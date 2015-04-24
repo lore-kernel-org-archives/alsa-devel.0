@@ -1,82 +1,117 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/7] Asoc: sti: add CPU DAI driver for
-	capture
-Date: Fri, 24 Apr 2015 19:20:11 +0100
-Message-ID: <20150424182011.GH22845@sirena.org.uk>
-References: <1429018531-29025-1-git-send-email-arnaud.pouliquen@st.com>
- <1429018531-29025-5-git-send-email-arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2] ASoC: Add support for NAU8825 codec to ASoC
+Date: Fri, 24 Apr 2015 19:28:12 +0100
+Message-ID: <20150424182812.GI22845@sirena.org.uk>
+References: <552F874A.7090409@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1804360220572454891=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 976F22605FA
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 20:20:16 +0200 (CEST)
-In-Reply-To: <1429018531-29025-5-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QKPhqaMSryCHBNcI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <552F874A.7090409@nuvoton.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chih-Chiang Chang <ccchang12@nuvoton.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1804360220572454891==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9dQosGoreRE7ZTIn"
-Content-Disposition: inline
-
-
---9dQosGoreRE7ZTIn
+--QKPhqaMSryCHBNcI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 14, 2015 at 03:35:28PM +0200, Arnaud Pouliquen wrote:
+On Thu, Apr 16, 2015 at 05:56:26PM +0800, Chih-Chiang Chang wrote:
 
-> +const struct snd_pcm_hardware uni_reader_pcm_hw = {
-> +	.info = (SNDRV_PCM_INFO_INTERLEAVED |
-> +		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +		 SNDRV_PCM_INFO_PAUSE),
+> +static const struct snd_kcontrol_new nau8825_hpo_mix[] = {
+> +
+> +	SOC_DAPM_SINGLE("HP L Switch", NAU8825_HSVOL_CTRL,
+> +	NAU8825_L_MUTE_SFT, 1, 1),
+> +	SOC_DAPM_SINGLE("HP R Switch", NAU8825_HSVOL_CTRL,
+> +	NAU8825_R_MUTE_SFT, 1, 1),
 
-The commit message says this is a CPU DAI but a snd_pcm_hardware is a
-DMA controller.
+Indentation - the continuation lines should be lined up with the (.
 
-> +static inline int get_property_hdl(struct device *dev, struct device_node *np,
-> +				   const char *prop, int idx)
+> +static void set_sys_clk(struct snd_soc_codec *codec, int sys_clk)
+> +{
 
-This appears to be duplicated from the previous patch, as does a *lot*
-of the code here.  Can we not share more of the code between playback
-and capture paths?
+This is only used in set_sysclk(), just merge it into there.
 
---9dQosGoreRE7ZTIn
+> +static const struct reg_default nau8825_reg[] = {
+> +	/* enable clock source */
+> +	{0x0001, 0x07FF},
+> +	/* enable VMID and Bias */
+> +	{0x0076, 0x3140},
+> +	/* setup clock divider */
+> +	{0x0003, 0x0050},
+> +	/* jack detection configuration */
+> +	{0x000C, 0x0004},
+> +	{0x000D, 0x00E0},
+> +	{0x000F, 0x0801},
+> +	{0x0012, 0x0010},
+> +	/* keypad detection configuration */
+> +	{0x0013, 0x0280},
+> +	{0x0014, 0x7310},
+> +	{0x0015, 0x050E},
+> +	{0x0016, 0x1B2A},
+> +	/* audio format configuration */
+> +	{0x001A, 0x0800},
+> +	{0x001C, 0x000E},
+> +	{0x001D, 0x0010},
+
+This all looks like normal configuration of the device done through a
+fixed magic number table which isn't what patches are for at all - they
+are for erratum fixes and similar.  Most if not all of this should be
+configured either from userspace or by the machine driver.
+
+> +static bool nau8825_volatile_register(struct device *dev, unsigned int reg)
+> +{
+> +	switch (reg) {
+> +	case NAU8825_RESET:
+> +	case NAU8825_ENA_CTRL:
+> +	case NAU8825_CLK_EN:
+> +	case NAU8825_CLK_DIVIDER:
+> +	case NAU8825_FLL_1:
+> +	case NAU8825_FLL_2:
+> +	case NAU8825_FLL_3:
+> +	case NAU8825_FLL_4:
+> +	case NAU8825_FLL_5:
+> +	case NAU8825_FLL_6:
+> +	case NAU8825_HEADSET_CTRL:
+> +	case NAU8825_JACK_DET_CTRL:
+> +	case NAU8825_IRQ_MASK:
+> +	case NAU8825_IRQ_CLEAR:
+> +	case NAU8825_IRQ_CTRL:
+
+Are you *sure* all these registers are volatile?  It isn't impossible of
+course but it seems like it'd be some very special hardware design.  It
+looks like all the registers are being marked as volatile.
+
+> +	/* software reset */
+> +	regmap_write(nau8825->regmap, NAU8825_RESET, 0x01);
+> +	regmap_write(nau8825->regmap, NAU8825_RESET, 0x02);
+
+We did the reset differently in the removal path...
+
+> +	/*writing initial register values to the codec*/
+> +	for (i = 0; i < ARRAY_SIZE(nau8825_reg); i++)
+> +		regmap_write(nau8825->regmap, nau8825_reg[i].reg,
+> +		nau8825_reg[i].def);
+
+We should use the reset values the CODEC has.
+
+--QKPhqaMSryCHBNcI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVOolaAAoJECTWi3JdVIfQzJUH/2xanD+Uh7P+O4sHHSd7W4kU
-x+yBW8N+r9p2WmJ86rRPijGQ8CFv9OL7YlnT1QMlPQdwhWeALFvMv2xji5l9OFgn
-AeP3GwBy7vfSBnV3o90E9WCBaKIIGPyMKXrqXW6E4nlrpMmMWBOF15y5QTMdGsPU
-4XMEHbT0OqZkZ0mhw/vRE6OSFh87lPWHnfR03OFC27FLZ6TD2AOiAOISrQCu1KUE
-agOiWAyR5W+dSCbcoLUWjbagTQ7WQ7+8YINA3eIiSkDs9Z2sggZdMF/FBPCfCmQI
-VCxEsKNadkk9zindVLjYmBw27mDc9xyE9jSTFMFL5shWnsHrSL+rGXUtDiPMDV0=
-=Zm//
+iQEcBAEBCAAGBQJVOos7AAoJECTWi3JdVIfQ20MH/0m7sUY+snJoYD2eNrEy/JOT
+QaR72/qHQkfK+1dNgNhS3+/eiu0FiHKFzAq6Msjret3NJO7InUg6v4so062gYbEB
+Mty1Ytpbqu2Woa4e07M7KDdHJqd3QztWzSnpgvydhtN1OSQ5SCYKgi0HaCCyEUqk
+8LBm8F+Iz64UPnmPYiRYKjJ09S8/FzomuF8qxSPVvZtPA4Fbk273hWPo9XDvR2CI
+yyOIxPSDkG5hQYkyqbKXQMee1+5CfKqr4HRDTsJQXGWGdLc47a7+GJvua/Jt/BCQ
+PfR/KApFqavQxnLPKrB0URveZzx1dsAxfDU0BQOUc4aCVwkBfmLHQlf21Pob55c=
+=yeAx
 -----END PGP SIGNATURE-----
 
---9dQosGoreRE7ZTIn--
-
---===============1804360220572454891==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1804360220572454891==--
+--QKPhqaMSryCHBNcI--
