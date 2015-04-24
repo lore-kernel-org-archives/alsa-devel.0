@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 1/7] ASoC: hda: Add skl dsp init and
- registering with SST IPC lib
-Date: Fri, 24 Apr 2015 18:36:57 +0100
-Message-ID: <20150424173657.GA22845@sirena.org.uk>
+Subject: Re: [RFC 2/7] ASoC: hda: add helper to configure
+	module params
+Date: Fri, 24 Apr 2015 18:38:30 +0100
+Message-ID: <20150424173830.GB22845@sirena.org.uk>
 References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
- <1429390653-8194-2-git-send-email-vinod.koul@intel.com>
+ <1429390653-8194-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2660720055861506128=="
+Content-Type: multipart/mixed; boundary="===============9105900780962146017=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4816F2605FA
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:37:02 +0200 (CEST)
-In-Reply-To: <1429390653-8194-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92AFE2605FA
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:38:35 +0200 (CEST)
+In-Reply-To: <1429390653-8194-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,74 +27,50 @@ Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2660720055861506128==
+--===============9105900780962146017==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4gDbFG3ar2iXiHcT"
+	protocol="application/pgp-signature"; boundary="49h+WPqFrDmC32aS"
 Content-Disposition: inline
 
 
---4gDbFG3ar2iXiHcT
+--49h+WPqFrDmC32aS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 19, 2015 at 02:27:27AM +0530, Vinod Koul wrote:
+On Sun, Apr 19, 2015 at 02:27:28AM +0530, Vinod Koul wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> This add helper functions to create module
+> parameter for module IPC msg
 
->  config SND_SOC_I2S_SKL_MACH
->          tristate "SOC Machine Audio driver for SKL Onboard I2S"
-> +	 select SND_HDA_DSP_LOADER
+This feels like it's abstracting between two different driver internal
+formats but it's not entirely clear to me.  I'm lacking some big picture
+stuff here.
 
-Looking at what this is modifying it really looks like there's some
-other patch series I wanted to look at first?
-
-> diff --git a/sound/soc/hda/hda_skl.h b/sound/soc/hda/hda_skl.h
-> index 0cc2ac69a9ab..914ea05da6aa 100644
-> --- a/sound/soc/hda/hda_skl.h
-> +++ b/sound/soc/hda/hda_skl.h
-> @@ -1,15 +1,3 @@
-> -/*
-> - *  This program is free software; you can redistribute it and/or modify=
- it
-> - *  under the terms of the GNU General Public License as published by th=
-e Free
-> - *  Software Foundation; either version 2 of the License, or (at your op=
-tion)
-> - *  any later version.
-> - *
-> - *  This program is distributed in the hope that it will be useful, but =
-WITHOUT
-> - *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> - *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licens=
-e for
-> - *  more details.
-> - */
-> -
-
-Oh? =20
-
---4gDbFG3ar2iXiHcT
+--49h+WPqFrDmC32aS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVOn84AAoJECTWi3JdVIfQ0PIH/1mQ+HqMTDiFZ8AEE1LRQttK
-j/RzAz3JVCTaL7bnFov/QAySYeJgmcbk+uY7qSLX8eoPsb6PbI2ZGq0bLM0pmCA5
-UiRxZtx1ATc8XYekivr5BBm05Jg+fzUacl05JnXhAM1zPzDL5f6U63v1RLvVdDoG
-LTy5abuZzLp+SSDB4/EnkNvctCtfmpnPcRxGby19itRZGWR8w0xgOex68nu/wE7d
-akhR0bLJ2oD9Yt/r1iu0+BxLEwV+5HuLaZFMb9phZffDpPfOaddBNX319BeieR1q
-+ISQHS6nzhaKgLYEIJHCXDVdeJgXHe+zb8AWVHCbihyDr0cKmCaR53rgyFdnJ0o=
-=2x4F
+iQEcBAEBCAAGBQJVOn+VAAoJECTWi3JdVIfQqaYH/2GDnS8DqC3YEvH5JECMD5p8
+znAJ+1O90zbZJuJ8De1Y93+BzPgqGZQjrgkOEw7uUphGNNKu3NrEbWHGzfCHxe4J
+mV07p5ggJWu0xM8Oy0OAutxLBasx4zLum8zz96UVuCUhPOqFV36hrTHcZrGZkM9m
+/PPXaHsgn18Isa+ZEBKsaTJEHtJ36grE1v8aTDS6CUCLc4PPWClqiXQ0yyoTI4pc
+plxj2/aCKH1/19jqDZk030uM1xbo5+4le+Vr2qMXZYVZhYbfQKBeYNVD4ug5PET5
+GLWFj9NRp5jt7xScAdKUP5j9Vy2wLsZLfVqj5YCCznO2TjwwoDEDDoXUF19qgUc=
+=9Q4e
 -----END PGP SIGNATURE-----
 
---4gDbFG3ar2iXiHcT--
+--49h+WPqFrDmC32aS--
 
---===============2660720055861506128==
+--===============9105900780962146017==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2660720055861506128==--
+--===============9105900780962146017==--
