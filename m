@@ -1,16 +1,18 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH 2/2] ASoC: rt5645: set platform data base on DMI
-Date: Thu, 23 Apr 2015 16:35:18 -0700
-Message-ID: <1429832118-20741-2-git-send-email-yang.a.fang@intel.com>
-References: <1429832118-20741-1-git-send-email-yang.a.fang@intel.com>
+From: Mike Ood <jh1ood@gmail.com>
+Subject: Re: snd-bebob and PrismSound Orpheus fails with
+	snd_pcm_hw_params_set_channels
+Date: Fri, 24 Apr 2015 09:20:24 +0900
+Message-ID: <CAJ0eYfXCX_0C-v0cGOwieDDCOn6q4Mt9JvBG7CxA51yOrALSpw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E786426041F
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 01:35:59 +0200 (CEST)
-In-Reply-To: <1429832118-20741-1-git-send-email-yang.a.fang@intel.com>
+Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
+ [209.85.216.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16E6926041F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 02:20:26 +0200 (CEST)
+Received: by vnbf62 with SMTP id f62so2831328vnb.3
+ for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 17:20:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,104 +22,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, bardliao@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+Clemens wrote:
+>> You should replace "hw" with "plughw" in the device name.
 
-set platform specific data for intel strago platform
+So you were referring to:
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/codecs/rt5645.c |   51 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+% aplay -L
+plughw:CARD=Orpheus,DEV=0
+    Orpheus, Orpheus PCM
+    Hardware device with all software conversions
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index e16724a..14cabee 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -19,6 +19,7 @@
- #include <linux/spi/spi.h>
- #include <linux/gpio.h>
- #include <linux/acpi.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -2628,6 +2629,39 @@ static struct acpi_device_id rt5645_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, rt5645_acpi_match);
- #endif
- 
-+static struct rt5645_priv *grt5645;
-+
-+static int strago_quirk_cb(const struct dmi_system_id *id)
-+{
-+	struct rt5645_priv **rt5645;
-+
-+	rt5645 = (struct rt5645_priv **)id->driver_data;
-+
-+	if (*rt5645) {
-+
-+		(*rt5645)->pdata.dmic_en = 1;
-+		(*rt5645)->pdata.dmic1_data_pin = -1;
-+		(*rt5645)->pdata.dmic2_data_pin = RT5645_DMIC_DATA_IN2P;
-+		(*rt5645)->pdata.en_jd_func = 1;
-+		(*rt5645)->pdata.jd_mode = 3;
-+
-+	}
-+
-+	return 1;
-+}
-+
-+static struct dmi_system_id dmi_platform_intel_braswell[] __initdata = {
-+	{
-+		.ident = "Intel Strago",
-+		.callback = strago_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Strago"),
-+		},
-+		.driver_data = (void *)&grt5645,
-+	},
-+	{ }
-+};
-+
- static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -2635,17 +2669,32 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	struct rt5645_priv *rt5645;
- 	int ret;
- 	unsigned int val;
-+	struct gpio_desc *gpiod;
- 
- 	rt5645 = devm_kzalloc(&i2c->dev, sizeof(struct rt5645_priv),
- 				GFP_KERNEL);
- 	if (rt5645 == NULL)
- 		return -ENOMEM;
- 
-+	grt5645 = rt5645;
- 	rt5645->i2c = i2c;
- 	i2c_set_clientdata(i2c, rt5645);
- 
--	if (pdata)
-+	if (pdata) {
- 		rt5645->pdata = *pdata;
-+	} else {
-+		dmi_check_system(dmi_platform_intel_braswell);
-+		gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
-+
-+		if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
-+			rt5645->pdata.hp_det_gpio = -1;
-+			dev_err(&i2c->dev, "failed to initialize gpiod\n");
-+		} else {
-+			rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
-+			rt5645->pdata.gpio_hp_det_active_high
-+						= !gpiod_is_active_low(gpiod);
-+		}
-+	}
- 
- 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
- 	if (IS_ERR(rt5645->regmap)) {
--- 
-1.7.9.5
+> Any error message in the system log?
+
+% tail dmesg?.txt
+
+==> dmesg1.txt <== this is just after booting.
+
+[   21.439026] r8169 0000:02:00.0 eth0: link down
+[   23.809013] r8169 0000:02:00.0 eth0: link up
+
+==> dmesg2.txt <== this is just after connecting Orpheus.
+
+[   21.439026] r8169 0000:02:00.0 eth0: link down
+[   23.809013] r8169 0000:02:00.0 eth0: link up
+[  110.079264] firewire_core 0000:08:00.0: phy config: new root=ffc1,
+gap_count=5
+[  110.343319] firewire_core 0000:08:00.0: phy config: new root=ffc1,
+gap_count=5
+[  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID
+00119800010001f9, S400
+[  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+
+==> dmesg3.txt <== this is just after % aplay -D plughw:2,0 test.wav
+
+[   21.439026] r8169 0000:02:00.0 eth0: link down
+[   23.809013] r8169 0000:02:00.0 eth0: link up
+[  110.079264] firewire_core 0000:08:00.0: phy config: new root=ffc1,
+gap_count=5
+[  110.343319] firewire_core 0000:08:00.0: phy config: new root=ffc1,
+gap_count=5
+[  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID
+00119800010001f9, S400
+[  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[  128.010593] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[  133.416998] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[  136.275142] snd-bebob fw1.0: Detect discontinuity of CIP: 50 70
+[  137.654178] snd-bebob fw1.0: Detect discontinuity of CIP: 70 90
+
+% ls -l dmesg?.txt
+-rw-rw-r-- 1 user1 user1 72728 Apr 24 08:42 dmesg1.txt
+-rw-rw-r-- 1 user1 user1 73050 Apr 24 08:42 dmesg2.txt
+-rw-rw-r-- 1 user1 user1 73318 Apr 24 08:43 dmesg3.txt
+
+% egrep 'Apr 24 08:42|Apr 24 08:43' /var/log/syslog
+
+Apr 24 08:42:24 host gnome-session[1466]: WARN  2015-04-24 08:42:24
+unity.dash.gsettingsscopereader GSettingsScopes.cpp:108 Error fetching
+protocol metadata for scope: social.scope : Valid key file could not be
+found in search dirs
+Apr 24 08:42:44 host kernel: [  110.079264] firewire_core 0000:08:00.0: phy
+config: new root=ffc1, gap_count=5
+Apr 24 08:42:45 host kernel: [  110.343319] firewire_core 0000:08:00.0: phy
+config: new root=ffc1, gap_count=5
+Apr 24 08:42:45 host kernel: [  110.580310] firewire_core 0000:08:00.0:
+created device fw1: GUID 00119800010001f9, S400
+Apr 24 08:42:48 host kernel: [  113.660273] snd-bebob fw1.0: Detect
+discontinuity of CIP: 00 08
+Apr 24 08:43:02 host kernel: [  128.010593] snd-bebob fw1.0: Detect
+discontinuity of CIP: 00 08
+Apr 24 08:43:08 host kernel: [  133.416998] snd-bebob fw1.0: Detect
+discontinuity of CIP: 00 08
+Apr 24 08:43:11 host rtkit-daemon[1163]: Supervising 4 threads of 1
+processes of 1 users.
+Apr 24 08:43:11 host rtkit-daemon[1163]: Successfully made thread 1900 of
+process 1540 (n/a) owned by '1000' RT at priority 5.
+Apr 24 08:43:11 host rtkit-daemon[1163]: Supervising 5 threads of 1
+processes of 1 users.
+Apr 24 08:43:11 host kernel: [  136.275142] snd-bebob fw1.0: Detect
+discontinuity of CIP: 50 70
+Apr 24 08:43:12 host kernel: [  137.654178] snd-bebob fw1.0: Detect
+discontinuity of CIP: 70 90
+Apr 24 08:43:14 host pulseaudio[1540]: [alsa-source-BeBoB] alsa-util.c:
+Could not recover from POLLERR|POLLNVAL|POLLHUP and XRUN: Connection timed
+out
+Apr 24 08:43:17 host systemd[1]: Stopping User Manager for UID 112...
+
+***
+
+Any clues?
+
+Mike Ood
+--
+% uname -a
+Linux host 3.19.0-15-generic #15-Ubuntu SMP Thu Apr 16 23:32:37 UTC 2015
+x86_64 x86_64 x86_64 GNU/Linux
+--
