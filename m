@@ -1,8 +1,8 @@
 From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Fw: Using loopback card to Connect GSM two way
-	call	to the real sound card UDA1345TS
-Date: Fri, 24 Apr 2015 06:26:19 +0000
-Message-ID: <1429856777625.96661@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two
+	way	call	to the real sound card UDA1345TS
+Date: Fri, 24 Apr 2015 06:26:58 +0000
+Message-ID: <1429856816994.50326@tataelxsi.co.in>
 References: <1425878251963.1340@tataelxsi.co.in>
  <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
  <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
@@ -15,9 +15,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from APAC01-HK1-obe.outbound.protection.outlook.com
- (mail-hk1on0119.outbound.protection.outlook.com [134.170.140.119])
- by alsa0.perex.cz (Postfix) with ESMTP id 72B9F26047A
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 08:26:23 +0200 (CEST)
+ (mail-hk1bn0104.outbound.protection.outlook.com [134.170.140.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E9502604AF
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 08:27:02 +0200 (CEST)
 In-Reply-To: <1429683117651.11394@tataelxsi.co.in>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -33,6 +33,7 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
+
 Dear Clemens,
 
 Could you please provide any inputs or suggestions w.r.t the below query
@@ -40,13 +41,12 @@ Could you please provide any inputs or suggestions w.r.t the below query
 Kindly do the needful as early as possible,
 
 Many Thanks in advance,
-
 ________________________________________
-From: Srinivasan S
+From: alsa-devel-bounces@alsa-project.org <alsa-devel-bounces@alsa-project.org> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in>
 Sent: Wednesday, April 22, 2015 11:41 AM
 To: Clemens Ladisch
 Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
-Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way        call    to the real sound card UDA1345TS
 
 Dear Clemens,
 
@@ -90,3 +90,7 @@ The slave device is the device whose name is specified with "slave.pcm".
 
 Regards,
 Clemens
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
