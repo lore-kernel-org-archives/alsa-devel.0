@@ -1,73 +1,76 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 6/8] extcon: arizona: Add support for	WM8998
- and WM1814
-Date: Fri, 24 Apr 2015 09:59:37 +0900
-Message-ID: <55399579.9090104@samsung.com>
-References: <1429619636-25478-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1429619636-25478-7-git-send-email-rf@opensource.wolfsonmicro.com>
- <55373766.6060106@samsung.com>
- <20150422091941.GA4303@opensource.wolfsonmicro.com>
- <553775D9.9080606@samsung.com>
- <20150423141540.GA17323@opensource.wolfsonmicro.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [ANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Fri, 24 Apr 2015 04:11:26 +0100
+Message-ID: <1429845086.2702.45.camel@loki>
+References: <s5h1trqavly.wl-tiwai@suse.de>
+ <20150423205745.GH22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-reply-to: <20150423141540.GA17323@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, myungjoo.ham@samsung.com, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2E3F260430
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 05:11:31 +0200 (CEST)
+In-Reply-To: <20150423205745.GH22845@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/23/2015 11:15 PM, Richard Fitzgerald wrote:
-> On Wed, Apr 22, 2015 at 07:20:09PM +0900, Chanwoo Choi wrote:
->> On 04/22/2015 06:19 PM, Richard Fitzgerald wrote:
->>> On Wed, Apr 22, 2015 at 02:53:42PM +0900, Chanwoo Choi wrote:
->>>> Hi Richard,
->>>>
->>>>> @@ -1176,6 +1182,11 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->>>>>  			break;
->>>>>  		}
->>>>>  		break;
->>>>> +	case WM8998:
->>>>> +	case WM1814:
->>>>> +		info->micd_clamp = true;
->>>>> +		info->hpdet_ip = 2;
->>>>
->>>> What is meaning of '2'? I prefer to use the definition for '2'.
->>>>
->>>
->>> '2' is the version number of the hpdet ip block in silicon. We're already using
->>> it as a raw number '0', '1' or '2' all over extcon-arizona.c so changing it here
->>> would mean making other patches to the file that aren't really part of adding
->>> WM8998 support, so I'd prefer not to change that as a side-effect of adding WM8998.
->>
->> I think that just you can define following definitions and use HPDET_IP_VER_V2 instead of '2'.
->>
->> 	#define HPDET_IP_VER_V0		0
->> 	#define HPDET_IP_VER_V1		1
->> 	#define HPDET_IP_VER_V2		2
->>
+On Thu, 2015-04-23 at 21:57 +0100, Mark Brown wrote:
+> Hi,
 > 
-> Can we deal with that as a separate patch from this series? Like I said,
-> the code already uses '0' '1' and '2' for the existing codecs so making a
-> change to use #define means patching the code for the other codecs. That
-> is not part of adding WM8998 support and I don't like patches that make
-> unexpected extra side-effect changes that are not relevant to the actual
-> functionality being added by the patch. It's specially annoying when
-> cherry-picking or reverting those patches if they included some extra
-> code change.
+> like previous years, we're going to hold a meeting to discuss
+> lowlevel audio on Linux.  This will be held the day after ELC Europe on
+> 8th October at CCD (The Convention Centre) in Dublin.
 > 
-> If we can get this series submitted I can look at making a later patch
-> to improve readbility, but since this really is just a version number I
-> think it would be enough to rename the variable to hpdet_ip_version rather
-> than effectively doing #define TWO 2
+> If you're interested please sign up in the attendee list:
+> 
+> https://docs.google.com/spreadsheets/d/1bi-8GHsqlzt41FR20WiMuWILe_cZowFireVMBd-QM8Q/edit?usp=sharing
+> 
+> and please follow up to this mail with any topics you'd like to see
+> raised so we can start collecting them (probably another Google doc will
+> be forthcoming for them).
 
-OK. I agree that rename the variable name (hpdet_ip_version)
-or add the definitions for version on later patch.
+My initial topics would be :-
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+o Reducing alsa kernel and driver size for IoT devices with limited
+DRAM. Look at Tinyalsa and salsalib too for IoT userspace.
 
-Thanks,
-Chanwoo Choi
+o Generic machine drivers based on ACPI table data from multiple
+devices. i.e. create a machine driver based on ACPI HW topology data
+from codec and DSP drivers. This seems to be done for DT, so we probably
+need to combine ACPI support into the existing code. The device property
+API can be used to abstract any differences between reading data from DT
+and ACPI. The difference with DT is that we will need to aggregate data
+from the codec and DSP tables as we wont have any ACPI table data for a
+machine driver device.
 
+o Intels audio testing tool (currently called BAT). What new features
+are needed/wanted most. This is a tool Intel are working on for
+automated testing of audio drivers and sound servers. It will be GPL
+licensed and is intended to be part of alsa-utils when ready. I'll make
+an announcement with more details and a git repo in the next few weeks.
+We are using this internally atm for testing current upstream SST
+drivers.
+
+Liam  
+
+
+
+> 
+> Thanks,
+> Mark
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
