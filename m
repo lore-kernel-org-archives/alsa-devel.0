@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 21/21] ALSA: hda - Replace open codes with
-	snd_hdac_stream_set_params()
-Date: Fri, 24 Apr 2015 14:38:53 +0200
-Message-ID: <1429879133-32293-22-git-send-email-tiwai@suse.de>
+Subject: [PATCH 16/21] ALSA: hda - Drop azx_sd_read*/write*()
+	macros
+Date: Fri, 24 Apr 2015 14:38:48 +0200
+Message-ID: <1429879133-32293-17-git-send-email-tiwai@suse.de>
 References: <1429879133-32293-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D98C2605FA
+ by alsa0.perex.cz (Postfix) with ESMTP id 985072605F5
  for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:39:01 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DFD78ADC0
+ by mx2.suse.de (Postfix) with ESMTP id CD90FAD9C
  for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:39:00 +0000 (UTC)
 In-Reply-To: <1429879133-32293-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,51 +27,51 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+They are no longer used (only one place which can be replaced with a
+proper helper function).  Let's drop.
+
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c | 23 ++++-------------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+ sound/pci/hda/hda_controller.h | 13 -------------
+ sound/pci/hda/hda_intel.c      |  2 +-
+ 2 files changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 14ffb6bd986c..e0bb6231ff0c 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -157,7 +157,7 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct azx_dev *azx_dev = get_azx_dev(substream);
- 	struct hda_pcm_stream *hinfo = to_hda_pcm_stream(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned int bufsize, period_bytes, format_val, stream_tag;
-+	unsigned int format_val, stream_tag;
- 	int err;
- 	struct hda_spdif_out *spdif =
- 		snd_hda_spdif_out_of_nid(apcm->codec, hinfo->nid);
-@@ -183,24 +183,9 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
- 		goto unlock;
- 	}
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index e8edb02c12d3..407cba6577b8 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -185,19 +185,6 @@ struct azx {
+ #define azx_readb(chip, reg) \
+ 	snd_hdac_chip_readb(azx_bus(chip), reg)
  
--	bufsize = snd_pcm_lib_buffer_bytes(substream);
--	period_bytes = snd_pcm_lib_period_bytes(substream);
+-#define azx_sd_writel(chip, dev, reg, value) \
+-	snd_hdac_stream_writel(&(dev)->core, reg, value)
+-#define azx_sd_readl(chip, dev, reg) \
+-	snd_hdac_stream_readl(&(dev)->core, reg)
+-#define azx_sd_writew(chip, dev, reg, value) \
+-	snd_hdac_stream_writew(&(dev)->core, reg, value)
+-#define azx_sd_readw(chip, dev, reg) \
+-	snd_hdac_stream_readw(&(dev)->core, reg)
+-#define azx_sd_writeb(chip, dev, reg, value) \
+-	snd_hdac_stream_writeb(&(dev)->core, reg, value)
+-#define azx_sd_readb(chip, dev, reg) \
+-	snd_hdac_stream_readb(&(dev)->core, reg)
 -
--	dev_dbg(chip->card->dev, "azx_pcm_prepare: bufsize=0x%x, format=0x%x\n",
--		bufsize, format_val);
--
--	if (bufsize != azx_dev->core.bufsize ||
--	    period_bytes != azx_dev->core.period_bytes ||
--	    format_val != azx_dev->core.format_val ||
--	    runtime->no_period_wakeup != azx_dev->core.no_period_wakeup) {
--		azx_dev->core.bufsize = bufsize;
--		azx_dev->core.period_bytes = period_bytes;
--		azx_dev->core.format_val = format_val;
--		azx_dev->core.no_period_wakeup = runtime->no_period_wakeup;
--		err = snd_hdac_stream_setup_periods(azx_stream(azx_dev));
--		if (err < 0)
--			goto unlock;
--	}
-+	err = snd_hdac_stream_set_params(azx_stream(azx_dev), format_val);
-+	if (err < 0)
-+		goto unlock;
+ #define azx_has_pm_runtime(chip) \
+ 	(!AZX_DCAPS_PM_RUNTIME || ((chip)->driver_caps & AZX_DCAPS_PM_RUNTIME))
  
- 	snd_hdac_stream_setup(azx_stream(azx_dev));
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 8a1471851ca7..2b823d4ad888 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -680,7 +680,7 @@ static unsigned int azx_via_get_position(struct azx *chip,
+ 	unsigned int mod_link_pos, mod_dma_pos, mod_mini_pos;
+ 	unsigned int fifo_size;
  
+-	link_pos = azx_sd_readl(chip, azx_dev, SD_LPIB);
++	link_pos = snd_hdac_stream_get_pos_lpib(azx_stream(azx_dev));
+ 	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		/* Playback, no problem using link position */
+ 		return link_pos;
 -- 
 2.3.5
