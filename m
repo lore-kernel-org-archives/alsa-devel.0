@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/21] ALSA: hda - Reenable tracepoints for
-	controller
-Date: Fri, 24 Apr 2015 14:38:46 +0200
-Message-ID: <1429879133-32293-15-git-send-email-tiwai@suse.de>
+Subject: [PATCH 15/21] ALSA: hda/tegra - Fix build error and
+	warning
+Date: Fri, 24 Apr 2015 14:38:47 +0200
+Message-ID: <1429879133-32293-16-git-send-email-tiwai@suse.de>
 References: <1429879133-32293-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 819F52605EE
+ by alsa0.perex.cz (Postfix) with ESMTP id 801FC2605EA
  for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:39:01 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C3A5DAD85
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CB6D4AD8B
  for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:39:00 +0000 (UTC)
 In-Reply-To: <1429879133-32293-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,67 +27,38 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After correcting the fields to point the right members, tracepoints
-can be reenabled again for the legacy controller code.
+I seem to have failed to run the build test properly...
+   sound/pci/hda/hda_tegra.c: In function 'hda_tegra_dev_free':
+   sound/pci/hda/hda_tegra.c:310:20: error: 'bus' undeclared (first use in this function)
+         snd_hdac_bus_exit(bus);
 
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c  | 6 ++++++
- sound/pci/hda/hda_intel_trace.h | 4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_tegra.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 8f12ad9a4df5..0e43f79e1d9b 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -31,6 +31,9 @@
- #include <sound/initval.h>
- #include "hda_controller.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "hda_intel_trace.h"
-+
- /* DSP lock helpers */
- #define dsp_lock(dev)		snd_hdac_dsp_lock(azx_stream(dev))
- #define dsp_unlock(dev)		snd_hdac_dsp_unlock(azx_stream(dev))
-@@ -229,6 +232,8 @@ static int azx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	int sync_reg;
- 
- 	azx_dev = get_azx_dev(substream);
-+	trace_azx_pcm_trigger(chip, azx_dev, cmd);
-+
- 	hstr = azx_stream(azx_dev);
- 	if (chip->driver_caps & AZX_DCAPS_OLD_SSYNC)
- 		sync_reg = AZX_REG_OLD_SSYNC;
-@@ -330,6 +335,7 @@ unsigned int azx_get_position(struct azx *chip,
- 		substream->runtime->delay = delay;
- 	}
- 
-+	trace_azx_get_position(chip, azx_dev, pos, delay);
- 	return pos;
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index d5349809f43d..801e9fb4a467 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -102,8 +102,6 @@ static int substream_alloc_pages(struct azx *chip,
+ 				 struct snd_pcm_substream *substream,
+ 				 size_t size)
+ {
+-	struct azx_dev *azx_dev = get_azx_dev(substream);
+-
+ 	return snd_pcm_lib_malloc_pages(substream, size);
  }
- EXPORT_SYMBOL_GPL(azx_get_position);
-diff --git a/sound/pci/hda/hda_intel_trace.h b/sound/pci/hda/hda_intel_trace.h
-index 7b5e4c2cf9d5..ae004737d0fd 100644
---- a/sound/pci/hda/hda_intel_trace.h
-+++ b/sound/pci/hda/hda_intel_trace.h
-@@ -24,7 +24,7 @@ TRACE_EVENT(azx_pcm_trigger,
  
- 	TP_fast_assign(
- 		__entry->card = (chip)->card->number;
--		__entry->idx = (dev)->index;
-+		__entry->idx = (dev)->core.index;
- 		__entry->cmd = cmd;
- 	),
+@@ -304,7 +302,7 @@ static int hda_tegra_dev_free(struct snd_device *device)
  
-@@ -46,7 +46,7 @@ TRACE_EVENT(azx_get_position,
+ 	azx_free_stream_pages(chip);
+ 	azx_free_streams(chip);
+-	snd_hdac_bus_exit(bus);
++	snd_hdac_bus_exit(azx_bus(chip));
  
- 	TP_fast_assign(
- 		__entry->card = (chip)->card->number;
--		__entry->idx = (dev)->index;
-+		__entry->idx = (dev)->core.index;
- 		__entry->pos = pos;
- 		__entry->delay = delay;
- 	),
+ 	return 0;
+ }
 -- 
 2.3.5
