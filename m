@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5645: set platform data base
-	on DMI
-Date: Fri, 24 Apr 2015 11:12:03 +0100
-Message-ID: <20150424101203.GL22845@sirena.org.uk>
-References: <1429832118-20741-1-git-send-email-yang.a.fang@intel.com>
- <1429832118-20741-2-git-send-email-yang.a.fang@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: snd-bebob and PrismSound Orpheus fails with
+	snd_pcm_hw_params_set_channels
+Date: Fri, 24 Apr 2015 19:13:21 +0900
+Message-ID: <553A1741.9020705@sakamocchi.jp>
+References: <CAJ0eYfXCX_0C-v0cGOwieDDCOn6q4Mt9JvBG7CxA51yOrALSpw@mail.gmail.com>
+ <5539FECC.8050609@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4828123312111705482=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DACA9260529
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:12:08 +0200 (CEST)
-In-Reply-To: <1429832118-20741-2-git-send-email-yang.a.fang@intel.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FDF7260554
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:13:39 +0200 (CEST)
+In-Reply-To: <5539FECC.8050609@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, bardliao@realtek.com
+To: Clemens Ladisch <clemens@ladisch.de>, Mike Ood <jh1ood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4828123312111705482==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mP0G5DnRF8tiiPfN"
-Content-Disposition: inline
+On Apr 23 2015 21:13, Mike Ood wrote:
+> % cat /proc/asound/card2/firewire/clock
+> Sampling rate: 44100
+> Clock Source: External (MSU-dest: 7)
 
+According to this output, the internal clock of your device is set to
+synchronize to external source such as S/PDIF or word clock.
 
---mP0G5DnRF8tiiPfN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If your device is implemented with no customization of the setting and
+you didn't give any external sources to your device, the device is not
+synchronized.
+(If you give it correctly, please inform it to us.)
 
-On Thu, Apr 23, 2015 at 04:35:18PM -0700, yang.a.fang@intel.com wrote:
+I think this is a cause of this issue.
+ * Your device lost synchronization.
+ * Transfers streaming packets with discontinuity.
+ * Then snd-bebob driver (in fact snd-firewire-lib) cannot continue.
 
-> +static int strago_quirk_cb(const struct dmi_system_id *id)
-> +{
-> +	struct rt5645_priv **rt5645;
-> +
-> +	rt5645 = (struct rt5645_priv **)id->driver_data;
-> +
-> +	if (*rt5645) {
-> +
-> +		(*rt5645)->pdata.dmic_en = 1;
-> +		(*rt5645)->pdata.dmic1_data_pin = -1;
-> +		(*rt5645)->pdata.dmic2_data_pin = RT5645_DMIC_DATA_IN2P;
-> +		(*rt5645)->pdata.en_jd_func = 1;
-> +		(*rt5645)->pdata.jd_mode = 3;
-> +
-> +	}
-> +
-> +	return 1;
-> +}
+On Apr 24 2015 17:29, Clemens Ladisch wrote:
+>> this is just after % aplay -D plughw:2,0 test.wav
+>> ...
+>> [  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID 00119800010001f9, S400
+>> [  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+>> [  128.010593] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+>> [  133.416998] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+>> [  136.275142] snd-bebob fw1.0: Detect discontinuity of CIP: 50 70
+>> [  137.654178] snd-bebob fw1.0: Detect discontinuity of CIP: 70 90
+> 
+> This means that some packet to be received from the device is (or
+> appears to be) missing.  In theory, this is supposed to happen only when
+> noise on the cable has corrupted the signal, but this might be a problem
+> with this device's firmware.
+> 
+> Does this device (with this cable) work in Windows or OS X?
 
-This doesn't look good - we're modifying the driver data which should
-really be global static data.  I'd expect us to be doing something like
-return a pointer to the platform data for the device, not modify things
-in place.
+libffado also supports this device and I guess you can start streaming
+with jackd and firewire backend because libffado implements loose
+checker of packet discontinuity.
 
---mP0G5DnRF8tiiPfN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Currently, libffado has a bug to fail to switch clock source for usual
+BeBoB driver. So we have no way to set the source of clock correctly.
+I've tried to fix it but get stuck deeply into ffado's fault and given up.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVOhbyAAoJECTWi3JdVIfQzo0H/jUNclVO4YjVYcL0KwNzp2fx
-jJodJ19Jp0VWHfIxyxhxM0zk8EPI43edSARzta3MlukuJ2zdS3A5MxExt4EWiQGX
-f+1iWXnx4FIvBanZ/vbTBqSrXHSWSkGNWjSuZEs7Jaxl4N7z2/FkKBWX18IyP/v0
-qv1TiFrv/CdQTOA5Qp4dtGsjg4TUSEeTcRAOn0PwFzoWVXa6dQ6AmMJxjoSQZAfD
-zvkoY2Zy1ITil+h1kf/EHC9RrPX6xhF5xCbaG7jmDYqe6D9Ik3HyL3qIRO5vcVew
-VbTs81QTjLLmLA3kwIXaTAkbPC4j+qNPmdDAOwOHGCm35/egApvxLRRiops9Cx4=
-=Rn8+
------END PGP SIGNATURE-----
-
---mP0G5DnRF8tiiPfN--
-
---===============4828123312111705482==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+For our information:
+http://subversion.ffado.org/wiki/AvcModels/PrismSoundOrpheus
 
 
---===============4828123312111705482==--
+Regards
+
+Takashi Sakamoto
