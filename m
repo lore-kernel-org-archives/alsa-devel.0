@@ -1,62 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: tas571x: New driver for TI TAS571x power
- amplifiers
-Date: Fri, 24 Apr 2015 10:28:39 +0100
-Message-ID: <20150424092839.GI22845@sirena.org.uk>
-References: <1429134141-17924-1-git-send-email-cernekee@chromium.org>
- <1429134141-17924-2-git-send-email-cernekee@chromium.org>
- <20150418113632.GE26185@sirena.org.uk>
- <CAJzqFtYVd+jHesoNnG47ftoK9SWYUmXwDXpf2==s3Rv1ewpsYg@mail.gmail.com>
- <CAJzqFtYZ8=k7ETGyXYoDTpjNdPQ7oRrMxO+kG++3diFif6Ox1g@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: rt5677: add register patch for PLL
+Date: Fri, 24 Apr 2015 11:07:12 +0100
+Message-ID: <20150424100712.GK22845@sirena.org.uk>
+References: <1429859969-25258-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y+dl6OcicAkN96vR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtYZ8=k7ETGyXYoDTpjNdPQ7oRrMxO+kG++3diFif6Ox1g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Cernekee <cernekee@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/mixed; boundary="===============3652697028811788728=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE0C5260555
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:07:22 +0200 (CEST)
+In-Reply-To: <1429859969-25258-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---y+dl6OcicAkN96vR
+--===============3652697028811788728==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+vvLrYJBRPXjEjJt"
+Content-Disposition: inline
+
+
+--+vvLrYJBRPXjEjJt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 23, 2015 at 05:47:49PM -0700, Kevin Cernekee wrote:
+On Fri, Apr 24, 2015 at 03:19:29PM +0800, Bard Liao wrote:
+> The PLL output will be unstable in some cases. We can fix it by
+> setting some registers.
 
-> This is mostly working OK, but regcache_sync() assumes that the
-> hardware registers have been reset back to the default values.  The
-> "pdn" GPIO doesn't actually reset the state of the tas571x; it just
-> makes I2C inaccessible and inhibits audio output.  So if the factory
-> default for mute is 0, corner cases like this fail:
+Applied, thanks.
 
-...
-
-> Aside from unnecessarily pulsing the reset GPIO when transitioning
-> back from SND_SOC_BIAS_OFF or overriding regcache_default_sync(), can
-> you think of a way to work around this?
-
-Do you need to work around it?  If the register map is being perserved
-you don't need to sync so just don't do it - it's just that the normal
-expectation would be that power down would cause the register map to be
-reset.
-
---y+dl6OcicAkN96vR
+--+vvLrYJBRPXjEjJt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVOgzHAAoJECTWi3JdVIfQ7hkH/1+Yd8imLUyeL3ROffmFUfAn
-fN7AhxP5HE/fmyFrUHx09FT18qpPfcP/ijQdiey0YE0UhEITWnzE1jWZ8YB9PNU6
-iMDKQ561LCIw6xThw16Y9PGWkaqnpqXZjVy3i1QVdh7f6eclrbL6hxihxxkw/5kX
-6IoYzFB0TMKBpLo9/CfLDK9ZjBBRdxsaCx7EZrP1y6qT7u0NMPSinVMNEfvwvvuY
-Q3L92jFNEAd8Tj5xycPBd5nMBgyltMTLUQngjEkXfqGVJkwxpzhN/oqtkIRXBzmI
-zdvr/VSEo6HWCwBV3h6fXQ0uHGU6A/wpMneqqP4OtSY3jFan25DNB+oNwupV1Ck=
-=f0W7
+iQEcBAEBCAAGBQJVOhXPAAoJECTWi3JdVIfQl+8H/ikiPvzEI3zAeeMb5StYlcn/
+b83Gf+w38N7wViK7bgVZlKBaMj/GN0RytXd37zFQl+zYhob77xo/b29Ec/O+rgXk
+BWgmrUnk4Rm+SaFveAFHbcaGDvDww/TBZHd2zWYLtCbIt3QjXDBgAuD7jlMYATLq
+2kOymGQylIcucw5QUeA7pFWak6WPpPJ07w5LbaypVkmexqWEQvqrprlDif1LGp8q
+GKwxitmABFHi9ug1wA1RS3JspRCWHHzLAWYUoNp+0CyGqq5TxRc48d53HU8ZeIUp
+qdXK6AkMBOoDR7Ie7GrgBmPZlJgRPgkLMwUifl/o9MJf0247nGzEBfCqEVBVVbY=
+=kdp8
 -----END PGP SIGNATURE-----
 
---y+dl6OcicAkN96vR--
+--+vvLrYJBRPXjEjJt--
+
+--===============3652697028811788728==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3652697028811788728==--
