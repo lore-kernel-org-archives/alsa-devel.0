@@ -1,25 +1,18 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Fw: Using loopback card to Connect GSM two way
-	call	to the real sound card UDA1345TS
-Date: Fri, 24 Apr 2015 12:05:33 +0000
-Message-ID: <1429877130444.23317@tataelxsi.co.in>
-References: <1425878251963.1340@tataelxsi.co.in>
- <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
- <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
- <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
- <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
- <551D5B78.60703@ladisch.de>
- <1429683117651.11394@tataelxsi.co.in>,<5539F971.2030407@ladisch.de>
+From: Mike Ood <jh1ood@gmail.com>
+Subject: Re: snd-bebob and PrismSound Orpheus fails with
+	snd_pcm_hw_params_set_channels
+Date: Fri, 24 Apr 2015 21:27:09 +0900
+Message-ID: <CAJ0eYfW4iatW+L+d+Y-9CAACfZVq7V=a575iRy9tTJ0SMjwXXQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APAC01-SG1-obe.outbound.protection.outlook.com
- (mail-sg1on0138.outbound.protection.outlook.com [134.170.132.138])
- by alsa0.perex.cz (Postfix) with ESMTP id B1D6A260577
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:05:37 +0200 (CEST)
-In-Reply-To: <5539F971.2030407@ladisch.de>
-Content-Language: en-US
+Received: from mail-vn0-f47.google.com (mail-vn0-f47.google.com
+ [209.85.216.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 717F926058F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:27:12 +0200 (CEST)
+Received: by vnbf1 with SMTP id f1so3799825vnb.5
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 05:27:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,45 +22,145 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Sakamoto wrote:
 
-Thanks  a lot for your quick responses Clemens,
+> > % cat /proc/asound/card2/firewire/clock
+> > Sampling rate: 44100
+> > Clock Source: External (MSU-dest: 7)
+>
+> According to this output, the internal clock of your device is set to
+> synchronize to external source such as S/PDIF or word clock.
 
-Sorry for my poor understanding 
+Oops. Let me boot my Windows7 again, and see..
+https://spinorlab.wordpress.com/2015/04/24/orpheus-and-its-sync-source/
+(see orpheussyncsource.jpg)
 
-As am newbie to alsa, due to time constraints am unable to spend time in writing my own application
+The control program by PrismSound tells that the Sync Source is Local,
+which means it is a Master and System is sync'ed to Orpheus's
+local clock.
 
-As per your suggestion, did you mean that , If I use Jack plugin , does it resolve this problem (ie., does the CPU consumption reduce drastically instead of dshare)
+http://www.prismsound.com/music_recording/products_subs/orpheus/online_manual/index.html
+(Contents -> Orpheus hardware -> Synchronization)
+(Contents -> Orpheus software -> Orpheus Control Panel)
 
+Funny?
 
-Kindly do the needful
+Now reboot again, and going back to Linux.
 
-Once again Thanks a lot for your suggestions Clemens w.r.t this Thread
+------------------
+% dmesg <- Orpheus was powered on already.
+------------------
 
-Thanks in advance,
-Srinivasan S
+[   20.927594] r8169 0000:02:00.0 eth0: link down
+[   23.299665] r8169 0000:02:00.0 eth0: link up
+[   27.676032] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   29.974533] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   32.282923] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   34.961027] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   37.259624] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   47.732497] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   50.030918] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   52.339515] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   55.037594] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   57.316079] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
 
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Friday, April 24, 2015 1:36 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
-Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+------------------
+% ls -l /proc/asound
+lrwxrwxrwx 1 root root 5 Apr 24 20:24 Orpheus -> card0
 
-Srinivasan S wrote:
-> could you please provide me some sample application links without
-> using dshare plugin , ie., using the two channels ie., left & right
-> directly
+------------------
+% cat /proc/asound/card0/firewire/clock
+Sampling rate: 44100
+Clock Source: External (MSU-dest: 7)  <- as Takashi pointed out!
 
-I am not aware of any (sample) program that does something like this
-(except maybe Jack, but floating-point samples would not be appropriate
-for your application).
+------------------
+% aplay -D plughw:0,0 test.wav <- same happens as is expected
+------------------
 
-You have to implement this yourself.
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+aplay: set_params:1297: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (46439 46440)
+PERIOD_SIZE: 2048
+PERIOD_BYTES: 8192
+PERIODS: 4
+BUFFER_TIME: (185759 185760)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 0
 
+------------------
+% dmesg <- the last line is added.
+------------------
+
+[   20.927594] r8169 0000:02:00.0 eth0: link down
+[   23.299665] r8169 0000:02:00.0 eth0: link up
+[   27.676032] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   29.974533] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   32.282923] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   34.961027] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   37.259624] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   47.732497] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   50.030918] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   52.339515] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   55.037594] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[   57.316079] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+[ 1483.932836] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+
+***
+
+> If your device is implemented with no customization of the
+> setting and you didn't give any external sources to your
+> device, the device is not synchronized.
+> (If you give it correctly, please inform it to us.)
+
+I am not sure, but I think I gave it correctly to Local Sync Source.
+
+> libffado also supports this device and I guess you can
+> start streaming with jackd and firewire backend
+
+Yes, as I have mentioned, I have been always successful
+with alsa (vanilla without snd-*) + libffado + jackd.
+
+> because libffado implements loose
+> checker of packet discontinuity.
+
+I do not understand techinical details, but the sound was
+perfect even with 192kHz/24bit audio using libffado.
+
+So if it's only a
+#define TIMER_SOMETHING value_anything
+type of things...
+
+> Currently, libffado has a bug to fail to switch clock
+> source for usual BeBoB driver.
+> So we have no way to set the source of clock correctly.
+> I've tried to fix it but get stuck deeply into
+> ffado's fault and given up.
+
+As for me, clock source settings, etc.,
+which is written into its EEPROM when powered off,
+can be occasionally set via the control program
+by PrismSound either on Windows/OS X,
+only when it becomes necessary.
+
+So personally I really do not matter, if I understand
+the situation correctly.
+
+> For our information:
+> http://subversion.ffado.org/wiki/AvcModels/PrismSoundOrpheus
+
+I hope some day this level of information becomes usefull
+for me.
 
 Regards,
-Clemens
+Mike Ood
