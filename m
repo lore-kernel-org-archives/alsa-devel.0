@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 1/9] ASoC: hda: Add helper to read/write to
-	dsp mmio space
-Date: Fri, 24 Apr 2015 18:33:31 +0100
-Message-ID: <20150424173331.GY22845@sirena.org.uk>
+Subject: Re: [RFC 2/9] ASoC: hda: Add IPC library for SKL
+	platform
+Date: Fri, 24 Apr 2015 18:34:27 +0100
+Message-ID: <20150424173427.GZ22845@sirena.org.uk>
 References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
- <1429276567-29007-2-git-send-email-vinod.koul@intel.com>
- <20150420214638.GX14892@sirena.org.uk>
- <20150422035014.GD2738@intel.com>
+ <1429276567-29007-3-git-send-email-vinod.koul@intel.com>
+ <20150420215639.GY14892@sirena.org.uk>
+ <20150422035453.GE2738@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4430528901722230875=="
+Content-Type: multipart/mixed; boundary="===============2972099896764985264=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 913C72606A7
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:33:35 +0200 (CEST)
-In-Reply-To: <20150422035014.GD2738@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFE142606CF
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:34:31 +0200 (CEST)
+In-Reply-To: <20150422035453.GE2738@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,50 +29,52 @@ Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4430528901722230875==
+--===============2972099896764985264==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yP26HYcdU/M+myrQ"
+	protocol="application/pgp-signature"; boundary="N9uilN5tARYNx5YN"
 Content-Disposition: inline
 
 
---yP26HYcdU/M+myrQ
+--N9uilN5tARYNx5YN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 22, 2015 at 09:20:14AM +0530, Vinod Koul wrote:
-> On Mon, Apr 20, 2015 at 10:46:38PM +0100, Mark Brown wrote:
+On Wed, Apr 22, 2015 at 09:24:53AM +0530, Vinod Koul wrote:
+> On Mon, Apr 20, 2015 at 10:56:39PM +0100, Mark Brown wrote:
 
-> > Much of this looks like a MMIO regmap, there's the memcpy() bits too
-> > which aren't but otherwise...
+> > More prints perhaps?  _PHRASE_DETECTED looks interesting, as does
+> > _OVERRUN.
 
-> Yes they are. memcpy bits are to copy the IPC mailbox payload data to aDSP
-> RAM which can range from few bytes to couple of KBs
+> Overrun is FW detectiong its pipelines are overunning the buffer, no the
+> ALSA ring buffer though. _PHRASE_DETECTED is for keyword detection which can
+> run on dsp
 
-Seems like we could use the block I/O stuff in regmap for that?
+Sure, it was fairly clear what the messages were for - it was more that
+they seemed like things we'd want to do more with than just ignore.
 
---yP26HYcdU/M+myrQ
+--N9uilN5tARYNx5YN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVOn5qAAoJECTWi3JdVIfQ8lQH/1lrZK+8KCBmuxTBeyxbFQP0
-3/P4fI0po1f2E7Iu0x11VmimIjCE60FQP/SHmnr2WQMMfOrDqkbr1g/3F+P1YBQg
-0xE3LenDlR6h8Rp7b/PmDkFWCBQV+kv1TQ5qyk0y9Sv8siyHEejg0eFSyLqSHIvq
-DIjOgcQCXkRNO/i+JGZMRu2VPiiOm0vFhaKS9XG89Z59PnOxbmpsXhmIN9ajGlYC
-NjLt7JHk3l45t9CNI3AXEBOOoZh5sJbYIsRiV0f+9kMTHVzFuIgH0+iOdVvl4u4R
-mGcAUw++nv2SMGA07Nw+py+tzAW5Fq4kLW6csVJTUggm2uFzYZFcFopUg4PrAbY=
-=L6WU
+iQEcBAEBCAAGBQJVOn6iAAoJECTWi3JdVIfQTwQH/RMwBt2PzKut1UEA/jyI3zxl
+1QSNt4lClAXvbie9eaWawXZ3V+WIKIGR+Kn9va+QfnPW0u9GkcOtgKRiwJmT3d07
+Vm/p4Ut/YMSX15MCUjHejRxLMYYuk+vsW+0v5QqBopuvrpC+Wphv6uSrK9l7Ljso
+gPOtEhek9Rk2R7eTbvgjXwiMigQzrBNkF6doe8kOBt5z92oHeNsM3t2aMaFFkEB/
++YqHjeaDI4Yo5hpKEMOz6VyANfHc0vPR5XwwNXLvPoxVz1OtY9Hd4L2XKDA6MEpg
+zBaeZc7mnT1cjQX5Ml9GqV4dwS2z8WAT853FLr9OmwVrxMNf6OgEsfSoYs6EaJY=
+=g4Nj
 -----END PGP SIGNATURE-----
 
---yP26HYcdU/M+myrQ--
+--N9uilN5tARYNx5YN--
 
---===============4430528901722230875==
+--===============2972099896764985264==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4430528901722230875==--
+--===============2972099896764985264==--
