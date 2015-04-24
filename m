@@ -1,38 +1,64 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3] ASoC: Intel: Support rt5650 codec for
- Cherrytrail & Braswell
-Date: Fri, 24 Apr 2015 10:54:56 +0530
-Message-ID: <20150424052456.GN2738@intel.com>
-References: <1429659360-99360-1-git-send-email-yang.a.fang@intel.com>
- <1429809782-91982-1-git-send-email-yang.a.fang@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DD48D260455
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 07:27:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1429809782-91982-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, broonie@kernel.org, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - fix headset mic detection problem for one more machine
+Date: Fri, 24 Apr 2015 13:39:59 +0800
+Message-ID: <1429853999-19218-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 23, 2015 at 10:23:02AM -0700, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
-> 
-> rt5650 and rt5645 are similar codec so reuse the cht_bsw_rt5645 driver
-> 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+We have two machines with alc256 codec in the pin quirk table, so
+moving the common pins to ALC256_STANDARD_PINS.
 
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1447909
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 03975d03..2a72da7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5228,6 +5228,16 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{0x1b, 0x411111f0}, \
+ 	{0x1e, 0x411111f0}
+ 
++#define ALC256_STANDARD_PINS \
++	{0x12, 0x90a60140}, \
++	{0x14, 0x90170110}, \
++	{0x19, 0x411111f0}, \
++	{0x1a, 0x411111f0}, \
++	{0x1b, 0x411111f0}, \
++	{0x1d, 0x40700001}, \
++	{0x1e, 0x411111f0}, \
++	{0x21, 0x02211020}
++
+ #define ALC282_STANDARD_PINS \
+ 	{0x14, 0x90170110}, \
+ 	{0x18, 0x411111f0}, \
+@@ -5328,15 +5338,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1d, 0x40700001},
+ 		{0x21, 0x02211050}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+-		{0x12, 0x90a60140},
+-		{0x13, 0x40000000},
+-		{0x14, 0x90170110},
+-		{0x19, 0x411111f0},
+-		{0x1a, 0x411111f0},
+-		{0x1b, 0x411111f0},
+-		{0x1d, 0x40700001},
+-		{0x1e, 0x411111f0},
+-		{0x21, 0x02211020}),
++		ALC256_STANDARD_PINS,
++		{0x13, 0x40000000}),
++	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC256_STANDARD_PINS,
++		{0x13, 0x411111f0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
+ 		{0x12, 0x90a60130},
+ 		{0x13, 0x40000000},
 -- 
-~Vinod
+1.9.1
