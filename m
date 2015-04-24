@@ -1,43 +1,54 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [LAD] [alsa-devel] Fw: Using loopback card to Connect GSM two
-	way call	to the real sound card UDA1345TS
-Date: Fri, 24 Apr 2015 10:06:09 +0200
-Message-ID: <5539F971.2030407@ladisch.de>
-References: <1425878251963.1340@tataelxsi.co.in>
- <1425878360800.70892@tataelxsi.co.in>,
- <54FD552C.7020902@ladisch.de>,
- <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
- <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
- <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
- <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd-bebob and PrismSound Orpheus fails
+	with	snd_pcm_hw_params_set_channels
+Date: Fri, 24 Apr 2015 10:29:00 +0200
+Message-ID: <5539FECC.8050609@ladisch.de>
+References: <CAJ0eYfXCX_0C-v0cGOwieDDCOn6q4Mt9JvBG7CxA51yOrALSpw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <1429683117651.11394-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
- <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev/>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
- <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-To: Srinivasan S <srinivasan.s-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org" <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9610F260513
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 10:29:01 +0200 (CEST)
+In-Reply-To: <CAJ0eYfXCX_0C-v0cGOwieDDCOn6q4Mt9JvBG7CxA51yOrALSpw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mike Ood <jh1ood@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Srinivasan S wrote:
-> could you please provide me some sample application links without
-> using dshare plugin , ie., using the two channels ie., left & right
-> directly
+Mike Ood wrote:
+> Clemens wrote:
+>> Any error message in the system log?
+>
+> this is just after % aplay -D plughw:2,0 test.wav
+> ...
+> [  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID 00119800010001f9, S400
+> [  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+> [  128.010593] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+> [  133.416998] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+> [  136.275142] snd-bebob fw1.0: Detect discontinuity of CIP: 50 70
+> [  137.654178] snd-bebob fw1.0: Detect discontinuity of CIP: 70 90
 
-I am not aware of any (sample) program that does something like this
-(except maybe Jack, but floating-point samples would not be appropriate
-for your application).
+This means that some packet to be received from the device is (or
+appears to be) missing.  In theory, this is supposed to happen only when
+noise on the cable has corrupted the signal, but this might be a problem
+with this device's firmware.
 
-You have to implement this yourself.
+Does this device (with this cable) work in Windows or OS X?
+
+
+At the moment, a missing packet results in the driver just stopping the
+stream.  There would be better ways to handle this, but I haven't yet
+found the time to implement this.
 
 
 Regards,
