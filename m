@@ -1,20 +1,20 @@
 From: "Jie, Yang" <yang.jie@intel.com>
 Subject: Re: [PATCH v9 0/7] ALSA: jack: Refactoring for jack
 	kctls
-Date: Fri, 24 Apr 2015 04:27:14 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90551FDAE@SHSMSX101.ccr.corp.intel.com>
+Date: Fri, 24 Apr 2015 04:37:45 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90551FDC7@SHSMSX101.ccr.corp.intel.com>
 References: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
  <s5h8udjko4m.wl-tiwai@suse.de>
  <E7B1D079BA13FB44A978CC8F69C7D6A90551F692@SHSMSX101.ccr.corp.intel.com>
- <s5hmw1ykhz1.wl-tiwai@suse.de> <1429802440.2671.29.camel@loki>
+ <20150423181822.GA22845@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E816226043E
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 06:27:20 +0200 (CEST)
-In-Reply-To: <1429802440.2671.29.camel@loki>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB3CF260440
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 06:37:56 +0200 (CEST)
+In-Reply-To: <20150423181822.GA22845@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,50 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam R" <liam.r.girdwood@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tanu.kaskinen@linux.intel.com" <tanu.kaskinen@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Girdwood, Liam R
-> Sent: Thursday, April 23, 2015 11:21 PM
-> To: Takashi Iwai
-> Cc: Jie, Yang; broonie@kernel.org; alsa-devel@alsa-project.org;
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, April 24, 2015 2:18 AM
+> To: Jie, Yang
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org; Girdwood, Liam R;
 > tanu.kaskinen@linux.intel.com
 > Subject: Re: [PATCH v9 0/7] ALSA: jack: Refactoring for jack kctls
 > 
-> On Thu, 2015-04-23 at 17:00 +0200, Takashi Iwai wrote:
-> > At Thu, 23 Apr 2015 13:45:07 +0000,
-> > Jie, Yang wrote:
-> > > >
-> > > > - Fix typos and syntax errors in comments and descriptions.
-> > > >   A spell checker is your friend.
-> > >
-> > > I just download one from
-> > > git://github.com/mprpic/git-spell-check.git,
-> > > now learning to use it, do you have better suggestion?
-> >
-> > Any spell checker would be fine.  I don't know of this tool, but isn't
-> > it only for XML?
-> >
-> > Also, for a lengthy document like in the last patch, it'd be good to
-> > get it proof read once by some native English speakers.  I remember a
-> > guy living in a corner of British Islands in your team ;)
-> >
+> On Thu, Apr 23, 2015 at 01:45:07PM +0000, Jie, Yang wrote:
 > 
-> Hehe, that will be me :)
+> > Hi, Mark, per my understanding, we didn't create specific kcontrols
+> > for each ASoC jack, now, my new change reuse the jack pins' info to
+> > create these kcontrols, which can be seen and controlled from upper
+> > layer (e.g. PA).
 > 
-> > Last but not least, reading twice before submission is always an old
-> > good method to catch silly typos or errors.  (I forget this often,
-> > too.)
-> >
-> 
-> Keyon, please send V10 internally and I'll read over the English comments,
-> commit messages, spelling etc before you send it to the list.
+> I have not been keeping up with this series because it's quite large and there
+> have been many revisions in a short period of time, along with a large
+> number of other substantial patch serieses from your colleagues.
  
-OK, thanks.
+I can imagine and understand that. Care yourself, Mark. :)
 
-> 
-> Thanks
-> 
-> Liam
+To simplify it, let me summarize it:
+only the patch 5 in the series ([PATCH v9 5/7] ASoC: jack: create kctls according
+to jack pins info) change ASoC code, when looking into it, you can find only one
+line is added:
++	snd_jack_add_new_kctl(jack->jack, pins[i].pin, pins[i].mask);
+
+So the patch will create extra kcontrols for ASoC jack, comparing to the current
+upstream code.
+
+Thanks,
+~Keyon
