@@ -1,18 +1,25 @@
-From: Mike Ood <jh1ood@gmail.com>
-Subject: Re: snd-bebob and PrismSound Orpheus fails with
-	snd_pcm_hw_params_set_channels
-Date: Fri, 24 Apr 2015 19:58:16 +0900
-Message-ID: <CAJ0eYfVwkZ0Y=yOBN-z4AV1WAEQijDe54A2wbaP8Bnz-W7-Bbw@mail.gmail.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two way
+	call	to the real sound card UDA1345TS
+Date: Fri, 24 Apr 2015 12:05:33 +0000
+Message-ID: <1429877130444.23317@tataelxsi.co.in>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de>
+ <1429683117651.11394@tataelxsi.co.in>,<5539F971.2030407@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f43.google.com (mail-vn0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CE28260573
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:58:17 +0200 (CEST)
-Received: by vnbf62 with SMTP id f62so3652314vnb.3
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 03:58:16 -0700 (PDT)
+Received: from APAC01-SG1-obe.outbound.protection.outlook.com
+ (mail-sg1on0138.outbound.protection.outlook.com [134.170.132.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1D6A260577
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:05:37 +0200 (CEST)
+In-Reply-To: <5539F971.2030407@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +29,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens wrote:
-> Does this device (with this cable) work in Windows or OS X?
 
-Definitely.
+Thanks  a lot for your quick responses Clemens,
 
-Let me now reset my PC so that it will boot from its Windows7 partion.
+Sorry for my poor understanding 
 
-With Audacity and a vendor supplied control software, my Orpheus
-plays 44.1kHz 2-ch sound perfectly.
+As am newbie to alsa, due to time constraints am unable to spend time in writing my own application
 
-Also,
+As per your suggestion, did you mean that , If I use Jack plugin , does it resolve this problem (ie., does the CPU consumption reduce drastically instead of dshare)
 
->>>> I have been using my PrismSound Orpheus successfully with
-juju+ffado+jackd as:
 
-for more than five years, not with the same PC but with the same cable,
-during which time I have never experienced a trouble.
+Kindly do the needful
 
-And before doing clean install of Ubuntu 15.04 (kernel 3.16) a few days ago,
-I confirmed that:
+Once again Thanks a lot for your suggestions Clemens w.r.t this Thread
 
-% jackd -R -dfirewire -r44100 -p4096 -n3 &
-% aplay -D pcm.jack test.wav
-or
-% alsaplayer -i text -o jack -d "system:playback_1,system:playback_2"
-test.wav
+Thanks in advance,
+Srinivasan S
 
-works all right on Ubuntu 14.04 with kernel 3.13.
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Friday, April 24, 2015 1:36 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
 
-So I have an impression that this is not a hardware but a software problem,
-perhaps specific to snd-bebob..
+Srinivasan S wrote:
+> could you please provide me some sample application links without
+> using dshare plugin , ie., using the two channels ie., left & right
+> directly
 
-***
+I am not aware of any (sample) program that does something like this
+(except maybe Jack, but floating-point samples would not be appropriate
+for your application).
 
-> At the moment, a missing packet results in the driver just stopping the
-> stream.  There would be better ways to handle this, but I haven't yet
-> found the time to implement this.
+You have to implement this yourself.
 
-Any suggestions will be appreciated. Thank you again for taking your time.
 
 Regards,
-Mike Ood
+Clemens
