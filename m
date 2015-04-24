@@ -1,20 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 20/21] ALSA: hda - add generic functions to set
-	hdac stream params
-Date: Fri, 24 Apr 2015 14:38:52 +0200
-Message-ID: <1429879133-32293-21-git-send-email-tiwai@suse.de>
-References: <1429879133-32293-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: Intel: Support rt5650 codec for
+ Cherrytrail & Braswell
+Date: Fri, 24 Apr 2015 13:44:14 +0100
+Message-ID: <20150424124414.GQ22845@sirena.org.uk>
+References: <1429659360-99360-1-git-send-email-yang.a.fang@intel.com>
+ <1429809782-91982-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1666309993352918680=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC3F2605FB
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:39:01 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E0341ADC1
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 12:39:00 +0000 (UTC)
-In-Reply-To: <1429879133-32293-1-git-send-email-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D7B0264F51
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 14:44:21 +0200 (CEST)
+In-Reply-To: <1429809782-91982-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,85 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-This will be used by hda controller driver to
-setup stream params in prepare. This function will
-setup the bdl and periods.
+--===============1666309993352918680==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="J2+Fj/9xHHlzMaG6"
+Content-Disposition: inline
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/hdaudio.h |  2 ++
- sound/hda/hdac_stream.c | 38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 40 insertions(+)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index d05931fc6f28..6a2e030c836c 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -418,6 +418,8 @@ void snd_hdac_stream_release(struct hdac_stream *azx_dev);
- int snd_hdac_stream_setup(struct hdac_stream *azx_dev);
- void snd_hdac_stream_cleanup(struct hdac_stream *azx_dev);
- int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev);
-+int snd_hdac_stream_set_params(struct hdac_stream *azx_dev,
-+				unsigned int format_val);
- void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start);
- void snd_hdac_stream_clear(struct hdac_stream *azx_dev);
- void snd_hdac_stream_stop(struct hdac_stream *azx_dev);
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 9ffff6d9ba8e..1ba0462ef7ca 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -394,6 +394,44 @@ int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev)
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_setup_periods);
- 
-+/* snd_hdac_stream_set_params - set stream parameters
-+ * @azx_dev: HD-audio core stream for which parameters are to be set
-+ * @format_val: format value parameter
-+ *
-+ * Setup the HD-audio core stream parameters from substream of the stream
-+ * and passed format value
-+ */
-+int snd_hdac_stream_set_params(struct hdac_stream *azx_dev,
-+				 unsigned int format_val)
-+{
-+
-+	unsigned int bufsize, period_bytes;
-+	struct snd_pcm_substream *substream = azx_dev->substream;
-+	struct snd_pcm_runtime *runtime;
-+	int err;
-+
-+	if (!substream)
-+		return -EINVAL;
-+	runtime = substream->runtime;
-+	bufsize = snd_pcm_lib_buffer_bytes(substream);
-+	period_bytes = snd_pcm_lib_period_bytes(substream);
-+
-+	if (bufsize != azx_dev->bufsize ||
-+	    period_bytes != azx_dev->period_bytes ||
-+	    format_val != azx_dev->format_val ||
-+	    runtime->no_period_wakeup != azx_dev->no_period_wakeup) {
-+		azx_dev->bufsize = bufsize;
-+		azx_dev->period_bytes = period_bytes;
-+		azx_dev->format_val = format_val;
-+		azx_dev->no_period_wakeup = runtime->no_period_wakeup;
-+		err = snd_hdac_stream_setup_periods(azx_dev);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_stream_set_params);
-+
- static cycle_t azx_cc_read(const struct cyclecounter *cc)
- {
- 	struct hdac_stream *azx_dev = container_of(cc, struct hdac_stream, cc);
--- 
-2.3.5
+--J2+Fj/9xHHlzMaG6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 23, 2015 at 10:23:02AM -0700, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>=20
+> rt5650 and rt5645 are similar codec so reuse the cht_bsw_rt5645 driver
+
+Applied, thanks.
+
+--J2+Fj/9xHHlzMaG6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVOjqdAAoJECTWi3JdVIfQTC0H/iCAohd5fWFLs1IBbQ+52xGX
+TGLIixLPIVK6Hln4UiL9kCf84gnUq3bfrb29IfcnFMHD+2iM0Ve3YuGbS2PnFKf8
+Y9LzPWLo1UH3A2rORe36CZf3HQKHvj4d8PyfwVgWNDMdkFVPe0cKT15gKiEpscGr
+P2s50+yMMNVTrU3RoMF6FwQUlBOWiscZeqNcNJGW888lzmnmSelyx3yCpjHlE1iH
+8l6SoJhwSUkJ++bJPtCP0/O/Hj9lNCFNzQFNDBEq05jVmqTlFFccRQUOmpy2ByRf
+QzE5vY8W7wSmeoRc8cEvMLIcYQGVZ4tS8IMLB0voOkAJghzbbY0U3wUbBtRAtEQ=
+=pqI0
+-----END PGP SIGNATURE-----
+
+--J2+Fj/9xHHlzMaG6--
+
+--===============1666309993352918680==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1666309993352918680==--
