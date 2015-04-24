@@ -1,18 +1,14 @@
-From: Mike Ood <jh1ood@gmail.com>
-Subject: Re: snd-bebob and PrismSound Orpheus fails with
-	snd_pcm_hw_params_set_channels
-Date: Fri, 24 Apr 2015 09:20:24 +0900
-Message-ID: <CAJ0eYfXCX_0C-v0cGOwieDDCOn6q4Mt9JvBG7CxA51yOrALSpw@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [RFC v2] ASoC: Topology File format
+Date: Fri, 24 Apr 2015 01:24:12 +0100
+Message-ID: <1429835052.2702.28.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
- [209.85.216.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 16E6926041F
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 02:20:26 +0200 (CEST)
-Received: by vnbf62 with SMTP id f62so2831328vnb.3
- for <alsa-devel@alsa-project.org>; Thu, 23 Apr 2015 17:20:25 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72F8526041D
+ for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 02:24:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,101 +18,448 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens wrote:
->> You should replace "hw" with "plughw" in the device name.
+Here's V2 of the file format the userspace topology tool will read to
+generate the binary output file. The output file uses the topology UAPI
+structures to represent the objects in the text file. This is still WiP
+and is based on the UCM file format from Jaroslav.
 
-So you were referring to:
+Changes from V1.
 
-% aplay -L
-plughw:CARD=Orpheus,DEV=0
-    Orpheus, Orpheus PCM
-    Hardware device with all software conversions
+ o Added BE's and Codec <-> codec links
+ o Added enumerated and binary controls
+ o Added private data
+ o Moved object names from name field into object top level (like
+section names).
+ o Control ops binding changed to string+number
 
-> Any error message in the system log?
+# Firmware Topology Configuration for Broadwell
 
-% tail dmesg?.txt
+# TLV scale used by both global and stream volumes
+SectionTLV."hsw_vol_tlv" {
 
-==> dmesg1.txt <== this is just after booting.
+	DBScale [
+		min "-9000"
+		step "300"
+		mute "1"
+	]
+}
 
-[   21.439026] r8169 0000:02:00.0 eth0: link down
-[   23.809013] r8169 0000:02:00.0 eth0: link up
+# Values for Equalizer 1
+SectionText."EQU1" {
+	Values [
+		"100Hz", "200Hz", "1kHz"
+	]
+}
 
-==> dmesg2.txt <== this is just after connecting Orpheus.
+# Private data for Equalizer 1
+SectionData."EQU1" {
+	file "/path/to/file"
+};
 
-[   21.439026] r8169 0000:02:00.0 eth0: link down
-[   23.809013] r8169 0000:02:00.0 eth0: link up
-[  110.079264] firewire_core 0000:08:00.0: phy config: new root=ffc1,
-gap_count=5
-[  110.343319] firewire_core 0000:08:00.0: phy config: new root=ffc1,
-gap_count=5
-[  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID
-00119800010001f9, S400
-[  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
+# Values for Input Muxes 1,2,3
+SectionText."In1" {
+	Values [
+		"Line", "Mic",
+	]
+}
 
-==> dmesg3.txt <== this is just after % aplay -D plughw:2,0 test.wav
+# Controls from default pipeline
+SectionControl."Default Pipeline" {
 
-[   21.439026] r8169 0000:02:00.0 eth0: link down
-[   23.809013] r8169 0000:02:00.0 eth0: link up
-[  110.079264] firewire_core 0000:08:00.0: phy config: new root=ffc1,
-gap_count=5
-[  110.343319] firewire_core 0000:08:00.0: phy config: new root=ffc1,
-gap_count=5
-[  110.580310] firewire_core 0000:08:00.0: created device fw1: GUID
-00119800010001f9, S400
-[  113.660273] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
-[  128.010593] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
-[  133.416998] snd-bebob fw1.0: Detect discontinuity of CIP: 00 08
-[  136.275142] snd-bebob fw1.0: Detect discontinuity of CIP: 50 70
-[  137.654178] snd-bebob fw1.0: Detect discontinuity of CIP: 70 90
+	# All controls in this section belong to this Index group/pipeline
+	Index "1"
 
-% ls -l dmesg?.txt
--rw-rw-r-- 1 user1 user1 72728 Apr 24 08:42 dmesg1.txt
--rw-rw-r-- 1 user1 user1 73050 Apr 24 08:42 dmesg2.txt
--rw-rw-r-- 1 user1 user1 73318 Apr 24 08:43 dmesg3.txt
+	# Master DSP volume
+	Mixer."Master Playback Volume" [
 
-% egrep 'Apr 24 08:42|Apr 24 08:43' /var/log/syslog
+		# Channel register and shift for Front Left/Right
+		Channel."FL" [
+			reg "0"
+			shift "0"
+		]
+		Channel."FR" [
+			reg "0"
+			shift "8"
+		]
 
-Apr 24 08:42:24 host gnome-session[1466]: WARN  2015-04-24 08:42:24
-unity.dash.gsettingsscopereader GSettingsScopes.cpp:108 Error fetching
-protocol metadata for scope: social.scope : Valid key file could not be
-found in search dirs
-Apr 24 08:42:44 host kernel: [  110.079264] firewire_core 0000:08:00.0: phy
-config: new root=ffc1, gap_count=5
-Apr 24 08:42:45 host kernel: [  110.343319] firewire_core 0000:08:00.0: phy
-config: new root=ffc1, gap_count=5
-Apr 24 08:42:45 host kernel: [  110.580310] firewire_core 0000:08:00.0:
-created device fw1: GUID 00119800010001f9, S400
-Apr 24 08:42:48 host kernel: [  113.660273] snd-bebob fw1.0: Detect
-discontinuity of CIP: 00 08
-Apr 24 08:43:02 host kernel: [  128.010593] snd-bebob fw1.0: Detect
-discontinuity of CIP: 00 08
-Apr 24 08:43:08 host kernel: [  133.416998] snd-bebob fw1.0: Detect
-discontinuity of CIP: 00 08
-Apr 24 08:43:11 host rtkit-daemon[1163]: Supervising 4 threads of 1
-processes of 1 users.
-Apr 24 08:43:11 host rtkit-daemon[1163]: Successfully made thread 1900 of
-process 1540 (n/a) owned by '1000' RT at priority 5.
-Apr 24 08:43:11 host rtkit-daemon[1163]: Supervising 5 threads of 1
-processes of 1 users.
-Apr 24 08:43:11 host kernel: [  136.275142] snd-bebob fw1.0: Detect
-discontinuity of CIP: 50 70
-Apr 24 08:43:12 host kernel: [  137.654178] snd-bebob fw1.0: Detect
-discontinuity of CIP: 70 90
-Apr 24 08:43:14 host pulseaudio[1540]: [alsa-source-BeBoB] alsa-util.c:
-Could not recover from POLLERR|POLLNVAL|POLLHUP and XRUN: Connection timed
-out
-Apr 24 08:43:17 host systemd[1]: Stopping User Manager for UID 112...
+		# max control value and whether value is inverted
+		max "31"
+		invert "false"
 
-***
+		# control uses bespoke driver get/put/info ID 0
+		ops "DRV0"
 
-Any clues?
+		# uses TLV data above
+		tlv_array "hsw_vol_tlv"
+	]
 
-Mike Ood
---
-% uname -a
-Linux host 3.19.0-15-generic #15-Ubuntu SMP Thu Apr 16 23:32:37 UTC 2015
-x86_64 x86_64 x86_64 GNU/Linux
---
+	# Offload 0 volume
+	Mixer."Media0 Playback Volume" [
+
+		# Channel register and shift for Front Left/Right
+		Channel."FL" [
+			reg "1"
+			shift "0"
+		]
+		Channel."FR" [
+			reg "1"
+			shift "8"
+		]
+
+		# max control value and whether value is inverted
+		max "31"
+		invert "false"
+
+		# control uses bespoke driver get/put/info ID 0
+		ops "DRV0"
+
+		# uses TLV data above
+		tlv_array "hsw_vol_tlv"
+	]
+
+	# Enum controls
+	Enum."Equ1" [
+		# Texts for enum
+		texts "EQU1"
+
+		# Channel register and shift for Front Left/Right
+		Channel."FL" [
+			reg "2"
+			shift "0"
+		]
+		Channel."FR" [
+			reg "1"
+			shift "8"
+		]
+
+		# control uses bespoke driver get/put/info ID 1
+		ops "DRV1"
+
+		# Private data for this control
+		data "EQU1"
+	]
+
+	Enum."Input Select" [
+		# Texts for enum
+		texts "In1"
+
+		# Channel register and shift for Front Left/Right
+		Channel."FL" [
+			reg "2"
+			shift "0"
+		]
+		Channel."FR" [
+			reg "1"
+			shift "8"
+		]
+
+		# control uses bespoke driver get/put/info ID 1
+		ops "DRV2"
+	]
+
+	# Byte controls
+	Bytes [
+		base "0"
+		num_regs "16"
+		mask "0xff"
+	]
+}
+
+# DAPM Widgets for main pipeline
+SectionWidget."Pipeline1" {
+
+	# All controls in this section belong to this Index group/pipeline
+	Index "1"
+
+	# SSP AIF input
+	AIF_IN."SSP0 CODEC IN" [
+		no_pm "true"
+	]
+
+	# SSP AIF output
+	AIF_OUT."SSP0 CODEC OUT" [
+		no_pm "true"
+	]
+
+	# Virtual playback mixer 
+	MIXER."Playback VMixer" [
+		no_pm "true"
+	]
+
+	# Test input mux
+	MUX."Capture Select" [
+		no_pm "true"
+		enum "Input Select"
+	]
+}
+
+# DAPM Routes
+SectionGraph."Pipeline 1 Graph" {
+
+	Index "1"
+
+	Routes [
+		"Playback VMixer, , System Playback"
+		"Playback VMixer, , Offload0 Playback"
+		"Playback VMixer, , Offload1 Playback"
+		"SSP0 CODEC OUT, , Playback VMixer"
+		"Analog Capture, , SSP0 CODEC IN"
+	]
+}
+
+# PCM Configurations supported by FW
+SectionPCMConfig."PCM 48k Stereo 24bit" {
+
+	Playback [
+		format "S24_LE"
+		rate "48000"
+		channels "2"
+		tdm_slot "0xf"
+	]
+
+	Capture [
+		format "S24_LE"
+		rate "48000"
+		channels "2"
+		tdm_slot "0xf"
+
+	]
+}
+
+SectionPCMConfig."PCM 48k Stereo 16bit" {
+
+	Playback [
+		format "S16_LE"
+		rate "48000"
+		channels "2"
+		tdm_slot "0xf"
+	]
+
+	Capture [
+		format "S16_LE"
+		rate "48000"
+		channels "2"
+		tdm_slot "0xf"
+
+	]
+}
+
+SectionPCMConfig."PCM 48k 2P/4C 16bit" {
+
+	Playback [
+		format "S16_LE"
+		rate "48000"
+		channels "2"
+		tdm_slot "0xf"
+	]
+
+	Capture [
+		format "S16_LE"
+		rate "48000"
+		channels "4"
+		tdm_slot "0xf"
+
+	]
+}
+
+SectionPCMConfig."PCM 8k Mono 16bit" {
+
+	Playback [
+		format "S16_LE"
+		rate "8000"
+		channels "1"
+	]
+
+	Capture [
+		format "S16_LE"
+		rate "8000"
+		channels "1"
+
+	]
+}
+
+# PCM capabilities supported by FW
+SectionPCMCapabilities."System Playback" {
+
+	Capabilities [
+		formats "S24_LE, S16_LE"
+		rate_min "48000"
+		rate_max "48000"
+		channels_min "2"
+		channels_max "2"
+	]
+}
+
+SectionPCMCapabilities."Analog Capture" {
+
+	Capabilities [
+		formats "S24_LE, S16_LE"
+		rate_min "48000"
+		rate_max "48000"
+		channels_min "2"
+		channels_max "4"
+	]
+}
+
+SectionPCMCapabilities."Offload Pin Playback" {
+
+	Capabilities [
+		formats "S24_LE, S16_LE"
+		rate_min "8000"
+		rate_max "192000"
+		channels_min "2"
+		channels_max "2"
+	]
+}
+
+SectionPCMCapabilities."Loopback Capture" {
+
+	Capabilities [
+		formats "S16_LE"
+		rate_min "48000"
+		rate_max "48000"
+		channels_min "2"
+		channels_max "2"
+	]
+}
+
+SectionPCMCapabilities."BT" {
+
+	Capabilities [
+		formats "S16_LE"
+		rate_min "8000"
+		rate_max "8000"
+		channels_min "1"
+		channels_max "1"
+	]
+}
+
+# PCM devices exported by Firmware
+SectionPCM."System Pin" {
+
+	Index "1"
+
+	# used for binding to the PCM
+	ID "0"
+
+	Playback [
+		Capabilities "System Playback"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+	]
+
+	Capture [
+		Capabilities "Analog Capture"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+		Config "PCM 48k 2P/4C 16bit"
+	]
+}
+
+SectionPCM."Offload Pin 0" {
+
+	Index "1"
+
+	# used for binding to the PCM
+	ID "1"
+
+	Playback [
+		Capabilities "Offload Pin Playback"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+	]
+}
+
+SectionPCM."Offload Pin 1" {
+
+	Index "1"
+
+	# used for binding to the PCM
+	ID "2"
+
+	Playback [
+		Capabilities "Offload Pin Playback"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+	]
+}
+
+SectionPCM."Loopback Pin" {
+
+	Index "1"
+
+	# used for binding to the PCM
+	ID "3"
+
+	Capture [
+		Capabilities "Loopback Capture"
+		Config "PCM 48k Stereo 16bit"
+	]
+}
+
+# Backend DAI links
+SectionBE."SSP0-Codec" {
+
+	Index "1"
+
+	# used for binding to the BE DAI link
+	ID "0"
+
+	# BE DAI link capabilities and supported configs
+	Playback [
+		Capabilities "System Playback"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+	]
+
+	Capture [
+		Capabilities "Analog Capture"
+		Config "PCM 48k Stereo 24bit"
+		Config "PCM 48k Stereo 16bit"
+		Config "PCM 48k 2P/4C 16bit"
+	]
+}
+
+SectionBE."SSP1-BT" {
+
+	Index "1"
+
+	# used for binding to the BE DAI link
+	ID "1"
+
+	# BE DAI link capabilities and supported configs
+	Playback [
+		Capabilities "BT"
+		Config "PCM 8k Mono 16bit"
+	]
+
+	Capture [
+		Capabilities "BT"
+		Config "PCM 8k Mono 16bit"
+	]
+}
+
+# Codec <-> Codec style links
+SectionCC."FM-Codec" {
+
+	Index "1"
+
+	# used for binding to the CC link
+	ID "0"
+
+	# CC DAI link capabilities and supported configs
+	Playback [
+		Capabilities "System Playback"
+		Config "PCM 48k Stereo 16bit"
+	]
+
+	Capture [
+		Capabilities "Analog Capture"
+		Config "PCM 48k Stereo 16bit"
+	]
+}
