@@ -1,17 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: snd-bebob and PrismSound Orpheus fails with
-	snd_pcm_hw_params_set_channels
-Date: Sat, 25 Apr 2015 21:01:25 +0900
-Message-ID: <553B8215.1060603@sakamocchi.jp>
-References: <CAJ0eYfW4iatW+L+d+Y-9CAACfZVq7V=a575iRy9tTJ0SMjwXXQ@mail.gmail.com>
+Subject: Re: [RFC] dice: simplifying address registration
+Date: Sat, 25 Apr 2015 21:25:14 +0900
+Message-ID: <553B87AA.60800@sakamocchi.jp>
+References: <553A3FC5.60809@sakamocchi.jp> <553B5534.1060005@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 30C2D2614FF
- for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 14:01:30 +0200 (CEST)
-In-Reply-To: <CAJ0eYfW4iatW+L+d+Y-9CAACfZVq7V=a575iRy9tTJ0SMjwXXQ@mail.gmail.com>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95F6C26155B
+ for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 14:25:18 +0200 (CEST)
+In-Reply-To: <553B5534.1060005@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mike Ood <jh1ood@gmail.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 24 2015 21:27, Mike Ood wrote:
+Clemens,
+
+Thanks for your comment.
+
+On Apr 25 2015 17:49, Clemens Ladisch wrote:
 > Takashi Sakamoto wrote:
+>> Currently Dice driver keeps address ranges for each unit instance. But
+>> there's a way to reuse the same address range.
 > 
->>> % cat /proc/asound/card2/firewire/clock
->>> Sampling rate: 44100
->>> Clock Source: External (MSU-dest: 7)
->>
->> According to this output, the internal clock of your device is set to
->> synchronize to external source such as S/PDIF or word clock.
+> This requires an additional check for the packet's source node, which is
+> essentially a duplicate of the core's address lookup code.
+>
+>> I think this idea can simplify driver probe processing
 > 
-> Oops. Let me boot my Windows7 again, and see..
-> https://spinorlab.wordpress.com/2015/04/24/orpheus-and-its-sync-source/
-> (see orpheussyncsource.jpg)
+> Yes, but that code is just moved to the module load processing.
+
+>From probe processing, thus address allocation is just one time, not
+each time IEEE 1394 unit is probed.
+
+>> and save resources of host controller.
 > 
-> The control program by PrismSound tells that the Sync Source is Local,
-> which means it is a Master and System is sync'ed to Orpheus's
-> local clock.
-> 
-> http://www.prismsound.com/music_recording/products_subs/orpheus/online_manual/index.html
-> (Contents -> Orpheus hardware -> Synchronization)
-> (Contents -> Orpheus software -> Orpheus Control Panel)
-> 
-> Funny?
+> When using multiple DICE devices, this saves four bytes of FireWire
+> address space per card, out of the total address space of 2^48 bytes.
+> Or what other resources do you mean?
 
-Not funny, but headache. It's a customization by hardware vendor, I
-mentioned. (in this case, by PrismSound Ltd.)
+Actually, 2^48 bytes are really huge. But there're some rude devices to
+transfer transaction to a certain address (i.e. Fireworks). For me, it's
+basically better idea to keep allocated address range as small as possible.
 
-BridgeCo AG (currently ArchWave AG) produced DM1000/DM1100/DM1500
-chipset with BeBoB firmware. PrismSound Ltd. utilized the chipset and
-firmware for streaming functionality of your Orpheus.
-
-BeBoB firmware gives common ways to control itself, while the hadware
-vendor added their own cusomization against it. I don't know exactly the
-reason because there're few information about your device.
-
-> I am not sure, but I think I gave it correctly to Local Sync Source.
-
-Actually, it's not synchronized in an aspect of streaming protocol
-because DMxxx chipset and BeBoB can transfer continuous packets in its
-streaming.
-
->> because libffado implements loose
->> checker of packet discontinuity.
-> 
-> I do not understand techinical details, but the sound was
-> perfect even with 192kHz/24bit audio using libffado.
-
-Ditto. libffado works with such broken stream by ignoring its packet
-index. I guess that you've continued to use your device with
-uns-ynchronized state for several years because no one reports it.
-
-> So if it's only a
-> #define TIMER_SOMETHING value_anything
-> type of things...
-
-I cannot understand what you mean.
-
->> Currently, libffado has a bug to fail to switch clock
->> source for usual BeBoB driver.
->> So we have no way to set the source of clock correctly.
->> I've tried to fix it but get stuck deeply into
->> ffado's fault and given up.
-> 
-> As for me, clock source settings, etc.,
-> which is written into its EEPROM when powered off,
-> can be occasionally set via the control program
-> by PrismSound either on Windows/OS X,
-> only when it becomes necessary.
-
-Unless fully understanding specifications about your device, you cannot
-make firm statement about it, I think. The drivers installed in Windows
-or OS X can set the synchronization when plugging-in.
+...But seems to be not so practical. OK. I dropped this patch.
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
