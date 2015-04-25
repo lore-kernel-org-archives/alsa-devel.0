@@ -1,28 +1,16 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: Re: [PATCH V2 1/4] regmap: cache: Add "was_reset"
-	argument to regcache_sync_region()
-Date: Fri, 24 Apr 2015 19:44:45 -0700
-Message-ID: <CAJzqFtaUAPhSANLa-T+c2jhtDspK3yVeDnyFQrh2-ev0QOGVZA@mail.gmail.com>
-References: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
- <1429915008-22015-2-git-send-email-cernekee@chromium.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] dice: simplifying address registration
+Date: Sat, 25 Apr 2015 10:49:56 +0200
+Message-ID: <553B5534.1060005@ladisch.de>
+References: <553A3FC5.60809@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 9516D2610A6
- for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 04:45:11 +0200 (CEST)
-Received: by wgyo15 with SMTP id o15so67042701wgy.2
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:45:09 -0700 (PDT)
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com.
- [209.85.212.174])
- by mx.google.com with ESMTPSA id bm9sm9254411wjc.21.2015.04.24.19.45.06
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 24 Apr 2015 19:45:07 -0700 (PDT)
-Received: by wizk4 with SMTP id k4so41188877wiz.1
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 19:45:06 -0700 (PDT)
-In-Reply-To: <1429915008-22015-2-git-send-email-cernekee@chromium.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 293D7260676
+ for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 10:50:35 +0200 (CEST)
+In-Reply-To: <553A3FC5.60809@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,29 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Andrew Bresticker <abrestic@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dgreid@chromium.org, Olof Johansson <olofj@chromium.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 24, 2015 at 3:36 PM, Kevin Cernekee <cernekee@chromium.org> wrote:
-> regcache_sync() and regcache_sync_region() currently assume that the
-> hardware has just emerged from a clean reset, and that all registers are
-> in their default states.  But that isn't the only possibility; the device
-> may have been in a different state in which the registers were
-> inaccessible but have retained their contents, e.g. clock gating.
->
-> So we will extend the more versatile of the two functions,
-> regcache_sync_region(), to let the caller decide what assumptions should
-> be made.
->
-> One driver that can benefit from this is adau1977, which has hacks to
-> overwrite the registers that regcache_sync() might have missed.  Also,
-> the powerdown pin on tas571x does not reset the register contents either,
-> so a similar feature will be required by that driver.
->
-> This commit just adds the new argument by changing the function
-> declarations and call sites, but doesn't wire it up yet.
+Takashi Sakamoto wrote:
+> Currently Dice driver keeps address ranges for each unit instance. But
+> there's a way to reuse the same address range.
 
-The last two lines of the changelog were inadvertently carried over
-from an older version of the patch, and should be deleted.  Will fix
-in V3.
+This requires an additional check for the packet's source node, which is
+essentially a duplicate of the core's address lookup code.
+
+> I think this idea can simplify driver probe processing
+
+Yes, but that code is just moved to the module load processing.
+
+> and save resources of host controller.
+
+When using multiple DICE devices, this saves four bytes of FireWire
+address space per card, out of the total address space of 2^48 bytes.
+Or what other resources do you mean?
+
+
+Regards,
+Clemens
