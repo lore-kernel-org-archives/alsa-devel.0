@@ -1,19 +1,18 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: [PATCH V2 2/4] ASoC: tas571x: Add DT binding document
-Date: Fri, 24 Apr 2015 15:36:46 -0700
-Message-ID: <1429915008-22015-3-git-send-email-cernekee@chromium.org>
-References: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
+From: Gabriele Martino <g.martino@gmx.com>
+Subject: Intel HDA / ca0132: support for Alienware 15 Creative
+ Sound Core3D-EX
+Date: Sat, 25 Apr 2015 02:50:23 +0200
+Message-ID: <553AE4CF.3070805@gmx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
- [209.85.213.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 68B6B2607E9
- for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 00:37:10 +0200 (CEST)
-Received: by igblo3 with SMTP id lo3so25930858igb.0
- for <alsa-devel@alsa-project.org>; Fri, 24 Apr 2015 15:37:09 -0700 (PDT)
-In-Reply-To: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E522A2610A6
+ for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 02:50:10 +0200 (CEST)
+Received: from [192.168.69.6] ([79.44.224.230]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0MEFIm-1YWP2Q1m24-00FUgK for
+ <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 02:50:10 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, abrestic@chromium.org, linux-kernel@vger.kernel.org, dgreid@chromium.org, olofj@chromium.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Document the bindings for the soon-to-be-added tas571x driver.
+Hi,
+the new Alienware 15 laptop (2015, not the M15x) has a Creative Sound
+Core3D-EX Audio which seems to work with ca0132.
+I'm using a 4.0.0 kernel with gentoo patchset, but with the default
+configuration:
+- the line out/headphone jack doesn't work, it only outputs some white noise
+- alsamixer shows only "Master" and "PCM" channel, no "Front", "Line
+Out" or similar
+- alsamixer has a toggle switch for the "HP/Speaker" but no
+headphone/line out switch
+- the jack detection is enabled on the "line in" jack instead of the
+"line out" (if I plug something on the "line in", the speakers are muted)
+- if I play too much with these switches, the speakers stop working
+until suspend/reboot
 
-Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
----
- .../devicetree/bindings/sound/tas571x.txt          | 41 ++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tas571x.txt
+To fix the first issue I run "hdajacksensetest" to get the headphone
+jack pin:
+hdajacksensetest -c 1 -a
+Pin 0x0b (Internal Speaker): present = Yes
+Pin 0x0c (Not connected): present = No
+Pin 0x0d (Not connected): present = No
+Pin 0x0e (Not connected): present = No
+Pin 0x0f (Not connected): present = Yes
+Pin 0x10 (Not connected): present = No
+Pin 0x11 (Black Line In, Left side): present = No
+Pin 0x12 (Internal Mic, Mobile-In): present = No
+Pin 0x13 (Not connected): present = No
+Pin 0x18 (Not connected): present = No
 
-diff --git a/Documentation/devicetree/bindings/sound/tas571x.txt b/Documentation/devicetree/bindings/sound/tas571x.txt
-new file mode 100644
-index 000000000000..0ac31d8d5ac4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tas571x.txt
-@@ -0,0 +1,41 @@
-+Texas Instruments TAS5711/TAS5717/TAS5719 stereo power amplifiers
-+
-+The codec is controlled through an I2C interface.  It also has two other
-+signals that can be wired up to GPIOs: reset (strongly recommended), and
-+powerdown (optional).
-+
-+Required properties:
-+
-+- compatible: "ti,tas5711", "ti,tas5717", or "ti,tas5719"
-+- reg: The I2C address of the device
-+- #sound-dai-cells: must be equal to 0
-+
-+Optional properties:
-+
-+- reset-gpios: GPIO specifier for the TAS571x's active low reset line
-+- pdn-gpios: GPIO specifier for the TAS571x's active low powerdown line
-+- clocks: clock phandle for the MCLK input
-+- clock-names: should be "mclk"
-+- AVDD-supply: regulator phandle for the AVDD supply (all chips)
-+- DVDD-supply: regulator phandle for the DVDD supply (all chips)
-+- HPVDD-supply: regulator phandle for the HPVDD supply (5717/5719)
-+- PVDD_AB-supply: regulator phandle for the PVDD_AB supply (5717/5719)
-+- PVDD_CD-supply: regulator phandle for the PVDD_CD supply (5717/5719)
-+- PVDD_A-supply: regulator phandle for the PVDD_A supply (5711)
-+- PVDD_B-supply: regulator phandle for the PVDD_B supply (5711)
-+- PVDD_C-supply: regulator phandle for the PVDD_C supply (5711)
-+- PVDD_D-supply: regulator phandle for the PVDD_D supply (5711)
-+
-+Example:
-+
-+	tas5717: audio-codec@2a {
-+		compatible = "ti,tas5717";
-+		reg = <0x2a>;
-+		#sound-dai-cells = <0>;
-+
-+		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
-+		pdn-gpios = <&gpio5 2 GPIO_ACTIVE_LOW>;
-+
-+		clocks = <&clk_core CLK_I2S>;
-+		clock-names = "mclk";
-+	};
--- 
-2.2.0.rc0.207.ga3a616c
+and replaced the pin number:
+
+--- /usr/src/linux-4.0.0-gentoo/sound/pci/hda/patch_ca0132.c.old       
+2015-04-13 00:12:50.000000000 +0200
++++ /usr/src/linux-4.0.0-gentoo/sound/pci/hda/patch_ca0132.c   
+2015-04-25 01:43:09.607531550 +0200
+@@ -4625,7 +4625,7 @@
+ 
+        spec->num_outputs = 2;
+        spec->out_pins[0] = 0x0b; /* speaker out */
+-       spec->out_pins[1] = 0x10; /* headphone out */
++       spec->out_pins[1] = 0x0f; /* default: 0x10 - headphone out -0x0f
+on Alienware 15 2015 */
+        spec->shared_out_nid = 0x2;
+ 
+        spec->num_inputs = 3;
+
+Now the "HP/Speaker Auto Detect" is ignored on both jacks, but I can
+switch between headphones and speakers manually with the "HP/Speaker" item.
+
+This is a dirty hack (and probably won't work on different cards), is
+there a better way to fix this and get at least the jack detection working?
+
+Regards,
+Gabriele
