@@ -1,61 +1,69 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC] dice: simplifying address registration
-Date: Sat, 25 Apr 2015 21:25:14 +0900
-Message-ID: <553B87AA.60800@sakamocchi.jp>
-References: <553A3FC5.60809@sakamocchi.jp> <553B5534.1060005@ladisch.de>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v3 1/2] extcon: arizona: Add support for
+	select accessory detect mode when headphone detection
+Date: Sat, 25 Apr 2015 13:50:25 +0100
+Message-ID: <20150425125025.GI3480@opensource.wolfsonmicro.com>
+References: <1429701801-25287-1-git-send-email-ideal.song@samsung.com> <1429701801-25287-2-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 95F6C26155B
- for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 14:25:18 +0200 (CEST)
-In-Reply-To: <553B5534.1060005@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1429701801-25287-2-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
-
-Thanks for your comment.
-
-On Apr 25 2015 17:49, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Currently Dice driver keeps address ranges for each unit instance. But
->> there's a way to reuse the same address range.
+On Wed, Apr 22, 2015 at 08:23:20PM +0900, Inha Song wrote:
+> This patch add support for select accessory detect mode to HPDETL or HPDETR.
+> Arizona provides a headphone detection circuit on the HPDETL and HPDETR pins
+> to measure the impedance of an external load connected to the headphone.
 > 
-> This requires an additional check for the packet's source node, which is
-> essentially a duplicate of the core's address lookup code.
->
->> I think this idea can simplify driver probe processing
+> Depending on board design, headphone detect pins can change to HPDETR or HPDETL.
 > 
-> Yes, but that code is just moved to the module load processing.
+> Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  
+> +static int arizona_extcon_of_get_pdata(struct arizona *arizona)
+> +{
+> +	struct arizona_pdata *pdata = &arizona->pdata;
+> +	unsigned int val;
 
->From probe processing, thus address allocation is just one time, not
-each time IEEE 1394 unit is probed.
+I would rather this is "unsigned int val =
+ARIZONA_ACCDET_MODE_HPL;".
 
->> and save resources of host controller.
-> 
-> When using multiple DICE devices, this saves four bytes of FireWire
-> address space per card, out of the total address space of 2^48 bytes.
-> Or what other resources do you mean?
+> +
+> +	of_property_read_u32(arizona->dev->of_node, "wlf,hpdet-channel", &val);
 
-Actually, 2^48 bytes are really huge. But there're some rude devices to
-transfer transaction to a certain address (i.e. Fireworks). For me, it's
-basically better idea to keep allocated address range as small as possible.
+Because this won't fill val if the DT entry isn't present.
 
-...But seems to be not so practical. OK. I dropped this patch.
+> +	switch (val) {
 
+Which means we hit this with val uninitialised.
 
-Thanks
+> +	case ARIZONA_ACCDET_MODE_HPL:
+> +	case ARIZONA_ACCDET_MODE_HPR:
 
-Takashi Sakamoto
+So we may select either channel at random.
+
+> +		pdata->hpdet_channel = val;
+> +		break;
+> +	default:
+> +		dev_err(arizona->dev,
+> +			"Wrong wlf,hpdet-channel DT value %d\n", val);
+
+Or most likely just print an error but the DT being missing
+shouldn't really be an error it is an optional entry.
+
+> +		pdata->hpdet_channel = ARIZONA_ACCDET_MODE_HPL;
+> +	}
+> +
+> +	return 0;
+> +}
+
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
