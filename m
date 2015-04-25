@@ -1,18 +1,16 @@
-From: Gabriele Martino <g.martino@gmx.com>
-Subject: Intel HDA / ca0132: support for Alienware 15 Creative
- Sound Core3D-EX
-Date: Sat, 25 Apr 2015 02:50:23 +0200
-Message-ID: <553AE4CF.3070805@gmx.com>
+From: yang.a.fang@intel.com
+Subject: [PATCH v2] ASoC: rt5645: set platform data base on DMI
+Date: Fri, 24 Apr 2015 17:50:54 -0700
+Message-ID: <1429923054-108946-1-git-send-email-yang.a.fang@intel.com>
+References: <1429832118-20741-2-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E522A2610A6
- for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 02:50:10 +0200 (CEST)
-Received: from [192.168.69.6] ([79.44.224.230]) by mail.gmx.com (mrgmx002)
- with ESMTPSA (Nemesis) id 0MEFIm-1YWP2Q1m24-00FUgK for
- <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 02:50:10 +0200
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79C5B2610A6
+ for <alsa-devel@alsa-project.org>; Sat, 25 Apr 2015 02:51:33 +0200 (CEST)
+In-Reply-To: <1429832118-20741-2-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +20,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-the new Alienware 15 laptop (2015, not the M15x) has a Creative Sound
-Core3D-EX Audio which seems to work with ca0132.
-I'm using a 4.0.0 kernel with gentoo patchset, but with the default
-configuration:
-- the line out/headphone jack doesn't work, it only outputs some white noise
-- alsamixer shows only "Master" and "PCM" channel, no "Front", "Line
-Out" or similar
-- alsamixer has a toggle switch for the "HP/Speaker" but no
-headphone/line out switch
-- the jack detection is enabled on the "line in" jack instead of the
-"line out" (if I plug something on the "line in", the speakers are muted)
-- if I play too much with these switches, the speakers stop working
-until suspend/reboot
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-To fix the first issue I run "hdajacksensetest" to get the headphone
-jack pin:
-hdajacksensetest -c 1 -a
-Pin 0x0b (Internal Speaker): present = Yes
-Pin 0x0c (Not connected): present = No
-Pin 0x0d (Not connected): present = No
-Pin 0x0e (Not connected): present = No
-Pin 0x0f (Not connected): present = Yes
-Pin 0x10 (Not connected): present = No
-Pin 0x11 (Black Line In, Left side): present = No
-Pin 0x12 (Internal Mic, Mobile-In): present = No
-Pin 0x13 (Not connected): present = No
-Pin 0x18 (Not connected): present = No
+set platform specific data for intel strago platform
 
-and replaced the pin number:
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/codecs/rt5645.c |   47 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
---- /usr/src/linux-4.0.0-gentoo/sound/pci/hda/patch_ca0132.c.old       
-2015-04-13 00:12:50.000000000 +0200
-+++ /usr/src/linux-4.0.0-gentoo/sound/pci/hda/patch_ca0132.c   
-2015-04-25 01:43:09.607531550 +0200
-@@ -4625,7 +4625,7 @@
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 61ca49f..07ef1b9 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -19,6 +19,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/gpio.h>
+ #include <linux/acpi.h>
++#include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -2666,6 +2667,34 @@ static struct acpi_device_id rt5645_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5645_acpi_match);
+ #endif
  
-        spec->num_outputs = 2;
-        spec->out_pins[0] = 0x0b; /* speaker out */
--       spec->out_pins[1] = 0x10; /* headphone out */
-+       spec->out_pins[1] = 0x0f; /* default: 0x10 - headphone out -0x0f
-on Alienware 15 2015 */
-        spec->shared_out_nid = 0x2;
++static struct rt5645_platform_data *rt5645_pdata;
++
++static struct rt5645_platform_data strago_platform_data = {
++	.dmic_en = true,
++	.dmic1_data_pin = -1,
++	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
++	.en_jd_func = true,
++	.jd_mode = 3,
++};
++
++static int strago_quirk_cb(const struct dmi_system_id *id)
++{
++	rt5645_pdata = &strago_platform_data;
++
++	return 1;
++}
++
++static struct dmi_system_id dmi_platform_intel_braswell[] __initdata = {
++	{
++		.ident = "Intel Strago",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Strago"),
++		},
++	},
++	{ }
++};
++
+ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -2673,6 +2702,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	struct rt5645_priv *rt5645;
+ 	int ret;
+ 	unsigned int val;
++	struct gpio_desc *gpiod;
  
-        spec->num_inputs = 3;
-
-Now the "HP/Speaker Auto Detect" is ignored on both jacks, but I can
-switch between headphones and speakers manually with the "HP/Speaker" item.
-
-This is a dirty hack (and probably won't work on different cards), is
-there a better way to fix this and get at least the jack detection working?
-
-Regards,
-Gabriele
+ 	rt5645 = devm_kzalloc(&i2c->dev, sizeof(struct rt5645_priv),
+ 				GFP_KERNEL);
+@@ -2682,8 +2712,23 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	rt5645->i2c = i2c;
+ 	i2c_set_clientdata(i2c, rt5645);
+ 
+-	if (pdata)
++	if (pdata) {
+ 		rt5645->pdata = *pdata;
++	} else {
++		if (dmi_check_system(dmi_platform_intel_braswell)) {
++			rt5645->pdata = *rt5645_pdata;
++			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
++
++			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
++				rt5645->pdata.hp_det_gpio = -1;
++				dev_err(&i2c->dev, "failed to initialize gpiod\n");
++			} else {
++				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
++				rt5645->pdata.gpio_hp_det_active_high
++						= !gpiod_is_active_low(gpiod);
++			}
++		}
++	}
+ 
+ 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
+ 	if (IS_ERR(rt5645->regmap)) {
+-- 
+1.7.9.5
