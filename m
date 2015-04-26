@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 6/7] ASoC: hda: Add support for SSP register
-	settings
-Date: Sun, 26 Apr 2015 19:48:31 +0530
-Message-ID: <20150426141831.GS2738@intel.com>
-References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
- <1429390653-8194-7-git-send-email-vinod.koul@intel.com>
- <20150424175532.GD22845@sirena.org.uk>
+Subject: Re: [RFC 4/9] ASoC: hda: Add DSP init and boot up
+	functionality
+Date: Sun, 26 Apr 2015 19:51:15 +0530
+Message-ID: <20150426142115.GT2738@intel.com>
+References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
+ <1429276567-29007-5-git-send-email-vinod.koul@intel.com>
+ <20150424171140.GU22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0075644973240015915=="
+Content-Type: multipart/mixed; boundary="===============5032364438551144900=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 620DA2606AC
- for <alsa-devel@alsa-project.org>; Sun, 26 Apr 2015 16:21:20 +0200 (CEST)
-In-Reply-To: <20150424175532.GD22845@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD8562606AC
+ for <alsa-devel@alsa-project.org>; Sun, 26 Apr 2015 16:24:04 +0200 (CEST)
+In-Reply-To: <20150424171140.GU22845@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,92 +23,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0075644973240015915==
+--===============5032364438551144900==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ibvzjYYg+QDzMCy1"
+	protocol="application/pgp-signature"; boundary="x1F0m3RQhDZyj8sd"
 Content-Disposition: inline
 
 
---ibvzjYYg+QDzMCy1
+--x1F0m3RQhDZyj8sd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 24, 2015 at 06:55:32PM +0100, Mark Brown wrote:
-> On Sun, Apr 19, 2015 at 02:27:32AM +0530, Vinod Koul wrote:
+On Fri, Apr 24, 2015 at 06:11:40PM +0100, Mark Brown wrote:
+> On Fri, Apr 17, 2015 at 06:46:02PM +0530, Vinod Koul wrote:
 >=20
-> > +	req_bclk =3D fs * slots * s_fmt;
+> > +static int ssth_acquire_irq(struct ssth_lib *ctx)
+> > +{
+> > +	if (request_threaded_irq(ctx->irq, ssth_interrupt,
+> > +			NULL, IRQF_SHARED, KBUILD_MODNAME, ctx)) {
+> > +		dev_err(ctx->dev, "unable to grab threaded IRQ %d, disabling device\=
+n", ctx->irq);
+> > +		return -1;
 >=20
-> We have a helper for this.
-will use
->=20
-> > +	dummy =3D 0;
-> > +	/* Find the lowest bit clock possible for particular configuration */
-> > +	do {
-> > +		req_bclk =3D ((s_fmt * fs * slots) + (fs * dummy));
-> > +		mod =3D HDA_SSP_MAX_FREQ_192 % req_bclk;
-> > +		divisor =3D HDA_SSP_MAX_FREQ_192 / req_bclk;
-> > +		if (!mod) {
-> > +			found =3D 1;
-> > +			break;
-> > +		}
-> > +		/* Dont add odd number of dummy bits, since I2S requires
-> > +		 * dummy bit after each slot/channel
-> > +		 */
->=20
-> It does?
-For us unfortuntely yes. We send 24 bit audio to codec and clock divider
-doesn't give us 48clocks per frame, so we have to add dummy clocks in each
-slot and send 25 clocks per slot
+> Don't discard the return code, pass it back.  I'm pretty sure the error
+> wasn't -EPERM anyway.  Though...
+yes, we will fix it
 
-> > +		dummy +=3D 2;
-> > +		if (dummy > (HDA_SSPSP2_FEP_MASK >> HDA_SSPSP2_FEP_SHIFT)) {
-> > +			dev_err(ctx->dev, "Dummy bit greater than what SSP can support\n");
-> > +			return -EINVAL;
-> > +		}
-> > +
-> > +	} while (divisor > 0);
 >=20
-> Aside from the limits this all looks like it could be generic?
-sure will try to do that.
+> > +
+> > +	/* initialize IPC */
+> > +	ctx->ipc =3D ssth_ipc_init(ctx->dev, ctx);
+> > +	if (ctx->ipc =3D=3D NULL)
+> > +		ret =3D -ENODEV;
+> > +
+> > +	/* Now let's request the IRQ */
+> > +	ssth_acquire_irq(ctx);
+>=20
+> ..of course we ignore errors anyway.  Why not just inline this?
+thats not right, we should do that...
+
+>=20
+> > +int ssth_dsp_free0(struct ssth_lib *dsp)
+> > +{
+> > +	int ret =3D 0;
+> > +
+> > +	dev_dbg(dsp->dev, "In %s\n", __func__);
+> > +
+> > +	ssth_ipc_int_disable(dsp);
+> > +
+> > +	free_irq(dsp->irq, dsp);
+> > +	ssth_ipc_free(dsp->ipc);
+> > +	ssth_disable_dsp_core(dsp);
+> > +	kfree(dsp);
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(ssth_dsp_free0);
+>=20
+> free0?
+crap, will fix
+
+>=20
+> > +bool ssth_dsp_is_running(struct ssth_lib *ctx)
+> > +{
+> > +	bool ret =3D 0;
+> > +
+> > +	mutex_lock(&ctx->sst_lock);
+> > +	ret =3D (ctx->sst_state =3D=3D SST_DSP_RUNNING) ? 1 : 0;
+> > +	mutex_unlock(&ctx->sst_lock);
+>=20
+> How does this get used?  The state could change immediately after
+> returning.  Also no need for the ternery operator there, logic
+> operations generate logic results anyway.
+yes you are right, we should hold the lock and check, will fix this
 
 Thanks
 --=20
 ~Vinod
 
---ibvzjYYg+QDzMCy1
+--x1F0m3RQhDZyj8sd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAEBAgAGBQJVPPO3AAoJEHwUBw8lI4NH5OwP/2Gych8vqD2BvrokO7E2iw+R
-KGOn6lRBcxDOHvBab96/1DXjpPBcitIoC0erNT12/lCRoCFLLZPhfJcR0cp0C1ZR
-8kpdUYvvPhGLzJwPsun5Or8Zl+D7qjQccu0WgNkULfSKAZcwLq5hKnPxm8yGijxk
-eLOlonlazcVJCxewb3U6NeBLeQXVvqeVaQ8kyLWwqQ27kDo8bROUn8eAKq5NZym7
-EG27rsrtSWjHhNdTGs1WSSU7rKVAODBDXNkEtPaFiMzRqd//9irovTG0m2BrIF5B
-nV4asYREAMPsAFaiQ+oK4w/ZtnYCfecdIzQEIp7gmzPLkgDc2F1y+Yo7m+MJX30F
-I7SvDtDz+BimbPU3sZGW78rVkz8JkWoXKZwvKXnFE6S9GfmJwhgdjDjcX8uaZ4HI
-5Sklc/7jRbZwtA87GlWkuHHTa+bKy2l+lt4eu5IU0zE1OtfDDuSLOB6/IyAjzZ6H
-tcMU0l3WGLG9W0/mqF35I9k/ry9ksAmlCS++VNOJXQGqlf4WK9AB6GHbyAWZSHwU
-VjPWl6D6q1GRCjyxd9sgVyjiC5ukrFcdfoB1/+QlzmzDkOhw6xwTQpqnx/C3o0Uy
-647+u1rbZOKu8G6DCK0J4cb2gui1ksSrrPXf5xmCp5oRRHU6kEiPCFyJjeZT+fCG
-1fiUHj+HB15eSCEPoz2L
-=l3YG
+iQIcBAEBAgAGBQJVPPRbAAoJEHwUBw8lI4NHMOYP/2NyAGi4uQVrfFKq9ODLhbBH
+d3WmhMOlfto2N8vz+f9pdJNNBJheVnVZMdSUDbA+ghRnELkMGvbSxNZ3hJjO3btU
+InkW9magEa4ZlkcYLdV2EDNad2HDHiwj5soLETw6d2jJW36j1WlnGTYJTNUS5Zi8
+t4JR+YA4kf54jnjrZDiElrQ3Fd7x2o1UsbnX1tLHO2U0b4j/FxC5Tv9eCaSV2/xo
+WdV0jsn/My2bwoZDgVW2rUMvLYwETXbUlcaKyEuUux5ZcjTNRxELl97NmxCjQ+rU
+fCDVQGJ/1GIk+uBmLFCuZxTh9lXRSNfp0h1tLCiFAG/KVzsKZm6CiNCbkHxFzk2B
+D8/CQtnNnfGMiWqIpdVmA4oadUj+FxksF8GtO13BmDHyUAoiu/vd5sKqv+LbMFm0
+EA1ONaBkZVW1KAK+ZOIRk69n4F5uiSS1fS0yNxYTlZZNDTYl/ts8ZUkoNDQ9YyxE
+Vpm7Ri1BMOk06WwyGHacLfjJkufKqatRPRLSfa9Gao1QHRKAzOjP4lbpof2k4FFa
++Bon98C50Lzp0aKIE0irhnyjYZJjyVGUGq2IlUjR3F0XahOk/om1APPkAISMF96m
+hiBdsFdL0srwSsCBgMZtcJ6tVoJ2DyKRdxbqJEUj/pfe8rW7YzxJabTXuXinHrB1
+WATfmSRZcP8OxSJH+VeB
+=QZHb
 -----END PGP SIGNATURE-----
 
---ibvzjYYg+QDzMCy1--
+--x1F0m3RQhDZyj8sd--
 
---===============0075644973240015915==
+--===============5032364438551144900==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0075644973240015915==--
+--===============5032364438551144900==--
