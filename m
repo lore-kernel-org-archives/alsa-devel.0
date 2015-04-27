@@ -1,21 +1,14 @@
-From: Gabriele Martino <g.martino@gmx.com>
-Subject: Re: Intel HDA / ca0132: support for Alienware 15
- Creative Sound Core3D-EX
-Date: Tue, 28 Apr 2015 00:17:01 +0200
-Message-ID: <553EB55D.4060701@gmx.com>
-References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
- <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: rt5645: fixed kbuild err
+Date: Mon, 27 Apr 2015 15:54:30 -0700
+Message-ID: <1430175270-54717-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B17FA260815
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 00:16:40 +0200 (CEST)
-Received: from [192.168.69.6] ([79.44.224.230]) by mail.gmx.com (mrgmx103)
- with ESMTPSA (Nemesis) id 0MMTZa-1YebCT4Bnq-008LJq for
- <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 00:16:40 +0200
-In-Reply-To: <s5h4mo14d72.wl-tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66011260815
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 00:55:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,55 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 27/04/2015 20:51, Takashi Iwai wrote:
-> At Mon, 27 Apr 2015 20:08:52 +0200,
-> Gabriele Martino wrote:
->> !!Advanced information - PCI Vendor/Device/Subsystem ID's
->> !!-------------------------------------------------------
->>
->> 00:03.0 0403: 8086:0c0c (rev 06)
->> 	Subsystem: 1028:0685
->> --
->> 00:1b.0 0403: 8086:8c20 (rev 05)
->> 	Subsystem: 1028:0685
-> PCI SSID is 1028:0685.
->
->> Codec: Creative CA0132
->> Address: 0
->> AFG Function Id: 0x1 (unsol 1)
->> Vendor Id: 0x11020011
->> Subsystem Id: 0x10280685
-> Codec SSID is also 1028:0685.
-I couldn't find any occurrence of SND_PCI_QUIRK() to mess up with in
-patch_ca0132.c.
-I gave a look at patch_realtek.c and got something like:
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-enum {
-    CA0132_FIXUP_CORE3D_EX
-}
+kbuild robot reports following error/warnings
 
-static const struct hda_fixup ca0132_fixups[] = {
-    [CA0132_FIXUP_CORE3D_EX] = {
-        .type = HDA_FIXUP_PINS,
-        .v.pins = (const struct hda_pintbl[]) {
-            { 0x0f, 0x032110f0 }, /* headphones */
-            { }
-        }
-    },
-    {}
-}
+   sound/soc/codecs/rt5645.c: In function 'rt5645_i2c_probe':
+>> sound/soc/codecs/rt5645.c:2720:4: error: implicit declaration of
+>> function 'devm_gpiod_get_index'
+>> [-Werror=implicit-function-declaration]
+       gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+       ^
+>> sound/soc/codecs/rt5645.c:2720:10: warning: assignment makes pointer
+>> from integer without a cast
+       gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+             ^
+>> sound/soc/codecs/rt5645.c:2722:4: error: implicit declaration of
+>> function 'gpiod_direction_input'
+>> [-Werror=implicit-function-declaration]
+       if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
+       ^
+>> sound/soc/codecs/rt5645.c:2726:5: error: implicit declaration of
+>> function 'desc_to_gpio' [-Werror=implicit-function-declaration]
+        rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
+        ^
+>> sound/soc/codecs/rt5645.c:2728:7: error: implicit declaration of
+>> function 'gpiod_is_active_low'
+>> [-Werror=implicit-function-declaration]
+          = !gpiod_is_active_low(gpiod);
+          ^
+   cc1: some warnings being treated as errors
 
-static const struct snd_pci_quirk alc861_fixup_tbl[] = {
-    SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15", CA0132_FIXUP_CORE3D_EX),
-    {}
-};
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/codecs/rt5645.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-But I don't know how to load this on ca0132.
-It there any simple documentation about quirks? I fear this is beyond my
-capabilities.
-
-Regards,
-Gabriele
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index fb561b4..2cab2eb 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -18,6 +18,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/acpi.h>
+ #include <linux/dmi.h>
+ #include <sound/core.h>
+-- 
+1.7.9.5
