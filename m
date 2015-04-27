@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 6/7] ASoC: hda: Add support for SSP register
-	settings
-Date: Mon, 27 Apr 2015 15:15:09 +0100
-Message-ID: <20150427141509.GS22845@sirena.org.uk>
-References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
- <1429390653-8194-7-git-send-email-vinod.koul@intel.com>
- <20150424175532.GD22845@sirena.org.uk>
- <20150426141831.GS2738@intel.com>
+Subject: Re: [RFC 6/9] ASoC: hda: Add Code Loader DMA support
+Date: Mon, 27 Apr 2015 15:17:17 +0100
+Message-ID: <20150427141717.GT22845@sirena.org.uk>
+References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
+ <1429276567-29007-7-git-send-email-vinod.koul@intel.com>
+ <20150424171838.GV22845@sirena.org.uk>
+ <20150426142822.GU2738@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3987775671812655599=="
+Content-Type: multipart/mixed; boundary="===============6298562012380577901=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 620D7260631
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 16:15:19 +0200 (CEST)
-In-Reply-To: <20150426141831.GS2738@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 126732605C8
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 16:17:22 +0200 (CEST)
+In-Reply-To: <20150426142822.GU2738@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3987775671812655599==
+--===============6298562012380577901==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TrbAYn63cdnBtVX6"
+	protocol="application/pgp-signature"; boundary="9Vz7pjwpooMoMvmu"
 Content-Disposition: inline
 
 
---TrbAYn63cdnBtVX6
+--9Vz7pjwpooMoMvmu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Apr 26, 2015 at 07:48:31PM +0530, Vinod Koul wrote:
-> On Fri, Apr 24, 2015 at 06:55:32PM +0100, Mark Brown wrote:
+On Sun, Apr 26, 2015 at 07:58:22PM +0530, Vinod Koul wrote:
+> On Fri, Apr 24, 2015 at 06:18:38PM +0100, Mark Brown wrote:
 
-> > > +		/* Dont add odd number of dummy bits, since I2S requires
-> > > +		 * dummy bit after each slot/channel
-> > > +		 */
+> > > +		goto cleanup;
+> > > +	}
 
-> > It does?
+> > What if the buffer is just too big?  Looks like this would loop for
+> > ever.
 
-> For us unfortuntely yes. We send 24 bit audio to codec and clock divider
-> doesn't give us 48clocks per frame, so we have to add dummy clocks in each
-> slot and send 25 clocks per slot
+> DMA is started, so link_pos get updated and we keep reading it. Since its
+> DMA a big buffer will get done fairly soon.
 
-So it's the hardware rather than I2S itself :)
+No, two separate questions there - what if the buffer is bigger than the
+maximum size (it looked like there was one) and what about error
+handling (if some clock gets stopped and we don't transfer data for
+example)?
 
---TrbAYn63cdnBtVX6
+--9Vz7pjwpooMoMvmu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVPkRsAAoJECTWi3JdVIfQwQEH/jb/+rXd7J9G6qOGg3ZuLl+/
-goRmJOtmm+khetWVbpDCaQzON5dluXSdH6WJaGFYOABM2zclhi+nh1kEEtMndnkB
-WbCpOCr8R+VEZ5iZRnuUkLjQsOkDnMpFrRzMh7GO3WsboteNnccRxafX93LsEX/C
-u25B7lAZ9yTu47+VoMDD5TAYkZLrjFWpBb9SRmmnuTJpKAKkSxpTts4WhBWc+t0/
-BJtZXTbcaupn/4fjNjLOr03LI8lsE7N6oNc6zVr1BvJNtnzBAj9/q0tvqI/dOJJG
-pupdU4I7O4HfoudgmbvGOKDggSDEZbGmlrbKb25JzfErDUnsFqgVZYiGyVxGhZU=
-=czJ/
+iQEcBAEBCAAGBQJVPkTsAAoJECTWi3JdVIfQHGgH/0mnQBz9l62uP7XfYjwBhrTn
+/Xw15cZ27QOFB2IlTjFNPgw2DAFFaX7VX+m5oxvBjxcPC5ErZ/Jtu2IR2BBnJcKl
+p+AJTOZz+3GjEqLvb9Sbbfnk4LMkitA0cPo5WaSrWQe0PMMfEennHxKWFJAJ/5cp
+nQjrEF790MTn2yLTwEOujmYq5p7F9EnVBkkmRwU9LuLFrPYThdfbA6rLtvhvSB5q
+vxcQPeGcfZ5YGX6UlMRztobkMSb2OUWkHVnWMwkD8jlSrNyvt+58Jm+ZTUPyz7bk
+7kHtBwZ7pqOUTWajv3iNgKQCahtF2ad3EKYK1blKH+CG95kOdHdw6wZPRkc6ywk=
+=rkZw
 -----END PGP SIGNATURE-----
 
---TrbAYn63cdnBtVX6--
+--9Vz7pjwpooMoMvmu--
 
---===============3987775671812655599==
+--===============6298562012380577901==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3987775671812655599==--
+--===============6298562012380577901==--
