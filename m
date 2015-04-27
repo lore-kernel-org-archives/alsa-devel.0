@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/4] ASoC: Add helper functions bias level
-	management
-Date: Mon, 27 Apr 2015 22:13:23 +0200
-Message-ID: <1430165606-3072-2-git-send-email-lars@metafoo.de>
-References: <1430165606-3072-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] ASoC: DPCM can care FE/BE merged format
+Date: Mon, 27 Apr 2015 21:33:10 +0100
+Message-ID: <20150427203310.GJ22845@sirena.org.uk>
+References: <87mw22ufs3.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hr3reklel.wl-tiwai@suse.de>
+ <87y4llucde.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hiocplv8x.wl-tiwai@suse.de>
+ <20150421104210.GE22845@sirena.org.uk>
+ <87pp6xm36l.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0361824839937887758=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
- [212.40.185.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 0586126509D
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:13:42 +0200 (CEST)
-In-Reply-To: <1430165606-3072-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFBEF26041C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:33:16 +0200 (CEST)
+In-Reply-To: <87pp6xm36l.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,183 +25,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Support Opensource <support.opensource@diasemi.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently drivers are responsible for managing the bias_level field of
-their DAPM context. The DAPM state itself is managed by the DAPM core
-though and the core has certain expectations on how and when the bias_level
-field should be updated. If drivers don't adhere to these undefined
-behavior can occur.
 
-This patch adds a few helper functions for manipulating the DAPM context
-state, each function with a description on when it should be used and what
-its effects are. This will also help us to move more of the bias_level
-management from drivers to the DAPM core.
+--===============0361824839937887758==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NXACYHFQzLMfb2dt"
+Content-Disposition: inline
 
-For convenience also add snd_soc_codec_* wrappers around these helpers.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc-dapm.h | 34 ++++++++++++++++++++++++++++++++++
- include/sound/soc.h      | 40 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-dapm.c     | 35 +++++++++++++++++++++++++++++++----
- 3 files changed, 105 insertions(+), 4 deletions(-)
+--NXACYHFQzLMfb2dt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 1065095..b659d9f 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -444,6 +444,9 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- struct snd_soc_dapm_context *snd_soc_dapm_kcontrol_dapm(
- 	struct snd_kcontrol *kcontrol);
- 
-+int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
-+	enum snd_soc_bias_level level);
-+
- /* dapm widget types */
- enum snd_soc_dapm_type {
- 	snd_soc_dapm_input = 0,		/* input pin */
-@@ -623,4 +626,35 @@ struct snd_soc_dapm_stats {
- 	int neighbour_checks;
- };
- 
-+/**
-+ * snd_soc_dapm_init_bias_level() - Initialize DAPM bias level
-+ * @dapm: The DAPM context to initialize
-+ * @level: The DAPM level to initialize to
-+ *
-+ * This function only sets the driver internal state of the DAPM level and will
-+ * not modify the state of the device. Hence it should not be used during normal
-+ * operation, but only to synchronize the internal state to the device state.
-+ * E.g. during driver probe to set the DAPM level to the one corresponding with
-+ * the power-on reset state of the device.
-+ *
-+ * To change the DAPM state of the device use snd_soc_dapm_set_bias_level().
-+ */
-+static inline void snd_soc_dapm_init_bias_level(
-+	struct snd_soc_dapm_context *dapm, enum snd_soc_bias_level level)
-+{
-+	dapm->bias_level = level;
-+}
-+
-+/**
-+ * snd_soc_dapm_get_bias_level() - Get current DAPM bias level
-+ * @dapm: The context for which to get the bias level
-+ *
-+ * Returns: The current bias level of the passed DAPM context.
-+ */
-+static inline enum snd_soc_bias_level snd_soc_dapm_get_bias_level(
-+	struct snd_soc_dapm_context *dapm)
-+{
-+	return dapm->bias_level;
-+}
-+
- #endif
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d57dc7c..de265a8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1294,6 +1294,46 @@ static inline struct snd_soc_dapm_context *snd_soc_codec_get_dapm(
- }
- 
- /**
-+ * snd_soc_dapm_init_bias_level() - Initialize CODEC DAPM bias level
-+ * @dapm: The CODEC for which to initialize the DAPM bias level
-+ * @level: The DAPM level to initialize to
-+ *
-+ * Initializes the CODEC DAPM bias level. See snd_soc_dapm_init_bias_level().
-+ */
-+static inline void snd_soc_codec_init_bias_level(struct snd_soc_codec *codec,
-+	enum snd_soc_bias_level level)
-+{
-+	snd_soc_dapm_init_bias_level(snd_soc_codec_get_dapm(codec), level);
-+}
-+
-+/**
-+ * snd_soc_dapm_get_bias_level() - Get current CODEC DAPM bias level
-+ * @codec: The CODEC for which to get the DAPM bias level
-+ *
-+ * Returns: The current DAPM bias level of the CODEC.
-+ */
-+static inline enum snd_soc_bias_level snd_soc_codec_get_bias_level(
-+	struct snd_soc_codec *codec)
-+{
-+	return snd_soc_dapm_get_bias_level(snd_soc_codec_get_dapm(codec));
-+}
-+
-+/**
-+ * snd_soc_codec_force_bias_level() - Set the CODEC DAPM bias level
-+ * @codec: The CODEC for which to set the level
-+ * @level: The level to set to
-+ *
-+ * Forces the CODEC bias level to a specific state. See
-+ * snd_soc_dapm_force_bias_level().
-+ */
-+static inline int snd_soc_codec_force_bias_level(struct snd_soc_codec *codec,
-+	enum snd_soc_bias_level level)
-+{
-+	return snd_soc_dapm_force_bias_level(snd_soc_codec_get_dapm(codec),
-+		level);
-+}
-+
-+/**
-  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
-  * @kcontrol: The kcontrol
-  *
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index defe0f0..b24782b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -526,6 +526,35 @@ static void soc_dapm_async_complete(struct snd_soc_dapm_context *dapm)
- }
- 
- /**
-+ * snd_soc_dapm_force_bias_level() - Sets the DAPM bias level
-+ * @dapm: The DAPM context for which to set the level
-+ * @level: The level to set
-+ *
-+ * Forces the DAPM bias level to a specific state. It will call the bias level
-+ * callback of DAPM context with the specified level. This will even happen if
-+ * the context is already at the same level. Furthermore it will not go through
-+ * the normal bias level sequencing, meaning any intermediate states between the
-+ * current and the target state will not be entered.
-+ *
-+ * Note that the change in bias level is only temporary and the next time
-+ * snd_soc_dapm_sync() is called the state will be set to the level as
-+ * determined by the DAPM core. The function is mainly intended to be used to
-+ * used during probe or resume from suspend to power up the device so
-+ * initialization can be done, before the DAPM core takes over.
-+ */
-+int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
-+	enum snd_soc_bias_level level)
-+{
-+	int ret = 0;
-+
-+	if (dapm->set_bias_level)
-+		ret = dapm->set_bias_level(dapm, level);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_force_bias_level);
-+
-+/**
-  * snd_soc_dapm_set_bias_level - set the bias level for the system
-  * @dapm: DAPM context
-  * @level: level to configure
-@@ -547,10 +576,8 @@ static int snd_soc_dapm_set_bias_level(struct snd_soc_dapm_context *dapm,
- 	if (ret != 0)
- 		goto out;
- 
--	if (dapm->set_bias_level)
--		ret = dapm->set_bias_level(dapm, level);
--	else if (!card || dapm != &card->dapm)
--		dapm->bias_level = level;
-+	if (!card || dapm != &card->dapm)
-+		ret = snd_soc_dapm_force_bias_level(dapm, level);
- 
- 	if (ret != 0)
- 		goto out;
--- 
-1.8.0
+On Wed, Apr 22, 2015 at 12:13:31AM +0000, Kuninori Morimoto wrote:
+
+> >> Maybe I'm misunderstanding, but if this feature
+> >> refines above all hw_params, it will conflicts
+> >> with .be_hw_params_fixup ?
+
+> >Yeah, there it'll need to clear the flag.
+
+> .dpcm_merged_foramt is using bit field, like this
+
+> 	unsigned int dpcm_merged_foramt:1;
+
+Note that you've misspelt this - should be "format".
+
+> I think we don't need flag control, but should I ?
+> (many other options are same style in struct snd_soc_dai_link)
+
+Not quite sure what "flag control" is here, sorry?
+
+> > > There are indeed cases where a BE takes incompatible hw configuration,
+> > > which needs be_hw_params_fixup.  But, in general, the FE's hw_params
+> > > is just copied to BE.  That is, we assume here blindly that FE's
+> > > configuration is compatible with BE's.  And, now this assumption isn't
+> > > true in rcar's case, so we face the issue.
+
+> > Well, it's as much that we're assuming there's rewriting going on which
+> > handles things - in many of these systems everything will be going
+> > through a DSP which rewrites everything on the way.
+
+> I guess we can use .be_hw_params_fixup if it is
+> "special rewrite" (ex 48kHz -> 44.1kHz, 8ch -> 2ch etc...).
+> But like this case (= it needs rewrite but normally we assume it)
+> using general method is useful.
+
+> I'm happy to create/send v2 patch, but, it will be "flag" fixup ?
+
+I'm having a bit of a hard time following, sorry.  If what you're saying
+here is that if we have a fixup method we should by default assume that
+only the front end constraints are relevant and ignore the back end then
+that does actually seem reasonable.
+
+--NXACYHFQzLMfb2dt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVPp0FAAoJECTWi3JdVIfQ6GYH/0ntnwy31qTM6qSQodut10k0
+4Yo+4Lp7SkNaGsBNZtS8pX0iTyh7ocgy/gySGxHhy1tlBXogyvBpcA9Zwh8fTu7O
+im1xU56uWtoGemDwQxF8s4WAFudBW0d0yLidkV/XuvgFRybPWesiOqHMEn28f4PR
+tWDELZVR7V3A4+4cmlNezEOA3J4WYdTqMUbj302ZauoZB+jD89Tq1aWe+efvtYQk
+J9YO9cv0ywHeva7X0Eby/oOu99sL+C6lQ2l9SJV7+lDw3pSVgy/etsXV7Xj4m1pa
+LoNVH6XCDHWlDedn+T+bjYIwrUr4rPniddkRI4T5agxyGuEsUAQLVfJ3mbpXup8=
+=qVRt
+-----END PGP SIGNATURE-----
+
+--NXACYHFQzLMfb2dt--
+
+--===============0361824839937887758==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0361824839937887758==--
