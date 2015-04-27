@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: soc.h: tidyup struct
- snd_soc_dai_link definition order
-Date: Mon, 27 Apr 2015 21:13:27 +0100
-Message-ID: <20150427201327.GI22845@sirena.org.uk>
-References: <87mw22ufs3.wl%kuninori.morimoto.gx@renesas.com>
- <87lhhmufqy.wl%kuninori.morimoto.gx@renesas.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: Add helper function getting CODEC's
+	DAPM context
+Date: Mon, 27 Apr 2015 22:13:22 +0200
+Message-ID: <1430165606-3072-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2626007522516733336=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DCD926041C
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:13:33 +0200 (CEST)
-In-Reply-To: <87lhhmufqy.wl%kuninori.morimoto.gx@renesas.com>
+Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
+ [212.40.185.223])
+ by alsa0.perex.cz (Postfix) with ESMTP id 497F02612D2
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:13:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Support Opensource <support.opensource@diasemi.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The DAPM context in the snd_soc_codec struct is redundant and scheduled to
+be replaced by the DAPM context in the snd_soc_component struct. This patch
+introduces a new helper function snd_soc_codec_get_dapm() which should be
+used for getting the DAPM context for a CODEC rather then directly
+accessing the dapm field. Once there are no more direct users of the dapm
+field left it is possible to transparently switch all drivers to the
+component DAPM context by updating snd_soc_codec_get_dapm() function.
 
---===============2626007522516733336==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6h+O0esyKQq61JWK"
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc.h | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-
---6h+O0esyKQq61JWK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 21, 2015 at 07:02:34AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current struct snd_soc_dai_link has many members, but definition order
-> was random. Especially, bool / bit field are defined randomly.
-> This patch tidyups these definition order to calculate data alignment
-> easy.
-
-Applied, thanks.
-
---6h+O0esyKQq61JWK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVPphmAAoJECTWi3JdVIfQEFYH/2FNUl62W2L2rCdTTiP/j5Lk
-1yWx/GTIXyDCKzdUeUAGJFIONHDcSTzsKQmtrsFI+j+uWKgsZRPt6kZwf8x+zpsH
-WUH6R4HQxGPt+IEvrRIoCd4kkFr4bRNFf+Z1lniakp+fK5mJ/XKlFFQYQPQtXV9o
-M4ANfuTLHzyZC8EKFnBZ7MOtPprYfT9eIDpC3+/YA7ycLRK0XspsRTOCEzsWvfaT
-I6EQBIVTFCO5xwHAgMSje++tbF3/Ak5Yb1huBtukjl6s0QbUwcKDJP89DWPyvCUA
-Gbe9wlfm0NTm7eMp+LRJPWZy/0YIFsejNpAtVM+eIV4Qyx7grBAkDdd98TwwceM=
-=qVDJ
------END PGP SIGNATURE-----
-
---6h+O0esyKQq61JWK--
-
---===============2626007522516733336==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2626007522516733336==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f6226914..d57dc7c 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -819,7 +819,7 @@ struct snd_soc_codec {
+ 	/* component */
+ 	struct snd_soc_component component;
+ 
+-	/* dapm */
++	/* Don't access this directly, use snd_soc_codec_get_dapm() */
+ 	struct snd_soc_dapm_context dapm;
+ 
+ #ifdef CONFIG_DEBUG_FS
+@@ -1282,6 +1282,18 @@ static inline struct snd_soc_dapm_context *snd_soc_component_get_dapm(
+ }
+ 
+ /**
++ * snd_soc_codec_get_dapm() - Returns the DAPM context for the CODEC
++ * @codec: The CODEC for which to get the DAPM context
++ *
++ * Note: Use this function instead of directly accessing the CODEC's dapm field
++ */
++static inline struct snd_soc_dapm_context *snd_soc_codec_get_dapm(
++	struct snd_soc_codec *codec)
++{
++	return &codec->dapm;
++}
++
++/**
+  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
+  * @kcontrol: The kcontrol
+  *
+-- 
+1.8.0
