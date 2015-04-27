@@ -1,8 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/4] ASoC: Route all bias level updates through
-	the core
-Date: Mon, 27 Apr 2015 22:13:24 +0200
-Message-ID: <1430165606-3072-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/4] ASoC: Move bias level update to the core
+Date: Mon, 27 Apr 2015 22:13:25 +0200
+Message-ID: <1430165606-3072-4-git-send-email-lars@metafoo.de>
 References: <1430165606-3072-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
  [212.40.185.223])
- by alsa0.perex.cz (Postfix) with ESMTP id E7F7D26041C
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:13:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C3ABB26532C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 22:13:48 +0200 (CEST)
 In-Reply-To: <1430165606-3072-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,335 +25,1330 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Support Opensource <support.opensource@diasemi.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the new snd_soc_codec_force_bias_level() helper function to invoke the
-bias_level callback of a driver instead of calling the callback by hand.
-Currently the effect of this is the same, but having all bias level updates
-go through a central place will allow us to move more of the bias level
-management into the DAPM core.
+All drivers have the same line at the end of the set_bias_level callback to
+update the bias_level state. Move this update into
+snd_soc_dapm_force_bias_level() and remove them from the drivers.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max98095.c | 4 ++--
- sound/soc/codecs/rt5640.c   | 4 ++--
- sound/soc/codecs/rt5645.c   | 2 +-
- sound/soc/codecs/rt5651.c   | 2 +-
- sound/soc/codecs/rt5677.c   | 2 +-
- sound/soc/codecs/sta32x.c   | 2 +-
- sound/soc/codecs/sta350.c   | 2 +-
- sound/soc/codecs/twl6040.c  | 2 +-
- sound/soc/codecs/wm8731.c   | 2 +-
- sound/soc/codecs/wm8737.c   | 2 +-
- sound/soc/codecs/wm8900.c   | 6 +++---
- sound/soc/codecs/wm8940.c   | 2 +-
- sound/soc/codecs/wm8955.c   | 2 +-
- sound/soc/codecs/wm8978.c   | 4 ++--
- sound/soc/codecs/wm8990.c   | 2 +-
- sound/soc/codecs/wm8993.c   | 4 ++--
- sound/soc/codecs/wm8994.c   | 2 +-
- sound/soc/codecs/wm9712.c   | 2 +-
- sound/soc/codecs/wm9713.c   | 2 +-
- 19 files changed, 25 insertions(+), 25 deletions(-)
+ sound/soc/codecs/88pm860x-codec.c | 1 -
+ sound/soc/codecs/adau1373.c       | 1 -
+ sound/soc/codecs/adau1701.c       | 1 -
+ sound/soc/codecs/adau1761.c       | 1 -
+ sound/soc/codecs/adau1781.c       | 1 -
+ sound/soc/codecs/adau1977.c       | 2 --
+ sound/soc/codecs/adav80x.c        | 1 -
+ sound/soc/codecs/ak4535.c         | 1 -
+ sound/soc/codecs/ak4641.c         | 1 -
+ sound/soc/codecs/ak4642.c         | 1 -
+ sound/soc/codecs/ak4671.c         | 1 -
+ sound/soc/codecs/alc5623.c        | 1 -
+ sound/soc/codecs/alc5632.c        | 1 -
+ sound/soc/codecs/cq93vc.c         | 1 -
+ sound/soc/codecs/cs4265.c         | 1 -
+ sound/soc/codecs/cs42l52.c        | 1 -
+ sound/soc/codecs/cs42l56.c        | 1 -
+ sound/soc/codecs/cs42l73.c        | 1 -
+ sound/soc/codecs/cx20442.c        | 2 --
+ sound/soc/codecs/da7213.c         | 1 -
+ sound/soc/codecs/da732x.c         | 2 --
+ sound/soc/codecs/da9055.c         | 1 -
+ sound/soc/codecs/es8328.c         | 1 -
+ sound/soc/codecs/isabelle.c       | 2 --
+ sound/soc/codecs/jz4740.c         | 2 --
+ sound/soc/codecs/lm4857.c         | 2 --
+ sound/soc/codecs/lm49453.c        | 2 --
+ sound/soc/codecs/max98088.c       | 1 -
+ sound/soc/codecs/max98090.c       | 1 -
+ sound/soc/codecs/max98095.c       | 1 -
+ sound/soc/codecs/max9850.c        | 1 -
+ sound/soc/codecs/ml26124.c        | 1 -
+ sound/soc/codecs/pcm512x.c        | 2 --
+ sound/soc/codecs/rt286.c          | 1 -
+ sound/soc/codecs/rt5631.c         | 1 -
+ sound/soc/codecs/rt5640.c         | 1 -
+ sound/soc/codecs/rt5645.c         | 1 -
+ sound/soc/codecs/rt5651.c         | 1 -
+ sound/soc/codecs/rt5670.c         | 1 -
+ sound/soc/codecs/rt5677.c         | 1 -
+ sound/soc/codecs/sgtl5000.c       | 1 -
+ sound/soc/codecs/sn95031.c        | 1 -
+ sound/soc/codecs/ssm2518.c        | 2 --
+ sound/soc/codecs/ssm2602.c        | 1 -
+ sound/soc/codecs/ssm4567.c        | 7 +------
+ sound/soc/codecs/sta32x.c         | 1 -
+ sound/soc/codecs/sta350.c         | 1 -
+ sound/soc/codecs/sta529.c         | 6 ------
+ sound/soc/codecs/stac9766.c       | 1 -
+ sound/soc/codecs/tlv320aic23.c    | 1 -
+ sound/soc/codecs/tlv320aic31xx.c  | 1 -
+ sound/soc/codecs/tlv320aic32x4.c  | 1 -
+ sound/soc/codecs/tlv320aic3x.c    | 1 -
+ sound/soc/codecs/tlv320dac33.c    | 1 -
+ sound/soc/codecs/twl4030.c        | 1 -
+ sound/soc/codecs/twl6040.c        | 2 --
+ sound/soc/codecs/uda134x.c        | 1 -
+ sound/soc/codecs/uda1380.c        | 1 -
+ sound/soc/codecs/wm0010.c         | 2 --
+ sound/soc/codecs/wm1250-ev1.c     | 2 --
+ sound/soc/codecs/wm8350.c         | 1 -
+ sound/soc/codecs/wm8400.c         | 1 -
+ sound/soc/codecs/wm8510.c         | 1 -
+ sound/soc/codecs/wm8523.c         | 1 -
+ sound/soc/codecs/wm8580.c         | 1 -
+ sound/soc/codecs/wm8711.c         | 1 -
+ sound/soc/codecs/wm8728.c         | 1 -
+ sound/soc/codecs/wm8731.c         | 1 -
+ sound/soc/codecs/wm8737.c         | 1 -
+ sound/soc/codecs/wm8750.c         | 1 -
+ sound/soc/codecs/wm8753.c         | 1 -
+ sound/soc/codecs/wm8770.c         | 1 -
+ sound/soc/codecs/wm8776.c         | 1 -
+ sound/soc/codecs/wm8900.c         | 1 -
+ sound/soc/codecs/wm8903.c         | 2 --
+ sound/soc/codecs/wm8904.c         | 1 -
+ sound/soc/codecs/wm8940.c         | 2 --
+ sound/soc/codecs/wm8955.c         | 1 -
+ sound/soc/codecs/wm8960.c         | 4 ----
+ sound/soc/codecs/wm8961.c         | 2 --
+ sound/soc/codecs/wm8962.c         | 1 -
+ sound/soc/codecs/wm8971.c         | 1 -
+ sound/soc/codecs/wm8974.c         | 1 -
+ sound/soc/codecs/wm8978.c         | 1 -
+ sound/soc/codecs/wm8983.c         | 1 -
+ sound/soc/codecs/wm8985.c         | 1 -
+ sound/soc/codecs/wm8988.c         | 1 -
+ sound/soc/codecs/wm8990.c         | 1 -
+ sound/soc/codecs/wm8991.c         | 1 -
+ sound/soc/codecs/wm8993.c         | 2 --
+ sound/soc/codecs/wm8994.c         | 2 --
+ sound/soc/codecs/wm8995.c         | 1 -
+ sound/soc/codecs/wm8996.c         | 2 --
+ sound/soc/codecs/wm9081.c         | 2 --
+ sound/soc/codecs/wm9090.c         | 2 --
+ sound/soc/codecs/wm9712.c         | 1 -
+ sound/soc/codecs/wm9713.c         | 1 -
+ sound/soc/soc-dapm.c              | 3 +++
+ 98 files changed, 4 insertions(+), 130 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 8fba0c3..d6e80a9 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2198,7 +2198,7 @@ static int max98095_suspend(struct snd_soc_codec *codec)
- 	if (max98095->headphone_jack || max98095->mic_jack)
- 		max98095_jack_detect_disable(codec);
- 
--	max98095_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index a0f2653..c0b2686 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1156,7 +1156,6 @@ static int pm860x_set_bias_level(struct snd_soc_codec *codec,
+ 		pm860x_set_bits(pm860x->i2c, REG_MISC2, data, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
  	return 0;
  }
-@@ -2208,7 +2208,7 @@ static int max98095_resume(struct snd_soc_codec *codec)
- 	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
- 	struct i2c_client *client = to_i2c_client(codec->dev);
  
--	max98095_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index 783dcb5..a431602 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -1444,7 +1444,6 @@ static int adau1373_set_bias_level(struct snd_soc_codec *codec,
+ 			ADAU1373_PWDN_CTRL3_PWR_EN, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
- 	if (max98095->headphone_jack || max98095->mic_jack) {
- 		max98095_jack_detect_enable(codec);
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 178e55d..d39b25c 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -1939,7 +1939,7 @@ static int rt5640_probe(struct snd_soc_codec *codec)
- 
- 	rt5640->codec = codec;
- 
--	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	snd_soc_update_bits(codec, RT5640_DUMMY1, 0x0301, 0x0301);
- 	snd_soc_update_bits(codec, RT5640_MICBIAS, 0x0030, 0x0030);
-@@ -1991,7 +1991,7 @@ static int rt5640_suspend(struct snd_soc_codec *codec)
- {
- 	struct rt5640_priv *rt5640 = snd_soc_codec_get_drvdata(codec);
- 
--	rt5640_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 	rt5640_reset(codec);
- 	regcache_cache_only(rt5640->regmap, true);
- 	regcache_mark_dirty(rt5640->regmap);
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 61ca49f..5147ee6 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2521,7 +2521,7 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index ca94ae8..ff7f846 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -571,7 +571,6 @@ static int adau1701_set_bias_level(struct snd_soc_codec *codec,
  		break;
  	}
  
--	rt5645_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
- 	snd_soc_update_bits(codec, RT5645_CHARGE_PUMP, 0x0300, 0x0200);
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index a1baeee..5ba2461 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -466,7 +466,6 @@ static int adau1761_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index 35581f4..9c01ef0 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -339,7 +339,6 @@ static int adau1781_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
+index 7ad8e15..c5b1b8e 100644
+--- a/sound/soc/codecs/adau1977.c
++++ b/sound/soc/codecs/adau1977.c
+@@ -496,8 +496,6 @@ static int adau1977_set_bias_level(struct snd_soc_codec *codec,
+ 	if (ret)
+ 		return ret;
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index 4373ada..260a652 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -714,7 +714,6 @@ static int adav80x_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index 9130d91..8670861 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -341,7 +341,6 @@ static int ak4535_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
+index 81b54a2..3b22b58 100644
+--- a/sound/soc/codecs/ak4641.c
++++ b/sound/soc/codecs/ak4641.c
+@@ -439,7 +439,6 @@ static int ak4641_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_mark_dirty(ak4641->regmap);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 13585e8..7c0f6552 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -482,7 +482,6 @@ static int ak4642_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_update_bits(codec, PW_MGMT1, PMVCM, PMVCM);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index 2a58b1d..0e59063 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -577,7 +577,6 @@ static int ak4671_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, AK4671_AD_DA_POWER_MANAGEMENT, 0x00);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index 0e35799..e92b5ae 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -826,7 +826,6 @@ static int alc5623_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, ALC5623_PWR_MANAG_ADD1, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index db3283a..607a63b 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -1000,7 +1000,6 @@ static int alc5632_set_bias_level(struct snd_soc_codec *codec,
+ 				ALC5632_PWR_MANAG_ADD1_MASK, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index d6dedd4..1c895a5 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -92,7 +92,6 @@ static int cq93vc_set_bias_level(struct snd_soc_codec *codec,
+ 			     DAVINCI_VC_REG12_POWER_ALL_OFF);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index cac48dd..d7ec475 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -503,7 +503,6 @@ static int cs4265_set_bias_level(struct snd_soc_codec *codec,
+ 			CS4265_PWRCTL_PDN);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 1589e7a..3c49a75 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -908,7 +908,6 @@ static int cs42l52_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_cache_only(cs42l52->regmap, true);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index cbc654f..a7638c5 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -978,7 +978,6 @@ static int cs42l56_set_bias_level(struct snd_soc_codec *codec,
+ 						    cs42l56->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 8ecedba..156ec93 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1228,7 +1228,6 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 1);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 0f334bc..13041cc 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -351,8 +351,6 @@ static int cx20442_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	if (!err)
+-		codec->dapm.bias_level = level;
+ 
+ 	return err;
+ }
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 9ec577f..925dd3c1 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1387,7 +1387,6 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
+ 				    DA7213_VMID_EN | DA7213_BIAS_EN, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+index 911c26c..0651905 100644
+--- a/sound/soc/codecs/da732x.c
++++ b/sound/soc/codecs/da732x.c
+@@ -1502,8 +1502,6 @@ static int da732x_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index ad19cc5..3bdc95a 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1377,7 +1377,6 @@ static int da9055_set_bias_level(struct snd_soc_codec *codec,
+ 				    DA9055_VMID_EN | DA9055_BIAS_EN, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index c5f35a0..996e3f4 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -566,7 +566,6 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
+ 				0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/isabelle.c b/sound/soc/codecs/isabelle.c
+index 3a89ce6..ebd9028 100644
+--- a/sound/soc/codecs/isabelle.c
++++ b/sound/soc/codecs/isabelle.c
+@@ -909,8 +909,6 @@ static int isabelle_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 933f447..8425d26 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -281,8 +281,6 @@ static int jz4740_codec_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/lm4857.c b/sound/soc/codecs/lm4857.c
+index a924bb9..79ad4cb 100644
+--- a/sound/soc/codecs/lm4857.c
++++ b/sound/soc/codecs/lm4857.c
+@@ -89,8 +89,6 @@ static int lm4857_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index c4dfde9..166fd4c 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -1284,8 +1284,6 @@ static int lm49453_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 805b3f8..3200aa8 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1584,7 +1584,6 @@ static int max98088_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_mark_dirty(max98088->regmap);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 3e33ef2..c5736b2 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -1824,7 +1824,6 @@ static int max98090_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_mark_dirty(max98090->regmap);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index d6e80a9..66c7ca4 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -1678,7 +1678,6 @@ static int max98095_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_mark_dirty(max98095->regmap);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index 10f8e47..f6b616b 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -264,7 +264,6 @@ static int max9850_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_OFF:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 711f550..f1d5778 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -536,7 +536,6 @@ static int ml26124_set_bias_level(struct snd_soc_codec *codec,
+ 				    ML26124_VMID, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index e12764d..c305b28 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -641,8 +641,6 @@ static int pcm512x_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 0fcda35..dbdbb9e 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1012,7 +1012,6 @@ static int rt286_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index 2c10d77..e285d8a 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -1569,7 +1569,6 @@ static int rt5631_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index d39b25c..7d488d8 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1902,7 +1902,6 @@ static int rt5640_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 5147ee6..6175e36 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2410,7 +2410,6 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 9f4c7be..35c9725 100644
+index 35c9725..f03c6fc 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1625,7 +1625,7 @@ static int rt5651_probe(struct snd_soc_codec *codec)
- 		RT5651_PWR_FV1 | RT5651_PWR_FV2,
- 		RT5651_PWR_FV1 | RT5651_PWR_FV2);
+@@ -1604,7 +1604,6 @@ static int rt5651_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
  
--	rt5651_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index cc7f84a..9235711 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2647,7 +2647,6 @@ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
  
  	return 0;
  }
 diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 9c07a0c..b428ab6 100644
+index b428ab6..fbe16ba 100644
 --- a/sound/soc/codecs/rt5677.c
 +++ b/sound/soc/codecs/rt5677.c
-@@ -4621,7 +4621,7 @@ static int rt5677_probe(struct snd_soc_codec *codec)
- 			ARRAY_SIZE(rt5677_dmic2_clk_1));
+@@ -4395,7 +4395,6 @@ static int rt5677_set_bias_level(struct snd_soc_codec *codec,
+ 	default:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 1b88343..69bc87d 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -979,7 +979,6 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	rt5677_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
- 	regmap_write(rt5677->regmap, RT5677_DIG_MISC, 0x0020);
- 	regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x0c00);
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+index 7947c0e..e474368 100644
+--- a/sound/soc/codecs/sn95031.c
++++ b/sound/soc/codecs/sn95031.c
+@@ -226,7 +226,6 @@ static int sn95031_set_vaud_bias(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index 67ea55a..40b22b3 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -521,8 +521,6 @@ static int ssm2518_set_bias_level(struct snd_soc_codec *codec,
+ 	if (ret)
+ 		return ret;
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 314eaec..296a140 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -473,7 +473,6 @@ static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index a984485..643bcff 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -361,12 +361,7 @@ static int ssm4567_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	if (ret)
+-		return ret;
+-
+-	codec->dapm.bias_level = level;
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct snd_soc_dai_ops ssm4567_dai_ops = {
 diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 007a0e3..686ec76 100644
+index 686ec76..033b7d9 100644
 --- a/sound/soc/codecs/sta32x.c
 +++ b/sound/soc/codecs/sta32x.c
-@@ -970,7 +970,7 @@ static int sta32x_probe(struct snd_soc_codec *codec)
- 	if (sta32x->pdata->needs_esd_watchdog)
- 		INIT_DELAYED_WORK(&sta32x->watchdog_work, sta32x_watchdog);
- 
--	sta32x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	/* Bias level configuration will have done an extra enable */
- 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
+@@ -854,7 +854,6 @@ static int sta32x_set_bias_level(struct snd_soc_codec *codec,
+ 				       sta32x->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
 diff --git a/sound/soc/codecs/sta350.c b/sound/soc/codecs/sta350.c
-index 669e322..46fc07a 100644
+index 46fc07a..50d8bbf 100644
 --- a/sound/soc/codecs/sta350.c
 +++ b/sound/soc/codecs/sta350.c
-@@ -1037,7 +1037,7 @@ static int sta350_probe(struct snd_soc_codec *codec)
- 	sta350->coef_shadow[60] = 0x400000;
- 	sta350->coef_shadow[61] = 0x400000;
+@@ -890,7 +890,6 @@ static int sta350_set_bias_level(struct snd_soc_codec *codec,
+ 				       sta350->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
--	sta350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	/* Bias level configuration will have done an extra enable */
- 	regulator_bulk_disable(ARRAY_SIZE(sta350->supplies), sta350->supplies);
+diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
+index b0f436d..c3217af 100644
+--- a/sound/soc/codecs/sta529.c
++++ b/sound/soc/codecs/sta529.c
+@@ -179,12 +179,6 @@ static int sta529_set_bias_level(struct snd_soc_codec *codec, enum
+ 		break;
+ 	}
  
+-	/*
+-	 * store the label for powers down audio subsystem for suspend.This is
+-	 * used by soc core layer
+-	 */
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ 
+ }
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index 6464caf..2341e8e 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -236,7 +236,6 @@ static int stac9766_set_bias_level(struct snd_soc_codec *codec,
+ 		stac9766_ac97_write(codec, AC97_POWERDOWN, 0xffff);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index cc17e7e..cd8c02b 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -506,7 +506,6 @@ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, TLV320AIC23_PWR, 0x1ff);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index c86dd9a..e629273 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1053,7 +1053,6 @@ static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
+ 			aic31xx_power_off(codec);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 015467e..ad6cb90 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -564,7 +564,6 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_OFF:
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 51c4713..57d7090 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1406,7 +1406,6 @@ static int aic3x_set_bias_level(struct snd_soc_codec *codec,
+ 			aic3x_set_power(codec, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 4e3e607..33e93f6 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -651,7 +651,6 @@ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 			return ret;
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index d04693e..e725e13 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1595,7 +1595,6 @@ static int twl4030_set_bias_level(struct snd_soc_codec *codec,
+ 		twl4030_codec_enable(codec, 0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 
+ 	return 0;
+ }
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index aeec27b..9bd887e 100644
+index 9bd887e..b8ecce2 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -1130,7 +1130,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 		return ret;
+@@ -853,8 +853,6 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	twl6040_init_chip(codec);
- 
+-	codec->dapm.bias_level = level;
+-
  	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index f883308..dbecbc0 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -350,7 +350,6 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
+ 			pd->power(0);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index dc7778b..cc5b176 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -623,7 +623,6 @@ static int uda1380_set_bias_level(struct snd_soc_codec *codec,
+ 		for (reg = UDA1380_MVOL; reg < UDA1380_CACHEREGNUM; reg++)
+ 			set_bit(reg - 0x10, &uda1380_cache_dirty);
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index f37989e..3358dd6 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -767,8 +767,6 @@ static int wm0010_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
+index 8011f75..048f005 100644
+--- a/sound/soc/codecs/wm1250-ev1.c
++++ b/sound/soc/codecs/wm1250-ev1.c
+@@ -61,8 +61,6 @@ static int wm1250_ev1_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index c65e5a7..dd0d024 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1235,7 +1235,6 @@ static int wm8350_set_bias_level(struct snd_soc_codec *codec,
+ 				       priv->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index b0d84e5..adbfebe 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1232,7 +1232,6 @@ static int wm8400_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 8736ad0..a380c10 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -538,7 +538,6 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index b1cc94f..34ebe95 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -344,7 +344,6 @@ static int wm8523_set_bias_level(struct snd_soc_codec *codec,
+ 				       wm8523->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 0a887c5..5951d88 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -812,7 +812,6 @@ static int wm8580_set_bias_level(struct snd_soc_codec *codec,
+ 				    WM8580_PWRDN1_PWDN, WM8580_PWRDN1_PWDN);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 121e46d..a4aab6e 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -320,7 +320,6 @@ static int wm8711_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8711_PWR, 0xffff);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index 55c7fb4..a737068 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -185,7 +185,6 @@ static int wm8728_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8728_DACCTL, reg | 0x4);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
 diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 2245b6a..00898d9 100644
+index 00898d9..a13a20a 100644
 --- a/sound/soc/codecs/wm8731.c
 +++ b/sound/soc/codecs/wm8731.c
-@@ -599,7 +599,7 @@ static int wm8731_probe(struct snd_soc_codec *codec)
- 		goto err_regulator_enable;
+@@ -523,7 +523,6 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 		regcache_mark_dirty(wm8731->regmap);
+ 		break;
  	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
--	wm8731_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	/* Latch the update bits */
- 	snd_soc_update_bits(codec, WM8731_LOUT1V, 0x100, 0);
 diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index ada9ac1..40e6acb 100644
+index 40e6acb..4a9407d 100644
 --- a/sound/soc/codecs/wm8737.c
 +++ b/sound/soc/codecs/wm8737.c
-@@ -560,7 +560,7 @@ static int wm8737_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8737_RIGHT_PGA_VOLUME, WM8737_RVU,
- 			    WM8737_RVU);
+@@ -510,7 +510,6 @@ static int wm8737_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
  
--	wm8737_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
- 	/* Bias level configuration will have done an extra enable */
- 	regulator_bulk_disable(ARRAY_SIZE(wm8737->supplies), wm8737->supplies);
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index eb0a164..d6ff25a 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -651,7 +651,6 @@ static int wm8750_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8750_PWR1, 0x0001);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index c50a595..b7d38f7 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -1367,7 +1367,6 @@ static int wm8753_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8753_PWR1, 0x0001);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
+index 53e977d..c24db80 100644
+--- a/sound/soc/codecs/wm8770.c
++++ b/sound/soc/codecs/wm8770.c
+@@ -534,7 +534,6 @@ static int wm8770_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
+index c13050b..b0e3c3b 100644
+--- a/sound/soc/codecs/wm8776.c
++++ b/sound/soc/codecs/wm8776.c
+@@ -357,7 +357,6 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
 diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index 2eb986c..065da37 100644
+index 065da37..e7d2ecd 100644
 --- a/sound/soc/codecs/wm8900.c
 +++ b/sound/soc/codecs/wm8900.c
-@@ -1138,7 +1138,7 @@ static int wm8900_suspend(struct snd_soc_codec *codec)
- 	wm8900->fll_out = fll_out;
- 	wm8900->fll_in = fll_in;
- 
--	wm8900_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
+@@ -1117,7 +1117,6 @@ static int wm8900_set_bias_level(struct snd_soc_codec *codec,
+ 			     WM8900_REG_POWER2_SYSCLK_ENA);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
  	return 0;
  }
-@@ -1156,7 +1156,7 @@ static int wm8900_resume(struct snd_soc_codec *codec)
- 		return ret;
+ 
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 04b04f8..5e0bef6 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1200,8 +1200,6 @@ static int wm8903_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	wm8900_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
  
- 	/* Restart the FLL? */
- 	if (wm8900->fll_out) {
-@@ -1189,7 +1189,7 @@ static int wm8900_probe(struct snd_soc_codec *codec)
- 	wm8900_reset(codec);
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 215e93c..a7a8fa0 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1907,7 +1907,6 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
+ 		clk_disable_unprepare(wm8904->mclk);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
- 	/* Turn the chip on */
--	wm8900_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	/* Latch the volume update bits */
- 	snd_soc_update_bits(codec, WM8900_REG_LINVOL, 0x100, 0x100);
 diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index e4142b4..4b4b997 100644
+index 4b4b997..f2d6a49 100644
 --- a/sound/soc/codecs/wm8940.c
 +++ b/sound/soc/codecs/wm8940.c
-@@ -707,7 +707,7 @@ static int wm8940_probe(struct snd_soc_codec *codec)
- 		return ret;
+@@ -510,8 +510,6 @@ static int wm8940_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	codec->dapm.bias_level = level;
+-
+ 	return ret;
+ }
  
- 	ret = snd_soc_write(codec, WM8940_POWER1, 0x180);
- 	if (ret < 0)
 diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
-index 00bec91..8080eab 100644
+index 8080eab..f400d5c 100644
 --- a/sound/soc/codecs/wm8955.c
 +++ b/sound/soc/codecs/wm8955.c
-@@ -929,7 +929,7 @@ static int wm8955_probe(struct snd_soc_codec *codec)
- 					    WM8955_DMEN, WM8955_DMEN);
+@@ -838,7 +838,6 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
+ 				       wm8955->supplies);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 3035d98..6fa832b 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -691,8 +691,6 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	wm8955_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
  
- 	/* Bias level configuration will have done an extra enable */
- 	regulator_bulk_disable(ARRAY_SIZE(wm8955->supplies), wm8955->supplies);
+@@ -802,8 +800,6 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
+index 95e2c1b..6f95d70 100644
+--- a/sound/soc/codecs/wm8961.c
++++ b/sound/soc/codecs/wm8961.c
+@@ -795,8 +795,6 @@ static int wm8961_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 118b003..00793b7 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2538,7 +2538,6 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index f9cbabd..94eb27e 100644
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -594,7 +594,6 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8971_PWR1, 0x0001);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index ff0e464..d2180c8 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -533,7 +533,6 @@ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
 diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index cf70329..572b1bf 100644
+index 572b1bf..e2363b9 100644
 --- a/sound/soc/codecs/wm8978.c
 +++ b/sound/soc/codecs/wm8978.c
-@@ -928,7 +928,7 @@ static int wm8978_suspend(struct snd_soc_codec *codec)
- {
- 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
+@@ -888,7 +888,6 @@ static int wm8978_set_bias_level(struct snd_soc_codec *codec,
  
--	wm8978_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 	/* Also switch PLL off */
- 	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, 0);
+ 	dev_dbg(codec->dev, "%s: %d, %x\n", __func__, level, power1);
  
-@@ -944,7 +944,7 @@ static int wm8978_resume(struct snd_soc_codec *codec)
- 	/* Sync reg_cache with the hardware */
- 	regcache_sync(wm8978->regmap);
- 
--	wm8978_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	if (wm8978->f_pllout)
- 		/* Switch PLL on */
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index c93bffc..c642b3a 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -1281,7 +1281,7 @@ static int wm8990_probe(struct snd_soc_codec *codec)
- 	wm8990_reset(codec);
- 
- 	/* charge output caps */
--	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	snd_soc_update_bits(codec, WM8990_AUDIO_INTERFACE_4,
- 			    WM8990_ALRCGPIO1, WM8990_ALRCGPIO1);
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 2e70a270..b8385ac 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -1563,7 +1563,7 @@ static int wm8993_suspend(struct snd_soc_codec *codec)
- 	wm8993->fll_fout = fll_fout;
- 	wm8993->fll_fref = fll_fref;
- 
--	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
+-	codec->dapm.bias_level = level;
  	return 0;
  }
-@@ -1573,7 +1573,7 @@ static int wm8993_resume(struct snd_soc_codec *codec)
- 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
  
--	wm8993_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	/* Restart the FLL? */
- 	if (wm8993->fll_fout) {
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 4fbc768..fedf48d 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3163,7 +3163,7 @@ static int wm8994_codec_suspend(struct snd_soc_codec *codec)
- 				 i + 1, ret);
+diff --git a/sound/soc/codecs/wm8983.c b/sound/soc/codecs/wm8983.c
+index 5d1cf08..f924571 100644
+--- a/sound/soc/codecs/wm8983.c
++++ b/sound/soc/codecs/wm8983.c
+@@ -963,7 +963,6 @@ static int wm8983_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
  	}
  
--	wm8994_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
+-	codec->dapm.bias_level = level;
  	return 0;
  }
+ 
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index 0b3b54c..4e6901b 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -957,7 +957,6 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 24968aa..92680c6 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -756,7 +756,6 @@ static int wm8988_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8988_PWR1, 0x0000);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index c642b3a..ff377ca 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -1227,7 +1227,6 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
+index 49df0dc..abd439f 100644
+--- a/sound/soc/codecs/wm8991.c
++++ b/sound/soc/codecs/wm8991.c
+@@ -1224,7 +1224,6 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index b8385ac..52ec4fe 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1065,8 +1065,6 @@ static int wm8993_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index fedf48d..2d32b54 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2546,8 +2546,6 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
+index 66103c2..47af27f 100644
+--- a/sound/soc/codecs/wm8995.c
++++ b/sound/soc/codecs/wm8995.c
+@@ -1990,7 +1990,6 @@ static int wm8995_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 308748a..3dce507 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -1628,8 +1628,6 @@ static int wm8996_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 13a3f33..02d9a50 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -898,8 +898,6 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 60d243c..03bca85 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -515,8 +515,6 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	}
+ 
+-	codec->dapm.bias_level = level;
+-
+ 	return 0;
+ }
+ 
 diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 98c9525..9119a77 100644
+index 9119a77..1fda104 100644
 --- a/sound/soc/codecs/wm9712.c
 +++ b/sound/soc/codecs/wm9712.c
-@@ -646,7 +646,7 @@ static int wm9712_soc_resume(struct snd_soc_codec *codec)
- 	if (ret < 0)
- 		return ret;
+@@ -610,7 +610,6 @@ static int wm9712_set_bias_level(struct snd_soc_codec *codec,
+ 		ac97_write(codec, AC97_POWERDOWN, 0xffff);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
--	wm9712_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	if (ret == 0) {
- 		/* Sync reg_cache with the hardware after cold reset */
 diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 7955295..39c3e71 100644
+index 39c3e71..9d18a0e 100644
 --- a/sound/soc/codecs/wm9713.c
 +++ b/sound/soc/codecs/wm9713.c
-@@ -1201,7 +1201,7 @@ static int wm9713_soc_resume(struct snd_soc_codec *codec)
- 	if (ret < 0)
- 		return ret;
+@@ -1171,7 +1171,6 @@ static int wm9713_set_bias_level(struct snd_soc_codec *codec,
+ 		ac97_write(codec, AC97_POWERDOWN, 0xffff);
+ 		break;
+ 	}
+-	codec->dapm.bias_level = level;
+ 	return 0;
+ }
  
--	wm9713_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b24782b..79b9478 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -550,6 +550,9 @@ int snd_soc_dapm_force_bias_level(struct snd_soc_dapm_context *dapm,
+ 	if (dapm->set_bias_level)
+ 		ret = dapm->set_bias_level(dapm, level);
  
- 	/* do we need to re-start the PLL ? */
- 	if (wm9713->pll_in)
++	if (ret == 0)
++		dapm->bias_level = level;
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_force_bias_level);
 -- 
 1.8.0
