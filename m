@@ -1,86 +1,113 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: RE: [PATCH] ASoC: Intel: fix Coccinelle kfree warning
-Date: Mon, 27 Apr 2015 07:52:28 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90552077E@SHSMSX101.ccr.corp.intel.com>
-References: <1430062932-26668-1-git-send-email-firogm@gmail.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A905520746@SHSMSX101.ccr.corp.intel.com>
- <20150427074221.GA6979@firo.lan>
+From: Mike Ood <jh1ood@gmail.com>
+Subject: Re: snd-bebob and PrismSound Orpheus fails with
+	snd_pcm_hw_params_set_channels
+Date: Mon, 27 Apr 2015 17:34:59 +0900
+Message-ID: <CAJ0eYfWCoqBBLdXpfitc1KZczZmPYXVy9n4-3YEU2Fw0sTRMNQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20150427074221.GA6979@firo.lan>
-Content-Language: en-US
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Firo Yang <firogm@gmail.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "Lu, Han" <han.lu@intel.com>, "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>, "Piskorski, Pawel" <pawel.piskorski@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Jin, Yao" <yao.jin@intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vn0-f52.google.com (mail-vn0-f52.google.com
+ [209.85.216.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7CCC2650E7
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 10:35:02 +0200 (CEST)
+Received: by vnbg1 with SMTP id g1so10977243vnb.2
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 01:35:01 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Firo Yang [mailto:firogm@gmail.com]
-> Sent: Monday, April 27, 2015 3:42 PM
-> To: Jie, Yang
-> Cc: lgirdwood@gmail.com; kernel-janitors@vger.kernel.org;
-> broonie@kernel.org; perex@perex.cz; tiwai@suse.de; Lu, Han;
-> jarkko.nikula@linux.intel.com; Piskorski, Pawel; alsa-devel@alsa-project.org;
-> Jin, Yao
-> Subject: Re: [PATCH] ASoC: Intel: fix Coccinelle kfree warning
-> 
-> Thanks, Jie.
-> 
-> I find another simlar BUG in
-> ./sound/soc/intel/baytrail/sst-baytrail-ipc.c::sst_byt_dsp_init()
-> Does anyone fixed it, too?
- 
-I guess so. You can refer to the for-next branch of git repo to
-confirm it:
-git://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git
+Yet another experiment.
 
-~Keyon
+Orpheus operation manual says there are six modes
+concerning Sync Source.
 
-> 
-> Regards
-> Firo
-> 
-> On Mon, Apr 27, 2015 at 07:23:32AM +0000, Jie, Yang wrote:
-> >> -----Original Message-----
-> >> From: Firo Yang [mailto:firogm@gmail.com]
-> >> Sent: Sunday, April 26, 2015 11:42 PM
-> >> To: lgirdwood@gmail.com
-> >> Cc: kernel-janitors@vger.kernel.org; broonie@kernel.org;
-> >> perex@perex.cz; tiwai@suse.de; Jie, Yang; Lu, Han;
-> >> jarkko.nikula@linux.intel.com; Piskorski, Pawel;
-> >> alsa-devel@alsa-project.org; Firo Yang
-> >> Subject: [PATCH] ASoC: Intel: fix Coccinelle kfree warning
-> >>
-> >> It's not necessary to use kfree() to free memory allocated with
-> >> devm_kzalloc in a probe function and using kfree leads to a double free.
-> >>
-> >> Signed-off-by: Firo Yang <firogm@gmail.com>
-> >> ---
-> >>  sound/soc/intel/haswell/sst-haswell-ipc.c | 1 -
-> >>  1 file changed, 1 deletion(-)
-> >>
-> >> diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c
-> >> b/sound/soc/intel/haswell/sst-haswell-ipc.c
-> >> index 344a1e9..324eceb 100644
-> >> --- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-> >> +++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-> >> @@ -2201,7 +2201,6 @@ dma_err:
-> >>  dsp_new_err:
-> >>  	sst_ipc_fini(ipc);
-> >>  ipc_init_err:
-> >> -	kfree(hsw);
-> >
-> >It has been fixed by Jin Yao 2 weeks ago:
-> >http://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h
-> >=for-next&id=ac98b4c015b50b1e452f8d55b612320be7f80825
-> >
-> >~Keyon
-> >
-> >>  	return ret;
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(sst_hsw_dsp_init);
-> >> --
-> >> 2.1.0
-> >
+--------------------------------------
+Sync         Source Master/Slave    Description
+--------------------------------------
+Local        Master    System is sync'ed to Orpheus' local clock
+Wordclock Master    System is sync'ed to external wordclock applied to
+Orpheus
+DI             Master    System is sync'ed to external S/PDIF applied to
+Orpheus
+ADAT        Master    System is sync'ed to external ADAT (ADAT input must
+be enabled)
+PC DAW    Slave      Orpheus is slaved to system clock from host PC
+CSP          Master    System is sync'ed to Orpheus' 1394 clock (not
+recommended)
+--------------------------------------
+
+With each of the five modes mentioned above (ADAT input not available),
+I tried to play music on Windows 7 using Audacity.
+
+The results are:
+
+-------------------
+Local        OK
+Wordclock NG
+DI             NG
+PC DAW    OK
+CSP          OK
+-------------------
+
+So it seems that if there is no external clock applied,
+when one is expected, Orpheus stops playing rather than
+trying to continue operation by free-running its clock.
+
+***
+
+Takashi Sakamoto wrote:
+
+> Not funny, but headache. It's a customization by hardware vendor, I
+> mentioned. (in this case, by PrismSound Ltd.)
+
+> BridgeCo AG (currently ArchWave AG) produced DM1000/DM1100/DM1500
+> chipset with BeBoB firmware. PrismSound Ltd. utilized the chipset and
+> firmware for streaming functionality of your Orpheus.
+
+> BeBoB firmware gives common ways to control itself, while the hadware
+> vendor added their own cusomization against it. I don't know exactly the
+> reason because there're few information about your device.
+
+I do not think I understand what you said here due to the lack of technical
+background, but what do you suggest at this moment to a casual applications
+programmer who wish to use snd-bebob with Orpheus?
+
+------------
+Answer 1
+------------
+It should work. I received many successful reports for my final call for
+testing last year.
+
+It must be a hardware problem with your PC, or Firewire Cable, or Orpheus,
+or all of them.
+
+------------
+Answer 2
+------------
+It should work. Check your software environment.
+Freshly installed Ubuntu 14.10 or later with the kernel
+3.16 or later may not work.
+
+Always download the latest sources from GitHub, etc.
+
+------------
+Answer 3
+------------
+Forget about snd-bebob, and fallback to libffado+jackd.
+
+The combination is loosing many packets, but if you say you do not
+notice any glitches, you should be completely happy with it.
+
+***
+
+Regards,
+Mike Ood
