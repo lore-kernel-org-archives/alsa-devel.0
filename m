@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v10 3/7] ALSA: jack: extend snd_jack_new to
-	support phantom jack
-Date: Mon, 27 Apr 2015 21:20:58 +0800
-Message-ID: <1430140862-17207-4-git-send-email-yang.jie@intel.com>
+Subject: [PATCH v10 6/7] ALSA: jack: remove exporting ctljack
+	functions
+Date: Mon, 27 Apr 2015 21:21:01 +0800
+Message-ID: <1430140862-17207-7-git-send-email-yang.jie@intel.com>
 References: <1430140862-17207-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 290F82650C0
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 15:17:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id CF410265262
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 15:17:45 +0200 (CEST)
 In-Reply-To: <1430140862-17207-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,168 +25,30 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Dont create input devices for phantom jacks.
-
-Here, we extend snd_jack_new() to support phantom jack creating:
-pass in a bool param for [non-]phantom flag, and a bool param
-initial_jack to indicate whether we need to create a kctl at
-this stage.
-
-We can also add a kctl to the jack after its created meaning we
-can now integrate the HDA and ASoC jacks.
+snd_kctl_jack_new() and snd_kctl_jack_report() are internal only now
+so make them static.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- include/sound/jack.h            |  4 ++--
- sound/core/jack.c               | 40 ++++++++++++++++++++++++++++------------
- sound/pci/hda/hda_jack.c        |  2 +-
- sound/pci/oxygen/xonar_wm87x6.c |  2 +-
- sound/soc/soc-jack.c            |  2 +-
- 5 files changed, 33 insertions(+), 17 deletions(-)
+ sound/core/ctljack.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 433b13b..23bede1 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -87,7 +87,7 @@ struct snd_jack {
- #ifdef CONFIG_SND_JACK
- 
- int snd_jack_new(struct snd_card *card, const char *id, int type,
--		 struct snd_jack **jack);
-+		 struct snd_jack **jack, bool initial_kctl, bool phantom_jack);
- int snd_jack_add_new_kctl(struct snd_jack *jack, const char * name, int mask);
- void snd_jack_set_parent(struct snd_jack *jack, struct device *parent);
- int snd_jack_set_key(struct snd_jack *jack, enum snd_jack_types type,
-@@ -97,7 +97,7 @@ void snd_jack_report(struct snd_jack *jack, int status);
- 
- #else
- static inline int snd_jack_new(struct snd_card *card, const char *id, int type,
--			       struct snd_jack **jack)
-+			       struct snd_jack **jack, bool initial_kctl, bool phantom_jack)
- {
- 	return 0;
+diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
+index 6435e82..8f8d103 100644
+--- a/sound/core/ctljack.c
++++ b/sound/core/ctljack.c
+@@ -74,7 +74,6 @@ snd_kctl_jack_new(const char *name, struct snd_card *card)
+ 	kctl->private_value = 0;
+ 	return kctl;
  }
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index 067d37d..b34187b 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -191,6 +191,8 @@ EXPORT_SYMBOL(snd_jack_add_new_kctl);
-  * @type:  a bitmask of enum snd_jack_type values that can be detected by
-  *         this jack
-  * @jjack: Used to provide the allocated jack object to the caller.
-+ * @initial_kctl: if true, create a kcontrol and add it to the jack list.
-+ * @phantom_jack: Don't create a input device for phantom jacks.
-  *
-  * Creates a new jack object.
-  *
-@@ -198,9 +200,10 @@ EXPORT_SYMBOL(snd_jack_add_new_kctl);
-  * On success @jjack will be initialised.
-  */
- int snd_jack_new(struct snd_card *card, const char *id, int type,
--		 struct snd_jack **jjack)
-+		 struct snd_jack **jjack, bool initial_kctl, bool phantom_jack)
- {
- 	struct snd_jack *jack;
-+	struct snd_jack_kctl *jack_kctl = NULL;
- 	int err;
- 	int i;
- 	static struct snd_device_ops ops = {
-@@ -209,26 +212,36 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 		.dev_disconnect = snd_jack_dev_disconnect,
- 	};
+-EXPORT_SYMBOL_GPL(snd_kctl_jack_new);
  
-+	if (initial_kctl) {
-+		jack_kctl = snd_jack_kctl_new(card, id, type);
-+		if (!jack_kctl)
-+			return -ENOMEM;
-+	}
-+
- 	jack = kzalloc(sizeof(struct snd_jack), GFP_KERNEL);
- 	if (jack == NULL)
- 		return -ENOMEM;
- 
- 	jack->id = kstrdup(id, GFP_KERNEL);
- 
--	jack->input_dev = input_allocate_device();
--	if (jack->input_dev == NULL) {
--		err = -ENOMEM;
--		goto fail_input;
--	}
-+	/* don't creat input device for phantom jack */
-+	if (!phantom_jack) {
-+		jack->input_dev = input_allocate_device();
-+		if (jack->input_dev == NULL) {
-+			err = -ENOMEM;
-+			goto fail_input;
-+		}
- 
--	jack->input_dev->phys = "ALSA";
-+		jack->input_dev->phys = "ALSA";
- 
--	jack->type = type;
-+		jack->type = type;
- 
--	for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
--		if (type & (1 << i))
--			input_set_capability(jack->input_dev, EV_SW,
--					     jack_switch_types[i]);
-+		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
-+			if (type & (1 << i))
-+				input_set_capability(jack->input_dev, EV_SW,
-+						     jack_switch_types[i]);
-+
-+	}
- 
- 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
- 	if (err < 0)
-@@ -237,6 +250,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 	jack->card = card;
- 	INIT_LIST_HEAD(&jack->kctl_list);
- 
-+	if (initial_kctl)
-+		snd_jack_kctl_add(jack, jack_kctl);
-+
- 	*jjack = jack;
- 
- 	return 0;
-diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index 05b49aa..16281c6 100644
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -417,7 +417,7 @@ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
- 	if (!phantom_jack) {
- 		jack->type = get_input_jack_type(codec, nid);
- 		err = snd_jack_new(codec->card, name, jack->type,
--				   &jack->jack);
-+				   &jack->jack, false, false);
- 		if (err < 0)
- 			return err;
- 		jack->jack->private_data = jack;
-diff --git a/sound/pci/oxygen/xonar_wm87x6.c b/sound/pci/oxygen/xonar_wm87x6.c
-index 6ce6860..90ac479 100644
---- a/sound/pci/oxygen/xonar_wm87x6.c
-+++ b/sound/pci/oxygen/xonar_wm87x6.c
-@@ -286,7 +286,7 @@ static void xonar_ds_init(struct oxygen *chip)
- 	xonar_enable_output(chip);
- 
- 	snd_jack_new(chip->card, "Headphone",
--		     SND_JACK_HEADPHONE, &data->hp_jack);
-+		     SND_JACK_HEADPHONE, &data->hp_jack, false, false);
- 	xonar_ds_handle_hp_jack(chip);
- 
- 	snd_component_add(chip->card, "WM8776");
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 9f60c25..70a9bdd 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -48,7 +48,7 @@ int snd_soc_card_jack_new(struct snd_soc_card *card, const char *id, int type,
- 	INIT_LIST_HEAD(&jack->jack_zones);
- 	BLOCKING_INIT_NOTIFIER_HEAD(&jack->notifier);
- 
--	ret = snd_jack_new(card->snd_card, id, type, &jack->jack);
-+	ret = snd_jack_new(card->snd_card, id, type, &jack->jack, false, false);
- 	if (ret)
- 		return ret;
- 
+ void snd_kctl_jack_report(struct snd_card *card,
+ 			  struct snd_kcontrol *kctl, bool status)
+@@ -84,4 +83,3 @@ void snd_kctl_jack_report(struct snd_card *card,
+ 	kctl->private_value = status;
+ 	snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
+ }
+-EXPORT_SYMBOL_GPL(snd_kctl_jack_report);
 -- 
 1.9.1
