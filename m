@@ -1,28 +1,19 @@
-From: Glenn Golden <gdg@zplane.com>
-Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
- mute LED non-workingness
-Date: Mon, 27 Apr 2015 11:52:52 -0600
-Message-ID: <20150427175252.GJ550@huh.zplane.com>
-References: <20150419133733.GA551@huh.zplane.com>
- <CAN8cciYqdJ-m+M0+F09115nocy7szAfgdAf834c2bS4=gL7DAA@mail.gmail.com>
- <20150425013937.GB550@huh.zplane.com>
- <1429974719.3937109.258484493.7D74FAC6@webmail.messagingengine.com>
- <20150426152012.GE550@huh.zplane.com>
- <s5hvbgiho2o.wl-tiwai@suse.de>
- <CAN8cciZQBRz2Ty3YRt2+3KO9v1BWef-_8FU_d_SsE87mLdgY-w@mail.gmail.com>
- <s5hh9s2gj45.wl-tiwai@suse.de>
- <20150427135859.GI550@huh.zplane.com>
- <s5ha8xt4hsa.wl-tiwai@suse.de>
-Reply-To: gdg@zplane.com
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: dmaengine_pcm: Make FLAG_NO_RESIDUE
+	internal
+Date: Mon, 27 Apr 2015 21:22:43 +0200
+Message-ID: <553E8C83.4030604@metafoo.de>
+References: <1430131465-17991-1-git-send-email-lars@metafoo.de>
+ <20150427182801.GX22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.indra.com (smtp.indra.com [209.169.0.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E3752606AD
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 19:53:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5ha8xt4hsa.wl-tiwai@suse.de>
+Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
+ [212.40.185.223])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C253260415
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 21:22:44 +0200 (CEST)
+In-Reply-To: <20150427182801.GX22845@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,41 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alex Hung <alex.hung@canonical.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Raymond Yau <superquad.vortex2@gmail.com>, bruno.mueller@gmail.com, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> [2015-04-27 19:12:21 +0200]:
-> 
-> I see no such warning in the log you attached, so it's not the issue,
-> as it seems.
-> 
-> Below is a debug patch, and now you should see messages like "XXX ..."
-> in kernel log at loading the driver.  If there is no such a message,
-> it means that the thinkpad hook isn't built in at all.  Please check
-> the kernel log again with the patch.
-> 
+On 04/27/2015 08:28 PM, Mark Brown wrote:
+> On Mon, Apr 27, 2015 at 12:44:25PM +0200, Lars-Peter Clausen wrote:
+[...]
+>> This patch makes the FLAG_NO_RESIDUE internal and no longer allows audio
+>> controller drivers to manually set the flag. If a DMA driver against
+>> expectations does not support reporting its capabilities for now the generic
+>> DMAengine PCM driver will now emit a warning and simply assume that residue
+>> reporting is not supported. In the future this might be changed to aborting
+>> with an error.
+>
+> I'm not sure it's ever going to buy us anything to error out on stuff,
+> it's not like the no residue case doesn't need to be supported anyway
+> for controllers that just can't do it.
 
-Actually, before adding your debug patch, a question about something that may 
-be relevant here: I noticed just now that the kernel build, which I performed 
-in accordance with the instructions from the Archlinux Wiki:
+I'm not too sure about it either. Since it is prone to race-conditions by 
+design we'd ideally eventually drop support for the fallback period counting 
+mechanism in the PCM driver altogether and instead the period counting would 
+be done at the DMAengine layer. At the DMAengine layer the period counting 
+can usually be implemented without any race conditions and other DMAengine 
+clients will also benefit from it.
 
-    https://wiki.archlinux.org/index.php/Kernels/Compilation/Traditional
+A good start might be to emit a warning when we have to do this in the PCM 
+driver to at least make sure that new platforms do this properly.
 
-did not result in a /lib/modules/extramodules-3.19-ARCH-gdg01 directory
-being created ("ARCH-gdg01" being the suffix used for the custom-built
-kernel).
-
-The only extant modules directories are /lib/modules/3.19.3-ARCH-gdg01
-and of course the extramodules dir /lib/modules/extramodules-3.19-ARCH
-that already existed from the previously installed ARCH distro kernel.
-
-I suspect this may be a problem vis a vis ACPI, because with the new kernel
-loaded, the battery level indicator is stuck at zero. :)
-
-What's the magic incantation to build the extramodules?  I did look through
-this:
-
-    https://www.kernel.org/doc/Documentation/kbuild/modules.txt
-
-but it did not seem to address this question that I could tell.
+- Lars
