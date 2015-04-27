@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v10 2/7] ALSA: Jack: handle jack embedded
-	kcontrol creating within ctljack
-Date: Mon, 27 Apr 2015 21:20:57 +0800
-Message-ID: <1430140862-17207-3-git-send-email-yang.jie@intel.com>
+Subject: [PATCH v10 4/7] ALSA: hda - Update to use the new jack
+	kctls method
+Date: Mon, 27 Apr 2015 21:20:59 +0800
+Message-ID: <1430140862-17207-5-git-send-email-yang.jie@intel.com>
 References: <1430140862-17207-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F3EA264F07
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 15:17:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 44F202650E7
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 15:17:44 +0200 (CEST)
 In-Reply-To: <1430140862-17207-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,112 +25,282 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a static method get_available_index() to
-allocate the index of new jack kcontrols and also adds
-jack_kctl_name_gen() which is used to ensure compatibility
-with jack naming by removing " Jack" from some incorrectly
-passed names.
+Jack snd_kcontrols can now be created during snd_jack_new()
+or by later calling snd_jack_add_new_kctls().
+
+This patch creates the jacks during the initialisation stage
+for both phantom and non phantom jacks.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- include/sound/control.h  |  2 +-
- sound/core/ctljack.c     | 37 ++++++++++++++++++++++++++++++++++---
- sound/core/jack.c        |  2 +-
- sound/pci/hda/hda_jack.c |  2 +-
- 4 files changed, 37 insertions(+), 6 deletions(-)
+ include/sound/control.h    |  2 +-
+ sound/core/ctljack.c       |  4 +--
+ sound/core/jack.c          |  2 +-
+ sound/pci/hda/hda_jack.c   | 90 +++++++++++++---------------------------------
+ sound/pci/hda/hda_jack.h   |  5 +--
+ sound/pci/hda/patch_hdmi.c |  2 +-
+ 6 files changed, 31 insertions(+), 74 deletions(-)
 
 diff --git a/include/sound/control.h b/include/sound/control.h
-index 95aad6d..f50e2e9 100644
+index f50e2e9..21d047f 100644
 --- a/include/sound/control.h
 +++ b/include/sound/control.h
 @@ -252,7 +252,7 @@ void snd_ctl_sync_vmaster(struct snd_kcontrol *kctl, bool hook_only);
   * Helper functions for jack-detection controls
   */
  struct snd_kcontrol *
--snd_kctl_jack_new(const char *name, int idx, void *private_data);
-+snd_kctl_jack_new(const char *name, void *private_data, struct snd_card *card);
+-snd_kctl_jack_new(const char *name, void *private_data, struct snd_card *card);
++snd_kctl_jack_new(const char *name, struct snd_card *card);
  void snd_kctl_jack_report(struct snd_card *card,
  			  struct snd_kcontrol *kctl, bool status);
  
 diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
-index e4b38fb..df7c6cd 100644
+index df7c6cd..6435e82 100644
 --- a/sound/core/ctljack.c
 +++ b/sound/core/ctljack.c
-@@ -31,15 +31,46 @@ static struct snd_kcontrol_new jack_detect_kctl = {
- 	.get = jack_detect_kctl_get,
- };
+@@ -61,11 +61,11 @@ static void jack_kctl_name_gen(char *name, const char *src_name, int size)
+ }
  
-+static int get_available_index(struct snd_card *card, const char *name)
-+{
-+	struct snd_ctl_elem_id sid;
-+
-+	memset(&sid, 0, sizeof(sid));
-+
-+	sid.index = 0;
-+	sid.iface = SNDRV_CTL_ELEM_IFACE_CARD;
-+	strlcpy(sid.name, name, sizeof(sid.name));
-+
-+	while (snd_ctl_find_id(card, &sid))
-+		sid.index++;
-+
-+	return sid.index;
-+}
-+
-+static void jack_kctl_name_gen(char *name, const char *src_name, int size)
-+{
-+	size_t count = strlen(src_name);
-+	bool need_cat = true;
-+
-+	/* remove redundant " Jack" from src_name */
-+	if (count >= 5)
-+		need_cat = strncmp(&src_name[count - 5], " Jack", 5) ? true : false;
-+
-+	snprintf(name, size, need_cat ? "%s Jack" : "%s", src_name);
-+
-+}
-+
  struct snd_kcontrol *
--snd_kctl_jack_new(const char *name, int idx, void *private_data)
-+snd_kctl_jack_new(const char *name, void *private_data, struct snd_card *card)
+-snd_kctl_jack_new(const char *name, void *private_data, struct snd_card *card)
++snd_kctl_jack_new(const char *name, struct snd_card *card)
  {
  	struct snd_kcontrol *kctl;
-+
- 	kctl = snd_ctl_new1(&jack_detect_kctl, private_data);
+ 
+-	kctl = snd_ctl_new1(&jack_detect_kctl, private_data);
++	kctl = snd_ctl_new1(&jack_detect_kctl, NULL);
  	if (!kctl)
  		return NULL;
--	snprintf(kctl->id.name, sizeof(kctl->id.name), "%s Jack", name);
--	kctl->id.index = idx;
-+
-+	jack_kctl_name_gen(kctl->id.name, name, sizeof(kctl->id.name));
-+	kctl->id.index = get_available_index(card, name);
- 	kctl->private_value = 0;
- 	return kctl;
- }
+ 
 diff --git a/sound/core/jack.c b/sound/core/jack.c
-index db69ecc..067d37d 100644
+index b34187b..e8b51f5 100644
 --- a/sound/core/jack.c
 +++ b/sound/core/jack.c
 @@ -135,7 +135,7 @@ static struct snd_jack_kctl * snd_jack_kctl_new(struct snd_card *card, const cha
  	struct snd_jack_kctl *jack_kctl;
  	int err;
  
--	kctl = snd_kctl_jack_new(name, 0, card);
-+	kctl = snd_kctl_jack_new(name, card, card);
+-	kctl = snd_kctl_jack_new(name, card, card);
++	kctl = snd_kctl_jack_new(name, card);
  	if (!kctl)
  		return NULL;
  
 diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index d7cfe7b..05b49aa 100644
+index 16281c6..366efbf 100644
 --- a/sound/pci/hda/hda_jack.c
 +++ b/sound/pci/hda/hda_jack.c
-@@ -402,7 +402,7 @@ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+@@ -132,11 +132,11 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec)
+ 
+ 	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
+ 		struct hda_jack_callback *cb, *next;
+-#ifdef CONFIG_SND_HDA_INPUT_JACK
++
+ 		/* free jack instances manually when clearing/reconfiguring */
+ 		if (!codec->bus->shutdown && jack->jack)
+ 			snd_device_free(codec->card, jack->jack);
+-#endif
++
+ 		for (cb = jack->callback; cb; cb = next) {
+ 			next = cb->next;
+ 			kfree(cb);
+@@ -337,20 +337,15 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
+ 	jack = codec->jacktbl.list;
+ 	for (i = 0; i < codec->jacktbl.used; i++, jack++)
+ 		if (jack->nid) {
+-			if (!jack->kctl || jack->block_report)
++			if (!jack->jack || jack->block_report)
+ 				continue;
+ 			state = get_jack_plug_state(jack->pin_sense);
+-			snd_kctl_jack_report(codec->card, jack->kctl, state);
+-#ifdef CONFIG_SND_HDA_INPUT_JACK
+-			if (jack->jack)
+-				snd_jack_report(jack->jack,
+-						state ? jack->type : 0);
+-#endif
++			snd_jack_report(jack->jack,
++					state ? jack->type : 0);
+ 		}
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_report_sync);
+ 
+-#ifdef CONFIG_SND_HDA_INPUT_JACK
+ /* guess the jack type from the pin-config */
+ static int get_input_jack_type(struct hda_codec *codec, hda_nid_t nid)
+ {
+@@ -377,54 +372,42 @@ static void hda_free_jack_priv(struct snd_jack *jack)
+ 	jacks->nid = 0;
+ 	jacks->jack = NULL;
+ }
+-#endif
+ 
+ /**
+  * snd_hda_jack_add_kctl - Add a kctl for the given pin
+  * @codec: the HDA codec
+  * @nid: pin NID to assign
+  * @name: string name for the jack
+- * @idx: index number for the jack
+  * @phantom_jack: flag to deal as a phantom jack
+  *
+  * This assigns a jack-detection kctl to the given pin.  The kcontrol
+  * will have the given name and index.
+  */
+ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx, bool phantom_jack)
++			  const char *name, bool phantom_jack)
+ {
+ 	struct hda_jack_tbl *jack;
+-	struct snd_kcontrol *kctl;
+-	int err, state;
++	int err, state, type;
+ 
+ 	jack = snd_hda_jack_tbl_new(codec, nid);
+ 	if (!jack)
  		return 0;
- 	if (jack->kctl)
+-	if (jack->kctl)
++	if (jack->jack)
  		return 0; /* already created */
--	kctl = snd_kctl_jack_new(name, idx, codec);
-+	kctl = snd_kctl_jack_new(name, codec, codec->card);
- 	if (!kctl)
- 		return -ENOMEM;
- 	err = snd_hda_ctl_add(codec, nid, kctl);
+-	kctl = snd_kctl_jack_new(name, codec, codec->card);
+-	if (!kctl)
+-		return -ENOMEM;
+-	err = snd_hda_ctl_add(codec, nid, kctl);
++
++	type = get_input_jack_type(codec, nid);
++	err = snd_jack_new(codec->card, name, type,
++			   &jack->jack, true, phantom_jack);
+ 	if (err < 0)
+ 		return err;
+-	jack->kctl = kctl;
+-	jack->phantom_jack = !!phantom_jack;
+ 
++	jack->phantom_jack = !!phantom_jack;
++	jack->type = type;
++	jack->jack->private_data = jack;
++	jack->jack->private_free = hda_free_jack_priv;
+ 	state = snd_hda_jack_detect(codec, nid);
+-	snd_kctl_jack_report(codec->card, kctl, state);
+-#ifdef CONFIG_SND_HDA_INPUT_JACK
+-	if (!phantom_jack) {
+-		jack->type = get_input_jack_type(codec, nid);
+-		err = snd_jack_new(codec->card, name, jack->type,
+-				   &jack->jack, false, false);
+-		if (err < 0)
+-			return err;
+-		jack->jack->private_data = jack;
+-		jack->jack->private_free = hda_free_jack_priv;
+-		snd_jack_report(jack->jack, state ? jack->type : 0);
+-	}
+-#endif
++	snd_jack_report(jack->jack, state ? jack->type : 0);
++
+ 	return 0;
+ }
+ 
+@@ -433,44 +416,23 @@ static int __snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+  * @codec: the HDA codec
+  * @nid: pin NID
+  * @name: the name string for the jack ctl
+- * @idx: the ctl index for the jack ctl
+  *
+  * This is a simple helper calling __snd_hda_jack_add_kctl().
+  */
+ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx)
++			  const char *name)
+ {
+-	return __snd_hda_jack_add_kctl(codec, nid, name, idx, false);
++	return __snd_hda_jack_add_kctl(codec, nid, name, false);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_add_kctl);
+ 
+-/* get the unique index number for the given kctl name */
+-static int get_unique_index(struct hda_codec *codec, const char *name, int idx)
+-{
+-	struct hda_jack_tbl *jack;
+-	int i, len = strlen(name);
+- again:
+-	jack = codec->jacktbl.list;
+-	for (i = 0; i < codec->jacktbl.used; i++, jack++) {
+-		/* jack->kctl.id contains "XXX Jack" name string with index */
+-		if (jack->kctl &&
+-		    !strncmp(name, jack->kctl->id.name, len) &&
+-		    !strcmp(" Jack", jack->kctl->id.name + len) &&
+-		    jack->kctl->id.index == idx) {
+-			idx++;
+-			goto again;
+-		}
+-	}
+-	return idx;
+-}
+-
+ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 			 const struct auto_pin_cfg *cfg,
+ 			 const char *base_name)
+ {
+ 	unsigned int def_conf, conn;
+ 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+-	int idx, err;
++	int err;
+ 	bool phantom_jack;
+ 
+ 	if (!nid)
+@@ -482,16 +444,14 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 	phantom_jack = (conn != AC_JACK_PORT_COMPLEX) ||
+ 		       !is_jack_detectable(codec, nid);
+ 
+-	if (base_name) {
++	if (base_name)
+ 		strlcpy(name, base_name, sizeof(name));
+-		idx = 0;
+-	} else
+-		snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
++	else
++		snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), NULL);
+ 	if (phantom_jack)
+ 		/* Example final name: "Internal Mic Phantom Jack" */
+ 		strncat(name, " Phantom", sizeof(name) - strlen(name) - 1);
+-	idx = get_unique_index(codec, name, idx);
+-	err = __snd_hda_jack_add_kctl(codec, nid, name, idx, phantom_jack);
++	err = __snd_hda_jack_add_kctl(codec, nid, name, phantom_jack);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+index b279e32..387d309 100644
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -39,11 +39,8 @@ struct hda_jack_tbl {
+ 	unsigned int block_report:1;    /* in a transitional state - do not report to userspace */
+ 	hda_nid_t gating_jack;		/* valid when gating jack plugged */
+ 	hda_nid_t gated_jack;		/* gated is dependent on this jack */
+-	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
+-#ifdef CONFIG_SND_HDA_INPUT_JACK
+ 	int type;
+ 	struct snd_jack *jack;
+-#endif
+ };
+ 
+ struct hda_jack_tbl *
+@@ -85,7 +82,7 @@ static inline bool snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
+ bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid);
+ 
+ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx);
++			  const char *name);
+ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+ 			   const struct auto_pin_cfg *cfg);
+ 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 5f44f60..67a85ca 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2081,7 +2081,7 @@ static int generic_hdmi_build_jack(struct hda_codec *codec, int pin_idx)
+ 		strncat(hdmi_str, " Phantom",
+ 			sizeof(hdmi_str) - strlen(hdmi_str) - 1);
+ 
+-	return snd_hda_jack_add_kctl(codec, per_pin->pin_nid, hdmi_str, 0);
++	return snd_hda_jack_add_kctl(codec, per_pin->pin_nid, hdmi_str);
+ }
+ 
+ static int generic_hdmi_build_controls(struct hda_codec *codec)
 -- 
 1.9.1
