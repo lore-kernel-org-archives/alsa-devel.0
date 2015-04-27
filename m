@@ -1,178 +1,105 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: dmaengine_pcm: Make FLAG_NO_RESIDUE
-	internal
-Date: Mon, 27 Apr 2015 12:44:25 +0200
-Message-ID: <1430131465-17991-1-git-send-email-lars@metafoo.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v10 0/9] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Mon, 27 Apr 2015 14:33:45 +0300
+Message-ID: <553E1E99.9020101@ti.com>
+References: <cover.1421782532.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-218.synserver.de (smtp-out-218.synserver.de
- [212.40.185.218])
- by alsa0.perex.cz (Postfix) with ESMTP id B11662605EF
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 12:44:25 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1421782532.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Whether residue can be reported or not is not a property of the audio
-controller but of the DMA controller. The FLAG_NO_RESIDUE was initially
-added when the DMAengine framework had no support for describing the residue
-reporting capabilities of the controller. Support for this was added quite a
-while ago and recently the DMAengine framework started to complain if a
-driver does not describe its capabilities and a lot of patches have been
-merged that add support for this where it was missing. So it should be safe
-to assume that driver on actively used platforms properly implement the DMA
-capabilities API.
+Hi,
+Have you done anything about the tda998x audio support lately?
 
-This patch makes the FLAG_NO_RESIDUE internal and no longer allows audio
-controller drivers to manually set the flag. If a DMA driver against
-expectations does not support reporting its capabilities for now the generic
-DMAengine PCM driver will now emit a warning and simply assume that residue
-reporting is not supported. In the future this might be changed to aborting
-with an error.
+I was thinking of taking a shot at this now that I finally seem to have 
+some time for it. However, if you are just about to send another series 
+I'll wait for that first and see what makes the most sense after that.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/dmaengine_pcm.h         |  5 -----
- sound/soc/atmel/atmel-pcm-dma.c       |  3 +--
- sound/soc/cirrus/ep93xx-pcm.c         |  1 -
- sound/soc/fsl/fsl_sai.c               |  3 +--
- sound/soc/soc-generic-dmaengine-pcm.c | 25 ++++++++++++++-----------
- sound/soc/ux500/ux500_pcm.c           |  1 -
- 6 files changed, 16 insertions(+), 22 deletions(-)
+My plan is to do something really simple first. No graph bindings or 
+anything fancy like that. Just a minimal dt-binding to for audio pin 
+configuration and use simple-card for the rest. I still try to make it 
+possible to support spdif and i2s at the same time, but I can not test 
+it as I do not have such HW.
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index eb73a3a..f86ef5e 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -91,11 +91,6 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
-  */
- #define SND_DMAENGINE_PCM_FLAG_NO_DT BIT(1)
- /*
-- * The platforms dmaengine driver does not support reporting the amount of
-- * bytes that are still left to transfer.
-- */
--#define SND_DMAENGINE_PCM_FLAG_NO_RESIDUE BIT(2)
--/*
-  * The PCM is half duplex and the DMA channel is shared between capture and
-  * playback.
-  */
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index b6625c8..dd57a9e 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -124,8 +124,7 @@ static const struct snd_dmaengine_pcm_config atmel_dmaengine_pcm_config = {
- 
- int atmel_pcm_dma_platform_register(struct device *dev)
- {
--	return snd_dmaengine_pcm_register(dev, &atmel_dmaengine_pcm_config,
--			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-+	return snd_dmaengine_pcm_register(dev, &atmel_dmaengine_pcm_config, 0);
- }
- EXPORT_SYMBOL(atmel_pcm_dma_platform_register);
- 
-diff --git a/sound/soc/cirrus/ep93xx-pcm.c b/sound/soc/cirrus/ep93xx-pcm.c
-index 5f66447..67a7333 100644
---- a/sound/soc/cirrus/ep93xx-pcm.c
-+++ b/sound/soc/cirrus/ep93xx-pcm.c
-@@ -60,7 +60,6 @@ int devm_ep93xx_pcm_platform_register(struct device *dev)
- {
- 	return devm_snd_dmaengine_pcm_register(dev,
- 		&ep93xx_dmaengine_pcm_config,
--		SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 		SND_DMAENGINE_PCM_FLAG_NO_DT |
- 		SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index ec79c3d..ee2671b 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -664,8 +664,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (sai->sai_on_imx)
- 		return imx_pcm_dma_init(pdev);
- 	else
--		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
--				SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-+		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- }
- 
- static const struct of_device_id fsl_sai_ids[] = {
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index c9917ca..6fd1906 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -24,6 +24,12 @@
- 
- #include <sound/dmaengine_pcm.h>
- 
-+/*
-+ * The platforms dmaengine driver does not support reporting the amount of
-+ * bytes that are still left to transfer.
-+ */
-+#define SND_DMAENGINE_PCM_FLAG_NO_RESIDUE BIT(31)
-+
- struct dmaengine_pcm {
- 	struct dma_chan *chan[SNDRV_PCM_STREAM_LAST + 1];
- 	const struct snd_dmaengine_pcm_config *config;
-@@ -222,14 +228,18 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 	return snd_dmaengine_pcm_request_channel(fn, dma_data->filter_data);
- }
- 
--static bool dmaengine_pcm_can_report_residue(struct dma_chan *chan)
-+static bool dmaengine_pcm_can_report_residue(struct device *dev,
-+	struct dma_chan *chan)
- {
- 	struct dma_slave_caps dma_caps;
- 	int ret;
- 
- 	ret = dma_get_slave_caps(chan, &dma_caps);
--	if (ret != 0)
--		return true;
-+	if (ret != 0) {
-+		dev_warn(dev, "Failed to get DMA channel capabilities, falling back to period counting: %d\n",
-+			 ret);
-+		return false;
-+	}
- 
- 	if (dma_caps.residue_granularity == DMA_RESIDUE_GRANULARITY_DESCRIPTOR)
- 		return false;
-@@ -289,14 +299,7 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		if (ret)
- 			return ret;
- 
--		/*
--		 * This will only return false if we know for sure that at least
--		 * one channel does not support residue reporting. If the DMA
--		 * driver does not implement the slave_caps API we rely having
--		 * the NO_RESIDUE flag set manually in case residue reporting is
--		 * not supported.
--		 */
--		if (!dmaengine_pcm_can_report_residue(pcm->chan[i]))
-+		if (!dmaengine_pcm_can_report_residue(dev, pcm->chan[i]))
- 			pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE;
- 	}
- 
-diff --git a/sound/soc/ux500/ux500_pcm.c b/sound/soc/ux500/ux500_pcm.c
-index 51a66a8..f12c01d 100644
---- a/sound/soc/ux500/ux500_pcm.c
-+++ b/sound/soc/ux500/ux500_pcm.c
-@@ -147,7 +147,6 @@ int ux500_pcm_register_platform(struct platform_device *pdev)
- 		pcm_config = &ux500_dmaengine_pcm_config;
- 
- 	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config,
--					 SND_DMAENGINE_PCM_FLAG_NO_RESIDUE |
- 					 SND_DMAENGINE_PCM_FLAG_COMPAT);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev,
--- 
-1.8.0
+I also try to make the ASoC part as generic as possible, so that it 
+could be reused by other HDMI encoders with spdif or i2s interface.
+
+Best regards,
+Jyri
+
+On 01/20/15 21:35, Jean-Francois Moine wrote:
+> Based on broonie/ASoC
+>
+> v10:
+> 	- add the generic dt-card
+> 	- define the audio ports from a DT graph of ports (Russell King)
+> 	- reuse HDMI constants (Andrew Jackson - Jyri Sarha)
+> 	- alloc rate_constraints in codec (Jyri Sarha)
+> 	- fix bad number of channels (Jyri Sarha)
+> 	- correct codec generation from config (Russell King - Jyri Sarha)
+> 	- no module init/exit (Russell King)
+> v9:
+> 	- back to a TDA998x specific CODEC
+> 	- more comments
+> 	- change magic values to constants
+> v8:
+> 	- change some comments about the patches
+> v7:
+> 	- remove the change of the K predivider (Jyri Sarha)
+> 	- add S24_3LE and S32_LE as possible audio formats (Jyri Sarha)
+> 	- don't move the struct priv2 definition and use the
+> 	  slave encoder private data as the device private data
+> 	  (Russell King)
+> 	- remove the useless request_module (Russell King/Mark Brown)
+> 	- don't lock the HDMI module (Russell King)
+> 	- use platform_device_unregister to remove the codec
+> 	  (Russell King)
+> v6:
+> 	- extend the HDMI CODEC instead of using a specific CODEC
+> v5:
+> 	- use the TDA998x private data instead of a specific area
+> 	  for the CODEC interface
+> 	- the CODEC is TDA998x specific (Mark Brown)
+> v4:
+> 	- remove all the TDA998x specific stuff from the CODEC
+> 	- move the EDID scan from the CODEC to the TDA998x
+> 	- move the CODEC to sound/soc (Mark Brown)
+> 	- update the audio_sample_rate from the EDID (Andrew Jackson)
+> v3: fix bad rate (Andrew Jackson)
+> v2: check double stream start (Mark Brown)
+>
+> Jean-Francois Moine (9):
+>    ASoC: kirkwood: dynamically build the DAI array
+>    ASoC: kirkwood: check the DAI type from the DAI name
+>    ASoC: kirkwood: accept the DAI definitions from a graph of ports
+>    drm/i2c: tda998x: Add support of a DT graph of ports
+>    drm/i2c: tda998x: Change drvdata for audio extension
+>    ASoC: tda998x: add a codec to the HDMI transmitter
+>    drm/i2c: tda998x: set cts_n according to the sample width
+>    ASoC: core: export snd_soc_get_dai_name
+>    ASoC: add generic dt-card support
+>
+>   .../devicetree/bindings/drm/i2c/tda998x.txt        |  51 ++++
+>   .../devicetree/bindings/sound/mvebu-audio.txt      |  30 +++
+>   drivers/gpu/drm/i2c/tda998x_drv.c                  | 237 +++++++++++++++++-
+>   include/sound/soc.h                                |   2 +
+>   include/sound/tda998x.h                            |  32 +++
+>   sound/soc/codecs/Kconfig                           |   5 +
+>   sound/soc/codecs/Makefile                          |   2 +
+>   sound/soc/codecs/tda998x.c                         | 175 +++++++++++++
+>   sound/soc/generic/Kconfig                          |   2 +
+>   sound/soc/generic/Makefile                         |   2 +
+>   sound/soc/generic/dt-card.c                        | 275 +++++++++++++++++++++
+>   sound/soc/kirkwood/kirkwood-i2s.c                  | 141 ++++++-----
+>   sound/soc/kirkwood/kirkwood.h                      |   4 +-
+>   sound/soc/soc-core.c                               |   5 +-
+>   14 files changed, 877 insertions(+), 86 deletions(-)
+>   create mode 100644 include/sound/tda998x.h
+>   create mode 100644 sound/soc/codecs/tda998x.c
+>   create mode 100644 sound/soc/generic/dt-card.c
+>
