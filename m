@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: dmaengine_pcm: Make FLAG_NO_RESIDUE
-	internal
-Date: Mon, 27 Apr 2015 21:22:43 +0200
-Message-ID: <553E8C83.4030604@metafoo.de>
-References: <1430131465-17991-1-git-send-email-lars@metafoo.de>
- <20150427182801.GX22845@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v9 5/7] ASoC: jack: create kctls according
+ to jack pins info
+Date: Mon, 27 Apr 2015 20:33:01 +0100
+Message-ID: <20150427193301.GY22845@sirena.org.uk>
+References: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
+ <1429756366-22520-6-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2571190103193281671=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-223.synserver.de (smtp-out-223.synserver.de
- [212.40.185.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C253260415
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 21:22:44 +0200 (CEST)
-In-Reply-To: <20150427182801.GX22845@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E802326041C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 21:33:09 +0200 (CEST)
+In-Reply-To: <1429756366-22520-6-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+To: Jie Yang <yang.jie@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 04/27/2015 08:28 PM, Mark Brown wrote:
-> On Mon, Apr 27, 2015 at 12:44:25PM +0200, Lars-Peter Clausen wrote:
-[...]
->> This patch makes the FLAG_NO_RESIDUE internal and no longer allows audio
->> controller drivers to manually set the flag. If a DMA driver against
->> expectations does not support reporting its capabilities for now the generic
->> DMAengine PCM driver will now emit a warning and simply assume that residue
->> reporting is not supported. In the future this might be changed to aborting
->> with an error.
->
-> I'm not sure it's ever going to buy us anything to error out on stuff,
-> it's not like the no residue case doesn't need to be supported anyway
-> for controllers that just can't do it.
 
-I'm not too sure about it either. Since it is prone to race-conditions by 
-design we'd ideally eventually drop support for the fallback period counting 
-mechanism in the PCM driver altogether and instead the period counting would 
-be done at the DMAengine layer. At the DMAengine layer the period counting 
-can usually be implemented without any race conditions and other DMAengine 
-clients will also benefit from it.
+--===============2571190103193281671==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5+qsj7yWT80VfEG5"
+Content-Disposition: inline
 
-A good start might be to emit a warning when we have to do this in the PCM 
-driver to at least make sure that new platforms do this properly.
 
-- Lars
+--5+qsj7yWT80VfEG5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 23, 2015 at 10:32:44AM +0800, Jie Yang wrote:
+> In the new jack kctls design, we can create kctls according to
+> pins info:
+>=20
+> 1. during jack creating, snd_jack_new() with NULL jack_kctl;
+> 2. for each pin, call snd_jack_add_kctl() to add one kctl
+> (it will call snd_ctl_add() to add kctl to card);
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--5+qsj7yWT80VfEG5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVPo7sAAoJECTWi3JdVIfQYcsH/0aVC8YUsSEa/+8adMLEHyIY
+stcD60Djmedm63mItH91WkAy1QALQL7jfVnj4mpxAxYJOOYJtFZGWa1dPpLGQi8j
+Gd0mWKiW+57osm8tDsUp+IokhxXHGCGxrYIVT78JgsyxIiR9wFtAC86DGq1H/unc
+2COiK5JkWAddQrk6HqdOwVBiVg/8CN4qM4fjv6NCRcIiX+gvQh8DuJmRxNjCXthB
+yL0R659cyii5tFRgYln6z4BWS+axIna/dmcKWsER9hebBCMxDMuIifYulFQw8sDR
+iY0/aq414MVbBkjhKtkYJ2t6IiALC9FjA5fltj+XSUVxODnmO3o9IIY+X+qkW/A=
+=fpvX
+-----END PGP SIGNATURE-----
+
+--5+qsj7yWT80VfEG5--
+
+--===============2571190103193281671==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2571190103193281671==--
