@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v9 5/7] ASoC: jack: create kctls according
- to jack pins info
-Date: Mon, 27 Apr 2015 20:33:01 +0100
-Message-ID: <20150427193301.GY22845@sirena.org.uk>
-References: <1429756366-22520-1-git-send-email-yang.jie@intel.com>
- <1429756366-22520-6-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: dmaengine_pcm: Make FLAG_NO_RESIDUE
+	internal
+Date: Mon, 27 Apr 2015 20:38:14 +0100
+Message-ID: <20150427193814.GZ22845@sirena.org.uk>
+References: <1430131465-17991-1-git-send-email-lars@metafoo.de>
+ <20150427182801.GX22845@sirena.org.uk>
+ <553E8C83.4030604@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2571190103193281671=="
+Content-Type: multipart/mixed; boundary="===============0401923364870173535=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E802326041C
- for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 21:33:09 +0200 (CEST)
-In-Reply-To: <1429756366-22520-6-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 166B126041C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Apr 2015 21:38:24 +0200 (CEST)
+In-Reply-To: <553E8C83.4030604@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, tanu.kaskinen@linux.intel.com, liam.r.girdwood@intel.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2571190103193281671==
+--===============0401923364870173535==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5+qsj7yWT80VfEG5"
+	protocol="application/pgp-signature"; boundary="vFe9IgxZ3Jt1WGP3"
 Content-Disposition: inline
 
 
---5+qsj7yWT80VfEG5
+--vFe9IgxZ3Jt1WGP3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 23, 2015 at 10:32:44AM +0800, Jie Yang wrote:
-> In the new jack kctls design, we can create kctls according to
-> pins info:
->=20
-> 1. during jack creating, snd_jack_new() with NULL jack_kctl;
-> 2. for each pin, call snd_jack_add_kctl() to add one kctl
-> (it will call snd_ctl_add() to add kctl to card);
+On Mon, Apr 27, 2015 at 09:22:43PM +0200, Lars-Peter Clausen wrote:
+> On 04/27/2015 08:28 PM, Mark Brown wrote:
+> >On Mon, Apr 27, 2015 at 12:44:25PM +0200, Lars-Peter Clausen wrote:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> >>This patch makes the FLAG_NO_RESIDUE internal and no longer allows audio
+> >>controller drivers to manually set the flag. If a DMA driver against
+> >>expectations does not support reporting its capabilities for now the generic
+> >>DMAengine PCM driver will now emit a warning and simply assume that residue
+> >>reporting is not supported. In the future this might be changed to aborting
+> >>with an error.
 
---5+qsj7yWT80VfEG5
+> >I'm not sure it's ever going to buy us anything to error out on stuff,
+> >it's not like the no residue case doesn't need to be supported anyway
+> >for controllers that just can't do it.
+
+> I'm not too sure about it either. Since it is prone to race-conditions by
+> design we'd ideally eventually drop support for the fallback period counting
+> mechanism in the PCM driver altogether and instead the period counting would
+> be done at the DMAengine layer. At the DMAengine layer the period counting
+> can usually be implemented without any race conditions and other DMAengine
+> clients will also benefit from it.
+
+Indeed, it would be much better to handle things like this further down
+the stack - if we do then probably this will take care of itself anyway
+since we'll always have something reported.
+
+> A good start might be to emit a warning when we have to do this in the PCM
+> driver to at least make sure that new platforms do this properly.
+
+Yes.  It might also encourage people to update their platforms.
+
+--vFe9IgxZ3Jt1WGP3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVPo7sAAoJECTWi3JdVIfQYcsH/0aVC8YUsSEa/+8adMLEHyIY
-stcD60Djmedm63mItH91WkAy1QALQL7jfVnj4mpxAxYJOOYJtFZGWa1dPpLGQi8j
-Gd0mWKiW+57osm8tDsUp+IokhxXHGCGxrYIVT78JgsyxIiR9wFtAC86DGq1H/unc
-2COiK5JkWAddQrk6HqdOwVBiVg/8CN4qM4fjv6NCRcIiX+gvQh8DuJmRxNjCXthB
-yL0R659cyii5tFRgYln6z4BWS+axIna/dmcKWsER9hebBCMxDMuIifYulFQw8sDR
-iY0/aq414MVbBkjhKtkYJ2t6IiALC9FjA5fltj+XSUVxODnmO3o9IIY+X+qkW/A=
-=fpvX
+iQEcBAEBCAAGBQJVPpAlAAoJECTWi3JdVIfQ45oH/3qsUEEJvvoicWpgRz49PQRL
++Fkyw3whn9F0TJfo2yN8Xrh2rRo8JCNtzvqDFrCoJMqsbZpb4gqtni8fs5JdCKg+
+5qYYCPTE0VDfwELJTWEgU/f7wbqXCtRzJ4aPSqWguRw2ErM/gqjwm9WTTvwR5pde
+Gf5/DFtcN20PfBRmcewLQnSaWkv2Vpd1qjdtIJYTuPJ4iKxue4CJmMV5j8Zl9Ssv
+TsjmIyNk7aIqUvkg0RaoBUnYa5XondmYUbBMDN/gEb6/yeiro5yJmELhoNEfdOv0
+GmJWTrVizd+7gCAGimJfg7IHXRn6LMbkfs/5TV21FP5S0prqRbab4IUdMYidZ/w=
+=xDa3
 -----END PGP SIGNATURE-----
 
---5+qsj7yWT80VfEG5--
+--vFe9IgxZ3Jt1WGP3--
 
---===============2571190103193281671==
+--===============0401923364870173535==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2571190103193281671==--
+--===============0401923364870173535==--
