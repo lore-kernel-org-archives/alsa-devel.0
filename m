@@ -1,96 +1,54 @@
-From: Glenn Golden <gdg@zplane.com>
-Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
- mute LED non-workingness
-Date: Tue, 28 Apr 2015 05:39:48 -0600
-Message-ID: <20150428113948.GN550@huh.zplane.com>
-References: <20150426152012.GE550@huh.zplane.com>
- <s5hvbgiho2o.wl-tiwai@suse.de>
- <CAN8cciZQBRz2Ty3YRt2+3KO9v1BWef-_8FU_d_SsE87mLdgY-w@mail.gmail.com>
- <s5hh9s2gj45.wl-tiwai@suse.de>
- <20150427135859.GI550@huh.zplane.com>
- <s5ha8xt4hsa.wl-tiwai@suse.de>
- <20150428000206.GK550@huh.zplane.com>
- <s5hmw1s3hxh.wl-tiwai@suse.de>
- <20150428101645.GM550@huh.zplane.com>
- <s5h618gwnno.wl-tiwai@suse.de>
-Reply-To: gdg@zplane.com
+From: Jonathan McDowell <noodles@earth.li>
+Subject: Audio crackles with 4.1-rc1
+Date: Tue, 28 Apr 2015 12:21:57 +0100
+Message-ID: <20150428112156.GQ10148@earth.li>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.indra.com (smtp.indra.com [209.169.0.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C10282605A3
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 13:39:58 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5h618gwnno.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alex Hung <alex.hung@canonical.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Raymond Yau <superquad.vortex2@gmail.com>, bruno.mueller@gmail.com, David Henningsson <david.henningsson@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> [2015-04-28 12:30:19 +0200]:
-> 
-> Then it's likely an issue in thinkpad_acpi.c.  It implies that the
-> driver couldn't get SSMS acpi handle.
-> 
+Having upgraded to 4.1-rc1 from 4.0 I'm now hearing audio crackles at
+regular intervals. I'm fairly sure this is due to the HDA power save as
+once audio is playing things are fine, it's just when starting to play
+audio that I hear the crackle.
 
-Raymond had pointed this out earlier as a (the?) patch that brought the static
-tp_led_table led_tables[] into existence:
+System is a Dell Latitude E7240. I haven't tried a bisect yet but will
+attempt to find some time to do so in the next few days. It looks like
+there have been some changes in sound/hda/ between 4.0 + 4.1-rc1 so I'll
+concentrate on those first.
 
-    http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/platform/x86/thinkpad_acpi.c?id=420f9739a62cdb027f5580d25c813501ff93aa6f
+Hopefully relevant dmesg output for the device:
 
-To my eyes, the table appears to be as it was in that patch:
+[   23.551075] snd_hda_intel 0000:00:03.0: enabling device (0000 -> 0002)
+[   23.551279] snd_hda_intel 0000:00:03.0: bound 0000:00:02.0 (ops 0xffffffff81891a00)
+[   23.575852] snd_hda_codec_realtek hdaudioC1D0: autoconfig for ALC3226: line_outs=1 (0x16/0x0/0x0/0x0/0x0) type:line
+[   23.575855] snd_hda_codec_realtek hdaudioC1D0:    speaker_outs=1 (0x14/0x0/0x0/0x0/0x0)
+[   23.575857] snd_hda_codec_realtek hdaudioC1D0:    hp_outs=1 (0x15/0x0/0x0/0x0/0x0)
+[   23.575858] snd_hda_codec_realtek hdaudioC1D0:    mono: mono_out=0x0
+[   23.575859] snd_hda_codec_realtek hdaudioC1D0:    inputs:
+[   23.575861] snd_hda_codec_realtek hdaudioC1D0:      Dock Mic=0x19
+[   23.575863] snd_hda_codec_realtek hdaudioC1D0:      Headset Mic=0x1a
+[   23.575870] snd_hda_codec_realtek hdaudioC1D0:      Internal Mic=0x12
+[   23.582324] input: HDA Intel HDMI HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:03.0/sound/card0/input12
+[   23.582397] input: HDA Intel HDMI HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:03.0/sound/card0/input13
+[   23.582747] input: HDA Intel HDMI HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:03.0/sound/card0/input14
+[   23.593267] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/sound/card1/input9
+[   23.594102] input: HDA Intel PCH Dock Mic as /devices/pci0000:00/0000:00:1b.0/sound/card1/input15
+[   23.594268] input: HDA Intel PCH Dock Line Out as /devices/pci0000:00/0000:00:1b.0/sound/card1/input16
+[   23.594346] input: HDA Intel PCH Front Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card1/input17
 
-    ---------------------------------------------------------------------------
-    static struct tp_led_table led_tables[] = {
-	    [TPACPI_LED_MUTE] = {
-		    .name = "SSMS",
-		    .on_value = 1,
-		    .off_value = 0,
-	    },
-	    [TPACPI_LED_MICMUTE] = {
-		    .name = "MMTS",
-		    .on_value = 2,
-		    .off_value = 0,
-	    },
-    };
-    ---------------------------------------------------------------------------
+I have:
 
-thinkpad_acpi.h defines this enum and func:
+CONFIG_SND_HDA_POWER_SAVE_DEFAULT=600
 
-    ---------------------------------------------------------------------------
-    /* These two functions return 0 if success, or negative error code
-       (e g -ENODEV if no led present) */
+set in my kernel config. There's no dmesg output around the times when
+the crackling is occurring.
 
-    enum {
-	    TPACPI_LED_MUTE,
-	    TPACPI_LED_MICMUTE,
-	    TPACPI_LED_MAX,
-    };
+J.
 
-    int tpacpi_led_set(int whichled, bool on);
-    ---------------------------------------------------------------------------
-
-although I don't understand why the comment says "these TWO functions..."
-since there's only one.
-
-How to learn more about the source of LED_MUTE's evident non-existence in
-my build? I guess I don't understand how the above "SSMS" entry in the table
-is non-existent? Is there a function-pointer table/hash in which "SSMS" is
-further used as a key?
-
-> 
-> For HD-audio, you need to unload the codec drivers at first, e.g.
-> [ ... ]
->
-
-Thanks, that will help a lot, as the machine is in constant use and
-reboots are painful.
+-- 
+Friends are God's apology for relations.
