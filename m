@@ -1,20 +1,16 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda - implement a refcount
- for i915 power well switch
-Date: Tue, 28 Apr 2015 15:09:23 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B8441CD@SHSMSX101.ccr.corp.intel.com>
-References: <4530387c0b63ccfafb5dbb3399a39b4093651c48.1429880424.git.mengdong.lin@intel.com>
- <1430224999-22271-1-git-send-email-mengdong.lin@intel.com>
- <s5hr3r4v23t.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2] Update email-id of author
+Date: Tue, 28 Apr 2015 16:31:00 +0100
+Message-ID: <20150428153100.GU22845@sirena.org.uk>
+References: <1430200808-19480-1-git-send-email-rajeevkumar.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8755918097755074522=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 61F6B260603
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 17:09:47 +0200 (CEST)
-In-Reply-To: <s5hr3r4v23t.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46304261692
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 17:31:07 +0200 (CEST)
+In-Reply-To: <1430200808-19480-1-git-send-email-rajeevkumar.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,95 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Rajeev Kumar <rajeevkumar.linux@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, April 28, 2015 9:01 PM
 
-> > This is to check the refcount of audio driver and reduce calling to i915.
-> 
-> This has to be implemented before patch 1 & 2, I suppose.
+--===============8755918097755074522==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wPbnqA164Gh9el77"
+Content-Disposition: inline
 
-You're right. I'll change the patch order.
 
-> But, you don't mention about the new mutex at all.  Why do you need it?
+--wPbnqA164Gh9el77
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'll remove the mutex. 
-Actually we need not this mutex for legacy HD-A at all. I'm not sure about the new SKL driver and so add a mutex. 
-But since the HW power dependency is same no matter which driver is used on SKL, we could assume the new driver will also request/release power in probe and codec runtime PM ops.
+On Tue, Apr 28, 2015 at 11:30:08AM +0530, Rajeev Kumar wrote:
+> rajeev-dlh.kumar@st.com email-id doesn't exist anymore as I have left the
+> company.  Replace ST's id with Rajeev Kumar <rajeevkumar.linux@gmail.com>
 
-Thanks
-Mengdong
- 
-> 
-> Takashi
-> 
-> >
-> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> >
-> > diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c index
-> > 52a85d8..e831691 100644
-> > --- a/sound/pci/hda/hda_i915.c
-> > +++ b/sound/pci/hda/hda_i915.c
-> > @@ -42,11 +42,16 @@ int hda_display_power(struct hda_intel *hda, bool
-> > enable)
-> >
-> >  	dev_dbg(&hda->chip.pci->dev, "display power %s\n",
-> >  		enable ? "enable" : "disable");
-> > -	if (enable)
-> > -		acomp->ops->get_power(acomp->dev);
-> > -	else
-> > -		acomp->ops->put_power(acomp->dev);
-> > -
-> > +	mutex_lock(&hda->display_power.lock);
-> > +	if (enable) {
-> > +		if (!hda->display_power.use_count++)
-> > +			acomp->ops->get_power(acomp->dev);
-> > +	} else {
-> > +		WARN_ON(!hda->display_power.use_count);
-> > +		if (!--hda->display_power.use_count)
-> > +			acomp->ops->put_power(acomp->dev);
-> > +	}
-> > +	mutex_unlock(&hda->display_power.lock);
-> >  	return 0;
-> >  }
-> >
-> > @@ -171,6 +176,8 @@ int hda_i915_init(struct hda_intel *hda)
-> >
-> >  	dev_dbg(dev, "bound to i915 component master\n");
-> >
-> > +	mutex_init(&hda->display_power.lock);
-> > +
-> >  	return 0;
-> >  out_master_del:
-> >  	component_master_del(dev, &hda_component_master_ops); diff --git
-> > a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h index
-> > 2069898..3ca000a 100644
-> > --- a/sound/pci/hda/hda_intel.h
-> > +++ b/sound/pci/hda/hda_intel.h
-> > @@ -19,6 +19,11 @@
-> >  #include <drm/i915_component.h>
-> >  #include "hda_controller.h"
-> >
-> > +struct i915_display_power {
-> > +	struct mutex lock;
-> > +	int use_count;
-> > +};
-> > +
-> >  struct hda_intel {
-> >  	struct azx chip;
-> >
-> > @@ -46,6 +51,7 @@ struct hda_intel {
-> >
-> >  	/* i915 component interface */
-> >  	struct i915_audio_component audio_component;
-> > +	struct i915_display_power display_power;
-> >  };
-> >
-> >  #ifdef CONFIG_SND_HDA_I915
-> > --
-> > 1.9.1
-> >
+Applied, thanks.
+
+--wPbnqA164Gh9el77
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVP6e0AAoJECTWi3JdVIfQkRsH/ROx3xv0DWmKiIJoiCZpdm3i
+t/X9R+JkD5HsbPSHB9iJ0Tm2kT8bwh1AGz1FoYVdyQxAwGK3Ai+CV4DClvan7M5I
+lRmt2njZNIFnH62CP8FSB4zCnuavpNXTl/urR35W7ZkNx56rmEi2+Vgxtbrk5bPN
+MfM6Ls2BX9tqkeenv2zDM9aINhGkS/WsTmC/iUZeekmBPDZFXE5lb5GbPlYqgZHJ
+9E/ZNyz8YH+GOx38QVZ3aMuhYArritGnPN+diWPNwkGpBUmuQpA3J2JxENLV7Gto
+/ZCXXtI6RGSJf9a8MLGvd/qkxFKe2xqityE5B4nGKBAlvAftGm/seu4C2ko/v58=
+=tKMp
+-----END PGP SIGNATURE-----
+
+--wPbnqA164Gh9el77--
+
+--===============8755918097755074522==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8755918097755074522==--
