@@ -1,7 +1,7 @@
 From: kbuild test robot <fengguang.wu@intel.com>
 Subject: [PATCH] ASoC: fix simple_return.cocci warnings
 Date: Tue, 28 Apr 2015 12:20:32 +0800
-Message-ID: <20150428042032.GA178194@athens>
+Message-ID: <20150428042032.GA178218@athens>
 References: <201504281230.EVsrh0Ze%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -13,7 +13,7 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: kbuild-all@01.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/codecs/adau1977.c:496:5-8: WARNING: end returns can be simpified
+sound/soc/codecs/ssm2518.c:521:5-8: WARNING: end returns can be simpified
 
  Simplify a trivial if-return sequence.  Possibly combine with a
  preceding function call.
@@ -23,12 +23,12 @@ CC: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 ---
 
- adau1977.c |    5 +----
+ ssm2518.c |    5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -493,10 +493,7 @@ static int adau1977_set_bias_level(struc
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -518,10 +518,7 @@ static int ssm2518_set_bias_level(struct
  		break;
  	}
  
@@ -39,4 +39,4 @@ Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 +	return ret;
  }
  
- static int adau1977_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ static int ssm2518_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
