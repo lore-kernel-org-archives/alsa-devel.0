@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 0/7] ASoC: intel - add skylake PCM driver
-Date: Wed, 29 Apr 2015 01:24:23 +0530
-Message-ID: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 1/7] ASoC: hda - add soc hda codec driver
+	wrapper
+Date: Wed, 29 Apr 2015 01:24:24 +0530
+Message-ID: <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
+References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DDD4260427
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 21:57:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F96326042B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 21:57:28 +0200 (CEST)
+In-Reply-To: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,50 +22,211 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds the hda codec wrapper first followed by asoc hda
-controller library, then SKL PCM driver and last decouples the controller
-for splitting the links
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Jeeja KP (7):
-  ASoC: hda - add soc hda codec driver wrapper
-  ALSA: hda - add new HDA registers
-  ASoC: hda - adds SoC controller and stream operations
-  ASoC: intel - add Skylake HDA platform driver
-  ASoC: intel - add Skylake HDA audio driver
-  ASoC: intel - add makefile support for SKL driver
-  ASoC: intel - adds support for decoupled mode in skl driver
+For ASoC HDA codecs we need to provide match function based on id_table and
+driver register/unregister wrapper functions
 
- include/sound/hda_register.h          |   87 +++
- include/sound/soc-hdaudio.h           |  343 ++++++++++++
- sound/soc/Kconfig                     |    1 +
- sound/soc/Makefile                    |    1 +
- sound/soc/hda/Kconfig                 |    3 +
- sound/soc/hda/Makefile                |    3 +
- sound/soc/hda/soc-hda-codec.c         |   85 +++
- sound/soc/hda/soc-hda-codec.h         |   44 ++
- sound/soc/hda/soc-hdac-controller.c   |  289 ++++++++++
- sound/soc/hda/soc-hdac-stream.c       |  390 ++++++++++++++
- sound/soc/intel/Kconfig               |   20 +
- sound/soc/intel/Makefile              |    1 +
- sound/soc/intel/skylake/Makefile      |    3 +
- sound/soc/intel/skylake/hda-skl-pcm.c |  933 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/hda-skl.c     |  743 ++++++++++++++++++++++++++
- sound/soc/intel/skylake/hda-skl.h     |   74 +++
- 16 files changed, 3020 insertions(+)
- create mode 100644 include/sound/soc-hdaudio.h
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/Kconfig             |    1 +
+ sound/soc/Makefile            |    1 +
+ sound/soc/hda/Kconfig         |    3 ++
+ sound/soc/hda/Makefile        |    3 ++
+ sound/soc/hda/soc-hda-codec.c |   85 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/hda/soc-hda-codec.h |   44 +++++++++++++++++++++
+ 6 files changed, 137 insertions(+)
  create mode 100644 sound/soc/hda/Kconfig
  create mode 100644 sound/soc/hda/Makefile
  create mode 100644 sound/soc/hda/soc-hda-codec.c
  create mode 100644 sound/soc/hda/soc-hda-codec.h
- create mode 100644 sound/soc/hda/soc-hdac-controller.c
- create mode 100644 sound/soc/hda/soc-hdac-stream.c
- create mode 100644 sound/soc/intel/skylake/Makefile
- create mode 100644 sound/soc/intel/skylake/hda-skl-pcm.c
- create mode 100644 sound/soc/intel/skylake/hda-skl.c
- create mode 100644 sound/soc/intel/skylake/hda-skl.h
 
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 3ba52da18bc6..d3903580cb10 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -40,6 +40,7 @@ source "sound/soc/cirrus/Kconfig"
+ source "sound/soc/davinci/Kconfig"
+ source "sound/soc/dwc/Kconfig"
+ source "sound/soc/fsl/Kconfig"
++source "sound/soc/hda/Kconfig"
+ source "sound/soc/jz4740/Kconfig"
+ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 974ba708b482..8741d6a38bf6 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_SND_SOC)	+= cirrus/
+ obj-$(CONFIG_SND_SOC)	+= davinci/
+ obj-$(CONFIG_SND_SOC)	+= dwc/
+ obj-$(CONFIG_SND_SOC)	+= fsl/
++obj-$(CONFIG_SND_SOC)	+= hda/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
+ obj-$(CONFIG_SND_SOC)	+= intel/
+ obj-$(CONFIG_SND_SOC)	+= mxs/
+diff --git a/sound/soc/hda/Kconfig b/sound/soc/hda/Kconfig
+new file mode 100644
+index 000000000000..815943360bc5
+--- /dev/null
++++ b/sound/soc/hda/Kconfig
+@@ -0,0 +1,3 @@
++config SND_SOC_HDA_CORE
++	tristate
++	select SND_HDA_CORE
+diff --git a/sound/soc/hda/Makefile b/sound/soc/hda/Makefile
+new file mode 100644
+index 000000000000..9585ab180a55
+--- /dev/null
++++ b/sound/soc/hda/Makefile
+@@ -0,0 +1,3 @@
++snd-soc-hda-core-objs := soc-hda-codec.o
++
++obj-$(CONFIG_SND_SOC_HDA_CORE) += snd-soc-hda-core.o
+diff --git a/sound/soc/hda/soc-hda-codec.c b/sound/soc/hda/soc-hda-codec.c
+new file mode 100644
+index 000000000000..caceb2136bba
+--- /dev/null
++++ b/sound/soc/hda/soc-hda-codec.c
+@@ -0,0 +1,85 @@
++/*
++ * soc-hda-codec.c ASoC High Definition Audio Codec interface Definitions
++ *
++ * Copyright (c) 2014-2015 Intel Corporation
++ *
++ * Author(s): Jeeja KP <jeeja.kp@intel.com>
++ *
++ *
++ *  This driver is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This driver is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <sound/hdaudio.h>
++#include "soc-hda-codec.h"
++
++/**
++ * snd_soc_hda_get_device_id - gets the hdac device id entry
++ * @hdev: HD-audio core bus
++ * @drv: HD-audio core stream object to initialize
++ *
++ * Compares the hdac device vendor_id and revision_id to the hdac_soc_codec
++ * driver id_table and returns the matching device id entry.
++ */
++const struct soc_hda_device_id *
++snd_soc_hda_get_device_id(
++			struct hdac_device *hdev,
++			struct soc_hda_codec_driver *drv)
++{
++	if (drv->id_table) {
++		const struct soc_hda_device_id *id  = drv->id_table;
++
++		while (id->name[0]) {
++			if (hdev->vendor_id == id->id &&
++				(!id->rev_id || id->rev_id == hdev->revision_id))
++				return id;
++			id++;
++		}
++	}
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_hda_get_device_id);
++
++static int hda_codec_match(struct hdac_device *dev, struct hdac_driver *drv)
++{
++	struct soc_hda_codec_driver *driver = to_soc_hda_codec_driver(drv);
++
++	if (snd_soc_hda_get_device_id(dev, driver))
++		return 1;
++	else
++		return 0;
++}
++
++/**
++ * snd_soc_hda_codec_driver_register - register hda codec driver
++ * @drv: HD Audio soc codec driver
++ */
++int snd_soc_hda_codec_driver_register(struct soc_hda_codec_driver *drv)
++{
++	drv->core.driver.bus = &snd_hda_bus_type;
++	drv->core.type = HDA_DEV_ASOC;
++	drv->core.match = hda_codec_match;
++	return driver_register(&drv->core.driver);
++}
++EXPORT_SYMBOL_GPL(snd_soc_hda_codec_driver_register);
++
++/**
++ * snd_soc_hda_codec_driver_unregister - unregister hda codec driver
++ * @drv: HD Audio soc codec driver
++ */
++void snd_soc_hda_codec_driver_unregister(struct soc_hda_codec_driver *drv)
++{
++	driver_unregister(&drv->core.driver);
++}
++EXPORT_SYMBOL_GPL(snd_soc_hda_codec_driver_unregister);
++
++MODULE_DESCRIPTION("ASoC HDA codec core");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/hda/soc-hda-codec.h b/sound/soc/hda/soc-hda-codec.h
+new file mode 100644
+index 000000000000..f8a199a58926
+--- /dev/null
++++ b/sound/soc/hda/soc-hda-codec.h
+@@ -0,0 +1,44 @@
++/*
++ * ASoC High Definition Audio Codec interface
++ *
++ * Copyright (c) 2014-2015 Intel Corporation
++ *
++ * Author(s): Jeeja KP <jeeja.kp@intel.com>
++ *
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License as published by the Free
++ *  Software Foundation; either version 2 of the License, or (at your option)
++ *  any later version.
++ *
++ *  This program is distributed in the hope that it will be useful, but WITHOUT
++ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ *  more details.
++ *
++ */
++
++#include <sound/hdaudio.h>
++
++/*HDA device table*/
++#define HDA_NAME_SIZE      20
++struct soc_hda_device_id {
++	__u32 id;
++	__u32 rev_id;
++	char name[HDA_NAME_SIZE];
++	unsigned long driver_data;
++};
++
++struct soc_hda_codec_driver {
++	struct hdac_driver core;
++	const struct soc_hda_device_id *id_table;
++};
++
++#define to_hdac_driver(drv) (container_of((drv), \
++				 struct hdac_driver, driver))
++#define to_soc_hda_codec_driver(hdrv) (container_of((hdrv), \
++				 struct soc_hda_codec_driver, core))
++
++int snd_soc_hda_codec_driver_register(struct soc_hda_codec_driver *drv);
++void snd_soc_hda_codec_driver_unregister(struct soc_hda_codec_driver *drv);
++const struct soc_hda_device_id *snd_soc_hda_get_device_id(
++	struct hdac_device *hdev, struct soc_hda_codec_driver *drv);
 -- 
 1.7.9.5
