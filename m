@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v2 3/3] ALSA: hda - implement a refcount for
-	i915 power well switch
-Date: Tue, 28 Apr 2015 20:43:19 +0800
-Message-ID: <1430224999-22271-1-git-send-email-mengdong.lin@intel.com>
+Subject: [PATCH v2 2/3] ALSA: hda - remove controller
+	dependency on i915 power well for Baytrail/Braswell
+Date: Tue, 28 Apr 2015 20:43:10 +0800
+Message-ID: <1430224990-22229-1-git-send-email-mengdong.lin@intel.com>
 References: <4530387c0b63ccfafb5dbb3399a39b4093651c48.1429880424.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B430260687
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 14:32:36 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79F2F26129B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 14:32:47 +0200 (CEST)
 In-Reply-To: <4530387c0b63ccfafb5dbb3399a39b4093651c48.1429880424.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,68 +27,45 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-This is to check the refcount of audio driver and reduce calling to i915.
+For Baytrail (Valleyview) and Braswell (Cherryview), not the HD-A controller
+but only the display codec is in the shared power well with gfx.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
-index 52a85d8..e831691 100644
---- a/sound/pci/hda/hda_i915.c
-+++ b/sound/pci/hda/hda_i915.c
-@@ -42,11 +42,16 @@ int hda_display_power(struct hda_intel *hda, bool enable)
- 
- 	dev_dbg(&hda->chip.pci->dev, "display power %s\n",
- 		enable ? "enable" : "disable");
--	if (enable)
--		acomp->ops->get_power(acomp->dev);
--	else
--		acomp->ops->put_power(acomp->dev);
--
-+	mutex_lock(&hda->display_power.lock);
-+	if (enable) {
-+		if (!hda->display_power.use_count++)
-+			acomp->ops->get_power(acomp->dev);
-+	} else {
-+		WARN_ON(!hda->display_power.use_count);
-+		if (!--hda->display_power.use_count)
-+			acomp->ops->put_power(acomp->dev);
-+	}
-+	mutex_unlock(&hda->display_power.lock);
- 	return 0;
- }
- 
-@@ -171,6 +176,8 @@ int hda_i915_init(struct hda_intel *hda)
- 
- 	dev_dbg(dev, "bound to i915 component master\n");
- 
-+	mutex_init(&hda->display_power.lock);
-+
- 	return 0;
- out_master_del:
- 	component_master_del(dev, &hda_component_master_ops);
-diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
-index 2069898..3ca000a 100644
---- a/sound/pci/hda/hda_intel.h
-+++ b/sound/pci/hda/hda_intel.h
-@@ -19,6 +19,11 @@
- #include <drm/i915_component.h>
- #include "hda_controller.h"
- 
-+struct i915_display_power {
-+	struct mutex lock;
-+	int use_count;
-+};
-+
- struct hda_intel {
- 	struct azx chip;
- 
-@@ -46,6 +51,7 @@ struct hda_intel {
- 
- 	/* i915 component interface */
- 	struct i915_audio_component audio_component;
-+	struct i915_display_power display_power;
- };
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1b688ba..e73dc34 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1903,8 +1903,9 @@ static int azx_probe_continue(struct azx *chip)
+ 	 * display codec needs the power and it can be released after probe.
+ 	 */
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+-		/* Assume the controller needs the power by default */
+-		chip->need_i915_power = 1;
++		/* Baytral/Braswell controllers don't need this power */
++		if (pci->device != 0x0f04 && pci->device != 0x2284)
++			chip->need_i915_power = 1;
  
  #ifdef CONFIG_SND_HDA_I915
+ 		err = hda_i915_init(hda);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 5f44f60..7b2744c 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2335,6 +2335,14 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		intel_haswell_fixup_enable_dp12(codec);
+ 	}
+ 
++	/* For Valleyview/Cherryview, the codec is in the display power well.
++	 * For Haswell/Broadwell, the controller is also in the power well and
++	 * can cover codec power request, and so need not set this flag.
++	 * For previous platforms, there is no such power well feature.
++	 */
++	if (is_valleyview_plus(codec))
++		codec->core.need_i915_power = 1;
++
+ 	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+ 		codec->depop_delay = 0;
+ 
 -- 
 1.9.1
