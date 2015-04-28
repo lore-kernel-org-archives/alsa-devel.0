@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/12] trivial: ASoC: adau1977: fix typo
- s/Substraction/Subtraction/
-Date: Tue, 28 Apr 2015 17:00:24 +0100
-Message-ID: <20150428160023.GW22845@sirena.org.uk>
-References: <1430219491-5076-1-git-send-email-ao2@ao2.it>
- <1430219491-5076-6-git-send-email-ao2@ao2.it>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: M-Audio Midisport 2x2 Anniversary edition,
+	latency	problem
+Date: Tue, 28 Apr 2015 18:21:15 +0200
+Message-ID: <553FB37B.3000802@ladisch.de>
+References: <1430209117.53049092@f91.i.mail.ru> <553F8B66.6050405@ladisch.de>
+ <1430230406.500088555@f412.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3968658869203626502=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E6E1261AB7
- for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 18:00:36 +0200 (CEST)
-In-Reply-To: <1430219491-5076-6-git-send-email-ao2@ao2.it>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6A077261AB0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2015 18:21:57 +0200 (CEST)
+In-Reply-To: <1430230406.500088555@f412.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jiri Kosina <trivial@kernel.org>
+To: Ilya Dikariev <dik_again@mail.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3968658869203626502==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hBb2QceSy2hc6+yw"
-Content-Disposition: inline
-
-
---hBb2QceSy2hc6+yw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 28, 2015 at 01:11:24PM +0200, Antonio Ospite wrote:
-> Signed-off-by: Antonio Ospite <ao2@ao2.it>
-
-Applied, but please use subject lines reflecting the style for the
-subsystem and don't send only a single patch for a series.
-
---hBb2QceSy2hc6+yw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVP66XAAoJECTWi3JdVIfQ/IAH/25DfTNSyJ05tIUikSvzDcFW
-mKsPLV8tkbuuxWn2WNCjQBqd16a3bFghkQ4RCml3VlqK8jxdWTEOZstrlij5Qt6Y
-RrDBAlBLlwtKf8RqmVe/tn9g7dozgzqK8/Xn4717jBXMdA8bcOAauwX+Kgclt+3X
-guvCga3Vg+pToeNFRrXcwnJgLdx7XvvOitjQfsU1vGKwNB7DPQdUUYKFySoxmeli
-g+O/W8tb4MQ8qy/k02ncLYnBArSql3nobQzR0mi/17Us26fpa6t6Z+nwwNLbjE91
-uFDiN9pN81Cs62OgoN+qtHDiD2/yJnoIK1o/VwZwcClsYLGjXiTO98y3q1HQi5w=
-=TDKA
------END PGP SIGNATURE-----
-
---hBb2QceSy2hc6+yw--
-
---===============3968658869203626502==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3968658869203626502==--
+SWx5YSBEaWthcmlldiB3cm90ZToKPiDQktGC0L7RgNC90LjQuiwgMjgg0LDQv9GA0LXQu9GPIDIw
+MTUsIDE1OjMwICswMjowMCDQvtGCIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRl
+PjoKPj4gSWx5YSBEaWthcmlldiB3cm90ZToKPj4+IEkgYm91Z2h0IGEgTUlESS1pbnRlcmZhY2Ug
+dm9uIE0tQXVkaW8gKHNlZSBzdWJqZWN0KSwgYnV0IHRoZXJlIGFyZQo+Pj4gc3RyYW5nZSB0aGlu
+Z3Mgd2l0aCBpdCBvbiBteSBkZXNrdG9wIChBcmNoLCBsYXRlc3Qga2VybmVsKS4gVGhlCj4+PiBs
+YXRlbmN5IGlzIGFib3V0IDUgc2Vjb25kcy4KPj4KPj4gSG93IGFyZSB5b3UgbWVhc3VyaW5nIHRo
+ZSBsYXRlbmN5Pwo+Cj4gSSBtZWFzdXJlZCBpdCBvbmx5IHdpdGggbXkgZmVlbGluZyBvZiB0aW1l
+LgoKV2hhdCBhcmUgdGhlIHNwZWNpZmljIGV2ZW50cyBiZXR3ZWVuIHdoaWNoIHRoZXJlIGlzIGFu
+IGludGVydmFsIG9mCjUgc2Vjb25kcz8KCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
