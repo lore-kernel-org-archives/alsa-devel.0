@@ -1,145 +1,85 @@
-From: Gabriele Martino <g.martino@gmx.com>
-Subject: Re: Intel HDA / ca0132: support for Alienware 15
- Creative Sound Core3D-EX
-Date: Wed, 29 Apr 2015 00:47:16 +0200
-Message-ID: <55400DF4.2080309@gmx.com>
-References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
- <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
- <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
+From: Kevin Cernekee <cernekee@chromium.org>
+Subject: Re: [PATCH V2 1/4] regmap: cache: Add "was_reset" argument to regcache_sync_region()
+Date: Tue, 28 Apr 2015 21:58:48 -0700
+Message-ID: <CAJzqFtYkSds+s2HA3uKrMQes+D2K1TxOdzm5jJhtt2iZvyqxCA@mail.gmail.com>
+References: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
+ <1429915008-22015-2-git-send-email-cernekee@chromium.org> <20150425113235.GA31708@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000709000104040207020605"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id F3C51260425
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 00:46:52 +0200 (CEST)
-Received: from [192.168.69.6] ([95.237.223.208]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0MPE7E-1Yre7Y25Ca-004Q5N for
- <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 00:46:52 +0200
-In-Reply-To: <s5hlhhc3hiy.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150425113235.GA31708@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000709000104040207020605
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-On 28/04/2015 08:15, Takashi Iwai wrote:
-> snd_pci_quirk_lookup() just returns a value matching in the given
-> table.  Provide a table like:
+On Sat, Apr 25, 2015 at 4:32 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Apr 24, 2015 at 03:36:45PM -0700, Kevin Cernekee wrote:
 >
-> enum {
-> 	QUIRK_NONE,
-> 	QUIRK_ALIENWARE,
-> };
+>> index 116655d92269..ece122a6fdeb 100644
+>> --- a/include/linux/regmap.h
+>> +++ b/include/linux/regmap.h
+>> @@ -438,7 +438,7 @@ bool regmap_can_raw_write(struct regmap *map);
+>>
+>>  int regcache_sync(struct regmap *map);
+>>  int regcache_sync_region(struct regmap *map, unsigned int min,
+>> -                      unsigned int max);
+>> +                      unsigned int max, bool was_reset);
 >
-> static const struct snd_pci_quirk ca0132_quirks[] =3D {
-> 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15", QUIRK_ALIENWARE),
-> 	{}
-> };
+> This seems pretty ugly - both the fact that we're changing the signature
+> of the function and the naming of the argument feel inelegant.  The
+> point isn't if the device has been reset, the point is if the device
+> currently has the default register values or not, and this means that
+> the user is responsible for tracking that state until the next time it
+> does the sync.  That may be immediately like in your case but there's no
+> reason that has to be the case.  The fact that we're passing in
+> something called "is_reset" which sounds like a state value for the
+> register map is a bit of a warning sign here.
 >
-> then somewhere in the probe, check the table
+> What we should be doing here is providing a way for users to tell regmap
+> if they've reset the register map and actually we already have that
+> interface, it's just not got the best name - regcache_mark_dirty() is
+> effectively it since there's really not a lot of other reasons why a
+> driver would need to mark the cache as dirty.  We're just not handling
+> it properly.  What we should do instead is to keep the interface as it
+> is for now and make it behave in a more expected fashion so that if the
+> cache is explicitly marked dirty we assume that the hardware is in the
+> default state and otherwise we don't.
 >
-> 	spec->quirk =3D snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
->
-> then refer it appropriately
->
-> 	if (spec->quirk =3D=3D QUIRK_ALIENWARE) {
-> 		spec->out_pins[1] =3D 0x0f;
-> 		....
-> 	} else {
-> 		spec->out_pins[1] =3D 0x10;
-> 		....
-> 	}
->
-> The current ca0132 code has way too may fixed assignment, so the pin
-> reassignment like other codec drivers doesn't work as is.  We'd need
-> to sort it out first.  So, start from the simple workaround.
-Thank you for your explanation.
-I managed to fix the pin address, but as I told before the jack
-detection is totally messed up.
-"hdajacksensetest" fails with:
-Ioctl call failed with error 16
+> Ideally what we'd do is both improve the naming of mark_dirty() (though
+> that's API churn which is nasty) and arrange for rbtree to cache the
+> default values lazily, that way the only things in the cache will be
+> things that have been explicitly changed (we will still want default
+> checking but it makes life easier and means we don't end up having to do
+> a full writeout for cases where things have been put into cache mode
+> without a reset).
 
-I can't understand why, as ca0132_select_out() already relies on
-spec->out_pins[0] and spec->out_pins[1].
+Hi Mark,
 
-Regards,
-Gabriele
+I started prototyping this, but ran into a couple of issues:
 
+1) How do we tell the difference between "regcache contains a
+non-default value that correctly reflects the hardware register
+contents" versus "regcache contains a non-default value that is
+waiting to be written when we exit cache_only mode"?
 
---------------000709000104040207020605
-Content-Type: text/x-patch;
- name="ca0132-alienware.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="ca0132-alienware.patch"
+2) Does that also mean that we should store default values in the
+rbtree if they are part of a deferred cache_only write, but not store
+them if the write went through to the hardware?
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 4a4e7b2..c9b0211 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -748,10 +748,24 @@
-=20
- 	struct hda_codec *codec;
- 	struct delayed_work unsol_hp_work;
-+	const struct snd_pci_quirk *quirk;
-=20
- #ifdef ENABLE_TUNING_CONTROLS
- 	long cur_ctl_vals[TUNING_CTLS_COUNT];
- #endif
-+};
-+
-+/*
-+ * CA0132 quirks table
-+ */
-+enum {
-+	QUIRK_NONE,
-+	QUIRK_ALIENWARE,
-+};
-+
-+static const struct snd_pci_quirk ca0132_quirks[] =3D {
-+	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15", QUIRK_ALIENWARE),
-+	{}
- };
-=20
- /*
-@@ -4653,6 +4667,7 @@
- 		return -ENOMEM;
- 	codec->spec =3D spec;
- 	spec->codec =3D codec;
-+	spec->quirk =3D snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
-=20
- 	spec->dsp_state =3D DSP_DOWNLOAD_INIT;
- 	spec->num_mixers =3D 1;
-@@ -4670,6 +4685,12 @@
-=20
- 	ca0132_config(codec);
-=20
-+	/* Apply detected quirks */
-+	if (spec->quirk->value =3D=3D QUIRK_ALIENWARE) {
-+		codec_dbg(codec, "QUIRK_ALIENWARE applied.\n\n");
-+		spec->out_pins[1] =3D 0x0f;
-+	}
-+
- 	err =3D snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
- 	if (err < 0)
- 		return err;
+3) If we're caching the default values lazily, does that mean that
+every regcache read would incur both an rbtree lookup and a bsearch of
+the reg_defaults array?
 
---------------000709000104040207020605
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+4) If "the only things in the cache will be things that have been
+explicitly changed," that could impact the semantics of
+regcache_drop_region().  Which fortunately has no users.
 
+Seems like it would be more straightforward just to add an
+rbnode->dirty bitmask alongside rbnode->cache_present, rather than
+trying to infer the hardware state from the presence/absence of the
+cache entry.  Knowing whether each individual register is out of sync
+with the hardware lets us avoid unnecessary writes in both situations:
+full reset, and temporary loss of register access.
 
---------------000709000104040207020605--
+What do you think?
