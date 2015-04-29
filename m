@@ -1,84 +1,234 @@
 From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v11 0/3] ASoC: tda998x: add a codec to the HDMI
-	transmitter
-Date: Wed, 29 Apr 2015 17:13:04 +0200
-Message-ID: <cover.1430320384.git.moinejf@free.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
- by alsa0.perex.cz (Postfix) with ESMTP id 614FB26060B
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:28:15 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v11 1/3] drm/i2c: tda998x: Add support of a DT graph of ports
+Date: Wed, 29 Apr 2015 12:20:43 +0200
+Message-ID: <227b36f0051a922e22d990a4050e6bb0757e4943.1430320384.git.moinejf@free.fr>
+References: <cover.1430320384.git.moinejf@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1430320384.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
+Cc: Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Based on 4.1-rc1
+Two kinds of ports may be declared in a DT graph of ports: video and audio.
+This patch accepts the port value from a video port as an alternative
+to the video-ports property.
+It also accepts audio ports in the case the transmitter is not used as
+a slave encoder.
+The new file include/sound/tda998x.h prepares to the definition of
+a tda998x CODEC.
 
-v11:
-	- reduce the patch series to adding the tda998x codec only
-v10:
-	- add the generic dt-card
-	- define the audio ports from a DT graph of ports (Russell King)
-	- reuse HDMI constants (Andrew Jackson - Jyri Sarha)
-	- alloc rate_constraints in codec (Jyri Sarha)
-	- fix bad number of channels (Jyri Sarha)
-	- correct codec generation from config (Russell King - Jyri Sarha)
-	- no module init/exit (Russell King)
-v9:
-	- back to a TDA998x specific CODEC
-	- more comments
-	- change magic values to constants
-v8:
-	- change some comments about the patches
-v7:
-	- remove the change of the K predivider (Jyri Sarha)
-	- add S24_3LE and S32_LE as possible audio formats (Jyri Sarha)
-	- don't move the struct priv2 definition and use the
-	  slave encoder private data as the device private data
-	  (Russell King)
-	- remove the useless request_module (Russell King/Mark Brown)
-	- don't lock the HDMI module (Russell King)
-	- use platform_device_unregister to remove the codec
-	  (Russell King)
-v6:
-	- extend the HDMI CODEC instead of using a specific CODEC
-v5:
-	- use the TDA998x private data instead of a specific area
-	  for the CODEC interface
-	- the CODEC is TDA998x specific (Mark Brown)
-v4:
-	- remove all the TDA998x specific stuff from the CODEC
-	- move the EDID scan from the CODEC to the TDA998x
-	- move the CODEC to sound/soc (Mark Brown)
-	- update the audio_sample_rate from the EDID (Andrew Jackson)
-v3: fix bad rate (Andrew Jackson)
-v2: check double stream start (Mark Brown)
-
-Jean-Francois Moine (3):
-  drm/i2c: tda998x: Add support of a DT graph of ports
-  drm/i2c: tda998x: Change drvdata for audio extension
-  ASoC: tda998x: add a codec to the HDMI transmitter
-
- .../devicetree/bindings/drm/i2c/tda998x.txt        |  51 +++++
- drivers/gpu/drm/i2c/tda998x_drv.c                  | 220 +++++++++++++++++++--
- include/sound/tda998x.h                            |  30 +++
- sound/soc/codecs/Kconfig                           |   5 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/tda998x.c                         | 174 ++++++++++++++++
- 6 files changed, 471 insertions(+), 11 deletions(-)
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
+---
+ .../devicetree/bindings/drm/i2c/tda998x.txt        | 51 +++++++++++++
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 88 +++++++++++++++++++---
+ include/sound/tda998x.h                            |  8 ++
+ 3 files changed, 138 insertions(+), 9 deletions(-)
  create mode 100644 include/sound/tda998x.h
- create mode 100644 sound/soc/codecs/tda998x.c
 
+diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+index e9e4bce..35f6a80 100644
+--- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
++++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+@@ -16,6 +16,35 @@ Optional properties:
+ 
+   - video-ports: 24 bits value which defines how the video controller
+ 	output is wired to the TDA998x input - default: <0x230145>
++	This property is not used when ports are defined.
++
++Optional nodes:
++
++  - port: up to three ports.
++	The ports are defined according to [1].
++
++    Video port.
++	There may be only one video port.
++	This one must contain the following property:
++
++	- port-type: must be "rgb"
++
++	and may contain the optional property:
++
++	- reg: 24 bits value which defines how the video controller
++		output is wired to the TDA998x input (video pins)
++		When absent, the default value is <0x230145>.
++
++    Audio ports.
++	There may be one or two audio ports.
++	These ones must contain the following properties:
++
++	- port-type: must be "i2s" or "spdif"
++
++	- reg: 8 bits value which defines how the audio controller
++		output is wired to the TDA998x input (audio pins)
++
++[1] Documentation/devicetree/bindings/graph.txt
+ 
+ Example:
+ 
+@@ -26,4 +55,26 @@ Example:
+ 		interrupts = <27 2>;		/* falling edge */
+ 		pinctrl-0 = <&pmx_camera>;
+ 		pinctrl-names = "default";
++
++		port@230145 {
++			port-type = "rgb";
++			reg = <0x230145>;
++			hdmi_0: endpoint {
++				remote-endpoint = <&lcd0_0>;
++			};
++		};
++		port@3 {			/* AP1 = I2S */
++			port-type = "i2s";
++			reg = <0x03>;
++			tda998x_i2s: endpoint {
++				remote-endpoint = <&audio1_i2s>;
++			};
++		};
++		port@4 {			 /* AP2 = S/PDIF */
++			port-type = "spdif";
++			reg = <0x04>;
++			tda998x_spdif: endpoint {
++				remote-endpoint = <&audio1_spdif1>;
++			};
++		};
+ 	};
+diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+index 5febffd..a2ed391 100644
+--- a/drivers/gpu/drm/i2c/tda998x_drv.c
++++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+@@ -27,6 +27,7 @@
+ #include <drm/drm_edid.h>
+ #include <drm/drm_of.h>
+ #include <drm/i2c/tda998x.h>
++#include <sound/tda998x.h>
+ 
+ #define DBG(fmt, ...) DRM_DEBUG(fmt"\n", ##__VA_ARGS__)
+ 
+@@ -47,6 +48,8 @@ struct tda998x_priv {
+ 	wait_queue_head_t wq_edid;
+ 	volatile int wq_edid_wait;
+ 	struct drm_encoder *encoder;
++
++	struct tda998x_audio_s audio;
+ };
+ 
+ #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
+@@ -1227,9 +1230,57 @@ static struct drm_encoder_slave_funcs tda998x_encoder_slave_funcs = {
+ 
+ /* I2C driver functions */
+ 
++static int tda998x_parse_ports(struct tda998x_priv *priv,
++				struct device_node *np)
++{
++	struct device_node *of_port;
++	const char *port_type;
++	int ret, audio_index, reg, afmt;
++
++	audio_index = 0;
++	for_each_child_of_node(np, of_port) {
++		if (!of_port->name
++		 || of_node_cmp(of_port->name, "port") != 0)
++			continue;
++		ret = of_property_read_string(of_port, "port-type",
++					&port_type);
++		if (ret < 0)
++			continue;
++		ret = of_property_read_u32(of_port, "reg", &reg);
++		if (strcmp(port_type, "rgb") == 0) {
++			if (!ret) {		/* video reg is optional */
++				priv->vip_cntrl_0 = reg >> 16;
++				priv->vip_cntrl_1 = reg >> 8;
++				priv->vip_cntrl_2 = reg;
++			}
++			continue;
++		}
++		if (strcmp(port_type, "i2s") == 0)
++			afmt = AFMT_I2S;
++		else if (strcmp(port_type, "spdif") == 0)
++			afmt = AFMT_SPDIF;
++		else
++			continue;
++		if (ret < 0) {
++			dev_err(&priv->hdmi->dev, "missing reg for %s\n",
++				port_type);
++			return ret;
++		}
++		if (audio_index >= ARRAY_SIZE(priv->audio.ports)) {
++			dev_err(&priv->hdmi->dev, "too many audio ports\n");
++			break;
++		}
++		priv->audio.ports[audio_index] = reg;
++		priv->audio.port_types[audio_index] = afmt;
++		audio_index++;
++	}
++	return 0;
++}
++
+ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+ {
+ 	struct device_node *np = client->dev.of_node;
++	struct device_node *of_port;
+ 	u32 video;
+ 	int rev_lo, rev_hi, ret;
+ 	unsigned short cec_addr;
+@@ -1334,15 +1385,34 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+ 	/* enable EDID read irq: */
+ 	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
+ 
+-	if (!np)
+-		return 0;		/* non-DT */
+-
+-	/* get the optional video properties */
+-	ret = of_property_read_u32(np, "video-ports", &video);
+-	if (ret == 0) {
+-		priv->vip_cntrl_0 = video >> 16;
+-		priv->vip_cntrl_1 = video >> 8;
+-		priv->vip_cntrl_2 = video;
++	/* get the device tree parameters */
++	if (np) {
++		of_port = of_get_child_by_name(np, "port");
++		if (of_port) {				/* graph of ports */
++			of_node_put(of_port);
++			ret = tda998x_parse_ports(priv, np);
++			if (ret < 0)
++				goto fail;
++
++			/* initialize the default audio configuration */
++			if (priv->audio.ports[0]) {
++				priv->params.audio_cfg = priv->audio.ports[0];
++				priv->params.audio_format =
++						priv->audio.port_types[0];
++				priv->params.audio_clk_cfg =
++					priv->params.audio_format ==
++							AFMT_SPDIF ? 0 : 1;
++			}
++		} else {
++
++			/* optional video properties */
++			ret = of_property_read_u32(np, "video-ports", &video);
++			if (ret == 0) {
++				priv->vip_cntrl_0 = video >> 16;
++				priv->vip_cntrl_1 = video >> 8;
++				priv->vip_cntrl_2 = video;
++			}
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/include/sound/tda998x.h b/include/sound/tda998x.h
+new file mode 100644
+index 0000000..487a809
+--- /dev/null
++++ b/include/sound/tda998x.h
+@@ -0,0 +1,8 @@
++#ifndef SND_TDA998X_H
++#define SND_TDA998X_H
++
++struct tda998x_audio_s {
++	u8 ports[2];			/* AP value */
++	u8 port_types[2];		/* AFMT_xxx */
++};
++#endif
 -- 
 2.1.4
