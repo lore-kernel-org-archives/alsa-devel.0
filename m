@@ -1,17 +1,17 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 4/8] gpio: arizona: add support for WM8998
-	and WM1814
-Date: Wed, 29 Apr 2015 15:37:05 +0100
-Message-ID: <1430318229-28518-5-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1430318229-28518-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Andy Ng <andreas2025@gmail.com>
+Subject: Alsa triggering methods
+Date: Wed, 29 Apr 2015 16:24:09 +0100
+Message-ID: <CAAVaN8wvo4Aq_ij1K_Nt2Jnc6qO8XDsd5X2hvsFKSAzQhbts2A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3169A260705
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 16:37:47 +0200 (CEST)
-In-Reply-To: <1430318229-28518-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Received: from mail-ie0-f172.google.com (mail-ie0-f172.google.com
+ [209.85.223.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id A534E2605D2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:24:10 +0200 (CEST)
+Received: by iejt8 with SMTP id t8so44936581iej.2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 08:24:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,28 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, myungjoo.ham@samsung.com, ckeepax@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/gpio/gpio-arizona.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Hi,
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index 052fbc8..ca00273 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -118,6 +118,8 @@ static int arizona_gpio_probe(struct platform_device *pdev)
- 	case WM5110:
- 	case WM8280:
- 	case WM8997:
-+	case WM8998:
-+	case WM1814:
- 		arizona_gpio->gpio_chip.ngpio = 5;
- 		break;
- 	default:
--- 
-1.7.2.5
+I am working on a ALSA card driver that handles a DSP instance. The
+problem I have is that the triggering mechanism in ALSA to start a PCM
+has the interrupts disabled, and my dsp framework is actually
+acknowledging the start trigger with an event after 50 microseconds
+time that I can't handle because the IRQs are disabled.
+
+Is there any way when the trigger mechanism goes down to the card to
+be able to handle any acknowledgements what will happen within a sort
+period of time.
+
+I have seen bespoke triggering method but not sure if everyone is using it.
+
+Any ideas would be helpful.
+
+Best regards,
+Andreas
