@@ -1,83 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 1/4] regmap: cache: Add "was_reset" argument to
- regcache_sync_region()
-Date: Wed, 29 Apr 2015 18:34:02 +0100
-Message-ID: <20150429173402.GP22845@sirena.org.uk>
-References: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
- <1429915008-22015-2-git-send-email-cernekee@chromium.org>
- <20150425113235.GA31708@sirena.org.uk>
- <CAJzqFtYkSds+s2HA3uKrMQes+D2K1TxOdzm5jJhtt2iZvyqxCA@mail.gmail.com>
- <20150429104042.GB22845@sirena.org.uk>
- <CAJzqFta=ndErf012QEV37kE0oSPp6dF_D7w_i_HsCkx5ytPgdA@mail.gmail.com>
- <20150429164632.GO22845@sirena.org.uk>
- <CAJzqFtbTbUG=s7sxNBEYG1Haq5tzaCrMB=j55okZnwdVmzUAYQ@mail.gmail.com>
+From: Glenn Golden <gdg@zplane.com>
+Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
+ mute LED non-workingness
+Date: Wed, 29 Apr 2015 11:41:21 -0600
+Message-ID: <20150429174120.GA21427@huh.zplane.com>
+References: <20150428000206.GK550@huh.zplane.com>
+ <s5hmw1s3hxh.wl-tiwai@suse.de>
+ <20150428101645.GM550@huh.zplane.com>
+ <s5h618gwnno.wl-tiwai@suse.de>
+ <20150428113948.GN550@huh.zplane.com>
+ <s5hwq0wv5du.wl-tiwai@suse.de>
+ <20150428175317.GO550@huh.zplane.com>
+ <s5hwq0w83fh.wl-tiwai@suse.de>
+ <20150429124616.GA22899@huh.zplane.com>
+ <1430312944.4023381.260152129.0B5EE013@webmail.messagingengine.com>
+Reply-To: gdg@zplane.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3VjAXQKlB2CdpQtt"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.indra.com (smtp.indra.com [209.169.0.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7655F2605F5
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 19:41:31 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CAJzqFtbTbUG=s7sxNBEYG1Haq5tzaCrMB=j55okZnwdVmzUAYQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Cernekee <cernekee@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <1430312944.4023381.260152129.0B5EE013@webmail.messagingengine.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, Alex Hung <alex.hung@canonical.com>, bruno.mueller@gmail.com, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Henrique de Moraes Holschuh <hmh@hmh.eng.br> [2015-04-29 10:09:04 -0300]:
+> > 
+> > Henrique - should this thread be moved to some TP ACPI list? 
+> 
+> There's  ibm-acpi-devel@lists.sourceforge.net.  We can also use the kernel
+> bugzilla.
+> 
 
---3VjAXQKlB2CdpQtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK. Since there's already a ticket on the kernel tracker, let's just use that.
 
-On Wed, Apr 29, 2015 at 10:02:03AM -0700, Kevin Cernekee wrote:
-> On Wed, Apr 29, 2015 at 9:46 AM, Mark Brown <broonie@kernel.org> wrote:
+    https://bugzilla.kernel.org/show_bug.cgi?id=96171
 
-> > We just need a single boolean?
+When you have time, let me know what the next step is for me to try here,
+and I'll post any results to the above ticket.
 
-> Right, so if we add a per-regmap bool that tells us whether the device
-> has been reset, then in the case of "not reset" we will have to write
-> every regcache entry out to the device.  Even the ones that weren't
-> touched while in cache_only mode.  This makes the "not reset" case
-> much less efficient than the "reset" case.
-
-The immediate point is to provide a useful external interface, the
-internal optimisation is much less urgent (and it's less clear to me how
-often we're going to need to do that at all - generally cache only and
-power loss go together.
-
-> BTW, any preferences on naming for the bool or for the renamed
-> mark_dirty function?
-
-Not urgently.  Note that I'm *not* suggesting an immediate rename,
-that's definitely a separate change (which will be a lot more painful to
-merge due to cross tree issues).
-
-> >> i.e. regcache_sync() finds a register value marked "present".  How do
-> >> we know whether we need to write it back to the hardware?  For the
-> >> special case of "cached non default register values immediately after
-> >> a HW reset" you can mostly figure this out, but if there was no HW
-> >> reset how do we know which entries changed while the HW was
-> >> inaccessible?
-
-> > In the first instance do we care?
-
-> I'm not sure I understand the question.
-
-Do we actually care about getting a list of the changed registers that
-much?
-
---3VjAXQKlB2CdpQtt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVQRYKAAoJECTWi3JdVIfQfYsIAIKxW37dqidzwS5ArJBIpzd9
-c5aJ5bmWP+r3aJXEY2NIGvg/lTtELe45uFOFltPfygWogYDxyp8j14Q0lFbBzytP
-m5o2rm+HmaOxtglvjM1q+qqhdDkDWq7tjuZ1gg05n0GCBt6eZLaV1iJrqQ8gMrgG
-vV9caW9J61hftHiZLMbTXP7l4bggj3zJmGX6id685iMBqApbpTsXvxJW0bm03tEE
-82iQ6qIOvXqBV/DUI7tYZdR8liFcff1p+2l+jXKXtUWz2qL6PzKJ7zusYB9ANDEY
-kzQpZCPFaCv5o4a0ZC/bIzUjd4+6zmZv6AKfW+PvnUOFBFrMeOxEkOuNL/z4+Tg=
-=joo2
------END PGP SIGNATURE-----
-
---3VjAXQKlB2CdpQtt--
+Thanks.
