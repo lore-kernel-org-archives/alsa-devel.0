@@ -1,182 +1,59 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 2/7] ALSA: hda - add new HDA registers
-Date: Wed, 29 Apr 2015 16:27:41 +0530
-Message-ID: <20150429105741.GE3521@localhost>
-References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
- <1430250870-3169-3-git-send-email-vinod.koul@intel.com>
- <s5h8udbgqs1.wl-tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v2 2/2] mfd: arizona: Update DT binding to
+ support hpdet channel
+Date: Wed, 29 Apr 2015 11:57:37 +0100
+Message-ID: <20150429105737.GZ9169@x1>
+References: <1429589505-11954-1-git-send-email-ideal.song@samsung.com>
+ <1429589505-11954-3-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 722442604CA
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 12:57:20 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5h8udbgqs1.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+In-Reply-To: <1429589505-11954-3-git-send-email-ideal.song@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, cw00.choi@samsung.com, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 29, 2015 at 12:41:50PM +0200, Takashi Iwai wrote:
-> At Wed, 29 Apr 2015 01:24:25 +0530,
-> Vinod Koul wrote:
-> > 
-> > From: Jeeja KP <jeeja.kp@intel.com>
-> > 
-> > This patch adds new registers as per HD audio Spec like capability registers
-> > for processing pipe, software position based FIFO, Multiple Links and Global
-> > Time Synchronization.
-> > 
-> > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> 
-> Should I merge this patch now to topic/hda branch?
-> This looks like the only patch changing the hda core code, the rest
-> are all hda_soc specific.
-yes, I would still request you to go thru the asoc patches :), your comments
-will help. Specfically am looking at the soc hda layer (1st two asoc
-patches) and then skl driver controller changes
+Does this looks okay to you Charles?
 
-> 
-> Or, feel free to take my ack:
->   Acked-by: Takashi Iwai <tiwai@suse.de>
-Thanks
+> This patch add device tree bindings for the pdata needed to configure
+> the Accessory Detect Mode select when Headphone detection.
 
--- 
-~Vinod
+Isn't the idea of headphone detection that it headphones are detected
+i.e. automatically?
 
-> 
-> 
-> Takashi
-> 
-> > ---
-> >  include/sound/hda_register.h |   87 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 87 insertions(+)
-> > 
-> > diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-> > index 4f6d3fce6ee6..dced67f5c35f 100644
-> > --- a/include/sound/hda_register.h
-> > +++ b/include/sound/hda_register.h
-> > @@ -28,6 +28,10 @@
-> >  #define AZX_REG_STATESTS		0x0e
-> >  #define AZX_REG_GSTS			0x10
-> >  #define   AZX_GSTS_FSTS		(1 << 1)   /* flush status */
-> > +#define AZX_REG_GCAP2			0x12
-> > +#define AZX_REG_LLCH			0x14
-> > +#define AZX_REG_OUTSTRMPAY		0x18
-> > +#define AZX_REG_INSTRMPAY		0x1A
-> >  #define AZX_REG_INTCTL			0x20
-> >  #define AZX_REG_INTSTS			0x24
-> >  #define AZX_REG_WALLCLK			0x30	/* 24Mhz source */
-> > @@ -81,6 +85,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
-> >  #define AZX_REG_SD_FIFOW		0x0e
-> >  #define AZX_REG_SD_FIFOSIZE		0x10
-> >  #define AZX_REG_SD_FORMAT		0x12
-> > +#define AZX_REG_SD_FIFOL		0x14
-> >  #define AZX_REG_SD_BDLPL		0x18
-> >  #define AZX_REG_SD_BDLPU		0x1c
-> >  
-> > @@ -134,6 +139,88 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
-> >  #define AZX_MAX_CORB_ENTRIES	256
-> >  #define AZX_MAX_RIRB_ENTRIES	256
-> >  
-> > +#define AZX_REG_CAP_HDR		0x0
-> > +#define CAP_HDR_VER_OFF		28
-> > +#define CAP_HDR_VER_MASK	(0xF << CAP_HDR_VER_OFF)
-> > +#define CAP_HDR_ID_OFF		16
-> > +#define CAP_HDR_ID_MASK		(0xFFF << CAP_HDR_ID_OFF)
-> > +#define CAP_HDR_NXT_PTR_MASK	0xFFFF
-> > +
-> > +/* registers of Software Position Based FIFO Capability Structure */
-> > +#define SPB_CAP_ID		0x4
-> > +#define AZX_REG_SPB_BASE_ADDR	0x700
-> > +#define AZX_REG_SPB_SPBFCH	0x00
-> > +#define AZX_REG_SPB_SPBFCCTL	0x04
-> > +/* Base used to calculate the iterating register offset */
-> > +#define SPB_BASE		0x08
-> > +/* Interval used to calculate the iterating register offset */
-> > +#define SPB_INTERVAL		0x08
-> > +
-> > +/* registers of Global Time Synchronization Capability Structure */
-> > +#define GTS_CAP_ID		0x1
-> > +#define AZX_REG_GTS_GTSCH	0x00
-> > +#define AZX_REG_GTS_GTSCD	0x04
-> > +#define AZX_REG_GTS_GTSCTLAC	0x0C
-> > +#define GTS_BASE		0x20
-> > +#define GTS_INTERVAL		0x20
-> > +
-> > +/* registers for Processing Pipe Capability Structure */
-> > +#define PP_CAP_ID		0x3
-> > +#define AZX_REG_PP_PPCH		0x10
-> > +#define AZX_REG_PP_PPCTL	0x04
-> > +#define PPCTL_PIE		(1<<31)
-> > +#define PPCTL_GPROCEN		(1<<30)
-> > +/* _X_ = dma engine # and cannot * exceed 29 (per spec max 30 dma engines) */
-> > +#define PPCTL_PROCEN(_X_)	(1<<(_X_))
-> > +
-> > +#define AZX_REG_PP_PPSTS	0x08
-> > +
-> > +#define PPHC_BASE		0x10
-> > +#define PPHC_INTERVAL		0x10
-> > +
-> > +#define AZX_REG_PPHCLLPL	0x0
-> > +#define AZX_REG_PPHCLLPU	0x4
-> > +#define AZX_REG_PPHCLDPL	0x8
-> > +#define AZX_REG_PPHCLDPU	0xC
-> > +
-> > +#define PPLC_BASE		0x10
-> > +#define PPLC_MULTI		0x10
-> > +#define PPLC_INTERVAL		0x10
-> > +
-> > +#define AZX_REG_PPLCCTL		0x0
-> > +#define PPLCCTL_STRM_BITS	4
-> > +#define PPLCCTL_STRM_SHIFT	20
-> > +#define REG_MASK(bit_num, offset) \
-> > +	(((1 << (bit_num)) - 1) << (offset))
-> > +#define PPLCCTL_STRM_MASK \
-> > +	REG_MASK(PPLCCTL_STRM_BITS, PPLCCTL_STRM_SHIFT)
-> > +#define PPLCCTL_RUN		(1<<1)
-> > +#define PPLCCTL_STRST		(1<<0)
-> > +
-> > +#define AZX_REG_PPLCFMT		0x4
-> > +#define AZX_REG_PPLCLLPL	0x8
-> > +#define AZX_REG_PPLCLLPU	0xC
-> > +
-> > +/* registers for Multiple Links Capability Structure */
-> > +#define ML_CAP_ID		0x2
-> > +#define AZX_REG_ML_MLCH		0x00
-> > +#define AZX_REG_ML_MLCD		0x04
-> > +#define ML_BASE			0x40
-> > +#define ML_INTERVAL		0x40
-> > +
-> > +#define AZX_REG_ML_LCAP		0x00
-> > +#define AZX_REG_ML_LCTL		0x04
-> > +#define AZX_REG_ML_LOSIDV	0x08
-> > +#define AZX_REG_ML_LSDIID	0x0C
-> > +#define AZX_REG_ML_LPSOO	0x10
-> > +#define AZX_REG_ML_LPSIO	0x12
-> > +#define AZX_REG_ML_LWALFC	0x18
-> > +#define AZX_REG_ML_LOUTPAY	0x20
-> > +#define AZX_REG_ML_LINPAY	0x30
-> > +
-> > +#define MLCTL_SPA		(1<<16)
-> > +#define MLCTL_CPA		23
-> > +
-> >  /*
-> >   * helpers to read the stream position
-> >   */
-> > -- 
-> > 1.7.9.5
-> > 
+> Signed-off-by: Inha Song <ideal.song@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/arizona.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Docu=
+mentation/devicetree/bindings/mfd/arizona.txt
+> index 7bd1273..3529592 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -49,6 +49,12 @@ Optional properties:
+>      input singals. If values less than the number of input signals, =
+elements
+>      that has not been specifed are set to 0 by default.
+> =20
+> +  - wlf,hpdet-channel : Headphone detection channel.
+> +	1 or ARIZONA_ACCDET_MODE_HPL - Headphone detect mode is set to HPDE=
+TL
+> +	2 or ARIZONA_ACCDET_MODE_HPR - Headphone detect mode is set to HPDE=
+TR
+> +	If this node is not mentioned or if the value is unknown, then
+> +	headphone detection mode is set to MICDET.
+> +
+>    - DCVDD-supply, MICVDD-supply : Power supplies, only need to be sp=
+ecified if
+>      they are being externally supplied. As covered in
+>      Documentation/devicetree/bindings/regulator/regulator.txt
 
--- 
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
