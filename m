@@ -1,7 +1,7 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 2/8] ASoC: arizona: add defines for single-input gain control
-Date: Wed, 29 Apr 2015 15:37:03 +0100
-Message-ID: <1430318229-28518-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 8/8] Documentation: Add WM8998/WM1814 device tree bindings
+Date: Wed, 29 Apr 2015 15:37:09 +0100
+Message-ID: <1430318229-28518-9-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1430318229-28518-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-gpio-owner@vger.kernel.org>
 In-Reply-To: <1430318229-28518-1-git-send-email-rf@opensource.wolfsonmicro.com>
@@ -10,33 +10,51 @@ To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@g
 Cc: myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Adds convenience defines for declaring a gain control that
-has an input mux. These blocks are functionally equivalent to
-the existing mixer blocks but can only have a single input
-active at once.
-
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.h |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ Documentation/devicetree/bindings/mfd/arizona.txt |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 11ff899..6559ca0 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -92,6 +92,11 @@ extern const unsigned int arizona_mixer_tlv[];
- extern const char *arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS];
- extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
- 
-+#define ARIZONA_GAINMUX_CONTROLS(name, base) \
-+	SOC_SINGLE_RANGE_TLV(name " Input Volume", base + 1,		\
-+			     ARIZONA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     arizona_mixer_tlv)
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 7665aa9..64fa3b2 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -10,6 +10,9 @@ Required properties:
+         "wlf,wm5110"
+         "wlf,wm8280"
+         "wlf,wm8997"
++        "wlf,wm8998"
++        "wlf,wm1814"
 +
- #define ARIZONA_MIXER_CONTROLS(name, base) \
- 	SOC_SINGLE_RANGE_TLV(name " Input 1 Volume", base + 1,		\
- 			     ARIZONA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
+   - reg : I2C slave address when connected using I2C, chip select number when
+     using SPI.
+ 
+@@ -31,10 +34,10 @@ Required properties:
+     as covered in Documentation/devicetree/bindings/regulator/regulator.txt
+ 
+   - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies (wm5102,
+-    wm5110, wm8280)
++    wm5110, wm8280, wm8998, wm1814)
+ 
+   - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (wm5102,
+-    wm5110, wm8280)
++    wm5110, wm8280, wm8998, wm1814)
+ 
+   - SPKVDD-supply : Speaker driver power supply (wm8997)
+ 
+@@ -53,8 +56,10 @@ Optional properties:
+     of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
+     2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
+     If present, values must be specified less than or equal to the number of
+-    input singals. If values less than the number of input signals, elements
+-    that has not been specifed are set to 0 by default.
++    input signals. If values less than the number of input signals, elements
++    that have not been specified are set to 0 by default. Entries are:
++    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
++    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
+ 
+   - wlf,dmic-ref : DMIC reference voltage source for each input, can be
+     selected from either MICVDD or one of the MICBIAS's, defines
 -- 
 1.7.2.5
 
