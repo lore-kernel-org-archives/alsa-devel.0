@@ -1,59 +1,58 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v2 2/2] mfd: arizona: Update DT binding to
- support hpdet channel
-Date: Wed, 29 Apr 2015 11:57:37 +0100
-Message-ID: <20150429105737.GZ9169@x1>
-References: <1429589505-11954-1-git-send-email-ideal.song@samsung.com>
- <1429589505-11954-3-git-send-email-ideal.song@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 1/9] ASoC: hda: Add helper to read/write to
+	dsp mmio space
+Date: Wed, 29 Apr 2015 16:33:48 +0530
+Message-ID: <20150429110348.GF3521@localhost>
+References: <1429276567-29007-1-git-send-email-vinod.koul@intel.com>
+ <1429276567-29007-2-git-send-email-vinod.koul@intel.com>
+ <20150420214638.GX14892@sirena.org.uk>
+ <20150422035014.GD2738@intel.com>
+ <20150424173331.GY22845@sirena.org.uk>
+ <20150426143452.GW2738@intel.com>
+ <20150427210202.GP22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE9242604CA
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 13:03:12 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1429589505-11954-3-git-send-email-ideal.song@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, cw00.choi@samsung.com, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk
+In-Reply-To: <20150427210202.GP22845@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Does this looks okay to you Charles?
+On Mon, Apr 27, 2015 at 10:02:02PM +0100, Mark Brown wrote:
+> On Sun, Apr 26, 2015 at 08:04:52PM +0530, Vinod Koul wrote:
+> > On Fri, Apr 24, 2015 at 06:33:31PM +0100, Mark Brown wrote:
+> 
+> > > Seems like we could use the block I/O stuff in regmap for that?
+> 
+> > Yes we could, but not sure if we really benefit from using regmap here. 
+> 
+> I'd look at it the other way around - what would it cost you given that
+> you're implementing regmap like wrappers already?  You do get all the
+> debugging features if you use it...
+it won't cost much :) If we had a register map I would not have questions.
+Btw HDA codec will sue regmap as core does that
 
-> This patch add device tree bindings for the pdata needed to configure
-> the Accessory Detect Mode select when Headphone detection.
+Most used here is a single IPC register for messaging and then 2K memory for
+payload. Each message has different values. We dont have register interface
+for DSP :(
 
-Isn't the idea of headphone detection that it headphones are detected
-i.e. automatically?
+Anyway discussed this with Liam as well, we might do something with our
+common amilbox code which the SKL driver will also use in next series
 
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> ---
->  Documentation/devicetree/bindings/mfd/arizona.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Docu=
-mentation/devicetree/bindings/mfd/arizona.txt
-> index 7bd1273..3529592 100644
-> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> @@ -49,6 +49,12 @@ Optional properties:
->      input singals. If values less than the number of input signals, =
-elements
->      that has not been specifed are set to 0 by default.
-> =20
-> +  - wlf,hpdet-channel : Headphone detection channel.
-> +	1 or ARIZONA_ACCDET_MODE_HPL - Headphone detect mode is set to HPDE=
-TL
-> +	2 or ARIZONA_ACCDET_MODE_HPR - Headphone detect mode is set to HPDE=
-TR
-> +	If this node is not mentioned or if the value is unknown, then
-> +	headphone detection mode is set to MICDET.
-> +
->    - DCVDD-supply, MICVDD-supply : Power supplies, only need to be sp=
-ecified if
->      they are being externally supplied. As covered in
->      Documentation/devicetree/bindings/regulator/regulator.txt
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+Thanks
+-- 
+~Vinod
