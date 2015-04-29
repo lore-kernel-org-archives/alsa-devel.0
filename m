@@ -1,23 +1,17 @@
-From: Gabriele Martino <g.martino@gmx.com>
-Subject: Re: Intel HDA / ca0132: support for Alienware 15
- Creative Sound Core3D-EX
-Date: Wed, 29 Apr 2015 17:42:55 +0200
-Message-ID: <5540FBFF.6020904@gmx.com>
-References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
- <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
- <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
- <55400DF4.2080309@gmx.com> <s5hpp6nf41g.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH utils 1/2] aplay: Fix type for signal flag
+Date: Wed, 29 Apr 2015 18:05:49 +0200
+Message-ID: <1430323550-17662-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A79E260609
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:42:38 +0200 (CEST)
-Received: from [192.168.0.21] ([80.206.126.150]) by mail.gmx.com (mrgmx101)
- with ESMTPSA (Nemesis) id 0MLzXM-1YvAAb1Ej6-007hlJ for
- <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:42:38 +0200
-In-Reply-To: <s5hpp6nf41g.wl-tiwai@suse.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A3102605D7
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 18:05:51 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4DE51AB1C
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 16:05:51 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,35 +24,26 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29/04/2015 15:38, Takashi Iwai wrote:
-> At Wed, 29 Apr 2015 00:47:16 +0200,
-> Gabriele Martino wrote:
->> Thank you for your explanation.
->> I managed to fix the pin address, but as I told before the jack
->> detection is totally messed up.
->> "hdajacksensetest" fails with:
->> Ioctl call failed with error 16
-> The error message looks irrelevant with the patch itself.
-> Did you build with proper kernel configs?
-> CONFIG_SND_HDA_HWDEP=y
-> CONFIG_SND_HDA_RECONFIG=y
-> CONFIG_SND_HDA_PATCH_LOADER=y
-It should be ok:
+A flag used in signal handlers has to be a special atomic type,
+volatile sig_atomic_t.
 
-$ grep CONFIG_SND_HDA_ /usr/src/linux/.config | grep -v '^#'
-CONFIG_SND_HDA_INTEL=m
-CONFIG_SND_HDA_DSP_LOADER=y
-CONFIG_SND_HDA_PREALLOC_SIZE=2048
-CONFIG_SND_HDA_HWDEP=y
-CONFIG_SND_HDA_RECONFIG=y
-CONFIG_SND_HDA_INPUT_JACK=y
-CONFIG_SND_HDA_PATCH_LOADER=y
-CONFIG_SND_HDA_CODEC_HDMI=m
-CONFIG_SND_HDA_I915=y
-CONFIG_SND_HDA_CODEC_CA0132=m
-CONFIG_SND_HDA_CODEC_CA0132_DSP=y
-CONFIG_SND_HDA_GENERIC=m
-CONFIG_SND_HDA_POWER_SAVE_DEFAULT=60
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ aplay/aplay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Gabriele
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index e58e1bcbdd7e..dfa1a0a95867 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -107,7 +107,7 @@ static snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK;
+ static int mmap_flag = 0;
+ static int interleaved = 1;
+ static int nonblock = 0;
+-static int in_aborting = 0;
++static volatile sig_atomic_t in_aborting = 0;
+ static u_char *audiobuf = NULL;
+ static snd_pcm_uframes_t chunk_size = 0;
+ static unsigned period_time = 0;
+-- 
+2.3.6
