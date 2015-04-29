@@ -1,58 +1,64 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH v11 2/3] drm/i2c: tda998x: Change drvdata for audio extension
-Date: Wed, 29 Apr 2015 12:26:33 +0200
-Message-ID: <779ff69d5fd57f0ea0c62492debad181402805e5.1430320384.git.moinejf@free.fr>
-References: <cover.1430320384.git.moinejf@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1430320384.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Gabriele Martino <g.martino@gmx.com>
+Subject: Re: Intel HDA / ca0132: support for Alienware 15
+ Creative Sound Core3D-EX
+Date: Wed, 29 Apr 2015 17:42:55 +0200
+Message-ID: <5540FBFF.6020904@gmx.com>
+References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
+ <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
+ <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
+ <55400DF4.2080309@gmx.com> <s5hpp6nf41g.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A79E260609
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:42:38 +0200 (CEST)
+Received: from [192.168.0.21] ([80.206.126.150]) by mail.gmx.com (mrgmx101)
+ with ESMTPSA (Nemesis) id 0MLzXM-1YvAAb1Ej6-007hlJ for
+ <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 17:42:38 +0200
+In-Reply-To: <s5hpp6nf41g.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The device drvdata is used for component bind, but points to the
-encoder/connector structure which is hidden from the slave encoder.
-For audio extension, the slave encoder private data must be accessible,
-so, this patch changes drvdata to the slave encoder private data and
-sets it in case of slave encoder use.
+On 29/04/2015 15:38, Takashi Iwai wrote:
+> At Wed, 29 Apr 2015 00:47:16 +0200,
+> Gabriele Martino wrote:
+>> Thank you for your explanation.
+>> I managed to fix the pin address, but as I told before the jack
+>> detection is totally messed up.
+>> "hdajacksensetest" fails with:
+>> Ioctl call failed with error 16
+> The error message looks irrelevant with the patch itself.
+> Did you build with proper kernel configs?
+> CONFIG_SND_HDA_HWDEP=y
+> CONFIG_SND_HDA_RECONFIG=y
+> CONFIG_SND_HDA_PATCH_LOADER=y
+It should be ok:
 
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- drivers/gpu/drm/i2c/tda998x_drv.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+$ grep CONFIG_SND_HDA_ /usr/src/linux/.config | grep -v '^#'
+CONFIG_SND_HDA_INTEL=m
+CONFIG_SND_HDA_DSP_LOADER=y
+CONFIG_SND_HDA_PREALLOC_SIZE=2048
+CONFIG_SND_HDA_HWDEP=y
+CONFIG_SND_HDA_RECONFIG=y
+CONFIG_SND_HDA_INPUT_JACK=y
+CONFIG_SND_HDA_PATCH_LOADER=y
+CONFIG_SND_HDA_CODEC_HDMI=m
+CONFIG_SND_HDA_I915=y
+CONFIG_SND_HDA_CODEC_CA0132=m
+CONFIG_SND_HDA_CODEC_CA0132_DSP=y
+CONFIG_SND_HDA_GENERIC=m
+CONFIG_SND_HDA_POWER_SAVE_DEFAULT=60
 
-diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
-index a2ed391..e9b497e 100644
---- a/drivers/gpu/drm/i2c/tda998x_drv.c
-+++ b/drivers/gpu/drm/i2c/tda998x_drv.c
-@@ -1448,6 +1448,8 @@ static int tda998x_encoder_init(struct i2c_client *client,
- 	encoder_slave->slave_priv = priv;
- 	encoder_slave->slave_funcs = &tda998x_encoder_slave_funcs;
- 
-+	dev_set_drvdata(&client->dev, priv);
-+
- 	return 0;
- }
- 
-@@ -1575,7 +1577,7 @@ static int tda998x_bind(struct device *dev, struct device *master, void *data)
- 	if (!priv)
- 		return -ENOMEM;
- 
--	dev_set_drvdata(dev, priv);
-+	dev_set_drvdata(dev, &priv->base);
- 
- 	if (dev->of_node)
- 		crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
-@@ -1634,7 +1636,9 @@ err_encoder:
- static void tda998x_unbind(struct device *dev, struct device *master,
- 			   void *data)
- {
--	struct tda998x_priv2 *priv = dev_get_drvdata(dev);
-+	struct tda998x_priv *priv_s = dev_get_drvdata(dev);
-+	struct tda998x_priv2 *priv =
-+			container_of(priv_s, struct tda998x_priv2, base);
- 
- 	drm_connector_cleanup(&priv->connector);
- 	drm_encoder_cleanup(&priv->encoder);
--- 
-2.1.4
+Regards,
+Gabriele
