@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v3 4/5] ALSA: hda - divide controller and codec
-	dependency on i915 gfx power well
-Date: Wed, 29 Apr 2015 17:43:36 +0800
-Message-ID: <077fe61f0236a60538693a5ea5e80a65996d9790.1430300071.git.mengdong.lin@intel.com>
+Subject: [PATCH v3 3/5] ALSA: hda - implement link_power ops
+	for i915 display power control
+Date: Wed, 29 Apr 2015 17:43:29 +0800
+Message-ID: <2a4a27d7d3eb030fe4b37a2598f9383e87cb81c5.1430300071.git.mengdong.lin@intel.com>
 References: <cover.1430300071.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A46DC2604EA
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 11:32:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C9CA92604C5
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 11:32:52 +0200 (CEST)
 In-Reply-To: <cover.1430300071.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,141 +27,76 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-This patch can improve power saving for Intel platforms on which only the
-display audio codec is in the shared i915 power well:
-
-- Add a flag "need_i915_power" to indicate whether the controller needs the
-  i915 power well.
-
-- The driver will always request the i915 power when probing the controller
-  and codecs if AZX_DCAPS_I915_POWERWELL is set (either the controller or a
-  codec needs this power).
-
-- If the controller needs the i915 power, the power will be held after probe
-  until the controller is runtime suspended or S3. If the controller doesn't
-  need the power, the power will be released the after probe, and a codec
-  that needs the power can request/release the power via bus link_power ops.
-
-Background:
-- For Haswell/Broadwell, which has a separate HD-A controller for display audio,
-  both the controller and the display codec are in the i915 power well.
-
-- For Baytrail/Braswell, the display and analog audio share the same HDA
-  controller and link, and only the display codec is in the i915 power well.
-
-- For Skylake, the display and analog audio share the same HDA controller but
-  use separate links. Only the display codec is in the i915 power well. And in
-  legacy mode we take the two links as one. So it can follow Baytrail/Braswell.
+This patch implements the bus link_power ops to request/release i915 display
+power well. It can be used by the display codec which shares this power well
+with GPU on Intel platforms.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index e0bb623..120854e 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -775,9 +775,20 @@ static int azx_get_response(struct hdac_bus *bus, unsigned int addr,
+ 		return azx_rirb_get_response(bus, addr, res);
+ }
+ 
++static int azx_link_power(struct hdac_bus *bus, bool enable)
++{
++	struct azx *chip = bus_to_azx(bus);
++
++	if (chip->ops->link_power)
++		return chip->ops->link_power(chip, enable);
++	else
++		return -EINVAL;
++}
++
+ static const struct hdac_bus_ops bus_core_ops = {
+ 	.command = azx_send_cmd,
+ 	.get_response = azx_get_response,
++	.link_power = azx_link_power,
+ };
+ 
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index 173bf7c..3d26e61 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -89,6 +89,8 @@ struct hda_controller_ops {
+ 				 struct vm_area_struct *area);
+ 	/* Check if current position is acceptable */
+ 	int (*position_check)(struct azx *chip, struct azx_dev *azx_dev);
++	/* enable/disable the link power */
++	int (*link_power)(struct azx *chip, bool enable);
+ };
+ 
+ struct azx_pcm {
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d70b405..98e721b 100644
+index e615556..d70b405 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -817,7 +817,8 @@ static int azx_suspend(struct device *dev)
- 
- 	if (chip->msi)
- 		pci_disable_msi(chip->pci);
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-+		&& hda->need_i915_power)
- 		hda_display_power(hda, false);
+@@ -543,6 +543,14 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
  	return 0;
  }
-@@ -837,7 +838,8 @@ static int azx_resume(struct device *dev)
- 	if (chip->disabled || hda->init_failed)
- 		return 0;
  
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-+		&& hda->need_i915_power) {
- 		hda_display_power(hda, true);
- 		haswell_set_bclk(hda);
- 	}
-@@ -880,7 +882,8 @@ static int azx_runtime_suspend(struct device *dev)
- 	azx_stop_chip(chip);
- 	azx_enter_link_reset(chip);
- 	azx_clear_irq_pending(chip);
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-+		&& hda->need_i915_power)
- 		hda_display_power(hda, false);
- 
- 	return 0;
-@@ -905,7 +908,8 @@ static int azx_runtime_resume(struct device *dev)
- 	if (!azx_has_pm_runtime(chip))
- 		return 0;
- 
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-+		&& hda->need_i915_power) {
- 		hda_display_power(hda, true);
- 		haswell_set_bclk(hda);
- 	}
-@@ -1126,7 +1130,8 @@ static int azx_free(struct azx *chip)
- 	release_firmware(chip->fw);
- #endif
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
--		hda_display_power(hda, false);
-+		if (hda->need_i915_power)
-+			hda_display_power(hda, false);
- 		hda_i915_exit(hda);
- 	}
- 	kfree(hda);
-@@ -1891,17 +1896,26 @@ static int azx_probe_continue(struct azx *chip)
- 	int err;
- 
- 	hda->probe_continued = 1;
--	/* Request power well for Haswell HDA controller and codec */
++/* Enable/disable i915 display power for the link */
++static int azx_intel_link_power(struct azx *chip, bool enable)
++{
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
 +
-+	/* Request display power well for the HDA controller or codec. For
-+	 * Haswell/Broadwell, both the display HDA controller and codec need
-+	 * this power. For other platforms, like Baytrail/Braswell, only the
-+	 * display codec needs the power and it can be released after probe.
-+	 */
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+		/* Assume the controller needs the power by default */
-+		hda->need_i915_power = 1;
++	return hda_display_power(hda, enable);
++}
 +
- #ifdef CONFIG_SND_HDA_I915
- 		err = hda_i915_init(hda);
- 		if (err < 0)
--			goto out_free;
-+			goto i915_power_fail;
-+
- 		err = hda_display_power(hda, true);
- 		if (err < 0) {
- 			dev_err(chip->card->dev,
- 				"Cannot turn on display power on i915\n");
--			goto out_free;
-+			goto i915_power_fail;
- 		}
- #endif
- 	}
-@@ -1948,6 +1962,11 @@ static int azx_probe_continue(struct azx *chip)
- 		pm_runtime_put_noidle(&pci->dev);
- 
- out_free:
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-+		&& !hda->need_i915_power)
-+		hda_display_power(hda, false);
-+
-+i915_power_fail:
- 	if (err < 0)
- 		hda->init_failed = 1;
- 	complete_all(&hda->probe_wait);
-diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
-index dc1d3ff..505f987 100644
---- a/sound/pci/hda/hda_intel.h
-+++ b/sound/pci/hda/hda_intel.h
-@@ -45,6 +45,7 @@ struct hda_intel {
- 	struct dev_pm_domain hdmi_pm_domain;
- 
- 	/* i915 component interface */
-+	bool need_i915_power:1; /* the hda controller needs i915 power */
- 	struct i915_audio_component audio_component;
- 	int i915_power_refcount;
+ /*
+  * Check whether the current DMA position is acceptable for updating
+  * periods.  Returns non-zero if it's OK.
+@@ -1789,6 +1797,7 @@ static const struct hda_controller_ops pci_hda_ops = {
+ 	.substream_free_pages = substream_free_pages,
+ 	.pcm_mmap_prepare = pcm_mmap_prepare,
+ 	.position_check = azx_position_check,
++	.link_power = azx_intel_link_power,
  };
+ 
+ static int azx_probe(struct pci_dev *pci,
 -- 
 1.9.1
