@@ -1,85 +1,58 @@
-From: Kevin Cernekee <cernekee@chromium.org>
-Subject: Re: [PATCH V2 1/4] regmap: cache: Add "was_reset" argument to regcache_sync_region()
-Date: Tue, 28 Apr 2015 21:58:48 -0700
-Message-ID: <CAJzqFtYkSds+s2HA3uKrMQes+D2K1TxOdzm5jJhtt2iZvyqxCA@mail.gmail.com>
-References: <1429915008-22015-1-git-send-email-cernekee@chromium.org>
- <1429915008-22015-2-git-send-email-cernekee@chromium.org> <20150425113235.GA31708@sirena.org.uk>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH v3] ASoC: Intel: Support rt5650 codec for
+ Cherrytrail & Braswell
+Date: Wed, 29 Apr 2015 05:25:35 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CC3BFC@ORSMSX113.amr.corp.intel.com>
+References: <1429659360-99360-1-git-send-email-yang.a.fang@intel.com>
+ <1429809782-91982-1-git-send-email-yang.a.fang@intel.com>
+ <20150424124414.GQ22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150425113235.GA31708@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65AEC260442
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 07:25:41 +0200 (CEST)
+In-Reply-To: <20150424124414.GQ22845@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
+ Denny" <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 25, 2015 at 4:32 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Apr 24, 2015 at 03:36:45PM -0700, Kevin Cernekee wrote:
->
->> index 116655d92269..ece122a6fdeb 100644
->> --- a/include/linux/regmap.h
->> +++ b/include/linux/regmap.h
->> @@ -438,7 +438,7 @@ bool regmap_can_raw_write(struct regmap *map);
->>
->>  int regcache_sync(struct regmap *map);
->>  int regcache_sync_region(struct regmap *map, unsigned int min,
->> -                      unsigned int max);
->> +                      unsigned int max, bool was_reset);
->
-> This seems pretty ugly - both the fact that we're changing the signature
-> of the function and the naming of the argument feel inelegant.  The
-> point isn't if the device has been reset, the point is if the device
-> currently has the default register values or not, and this means that
-> the user is responsible for tracking that state until the next time it
-> does the sync.  That may be immediately like in your case but there's no
-> reason that has to be the case.  The fact that we're passing in
-> something called "is_reset" which sounds like a state value for the
-> register map is a bit of a warning sign here.
->
-> What we should be doing here is providing a way for users to tell regmap
-> if they've reset the register map and actually we already have that
-> interface, it's just not got the best name - regcache_mark_dirty() is
-> effectively it since there's really not a lot of other reasons why a
-> driver would need to mark the cache as dirty.  We're just not handling
-> it properly.  What we should do instead is to keep the interface as it
-> is for now and make it behave in a more expected fashion so that if the
-> cache is explicitly marked dirty we assume that the hardware is in the
-> default state and otherwise we don't.
->
-> Ideally what we'd do is both improve the naming of mark_dirty() (though
-> that's API churn which is nasty) and arrange for rbtree to cache the
-> default values lazily, that way the only things in the cache will be
-> things that have been explicitly changed (we will still want default
-> checking but it makes life easier and means we don't end up having to do
-> a full writeout for cases where things have been put into cache mode
-> without a reset).
+
+
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, April 24, 2015 5:44 AM
+> To: Fang, Yang A
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Koul, Vinod;
+> kevin.strasser@linux.intel.com; Nujella, Sathyanarayana; Jain, Praveen K;
+> Iriawan, Denny
+> Subject: Re: [PATCH v3] ASoC: Intel: Support rt5650 codec for Cherrytrail &
+> Braswell
+> 
+> On Thu, Apr 23, 2015 at 10:23:02AM -0700, yang.a.fang@intel.com wrote:
+> > From: "Fang, Yang A" <yang.a.fang@intel.com>
+> >
+> > rt5650 and rt5645 are similar codec so reuse the cht_bsw_rt5645 driver
+> 
+> Applied, thanks.
 
 Hi Mark,
 
-I started prototyping this, but ran into a couple of issues:
+May I ask which branch you are applied?  I did not find it in topic/intel  or  for-next.
 
-1) How do we tell the difference between "regcache contains a
-non-default value that correctly reflects the hardware register
-contents" versus "regcache contains a non-default value that is
-waiting to be written when we exit cache_only mode"?
-
-2) Does that also mean that we should store default values in the
-rbtree if they are part of a deferred cache_only write, but not store
-them if the write went through to the hardware?
-
-3) If we're caching the default values lazily, does that mean that
-every regcache read would incur both an rbtree lookup and a bsearch of
-the reg_defaults array?
-
-4) If "the only things in the cache will be things that have been
-explicitly changed," that could impact the semantics of
-regcache_drop_region().  Which fortunately has no users.
-
-Seems like it would be more straightforward just to add an
-rbnode->dirty bitmask alongside rbnode->cache_present, rather than
-trying to infer the hardware state from the presence/absence of the
-cache entry.  Knowing whether each individual register is out of sync
-with the hardware lets us avoid unnecessary writes in both situations:
-full reset, and temporary loss of register access.
-
-What do you think?
+Thanks,
+Yang
