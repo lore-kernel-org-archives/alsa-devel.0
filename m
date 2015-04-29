@@ -1,8 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: Intel HDA / ca0132: support for Alienware 15
 	Creative Sound Core3D-EX
-Date: Wed, 29 Apr 2015 15:38:19 +0200
-Message-ID: <s5hpp6nf41g.wl-tiwai@suse.de>
+Date: Wed, 29 Apr 2015 15:40:03 +0200
+Message-ID: <s5hoam7f3yk.wl-tiwai@suse.de>
 References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
  <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
  <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
@@ -12,8 +12,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E81A2605EE
- for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 15:38:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 61DC8260606
+ for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2015 15:40:03 +0200 (CEST)
 In-Reply-To: <55400DF4.2080309@gmx.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,48 +31,32 @@ List-Id: alsa-devel@alsa-project.org
 At Wed, 29 Apr 2015 00:47:16 +0200,
 Gabriele Martino wrote:
 > 
-> On 28/04/2015 08:15, Takashi Iwai wrote:
-> > snd_pci_quirk_lookup() just returns a value matching in the given
-> > table.  Provide a table like:
-> >
-> > enum {
-> > 	QUIRK_NONE,
-> > 	QUIRK_ALIENWARE,
-> > };
-> >
-> > static const struct snd_pci_quirk ca0132_quirks[] = {
-> > 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15", QUIRK_ALIENWARE),
-> > 	{}
-> > };
-> >
-> > then somewhere in the probe, check the table
-> >
-> > 	spec->quirk = snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
-> >
-> > then refer it appropriately
-> >
-> > 	if (spec->quirk == QUIRK_ALIENWARE) {
-> > 		spec->out_pins[1] = 0x0f;
-> > 		....
-> > 	} else {
-> > 		spec->out_pins[1] = 0x10;
-> > 		....
-> > 	}
-> >
-> > The current ca0132 code has way too may fixed assignment, so the pin
-> > reassignment like other codec drivers doesn't work as is.  We'd need
-> > to sort it out first.  So, start from the simple workaround.
-> Thank you for your explanation.
-> I managed to fix the pin address, but as I told before the jack
-> detection is totally messed up.
-> "hdajacksensetest" fails with:
-> Ioctl call failed with error 16
+> @@ -4653,6 +4667,7 @@
+>  		return -ENOMEM;
+>  	codec->spec = spec;
+>  	spec->codec = codec;
+> +	spec->quirk = snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
+>  
+>  	spec->dsp_state = DSP_DOWNLOAD_INIT;
+>  	spec->num_mixers = 1;
+> @@ -4670,6 +4685,12 @@
+>  
+>  	ca0132_config(codec);
+>  
+> +	/* Apply detected quirks */
+> +	if (spec->quirk->value == QUIRK_ALIENWARE) {
 
-The error message looks irrelevant with the patch itself.
-Did you build with proper kernel configs?
-CONFIG_SND_HDA_HWDEP=y
-CONFIG_SND_HDA_RECONFIG=y
-CONFIG_SND_HDA_PATCH_LOADER=y
+Add a NULL check.  Or, rather just record only quirk->value as
+spec->quirk.
+
+	quirk = snd_pci_quirk_lookup(pci, quirks);
+	if (quirk)
+		spec->quirk = quirk->value;
+
+	....
+
+	if (spec->quirk == QUIRK_ALIENWARE)
+		....
 
 
 Takashi
