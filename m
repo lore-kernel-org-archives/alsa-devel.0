@@ -1,94 +1,89 @@
-From: Jonathan McDowell <noodles@earth.li>
-Subject: Re: Audio crackles with 4.1-rc1
-Date: Thu, 30 Apr 2015 16:01:31 +0100
-Message-ID: <20150430150131.GA10148@earth.li>
-References: <20150428112156.GQ10148@earth.li>
- <s5hvbggv4xa.wl-tiwai@suse.de>
- <20150428123518.GU10148@earth.li>
- <s5hpp6ov1wv.wl-tiwai@suse.de>
- <s5ha8xsuxe3.wl-tiwai@suse.de>
- <20150429112859.GY10148@earth.li>
- <s5h4mnzgne6.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 4/5] ASoC: dapm: Add support for
+	autodisable mux controls
+Date: Thu, 30 Apr 2015 17:39:50 +0200
+Message-ID: <55424CC6.7030701@metafoo.de>
+References: <1430390332-14037-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1430390332-14037-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <554223B8.1040304@metafoo.de>
+ <20150430150039.GR3480@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h4mnzgne6.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-225.synserver.de (smtp-out-225.synserver.de
+ [212.40.185.225])
+ by alsa0.perex.cz (Postfix) with ESMTP id 336B2261B1E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 17:40:05 +0200 (CEST)
+In-Reply-To: <20150430150039.GR3480@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 29, 2015 at 01:54:57PM +0200, Takashi Iwai wrote:
-> At Wed, 29 Apr 2015 12:28:59 +0100,
-> Jonathan McDowell wrote:
-> > 
-> > On Tue, Apr 28, 2015 at 04:43:00PM +0200, Takashi Iwai wrote:
-> > > At Tue, 28 Apr 2015 15:05:20 +0200,
-> > > Takashi Iwai wrote:
-> > > > At Tue, 28 Apr 2015 13:35:18 +0100,
-> > > > Jonathan McDowell wrote:
-> > > > > On Tue, Apr 28, 2015 at 02:00:17PM +0200, Takashi Iwai wrote:
-> > > > > > At Tue, 28 Apr 2015 12:21:57 +0100,
-> > > > > > Jonathan McDowell wrote:
-> > > > > >
-> > > > > > > Having upgraded to 4.1-rc1 from 4.0 I'm now hearing audio
-> > > > > > > crackles at regular intervals. I'm fairly sure this is due to
-> > > > > > > the HDA power save as once audio is playing things are fine,
-> > > > > > > it's just when starting to play audio that I hear the crackle.
-> > > > > > > 
-> > > > > > > System is a Dell Latitude E7240. I haven't tried a bisect yet
-> > > > > > > but will attempt to find some time to do so in the next few
-> > > > > > > days. It looks like there have been some changes in sound/hda/
-> > > > > > > between 4.0 + 4.1-rc1 so I'll concentrate on those first.
-> > > > > > > 
-> > > > > > There are lots of code changes and enhancements wrt power saving
-> > > > > > in 4.1, and bisection won't help so much, I'm afraid.
-> > > > > > 
-> > > > > > First off, check the device status while you hear crackles.  Is
-> > > > > > the codec in runtime suspend (aka power save)?  This can be seen
-> > > > > > in /sys/bus/hdaudio/devices/*/power/runtime_status.  Then check
-> > > > > > the runtime status of the controller, too, found in
-> > > > > > /sys/class/sound/card?/device/power/runtime_status.
-> > > > > 
-> > > > > The cracking is definitely happening with the transition from suspended
-> > > > > to active:
-> > > > > 
-> > > > > /sys/class/sound/card0/device/power/runtime_status:suspended
-> > > > > /sys/class/sound/card1/device/power/runtime_status:active
-> > > > > /sys/bus/hdaudio/devices/hdaudioC0D0/power/runtime_status:suspended
-> > > > > /sys/bus/hdaudio/devices/hdaudioC1D0/power/runtime_status:active
-> > > > > 
-> > > > > card1 + C1D0 were suspended, I hit delete in a terminal to force a
-> > > > > terminal bell, got the crackle and the state changed to active as above.
-> > > > 
-> > > > Ah, so it's a click noise that happens only once per runtime PM
-> > > > transition?  I thought it were constant crackling noises from your
-> > > > description ("regular intervals").
-> > > > 
-> > > > In anyway, please give alsa-info.sh output on both 4.0 and 4.1.
-> > > 
-> > > Also, does the click noise occur only at powering up, and not at
-> > > powering down?
-> > 
-> > The click is only on the transition from suspended to active; not
-> > constantly during playback and not when transitioning from active to
-> > suspended. It doesn't appear 4.0 is doing the suspending at all; there
-> > are no /sys/bus/hdaudio/devices/*/power/runtime_status files and the
-> > card runtime_status is always active. alsa-info for 4.0 + 4.1-rc1
-> > attached.
-> 
-> OK, thanks for clarification.
-> 
-> One patch you can try (with or without power_save_node disablement) is
-> below, it squashes the verb sequences at (runtime) PM resume as we did
-> for 4.0.  Let me know if this changes the behavior.
+On 04/30/2015 05:00 PM, Charles Keepax wrote:
+> On Thu, Apr 30, 2015 at 02:44:40PM +0200, Lars-Peter Clausen wrote:
+>> On 04/30/2015 12:38 PM, Charles Keepax wrote:
+>>> Commit 57295073b6ac ("ASoC: dapm: Implement mixer input auto-disable")
+>>> added support for autodisable controls, controls whose values are only
+>>> written to the hardware when their respective widgets are powered up.
+>>> But it only added support for controls based on the mixer abstraction.
+>>>
+>>> This patch add support for mux controls (DAPM controls based on the
+>>> enum abstraction) to be auto-disabled as well. As each mux can only have
+>>> a single control, there is no need to tie the autodisable widget to the
+>>> inputs (as is done for the mixer controls) it can be tided directly to
+>>> the mux widget itself.
+>>>
+>>> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+>>
+>> Looks pretty good.
+>>
+>> [...]
+>>> @@ -354,6 +355,34 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
+>>>    			}
+>>>    		}
+>>>    		break;
+>>> +	case snd_soc_dapm_mux:
+>>> +		e = (struct soc_enum *)kcontrol->private_value;
+>>> +
+>>> +		if (e->autodisable) {
+>>> +			struct snd_soc_dapm_widget template;
+>>> +
+>>> +			memset(&template, 0, sizeof(template));
+>>> +			template.reg = e->reg;
+>>> +			template.mask = e->mask << e->shift_l;
+>>> +			template.shift = e->shift_l;
+>>> +			template.off_val = 0;
+>>
+>> I've though about adding a auto-disable MUX type as well and the chip
+>> were I wanted to use it has a non-zero power-off value. So I'd like to be
+>> able to somehow specify this. We could for example put it at the end of
+>> the values array. E.g.
+>>
+>> if (e->values)
+>> 	template.off_val = e->values[e->items].
+>> else
+>> 	template.off_val = 0;
+>>
+>
+> Thats a good point something I hadn't thought of. It seems
+> reasonable that if the mux is autodisable that one of the states
+> in the values array should be the disabled state. Either the
+> first or last value would seem the reasonable choices. I would
+> lean towards the first value, as this is already the case in the
+> Arizona code :-).
 
-Patch alone has no effect. Patch with power_save_node disablement solves
-the problem. Didn't try power_save_node disablement without the patch.
+Hm, right. What I had in mind is to not export the off state to userland, 
+but I guess it makes sense to make it possible to select it explicitly since 
+it is consistent with the auto-disable switches.
 
-J.
-
--- 
-This .sig brought to you by the letter M and the number  7
-Product of the Republic of HuggieTag
+- Lars
