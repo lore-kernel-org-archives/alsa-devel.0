@@ -1,19 +1,24 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [for-next] NULL pointer dereference in codec probe
-Date: Thu, 30 Apr 2015 13:53:52 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A9055239BC@SHSMSX101.ccr.corp.intel.com>
-References: <87fv7i9bgu.fsf@intel.com>	<s5hr3r1ewyt.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A905523951@SHSMSX101.ccr.corp.intel.com>
- <s5hfv7heo96.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 6/7] ASoC: hda: Add support for SSP register
+ settings
+Date: Thu, 30 Apr 2015 15:36:42 +0100
+Message-ID: <20150430143642.GX22845@sirena.org.uk>
+References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
+ <1429390653-8194-7-git-send-email-vinod.koul@intel.com>
+ <20150424175532.GD22845@sirena.org.uk>
+ <20150426141831.GS2738@intel.com>
+ <20150427141509.GS22845@sirena.org.uk>
+ <55416D07.6060204@linux.intel.com>
+ <55416E36.7090208@linux.intel.com>
+ <20150430043941.GK3521@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7191663340301027126=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id ACF322618ED
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 15:53:58 +0200 (CEST)
-In-Reply-To: <s5hfv7heo96.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93271261A0D
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 16:36:50 +0200 (CEST)
+In-Reply-To: <20150430043941.GK3521@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,111 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Nikula, Jani" <jani.nikula@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Tian,
- YeX" <yex.tian@intel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, April 30, 2015 9:32 PM
-> To: Jie, Yang
-> Cc: Nikula, Jani; Jaroslav Kysela; alsa-devel@alsa-project.org; Tian, YeX
-> Subject: Re: [for-next] NULL pointer dereference in codec probe
-> 
-> At Thu, 30 Apr 2015 12:27:52 +0000,
-> Jie, Yang wrote:
-> >
-> > > -----Original Message-----
-> > > From: Jie, Yang
-> > > Sent: Thursday, April 30, 2015 7:08 PM
-> > > To: 'Takashi Iwai'; Nikula, Jani
-> > > Cc: Jaroslav Kysela; alsa-devel@alsa-project.org; Tian, YeX
-> > > Subject: RE: [for-next] NULL pointer dereference in codec probe
-> > >
-> > > > -----Original Message-----
-> > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > > Sent: Thursday, April 30, 2015 6:23 PM
-> > > > To: Nikula, Jani
-> > > > Cc: Jaroslav Kysela; alsa-devel@alsa-project.org; Tian, YeX; Jie,
-> > > > Yang
-> > > > Subject: Re: [for-next] NULL pointer dereference in codec probe
-> > > >
-> > > > At Thu, 30 Apr 2015 13:06:41 +0300, Jani Nikula wrote:
-> > > > >
-> > > > >
-> > > > > Hi all, our graphics QA found an issue [1] with the for-next
-> > > > > branch of [2] merged on top of v4.1-rc1. Backtrace in the bug. I
-> > > > > didn't really have time to look into the details, but just letting you
-> know.
-> > > >
-> > > > Looks like the new jack stuff broke something.  Keyon, could you
-> > > > take a
-> > > look?
-> > >
-> > > I noticed this today and root caused it. Will provide a patch for it
-> tomorrow.
-> >
-> > I just worked out a patch[1] to fix it. no chance to test it yet.
-> > will send it to ML once it passed my testing tomorrow.
-> >
-> > [1] https://bugs.freedesktop.org/attachment.cgi?id=115474
-> 
-> I could reproduce the problem on my machine, and checked your patch.
-> It's good per se, but it doesn't suffice.  We have to cover all
-> jack->input_dev accesses.  The additional fix patch is attached
-> below.
-> 
-> Since the bug is fixed by these patches, I'm going to queue them to
-> topic/jack and for-next branch.
- 
-Cool! Thank you Takashi! Then I don't need go to work on May Day.
-I can try those patches next Monday.
 
-~Keyon
+--===============7191663340301027126==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NTOVO8yPnPpjB3od"
+Content-Disposition: inline
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: jack: Fix another NULL dereference due to empty
-> input  jack
-> 
-> Another fixes for NULL jack->input_dev in some places in jack.c.
-> 
-> Fixes: 2ba2dfa1fcc7 ('ALSA: hda - Update to use the new jack kctls method')
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/jack.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/core/jack.c b/sound/core/jack.c index
-> 0dbd618e3c94..eb66327b5f1c 100644
-> --- a/sound/core/jack.c
-> +++ b/sound/core/jack.c
-> @@ -87,6 +87,10 @@ static int snd_jack_dev_register(struct snd_device
-> *device)
-> 
->  	snprintf(jack->name, sizeof(jack->name), "%s %s",
->  		 card->shortname, jack->id);
-> +
-> +	if (!jack->input_dev)
-> +		return 0;
-> +
->  	jack->input_dev->name = jack->name;
-> 
->  	/* Default to the sound card device. */ @@ -278,6 +282,8 @@
-> EXPORT_SYMBOL(snd_jack_new);  void snd_jack_set_parent(struct
-> snd_jack *jack, struct device *parent)  {
->  	WARN_ON(jack->registered);
-> +	if (!jack->input_dev)
-> +		return;
-> 
->  	jack->input_dev->dev.parent = parent;
->  }
-> --
-> 2.3.6
+
+--NTOVO8yPnPpjB3od
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Apr 30, 2015 at 10:09:41AM +0530, Vinod Koul wrote:
+> On Wed, Apr 29, 2015 at 06:50:14PM -0500, Pierre-Louis Bossart wrote:
+
+> > >That said I am not sure how this code would work on SKL. Vinod, isn't
+> > >this for BXT only? how do you get 19.2 on SKL, shouldn't you guys use a
+> > >24 MHz root frequency to find the divider?
+
+> > And regardless you should make sure that the actual blck does not
+> > exceed the maximum serial bit-rate supported by the SOC (AC timing).
+
+> Yes botha re valid points. But I do rember one of the platforms has 10.2 and
+> another has 25, so we need to be agnostic here and do compare, or use ACPI
+> blobs :)
+
+If this is under the control of the system integrators then I'd suggest
+you're going to see the configuration being used.
+
+--NTOVO8yPnPpjB3od
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVQj35AAoJECTWi3JdVIfQuZIH/A0WAzK10Kk47EERLUWGFayI
+qSUPdJp63c2gJM43g5aiWhcVRSTP0AmxKpEkdmB1em1Uy3mH6SA6d0n62cIfy4tL
+WkX8R55q2x3H2rWpRckHhIv7lB1jE06B+wAEiHVts0jyvs3aoSLjfgRqgz/z1s6b
+V5gGJJRUV9YktX3CbtUGVMn9can+D0cvjVtl8t6TaGG8NLngrv7y/6wziJbr7Lbt
+LXI7Pn4OYowAn9eaHJ7tMMI2wbXwp0M2tcotFrvaw7t/SsOtMm/qERXb/2nGTEF7
++tcKJZvAZ/SMrn4iwn28CmSZlZ4WPjTJRTdvpD1GoPDC0v5WL584L7BlToAf+jI=
+=6qB8
+-----END PGP SIGNATURE-----
+
+--NTOVO8yPnPpjB3od--
+
+--===============7191663340301027126==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7191663340301027126==--
