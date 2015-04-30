@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 3/5] ASoC: dapm: Append "Autodisable" to
- autodisable widget names
-Date: Thu, 30 Apr 2015 19:40:42 +0200
-Message-ID: <5542691A.9050204@metafoo.de>
-References: <1430411912-6599-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1430411912-6599-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH 2/4] ASoC: Intel: Add Cherrytrail &
+ Braswell machine driver cht_bsw_max98090
+Date: Thu, 30 Apr 2015 17:43:42 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CC596B@ORSMSX113.amr.corp.intel.com>
+References: <1430358238-74659-1-git-send-email-yang.a.fang@intel.com>
+ <1430358238-74659-2-git-send-email-yang.a.fang@intel.com>
+ <20150430043651.GJ3521@localhost> <20150430062418.GA76535@mocha>
+ <55424CED.1080402@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-225.synserver.de (smtp-out-225.synserver.de
- [212.40.185.225])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BFCA260418
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 19:40:41 +0200 (CEST)
-In-Reply-To: <1430411912-6599-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EDF0260418
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 19:44:06 +0200 (CEST)
+In-Reply-To: <55424CED.1080402@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Jain,
+ Praveen K" <praveen.k.jain@intel.com>, "Diwakar,
+ Praveen" <praveen.diwakar@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
+ Denny" <denny.iriawan@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/30/2015 06:38 PM, Charles Keepax wrote:
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index beb48b6..e557018 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -308,11 +308,19 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
->   {
->   	struct dapm_kcontrol_data *data;
->   	struct soc_mixer_control *mc;
-> +	const char *name;
-> +	int ret;
->
->   	data = kzalloc(sizeof(*data), GFP_KERNEL);
->   	if (!data)
->   		return -ENOMEM;
->
-> +	name = kasprintf(GFP_KERNEL, "%s %s", kcontrol->id.name, "Autodisable");
 
-We should only allocate the name if we create a widget, otherwise we are 
-going to leak the memory.
 
-> +	if (!name) {
-> +		ret = -ENOMEM;
-> +		goto err_data;
-> +	}
-> +
->   	INIT_LIST_HEAD(&data->paths);
->
+> -----Original Message-----
+> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+> Sent: Thursday, April 30, 2015 8:40 AM
+> To: Fang, Yang A; Koul, Vinod
+> Cc: alsa-devel@alsa-project.org; Jain, Praveen K; Diwakar, Praveen;
+> lgirdwood@gmail.com; Iriawan, Denny; broonie@kernel.org;
+> kevin.strasser@linux.intel.com; dgreid@chromium.org
+> Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: Intel: Add Cherrytrail & Braswell
+> machine driver cht_bsw_max98090
+> 
+> 
+> >>> +	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
+> >>> +				SND_JACK_HEADPHONE |
+> SND_JACK_MICROPHONE |
+> >>> +				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> >>> +				SND_JACK_BTN_2 | SND_JACK_BTN_3, jack,
+> NULL, 0);
+> >> Do you really support all those buttons?
+> > TI driver supports 4 buttons sound/soc/codecs/ts3a227e.c google made 4
+> > buttons headsets
+> 
+> Not every codec is capable of handling 4 buttons.
+> That TI codec was made specifically to detect 4 different levels of impedance.
+> Looking at the Max98090, I see support for a single button press (change in
+> the status of JKSNS). what makes you think you can handle 4 buttons in the
+> codec hardware?
+
+This machine driver will also probe TI driver as an aux device.  So Ti driver will handle
+Buttons event .
+
+Thanks,
+Yang
