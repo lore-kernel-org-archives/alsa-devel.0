@@ -1,53 +1,139 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC 6/7] ASoC: hda: Add support for SSP register
- settings
-Date: Wed, 29 Apr 2015 18:50:14 -0500
-Message-ID: <55416E36.7090208@linux.intel.com>
-References: <1429390653-8194-1-git-send-email-vinod.koul@intel.com>
- <1429390653-8194-7-git-send-email-vinod.koul@intel.com>
- <20150424175532.GD22845@sirena.org.uk> <20150426141831.GS2738@intel.com>
- <20150427141509.GS22845@sirena.org.uk> <55416D07.6060204@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C3A92606E8
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 01:50:17 +0200 (CEST)
-In-Reply-To: <55416D07.6060204@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [alsa-devel] [PATCH v4 1/2] extcon: arizona: Add support for select
+ accessory detect mode when headphone detection
+Date: Thu, 30 Apr 2015 10:37:57 +0900
+Message-ID: <1430357878-22859-2-git-send-email-ideal.song@samsung.com>
+References: <1430357878-22859-1-git-send-email-ideal.song@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1430357878-22859-1-git-send-email-ideal.song@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lee.jones@linaro.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, cw00.choi@samsung.com, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch add support for select accessory detect mode to HPDETL or HPDETR.
+Arizona provides a headphone detection circuit on the HPDETL and HPDETR pins
+to measure the impedance of an external load connected to the headphone.
 
->>>>> +        /* Dont add odd number of dummy bits, since I2S requires
->>>>> +         * dummy bit after each slot/channel
->>>>> +         */
->>
->>>> It does?
->>
->>> For us unfortuntely yes. We send 24 bit audio to codec and clock divider
->>> doesn't give us 48clocks per frame, so we have to add dummy clocks in
->>> each
->>> slot and send 25 clocks per slot
->>
->> So it's the hardware rather than I2S itself :)
->
-> It depends on the clock reference used to drive the SSP. With a 19.2
-> reference we typically divide by 50 and pad with a trailing bit.
->
-> That said I am not sure how this code would work on SKL. Vinod, isn't
-> this for BXT only? how do you get 19.2 on SKL, shouldn't you guys use a
-> 24 MHz root frequency to find the divider?
+Depending on board design, headphone detect pins can change to HPDETR or HPDETL.
 
-And regardless you should make sure that the actual blck does not exceed 
-the maximum serial bit-rate supported by the SOC (AC timing).
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ drivers/extcon/extcon-arizona.c   | 38 ++++++++++++++++++++++++++++++--------
+ include/dt-bindings/mfd/arizona.h |  8 ++++++++
+ include/linux/mfd/arizona/pdata.h |  3 +++
+ 3 files changed, 41 insertions(+), 8 deletions(-)
+ create mode 100644 include/dt-bindings/mfd/arizona.h
+
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index 63f01c4..d251e92 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -32,13 +32,10 @@
+ #include <linux/mfd/arizona/core.h>
+ #include <linux/mfd/arizona/pdata.h>
+ #include <linux/mfd/arizona/registers.h>
++#include <dt-bindings/mfd/arizona.h>
+ 
+ #define ARIZONA_MAX_MICD_RANGE 8
+ 
+-#define ARIZONA_ACCDET_MODE_MIC 0
+-#define ARIZONA_ACCDET_MODE_HPL 1
+-#define ARIZONA_ACCDET_MODE_HPR 2
+-
+ #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
+ #define ARIZONA_MICD_CLAMP_MODE_JDH      0x5
+ #define ARIZONA_MICD_CLAMP_MODE_JDL_GP5H 0x9
+@@ -653,9 +650,9 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
+ 	ret = regmap_update_bits(arizona->regmap,
+ 				 ARIZONA_ACCESSORY_DETECT_MODE_1,
+ 				 ARIZONA_ACCDET_MODE_MASK,
+-				 ARIZONA_ACCDET_MODE_HPL);
++				 arizona->pdata.hpdet_channel);
+ 	if (ret != 0) {
+-		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
++		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+ 		goto err;
+ 	}
+ 
+@@ -705,9 +702,9 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
+ 				 ARIZONA_ACCESSORY_DETECT_MODE_1,
+ 				 ARIZONA_ACCDET_SRC | ARIZONA_ACCDET_MODE_MASK,
+ 				 info->micd_modes[0].src |
+-				 ARIZONA_ACCDET_MODE_HPL);
++				 arizona->pdata.hpdet_channel);
+ 	if (ret != 0) {
+-		dev_err(arizona->dev, "Failed to set HPDETL mode: %d\n", ret);
++		dev_err(arizona->dev, "Failed to set HPDET mode: %d\n", ret);
+ 		goto err;
+ 	}
+ 
+@@ -1103,6 +1100,26 @@ static void arizona_micd_set_level(struct arizona *arizona, int index,
+ 	regmap_update_bits(arizona->regmap, reg, mask, level);
+ }
+ 
++static int arizona_extcon_of_get_pdata(struct arizona *arizona)
++{
++	struct arizona_pdata *pdata = &arizona->pdata;
++	unsigned int val = ARIZONA_ACCDET_MODE_HPL;
++
++	of_property_read_u32(arizona->dev->of_node, "wlf,hpdet-channel", &val);
++	switch (val) {
++	case ARIZONA_ACCDET_MODE_HPL:
++	case ARIZONA_ACCDET_MODE_HPR:
++		pdata->hpdet_channel = val;
++		break;
++	default:
++		dev_err(arizona->dev,
++			"Wrong wlf,hpdet-channel DT value %d\n", val);
++		pdata->hpdet_channel = ARIZONA_ACCDET_MODE_HPL;
++	}
++
++	return 0;
++}
++
+ static int arizona_extcon_probe(struct platform_device *pdev)
+ {
+ 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+@@ -1120,6 +1137,11 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+ 	if (!info)
+ 		return -ENOMEM;
+ 
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev))
++			arizona_extcon_of_get_pdata(arizona);
++	}
++
+ 	info->micvdd = devm_regulator_get(&pdev->dev, "MICVDD");
+ 	if (IS_ERR(info->micvdd)) {
+ 		ret = PTR_ERR(info->micvdd);
+diff --git a/include/dt-bindings/mfd/arizona.h b/include/dt-bindings/mfd/arizona.h
+new file mode 100644
+index 0000000..9ecff78
+--- /dev/null
++++ b/include/dt-bindings/mfd/arizona.h
+@@ -0,0 +1,8 @@
++#ifndef __DT_BINDINGS_ARIZONA_H__
++#define __DT_BINDINGS_ARIZONA_H__
++
++#define ARIZONA_ACCDET_MODE_MIC 0
++#define ARIZONA_ACCDET_MODE_HPL 1
++#define ARIZONA_ACCDET_MODE_HPR 2
++
++#endif /* __DT_BINDINGS_ARIZONA_H__ */
+diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/arizona/pdata.h
+index 4578c72..2473a67 100644
+--- a/include/linux/mfd/arizona/pdata.h
++++ b/include/linux/mfd/arizona/pdata.h
+@@ -139,6 +139,9 @@ struct arizona_pdata {
+ 	/** GPIO used for mic isolation with HPDET */
+ 	int hpdet_id_gpio;
+ 
++	/** Channel to use for headphone detection */
++	unsigned int hpdet_channel;
++
+ 	/** Extra debounce timeout used during initial mic detection (ms) */
+ 	int micd_detect_debounce;
+ 
+-- 
+2.0.0.390.gcb682f8
