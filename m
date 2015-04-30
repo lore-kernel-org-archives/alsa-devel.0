@@ -1,20 +1,19 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: snd-hda-intel : issues with mic boost on ALC3236
-Date: Thu, 30 Apr 2015 07:19:55 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A0F7BA@RTITMBSV09.realtek.com.tw>
-References: <CAP1KSYf_wsief6OCx8hMta5Bq0zN8meCzfxkyjt2ab8hXettMg@mail.gmail.com>
- <s5h618e92w5.wl-tiwai@suse.de>
- <CAP1KSYfB8Gk6kQG0XdJdj7+92WHN5cVHjdzJgA5VFq5gZ3SvXA@mail.gmail.com>
- <s5hy4la6vgn.wl-tiwai@suse.de>
+From: Bram Bos <buramu@gmail.com>
+Subject: Re: Simple Mixer help
+Date: Thu, 30 Apr 2015 10:29:14 +0200
+Message-ID: <CAPaK8baiMvLVkn5=Q8RkR-v0TjAugaYBZR9+=tnbtCv2xa84KA@mail.gmail.com>
+References: <CAPaK8bb7mvNjf-EwEciBQth68hRWvXEE5cwAqUdRBk5QcXRqYw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DD912614B0
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 09:20:05 +0200 (CEST)
-In-Reply-To: <s5hy4la6vgn.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
+ [209.85.218.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 071A1261543
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 10:29:19 +0200 (CEST)
+Received: by oiko83 with SMTP id o83so42408179oik.1
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 01:29:15 -0700 (PDT)
+In-Reply-To: <CAPaK8bb7mvNjf-EwEciBQth68hRWvXEE5cwAqUdRBk5QcXRqYw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,76 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Simon Derr <ddrsimon@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- 
+Ok, so perhaps this is not the forum to ask support for using ALSA in
+application development.
+Can anyone point me to a place where I can ask such questions.?
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Thursday, April 30, 2015 1:23 PM
-> To: Simon Derr
-> Cc: Kailang; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] snd-hda-intel : issues with mic 
-> boost on ALC3236
-> 
-> At Wed, 29 Apr 2015 22:26:39 +0200,
-> Simon Derr wrote:
-> > 
-> > >> I'm having issues with the internal microphone on an 
-> Asus R553 (or S551) laptop.
-> > >>
-> > >> With the boost set to zero the microphone works but the level of 
-> > >> the recording is very low.
-> > >> If I try another boost setting I don't get any signal anymore.
-> > 
-> > > The problem is unlikely specific to the codec (ALC3236) but the 
-> > > whole hardware implementation.
-> > 
-> > I have to admit that I have zero knowledge of how these things are 
-> > implemented. I can't find a datasheet for that codec anywhere.
-> > However, looking at the ALC262 datasheet for instance, the block 
-> > diagram represents the boost function inside the codec itself.
-> 
-> ALC3236 isn't ALC262 but rather ALC269 variant.
-> 
-> Kailang, is there anything special in ALC3236 regarding the 
-> mic boost handling?  Here, the problem is that the machine 
-> doesn't get builtin mic working when mic boost is set more 
-> than 0, and 0 gives only low signals.  alsa-info.sh is at:
->   
-> http://www.alsa-project.org/db/?f=55b7fb0b4998757d099addae0a41
-1e6a7cebc079
-> 
+The existing ALSA documentation is not sufficient to help me out here.
 
-I ever met this issue before. But I forgot which cause this issue.
-Maybe some hidden registers need to be changed.
-I will ask our AE for this. 
+Thanks!
 
-> > > Your hardware seems to have only one mic pin.  It's 
-> already strange.
-> > > Usually there are two mic pins.  Did you try the input 
-> from mic jack
-> > > (or headset mic)?   Did it work with mic boot volume properly?
-> > 
-> > I just tried : plugging a headset in the combo jack does 
-> not seem to 
-> > have any effect on the mic input. It seems that the mic on 
-> the headset 
-> > is not used, and that the internal microphone of the laptop 
-> is still 
-> > active.
-> 
-> So you have two problems.  Not sure whether it's related, though.
-> 
-> You may try some existing quirk for Dell laptops, e.g. 
-> model=dell-headset-multi.  In your case, the realtek codec is 
-> the second one, so pass "model=,dell-headset-multi" (give a 
-> comma at first)
-> 
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
+2015-04-29 16:15 GMT+02:00 Bram Bos <buramu@gmail.com>:
+
+> I want to get access to the ALSA Simple Mixer interface, but rather than
+> the 'default' sound device I want to target a specific USB sound device.
+>
+> I'm at a loss how to refer to it...  I am using a modified version of the
+> code below but I have no idea what to replace the "card" and "selem_name"
+> strings with. The device name? The 'hwX.Y' string?
+>
+> And do I need to change the index#?
+>
+> Too many variables to solve this by trial and error.
+> Any hints appreciated!
+>
+> void SetAlsaMasterVolume(long volume){
+>     long min, max;
+>     snd_mixer_t *handle;
+>     snd_mixer_selem_id_t *sid;
+>     const char *card = "default";
+>     const char *selem_name = "Master";
+>
+>     snd_mixer_open(&handle, 0);
+>     snd_mixer_attach(handle, card);
+>     snd_mixer_selem_register(handle, NULL, NULL);
+>     snd_mixer_load(handle);
+>
+>     snd_mixer_selem_id_alloca(&sid);
+>     snd_mixer_selem_id_set_index(sid, 0);
+>     snd_mixer_selem_id_set_name(sid, selem_name);
+>     snd_mixer_elem_t* elem = snd_mixer_find_selem(handle, sid);
+>
+>     snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+>     snd_mixer_selem_set_playback_volume_all(elem, volume * max / 100);
+>
+>     snd_mixer_close(handle);}
+>
+>
