@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/3] Calculate BCLK using TDM slots and
- remove channels rule
-Date: Thu, 30 Apr 2015 20:47:42 +0100
-Message-ID: <20150430194742.GF22845@sirena.org.uk>
-References: <cover.1429794271.git.jsarha@ti.com>
+Subject: Re: [PATCH 3/4] ASoC: ts3a227e: add platform data for
+	ts3a227e driver
+Date: Thu, 30 Apr 2015 21:02:20 +0100
+Message-ID: <20150430200220.GH22845@sirena.org.uk>
+References: <1430358238-74659-1-git-send-email-yang.a.fang@intel.com>
+ <1430358238-74659-3-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1536321215172559722=="
+Content-Type: multipart/mixed; boundary="===============1272435302118709158=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BBB952607C8
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 21:47:48 +0200 (CEST)
-In-Reply-To: <cover.1429794271.git.jsarha@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83B3F2617A5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 22:02:25 +0200 (CEST)
+In-Reply-To: <1430358238-74659-3-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, praveen.diwakar@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1536321215172559722==
+--===============1272435302118709158==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2xQ++RZVvX2PkXx5"
+	protocol="application/pgp-signature"; boundary="BCmKmcMXLhrd5LC7"
 Content-Disposition: inline
 
 
---2xQ++RZVvX2PkXx5
+--BCmKmcMXLhrd5LC7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 23, 2015 at 04:16:03PM +0300, Jyri Sarha wrote:
-> The first and the last patch are excatly the same as in the first
-> series, but in the middle thee is a new patch to constraint out
-> unsupported channel counts in multiple serializers case.
+On Wed, Apr 29, 2015 at 06:43:57PM -0700, yang.a.fang@intel.com wrote:
 
-Applied all, thanks.
+> @@ -296,7 +303,7 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
+>  	}
+> =20
+>  	ret =3D devm_request_threaded_irq(dev, i2c->irq, NULL, ts3a227e_interru=
+pt,
+> -					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> +					ts3a227e->pdata.irqflag,
+>  					"TS3A227E", ts3a227e);
+>  	if (ret) {
+>  		dev_err(dev, "Cannot request irq %d (%d)\n", i2c->irq, ret);
 
---2xQ++RZVvX2PkXx5
+This doesn't make much sense to me - no change is made to the
+configuration of the device, the driver just passes the flag through to
+the interrupt controller code.  I can't see how that's going to work
+well, somewhere along the line something must be misconfigured.
+
+--BCmKmcMXLhrd5LC7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVQobdAAoJECTWi3JdVIfQ1pYIAIcEe/bV4V1gJM3Oj1WARlo0
-RlN1EFTD1+r2S8Jh98Zw0MbPwgSUk+gzciI4MnY9kM5+kN9Db+zCWG7k2Sd8cbcP
-t5iucmQHHrnXFi7HxeOgyHeghC8efVV0LvmwXSpdGwnAJAjotMX9KMG/0vw6X6Xq
-18LvafvvBUVyg7NAa+S2gbIDpGGCWv9DB+HFBzfx7VAO0fb2QC7M5Qczwa1HdXrC
-JiAJkGOMVu9WdkNUTRp2bsyFl29Z7t6zNb2JY7gfUSjSLqCfTl+tN7EqTY8wHVRF
-bBMnY+/CqxOUOGgyraVqBZ6jyzi/miOwe0zRf4QlGL7uVbekRv1YDzxdlSpf8lE=
-=d/sX
+iQEcBAEBCAAGBQJVQopLAAoJECTWi3JdVIfQ0esH/RMJlcPMj46jhLHWw+6Vrmgc
+6wL83xAit1MJKkfA1SkSIIeBeY5BmM3oef7sy4uFKyYP4YWZ6zqXJjB6skGr6Dp0
+n+9SdpptKkz+DsHHFK5MSjTnlY4GA3vEMnQnBJNt26YkFme/eZrNy8JJWSfaVCQq
+aAb4R5Hb2dh8k8RHyv1nxrtNhMSxGBah81CQhYbOP084tKN5SrcwdZH6QNG1ipjf
+bc6s8Llnq+UECzqMHd8pZkkYGHIlnXfKFkLgErUCcuU5vs7PNRGKCbzO0oxHcmxd
+O3xQ0CW/PIeF3atavpLpL/yKUnDv2Uy3bdYLeMUJLtnwgekMkr8oOOJfOKOx4Lo=
+=axzV
 -----END PGP SIGNATURE-----
 
---2xQ++RZVvX2PkXx5--
+--BCmKmcMXLhrd5LC7--
 
---===============1536321215172559722==
+--===============1272435302118709158==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1536321215172559722==--
+--===============1272435302118709158==--
