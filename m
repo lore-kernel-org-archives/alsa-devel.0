@@ -1,92 +1,57 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 14/14] ASoC: qcom: document apq8016 machine driver bindings
-Date: Thu, 30 Apr 2015 18:18:26 +0100
-Message-ID: <1430414306-11469-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 3/5] ASoC: dapm: Append "Autodisable" to
+ autodisable widget names
+Date: Thu, 30 Apr 2015 19:40:42 +0200
+Message-ID: <5542691A.9050204@metafoo.de>
+References: <1430411912-6599-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1430411912-6599-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-225.synserver.de (smtp-out-225.synserver.de
+ [212.40.185.225])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BFCA260418
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 19:40:41 +0200 (CEST)
+In-Reply-To: <1430411912-6599-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for apq8016 machine driver.
-On APQ8016 4 MI2S can be configured to different sinks like internal
-codec/external codec, this connection is controlled via 2 iomux
-registers.
+On 04/30/2015 06:38 PM, Charles Keepax wrote:
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index beb48b6..e557018 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -308,11 +308,19 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
+>   {
+>   	struct dapm_kcontrol_data *data;
+>   	struct soc_mixer_control *mc;
+> +	const char *name;
+> +	int ret;
+>
+>   	data = kzalloc(sizeof(*data), GFP_KERNEL);
+>   	if (!data)
+>   		return -ENOMEM;
+>
+> +	name = kasprintf(GFP_KERNEL, "%s %s", kcontrol->id.name, "Autodisable");
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../bindings/sound/qcom,apq8016-machine.txt        | 61 ++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-machine.txt
+We should only allocate the name if we create a widget, otherwise we are 
+going to leak the memory.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-machine.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-machine.txt
-new file mode 100644
-index 0000000..de697b8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-machine.txt
-@@ -0,0 +1,61 @@
-+* Qualcomm Technologies APQ8016 ASoC machine driver
-+
-+This node models the Qualcomm Technologies APQ8016 ASoC machine driver
-+
-+Required properties:
-+
-+- compatible		: "qcom,apq8016-sndcard"
-+
-+- pinctrl-N		: One property must exist for each entry in
-+			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
-+			  for details of the property values.
-+- pinctrl-names		: Must contain a "default" entry.
-+- reg			: Must contain an address for each entry in reg-names.
-+- reg-names		: A list which must include the following entries:
-+				* "mic-iomux"
-+				* "spkr-iomux"
-+- qcom,model		: Name of the sound card.
-+
-+Dai-link subnode properties and subnodes:
-+
-+Required dai-link subnodes:
-+
-+- cpu					: CPU   sub-node
-+- codec					: CODEC sub-node
-+
-+Required CPU/CODEC subnodes properties:
-+
-+-sound-dai		: phandle and port of CPU/CODEC
-+-capture-dai		: phandle and port of CPU/CODEC
-+
-+Optional CPU/CODEC subnodes properties:
-+- external	: flag to indicate if the I2S is connected to external codec
-+Example:
-+
-+sound: sound {
-+	compatible = "qcom,apq8016-sndcard";
-+	reg = <0x07702000 0x4>, <0x07702004 0x4>;
-+	reg-names = "mic-iomux", "spkr-iomux";
-+	qcom,model = "DB410c";
-+
-+	/* I2S - Internal codec */
-+	internal-dai-link@0 {
-+		cpu { /* PRIMARY */
-+			sound-dai = <&lpass MI2S_PRIMARY>;
-+		};
-+		codec {
-+			sound-dai = <&wcd_codec 0>;
-+		};
-+	};
-+
-+	/* External Primary or External Secondary -ADV7533 HDMI */
-+	external-dai-link@0 {
-+		external;
-+		cpu { /* QUAT */
-+			sound-dai = <&lpass MI2S_QUATERNARY>;
-+		};
-+		codec {
-+			sound-dai = <&adv_bridge 0>;
-+		};
-+	};
-+};
--- 
-1.9.1
+> +	if (!name) {
+> +		ret = -ENOMEM;
+> +		goto err_data;
+> +	}
+> +
+>   	INIT_LIST_HEAD(&data->paths);
+>
