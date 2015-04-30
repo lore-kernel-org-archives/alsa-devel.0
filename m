@@ -1,17 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH lib 0/5] alsa-lib namehint fixes
-Date: Thu, 30 Apr 2015 15:06:13 +0200
-Message-ID: <1430399178-15173-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH lib 5/5] conf: Add hint descriptions to ctl,
+	hwdep, seq and timer devices
+Date: Thu, 30 Apr 2015 15:06:18 +0200
+Message-ID: <1430399178-15173-6-git-send-email-tiwai@suse.de>
+References: <1430399178-15173-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FE5F261738
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 15:06:21 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 38695ABEB
+ by alsa0.perex.cz (Postfix) with ESMTP id 0282426172B
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 15:06:20 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 3DB48AC54
  for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 13:06:19 +0000 (UTC)
+In-Reply-To: <1430399178-15173-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +27,83 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/conf/alsa.conf | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-here is a series of fixes for alsa-lib namehint stuff.
-Currently snd_device_name_hint() doesn't return proper lists except
-for PCM.  Also it may do bogus free() or segfault for wrong
-operations.  This patchset addresses such issues and also adds the
-missing hint descriptions to ctl, seq, hwdep, etc.
-
-
-Takashi
-
-===
-
-Takashi Iwai (5):
-  namehint: Fix invalid list access in snd_device_name_hint()
-  namehint: Fix the listing without device number
-  namehint: Fix bad free with invalid iface name
-  Allow hint for ctl, hwdep, timer and seq
-  conf: Add hint descriptions to ctl, hwdep, seq and timer devices
-
- include/local.h             |  2 ++
- src/conf/alsa.conf          | 15 ++++++++++++++-
- src/confmisc.c              | 13 +++++++++++++
- src/control/control_hw.c    |  4 +---
- src/control/control_shm.c   |  7 ++-----
- src/control/namehint.c      | 26 ++++++++++++--------------
- src/hwdep/hwdep_hw.c        |  4 +---
- src/pcm/pcm.c               | 12 ------------
- src/pcm/pcm_local.h         |  5 ++---
- src/rawmidi/rawmidi.c       | 18 ------------------
- src/rawmidi/rawmidi_local.h |  2 +-
- src/seq/seq_hw.c            |  4 +---
- src/timer/timer_hw.c        |  4 +---
- src/timer/timer_query_hw.c  |  4 +---
- 14 files changed, 51 insertions(+), 69 deletions(-)
-
+diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
+index 5c928e8afbcd..f22918fbbf83 100644
+--- a/src/conf/alsa.conf
++++ b/src/conf/alsa.conf
+@@ -345,6 +345,7 @@ ctl.sysdefault {
+ 			name defaults.ctl.card
+ 		}
+ 	}
++	hint.description "Default control device"
+ }
+ ctl.default ctl.sysdefault
+ 
+@@ -366,6 +367,7 @@ ctl.hw {
+ 	}
+ 	type hw
+ 	card $CARD
++	hint.description "Direct control device"
+ }
+ 
+ ctl.shm {
+@@ -408,6 +410,7 @@ rawmidi.default {
+ 			name defaults.rawmidi.device
+ 		}
+ 	}
++	hint.description "Default raw MIDI device"
+ }
+ 
+ rawmidi.hw {
+@@ -469,6 +472,7 @@ rawmidi.virtual {
+ 
+ seq.default {
+ 	type hw
++	hint.description "Default sequencer device"
+ }
+ 
+ seq.hw {
+@@ -502,6 +506,7 @@ hwdep.default {
+ 			name defaults.hwdep.device
+ 		}
+ 	}
++	hint.description "Default hardware dependent device"
+ }
+ 
+ hwdep.hw {
+@@ -536,6 +541,10 @@ hwdep.hw {
+ 	type hw
+ 	card $CARD
+ 	device $DEV
++	hint {
++		description "Direct hardware dependent device"
++		device $DEV
++	}
+ }
+ 
+ #
+@@ -572,7 +581,7 @@ timer.default {
+ 		@func refer
+ 		name defaults.timer.subdevice
+ 	}
+-	hint.description "Default direct hardware timer device"
++	hint.description "Default timer device"
+ }
+ 
+ timer.hw {
+@@ -618,4 +627,8 @@ timer.hw {
+ 	card $CARD
+ 	device $DEV
+ 	subdevice $SUBDEV
++	hint {
++		description "Direct timer device"
++		device $DEV
++	}
+ }
 -- 
 2.3.6
