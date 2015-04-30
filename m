@@ -1,74 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Correct pm status
- check in suspend callback
-Date: Thu, 30 Apr 2015 21:09:02 +0100
-Message-ID: <20150430200902.GJ22845@sirena.org.uk>
-References: <1430384261-5373-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [RESEND RFC PATCH 1/3] ASoC: mediatek: Add binding support for
+ AFE driver
+Date: Thu, 30 Apr 2015 21:12:07 +0100
+Message-ID: <20150430201207.GK22845@sirena.org.uk>
+References: <1428653649-38200-1-git-send-email-koro.chen@mediatek.com>
+ <1428653649-38200-2-git-send-email-koro.chen@mediatek.com>
+ <20150418173407.GE26185@sirena.org.uk>
+ <20150420043747.GH6325@pengutronix.de>
+ <20150420204849.GJ14892@sirena.org.uk>
+ <1429672640.14162.55.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2766927668637636091=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AACA6266208
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 22:09:10 +0200 (CEST)
-In-Reply-To: <1430384261-5373-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Zc0AcwaKuEyWL+br"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1429672640.14162.55.camel@mtksdaap41>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2766927668637636091==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BlZLtSLbY2DC60zw"
-Content-Disposition: inline
-
-
---BlZLtSLbY2DC60zw
+--Zc0AcwaKuEyWL+br
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 30, 2015 at 11:57:41AM +0300, Peter Ujfalusi wrote:
-> pm_runtime_enabled() will only tell if the pm runtime has been enabled for
-> the device, which is done at probe time but will not tell the actual power
-> state of the device.
-> pm_runtime_active() provides this information.
-> This patch fixes a kernel crash when doing suspend when McASP is not
-> active.
+On Wed, Apr 22, 2015 at 11:17:20AM +0800, Koro Chen wrote:
 
-Applied, thanks.
+> If using DPCM, it seems the most suitable FE DAIs will be memif, and
+> external interface like I2S should be BE DAIs. Do you think it is
+> suitable for our memif to be FE DAIs? Then which memif to used can be
+> described in a machine driver's FE DAIs. But I think this has a problem
+> that our memif is one-direction, playback or capture. So the binded pcm
+> device cannot have playback and capture capability together. May it
+> cause trouble for user space apps that assumes there will be pcmC0D0p,
+> pcmC0D0c?
 
---BlZLtSLbY2DC60zw
+I think the only userspace application you really have to worry about
+here is PulseAudio which (at least with UCM) should be able to cope
+since it needs to handle things like USB microphones.  I think
+everything else I can think of can either cope or has to handle the same
+use cases as PulseAudio does so should have support.
+
+--Zc0AcwaKuEyWL+br
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVQovdAAoJECTWi3JdVIfQahYH/2f0g66Z5ElzGbGu/25EV4w6
-0rzG1jgB/0butw/UUepSmKKaYZ9ijrZ6CfQ1bEIm+1hYj75NqK0Fguvc2FGHVxhV
-vYAO525J7ul94ltDxpz1L3bFwFImf+DXr/ea23lY2qrPnbRAxDn4pd1+8jZXzYNe
-U319da+L2qy1Qbo9gvnyPZpVNRZbAZAyNgzkcDW6VqDBPieZCdoIk89Baw38G8eT
-ZBY+cNPwxsyDboXRfPxE8ji9UmUK6k7L1qTPSw0ldU8Y/Ti83mwMSiP+CV0r25I4
-/fu+PMGPmA2o8y+sEtq3o2fLATYwSImS1ngNcam8f1jU3hc0szF9faxf21BN3mc=
-=NcYI
+iQEcBAEBCAAGBQJVQoyWAAoJECTWi3JdVIfQ39IH/0AcULgyvIUMLo5A+Zi5EOD2
+8LdacMZp5UHIr7/EeNyssa6C3uzrFPxZ95YAbq1wCOtKYtEZbw9XYh2EzzocEvRk
+C+RyzqX1yNs8IxkPsTFRQU7Upo+W3Q1SzjaVcTnJBYlrB5tAsYGuODhW51LQZZgf
+M9BH9hQ0sBKm6SJkshpE7i3D/AJDHSSW54ntIJIV+7PkLJYZ3LIEQAGPOzQZoYNj
+2BCtSg0LzuZKLzbBEbjgMKIgyzdtFsbXsr7mBpjsQuNpgR6+YjXYimWWhVJTqQdx
+qm713NAaJA0bYH1cE55JJ1j0KAwUA58a1lGRZYuiVgBSP77wylnvsdPsi5hNQR0=
+=go0X
 -----END PGP SIGNATURE-----
 
---BlZLtSLbY2DC60zw--
-
---===============2766927668637636091==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2766927668637636091==--
+--Zc0AcwaKuEyWL+br--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
