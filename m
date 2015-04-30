@@ -1,17 +1,20 @@
-From: =?UTF-8?B?UGhpbGlwcGUgUsOpdG9ybmF6?= <philippe.retornaz@epfl.ch>
-Subject: Re: [PATCH RFT] ASoC: mc13783: Fix wrong mask value
- used in mc13xxx_reg_rmw() calls
-Date: Thu, 30 Apr 2015 09:17:52 +0200
-Message-ID: <5541D720.9040002@epfl.ch>
-References: <1430117495.28082.2.camel@ingics.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: snd-hda-intel : issues with mic boost on ALC3236
+Date: Thu, 30 Apr 2015 07:19:55 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A0F7BA@RTITMBSV09.realtek.com.tw>
+References: <CAP1KSYf_wsief6OCx8hMta5Bq0zN8meCzfxkyjt2ab8hXettMg@mail.gmail.com>
+ <s5h618e92w5.wl-tiwai@suse.de>
+ <CAP1KSYfB8Gk6kQG0XdJdj7+92WHN5cVHjdzJgA5VFq5gZ3SvXA@mail.gmail.com>
+ <s5hy4la6vgn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp0.epfl.ch (smtp0.epfl.ch [128.178.224.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C3F82614B0
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 09:17:58 +0200 (CEST)
-In-Reply-To: <1430117495.28082.2.camel@ingics.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DD912614B0
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 09:20:05 +0200 (CEST)
+In-Reply-To: <s5hy4la6vgn.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +24,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, SaschaHauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Fabio Estevam <festevam@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, Simon Derr <ddrsimon@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpMZSAyNy4gMDQuIDE1IDA4OjUxLCBBeGVsIExpbiBhIMOpY3JpdCA6Cj4gbWMxM3h4
-eF9yZWdfcm13KCkgd29uJ3QgY2hhbmdlIGFueSBiaXQgaWYgcGFzc2luZyAwIHRvIHRoZSBtYXNr
-IGZpZWxkLgo+IFBhc3MgQVVESU9fU1NJX1NFTCBpbnN0ZWFkIG9mIDAgZm9yIHRoZSBtYXNrIGZp
-ZWxkIHRvIHNldCBBVURJT19TU0lfU0VMCj4gYml0Lgo+CgpJJ20gc29ycnkgYnV0IEkgZG9uJ3Qg
-aGF2ZSBhY2Nlc3MgdG8gdGhlIGhhcmR3YXJlIGFueW1vcmUuCk1heWJlIEZhYmlvIEVzdGV2YW0g
-b3IgU2hhd24gR3VvIGNhbiB0ZXN0IGl0LgoKUmVnYXJkcywKClBoaWxpcHBlCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+ 
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Thursday, April 30, 2015 1:23 PM
+> To: Simon Derr
+> Cc: Kailang; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] snd-hda-intel : issues with mic 
+> boost on ALC3236
+> 
+> At Wed, 29 Apr 2015 22:26:39 +0200,
+> Simon Derr wrote:
+> > 
+> > >> I'm having issues with the internal microphone on an 
+> Asus R553 (or S551) laptop.
+> > >>
+> > >> With the boost set to zero the microphone works but the level of 
+> > >> the recording is very low.
+> > >> If I try another boost setting I don't get any signal anymore.
+> > 
+> > > The problem is unlikely specific to the codec (ALC3236) but the 
+> > > whole hardware implementation.
+> > 
+> > I have to admit that I have zero knowledge of how these things are 
+> > implemented. I can't find a datasheet for that codec anywhere.
+> > However, looking at the ALC262 datasheet for instance, the block 
+> > diagram represents the boost function inside the codec itself.
+> 
+> ALC3236 isn't ALC262 but rather ALC269 variant.
+> 
+> Kailang, is there anything special in ALC3236 regarding the 
+> mic boost handling?  Here, the problem is that the machine 
+> doesn't get builtin mic working when mic boost is set more 
+> than 0, and 0 gives only low signals.  alsa-info.sh is at:
+>   
+> http://www.alsa-project.org/db/?f=55b7fb0b4998757d099addae0a41
+1e6a7cebc079
+> 
+
+I ever met this issue before. But I forgot which cause this issue.
+Maybe some hidden registers need to be changed.
+I will ask our AE for this. 
+
+> > > Your hardware seems to have only one mic pin.  It's 
+> already strange.
+> > > Usually there are two mic pins.  Did you try the input 
+> from mic jack
+> > > (or headset mic)?   Did it work with mic boot volume properly?
+> > 
+> > I just tried : plugging a headset in the combo jack does 
+> not seem to 
+> > have any effect on the mic input. It seems that the mic on 
+> the headset 
+> > is not used, and that the internal microphone of the laptop 
+> is still 
+> > active.
+> 
+> So you have two problems.  Not sure whether it's related, though.
+> 
+> You may try some existing quirk for Dell laptops, e.g. 
+> model=dell-headset-multi.  In your case, the realtek codec is 
+> the second one, so pass "model=,dell-headset-multi" (give a 
+> comma at first)
+> 
+> 
+> Takashi
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
