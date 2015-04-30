@@ -1,21 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: dapm: Add support for
-	autodisable mux controls
-Date: Thu, 30 Apr 2015 16:58:58 +0100
-Message-ID: <20150430155858.GA22845@sirena.org.uk>
-References: <1430390332-14037-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1430390332-14037-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <554223B8.1040304@metafoo.de>
- <20150430150039.GR3480@opensource.wolfsonmicro.com>
- <55424CC6.7030701@metafoo.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/3] ALSA: hda: add hdac_adsp_enable module
+ flag
+Date: Thu, 30 Apr 2015 11:02:19 -0500
+Message-ID: <5542520B.8080606@linux.intel.com>
+References: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1753482705203679620=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD5A5264F0A
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 17:59:09 +0200 (CEST)
-In-Reply-To: <55424CC6.7030701@metafoo.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id CAFEF265DC6
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 18:02:32 +0200 (CEST)
+In-Reply-To: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On 4/30/15 9:52 AM, Vinod Koul wrote:
+> Some Intel HDA controllers sport a DSP. These systems can also be enabled
+> with ASoC HDA driver as well. So add a flag in hda-core to enable/disable
+> aDSP This flag for now is false, and should be true once the ASoC based
+> systems mature.  The integrators/OS vendors can configure this flag based on
+> system preference.
 
---===============1753482705203679620==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SOeYZCt5d38i4IhE"
-Content-Disposition: inline
+This choice is contingent on the BIOS options, you can't enable the DSP 
+if the BIOS said no DSP...
 
-
---SOeYZCt5d38i4IhE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 30, 2015 at 05:39:50PM +0200, Lars-Peter Clausen wrote:
-
-> Hm, right. What I had in mind is to not export the off state to userland,
-> but I guess it makes sense to make it possible to select it explicitly since
-> it is consistent with the auto-disable switches.
-
-It's not just consistent, you need to be able to do that so that you can
-set something to a known unused input when it's not in use, otherwise
-you need to worry about making sure that you don't end up causing audio
-to flow through the mux unintentionally when you go into some other use
-case.
-
---SOeYZCt5d38i4IhE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVQlFCAAoJECTWi3JdVIfQRykH/1E7S+yhjCLMJIo55EntaFGU
-LuQc2zaS3WPJG0AZ7UkFOEb8AAsKMNMhw6vNLkh3NguqeaB0QgVBZCjbszvbnN0q
-lmEN4zgN5qr/XEhMe98by4TrH49lsUlOe2B6oya+Lxl1NpNeEzwb14opGCaJPGqn
-aON/6rSxXGsTMDrp3ttQg5F6e6Mn3PSBcHsfbVucphptj/+/VyC0Jd25obIN1giC
-t66tKWaPkXmu8S6s88gFgb5XFI0MieO+5Xw13+fx+2LXiTb9Aaq+6HKxohAeRIms
-SEWn2bSrx54dbNRGO6XhiWKlBAzPfHqCzx5xmaIypuKqcQal/oo0dW8x6gJO6C8=
-=8U03
------END PGP SIGNATURE-----
-
---SOeYZCt5d38i4IhE--
-
---===============1753482705203679620==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1753482705203679620==--
+>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>   include/sound/hdaudio.h  | 11 +++++++++++
+>   sound/hda/hda_bus_type.c |  4 ++++
+>   2 files changed, 15 insertions(+)
+>
+> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+> index b97c59eab7ab..015bec1079f9 100644
+> --- a/include/sound/hdaudio.h
+> +++ b/include/sound/hdaudio.h
+> @@ -12,6 +12,17 @@
+>   #include <sound/memalloc.h>
+>   #include <sound/hda_verbs.h>
+>
+> +/*
+> + * hdac_adsp_enable: exported HD-A aDSP enable configuration.
+> + *
+> + * Some Intel HDA controllers sport a DSP, for these platform we can bypass
+> + * aDSP and use as regular HDA controller or enable aDSP and use aDSP
+> + * along with I2S codecs etc.
+> + * hdac_adsp_enable would enable the aDSP based HDA controller if the
+> + * platform supports it
+> + */
+> +extern bool hdac_adsp_enable;
+> +
+>   /* codec node id */
+>   typedef u16 hda_nid_t;
+>
+> diff --git a/sound/hda/hda_bus_type.c b/sound/hda/hda_bus_type.c
+> index 519914a12e8a..80e0570ffbf4 100644
+> --- a/sound/hda/hda_bus_type.c
+> +++ b/sound/hda/hda_bus_type.c
+> @@ -10,6 +10,10 @@
+>   MODULE_DESCRIPTION("HD-audio bus");
+>   MODULE_LICENSE("GPL");
+>
+> +bool hdac_adsp_enable = false;
+> +module_param(hdac_adsp_enable, bool, 0444);
+> +MODULE_PARM_DESC(hdac_adsp_enable, "Enable aDSP on Intel HDA based systems");
+> +
+>   static int hda_bus_match(struct device *dev, struct device_driver *drv)
+>   {
+>   	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+>
