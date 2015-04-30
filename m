@@ -1,20 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 3/7] ASoC: hda - adds SoC controller and
- stream operations
-Date: Thu, 30 Apr 2015 15:05:04 +0530
-Message-ID: <20150430093504.GL3521@localhost>
+Subject: Re: [PATCH v3 4/7] ASoC: intel - add Skylake HDA
+	platform driver
+Date: Thu, 30 Apr 2015 15:12:21 +0530
+Message-ID: <20150430094221.GM3521@localhost>
 References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
- <1430250870-3169-4-git-send-email-vinod.koul@intel.com>
- <s5hzj5rf7cv.wl-tiwai@suse.de>
+ <1430250870-3169-5-git-send-email-vinod.koul@intel.com>
+ <s5hy4lbf75l.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C5ED2614AC
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 11:34:23 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 941222625ED
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 11:41:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hzj5rf7cv.wl-tiwai@suse.de>
+In-Reply-To: <s5hy4lbf75l.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,219 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 29, 2015 at 02:26:40PM +0200, Takashi Iwai wrote:
-> At Wed, 29 Apr 2015 01:24:26 +0530,
+On Wed, Apr 29, 2015 at 02:31:02PM +0200, Takashi Iwai wrote:
+> At Wed, 29 Apr 2015 01:24:27 +0530,
 > Vinod Koul wrote:
 > > 
-> > +struct soc_hdac_stream {
-> > +	struct hdac_stream hstream;
-> > +	unsigned int decoupled:1;
-> > +	void __iomem *pphc_addr; /* processing pipe host stream reg pointer */
-> > +	void __iomem *pplc_addr; /* processing pipe link stream reg pointer */
-> > +	bool link_locked:1;
-> > +	struct snd_pcm_substream *link_substream;
-> > +	bool link_prepared;
-> 
-> The bit fields should be gathered into the same place so that the
-> struct can be packed better.  Also, use bool consistently for bit
-> fields, too.
-Sure, btw should we use bitfields or bool alone. I dont see much reason to
-use bitfields here?
-
-> > +/**
-> > + * snd_soc_hdac_bus_parse_capabilities - parse capablity structure
-> > + * @sbus - HD-audio soc core bus
-> > + */
-> > +int snd_soc_hdac_bus_parse_capabilities(struct soc_hdac_bus *sbus)
+> > +static struct snd_soc_dai_driver soc_hda_platform_dai[] = {
 > > +{
-> > +	unsigned int cur_cap;
-> > +	unsigned int offset;
-> > +	struct hdac_bus *bus = &sbus->bus;
-> > +
-> > +	offset = snd_hdac_chip_readl(bus, LLCH);
-> > +
-> > +	sbus->ppcap = false;
-> > +	sbus->mlcap = false;
-> > +	sbus->spbcap = false;
-> > +	sbus->gtscap = false;
-> > +
-> > +	/* Lets walk the linked capabilities list */
-> > +	do {
+> > +	.name = "System Pin",
+> > +	.ops = &hda_pcm_dai_ops,
+> > +	.playback = {
+> > +		.stream_name = "System Playback",
+> > +		.channels_min = HDA_MONO,
+> > +		.channels_max = HDA_STEREO,
+> > +		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_8000,
+> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> > +	},
+> > +	.capture = {
+> > +		.stream_name = "System Capture",
+> > +		.channels_min = HDA_MONO,
+> > +		.channels_max = HDA_STEREO,
+> > +		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
+> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
 > 
-> I'd check the validity of the offset value, at least, to a negative
-> value.  When a chip or bus is screwed up, it would return -1.
-Ok
+> Is it really S24_LE?  It's packed in lower 3 bytes of 4 bytes format.
+Yup, we do use S24_LE, thats very common on our DSP based systems
 
 > 
-> 
-> > +/**
-> > + * snd_soc_hdac_bus_get_ml_capablities - get multilink capablity
-> > + * @sbus - HD-audio soc core bus
-> > + */
-> > +int snd_soc_hdac_bus_get_ml_capablities(struct soc_hdac_bus *sbus)
+> > +	},
+> > +},
 > > +{
-> > +	int idx = 0;
-> 
-> Superfluous initialization.
-> 
-> > +	u32 link_count = 0;
-> 
-> Ditto.
-will remove
-
-> 
-> > +	struct soc_hdac_link *hlink;
-> > +	struct hdac_bus *bus = &sbus->bus;
-> > +
-> > +	INIT_LIST_HEAD(&sbus->hlink_list);
-> 
-> This should be done better in the initializer of soc_hdac_bus object.
-Good catch
-
-> 
-> > +
-> > +	link_count = soc_hdac_bus_mlcap_readb(sbus, ML_MLCD) + 1;
-> > +
-> > +	dev_dbg(bus->dev, "In %s Link count: %d\n", __func__, link_count);
-> > +
-> > +	for (idx = 0; idx < link_count; idx++) {
-> > +		hlink  = devm_kzalloc(bus->dev, sizeof(*hlink), GFP_KERNEL);
-> > +		if (!hlink)
-> > +			return -ENOMEM;
-> > +		hlink->index = idx;
-> > +		hlink->bus = bus;
-> > +		hlink->ml_addr = sbus->mlcap_addr +
-> > +					ML_BASE +
-> > +					(ML_INTERVAL *
-> > +					idx);
-> > +		hlink->lcaps  = soc_hdac_link_readw(hlink, ML_LCAP);
-> > +		hlink->lsdiid = soc_hdac_link_readw(hlink, ML_LSDIID);
-> > +
-> > +		list_add(&hlink->list, &sbus->hlink_list);
-> 
-> list_add_tail() is used more often.  (Does the order matter?)
-I dont think so... but i agree would make sense to order it
-
-> 
-> > +/**
-> > + * snd_soc_hdac_bus_map_codec_to_link - maps codec to link
-> > + * @sbus - HD-audio soc core bus
-> > + * @addr - codec address
-> > + */
-> > +int snd_soc_hdac_bus_map_codec_to_link(struct soc_hdac_bus *sbus, int addr)
+> > +	.name = "Deepbuffer Pin",
+> > +	.ops = &hda_pcm_dai_ops,
+> > +	.playback = {
+> > +		.stream_name = "Deepbuffer Playback",
+> > +		.channels_min = HDA_STEREO,
+> > +		.channels_max = HDA_STEREO,
+> > +		.rates = SNDRV_PCM_RATE_48000,
+> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> > +	},
+> > +},
 > > +{
-> > +	struct soc_hdac_link *hlink;
-> > +	struct hdac_bus *bus = &sbus->bus;
-> > +
-> > +	list_for_each_entry(hlink, &sbus->hlink_list, list) {
-> > +		/*check if SDI bit number == Codec address */
-> > +		dev_dbg(bus->dev, "lsdid for %d link %x\n", hlink->index, hlink->lsdiid);
-> > +		if (!(hlink->lsdiid))
+> > +	.name = "LowLatency Pin",
+> > +	.ops = &hda_pcm_dai_ops,
+> > +	.playback = {
+> > +		.stream_name = "Low Latency Playback",
+> > +		.channels_min = HDA_STEREO,
+> > +		.channels_max = HDA_STEREO,
+> > +		.rates = SNDRV_PCM_RATE_48000,
+> > +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> > +	},
 > 
-> Superfluous parentheses.
-will fix
-
-> 
-> > +			continue;
-> > +
-> > +		if (hlink->lsdiid && (0x1 << addr)) {
-> > +			snprintf(hlink->codec[addr],
-> > +					sizeof(hlink->codec[addr]),
-> > +					"codec#%03x.%d", addr, addr);
-> 
-> Does repeating the address twice make sense?
-It doesnt :)
-
-> 
-> 
-> > +			break;
-> > +		}
-> > +	}
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_soc_hdac_bus_map_codec_to_link);
-> > +
-> > +/**
-> > + * snd_soc_hdac_bus_get_link_index - get link based on codec name
-> > + * @sbus - HD-audio soc core bus
-> > + * @codec_name - codec name
-> > + */
-> > +struct soc_hdac_link *snd_soc_hdac_bus_get_link(struct soc_hdac_bus *sbus,
-> > +						 const char *codec_name)
-> > +{
-> > +	int i = 0;
-> > +	struct soc_hdac_link *hlink = NULL;
-> > +
-> > +	list_for_each_entry(hlink, &sbus->hlink_list, list) {
-> > +		for (i = 0; i < 16 ; i++) {
-> 
-> Where does 16 comes from?  Not HDA_MAX_CODECS?
-HDA Spec :) but i think we should use HDA_MAX_CODECS rather
-
-> 
-> > +			if (strlen(hlink->codec[i]) == 0)
-> > +				break;
-> 
-> It can be simplified like
-> 			if (!hlink->codec[i][0])
-yes
-
-> 
-> > +			if (!strncmp(hlink->codec[i], codec_name,
-> > +					sizeof(codec_name)))
-> 
-> This looks buggy.  sizeof(codec_name) == sizeof(const char *) == 4 or 8.
-yes it should be strlen() instead
-
-> 
-> > +				return hlink;
-> > +		}
-> > +	}
-> > +	return hlink;
-> 
-> This also looks buggy.  When the loop is out, hlink isn't NULL.
-yes we should make it return NULL
-
-> 
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_soc_hdac_bus_get_link);
-> > +
-> > +/**
-> > + * snd_soc_hdac_bus_link_power_up -power up hda link
-> > + * @link - HD-audio soc link
-> > + */
-> > +int snd_soc_hdac_bus_link_power_up(struct soc_hdac_link *link)
-> > +{
-> > +	int timeout;
-> > +	u32 val;
-> > +	int mask = (1 << MLCTL_CPA);
-> > +
-> > +	soc_hdac_link_updatel(link, ML_LCTL, 0, MLCTL_SPA);
-> > +	udelay(3);
-> > +	timeout = 300;
-> > +
-> > +	do {
-> > +		val = soc_hdac_link_readl(link, ML_LCTL);
-> > +		if (((val & mask) >> MLCTL_CPA))
-> > +			return 0;
-> > +	} while (--timeout);
-> 
-> How 300 reads timeout calculated?  There is no delay in the loop, so
-> it's quite short.
-I think we should to cpu_relax or add a delay here
-
-> 
-> 
-> > +/* Module information */
-> > +MODULE_AUTHOR("Jeeja KP <jeeja.kp@intel.com>");
-> > +MODULE_DESCRIPTION("HDA SoC core");
-> > +MODULE_LICENSE("GPL v2");
-> 
-> There is already module information in soc-hda-codec.c.
-yes will eliminate the duplicate
+> Are there no S32_LE support at all for all dais?
+No, just 16 and 24 bits :)
 
 -- 
 ~Vinod
