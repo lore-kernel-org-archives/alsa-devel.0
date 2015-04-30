@@ -1,22 +1,20 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 2/2] mfd: arizona: Update DT binding to
- support hpdet channel
-Date: Thu, 30 Apr 2015 11:09:47 +0100
-Message-ID: <20150430100947.GE1815@x1>
-References: <1430357878-22859-1-git-send-email-ideal.song@samsung.com>
- <1430357878-22859-3-git-send-email-ideal.song@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 5/7] ASoC: intel - add Skylake HDA audio
+	driver
+Date: Thu, 30 Apr 2015 15:41:40 +0530
+Message-ID: <20150430101140.GN3521@localhost>
+References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
+ <1430250870-3169-6-git-send-email-vinod.koul@intel.com>
+ <s5hwq0vf6bi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FF64265B58
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 12:09:53 +0200 (CEST)
-Received: by wizk4 with SMTP id k4so12914734wiz.1
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 03:09:52 -0700 (PDT)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A848F265B58
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 12:11:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1430357878-22859-3-git-send-email-ideal.song@samsung.com>
+In-Reply-To: <s5hwq0vf6bi.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,37 +24,365 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, cw00.choi@samsung.com, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAzMCBBcHIgMjAxNSwgSW5oYSBTb25nIHdyb3RlOgoKPiBUaGlzIHBhdGNoIGFkZCBk
-ZXZpY2UgdHJlZSBiaW5kaW5ncyBmb3IgdGhlIHBkYXRhIG5lZWRlZCB0byBjb25maWd1cmUKPiB0
-aGUgQWNjZXNzb3J5IERldGVjdCBNb2RlIHNlbGVjdCB3aGVuIEhlYWRwaG9uZSBkZXRlY3Rpb24u
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogSW5oYSBTb25nIDxpZGVhbC5zb25nQHNhbXN1bmcuY29tPgo+
-IC0tLQo+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2FyaXpvbmEudHh0
-IHwgNiArKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQoKQWNrZWQtYnk6
-IExlZSBKb25lcyA8bGVlQGtlcm5lbC5vcmc+Cgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbWZkL2FyaXpvbmEudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL21mZC9hcml6b25hLnR4dAo+IGluZGV4IDdiZDEyNzMuLjdkZGVkYTgg
-MTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9hcml6
-b25hLnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvYXJp
-em9uYS50eHQKPiBAQCAtNDksNiArNDksMTIgQEAgT3B0aW9uYWwgcHJvcGVydGllczoKPiAgICAg
-IGlucHV0IHNpbmdhbHMuIElmIHZhbHVlcyBsZXNzIHRoYW4gdGhlIG51bWJlciBvZiBpbnB1dCBz
-aWduYWxzLCBlbGVtZW50cwo+ICAgICAgdGhhdCBoYXMgbm90IGJlZW4gc3BlY2lmZWQgYXJlIHNl
-dCB0byAwIGJ5IGRlZmF1bHQuCj4gIAo+ICsgIC0gd2xmLGhwZGV0LWNoYW5uZWwgOiBIZWFkcGhv
-bmUgZGV0ZWN0aW9uIGNoYW5uZWwuCj4gKyAgICBBUklaT05BX0FDQ0RFVF9NT0RFX0hQTCBvciAx
-IC0gSGVhZHBob25lIGRldGVjdCBtb2RlIGlzIHNldCB0byBIUERFVEwKPiArICAgIEFSSVpPTkFf
-QUNDREVUX01PREVfSFBSIG9yIDIgLSBIZWFkcGhvbmUgZGV0ZWN0IG1vZGUgaXMgc2V0IHRvIEhQ
-REVUUgo+ICsgICAgSWYgdGhpcyBub2RlIGlzIG5vdCBtZW50aW9uZWQgb3IgaWYgdGhlIHZhbHVl
-IGlzIHVua25vd24sIHRoZW4KPiArICAgIGhlYWRwaG9uZSBkZXRlY3Rpb24gbW9kZSBpcyBzZXQg
-dG8gSFBERVRMLgo+ICsKPiAgICAtIERDVkRELXN1cHBseSwgTUlDVkRELXN1cHBseSA6IFBvd2Vy
-IHN1cHBsaWVzLCBvbmx5IG5lZWQgdG8gYmUgc3BlY2lmaWVkIGlmCj4gICAgICB0aGV5IGFyZSBi
-ZWluZyBleHRlcm5hbGx5IHN1cHBsaWVkLiBBcyBjb3ZlcmVkIGluCj4gICAgICBEb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL3JlZ3VsYXRvci50eHQKCi0tIApMZWUg
-Sm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8u
-b3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzog
-RmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Wed, Apr 29, 2015 at 02:49:05PM +0200, Takashi Iwai wrote:
+> At Wed, 29 Apr 2015 01:24:28 +0530,
+> Vinod Koul wrote:
+> > 
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_SUPPORTED_DEVICE("{Intel, PCH},");
+> > +MODULE_DESCRIPTION("Intel aDSP HDA driver");
+> 
+> Are the descriptions correct?
+What am i missing?
+
+> 
+> 
+> > +/*
+> > + * Check whether the current DMA position is acceptable for updating
+> > + * periods.  Returns non-zero if it's OK.
+> > + */
+> > +static int azx_position_ok(struct hdac_bus *bus, struct hdac_stream *stream)
+> > +{
+> > +	u32 wallclk;
+> > +	unsigned int pos = 0;
+> > +
+> > +	wallclk = snd_hdac_chip_readl(bus, WALLCLK) - stream->start_wallclk;
+> > +	if (wallclk < (stream->period_wallclk * 2) / 3)
+> > +		return -1;	/* bogus (too early) interrupt */
+> > +
+> > +	if (bus->use_posbuf) {
+> > +		/* use the position buffer as default */
+> > +		pos = snd_hdac_stream_get_pos_posbuf(stream);
+> > +		if (!pos || pos == (u32)-1) {
+> > +			dev_info(bus->dev,
+> > +				 "Invalid pos buffer, using LPIB read method instead.\n");
+> > +			pos = snd_hdac_stream_get_pos_lpib(stream);
+> > +		}
+> > +	}
+> > +
+> > +	if (pos >= stream->bufsize)
+> > +		pos = 0;
+> > +
+> > +	if (WARN_ONCE(!stream->period_bytes,
+> > +		      "hda-skl: zero stream->period_bytes"))
+> > +		return -1; /* this shouldn't happen! */
+> > +
+> > +	if (wallclk < (stream->period_wallclk * 5) / 4 &&
+> > +	    pos % stream->period_bytes > stream->period_bytes / 2)
+> > +		/* NG - it's below the first next period boundary */
+> > +		return bus->bdl_pos_adj ? 0 : -1;
+> > +
+> > +	stream->start_wallclk += wallclk;
+> > +
+> > +	return 1; /* OK, it's fine */
+> 
+> I'd love to drop this messy trick if SKL doesn't need it.
+> Could you check whether it works without this?
+Sure let me test this
+
+> 
+> 
+> > +static irqreturn_t azx_interrupt(int irq, void *dev_id)
+> > +{
+> > +	struct soc_hdac_bus *sbus = dev_id;
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	u32 status;
+> > +
+> > +#ifdef CONFIG_PM
+> > +	if (!pm_runtime_active(bus->dev))
+> > +		return IRQ_NONE;
+> > +#endif
+> > +
+> > +	spin_lock(&bus->reg_lock);
+> > +
+> > +	status = snd_hdac_chip_readl(bus, INTSTS);
+> > +	if (status == 0 || status == 0xffffffff) {
+> > +		spin_unlock(&bus->reg_lock);
+> > +		return IRQ_NONE;
+> > +	}
+> > +
+> > +	/* clear rirb int */
+> > +	status = snd_hdac_chip_readb(bus, RIRBSTS);
+> > +	if (status & RIRB_INT_MASK) {
+> > +		if (status & RIRB_INT_RESPONSE)
+> > +			snd_hdac_bus_update_rirb(bus);
+> > +		snd_hdac_chip_writeb(bus, RIRBSTS, RIRB_INT_MASK);
+> > +		return IRQ_HANDLED;
+> 
+> An irq may have both RIRB and stream irq bits set.  If we return
+> IRQ_HANDLED here, I suppose the stream irqs won't be handled.
+They will be in the thread handler. Also worth mentioning here is that the
+aDSP interrupts will be handled by IPC code (shared interrupt)
+
+Now yes we are missing fallback to coupled mode, if aDSP fails then stream
+should be handled here, will add that
+
+> 
+> > +	}
+> > +
+> > +	spin_unlock(&bus->reg_lock);
+> > +	return IRQ_WAKE_THREAD;
+> > +}
+> 
+> The threaded irq handler checks only the stream irqs, so better to
+> check INTSTS here.  That is, something like:
+>   return snd_hdac_chip_readl(bus, INTSTS) ? IRQ_WAKE_THREAD : IRQ_HANDLED;
+Yes that makese sense
+
+> 
+> > +#ifdef CONFIG_PM_SLEEP
+> > +/*
+> > + * power management
+> > + */
+> > +static int azx_suspend(struct device *dev)
+> > +{
+> > +	struct pci_dev *pci = to_pci_dev(dev);
+> > +	struct soc_hdac_bus *sbus = pci_get_drvdata(pci);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +
+> > +	snd_hdac_bus_stop_chip(bus);
+> > +	snd_hdac_bus_enter_link_reset(bus);
+> > +	if (bus->irq >= 0) {
+> > +		free_irq(bus->irq, bus);
+> > +		bus->irq = -1;
+> > +	}
+> > +
+> > +	if (hda->msi)
+> > +		pci_disable_msi(pci);
+> > +	pci_disable_device(pci);
+> > +	pci_save_state(pci);
+> > +	pci_set_power_state(pci, PCI_D3hot);
+> 
+> Drop the last three lines, they are done in PCI core nowadays.
+ok
+
+> 
+> > +	return 0;
+> > +}
+> > +
+> > +static int azx_resume(struct device *dev)
+> > +{
+> > +	struct pci_dev *pci = to_pci_dev(dev);
+> > +	struct soc_hdac_bus *sbus = pci_get_drvdata(pci);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +
+> > +	pci_set_power_state(pci, PCI_D0);
+> > +	pci_restore_state(pci);
+> > +
+> > +	if (pci_enable_device(pci) < 0) {
+> > +		dev_err(dev, "hda-intel: pci_enable_device failed, disabling device\n");
+> > +		return -EIO;
+> > +	}
+> 
+> These three calls should be dropped, too.
+ok
+
+> 
+> 
+> > +	pci_set_master(pci);
+> > +	if (hda->msi)
+> > +		if (pci_enable_msi(pci) < 0)
+> > +			hda->msi = 0;
+> > +	if (azx_acquire_irq(sbus, 1) < 0)
+> > +		return -EIO;
+> > +	azx_init_pci(hda);
+> > +
+> > +	snd_hdac_bus_init_chip(bus, 1);
+> > +	return 0;
+> > +}
+> > +#endif /* CONFIG_PM_SLEEP */
+> > +
+> > +#ifdef CONFIG_PM
+> > +static int azx_runtime_suspend(struct device *dev)
+> > +{
+> > +	struct pci_dev *pci = to_pci_dev(dev);
+> > +	struct soc_hdac_bus *sbus = pci_get_drvdata(pci);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +
+> > +	dev_dbg(bus->dev, "in %s\n", __func__);
+> > +
+> > +	/* enable controller wake up event */
+> > +	snd_hdac_chip_updatew(bus, WAKEEN, 0, STATESTS_INT_MASK);
+> > +
+> > +	snd_hdac_bus_stop_chip(bus);
+> > +	snd_hdac_bus_enter_link_reset(bus);
+> > +	return 0;
+> > +}
+> > +
+> > +static int azx_runtime_resume(struct device *dev)
+> > +{
+> > +	struct pci_dev *pci = to_pci_dev(dev);
+> > +	struct soc_hdac_bus *sbus = pci_get_drvdata(pci);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +	int status;
+> > +
+> > +	dev_dbg(bus->dev, "in %s\n", __func__);
+> > +
+> > +	/* Read STATESTS before controller reset */
+> > +	status = snd_hdac_chip_readw(bus, STATESTS);
+> > +
+> > +	azx_init_pci(hda);
+> > +	snd_hdac_bus_init_chip(bus, true);
+> > +	/* disable controller Wake Up event */
+> > +	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct dev_pm_ops azx_pm = {
+> > +	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
+> > +	SET_RUNTIME_PM_OPS(azx_runtime_suspend, azx_runtime_resume, NULL)
+> > +};
+> > +#endif /* CONFIG_PM */
+> > +
+> > +/*
+> > + * destructor
+> > + */
+> > +static int azx_free(struct soc_hdac_bus *sbus)
+> > +{
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +
+> > +	hda->init_failed = 1; /* to be sure */
+> > +
+> > +	snd_soc_hdac_stop_streams(sbus);
+> > +
+> > +	if (bus->irq >= 0)
+> > +		free_irq(bus->irq, (void *)bus);
+> > +	if (hda->msi)
+> > +		pci_disable_msi(hda->pci);
+> > +	if (bus->remap_addr)
+> > +		iounmap(bus->remap_addr);
+> > +
+> > +	snd_hdac_bus_free_stream_pages(bus);
+> > +	azx_free_streams(sbus);
+> > +	pci_release_regions(hda->pci);
+> > +	pci_disable_device(hda->pci);
+> > +
+> > +	snd_hdac_bus_exit(bus);
+> > +	return 0;
+> > +}
+> > +
+> > +static int hda_dmic_device_register(struct hda_skl *hda)
+> > +{
+> > +	struct hdac_bus *bus = hdac_bus(&hda->sbus);
+> > +	struct platform_device *pdev;
+> > +	int ret;
+> > +
+> > +	pdev = platform_device_alloc("dmic-codec", -1);
+> > +	if (!pdev) {
+> > +		dev_err(bus->dev, "failed to allocate dmic device\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	ret = platform_device_add(pdev);
+> > +	if (ret) {
+> > +		dev_err(bus->dev, "failed to add hda codec device\n");
+> > +		platform_device_put(pdev);
+> > +		return -1;
+> > +	}
+> > +	hda->dmic_dev = pdev;
+> > +	return 0;
+> > +}
+> > +
+> > +static void hda_dmic_device_unregister(struct hda_skl *hda)
+> > +{
+> > +
+> > +	if (hda->dmic_dev)
+> > +		platform_device_unregister(hda->dmic_dev);
+> > +}
+> > +
+> > +static int azx_add_codec_device(int addr, struct hdac_bus *bus)
+> > +{
+> > +	struct hdac_device *hdev = NULL;
+> > +	char name[10];
+> > +	int ret;
+> > +
+> > +	hdev = devm_kzalloc(bus->dev, sizeof(*hdev), GFP_KERNEL);
+> > +	if (!hdev)
+> > +		return -ENOMEM;
+> > +
+> > +	snprintf(name, sizeof(name), "codec#%03x", addr);
+> 
+> The name should be unique, and this would conflict when there are
+> multiple sound cards with the same codec address.  The legacy driver,
+> for example, encodes the name with the card index and the codec
+> address.
+would we have multiple cards on a system with hda codecs? I am not too sure,
+but yes lets add this
+
+> 
+> > +static int azx_first_init(struct soc_hdac_bus *sbus)
+> > +{
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	struct pci_dev *pci = hda->pci;
+> > +	int err;
+> > +	unsigned short gcap;
+> > +	int capture_streams, playback_streams;
+> > +
+> > +	err = pci_request_regions(pci, "ICH HD audio");
+> 
+> Choose a more sensible name for a new driver :)
+Ah yes :) I am think "SKL HDA aDSP driver" or generically "HDA aDSP driver"
+
+
+> 
+> > +	if (err < 0)
+> > +		return err;
+> > +
+> > +	bus->addr = pci_resource_start(pci, 0);
+> > +	bus->remap_addr = pci_ioremap_bar(pci, 0);
+> > +	if (bus->remap_addr == NULL) {
+> > +		dev_err(bus->dev, "ioremap error\n");
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	if (hda->msi)
+> > +		if (pci_enable_msi(pci) < 0)
+> > +			hda->msi = 0;
+> > +
+> > +	if (azx_acquire_irq(sbus, 0) < 0)
+> > +		return -EBUSY;
+> > +
+> > +	pci_set_master(pci);
+> > +	synchronize_irq(bus->irq);
+> > +
+> > +	gcap = snd_hdac_chip_readw(bus, GCAP);
+> > +	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
+> > +
+> > +	/* allow 64bit DMA address if supported by H/W */
+> > +	if (!pci_set_dma_mask(pci, DMA_BIT_MASK(64)))
+> > +		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(64));
+> > +	else {
+> > +		pci_set_dma_mask(pci, DMA_BIT_MASK(32));
+> > +		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(32));
+> > +	}
+> 
+> These are replaced with dma_set_mask().  See the codes in for-next
+> branch.
+Sure, will use that
+
+> 
+> > +/* PCI IDs */
+> > +static const struct pci_device_id azx_ids[] = {
+> > +	/* Sunrise Point-LP */
+> > +	{ PCI_DEVICE(0x8086, 0x9d70), 0},
+> > +	{ 0, }
+> > +};
+> > +MODULE_DEVICE_TABLE(pci, azx_ids);
+> 
+> We wanted to have a mechanism to work around the PCI ID conflict
+> between asoc and legacy drivers.  Will it be included in the next
+> series?
+I will send that out first before this is merged, possiblu later today so
+that you can see them before you leave :)
+
+-- 
+~Vinod
