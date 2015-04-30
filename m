@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RFC PATCH 02/14] ASoC: qcom: remove unnecessary header files
-Date: Thu, 30 Apr 2015 18:16:44 +0100
-Message-ID: <1430414204-10955-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 04/14] ASoC: qcom: remove hardcoded i2s port number
+Date: Thu, 30 Apr 2015 18:17:02 +0100
+Message-ID: <1430414222-11039-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,61 +10,92 @@ To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes unnecessary header files in lpass cpu and platform
-code.
+This patch attempts to remove the hardcoded i2s port number in lpass
+driver. Now the the port number comes from the dai id field.
+
+This will allow other SOCs to use different port numbers on the lpass
+driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/lpass-cpu.c      | 6 +-----
- sound/soc/qcom/lpass-platform.c | 6 ------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ sound/soc/qcom/lpass-cpu.c     | 17 ++++++-----------
+ sound/soc/qcom/lpass-ipq806x.c |  1 +
+ 2 files changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 1e284c6..4084295 100644
+index 74b2245..7aca253 100644
 --- a/sound/soc/qcom/lpass-cpu.c
 +++ b/sound/soc/qcom/lpass-cpu.c
-@@ -14,12 +14,7 @@
-  */
+@@ -138,8 +138,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- #include <linux/clk.h>
--#include <linux/compiler.h>
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/ioport.h>
- #include <linux/kernel.h>
--#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-@@ -28,6 +23,7 @@
- #include <linux/regmap.h>
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
-+
- #include "lpass-lpaif-ipq806x.h"
+ 	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant,
+-			   LPAIF_I2S_PORT_MI2S),
++			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+ 			   regval);
+ 	if (ret) {
+ 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+@@ -164,8 +163,7 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+ 	int ret;
+ 
+ 	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant,
+-			   LPAIF_I2S_PORT_MI2S), 0);
++			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+ 	if (ret)
+ 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+ 				__func__, ret);
+@@ -180,7 +178,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+ 	int ret;
+ 
+ 	ret = regmap_update_bits(drvdata->lpaif_map,
+-			LPAIF_I2SCTL_REG(drvdata->variant, LPAIF_I2S_PORT_MI2S),
++			LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+ 			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
+ 	if (ret)
+ 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+@@ -200,8 +198,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		ret = regmap_update_bits(drvdata->lpaif_map,
+-				LPAIF_I2SCTL_REG(drvdata->variant,
+-				LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+ 				LPAIF_I2SCTL_SPKEN_MASK,
+ 				LPAIF_I2SCTL_SPKEN_ENABLE);
+ 		if (ret)
+@@ -212,8 +209,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		ret = regmap_update_bits(drvdata->lpaif_map,
+-				LPAIF_I2SCTL_REG(drvdata->variant,
+-				LPAIF_I2S_PORT_MI2S),
++				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+ 				LPAIF_I2SCTL_SPKEN_MASK,
+ 				LPAIF_I2SCTL_SPKEN_DISABLE);
+ 		if (ret)
+@@ -243,8 +239,7 @@ int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ 
+ 	/* ensure audio hardware is disabled */
+ 	ret = regmap_write(drvdata->lpaif_map,
+-			   LPAIF_I2SCTL_REG(drvdata->variant,
+-			   LPAIF_I2S_PORT_MI2S), 0);
++			LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+ 	if (ret)
+ 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+ 				__func__, ret);
+diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+index 8e9a427..0466483 100644
+--- a/sound/soc/qcom/lpass-ipq806x.c
++++ b/sound/soc/qcom/lpass-ipq806x.c
+@@ -29,6 +29,7 @@
  #include "lpass.h"
  
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 2fa6280..ffc0928 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -13,17 +13,11 @@
-  * lpass-platform.c -- ALSA SoC platform driver for QTi LPASS
-  */
- 
--#include <linux/compiler.h>
--#include <linux/device.h>
- #include <linux/dma-mapping.h>
--#include <linux/err.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/io.h>
- #include <linux/platform_device.h>
--#include <sound/memalloc.h>
--#include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <linux/regmap.h>
- #include <sound/soc.h>
+ static struct snd_soc_dai_driver lpass_cpu_dai_driver = {
++	.id	= LPAIF_I2S_PORT_MI2S,
+ 	.playback = {
+ 		.stream_name	= "lpass-cpu-playback",
+ 		.formats	= SNDRV_PCM_FMTBIT_S16 |
 -- 
 1.9.1
