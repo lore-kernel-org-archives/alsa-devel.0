@@ -1,21 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/4] ASoC: Intel: Add Cherrytrail &
- Braswell machine driver cht_bsw_max98090
-Date: Thu, 30 Apr 2015 13:30:14 -0500
-Message-ID: <554274B6.9000104@linux.intel.com>
-References: <1430358238-74659-1-git-send-email-yang.a.fang@intel.com>
- <1430358238-74659-2-git-send-email-yang.a.fang@intel.com>
- <20150430043651.GJ3521@localhost> <20150430062418.GA76535@mocha>
- <55424CED.1080402@linux.intel.com>
- <CAEUnVG78u7NUGYpT5QgnjcN7EmpnsjYbPTwHtHrfdUH0pOzFPA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ALSA: hda: add hdac_adsp_enable module
+ flag
+Date: Thu, 30 Apr 2015 20:27:26 +0100
+Message-ID: <20150430192726.GD22845@sirena.org.uk>
+References: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
+ <5542520B.8080606@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1144783236416895587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A9740260423
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 20:30:17 +0200 (CEST)
-In-Reply-To: <CAEUnVG78u7NUGYpT5QgnjcN7EmpnsjYbPTwHtHrfdUH0pOzFPA@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 632062604F8
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 21:27:34 +0200 (CEST)
+In-Reply-To: <5542520B.8080606@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Yang Fang <yang.a.fang@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, "Diwakar, Praveen" <praveen.diwakar@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, Mark Brown <broonie@kernel.org>, kevin.strasser@linux.intel.com, Vinod Koul <vinod.koul@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 4/30/15 11:39 AM, Dylan Reid wrote:
-> On Thu, Apr 30, 2015 at 8:40 AM, Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->>>>> +       ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
->>>>> +                               SND_JACK_HEADPHONE | SND_JACK_MICROPHONE
->>>>> |
->>>>> +                               SND_JACK_BTN_0 | SND_JACK_BTN_1 |
->>>>> +                               SND_JACK_BTN_2 | SND_JACK_BTN_3, jack,
->>>>> NULL, 0);
->>>>
->>>> Do you really support all those buttons?
->>>
->>> TI driver supports 4 buttons sound/soc/codecs/ts3a227e.c
->>> google made 4 buttons headsets
->>
->>
->> Not every codec is capable of handling 4 buttons.
->> That TI codec was made specifically to detect 4 different levels of
->> impedance. Looking at the Max98090, I see support for a single button press
->> (change in the status of JKSNS). what makes you think you can handle 4
->> buttons in the codec hardware?
->
-> The 98090 isn't involved in the button or jack detection in this case.
-> The ts3a227e handles all jack and button events and posts them to the
-> jack.
 
-ok, got it. Thanks for the clarification.
-Maybe the commit message could be state this dependency, it's not like 
-the other machine drivers we've seen so far, there are only 4 lines in 
-the patch where this TI chip is mentioned.
+--===============1144783236416895587==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sPDkDMdRS1PSJyum"
+Content-Disposition: inline
+
+
+--sPDkDMdRS1PSJyum
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Apr 30, 2015 at 11:02:19AM -0500, Pierre-Louis Bossart wrote:
+> On 4/30/15 9:52 AM, Vinod Koul wrote:
+
+> >Some Intel HDA controllers sport a DSP. These systems can also be enabled
+> >with ASoC HDA driver as well. So add a flag in hda-core to enable/disable
+> >aDSP This flag for now is false, and should be true once the ASoC based
+> >systems mature.  The integrators/OS vendors can configure this flag based on
+> >system preference.
+
+> This choice is contingent on the BIOS options, you can't enable the DSP if
+> the BIOS said no DSP...
+
+Presumably this flag should be coming from the BIOS by default and this
+providing a disable only setting for test/development?
+
+--sPDkDMdRS1PSJyum
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVQoIdAAoJECTWi3JdVIfQD2wH/AmRCHo/JICsVJ+1ABf13q6c
+tKZechUO8JAmq03xickEOD5GmwX1S2yAy8aTTD3wu1VxmqepiHBmKKE3YXjyA3gu
+Km5+hesaX6ceopGWaXsji7A1pyvwRyVb9ew8rC79Hd+WtEoxN2Mnvlbyas9Le2UI
+6DqR5LtEvcXgEm42yCp5J2GkwgwZowCajF3xQ3LXKLr5v6W6McMFh1Tt9hzz/GPJ
+5G/vkZrUOiU3Y4cgk6hvEICso4Op47Ac2eTdF1sVtB1CQlRw3/YcbLBLss6WSOQX
+/f5QTDovwVGGY7B9jmHHftTVEs7SAR/26zE0qLg6u9Ut+XiVeouPJt4Ng6rsVTA=
+=Fxad
+-----END PGP SIGNATURE-----
+
+--sPDkDMdRS1PSJyum--
+
+--===============1144783236416895587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1144783236416895587==--
