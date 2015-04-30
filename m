@@ -1,15 +1,19 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH 1/4] ASoC: Intel: Add support max98090 in sst
-	driver
-Date: Wed, 29 Apr 2015 18:43:55 -0700
-Message-ID: <1430358238-74659-1-git-send-email-yang.a.fang@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - remove unnecessary
+ controller dependency on i915 gfx power
+Date: Thu, 30 Apr 2015 02:07:40 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B845286@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1430300071.git.mengdong.lin@intel.com>
+ <s5hd22ngrb7.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 378902607F7
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 03:44:38 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A00522607F7
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 04:07:53 +0200 (CEST)
+In-Reply-To: <s5hd22ngrb7.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, praveen.k.jain@intel.com, praveen.diwakar@intel.com, denny.iriawan@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, kevin.strasser@linux.intel.com, dgreid@chromium.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, April 29, 2015 6:30 PM
 
-Added entry in sst driver to support max98090 codec
-for intel Braswell platform.
+> > Mengdong Lin (5):
+> >   ALSA: hda - implement a refcount for i915 power well switch
+> >   ALSA: hda - allow a codec to control the link power
+> >   ALSA: hda - implement link_power ops for i915 display power control
+> >   ALSA: hda - divide controller and codec dependency on i915 gfx power
+> >     well
+> >   ALSA: hda - remove controller dependency on i915 power well for
+> >     Baytrail/Braswell
+> 
+> Applied all patches to topic/hda branch and merged to for-next.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/atom/sst/sst_acpi.c |    2 ++
- 1 file changed, 2 insertions(+)
+Thank you, Takashi!
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index fc02a48..bb19b58 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -356,6 +356,8 @@ static struct sst_machines sst_acpi_chv[] = {
- 						&chv_platform_data },
- 	{"10EC5650", "cht-bsw", "cht-bsw-rt5645", NULL, "intel/fw_sst_22a8.bin",
- 						&chv_platform_data },
-+	{"193C9890", "cht-bsw", "cht-bsw-max98090", NULL,
-+	"intel/fw_sst_22a8.bin", &chv_platform_data },
- 	{},
- };
- 
--- 
-1.7.9.5
+When will these patches be available on topic/hda or for-next branch? I've not found them yet.
+
+And I'll try to move the hda-i915 to the sound/hda, and then apply the new power saving to Slylake after more test.
+
+Regards
+Mengdong
