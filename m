@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ALSA: hda: register selectively for
-	SPT-LP
-Date: Thu, 30 Apr 2015 21:33:55 +0100
-Message-ID: <20150430203355.GP22845@sirena.org.uk>
-References: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
- <1430405556-19166-3-git-send-email-vinod.koul@intel.com>
+From: Simon Derr <ddrsimon@gmail.com>
+Subject: Re: snd-hda-intel : issues with mic boost on ALC3236
+Date: Thu, 30 Apr 2015 22:39:19 +0200
+Message-ID: <CAP1KSYcsp5JsAJJjHetvAaLr3J4Syhe7t0TuhEm-quTjSc2OiQ@mail.gmail.com>
+References: <CAP1KSYf_wsief6OCx8hMta5Bq0zN8meCzfxkyjt2ab8hXettMg@mail.gmail.com>
+ <s5h618e92w5.wl-tiwai@suse.de>
+ <CAP1KSYfB8Gk6kQG0XdJdj7+92WHN5cVHjdzJgA5VFq5gZ3SvXA@mail.gmail.com>
+ <s5hy4la6vgn.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A0F7BA@RTITMBSV09.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5798677012060339236=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5C8E261ABF
- for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 22:34:04 +0200 (CEST)
-In-Reply-To: <1430405556-19166-3-git-send-email-vinod.koul@intel.com>
+Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4E11261ABF
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 22:39:39 +0200 (CEST)
+Received: by wgen6 with SMTP id n6so74884534wge.3
+ for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2015 13:39:39 -0700 (PDT)
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A17A0F7BA@RTITMBSV09.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
+To: Kailang <kailang@realtek.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+>> Kailang, is there anything special in ALC3236 regarding the
+>> mic boost handling?  Here, the problem is that the machine
+>> doesn't get builtin mic working when mic boost is set more
+>> than 0, and 0 gives only low signals.  alsa-info.sh is at:
 
---===============5798677012060339236==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ihr1HbZZ2fheRKVn"
-Content-Disposition: inline
+>> You may try some existing quirk for Dell laptops, e.g.
+>> model=dell-headset-multi.  In your case, the realtek codec is
+>> the second one, so pass "model=,dell-headset-multi" (give a
+>> comma at first)
 
+Hi,
 
---Ihr1HbZZ2fheRKVn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Good news : setting model=,headset-mic seems to solve all my issues.
+The jack mic works, the internal mic works, and the boost works.
+Does that make sense to you ?
 
-On Thu, Apr 30, 2015 at 08:22:36PM +0530, Vinod Koul wrote:
+Anyway, thanks a lot for your help.
 
-> -	/* Sunrise Point-LP */
-> -	{ PCI_DEVICE(0x8086, 0x9d70),
-> -	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
+May I suggest updating the list of codec variants in HD-Audio-Models.txt ?
+I originally thought none of the quirks applied to my codec because
+neither ALC3236 nor ALC233 was listed there.
 
-> +static const struct pci_device_id azx_intel_adsp_ids[] =3D {
-> +	/* Sunrise Point-LP */
-> +	{ PCI_DEVICE(0x8086, 0x9d70),
-> +	  .driver_data =3D AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-> +	{ 0, }
-> +};
-> +MODULE_DEVICE_TABLE(pci, azx_intel_adsp_ids);
-> +
-
->  static int __init azx_module_init(void)
->  {
->  	int ret;
-> =20
->  	ret =3D pci_register_driver(&azx_driver);
-> =20
-> +	if (!hdac_adsp_enable)
-> +		ret =3D pci_register_driver(&azx_intel_adsp_driver);
-
-This feels like the wrong idiom here.  I'd expect us to do this by
-binding to the device but ignoring the DSP functionality, or if the
-device has only DSP functionality (it's not clear with the context I
-have but I think that's the case) just printing a message and not
-telling the sound core about it.  Having the driver just fail to load
-seems like it might be a bit obscure.
-
-Though to be honest if it *is* going to register as a separate HDA
-device then it seems like userspace quirking for this is just as viable.
-
---Ihr1HbZZ2fheRKVn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVQpGyAAoJECTWi3JdVIfQF44H/RYtDKLRizkMUbdIMqJuWNZ2
-LfjoHjzx6ClCh3KGoleOK0DU+4OoGiiv1PGOf/VFPtbbvMdVSXt9UBuWEJNaoitn
-Q4in111SmoF9vlY3TLSdz1o6YxpOmqCZ/HVuo0fu1QGRcWmsDWX/qoC5floX4o3v
-GeQu14rQNenQ2NjmSRHK0lCXrObjVT+7BShJHRopRnZioLiSWgcwjjY+2WcF4TiP
-LzeN3FDycEfJxWSop5qkKdikRLjf/zK6wAlKgwTDYE/hK43XNLeH9TUfxaXO7aQ/
-M0Kx9dV2W6spGFr+uvzX9AQqBTcIDgbWCIZO2/waOa2X2Yl+GmjTfFHxR7MsW7I=
-=g14a
------END PGP SIGNATURE-----
-
---Ihr1HbZZ2fheRKVn--
-
---===============5798677012060339236==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
 
 
---===============5798677012060339236==--
+   Simon
