@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 1/5] ASoC: Correct typo in
-	SOC_VALUE_ENUM_SINGLE macro
-Date: Fri, 01 May 2015 16:31:02 +0200
-Message-ID: <55438E26.9000908@metafoo.de>
-References: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ALSA: hda: add hdac_adsp_enable module
+ flag
+Date: Fri, 1 May 2015 15:41:21 +0100
+Message-ID: <20150501144121.GB22845@sirena.org.uk>
+References: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
+ <5542520B.8080606@linux.intel.com>
+ <20150430192726.GD22845@sirena.org.uk>
+ <s5hmw1pjqhm.wl-tiwai@suse.de> <20150501043940.GR3521@localhost>
+ <55438A6E.1030102@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4343432828475806204=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-190.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 30E3E26061A
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 16:31:59 +0200 (CEST)
-In-Reply-To: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 018E42606C3
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 16:41:28 +0200 (CEST)
+In-Reply-To: <55438A6E.1030102@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/01/2015 01:37 PM, Charles Keepax wrote:
-> xnitmes is clearly intended to be xnitems, but all other macros just
-> refer to this as xitems, so change it to that.
->
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Looks good, works fine, thanks. Patch 1-4:
+--===============4343432828475806204==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="e82EAmBhnWJLghdN"
+Content-Disposition: inline
 
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
-Tested-by: Lars-Peter Clausen <lars@metafoo.de>
+
+--e82EAmBhnWJLghdN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 01, 2015 at 09:15:10AM -0500, Pierre-Louis Bossart wrote:
+
+> Maybe I confused everyone, it's not complicated: there is a register that
+> indicates if the DSP is enabled and that can be queried before launching the
+> DSP driver. There is no guessing or need for DMI-based quirks, the
+> capabilities are exposed and that should be used. You can then add a driver
+> parameter to fall back to legacy mode, e.g. for testing, but that would be a
+> second level disable. For once the hardware does tell us what to do, we need
+> to use the information...
+
+Oh, OK.  That sounds sensible!  If that's the case then surely we should
+just have one driver for the PCI ID which just skips enabling the DSP
+bits based on a combination of the register and the driver parameter?
+We shouldn't need this multiple drivers for the same PCI ID stuff.
+
+--e82EAmBhnWJLghdN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVQ5CQAAoJECTWi3JdVIfQ0nMH/j3PjNpAAytvEFjRV/+kdUJS
+aX3zDaKS6UVCqPu64PVD/iw2ZDsfiArlAjh1F4R8cCDspp8nYkRdITNUDAf7IOAI
+/opsNk382mmjhQlO7Vf5hWuvG6UwE+wsGcwYflXwGG3RMHZAGACd5CkDDLC2jgbz
+DP5J4u3ww4uZ+eH4LNn5ZaY6JkmeNOQMjZjETWgPpzVSLPROvdwDcxanj0MTP6pq
+ImRp98MdUcTOi7B94OILqlte38KVZ/6h8h42vqagOmKSnf6hOnPA9r9J+sqYUwZ1
+et0G9cRU4+fwOueAWSQvR46pAQEp40a65IzwESPKwM2GMA1qSs7Itsh0cinAqJQ=
+=QP24
+-----END PGP SIGNATURE-----
+
+--e82EAmBhnWJLghdN--
+
+--===============4343432828475806204==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4343432828475806204==--
