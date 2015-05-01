@@ -1,17 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/4] ASoC: dapm: Add demux support
-Date: Fri,  1 May 2015 18:02:43 +0200
-Message-ID: <1430496165-13917-2-git-send-email-lars@metafoo.de>
-References: <1430496165-13917-1-git-send-email-lars@metafoo.de>
+From: Sergej Sawazki <ce3a@gmx.de>
+Subject: [RFC PATCH] ASoC: wm8741: Add differential mono mode
+	support
+Date: Fri,  1 May 2015 20:13:57 +0200
+Message-ID: <1430504037-7170-1-git-send-email-ce3a@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-014.synserver.de (smtp-out-017.synserver.de
- [212.40.185.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D57A260708
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 19:15:53 +0200 (CEST)
-In-Reply-To: <1430496165-13917-1-git-send-email-lars@metafoo.de>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5D9E260538
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 20:14:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,278 +19,273 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com
+Cc: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A demux is conceptually similar to a mux. Where a mux has multiple input
-and one output and selects one of the inputs to be connected to the output,
-the demux has one input and multiple outputs and selects one of the outputs
-to which the input gets connected.
+The WM8741 DAC supports several differential output modes (stereo,
+stereo reversed, mono left, mono right). Add platform data and DT
+bindings to configure it.
 
-This similarity makes it straight forward to support them in DAPM using the
-existing mux support, we only need to swap sinks and sources when initially
-setting up the paths.
-
-The only slightly tricky part is that there can only be one control per
-path. Since mixers/muxes are at the sink of a path and a demux is at the
-source and both types want a control it is not possible to directly connect
-a demux output to a mixer/mux input. The patch adds some sanity checks to
-make sure that this does not happen.
-
-Drivers who want to model hardware which directly connects a demux output
-to a mixer/mux input can do this by inserting a dummy widget between the
-two. E.g.:
-
-	{ "Dummy", "Demux Control", "Demux" },
-	{ "Mixer", "Mixer Control", "Dummy" },
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
 ---
- include/sound/soc-dapm.h |   5 +++
- sound/soc/soc-dapm.c     | 112 ++++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 102 insertions(+), 15 deletions(-)
+ Documentation/devicetree/bindings/sound/wm8741.txt |  11 ++
+ sound/soc/codecs/wm8741.c                          | 129 ++++++++++++++++++---
+ sound/soc/codecs/wm8741.h                          |  10 ++
+ 3 files changed, 137 insertions(+), 13 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index b659d9f..bfc415e 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -107,6 +107,10 @@ struct device;
- {	.id = snd_soc_dapm_mux, .name = wname, \
- 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
- 	.kcontrol_news = wcontrols, .num_kcontrols = 1}
-+#define SND_SOC_DAPM_DEMUX(wname, wreg, wshift, winvert, wcontrols) \
-+{	.id = snd_soc_dapm_demux, .name = wname, \
-+	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
-+	.kcontrol_news = wcontrols, .num_kcontrols = 1}
+diff --git a/Documentation/devicetree/bindings/sound/wm8741.txt b/Documentation/devicetree/bindings/sound/wm8741.txt
+index 74bda58..a133154 100644
+--- a/Documentation/devicetree/bindings/sound/wm8741.txt
++++ b/Documentation/devicetree/bindings/sound/wm8741.txt
+@@ -10,9 +10,20 @@ Required properties:
+   - reg : the I2C address of the device for I2C, the chip select
+           number for SPI.
  
- /* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
- #define SOC_PGA_ARRAY(wname, wreg, wshift, winvert,\
-@@ -452,6 +456,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_input = 0,		/* input pin */
- 	snd_soc_dapm_output,		/* output pin */
- 	snd_soc_dapm_mux,			/* selects 1 analog signal from many inputs */
-+	snd_soc_dapm_demux,			/* connects the input to one of multiple outputs */
- 	snd_soc_dapm_mixer,			/* mixes several analog signals together */
- 	snd_soc_dapm_mixer_named_ctl,		/* mixer with named controls */
- 	snd_soc_dapm_pga,			/* programmable gain/attenuation (volume) */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5c159f4..a2e5f22 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -70,6 +70,7 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_aif_out] = 4,
- 	[snd_soc_dapm_mic] = 5,
- 	[snd_soc_dapm_mux] = 6,
-+	[snd_soc_dapm_demux] = 6,
- 	[snd_soc_dapm_dac] = 7,
- 	[snd_soc_dapm_switch] = 8,
- 	[snd_soc_dapm_mixer] = 8,
-@@ -100,6 +101,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_mic] = 7,
- 	[snd_soc_dapm_micbias] = 8,
- 	[snd_soc_dapm_mux] = 9,
-+	[snd_soc_dapm_demux] = 9,
- 	[snd_soc_dapm_aif_in] = 10,
- 	[snd_soc_dapm_aif_out] = 10,
- 	[snd_soc_dapm_dai_in] = 10,
-@@ -356,6 +358,7 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 			}
- 		}
- 		break;
-+	case snd_soc_dapm_demux:
- 	case snd_soc_dapm_mux:
- 		e = (struct soc_enum *)kcontrol->private_value;
- 
-@@ -639,9 +642,10 @@ out:
- 
- /* connect mux widget to its interconnecting audio paths */
- static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
--	struct snd_soc_dapm_path *path, const char *control_name)
-+	struct snd_soc_dapm_path *path, const char *control_name,
-+	struct snd_soc_dapm_widget *w)
- {
--	const struct snd_kcontrol_new *kcontrol = &path->sink->kcontrol_news[0];
-+	const struct snd_kcontrol_new *kcontrol = &w->kcontrol_news[0];
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int val, item;
- 	int i;
-@@ -781,6 +785,7 @@ static int dapm_create_or_share_mixmux_kcontrol(struct snd_soc_dapm_widget *w,
- 				wname_in_long_name = false;
- 				kcname_in_long_name = true;
- 				break;
-+			case snd_soc_dapm_demux:
- 			case snd_soc_dapm_mux:
- 				wname_in_long_name = true;
- 				kcname_in_long_name = false;
-@@ -886,17 +891,32 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_dapm_path *path;
-+	struct list_head *paths;
-+	const char *type;
- 	int ret;
- 
-+	switch (w->id) {
-+	case snd_soc_dapm_mux:
-+		paths = &w->sources;
-+		type = "mux";
-+		break;
-+	case snd_soc_dapm_demux:
-+		paths = &w->sinks;
-+		type = "demux";
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++Optional properties:
 +
- 	if (w->num_kcontrols != 1) {
- 		dev_err(dapm->dev,
--			"ASoC: mux %s has incorrect number of controls\n",
-+			"ASoC: %s %s has incorrect number of controls\n", type,
- 			w->name);
- 		return -EINVAL;
- 	}
++  - diff-mode: Differential output mode configuration. Default value for field
++    DIFF in register R8 (MODE_CONTROL_2). If absent, the default is 0, shall be:
++    0 = stereo
++    1 = mono left
++    2 = stereo reversed
++    3 = mono right
++
+ Example:
  
--	if (list_empty(&w->sources)) {
--		dev_err(dapm->dev, "ASoC: mux %s has no paths\n", w->name);
-+	if (list_empty(paths)) {
-+		dev_err(dapm->dev, "ASoC: %s %s has no paths\n", type, w->name);
- 		return -EINVAL;
- 	}
+ codec: wm8741@1a {
+ 	compatible = "wlf,wm8741";
+ 	reg = <0x1a>;
++
++	diff-mode = <3>;
+ };
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 9e71c76..9b777a6 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -41,6 +41,7 @@ static const char *wm8741_supply_names[WM8741_NUM_SUPPLIES] = {
  
-@@ -904,9 +924,16 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
- 	if (ret < 0)
- 		return ret;
+ /* codec private data */
+ struct wm8741_priv {
++	struct wm8741_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data supplies[WM8741_NUM_SUPPLIES];
+ 	unsigned int sysclk;
+@@ -87,13 +88,27 @@ static int wm8741_reset(struct snd_soc_codec *codec)
+ static const DECLARE_TLV_DB_SCALE(dac_tlv_fine, -12700, 13, 0);
+ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12700, 400, 0);
  
--	list_for_each_entry(path, &w->sources, list_sink) {
--		if (path->name)
--			dapm_kcontrol_add_path(w->kcontrols[0], path);
-+	if (w->id == snd_soc_dapm_mux) {
-+		list_for_each_entry(path, &w->sources, list_sink) {
-+			if (path->name)
-+				dapm_kcontrol_add_path(w->kcontrols[0], path);
-+		}
-+	} else {
-+		list_for_each_entry(path, &w->sinks, list_source) {
-+			if (path->name)
-+				dapm_kcontrol_add_path(w->kcontrols[0], path);
-+		}
- 	}
+-static const struct snd_kcontrol_new wm8741_snd_controls[] = {
++static const struct snd_kcontrol_new wm8741_snd_controls_stereo[] = {
+ SOC_DOUBLE_R_TLV("Fine Playback Volume", WM8741_DACLLSB_ATTENUATION,
+ 		 WM8741_DACRLSB_ATTENUATION, 1, 255, 1, dac_tlv_fine),
+ SOC_DOUBLE_R_TLV("Playback Volume", WM8741_DACLMSB_ATTENUATION,
+ 		 WM8741_DACRMSB_ATTENUATION, 0, 511, 1, dac_tlv),
+ };
  
- 	return 0;
-@@ -2414,6 +2441,50 @@ static void dapm_update_widget_flags(struct snd_soc_dapm_widget *w)
- 	}
- }
++static const struct snd_kcontrol_new wm8741_snd_controls_mono_left[] = {
++SOC_SINGLE_TLV("Fine Playback Volume Left", WM8741_DACLLSB_ATTENUATION,
++		 1, 255, 1, dac_tlv_fine),
++SOC_SINGLE_TLV("Playback Volume Left", WM8741_DACLMSB_ATTENUATION,
++		 0, 511, 1, dac_tlv),
++};
++
++static const struct snd_kcontrol_new wm8741_snd_controls_mono_right[] = {
++	SOC_SINGLE_TLV("Fine Playback Volume Right", WM8741_DACRLSB_ATTENUATION,
++		1, 255, 1, dac_tlv_fine),
++	SOC_SINGLE_TLV("Playback Volume Right", WM8741_DACRMSB_ATTENUATION,
++		0, 511, 1, dac_tlv),
++};
++
+ static const struct snd_soc_dapm_widget wm8741_dapm_widgets[] = {
+ SND_SOC_DAPM_DAC("DACL", "Playback", SND_SOC_NOPM, 0, 0),
+ SND_SOC_DAPM_DAC("DACR", "Playback", SND_SOC_NOPM, 0, 0),
+@@ -398,7 +413,7 @@ static struct snd_soc_dai_driver wm8741_dai = {
+ 	.name = "wm8741",
+ 	.playback = {
+ 		.stream_name = "Playback",
+-		.channels_min = 2,  /* Mono modes not yet supported */
++		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = WM8741_RATES,
+ 		.formats = WM8741_FORMATS,
+@@ -416,6 +431,65 @@ static int wm8741_resume(struct snd_soc_codec *codec)
+ #define wm8741_resume NULL
+ #endif
  
-+static int snd_soc_dapm_check_dynamic_path(struct snd_soc_dapm_context *dapm,
-+	struct snd_soc_dapm_widget *source, struct snd_soc_dapm_widget *sink,
-+	const char *control)
++static int wm8741_configure(struct snd_soc_codec *codec)
 +{
-+	bool dynamic_source = false;
-+	bool dynamic_sink = false;
++	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
 +
-+	if (!control)
-+		return 0;
-+
-+	switch (source->id) {
-+	case snd_soc_dapm_demux:
-+		dynamic_source = true;
++	/* Configure differential mode */
++	switch (wm8741->pdata.diff_mode) {
++	case WM8741_DIFF_MODE_STEREO:
++	case WM8741_DIFF_MODE_STEREO_REVERSED:
++	case WM8741_DIFF_MODE_MONO_LEFT:
++	case WM8741_DIFF_MODE_MONO_RIGHT:
++		snd_soc_update_bits(codec, WM8741_MODE_CONTROL_2,
++				WM8741_DIFF_MASK,
++				wm8741->pdata.diff_mode << WM8741_DIFF_SHIFT);
 +		break;
 +	default:
-+		break;
-+	}
-+
-+	switch (sink->id) {
-+	case snd_soc_dapm_mux:
-+	case snd_soc_dapm_switch:
-+	case snd_soc_dapm_mixer:
-+	case snd_soc_dapm_mixer_named_ctl:
-+		dynamic_sink = true;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (dynamic_source && dynamic_sink) {
-+		dev_err(dapm->dev,
-+			"Direct connection between demux and mixer/mux not supported for path %s -> [%s] -> %s\n",
-+			source->name, control, sink->name);
 +		return -EINVAL;
-+	} else if (!dynamic_source && !dynamic_sink) {
-+		dev_err(dapm->dev,
-+			"Control not supported for path %s -> [%s] -> %s\n",
-+			source->name, control, sink->name);
++	}
++
++	/* Change some default settings - latch VU */
++	snd_soc_update_bits(codec, WM8741_DACLLSB_ATTENUATION,
++		WM8741_UPDATELL, WM8741_UPDATELL);
++	snd_soc_update_bits(codec, WM8741_DACLMSB_ATTENUATION,
++		WM8741_UPDATELM, WM8741_UPDATELM);
++	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
++		WM8741_UPDATERL, WM8741_UPDATERL);
++	snd_soc_update_bits(codec, WM8741_DACRMSB_ATTENUATION,
++		WM8741_UPDATERM, WM8741_UPDATERM);
++
++	return 0;
++}
++
++static int wm8741_add_controls(struct snd_soc_codec *codec)
++{
++	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
++
++	switch (wm8741->pdata.diff_mode) {
++	case WM8741_DIFF_MODE_STEREO:
++	case WM8741_DIFF_MODE_STEREO_REVERSED:
++		snd_soc_add_codec_controls(codec,
++			wm8741_snd_controls_stereo,
++			ARRAY_SIZE(wm8741_snd_controls_stereo));
++		break;
++	case WM8741_DIFF_MODE_MONO_LEFT:
++		snd_soc_add_codec_controls(codec,
++			wm8741_snd_controls_mono_left,
++			ARRAY_SIZE(wm8741_snd_controls_mono_left));
++		break;
++	case WM8741_DIFF_MODE_MONO_RIGHT:
++		snd_soc_add_codec_controls(codec,
++			wm8741_snd_controls_mono_right,
++			ARRAY_SIZE(wm8741_snd_controls_mono_right));
++		break;
++	default:
 +		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
- static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_widget *wsource, struct snd_soc_dapm_widget *wsink,
- 	const char *control,
-@@ -2444,6 +2515,10 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 		return -EINVAL;
+ static int wm8741_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
+@@ -434,15 +508,17 @@ static int wm8741_probe(struct snd_soc_codec *codec)
+ 		goto err_enable;
  	}
  
-+	ret = snd_soc_dapm_check_dynamic_path(dapm, wsource, wsink, control);
-+	if (ret)
+-	/* Change some default settings - latch VU */
+-	snd_soc_update_bits(codec, WM8741_DACLLSB_ATTENUATION,
+-			    WM8741_UPDATELL, WM8741_UPDATELL);
+-	snd_soc_update_bits(codec, WM8741_DACLMSB_ATTENUATION,
+-			    WM8741_UPDATELM, WM8741_UPDATELM);
+-	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
+-			    WM8741_UPDATERL, WM8741_UPDATERL);
+-	snd_soc_update_bits(codec, WM8741_DACRMSB_ATTENUATION,
+-			    WM8741_UPDATERM, WM8741_UPDATERM);
++	ret = wm8741_configure(codec);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to change default settings\n");
++		goto err_enable;
++	}
++
++	ret = wm8741_add_controls(codec);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to add controls\n");
++		goto err_enable;
++	}
+ 
+ 	dev_dbg(codec->dev, "Successful registration\n");
+ 	return ret;
+@@ -467,8 +543,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
+ 	.remove =	wm8741_remove,
+ 	.resume =	wm8741_resume,
+ 
+-	.controls = wm8741_snd_controls,
+-	.num_controls = ARRAY_SIZE(wm8741_snd_controls),
+ 	.dapm_widgets = wm8741_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(wm8741_dapm_widgets),
+ 	.dapm_routes = wm8741_dapm_routes,
+@@ -493,6 +567,23 @@ static const struct regmap_config wm8741_regmap = {
+ 	.readable_reg = wm8741_readable,
+ };
+ 
++static int wm8741_set_pdata(struct device *dev, struct wm8741_priv *wm8741)
++{
++	const struct wm8741_platform_data *pdata = dev_get_platdata(dev);
++	u32 diff_mode;
++
++	if (dev->of_node) {
++		if (of_property_read_u32(dev->of_node, "diff-mode", &diff_mode)
++				>= 0)
++			wm8741->pdata.diff_mode = diff_mode;
++	} else {
++		if (pdata != NULL)
++			memcpy(&wm8741->pdata, pdata, sizeof(wm8741->pdata));
++	}
++
++	return 0;
++}
++
+ #if IS_ENABLED(CONFIG_I2C)
+ static int wm8741_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+@@ -522,6 +613,12 @@ static int wm8741_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	wm8741_set_pdata(&i2c->dev, wm8741);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to set pdata: %d\n", ret);
 +		return ret;
++	}
 +
- 	path = kzalloc(sizeof(struct snd_soc_dapm_path), GFP_KERNEL);
- 	if (!path)
- 		return -ENOMEM;
-@@ -2463,10 +2538,19 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 	if (control == NULL) {
- 		path->connect = 1;
- 	} else {
--		/* connect dynamic paths */
-+		switch (wsource->id) {
-+		case snd_soc_dapm_demux:
-+			ret = dapm_connect_mux(dapm, path, control, wsource);
-+			if (ret)
-+				goto err;
-+			break;
-+		default:
-+			break;
-+		}
-+
- 		switch (wsink->id) {
- 		case snd_soc_dapm_mux:
--			ret = dapm_connect_mux(dapm, path, control);
-+			ret = dapm_connect_mux(dapm, path, control, wsink);
- 			if (ret != 0)
- 				goto err;
- 			break;
-@@ -2478,11 +2562,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 				goto err;
- 			break;
- 		default:
--			dev_err(dapm->dev,
--				"Control not supported for path %s -> [%s] -> %s\n",
--				wsource->name, control, wsink->name);
--			ret = -EINVAL;
--			goto err;
-+			break;
- 		}
+ 	i2c_set_clientdata(i2c, wm8741);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+@@ -582,6 +679,12 @@ static int wm8741_spi_probe(struct spi_device *spi)
+ 		return ret;
  	}
  
-@@ -2815,6 +2895,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 			dapm_new_mixer(w);
- 			break;
- 		case snd_soc_dapm_mux:
-+		case snd_soc_dapm_demux:
- 			dapm_new_mux(w);
- 			break;
- 		case snd_soc_dapm_pga:
-@@ -3219,6 +3300,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 		w->power_check = dapm_always_on_check_power;
- 		break;
- 	case snd_soc_dapm_mux:
-+	case snd_soc_dapm_demux:
- 	case snd_soc_dapm_switch:
- 	case snd_soc_dapm_mixer:
- 	case snd_soc_dapm_mixer_named_ctl:
++	wm8741_set_pdata(&spi->dev, wm8741);
++	if (ret != 0) {
++		dev_err(&spi->dev, "Failed to set pdata: %d\n", ret);
++		return ret;
++	}
++
+ 	spi_set_drvdata(spi, wm8741);
+ 
+ 	ret = snd_soc_register_codec(&spi->dev,
+diff --git a/sound/soc/codecs/wm8741.h b/sound/soc/codecs/wm8741.h
+index 56c1b1d..c8835f6 100644
+--- a/sound/soc/codecs/wm8741.h
++++ b/sound/soc/codecs/wm8741.h
+@@ -194,6 +194,12 @@
+ #define WM8741_DITHER_SHIFT                          0  /* DITHER - [1:0] */
+ #define WM8741_DITHER_WIDTH                          2  /* DITHER - [1:0] */
+ 
++/* DIFF field values */
++#define WM8741_DIFF_MODE_STEREO                      0  /* stereo normal */
++#define WM8741_DIFF_MODE_STEREO_REVERSED             2  /* stereo reversed */
++#define WM8741_DIFF_MODE_MONO_LEFT                   1  /* mono left */
++#define WM8741_DIFF_MODE_MONO_RIGHT                  3  /* mono right */
++
+ /*
+  * R32 (0x20) - ADDITONAL_CONTROL_1
+  */
+@@ -208,4 +214,8 @@
+ 
+ #define  WM8741_SYSCLK 0
+ 
++struct wm8741_platform_data {
++	u32 diff_mode;   /* Differential Output Mode */
++};
++
+ #endif
 -- 
-1.8.0
+1.9.1
