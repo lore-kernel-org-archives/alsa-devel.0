@@ -1,45 +1,188 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: samsung: Constify platform_device_id
-Date: Fri, 1 May 2015 17:54:05 +0100
-Message-ID: <20150501165405.GP22845@sirena.org.uk>
-References: <1430496014-32309-1-git-send-email-k.kozlowski.k@gmail.com>
- <1430496014-32309-4-git-send-email-k.kozlowski.k@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 3/4] ASoC: lm4857: Use DAPM demux
+Date: Fri,  1 May 2015 18:02:44 +0200
+Message-ID: <1430496165-13917-3-git-send-email-lars@metafoo.de>
+References: <1430496165-13917-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BktmtKUJXfGkDXG3"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1430496014-32309-4-git-send-email-k.kozlowski.k@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-014.synserver.de (smtp-out-017.synserver.de
+ [212.40.185.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52D05260538
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 19:15:52 +0200 (CEST)
+In-Reply-To: <1430496165-13917-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Use a DAPM auto-disable demux to model the Mode control which affects the
+routing of the input pin to the output pins. This allows us to remove the
+custom code for handling the Mode control.
 
---BktmtKUJXfGkDXG3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/lm4857.c | 100 ++++++++++++----------------------------------
+ 1 file changed, 26 insertions(+), 74 deletions(-)
 
-On Sat, May 02, 2015 at 01:00:14AM +0900, Krzysztof Kozlowski wrote:
-> The platform_device_id is not modified by the driver and core uses it as
-> const.
-
-Applied, thanks.
-
---BktmtKUJXfGkDXG3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVQ6+sAAoJECTWi3JdVIfQPkUH/AmZWavLaSNSnNx6XX1Q1hns
-FFXoaPjZK6LQ3tRtPlyxj9qXjvbyOnKoNWJX04AU8/Pkq9ca/0G9fpTpSGvbCpLk
-ymBImJHtPLP+JE6O3DKUuJ0/6V/ROVC1tyO7XRdjDUZRArcFriYV6H8FKa06Kxz0
-r7SkAVIafPXd3AjIUB6o66PqsLwNbaNV2Rk0V2LQlgO/ChME3wHVlkAinDkJrGcO
-Hgo4ROodt4LiYlQT7crdXG2pVB0L2ncF6QTeeTVfi2T/XgMVNJ9CIp7z+QZUb+Fu
-h7AVD1vc3+Q5pckYZxjnmnNhfOKVg1bCgj8ASEWOgvS8+RhU9uWA0p8XycQCMiY=
-=nag6
------END PGP SIGNATURE-----
-
---BktmtKUJXfGkDXG3--
+diff --git a/sound/soc/codecs/lm4857.c b/sound/soc/codecs/lm4857.c
+index 79ad4cb..dac9165 100644
+--- a/sound/soc/codecs/lm4857.c
++++ b/sound/soc/codecs/lm4857.c
+@@ -23,11 +23,6 @@
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+ 
+-struct lm4857 {
+-	struct regmap *regmap;
+-	uint8_t mode;
+-};
+-
+ static const struct reg_default lm4857_default_regs[] = {
+ 	{ 0x0, 0x00 },
+ 	{ 0x1, 0x00 },
+@@ -46,64 +41,33 @@ static const struct reg_default lm4857_default_regs[] = {
+ #define LM4857_WAKEUP 5
+ #define LM4857_EPGAIN 4
+ 
+-static int lm4857_get_mode(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct lm4857 *lm4857 = snd_soc_codec_get_drvdata(codec);
+-
+-	ucontrol->value.integer.value[0] = lm4857->mode;
+-
+-	return 0;
+-}
+-
+-static int lm4857_set_mode(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+-	struct lm4857 *lm4857 = snd_soc_codec_get_drvdata(codec);
+-	uint8_t value = ucontrol->value.integer.value[0];
+-
+-	lm4857->mode = value;
+-
+-	if (codec->dapm.bias_level == SND_SOC_BIAS_ON)
+-		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F, value + 6);
+-
+-	return 1;
+-}
+-
+-static int lm4857_set_bias_level(struct snd_soc_codec *codec,
+-				 enum snd_soc_bias_level level)
+-{
+-	struct lm4857 *lm4857 = snd_soc_codec_get_drvdata(codec);
+-
+-	switch (level) {
+-	case SND_SOC_BIAS_ON:
+-		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F,
+-			lm4857->mode + 6);
+-		break;
+-	case SND_SOC_BIAS_STANDBY:
+-		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F, 0);
+-		break;
+-	default:
+-		break;
+-	}
+-
+-	return 0;
+-}
++static const unsigned int lm4857_mode_values[] = {
++	0,
++	6,
++	7,
++	8,
++	9,
++};
+ 
+-static const char *lm4857_mode[] = {
++static const char * const lm4857_mode_texts[] = {
++	"Off",
+ 	"Earpiece",
+ 	"Loudspeaker",
+ 	"Loudspeaker + Headphone",
+ 	"Headphone",
+ };
+ 
+-static SOC_ENUM_SINGLE_EXT_DECL(lm4857_mode_enum, lm4857_mode);
++static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(lm4857_mode_enum,
++	LM4857_CTRL, 0, 0xf, lm4857_mode_texts, lm4857_mode_values);
++
++static const struct snd_kcontrol_new lm4857_mode_ctrl =
++	SOC_DAPM_ENUM("Mode", lm4857_mode_enum);
+ 
+ static const struct snd_soc_dapm_widget lm4857_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("IN"),
+ 
++	SND_SOC_DAPM_DEMUX("Mode", SND_SOC_NOPM, 0, 0, &lm4857_mode_ctrl),
++
+ 	SND_SOC_DAPM_OUTPUT("LS"),
+ 	SND_SOC_DAPM_OUTPUT("HP"),
+ 	SND_SOC_DAPM_OUTPUT("EP"),
+@@ -125,24 +89,18 @@ static const struct snd_kcontrol_new lm4857_controls[] = {
+ 		LM4857_WAKEUP, 1, 0),
+ 	SOC_SINGLE("Earpiece 6dB Playback Switch", LM4857_CTRL,
+ 		LM4857_EPGAIN, 1, 0),
+-
+-	SOC_ENUM_EXT("Mode", lm4857_mode_enum,
+-		lm4857_get_mode, lm4857_set_mode),
+ };
+ 
+-/* There is a demux between the input signal and the output signals.
+- * Currently there is no easy way to model it in ASoC and since it does not make
+- * much of a difference in practice simply connect the input direclty to the
+- * outputs. */
+ static const struct snd_soc_dapm_route lm4857_routes[] = {
+-	{"LS", NULL, "IN"},
+-	{"HP", NULL, "IN"},
+-	{"EP", NULL, "IN"},
++	{ "Mode", NULL, "IN" },
++	{ "LS", "Loudspeaker", "Mode" },
++	{ "LS", "Loudspeaker + Headphone", "Mode" },
++	{ "HP", "Headphone", "Mode" },
++	{ "HP", "Loudspeaker + Headphone", "Mode" },
++	{ "EP", "Earpiece", "Mode" },
+ };
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_lm4857 = {
+-	.set_bias_level = lm4857_set_bias_level,
+-
+ 	.controls = lm4857_controls,
+ 	.num_controls = ARRAY_SIZE(lm4857_controls),
+ 	.dapm_widgets = lm4857_dapm_widgets,
+@@ -165,17 +123,11 @@ static const struct regmap_config lm4857_regmap_config = {
+ static int lm4857_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+-	struct lm4857 *lm4857;
+-
+-	lm4857 = devm_kzalloc(&i2c->dev, sizeof(*lm4857), GFP_KERNEL);
+-	if (!lm4857)
+-		return -ENOMEM;
+-
+-	i2c_set_clientdata(i2c, lm4857);
++	struct regmap *regmap;
+ 
+-	lm4857->regmap = devm_regmap_init_i2c(i2c, &lm4857_regmap_config);
+-	if (IS_ERR(lm4857->regmap))
+-		return PTR_ERR(lm4857->regmap);
++	regmap = devm_regmap_init_i2c(i2c, &lm4857_regmap_config);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_lm4857, NULL, 0);
+ }
+-- 
+1.8.0
