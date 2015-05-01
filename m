@@ -1,25 +1,14 @@
-From: Gabriele Martino <g.martino@gmx.com>
-Subject: Re: Intel HDA / ca0132: support for Alienware 15
- Creative Sound Core3D-EX
-Date: Fri, 01 May 2015 02:36:22 +0200
-Message-ID: <5542CA86.5010800@gmx.com>
-References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
- <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
- <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
- <55400DF4.2080309@gmx.com> <s5hpp6nf41g.wl-tiwai@suse.de>
- <5540FBFF.6020904@gmx.com> <s5h8uda93pf.wl-tiwai@suse.de>
- <55416BEE.5090003@gmx.com> <s5hvbge6u4x.wl-tiwai@suse.de>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ALSA: jack: fix a randconfig build issue
+Date: Fri,  1 May 2015 11:10:29 +0800
+Message-ID: <1430449829-10568-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C9543260410
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 02:35:51 +0200 (CEST)
-Received: from [192.168.69.6] ([82.54.204.229]) by mail.gmx.com (mrgmx102)
- with ESMTPSA (Nemesis) id 0MKt5A-1Ynyvn1FFg-0006iW for
- <alsa-devel@alsa-project.org>; Fri, 01 May 2015 02:35:51 +0200
-In-Reply-To: <s5hvbge6u4x.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E06092605E5
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 05:06:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,61 +18,200 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 30/04/2015 07:51, Takashi Iwai wrote:
-> At Thu, 30 Apr 2015 01:40:30 +0200,
-> Gabriele Martino wrote:
->> It was an error on my part, my apologies.
->> I did a full kernel clean and rebuild, and the error 16 went away.
->> But the jack detection is still broken.
->>
->> hdajacksensetest -c 1 -a
->> Pin 0x0b (Internal Speaker): present = Yes
->> Pin 0x0c (Not connected): present = No
->> Pin 0x0d (Not connected): present = No
->> Pin 0x0e (Not connected): present = No
->> Pin 0x0f (Not connected): present = Yes
->> Pin 0x10 (Not connected): present = No
->> Pin 0x11 (Black Line In, Left side): present = No
->> Pin 0x12 (Internal Mic, Mobile-In): present = No
->> Pin 0x13 (Not connected): present = No
->> Pin 0x18 (Not connected): present = No
->>
->> Pin 0x0f is still reported as not connected, but correctly detects the
->> jack if plugged.
->> If I turn off and on the "HP/Speaker Auto Detect" in alsamixer while
->> "HP/Speaker" is off, the correct output is detected.
->> If "HP/Speaker" is on, the behaviour is inconsistent.
->>
->> Is there a configuration file? Where can I find the metadata "Black Line
->> In, Left side"?
->> I don't know if it is related, but pavucontrol detects only the
->> "speakers" port.
->> On my previous laptop (with Creative Recon 3Di, another ca0132 card) I
->> could choose between "speakers and "headphones".
-> It implies that the whole pin config BIOS provides is buggy.   The
-> jack color, location, etc, all are parsed from 32bit pin configuration
-> value for each pin.
->
-> You need to correct the pin config and sets it statically in the
-> driver.  hdajackretask can give you the map and reload it
-> dynamically.
-Ok, I overrided the pin 0x0f to:
--Connectivity: jack
--Device: headphones
-and now it shows the ports "Speakers" and "Headphones" as it should.
-It correctly switches from "Speakers" to "Headphones" when I plug the
-jack, but the sound comes still from the speakers.
-I have to mess with the alsamixer's switches to get the correct output
-device, as I did before.
+There may be no input_dev for jack(e.g. phantom jack), when
+CONFIG_INPUT is not selected, building errors such as:
+undefined reference to `input_xxx'...
 
-What is the meaning of "Channel group" and "Channel (in group)" controls
-of in hdajackretask? I can't find any documentation.
-The speakers are on channel group 15, channel in group "Front".
-The headphones got as default value channel group 3, channel in group
-"Channel 30 & 31".
+Here add #ifdef judgement to fix the issue.
 
-Regards,
-Gabriele
+Signed-off-by: Jie Yang <yang.jie@intel.com>
+---
+ include/sound/jack.h |  2 ++
+ sound/core/jack.c    | 40 ++++++++++++++++++++++++++--------------
+ 2 files changed, 28 insertions(+), 14 deletions(-)
+
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 23bede1..c1010f9 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -72,7 +72,9 @@ enum snd_jack_types {
+ #define SND_JACK_SWITCH_TYPES 6
+ 
+ struct snd_jack {
++#ifdef CONFIG_INPUT
+ 	struct input_dev *input_dev;
++#endif
+ 	struct list_head kctl_list;
+ 	struct snd_card *card;
+ 	int registered;
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index eb66327..3a1901e 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -32,6 +32,7 @@ struct snd_jack_kctl {
+ 	unsigned int mask_bits; /* only masked status bits are reported via kctl */
+ };
+ 
++#ifdef CONFIG_INPUT
+ static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+ 	SW_HEADPHONE_INSERT,
+ 	SW_MICROPHONE_INSERT,
+@@ -40,9 +41,11 @@ static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+ 	SW_VIDEOOUT_INSERT,
+ 	SW_LINEIN_INSERT,
+ };
++#endif
+ 
+ static int snd_jack_dev_disconnect(struct snd_device *device)
+ {
++#ifdef CONFIG_INPUT
+ 	struct snd_jack *jack = device->device_data;
+ 
+ 	if (!jack->input_dev)
+@@ -54,7 +57,9 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ 		input_unregister_device(jack->input_dev);
+ 	else
+ 		input_free_device(jack->input_dev);
++
+ 	jack->input_dev = NULL;
++#endif
+ 	return 0;
+ }
+ 
+@@ -83,11 +88,12 @@ static int snd_jack_dev_register(struct snd_device *device)
+ {
+ 	struct snd_jack *jack = device->device_data;
+ 	struct snd_card *card = device->card;
+-	int err, i;
++	int err = 0;
+ 
+ 	snprintf(jack->name, sizeof(jack->name), "%s %s",
+ 		 card->shortname, jack->id);
+ 
++#ifdef CONFIG_INPUT
+ 	if (!jack->input_dev)
+ 		return 0;
+ 
+@@ -98,7 +104,7 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 		jack->input_dev->dev.parent = snd_card_get_device_link(card);
+ 
+ 	/* Add capabilities for any keys that are enabled */
+-	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
++	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
+ 		int testbit = SND_JACK_BTN_0 >> i;
+ 
+ 		if (!(jack->type & testbit))
+@@ -113,6 +119,7 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	err = input_register_device(jack->input_dev);
+ 	if (err == 0)
+ 		jack->registered = 1;
++#endif
+ 
+ 	return err;
+ }
+@@ -209,7 +216,6 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 	struct snd_jack *jack;
+ 	struct snd_jack_kctl *jack_kctl = NULL;
+ 	int err;
+-	int i;
+ 	static struct snd_device_ops ops = {
+ 		.dev_free = snd_jack_dev_free,
+ 		.dev_register = snd_jack_dev_register,
+@@ -230,26 +236,31 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 
+ 	/* don't creat input device for phantom jack */
+ 	if (!phantom_jack) {
++#ifdef CONFIG_INPUT
+ 		jack->input_dev = input_allocate_device();
+ 		if (jack->input_dev == NULL) {
+ 			err = -ENOMEM;
+-			goto fail_input;
++			goto error;
+ 		}
+ 
+ 		jack->input_dev->phys = "ALSA";
+ 
+-		jack->type = type;
+-
+-		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
++		for (int i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+ 			if (type & (1 << i))
+ 				input_set_capability(jack->input_dev, EV_SW,
+ 						     jack_switch_types[i]);
++#endif
++		jack->type = type;
+ 
+ 	}
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
+-	if (err < 0)
+-		goto fail_input;
++	if (err < 0) {
++#ifdef CONFIG_INPUT
++		input_free_device(jack->input_dev);
++#endif
++		goto error;
++	}
+ 
+ 	jack->card = card;
+ 	INIT_LIST_HEAD(&jack->kctl_list);
+@@ -261,8 +272,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 
+ 	return 0;
+ 
+-fail_input:
+-	input_free_device(jack->input_dev);
++error:
+ 	kfree(jack->id);
+ 	kfree(jack);
+ 	return err;
+@@ -281,11 +291,13 @@ EXPORT_SYMBOL(snd_jack_new);
+  */
+ void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
+ {
++#ifdef CONFIG_INPUT
+ 	WARN_ON(jack->registered);
+ 	if (!jack->input_dev)
+ 		return;
+ 
+ 	jack->input_dev->dev.parent = parent;
++#endif
+ }
+ EXPORT_SYMBOL(snd_jack_set_parent);
+ 
+@@ -340,7 +352,6 @@ EXPORT_SYMBOL(snd_jack_set_key);
+ void snd_jack_report(struct snd_jack *jack, int status)
+ {
+ 	struct snd_jack_kctl *jack_kctl;
+-	int i;
+ 
+ 	if (!jack)
+ 		return;
+@@ -349,10 +360,11 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
+ 					    status & jack_kctl->mask_bits);
+ 
++#ifdef CONFIG_INPUT
+ 	if (!jack->input_dev)
+ 		return;
+ 
+-	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
++	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
+ 		int testbit = SND_JACK_BTN_0 >> i;
+ 
+ 		if (jack->type & testbit)
+@@ -369,7 +381,7 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	}
+ 
+ 	input_sync(jack->input_dev);
+-
++#endif
+ }
+ EXPORT_SYMBOL(snd_jack_report);
+ 
+-- 
+1.9.1
