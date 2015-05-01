@@ -1,14 +1,22 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ALSA: jack: fix a randconfig build issue
-Date: Fri,  1 May 2015 11:10:29 +0800
-Message-ID: <1430449829-10568-1-git-send-email-yang.jie@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 3/3] ALSA: hda: register selectively for
+	SPT-LP
+Date: Fri, 1 May 2015 10:01:43 +0530
+Message-ID: <20150501043143.GQ3521@localhost>
+References: <1430405556-19166-1-git-send-email-vinod.koul@intel.com>
+ <1430405556-19166-3-git-send-email-vinod.koul@intel.com>
+ <20150430203355.GP22845@sirena.org.uk>
+ <s5hk2wtjpsl.wl-tiwai@suse.de>
+ <20150430212330.GQ22845@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E06092605E5
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 05:06:56 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1094726042F
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 06:31:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150430212330.GQ22845@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,200 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-There may be no input_dev for jack(e.g. phantom jack), when
-CONFIG_INPUT is not selected, building errors such as:
-undefined reference to `input_xxx'...
+On Thu, Apr 30, 2015 at 10:23:30PM +0100, Mark Brown wrote:
+> On Thu, Apr 30, 2015 at 10:59:22PM +0200, Takashi Iwai wrote:
+> 
+> > Ideally, it'd be best if the system can do everything automatically,
+> > e.g. loads the DSP driver at first, then falls back to the legacy
+> > driver if no DSP is found.  But there seems no clean way to do this,
+> > so far.  Thus the flag was introduced.
+> 
+> Eeew, that's horrible.  I guess another DMI quirk table is going to be
+> needed...  
+> 
+> > Another way to skip the unwanted driver is just to return -ENODEV from
+> > its probe callback when the given PCI is SKL and the flag is set.
+> > Then the driver core ignores this and continues to the next possible
+> > driver (i.e. the dsp one).  The same should be applied to hda-soc-skl
+> > driver in vice versa.
+> 
+> Right, that was one of my suggestions.
+okay that sounds okay to me. So the device probe checks the value of this
+flag and then either goes ahead with probe or returns -ENODEV
 
-Here add #ifdef judgement to fix the issue.
-
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- include/sound/jack.h |  2 ++
- sound/core/jack.c    | 40 ++++++++++++++++++++++++++--------------
- 2 files changed, 28 insertions(+), 14 deletions(-)
-
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 23bede1..c1010f9 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -72,7 +72,9 @@ enum snd_jack_types {
- #define SND_JACK_SWITCH_TYPES 6
- 
- struct snd_jack {
-+#ifdef CONFIG_INPUT
- 	struct input_dev *input_dev;
-+#endif
- 	struct list_head kctl_list;
- 	struct snd_card *card;
- 	int registered;
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index eb66327..3a1901e 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -32,6 +32,7 @@ struct snd_jack_kctl {
- 	unsigned int mask_bits; /* only masked status bits are reported via kctl */
- };
- 
-+#ifdef CONFIG_INPUT
- static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
- 	SW_HEADPHONE_INSERT,
- 	SW_MICROPHONE_INSERT,
-@@ -40,9 +41,11 @@ static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
- 	SW_VIDEOOUT_INSERT,
- 	SW_LINEIN_INSERT,
- };
-+#endif
- 
- static int snd_jack_dev_disconnect(struct snd_device *device)
- {
-+#ifdef CONFIG_INPUT
- 	struct snd_jack *jack = device->device_data;
- 
- 	if (!jack->input_dev)
-@@ -54,7 +57,9 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
- 		input_unregister_device(jack->input_dev);
- 	else
- 		input_free_device(jack->input_dev);
-+
- 	jack->input_dev = NULL;
-+#endif
- 	return 0;
- }
- 
-@@ -83,11 +88,12 @@ static int snd_jack_dev_register(struct snd_device *device)
- {
- 	struct snd_jack *jack = device->device_data;
- 	struct snd_card *card = device->card;
--	int err, i;
-+	int err = 0;
- 
- 	snprintf(jack->name, sizeof(jack->name), "%s %s",
- 		 card->shortname, jack->id);
- 
-+#ifdef CONFIG_INPUT
- 	if (!jack->input_dev)
- 		return 0;
- 
-@@ -98,7 +104,7 @@ static int snd_jack_dev_register(struct snd_device *device)
- 		jack->input_dev->dev.parent = snd_card_get_device_link(card);
- 
- 	/* Add capabilities for any keys that are enabled */
--	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
-+	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
- 		int testbit = SND_JACK_BTN_0 >> i;
- 
- 		if (!(jack->type & testbit))
-@@ -113,6 +119,7 @@ static int snd_jack_dev_register(struct snd_device *device)
- 	err = input_register_device(jack->input_dev);
- 	if (err == 0)
- 		jack->registered = 1;
-+#endif
- 
- 	return err;
- }
-@@ -209,7 +216,6 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 	struct snd_jack *jack;
- 	struct snd_jack_kctl *jack_kctl = NULL;
- 	int err;
--	int i;
- 	static struct snd_device_ops ops = {
- 		.dev_free = snd_jack_dev_free,
- 		.dev_register = snd_jack_dev_register,
-@@ -230,26 +236,31 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 
- 	/* don't creat input device for phantom jack */
- 	if (!phantom_jack) {
-+#ifdef CONFIG_INPUT
- 		jack->input_dev = input_allocate_device();
- 		if (jack->input_dev == NULL) {
- 			err = -ENOMEM;
--			goto fail_input;
-+			goto error;
- 		}
- 
- 		jack->input_dev->phys = "ALSA";
- 
--		jack->type = type;
--
--		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
-+		for (int i = 0; i < SND_JACK_SWITCH_TYPES; i++)
- 			if (type & (1 << i))
- 				input_set_capability(jack->input_dev, EV_SW,
- 						     jack_switch_types[i]);
-+#endif
-+		jack->type = type;
- 
- 	}
- 
- 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
--	if (err < 0)
--		goto fail_input;
-+	if (err < 0) {
-+#ifdef CONFIG_INPUT
-+		input_free_device(jack->input_dev);
-+#endif
-+		goto error;
-+	}
- 
- 	jack->card = card;
- 	INIT_LIST_HEAD(&jack->kctl_list);
-@@ -261,8 +272,7 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 
- 	return 0;
- 
--fail_input:
--	input_free_device(jack->input_dev);
-+error:
- 	kfree(jack->id);
- 	kfree(jack);
- 	return err;
-@@ -281,11 +291,13 @@ EXPORT_SYMBOL(snd_jack_new);
-  */
- void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
- {
-+#ifdef CONFIG_INPUT
- 	WARN_ON(jack->registered);
- 	if (!jack->input_dev)
- 		return;
- 
- 	jack->input_dev->dev.parent = parent;
-+#endif
- }
- EXPORT_SYMBOL(snd_jack_set_parent);
- 
-@@ -340,7 +352,6 @@ EXPORT_SYMBOL(snd_jack_set_key);
- void snd_jack_report(struct snd_jack *jack, int status)
- {
- 	struct snd_jack_kctl *jack_kctl;
--	int i;
- 
- 	if (!jack)
- 		return;
-@@ -349,10 +360,11 @@ void snd_jack_report(struct snd_jack *jack, int status)
- 		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
- 					    status & jack_kctl->mask_bits);
- 
-+#ifdef CONFIG_INPUT
- 	if (!jack->input_dev)
- 		return;
- 
--	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
-+	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
- 		int testbit = SND_JACK_BTN_0 >> i;
- 
- 		if (jack->type & testbit)
-@@ -369,7 +381,7 @@ void snd_jack_report(struct snd_jack *jack, int status)
- 	}
- 
- 	input_sync(jack->input_dev);
--
-+#endif
- }
- EXPORT_SYMBOL(snd_jack_report);
- 
+Thanks
 -- 
-1.9.1
+~Vinod
