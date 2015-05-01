@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 2/5] ASoC: dapm: Remove local OOM error
-	message
-Date: Fri,  1 May 2015 12:37:24 +0100
-Message-ID: <1430480247-28753-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 5/5] ASoC: arizona: Use auto disable muxes
+	for routing
+Date: Fri,  1 May 2015 12:37:27 +0100
+Message-ID: <1430480247-28753-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C25A72617C6
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 13:45:32 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4EE94262632
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 13:45:35 +0200 (CEST)
 In-Reply-To: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +25,31 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The memory subsystem is pretty chatty on failure no need to have local
-OOM messages as well.
+The mixer core on the Arizona devices is powered up whenever any routing
+is non-zero. This patch saves a little power and avoids a few difficult
+corner cases (around the mixer core being powered whilst there is no
+clock available), by using the autodisable mux functionality to only
+write out the settings for the muxes when they are powered up.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |    6 +-----
- 1 files changed, 1 insertions(+), 5 deletions(-)
+ sound/soc/codecs/arizona.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 79b9478..beb48b6 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -310,12 +310,8 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 	struct soc_mixer_control *mc;
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 11ff899..bacc296 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -107,8 +107,8 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ 			     arizona_mixer_tlv)
  
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
--	if (!data) {
--		dev_err(widget->dapm->dev,
--				"ASoC: can't allocate kcontrol data for %s\n",
--				widget->name);
-+	if (!data)
- 		return -ENOMEM;
--	}
+ #define ARIZONA_MUX_ENUM_DECL(name, reg) \
+-	SOC_VALUE_ENUM_SINGLE_DECL(name, reg, 0, 0xff,			\
+-				   arizona_mixer_texts, arizona_mixer_values)
++	SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL( \
++		name, reg, 0, 0xff, arizona_mixer_texts, arizona_mixer_values)
  
- 	INIT_LIST_HEAD(&data->paths);
- 
+ #define ARIZONA_MUX_CTL_DECL(name) \
+ 	const struct snd_kcontrol_new name##_mux =	\
 -- 
 1.7.2.5
