@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: rt5645: fix wrong mask for
-	button report
-Date: Fri, 1 May 2015 17:34:42 +0100
-Message-ID: <20150501163442.GD22845@sirena.org.uk>
+Subject: Re: [PATCH 1/6] ASoC: rt5645: remove
+	RT5645_I2S_BCLK_MS1 control
+Date: Fri, 1 May 2015 17:35:11 +0100
+Message-ID: <20150501163511.GE22845@sirena.org.uk>
 References: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
- <1430389127-24609-5-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4754983032792077457=="
+Content-Type: multipart/mixed; boundary="===============0865377643768967768=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 86AD82605F5
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 18:34:47 +0200 (CEST)
-In-Reply-To: <1430389127-24609-5-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 69CC8260A5D
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 18:35:16 +0200 (CEST)
+In-Reply-To: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +26,46 @@ Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengx
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4754983032792077457==
+--===============0865377643768967768==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ePb1vBESXVFrMIkZ"
+	protocol="application/pgp-signature"; boundary="5mqCGJ/oA/hbmJAP"
 Content-Disposition: inline
 
 
---ePb1vBESXVFrMIkZ
+--5mqCGJ/oA/hbmJAP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Apr 30, 2015 at 06:18:46PM +0800, Bard Liao wrote:
-> rt5645->btn_jack is for jack button report. So the mask should be
-> SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2 | SND_JACK_BTN_3.
+On Thu, Apr 30, 2015 at 06:18:42PM +0800, Bard Liao wrote:
+> RT5645_I2S_BCLK_MS1 (reg 0x73 [5]) is reserverd in rt5645 and rt5650.
+> This function is move to TDM control. We can configure it by
+> snd_soc_dai_set_tdm_slot's slot_width parameter.
 
-It doesn't matter in this case but generally bug fixes should go at the
-start of the series, that way they don't end up depending on other
-things and it's easier to apply them and get them sent to stable if
-needed.
+Applied all except patch 4 (the DT one), thanks.
 
---ePb1vBESXVFrMIkZ
+--5mqCGJ/oA/hbmJAP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVQ6shAAoJECTWi3JdVIfQNRkH/06qD//aaomhqvAYy3y+MsVB
-MBsoQ9QAxP9CZrfUnblZN3nNxnL8A5frZOTiF+TdK6BdLgdA/iwu3yQzfh2G3lC/
-i94ILVa1wGrGTFj8ModA1vD6BKbaRc0GvHGnPTcduBClqEzW/xym61q/Tw+obSMg
-yOluZkIb1r9TjJnz6Ys0B2F9d78COJGNkP0NCLCUaof1YF1GBC14NoizL4A6LZ37
-binasFxEeyPte8TSEH/XC362p3ZgKp2lHMNjUZxekteAqDmCiIngGhj9PB8Xo+00
-ImoD/yqIKB5NDvl0lomMc/om29523zR/dmpjgzp+aoUKQ0I5uTzoy1jPOx70rY4=
-=9I9e
+iQEcBAEBCAAGBQJVQ6s+AAoJECTWi3JdVIfQSRQH/2eaen/WBgYf/6ABwxIfyRzM
+Hnz0FekzrDWFzyQCXsp8ugAWIJtBCBJInm/i90qxaUbwv9ZnLLjwka0ILyK5107Z
+6L/d+vbXuX98NF9CdAynWtAuKksrGsf7I2RUIy8ksS/Kgo4LNyvxeG5TRl/0IuS/
+bW6WKA1r+dW2E2zraWXttXcgfEVtpIO1iUjirNW87/Hyqu8X6DJXsMzWIDpwKe75
+Hzw93ZeOTtV72mFFB/U0rOp6Q82UXWbSPzpZOpOnOfhg1KcMfIPs3XVzMOLJVmcz
+P2nWF70OlVOHdqzb0LXRKYHXLEK8AanKFCTrB7upa5oZxBtstRQgtabc96a1xco=
+=E7IX
 -----END PGP SIGNATURE-----
 
---ePb1vBESXVFrMIkZ--
+--5mqCGJ/oA/hbmJAP--
 
---===============4754983032792077457==
+--===============0865377643768967768==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4754983032792077457==--
+--===============0865377643768967768==--
