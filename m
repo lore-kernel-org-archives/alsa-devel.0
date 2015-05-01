@@ -1,11 +1,11 @@
 From: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
-Subject: [PATCH 4/4] ASoC: samsung: Constify platform_device_id
-Date: Sat,  2 May 2015 01:00:14 +0900
-Message-ID: <1430496014-32309-4-git-send-email-k.kozlowski.k@gmail.com>
+Subject: [PATCH 2/4] ASoC: bt-sco: Constify platform_device_id
+Date: Sat,  2 May 2015 01:00:12 +0900
+Message-ID: <1430496014-32309-2-git-send-email-k.kozlowski.k@gmail.com>
 References: <1430496014-32309-1-git-send-email-k.kozlowski.k@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 In-Reply-To: <1430496014-32309-1-git-send-email-k.kozlowski.k@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 Cc: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
 List-Id: alsa-devel@alsa-project.org
@@ -15,21 +15,21 @@ const.
 
 Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
 ---
- sound/soc/samsung/i2s.c | 2 +-
+ sound/soc/codecs/bt-sco.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index b92ab40d2be6..ea4ab374a223 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1493,7 +1493,7 @@ static const struct samsung_i2s_dai_data samsung_dai_type_sec = {
- 	.dai_type = TYPE_SEC,
- };
+diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+index e7238b8904bc..9d0b794d3005 100644
+--- a/sound/soc/codecs/bt-sco.c
++++ b/sound/soc/codecs/bt-sco.c
+@@ -63,7 +63,7 @@ static int bt_sco_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
--static struct platform_device_id samsung_i2s_driver_ids[] = {
-+static const struct platform_device_id samsung_i2s_driver_ids[] = {
+-static struct platform_device_id bt_sco_driver_ids[] = {
++static const struct platform_device_id bt_sco_driver_ids[] = {
  	{
- 		.name           = "samsung-i2s",
- 		.driver_data	= (kernel_ulong_t)&i2sv3_dai_type,
+ 		.name		= "dfbmcs320",
+ 	},
 -- 
 2.1.4
