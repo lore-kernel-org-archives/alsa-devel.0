@@ -1,71 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFT] ASoC: mc13783: Fix wrong mask value
- used in mc13xxx_reg_rmw() calls
-Date: Fri, 1 May 2015 17:36:52 +0100
-Message-ID: <20150501163652.GG22845@sirena.org.uk>
-References: <1430117495.28082.2.camel@ingics.com>
+Subject: Re: [PATCH 1/4] ASoC: au1x: Constify platform_device_id
+Date: Fri, 1 May 2015 17:46:24 +0100
+Message-ID: <20150501164624.GM22845@sirena.org.uk>
+References: <1430496014-32309-1-git-send-email-k.kozlowski.k@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7204338588300079754=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 123B92605F5
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 18:37:08 +0200 (CEST)
-In-Reply-To: <1430117495.28082.2.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Philippe =?iso-8859-1?Q?R=E9tornaz?= <philippe.retornaz@epfl.ch>, SaschaHauer <s.hauer@pengutronix.de>, Steffen Trumtrar <s.trumtrar@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4kyyiuJNZa/POMXt"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1430496014-32309-1-git-send-email-k.kozlowski.k@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Kukjin Kim <kgene@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7204338588300079754==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mj1f7rlQIuao6W6r"
-Content-Disposition: inline
-
-
---mj1f7rlQIuao6W6r
+--4kyyiuJNZa/POMXt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 27, 2015 at 02:51:35PM +0800, Axel Lin wrote:
-> mc13xxx_reg_rmw() won't change any bit if passing 0 to the mask field.
-> Pass AUDIO_SSI_SEL instead of 0 for the mask field to set AUDIO_SSI_SEL
-> bit.
+On Sat, May 02, 2015 at 01:00:11AM +0900, Krzysztof Kozlowski wrote:
+> The platform_device_id is not modified by the driver and core uses it as
+> const.
 
 Applied, thanks.
 
---mj1f7rlQIuao6W6r
+--4kyyiuJNZa/POMXt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVQ6ujAAoJECTWi3JdVIfQrgcH+wZdfv/2S/QIk1fRwELnnKMM
-0YmH6U0EvrArTJEpbuCXgEpCoBv/cXr3M3Qqui8n4SHRvih1dSJObRLNyBu+5ZXu
-LsZy90Nlw2n4ix5K1gfq7yfQ8HTXubWze07NI6iz4V4vb6cWd1xJD+cgRd5MmFZF
-tNYL0eVj3Z0ZLCiFZzSx/ioLn2mXhUWRLdnd5vlf/AyhqwrR6TSGUBCwPVYuA+7U
-FZYWUZJJwjYMN9AlOrLlCGxzdhgaGGCbHr9hwcUBWWjH2ooZ850eqgvEk69YZimG
-E3/ttPuHgG2woQXX2E75oJt8PyN6NeQ3qkVS2OfH6a4RXIAU7q2V3M+Qiv+r28c=
-=lWZX
+iQEcBAEBCAAGBQJVQ63fAAoJECTWi3JdVIfQAjQH/A3e23pzvDBdrQiWsDNZhyrZ
+IOR8OlgwM3GLe/FoHsud8RTdr38gIM8papbGpiHF69kSVB5qp/bwRvI2o+Ao0wTx
+6uCnvcaUzGi2K6VWheeQsplFVmad78h19CwTGkN91NwC/e/XVjJsSzCk/y6qdiIb
+DxVgpTALk9Tt+fJbnpe1lxPMIBabb4Id1xc66JFOHpKpkun0p6OmyCT8s0l4bM7S
+kAu87h7BJ0gdF1uLrOdhiwKzjoOhSDRKmepzKqfpqIo2DrPNenfRbYWEpD4kwmyE
+RwyugWz/NPeek3kqI1i2CjJEXSvWao8h78hgAej+0H3Y0OKFlvfTLNGgLPI7uJ4=
+=rQvY
 -----END PGP SIGNATURE-----
 
---mj1f7rlQIuao6W6r--
-
---===============7204338588300079754==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7204338588300079754==--
+--4kyyiuJNZa/POMXt--
