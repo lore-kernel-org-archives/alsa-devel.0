@@ -1,48 +1,48 @@
 From: Belisko Marek <marek.belisko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Subject: Re: [PATCH 1/3] ASoC: Add gtm601 codec driver
-Date: Fri, 1 May 2015 13:36:48 +0200
-Message-ID: <CAAfyv36Bi_Em=PUUf1n0nk6AAR65QLzr_R2SenHs_C5Q3Ggjmg@mail.gmail.com>
+Date: Fri, 1 May 2015 13:39:39 +0200
+Message-ID: <CAAfyv368_X6t7OqtP6CKttU1PKx2Su_xptUNqYZ2j2-2PmG5DA@mail.gmail.com>
 References: <1430429283-27907-1-git-send-email-marek@goldelico.com>
 	<1430429283-27907-2-git-send-email-marek@goldelico.com>
-	<20150501110311.GV22845@sirena.org.uk>
+	<1430465409.2187.47.camel@x220>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150501110311.GV22845-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+In-Reply-To: <1430465409.2187.47.camel@x220>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, "Dr. H. Nikolaus Schaller" <hns-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+To: Paul Bolle <pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org>
+Cc: perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Dr. H. Nikolaus Schaller" <hns-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi Paul,
 
-On Fri, May 1, 2015 at 1:03 PM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Thu, Apr 30, 2015 at 11:28:01PM +0200, Marek Belisko wrote:
+On Fri, May 1, 2015 at 9:30 AM, Paul Bolle <pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org> wrote:
+> Just a nit: a license mismatch.
+Right, I copy and paste license header from wm827 driver but add
+MODULE_LICENSE wrong version. I'll update in next version. Thanks.
 >
->>       select SND_SOC_WM9705 if SND_SOC_AC97_BUS
->>       select SND_SOC_WM9712 if SND_SOC_AC97_BUS
->>       select SND_SOC_WM9713 if SND_SOC_AC97_BUS
->> +     select SND_SOC_GTM601
->>          help
->> +config SND_SOC_GTM601
->> +     tristate 'GTM601 UMTS modem audio codec'
->> +
+> On Thu, 2015-04-30 at 23:28 +0200, Marek Belisko wrote:
+>> --- /dev/null
+>> +++ b/sound/soc/codecs/gtm601.c
 >
-> Keep Makefile and Kconfig sorted.
-Ok.
+>> + *  This program is free software; you can redistribute  it and/or modify it
+>> + *  under  the terms of  the GNU General  Public License as published by the
+>> + *  Free Software Foundation;  either version 2 of the  License, or (at your
+>> + *  option) any later version.
 >
->> +/*
->> + * Note this is a simple chip with no configuration interface, sample rate is
->> + * determined automatically by examining the Master clock and Bit clock ratios
->> + */
+> This states the license is GPL v2 or later.
 >
->> +#define GTM601_RATES  (SNDRV_PCM_RATE_8000)
+>> +MODULE_LICENSE("GPL v2");
 >
-> Does it or doesn't it support multiple sample rates?
-It support only 8kHz rate. I'll remove define and use SNDRV_PCM_RATE_8000
-only in gtm601_dai struct.
+> And, according to include/linux/module.h, this states the license is
+> (just) GPL v2. So I think either the comment at the top of this file or
+> the ident used in the MODULE_LICESE() macro should change.
+>
+>
+> Paul Bolle
+>
 
-Thanks and BR.
+BR,
 
 marek
 
