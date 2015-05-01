@@ -1,17 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/4] ASoC: lm4857: Convert to component
-Date: Fri,  1 May 2015 18:02:45 +0200
-Message-ID: <1430496165-13917-4-git-send-email-lars@metafoo.de>
-References: <1430496165-13917-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: dapm: Add new widgets to the end of
+	the widget list
+Date: Fri,  1 May 2015 18:02:42 +0200
+Message-ID: <1430496165-13917-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-014.synserver.de (smtp-out-017.synserver.de
  [212.40.185.17])
- by alsa0.perex.cz (Postfix) with ESMTP id B3B1D2605E5
- for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 19:15:52 +0200 (CEST)
-In-Reply-To: <1430496165-13917-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DAC92605F3
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 19:15:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +24,38 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver does not use any CODEC specific constructs anymore. Convert it
-to snd_soc_component.
+Currently new widgets are appended to the beginning of the cards widget
+list. This has the effect that widgets that are created while iterating
+over the widget list in snd_soc_dapm_new_widgets() (like e.g. the
+auto-disable widgets) are not covered during that invocation of the
+function. If no further invocations of snd_soc_dapm_new_widgets() happen
+these widgets will not be fully initialized and e.g. no debugfs entries are
+created for them.
+
+By adding new widgets to the end of the widget list we make sure that
+widgets that are created in snd_soc_dapm_new_widgets() will still be
+handled during the same snd_soc_dapm_new_widgets() invocation and are
+always fully initialized.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/lm4857.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+This series depends on Charles' mux auto-disable series.
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/lm4857.c b/sound/soc/codecs/lm4857.c
-index dac9165..99ffc49 100644
---- a/sound/soc/codecs/lm4857.c
-+++ b/sound/soc/codecs/lm4857.c
-@@ -100,7 +100,7 @@ static const struct snd_soc_dapm_route lm4857_routes[] = {
- 	{ "EP", "Earpiece", "Mode" },
- };
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 79e6cf4..5c159f4 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3252,7 +3252,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	INIT_LIST_HEAD(&w->sinks);
+ 	INIT_LIST_HEAD(&w->list);
+ 	INIT_LIST_HEAD(&w->dirty);
+-	list_add(&w->list, &dapm->card->widgets);
++	list_add_tail(&w->list, &dapm->card->widgets);
  
--static struct snd_soc_codec_driver soc_codec_dev_lm4857 = {
-+static struct snd_soc_component_driver lm4857_component_driver = {
- 	.controls = lm4857_controls,
- 	.num_controls = ARRAY_SIZE(lm4857_controls),
- 	.dapm_widgets = lm4857_dapm_widgets,
-@@ -129,13 +129,8 @@ static int lm4857_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
--	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_lm4857, NULL, 0);
--}
--
--static int lm4857_i2c_remove(struct i2c_client *i2c)
--{
--	snd_soc_unregister_codec(&i2c->dev);
--	return 0;
-+	return devm_snd_soc_register_component(&i2c->dev,
-+		&lm4857_component_driver, NULL, 0);
- }
- 
- static const struct i2c_device_id lm4857_i2c_id[] = {
-@@ -150,7 +145,6 @@ static struct i2c_driver lm4857_i2c_driver = {
- 		.owner = THIS_MODULE,
- 	},
- 	.probe = lm4857_i2c_probe,
--	.remove = lm4857_i2c_remove,
- 	.id_table = lm4857_i2c_id,
- };
- 
+ 	w->inputs = -1;
+ 	w->outputs = -1;
 -- 
 1.8.0
