@@ -1,59 +1,109 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 8/8] Documentation: Add WM8998/WM1814 device tree bindings
-Date: Fri,  1 May 2015 16:15:19 +0100
-Message-ID: <1430493319-23808-9-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 6/8] extcon: arizona: Add support for WM8998
+	and WM1814
+Date: Fri,  1 May 2015 16:15:17 +0100
+Message-ID: <1430493319-23808-7-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F0FB2606C5
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 17:16:14 +0200 (CEST)
 In-Reply-To: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com
-Cc: myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, myungjoo.ham@samsung.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- Documentation/devicetree/bindings/mfd/arizona.txt |   13 +++++++++----
- 1 files changed, 9 insertions(+), 4 deletions(-)
+This patch adds support for the WM8998 and WM1814 codecs.
+These use the same IP version as WM5110 but have different
+clamp control.
 
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index 7665aa9..64fa3b2 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -10,6 +10,9 @@ Required properties:
-         "wlf,wm5110"
-         "wlf,wm8280"
-         "wlf,wm8997"
-+        "wlf,wm8998"
-+        "wlf,wm1814"
-+
-   - reg : I2C slave address when connected using I2C, chip select number when
-     using SPI.
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+---
+ drivers/extcon/extcon-arizona.c |   33 ++++++++++++++++++++++-----------
+ 1 files changed, 22 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index 830c5f9..586ec53 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -1,7 +1,7 @@
+ /*
+  * extcon-arizona.c - Extcon driver Wolfson Arizona devices
+  *
+- *  Copyright (C) 2012 Wolfson Microelectronics plc
++ *  Copyright (C) 2012-2014 Wolfson Microelectronics plc
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -140,10 +140,14 @@ static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
+ 				    bool clamp)
+ {
+ 	struct arizona *arizona = info->arizona;
+-	unsigned int mask = 0, val = 0;
++	unsigned int mask, val = 0;
+ 	int ret;
  
-@@ -31,10 +34,10 @@ Required properties:
-     as covered in Documentation/devicetree/bindings/regulator/regulator.txt
+ 	switch (arizona->type) {
++	case WM8998:
++	case WM1814:
++		mask = 0;
++		break;
+ 	case WM5110:
+ 		mask = ARIZONA_HP1L_SHRTO | ARIZONA_HP1L_FLWR |
+ 		       ARIZONA_HP1L_SHRTI;
+@@ -175,17 +179,19 @@ static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
+ 				 ret);
+ 	}
  
-   - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies (wm5102,
--    wm5110, wm8280)
-+    wm5110, wm8280, wm8998, wm1814)
+-	ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1L,
+-				 mask, val);
+-	if (ret != 0)
+-		dev_warn(arizona->dev, "Failed to do clamp: %d\n",
++	if (mask) {
++		ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1L,
++					 mask, val);
++		if (ret != 0)
++			dev_warn(arizona->dev, "Failed to do clamp: %d\n",
+ 				 ret);
  
-   - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (wm5102,
--    wm5110, wm8280)
-+    wm5110, wm8280, wm8998, wm1814)
+-	ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1R,
+-				 mask, val);
+-	if (ret != 0)
+-		dev_warn(arizona->dev, "Failed to do clamp: %d\n",
+-			 ret);
++		ret = regmap_update_bits(arizona->regmap, ARIZONA_HP_CTRL_1R,
++					 mask, val);
++		if (ret != 0)
++			dev_warn(arizona->dev, "Failed to do clamp: %d\n",
++				 ret);
++	}
  
-   - SPKVDD-supply : Speaker driver power supply (wm8997)
- 
-@@ -53,8 +56,10 @@ Optional properties:
-     of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
-     2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
-     If present, values must be specified less than or equal to the number of
--    input singals. If values less than the number of input signals, elements
--    that has not been specifed are set to 0 by default.
-+    input signals. If values less than the number of input signals, elements
-+    that have not been specified are set to 0 by default. Entries are:
-+    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
-+    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
- 
-   - wlf,dmic-ref : DMIC reference voltage source for each input, can be
-     selected from either MICVDD or one of the MICBIAS's, defines
+ 	/* Restore the desired state while not doing the clamp */
+ 	if (!clamp) {
+@@ -1176,6 +1182,11 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+ 			break;
+ 		}
+ 		break;
++	case WM8998:
++	case WM1814:
++		info->micd_clamp = true;
++		info->hpdet_ip_version = 2;
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
 1.7.2.5
