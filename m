@@ -1,17 +1,25 @@
-Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DF3132650DB
- for <alsa-devel@alsa-project.org>; Wed,  8 Apr 2015 06:35:07 +0200 (CEST)
-Date: Wed, 8 Apr 2015 10:17:20 +0530
-From: Ramesh Babu <ramesh.babu@intel.com>
-Message-ID: <20150408044714.GA6212@ramesh.babu@intel.com>
-References: <1427968651-7821-1-git-send-email-vinod.koul@intel.com>
- <1427968651-7821-4-git-send-email-vinod.koul@intel.com>
- <20150406170804.GQ6023@sirena.org.uk>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150406170804.GQ6023@sirena.org.uk>
-Subject: Re: [alsa-devel] [RFC 3/3] ALSA: hda - add soc hda bus wrapper
+From: Gabriele Martino <g.martino@gmx.com>
+Subject: Re: Intel HDA / ca0132: support for Alienware 15
+ Creative Sound Core3D-EX
+Date: Fri, 01 May 2015 02:36:22 +0200
+Message-ID: <5542CA86.5010800@gmx.com>
+References: <553AE4CF.3070805@gmx.com> <s5hh9s2lyz0.wl-tiwai@suse.de>
+ <553E7B34.2080501@gmx.com> <s5h4mo14d72.wl-tiwai@suse.de>
+ <553EB55D.4060701@gmx.com> <s5hlhhc3hiy.wl-tiwai@suse.de>
+ <55400DF4.2080309@gmx.com> <s5hpp6nf41g.wl-tiwai@suse.de>
+ <5540FBFF.6020904@gmx.com> <s5h8uda93pf.wl-tiwai@suse.de>
+ <55416BEE.5090003@gmx.com> <s5hvbge6u4x.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9543260410
+ for <alsa-devel@alsa-project.org>; Fri,  1 May 2015 02:35:51 +0200 (CEST)
+Received: from [192.168.69.6] ([82.54.204.229]) by mail.gmx.com (mrgmx102)
+ with ESMTPSA (Nemesis) id 0MKt5A-1Ynyvn1FFg-0006iW for
+ <alsa-devel@alsa-project.org>; Fri, 01 May 2015 02:35:51 +0200
+In-Reply-To: <s5hvbge6u4x.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +27,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com, pathes.audio@intel.com
-List-ID: <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 06, 2015 at 06:08:04PM +0100, Mark Brown wrote:
+On 30/04/2015 07:51, Takashi Iwai wrote:
+> At Thu, 30 Apr 2015 01:40:30 +0200,
+> Gabriele Martino wrote:
+>> It was an error on my part, my apologies.
+>> I did a full kernel clean and rebuild, and the error 16 went away.
+>> But the jack detection is still broken.
+>>
+>> hdajacksensetest -c 1 -a
+>> Pin 0x0b (Internal Speaker): present = Yes
+>> Pin 0x0c (Not connected): present = No
+>> Pin 0x0d (Not connected): present = No
+>> Pin 0x0e (Not connected): present = No
+>> Pin 0x0f (Not connected): present = Yes
+>> Pin 0x10 (Not connected): present = No
+>> Pin 0x11 (Black Line In, Left side): present = No
+>> Pin 0x12 (Internal Mic, Mobile-In): present = No
+>> Pin 0x13 (Not connected): present = No
+>> Pin 0x18 (Not connected): present = No
+>>
+>> Pin 0x0f is still reported as not connected, but correctly detects the
+>> jack if plugged.
+>> If I turn off and on the "HP/Speaker Auto Detect" in alsamixer while
+>> "HP/Speaker" is off, the correct output is detected.
+>> If "HP/Speaker" is on, the behaviour is inconsistent.
+>>
+>> Is there a configuration file? Where can I find the metadata "Black Line
+>> In, Left side"?
+>> I don't know if it is related, but pavucontrol detects only the
+>> "speakers" port.
+>> On my previous laptop (with Creative Recon 3Di, another ca0132 card) I
+>> could choose between "speakers and "headphones".
+> It implies that the whole pin config BIOS provides is buggy.   The
+> jack color, location, etc, all are parsed from 32bit pin configuration
+> value for each pin.
+>
+> You need to correct the pin config and sets it statically in the
+> driver.  hdajackretask can give you the map and reload it
+> dynamically.
+Ok, I overrided the pin 0x0f to:
+-Connectivity: jack
+-Device: headphones
+and now it shows the ports "Speakers" and "Headphones" as it should.
+It correctly switches from "Speakers" to "Headphones" when I plug the
+jack, but the sound comes still from the speakers.
+I have to mess with the alsamixer's switches to get the correct output
+device, as I did before.
 
-Hi Takashi, Mark
+What is the meaning of "Channel group" and "Channel (in group)" controls
+of in hdajackretask? I can't find any documentation.
+The speakers are on channel group 15, channel in group "Front".
+The headphones got as default value channel group 3, channel in group
+"Channel 30 & 31".
 
-> On Thu, Apr 02, 2015 at 03:27:31PM +0530, Vinod Koul wrote:
-> 
-> 
-> > +/**
-> > + * hda_device_unregister - unregister a hda device
-> > + * @pdev: hda device we're unregistering
-> > + *
-> > + * Unregistration is done in 2 steps. First we release all resources
-> > + * and remove it from the subsystem, then we drop reference count by
-> > + * calling hda_device_put().
-> > + */
-> > +void snd_soc_hdac_device_unregister(struct snd_soc_hdac_device *pdev)
-> > +{
-> > +	snd_hdac_device_exit(&pdev->hdac);
-> > +	snd_hdac_device_unregister(&pdev->hdac);
-> > +	snd_soc_hdac_device_put(pdev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(snd_soc_hdac_device_unregister);
-> 
-> Takashi queried bits of this too...  I have to say I don't entirely
-> understand how this device management is supposed to work and the lack
-> of any users in the current series isn't giving me anything to refer to
-> here, perhaps it's all obvious given them but I don't have them just
-> now.  A lot of this looks like it's boilerplate which should be
-> duplicating something device modelish and there certainly seem to be
-> some things with object lifetimes that need paying attention to.
-> 
-> All the commit message says is "create asoc wrppers on top of hdac", can
-> we have more words please?
-
-Will fix your comments in next version of the RFC patches.
--- 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Regards,
+Gabriele
