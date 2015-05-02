@@ -1,18 +1,23 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ALSA: jack: fix a randconfig build issue
-Date: Sat, 2 May 2015 04:51:34 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905523E71@SHSMSX101.ccr.corp.intel.com>
-References: <1430449829-10568-1-git-send-email-yang.jie@intel.com>
- <s5hd22kkc26.wl-tiwai@suse.de>
+From: =?utf-8?B?xYF1a2FzeiBXb2puacWCb3dpY3o=?= <lukasz.wojnilowicz@gmail.com>
+Subject: Front speakers doesn't work in multichannel output,
+	regression in ALC888
+Date: Sat, 02 May 2015 07:42:27 +0200
+Message-ID: <2927807.UsnFnTlWVL@luklap.workgroup>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C8DE261721
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2015 06:51:39 +0200 (CEST)
-In-Reply-To: <s5hd22kkc26.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2416261721
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2015 07:42:30 +0200 (CEST)
+Received: by lbbqq2 with SMTP id qq2so75784308lbb.3
+ for <alsa-devel@alsa-project.org>; Fri, 01 May 2015 22:42:30 -0700 (PDT)
+Received: from luklap.workgroup (c162-131.icpnet.pl. [85.221.162.131])
+ by mx.google.com with ESMTPSA id ra7sm1788701lbb.27.2015.05.01.22.42.29
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 01 May 2015 22:42:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,252 +27,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, May 01, 2015 3:11 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH] ALSA: jack: fix a randconfig build issue
-> 
-> At Fri,  1 May 2015 11:10:29 +0800,
-> Jie Yang wrote:
-> >
-> > There may be no input_dev for jack(e.g. phantom jack), when
-> > CONFIG_INPUT is not selected, building errors such as:
-> > undefined reference to `input_xxx'...
-> >
-> > Here add #ifdef judgement to fix the issue.
-> 
-> Well, the standard idiom so far is to enable SND_JACK selectively.
-> Take a look at the comment in sound/core/Kconfig.
-> 
-> # To be effective this also requires INPUT - users should say:
-> #    select SND_JACK if INPUT=y || INPUT=SND
-> # to avoid having to force INPUT on.
-> config SND_JACK
-> 	bool
-> 
-> And, looking at sound/pci/hda/Kconfig, there is still SND_HDA_INPUT_JACK.
-> 
-> So, what you need to fix is:
-> - Remove SND_HDA_INPUT_JACK from sound/pci/hda/Kconfig and the last
->   ifdef in hda_codec.h
-> 
-> - Replace the line "select SND_JACK" with
-> 	select SND_JACK if INPUT=y || INPUT=SND_HDA
- 
-OK, will follow this. What I only concern is that if user want SND_JACk when
-INPUT=N(e.g. phantom jack?), it becomes impossible.
+Hi all,
 
-~Keyon
+My problem is that when I set channel output to "Analog output surround 5.1" 
+(or 2.1 or 4.1), I hear no sound in front speakers, but in case of 5.1 or 4.1 
+I can hear sound in rear speakers. I use kernel 3.19.5 and it didn't happen in 
+earlier kernels that is 3.18 and in 3.17 for sure.
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> >
-> > Signed-off-by: Jie Yang <yang.jie@intel.com>
-> > ---
-> >  include/sound/jack.h |  2 ++
-> >  sound/core/jack.c    | 40 ++++++++++++++++++++++++++--------------
-> >  2 files changed, 28 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/include/sound/jack.h b/include/sound/jack.h index
-> > 23bede1..c1010f9 100644
-> > --- a/include/sound/jack.h
-> > +++ b/include/sound/jack.h
-> > @@ -72,7 +72,9 @@ enum snd_jack_types {  #define
-> SND_JACK_SWITCH_TYPES
-> > 6
-> >
-> >  struct snd_jack {
-> > +#ifdef CONFIG_INPUT
-> >  	struct input_dev *input_dev;
-> > +#endif
-> >  	struct list_head kctl_list;
-> >  	struct snd_card *card;
-> >  	int registered;
-> > diff --git a/sound/core/jack.c b/sound/core/jack.c index
-> > eb66327..3a1901e 100644
-> > --- a/sound/core/jack.c
-> > +++ b/sound/core/jack.c
-> > @@ -32,6 +32,7 @@ struct snd_jack_kctl {
-> >  	unsigned int mask_bits; /* only masked status bits are reported via
-> > kctl */  };
-> >
-> > +#ifdef CONFIG_INPUT
-> >  static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
-> >  	SW_HEADPHONE_INSERT,
-> >  	SW_MICROPHONE_INSERT,
-> > @@ -40,9 +41,11 @@ static int
-> jack_switch_types[SND_JACK_SWITCH_TYPES] = {
-> >  	SW_VIDEOOUT_INSERT,
-> >  	SW_LINEIN_INSERT,
-> >  };
-> > +#endif
-> >
-> >  static int snd_jack_dev_disconnect(struct snd_device *device)  {
-> > +#ifdef CONFIG_INPUT
-> >  	struct snd_jack *jack = device->device_data;
-> >
-> >  	if (!jack->input_dev)
-> > @@ -54,7 +57,9 @@ static int snd_jack_dev_disconnect(struct snd_device
-> *device)
-> >  		input_unregister_device(jack->input_dev);
-> >  	else
-> >  		input_free_device(jack->input_dev);
-> > +
-> >  	jack->input_dev = NULL;
-> > +#endif
-> >  	return 0;
-> >  }
-> >
-> > @@ -83,11 +88,12 @@ static int snd_jack_dev_register(struct snd_device
-> > *device)  {
-> >  	struct snd_jack *jack = device->device_data;
-> >  	struct snd_card *card = device->card;
-> > -	int err, i;
-> > +	int err = 0;
-> >
-> >  	snprintf(jack->name, sizeof(jack->name), "%s %s",
-> >  		 card->shortname, jack->id);
-> >
-> > +#ifdef CONFIG_INPUT
-> >  	if (!jack->input_dev)
-> >  		return 0;
-> >
-> > @@ -98,7 +104,7 @@ static int snd_jack_dev_register(struct snd_device
-> *device)
-> >  		jack->input_dev->dev.parent =
-> snd_card_get_device_link(card);
-> >
-> >  	/* Add capabilities for any keys that are enabled */
-> > -	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
-> > +	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
-> >  		int testbit = SND_JACK_BTN_0 >> i;
-> >
-> >  		if (!(jack->type & testbit))
-> > @@ -113,6 +119,7 @@ static int snd_jack_dev_register(struct snd_device
-> *device)
-> >  	err = input_register_device(jack->input_dev);
-> >  	if (err == 0)
-> >  		jack->registered = 1;
-> > +#endif
-> >
-> >  	return err;
-> >  }
-> > @@ -209,7 +216,6 @@ int snd_jack_new(struct snd_card *card, const char
-> *id, int type,
-> >  	struct snd_jack *jack;
-> >  	struct snd_jack_kctl *jack_kctl = NULL;
-> >  	int err;
-> > -	int i;
-> >  	static struct snd_device_ops ops = {
-> >  		.dev_free = snd_jack_dev_free,
-> >  		.dev_register = snd_jack_dev_register, @@ -230,26 +236,31
-> @@ int
-> > snd_jack_new(struct snd_card *card, const char *id, int type,
-> >
-> >  	/* don't creat input device for phantom jack */
-> >  	if (!phantom_jack) {
-> > +#ifdef CONFIG_INPUT
-> >  		jack->input_dev = input_allocate_device();
-> >  		if (jack->input_dev == NULL) {
-> >  			err = -ENOMEM;
-> > -			goto fail_input;
-> > +			goto error;
-> >  		}
-> >
-> >  		jack->input_dev->phys = "ALSA";
-> >
-> > -		jack->type = type;
-> > -
-> > -		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
-> > +		for (int i = 0; i < SND_JACK_SWITCH_TYPES; i++)
-> >  			if (type & (1 << i))
-> >  				input_set_capability(jack->input_dev,
-> EV_SW,
-> >  						     jack_switch_types[i]);
-> > +#endif
-> > +		jack->type = type;
-> >
-> >  	}
-> >
-> >  	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
-> > -	if (err < 0)
-> > -		goto fail_input;
-> > +	if (err < 0) {
-> > +#ifdef CONFIG_INPUT
-> > +		input_free_device(jack->input_dev);
-> > +#endif
-> > +		goto error;
-> > +	}
-> >
-> >  	jack->card = card;
-> >  	INIT_LIST_HEAD(&jack->kctl_list);
-> > @@ -261,8 +272,7 @@ int snd_jack_new(struct snd_card *card, const char
-> > *id, int type,
-> >
-> >  	return 0;
-> >
-> > -fail_input:
-> > -	input_free_device(jack->input_dev);
-> > +error:
-> >  	kfree(jack->id);
-> >  	kfree(jack);
-> >  	return err;
-> > @@ -281,11 +291,13 @@ EXPORT_SYMBOL(snd_jack_new);
-> >   */
-> >  void snd_jack_set_parent(struct snd_jack *jack, struct device
-> > *parent)  {
-> > +#ifdef CONFIG_INPUT
-> >  	WARN_ON(jack->registered);
-> >  	if (!jack->input_dev)
-> >  		return;
-> >
-> >  	jack->input_dev->dev.parent = parent;
-> > +#endif
-> >  }
-> >  EXPORT_SYMBOL(snd_jack_set_parent);
-> >
-> > @@ -340,7 +352,6 @@ EXPORT_SYMBOL(snd_jack_set_key);  void
-> > snd_jack_report(struct snd_jack *jack, int status)  {
-> >  	struct snd_jack_kctl *jack_kctl;
-> > -	int i;
-> >
-> >  	if (!jack)
-> >  		return;
-> > @@ -349,10 +360,11 @@ void snd_jack_report(struct snd_jack *jack, int
-> status)
-> >  		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
-> >  					    status & jack_kctl->mask_bits);
-> >
-> > +#ifdef CONFIG_INPUT
-> >  	if (!jack->input_dev)
-> >  		return;
-> >
-> > -	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
-> > +	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
-> >  		int testbit = SND_JACK_BTN_0 >> i;
-> >
-> >  		if (jack->type & testbit)
-> > @@ -369,7 +381,7 @@ void snd_jack_report(struct snd_jack *jack, int
-> status)
-> >  	}
-> >
-> >  	input_sync(jack->input_dev);
-> > -
-> > +#endif
-> >  }
-> >  EXPORT_SYMBOL(snd_jack_report);
-> >
-> > --
-> > 1.9.1
-> >
+My configuration is:
+OS: Fedora 21 64 bit
+SoundCard: ALC888
+Model name: acer-aspire-4930g
+Laptop: Acer Aspire 5930g
+Speakers: external 5.1 with 3 jacks
+Sound channel configuration module is standard configuration module from KDE.
+
+Additional info:
+1) When channel output is 5.1 and I unplug green jack and leave two others 
+jacks connected then I can hear sound in laptop internal speakers.
+2) Earlier (kernel 3.18 and 3.17) I didn't have possibility to choose 2.1 
+configuration and additionally to 4.1 configuration I could also choose 4.0 
+configuration.
+
+Thanks for looking into problem.
+
+Cheers
+LW
