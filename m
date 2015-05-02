@@ -1,56 +1,273 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: Add gtm601 codec driver
-Date: Fri, 1 May 2015 22:34:26 +0200
-Message-ID: <CAAfyv34FJvBmCqUnZhiNMRMn2X+_4gbh=GJpV3ySmUeGaTSxyQ@mail.gmail.com>
-References: <1430429283-27907-1-git-send-email-marek@goldelico.com>
-	<1430429283-27907-2-git-send-email-marek@goldelico.com>
-	<20150501110311.GV22845@sirena.org.uk>
-	<CAAfyv36Bi_Em=PUUf1n0nk6AAR65QLzr_R2SenHs_C5Q3Ggjmg@mail.gmail.com>
-	<20150501140225.GY22845@sirena.org.uk>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ALSA: jack: fix a randconfig build issue
+Date: Sat, 2 May 2015 04:51:34 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905523E71@SHSMSX101.ccr.corp.intel.com>
+References: <1430449829-10568-1-git-send-email-yang.jie@intel.com>
+ <s5hd22kkc26.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150501140225.GY22845@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: perex@perex.cz, tiwai@suse.de, "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C8DE261721
+ for <alsa-devel@alsa-project.org>; Sat,  2 May 2015 06:51:39 +0200 (CEST)
+In-Reply-To: <s5hd22kkc26.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 1, 2015 at 4:02 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, May 01, 2015 at 01:36:48PM +0200, Belisko Marek wrote:
->> On Fri, May 1, 2015 at 1:03 PM, Mark Brown <broonie@kernel.org> wrote:
->> > On Thu, Apr 30, 2015 at 11:28:01PM +0200, Marek Belisko wrote:
->
->> >> +/*
->> >> + * Note this is a simple chip with no configuration interface, sample rate is
->> >> + * determined automatically by examining the Master clock and Bit clock ratios
->> >> + */
->> >
->> >> +#define GTM601_RATES  (SNDRV_PCM_RATE_8000)
->
->> > Does it or doesn't it support multiple sample rates?
->
->> It support only 8kHz rate. I'll remove define and use SNDRV_PCM_RATE_8000
->> only in gtm601_dai struct.
->
-> I was more commenting on the fact that the comment immediately above
-> says that the sample rate is determined automatically which suggests
-> that multiple sample rates are supported.
-OK I see. Checked with gtm601 datasheet max master clock is 2.048MHz so
-it is 8kHz LRCLK. Sorry for confusing comment.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, May 01, 2015 3:11 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [PATCH] ALSA: jack: fix a randconfig build issue
+> 
+> At Fri,  1 May 2015 11:10:29 +0800,
+> Jie Yang wrote:
+> >
+> > There may be no input_dev for jack(e.g. phantom jack), when
+> > CONFIG_INPUT is not selected, building errors such as:
+> > undefined reference to `input_xxx'...
+> >
+> > Here add #ifdef judgement to fix the issue.
+> 
+> Well, the standard idiom so far is to enable SND_JACK selectively.
+> Take a look at the comment in sound/core/Kconfig.
+> 
+> # To be effective this also requires INPUT - users should say:
+> #    select SND_JACK if INPUT=y || INPUT=SND
+> # to avoid having to force INPUT on.
+> config SND_JACK
+> 	bool
+> 
+> And, looking at sound/pci/hda/Kconfig, there is still SND_HDA_INPUT_JACK.
+> 
+> So, what you need to fix is:
+> - Remove SND_HDA_INPUT_JACK from sound/pci/hda/Kconfig and the last
+>   ifdef in hda_codec.h
+> 
+> - Replace the line "select SND_JACK" with
+> 	select SND_JACK if INPUT=y || INPUT=SND_HDA
+ 
+OK, will follow this. What I only concern is that if user want SND_JACk when
+INPUT=N(e.g. phantom jack?), it becomes impossible.
 
-BR,
+~Keyon
 
-marek
-
--- 
-as simple and primitive as possible
--------------------------------------------------
-Marek Belisko - OPEN-NANDRA
-Freelance Developer
-
-Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
-Tel: +421 915 052 184
-skype: marekwhite
-twitter: #opennandra
-web: http://open-nandra.com
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> >
+> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > ---
+> >  include/sound/jack.h |  2 ++
+> >  sound/core/jack.c    | 40 ++++++++++++++++++++++++++--------------
+> >  2 files changed, 28 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/sound/jack.h b/include/sound/jack.h index
+> > 23bede1..c1010f9 100644
+> > --- a/include/sound/jack.h
+> > +++ b/include/sound/jack.h
+> > @@ -72,7 +72,9 @@ enum snd_jack_types {  #define
+> SND_JACK_SWITCH_TYPES
+> > 6
+> >
+> >  struct snd_jack {
+> > +#ifdef CONFIG_INPUT
+> >  	struct input_dev *input_dev;
+> > +#endif
+> >  	struct list_head kctl_list;
+> >  	struct snd_card *card;
+> >  	int registered;
+> > diff --git a/sound/core/jack.c b/sound/core/jack.c index
+> > eb66327..3a1901e 100644
+> > --- a/sound/core/jack.c
+> > +++ b/sound/core/jack.c
+> > @@ -32,6 +32,7 @@ struct snd_jack_kctl {
+> >  	unsigned int mask_bits; /* only masked status bits are reported via
+> > kctl */  };
+> >
+> > +#ifdef CONFIG_INPUT
+> >  static int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+> >  	SW_HEADPHONE_INSERT,
+> >  	SW_MICROPHONE_INSERT,
+> > @@ -40,9 +41,11 @@ static int
+> jack_switch_types[SND_JACK_SWITCH_TYPES] = {
+> >  	SW_VIDEOOUT_INSERT,
+> >  	SW_LINEIN_INSERT,
+> >  };
+> > +#endif
+> >
+> >  static int snd_jack_dev_disconnect(struct snd_device *device)  {
+> > +#ifdef CONFIG_INPUT
+> >  	struct snd_jack *jack = device->device_data;
+> >
+> >  	if (!jack->input_dev)
+> > @@ -54,7 +57,9 @@ static int snd_jack_dev_disconnect(struct snd_device
+> *device)
+> >  		input_unregister_device(jack->input_dev);
+> >  	else
+> >  		input_free_device(jack->input_dev);
+> > +
+> >  	jack->input_dev = NULL;
+> > +#endif
+> >  	return 0;
+> >  }
+> >
+> > @@ -83,11 +88,12 @@ static int snd_jack_dev_register(struct snd_device
+> > *device)  {
+> >  	struct snd_jack *jack = device->device_data;
+> >  	struct snd_card *card = device->card;
+> > -	int err, i;
+> > +	int err = 0;
+> >
+> >  	snprintf(jack->name, sizeof(jack->name), "%s %s",
+> >  		 card->shortname, jack->id);
+> >
+> > +#ifdef CONFIG_INPUT
+> >  	if (!jack->input_dev)
+> >  		return 0;
+> >
+> > @@ -98,7 +104,7 @@ static int snd_jack_dev_register(struct snd_device
+> *device)
+> >  		jack->input_dev->dev.parent =
+> snd_card_get_device_link(card);
+> >
+> >  	/* Add capabilities for any keys that are enabled */
+> > -	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
+> > +	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
+> >  		int testbit = SND_JACK_BTN_0 >> i;
+> >
+> >  		if (!(jack->type & testbit))
+> > @@ -113,6 +119,7 @@ static int snd_jack_dev_register(struct snd_device
+> *device)
+> >  	err = input_register_device(jack->input_dev);
+> >  	if (err == 0)
+> >  		jack->registered = 1;
+> > +#endif
+> >
+> >  	return err;
+> >  }
+> > @@ -209,7 +216,6 @@ int snd_jack_new(struct snd_card *card, const char
+> *id, int type,
+> >  	struct snd_jack *jack;
+> >  	struct snd_jack_kctl *jack_kctl = NULL;
+> >  	int err;
+> > -	int i;
+> >  	static struct snd_device_ops ops = {
+> >  		.dev_free = snd_jack_dev_free,
+> >  		.dev_register = snd_jack_dev_register, @@ -230,26 +236,31
+> @@ int
+> > snd_jack_new(struct snd_card *card, const char *id, int type,
+> >
+> >  	/* don't creat input device for phantom jack */
+> >  	if (!phantom_jack) {
+> > +#ifdef CONFIG_INPUT
+> >  		jack->input_dev = input_allocate_device();
+> >  		if (jack->input_dev == NULL) {
+> >  			err = -ENOMEM;
+> > -			goto fail_input;
+> > +			goto error;
+> >  		}
+> >
+> >  		jack->input_dev->phys = "ALSA";
+> >
+> > -		jack->type = type;
+> > -
+> > -		for (i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+> > +		for (int i = 0; i < SND_JACK_SWITCH_TYPES; i++)
+> >  			if (type & (1 << i))
+> >  				input_set_capability(jack->input_dev,
+> EV_SW,
+> >  						     jack_switch_types[i]);
+> > +#endif
+> > +		jack->type = type;
+> >
+> >  	}
+> >
+> >  	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
+> > -	if (err < 0)
+> > -		goto fail_input;
+> > +	if (err < 0) {
+> > +#ifdef CONFIG_INPUT
+> > +		input_free_device(jack->input_dev);
+> > +#endif
+> > +		goto error;
+> > +	}
+> >
+> >  	jack->card = card;
+> >  	INIT_LIST_HEAD(&jack->kctl_list);
+> > @@ -261,8 +272,7 @@ int snd_jack_new(struct snd_card *card, const char
+> > *id, int type,
+> >
+> >  	return 0;
+> >
+> > -fail_input:
+> > -	input_free_device(jack->input_dev);
+> > +error:
+> >  	kfree(jack->id);
+> >  	kfree(jack);
+> >  	return err;
+> > @@ -281,11 +291,13 @@ EXPORT_SYMBOL(snd_jack_new);
+> >   */
+> >  void snd_jack_set_parent(struct snd_jack *jack, struct device
+> > *parent)  {
+> > +#ifdef CONFIG_INPUT
+> >  	WARN_ON(jack->registered);
+> >  	if (!jack->input_dev)
+> >  		return;
+> >
+> >  	jack->input_dev->dev.parent = parent;
+> > +#endif
+> >  }
+> >  EXPORT_SYMBOL(snd_jack_set_parent);
+> >
+> > @@ -340,7 +352,6 @@ EXPORT_SYMBOL(snd_jack_set_key);  void
+> > snd_jack_report(struct snd_jack *jack, int status)  {
+> >  	struct snd_jack_kctl *jack_kctl;
+> > -	int i;
+> >
+> >  	if (!jack)
+> >  		return;
+> > @@ -349,10 +360,11 @@ void snd_jack_report(struct snd_jack *jack, int
+> status)
+> >  		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
+> >  					    status & jack_kctl->mask_bits);
+> >
+> > +#ifdef CONFIG_INPUT
+> >  	if (!jack->input_dev)
+> >  		return;
+> >
+> > -	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
+> > +	for (int i = 0; i < ARRAY_SIZE(jack->key); i++) {
+> >  		int testbit = SND_JACK_BTN_0 >> i;
+> >
+> >  		if (jack->type & testbit)
+> > @@ -369,7 +381,7 @@ void snd_jack_report(struct snd_jack *jack, int
+> status)
+> >  	}
+> >
+> >  	input_sync(jack->input_dev);
+> > -
+> > +#endif
+> >  }
+> >  EXPORT_SYMBOL(snd_jack_report);
+> >
+> > --
+> > 1.9.1
+> >
