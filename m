@@ -1,62 +1,42 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH v3 3/8] mfd: arizona: Add support for WM8998 and WM1814
-Date: Sat, 02 May 2015 11:58:51 +0200
-Message-ID: <1430560731.2187.70.camel@x220>
-References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
-	 <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ALSA: hda - Add dock support for ThinkPad X250
+ (17aa:2226)
+Date: Sat, 2 May 2015 15:20:18 +0200
+Message-ID: <20150502132018.GA21158@kroah.com>
+References: <1428737495-9906-1-git-send-email-corsac@debian.org>
+ <1428737495-9906-2-git-send-email-corsac@debian.org>
+ <s5hlhhy4rej.wl-tiwai@suse.de>
+ <1429468288.4396.7.camel@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1429468288.4396.7.camel@debian.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yves-Alexis Perez <corsac@debian.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Ebalard <arno@natisbad.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Something I didn't notice when v2 came along.
+On Sun, Apr 19, 2015 at 08:31:28PM +0200, Yves-Alexis Perez wrote:
+> On sam., 2015-04-11 at 17:27 +0200, Takashi Iwai wrote:
+> > At Sat, 11 Apr 2015 09:31:35 +0200,
+> > Yves-Alexis Perez wrote:
+> > > 
+> > > This model uses the same dock port as the previous generation.
+> > > 
+> > > Signed-off-by: Yves-Alexis Perez <corsac@debian.org>
+> > 
+> > Thanks, applied with Cc to stable.
+> > But, at the next time, please put maintainers to Cc.
+> 
+> Hi Greg,
+> 
+> I noticed a similar patch (f2aa1110 for the ThinkPad T450) was correctly
+> included in 3.19.5 (as 3b941649), but this one (c0278669) was not.
+> 
+> Is there something I'm missing?
 
-On Fri, 2015-05-01 at 16:15 +0100, Richard Fitzgerald wrote:
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
+It was not in a released kernel from Linus yet.  It now showed up in
+4.1-rc1, so it can go into a stable tree.
 
-> +config MFD_WM8998
-> +	bool "Wolfson Microelectronics WM8998"
-> +	depends on MFD_ARIZONA
-> +	help
-> +	  Support for Wolfson Microelectronics WM8998 low power audio SoC
-> +
->  config MFD_WM8400
->  	bool "Wolfson Microelectronics WM8400"
->  	select MFD_CORE
-
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-
->  ifneq ($(CONFIG_MFD_WM8997),n)
->  obj-$(CONFIG_MFD_ARIZONA)	+= wm8997-tables.o
->  endif
-> +ifneq ($(CONFIG_MFD_WM8998),n)
-> +obj-$(CONFIG_MFD_ARIZONA)	+= wm8998-tables.o
-> +endif
-
-Playing a bit with the current version of drivers/mfd/Makefile it seems
-these
-    ifneq ($(CONFIG_MFD_WM[...]),n)
-
-tests will always be true. Because, as far as I know, the Kconfig macros
-used in those tests will either be "y" or the empty string, but never
-"n". (I don't speak Makefilese fluent enough to know how to add simple
-debugging prints for the values of the CONFIG_MFD_WM[...] macros to
-actually test this, so correct me if I'm wrong here.)
-
-So I think that, effectively, these wm[...]-tables.o objects will always
-be built if CONFIG_MFD_ARIZONA is set. Is that the intention? If not,
-perhaps these test should read
-    ifeq ($(CONFIG_MFD_WM[...]),y)
-
-Thanks,
-
-
-Paul Bolle
-
+greg k-h
