@@ -1,82 +1,58 @@
-From: Glenn Golden <gdg@zplane.com>
-Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
- mute LED non-workingness
-Date: Sat, 2 May 2015 10:00:04 -0600
-Message-ID: <20150502160003.GA557@huh.zplane.com>
-References: <20150425013937.GB550@huh.zplane.com>
- <1429974719.3937109.258484493.7D74FAC6@webmail.messagingengine.com>
- <20150426152012.GE550@huh.zplane.com>
- <s5hvbgiho2o.wl-tiwai@suse.de>
- <CAN8cciZQBRz2Ty3YRt2+3KO9v1BWef-_8FU_d_SsE87mLdgY-w@mail.gmail.com>
- <s5hh9s2gj45.wl-tiwai@suse.de>
- <20150427135859.GI550@huh.zplane.com>
- <s5ha8xt4hsa.wl-tiwai@suse.de>
- <20150428000206.GK550@huh.zplane.com>
- <CAN8ccibSH6je=OpX6vOTG9PzETxikmpuX+7PDgiYNrsG+YavNw@mail.gmail.com>
-Reply-To: gdg@zplane.com
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [RFC PATCH 00/14] ASoC: qcom: add support to apq8016 audio
+Date: Sat, 2 May 2015 16:57:04 -0700
+Message-ID: <20150502235704.GA27804@kwestfie-linux.qualcomm.com>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.indra.com (smtp.indra.com [209.169.0.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 611822614F1
- for <alsa-devel@alsa-project.org>; Sat,  2 May 2015 18:00:15 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAN8ccibSH6je=OpX6vOTG9PzETxikmpuX+7PDgiYNrsG+YavNw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Alex Hung <alex.hung@canonical.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, bruno.mueller@gmail.com, David Henningsson <david.henningsson@canonical.com>
+In-Reply-To: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Raymond Yau <superquad.vortex2@gmail.com> [2015-05-01 22:22:15 +0800]:
-> >
-> > Here are the XXX messages:
-> >
-> >     [   13.722755] sound hdaudioC0D0: XXX hda_fixup_thinkpad_acpi init...
-> >     [   13.724366] sound hdaudioC0D0: XXX ok, this is thinkpad
-> >     [   13.724373] sound hdaudioC0D0: XXX mute LED NOT WORKING!
-> >
+On Thu, Apr 30, 2015 at 06:15:48PM +0100, Srinivas Kandagatla wrote:
+> Hi All,
 > 
-> This mean that your thinkpad does not support SSMS interface
+> This patchset adds apq8016 audio support into lpass driver. Existing Lpass
+> driver can not be used as-it-is for apq8016 as it contains code specific to
+> ipq806x. Also the driver only supports single i2s port, single dma channel and
+> single bitclk control.
 > 
-
-Yes, this was confirmed by an experiment later in the PA thread suggested by
-Takashi, in which attempted access to the SSMS device yielded ENODEV.
-
-Seems to me the next step then is to try to determine the difference between
-the following two possibilities:
-
-   a.  The SSMS interface is truly not available on the T-510.
-
-   b.  There is a bug in thinkpad_acpi (or elsewhere?) which is preventing
-       the SSMS interface from being visible, hence leading to ENODEV upon
-       attempted access.
-
-Henrique: Can you comment on how best to proceed further here? Let me know if
-there's any experiments I can do on my end to narrow this down as either (a)
-or (b).
-
+> APQ8016 has 4 MI2S( Primary, Secondary, Tertiary, Quaternary) which can be routed
+> to internal wcd codec or external codecs. This routing is controlled by 2 mux
+> registers.
 > 
-> >     [   13.724374] sound hdaudioC0D0: XXX ok, mic LED is hooked
-> >
+> This patch series firstly re-organizes the lpass driver such that the SOC
+> specific bits are moved away from the driver. And secondly the SOC specifics
+> are now passed as lpass variant data which would include various register
+> offsets, dma channel allocations and SOC specific clock handling.
 > 
-> This mean that your thinkpad support MMTS interface
+> Finally the patchset add apq8016 lpass and machine driver.
 > 
-
-Yes, as stated in the original report, there is no issue at all with the
-MIC MUTE LED.
-
+> This patchset also has two trivial cleanup patches which are to do with
+> redundant checks and removing unnecessary header files.
 > 
-> Do T420 support SSMS interface ?
->
+> All these patches are tested for HDMI audio via adv7533 bridge and Analog audio
+> on APQ8016-SBC and msm8916-mtp boards. I dont have access to ipq806x boards to
+> test these patches.
+> 
+> This is very first version of the patches which was developed with very
+> mimimal/no access to IP documentation. I would like to get your opinon on the
+> over all approch.
+> 
+> 
+> Kenneth/Patrick,
+> 	Could you please try these patches on storm board?
 
-Good question. I have no access to T-420. Does anyone know for sure?
+I will test the patches and let you know by Wednesday.  Also, I posted
+some comments, but Patrick should be posting his comments separately
+later next week.
+
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
