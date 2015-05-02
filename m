@@ -1,42 +1,48 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: hda - Add dock support for ThinkPad X250
- (17aa:2226)
-Date: Sat, 2 May 2015 15:20:18 +0200
-Message-ID: <20150502132018.GA21158@kroah.com>
-References: <1428737495-9906-1-git-send-email-corsac@debian.org>
- <1428737495-9906-2-git-send-email-corsac@debian.org>
- <s5hlhhy4rej.wl-tiwai@suse.de>
- <1429468288.4396.7.camel@debian.org>
+From: Jonathan McDowell <noodles@earth.li>
+Subject: Re: Audio crackles with 4.1-rc1
+Date: Sat, 2 May 2015 16:05:13 +0100
+Message-ID: <20150502150513.GF10148@earth.li>
+References: <20150428112156.GQ10148@earth.li>
+ <s5hvbggv4xa.wl-tiwai@suse.de>
+ <20150428123518.GU10148@earth.li>
+ <s5hpp6ov1wv.wl-tiwai@suse.de>
+ <s5ha8xsuxe3.wl-tiwai@suse.de>
+ <20150429112859.GY10148@earth.li>
+ <s5h4mnzgne6.wl-tiwai@suse.de>
+ <20150430150131.GA10148@earth.li>
+ <s5hd22l7dgo.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1429468288.4396.7.camel@debian.org>
+In-Reply-To: <s5hd22l7dgo.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Yves-Alexis Perez <corsac@debian.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Ebalard <arno@natisbad.org>, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 19, 2015 at 08:31:28PM +0200, Yves-Alexis Perez wrote:
-> On sam., 2015-04-11 at 17:27 +0200, Takashi Iwai wrote:
-> > At Sat, 11 Apr 2015 09:31:35 +0200,
-> > Yves-Alexis Perez wrote:
-> > > 
-> > > This model uses the same dock port as the previous generation.
-> > > 
-> > > Signed-off-by: Yves-Alexis Perez <corsac@debian.org>
+On Thu, Apr 30, 2015 at 07:06:31PM +0200, Takashi Iwai wrote:
+> At Thu, 30 Apr 2015 16:01:31 +0100, Jonathan McDowell wrote:
 > > 
-> > Thanks, applied with Cc to stable.
-> > But, at the next time, please put maintainers to Cc.
+> > On Wed, Apr 29, 2015 at 01:54:57PM +0200, Takashi Iwai wrote:
+> > > 
+> > > One patch you can try (with or without power_save_node
+> > > disablement) is below, it squashes the verb sequences at (runtime)
+> > > PM resume as we did for 4.0.  Let me know if this changes the
+> > > behavior.
+> > 
+> > Patch alone has no effect. Patch with power_save_node disablement
+> > solves the problem. Didn't try power_save_node disablement without
+> > the patch.
 > 
-> Hi Greg,
-> 
-> I noticed a similar patch (f2aa1110 for the ThinkPad T450) was correctly
-> included in 3.19.5 (as 3b941649), but this one (c0278669) was not.
-> 
-> Is there something I'm missing?
+> Then please confirm that only power_save_node disablement suffices.
+> This can be considered as the least change that can be put to 4.1-rc
+> if no better fix is found.
 
-It was not in a released kernel from Linus yet.  It now showed up in
-4.1-rc1, so it can go into a stable tree.
+Setting codec->power_save_node to 0 in patch_alc269 is sufficient; no
+noticeable cracking occurring.
 
-greg k-h
+J.
+
+-- 
+Beware of programmers carrying screwdrivers.
