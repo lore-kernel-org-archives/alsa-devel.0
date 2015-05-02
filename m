@@ -1,111 +1,39 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [RFC PATCH 03/14] ASoC: qcom: move ipq806x specific bits out of
- lpass driver.
-Date: Sat, 2 May 2015 16:57:39 -0700
-Message-ID: <20150502235738.GB27804@kwestfie-linux.qualcomm.com>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [RFC PATCH 07/14] ASoC: qcom: add no osr clk flag to lpass
+ variant
+Date: Sat, 2 May 2015 16:58:09 -0700
+Message-ID: <20150502235800.GC27804@kwestfie-linux.qualcomm.com>
 References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1430414213-10997-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1430414244-11168-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1430414213-10997-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+In-Reply-To: <1430414244-11168-1-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 30, 2015 at 06:16:53PM +0100, Srinivas Kandagatla wrote:
-> This patch tries to make the lpass driver more generic by moving the
-> ipq806x specific bits out of the cpu and platform driver, also allows the
-> SOC specific drivers to add the correct register offsets.
-> 
-> This patch also renames the register definition header file into more
-> generic header file.
+On Thu, Apr 30, 2015 at 06:17:24PM +0100, Srinivas Kandagatla wrote:
+> Some LPASS integrations like on APQ8016 do not have OSR clk, so adding
+> no osr clk bit would allow such integrations to use lpass driver.
 
-> diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-> new file mode 100644
-> index 0000000..8e9a427
-> --- /dev/null
-> +++ b/sound/soc/qcom/lpass-ipq806x.c
+Going forward, as the code is generalized, perhaps having an enable flag
+for each clock, rather than a flag that negates an existing clock?
+Or checking that the clock pointer is NULL after probing would be the
+indication?
 
-> +static const struct of_device_id ipq806x_lpass_cpu_device_id[] = {
-> +	{ .compatible = "qcom,lpass-cpu", .data = &ipq806x_data },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, ipq806x_lpass_cpu_device_id);
-
-Surround with #ifdef CONFIG_OF?
-
-> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-> new file mode 100644
-> index 0000000..5541b14
-> --- /dev/null
-> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
-
-> +#define LPAIF_I2SCTL_REG_ADDR(v, addr, port) \
-> +	(v->i2sctrl_reg_base + (addr) + v->i2sctrl_reg_stride * (port))
-
-Could all of these variant-related macros be eliminated by using the
-regmap_fields_* accessor functions, instead of the regmap_* functions?
-
-> +enum lpaif_i2s_ports {
-> +	LPAIF_I2S_PORT_MIN		= 0,
-> +
-> +	LPAIF_I2S_PORT_CODEC_SPK	= 0,
-> +	LPAIF_I2S_PORT_CODEC_MIC	= 1,
-> +	LPAIF_I2S_PORT_SEC_SPK		= 2,
-> +	LPAIF_I2S_PORT_SEC_MIC		= 3,
-> +	LPAIF_I2S_PORT_MI2S		= 4,
-> +
-> +	LPAIF_I2S_PORT_MAX		= 4,
-> +	LPAIF_I2S_PORT_NUM		= 5,
-> +};
-
-These port mappings here...
-
-> +enum lpaif_irq_ports {
-> +	LPAIF_IRQ_PORT_MIN		= 0,
-> +
-> +	LPAIF_IRQ_PORT_HOST		= 0,
-> +	LPAIF_IRQ_PORT_ADSP		= 1,
-> +
-> +	LPAIF_IRQ_PORT_MAX		= 2,
-> +	LPAIF_IRQ_PORT_NUM		= 3,
-> +};
-
-...here...
-
-> +enum lpaif_dma_channels {
-> +	LPAIF_RDMA_CHAN_MIN		= 0,
-> +
-> +	LPAIF_RDMA_CHAN_MI2S		= 0,
-> +	LPAIF_RDMA_CHAN_PCM0		= 1,
-> +	LPAIF_RDMA_CHAN_PCM1		= 2,
-> +
-> +	LPAIF_RDMA_CHAN_MAX		= 4,
-> +	LPAIF_RDMA_CHAN_NUM		= 5,
-> +};
-
-...and here can be SOC-specific.  Should move them to the SOC-specific
-files.
-
-> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-> index 5c99b3d..5bd2a90 100644
-> --- a/sound/soc/qcom/lpass.h
-> +++ b/sound/soc/qcom/lpass.h
-
->  /* register the platform driver from the CPU DAI driver */
->  int asoc_qcom_lpass_platform_register(struct platform_device *);
-> +int lpass_cpu_platform_remove(struct platform_device *pdev);
-> +int lpass_cpu_platform_probe(struct platform_device *pdev);
-> +int lpass_cpu_dai_probe(struct snd_soc_dai *dai);
-> +extern struct snd_soc_dai_ops lpass_cpu_dai_ops;
-
-Prefix with asoc_qcom_ to reduce chance of collisions.
+>  sound/soc/qcom/lpass-cpu.c | 49 +++++++++++++++++++++++++++++-----------------
+>  sound/soc/qcom/lpass.h     |  2 ++
+>  2 files changed, 33 insertions(+), 18 deletions(-)
 
 -- 
 Kenneth Westfield
 Qualcomm Innovation Center, Inc.
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
 a Linux Foundation Collaborative Project
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
