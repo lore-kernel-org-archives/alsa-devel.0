@@ -1,18 +1,16 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH] ASoC: uda1380: Avoid accessing i2c bus when
-	codec is disabled
-Date: Sun,  3 May 2015 21:11:47 +0300
-Message-ID: <1430676707-30423-1-git-send-email-anarsoul@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: samsung: wolfson: Improve compile test
+	coverage
+Date: Sun,  3 May 2015 20:13:35 +0200
+Message-ID: <1430676815-10450-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 261FB26049D
- for <alsa-devel@alsa-project.org>; Sun,  3 May 2015 20:12:03 +0200 (CEST)
-Received: by layy10 with SMTP id y10so91533645lay.0
- for <alsa-devel@alsa-project.org>; Sun, 03 May 2015 11:12:02 -0700 (PDT)
+Received: from smtp-out-155.synserver.de (smtp-out-155.synserver.de
+ [212.40.185.155])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6080D26049D
+ for <alsa-devel@alsa-project.org>; Sun,  3 May 2015 20:13:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-set_dai_fmt_both() callback is called from snd_soc_runtime_set_dai_fmt()
-which is called from snd_soc_register_card(), but at this time codec
-is not powered on yet. Replace direct i2c write with regcache write.
+While the the Wolfson machine drivers have a runtime dependency on a
+specific machine there is no compile time dependency. Allow to lets those
+drivers to be selected when COMPILE_TEST is selected to improve the compile
+time test coverage.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/uda1380.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/Kconfig | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index dc7778b..c3c33bd 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -437,7 +437,7 @@ static int uda1380_set_dai_fmt_both(struct snd_soc_dai *codec_dai,
- 	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
- 		return -EINVAL;
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 0632a36..3744c9e 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -174,7 +174,8 @@ config SND_SOC_SMDK_WM8994_PCM
  
--	uda1380_write(codec, UDA1380_IFACE, iface);
-+	uda1380_write_reg_cache(codec, UDA1380_IFACE, iface);
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C && SPI_MASTER
++	depends on SND_SOC_SAMSUNG && I2C && SPI_MASTER
++	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8996
+ 	select SND_SOC_WM9081
+@@ -183,13 +184,15 @@ config SND_SOC_SPEYSIDE
  
- 	return 0;
- }
+ config SND_SOC_TOBERMORY
+ 	tristate "Audio support for Wolfson Tobermory"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && INPUT && I2C
++	depends on SND_SOC_SAMSUNG && INPUT && I2C
++	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8962
+ 
+ config SND_SOC_BELLS
+ 	tristate "Audio support for Wolfson Bells"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && MFD_ARIZONA && I2C && SPI_MASTER
++	depends on SND_SOC_SAMSUNG && MFD_ARIZONA && I2C && SPI_MASTER
++	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5102
+ 	select SND_SOC_WM5110
+@@ -199,14 +202,16 @@ config SND_SOC_BELLS
+ 
+ config SND_SOC_LOWLAND
+ 	tristate "Audio support for Wolfson Lowland"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C
++	depends on SND_SOC_SAMSUNG && I2C
++	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM5100
+ 	select SND_SOC_WM9081
+ 
+ config SND_SOC_LITTLEMILL
+ 	tristate "Audio support for Wolfson Littlemill"
+-	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410 && I2C
++	depends on SND_SOC_SAMSUNG && I2C
++	depends on MACH_WLF_CRAGG_6410 || COMPILE_TEST
+ 	select SND_SAMSUNG_I2S
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
 -- 
-2.3.5
+1.8.0
