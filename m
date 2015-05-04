@@ -1,64 +1,70 @@
-From: Arijit De <arijit.de@geosemi.com>
-Subject: stereo uac device control over mixer
-Date: Mon, 4 May 2015 08:34:16 +0000
-Message-ID: <1430728456157.40941@geosemi.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 3/8] mfd: arizona: Add support for WM8998 and WM1814
+Date: Mon, 4 May 2015 10:11:19 +0100
+Message-ID: <20150504091119.GA32076@opensource.wolfsonmicro.com>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com> <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com> <1430560731.2187.70.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay05.mycloudmailbox.com (relay05.mycloudmailbox.com
- [199.244.76.202])
- by alsa0.perex.cz (Postfix) with ESMTP id 7396E260469
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 10:34:18 +0200 (CEST)
-Received: from S05-MBX02-11.S05.local (unknown [10.30.33.82])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by relay05.mycloudmailbox.com (Postfix) with ESMTPS id 3lgHXl60wfzVfhZ
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 04:34:15 -0400 (EDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1430560731.2187.70.camel@x220>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, May 02, 2015 at 11:58:51AM +0200, Paul Bolle wrote:
+> Something I didn't notice when v2 came along.
+> 
+> On Fri, 2015-05-01 at 16:15 +0100, Richard Fitzgerald wrote:
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> 
+> > +config MFD_WM8998
+> > +	bool "Wolfson Microelectronics WM8998"
+> > +	depends on MFD_ARIZONA
+> > +	help
+> > +	  Support for Wolfson Microelectronics WM8998 low power audio SoC
+> > +
+> >  config MFD_WM8400
+> >  	bool "Wolfson Microelectronics WM8400"
+> >  	select MFD_CORE
+> 
+> > --- a/drivers/mfd/Makefile
+> > +++ b/drivers/mfd/Makefile
+> 
+> >  ifneq ($(CONFIG_MFD_WM8997),n)
+> >  obj-$(CONFIG_MFD_ARIZONA)	+= wm8997-tables.o
+> >  endif
+> > +ifneq ($(CONFIG_MFD_WM8998),n)
+> > +obj-$(CONFIG_MFD_ARIZONA)	+= wm8998-tables.o
+> > +endif
+> 
+> Playing a bit with the current version of drivers/mfd/Makefile it seems
+> these
+>     ifneq ($(CONFIG_MFD_WM[...]),n)
+> 
+> tests will always be true. Because, as far as I know, the Kconfig macros
+> used in those tests will either be "y" or the empty string, but never
+> "n". (I don't speak Makefilese fluent enough to know how to add simple
+> debugging prints for the values of the CONFIG_MFD_WM[...] macros to
+> actually test this, so correct me if I'm wrong here.)
 
-I am working on a USB audio MIC device(capture device),
-implemented UAC1.0 spec inside the firmware for that,
-my device is a stereo uac capture? device.
-I am trying to enable left and write channel separate control(volume, mute etc.) over mixer interface.
+Yes, I've noticed that these tests are wrong and I'm working on a patch for
+it. It's another one of those cases where more lines needs patching to fix
+it than the 3 lines this WM8998 patch adds, and also fixing it potentially
+breaks the build because of dependencies that were accidentally working
+because they never got compiled out. So I'd prefer not to half-fix it in
+these WM8998 patches it's better to let the code settle and then fix it properly.
 
-my understanding about how to enable channel specific control is
-in UAC Feature Unit Descriptor
-if I add bmaControls(0) and bmaControls(1) with correct bitmap for Mute & Volume support
-amixer is able to identify my device as a two MIC device,
-
-amixer output for my usb audio capture device
-**********************************
-Simple mixer control 'Mic',0
-  Capabilities: cvolumecaps joined 780
- cvolume-joined cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 15
-  Mono: Capture 9 [60%] [27.00dB] [on]
-Simple mixer control 'Mic',1
-  Capabilities: cvolumecaps joined 780
- cvolume-joined cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 15
-  Mono: Capture 9 [60%] [27.00dB] [on]
-**********************************
-
-is the correct way of achieving it
-OR
-ideally there should be a single Mic with "Front Left - Front Right" support ?
-
-Thanks
-Arijit
+> 
+> So I think that, effectively, these wm[...]-tables.o objects will always
+> be built if CONFIG_MFD_ARIZONA is set. Is that the intention? If not,
+> perhaps these test should read
+>     ifeq ($(CONFIG_MFD_WM[...]),y)
+> 
+> Thanks,
+> 
+> 
+> Paul Bolle
+> 
