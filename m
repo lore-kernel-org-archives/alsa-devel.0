@@ -1,18 +1,14 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: [RFC PATCH] ASoC: wm8741: Add differential mono
- mode support
-Date: Mon, 04 May 2015 21:03:56 +0200
-Message-ID: <5547C29C.9020905@gmx.de>
-References: <1430504037-7170-1-git-send-email-ce3a@gmx.de>
- <20150504112537.GA15510@sirena.org.uk>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: Intel: Fixed kbuild warnings
+Date: Mon,  4 May 2015 13:43:47 -0700
+Message-ID: <1430772227-98776-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 71A8B2605A4
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 21:04:04 +0200 (CEST)
-In-Reply-To: <20150504112537.GA15510@sirena.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77948260681
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 22:44:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
+ Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Am 04.05.2015 um 13:25 schrieb Mark Brown:
-> On Fri, May 01, 2015 at 08:13:57PM +0200, Sergej Sawazki wrote:
->
->> +static const struct snd_kcontrol_new wm8741_snd_controls_mono_right[] = {
->> +	SOC_SINGLE_TLV("Fine Playback Volume Right", WM8741_DACRLSB_ATTENUATION,
->> +		1, 255, 1, dac_tlv_fine),
->> +	SOC_SINGLE_TLV("Playback Volume Right", WM8741_DACRMSB_ATTENUATION,
->> +		0, 511, 1, dac_tlv),
->> +};
->
-> Please follow the control naming standard in ControlNames.txt: all
-> volume controls must have Volume as the last word in the name.
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-Thanks for this information. I would suggest "Right Fine Playback
-Volume". Where "Right" is the "CHANNEL" from ControlNames.txt.
-However, there is no "Right" in the "CHANNEL" section.
-What do you think?
+fix following sparse warnings: (new ones prefixed by >>)
 
->>   	.name = "wm8741",
->>   	.playback = {
->>   		.stream_name = "Playback",
->> -		.channels_min = 2,  /* Mono modes not yet supported */
->> +		.channels_min = 1,
->>   		.channels_max = 2,
->
-> This should be varying with the platform data: in the mono modes we
-> can't do stereo and I suspect the stereo modes may have issues with
-> mono.
+>> sound/soc/intel/boards/cht_bsw_max98090_ti.c:168:37: sparse:
+>> incorrect type in argument 2 (different base types)
+   sound/soc/intel/boards/cht_bsw_max98090_ti.c:168:37:    expected
+unsigned int [unsigned] val
+   sound/soc/intel/boards/cht_bsw_max98090_ti.c:168:37:    got
+restricted snd_pcm_format_t [usertype] <noident>
 
-I think this should be always ".channels_min = 2". In "mono mode"
-the DAC plays either the right or the left channel, however the I2S
-signal is expected to be stereo.
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Sergej
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 3c518b1..1be0794 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -163,9 +163,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	channels->min = channels->max = 2;
+ 
+ 	/* set SSP2 to 24-bit */
+-	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+-				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S24_LE);
++	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
