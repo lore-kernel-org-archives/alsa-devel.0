@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/5] ASoC: Correct typo in
-	SOC_VALUE_ENUM_SINGLE macro
-Date: Mon, 4 May 2015 13:03:41 +0100
-Message-ID: <20150504120341.GI15510@sirena.org.uk>
-References: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
+Date: Mon, 4 May 2015 12:59:07 +0100
+Message-ID: <20150504115907.GG15510@sirena.org.uk>
+References: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
+ <1430389127-24609-4-git-send-email-bardliao@realtek.com>
+ <20150501163247.GC22845@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3743668504688501738=="
+Content-Type: multipart/mixed; boundary="===============0914681792661375746=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 11B33264EF3
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:15 +0200 (CEST)
-In-Reply-To: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DDD4260586
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:24 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3743668504688501738==
+--===============0914681792661375746==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BghK6+krpKHjj+jk"
+	protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
 Content-Disposition: inline
 
 
---BghK6+krpKHjj+jk
+--UKNXkkdQCYZ6W5l3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 01, 2015 at 12:37:23PM +0100, Charles Keepax wrote:
+On Mon, May 04, 2015 at 05:21:59AM +0000, Bard Liao wrote:
 
-> Changes since v2:
->  - Use snd_soc_enum_item_to_val to get zero value from mux to account for
->    non-value enums
->  - Improve handling in snd_soc_dapm_put_enum_double of the situation
->    where the register and widget views of the control values don't match
->=20
-> Thanks,
-> Charles
->=20
->  include/sound/soc.h |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+> > > +  Boolean. Indicate if codec IRQ is used or not. It is usually used
+> > > +for JD
+> > > +  and/or headset button detection.
 
-This list of changes doesn't appear to have anything to do with this
-patch?
+> > I'm not sure I understand what this is for?  I'd expect that the interrupt
+> > would be used if specified, though if a GPIO is specified I guess that'd
+> > override it.
 
---BghK6+krpKHjj+jk
+> It is for codec IRQ though it is called en-jd-func. rt5645 IRQ is not
+> for JD only but also other functions (like button detection). Another
+> thing is that a separate CPU pin is used for JD IRQ in some HW
+> design. It means some HW design use their own JD function. That's
+> what hp-det-gpio for.
+
+I'm still not clear here - why is there a need for a separate flag over
+just specifying the additional GPIO/interrupt to use for this function?
+
+--UKNXkkdQCYZ6W5l3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVR2AcAAoJECTWi3JdVIfQLJ8H/3k5rSkHsIrmPScvgiwHTfcA
-trhLH+gdeQxVmvpshtFfubLe6vasg0YsW2K10bKyODVaBi028BiA8GFISISfVQ/B
-TRznqEdlI3RlUVxcJjXn+GG+GnXjofOHis+2IEpoi0MfhwRN1I7YiAqSw+82g1qV
-vATf+LePtnpK0MpCF7BZcEI/XxrcOo/bP7O3sDS7xU6xceas4VUlVlN44v19URsH
-a4FNRS0C1Df5fUx+/wNC16frxoMZthHgep1/dtL1U62gEPEod2Iocrh3oC6rzxjW
-vUYdCDbDgv1CendfNo/2PoXcvAGdv50TRTegpLmyVHNTOKTf4FUAhsCUBIsZ8bU=
-=G27I
+iQEcBAEBCAAGBQJVR18KAAoJECTWi3JdVIfQ69gH/RQmUF+l+QuZliSW6GCTKuRR
+oKScTMWzx+Hff/CmYi8oIsG6l6jc/VPS5nLVZ8rU7GegV/woyZZmW3GsMUaXkFGk
+qSacw8IcBbnovl4tM4ZPYM98zKickQLztRDPSyOYJ5Nw8AnXJdaxk2Eqcb72frLr
+p5cyP6BnXa5r/RkCHEE2XoCmf7AOjciaAmOrdY9mkvUYEwtkkNBIwSgKyXh+8c/P
+0WhTdHiuJM4kAoBefwUQgkX3DvjHFQGddrhSdZJKDA4bunYKvHUUtctzK0Ct3vTe
+vub9DXhvWPNu6DOCQhETSYgxtsqqSiPtls80jr+Q6Q5k/M0yzuItkNAkkuXqlAk=
+=RKFH
 -----END PGP SIGNATURE-----
 
---BghK6+krpKHjj+jk--
+--UKNXkkdQCYZ6W5l3--
 
---===============3743668504688501738==
+--===============0914681792661375746==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3743668504688501738==--
+--===============0914681792661375746==--
