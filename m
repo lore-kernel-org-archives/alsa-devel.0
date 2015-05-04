@@ -1,78 +1,93 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
-Date: Mon, 4 May 2015 05:21:59 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
-References: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
- <1430389127-24609-4-git-send-email-bardliao@realtek.com>
- <20150501163247.GC22845@sirena.org.uk>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH V3 1/4] regmap: Use regcache_mark_dirty() to indicate
+ power loss or reset
+Date: Mon, 04 May 2015 08:38:21 +0200
+Message-ID: <554713DD.4020006@metafoo.de>
+References: <1430697619-22773-1-git-send-email-cernekee@chromium.org> <1430697619-22773-2-git-send-email-cernekee@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CE2926044B
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 07:22:09 +0200 (CEST)
-In-Reply-To: <20150501163247.GC22845@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1430697619-22773-2-git-send-email-cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Saturday, May 02, 2015 12:33 AM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
-> Flove; Oder Chiou; John Lin; koro.chen@mediatek.com;
-> yang.a.fang@intel.com; zhengxing@rock-chips.com
-> Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
-> 
-> On Thu, Apr 30, 2015 at 06:18:45PM +0800, Bard Liao wrote:
-> 
-> > +- realtek,dmic-en : Boolean. Indicate DMIC is used.
-> 
-> Why is this in DT as opposed to being configured by the DAPM routing or
-> something - what is the concrete effect of this?  Also...
+On 05/04/2015 02:00 AM, Kevin Cernekee wrote:
+> Existing regmap users call regcache_mark_dirty() as part of the
+> suspend/resume sequence, to tell regcache that non-default values need to
+> be resynced post-resume.  Add an internal "no_sync_defaults" regmap flag
+> to remember this state, so that regcache_sync() can differentiate between
+> these two cases:
+>
+> 1) HW was reset, so any cache values that match map->reg_defaults can be
+> safely skipped.  On some chips there are a lot of registers in the
+> reg_defaults list, so this optimization speeds things up quite a bit.
+>
+> 2) HW was not reset (maybe it was just clock-gated), so if we cached
+> any writes, they should be sent to the hardware regardless of whether
+> they match the HW default.  Currently this will write out all values in
+> the regcache, since we don't maintain per-register dirty bits.
+>
+> Suggested-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Signed-off-by: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+> ---
+>   drivers/base/regmap/internal.h |  3 +++
+>   drivers/base/regmap/regcache.c | 61 ++++++++++++++++++++++++++++--------------
+>   2 files changed, 44 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/base/regmap/internal.h b/drivers/base/regmap/internal.h
+> index a13587b5c2be..b2b2849fc6d3 100644
+> --- a/drivers/base/regmap/internal.h
+> +++ b/drivers/base/regmap/internal.h
+> @@ -131,7 +131,10 @@ struct regmap {
+>   	struct reg_default *reg_defaults;
+>   	const void *reg_defaults_raw;
+>   	void *cache;
+> +	/* if set, the cache contains newer data than the HW */
+>   	u32 cache_dirty;
+> +	/* if set, the HW registers are known to match map->reg_defaults */
+> +	bool no_sync_defaults;
+>
+>   	struct reg_default *patch;
+>   	int patch_regs;
+> diff --git a/drivers/base/regmap/regcache.c b/drivers/base/regmap/regcache.c
+> index 7eb7b3b98794..63af3103d0c6 100644
+> --- a/drivers/base/regmap/regcache.c
+> +++ b/drivers/base/regmap/regcache.c
+> @@ -253,6 +253,9 @@ static int regcache_default_sync(struct regmap *map, unsigned int min,
+>   				 unsigned int max)
+>   {
+>   	unsigned int reg;
+> +	bool no_sync_defaults = map->no_sync_defaults;
+> +
+> +	map->no_sync_defaults = false;
 
-It is for DMIC clock pin configuration. If dmic_en is true, we will
-set the gpio pin to be used as DMIC clock.
+This needs to be done at the end in regcache_sync(), the same place where 
+dirty is set to false.
 
-> 
-> > +- realtek,dmic1-data-pin
-> > +- realtek,dmic2-data-pin
-> > +  Indicate which pin is used for each DMIC.
-> 
-> ...should it be combined with these (eg, if one of these properties is
-> specified should that imply that DMIC is enabled)?  We should also have
-> something saying what the value for these properties is.
+>
+>   	for (reg = min; reg <= max; reg += map->reg_stride) {
+>   		unsigned int val;
+> @@ -266,10 +269,12 @@ static int regcache_default_sync(struct regmap *map, unsigned int min,
+>   		if (ret)
+>   			return ret;
+>
+> -		/* Is this the hardware default?  If so skip. */
+> -		ret = regcache_lookup_reg(map, reg);
+> -		if (ret >= 0 && val == map->reg_defaults[ret].def)
+> -			continue;
+> +		if (no_sync_defaults) {
+> +			/* Is this the hardware default?  If so skip. */
+> +			ret = regcache_lookup_reg(map, reg);
+> +			if (ret >= 0 && val == map->reg_defaults[ret].def)
+> +				continue;
+> +		}
 
-Yes, it can be combined with dmic_en. Also, I will add some descriptions
-for the values.
-
-> 
-> > +- realtek,en-jd-func
-> > +  Boolean. Indicate if codec IRQ is used or not. It is usually used
-> > +for JD
-> > +  and/or headset button detection.
-> 
-> I'm not sure I understand what this is for?  I'd expect that the interrupt
-> would be used if specified, though if a GPIO is specified I guess that'd
-> override it.
-
-It is for codec IRQ though it is called en-jd-func. rt5645 IRQ is not
-for JD only but also other functions (like button detection). Another
-thing is that a separate CPU pin is used for JD IRQ in some HW
-design. It means some HW design use their own JD function. That's
-what hp-det-gpio for.
-
-> 
-> ------Please consider the environment before printing this e-mail.
+This should go into a helper function regacache_reg_needs_sync() so it can 
+be reused at the other places where the same logic is needed.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
