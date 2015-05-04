@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: Intel: Add support max98090
-	in sst driver
-Date: Mon, 4 May 2015 13:16:29 +0100
-Message-ID: <20150504121629.GN15510@sirena.org.uk>
-References: <1430358238-74659-2-git-send-email-yang.a.fang@intel.com>
- <1430505723-75442-1-git-send-email-yang.a.fang@intel.com>
+Subject: Re: [PATCH v3 3/5] ASoC: dapm: Append "Autodisable" to
+ autodisable widget names
+Date: Mon, 4 May 2015 13:04:41 +0100
+Message-ID: <20150504120441.GK15510@sirena.org.uk>
+References: <1430480247-28753-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1430480247-28753-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8948536435075215826=="
+Content-Type: multipart/mixed; boundary="===============6808851017020338804=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2B672605BB
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:29 +0200 (CEST)
-In-Reply-To: <1430505723-75442-1-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C2BDC261740
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:31 +0200 (CEST)
+In-Reply-To: <1430480247-28753-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, praveen.diwakar@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8948536435075215826==
+--===============6808851017020338804==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+cfQkLQGU7KOA/8T"
+	protocol="application/pgp-signature"; boundary="LQ77YLfPrO/qF/pM"
 Content-Disposition: inline
 
 
---+cfQkLQGU7KOA/8T
+--LQ77YLfPrO/qF/pM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 01, 2015 at 11:42:02AM -0700, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> Added entry in sst driver to support max98090 codec
-> for intel Braswell platform.
+On Fri, May 01, 2015 at 12:37:25PM +0100, Charles Keepax wrote:
+> This makes it a little easier to follow what is happening in debugfs.
+> Additionally is also useful in facilitating work to add autodisable
+> muxes because the control name is already used for the mux widget and
+> thus shouldn't be reused for the autodisable widget.
 
 Applied, thanks.
 
---+cfQkLQGU7KOA/8T
+--LQ77YLfPrO/qF/pM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVR2McAAoJECTWi3JdVIfQyHkH/3U6EOGpi2KVsO89iipY9L6q
-G2KtTiUeH9hzUf5vMi2pZuZHFQXI2QPhPyhS25I2V9EW6fb2e26cQ1XJ0ztpnKTD
-acDRdSu/PKX1kiAwMHfrd1EL/veYwDgXqVj18RsLXlUErpTtEkrYwJHyJpt+PgN5
-StJccVm8nkXL6LyaAYb9kd2aE5FZP+1zVPZMIHr+iT1XiL4hsG1vR3rFncqedp78
-KP2G1/dx40rBiAcV6dwRnYqOvXUZuhBkg5wKBdIPmHopw5IFB/4wfcAxt5PsiilT
-aLluihYmbWjmxCD8NC1OuO5eEjBqIfhAY+4ZaFcfLsU3dq5IRDHd0YHzSogpRBs=
-=QAmM
+iQEcBAEBCAAGBQJVR2BYAAoJECTWi3JdVIfQBhMH/1n66BFBMVV7Q/c3Ybu+aZNc
+woJx0i2SbpJbrW+QuE9JyoMdsDxf93h2GrK67cgo/4MmAO0vy1TTNsGFn1WZAjxA
+trSmLGMfK1+l4IF6FjwPYlWu8oOIc7e7DmUjg05BEez3yzzsPhsD1DNY3d3Xujep
+oZGyH+MFbHO3qgDr0IJK8TfhJfJiFsWfXZAarb/7XViM+bfw05mRmTaoy5J0F+FP
+8/IANHFeBkv6U85iwda4Pkqu+MPttN3cqTtqm5dvYRskVnFWae1oNi+bA6/tUpUS
+woU5p3osX8W63m9MSz/4xG2zw3j8FXgtYVxVwA/06+On072mzhKxrcCdHrUpjWE=
+=wp+d
 -----END PGP SIGNATURE-----
 
---+cfQkLQGU7KOA/8T--
+--LQ77YLfPrO/qF/pM--
 
---===============8948536435075215826==
+--===============6808851017020338804==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8948536435075215826==--
+--===============6808851017020338804==--
