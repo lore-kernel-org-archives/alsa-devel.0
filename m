@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/7] ASoC: ssm2602: Replace direct
+Subject: [PATCH 7/7] ASoC: ssm4567: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  4 May 2015 18:46:13 +0200
-Message-ID: <1430757974-7432-6-git-send-email-lars@metafoo.de>
+Date: Mon,  4 May 2015 18:46:14 +0200
+Message-ID: <1430757974-7432-7-git-send-email-lars@metafoo.de>
 References: <1430757974-7432-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
  [212.40.185.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 508562606A3
+ by alsa0.perex.cz (Postfix) with ESMTP id BC7222606D9
  for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 18:46:23 +0200 (CEST)
 In-Reply-To: <1430757974-7432-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,35 +28,25 @@ List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
 removed, in preparation for this replace all manual access to
-codec->dapm with snd_soc_codec_get_dapm().
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ssm2602.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ssm4567.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 296a140..69a773a 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -523,8 +523,8 @@ static int ssm2602_resume(struct snd_soc_codec *codec)
- 
- static int ssm2602_codec_probe(struct snd_soc_codec *codec)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret;
- 
- 	regmap_update_bits(ssm2602->regmap, SSM2602_LOUT1V,
-@@ -548,7 +548,7 @@ static int ssm2602_codec_probe(struct snd_soc_codec *codec)
- 
- static int ssm2604_codec_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	int ret;
- 
- 	ret = snd_soc_dapm_new_controls(dapm, ssm2604_dapm_widgets,
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 643bcff..938d2cb 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -353,7 +353,7 @@ static int ssm4567_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
+ 			ret = ssm4567_set_power(ssm4567, true);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
 -- 
 1.8.0
