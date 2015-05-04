@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: ad1836: Replace direct
- snd_soc_codec dapm field access
-Date: Mon, 4 May 2015 18:44:46 +0100
-Message-ID: <20150504174446.GV22845@sirena.org.uk>
-References: <1430757974-7432-1-git-send-email-lars@metafoo.de>
+From: Sergej Sawazki <ce3a@gmx.de>
+Subject: Re: [RFC PATCH] ASoC: wm8741: Add differential mono
+ mode support
+Date: Mon, 04 May 2015 21:03:56 +0200
+Message-ID: <5547C29C.9020905@gmx.de>
+References: <1430504037-7170-1-git-send-email-ce3a@gmx.de>
+ <20150504112537.GA15510@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3708539075443521033=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FE4E260617
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 19:44:55 +0200 (CEST)
-In-Reply-To: <1430757974-7432-1-git-send-email-lars@metafoo.de>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71A8B2605A4
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 21:04:04 +0200 (CEST)
+In-Reply-To: <20150504112537.GA15510@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Am 04.05.2015 um 13:25 schrieb Mark Brown:
+> On Fri, May 01, 2015 at 08:13:57PM +0200, Sergej Sawazki wrote:
+>
+>> +static const struct snd_kcontrol_new wm8741_snd_controls_mono_right[] = {
+>> +	SOC_SINGLE_TLV("Fine Playback Volume Right", WM8741_DACRLSB_ATTENUATION,
+>> +		1, 255, 1, dac_tlv_fine),
+>> +	SOC_SINGLE_TLV("Playback Volume Right", WM8741_DACRMSB_ATTENUATION,
+>> +		0, 511, 1, dac_tlv),
+>> +};
+>
+> Please follow the control naming standard in ControlNames.txt: all
+> volume controls must have Volume as the last word in the name.
 
---===============3708539075443521033==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ghitYs98853OZ3zU"
-Content-Disposition: inline
+Thanks for this information. I would suggest "Right Fine Playback
+Volume". Where "Right" is the "CHANNEL" from ControlNames.txt.
+However, there is no "Right" in the "CHANNEL" section.
+What do you think?
 
+>>   	.name = "wm8741",
+>>   	.playback = {
+>>   		.stream_name = "Playback",
+>> -		.channels_min = 2,  /* Mono modes not yet supported */
+>> +		.channels_min = 1,
+>>   		.channels_max = 2,
+>
+> This should be varying with the platform data: in the mono modes we
+> can't do stereo and I suspect the stereo modes may have issues with
+> mono.
 
---ghitYs98853OZ3zU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think this should be always ".channels_min = 2". In "mono mode"
+the DAC plays either the right or the left channel, however the I2S
+signal is expected to be stereo.
 
-On Mon, May 04, 2015 at 06:46:08PM +0200, Lars-Peter Clausen wrote:
-> The dapm field of the snd_soc_codec struct is eventually going to be
-> removed, in preparation for this replace all manual access to
-> codec->dapm with snd_soc_codec_get_dapm().
-
-Applied all, thanks.
-
---ghitYs98853OZ3zU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVR7AOAAoJECTWi3JdVIfQBy8H/1YA0WKIxeWGbxo22IP+jmVx
-nzPeigi5869HM8KNJxdORMg02Ppsdw3i5QUomOd1trvUgtzRIFrBNJBeWDvugi4E
-T93+cam7BrSjbW+Tu/W/OqsmwMlzTjsAD896ig8nSwwGalAakRvRzR+1HFtNbH9P
-VZ4Y68wvLNRLtVoyAMb8FzNjWsJF3eEkkY1FDPGBX2BvXmfLNg1EQ4vDY/CeceRc
-vf+Gjy6JQsiHkIfrcIgzXxElGySVvVeCvNSZsx3UNCe2Md5lye3lqLktXRMq3uxX
-vLeUPlgSuCbiSWtoWXLx7Av+SgctzHrvVLKHiHhFXoB7q8WftL4yG/MdtBIgJwo=
-=3/U/
------END PGP SIGNATURE-----
-
---ghitYs98853OZ3zU--
-
---===============3708539075443521033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3708539075443521033==--
+Sergej
