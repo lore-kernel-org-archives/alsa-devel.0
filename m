@@ -1,19 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
-Date: Mon, 4 May 2015 12:59:07 +0100
-Message-ID: <20150504115907.GG15510@sirena.org.uk>
-References: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
- <1430389127-24609-4-git-send-email-bardliao@realtek.com>
- <20150501163247.GC22845@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
+ mute LED non-workingness
+Date: Mon, 04 May 2015 10:16:21 -0300
+Message-ID: <1430745381.1616962.262389473.6ABEC97F@webmail.messagingengine.com>
+References: <20150426152012.GE550@huh.zplane.com>
+ <s5hvbgiho2o.wl-tiwai@suse.de>
+ <CAN8cciZQBRz2Ty3YRt2+3KO9v1BWef-_8FU_d_SsE87mLdgY-w@mail.gmail.com>
+ <s5hh9s2gj45.wl-tiwai@suse.de> <20150427135859.GI550@huh.zplane.com>
+ <s5ha8xt4hsa.wl-tiwai@suse.de> <20150428000206.GK550@huh.zplane.com>
+ <CAN8ccibSH6je=OpX6vOTG9PzETxikmpuX+7PDgiYNrsG+YavNw@mail.gmail.com>
+ <20150502160003.GA557@huh.zplane.com>
+ <1430735828.1027589.262340817.33A79FB3@webmail.messagingengine.com>
+ <20150504122604.GA577@huh.zplane.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0914681792661375746=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DDD4260586
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:24 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AFEB6261A57
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 15:16:22 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0E9F120C2A
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 09:16:21 -0400 (EDT)
+In-Reply-To: <20150504122604.GA577@huh.zplane.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +32,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
+To: Glenn Golden <gdg@zplane.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Alex Hung <alex.hung@canonical.com>, Raymond Yau <superquad.vortex2@gmail.com>, bruno.mueller@gmail.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, May 4, 2015, at 09:26, Glenn Golden wrote:
+> Henrique de Moraes Holschuh <hmh@hmh.eng.br> [2015-05-04 07:37:08 -0300]:
+> > On Sat, May 2, 2015, at 13:00, Glenn Golden wrote:
+> > > Henrique: Can you comment on how best to proceed further here? 
+> > >
+> >
+> > Please attach the full acpidump (use a recent enough acpidump utility,
+> > please) to the bugzilla report and reply to this thread after you did so.
+> > Also attach the output of dmidecode.  
+> >
+> 
+> Done:
 
---===============0914681792661375746==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
-Content-Disposition: inline
+Well, your firmware does not have SSMS, at all.  It is not that thinkpad-acpi can't find it due to some change in the acpi core, it simply isn't there to be found.
 
-
---UKNXkkdQCYZ6W5l3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 04, 2015 at 05:21:59AM +0000, Bard Liao wrote:
-
-> > > +  Boolean. Indicate if codec IRQ is used or not. It is usually used
-> > > +for JD
-> > > +  and/or headset button detection.
-
-> > I'm not sure I understand what this is for?  I'd expect that the interrupt
-> > would be used if specified, though if a GPIO is specified I guess that'd
-> > override it.
-
-> It is for codec IRQ though it is called en-jd-func. rt5645 IRQ is not
-> for JD only but also other functions (like button detection). Another
-> thing is that a separate CPU pin is used for JD IRQ in some HW
-> design. It means some HW design use their own JD function. That's
-> what hp-det-gpio for.
-
-I'm still not clear here - why is there a need for a separate flag over
-just specifying the additional GPIO/interrupt to use for this function?
-
---UKNXkkdQCYZ6W5l3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVR18KAAoJECTWi3JdVIfQ69gH/RQmUF+l+QuZliSW6GCTKuRR
-oKScTMWzx+Hff/CmYi8oIsG6l6jc/VPS5nLVZ8rU7GegV/woyZZmW3GsMUaXkFGk
-qSacw8IcBbnovl4tM4ZPYM98zKickQLztRDPSyOYJ5Nw8AnXJdaxk2Eqcb72frLr
-p5cyP6BnXa5r/RkCHEE2XoCmf7AOjciaAmOrdY9mkvUYEwtkkNBIwSgKyXh+8c/P
-0WhTdHiuJM4kAoBefwUQgkX3DvjHFQGddrhSdZJKDA4bunYKvHUUtctzK0Ct3vTe
-vub9DXhvWPNu6DOCQhETSYgxtsqqSiPtls80jr+Q6Q5k/M0yzuItkNAkkuXqlAk=
-=RKFH
------END PGP SIGNATURE-----
-
---UKNXkkdQCYZ6W5l3--
-
---===============0914681792661375746==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0914681792661375746==--
+-- 
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
