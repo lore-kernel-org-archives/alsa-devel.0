@@ -1,70 +1,52 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 3/8] mfd: arizona: Add support for WM8998 and WM1814
-Date: Mon, 4 May 2015 10:11:19 +0100
-Message-ID: <20150504091119.GA32076@opensource.wolfsonmicro.com>
-References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com> <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com> <1430560731.2187.70.camel@x220>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: da7210: Fix dependency to allow build
+ with SND_SOC_I2C_AND_SPI
+Date: Mon, 04 May 2015 17:28:02 +0800
+Message-ID: <1430731682.32362.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1430560731.2187.70.camel@x220>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f178.google.com (mail-pd0-f178.google.com
+ [209.85.192.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0569F2604B1
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 11:28:11 +0200 (CEST)
+Received: by pdbqd1 with SMTP id qd1so158328532pdb.2
+ for <alsa-devel@alsa-project.org>; Mon, 04 May 2015 02:28:08 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Dajun Chen <dchen@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, Ashish Chavan <ashish.chavan@kpitcummins.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 02, 2015 at 11:58:51AM +0200, Paul Bolle wrote:
-> Something I didn't notice when v2 came along.
-> 
-> On Fri, 2015-05-01 at 16:15 +0100, Richard Fitzgerald wrote:
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> 
-> > +config MFD_WM8998
-> > +	bool "Wolfson Microelectronics WM8998"
-> > +	depends on MFD_ARIZONA
-> > +	help
-> > +	  Support for Wolfson Microelectronics WM8998 low power audio SoC
-> > +
-> >  config MFD_WM8400
-> >  	bool "Wolfson Microelectronics WM8400"
-> >  	select MFD_CORE
-> 
-> > --- a/drivers/mfd/Makefile
-> > +++ b/drivers/mfd/Makefile
-> 
-> >  ifneq ($(CONFIG_MFD_WM8997),n)
-> >  obj-$(CONFIG_MFD_ARIZONA)	+= wm8997-tables.o
-> >  endif
-> > +ifneq ($(CONFIG_MFD_WM8998),n)
-> > +obj-$(CONFIG_MFD_ARIZONA)	+= wm8998-tables.o
-> > +endif
-> 
-> Playing a bit with the current version of drivers/mfd/Makefile it seems
-> these
->     ifneq ($(CONFIG_MFD_WM[...]),n)
-> 
-> tests will always be true. Because, as far as I know, the Kconfig macros
-> used in those tests will either be "y" or the empty string, but never
-> "n". (I don't speak Makefilese fluent enough to know how to add simple
-> debugging prints for the values of the CONFIG_MFD_WM[...] macros to
-> actually test this, so correct me if I'm wrong here.)
+Since commit aa0e25caafb7 ("ASoC: da7210: Add support for spi regmap"),
+the da7210 codec driver supports both I2C and SPI buses.
+Thus update the dependency accordingly.
 
-Yes, I've noticed that these tests are wrong and I'm working on a patch for
-it. It's another one of those cases where more lines needs patching to fix
-it than the 3 lines this WM8998 patch adds, and also fixing it potentially
-breaks the build because of dependencies that were accidentally working
-because they never got compiled out. So I'd prefer not to half-fix it in
-these WM8998 patches it's better to let the code settle and then fix it properly.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> So I think that, effectively, these wm[...]-tables.o objects will always
-> be built if CONFIG_MFD_ARIZONA is set. Is that the intention? If not,
-> perhaps these test should read
->     ifeq ($(CONFIG_MFD_WM[...]),y)
-> 
-> Thanks,
-> 
-> 
-> Paul Bolle
-> 
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 061c465..ac84ac4 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -54,7 +54,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_CS4271_SPI if SPI_MASTER
+ 	select SND_SOC_CS42XX8_I2C if I2C
+ 	select SND_SOC_CX20442 if TTY
+-	select SND_SOC_DA7210 if I2C
++	select SND_SOC_DA7210 if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_DA7213 if I2C
+ 	select SND_SOC_DA732X if I2C
+ 	select SND_SOC_DA9055 if I2C
+-- 
+2.1.0
