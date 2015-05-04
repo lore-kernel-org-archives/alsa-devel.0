@@ -1,27 +1,21 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
- mute LED non-workingness
-Date: Mon, 04 May 2015 07:37:08 -0300
-Message-ID: <1430735828.1027589.262340817.33A79FB3@webmail.messagingengine.com>
-References: <20150425013937.GB550@huh.zplane.com>
- <1429974719.3937109.258484493.7D74FAC6@webmail.messagingengine.com>
- <20150426152012.GE550@huh.zplane.com> <s5hvbgiho2o.wl-tiwai@suse.de>
- <CAN8cciZQBRz2Ty3YRt2+3KO9v1BWef-_8FU_d_SsE87mLdgY-w@mail.gmail.com>
- <s5hh9s2gj45.wl-tiwai@suse.de> <20150427135859.GI550@huh.zplane.com>
- <s5ha8xt4hsa.wl-tiwai@suse.de> <20150428000206.GK550@huh.zplane.com>
- <CAN8ccibSH6je=OpX6vOTG9PzETxikmpuX+7PDgiYNrsG+YavNw@mail.gmail.com>
- <20150502160003.GA557@huh.zplane.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH v3 3/8] mfd: arizona: Add support for
+	WM8998 and WM1814
+Date: Mon, 04 May 2015 12:44:14 +0200
+Message-ID: <1430736254.23580.2.camel@tiscali.nl>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1430560731.2187.70.camel@x220>
+ <20150504091119.GA32076@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 7895B2604B8
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 12:37:09 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id 8B27F2081F
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 06:37:08 -0400 (EDT)
-In-Reply-To: <20150502160003.GA557@huh.zplane.com>
+Received: from lb1-smtp-cloud3.xs4all.net (lb1-smtp-cloud3.xs4all.net
+ [194.109.24.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C1F82604B8
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 12:44:18 +0200 (CEST)
+In-Reply-To: <20150504091119.GA32076@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,21 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Glenn Golden <gdg@zplane.com>, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Alex Hung <alex.hung@canonical.com>, bruno.mueller@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, myungjoo.ham@samsung.com, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 2, 2015, at 13:00, Glenn Golden wrote:
-> Henrique: Can you comment on how best to proceed further here? Let me know if
+Richard Fitzgerald schreef op ma 04-05-2015 om 10:11 [+0100]:
+> Yes, I've noticed that these tests are wrong and I'm working on a patch for
+> it.
 
-Please attach the full acpidump (use a recent enough acpidump utility, please) to the bugzilla report and reply to this thread after you did so.  Also attach the output of dmidecode.
+Glad to hear I wasn't misreading that Makefile.
 
-Please make sure to XXXX-out any UUIDs and serial numbers in the dmidecode output before you attach it to the bugzilla report.
+> It's another one of those cases where more lines needs patching to fix
+> it than the 3 lines this WM8998 patch adds, and also fixing it potentially
+> breaks the build because of dependencies that were accidentally working
+> because they never got compiled out. So I'd prefer not to half-fix it in
+> these WM8998 patches it's better to let the code settle and then fix it properly.
 
-That should tell us which interfaces are really available in the ACPI firmware for the laptop, regardless of any possible bugs in thinkpad-acpi.
+I see. Unless that fix takes very long to land, I won't be bothering you
+about this again.
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+Thanks,
+
+
+Paul Bolle
