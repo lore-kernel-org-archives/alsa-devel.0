@@ -1,21 +1,14 @@
-From: "Fang, Yang A" <yang.a.fang@intel.com>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Add Cherrytrail &
- Braswell machine driver cht_bsw_max98090_ti
-Date: Mon, 4 May 2015 14:40:45 +0000
-Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CC9FB2@ORSMSX113.amr.corp.intel.com>
-References: <1430358238-74659-2-git-send-email-yang.a.fang@intel.com>
- <1430505723-75442-1-git-send-email-yang.a.fang@intel.com>
- <1430505723-75442-2-git-send-email-yang.a.fang@intel.com>
- <20150504121749.GO15510@sirena.org.uk>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: [PATCH] ucm: allow multiple devices in JackHWMute
+Date: Mon,  4 May 2015 19:10:38 +0300
+Message-ID: <1430755838-16445-1-git-send-email-tanu.kaskinen@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 39709260565
- for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 16:41:14 +0200 (CEST)
-In-Reply-To: <20150504121749.GO15510@sirena.org.uk>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A7662605B2
+ for <alsa-devel@alsa-project.org>; Mon,  4 May 2015 18:11:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "Diwakar,
- Praveen" <praveen.diwakar@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
- Denny" <denny.iriawan@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+One jack may mute multiple devices, so let's make JackHWMute a list of
+device names instead of just a single device name.
+
+Signed-off-by: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ include/use-case.h | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Monday, May 04, 2015 5:18 AM
-> To: Fang, Yang A
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Koul, Vinod; Diwakar,
-> Praveen; dgreid@chromium.org; kevin.strasser@linux.intel.com; Jain,
-> Praveen K; Iriawan, Denny; Nujella, Sathyanarayana; Sripathi, Srinivas
-> Subject: Re: [PATCH v2 2/2] ASoC: Intel: Add Cherrytrail & Braswell machine
-> driver cht_bsw_max98090_ti
-> 
-> On Fri, May 01, 2015 at 11:42:03AM -0700, yang.a.fang@intel.com wrote:
-> > From: "Fang, Yang A" <yang.a.fang@intel.com>
-> >
-> > Add machine driver for two Intel Cherryview-based platforms,
-> > Cherrytrail and Braswell. This machine driver will support max98090
-> > codec as primary codec. it can also support TI jack detect chip as aux
-> > device if platform supports it.
-> 
-> Applied, thanks - but this seems like it was against something other than
-> mainline since it didn't immediately apply.
+Changes in v2:
+ - Fixed the typo that Arun pointed out.
+ - Send to alsa-devel (v1 was accidentally not sent to the list).
 
-Hi Mark,
-Thanks. yes I posted another intel machine driver https://patchwork.kernel.org/patch/6264231/
-On 4/23 you only applied but still did not published. May I ask again is that patch still in your local?
-Current patch is applied against that machine driver. 
 
-Thanks,
-Yang
-
- 
+diff --git a/include/use-case.h b/include/use-case.h
+index e3308b1..c7789c0 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -311,14 +311,15 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+  *        applications are likely to support only one or the other.
+  *
+  *        If **JackHWMute** is set, it indicates that when the jack is plugged
+- *        in, the hardware automatically mutes some other device. The
+- *        JackHWMute value is the name of the muted device. Note that
+- *        JackHWMute should be used only when the hardware enforces the
+- *        automatic muting. If the hardware doesn't enforce any muting, it may
+- *        still be tempting to set JackHWMute to trick upper software layers to
+- *        e.g. automatically mute speakers when headphones are plugged in, but
+- *        that's application policy configuration that doesn't belong to UCM
+- *        configuration files.
++ *        in, the hardware automatically mutes some other device(s). The
++ *        JackHWMute value is a space-separated list of device names (this
++ *        isn't compatible with device names with spaces in them, so don't use
++ *        such device names!). Note that JackHWMute should be used only when
++ *        the hardware enforces the automatic muting. If the hardware doesn't
++ *        enforce any muting, it may still be tempting to set JackHWMute to
++ *        trick upper software layers to e.g. automatically mute speakers when
++ *        headphones are plugged in, but that's application policy
++ *        configuration that doesn't belong to UCM configuration files.
+  */
+ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+                      const char *identifier,
+-- 
+1.9.3
