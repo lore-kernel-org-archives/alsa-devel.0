@@ -1,21 +1,21 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH] ASoC: Intel: Enabled button jack for BSW
- platform with rt5650 codec
-Date: Tue, 5 May 2015 15:02:01 -0700
-Message-ID: <CAEUnVG7MW4z4kHipcCWEFAvkqFEu42k4ax4+S2YDvexwJjHdPw@mail.gmail.com>
-References: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
- <20150505214902.GG15510@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: zx: Add zx296702 SPDIF support
+Date: Tue, 5 May 2015 23:07:17 +0100
+Message-ID: <20150505220717.GI15510@sirena.org.uk>
+References: <1430366850-10281-1-git-send-email-jun.nie@linaro.org>
+ <1430366850-10281-2-git-send-email-jun.nie@linaro.org>
+ <20150501105503.GT22845@sirena.org.uk>
+ <CABymUCNcD_7fxCh110A-w5=3Lo5Jn2aCHGy3DwLDroZP9oqi4w@mail.gmail.com>
+ <20150504135416.GZ15510@sirena.org.uk>
+ <CABymUCNYZ=ik9Z6zfOXzFN6GyfQ+Z98EArPuG-s1e2S01rvU-w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3383085278784984747=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f51.google.com (mail-vn0-f51.google.com
- [209.85.216.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A26B92604A3
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:02:23 +0200 (CEST)
-Received: by vnbf62 with SMTP id f62so18118813vnb.3
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2015 15:02:22 -0700 (PDT)
-In-Reply-To: <20150505214902.GG15510@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 015212604A3
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:07:31 +0200 (CEST)
+In-Reply-To: <CABymUCNYZ=ik9Z6zfOXzFN6GyfQ+Z98EArPuG-s1e2S01rvU-w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +25,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srinivas.sripathi@intel.com, Yang Fang <yang.a.fang@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>, Denny Iriawan <denny.iriawan@intel.com>, kevin.strasser@linux.intel.com
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, ZTE-LT Mailman List <zte-lt@lists.linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 5, 2015 at 2:49 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, May 04, 2015 at 05:19:20PM -0700, yang.a.fang@intel.com wrote:
->> From: "Fang, Yang A" <yang.a.fang@intel.com>
->>
->> rt5650 codec supports 4 buttons detections so enabled it
->
->> @@ -43,6 +43,7 @@ struct cht_acpi_card {
->>  struct cht_mc_private {
->>       struct snd_soc_jack hp_jack;
->>       struct snd_soc_jack mic_jack;
->> +     struct snd_soc_jack btn_jack;
->>       struct cht_acpi_card *acpi_card;
->
-> This is a bit weird - why are we adding an additional jack here, surely
-> the button is attached to the mic jack here?  The jacks should
-> correspond to the physical jacks on the system rather than the function
-> so that users and applications can tie the jacks that we have in
-> software to those physically on the system.
->
-> Now I'm wondering if the headphone and microphone are expected to be a
-> single jack here?
 
-At least the Chromebook version will have a single combo jack.  I
-would expect there to be a single jack created that reports all of hp,
-mic, and buttons.
+--===============3383085278784984747==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="VxEiC3f0k/7mWchE"
+Content-Disposition: inline
 
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+
+--VxEiC3f0k/7mWchE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 05, 2015 at 09:43:56AM +0800, Jun Nie wrote:
+> 2015-05-04 21:54 GMT+08:00 Mark Brown <broonie@kernel.org>:
+
+> > So this special HDMI S/PDIF controller is directly integrated with the
+> > HDMI IP in the SoC and not usable as a generic S/PDIF controller?  That
+> > seems to mirror system designs which have an external HDMI encoder which
+> > use S/PDIF or I2S to connect the audio portion to an external device.
+
+> The first SPDIF controller on ZTE SOC is dedicated for HDMI and the
+> 2nd one is for external output only via physical pad. The two
+> controller IPs are identical, also independent with each other and
+> HDMI in register address region.
+
+OK, so this does sound like the software should like one of the systems
+with an external HDMI encoder and the HDMI handled separately rather
+than in this driver anyway.
+
+> > I'd suggest for future versions reorganizing things so that you add the
+> > S/PDIF driver with only S/PDIF support and then have a separate patch
+> > that layers on the HDMI support.
+
+> Reasonable suggestion. Then I can have more time to think about HDMI
+> part. More comments is welcome if any.
+
+This sounds like the software should look like a TDA998x (which is
+having patches posted still) so just have the S/PDIF controllers as pure
+S/PDIF controllers and then a separate driver for the HDMI part that
+it's hooked up to which deals with the audio configuration for the HDMI
+side.
+
+--VxEiC3f0k/7mWchE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVST8SAAoJELSic+t+oim9pv0QAJIM+veJVfavK/TOh5Rwh9Wh
+t91JVrNi720MypIR+WL2ch01+ICMfbdRmZ8RA1GrBZUfqR3AAcakg5XSU6O8cw4U
+scKXg4Cyx4I7TrXK0dgPSuOZyOo1oo92rACgQR4fZ6IfK4RrZrqfnQlLOTIJ4GAi
+9tlV9L7iBYKNmDlB3k3SVHrrOn36kQOA6KN08RZs+9GbzcTke/Jxa7eoWcn/CGty
+mOkh65k6Gza4JGliVhDp44p1Rmu3cyUG5pc6p6lW82ABjB4wA3TDZcRcT/bsNQDi
+Hp+HhgQeaZyM3AYki+MFa4g9+UJtlM2WktXFXCK4q5mX42c1u8PfMnjLFutDTxJf
+B/HJQna+bG89gmyH6LjHXpHJAuXjRB8Z7OQ39TTxUuax39psxonnytTrDH98Hk2u
+2Kqoe+O6G8OHC9lFWOjIZHLl49klQFDq3Kj9aF2rLmTrXll2ObRgAuLlWwuy48RJ
+XlchVQ37SRjBOwUxVtNcAI+yQSm3u0SzyjdR6HGBlNrJ6BkXcI1SojXeu+3m7fao
+sgSWOYjpIioaMIGTX6ugbSwuMiLoGe/U+tKVT2dGCK6OHil+e3oKqMbEPa6kg7bi
+RAr6Lvmr+Iht6NnDLlGtzqOHn0uNOkL6Oprgl2ucedJbV+3pzrj20XW21VMC8VUo
+aUOx703L1vwPdVNz/OlV
+=K+0n
+-----END PGP SIGNATURE-----
+
+--VxEiC3f0k/7mWchE--
+
+--===============3383085278784984747==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3383085278784984747==--
