@@ -1,104 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: zx: Add zx296702 SPDIF support
-Date: Tue, 5 May 2015 23:07:17 +0100
-Message-ID: <20150505220717.GI15510@sirena.org.uk>
-References: <1430366850-10281-1-git-send-email-jun.nie@linaro.org>
- <1430366850-10281-2-git-send-email-jun.nie@linaro.org>
- <20150501105503.GT22845@sirena.org.uk>
- <CABymUCNcD_7fxCh110A-w5=3Lo5Jn2aCHGy3DwLDroZP9oqi4w@mail.gmail.com>
- <20150504135416.GZ15510@sirena.org.uk>
- <CABymUCNYZ=ik9Z6zfOXzFN6GyfQ+Z98EArPuG-s1e2S01rvU-w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3383085278784984747=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 015212604A3
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:07:31 +0200 (CEST)
-In-Reply-To: <CABymUCNYZ=ik9Z6zfOXzFN6GyfQ+Z98EArPuG-s1e2S01rvU-w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, ZTE-LT Mailman List <zte-lt@lists.linaro.org>
+From: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: [PATCH V4 1/5] regmap: Add a helper function for regcache sync test
+Date: Tue,  5 May 2015 15:14:13 -0700
+Message-ID: <1430864057-3848-2-git-send-email-cernekee@chromium.org>
+References: <1430864057-3848-1-git-send-email-cernekee@chromium.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1430864057-3848-1-git-send-email-cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, abrestic-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, olofj-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+We're going to add another "does this register need syncing?" check, so
+rather than repeating it in three places, we'll separate all of the
+relevant logic into a helper function.
 
---===============3383085278784984747==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="VxEiC3f0k/7mWchE"
-Content-Disposition: inline
+Signed-off-by: Kevin Cernekee <cernekee-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+---
+ drivers/base/regmap/regcache.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/base/regmap/regcache.c b/drivers/base/regmap/regcache.c
+index 7eb7b3b98794..c58493eaf050 100644
+--- a/drivers/base/regmap/regcache.c
++++ b/drivers/base/regmap/regcache.c
+@@ -249,6 +249,18 @@ int regcache_write(struct regmap *map,
+ 	return 0;
+ }
+ 
++static bool regcache_reg_needs_sync(struct regmap *map, unsigned int reg,
++				    unsigned int val)
++{
++	int ret;
++
++	/* Is this the hardware default?  If so skip. */
++	ret = regcache_lookup_reg(map, reg);
++	if (ret >= 0 && val == map->reg_defaults[ret].def)
++		return false;
++	return true;
++}
++
+ static int regcache_default_sync(struct regmap *map, unsigned int min,
+ 				 unsigned int max)
+ {
+@@ -266,9 +278,7 @@ static int regcache_default_sync(struct regmap *map, unsigned int min,
+ 		if (ret)
+ 			return ret;
+ 
+-		/* Is this the hardware default?  If so skip. */
+-		ret = regcache_lookup_reg(map, reg);
+-		if (ret >= 0 && val == map->reg_defaults[ret].def)
++		if (!regcache_reg_needs_sync(map, reg, val))
+ 			continue;
+ 
+ 		map->cache_bypass = 1;
+@@ -613,10 +623,7 @@ static int regcache_sync_block_single(struct regmap *map, void *block,
+ 			continue;
+ 
+ 		val = regcache_get_val(map, block, i);
+-
+-		/* Is this the hardware default?  If so skip. */
+-		ret = regcache_lookup_reg(map, regtmp);
+-		if (ret >= 0 && val == map->reg_defaults[ret].def)
++		if (!regcache_reg_needs_sync(map, regtmp, val))
+ 			continue;
+ 
+ 		map->cache_bypass = 1;
+@@ -688,10 +695,7 @@ static int regcache_sync_block_raw(struct regmap *map, void *block,
+ 		}
+ 
+ 		val = regcache_get_val(map, block, i);
+-
+-		/* Is this the hardware default?  If so skip. */
+-		ret = regcache_lookup_reg(map, regtmp);
+-		if (ret >= 0 && val == map->reg_defaults[ret].def) {
++		if (!regcache_reg_needs_sync(map, regtmp, val)) {
+ 			ret = regcache_sync_block_raw_flush(map, &data,
+ 							    base, regtmp);
+ 			if (ret != 0)
+-- 
+2.2.0.rc0.207.ga3a616c
 
---VxEiC3f0k/7mWchE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 05, 2015 at 09:43:56AM +0800, Jun Nie wrote:
-> 2015-05-04 21:54 GMT+08:00 Mark Brown <broonie@kernel.org>:
-
-> > So this special HDMI S/PDIF controller is directly integrated with the
-> > HDMI IP in the SoC and not usable as a generic S/PDIF controller?  That
-> > seems to mirror system designs which have an external HDMI encoder which
-> > use S/PDIF or I2S to connect the audio portion to an external device.
-
-> The first SPDIF controller on ZTE SOC is dedicated for HDMI and the
-> 2nd one is for external output only via physical pad. The two
-> controller IPs are identical, also independent with each other and
-> HDMI in register address region.
-
-OK, so this does sound like the software should like one of the systems
-with an external HDMI encoder and the HDMI handled separately rather
-than in this driver anyway.
-
-> > I'd suggest for future versions reorganizing things so that you add the
-> > S/PDIF driver with only S/PDIF support and then have a separate patch
-> > that layers on the HDMI support.
-
-> Reasonable suggestion. Then I can have more time to think about HDMI
-> part. More comments is welcome if any.
-
-This sounds like the software should look like a TDA998x (which is
-having patches posted still) so just have the S/PDIF controllers as pure
-S/PDIF controllers and then a separate driver for the HDMI part that
-it's hooked up to which deals with the audio configuration for the HDMI
-side.
-
---VxEiC3f0k/7mWchE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVST8SAAoJELSic+t+oim9pv0QAJIM+veJVfavK/TOh5Rwh9Wh
-t91JVrNi720MypIR+WL2ch01+ICMfbdRmZ8RA1GrBZUfqR3AAcakg5XSU6O8cw4U
-scKXg4Cyx4I7TrXK0dgPSuOZyOo1oo92rACgQR4fZ6IfK4RrZrqfnQlLOTIJ4GAi
-9tlV9L7iBYKNmDlB3k3SVHrrOn36kQOA6KN08RZs+9GbzcTke/Jxa7eoWcn/CGty
-mOkh65k6Gza4JGliVhDp44p1Rmu3cyUG5pc6p6lW82ABjB4wA3TDZcRcT/bsNQDi
-Hp+HhgQeaZyM3AYki+MFa4g9+UJtlM2WktXFXCK4q5mX42c1u8PfMnjLFutDTxJf
-B/HJQna+bG89gmyH6LjHXpHJAuXjRB8Z7OQ39TTxUuax39psxonnytTrDH98Hk2u
-2Kqoe+O6G8OHC9lFWOjIZHLl49klQFDq3Kj9aF2rLmTrXll2ObRgAuLlWwuy48RJ
-XlchVQ37SRjBOwUxVtNcAI+yQSm3u0SzyjdR6HGBlNrJ6BkXcI1SojXeu+3m7fao
-sgSWOYjpIioaMIGTX6ugbSwuMiLoGe/U+tKVT2dGCK6OHil+e3oKqMbEPa6kg7bi
-RAr6Lvmr+Iht6NnDLlGtzqOHn0uNOkL6Oprgl2ucedJbV+3pzrj20XW21VMC8VUo
-aUOx703L1vwPdVNz/OlV
-=K+0n
------END PGP SIGNATURE-----
-
---VxEiC3f0k/7mWchE--
-
---===============3383085278784984747==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3383085278784984747==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
