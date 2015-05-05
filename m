@@ -1,76 +1,73 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC PATCH 14/14] ASoC: qcom: document apq8016 machine driver
- bindings
-Date: Tue, 05 May 2015 08:17:01 +0100
-Message-ID: <55486E6D.9010402@linaro.org>
-References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <1430414306-11469-1-git-send-email-srinivas.kandagatla@linaro.org> <20150503000307.GG27804@kwestfie-linux.qualcomm.com>
+Subject: Re: [RFC PATCH 03/14] ASoC: qcom: move ipq806x specific bits out
+ of lpass driver.
+Date: Tue, 05 May 2015 08:17:23 +0100
+Message-ID: <55486E83.9030308@linaro.org>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <1430414213-10997-1-git-send-email-srinivas.kandagatla@linaro.org> <20150502235738.GB27804@kwestfie-linux.qualcomm.com> <20150505051913.GA12961@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150503000307.GG27804@kwestfie-linux.qualcomm.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20150505051913.GA12961@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 03/05/15 01:03, Kenneth Westfield wrote:
-> On Thu, Apr 30, 2015 at 06:18:26PM +0100, Srinivas Kandagatla wrote:
->> This patch adds bindings for apq8016 machine driver.
->> On APQ8016 4 MI2S can be configured to different sinks like internal
->> codec/external codec, this connection is controlled via 2 iomux
->> registers.
->>
->> +sound: sound {
->> +	compatible = "qcom,apq8016-sndcard";
->> +	reg = <0x07702000 0x4>, <0x07702004 0x4>;
->> +	reg-names = "mic-iomux", "spkr-iomux";
->> +	qcom,model = "DB410c";
->> +
->> +	/* I2S - Internal codec */
->> +	internal-dai-link@0 {
->> +		cpu { /* PRIMARY */
->> +			sound-dai = <&lpass MI2S_PRIMARY>;
->> +		};
->> +		codec {
->> +			sound-dai = <&wcd_codec 0>;
->> +		};
->> +	};
->> +
->> +	/* External Primary or External Secondary -ADV7533 HDMI */
->> +	external-dai-link@0 {
->> +		external;
->> +		cpu { /* QUAT */
->> +			sound-dai = <&lpass MI2S_QUATERNARY>;
->> +		};
->> +		codec {
->> +			sound-dai = <&adv_bridge 0>;
->> +		};
->> +	};
->> +};
+On 05/05/15 06:19, Kenneth Westfield wrote:
+>>> > >+enum lpaif_i2s_ports {
+>>> > >+	LPAIF_I2S_PORT_MIN		= 0,
+>>> > >+
+>>> > >+	LPAIF_I2S_PORT_CODEC_SPK	= 0,
+>>> > >+	LPAIF_I2S_PORT_CODEC_MIC	= 1,
+>>> > >+	LPAIF_I2S_PORT_SEC_SPK		= 2,
+>>> > >+	LPAIF_I2S_PORT_SEC_MIC		= 3,
+>>> > >+	LPAIF_I2S_PORT_MI2S		= 4,
+>>> > >+
+>>> > >+	LPAIF_I2S_PORT_MAX		= 4,
+>>> > >+	LPAIF_I2S_PORT_NUM		= 5,
+>>> > >+};
+>> >
+>> >These port mappings here...
+>> >
+>>> > >+enum lpaif_irq_ports {
+>>> > >+	LPAIF_IRQ_PORT_MIN		= 0,
+>>> > >+
+>>> > >+	LPAIF_IRQ_PORT_HOST		= 0,
+>>> > >+	LPAIF_IRQ_PORT_ADSP		= 1,
+>>> > >+
+>>> > >+	LPAIF_IRQ_PORT_MAX		= 2,
+>>> > >+	LPAIF_IRQ_PORT_NUM		= 3,
+>>> > >+};
+>> >
+>> >...here...
+>> >
+>>> > >+enum lpaif_dma_channels {
+>>> > >+	LPAIF_RDMA_CHAN_MIN		= 0,
+>>> > >+
+>>> > >+	LPAIF_RDMA_CHAN_MI2S		= 0,
+>>> > >+	LPAIF_RDMA_CHAN_PCM0		= 1,
+>>> > >+	LPAIF_RDMA_CHAN_PCM1		= 2,
+>>> > >+
+>>> > >+	LPAIF_RDMA_CHAN_MAX		= 4,
+>>> > >+	LPAIF_RDMA_CHAN_NUM		= 5,
+>>> > >+};
+>> >
+>> >...and here can be SOC-specific.  Should move them to the SOC-specific
+>> >files.
+> Expanding on this, the I2S port mappings for the APQ8016 should replace
+> the ones defined above with the constants you refer to in
+> dt-bindings/sound/apq8016.h:
+>     MI2S_PRIMARY
+>     MI2S_SECONDARY
+>     etc.
 >
-> OK, although I will need to double-check this with the spec, it seems
-> (from the patches) that there are 4 I2S ports, 2 of which are being
-> used.  Usually, multi-channel audio is sent to the primary dai (which
-> is MI2S), which then gets sent to the other ports by HW.  If that holds
-> true for this SOC, then the external cpu dai should be labelled I2S,
-> not MI2S.  If not, then both should be labelled as I2S (and the DAI
-> channel constraints should be reduced to 1-2).
->
-I have got very limited access to documentation, which obviously does 
-not have any info related to channel capabilities. I was thinking that 
-all the playback ports support multi-channel. I might be wrong though.
+> Maybe defining a corresponding ipq806x.h in the same directory, and
+> moving the above definitions there?
 
-> Looking at patch 12, the internal DAI is labelled Headset and the
-> external DAI is labelled HDMI.
-This naming is very specific to the SBC board.
-
-   I will check the spec to see if the QUAT
-> I2S port can handle multi-channel.
-External HDMI bridge on the other side only supports 2-channels, but if 
-you can re-check on the channel capabilities would be good.
+As you pointed out i2s ports definitions can be moved to 
+dt-bindings/soc/ipq806x.h but the channels can be directly defined in 
+lpass-ipq806x.c as there would be no DT consumers for these defines anyway.
 
 --srini
-
->
