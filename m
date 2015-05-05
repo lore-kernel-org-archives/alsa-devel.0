@@ -1,15 +1,25 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: Intel: Enabled button jack for BSW
-	platform with rt5650 codec
-Date: Mon,  4 May 2015 17:19:20 -0700
-Message-ID: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
+From: gpe <gpe92@free.fr>
+Subject: need information about dapm events,
+	bias and mute management
+Date: Tue, 5 May 2015 02:58:17 +0200
+Message-ID: <20150505025817.08d30abbfa6902ce287ed217@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id AC86D2606D9
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 02:20:02 +0200 (CEST)
+Received: from smtp21.services.sfr.fr (smtp21.services.sfr.fr [93.17.128.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D43D2606E2
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 02:58:18 +0200 (CEST)
+Received: from filter.sfr.fr (localhost [79.82.41.4])
+ by msfrf2104.sfr.fr (SMTP Server) with ESMTP id F3EC97000375
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 02:58:17 +0200 (CEST)
+Received: from reveillon (4.41.82.79.rev.sfr.net [79.82.41.4])	(using TLSv1
+ with cipher AES128-SHA (128/128 bits))	(No client certificate requested)
+ by msfrf2104.sfr.fr (SMTP Server) with ESMTP id DB118700034D
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 02:58:17 +0200 (CEST)
+Received: from localhost ([::1] helo=reveillon.localdomain)	by reveillon
+ with smtp (Exim 4.84)	(envelope-from <gpe92@free.fr>)	id 1YpRBh-0005OT-Fl
+ for alsa-devel@alsa-project.org; Tue, 05 May 2015 02:58:17 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +29,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+Hi,
 
-rt5650 codec supports 4 buttons detections so enabled it
+I'm working on an asoc codec but I'm facing some problems with the DAPM events
+the bias and the mute management.
+The kernel is a 3.4.91.
+Globally my codec is functionnal but I've some glitch.
+By using DAPM events (PRE_PMU, POST_PMU) and bias management I've suppressed
+the glitchs at the start but I've always some glitchs at the end of a playback.
+I'm trying to suppress them with PRE_PMD but it not works.
+When I test my code I see that some power off are done before the call of the
+SND_SOC_DAPM_PRE_PMD event. Is it normal ?
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/boards/cht_bsw_rt5645.c |   23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+Another question is regarding the mute management (snd_soc_dai_digital_mute)
+which is done after all the power off ... I expected it to be done just at
+the end of the playback.
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 8f96c21..1468c3d 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -43,6 +43,7 @@ struct cht_acpi_card {
- struct cht_mc_private {
- 	struct snd_soc_jack hp_jack;
- 	struct snd_soc_jack mic_jack;
-+	struct snd_soc_jack btn_jack;
- 	struct cht_acpi_card *acpi_card;
- };
- 
-@@ -182,6 +183,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-+	struct snd_soc_jack *btn_jack;
- 
- 	/* Select clk_i2s1_asrc as ASRC clock source */
- 	rt5645_sel_asrc_clk_src(codec,
-@@ -214,7 +216,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
--	rt5645_set_jack_detect(codec, &ctx->hp_jack, &ctx->mic_jack, NULL);
-+	if (ctx->acpi_card->codec_type == CODEC_TYPE_RT5650) {
-+
-+		ret = snd_soc_card_jack_new(runtime->card, "Button Jack",
-+						SND_JACK_BTN_0 |
-+						SND_JACK_BTN_1 |
-+						SND_JACK_BTN_2 |
-+						SND_JACK_BTN_3, &ctx->btn_jack,
-+						NULL, 0);
-+		if (ret) {
-+			dev_err(runtime->dev,
-+					"Btn jack creation failed %d\n", ret);
-+			return ret;
-+		}
-+
-+		btn_jack = &ctx->btn_jack;
-+	} else {
-+		btn_jack = NULL;
-+	}
-+
-+	rt5645_set_jack_detect(codec, &ctx->hp_jack, &ctx->mic_jack, btn_jack);
- 
- 	return ret;
- }
+Last question about the bias management (set_bias_level in
+snd_soc_codec_driver). During the start I see the bias level incrementing but
+during the stop there is no action on the bias level. Why ?
+
+Regards.
+
+PS: I'm a newbie on codec development so don't hit to hard on my head if my
+questions are stupid. I've read many docs but I don't found a doc which
+describes the interactions between the APIs.
+PS2: sorry for my bad english.
+
 -- 
-1.7.9.5
++-------+
+| gpe92 |
++-------+
