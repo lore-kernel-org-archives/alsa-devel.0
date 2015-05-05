@@ -1,92 +1,102 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: [RFC PATCH] ASoC: wm8741: Add differential mono
-	mode support
-Date: Tue, 05 May 2015 14:19:38 +0200
-Message-ID: <B33D8E95-F8F9-40B8-B9BC-6AA8734A4838@gmx.de>
-References: <1430504037-7170-1-git-send-email-ce3a@gmx.de>
- <20150504112537.GA15510@sirena.org.uk> <5547C29C.9020905@gmx.de>
- <20150505112239.GD22845@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
- by alsa0.perex.cz (Postfix) with ESMTP id E6EB22614F4
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 14:19:52 +0200 (CEST)
-In-Reply-To: <20150505112239.GD22845@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] ALSA: hda/tegra - Fix oops
+Date: Tue,  5 May 2015 14:45:57 +0200
+Message-ID: <1430829957-1496-1-git-send-email-thierry.reding@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
+Commit a41d122449be ("ALSA: hda - Embed bus into controller object")
+introduced a regression in the Tegra HDA driver that causes the
+following oops during boot:
 
-Am 5. Mai 2015 13:22:39 MESZ, schrieb Mark Brown <broonie@kernel.org>:
->On Mon, May 04, 2015 at 09:03:56PM +0200, Sergej Sawazki wrote:
->> Am 04.05.2015 um 13:25 schrieb Mark Brown:
->> >On Fri, May 01, 2015 at 08:13:57PM +0200, Sergej Sawazki wrote:
->> >
->> >>+static const struct snd_kcontrol_new
->wm8741_snd_controls_mono_right[] = {
->> >>+	SOC_SINGLE_TLV("Fine Playback Volume Right",
->WM8741_DACRLSB_ATTENUATION,
->> >>+		1, 255, 1, dac_tlv_fine),
->> >>+	SOC_SINGLE_TLV("Playback Volume Right",
->WM8741_DACRMSB_ATTENUATION,
->> >>+		0, 511, 1, dac_tlv),
->> >>+};
->
->> >Please follow the control naming standard in ControlNames.txt: all
->> >volume controls must have Volume as the last word in the name.
->
->> Thanks for this information. I would suggest "Right Fine Playback
->> Volume". Where "Right" is the "CHANNEL" from ControlNames.txt.
->> However, there is no "Right" in the "CHANNEL" section.
->> What do you think?
->
->If the device is in a mono mode it shouldn't have Left or Right in the
->control name at all.
+	[    2.333458] Unable to handle kernel NULL pointer dereference at virtual address 000004c4
+	[    2.341537] pgd = c0004000
+	[    2.344312] [000004c4] *pgd=00000000
+	[    2.347898] Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+	[    2.353200] Modules linked in:
+	[    2.356264] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W       4.1.0-rc2-next-20150505-00344-g8577890defbf #79
+	[    2.366682] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+	[    2.372939] task: ee0d8b40 ti: ee0da000 task.ti: ee0da000
+	[    2.378336] PC is at azx_bus_init+0x18/0xf4
+	[    2.382516] LR is at hda_tegra_probe+0x6c/0x478
+	[    2.387043] pc : [<c06156c4>]    lr : [<c061cf00>]    psr: 60000113
+	[    2.387043] sp : ee0dbe38  ip : 00000000  fp : 00000000
+	[    2.398501] r10: ed874c00  r9 : 000000fd  r8 : 00000000
+	[    2.403717] r7 : ed874c10  r6 : 00000000  r5 : 00000000  r4 : ed016810
+	[    2.410232] r3 : c08a2ad4  r2 : c08a1ea0  r1 : 00000000  r0 : ed016810
+	[    2.416750] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+	[    2.424046] Control: 10c5387d  Table: 8000406a  DAC: 00000015
+	[    2.429783] Process swapper/0 (pid: 1, stack limit = 0xee0da210)
+	[    2.435778] Stack: (0xee0dbe38 to 0xee0dc000)
+	[    2.440129] be20:                                                       00000000 ed016810
+	[    2.448297] be40: 00000000 c061cf00 00000000 ee0dbe5c ed8735d0 c0a7bc48 ed02fd50 ed016000
+	[    2.456462] be60: c1250164 ed874c10 c0c66bf8 fffffdfb 00000000 000000fd c0b8dc98 c046664c
+	[    2.464628] be80: c0466608 c1250164 ed874c10 00000000 c0c66bf8 c0464eb4 ed874c10 c0c66bf8
+	[    2.472793] bea0: ed874c44 c0c43458 00000000 c04650d0 00000000 c0c66bf8 c046503c c04633b4
+	[    2.480959] bec0: ee11bea4 ed85f390 c0c66bf8 ed017ac0 00000000 c0464634 c0ab2b7c c0c66bf8
+	[    2.489125] bee0: c0bfde20 c0c66bf8 c0bfde20 ed01ce40 c0b7b414 c04656e8 c04665b0 c0bfde20
+	[    2.497291] bf00: c0bfde20 c0009770 ee0d8b40 c0c02488 60000113 00000000 00000000 00000003
+	[    2.505458] bf20: 00000000 c0c02488 60000113 00000000 c0b54598 c0b16a90 ef7fcc57 c0041228
+	[    2.513624] bf40: c0a9150c ef7fcc5f 00000006 00000006 00000000 c0bf1fa8 c0bf2354 00000006
+	[    2.521790] bf60: c0b8dc90 c0c7c000 c0c7c000 c0b8dc98 00000000 c0b54dd8 00000006 00000006
+	[    2.529956] bf80: c0b54598 00000000 00000000 c07ff08c 00000000 00000000 00000000 00000000
+	[    2.538122] bfa0: 00000000 c07ff094 00000000 c000f5a0 00000000 00000000 00000000 00000000
+	[    2.546286] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+	[    2.554451] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000 fffff7ff c013f264
+	[    2.562624] [<c06156c4>] (azx_bus_init) from [<c061cf00>] (hda_tegra_probe+0x6c/0x478)
+	[    2.570535] [<c061cf00>] (hda_tegra_probe) from [<c046664c>] (platform_drv_probe+0x44/0xa4)
+	[    2.578879] [<c046664c>] (platform_drv_probe) from [<c0464eb4>] (driver_probe_device+0x174/0x2b8)
+	[    2.587739] [<c0464eb4>] (driver_probe_device) from [<c04650d0>] (__driver_attach+0x94/0x98)
+	[    2.596172] [<c04650d0>] (__driver_attach) from [<c04633b4>] (bus_for_each_dev+0x6c/0xa0)
+	[    2.604342] [<c04633b4>] (bus_for_each_dev) from [<c0464634>] (bus_add_driver+0x148/0x1f0)
+	[    2.612597] [<c0464634>] (bus_add_driver) from [<c04656e8>] (driver_register+0x78/0xf8)
+	[    2.620593] [<c04656e8>] (driver_register) from [<c0009770>] (do_one_initcall+0x8c/0x1d4)
+	[    2.628765] [<c0009770>] (do_one_initcall) from [<c0b54dd8>] (kernel_init_freeable+0x144/0x1e4)
+	[    2.637459] [<c0b54dd8>] (kernel_init_freeable) from [<c07ff094>] (kernel_init+0x8/0xe8)
+	[    2.645543] [<c07ff094>] (kernel_init) from [<c000f5a0>] (ret_from_fork+0x14/0x34)
 
-The mono mode of the device should not be confused
-with the ALSA mono mode. If the device is in mono mode
-it either plays the left (mono left mode) or the right (mono
-right mode) channel.
+This is caused by azx_bus_init() trying to dereference chip->card, which
+for the Tegra driver doesn't get initialized until sometime later during
+the call to hda_tegra_create().
 
-My board has two of this DACs (left and right channel). 
-The control names should be different, hence my
-suggestion for the "Left" and "Right" prefixes.
+Fix this by mimicking the behaviour of the Intel driver and defer HDA
+bus initialization until right before the call to snd_device_new().
 
-Another approach would be to say that the machine
-driver is responsible for mixer controls if the devices
-are in mono mode. What do you think?
+Signed-off-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+ sound/pci/hda/hda_tegra.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
->> >>  	.playback = {
->> >>  		.stream_name = "Playback",
->> >>-		.channels_min = 2,  /* Mono modes not yet supported */
->> >>+		.channels_min = 1,
->> >>  		.channels_max = 2,
->
->> >This should be varying with the platform data: in the mono modes we
->> >can't do stereo and I suspect the stereo modes may have issues with
->> >mono.
->
->> I think this should be always ".channels_min = 2". In "mono mode"
->> the DAC plays either the right or the left channel, however the I2S
->> signal is expected to be stereo.
->
->Does the device only do I2S or can it do DSP modes as well (and if it
->does are they OK with an actual mono signal)?
-
-It can do DSP A and B, but they do not support an actual
-mono signal (left + right only).
-
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 801e9fb4a467..db0bb50fa5b9 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -439,6 +439,10 @@ static int hda_tegra_create(struct snd_card *card,
+ 	chip->single_cmd = false;
+ 	chip->snoop = true;
+ 
++	err = azx_bus_init(chip, NULL, &hda_tegra_io_ops);
++	if (err < 0)
++		return err;
++
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Error creating device\n");
+@@ -475,10 +479,6 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	err = azx_bus_init(chip, NULL, &hda_tegra_io_ops);
+-	if (err < 0)
+-		goto out_free;
+-
+ 	err = hda_tegra_create(card, driver_flags, hda);
+ 	if (err < 0)
+ 		goto out_free;
 -- 
-Sergej
+2.3.5
