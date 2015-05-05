@@ -1,58 +1,95 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V4 3/5] ASoC: tas571x: Add DT binding document
-Date: Wed, 6 May 2015 00:01:43 +0100
-Message-ID: <20150505230143.GQ15510@sirena.org.uk>
-References: <1430864057-3848-1-git-send-email-cernekee@chromium.org>
- <1430864057-3848-4-git-send-email-cernekee@chromium.org>
- <20150505223230.GL15510@sirena.org.uk>
- <CAJzqFtaRd7GN6af=7jZSh01mL04XBFYE5cGfHY9V=p7uKFwf_A@mail.gmail.com>
+From: yang.a.fang@intel.com
+Subject: [PATCH v2] ASoC: Intel: Enabled button jack for BSW
+	platform with rt5650 codec
+Date: Tue,  5 May 2015 16:55:34 -0700
+Message-ID: <1430870135-68604-1-git-send-email-yang.a.fang@intel.com>
+References: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oo0YFrdPmwHtbsRF"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJzqFtaRd7GN6af=7jZSh01mL04XBFYE5cGfHY9V=p7uKFwf_A@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kevin Cernekee <cernekee@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 806852604BE
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 01:56:17 +0200 (CEST)
+In-Reply-To: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
+ Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, bardliao@realtek.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
---oo0YFrdPmwHtbsRF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+rt5650 codec supports 4 buttons detections so enabled it
 
-On Tue, May 05, 2015 at 03:56:09PM -0700, Kevin Cernekee wrote:
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/intel/boards/cht_bsw_rt5645.c |   25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-> Note that the regcache changes were intentionally ordered before the
-> tas571x commits, because the regcache changes are needed for the new
-> driver to work correctly.  In the for-next branch I see the tas571x
-> commits, but not the regcache changes.
-
-That's fine, there's no actual code dependency and the regmap git tree
-is separate to the ASoC git tree.  It's not like there's an existing
-driver we'd be breaking the bisection for.
-
---oo0YFrdPmwHtbsRF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVSUvUAAoJELSic+t+oim9xV4P/0CJhgaA9jBugOKHYGEfNuX1
-zshMBE6n3VZ5dxtc3V59PTFn/ZZtmSeDbzrapW2/zB3g+WfKQsclsirrtLTcwEYZ
-LNd2Mw1E/6pZJegq9vjeUXbi5RAbZlrfv3D6VZwaHQLqP8RUsVENdZGtqpFPqHWp
-KQ4SlPOrF1UB3+ohfpbOTNyMziUO67ouC9rP/DmDaiFCppGBjrZmWMSjDadU3TMq
-JI09W2ZLnrnZ58lSQWNIVT+b9ugvNZ/Z/6ZVZA7q57XyikVinJzeV0lcgIbOljFN
-Ysf1sKvPp1nlqQ2S5MirJ6W9G7xwLAaXvCGymmVgT/SI68d9uKKHo7VDUixsZbY0
-XfyspRsMp9e/hqQO6i1z5Q/DT/J43Ji5faiC+DTZ/f3dgcDiPUM8t/qt4f0VxPLg
-QDz/I0hULuWt+OP3Uhj3EqJoUjRNBR1aFEvIsJOZgtdVaKNorew2I+I1AD8ZVkZd
-Gm+aEXU4S3kRMdMeV97s0QupZUd1iQ4pu8HRa+hjaAax8uNo1HYT2QVaFC3W2bqD
-t5s2RdPZqu05VBS4N2OPuWDqlaOp8zKr0MqpC+gvCY/wl+r4IF4L3YiRJ0fjCKqz
-/iwxnHi9d5FvGIj6V/1U9Lumcu8Gyaa+QlG2ebzFE/0R4RcRSquur3pT8FsqrA0I
-PnL5JgR3B1+xmAMXy8zl
-=E7vq
------END PGP SIGNATURE-----
-
---oo0YFrdPmwHtbsRF--
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 8f96c21..bdcaf46 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -41,8 +41,7 @@ struct cht_acpi_card {
+ };
+ 
+ struct cht_mc_private {
+-	struct snd_soc_jack hp_jack;
+-	struct snd_soc_jack mic_jack;
++	struct snd_soc_jack jack;
+ 	struct cht_acpi_card *acpi_card;
+ };
+ 
+@@ -179,6 +178,7 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
++	int jack_type;
+ 	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+@@ -198,23 +198,22 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_card_jack_new(runtime->card, "Headphone Jack",
+-				    SND_JACK_HEADPHONE, &ctx->hp_jack,
+-				    NULL, 0);
+-	if (ret) {
+-		dev_err(runtime->dev, "HP jack creation failed %d\n", ret);
+-		return ret;
+-	}
++	if (ctx->acpi_card->codec_type == CODEC_TYPE_RT5650)
++		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++					SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					SND_JACK_BTN_2 | SND_JACK_BTN_3;
++	else
++		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+ 
+-	ret = snd_soc_card_jack_new(runtime->card, "Mic Jack",
+-				    SND_JACK_MICROPHONE, &ctx->mic_jack,
++	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
++				    jack_type, &ctx->jack,
+ 				    NULL, 0);
+ 	if (ret) {
+-		dev_err(runtime->dev, "Mic jack creation failed %d\n", ret);
++		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	rt5645_set_jack_detect(codec, &ctx->hp_jack, &ctx->mic_jack, NULL);
++	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
+ 
+ 	return ret;
+ }
+-- 
+1.7.9.5
