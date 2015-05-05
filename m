@@ -1,22 +1,19 @@
-From: Dylan Reid <dgreid@chromium.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: Intel: Enabled button jack for BSW
  platform with rt5650 codec
-Date: Tue, 5 May 2015 15:27:33 -0700
-Message-ID: <CAEUnVG5CSbPf7cTmmDmw9CWYRf-vtwvRy3RMAMTMm+9wphZ7fw@mail.gmail.com>
+Date: Tue, 5 May 2015 23:30:28 +0100
+Message-ID: <20150505223028.GK15510@sirena.org.uk>
 References: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
  <20150505214902.GG15510@sirena.org.uk>
  <CAEUnVG7MW4z4kHipcCWEFAvkqFEu42k4ax4+S2YDvexwJjHdPw@mail.gmail.com>
  <20150505221415.GA109322@mocha>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4876765031728197596=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f53.google.com (mail-vn0-f53.google.com
- [209.85.216.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 18810261AA0
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:27:55 +0200 (CEST)
-Received: by vnbg190 with SMTP id g190so18150724vnb.12
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2015 15:27:54 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AD4B2604A7
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:30:34 +0200 (CEST)
 In-Reply-To: <20150505221415.GA109322@mocha>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,75 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Yang Fang <yang.a.fang@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srinivas.sripathi@intel.com, Vinod Koul <vinod.koul@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, Mark Brown <broonie@kernel.org>, "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, srinivas.sripathi@intel.com, Vinod Koul <vinod.koul@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 5, 2015 at 3:14 PM, Yang Fang <yang.a.fang@intel.com> wrote:
-> On Tue, May 05, 2015 at 03:02:01PM -0700, Dylan Reid wrote:
->> On Tue, May 5, 2015 at 2:49 PM, Mark Brown <broonie@kernel.org> wrote:
->> > On Mon, May 04, 2015 at 05:19:20PM -0700, yang.a.fang@intel.com wrote:
->> >> From: "Fang, Yang A" <yang.a.fang@intel.com>
->> >>
->> >> rt5650 codec supports 4 buttons detections so enabled it
->> >
->> >> @@ -43,6 +43,7 @@ struct cht_acpi_card {
->> >>  struct cht_mc_private {
->> >>       struct snd_soc_jack hp_jack;
->> >>       struct snd_soc_jack mic_jack;
->> >> +     struct snd_soc_jack btn_jack;
->> >>       struct cht_acpi_card *acpi_card;
->> >
->> > This is a bit weird - why are we adding an additional jack here, surely
->> > the button is attached to the mic jack here?  The jacks should
->> > correspond to the physical jacks on the system rather than the function
->> > so that users and applications can tie the jacks that we have in
->> > software to those physically on the system.
->> >
->> > Now I'm wondering if the headphone and microphone are expected to be a
->> > single jack here?
->>
->> At least the Chromebook version will have a single combo jack.  I
->> would expect there to be a single jack created that reports all of hp,
->> mic, and buttons.
-> I recalled in Baytrail cras required hp and mic to be separated jack.
-> I beleived it is changed afterwards.
->
+
+--===============4876765031728197596==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="WAAb/gZE1HXiAv4U"
+Content-Disposition: inline
+
+
+--WAAb/gZE1HXiAv4U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 05, 2015 at 03:14:15PM -0700, Yang Fang wrote:
+
 > now rt5645_set_jack_detect in rt5645.c aleady split jack into 3 like
 > below. maybe we need Bard to combine them ?
 
-That would be ideal.  The ts3a227e driver already behaves this.
+It's fine to do that in the CODEC driver and actually good for the
+headphone and microphone - the board can always pass in the same jack
+for all of them but if it does have split headphone and mic jacks then
+it can do that.
 
->
->  int rt5645_set_jack_detect(struct snd_soc_codec *codec,
->      struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack,
->      struct snd_soc_jack *btn_jack)
->  {
->      struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
->
->      rt5645->hp_jack = hp_jack;
->      rt5645->mic_jack = mic_jack;
->      rt5645->btn_jack = btn_jack;
->      if (rt5645->btn_jack && rt5645->codec_type ==
-> CODEC_TYPE_RT5650) {
->          rt5645->en_button_func = true;
->          regmap_update_bits(rt5645->regmap, RT5645_GPIO_CTRL1,
->                  RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
->          regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
->                  RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
->          regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
->                  RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
->      }
->      rt5645_irq_detection(rt5645);
->
->      return 0;
->  }
->
-> Yang
->
->>
->> >
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >
+--WAAb/gZE1HXiAv4U
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVSUSAAAoJELSic+t+oim9HLEP/RnN0y0bB5kUSGImKfp2kazs
+fNhXrrwWBbTFqMcBARt0hINy04GISY2okJlzgzO0bb8jtLKcvSiN01BFsmu2Tx48
+IA3wytRlzZmxx5Y85tR4pPCudfrZM6I0HtuTwLakRroupSKO8Y1DLyKu5m2Mkho+
+YW1ScAuN+H2fkJ0GfMZ+80x0md4yHtvaDyGs5HVgGx2fFYboUCtAKy2sgUsZ5sPA
+k1m8fvgnQICYCy8e0ALV3a/dMaRGkY4iMEsGk6Z8VQ3QL6XXgYBRrwIu7hCZQVpc
+9myv7Rd03nTYQ1/d2m8/VFI2w+0zQcEVfML9puhHBhmWPyPxm5VGP5IJ/LyREHcK
+NWevV546L90Ih6sMOEZDxNA21DLP+4dQO5BHnpHNKex02zvpJ/q1/L+QsQXQ9ivf
+xTSAeeQQv2Ddq+JT7X315R/mS+mqxZLyOtqrWDAevUgS+VhzIwxH++oQMgKmRJzm
+xAw/XMof/k+/n6r470jCGh9cPQqpm/8aLsVnud0Pu54DGWAMFu0nAuj47b2TzC+q
+wP3BZji3V20ejupX2PbLj8kxYJieKckeefRszq2oniJnRiKhn/ionIrYfRZXr5ii
+/MQ+tsJWREdb1nSDrp+d07bfvLFZIp8DDrUtSGDVRlOk5DTP4peG47H16EdSHmXF
+PvUZYnRMusvjUTSapm1y
+=tz7C
+-----END PGP SIGNATURE-----
+
+--WAAb/gZE1HXiAv4U--
+
+--===============4876765031728197596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4876765031728197596==--
