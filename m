@@ -1,67 +1,118 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
-Date: Tue, 5 May 2015 05:59:24 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D701067433@RTITMBSV03.realtek.com.tw>
-References: <1430389127-24609-1-git-send-email-bardliao@realtek.com>
- <1430389127-24609-4-git-send-email-bardliao@realtek.com>
- <20150501163247.GC22845@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D701066F9B@RTITMBSV03.realtek.com.tw>
- <20150504115907.GG15510@sirena.org.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [RFC PATCH 03/14] ASoC: qcom: move ipq806x specific bits out
+ of lpass driver.
+Date: Tue, 05 May 2015 08:16:46 +0100
+Message-ID: <55486E5E.4010601@linaro.org>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <1430414213-10997-1-git-send-email-srinivas.kandagatla@linaro.org> <20150502235738.GB27804@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 646BB2608BB
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 07:59:34 +0200 (CEST)
-In-Reply-To: <20150504115907.GG15510@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20150502235738.GB27804@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Monday, May 04, 2015 7:59 PM
-> To: Bard Liao
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
-> Flove; Oder Chiou; John Lin; koro.chen@mediatek.com;
-> yang.a.fang@intel.com; zhengxing@rock-chips.com
-> Subject: Re: [PATCH 4/6] ASoC: rt5645: add device tree support
-> 
-> On Mon, May 04, 2015 at 05:21:59AM +0000, Bard Liao wrote:
-> 
-> > > > +  Boolean. Indicate if codec IRQ is used or not. It is usually
-> > > > +used for JD
-> > > > +  and/or headset button detection.
-> 
-> > > I'm not sure I understand what this is for?  I'd expect that the
-> > > interrupt would be used if specified, though if a GPIO is specified
-> > > I guess that'd override it.
-> 
-> > It is for codec IRQ though it is called en-jd-func. rt5645 IRQ is not
-> > for JD only but also other functions (like button detection). Another
-> > thing is that a separate CPU pin is used for JD IRQ in some HW design.
-> > It means some HW design use their own JD function. That's what
-> > hp-det-gpio for.
-> 
-> I'm still not clear here - why is there a need for a separate flag over just
-> specifying the additional GPIO/interrupt to use for this function?
 
-Oh, we can assume codec IRQ is used if codec JD or button detection
-function is used. I will send a patch to remove dmic_en and en_jd_func
-in platform data and send the device tree support patch again.
 
-Thanks.
+On 03/05/15 00:57, Kenneth Westfield wrote:
+> On Thu, Apr 30, 2015 at 06:16:53PM +0100, Srinivas Kandagatla wrote:
+>> This patch tries to make the lpass driver more generic by moving the
+>> ipq806x specific bits out of the cpu and platform driver, also allows the
+>> SOC specific drivers to add the correct register offsets.
+>>
+>> This patch also renames the register definition header file into more
+>> generic header file.
+>
+>> diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+>> new file mode 100644
+>> index 0000000..8e9a427
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/lpass-ipq806x.c
+>
+>> +static const struct of_device_id ipq806x_lpass_cpu_device_id[] = {
+>> +	{ .compatible = "qcom,lpass-cpu", .data = &ipq806x_data },
+>> +	{}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, ipq806x_lpass_cpu_device_id);
+>
+> Surround with #ifdef CONFIG_OF?
 
-> 
-> ------Please consider the environment before printing this e-mail.
+I was more of thinking adding "depends OF" in Kconfig.
+Is there any possibility that the driver would support non-DT?
+
+>
+>> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+>> new file mode 100644
+>> index 0000000..5541b14
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
+>
+>> +#define LPAIF_I2SCTL_REG_ADDR(v, addr, port) \
+>> +	(v->i2sctrl_reg_base + (addr) + v->i2sctrl_reg_stride * (port))
+>
+> Could all of these variant-related macros be eliminated by using the
+> regmap_fields_* accessor functions, instead of the regmap_* functions?
+Possible, I will give it a try.
+
+>
+>> +enum lpaif_i2s_ports {
+>> +	LPAIF_I2S_PORT_MIN		= 0,
+>> +
+>> +	LPAIF_I2S_PORT_CODEC_SPK	= 0,
+>> +	LPAIF_I2S_PORT_CODEC_MIC	= 1,
+>> +	LPAIF_I2S_PORT_SEC_SPK		= 2,
+>> +	LPAIF_I2S_PORT_SEC_MIC		= 3,
+>> +	LPAIF_I2S_PORT_MI2S		= 4,
+>> +
+>> +	LPAIF_I2S_PORT_MAX		= 4,
+>> +	LPAIF_I2S_PORT_NUM		= 5,
+>> +};
+>
+> These port mappings here...
+>
+>> +enum lpaif_irq_ports {
+>> +	LPAIF_IRQ_PORT_MIN		= 0,
+>> +
+>> +	LPAIF_IRQ_PORT_HOST		= 0,
+>> +	LPAIF_IRQ_PORT_ADSP		= 1,
+>> +
+>> +	LPAIF_IRQ_PORT_MAX		= 2,
+>> +	LPAIF_IRQ_PORT_NUM		= 3,
+>> +};
+>
+> ...here...
+>
+>> +enum lpaif_dma_channels {
+>> +	LPAIF_RDMA_CHAN_MIN		= 0,
+>> +
+>> +	LPAIF_RDMA_CHAN_MI2S		= 0,
+>> +	LPAIF_RDMA_CHAN_PCM0		= 1,
+>> +	LPAIF_RDMA_CHAN_PCM1		= 2,
+>> +
+>> +	LPAIF_RDMA_CHAN_MAX		= 4,
+>> +	LPAIF_RDMA_CHAN_NUM		= 5,
+>> +};
+>
+> ...and here can be SOC-specific.  Should move them to the SOC-specific
+> files.
+Yes, I agree, i will move them to soc specific header file.
+
+>
+>> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+>> index 5c99b3d..5bd2a90 100644
+>> --- a/sound/soc/qcom/lpass.h
+>> +++ b/sound/soc/qcom/lpass.h
+>
+>>   /* register the platform driver from the CPU DAI driver */
+>>   int asoc_qcom_lpass_platform_register(struct platform_device *);
+>> +int lpass_cpu_platform_remove(struct platform_device *pdev);
+>> +int lpass_cpu_platform_probe(struct platform_device *pdev);
+>> +int lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+>> +extern struct snd_soc_dai_ops lpass_cpu_dai_ops;
+>
+> Prefix with asoc_qcom_ to reduce chance of collisions.
+>
+Sounds sensible, Will fix it in next version.
+
+--srini
