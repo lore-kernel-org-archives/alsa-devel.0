@@ -1,21 +1,18 @@
-From: "Fang, Yang A" <yang.a.fang@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Enabled button jack for BSW
- platform with rt5650 codec
-Date: Tue, 5 May 2015 22:39:27 +0000
-Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CCC12F@ORSMSX113.amr.corp.intel.com>
-References: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
- <20150505214902.GG15510@sirena.org.uk>
- <CAEUnVG7MW4z4kHipcCWEFAvkqFEu42k4ax4+S2YDvexwJjHdPw@mail.gmail.com>
- <20150505221415.GA109322@mocha> <20150505223028.GK15510@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v11 3/3] ASoC: tda998x: add a codec to the
+ HDMI transmitter
+Date: Tue, 5 May 2015 23:40:51 +0100
+Message-ID: <20150505224051.GN15510@sirena.org.uk>
+References: <cover.1430320384.git.moinejf@free.fr>
+ <7fcabac9f60497d80a571b1d3108e454084b95cb.1430320384.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6151523594749515327=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C10D02604A7
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:39:37 +0200 (CEST)
-In-Reply-To: <20150505223028.GK15510@sirena.org.uk>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07BEC2604A7
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:41:16 +0200 (CEST)
+In-Reply-To: <7fcabac9f60497d80a571b1d3108e454084b95cb.1430320384.git.moinejf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain,
- Praveen K" <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "Iriawan, Denny" <denny.iriawan@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>, Bard Liao <bardliao@realtek.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, Dylan Reid <dgreid@chromium.org>
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============6151523594749515327==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/XHXXBvNKG2ATP64"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, May 05, 2015 3:30 PM
-> To: Fang, Yang A
-> Cc: Dylan Reid; alsa-devel@alsa-project.org; Sripathi, Srinivas; Koul, Vinod;
-> Jain, Praveen K; Liam Girdwood; Iriawan, Denny; Nujella, Sathyanarayana;
-> kevin.strasser@linux.intel.com
-> Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: Enabled button jack for BSW
-> platform with rt5650 codec
-> 
-> On Tue, May 05, 2015 at 03:14:15PM -0700, Yang Fang wrote:
-> 
-> > now rt5645_set_jack_detect in rt5645.c aleady split jack into 3 like
-> > below. maybe we need Bard to combine them ?
-> 
-> It's fine to do that in the CODEC driver and actually good for the headphone
-> and microphone - the board can always pass in the same jack for all of them
-> but if it does have split headphone and mic jacks then it can do that.
 
-Thanks. I will post v2 after Bard modifies the api
+--/XHXXBvNKG2ATP64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yang
+On Wed, Apr 29, 2015 at 12:53:53PM +0200, Jean-Francois Moine wrote:
+
+> +/* get the audio capabilities from the EDID */
+> +static void tda998x_get_audio_caps(struct tda998x_priv *priv,
+> +				struct drm_connector *connector)
+> +{
+
+Russell created some generic EDID handling code (sound/core: add DRM ELD
+helper), if at all possible I'd really like to get those patches merged
+and use them rather than have custom code.  If they're not suitable then
+let's understand why.
+
+--/XHXXBvNKG2ATP64
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVSUbvAAoJELSic+t+oim9S5UQAJgJMkiOm2U0scB9CSwMekSF
+n9O37aBh165kGSG8hORa265T0jhu0kXyL/380QnlK5FV2R2qJ3QvXQWLLIkqg6Dw
+zD2Fq4bgtBW6u9e3mviu3wX7BF4XZ+npvnhdMKx30SGJHQF0dn2tqhDTkSmQuwFx
+erDqj7+aqrWJlDA326jot3uuRdXgwwChRJnKAa4pu1sEL4yWLzfRHp+qolkRwLGg
+ZiINJUGXqgWtjQLsf1kPUATiJgEMQe4pqE88AaRmyytBxTHBNSsL+N4b4mQ0j6YU
+7UOwLQi1VQj6orC2yRRnGLA9YBoGELxX8EI/D48xxOyFmPdeBtWic59zy3kDGUJe
+1nJvS3mwqbv9MOOwnIfAd2jXnsP1hISFha3wyrai6AsiRBe8yCIGETOxXZiZ3T+R
+66c+2I+nS2E6fp2m8yLmvWF9v3Cqf8IYjJ/YcxgjUORHT8UtwyQOyMB4EAqobf+q
+Y7tD7blgd0HgFa1ef+Ujtw9iexn6I2tOZ8JEK5aIC3rfxyHyR0jqEF33Ce5odQ9b
+vLH5FCE0iFD2ukd1XPDBQKf9i7NyJo0kQt5PGF7p9gJQyL8+JyUy8aOmJB4zXJlA
+vqaXs/6csDkcahRvyiZxp0b7AAVxZke2r+uwN8uWOEGM4a3NqQ2V8DfADkZr7AZd
+n35+/MRJQJzgTjz0Xu1f
+=6EMF
+-----END PGP SIGNATURE-----
+
+--/XHXXBvNKG2ATP64--
+
+--===============6151523594749515327==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6151523594749515327==--
