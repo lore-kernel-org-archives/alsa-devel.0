@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Tue, 5 May 2015 23:35:42 +0100
-Message-ID: <20150505223542.GM15510@sirena.org.uk>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
- <s5ha8ymy3e2.wl-tiwai@suse.de>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Enabled button jack for BSW
+ platform with rt5650 codec
+Date: Tue, 5 May 2015 22:39:27 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CCC12F@ORSMSX113.amr.corp.intel.com>
+References: <1430785160-72477-1-git-send-email-yang.a.fang@intel.com>
+ <20150505214902.GG15510@sirena.org.uk>
+ <CAEUnVG7MW4z4kHipcCWEFAvkqFEu42k4ax4+S2YDvexwJjHdPw@mail.gmail.com>
+ <20150505221415.GA109322@mocha> <20150505223028.GK15510@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6984251981839207103=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DEFAA2604A7
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:36:07 +0200 (CEST)
-In-Reply-To: <s5ha8ymy3e2.wl-tiwai@suse.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C10D02604A7
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 00:39:37 +0200 (CEST)
+In-Reply-To: <20150505223028.GK15510@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain,
+ Praveen K" <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, "Iriawan, Denny" <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, Bard Liao <bardliao@realtek.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6984251981839207103==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MhZKc0eW5aU1X1vX"
-Content-Disposition: inline
 
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, May 05, 2015 3:30 PM
+> To: Fang, Yang A
+> Cc: Dylan Reid; alsa-devel@alsa-project.org; Sripathi, Srinivas; Koul, Vinod;
+> Jain, Praveen K; Liam Girdwood; Iriawan, Denny; Nujella, Sathyanarayana;
+> kevin.strasser@linux.intel.com
+> Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: Enabled button jack for BSW
+> platform with rt5650 codec
+> 
+> On Tue, May 05, 2015 at 03:14:15PM -0700, Yang Fang wrote:
+> 
+> > now rt5645_set_jack_detect in rt5645.c aleady split jack into 3 like
+> > below. maybe we need Bard to combine them ?
+> 
+> It's fine to do that in the CODEC driver and actually good for the headphone
+> and microphone - the board can always pass in the same jack for all of them
+> but if it does have split headphone and mic jacks then it can do that.
 
---MhZKc0eW5aU1X1vX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks. I will post v2 after Bard modifies the api
 
-On Sun, Apr 05, 2015 at 05:57:09PM +0200, Takashi Iwai wrote:
-> At Thu, 02 Apr 2015 10:22:06 +0100,
-> Russell King wrote:
-
-> > +config SND_PCM_ELD
-> > +	bool
-
-> I don't mind much adding this one, but a new Kconfig is always a
-> question.  I'd like to hear other's opinion, too.
-
-One point in favour of this is that there's been some discussion
-recently of IoT applications with very low resource requirements that
-might need audion functionality so it's likely that people will be
-taking a look at trying to minimize code size for the audio stack.  This
-sort of configurability may well be useful for such applications.
-
---MhZKc0eW5aU1X1vX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVSUW7AAoJELSic+t+oim9OogP/AmLnCC2rNWaXC3VsS/TqhGf
-1qE9jn8Y4ZLAaBmJtqHOHOLUojEdhPcleUXyJLEn08ILFcdYd+0Djf/9hv7pJx7t
-5fHYCO0oBVWcEJ89XTLrMrRSTpbxhdRBauLsz7VYhA4tLzcWPec3PBhNc06+4vd9
-ckN/pnje9HT3d+XC9YdCPzg19wpNvmPr+3w/ZfXoVVBdJi0EpW6FYObtdj0NMFV0
-co5S+boFnefwHk2/Fm3i5DD/Qc/EMykE+9m8p0dVJY9iwsInXJTIRI24oOPykB/N
-wW4kOR06da5ADiwXEUuvkENW82bj9o2zls78xm2ydkISauJYRbytBpZD2xwoBKYn
-qWGK6gGl6coqGtBu102L8qcoB/d8UXvvEqcxL6SREecrZSRayYvX14I+V3edBDYN
-zfv/VQyVI6oiGBEtKak2MR6ol56ySBPNI0MFch90/8dMEogpPAdG08vBhhHq7vpX
-IpLMb6AWcu9yQAPDCbxSP78ObnF2QUOlXzXtZ7ecIaeZpYh45LyNBBG32ITwgNU9
-3ar0fkYM+M02P+a/GbpZgySIKpVVuInKwL1Hfvb7SpXByV1/n96oA/M+RiSVD/X4
-8NCur2O/9XCPFRVkDWXiOJ394PJIRgsrTGql11aw9lOfmzSOp/dSezryObw2G9xV
-Ntd3Y3xnmv+f1Gz1QShe
-=Mf5c
------END PGP SIGNATURE-----
-
---MhZKc0eW5aU1X1vX--
-
---===============6984251981839207103==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6984251981839207103==--
+Yang
