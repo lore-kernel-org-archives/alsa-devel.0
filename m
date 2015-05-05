@@ -1,21 +1,17 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: [RFC PATCH] ASoC: wm8741: Add differential mono
-	mode support
-Date: Tue, 05 May 2015 16:07:09 +0200
-Message-ID: <EABFA35E-4B67-4CA9-8C48-95203DEAA582@gmx.de>
-References: <1430504037-7170-1-git-send-email-ce3a@gmx.de>
- <20150504112537.GA15510@sirena.org.uk> <5547C29C.9020905@gmx.de>
- <20150505112239.GD22845@sirena.org.uk>
- <B33D8E95-F8F9-40B8-B9BC-6AA8734A4838@gmx.de>
- <20150505135731.GF22845@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
+Date: Tue, 05 May 2015 15:45:58 +0100
+Message-ID: <1430837158.8043.61.camel@loki>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-3-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 615FF2619F0
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 16:07:16 +0200 (CEST)
-In-Reply-To: <20150505135731.GF22845@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA91F261736
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 16:46:04 +0200 (CEST)
+In-Reply-To: <1430833322-13531-3-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,32 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>
-Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2015-05-05 at 21:42 +0800, Bard Liao wrote:
+> Modify the RT5645 driver to parse platform data from device tree.
+> Write a DT binding document to describe those properties.
+> 
+> Signed-off-by: Bard Liao <bardliao@realtek.com>
+> ---
+>  Documentation/devicetree/bindings/sound/rt5645.txt | 72 ++++++++++++++++++++++
+>  sound/soc/codecs/rt5645.c                          | 35 +++++++++++
+>  2 files changed, 107 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rt5645.txt
+> 
 
+> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+> index e435680..36e22b6 100644
+> --- a/sound/soc/codecs/rt5645.c
+> +++ b/sound/soc/codecs/rt5645.c
+> @@ -3134,6 +3134,37 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
+>  	{ }
+>  };
+>  
+> +static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device_node *np)
+> +{
+> +	rt5645->pdata.in2_diff = of_property_read_bool(np,
+> +		"realtek,in2-differential");
+> +	of_property_read_u32(np,
+> +		"realtek,dmic1-data-pin", &rt5645->pdata.dmic1_data_pin);
 
-Am 5. Mai 2015 15:57:31 MESZ, schrieb Mark Brown <broonie@kernel.org>:
->On Tue, May 05, 2015 at 02:19:38PM +0200, Sergej Sawazki wrote:
->
->> The mono mode of the device should not be confused
->> with the ALSA mono mode. If the device is in mono mode
->> it either plays the left (mono left mode) or the right (mono
->> right mode) channel.
->
->> My board has two of this DACs (left and right channel). 
->> The control names should be different, hence my
->> suggestion for the "Left" and "Right" prefixes.
->
->That's fine and totally normal.
->
->> Another approach would be to say that the machine
->> driver is responsible for mixer controls if the devices
->> are in mono mode. What do you think?
->
->Yes, the machine driver should do this - you may have left and right on
->your board but these configurations are for example often used with 5.1
->systems.
+We should really be using device_property_() instead of of_property_()
+APIs since we will have to support both DT and ACPI properties.
 
-Good point. Thanks. I am going to resend the patch as v2.
+Liam
