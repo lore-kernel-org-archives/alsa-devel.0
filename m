@@ -1,59 +1,30 @@
 From: Kevin Cernekee <cernekee@chromium.org>
-Subject: [PATCH] ASoC: tas571x: Eliminate redundant dev->of_node NULL check
-Date: Tue,  5 May 2015 15:52:29 -0700
-Message-ID: <1430866350-21391-1-git-send-email-cernekee@chromium.org>
+Subject: Re: [PATCH V4 3/5] ASoC: tas571x: Add DT binding document
+Date: Tue, 5 May 2015 15:56:09 -0700
+Message-ID: <CAJzqFtaRd7GN6af=7jZSh01mL04XBFYE5cGfHY9V=p7uKFwf_A@mail.gmail.com>
+References: <1430864057-3848-1-git-send-email-cernekee@chromium.org>
+ <1430864057-3848-4-git-send-email-cernekee@chromium.org> <20150505223230.GL15510@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150505223230.GL15510@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: lars@metafoo.de, dgreid@chromium.org, abrestic@chromium.org, olofj@chromium.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, dgreid@chromium.org, Andrew Bresticker <abrestic@chromium.org>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-of_match_device() checks if dev->of_node is NULL, so we don't need to do
-it again in the probe function.
+On Tue, May 5, 2015 at 3:32 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, May 05, 2015 at 03:14:15PM -0700, Kevin Cernekee wrote:
+>> Document the bindings for the soon-to-be-added tas571x driver.
+>
+> If this is different to the already applied patches send incremental
+> updates.  If this is the same as the version of the driver that is
+> already applied please don't resend already applied patches.
 
-Signed-off-by: Kevin Cernekee <cernekee@chromium.org>
----
+OK - I sent an incremental update for the one thing that changed in
+the tas571x driver from V3 to V4.
 
-
-This applies to the broonie/sound.git for-next branch.
-
-
- sound/soc/codecs/tas571x.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index b187ea53a7f9..85bcc374c8e8 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -377,6 +377,7 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- {
- 	struct tas571x_private *priv;
- 	struct device *dev = &client->dev;
-+	const struct of_device_id *of_id;
- 	int i, ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -384,18 +385,12 @@ static int tas571x_i2c_probe(struct i2c_client *client,
- 		return -ENOMEM;
- 	i2c_set_clientdata(client, priv);
- 
--	if (dev->of_node) {
--		const struct of_device_id *of_id;
--
--		of_id = of_match_device(tas571x_of_match, dev);
--		if (of_id)
--			priv->chip = of_id->data;
--	}
--
--	if (!priv->chip) {
-+	of_id = of_match_device(tas571x_of_match, dev);
-+	if (!of_id) {
- 		dev_err(dev, "Unknown device type\n");
- 		return -EINVAL;
- 	}
-+	priv->chip = of_id->data;
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(priv->mclk) && PTR_ERR(priv->mclk) != -ENOENT) {
--- 
-2.2.0.rc0.207.ga3a616c
+Note that the regcache changes were intentionally ordered before the
+tas571x commits, because the regcache changes are needed for the new
+driver to work correctly.  In the for-next branch I see the tas571x
+commits, but not the regcache changes.
