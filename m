@@ -1,17 +1,15 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [TINYCOMPRESS][PATCH v3 5/7] compress.c: fix check for
-	errors from poll(), read() and write()
-Date: Tue, 5 May 2015 11:21:09 +0100
-Message-ID: <1430821271-15624-6-git-send-email-qais.yousef@imgtec.com>
-References: <1430821271-15624-1-git-send-email-qais.yousef@imgtec.com>
+Subject: [TINYCOMPRESS][PATCH v3 0/7] Convert build system to
+	autotools
+Date: Tue, 5 May 2015 11:21:04 +0100
+Message-ID: <1430821271-15624-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailapp01.imgtec.com (mailapp01.imgtec.com [195.59.15.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 7775E2652C3
- for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 12:22:34 +0200 (CEST)
-In-Reply-To: <1430821271-15624-1-git-send-email-qais.yousef@imgtec.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4767A2625EA
+ for <alsa-devel@alsa-project.org>; Tue,  5 May 2015 12:23:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +23,69 @@ To: vinod.koul@intel.com
 Cc: alsa-devel@alsa-project.org, Qais Yousef <qais.yousef@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-When these functions fail they return -1 and set errno. Fix error checks
-accordingly.
+This series converts the build system to use autotools and splits the files into
+lib and utils.
 
-Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
----
- src/lib/compress.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+Also patch 5 fixes error handling code.
 
-diff --git a/src/lib/compress.c b/src/lib/compress.c
-index 15dfdb74137e..84738d24ff45 100644
---- a/src/lib/compress.c
-+++ b/src/lib/compress.c
-@@ -383,7 +383,7 @@ int compress_write(struct compress *compress, const void *buf, unsigned int size
- 			}
- 			/* A pause will cause -EBADFD or zero.
- 			 * This is not an error, just stop writing */
--			if ((ret == 0) || (ret == -EBADFD))
-+			if ((ret == 0) || (ret < 0 && errno == EBADFD))
- 				break;
- 			if (ret < 0)
- 				return oops(compress, errno, "poll error");
-@@ -397,11 +397,12 @@ int compress_write(struct compress *compress, const void *buf, unsigned int size
- 		else
- 			to_write = size;
- 		written = write(compress->fd, cbuf, to_write);
--		/* If play was paused the write returns -EBADFD */
--		if (written == -EBADFD)
--			break;
--		if (written < 0)
-+		if (written < 0) {
-+			/* If play was paused the write returns -EBADFD */
-+			if (errno == EBADFD)
-+				break;
- 			return oops(compress, errno, "write failed!");
-+		}
- 
- 		size -= written;
- 		cbuf += written;
-@@ -443,7 +444,7 @@ int compress_read(struct compress *compress, void *buf, unsigned int size)
- 			}
- 			/* A pause will cause -EBADFD or zero.
- 			 * This is not an error, just stop reading */
--			if ((ret == 0) || (ret == -EBADFD))
-+			if ((ret == 0) || (ret < 0 && errno == EBADFD))
- 				break;
- 			if (ret < 0)
- 				return oops(compress, errno, "poll error");
-@@ -457,11 +458,12 @@ int compress_read(struct compress *compress, void *buf, unsigned int size)
- 		else
- 			to_read = size;
- 		num_read = read(compress->fd, cbuf, to_read);
--		/* If play was paused the read returns -EBADFD */
--		if (num_read == -EBADFD)
--			break;
--		if (num_read < 0)
-+		if (num_read < 0) {
-+			/* If play was paused the read returns -EBADFD */
-+			if (errno == EBADFD)
-+				break;
- 			return oops(compress, errno, "read failed!");
-+		}
- 
- 		size -= num_read;
- 		cbuf += num_read;
+I can't test Android builds but both cross and native compiling worked for me.
+
+I left AUTHORS, ChangeLog and NEWS files empty. I used the license header to fill COPYING.
+
+Changes in v3:
+  - fix a typo in PATCH 1 where we compile cplay.c instead of crec.c for crecord app.
+  - Add mising SOB lines.
+
+Qais Yousef (7):
+  Convert the build system to autotools
+  add .gitignore file
+  makefile.linux: delete as no longer necessary/used
+  Android.mk: Update to use the new location of source files
+  compress.c: fix check for errors from poll(), read() and write()
+  src/lib/utils.c: remove this empty file
+  tinycompress.h: explicitly include required headers
+
+ .gitignore                          |  39 ++++
+ AUTHORS                             |   0
+ Android.mk                          |   6 +-
+ COPYING                             |  51 +++++
+ ChangeLog                           |   0
+ INSTALL                             | 365 ++++++++++++++++++++++++++++++++++++
+ Makefile.am                         |   3 +
+ NEWS                                |   0
+ autogen.sh                          |   6 +
+ configure.ac                        |  32 ++++
+ include/Makefile.am                 |   6 +
+ include/tinycompress/tinycompress.h |   3 +
+ m4/.place_holder                    |   0
+ makefile.linux                      |  41 ----
+ src/Makefile.am                     |   1 +
+ src/lib/Makefile.am                 |   5 +
+ compress.c => src/lib/compress.c    |  22 ++-
+ src/utils/Makefile.am               |  11 ++
+ cplay.c => src/utils/cplay.c        |   0
+ crec.c => src/utils/crec.c          |   0
+ utils.c                             |  62 ------
+ 21 files changed, 537 insertions(+), 116 deletions(-)
+ create mode 100644 .gitignore
+ create mode 100644 AUTHORS
+ create mode 100644 COPYING
+ create mode 100644 ChangeLog
+ create mode 100644 INSTALL
+ create mode 100644 Makefile.am
+ create mode 100644 NEWS
+ create mode 100755 autogen.sh
+ create mode 100644 configure.ac
+ create mode 100644 include/Makefile.am
+ create mode 100644 m4/.place_holder
+ delete mode 100644 makefile.linux
+ create mode 100644 src/Makefile.am
+ create mode 100644 src/lib/Makefile.am
+ rename compress.c => src/lib/compress.c (98%)
+ create mode 100644 src/utils/Makefile.am
+ rename cplay.c => src/utils/cplay.c (100%)
+ rename crec.c => src/utils/crec.c (100%)
+ delete mode 100644 utils.c
+
 -- 
 2.1.0
