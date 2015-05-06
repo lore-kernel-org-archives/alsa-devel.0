@@ -1,54 +1,72 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Wed, 06 May 2015 09:58:14 +0100
-Message-ID: <1430902694.16962.11.camel@loki>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
- <20150505223542.GM15510@sirena.org.uk>
+From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v3 7/8] ASoC: wm8998: Initial WM8998 codec driver
+Date: Wed, 6 May 2015 10:24:05 +0100
+Message-ID: <20150506092405.GA17710@opensource.wolfsonmicro.com>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com> <1430493319-23808-8-git-send-email-rf@opensource.wolfsonmicro.com> <20150504113943.GB15510@sirena.org.uk> <20150505092411.GA15549@opensource.wolfsonmicro.com> <20150505105327.GZ22845@sirena.org.uk> <20150505133129.GA26101@opensource.wolfsonmicro.com> <20150505215934.GH15510@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 618F92606BC
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 10:58:25 +0200 (CEST)
-In-Reply-To: <20150505223542.GM15510@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150505215934.GH15510-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, myungjoo.ham-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-05-05 at 23:35 +0100, Mark Brown wrote:
-> On Sun, Apr 05, 2015 at 05:57:09PM +0200, Takashi Iwai wrote:
-> > At Thu, 02 Apr 2015 10:22:06 +0100,
-> > Russell King wrote:
+On Tue, May 05, 2015 at 10:59:34PM +0100, Mark Brown wrote:
+> On Tue, May 05, 2015 at 02:31:29PM +0100, Richard Fitzgerald wrote:
 > 
-> > > +config SND_PCM_ELD
-> > > +	bool
+> > We can't really tell people what the selection does because that depends on
+> > the external hardware. The A setting might be a headset mic, or a line in,
+> > or a builtin mic...
 > 
-> > I don't mind much adding this one, but a new Kconfig is always a
-> > question.  I'd like to hear other's opinion, too.
+> > All we can do is say what the selection is called generically by the codec.
+> > So take the IN1L signal, on the codec it has two inputs "A" and "B". The
+> > IN1L Mux control has two settings "A" and "B". That seems clear.
 > 
-> One point in favour of this is that there's been some discussion
-> recently of IoT applications with very low resource requirements that
-> might need audion functionality so it's likely that people will be
-> taking a look at trying to minimize code size for the audio stack.  This
-> sort of configurability may well be useful for such applications.
+> So you're saying that you've got a mux on a single physical input which
+> has two inputs?  Are you sure that this is actually a mux and not some
+> sort of mode setting that should be in platform data or DT - what do
+> these settinngs actually correspond to?  The routes in the driver look
+> like there's two physical pins for each one of IN1L/R which the device
+> can switch between for some reason which does correspond to a mux but
+> that'd more normally be named IN1AL or similar.
+> 
+
+No, I'm just saying I don't see how calling the mux positions "IN1AL"
+is any clearer than calling them "A" and "B". The "IN1AL" names of the
+DAPM widgets is purely an internal detail that you wouldn't see through
+the ALSA interface anyway so they don't relate any more closely to what
+Joe user is seeing in the control list. The IN1L mux is for IN1L
+so including that information in the mux position is redundant. For me
+the real benefit of the "A"/"B" naming is that if you're reading through
+a configuration script and saw something like
+
+    'IN1L Mux' = 'B'
+    'IN1R Mux' = 'B'
+
+It's much more readably obvious that both channels are set the same
+rather than
+
+    'IN1L Mux' = 'IN1BL'
+    'IN1R Mux' = 'IN1BR'
+
+The second version doesn't tell you any more information than the first
+but makes it harder to scan so you have to read more carefully to check
+the settings
 
 
-Fwiw, Keyon is looking at reducing runtime audio DRAM usage atm and will
-probably have to add other Kconfig options to the audio kernel config
-e.g. disable DPCM, disable DAPM, disable HW/SW params refinement,
-disable async audio ioctls, etc. Currently the kernel audio core and
-drivers are coming in at between 300k to 500k, which is a lot for a
-device with limited memory and very simple audio requirements.
+> Though if the left and right side need to be set to the same thing
+> (which IIRC a previous version had code to check for and you did mention
+> in your mail) all the time then why are there two separate muxes anyway?
 
-Liam
+They only need to be set the same if the "A" input is set to digital mic
+mode because that uses pins from both the left and right channel to
+run the single digital interface. If the A input is analogue the two
+channels are independant so the left/right muxes can be set to A or B
+inputs independantly.
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
