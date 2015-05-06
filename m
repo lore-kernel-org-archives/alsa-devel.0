@@ -1,22 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 1/7] ASoC: hda - add soc hda codec
-	driver wrapper
-Date: Wed, 6 May 2015 22:21:11 +0530
-Message-ID: <20150506165111.GV3521@localhost>
-References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
- <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
- <20150504131226.GV15510@sirena.org.uk>
- <20150506034750.GO3521@localhost>
- <20150506125123.GT22845@sirena.org.uk>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
+Date: Wed, 06 May 2015 20:02:52 +0300
+Message-ID: <554A493C.5080106@iki.fi>
+References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+ <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
+ <20150405162034.GH13898@n2100.arm.linux.org.uk>
+ <s5h4mouy14a.wl-tiwai@suse.de>
+ <20150405172608.GA12732@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 44AA5260682
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 18:50:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150506125123.GT22845@sirena.org.uk>
+Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47739260713
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 19:03:01 +0200 (CEST)
+In-Reply-To: <20150405172608.GA12732@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 06, 2015 at 01:51:23PM +0100, Mark Brown wrote:
-> On Wed, May 06, 2015 at 09:17:50AM +0530, Vinod Koul wrote:
-> > On Mon, May 04, 2015 at 02:12:26PM +0100, Mark Brown wrote:
+05.04.2015, 20:26, Russell King - ARM Linux kirjoitti:
+> On Sun, Apr 05, 2015 at 06:46:13PM +0200, Takashi Iwai wrote:
+>>
+>> One another question: don't we need to deal with the sample bits in
+>> sad[2]?
 > 
-> > > If this is for CODECs why is it in a new directory?
+> It should, but I'm very wary about doing that without seeing more
+> examples of real SADs.  Right now, all my examples only support
+> one SAD with either 2 channel or 6 channel audio at the standard
+> (basic) 32, 44.1 and 48kHz rates.
 > 
-> > yes it is for HDA codecs which are enumerated over HDA links, but this is
-> > the HDA bus code which is ASoC specfic. All generic HDA code which uses the
-> > hda lib (new sound/hda) is kept in sound/soc/hda
-> > All intel driver updates will go to sound/soc/intel/skylake
-> > The codecs drivers will as usual show up in sound/soc/codecs/
+> The HDMI / CEA specs are very loose in their wording about the
+> short audio descriptors.  I've no idea whether a sink can provide
+> (for example) descriptors such as:
 > 
-> I'm still not 100% clear as to what a "HDA CODEC wrapper" is intended to
-> be.  I think this series probably needs an introduction which describes
-> what the overall picture we're aiming for is.
-okay let me try that here as well as next version which i will post
-tomorrow.
+> 	LPCM, 6 channel 32, 44.1, 48kHz
+> 	LPCM, 2 channel, 32, 44.1, 48, 96, 192kHz
+> 
+> or whether have to describe that as a single descriptor.  I only
+> have two TVs to test with here.
 
-So SKL has HDA controller based audio subsystem with DSP and gets better
-with support for I2S, HDA, PDM links.
+For the record, yes, multiple LPCM SADs are relatively common, and I
+think I've seen some that offered more rates on a stereo SAD than on a
+multichannel SAD (like in your example).
 
-So we worked with Takashi on HDA parts and now we have core code of HDA moved
-into sound/hda which current HDA drivers use and will also be used by ASoC
-SKL driver.
 
-The SKL platform driver will load and create the soc_hdac_bus which would
-embed the hdac_bus, same for hdac_device (hda codecs) and hdac_stream (pcms)
-This is on top of hdac code in Takashi's topic/hda
+> What I'm concerned about is that when the ALSA parameter refining
+> starts, we start with (eg) 2-8 channels, 32-192kHz.  Given that,
+> if we invoke the channel restriction before the rate restriction,
+> we would end up limiting to 2 channel at 32-192kHz.  If we apply
+> the restrictions in the opposite order, we'd restrict to 6
+> channel, 32-48kHz.  Neither are obviously correct in this
+> circumstance, and I don't really see a way to solve it given my
+> understanding of the way ALSA's parameter refinement works.
+> 
+> I suspect this is why most HDMI drivers are implemented such that
+> they take the maximum capabilities over all SADs, which would end
+> up restricting audio in the above case to: up to 6 channels, at
+> 32, 44.1, 48, 96 and 192kHz, even though 6 channel @ 192kHz isn't
+> hasn't been indicated as supported.
+> 
+> Most of this is speculation though, based off what is in the
+> documentation.  As I say, I don't have enough real-world examples
+> to get a feel for what manufacturers _actually_ do to give a hint
+> as to how the documentation should be interpreted.
+> 
+> So, maybe I should just copy what everyone else does and take the
+> maximum of all descriptors...
+> 
 
-This patch provides the match function for asoc type hda codecs and lets
-them get enumerated by hdac. The second patch in this series adds the
-controller specific soc code. Common parts are in hdac core with changes
-introduced as part of SKL controller in soc part. Then we add the rest of
-controller PCM driver code (still HDA) and last patch breaks the HDA streams
-to host and link which will allow insertion of DSP in between these links.
 
-The subsequent series will add IPC driver for SKL (using common IPC
-routines), then DSP topology handlers, DSP code with I2S support and then
-lastly when DFW is accepted then its handlers.
-
-Let me know if you have more questions around this, would be happy to answer
-them :)
-
-Thanks
 -- 
-~Vinod
+Anssi Hannula
