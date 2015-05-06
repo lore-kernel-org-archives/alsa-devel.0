@@ -1,51 +1,56 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [RFC PATCH 00/14] ASoC: qcom: add support to apq8016 audio
-Date: Wed, 06 May 2015 07:54:16 +0100
-Message-ID: <5549BA98.9080501@linaro.org>
-References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <20150502235704.GA27804@kwestfie-linux.qualcomm.com> <20150506054758.GD5639@kwestfie-linux.qualcomm.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add headset mic quirk for Dell
+	Inspiron 5548
+Date: Wed,  6 May 2015 10:53:02 +0200
+Message-ID: <1430902382-4955-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150506054758.GD5639-VfhoOQ2zEbNBVvN7MMdr1KRtKmQZhJ7pQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 964FD2606BA
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 10:53:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.se, 1452175@bugs.launchpad.net, alsa-devel@alsa-project.org
+Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kenneth,
+This enables the headset microphone on Dell Inspiron 5548,
+or at least some variants of it.
 
-On 06/05/15 06:47, Kenneth Westfield wrote:
->> >
->> >I will test the patches and let you know by Wednesday.  Also, I posted
->> >some comments, but Patrick should be posting his comments separately
->> >later next week.
-> Srinivas,
->
-> After applying the patches, audio playback is no longer functional on
-> the storm board.  Give me some time to debug this and I will get back
-> to you.
-I found atleast one issue with rdma audif bits in ipq806x lpass
+Cc: stable@kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1452175
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-could you try change, this will be fixed properly in next version.
-
------------------------><---------------------------------------------
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 11a7053..2b00355 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -69,6 +69,7 @@ struct lpass_variant ipq806x_data = {
-         .rdma_reg_base          = 0x6000,
-         .rdma_reg_stride        = 0x1000,
-         .rdma_channels          = 4,
-+       .rdmactl_audif_start    = 4,
-         .dai_driver             = &lpass_cpu_dai_driver,
-         .num_dai                = 1,
-
------------------------><---------------------------------------------
-
-
---srini
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 06199e4..c5413e9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5337,6 +5337,13 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x17, 0x40000000},
+ 		{0x1d, 0x40700001},
+ 		{0x21, 0x02211050}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell Inspiron 5548", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC255_STANDARD_PINS,
++		{0x12, 0x90a60180},
++		{0x14, 0x90170130},
++		{0x17, 0x40000000},
++		{0x1d, 0x40700001},
++		{0x21, 0x02211040}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC256_STANDARD_PINS,
+ 		{0x13, 0x40000000}),
+-- 
+1.9.1
