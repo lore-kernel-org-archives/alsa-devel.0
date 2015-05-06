@@ -1,64 +1,62 @@
-From: Dan Hordern <danhordern@gmail.com>
-Subject: ALSA: dmix: pcm status incomplete
-Date: Wed, 6 May 2015 14:29:01 +1000
-Message-ID: <CAECUvW3sTPqpquv_BFr61mnmrL5kRDcsD9spF5FfuGJ4CFO98A@mail.gmail.com>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC PATCH 03/14] ASoC: qcom: move ipq806x specific
+ bits out of lpass driver.
+Date: Tue, 5 May 2015 22:35:44 -0700
+Message-ID: <20150506053543.GA5639@kwestfie-linux.qualcomm.com>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1430414213-10997-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <20150502235738.GB27804@kwestfie-linux.qualcomm.com>
+ <55486E5E.4010601@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f170.google.com (mail-yk0-f170.google.com
- [209.85.160.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 42FC3260522
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 06:29:02 +0200 (CEST)
-Received: by ykec202 with SMTP id c202so48419041yke.2
- for <alsa-devel@alsa-project.org>; Tue, 05 May 2015 21:29:01 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <55486E5E.4010601-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-I require timestamp information from the soundcard and host for our
-application. However, I noticed that when using "dmix:0,0" instead of
-"hw:0,0", the audio timestamp and delay frames are both zero.
+On Tue, May 05, 2015 at 12:16:46AM -0700, Srinivas Kandagatla wrote:
+> On 03/05/15 00:57, Kenneth Westfield wrote:
+> >On Thu, Apr 30, 2015 at 06:16:53PM +0100, Srinivas Kandagatla wrote:
+> >>This patch tries to make the lpass driver more generic by moving the
+> >>ipq806x specific bits out of the cpu and platform driver, also allows
+> the
+> >>SOC specific drivers to add the correct register offsets.
+> >>
+> >>This patch also renames the register definition header file into more
+> >>generic header file.
+> >
+> >>diff --git a/sound/soc/qcom/lpass-ipq806x.c
+> b/sound/soc/qcom/lpass-ipq806x.c
+> >>new file mode 100644
+> >>index 0000000..8e9a427
+> >>--- /dev/null
+> >>+++ b/sound/soc/qcom/lpass-ipq806x.c
+> >
+> >>+static const struct of_device_id ipq806x_lpass_cpu_device_id[] = {
+> >>+	{ .compatible = "qcom,lpass-cpu", .data = &ipq806x_data },
+> >>+	{}
+> >>+};
+> >>+MODULE_DEVICE_TABLE(of, ipq806x_lpass_cpu_device_id);
+> >
+> >Surround with #ifdef CONFIG_OF?
+> 
+> I was more of thinking adding "depends OF" in Kconfig.
 
-Looking in to the code, it seems that the 'snd_pcm_dmix_status' function
-does not populate either of these. In order to expose these, I have
-modified this function to get this information from the slave pcm; patch
-below.
+Works for me.
 
-I was hoping for some feedback on this change. I am not sure if the delay
-value makes sense as yet, and whether there are consequences of using the
-hardware trigger timestamp etc. I am guessing the dsnoop and dshare plugins
-may also have this issue, though I have not checked.
+> Is there any possibility that the driver would support non-DT?
 
-Thanks,
-Dan
+Not that I am aware of.
 
-
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index babde6a..a4d7fc0 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -475,12 +475,12 @@ static int snd_pcm_dmix_status(snd_pcm_t *pcm,
-snd_pcm_status_t * status)
-                break;
-        }
-        memset(status, 0, sizeof(*status));
-+       snd_pcm_status(dmix->spcm, status);
-        status->state = snd_pcm_dmix_state(pcm);
--       status->trigger_tstamp = dmix->trigger_tstamp;
--       gettimestamp(&status->tstamp, pcm->tstamp_type);
-        status->avail = snd_pcm_mmap_playback_avail(pcm);
-        status->avail_max = status->avail > dmix->avail_max ? status->avail
-: dmix->avail_max;
-        dmix->avail_max = 0;
-+       status->delay = snd_pcm_mmap_playback_delay(pcm);
-        return 0;
- }
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
