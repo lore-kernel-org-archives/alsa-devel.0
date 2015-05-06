@@ -1,15 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/5] ASoC: Intel: let machines configure SSP
-	configuration
-Date: Wed,  6 May 2015 22:06:39 +0530
-Message-ID: <1430930204-32184-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: dapm: Add new widgets to the end
+ of the widget list
+Date: Wed, 6 May 2015 17:36:10 +0100
+Message-ID: <20150506163610.GZ22845@sirena.org.uk>
+References: <1430496165-13917-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1772495939157195700=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 29501260632
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 18:36:16 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFA25260682
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 18:36:20 +0200 (CEST)
+In-Reply-To: <1430496165-13917-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, praveen.diwakar@intel.com, liam.r.girdwood@linux.intel.com, yang.a.fang@intel.com, broonie@kernel.org, sathyanarayana.nujella@intel.com, Vinod Koul <vinod.koul@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This series first add frame and data polarity to ssp config and then starts
-to use local values for ssp config and then eventually lets that be loaded
-by hw_params and updates by pcm format and tdm calls to allow machine t
-specify these parameters
 
-Vinod Koul (5):
-  ASoC: Intel: add frame and data polarity to ssp config
-  ASoC: Intel: use local values for ssp configuration
-  ASoC: Intel: load hw_defaults in hw_params of ssp be
-  ASoC: intel: add support for specifying PCM format
-  ASoC: Intel: add support for configuring TDM slots for SSP
+--===============1772495939157195700==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="j4RN9nyOJty92gQL"
+Content-Disposition: inline
 
- sound/soc/intel/atom/sst-atom-controls.c     | 167 +++++++++++++++++++++++----
- sound/soc/intel/atom/sst-atom-controls.h     |   7 ++
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |  47 +++++++-
- sound/soc/intel/atom/sst-mfld-platform.h     |   2 +
- 4 files changed, 197 insertions(+), 26 deletions(-)
 
--- 
-1.9.1
+--j4RN9nyOJty92gQL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 01, 2015 at 06:02:42PM +0200, Lars-Peter Clausen wrote:
+> Currently new widgets are appended to the beginning of the cards widget
+> list. This has the effect that widgets that are created while iterating
+
+Applied all, thanks.
+
+--j4RN9nyOJty92gQL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVSkL6AAoJECTWi3JdVIfQBVkH/irjt0yIsoH0XX3Fufl3ccyq
+nBSrtKsnxTvjYCnd+y26homCZ3wOPHN1jNHsXpnTvZKCp8BEyHF1z2O1Cfk/Kg0n
+Dnkyzau7cWraw0AuaE0ID2j2ZFsYcJTIeJricRNpNwH4z1ot2eX6Mz0zZ5HlafGi
+BOwFySp5RHQ4muzTgngZjLsBXNcAWJH9uW2Pr2l+U4OlH51mLZvdoqSalZMz+/fX
+5Mn9hdPGjdqqFd1DvDXRY/DYuDOdDGjce/p27pKek90REbThauZd1sWmQ2ECOOgO
+IaK/sPPy01Qj5mj2nRWvbRaySTxPwbbNcb/mt44QsO0fx+7ow10Ba/OMAGoNNbI=
+=Vekm
+-----END PGP SIGNATURE-----
+
+--j4RN9nyOJty92gQL--
+
+--===============1772495939157195700==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1772495939157195700==--
