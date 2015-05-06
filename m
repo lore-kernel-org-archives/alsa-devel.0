@@ -1,66 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 7/8] ASoC: wm8998: Initial WM8998 codec driver
-Date: Wed, 6 May 2015 13:34:55 +0100
-Message-ID: <20150506123455.GR22845@sirena.org.uk>
-References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1430493319-23808-8-git-send-email-rf@opensource.wolfsonmicro.com>
- <20150504113943.GB15510@sirena.org.uk>
- <20150505092411.GA15549@opensource.wolfsonmicro.com>
- <20150505105327.GZ22845@sirena.org.uk>
- <20150505133129.GA26101@opensource.wolfsonmicro.com>
- <20150505215934.GH15510@sirena.org.uk>
- <20150506092405.GA17710@opensource.wolfsonmicro.com>
- <20150506114849.GM22845@sirena.org.uk>
- <20150506122153.GA29266@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 1/7] ASoC: hda - add soc hda codec
+	driver wrapper
+Date: Wed, 6 May 2015 13:51:23 +0100
+Message-ID: <20150506125123.GT22845@sirena.org.uk>
+References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
+ <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
+ <20150504131226.GV15510@sirena.org.uk>
+ <20150506034750.GO3521@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U1Fr+mZHKwKJ1EEe"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150506122153.GA29266@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============1054844974278425145=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D47ED261AD0
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 14:51:30 +0200 (CEST)
+In-Reply-To: <20150506034750.GO3521@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---U1Fr+mZHKwKJ1EEe
+--===============1054844974278425145==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="EHIfaCJCrbNheqy5"
+Content-Disposition: inline
+
+
+--EHIfaCJCrbNheqy5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 06, 2015 at 01:21:53PM +0100, Richard Fitzgerald wrote:
-> On Wed, May 06, 2015 at 12:48:49PM +0100, Mark Brown wrote:
+On Wed, May 06, 2015 at 09:17:50AM +0530, Vinod Koul wrote:
+> On Mon, May 04, 2015 at 02:12:26PM +0100, Mark Brown wrote:
 
-> > >     'IN1L Mux' = 'B'
-> > >     'IN1R Mux' = 'B'
+> > If this is for CODECs why is it in a new directory?
 
-> > > It's much more readably obvious that both channels are set the same
-> > > rather than
+> yes it is for HDA codecs which are enumerated over HDA links, but this is
+> the HDA bus code which is ASoC specfic. All generic HDA code which uses the
+> hda lib (new sound/hda) is kept in sound/soc/hda
+> All intel driver updates will go to sound/soc/intel/skylake
+> The codecs drivers will as usual show up in sound/soc/codecs/
 
-> > Right, but as I said on the initial version in the case where you care
-> > the user probably shouldn't have the ability to set them independently
-> > in the first place.
+I'm still not 100% clear as to what a "HDA CODEC wrapper" is intended to
+be.  I think this series probably needs an introduction which describes
+what the overall picture we're aiming for is.
 
-> They don't. In this version I've got a custom put so that in the
-> configuration where they must both change together changing one will force
-> the other to the same state.
-
-OK, so it's not something you need to check then!
-
---U1Fr+mZHKwKJ1EEe
+--EHIfaCJCrbNheqy5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVSgpuAAoJECTWi3JdVIfQlUsH/jlYTzlj3DF9Vcnt+SrTfglO
-HrAbC3BQmNrB/SVuhmPv/k4fe0I15aCf51LAFRik8faUmK0tmOBDRxhv83TPnkbj
-hmtifjzhL1obwFC8ljF4FFdHZXOeYw6XF/uv3EuhjbduNPOTYCGed8gLrCHNOHyE
-ZEYdK1YDSsI3KkE3zVx+b9rr9NLCJIRHcxv+hr0Uhf/h+dERn4IpjWjepb9lsrr+
-GaljmBnFKdmk6/f5ZrfMU33rOpsWMjWMtX9oYMEvGABH/dk7s58q/GpQBb36Z+fm
-rE6CL+MA9xUy+aPp9Ojb1l+dIKgL+JnmP67Vz9fbwZhtK8XspjH/oMjoG5Nwcps=
-=o6jY
+iQEcBAEBCAAGBQJVSg5KAAoJECTWi3JdVIfQcaoH/iD8l/QeacgGS+vf6hrfKtcz
+M2UOOReaWX34t5iyr9mici1OMzsVxcgf31p5k8vGLeBCKtwZNo1q85dXN/7WrlCB
+ZIjKJfeHVQEe/p0aHk9IhrBwpmTSqnaePOE1vB0JrwgQpwJAZ3mf3Mp54CqfqoC7
+vR8T9l4O5MLDH85hLRe5Zi5IkorBgja/kW4AXnen5niWCC1vSu5pSRkpPV3GkWPl
++X2YyoGnPQKcvB3OOnazMl+kPkfcfyM4ypAPSQdGPbdpjYyZsI8bso4EqgTUasEI
+xOvXZuePg1YSFiXJWvdDvsq+K2juVYSa4zZQNFbdFOv03TPQqD76qBP2UiZMZVU=
+=2gLd
 -----END PGP SIGNATURE-----
 
---U1Fr+mZHKwKJ1EEe--
+--EHIfaCJCrbNheqy5--
+
+--===============1054844974278425145==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1054844974278425145==--
