@@ -1,16 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add headset mic quirk for Dell
-	Inspiron 5548
-Date: Wed,  6 May 2015 10:53:02 +0200
-Message-ID: <1430902382-4955-1-git-send-email-david.henningsson@canonical.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
+Date: Wed, 06 May 2015 09:58:14 +0100
+Message-ID: <1430902694.16962.11.camel@loki>
+References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+ <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
+ <20150505223542.GM15510@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 964FD2606BA
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 10:53:03 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 618F92606BC
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 10:58:25 +0200 (CEST)
+In-Reply-To: <20150505223542.GM15510@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,37 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.se, 1452175@bugs.launchpad.net, alsa-devel@alsa-project.org
-Cc: stable@kernel.org, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This enables the headset microphone on Dell Inspiron 5548,
-or at least some variants of it.
+On Tue, 2015-05-05 at 23:35 +0100, Mark Brown wrote:
+> On Sun, Apr 05, 2015 at 05:57:09PM +0200, Takashi Iwai wrote:
+> > At Thu, 02 Apr 2015 10:22:06 +0100,
+> > Russell King wrote:
+> 
+> > > +config SND_PCM_ELD
+> > > +	bool
+> 
+> > I don't mind much adding this one, but a new Kconfig is always a
+> > question.  I'd like to hear other's opinion, too.
+> 
+> One point in favour of this is that there's been some discussion
+> recently of IoT applications with very low resource requirements that
+> might need audion functionality so it's likely that people will be
+> taking a look at trying to minimize code size for the audio stack.  This
+> sort of configurability may well be useful for such applications.
 
-Cc: stable@kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1452175
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 06199e4..c5413e9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5337,6 +5337,13 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x17, 0x40000000},
- 		{0x1d, 0x40700001},
- 		{0x21, 0x02211050}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell Inspiron 5548", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		ALC255_STANDARD_PINS,
-+		{0x12, 0x90a60180},
-+		{0x14, 0x90170130},
-+		{0x17, 0x40000000},
-+		{0x1d, 0x40700001},
-+		{0x21, 0x02211040}),
- 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		ALC256_STANDARD_PINS,
- 		{0x13, 0x40000000}),
--- 
-1.9.1
+Fwiw, Keyon is looking at reducing runtime audio DRAM usage atm and will
+probably have to add other Kconfig options to the audio kernel config
+e.g. disable DPCM, disable DAPM, disable HW/SW params refinement,
+disable async audio ioctls, etc. Currently the kernel audio core and
+drivers are coming in at between 300k to 500k, which is a lot for a
+device with limited memory and very simple audio requirements.
+
+Liam
