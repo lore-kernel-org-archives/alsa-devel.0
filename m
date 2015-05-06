@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rt5645: fix add missing widget
-Date: Wed, 6 May 2015 18:48:38 +0100
-Message-ID: <20150506174838.GD22845@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: rt5645: remove unused field in
+	pdata
+Date: Wed, 6 May 2015 18:50:12 +0100
+Message-ID: <20150506175012.GE22845@sirena.org.uk>
 References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4347794513752537467=="
+Content-Type: multipart/mixed; boundary="===============8345533290893489688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CE9EE260631
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 19:48:47 +0200 (CEST)
-In-Reply-To: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66D8B26070C
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 19:50:17 +0200 (CEST)
+In-Reply-To: <1430833322-13531-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +27,47 @@ Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengx
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4347794513752537467==
+--===============8345533290893489688==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h+fVSf+UNmt0b7TK"
+	protocol="application/pgp-signature"; boundary="Y0+U+U1OM05jSAdB"
 Content-Disposition: inline
 
 
---h+fVSf+UNmt0b7TK
+--Y0+U+U1OM05jSAdB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 05, 2015 at 09:42:00PM +0800, Bard Liao wrote:
-> "IF1 DAC0" and "IF1 DAC3" are used in rt5645_dapm_routes but missing
-> in rt5645_dapm_widgets.
+On Tue, May 05, 2015 at 09:42:01PM +0800, Bard Liao wrote:
+> We can know if dmic is used by reading the value of dmic1_data_pin
+> and dmic2_data_pin. Also IRQ must be used if codec JD or button
+> detection function is used. So, dmic_en and en_jd_func can be remove
+> from platform data.
 
 Applied, thanks.
 
---h+fVSf+UNmt0b7TK
+--Y0+U+U1OM05jSAdB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVSlP1AAoJECTWi3JdVIfQlAcH/3f++ncNs0Dw13lgQTcXisxj
-dalkGEdm3Obv7e/o09eI70FebfQ5TWEtc0ylM/KuLeAZiArPGeA+KKA20i9wncmc
-idg64YplrLBkfhnw6Ex3SmWX82tcIR45Sfs3AlaXqSR9NmwbE/9lLdxX1Eyx3agI
-dswPaem7c+fmVF2mwOuq1KMaspkRO0cjmyF1A222smWYzS/UBntISmMwAJXCfXkj
-oUCXLETaSNGzlLPuZWR+hsSRGwFm3sf/tc6kdIqd/XFlf27VJAFYAl5uCHn20ywc
-H8XK0B45hRbIe3Lb3shtkJfaXN5msCmH+Z5S38qbo4YqRNhVYcXheVZaBdpbiLU=
-=ZJ+Z
+iQEcBAEBCAAGBQJVSlRTAAoJECTWi3JdVIfQL64H/jV59wai6m/k/5J7NOuS6fjt
+CtkggkUBmCl1C42xHYcvZUh+9pOsBd1AE8X4TLUSMa985V4QLmBG3isxpxp0xe4i
+eMLXHBGi5YXFGmunUboadHqbUWqzbVoASlDXH6Mq6GEJCcnxRpdvIEk1G4TaCnZg
+CC0RKTMHYg3ifZ92mR5PKhxRGrtK04n/nXK56NTzXFyExYpDz64cDuaWc44GXzhA
+WjDOfjaURLZxaqy3VOTZBflzcupP+0WOeUY7oizg09ZnJlStxSSH0biFH+1IBuaJ
+EEBRG6YeGAeFA1wZtLtLR2W65fb5Vb9DZ6sC6LyHK6M//NoLtSMt1Fo2eBaFtuk=
+=OAin
 -----END PGP SIGNATURE-----
 
---h+fVSf+UNmt0b7TK--
+--Y0+U+U1OM05jSAdB--
 
---===============4347794513752537467==
+--===============8345533290893489688==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4347794513752537467==--
+--===============8345533290893489688==--
