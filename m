@@ -1,20 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 1/7] ASoC: hda - add soc hda codec
-	driver wrapper
-Date: Wed, 6 May 2015 09:17:50 +0530
-Message-ID: <20150506034750.GO3521@localhost>
-References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
- <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
- <20150504131226.GV15510@sirena.org.uk>
+From: Dan Hordern <danhordern@gmail.com>
+Subject: ALSA: dmix: pcm status incomplete
+Date: Wed, 6 May 2015 14:29:01 +1000
+Message-ID: <CAECUvW3sTPqpquv_BFr61mnmrL5kRDcsD9spF5FfuGJ4CFO98A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A16AC2604CA
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 05:47:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150504131226.GV15510@sirena.org.uk>
+Received: from mail-yk0-f170.google.com (mail-yk0-f170.google.com
+ [209.85.160.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42FC3260522
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 06:29:02 +0200 (CEST)
+Received: by ykec202 with SMTP id c202so48419041yke.2
+ for <alsa-devel@alsa-project.org>; Tue, 05 May 2015 21:29:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 04, 2015 at 02:12:26PM +0100, Mark Brown wrote:
-> On Wed, Apr 29, 2015 at 01:24:24AM +0530, Vinod Koul wrote:
-> 
-> > For ASoC HDA codecs we need to provide match function based on id_table and
-> > driver register/unregister wrapper functions
-> 
-> This changelog doesn't really leave me that much the wiser as to what
-> this is intended to do...  what are we matching in what ID table and
-> what are we wrapping?
-> 
-> > ---
-> >  sound/soc/Kconfig             |    1 +
-> >  sound/soc/Makefile            |    1 +
-> >  sound/soc/hda/Kconfig         |    3 ++
-> >  sound/soc/hda/Makefile        |    3 ++
-> >  sound/soc/hda/soc-hda-codec.c |   85 +++++++++++++++++++++++++++++++++++++++++
-> >  sound/soc/hda/soc-hda-codec.h |   44 +++++++++++++++++++++
-> >  6 files changed, 137 insertions(+)
-> 
-> If this is for CODECs why is it in a new directory?
-yes it is for HDA codecs which are enumerated over HDA links, but this is
-the HDA bus code which is ASoC specfic. All generic HDA code which uses the
-hda lib (new sound/hda) is kept in sound/soc/hda
-All intel driver updates will go to sound/soc/intel/skylake
-The codecs drivers will as usual show up in sound/soc/codecs/
+I require timestamp information from the soundcard and host for our
+application. However, I noticed that when using "dmix:0,0" instead of
+"hw:0,0", the audio timestamp and delay frames are both zero.
 
-> 
-> > +const struct soc_hda_device_id * +snd_soc_hda_get_device_id( +
-> > struct hdac_device *hdev, +			struct soc_hda_codec_driver
-> > *drv)
-> 
-> Please can we have more normal indentation - put at least the first
-> argument for the function on the same line as the function name.
-Yes Takashi also pointed out, fixed now. The zeal to keep under 80 chars
-made it look funny.
+Looking in to the code, it seems that the 'snd_pcm_dmix_status' function
+does not populate either of these. In order to expose these, I have
+modified this function to get this information from the slave pcm; patch
+below.
 
-Thanks
--- 
-~Vinod
+I was hoping for some feedback on this change. I am not sure if the delay
+value makes sense as yet, and whether there are consequences of using the
+hardware trigger timestamp etc. I am guessing the dsnoop and dshare plugins
+may also have this issue, though I have not checked.
+
+Thanks,
+Dan
+
+
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index babde6a..a4d7fc0 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -475,12 +475,12 @@ static int snd_pcm_dmix_status(snd_pcm_t *pcm,
+snd_pcm_status_t * status)
+                break;
+        }
+        memset(status, 0, sizeof(*status));
++       snd_pcm_status(dmix->spcm, status);
+        status->state = snd_pcm_dmix_state(pcm);
+-       status->trigger_tstamp = dmix->trigger_tstamp;
+-       gettimestamp(&status->tstamp, pcm->tstamp_type);
+        status->avail = snd_pcm_mmap_playback_avail(pcm);
+        status->avail_max = status->avail > dmix->avail_max ? status->avail
+: dmix->avail_max;
+        dmix->avail_max = 0;
++       status->delay = snd_pcm_mmap_playback_delay(pcm);
+        return 0;
+ }
