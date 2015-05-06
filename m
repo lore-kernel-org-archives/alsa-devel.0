@@ -1,20 +1,16 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Wed, 06 May 2015 20:02:52 +0300
-Message-ID: <554A493C.5080106@iki.fi>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
- <20150405162034.GH13898@n2100.arm.linux.org.uk>
- <s5h4mouy14a.wl-tiwai@suse.de>
- <20150405172608.GA12732@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: rt5645: fix add missing widget
+Date: Wed, 6 May 2015 18:48:38 +0100
+Message-ID: <20150506174838.GD22845@sirena.org.uk>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4347794513752537467=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 47739260713
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 19:03:01 +0200 (CEST)
-In-Reply-To: <20150405172608.GA12732@n2100.arm.linux.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE9EE260631
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 19:48:47 +0200 (CEST)
+In-Reply-To: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, lgirdwood@gmail.com, john.lin@realtek.com, koro.chen@mediatek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-05.04.2015, 20:26, Russell King - ARM Linux kirjoitti:
-> On Sun, Apr 05, 2015 at 06:46:13PM +0200, Takashi Iwai wrote:
->>
->> One another question: don't we need to deal with the sample bits in
->> sad[2]?
-> 
-> It should, but I'm very wary about doing that without seeing more
-> examples of real SADs.  Right now, all my examples only support
-> one SAD with either 2 channel or 6 channel audio at the standard
-> (basic) 32, 44.1 and 48kHz rates.
-> 
-> The HDMI / CEA specs are very loose in their wording about the
-> short audio descriptors.  I've no idea whether a sink can provide
-> (for example) descriptors such as:
-> 
-> 	LPCM, 6 channel 32, 44.1, 48kHz
-> 	LPCM, 2 channel, 32, 44.1, 48, 96, 192kHz
-> 
-> or whether have to describe that as a single descriptor.  I only
-> have two TVs to test with here.
 
-For the record, yes, multiple LPCM SADs are relatively common, and I
-think I've seen some that offered more rates on a stereo SAD than on a
-multichannel SAD (like in your example).
+--===============4347794513752537467==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="h+fVSf+UNmt0b7TK"
+Content-Disposition: inline
 
 
-> What I'm concerned about is that when the ALSA parameter refining
-> starts, we start with (eg) 2-8 channels, 32-192kHz.  Given that,
-> if we invoke the channel restriction before the rate restriction,
-> we would end up limiting to 2 channel at 32-192kHz.  If we apply
-> the restrictions in the opposite order, we'd restrict to 6
-> channel, 32-48kHz.  Neither are obviously correct in this
-> circumstance, and I don't really see a way to solve it given my
-> understanding of the way ALSA's parameter refinement works.
-> 
-> I suspect this is why most HDMI drivers are implemented such that
-> they take the maximum capabilities over all SADs, which would end
-> up restricting audio in the above case to: up to 6 channels, at
-> 32, 44.1, 48, 96 and 192kHz, even though 6 channel @ 192kHz isn't
-> hasn't been indicated as supported.
-> 
-> Most of this is speculation though, based off what is in the
-> documentation.  As I say, I don't have enough real-world examples
-> to get a feel for what manufacturers _actually_ do to give a hint
-> as to how the documentation should be interpreted.
-> 
-> So, maybe I should just copy what everyone else does and take the
-> maximum of all descriptors...
-> 
+--h+fVSf+UNmt0b7TK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 05, 2015 at 09:42:00PM +0800, Bard Liao wrote:
+> "IF1 DAC0" and "IF1 DAC3" are used in rt5645_dapm_routes but missing
+> in rt5645_dapm_widgets.
+
+Applied, thanks.
+
+--h+fVSf+UNmt0b7TK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVSlP1AAoJECTWi3JdVIfQlAcH/3f++ncNs0Dw13lgQTcXisxj
+dalkGEdm3Obv7e/o09eI70FebfQ5TWEtc0ylM/KuLeAZiArPGeA+KKA20i9wncmc
+idg64YplrLBkfhnw6Ex3SmWX82tcIR45Sfs3AlaXqSR9NmwbE/9lLdxX1Eyx3agI
+dswPaem7c+fmVF2mwOuq1KMaspkRO0cjmyF1A222smWYzS/UBntISmMwAJXCfXkj
+oUCXLETaSNGzlLPuZWR+hsSRGwFm3sf/tc6kdIqd/XFlf27VJAFYAl5uCHn20ywc
+H8XK0B45hRbIe3Lb3shtkJfaXN5msCmH+Z5S38qbo4YqRNhVYcXheVZaBdpbiLU=
+=ZJ+Z
+-----END PGP SIGNATURE-----
+
+--h+fVSf+UNmt0b7TK--
+
+--===============4347794513752537467==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
--- 
-Anssi Hannula
+--===============4347794513752537467==--
