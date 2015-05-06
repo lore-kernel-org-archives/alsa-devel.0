@@ -1,47 +1,73 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Alsa triggering methods
-Date: Wed, 6 May 2015 16:35:00 +0530
-Message-ID: <20150506110500.GT3521@localhost>
-References: <CAAVaN8wvo4Aq_ij1K_Nt2Jnc6qO8XDsd5X2hvsFKSAzQhbts2A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 7/8] ASoC: wm8998: Initial WM8998 codec driver
+Date: Wed, 6 May 2015 12:48:49 +0100
+Message-ID: <20150506114849.GM22845@sirena.org.uk>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1430493319-23808-8-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20150504113943.GB15510@sirena.org.uk>
+ <20150505092411.GA15549@opensource.wolfsonmicro.com>
+ <20150505105327.GZ22845@sirena.org.uk>
+ <20150505133129.GA26101@opensource.wolfsonmicro.com>
+ <20150505215934.GH15510@sirena.org.uk>
+ <20150506092405.GA17710@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BB8E260704
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 13:04:11 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jAzuEdEubtg2kr7a"
+Return-path: <linux-gpio-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAAVaN8wvo4Aq_ij1K_Nt2Jnc6qO8XDsd5X2hvsFKSAzQhbts2A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Ng <andreas2025@gmail.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20150506092405.GA17710@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lee.jones@linaro.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 29, 2015 at 04:24:09PM +0100, Andy Ng wrote:
-> Hi,
-> 
-> I am working on a ALSA card driver that handles a DSP instance. The
-> problem I have is that the triggering mechanism in ALSA to start a PCM
-> has the interrupts disabled, and my dsp framework is actually
-> acknowledging the start trigger with an event after 50 microseconds
-> time that I can't handle because the IRQs are disabled.
-> 
-> Is there any way when the trigger mechanism goes down to the card to
-> be able to handle any acknowledgements what will happen within a sort
-> period of time.
-> 
-> I have seen bespoke triggering method but not sure if everyone is using it.
-> 
-> Any ideas would be helpful.
-trigger can be nonatomic too, you can set nonatomic = true for your pcms
 
--- 
-~Vinod
+--jAzuEdEubtg2kr7a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 06, 2015 at 10:24:05AM +0100, Richard Fitzgerald wrote:
+
+> No, I'm just saying I don't see how calling the mux positions "IN1AL"
+> is any clearer than calling them "A" and "B". The "IN1AL" names of the
+> DAPM widgets is purely an internal detail that you wouldn't see through
+> the ALSA interface anyway so they don't relate any more closely to what
+> Joe user is seeing in the control list. The IN1L mux is for IN1L
+> so including that information in the mux position is redundant. For me
+
+Providing that people remember that this is what's going on here and
+that they remember that for this mux this shortened name is used rather
+than the full one.  We're relatively consistent in doing this for most
+drivers, it's helpful that "I want to connect X to Y" usually translates
+directly into one of "amixer cset X Y" or "amixer cset 'X Y' on".
+
+> the real benefit of the "A"/"B" naming is that if you're reading through
+> a configuration script and saw something like
+
+>     'IN1L Mux' = 'B'
+>     'IN1R Mux' = 'B'
+
+> It's much more readably obvious that both channels are set the same
+> rather than
+
+Right, but as I said on the initial version in the case where you care
+the user probably shouldn't have the ability to set them independently
+in the first place.
+
+--jAzuEdEubtg2kr7a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVSf+gAAoJECTWi3JdVIfQN68H/Ai69amRA/CHNZi3t4Vw3w9j
+PJq14L93fji7fNJ+tOb3MCUkXXdiNdGDy8XnjERXcwp5n6lUidk2iUfKXwGxgf1U
+bf2kg81odLK2KN1rh1Ee02MN3159Ej/HZxCfghvGa1hrYQ1v22LBKoyD3BZnGTRp
+3PMr18mxMSpCjpxd/NBb/YG5cJsZ6LfMDSnw/P3LObKMBHkAUES2fxtAUZ3A4/3l
+b3CF2N5piVWZEDUGtZjg+iC/PQMyMnoOE2uTXP+zLwdOYqLph2WPZBTdJo0UBy7l
+bwU8m8yVuZWM7EefIn2vjvQsGfMxXB3RC912xfboTEym9CVYnQPLX3EE0p2EvhQ=
+=v9fh
+-----END PGP SIGNATURE-----
+
+--jAzuEdEubtg2kr7a--
