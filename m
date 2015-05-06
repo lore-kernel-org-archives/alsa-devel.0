@@ -1,48 +1,42 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: [PATCH] ASoC: bt-sco: Add devicetree support for bt-sco codec
-Date: Wed, 6 May 2015 21:38:55 +0200
-Message-ID: <CAAfyv37jOJ=grVAM22-oLx2s6-8rXr2fVbgpNqkaJjwuEsHZ9Q@mail.gmail.com>
-References: <1430856941-3938-1-git-send-email-marek@goldelico.com>
-	<20150506121311.GP22845@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150506121311.GP22845@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.de, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "Dr. H. Nikolaus Schaller" <hns@goldelico.com>
+From: Marek Belisko <marek-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>
+Subject: [PATCH v2 0/4] ASoC: Add gtm601 simple codec
+Date: Wed,  6 May 2015 22:38:46 +0200
+Message-ID: <1430944730-10480-1-git-send-email-marek@goldelico.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, hns-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Marek Belisko <marek-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Following patch series add support for gtm601 PCM audio.
+gtm601 is UMTS modem which provide I2S interface for rx/tx data.
+Codec is connected to cpu in master mode (rate is fixed 8kHz).
 
-On Wed, May 6, 2015 at 2:13 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, May 05, 2015 at 10:15:41PM +0200, Marek Belisko wrote:
->
->> +static const struct of_device_id bt_sco_codec_of_match[] = {
->> +     { .compatible = "delta,dfbmcs320", },
->> +     { .compatible = "linux,bt-sco", },
->
-> Is there any burning reason for adding the linux,bt-sco compatible?
-No no real reason just want to keep that if somebody would like use it from DT
-referenced by bt-sco entry (similar as platform data). I'm adding DT
-support for it because I want to use
-this for W2CBW003 chip and I can use simply "linux,bt-sco" property in
-DT or I instead of that add new vendor
-prefix + add new compatible entry which is IMO much harder that
-reference it by generic name.
+changes from v1:
+- fix license mismatch
+- sort Kconfig and Makefiles additions
+- remove misleading comment
 
-Thanks,
+Marek Belisko (4):
+  ASoC: Add gtm601 codec driver
+  Documentation: devicetree: sound: Add documentation for gtm601 codec
+  Documentation: vendor-prefixes: Add option prefix
+  ARM: dts: omap3-gta04: Add GSM audio support
 
-marek
+ Documentation/devicetree/bindings/sound/gtm601.txt | 14 ++++
+ .../devicetree/bindings/vendor-prefixes.txt        |  1 +
+ arch/arm/boot/dts/omap3-gta04.dtsi                 | 26 ++++++
+ sound/soc/codecs/Kconfig                           |  4 +
+ sound/soc/codecs/Makefile                          |  2 +
+ sound/soc/codecs/gtm601.c                          | 98 ++++++++++++++++++++++
+ 6 files changed, 145 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
+ create mode 100644 sound/soc/codecs/gtm601.c
 
 -- 
-as simple and primitive as possible
--------------------------------------------------
-Marek Belisko - OPEN-NANDRA
-Freelance Developer
+1.9.1
 
-Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
-Tel: +421 915 052 184
-skype: marekwhite
-twitter: #opennandra
-web: http://open-nandra.com
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
