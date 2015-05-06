@@ -1,82 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/7] ASoC: hda - add soc hda codec
-	driver wrapper
-Date: Wed, 6 May 2015 13:51:23 +0100
-Message-ID: <20150506125123.GT22845@sirena.org.uk>
-References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
- <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
- <20150504131226.GV15510@sirena.org.uk>
- <20150506034750.GO3521@localhost>
+From: Javier Martinez Canillas <javier@dowhile0.org>
+Subject: Re: [alsa-devel] [PATCH v2 RESEND] ARM: dts: Support audio on
+ Exynos5422-odroidxu3 using simple-audio-card
+Date: Wed, 6 May 2015 15:23:44 +0200
+Message-ID: <CABxcv=mpPOfDDnD0RJGb-W313jpxqiW2O_o_tFJgSwEhOZnKew@mail.gmail.com>
+References: <1428651178-18186-1-git-send-email-ideal.song@samsung.com>
+	<552791A4.40203@fivetechno.de>
+	<CANAwSgS98n0kX8oBUk5Ehk1fwU4DA_DNuAqztp3LrOBcmrtAZw@mail.gmail.com>
+	<20150506104714.498f8da5@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1054844974278425145=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D47ED261AD0
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 14:51:30 +0200 (CEST)
-In-Reply-To: <20150506034750.GO3521@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20150506104714.498f8da5@songinha-Samsung-DeskTop-System>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>, =?UTF-8?Q?Krzysztof_Koz=C5=82owski?= <k.kozlowski@samsung.com>
+Cc: Kukjin Kim <kgene@kernel.org>, Anand Moon <linux.amoon@gmail.com>, Markus Reichl <m.reichl@fivetechno.de>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
++Krzysztof Kozlowski
 
---===============1054844974278425145==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="EHIfaCJCrbNheqy5"
-Content-Disposition: inline
+Hello Inha,
 
+On Wed, May 6, 2015 at 3:47 AM, Inha Song <ideal.song@samsung.com> wrote:
+> Hi Kukjin,
+>
+> Any comments about this patch?
+>
+> Best Regards,
+> Inha Song.
+>
 
---EHIfaCJCrbNheqy5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It seems Kukjin didn't have time lately to deal with the huge backlog
+of patches for Exynos so Krzysztof (added as cc) has kindly
+volunteered to help him by acting as a co-maintainer and queuing
+patches.
 
-On Wed, May 06, 2015 at 09:17:50AM +0530, Vinod Koul wrote:
-> On Mon, May 04, 2015 at 02:12:26PM +0100, Mark Brown wrote:
+So could you please for any patches that my have been forgotten (like
+$subject),  rebase on current head, carry all the obtained tags and
+re-send cc'ing Krzysztof so he can be aware of them?
 
-> > If this is for CODECs why is it in a new directory?
-
-> yes it is for HDA codecs which are enumerated over HDA links, but this is
-> the HDA bus code which is ASoC specfic. All generic HDA code which uses the
-> hda lib (new sound/hda) is kept in sound/soc/hda
-> All intel driver updates will go to sound/soc/intel/skylake
-> The codecs drivers will as usual show up in sound/soc/codecs/
-
-I'm still not 100% clear as to what a "HDA CODEC wrapper" is intended to
-be.  I think this series probably needs an introduction which describes
-what the overall picture we're aiming for is.
-
---EHIfaCJCrbNheqy5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVSg5KAAoJECTWi3JdVIfQcaoH/iD8l/QeacgGS+vf6hrfKtcz
-M2UOOReaWX34t5iyr9mici1OMzsVxcgf31p5k8vGLeBCKtwZNo1q85dXN/7WrlCB
-ZIjKJfeHVQEe/p0aHk9IhrBwpmTSqnaePOE1vB0JrwgQpwJAZ3mf3Mp54CqfqoC7
-vR8T9l4O5MLDH85hLRe5Zi5IkorBgja/kW4AXnen5niWCC1vSu5pSRkpPV3GkWPl
-+X2YyoGnPQKcvB3OOnazMl+kPkfcfyM4ypAPSQdGPbdpjYyZsI8bso4EqgTUasEI
-xOvXZuePg1YSFiXJWvdDvsq+K2juVYSa4zZQNFbdFOv03TPQqD76qBP2UiZMZVU=
-=2gLd
------END PGP SIGNATURE-----
-
---EHIfaCJCrbNheqy5--
-
---===============1054844974278425145==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1054844974278425145==--
+Best regards,
+Javier
