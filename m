@@ -1,111 +1,56 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/5] ASoC: Intel: add support for configuring
-	TDM slots for SSP
-Date: Wed,  6 May 2015 22:06:44 +0530
-Message-ID: <1430930204-32184-6-git-send-email-vinod.koul@intel.com>
-References: <1430930204-32184-1-git-send-email-vinod.koul@intel.com>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH v2 08/17] gpio: locomo: implement per-pin irq handling
+Date: Wed, 6 May 2015 19:42:33 +0300
+Message-ID: <CALT56yNJutWTW5zsos+=Uh+BDvO4o_tqBEj+H621TncVK6eD_Q@mail.gmail.com>
+References: <1430178954-11138-1-git-send-email-dbaryshkov@gmail.com>
+	<1430178954-11138-9-git-send-email-dbaryshkov@gmail.com>
+	<CACRpkdZt+rjzVSqXE6MDaY5S9gezeTu+2QWu31xKsg08TpXibw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E34D26586F
- for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 18:36:45 +0200 (CEST)
-In-Reply-To: <1430930204-32184-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, praveen.diwakar@intel.com, liam.r.girdwood@linux.intel.com, yang.a.fang@intel.com, broonie@kernel.org, sathyanarayana.nujella@intel.com, Vinod Koul <vinod.koul@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <CACRpkdZt+rjzVSqXE6MDaY5S9gezeTu+2QWu31xKsg08TpXibw@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, linux-leds@vger.kernel.or
 List-Id: alsa-devel@alsa-project.org
 
-With this machines can now configure TDM settings for SSP port using
-set_tdm_slot API
+2015-05-06 17:15 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
+> On Tue, Apr 28, 2015 at 1:55 AM, Dmitry Eremin-Solenikov
+> <dbaryshkov@gmail.com> wrote:
+>
+>> LoCoMo has a possibility to generate per-GPIO edge irqs. Support for
+>> that was there in old locomo driver, got 'cleaned up' during old driver
+>> IRQ cascading cleanup and is now reimplemented. It is expected that
+>> SL-5500 (collie) will use locomo gpio irqs for mmc detection irq.
+>>
+>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Praveen Diwakar <praveen.diwakar@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/atom/sst-atom-controls.c     | 13 +++++++++++++
- sound/soc/intel/atom/sst-atom-controls.h     |  2 ++
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 16 ++++++++++++++++
- 3 files changed, 31 insertions(+)
+Thanks for review of the patches.
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index e024d98948fa..61e240935451 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -774,6 +774,19 @@ int sst_handle_vb_timer(struct snd_soc_dai *dai, bool enable)
- 	return ret;
- }
- 
-+int sst_fill_ssp_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+		unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct sst_data *ctx = snd_soc_dai_get_drvdata(dai);
-+
-+	ctx->ssp_cmd.nb_slots = slots;
-+	ctx->ssp_cmd.active_tx_slot_map = tx_mask;
-+	ctx->ssp_cmd.active_rx_slot_map = rx_mask;
-+	ctx->ssp_cmd.nb_bits_per_slots = slot_width;
-+
-+	return 0;
-+}
-+
- static int sst_get_frame_sync_polarity(struct snd_soc_dai *dai,
- 		unsigned int fmt)
- {
-diff --git a/sound/soc/intel/atom/sst-atom-controls.h b/sound/soc/intel/atom/sst-atom-controls.h
-index 53551a657b51..93de8045d4e1 100644
---- a/sound/soc/intel/atom/sst-atom-controls.h
-+++ b/sound/soc/intel/atom/sst-atom-controls.h
-@@ -869,6 +869,8 @@ struct sst_enum {
- 	SOC_DAPM_ENUM(SST_MUX_CTL_NAME(xpname, xinstance), \
- 			  SST_SSP_MUX_ENUM(xreg, xshift, xtexts))
- 
-+int sst_fill_ssp_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+				unsigned int rx_mask, int slots, int slot_width);
- int sst_fill_ssp_config(struct snd_soc_dai *dai, unsigned int fmt);
- void sst_fill_ssp_defaults(struct snd_soc_dai *dai);
- 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 580f5e92580e..641ebe61dc08 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -464,6 +464,21 @@ static int sst_set_format(struct snd_soc_dai *dai, unsigned int fmt)
- 	return ret;
- }
- 
-+static int sst_platform_set_ssp_slot(struct snd_soc_dai *dai,
-+			unsigned int tx_mask, unsigned int rx_mask,
-+			int slots, int slot_width) {
-+	int ret = 0;
-+
-+	if (!dai->active)
-+		return ret;
-+
-+	ret = sst_fill_ssp_slot(dai, tx_mask, rx_mask, slots, slot_width);
-+	if (ret < 0)
-+		dev_err(dai->dev, "sst_fill_ssp_slot failed..%d\n", ret);
-+
-+	return ret;
-+}
-+
- static void sst_disable_ssp(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
-@@ -490,6 +505,7 @@ static struct snd_soc_dai_ops sst_be_dai_ops = {
- 	.startup = sst_enable_ssp,
- 	.hw_params = sst_be_hw_params,
- 	.set_fmt = sst_set_format,
-+	.set_tdm_slot = sst_platform_set_ssp_slot,
- 	.shutdown = sst_disable_ssp,
- };
- 
+> Assume this will also go through MFD.
+>
+>> +       irq_set_chained_handler(lg->irq, NULL);
+>> +       irq_set_handler_data(lg->irq, NULL);
+>
+> Why is this needed? If the GPIOLIB_IRQCHIP code in
+> gpiolib.c is not doing this then maybe it's the core code that
+> needs fixing rather than having this in the driver.
+
+I have skimmed through the rest of drivers using
+gpiochip_set_chained_irqchip(). Indeed none of the drivers NULL
+the chained handled and handler data. However I couldn't locate
+the code where they would be cleared.
+
+Should I still send the patch fixing the GPIOLIB_IRQCHIP?
+
+>
+> Yours,
+> Linus Walleij
+
+
+
 -- 
-1.9.1
+With best wishes
+Dmitry
