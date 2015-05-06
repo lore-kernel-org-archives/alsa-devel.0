@@ -1,56 +1,78 @@
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Subject: Re: [PATCH v2 08/17] gpio: locomo: implement per-pin irq handling
-Date: Wed, 6 May 2015 19:42:33 +0300
-Message-ID: <CALT56yNJutWTW5zsos+=Uh+BDvO4o_tqBEj+H621TncVK6eD_Q@mail.gmail.com>
-References: <1430178954-11138-1-git-send-email-dbaryshkov@gmail.com>
-	<1430178954-11138-9-git-send-email-dbaryshkov@gmail.com>
-	<CACRpkdZt+rjzVSqXE6MDaY5S9gezeTu+2QWu31xKsg08TpXibw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 1/7] ASoC: hda - add soc hda codec
+	driver wrapper
+Date: Wed, 6 May 2015 22:21:11 +0530
+Message-ID: <20150506165111.GV3521@localhost>
+References: <1430250870-3169-1-git-send-email-vinod.koul@intel.com>
+ <1430250870-3169-2-git-send-email-vinod.koul@intel.com>
+ <20150504131226.GV15510@sirena.org.uk>
+ <20150506034750.GO3521@localhost>
+ <20150506125123.GT22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <CACRpkdZt+rjzVSqXE6MDaY5S9gezeTu+2QWu31xKsg08TpXibw@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, linux-leds@vger.kernel.or
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44AA5260682
+ for <alsa-devel@alsa-project.org>; Wed,  6 May 2015 18:50:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150506125123.GT22845@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-2015-05-06 17:15 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
-> On Tue, Apr 28, 2015 at 1:55 AM, Dmitry Eremin-Solenikov
-> <dbaryshkov@gmail.com> wrote:
->
->> LoCoMo has a possibility to generate per-GPIO edge irqs. Support for
->> that was there in old locomo driver, got 'cleaned up' during old driver
->> IRQ cascading cleanup and is now reimplemented. It is expected that
->> SL-5500 (collie) will use locomo gpio irqs for mmc detection irq.
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On Wed, May 06, 2015 at 01:51:23PM +0100, Mark Brown wrote:
+> On Wed, May 06, 2015 at 09:17:50AM +0530, Vinod Koul wrote:
+> > On Mon, May 04, 2015 at 02:12:26PM +0100, Mark Brown wrote:
+> 
+> > > If this is for CODECs why is it in a new directory?
+> 
+> > yes it is for HDA codecs which are enumerated over HDA links, but this is
+> > the HDA bus code which is ASoC specfic. All generic HDA code which uses the
+> > hda lib (new sound/hda) is kept in sound/soc/hda
+> > All intel driver updates will go to sound/soc/intel/skylake
+> > The codecs drivers will as usual show up in sound/soc/codecs/
+> 
+> I'm still not 100% clear as to what a "HDA CODEC wrapper" is intended to
+> be.  I think this series probably needs an introduction which describes
+> what the overall picture we're aiming for is.
+okay let me try that here as well as next version which i will post
+tomorrow.
 
-Thanks for review of the patches.
+So SKL has HDA controller based audio subsystem with DSP and gets better
+with support for I2S, HDA, PDM links.
 
-> Assume this will also go through MFD.
->
->> +       irq_set_chained_handler(lg->irq, NULL);
->> +       irq_set_handler_data(lg->irq, NULL);
->
-> Why is this needed? If the GPIOLIB_IRQCHIP code in
-> gpiolib.c is not doing this then maybe it's the core code that
-> needs fixing rather than having this in the driver.
+So we worked with Takashi on HDA parts and now we have core code of HDA moved
+into sound/hda which current HDA drivers use and will also be used by ASoC
+SKL driver.
 
-I have skimmed through the rest of drivers using
-gpiochip_set_chained_irqchip(). Indeed none of the drivers NULL
-the chained handled and handler data. However I couldn't locate
-the code where they would be cleared.
+The SKL platform driver will load and create the soc_hdac_bus which would
+embed the hdac_bus, same for hdac_device (hda codecs) and hdac_stream (pcms)
+This is on top of hdac code in Takashi's topic/hda
 
-Should I still send the patch fixing the GPIOLIB_IRQCHIP?
+This patch provides the match function for asoc type hda codecs and lets
+them get enumerated by hdac. The second patch in this series adds the
+controller specific soc code. Common parts are in hdac core with changes
+introduced as part of SKL controller in soc part. Then we add the rest of
+controller PCM driver code (still HDA) and last patch breaks the HDA streams
+to host and link which will allow insertion of DSP in between these links.
 
->
-> Yours,
-> Linus Walleij
+The subsequent series will add IPC driver for SKL (using common IPC
+routines), then DSP topology handlers, DSP code with I2S support and then
+lastly when DFW is accepted then its handlers.
 
+Let me know if you have more questions around this, would be happy to answer
+them :)
 
-
+Thanks
 -- 
-With best wishes
-Dmitry
+~Vinod
