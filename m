@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/2] ASoC: dapm: Add cache to speed up
 	adding of routes
-Date: Thu, 7 May 2015 13:48:11 +0100
-Message-ID: <20150507124811.GV15510@sirena.org.uk>
+Date: Thu, 7 May 2015 14:16:10 +0100
+Message-ID: <20150507131610.GY15510@sirena.org.uk>
 References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <554B4ADF.3000801@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7431612418243128158=="
+Content-Type: multipart/mixed; boundary="===============2818550119495826095=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DC312650DB
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 15:06:59 +0200 (CEST)
-In-Reply-To: <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 05B6A264F2D
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 15:16:25 +0200 (CEST)
+In-Reply-To: <554B4ADF.3000801@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,116 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7431612418243128158==
+--===============2818550119495826095==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4s/bJpmTUQ8gJs0P"
+	protocol="application/pgp-signature"; boundary="N/6iDJYGLS5Zr1Py"
 Content-Disposition: inline
 
 
---4s/bJpmTUQ8gJs0P
+--N/6iDJYGLS5Zr1Py
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 07, 2015 at 11:33:59AM +0100, Charles Keepax wrote:
-> Some CODECs have a significant number of DAPM routes and for each route,
-> when it is added to the card, the entire card widget list must be
+On Thu, May 07, 2015 at 01:22:07PM +0200, Lars-Peter Clausen wrote:
 
-The idea here is good but I'm having a hard time loving the
-implementation.  It feels like it's hacking this specific implementation
-in many different places without really abstracting things - having a
-neat trick hidden in one place would be one thinng but it's spread
-through several different places.
+> That's crazy! ;)
 
-> +static struct snd_soc_dapm_widget *
-> +dapm_check_path_cache(const char *name, struct snd_soc_dapm_widget *w, int n)
-> +{
-> +	int i;
-> +
-> +	if (w) {
-> +		for (i = 0; i < n; i++) {
-> +			if (!strcmp(name, w->name))
-> +				return w;
-> +
-> +			w = list_next_entry(w, list);
-> +		}
+> I wonder if it makes sense to come up with a more machine readable blob
+> format that can be pre-compiled where we don't have to search the widget
+> list each time a route is added. Instead of having it reference the widgets
+> by name use a index that points into an array of widgets. That makes the
+> lookup time O(1).
 
-This will not be happy if there are fewer than n entries to look at.
+I'm a bit reluctant to complicate the build process, but like I said inn
+my review there's definitely things we can do at runtime if people want
+to look at this - build some data structure that indexes the names in a
+way that allows us to look them up more quickly.  In general I'd expect
+it to be negligable cost for small devices and a win for larger ones.
 
->  static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
-> -				  const struct snd_soc_dapm_route *route)
-> +				  const struct snd_soc_dapm_route *route,
-> +				  struct snd_soc_dapm_path *cache)
-
-The fact that we're directly using the path structure as the type for
-the cache here is a warning flag, it means that everywhere that knows
-there is a cache at all needs to know about the specific type of the
-cache.  If we were to improve the cache in the future, for example doing
-something like building a hash that maps names to widgets for the
-duration of probe, then everywhere would need to change.
-
-> +	if (cache) {
-> +		wsink = dapm_check_path_cache(sink, cache->sink, 2);
-> +		wsource = dapm_check_path_cache(source, cache->source, 2);
-> +
-> +		if (wsink && wsource)
-> +			goto skip_search;
-> +	}
-> +
-
-This is the only place where we have _check_path_cache() calls so n is
-always 2 here and it is unclear where that number comes from or what it
-means without going and peering at the implementation and the commit
-log.  It seems it would be better to hide that number inside the
-function.
-
-> +skip_search:
-> +	if (cache) {
-> +		cache->sink = wsink;
-> +		cache->source = wsource;
-> +	}
-> +
-
-Putting this into a store hit function would be good.
-
->  	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
->  	for (i = 0; i < num; i++) {
-> -		r = snd_soc_dapm_add_route(dapm, route);
-> +		r = snd_soc_dapm_add_route(dapm, route, &cache);
-
-Should we just have the cache in the dapm context or the card instead of
-locally?  It's only two pointers at the minute so there doesn't seem to
-be much cost from keeping it around and it might generate somme more
-hits for some use cases.  Or to put it another way why is the cache
-optional and created and re-created here like this?
-
---4s/bJpmTUQ8gJs0P
+--N/6iDJYGLS5Zr1Py
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVS18KAAoJECTWi3JdVIfQZS8H/0wi5Tb5ZB6mLjIQlWnrH1E9
-GhISpSAwa3iVVLf+RRd+Wa3R0GN0Ib1gIRikEpU3DR9yeKFLCi/xHELGtJYid+R1
-+P9WkrnAbTc0zEGRIzy0D6AbEInz9dtewsuteMeN7zCKQJPEwS5KLAbiR+2DIUEl
-39tAJYi1NYGzeTJ2KVgOjgxTLQynwR4oviJk50sRjubyzpgvRcJnKp8QoykOOWoQ
-d3tGqHZEx9zDw7jucln8UchqpxjpeyiBvhZwXqde1xuztZWzx17RBsjQh4MVK+E9
-B8ugOSN+uon1ILe9vMBw1smy/oHnMcC4qLZzsfGxuqtt+SBkMsqpEdkwTQ6kUEM=
-=1DsB
+iQEcBAEBCAAGBQJVS2WZAAoJECTWi3JdVIfQ3YsH/2y6TL2Hg0kD+ypq3ndzoOdf
+Uy58liFr8oGSqHNMl+iA5gXBlHMjhUW01DkX4eP6YnExZI30vEdAadgW9fykMGlb
+rWedHJ8tbk0/RJYtcb5QmlgOtUQrdUarpg2/NzTjVDEGz49yFlVbGWs7zE88vfpe
+9mgP4V5nnGVCnDvMnrCkwRB1DBWkN2oPiQKwmR4RpyE87+stezMgq9MppRTmj+NY
+C0oEx8pWZ34SFrYu68tmF4EYMUpicNegpNk3IXQ1Ww3dVzMF/zXrlk8TMtfko0sJ
+XVVGXtXPnZITFt5zYOrTrTCn1ZELy3sXJMl9ldzBMhE3DVjdP8cXvmgjCZ37M3Q=
+=EJiZ
 -----END PGP SIGNATURE-----
 
---4s/bJpmTUQ8gJs0P--
+--N/6iDJYGLS5Zr1Py--
 
---===============7431612418243128158==
+--===============2818550119495826095==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7431612418243128158==--
+--===============2818550119495826095==--
