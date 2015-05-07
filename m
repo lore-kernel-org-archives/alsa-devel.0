@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: dapm: Break out of widget search
- when source and sink are located
-Date: Thu, 7 May 2015 12:25:50 +0100
-Message-ID: <20150507112550.GT15510@sirena.org.uk>
-References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
+Date: Thu, 07 May 2015 12:26:01 +0100
+Message-ID: <1430997961.17543.38.camel@loki>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-3-git-send-email-bardliao@realtek.com>
+ <1430837158.8043.61.camel@loki>
+ <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3879475385100023333=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E38972606E0
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 13:26:02 +0200 (CEST)
-In-Reply-To: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C11EA261546
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 13:26:08 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+To: Bard Liao <bardliao@realtek.com>, Rafael Wysocki <rafael.j.wysocki@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2015-05-07 at 05:34 +0000, Bard Liao wrote:
+> > > > +static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct
+> > > > +device_node *np) {
+> > > > + rt5645->pdata.in2_diff = of_property_read_bool(np,
+> > > > +         "realtek,in2-differential");
+> > > > + of_property_read_u32(np,
+> > > > +         "realtek,dmic1-data-pin",
+> > &rt5645->pdata.dmic1_data_pin);
+> > >
+> > > We should really be using device_property_() instead of
+> of_property_()
+> > > APIs since we will have to support both DT and ACPI properties.
+> 
+> Unfortunately, I can't find a way to test it.
 
---===============3879475385100023333==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fNiTSQzYLOUQOoB2"
-Content-Disposition: inline
+device_property() API calls abstract the device tree calls and ACPI
+calls. So testing with your DT based HW will work.
 
+> Is that ok we just replace all of_property_ with device_property_?
 
---fNiTSQzYLOUQOoB2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, that's the intention.
 
-On Thu, May 07, 2015 at 11:33:58AM +0100, Charles Keepax wrote:
-> Currently snd_soc_dapm_add_route will continue to search the widget list
-> even after both the source and sink for the route have been located.
-> This patch breaks out of the search when both are located giving a
-> small improvement in probe time for drivers.
+> Also, is there any corresponding API for of_get_named_gpio?
+> Or we can replace it with device_property_read_u32?
+> I tried the change above, and it can build. However I don't know
+> if it can work.
 
-Applied, thanks.
+Oh, I think that's a question for Rafael. I think the intention is to
+have a 1:1 mapping between the APIs so that there are no gaps ?
 
---fNiTSQzYLOUQOoB2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVS0u+AAoJECTWi3JdVIfQk3MH/RWDpsCOU1CwPJ37MuUE20gE
-CbmNBMDx+xr54baTIHJ6wiyFqES3+E9OKI0H0D+2nNmQ43IjjjQU+oSw5R9uPmUd
-5iCylRH5GjrL/GFoxvAYpAfH/7Na/eR/aO6qpk+CdDRRGbHBwtTTd3mvyCWxqnu7
-yI8Gvm17slQPZGmbiITr/2SUnYJX9JcScBQBBhVCz6QabqrQFBeyisQrM0AbPwp+
-VCDgNueqwCY7zBGa6XaiDZzLbUafrOGmkRhT3yqLGg2OaeJpMi+3aqDDditQ3GXQ
-MZqBBJjsqnQIMNOh9P9YPcEZRIJausrMHolY/BpSXhMakpt3baeCqkquyTY/ZoI=
-=DPaZ
------END PGP SIGNATURE-----
-
---fNiTSQzYLOUQOoB2--
-
---===============3879475385100023333==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3879475385100023333==--
+Liam
