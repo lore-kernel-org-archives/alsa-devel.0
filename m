@@ -1,19 +1,20 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
-Date: Thu, 07 May 2015 12:26:01 +0100
-Message-ID: <1430997961.17543.38.camel@loki>
-References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
- <1430833322-13531-3-git-send-email-bardliao@realtek.com>
- <1430837158.8043.61.camel@loki>
- <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Add cache to speed up
+	adding of routes
+Date: Thu, 7 May 2015 13:35:57 +0100
+Message-ID: <20150507123557.GA3480@opensource.wolfsonmicro.com>
+References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <554B4ADF.3000801@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C11EA261546
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 13:26:08 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C4522619E9
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 14:35:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <554B4ADF.3000801@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Rafael Wysocki <rafael.j.wysocki@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "broonie@kernel.org" <broonie@kernel.org>, Flove <flove@realtek.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-05-07 at 05:34 +0000, Bard Liao wrote:
-> > > > +static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct
-> > > > +device_node *np) {
-> > > > + rt5645->pdata.in2_diff = of_property_read_bool(np,
-> > > > +         "realtek,in2-differential");
-> > > > + of_property_read_u32(np,
-> > > > +         "realtek,dmic1-data-pin",
-> > &rt5645->pdata.dmic1_data_pin);
-> > >
-> > > We should really be using device_property_() instead of
-> of_property_()
-> > > APIs since we will have to support both DT and ACPI properties.
-> 
-> Unfortunately, I can't find a way to test it.
+On Thu, May 07, 2015 at 01:22:07PM +0200, Lars-Peter Clausen wrote:
+> On 05/07/2015 12:33 PM, Charles Keepax wrote:
+>> Some CODECs have a significant number of DAPM routes and for each route,
+>> when it is added to the card, the entire card widget list must be
+>> searched. When adding routes it is very likely, however, that adjacent
+>> routes will require adjacent widgets. For example all the routes for a
+>> mux are likely added in a block and the sink widget will be the same
+>> each time and it is also quite likely that the source widgets are
+>> sequential located in the widget list.
+>>
+>> This patch adds an optional cache argument to snd_soc_dapm_add_route, if
+>> given, this argument will hold the source and sink widgets from the last
+>> call to snd_soc_dapm_add_route. A small search of the widget list will
+>> be made from those points for both the sink and source. Currently this
+>> search only checks both the last widget and the one adjacent to it.
+>>
+>> On wm8280 which has approximately 500 widgets and 30000 routes (one of
+>> the largest CODECs in mainline), the number of paths that hit the cache
+>> is 24000, which significantly improves probe time.
+>
+> That's crazy! ;)
+>
+> I wonder if it makes sense to come up with a more machine readable blob  
+> format that can be pre-compiled where we don't have to search the widget  
+> list each time a route is added. Instead of having it reference the 
+> widgets by name use a index that points into an array of widgets. That 
+> makes the lookup time O(1).
+>
 
-device_property() API calls abstract the device tree calls and ACPI
-calls. So testing with your DT based HW will work.
+I don't think its necessary just yet we have one more slightly
+larger CODEC (700 widgets, 46000 routes), which we haven't
+managed to get around to upstreaming yet. But it looks like the
+size is levelling off about there for now and this solution is
+probably good enough for that size.
 
-> Is that ok we just replace all of_property_ with device_property_?
+>>
+>> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+>> ---
+>>   sound/soc/soc-dapm.c |   40 ++++++++++++++++++++++++++++++++++++++--
+>>   1 files changed, 38 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+>> index ea3348e..95d3ea5 100644
+>> --- a/sound/soc/soc-dapm.c
+>> +++ b/sound/soc/soc-dapm.c
+>> @@ -2585,8 +2585,26 @@ err:
+>>   	return ret;
+>>   }
+>>
+>> +static struct snd_soc_dapm_widget *
+>> +dapm_check_path_cache(const char *name, struct snd_soc_dapm_widget *w, int n)
+>> +{
+>> +	int i;
+>> +
+>> +	if (w) {
+>> +		for (i = 0; i < n; i++) {
+>> +			if (!strcmp(name, w->name))
+>> +				return w;
+>> +
+>> +			w = list_next_entry(w, list);
+>
+> This will return garbage if w is the last widget in the list.
+>
+> Otherwise the patch looks sensible.
+>
 
-Yes, that's the intention.
+Oops, thanks I will fix that up.
 
-> Also, is there any corresponding API for of_get_named_gpio?
-> Or we can replace it with device_property_read_u32?
-> I tried the change above, and it can build. However I don't know
-> if it can work.
-
-Oh, I think that's a question for Rafael. I think the intention is to
-have a 1:1 mapping between the APIs so that there are no gaps ?
-
-Liam
+Thanks,
+Charles
