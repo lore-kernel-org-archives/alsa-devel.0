@@ -1,80 +1,76 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Thu, 7 May 2015 11:41:03 +0100
-Message-ID: <20150507104102.GA2067@n2100.arm.linux.org.uk>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
- <s5ha8ymy3e2.wl-tiwai@suse.de>
- <20150405162034.GH13898@n2100.arm.linux.org.uk>
- <s5h4mouy14a.wl-tiwai@suse.de>
- <20150405172608.GA12732@n2100.arm.linux.org.uk>
- <554A493C.5080106@iki.fi>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: dapm: Break out of widget search
+	when source and sink are located
+Date: Thu,  7 May 2015 11:33:58 +0100
+Message-ID: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <554A493C.5080106@iki.fi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Anssi Hannula <anssi.hannula@iki.fi>, Takashi Iwai <tiwai@suse.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54AA0260682
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 12:42:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXkgMDYsIDIwMTUgYXQgMDg6MDI6NTJQTSArMDMwMCwgQW5zc2kgSGFubnVsYSB3
-cm90ZToKPiAwNS4wNC4yMDE1LCAyMDoyNiwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IGtpcmpv
-aXR0aToKPiA+IE9uIFN1biwgQXByIDA1LCAyMDE1IGF0IDA2OjQ2OjEzUE0gKzAyMDAsIFRha2Fz
-aGkgSXdhaSB3cm90ZToKPiA+Pgo+ID4+IE9uZSBhbm90aGVyIHF1ZXN0aW9uOiBkb24ndCB3ZSBu
-ZWVkIHRvIGRlYWwgd2l0aCB0aGUgc2FtcGxlIGJpdHMgaW4KPiA+PiBzYWRbMl0/Cj4gPiAKPiA+
-IEl0IHNob3VsZCwgYnV0IEknbSB2ZXJ5IHdhcnkgYWJvdXQgZG9pbmcgdGhhdCB3aXRob3V0IHNl
-ZWluZyBtb3JlCj4gPiBleGFtcGxlcyBvZiByZWFsIFNBRHMuICBSaWdodCBub3csIGFsbCBteSBl
-eGFtcGxlcyBvbmx5IHN1cHBvcnQKPiA+IG9uZSBTQUQgd2l0aCBlaXRoZXIgMiBjaGFubmVsIG9y
-IDYgY2hhbm5lbCBhdWRpbyBhdCB0aGUgc3RhbmRhcmQKPiA+IChiYXNpYykgMzIsIDQ0LjEgYW5k
-IDQ4a0h6IHJhdGVzLgo+ID4gCj4gPiBUaGUgSERNSSAvIENFQSBzcGVjcyBhcmUgdmVyeSBsb29z
-ZSBpbiB0aGVpciB3b3JkaW5nIGFib3V0IHRoZQo+ID4gc2hvcnQgYXVkaW8gZGVzY3JpcHRvcnMu
-ICBJJ3ZlIG5vIGlkZWEgd2hldGhlciBhIHNpbmsgY2FuIHByb3ZpZGUKPiA+IChmb3IgZXhhbXBs
-ZSkgZGVzY3JpcHRvcnMgc3VjaCBhczoKPiA+IAo+ID4gCUxQQ00sIDYgY2hhbm5lbCAzMiwgNDQu
-MSwgNDhrSHoKPiA+IAlMUENNLCAyIGNoYW5uZWwsIDMyLCA0NC4xLCA0OCwgOTYsIDE5MmtIego+
-ID4gCj4gPiBvciB3aGV0aGVyIGhhdmUgdG8gZGVzY3JpYmUgdGhhdCBhcyBhIHNpbmdsZSBkZXNj
-cmlwdG9yLiAgSSBvbmx5Cj4gPiBoYXZlIHR3byBUVnMgdG8gdGVzdCB3aXRoIGhlcmUuCj4gCj4g
-Rm9yIHRoZSByZWNvcmQsIHllcywgbXVsdGlwbGUgTFBDTSBTQURzIGFyZSByZWxhdGl2ZWx5IGNv
-bW1vbiwgYW5kIEkKPiB0aGluayBJJ3ZlIHNlZW4gc29tZSB0aGF0IG9mZmVyZWQgbW9yZSByYXRl
-cyBvbiBhIHN0ZXJlbyBTQUQgdGhhbiBvbiBhCj4gbXVsdGljaGFubmVsIFNBRCAobGlrZSBpbiB5
-b3VyIGV4YW1wbGUpLgoKT2theSwgc28gd2UgInRoaW5rIiB3ZSd2ZSBzZWVuIGl0IGluIHRoZSB3
-aWxkLi4uCgo+ID4gV2hhdCBJJ20gY29uY2VybmVkIGFib3V0IGlzIHRoYXQgd2hlbiB0aGUgQUxT
-QSBwYXJhbWV0ZXIgcmVmaW5pbmcKPiA+IHN0YXJ0cywgd2Ugc3RhcnQgd2l0aCAoZWcpIDItOCBj
-aGFubmVscywgMzItMTkya0h6LiAgR2l2ZW4gdGhhdCwKPiA+IGlmIHdlIGludm9rZSB0aGUgY2hh
-bm5lbCByZXN0cmljdGlvbiBiZWZvcmUgdGhlIHJhdGUgcmVzdHJpY3Rpb24sCj4gPiB3ZSB3b3Vs
-ZCBlbmQgdXAgbGltaXRpbmcgdG8gMiBjaGFubmVsIGF0IDMyLTE5MmtIei4gIElmIHdlIGFwcGx5
-Cj4gPiB0aGUgcmVzdHJpY3Rpb25zIGluIHRoZSBvcHBvc2l0ZSBvcmRlciwgd2UnZCByZXN0cmlj
-dCB0byA2Cj4gPiBjaGFubmVsLCAzMi00OGtIei4gIE5laXRoZXIgYXJlIG9idmlvdXNseSBjb3Jy
-ZWN0IGluIHRoaXMKPiA+IGNpcmN1bXN0YW5jZSwgYW5kIEkgZG9uJ3QgcmVhbGx5IHNlZSBhIHdh
-eSB0byBzb2x2ZSBpdCBnaXZlbiBteQo+ID4gdW5kZXJzdGFuZGluZyBvZiB0aGUgd2F5IEFMU0En
-cyBwYXJhbWV0ZXIgcmVmaW5lbWVudCB3b3Jrcy4KPiA+IAo+ID4gSSBzdXNwZWN0IHRoaXMgaXMg
-d2h5IG1vc3QgSERNSSBkcml2ZXJzIGFyZSBpbXBsZW1lbnRlZCBzdWNoIHRoYXQKPiA+IHRoZXkg
-dGFrZSB0aGUgbWF4aW11bSBjYXBhYmlsaXRpZXMgb3ZlciBhbGwgU0FEcywgd2hpY2ggd291bGQg
-ZW5kCj4gPiB1cCByZXN0cmljdGluZyBhdWRpbyBpbiB0aGUgYWJvdmUgY2FzZSB0bzogdXAgdG8g
-NiBjaGFubmVscywgYXQKPiA+IDMyLCA0NC4xLCA0OCwgOTYgYW5kIDE5MmtIeiwgZXZlbiB0aG91
-Z2ggNiBjaGFubmVsIEAgMTkya0h6IGlzbid0Cj4gPiBoYXNuJ3QgYmVlbiBpbmRpY2F0ZWQgYXMg
-c3VwcG9ydGVkLgo+ID4gCj4gPiBNb3N0IG9mIHRoaXMgaXMgc3BlY3VsYXRpb24gdGhvdWdoLCBi
-YXNlZCBvZmYgd2hhdCBpcyBpbiB0aGUKPiA+IGRvY3VtZW50YXRpb24uICBBcyBJIHNheSwgSSBk
-b24ndCBoYXZlIGVub3VnaCByZWFsLXdvcmxkIGV4YW1wbGVzCj4gPiB0byBnZXQgYSBmZWVsIGZv
-ciB3aGF0IG1hbnVmYWN0dXJlcnMgX2FjdHVhbGx5XyBkbyB0byBnaXZlIGEgaGludAo+ID4gYXMg
-dG8gaG93IHRoZSBkb2N1bWVudGF0aW9uIHNob3VsZCBiZSBpbnRlcnByZXRlZC4KCi4uLiBzbyB0
-aGlzIGlzIHByb2JhYmx5IGxlc3MgdGhhbiBzcGVjdWxhdGlvbi4KClNvLCBBTFNBIGd1cnVzLCBo
-b3cgZG8gd2UgaGFuZGxlIHRoaXM/ICBIb3cgZG8gd2UgYXJyYW5nZSB0aGUgcGFyYW1ldGVyCnJl
-c29sdXRpb24gc3VjaCB0aGF0IEFMU0EgY2FuIHBlcm1pdCBfZWl0aGVyXyAyIGNoYW5uZWxzIGF0
-IDE5MmtIeiBvciA2CmNoYW5uZWxzIGF0IDQ4a0h6LCBidXQgbm90IDYgY2hhbm5lbHMgYXQgMTky
-a0h6PyAgUmlnaHQgbm93LCBJIGRvbid0CnNlZSBob3cgdGhhdCdzIHBvc3NpYmxlLgoKLS0gCkZU
-VEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3du
-IDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJp
-LWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-L21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Currently snd_soc_dapm_add_route will continue to search the widget list
+even after both the source and sink for the route have been located.
+This patch breaks out of the search when both are located giving a
+small improvement in probe time for drivers.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+
+Note these patches depend on:
+
+commit 92fa12426741d52b39ec92ad77c9843d3fc2b3d6
+Author: Lars-Peter Clausen <lars@metafoo.de>
+Date:   Fri May 1 18:02:42 2015 +0200
+
+    ASoC: dapm: Add new widgets to the end of the widget list
+
+Thanks,
+Charles
+
+ sound/soc/soc-dapm.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a2e5f22..ea3348e 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2617,14 +2617,20 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ 	list_for_each_entry(w, &dapm->card->widgets, list) {
+ 		if (!wsink && !(strcmp(w->name, sink))) {
+ 			wtsink = w;
+-			if (w->dapm == dapm)
++			if (w->dapm == dapm) {
+ 				wsink = w;
++				if (wsource)
++					break;
++			}
+ 			continue;
+ 		}
+ 		if (!wsource && !(strcmp(w->name, source))) {
+ 			wtsource = w;
+-			if (w->dapm == dapm)
++			if (w->dapm == dapm) {
+ 				wsource = w;
++				if (wsink)
++					break;
++			}
+ 		}
+ 	}
+ 	/* use widget from another DAPM context if not found from this */
+-- 
+1.7.2.5
