@@ -1,19 +1,19 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH 2/2] ASoC: dapm: Add cache to speed up
- adding of routes
-Date: Thu, 7 May 2015 14:39:04 +0200
-Message-ID: <554B5CE8.7030200@topic.nl>
-References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <554B4ADF.3000801@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
+Date: Thu, 7 May 2015 13:51:42 +0100
+Message-ID: <20150507125142.GW15510@sirena.org.uk>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-3-git-send-email-bardliao@realtek.com>
+ <1430837158.8043.61.camel@loki>
+ <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5328855422955254988=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx6-out12.antispamcloud.com (mx6-out12.antispamcloud.com
- [95.211.2.203]) by alsa0.perex.cz (Postfix) with ESMTP id 2F61D262607
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 14:39:13 +0200 (CEST)
-In-Reply-To: <554B4ADF.3000801@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B16CA2650DB
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 15:06:45 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-77u/T24gMDctMDUtMTUgMTM6MjIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPiBPbiAwNS8w
-Ny8yMDE1IDEyOjMzIFBNLCBDaGFybGVzIEtlZXBheCB3cm90ZToKPj4gU29tZSBDT0RFQ3MgaGF2
-ZSBhIHNpZ25pZmljYW50IG51bWJlciBvZiBEQVBNIHJvdXRlcyBhbmQgZm9yIGVhY2ggcm91dGUs
-Cj4+IHdoZW4gaXQgaXMgYWRkZWQgdG8gdGhlIGNhcmQsIHRoZSBlbnRpcmUgY2FyZCB3aWRnZXQg
-bGlzdCBtdXN0IGJlCj4+IHNlYXJjaGVkLiBXaGVuIGFkZGluZyByb3V0ZXMgaXQgaXMgdmVyeSBs
-aWtlbHksIGhvd2V2ZXIsIHRoYXQgYWRqYWNlbnQKPj4gcm91dGVzIHdpbGwgcmVxdWlyZSBhZGph
-Y2VudCB3aWRnZXRzLiBGb3IgZXhhbXBsZSBhbGwgdGhlIHJvdXRlcyBmb3IgYQo+PiBtdXggYXJl
-IGxpa2VseSBhZGRlZCBpbiBhIGJsb2NrIGFuZCB0aGUgc2luayB3aWRnZXQgd2lsbCBiZSB0aGUg
-c2FtZQo+PiBlYWNoIHRpbWUgYW5kIGl0IGlzIGFsc28gcXVpdGUgbGlrZWx5IHRoYXQgdGhlIHNv
-dXJjZSB3aWRnZXRzIGFyZQo+PiBzZXF1ZW50aWFsIGxvY2F0ZWQgaW4gdGhlIHdpZGdldCBsaXN0
-Lgo+Pgo+PiBUaGlzIHBhdGNoIGFkZHMgYW4gb3B0aW9uYWwgY2FjaGUgYXJndW1lbnQgdG8gc25k
-X3NvY19kYXBtX2FkZF9yb3V0ZSwgaWYKPj4gZ2l2ZW4sIHRoaXMgYXJndW1lbnQgd2lsbCBob2xk
-IHRoZSBzb3VyY2UgYW5kIHNpbmsgd2lkZ2V0cyBmcm9tIHRoZSBsYXN0Cj4+IGNhbGwgdG8gc25k
-X3NvY19kYXBtX2FkZF9yb3V0ZS4gQSBzbWFsbCBzZWFyY2ggb2YgdGhlIHdpZGdldCBsaXN0IHdp
-bGwKPj4gYmUgbWFkZSBmcm9tIHRob3NlIHBvaW50cyBmb3IgYm90aCB0aGUgc2luayBhbmQgc291
-cmNlLiBDdXJyZW50bHkgdGhpcwo+PiBzZWFyY2ggb25seSBjaGVja3MgYm90aCB0aGUgbGFzdCB3
-aWRnZXQgYW5kIHRoZSBvbmUgYWRqYWNlbnQgdG8gaXQuCj4+Cj4+IE9uIHdtODI4MCB3aGljaCBo
-YXMgYXBwcm94aW1hdGVseSA1MDAgd2lkZ2V0cyBhbmQgMzAwMDAgcm91dGVzIChvbmUgb2YKPj4g
-dGhlIGxhcmdlc3QgQ09ERUNzIGluIG1haW5saW5lKSwgdGhlIG51bWJlciBvZiBwYXRocyB0aGF0
-IGhpdCB0aGUgY2FjaGUKPj4gaXMgMjQwMDAsIHdoaWNoIHNpZ25pZmljYW50bHkgaW1wcm92ZXMg
-cHJvYmUgdGltZS4KPgo+IFRoYXQncyBjcmF6eSEgOykKPgo+IEkgd29uZGVyIGlmIGl0IG1ha2Vz
-IHNlbnNlIHRvIGNvbWUgdXAgd2l0aCBhIG1vcmUgbWFjaGluZSByZWFkYWJsZSBibG9iIGZvcm1h
-dAo+IHRoYXQgY2FuIGJlIHByZS1jb21waWxlZCB3aGVyZSB3ZSBkb24ndCBoYXZlIHRvIHNlYXJj
-aCB0aGUgd2lkZ2V0IGxpc3QgZWFjaAo+IHRpbWUgYSByb3V0ZSBpcyBhZGRlZC4gSW5zdGVhZCBv
-ZiBoYXZpbmcgaXQgcmVmZXJlbmNlIHRoZSB3aWRnZXRzIGJ5IG5hbWUgdXNlCj4gYSBpbmRleCB0
-aGF0IHBvaW50cyBpbnRvIGFuIGFycmF5IG9mIHdpZGdldHMuIFRoYXQgbWFrZXMgdGhlIGxvb2t1
-cCB0aW1lIE8oMSkuCgpTdG9yaW5nIHRoZSBuYW1lcyBpbiBhIGJ0cmVlIG9yIHNpbWlsYXIgc3Ry
-dWN0dXJlIHNob3VsZCBiZSBhIG5pY2UgYmFsYW5jZS4gClRoYXQgd291bGQgbWFrZSBuYW1lIGxv
-b2t1cHMgTyhsb2cobikpLCBtZWFuaW5nIHRoYXQgaXQgd291bGQgZmluZCBhIG5hbWUgaW4gCjMw
-MDAwIGl0ZW1zIGluIGFib3V0IDUgc3RlcHMuCgpBIGhhc2h0YWJsZSBvciBwcmVjb21waWxlZCAi
-aWQiIHdvdWxkIG9ubHkgYmUgdmlhYmxlIGlmIHRoZSB3aG9sZSB0YWJsZSBjYW4gYmUgCmNhbGN1
-bGF0ZWQgYXQgY29tcGlsZSB0aW1lLiBXaXRoIG1hbnkgZGV2aWNlcyBiZWluZyBob3QtcGx1Z2dh
-YmxlIGFuZCBjcmVhdGluZyAKbXVsdGlwbGUgaW5zdGFuY2VzIGF0IHJ1bnRpbWUsIEkgZG9uJ3Qg
-cmVhbGx5IHRoaW5rIHRoYXQnZCBiZSBmZWFzaWJsZSAtIGlmIGl0IAp3ZXJlLCB5b3UgbWlnaHQg
-YXMgd2VsbCBsZXQgdGhlIGxpbmtlciBmaWxsIGluIHRoZSByaWdodCBwb2ludGVyIGFuZCBza2lw
-IHRoZSAKd2hvbGUgc2VhcmNoaW5nLW9uLW5hbWUgdGhpbmcuCgpJZiBuZXcgZW50cmllcyBhcmUg
-YmVpbmcgYWRkZWQgaW4gYXNjZW5kaW5nIG9yZGVyLCBpbnNlcnRpbmcgaW50byB0aGUgYnRyZWUg
-aXMgCmEgZmFzdCBvcGVyYXRpb24gYXMgd2VsbC4KCkRyYXdiYWNrIGlzIHRoYXQgeW91J2xsIG5l
-ZWQgdG8gc3RvcmUgdGhlIGJ0cmVlIGdyYXBoIGluIG1lbW9yeSBzbyBpdCdsbCAKY29uc3VtZSBh
-IGJpdCBtb3JlIChzb21ldGhpbmcgbGlrZSB0d28gZXh0cmEgcG9pbnRlcnMgcGVyIGVudHJ5KS4K
-CiA+IC4uLgoKCgpLaW5kIHJlZ2FyZHMsCgpNaWtlIExvb2lqbWFucwpTeXN0ZW0gRXhwZXJ0CgpU
-T1BJQyBFbWJlZGRlZCBQcm9kdWN0cwpFaW5kaG92ZW5zZXdlZyAzMi1DLCBOTC01NjgzIEtIIEJl
-c3QKUG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9vbjogKzMxICgwKSA0OTkgMzMg
-NjkgNzkKVGVsZWZheDogKzMxICgwKSA0OTkgMzMgNjkgNzAKRS1tYWlsOiBtaWtlLmxvb2lqbWFu
-c0B0b3BpY3Byb2R1Y3RzLmNvbQpXZWJzaXRlOiB3d3cudG9waWNwcm9kdWN0cy5jb20KClBsZWFz
-ZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsCgoK
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============5328855422955254988==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="U/MfkCnVXJJtEFur"
+Content-Disposition: inline
+
+
+--U/MfkCnVXJJtEFur
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 07, 2015 at 05:34:27AM +0000, Bard Liao wrote:
+
+> > > We should really be using device_property_() instead of of_property_()
+> > > APIs since we will have to support both DT and ACPI properties.
+
+> Unfortunately, I can't find a way to test it.
+
+Why can't you test it - weren't you testing your original version of the
+code?
+
+> Is that ok we just replace all of_property_ with device_property_?
+> Also, is there any corresponding API for of_get_named_gpio?
+> Or we can replace it with device_property_read_u32?
+> I tried the change above, and it can build. However I don't know
+> if it can work.
+
+You shouldn't be using of_get_named_gpio() for DT stuff either, use
+gpiod_get() which follows the usual pattern of taking a string which is
+used to do the lookup with whatever firmware is in use.
+
+--U/MfkCnVXJJtEFur
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVS1/dAAoJECTWi3JdVIfQmVkH/Re4REwYGr66mCoC3uI+kYlp
+TdXn4QsfoisqcT5UJh2s7pD4tKcJgPR77bKWmpOiyJOTJvIAt7i70PxVSvgjy2IX
+bhAcQotPxq96US0faxw4wZ/RiJ2w8zyMRydSL+rJEkvAnVhjTbSJUX2kEW+IYwOI
+tva6qHtx8VvIehfnGM4jq5aEWOSlon9Mty1xZdLPpgMDWzlPf0PSZxItwv29nH+J
+WDeYgQeDS7QG1dDMtWc8t8zcGoKwcWp1xkLB4Hw/Vxdf3eK/V1uJF4bi2RMTJpcs
+q5nIRjLpC8+plnJludsWfPIJkIWzWbK0DGeTmp1Y1wFFfWzwfahqAXxGj16LOxA=
+=xQJh
+-----END PGP SIGNATURE-----
+
+--U/MfkCnVXJJtEFur--
+
+--===============5328855422955254988==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5328855422955254988==--
