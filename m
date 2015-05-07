@@ -1,50 +1,46 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 2/4] Documentation: devicetree: sound: Add
- documentation for gtm601 codec
-Date: Thu, 7 May 2015 19:45:33 +0100
-Message-ID: <20150507184533.GN22845@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/4] ASoC: Add gtm601 codec driver
+Date: Thu, 7 May 2015 19:50:52 +0100
+Message-ID: <20150507185052.GO22845@sirena.org.uk>
 References: <1430944730-10480-1-git-send-email-marek@goldelico.com>
- <1430944730-10480-3-git-send-email-marek@goldelico.com>
+ <1430944730-10480-2-git-send-email-marek@goldelico.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TLazG2gG5ZspYpvE"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="vYN84Y4CF9qFGA/I"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1430944730-10480-3-git-send-email-marek-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marek Belisko <marek-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>
-Cc: perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, hns-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <1430944730-10480-2-git-send-email-marek@goldelico.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marek Belisko <marek@goldelico.com>
+Cc: perex@perex.cz, tiwai@suse.de, hns@goldelico.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---TLazG2gG5ZspYpvE
+--vYN84Y4CF9qFGA/I
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 06, 2015 at 10:38:48PM +0200, Marek Belisko wrote:
-> Add small documentation for gtm601 UMTS modem audio interface.
+On Wed, May 06, 2015 at 10:38:47PM +0200, Marek Belisko wrote:
+> This driver add PCM interface to a GTM601 UMTS modem chip.
+> There is no configuration interface.
 
-git am complains that this patch is corrupt so I can't apply it.  Please
-also use subject lines reflecting the style for the subsystem.
+Applied, thanks.  Please remember to CC maintainers on patches, you've
+missed Liam for some reason.
 
---TLazG2gG5ZspYpvE
+--vYN84Y4CF9qFGA/I
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVS7LMAAoJECTWi3JdVIfQJ3gH/02YTFuE3SRAJE9O/+Gmz9jD
-dDWsXcnIxrX924Wsw3ORrxyMDe1qQaB4Pzg293XjQBoRyNLKep83T+C1FbKidx1y
-pYfK8Py7r8Bp2G3wTH7O3VwJlfFS4Hmi6mYGuvMK3rHUKcSVJAQ6uM87yuHl8ZKz
-hknTI+sootMazTJwViXXhWfsabwRG7FD7NRT1mhy14qE9iIPhPLONJc/9aGCAx7c
-O3n7OWweDacSnRlEnTaQHBPuNzZpWlQp+oTchyEp+EhVdVYc3iI4I9FPTrjAT7xy
-aNchTJKfGz/d9+IZYBMhW/uO8yfREiRlqgqyV4ZftibSeVEj1n8/3izCO9CcorU=
-=vsJp
+iQEcBAEBCAAGBQJVS7QLAAoJECTWi3JdVIfQI80H/iOpw9SQlkJk+dLwxdAFvuqC
+5vAQyKfqunNMUiAHKn5wckrtZKn0ljoV+rC/iN42H7FAJhCAdVlGpSCyEMl1gw10
+ybpyEhGYLLJa8DlMCYwRw97yuLRgjT/jJvkL6QXuwQzAhTw5T+XnWLllSxiUVerf
+4x6/c4h2gwp44+PHhLFPYhyOgRa2baFz2/pXKbukhepbv9gKb7GE9yfnijSr9Bev
+gL80ChgmWnKFsDzgCsxg+v9QkVLzcxx4z4HQMx+l8NyIZGxGDzk78syWnebajD7W
+yizd0cmFhi3pUoBOgWaaqAkoY0uMtdvn0jfMtE6QYJY2+nZKvqFsTayEg77XCPs=
+=ZRW/
 -----END PGP SIGNATURE-----
 
---TLazG2gG5ZspYpvE--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--vYN84Y4CF9qFGA/I--
