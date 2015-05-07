@@ -1,19 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
 Subject: Re: [PATCH 2/2] ASoC: dapm: Add cache to speed up
-	adding of routes
-Date: Thu, 7 May 2015 13:35:57 +0100
-Message-ID: <20150507123557.GA3480@opensource.wolfsonmicro.com>
+ adding of routes
+Date: Thu, 7 May 2015 14:39:04 +0200
+Message-ID: <554B5CE8.7030200@topic.nl>
 References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
  <554B4ADF.3000801@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C4522619E9
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 14:35:58 +0200 (CEST)
-Content-Disposition: inline
+Received: from mx6-out12.antispamcloud.com (mx6-out12.antispamcloud.com
+ [95.211.2.203]) by alsa0.perex.cz (Postfix) with ESMTP id 2F61D262607
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 14:39:13 +0200 (CEST)
 In-Reply-To: <554B4ADF.3000801@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,77 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 07, 2015 at 01:22:07PM +0200, Lars-Peter Clausen wrote:
-> On 05/07/2015 12:33 PM, Charles Keepax wrote:
->> Some CODECs have a significant number of DAPM routes and for each route,
->> when it is added to the card, the entire card widget list must be
->> searched. When adding routes it is very likely, however, that adjacent
->> routes will require adjacent widgets. For example all the routes for a
->> mux are likely added in a block and the sink widget will be the same
->> each time and it is also quite likely that the source widgets are
->> sequential located in the widget list.
->>
->> This patch adds an optional cache argument to snd_soc_dapm_add_route, if
->> given, this argument will hold the source and sink widgets from the last
->> call to snd_soc_dapm_add_route. A small search of the widget list will
->> be made from those points for both the sink and source. Currently this
->> search only checks both the last widget and the one adjacent to it.
->>
->> On wm8280 which has approximately 500 widgets and 30000 routes (one of
->> the largest CODECs in mainline), the number of paths that hit the cache
->> is 24000, which significantly improves probe time.
->
-> That's crazy! ;)
->
-> I wonder if it makes sense to come up with a more machine readable blob  
-> format that can be pre-compiled where we don't have to search the widget  
-> list each time a route is added. Instead of having it reference the 
-> widgets by name use a index that points into an array of widgets. That 
-> makes the lookup time O(1).
->
-
-I don't think its necessary just yet we have one more slightly
-larger CODEC (700 widgets, 46000 routes), which we haven't
-managed to get around to upstreaming yet. But it looks like the
-size is levelling off about there for now and this solution is
-probably good enough for that size.
-
->>
->> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
->> ---
->>   sound/soc/soc-dapm.c |   40 ++++++++++++++++++++++++++++++++++++++--
->>   1 files changed, 38 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
->> index ea3348e..95d3ea5 100644
->> --- a/sound/soc/soc-dapm.c
->> +++ b/sound/soc/soc-dapm.c
->> @@ -2585,8 +2585,26 @@ err:
->>   	return ret;
->>   }
->>
->> +static struct snd_soc_dapm_widget *
->> +dapm_check_path_cache(const char *name, struct snd_soc_dapm_widget *w, int n)
->> +{
->> +	int i;
->> +
->> +	if (w) {
->> +		for (i = 0; i < n; i++) {
->> +			if (!strcmp(name, w->name))
->> +				return w;
->> +
->> +			w = list_next_entry(w, list);
->
-> This will return garbage if w is the last widget in the list.
->
-> Otherwise the patch looks sensible.
->
-
-Oops, thanks I will fix that up.
-
-Thanks,
-Charles
+77u/T24gMDctMDUtMTUgMTM6MjIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPiBPbiAwNS8w
+Ny8yMDE1IDEyOjMzIFBNLCBDaGFybGVzIEtlZXBheCB3cm90ZToKPj4gU29tZSBDT0RFQ3MgaGF2
+ZSBhIHNpZ25pZmljYW50IG51bWJlciBvZiBEQVBNIHJvdXRlcyBhbmQgZm9yIGVhY2ggcm91dGUs
+Cj4+IHdoZW4gaXQgaXMgYWRkZWQgdG8gdGhlIGNhcmQsIHRoZSBlbnRpcmUgY2FyZCB3aWRnZXQg
+bGlzdCBtdXN0IGJlCj4+IHNlYXJjaGVkLiBXaGVuIGFkZGluZyByb3V0ZXMgaXQgaXMgdmVyeSBs
+aWtlbHksIGhvd2V2ZXIsIHRoYXQgYWRqYWNlbnQKPj4gcm91dGVzIHdpbGwgcmVxdWlyZSBhZGph
+Y2VudCB3aWRnZXRzLiBGb3IgZXhhbXBsZSBhbGwgdGhlIHJvdXRlcyBmb3IgYQo+PiBtdXggYXJl
+IGxpa2VseSBhZGRlZCBpbiBhIGJsb2NrIGFuZCB0aGUgc2luayB3aWRnZXQgd2lsbCBiZSB0aGUg
+c2FtZQo+PiBlYWNoIHRpbWUgYW5kIGl0IGlzIGFsc28gcXVpdGUgbGlrZWx5IHRoYXQgdGhlIHNv
+dXJjZSB3aWRnZXRzIGFyZQo+PiBzZXF1ZW50aWFsIGxvY2F0ZWQgaW4gdGhlIHdpZGdldCBsaXN0
+Lgo+Pgo+PiBUaGlzIHBhdGNoIGFkZHMgYW4gb3B0aW9uYWwgY2FjaGUgYXJndW1lbnQgdG8gc25k
+X3NvY19kYXBtX2FkZF9yb3V0ZSwgaWYKPj4gZ2l2ZW4sIHRoaXMgYXJndW1lbnQgd2lsbCBob2xk
+IHRoZSBzb3VyY2UgYW5kIHNpbmsgd2lkZ2V0cyBmcm9tIHRoZSBsYXN0Cj4+IGNhbGwgdG8gc25k
+X3NvY19kYXBtX2FkZF9yb3V0ZS4gQSBzbWFsbCBzZWFyY2ggb2YgdGhlIHdpZGdldCBsaXN0IHdp
+bGwKPj4gYmUgbWFkZSBmcm9tIHRob3NlIHBvaW50cyBmb3IgYm90aCB0aGUgc2luayBhbmQgc291
+cmNlLiBDdXJyZW50bHkgdGhpcwo+PiBzZWFyY2ggb25seSBjaGVja3MgYm90aCB0aGUgbGFzdCB3
+aWRnZXQgYW5kIHRoZSBvbmUgYWRqYWNlbnQgdG8gaXQuCj4+Cj4+IE9uIHdtODI4MCB3aGljaCBo
+YXMgYXBwcm94aW1hdGVseSA1MDAgd2lkZ2V0cyBhbmQgMzAwMDAgcm91dGVzIChvbmUgb2YKPj4g
+dGhlIGxhcmdlc3QgQ09ERUNzIGluIG1haW5saW5lKSwgdGhlIG51bWJlciBvZiBwYXRocyB0aGF0
+IGhpdCB0aGUgY2FjaGUKPj4gaXMgMjQwMDAsIHdoaWNoIHNpZ25pZmljYW50bHkgaW1wcm92ZXMg
+cHJvYmUgdGltZS4KPgo+IFRoYXQncyBjcmF6eSEgOykKPgo+IEkgd29uZGVyIGlmIGl0IG1ha2Vz
+IHNlbnNlIHRvIGNvbWUgdXAgd2l0aCBhIG1vcmUgbWFjaGluZSByZWFkYWJsZSBibG9iIGZvcm1h
+dAo+IHRoYXQgY2FuIGJlIHByZS1jb21waWxlZCB3aGVyZSB3ZSBkb24ndCBoYXZlIHRvIHNlYXJj
+aCB0aGUgd2lkZ2V0IGxpc3QgZWFjaAo+IHRpbWUgYSByb3V0ZSBpcyBhZGRlZC4gSW5zdGVhZCBv
+ZiBoYXZpbmcgaXQgcmVmZXJlbmNlIHRoZSB3aWRnZXRzIGJ5IG5hbWUgdXNlCj4gYSBpbmRleCB0
+aGF0IHBvaW50cyBpbnRvIGFuIGFycmF5IG9mIHdpZGdldHMuIFRoYXQgbWFrZXMgdGhlIGxvb2t1
+cCB0aW1lIE8oMSkuCgpTdG9yaW5nIHRoZSBuYW1lcyBpbiBhIGJ0cmVlIG9yIHNpbWlsYXIgc3Ry
+dWN0dXJlIHNob3VsZCBiZSBhIG5pY2UgYmFsYW5jZS4gClRoYXQgd291bGQgbWFrZSBuYW1lIGxv
+b2t1cHMgTyhsb2cobikpLCBtZWFuaW5nIHRoYXQgaXQgd291bGQgZmluZCBhIG5hbWUgaW4gCjMw
+MDAwIGl0ZW1zIGluIGFib3V0IDUgc3RlcHMuCgpBIGhhc2h0YWJsZSBvciBwcmVjb21waWxlZCAi
+aWQiIHdvdWxkIG9ubHkgYmUgdmlhYmxlIGlmIHRoZSB3aG9sZSB0YWJsZSBjYW4gYmUgCmNhbGN1
+bGF0ZWQgYXQgY29tcGlsZSB0aW1lLiBXaXRoIG1hbnkgZGV2aWNlcyBiZWluZyBob3QtcGx1Z2dh
+YmxlIGFuZCBjcmVhdGluZyAKbXVsdGlwbGUgaW5zdGFuY2VzIGF0IHJ1bnRpbWUsIEkgZG9uJ3Qg
+cmVhbGx5IHRoaW5rIHRoYXQnZCBiZSBmZWFzaWJsZSAtIGlmIGl0IAp3ZXJlLCB5b3UgbWlnaHQg
+YXMgd2VsbCBsZXQgdGhlIGxpbmtlciBmaWxsIGluIHRoZSByaWdodCBwb2ludGVyIGFuZCBza2lw
+IHRoZSAKd2hvbGUgc2VhcmNoaW5nLW9uLW5hbWUgdGhpbmcuCgpJZiBuZXcgZW50cmllcyBhcmUg
+YmVpbmcgYWRkZWQgaW4gYXNjZW5kaW5nIG9yZGVyLCBpbnNlcnRpbmcgaW50byB0aGUgYnRyZWUg
+aXMgCmEgZmFzdCBvcGVyYXRpb24gYXMgd2VsbC4KCkRyYXdiYWNrIGlzIHRoYXQgeW91J2xsIG5l
+ZWQgdG8gc3RvcmUgdGhlIGJ0cmVlIGdyYXBoIGluIG1lbW9yeSBzbyBpdCdsbCAKY29uc3VtZSBh
+IGJpdCBtb3JlIChzb21ldGhpbmcgbGlrZSB0d28gZXh0cmEgcG9pbnRlcnMgcGVyIGVudHJ5KS4K
+CiA+IC4uLgoKCgpLaW5kIHJlZ2FyZHMsCgpNaWtlIExvb2lqbWFucwpTeXN0ZW0gRXhwZXJ0CgpU
+T1BJQyBFbWJlZGRlZCBQcm9kdWN0cwpFaW5kaG92ZW5zZXdlZyAzMi1DLCBOTC01NjgzIEtIIEJl
+c3QKUG9zdGJ1cyA0NDAsIE5MLTU2ODAgQUsgQmVzdApUZWxlZm9vbjogKzMxICgwKSA0OTkgMzMg
+NjkgNzkKVGVsZWZheDogKzMxICgwKSA0OTkgMzMgNjkgNzAKRS1tYWlsOiBtaWtlLmxvb2lqbWFu
+c0B0b3BpY3Byb2R1Y3RzLmNvbQpXZWJzaXRlOiB3d3cudG9waWNwcm9kdWN0cy5jb20KClBsZWFz
+ZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsCgoK
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
