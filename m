@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
-Date: Thu, 7 May 2015 13:51:42 +0100
-Message-ID: <20150507125142.GW15510@sirena.org.uk>
-References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
- <1430833322-13531-3-git-send-email-bardliao@realtek.com>
- <1430837158.8043.61.camel@loki>
- <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Add cache to speed up
+	adding of routes
+Date: Thu, 7 May 2015 13:48:11 +0100
+Message-ID: <20150507124811.GV15510@sirena.org.uk>
+References: <1430994839-32584-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5328855422955254988=="
+Content-Type: multipart/mixed; boundary="===============7431612418243128158=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B16CA2650DB
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 15:06:45 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC312650DB
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 15:06:59 +0200 (CEST)
+In-Reply-To: <1430994839-32584-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Flove <flove@realtek.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5328855422955254988==
+--===============7431612418243128158==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U/MfkCnVXJJtEFur"
+	protocol="application/pgp-signature"; boundary="4s/bJpmTUQ8gJs0P"
 Content-Disposition: inline
 
 
---U/MfkCnVXJJtEFur
+--4s/bJpmTUQ8gJs0P
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 07, 2015 at 05:34:27AM +0000, Bard Liao wrote:
+On Thu, May 07, 2015 at 11:33:59AM +0100, Charles Keepax wrote:
+> Some CODECs have a significant number of DAPM routes and for each route,
+> when it is added to the card, the entire card widget list must be
 
-> > > We should really be using device_property_() instead of of_property_()
-> > > APIs since we will have to support both DT and ACPI properties.
+The idea here is good but I'm having a hard time loving the
+implementation.  It feels like it's hacking this specific implementation
+in many different places without really abstracting things - having a
+neat trick hidden in one place would be one thinng but it's spread
+through several different places.
 
-> Unfortunately, I can't find a way to test it.
+> +static struct snd_soc_dapm_widget *
+> +dapm_check_path_cache(const char *name, struct snd_soc_dapm_widget *w, int n)
+> +{
+> +	int i;
+> +
+> +	if (w) {
+> +		for (i = 0; i < n; i++) {
+> +			if (!strcmp(name, w->name))
+> +				return w;
+> +
+> +			w = list_next_entry(w, list);
+> +		}
 
-Why can't you test it - weren't you testing your original version of the
-code?
+This will not be happy if there are fewer than n entries to look at.
 
-> Is that ok we just replace all of_property_ with device_property_?
-> Also, is there any corresponding API for of_get_named_gpio?
-> Or we can replace it with device_property_read_u32?
-> I tried the change above, and it can build. However I don't know
-> if it can work.
+>  static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+> -				  const struct snd_soc_dapm_route *route)
+> +				  const struct snd_soc_dapm_route *route,
+> +				  struct snd_soc_dapm_path *cache)
 
-You shouldn't be using of_get_named_gpio() for DT stuff either, use
-gpiod_get() which follows the usual pattern of taking a string which is
-used to do the lookup with whatever firmware is in use.
+The fact that we're directly using the path structure as the type for
+the cache here is a warning flag, it means that everywhere that knows
+there is a cache at all needs to know about the specific type of the
+cache.  If we were to improve the cache in the future, for example doing
+something like building a hash that maps names to widgets for the
+duration of probe, then everywhere would need to change.
 
---U/MfkCnVXJJtEFur
+> +	if (cache) {
+> +		wsink = dapm_check_path_cache(sink, cache->sink, 2);
+> +		wsource = dapm_check_path_cache(source, cache->source, 2);
+> +
+> +		if (wsink && wsource)
+> +			goto skip_search;
+> +	}
+> +
+
+This is the only place where we have _check_path_cache() calls so n is
+always 2 here and it is unclear where that number comes from or what it
+means without going and peering at the implementation and the commit
+log.  It seems it would be better to hide that number inside the
+function.
+
+> +skip_search:
+> +	if (cache) {
+> +		cache->sink = wsink;
+> +		cache->source = wsource;
+> +	}
+> +
+
+Putting this into a store hit function would be good.
+
+>  	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
+>  	for (i = 0; i < num; i++) {
+> -		r = snd_soc_dapm_add_route(dapm, route);
+> +		r = snd_soc_dapm_add_route(dapm, route, &cache);
+
+Should we just have the cache in the dapm context or the card instead of
+locally?  It's only two pointers at the minute so there doesn't seem to
+be much cost from keeping it around and it might generate somme more
+hits for some use cases.  Or to put it another way why is the cache
+optional and created and re-created here like this?
+
+--4s/bJpmTUQ8gJs0P
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVS1/dAAoJECTWi3JdVIfQmVkH/Re4REwYGr66mCoC3uI+kYlp
-TdXn4QsfoisqcT5UJh2s7pD4tKcJgPR77bKWmpOiyJOTJvIAt7i70PxVSvgjy2IX
-bhAcQotPxq96US0faxw4wZ/RiJ2w8zyMRydSL+rJEkvAnVhjTbSJUX2kEW+IYwOI
-tva6qHtx8VvIehfnGM4jq5aEWOSlon9Mty1xZdLPpgMDWzlPf0PSZxItwv29nH+J
-WDeYgQeDS7QG1dDMtWc8t8zcGoKwcWp1xkLB4Hw/Vxdf3eK/V1uJF4bi2RMTJpcs
-q5nIRjLpC8+plnJludsWfPIJkIWzWbK0DGeTmp1Y1wFFfWzwfahqAXxGj16LOxA=
-=xQJh
+iQEcBAEBCAAGBQJVS18KAAoJECTWi3JdVIfQZS8H/0wi5Tb5ZB6mLjIQlWnrH1E9
+GhISpSAwa3iVVLf+RRd+Wa3R0GN0Ib1gIRikEpU3DR9yeKFLCi/xHELGtJYid+R1
++P9WkrnAbTc0zEGRIzy0D6AbEInz9dtewsuteMeN7zCKQJPEwS5KLAbiR+2DIUEl
+39tAJYi1NYGzeTJ2KVgOjgxTLQynwR4oviJk50sRjubyzpgvRcJnKp8QoykOOWoQ
+d3tGqHZEx9zDw7jucln8UchqpxjpeyiBvhZwXqde1xuztZWzx17RBsjQh4MVK+E9
+B8ugOSN+uon1ILe9vMBw1smy/oHnMcC4qLZzsfGxuqtt+SBkMsqpEdkwTQ6kUEM=
+=1DsB
 -----END PGP SIGNATURE-----
 
---U/MfkCnVXJJtEFur--
+--4s/bJpmTUQ8gJs0P--
 
---===============5328855422955254988==
+--===============7431612418243128158==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5328855422955254988==--
+--===============7431612418243128158==--
