@@ -1,40 +1,94 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: [PATCH v2 1/4] ASoC: Add gtm601 codec driver
-Date: Thu, 7 May 2015 20:57:59 +0200
-Message-ID: <CAAfyv34E_AqzbW5o19eNO8AyEaDERwXXt4dzNxo07BVo3RzXdg@mail.gmail.com>
-References: <1430944730-10480-1-git-send-email-marek@goldelico.com>
-	<1430944730-10480-2-git-send-email-marek@goldelico.com>
-	<20150507185052.GO22845@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: brownstone: Automatically disconnect
+	non-connected pins
+Date: Thu,  7 May 2015 21:27:46 +0200
+Message-ID: <1431026869-27206-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150507185052.GO22845@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: perex@perex.cz, tiwai@suse.de, "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-207.synserver.de (smtp-out-207.synserver.de
+ [212.40.185.207])
+ by alsa0.perex.cz (Postfix) with ESMTP id DADCD265A28
+ for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 21:27:55 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 7, 2015 at 8:50 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, May 06, 2015 at 10:38:47PM +0200, Marek Belisko wrote:
->> This driver add PCM interface to a GTM601 UMTS modem chip.
->> There is no configuration interface.
->
-> Applied, thanks.  Please remember to CC maintainers on patches, you've
-> missed Liam for some reason.
-OK thanks. I'll fix Documentation patches and post them to correct maintainers.
+Most DAPM input and output pins of the wm8994 are either used in the card's
+DAPM routing table or are marked as not connected.
 
-BR,
+The only exception is DMIC2DAT input. Given that DMIC1DAT is explicitly
+mentioned in the DAPM routes lets assume that DMIC2DAT simply has been
+overlooked and should be marked as not connected.
 
-marek
+Set the fully_routed flag of the card instead of manually marking the
+unused inputs and outputs as not connected. This makes the code a bit
+shorter and cleaner.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/pxa/brownstone.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
+
+diff --git a/sound/soc/pxa/brownstone.c b/sound/soc/pxa/brownstone.c
+index 79936e3..2b26318 100644
+--- a/sound/soc/pxa/brownstone.c
++++ b/sound/soc/pxa/brownstone.c
+@@ -45,29 +45,6 @@ static const struct snd_soc_dapm_route brownstone_audio_map[] = {
+ 	{"MICBIAS1", NULL, "Main Mic"},
+ };
+ 
+-static int brownstone_wm8994_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	/* set endpoints to not connected */
+-	snd_soc_dapm_nc_pin(dapm, "HPOUT2P");
+-	snd_soc_dapm_nc_pin(dapm, "HPOUT2N");
+-	snd_soc_dapm_nc_pin(dapm, "LINEOUT1N");
+-	snd_soc_dapm_nc_pin(dapm, "LINEOUT1P");
+-	snd_soc_dapm_nc_pin(dapm, "LINEOUT2N");
+-	snd_soc_dapm_nc_pin(dapm, "LINEOUT2P");
+-	snd_soc_dapm_nc_pin(dapm, "IN1LN");
+-	snd_soc_dapm_nc_pin(dapm, "IN1LP");
+-	snd_soc_dapm_nc_pin(dapm, "IN1RP");
+-	snd_soc_dapm_nc_pin(dapm, "IN2LP:VXRN");
+-	snd_soc_dapm_nc_pin(dapm, "IN2RN");
+-	snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
+-	snd_soc_dapm_nc_pin(dapm, "IN2LN");
+-
+-	return 0;
+-}
+-
+ static int brownstone_wm8994_hw_params(struct snd_pcm_substream *substream,
+ 				       struct snd_pcm_hw_params *params)
+ {
+@@ -115,7 +92,6 @@ static struct snd_soc_dai_link brownstone_wm8994_dai[] = {
+ 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 				SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &brownstone_ops,
+-	.init		= brownstone_wm8994_init,
+ },
+ };
+ 
+@@ -132,6 +108,7 @@ static struct snd_soc_card brownstone = {
+ 	.num_dapm_widgets = ARRAY_SIZE(brownstone_dapm_widgets),
+ 	.dapm_routes = brownstone_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(brownstone_audio_map),
++	.fully_routed = true,
+ };
+ 
+ static int brownstone_probe(struct platform_device *pdev)
 -- 
-as simple and primitive as possible
--------------------------------------------------
-Marek Belisko - OPEN-NANDRA
-Freelance Developer
-
-Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
-Tel: +421 915 052 184
-skype: marekwhite
-twitter: #opennandra
-web: http://open-nandra.com
+1.8.0
