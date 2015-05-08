@@ -1,68 +1,43 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] conf/ucm: broadwell-rt286: change to set
-	capture volume and capture device
-Date: Fri,  8 May 2015 15:18:47 +0800
-Message-ID: <1431069527-9336-1-git-send-email-yang.jie@intel.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 3/8] mfd: arizona: Add support for WM8998 and WM1814
+Date: Fri, 8 May 2015 10:11:45 +0100
+Message-ID: <20150508091145.GA9991@opensource.wolfsonmicro.com>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com> <1430493319-23808-4-git-send-email-rf@opensource.wolfsonmicro.com> <20150507085238.GA16220@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F650260573
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 09:15:08 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150507085238.GA16220@x1>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Set 'Mic Capture Volume' in capture device EnableSequence, to fix
-capture no volume by default issue.
+On Thu, May 07, 2015 at 09:52:38AM +0100, Lee Jones wrote:
+> On Fri, 01 May 2015, Richard Fitzgerald wrote:
+> 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> >  drivers/mfd/Kconfig                   |    6 +
+> >  drivers/mfd/Makefile                  |    3 +
+> >  drivers/mfd/arizona-core.c            |  105 ++-
+> >  drivers/mfd/arizona-i2c.c             |    8 +
+> >  drivers/mfd/arizona-irq.c             |    9 +
+> >  drivers/mfd/arizona.h                 |    5 +
+> >  drivers/mfd/wm8998-tables.c           | 1592 +++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/arizona/core.h      |    3 +
+> >  include/linux/mfd/arizona/pdata.h     |    2 +
+> >  include/linux/mfd/arizona/registers.h |  220 +++++
+> >  10 files changed, 1945 insertions(+), 8 deletions(-)
+> >  create mode 100644 drivers/mfd/wm8998-tables.c
+> 
+> How orthogonal is this patch?  Can I just take it?
+> 
+> For my own reference:
+>   Acked-by: Lee Jones <lee.jones@linaro.org>
 
-Also add JackHWMute Value item to mute onboard dmic while headset
-mic is plugged in.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- src/conf/ucm/broadwell-rt286/HiFi | 5 +++++
- 1 file changed, 5 insertions(+)
+This patches code added by patch 1 "mfd: arizona: Split INx_MODE into two fields" so you'll
+need to take that one as well. But if you are ok with that change too then yes it's ok to
+take both of them into mfd.
 
-diff --git a/src/conf/ucm/broadwell-rt286/HiFi b/src/conf/ucm/broadwell-rt286/HiFi
-index 58983ea..c09a01c 100644
---- a/src/conf/ucm/broadwell-rt286/HiFi
-+++ b/src/conf/ucm/broadwell-rt286/HiFi
-@@ -86,6 +86,7 @@ SectionDevice."Handset" {
- 	EnableSequence [
- 		cdev "hw:broadwellrt286"
- 
-+		cset "name='Mic Capture Volume' 28"
- 		cset "name='ADC 0 Mux' 0"
- 		cset "name='ADC0 Capture Switch' on"
- 		cset "name='ADC0 Capture Volume' 127"
-@@ -99,6 +100,9 @@ SectionDevice."Handset" {
- 
- 	Value {
- 		CaptureChannels "2"
-+		JackDev "rt286-jack"
-+		JackControl "Mic Jack"
-+		JackHWMute "Mainmic"
- 	}
- }
- 
-@@ -112,6 +116,7 @@ SectionDevice."Mainmic" {
- 	EnableSequence [
- 		cdev "hw:broadwellrt286"
- 
-+		cset "name='Mic Capture Volume' 30"
- 		cset "name='ADC 0 Mux' 2"
- 		cset "name='ADC0 Capture Switch' on"
- 		cset "name='ADC0 Capture Volume' 127"
--- 
-1.9.1
