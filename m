@@ -1,48 +1,48 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
-Date: Fri, 08 May 2015 14:05:56 -0500
-Message-ID: <554D0914.2040404@linux.intel.com>
-References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
- <1430833322-13531-3-git-send-email-bardliao@realtek.com>
- <1430837158.8043.61.camel@loki>
- <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
- <20150507125142.GW15510@sirena.org.uk> <554BAED7.4080705@linux.intel.com>
- <20150507183629.GM22845@sirena.org.uk> <554CBA8C.4080909@linux.intel.com>
- <20150508164633.GA2761@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C7A3B260547
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 21:06:00 +0200 (CEST)
-In-Reply-To: <20150508164633.GA2761@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH 0/2] Update ALSA driver to use media controller API
+Date: Fri,  8 May 2015 13:31:29 -0600
+Message-ID: <cover.1431110739.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, normalperson@yhbt.net, fisch602@gmail.com, joe@oampo.co.uk
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/8/15 11:46 AM, Mark Brown wrote:
-> On Fri, May 08, 2015 at 08:30:52AM -0500, Pierre-Louis Bossart wrote:
->
->> Agree, but there wasn't a clear message provided to the readers of this
->> mailing list. A 'should' is a recommendation that provides no real incentive
->> to move to the new gpiod framework. The message would be clearer if
->> maintainers stated that new contributions using of_get_named_gpio() will no
->> longer be merged in the mainline (maybe after a specific milestone). That
->> would set the direction for everyone.
->
-> That's what's been happening...
+This patch series updates ALSA driver to use media controller
+API to share tuner with DVB and V4L2 drivers that control AU0828
+media device. Two new interfaces are added to media controller
+API to enable creating media device as a device resource. This
+allows creating media device as a device resource on the main
+struct device that is common to all drivers that control a single
+media hardware and share resources on it. Drivers then can find
+the common media device to register entities and manage links,
+and pipelines.
 
-We are in agreement. I wasn't trying to argue but make sure everyone 
-noticed this change. I saw a commit with of_get_named_gpio in sound/soc 
-as recent as December 30, 2014 and we talked to 3rd parties unaware of 
-this change. Now they are :-)
+Tested with and without CONFIG_MEDIA_CONTROLLER enabled.
+Tested tuner entity doesn't exist case as au0828 v4l2
+driver is the one that will create the tuner when it gets
+updated to use media controller API.
+
+Please note that au0828 updates media controller are necessary
+before the resource sharing can work across ALSA and au0828
+dvb and v4l2 drivers. This work is in progress and another
+developer is working on it.
+
+Shuah Khan (2):
+  media: new media controller API for device resource support
+  sound/usb: Update ALSA driver to use media controller API
+
+ drivers/media/media-device.c | 33 +++++++++++++++++++++++++
+ include/media/media-device.h |  2 ++
+ sound/usb/card.c             |  5 ++++
+ sound/usb/card.h             | 12 +++++++++
+ sound/usb/pcm.c              | 23 +++++++++++++++++-
+ sound/usb/quirks-table.h     |  1 +
+ sound/usb/quirks.c           | 58 +++++++++++++++++++++++++++++++++++++++++++-
+ sound/usb/quirks.h           |  6 +++++
+ sound/usb/stream.c           | 40 ++++++++++++++++++++++++++++++
+ sound/usb/usbaudio.h         |  1 +
+ 10 files changed, 179 insertions(+), 2 deletions(-)
+
+-- 
+2.1.4
