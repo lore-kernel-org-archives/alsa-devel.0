@@ -1,7 +1,7 @@
 From: Todd Dailey <todd@todddailey.ca>
 Subject: Re: No sound from Mac Pro headphone port
-Date: Fri, 08 May 2015 10:48:15 -0400
-Message-ID: <554CCCAF.6000608@todddailey.ca>
+Date: Fri, 08 May 2015 10:49:57 -0400
+Message-ID: <554CCD15.8050501@todddailey.ca>
 References: <554CC0EC.5000506@todddailey.ca>
  <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from yonca.sibername.com (yonca.sibername.com [67.212.91.121])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A3FB265D7A
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 16:48:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C6516265D81
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 16:50:05 +0200 (CEST)
 In-Reply-To: <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,22 +25,8 @@ To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Bingo: the pin-outs are very incorrect.
-
-This is the (original) tech specs of the machine.
-
-https://support.apple.com/kb/SP506?viewlocale=en_US&locale=en_US
-
-Note:
-
-1 x internal speaker
-1 x FRONT headphone port
-1 x REAR line out port
-1 x REAR line in port
-1 x REAR optical TOSLINK out port
-1 x REAR optical TOSLINK in port
-
-The machine does not have a built-in mic port.
+Should have noted, if not clear from the physical ports, no, the machine 
+does not have outputs for 5.1 surround sound.
 
 -- 
 TD
