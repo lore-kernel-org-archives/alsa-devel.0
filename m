@@ -1,62 +1,79 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: bt-sco: Add devicetree support for bt-sco codec
-Date: Fri, 8 May 2015 19:06:44 +0100
-Message-ID: <20150508180644.GI2761@sirena.org.uk>
-References: <1430856941-3938-1-git-send-email-marek@goldelico.com>
- <20150506121311.GP22845@sirena.org.uk>
- <CAAfyv37jOJ=grVAM22-oLx2s6-8rXr2fVbgpNqkaJjwuEsHZ9Q@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qLni7iB6Dl8qUSwk"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAAfyv37jOJ=grVAM22-oLx2s6-8rXr2fVbgpNqkaJjwuEsHZ9Q-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Belisko Marek <marek.belisko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Dr. H. Nikolaus Schaller" <hns-xXXSsgcRVICgSpxsJD1C4w@public.gmane.org>
+From: Marek Belisko <marek@goldelico.com>
+Subject: [PATCH v2] ASoC: bt-sco: Add devicetree support for bt-sco codec
+Date: Fri,  8 May 2015 21:02:34 +0200
+Message-ID: <1431111754-14562-1-git-send-email-marek@goldelico.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, hns@goldelico.com, Marek Belisko <marek@goldelico.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add devicetree support for bluetooth SCO link codec.
 
---qLni7iB6Dl8qUSwk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Marek Belisko <marek@goldelico.com>
+---
+changes from v1:
+- removed "linux,bt-sco" compatible property + update documentation
 
-On Wed, May 06, 2015 at 09:38:55PM +0200, Belisko Marek wrote:
+ Documentation/devicetree/bindings/sound/bt-sco.txt    | 13 +++++++++++++
+ Documentation/devicetree/bindings/vendor-prefixes.txt |  1 +
+ sound/soc/codecs/bt-sco.c                             |  9 +++++++++
+ 3 files changed, 23 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/bt-sco.txt
 
-> > Is there any burning reason for adding the linux,bt-sco compatible?
-
-> No no real reason just want to keep that if somebody would like use it from DT
-> referenced by bt-sco entry (similar as platform data). I'm adding DT
-> support for it because I want to use
-> this for W2CBW003 chip and I can use simply "linux,bt-sco" property in
-> DT or I instead of that add new vendor
-> prefix + add new compatible entry which is IMO much harder that
-> reference it by generic name.
-
-OK, can you change the patch to just have the part specific name please?
-If we were to have a generic binding it should really be richer than
-this, for example I think I've seen BT devices that take in 16kHz
-streams rather than 8kHz and there are often requirements for oversized
-data frames as well.
-
---qLni7iB6Dl8qUSwk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVTPszAAoJECTWi3JdVIfQYCsH/10m/7wdBtY60QPlrD0RFlXZ
-INGbmNuDmF0pW4Z0Ys7g3Zi4irpnMQn/kZOhaHocBK3d+nrT1DWEFez7g58etEiH
-AT532QXLqKSPoOok7yhrZ/xLgVHasdkPlpLOQp7EQZ4+ASuIJTGeYSI1fUcgBeHq
-gjDdKt3auj0C0vszlJYCd/+Jo3ehvEEhvKemQ4h/X9ADbS1FIplJRG4eJz6WhV94
-NZikgN95PQ+/JW+EHAWr78CN6b+on1cYZ22ijqC6csjlQk2xy0t836jrvoU0Rj0M
-dWvBKJ+AFvxYw70aY6GM3qVgzR4RrjuBgk70GwglgT8j47OUeu7DXKYisbPGmEo=
-=JQb2
------END PGP SIGNATURE-----
-
---qLni7iB6Dl8qUSwk--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/sound/bt-sco.txt b/Documentation/devicetree/bindings/sound/bt-sco.txt
+new file mode 100644
+index 0000000..29b8e5d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/bt-sco.txt
+@@ -0,0 +1,13 @@
++Bluetooth-SCO audio CODEC
++
++This device support generic Bluetooth SCO link.
++
++Required properties:
++
++  - compatible : "delta,dfbmcs320"
++
++Example:
++
++codec: bt_sco {
++	compatible = "delta,dfbmcs320";
++};
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+index ed3bd55..7a3a657 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.txt
++++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+@@ -55,6 +55,7 @@ crystalfontz	Crystalfontz America, Inc.
+ cubietech	Cubietech, Ltd.
+ dallas	Maxim Integrated Products (formerly Dallas Semiconductor)
+ davicom	DAVICOM Semiconductor, Inc.
++delta	Delta Electronics, Inc.
+ denx	Denx Software Engineering
+ digi	Digi International Inc.
+ digilent	Diglent, Inc.
+diff --git a/sound/soc/codecs/bt-sco.c b/sound/soc/codecs/bt-sco.c
+index e7238b8..18c9357 100644
+--- a/sound/soc/codecs/bt-sco.c
++++ b/sound/soc/codecs/bt-sco.c
+@@ -74,9 +74,18 @@ static struct platform_device_id bt_sco_driver_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(platform, bt_sco_driver_ids);
+ 
++#if defined(CONFIG_OF)
++static const struct of_device_id bt_sco_codec_of_match[] = {
++	{ .compatible = "delta,dfbmcs320", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, bt_sco_codec_of_match);
++#endif
++
+ static struct platform_driver bt_sco_driver = {
+ 	.driver = {
+ 		.name = "bt-sco",
++		.of_match_table = of_match_ptr(bt_sco_codec_of_match),
+ 	},
+ 	.probe = bt_sco_probe,
+ 	.remove = bt_sco_remove,
+-- 
+1.9.1
