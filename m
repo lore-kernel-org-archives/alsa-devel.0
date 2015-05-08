@@ -1,29 +1,83 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v12 1/6] drm/edid: add function to help find SADs
-Date: Fri, 8 May 2015 12:33:25 +0100
-Message-ID: <20150508113325.GH2067@n2100.arm.linux.org.uk>
-References: <cover.1431083916.git.moinejf@free.fr>
- <61f4eab5f21cc5eea1b74858852c4569dd839ac8.1431083916.git.moinejf@free.fr>
+Subject: Re: [alsa-devel] [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
+Date: Fri, 8 May 2015 12:42:30 +0100
+Message-ID: <20150508114230.GI2067@n2100.arm.linux.org.uk>
+References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+ <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
+ <s5ha8ymy3e2.wl-tiwai@suse.de>
+ <20150405162034.GH13898@n2100.arm.linux.org.uk>
+ <s5h4mouy14a.wl-tiwai@suse.de>
+ <20150405172608.GA12732@n2100.arm.linux.org.uk>
+ <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <61f4eab5f21cc5eea1b74858852c4569dd839ac8.1431083916.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jyri.sarha@iki.fi>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 08, 2015 at 09:39:33AM +0200, Jean-Francois Moine wrote:
-> From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-> 
-> Add a function to find the start of the SADs in the ELD.  This
-> complements the helper to retrieve the SAD count.
-> 
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-
-NAK.  Where's my sign-off gone?  This is unacceptable behaviour.
-
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
+T24gRnJpLCBNYXkgMDgsIDIwMTUgYXQgMDE6NTY6MDJQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
+ZToKPiBPbiAyMDE1LTA0LTA1IDIwOjI2LCBSdXNzZWxsIEtpbmcgLSBBUk0gTGludXggd3JvdGU6
+Cj4gPk9uIFN1biwgQXByIDA1LCAyMDE1IGF0IDA2OjQ2OjEzUE0gKzAyMDAsIFRha2FzaGkgSXdh
+aSB3cm90ZToKPiA+PkF0IFN1biwgNSBBcHIgMjAxNSAxNzoyMDozNCArMDEwMCwKPiA+PlJ1c3Nl
+bGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToKPiA+Pj4gU2luY2UgKGFmYWlrKSBBTFNBIGhhcyBh
+IGxhY2sgb2Ygc3VwcG9ydCBmb3IgZHluYW1pYyByZWNvbmZpZ3VyYXRpb24KPiA+Pj4gYWNjb3Jk
+aW5nIHRvIHRoZSBhdHRhY2hlZCBkZXZpY2UgY2hhbmdpbmcsIHRoZSBiZXN0IHdlIGNhbiBkbyB3
+aXRob3V0Cj4gPj4+IGEgaHVnZSBhbW91bnQgb2YgcmUtd29yayBvZiBIRE1JIHN1cHBvcnQgYWNy
+b3NzIGFsbCBhZGFwdGVycyBpcyB0bwo+ID4+PiBwcm9jZXNzIHRoZSBjYXBhYmlsaXRpZXMgb2Yg
+dGhlIGF0dGFjaGVkIGRldmljZSBhdCBwcmVwYXJlIHRpbWUKPiA+Pj4gYWNjb3JkaW5nIHRvIHRo
+ZSBjdXJyZW50IGNhcGFiaWxpdGllcy4KPiA+Pgo+ID4+WWVhaCwgcmVjb25maWd1cmF0aW9uIGlz
+IHRyaWNreS4gIEJUVywgaG93IGlzIHRoZSBIRE1JIHVucGx1ZyBoYW5kbGVkCj4gPj5kdXJpbmcg
+cGxheWJhY2s/Cj4gPgo+ID5XZSBkb24ndCBoYW5kbGUgaXQgcmlnaHQgbm93IC0gYW5kIHdlIGRv
+bid0IGhhdmUgYW55IG5vdGlmaWNhdGlvbiB0bwo+ID50aGUgYXVkaW8gZHJpdmVycyB0aGF0IHRo
+YXQgaGFzIGhhcHBlbmVkLiAgRXZlbiBpZiB3ZSBkaWQgaGF2ZSBzdWNoIGEKPiA+bm90aWZpY2F0
+aW9uLCBJJ20gbm90IHN1cmUgd2hhdCB0aGUgYXVkaW8gZHJpdmVyIGNvdWxkIGRvIHdpdGggaXQg
+YXQKPiA+dGhlIG1vbWVudC4KPiA+Cj4gPj4+IEltcGxlbWVudGluZyBkeW5hbWljIHJlY29uZmln
+dXJhdGlvbiBpbiBBTFNBIGlzIG5vdCBzb21ldGhpbmcgSSB3YW50IHRvCj4gPj4+IGdldCBpbnZv
+bHZlZCB3aXRoLCBhbmQgYXMgd2UgL2FscmVhZHkvIGhhdmUgSERNSSBzdXBwb3J0IG1lcmdlZCBp
+biB0aGUKPiA+Pj4ga2VybmVsLCB0aGlzIGlzIG5vdCBhIGJsb2NrZXIgZm9yIGF0IGxlYXN0IHRy
+eWluZyB0byBnZXQgc29tZSBzZW1ibGVuY2UKPiA+Pj4gb2Ygc2FuaXR5LCByYXRoZXIgdGhhbiBo
+YXZpbmcgZXZlcnkgZHJpdmVyIHJlLWltcGxlbWVudGluZyBzdHVmZiBsaWtlCj4gPj4+IHRoaXMu
+Cj4gPj4KPiA+PldlbGwsIEkgZGlkbid0IG1lYW4gYWJvdXQgdGhlIGR5bmFtaWMgcmVjb25maWd1
+cmF0aW9uLiAgSSB0aG91Z2h0IG9mCj4gPj5yYXRoZXIgbWluL21heCBwYWlycywgYnV0IGl0IHdh
+cyBqdXN0IGEgd3JvbmcgYXNzdW1wdGlvbi4gIFNjcmF0Y2gKPiA+Pml0Lgo+ID4+Cj4gPj5PbmUg
+YW5vdGhlciBxdWVzdGlvbjogZG9uJ3Qgd2UgbmVlZCB0byBkZWFsIHdpdGggdGhlIHNhbXBsZSBi
+aXRzIGluCj4gPj5zYWRbMl0/Cj4gPgo+ID5JdCBzaG91bGQsIGJ1dCBJJ20gdmVyeSB3YXJ5IGFi
+b3V0IGRvaW5nIHRoYXQgd2l0aG91dCBzZWVpbmcgbW9yZQo+ID5leGFtcGxlcyBvZiByZWFsIFNB
+RHMuCj4gCj4gSWYgdGhlIHNhbWUgY29uc3RyYWludCBzZXR0aW5nIGhlbHBlcnMgYXJlIHRvIGJl
+IHVzZWQgYWxzbyB3aXRoCj4gZXh0ZXJuYWwgSERNSSBlbmNvZGVycyB3aXRoIGkycyBpbnRlcmZh
+Y2UsIHRoZXJlIHNob3VsZCBiZSBhbiBvcHRpb24KPiB0byBsZWF2ZSBvdXQgdGhlIGNvbnN0cmFp
+bnRzIGZvciB0aGUgc2FtcGxlIGJpdHMuIFRoZXJlIGlzIG5vIGRpcmVjdAo+IGNvbm5lY3Rpb24g
+YmV0d2VlbiB0aGUgbnVtYmVyIG9mIGJpdHMgb24gSTJTIGFuZCBIRE1JIGxpbmsuIFRoZSBDUFUK
+PiBEQUkgbWF5IGFwcGx5IGl0cyBvd24gY29uc3RyYWludHMgb24gdGhlIGF2YWlsYWJsZSBzYW1w
+bGUgZm9ybWF0cyBhbmQKPiB0b28gc3RyaWN0IGNvbnN0cmFpbnRzIGF0IHRoZSBlbmNvZGVyIGVu
+ZCBtYXkgbGVhZCB0byB6ZXJvIGF2YWlsYWJsZQo+IGZvcm1hdHMuCgpQb3NzaWJseSwgYnV0IHRo
+ZW4gaG93IGRvIHdlIGtub3cgd2hpY2ggU0FEIHRvIGFwcGx5IHRvIGxpbWl0IHRoZSBudW1iZXIK
+b2YgY2hhbm5lbHM/CgpJIHN1c3BlY3QgZm9yIHRoZSB1c2UgY2FzZSB5b3UncmUgc3VnZ2VzdGlu
+ZyBhYm92ZSwgaXQncyBiZXR0ZXIgbGVmdCB0bwp0aGUgdXNlciByYXRoZXIgdGhhbiBnZW5lcmlj
+IGNvZGUgdG8gd29yayBpdCBvdXQgb3RoZXJ3aXNlIHRoaW5ncyBnZXQKZmFyIHRvbyBjb21wbGV4
+LiAgV2UnZCBuZWVkIHRvIGhhdmUgc29tZSB3YXkgZm9yIHRoZSBkcml2ZXIgdG8gcmVwb3J0CmJh
+Y2sgdG8gdGhpcyBnZW5lcmljIGNvZGUgdGhlIGFjdHVhbCBudW1iZXIgb2YgYml0cyBvbiB0aGUg
+SERNSSBsaW5rLgoKSG93ZXZlciwgYXMgd2UgY3VycmVudGx5IGtub3csIEFMU0EgYXBwZWFycyB0
+byBoYXZlIGEgcHJvYmxlbSBoZXJlIHdoaWNoCnByZXR0eSBtdWNoIG1ha2VzIHByb3Blcmx5IHJl
+c3RyaWN0aW5nIHRoZSBjaGFubmVscyBhbmQgc2FtcGxlIHJhdGVzCmltcG9zc2libGUgdG8gZG8u
+ICBUaGF0IGlzc3VlIGlzIHRoZSBvbmUgSSdtIG11Y2ggbW9yZSBrZWVuIHRvIHNvbHZlCnJpZ2h0
+IG5vdywgYmVjYXVzZSB3aXRob3V0IHRoYXQgYmVpbmcgc29sdmVkLCB0aGlzIHNldCBvZiBwYXRj
+aGVzIGlzCnByZXR0eSBtdWNoIGRlYWQgaW4gdGhlIHdhdGVyLgoKLS0gCkZUVEMgYnJvYWRiYW5k
+IGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAK
+YWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
+dGluZm8vZHJpLWRldmVsCg==
