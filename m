@@ -1,17 +1,23 @@
-From: Todd Dailey <todd@todddailey.ca>
-Subject: Re: No sound from Mac Pro headphone port
-Date: Fri, 08 May 2015 10:49:57 -0400
-Message-ID: <554CCD15.8050501@todddailey.ca>
-References: <554CC0EC.5000506@todddailey.ca>
- <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
+Date: Fri, 8 May 2015 17:46:33 +0100
+Message-ID: <20150508164633.GA2761@sirena.org.uk>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-3-git-send-email-bardliao@realtek.com>
+ <1430837158.8043.61.camel@loki>
+ <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+ <20150507125142.GW15510@sirena.org.uk>
+ <554BAED7.4080705@linux.intel.com>
+ <20150507183629.GM22845@sirena.org.uk>
+ <554CBA8C.4080909@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0208464330904657164=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yonca.sibername.com (yonca.sibername.com [67.212.91.121])
- by alsa0.perex.cz (Postfix) with ESMTP id C6516265D81
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 16:50:05 +0200 (CEST)
-In-Reply-To: <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05D7B265DDA
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 18:46:47 +0200 (CEST)
+In-Reply-To: <554CBA8C.4080909@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +27,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Should have noted, if not clear from the physical ports, no, the machine 
-does not have outputs for 5.1 surround sound.
 
--- 
-TD
-todd@todddailey.ca
+--===============0208464330904657164==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
 
-On 08/05/15 10:36 AM, Raymond Yau wrote:
->
->
-> 2015-05-08 21:58 GMT+08:00 Todd Dailey <todd@todddailey.ca
-> <mailto:todd@todddailey.ca>>:
->
->     https://bugtrack.alsa-project.org/alsa-bug does not work so
->     following instructions to post bug here.
->
->     Linux 4. Mac Pro 2009. ACL889A codec.
->
->     No sound from headphone port. Seems to detect plug / unplug OK.
->
->     Works OK when machine booted to OS X or Windows 7.
->
->     Have found several bug repors on similar issues with Mac laptops but
->     no fixes.
->
->     Have written e-mail with David Henningsson on problem but unable to
->     find a solution.
->
->     ALSA-info output:
->
->     http://www.alsa-project.org/db/?f=1dc7146eb34af5ad307d029868f775fac5e2764e
->
->
-> Do your macpro spec support 5.1 ?
->
-> Simple mixer control 'Channel Mode',0
->    Capabilities: enum
->    Items: '2ch' '4ch' '6ch'
->    Item0: '2ch'
->
-> Pin default seem incorrect
->
-> 1) Headphone at ext Rear
-> 2) Line Out does not support jack detection
-> 3) Mic jack ????
->
-> /sys/class/sound/hwC0D0/init_pin_configs:
-> 0x14 0x01010150
-> 0x15 0x400000f0
-> 0x16 0x400000f0
-> 0x17 0x400000f0
-> 0x18 0x01a19070
-> 0x19 0x01214040
-> 0x1a 0x01813010
-> 0x1b 0x90100130
-> 0x1c 0x400000f0
-> 0x1d 0x400000f0
-> 0x1e 0x0145e160
-> 0x1f 0x01c5e120
->
-> /sys/class/sound/hwC0D0/driver_pin_configs:
->
->
->
-> [    4.057250] sound hdaudioC0D0: ALC889A: SKU not ready 0x400000f0
-> [    4.057633] sound hdaudioC0D0: autoconfig for ALC889A: line_outs=1
-> (0x14/0x0/0x0/0x0/0x0) type:line
-> [    4.057636] sound hdaudioC0D0:    speaker_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-> [    4.057638] sound hdaudioC0D0:    hp_outs=1 (0x19/0x0/0x0/0x0/0x0)
-> [    4.057639] sound hdaudioC0D0:    mono: mono_out=0x0
-> [    4.057641] sound hdaudioC0D0:    dig-out=0x1e/0x0
-> [    4.057642] sound hdaudioC0D0:    inputs:
-> [    4.057645] sound hdaudioC0D0:      Mic=0x18
-> [    4.057646] sound hdaudioC0D0:      Line=0x1a
-> [    4.057648] sound hdaudioC0D0:    dig-in=0x1f
->
+
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 08, 2015 at 08:30:52AM -0500, Pierre-Louis Bossart wrote:
+
+> Agree, but there wasn't a clear message provided to the readers of this
+> mailing list. A 'should' is a recommendation that provides no real incentive
+> to move to the new gpiod framework. The message would be clearer if
+> maintainers stated that new contributions using of_get_named_gpio() will no
+> longer be merged in the mainline (maybe after a specific milestone). That
+> would set the direction for everyone.
+
+That's what's been happening...
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVTOhoAAoJECTWi3JdVIfQZ+4H/33ztvnKHL4UvxKDbo7pDTvX
+NumHBZIKqkLjcvrat/uIdxaedD9/YpaRrG/P4Bh56viznfeLCbQMjVorWS73L934
+zDNhsGFGxGJcDbDUVuVocT62sUueTU/Hsz75fTKroHJ470fyYcv0o5E3BJOoq6PC
+iqONVYv1aPuMqXdGXxa64erytaqn+L8wpBrq4u74Y3Cm5FWB3YyzDLxixFnChvZy
+uUnJtTKcwyWq86aajkd2xoRwT+0Lgo+hSJrL/jWjZQbFpZrioY5BkuYLx6zYh6Tr
+LYJue5K8Nm8LNyBHUzdnESpqx35NLJWkbme20xwDX5qE7OZWto3zpd8GBhLCYI0=
+=KqAK
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
+
+--===============0208464330904657164==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0208464330904657164==--
