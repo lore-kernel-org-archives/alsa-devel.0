@@ -1,18 +1,26 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/4] ASoC: z2: Automatically disconnect
-	non-connected pins
-Date: Thu,  7 May 2015 21:27:49 +0200
-Message-ID: <1431026869-27206-4-git-send-email-lars@metafoo.de>
-References: <1431026869-27206-1-git-send-email-lars@metafoo.de>
+From: Karl Swisher <k_swisher@frontier.com>
+Subject: PreSonus Information For Developers
+Date: Thu, 07 May 2015 22:09:49 -0400
+Message-ID: <554C1AED.7070503@frontier.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-207.synserver.de (smtp-out-207.synserver.de
- [212.40.185.207])
- by alsa0.perex.cz (Postfix) with ESMTP id AF1AD265A45
- for <alsa-devel@alsa-project.org>; Thu,  7 May 2015 21:27:57 +0200 (CEST)
-In-Reply-To: <1431026869-27206-1-git-send-email-lars@metafoo.de>
+Received: from filter01.dlls.pa.frontiernet.net
+ (filter01.dlls.pa.frontiernet.net [199.224.80.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 109152610A6
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 04:10:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by filter01.dlls.pa.frontiernet.net (Postfix) with ESMTP id D31D61FE476
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 02:10:01 +0000 (UTC)
+Received: from relay02.dlls.pa.frontiernet.net ([199.224.80.245])
+ by localhost (filter01.dlls.pa.frontiernet.net [199.224.80.228]) (amavisd-new,
+ port 10024)
+ with LMTP id MElvrVFsvwr4 for <alsa-devel@alsa-project.org>;
+ Fri,  8 May 2015 02:09:50 +0000 (UTC)
+Received: from client.karlnet.net (unknown [184.13.130.14])
+ by relay02.dlls.pa.frontiernet.net (Postfix) with ESMTPA id 73D064A05B
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 02:09:49 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +30,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: ALSA-DEVEL <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Most DAPM input and output pins of the wm8750 are either used in the card's
-DAPM routing table or are marked as not connected. The only exceptions are
-the LINPUT1, RINPUT1, LINPUT2 input pins. Lets assume that those were
-simply overlooked and that the routing table is complete.
+Hello all,
 
-Set the fully_routed flag of the card instead of manually marking the
-unused inputs and outputs as not connected. This makes the code a bit
-shorter and cleaner.
+     I have what might be useful information to some developers but I do 
+not sure who or how to contact the right people.  I recently purchased a 
+PreSonus StudioLive AI 32.4.2 mixer.  Have it half way working under 
+Linux.  This mixer has a network connection in addition to the firewire 
+interface.  I've installed their software under VirtualBox and ran 
+tcpflow capturing packet content between the computer and the mixer.  I 
+have started creating text files of the packets of which below is an 
+example of their software performing functions like the mixer booting, 
+backing up, restore, and selecting the digital output channels 33 
+through 48.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/pxa/z2.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 06 00 4b 41 65 00 64 00
+55 43 00 01 1d 00 46 52 65 00 64 00 01 00
+Listpresets/scene 00 00
 
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index bcbfbe8..990b1aa 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -132,16 +132,8 @@ static const struct snd_soc_dapm_route z2_audio_map[] = {
-  */
- static int z2_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret;
- 
--	/* NC codec pins */
--	snd_soc_dapm_disable_pin(dapm, "LINPUT3");
--	snd_soc_dapm_disable_pin(dapm, "RINPUT3");
--	snd_soc_dapm_disable_pin(dapm, "OUT3");
--	snd_soc_dapm_disable_pin(dapm, "MONO1");
--
- 	/* Jack detection API stuff */
- 	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack", SND_JACK_HEADSET,
- 				    &hs_jack, hs_jack_pins,
-@@ -189,6 +181,7 @@ static struct snd_soc_card snd_soc_z2 = {
- 	.num_dapm_widgets = ARRAY_SIZE(wm8750_dapm_widgets),
- 	.dapm_routes = z2_audio_map,
- 	.num_dapm_routes = ARRAY_SIZE(z2_audio_map),
-+	.fully_routed = true,
- };
- 
- static struct platform_device *z2_snd_device;
--- 
-1.8.0
+55 43 00 01 1b 00 46 52 65 00 64 00 01 00
+Listpresets/channel 00 00
+
+55 43 00 01 19 00 46 52 65 00 64 00 01 00
+Listpresets/geq 00 00
+
+55 43 00 01 19 00 46 52 65 00 64 00 01 00
+Listpresets/reverb 00 00
+
+     I'm trying to separate out the bin code from the text.
+
+     Does anyone here know if there is value in this information or 
+anyone that might want it?  Have a few functions decoded in the format 
+above.
+
+Thanks
+Karl
