@@ -1,84 +1,41 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH] ASoC: codecs-ac97: Remove rate constraints
-Date: Fri, 08 May 2015 23:16:22 +0200
-Message-ID: <554D27A6.4040602@maciej.szmigiero.name>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: codecs-ac97: Remove rate constraints
+Date: Fri, 8 May 2015 18:32:00 -0300
+Message-ID: <CAOMZO5A=M2oW47r8_MPrxkd9z6kDj6FG68fVAdKAzngPX0mn=Q@mail.gmail.com>
+References: <554D27A6.4040602@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <554D27A6.4040602@maciej.szmigiero.name>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Remove rate constraints from generic ASoC AC'97 CODEC and make
-it selectable in config.
+On Fri, May 8, 2015 at 6:16 PM, Maciej S. Szmigiero
+<mail@maciej.szmigiero.name> wrote:
+> Remove rate constraints from generic ASoC AC'97 CODEC and make
+> it selectable in config.
 
-Supported rates should be detected and constrained anyway by
-AC'97 generic code - was tested with VT1613 CODEC and iMX6 SSI
-controller.
+Shouldn't this be split in two patches?
 
-This way this driver can be used for platforms which don't need
-specialized AC'97 CODEC drivers while at the same avoiding
-code duplication from implementing equivalent functionality in
-a controller driver.
+>
+> Supported rates should be detected and constrained anyway by
+> AC'97 generic code - was tested with VT1613 CODEC and iMX6 SSI
+> controller.
 
-Resending due to no response received.
+Nice, I would like to test this on a Udoo board. Care to share the dts
+changes? (I know this is off topic for this list ;-) Apart from the
+dts changes: are there still missing patches in linux-next to make
+audio work in Udoo?
 
-Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
+> This way this driver can be used for platforms which don't need
+> specialized AC'97 CODEC drivers while at the same avoiding
+> code duplication from implementing equivalent functionality in
+> a controller driver.
+>
+> Resending due to no response received.
 
-diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
-index d0ac723..5b3224c 100644
---- a/sound/soc/codecs/ac97.c
-+++ b/sound/soc/codecs/ac97.c
-@@ -44,10 +44,6 @@ static int ac97_prepare(struct snd_pcm_substream *substream,
- 	return snd_ac97_set_rate(ac97, reg, substream->runtime->rate);
- }
- 
--#define STD_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
--		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 |\
--		SNDRV_PCM_RATE_48000)
--
- static const struct snd_soc_dai_ops ac97_dai_ops = {
- 	.prepare	= ac97_prepare,
- };
-@@ -58,13 +54,13 @@ static struct snd_soc_dai_driver ac97_dai = {
- 		.stream_name = "AC97 Playback",
- 		.channels_min = 1,
- 		.channels_max = 2,
--		.rates = STD_AC97_RATES,
-+		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = SND_SOC_STD_AC97_FMTS,},
- 	.capture = {
- 		.stream_name = "AC97 Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
--		.rates = STD_AC97_RATES,
-+		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = SND_SOC_STD_AC97_FMTS,},
- 	.ops = &ac97_dai_ops,
- };
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 061c465..84cad9a 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -16,7 +16,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_88PM860X if MFD_88PM860X
- 	select SND_SOC_L3
- 	select SND_SOC_AB8500_CODEC if ABX500_CORE
--	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
-+	select SND_SOC_AC97_CODEC
- 	select SND_SOC_AD1836 if SPI_MASTER
- 	select SND_SOC_AD193X_SPI if SPI_MASTER
- 	select SND_SOC_AD193X_I2C if I2C
-@@ -211,8 +211,9 @@ config SND_SOC_AB8500_CODEC
- 	tristate
- 
- config SND_SOC_AC97_CODEC
--	tristate
-+	tristate "Build generic ASoC AC97 CODEC driver"
- 	select SND_AC97_CODEC
-+	select SND_SOC_AC97_BUS
- 
- config SND_SOC_AD1836
- 	tristate
+No need to put this in the commit log.
+
+Thanks
