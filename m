@@ -1,133 +1,108 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [TINYCOMPRESS][PATCH v3 0/7] Convert build system
-	to autotools
-Date: Fri, 8 May 2015 16:07:44 +0530
-Message-ID: <20150508103744.GJ3521@localhost>
-References: <1430821271-15624-1-git-send-email-qais.yousef@imgtec.com>
+From: Jyri Sarha <jyri.sarha@iki.fi>
+Subject: Re: [alsa-devel] [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
+Date: Fri, 08 May 2015 13:56:02 +0300
+Message-ID: <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
+References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+ <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
+ <20150405162034.GH13898@n2100.arm.linux.org.uk>
+ <s5h4mouy14a.wl-tiwai@suse.de>
+ <20150405172608.GA12732@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 89914265AD0
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 12:36:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1430821271-15624-1-git-send-email-qais.yousef@imgtec.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20150405172608.GA12732@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXkgMDUsIDIwMTUgYXQgMTE6MjE6MDRBTSArMDEwMCwgUWFpcyBZb3VzZWYgd3Jv
-dGU6Cj4gVGhpcyBzZXJpZXMgY29udmVydHMgdGhlIGJ1aWxkIHN5c3RlbSB0byB1c2UgYXV0b3Rv
-b2xzIGFuZCBzcGxpdHMgdGhlIGZpbGVzIGludG8KPiBsaWIgYW5kIHV0aWxzLgo+IAo+IEFsc28g
-cGF0Y2ggNSBmaXhlcyBlcnJvciBoYW5kbGluZyBjb2RlLgo+IAo+IEkgY2FuJ3QgdGVzdCBBbmRy
-b2lkIGJ1aWxkcyBidXQgYm90aCBjcm9zcyBhbmQgbmF0aXZlIGNvbXBpbGluZyB3b3JrZWQgZm9y
-IG1lLgo+IAo+IEkgbGVmdCBBVVRIT1JTLCBDaGFuZ2VMb2cgYW5kIE5FV1MgZmlsZXMgZW1wdHku
-IEkgdXNlZCB0aGUgbGljZW5zZSBoZWFkZXIgdG8gZmlsbCBDT1BZSU5HLgpPa2F5IEkgaGF2ZSBm
-aWxsZWQgdGhlIGZpcnN0IHR3byBhbmQgbm90aGluZyBpbiBORVdTIDopCgpBcHBsaWVkIHRoaXMg
-d2l0aCBiZWxvdyBjaGFuZ2VzCgpUaGlzIHdhcyBhdXRnZW5lcmF0ZWQuLi4KCi0tLS0+PDgtLS0t
-LS0tLS0tLS0tLS0tCmNvbW1pdCA4ZDY4YzFhYTdiOTliZWI3Nzc0ZWI3YTA1MzQ5ZDNiMDBhNjM1
-ZDFiCkF1dGhvcjogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+CkRhdGU6ICAgRnJp
-IE1heSA4IDE1OjQ4OjA2IDIwMTUgKzA1MzAKCiAgICBhdXRvdG9vbDogdXBkYXRlIHRoZSBJTlNU
-QUxMIGZpbGUKCiAgICB0b29sY2hhaW5zIGFyZSB1cGRhdGluZyB0aGUgSU5TVEFMTCBmaWxlIHNv
-IHRha2UgdGhlIHVwZGF0ZWQgY2hhbmdlcwoKICAgIFNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwg
-PHZpbm9kLmtvdWxAaW50ZWwuY29tPgoKZGlmZiAtLWdpdCBhL0lOU1RBTEwgYi9JTlNUQUxMCmlu
-ZGV4IDdkMWMzMjNiZWFlNy4uMjA5OTg0MDc1NmU2IDEwMDY0NAotLS0gYS9JTlNUQUxMCisrKyBi
-L0lOU1RBTEwKQEAgLTEsOCArMSw4IEBACiBJbnN0YWxsYXRpb24gSW5zdHJ1Y3Rpb25zCiAqKioq
-KioqKioqKioqKioqKioqKioqKioqCgotQ29weXJpZ2h0IChDKSAxOTk0LCAxOTk1LCAxOTk2LCAx
-OTk5LCAyMDAwLCAyMDAxLCAyMDAyLCAyMDA0LCAyMDA1LAotMjAwNiwgMjAwNywgMjAwOCwgMjAw
-OSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4KK0NvcHlyaWdodCAoQykgMTk5NC0xOTk2
-LCAxOTk5LTIwMDIsIDIwMDQtMjAxMyBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sCitJbmMuCgog
-ICAgQ29weWluZyBhbmQgZGlzdHJpYnV0aW9uIG9mIHRoaXMgZmlsZSwgd2l0aCBvciB3aXRob3V0
-IG1vZGlmaWNhdGlvbiwKIGFyZSBwZXJtaXR0ZWQgaW4gYW55IG1lZGl1bSB3aXRob3V0IHJveWFs
-dHkgcHJvdmlkZWQgdGhlIGNvcHlyaWdodApAQCAtMTIsOCArMTIsOCBAQCB3aXRob3V0IHdhcnJh
-bnR5IG9mIGFueSBraW5kLgogQmFzaWMgSW5zdGFsbGF0aW9uCiA9PT09PT09PT09PT09PT09PT0K
-Ci0gICBCcmllZmx5LCB0aGUgc2hlbGwgY29tbWFuZHMgYC4vY29uZmlndXJlOyBtYWtlOyBtYWtl
-IGluc3RhbGwnIHNob3VsZAotY29uZmlndXJlLCBidWlsZCwgYW5kIGluc3RhbGwgdGhpcyBwYWNr
-YWdlLiAgVGhlIGZvbGxvd2luZworICAgQnJpZWZseSwgdGhlIHNoZWxsIGNvbW1hbmQgYC4vY29u
-ZmlndXJlICYmIG1ha2UgJiYgbWFrZSBpbnN0YWxsJworc2hvdWxkIGNvbmZpZ3VyZSwgYnVpbGQs
-IGFuZCBpbnN0YWxsIHRoaXMgcGFja2FnZS4gIFRoZSBmb2xsb3dpbmcKIG1vcmUtZGV0YWlsZWQg
-aW5zdHJ1Y3Rpb25zIGFyZSBnZW5lcmljOyBzZWUgdGhlIGBSRUFETUUnIGZpbGUgZm9yCiBpbnN0
-cnVjdGlvbnMgc3BlY2lmaWMgdG8gdGhpcyBwYWNrYWdlLiAgU29tZSBwYWNrYWdlcyBwcm92aWRl
-IHRoaXMKIGBJTlNUQUxMJyBmaWxlIGJ1dCBkbyBub3QgaW1wbGVtZW50IGFsbCBvZiB0aGUgZmVh
-dHVyZXMgZG9jdW1lbnRlZApAQCAtMjI2LDYgKzIyNiwxMSBAQCBvcmRlciB0byB1c2UgYW4gQU5T
-SSBDIGNvbXBpbGVyOgoKIGFuZCBpZiB0aGF0IGRvZXNuJ3Qgd29yaywgaW5zdGFsbCBwcmUtYnVp
-bHQgYmluYXJpZXMgb2YgR0NDIGZvciBIUC1VWC4KCisgICBIUC1VWCBgbWFrZScgdXBkYXRlcyB0
-YXJnZXRzIHdoaWNoIGhhdmUgdGhlIHNhbWUgdGltZSBzdGFtcHMgYXMKK3RoZWlyIHByZXJlcXVp
-c2l0ZXMsIHdoaWNoIG1ha2VzIGl0IGdlbmVyYWxseSB1bnVzYWJsZSB3aGVuIHNoaXBwZWQKK2dl
-bmVyYXRlZCBmaWxlcyBzdWNoIGFzIGBjb25maWd1cmUnIGFyZSBpbnZvbHZlZC4gIFVzZSBHTlUg
-YG1ha2UnCitpbnN0ZWFkLgorCiAgICBPbiBPU0YvMSBhLmsuYS4gVHJ1NjQsIHNvbWUgdmVyc2lv
-bnMgb2YgdGhlIGRlZmF1bHQgQyBjb21waWxlciBjYW5ub3QKIHBhcnNlIGl0cyBgPHdjaGFyLmg+
-JyBoZWFkZXIgZmlsZS4gIFRoZSBvcHRpb24gYC1ub2R0aycgY2FuIGJlIHVzZWQgYXMKIGEgd29y
-a2Fyb3VuZC4gIElmIEdOVSBDQyBpcyBub3QgaW5zdGFsbGVkLCBpdCBpcyB0aGVyZWZvcmUgcmVj
-b21tZW5kZWQKQEAgLTMwNCw5ICszMDksMTAgQEAgY2F1c2VzIHRoZSBzcGVjaWZpZWQgYGdjYycg
-dG8gYmUgdXNlZCBhcyB0aGUgQyBjb21waWxlcgoodW5sZXNzIGl0IGlzCiBvdmVycmlkZGVuIGlu
-IHRoZSBzaXRlIHNoZWxsIHNjcmlwdCkuCgogVW5mb3J0dW5hdGVseSwgdGhpcyB0ZWNobmlxdWUg
-ZG9lcyBub3Qgd29yayBmb3IgYENPTkZJR19TSEVMTCcgZHVlIHRvCi1hbiBBdXRvY29uZiBidWcu
-ICBVbnRpbCB0aGUgYnVnIGlzIGZpeGVkIHlvdSBjYW4gdXNlIHRoaXMgd29ya2Fyb3VuZDoKK2Fu
-IEF1dG9jb25mIGxpbWl0YXRpb24uICBVbnRpbCB0aGUgbGltaXRhdGlvbiBpcyBsaWZ0ZWQsIHlv
-dSBjYW4gdXNlCit0aGlzIHdvcmthcm91bmQ6CgotICAgICBDT05GSUdfU0hFTEw9L2Jpbi9iYXNo
-IC9iaW4vYmFzaCAuL2NvbmZpZ3VyZSBDT05GSUdfU0hFTEw9L2Jpbi9iYXNoCisgICAgIENPTkZJ
-R19TSEVMTD0vYmluL2Jhc2ggLi9jb25maWd1cmUgQ09ORklHX1NIRUxMPS9iaW4vYmFzaAoKIGBj
-b25maWd1cmUnIEludm9jYXRpb24KID09PT09PT09PT09PT09PT09PT09PT0KQEAgLTM2Miw0ICsz
-NjgsMyBAQCBvcGVyYXRlcy4KCiBgY29uZmlndXJlJyBhbHNvIGFjY2VwdHMgc29tZSBvdGhlciwg
-bm90IHdpZGVseSB1c2VmdWwsIG9wdGlvbnMuICBSdW4KIGBjb25maWd1cmUgLS1oZWxwJyBmb3Ig
-bW9yZSBkZXRhaWxzLgoKLS0KClBvcHVsYXRlZCBDaGFuZ2Vsb2cgd2l0aDoKCi0tPjw4LS0tLS0t
-LS0tLS0tLS0KW3Zrb3VsQHZrb3VsLXVkZXNrNyB0aW55Y29tcHJlc3MgKG1hc3RlcildJCBnaXQg
-c2hvdyBIRUFEfjIKY29tbWl0IDRiYzI0ZmM1NjM1ZjkzNDU4NGY1OWZjNmYwZmIxMjY1M2EwMzRj
-ZTkKQXV0aG9yOiBWaW5vZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KRGF0ZTogICBGcmkg
-TWF5IDggMTU6NDk6MDUgMjAxNSArMDUzMAoKICAgIENoYW5nZWxvZzogdXBkYXRlIHRvIGdpdCBs
-b2cKCiAgICB3ZSBkb250IHVzZSBjaGFuZ2Vsb2cgZmlsZSBhcyBnaXQgaXMgYSB2ZXJ5IGdvb2Qg
-bG9nIG9mIHdoYXQgd2UgYXJlCiAgICBjaGFuZ2luZywgc28gcG9pbnQgdG8gZ2l0IGxvZwoKICAg
-IFNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwuY29tPgoKZGlmZiAt
-LWdpdCBhL0NoYW5nZUxvZyBiL0NoYW5nZUxvZwppbmRleCBlNjlkZTI5YmIyZDEuLmIwMDMzNmNh
-Yzc1NiAxMDA2NDQKLS0tIGEvQ2hhbmdlTG9nCisrKyBiL0NoYW5nZUxvZwpAQCAtMCwwICsxLDMg
-QEAKK0ZvciBjaGFuZ2Vsb2cgcGxlYXNlIHNlZSB0aGUgZ2l0IGxvZyBvZiB0aGUgcHJvamVjdAor
-CiskIGdpdCBsb2cKCi0tCgpQb3B1bGF0ZWQgYXV0aG9yIGluZm8KCi0tLS0+PDgtLS0tLS0tLS0t
-LS0KCmNvbW1pdCA0ZDg5MjY0NDIyY2U4ZjA2YzRiOGM1ZTllOTY3MTk3NDM5MTFjNjVlCkF1dGhv
-cjogVmlub2QgS291bCA8dmlub2Qua291bEBpbnRlbC5jb20+CkRhdGU6ICAgRnJpIE1heSA4IDE1
-OjUzOjA2IDIwMTUgKzA1MzAKCiAgICBBdXRob3JzOiBhZGQgaW5mb3JtYXRpb24gYWJvdXQgaG93
-IHRvIGZpbmQgYXV0aG9ycwoKICAgIFNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwgPHZpbm9kLmtv
-dWxAaW50ZWwuY29tPgoKZGlmZiAtLWdpdCBhL0FVVEhPUlMgYi9BVVRIT1JTCmluZGV4IGU2OWRl
-MjliYjJkMS4uZTU3YTIwYmVhMGUxIDEwMDY0NAotLS0gYS9BVVRIT1JTCisrKyBiL0FVVEhPUlMK
-QEAgLTAsMCArMSw0IEBACitUbyBzZWUgYXV0aG9yIG9mIHZhcmlvdXMgY2hhbmdlcyBpbiB0aGlz
-IHByb2plY3QsIHBsZWFzZSBydW4gdGhlIGJlbG93IGdpdAorY29tbWFuZAorCiskIGdpdCBsb2cg
-LS1mb3JtYXQ9JyVhTid8IHNvcnQgLXUKCgotLQoKVGhlbiBzYXcgdGhpcyB3YXJuIHdoZW4gY29t
-cGlsaW5nIHNvIGZpeGVkIGl0CgotLS0tLS0tPjw4LS0tLS0KY29tbWl0IDUwYzJiMDNiM2Q3YmU5
-YmRmNmY3Y2ZkYmY3MzA2NjVlM2I1OTYwODYKQXV0aG9yOiBWaW5vZCBLb3VsIDx2aW5vZC5rb3Vs
-QGludGVsLmNvbT4KRGF0ZTogICBGcmkgTWF5IDggMTY6MDA6MDIgMjAxNSArMDUzMAoKICAgIGNw
-bGF5OiBjaGVjayB0aGUgdmFsdWVzIG9mIGZyZWFkCgogICAgVGhpcyBmaXhlcyB0aGUgZm9sbG93
-aW5nIHdhcm5pbmc6CiAgICBjcGxheS5jOiBJbiBmdW5jdGlvbiDigJhwbGF5X3NhbXBsZXPigJk6
-CiAgICBjcGxheS5jOjIxOTo3OiB3YXJuaW5nOiBpZ25vcmluZyByZXR1cm4gdmFsdWUgb2Yg4oCY
-ZnJlYWTigJksIGRlY2xhcmVkIHdpdGgKICAgIGF0dHJpYnV0ZSB3YXJuX3VudXNlZF9yZXN1bHQg
-Wy1XdW51c2VkLXJlc3VsdF0KICAgICAgZnJlYWQoJmhlYWRlciwgc2l6ZW9mKGhlYWRlciksIDEs
-IGZpbGUpOwoKICAgIFNpZ25lZC1vZmYtYnk6IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwu
-Y29tPgoKZGlmZiAtLWdpdCBhL3NyYy91dGlscy9jcGxheS5jIGIvc3JjL3V0aWxzL2NwbGF5LmMK
-aW5kZXggYzQ2NTc3YTM0NjhhLi4yZDFhMTc2MGIzZWMgMTAwNjQ0Ci0tLSBhL3NyYy91dGlscy9j
-cGxheS5jCisrKyBiL3NyYy91dGlscy9jcGxheS5jCkBAIC0yMDcsNiArMjA3LDcgQEAgdm9pZCBw
-bGF5X3NhbXBsZXMoY2hhciAqbmFtZSwgdW5zaWduZWQgaW50IGNhcmQsCnVuc2lnbmVkIGludCBk
-ZXZpY2UsCiAgICAgICAgY2hhciAqYnVmZmVyOwogICAgICAgIGludCBzaXplLCBudW1fcmVhZCwg
-d3JvdGU7CiAgICAgICAgdW5zaWduZWQgaW50IGNoYW5uZWxzLCByYXRlLCBiaXRzOworICAgICAg
-IHNpemVfdCByZWFkOwoKICAgICAgICBpZiAodmVyYm9zZSkKICAgICAgICAgICAgICAgIHByaW50
-ZigiJXM6IGVudHJ5XG4iLCBfX2Z1bmNfXyk7CkBAIC0yMTYsNyArMjE3LDEyIEBAIHZvaWQgcGxh
-eV9zYW1wbGVzKGNoYXIgKm5hbWUsIHVuc2lnbmVkIGludCBjYXJkLAp1bnNpZ25lZCBpbnQgZGV2
-aWNlLAogICAgICAgICAgICAgICAgZXhpdChFWElUX0ZBSUxVUkUpOwogICAgICAgIH0KCi0gICAg
-ICAgZnJlYWQoJmhlYWRlciwgc2l6ZW9mKGhlYWRlciksIDEsIGZpbGUpOworICAgICAgIHJlYWQg
-PSBmcmVhZCgmaGVhZGVyLCBzaXplb2YoaGVhZGVyKSwgMSwgZmlsZSk7CisgICAgICAgaWYgKHJl
-YWQgIT0gc2l6ZW9mKGhlYWRlcikpIHsKKyAgICAgICAgICAgICAgIGZwcmludGYoc3RkZXJyLCAi
-VW5hYmxlIHRvIHJlYWQgaGVhZGVyIFxuIik7CisgICAgICAgICAgICAgICBmY2xvc2UoZmlsZSk7
-CisgICAgICAgICAgICAgICBleGl0KEVYSVRfRkFJTFVSRSk7CisgICAgICAgfQoKICAgICAgICBp
-ZiAocGFyc2VfbXAzX2hlYWRlcigmaGVhZGVyLCAmY2hhbm5lbHMsICZyYXRlLCAmYml0cykgPT0g
-LTEpIHsKICAgICAgICAgICAgICAgIGZjbG9zZShmaWxlKTsKCi0tIAp+Vmlub2QKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 2015-04-05 20:26, Russell King - ARM Linux wrote:
+> On Sun, Apr 05, 2015 at 06:46:13PM +0200, Takashi Iwai wrote:
+>> At Sun, 5 Apr 2015 17:20:34 +0100,
+>> Russell King - ARM Linux wrote:
+>> > Since (afaik) ALSA has a lack of support for dynamic reconfiguration
+>> > according to the attached device changing, the best we can do without
+>> > a huge amount of re-work of HDMI support across all adapters is to
+>> > process the capabilities of the attached device at prepare time
+>> > according to the current capabilities.
+>> 
+>> Yeah, reconfiguration is tricky.  BTW, how is the HDMI unplug handled
+>> during playback?
+> 
+> We don't handle it right now - and we don't have any notification to
+> the audio drivers that that has happened.  Even if we did have such a
+> notification, I'm not sure what the audio driver could do with it at
+> the moment.
+> 
+>> > Implementing dynamic reconfiguration in ALSA is not something I want to
+>> > get involved with, and as we /already/ have HDMI support merged in the
+>> > kernel, this is not a blocker for at least trying to get some semblence
+>> > of sanity, rather than having every driver re-implementing stuff like
+>> > this.
+>> 
+>> Well, I didn't mean about the dynamic reconfiguration.  I thought of
+>> rather min/max pairs, but it was just a wrong assumption.  Scratch
+>> it.
+>> 
+>> One another question: don't we need to deal with the sample bits in
+>> sad[2]?
+> 
+> It should, but I'm very wary about doing that without seeing more
+> examples of real SADs.
+
+If the same constraint setting helpers are to be used also with
+external HDMI encoders with i2s interface, there should be an option
+to leave out the constraints for the sample bits. There is no direct
+connection between the number of bits on I2S and HDMI link. The CPU
+DAI may apply its own constraints on the available sample formats and
+too strict constraints at the encoder end may lead to zero available
+formats.
+
+Best regrads,
+Jyri
+
+> Right now, all my examples only support
+> one SAD with either 2 channel or 6 channel audio at the standard
+> (basic) 32, 44.1 and 48kHz rates.
+> 
+> The HDMI / CEA specs are very loose in their wording about the
+> short audio descriptors.  I've no idea whether a sink can provide
+> (for example) descriptors such as:
+> 
+> 	LPCM, 6 channel 32, 44.1, 48kHz
+> 	LPCM, 2 channel, 32, 44.1, 48, 96, 192kHz
+> 
+> or whether have to describe that as a single descriptor.  I only
+> have two TVs to test with here.
+> 
+> What I'm concerned about is that when the ALSA parameter refining
+> starts, we start with (eg) 2-8 channels, 32-192kHz.  Given that,
+> if we invoke the channel restriction before the rate restriction,
+> we would end up limiting to 2 channel at 32-192kHz.  If we apply
+> the restrictions in the opposite order, we'd restrict to 6
+> channel, 32-48kHz.  Neither are obviously correct in this
+> circumstance, and I don't really see a way to solve it given my
+> understanding of the way ALSA's parameter refinement works.
+> 
+> I suspect this is why most HDMI drivers are implemented such that
+> they take the maximum capabilities over all SADs, which would end
+> up restricting audio in the above case to: up to 6 channels, at
+> 32, 44.1, 48, 96 and 192kHz, even though 6 channel @ 192kHz isn't
+> hasn't been indicated as supported.
+> 
+> Most of this is speculation though, based off what is in the
+> documentation.  As I say, I don't have enough real-world examples
+> to get a feel for what manufacturers _actually_ do to give a hint
+> as to how the documentation should be interpreted.
+> 
+> So, maybe I should just copy what everyone else does and take the
+> maximum of all descriptors...
