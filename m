@@ -1,108 +1,70 @@
-From: Jyri Sarha <jyri.sarha@iki.fi>
-Subject: Re: [alsa-devel] [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Fri, 08 May 2015 13:56:02 +0300
-Message-ID: <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk> <s5ha8ymy3e2.wl-tiwai@suse.de>
- <20150405162034.GH13898@n2100.arm.linux.org.uk>
- <s5h4mouy14a.wl-tiwai@suse.de>
- <20150405172608.GA12732@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: brownstone: Automatically
+ disconnect non-connected pins
+Date: Fri, 8 May 2015 12:05:18 +0100
+Message-ID: <20150508110518.GD22845@sirena.org.uk>
+References: <1431026869-27206-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20150405172608.GA12732@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3174689495024219482=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2D8F265B65
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 13:05:26 +0200 (CEST)
+In-Reply-To: <1431026869-27206-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2015-04-05 20:26, Russell King - ARM Linux wrote:
-> On Sun, Apr 05, 2015 at 06:46:13PM +0200, Takashi Iwai wrote:
->> At Sun, 5 Apr 2015 17:20:34 +0100,
->> Russell King - ARM Linux wrote:
->> > Since (afaik) ALSA has a lack of support for dynamic reconfiguration
->> > according to the attached device changing, the best we can do without
->> > a huge amount of re-work of HDMI support across all adapters is to
->> > process the capabilities of the attached device at prepare time
->> > according to the current capabilities.
->> 
->> Yeah, reconfiguration is tricky.  BTW, how is the HDMI unplug handled
->> during playback?
-> 
-> We don't handle it right now - and we don't have any notification to
-> the audio drivers that that has happened.  Even if we did have such a
-> notification, I'm not sure what the audio driver could do with it at
-> the moment.
-> 
->> > Implementing dynamic reconfiguration in ALSA is not something I want to
->> > get involved with, and as we /already/ have HDMI support merged in the
->> > kernel, this is not a blocker for at least trying to get some semblence
->> > of sanity, rather than having every driver re-implementing stuff like
->> > this.
->> 
->> Well, I didn't mean about the dynamic reconfiguration.  I thought of
->> rather min/max pairs, but it was just a wrong assumption.  Scratch
->> it.
->> 
->> One another question: don't we need to deal with the sample bits in
->> sad[2]?
-> 
-> It should, but I'm very wary about doing that without seeing more
-> examples of real SADs.
 
-If the same constraint setting helpers are to be used also with
-external HDMI encoders with i2s interface, there should be an option
-to leave out the constraints for the sample bits. There is no direct
-connection between the number of bits on I2S and HDMI link. The CPU
-DAI may apply its own constraints on the available sample formats and
-too strict constraints at the encoder end may lead to zero available
-formats.
+--===============3174689495024219482==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9txOV/VkvTinkpci"
+Content-Disposition: inline
 
-Best regrads,
-Jyri
 
-> Right now, all my examples only support
-> one SAD with either 2 channel or 6 channel audio at the standard
-> (basic) 32, 44.1 and 48kHz rates.
-> 
-> The HDMI / CEA specs are very loose in their wording about the
-> short audio descriptors.  I've no idea whether a sink can provide
-> (for example) descriptors such as:
-> 
-> 	LPCM, 6 channel 32, 44.1, 48kHz
-> 	LPCM, 2 channel, 32, 44.1, 48, 96, 192kHz
-> 
-> or whether have to describe that as a single descriptor.  I only
-> have two TVs to test with here.
-> 
-> What I'm concerned about is that when the ALSA parameter refining
-> starts, we start with (eg) 2-8 channels, 32-192kHz.  Given that,
-> if we invoke the channel restriction before the rate restriction,
-> we would end up limiting to 2 channel at 32-192kHz.  If we apply
-> the restrictions in the opposite order, we'd restrict to 6
-> channel, 32-48kHz.  Neither are obviously correct in this
-> circumstance, and I don't really see a way to solve it given my
-> understanding of the way ALSA's parameter refinement works.
-> 
-> I suspect this is why most HDMI drivers are implemented such that
-> they take the maximum capabilities over all SADs, which would end
-> up restricting audio in the above case to: up to 6 channels, at
-> 32, 44.1, 48, 96 and 192kHz, even though 6 channel @ 192kHz isn't
-> hasn't been indicated as supported.
-> 
-> Most of this is speculation though, based off what is in the
-> documentation.  As I say, I don't have enough real-world examples
-> to get a feel for what manufacturers _actually_ do to give a hint
-> as to how the documentation should be interpreted.
-> 
-> So, maybe I should just copy what everyone else does and take the
-> maximum of all descriptors...
+--9txOV/VkvTinkpci
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, May 07, 2015 at 09:27:46PM +0200, Lars-Peter Clausen wrote:
+> Most DAPM input and output pins of the wm8994 are either used in the card's
+> DAPM routing table or are marked as not connected.
+
+Applied all, thanks.
+
+--9txOV/VkvTinkpci
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVTJhuAAoJECTWi3JdVIfQ5X4H/2QmrvpbjrxkdZps0CNWEfSy
+h4q07c2pb6y9OBInvfz80bB7anWOo7s4oj8kEQ899ZMXA2ZLv8SUprs/8QftW9lF
+ukwZhuM9MGzcaBM/gt45X5NDOEB+I0D5jqgl0YxbTu/KvO66pQk6xqfs6OUZ6ya8
+xgAtg+5kjjQ/gy0r1vzjKMrmHBpo4KPb7YmWx0DJhmoV1SJr3lNSwm23e42LIrVO
+9712mX4VQumL/EA6bnaRFtITgx8ErFxbyrd1zPfzJVJiFkUOubKeNsRAqRgG0+yc
+KQiiLbi0Pmb+ldmVzye+4EC8SwKAUo677JZZH1gLkTq2oAFb30+QDMBXc5pcwIU=
+=rYrX
+-----END PGP SIGNATURE-----
+
+--9txOV/VkvTinkpci--
+
+--===============3174689495024219482==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3174689495024219482==--
