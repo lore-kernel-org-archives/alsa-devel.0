@@ -1,83 +1,212 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Jyri Sarha <jyri.sarha@iki.fi>
 Subject: Re: [alsa-devel] [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Fri, 8 May 2015 12:42:30 +0100
-Message-ID: <20150508114230.GI2067@n2100.arm.linux.org.uk>
+Date: Fri, 08 May 2015 16:16:08 +0300
+Message-ID: <34627ba55428fd0dd821d99a5326e451@kapsi.fi>
 References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
  <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
- <s5ha8ymy3e2.wl-tiwai@suse.de>
- <20150405162034.GH13898@n2100.arm.linux.org.uk>
- <s5h4mouy14a.wl-tiwai@suse.de>
- <20150405172608.GA12732@n2100.arm.linux.org.uk>
- <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <ef04b1827963c2746c252f65bfa0d172@kapsi.fi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jyri.sarha@iki.fi>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, jsarha@ti.com, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMDgsIDIwMTUgYXQgMDE6NTY6MDJQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
-ZToKPiBPbiAyMDE1LTA0LTA1IDIwOjI2LCBSdXNzZWxsIEtpbmcgLSBBUk0gTGludXggd3JvdGU6
-Cj4gPk9uIFN1biwgQXByIDA1LCAyMDE1IGF0IDA2OjQ2OjEzUE0gKzAyMDAsIFRha2FzaGkgSXdh
-aSB3cm90ZToKPiA+PkF0IFN1biwgNSBBcHIgMjAxNSAxNzoyMDozNCArMDEwMCwKPiA+PlJ1c3Nl
-bGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToKPiA+Pj4gU2luY2UgKGFmYWlrKSBBTFNBIGhhcyBh
-IGxhY2sgb2Ygc3VwcG9ydCBmb3IgZHluYW1pYyByZWNvbmZpZ3VyYXRpb24KPiA+Pj4gYWNjb3Jk
-aW5nIHRvIHRoZSBhdHRhY2hlZCBkZXZpY2UgY2hhbmdpbmcsIHRoZSBiZXN0IHdlIGNhbiBkbyB3
-aXRob3V0Cj4gPj4+IGEgaHVnZSBhbW91bnQgb2YgcmUtd29yayBvZiBIRE1JIHN1cHBvcnQgYWNy
-b3NzIGFsbCBhZGFwdGVycyBpcyB0bwo+ID4+PiBwcm9jZXNzIHRoZSBjYXBhYmlsaXRpZXMgb2Yg
-dGhlIGF0dGFjaGVkIGRldmljZSBhdCBwcmVwYXJlIHRpbWUKPiA+Pj4gYWNjb3JkaW5nIHRvIHRo
-ZSBjdXJyZW50IGNhcGFiaWxpdGllcy4KPiA+Pgo+ID4+WWVhaCwgcmVjb25maWd1cmF0aW9uIGlz
-IHRyaWNreS4gIEJUVywgaG93IGlzIHRoZSBIRE1JIHVucGx1ZyBoYW5kbGVkCj4gPj5kdXJpbmcg
-cGxheWJhY2s/Cj4gPgo+ID5XZSBkb24ndCBoYW5kbGUgaXQgcmlnaHQgbm93IC0gYW5kIHdlIGRv
-bid0IGhhdmUgYW55IG5vdGlmaWNhdGlvbiB0bwo+ID50aGUgYXVkaW8gZHJpdmVycyB0aGF0IHRo
-YXQgaGFzIGhhcHBlbmVkLiAgRXZlbiBpZiB3ZSBkaWQgaGF2ZSBzdWNoIGEKPiA+bm90aWZpY2F0
-aW9uLCBJJ20gbm90IHN1cmUgd2hhdCB0aGUgYXVkaW8gZHJpdmVyIGNvdWxkIGRvIHdpdGggaXQg
-YXQKPiA+dGhlIG1vbWVudC4KPiA+Cj4gPj4+IEltcGxlbWVudGluZyBkeW5hbWljIHJlY29uZmln
-dXJhdGlvbiBpbiBBTFNBIGlzIG5vdCBzb21ldGhpbmcgSSB3YW50IHRvCj4gPj4+IGdldCBpbnZv
-bHZlZCB3aXRoLCBhbmQgYXMgd2UgL2FscmVhZHkvIGhhdmUgSERNSSBzdXBwb3J0IG1lcmdlZCBp
-biB0aGUKPiA+Pj4ga2VybmVsLCB0aGlzIGlzIG5vdCBhIGJsb2NrZXIgZm9yIGF0IGxlYXN0IHRy
-eWluZyB0byBnZXQgc29tZSBzZW1ibGVuY2UKPiA+Pj4gb2Ygc2FuaXR5LCByYXRoZXIgdGhhbiBo
-YXZpbmcgZXZlcnkgZHJpdmVyIHJlLWltcGxlbWVudGluZyBzdHVmZiBsaWtlCj4gPj4+IHRoaXMu
-Cj4gPj4KPiA+PldlbGwsIEkgZGlkbid0IG1lYW4gYWJvdXQgdGhlIGR5bmFtaWMgcmVjb25maWd1
-cmF0aW9uLiAgSSB0aG91Z2h0IG9mCj4gPj5yYXRoZXIgbWluL21heCBwYWlycywgYnV0IGl0IHdh
-cyBqdXN0IGEgd3JvbmcgYXNzdW1wdGlvbi4gIFNjcmF0Y2gKPiA+Pml0Lgo+ID4+Cj4gPj5PbmUg
-YW5vdGhlciBxdWVzdGlvbjogZG9uJ3Qgd2UgbmVlZCB0byBkZWFsIHdpdGggdGhlIHNhbXBsZSBi
-aXRzIGluCj4gPj5zYWRbMl0/Cj4gPgo+ID5JdCBzaG91bGQsIGJ1dCBJJ20gdmVyeSB3YXJ5IGFi
-b3V0IGRvaW5nIHRoYXQgd2l0aG91dCBzZWVpbmcgbW9yZQo+ID5leGFtcGxlcyBvZiByZWFsIFNB
-RHMuCj4gCj4gSWYgdGhlIHNhbWUgY29uc3RyYWludCBzZXR0aW5nIGhlbHBlcnMgYXJlIHRvIGJl
-IHVzZWQgYWxzbyB3aXRoCj4gZXh0ZXJuYWwgSERNSSBlbmNvZGVycyB3aXRoIGkycyBpbnRlcmZh
-Y2UsIHRoZXJlIHNob3VsZCBiZSBhbiBvcHRpb24KPiB0byBsZWF2ZSBvdXQgdGhlIGNvbnN0cmFp
-bnRzIGZvciB0aGUgc2FtcGxlIGJpdHMuIFRoZXJlIGlzIG5vIGRpcmVjdAo+IGNvbm5lY3Rpb24g
-YmV0d2VlbiB0aGUgbnVtYmVyIG9mIGJpdHMgb24gSTJTIGFuZCBIRE1JIGxpbmsuIFRoZSBDUFUK
-PiBEQUkgbWF5IGFwcGx5IGl0cyBvd24gY29uc3RyYWludHMgb24gdGhlIGF2YWlsYWJsZSBzYW1w
-bGUgZm9ybWF0cyBhbmQKPiB0b28gc3RyaWN0IGNvbnN0cmFpbnRzIGF0IHRoZSBlbmNvZGVyIGVu
-ZCBtYXkgbGVhZCB0byB6ZXJvIGF2YWlsYWJsZQo+IGZvcm1hdHMuCgpQb3NzaWJseSwgYnV0IHRo
-ZW4gaG93IGRvIHdlIGtub3cgd2hpY2ggU0FEIHRvIGFwcGx5IHRvIGxpbWl0IHRoZSBudW1iZXIK
-b2YgY2hhbm5lbHM/CgpJIHN1c3BlY3QgZm9yIHRoZSB1c2UgY2FzZSB5b3UncmUgc3VnZ2VzdGlu
-ZyBhYm92ZSwgaXQncyBiZXR0ZXIgbGVmdCB0bwp0aGUgdXNlciByYXRoZXIgdGhhbiBnZW5lcmlj
-IGNvZGUgdG8gd29yayBpdCBvdXQgb3RoZXJ3aXNlIHRoaW5ncyBnZXQKZmFyIHRvbyBjb21wbGV4
-LiAgV2UnZCBuZWVkIHRvIGhhdmUgc29tZSB3YXkgZm9yIHRoZSBkcml2ZXIgdG8gcmVwb3J0CmJh
-Y2sgdG8gdGhpcyBnZW5lcmljIGNvZGUgdGhlIGFjdHVhbCBudW1iZXIgb2YgYml0cyBvbiB0aGUg
-SERNSSBsaW5rLgoKSG93ZXZlciwgYXMgd2UgY3VycmVudGx5IGtub3csIEFMU0EgYXBwZWFycyB0
-byBoYXZlIGEgcHJvYmxlbSBoZXJlIHdoaWNoCnByZXR0eSBtdWNoIG1ha2VzIHByb3Blcmx5IHJl
-c3RyaWN0aW5nIHRoZSBjaGFubmVscyBhbmQgc2FtcGxlIHJhdGVzCmltcG9zc2libGUgdG8gZG8u
-ICBUaGF0IGlzc3VlIGlzIHRoZSBvbmUgSSdtIG11Y2ggbW9yZSBrZWVuIHRvIHNvbHZlCnJpZ2h0
-IG5vdywgYmVjYXVzZSB3aXRob3V0IHRoYXQgYmVpbmcgc29sdmVkLCB0aGlzIHNldCBvZiBwYXRj
-aGVzIGlzCnByZXR0eSBtdWNoIGRlYWQgaW4gdGhlIHdhdGVyLgoKLS0gCkZUVEMgYnJvYWRiYW5k
-IGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAK
-YWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVsCg==
+On 2015-04-02 12:22, Russell King wrote:
+> Add a helper for the EDID like data structure, which is typically 
+> passed
+> from a HDMI adapter to its associated audio driver.  This informs the
+> audio driver of the capabilities of the attached HDMI sink.
+> 
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>  include/sound/pcm_drm_eld.h |  6 +++
+>  sound/core/Kconfig          |  3 ++
+>  sound/core/Makefile         |  1 +
+>  sound/core/pcm_drm_eld.c    | 92 
+> +++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 102 insertions(+)
+>  create mode 100644 include/sound/pcm_drm_eld.h
+>  create mode 100644 sound/core/pcm_drm_eld.c
+> 
+> diff --git a/include/sound/pcm_drm_eld.h b/include/sound/pcm_drm_eld.h
+> new file mode 100644
+> index 000000000000..93357b25d2e2
+> --- /dev/null
+> +++ b/include/sound/pcm_drm_eld.h
+> @@ -0,0 +1,6 @@
+> +#ifndef __SOUND_PCM_DRM_ELD_H
+> +#define __SOUND_PCM_DRM_ELD_H
+> +
+> +int snd_pcm_hw_constraint_eld(struct snd_pcm_runtime *runtime, void 
+> *eld);
+> +
+> +#endif
+> diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+> index 313f22e9d929..b534c8a6046b 100644
+> --- a/sound/core/Kconfig
+> +++ b/sound/core/Kconfig
+> @@ -6,6 +6,9 @@ config SND_PCM
+>  	tristate
+>  	select SND_TIMER
+> 
+> +config SND_PCM_ELD
+> +	bool
+> +
+>  config SND_DMAENGINE_PCM
+>  	tristate
+> 
+> diff --git a/sound/core/Makefile b/sound/core/Makefile
+> index 4daf2f58261c..591b49157b4d 100644
+> --- a/sound/core/Makefile
+> +++ b/sound/core/Makefile
+> @@ -13,6 +13,7 @@ snd-$(CONFIG_SND_JACK)	  += jack.o
+>  snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
+>  		pcm_memory.o memalloc.o
+>  snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
+> +snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+> 
+>  # for trace-points
+>  CFLAGS_pcm_lib.o := -I$(src)
+> diff --git a/sound/core/pcm_drm_eld.c b/sound/core/pcm_drm_eld.c
+> new file mode 100644
+> index 000000000000..47d9b60435fe
+> --- /dev/null
+> +++ b/sound/core/pcm_drm_eld.c
+> @@ -0,0 +1,92 @@
+> +/*
+> + *  PCM DRM helpers
+> + *
+> + *   This program is free software; you can redistribute it and/or 
+> modify
+> + *   it under the terms of the GNU General Public License version 2 as
+> + *   published by the Free Software Foundation.
+> + */
+> +#include <linux/export.h>
+> +#include <drm/drm_edid.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_drm_eld.h>
+> +
+> +static const unsigned int eld_rates[] = {
+> +	32000,
+> +	44100,
+> +	48000,
+> +	88200,
+> +	96000,
+> +	176400,
+> +	192000,
+> +};
+> +
+
+For what I can see, you are setting the cross dependency between
+the sample rate and channels incorrectly. You should look for the
+currently tested channel count directly from hw params.
+
+> +static int eld_limit_rates(struct snd_pcm_hw_params *params,
+> +			   struct snd_pcm_hw_rule *rule)
+> +{
+> +	struct snd_interval *r = hw_param_interval(params, rule->var);
+> +	struct snd_interval *c;
+> +	unsigned int rate_mask = 7, i;
+> +	const u8 *sad, *eld = rule->private;
+> +
+> +	sad = drm_eld_sad(eld);
+> +	if (sad) {
+> +		c = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-               c = hw_param_interval(params, 
+SNDRV_PCM_HW_PARAM_CHANNELS);
++               uint pchannels = params_channels(params);
+> +
+> +		for (i = drm_eld_sad_count(eld); i > 0; i--, sad += 3) {
+> +			unsigned channels = 1 + (sad[0] & 7);
+> +
+> +			/*
+> +			 * Exclude SADs which do not include the
+> +			 * requested number of channels.
+> +			 */
+> +			if (pchannels <= channels)
+> +				rate_mask |= sad[1];
+> +		}
+> +printk("%s: r %d-%d c %d-%d m %x\n", __func__, r->min, r->max,
+> c->min, c->max, rate_mask);
+> +	}
+> +
+> +	return snd_interval_list(r, ARRAY_SIZE(eld_rates), eld_rates,
+> +				 rate_mask);
+> +}
+> +
+
+ From this side the dependency is missing all together.
+
+> +static int eld_limit_channels(struct snd_pcm_hw_params *params,
+> +			      struct snd_pcm_hw_rule *rule)
+> +{
+> +	struct snd_interval *var = hw_param_interval(params, rule->var);
+> +	struct snd_interval t = { .min = 1, .max = 2, .integer = 1, };
+> +	unsigned int i;
+
++       unsigned int j;
+
+> +	const u8 *sad, *eld = rule->private;
+
++	int rate = params_rate(params);
+
+> +
+> +	sad = drm_eld_sad(eld);
+> +	if (sad) {
+> +		for (i = drm_eld_sad_count(eld); i > 0; i--, sad += 3) {
+
++                for (j = 0; j < ARRAY_SIZE(eld_rates); j++)
++                        if ((sad[1] & (1<<j)) && rate == eld_rates[j]) 
+{
+
+> +			 switch (sad[0] & 0x78) {
+> +			 case 0x08:
+> +				t.max = max(t.max, (sad[0] & 7) + 1u);
+> +				break;
+> +			}
+
++               }
+
+> +		}
+> +	}
+> +
+> +	return snd_interval_refine(var, &t);
+> +}
+> +
+
+The code is completely untested, but I am sure you got the idea.
+
+Best regards,
+Jyri
+
+> +int snd_pcm_hw_constraint_eld(struct snd_pcm_runtime *runtime, void 
+> *eld)
+> +{
+> +	int ret;
+> +
+> +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> +				  eld_limit_rates, eld,
+> +				  SNDRV_PCM_HW_PARAM_RATE,
+> +				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +				  eld_limit_channels, eld,
+> +				  SNDRV_PCM_HW_PARAM_CHANNELS,
+> +				  SNDRV_PCM_HW_PARAM_RATE, -1);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_pcm_hw_constraint_eld);
