@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: brownstone: Automatically
- disconnect non-connected pins
-Date: Fri, 8 May 2015 12:05:18 +0100
-Message-ID: <20150508110518.GD22845@sirena.org.uk>
-References: <1431026869-27206-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: fsl_ssi: No need call
+	of_device_is_available()
+Date: Fri, 8 May 2015 12:05:51 +0100
+Message-ID: <20150508110551.GE22845@sirena.org.uk>
+References: <1431051856-22476-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3174689495024219482=="
+Content-Type: multipart/mixed; boundary="===============5352648915327014433=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F2D8F265B65
- for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 13:05:26 +0200 (CEST)
-In-Reply-To: <1431026869-27206-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 99A4B265CC1
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 13:06:00 +0200 (CEST)
+In-Reply-To: <1431051856-22476-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3174689495024219482==
+--===============5352648915327014433==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9txOV/VkvTinkpci"
+	protocol="application/pgp-signature"; boundary="XIihDAIFcHS4kFQ7"
 Content-Disposition: inline
 
 
---9txOV/VkvTinkpci
+--XIihDAIFcHS4kFQ7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 07, 2015 at 09:27:46PM +0200, Lars-Peter Clausen wrote:
-> Most DAPM input and output pins of the wm8994 are either used in the card's
-> DAPM routing table or are marked as not connected.
+On Thu, May 07, 2015 at 11:24:16PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> The comment and the call to of_device_is_available() are not really
+> needed.
 
-Applied all, thanks.
+Applied, thanks.
 
---9txOV/VkvTinkpci
+--XIihDAIFcHS4kFQ7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVTJhuAAoJECTWi3JdVIfQ5X4H/2QmrvpbjrxkdZps0CNWEfSy
-h4q07c2pb6y9OBInvfz80bB7anWOo7s4oj8kEQ899ZMXA2ZLv8SUprs/8QftW9lF
-ukwZhuM9MGzcaBM/gt45X5NDOEB+I0D5jqgl0YxbTu/KvO66pQk6xqfs6OUZ6ya8
-xgAtg+5kjjQ/gy0r1vzjKMrmHBpo4KPb7YmWx0DJhmoV1SJr3lNSwm23e42LIrVO
-9712mX4VQumL/EA6bnaRFtITgx8ErFxbyrd1zPfzJVJiFkUOubKeNsRAqRgG0+yc
-KQiiLbi0Pmb+ldmVzye+4EC8SwKAUo677JZZH1gLkTq2oAFb30+QDMBXc5pcwIU=
-=rYrX
+iQEcBAEBCAAGBQJVTJiPAAoJECTWi3JdVIfQVZ0H/jUFR53YAguf2PTF+J/7Cjyc
+nAtUln6FoAcu9q1CXjE4KL8wsOwMrKXF645+J21HlEBwsXXad1lH/sGFo8jyAZX3
+obkA32fNh0McT8qGuuf5JfIKJ4dihcAttfnvOnPZpTPF3EnjBw7WPWBoQ1KuNbOp
+qtpULQ2khG9wtMJhalJOYZfLBzb2BADjsPzEtESHnphM+4GD6apuO0mvhbWTWMrg
+sMMCGVv6zLxu8oSpQjNeqfBFER6P8R6GNkn7Ps/X6rJWBZGSCfwNoLkLIk34eumD
+tX2UsnzTUQ+xZHct1/zdEp27muidyCDz4O6Ua8VQGL3+92SFSssLVYgukGOntEs=
+=/Iec
 -----END PGP SIGNATURE-----
 
---9txOV/VkvTinkpci--
+--XIihDAIFcHS4kFQ7--
 
---===============3174689495024219482==
+--===============5352648915327014433==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3174689495024219482==--
+--===============5352648915327014433==--
