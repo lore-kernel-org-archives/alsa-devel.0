@@ -1,67 +1,57 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH RFC v2 10/13] sound/core: add DRM ELD helper
-Date: Fri, 8 May 2015 14:27:01 +0100
-Message-ID: <20150508132701.GJ2067@n2100.arm.linux.org.uk>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
- <E1YdbKA-00085Q-LL@rmk-PC.arm.linux.org.uk>
- <34627ba55428fd0dd821d99a5326e451@kapsi.fi>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: add device tree support
+Date: Fri, 08 May 2015 08:30:52 -0500
+Message-ID: <554CBA8C.4080909@linux.intel.com>
+References: <1430833322-13531-1-git-send-email-bardliao@realtek.com>
+ <1430833322-13531-3-git-send-email-bardliao@realtek.com>
+ <1430837158.8043.61.camel@loki>
+ <ABFD875FF5FB574BA706497D987D48D701067CC7@RTITMBSV03.realtek.com.tw>
+ <20150507125142.GW15510@sirena.org.uk> <554BAED7.4080705@linux.intel.com>
+ <20150507183629.GM22845@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <34627ba55428fd0dd821d99a5326e451@kapsi.fi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jyri.sarha@iki.fi>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, jsarha@ti.com, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2144B265D26
+ for <alsa-devel@alsa-project.org>; Fri,  8 May 2015 15:30:53 +0200 (CEST)
+In-Reply-To: <20150507183629.GM22845@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMDgsIDIwMTUgYXQgMDQ6MTY6MDhQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
-ZToKPiBPbiAyMDE1LTA0LTAyIDEyOjIyLCBSdXNzZWxsIEtpbmcgd3JvdGU6Cj4gPitzdGF0aWMg
-Y29uc3QgdW5zaWduZWQgaW50IGVsZF9yYXRlc1tdID0gewo+ID4rCTMyMDAwLAo+ID4rCTQ0MTAw
-LAo+ID4rCTQ4MDAwLAo+ID4rCTg4MjAwLAo+ID4rCTk2MDAwLAo+ID4rCTE3NjQwMCwKPiA+Kwkx
-OTIwMDAsCj4gPit9Owo+ID4rCj4gCj4gRm9yIHdoYXQgSSBjYW4gc2VlLCB5b3UgYXJlIHNldHRp
-bmcgdGhlIGNyb3NzIGRlcGVuZGVuY3kgYmV0d2Vlbgo+IHRoZSBzYW1wbGUgcmF0ZSBhbmQgY2hh
-bm5lbHMgaW5jb3JyZWN0bHkuCgpUaGVyZSBpcyBhIGRlcGVuZGVuY3kgYmV0d2VlbiBzYW1wbGUg
-cmF0ZSBhbmQgY2hhbm5lbHMuCgo+IFlvdSBzaG91bGQgbG9vayBmb3IgdGhlCj4gY3VycmVudGx5
-IHRlc3RlZCBjaGFubmVsIGNvdW50IGRpcmVjdGx5IGZyb20gaHcgcGFyYW1zLgoKSSdtIG5vdCBz
-byBzdXJlIHRoYXQncyByaWdodCBhZnRlciBsb29raW5nIGF0IHNuZF9hYzk3X3BjbV9kb3VibGVf
-cmF0ZV9ydWxlcygpLgpUaGF0J3MgcHJldHR5IG11Y2ggdGhlIHNhbWUgcHJvYmxlbSAtIEFDJzk3
-IGNvZGVjcyBjYW4gb3BlcmF0ZSBhdCBhCnNhbXBsZSByYXRlIG9mIGVpdGhlciB0aGUgYnVzIGZy
-YW1lIGZyZXF1ZW5jeSBvciB0d2ljZSB0aGUgYnVzIGZyYW1lCmZyZXF1ZW5jeS4KClRoZXkgYWNo
-aWV2ZSB0d2ljZSB0aGUgYnVzIGZyYW1lIGZyZXF1ZW5jeSBieSByZWFsbG9jYXRpbmcgYSBjb3Vw
-bGUKb2YgdGhlIFBDTSBkYXRhIHNsb3RzIHdoaWNoIHdvdWxkIG90aGVyd2lzZSBiZSB1c2VkIGZv
-ciA+MiBjaGFubmVscwp0byB0aGUgZmlyc3QgdHdvIGNoYW5uZWxzLCB0aHVzIGFsbG93aW5nIHR3
-byBmcm9udCBjaGFubmVsIHNhbXBsZXMKcGVyIGZyYW1lLgoKQUMnOTcgbGltaXRzIHRoZSBudW1i
-ZXIgb2YgY2hhbm5lbHMgdG8gdHdvIGlmOgoKICAgICAgICBpZiAocmF0ZS0+bWluID4gNDgwMDAp
-IHsKCmFuZCBsaW1pdHMgdGhlIHNhbXBsZSByYXRlIHRvIDEtNDhrSHogaWY6CgogICAgICAgIGlm
-IChjaGFubmVscy0+bWluID4gMikgewoKPiBGcm9tIHRoaXMgc2lkZSB0aGUgZGVwZW5kZW5jeSBp
-cyBtaXNzaW5nIGFsbCB0b2dldGhlci4KClllcywgaXQgSSBpbml0aWFsbHkgY291bGRuJ3Qgd29y
-ayBvdXQgaG93IHRvIGRvIHRoYXQgYml0Li4uIGJ1dCBJIGhhdmUKYSBzb2x1dGlvbiBub3cgd2hp
-Y2ggc2VlbXMgdG8gc29ydC1vZiB3b3JrLgoKVGVzdGluZyB3aXRoIGFwbGF5LCBJIGZpbmQgdGhh
-dCBpdCBzZWVtcyB0byBtb3N0bHkgd29yaywgYW5kIEkgZ3Vlc3MKdGhhdDoKCglhcGxheSAtRCBo
-dzowLDAgLXYgLWYgUzI0X0xFIC1jIDYgLXIgMTkyMDAwIC9kZXYvemVybwoKcmVzdWx0aW5nIGlu
-OgoKUGxheWluZyByYXcgZGF0YSAnL2Rldi96ZXJvJyA6IFNpZ25lZCAyNCBiaXQgTGl0dGxlIEVu
-ZGlhbiwgUmF0ZSAxOTIwMDAgSHosIENoYW5uZWxzIDYKV2FybmluZzogcmF0ZSBpcyBub3QgYWNj
-dXJhdGUgKHJlcXVlc3RlZCA9IDE5MjAwMEh6LCBnb3QgPSA0ODAwMEh6KQogICAgICAgICBwbGVh
-c2UsIHRyeSB0aGUgcGx1ZyBwbHVnaW4KSGFyZHdhcmUgUENNIGNhcmQgMCAnRFctSERNSScgZGV2
-aWNlIDAgc3ViZGV2aWNlIDAKSXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNL
-CiAgYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQKICBmb3JtYXQgICAgICAgOiBTMjRfTEUK
-ICBzdWJmb3JtYXQgICAgOiBTVEQKICBjaGFubmVscyAgICAgOiA2CiAgcmF0ZSAgICAgICAgIDog
-NDgwMDAKICBleGFjdCByYXRlICAgOiA0ODAwMCAoNDgwMDAvMSkKCmlzIGFjY2VwdGFibGUuCgpB
-bHNvIGxvb2tpbmcgYXQgQUMnOTcsIEkgZG9uJ3QgbmVlZCB0byBsaXN0IHRoZSBzYW1lIHBhcmFt
-ZXRlciBhcyBhCmRlcGVuZGVudCBvZiB0aGUgcnVsZS4uLiBzb21ldGhpbmcgSSdsbCB0cnkgd2hl
-biBJJ20gYmFjayBmcm9tIHRoZQpob3NwaXRhbCBsYXRlciB0aGlzIGFmdGVybm9vbi4uLgoKLS0g
-CkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBk
-b3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
-ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On 5/7/15 1:36 PM, Mark Brown wrote:
+> On Thu, May 07, 2015 at 01:28:39PM -0500, Pierre-Louis Bossart wrote:
+>> On 5/7/15 7:51 AM, Mark Brown wrote:
+>
+>>> You shouldn't be using of_get_named_gpio() for DT stuff either, use
+>>> gpiod_get() which follows the usual pattern of taking a string which is
+>>> used to do the lookup with whatever firmware is in use.
+>
+>> But to Bard's credit the use of_get_named_gpio() is pretty common - i see 18
+>> occurrences in soc/codecs alone, others will have the same problem...
+>> we talked internally (RafaelW, Darren Hart, LiamG and me) about reaching out
+>> to gpio and audio maintainers and aligning some sort of coordinated change
+>> to the gpiod framework w/ guidance to developers, did that thread start?
+>
+> I'm not sure there's any particular need for coordination here, the APIs
+> are in place already - the gpiod_ APIs will already transparently look
+> up both ACPI and DT (see __gpiod_get_index() for the implementation) and
+> new drivers should really be using gpiod_ anyway regardless of trying to
+> do both ACPI and DT.
+
+Agree, but there wasn't a clear message provided to the readers of this 
+mailing list. A 'should' is a recommendation that provides no real 
+incentive to move to the new gpiod framework. The message would be 
+clearer if maintainers stated that new contributions using 
+of_get_named_gpio() will no longer be merged in the mainline (maybe 
+after a specific milestone). That would set the direction for everyone.
