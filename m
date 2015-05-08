@@ -1,123 +1,248 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] ASoC: ux500: adjust devm usage
-Date: Mon, 20 Jul 2015 13:25:20 +0200
-Message-ID: <CAPDyKFpih4xXG+JGkGcG=1wZf0jSEZ_a=fFP2FmB3iD2okO0DA@mail.gmail.com>
-References: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: [PATCH v13 1/3] drm/i2c: tda998x: Add support of a DT graph of ports
+Date: Fri, 8 May 2015 10:18:45 +0200
+Message-ID: <3ac20722ba6bb8204af5f6408d2efdf44ce38417.1437397271.git.moinejf@free.fr>
+References: <cover.1437397270.git.moinejf@free.fr>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.1437397270.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 19 July 2015 at 21:12, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
-> The explicit call to devm_regulator_put in the probe and remove functions
-> does not seem to be necessary.  In particular, the functions
-> prcmu_qos_remove_requirement and ux500_msp_i2s_cleanup_msp in the remove
-> function seem to do nothing that can interfere with devm_regulator_put,
-> making it safe to allow devm_regulator_put to occur after the end of the
-> remove function.
->
-> Convert the calls to clk_get to devm_clk_get, and remove the corresponding
-> calls to clk_put in the probe and remove functions.
->
-> Replace various gotos by direct returns, and drop unneeded labels.
->
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Two kinds of ports may be declared in a DT graph of ports: video and audio.
+This patch accepts the port value from a video port as an alternative
+to the video-ports property.
+It also accepts audio ports in the case the transmitter is not used as
+a slave encoder.
+The new file include/sound/tda998x.h prepares to the definition of
+a tda998x CODEC.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+---
+ .../devicetree/bindings/drm/i2c/tda998x.txt        | 51 ++++++++++++
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 90 +++++++++++++++++++---
+ include/sound/tda998x.h                            |  8 ++
+ 3 files changed, 140 insertions(+), 9 deletions(-)
+ create mode 100644 include/sound/tda998x.h
 
-Kind regards
-Uffe
+diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+index e9e4bce..386b6c3 100644
+--- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
++++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
+@@ -16,6 +16,35 @@ Optional properties:
+ 
+   - video-ports: 24 bits value which defines how the video controller
+ 	output is wired to the TDA998x input - default: <0x230145>
++	This property is not used when ports are defined.
++
++Optional nodes:
++
++  - port: up to three ports.
++	The ports are defined according to [1].
++
++    Video port.
++	There may be only one video port.
++	This one must contain the following property:
++
++	- port-type: must be "rgb"
++
++	and may contain the optional property:
++
++	- reg: 24 bits value which defines how the video controller
++		output is wired to the TDA998x input (video pins)
++		When absent, the default value is <0x230145>.
++
++    Audio ports.
++	There may be one or two audio ports.
++	These ones must contain the following properties:
++
++	- port-type: must be "i2s" or "spdif"
++
++	- reg: 8 bits value which defines how the audio controller
++		output is wired to the TDA998x input (audio pins)
++
++[1] Documentation/devicetree/bindings/graph.txt
+ 
+ Example:
+ 
+@@ -26,4 +55,26 @@ Example:
+ 		interrupts = <27 2>;		/* falling edge */
+ 		pinctrl-0 = <&pmx_camera>;
+ 		pinctrl-names = "default";
++
++		port@230145 {
++			port-type = "rgb";
++			reg = <0x230145>;
++			hdmi_0: endpoint {
++				remote-endpoint = <&lcd0_0>;
++			};
++		};
++		port@3 {			/* AP1 = I2S */
++			port-type = "i2s";
++			reg = <0x03>;
++			tda998x_i2s: endpoint {
++				remote-endpoint = <&audio1_i2s>;
++			};
++		};
++		port@4 {			 /* AP2 = S/PDIF */
++			port-type = "spdif";
++			reg = <0x04>;
++			tda998x_spdif: endpoint {
++				remote-endpoint = <&audio1_spdif1>;
++			};
++		};
+ 	};
+diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+index 424228b..b0a730a 100644
+--- a/drivers/gpu/drm/i2c/tda998x_drv.c
++++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+@@ -27,6 +27,7 @@
+ #include <drm/drm_edid.h>
+ #include <drm/drm_of.h>
+ #include <drm/i2c/tda998x.h>
++#include <sound/tda998x.h>
+ 
+ #define DBG(fmt, ...) DRM_DEBUG(fmt"\n", ##__VA_ARGS__)
+ 
+@@ -47,6 +48,8 @@ struct tda998x_priv {
+ 	wait_queue_head_t wq_edid;
+ 	volatile int wq_edid_wait;
+ 	struct drm_encoder *encoder;
++
++	struct tda998x_audio_s audio;
+ };
+ 
+ #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
+@@ -774,6 +777,8 @@ static void tda998x_encoder_set_config(struct tda998x_priv *priv,
+ 			    (p->mirr_f ? VIP_CNTRL_2_MIRR_F : 0);
+ 
+ 	priv->params = *p;
++	priv->audio.port_types[0] = p->audio_format;
++	priv->audio.ports[0] = p->audio_cfg;
+ }
+ 
+ static void tda998x_encoder_dpms(struct tda998x_priv *priv, int mode)
+@@ -1230,9 +1235,57 @@ static struct drm_encoder_slave_funcs tda998x_encoder_slave_funcs = {
+ 
+ /* I2C driver functions */
+ 
++static int tda998x_parse_ports(struct tda998x_priv *priv,
++				struct device_node *np)
++{
++	struct device_node *of_port;
++	const char *port_type;
++	int ret, audio_index, reg, afmt;
++
++	audio_index = 0;
++	for_each_child_of_node(np, of_port) {
++		if (!of_port->name
++		 || of_node_cmp(of_port->name, "port") != 0)
++			continue;
++		ret = of_property_read_string(of_port, "port-type",
++					&port_type);
++		if (ret < 0)
++			continue;
++		ret = of_property_read_u32(of_port, "reg", &reg);
++		if (strcmp(port_type, "rgb") == 0) {
++			if (!ret) {		/* video reg is optional */
++				priv->vip_cntrl_0 = reg >> 16;
++				priv->vip_cntrl_1 = reg >> 8;
++				priv->vip_cntrl_2 = reg;
++			}
++			continue;
++		}
++		if (strcmp(port_type, "i2s") == 0)
++			afmt = AFMT_I2S;
++		else if (strcmp(port_type, "spdif") == 0)
++			afmt = AFMT_SPDIF;
++		else
++			continue;
++		if (ret < 0) {
++			dev_err(&priv->hdmi->dev, "missing reg for %s\n",
++				port_type);
++			return ret;
++		}
++		if (audio_index >= ARRAY_SIZE(priv->audio.ports)) {
++			dev_err(&priv->hdmi->dev, "too many audio ports\n");
++			break;
++		}
++		priv->audio.ports[audio_index] = reg;
++		priv->audio.port_types[audio_index] = afmt;
++		audio_index++;
++	}
++	return 0;
++}
++
+ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+ {
+ 	struct device_node *np = client->dev.of_node;
++	struct device_node *of_port;
+ 	u32 video;
+ 	int rev_lo, rev_hi, ret;
+ 	unsigned short cec_addr;
+@@ -1337,15 +1390,34 @@ static int tda998x_create(struct i2c_client *client, struct tda998x_priv *priv)
+ 	/* enable EDID read irq: */
+ 	reg_set(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
+ 
+-	if (!np)
+-		return 0;		/* non-DT */
+-
+-	/* get the optional video properties */
+-	ret = of_property_read_u32(np, "video-ports", &video);
+-	if (ret == 0) {
+-		priv->vip_cntrl_0 = video >> 16;
+-		priv->vip_cntrl_1 = video >> 8;
+-		priv->vip_cntrl_2 = video;
++	/* get the device tree parameters */
++	if (np) {
++		of_port = of_get_child_by_name(np, "port");
++		if (of_port) {				/* graph of ports */
++			of_node_put(of_port);
++			ret = tda998x_parse_ports(priv, np);
++			if (ret < 0)
++				goto fail;
++
++			/* initialize the default audio configuration */
++			if (priv->audio.ports[0]) {
++				priv->params.audio_cfg = priv->audio.ports[0];
++				priv->params.audio_format =
++						priv->audio.port_types[0];
++				priv->params.audio_clk_cfg =
++					priv->params.audio_format ==
++							AFMT_SPDIF ? 0 : 1;
++			}
++		} else {
++
++			/* optional video properties */
++			ret = of_property_read_u32(np, "video-ports", &video);
++			if (ret == 0) {
++				priv->vip_cntrl_0 = video >> 16;
++				priv->vip_cntrl_1 = video >> 8;
++				priv->vip_cntrl_2 = video;
++			}
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/include/sound/tda998x.h b/include/sound/tda998x.h
+new file mode 100644
+index 0000000..487a809
+--- /dev/null
++++ b/include/sound/tda998x.h
+@@ -0,0 +1,8 @@
++#ifndef SND_TDA998X_H
++#define SND_TDA998X_H
++
++struct tda998x_audio_s {
++	u8 ports[2];			/* AP value */
++	u8 port_types[2];		/* AFMT_xxx */
++};
++#endif
+-- 
+2.1.4
 
->
-> ---
->  sound/soc/ux500/ux500_msp_dai.c |   29 ++++++++++-------------------
->  1 file changed, 10 insertions(+), 19 deletions(-)
->
-> diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-> index 978f2d7..f5df08d 100644
-> --- a/sound/soc/ux500/ux500_msp_dai.c
-> +++ b/sound/soc/ux500/ux500_msp_dai.c
-> @@ -773,20 +773,22 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
->         }
->         prcmu_qos_add_requirement(PRCMU_QOS_APE_OPP, (char *)pdev->name, 50);
->
-> -       drvdata->pclk = clk_get(&pdev->dev, "apb_pclk");
-> +       drvdata->pclk = devm_clk_get(&pdev->dev, "apb_pclk");
->         if (IS_ERR(drvdata->pclk)) {
->                 ret = (int)PTR_ERR(drvdata->pclk);
-> -               dev_err(&pdev->dev, "%s: ERROR: clk_get of pclk failed (%d)!\n",
-> +               dev_err(&pdev->dev,
-> +                       "%s: ERROR: devm_clk_get of pclk failed (%d)!\n",
->                         __func__, ret);
-> -               goto err_pclk;
-> +               return ret;
->         }
->
-> -       drvdata->clk = clk_get(&pdev->dev, NULL);
-> +       drvdata->clk = devm_clk_get(&pdev->dev, NULL);
->         if (IS_ERR(drvdata->clk)) {
->                 ret = (int)PTR_ERR(drvdata->clk);
-> -               dev_err(&pdev->dev, "%s: ERROR: clk_get failed (%d)!\n",
-> +               dev_err(&pdev->dev,
-> +                       "%s: ERROR: devm_clk_get failed (%d)!\n",
->                         __func__, ret);
-> -               goto err_clk;
-> +               return ret;
->         }
->
->         ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp,
-> @@ -795,7 +797,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
->                 dev_err(&pdev->dev,
->                         "%s: ERROR: Failed to init MSP-struct (%d)!",
->                         __func__, ret);
-> -               goto err_init_msp;
-> +               return ret;
->         }
->         dev_set_drvdata(&pdev->dev, drvdata);
->
-> @@ -804,7 +806,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
->         if (ret < 0) {
->                 dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
->                         __func__, drvdata->msp->id);
-> -               goto err_init_msp;
-> +               return ret;
->         }
->
->         ret = ux500_pcm_register_platform(pdev);
-> @@ -819,13 +821,6 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
->
->  err_reg_plat:
->         snd_soc_unregister_component(&pdev->dev);
-> -err_init_msp:
-> -       clk_put(drvdata->clk);
-> -err_clk:
-> -       clk_put(drvdata->pclk);
-> -err_pclk:
-> -       devm_regulator_put(drvdata->reg_vape);
-> -
->         return ret;
->  }
->
-> @@ -837,12 +832,8 @@ static int ux500_msp_drv_remove(struct platform_device *pdev)
->
->         snd_soc_unregister_component(&pdev->dev);
->
-> -       devm_regulator_put(drvdata->reg_vape);
->         prcmu_qos_remove_requirement(PRCMU_QOS_APE_OPP, "ux500_msp_i2s");
->
-> -       clk_put(drvdata->clk);
-> -       clk_put(drvdata->pclk);
-> -
->         ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
->
->         return 0;
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
