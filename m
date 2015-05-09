@@ -1,99 +1,94 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH RESEND] sound: ppc: keywest: drop using attach
-	adapter
-Date: Sat,  9 May 2015 19:42:22 +0200
-Message-ID: <1431193342-3864-1-git-send-email-wsa@the-dreams.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH 12/13] drm: bridge/dw_hdmi-ahb-audio: add
+ audio driver
+Date: Sat, 9 May 2015 18:53:28 +0100
+Message-ID: <20150509175327.GU2067@n2100.arm.linux.org.uk>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1y8-0006lG-Mw@rmk-PC.arm.linux.org.uk>
+ <554E3AA8.8060601@iki.fi>
+ <20150509165536.GS2067@n2100.arm.linux.org.uk>
+ <554E3EE1.40904@iki.fi>
+ <20150509174054.GT2067@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pokefinder.org (sauhun.de [89.238.76.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 360A6260592
- for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 19:44:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Mark Elliott <txlitebeer@gmail.com>, linuxppc-dev@lists.ozlabs.org, Dan DeVoto <dand1972@yahoo.com>, Wolfram Sang <wsa@the-dreams.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20150509174054.GT2067@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-As we now have deferred probing, we can use a custom mechanism and
-finally get rid of this legacy interface from the i2c core.
-
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-Tested-by: Dan DeVoto <dand1972@yahoo.com>
-Tested-by: Mark Elliott <txlitebeer@gmail.com>
----
-
-Changes since last time: Added two test tags from the Debian PPC list.
-
-I'd love to have that in 4.2, so I can get rid of that legacy interface.
-I can take it via I2C but ALSA looks like the proper path to me.
-
- sound/ppc/keywest.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-index 0d1c27e911b8dd..d7627bae08362e 100644
---- a/sound/ppc/keywest.c
-+++ b/sound/ppc/keywest.c
-@@ -52,7 +52,7 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
- 		return -EINVAL;
- 
- 	if (strncmp(adapter->name, "mac-io", 6))
--		return 0; /* ignored */
-+		return -EINVAL; /* ignored */
- 
- 	memset(&info, 0, sizeof(struct i2c_board_info));
- 	strlcpy(info.type, "keywest", I2C_NAME_SIZE);
-@@ -100,7 +100,6 @@ static struct i2c_driver keywest_driver = {
- 	.driver = {
- 		.name = "PMac Keywest Audio",
- 	},
--	.attach_adapter = keywest_attach_adapter,
- 	.probe = keywest_probe,
- 	.remove = keywest_remove,
- 	.id_table = keywest_i2c_id,
-@@ -132,16 +131,32 @@ int snd_pmac_tumbler_post_init(void)
- /* exported */
- int snd_pmac_keywest_init(struct pmac_keywest *i2c)
- {
--	int err;
-+	struct i2c_adapter *adap;
-+	int err, i = 0;
- 
- 	if (keywest_ctx)
- 		return -EBUSY;
- 
-+	adap = i2c_get_adapter(0);
-+	if (!adap)
-+		return -EPROBE_DEFER;
-+
- 	keywest_ctx = i2c;
- 
- 	if ((err = i2c_add_driver(&keywest_driver))) {
- 		snd_printk(KERN_ERR "cannot register keywest i2c driver\n");
-+		i2c_put_adapter(adap);
- 		return err;
- 	}
--	return 0;
-+
-+	/* We assume Macs have consecutive I2C bus numbers starting at 0 */
-+	while (adap) {
-+		err = keywest_attach_adapter(adap);
-+		if (!err)
-+			return 0;
-+		i2c_put_adapter(adap);
-+		adap = i2c_get_adapter(++i);
-+	}
-+
-+	return -ENODEV;
- }
--- 
-2.1.4
+T24gU2F0LCBNYXkgMDksIDIwMTUgYXQgMDY6NDA6NTRQTSArMDEwMCwgUnVzc2VsbCBLaW5nIC0g
+QVJNIExpbnV4IHdyb3RlOgo+IEV2ZW4gVkxDIF9kb2Vzbid0XyBpZiBpdCdzIG91dHB1dHRpbmcg
+dG8gYSBzdGFuZGFyZCBhdWRpbyAtIGluIG90aGVyCj4gd29yZHMsIGlmIHlvdSBkb24ndCB0aWNr
+IHRoZSBTUERJRiBkaXJlY3Qgb3V0cHV0IG9wdGlvbiB3aGljaCBkZWZhdWx0cwo+IHRvIGRpc2Fi
+bGVkICh3aGljaCwgd2hlbiBlbmFibGVkLCBvcGVucyB0aGUgZGV2aWNlIHBhc3NpbmcgdGhlIEFF
+Uwo+IGJpdHMgX2FuZF8gcGVybWl0cyBpdCB0byBzZW5kIGEgY29tcHJlc3NlZCBhdWRpbyBzdHJl
+YW0uKSAgSSd2ZSBsb29rZWQKPiBhdCB0aGlzIGluIFZMQyBtYW55IHRpbWVzLi4uCgpGWUksIGhl
+cmUncyB0aGUgY29kZToKCiAgICB2bGNfZm91cmNjX3QgZm91cmNjID0gYW91dC0+Zm9ybWF0Lmlf
+Zm9ybWF0OwogICAgYm9vbCBzcGRpZiA9IGZhbHNlOwogICAgc3dpdGNoIChmb3VyY2MpCiAgICB7
+Ci4uLiBvdGhlciBsaW5lYXIgZmxvYXQvaW50ZWdlciBjb2RlYyBJRHMgLi4uCiAgICAgICAgY2Fz
+ZSBWTENfQ09ERUNfVTE2QjoKICAgICAgICAgICAgcGNtX2Zvcm1hdCA9IFNORF9QQ01fRk9STUFU
+X1UxNl9CRTsKICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgY2FzZSBWTENfQ09ERUNfVTE2TDoK
+ICAgICAgICAgICAgcGNtX2Zvcm1hdCA9IFNORF9QQ01fRk9STUFUX1UxNl9MRTsKICAgICAgICAg
+ICAgYnJlYWs7Ci4uLgogICAgICAgIGRlZmF1bHQ6CiAgICAgICAgICAgIGlmIChBT1VUX0ZNVF9T
+UERJRigmYW91dC0+Zm9ybWF0KSkKICAgICAgICAgICAgICAgIHNwZGlmID0gdmFyX0luaGVyaXRC
+b29sIChhb3V0LCAic3BkaWYiKTsKICAgICAgICAgICAgaWYgKHNwZGlmKQogICAgICAgICAgICB7
+CiAgICAgICAgICAgICAgICBmb3VyY2MgPSBWTENfQ09ERUNfU1BESUZMOwogICAgICAgICAgICAg
+ICAgcGNtX2Zvcm1hdCA9IFNORF9QQ01fRk9STUFUX1MxNjsKICAgICAgICAgICAgfQogICAgICAg
+ICAgICBlbHNlCiAgICAgICAgICAgIGlmIChIQVZFX0ZQVSkKICAgICAgICAgICAgewogICAgICAg
+ICAgICAgICAgZm91cmNjID0gVkxDX0NPREVDX0ZMMzI7CiAgICAgICAgICAgICAgICBwY21fZm9y
+bWF0ID0gU05EX1BDTV9GT1JNQVRfRkxPQVQ7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxz
+ZQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBmb3VyY2MgPSBWTENfQ09ERUNfUzE2TjsK
+ICAgICAgICAgICAgICAgIHBjbV9mb3JtYXQgPSBTTkRfUENNX0ZPUk1BVF9TMTY7CiAgICAgICAg
+ICAgIH0KICAgIH0KCiAgICAvKiBDaG9vc2UgdGhlIElFQyBkZXZpY2UgZm9yIFMvUERJRiBvdXRw
+dXQ6CiAgICAgICBpZiB0aGUgZGV2aWNlIGlzIG92ZXJyaWRkZW4gYnkgdGhlIHVzZXIgdGhlbiBp
+dCB3aWxsIGJlIHRoZSBvbmUuCiAgICAgICBPdGhlcndpc2Ugd2UgY29tcHV0ZSB0aGUgZGVmYXVs
+dCBkZXZpY2UgYmFzZWQgb24gdGhlIG91dHB1dCBmb3JtYXQuICovCiAgICBpZiAoc3BkaWYgJiYg
+IXN0cmNtcCAoZGV2aWNlLCAiZGVmYXVsdCIpKQogICAgewogICAgICAgIHVuc2lnbmVkIGFlczM7
+CgogICAgICAgIHN3aXRjaCAoYW91dC0+Zm9ybWF0LmlfcmF0ZSkKICAgICAgICB7CiNkZWZpbmUg
+RlMoZnJlcSkgXAogICAgICAgICAgICBjYXNlIGZyZXE6IGFlczMgPSBJRUM5NThfQUVTM19DT05f
+RlNfICMjIGZyZXE7IGJyZWFrOwogICAgICAgICAgICBGUyggNDQxMDApIC8qIGRlZi4gKi8gRlMo
+IDQ4MDAwKSBGUyggMzIwMDApCiAgICAgICAgICAgIEZTKCAyMjA1MCkgICAgICAgICAgICBGUygg
+MjQwMDApCiAgICAgICAgICAgIEZTKCA4ODIwMCkgRlMoNzY4MDAwKSBGUyggOTYwMDApCiAgICAg
+ICAgICAgIEZTKDE3NjQwMCkgICAgICAgICAgICBGUygxOTIwMDApCiN1bmRlZiBGUwogICAgICAg
+ICAgICBkZWZhdWx0OgogICAgICAgICAgICAgICAgYWVzMyA9IElFQzk1OF9BRVMzX0NPTl9GU19O
+T1RJRDsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgIH0KCiAgICAgICAgZnJlZSAoZGV2
+aWNlKTsKICAgICAgICBpZiAoYXNwcmludGYgKCZkZXZpY2UsCiAgICAgICAgICAgICAgICAgICAg
+ICAiaWVjOTU4OkFFUzA9MHgleCxBRVMxPTB4JXgsQUVTMj0weCV4LEFFUzM9MHgleCIsCiAgICAg
+ICAgICAgICAgICAgICAgICBJRUM5NThfQUVTMF9DT05fRU1QSEFTSVNfTk9ORSB8IElFQzk1OF9B
+RVMwX05PTkFVRElPLAogICAgICAgICAgICAgICAgICAgICAgSUVDOTU4X0FFUzFfQ09OX09SSUdJ
+TkFMIHwgSUVDOTU4X0FFUzFfQ09OX1BDTV9DT0RFUiwKICAgICAgICAgICAgICAgICAgICAgIDAs
+IGFlczMpID09IC0xKQogICAgICAgICAgICByZXR1cm4gVkxDX0VOT01FTTsKICAgIH0KLi4uCiAg
+ICAvKiBWTEMgYWx3YXlzIGhhcyBhIHJlc2FtcGxlci4gTm8gbmVlZCBmb3IgQUxTQSdzLiAqLwog
+ICAgY29uc3QgaW50IG1vZGUgPSBTTkRfUENNX05PX0FVVE9fUkVTQU1QTEU7CgogICAgaW50IHZh
+bCA9IHNuZF9wY21fb3BlbiAoJnBjbSwgZGV2aWNlLCBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSywg
+bW9kZSk7CgpTbywgdGhlIHJlc3VsdCBpczoKCiogVkxDIG9wZW5zIHRoZSBBTFNBIGRldmljZSBf
+d2l0aG91dF8gQUVTIGluZm9ybWF0aW9uIGlmIHRoZSBmb3VyY2MKICBiZWluZyBwYXNzZWQgaWYg
+dGhlIGZvcm1hdCBpcyBhIGxpbmVhciBQQ00gdHlwZS4KCiogSWYgdGhlIGZvcm1hdCBpcyBub3Qg
+YSBsaW5lYXIgUENNIHR5cGUgX2FuZF8gaXQgaXMgYSBmb3JtYXQgd2hpY2gKICBzYXRpc2ZpZXMg
+QU9VVF9GTVRfU1BESUYoKSwgX2FuZF8gdGhlIFNQRElGIHBhc3N0aHJvdWdoIG9wdGlvbiBpcwog
+IGVuYWJsZWQsIF90aGVuXyB3ZSBvcGVuIHRoZSBJRUM5NTggYXVkaW8gb3V0cHV0IGRldmljZSB3
+aXRoIHRoZQogIGZpcnN0IGZvdXIgQUVTIGRhdGEgYnl0ZXMgc3BlY2lmaWVkIHdpdGggU05EX1BD
+TV9GT1JNQVRfUzE2LgogIE1vcmVvdmVyLCB0aGUgZmlyc3QgZGF0YSBieXRlIGFsd2F5cyBpbmRp
+Y2F0ZXMgdGhhdCB0aGUgc3RyZWFtIGlzCiAgbm9uLWF1ZGlvLgoKU28sIGluIHRoZSBjYXNlIG9m
+IGxpbmVhciBQQ00sIHRoZSBBRVMgZGF0YSBieXRlcyBhcmUgKm5vdCogc3BlY2lmaWVkCmJ5IFZM
+Qy4KClNvLCBpZiB3ZSBkb24ndCBoYXZlIHRoZSBrZXJuZWwgZHJpdmVyIHNwZWNpZnlpbmcgdGhl
+IElFQzk1OCBpbmZvcm1hdGlvbgpmb3IgSERNSS9TUERJRiBvdXRwdXRzLCBhbmQgdXNlcnMgb2Yg
+QUxTQSdzIHVzZXJzcGFjZSBBUElzIGRvbid0IGdlbmVyYXRlCnRoZW0gZm9yIGxpbmVhciBQQ00s
+IGhvdyBhcmUgdGhlIHJlcXVpcmVkIEFFUyBkYXRhIGJ5dGVzIGdlbmVyYXRlZD8KCi0tIApGVFRD
+IGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93biA0
+MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
+ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
