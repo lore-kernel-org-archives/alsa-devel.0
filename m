@@ -1,61 +1,83 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: PreSonus Information For Developers
-Date: Sat, 09 May 2015 09:02:03 +0200
-Message-ID: <554DB0EB.9090502@ladisch.de>
-References: <554C1AED.7070503@frontier.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH v3 0/13] dw_hdmi cleanups, audio preparation, helpers and ahb
+ audio support
+Date: Sat, 9 May 2015 11:25:01 +0100
+Message-ID: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 553FD260455
- for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 09:02:11 +0200 (CEST)
-In-Reply-To: <554C1AED.7070503@frontier.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Karl Swisher <k_swisher@frontier.com>, ALSA-DEVEL <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Karl Swisher wrote:
-> I have what might be useful information to some developers but I do
-> not sure who or how to contact the right people.  I recently purchased
-> a PreSonus StudioLive AI 32.4.2 mixer.  Have it half way working under
-> Linux.  This mixer has a network connection in addition to the
-> firewire interface.  I've installed their software under VirtualBox
-> and ran tcpflow capturing packet content between the computer and the
-> mixer.  I have started creating text files of the packets of which
-> below is an example of their software performing functions like the
-> mixer booting, backing up, restore, and selecting the digital output
-> channels 33 through 48.
->
-> 55 43 00 01 06 00 4b 41 65 00 64 00
-> 55 43 00 01 1d 00 46 52 65 00 64 00 01 00
-> Listpresets/scene 00 00
->
-> 55 43 00 01 1b 00 46 52 65 00 64 00 01 00
-> Listpresets/channel 00 00
->
-> 55 43 00 01 19 00 46 52 65 00 64 00 01 00
-> Listpresets/geq 00 00
->
-> 55 43 00 01 19 00 46 52 65 00 64 00 01 00
-> Listpresets/reverb 00 00
->
-> Does anyone here know if there is value in this information or anyone
-> that might want it?
-
-This information might be useful for somebody who wants to write a mixer
-for this device.
-
-Please add this to a page on the FFADO wiki: http://subversion.ffado.org/
-
-
-Regards,
-Clemens
+SSdtIHNlbmRpbmcgdGhpcyBzZXJpZXMgYWdhaW4gZm9yIGNvbW1lbnRzLCBhbmQgdG8gYWxsb3cg
+cGVvcGxlIHRvCnVwZGF0ZSB0aGVpciBjb2RlIGJhc2VzIChmb3IgdGhvc2Ugd2hvIGFyZSB1c2lu
+ZyBteSBBSEIgYXVkaW8gZHJpdmVyCm9uIGlNWDYpLgoKVGhlcmUgaGF2ZSBiZWVuIHZlcnkgZmV3
+IGNoYW5nZXMgZnJvbSB0aGUgcHJldmlvdXMgcG9zdGluZywgdGhlCmV4Y2VwdGlvbiBiZWluZyB0
+aGUgRUxEIGhlbHBlciBpbiBwYXRjaCAxMCwgd2hpY2ggc2hvdWxkIGJlIGNvcnJlY3RseQpzb3J0
+ZWQgbm93LgoKSSB3b3VsZCBsaWtlIHRvOgoqIHF1ZXVlIHRoZSBmaXJzdCBzaXggcGF0Y2hlcyBm
+b3IgRGF2aWQsIHNvIEknbSBhc2tpbmcgZm9yIGFja3MgZm9yIHRoZXNlCiogb2J0YWluIGFncmVl
+bWVudCB3aXRoIHRoZSBSb2NrY2hpcCBndXlzIG9uIHBhdGNoZXMgNyBhbmQgOAoqIHF1ZXVlIHBh
+dGNoZXMgOSB0byAxMSBpbmNsdXNpdmUgYXMgd2VsbCAoYXMgdGhlc2UgYXJlIGNyb3NzLXN1YnN5
+c3RlbSwKICBJIHRoaW5rIHdlIG5lZWQgdG8gZGlzY3VzcyBob3cgdGhleSBhcmUgdG8gYmUgaGFu
+ZGxlZCAtIHRoZXJlIGlzIG90aGVyCiAgd29yayBpbiB0aGUgcGlwZWxpbmVzIGZyb20gb3RoZXJz
+IGRlcGVuZGluZyBvbiB0aGVzZSBjaGFuZ2VzLikgIFNvIGFja3MKICBmb3IgdGhlc2Ugd291bGQg
+YmUgbmljZSB0b28uCgpIZXJlJ3MgdGhlIHN1bW1hcnkgb2YgdGhlIHBhdGNoZXMsIHNhbWUgYXMg
+bGFzdCB0aW1lOgoKVGhlIGZpcnN0IGZvdXIgcGF0Y2hlcyBhcmUgYSBmZXcgY2xlYW51cHMgdG8g
+dGhlIGR3X2hkbWkgZHJpdmVyLgoKVGhlIG5leHQgdHdvIHBhdGNoZXMgaW50cm9kdWNlIG5ldyBp
+bnRlcmZhY2VzIHRvIHRoZSBkd19oZG1pIGRyaXZlcgp0byBzdXBwb3J0IEFIQiBhdWRpbywgaW5j
+bHVkaW5nIHRoZSBlcnJhdGEgZm91bmQgb24gaU1YNiB3aGljaApyZXF1aXJlcyBOIHRvIGJlIHBy
+b2dyYW1tZWQgdG8gemVybyB3aGVuIHRoZSBhdWRpbyBGSUZPIGlzIG5vdCBmdWxsLgpJJ20gZXhw
+ZWN0aW5nIHNvbWUgZGlzY3Vzc2lvbiB3aXRoIHRoZXNlIGxhc3QgdHdvIGFzIHdlIHRyeSB0byB3
+b3JrCm91dCBob3cgdG8gZGVhbCB3aXRoIHRoZSB0d28gdmFyaWFudHMgb2YgYXVkaW8gc3VwcG9y
+dCBmb3IgdGhpcyBwYXJ0CihBSEIgYXVkaW8gdnMgSTJTIGF1ZGlvKS4KClRoZSBmb2xsb3dpbmcg
+dGhyZWUgYWRkIHZhcmlvdXMgaGVscGVycyB0byB0aGUgRFJNIGFuZCBBTFNBIHN1YnN5c3RlbXMK
+Zm9yIGF1ZGlvIHN1cHBvcnQgd2hpY2ggaXMgbm9uLXNwZWNpZmljIHRvIHRoZSBBSEIgYXVkaW8g
+ZHJpdmVyLiAgRm9yCkRSTSwgdGhpcyBpcyBhIGhlbHBlciBtYWNybyB0byBvYnRhaW4gdGhlIHBv
+aW50ZXIgaW50byB0aGUgc2hvcnQgYXVkaW8KZGVzY3JpcHRvcnMuICBGb3IgQUxTQSwgaXQncyBh
+IHNldCBvZiBoZWxwZXJzIHRvIHJlc3RyaWN0IGFuIGF1ZGlvIFBDTQpkZXZpY2UncyBjYXBhYmls
+aXRpZXMgYWNjb3JkaW5nIHRvIHRoZSBFTEQsIGFuZCB0byBnZW5lcmF0ZSB0aGUgSUVDOTU4CmNo
+YW5uZWwgc3RhdHVzIGRhdGEuICBJZiB0aGVzZSBoZWxwZXJzIGFyZSBhY2NlcHRhYmxlLCB3ZSBj
+YW4gY29udmVydAphIG51bWJlciBvZiBkcml2ZXJzIHRvIHRoZW0uCgpUaGUgRUxEIGhlbHBlciBp
+c24ndCBxdWl0ZSBmaW5pc2hlZCwgYnV0IHNob3VsZCBiZSBzdWZmaWNpZW50IGZvcgppbml0aWFs
+IHRlc3RpbmcuCgpUaGUgbGFzdCB0d28gcGF0Y2hlcyBhZGQgc3VwcG9ydCBmb3IgdGhlIGR3X2hk
+bWkgYXVkaW8uICBUaGlzIGlzIGFuCkFMU0EgZHJpdmVyIHJhdGhlciB0aGFuIGFuIEFTb0MgZHJp
+dmVyIGFzIGl0J3MgYSBwcmV0dHkgc2ltcGxlIGFmZmFpci4KSSBjb3VsZG4ndCBmaW5kIGEgc3Vp
+dGFibGUgbG9jYXRpb24gaW4gdGhlIHNvdW5kLyBzdWJ0cmVlIHRvIHBsYWNlIGl0LApzbyBJJ3Zl
+IHBsYWNlZCBpdCBuZXh0IHRvIHRoZSBicmlkZ2UgLSB5ZXMsIHdlIHByb2JhYmx5IG5lZWQgdG8g
+ZmluZAppdCBhIGJldHRlciBob21lIGluIHRoZSBzb3VuZC8gc3VidHJlZSwgYnV0IGl0IGN1cnJl
+bnRseSBtYWtlcwp1c2Ugb2YgZHdfaGRtaS5oIGluIHRoZSBkaXJlY3RvcnkgaXQgbGl2ZXMuCgog
+ZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9LY29uZmlnICAgICAgICAgICAgIHwgIDExICsKIGRyaXZl
+cnMvZ3B1L2RybS9icmlkZ2UvTWFrZWZpbGUgICAgICAgICAgICB8ICAgMSArCiBkcml2ZXJzL2dw
+dS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMgfCA1NjYgKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS1haGItYXVkaW8uaCB8
+ICAxNCArCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYyAgICAgICAgICAgfCAzMjEg
+KysrKysrKysrLS0tLS0tLQogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmggICAgICAg
+ICAgIHwgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pbXgvZHdfaGRtaS1pbXguYyAgICAgICAgICB8
+ICAgNSArCiBpbmNsdWRlL2RybS9icmlkZ2UvZHdfaGRtaS5oICAgICAgICAgICAgICAgfCAgIDcg
+KwogaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCAgICAgICAgICAgICAgICAgICAgIHwgIDE5ICsKIGlu
+Y2x1ZGUvc291bmQvcGNtX2RybV9lbGQuaCAgICAgICAgICAgICAgICB8ICAgNiArCiBpbmNsdWRl
+L3NvdW5kL3BjbV9pZWM5NTguaCAgICAgICAgICAgICAgICAgfCAgIDkgKwogc291bmQvY29yZS9L
+Y29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsKIHNvdW5kL2NvcmUvTWFrZWZp
+bGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBzb3VuZC9jb3JlL3BjbV9kcm1fZWxk
+LmMgICAgICAgICAgICAgICAgICAgfCAgOTkgKysrKysKIHNvdW5kL2NvcmUvcGNtX2llYzk1OC5j
+ICAgICAgICAgICAgICAgICAgICB8ICA5NSArKysrKwogMTUgZmlsZXMgY2hhbmdlZCwgMTAzNiBp
+bnNlcnRpb25zKCspLCAxMjggZGVsZXRpb25zKC0pCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAu
+OG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1cAphY2NvcmRp
+bmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
+cmktZGV2ZWwK
