@@ -1,20 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v2 2/2] ASoC: sta350: Use
- devm_gpiod_get_optional at appropriate place
-Date: Sat, 09 May 2015 23:09:32 +0800
-Message-ID: <1431184172.5393.2.camel@ingics.com>
-References: <1431184113.5393.1.camel@ingics.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/2] ASoC: fsl: fsl_dma: Use true/false for
+	boolean init
+Date: Sat,  9 May 2015 12:45:52 -0300
+Message-ID: <1431186353-7331-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 454E826051D
- for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 17:09:37 +0200 (CEST)
-Received: by pdbqa5 with SMTP id qa5so109211617pdb.1
- for <alsa-devel@alsa-project.org>; Sat, 09 May 2015 08:09:36 -0700 (PDT)
-In-Reply-To: <1431184113.5393.1.camel@ingics.com>
+Received: from mail-yh0-f49.google.com (mail-yh0-f49.google.com
+ [209.85.213.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61793260505
+ for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 17:46:19 +0200 (CEST)
+Received: by yhw29 with SMTP id 29so26610441yhw.1
+ for <alsa-devel@alsa-project.org>; Sat, 09 May 2015 08:46:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Johannes Stezenbach <js@sig21.net>, Sven Brandau <info@brandau.biz>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-devm_gpiod_get_optional is equivalent to devm_gpiod_get(), except that
-when no GPIO was assigned to the requested function it will return NULL.
-This is convenient for drivers that need to handle optional GPIOs.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-I just checked the code in commit 34d7c3905adb9a9
-("ASoC: improve usage of gpiod API") and found that it should use
-devm_gpiod_get_optional rather than devm_gpiod_get here.
+Bool initializations should use true and false.  Bool tests don't need
+comparisons.  Based on contributions from Joe Perches, Rusty Russell
+and Bruce W Allan.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+The semantic patch that makes this change is available
+in scripts/coccinelle/misc/boolinit.cocci.
+
+More information about semantic patching is available at
+http://coccinelle.lip6.fr/
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
-v2: Fixup subject line
-
- sound/soc/codecs/sta350.c | 4 ++--
+ sound/soc/fsl/fsl_dma.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sta350.c b/sound/soc/codecs/sta350.c
-index 50d8bbf..0cea8f9 100644
---- a/sound/soc/codecs/sta350.c
-+++ b/sound/soc/codecs/sta350.c
-@@ -1217,8 +1217,8 @@ static int sta350_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(sta350->gpiod_nreset))
- 		return PTR_ERR(sta350->gpiod_nreset);
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 93d7e56..ccadefc 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -445,7 +445,7 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ 		return ret;
+ 	}
  
--	sta350->gpiod_power_down = devm_gpiod_get(dev, "power-down",
--						  GPIOD_OUT_LOW);
-+	sta350->gpiod_power_down = devm_gpiod_get_optional(dev, "power-down",
-+							   GPIOD_OUT_LOW);
- 	if (IS_ERR(sta350->gpiod_power_down))
- 		return PTR_ERR(sta350->gpiod_power_down);
+-	dma->assigned = 1;
++	dma->assigned = true;
  
+ 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+ 	snd_soc_set_runtime_hwparams(substream, &fsl_dma_hardware);
+@@ -814,7 +814,7 @@ static int fsl_dma_close(struct snd_pcm_substream *substream)
+ 		substream->runtime->private_data = NULL;
+ 	}
+ 
+-	dma->assigned = 0;
++	dma->assigned = false;
+ 
+ 	return 0;
+ }
 -- 
-2.1.0
+1.9.1
