@@ -1,62 +1,99 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 12/13] drm: bridge/dw_hdmi-ahb-audio: add
- audio driver
-Date: Sat, 9 May 2015 18:40:54 +0100
-Message-ID: <20150509174054.GT2067@n2100.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1y8-0006lG-Mw@rmk-PC.arm.linux.org.uk>
- <554E3AA8.8060601@iki.fi>
- <20150509165536.GS2067@n2100.arm.linux.org.uk>
- <554E3EE1.40904@iki.fi>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: [PATCH RESEND] sound: ppc: keywest: drop using attach
+	adapter
+Date: Sat,  9 May 2015 19:42:22 +0200
+Message-ID: <1431193342-3864-1-git-send-email-wsa@the-dreams.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <554E3EE1.40904@iki.fi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pokefinder.org (sauhun.de [89.238.76.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 360A6260592
+ for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 19:44:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Mark Elliott <txlitebeer@gmail.com>, linuxppc-dev@lists.ozlabs.org, Dan DeVoto <dand1972@yahoo.com>, Wolfram Sang <wsa@the-dreams.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBNYXkgMDksIDIwMTUgYXQgMDg6MDc6NDVQTSArMDMwMCwgQW5zc2kgSGFubnVsYSB3
-cm90ZToKPiAwOS4wNS4yMDE1LCAxOTo1NSwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IGtpcmpv
-aXR0aToKPiA+IE9uIFNhdCwgTWF5IDA5LCAyMDE1IGF0IDA3OjQ5OjQ0UE0gKzAzMDAsIEFuc3Np
-IEhhbm51bGEgd3JvdGU6Cj4gPj4gKE9mIGNvdXJzZSBoYXZpbmcgdXNlcnNwYWNlIHNldCB0aGVt
-IHJlcXVpcmVzIHRoYXQgdGhlIGRldmljZSBoYXMgYQo+ID4+IHByb3BlciBlbnRyeSBpbiAvdXNy
-L3NoYXJlL2Fsc2EvY2FyZHMgYW5kIHRoZSBwY20gZGV2aWNlIGlzIGFjY2Vzc2VkIHZpYQo+ID4+
-IHRoZSBzdGFuZGFyZCAiaGRtaSIgb3IgImllYzk1OCIgZGV2aWNlIG5hbWVzIHdoaWNoIHBlcmZv
-cm0gdGhlIGNoYW5uZWwKPiA+PiBzdGF0dXMgd29yZCBzZXR1cC4gSSBndWVzcyB0aGUgQVJNIFNv
-QyBzdHVmZiBnZW5lcmFsbHkgZG9lc24ndCBib3RoZXIKPiA+PiB3aXRoIHRoYXQsIGV4cGxhaW5p
-bmcgYSBiaXQgd2h5IHNvbWUga2VybmVsIGRyaXZlcnMgc2V0IHRoZW0gYnkgdGhlbXNlbHZlcyku
-Cj4gPiAKPiA+IEknbSBub3Qgc3VyZSB0aGF0J3Mgc3VmZmljaWVudCAtIEkgaGF2ZW4ndCB5ZXQg
-Zm91bmQgd2hlcmUgaW4gdGhlIEFMU0EKPiA+IHVzZXJzcGFjZSwgdGhlIEFFUyBiaXRzIGFyZSBh
-cHByb3ByaWF0ZWx5IHNldCBhY2NvcmRpbmcgdG8gdGhlIHNhbXBsZQo+ID4gcmF0ZS4KPiAKPiBS
-aWdodCwgdGhhdCBpcyBsZWZ0IHRvIHRoZSBhcHBsaWNhdGlvbnMgKGUuZy4gVkxDIGFuZCBLb2Rp
-IGRvIHRoYXQpLiBJJ20KPiB1bmRlciB0aGUgaW1wcmVzc2lvbiB0aGF0IHNpbmtzIGRvIG5vdCBu
-b3JtYWxseSBjYXJlIGFib3V0IHRoaXMgdmFsdWUsCj4gdGhvdWdoLCBidXQgdGhhdCBjb3VsZCBq
-dXN0IGJlIGJlY2F1c2UgbW9zdCBkZXNrdG9wIEhXIHNldHMgaXQgYnkKPiB0aGVtc2VsdmVzLgoK
-Tm8sIHRoYXQgc2VlbXMgdG90YWxseSB3cm9uZyB0byBtZS4KCldoYXQgaWYgeW91IG9wZW4gdGhl
-IGRldmljZSB1c2luZyBhcGxheT8gIE9yIHB1bHNlYXVkaW8/ICBPciBtYWRwbGF5PwpPciBhbm90
-aGVyIGF1ZGlvIGFwcGxpY2F0aW9uIHdoaWNoIHRoaW5rcyBpdCdzIGFkZHJlc3NpbmcgYSBzdGFu
-ZGFyZApQQ00gZGV2aWNlLgoKV2h5IHNob3VsZCBldmVyeSBhdWRpbyB1c2VyIGhhdmUgc29tZSBj
-b2RlIGluIGl0IHRvIGdlbmVyYXRlIHRoZSBJRUMKYml0cz8KCkV2ZW4gVkxDIF9kb2Vzbid0XyBp
-ZiBpdCdzIG91dHB1dHRpbmcgdG8gYSBzdGFuZGFyZCBhdWRpbyAtIGluIG90aGVyCndvcmRzLCBp
-ZiB5b3UgZG9uJ3QgdGljayB0aGUgU1BESUYgZGlyZWN0IG91dHB1dCBvcHRpb24gd2hpY2ggZGVm
-YXVsdHMKdG8gZGlzYWJsZWQgKHdoaWNoLCB3aGVuIGVuYWJsZWQsIG9wZW5zIHRoZSBkZXZpY2Ug
-cGFzc2luZyB0aGUgQUVTCmJpdHMgX2FuZF8gcGVybWl0cyBpdCB0byBzZW5kIGEgY29tcHJlc3Nl
-ZCBhdWRpbyBzdHJlYW0uKSAgSSd2ZSBsb29rZWQKYXQgdGhpcyBpbiBWTEMgbWFueSB0aW1lcy4u
-LgoKSSB0aGluayB5b3UncmUgYSBsaXR0bGUgY29uZnVzZWQgYWJvdXQgd2hhdCB1c2Vyc3BhY2Ug
-ZG9lcyBoZXJlLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRs
-eSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
-bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+As we now have deferred probing, we can use a custom mechanism and
+finally get rid of this legacy interface from the i2c core.
+
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+Tested-by: Dan DeVoto <dand1972@yahoo.com>
+Tested-by: Mark Elliott <txlitebeer@gmail.com>
+---
+
+Changes since last time: Added two test tags from the Debian PPC list.
+
+I'd love to have that in 4.2, so I can get rid of that legacy interface.
+I can take it via I2C but ALSA looks like the proper path to me.
+
+ sound/ppc/keywest.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
+index 0d1c27e911b8dd..d7627bae08362e 100644
+--- a/sound/ppc/keywest.c
++++ b/sound/ppc/keywest.c
+@@ -52,7 +52,7 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
+ 		return -EINVAL;
+ 
+ 	if (strncmp(adapter->name, "mac-io", 6))
+-		return 0; /* ignored */
++		return -EINVAL; /* ignored */
+ 
+ 	memset(&info, 0, sizeof(struct i2c_board_info));
+ 	strlcpy(info.type, "keywest", I2C_NAME_SIZE);
+@@ -100,7 +100,6 @@ static struct i2c_driver keywest_driver = {
+ 	.driver = {
+ 		.name = "PMac Keywest Audio",
+ 	},
+-	.attach_adapter = keywest_attach_adapter,
+ 	.probe = keywest_probe,
+ 	.remove = keywest_remove,
+ 	.id_table = keywest_i2c_id,
+@@ -132,16 +131,32 @@ int snd_pmac_tumbler_post_init(void)
+ /* exported */
+ int snd_pmac_keywest_init(struct pmac_keywest *i2c)
+ {
+-	int err;
++	struct i2c_adapter *adap;
++	int err, i = 0;
+ 
+ 	if (keywest_ctx)
+ 		return -EBUSY;
+ 
++	adap = i2c_get_adapter(0);
++	if (!adap)
++		return -EPROBE_DEFER;
++
+ 	keywest_ctx = i2c;
+ 
+ 	if ((err = i2c_add_driver(&keywest_driver))) {
+ 		snd_printk(KERN_ERR "cannot register keywest i2c driver\n");
++		i2c_put_adapter(adap);
+ 		return err;
+ 	}
+-	return 0;
++
++	/* We assume Macs have consecutive I2C bus numbers starting at 0 */
++	while (adap) {
++		err = keywest_attach_adapter(adap);
++		if (!err)
++			return 0;
++		i2c_put_adapter(adap);
++		adap = i2c_get_adapter(++i);
++	}
++
++	return -ENODEV;
+ }
+-- 
+2.1.4
