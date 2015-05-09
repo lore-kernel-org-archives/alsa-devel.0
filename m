@@ -1,58 +1,40 @@
-From: sylvain.bertrand@gmail.com
-Subject: USB-Audio.conf routing and dmix
-Date: Sat, 9 May 2015 00:20:17 +0000
-Message-ID: <20150509002017.GB18945@freedom>
+From: Eric Wong <normalperson@yhbt.net>
+Subject: Re: [PATCH 2/2] sound/usb: Update ALSA driver to use media
+ controller API
+Date: Sat, 9 May 2015 04:51:09 +0000
+Message-ID: <20150509045109.GA6528@dcvr.yhbt.net>
+References: <cover.1431110739.git.shuahkh@osg.samsung.com>
+ <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C41A2605CB
- for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 02:20:27 +0200 (CEST)
-Received: by wiun10 with SMTP id n10so43473064wiu.1
- for <alsa-devel@alsa-project.org>; Fri, 08 May 2015 17:20:26 -0700 (PDT)
-Received: from localhost (spybox.legeek.net. [88.188.175.165])
- by mx.google.com with ESMTPSA id k2sm1172533wix.4.2015.05.08.17.20.25
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 08 May 2015 17:20:25 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, fisch602@gmail.com, joe@oampo.co.uk, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Shuah Khan <shuahkh@osg.samsung.com> wrote:
+> @@ -541,13 +591,19 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+>  		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
+>  		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
+>  	};
+> +	int ret;
+>  
+> +	if (quirk->media_device) {
+> +		/* don't want to fail when media_device_init() doesn't work */
+> +		ret = media_device_init(iface);
+> +	}
+>  	if (quirk->type < QUIRK_TYPE_COUNT) {
+> -		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
+> +		ret = quirk_funcs[quirk->type](chip, iface, driver, quirk);
+>  	} else {
+>  		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
+>  		return -ENXIO;
+>  	}
+> +	return ret;
+>  }
 
-I have a bose USB audio 5.1 device, a generic USB audio device.
-
-I noticed that the proper channels routing was missing from the default generic
-USB pcm, but dmix was used. And for the surround pcms I noticed it was the
-other way around!
-
-I did modify the default pcm to include a routing plugin. I put 8 channels in
-the routing plugin. I guess the proper way would be to detect the hw card
-number of channels and select a route plugin configuration with the correct
-count of channels (maybe their is a function to get that info?).
-
-I linked the surround51 and surround71 pcms with the 'disable-able' dmix
-section from the default pcm.
-
-I did not touch the surround40* pcms, surround pcms which are specific to some
-cards and the iec958 ones.
-
-http://filebin.ca/214UTT8fBnUm/USB-Audio.conf
-
-
-regards,
-
--- 
-Sylvain BERTRAND
+What is the point of saving 'ret' of media_device_init if it'll
+only be clobbered or ignored for ENXIO?
