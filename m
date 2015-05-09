@@ -1,73 +1,46 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 12/13] drm: bridge/dw_hdmi-ahb-audio: add
- audio driver
-Date: Sat, 9 May 2015 19:11:53 +0100
-Message-ID: <20150509181153.GV2067@n2100.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1y8-0006lG-Mw@rmk-PC.arm.linux.org.uk>
- <554E3AA8.8060601@iki.fi>
- <20150509165536.GS2067@n2100.arm.linux.org.uk>
- <554E3EE1.40904@iki.fi>
- <20150509174054.GT2067@n2100.arm.linux.org.uk>
- <554E49FE.8040004@iki.fi>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC: codecs-ac97: Remove rate constraints
+Date: Sun, 10 May 2015 00:06:45 +0200
+Message-ID: <554E84F5.8030709@maciej.szmigiero.name>
+References: <554D27A6.4040602@maciej.szmigiero.name>	<CAOMZO5A=M2oW47r8_MPrxkd9z6kDj6FG68fVAdKAzngPX0mn=Q@mail.gmail.com>	<554D4367.6070500@maciej.szmigiero.name>
+ <CAOMZO5AGXuLLP5DtWX1TZ14T98jN-s0rDSpUqCpUbZqa-Cyzjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <554E49FE.8040004@iki.fi>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id A70E52606FD
+ for <alsa-devel@alsa-project.org>; Sun, 10 May 2015 00:06:52 +0200 (CEST)
+In-Reply-To: <CAOMZO5AGXuLLP5DtWX1TZ14T98jN-s0rDSpUqCpUbZqa-Cyzjg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBNYXkgMDksIDIwMTUgYXQgMDg6NTU6MTBQTSArMDMwMCwgQW5zc2kgSGFubnVsYSB3
-cm90ZToKPiAwOS4wNS4yMDE1LCAyMDo0MCwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IGtpcmpv
-aXR0aToKPiA+IEV2ZW4gVkxDIF9kb2Vzbid0XyBpZiBpdCdzIG91dHB1dHRpbmcgdG8gYSBzdGFu
-ZGFyZCBhdWRpbyAtIGluIG90aGVyCj4gPiB3b3JkcywgaWYgeW91IGRvbid0IHRpY2sgdGhlIFNQ
-RElGIGRpcmVjdCBvdXRwdXQgb3B0aW9uIHdoaWNoIGRlZmF1bHRzCj4gPiB0byBkaXNhYmxlZCAo
-d2hpY2gsIHdoZW4gZW5hYmxlZCwgb3BlbnMgdGhlIGRldmljZSBwYXNzaW5nIHRoZSBBRVMKPiA+
-IGJpdHMgX2FuZF8gcGVybWl0cyBpdCB0byBzZW5kIGEgY29tcHJlc3NlZCBhdWRpbyBzdHJlYW0u
-KSAgSSd2ZSBsb29rZWQKPiA+IGF0IHRoaXMgaW4gVkxDIG1hbnkgdGltZXMuLi4KPiAKPiBUaGF0
-IGlzIG15IHVuZGVyc3RhbmRpbmcgYXMgd2VsbC4gU2FtZSBmb3IgcHVsc2VhdWRpbywgaXQgZG9l
-c24ndCBzZXQKPiBhbnkgQUVTIGJpdHMgZXhjZXB0IGZvciBwYXNzdGhyb3VnaCAoYW5kIG1vc3Qg
-b3RoZXIgYXBwbGljYXRpb25zIG5ldmVyCj4gc2V0IHRoZW0pLgoKUmlnaHQsIHNvIHdoZW4geW91
-J3JlIGRlYWxpbmcgd2l0aCBIRE1JLCB3aGVyZSBpdCdzIHJlcXVpcmVkIHRoYXQgdGhlCkFFUyBi
-aXRzIGNvbnRhaW4gYWNjdXJhdGUgaW5mb3JtYXRpb24sIHRoZSBvbmx5IHJlYWwgb3B0aW9uIGlz
-IHRvIHNldAppdCBhcHByb3ByaWF0ZWx5IGluIHRoZSBkcml2ZXIgaWYgdXNlcnNwYWNlIGRvZXNu
-J3Qgc3BlY2lmeSB0aGUgQUVTCmRhdGEgYml0cy4KCk5vdywgd2l0aCB0aGUgZHctaGRtaS1haGIg
-ZHJpdmVyLCBJJ20gZG9pbmcgc29tZXRoaW5nIHNlbnNpYmxlIC0gYW5kCnllcywgSSBkbyBoYXZl
-IGEgY2FyZCBmaWxlIGluIC91c3Ivc2hhcmUvYWxzYSAoc2VlIGJlbG93KS4KCldoYXQgdGhpcyBk
-b2VzIGlzIGVuc3VyZSB0aGF0IGxpbmVhciBQQ00gaXMgY29udmVydGVkIHRvIDI0LWJpdCBQQ00K
-KHdoaWNoIG1ha2VzIHRoZSBrZXJuZWwgY29udmVyc2lvbiB0byB0aGUgcmVxdWlyZWQgaGFyZHdh
-cmUgZm9ybWF0CmVhc2llciAtIEkgaGF0ZSB0aGlzLCBJJ2QgbXVjaCBwcmVmZXIgaXQgdG8gYmUg
-ZG9uZSBpbiB1c2Vyc3BhY2UuKQoKSG93ZXZlciwgaW4gdGhlIGNhc2Ugb2YgVkxDLCBpZiBpdCB3
-YW50cyB0byBzZW5kIG5vbi1hdWRpbywgaXQgd2lsbApvcGVuIHRoZSBJRUM5NTggZGV2aWNlLCB3
-aGljaCB3aWxsIHVzZSB0aGUgaWVjOTU4IHBsdWdpbiB0byBjb25maWd1cmUKdGhlIEFFUyBiaXRz
-IGZvciBub24tYXVkaW8sIGFuZCBwYXNzIElFQzk1OCBkYXRhIHRvIHRoZSBrZXJuZWwgKHdoaWNo
-CnN0aWxsIG5lZWRzIHRvIGJlIHJlZm9ybWF0dGVkIHRvIHRoZSBoYXJkd2FyZSdzIHNwZWNpYWwg
-Zm9ybWF0LikKCmR3LWhkbWktYWhiLWF1ZC5wY20uZGVmYXVsdCB7CglAYXJncyBbIENBUkQgXQoJ
-QGFyZ3MuQ0FSRCB7IHR5cGUgc3RyaW5nIH0KCXR5cGUgYXN5bQoJcGxheWJhY2sucGNtIHsKCQl0
-eXBlIHNvZnR2b2wKCQlzbGF2ZS5wY20gewoJCQl0eXBlIHBsdWcKCQkJc2xhdmUucGNtIHsKCQkJ
-CUBmdW5jIGNvbmNhdAoJCQkJc3RyaW5ncyBbICJkbWl4OiIgJENBUkQgIixGT1JNQVQ9UzI0X0xF
-IiBdCgkJCX0KCQl9CgkJY29udHJvbCB7CgkJCW5hbWUgIlBDTSBQbGF5YmFjayBWb2x1bWUiCgkJ
-CWNhcmQgJENBUkQKCQl9Cgl9Cn0KCjxjb25mZGlyOnBjbS9pZWM5NTguY29uZj4KCmR3LWhkbWkt
-YWhiLWF1ZC5wY20uaWVjOTU4LjAgewoJQGFyZ3MgWyBDQVJEIEFFUzAgQUVTMSBBRVMyIEFFUzMg
-XQoJQGFyZ3MuQ0FSRCB7IHR5cGUgc3RyaW5nIH0KCUBhcmdzLkFFUzAgeyB0eXBlIGludGVnZXIg
-fQoJQGFyZ3MuQUVTMSB7IHR5cGUgaW50ZWdlciB9CglAYXJncy5BRVMyIHsgdHlwZSBpbnRlZ2Vy
-IH0KCUBhcmdzLkFFUzMgeyB0eXBlIGludGVnZXIgfQoJdHlwZSBpZWM5NTgKCXNsYXZlLnBjbSB7
-CgkJdHlwZSBodwoJCWNhcmQgJENBUkQKCQlkZXZpY2UgMAoJfQoJc2xhdmUuZm9ybWF0IElFQzk1
-OF9TVUJGUkFNRV9MRQoJc3RhdHVzIFsgJEFFUzAgJEFFUzEgJEFFUzIgJEFFUzMgXQp9CgoKLS0g
-CkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBk
-b3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
-ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Hi Fabio,
+
+W dniu 09.05.2015 01:47, Fabio Estevam pisze:
+> Hi Maciej,
+> 
+(..)
+> 
+> Please keep me on Cc when you submit further ac97 patches / udoo dts,
+> so that I can help testing them.
+>
+> Thanks,
+> 
+> Fabio Estevam
+
+Thank you for your kind words,
+naturally I will keep you CCed.
+
+Best regards,
+Maciej Szmigiero
