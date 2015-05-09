@@ -1,18 +1,21 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 11/13] sound/core: add IEC958 channel status
-	helper
-Date: Sat, 09 May 2015 11:26:47 +0100
-Message-ID: <E1Yr1y3-0006lC-JP@rmk-PC.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: No sound from Mac Pro headphone port
+Date: Sat, 9 May 2015 21:07:01 +0800
+Message-ID: <CAN8cciaSiJBr4RKP6Rj3JurnrPEGufBsnLEACdvrhRLcRfPkcg@mail.gmail.com>
+References: <554CC0EC.5000506@todddailey.ca>
+ <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
+ <554CCCAF.6000608@todddailey.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
- [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 85047260663
- for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 12:31:46 +0200 (CEST)
-In-Reply-To: <20150509102501.GO2067@n2100.arm.linux.org.uk>
-Content-Disposition: inline
+Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
+ [209.85.218.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39B5F260504
+ for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 15:07:02 +0200 (CEST)
+Received: by oift201 with SMTP id t201so76898346oif.3
+ for <alsa-devel@alsa-project.org>; Sat, 09 May 2015 06:07:01 -0700 (PDT)
+In-Reply-To: <554CCCAF.6000608@todddailey.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,165 +25,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
+To: Todd Dailey <todd@todddailey.ca>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a helper to create the IEC958 channel status from an ALSA
-snd_pcm_runtime structure, taking account of the sample rate and
-sample size.
+2015-05-08 22:48 GMT+08:00 Todd Dailey <todd@todddailey.ca>:
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- include/sound/pcm_iec958.h |  9 +++++
- sound/core/Kconfig         |  3 ++
- sound/core/Makefile        |  1 +
- sound/core/pcm_iec958.c    | 95 ++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 108 insertions(+)
- create mode 100644 include/sound/pcm_iec958.h
- create mode 100644 sound/core/pcm_iec958.c
+> Bingo: the pin-outs are very incorrect.
+>
+> This is the (original) tech specs of the machine.
+>
+> https://support.apple.com/kb/SP506?viewlocale=en_US&locale=en_US
+>
+> Note:
+>
+> 1 x internal speaker
+> 1 x FRONT headphone port
+>
 
-diff --git a/include/sound/pcm_iec958.h b/include/sound/pcm_iec958.h
-new file mode 100644
-index 000000000000..0eed397aca8e
---- /dev/null
-+++ b/include/sound/pcm_iec958.h
-@@ -0,0 +1,9 @@
-+#ifndef __SOUND_PCM_IEC958_H
-+#define __SOUND_PCM_IEC958_H
-+
-+#include <linux/types.h>
-+
-+int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
-+	size_t len);
-+
-+#endif
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index b534c8a6046b..1507469425ec 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -9,6 +9,9 @@ config SND_PCM
- config SND_PCM_ELD
- 	bool
- 
-+config SND_PCM_IEC958
-+	bool
-+
- config SND_DMAENGINE_PCM
- 	tristate
- 
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index 591b49157b4d..2b925fcc95ea 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -14,6 +14,7 @@ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
- 		pcm_memory.o memalloc.o
- snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
- snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
-+snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
- 
- # for trace-points
- CFLAGS_pcm_lib.o := -I$(src)
-diff --git a/sound/core/pcm_iec958.c b/sound/core/pcm_iec958.c
-new file mode 100644
-index 000000000000..36b2d7aca1bd
---- /dev/null
-+++ b/sound/core/pcm_iec958.c
-@@ -0,0 +1,95 @@
-+/*
-+ *  PCM DRM helpers
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License version 2 as
-+ *   published by the Free Software Foundation.
-+ */
-+#include <linux/export.h>
-+#include <linux/types.h>
-+#include <sound/asoundef.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_iec958.h>
-+
-+/**
-+ * snd_pcm_create_iec958_consumer - create consumer format IEC958 channel status
-+ * @runtime: pcm runtime structure with ->rate filled in
-+ * @cs: channel status buffer, at least four bytes
-+ * @len: length of channel status buffer
-+ *
-+ * Create the consumer format channel status data in @cs of maximum size
-+ * @len corresponding to the parameters of the PCM runtime @runtime.
-+ *
-+ * Drivers may wish to tweak the contents of the buffer after creation.
-+ *
-+ * Returns: length of buffer, or negative error code if something failed.
-+ */
-+int snd_pcm_create_iec958_consumer(struct snd_pcm_runtime *runtime, u8 *cs,
-+	size_t len)
-+{
-+	unsigned int fs, ws;
-+
-+	if (len < 4)
-+		return -EINVAL;
-+
-+	switch (runtime->rate) {
-+	case 32000:
-+		fs = IEC958_AES3_CON_FS_32000;
-+		break;
-+	case 44100:
-+		fs = IEC958_AES3_CON_FS_44100;
-+		break;
-+	case 48000:
-+		fs = IEC958_AES3_CON_FS_48000;
-+		break;
-+	case 88200:
-+		fs = IEC958_AES3_CON_FS_88200;
-+		break;
-+	case 96000:
-+		fs = IEC958_AES3_CON_FS_96000;
-+		break;
-+	case 176400:
-+		fs = IEC958_AES3_CON_FS_176400;
-+		break;
-+	case 192000:
-+		fs = IEC958_AES3_CON_FS_192000;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (len > 4) {
-+		switch (snd_pcm_format_width(runtime->format)) {
-+		case 16:
-+			ws = IEC958_AES4_CON_WORDLEN_20_16;
-+			break;
-+		case 18:
-+			ws = IEC958_AES4_CON_WORDLEN_22_18;
-+			break;
-+		case 20:
-+			ws = IEC958_AES4_CON_WORDLEN_20_16 |
-+			     IEC958_AES4_CON_MAX_WORDLEN_24;
-+			break;
-+		case 24:
-+			ws = IEC958_AES4_CON_WORDLEN_24_20 |
-+			     IEC958_AES4_CON_MAX_WORDLEN_24;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	memset(cs, 0, len);
-+
-+	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
-+	cs[1] = IEC958_AES1_CON_GENERAL;
-+	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
-+	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | fs;
-+
-+	if (len > 4)
-+		cs[4] = ws;
-+
-+	return len;
-+}
-+EXPORT_SYMBOL(snd_pcm_create_iec958_consumer);
--- 
-1.8.3.1
+Refer to user manual ,
+Headphone Jack
+Connect headphones, including Apple Earphone with remote and mic through
+the headphone mini jack
+
+Is node 0x18  headset mic ?
+need specific sequence number and parser_flags
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=cb420b1186e0090f24137855e14e6f3bf7cb769d
+
++#define HDA_PINCFG_HEADSET_MIC   (1 << 2) /* Try to find headset mic; mark
+seq number as 0xc to trigger */
+
+
+> 1 x REAR line out port
+>
+1 x REAR line in port
+> 1 x REAR optical TOSLINK out port
+> 1 x REAR optical TOSLINK in port
+>
+> The machine does not have a built-in mic port.
+>
+
+you need to use hdajacksensetest to verify hp, line out , line in jacks are
+node 0x19, 0x14 and 0x1a by plug and unplug those jacks
+
+clear bit 8 of pin default of Line Out Jack if it return correct jack state
+
+
+> Should have noted, if not clear from the physical ports, no, the machine
+does not have outputs for 5.1 surround sound.
+
+
+http://www.intel.com/support/motherboards/desktop/sb/CS-034206.htm
+
+
+you can enable multi-streaming by indep_hp=1
+
+>
+>
+>>     Linux 4. Mac Pro 2009. ACL889A codec.
+>>
+>>     No sound from headphone port. Seems to detect plug / unplug OK.
+>>
+>>     Works OK when machine booted to OS X or Windows 7.
+>>
+>>     Have found several bug repors on similar issues with Mac laptops but
+>>     no fixes.
+>>
+>>     Have written e-mail with David Henningsson on problem but unable to
+>>     find a solution.
+>>
+>>     ALSA-info output:
+>>
+>>
+>> http://www.alsa-project.org/db/?f=1dc7146eb34af5ad307d029868f775fac5e2764e
+>>
+>>
+>> Do your macpro spec support 5.1 ?
+>>
+>> Simple mixer control 'Channel Mode',0
+>>    Capabilities: enum
+>>    Items: '2ch' '4ch' '6ch'
+>>    Item0: '2ch'
+>>
+>> Pin default seem incorrect
+>>
+>> 1) Headphone at ext Rear
+>> 2) Line Out does not support jack detection
+>> 3) Mic jack ????
+>>
+>> /sys/class/sound/hwC0D0/init_pin_configs:
+>> 0x14 0x01010150
+>> 0x15 0x400000f0
+>> 0x16 0x400000f0
+>> 0x17 0x400000f0
+>> 0x18 0x01a19070
+>> 0x19 0x01214040
+>> 0x1a 0x01813010
+>> 0x1b 0x90100130
+>> 0x1c 0x400000f0
+>> 0x1d 0x400000f0
+>> 0x1e 0x0145e160
+>> 0x1f 0x01c5e120
+>>
+>> /sys/class/sound/hwC0D0/driver_pin_configs:
+>>
+>>
+>>
+>> [    4.057250] sound hdaudioC0D0: ALC889A: SKU not ready 0x400000f0
+>> [    4.057633] sound hdaudioC0D0: autoconfig for ALC889A: line_outs=1
+>> (0x14/0x0/0x0/0x0/0x0) type:line
+>> [    4.057636] sound hdaudioC0D0:    speaker_outs=1 (0x1b/0x0/0x0/0x0/0x0)
+>> [    4.057638] sound hdaudioC0D0:    hp_outs=1 (0x19/0x0/0x0/0x0/0x0)
+>> [    4.057639] sound hdaudioC0D0:    mono: mono_out=0x0
+>> [    4.057641] sound hdaudioC0D0:    dig-out=0x1e/0x0
+>> [    4.057642] sound hdaudioC0D0:    inputs:
+>> [    4.057645] sound hdaudioC0D0:      Mic=0x18
+>> [    4.057646] sound hdaudioC0D0:      Line=0x1a
+>> [    4.057648] sound hdaudioC0D0:    dig-in=0x1f
+>>
+>>
