@@ -1,83 +1,70 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [PATCH v3 0/13] dw_hdmi cleanups, audio preparation, helpers and ahb
- audio support
-Date: Sat, 9 May 2015 11:25:01 +0100
-Message-ID: <20150509102501.GO2067@n2100.arm.linux.org.uk>
-References: <20150402092050.GH24899@n2100.arm.linux.org.uk>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH 01/13] drm: imx/dw_hdmi: move phy comments
+Date: Sat, 09 May 2015 11:25:56 +0100
+Message-ID: <E1Yr1xE-0006kO-Aq@rmk-PC.arm.linux.org.uk>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (pandora.arm.linux.org.uk
+ [78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id B7841260471
+ for <alsa-devel@alsa-project.org>; Sat,  9 May 2015 12:25:58 +0200 (CEST)
+In-Reply-To: <20150509102501.GO2067@n2100.arm.linux.org.uk>
 Content-Disposition: inline
-In-Reply-To: <20150402092050.GH24899@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-SSdtIHNlbmRpbmcgdGhpcyBzZXJpZXMgYWdhaW4gZm9yIGNvbW1lbnRzLCBhbmQgdG8gYWxsb3cg
-cGVvcGxlIHRvCnVwZGF0ZSB0aGVpciBjb2RlIGJhc2VzIChmb3IgdGhvc2Ugd2hvIGFyZSB1c2lu
-ZyBteSBBSEIgYXVkaW8gZHJpdmVyCm9uIGlNWDYpLgoKVGhlcmUgaGF2ZSBiZWVuIHZlcnkgZmV3
-IGNoYW5nZXMgZnJvbSB0aGUgcHJldmlvdXMgcG9zdGluZywgdGhlCmV4Y2VwdGlvbiBiZWluZyB0
-aGUgRUxEIGhlbHBlciBpbiBwYXRjaCAxMCwgd2hpY2ggc2hvdWxkIGJlIGNvcnJlY3RseQpzb3J0
-ZWQgbm93LgoKSSB3b3VsZCBsaWtlIHRvOgoqIHF1ZXVlIHRoZSBmaXJzdCBzaXggcGF0Y2hlcyBm
-b3IgRGF2aWQsIHNvIEknbSBhc2tpbmcgZm9yIGFja3MgZm9yIHRoZXNlCiogb2J0YWluIGFncmVl
-bWVudCB3aXRoIHRoZSBSb2NrY2hpcCBndXlzIG9uIHBhdGNoZXMgNyBhbmQgOAoqIHF1ZXVlIHBh
-dGNoZXMgOSB0byAxMSBpbmNsdXNpdmUgYXMgd2VsbCAoYXMgdGhlc2UgYXJlIGNyb3NzLXN1YnN5
-c3RlbSwKICBJIHRoaW5rIHdlIG5lZWQgdG8gZGlzY3VzcyBob3cgdGhleSBhcmUgdG8gYmUgaGFu
-ZGxlZCAtIHRoZXJlIGlzIG90aGVyCiAgd29yayBpbiB0aGUgcGlwZWxpbmVzIGZyb20gb3RoZXJz
-IGRlcGVuZGluZyBvbiB0aGVzZSBjaGFuZ2VzLikgIFNvIGFja3MKICBmb3IgdGhlc2Ugd291bGQg
-YmUgbmljZSB0b28uCgpIZXJlJ3MgdGhlIHN1bW1hcnkgb2YgdGhlIHBhdGNoZXMsIHNhbWUgYXMg
-bGFzdCB0aW1lOgoKVGhlIGZpcnN0IGZvdXIgcGF0Y2hlcyBhcmUgYSBmZXcgY2xlYW51cHMgdG8g
-dGhlIGR3X2hkbWkgZHJpdmVyLgoKVGhlIG5leHQgdHdvIHBhdGNoZXMgaW50cm9kdWNlIG5ldyBp
-bnRlcmZhY2VzIHRvIHRoZSBkd19oZG1pIGRyaXZlcgp0byBzdXBwb3J0IEFIQiBhdWRpbywgaW5j
-bHVkaW5nIHRoZSBlcnJhdGEgZm91bmQgb24gaU1YNiB3aGljaApyZXF1aXJlcyBOIHRvIGJlIHBy
-b2dyYW1tZWQgdG8gemVybyB3aGVuIHRoZSBhdWRpbyBGSUZPIGlzIG5vdCBmdWxsLgpJJ20gZXhw
-ZWN0aW5nIHNvbWUgZGlzY3Vzc2lvbiB3aXRoIHRoZXNlIGxhc3QgdHdvIGFzIHdlIHRyeSB0byB3
-b3JrCm91dCBob3cgdG8gZGVhbCB3aXRoIHRoZSB0d28gdmFyaWFudHMgb2YgYXVkaW8gc3VwcG9y
-dCBmb3IgdGhpcyBwYXJ0CihBSEIgYXVkaW8gdnMgSTJTIGF1ZGlvKS4KClRoZSBmb2xsb3dpbmcg
-dGhyZWUgYWRkIHZhcmlvdXMgaGVscGVycyB0byB0aGUgRFJNIGFuZCBBTFNBIHN1YnN5c3RlbXMK
-Zm9yIGF1ZGlvIHN1cHBvcnQgd2hpY2ggaXMgbm9uLXNwZWNpZmljIHRvIHRoZSBBSEIgYXVkaW8g
-ZHJpdmVyLiAgRm9yCkRSTSwgdGhpcyBpcyBhIGhlbHBlciBtYWNybyB0byBvYnRhaW4gdGhlIHBv
-aW50ZXIgaW50byB0aGUgc2hvcnQgYXVkaW8KZGVzY3JpcHRvcnMuICBGb3IgQUxTQSwgaXQncyBh
-IHNldCBvZiBoZWxwZXJzIHRvIHJlc3RyaWN0IGFuIGF1ZGlvIFBDTQpkZXZpY2UncyBjYXBhYmls
-aXRpZXMgYWNjb3JkaW5nIHRvIHRoZSBFTEQsIGFuZCB0byBnZW5lcmF0ZSB0aGUgSUVDOTU4CmNo
-YW5uZWwgc3RhdHVzIGRhdGEuICBJZiB0aGVzZSBoZWxwZXJzIGFyZSBhY2NlcHRhYmxlLCB3ZSBj
-YW4gY29udmVydAphIG51bWJlciBvZiBkcml2ZXJzIHRvIHRoZW0uCgpUaGUgRUxEIGhlbHBlciBp
-c24ndCBxdWl0ZSBmaW5pc2hlZCwgYnV0IHNob3VsZCBiZSBzdWZmaWNpZW50IGZvcgppbml0aWFs
-IHRlc3RpbmcuCgpUaGUgbGFzdCB0d28gcGF0Y2hlcyBhZGQgc3VwcG9ydCBmb3IgdGhlIGR3X2hk
-bWkgYXVkaW8uICBUaGlzIGlzIGFuCkFMU0EgZHJpdmVyIHJhdGhlciB0aGFuIGFuIEFTb0MgZHJp
-dmVyIGFzIGl0J3MgYSBwcmV0dHkgc2ltcGxlIGFmZmFpci4KSSBjb3VsZG4ndCBmaW5kIGEgc3Vp
-dGFibGUgbG9jYXRpb24gaW4gdGhlIHNvdW5kLyBzdWJ0cmVlIHRvIHBsYWNlIGl0LApzbyBJJ3Zl
-IHBsYWNlZCBpdCBuZXh0IHRvIHRoZSBicmlkZ2UgLSB5ZXMsIHdlIHByb2JhYmx5IG5lZWQgdG8g
-ZmluZAppdCBhIGJldHRlciBob21lIGluIHRoZSBzb3VuZC8gc3VidHJlZSwgYnV0IGl0IGN1cnJl
-bnRseSBtYWtlcwp1c2Ugb2YgZHdfaGRtaS5oIGluIHRoZSBkaXJlY3RvcnkgaXQgbGl2ZXMuCgog
-ZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9LY29uZmlnICAgICAgICAgICAgIHwgIDExICsKIGRyaXZl
-cnMvZ3B1L2RybS9icmlkZ2UvTWFrZWZpbGUgICAgICAgICAgICB8ICAgMSArCiBkcml2ZXJzL2dw
-dS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMgfCA1NjYgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS1haGItYXVkaW8uaCB8
-ICAxNCArCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYyAgICAgICAgICAgfCAzMjEg
-KysrKysrKysrLS0tLS0tLQogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmggICAgICAg
-ICAgIHwgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pbXgvZHdfaGRtaS1pbXguYyAgICAgICAgICB8
-ICAgNSArCiBpbmNsdWRlL2RybS9icmlkZ2UvZHdfaGRtaS5oICAgICAgICAgICAgICAgfCAgIDcg
-KwogaW5jbHVkZS9kcm0vZHJtX2VkaWQuaCAgICAgICAgICAgICAgICAgICAgIHwgIDE5ICsKIGlu
-Y2x1ZGUvc291bmQvcGNtX2RybV9lbGQuaCAgICAgICAgICAgICAgICB8ICAgNiArCiBpbmNsdWRl
-L3NvdW5kL3BjbV9pZWM5NTguaCAgICAgICAgICAgICAgICAgfCAgIDkgKwogc291bmQvY29yZS9L
-Y29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsKIHNvdW5kL2NvcmUvTWFrZWZp
-bGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArCiBzb3VuZC9jb3JlL3BjbV9kcm1fZWxk
-LmMgICAgICAgICAgICAgICAgICAgfCAgOTkgKysrKysKIHNvdW5kL2NvcmUvcGNtX2llYzk1OC5j
-ICAgICAgICAgICAgICAgICAgICB8ICA5NSArKysrKwogMTUgZmlsZXMgY2hhbmdlZCwgMTAzNiBp
-bnNlcnRpb25zKCspLCAxMjggZGVsZXRpb25zKC0pCgotLSAKRlRUQyBicm9hZGJhbmQgZm9yIDAu
-OG1pbGUgbGluZTogY3VycmVudGx5IGF0IDEwLjVNYnBzIGRvd24gNDAwa2JwcyB1cAphY2NvcmRp
-bmcgdG8gc3BlZWR0ZXN0Lm5ldC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
-cmktZGV2ZWwK
+The phy comments in dw_hdmi.c applied to the iMX6 version.  Move these
+comments to the iMX6 dw_hdmi-imx data along side the data.
+
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ drivers/gpu/drm/bridge/dw_hdmi.c  | 3 ---
+ drivers/gpu/drm/imx/dw_hdmi-imx.c | 5 +++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+index 49cafb61d290..3494391e4199 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+@@ -834,11 +834,8 @@ static int hdmi_phy_configure(struct dw_hdmi *hdmi, unsigned char prep,
+ 		    phy_config[i].mpixelclock)
+ 			break;
+ 
+-	/* RESISTANCE TERM 133Ohm Cfg */
+ 	hdmi_phy_i2c_write(hdmi, phy_config[i].term, 0x19);  /* TXTERM */
+-	/* PREEMP Cgf 0.00 */
+ 	hdmi_phy_i2c_write(hdmi, phy_config[i].sym_ctr, 0x09); /* CKSYMTXCTRL */
+-	/* TX/CK LVL 10 */
+ 	hdmi_phy_i2c_write(hdmi, phy_config[i].vlev_ctr, 0x0E); /* VLEVCTRL */
+ 
+ 	/* REMOVE CLK TERM */
+diff --git a/drivers/gpu/drm/imx/dw_hdmi-imx.c b/drivers/gpu/drm/imx/dw_hdmi-imx.c
+index a3ecf1069b76..644edf65dbe0 100644
+--- a/drivers/gpu/drm/imx/dw_hdmi-imx.c
++++ b/drivers/gpu/drm/imx/dw_hdmi-imx.c
+@@ -75,6 +75,11 @@ static const struct dw_hdmi_curr_ctrl imx_cur_ctr[] = {
+ 	},
+ };
+ 
++/*
++ * Resistance term 133Ohm Cfg
++ * PREEMP config 0.00
++ * TX/CK level 10
++ */
+ static const struct dw_hdmi_phy_config imx_phy_config[] = {
+ 	/*pixelclk   symbol   term   vlev */
+ 	{ 148500000, 0x800d, 0x0005, 0x01ad},
+-- 
+1.8.3.1
