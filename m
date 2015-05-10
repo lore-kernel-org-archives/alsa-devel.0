@@ -1,264 +1,94 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: [PATCH v2] ASoC: wm8741: Add differential mono
- mode support
-Date: Sun, 10 May 2015 12:23:28 +0200
-Message-ID: <554F31A0.1030202@gmx.de>
-References: <1430858791-11825-1-git-send-email-ce3a@gmx.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [alsa-devel] [PATCH 12/13] drm: bridge/dw_hdmi-ahb-audio: add
+ audio driver
+Date: Sun, 10 May 2015 21:59:42 +0300
+Message-ID: <554FAA9E.100@iki.fi>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1y8-0006lG-Mw@rmk-PC.arm.linux.org.uk> <554E3AA8.8060601@iki.fi>
+ <20150509165536.GS2067@n2100.arm.linux.org.uk> <554E3EE1.40904@iki.fi>
+ <20150509174054.GT2067@n2100.arm.linux.org.uk> <554E49FE.8040004@iki.fi>
+ <20150509181153.GV2067@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 08637261B11
- for <alsa-devel@alsa-project.org>; Sun, 10 May 2015 19:01:17 +0200 (CEST)
-In-Reply-To: <1430858791-11825-1-git-send-email-ce3a@gmx.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150509181153.GV2067@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05.05.2015 22:46, Sergej Sawazki wrote:
-> The WM8741 DAC supports several differential output modes (stereo,
-> stereo reversed, mono left, mono right). Add platform data and DT
-> bindings to configure it.
->
-> Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
-> ---
->   Documentation/devicetree/bindings/sound/wm8741.txt |  11 +++
->   sound/soc/codecs/wm8741.c                          | 108 ++++++++++++++++++---
->   sound/soc/codecs/wm8741.h                          |  10 ++
->   3 files changed, 117 insertions(+), 12 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/wm8741.txt b/Documentation/devicetree/bindings/sound/wm8741.txt
-> index 74bda58..a133154 100644
-> --- a/Documentation/devicetree/bindings/sound/wm8741.txt
-> +++ b/Documentation/devicetree/bindings/sound/wm8741.txt
-> @@ -10,9 +10,20 @@ Required properties:
->     - reg : the I2C address of the device for I2C, the chip select
->             number for SPI.
->
-> +Optional properties:
-> +
-> +  - diff-mode: Differential output mode configuration. Default value for field
-> +    DIFF in register R8 (MODE_CONTROL_2). If absent, the default is 0, shall be:
-> +    0 = stereo
-> +    1 = mono left
-> +    2 = stereo reversed
-> +    3 = mono right
-> +
->   Example:
->
->   codec: wm8741@1a {
->   	compatible = "wlf,wm8741";
->   	reg = <0x1a>;
-> +
-> +	diff-mode = <3>;
->   };
-> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-> index 9e71c76..cbf90ab 100644
-> --- a/sound/soc/codecs/wm8741.c
-> +++ b/sound/soc/codecs/wm8741.c
-> @@ -41,6 +41,7 @@ static const char *wm8741_supply_names[WM8741_NUM_SUPPLIES] = {
->
->   /* codec private data */
->   struct wm8741_priv {
-> +	struct wm8741_platform_data pdata;
->   	struct regmap *regmap;
->   	struct regulator_bulk_data supplies[WM8741_NUM_SUPPLIES];
->   	unsigned int sysclk;
-> @@ -398,7 +399,7 @@ static struct snd_soc_dai_driver wm8741_dai = {
->   	.name = "wm8741",
->   	.playback = {
->   		.stream_name = "Playback",
-> -		.channels_min = 2,  /* Mono modes not yet supported */
-> +		.channels_min = 2,
->   		.channels_max = 2,
->   		.rates = WM8741_RATES,
->   		.formats = WM8741_FORMATS,
-> @@ -416,6 +417,60 @@ static int wm8741_resume(struct snd_soc_codec *codec)
->   #define wm8741_resume NULL
->   #endif
->
-> +static int wm8741_configure(struct snd_soc_codec *codec)
-> +{
-> +	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	/* Configure differential mode */
-> +	switch (wm8741->pdata.diff_mode) {
-> +	case WM8741_DIFF_MODE_STEREO:
-> +	case WM8741_DIFF_MODE_STEREO_REVERSED:
-> +	case WM8741_DIFF_MODE_MONO_LEFT:
-> +	case WM8741_DIFF_MODE_MONO_RIGHT:
-> +		snd_soc_update_bits(codec, WM8741_MODE_CONTROL_2,
-> +				WM8741_DIFF_MASK,
-> +				wm8741->pdata.diff_mode << WM8741_DIFF_SHIFT);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Change some default settings - latch VU */
-> +	snd_soc_update_bits(codec, WM8741_DACLLSB_ATTENUATION,
-> +			WM8741_UPDATELL, WM8741_UPDATELL);
-> +	snd_soc_update_bits(codec, WM8741_DACLMSB_ATTENUATION,
-> +			WM8741_UPDATELM, WM8741_UPDATELM);
-> +	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
-> +			WM8741_UPDATERL, WM8741_UPDATERL);
-> +	snd_soc_update_bits(codec, WM8741_DACRMSB_ATTENUATION,
-> +			WM8741_UPDATERM, WM8741_UPDATERM);
-> +
-> +	return 0;
-> +}
-> +
-> +static int wm8741_add_controls(struct snd_soc_codec *codec)
-> +{
-> +	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	switch (wm8741->pdata.diff_mode) {
-> +	case WM8741_DIFF_MODE_STEREO:
-> +	case WM8741_DIFF_MODE_STEREO_REVERSED:
-> +		snd_soc_add_codec_controls(codec, wm8741_snd_controls,
-> +				ARRAY_SIZE(wm8741_snd_controls));
-> +		break;
-> +	case WM8741_DIFF_MODE_MONO_LEFT:
-> +	case WM8741_DIFF_MODE_MONO_RIGHT:
-> +		/* The machine driver is responsible for mixer controls
-> +		 * if the codec is configured in differential mono mode.
-> +		 */
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int wm8741_probe(struct snd_soc_codec *codec)
->   {
->   	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
-> @@ -434,15 +489,17 @@ static int wm8741_probe(struct snd_soc_codec *codec)
->   		goto err_enable;
->   	}
->
-> -	/* Change some default settings - latch VU */
-> -	snd_soc_update_bits(codec, WM8741_DACLLSB_ATTENUATION,
-> -			    WM8741_UPDATELL, WM8741_UPDATELL);
-> -	snd_soc_update_bits(codec, WM8741_DACLMSB_ATTENUATION,
-> -			    WM8741_UPDATELM, WM8741_UPDATELM);
-> -	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
-> -			    WM8741_UPDATERL, WM8741_UPDATERL);
-> -	snd_soc_update_bits(codec, WM8741_DACRMSB_ATTENUATION,
-> -			    WM8741_UPDATERM, WM8741_UPDATERM);
-> +	ret = wm8741_configure(codec);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to change default settings\n");
-> +		goto err_enable;
-> +	}
-> +
-> +	ret = wm8741_add_controls(codec);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to add controls\n");
-> +		goto err_enable;
-> +	}
->
->   	dev_dbg(codec->dev, "Successful registration\n");
->   	return ret;
-> @@ -467,8 +524,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
->   	.remove =	wm8741_remove,
->   	.resume =	wm8741_resume,
->
-> -	.controls = wm8741_snd_controls,
-> -	.num_controls = ARRAY_SIZE(wm8741_snd_controls),
->   	.dapm_widgets = wm8741_dapm_widgets,
->   	.num_dapm_widgets = ARRAY_SIZE(wm8741_dapm_widgets),
->   	.dapm_routes = wm8741_dapm_routes,
-> @@ -493,6 +548,23 @@ static const struct regmap_config wm8741_regmap = {
->   	.readable_reg = wm8741_readable,
->   };
->
-> +static int wm8741_set_pdata(struct device *dev, struct wm8741_priv *wm8741)
-> +{
-> +	const struct wm8741_platform_data *pdata = dev_get_platdata(dev);
-> +	u32 diff_mode;
-> +
-> +	if (dev->of_node) {
-> +		if (of_property_read_u32(dev->of_node, "diff-mode", &diff_mode)
-> +				>= 0)
-> +			wm8741->pdata.diff_mode = diff_mode;
-> +	} else {
-> +		if (pdata != NULL)
-> +			memcpy(&wm8741->pdata, pdata, sizeof(wm8741->pdata));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   #if IS_ENABLED(CONFIG_I2C)
->   static int wm8741_i2c_probe(struct i2c_client *i2c,
->   			    const struct i2c_device_id *id)
-> @@ -522,6 +594,12 @@ static int wm8741_i2c_probe(struct i2c_client *i2c,
->   		return ret;
->   	}
->
-> +	wm8741_set_pdata(&i2c->dev, wm8741);
-> +	if (ret != 0) {
-> +		dev_err(&i2c->dev, "Failed to set pdata: %d\n", ret);
-> +		return ret;
-> +	}
-> +
->   	i2c_set_clientdata(i2c, wm8741);
->
->   	ret = snd_soc_register_codec(&i2c->dev,
-> @@ -582,6 +660,12 @@ static int wm8741_spi_probe(struct spi_device *spi)
->   		return ret;
->   	}
->
-> +	wm8741_set_pdata(&spi->dev, wm8741);
-> +	if (ret != 0) {
-> +		dev_err(&spi->dev, "Failed to set pdata: %d\n", ret);
-> +		return ret;
-> +	}
-> +
->   	spi_set_drvdata(spi, wm8741);
->
->   	ret = snd_soc_register_codec(&spi->dev,
-> diff --git a/sound/soc/codecs/wm8741.h b/sound/soc/codecs/wm8741.h
-> index 56c1b1d..c8835f6 100644
-> --- a/sound/soc/codecs/wm8741.h
-> +++ b/sound/soc/codecs/wm8741.h
-> @@ -194,6 +194,12 @@
->   #define WM8741_DITHER_SHIFT                          0  /* DITHER - [1:0] */
->   #define WM8741_DITHER_WIDTH                          2  /* DITHER - [1:0] */
->
-> +/* DIFF field values */
-> +#define WM8741_DIFF_MODE_STEREO                      0  /* stereo normal */
-> +#define WM8741_DIFF_MODE_STEREO_REVERSED             2  /* stereo reversed */
-> +#define WM8741_DIFF_MODE_MONO_LEFT                   1  /* mono left */
-> +#define WM8741_DIFF_MODE_MONO_RIGHT                  3  /* mono right */
-> +
->   /*
->    * R32 (0x20) - ADDITONAL_CONTROL_1
->    */
-> @@ -208,4 +214,8 @@
->
->   #define  WM8741_SYSCLK 0
->
-> +struct wm8741_platform_data {
-> +	u32 diff_mode;   /* Differential Output Mode */
-> +};
-> +
->   #endif
->
-
-Gentle ping.
-
-Best regards,
-Sergej
+MDkuMDUuMjAxNSwgMjE6MTEsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCBraXJqb2l0dGk6Cj4g
+T24gU2F0LCBNYXkgMDksIDIwMTUgYXQgMDg6NTU6MTBQTSArMDMwMCwgQW5zc2kgSGFubnVsYSB3
+cm90ZToKPj4gMDkuMDUuMjAxNSwgMjA6NDAsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCBraXJq
+b2l0dGk6Cj4+PiBFdmVuIFZMQyBfZG9lc24ndF8gaWYgaXQncyBvdXRwdXR0aW5nIHRvIGEgc3Rh
+bmRhcmQgYXVkaW8gLSBpbiBvdGhlcgo+Pj4gd29yZHMsIGlmIHlvdSBkb24ndCB0aWNrIHRoZSBT
+UERJRiBkaXJlY3Qgb3V0cHV0IG9wdGlvbiB3aGljaCBkZWZhdWx0cwo+Pj4gdG8gZGlzYWJsZWQg
+KHdoaWNoLCB3aGVuIGVuYWJsZWQsIG9wZW5zIHRoZSBkZXZpY2UgcGFzc2luZyB0aGUgQUVTCj4+
+PiBiaXRzIF9hbmRfIHBlcm1pdHMgaXQgdG8gc2VuZCBhIGNvbXByZXNzZWQgYXVkaW8gc3RyZWFt
+LikgIEkndmUgbG9va2VkCj4+PiBhdCB0aGlzIGluIFZMQyBtYW55IHRpbWVzLi4uCj4+Cj4+IFRo
+YXQgaXMgbXkgdW5kZXJzdGFuZGluZyBhcyB3ZWxsLiBTYW1lIGZvciBwdWxzZWF1ZGlvLCBpdCBk
+b2Vzbid0IHNldAo+PiBhbnkgQUVTIGJpdHMgZXhjZXB0IGZvciBwYXNzdGhyb3VnaCAoYW5kIG1v
+c3Qgb3RoZXIgYXBwbGljYXRpb25zIG5ldmVyCj4+IHNldCB0aGVtKS4KPiAKPiBSaWdodCwgc28g
+d2hlbiB5b3UncmUgZGVhbGluZyB3aXRoIEhETUksIHdoZXJlIGl0J3MgcmVxdWlyZWQgdGhhdCB0
+aGUKPiBBRVMgYml0cyBjb250YWluIGFjY3VyYXRlIGluZm9ybWF0aW9uLCB0aGUgb25seSByZWFs
+IG9wdGlvbiBpcyB0byBzZXQKPiBpdCBhcHByb3ByaWF0ZWx5IGluIHRoZSBkcml2ZXIgaWYgdXNl
+cnNwYWNlIGRvZXNuJ3Qgc3BlY2lmeSB0aGUgQUVTCj4gZGF0YSBiaXRzLgoKSSB3b25kZXIgd2hl
+dGhlciByZWNlaXZlcnMgYWN0dWFsbHkgY2FyZSB3aXRoIEhETUkgKHRoZXkgZ2VuZXJhbGx5IGRv
+bid0CndpdGggUy9QRElGKSAtIHRoYXQncyBvbmUgdGlkYml0IGZvciBtZSB0byB0ZXN0IGxhdGVy
+Li4uIEJ1dCBvZiBjb3Vyc2UKaXQgZG9lc24ndCBjaGFuZ2UgbXVjaCB3aXRoIHRoZSBtYXR0ZXIg
+YXQgaGFuZCwgaW4gYW55IGNhc2Ugd2Ugc2hvdWxkCnN0cml2ZSB0byBnZXQgdGhlIGJpdHMgY29y
+cmVjdCBpZiBvbmx5IGJlY2F1c2UgdGhlIEhETUkgc3BlYyByZXF1aXJlcwp0aGVtIHRvIGJlIChJ
+IGRvbid0IHRoaW5rIHRoZXkgd2VyZSBvcHRpb25hbCBpbiBJRUMgNjA5NTgtMyBlaXRoZXIsIHRo
+b3VnaCkuCgo+IE5vdywgd2l0aCB0aGUgZHctaGRtaS1haGIgZHJpdmVyLCBJJ20gZG9pbmcgc29t
+ZXRoaW5nIHNlbnNpYmxlCgpSaWdodC4KCldoYXQgSSdkIGxpa2UgdG8gc2VlIGlzIGFycml2ZSBh
+dCBzb21lIHNvcnQgb2YgZ2VuZXJhbCBjb25zZW5zdXMgb24gaG93CnRoZSBBRVMgYml0cyBzaG91
+bGQgYmUgaGFuZGxlZCAoaS5lLiBzaG91bGQgdGhlIGRyaXZlciBhbHdheXMgc2V0IHRoZW0KdGhl
+bXNlbHZlcyBhbmQgZGlzYWxsb3cvYWxsb3cgdGhlIHVzZXJzcGFjZSB0byBvdmVycmlkZSB0aGUg
+cmF0ZSBiaXRzKSwKd2hpY2ggY291bGQgdGhlbiBiZSBhcHBsaWVkIHRvIG90aGVyIGRyaXZlcnMg
+YXMgd2VsbC4KCkJ1dCBtYXliZSB0aGF0IGlzIGZvciBhbm90aGVyIHRpbWUsIG9yIGp1c3QgYSBm
+dXRpbGUgZWZmb3J0IGFsdG9nZXRoZXIuLi4KCj4gLSBhbmQKPiB5ZXMsIEkgZG8gaGF2ZSBhIGNh
+cmQgZmlsZSBpbiAvdXNyL3NoYXJlL2Fsc2EgKHNlZSBiZWxvdykuCj4gCj4gV2hhdCB0aGlzIGRv
+ZXMgaXMgZW5zdXJlIHRoYXQgbGluZWFyIFBDTSBpcyBjb252ZXJ0ZWQgdG8gMjQtYml0IFBDTQo+
+ICh3aGljaCBtYWtlcyB0aGUga2VybmVsIGNvbnZlcnNpb24gdG8gdGhlIHJlcXVpcmVkIGhhcmR3
+YXJlIGZvcm1hdAo+IGVhc2llciAtIEkgaGF0ZSB0aGlzLCBJJ2QgbXVjaCBwcmVmZXIgaXQgdG8g
+YmUgZG9uZSBpbiB1c2Vyc3BhY2UuKQoKSW5kZWVkLiBJIGRpZCBub3RpY2UgdGhlcmUgaXMgYSBT
+TkQoUlYpX1BDTV9GT1JNQVRfU1BFQ0lBTCBidXQgSSBndWVzcwppdCBtaWdodCBub3QgYmUgZWFz
+aWx5IHVzZWQgZm9yIHRoaXMgcHVycG9zZSBzaW5jZSBpdCBkb2Vzbid0IGhhdmUgYQpzcGVjaWZp
+YyBzYW1wbGUgd2lkdGggZXRjIChidXQgSSBhbSBub3QgZmFtaWxpYXIgZW5vdWdoIHdpdGggdGhp
+cyB0byBzYXkKd2hldGhlciBpdCBjb3VsZCB3b3JrIG9yIG5vdCkuLi4KCj4gSG93ZXZlciwgaW4g
+dGhlIGNhc2Ugb2YgVkxDLCBpZiBpdCB3YW50cyB0byBzZW5kIG5vbi1hdWRpbywgaXQgd2lsbAo+
+IG9wZW4gdGhlIElFQzk1OCBkZXZpY2UsIHdoaWNoIHdpbGwgdXNlIHRoZSBpZWM5NTggcGx1Z2lu
+IHRvIGNvbmZpZ3VyZQo+IHRoZSBBRVMgYml0cyBmb3Igbm9uLWF1ZGlvLCBhbmQgcGFzcyBJRUM5
+NTggZGF0YSB0byB0aGUga2VybmVsICh3aGljaAo+IHN0aWxsIG5lZWRzIHRvIGJlIHJlZm9ybWF0
+dGVkIHRvIHRoZSBoYXJkd2FyZSdzIHNwZWNpYWwgZm9ybWF0LikKCkFoLCBzbyB0aGUgQUVTIGJp
+dHMgYXJlIGFjdHVhbGx5IG92ZXJyaWRhYmxlIGJ5IHVzZXJzcGFjZSwgd2hpY2ggaXMgd2hhdApJ
+IHdhcyBpbml0aWFsbHkgY29uY2VybmVkIHdpdGggOikKCk9mIGNvdXJzZSwgdGhpcyBtZWFucyB0
+aGF0IGFwcGxpY2F0aW9ucyBvcGVuaW5nICJpZWM5NTgiIGJ1dCBub3Qgc2V0dGluZwpyYXRlIGJp
+dHMgKHdoaWNoIGlzIGNvbW1vbikgd2lsbCBnZXQgdGhlIGRlZmF1bHQgNDhrSHogYml0cyBmcm9t
+Ci91c3Ivc2hhcmUvYWxzYS9wY20vKGllYzk1OHxoZG1pKS5jb25mKS4gTm90IHN1cmUgaG93IGJp
+ZyBhbiBpc3N1ZSB0aGF0CmlzLCB0aG91Z2guIFRoZSAiaWVjOTU4IiBBTFNBIHBsdWdpbiBkb2Vz
+IHNlZW0gdG8gaGF2ZSBhIEZJWE1FIGNvbW1lbnQKYWJvdXQgc2V0dGluZyBBRVMgYml0cyBhY2Nv
+cmRpbmcgdG8gc2FtcGxlIHJhdGUuCgoKWy4uLl0KPiAKPiA8Y29uZmRpcjpwY20vaWVjOTU4LmNv
+bmY+Cj4gCj4gZHctaGRtaS1haGItYXVkLnBjbS5pZWM5NTguMCB7CgpJIHRoaW5rIHlvdSBzaG91
+bGQgcy9pZWM5NTgvaGRtaS8gZm9yIHRoZSBhYm92ZSB0d28gbGluZXMuIEhETUkgZGV2aWNlcwpz
+aG91bGQgYmUgdXNpbmcgImhkbWkiIGluc3RlYWQgb2YgImllYzk1OCIgYnkgY29udmVudGlvbiAo
+dGhlIGxhdHRlciBpcwp1c2VkIGZvciBvcHRpY2FsL2NvYXhpYWwgUy9QRElGKS4KCj4gCUBhcmdz
+IFsgQ0FSRCBBRVMwIEFFUzEgQUVTMiBBRVMzIF0KPiAJQGFyZ3MuQ0FSRCB7IHR5cGUgc3RyaW5n
+IH0KPiAJQGFyZ3MuQUVTMCB7IHR5cGUgaW50ZWdlciB9Cj4gCUBhcmdzLkFFUzEgeyB0eXBlIGlu
+dGVnZXIgfQo+IAlAYXJncy5BRVMyIHsgdHlwZSBpbnRlZ2VyIH0KPiAJQGFyZ3MuQUVTMyB7IHR5
+cGUgaW50ZWdlciB9Cj4gCXR5cGUgaWVjOTU4Cj4gCXNsYXZlLnBjbSB7Cj4gCQl0eXBlIGh3Cj4g
+CQljYXJkICRDQVJECj4gCQlkZXZpY2UgMAo+IAl9Cj4gCXNsYXZlLmZvcm1hdCBJRUM5NThfU1VC
+RlJBTUVfTEUKPiAJc3RhdHVzIFsgJEFFUzAgJEFFUzEgJEFFUzIgJEFFUzMgXQo+IH0KPiAKPiAK
+Ci0tIApBbnNzaSBIYW5udWxhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNr
+dG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJp
+LWRldmVsCg==
