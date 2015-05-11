@@ -1,53 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 2/5] ASoC: rsnd: make sure it uses lock when
- it calls rsnd_dai_call
-Date: Mon, 11 May 2015 15:57:43 +0100
-Message-ID: <20150511145743.GD3458@sirena.org.uk>
-References: <8761948j4f.wl%kuninori.morimoto.gx@renesas.com>
- <8738488j2k.wl%kuninori.morimoto.gx@renesas.com>
- <alpine.DEB.2.10.1505041134140.4711@ayla.of.borg>
- <87iobz506i.wl%kuninori.morimoto.gx@renesas.com>
- <87lhgv33mp.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl: fsl_dma: Use true/false for
+	boolean init
+Date: Mon, 11 May 2015 16:14:33 +0100
+Message-ID: <20150511151433.GG3458@sirena.org.uk>
+References: <1431186353-7331-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="osDK9TLjxFScVI/L"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87lhgv33mp.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux-ALSA <alsa-devel@alsa-project.org>, NAOYA SHIIBA <naoya.shiiba.nx@renesas.com>, linux-sh@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, TOSHIAKI KOMATSU <toshiaki.komatsu.ud@renesas.com>, Simon <horms@verge.net.au>, Atsushi Tamaki <atsushi.tamaki.ks@renesas.com>
+Content-Type: multipart/mixed; boundary="===============4922804182273558602=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78ACA2615F7
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 17:14:43 +0200 (CEST)
+In-Reply-To: <1431186353-7331-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=us-ascii
+--===============4922804182273558602==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aYDVKSzuImP48n7V"
 Content-Disposition: inline
 
-On Mon, May 11, 2015 at 05:44:14PM +0900, Kuninori Morimoto wrote:
 
-> Mark, is it possible to revert this patch ?
+--aYDVKSzuImP48n7V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> e9c390df671fadc829550935ffb6b23549f26ded
-> (ASoC: rsnd: make sure it uses lock when it calls rsnd_dai_call)
+On Sat, May 09, 2015 at 12:45:52PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Bool initializations should use true and false.  Bool tests don't need
+> comparisons.  Based on contributions from Joe Perches, Rusty Russell
+> and Bruce W Allan.
 
-Sure, please send a patch for that with a changelog explaining why the
-revert is being done.
+Applied both, thanks.
 
---osDK9TLjxFScVI/L
+--aYDVKSzuImP48n7V
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUMNmAAoJECTWi3JdVIfQrAoH/A3dHrPUqRtEds9S2r8mSNtu
-xvLPD6bNG9hiz2mc4o5r25AtVbHfW3QUnMMEtC0J0PQg2B6YPAq0qcrn4m0Po/Va
-3yQThLVc8dJDRlj06gUnK49vdZE6D403BfAXomzo12yb0TzcFZ0seaqQOVYYOUN+
-+SfZkS3YQDKabZFyDslBwU1CqEgmVn7aYTz6w71lNEn/xtL5brV6fh6Ek6ZrrDkx
-EHC3iPZh8iFtgQOkYw4tNRR+tHTXuSx7wKlDQfVWjdgbUR0dsiaKQiINTAjVYz7n
-2GLhOGDgXWiGTT1i7f0P6giylx9mVyF1mpTMvVlOuA919E3WQlOjBvIX0NVdFfo=
-=Q/ex
+iQEcBAEBCAAGBQJVUMdYAAoJECTWi3JdVIfQ98EH/3RmDhG3bfEKJ9AbU0Fcrulo
+H6ul/D8PvMHz4QpjcQRsH4CTG75cMs5lRMift3MUf7Wqj9IW4rkFeTnlZQqk9HA+
+2emiA1Mf8El82wWGE1lM8trCRsdd9/1nnCIgMwAOV8rmjeoTzFKBQ5JTmFgG2nVk
+hY3CeUnHnn7E0X6K453mKG5I00NONRYOy6HC3XHEEKPYE43BVz3KvUqnDaoupV61
+KfIFNa28DGrZFNGd9zj0TmGgJmzZflmhCX5gF/2EKqFQVKNPqxOQehUBdCPVM65e
+UHyxVcQ41a2a3P/rwqC1h6/fh1nWs/uBbXhEkW8HA6yyyorb16JUk1mGkZqrpdo=
+=EHyq
 -----END PGP SIGNATURE-----
 
---osDK9TLjxFScVI/L--
+--aYDVKSzuImP48n7V--
+
+--===============4922804182273558602==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4922804182273558602==--
