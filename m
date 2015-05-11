@@ -1,94 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5645: fix jack type detect
-	error
-Date: Mon, 11 May 2015 17:06:19 +0100
-Message-ID: <20150511160619.GL3458@sirena.org.uk>
-References: <1431064414-27676-1-git-send-email-john.lin@realtek.com>
- <20150508171413.GE2761@sirena.org.uk>
- <14AE6189BDA733429BF8455FEEF63298010D9346@RTITMBSV02.realtek.com.tw>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH 2/2] sound/usb: Update ALSA driver to use media controller
+ API
+Date: Mon, 11 May 2015 10:09:24 -0600
+Message-ID: <5550D434.6000906@osg.samsung.com>
+References: <cover.1431110739.git.shuahkh@osg.samsung.com> <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com> <20150509045109.GA6528@dcvr.yhbt.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1863432288349889400=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BB37264F45
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 18:06:28 +0200 (CEST)
-In-Reply-To: <14AE6189BDA733429BF8455FEEF63298010D9346@RTITMBSV02.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "zhengxing@rock-chips.com" <zhengxing@rock-chips.com>, "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20150509045109.GA6528@dcvr.yhbt.net>
+Sender: linux-media-owner@vger.kernel.org
+To: Eric Wong <normalperson@yhbt.net>
+Cc: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, fisch602@gmail.com, joe@oampo.co.uk, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/08/2015 10:51 PM, Eric Wong wrote:
+> Shuah Khan <shuahkh@osg.samsung.com> wrote:
+>> @@ -541,13 +591,19 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+>>  		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
+>>  		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
+>>  	};
+>> +	int ret;
+>>  
+>> +	if (quirk->media_device) {
+>> +		/* don't want to fail when media_device_init() doesn't work */
+>> +		ret = media_device_init(iface);
+>> +	}
+>>  	if (quirk->type < QUIRK_TYPE_COUNT) {
+>> -		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
+>> +		ret = quirk_funcs[quirk->type](chip, iface, driver, quirk);
+>>  	} else {
+>>  		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
+>>  		return -ENXIO;
+>>  	}
+>> +	return ret;
+>>  }
+> 
+> What is the point of saving 'ret' of media_device_init if it'll
+> only be clobbered or ignored for ENXIO?
+> 
 
---===============1863432288349889400==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dfmC41YZQlborXoK"
-Content-Disposition: inline
+Agreed. There is no point in saving it.
 
+thanks,
+-- Shuah
 
---dfmC41YZQlborXoK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, May 11, 2015 at 02:33:36AM +0000, John Lin wrote:
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-> > Sent: Saturday, May 09, 2015 1:14 AM
-> > To: John Lin
-> > Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Bard Liao; Flove;
-> > Oder Chiou; koro.chen@mediatek.com; yang.a.fang@intel.com;
-> > zhengxing@rock-chips.com
-> > Subject: Re: [PATCH 1/2] ASoC: rt5645: fix jack type detect error
-
-> > On Fri, May 08, 2015 at 01:53:33PM +0800, John Lin wrote:
-> > > rt5645_jack_detect doesn't report the correct jack type consistently.
-> > > This patch can make it more stable.
-
-> > Can you be more specific about what the problem is and how this fixes it
-> > pleased?  It's a bit hard to review based on your changelog.
-
-> It mistakes OMTP type headset to CTIA type if "LDO2" power is disable in=
-=20
-> jack detection function. So, we keep "LDO2" power enabled until jack out.
-> We also change the register sequence to make it more stable and remove=20
-> unnecessary power such as "micbias1" and "micbias2" for jack detection.
-
-This stuff needs to be in the changelog.  It also sounds like there's at
-least two probably three patches here - one to keep the LDO power
-enabled for lonnger and one or more changes to the register sequence.
-
---dfmC41YZQlborXoK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVUNN7AAoJECTWi3JdVIfQ5PIH/AjDekf9dajeG9BZDp9K7nuf
-JP+iZK9HEryJKtSfHHXEQBgMOb3qvXxH9pWQvmvnmTTJzBMpMdC092qv+L5+mDou
-aRLehyHr+lNGMYB+qooFtyxS06y1AXJTzomTRzwoNVKH+wnO5V0khtaV6tbYFgcU
-JcxKRFgBtGyx9r0yMxAxvf13wcJqj3X1u5r029p6SGHrmqP1jKLWvNyUuDZ4Agrz
-G1cXdIxVIF2EW//zng+F3LdumbV68EQv6OItBbGDyGpg98P54Z66LQhIzBslLyD+
-WQx39tAiQ90RGxaKEODq635f+4BU/QfqiGRgIb2lQe2/X0pldtHbgBUfVLB/ycs=
-=cajt
------END PGP SIGNATURE-----
-
---dfmC41YZQlborXoK--
-
---===============1863432288349889400==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1863432288349889400==--
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Open Source Innovation Group
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
