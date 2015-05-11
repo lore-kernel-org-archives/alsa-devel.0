@@ -1,53 +1,99 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH 2/2] sound/usb: Update ALSA driver to use media controller
- API
-Date: Mon, 11 May 2015 10:09:24 -0600
-Message-ID: <5550D434.6000906@osg.samsung.com>
-References: <cover.1431110739.git.shuahkh@osg.samsung.com> <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com> <20150509045109.GA6528@dcvr.yhbt.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] ASoC: DPCM can care FE/BE merged format
+Date: Mon, 11 May 2015 17:15:45 +0100
+Message-ID: <20150511161545.GN3458@sirena.org.uk>
+References: <87mw22ufs3.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hr3reklel.wl-tiwai@suse.de>
+ <87y4llucde.wl%kuninori.morimoto.gx@renesas.com>
+ <s5hiocplv8x.wl-tiwai@suse.de>
+ <20150421104210.GE22845@sirena.org.uk>
+ <87pp6xm36l.wl%kuninori.morimoto.gx@renesas.com>
+ <20150427203310.GJ22845@sirena.org.uk>
+ <87a8xb4uqy.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20150509045109.GA6528@dcvr.yhbt.net>
-Sender: linux-media-owner@vger.kernel.org
-To: Eric Wong <normalperson@yhbt.net>
-Cc: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, fisch602@gmail.com, joe@oampo.co.uk, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Shuah Khan <shuahkh@osg.samsung.com>
+Content-Type: multipart/mixed; boundary="===============4308882204273584483=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AF8D264F53
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 18:15:53 +0200 (CEST)
+In-Reply-To: <87a8xb4uqy.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/08/2015 10:51 PM, Eric Wong wrote:
-> Shuah Khan <shuahkh@osg.samsung.com> wrote:
->> @@ -541,13 +591,19 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
->>  		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
->>  		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
->>  	};
->> +	int ret;
->>  
->> +	if (quirk->media_device) {
->> +		/* don't want to fail when media_device_init() doesn't work */
->> +		ret = media_device_init(iface);
->> +	}
->>  	if (quirk->type < QUIRK_TYPE_COUNT) {
->> -		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
->> +		ret = quirk_funcs[quirk->type](chip, iface, driver, quirk);
->>  	} else {
->>  		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
->>  		return -ENXIO;
->>  	}
->> +	return ret;
->>  }
-> 
-> What is the point of saving 'ret' of media_device_init if it'll
-> only be clobbered or ignored for ENXIO?
-> 
 
-Agreed. There is no point in saving it.
+--===============4308882204273584483==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="EqVOK5mkaJAMmtSx"
+Content-Disposition: inline
 
-thanks,
--- Shuah
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Open Source Innovation Group
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+--EqVOK5mkaJAMmtSx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 11, 2015 at 04:14:47AM +0000, Kuninori Morimoto wrote:
+
+> > Not quite sure what "flag control" is here, sorry?
+
+> Sorry for my confusable words.
+> Takashi mentioned
+
+> 	>     .dpcm_merged_foramt
+> 	>     .dpcm_merged_rate
+> 	>     .dpcm_merged_chan
+
+> 	Better to have bit flags.
+
+> I guess Takashi means like this
+
+> 	u32 xxx_flags
+> 	#define DPCM_xxxx_FORMAT	(1 << 0)
+> 	#define DPCM_xxxx_RATE		(1 << 1)
+> 	#define DPCM_xxxx_CHAN		(1 << 2)
+
+> But, this .dpcm_merged_xxx is defined as
+
+> 	unsigned int dpcm_merged_foramt:1;
+
+> "flag control" here means #defined DPCM_xxxx_CHAN flag,
+> and I think we don't need it.
+
+OK, right.  Yes, we can probably live without.
+
+--EqVOK5mkaJAMmtSx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVUNWwAAoJECTWi3JdVIfQMjQH/1lh8u6NyZR9vH7VVzLyCmB2
+uc+siM3B5oR4iDtDqkGYyEbiYssAp6VwW+WFhpArKc1KlaD5MQ0p+N8ERowg7qhn
+1MULHoRe7v25N8sdqfUWKqZHDtlhuIMyfGjh1VuOxgPTHSL3MTVdJWNcnRCvvHGm
+r28bMQUVBQM+DifQReT3AHqrF3EcjQ5Ttejn/Se80xZBZfS1A6FiWTquTwnYEGeY
+35n1wGxJaBR0PhDSvMkV3iripQeHfNJXQzbmjeliSUEL60ohICPHXyi5FEUVHpcP
+zUTVrBmYKPZ5d2dG+DCX2TAxr+kHCicPERyfpI/cN6MnE+ImMwjVSZSk8QbTvrs=
+=NmKi
+-----END PGP SIGNATURE-----
+
+--EqVOK5mkaJAMmtSx--
+
+--===============4308882204273584483==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4308882204273584483==--
