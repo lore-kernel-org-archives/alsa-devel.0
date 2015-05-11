@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 04/11] ASoC: cx20442: Replace direct
+Subject: [PATCH 05/11] ASoC: es8328: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon, 11 May 2015 09:42:29 +0200
-Message-ID: <1431330156-16706-4-git-send-email-lars@metafoo.de>
+Date: Mon, 11 May 2015 09:42:30 +0200
+Message-ID: <1431330156-16706-5-git-send-email-lars@metafoo.de>
 References: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-107.synserver.de (smtp-out-107.synserver.de
  [212.40.185.107])
- by alsa0.perex.cz (Postfix) with ESMTP id 037C926067F
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 09:42:45 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 554D42606A6
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 09:42:46 +0200 (CEST)
 In-Reply-To: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,30 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/cx20442.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8328.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index 13041cc..d6f4abb 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -333,7 +333,7 @@ static int cx20442_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
--		if (codec->dapm.bias_level != SND_SOC_BIAS_STANDBY)
-+		if (snd_soc_codec_get_bias_level(codec) != SND_SOC_BIAS_STANDBY)
- 			break;
- 		if (IS_ERR(cx20442->por))
- 			err = PTR_ERR(cx20442->por);
-@@ -341,7 +341,7 @@ static int cx20442_set_bias_level(struct snd_soc_codec *codec,
- 			err = regulator_enable(cx20442->por);
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 996e3f4..6a09101 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -536,7 +536,7 @@ static int es8328_set_bias_level(struct snd_soc_codec *codec,
  		break;
+ 
  	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level != SND_SOC_BIAS_PREPARE)
-+		if (snd_soc_codec_get_bias_level(codec) != SND_SOC_BIAS_PREPARE)
- 			break;
- 		if (IS_ERR(cx20442->por))
- 			err = PTR_ERR(cx20442->por);
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			snd_soc_update_bits(codec, ES8328_CONTROL1,
+ 					ES8328_CONTROL1_VMIDSEL_MASK |
+ 					ES8328_CONTROL1_ENREF,
 -- 
 1.8.0
