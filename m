@@ -1,20 +1,18 @@
-From: Stanislav Sergiienko <pythonpowerd@gmail.com>
-Subject: Re: BugReport: Dice works partially [Broken]
-Date: Mon, 11 May 2015 01:10:04 +0300
-Message-ID: <CAPv3ZfzgsPHATbkxa1qGGFat52NujLwkbyN3zCUQ94a3aSqR0w@mail.gmail.com>
-References: <CAPv3Zfxaw9ZEBd_JjCoHjHC=xxJyEpG+dLHpB-vrmNCms=0uRQ@mail.gmail.com>
- <5522E937.8030405@ladisch.de>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: wm8903: Fix define for
+	WM8903_VMID_RES_250K
+Date: Mon, 11 May 2015 09:04:06 +0800
+Message-ID: <1431306246.8012.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
- [209.85.216.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F5CD2604EB
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 00:10:06 +0200 (CEST)
-Received: by vnbf129 with SMTP id f129so8414358vnb.9
- for <alsa-devel@alsa-project.org>; Sun, 10 May 2015 15:10:05 -0700 (PDT)
-In-Reply-To: <5522E937.8030405@ladisch.de>
+Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
+ [209.85.220.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D66F2604AB
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 03:04:13 +0200 (CEST)
+Received: by pacyx8 with SMTP id yx8so96475814pac.1
+ for <alsa-devel@alsa-project.org>; Sun, 10 May 2015 18:04:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBBbnkgZXJyb3IgbWVzc2FnZXMgaW4gdGhlIHN5c3RlbSBsb2c/CgpUaGUgcHJvYmxlbSBpcyB0
-aGF0IGkgY291bGRuJ3QgZmluZCBhbnkgc2lnbmlmaWNhbnQgZXJyb3JzLiBBbGwgaSB3YXMKYWJs
-ZSB0byBnYXRoZXIgaXM6Cgpqb3VybmFsY3RsOgrQsNC/0YAgMTMgMTM6NDc6NTYgQXJjaExpbnV4
-IHB1bHNlYXVkaW9bMjExNV06IFtwdWxzZWF1ZGlvXSBwaWQuYzogRGFlbW9uCmFscmVhZHkgcnVu
-bmluZy4K0LDQv9GAIDEzIDEzOjQ4OjAzIEFyY2hMaW51eCBwdWxzZWF1ZGlvWzIwOThdOiBbYWxz
-YS1zaW5rLURJQ0VdCmFsc2Etc2luay5jOiBBTFNBIHdva2UgdXMgdXAgdG8gd3JpdGUgbmV3IGRh
-dGEgdG8gdGhlIGRldmljZSwgYnV0CnRoZXJlIHdhcyBhY3R1YWxseSBub3RoaW5nIHRvIHdyaXRl
-IQrQsNC/0YAgMTMgMTM6NDg6MDMgQXJjaExpbnV4IHB1bHNlYXVkaW9bMjA5OF06IFthbHNhLXNp
-bmstRElDRV0KYWxzYS1zaW5rLmM6IE1vc3QgbGlrZWx5IHRoaXMgaXMgYSBidWcgaW4gdGhlIEFM
-U0EgZHJpdmVyICdzbmRfZGljZScuClBsZWFzZSByZXBvcnQgdGhpcyBpc3N1ZSB0byB0aGUgQUxT
-QSBkZXZlbG9wZXJzLgrQsNC/0YAgMTMgMTM6NDg6MDMgQXJjaExpbnV4IHB1bHNlYXVkaW9bMjA5
-OF06IFthbHNhLXNpbmstRElDRV0KYWxzYS1zaW5rLmM6IFdlIHdlcmUgd29rZW4gdXAgd2l0aCBQ
-T0xMT1VUIHNldCAtLSBob3dldmVyIGEgc3Vic2VxdWVudApzbmRfcGNtX2F2YWlsKCkgcmV0dXJu
-ZWQgMCBvciBhbm90aGVyIHZhbHVlIDwgbWluX2F2YWlsLgoKU29tZXRpbWVzIHNlZSB0aGlzOgrQ
-vNCw0LkgMDMgMTc6MzA6MjcgQXJjaExpbnV4IHB1bHNlYXVkaW9bNjU3XTogW2Fsc2Etc2luay1E
-SUNFXQphbHNhLXNpbmsuYzogUmVzdW1lIGZhaWxlZCwgY291bGRuJ3QgcmVzdG9yZSBvcmlnaW5h
-bCBzYW1wbGUgc2V0dGluZ3MuCgpTb21ldGltZXMgYWZ0ZXIgcGxheSBmYWlsZWQgaSBzZWUgaW4g
-c3lzbm90aWZpY2F0aW9uIGFyZWE6CiJEZXNrdG9wS29ubmVjdDYgZG9uJ3Qgd29yaywgJ0RlZmF1
-bHQnIHdpbGwgYmUgdXNlZCIKCkluIGRtZXNnIGkgc2VlIG5vIGVycm9ycy4KCj4gV2hhdCBleGFj
-dGx5IGhhcHBlbnMgd2hlbiBpdCBjYW5ub3QgcGxheSBzb3VuZD8KCk5vIGVycm9ycy4gSXQncyBq
-dXN0IGRvbid0IHBsYXkgYW55dGhpbmcuIEZvciBleGFtcGxlLCBmb3IgdmlkZW8sCnZhcmlvdXMg
-cGxheWVycyBoYW5kbGUgaXQgZGlmZmVyZW50bHkgLSBzb21lIGFyZSBqdXN0IHBsYXkgdmlkZW8K
-d2l0aG91dCBhbnkgc291bmQsIHNvbWUgY2FuJ3QgcGxheSB2aWRlbyBhdCBhbGwoc3RvcHMgcGxh
-eSBvbiBmaXJzdApmcmFtZSkuCgo+IFdoYXQgZXhhY3RseSBoYXBwZW5zIHdoZW4gaXQgImJyZWFr
-cyI/CgpBbG1vc3Qgbm90aGluZywgc29tZXRpbWVzIGkgY2FuIGhlYXIgdGhhdCBtdXNpYyBicmVh
-a3Mgd2l0aCBzb21lIGtpbmQKb2YgImNsaWNrLXNvdW5kIiwgbGlrZSBzb21lb25lIHB1bGxlZCB0
-aGUgd2lyZSBmcm9tIG15IGxvdWRzcGVha2Vycy4KQnV0IHRoaXMgc291bmQgaXMgYmFyZWx5IG5v
-dGljZWFibGUuCklmIGkgdHJ5IHRvIHBsYXkgZmlsZSBhZ2FpbiBpIGhlYXIgc29tZSBraW5kIG9m
-ICJpbml0aWFsaXphdGlvbgpzb3VuZCIsIGxpa2Ugd2hlbiBkZXZpY2Ugb3BlbiBvbiBQQyBib290
-LgpJdCdzIGhhcmQgdG8gZGVzY3JpYmUgaXQgaW4gbXkgRW5nbGlzaCA6KQoKSWYgeW91IHNlbmQg
-bWUgaW5mbyBhYm91dCBob3cgdG8gZ2F0aGVyIG1vcmUgZGV0YWlsZWQgbG9ncywgaSB0cnkgZG8g
-dGhpcy4KUC5TLiBTb3JyeSBmb3IgbG9uZyB0aW1lIHRvIGFuc3dlci4KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Vk1JRCBDb250cm9sIDAgQklUWzI6MV0gaXMgVk1JRCBEaXZpZGVyIEVuYWJsZSBhbmQgU2VsZWN0
+CgowMCA9IFZNSUQgZGlzYWJsZWQgKGZvciBPRkYgbW9kZSkKMDEgPSAyIHggNTBrzqkgZGl2aWRl
+ciAoZm9yIG5vcm1hbCBvcGVyYXRpb24pCjEwID0gMiB4IDI1MGvOqSBkaXZpZGVyIChmb3IgbG93
+IHBvd2VyIHN0YW5kYnkpCjExID0gMiB4IDVrzqkgZGl2aWRlciAoZm9yIGZhc3Qgc3RhcnQtdXAp
+CgpTbyBXTTg5MDNfVk1JRF9SRVNfMjUwSyBzaG91bGQgYmUgMiA8PCAxLCB3aGljaCBpcyA0LgoK
+U2lnbmVkLW9mZi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGluZ2ljcy5jb20+Ci0tLQogc291bmQv
+c29jL2NvZGVjcy93bTg5MDMuaCB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mvd204OTAzLmgg
+Yi9zb3VuZC9zb2MvY29kZWNzL3dtODkwMy5oCmluZGV4IGRiOTQ5MzEuLjBiYjRhNjQgMTAwNjQ0
+Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvd204OTAzLmgKKysrIGIvc291bmQvc29jL2NvZGVjcy93
+bTg5MDMuaApAQCAtMTcyLDcgKzE3Miw3IEBAIGV4dGVybiBpbnQgd204OTAzX21pY19kZXRlY3Qo
+c3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLAogI2RlZmluZSBXTTg5MDNfVk1JRF9CVUZfRU5B
+X1dJRFRIICAgICAgICAgICAgICAgICAgICAxICAvKiBWTUlEX0JVRl9FTkEgKi8KIAogI2RlZmlu
+ZSBXTTg5MDNfVk1JRF9SRVNfNTBLICAgICAgICAgICAgICAgICAgICAgICAgICAyCi0jZGVmaW5l
+IFdNODkwM19WTUlEX1JFU18yNTBLICAgICAgICAgICAgICAgICAgICAgICAgIDMKKyNkZWZpbmUg
+V004OTAzX1ZNSURfUkVTXzI1MEsgICAgICAgICAgICAgICAgICAgICAgICAgNAogI2RlZmluZSBX
+TTg5MDNfVk1JRF9SRVNfNUsgICAgICAgICAgICAgICAgICAgICAgICAgICA2CiAKIC8qCi0tIAoy
+LjEuMAoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
