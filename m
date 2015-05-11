@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 03/11] ASoC: ak4641: Replace direct
+Subject: [PATCH 06/11] ASoC: jz4740: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon, 11 May 2015 09:42:28 +0200
-Message-ID: <1431330156-16706-3-git-send-email-lars@metafoo.de>
+Date: Mon, 11 May 2015 09:42:31 +0200
+Message-ID: <1431330156-16706-6-git-send-email-lars@metafoo.de>
 References: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-107.synserver.de (smtp-out-107.synserver.de
  [212.40.185.107])
- by alsa0.perex.cz (Postfix) with ESMTP id DA8A82606AD
+ by alsa0.perex.cz (Postfix) with ESMTP id C6F6F2606A8
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 09:42:46 +0200 (CEST)
 In-Reply-To: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,21 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ak4641.c | 2 +-
+ sound/soc/codecs/jz4740.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
-index 3b22b58..2d0ff45 100644
---- a/sound/soc/codecs/ak4641.c
-+++ b/sound/soc/codecs/ak4641.c
-@@ -412,7 +412,7 @@ static int ak4641_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_update_bits(codec, AK4641_DAC, 0x20, 0x20);
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 8425d26..9363fdb 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -258,7 +258,7 @@ static int jz4740_codec_set_bias_level(struct snd_soc_codec *codec,
  		break;
  	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			if (pdata && gpio_is_valid(pdata->gpio_power))
- 				gpio_set_value(pdata->gpio_power, 1);
- 			mdelay(1);
+ 		/* The only way to clear the suspend flag is to reset the codec */
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
+ 			jz4740_codec_wakeup(regmap);
+ 
+ 		mask = JZ4740_CODEC_1_VREF_DISABLE |
 -- 
 1.8.0
