@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/11] ASoC: 88pm860x: Replace direct
+Subject: [PATCH 04/11] ASoC: cx20442: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon, 11 May 2015 09:42:26 +0200
-Message-ID: <1431330156-16706-1-git-send-email-lars@metafoo.de>
+Date: Mon, 11 May 2015 09:42:29 +0200
+Message-ID: <1431330156-16706-4-git-send-email-lars@metafoo.de>
+References: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-107.synserver.de (smtp-out-107.synserver.de
  [212.40.185.107])
- by alsa0.perex.cz (Postfix) with ESMTP id 066CD26068A
+ by alsa0.perex.cz (Postfix) with ESMTP id 037C926067F
  for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 09:42:45 +0200 (CEST)
+In-Reply-To: <1431330156-16706-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,23 +32,30 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-All patches in this series have a dependency on topic/dapm
----
- sound/soc/codecs/88pm860x-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cx20442.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index c0b2686..ee31fa7 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1140,7 +1140,7 @@ static int pm860x_set_bias_level(struct snd_soc_codec *codec,
- 		break;
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 13041cc..d6f4abb 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -333,7 +333,7 @@ static int cx20442_set_bias_level(struct snd_soc_codec *codec,
  
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (codec->dapm.bias_level != SND_SOC_BIAS_STANDBY)
++		if (snd_soc_codec_get_bias_level(codec) != SND_SOC_BIAS_STANDBY)
+ 			break;
+ 		if (IS_ERR(cx20442->por))
+ 			err = PTR_ERR(cx20442->por);
+@@ -341,7 +341,7 @@ static int cx20442_set_bias_level(struct snd_soc_codec *codec,
+ 			err = regulator_enable(cx20442->por);
+ 		break;
  	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			/* Enable Audio PLL & Audio section */
- 			data = AUDIO_PLL | AUDIO_SECTION_ON;
- 			pm860x_reg_write(pm860x->i2c, REG_MISC2, data);
+-		if (codec->dapm.bias_level != SND_SOC_BIAS_PREPARE)
++		if (snd_soc_codec_get_bias_level(codec) != SND_SOC_BIAS_PREPARE)
+ 			break;
+ 		if (IS_ERR(cx20442->por))
+ 			err = PTR_ERR(cx20442->por);
 -- 
 1.8.0
