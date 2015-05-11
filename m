@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fsl: fsl_dma: Use true/false for
-	boolean init
-Date: Mon, 11 May 2015 16:14:33 +0100
-Message-ID: <20150511151433.GG3458@sirena.org.uk>
-References: <1431186353-7331-1-git-send-email-festevam@gmail.com>
+From: Arijit De <arijit.de@geosemi.com>
+Subject: Re: stereo uac device control over mixer
+Date: Mon, 11 May 2015 15:28:52 +0000
+Message-ID: <1431358131671.36088@geosemi.com>
+References: <1430728456157.40941@geosemi.com>,	<55476E36.4090105@ladisch.de>
+ <1430800272738.13266@geosemi.com>,<5548C97B.90908@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4922804182273558602=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 78ACA2615F7
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 17:14:43 +0200 (CEST)
-In-Reply-To: <1431186353-7331-1-git-send-email-festevam@gmail.com>
+Received: from relay05.mycloudmailbox.com (relay05.mycloudmailbox.com
+ [199.244.76.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 806AC2615F7
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 17:28:57 +0200 (CEST)
+In-Reply-To: <5548C97B.90908@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
 
---===============4922804182273558602==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aYDVKSzuImP48n7V"
-Content-Disposition: inline
+I want to do Left/Right Mic mute independently,
+but I dont see that kind of control is provided in alsamixer(GUI) for capture devices.
 
+Is Left/Right Mic mute is supported ?
 
---aYDVKSzuImP48n7V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+because I can see a api for the same
+snd_mixer_selem_set_capture_switch (snd_mixer_elem_t *elem, snd_mixer_selem_channel_id_t channel, int value);
 
-On Sat, May 09, 2015 at 12:45:52PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Bool initializations should use true and false.  Bool tests don't need
-> comparisons.  Based on contributions from Joe Perches, Rusty Russell
-> and Bruce W Allan.
+Thanks
+Arijit
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Tuesday, May 5, 2015 7:15 PM
+To: Arijit De; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] stereo uac device control over mixer
 
-Applied both, thanks.
+Arijit De wrote:
+>       AudioControl Interface Descriptor:
+>         bLength                 9
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                 2
+>         bSourceID               1
+>         bControlSize            1
+>         bmaControls( 0)      0x03
+>           Mute Control
+>           Volume Control
 
---aYDVKSzuImP48n7V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+These are the controls for the master channel.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>         bmaControls( 1)      0x03
+>           Mute Control
+>           Volume Control
 
-iQEcBAEBCAAGBQJVUMdYAAoJECTWi3JdVIfQ98EH/3RmDhG3bfEKJ9AbU0Fcrulo
-H6ul/D8PvMHz4QpjcQRsH4CTG75cMs5lRMift3MUf7Wqj9IW4rkFeTnlZQqk9HA+
-2emiA1Mf8El82wWGE1lM8trCRsdd9/1nnCIgMwAOV8rmjeoTzFKBQ5JTmFgG2nVk
-hY3CeUnHnn7E0X6K453mKG5I00NONRYOy6HC3XHEEKPYE43BVz3KvUqnDaoupV61
-KfIFNa28DGrZFNGd9zj0TmGgJmzZflmhCX5gF/2EKqFQVKNPqxOQehUBdCPVM65e
-UHyxVcQ41a2a3P/rwqC1h6/fh1nWs/uBbXhEkW8HA6yyyorb16JUk1mGkZqrpdo=
-=EHyq
------END PGP SIGNATURE-----
+These are the controls for the mic's left channel.
 
---aYDVKSzuImP48n7V--
+>         iFeature                0
 
---===============4922804182273558602==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The controls for the mic's right channel are missing.
 
 
---===============4922804182273558602==--
+There are no descriptors for playback, but this does not matter for the
+mixer.
+
+
+Regards,
+Clemens
