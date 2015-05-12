@@ -1,125 +1,105 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH 2/3] ASoC: fsl_sai: Add tdm slots operation for SAI master mode
-Date: Tue, 12 May 2015 15:07:40 +0800
-Message-ID: <d2d07bb90912cbcc48d18de986a11591b12a91b2.1431414110.git.zidan.wang@freescale.com>
-References: <a60e5babb208b08fb4cd8188573606eb745cc1c4.1431414110.git.zidan.wang@freescale.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: RE: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
+ Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
+ 13 (2015) until 4.2]
+Date: Tue, 12 May 2015 07:27:17 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905526D57@SHSMSX101.ccr.corp.intel.com>
+References: <55401602.5050907@dell.com> <55480021.1090402@dell.com>
+ <20150511182658.GA8516@isilmar-3.linta.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a60e5babb208b08fb4cd8188573606eb745cc1c4.1431414110.git.zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: nicoleotsuka@gmail.com
-Cc: timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20150511182658.GA8516@isilmar-3.linta.de>
+Content-Language: en-US
+Sender: linux-acpi-owner@vger.kernel.org
+To: Dominik Brodowski <linux@dominikbrodowski.net>, Mario Limonciello <mario_limonciello@dell.com>, "Moore, Robert" <robert.moore@intel.com>, "Zheng, Lv" <lv.zheng@intel.com>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+Cc: "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "Lu, Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add tdm slot operation for SAI master mode. When using SAI as master
-mode, we should use set_tdm_slot() helper function to set tdm slots
-in machine driver, or it will using default value of slots and slot
-width.
++Liam.
 
-SAI will generate BCLK depends on sample rate, slots and slot width.
-And there may be unused BCLK cycles before each LRCLK transition.
+> -----Original Message-----
+> From: Dominik Brodowski [mailto:linux@dominikbrodowski.net]
+> Sent: Tuesday, May 12, 2015 2:27 AM
+> To: Mario Limonciello; Moore, Robert; Zheng, Lv; Wysocki, Rafael J
+> Cc: linux-acpi@vger.kernel.org; broonie@kernel.org; Lu, Han; Jie, Yang; alsa-
+> devel@alsa-project.org
+> Subject: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
+> Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
+> 13 (2015) until 4.2]
+> 
+> Hi,
+> 
+> (CC'ing sound experts)
+> 
+> indeed, commit b1ef29725865 causes a severe regression -- actually, it causes
+> sound to be totally unusuable on the Dell XPS 13 (2015) on Debian jessie,
+> while it works fine in 4.0 / with b1ef29725865 reverted.
+> 
+> According to an off-list discussion, the sound breakage (and not just some
+> jack detection issue) seems to be caused due to alsa-lib being too old.
+> The matter is further complicated by the issue that the driver asks for some
+> firmware blob intel/IntcPP01.bin which (at least) I cannot find anywhere.
+ 
+Lacking of IntcPP01.bin should not block Broadwell ADSP audio functions.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
- sound/soc/fsl/fsl_sai.c | 28 ++++++++++++++++++++++------
- sound/soc/fsl/fsl_sai.h |  3 +++
- 2 files changed, 25 insertions(+), 6 deletions(-)
+Suppose these should be the same issues Mark told us, right?
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 1ccc10d1..88f5861 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -115,6 +115,17 @@ out:
- 		return IRQ_HANDLED;
- }
- 
-+static int fsl_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
-+				u32 rx_mask, int slots, int slot_width)
-+{
-+	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	sai->slots = slots;
-+	sai->slot_width = slot_width;
-+
-+	return 0;
-+}
-+
- static int fsl_sai_set_dai_sysclk_tr(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int fsl_dir)
- {
-@@ -372,11 +383,13 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int channels = params_channels(params);
- 	u32 word_width = snd_pcm_format_width(params_format(params));
- 	u32 val_cr4 = 0, val_cr5 = 0;
-+	u32 slot_width = word_width;
- 	int ret;
- 
- 	if (!sai->is_slave_mode) {
-+		slot_width = sai->slot_width;
- 		ret = fsl_sai_set_bclk(cpu_dai, tx,
--			2 * word_width * params_rate(params));
-+				sai->slots * slot_width * params_rate(params));
- 		if (ret)
- 			return ret;
- 
-@@ -388,21 +401,20 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 			sai->mclk_streams |= BIT(substream->stream);
- 		}
--
- 	}
- 
- 	if (!sai->is_dsp_mode)
--		val_cr4 |= FSL_SAI_CR4_SYWD(word_width);
-+		val_cr4 |= FSL_SAI_CR4_SYWD(slot_width);
- 
--	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
--	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
-+	val_cr5 |= FSL_SAI_CR5_WNW(slot_width);
-+	val_cr5 |= FSL_SAI_CR5_W0W(slot_width);
- 
- 	if (sai->is_lsb_first)
- 		val_cr5 |= FSL_SAI_CR5_FBT(0);
- 	else
- 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
- 
--	val_cr4 |= FSL_SAI_CR4_FRSZ(channels);
-+	val_cr4 |= FSL_SAI_CR4_FRSZ(sai->slots);
- 
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx),
- 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
-@@ -536,6 +548,7 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
- 	.set_fmt	= fsl_sai_set_dai_fmt,
-+	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
- 	.hw_params	= fsl_sai_hw_params,
- 	.hw_free	= fsl_sai_hw_free,
- 	.trigger	= fsl_sai_trigger,
-@@ -721,6 +734,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	sai->slots = 2;
-+	sai->slot_width = 32;
-+
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		dev_err(&pdev->dev, "no irq for node %s\n", pdev->name);
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 0662809..1ec09d6 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -142,6 +142,9 @@ struct fsl_sai {
- 
- 	unsigned int mclk_id[2];
- 	unsigned int mclk_streams;
-+	unsigned int slots;
-+	unsigned int slot_width;
-+
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- };
--- 
-1.9.1
+Yes, we are doing some fixes in alsa-lib/ucm/config part, without these fixes,
+You can do manual volume +/- and switches on/off in alsamixer GUI interface.
+
+BTW, if you can create kernel.org bugs to descript these issues, it will be helpful
+for to trace and fix them after we got this XPS 13 machine.
+
+Thanks,
+~Keyon
+
+> 
+> Under the no-regression rule, this means that either b1ef29725865 needs to
+> be reverted or we need to find another solution to this matter, such as an
+> override. And I think it is needed for longer than just for 4.1, as it will
+> continue to be cause regressions on quite recent userspace.
+> 
+> Best,
+> 	Dominik
+> 
+> 
+> PS/OT: Probably I'm preaching to the choir, but @Mario: it's a pity the XPS (or
+> some versions of it) with pre-installed Ubuntu actually ships with a Wifi
+> adapter which seems to be unsupported by upstream Linux...
+> 
+> 
+> On Mon, May 04, 2015 at 06:26:25PM -0500, Mario Limonciello wrote:
+> >
+> > On 04/28/2015 06:21 PM, Mario Limonciello wrote:
+> > >Hi,
+> > >
+> > >Due to b1ef2972586577e0ca9675254ee141f65a8824e5 landing recently as a
+> result of some previous ACPI community discussion, the Dell XPS 13 (2015) no
+> longer has fully functional audio.  In case you aren't aware, the XPS 13 (2015)
+> switches audio modes based upon a combination of what's detected for the
+> _OSI string and _REV values. When "Windows 2013" is found with _REV=2
+> the audio codec will be configured for I2S audio mode.  When "Windows
+> 2013" with _REV=5 is found it will be configured for HDA audio mode.
+> > >
+> > >I2S audio is improving, but not as mature as HDA audio mode is at this
+> point.  Currently jack detection does not work properly in 4.1 with I2S audio
+> codecs.  I've been notified that the support for jack detection will be landing
+> in 4.2.  I'd like to discuss the possibility of including a quirk for the _REV
+> behavior when the DMI information corresponding to the Dell XPS 13 (2015)
+> is detected for 4.1.  This will let it continue to run in HDA mode until I2S mode
+> is mature.
+> > >
+> > >I'd also like to plan for the quirk to be dropped when jack detection has
+> landed for 4.2 (or if it gets pushed out further when it lands for 4.3).
+> > >
+> > >Would you guys be open to that?
+> > >
+> > >Thanks,
+> > Hello,
+> >
+> > I just wanted to follow up on this, I would like to come up with a solution
+> before it's too late for 4.1 on the XPS 13 (2015).
+> >
+> > Thanks,
