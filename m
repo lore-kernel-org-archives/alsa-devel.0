@@ -1,39 +1,104 @@
-From: Dave Airlie <airlied@gmail.com>
-Subject: DP MST audio support
-Date: Tue, 12 May 2015 11:50:20 +1000
-Message-ID: <CAPM=9tx74D8SaghkuY7qcJ5emAXdtQeZOQf8N6e=FEy9VsLJvA@mail.gmail.com>
+From: libin.yang@intel.com
+Subject: [PATCH 1/3] ALSA: hda - add hdac stream trace
+Date: Tue, 12 May 2015 09:43:20 +0800
+Message-ID: <1431395002-111613-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F5C4265062
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 03:51:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Libin Yang <libin.yang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpTbyBJIGhhdmUgYSBicmFuY2ggdGhhdCBtYWtlcyBubyBzb3VuZCwKaHR0cDovL2NnaXQu
-ZnJlZWRlc2t0b3Aub3JnL35haXJsaWVkL2xpbnV4L2xvZy8/aD1kcC1tc3QtYXVkaW8KCmFuZCBJ
-J20gbm90IHN1cmUgd2hlcmUgSSBuZWVkIHRvIHR1cm4gdG8gbmV4dCwKClRoZSBJbnRlbCBkb2Nz
-IEkndmUgcmVhZCBhcmUga2luZGEgdmFndWUsIGFzc3VtaW5nIHlvdSBrbm93IGxvdHMgb2YKdGhp
-bmdzIEkgY2xlYXJseSBkb24ndC4KCnNvIGluIHRoZW9yeSBteSBicmFuY2gsIHNldHMgdXAgdGhl
-IFNEUCBzdHJlYW0gdG8gdGhlIG1vbml0b3IgaW4gdGhlCnBheWxvYWQgY3JlYXRpb24sCmVuYWJs
-ZXMgdGhlIGNvZGVjIGluIHRoZSBpbnRlbCBHUFUgZHJpdmVyLCBhbmQgcGFzc2VzIHRoZSBFTEQg
-dG8gdGhlCmF1ZGlvIGRyaXZlci4KClRoZSBhdWRpbyBkcml2ZXIgdXNlcyB0aGUgZGV2aWNlIGxp
-c3QgdG8gZ2V0IHRoZSBwcmVzZW5jZS92YWxpZCBiaXRzCnBlciBkZXZpY2UsIGFuZCBtYW5hZ2Vz
-IHRvIHJldHJpZXZlIHRoZSBFTEQuIEkgZXZlbiBjcmVhdGUgRUxEIGZpbGVzCmluIC9wcm9jL2Fz
-b3VuZC9IRE1JLyB0aGF0IGhhdmUgc2Vuc2libGUgdmFsdWVzIGluIHRoZW0KClNvIGl0IGxvb2tz
-IGxpa2UgSSdtIGp1c3QgbWlzc2luZyBzb21lIHJvdXRpbmcgc29tZXdoZXJlLCBtb3N0IGxpa2Vs
-eQppbiB0aGUgYXVkaW8gZHJpdmVyLCB0aGVuIGFnYWluIEkgIGNvdWxkIGJlIG1pc3NpbmcgYSBs
-b3QgbW9yZSB0aGFuCnRoYXQuCgpKdXN0IGxvb2tpbmcgZm9yIGFueSBpZGVhcyBvciBrbm93bGVk
-Z2UgcGVvcGxlIG1heSBoYXZlIGxvY2tlZCBpbgp0aGVpciBicmFpbnMgb3IgaW5zaWRlIHRoZWly
-IGZpcmV3YWxscy4KCkRhdmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNr
-dG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50
-ZWwtZ2Z4Cg==
+From: Libin Yang <libin.yang@intel.com>
+
+Add the trace of snd_hdac_stream_start and snd_hdac_stream_stop.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/hda/hdac_stream.c |  5 +++++
+ sound/hda/trace.h       | 27 +++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
+
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index 1ba0462..52a894f 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -10,6 +10,7 @@
+ #include <sound/pcm.h>
+ #include <sound/hdaudio.h>
+ #include <sound/hda_register.h>
++#include "trace.h"
+ 
+ /**
+  * snd_hdac_stream_init - initialize each stream (aka device)
+@@ -48,6 +49,8 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
+ {
+ 	struct hdac_bus *bus = azx_dev->bus;
+ 
++	trace_snd_hdac_stream_start(bus, azx_dev);
++
+ 	azx_dev->start_wallclk = snd_hdac_chip_readl(bus, WALLCLK);
+ 	if (!fresh_start)
+ 		azx_dev->start_wallclk -= azx_dev->period_wallclk;
+@@ -82,6 +85,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_clear);
+  */
+ void snd_hdac_stream_stop(struct hdac_stream *azx_dev)
+ {
++	trace_snd_hdac_stream_stop(azx_dev->bus, azx_dev);
++
+ 	snd_hdac_stream_clear(azx_dev);
+ 	/* disable SIE */
+ 	snd_hdac_chip_updatel(azx_dev->bus, INTCTL, 1 << azx_dev->index, 0);
+diff --git a/sound/hda/trace.h b/sound/hda/trace.h
+index 33a7eb5..e27e2c0 100644
+--- a/sound/hda/trace.h
++++ b/sound/hda/trace.h
+@@ -50,6 +50,33 @@ TRACE_EVENT(hda_unsol_event,
+ 	),
+ 	TP_printk("%s", __get_str(msg))
+ );
++
++DECLARE_EVENT_CLASS(hdac_stream,
++	TP_PROTO(struct hdac_bus *bus, struct hdac_stream *azx_dev),
++
++	TP_ARGS(bus, azx_dev),
++
++	TP_STRUCT__entry(
++		__field(unsigned char, stream_tag)
++	),
++
++	TP_fast_assign(
++		__entry->stream_tag = (azx_dev)->stream_tag;
++	),
++
++	TP_printk("stream_tag: %d", __entry->stream_tag)
++);
++
++DEFINE_EVENT(hdac_stream, snd_hdac_stream_start,
++	TP_PROTO(struct hdac_bus *bus, struct hdac_stream *azx_dev),
++	TP_ARGS(bus, azx_dev)
++);
++
++DEFINE_EVENT(hdac_stream, snd_hdac_stream_stop,
++	TP_PROTO(struct hdac_bus *bus, struct hdac_stream *azx_dev),
++	TP_ARGS(bus, azx_dev)
++);
++
+ #endif /* __HDAC_TRACE_H */
+ 
+ /* This part must be outside protection */
+-- 
+1.9.1
