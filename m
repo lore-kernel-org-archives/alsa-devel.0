@@ -1,57 +1,47 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: [PATCH v2] ASoC: bt-sco: Add devicetree support
-	for bt-sco codec
-Date: Tue, 12 May 2015 21:00:59 +0200
-Message-ID: <CAAfyv37Aeo35ToaNj1uQjJmOwAjn9QrqrTv=yW=jcmF8oX-6hw@mail.gmail.com>
-References: <1431111754-14562-1-git-send-email-marek@goldelico.com>
- <20150512183722.GO3066@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: Let wm8960 driver
+ configure its bit clock and frame clock
+Date: Tue, 12 May 2015 20:05:52 +0100
+Message-ID: <20150512190552.GV3066@sirena.org.uk>
+References: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f50.google.com (mail-la0-f50.google.com
- [209.85.215.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 84FEE265872
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 21:01:00 +0200 (CEST)
-Received: by layy10 with SMTP id y10so13161930lay.0
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 12:01:00 -0700 (PDT)
-In-Reply-To: <20150512183722.GO3066@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, tiwai@suse.de, "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qa1NXTiqN6KSzHv0"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Tue, May 12, 2015 at 8:37 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, May 08, 2015 at 09:02:34PM +0200, Marek Belisko wrote:
->> Add devicetree support for bluetooth SCO link codec.
->
-> Applied with a bit of effort, you seem to have sent this against some
-> non-mainline tree - please check that in future.
-Ups sorry it was based on some other changes and not on linux-next master.
-Thanks for fixing.
+--qa1NXTiqN6KSzHv0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-BR,
+On Tue, May 12, 2015 at 02:58:08PM +0800, Zidan Wang wrote:
+> wm8960 codec driver missing configure its bit clock and frame clock for codec
+> master mode, so add support for it. It will calculate a appropriate frequency
+> dividing ratio according to the system clock, bit clock and frame clock, then
+> set the corresponding registers.
 
-marek
+Applied all, thanks.
 
--- 
-as simple and primitive as possible
--------------------------------------------------
-Marek Belisko - OPEN-NANDRA
-Freelance Developer
+--qa1NXTiqN6KSzHv0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Ruska Nova Ves 219 | Presov, 08005 Slovak Republic
-Tel: +421 915 052 184
-skype: marekwhite
-twitter: #opennandra
-web: http://open-nandra.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVUk8PAAoJECTWi3JdVIfQpm8H/0WHj3lzl/fqSgNAt928SSHm
+WyIaUQG+eVUTFKHllvwsdjhyli6pKI2k/RdyY0grz/v7PyInhknhYP9f4qdC22Wq
+bMN1Mb6cAb0dsvP0Rcm/jFTJg4aZ7LDbG7GIm5ywGXL3pIguENWRV3G27aMse8FU
+rYitnUWfQQw+7KxIJGWTwGnhK3eIeUv5jmCarlKpcpfHojeHpWrEcMydSYPfu8KW
+kA91HdskhNZ+3mgn4H/o+MYzydyxxbPvQvX9M+Wz1QGPqLNNBPy43/Qz8Zwnjk0R
+ihXAfWp9/TjJOA5CDNQ5NScF73ZxQQELzPFljTW8gQMyz7/pX60leX7wv7ph/z0=
+=6D6t
+-----END PGP SIGNATURE-----
+
+--qa1NXTiqN6KSzHv0--
