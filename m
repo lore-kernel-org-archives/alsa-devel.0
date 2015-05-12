@@ -1,48 +1,56 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Remove unused call to
-	"get_pin" in patch_hdmi.c
-Date: Tue, 12 May 2015 09:35:35 +0200
-Message-ID: <5551AD47.3050806@canonical.com>
-References: <1431332637-8650-1-git-send-email-david.henningsson@canonical.com>
- <s5hlhgvgus2.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id C874626517F
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 09:35:28 +0200 (CEST)
-In-Reply-To: <s5hlhgvgus2.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Xing Zheng <acgzxing@gmail.com>
+Subject: [PATCH 0/4] ASoC: rockchip: add rockchip machine driver
+Date: Tue, 12 May 2015 17:26:33 +0800
+Message-ID: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org
+Cc: linux-rockchip@lists.infradead.org, zhengxing <zhengxing@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+From: zhengxing <zhengxing@rock-chips.com>
 
 
-On 2015-05-11 14:31, Takashi Iwai wrote:
-> At Mon, 11 May 2015 10:23:57 +0200,
-> David Henningsson wrote:
->>
->> Janitorial patch (no functional change)
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->
-> Applied, thanks.
+Hi,
 
-Thanks. Did you forget to push it? I can't find it on 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git
+These patches to add machine driver for rockchip platform.
 
+We intended to use simple-card on the project, but it seem like that have
+some issues(jack detection). We need the following features on the project,
+but simple-card is temporarily unable to provide them:
+1. We need dynamically recognize and select one codec from supported codecs
+   in dts.
+2. Simple-card don't provide to call the codec jack detection callback via dts
+   description (ts3a227e_enable_jack_detect for max98090, rt5645_set_jack_detect
+   for rt5645/rt5650).
+3. Simple-card support simple-widght only, but codec may use cunstom the name of
+   widget (rk_dapm_widgets: "Headset Mic", "Int Mic" in max98090).
+
+Simple-card is good generic machine driver, but if we want to replace simple-card
+in the exsiting work, it may bring other problems. Therefore, we want to upload
+these functions that we need.
+
+
+
+zhengxing (4):
+  ASoC: rockchip: add rockchip machine driver
+  ASoC: rockchip: add rockchip machine driver for max98090
+  ASoC: rockchip: add rockchip machine driver for rt5650/rt5645
+  ASoC: rockchip-audio-machine: add rockchip machine driver bindings
+
+ .../sound/rockchip,rockchip-audio-machine.txt      |   38 ++++
+ sound/soc/rockchip/Kconfig                         |   26 +++
+ sound/soc/rockchip/Makefile                        |    9 +
+ sound/soc/rockchip/rockchip_machine_driver.c       |  222 ++++++++++++++++++++
+ sound/soc/rockchip/rockchip_machine_driver.h       |   41 ++++
+ sound/soc/rockchip/rockchip_max98090.c             |  185 ++++++++++++++++
+ sound/soc/rockchip/rockchip_rt5645.c               |  220 +++++++++++++++++++
+ 7 files changed, 741 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rockchip-audio-machine.txt
+ create mode 100644 sound/soc/rockchip/rockchip_machine_driver.c
+ create mode 100644 sound/soc/rockchip/rockchip_machine_driver.h
+ create mode 100644 sound/soc/rockchip/rockchip_max98090.c
+ create mode 100644 sound/soc/rockchip/rockchip_rt5645.c
 
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.7.9.5
