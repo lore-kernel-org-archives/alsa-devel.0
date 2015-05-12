@@ -1,70 +1,126 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
- Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
- 13 (2015) until 4.2]
-Date: Tue, 12 May 2015 11:12:58 +0100
-Message-ID: <20150512101258.GL2761@sirena.org.uk>
-References: <55401602.5050907@dell.com>
- <55480021.1090402@dell.com>
- <20150511182658.GA8516@isilmar-3.linta.de>
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC PATCH 00/14] ASoC: qcom: add support to apq8016
+ audio
+Date: Tue, 12 May 2015 11:21:42 +0100
+Message-ID: <5551D436.2070600@linaro.org>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <20150502235704.GA27804@kwestfie-linux.qualcomm.com> <20150506054758.GD5639@kwestfie-linux.qualcomm.com> <5549BA98.9080501@linaro.org> <20150512040600.GA24087@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hdW7zL/qDS6RXdAL"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150511182658.GA8516@isilmar-3.linta.de>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Mario Limonciello <mario_limonciello@dell.com>, robert.moore@intel.com, lv.zheng@intel.com, rafael.j.wysocki@intel.com, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, han.lu@intel.com, yang.jie@intel.com, alsa-devel@alsa-project.org, Matthew Garrett <mjg59@coreos.com>, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150512040600.GA24087-VfhoOQ2zEbNBVvN7MMdr1KRtKmQZhJ7pQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
++ adding Lars
 
---hdW7zL/qDS6RXdAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 12/05/15 05:06, Kenneth Westfield wrote:
+> Srinivas,
+>
+> I was able to get audio working on the Storm board.  There were several
+> issues.  First, the I2S control port was saved in the DAI driver id field
+> (which was 4), but the DAI id field was used by the macro (which was 0).
+> The patch below fixed it:
 
-On Mon, May 11, 2015 at 08:26:58PM +0200, Dominik Brodowski wrote:
+Ah, I did not expect that to happen, dai->id and dai->driver->id should 
+be same. Surprisingly this is not true for IPQ806x platform only because 
+dais count == 1. Which results in dai->id not getting assigned to 
+dai->driver->id due to below code snippet in  sound/soc/soc-core.c
 
-Also CCing Matthew who came up with the original version of the version
-change and Liam who is one of Intel's audio experts.
+--------------------><------------------------------------------
+/*
+  * Back in the old days when we still had component-less DAIs,
+  * instead of having a static name, component-less DAIs would
+  * inherit the name of the parent device so it is possible to
+  * register multiple instances of the DAI. We still need to keep
+  * the same naming style even though those DAIs are not
+  * component-less anymore.
+  */
+if (count == 1 && legacy_dai_naming) {
+	dai->name = fmt_single_name(dev, &dai->id);
+} else {
+	dai->name = fmt_multiple_name(dev, &dai_drv[i]);
+	if (dai_drv[i].id)
+		dai->id = dai_drv[i].id;
+	else
+		dai->id = i;
+}
+--------------------><------------------------------------------
 
-> According to an off-list discussion, the sound breakage (and not just some
-> jack detection issue) seems to be caused due to alsa-lib being too old.
+Its not clear from code, why should we enter to legacy naming if the 
+dais count == 1 even-though the dai_drv has has valid name and id 
+information.
 
-Right, it needs the userspace configuration files installing.
+Mark/Lars,
 
-> The matter is further complicated by the issue that the driver
-> asks for some firmware blob intel/IntcPP01.bin which (at least) I
-> cannot find anywhere.
+I can workaround this by using dai->driver->id in the driver, But do you 
+think that dai name and id should be assigned from dai drv if present?
 
-As previously advised that firmware is optional.
+--srini
 
-> Under the no-regression rule, this means that either b1ef29725865 needs
-> to be reverted or we need to find another solution to this matter, such as
-> an override. And I think it is needed for longer than just for 4.1, as it
-> will continue to be cause regressions on quite recent userspace.
-
-Does this also affect other behaviour of the system?  I'd be pretty
-unhappy if it introduce power regressions for example, I mostly don't use
-audio on my laptops but I care a lot about how long it'll run
-disconnected.  It *is* quite a new laptop and my experience installing
-was very much that it was in bringup (though quite a bit of this was
-userspace).
-
---hdW7zL/qDS6RXdAL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVUdIlAAoJECTWi3JdVIfQWx0H/3V3SGtx3hvUfFroJX5tKQqB
-p2dGnPmEztMwTnf9ZDgp+x+3cg+wvdOqHzpVSe62EbSxkF2RmpWvNpuC5US1oZuv
-3I/B3IGpb/+56uhCkkLSa+/apweU/+nXG3vZUA+YOtjwVEtPJrvjVCrIWqR9o7TR
-NFU6JTkWd0iGt/df5ee0fWee7odALiZuxl6533e47OVfyxGp7uS0nk1L5gBWiGMO
-OXAZnD4NdbBGoZrmhO3U2nC6XZC8bu8SUQvVxnmnZQHePtyDVANwmAE8TUAqxasv
-raLPpPvvarsZ1UrvPB9LFkopPl6tOCi025ok9lLHuOGSqhKDdXiLAVTFbYHj1e4=
-=u50f
------END PGP SIGNATURE-----
-
---hdW7zL/qDS6RXdAL--
+>
+> -----------------------><---------------------------------------------
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index 17ad20d..58ae8af 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -146,7 +146,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>   	}
+>
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   			   regval);
+>   	if (ret) {
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+> @@ -171,7 +171,7 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+>   	int ret;
+>
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+> +			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+>   				__func__, ret);
+> @@ -186,7 +186,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+>   	int ret;
+>
+>   	ret = regmap_update_bits(drvdata->lpaif_map,
+> -			LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+> @@ -206,7 +206,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_RESUME:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>   		ret = regmap_update_bits(drvdata->lpaif_map,
+> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   				LPAIF_I2SCTL_SPKEN_MASK,
+>   				LPAIF_I2SCTL_SPKEN_ENABLE);
+>   		if (ret)
+> @@ -217,7 +217,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_SUSPEND:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>   		ret = regmap_update_bits(drvdata->lpaif_map,
+> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   				LPAIF_I2SCTL_SPKEN_MASK,
+>   				LPAIF_I2SCTL_SPKEN_DISABLE);
+>   		if (ret)
+> @@ -247,7 +247,7 @@ int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+>
+>   	/* ensure audio hardware is disabled */
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+> +			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+>   				__func__, ret);
+> -----------------------><---------------------------------------------
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
