@@ -1,146 +1,64 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [alsa-devel] [RFC PATCH 00/14] ASoC: qcom: add support to
-	apq8016 audio
-Date: Mon, 11 May 2015 21:06:02 -0700
-Message-ID: <20150512040600.GA24087@kwestfie-linux.qualcomm.com>
-References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
- <20150502235704.GA27804@kwestfie-linux.qualcomm.com>
- <20150506054758.GD5639@kwestfie-linux.qualcomm.com>
- <5549BA98.9080501@linaro.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH 1/5] ASoC: wm8996: Pass the IRQF_ONESHOT flag
+Date: Tue, 12 May 2015 01:22:56 -0300
+Message-ID: <1431404580-17991-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5549BA98.9080501@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f179.google.com (mail-yk0-f179.google.com
+ [209.85.160.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3C672651B7
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 06:24:17 +0200 (CEST)
+Received: by ykeo186 with SMTP id o186so44240833yke.0
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 21:24:16 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Julia.Lawall@lip6.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 05, 2015 at 11:54:16PM -0700, Srinivas Kandagatla wrote:
-> Hi Kenneth,
-> 
-> On 06/05/15 06:47, Kenneth Westfield wrote:
-> >>>
-> >>>I will test the patches and let you know by Wednesday.  Also, I posted
-> >>>some comments, but Patrick should be posting his comments separately
-> >>>later next week.
-> >Srinivas,
-> >
-> >After applying the patches, audio playback is no longer functional on
-> >the storm board.  Give me some time to debug this and I will get back
-> >to you.
-> I found atleast one issue with rdma audif bits in ipq806x lpass
-> 
-> could you try change, this will be fixed properly in next version.
-> 
-> -----------------------><---------------------------------------------
-> diff --git a/sound/soc/qcom/lpass-ipq806x.c
-> b/sound/soc/qcom/lpass-ipq806x.c
-> index 11a7053..2b00355 100644
-> --- a/sound/soc/qcom/lpass-ipq806x.c
-> +++ b/sound/soc/qcom/lpass-ipq806x.c
-> @@ -69,6 +69,7 @@ struct lpass_variant ipq806x_data = {
->         .rdma_reg_base          = 0x6000,
->         .rdma_reg_stride        = 0x1000,
->         .rdma_channels          = 4,
-> +       .rdmactl_audif_start    = 4,
->         .dai_driver             = &lpass_cpu_dai_driver,
->         .num_dai                = 1,
-> 
-> -----------------------><---------------------------------------------
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Srinivas,
+Since commit 1c6c69525b40eb76de8adf039409722015927dc3 ("genirq: Reject
+bogus threaded irq requests") threaded IRQs without a primary handler
+need to be requested with IRQF_ONESHOT, otherwise the request will fail.
 
-I was able to get audio working on the Storm board.  There were several
-issues.  First, the I2S control port was saved in the DAI driver id field
-(which was 4), but the DAI id field was used by the macro (which was 0).
-The patch below fixed it:
+So pass the IRQF_ONESHOT flag in this case.
 
------------------------><---------------------------------------------
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 17ad20d..58ae8af 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -146,7 +146,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 	}
+The semantic patch that makes this change is available
+in scripts/coccinelle/misc/irqf_oneshot.cocci.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/codecs/wm8996.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 3dce507..232f234 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2644,10 +2644,12 @@ static int wm8996_probe(struct snd_soc_codec *codec)
+ 		if (irq_flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING))
+ 			ret = request_threaded_irq(i2c->irq, NULL,
+ 						   wm8996_edge_irq,
+-						   irq_flags, "wm8996", codec);
++						   irq_flags | IRQF_ONESHOT,
++						   "wm8996", codec);
+ 		else
+ 			ret = request_threaded_irq(i2c->irq, NULL, wm8996_irq,
+-						   irq_flags, "wm8996", codec);
++						   irq_flags | IRQF_ONESHOT,
++						   "wm8996", codec);
  
- 	ret = regmap_write(drvdata->lpaif_map,
--			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
-+			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
- 			   regval);
- 	if (ret) {
- 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-@@ -171,7 +171,7 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
- 	int ret;
- 
- 	ret = regmap_write(drvdata->lpaif_map,
--			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
-+			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
- 	if (ret)
- 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
- 				__func__, ret);
-@@ -186,7 +186,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
- 	int ret;
- 
- 	ret = regmap_update_bits(drvdata->lpaif_map,
--			LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
-+			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
- 			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
- 	if (ret)
- 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
-@@ -206,7 +206,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_update_bits(drvdata->lpaif_map,
--				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
-+				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
- 				LPAIF_I2SCTL_SPKEN_MASK,
- 				LPAIF_I2SCTL_SPKEN_ENABLE);
- 		if (ret)
-@@ -217,7 +217,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		ret = regmap_update_bits(drvdata->lpaif_map,
--				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
-+				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
- 				LPAIF_I2SCTL_SPKEN_MASK,
- 				LPAIF_I2SCTL_SPKEN_DISABLE);
- 		if (ret)
-@@ -247,7 +247,7 @@ int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
- 
- 	/* ensure audio hardware is disabled */
- 	ret = regmap_write(drvdata->lpaif_map,
--			LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
-+			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
- 	if (ret)
- 		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
- 				__func__, ret);
------------------------><---------------------------------------------
-
-In addition to your patch above, I also needed to correct the rdma_port
-assignment by removing the i2s port reference:
-
------------------------><---------------------------------------------
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index c5907d5..580cae1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -91,7 +91,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int channels = params_channels(params);
- 	unsigned int regval;
- 	int bitwidth;
--	int ret, rdma_port = pcm_data->i2s_port + v->rdmactl_audif_start;
-+	int ret, rdma_port = v->rdmactl_audif_start;
- 
- 	bitwidth = snd_pcm_format_width(format);
- 	if (bitwidth < 0) {
------------------------><---------------------------------------------
-
-Please incorporate these fixes into your next patch series.
-
+ 		if (ret == 0) {
+ 			/* Unmask the interrupt */
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+1.9.1
