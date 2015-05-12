@@ -2,69 +2,61 @@ From: Mark Brown <broonie@kernel.org>
 Subject: Re: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
  Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
  13 (2015) until 4.2]
-Date: Tue, 12 May 2015 18:30:37 +0100
-Message-ID: <20150512173037.GF3066@sirena.org.uk>
-References: <20150512161849.GD3066@sirena.org.uk>
+Date: Tue, 12 May 2015 18:32:50 +0100
+Message-ID: <20150512173250.GG3066@sirena.org.uk>
+References: <55401602.5050907@dell.com>
+ <55480021.1090402@dell.com>
+ <20150511182658.GA8516@isilmar-3.linta.de>
  <20150512101258.GL2761@sirena.org.uk>
- <20150512171346.GA20321@light.dominikbrodowski.net>
+ <55521BA0.3030606@dell.com>
+ <20150512161849.GD3066@sirena.org.uk>
+ <CAPeXnHtdU=9bMjHh8NSArYngxDC1wSp3ZDiN96e5gHB_LQjr5g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jkO+KyKz7TfD21mV"
+	protocol="application/pgp-signature"; boundary="jt0yj30bxbg11sci"
 Return-path: <linux-acpi-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150512171346.GA20321@light.dominikbrodowski.net>
+In-Reply-To: <CAPeXnHtdU=9bMjHh8NSArYngxDC1wSp3ZDiN96e5gHB_LQjr5g@mail.gmail.com>
 Sender: linux-acpi-owner@vger.kernel.org
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Mario Limonciello <mario_limonciello@dell.com>, robert.moore@intel.com, lv.zheng@intel.com, rafael.j.wysocki@intel.com, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, han.lu@intel.com, yang.jie@intel.com, alsa-devel@alsa-project.org, Matthew Garrett <mjg59@coreos.com>, liam.r.girdwood@intel.com
+To: Matthew Garrett <matthew.garrett@coreos.com>
+Cc: Mario Limonciello <mario_limonciello@dell.com>, Dominik Brodowski <linux@dominikbrodowski.net>, "robert.moore@intel.com" <robert.moore@intel.com>, "lv.zheng@intel.com" <lv.zheng@intel.com>, "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "han.lu@intel.com" <han.lu@intel.com>, "yang.jie@intel.com" <yang.jie@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Matthew Garrett <mjg59@coreos.com>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---jkO+KyKz7TfD21mV
+--jt0yj30bxbg11sci
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 12, 2015 at 07:13:46PM +0200, Dominik Brodowski wrote:
+On Tue, May 12, 2015 at 10:21:41AM -0700, Matthew Garrett wrote:
 
-> ... and PulseAudio 6.0, as you stated in another message, but which is no=
-t in
-> Debian jessie. Therefore, commit b1ef29725865 does cause a regression (ev=
-en
-> though it's just a side effect): the Dell XPS 13 (2013) works just fine w=
-ith
-> a standard Debian jessie install and a current kernel. Sound worked fine
-> until commit b1ef29725865 / works fine with commit b1ef29725865 reverted.
+> Since there's no way to get this working without using new userspace,
+> we're basically stuck with having to support _REV 5. And since we're
+> supposed to support old userspace basically forever, this isn't going
+> to be something that we can just remove in a few months. But since the
+> hardware is intended to be used in I2S mode, we don't want this quirk
+> to be there forever. So we're basically left with adding
+> CONFIG_ACPI_WORKAROUND_BROKEN_DELLS which enables the quirk, default
+> it to Y and then let distributions set it to N when they've got
+> sufficiently new userspace. Unless someone has a better plan?
 
-> New kernels should continue to work on (reasonably) old userspace; and
-> currently I do not see how this can be made to work with commit=20
-> b1ef29725865 and no quirk / override. As soon as I find the time for that,
-> I'll try to create a patch for that -- unless someone beats me to that.
+That makes sense to me given that the firmware doesn't seem to do
+anything problematic in Linux mode - hopefully we won't have too many
+more of these systems to contend with.
 
-IIRC I wasn't getting a useful GUI out of the box with Jessie either,
-though that could've been installer stuff - I can't remember any more
-(and the support for high DPI displays within the installer itself makes
-me happy I've got an eye checkup booked soon).
-
-> Well, sound _is_ quite important to me; and as stated above, the laptop
-> works just fine otherwise on Debian jessie (well, except the WiFi adapter,
-> but that's another story).
-
-I just swapped my WiFi adaptor out for an Intel card, fairly easy to do.
-
---jkO+KyKz7TfD21mV
+--jt0yj30bxbg11sci
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUji8AAoJECTWi3JdVIfQbnAH/jcQDL69z6mnf+iqmHDpTQZT
-2+SYw7r3t3YQ+S54r2Ww8CDICRnp0OO3qc89itZzQa4NoCnvhmujk6G1j3GpXSkZ
-KZoamEVjDUiRckCrg79UYk82wQLwyKviAj+H6iub9EJ7pKN/4Cl9Im3dbJftzASj
-TTMeLSBD74InDHUDNPKgKff+1sbN47fVPpHk7RC+dMEQm6wl2dUypz8kobWh8/BS
-jBNXbykP4zcwnDpUtpGCnyzAFm0I19nSsqC1wlvLtRbqOkLvxkaUgSqeQU1kzfVw
-lk1pUN5APcRp9sooQytPSYVKB+lZaSCjoJAb9nXrkAJAV414Us5VIUTBQOutR/c=
-=z66c
+iQEcBAEBCAAGBQJVUjlBAAoJECTWi3JdVIfQJWsH/1bCl0sX1B2r7uTlZ2rJq+OW
+KRdOxTqNfd1wIFcTf1WnYs0MO02ZQtxlvMvmRqSL9tQzgK4NKYkl+pAym9iEZb8f
+wsrp6nGlC1euYY9GF27xJkVNp8lpJeHkYw34JGHTYLx59ZOAMDIM8TS6ZJsDCRjg
+nFW5saTXVz9M+qSLR/TyY7374Ah+A47U+u0NZRyofW8GJF97+Uyk8aPuKTb6kbO2
+RvNk1EJoWuBMiiwIUIj8kGhLQnS1dVTOjfEucftXJe+TMCvWneqWoEPfrxKodkKF
+9iEAIEdMACr/6egvBO1wAgLKJ/BBJKkFcNh1DzFv0dxCqP/W0CApfBgPD3XIi1Q=
+=xfJ4
 -----END PGP SIGNATURE-----
 
---jkO+KyKz7TfD21mV--
+--jt0yj30bxbg11sci--
