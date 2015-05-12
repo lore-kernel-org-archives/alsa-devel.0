@@ -1,18 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 3/5] ASoC: wm8994: Pass the IRQF_ONESHOT flag
-Date: Tue, 12 May 2015 01:22:58 -0300
-Message-ID: <1431404580-17991-3-git-send-email-festevam@gmail.com>
+Subject: [PATCH 4/5] ASoC: twl6040: Pass the IRQF_ONESHOT flag
+Date: Tue, 12 May 2015 01:22:59 -0300
+Message-ID: <1431404580-17991-4-git-send-email-festevam@gmail.com>
 References: <1431404580-17991-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f42.google.com (mail-yh0-f42.google.com
- [209.85.213.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BED9265335
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 06:24:23 +0200 (CEST)
-Received: by yhcb70 with SMTP id b70so42795556yhc.0
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 21:24:22 -0700 (PDT)
+Received: from mail-yk0-f171.google.com (mail-yk0-f171.google.com
+ [209.85.160.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80BE226533F
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 06:24:25 +0200 (CEST)
+Received: by ykeo186 with SMTP id o186so44241815yke.0
+ for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 21:24:25 -0700 (PDT)
 In-Reply-To: <1431404580-17991-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -40,32 +40,22 @@ in scripts/coccinelle/misc/irqf_oneshot.cocci.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/wm8994.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl6040.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 2d32b54..dc8f482 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4084,7 +4084,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		if (wm8994->micdet_irq)
- 			ret = request_threaded_irq(wm8994->micdet_irq, NULL,
- 						   wm8994_mic_irq,
--						   IRQF_TRIGGER_RISING,
-+						   IRQF_TRIGGER_RISING |
-+						   IRQF_ONESHOT,
- 						   "Mic1 detect",
- 						   wm8994);
- 		 else
-@@ -4132,7 +4133,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		if (wm8994->micdet_irq) {
- 			ret = request_threaded_irq(wm8994->micdet_irq, NULL,
- 						   wm8958_mic_irq,
--						   IRQF_TRIGGER_RISING,
-+						   IRQF_TRIGGER_RISING |
-+						   IRQF_ONESHOT,
- 						   "Mic detect",
- 						   wm8994);
- 			if (ret != 0)
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index b8ecce2..4791f9a 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1121,7 +1121,8 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	mutex_init(&priv->mutex);
+ 
+ 	ret = request_threaded_irq(priv->plug_irq, NULL,
+-					twl6040_audio_handler, IRQF_NO_SUSPEND,
++					twl6040_audio_handler,
++					IRQF_NO_SUSPEND | IRQF_ONESHOT,
+ 					"twl6040_irq_plug", codec);
+ 	if (ret) {
+ 		dev_err(codec->dev, "PLUG IRQ request failed: %d\n", ret);
 -- 
 1.9.1
