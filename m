@@ -1,45 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Modify widget stream name according to prefix
-Date: Tue, 12 May 2015 19:07:39 +0100
-Message-ID: <20150512180738.GN3066@sirena.org.uk>
-References: <1431311813-37430-1-git-send-email-koro.chen@mediatek.com>
+Subject: Re: [PATCH v2] ASoC: bt-sco: Add devicetree support for bt-sco codec
+Date: Tue, 12 May 2015 19:37:22 +0100
+Message-ID: <20150512183722.GO3066@sirena.org.uk>
+References: <1431111754-14562-1-git-send-email-marek@goldelico.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N/GrjenRD+RJfyz+"
+	protocol="application/pgp-signature"; boundary="Vy1A5eXR7jld12ZH"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1431311813-37430-1-git-send-email-koro.chen@mediatek.com>
+In-Reply-To: <1431111754-14562-1-git-send-email-marek@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.de, srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Marek Belisko <marek@goldelico.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, hns@goldelico.com
 List-Id: alsa-devel@alsa-project.org
 
 
---N/GrjenRD+RJfyz+
+--Vy1A5eXR7jld12ZH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 11, 2015 at 10:36:53AM +0800, Koro Chen wrote:
-> When there is prefix specified, currently we will add this prefix in
-> widget->name, but not in widget->sname.
-> it causes failure at snd_soc_dapm_link_dai_widgets:
+On Fri, May 08, 2015 at 09:02:34PM +0200, Marek Belisko wrote:
+> Add devicetree support for bluetooth SCO link codec.
 
-Applied, thanks.
+Applied with a bit of effort, you seem to have sent this against some
+non-mainline tree - please check that in future.
 
---N/GrjenRD+RJfyz+
+--Vy1A5eXR7jld12ZH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUkFqAAoJECTWi3JdVIfQs+0H/RZvf/6+FqJqf/33naIp/cf3
-DMD1iuPlxCJUxezEMofeoZXxSwGZP87bBrBjaZPJThOKtV2Cs9SgejcnQS38HCDB
-kMdxrn0yXlt/vQG77mqVYnVJ6NJ+ivEOlaOdNPJAIVCi2QmZPGp9c5GNUN8kcRBi
-xjED0aO37G7W6/XKwN/uyFK8qfEXIwg2Mm4K01llrQ7x/imAU92FG1dkGRw2tIXn
-cGqjcFNfyTt+5lLQUzng3tW8xALBqo/Bv/hZWIsDqBqVjMhim1x1/7HgJ5uuNH9Z
-w9ku5bEX9SCDZ/engev68pY4HH4AOsqGheDS3fGu0dYNVz8LumXsi4X+p+GM+gE=
-=16xX
+iQEcBAEBCAAGBQJVUkhhAAoJECTWi3JdVIfQzfMH/2b1lj4+U04NqgPk2+ucrZt3
+MOFDBTflDSjQ1WxjAUIuG7cNzwRPZ5SgOITrCsFKPxPIUopJQ6MzpkWjqYHgLReD
+EmdMqGLUHfUAOCsYHob+3F39enkPa21iN7tZzZybzZiktaYakzlyiBQw7tlEi01K
+YyMFrH70tTgSsmTQr0E9Kk4AW0xZ3wA60tBOj7YLO/cpMG+xDRe1lCUN957HHCP2
+905AepZuEq928uYSIN5PWB+ezmhFjQJESQO/uERrsGJrBd7l+IZ8T8vwUY3JsYy4
+dxk4V+3rsS9FQC+oa3fP7k7bKwU4HwN/uzQdFNSEZ3GgHziVEvI3H6Eo64VDk08=
+=TsBO
 -----END PGP SIGNATURE-----
 
---N/GrjenRD+RJfyz+--
+--Vy1A5eXR7jld12ZH--
