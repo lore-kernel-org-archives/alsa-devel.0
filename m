@@ -1,45 +1,39 @@
-From: alex.d.wiggins@gmail.com
-Subject: [PATCH - alsa-plugins/pulse 1/1] Add 24 bit data
-	formats to Pulse plugin.
-Date: Tue, 12 May 2015 01:09:34 +0100
-Message-ID: <555144d4.e7bbb40a.3e71.0f8d@mx.google.com>
+From: Dave Airlie <airlied@gmail.com>
+Subject: DP MST audio support
+Date: Tue, 12 May 2015 11:50:20 +1000
+Message-ID: <CAPM=9tx74D8SaghkuY7qcJ5emAXdtQeZOQf8N6e=FEy9VsLJvA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Alex Wiggins <alex.d.wiggins@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alex Wiggins <alex.d.wiggins@gmail.com>
-
-Signed-off-by: Alex Wiggins <alex.d.wiggins@gmail.com>
-
-diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
-index 0d3704b..5cb3452 100644
---- a/pulse/pcm_pulse.c
-+++ b/pulse/pcm_pulse.c
-@@ -994,7 +994,11 @@ static int pulse_hw_constraint(snd_pcm_pulse_t * pcm)
- 		SND_PCM_FORMAT_FLOAT_LE,
- 		SND_PCM_FORMAT_FLOAT_BE,
- 		SND_PCM_FORMAT_S32_LE,
--		SND_PCM_FORMAT_S32_BE
-+		SND_PCM_FORMAT_S32_BE,
-+		SND_PCM_FORMAT_S24_3LE,
-+		SND_PCM_FORMAT_S24_3BE,
-+		SND_PCM_FORMAT_S24_LE,
-+		SND_PCM_FORMAT_S24_BE
- 	};
- 
- 	int err;
--- 
-2.3.6
+SGksCgpTbyBJIGhhdmUgYSBicmFuY2ggdGhhdCBtYWtlcyBubyBzb3VuZCwKaHR0cDovL2NnaXQu
+ZnJlZWRlc2t0b3Aub3JnL35haXJsaWVkL2xpbnV4L2xvZy8/aD1kcC1tc3QtYXVkaW8KCmFuZCBJ
+J20gbm90IHN1cmUgd2hlcmUgSSBuZWVkIHRvIHR1cm4gdG8gbmV4dCwKClRoZSBJbnRlbCBkb2Nz
+IEkndmUgcmVhZCBhcmUga2luZGEgdmFndWUsIGFzc3VtaW5nIHlvdSBrbm93IGxvdHMgb2YKdGhp
+bmdzIEkgY2xlYXJseSBkb24ndC4KCnNvIGluIHRoZW9yeSBteSBicmFuY2gsIHNldHMgdXAgdGhl
+IFNEUCBzdHJlYW0gdG8gdGhlIG1vbml0b3IgaW4gdGhlCnBheWxvYWQgY3JlYXRpb24sCmVuYWJs
+ZXMgdGhlIGNvZGVjIGluIHRoZSBpbnRlbCBHUFUgZHJpdmVyLCBhbmQgcGFzc2VzIHRoZSBFTEQg
+dG8gdGhlCmF1ZGlvIGRyaXZlci4KClRoZSBhdWRpbyBkcml2ZXIgdXNlcyB0aGUgZGV2aWNlIGxp
+c3QgdG8gZ2V0IHRoZSBwcmVzZW5jZS92YWxpZCBiaXRzCnBlciBkZXZpY2UsIGFuZCBtYW5hZ2Vz
+IHRvIHJldHJpZXZlIHRoZSBFTEQuIEkgZXZlbiBjcmVhdGUgRUxEIGZpbGVzCmluIC9wcm9jL2Fz
+b3VuZC9IRE1JLyB0aGF0IGhhdmUgc2Vuc2libGUgdmFsdWVzIGluIHRoZW0KClNvIGl0IGxvb2tz
+IGxpa2UgSSdtIGp1c3QgbWlzc2luZyBzb21lIHJvdXRpbmcgc29tZXdoZXJlLCBtb3N0IGxpa2Vs
+eQppbiB0aGUgYXVkaW8gZHJpdmVyLCB0aGVuIGFnYWluIEkgIGNvdWxkIGJlIG1pc3NpbmcgYSBs
+b3QgbW9yZSB0aGFuCnRoYXQuCgpKdXN0IGxvb2tpbmcgZm9yIGFueSBpZGVhcyBvciBrbm93bGVk
+Z2UgcGVvcGxlIG1heSBoYXZlIGxvY2tlZCBpbgp0aGVpciBicmFpbnMgb3IgaW5zaWRlIHRoZWly
+IGZpcmV3YWxscy4KCkRhdmUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNr
+dG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50
+ZWwtZ2Z4Cg==
