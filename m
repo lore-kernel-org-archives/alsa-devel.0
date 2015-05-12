@@ -1,131 +1,151 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Fix headset mic and mic-in for a
-	Dell desktop
-Date: Tue, 12 May 2015 14:38:15 +0200
-Message-ID: <1431434295-22766-1-git-send-email-david.henningsson@canonical.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [RFC PATCH 00/14] ASoC: qcom: add support to apq8016
+ audio
+Date: Tue, 12 May 2015 14:11:55 +0100
+Message-ID: <5551FC1B.8000800@linaro.org>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org> <20150502235704.GA27804@kwestfie-linux.qualcomm.com> <20150506054758.GD5639@kwestfie-linux.qualcomm.com> <5549BA98.9080501@linaro.org> <20150512040600.GA24087@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 13262265132
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 14:38:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1454235@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20150512040600.GA24087@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ALC662 does not need any special verbs to change the jack functionality,
-and enables mic in through the headphone jack mode by changing the
-direction of the headphone pin node.
+Hi Kenneth,
 
-BugLink: https://bugs.launchpad.net/bugs/1454235
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 46 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+On 12/05/15 05:06, Kenneth Westfield wrote:
+> On Tue, May 05, 2015 at 11:54:16PM -0700, Srinivas Kandagatla wrote:
+>> Hi Kenneth,
+>>
+>> On 06/05/15 06:47, Kenneth Westfield wrote:
+>>>>>
+>>>>> I will test the patches and let you know by Wednesday.  Also, I posted
+>>>>> some comments, but Patrick should be posting his comments separately
+>>>>> later next week.
+>>> Srinivas,
+>>>
+>>> After applying the patches, audio playback is no longer functional on
+>>> the storm board.  Give me some time to debug this and I will get back
+>>> to you.
+>> I found atleast one issue with rdma audif bits in ipq806x lpass
+>>
+>> could you try change, this will be fixed properly in next version.
+>>
+>> -----------------------><---------------------------------------------
+>> diff --git a/sound/soc/qcom/lpass-ipq806x.c
+>> b/sound/soc/qcom/lpass-ipq806x.c
+>> index 11a7053..2b00355 100644
+>> --- a/sound/soc/qcom/lpass-ipq806x.c
+>> +++ b/sound/soc/qcom/lpass-ipq806x.c
+>> @@ -69,6 +69,7 @@ struct lpass_variant ipq806x_data = {
+>>          .rdma_reg_base          = 0x6000,
+>>          .rdma_reg_stride        = 0x1000,
+>>          .rdma_channels          = 4,
+>> +       .rdmactl_audif_start    = 4,
+>>          .dai_driver             = &lpass_cpu_dai_driver,
+>>          .num_dai                = 1,
+>>
+>> -----------------------><---------------------------------------------
+>
+> Srinivas,
+>
+> I was able to get audio working on the Storm board.  There were several
+> issues.  First, the I2S control port was saved in the DAI driver id field
+> (which was 4), but the DAI id field was used by the macro (which was 0).
+> The patch below fixed it:
+>
+> -----------------------><---------------------------------------------
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index 17ad20d..58ae8af 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -146,7 +146,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>   	}
+>
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   			   regval);
+>   	if (ret) {
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+> @@ -171,7 +171,7 @@ static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
+>   	int ret;
+>
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+> +			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+>   				__func__, ret);
+> @@ -186,7 +186,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+>   	int ret;
+>
+>   	ret = regmap_update_bits(drvdata->lpaif_map,
+> -			LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   			LPAIF_I2SCTL_SPKEN_MASK, LPAIF_I2SCTL_SPKEN_ENABLE);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+> @@ -206,7 +206,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_RESUME:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>   		ret = regmap_update_bits(drvdata->lpaif_map,
+> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   				LPAIF_I2SCTL_SPKEN_MASK,
+>   				LPAIF_I2SCTL_SPKEN_ENABLE);
+>   		if (ret)
+> @@ -217,7 +217,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_SUSPEND:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>   		ret = regmap_update_bits(drvdata->lpaif_map,
+> -				LPAIF_I2SCTL_REG(drvdata->variant, dai->id),
+> +				LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
+>   				LPAIF_I2SCTL_SPKEN_MASK,
+>   				LPAIF_I2SCTL_SPKEN_DISABLE);
+>   		if (ret)
+> @@ -247,7 +247,7 @@ int lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+>
+>   	/* ensure audio hardware is disabled */
+>   	ret = regmap_write(drvdata->lpaif_map,
+> -			LPAIF_I2SCTL_REG(drvdata->variant, dai->id), 0);
+> +			LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id), 0);
+>   	if (ret)
+>   		dev_err(dai->dev, "%s() error writing to i2sctl reg: %d\n",
+>   				__func__, ret);
+> -----------------------><---------------------------------------------
+>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ce41271..30ec30f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3674,6 +3674,10 @@ static void alc_headset_mode_mic_in(struct hda_codec *codec, hda_nid_t hp_pin,
- 		alc_process_coef_fw(codec, coef0293);
- 		snd_hda_set_pin_ctl_cache(codec, mic_pin, PIN_VREF50);
- 		break;
-+	case 0x10ec0662:
-+		snd_hda_set_pin_ctl_cache(codec, hp_pin, 0);
-+		snd_hda_set_pin_ctl_cache(codec, mic_pin, PIN_VREF50);
-+		break;
- 	case 0x10ec0668:
- 		alc_write_coef_idx(codec, 0x11, 0x0001);
- 		snd_hda_set_pin_ctl_cache(codec, hp_pin, 0);
-@@ -4012,7 +4016,7 @@ static void alc_update_headset_mode(struct hda_codec *codec)
- 	if (new_headset_mode != ALC_HEADSET_MODE_MIC) {
- 		snd_hda_set_pin_ctl_cache(codec, hp_pin,
- 					  AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN);
--		if (spec->headphone_mic_pin)
-+		if (spec->headphone_mic_pin && spec->headphone_mic_pin != hp_pin)
- 			snd_hda_set_pin_ctl_cache(codec, spec->headphone_mic_pin,
- 						  PIN_VREFHIZ);
- 	}
-@@ -4215,6 +4219,18 @@ static void alc_fixup_dell_xps13(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc_fixup_headset_mode_alc662(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
-+		spec->gen.hp_mic = 1; /* Mic-in is same pin as headphone */
-+	} else
-+		alc_fixup_headset_mode(codec, fix, action);
-+}
-+
- static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
- 				const struct hda_fixup *fix, int action)
- {
-@@ -6080,7 +6096,9 @@ enum {
- 	ALC662_FIXUP_NO_JACK_DETECT,
- 	ALC662_FIXUP_ZOTAC_Z68,
- 	ALC662_FIXUP_INV_DMIC,
-+	ALC662_FIXUP_DELL_MIC_NO_PRESENCE,
- 	ALC668_FIXUP_DELL_MIC_NO_PRESENCE,
-+	ALC662_FIXUP_HEADSET_MODE,
- 	ALC668_FIXUP_HEADSET_MODE,
- 	ALC662_FIXUP_BASS_MODE4_CHMAP,
- 	ALC662_FIXUP_BASS_16,
-@@ -6273,6 +6291,20 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE
- 	},
-+	[ALC662_FIXUP_DELL_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x03a1113c }, /* use as headset mic, without its own jack detect */
-+			/* headphone mic by setting pin control of 0x1b (headphone out) to in + vref_50 */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC662_FIXUP_HEADSET_MODE
-+	},
-+	[ALC662_FIXUP_HEADSET_MODE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_headset_mode_alc662,
-+	},
- 	[ALC668_FIXUP_DELL_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -6432,6 +6464,18 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{0x1f, 0x411111f0}
- 
- static const struct snd_hda_pin_quirk alc662_pin_fixup_tbl[] = {
-+	SND_HDA_PIN_QUIRK(0x10ec0662, 0x1028, "Dell", ALC662_FIXUP_DELL_MIC_NO_PRESENCE,
-+		{0x12, 0x4004c000},
-+		{0x14, 0x01014010},
-+		{0x15, 0x411111f0},
-+		{0x16, 0x411111f0},
-+		{0x18, 0x01a19020},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x0181302f},
-+		{0x1b, 0x0221401f},
-+		{0x1c, 0x411111f0},
-+		{0x1d, 0x4054c601},
-+		{0x1e, 0x411111f0}),
- 	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell", ALC668_FIXUP_AUTO_MUTE,
- 		ALC668_STANDARD_PINS,
- 		{0x12, 0x99a30130},
--- 
-1.9.1
+> In addition to your patch above, I also needed to correct the rdma_port
+> assignment by removing the i2s port reference:
+
+
+>
+> -----------------------><---------------------------------------------
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index c5907d5..580cae1 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -91,7 +91,7 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
+>   	unsigned int channels = params_channels(params);
+>   	unsigned int regval;
+>   	int bitwidth;
+> -	int ret, rdma_port = pcm_data->i2s_port + v->rdmactl_audif_start;
+> +	int ret, rdma_port = v->rdmactl_audif_start;
+>
+>   	bitwidth = snd_pcm_format_width(format);
+>   	if (bitwidth < 0) {
+> -----------------------><---------------------------------------------
+>
+> Please incorporate these fixes into your next patch series.
+>
+I think my patch and above change for rdma port are not necessary as the 
+rdma_port existing calculation would result 4 anyway, for 
+rdmactl_audif_start= 0 and dai->driver->id = 4. Which is correct in MI2S 
+case.
+
+Only replacing dai->id to dai->driver->id should fix the issue on storm 
+board. So I will drop these two changes in next verion.
+--srini
