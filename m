@@ -1,105 +1,48 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: RE: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
- Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
- 13 (2015) until 4.2]
-Date: Tue, 12 May 2015 07:27:17 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905526D57@SHSMSX101.ccr.corp.intel.com>
-References: <55401602.5050907@dell.com> <55480021.1090402@dell.com>
- <20150511182658.GA8516@isilmar-3.linta.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Remove unused call to
+	"get_pin" in patch_hdmi.c
+Date: Tue, 12 May 2015 09:35:35 +0200
+Message-ID: <5551AD47.3050806@canonical.com>
+References: <1431332637-8650-1-git-send-email-david.henningsson@canonical.com>
+ <s5hlhgvgus2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20150511182658.GA8516@isilmar-3.linta.de>
-Content-Language: en-US
-Sender: linux-acpi-owner@vger.kernel.org
-To: Dominik Brodowski <linux@dominikbrodowski.net>, Mario Limonciello <mario_limonciello@dell.com>, "Moore, Robert" <robert.moore@intel.com>, "Zheng, Lv" <lv.zheng@intel.com>, "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Cc: "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "Lu, Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id C874626517F
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 09:35:28 +0200 (CEST)
+In-Reply-To: <s5hlhgvgus2.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-+Liam.
 
-> -----Original Message-----
-> From: Dominik Brodowski [mailto:linux@dominikbrodowski.net]
-> Sent: Tuesday, May 12, 2015 2:27 AM
-> To: Mario Limonciello; Moore, Robert; Zheng, Lv; Wysocki, Rafael J
-> Cc: linux-acpi@vger.kernel.org; broonie@kernel.org; Lu, Han; Jie, Yang; alsa-
-> devel@alsa-project.org
-> Subject: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
-> Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
-> 13 (2015) until 4.2]
-> 
-> Hi,
-> 
-> (CC'ing sound experts)
-> 
-> indeed, commit b1ef29725865 causes a severe regression -- actually, it causes
-> sound to be totally unusuable on the Dell XPS 13 (2015) on Debian jessie,
-> while it works fine in 4.0 / with b1ef29725865 reverted.
-> 
-> According to an off-list discussion, the sound breakage (and not just some
-> jack detection issue) seems to be caused due to alsa-lib being too old.
-> The matter is further complicated by the issue that the driver asks for some
-> firmware blob intel/IntcPP01.bin which (at least) I cannot find anywhere.
- 
-Lacking of IntcPP01.bin should not block Broadwell ADSP audio functions.
 
-Suppose these should be the same issues Mark told us, right?
+On 2015-05-11 14:31, Takashi Iwai wrote:
+> At Mon, 11 May 2015 10:23:57 +0200,
+> David Henningsson wrote:
+>>
+>> Janitorial patch (no functional change)
+>>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>
+> Applied, thanks.
 
-Yes, we are doing some fixes in alsa-lib/ucm/config part, without these fixes,
-You can do manual volume +/- and switches on/off in alsamixer GUI interface.
+Thanks. Did you forget to push it? I can't find it on 
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git
 
-BTW, if you can create kernel.org bugs to descript these issues, it will be helpful
-for to trace and fix them after we got this XPS 13 machine.
 
-Thanks,
-~Keyon
-
-> 
-> Under the no-regression rule, this means that either b1ef29725865 needs to
-> be reverted or we need to find another solution to this matter, such as an
-> override. And I think it is needed for longer than just for 4.1, as it will
-> continue to be cause regressions on quite recent userspace.
-> 
-> Best,
-> 	Dominik
-> 
-> 
-> PS/OT: Probably I'm preaching to the choir, but @Mario: it's a pity the XPS (or
-> some versions of it) with pre-installed Ubuntu actually ships with a Wifi
-> adapter which seems to be unsupported by upstream Linux...
-> 
-> 
-> On Mon, May 04, 2015 at 06:26:25PM -0500, Mario Limonciello wrote:
-> >
-> > On 04/28/2015 06:21 PM, Mario Limonciello wrote:
-> > >Hi,
-> > >
-> > >Due to b1ef2972586577e0ca9675254ee141f65a8824e5 landing recently as a
-> result of some previous ACPI community discussion, the Dell XPS 13 (2015) no
-> longer has fully functional audio.  In case you aren't aware, the XPS 13 (2015)
-> switches audio modes based upon a combination of what's detected for the
-> _OSI string and _REV values. When "Windows 2013" is found with _REV=2
-> the audio codec will be configured for I2S audio mode.  When "Windows
-> 2013" with _REV=5 is found it will be configured for HDA audio mode.
-> > >
-> > >I2S audio is improving, but not as mature as HDA audio mode is at this
-> point.  Currently jack detection does not work properly in 4.1 with I2S audio
-> codecs.  I've been notified that the support for jack detection will be landing
-> in 4.2.  I'd like to discuss the possibility of including a quirk for the _REV
-> behavior when the DMI information corresponding to the Dell XPS 13 (2015)
-> is detected for 4.1.  This will let it continue to run in HDA mode until I2S mode
-> is mature.
-> > >
-> > >I'd also like to plan for the quirk to be dropped when jack detection has
-> landed for 4.2 (or if it gets pushed out further when it lands for 4.3).
-> > >
-> > >Would you guys be open to that?
-> > >
-> > >Thanks,
-> > Hello,
-> >
-> > I just wanted to follow up on this, I would like to come up with a solution
-> before it's too late for 4.1 on the XPS 13 (2015).
-> >
-> > Thanks,
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
