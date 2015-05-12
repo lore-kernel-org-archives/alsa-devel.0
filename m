@@ -1,47 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add 12kHz, 24kHz, 176.4kHz and 192kHz
- sample rate support
-Date: Tue, 12 May 2015 19:44:54 +0100
-Message-ID: <20150512184454.GR3066@sirena.org.uk>
-References: <cover.1431337606.git.zidan.wang@freescale.com>
- <1431339894-4248-3-git-send-email-zidan.wang@freescale.com>
+Subject: Re: [PATCH 4/5] ASoC: twl6040: Pass the IRQF_ONESHOT
+	flag
+Date: Tue, 12 May 2015 19:47:55 +0100
+Message-ID: <20150512184755.GS3066@sirena.org.uk>
+References: <1431404580-17991-1-git-send-email-festevam@gmail.com>
+ <1431404580-17991-4-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tV/+6PImfyFtriLg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1431339894-4248-3-git-send-email-zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: nicoleotsuka@gmail.com, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4893210943834787655=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 508F626587B
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 20:48:03 +0200 (CEST)
+In-Reply-To: <1431404580-17991-4-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Julia.Lawall@lip6.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---tV/+6PImfyFtriLg
-Content-Type: text/plain; charset=us-ascii
+--===============4893210943834787655==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1IOPqZ3f1xe/JZlz"
 Content-Disposition: inline
 
-On Mon, May 11, 2015 at 06:24:43PM +0800, Zidan Wang wrote:
-> Normally we don't support 12kHz, 24kHz in audio driver, alsa didn't
-> have formal definition of 12kHz, 24kHz, but alsa supply a way to
-> support these sample rates. And add 176.4kHz and 192kHz support.
+
+--1IOPqZ3f1xe/JZlz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, May 12, 2015 at 01:22:59AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Since commit 1c6c69525b40eb76de8adf039409722015927dc3 ("genirq: Reject
+> bogus threaded irq requests") threaded IRQs without a primary handler
+> need to be requested with IRQF_ONESHOT, otherwise the request will fail.
 
 Applied, thanks.
 
---tV/+6PImfyFtriLg
+--1IOPqZ3f1xe/JZlz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUkolAAoJECTWi3JdVIfQEgEH/1k7Q6FdaGYIhhfle/Mn/lB/
-vEBMvzmoUp+gfa139n8gu8nXHZQOwrNIhYRz3rlCPC3I8CpNrsyBX0JqC2e8AOe2
-PTL4ftqUV+1NSwa0nqCvKIYCtqvKkVlr/W6CphK49vJW7WhLHkt4t3Z2t/NYHa9X
-0cyYi4aUeVcg53dTBCVI/dqHEpeNZmyGiBmfC8zhQZQVKv31zTe7tUmTHxCUH8OB
-VLSPloQ1s5QzHt52ESzG+wO2JVX8fD/H5nBgMRlBEHvdcCv+J+hyrS9iqyk46Qn9
-RP4daaMIefyqkkjk1bwzcQ3ZIrJGT4LG8uuS9hznBPtvM5sXUDkx4V4pQp1cjRU=
-=VWUE
+iQEcBAEBCAAGBQJVUkraAAoJECTWi3JdVIfQIrsIAIE9ayX5GzTdcJeG002Z40rC
+PCa7tnAsHl2zgCEhIWybsN9yGzmmrM3MYLlsBuMmP+jSP7zCrJOE+mjFw8WQZl4D
+nba1Jk4KdPT3IvyrZsJeL8+fU8ruKv4kxDpZJAbgWxvmbfrpaq+4w5ODMT/+K51d
+0EJZ0uoydM6Xcw7O/gK4EB53hrcWX3dnqzKc702eBIowHB2hg3djkW4R40UO2nVd
+wms7tmV4HPCdYVAQjym3ycUXAwCzcZ05VLB5llvE5rYkY18h8vlkixrNvXOhmhQb
+m6/X/s2+aIHJOFSuVLW1LVDKf62sT54biS5/JG8A41+OqYEaniP9aaMRftTWA7o=
+=w/YP
 -----END PGP SIGNATURE-----
 
---tV/+6PImfyFtriLg--
+--1IOPqZ3f1xe/JZlz--
+
+--===============4893210943834787655==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4893210943834787655==--
