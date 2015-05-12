@@ -1,84 +1,84 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH v2 10/17] i2c: add locomo i2c driver
-Date: Tue, 12 May 2015 21:28:38 +0200
-Message-ID: <20150512192837.GF4449@schokonusskuchen.bad>
-References: <1430178954-11138-1-git-send-email-dbaryshkov@gmail.com>
- <1430178954-11138-11-git-send-email-dbaryshkov@gmail.com>
- <20150512192413.GE4449@schokonusskuchen.bad>
- <CALT56yNHvJ1Swj2pp2JrBaJBensSP703JXQKfvivFrJOYf85QA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/4] ASoC: rockchip: add rockchip machine driver for
+ rt5650/rt5645
+Date: Tue, 12 May 2015 20:30:14 +0100
+Message-ID: <20150512193014.GB3066@sirena.org.uk>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-4-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="65ImJOski3p8EhYV"
-Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="obAtV4On+KRLREo5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CALT56yNHvJ1Swj2pp2JrBaJBensSP703JXQKfvivFrJOYf85QA@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, linux-i2c@vger.kernel.org, linux-input <linux-input@vger.kernel.org>, linux-leds <linux-leds@vger.kernel.org>, linux-spi <linux-spi@vger.kern>
+In-Reply-To: <1431422797-31903-4-git-send-email-zhengxing@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Xing Zheng <acgzxing@gmail.com>
+Cc: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, zhengxing <zhengxing@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---65ImJOski3p8EhYV
+--obAtV4On+KRLREo5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 12, 2015 at 10:27:07PM +0300, Dmitry Eremin-Solenikov wrote:
-> 2015-05-12 22:24 GMT+03:00 Wolfram Sang <wsa@the-dreams.de>:
-> > On Tue, Apr 28, 2015 at 02:55:47AM +0300, Dmitry Eremin-Solenikov wrote:
-> >> LoCoMo chip contains a tiny i2c controller destined to control
-> >> M62332 DAC. Provide a separate I2C driver for this cell.
-> >>
-> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> >
-> > Thanks for the submission!
-> >
-> >> +#include <linux/kernel.h>
-> >> +#include <linux/module.h>
-> >> +#include <linux/platform_device.h>
-> >> +#include <linux/regmap.h>
-> >> +#include <linux/slab.h>
-> >> +#include <linux/mfd/locomo.h>
-> >> +
-> >> +#include <linux/i2c.h>
-> >> +#include <linux/i2c-algo-bit.h>
-> >
-> > To avoid duplicates, I prefer the includes to be sorted. No need to
-> > resend because of that, though.
-> >
-> > Kudos for brushing up old code! Do you want the drivers go via the
-> > subsystem trees? Or is there a dependency so it should go in via some
-> > other tree in one go?
+On Tue, May 12, 2015 at 05:26:36PM +0800, Xing Zheng wrote:
+> From: zhengxing <zhengxing@rock-chips.com>
 >=20
-> There is a header dependency -- <linux/mfd/locomo.h> is a new header.
-> I'd prefer for these patches to go in via one of MFD, arm-soc or ARM trees
-> as a whole series (if that would be ok with respective maintainers).
+> The driver is used for rockchip board using a rt5650/rt5645.
+> Test on RK3288 with rt5650.
 
-Fine with me.
+Similar comments to the Maxim driver plus...
 
-Reviewed-by: Wolfram Sang <wsa@the-dreams.de>
+> +/* Jack detect via rt5645 driver. */
+> +extern int rt5645_set_jack_detect(struct snd_soc_codec *codec,
+> +				  struct snd_soc_jack *hp_jack,
+> +				  struct snd_soc_jack *mic_jack,
+> +				  struct snd_soc_jack *btn_jack);
+> +
+> +/* For compatible. */
+> +int __weak rt5645_set_jack_detect(struct snd_soc_codec *codec,
+> +				  struct snd_soc_jack *hp_jack,
+> +				  struct snd_soc_jack *mic_jack,
+> +				  struct snd_soc_jack *btn_jack)
+> +{
+> +	dev_warn(codec->dev, "Jack detect dummy, have no implement it?\n");
+> +
+> +	return 0;
+> +}
 
+Don't do this - if the functionality isn't there in the CODEC driver get
+it implemented before you use it.  Make sure you're using the API the
+CODEC actually ends up exporting.
 
---65ImJOski3p8EhYV
+> +	/* Enable Headset and 4 Buttons Jack detection */
+> +	ret =3D snd_soc_card_jack_new(card, "Headphone Jack",
+> +				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE,
+
+> +	ret =3D snd_soc_card_jack_new(card, "Mic Jack",
+> +
+> +	ret =3D snd_soc_card_jack_new(card, "Button Jack",
+
+No, don't do this - as discussed in another Chromebook review (I'm
+guessing this is a Chromebook) the jacks should represent the physical
+jacks in the system.  It's possible you have separate headphone and
+microphone jacks but I really expect microphone and button to be on the
+same socket.
+
+--obAtV4On+KRLREo5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v2
 
-iQIbBAEBAgAGBQJVUlRlAAoJEBQN5MwUoCm2ej0P+IIGAwD/rcSrFWlH3MXKff0v
-qacZgD25svWNP+S4hrW42/x4lksQmhegWBUj10lhQ1UlVoY6JwByMQRUGz3rsf5J
-j6/L6Edo8IXopbrWmtXjG4YiFMAIAmRWFV7LP2dcfP/3MXOWtAlzGnLsyA2hpUk0
-dDSET2fTSuBxYW0C5jKk2yaE6mF14jebYBV83MuzG7bHBklQwdoXu2rk19XPE+Yw
-p/SB7Yk5luWIVtekfGDRdEeDac8Z7nf3ZuJdOCpXcaPLZoCeFoPxSgDLE2vjsIME
-EEBFJu2F+dF0oVdvPsIflhCeu1o6ba7iOLB3f4rpNMJZw4UsxphvT7uoSYCwwhH+
-naU47orc6X9a4yG50wxla/3nRAcrc6rPu5rUhFCNrUWibAzZJix8iMl2OHPEazHC
-i8X7QC0RLXdrSHw1YWgIdYsUDtqtWoF5gGkEnCkkxw4fGQYCaJzmJfsoxIii/+ol
-HgZlMN+Xwr5l0zykm0T4sfgnNdRriAQwAGv+f3i+6hT3uTj9iDzjY5AWNjE50l8H
-zSTGhNkNByPVare/obIT273YmA4pldZJ/xOin5fAtSsgTBraBzb6+NOi5pqkJCkb
-Wdvj4Dd+V+GcKQYYIaA1K/pJ06m4Pr1aZ7a8DOiE/aMBJ6nrKeY5k5ZcBMKx4wfm
-HjbVrK3h4R/rQE5p9I0=
-=2XV8
+iQEcBAEBCAAGBQJVUlTFAAoJECTWi3JdVIfQqjMH/2qpizPIinUrfeomSUdOeM4W
+lrG2OaGezU+DCa/DbeJMdBnFZ+tid5c1rh6abd5bnRIYWTZrkWXYYOkMQpAEC8GJ
+1B2BFTpZEObLKIgg4qAkzuu/v4X6ScdxPHY/SFlsnIEUyaAvDbj3peycQJ838Vxz
+lwtRgkhc7TMTjOqI/lxMkdTNF5t6DMRY0ZXC/ZGjG2sO6shomdPEuUMnXFvcaQNv
+8+iDNyfo4mdW5Rhkk6eWFf60p/phVC8R1aB6X4Rcbeao23kYi8zcsD1zFmKqrkyR
+e9z4mTG+mQpH7AjCC/cRlyD3ttZOjneDe9DNBxXRa1Z0BlFerOG8Z7eYW9IGUgo=
+=6AbP
 -----END PGP SIGNATURE-----
 
---65ImJOski3p8EhYV--
+--obAtV4On+KRLREo5--
