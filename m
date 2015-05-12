@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: sta32x: Use
+Subject: Re: [PATCH v2 2/2] ASoC: sta350: Use
  devm_gpiod_get_optional at appropriate place
-Date: Tue, 12 May 2015 18:52:21 +0100
-Message-ID: <20150512175221.GJ3066@sirena.org.uk>
+Date: Tue, 12 May 2015 18:52:49 +0100
+Message-ID: <20150512175249.GK3066@sirena.org.uk>
 References: <1431184113.5393.1.camel@ingics.com>
+ <1431184172.5393.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3415336718896780115=="
+Content-Type: multipart/mixed; boundary="===============8095064795611573134=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 02CBC2651A8
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 19:52:38 +0200 (CEST)
-In-Reply-To: <1431184113.5393.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D0A33265888
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 19:53:02 +0200 (CEST)
+In-Reply-To: <1431184172.5393.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,46 +27,46 @@ Cc: Johannes Stezenbach <js@sig21.net>, Sven Brandau <info@brandau.biz>, Liam Gi
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3415336718896780115==
+--===============8095064795611573134==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q5r20fdKX+PFtYHw"
+	protocol="application/pgp-signature"; boundary="aziWXe2aaRGlkyg3"
 Content-Disposition: inline
 
 
---q5r20fdKX+PFtYHw
+--aziWXe2aaRGlkyg3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, May 09, 2015 at 11:08:33PM +0800, Axel Lin wrote:
-> devm_gpiod_get_optional() is equivalent to devm_gpiod_get(), except that
+On Sat, May 09, 2015 at 11:09:32PM +0800, Axel Lin wrote:
+> devm_gpiod_get_optional is equivalent to devm_gpiod_get(), except that
 > when no GPIO was assigned to the requested function it will return NULL.
 > This is convenient for drivers that need to handle optional GPIOs.
 
 Applied, thanks.
 
---q5r20fdKX+PFtYHw
+--aziWXe2aaRGlkyg3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUj3UAAoJECTWi3JdVIfQxPIH/R/FyILOZITPwKqvBLEc8s7W
-kDhl1/yzXrRiJVXmSUcSO7nM+Yl8P7wOf4itjzbW4cMyWSPdaT1sAHK3xQsAL43x
-3u4refn6D4VgAoKhB5nCxjQC/UOLxc29LalYN5RpwMja/klte7alhGV50xRZ9PTU
-WiXa+rdBT9xHpvyQP636DzBxVgFkGw6jwdxsfdpN7ZfULC6VcT2dSOo5tAUhMEBs
-yvTouNr4JgSHUceDlIN8QNOSbDd9A/RZeEiK9rMbWg4CpDgu0In90iaEX5We6u49
-nl0qILXZCc+uGcMD0Neegiq/PFYkWNdBAdB4ELIXwgSNpA7hj49bJssSWdr1Xls=
-=EIDN
+iQEcBAEBCAAGBQJVUj3xAAoJECTWi3JdVIfQmyIH/0qIxtBSLGx6ugeQEv/NbpxF
+BKCf1a6gs691wu7wyCsofF4/aenzO0tNQdRNMLg0xtmdX3jKfiQ+67k8Zj2EGoNd
+pbNk4AawmUgHcQHeaBkZ2TLIGITyLPWReHpIFKBvl9RFSXQek9xZJPk1o9MQzHdZ
+yl7iPWwsRZnf0P7GRBBEWEC7KWe+6l8sRdvxzV2ie12YhE+OZUb11MFsobGlPZrY
+SZRUvZ0YN2pwwDfAEnTq5zFnIqsIun3A+/RuJXktBPBx6f422j1mrzE58gyDYArD
+d0wqyDwb+VusIv2LHKGdtgXOf0lmdUaFwqdw3c8CdBC9qvJj/ZreQlYUWebV334=
+=nuOe
 -----END PGP SIGNATURE-----
 
---q5r20fdKX+PFtYHw--
+--aziWXe2aaRGlkyg3--
 
---===============3415336718896780115==
+--===============8095064795611573134==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3415336718896780115==--
+--===============8095064795611573134==--
