@@ -1,42 +1,71 @@
-From: Mario Limonciello <mario_limonciello@dell.com>
-Subject: Re: commit b1ef29725865 (ACPI _REV=2) causes sound regression on
- Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS
- 13 (2015) until 4.2]
-Date: Tue, 12 May 2015 12:49:02 -0500
-Message-ID: <55523D0E.5090300@dell.com>
-References: <55401602.5050907@dell.com>	<55480021.1090402@dell.com>	<20150511182658.GA8516@isilmar-3.linta.de>	<20150512101258.GL2761@sirena.org.uk>	<55521BA0.3030606@dell.com>	<20150512161849.GD3066@sirena.org.uk>	<CAPeXnHtdU=9bMjHh8NSArYngxDC1wSp3ZDiN96e5gHB_LQjr5g@mail.gmail.com>	<5552388C.9000500@dell.com> <CAPeXnHss+k4xqYDZsDycKEAtLGMBbsnsMiHsZ_voigbPoq3vUw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] ASoC: sta32x: Use
+ devm_gpiod_get_optional at appropriate place
+Date: Tue, 12 May 2015 18:52:21 +0100
+Message-ID: <20150512175221.GJ3066@sirena.org.uk>
+References: <1431184113.5393.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <CAPeXnHss+k4xqYDZsDycKEAtLGMBbsnsMiHsZ_voigbPoq3vUw@mail.gmail.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Matthew Garrett <matthew.garrett@coreos.com>
-Cc: Mark Brown <broonie@kernel.org>, Dominik Brodowski <linux@dominikbrodowski.net>, "robert.moore@intel.com" <robert.moore@intel.com>, "lv.zheng@intel.com" <lv.zheng@intel.com>, "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "han.lu@intel.com" <han.lu@intel.com>, "yang.jie@intel.com" <yang.jie@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Matthew Garrett <mjg59@coreos.com>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
+Content-Type: multipart/mixed; boundary="===============3415336718896780115=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02CBC2651A8
+ for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 19:52:38 +0200 (CEST)
+In-Reply-To: <1431184113.5393.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Johannes Stezenbach <js@sig21.net>, Sven Brandau <info@brandau.biz>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============3415336718896780115==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="q5r20fdKX+PFtYHw"
+Content-Disposition: inline
 
-On 05/12/2015 12:43 PM, Matthew Garrett wrote:
-> On Tue, May 12, 2015 at 10:29 AM, Mario Limonciello
-> <mario_limonciello@dell.com> wrote:
->> Just to be clear, from the Dell side only the XPS 13 9343 has this _REV
->> behavior.
-> The Inspiron 7437 queries _REV and uses it to modify its EC behaviour,
-> and apparently breaks on Linux without that.
-Thanks for bringing this to my attention.  I'll check with my BIOS 
-architecture team on this.  XPS 13 9343 was supposed to be the only 
-system doing this.
 
->> What's wrong with a DMI quirk until I2S is mature on the kernel side and
->> userspace is new enough in distros?  Is it too early in boot for DMI quirks?
->> That would enforce that no other machines can use _REV value of 5 to detect
->> Linux without breaking the 9343.
-> DMI quirking is fine, but it has to be behind a config option. We're
-> going to have to carry the quirk for several years because we have to
-> support old userspace for an arbitrarily long time, and if there's no
-> config option then Linux will be stuck in HDA mode for that entire
-> time.
->
+--q5r20fdKX+PFtYHw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-OK, that makes more sense to me.  Thanks.
+On Sat, May 09, 2015 at 11:08:33PM +0800, Axel Lin wrote:
+> devm_gpiod_get_optional() is equivalent to devm_gpiod_get(), except that
+> when no GPIO was assigned to the requested function it will return NULL.
+> This is convenient for drivers that need to handle optional GPIOs.
+
+Applied, thanks.
+
+--q5r20fdKX+PFtYHw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVUj3UAAoJECTWi3JdVIfQxPIH/R/FyILOZITPwKqvBLEc8s7W
+kDhl1/yzXrRiJVXmSUcSO7nM+Yl8P7wOf4itjzbW4cMyWSPdaT1sAHK3xQsAL43x
+3u4refn6D4VgAoKhB5nCxjQC/UOLxc29LalYN5RpwMja/klte7alhGV50xRZ9PTU
+WiXa+rdBT9xHpvyQP636DzBxVgFkGw6jwdxsfdpN7ZfULC6VcT2dSOo5tAUhMEBs
+yvTouNr4JgSHUceDlIN8QNOSbDd9A/RZeEiK9rMbWg4CpDgu0In90iaEX5We6u49
+nl0qILXZCc+uGcMD0Neegiq/PFYkWNdBAdB4ELIXwgSNpA7hj49bJssSWdr1Xls=
+=EIDN
+-----END PGP SIGNATURE-----
+
+--q5r20fdKX+PFtYHw--
+
+--===============3415336718896780115==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3415336718896780115==--
