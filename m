@@ -1,47 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: Let wm8960 driver
- configure its bit clock and frame clock
-Date: Tue, 12 May 2015 20:05:52 +0100
-Message-ID: <20150512190552.GV3066@sirena.org.uk>
-References: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
+Subject: Re: [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
+Date: Tue, 12 May 2015 20:22:15 +0100
+Message-ID: <20150512192215.GZ3066@sirena.org.uk>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qa1NXTiqN6KSzHv0"
+	protocol="application/pgp-signature"; boundary="jwJ6bIT+r2BZUD+c"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
+In-Reply-To: <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: tiwai@suse.de, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Xing Zheng <acgzxing@gmail.com>
+Cc: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, zhengxing <zhengxing@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---qa1NXTiqN6KSzHv0
+--jwJ6bIT+r2BZUD+c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 12, 2015 at 02:58:08PM +0800, Zidan Wang wrote:
-> wm8960 codec driver missing configure its bit clock and frame clock for codec
-> master mode, so add support for it. It will calculate a appropriate frequency
-> dividing ratio according to the system clock, bit clock and frame clock, then
-> set the corresponding registers.
+On Tue, May 12, 2015 at 05:26:34PM +0800, Xing Zheng wrote:
+> From: zhengxing <zhengxing@rock-chips.com>
+>=20
+> In most cases, we maybe use simple-card as generic machine driver
+> on next kernel, but there are some issue that jack detection and
+> widgets extandable on simple-card.
+>=20
+> Own machine drvier can select one valid codec from supported codecs,
+> and add needful function from dts on rockchip platform.
 
-Applied all, thanks.
+Is it not possible to extend simple card to handle your use cases?
+Given the very generic naming and the fact that things like jack
+detection and so on should depend on the CODEC and board usually rather
+than on the SoC it doesn't sound like this is Rockchip specific.
 
---qa1NXTiqN6KSzHv0
+This also looks like you're reimplementing some device model enumeration
+stuff which probably shouldn't be happening but let's understand the
+problem you're trying to solve here before going too far into the code.
+
+--jwJ6bIT+r2BZUD+c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVUk8PAAoJECTWi3JdVIfQpm8H/0WHj3lzl/fqSgNAt928SSHm
-WyIaUQG+eVUTFKHllvwsdjhyli6pKI2k/RdyY0grz/v7PyInhknhYP9f4qdC22Wq
-bMN1Mb6cAb0dsvP0Rcm/jFTJg4aZ7LDbG7GIm5ywGXL3pIguENWRV3G27aMse8FU
-rYitnUWfQQw+7KxIJGWTwGnhK3eIeUv5jmCarlKpcpfHojeHpWrEcMydSYPfu8KW
-kA91HdskhNZ+3mgn4H/o+MYzydyxxbPvQvX9M+Wz1QGPqLNNBPy43/Qz8Zwnjk0R
-ihXAfWp9/TjJOA5CDNQ5NScF73ZxQQELzPFljTW8gQMyz7/pX60leX7wv7ph/z0=
-=6D6t
+iQEcBAEBCAAGBQJVUlLmAAoJECTWi3JdVIfQUWsH/2RfuqO5qDKCHu75wbBaxCI8
+SoqbLs0DBBrtDgZB6XISgreOdG0syyPlJqb7Ceip0KtwN6aVapbmcckPpkAplHve
+2BwiKrKZVbhncF4K3RJkBViLtACdSRc2tfJIFmOwBPn4Ju7jbLLk+e1oVrTc/bJm
+gOk9k4WFZ8As8DmXYdbKMR0qnhNuiHNVi5XYWz/iLCIHo7bAfQIBHJpK6rQBsf7T
+kfNlQLNzdnYe5wSoi8DMLanYZq/m+9TPmG7WA9qLrn6CKe20/7xnwz6GwKhZkv0G
+pTMlni/82NhrDcvfor2dFJrJRstdxEPng14ehkllJ+If+MC+Llow1zpLu3EXawA=
+=5MVp
 -----END PGP SIGNATURE-----
 
---qa1NXTiqN6KSzHv0--
+--jwJ6bIT+r2BZUD+c--
