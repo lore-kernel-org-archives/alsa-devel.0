@@ -1,62 +1,50 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 5/5] ASoC: max98095: Pass the IRQF_ONESHOT flag
-Date: Tue, 12 May 2015 01:23:00 -0300
-Message-ID: <1431404580-17991-5-git-send-email-festevam@gmail.com>
-References: <1431404580-17991-1-git-send-email-festevam@gmail.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [alsa-devel][PATCH 2/4] ASoC: wm8960: add 32 bit word length support
+Date: Tue, 12 May 2015 14:58:21 +0800
+Message-ID: <a55117060a6a22b1c523f19d9f47bd65054259e9.1431413323.git.zidan.wang@freescale.com>
+References: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f172.google.com (mail-yk0-f172.google.com
- [209.85.160.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F1AE265368
- for <alsa-devel@alsa-project.org>; Tue, 12 May 2015 06:24:28 +0200 (CEST)
-Received: by ykeo186 with SMTP id o186so44242135yke.0
- for <alsa-devel@alsa-project.org>; Mon, 11 May 2015 21:24:27 -0700 (PDT)
-In-Reply-To: <1431404580-17991-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Julia.Lawall@lip6.fr, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c36ecb00aeb3115e208518c5e256f35f7b1308db.1431413323.git.zidan.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+According to referance manual, right justify mode can't
+support 32 bit word length.
 
-Since commit 1c6c69525b40eb76de8adf039409722015927dc3 ("genirq: Reject
-bogus threaded irq requests") threaded IRQs without a primary handler
-need to be requested with IRQF_ONESHOT, otherwise the request will fail.
-
-So pass the IRQF_ONESHOT flag in this case.
-
-The semantic patch that makes this change is available
-in scripts/coccinelle/misc/irqf_oneshot.cocci.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/codecs/max98095.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8960.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 66c7ca4..453a919 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2300,8 +2300,8 @@ static int max98095_probe(struct snd_soc_codec *codec)
- 		/* register an audio interrupt */
- 		ret = request_threaded_irq(client->irq, NULL,
- 			max98095_report_jack,
--			IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
--			"max98095", codec);
-+			IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING |
-+			IRQF_ONESHOT, "max98095", codec);
- 		if (ret) {
- 			dev_err(codec->dev, "Failed to request IRQ: %d\n", ret);
- 			goto err_access;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index b072501..2559e31 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -655,6 +655,12 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
+ 	case 24:
+ 		iface |= 0x0008;
+ 		break;
++	case 32:
++		/* right justify mode does not support 32 word length */
++		if ((iface & 0x3) != 0) {
++			iface |= 0x000c;
++			break;
++		}
+ 	default:
+ 		dev_err(codec->dev, "unsupported width %d\n",
+ 			params_width(params));
+@@ -1050,7 +1056,7 @@ static int wm8960_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ #define WM8960_FORMATS \
+ 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+-	SNDRV_PCM_FMTBIT_S24_LE)
++	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops wm8960_dai_ops = {
+ 	.hw_params = wm8960_hw_params,
 -- 
 1.9.1
