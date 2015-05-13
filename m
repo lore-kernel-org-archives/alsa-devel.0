@@ -1,127 +1,71 @@
-From: Jacek Anaszewski <j.anaszewski@samsung.com>
-Subject: Re: [PATCH v2 02/17] leds: port locomo leds driver to new locomo core
-Date: Wed, 13 May 2015 16:53:03 +0200
-Message-ID: <5553654F.4010608@samsung.com>
-References: <1430178954-11138-1-git-send-email-dbaryshkov@gmail.com>
- <1430178954-11138-3-git-send-email-dbaryshkov@gmail.com>
- <554A2DB4.3020000@samsung.com>
- <CALT56yNJWapNw1XLrzfbUDUz1LF_BB9DfF94H6GhbnBUEP80_w@mail.gmail.com>
- <555327EA.5060402@samsung.com>
- <CALT56yOJyZvWF9neC2A09Y_w1Ej41uwWvU=aOOM0idbzUkBiFQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: wm8741: Add differential mono
+ mode support
+Date: Wed, 13 May 2015 15:54:38 +0100
+Message-ID: <20150513145438.GV2761@sirena.org.uk>
+References: <1431509941-14507-1-git-send-email-ce3a@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-reply-to: <CALT56yOJyZvWF9neC2A09Y_w1Ej41uwWvU=aOOM0idbzUkBiFQ@mail.gmail.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, linux-i2c@vger.kernel.org, linux-input <linux-input@vger.kernel.org>, linux-leds <linux-leds@vger.kernel.or>
+Content-Type: multipart/mixed; boundary="===============9017701797189228717=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE842265D05
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 16:54:50 +0200 (CEST)
+In-Reply-To: <1431509941-14507-1-git-send-email-ce3a@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <ce3a@gmx.de>
+Cc: ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/13/2015 04:14 PM, Dmitry Eremin-Solenikov wrote:
-> 2015-05-13 13:31 GMT+03:00 Jacek Anaszewski <j.anaszewski@samsung.com>:
->> On 05/12/2015 05:35 PM, Dmitry Eremin-Solenikov wrote:
->>>
->>> 2015-05-06 18:05 GMT+03:00 Jacek Anaszewski <j.anaszewski@samsung.com>:
->>>>
->>>> On 04/28/2015 01:55 AM, Dmitry Eremin-Solenikov wrote:
->>>>>
->>>>>
->>>>> Adapt locomo leds driver to new locomo core setup.
->>>>>
->>>>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->>>>> ---
->>>>>     drivers/leds/Kconfig       |   1 -
->>>>>     drivers/leds/leds-locomo.c | 119
->>>>> +++++++++++++++++++++++----------------------
->>>>>     2 files changed, 61 insertions(+), 59 deletions(-)
->>>>>
->>>>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
->>>>> index 966b960..4b4650b 100644
->>>>> --- a/drivers/leds/Kconfig
->>>>> +++ b/drivers/leds/Kconfig
->>>>> @@ -79,7 +79,6 @@ config LEDS_LM3642
->>>>>     config LEDS_LOCOMO
->>>>>           tristate "LED Support for Locomo device"
->>>>>           depends on LEDS_CLASS
->>>>> -       depends on SHARP_LOCOMO
->>>>
->>>>
->>>>
->>>> Why do you remove this dependency?
->>>
->>>
->>> Because SHARP_LOCOMO is a Kconfig symbol for the old driver. New driver
->>> uses MFD_LOCOMO Kconfig entry. Also the driver now uses generic platform
->>> device and regmap interfaces, so there is no direct dependency on main
->>> LoCoMo driver. And the policy (IIRC) was not to have such dependencies.
->>
->>
->> Ack. Shouldn't you also need "select REGMAP_MMIO" ?
->
-> No. Maybe I should add "select REGMAP" instead.
 
-REGMAP is enabled by default if REGMAP_MMIO is enabled. Having
-REGMAP_MMIO selected would also allow to notice at first glance which
-regmap backend is used. This would in turn provide a straightforward
-explanation on why brightness_set op is not delegated to work queue.
+--===============9017701797189228717==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kD0q5DIPXzY/lIlp"
+Content-Disposition: inline
 
->>>>>    static void locomoled_brightness_set(struct led_classdev *led_cdev,
->>>>> -                               enum led_brightness value, int offset)
->>>>> +                               enum led_brightness value)
->>>>>     {
->>>>> -       struct locomo_dev *locomo_dev =
->>>>> LOCOMO_DEV(led_cdev->dev->parent);
->>>>> -       unsigned long flags;
->>>>> +       struct locomo_led *led = container_of(led_cdev, struct
->>>>> locomo_led,
->>>>> led);
->>>>>
->>>>> -       local_irq_save(flags);
->>>>> -       if (value)
->>>>> -               locomo_writel(LOCOMO_LPT_TOFH, locomo_dev->mapbase +
->>>>> offset);
->>>>> -       else
->>>>> -               locomo_writel(LOCOMO_LPT_TOFL, locomo_dev->mapbase +
->>>>> offset);
->>>>> -       local_irq_restore(flags);
->>>>> +       regmap_write(led->regmap, led->reg,
->>>>> +                       value ? LOCOMO_LPT_TOFH : LOCOMO_LPT_TOFL);
->>>>>     }
->>>>
->>>>
->>>>
->>>> Please use work queue for setting brightness. This is required for the
->>>> driver to be compatible with led triggers. You can refer to the
->>>> existing LED drivers on how to implement this.
->>>
->>>
->>> Hmm. Why? The regmap here uses MMIO access, so it is atomic operation
->>> and doesn't need to be wrapped into work queue, does it?
->>
->>
->> Triggers can call brightness_set op in the interrupt context, so it
->> cannot sleep. I see "map->lock(map->lock_arg)" in regmap_write, thus
->> I am inferring that it can sleep.
->>
->> I am not sure if regmap implements its 'lock' op when using MMIO.
->>
->> The best way to figure this out is turning "LED Timer Trigger" on
->> in the config and execute:
->>
->> echo "timer" > trigger
->
-> It works without any "might sleep/sleeping in atomic context" warnings.
->
-> Technically I'd agree with you. If I'm using regmaps, ideally I should not
-> depend on the exact backend and put working with it to the work queue.
-> However as this is a driver for quite old IP block, it is not used with
-> regmap backends other than MMIO, I'd deduce, it's ok to do things
-> in a more relaxed way and to call regmap_write even from atomic
-> contexts.
 
-Ack.
+--kD0q5DIPXzY/lIlp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Best Regards,
-Jacek Anaszewski
+On Wed, May 13, 2015 at 11:39:01AM +0200, Sergej Sawazki wrote:
+> The WM8741 DAC supports several differential output modes (stereo,
+> stereo reversed, mono left, mono right). Add platform data and DT
+> bindings to configure it.
+
+Applied, thanks.
+
+--kD0q5DIPXzY/lIlp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVU2WtAAoJECTWi3JdVIfQqRMH/3UG2SX88LyZb/Txc0PhtA53
+GBl6yxpwHQHpx9aleSxQduEV/0nVW/v3VTKOOkCHB++tiLmPM3EwGJN3lrIdnOyL
+QVFPZ9WhDafC0F3cBHWb0Kk8FnYCVk3y0eNRzbVKrSN2s2UFu6sg2FJQLsZIzhci
+It1gc18BYPiQGAKgpamYyqfRw5Fu16Tnje4XaI2McML+saDix7q+49R6xaQutfL9
+Cwk9o7dznekyjYFloh+nNT4L/hbC9B8p/voIaQKYmVIGKPro26Bj/+3ce/DbDyc3
+eEiufgVC2Fj4o51fsRg6MKXwl5ya6M6P/e6E9I7daGs6QE5TPzKZLxsdPmC6Y8s=
+=2kbX
+-----END PGP SIGNATURE-----
+
+--kD0q5DIPXzY/lIlp--
+
+--===============9017701797189228717==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9017701797189228717==--
