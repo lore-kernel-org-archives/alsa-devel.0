@@ -1,74 +1,69 @@
-From: Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v2 02/17] leds: port locomo leds driver to new locomo core
-Date: Wed, 13 May 2015 09:42:48 -0700
-Message-ID: <20150513164248.GB11891@dtor-ws>
-References: <1430178954-11138-1-git-send-email-dbaryshkov@gmail.com>
- <1430178954-11138-3-git-send-email-dbaryshkov@gmail.com>
- <554A2DB4.3020000@samsung.com>
- <CALT56yNJWapNw1XLrzfbUDUz1LF_BB9DfF94H6GhbnBUEP80_w@mail.gmail.com>
- <555327EA.5060402@samsung.com>
- <CALT56yOJyZvWF9neC2A09Y_w1Ej41uwWvU=aOOM0idbzUkBiFQ@mail.gmail.com>
- <5553654F.4010608@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
+Date: Wed, 13 May 2015 17:42:51 +0100
+Message-ID: <20150513164250.GB2761@sirena.org.uk>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
+ <20150512192215.GZ3066@sirena.org.uk>
+ <55535035.5070608@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jE+K4o1MICf3EEet"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5553654F.4010608-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jacek Anaszewski <j.anaszewski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Bryan Wu <cooloney-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Richard Purdie <rpurdie-Fm38FmjxZ/leoWH0uzbU5w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jingoo Han <jg1.han-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Jean-Christophe Plagniol-Villard <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>, Tomi Valkeinen <tomi.valkeinen-l0cyMroinI0@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-leds <linux-leds-u79uwXL29TZUIDd8j+nm9g@public.gmane.org>
+In-Reply-To: <55535035.5070608@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: zhengxing <zhengxing@rock-chips.com>
+Cc: Xing Zheng <acgzxing@gmail.com>, dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 13, 2015 at 04:53:03PM +0200, Jacek Anaszewski wrote:
-> On 05/13/2015 04:14 PM, Dmitry Eremin-Solenikov wrote:
-> >2015-05-13 13:31 GMT+03:00 Jacek Anaszewski <j.anaszewski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>:
-> >>On 05/12/2015 05:35 PM, Dmitry Eremin-Solenikov wrote:
-> >>>
-> >>>2015-05-06 18:05 GMT+03:00 Jacek Anaszewski <j.anaszewski-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>:
-> >>>>
-> >>>>On 04/28/2015 01:55 AM, Dmitry Eremin-Solenikov wrote:
-> >>>>>
-> >>>>>
-> >>>>>Adapt locomo leds driver to new locomo core setup.
-> >>>>>
-> >>>>>Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> >>>>>---
-> >>>>>    drivers/leds/Kconfig       |   1 -
-> >>>>>    drivers/leds/leds-locomo.c | 119
-> >>>>>+++++++++++++++++++++++----------------------
-> >>>>>    2 files changed, 61 insertions(+), 59 deletions(-)
-> >>>>>
-> >>>>>diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> >>>>>index 966b960..4b4650b 100644
-> >>>>>--- a/drivers/leds/Kconfig
-> >>>>>+++ b/drivers/leds/Kconfig
-> >>>>>@@ -79,7 +79,6 @@ config LEDS_LM3642
-> >>>>>    config LEDS_LOCOMO
-> >>>>>          tristate "LED Support for Locomo device"
-> >>>>>          depends on LEDS_CLASS
-> >>>>>-       depends on SHARP_LOCOMO
-> >>>>
-> >>>>
-> >>>>
-> >>>>Why do you remove this dependency?
-> >>>
-> >>>
-> >>>Because SHARP_LOCOMO is a Kconfig symbol for the old driver. New driver
-> >>>uses MFD_LOCOMO Kconfig entry. Also the driver now uses generic platform
-> >>>device and regmap interfaces, so there is no direct dependency on main
-> >>>LoCoMo driver. And the policy (IIRC) was not to have such dependencies.
-> >>
-> >>
-> >>Ack. Shouldn't you also need "select REGMAP_MMIO" ?
-> >
-> >No. Maybe I should add "select REGMAP" instead.
-> 
-> REGMAP is enabled by default if REGMAP_MMIO is enabled. Having
 
-That is unfortunately not how select works: it does not automatically
-select parents for the selected symbol.
+--jE+K4o1MICf3EEet
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+On Wed, May 13, 2015 at 09:23:01PM +0800, zhengxing wrote:
+> On 2015=E5=B9=B405=E6=9C=8813=E6=97=A5 03:22, Mark Brown wrote:
 
--- 
-Dmitry
+> >Is it not possible to extend simple card to handle your use cases?
+> >Given the very generic naming and the fact that things like jack
+> >detection and so on should depend on the CODEC and board usually rather
+> >than on the SoC it doesn't sound like this is Rockchip specific.
+
+> >This also looks like you're reimplementing some device model enumeration
+> >stuff which probably shouldn't be happening but let's understand the
+> >problem you're trying to solve here before going too far into the code.
+
+> Because we are trying to bring rt5650 in the project, so we intend to
+> describe supported codecs with DTS via only a rockchip machine driver fil=
+e,
+> others remain pre-implement(like max98090 / rt5645 that vendor machine
+> driver).
+
+I don't undertand what you're saying here, sorry - why is this not just
+a case of writing multiple machine drivers?
+
+> I communicated with Dylan, and he told me that the jack detection is an
+> issue in the simple-card, and suggested we are better to send them at
+> present.
+
+But what are these issues?
+
+--jE+K4o1MICf3EEet
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVU38KAAoJECTWi3JdVIfQmAEH/A1AlFmVqq+7EFeJfhOPW8e4
+eqCNFM+cvW+gukhi5pOP4gW56+RF00LMmMrNNwR0WrIvRQognI87qteklfa6JWuG
+Auwmhp+kLfjdz2DlK69mCewjbImNmbZoCPRFjY8dDjmvyKZzeaCHgTVl7PH9YOaV
+4EPbSStnQ5IMxfiD5yKN9SDKiKxwrN8oA+FoBpuORAE838NqQDT/ps9C4PtjGpb0
+asKBdN/xCaG0g7l+pTny4WlJnfPt8VYtciRQrb6YMCKzSSUd0/MDUJxGjSfnbwyY
+FAvkZW2X1akolUr5VrnAhf4cVWYBBUAwnJlt13A2tnwoY0aQLSmAFigTjkc29w8=
+=1T9p
+-----END PGP SIGNATURE-----
+
+--jE+K4o1MICf3EEet--
