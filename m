@@ -1,61 +1,75 @@
-From: Dave Airlie <airlied@gmail.com>
-Subject: Re: DP MST audio support
-Date: Thu, 14 May 2015 09:10:33 +1000
-Message-ID: <CAPM=9twBGjXmW854avAySJCdhbRSWA88aj40JNOFNn7GG1WWRg@mail.gmail.com>
-References: <CAPM=9tx74D8SaghkuY7qcJ5emAXdtQeZOQf8N6e=FEy9VsLJvA@mail.gmail.com>
- <CAPM=9tyc70Xd4us2LFCCYNYT8MfgqNKFxG-f=Ne7dJ_cVNYjXw@mail.gmail.com>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
+Date: Wed, 13 May 2015 16:11:14 -0700
+Message-ID: <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
+ <20150512192215.GZ3066@sirena.org.uk> <55535035.5070608@rock-chips.com>
+ <20150513164250.GB2761@sirena.org.uk> <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <CAPM=9tyc70Xd4us2LFCCYNYT8MfgqNKFxG-f=Ne7dJ_cVNYjXw@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: zhengxing <zhengxing@rock-chips.com>, Xing Zheng <acgzxing@gmail.com>, Douglas Anderson <dianders@chromium.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Sonny Rao <sonnyrao@chromium.org>, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTIgTWF5IDIwMTUgYXQgMTM6MjcsIERhdmUgQWlybGllIDxhaXJsaWVkQGdtYWlsLmNvbT4g
-d3JvdGU6Cj4gT24gMTIgTWF5IDIwMTUgYXQgMTE6NTAsIERhdmUgQWlybGllIDxhaXJsaWVkQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4+IEhpLAo+Pgo+PiBTbyBJIGhhdmUgYSBicmFuY2ggdGhhdCBtYWtl
-cyBubyBzb3VuZCwKPj4gaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL35haXJsaWVkL2xpbnV4
-L2xvZy8/aD1kcC1tc3QtYXVkaW8KPj4KPj4gYW5kIEknbSBub3Qgc3VyZSB3aGVyZSBJIG5lZWQg
-dG8gdHVybiB0byBuZXh0LAo+Pgo+PiBUaGUgSW50ZWwgZG9jcyBJJ3ZlIHJlYWQgYXJlIGtpbmRh
-IHZhZ3VlLCBhc3N1bWluZyB5b3Uga25vdyBsb3RzIG9mCj4+IHRoaW5ncyBJIGNsZWFybHkgZG9u
-J3QuCj4+Cj4+IHNvIGluIHRoZW9yeSBteSBicmFuY2gsIHNldHMgdXAgdGhlIFNEUCBzdHJlYW0g
-dG8gdGhlIG1vbml0b3IgaW4gdGhlCj4+IHBheWxvYWQgY3JlYXRpb24sCj4+IGVuYWJsZXMgdGhl
-IGNvZGVjIGluIHRoZSBpbnRlbCBHUFUgZHJpdmVyLCBhbmQgcGFzc2VzIHRoZSBFTEQgdG8gdGhl
-Cj4+IGF1ZGlvIGRyaXZlci4KPj4KPj4gVGhlIGF1ZGlvIGRyaXZlciB1c2VzIHRoZSBkZXZpY2Ug
-bGlzdCB0byBnZXQgdGhlIHByZXNlbmNlL3ZhbGlkIGJpdHMKPj4gcGVyIGRldmljZSwgYW5kIG1h
-bmFnZXMgdG8gcmV0cmlldmUgdGhlIEVMRC4gSSBldmVuIGNyZWF0ZSBFTEQgZmlsZXMKPj4gaW4g
-L3Byb2MvYXNvdW5kL0hETUkvIHRoYXQgaGF2ZSBzZW5zaWJsZSB2YWx1ZXMgaW4gdGhlbQo+Pgo+
-PiBTbyBpdCBsb29rcyBsaWtlIEknbSBqdXN0IG1pc3Npbmcgc29tZSByb3V0aW5nIHNvbWV3aGVy
-ZSwgbW9zdCBsaWtlbHkKPj4gaW4gdGhlIGF1ZGlvIGRyaXZlciwgdGhlbiBhZ2FpbiBJICBjb3Vs
-ZCBiZSBtaXNzaW5nIGEgbG90IG1vcmUgdGhhbgo+PiB0aGF0Lgo+Pgo+PiBKdXN0IGxvb2tpbmcg
-Zm9yIGFueSBpZGVhcyBvciBrbm93bGVkZ2UgcGVvcGxlIG1heSBoYXZlIGxvY2tlZCBpbgo+PiB0
-aGVpciBicmFpbnMgb3IgaW5zaWRlIHRoZWlyIGZpcmV3YWxscy4KPgo+IE9rYXkgdGhlIGJyYW5j
-aCBub3cgaGFzIGF1ZGlvIG9uIG15IHRlc3Qgc2V0dXAsCj4KPiBJJ3ZlIGhhZCB0byBoYWNrIG91
-dCB0aGUgaW50ZWxfbm90X3NoYXJlX2Fzc2lnbmVkX2N2dCBmdW5jdGlvbgo+IGl0IGFwcGVhcnMg
-dG8gZG8gYmFkIHRoaW5ncywgSSBzZXQgcGluIDYgdG8gY29ubmVjdGlvbiAwIChwaW4gMiksIHRo
-ZSBsYXRlcgo+IHNldHMgb24gcGluIDUvNyB0byBjb25uZWN0aW9uIDEgYnkgdGhhdCBmdW5jdGlv
-biBzZWVtcyB0byByZXByb2dyYW0gcGluIDYuCj4KPiBJJ20gZ3Vlc3NpbmcgdGhlIGNvbm5lY3Rp
-b24gaXMgYXNzaWduZWQgdG8gYSBkZXZpY2Ugbm90IGEgcGluIGluIHRoZSBuZXcgaHcsCj4gYW5k
-IHRoZSBzYW1lIGRldmljZSBpcyByb3V0ZWQgdmlhIHBpbiA1Lzcgc28gSSBlbmQgdXAgdHJhc2hp
-bmcgaXQuCj4KPiBteSB0ZXN0IHNldHVwIGlzIGEgSGFzd2VsbCBMZW5vdm8gdDQ0MHMgKyBkb2Nr
-aW5nIHN0YXRpb24gKyBEZWxsIFUyNDEwLgo+CgpwaW5nIGF1ZGlvIGd1eXM/CgpjYW4gc29tZW9u
-ZSBmcm9tIGFsc2EgcGxlYXNlIHRha2UgYSBsb29rIG9yIHNvbWUgaW50ZXJlc3QgaW4gdGhpcz8K
-ClRoZSBncmFwaGljcyBzaWRlIHBhdGNoZXMgYXJlIGZhaXJseSB0cml2aWFsLCBhbHNvIGl0IHdv
-dWxkIGJlIGdvb2QgdG8KZ2V0IGEgZ29vZCBleHBsYWluYXRpb24gb2YgaG93IHRoZSBodyB3b3Jr
-cywKCmZyb20gd2hhdCBJIGNhbiBzZWUgZGV2aWNlcyBnZXQgY29ubmVjdGlvbnMgbm90IHBpbnMg
-b24gdGhpcyBodywgYW5kIEkKbm90aWNlIHRoYXQgSSBkb24ndCBhbHdheXMgZ2V0IDMgZGV2aWNl
-cywgc28gSSdtIG5vdCBzdXJlIGlmIGRldmljZXMKYXJlIGEgZHluYW1pYyB0aGluZyB3ZSBzaG91
-bGQgYmUgcmVwcm9iaW5nIG9uIHNvbWUgc2lnbmFsLgoKRGF2ZS4KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRl
-bC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Wed, May 13, 2015 at 10:21 AM, Dylan Reid <dgreid@chromium.org> wrot=
+e:
+> On Wed, May 13, 2015 at 9:42 AM, Mark Brown <broonie@kernel.org> wrot=
+e:
+>> On Wed, May 13, 2015 at 09:23:01PM +0800, zhengxing wrote:
+>>> On 2015=E5=B9=B405=E6=9C=8813=E6=97=A5 03:22, Mark Brown wrote:
+>>
+>>> >Is it not possible to extend simple card to handle your use cases?
+>>> >Given the very generic naming and the fact that things like jack
+>>> >detection and so on should depend on the CODEC and board usually r=
+ather
+>>> >than on the SoC it doesn't sound like this is Rockchip specific.
+>>
+>>> >This also looks like you're reimplementing some device model enume=
+ration
+>>> >stuff which probably shouldn't be happening but let's understand t=
+he
+>>> >problem you're trying to solve here before going too far into the =
+code.
+>>
+>>> Because we are trying to bring rt5650 in the project, so we intend =
+to
+>>> describe supported codecs with DTS via only a rockchip machine driv=
+er file,
+>>> others remain pre-implement(like max98090 / rt5645 that vendor mach=
+ine
+>>> driver).
+>>
+>> I don't undertand what you're saying here, sorry - why is this not j=
+ust
+>> a case of writing multiple machine drivers?
+>
+> I don't understand this either.  I'd think the best solution is
+> simple-card, configured through DTS for each device.
+>
+>>
+>>> I communicated with Dylan, and he told me that the jack detection i=
+s an
+>>> issue in the simple-card, and suggested we are better to send them =
+at
+>>> present.
+>>
+>> But what are these issues?
+>
+> The issue I was referring to when I spoke with rock chip was the need
+> to pass the jack simple-card creates to the headset chip or codec.  W=
+e
+> need a way to specify a device like a tsa227e or rt5650 to pass the
+> jack to, which events are supported by the jack, and a generic API fo=
+r
+> passing the jack.
+
+I'm having some trouble envisioning how to pass the jack to the
+headset chip in a generic way.  A callback could be added to
+snd_soc_component_driver, or a snd_soc_headset_driver could be added.
+The headset_drive would fit the ts3a227e well, but not the rt5645
+which is also a full blown codec.
