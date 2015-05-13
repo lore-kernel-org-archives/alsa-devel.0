@@ -1,57 +1,851 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v1 12/13] ASoC: qcom: Document apq8016 bindings.
-Date: Wed, 13 May 2015 13:03:23 +0100
-Message-ID: <1431518603-7794-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: mengdong.lin@intel.com
+Subject: [RFC PATCH] ALSA: hda - Move hda_i915.c from
+	sound/pci/hda to sound/hda
+Date: Wed, 13 May 2015 20:21:16 +0800
+Message-ID: <1431519676-3628-1-git-send-email-mengdong.lin@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id E466C266555
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 14:10:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch updates lpass bindings with apq8016 specific bindings.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+The file is moved to hda core, so can be used by both legacy HDA driver and
+new Skylake audio driver.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-index e00732d..21c6483 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-@@ -4,12 +4,21 @@ This node models the Qualcomm Technologies Low-Power Audio SubSystem (LPASS).
- 
- Required properties:
- 
--- compatible		: "qcom,lpass-cpu"
-+- compatible		: "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
- - clocks		: Must contain an entry for each entry in clock-names.
- - clock-names		: A list which must include the following entries:
- 				* "ahbix-clk"
- 				* "mi2s-osr-clk"
- 				* "mi2s-bit-clk"
-+			: required clocks for "qcom,lpass-cpu-apq8016"
-+				* "ahbix-clk"
-+				* "mi2s-bit-clk0"
-+				* "mi2s-bit-clk1"
-+				* "mi2s-bit-clk2"
-+				* "mi2s-bit-clk3"
-+				* "pcnoc-mport-clk"
-+				* "pcnoc-sway-clk"
+- The i915 audio component is moved to core bus and dynamically allocated.
+- A static pointer hda_acomp is used to help bind/unbind callbacks to get
+  this component, because the sound card's private_data is used by the azx
+  chip pointer, which is a legacy structure. It could be removed if private
+  _data changes to some core structure which can be extended to find the
+  bus.
+- hda_get_display_clk() is added to get the display core clock for HSW/BDW.
+- haswell_set_bclk() is moved to hda_intel.c because it needs to write the
+  controller registers EM4/EM5.
+- Move definition of HSW/BDW-specific registers EM4/EM5 to hda_register.h
+  and rename them to HSW_EM4/HSW_EM5, because other HD-A controllers have
+  different layout for the extended mode registers.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/include/sound/hda_i915.h b/include/sound/hda_i915.h
+new file mode 100644
+index 0000000..440e4c0
+--- /dev/null
++++ b/include/sound/hda_i915.h
+@@ -0,0 +1,36 @@
++/*
++ * HD-Audio helpers to sync with i915 driver
++ */
++#ifndef __SOUND_HDA_I915_H
++#define __SOUND_HDA_I915_H
 +
- - interrupts		: Must contain an entry for each entry in
- 			  interrupt-names.
- - interrupt-names	: A list which must include the following entries:
-@@ -22,6 +31,8 @@ Required properties:
- - reg-names		: A list which must include the following entries:
- 				* "lpass-lpaif"
- 
++#ifdef CONFIG_SND_HDA_I915
++int hda_set_codec_wakeup(struct hdac_bus *bus, bool enable);
++int hda_display_power(struct hdac_bus *bus, bool enable);
++int hda_get_display_clk(struct hdac_bus *bus);
++int hda_i915_init(struct hdac_bus *bus);
++int hda_i915_exit(struct hdac_bus *bus);
++#else
++static int hda_set_codec_wakeup(struct hdac_bus *bus, bool enable)
++{
++	return 0;
++}
++static inline int hda_display_power(struct hdac_bus *bus, bool enable)
++{
++	return 0;
++}
++static inline int hda_get_display_clk(struct hdac_bus *bus)
++{
++	return 0;
++}
++static inline int hda_i915_init(struct hdac_bus *bus)
++{
++	return -ENODEV;
++}
++static inline int hda_i915_exit(struct hdac_bus *bus)
++{
++	return 0;
++}
++#endif
 +
-+
- Optional properties:
++#endif /* __SOUND_HDA_I915_H */
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 4f6d3fc..0c7536e 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -84,6 +84,10 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_SD_BDLPL		0x18
+ #define AZX_REG_SD_BDLPU		0x1c
  
- - qcom,adsp		: Phandle for the audio DSP node
++/* Haswell/Broadwell display HD-A controller Extended Mode registers */
++#define AZX_REG_HSW_EM4			0x100c
++#define AZX_REG_HSW_EM5			0x1010
++
+ /* PCI space */
+ #define AZX_PCIREG_TCSEL		0x44
+ 
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index b97c59e..64fff4d 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -11,6 +11,7 @@
+ #include <sound/core.h>
+ #include <sound/memalloc.h>
+ #include <sound/hda_verbs.h>
++#include <drm/i915_component.h>
+ 
+ /* codec node id */
+ typedef u16 hda_nid_t;
+@@ -285,6 +286,10 @@ struct hdac_bus {
+ 	/* locks */
+ 	spinlock_t reg_lock;
+ 	struct mutex cmd_mutex;
++
++	/* i915 component interface */
++	struct i915_audio_component *audio_component;
++	int i915_power_refcount;
+ };
+ 
+ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
+diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
+index 7a17fca..ac5ffac 100644
+--- a/sound/hda/Kconfig
++++ b/sound/hda/Kconfig
+@@ -4,3 +4,9 @@ config SND_HDA_CORE
+ 
+ config SND_HDA_DSP_LOADER
+ 	bool
++
++config SND_HDA_I915
++	bool
++	default y
++	depends on DRM_I915
++	depends on SND_HDA_CORE
+diff --git a/sound/hda/Makefile b/sound/hda/Makefile
+index 5b4bb47..1ce78c6 100644
+--- a/sound/hda/Makefile
++++ b/sound/hda/Makefile
+@@ -4,4 +4,7 @@ snd-hda-core-objs := hda_bus_type.o hdac_bus.o hdac_device.o hdac_sysfs.o \
+ snd-hda-core-objs += trace.o
+ CFLAGS_trace.o := -I$(src)
+ 
++# for sync with i915 gfx driver
++snd-hda-core-$(CONFIG_SND_HDA_I915) += hda_i915.o
++
+ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
+diff --git a/sound/hda/hda_i915.c b/sound/hda/hda_i915.c
+new file mode 100644
+index 0000000..5c87938
+--- /dev/null
++++ b/sound/hda/hda_i915.c
+@@ -0,0 +1,193 @@
++/*
++ *  hda_i915.c - routines for Haswell HDA controller power well support
++ *
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License as published by the Free
++ *  Software Foundation; either version 2 of the License, or (at your option)
++ *  any later version.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++ *  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ *  for more details.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/component.h>
++#include <drm/i915_component.h>
++#include <sound/core.h>
++#include <sound/hdaudio.h>
++#include <sound/hda_i915.h>
++
++static struct i915_audio_component *hda_acomp;
++
++int hda_set_codec_wakeup(struct hdac_bus *bus, bool enable)
++{
++	struct i915_audio_component *acomp = bus->audio_component;
++
++	if (!acomp->ops)
++		return -ENODEV;
++
++	if (!acomp->ops->codec_wake_override) {
++		dev_warn(bus->dev,
++			"Invalid codec wake callback\n");
++		return 0;
++	}
++
++	dev_dbg(bus->dev, "%s codec wakeup\n",
++		enable ? "enable" : "disable");
++
++	acomp->ops->codec_wake_override(acomp->dev, enable);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hda_set_codec_wakeup);
++
++int hda_display_power(struct hdac_bus *bus, bool enable)
++{
++	struct i915_audio_component *acomp = bus->audio_component;
++
++	if (!acomp->ops)
++		return -ENODEV;
++
++	dev_dbg(bus->dev, "display power %s\n",
++		enable ? "enable" : "disable");
++
++	if (enable) {
++		if (!bus->i915_power_refcount++)
++			acomp->ops->get_power(acomp->dev);
++	} else {
++		WARN_ON(!bus->i915_power_refcount);
++		if (!--bus->i915_power_refcount)
++			acomp->ops->put_power(acomp->dev);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hda_display_power);
++
++int hda_get_display_clk(struct hdac_bus *bus)
++{
++	struct i915_audio_component *acomp = bus->audio_component;
++
++	if (!acomp->ops)
++		return -ENODEV;
++
++	return acomp->ops->get_cdclk_freq(acomp->dev);
++}
++EXPORT_SYMBOL_GPL(hda_get_display_clk);
++
++static int hda_component_master_bind(struct device *dev)
++{
++	struct i915_audio_component *acomp = hda_acomp;
++	int ret;
++
++	ret = component_bind_all(dev, acomp);
++	if (ret < 0)
++		return ret;
++
++	if (WARN_ON(!(acomp->dev && acomp->ops && acomp->ops->get_power &&
++		      acomp->ops->put_power && acomp->ops->get_cdclk_freq))) {
++		ret = -EINVAL;
++		goto out_unbind;
++	}
++
++	/*
++	 * Atm, we don't support dynamic unbinding initiated by the child
++	 * component, so pin its containing module until we unbind.
++	 */
++	if (!try_module_get(acomp->ops->owner)) {
++		ret = -ENODEV;
++		goto out_unbind;
++	}
++
++	return 0;
++
++out_unbind:
++	component_unbind_all(dev, acomp);
++
++	return ret;
++}
++
++static void hda_component_master_unbind(struct device *dev)
++{
++	struct i915_audio_component *acomp = hda_acomp;
++
++	module_put(acomp->ops->owner);
++	component_unbind_all(dev, acomp);
++	WARN_ON(acomp->ops || acomp->dev);
++}
++
++static const struct component_master_ops hda_component_master_ops = {
++	.bind = hda_component_master_bind,
++	.unbind = hda_component_master_unbind,
++};
++
++static int hda_component_master_match(struct device *dev, void *data)
++{
++	/* i915 is the only supported component */
++	return !strcmp(dev->driver->name, "i915");
++}
++
++int hda_i915_init(struct hdac_bus *bus)
++{
++	struct component_match *match = NULL;
++	struct device *dev = bus->dev;
++	struct i915_audio_component *acomp;
++	int ret;
++
++	acomp = kzalloc(sizeof(*acomp), GFP_KERNEL);
++	if (!acomp)
++		return -ENOMEM;
++	bus->audio_component = acomp;
++	hda_acomp = acomp;
++
++	component_match_add(dev, &match, hda_component_master_match, bus);
++	ret = component_master_add_with_match(dev, &hda_component_master_ops,
++					      match);
++	if (ret < 0)
++		goto out_err;
++
++	/*
++	 * Atm, we don't support deferring the component binding, so make sure
++	 * i915 is loaded and that the binding successfully completes.
++	 */
++	request_module("i915");
++
++	if (!acomp->ops) {
++		ret = -ENODEV;
++		goto out_master_del;
++	}
++	dev_dbg(dev, "bound to i915 component master\n");
++
++	return 0;
++out_master_del:
++	component_master_del(dev, &hda_component_master_ops);
++out_err:
++	kfree(acomp);
++	bus->audio_component = NULL;
++	dev_err(dev, "failed to add i915 component master (%d)\n", ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hda_i915_init);
++
++int hda_i915_exit(struct hdac_bus *bus)
++{
++	struct device *dev = bus->dev;
++	struct i915_audio_component *acomp = bus->audio_component;
++
++	WARN_ON(bus->i915_power_refcount);
++	if (bus->i915_power_refcount > 0 && acomp && acomp->ops)
++		acomp->ops->put_power(acomp->dev);
++
++	component_master_del(dev, &hda_component_master_ops);
++
++	kfree(acomp);
++	bus->audio_component = NULL;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hda_i915_exit);
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 117bf5c..98ced97 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -145,11 +145,6 @@ config SND_HDA_CODEC_HDMI
+ comment "Set to Y if you want auto-loading the codec driver"
+ 	depends on SND_HDA=y && SND_HDA_CODEC_HDMI=m
+ 
+-config SND_HDA_I915
+-	bool
+-	default y
+-	depends on DRM_I915
+-
+ config SND_HDA_CODEC_CIRRUS
+ 	tristate "Build Cirrus Logic codec support"
+ 	select SND_HDA_GENERIC
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index c5e6651..a32ab83 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -1,7 +1,5 @@
+ snd-hda-intel-objs := hda_intel.o
+ snd-hda-tegra-objs := hda_tegra.o
+-# for haswell power well
+-snd-hda-intel-$(CONFIG_SND_HDA_I915) +=	hda_i915.o
+ 
+ snd-hda-codec-y := hda_bind.o hda_codec.o hda_jack.o hda_auto_parser.o hda_sysfs.o
+ snd-hda-codec-y += hda_controller.o
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+deleted file mode 100644
+index 8521702..0000000
+--- a/sound/pci/hda/hda_i915.c
++++ /dev/null
+@@ -1,227 +0,0 @@
+-/*
+- *  hda_i915.c - routines for Haswell HDA controller power well support
+- *
+- *  This program is free software; you can redistribute it and/or modify it
+- *  under the terms of the GNU General Public License as published by the Free
+- *  Software Foundation; either version 2 of the License, or (at your option)
+- *  any later version.
+- *
+- *  This program is distributed in the hope that it will be useful, but
+- *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+- *  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+- *  for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program; if not, write to the Free Software Foundation,
+- *  Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+- */
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/pci.h>
+-#include <linux/component.h>
+-#include <drm/i915_component.h>
+-#include <sound/core.h>
+-#include "hda_controller.h"
+-#include "hda_intel.h"
+-
+-/* Intel HSW/BDW display HDA controller Extended Mode registers.
+- * EM4 (M value) and EM5 (N Value) are used to convert CDClk (Core Display
+- * Clock) to 24MHz BCLK: BCLK = CDCLK * M / N
+- * The values will be lost when the display power well is disabled.
+- */
+-#define AZX_REG_EM4			0x100c
+-#define AZX_REG_EM5			0x1010
+-
+-int hda_set_codec_wakeup(struct hda_intel *hda, bool enable)
+-{
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-
+-	if (!acomp->ops)
+-		return -ENODEV;
+-
+-	if (!acomp->ops->codec_wake_override) {
+-		dev_warn(&hda->chip.pci->dev,
+-			"Invalid codec wake callback\n");
+-		return 0;
+-	}
+-
+-	dev_dbg(&hda->chip.pci->dev, "%s codec wakeup\n",
+-		enable ? "enable" : "disable");
+-
+-	acomp->ops->codec_wake_override(acomp->dev, enable);
+-
+-	return 0;
+-}
+-
+-int hda_display_power(struct hda_intel *hda, bool enable)
+-{
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-
+-	if (!acomp->ops)
+-		return -ENODEV;
+-
+-	dev_dbg(&hda->chip.pci->dev, "display power %s\n",
+-		enable ? "enable" : "disable");
+-
+-	if (enable) {
+-		if (!hda->i915_power_refcount++)
+-			acomp->ops->get_power(acomp->dev);
+-	} else {
+-		WARN_ON(!hda->i915_power_refcount);
+-		if (!--hda->i915_power_refcount)
+-			acomp->ops->put_power(acomp->dev);
+-	}
+-
+-	return 0;
+-}
+-
+-void haswell_set_bclk(struct hda_intel *hda)
+-{
+-	int cdclk_freq;
+-	unsigned int bclk_m, bclk_n;
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-	struct pci_dev *pci = hda->chip.pci;
+-
+-	/* Only Haswell/Broadwell need set BCLK */
+-	if (pci->device != 0x0a0c && pci->device != 0x0c0c
+-	   && pci->device != 0x0d0c && pci->device != 0x160c)
+-		return;
+-
+-	if (!acomp->ops)
+-		return;
+-
+-	cdclk_freq = acomp->ops->get_cdclk_freq(acomp->dev);
+-	switch (cdclk_freq) {
+-	case 337500:
+-		bclk_m = 16;
+-		bclk_n = 225;
+-		break;
+-
+-	case 450000:
+-	default: /* default CDCLK 450MHz */
+-		bclk_m = 4;
+-		bclk_n = 75;
+-		break;
+-
+-	case 540000:
+-		bclk_m = 4;
+-		bclk_n = 90;
+-		break;
+-
+-	case 675000:
+-		bclk_m = 8;
+-		bclk_n = 225;
+-		break;
+-	}
+-
+-	azx_writew(&hda->chip, EM4, bclk_m);
+-	azx_writew(&hda->chip, EM5, bclk_n);
+-}
+-
+-static int hda_component_master_bind(struct device *dev)
+-{
+-	struct snd_card *card = dev_get_drvdata(dev);
+-	struct azx *chip = card->private_data;
+-	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-	int ret;
+-
+-	ret = component_bind_all(dev, acomp);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (WARN_ON(!(acomp->dev && acomp->ops && acomp->ops->get_power &&
+-		      acomp->ops->put_power && acomp->ops->get_cdclk_freq))) {
+-		ret = -EINVAL;
+-		goto out_unbind;
+-	}
+-
+-	/*
+-	 * Atm, we don't support dynamic unbinding initiated by the child
+-	 * component, so pin its containing module until we unbind.
+-	 */
+-	if (!try_module_get(acomp->ops->owner)) {
+-		ret = -ENODEV;
+-		goto out_unbind;
+-	}
+-
+-	return 0;
+-
+-out_unbind:
+-	component_unbind_all(dev, acomp);
+-
+-	return ret;
+-}
+-
+-static void hda_component_master_unbind(struct device *dev)
+-{
+-	struct snd_card *card = dev_get_drvdata(dev);
+-	struct azx *chip = card->private_data;
+-	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-
+-	module_put(acomp->ops->owner);
+-	component_unbind_all(dev, acomp);
+-	WARN_ON(acomp->ops || acomp->dev);
+-}
+-
+-static const struct component_master_ops hda_component_master_ops = {
+-	.bind = hda_component_master_bind,
+-	.unbind = hda_component_master_unbind,
+-};
+-
+-static int hda_component_master_match(struct device *dev, void *data)
+-{
+-	/* i915 is the only supported component */
+-	return !strcmp(dev->driver->name, "i915");
+-}
+-
+-int hda_i915_init(struct hda_intel *hda)
+-{
+-	struct component_match *match = NULL;
+-	struct device *dev = &hda->chip.pci->dev;
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-	int ret;
+-
+-	component_match_add(dev, &match, hda_component_master_match, hda);
+-	ret = component_master_add_with_match(dev, &hda_component_master_ops,
+-					      match);
+-	if (ret < 0)
+-		goto out_err;
+-
+-	/*
+-	 * Atm, we don't support deferring the component binding, so make sure
+-	 * i915 is loaded and that the binding successfully completes.
+-	 */
+-	request_module("i915");
+-
+-	if (!acomp->ops) {
+-		ret = -ENODEV;
+-		goto out_master_del;
+-	}
+-
+-	dev_dbg(dev, "bound to i915 component master\n");
+-
+-	return 0;
+-out_master_del:
+-	component_master_del(dev, &hda_component_master_ops);
+-out_err:
+-	dev_err(dev, "failed to add i915 component master (%d)\n", ret);
+-
+-	return ret;
+-}
+-
+-int hda_i915_exit(struct hda_intel *hda)
+-{
+-	struct device *dev = &hda->chip.pci->dev;
+-	struct i915_audio_component *acomp = &hda->audio_component;
+-
+-	WARN_ON(hda->i915_power_refcount);
+-	if (hda->i915_power_refcount > 0 && acomp->ops)
+-		acomp->ops->put_power(acomp->dev);
+-
+-	component_master_del(dev, &hda_component_master_ops);
+-
+-	return 0;
+-}
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 706879a..229a1e4 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -57,6 +57,8 @@
+ #endif
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/hdaudio.h>
++#include <sound/hda_i915.h>
+ #include <linux/vgaarb.h>
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+@@ -493,13 +495,13 @@ static void azx_init_pci(struct azx *chip)
+ 
+ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ {
+-	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hdac_bus *bus = azx_bus(chip);
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+-		hda_set_codec_wakeup(hda, true);
++		hda_set_codec_wakeup(bus, true);
+ 	azx_init_chip(chip, full_reset);
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+-		hda_set_codec_wakeup(hda, false);
++		hda_set_codec_wakeup(bus, false);
+ }
+ 
+ /* calculate runtime delay from LPIB */
+@@ -557,9 +559,9 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
+ /* Enable/disable i915 display power for the link */
+ static int azx_intel_link_power(struct azx *chip, bool enable)
+ {
+-	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hdac_bus *bus = azx_bus(chip);
+ 
+-	return hda_display_power(hda, enable);
++	return hda_display_power(bus, enable);
+ }
+ 
+ /*
+@@ -797,6 +799,50 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ #define azx_del_card_list(chip) /* NOP */
+ #endif /* CONFIG_PM */
+ 
++/* Intel HSW/BDW display HDA controller is in GPU. Both its power and link BCLK
++ * depends on GPU. Two Extended Mode registers EM4 (M value) and EM5 (N Value)
++ * are used to convert CDClk (Core Display Clock) to 24MHz BCLK:
++ * BCLK = CDCLK * M / N
++ * The values will be lost when the display power well is disabled and need to
++ * be restored to avoid abnormal playback speed.
++ */
++static void haswell_set_bclk(struct hda_intel *hda)
++{
++	struct azx *chip = &hda->chip;
++	int cdclk_freq;
++	unsigned int bclk_m, bclk_n;
++
++	if (!hda->need_i915_power)
++		return;
++
++	cdclk_freq = hda_get_display_clk(azx_bus(chip));
++	switch (cdclk_freq) {
++	case 337500:
++		bclk_m = 16;
++		bclk_n = 225;
++		break;
++
++	case 450000:
++	default: /* default CDCLK 450MHz */
++		bclk_m = 4;
++		bclk_n = 75;
++		break;
++
++	case 540000:
++		bclk_m = 4;
++		bclk_n = 90;
++		break;
++
++	case 675000:
++		bclk_m = 8;
++		bclk_n = 225;
++		break;
++	}
++
++	azx_writew(chip, HSW_EM4, bclk_m);
++	azx_writew(chip, HSW_EM5, bclk_n);
++}
++
+ #if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+ /*
+  * power management
+@@ -830,7 +876,7 @@ static int azx_suspend(struct device *dev)
+ 		pci_disable_msi(chip->pci);
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+ 		&& hda->need_i915_power)
+-		hda_display_power(hda, false);
++		hda_display_power(bus, false);
+ 	return 0;
+ }
+ 
+@@ -851,7 +897,7 @@ static int azx_resume(struct device *dev)
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+ 		&& hda->need_i915_power) {
+-		hda_display_power(hda, true);
++		hda_display_power(azx_bus(chip), true);
+ 		haswell_set_bclk(hda);
+ 	}
+ 	if (chip->msi)
+@@ -895,7 +941,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	azx_clear_irq_pending(chip);
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+ 		&& hda->need_i915_power)
+-		hda_display_power(hda, false);
++		hda_display_power(azx_bus(chip), false);
+ 
+ 	return 0;
+ }
+@@ -905,6 +951,7 @@ static int azx_runtime_resume(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+ 	struct hda_intel *hda;
++	struct hdac_bus *bus;
+ 	struct hda_codec *codec;
+ 	int status;
+ 
+@@ -921,11 +968,12 @@ static int azx_runtime_resume(struct device *dev)
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+ 		&& hda->need_i915_power) {
+-		hda_display_power(hda, true);
++		bus =  azx_bus(chip);
++		hda_display_power(bus, true);
+ 		haswell_set_bclk(hda);
+ 		/* toggle codec wakeup bit for STATESTS read */
+-		hda_set_codec_wakeup(hda, true);
+-		hda_set_codec_wakeup(hda, false);
++		hda_set_codec_wakeup(bus, true);
++		hda_set_codec_wakeup(bus, false);
+ 	}
+ 
+ 	/* Read STATESTS before controller reset */
+@@ -1143,10 +1191,11 @@ static int azx_free(struct azx *chip)
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	release_firmware(chip->fw);
+ #endif
++
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+ 		if (hda->need_i915_power)
+-			hda_display_power(hda, false);
+-		hda_i915_exit(hda);
++			hda_display_power(bus, false);
++		hda_i915_exit(bus);
+ 	}
+ 	kfree(hda);
+ 
+@@ -1905,6 +1954,7 @@ static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+ static int azx_probe_continue(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hdac_bus *bus = azx_bus(chip);
+ 	struct pci_dev *pci = chip->pci;
+ 	int dev = chip->dev_index;
+ 	int err;
+@@ -1921,11 +1971,11 @@ static int azx_probe_continue(struct azx *chip)
+ 		if (pci->device != 0x0f04 && pci->device != 0x2284)
+ 			hda->need_i915_power = 1;
+ 
+-		err = hda_i915_init(hda);
++		err = hda_i915_init(bus);
+ 		if (err < 0)
+ 			goto i915_power_fail;
+ 
+-		err = hda_display_power(hda, true);
++		err = hda_display_power(bus, true);
+ 		if (err < 0) {
+ 			dev_err(chip->card->dev,
+ 				"Cannot turn on display power on i915\n");
+@@ -1977,7 +2027,7 @@ static int azx_probe_continue(struct azx *chip)
+ out_free:
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+ 		&& !hda->need_i915_power)
+-		hda_display_power(hda, false);
++		hda_display_power(bus, false);
+ 
+ i915_power_fail:
+ 	if (err < 0)
+diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
+index 7fd3254..354f0bb 100644
+--- a/sound/pci/hda/hda_intel.h
++++ b/sound/pci/hda/hda_intel.h
+@@ -16,7 +16,6 @@
+ #ifndef __SOUND_HDA_INTEL_H
+ #define __SOUND_HDA_INTEL_H
+ 
+-#include <drm/i915_component.h>
+ #include "hda_controller.h"
+ 
+ struct hda_intel {
+@@ -44,36 +43,7 @@ struct hda_intel {
+ 	/* secondary power domain for hdmi audio under vga device */
+ 	struct dev_pm_domain hdmi_pm_domain;
+ 
+-	/* i915 component interface */
+ 	bool need_i915_power:1; /* the hda controller needs i915 power */
+-	struct i915_audio_component audio_component;
+-	int i915_power_refcount;
+ };
+ 
+-#ifdef CONFIG_SND_HDA_I915
+-int hda_set_codec_wakeup(struct hda_intel *hda, bool enable);
+-int hda_display_power(struct hda_intel *hda, bool enable);
+-void haswell_set_bclk(struct hda_intel *hda);
+-int hda_i915_init(struct hda_intel *hda);
+-int hda_i915_exit(struct hda_intel *hda);
+-#else
+-static inline int hda_set_codec_wakeup(struct hda_intel *hda, bool enable)
+-{
+-	return 0;
+-}
+-static inline int hda_display_power(struct hda_intel *hda, bool enable)
+-{
+-	return 0;
+-}
+-static inline void haswell_set_bclk(struct hda_intel *hda) { return; }
+-static inline int hda_i915_init(struct hda_intel *hda)
+-{
+-	return 0;
+-}
+-static inline int hda_i915_exit(struct hda_intel *hda)
+-{
+-	return 0;
+-}
+-#endif
+-
+ #endif
 -- 
 1.9.1
