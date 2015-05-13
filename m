@@ -1,15 +1,14 @@
-From: han.lu@intel.com
-Subject: [PATCH 1/1] ALSA: core: Fix regression for ELD/codec
-	information files
-Date: Wed, 13 May 2015 16:36:33 +0800
-Message-ID: <1431506193-28265-1-git-send-email-han.lu@intel.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH early RFC 0/2] Implement ASoC HDMI codec library
+Date: Wed, 13 May 2015 12:23:45 +0300
+Message-ID: <cover.1431508524.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C1C6C2605EF
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 10:38:30 +0200 (CEST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 685762651CB
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 11:23:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,32 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, libin.yang@intel.com, mengdong.lin@intel.com
-Cc: "Lu, Han" <han.lu@intel.com>
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, moinejf@free.fr, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lu, Han" <han.lu@intel.com>
+This is on early RFC and should not be merged yet. The idea is just
+to share my ideas early on as there has been a lot of development
+going on around HDMI audio.
 
-The commit c560a6797e3b ("ALSA: core: Remove child proc file elements
-recursively") introduced a regression that ELD/codec information files
-can not be found on /proc/asound/cardX/. This patch corrects it.
+The I2S DAI of the ASoC side patch is usable already, the spdif
+support has not been tested and the EDID SADs handling should use
+Russel's DRM ELD helper when it is ready.
 
-Signed-off-by: Lu, Han <han.lu@intel.com>
+The tda998x patch is just to demonstrate the usage of the
+HDMI-codec-lib. At least the audio related DT-bindings are missing
+completely and the configuration is hard coded to work on
+Beaglebone-Black.
 
-diff --git a/include/sound/info.h b/include/sound/info.h
-index 1626995..ae8d30a 100644
---- a/include/sound/info.h
-+++ b/include/sound/info.h
-@@ -149,6 +149,10 @@ static inline int snd_card_proc_new(struct snd_card *card, const char *name,
- 				    struct snd_info_entry **entryp)
- {
- 	*entryp = snd_info_create_card_entry(card, name, card->proc_root);
-+	if (snd_info_register(*entryp) < 0) {
-+		snd_info_free_entry(*entryp);
-+		*entryp = NULL;
-+	}
- 	return *entryp ? 0 : -ENOMEM;
- }
- 
+Jean-Francois, would you consider trying the generic ASoC patch with
+your HW, as I can not test the spdif functionality with mine?
+
+The library could also be implemented as a separate platform driver,
+but then adding a pointer for private data to struct
+snd_soc_dai_driver, snd_soc_codec, or to snd_soc_component would be of
+great help.
+
+These patches, my tilcdc refactoring[1], and my latest BCLK fixes for
+davinci-mcasp diver [2], can found in a branch that produces a working
+HDMI audio on Beaglebone-Black here:
+
+https://github.com/jsarha/linux.git linux-master-bbb-hdmi-20150512
+
+[1] http://lists.freedesktop.org/archives/dri-devel/2015-May/082537.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090974.html
+
+Jyri Sarha (2):
+  ASoC: hdmi-codec-lib: Add hdmi-codec-lib for external HDMI-encoders
+  drm/i2c: tda998x: HACK Implement primitive HDMI audio with ASoC
+    hdmi-code-lib
+
+ drivers/gpu/drm/i2c/Kconfig       |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c | 238 +++++++++++++++++
+ include/sound/hdmi-codec-lib.h    | 105 ++++++++
+ sound/soc/codecs/Kconfig          |   4 +
+ sound/soc/codecs/Makefile         |   2 +
+ sound/soc/codecs/hdmi-codec-lib.c | 536 ++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 886 insertions(+)
+ create mode 100644 include/sound/hdmi-codec-lib.h
+ create mode 100644 sound/soc/codecs/hdmi-codec-lib.c
+
 -- 
 1.9.1
