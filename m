@@ -1,175 +1,83 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 1/8] mfd: arizona: Split INx_MODE into two fields
-Date: Wed, 13 May 2015 13:28:27 +0100
-Message-ID: <20150513122827.GV3394@x1>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 8/8] Documentation: Add WM8998/WM1814 device tree
+ bindings
+Date: Wed, 13 May 2015 13:29:42 +0100
+Message-ID: <20150513122942.GW3394@x1>
 References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1430493319-23808-2-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1430493319-23808-9-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-gpio-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1430493319-23808-2-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
+In-Reply-To: <1430493319-23808-9-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, myungjoo.ham-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 01 May 2015, Richard Fitzgerald wrote:
 
-> Later arizona silicon has the single/differential selector
-> in a different register, and IN1_MODE only selects between
-> analogue or digital. Prepare for this by splitting the
-> INx_MODE definition into two fields.
->=20
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 > ---
->  drivers/mfd/arizona-core.c            |    8 ++++++--
->  include/linux/mfd/arizona/pdata.h     |    5 ++++-
->  include/linux/mfd/arizona/registers.h |   27 ++++++++++++++++++-----=
-----
->  3 files changed, 28 insertions(+), 12 deletions(-)
+>  Documentation/devicetree/bindings/mfd/arizona.txt |   13 +++++++++--=
+--
+>  1 files changed, 9 insertions(+), 4 deletions(-)
 
 Applied, thanks.
 
-> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> index 6ca6dfa..33fa5b5 100644
-> --- a/drivers/mfd/arizona-core.c
-> +++ b/drivers/mfd/arizona-core.c
-> @@ -977,12 +977,16 @@ int arizona_dev_init(struct arizona *arizona)
->  		/* Default for both is 0 so noop with defaults */
->  		val =3D arizona->pdata.dmic_ref[i]
->  			<< ARIZONA_IN1_DMIC_SUP_SHIFT;
-> -		val |=3D arizona->pdata.inmode[i] << ARIZONA_IN1_MODE_SHIFT;
-> +		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_DMIC)
-> +			val |=3D 1 << ARIZONA_IN1_MODE_SHIFT;
-> +		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
-> +			val |=3D 1 << ARIZONA_IN1_SINGLE_ENDED_SHIFT;
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Docu=
+mentation/devicetree/bindings/mfd/arizona.txt
+> index 7665aa9..64fa3b2 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -10,6 +10,9 @@ Required properties:
+>          "wlf,wm5110"
+>          "wlf,wm8280"
+>          "wlf,wm8997"
+> +        "wlf,wm8998"
+> +        "wlf,wm1814"
+> +
+>    - reg : I2C slave address when connected using I2C, chip select nu=
+mber when
+>      using SPI.
 > =20
->  		regmap_update_bits(arizona->regmap,
->  				   ARIZONA_IN1L_CONTROL + (i * 8),
->  				   ARIZONA_IN1_DMIC_SUP_MASK |
-> -				   ARIZONA_IN1_MODE_MASK, val);
-> +				   ARIZONA_IN1_MODE_MASK |
-> +				   ARIZONA_IN1_SINGLE_ENDED_MASK, val);
->  	}
+> @@ -31,10 +34,10 @@ Required properties:
+>      as covered in Documentation/devicetree/bindings/regulator/regula=
+tor.txt
 > =20
->  	for (i =3D 0; i < ARIZONA_MAX_OUTPUT; i++) {
-> diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/ar=
-izona/pdata.h
-> index 1789cb0..f672267 100644
-> --- a/include/linux/mfd/arizona/pdata.h
-> +++ b/include/linux/mfd/arizona/pdata.h
-> @@ -156,7 +156,10 @@ struct arizona_pdata {
->  	/** MICBIAS configurations */
->  	struct arizona_micbias micbias[ARIZONA_MAX_MICBIAS];
+>    - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies=
+ (wm5102,
+> -    wm5110, wm8280)
+> +    wm5110, wm8280, wm8998, wm1814)
 > =20
-> -	/** Mode of input structures */
-> +	/**
-> +	 * Mode of input structures
-> +	 * One of the ARIZONA_INMODE_xxx values
-> +	 */
->  	int inmode[ARIZONA_MAX_INPUT];
+>    - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (=
+wm5102,
+> -    wm5110, wm8280)
+> +    wm5110, wm8280, wm8998, wm1814)
 > =20
->  	/** Mode for outputs */
-> diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mf=
-d/arizona/registers.h
-> index aacc10d..3499d36 100644
-> --- a/include/linux/mfd/arizona/registers.h
-> +++ b/include/linux/mfd/arizona/registers.h
-> @@ -2515,9 +2515,12 @@
->  #define ARIZONA_IN1_DMIC_SUP_MASK                0x1800  /* IN1_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN1_DMIC_SUP_SHIFT                   11  /* IN1_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN1_DMIC_SUP_WIDTH                    2  /* IN1_DMIC=
-_SUP - [12:11] */
-> -#define ARIZONA_IN1_MODE_MASK                    0x0600  /* IN1_MODE=
- - [10:9] */
-> -#define ARIZONA_IN1_MODE_SHIFT                        9  /* IN1_MODE=
- - [10:9] */
-> -#define ARIZONA_IN1_MODE_WIDTH                        2  /* IN1_MODE=
- - [10:9] */
-> +#define ARIZONA_IN1_MODE_MASK                    0x0400  /* IN1_MODE=
- - [10] */
-> +#define ARIZONA_IN1_MODE_SHIFT                       10  /* IN1_MODE=
- - [10] */
-> +#define ARIZONA_IN1_MODE_WIDTH                        1  /* IN1_MODE=
- - [10] */
-> +#define ARIZONA_IN1_SINGLE_ENDED_MASK            0x0200  /* IN1_MODE=
- - [9] */
-> +#define ARIZONA_IN1_SINGLE_ENDED_SHIFT                9  /* IN1_MODE=
- - [9] */
-> +#define ARIZONA_IN1_SINGLE_ENDED_WIDTH                1  /* IN1_MODE=
- - [9] */
->  #define ARIZONA_IN1L_PGA_VOL_MASK                0x00FE  /* IN1L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN1L_PGA_VOL_SHIFT                    1  /* IN1L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN1L_PGA_VOL_WIDTH                    7  /* IN1L_PGA=
-_VOL - [7:1] */
-> @@ -2588,9 +2591,12 @@
->  #define ARIZONA_IN2_DMIC_SUP_MASK                0x1800  /* IN2_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN2_DMIC_SUP_SHIFT                   11  /* IN2_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN2_DMIC_SUP_WIDTH                    2  /* IN2_DMIC=
-_SUP - [12:11] */
-> -#define ARIZONA_IN2_MODE_MASK                    0x0600  /* IN2_MODE=
- - [10:9] */
-> -#define ARIZONA_IN2_MODE_SHIFT                        9  /* IN2_MODE=
- - [10:9] */
-> -#define ARIZONA_IN2_MODE_WIDTH                        2  /* IN2_MODE=
- - [10:9] */
-> +#define ARIZONA_IN2_MODE_MASK                    0x0400  /* IN2_MODE=
- - [10] */
-> +#define ARIZONA_IN2_MODE_SHIFT                       10  /* IN2_MODE=
- - [10] */
-> +#define ARIZONA_IN2_MODE_WIDTH                        1  /* IN2_MODE=
- - [10] */
-> +#define ARIZONA_IN2_SINGLE_ENDED_MASK            0x0200  /* IN2_MODE=
- - [9] */
-> +#define ARIZONA_IN2_SINGLE_ENDED_SHIFT                9  /* IN2_MODE=
- - [9] */
-> +#define ARIZONA_IN2_SINGLE_ENDED_WIDTH                1  /* IN2_MODE=
- - [9] */
->  #define ARIZONA_IN2L_PGA_VOL_MASK                0x00FE  /* IN2L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN2L_PGA_VOL_SHIFT                    1  /* IN2L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN2L_PGA_VOL_WIDTH                    7  /* IN2L_PGA=
-_VOL - [7:1] */
-> @@ -2661,9 +2667,12 @@
->  #define ARIZONA_IN3_DMIC_SUP_MASK                0x1800  /* IN3_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN3_DMIC_SUP_SHIFT                   11  /* IN3_DMIC=
-_SUP - [12:11] */
->  #define ARIZONA_IN3_DMIC_SUP_WIDTH                    2  /* IN3_DMIC=
-_SUP - [12:11] */
-> -#define ARIZONA_IN3_MODE_MASK                    0x0600  /* IN3_MODE=
- - [10:9] */
-> -#define ARIZONA_IN3_MODE_SHIFT                        9  /* IN3_MODE=
- - [10:9] */
-> -#define ARIZONA_IN3_MODE_WIDTH                        2  /* IN3_MODE=
- - [10:9] */
-> +#define ARIZONA_IN3_MODE_MASK                    0x0400  /* IN3_MODE=
- - [10] */
-> +#define ARIZONA_IN3_MODE_SHIFT                       10  /* IN3_MODE=
- - [10] */
-> +#define ARIZONA_IN3_MODE_WIDTH                        1  /* IN3_MODE=
- - [10] */
-> +#define ARIZONA_IN3_SINGLE_ENDED_MASK            0x0200  /* IN3_MODE=
- - [9] */
-> +#define ARIZONA_IN3_SINGLE_ENDED_SHIFT                9  /* IN3_MODE=
- - [9] */
-> +#define ARIZONA_IN3_SINGLE_ENDED_WIDTH                1  /* IN3_MODE=
- - [9] */
->  #define ARIZONA_IN3L_PGA_VOL_MASK                0x00FE  /* IN3L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN3L_PGA_VOL_SHIFT                    1  /* IN3L_PGA=
-_VOL - [7:1] */
->  #define ARIZONA_IN3L_PGA_VOL_WIDTH                    7  /* IN3L_PGA=
-_VOL - [7:1] */
+>    - SPKVDD-supply : Speaker driver power supply (wm8997)
+> =20
+> @@ -53,8 +56,10 @@ Optional properties:
+>      of input signals. Valid values are 0 (Differential), 1 (Single-e=
+nded) and
+>      2 (Digital Microphone). If absent, INn_MODE registers set to 0 b=
+y default.
+>      If present, values must be specified less than or equal to the n=
+umber of
+> -    input singals. If values less than the number of input signals, =
+elements
+> -    that has not been specifed are set to 0 by default.
+> +    input signals. If values less than the number of input signals, =
+elements
+> +    that have not been specified are set to 0 by default. Entries ar=
+e:
+> +    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
+> +    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
+> =20
+>    - wlf,dmic-ref : DMIC reference voltage source for each input, can=
+ be
+>      selected from either MICVDD or one of the MICBIAS's, defines
 
 --=20
 Lee Jones
@@ -177,7 +85,7 @@ Linaro STMicroelectronics Landing Team Lead
 Linaro.org =E2=94=82 Open source software for ARM SoCs
 =46ollow Linaro: Facebook | Twitter | Blog
 --
-To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
 n
-the body of a message to majordomo@vger.kernel.org
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
