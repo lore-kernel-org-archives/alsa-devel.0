@@ -1,17 +1,21 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: rt5677: Add reset-gpio dts option
-Date: Wed, 13 May 2015 08:25:15 -0700
-Message-ID: <1431530715-21333-1-git-send-email-anatol.pomozov@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Assert in pcm_params.c
+Date: Thu, 14 May 2015 00:03:40 +0800
+Message-ID: <CAN8ccibLLMgrfEVOBQkbc8yWhTQyWSK2A4iHPgHJO3cKy8ZRtg@mail.gmail.com>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201504201217.36477.gineera@aspect135.co.uk>
+ <201505010836.47714.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D988265CBE
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 17:25:56 +0200 (CEST)
-Received: by iebpz10 with SMTP id pz10so35351485ieb.2
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 08:25:55 -0700 (PDT)
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6374265D05
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 18:03:41 +0200 (CEST)
+Received: by oign205 with SMTP id n205so34852433oig.2
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 09:03:40 -0700 (PDT)
+In-Reply-To: <201505010836.47714.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,137 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It allows to configure codec's RESET pin gpio
+> > > The following assert is being hit in pcm_params.c:
+> > >
+> > > "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'
+> > > failed."
+> > >
+> > > This is from a developer using Portaudio in his own application; I
+have
+> > > yet to ascertain full details, but it is trying successive sample
+rates
+> > > to see which are valid.
+> >
+> > Further info: this occurs with an Intel motherboard/soundcard,
+attempting
+> > to open and config the stream at 44100 using front, surround or hdmi
+pcm,
+> > having previously opened and tried at a lower, not-supported samplerate,
+> > and closed. AFAIK other pcms work OK.
+> >
+> > The assert is hit with all current Debian and Ubuntu distros, for
+example
+> >      Debian 8 (jessie) 32 bit:  kernel 3.16.0-4-686-pae (Alsa 1.0.28)
+> > but is not seen with Fedora 20 or OpenSuse 12.1 (do they have asserts
+> > off?).
+> >
+> > > Does this point to a flaw in the configuration or possibly a bug in
+> > > Alsa-lib or can it occur just as a result of misuse of the Alsa API?
+> >
+> > I will try to conceive some more tests.  How can we debug this further?
+>
+> A minimal self-contained demo program ('test-format') has been developed
+and
+> is attached, that demonstrates the issue 100% on the reporters machine
+> (HDA-Intel, 6-ch I believe).  The output is:
+>
+> root@Xeon:/home/patest# ./test-format
+> Testing device front
+> Num channels 6
+> Testing rate: 22050   Result:...Invalid Sample Rate
+> Testing rate: 32000   Result:...Invalid Sample Rate
+> test-format: pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err
+>=
+> 0' failed.
+> Testing rate: 44100   Aborted
+>
+> Alsa-info is at:
+>
+> http://www.alsa-project.org/db/?f=19dfeee29f73007e61a00a8fabe3c958f7cb8e87
+>
+> This apparently happens with or without Pulseaudio running, with just the
+> single 44100 rate, and also with surround devices.  Also, on all current
+> Debian and Ubuntu - we have focused on Jessie.
+>
+> I do not have a machine with similar hardware, so cannot duplicate the
+> results.
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- Documentation/devicetree/bindings/sound/rt5677.txt |  2 ++
- sound/soc/codecs/rt5677.c                          | 32 ++++++++++++++++++++--
- sound/soc/codecs/rt5677.h                          |  1 +
- 3 files changed, 33 insertions(+), 2 deletions(-)
+Cannot reproduce the assert
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
-index 740ff77..f070789 100644
---- a/Documentation/devicetree/bindings/sound/rt5677.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5677.txt
-@@ -18,6 +18,7 @@ Required properties:
- Optional properties:
- 
- - realtek,pow-ldo2-gpio : The GPIO that controls the CODEC's POW_LDO2 pin.
-+- realtek,reset-gpio : The GPIO that controls the CODEC's RESET pin.
- 
- - realtek,in1-differential
- - realtek,in2-differential
-@@ -70,6 +71,7 @@ rt5677 {
- 
- 	realtek,pow-ldo2-gpio =
- 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
-+	realtek,reset-gpio = <&gpio TEGRA_GPIO(BB, 3) GPIO_ACTIVE_LOW>;
- 	realtek,in1-differential = "true";
- 	realtek,gpio-config = /bits/ 8  <0 0 0 0 0 2>;   /* pull up GPIO6 */
- 	realtek,jd2-gpio = <3>;  /* Enables Jack detection for GPIO6 */
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 8bb7be8..235064a 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4765,6 +4765,8 @@ static int rt5677_remove(struct snd_soc_codec *codec)
- 	regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
- 	if (gpio_is_valid(rt5677->pow_ldo2))
- 		gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
-+	if (gpio_is_valid(rt5677->reset_pin))
-+		gpio_set_value_cansleep(rt5677->reset_pin, 0);
- 
- 	return 0;
- }
-@@ -4780,6 +4782,8 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- 
- 		if (gpio_is_valid(rt5677->pow_ldo2))
- 			gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
-+		if (gpio_is_valid(rt5677->reset_pin))
-+			gpio_set_value_cansleep(rt5677->reset_pin, 0);
- 	}
- 
- 	return 0;
-@@ -4790,10 +4794,13 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (!rt5677->dsp_vad_en) {
--		if (gpio_is_valid(rt5677->pow_ldo2)) {
-+		if (gpio_is_valid(rt5677->pow_ldo2))
- 			gpio_set_value_cansleep(rt5677->pow_ldo2, 1);
-+		if (gpio_is_valid(rt5677->reset_pin))
-+			gpio_set_value_cansleep(rt5677->reset_pin, 1);
-+		if (gpio_is_valid(rt5677->pow_ldo2) ||
-+		    gpio_is_valid(rt5677->reset_pin))
- 			msleep(10);
--		}
- 
- 		regcache_cache_only(rt5677->regmap, false);
- 		regcache_sync(rt5677->regmap);
-@@ -5031,6 +5038,8 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- 
- 	rt5677->pow_ldo2 = of_get_named_gpio(np,
- 					"realtek,pow-ldo2-gpio", 0);
-+	rt5677->reset_pin = of_get_named_gpio(np,
-+					"realtek,reset-gpio", 0);
- 
- 	/*
- 	 * POW_LDO2 is optional (it may be statically tied on the board).
-@@ -5041,6 +5050,9 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- 	if (!gpio_is_valid(rt5677->pow_ldo2) &&
- 			(rt5677->pow_ldo2 != -ENOENT))
- 		return rt5677->pow_ldo2;
-+	if (!gpio_is_valid(rt5677->reset_pin) &&
-+			(rt5677->reset_pin != -ENOENT))
-+		return rt5677->reset_pin;
- 
- 	of_property_read_u8_array(np, "realtek,gpio-config",
- 		rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
-@@ -5142,6 +5154,7 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 		}
- 	} else {
- 		rt5677->pow_ldo2 = -EINVAL;
-+		rt5677->reset_pin = -EINVAL;
- 	}
- 
- 	if (gpio_is_valid(rt5677->pow_ldo2)) {
-@@ -5153,6 +5166,21 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 				rt5677->pow_ldo2, ret);
- 			return ret;
- 		}
-+	}
-+
-+	if (gpio_is_valid(rt5677->reset_pin)) {
-+		ret = devm_gpio_request_one(&i2c->dev, rt5677->reset_pin,
-+					    GPIOF_OUT_INIT_HIGH,
-+					    "RT5677 RESET");
-+		if (ret < 0) {
-+			dev_err(&i2c->dev, "Failed to request RESET %d: %d\n",
-+				rt5677->reset_pin, ret);
-+			return ret;
-+		}
-+	}
-+
-+	if (gpio_is_valid(rt5677->pow_ldo2) ||
-+	    gpio_is_valid(rt5677->reset_pin)) {
- 		/* Wait a while until I2C bus becomes available. The datasheet
- 		 * does not specify the exact we should wait but startup
- 		 * sequence mentiones at least a few milliseconds.
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 62571d0..7eca38a 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1776,6 +1776,7 @@ struct rt5677_priv {
- 	int pll_in;
- 	int pll_out;
- 	int pow_ldo2; /* POW_LDO2 pin */
-+	int reset_pin; /* RESET pin */
- 	enum rt5677_type type;
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip gpio_chip;
--- 
-2.2.0.rc0.207.ga3a616c
+But the only plugin associated with front device is softvol
+
+Do the assert still occur with hw device ?(without softvol plugin)
+
+You need to provide debug output by  define RULES_DEBUG in pcm_params.c
+
+What value do the distribution use for hda prealloc max size ?
+
+snd_pcm_hw_params() may fail with invalid  argument even when
+pa_isFormataupported return true
