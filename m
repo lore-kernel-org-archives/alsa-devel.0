@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v1 13/13] ASoC: qcom: document apq8016 sbc machine driver bindings
-Date: Wed, 13 May 2015 13:03:31 +0100
-Message-ID: <1431518611-7836-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 12/13] ASoC: qcom: Document apq8016 bindings.
+Date: Wed, 13 May 2015 13:03:23 +0100
+Message-ID: <1431518603-7794-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,83 +10,48 @@ To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for apq8016 sbc machine driver.
-On APQ8016 4 MI2S can be configured to different sinks like internal
-codec/external codec, this connection is controlled via 2 iomux
-registers.
+This patch updates lpass bindings with apq8016 specific bindings.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,apq8016-sbc.txt | 61 ++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+ Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-new file mode 100644
-index 0000000..01d62be
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-@@ -0,0 +1,61 @@
-+* Qualcomm Technologies APQ8016 SBC ASoC machine driver
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+index e00732d..21c6483 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+@@ -4,12 +4,21 @@ This node models the Qualcomm Technologies Low-Power Audio SubSystem (LPASS).
+ 
+ Required properties:
+ 
+-- compatible		: "qcom,lpass-cpu"
++- compatible		: "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
+ - clocks		: Must contain an entry for each entry in clock-names.
+ - clock-names		: A list which must include the following entries:
+ 				* "ahbix-clk"
+ 				* "mi2s-osr-clk"
+ 				* "mi2s-bit-clk"
++			: required clocks for "qcom,lpass-cpu-apq8016"
++				* "ahbix-clk"
++				* "mi2s-bit-clk0"
++				* "mi2s-bit-clk1"
++				* "mi2s-bit-clk2"
++				* "mi2s-bit-clk3"
++				* "pcnoc-mport-clk"
++				* "pcnoc-sway-clk"
 +
-+This node models the Qualcomm Technologies APQ8016 SBC ASoC machine driver
+ - interrupts		: Must contain an entry for each entry in
+ 			  interrupt-names.
+ - interrupt-names	: A list which must include the following entries:
+@@ -22,6 +31,8 @@ Required properties:
+ - reg-names		: A list which must include the following entries:
+ 				* "lpass-lpaif"
+ 
 +
-+Required properties:
 +
-+- compatible		: "qcom,apq8016-sbc-sndcard"
-+
-+- pinctrl-N		: One property must exist for each entry in
-+			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
-+			  for details of the property values.
-+- pinctrl-names		: Must contain a "default" entry.
-+- reg			: Must contain an address for each entry in reg-names.
-+- reg-names		: A list which must include the following entries:
-+				* "mic-iomux"
-+				* "spkr-iomux"
-+- qcom,model		: Name of the sound card.
-+
-+Dai-link subnode properties and subnodes:
-+
-+Required dai-link subnodes:
-+
-+- cpu					: CPU   sub-node
-+- codec					: CODEC sub-node
-+
-+Required CPU/CODEC subnodes properties:
-+
-+-sound-dai		: phandle and port of CPU/CODEC
-+-capture-dai		: phandle and port of CPU/CODEC
-+
-+Optional CPU/CODEC subnodes properties:
-+- external	: flag to indicate if the I2S is connected to external codec
-+Example:
-+
-+sound: sound {
-+	compatible = "qcom,apq8016-sbc-sndcard";
-+	reg = <0x07702000 0x4>, <0x07702004 0x4>;
-+	reg-names = "mic-iomux", "spkr-iomux";
-+	qcom,model = "DB410c";
-+
-+	/* I2S - Internal codec */
-+	internal-dai-link@0 {
-+		cpu { /* PRIMARY */
-+			sound-dai = <&lpass MI2S_PRIMARY>;
-+		};
-+		codec {
-+			sound-dai = <&wcd_codec 0>;
-+		};
-+	};
-+
-+	/* External Primary or External Secondary -ADV7533 HDMI */
-+	external-dai-link@0 {
-+		external;
-+		cpu { /* QUAT */
-+			sound-dai = <&lpass MI2S_QUATERNARY>;
-+		};
-+		codec {
-+			sound-dai = <&adv_bridge 0>;
-+		};
-+	};
-+};
+ Optional properties:
+ 
+ - qcom,adsp		: Phandle for the audio DSP node
 -- 
 1.9.1
