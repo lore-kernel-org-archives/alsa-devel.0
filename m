@@ -1,20 +1,18 @@
-From: sylvain.bertrand@gmail.com
-Subject: Re: USB-Audio.conf routing and dmix
-Date: Wed, 13 May 2015 11:32:15 +0000
-Message-ID: <20150513113215.GA569@freedom>
-References: <20150509002017.GB18945@freedom> <20150511195734.GA12233@freedom>
- <55531850.1020208@ladisch.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Rename HP control to
+	Headphone
+Date: Wed, 13 May 2015 11:59:43 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7010697AA@RTITMBSV03.realtek.com.tw>
+References: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 82EAB265A8C
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 13:32:17 +0200 (CEST)
-Received: by wgnd10 with SMTP id d10so37848660wgn.2
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 04:32:17 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <55531850.1020208@ladisch.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E911265ABD
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 13:59:49 +0200 (CEST)
+In-Reply-To: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Nicolas Boichat <drinkcat@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 13, 2015 at 11:24:32AM +0200, Clemens Ladisch wrote:
->>> I linked the surround51 and surround71 pcms with the 'disable-able' dmix
->>> section from the default pcm.
+> -----Original Message-----
+> From: Nicolas Boichat [mailto:drinkcat@chromium.org]
+> Sent: Wednesday, May 13, 2015 4:15 PM
+> To: alsa-devel@alsa-project.org
+> Cc: Bard Liao; Oder Chiou; Koro Chen
+> Subject: [PATCH] ASoC: rt5645: Rename HP control to Headphone
 > 
-> These devices are not supposed to use plug or dmix.
+> Use the standard name "Headphone" instead of "HP" for better userspace
+> integration.
+> 
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 
-Ok. Then, there is no pcm to output 5.1 sound with dmix.
+Acked-by: Bard Liao <bardliao@realtek.com>
 
-Does it mean that the application is in charge to build a alsa-lib pipeline
-with dmix pcm and surround51 pcm, in order to let other applications output 5.1
-sound at the same time?
+Should we send it to Mark Brown <broonie@kernel.org>?
 
-regards,
-
--- 
-Sylvain
+> 
+> ------Please consider the environment before printing this e-mail.
