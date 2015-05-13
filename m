@@ -1,52 +1,46 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add Conexant codecs CX20721, CX20722, CX20723 and CX20724
-Date: Wed, 13 May 2015 13:28:54 +0200
-Message-ID: <1431516534-7861-1-git-send-email-david.henningsson@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: 1454656@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+From: sylvain.bertrand@gmail.com
+Subject: Re: USB-Audio.conf routing and dmix
+Date: Wed, 13 May 2015 11:32:15 +0000
+Message-ID: <20150513113215.GA569@freedom>
+References: <20150509002017.GB18945@freedom> <20150511195734.GA12233@freedom>
+ <55531850.1020208@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f54.google.com (mail-wg0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82EAB265A8C
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 13:32:17 +0200 (CEST)
+Received: by wgnd10 with SMTP id d10so37848660wgn.2
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 04:32:17 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <55531850.1020208@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for Conexant HD Audio codecs
-CX20721, CX20722, CX20723 and CX20724.
+On Wed, May 13, 2015 at 11:24:32AM +0200, Clemens Ladisch wrote:
+>>> I linked the surround51 and surround71 pcms with the 'disable-able' dmix
+>>> section from the default pcm.
+> 
+> These devices are not supposed to use plug or dmix.
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1454656
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Ok. Then, there is no pcm to output 5.1 sound with dmix.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index f8f0dfb..78b719b 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -968,6 +968,14 @@ static const struct hda_codec_preset snd_hda_preset_conexant[] = {
- 	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f150b9, .name = "CX20665",
- 	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f150f1, .name = "CX20721",
-+	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f150f2, .name = "CX20722",
-+	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f150f3, .name = "CX20723",
-+	  .patch = patch_conexant_auto },
-+	{ .id = 0x14f150f4, .name = "CX20724",
-+	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f1510f, .name = "CX20751/2",
- 	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f15110, .name = "CX20751/2",
-@@ -1002,6 +1010,10 @@ MODULE_ALIAS("snd-hda-codec-id:14f150ab");
- MODULE_ALIAS("snd-hda-codec-id:14f150ac");
- MODULE_ALIAS("snd-hda-codec-id:14f150b8");
- MODULE_ALIAS("snd-hda-codec-id:14f150b9");
-+MODULE_ALIAS("snd-hda-codec-id:14f150f1");
-+MODULE_ALIAS("snd-hda-codec-id:14f150f2");
-+MODULE_ALIAS("snd-hda-codec-id:14f150f3");
-+MODULE_ALIAS("snd-hda-codec-id:14f150f4");
- MODULE_ALIAS("snd-hda-codec-id:14f1510f");
- MODULE_ALIAS("snd-hda-codec-id:14f15110");
- MODULE_ALIAS("snd-hda-codec-id:14f15111");
+Does it mean that the application is in charge to build a alsa-lib pipeline
+with dmix pcm and surround51 pcm, in order to let other applications output 5.1
+sound at the same time?
+
+regards,
+
 -- 
-1.9.1
+Sylvain
