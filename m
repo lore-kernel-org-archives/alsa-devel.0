@@ -1,79 +1,183 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC suspend resume question
-Date: Wed, 13 May 2015 12:48:26 +0100
-Message-ID: <20150513114826.GN3066@sirena.org.uk>
-References: <CAOV7ByJ+R1df0HgCB-w5zW9re5rE8abNFw5_of8ZRobcdiMP5Q@mail.gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 1/8] mfd: arizona: Split INx_MODE into two fields
+Date: Wed, 13 May 2015 13:28:27 +0100
+Message-ID: <20150513122827.GV3394@x1>
+References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1430493319-23808-2-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0545855950047037483=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 412B9266042
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 14:18:26 +0200 (CEST)
-In-Reply-To: <CAOV7ByJ+R1df0HgCB-w5zW9re5rE8abNFw5_of8ZRobcdiMP5Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: Dylan Reid <dgreid@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1430493319-23808-2-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, cw00.choi@samsung.com, myungjoo.ham@samsung.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 01 May 2015, Richard Fitzgerald wrote:
 
---===============0545855950047037483==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="O6uyWUGY5J97yCxj"
-Content-Disposition: inline
+> Later arizona silicon has the single/differential selector
+> in a different register, and IN1_MODE only selects between
+> analogue or digital. Prepare for this by splitting the
+> INx_MODE definition into two fields.
+>=20
+> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> ---
+>  drivers/mfd/arizona-core.c            |    8 ++++++--
+>  include/linux/mfd/arizona/pdata.h     |    5 ++++-
+>  include/linux/mfd/arizona/registers.h |   27 ++++++++++++++++++-----=
+----
+>  3 files changed, 28 insertions(+), 12 deletions(-)
 
+Applied, thanks.
 
---O6uyWUGY5J97yCxj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> index 6ca6dfa..33fa5b5 100644
+> --- a/drivers/mfd/arizona-core.c
+> +++ b/drivers/mfd/arizona-core.c
+> @@ -977,12 +977,16 @@ int arizona_dev_init(struct arizona *arizona)
+>  		/* Default for both is 0 so noop with defaults */
+>  		val =3D arizona->pdata.dmic_ref[i]
+>  			<< ARIZONA_IN1_DMIC_SUP_SHIFT;
+> -		val |=3D arizona->pdata.inmode[i] << ARIZONA_IN1_MODE_SHIFT;
+> +		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_DMIC)
+> +			val |=3D 1 << ARIZONA_IN1_MODE_SHIFT;
+> +		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
+> +			val |=3D 1 << ARIZONA_IN1_SINGLE_ENDED_SHIFT;
+> =20
+>  		regmap_update_bits(arizona->regmap,
+>  				   ARIZONA_IN1L_CONTROL + (i * 8),
+>  				   ARIZONA_IN1_DMIC_SUP_MASK |
+> -				   ARIZONA_IN1_MODE_MASK, val);
+> +				   ARIZONA_IN1_MODE_MASK |
+> +				   ARIZONA_IN1_SINGLE_ENDED_MASK, val);
+>  	}
+> =20
+>  	for (i =3D 0; i < ARIZONA_MAX_OUTPUT; i++) {
+> diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/ar=
+izona/pdata.h
+> index 1789cb0..f672267 100644
+> --- a/include/linux/mfd/arizona/pdata.h
+> +++ b/include/linux/mfd/arizona/pdata.h
+> @@ -156,7 +156,10 @@ struct arizona_pdata {
+>  	/** MICBIAS configurations */
+>  	struct arizona_micbias micbias[ARIZONA_MAX_MICBIAS];
+> =20
+> -	/** Mode of input structures */
+> +	/**
+> +	 * Mode of input structures
+> +	 * One of the ARIZONA_INMODE_xxx values
+> +	 */
+>  	int inmode[ARIZONA_MAX_INPUT];
+> =20
+>  	/** Mode for outputs */
+> diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mf=
+d/arizona/registers.h
+> index aacc10d..3499d36 100644
+> --- a/include/linux/mfd/arizona/registers.h
+> +++ b/include/linux/mfd/arizona/registers.h
+> @@ -2515,9 +2515,12 @@
+>  #define ARIZONA_IN1_DMIC_SUP_MASK                0x1800  /* IN1_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN1_DMIC_SUP_SHIFT                   11  /* IN1_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN1_DMIC_SUP_WIDTH                    2  /* IN1_DMIC=
+_SUP - [12:11] */
+> -#define ARIZONA_IN1_MODE_MASK                    0x0600  /* IN1_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN1_MODE_SHIFT                        9  /* IN1_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN1_MODE_WIDTH                        2  /* IN1_MODE=
+ - [10:9] */
+> +#define ARIZONA_IN1_MODE_MASK                    0x0400  /* IN1_MODE=
+ - [10] */
+> +#define ARIZONA_IN1_MODE_SHIFT                       10  /* IN1_MODE=
+ - [10] */
+> +#define ARIZONA_IN1_MODE_WIDTH                        1  /* IN1_MODE=
+ - [10] */
+> +#define ARIZONA_IN1_SINGLE_ENDED_MASK            0x0200  /* IN1_MODE=
+ - [9] */
+> +#define ARIZONA_IN1_SINGLE_ENDED_SHIFT                9  /* IN1_MODE=
+ - [9] */
+> +#define ARIZONA_IN1_SINGLE_ENDED_WIDTH                1  /* IN1_MODE=
+ - [9] */
+>  #define ARIZONA_IN1L_PGA_VOL_MASK                0x00FE  /* IN1L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN1L_PGA_VOL_SHIFT                    1  /* IN1L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN1L_PGA_VOL_WIDTH                    7  /* IN1L_PGA=
+_VOL - [7:1] */
+> @@ -2588,9 +2591,12 @@
+>  #define ARIZONA_IN2_DMIC_SUP_MASK                0x1800  /* IN2_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN2_DMIC_SUP_SHIFT                   11  /* IN2_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN2_DMIC_SUP_WIDTH                    2  /* IN2_DMIC=
+_SUP - [12:11] */
+> -#define ARIZONA_IN2_MODE_MASK                    0x0600  /* IN2_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN2_MODE_SHIFT                        9  /* IN2_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN2_MODE_WIDTH                        2  /* IN2_MODE=
+ - [10:9] */
+> +#define ARIZONA_IN2_MODE_MASK                    0x0400  /* IN2_MODE=
+ - [10] */
+> +#define ARIZONA_IN2_MODE_SHIFT                       10  /* IN2_MODE=
+ - [10] */
+> +#define ARIZONA_IN2_MODE_WIDTH                        1  /* IN2_MODE=
+ - [10] */
+> +#define ARIZONA_IN2_SINGLE_ENDED_MASK            0x0200  /* IN2_MODE=
+ - [9] */
+> +#define ARIZONA_IN2_SINGLE_ENDED_SHIFT                9  /* IN2_MODE=
+ - [9] */
+> +#define ARIZONA_IN2_SINGLE_ENDED_WIDTH                1  /* IN2_MODE=
+ - [9] */
+>  #define ARIZONA_IN2L_PGA_VOL_MASK                0x00FE  /* IN2L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN2L_PGA_VOL_SHIFT                    1  /* IN2L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN2L_PGA_VOL_WIDTH                    7  /* IN2L_PGA=
+_VOL - [7:1] */
+> @@ -2661,9 +2667,12 @@
+>  #define ARIZONA_IN3_DMIC_SUP_MASK                0x1800  /* IN3_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN3_DMIC_SUP_SHIFT                   11  /* IN3_DMIC=
+_SUP - [12:11] */
+>  #define ARIZONA_IN3_DMIC_SUP_WIDTH                    2  /* IN3_DMIC=
+_SUP - [12:11] */
+> -#define ARIZONA_IN3_MODE_MASK                    0x0600  /* IN3_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN3_MODE_SHIFT                        9  /* IN3_MODE=
+ - [10:9] */
+> -#define ARIZONA_IN3_MODE_WIDTH                        2  /* IN3_MODE=
+ - [10:9] */
+> +#define ARIZONA_IN3_MODE_MASK                    0x0400  /* IN3_MODE=
+ - [10] */
+> +#define ARIZONA_IN3_MODE_SHIFT                       10  /* IN3_MODE=
+ - [10] */
+> +#define ARIZONA_IN3_MODE_WIDTH                        1  /* IN3_MODE=
+ - [10] */
+> +#define ARIZONA_IN3_SINGLE_ENDED_MASK            0x0200  /* IN3_MODE=
+ - [9] */
+> +#define ARIZONA_IN3_SINGLE_ENDED_SHIFT                9  /* IN3_MODE=
+ - [9] */
+> +#define ARIZONA_IN3_SINGLE_ENDED_WIDTH                1  /* IN3_MODE=
+ - [9] */
+>  #define ARIZONA_IN3L_PGA_VOL_MASK                0x00FE  /* IN3L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN3L_PGA_VOL_SHIFT                    1  /* IN3L_PGA=
+_VOL - [7:1] */
+>  #define ARIZONA_IN3L_PGA_VOL_WIDTH                    7  /* IN3L_PGA=
+_VOL - [7:1] */
 
-On Tue, May 12, 2015 at 07:08:13PM -0700, Ben Zhang wrote:
-
-> I have a question about the design of ASoC suspend/resume path. Who
-> should call snd_soc_suspend() and snd_soc_resume()?
-
-> They are part of the soc-audio driver's dev_pm_ops, but some ASoC
-> platform drivers also calls them. For example,
-
-> hsw_pcm_prepare() in sound/soc/intel/haswell/sst-haswell-pcm.c
-> sst_soc_prepare() in sound/soc/intel/atom/sst-mfld-platform-pcm.c
-
-The machine driver needs to ensure that they are called.  If it has
-nothing specific it needs to do it can just provide them as ops
-directly, or it can call them from within its own suspend and resume
-calls.  No new systems should be using the soc-audio device.
-
---O6uyWUGY5J97yCxj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVUzoJAAoJECTWi3JdVIfQLnAH/39tfiaIcYaPSlEr7UVxPJpt
-mtUYK5MlkSVdW1b0J/4RZq6gCnpIcRc/fxw7zf3fFsIbvFM3AW+pXF0cihGPkzGr
-FZPMlj7QwBSPo9FBLQQFB7c399gpS+XOwrMZAO197bTY8SpqG1UwLzeu4AonqgfK
-574J8ykYVAMGfw80EsvzE1wK0la6yk0WOitIQx9/Elkk1TPf9I7W3Xnhhn5KxSQ3
-J6CRjrX64lY16ggnTWdgLq3YXFVdIPVafhUCuE/2tA2wnWfFJ7f0DQU7CnZZo/7w
-5YZ0pQJVHE2WDr64G7AVIm20YVvC0o7D+hBGq7B9qRHrOVoHDNtfHX5xUW8oMoA=
-=ih3q
------END PGP SIGNATURE-----
-
---O6uyWUGY5J97yCxj--
-
---===============0545855950047037483==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0545855950047037483==--
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
+--
+To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
