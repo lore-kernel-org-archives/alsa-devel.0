@@ -1,43 +1,49 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH early RFC 0/2] Implement ASoC HDMI codec library
-Date: Wed, 13 May 2015 19:42:36 +0200
-Message-ID: <20150513194236.68a0d0a6@armhf>
-References: <cover.1431508524.git.jsarha@ti.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC: codecs-ac97: make selectable in config
+Date: Wed, 13 May 2015 22:57:24 +0200
+Message-ID: <5553BAB4.3040209@maciej.szmigiero.name>
+References: <554E8634.2010008@maciej.szmigiero.name> <20150512175807.GL3066@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1431508524.git.jsarha@ti.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150512175807.GL3066@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMyBNYXkgMjAxNSAxMjoyMzo0NSArMDMwMApKeXJpIFNhcmhhIDxqc2FyaGFAdGku
-Y29tPiB3cm90ZToKCj4gSmVhbi1GcmFuY29pcywgd291bGQgeW91IGNvbnNpZGVyIHRyeWluZyB0
-aGUgZ2VuZXJpYyBBU29DIHBhdGNoIHdpdGgKPiB5b3VyIEhXLCBhcyBJIGNhbiBub3QgdGVzdCB0
-aGUgc3BkaWYgZnVuY3Rpb25hbGl0eSB3aXRoIG1pbmU/CgpIaSBKeXJpLAoKSSBhbSBub3Qgc3Vy
-ZSB0byBuZWVkIGFsbCB0aGUgc3R1ZmYgeW91IGNvZGVkLgoKTXkgdGRhOTk4eCBDT0RFQyBpcyBx
-dWl0ZSBlbXB0eSBhbmQgaXQgd29ya3MgZmluZSBpbiBteSBzeXN0ZW0uCklmIHlvdSBsb29rIGF0
-IG15IGxhc3QgcGF0Y2ggcmVxdWVzdCAoW1BBVENIIHYxMiA2LzZdIEFTb0M6IHRkYTk5OHg6CmFk
-ZCBhIGNvZGVjIHRvIHRoZSBIRE1JIHRyYW5zbWl0dGVyIC0KaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LU1heS8wOTE3NTguaHRtbCksCnRo
-ZSBjb2RlIGlzIG11Y2ggc21hbGxlciB0aGFuIHlvdXJzIGFuZCBkb2VzIG5vdCBhc2sgZm9yIGEg
-c3RydWN0dXJlCmNvbnN0cmFpbnQgKCsvKiBIYXMgdG8gYmUgdGhlIGZpcnN0IG1lbWJlciBvZiB0
-aGUgaGRtaSBlbmRjb2RlcidzCmRydmRhdGEgKi8pLgoKU28sIEknZCByYXRoZXIgc2VlIGEgcmVh
-bCBoZG1pIGNvZGVjIGxpYnJhcnksIGkuZS4gYSBzZXQgb2YgY29tbW9uCmZ1bmN0aW9ucyBhcyBS
-dXNzZWxsJ3MgRFJNIEVMRCBoZWxwZXIsIGVhY2ggc3BlY2lmaWMgaGRtaSBjb2RlYyBiZWluZwpm
-cmVlIGFib3V0IHRoZSBtZWNoYW5pc20gdXNlZCBmb3IgdGhlIGV4Y2hhbmdlcyB3aXRoIHRoZSBo
-ZG1pCnRyYW5zbWl0dGVyLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemgg
-aGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGlu
-ZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+Thanks for looking into the patch.
+
+W dniu 12.05.2015 19:58, Mark Brown pisze:
+> On Sun, May 10, 2015 at 12:12:04AM +0200, Maciej S. Szmigiero wrote:
+> 
+>> @@ -16,7 +16,7 @@ config SND_SOC_ALL_CODECS
+>>  	select SND_SOC_88PM860X if MFD_88PM860X
+>>  	select SND_SOC_L3
+>>  	select SND_SOC_AB8500_CODEC if ABX500_CORE
+>> -	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
+>> +	select SND_SOC_AC97_CODEC
+>>  	select SND_SOC_AD1836 if SPI_MASTER
+>>  	select SND_SOC_AD193X_SPI if SPI_MASTER
+>>  	select SND_SOC_AD193X_I2C if I2C
+> 
+> No, you're missing the point of what _ALL_CODECS does - it builds
+> everything possible.  This will break the build for systems without
+> AC'97 support.
+
+How?
+In the second hunk of the patch I've made SND_SOC_AC97_CODEC select
+SND_SOC_AC97_BUS.
+
+ASoC AC'97 CODEC uses only AC'97 symbols defined in
+pci/ac97/ac97_codec.c, pci/ac97/ac97_pcm.c and sound/soc/soc-ac97.c.
+
+pci/ac97/ac97_codec.c, pci/ac97/ac97_pcm.c will be built via
+SND_SOC_ALL_CODECS -> SND_SOC_AC97_CODEC -> SND_AC97_CODEC dependency.
+
+sound/soc/soc-ac97.c will be build via SND_SOC_ALL_CODECS ->
+SND_SOC_AC97_CODEC -> SND_SOC_AC97_BUS dependency.
+
+Best regards,
+Maciej Szmigiero
