@@ -1,44 +1,51 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [RFC PATCH] ALSA: pcm: Modify double acknowledged interrupts check condition
-Date: Wed, 13 May 2015 22:39:03 +0800
-Message-ID: <1431527943-64178-1-git-send-email-koro.chen@mediatek.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: rt5645: Rename HP control
+	to	Headphone
+Date: Wed, 13 May 2015 15:45:56 +0100
+Message-ID: <20150513144556.GJ3480@opensource.wolfsonmicro.com>
+References: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
+ <ABFD875FF5FB574BA706497D987D48D7010697AA@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB10E265B93
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 16:45:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7010697AA@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas Boichat <drinkcat@chromium.org>, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently in snd_pcm_update_hw_ptr0 during interrupt,
-we consider there were double acknowledged interrupts when:
-1. HW reported pointer is smaller than expected, and
-2. Time from last update time (hdelta) is over half a buffer time.
+On Wed, May 13, 2015 at 11:59:43AM +0000, Bard Liao wrote:
+> > -----Original Message-----
+> > From: Nicolas Boichat [mailto:drinkcat@chromium.org]
+> > Sent: Wednesday, May 13, 2015 4:15 PM
+> > To: alsa-devel@alsa-project.org
+> > Cc: Bard Liao; Oder Chiou; Koro Chen
+> > Subject: [PATCH] ASoC: rt5645: Rename HP control to Headphone
+> > 
+> > Use the standard name "Headphone" instead of "HP" for better userspace
+> > integration.
+> > 
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> 
+> Acked-by: Bard Liao <bardliao@realtek.com>
+> 
+> Should we send it to Mark Brown <broonie@kernel.org>?
 
-However, when HW reported pointer is only a few bytes smaller than
-expected, and when hdelta is just a little larger than half a buffer time
-(e.g. ping-pong buffer), it wrongly treats this IRQ as double acknowledged.
+Yes, he is the maintainer that would apply it so the patch needs
+to be sent to him.
 
-The condition #2 uses jiffies, but jiffies is not high resolution
-since it is integer. We should consider jiffies inaccuracy.
-
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
----
- sound/core/pcm_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index ac6b33f..7d45645 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -339,7 +339,7 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		if (delta > new_hw_ptr) {
- 			/* check for double acknowledged interrupts */
- 			hdelta = curr_jiffies - runtime->hw_ptr_jiffies;
--			if (hdelta > runtime->hw_ptr_buffer_jiffies/2) {
-+			if (hdelta > runtime->hw_ptr_buffer_jiffies/2 + 1) {
- 				hw_base += runtime->buffer_size;
- 				if (hw_base >= runtime->boundary) {
- 					hw_base = 0;
--- 
-1.8.1.1.dirty
+Thanks,
+Charles
