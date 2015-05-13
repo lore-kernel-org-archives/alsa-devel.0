@@ -1,91 +1,73 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 8/8] Documentation: Add WM8998/WM1814 device tree
- bindings
-Date: Wed, 13 May 2015 13:29:42 +0100
-Message-ID: <20150513122942.GW3394@x1>
-References: <1430493319-23808-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1430493319-23808-9-git-send-email-rf@opensource.wolfsonmicro.com>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: commit b1ef29725865 (ACPI _REV=2) causes sound regression on Dell XPS 13 [Was: Discussion around quirking the _REV behavior for the XPS 13 (2015) until 4.2]
+Date: Wed, 13 May 2015 15:44:09 +0200
+Message-ID: <1435132.ABVHTMV8VU@vostro.rjw.lan>
+References: <55401602.5050907@dell.com> <28099406.1MOrFLUSgY@vostro.rjw.lan> <20150513063647.GA2479@air.dominikbrodowski.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1430493319-23808-9-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, myungjoo.ham-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20150513063647.GA2479@air.dominikbrodowski.net>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Matthew Garrett <matthew.garrett@coreos.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Mario Limonciello <mario_limonciello@dell.com>, Mark Brown <broonie@kernel.org>, "robert.moore@intel.com" <robert.moore@intel.com>, "lv.zheng@intel.com" <lv.zheng@intel.com>, "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>, "han.lu@intel.com" <han.lu@intel.com>, "yang.jie@intel.com" <yang.jie@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Matthew Garrett <mjg59@coreos.com>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 01 May 2015, Richard Fitzgerald wrote:
+On Wednesday, May 13, 2015 08:36:47 AM Dominik Brodowski wrote:
+> 
+> --3MwIy2ne0vdjdPXF
+> Content-Type: text/plain; charset=us-ascii
+> Content-Disposition: inline
+> Content-Transfer-Encoding: quoted-printable
+> 
+> On Wed, May 13, 2015 at 01:38:59AM +0200, Rafael J. Wysocki wrote:
+> > On Tuesday, May 12, 2015 10:43:33 AM Matthew Garrett wrote:
+> > > On Tue, May 12, 2015 at 10:29 AM, Mario Limonciello
+> > > <mario_limonciello@dell.com> wrote:
+> > > > Just to be clear, from the Dell side only the XPS 13 9343 has this _R=
+> EV
+> > > > behavior.
+> > >=20
+> > > The Inspiron 7437 queries _REV and uses it to modify its EC behaviour,
+> > > and apparently breaks on Linux without that.
+> > >=20
+> > > > What's wrong with a DMI quirk until I2S is mature on the kernel side =
+> and
+> > > > userspace is new enough in distros?  Is it too early in boot for DMI =
+> quirks?
+> > > > That would enforce that no other machines can use _REV value of 5 to =
+> detect
+> > > > Linux without breaking the 9343.
+> > >=20
+> > > DMI quirking is fine, but it has to be behind a config option. We're
+> > > going to have to carry the quirk for several years because we have to
+> > > support old userspace for an arbitrarily long time, and if there's no
+> > > config option then Linux will be stuck in HDA mode for that entire
+> > > time.
+> >=20
+> > One problem with the DMI-based approach is that _REV is constant in ACPIC=
+> A,
+> > so to be able to return different values from it for different systems, w=
+> e'll
+> > need to add some ACPICA-ish code handling that specifically for Linux and
+> > we're a bit too late in the cycle for that.
+> >=20
+> > So here's what I'm going to do.  I'll revert commit b1ef29725865 for 4.1,
+> > but *only* for 4.1 (I've actually queued up a revert of it already) and
+> > I'll revert that revert during the 4.2 merge window.
+> 
+> Sounds like a good plan. Thanks!
+> 
+> > In the meantime, we'll develop the code to implement the DMI-based quirks
+> > for the Dells and apply it for 4.2.
+> >=20
+> > Are there any volunteers for doing the last part?
+> 
+> Will try to prepare patches for that tomorrow.
 
-> Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/mfd/arizona.txt |   13 +++++++++--=
---
->  1 files changed, 9 insertions(+), 4 deletions(-)
+Thanks a lot!
+ 
 
-Applied, thanks.
-
-> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Docu=
-mentation/devicetree/bindings/mfd/arizona.txt
-> index 7665aa9..64fa3b2 100644
-> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> @@ -10,6 +10,9 @@ Required properties:
->          "wlf,wm5110"
->          "wlf,wm8280"
->          "wlf,wm8997"
-> +        "wlf,wm8998"
-> +        "wlf,wm1814"
-> +
->    - reg : I2C slave address when connected using I2C, chip select nu=
-mber when
->      using SPI.
-> =20
-> @@ -31,10 +34,10 @@ Required properties:
->      as covered in Documentation/devicetree/bindings/regulator/regula=
-tor.txt
-> =20
->    - DBVDD2-supply, DBVDD3-supply : Additional databus power supplies=
- (wm5102,
-> -    wm5110, wm8280)
-> +    wm5110, wm8280, wm8998, wm1814)
-> =20
->    - SPKVDDL-supply, SPKVDDR-supply : Speaker driver power supplies (=
-wm5102,
-> -    wm5110, wm8280)
-> +    wm5110, wm8280, wm8998, wm1814)
-> =20
->    - SPKVDD-supply : Speaker driver power supply (wm8997)
-> =20
-> @@ -53,8 +56,10 @@ Optional properties:
->      of input signals. Valid values are 0 (Differential), 1 (Single-e=
-nded) and
->      2 (Digital Microphone). If absent, INn_MODE registers set to 0 b=
-y default.
->      If present, values must be specified less than or equal to the n=
-umber of
-> -    input singals. If values less than the number of input signals, =
-elements
-> -    that has not been specifed are set to 0 by default.
-> +    input signals. If values less than the number of input signals, =
-elements
-> +    that have not been specified are set to 0 by default. Entries ar=
-e:
-> +    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
-> +    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
-> =20
->    - wlf,dmic-ref : DMIC reference voltage source for each input, can=
- be
->      selected from either MICVDD or one of the MICBIAS's, defines
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+I speak only for myself.
+Rafael J. Wysocki, Intel Open Source Technology Center.
