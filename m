@@ -1,35 +1,61 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: codecs-ac97: make selectable in config
-Date: Thu, 14 May 2015 21:24:15 +0200
-Message-ID: <5554F65F.7090004@metafoo.de>
-References: <554E8634.2010008@maciej.szmigiero.name> <20150512175807.GL3066@sirena.org.uk> <5553BAB4.3040209@maciej.szmigiero.name> <20150514175351.GQ2761@sirena.org.uk> <5554ED71.4040608@metafoo.de> <20150514191031.GS2761@sirena.org.uk>
+Date: Thu, 14 May 2015 20:28:47 +0100
+Message-ID: <20150514192847.GV2761@sirena.org.uk>
+References: <554E8634.2010008@maciej.szmigiero.name>
+ <20150512175807.GL3066@sirena.org.uk>
+ <5553BAB4.3040209@maciej.szmigiero.name>
+ <20150514175351.GQ2761@sirena.org.uk>
+ <5554ED71.4040608@metafoo.de>
+ <20150514191031.GS2761@sirena.org.uk>
+ <5554F65F.7090004@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="B4kTqtjDNMSIbfiv"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150514191031.GS2761@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <5554F65F.7090004@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/14/2015 09:10 PM, Mark Brown wrote:
-> On Thu, May 14, 2015 at 08:46:09PM +0200, Lars-Peter Clausen wrote:
->> On 05/14/2015 07:53 PM, Mark Brown wrote:
->
->>> select doesn't respect dependencies, it'll just force on the selected
->>> symbol.
->
->> The patch works fine, neither SND_SOC_AC97_BUS nor the symbols selected by
->> SND_SOC_AC97_BUS have any dependencies.
->
-> Does the select from SND_SOC_AC97_BUS actually happen if it is selected
-> by SND_SOC_ALL_CODECS?  That's the issue, if it works now it's a
-> relatively recent thing.
 
-I'm not sure I fully understand what you mean.
+--B4kTqtjDNMSIbfiv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The Kconfig entry for the CODEC has no 'depends on'. It does a 'select 
-SND_SOC_AC97_BUS', which means all built time dependencies are pulled in 
-this way. So if SND_SOC_ALL_CODECS selects the CODEC unconditionally that 
-should work fine, since no dependencies are bypassed.
+On Thu, May 14, 2015 at 09:24:15PM +0200, Lars-Peter Clausen wrote:
+> On 05/14/2015 09:10 PM, Mark Brown wrote:
+
+> >Does the select from SND_SOC_AC97_BUS actually happen if it is selected
+> >by SND_SOC_ALL_CODECS?  That's the issue, if it works now it's a
+> >relatively recent thing.
+
+> I'm not sure I fully understand what you mean.
+
+> The Kconfig entry for the CODEC has no 'depends on'. It does a 'select
+> SND_SOC_AC97_BUS', which means all built time dependencies are pulled in
+> this way. So if SND_SOC_ALL_CODECS selects the CODEC unconditionally that
+> should work fine, since no dependencies are bypassed.
+
+No, it's not just dependencies but also selects that get ignored (or
+used to anyway like I say) - a select just forces the symbol on.
+
+--B4kTqtjDNMSIbfiv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVVPduAAoJECTWi3JdVIfQ/eYH/ijmFCdHVhYrarYNrn0SGB8y
+BdO62i6ekx8hTOYtZ/jYmNMaY6j0FMIdHuIF9Xgnl1lQIeJ2xF4iZg959B0tjfGf
+/pUjot7+gyJkYD9gIkAbVMmv/xB0PP9YOuBlKQVwUcxRsdEPNGI73S7aLXYJv85Q
+GCZw5PiPRtWtrhhjBkd5SY/fx5RgFCBlkOaSUOmaBxp83AVB3n2o3gsf4FxC59eO
+anE3r2cXJjPuMsKyAyE45MwZyG0kQnOBv+W8VnOpcMIAUefZU49Bjx4NDg4wyY9R
+3R18UAH31NkbFKSq8hs46UFPHd7ePAUIEIocRkG9GNomJDJEu8oGiuBBHoJuSMs=
+=t0jE
+-----END PGP SIGNATURE-----
+
+--B4kTqtjDNMSIbfiv--
