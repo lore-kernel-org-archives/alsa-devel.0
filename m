@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs-ac97: make selectable in
-	config
-Date: Thu, 14 May 2015 20:10:31 +0100
-Message-ID: <20150514191031.GS2761@sirena.org.uk>
-References: <554E8634.2010008@maciej.szmigiero.name>
- <20150512175807.GL3066@sirena.org.uk>
- <5553BAB4.3040209@maciej.szmigiero.name>
- <20150514175351.GQ2761@sirena.org.uk> <5554ED71.4040608@metafoo.de>
+Subject: Re: [PATCH 01/11] ASoC: sta32x: Replace direct
+ snd_soc_codec dapm field access
+Date: Thu, 14 May 2015 20:14:37 +0100
+Message-ID: <20150514191437.GT2761@sirena.org.uk>
+References: <1431595203-12851-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5249144592237757191=="
+Content-Type: multipart/mixed; boundary="===============0092847285978561114=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A4962605A1
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 21:10:46 +0200 (CEST)
-In-Reply-To: <5554ED71.4040608@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C10726058F
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 21:14:57 +0200 (CEST)
+In-Reply-To: <1431595203-12851-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Bard Liao <bardliao@realtek.com>, Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Sven Brandau <brandau@gmx.de>, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jerry Wong <jerry.wong@maximintegrated.com>, Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5249144592237757191==
+--===============0092847285978561114==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fCjW77bNSYaih4x3"
+	protocol="application/pgp-signature"; boundary="oYHLzUxHEKq3fcvW"
 Content-Disposition: inline
 
 
---fCjW77bNSYaih4x3
+--oYHLzUxHEKq3fcvW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 14, 2015 at 08:46:09PM +0200, Lars-Peter Clausen wrote:
-> On 05/14/2015 07:53 PM, Mark Brown wrote:
+On Thu, May 14, 2015 at 11:19:53AM +0200, Lars-Peter Clausen wrote:
+> The dapm field of the snd_soc_codec struct is eventually going to be
+> removed, in preparation for this replace all manual access to
+> codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
-> >select doesn't respect dependencies, it'll just force on the selected
-> >symbol.
+Applied all, thanks.
 
-> The patch works fine, neither SND_SOC_AC97_BUS nor the symbols selected by
-> SND_SOC_AC97_BUS have any dependencies.
-
-Does the select from SND_SOC_AC97_BUS actually happen if it is selected
-by SND_SOC_ALL_CODECS?  That's the issue, if it works now it's a
-relatively recent thing.
-
---fCjW77bNSYaih4x3
+--oYHLzUxHEKq3fcvW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVVPMnAAoJECTWi3JdVIfQt7UH/2QB42+b17u+mDyLz6wscekP
-tmN0E+OPyhYWQIgKyhialNjGZV3AAu72lP0Ic4VAj3CdnSg24fsYq//IK4VeERts
-G1JvK6zU/41OWILHqsyZgoWXJyHBa56VV3y+dtxy8NOqVKRSX2njtpP5IxqvgNj+
-wH3ZM8romS5/NxM5/Q88bkHWu8JDL5rq9003ZR5ZOux/BEEtqAHVNfGUbvDy68vO
-aOzM+cXdJ3muLknuyc0DCZhdO81FhXBPcWxJrm5a+Gyf2g9GB5Uqr/3XS4/yWULO
-bl/i0rGi9vjIV7MPS1eSipkaiUYY0UA0s7Y2FxuRIqDoT6Bf7SuPpWQo4UykTL4=
-=MWq6
+iQEcBAEBCAAGBQJVVPQcAAoJECTWi3JdVIfQhcoH/R56G6eLN42ZDa3ciMoFRha0
+8k5RsBuEpcKgNZRgICRZfBKBF8K/6Prtx/Z+X6s/iOHE61RTRyqDVhM0Or1cF4AC
+LYTk6alkJIJlO68HDEA3xlpY/S8/1GlCvn+D4M1sICNAhvF/e0Zs9YzN6yHaY04A
+ltk3OCazZQ93A9PyidCgSJwBlOEP5UInwnZ5ZEs0oFbSQuYKvv/4c5i8gQ/9P4Kb
+D4kLkZJ/cy54LneE4jPU/QZ1q61SbdNr+ieKps+jp1VxiIaQj/3sYUP4gN+z8RX7
+klfBfaRcMSWvdZlCrn9ovbC6PQwvSUqk+7YzRqo6ihOc0+hXCDvicxDCeSZrfKw=
+=GAhE
 -----END PGP SIGNATURE-----
 
---fCjW77bNSYaih4x3--
+--oYHLzUxHEKq3fcvW--
 
---===============5249144592237757191==
+--===============0092847285978561114==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5249144592237757191==--
+--===============0092847285978561114==--
