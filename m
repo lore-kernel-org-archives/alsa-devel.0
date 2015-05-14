@@ -1,88 +1,66 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Assert in pcm_params.c
-Date: Thu, 14 May 2015 09:34:32 +0800
-Message-ID: <CAN8cciZCDiz2ihbxSZZ5zovtkvX_EBWc6v2BG=wevCq2_WBaYg@mail.gmail.com>
-References: <201504180908.47022.gineera@aspect135.co.uk>
- <201504201217.36477.gineera@aspect135.co.uk>
- <201505010836.47714.gineera@aspect135.co.uk>
+From: zhengxing <zhengxing@rock-chips.com>
+Subject: Re: [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
+Date: Thu, 14 May 2015 10:22:18 +0800
+Message-ID: <555406DA.8040709@rock-chips.com>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com> <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com> <20150512192215.GZ3066@sirena.org.uk> <55535035.5070608@rock-chips.com> <20150513164250.GB2761@sirena.org.uk> <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com> <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id CB92B2605D3
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 03:34:33 +0200 (CEST)
-Received: by oiko83 with SMTP id o83so45419964oik.1
- for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 18:34:32 -0700 (PDT)
-In-Reply-To: <201505010836.47714.gineera@aspect135.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>, Leif Asbrink <leif@sm5bsz.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, Xing Zheng <acgzxing@gmail.com>, Douglas Anderson <dianders@chromium.org>, =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>, Sonny Rao <sonnyrao@chromium.org>, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > The following assert is being hit in pcm_params.c:
-> > >
-> > > "pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >= 0'
-> > > failed."
-> > >
-> > > This is from a developer using Portaudio in his own application; I have
-> > > yet to ascertain full details, but it is trying successive sample rates
-> > > to see which are valid.
-> >
-> > Further info: this occurs with an Intel motherboard/soundcard, attempting
-> > to open and config the stream at 44100 using front, surround or hdmi pcm,
-> > having previously opened and tried at a lower, not-supported samplerate,
-> > and closed. AFAIK other pcms work OK.
-> >
-> > The assert is hit with all current Debian and Ubuntu distros, for example
-> >      Debian 8 (jessie) 32 bit:  kernel 3.16.0-4-686-pae (Alsa 1.0.28)
-> > but is not seen with Fedora 20 or OpenSuse 12.1 (do they have asserts
-> > off?).
-> >
-> > > Does this point to a flaw in the configuration or possibly a bug in
-> > > Alsa-lib or can it occur just as a result of misuse of the Alsa API?
-> >
-> > I will try to conceive some more tests.  How can we debug this further?
->
-> A minimal self-contained demo program ('test-format') has been developed
-> and
-> is attached, that demonstrates the issue 100% on the reporters machine
-> (HDA-Intel, 6-ch I believe).  The output is:
->
-> root@Xeon:/home/patest# ./test-format
-> Testing device front
-> Num channels 6
-> Testing rate: 22050   Result:...Invalid Sample Rate
-> Testing rate: 32000   Result:...Invalid Sample Rate
-> test-format: pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion `err >=
-> 0' failed.
-> Testing rate: 44100   Aborted
->
+On 2015=E5=B9=B405=E6=9C=8814=E6=97=A5 07:11, Dylan Reid wrote:
+> On Wed, May 13, 2015 at 10:21 AM, Dylan Reid<dgreid@chromium.org>  wr=
+ote:
+>> On Wed, May 13, 2015 at 9:42 AM, Mark Brown<broonie@kernel.org>  wro=
+te:
+>>> On Wed, May 13, 2015 at 09:23:01PM +0800, zhengxing wrote:
+>>>> On 2015=E5=B9=B405=E6=9C=8813=E6=97=A5 03:22, Mark Brown wrote:
+>>>>> Is it not possible to extend simple card to handle your use cases=
+?
+>>>>> Given the very generic naming and the fact that things like jack
+>>>>> detection and so on should depend on the CODEC and board usually =
+rather
+>>>>> than on the SoC it doesn't sound like this is Rockchip specific.
+>>>>> This also looks like you're reimplementing some device model enum=
+eration
+>>>>> stuff which probably shouldn't be happening but let's understand =
+the
+>>>>> problem you're trying to solve here before going too far into the=
+ code.
+>>>> Because we are trying to bring rt5650 in the project, so we intend=
+ to
+>>>> describe supported codecs with DTS via only a rockchip machine dri=
+ver file,
+>>>> others remain pre-implement(like max98090 / rt5645 that vendor mac=
+hine
+>>>> driver).
+>>> I don't undertand what you're saying here, sorry - why is this not =
+just
+>>> a case of writing multiple machine drivers?
+>> I don't understand this either.  I'd think the best solution is
+>> simple-card, configured through DTS for each device.
 
-> Alsa-info is at:
->
-> http://www.alsa-project.org/db/?f=19dfeee29f73007e61a00a8fabe3c958f7cb8e87
->
-> This apparently happens with or without Pulseaudio running, with just the
-> single 44100 rate, and also with surround devices.  Also, on all current
-> Debian and Ubuntu - we have focused on Jessie.
->
-> I do not have a machine with similar hardware, so cannot duplicate the
-> results.
->
+Hi Mark, Dylan,
+I tried to use simple-card and had some trouble that jack detection. So=
+=20
+my idea is simply:
+                                                   /-- rockchip_max9809=
+0=20
+(to configure max98090, and no need to via DTS)
+    rockchip_machine_driver  |-- rockchip_rt5645 (to configure=20
+rt5650/rt5645, and no need to via DTS)
+(supported codecs via DTS)   \-- rockchip_(maybe other codecs)
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_intel.c?id=2ae66c26550cd94b0e2606a9275eb0ab7070ad0e
+It is right that it is base on original rockchip_max98090, but the old=20
+rockchip_max98090 used DTS.
 
-seem assert only occur when hda controller support arbitrary period size
-(align_buffer_size=0) and softvol plugin ,
+I tried to explain my ideas. Your kind suggestions will be highly=20
+appreciated.
 
-your program return invalid argument -22 without softvol plugin
+Thanks.
