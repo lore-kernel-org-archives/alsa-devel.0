@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 04/11] ASoC: da7213: Replace direct
+Subject: [PATCH 06/11] ASoC: da9055: Replace direct
 	snd_soc_codec dapm field access
-Date: Thu, 14 May 2015 11:19:56 +0200
-Message-ID: <1431595203-12851-4-git-send-email-lars@metafoo.de>
+Date: Thu, 14 May 2015 11:19:58 +0200
+Message-ID: <1431595203-12851-6-git-send-email-lars@metafoo.de>
 References: <1431595203-12851-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-163.synserver.de (smtp-out-163.synserver.de
  [212.40.185.163])
- by alsa0.perex.cz (Postfix) with ESMTP id CF3A22606C2
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 11:20:17 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DAEDB2606C5
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 11:20:19 +0200 (CEST)
 In-Reply-To: <1431595203-12851-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,21 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/da7213.c | 2 +-
+ sound/soc/codecs/da9055.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 925dd3c1..238e48a 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1374,7 +1374,7 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index 3bdc95a..66bb446 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1364,7 +1364,7 @@ static int da9055_set_bias_level(struct snd_soc_codec *codec,
  	case SND_SOC_BIAS_PREPARE:
  		break;
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
  			/* Enable VMID reference & master bias */
- 			snd_soc_update_bits(codec, DA7213_REFERENCES,
- 					    DA7213_VMID_EN | DA7213_BIAS_EN,
+ 			snd_soc_update_bits(codec, DA9055_REFERENCES,
+ 					    DA9055_VMID_EN | DA9055_BIAS_EN,
 -- 
 1.8.0
