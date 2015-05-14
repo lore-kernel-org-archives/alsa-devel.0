@@ -1,75 +1,61 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
-Date: Wed, 13 May 2015 16:11:14 -0700
-Message-ID: <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
-References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
- <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
- <20150512192215.GZ3066@sirena.org.uk> <55535035.5070608@rock-chips.com>
- <20150513164250.GB2761@sirena.org.uk> <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [PATCH] ASoC: rt5645: Rename HP control to Headphone
+Date: Thu, 14 May 2015 08:43:31 +0800
+Message-ID: <1431564211-25641-1-git-send-email-drinkcat@chromium.org>
+References: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A21F2614FF
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 02:44:12 +0200 (CEST)
+Received: by pabtp1 with SMTP id tp1so66536262pab.2
+ for <alsa-devel@alsa-project.org>; Wed, 13 May 2015 17:44:11 -0700 (PDT)
+In-Reply-To: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: zhengxing <zhengxing@rock-chips.com>, Xing Zheng <acgzxing@gmail.com>, Douglas Anderson <dianders@chromium.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, Sonny Rao <sonnyrao@chromium.org>, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>, Koro Chen <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 13, 2015 at 10:21 AM, Dylan Reid <dgreid@chromium.org> wrot=
-e:
-> On Wed, May 13, 2015 at 9:42 AM, Mark Brown <broonie@kernel.org> wrot=
-e:
->> On Wed, May 13, 2015 at 09:23:01PM +0800, zhengxing wrote:
->>> On 2015=E5=B9=B405=E6=9C=8813=E6=97=A5 03:22, Mark Brown wrote:
->>
->>> >Is it not possible to extend simple card to handle your use cases?
->>> >Given the very generic naming and the fact that things like jack
->>> >detection and so on should depend on the CODEC and board usually r=
-ather
->>> >than on the SoC it doesn't sound like this is Rockchip specific.
->>
->>> >This also looks like you're reimplementing some device model enume=
-ration
->>> >stuff which probably shouldn't be happening but let's understand t=
-he
->>> >problem you're trying to solve here before going too far into the =
-code.
->>
->>> Because we are trying to bring rt5650 in the project, so we intend =
-to
->>> describe supported codecs with DTS via only a rockchip machine driv=
-er file,
->>> others remain pre-implement(like max98090 / rt5645 that vendor mach=
-ine
->>> driver).
->>
->> I don't undertand what you're saying here, sorry - why is this not j=
-ust
->> a case of writing multiple machine drivers?
->
-> I don't understand this either.  I'd think the best solution is
-> simple-card, configured through DTS for each device.
->
->>
->>> I communicated with Dylan, and he told me that the jack detection i=
-s an
->>> issue in the simple-card, and suggested we are better to send them =
-at
->>> present.
->>
->> But what are these issues?
->
-> The issue I was referring to when I spoke with rock chip was the need
-> to pass the jack simple-card creates to the headset chip or codec.  W=
-e
-> need a way to specify a device like a tsa227e or rt5650 to pass the
-> jack to, which events are supported by the jack, and a generic API fo=
-r
-> passing the jack.
+Use the standard name "Headphone" instead of "HP" for better
+userspace integration.
 
-I'm having some trouble envisioning how to pass the jack to the
-headset chip in a generic way.  A callback could be added to
-snd_soc_component_driver, or a snd_soc_headset_driver could be added.
-The headset_drive would fit the ts3a227e well, but not the rt5645
-which is also a full blown codec.
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Acked-by: Bard Liao <bardliao@realtek.com>
+---
+
+Resending without modification, adding Mark to CC list.
+
+Thanks!
+
+ sound/soc/codecs/rt5645.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index be4d741..bc925f0 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -464,9 +464,9 @@ static const struct snd_kcontrol_new rt5645_snd_controls[] = {
+ 		RT5645_L_VOL_SFT, RT5645_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 
+ 	/* Headphone Output Volume */
+-	SOC_DOUBLE("HP Channel Switch", RT5645_HP_VOL,
++	SOC_DOUBLE("Headphone Channel Switch", RT5645_HP_VOL,
+ 		RT5645_VOL_L_SFT, RT5645_VOL_R_SFT, 1, 1),
+-	SOC_DOUBLE_TLV("HP Playback Volume", RT5645_HP_VOL,
++	SOC_DOUBLE_TLV("Headphone Playback Volume", RT5645_HP_VOL,
+ 		RT5645_L_VOL_SFT, RT5645_R_VOL_SFT, 39, 1, out_vol_tlv),
+ 
+ 	/* OUTPUT Control */
+-- 
+2.1.2
