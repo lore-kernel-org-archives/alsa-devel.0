@@ -1,44 +1,36 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] sound: oss: fix build warning
-Date: Thu, 14 May 2015 16:42:59 +0530
-Message-ID: <1431601979-24852-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH 0/4] ACPI: provide an override for _REV
+Date: Thu, 14 May 2015 15:31:24 +0200
+Message-ID: <1431610288-26737-1-git-send-email-linux@dominikbrodowski.net>
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Sender: linux-acpi-owner@vger.kernel.org
+To: rjw@rjwysocki.net
+Cc: linux-acpi@vger.kernel.org, mario_limonciello@dell.com, broonie@kernel.org, matthew.garrett@coreos.com, alsa-devel@alsa-project.org, Dominik Brodowski <linux@dominikbrodowski.net>
 List-Id: alsa-devel@alsa-project.org
 
-while building with allyesconfig it was giving a build warning about
-unused variable. declare the variable only if the driver is built as a
-module.
+As promised, here are a few patches which allow to override the _REV
+(supported ACPI revision) setting of the ACPI implementation. With
+this patch in place (and possibly with other quirks added to
+drivers/acpi/osl.c -- Matthew mentioned the Inspiron 7437), the
+patch b1ef29725865 can be applied again (or the revert of
+b1ef29725865 be reverted).
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
+Also throw in a re-ordering of the kernel-parameters Documentation.
 
-build tested with allyesconfig and allmodconfig
+Dominik Brodowski (4):
+  acpi: use same type for acpi_predefined_names values as in definition
+  acpi: allow for an override to set _REV
+  acpi: add _REV quirk for Dell XPS 13 (2015)
+  acpi: fix kernel-parameters ordering in Documentation
 
- sound/oss/ad1848.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/kernel-parameters.txt | 76 ++++++++++++++++++++++---------------
+ drivers/acpi/Kconfig                | 15 ++++++++
+ drivers/acpi/bus.c                  |  2 +
+ drivers/acpi/internal.h             |  1 +
+ drivers/acpi/osl.c                  | 60 ++++++++++++++++++++++++++++-
+ include/acpi/acpiosxf.h             |  2 +-
+ 6 files changed, 123 insertions(+), 33 deletions(-)
 
-diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
-index ec1ee07..10c8de1 100644
---- a/sound/oss/ad1848.c
-+++ b/sound/oss/ad1848.c
-@@ -2860,6 +2860,7 @@ static struct {
- 	{NULL}
- };
- 
-+#ifdef MODULE
- static struct isapnp_device_id id_table[] = {
- 	{	ISAPNP_VENDOR('C','M','I'), ISAPNP_DEVICE(0x0001),
- 		ISAPNP_VENDOR('@','@','@'), ISAPNP_FUNCTION(0x0001), 0 },
-@@ -2877,6 +2878,7 @@ static struct isapnp_device_id id_table[] = {
- };
- 
- MODULE_DEVICE_TABLE(isapnp, id_table);
-+#endif
- 
- static struct pnp_dev *activate_dev(char *devname, char *resname, struct pnp_dev *dev)
- {
 -- 
-1.8.1.2
+2.1.4
+
