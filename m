@@ -1,209 +1,112 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 05/13] ASoC: qcom: support bitclk and osrclk per i2s
- port
-Date: Fri, 15 May 2015 09:44:29 +0100
-Message-ID: <5555B1ED.5050707@linaro.org>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518452-7434-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052329.GA31687@kwestfie-linux.qualcomm.com>
+Subject: Re: [PATCH v1 10/13] ASoC: qcom: Add apq8016 lpass driver support
+Date: Fri, 15 May 2015 09:46:17 +0100
+Message-ID: <5555B259.10508@linaro.org>
+References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518586-7709-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052340.GB31687@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150515052329.GA31687@kwestfie-linux.qualcomm.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20150515052340.GB31687@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
+Thanks for review,
 
 On 15/05/15 06:23, Kenneth Westfield wrote:
-> On Wed, May 13, 2015 at 05:00:52AM -0700, Srinivas Kandagatla wrote:
->> This patch adds support to allow bitclk and osrclk per i2s dai port.
->> on APQ8016 there are 4 i2s ports each one has its own bit clks.
+> On Wed, May 13, 2015 at 05:03:06AM -0700, Srinivas Kandagatla wrote:
+>> This patch adds apq8016 lpass driver support. APQ8016 has 4 MI2S which
+>> can be routed to one internal codec and 2 external codec interfaces.
 >>
->> Without this patch its not possible to support multiple i2s ports in the
->> lpass driver.
+>> Primary, Secondary, Quaternary I2S can do Rx(playback) and Tertiary and
+>> Quaternary can do Tx(capture).
 >
->> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
->> index 5965667..0d28ea7 100644
->> --- a/sound/soc/qcom/lpass-cpu.c
->> +++ b/sound/soc/qcom/lpass-cpu.c
->> @@ -33,7 +33,7 @@ static int lpass_cpu_daiops_set_sysclk(struct
->> snd_soc_dai *dai, int clk_id,
->>   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
->>   	int ret;
+>> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+>> index 865205e..9cc5ed7 100644
+>> --- a/sound/soc/qcom/Kconfig
+>> +++ b/sound/soc/qcom/Kconfig
+>> @@ -20,6 +20,12 @@ config SND_SOC_LPASS_IPQ806X
+>>   	select SND_SOC_LPASS_CPU
+>>   	select SND_SOC_LPASS_PLATFORM
 >>
->> -	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
->> +	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
->>   	if (ret)
->>   		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u:
->> %d\n",
->>   				__func__, freq, ret);
+>> +config SND_SOC_LPASS_APQ8016
+>> +	tristate
+>> +	depends on SND_SOC_QCOM
+>> +	select SND_SOC_LPASS_CPU
+>> +	select SND_SOC_LPASS_PLATFORM
 >
-> Audio was broken on the Storm board with this patch series.  The issue
-> has to do with the mismatch of the clock position in the array (which
-> was 0) and the dai->driver->id (which was 4).  Basically, the position of
-> the bit/osr clocks in their respective arrays need to match the MI2S
-> port number, even if the port number doesn't start at the 0 position.
+> Continuing from my comments on patch 2/13, should an OF dependency be added
+> here as well?
+LPASS_CPU and LPASS_PLATFORM already has this dependency, so there is no 
+chance that APQ8016 can be selected without OF.
+
 >
-> I realize there are multiple ways to address this.  The quick solution I
-> came up with (to get audio functioning again) was to change the DT clock
-> entries for the ipq806x (see changes below for your reference).  The
-> downside to the way I did this is, that now, there is no error-checking
-> for clocks that should be in the DT but aren't there.
+>> +
+>>   config SND_SOC_STORM
+>>   	tristate "ASoC I2S support for Storm boards"
+>>   	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
 >
-> Suggestions are welcome on how to best address this issue.
-I think all we need to do is populate the correct index in the clk 
-array. TBH I don't want to change any of ipq806x bindings.
-
-I think the below fix should be the right one, actually I did think of 
-doing this in v1 when I changed usage of dai->id to dai->driver->id , 
-but some how I missed it.
-
-Let me know your thoughts.
------------------------><---------------------------------------------
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 33e28370..64620ce 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -365,7 +365,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
-platform_device *pdev)
-         struct device *dev = &pdev->dev;
-         const struct of_device_id *match;
-         char clk_name[16];
--       int ret, i;
-+       int ret, i, dai_id;
-
-         dsp_of_node = of_parse_phandle(pdev->dev.of_node, "qcom,adsp", 0);
-         if (dsp_of_node) {
-@@ -412,34 +412,36 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
-platform_device *pdev)
-                 variant->init(pdev);
-
-         for (i = 0; i < variant->num_dai; i++) {
-+               dai_id = variant->dai_driver[i].id;
-                 if (variant->num_dai > 1)
-                         sprintf(clk_name, "mi2s-osr-clk%d", i);
-                 else
-                         sprintf(clk_name, "mi2s-osr-clk");
-
--               drvdata->mi2s_osr_clk[i] = devm_clk_get(&pdev->dev,
-+               drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(&pdev->dev,
-                                                                 clk_name);
--               if (IS_ERR(drvdata->mi2s_osr_clk[i])) {
-+               if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
-                         dev_err(&pdev->dev,
-                                 "%s() error getting mi2s-osr-clk: %ld\n",
-                                 __func__,
--                               PTR_ERR(drvdata->mi2s_osr_clk[i]));
-+                               PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
-                 }
-         }
-
-         for (i = 0; i < variant->num_dai; i++) {
-+               dai_id = variant->dai_driver[i].id;
-
-                 if (variant->num_dai > 1)
-                         sprintf(clk_name, "mi2s-bit-clk%d", i);
-                 else
-                         sprintf(clk_name, "mi2s-bit-clk");
-
--               drvdata->mi2s_bit_clk[i] = devm_clk_get(&pdev->dev, 
-clk_name);
--               if (IS_ERR(drvdata->mi2s_bit_clk[i])) {
-+               drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(&pdev->dev, 
-clk_name);
-+               if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
-                         dev_err(&pdev->dev,
-                                 "%s() error getting mi2s-bit-clk: %ld\n",
-                                 __func__, 
-PTR_ERR(drvdata->mi2s_bit_clk[i]));
--                       return PTR_ERR(drvdata->mi2s_bit_clk[i]);
-+                       return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
-                 }
-         }
-
------------------------><---------------------------------------------
+>> diff --git a/sound/soc/qcom/lpass-apq8016.c
+>> b/sound/soc/qcom/lpass-apq8016.c
+>> new file mode 100644
+>> index 0000000..5cbf17f0
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/lpass-apq8016.c
+>
+>> +static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int
+>> chan)
+>> +{
+>> +	clear_bit(chan, &drvdata->rdma_ch_bit_map);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int apq8016_lpass_init(struct platform_device *pdev)
+>> +{
+>> +	struct lpass_data *drvdata = platform_get_drvdata(pdev);
+>> +	struct device *dev = &pdev->dev;
+>> +	int ret;
+>> +
+>> +	drvdata->pcnoc_mport_clk = devm_clk_get(dev, "pcnoc-mport-clk");
+>> +	if (IS_ERR(drvdata->pcnoc_mport_clk)) {
+>> +		dev_err(&pdev->dev, "%s() error getting pcnoc-mport-clk:
+>> %ld\n",
+>> +				__func__,
+>> PTR_ERR(drvdata->pcnoc_mport_clk));
+>> +		return PTR_ERR(drvdata->pcnoc_mport_clk);
+>> +	}
+>> +
+>> +	ret = clk_prepare_enable(drvdata->pcnoc_mport_clk);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
+>
+> Please correct the clock name in the log message ...
+>
+Yep, will fix it.
+>> +				__func__, ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	drvdata->pcnoc_sway_clk = devm_clk_get(dev, "pcnoc-sway-clk");
+>> +	if (IS_ERR(drvdata->pcnoc_sway_clk)) {
+>> +		dev_err(&pdev->dev, "%s() error getting pcnoc-sway-clk:
+>> %ld\n",
+>> +				__func__,
+>> PTR_ERR(drvdata->pcnoc_sway_clk));
+>> +		return PTR_ERR(drvdata->pcnoc_sway_clk);
+>> +	}
+>> +
+>> +	ret = clk_prepare_enable(drvdata->pcnoc_sway_clk);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
+>
+> ... here too.
+>
+Sure, I will fix it.
 
 --srini
->
-> -----------------------><---------------------------------------------
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> index 21c6483..2684a4f 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> @@ -8,8 +8,8 @@ Required properties:
->   - clocks		: Must contain an entry for each entry in clock-names.
->   - clock-names		: A list which must include the following entries:
->   				* "ahbix-clk"
-> -				* "mi2s-osr-clk"
-> -				* "mi2s-bit-clk"
-> +				* "mi2s-osr-clk4"
-> +				* "mi2s-bit-clk4"
->   			: required clocks for "qcom,lpass-cpu-apq8016"
->   				* "ahbix-clk"
->   				* "mi2s-bit-clk0"
-> @@ -42,7 +42,7 @@ Example:
->   lpass@28100000 {
->   	compatible = "qcom,lpass-cpu";
->   	clocks = <&lcc AHBIX_CLK>, <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
-> -	clock-names = "ahbix-clk", "mi2s-osr-clk", "mi2s-bit-clk";
-> +	clock-names = "ahbix-clk", "mi2s-osr-clk4", "mi2s-bit-clk4";
->   	interrupts = <0 85 1>;
->   	interrupt-names = "lpass-irq-lpaif";
->   	pinctrl-names = "default", "idle";
-> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> index 5a13366..090984f 100644
-> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> @@ -189,8 +189,8 @@
->   					<&lcc MI2S_OSR_CLK>,
->   					<&lcc MI2S_BIT_CLK>;
->   			clock-names = "ahbix-clk",
-> -					"mi2s-osr-clk",
-> -					"mi2s-bit-clk";
-> +					"mi2s-osr-clk4",
-> +					"mi2s-bit-clk4";
->   			interrupts = <0 85 1>;
->   			interrupt-names = "lpass-irq-lpaif";
->   			reg = <0x28100000 0x10000>;
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index 5053629..7b66e52 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -411,11 +411,8 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   	if (variant->init)
->   		variant->init(pdev);
->
-> -	for (i = 0; i < variant->num_dai; i++) {
-> -		if (variant->num_dai > 1)
-> -			sprintf(clk_name, "mi2s-osr-clk%d", i);
-> -		else
-> -			sprintf(clk_name, "mi2s-osr-clk");
-> +	for (i = 0; i < LPASS_MAX_MI2S_PORTS; i++) {
-> +		sprintf(clk_name, "mi2s-osr-clk%d", i);
->
->   		drvdata->mi2s_osr_clk[i] = devm_clk_get(&pdev->dev,
->   								clk_name);
-> @@ -427,19 +424,14 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->   		}
->   	}
->
-> -	for (i = 0; i < variant->num_dai; i++) {
-> -
-> -		if (variant->num_dai > 1)
-> -			sprintf(clk_name, "mi2s-bit-clk%d", i);
-> -		else
-> -			sprintf(clk_name, "mi2s-bit-clk");
-> +	for (i = 0; i < LPASS_MAX_MI2S_PORTS; i++) {
-> +		sprintf(clk_name, "mi2s-bit-clk%d", i);
->
->   		drvdata->mi2s_bit_clk[i] = devm_clk_get(&pdev->dev, clk_name);
->   		if (IS_ERR(drvdata->mi2s_bit_clk[i])) {
->   			dev_err(&pdev->dev,
->   				"%s() error getting mi2s-bit-clk: %ld\n",
->   				__func__, PTR_ERR(drvdata->mi2s_bit_clk[i]));
-> -			return PTR_ERR(drvdata->mi2s_bit_clk[i]);
->   		}
->   	}
-> -----------------------><---------------------------------------------
+>> +				__func__, ret);
+>> +		return ret;
+>> +	}
 >
