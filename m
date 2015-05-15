@@ -1,180 +1,140 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No sound from Mac Pro headphone port
-Date: Fri, 15 May 2015 11:57:30 +0800
-Message-ID: <CAN8cciaepxbsuprm+EFr4jE24so1-WMnNDOfdQQPaM9AsK2hNQ@mail.gmail.com>
-References: <554CC0EC.5000506@todddailey.ca>
- <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
- <554CCCAF.6000608@todddailey.ca>
- <CAN8cciaSiJBr4RKP6Rj3JurnrPEGufBsnLEACdvrhRLcRfPkcg@mail.gmail.com>
- <5555460D.3060907@todddailey.ca>
- <CAN8cciaEdt3zM_V7M4_8YVBHrs+GQsfs1jV32owfsR_2oO52AA@mail.gmail.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [PATCH v1 05/13] ASoC: qcom: support bitclk and osrclk per i2s
+ port
+Date: Thu, 14 May 2015 22:23:30 -0700
+Message-ID: <20150515052329.GA31687@kwestfie-linux.qualcomm.com>
+References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1431518452-7434-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
- [209.85.218.53])
- by alsa0.perex.cz (Postfix) with ESMTP id F2EF526154E
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 05:57:31 +0200 (CEST)
-Received: by oiko83 with SMTP id o83so73275773oik.1
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 20:57:30 -0700 (PDT)
-In-Reply-To: <CAN8cciaEdt3zM_V7M4_8YVBHrs+GQsfs1jV32owfsR_2oO52AA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Todd Dailey <todd@todddailey.ca>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1431518452-7434-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->
-> You will need to provide more specific instructions on what you want. I
-do not read code.
->
+On Wed, May 13, 2015 at 05:00:52AM -0700, Srinivas Kandagatla wrote:
+> This patch adds support to allow bitclk and osrclk per i2s dai port.
+> on APQ8016 there are 4 i2s ports each one has its own bit clks.
+> 
+> Without this patch its not possible to support multiple i2s ports in the
+> lpass driver.
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=29ebe40284c75a5888c601872059fca7e258528d
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index 5965667..0d28ea7 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -33,7 +33,7 @@ static int lpass_cpu_daiops_set_sysclk(struct
+> snd_soc_dai *dai, int clk_id,
+>  	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+>  	int ret;
+>  
+> -	ret = clk_set_rate(drvdata->mi2s_osr_clk, freq);
+> +	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
+>  	if (ret)
+>  		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u:
+> %d\n",
+>  				__func__, freq, ret);
 
->>
->>
->>     Bingo: the pin-outs are very incorrect.
->>
->>     This is the (original) tech specs of the machine.
->>
->>     https://support.apple.com/kb/SP506?viewlocale=en_US&locale=en_US
->>
->>     Note:
->>
->>     1 x internal speaker
->>     1 x FRONT headphone port
->>
->>
->> Refer to user manual ,
->> Headphone Jack
->> Connect headphones, including Apple Earphone with remote and mic through
->> the headphone mini jack
->>
->> Is node 0x18  headset mic ?
->> need specific sequence number and parser_flags
->>
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=cb420b1186e0090f24137855e14e6f3bf7cb769d
->>
->> +#define HDA_PINCFG_HEADSET_MIC   (1 << 2) /* Try to find headset mic;
->> mark seq number as 0xc to trigger */
->>
->>     1 x REAR line out port
->>
->>     1 x REAR line in port
->>     1 x REAR optical TOSLINK out port
->>     1 x REAR optical TOSLINK in port
->>
->>     The machine does not have a built-in mic port.
->>
->>
->> you need to use hdajacksensetest to verify hp, line out , line in jacks
->> are node 0x19, 0x14 and 0x1a by plug and unplug those jacks
->>
->> clear bit 8 of pin default of Line Out Jack if it return correct jack
-state
->>
->>
->>
->>              Linux 4. Mac Pro 2009. ACL889A codec.
->>
->>              No sound from headphone port. Seems to detect plug / unplug
-OK.
->>
->>              Works OK when machine booted to OS X or Windows 7.
->>
->>              Have found several bug repors on similar issues with Mac
->>         laptops but
->>              no fixes.
->>
->>              Have written e-mail with David Henningsson on problem but
->>         unable to
->>              find a solution.
->>
->>              ALSA-info output:
->>
->>
-http://www.alsa-project.org/db/?f=1dc7146eb34af5ad307d029868f775fac5e2764e
->>
->>
->>         Do your macpro spec support 5.1 ?
->>
->>         Simple mixer control 'Channel Mode',0
->>             Capabilities: enum
->>             Items: '2ch' '4ch' '6ch'
->>             Item0: '2ch'
+Audio was broken on the Storm board with this patch series.  The issue
+has to do with the mismatch of the clock position in the array (which
+was 0) and the dai->driver->id (which was 4).  Basically, the position of
+the bit/osr clocks in their respective arrays need to match the MI2S
+port number, even if the port number doesn't start at the 0 position.
 
-Channel mode is created when there are three or more jacks at same location
+I realize there are multiple ways to address this.  The quick solution I
+came up with (to get audio functioning again) was to change the DT clock
+entries for the ipq806x (see changes below for your reference).  The
+downside to the way I did this is, that now, there is no error-checking
+for clocks that should be in the DT but aren't there.
 
-Use hdajackretask to change location of HP and Mic from Ext Rear to Ext
-Front
+Suggestions are welcome on how to best address this issue.
 
-Advanced override and set as boot default
+-----------------------><---------------------------------------------
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+index 21c6483..2684a4f 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+@@ -8,8 +8,8 @@ Required properties:
+ - clocks		: Must contain an entry for each entry in clock-names.
+ - clock-names		: A list which must include the following entries:
+ 				* "ahbix-clk"
+-				* "mi2s-osr-clk"
+-				* "mi2s-bit-clk"
++				* "mi2s-osr-clk4"
++				* "mi2s-bit-clk4"
+ 			: required clocks for "qcom,lpass-cpu-apq8016"
+ 				* "ahbix-clk"
+ 				* "mi2s-bit-clk0"
+@@ -42,7 +42,7 @@ Example:
+ lpass@28100000 {
+ 	compatible = "qcom,lpass-cpu";
+ 	clocks = <&lcc AHBIX_CLK>, <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
+-	clock-names = "ahbix-clk", "mi2s-osr-clk", "mi2s-bit-clk";
++	clock-names = "ahbix-clk", "mi2s-osr-clk4", "mi2s-bit-clk4";
+ 	interrupts = <0 85 1>;
+ 	interrupt-names = "lpass-irq-lpaif";
+ 	pinctrl-names = "default", "idle";
+diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+index 5a13366..090984f 100644
+--- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
+@@ -189,8 +189,8 @@
+ 					<&lcc MI2S_OSR_CLK>,
+ 					<&lcc MI2S_BIT_CLK>;
+ 			clock-names = "ahbix-clk",
+-					"mi2s-osr-clk",
+-					"mi2s-bit-clk";
++					"mi2s-osr-clk4",
++					"mi2s-bit-clk4";
+ 			interrupts = <0 85 1>;
+ 			interrupt-names = "lpass-irq-lpaif";
+ 			reg = <0x28100000 0x10000>;
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 5053629..7b66e52 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -411,11 +411,8 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 	if (variant->init)
+ 		variant->init(pdev);
+ 
+-	for (i = 0; i < variant->num_dai; i++) {
+-		if (variant->num_dai > 1)
+-			sprintf(clk_name, "mi2s-osr-clk%d", i);
+-		else
+-			sprintf(clk_name, "mi2s-osr-clk");
++	for (i = 0; i < LPASS_MAX_MI2S_PORTS; i++) {
++		sprintf(clk_name, "mi2s-osr-clk%d", i);
+ 
+ 		drvdata->mi2s_osr_clk[i] = devm_clk_get(&pdev->dev,
+ 								clk_name);
+@@ -427,19 +424,14 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	for (i = 0; i < variant->num_dai; i++) {
+-
+-		if (variant->num_dai > 1)
+-			sprintf(clk_name, "mi2s-bit-clk%d", i);
+-		else
+-			sprintf(clk_name, "mi2s-bit-clk");
++	for (i = 0; i < LPASS_MAX_MI2S_PORTS; i++) {
++		sprintf(clk_name, "mi2s-bit-clk%d", i);
+ 
+ 		drvdata->mi2s_bit_clk[i] = devm_clk_get(&pdev->dev, clk_name);
+ 		if (IS_ERR(drvdata->mi2s_bit_clk[i])) {
+ 			dev_err(&pdev->dev,
+ 				"%s() error getting mi2s-bit-clk: %ld\n",
+ 				__func__, PTR_ERR(drvdata->mi2s_bit_clk[i]));
+-			return PTR_ERR(drvdata->mi2s_bit_clk[i]);
+ 		}
+ 	}
+-----------------------><---------------------------------------------
 
-http://git.alsa-project.org/?p=alsa-tools.git;a=blob;f=hdajackretask/README;hb=HEAD
-
-http://voices.canonical.com/david.henningsson/2011/11/29/turn-your-mic-jack-into-a-headphone-jack/
-
-http://git.alsa-project.org/?p=alsa-tools.git;a=tree;f=hdajacksensetest;hb=HEAD
-
-Use hdajacksensetest -a to verify line out support jack detect
-
-clear MISC = NO_PRESENCE bit 8 of pin default of Line out by hdajackretask
-
-Pin Default 0x01010050: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Unknown
-    DefAssociation = 0x5, Sequence = 0x0
-
-
-Most likely need vendor coefficient to support mono  mic of apple earphones
-
->>
->>         Pin default seem incorrect
->>
->>         1) Headphone at ext Rear
->>         2) Line Out does not support jack detection
->>         3) Mic jack ????
->>
->>         /sys/class/sound/hwC0D0/init_pin_configs:
->>         0x14 0x01010150
->>         0x15 0x400000f0
->>         0x16 0x400000f0
->>         0x17 0x400000f0
->>         0x18 0x01a19070
->>         0x19 0x01214040
->>         0x1a 0x01813010
->>         0x1b 0x90100130
->>         0x1c 0x400000f0
->>         0x1d 0x400000f0
->>         0x1e 0x0145e160
->>         0x1f 0x01c5e120
->>
->>         /sys/class/sound/hwC0D0/driver_pin_configs:
->>
->>
->>
->>         [    4.057250] sound hdaudioC0D0: ALC889A: SKU not ready
-0x400000f0
->>         [    4.057633] sound hdaudioC0D0: autoconfig for ALC889A:
->>         line_outs=1
->>         (0x14/0x0/0x0/0x0/0x0) type:line
->>         [    4.057636] sound hdaudioC0D0:    speaker_outs=1
->>         (0x1b/0x0/0x0/0x0/0x0)
->>         [    4.057638] sound hdaudioC0D0:    hp_outs=1
->>         (0x19/0x0/0x0/0x0/0x0)
->>         [    4.057639] sound hdaudioC0D0:    mono: mono_out=0x0
->>         [    4.057641] sound hdaudioC0D0:    dig-out=0x1e/0x0
->>         [    4.057642] sound hdaudioC0D0:    inputs:
->>         [    4.057645] sound hdaudioC0D0:      Mic=0x18
->>         [    4.057646] sound hdaudioC0D0:      Line=0x1a
->>         [    4.057648] sound hdaudioC0D0:    dig-in=0x1f
->>
->>
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
