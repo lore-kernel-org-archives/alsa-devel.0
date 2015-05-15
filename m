@@ -1,72 +1,72 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: USB-Audio.conf routing and dmix
-Date: Fri, 15 May 2015 10:58:11 +0500
-Message-ID: <55558AF3.8070804@gmail.com>
-References: <20150509002017.GB18945@freedom> <20150511195734.GA12233@freedom>
- <55531850.1020208@ladisch.de> <20150513113215.GA569@freedom>
- <20150515020715.GA418@freedom> <555589EF.60602@gmail.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH early RFC 0/2] Implement ASoC HDMI codec library
+Date: Fri, 15 May 2015 10:13:07 +0300
+Message-ID: <55559C83.6080700@ti.com>
+References: <cover.1431508524.git.jsarha@ti.com> <20150513194236.68a0d0a6@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 09DE726154E
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 07:58:15 +0200 (CEST)
-Received: by wgbhc8 with SMTP id hc8so67143914wgb.3
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 22:58:14 -0700 (PDT)
-In-Reply-To: <555589EF.60602@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: sylvain.bertrand@gmail.com, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20150513194236.68a0d0a6@armhf>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-15.05.2015 10:53, Alexander E. Patrakov wrote:
-> 15.05.2015 07:07, sylvain.bertrand@gmail.com wrote:
->> On Wed, May 13, 2015 at 11:32:15AM +0000, sylvain.bertrand@gmail.com
->> wrote:
->>> On Wed, May 13, 2015 at 11:24:32AM +0200, Clemens Ladisch wrote:
->>>>>> I linked the surround51 and surround71 pcms with the
->>>>>> 'disable-able' dmix
->>>>>> section from the default pcm.
->>>>
->>>> These devices are not supposed to use plug or dmix.
->>>
->>> Ok. Then, there is no pcm to output 5.1 sound with dmix.
->>>
->>> Does it mean that the application is in charge to build a alsa-lib
->>> pipeline
->>> with dmix pcm and surround51 pcm, in order to let other applications
->>> output 5.1
->>> sound at the same time?
->>
->> Then what is the "Right"(tm) way to do that?
->>
+On 05/13/15 20:42, Jean-Francois Moine wrote:
+> On Wed, 13 May 2015 12:23:45 +0300
+> Jyri Sarha <jsarha@ti.com> wrote:
 >
-> [this is my personal opinion, in no way official]
+>> Jean-Francois, would you consider trying the generic ASoC patch with
+>> your HW, as I can not test the spdif functionality with mine?
 >
-> The right way seems to be to use PulseAudio. Pure ALSA, in its default
-> configuration, just does not support mixing 5.1 audio, on any card. This
-> default cannot really be changed, because there are many people who use
-> 5.1 cards for output to stereo headphones only, i.e. who need automatic
-> downmixing if an app (such as VLC) starts a 5.1 stream. The default
-> plug/dmix setup provides such downmixing.
+> Hi Jyri,
+>
+> I am not sure to need all the stuff you coded.
+>
 
-I need to test things before posting. This is wrong, plug/dmix does not 
-include the extra channels in the stereo mix.
+You do not need to use all of the stuff on the ASoC side. At minimum you 
+could just implement hw_params() and audio_shutdown() for struct 
+hdmi_codec_ops and just use the hw_params() parameters you need. With 
+such and implementation the tda998x side would not look too different 
+from what you are having now.
 
-> As an application developer, just tell your users "your default device
-> needs to support 5.1, see you there", as mpv developers did. This will
-> be the case either with PulseAudio or with a hacked .asoundrc.
+> My tda998x CODEC is quite empty and it works fine in my system.
+> If you look at my last patch request ([PATCH v12 6/6] ASoC: tda998x:
+> add a codec to the HDMI transmitter -
 
-This is still my position.
+The idea for my lib is to work for all external HDMI encoders with i2s 
+and/or spdif interface. And avoid the need to create a new HW specific 
+ASoC module and API for each HDMI encoder.
 
--- 
-Alexander E. Patrakov
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/091758.html),
+> the code is much smaller than yours and does not ask for a structure
+> constraint (+/* Has to be the first member of the hdmi endcoder's
+> drvdata */).
+>
+
+If that is generally considered annoying, I can get around it by adding 
+a private_data member to struct snd_soc_dai (Mark, is that Ok?).
+
+With the above change it is simply a matter of choice whether the 
+library is actually a platform driver.
+
+> So, I'd rather see a real hdmi codec library, i.e. a set of common
+> functions as Russell's DRM ELD helper, each specific hdmi codec being
+> free about the mechanism used for the exchanges with the hdmi
+> transmitter.
+>
+
+Well, this is a real library and these are common functions for all HDMI 
+encoder fitting the description. If we want to avoid each encoder from 
+adding their own module to ASoC side and implementing their own API, we 
+need something similar to what I wrote.
+
+I am happy to do what ever changes are considered necessary, but I think 
+I my idea in general is sound.
+
+Of course another option would be just to implement the ASoC component 
+within the video side driver and use the ASoC structures directly.
+
+Best regards,
+Jyri
