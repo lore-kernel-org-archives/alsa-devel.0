@@ -1,72 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Drop unnecessary bias level check on
-	resume
-Date: Fri, 15 May 2015 16:50:16 +0100
-Message-ID: <20150515155016.GB4637@sirena.org.uk>
-References: <1431686490-13204-1-git-send-email-lars@metafoo.de>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: skip legacy dai naming if dai driver
+ has	all the information
+Date: Fri, 15 May 2015 13:07:53 -0700
+Message-ID: <20150515200752.GA30834@kwestfie-linux.qualcomm.com>
+References: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1732568521475527341=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2956B26650F
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 17:50:28 +0200 (CEST)
-In-Reply-To: <1431686490-13204-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, May 15, 2015 at 02:38:27AM -0700, Srinivas Kandagatla wrote:
+> Original issue is that the id field in the dai is not same as the id
+> in dai_driver when dai driver count == 1. This is due to the legacy
+> dai naming check, which could possibly cause issues if the audio drivers
+> written in assumption that dai->id would be always equal to
+> dai_driver->id.
+> This assumption is true only if the dai driver count is greater than 1,
+> and false if dai driver count is 1. On Qcom Lpass driver we hit such
+> issue while adding support to apq8016.
+> 
+> The code path which falls back to legacy naming for cases where num_dai
+> == 1 does not check if there is any valid information in the dai_driver.
+> This patch fixes that by checking if the dai_driver has valid id and
+> name before falling back to legacy dai naming
+> Although the drivers can work around this issue by only using
+> dai->driver->id, but this patch attempts to fix the actual issue.
+> 
+> Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
 
---===============1732568521475527341==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
-Content-Disposition: inline
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 
-
---ftEhullJWpWg/VHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 15, 2015 at 12:41:30PM +0200, Lars-Peter Clausen wrote:
-> The suspended flag will only be set if the CODEC bias level was either
-> STANDBY or OFF. This means we don't need to check for that on resume since
-> the condition will always be true.
-
-Applied, thanks.  I've got a feeling that's bitrot and wasn't always
-true...
-
---ftEhullJWpWg/VHq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVVhW3AAoJECTWi3JdVIfQaUUH/1gdULchuk1bmRyuwqwTqTRL
-8lp+SGaDr4wZ7ylS75CRt9uyUJf8VoP2dh4/xBKBG81dEUDrYbFSTShWkobrDh4M
-b7fr/b8aMrNuD7KFF9LG6aUTj58K1dTIL5HbLkQwCLUYIBFWar9wTssemelpDT3l
-SK0jvDFv3KPXqvAgwiuRzIVoav/VUm4GeRIlbYT0olJC7eH7cPKdHsncubtbQyOW
-e2okq20cI4nSR2IEu6Vc9PhpLknjGlqu34a9gvuPnHWYtb0gUggk1aCfH6onH5SC
-XZDx/xS2OZjz54LqBzjXywQ5I/E8UOJE+zSqEfL1D45b6pSELEYKqoqDK4eUwA0=
-=B+UQ
------END PGP SIGNATURE-----
-
---ftEhullJWpWg/VHq--
-
---===============1732568521475527341==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1732568521475527341==--
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
