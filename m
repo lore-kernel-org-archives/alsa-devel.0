@@ -1,112 +1,49 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 10/13] ASoC: qcom: Add apq8016 lpass driver support
-Date: Fri, 15 May 2015 09:46:17 +0100
-Message-ID: <5555B259.10508@linaro.org>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518586-7709-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052340.GB31687@kwestfie-linux.qualcomm.com>
+From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v1 11/13] ASoC: qcom: add apq8016 sound card support
+Date: Fri, 15 May 2015 09:47:06 +0100
+Message-ID: <5555B28A.9040608@linaro.org>
+References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518594-7752-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052348.GC31687@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20150515052340.GB31687@kwestfie-linux.qualcomm.com>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150515052348.GC31687-VfhoOQ2zEbNBVvN7MMdr1KRtKmQZhJ7pQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for review,
+
 
 On 15/05/15 06:23, Kenneth Westfield wrote:
-> On Wed, May 13, 2015 at 05:03:06AM -0700, Srinivas Kandagatla wrote:
->> This patch adds apq8016 lpass driver support. APQ8016 has 4 MI2S which
->> can be routed to one internal codec and 2 external codec interfaces.
->>
->> Primary, Secondary, Quaternary I2S can do Rx(playback) and Tertiary and
->> Quaternary can do Tx(capture).
+> On Wed, May 13, 2015 at 05:03:14AM -0700, Srinivas Kandagatla wrote:
+>> This patch adds apq8016 machine driver support. This patch was tested on
+>> two apq8016-sbc and msm8916-mtp board for both hdmi and analog audio
+>> features.
 >
 >> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
->> index 865205e..9cc5ed7 100644
+>> index 9cc5ed7..e71b0f2 100644
 >> --- a/sound/soc/qcom/Kconfig
 >> +++ b/sound/soc/qcom/Kconfig
->> @@ -20,6 +20,12 @@ config SND_SOC_LPASS_IPQ806X
->>   	select SND_SOC_LPASS_CPU
->>   	select SND_SOC_LPASS_PLATFORM
->>
->> +config SND_SOC_LPASS_APQ8016
->> +	tristate
->> +	depends on SND_SOC_QCOM
->> +	select SND_SOC_LPASS_CPU
->> +	select SND_SOC_LPASS_PLATFORM
->
-> Continuing from my comments on patch 2/13, should an OF dependency be added
-> here as well?
-LPASS_CPU and LPASS_PLATFORM already has this dependency, so there is no 
-chance that APQ8016 can be selected without OF.
-
->
+>> @@ -34,3 +34,12 @@ config SND_SOC_STORM
+>>   	help
+>>             Say Y or M if you want add support for SoC audio on the
+>>             Qualcomm Technologies IPQ806X-based Storm board.
 >> +
->>   config SND_SOC_STORM
->>   	tristate "ASoC I2S support for Storm boards"
->>   	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
+>> +config SND_SOC_APQ8016_SBC
+>> +	tristate "SoC Audio support for APQ8016 SBC platforms"
+>> +	depends on SND_SOC_QCOM || ARCH_QCOM || COMPILE_TEST
 >
->> diff --git a/sound/soc/qcom/lpass-apq8016.c
->> b/sound/soc/qcom/lpass-apq8016.c
->> new file mode 100644
->> index 0000000..5cbf17f0
->> --- /dev/null
->> +++ b/sound/soc/qcom/lpass-apq8016.c
+> I believe this should be:
+>          depends on (SND_SOC_QCOM && ARCH_QCOM) || COMPILE_TEST
 >
->> +static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int
->> chan)
->> +{
->> +	clear_bit(chan, &drvdata->rdma_ch_bit_map);
->> +
->> +	return 0;
->> +}
->> +
->> +static int apq8016_lpass_init(struct platform_device *pdev)
->> +{
->> +	struct lpass_data *drvdata = platform_get_drvdata(pdev);
->> +	struct device *dev = &pdev->dev;
->> +	int ret;
->> +
->> +	drvdata->pcnoc_mport_clk = devm_clk_get(dev, "pcnoc-mport-clk");
->> +	if (IS_ERR(drvdata->pcnoc_mport_clk)) {
->> +		dev_err(&pdev->dev, "%s() error getting pcnoc-mport-clk:
->> %ld\n",
->> +				__func__,
->> PTR_ERR(drvdata->pcnoc_mport_clk));
->> +		return PTR_ERR(drvdata->pcnoc_mport_clk);
->> +	}
->> +
->> +	ret = clk_prepare_enable(drvdata->pcnoc_mport_clk);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
+Yep , I will fix it.
+>> +	select SND_SOC_LPASS_APQ8016
+>> +	help
+>> +          Support for Qualcomm Technologies LPASS audio block in
+>> +          APQ8016 SOC-based systems.
+>> +          Say Y if you want to use audio devices on MI2S
 >
-> Please correct the clock name in the log message ...
->
-Yep, will fix it.
->> +				__func__, ret);
->> +		return ret;
->> +	}
->> +
->> +	drvdata->pcnoc_sway_clk = devm_clk_get(dev, "pcnoc-sway-clk");
->> +	if (IS_ERR(drvdata->pcnoc_sway_clk)) {
->> +		dev_err(&pdev->dev, "%s() error getting pcnoc-sway-clk:
->> %ld\n",
->> +				__func__,
->> PTR_ERR(drvdata->pcnoc_sway_clk));
->> +		return PTR_ERR(drvdata->pcnoc_sway_clk);
->> +	}
->> +
->> +	ret = clk_prepare_enable(drvdata->pcnoc_sway_clk);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "%s() Error enabling ahbix_clk: %d\n",
->
-> ... here too.
->
-Sure, I will fix it.
-
---srini
->> +				__func__, ret);
->> +		return ret;
->> +	}
->
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
