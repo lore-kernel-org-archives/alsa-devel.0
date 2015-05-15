@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 8/8] ASoC: twl6040: Replace direct
+Subject: [PATCH 6/8] ASoC: tlv320dac33: Replace direct
 	snd_soc_codec dapm field access
-Date: Fri, 15 May 2015 12:33:00 +0200
-Message-ID: <1431685980-6600-8-git-send-email-lars@metafoo.de>
+Date: Fri, 15 May 2015 12:32:58 +0200
+Message-ID: <1431685980-6600-6-git-send-email-lars@metafoo.de>
 References: <1431685980-6600-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-168.synserver.de (smtp-out-168.synserver.de
  [212.40.185.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 63D852664D3
+ by alsa0.perex.cz (Postfix) with ESMTP id 3581E2664BF
  for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 12:33:09 +0200 (CEST)
 In-Reply-To: <1431685980-6600-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,25 +28,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
 removed, in preparation for this replace all manual access to
-codec->dapm with snd_soc_codec_get_dapm().
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/twl6040.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320dac33.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index b8ecce2..9db7408 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -533,7 +533,7 @@ static int twl6040_pll_put_enum(struct snd_kcontrol *kcontrol,
- 
- int twl6040_get_dl1_gain(struct snd_soc_codec *codec)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 
- 	if (snd_soc_dapm_get_pin_status(dapm, "EP"))
- 		return -1; /* -1dB */
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 33e93f6..d67a311 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -633,7 +633,7 @@ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			/* Coming from OFF, switch on the codec */
+ 			ret = dac33_hard_power(codec, 1);
+ 			if (ret != 0)
+@@ -644,7 +644,7 @@ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		/* Do not power off, when the codec is already off */
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF)
+ 			return 0;
+ 		ret = dac33_hard_power(codec, 0);
+ 		if (ret != 0)
 -- 
 1.8.0
