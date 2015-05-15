@@ -1,100 +1,39 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 02/13] ASoC: qcom: move ipq806x specific bits out of
- lpass driver.
-Date: Fri, 15 May 2015 09:48:18 +0100
-Message-ID: <5555B2D2.9000603@linaro.org>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518426-7307-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052356.GD31687@kwestfie-linux.qualcomm.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8955: Fix setting wrong register
+	for	WM8955_K_8_0_MASK bits
+Date: Fri, 15 May 2015 09:58:20 +0100
+Message-ID: <20150515085820.GK3480@opensource.wolfsonmicro.com>
+References: <1431652516.5652.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150515052356.GD31687@kwestfie-linux.qualcomm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 738F22605B6
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 10:58:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1431652516.5652.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, May 15, 2015 at 09:15:16AM +0800, Axel Lin wrote:
+> WM8955_K_8_0_MASK bits is controlled by WM8955_PLL_CONTROL_3 rather than
+> WM8955_PLL_CONTROL_2.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
 
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-On 15/05/15 06:23, Kenneth Westfield wrote:
-> On Wed, May 13, 2015 at 05:00:26AM -0700, Srinivas Kandagatla wrote:
->> This patch tries to make the lpass driver more generic by moving the
->> ipq806x specific bits out of the cpu and platform driver, also allows the
->> SOC specific drivers to add the correct register offsets.
->>
->> This patch also renames the register definition header file into more
->> generic header file.
->
->> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
->> index 05b9840..865205e 100644
->> --- a/sound/soc/qcom/Kconfig
->> +++ b/sound/soc/qcom/Kconfig
->
->> @@ -14,11 +14,16 @@ config SND_SOC_LPASS_PLATFORM
->>   	depends on SND_SOC_QCOM && OF
->>   	select REGMAP_MMIO
->>
->> +config SND_SOC_LPASS_IPQ806X
->> +	tristate
->> +	depends on SND_SOC_QCOM
->> +	select SND_SOC_LPASS_CPU
->> +	select SND_SOC_LPASS_PLATFORM
->
-> Based on moving the of_device_id table from lpass-cpu.c to
-> lpass-ipq806x.c, shouldn't the OF dependency follow to the
-> SND_SOC_LPASS_IPQ806X config (and not SND_SOC_LPASS_CPU)?
->
->> +
->>   config SND_SOC_STORM
->>   	tristate "ASoC I2S support for Storm boards"
->>   	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
->> -	select SND_SOC_LPASS_CPU
->> -	select SND_SOC_LPASS_PLATFORM
->> +	select SND_SOC_LPASS_IPQ806X
->>   	select SND_SOC_MAX98357A
->>   	help
->>             Say Y or M if you want add support for SoC audio on the
->
->> diff --git a/sound/soc/qcom/lpass-ipq806x.c
->> b/sound/soc/qcom/lpass-ipq806x.c
->> new file mode 100644
->> index 0000000..d1f698c
->> --- /dev/null
->> +++ b/sound/soc/qcom/lpass-ipq806x.c
->
->> +static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
->> +	.driver	= {
->> +		.name		= "lpass-cpu",
->> +		.of_match_table	=
->> of_match_ptr(ipq806x_lpass_cpu_device_id),
->> +	},
->> +	.probe	= asoc_qcom_lpass_cpu_platform_probe,
->> +	.remove	= asoc_qcom_lpass_cpu_platform_remove,
->> +};
->> +module_platform_driver(ipq801x_lpass_cpu_platform_driver);
->
-> Patch below fixes the above typo (which breaks compilation):
->
-
-Oops, will fix it.
-
-> -----------------------><---------------------------------------------
-> diff --git a/sound/soc/qcom/lpass-ipq806x.c
-> b/sound/soc/qcom/lpass-ipq806x.c
-> index ad1d67a..2eab828 100644
-> --- a/sound/soc/qcom/lpass-ipq806x.c
-> +++ b/sound/soc/qcom/lpass-ipq806x.c
-> @@ -103,7 +103,7 @@ static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
->          .probe  = asoc_qcom_lpass_cpu_platform_probe,
->          .remove = asoc_qcom_lpass_cpu_platform_remove,
->   };
-> -module_platform_driver(ipq801x_lpass_cpu_platform_driver);
-> +module_platform_driver(ipq806x_lpass_cpu_platform_driver);
->
->   MODULE_DESCRIPTION("QTi LPASS CPU Driver");
->   MODULE_LICENSE("GPL v2");
-> -----------------------><---------------------------------------------
->
->> +
->> +MODULE_DESCRIPTION("QTi LPASS CPU Driver");
->> +MODULE_LICENSE("GPL v2");
->
+Thanks,
+Charles
