@@ -1,101 +1,79 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [PATCH v1 02/13] ASoC: qcom: move ipq806x specific bits out of
- lpass driver.
-Date: Thu, 14 May 2015 22:23:57 -0700
-Message-ID: <20150515052356.GD31687@kwestfie-linux.qualcomm.com>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1431518426-7307-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: USB-Audio.conf routing and dmix
+Date: Fri, 15 May 2015 10:53:51 +0500
+Message-ID: <555589EF.60602@gmail.com>
+References: <20150509002017.GB18945@freedom> <20150511195734.GA12233@freedom>
+ <55531850.1020208@ladisch.de> <20150513113215.GA569@freedom>
+ <20150515020715.GA418@freedom>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1431518426-7307-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
+ [209.85.212.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25FA22615C0
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 07:53:55 +0200 (CEST)
+Received: by wicnf17 with SMTP id nf17so123199257wic.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 22:53:54 -0700 (PDT)
+In-Reply-To: <20150515020715.GA418@freedom>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: sylvain.bertrand@gmail.com, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 13, 2015 at 05:00:26AM -0700, Srinivas Kandagatla wrote:
-> This patch tries to make the lpass driver more generic by moving the
-> ipq806x specific bits out of the cpu and platform driver, also allows the
-> SOC specific drivers to add the correct register offsets.
-> 
-> This patch also renames the register definition header file into more
-> generic header file.
+15.05.2015 07:07, sylvain.bertrand@gmail.com wrote:
+> On Wed, May 13, 2015 at 11:32:15AM +0000, sylvain.bertrand@gmail.com wrote:
+>> On Wed, May 13, 2015 at 11:24:32AM +0200, Clemens Ladisch wrote:
+>>>>> I linked the surround51 and surround71 pcms with the 'disable-able' dmix
+>>>>> section from the default pcm.
+>>>
+>>> These devices are not supposed to use plug or dmix.
+>>
+>> Ok. Then, there is no pcm to output 5.1 sound with dmix.
+>>
+>> Does it mean that the application is in charge to build a alsa-lib pipeline
+>> with dmix pcm and surround51 pcm, in order to let other applications output 5.1
+>> sound at the same time?
+>
+> Then what is the "Right"(tm) way to do that?
+>
 
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index 05b9840..865205e 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
+[this is my personal opinion, in no way official]
 
-> @@ -14,11 +14,16 @@ config SND_SOC_LPASS_PLATFORM
->  	depends on SND_SOC_QCOM && OF
->  	select REGMAP_MMIO
->  
-> +config SND_SOC_LPASS_IPQ806X
-> +	tristate
-> +	depends on SND_SOC_QCOM
-> +	select SND_SOC_LPASS_CPU
-> +	select SND_SOC_LPASS_PLATFORM
+The right way seems to be to use PulseAudio. Pure ALSA, in its default 
+configuration, just does not support mixing 5.1 audio, on any card. This 
+default cannot really be changed, because there are many people who use 
+5.1 cards for output to stereo headphones only, i.e. who need automatic 
+downmixing if an app (such as VLC) starts a 5.1 stream. The default 
+plug/dmix setup provides such downmixing.
 
-Based on moving the of_device_id table from lpass-cpu.c to
-lpass-ipq806x.c, shouldn't the OF dependency follow to the
-SND_SOC_LPASS_IPQ806X config (and not SND_SOC_LPASS_CPU)?
+Those who actually have a 5.1 system and need to opt out of this 
+downmixing must actively do it (both with ALSA and with PulseAudio). For 
+PulseAudio, it is as simple as starting pavucontrol and selecting a 5.1 
+output profile for the relevant card. For ALSA, a config has to be 
+created from scratch. On some cards, the config suggested by mpv 
+developers works:
 
-> +
->  config SND_SOC_STORM
->  	tristate "ASoC I2S support for Storm boards"
->  	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-> -	select SND_SOC_LPASS_CPU
-> -	select SND_SOC_LPASS_PLATFORM
-> +	select SND_SOC_LPASS_IPQ806X
->  	select SND_SOC_MAX98357A
->  	help
->            Say Y or M if you want add support for SoC audio on the
+https://github.com/mpv-player/mpv/wiki/ALSA:-Surround-Sound-and-Upmixing
 
-> diff --git a/sound/soc/qcom/lpass-ipq806x.c
-> b/sound/soc/qcom/lpass-ipq806x.c
-> new file mode 100644
-> index 0000000..d1f698c
-> --- /dev/null
-> +++ b/sound/soc/qcom/lpass-ipq806x.c
+As an application developer, just tell your users "your default device 
+needs to support 5.1, see you there", as mpv developers did. This will 
+be the case either with PulseAudio or with a hacked .asoundrc.
 
-> +static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
-> +	.driver	= {
-> +		.name		= "lpass-cpu",
-> +		.of_match_table	=
-> of_match_ptr(ipq806x_lpass_cpu_device_id),
-> +	},
-> +	.probe	= asoc_qcom_lpass_cpu_platform_probe,
-> +	.remove	= asoc_qcom_lpass_cpu_platform_remove,
-> +};
-> +module_platform_driver(ipq801x_lpass_cpu_platform_driver);
-
-Patch below fixes the above typo (which breaks compilation):
-
------------------------><---------------------------------------------
-diff --git a/sound/soc/qcom/lpass-ipq806x.c
-b/sound/soc/qcom/lpass-ipq806x.c
-index ad1d67a..2eab828 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -103,7 +103,7 @@ static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
-        .probe  = asoc_qcom_lpass_cpu_platform_probe,
-        .remove = asoc_qcom_lpass_cpu_platform_remove,
- };
--module_platform_driver(ipq801x_lpass_cpu_platform_driver);
-+module_platform_driver(ipq806x_lpass_cpu_platform_driver);
-                  
- MODULE_DESCRIPTION("QTi LPASS CPU Driver");
- MODULE_LICENSE("GPL v2");
------------------------><---------------------------------------------
-
-> +
-> +MODULE_DESCRIPTION("QTi LPASS CPU Driver");
-> +MODULE_LICENSE("GPL v2");
+OTOH, I will be happy to review a patch that makes the dmix channel 
+count configurable on a per-card basis in .asoundrs in a way similar to 
+the rate. But that's hard - you will have to change all card configs, 
+and implement some conditional blocks because some cards expose 
+themselves as several stereo devices, so you want a multi plugin on 
+several instances of dmix then.
 
 -- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+Alexander E. Patrakov
