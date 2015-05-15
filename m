@@ -1,18 +1,21 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: wm8955: Fix setting wrong register for
- WM8955_K_8_0_MASK bits
-Date: Fri, 15 May 2015 09:15:16 +0800
-Message-ID: <1431652516.5652.1.camel@ingics.com>
+From: sylvain.bertrand@gmail.com
+Subject: Re: USB-Audio.conf routing and dmix
+Date: Fri, 15 May 2015 02:07:15 +0000
+Message-ID: <20150515020715.GA418@freedom>
+References: <20150509002017.GB18945@freedom> <20150511195734.GA12233@freedom>
+ <55531850.1020208@ladisch.de> <20150513113215.GA569@freedom>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 596232614D9
- for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 03:15:23 +0200 (CEST)
-Received: by pabts4 with SMTP id ts4so108102pab.3
- for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 18:15:22 -0700 (PDT)
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEB8E261540
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 04:07:16 +0200 (CEST)
+Received: by wizk4 with SMTP id k4so266594588wiz.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 May 2015 19:07:16 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20150513113215.GA569@freedom>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-WM8955_K_8_0_MASK bits is controlled by WM8955_PLL_CONTROL_3 rather than
-WM8955_PLL_CONTROL_2.
+On Wed, May 13, 2015 at 11:32:15AM +0000, sylvain.bertrand@gmail.com wrote:
+> On Wed, May 13, 2015 at 11:24:32AM +0200, Clemens Ladisch wrote:
+> >>> I linked the surround51 and surround71 pcms with the 'disable-able' dmix
+> >>> section from the default pcm.
+> > 
+> > These devices are not supposed to use plug or dmix.
+> 
+> Ok. Then, there is no pcm to output 5.1 sound with dmix.
+> 
+> Does it mean that the application is in charge to build a alsa-lib pipeline
+> with dmix pcm and surround51 pcm, in order to let other applications output 5.1
+> sound at the same time?
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/wm8955.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Then what is the "Right"(tm) way to do that?
 
-diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
-index f400d5c..08063a6 100644
---- a/sound/soc/codecs/wm8955.c
-+++ b/sound/soc/codecs/wm8955.c
-@@ -298,7 +298,7 @@ static int wm8955_configure_clocking(struct snd_soc_codec *codec)
- 		snd_soc_update_bits(codec, WM8955_PLL_CONTROL_2,
- 				    WM8955_K_17_9_MASK,
- 				    (pll.k >> 9) & WM8955_K_17_9_MASK);
--		snd_soc_update_bits(codec, WM8955_PLL_CONTROL_2,
-+		snd_soc_update_bits(codec, WM8955_PLL_CONTROL_3,
- 				    WM8955_K_8_0_MASK,
- 				    pll.k & WM8955_K_8_0_MASK);
- 		if (pll.k)
 -- 
-2.1.0
+Sylvain
