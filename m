@@ -1,72 +1,66 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH early RFC 0/2] Implement ASoC HDMI codec library
-Date: Fri, 15 May 2015 10:13:07 +0300
-Message-ID: <55559C83.6080700@ti.com>
-References: <cover.1431508524.git.jsarha@ti.com> <20150513194236.68a0d0a6@armhf>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: USB-Audio.conf routing and dmix
+Date: Fri, 15 May 2015 16:13:18 +0800
+Message-ID: <CAN8cciYjn2r4J0BCFQ8LdJbbH6tDrdcd48Qyzx2ARo=WQGkcKg@mail.gmail.com>
+References: <20150509002017.GB18945@freedom>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20150513194236.68a0d0a6@armhf>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C043926057F
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 10:13:19 +0200 (CEST)
+Received: by oift201 with SMTP id t201so76787470oif.3
+ for <alsa-devel@alsa-project.org>; Fri, 15 May 2015 01:13:18 -0700 (PDT)
+In-Reply-To: <20150509002017.GB18945@freedom>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: sylvain.bertrand@gmail.com
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/13/15 20:42, Jean-Francois Moine wrote:
-> On Wed, 13 May 2015 12:23:45 +0300
-> Jyri Sarha <jsarha@ti.com> wrote:
 >
->> Jean-Francois, would you consider trying the generic ASoC patch with
->> your HW, as I can not test the spdif functionality with mine?
+> I have a bose USB audio 5.1 device, a generic USB audio device.
 >
-> Hi Jyri,
+> I noticed that the proper channels routing was missing from the default
+generic
+> USB pcm, but dmix was used. And for the surround pcms I noticed it was the
+> other way around!
 >
-> I am not sure to need all the stuff you coded.
+> I did modify the default pcm to include a routing plugin. I put 8
+channels in
+> the routing plugin. I guess the proper way would be to detect the hw card
+> number of channels and select a route plugin configuration with the
+correct
+> count of channels (maybe their is a function to get that info?).
 >
-
-You do not need to use all of the stuff on the ASoC side. At minimum you 
-could just implement hw_params() and audio_shutdown() for struct 
-hdmi_codec_ops and just use the hw_params() parameters you need. With 
-such and implementation the tda998x side would not look too different 
-from what you are having now.
-
-> My tda998x CODEC is quite empty and it works fine in my system.
-> If you look at my last patch request ([PATCH v12 6/6] ASoC: tda998x:
-> add a codec to the HDMI transmitter -
-
-The idea for my lib is to work for all external HDMI encoders with i2s 
-and/or spdif interface. And avoid the need to create a new HW specific 
-ASoC module and API for each HDMI encoder.
-
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/091758.html),
-> the code is much smaller than yours and does not ask for a structure
-> constraint (+/* Has to be the first member of the hdmi endcoder's
-> drvdata */).
+> I linked the surround51 and surround71 pcms with the 'disable-able' dmix
+> section from the default pcm.
+>
+> I did not touch the surround40* pcms, surround pcms which are specific to
+some
+> cards and the iec958 ones.
+>
+> http://filebin.ca/214UTT8fBnUm/USB-Audio.conf
+>
 >
 
-If that is generally considered annoying, I can get around it by adding 
-a private_data member to struct snd_soc_dai (Mark, is that Ok?).
+Post the output of your usb audio
 
-With the above change it is simply a matter of choice whether the 
-library is actually a platform driver.
+lsusb -vvvv
 
-> So, I'd rather see a real hdmi codec library, i.e. a set of common
-> functions as Russell's DRM ELD helper, each specific hdmi codec being
-> free about the mechanism used for the exchanges with the hdmi
-> transmitter.
->
+Most likely your usb audio device does not support stereo
 
-Well, this is a real library and these are common functions for all HDMI 
-encoder fitting the description. If we want to avoid each encoder from 
-adding their own module to ASoC side and implementing their own API, we 
-need something similar to what I wrote.
+Post output of alsa-info.sh
 
-I am happy to do what ever changes are considered necessary, but I think 
-I my idea in general is sound.
+Pulseaudio don't support if your volume control have more than two channels
 
-Of course another option would be just to implement the ASoC component 
-within the video side driver and use the ASoC structures directly.
-
-Best regards,
-Jyri
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa?id=527078523815587bfd021bc1d10782403e9b3e84
