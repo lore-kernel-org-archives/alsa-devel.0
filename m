@@ -1,49 +1,100 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v1 11/13] ASoC: qcom: add apq8016 sound card support
-Date: Fri, 15 May 2015 09:47:06 +0100
-Message-ID: <5555B28A.9040608@linaro.org>
-References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518594-7752-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052348.GC31687@kwestfie-linux.qualcomm.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v1 02/13] ASoC: qcom: move ipq806x specific bits out of
+ lpass driver.
+Date: Fri, 15 May 2015 09:48:18 +0100
+Message-ID: <5555B2D2.9000603@linaro.org>
+References: <1431518302-7139-1-git-send-email-srinivas.kandagatla@linaro.org> <1431518426-7307-1-git-send-email-srinivas.kandagatla@linaro.org> <20150515052356.GD31687@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150515052348.GC31687-VfhoOQ2zEbNBVvN7MMdr1KRtKmQZhJ7pQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150515052356.GD31687@kwestfie-linux.qualcomm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
 On 15/05/15 06:23, Kenneth Westfield wrote:
-> On Wed, May 13, 2015 at 05:03:14AM -0700, Srinivas Kandagatla wrote:
->> This patch adds apq8016 machine driver support. This patch was tested on
->> two apq8016-sbc and msm8916-mtp board for both hdmi and analog audio
->> features.
+> On Wed, May 13, 2015 at 05:00:26AM -0700, Srinivas Kandagatla wrote:
+>> This patch tries to make the lpass driver more generic by moving the
+>> ipq806x specific bits out of the cpu and platform driver, also allows the
+>> SOC specific drivers to add the correct register offsets.
+>>
+>> This patch also renames the register definition header file into more
+>> generic header file.
 >
 >> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
->> index 9cc5ed7..e71b0f2 100644
+>> index 05b9840..865205e 100644
 >> --- a/sound/soc/qcom/Kconfig
 >> +++ b/sound/soc/qcom/Kconfig
->> @@ -34,3 +34,12 @@ config SND_SOC_STORM
+>
+>> @@ -14,11 +14,16 @@ config SND_SOC_LPASS_PLATFORM
+>>   	depends on SND_SOC_QCOM && OF
+>>   	select REGMAP_MMIO
+>>
+>> +config SND_SOC_LPASS_IPQ806X
+>> +	tristate
+>> +	depends on SND_SOC_QCOM
+>> +	select SND_SOC_LPASS_CPU
+>> +	select SND_SOC_LPASS_PLATFORM
+>
+> Based on moving the of_device_id table from lpass-cpu.c to
+> lpass-ipq806x.c, shouldn't the OF dependency follow to the
+> SND_SOC_LPASS_IPQ806X config (and not SND_SOC_LPASS_CPU)?
+>
+>> +
+>>   config SND_SOC_STORM
+>>   	tristate "ASoC I2S support for Storm boards"
+>>   	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
+>> -	select SND_SOC_LPASS_CPU
+>> -	select SND_SOC_LPASS_PLATFORM
+>> +	select SND_SOC_LPASS_IPQ806X
+>>   	select SND_SOC_MAX98357A
 >>   	help
 >>             Say Y or M if you want add support for SoC audio on the
->>             Qualcomm Technologies IPQ806X-based Storm board.
+>
+>> diff --git a/sound/soc/qcom/lpass-ipq806x.c
+>> b/sound/soc/qcom/lpass-ipq806x.c
+>> new file mode 100644
+>> index 0000000..d1f698c
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/lpass-ipq806x.c
+>
+>> +static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
+>> +	.driver	= {
+>> +		.name		= "lpass-cpu",
+>> +		.of_match_table	=
+>> of_match_ptr(ipq806x_lpass_cpu_device_id),
+>> +	},
+>> +	.probe	= asoc_qcom_lpass_cpu_platform_probe,
+>> +	.remove	= asoc_qcom_lpass_cpu_platform_remove,
+>> +};
+>> +module_platform_driver(ipq801x_lpass_cpu_platform_driver);
+>
+> Patch below fixes the above typo (which breaks compilation):
+>
+
+Oops, will fix it.
+
+> -----------------------><---------------------------------------------
+> diff --git a/sound/soc/qcom/lpass-ipq806x.c
+> b/sound/soc/qcom/lpass-ipq806x.c
+> index ad1d67a..2eab828 100644
+> --- a/sound/soc/qcom/lpass-ipq806x.c
+> +++ b/sound/soc/qcom/lpass-ipq806x.c
+> @@ -103,7 +103,7 @@ static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
+>          .probe  = asoc_qcom_lpass_cpu_platform_probe,
+>          .remove = asoc_qcom_lpass_cpu_platform_remove,
+>   };
+> -module_platform_driver(ipq801x_lpass_cpu_platform_driver);
+> +module_platform_driver(ipq806x_lpass_cpu_platform_driver);
+>
+>   MODULE_DESCRIPTION("QTi LPASS CPU Driver");
+>   MODULE_LICENSE("GPL v2");
+> -----------------------><---------------------------------------------
+>
 >> +
->> +config SND_SOC_APQ8016_SBC
->> +	tristate "SoC Audio support for APQ8016 SBC platforms"
->> +	depends on SND_SOC_QCOM || ARCH_QCOM || COMPILE_TEST
+>> +MODULE_DESCRIPTION("QTi LPASS CPU Driver");
+>> +MODULE_LICENSE("GPL v2");
 >
-> I believe this should be:
->          depends on (SND_SOC_QCOM && ARCH_QCOM) || COMPILE_TEST
->
-Yep , I will fix it.
->> +	select SND_SOC_LPASS_APQ8016
->> +	help
->> +          Support for Qualcomm Technologies LPASS audio block in
->> +          APQ8016 SOC-based systems.
->> +          Say Y if you want to use audio devices on MI2S
->
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
