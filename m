@@ -1,64 +1,91 @@
-From: Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Subject: Re: USB headset cannot get freq
-Date: Sat, 16 May 2015 08:25:57 -0700
-Message-ID: <20150516152557.GA14206@kroah.com>
-References: <20150516142523.GE1794@fritha.org>
+From: Glenn Golden <gdg@zplane.com>
+Subject: Re: [pulseaudio-discuss] ThinkPad T-510 audio output
+ mute LED non-workingness
+Date: Sat, 16 May 2015 14:32:57 -0600
+Message-ID: <20150516203257.GA565@huh.zplane.com>
+References: <20150427135859.GI550@huh.zplane.com>
+ <s5ha8xt4hsa.wl-tiwai@suse.de>
+ <20150428000206.GK550@huh.zplane.com>
+ <CAN8ccibSH6je=OpX6vOTG9PzETxikmpuX+7PDgiYNrsG+YavNw@mail.gmail.com>
+ <20150502160003.GA557@huh.zplane.com>
+ <1430735828.1027589.262340817.33A79FB3@webmail.messagingengine.com>
+ <20150504122604.GA577@huh.zplane.com>
+ <1430745381.1616962.262389473.6ABEC97F@webmail.messagingengine.com>
+ <20150507001557.GH554@huh.zplane.com>
+ <5550A70D.20407@canonical.com>
+Reply-To: gdg@zplane.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.indra.com (smtp.indra.com [209.169.0.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A0FA260715
+ for <alsa-devel@alsa-project.org>; Sat, 16 May 2015 22:33:12 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150516142523.GE1794-iEI8Y0CNJBYdnm+yROfE0A@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Heinz Diehl <htd+ml-iEI8Y0CNJBYdnm+yROfE0A@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <5550A70D.20407@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Alex Hung <alex.hung@canonical.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Raymond Yau <superquad.vortex2@gmail.com>, bruno.mueller@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 16, 2015 at 04:25:23PM +0200, Heinz Diehl wrote:
-> Hi,
+David Henningsson <david.henningsson@canonical.com> [2015-05-11 14:56:45 +0200]:
 > 
-> this is the Jabra Evolve 40 MS headset:
-> Bus 001 Device 008: ID 0b0e:0305 GN Netcom
 > 
-> When plugged in, dmesg says:
+> On 2015-05-07 02:15, Glenn Golden wrote:
+> >  8.  ...because [Alsa? Pulseaudio?] maintains two independent mixer mute state
+> >      variables -- one for headphone port, one for speaker port -- the semantics
+> >      of both the mute key and the mute LED become less straightforward than
+> >      with the hardware-based mute in 3.18.
 > 
-> [  247.215998] usb 1-5: new full-speed USB device number 8 using xhci_hcd
-> [  247.384000] usb 1-5: New USB device found, idVendor=0b0e, idProduct=0305
-> [  247.384008] usb 1-5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> [  247.384012] usb 1-5: Product: Jabra EVOLVE LINK MS
-> [  247.384016] usb 1-5: Manufacturer: GN Netcom A/S
-> [  247.384019] usb 1-5: SerialNumber: 0001A3E08CFC09
-> [  247.386542] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.388490] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.406532] input: GN Netcom A/S Jabra EVOLVE LINK MS as /devices/pci0000:00/0000:00:14.0/usb1/1-5/1-5:1.3/0003:0B0E:0305.0009/input/input12
-> [  247.457203] hid-generic 0003:0B0E:0305.0009: input,hiddev0,hidraw1: USB HID v1.00 Device [GN Netcom A/S Jabra EVOLVE LINK MS] on usb-0000:00:14.0-5/input3
-> [  247.467683] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.467912] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.473505] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.473718] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.475488] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.475721] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.481899] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.482097] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.483351] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.483566] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.487396] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.487586] usb 1-5: 2:1: cannot get freq at ep 0x4
-> [  247.494730] usb 1-5: 1:1: cannot get freq at ep 0x83
-> [  247.495018] usb 1-5: 1:1: cannot get freq at ep 0x83
+> The mute LED follows the state of ALSA's "Master Playback Switch". When that
+> one is off, neither 3.5 mm headphone nor internal speakers have output -
+> they're both muted.
 > 
-> The micro/playback devices show up, but there's no sound and the mic is also
-> dead.
+> PulseAudio's abstraction layer sets "Master Playback Switch" according to
+> its active port's mute state. PulseAudio's active port (here speaker or
+> headphone) will, by default, change automatically as headphones are plugged
+> in or unplugged.
 > 
-> I've spent the last two days reading on the net, tried a lot of different
-> options, but whithout any success. In a lot of similar bug reports, people
-> point out that this is a bug in the Linux kernel USB subsystem..
-> 
-> What can I do to debug this further, in order to get a working headset?
 
-The sound developers should be able to help you (added to the cc:)
+Thanks, David.  I updated #7 and #8 per your comments above:
 
-greg k-h
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ =============================================================================
+ 7.  If you elect to have the mute key toggle the Master Playback mute via an
+     event which invokes pactl/pacmd/amixer/[insert fave mixer control tool]
+     then the mute LED will automatically follow the Master Playback mute state
+     as mentioned above, thus no explicit action is required to make the LED
+     work.  But! ...
+
+ 8.  ...if you also use PulseAudio, then the situation becomes a little more
+     complicated, because PA maintains two independent mixer mute state
+     variables, one for the headphone port, one for the speaker port, and the
+     following caveats apply:
+
+       * The mute key (via your userspace mixer control event handler) will
+         toggle only the port (HPH or SPKR) that happens to be active at that
+         time, and will have no effect on the mute state of the other port.
+
+       * PulseAudio forces the Master Playback mute state to follow the mute
+         state of its curently active port, hence...
+
+       * ...the mute LED will likewise follow the mute state of PA's active
+         port via kernel auto-synch (as described in (5) above).
+
+     Taken together, these imply that when PulseAudio is in the picture, no
+     unequivocal semantic can be attached to "mute LED on", as it was with
+     hardware-based mute in 3.18: All you can say is that if the LED is on,
+     then PulseAudio's active port is muted via the mixer; the LED gives no
+     information about the inactive port's mute state.  One possibly surprising
+     consequence of this is that if the ALSA 'auto-mute' feature is enabled,
+     then the mute LED may (or may not) change state simply by the action of
+     plugging or unplugging the headphones, since doing so automatically
+     switches the active port.
+ =============================================================================
