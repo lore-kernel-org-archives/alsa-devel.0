@@ -1,93 +1,64 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 13/13] ASoC: qcom: document apq8016 sbc machine driver bindings
-Date: Sat, 16 May 2015 13:33:48 +0100
-Message-ID: <1431779628-2516-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+Subject: Re: USB headset cannot get freq
+Date: Sat, 16 May 2015 08:25:57 -0700
+Message-ID: <20150516152557.GA14206@kroah.com>
+References: <20150516142523.GE1794@fritha.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150516142523.GE1794-iEI8Y0CNJBYdnm+yROfE0A@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Heinz Diehl <htd+ml-iEI8Y0CNJBYdnm+yROfE0A@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for apq8016 sbc machine driver.
-On APQ8016 4 MI2S can be configured to different sinks like internal
-codec/external codec, this connection is controlled via 2 iomux
-registers.
+On Sat, May 16, 2015 at 04:25:23PM +0200, Heinz Diehl wrote:
+> Hi,
+> 
+> this is the Jabra Evolve 40 MS headset:
+> Bus 001 Device 008: ID 0b0e:0305 GN Netcom
+> 
+> When plugged in, dmesg says:
+> 
+> [  247.215998] usb 1-5: new full-speed USB device number 8 using xhci_hcd
+> [  247.384000] usb 1-5: New USB device found, idVendor=0b0e, idProduct=0305
+> [  247.384008] usb 1-5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+> [  247.384012] usb 1-5: Product: Jabra EVOLVE LINK MS
+> [  247.384016] usb 1-5: Manufacturer: GN Netcom A/S
+> [  247.384019] usb 1-5: SerialNumber: 0001A3E08CFC09
+> [  247.386542] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.388490] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.406532] input: GN Netcom A/S Jabra EVOLVE LINK MS as /devices/pci0000:00/0000:00:14.0/usb1/1-5/1-5:1.3/0003:0B0E:0305.0009/input/input12
+> [  247.457203] hid-generic 0003:0B0E:0305.0009: input,hiddev0,hidraw1: USB HID v1.00 Device [GN Netcom A/S Jabra EVOLVE LINK MS] on usb-0000:00:14.0-5/input3
+> [  247.467683] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.467912] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.473505] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.473718] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.475488] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.475721] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.481899] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.482097] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.483351] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.483566] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.487396] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.487586] usb 1-5: 2:1: cannot get freq at ep 0x4
+> [  247.494730] usb 1-5: 1:1: cannot get freq at ep 0x83
+> [  247.495018] usb 1-5: 1:1: cannot get freq at ep 0x83
+> 
+> The micro/playback devices show up, but there's no sound and the mic is also
+> dead.
+> 
+> I've spent the last two days reading on the net, tried a lot of different
+> options, but whithout any success. In a lot of similar bug reports, people
+> point out that this is a bug in the Linux kernel USB subsystem..
+> 
+> What can I do to debug this further, in order to get a working headset?
 
-Tested-by: Kenneth Westfield <kwestfie@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../devicetree/bindings/sound/qcom,apq8016-sbc.txt | 61 ++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+The sound developers should be able to help you (added to the cc:)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-new file mode 100644
-index 0000000..01d62be
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-@@ -0,0 +1,61 @@
-+* Qualcomm Technologies APQ8016 SBC ASoC machine driver
-+
-+This node models the Qualcomm Technologies APQ8016 SBC ASoC machine driver
-+
-+Required properties:
-+
-+- compatible		: "qcom,apq8016-sbc-sndcard"
-+
-+- pinctrl-N		: One property must exist for each entry in
-+			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
-+			  for details of the property values.
-+- pinctrl-names		: Must contain a "default" entry.
-+- reg			: Must contain an address for each entry in reg-names.
-+- reg-names		: A list which must include the following entries:
-+				* "mic-iomux"
-+				* "spkr-iomux"
-+- qcom,model		: Name of the sound card.
-+
-+Dai-link subnode properties and subnodes:
-+
-+Required dai-link subnodes:
-+
-+- cpu					: CPU   sub-node
-+- codec					: CODEC sub-node
-+
-+Required CPU/CODEC subnodes properties:
-+
-+-sound-dai		: phandle and port of CPU/CODEC
-+-capture-dai		: phandle and port of CPU/CODEC
-+
-+Optional CPU/CODEC subnodes properties:
-+- external	: flag to indicate if the I2S is connected to external codec
-+Example:
-+
-+sound: sound {
-+	compatible = "qcom,apq8016-sbc-sndcard";
-+	reg = <0x07702000 0x4>, <0x07702004 0x4>;
-+	reg-names = "mic-iomux", "spkr-iomux";
-+	qcom,model = "DB410c";
-+
-+	/* I2S - Internal codec */
-+	internal-dai-link@0 {
-+		cpu { /* PRIMARY */
-+			sound-dai = <&lpass MI2S_PRIMARY>;
-+		};
-+		codec {
-+			sound-dai = <&wcd_codec 0>;
-+		};
-+	};
-+
-+	/* External Primary or External Secondary -ADV7533 HDMI */
-+	external-dai-link@0 {
-+		external;
-+		cpu { /* QUAT */
-+			sound-dai = <&lpass MI2S_QUATERNARY>;
-+		};
-+		codec {
-+			sound-dai = <&adv_bridge 0>;
-+		};
-+	};
-+};
--- 
-1.9.1
+greg k-h
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
