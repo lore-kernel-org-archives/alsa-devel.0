@@ -1,28 +1,31 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Front speakers doesn't work in multichannel output,
-	regression in ALC888
-Date: Sun, 17 May 2015 09:49:09 +0800
-Message-ID: <CAN8ccibBFmq8qBE-817u703r7tLffLkFURBHJK_z4bDoXbM-QA@mail.gmail.com>
-References: <2927807.UsnFnTlWVL@luklap.workgroup>
- <4324603.tPLEjaP5mH@luklap.workgroup>
- <CAN8cciYbGexGm8GS3nJgBkfTphy6H-eV-dkwno6TYV0FiMfOhQ@mail.gmail.com>
- <4678913.FpDgrA5u1d@luklap.workgroup>
- <CAN8cciZdSoQpLQe2Cum1gozsJ48J-B9gbECFYDsHgx6=R4pLYg@mail.gmail.com>
- <CAN8cciZS8MhXWy5anxMSgtLdDYHQtURXJ2iEoL0YMpb41EifHg@mail.gmail.com>
- <d3bbb31411796d9f835396d30dcaa309@mail.onse.fi>
- <CAN8ccibM+PoboaTXoHqg=dCbe-3+ijQZ6xL_Q1J=H9ovZ8gzkQ@mail.gmail.com>
- <5554529A.4040202@iki.fi>
+From: "Christian Gleerup" <cromozon@swn.nu>
+Subject: Re: getting the sound to work on my asus m6s00v
+Date: Sun, 17 May 2015 11:24:31 +0200
+Message-ID: <10d760a1b9c16c5388124146d090f3e0@swn.nu>
+References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
+ <5508DD4D.3040901@canonical.com>
+ <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
+ <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
+ <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
+ <64443a816660f3098fc300c7d7b5a01f@swn.nu>
+ <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
+ <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
+ <CAN8cciYo-SSeoBg69qaj+aYBx+ZRbVuhbgkURutuBWGwCxauWA@mail.gmail.com>
+ <CAN8cciam2=TE3zhWNB_GQEr1Q1z_X7S+k34fAgajE_XNYJzo0Q@mail.gmail.com>
+ <CAN8cciZhtL_C-DAErzhM4E3t3nn7KdAbjQXQEPk3iVcBvm4aUw@mail.gmail.com>
+ <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
+ <CAN8cciZNz1TGSQah+KzRGGhRwGWR4U3LbMVUxV+=0mtX1gdM=w@mail.gmail.com>
+ <f7a08a5262537ca8764cb91177f85646@swn.nu>
+ <s5hiodlz116.wl-tiwai@suse.de>
+ <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id E08B526048C
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2015 03:49:10 +0200 (CEST)
-Received: by oiko83 with SMTP id o83so107442606oik.1
- for <alsa-devel@alsa-project.org>; Sat, 16 May 2015 18:49:09 -0700 (PDT)
-In-Reply-To: <5554529A.4040202@iki.fi>
+Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B069261AC1
+ for <alsa-devel@alsa-project.org>; Sun, 17 May 2015 11:21:18 +0200 (CEST)
+In-Reply-To: <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,84 +35,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: tiwai@suse.de, lukasz.wojnilowicz@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Vincent Petry <PVince81@yahoo.fr>, Juan Jesus Garcia de Soria <skandalfo@gmail.com>
+To: tiwai@suse.de, Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>, korobka@en.gov.ua
 List-Id: alsa-devel@alsa-project.org
 
-> >>>> I started MS Windows and without externals speakers plugged in I
-> >>>
-> >>> could test
-> >>>  > 5.1 configuration and it seemed that sound was coming from
-> >>> different directions.
-> >>>
-> >>>  >
-> >>>  > What I managed to determine:
-> >>>  > I've got 3 stacks:
-> >>>  > 1 ST: Headphone, Line-out (FL and FR), SPDIF
-> >>>  > 2 ST: Microphone, Line-out (CLFE)
-> >>>  > 3 ST: Line-in, Line-out (RL and RR)
-> >>>  >
-> >>>  > I've got 5 responsive output pins
-> >>>  > PIN 0x14: Internal FL FR
-> >>>  > PIN 0x15: External FL FR
-> >>>  > PIN 0x17: Internal LFE
-> >>>  > PIN 0x18: External CLFE
-> >>>  > PIN 0x1a: External RL RR
-> >>>  >
-> >>>  > How can we make it work with these information?
-
-speaker-test -Dhw:0,0 -c4 -t wav
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_realtek.c?id=7cef4cf1c5e9d81554137f52b96a5ab7f6241cdd
-
-You need to notify user of other acer aspire which use quirk
-ALC888_ACER_ASPIRE_4930G if you want to remove node 0x16
-
-> >>>
-> >>>
-> >
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/plain/Documentation/sound/alsa/Channel-Mapping-API.txt
-> >>> [1]
-> >>>
-> >>> seem chnmap type _FIXED , _VAR and _PAIRED does not fit when LFE and
-> >>> FC can be swapped for internal speaker and external speaker
-> >>
-> >>
-> >> Right, you can't do it with a single map of one of those types.
-> >
-> >
-http://git.alsa-project.org/?p=alsa-utils.git&a=search&h=HEAD&st=commit&s=chmap
-> >
-> > do chmap of internal speakers need {FL FR RL RR LFE NA} ?
->
-> From above it looks like there are 3 internal speakers, so I guess e.g.
-> {FL FR LFE NA} might be in order (or just {FL FR LFE} if 3-channel
-> playback is supported).
-
-This is different from 2.1 internal speakers when yours also support
-external 5.1
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=f37bc7a88d374448a1f4bba9267d308606d78bf2
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=8e38395360844806041ea69ab9690f5f174bc40c
-
->
-> >
-http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=7b14c00b56784f69ecc954a2de36e0a058fc8849;hp=000bf230cfb3b0abe88d27701dd77982675126ec
-> >
-> > this example seem not working
-> >
-> > speaker-test -c2 -t wav -Dplug:front -mFR,FL
->
-> You are getting an error?
-
-Unable to set channel map
-
-> If so, that is expected if the underlying device does not support the
-> wanted channel map.
->
-
-Seem only those idt codecs which wcaps support R/L swap but hda-intel use
-snd_pcm_std_chmap
-
-Are there any other sound card support swap front right and front left ?
+SSBtYW5nZWQgdG8gZ2V0IHNvdW5kIHdvcmtpbmcgYWdhaW4gd2hpbGUgcGxheWluZyBhcnJvdW5k
+IHdpdGggaGRhcmV0YXNrLgpidXQgaW5pdGlhbGx5IGkgdHJpZWQgc2V0dGluZyB1cCB0aGUgb3V0
+cHV0cyBhcyBzdWdnZXN0LAp3aGljaCBkaWRuJ3QgZ2l2ZWFueXRoaW5nLCB0aGVuIGEgdGhlbiBJ
+IHRyaWVkIHNldHRpbmcgMC4xNSBhcyBpbnRlcm5hbCBzcGVha2VyIGFsc28uCgpGb3IgdGhlIGZp
+cnN0IGZldyBzZWNvbmRzIHRoZXJlIHdoZXJlIG5vIHNvdW5kLCBhbmQgdGhlbiB0aGUgc291bmQg
+c2xvd2x5IHN0YXJ0ZWQgdG8gaW5jcmVhc2UsIGJ1dCBub3QgdGhlIHNvdW5kIGkgd2FzIHBsYXlp
+bmcganVzdCBzb21lIG5vaXNlLCBub3QgY29udGlub3VzbHkgYnV0Li4gZXJobSBsaWtlIHRoaXM6
+Ci58LnwufC58LnwufC58LnwufC58LnwufC58LnwKCkkgd2FzIG5vdCBhYmxlIHRvIGtpbGwgdGhl
+IHNvdW5kIGV2ZW4gd2hlbiBtdXRpbmcgYWxsIGNoYW5uZWxzIGluIGFsc2EgbWl4ZXIuCnRoZW4g
+SSByZW1vdmVkIGFsbCBvdmVycmlkZXMgKGV4cGVjdCBjaDB4MTgpLCBhZnRlciBjbGlja2luZyBh
+cHBseSB0aGUgcmVwZWF0aW5nIHBlcmlvZGljIHNvdW5kIGRpcy1hcGVyZWQsIGFuZCBJIHdhcyBh
+YmxlIHRvIHBsYXkgc291bmQuCgpTbyBub3cgSSBhbSBhYmxlIHRvIHBsYXkgc291bmQgdGhyb3Vn
+aCB0aGUgaW50ZXJuYWwgc3BlYWtlcgpJIGhhdmUgdG9nZ2xlZCBob19taWNfZGV0ZWN0PWZhbHNl
+LCBzZXQgbW9kZWw9YXV0by4KCgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLSAKPiBGcm9tOiAi
+UmF5bW9uZCBZYXUiIDxzdXBlcnF1YWQudm9ydGV4MkBnbWFpbC5jb20+IAo+IFRvOiBjcm9tb3pv
+bkBzd24ubnUsIHRpd2FpQHN1c2UuZGUgCj4gQ2M6ICJIdWkgV2FuZyIgPGh1aS53YW5nQGNhbm9u
+aWNhbC5jb20+LCAiQUxTQSBEZXZlbG9wbWVudCBNYWlsaW5nIExpc3QiIDxhbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmc+LCBuYiA8bmJAZGFnYW1pLm9yZz4sIGtvcm9ia2FAZW4uZ292LnVhIAo+
+IERhdGU6IDI5LzAzLzIwMTUgMTg6MDcgCj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBnZXR0
+aW5nIHRoZSBzb3VuZCB0byB3b3JrIG9uIG15IGFzdXMgbTZzMDB2IAo+IAo+ID4KPiA+Cj4gPiA+
+IEl0IGxvb2tzIGxpa2UgdGhlIHBpbiBjb25uZWN0aW9uIG1hcCBhcyBiZWxvdzoKPiA+ID4KPiA+
+ID4gMHgxNDogZXh0ZXJuYWwgbWljIGluIGphY2sKPiA+ID4gMHgxNTogZXh0ZXJuYWwgaGVhZHBo
+b25lIGphY2sKPiA+ID4gMHgxODogaW50ZXJuYWwgbWljCj4gPiA+IDB4MWE6IGludGVybmFsIHNw
+ZWFrZXIKPiA+ID4gMHgxZTogaW50ZXJuYWwgU1BESUYgT3V0Cj4gPgo+ID4gbm9vYiBxdWVzdGlv
+bjoKPiA+IGhvdyBkbyBJIHVzZSB0aGlzIGtub3dsZWRnZSB0byBnZXQgc291bmQgb3V0b3V0Cj4g
+Pgo+ID4KPiAKPiBodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS10b29scy5naXQ7
+YT1ibG9iO2Y9aGRhamFja3JldGFzay9SRUFETUU7aGI9SEVBRAo+IAo+IE5vIG5lZWQgdG8gdXNl
+IGhpbnQgaHBfbWljX2RldGVjdD0wIGlmIHlvdSBmaW5kIHRoZSBub2RlIG9mIGludGVybmFsIG1p
+Ywo+IGFuZCBtaWMgamFjawo+IAo+IDcuMy4zLjE1IFBpbiBTZW5zZQo+IFRoZSBQaW4gU2Vuc2Ug
+Y29udHJvbCByZXR1cm5zIHRoZSBQcmVzZW5jZSBEZXRlY3Qgc3RhdHVzLCBFRElELUxpa2UgRGF0
+YQo+IChFTEQpIFZhbGlkLCBhbmQgdGhlIGltcGVkYW5jZSBtZWFzdXJlbWVudCBvZiB0aGUgZGV2
+aWNlIGF0dGFjaGVkIHRvIHRoZQo+IHBpbi4KPiAKPiBTb21lIGNvZGVjcyBtYXkgcmVxdWlyZSB0
+aGF0IHRoZSBpbXBlZGFuY2UgbWVhc3VyZW1lbnQgYmUgdHJpZ2dlcmVkIGJ5Cj4gc29mdHdhcmU7
+IGluIHRoYXQgY2FzZSwgc2VuZGluZyB0aGUgRXhlY3V0ZSBjb21tYW5kIHdpbGwgY2F1c2UgdGhl
+Cj4gaW1wZWRhbmNlIG1lYXN1cmVtZW50IHRvIGJlZ2luLgo+IAo+IFRoZSDigJxQcmVzZW5jZSBE
+ZXRlY3TigJ0gYml0IHdpbGwgYWx3YXlzIGJlIGFjY3VyYXRlIGlmIHRoYXQgZnVuY3Rpb25hbGl0
+eSBpcwo+IHN1cHBvcnRlZCBieSB0aGUgd2lkZ2V0Lgo+IAo+IE5vdGUgdGhhdCB0aGUgUGluIENv
+bXBsZXggV2lkZ2V0IG1heSBzdXBwb3J0IHRoZSBnZW5lcmF0aW9uIG9mIGFuCj4gVW5zb2xpY2l0
+ZWQgUmVzcG9uc2UgdG8gaW5kaWNhdGUgdGhhdCB0aGUgU2Vuc2UgTWVhc3VyZW1lbnQgKGVpdGhl
+ciB0aGUKPiBQcmVzZW5jZSBEZXRlY3Qgb3IgdGhlIEltcGVkYW5jZSkgdmFsdWUgaGFzIGNoYW5n
+ZWQsIHRoZSBnZW5lcmF0aW9uIG9mCj4gd2hpY2ggaW1wbGllcyB0aGF0IHRoZSBtZWFzdXJlbWVu
+dCBpcyBjb21wbGV0ZS4KPiAKPiBSaWdodCBDaG5sOiDCoE5vcm1hbGx5IGltcGVkYW5jZSBzZW5z
+aW5nIGlzIGRvbmUgb24gdGhlIGxlZnQgY2hhbm5lbCBvcgo+IOKAnHRpcOKAnSBvZiB0aGUgY29u
+bmVjdG9yLiDCoEhvd2V2ZXIsIFBpbiBXaWRnZXRzIG1heSBvcHRpb25hbGx5IHN1cHBvcnQKPiBz
+ZW5zaW5nIG9uIHRoZSByaWdodCBjaGFubmVsIG9yIOKAnHJpbmfigJ0gb2YgdGhlIGNvbm5lY3Rv
+ci4gwqBXaGVuIHRoaXMgYml0IGlzCj4gMSwgdGhlIGltcGVkYW5jZSB2YWx1ZSBpcyB0YWtlbiBv
+biB0aGUgcmlnaHQgY2hhbm5lbCBpZiB0aGUgUGluIFdpZGdldAo+IHN1cHBvcnRzIHRoaXM7IGlm
+IG5vdCBzdXBwb3J0ZWQsIHRoaXMgYml0IGlzIGlnbm9yZWQuIMKgV2hlbiB0aGlzIGJpdCBpcyAw
+LAo+IHRoZSBsZWZ0IGNoYW5uZWwgaXMgc2Vuc2VkLgo+IAo+ID4gPgo+ID4gPgo+ID4gPiA+IFNl
+ZW0gaW1wZWRhbmNlIG1lYXN1cmVtZW50IGlzIG5vdCBjb3JyZWN0LCBtaWMgc2hvdWxkIGhhdmUg
+aGlnaGVyCj4gaW1wZWRhbmNlCj4gPiA+ID4gdGhhbiBoZWFkcGhvbmUKPiA+ID4gPgo+ID4gPiA+
+Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291
+bmQuZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLnR4dAo+ID4gPiA+
+Cj4gPiA+ID4gWW91IGNhbiBkaXNhYmxlIGl0IGJ5IGhpbnQgdHJpZ2dlcl9zZW5zZT0wCj4gPiA+
+ID4KPiA+ID4gPiAtIHRyaWdnZXJfc2Vuc2UgKGJvb2wpOiBpbmRpY2F0ZXMgdGhhdCB0aGUgamFj
+ayBkZXRlY3Rpb24gbmVlZHMgdGhlCj4gPiA+ID4gwqAgZXhwbGljaXQgY2FsbCBvZiBBQ19WRVJC
+X1NFVF9QSU5fU0VOU0UgdmVyYgo+ID4gPiA+Cj4gPiA+ID4gTm9kZSAweDE0IFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0Cj4gPiA+ID4gwqAgQ29udHJvbDogbmFt
+ZT0iTWFzdGVyIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCj4gPiA+ID4gwqAg
+wqAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAo+ID4gPiA+IMKgIENv
+bnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBNaWMgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNl
+PTAKPiA+ID4gPiDCoCBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNp
+emU9MHgwMCwgbXV0ZT0xCj4gPiA+ID4gwqAgQW1wLU91dCB2YWxzOiDCoFsweDAwIDB4MDBdCj4g
+PiA+ID4gwqAgUGluY2FwIDB4MDAwMDAwM2Y6IElOIE9VVCBIUCBEZXRlY3QgVHJpZ2dlciBJbXBT
+ZW5zZQo+ID4gPiA+IMKgIFBpbiBEZWZhdWx0IDB4MDEyMTQxMWY6IFtKYWNrXSBIUCBPdXQgYXQg
+RXh0IFJlYXIKPiA+ID4gPiDCoCDCoCBDb25uID0gMS84LCBDb2xvciA9IEdyZWVuCj4gPiA+ID4g
+wqAgwqAgRGVmQXNzb2NpYXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHhmCj4gPiA+ID4gwqAgwqAg
+TWlzYyA9IE5PX1BSRVNFTkNFCj4gPiA+ID4gwqAgUGluLWN0bHM6IDB4YzA6IE9VVCBIUAo+ID4g
+PiA+IMKgIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAo+ID4gPiA+IMKgIENvbm5lY3Rp
+b246IDEKPiA+ID4gPiDCoCDCoCDCoDB4MGMKPiA+ID4gPgo+ID4gPiA+IFRvIGdldCBiYWNrIGhl
+YWRwaG9uZSBwaGFudG9tIGphY2sgaWYgSFAgaXMgcmVhbGx5IHNoYXJlZCB3aXRoIHNwZWFrZXIK
+PiA+ID4gPgo+ID4gPiA+IERpc2FibGUgaHAgbWljIGJ5IGhpbnQgwqBocF9taWNfZGV0ZWN0PTAK
+PiA+ID4gPgo+ID4gPiA+IC0gaHBfbWljX2RldGVjdCAoYm9vbCk6IGVuYWJsZS9kaXNhYmxlIHRo
+ZSBocC9taWMgc2hhcmVkIGlucHV0IGZvciBhCj4gc2luZ2xlCj4gPiA+ID4gYnVpbHQtaW4gbWlj
+IGNhc2U7IGRlZmF1bHQgdHJ1ZQo+ID4gPgo+ID4gPiBub3Qgc3VyZSBpZiB0aGlzIGlzIGNvcnJl
+Y3QsIGJ1dCBpdCBkb2VzbnQgdHVybiBvbiBzb3VuZAo+ID4gPiBzdWRvIG1vZHByb2JlIHNuZC1o
+ZGEtaW50ZWwgb3B0aW9ucz10cmlnZ2VyX3NlbnNlPTAKPiA+Cj4gPiBUaGUgaGludCBzdHJpbmdz
+IGFyZW4ndCBwYXNzZWQgaW4gdGhhdCB3YXkuIMKgSXQncyBwYXNzZWQgaW4gYSBmaXJtd2FyZQo+
+ID4gInBhdGNoIiBmaWxlIHRoYXQgaXMgc3BlY2lmaWVkIHZpYSBwYXRjaCBvcHRpb24gc25kLWhk
+YS1pbnRlbCBtb2R1bGUuCj4gPiBTZWUgRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlv
+LnR4dCBmb3IgZGV0YWlscy4KPiA+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
