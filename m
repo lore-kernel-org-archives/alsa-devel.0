@@ -1,128 +1,92 @@
-From: "Christian Gleerup" <cromozon@swn.nu>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Sun, 17 May 2015 11:24:31 +0200
-Message-ID: <10d760a1b9c16c5388124146d090f3e0@swn.nu>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
- <64443a816660f3098fc300c7d7b5a01f@swn.nu>
- <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
- <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
- <CAN8cciYo-SSeoBg69qaj+aYBx+ZRbVuhbgkURutuBWGwCxauWA@mail.gmail.com>
- <CAN8cciam2=TE3zhWNB_GQEr1Q1z_X7S+k34fAgajE_XNYJzo0Q@mail.gmail.com>
- <CAN8cciZhtL_C-DAErzhM4E3t3nn7KdAbjQXQEPk3iVcBvm4aUw@mail.gmail.com>
- <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
- <CAN8cciZNz1TGSQah+KzRGGhRwGWR4U3LbMVUxV+=0mtX1gdM=w@mail.gmail.com>
- <f7a08a5262537ca8764cb91177f85646@swn.nu>
- <s5hiodlz116.wl-tiwai@suse.de>
- <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
+From: Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Subject: Re: [PATCH v2 05/13] ASoC: qcom: support bitclk and osrclk per i2s
+ port
+Date: Sun, 17 May 2015 09:14:44 -0700
+Message-ID: <20150517161444.GA10901@kwestfie-linux.qualcomm.com>
+References: <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1431779562-2034-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B069261AC1
- for <alsa-devel@alsa-project.org>; Sun, 17 May 2015 11:21:18 +0200 (CEST)
-In-Reply-To: <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>, korobka@en.gov.ua
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1431779562-2034-1-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Kenneth Westfield <kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBtYW5nZWQgdG8gZ2V0IHNvdW5kIHdvcmtpbmcgYWdhaW4gd2hpbGUgcGxheWluZyBhcnJvdW5k
-IHdpdGggaGRhcmV0YXNrLgpidXQgaW5pdGlhbGx5IGkgdHJpZWQgc2V0dGluZyB1cCB0aGUgb3V0
-cHV0cyBhcyBzdWdnZXN0LAp3aGljaCBkaWRuJ3QgZ2l2ZWFueXRoaW5nLCB0aGVuIGEgdGhlbiBJ
-IHRyaWVkIHNldHRpbmcgMC4xNSBhcyBpbnRlcm5hbCBzcGVha2VyIGFsc28uCgpGb3IgdGhlIGZp
-cnN0IGZldyBzZWNvbmRzIHRoZXJlIHdoZXJlIG5vIHNvdW5kLCBhbmQgdGhlbiB0aGUgc291bmQg
-c2xvd2x5IHN0YXJ0ZWQgdG8gaW5jcmVhc2UsIGJ1dCBub3QgdGhlIHNvdW5kIGkgd2FzIHBsYXlp
-bmcganVzdCBzb21lIG5vaXNlLCBub3QgY29udGlub3VzbHkgYnV0Li4gZXJobSBsaWtlIHRoaXM6
-Ci58LnwufC58LnwufC58LnwufC58LnwufC58LnwKCkkgd2FzIG5vdCBhYmxlIHRvIGtpbGwgdGhl
-IHNvdW5kIGV2ZW4gd2hlbiBtdXRpbmcgYWxsIGNoYW5uZWxzIGluIGFsc2EgbWl4ZXIuCnRoZW4g
-SSByZW1vdmVkIGFsbCBvdmVycmlkZXMgKGV4cGVjdCBjaDB4MTgpLCBhZnRlciBjbGlja2luZyBh
-cHBseSB0aGUgcmVwZWF0aW5nIHBlcmlvZGljIHNvdW5kIGRpcy1hcGVyZWQsIGFuZCBJIHdhcyBh
-YmxlIHRvIHBsYXkgc291bmQuCgpTbyBub3cgSSBhbSBhYmxlIHRvIHBsYXkgc291bmQgdGhyb3Vn
-aCB0aGUgaW50ZXJuYWwgc3BlYWtlcgpJIGhhdmUgdG9nZ2xlZCBob19taWNfZGV0ZWN0PWZhbHNl
-LCBzZXQgbW9kZWw9YXV0by4KCgotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLSAKPiBGcm9tOiAi
-UmF5bW9uZCBZYXUiIDxzdXBlcnF1YWQudm9ydGV4MkBnbWFpbC5jb20+IAo+IFRvOiBjcm9tb3pv
-bkBzd24ubnUsIHRpd2FpQHN1c2UuZGUgCj4gQ2M6ICJIdWkgV2FuZyIgPGh1aS53YW5nQGNhbm9u
-aWNhbC5jb20+LCAiQUxTQSBEZXZlbG9wbWVudCBNYWlsaW5nIExpc3QiIDxhbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmc+LCBuYiA8bmJAZGFnYW1pLm9yZz4sIGtvcm9ia2FAZW4uZ292LnVhIAo+
-IERhdGU6IDI5LzAzLzIwMTUgMTg6MDcgCj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBnZXR0
-aW5nIHRoZSBzb3VuZCB0byB3b3JrIG9uIG15IGFzdXMgbTZzMDB2IAo+IAo+ID4KPiA+Cj4gPiA+
-IEl0IGxvb2tzIGxpa2UgdGhlIHBpbiBjb25uZWN0aW9uIG1hcCBhcyBiZWxvdzoKPiA+ID4KPiA+
-ID4gMHgxNDogZXh0ZXJuYWwgbWljIGluIGphY2sKPiA+ID4gMHgxNTogZXh0ZXJuYWwgaGVhZHBo
-b25lIGphY2sKPiA+ID4gMHgxODogaW50ZXJuYWwgbWljCj4gPiA+IDB4MWE6IGludGVybmFsIHNw
-ZWFrZXIKPiA+ID4gMHgxZTogaW50ZXJuYWwgU1BESUYgT3V0Cj4gPgo+ID4gbm9vYiBxdWVzdGlv
-bjoKPiA+IGhvdyBkbyBJIHVzZSB0aGlzIGtub3dsZWRnZSB0byBnZXQgc291bmQgb3V0b3V0Cj4g
-Pgo+ID4KPiAKPiBodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS10b29scy5naXQ7
-YT1ibG9iO2Y9aGRhamFja3JldGFzay9SRUFETUU7aGI9SEVBRAo+IAo+IE5vIG5lZWQgdG8gdXNl
-IGhpbnQgaHBfbWljX2RldGVjdD0wIGlmIHlvdSBmaW5kIHRoZSBub2RlIG9mIGludGVybmFsIG1p
-Ywo+IGFuZCBtaWMgamFjawo+IAo+IDcuMy4zLjE1IFBpbiBTZW5zZQo+IFRoZSBQaW4gU2Vuc2Ug
-Y29udHJvbCByZXR1cm5zIHRoZSBQcmVzZW5jZSBEZXRlY3Qgc3RhdHVzLCBFRElELUxpa2UgRGF0
-YQo+IChFTEQpIFZhbGlkLCBhbmQgdGhlIGltcGVkYW5jZSBtZWFzdXJlbWVudCBvZiB0aGUgZGV2
-aWNlIGF0dGFjaGVkIHRvIHRoZQo+IHBpbi4KPiAKPiBTb21lIGNvZGVjcyBtYXkgcmVxdWlyZSB0
-aGF0IHRoZSBpbXBlZGFuY2UgbWVhc3VyZW1lbnQgYmUgdHJpZ2dlcmVkIGJ5Cj4gc29mdHdhcmU7
-IGluIHRoYXQgY2FzZSwgc2VuZGluZyB0aGUgRXhlY3V0ZSBjb21tYW5kIHdpbGwgY2F1c2UgdGhl
-Cj4gaW1wZWRhbmNlIG1lYXN1cmVtZW50IHRvIGJlZ2luLgo+IAo+IFRoZSDigJxQcmVzZW5jZSBE
-ZXRlY3TigJ0gYml0IHdpbGwgYWx3YXlzIGJlIGFjY3VyYXRlIGlmIHRoYXQgZnVuY3Rpb25hbGl0
-eSBpcwo+IHN1cHBvcnRlZCBieSB0aGUgd2lkZ2V0Lgo+IAo+IE5vdGUgdGhhdCB0aGUgUGluIENv
-bXBsZXggV2lkZ2V0IG1heSBzdXBwb3J0IHRoZSBnZW5lcmF0aW9uIG9mIGFuCj4gVW5zb2xpY2l0
-ZWQgUmVzcG9uc2UgdG8gaW5kaWNhdGUgdGhhdCB0aGUgU2Vuc2UgTWVhc3VyZW1lbnQgKGVpdGhl
-ciB0aGUKPiBQcmVzZW5jZSBEZXRlY3Qgb3IgdGhlIEltcGVkYW5jZSkgdmFsdWUgaGFzIGNoYW5n
-ZWQsIHRoZSBnZW5lcmF0aW9uIG9mCj4gd2hpY2ggaW1wbGllcyB0aGF0IHRoZSBtZWFzdXJlbWVu
-dCBpcyBjb21wbGV0ZS4KPiAKPiBSaWdodCBDaG5sOiDCoE5vcm1hbGx5IGltcGVkYW5jZSBzZW5z
-aW5nIGlzIGRvbmUgb24gdGhlIGxlZnQgY2hhbm5lbCBvcgo+IOKAnHRpcOKAnSBvZiB0aGUgY29u
-bmVjdG9yLiDCoEhvd2V2ZXIsIFBpbiBXaWRnZXRzIG1heSBvcHRpb25hbGx5IHN1cHBvcnQKPiBz
-ZW5zaW5nIG9uIHRoZSByaWdodCBjaGFubmVsIG9yIOKAnHJpbmfigJ0gb2YgdGhlIGNvbm5lY3Rv
-ci4gwqBXaGVuIHRoaXMgYml0IGlzCj4gMSwgdGhlIGltcGVkYW5jZSB2YWx1ZSBpcyB0YWtlbiBv
-biB0aGUgcmlnaHQgY2hhbm5lbCBpZiB0aGUgUGluIFdpZGdldAo+IHN1cHBvcnRzIHRoaXM7IGlm
-IG5vdCBzdXBwb3J0ZWQsIHRoaXMgYml0IGlzIGlnbm9yZWQuIMKgV2hlbiB0aGlzIGJpdCBpcyAw
-LAo+IHRoZSBsZWZ0IGNoYW5uZWwgaXMgc2Vuc2VkLgo+IAo+ID4gPgo+ID4gPgo+ID4gPiA+IFNl
-ZW0gaW1wZWRhbmNlIG1lYXN1cmVtZW50IGlzIG5vdCBjb3JyZWN0LCBtaWMgc2hvdWxkIGhhdmUg
-aGlnaGVyCj4gaW1wZWRhbmNlCj4gPiA+ID4gdGhhbiBoZWFkcGhvbmUKPiA+ID4gPgo+ID4gPiA+
-Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291
-bmQuZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLnR4dAo+ID4gPiA+
-Cj4gPiA+ID4gWW91IGNhbiBkaXNhYmxlIGl0IGJ5IGhpbnQgdHJpZ2dlcl9zZW5zZT0wCj4gPiA+
-ID4KPiA+ID4gPiAtIHRyaWdnZXJfc2Vuc2UgKGJvb2wpOiBpbmRpY2F0ZXMgdGhhdCB0aGUgamFj
-ayBkZXRlY3Rpb24gbmVlZHMgdGhlCj4gPiA+ID4gwqAgZXhwbGljaXQgY2FsbCBvZiBBQ19WRVJC
-X1NFVF9QSU5fU0VOU0UgdmVyYgo+ID4gPiA+Cj4gPiA+ID4gTm9kZSAweDE0IFtQaW4gQ29tcGxl
-eF0gd2NhcHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0Cj4gPiA+ID4gwqAgQ29udHJvbDogbmFt
-ZT0iTWFzdGVyIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCj4gPiA+ID4gwqAg
-wqAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAo+ID4gPiA+IMKgIENv
-bnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBNaWMgUGhhbnRvbSBKYWNrIiwgaW5kZXg9MCwgZGV2aWNl
-PTAKPiA+ID4gPiDCoCBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNp
-emU9MHgwMCwgbXV0ZT0xCj4gPiA+ID4gwqAgQW1wLU91dCB2YWxzOiDCoFsweDAwIDB4MDBdCj4g
-PiA+ID4gwqAgUGluY2FwIDB4MDAwMDAwM2Y6IElOIE9VVCBIUCBEZXRlY3QgVHJpZ2dlciBJbXBT
-ZW5zZQo+ID4gPiA+IMKgIFBpbiBEZWZhdWx0IDB4MDEyMTQxMWY6IFtKYWNrXSBIUCBPdXQgYXQg
-RXh0IFJlYXIKPiA+ID4gPiDCoCDCoCBDb25uID0gMS84LCBDb2xvciA9IEdyZWVuCj4gPiA+ID4g
-wqAgwqAgRGVmQXNzb2NpYXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHhmCj4gPiA+ID4gwqAgwqAg
-TWlzYyA9IE5PX1BSRVNFTkNFCj4gPiA+ID4gwqAgUGluLWN0bHM6IDB4YzA6IE9VVCBIUAo+ID4g
-PiA+IMKgIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAo+ID4gPiA+IMKgIENvbm5lY3Rp
-b246IDEKPiA+ID4gPiDCoCDCoCDCoDB4MGMKPiA+ID4gPgo+ID4gPiA+IFRvIGdldCBiYWNrIGhl
-YWRwaG9uZSBwaGFudG9tIGphY2sgaWYgSFAgaXMgcmVhbGx5IHNoYXJlZCB3aXRoIHNwZWFrZXIK
-PiA+ID4gPgo+ID4gPiA+IERpc2FibGUgaHAgbWljIGJ5IGhpbnQgwqBocF9taWNfZGV0ZWN0PTAK
-PiA+ID4gPgo+ID4gPiA+IC0gaHBfbWljX2RldGVjdCAoYm9vbCk6IGVuYWJsZS9kaXNhYmxlIHRo
-ZSBocC9taWMgc2hhcmVkIGlucHV0IGZvciBhCj4gc2luZ2xlCj4gPiA+ID4gYnVpbHQtaW4gbWlj
-IGNhc2U7IGRlZmF1bHQgdHJ1ZQo+ID4gPgo+ID4gPiBub3Qgc3VyZSBpZiB0aGlzIGlzIGNvcnJl
-Y3QsIGJ1dCBpdCBkb2VzbnQgdHVybiBvbiBzb3VuZAo+ID4gPiBzdWRvIG1vZHByb2JlIHNuZC1o
-ZGEtaW50ZWwgb3B0aW9ucz10cmlnZ2VyX3NlbnNlPTAKPiA+Cj4gPiBUaGUgaGludCBzdHJpbmdz
-IGFyZW4ndCBwYXNzZWQgaW4gdGhhdCB3YXkuIMKgSXQncyBwYXNzZWQgaW4gYSBmaXJtd2FyZQo+
-ID4gInBhdGNoIiBmaWxlIHRoYXQgaXMgc3BlY2lmaWVkIHZpYSBwYXRjaCBvcHRpb24gc25kLWhk
-YS1pbnRlbCBtb2R1bGUuCj4gPiBTZWUgRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlv
-LnR4dCBmb3IgZGV0YWlscy4KPiA+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Sat, May 16, 2015 at 05:32:42AM -0700, Srinivas Kandagatla wrote:
+> This patch adds support to allow bitclk and osrclk per i2s dai port.
+> on APQ8016 there are 4 i2s ports each one has its own bit clks.
+> 
+> Without this patch its not possible to support multiple i2s ports in the
+> lpass driver.
+
+> @@ -400,18 +402,34 @@ int asoc_qcom_lpass_cpu_platform_probe(struct
+> platform_device *pdev)
+>  	if (variant->init)
+>  		variant->init(pdev);
+>  
+> -	drvdata->mi2s_osr_clk = devm_clk_get(&pdev->dev, "mi2s-osr-clk");
+> -	if (IS_ERR(drvdata->mi2s_osr_clk)) {
+> -		dev_err(&pdev->dev, "%s() error getting mi2s-osr-clk:
+> %ld\n",
+> -				__func__, PTR_ERR(drvdata->mi2s_osr_clk));
+> -		return PTR_ERR(drvdata->mi2s_osr_clk);
+> -	}
+> -
+> -	drvdata->mi2s_bit_clk = devm_clk_get(&pdev->dev, "mi2s-bit-clk");
+> -	if (IS_ERR(drvdata->mi2s_bit_clk)) {
+> -		dev_err(&pdev->dev, "%s() error getting mi2s-bit-clk:
+> %ld\n",
+> -				__func__, PTR_ERR(drvdata->mi2s_bit_clk));
+> -		return PTR_ERR(drvdata->mi2s_bit_clk);
+> +	for (i = 0; i < variant->num_dai; i++) {
+> +		dai_id = variant->dai_driver[i].id;
+> +		if (variant->num_dai > 1)
+> +			sprintf(clk_name, "mi2s-osr-clk%d", i);
+> +		else
+> +			sprintf(clk_name, "mi2s-osr-clk");
+> +
+> +		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(&pdev->dev,
+> +								clk_name);
+> +		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
+> +			dev_err(&pdev->dev,
+> +				"%s() error getting mi2s-osr-clk: %ld\n",
+> +				__func__,
+> +			return PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
+
+Should the previous two lines be:
+
++                             __func__, PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
++                     return PTR_ERR(drvdata->mi2s_osr_clk[dai_id]);
+
+as you remove the return in patch 6?
+
+> +		}
+> +
+> +		if (variant->num_dai > 1)
+> +			sprintf(clk_name, "mi2s-bit-clk%d", i);
+> +		else
+> +			sprintf(clk_name, "mi2s-bit-clk");
+> +
+> +		drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(&pdev->dev,
+> clk_name);
+> +		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
+> +			dev_err(&pdev->dev,
+> +				"%s() error getting mi2s-bit-clk: %ld\n",
+> +				__func__,
+> PTR_ERR(drvdata->mi2s_bit_clk[i]));
+> +			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+> +		}
+>  	}
+
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
