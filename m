@@ -1,15 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/8] ASoC: Intel: refactor common SST IPC
-	handling
-Date: Mon, 18 May 2015 16:55:53 +0530
-Message-ID: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/8] ASoC: Intel: Create an ops to check for
+	DSP busy
+Date: Mon, 18 May 2015 16:55:54 +0530
+Message-ID: <1431948361-12756-2-git-send-email-vinod.koul@intel.com>
+References: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A4AE3260505
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 13:25:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E844260526
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 13:25:07 +0200 (CEST)
+In-Reply-To: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,29 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series refactors the common SST IPC code to remove some hardcoded
-assumption which are no longer valid for future platforms like Skylake,
-These are made configurable and right configuration applied for respective
-drivers. The changes are mailbox sizes and dsp busy checks.
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Subhransu S. Prusty (8):
-  ASoC: Intel: Create an ops to check for DSP busy
-  ASoC: Intel: Move the busy check to ops for Baytrail
-  ASoC: Intel: Move the busy check to ops for HSW
-  ASoC: Intel: Remove the direct register reference from common ipc
-  ASoC: Intel: Allow to configure max size for mailbox data
-  ASoC: Intel: Initialize max mailbox size for baytrail
-  ASoC: Intel: Initialize max mailbox size for haswell
-  ASoC: Intel: Allocate for the mailbox with max size
+Created an ops to check if DSP busy, to avoid using platform
+specific registers in common IPC.
 
- sound/soc/intel/baytrail/sst-baytrail-ipc.c | 11 +++++++++++
- sound/soc/intel/common/sst-ipc.c            | 20 +++++++++++++++++---
- sound/soc/intel/common/sst-ipc.h            |  7 +++++--
- sound/soc/intel/haswell/sst-haswell-ipc.c   | 12 ++++++++++++
- 4 files changed, 45 insertions(+), 5 deletions(-)
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/common/sst-ipc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
+index 125ea451a373..77a3befd16b0 100644
+--- a/sound/soc/intel/common/sst-ipc.h
++++ b/sound/soc/intel/common/sst-ipc.h
+@@ -51,6 +51,7 @@ struct sst_plat_ipc_ops {
+ 	void (*shim_dbg)(struct sst_generic_ipc *, const char *);
+ 	void (*tx_data_copy)(struct ipc_message *, char *, size_t);
+ 	u64  (*reply_msg_match)(u64 header, u64 *mask);
++	bool (*is_dsp_busy)(struct sst_dsp *dsp);
+ };
+ 
+ /* SST generic IPC data */
 -- 
 1.9.1
