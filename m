@@ -1,16 +1,14 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v2 6/9] ASoC: Add ability to build sti drivers
-Date: Mon, 18 May 2015 14:12:53 +0200
-Message-ID: <1431951176-24670-7-git-send-email-arnaud.pouliquen@st.com>
-References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v2 0/9] asoc: Add audio for sti platforms
+Date: Mon, 18 May 2015 14:12:47 +0200
+Message-ID: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1D79D26066D
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 14:13:33 +0200 (CEST)
-In-Reply-To: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 4CE1626109C
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 14:15:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +22,55 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Define the platform and codec drivers, and how to build them.
+version 2: corrections after first review
+	- bindings:
+		. suppress useless dts declarations
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/Kconfig      |  1 +
- sound/soc/Makefile     |  1 +
- sound/soc/sti/Kconfig  | 11 +++++++++++
- sound/soc/sti/Makefile |  5 +++++
- 4 files changed, 18 insertions(+)
+	- uniperif_player.c:
+		. Suppress standby mode in uniplayer ( will be part of a dedicated patch)
+		. Deliver IEC and clock adjustement controls in separate patch 
+	- uniperif_reader.c:
+		. kept as separate file as behavior and feature not same than uniplayer
+		. minor corrections
+	- codec/sti-sas.c
+		. implement DAPM for DAC
+		. rework registers declaration to separate device and driver part
+
+version 1:
+	- First patches submission
+
+Arnaud Pouliquen (9):
+  ASoC: sti: add binding for ASoc driver
+  ASoC: sti: Add uniperipheral header file
+  ASoC: sti: Add CPU DAI driver for playback
+  ASoC: sti: Add CPU DAI driver for capture
+  ASoC: sti: Add platform driver
+  ASoC: Add ability to build sti drivers
+  ASoC: Codec: Add sti platform codec
+  ASoC: sti: Add clock adjustement control
+  ASoC: sti: Add IEC control
+
+ .../devicetree/bindings/sound/st,sti-asoc-card.txt |  158 +++
+ sound/soc/Kconfig                                  |    1 +
+ sound/soc/Makefile                                 |    1 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/sti-sas.c                         |  645 +++++++++++
+ sound/soc/sti/Kconfig                              |   17 +
+ sound/soc/sti/Makefile                             |    5 +
+ sound/soc/sti/sti_platform.c                       |  642 ++++++++++
+ sound/soc/sti/uniperif.h                           | 1224 ++++++++++++++++++++
+ sound/soc/sti/uniperif_player.c                    | 1218 +++++++++++++++++++
+ sound/soc/sti/uniperif_reader.c                    |  459 ++++++++
+ 12 files changed, 4376 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+ create mode 100644 sound/soc/codecs/sti-sas.c
  create mode 100644 sound/soc/sti/Kconfig
  create mode 100644 sound/soc/sti/Makefile
+ create mode 100644 sound/soc/sti/sti_platform.c
+ create mode 100644 sound/soc/sti/uniperif.h
+ create mode 100644 sound/soc/sti/uniperif_player.c
+ create mode 100644 sound/soc/sti/uniperif_reader.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 3ba52da..791f2a6 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -53,6 +53,7 @@ source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
-+source "sound/soc/sti/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 974ba70..30b2d6d 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
-+obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
-new file mode 100644
-index 0000000..c29e219
---- /dev/null
-+++ b/sound/soc/sti/Kconfig
-@@ -0,0 +1,11 @@
-+#
-+# STM SoC audio configuration
-+#
-+menuconfig SND_SOC_STI
-+	tristate "SoC Audio support for STI System-On-Chip"
-+	depends on SND_SOC
-+	depends on ARCH_STI
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+		Say Y if you want to enable ASoC-support for
-+		any of the STI platforms (e.g. STIH416).
-diff --git a/sound/soc/sti/Makefile b/sound/soc/sti/Makefile
-new file mode 100644
-index 0000000..de38cce
---- /dev/null
-+++ b/sound/soc/sti/Makefile
-@@ -0,0 +1,5 @@
-+# STI platform support
-+snd-soc-sti-objs := sti_platform.o uniperif_player.o uniperif_reader.o
-+
-+obj-$(CONFIG_SND_SOC_STI) += snd-soc-sti.o
-+
 -- 
 1.9.1
