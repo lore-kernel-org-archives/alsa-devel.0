@@ -1,15 +1,14 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v2 4/9] ASoC: sti: Add CPU DAI driver for
-	capture
-Date: Mon, 18 May 2015 14:12:51 +0200
-Message-ID: <1431951176-24670-5-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v2 7/9] ASoC: Codec: Add sti platform codec
+Date: Mon, 18 May 2015 14:12:54 +0200
+Message-ID: <1431951176-24670-8-git-send-email-arnaud.pouliquen@st.com>
 References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 628AC2605B8
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 850BE260670
  for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 14:13:22 +0200 (CEST)
 In-Reply-To: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,35 +24,66 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add code to manage Uniperipheral reader IP instances.
-These DAIs are dedicated to capture and support I2S and IEC mode.
+Codec part of the STi platform that support codec IPs.
+This first version does not support HDMI, but only DAC and SPDIF out.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif.h        |   4 +
- sound/soc/sti/uniperif_reader.c | 459 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 463 insertions(+)
- create mode 100644 sound/soc/sti/uniperif_reader.c
+ sound/soc/codecs/Kconfig   |   4 +
+ sound/soc/codecs/Makefile  |   2 +
+ sound/soc/codecs/sti-sas.c | 645 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/sti/Kconfig      |   6 +
+ 4 files changed, 657 insertions(+)
+ create mode 100644 sound/soc/codecs/sti-sas.c
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 1e67489..c18584c 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1217,4 +1217,8 @@ int uni_player_init(struct platform_device *pdev, struct device_node *node,
- 		    struct uniperif **uni_player, int idx);
- int uni_player_remove(struct platform_device *pdev);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 061c465..f3fe64e 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -102,6 +102,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_STA350 if I2C
+ 	select SND_SOC_STA529 if I2C
+ 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
++	select SND_SOC_STI_SAS
+ 	select SND_SOC_TAS2552 if I2C
+ 	select SND_SOC_TAS5086 if I2C
+ 	select SND_SOC_TFA9879 if I2C
+@@ -603,6 +604,9 @@ config SND_SOC_STA529
+ config SND_SOC_STAC9766
+ 	tristate
  
-+/* uniperiph reader */
-+int uni_reader_init(struct platform_device *pdev, struct device_node *node,
-+		    struct uniperif **uni_reader, int idx);
-+int uni_reader_remove(struct platform_device *pdev);
- #endif
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
++config SND_SOC_STI_SAS
++	tristate
++
+ config SND_SOC_TAS2552
+ 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
+ 	depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index abe2d7e..249ef0d 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -105,6 +105,7 @@ snd-soc-sta32x-objs := sta32x.o
+ snd-soc-sta350-objs := sta350.o
+ snd-soc-sta529-objs := sta529.o
+ snd-soc-stac9766-objs := stac9766.o
++snd-soc-sti-sas-objs := sti-sas.o
+ snd-soc-tas5086-objs := tas5086.o
+ snd-soc-tfa9879-objs := tfa9879.o
+ snd-soc-tlv320aic23-objs := tlv320aic23.o
+@@ -286,6 +287,7 @@ obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
+ obj-$(CONFIG_SND_SOC_STA350)   += snd-soc-sta350.o
+ obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
+ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
++obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
+ obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
+ obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
+ obj-$(CONFIG_SND_SOC_TFA9879)	+= snd-soc-tfa9879.o
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
 new file mode 100644
-index 0000000..eaae613
+index 0000000..6cd4c1d
 --- /dev/null
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -0,0 +1,459 @@
++++ b/sound/soc/codecs/sti-sas.c
+@@ -0,0 +1,645 @@
 +/*
 + * Copyright (C) STMicroelectronics SA 2015
 + * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
@@ -61,457 +91,658 @@ index 0000000..eaae613
 + * License terms:  GNU General Public License (GPL), version 2
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/delay.h>
 +#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/reset.h>
++#include <linux/mfd/syscon.h>
 +
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
 +
-+#include "uniperif.h"
++/* chipID supported */
++#define CHIPID_STIH416 0
++#define CHIPID_STIH407 1
 +
-+/*
-+ * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-+ * integrate unireader capability in term of rate and supported channels
-+ */
-+const struct snd_pcm_hardware uni_reader_pcm_hw = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_MMAP_VALID,
-+	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE,
++/* DAC definitions */
 +
-+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+	.rate_min = 8000,
-+	.rate_max = 96000,
++/* stih416 DAC registers */
++/* sysconf 2517: Audio-DAC-Control */
++#define STIH416_AUDIO_DAC_CTRL 0x00000814
++/* sysconf 2519: Audio-Gue-Control */
++#define STIH416_AUDIO_GLUE_CTRL 0x0000081C
 +
-+	.channels_min = 2,
-+	.channels_max = 8,
++/* stih407 DAC registers */
++/* sysconf 5041: Audio-Gue-Control */
++#define STIH407_AUDIO_GLUE_CTRL 0x000000A4
++/* sysconf 5042: Audio-DAC-Control */
++#define STIH407_AUDIO_DAC_CTRL 0x000000A8
 +
-+	.periods_min = 2,
-+	.periods_max = 48,
-+
-+	.period_bytes_min = 128,
-+	.period_bytes_max = 64 * PAGE_SIZE,
-+	.buffer_bytes_max = 256 * PAGE_SIZE
++enum {
++	STI_SAS_DAI_SPDIF_OUT,
++	STI_SAS_DAI_ANALOG_OUT,
 +};
 +
-+/*
-+ * uni_reader_irq_handler
-+ * In case of error audio stream is stopped; stop action is protected via PCM
-+ * stream lock for avoiding the race with trigger callback.
-+ */
-+static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
-+{
-+	irqreturn_t ret = IRQ_NONE;
-+	struct uniperif *reader = dev_id;
-+	unsigned int status;
++enum {
++	BIPHASE_ENABLE,
++	BIPHASE_IDLE,
++	STI_SPDIF_MAX_RF
++};
 +
-+	if (reader->state == UNIPERIF_STATE_STOPPED) {
-+		/* Unexpected IRQ: do nothing */
-+		dev_warn(reader->dev, "unexpected IRQ ");
-+		return IRQ_HANDLED;
++enum {
++	STIH416_DAC_MODE,
++	STIH416_DAC_NOT_STANDBY,
++	STIH416_DAC_SOFTMUTE,
++	STIH416_DAC_ANALOG_PWR_DW,
++	STIH416_DAC_ANALOG_NOT_PWR_DW_BG,
++	STIH416_DAC_MAX_RF
++};
++
++enum {
++	STIH407_DAC_SOFTMUTE,
++	STIH407_DAC_STANDBY_ANA,
++	STIH407_DAC_STANDBY,
++	STIH407_DAC_MAX_RF
++};
++
++/* DAC configuration fields */
++const struct reg_field sti_sas_dac_stih416[STIH416_DAC_MAX_RF] = {
++	/*STIH416_DAC_MODE*/
++	REG_FIELD(STIH416_AUDIO_DAC_CTRL, 1, 2),
++	/*STIH416_DAC_NOT_STANDBY */
++	REG_FIELD(STIH416_AUDIO_DAC_CTRL, 3, 3),
++	/*STIH416_DAC_SOFTMUTE*/
++	REG_FIELD(STIH416_AUDIO_DAC_CTRL, 4, 4),
++	/*STIH416_DAC_ANALOG_PWR_DW*/
++	REG_FIELD(STIH416_AUDIO_DAC_CTRL, 5, 5),
++	/*STIH416_DAC_ANALOG_NOT_PWR_DW_BG*/
++	REG_FIELD(STIH416_AUDIO_DAC_CTRL, 6, 6),
++};
++
++const struct reg_field sti_sas_dac_stih407[STIH407_DAC_MAX_RF] = {
++	/*STIH407_DAC_SOFTMUTE*/
++	REG_FIELD(STIH407_AUDIO_DAC_CTRL, 0, 0),
++	/*STIH407_DAC_STANDBY_ANA*/
++	REG_FIELD(STIH407_AUDIO_DAC_CTRL, 1, 1),
++	/*STIH407_DAC_STANDBY */
++	REG_FIELD(STIH407_AUDIO_DAC_CTRL, 2, 2),
++};
++
++/* SPDIF configuration fields */
++const struct reg_field sti_sas_spdif_stih416[STI_SPDIF_MAX_RF] = {
++	/*BIPHASE_ENABLE */
++	REG_FIELD(STIH416_AUDIO_GLUE_CTRL, 6, 6),
++	/*BIPHASE_IDLE*/
++	REG_FIELD(STIH416_AUDIO_GLUE_CTRL, 7, 7),
++};
++
++const struct reg_field sti_sas_spdif_stih407[STI_SPDIF_MAX_RF] = {
++	/*BIPHASE_ENABLE */
++	REG_FIELD(STIH407_AUDIO_GLUE_CTRL, 6, 6),
++	/*BIPHASE_IDLE*/
++	REG_FIELD(STIH407_AUDIO_GLUE_CTRL, 7, 7),
++};
++
++struct sti_dac_audio {
++	struct regmap *regmap;
++	struct regmap_field  **field;
++	struct reset_control *rst;
++};
++
++struct sti_spdif_audio {
++	struct regmap *regmap;
++	struct regmap_field  **field;
++};
++
++const int sti_sas_dai_clk_div[];
++
++/* device data structure */
++struct sti_sas_dev_data {
++	const int chipid; /* IC version */
++	const struct reg_field *dac; /* DAC register description*/
++	const struct snd_soc_dai_ops *dac_ops;  /* DAC function callbacks */
++	const struct reg_field *spdif; /* SPDIFF register description */
++	const struct snd_soc_dapm_widget *dapm_widgets; /* dapms declaration */
++	const int num_dapm_widgets; /* dapms declaration */
++};
++
++/* driver data structure */
++struct sti_sas_data {
++	struct device *dev;
++	const struct sti_sas_dev_data *dev_data;
++	struct sti_dac_audio dac;
++	struct sti_spdif_audio spdif;
++};
++
++static int sti_sas_map_sas_registers(struct sti_sas_data *data)
++{
++	struct sti_spdif_audio *spdif = &data->spdif;
++	const struct reg_field *spdif_reg = data->dev_data->spdif;
++	struct sti_dac_audio *dac = &data->dac;
++	const struct reg_field *dac_reg = data->dev_data->dac;
++	int i, max_rf;
++
++	/* Allocate device structure */
++	spdif->field = devm_kzalloc(data->dev,
++			     sizeof(struct regmap_field *) * STI_SPDIF_MAX_RF,
++			     GFP_KERNEL);
++	if (!spdif->field)
++		return -ENOMEM;
++
++	if (data->dev_data->chipid == CHIPID_STIH407)
++		max_rf = STIH407_DAC_MAX_RF;
++	else
++		max_rf = STIH416_DAC_MAX_RF;
++	dac->field = devm_kzalloc(data->dev,
++				  sizeof(struct regmap_field *) * max_rf,
++				  GFP_KERNEL);
++	if (!dac->field)
++		return -ENOMEM;
++
++	/* Get spdif regmap fields */
++	for (i = 0; i < STI_SPDIF_MAX_RF; i++)
++		spdif->field[i] = regmap_field_alloc(spdif->regmap,
++						     spdif_reg[i]);
++	/* Get DAC regmap fields */
++	for (i = 0; i < max_rf; i++)
++		dac->field[i] = regmap_field_alloc(dac->regmap, dac_reg[i]);
++
++	return 0;
++}
++
++static int  sti_sas_init_sas_registers(struct device *dev,
++				       struct sti_sas_data *data)
++{
++	struct sti_spdif_audio *spdif = &data->spdif;
++	struct sti_dac_audio *dac = &data->dac;
++	int ret;
++	/*
++	 * DAC and SPDIF are activated by default
++	 * put them in IDLE to save power
++	 */
++
++	/* Initialise bi-phase formatter to disabled */
++	ret = regmap_field_write(spdif->field[BIPHASE_ENABLE], 0);
++
++	if (!ret)
++		/* Initialise bi-phase formatter idle value to 0 */
++		ret = regmap_field_write(spdif->field[BIPHASE_IDLE], 0);
++	if (ret < 0) {
++		dev_err(dev, "Failed to update SPDIF registers");
++		return ret;
 +	}
 +
-+	/* Get interrupt status & clear them immediately */
-+	status = GET_UNIPERIF_ITS(reader);
-+	SET_UNIPERIF_ITS_BCLR(reader, status);
++	/* Init DAC configuration */
++	if (data->dev_data->chipid == CHIPID_STIH407) {
++		/* init configuration */
++		ret = regmap_field_write(
++			dac->field[STIH407_DAC_STANDBY], 1);
 +
-+	/* Check for fifo overflow error */
-+	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
-+		dev_err(reader->dev, "FIFO error detected");
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH407_DAC_STANDBY_ANA], 1);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH407_DAC_SOFTMUTE], 1);
++	} else if (data->dev_data->chipid == CHIPID_STIH416) {
++		ret = regmap_field_write(
++			dac->field[STIH416_DAC_NOT_STANDBY], 0);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_ANALOG_PWR_DW], 0);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_ANALOG_NOT_PWR_DW_BG],
++				0);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_SOFTMUTE], 1);
++	}
 +
-+		snd_pcm_stream_lock(reader->substream);
-+		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock(reader->substream);
-+
-+		return IRQ_HANDLED;
++	if (ret < 0) {
++		dev_err(dev, "Failed to update DAC registers");
++		return ret;
 +	}
 +
 +	return ret;
 +}
 +
-+static int uni_reader_prepare_pcm(struct uniperif *reader,
-+				  struct snd_pcm_runtime *runtime)
++/*
++ * DAC
++ */
++static int sti_sas_dac_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 +{
-+	int slot_width;
-+
-+	if (!runtime) {
-+		dev_err(reader->dev, "%s: invalid pointer(s)", __func__);
++	/* Sanity check only */
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: Unsupporter master mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
 +		return -EINVAL;
 +	}
-+
-+	/* Force slot width to 32 in I2S mode */
-+	if ((reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK)
-+		== SND_SOC_DAIFMT_I2S) {
-+		slot_width = 32;
-+	} else {
-+		switch (runtime->format) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			slot_width = 16;
-+			break;
-+		default:
-+			slot_width = 32;
-+			break;
-+		}
-+	}
-+
-+	/* Number of bits per subframe (i.e one channel sample) on input. */
-+	switch (slot_width) {
-+	case 32:
-+		SET_UNIPERIF_I2S_FMT_NBIT_32(reader);
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(reader);
-+		break;
-+	case 16:
-+		SET_UNIPERIF_I2S_FMT_NBIT_16(reader);
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(reader);
-+		break;
-+	default:
-+		dev_err(reader->dev, "subframe format not supported");
-+		return -EINVAL;
-+	}
-+
-+	/* Configure data memory format */
-+	switch (runtime->format) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		/* One data word contains two samples */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(reader);
-+		break;
-+
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		/*
-+		 * Actually "16 bits/0 bits" means "32/28/24/20/18/16 bits
-+		 * on the MSB then zeros (if less than 32 bytes)"...
-+		 */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(reader);
-+		break;
-+
-+	default:
-+		dev_err(reader->dev, "format not supported");
-+		return -EINVAL;
-+	}
-+
-+	SET_UNIPERIF_CONFIG_MSTR_CLKEDGE_RISING(reader);
-+	SET_UNIPERIF_CTRL_READER_OUT_SEL_IN_MEM(reader);
-+
-+	/*
-+	 * Serial audio interface format - for detailed explanation
-+	 * see ie.:
-+	 * http: www.cirrus.com/en/pubs/appNote/AN282REV1.pdf
-+	 */
-+
-+	SET_UNIPERIF_I2S_FMT_ORDER_MSB(reader);
-+
-+	/* Data clocking (changing) on the rising edge */
-+	SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(reader);
-+
-+	/* Number of channels must be even */
-+
-+	if ((runtime->channels % 2) || (runtime->channels < 2) ||
-+	    (runtime->channels > 10)) {
-+		dev_err(reader->dev, "%s: invalid nb of channels", __func__);
-+		return -EINVAL;
-+	}
-+
-+	SET_UNIPERIF_I2S_FMT_NUM_CH(reader, runtime->channels / 2);
 +
 +	return 0;
 +}
 +
-+static int uni_reader_prepare(struct uniperif *reader,
-+			      struct snd_pcm_runtime *runtime)
++static int stih416_dac_probe(struct snd_soc_dai *dai)
 +{
-+	int transfer_size, trigger_limit;
-+	int ret;
-+	int count = 10;
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
 +
-+	/* The reader should be stopped */
-+	if (reader->state != UNIPERIF_STATE_STOPPED) {
-+		dev_err(reader->dev, "%s: invalid reader state %d", __func__,
-+			reader->state);
-+		return -EINVAL;
++	/* Get reset control */
++	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
++	if (IS_ERR(dac->rst)) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: DAC reset control not defined (%d)!\n",
++			__func__, (int)dac->rst);
++		dac->rst = NULL;
++		return -EFAULT;
++	}
++	/* Put the DAC into reset */
++	reset_control_assert(dac->rst);
++
++	return 0;
++}
++
++static int  stih416_sas_dac_supply(struct snd_soc_dapm_widget *w,
++				   struct snd_kcontrol *kcontrol, int event) {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
++	int ret = 0;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Take the DAC out of reset */
++		reset_control_deassert(dac->rst);
++
++		/* Enable analog */
++		ret = regmap_field_write(
++			dac->field[STIH416_DAC_ANALOG_NOT_PWR_DW_BG], 1);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_ANALOG_PWR_DW], 1);
++		/* Disable standby */
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_NOT_STANDBY], 1);
++
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++
++		/* Enable standby */
++		ret = regmap_field_write(
++			dac->field[STIH416_DAC_NOT_STANDBY], 0);
++		/* Disable analog */
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_ANALOG_PWR_DW], 0);
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH416_DAC_ANALOG_NOT_PWR_DW_BG],
++				0);
++		/* Put the DAC into reset */
++		reset_control_assert(dac->rst);
++		break;
 +	}
 +
-+	/* Calculate transfer size (in fifo cells and bytes) for frame count */
-+	transfer_size = runtime->channels * UNIPERIF_FIFO_FRAMES;
++	return ret;
++}
 +
-+	/* Calculate number of empty cells available before asserting DREQ */
-+	if (reader->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
++static int  stih407_sas_dac_supply(struct snd_soc_dapm_widget *w,
++				   struct snd_kcontrol *kcontrol, int event) {
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
++	int ret = 0;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Enable analog */
++		ret = regmap_field_write(dac->field[STIH407_DAC_STANDBY_ANA],
++					 0);
++		/* Disable standby */
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH407_DAC_STANDBY], 0);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		/* Enable standby */
++		ret = regmap_field_write(dac->field[STIH407_DAC_STANDBY], 1);
++		/* Disable analog */
++		if (!ret)
++			ret = regmap_field_write(
++				dac->field[STIH407_DAC_STANDBY_ANA], 1);
++		break;
++	}
++
++	return ret;
++}
++
++const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC_E("DAC enable", "dac_p", SND_SOC_NOPM, 0, 0,
++			   stih416_sas_dac_supply,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_OUTPUT("DAC Output"),
++};
++
++const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC_E("DAC enable", "dac_p", SND_SOC_NOPM, 0, 0,
++			   stih407_sas_dac_supply,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_OUTPUT("DAC Output"),
++};
++
++const struct snd_soc_dapm_route sti_sas_route[] = {
++	{"DAC Output", NULL, "DAC enable"},
++};
++
++static int stih416_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
++
++	if (mute)
++		return regmap_field_write(
++			dac->field[STIH416_DAC_SOFTMUTE], 1);
 +	else
-+		/*
-+		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
-+		 * FDMA_TRIGGER_LIMIT also controls when the state switches
-+		 * from OFF or STANDBY to AUDIO DATA.
-+		 */
-+		trigger_limit = transfer_size;
++		return regmap_field_write(
++			dac->field[STIH416_DAC_SOFTMUTE], 0);
++}
 +
-+	/* Trigger limit must be an even number */
-+	if ((!trigger_limit % 2) ||
-+	    (trigger_limit != 1 && transfer_size % 2) ||
-+	    (trigger_limit > UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(reader))) {
-+		dev_err(reader->dev, "invalid trigger limit %d", trigger_limit);
++static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
++
++	if (mute)
++		return regmap_field_write(
++			dac->field[STIH407_DAC_SOFTMUTE], 1);
++	else
++		return regmap_field_write(
++			dac->field[STIH407_DAC_SOFTMUTE], 0);
++}
++
++/*
++ * SPDIF
++ */
++static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
++				 unsigned int fmt)
++{
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: Unsupporter master mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
 +		return -EINVAL;
-+	}
-+
-+	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(reader, trigger_limit);
-+
-+	ret = uni_reader_prepare_pcm(reader, runtime);
-+
-+	switch (reader->daifmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_IF:
-+	case SND_SOC_DAIFMT_NB_IF:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(reader);
-+		break;
-+	default:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(reader);
-+	}
-+
-+	switch (reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
-+		SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(reader);
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
-+		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(reader);
-+		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
-+		break;
-+	default:
-+		dev_err(reader->dev, "format not supported");
-+		return -EINVAL;
-+	}
-+
-+	/* Clear any pending interrupts */
-+	SET_UNIPERIF_ITS_BCLR(reader, GET_UNIPERIF_ITS(reader));
-+
-+	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(reader, 0);
-+
-+	/* Set the interrupt mask */
-+	SET_UNIPERIF_ITM_BSET_DMA_ERROR(reader);
-+	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
-+	SET_UNIPERIF_ITM_BSET_MEM_BLK_READ(reader);
-+
-+	/* Enable underflow recovery interrupts */
-+	if (reader->info->underflow_enabled) {
-+		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(reader);
-+		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(reader);
-+	}
-+
-+	/* Reset uniperipheral reader */
-+	SET_UNIPERIF_SOFT_RST_SOFT_RST(reader);
-+
-+	while (GET_UNIPERIF_SOFT_RST_SOFT_RST(reader)) {
-+		udelay(5);
-+		count--;
-+	}
-+	if (!count) {
-+		dev_err(reader->dev, "Failed to reset uniperif");
-+		return -EIO;
 +	}
 +
 +	return 0;
 +}
 +
-+static int uni_reader_start(struct uniperif *reader)
++/*
++ * sti_sas_spdif_trigger:
++ * Trigger function is used to ensure that BiPhase Formater is disabled
++ * before CPU dai is stopped.
++ * This is mandatory to avoid that BPF is stalled
++ */
++static int sti_sas_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
++				 struct snd_soc_dai *dai)
 +{
-+	/* The reader should be stopped */
-+	if (reader->state != UNIPERIF_STATE_STOPPED) {
-+		dev_err(reader->dev, "%s: invalid reader state", __func__);
-+		return -EINVAL;
-+	}
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_spdif_audio *spdif =  &drvdata->spdif;
 +
-+	/* Enable reader interrupts (and clear possible stalled ones) */
-+	enable_irq(reader->irq);
-+	SET_UNIPERIF_ITS_BCLR_FIFO_ERROR(reader);
-+	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
-+
-+	/* Launch the reader */
-+	SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(reader);
-+
-+	/* Update state to started */
-+	reader->state = UNIPERIF_STATE_STARTED;
-+	return 0;
-+}
-+
-+static int uni_reader_stop(struct uniperif *reader)
-+{
-+	/* The reader should not be in stopped state */
-+	if (reader->state == UNIPERIF_STATE_STOPPED) {
-+		dev_err(reader->dev, "%s: invalid reader state", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* Turn the reader off */
-+	SET_UNIPERIF_CTRL_OPERATION_OFF(reader);
-+
-+	/* Disable interrupts */
-+	SET_UNIPERIF_ITM_BCLR(reader, GET_UNIPERIF_ITM(reader));
-+	disable_irq_nosync(reader->irq);
-+
-+	/* Update state to stopped and return */
-+	reader->state = UNIPERIF_STATE_STOPPED;
-+
-+	return 0;
-+}
-+
-+static int uni_reader_suspend(struct uniperif *reader)
-+{
-+	/* pinctrl: switch pinstate to sleep */
-+	return pinctrl_pm_select_sleep_state(reader->dev);
-+}
-+
-+static int uni_reader_resume(struct uniperif *reader)
-+{
-+	/* Ensure that disable by default */
-+	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(reader);
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(reader);
-+	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(reader);
-+	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(reader);
-+
-+	/* Pinctrl: switch pinstate to default */
-+	return pinctrl_pm_select_default_state(reader->dev);
-+}
-+
-+static int  uni_reader_trigger(struct uniperif *reader, int cmd)
-+{
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
-+		return  uni_reader_start(reader);
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		return  uni_reader_stop(reader);
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		return uni_reader_suspend(reader);
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		return regmap_field_write(spdif->field[BIPHASE_ENABLE],
++					  1);
++		break;
++
 +	case SNDRV_PCM_TRIGGER_RESUME:
-+		return uni_reader_resume(reader);
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		return regmap_field_write(spdif->field[BIPHASE_ENABLE],
++					  0);
++		break;
 +	default:
 +		return -EINVAL;
-+	}
-+}
-+
-+static void uni_reader_close(struct uniperif *reader)
-+{
-+	if (reader->state != UNIPERIF_STATE_STOPPED) {
-+		/* Stop the reader */
-+		uni_reader_stop(reader);
 +	}
 +}
 +
 +/*
-+ * Platform driver routines
++ * CODEC DAIS
 + */
 +
-+static int uni_reader_parse_dt(struct platform_device *pdev,
-+			       struct device_node *pnode,
-+			       struct uniperif *reader)
++/*
++ * sti_sas_hw_params:
++ * Request MCLK-FS clocks division to CPU_DAI based on requested rate
++ */
++static int sti_sas_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params,
++			     struct snd_soc_dai *dai)
 +{
-+	struct uniperif_info *info;
++	struct snd_soc_codec *codec = dai->codec;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	int div;
 +
-+	/* Allocate memory for the info structure */
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	if (!pnode) {
-+		dev_err(&pdev->dev, "%s: invalid pnode", __func__);
-+		return -EINVAL;
-+	}
-+	of_property_read_u32(pnode, "version", &info->ver);
-+
-+	/* Save the info structure */
-+	reader->info = info;
++	div = sti_sas_dai_clk_div[dai->id];
++	if (cpu_dai->driver->ops->set_clkdiv)
++		return cpu_dai->driver->ops->set_clkdiv(cpu_dai,
++							SND_SOC_CLOCK_OUT, div);
++	dev_warn(codec->dev, "WARN: CPU DAI not support sysclk div");
 +
 +	return 0;
 +}
 +
-+const struct uniperif_ops uni_reader_ops = {
-+	.close = uni_reader_close,
-+	.prepare = uni_reader_prepare,
-+	.trigger = uni_reader_trigger
++const struct snd_soc_dai_ops stih416_dac_ops = {
++	.set_fmt = sti_sas_dac_set_fmt,
++	.mute_stream = stih416_sas_dac_mute,
++	.hw_params = sti_sas_hw_params
 +};
 +
-+int uni_reader_init(struct platform_device *pdev, struct device_node *node,
-+		    struct uniperif **uni_reader, int idx)
-+{
-+	struct uniperif *reader;
-+	int ret = 0;
++const struct snd_soc_dai_ops stih407_dac_ops = {
++	.set_fmt = sti_sas_dac_set_fmt,
++	.mute_stream = stih407_sas_dac_mute,
++	.hw_params = sti_sas_hw_params
++};
 +
-+	reader = devm_kzalloc(&pdev->dev, sizeof(*reader), GFP_KERNEL);
-+	if (!reader)
++const struct sti_sas_dev_data stih416_data = {
++	.chipid = CHIPID_STIH416,
++	.dac = sti_sas_dac_stih416,
++	.dac_ops = &stih416_dac_ops,
++	.spdif = sti_sas_spdif_stih416,
++	.dapm_widgets = stih416_sas_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(stih416_sas_dapm_widgets)
++};
++
++const struct sti_sas_dev_data stih407_data = {
++	.chipid = CHIPID_STIH407,
++	.dac = sti_sas_dac_stih407,
++	.dac_ops = &stih407_dac_ops,
++	.spdif = sti_sas_spdif_stih407,
++	.dapm_widgets = stih407_sas_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(stih407_sas_dapm_widgets)
++};
++
++static struct snd_soc_dai_driver sti_sas_dai[] = {
++	{
++		.name = "sas-dai-spdif-out",
++		.id = STI_SAS_DAI_SPDIF_OUT,
++		.playback = {
++			.stream_name = "spdif_p",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
++				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |
++				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S32_LE,
++		},
++		.ops = (struct snd_soc_dai_ops[]) {
++			{
++				.set_fmt = sti_sas_spdif_set_fmt,
++				.trigger = sti_sas_spdif_trigger,
++				.hw_params = sti_sas_hw_params,
++			}
++		},
++	},
++	{
++		.name = "sas-dai-dac",
++		.id = STI_SAS_DAI_ANALOG_OUT,
++		.playback = {
++			.stream_name = "dac_p",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S32_LE,
++		},
++	},
++};
++
++const int sti_sas_dai_clk_div[ARRAY_SIZE(sti_sas_dai)] = {
++	128, /* spdif out */
++	256, /* dac */
++};
++
++#ifdef CONFIG_PM_SLEEP
++static int sti_sas_resume(struct snd_soc_codec *codec)
++{
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++
++	return sti_sas_init_sas_registers(codec->dev, drvdata);
++}
++#else
++#define sti_sas_resume NULL
++#endif
++
++static int sti_sas_codec_probe(struct snd_soc_codec *codec)
++{
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	int ret;
++
++	ret = sti_sas_init_sas_registers(codec->dev, drvdata);
++
++	return ret;
++}
++
++static struct snd_soc_codec_driver sti_sas_driver = {
++	.probe = sti_sas_codec_probe,
++	.resume = sti_sas_resume,
++	.dapm_routes =	sti_sas_route,
++	.num_dapm_routes = ARRAY_SIZE(sti_sas_route),
++};
++
++static const struct of_device_id sti_sas_dev_match[] = {
++	{
++		.compatible = "st,stih416-sas-codec",
++		.data = &stih416_data,
++	},
++	{
++		.compatible = "st,stih407-sas-codec",
++		.data = &stih407_data,
++	},
++	{},
++};
++
++static int sti_sas_driver_probe(struct platform_device *pdev)
++{
++	struct device_node *pnode = pdev->dev.of_node;
++	int ret = 0;
++	struct sti_sas_data *drvdata;
++
++	/* Allocate device structure */
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_data),
++			       GFP_KERNEL);
++	if (!drvdata)
 +		return -ENOMEM;
 +
-+	reader->dev = &pdev->dev;
-+	reader->state = UNIPERIF_STATE_STOPPED;
-+	reader->hw = &uni_reader_pcm_hw;
-+	reader->ops = &uni_reader_ops;
-+	ret = uni_reader_parse_dt(pdev, node, reader);
++	/* Populate data structure depending on compatibility */
++	if (!of_match_node(sti_sas_dev_match, pnode)->data) {
++		dev_err(&pdev->dev, "data associated to device is missing");
++		return -EINVAL;
++	}
 +
-+	if (ret < 0) {
-+		dev_err(reader->dev, "Failed to parse DeviceTree");
++	drvdata->dev_data = of_match_node(sti_sas_dev_match, pnode)->data;
++
++	/* Initialise device structure */
++	drvdata->dev = &pdev->dev;
++
++	/* Request the DAC & SPDIF registers memory region */
++	drvdata->dac.regmap =
++		syscon_regmap_lookup_by_phandle(pnode, "st,syscfg");
++	if (!drvdata->dac.regmap) {
++		dev_err(&pdev->dev, "audio registers not enabled\n");
++		return -EFAULT;
++	}
++	drvdata->spdif.regmap = drvdata->dac.regmap;
++
++	ret = sti_sas_map_sas_registers(drvdata);
++	if (ret < 0)
 +		return ret;
-+	}
 +
-+	/* Get resources */
++	/* Set DAC dai probe */
++	if (drvdata->dev_data->chipid == CHIPID_STIH416)
++		sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].probe = stih416_dac_probe;
 +
-+	reader->mem_region = platform_get_resource(pdev, IORESOURCE_MEM, idx);
++	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
 +
-+	if (!reader->mem_region) {
-+		dev_err(&pdev->dev, "Failed to get memory resource");
-+		return -ENODEV;
-+	}
++	/* Set dapms*/
++	sti_sas_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
++	sti_sas_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
 +
-+	reader->base = devm_ioremap_resource(&pdev->dev,
-+						reader->mem_region);
++	/* Store context */
++	dev_set_drvdata(&pdev->dev, drvdata);
 +
-+	if (!reader->base) {
-+		dev_err(&pdev->dev, "Failed to ioremap memory region");
-+		return -ENXIO;
-+	}
-+
-+	reader->fifo_phys_address = reader->mem_region->start +
-+				     UNIPERIF_FIFO_DATA_OFFSET(reader);
-+
-+	reader->irq = platform_get_irq(pdev, idx);
-+
-+	if (reader->irq < 0) {
-+		dev_err(&pdev->dev, "Failed to get IRQ resource");
-+		return -ENXIO;
-+	}
-+
-+	ret = devm_request_irq(&pdev->dev, reader->irq,
-+			       uni_reader_irq_handler, IRQF_SHARED,
-+			       dev_name(&pdev->dev), reader);
-+
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to request IRQ");
-+		return -EBUSY;
-+	}
-+
-+	/*
-+	 * request_irq() enables the interrupt immediately; as it is
-+	 * lethal in concurrent audio environment, we want to have
-+	 * it disabled for most of the time...
-+	 */
-+	disable_irq(reader->irq);
-+
-+	*uni_reader = reader;
-+
-+	/* Ensure that disable by default */
-+	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(reader);
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(reader);
-+	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(reader);
-+	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(reader);
-+
-+	return 0;
++	return snd_soc_register_codec(&pdev->dev, &sti_sas_driver,
++					sti_sas_dai,
++					ARRAY_SIZE(sti_sas_dai));
 +}
-+EXPORT_SYMBOL_GPL(uni_reader_init);
 +
-+int uni_reader_remove(struct platform_device *pdev)
++static int sti_sas_driver_remove(struct platform_device *pdev)
 +{
-+	/* Nothing to do */
++	snd_soc_unregister_codec(&pdev->dev);
++
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(uni_reader_remove);
++
++static struct platform_driver sti_sas_platform_driver = {
++	.driver = {
++		.name = "sti-sas-codec",
++		.owner = THIS_MODULE,
++		.of_match_table = sti_sas_dev_match,
++	},
++	.probe = sti_sas_driver_probe,
++	.remove = sti_sas_driver_remove,
++};
++
++module_platform_driver(sti_sas_platform_driver);
++
++MODULE_DESCRIPTION("audio codec for STMicroelectronics sti platforms");
++MODULE_AUTHOR("Arnaud.pouliquen@st.com");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
+index c29e219..af5d6fd 100644
+--- a/sound/soc/sti/Kconfig
++++ b/sound/soc/sti/Kconfig
+@@ -9,3 +9,9 @@ menuconfig SND_SOC_STI
+ 	help
+ 		Say Y if you want to enable ASoC-support for
+ 		any of the STI platforms (e.g. STIH416).
++
++config SND_SOC_STI_SAS
++	tristate "codec Audio support for STI SAS codec"
++	depends on SND_SOC_STI
++	help
++		Say Y if you want to include STI SAS audio codec support
+\ No newline at end of file
 -- 
 1.9.1
