@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 7/8] ASoC: Intel: Initialize max mailbox size
-	for haswell
-Date: Mon, 18 May 2015 16:56:00 +0530
-Message-ID: <1431948361-12756-8-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 8/8] ASoC: Intel: Allocate for the mailbox with
+	max size
+Date: Mon, 18 May 2015 16:56:01 +0530
+Message-ID: <1431948361-12756-9-git-send-email-vinod.koul@intel.com>
 References: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DC722606CA
- for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 13:25:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BB6F2606FF
+ for <alsa-devel@alsa-project.org>; Mon, 18 May 2015 13:25:38 +0200 (CEST)
 In-Reply-To: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,22 +30,51 @@ From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/common/sst-ipc.c | 15 +++++++++++++++
+ sound/soc/intel/common/sst-ipc.h |  4 ++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index 6304e4bfccd6..f95f271aab0c 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -2127,6 +2127,9 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 	ipc->ops.reply_msg_match = hsw_reply_msg_match;
- 	ipc->ops.is_dsp_busy = hsw_is_dsp_busy;
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index a7699f35a8d2..137bdfc35063 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -128,6 +128,21 @@ static int msg_empty_list_init(struct sst_generic_ipc *ipc)
+ 	if (ipc->msg == NULL)
+ 		return -ENOMEM;
  
-+	ipc->tx_data_max_size = IPC_MAX_MAILBOX_BYTES;
-+	ipc->rx_data_max_size = IPC_MAX_MAILBOX_BYTES;
++	ipc->msg->tx_data = devm_kzalloc(ipc->dev,
++			sizeof(ipc->tx_data_max_size), GFP_KERNEL);
++	if (ipc->msg->tx_data == NULL) {
++		kfree(ipc->msg);
++		return -ENOMEM;
++	}
 +
- 	ret = sst_ipc_init(ipc);
- 	if (ret != 0)
- 		goto ipc_init_err;
++	ipc->msg->rx_data = devm_kzalloc(ipc->dev,
++			sizeof(ipc->rx_data_max_size), GFP_KERNEL);
++	if (ipc->msg->rx_data == NULL) {
++		kfree(ipc->msg->tx_data);
++		kfree(ipc->msg);
++		return -ENOMEM;
++	}
++
+ 	for (i = 0; i < IPC_EMPTY_LIST_SIZE; i++) {
+ 		init_waitqueue_head(&ipc->msg[i].waitq);
+ 		list_add(&ipc->msg[i].list, &ipc->empty_list);
+diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
+index 7139afd2547f..ceb7e468a3fa 100644
+--- a/sound/soc/intel/common/sst-ipc.h
++++ b/sound/soc/intel/common/sst-ipc.h
+@@ -32,9 +32,9 @@ struct ipc_message {
+ 	u64 header;
+ 
+ 	/* direction wrt host CPU */
+-	char tx_data[IPC_MAX_MAILBOX_BYTES];
++	char *tx_data;
+ 	size_t tx_size;
+-	char rx_data[IPC_MAX_MAILBOX_BYTES];
++	char *rx_data;
+ 	size_t rx_size;
+ 
+ 	wait_queue_head_t waitq;
 -- 
 1.9.1
