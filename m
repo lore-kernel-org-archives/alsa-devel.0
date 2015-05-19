@@ -1,40 +1,61 @@
-From: Alexander Stein <alexanders83@web.de>
-Subject: Re: [PATCH] ALSA: sound/atmel/ac97c.c: remove unused
-	variable
-Date: Tue, 19 May 2015 17:38:27 +0200
-Message-ID: <1744036.GvGagi42vq@ws-stein>
-References: <14010746.Ukv1maRMaG@wuerfel>
+From: Jonathan McDowell <noodles@earth.li>
+Subject: Re: Audio crackles with 4.1-rc1
+Date: Tue, 19 May 2015 17:19:11 +0100
+Message-ID: <20150519161911.GD28070@earth.li>
+References: <s5hvbggv4xa.wl-tiwai@suse.de>
+ <20150428123518.GU10148@earth.li>
+ <s5hpp6ov1wv.wl-tiwai@suse.de>
+ <s5ha8xsuxe3.wl-tiwai@suse.de>
+ <20150429112859.GY10148@earth.li>
+ <s5h4mnzgne6.wl-tiwai@suse.de>
+ <20150430150131.GA10148@earth.li>
+ <s5hd22l7dgo.wl-tiwai@suse.de>
+ <20150502150513.GF10148@earth.li>
+ <s5hk2w514aj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id A60E3260567
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 17:39:31 +0200 (CEST)
-In-Reply-To: <14010746.Ukv1maRMaG@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hk2w514aj.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 19 May 2015 17:20:36, Arnd Bergmann wrote:
-> The recently added DT support for the ac97 driver is causing
-> a gcc warning:
+On Tue, May 19, 2015 at 08:15:32AM +0200, Takashi Iwai wrote:
+> At Sat, 2 May 2015 16:05:13 +0100,
+> Jonathan McDowell wrote:
+> > 
+> > On Thu, Apr 30, 2015 at 07:06:31PM +0200, Takashi Iwai wrote:
+> > > At Thu, 30 Apr 2015 16:01:31 +0100, Jonathan McDowell wrote:
+> > > > 
+> > > > On Wed, Apr 29, 2015 at 01:54:57PM +0200, Takashi Iwai wrote:
+> > > > > 
+> > > > > One patch you can try (with or without power_save_node
+> > > > > disablement) is below, it squashes the verb sequences at (runtime)
+> > > > > PM resume as we did for 4.0.  Let me know if this changes the
+> > > > > behavior.
+> > > > 
+> > > > Patch alone has no effect. Patch with power_save_node disablement
+> > > > solves the problem. Didn't try power_save_node disablement without
+> > > > the patch.
+> > > 
+> > > Then please confirm that only power_save_node disablement suffices.
+> > > This can be considered as the least change that can be put to 4.1-rc
+> > > if no better fix is found.
+> > 
+> > Setting codec->power_save_node to 0 in patch_alc269 is sufficient; no
+> > noticeable cracking occurring.
 > 
-> sound/atmel/ac97c.c: In function 'atmel_ac97c_probe_dt':
-> sound/atmel/ac97c.c:919:29: warning: unused variable 'match' [-Wunused-variable]
->   const struct of_device_id *match;
-> 
-> The variable is clearly unused, so we can remove it.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Does the patch below have any improvement?
 
-Acked-by: Alexander Stein <alexanders83@web.de>
+I still get a clicking on the standby -> active transition with the
+patch provided on top of 4.1-rc4.
+
+J.
+
+-- 
+   101 things you can't have too   |  .''`.  Debian GNU/Linux Developer
+  much of : 9 - Processing power.  | : :' :  Happy to accept PGP signed
+                                   | `. `'   or encrypted mail - RSA
+                                   |   `-    key on the keyservers.
