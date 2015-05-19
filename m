@@ -1,54 +1,56 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 06/17] video: lcd: add LoCoMo LCD driver
-Date: Tue, 19 May 2015 13:34:18 +0100
-Message-ID: <20150519123418.GB3627@x1>
-References: <1431880077-26321-1-git-send-email-dbaryshkov@gmail.com>
- <1431880077-26321-7-git-send-email-dbaryshkov@gmail.com>
- <20150519093644.GT22418@x1>
- <CALT56yMwGngNvRWiCux962B=EQODUHW3=-ed6SZWJ9PnSPm09A@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: omap: fix up SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency, again
+Date: Tue, 19 May 2015 14:47:32 +0200
+Message-ID: <3413182.qcoNiOhonF@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-leds-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CALT56yMwGngNvRWiCux962B=EQODUHW3=-ed6SZWJ9PnSPm09A@mail.gmail.com>
-Sender: linux-leds-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, linux-input <linux-input@vger.kernel.org>, linux-leds <linux-leds@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, linux-fbdev@vger.
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, linux-omap@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 May 2015, Dmitry Eremin-Solenikov wrote:
+I tried to fix this before and submitted a working patch, but after
+some discussion we came up with what seemed to be a nicer solution,
+resulting in commit 3d4cf65e2d ("ASoC: omap: fix up
+SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency"). Unfortunately, that
+version was incomplete, and we still get this build error:
 
-> 2015-05-19 12:36 GMT+03:00 Lee Jones <lee.jones@linaro.org>:
-> > On Sun, 17 May 2015, Dmitry Eremin-Solenikov wrote:
-> >
-> >> LoCoMo has some special handling for TFT screens attached to Colli=
-e and
-> >> Poodle. Implement that as a separate driver.
-> >>
-> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> >> ---
-> >>  drivers/video/backlight/Kconfig      |  10 ++
-> >>  drivers/video/backlight/Makefile     |   1 +
-> >>  drivers/video/backlight/locomo_lcd.c | 285 ++++++++++++++++++++++=
-+++++++++++++
-> >>  3 files changed, 296 insertions(+)
-> >>  create mode 100644 drivers/video/backlight/locomo_lcd.c
-> >
-> > This looks like it should be part of patch 16.
-> >
-> > How much of this file is the same as the one removed later in the s=
-et?
->=20
-> This is a completely new driver. Only few comments remained from old
-> locomolcd.c.
+drivers/clk/clk-palmas.c:46:16: error: field 'hw' has incomplete type
+drivers/clk/clk-palmas.c: In function 'to_palmas_clks_info':
+drivers/clk/clk-palmas.c:54:74: warning: initialization from incompatible pointer type [-Winc
 
-Okay, thanks for the explanation.
+This happens only in randconfig builds that turn on MFD_PALMAS
+on a platform other than OMAP2+ when COMPILE_TEST is set
+but COMMON_CLK is not.
 
-I'm sure Jingoo will be around to review shortly.
+The new approach is only 'select COMMON_CLK_PALMAS' if we know
+that we are on an OMAP5 platform and MFD_PALMAS is already set.
+This patch has survived thousands of randconfig builds and I
+don't see a remaining hole in the logic.
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 3d4cf65e2d ("ASoC: omap: fix up SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency")
+
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 6768e4f7d7d0..30d0109703a9 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -100,12 +100,13 @@ config SND_OMAP_SOC_OMAP_TWL4030
+ 
+ config SND_OMAP_SOC_OMAP_ABE_TWL6040
+ 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
+-	depends on TWL6040_CORE && SND_OMAP_SOC && (ARCH_OMAP4 || SOC_OMAP5 || COMPILE_TEST)
++	depends on TWL6040_CORE && SND_OMAP_SOC
++	depends on ARCH_OMAP4 || (SOC_OMAP5 && MFD_PALMAS) || COMPILE_TEST
+ 	select SND_OMAP_SOC_DMIC
+ 	select SND_OMAP_SOC_MCPDM
+ 	select SND_SOC_TWL6040
+ 	select SND_SOC_DMIC
+-	select COMMON_CLK_PALMAS if MFD_PALMAS
++	select COMMON_CLK_PALMAS if (SOC_OMAP5 && MFD_PALMAS)
+ 	help
+ 	  Say Y if you want to add support for SoC audio on OMAP boards using
+ 	  ABE and twl6040 codec. This driver currently supports:
+
