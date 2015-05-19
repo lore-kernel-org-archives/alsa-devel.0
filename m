@@ -1,19 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 8/8] ASoC: Intel: Allocate for the mailbox
-	with max size
-Date: Tue, 19 May 2015 14:56:11 +0530
-Message-ID: <20150519092611.GK3140@localhost>
-References: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
- <1431948361-12756-9-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 0/8] ASoC: Intel: refactor common SST IPC
+	handling
+Date: Tue, 19 May 2015 15:00:32 +0530
+Message-ID: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F26362606A7
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:25:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1431948361-12756-9-git-send-email-vinod.koul@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B475264F10
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:29:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 18, 2015 at 04:56:01PM +0530, Vinod Koul wrote:
-> From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-> 
-> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> ---
->  sound/soc/intel/common/sst-ipc.c | 15 +++++++++++++++
->  sound/soc/intel/common/sst-ipc.h |  4 ++--
->  2 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
-> index a7699f35a8d2..137bdfc35063 100644
-> --- a/sound/soc/intel/common/sst-ipc.c
-> +++ b/sound/soc/intel/common/sst-ipc.c
-> @@ -128,6 +128,21 @@ static int msg_empty_list_init(struct sst_generic_ipc *ipc)
->  	if (ipc->msg == NULL)
->  		return -ENOMEM;
->  
-> +	ipc->msg->tx_data = devm_kzalloc(ipc->dev,
-> +			sizeof(ipc->tx_data_max_size), GFP_KERNEL);
-> +	if (ipc->msg->tx_data == NULL) {
-> +		kfree(ipc->msg);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ipc->msg->rx_data = devm_kzalloc(ipc->dev,
-> +			sizeof(ipc->rx_data_max_size), GFP_KERNEL);
-> +	if (ipc->msg->rx_data == NULL) {
-> +		kfree(ipc->msg->tx_data);
-> +		kfree(ipc->msg);
-> +		return -ENOMEM;
-> +	}
-> +
->  	for (i = 0; i < IPC_EMPTY_LIST_SIZE; i++) {
-we need to allocate the memory for each message in the queue, i will send
-updated series now
+This series refactors the common SST IPC code to remove some hardcoded
+assumption which are no longer valid for future platforms like Skylake,
+These are made configurable and right configuration applied for respective
+drivers. The changes are mailbox sizes and dsp busy checks.
+
+changes in v2:
+ - fix the mem allocation for IPC mailbox
+
+Subhransu S. Prusty (8):
+  ASoC: Intel: Create an ops to check for DSP busy
+  ASoC: Intel: Move the busy check to ops for Baytrail
+  ASoC: Intel: Move the busy check to ops for HSW
+  ASoC: Intel: Remove the direct register reference from common ipc
+  ASoC: Intel: Allow to configure max size for mailbox data
+  ASoC: Intel: Initialize max mailbox size for baytrail
+  ASoC: Intel: Initialize max mailbox size for haswell
+  ASoC: Intel: Allocate for the mailbox with max size
+
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c | 11 ++++++++++
+ sound/soc/intel/common/sst-ipc.c            | 34 +++++++++++++++++++++++++----
+ sound/soc/intel/common/sst-ipc.h            |  7 ++++--
+ sound/soc/intel/haswell/sst-haswell-ipc.c   | 12 ++++++++++
+ 4 files changed, 58 insertions(+), 6 deletions(-)
 
 -- 
-~Vinod
-
->  		init_waitqueue_head(&ipc->msg[i].waitq);
->  		list_add(&ipc->msg[i].list, &ipc->empty_list);
-> diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
-> index 7139afd2547f..ceb7e468a3fa 100644
-> --- a/sound/soc/intel/common/sst-ipc.h
-> +++ b/sound/soc/intel/common/sst-ipc.h
-> @@ -32,9 +32,9 @@ struct ipc_message {
->  	u64 header;
->  
->  	/* direction wrt host CPU */
-> -	char tx_data[IPC_MAX_MAILBOX_BYTES];
-> +	char *tx_data;
->  	size_t tx_size;
-> -	char rx_data[IPC_MAX_MAILBOX_BYTES];
-> +	char *rx_data;
->  	size_t rx_size;
->  
->  	wait_queue_head_t waitq;
-> -- 
-> 1.9.1
-> 
-
--- 
+1.9.1
