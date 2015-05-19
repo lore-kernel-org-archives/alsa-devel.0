@@ -1,53 +1,48 @@
-From: Jonathan McDowell <noodles@earth.li>
-Subject: Re: Audio crackles with 4.1-rc1
-Date: Tue, 19 May 2015 22:53:10 +0100
-Message-ID: <20150519215310.GF28070@earth.li>
-References: <s5hpp6ov1wv.wl-tiwai@suse.de>
- <s5ha8xsuxe3.wl-tiwai@suse.de>
- <20150429112859.GY10148@earth.li>
- <s5h4mnzgne6.wl-tiwai@suse.de>
- <20150430150131.GA10148@earth.li>
- <s5hd22l7dgo.wl-tiwai@suse.de>
- <20150502150513.GF10148@earth.li>
- <s5hk2w514aj.wl-tiwai@suse.de>
- <20150519161911.GD28070@earth.li>
- <s5hr3qctryf.wl-tiwai@suse.de>
+From: e-rouge <contact@e-rouge.net>
+Subject: Focusrite Forte
+Date: Tue, 19 May 2015 23:56:26 +0200
+Message-ID: <555BB18A.10503@e-rouge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hr3qctryf.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from anborn.planethoster.net (anborn.planethoster.net
+ [199.16.128.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B1C4260309
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 23:53:09 +0200 (CEST)
+Received: from alyon-655-1-680-27.w109-213.abo.wanadoo.fr
+ ([109.213.241.27]:40945 helo=[192.168.1.14])
+ by anborn.planethoster.net with esmtpsa (TLSv1:DHE-RSA-AES128-SHA:128)
+ (Exim 4.85) (envelope-from <contact@e-rouge.net>) id 1YupRi-002xIq-IA
+ for alsa-devel@alsa-project.org; Tue, 19 May 2015 23:53:06 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 19, 2015 at 07:09:12PM +0200, Takashi Iwai wrote:
-> At Tue, 19 May 2015 17:19:11 +0100,
-> Jonathan McDowell wrote:
-> > 
-> > On Tue, May 19, 2015 at 08:15:32AM +0200, Takashi Iwai wrote:
-> > > Does the patch below have any improvement?
-> > 
-> > I still get a clicking on the standby -> active transition with the
-> > patch provided on top of 4.1-rc4.
-> 
-> OK, just to be sure, could you check whether changing msleep(10) to
-> msleep(100) makes no difference?  Also put a line like
-> 	pr_info("XXX power up %x\n", nid);
-> after msleep() call to see which nodes are powered up dynamically.
+Hello,
 
-Increasing the delay, if anything, makes the crackle when powering up
-seem a little longer. dmesg log looks like:
+I just bought a Focusrite Forte, and yeah I've fooled by the 
+class-compliant thingy and the touch controls.
 
-[ 4206.075557] XXX power up 2
-[ 4206.179671] XXX power up 14
-[ 4206.291758] XXX power up 3
+For some reasons the card controls require a deamon that only runs on 
+window and mac.
 
-J.
+Well, OK, I'm a programmer, I can fix that. There must be a way to 
+access all the parameters (namely gain and phantom switches). Can you 
+provide me some basic commands to know what this card has under the hood ?
 
--- 
-                                            xmpp:noodles@earth.li
-"f u cn rd ths, u cn gt a gd jb n cmptr
-                                            prgrmmng." -- Simon
-Cozens, ox.os.linux
+What tools do you use to do that ?
+
+Thanks a lot in advance
+
+T.
+
+P.S. : well if someone has a solution out-of-the-box, I can take it too :)
