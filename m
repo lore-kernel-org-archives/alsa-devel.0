@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: fix kernel hang when call
- rt5645_set_jack_detect()
-Date: Tue, 19 May 2015 13:11:09 +0100
-Message-ID: <20150519121109.GK2761@sirena.org.uk>
-References: <1431916443-22588-1-git-send-email-john.lin@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5645: Rename HP control to
+	Headphone
+Date: Tue, 19 May 2015 13:11:59 +0100
+Message-ID: <20150519121159.GL2761@sirena.org.uk>
+References: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
+ <1431564211-25641-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2935552561247000581=="
+Content-Type: multipart/mixed; boundary="===============4424029317164736222=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97FD726528B
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 14:11:16 +0200 (CEST)
-In-Reply-To: <1431916443-22588-1-git-send-email-john.lin@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E14432652B4
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 14:12:04 +0200 (CEST)
+In-Reply-To: <1431564211-25641-1-git-send-email-drinkcat@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Lin <john.lin@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, yang.a.fang@intel.com, koro.chen@mediatek.com, lgirdwood@gmail.com, bardliao@realtek.com, flove@realtek.com
+To: Nicolas Boichat <drinkcat@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2935552561247000581==
+--===============4424029317164736222==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iDz/PsN11jbXo3Nh"
+	protocol="application/pgp-signature"; boundary="Kj46dXrFpQxWGjjB"
 Content-Disposition: inline
 
 
---iDz/PsN11jbXo3Nh
+--Kj46dXrFpQxWGjjB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 18, 2015 at 10:34:03AM +0800, John Lin wrote:
-> rt5645_set_jack_detect() is usually called from
-> snd_soc_dai_link.init() and it calls snd_soc_jack_report() from
-> rt5645_irq_detection() if jack is inserted. snd_soc_jack_report()
-> results in kernel hang if it is called from a context which cannot
-> sleep.
+On Thu, May 14, 2015 at 08:43:31AM +0800, Nicolas Boichat wrote:
+> Use the standard name "Headphone" instead of "HP" for better
+> userspace integration.
 
-Applied, thanks - I rather suspect this is a case of trying to reacquire
-the same lock rather than being called from a context that can't sleep
-though, we shouldn't be doing device init in atomic context.
+Applied, thanks.
 
---iDz/PsN11jbXo3Nh
+--Kj46dXrFpQxWGjjB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVWyhdAAoJECTWi3JdVIfQYnQH/ilXJxTKOtl5hT50Bs5SHbq3
-OmTEkJwKdiLgGs6lCXmODDJNTVW5qZR6YeRt/YYuKuSqycCKHKq3tPQ1sNNFqr5a
-tzw0eQBSMCTc33qOzowwYVqKoa/Hlpvy9hrAgJZjUaZ373X4CLU8gaaojzKiOadv
-asqaX12r8Sa7FsjDoZsUtEheANgTRmQbXOa6dMQRXkYwZCXYYiPCjXVpOzcz1NcP
-ja0h/7Q6NuBuQ8f+rSl0lhXO3C7Y0sVoJDkdY6N+ZP6pq1iXyrDAYiRq1SeU1hSk
-0zt59cAOC/B55jTOKThNJRFZX3o2yTuVagGL1BIk7qo9VBwXV/d1+M9Ib79gLxc=
-=3wsz
+iQEcBAEBCAAGBQJVWyiPAAoJECTWi3JdVIfQ1CIH/A4n1UXyfyygug25YuLdM/0J
+PD7zTSyquzGg9i6iXJPwFkYDFn0lkW2j93/hippEzYpBlfDAD9YPCumoq1TIjUqo
+bGdtF+kGmQfc/lRldCExPvopCKzA+hy/7dJtm0nptt1QgBG9ufTO/fjEI4n7s+p0
+3B+4fNiheaknEJJzbClNgYYr/q9jHC1y+S7iTl1ephzLzGZBgjhyjInjOVJXX/V+
+V4RuSLG5p532+/5SBssXw1MacDyh6yIUCjHvnY3RJDyQBpnfBUGlHNg0UATwLjRF
+esOOEIm42e4nbiR/SSALGOJd73vuOKCS2AjIFPa7BZ4lzWpYDdq+73ES7FcNoKY=
+=zuq4
 -----END PGP SIGNATURE-----
 
---iDz/PsN11jbXo3Nh--
+--Kj46dXrFpQxWGjjB--
 
---===============2935552561247000581==
+--===============4424029317164736222==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2935552561247000581==--
+--===============4424029317164736222==--
