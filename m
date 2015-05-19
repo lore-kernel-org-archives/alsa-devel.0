@@ -1,18 +1,21 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [PATCH] SoC: max98357a: use flags argument of
- devm_gpiod_get to set direction
-Date: Tue, 19 May 2015 11:30:54 -0700
-Message-ID: <20150519183053.GA11187@kwestfie-linux.qualcomm.com>
-References: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Assert in pcm_params.c
+Date: Tue, 19 May 2015 20:22:50 +0100
+Message-ID: <201505192022.50591.gineera@aspect135.co.uk>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201505010836.47714.gineera@aspect135.co.uk> <s5hbnhgzsh4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id F2CB9260584
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 20:30:59 +0200 (CEST)
+Received: from 3.array2.smtp.34sp.com (3.array2.smtp.34sp.com [46.183.9.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id F177526058A
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 21:22:52 +0200 (CEST)
+Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
+ by 3.array2.smtp.34sp.com (Postfix) with ESMTP id 741FE6B66C
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 20:22:50 +0100 (BST)
+In-Reply-To: <s5hbnhgzsh4.wl-tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 18, 2015 at 11:58:09PM -0700, Uwe Kleine-K??nig wrote:
-> Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
-> which appeared in v3.17-rc1, the gpiod_get* functions take an additional
-> parameter that allows to specify direction and initial value for output.
-> 
-> Use this to simplify the driver. Furthermore this is one caller less
-> that stops us making the flags argument to gpiod_get*() mandatory.
-> 
-> Fixes: af5adf129369 ("ASoC: max98357a: Add MAX98357A codec driver")
-> Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
-
-Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
-
--- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+T24gVHVlc2RheSAxOSBNYXkgMjAxNSAxMzowMSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZy
+aSwgMSBNYXkgMjAxNSAwODozNjo0NyArMDEwMCwgQWxhbiBIb3JzdG1hbm4gd3JvdGU6Cj4gPiBB
+IG1pbmltYWwgc2VsZi1jb250YWluZWQgZGVtbyBwcm9ncmFtICgndGVzdC1mb3JtYXQnKSBoYXMg
+YmVlbiBkZXZlbG9wZWQKPiA+IGFuZCBpcyBhdHRhY2hlZCwgdGhhdCBkZW1vbnN0cmF0ZXMgdGhl
+IGlzc3VlIDEwMCUgb24gdGhlIHJlcG9ydGVycwo+ID4gbWFjaGluZSAoSERBLUludGVsLCA2LWNo
+IEkgYmVsaWV2ZSkuICBUaGUgb3V0cHV0IGlzOgo+ID4KPiA+IHJvb3RAWGVvbjovaG9tZS9wYXRl
+c3QjIC4vdGVzdC1mb3JtYXQKPiA+IFRlc3RpbmcgZGV2aWNlIGZyb250Cj4gPiBOdW0gY2hhbm5l
+bHMgNgo+ID4gVGVzdGluZyByYXRlOiAyMjA1MCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUg
+UmF0ZQo+ID4gVGVzdGluZyByYXRlOiAzMjAwMCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUg
+UmF0ZQo+ID4gdGVzdC1mb3JtYXQ6IHBjbV9wYXJhbXMuYzoyMjQ5OiBzbmQxX3BjbV9od19wYXJh
+bXNfc2xhdmU6IEFzc2VydGlvbiBgZXJyCj4gPiA+PSAwJyBmYWlsZWQuCj4gPiBUZXN0aW5nIHJh
+dGU6IDQ0MTAwIMKgIEFib3J0ZWQKPiA+Cj4gPiBBbHNhLWluZm8gaXMgYXQ6Cj4gPgo+ID4gaHR0
+cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTE5ZGZlZWUyOWY3MzAwN2U2MWEwMGE4ZmFi
+ZTNjOTU4ZjdjYjhlOAo+ID43Cj4gPgo+ID4gVGhpcyBhcHBhcmVudGx5IGhhcHBlbnMgd2l0aCBv
+ciB3aXRob3V0IFB1bHNlYXVkaW8gcnVubmluZywgd2l0aCBqdXN0IHRoZQo+ID4gc2luZ2xlIDQ0
+MTAwIHJhdGUsIGFuZCBhbHNvIHdpdGggc3Vycm91bmQgZGV2aWNlcy4gIEFsc28sIG9uIGFsbCBj
+dXJyZW50Cj4gPiBEZWJpYW4gYW5kIFVidW50dSAtIHdlIGhhdmUgZm9jdXNlZCBvbiBKZXNzaWUu
+Cj4gPgo+ID4gSSBkbyBub3QgaGF2ZSBhIG1hY2hpbmUgd2l0aCBzaW1pbGFyIGhhcmR3YXJlLCBz
+byBjYW5ub3QgZHVwbGljYXRlIHRoZQo+ID4gcmVzdWx0cy4KPiA+Cj4gPiBBbnkgY29tbWVudHMs
+IGlkZWFzIGV0YyB3b3VsZCBiZSBhcHByZWNpYXRlZC4KPgo+IEkgYWxzbyBjYW4ndCByZXByb2R1
+Y2UgdGhpcy4gIFNvIHRoaXMgbXVzdCBiZSBwcmV0dHkgc3BlY2lmaWMgdG8gdGhlCj4gc2V0dXAu
+Cj4KPiBDb3VsZCB5b3UgZ2l2ZSB0aGUgZXhhY3QgY29uZGl0aW9uIHRvIHRyaWdnZXIgdGhlIHBy
+b2JsZW0/ICBBbHNvLCB0aGlzCj4gaGFwcGVucyBjZXJ0YWlubHkgd2l0aCB0aGUgbGF0ZXN0IGFs
+c2EtbGliPwoKVGhhbmtzIGZvciB0YWtpbmcgYSBsb29rLiAgSnVzdCBjb21waWxpbmcgYW5kIHJ1
+bm5pbmcgdGhhdCB0ZXN0IHByb2dyYW0sIG9uIAp0aGUgcmVwb3J0ZXIncyBtYWNoaW5lLCB3aGlj
+aCBoYXMgc29tZSBzb3J0IG9mIG11bHRpLWNoYW5uZWwgSERBLUludGVsLCBpcyAKMTAwJSByZXBy
+b2R1Y2libGUuIFRoZSBBbHNhLWxpYiBtdXN0IGJlIHRoZSBvbmUgcHJvdmlkZWQgYnkgRGViaWFu
+IEplc3NpZSAKKHdoaWNoIHdhcyByZWxlYXNlZCAyNS40LjIwMTUpOyAxLjAuMjggSSB0aGluay4g
+IERvZXMgdGhlIEFsc2EtaW5mbyBnaXZlIAplbm91Z2ggZGV0YWlscyAtIEkgY2FuIGFzayBhbnkg
+c3BlY2lmaWMgcXVlc3Rpb25zLgoKSG93ZXZlciwgUmF5bW9uZCBzZWVtcyB0byBoYXZlIHNvbWUg
+aWRlYXMgb2YgYSBwb3NzaWJsZSBjYXVzZSwgaW4gY29ubmVjdGlvbiAKd2l0aCBhcmJpdHJhcnkg
+cGVyaW9kIHNpemUgYW5kIHNvZnR2b2w7IGlzIHRoYXQgcGxhdXNpYmxlPwoKUmVnYXJkcwoKQWxh
+bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
