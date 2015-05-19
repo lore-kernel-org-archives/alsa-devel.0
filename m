@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/8] ASoC: Intel: Move the busy check to ops
-	for HSW
-Date: Tue, 19 May 2015 15:00:35 +0530
-Message-ID: <1432027840-18711-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 4/8] ASoC: Intel: Remove the direct register
+	reference from common ipc
+Date: Tue, 19 May 2015 15:00:36 +0530
+Message-ID: <1432027840-18711-5-git-send-email-vinod.koul@intel.com>
 References: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 311932650F5
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:29:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AEA4F265128
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:29:53 +0200 (CEST)
 In-Reply-To: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,35 +30,31 @@ From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/common/sst-ipc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index 324eceb07b25..6304e4bfccd6 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -2098,6 +2098,14 @@ static u64 hsw_reply_msg_match(u64 header, u64 *mask)
- 	return header;
- }
+diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+index 4b62a553823c..a7699f35a8d2 100644
+--- a/sound/soc/intel/common/sst-ipc.c
++++ b/sound/soc/intel/common/sst-ipc.c
+@@ -142,7 +142,6 @@ static void ipc_tx_msgs(struct kthread_work *work)
+ 		container_of(work, struct sst_generic_ipc, kwork);
+ 	struct ipc_message *msg;
+ 	unsigned long flags;
+-	u64 ipcx;
  
-+static bool hsw_is_dsp_busy(struct sst_dsp *dsp)
-+{
-+	u64 ipcx;
-+
-+	ipcx = sst_dsp_shim_read_unlocked(dsp, SST_IPCX);
-+	return (ipcx & (SST_IPCX_BUSY | SST_IPCX_DONE));
-+}
-+
- int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- {
- 	struct sst_hsw_ipc_fw_version version;
-@@ -2117,6 +2125,7 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 	ipc->ops.shim_dbg = hsw_shim_dbg;
- 	ipc->ops.tx_data_copy = hsw_tx_data_copy;
- 	ipc->ops.reply_msg_match = hsw_reply_msg_match;
-+	ipc->ops.is_dsp_busy = hsw_is_dsp_busy;
+ 	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
  
- 	ret = sst_ipc_init(ipc);
- 	if (ret != 0)
+@@ -153,8 +152,8 @@ static void ipc_tx_msgs(struct kthread_work *work)
+ 
+ 	/* if the DSP is busy, we will TX messages after IRQ.
+ 	 * also postpone if we are in the middle of procesing completion irq*/
+-	ipcx = sst_dsp_shim_read_unlocked(ipc->dsp, SST_IPCX);
+-	if (ipcx & (SST_IPCX_BUSY | SST_IPCX_DONE)) {
++	if (ipc->ops.is_dsp_busy && ipc->ops.is_dsp_busy(ipc->dsp)) {
++		dev_dbg(ipc->dev, "ipc_tx_msgs dsp busy\n");
+ 		spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
+ 		return;
+ 	}
 -- 
 1.9.1
