@@ -1,20 +1,19 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: Re: [WM5102/ARIZONA] spi driver needs to support ACPI
-Date: Tue, 19 May 2015 11:04:30 +0200
-Message-ID: <CAKor6TerixSeaVYUs6uprcPwUvoNkkPhHx8Ap9apTbPW+1o4aA@mail.gmail.com>
-References: <CAKor6TdtBEf9cN-EFw0BpRd4EbAKYXgfWh_PbSiG5=EhC1peew@mail.gmail.com>
- <555A1357.3090905@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 8/8] ASoC: Intel: Allocate for the mailbox
+	with max size
+Date: Tue, 19 May 2015 14:56:11 +0530
+Message-ID: <20150519092611.GK3140@localhost>
+References: <1431948361-12756-1-git-send-email-vinod.koul@intel.com>
+ <1431948361-12756-9-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f169.google.com (mail-qc0-f169.google.com
- [209.85.216.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E4682606A7
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:04:31 +0200 (CEST)
-Received: by qcir1 with SMTP id r1so3713531qci.3
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 02:04:30 -0700 (PDT)
-In-Reply-To: <555A1357.3090905@linux.intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F26362606A7
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:25:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1431948361-12756-9-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,235 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-so the ACPI id string, which I want to add to arizona-spi.c should be
-
-WM510205 ??
-
-I have changed the ACPI string to
-
-{"WM510205", WM5102},
-
-now and give it a try.
-
-cheers
-chris
-
-2015-05-18 18:29 GMT+02:00 Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com>:
-> On 5/15/15 4:16 AM, Christian Hartmann wrote:
->>
->> Hi list,
->>
->>
->> I need ACPI support for the arizona-core / arizona-spi driver for the
->> ACPI ID WM5102.
->> This audio codec is build into the Lenovo Yoga 851F. This device is a
->> 32Bit (UEFI) system
->>
->>
->> http://support.lenovo.com/de/de/products/tablets/yoga-series/yoga-tablet-2-851
->>
->>
->> I have tested with vanilla kernels from kernel.org 3.19.y ,4.0.y and
->> master (from torvalds) currently its 4.1.0-rc3. As distribution I am
->> working with Fedora / Fedlet was the initial install image.
->>
->> With all vanilla kernels I got at first an error message from spi32766:
->>
->> [ 0.296297] pxa2xx-spi 80860F0E:00: cs1 >= max 1
->> [ 0.296311] spi_master spi32766: failed to add SPI device
->> WM510205:00 from ACPI
->>
->> so I have at first patched as suggested by broonie the arizona-core
->>
->> commit 48203a0fede057d6a8c5f6872c53326395350f45
->> Author: somebody anybody <somebody@foobar.com>
->> Date:   Mon May 11 13:35:43 2015 +0200
->>
->>      spi-pxa2xx : raise chipselect
->>
->>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>
->> diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
->> index e3223ac..9c919ea 100644
->> --- a/drivers/spi/spi-pxa2xx.c
->> +++ b/drivers/spi/spi-pxa2xx.c
->> @@ -1279,7 +1279,7 @@ pxa2xx_spi_acpi_get_pdata(struct platform_device
->> *pdev)
->>          if (adev->pnp.unique_id && !kstrtoint(adev->pnp.unique_id, 0,
->> &devid))
->>                  ssp->port_id = devid;
->>
->> -       pdata->num_chipselect = 1;
->> +       pdata->num_chipselect = 20;
->>          pdata->enable_dma = true;
->>
->>          return pdata;
->>
->> This leds the spi master do the further ACPI configuration and inital
->> setup for the arizona-spi device, but adding the ACPI ID to it
->> does not work yet as expected:
->>
->> The current last patchset on top of master is
->>
->>
->> Author: somebody anybody <somebody@foobar.com>
->> Date:   Wed May 13 11:36:25 2015 +0200
->>
->>      arizona : added ACPI id of wm5102 to SPI driver, too
->>
->>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>
->> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
->> index 1e845f6..c19a4c1 100644
->> --- a/drivers/mfd/arizona-spi.c
->> +++ b/drivers/mfd/arizona-spi.c
->> @@ -17,6 +17,7 @@
->>   #include <linux/regulator/consumer.h>
->>   #include <linux/slab.h>
->>   #include <linux/spi/spi.h>
->> +#include <linux/acpi.h>
->>   #include <linux/of.h>
->>
->>   #include <linux/mfd/arizona/core.h>
->> @@ -82,6 +83,15 @@ static int arizona_spi_remove(struct spi_device *spi)
->>          return 0;
->>   }
->>
->> +#ifdef CONFIG_ACPI
->> +static struct acpi_device_id wm5102_acpi_match[] = {
->> +               { "WM5102", 0},
->> +               { "WM510205", 0},
->> +               { },
->> +};
->> +MODULE_DEVICE_TABLE(acpi, wm5102_acpi_match);
->> +#endif
->> +
->>   static const struct spi_device_id arizona_spi_ids[] = {
->>          { "wm5102", WM5102 },
->>          { "wm5110", WM5110 },
->> @@ -96,6 +106,9 @@ static struct spi_driver arizona_spi_driver = {
->>                  .owner  = THIS_MODULE,
->>                  .pm     = &arizona_pm_ops,
->>                  .of_match_table = of_match_ptr(arizona_of_match),
->> +#ifdef CONFIG_ACPI
->> +               .acpi_match_table = ACPI_PTR(wm5102_acpi_match),
->> +#endif
->>          },
->>          .probe          = arizona_spi_probe,
->>          .remove         = arizona_spi_remove,
->>
->>
->>
->>
->> commit 268e21d29c942205e40f749c6d71c77839dc67da
->> Author: somebody anybody <somebody@foobar.com>
->> Date:   Wed May 13 11:36:04 2015 +0200
->>
->>      arizona : added ACPI id of wm5102 to i2c driver
->>
->>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>
->> diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
->> index ff782a5..45ece1b 100644
->> --- a/drivers/mfd/arizona-i2c.c
->> +++ b/drivers/mfd/arizona-i2c.c
->> @@ -18,6 +18,7 @@
->>   #include <linux/regulator/consumer.h>
->>   #include <linux/slab.h>
->>   #include <linux/of.h>
->> +#include <linux/acpi.h>
->>
->>   #include <linux/mfd/arizona/core.h>
->>
->> @@ -85,6 +86,15 @@ static int arizona_i2c_remove(struct i2c_client *i2c)
->>          return 0;
->>   }
->>
->> +#ifdef CONFIG_ACPI
->> +static struct acpi_device_id wm5102_acpi_match[] = {
->> +               { "WM5102", 0},
->> +               { "WM510205", 0},
->> +               { },
->
->
-> Those IDs don't really look like ACPI ones? Isn't there a rule that the _HID
-> is represented by a 4-letter vendor ID followed by part ID? see
-> http://www.uefi.org/PNP_ACPI_Registry
->
->
->> +};
->> +MODULE_DEVICE_TABLE(acpi, wm5102_acpi_match);
->> +#endif
->> +
->>   static const struct i2c_device_id arizona_i2c_id[] = {
->>          { "wm5102", WM5102 },
->>          { "wm5110", WM5110 },
->> @@ -100,6 +110,9 @@ static struct i2c_driver arizona_i2c_driver = {
->>                  .owner  = THIS_MODULE,
->>                  .pm     = &arizona_pm_ops,
->>                  .of_match_table = of_match_ptr(arizona_of_match),
->> +#ifdef CONFIG_ACPI
->> +               .acpi_match_table = ACPI_PTR(wm5102_acpi_match),
->> +#endif
->>          },
->>          .probe          = arizona_i2c_probe,
->>          .remove         = arizona_i2c_remove,
->>
->>
->>
->> with these two patches the local master branch compiles fine, but at
->> initialzing the arizona-spi driver gots a NULL pointer exception.
->>
->> I attach the whole dmesg of 4.1.0-rc3 (build 4.1.0.24-rc3).
->>
->> I need some assistance or hints to the right direction, I am looking
->> myself and I also try what I can, but I think it would be easy peasy
->> with some experts like here on this list :)
->>
->>
->> PS: the message : spi_master spi32766: raised num_chipselect to 20 for
->> WM510205:00
->>
->> is a dev_err() line added to the function static acpi_status
->> acpi_spi_add_device(), there I had raised the num_chipselect first
->> (that was wrong, the raise is now done as in the first patch above.
->> this is only a debug message and will be removed soon)
->>
->>
->> PPS: for me it seems that there is a missing 'link' from WM5102 to the
->> sst-acpi 80860F28:00 device, which complaints NOW / the first time
->> with the three patches applied on top on master.... will have a look
->> into it.
->>
->> I hope I got this device working with some more help from you.
->>
->> cheers
->> chris
->>
->>
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
-
-
+On Mon, May 18, 2015 at 04:56:01PM +0530, Vinod Koul wrote:
+> From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+> 
+> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  sound/soc/intel/common/sst-ipc.c | 15 +++++++++++++++
+>  sound/soc/intel/common/sst-ipc.h |  4 ++--
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
+> index a7699f35a8d2..137bdfc35063 100644
+> --- a/sound/soc/intel/common/sst-ipc.c
+> +++ b/sound/soc/intel/common/sst-ipc.c
+> @@ -128,6 +128,21 @@ static int msg_empty_list_init(struct sst_generic_ipc *ipc)
+>  	if (ipc->msg == NULL)
+>  		return -ENOMEM;
+>  
+> +	ipc->msg->tx_data = devm_kzalloc(ipc->dev,
+> +			sizeof(ipc->tx_data_max_size), GFP_KERNEL);
+> +	if (ipc->msg->tx_data == NULL) {
+> +		kfree(ipc->msg);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	ipc->msg->rx_data = devm_kzalloc(ipc->dev,
+> +			sizeof(ipc->rx_data_max_size), GFP_KERNEL);
+> +	if (ipc->msg->rx_data == NULL) {
+> +		kfree(ipc->msg->tx_data);
+> +		kfree(ipc->msg);
+> +		return -ENOMEM;
+> +	}
+> +
+>  	for (i = 0; i < IPC_EMPTY_LIST_SIZE; i++) {
+we need to allocate the memory for each message in the queue, i will send
+updated series now
 
 -- 
---
-......oooO..............
-.....(....).....Oooo...
-......)../.....(....)....
-.....(_/.......)../.....
-...............(_/.......
-... I WAS ..............
-.......... HERE...... ;)
+~Vinod
+
+>  		init_waitqueue_head(&ipc->msg[i].waitq);
+>  		list_add(&ipc->msg[i].list, &ipc->empty_list);
+> diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
+> index 7139afd2547f..ceb7e468a3fa 100644
+> --- a/sound/soc/intel/common/sst-ipc.h
+> +++ b/sound/soc/intel/common/sst-ipc.h
+> @@ -32,9 +32,9 @@ struct ipc_message {
+>  	u64 header;
+>  
+>  	/* direction wrt host CPU */
+> -	char tx_data[IPC_MAX_MAILBOX_BYTES];
+> +	char *tx_data;
+>  	size_t tx_size;
+> -	char rx_data[IPC_MAX_MAILBOX_BYTES];
+> +	char *rx_data;
+>  	size_t rx_size;
+>  
+>  	wait_queue_head_t waitq;
+> -- 
+> 1.9.1
+> 
+
+-- 
