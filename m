@@ -1,21 +1,16 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Assert in pcm_params.c
-Date: Tue, 19 May 2015 20:22:50 +0100
-Message-ID: <201505192022.50591.gineera@aspect135.co.uk>
-References: <201504180908.47022.gineera@aspect135.co.uk>
- <201505010836.47714.gineera@aspect135.co.uk> <s5hbnhgzsh4.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/7] ASoC: alc5623: Replace direct
+	snd_soc_codec dapm field access
+Date: Tue, 19 May 2015 21:49:05 +0200
+Message-ID: <1432064952-31997-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 3.array2.smtp.34sp.com (3.array2.smtp.34sp.com [46.183.9.3])
- by alsa0.perex.cz (Postfix) with ESMTP id F177526058A
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 21:22:52 +0200 (CEST)
-Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
- by 3.array2.smtp.34sp.com (Postfix) with ESMTP id 741FE6B66C
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 20:22:50 +0100 (BST)
-In-Reply-To: <s5hbnhgzsh4.wl-tiwai@suse.de>
-Content-Disposition: inline
+Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
+ [212.40.185.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B47926058A
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 21:49:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlc2RheSAxOSBNYXkgMjAxNSAxMzowMSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZy
-aSwgMSBNYXkgMjAxNSAwODozNjo0NyArMDEwMCwgQWxhbiBIb3JzdG1hbm4gd3JvdGU6Cj4gPiBB
-IG1pbmltYWwgc2VsZi1jb250YWluZWQgZGVtbyBwcm9ncmFtICgndGVzdC1mb3JtYXQnKSBoYXMg
-YmVlbiBkZXZlbG9wZWQKPiA+IGFuZCBpcyBhdHRhY2hlZCwgdGhhdCBkZW1vbnN0cmF0ZXMgdGhl
-IGlzc3VlIDEwMCUgb24gdGhlIHJlcG9ydGVycwo+ID4gbWFjaGluZSAoSERBLUludGVsLCA2LWNo
-IEkgYmVsaWV2ZSkuICBUaGUgb3V0cHV0IGlzOgo+ID4KPiA+IHJvb3RAWGVvbjovaG9tZS9wYXRl
-c3QjIC4vdGVzdC1mb3JtYXQKPiA+IFRlc3RpbmcgZGV2aWNlIGZyb250Cj4gPiBOdW0gY2hhbm5l
-bHMgNgo+ID4gVGVzdGluZyByYXRlOiAyMjA1MCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUg
-UmF0ZQo+ID4gVGVzdGluZyByYXRlOiAzMjAwMCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUg
-UmF0ZQo+ID4gdGVzdC1mb3JtYXQ6IHBjbV9wYXJhbXMuYzoyMjQ5OiBzbmQxX3BjbV9od19wYXJh
-bXNfc2xhdmU6IEFzc2VydGlvbiBgZXJyCj4gPiA+PSAwJyBmYWlsZWQuCj4gPiBUZXN0aW5nIHJh
-dGU6IDQ0MTAwIMKgIEFib3J0ZWQKPiA+Cj4gPiBBbHNhLWluZm8gaXMgYXQ6Cj4gPgo+ID4gaHR0
-cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTE5ZGZlZWUyOWY3MzAwN2U2MWEwMGE4ZmFi
-ZTNjOTU4ZjdjYjhlOAo+ID43Cj4gPgo+ID4gVGhpcyBhcHBhcmVudGx5IGhhcHBlbnMgd2l0aCBv
-ciB3aXRob3V0IFB1bHNlYXVkaW8gcnVubmluZywgd2l0aCBqdXN0IHRoZQo+ID4gc2luZ2xlIDQ0
-MTAwIHJhdGUsIGFuZCBhbHNvIHdpdGggc3Vycm91bmQgZGV2aWNlcy4gIEFsc28sIG9uIGFsbCBj
-dXJyZW50Cj4gPiBEZWJpYW4gYW5kIFVidW50dSAtIHdlIGhhdmUgZm9jdXNlZCBvbiBKZXNzaWUu
-Cj4gPgo+ID4gSSBkbyBub3QgaGF2ZSBhIG1hY2hpbmUgd2l0aCBzaW1pbGFyIGhhcmR3YXJlLCBz
-byBjYW5ub3QgZHVwbGljYXRlIHRoZQo+ID4gcmVzdWx0cy4KPiA+Cj4gPiBBbnkgY29tbWVudHMs
-IGlkZWFzIGV0YyB3b3VsZCBiZSBhcHByZWNpYXRlZC4KPgo+IEkgYWxzbyBjYW4ndCByZXByb2R1
-Y2UgdGhpcy4gIFNvIHRoaXMgbXVzdCBiZSBwcmV0dHkgc3BlY2lmaWMgdG8gdGhlCj4gc2V0dXAu
-Cj4KPiBDb3VsZCB5b3UgZ2l2ZSB0aGUgZXhhY3QgY29uZGl0aW9uIHRvIHRyaWdnZXIgdGhlIHBy
-b2JsZW0/ICBBbHNvLCB0aGlzCj4gaGFwcGVucyBjZXJ0YWlubHkgd2l0aCB0aGUgbGF0ZXN0IGFs
-c2EtbGliPwoKVGhhbmtzIGZvciB0YWtpbmcgYSBsb29rLiAgSnVzdCBjb21waWxpbmcgYW5kIHJ1
-bm5pbmcgdGhhdCB0ZXN0IHByb2dyYW0sIG9uIAp0aGUgcmVwb3J0ZXIncyBtYWNoaW5lLCB3aGlj
-aCBoYXMgc29tZSBzb3J0IG9mIG11bHRpLWNoYW5uZWwgSERBLUludGVsLCBpcyAKMTAwJSByZXBy
-b2R1Y2libGUuIFRoZSBBbHNhLWxpYiBtdXN0IGJlIHRoZSBvbmUgcHJvdmlkZWQgYnkgRGViaWFu
-IEplc3NpZSAKKHdoaWNoIHdhcyByZWxlYXNlZCAyNS40LjIwMTUpOyAxLjAuMjggSSB0aGluay4g
-IERvZXMgdGhlIEFsc2EtaW5mbyBnaXZlIAplbm91Z2ggZGV0YWlscyAtIEkgY2FuIGFzayBhbnkg
-c3BlY2lmaWMgcXVlc3Rpb25zLgoKSG93ZXZlciwgUmF5bW9uZCBzZWVtcyB0byBoYXZlIHNvbWUg
-aWRlYXMgb2YgYSBwb3NzaWJsZSBjYXVzZSwgaW4gY29ubmVjdGlvbiAKd2l0aCBhcmJpdHJhcnkg
-cGVyaW9kIHNpemUgYW5kIHNvZnR2b2w7IGlzIHRoYXQgcGxhdXNpYmxlPwoKUmVnYXJkcwoKQWxh
-bgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The dapm field of the snd_soc_codec struct is eventually going to be
+removed, in preparation for this replace all manual access to
+codec->dapm with snd_soc_codec_get_dapm().
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+Full series depends on topic/dapm
+---
+ sound/soc/codecs/alc5623.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index e92b5ae..0fc24e0 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -893,7 +893,7 @@ static int alc5623_resume(struct snd_soc_codec *codec)
+ static int alc5623_probe(struct snd_soc_codec *codec)
+ {
+ 	struct alc5623_priv *alc5623 = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 
+ 	alc5623_reset(codec);
+ 
+-- 
+1.8.0
