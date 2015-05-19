@@ -1,71 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Rename HP control to
-	Headphone
-Date: Tue, 19 May 2015 13:11:59 +0100
-Message-ID: <20150519121159.GL2761@sirena.org.uk>
-References: <1431504912-30698-1-git-send-email-drinkcat@chromium.org>
- <1431564211-25641-1-git-send-email-drinkcat@chromium.org>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 01/17] mfd: add new driver for Sharp LoCoMo
+Date: Tue, 19 May 2015 13:33:14 +0100
+Message-ID: <20150519123314.GA3627@x1>
+References: <1431880077-26321-1-git-send-email-dbaryshkov@gmail.com>
+ <1431880077-26321-2-git-send-email-dbaryshkov@gmail.com>
+ <20150519103828.GU22418@x1>
+ <20150519112134.GD2067@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4424029317164736222=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E14432652B4
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 14:12:04 +0200 (CEST)
-In-Reply-To: <1431564211-25641-1-git-send-email-drinkcat@chromium.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150519112134.GD2067@n2100.arm.linux.org.uk>
+Sender: linux-input-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, linux-input@vger.kernel.org, linux-leds@vger.kernel.org, linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 19 May 2015, Russell King - ARM Linux wrote:
 
---===============4424029317164736222==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Kj46dXrFpQxWGjjB"
-Content-Disposition: inline
+> On Tue, May 19, 2015 at 11:38:28AM +0100, Lee Jones wrote:
+> > On Sun, 17 May 2015, Dmitry Eremin-Solenikov wrote:
+> > > +static void locomo_mask_irq(struct irq_data *d)
+> > > +{
+> > > +	struct locomo *ldev =3D irq_data_get_irq_chip_data(d);
+> > > +	unsigned int mask =3D 0x0010 << d->hwirq;
+> >=20
+> > This also needs defining.
+> >=20
+> > Why not
+> >   BIT(d->hwirq + 1)
+>=20
+> I think your maths is off...
+>=20
+> 0x0010 << d->hwirq !=3D BIT(d->hwirq + 1)
 
+Ah, that's hex.  I was blinded by the 1's and 0's.  Doh!
 
---Kj46dXrFpQxWGjjB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks Russell.
 
-On Thu, May 14, 2015 at 08:43:31AM +0800, Nicolas Boichat wrote:
-> Use the standard name "Headphone" instead of "HP" for better
-> userspace integration.
+---
 
-Applied, thanks.
+Why not
+  BIT(d->hwirq + 4)
 
---Kj46dXrFpQxWGjjB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+=2E.. with an explanation as to why you're skipping the first 4 bits?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+/me hopes that maths is right now. :)
 
-iQEcBAEBCAAGBQJVWyiPAAoJECTWi3JdVIfQ1CIH/A4n1UXyfyygug25YuLdM/0J
-PD7zTSyquzGg9i6iXJPwFkYDFn0lkW2j93/hippEzYpBlfDAD9YPCumoq1TIjUqo
-bGdtF+kGmQfc/lRldCExPvopCKzA+hy/7dJtm0nptt1QgBG9ufTO/fjEI4n7s+p0
-3B+4fNiheaknEJJzbClNgYYr/q9jHC1y+S7iTl1ephzLzGZBgjhyjInjOVJXX/V+
-V4RuSLG5p532+/5SBssXw1MacDyh6yIUCjHvnY3RJDyQBpnfBUGlHNg0UATwLjRF
-esOOEIm42e4nbiR/SSALGOJd73vuOKCS2AjIFPa7BZ4lzWpYDdq+73ES7FcNoKY=
-=zuq4
------END PGP SIGNATURE-----
-
---Kj46dXrFpQxWGjjB--
-
---===============4424029317164736222==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4424029317164736222==--
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
