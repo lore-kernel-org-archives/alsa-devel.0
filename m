@@ -1,21 +1,18 @@
-From: Yogesh Soni <yksoni@gmail.com>
-Subject: Re: [PATCH]: No sound when using software based mmap
-	support and dmix plugin
-Date: Tue, 19 May 2015 11:14:13 -0700
-Message-ID: <CAHK=agsOJnT6DSYDZHVjYez4PY9JYjERfvikNeSeG+xfP0uP_g@mail.gmail.com>
-References: <CAHK=aguXV_4zK+=FBmrMKZrVmBPSMoCdVvdK_P9i0HQVJXPcrw@mail.gmail.com>
- <s5hfv6szt4w.wl-tiwai@suse.de>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [PATCH] SoC: max98357a: use flags argument of
+ devm_gpiod_get to set direction
+Date: Tue, 19 May 2015 11:30:54 -0700
+Message-ID: <20150519183053.GA11187@kwestfie-linux.qualcomm.com>
+References: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com
- [209.85.220.170])
- by alsa0.perex.cz (Postfix) with ESMTP id B9501260584
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 20:14:14 +0200 (CEST)
-Received: by qkdn188 with SMTP id n188so10774856qkd.2
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 11:14:14 -0700 (PDT)
-In-Reply-To: <s5hfv6szt4w.wl-tiwai@suse.de>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2CB9260584
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 20:30:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Mon, May 18, 2015 at 11:58:09PM -0700, Uwe Kleine-K??nig wrote:
+> Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
+> which appeared in v3.17-rc1, the gpiod_get* functions take an additional
+> parameter that allows to specify direction and initial value for output.
+> 
+> Use this to simplify the driver. Furthermore this is one caller less
+> that stops us making the flags argument to gpiod_get*() mandatory.
+> 
+> Fixes: af5adf129369 ("ASoC: max98357a: Add MAX98357A codec driver")
+> Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
 
-Thanks for your reply. Please consider the following snippet from
-pcm-indirect.h.  When using other plugins (like softvol), appl_ptr was
-updated correctly and below code worked well. In case of dmix, The samples
-are never copied to substream because
-   appl_ptr = rec->appl_ptr = diff = 0  --> rec->sw_ready = 0 .
+Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 
-*snd_pcm_sframes_t diff = appl_ptr - rec->appl_ptr;*
-.....
-if (*diff*) {
-.......
-rec->sw_ready += (int)frames_to_bytes(runtime, diff);
-.......
-}
- while (rec->hw_ready < qsize &&* rec->sw_ready > 0*) {
- *copy(substream, rec, bytes);*
-         }
-
-Regards
-Yogesh
-
-On Tue, May 19, 2015 at 4:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Wed, 13 May 2015 17:12:33 -0700,
-> Yogesh Soni wrote:
-> >
-> > Hi all,
-> >
-> > I am trying to have dmix plugin work ( I succeeded) with the audio card
-> > that does not have hardware mmap support and uses pcm_indirect method to
-> > map software buffer for mmap feature.
-> >
-> > Most of the plugins were working quite well with mmap/pcm_indirect combo.
-> > However, dmix plugin did not work (no sound). I debugged and realized
-> that
-> > appl_ptr in pcm_direct.h(snd_pcm_indirect_playback_transfer()) was
-> always 0
-> > and hence nothing got copied to slave pcm buffer. I then discovered that
-> > dmix operates in freewheeling-mode..
-> >
-> > I have made a small workaround patch (I believe it can be cleaned up) in
-> > case of free-wheeling mode, basically using sw_ready to hold bytes that
-> > need to be copied. I used rec->sw_ready because it looked safest to use
-> for
-> > this purpose. As a result of this patch, normally period_size bytes are
-> > copied to pcm buffer every period and sound is playing smooth.
-> >
-> > I am a noob in alsa and linux in general. So, I would like your opinion
-> on
-> > the patch. I would much prefer if I could write a patch that is generic
-> and
-> > clean enough, so that it could be used by others. patch is attached.
->
-> Thanks for reporting and the patch.
->
-> So, what actually prevents working with the current code in the free
-> wheeling mode?
->
->
-> Takashi
->
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
