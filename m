@@ -1,61 +1,47 @@
-From: Jonathan McDowell <noodles@earth.li>
-Subject: Re: Audio crackles with 4.1-rc1
-Date: Tue, 19 May 2015 17:19:11 +0100
-Message-ID: <20150519161911.GD28070@earth.li>
-References: <s5hvbggv4xa.wl-tiwai@suse.de>
- <20150428123518.GU10148@earth.li>
- <s5hpp6ov1wv.wl-tiwai@suse.de>
- <s5ha8xsuxe3.wl-tiwai@suse.de>
- <20150429112859.GY10148@earth.li>
- <s5h4mnzgne6.wl-tiwai@suse.de>
- <20150430150131.GA10148@earth.li>
- <s5hd22l7dgo.wl-tiwai@suse.de>
- <20150502150513.GF10148@earth.li>
- <s5hk2w514aj.wl-tiwai@suse.de>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: rockchip: add rockchip machine driver
+Date: Tue, 19 May 2015 09:37:58 -0700
+Message-ID: <CAEUnVG6QLtV3AXjdPAp5mYDTnmNVsyLfYQmLykeLMd-KgnX+5A@mail.gmail.com>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
+ <20150512192215.GZ3066@sirena.org.uk> <55535035.5070608@rock-chips.com>
+ <20150513164250.GB2761@sirena.org.uk> <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
+ <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
+ <555659DB.9010204@metafoo.de> <20150519111602.GG2761@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hk2w514aj.wl-tiwai@suse.de>
+In-Reply-To: <20150519111602.GG2761@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, zhengxing <zhengxing@rock-chips.com>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Douglas Anderson <dianders@chromium.org>, Xing Zheng <acgzxing@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Sonny Rao <sonnyrao@chromium.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 19, 2015 at 08:15:32AM +0200, Takashi Iwai wrote:
-> At Sat, 2 May 2015 16:05:13 +0100,
-> Jonathan McDowell wrote:
-> > 
-> > On Thu, Apr 30, 2015 at 07:06:31PM +0200, Takashi Iwai wrote:
-> > > At Thu, 30 Apr 2015 16:01:31 +0100, Jonathan McDowell wrote:
-> > > > 
-> > > > On Wed, Apr 29, 2015 at 01:54:57PM +0200, Takashi Iwai wrote:
-> > > > > 
-> > > > > One patch you can try (with or without power_save_node
-> > > > > disablement) is below, it squashes the verb sequences at (runtime)
-> > > > > PM resume as we did for 4.0.  Let me know if this changes the
-> > > > > behavior.
-> > > > 
-> > > > Patch alone has no effect. Patch with power_save_node disablement
-> > > > solves the problem. Didn't try power_save_node disablement without
-> > > > the patch.
-> > > 
-> > > Then please confirm that only power_save_node disablement suffices.
-> > > This can be considered as the least change that can be put to 4.1-rc
-> > > if no better fix is found.
-> > 
-> > Setting codec->power_save_node to 0 in patch_alc269 is sufficient; no
-> > noticeable cracking occurring.
-> 
-> Does the patch below have any improvement?
+On Tue, May 19, 2015 at 4:16 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Fri, May 15, 2015 at 10:40:59PM +0200, Lars-Peter Clausen wrote:
+>
+>> I think the proper way to support this is come up with the concept of jack
+>> detection providers and consumers. A component can register a jack detection
+>> provider just like it can register a DAI. And then in the board driver you'd
+>> just link the jack detection logic to the jack using the usual approach,
+>> which is also used for DAIs (e.g. of node or device name). The core would
+>> then take care of calling a enable callback or whatever is required to setup
+>> the jack detection logic in the driver.
+>
+> Yes, nobody has really cared about it since we started pushing things
+> out of the card init into the device level.  We would also need to add a
+> way to force microphone biases on for devices where that's not a part of
+> the jack detection IP.
+>
 
-I still get a clicking on the standby -> active transition with the
-patch provided on top of 4.1-rc4.
+Can the jacks can each be an aux_dev?  The jack driver would create
+the jack at probe time and register it with the card in aux_dev->init.
+cht_bsw_max98090_ti.c is already doing something similar, although all
+contained in the machine driver.
 
-J.
+If the jack detection circuit is integrated with a full codec, then
+the codec driver can also create the jack and register it with the
+card.
 
--- 
-   101 things you can't have too   |  .''`.  Debian GNU/Linux Developer
-  much of : 9 - Processing power.  | : :' :  Happy to accept PGP signed
-                                   | `. `'   or encrypted mail - RSA
-                                   |   `-    key on the keyservers.
+Then simple-card can have an optional property to specify aux devs.  A
+GPIO jack device could handle simple switch-based jack detection.
