@@ -1,95 +1,131 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap: fix up
- SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency, again
-Date: Wed, 20 May 2015 10:54:32 +0300
-Message-ID: <555C3DB8.5050506@ti.com>
-References: <3413182.qcoNiOhonF@wuerfel>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 1/4] dmaengine: rcar-dmac: fixup spinlock in rcar-dmac
+Date: Wed, 20 May 2015 11:25:19 +0300
+Message-ID: <2119137.Ez4XYKtCXC@avalon>
+References: <87382r52x2.wl%kuninori.morimoto.gx@renesas.com> <871tib52vy.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 793FB26147E
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 09:54:39 +0200 (CEST)
-In-Reply-To: <3413182.qcoNiOhonF@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <871tib52vy.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/19/2015 03:47 PM, Arnd Bergmann wrote:
-> I tried to fix this before and submitted a working patch, but after
-> some discussion we came up with what seemed to be a nicer solution,
-> resulting in commit 3d4cf65e2d ("ASoC: omap: fix up
-> SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency"). Unfortunately, that
-> version was incomplete, and we still get this build error:
-> =
+Hi Morimoto-san,
 
-> drivers/clk/clk-palmas.c:46:16: error: field 'hw' has incomplete type
-> drivers/clk/clk-palmas.c: In function 'to_palmas_clks_info':
-> drivers/clk/clk-palmas.c:54:74: warning: initialization from incompatible=
- pointer type [-Winc
-> =
+Thank you for the patch.
 
-> This happens only in randconfig builds that turn on MFD_PALMAS
-> on a platform other than OMAP2+ when COMPILE_TEST is set
-> but COMMON_CLK is not.
-> =
+On Wednesday 20 May 2015 03:46:19 Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Current rcar-dmac driver is using spin_lock_irq() / spin_unlock_irq()
+> in some functions. But, some other driver might call DMAEngine API
+> during interrupt disabled. In such case, rcar-dmac side spin_unlock_irq()
+> forcefully allows all interrupts. Therefore, other driver receives
+> unexpected interruption, and its exclusive access control will be broken.
+> This patch replaces spin_lock_irq() to spin_lock_irqsave(),
+> and spin_unlock_irq() to spin_unlock_irqrestore().
 
-> The new approach is only 'select COMMON_CLK_PALMAS' if we know
-> that we are on an OMAP5 platform and MFD_PALMAS is already set.
-> This patch has survived thousands of randconfig builds and I
-> don't see a remaining hole in the logic.
+I would have sworn I had fixed the issue already :-/ Sorry about it.
 
-Yeah, debugging Kconfig is not for the faint-hearted ;)
+I believe (part of) the issue should be fixed in the DMA engine API by 
+splitting descriptor allocation to non-atomic context, but that's a longer 
+term solution of course, out of scope for this series.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+The patch looks good, please see below for a couple of comments.
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Fixes: 3d4cf65e2d ("ASoC: omap: fix up SND_OMAP_SOC_OMAP_ABE_TWL6040 depe=
-ndency")
-> =
+> Reported-by: Cao Minh Hiep <cm-hiep@jinso.co.jp>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
+> ---
+>  drivers/dma/sh/rcar-dmac.c | 55 +++++++++++++++++++++++------------------
+>  1 file changed, 31 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+> index a18d16c..6a5d4b9 100644
+> --- a/drivers/dma/sh/rcar-dmac.c
+> +++ b/drivers/dma/sh/rcar-dmac.c
 
-> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-> index 6768e4f7d7d0..30d0109703a9 100644
-> --- a/sound/soc/omap/Kconfig
-> +++ b/sound/soc/omap/Kconfig
-> @@ -100,12 +100,13 @@ config SND_OMAP_SOC_OMAP_TWL4030
->  =
+[snip]
 
->  config SND_OMAP_SOC_OMAP_ABE_TWL6040
->  	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
-> -	depends on TWL6040_CORE && SND_OMAP_SOC && (ARCH_OMAP4 || SOC_OMAP5 || =
-COMPILE_TEST)
-> +	depends on TWL6040_CORE && SND_OMAP_SOC
-> +	depends on ARCH_OMAP4 || (SOC_OMAP5 && MFD_PALMAS) || COMPILE_TEST
->  	select SND_OMAP_SOC_DMIC
->  	select SND_OMAP_SOC_MCPDM
->  	select SND_SOC_TWL6040
->  	select SND_SOC_DMIC
-> -	select COMMON_CLK_PALMAS if MFD_PALMAS
-> +	select COMMON_CLK_PALMAS if (SOC_OMAP5 && MFD_PALMAS)
->  	help
->  	  Say Y if you want to add support for SoC audio on OMAP boards using
->  	  ABE and twl6040 codec. This driver currently supports:
-> =
+> @@ -964,12 +969,13 @@ static void rcar_dmac_free_chan_resources(struct
+> dma_chan *chan) struct rcar_dmac *dmac = to_rcar_dmac(chan->device);
+>  	struct rcar_dmac_desc_page *page, *_page;
+>  	struct rcar_dmac_desc *desc;
+> +	unsigned long flags;
+>  	LIST_HEAD(list);
+> 
+>  	/* Protect against ISR */
+> -	spin_lock_irq(&rchan->lock);
+> +	spin_lock_irqsave(&rchan->lock, flags);
 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> =
+The .device_free_chan_resources() can't be called with interrupts disabled, so 
+we should be safe with spin_lock_irq() here. However, as the function isn't 
+called in a performance-critical path, I'm fine with spin_lock_irqsave() too.
 
+>  	rcar_dmac_chan_halt(rchan);
+> -	spin_unlock_irq(&rchan->lock);
+> +	spin_unlock_irqrestore(&rchan->lock, flags);
+> 
+>  	/* Now no new interrupts will occur */
+> 
+> @@ -1351,8 +1357,9 @@ static irqreturn_t rcar_dmac_isr_channel_thread(int
+> irq, void *dev) {
+>  	struct rcar_dmac_chan *chan = dev;
+>  	struct rcar_dmac_desc *desc;
+> +	unsigned long flags;
+> 
+> -	spin_lock_irq(&chan->lock);
+> +	spin_lock_irqsave(&chan->lock, flags);
 
+Isn't the threaded IRQ handler called in a thread with interrupts enabled by 
+definition ? spin_lock_irq() should thus be safe here. You could, however, 
+convince me that spin_lock_irqsave() won't make much of a difference 
+performance-wise, and would allow avoiding future similar bugs.
+ 
+>  	/* For cyclic transfers notify the user after every chunk. */
+>  	if (chan->desc.running && chan->desc.running->cyclic) {
+> @@ -1364,9 +1371,9 @@ static irqreturn_t rcar_dmac_isr_channel_thread(int
+> irq, void *dev) callback_param = desc->async_tx.callback_param;
+> 
+>  		if (callback) {
+> -			spin_unlock_irq(&chan->lock);
+> +			spin_unlock_irqrestore(&chan->lock, flags);
+>  			callback(callback_param);
+> -			spin_lock_irq(&chan->lock);
+> +			spin_lock_irqsave(&chan->lock, flags);
+>  		}
+>  	}
+> 
+> @@ -1381,20 +1388,20 @@ static irqreturn_t rcar_dmac_isr_channel_thread(int
+> irq, void *dev) list_del(&desc->node);
+> 
+>  		if (desc->async_tx.callback) {
+> -			spin_unlock_irq(&chan->lock);
+> +			spin_unlock_irqrestore(&chan->lock, flags);
+>  			/*
+>  			 * We own the only reference to this descriptor, we can
+>  			 * safely dereference it without holding the channel
+>  			 * lock.
+>  			 */
+>  			desc->async_tx.callback(desc->async_tx.callback_param);
+> -			spin_lock_irq(&chan->lock);
+> +			spin_lock_irqsave(&chan->lock, flags);
+>  		}
+> 
+>  		list_add_tail(&desc->node, &chan->desc.wait);
+>  	}
+> 
+> -	spin_unlock_irq(&chan->lock);
+> +	spin_unlock_irqrestore(&chan->lock, flags);
+> 
+>  	/* Recycle all acked descriptors. */
+>  	rcar_dmac_desc_recycle_acked(chan);
 
--- =
+-- 
+Regards,
 
-P=E9ter
+Laurent Pinchart
+
