@@ -1,91 +1,31 @@
-From: Jun Nie <jun.nie@linaro.org>
-Subject: [PATCH 2/2] dt: Add documentation for the ZTE I2S
-	controller
-Date: Wed, 20 May 2015 19:06:12 +0800
-Message-ID: <1432119972-6934-2-git-send-email-jun.nie@linaro.org>
-References: <1432119972-6934-1-git-send-email-jun.nie@linaro.org>
+From: "Jingoo Han" <jingoohan1@gmail.com>
+Subject: Re: [PATCH v3 06/17] video: lcd: add LoCoMo LCD driver
+Date: Wed, 20 May 2015 21:26:45 +0900
+Message-ID: <000001d092f8$42fc9aa0$c8f5cfe0$@com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 73B3B261737
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 13:06:49 +0200 (CEST)
-Received: by pabts4 with SMTP id ts4so63242992pab.3
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 04:06:48 -0700 (PDT)
-In-Reply-To: <1432119972-6934-1-git-send-email-jun.nie@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, Jun Nie <jun.nie@linaro.org>, zte-lt@lists.linaro.org
+Return-path: <linux-leds-owner@vger.kernel.org>
+Content-Language: ko
+Sender: linux-leds-owner@vger.kernel.org
+To: 'Dmitry Eremin-Solenikov' <dbaryshkov@gmail.com>, 'Lee Jones' <lee.jones@linaro.org>
+Cc: 'Russell King' <linux@arm.linux.org.uk>, 'Daniel Mack' <zonque@gmail.com>, 'Robert Jarzmik' <robert.jarzmik@free.fr>, 'Linus Walleij' <linus.walleij@linaro.org>, 'Alexandre Courbot' <acourbot@nvidia.com>, 'Wolfram Sang' <wsa@the-dreams.de>, 'Dmitry Torokhov' <dmitry.torokhov@gmail.com>, 'Bryan Wu' <cooloney@gmail.com>, 'Richard Purdie' <rpurdie@rpsys.net>, 'Samuel Ortiz' <sameo@linux.intel.com>, 'Mark Brown' <broonie@linaro.org>, 'Jean-Christophe PLAGNIOL-VILLARD' <plagnioj@jcrosoft.com>, 'Tomi Valkeinen' <tomi.valkeinen@ti.com>, 'Liam Girdwood' <liam.r.girdwood@linux.intel.com>, 'Andrea Adami' <andrea.adami@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-gpiol@vger.kernel.org, linux-input@vger.kernel.org, linux-leds@vger.kernel.org, linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the devicetree documentation for the ZTE
-zx296702 I2S audio controller.
+> LoCoMo has some special handling for TFT screens attached to Collie and
+> Poodle. Implement that as a separate driver.
+>
+> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 
-Signed-off-by: Jun Nie <jun.nie@linaro.org>
----
- .../devicetree/bindings/sound/zte,zx-i2s.txt       | 44 ++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+Acked-by: Jingoo Han <jingoohan1@gmail.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
-new file mode 100644
-index 0000000..7e5aa6f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
-@@ -0,0 +1,44 @@
-+ZTE ZX296702 I2S controller
-+
-+Required properties:
-+ - compatible : Must be "zte,zx296702-i2s"
-+ - reg : Must contain I2S core's registers location and length
-+ - clocks : Pairs of phandle and specifier referencing the controller's clocks.
-+ - clock-names: "tx" for the clock to the I2S interface.
-+ - dmas: Pairs of phandle and specifier for the DMA channel that is used by
-+   the core. The core expects two dma channels for transmit.
-+ - dma-names : Must be "tx" and "rx"
-+
-+For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
-+please check:
-+	* resource-names.txt
-+	* clock/clock-bindings.txt
-+	* dma/dma.txt
-+
-+Example:
-+	i2s0: i2s0@0b005000 {
-+		#sound-dai-cells = <0>;
-+		compatible = "zte,zx296702-i2s";
-+		reg = <0x0b005000 0x1000>;
-+		clocks = <&lsp0clk ZX296702_I2S0_DIV>;
-+		clock-names = "tx";
-+		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-+		dmas = <&dma 5>, <&dma 6>;
-+		dma-names = "tx", "rx";
-+		status = "okay";
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "zx296702_snd";
-+		simple-audio-card,format = "left_j";
-+		simple-audio-card,bitclock-master = <&sndcodec>;
-+		simple-audio-card,frame-master = <&sndcodec>;
-+		sndcpu: simple-audio-card,cpu {
-+			sound-dai = <&i2s0>;
-+		};
-+
-+		sndcodec: simple-audio-card,codec {
-+			sound-dai = <&acodec>;
-+		};
-+	};
--- 
-1.9.1
+Best regards,
+Jingoo Han
+
+> ---
+>  drivers/video/backlight/Kconfig      |  10 ++
+>  drivers/video/backlight/Makefile     |   1 +
+>  drivers/video/backlight/locomo_lcd.c | 285 +++++++++++++++++++++++++++++++++++
+>  3 files changed, 296 insertions(+)
+>  create mode 100644 drivers/video/backlight/locomo_lcd.c
