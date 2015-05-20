@@ -1,36 +1,22 @@
-From: Yomi Ogunwumi <abyomi0@gmail.com>
-Subject: Re: Issues and/or possible bugs in alsa
-Date: Tue, 19 May 2015 20:57:14 -0400
-Message-ID: <CACui-2nwb0CwoTADJiG8AA08zYhQi=+wmBy+zUB4NUE1Cyb9yw@mail.gmail.com>
-References: <CACui-2k8j3ZWtmvwiE3V5apuQ0g-dn=wN-h4miExDYLLR4diWA@mail.gmail.com>
- <54ED8466.7020102@gmail.com>
- <CAN8cciYnyLahS2gQ0g0vSaNj+xo=Tz9_FQ9L-WazOb1t5no_kA@mail.gmail.com>
- <54F1C10B.2050008@gmail.com> <s5hmw3ygjcx.wl-tiwai@suse.de>
- <CACui-2k_6R7SG2_o0SO+oLMNz-Lo7zpY6tuvOOYJ1eq7N056hg@mail.gmail.com>
- <CAN8ccia6_ZSdAtL3w4s4B0RYLnOXZK-LddpQi4LCjdHZrtJqfA@mail.gmail.com>
- <CACui-2ngDGDf3R-Jp0mxrYKrJQuWCS6msk-A3LdTk0n2LZCqTQ@mail.gmail.com>
- <CACui-2kLt+x6RieNZ05bFbs5veu7zy3m50MfurPCpPtBAwY07Q@mail.gmail.com>
- <CACui-2n2MTnA9DWzGdprfJ=bY+OjYMkBtFe7YQQnTf5BBtyk=Q@mail.gmail.com>
- <CAN8cciYc6ggpnOZydy4Mm_TsXo4c8SAN_cyutJ1FFeuiqxCEnw@mail.gmail.com>
- <CACui-2ndKUv=JPdDqQ9isctMhthEBL1hD_UJRy6GaONmfjkvTA@mail.gmail.com>
- <CAN8ccibNsvV5_TG3XCDOdTjkPSEd9aC1QjV1rrjz4NnidhbrDA@mail.gmail.com>
- <CACui-2kobAiBJB0=dd8_jhEGMkHzq1Rjd4cLM0Aus3CRyc9QgA@mail.gmail.com>
- <CAN8ccibAhwFmLLSq=KEu_oRzdgGzO+LRG+C=7ETTFXmM7qnfXQ@mail.gmail.com>
- <CACui-2kV+6gbH7fizttHBnRcuc7rsx5X2bmVpLQMB+wUAT-Wpg@mail.gmail.com>
- <CAN8ccibSwV5VojnNchLwvewanxP4DF5nXHzYVqXF5pkm4abZ6A@mail.gmail.com>
- <CACui-2nSTWM5XC=UeDNhjUpvJyna8Uo-qghGJv-XLVHL9n2Ldw@mail.gmail.com>
- <CACui-2njx_9T2ktPJdv_LtZ2n=OhttQZAvxUWoLz4b6fD-w+CQ@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Assert in pcm_params.c
+Date: Wed, 20 May 2015 10:21:14 +0800
+Message-ID: <CAN8cciaFFBp-wp08e5sRjqdsc3vPybU6Exr0SbkW3fi7uGmkzw@mail.gmail.com>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201505010836.47714.gineera@aspect135.co.uk>
+ <s5hbnhgzsh4.wl-tiwai@suse.de>
+ <201505192022.50591.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f48.google.com (mail-yh0-f48.google.com
- [209.85.213.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 14063260415
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 02:57:21 +0200 (CEST)
-Received: by yhda23 with SMTP id a23so9144034yhd.2
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 17:57:16 -0700 (PDT)
-In-Reply-To: <CACui-2njx_9T2ktPJdv_LtZ2n=OhttQZAvxUWoLz4b6fD-w+CQ@mail.gmail.com>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEB6F26043E
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 04:21:15 +0200 (CEST)
+Received: by oihb9 with SMTP id b9so25600069oih.3
+ for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 19:21:15 -0700 (PDT)
+In-Reply-To: <201505192022.50591.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -40,119 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-V2hhdCBleGFjdGx5IGFtIEkgY2hhbmdpbmcgaW4gaGRhX2phY2suYyA/CgogICAgc3dpdGNoKG5p
-ZCl7CiAgICAgY2FzZSAweDE4OgogICAgICAgICAgICAgdmFsID0gc25kX2hkYV9jb2RlY19yZWFk
-KGNvZGVjLCAweDIxLCAwLAogIEFDX1ZFUkJfR0VUX1BJTl9TRU5TRSwgMCk7CiAgICAgICAgICAg
-ICBicmVhazsKICAgICBjYXNlIDB4MjEKICAgICAgICAgICAgIHZhbCA9IHNuZF9oZGFfY29kZWNf
-cmVhZChjb2RlYywgMHgxOCwgMCwKICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwogICAgICAg
-ICAgICAgYnJlYWs7CiAgICAgZGVmYXVsdDoKICAgICAgICAgICB2YWwgPSBzbmRfaGRhX2NvZGVj
-X3JlYWQoY29kZWMsIG5pZCwgMCwKICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwogICAgICAg
-ICAgICAgIGJyZWFrOwogICAgIH0KCnNuZF9oZGFfY29kZWNfd3JpdGVfY2FjaGUoY29kZWMsIG5p
-ZCwgMCwKCkFDX1ZFUkJfU0VUX1VOU09MSUNJVEVEX0VOQUJMRSwKQUNfVVNSU1BfRU4gfCBqYWNr
-LT50YWcpOwoKCk9uIE1vbiwgTWF5IDExLCAyMDE1IGF0IDEwOjIyIEFNLCBZb21pIE9ndW53dW1p
-IDxhYnlvbWkwQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IFdoYXQgZXhhY3RseSBhbSBJIGNoYW5naW5n
-IGhlcmU/Cj4KPiBzd2l0Y2gobmlkKXsKPiAgICAgIGNhc2UgMHgxODoKPiAgICAgICAgICAgICAg
-dmFsID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCAweDIxLCAwLAo+ICAgQUNfVkVSQl9HRVRf
-UElOX1NFTlNFLCAwKTsKPiAgICAgICAgICAgICAgYnJlYWs7Cj4gICAgICBjYXNlIDB4MjEKPiAg
-ICAgICAgICAgICAgdmFsID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCAweDE4LCAwLAo+ICAg
-QUNfVkVSQl9HRVRfUElOX1NFTlNFLCAwKTsKPiAgICAgICAgICAgICAgYnJlYWs7Cj4gICAgICBk
-ZWZhdWx0Ogo+ICAgICAgICAgICAgdmFsID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCBuaWQs
-IDAsCj4gICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwo+ICAgICAgICAgICAgICAgYnJlYWs7
-Cj4gICAgICB9Cj4gT24gQXByIDEzLCAyMDE1IDk6MzYgUE0sICJZb21pIE9ndW53dW1pIiA8YWJ5
-b21pMEBnbWFpbC5jb20+IHdyb3RlOgo+Cj4+IEkgc2hvdWxkIGhhdmUgZWxhYm9yYXRlZCBhIGJp
-dCBtb3JlIG9uIHRoZSByZXN1bHQgb2YgdGhlIGxhc3QgY2FzZS4KPj4KPj4gTm8sIHdoZW4gSSBw
-bHVnIGluIHRoZSBoZWFkcGhvbmVzIGludG8gdGhlIE1pY3JvcGhvbmUgamFjaywgdGhlCj4+IGhl
-YWRwaG9uZXMgZG8gbm90IHdvcmsgYXQgYWxsLiAod2hpY2ggbWFrZXMgc2Vuc2UsIGJlY2F1c2Ug
-aXQncyBhIG1pYwo+PiBqYWNrLi4uaXQgd291bGQgYmUgZXhwZWN0aW5nIGEgbWljLCByaWdodD8p
-Cj4+Cj4+IFdoaWxlIGFsc2FtaXhlciB3aWxsIGNvcnJlY3RseSByYWlzZSB0aGUgaGVhZHBob25l
-IG91dHB1dCBhbmQgbXV0ZSB0aGUKPj4gc3BlYWtlcnMgKHdoZW4gSSBwbHVnZ2VkIHRoZSBoZWFk
-cGhvbmVzIGludG8gdGhlIG1pYyBqYWNrKSDigJQgbm8gc291bmQgY29tZXMKPj4gdGhyb3VnaCB0
-aGUgaGVhZHBob25lcy4KPj4KPj4gSnVzdCB0byBhdm9pZCBhbnkgcG9zc2libGUgY29uZnVzaW9u
-Li4uCj4+Cj4+IEFyZSB0aG9zZSBtb3JlIGNoYW5nZXMgSSBzaG91bGQgbWFrZSB0byB0aGUgY29k
-ZT8KPj4KPj4gSGVhZHBob25lcyB1bnBsdWdnZWQuCj4+IFBpbiAweDE4IChCbGFjayBNaWMsIFJp
-Z2h0IHNpZGUpOiBwcmVzZW50ID0gTm8KPj4gUGluIDB4MjEgKEJsYWNrIEhlYWRwaG9uZSwgUmln
-aHQgc2lkZSk6IHByZXNlbnQgPSBObwo+Pgo+PiBIZWFkcGhvbmVzIHBsdWdnZWQgaW50byBIZWFk
-cGhvbmUgcG9ydC4KPj4gUGluIDB4MTggKEJsYWNrIE1pYywgUmlnaHQgc2lkZSk6IHByZXNlbnQg
-PSBZZXMKPj4gUGluIDB4MjEgKEJsYWNrIEhlYWRwaG9uZSwgUmlnaHQgc2lkZSk6IHByZXNlbnQg
-PSBObwo+Pgo+PiBIZWFkcGhvbmVzIHBsdWdnZWQgaW50byBNaWMgcG9ydC4KPj4gUGluIDB4MTgg
-KEJsYWNrIE1pYywgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBZZXMKPj4gUGluIDB4MjEgKEJsYWNr
-IEhlYWRwaG9uZSwgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBZZXMKPj4KPj4gT24gTW9uLCBBcHIg
-MTMsIDIwMTUgYXQgOToyMCBQTSwgUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWls
-LmNvbQo+PiA+IHdyb3RlOgo+Pgo+Pj4gPgo+Pj4gPiBIZWFkcGhvbmVzIHVucGx1Z2dlZC4KPj4+
-ID4gWzExOjEwOjQ0IHwgeW9taUB4YW5hIH4vc29mdHdhcmUvYWxzYS10b29scy9oZGFqYWNrc2Vu
-c2V0ZXN0XSDCuyBzdWRvCj4+PiAuL2hkYWphY2tzZW5zZXRlc3QgLWMgMQo+Pj4gPiBbc3Vkb10g
-cGFzc3dvcmQgZm9yIHlvbWk6Cj4+PiA+IFBpbiAweDE4IChCbGFjayBNaWMsIFJpZ2h0IHNpZGUp
-OiBwcmVzZW50ID0gTm8KPj4+ID4gUGluIDB4MjEgKEJsYWNrIEhlYWRwaG9uZSwgUmlnaHQgc2lk
-ZSk6IHByZXNlbnQgPSBObwo+Pj4gPgo+Pj4gPiBIZWFkcGhvbmVzIHBsdWdnZWQgaW4uCj4+PiA+
-IFsxMToxMDo1MCB8IHlvbWlAeGFuYSB+L3NvZnR3YXJlL2Fsc2EtdG9vbHMvaGRhamFja3NlbnNl
-dGVzdF0gwrsgc3Vkbwo+Pj4gLi9oZGFqYWNrc2Vuc2V0ZXN0IC1jIDEKPj4+ID4gUGluIDB4MTgg
-KEJsYWNrIE1pYywgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBZZXMKPj4+ID4gUGluIDB4MjEgKEJs
-YWNrIEhlYWRwaG9uZSwgUmlnaHQgc2lkZSk6IHByZXNlbnQgPSBObwo+Pj4gPgo+Pj4gPiBUaGF0
-J3Mgb2RkLiBJdCBzZWVtcyB0byBkZXRlY3QgbXkgaGVhZHBob25lcyBhcyBiZWluZyBwbHVnZ2Vk
-IGludG8gdGhlCj4+PiBNaWMgamFjay4gSXQgaXNuJ3QuIEl0IGlzIHBsdWdnZWQgaW50byB0aGUg
-aGVhZHBob25lIGphY2suIEkgY2hlY2tlZC4KPj4+ID4gSGFoYS4gSWYgSSBwbHVnIG15IGhlYWRw
-aG9uZXMgaW50byB0aGUgTWljIEphY2suLi5hbHNhbWl4ZXIgY29ycmVjdGx5Cj4+PiBtdXRlcyB0
-aGUgc3BlYWtlcnMgYW5kIHJhaXNlcyB0aGUgdm9sdW1lIG9mIHRoZSBoZWFkcGhvbmVzIG91dHB1
-dC4KPj4+ID4KPj4+ID4gSGVhZHBob25lcyBwbHVnZ2VkIGludG8gTWljIEphY2suCj4+PiA+IFsx
-MToxMTowOCB8IHlvbWlAeGFuYSB+L3NvZnR3YXJlL2Fsc2EtdG9vbHMvaGRhamFja3NlbnNldGVz
-dF0gwrsgc3Vkbwo+Pj4gLi9oZGFqYWNrc2Vuc2V0ZXN0IC1jIDEKPj4+ID4gW3N1ZG9dIHBhc3N3
-b3JkIGZvciB5b21pOgo+Pj4gPiBQaW4gMHgxOCAoQmxhY2sgTWljLCBSaWdodCBzaWRlKTogcHJl
-c2VudCA9IFllcwo+Pj4gPiBQaW4gMHgyMSAoQmxhY2sgSGVhZHBob25lLCBSaWdodCBzaWRlKTog
-cHJlc2VudCA9IFllcwo+Pj4KPj4+IERvIHlvdSBtZWFuIGhlYWRwaG9uZSBhbmQgbWljIHdvcmsg
-YXMgZXhwZWN0ZWQgb25seSB3aGVuIGJvdGggYXJlCj4+PiBwbHVnZ2VkIGFuZCBhbHdheXMgZmFp
-bCB3aGVuIGhlYWRwaG9uZSBvciBtaWMgaXMgcGx1Z2dlZCA/Cj4+Pgo+Pj4gTG9vayAgbGlrZSBq
-YWNrIHNlbnNlIGNpcmN1aXQgb2YgaHAgYW5kIG1pYyBhcmUgc3dhcHBlZAo+Pj4KPj4+Cj4+PiBo
-dHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC5n
-aXQvdHJlZS9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmMKPj4+Cj4+PiBUaGUgY3VycmVudCBpbXBs
-ZW1lbnRhdGlvbiBhc3N1bWUga2N0bCByZXR1cm4gamFjayBzdGF0ZSBvZiAgdGhlCj4+PiBjb3Jy
-ZXNwb25kaW5nIHBpbiBjb21wbGV4Cj4+Pgo+Pj4gQ2FuIHR3byBwaW5zIHVzZSB0aGUgb3RoZXIg
-cGluIGFzIHRoZSBnYXRlZCBqYWNrIGF0IHNhbWUgdGltZSA/Cj4+PiBzbmRfaGRhX2phY2tfc2V0
-X2dhdGluZ19qYWNrKCkKPj4+Cj4+PiBBTFNBOiBoZGEgLSBBbGxvdyBqYWNrIHN0YXRlIHRvIGRl
-cGVuZCBvbiBhbm90aGVyIGphY2sKPj4+Cj4+Pgo+Pj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9j
-Z2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0L2NvbW1pdC9zb3VuZC9wY2kvaGRh
-L2hkYV9qYWNrLmM/aWQ9MDYxOWJhOGMxN2IxMjFlZjAyNzNiZTE4MTE5ODY1OWIxN2Q4NDI0Nwo+
-Pj4KPj4+IHlvdXIgY2FzZSBzZWVtIG5vdCBqdXN0IG5lZWQgdG8gIHN3YXAgdGhlIHJlc3VsdCBy
-ZXR1cm4gYnkKPj4+IHJlYWRfcGluX3NlbnNlKCkKPj4+Cj4+PiAgICAgIHN3aXRjaChuaWQpewo+
-Pj4gICAgICBjYXNlIDB4MTg6Cj4+PiAgICAgICAgICAgICAgdmFsID0gc25kX2hkYV9jb2RlY19y
-ZWFkKGNvZGVjLCAweDIxLCAwLAo+Pj4gICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwo+Pj4g
-ICAgICAgICAgICAgIGJyZWFrOwo+Pj4gICAgICBjYXNlIDB4MjEKPj4+ICAgICAgICAgICAgICB2
-YWwgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIDB4MTgsIDAsCj4+PiAgIEFDX1ZFUkJfR0VU
-X1BJTl9TRU5TRSwgMCk7Cj4+PiAgICAgICAgICAgICAgYnJlYWs7Cj4+PiAgICAgIGRlZmF1bHQ6
-Cj4+PiAgICAgICAgICAgIHZhbCA9IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywgbmlkLCAwLAo+
-Pj4gICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwo+Pj4gICAgICAgICAgICAgICBicmVhazsK
-Pj4+ICAgICAgfQo+Pj4KPj4+IGJ1dCBhbHNvIHN3YXAgdGhlIHVuc29saWNpdGVkIGV2ZW50IHRh
-ZyBvbiB0aG9zZSB0d28gcGluIGNvbXBsZXggc2luY2UKPj4+IHRoZSBkcml2ZXIgdXNlIGphY2st
-PnRhZyB0byBkZXRlcm1pbmUgcGluIGNvbXBsZXgKPj4+Cj4+PiBzbmRfaGRhX2NvZGVjX3dyaXRl
-X2NhY2hlKGNvZGVjLCBuaWQsIDAsCj4+PiBBQ19WRVJCX1NFVF9VTlNPTElDSVRFRF9FTkFCTEUs
-Cj4+PiBBQ19VU1JTUF9FTiB8IGphY2stPnRhZyk7Cj4+Pgo+Pj4gTm9kZSAweDE4IFtQaW4gQ29t
-cGxleF0gd2NhcHMgMHg0MDAxOGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAo+Pj4gICBDb250cm9s
-OiBuYW1lPSJNaWMgQm9vc3QgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKPj4+ICAgICBDb250
-cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKPj4+ICAgQ29udHJvbDogbmFtZT0i
-TWljIEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAo+Pj4gICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAs
-IG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDJmLCBtdXRlPTAKPj4+ICAgQW1wLUluIHZhbHM6ICBb
-MHgwMSAweDAxXQo+Pj4gICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3Rl
-cHNpemU9MHgwMCwgbXV0ZT0xCj4+PiAgIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCj4+PiAg
-IFBpbmNhcCAweDAwMDAxNzM0OiBJTiBPVVQgRGV0ZWN0Cj4+PiAgICAgVnJlZiBjYXBzOiBISVog
-NTAgR1JEIDgwCj4+PiAgIFBpbiBEZWZhdWx0IDB4MDRhMTEwMzA6IFtKYWNrXSBNaWMgYXQgRXh0
-IFJpZ2h0Cj4+PiAgICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawo+Pj4gICAgIERlZkFzc29j
-aWF0aW9uID0gMHgzLCBTZXF1ZW5jZSA9IDB4MAo+Pj4gICBQaW4tY3RsczogMHgyNDogSU4gVlJF
-Rl84MAo+Pj4gICBVbnNvbGljaXRlZDogdGFnPTAyLCBlbmFibGVkPTEKPj4+ICAgQ29ubmVjdGlv
-bjogMQo+Pj4gICAgICAweDBkCj4+Pgo+Pj4gTm9kZSAweDIxIFtQaW4gQ29tcGxleF0gd2NhcHMg
-MHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0Cj4+PiAgIENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQ
-bGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAo+Pj4gICAgIENvbnRyb2xBbXA6IGNo
-cz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKPj4+ICAgQ29udHJvbDogbmFtZT0iSGVhZHBob25l
-IEphY2siLCBpbmRleD0wLCBkZXZpY2U9MAo+Pj4gICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBu
-c3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCj4+PiAgIEFtcC1PdXQgdmFsczogIFsw
-eDgwIDB4ODBdCj4+PiAgIFBpbmNhcCAweDAwMDAwMDFjOiBPVVQgSFAgRGV0ZWN0Cj4+PiAgIFBp
-biBEZWZhdWx0IDB4MDQyMTEwMjA6IFtKYWNrXSBIUCBPdXQgYXQgRXh0IFJpZ2h0Cj4+PiAgICAg
-Q29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawo+Pj4gICAgIERlZkFzc29jaWF0aW9uID0gMHgyLCBT
-ZXF1ZW5jZSA9IDB4MAo+Pj4gICBQaW4tY3RsczogMHhjMDogT1VUIEhQCj4+PiAgIFVuc29saWNp
-dGVkOiB0YWc9MDEsIGVuYWJsZWQ9MQo+Pj4gICBDb25uZWN0aW9uOiAyCj4+PiAgICAgIDB4MGMq
-IDB4MGRwCj4+Pgo+Pgo+Pgo+Pgo+PiAtLQo+PiAqWW9taSoKPj4KPgoKCi0tIAoqWW9taSoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> > > A minimal self-contained demo program ('test-format') has been
+developed
+> > > and is attached, that demonstrates the issue 100% on the reporters
+> > > machine (HDA-Intel, 6-ch I believe).  The output is:
+> > >
+> > > root@Xeon:/home/patest# ./test-format
+> > > Testing device front
+> > > Num channels 6
+> > > Testing rate: 22050   Result:...Invalid Sample Rate
+> > > Testing rate: 32000   Result:...Invalid Sample Rate
+> > > test-format: pcm_params.c:2249: snd1_pcm_hw_params_slave: Assertion
+`err
+> > > >= 0' failed.
+> > > Testing rate: 44100   Aborted
+> > >
+> > > Alsa-info is at:
+> > >
+> > >
+http://www.alsa-project.org/db/?f=19dfeee29f73007e61a00a8fabe3c958f7cb8e8
+> > >7
+> > >
+
+00:1b.0 0403: 8086:269a (rev 09)
+Subsystem: 8086:0419
+
+{ PCI_DEVICE(0x8086, 0x269a),
+  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=103884a351a221553095c509a1dbbbf7d4fd9b05
+
+#define AZX_DCAPS_INTEL_ICH \
+(AZX_DCAPS_OLD_SSYNC | AZX_DCAPS_NO_ALIGN_BUFSIZE)
+
+Only AZX_DCAPS_INTEL_ICH use AZX_DCAPS_NO_ALIGN_BUFSIZE
+
+> > > This apparently happens with or without Pulseaudio running, with just
+the
+> > > single 44100 rate, and also with surround devices.  Also, on all
+current
+> > > Debian and Ubuntu - we have focused on Jessie.
+> > >
+> > > I do not have a machine with similar hardware, so cannot duplicate the
+> > > results.
+> > >
+> > > Any comments, ideas etc would be appreciated.
+> >
+> > I also can't reproduce this.  So this must be pretty specific to the
+> > setup.
+> >
+> > Could you give the exact condition to trigger the problem?  Also, this
+> > happens certainly with the latest alsa-lib?
+>
+> Thanks for taking a look.  Just compiling and running that test program,
+on
+> the reporter's machine, which has some sort of multi-channel HDA-Intel, is
+> 100% reproducible. The Alsa-lib must be the one provided by Debian Jessie
+> (which was released 25.4.2015); 1.0.28 I think.  Does the Alsa-info give
+> enough details - I can ask any specific questions.
+>
+
+snd_hda_prealloc_size may affect the result
+
+when your program let alsa lib to determine those buffer size, period and
+period size , snd_pcm_hw_params return error on 6 channels for some hda
+controllers
+
+Your program  return error when using "hw" instead of  assert  when using
+"front" with 6 channels
