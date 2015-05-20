@@ -1,48 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: fix up SND_OMAP_SOC_OMAP_ABE_TWL6040
- dependency, again
-Date: Wed, 20 May 2015 19:06:36 +0100
-Message-ID: <20150520180636.GK21577@sirena.org.uk>
-References: <3413182.qcoNiOhonF@wuerfel>
+Subject: Re: [PATCH] SoC: sta32x: use devm_gpiod_get_optional
+ for optional reset gpio
+Date: Wed, 20 May 2015 19:08:36 +0100
+Message-ID: <20150520180836.GL21577@sirena.org.uk>
+References: <1432018467-5497-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="M0YLxmUXciMpOLPE"
-Return-path: <linux-kbuild-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <3413182.qcoNiOhonF@wuerfel>
-Sender: linux-kbuild-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, linux-omap@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1165960914131284312=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3508F265474
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 20:08:53 +0200 (CEST)
+In-Reply-To: <1432018467-5497-1-git-send-email-u.kleine-koenig@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: kernel@pengutronix.de, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Thomas =?iso-8859-1?Q?Niederpr=FCm?= <niederp@physik.uni-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---M0YLxmUXciMpOLPE
-Content-Type: text/plain; charset=us-ascii
+--===============1165960914131284312==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5VuzLDXibKSJvVYD"
 Content-Disposition: inline
 
-On Tue, May 19, 2015 at 02:47:32PM +0200, Arnd Bergmann wrote:
-> I tried to fix this before and submitted a working patch, but after
-> some discussion we came up with what seemed to be a nicer solution,
-> resulting in commit 3d4cf65e2d ("ASoC: omap: fix up
-> SND_OMAP_SOC_OMAP_ABE_TWL6040 dependency"). Unfortunately, that
-> version was incomplete, and we still get this build error:
 
-Applied, thanks.
+--5VuzLDXibKSJvVYD
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---M0YLxmUXciMpOLPE
+On Tue, May 19, 2015 at 08:54:27AM +0200, Uwe Kleine-K=F6nig wrote:
+> Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
+> which appeared in v3.17-rc1, the gpiod_get* functions take an additional
+> parameter that allows to specify direction and initial value for output.
+
+Applied, thanks.  Please use subject liens reflecting the style for the
+subsystem.
+
+--5VuzLDXibKSJvVYD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXM0sAAoJECTWi3JdVIfQNNUH/1rskV4DSNYxSAmBID6bYuSg
-SP08jIS1KN3Z3KW8rvTjw03DWl6SI40dySKZa+1gMJ8omn7Jpsa9VorfjBMQgRnZ
-LjeoGuJVCa1x647sglYqpIgWxnRcGsVqzECBOcmIQnEiYIWwFcBVV4Jmeh218NgF
-n/3/cwNC12fO+YIkhtoraxvBgcVjNWk60d2JaLUR/h0FGlyw+6fZTHr2PUxuDJAe
-HcoBXQzdoahj8+63VrelM6RpUS+O7pX0Ivu+ILHEy8rDqr8zitRuz7n6SoDcz30i
-xIhGUmAoet8QCIhFjFjH3nhXNDthlJpCqWVVUnJjeb9X24CrCER91kOAGVACLhQ=
-=mhao
+iQEcBAEBCAAGBQJVXM2jAAoJECTWi3JdVIfQvuoH/j0854EkhqemcuConSZUYL/q
+h8YjqbpUh4nFBEkzP/CKmHoLw6mWq5V/gpK0Kos/0jDkncngbXwn73jlRqbbNCTf
+wWp1hYE2JkSFlT9LybuWlFOHq8uFqTl9DbXiW/UNwhPDIVQgPhqdkrqMolCZrnGT
+gWelhiAHwW281grBaPS7Kg4OX3U30xw+JNoAaVCMnq0H3BJ3sL5Mka7Q6M4VEltP
+xj6JlgfOozI39v0HRreGYckb+AeMJDUhy82ehFTunhjNxBhaMD3BWHAXTjW0OBpW
+/i2ZvMwHFB0Nt/5nFdR9U0MGHxuQ0mZ9dny8TkiOnPu6MjpUL8AaVuuGtJ49Q5A=
+=hZI5
 -----END PGP SIGNATURE-----
 
---M0YLxmUXciMpOLPE--
+--5VuzLDXibKSJvVYD--
+
+--===============1165960914131284312==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1165960914131284312==--
