@@ -1,47 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rx51: use flags argument of devm_gpiod_get to set
- direction
-Date: Wed, 20 May 2015 19:09:05 +0100
-Message-ID: <20150520180905.GN21577@sirena.org.uk>
-References: <1432021688-25830-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] SoC: max98357a: use flags argument of
+ devm_gpiod_get to set direction
+Date: Wed, 20 May 2015 19:08:57 +0100
+Message-ID: <20150520180857.GM21577@sirena.org.uk>
+References: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ggdAeHltlv4tpqCr"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1432021688-25830-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0047179041756481735=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C51C5265474
+ for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 20:09:05 +0200 (CEST)
+In-Reply-To: <1432018689-7124-1-git-send-email-u.kleine-koenig@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Sebastian Reichel <sre@kernel.org>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>
+Cc: Kenneth Westfield <kwestfie@codeaurora.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 
---ggdAeHltlv4tpqCr
+--===============0047179041756481735==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oiL9LJXJsdjS5rzq"
+Content-Disposition: inline
+
+
+--oiL9LJXJsdjS5rzq
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 19, 2015 at 09:48:08AM +0200, Uwe Kleine-K=F6nig wrote:
+On Tue, May 19, 2015 at 08:58:09AM +0200, Uwe Kleine-K=F6nig wrote:
 > Since 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions)
 > which appeared in v3.17-rc1, the gpiod_get* functions take an additional
 > parameter that allows to specify direction and initial value for output.
 
-Applied, thanks.
+Applied, thanks.  Please use subject lines reflecting the style for the
+subsystem.
 
---ggdAeHltlv4tpqCr
+--oiL9LJXJsdjS5rzq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXM3AAAoJECTWi3JdVIfQQJkH/1/9MWT5R+xYmi8/dHcNJF1T
-3xWVgsLz2n1s0PP2iOulH+AFTHDB9NkvUgUxY+dfjIS74c2U0m6QARPSoyHvI8eM
-lrOt2lHnj9X2U+Wp+wqnzOfVdLLiF9ON3PSnUE3Dw92/JzIAJD9v6kRzkYsDvFX3
-1VVQxx5b+CfHlMN7GxDbqZ1uI6nMZjAipIS83KBqrQPMDVg0MhmHsmu69ICUpKFj
-T3ISgP7GUBqTQLOF0/2FKFJdfVLEym4VG0ELnJR3EODRk40hP8CVqp5A03aHYMFm
-01HfJ+7HtoxXG3st7kVqrPjOZPrxtXr3MSuXDNX5OVN4hkDAjmp8m3xMqLO4BqY=
-=YKvu
+iQEcBAEBCAAGBQJVXM24AAoJECTWi3JdVIfQXa8H/2IzIii63nw/q9pizYz67cfH
+iMhTjc8zGGcZMtYPo+9bI0Rsfbfope5Rw1nx0qUkjRwD1j/hoLPk5Frj27F+1nbX
+AC5MhiNGFJyJDu4tCS5uGw27sAm/3sjYQyg9n0wmqhQmvKe0TGUmjy5Y9jrls2ZZ
+WwVksiBIil0hBmJydNgKfY//tD5luXU5xE8FnWz0hN2KPxHkdjYzzwboEGBXlANf
+BV8irdDf9+X3+VH3rW2amYwqR2K5gEGosiiUw98n0uWWGzSMf9uZMTPt2rveEGoR
+JVFofHolf3Nq/mtxj5kh/Yo0VWo9xo8LWqhI4rr3mZ0F1OMsOX8X/zxIsQgaeGE=
+=RBoY
 -----END PGP SIGNATURE-----
 
---ggdAeHltlv4tpqCr--
+--oiL9LJXJsdjS5rzq--
+
+--===============0047179041756481735==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0047179041756481735==--
