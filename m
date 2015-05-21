@@ -1,45 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: skip legacy dai naming if dai driver has all the
- information
-Date: Thu, 21 May 2015 22:22:22 +0100
-Message-ID: <20150521212222.GQ21577@sirena.org.uk>
-References: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: qcom: remove incorrect dependencies
+Date: Thu, 21 May 2015 23:23:14 +0200
+Message-ID: <8811360.XmVQbMhHJj@wuerfel>
+References: <2324031.cqS0mEEEhQ@wuerfel> <20150521205952.GA31005@kwestfie-linux.qualcomm.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HlZi+g8Ywt2nzGP6"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20150521205952.GA31005@kwestfie-linux.qualcomm.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Kenneth Westfield <kwestfie@codeaurora.org>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday 21 May 2015 14:00:00 Kenneth Westfield wrote:
+> > diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> > index 5f58e4f1bca9..b07f183fc47f 100644
+> > --- a/sound/soc/qcom/Kconfig
+> > +++ b/sound/soc/qcom/Kconfig
+> > @@ -6,12 +6,10 @@ config SND_SOC_QCOM
+> >  
+> >  config SND_SOC_LPASS_CPU
+> >       tristate
+> > -     depends on SND_SOC_QCOM
+> 
+> Rather than remove the dependency (which I would like to keep), would
+> the following change work for SND_SOC_LPASS_CPU and
+> SND_SOC_LPASS_PLATFORM?
+> -       depends on SND_SOC_QCOM
+> +       depends on SND_SOC_QCOM || COMPILE_TEST
+> 
+> If so, I will submit a patch (I know this has been applied already) on
+> top of this one.
+> 
 
---HlZi+g8Ywt2nzGP6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That would have the same effect, but what is the point? Do you plan
+to make these options user-visible in the future?
 
-On Fri, May 15, 2015 at 10:38:27AM +0100, Srinivas Kandagatla wrote:
-> Original issue is that the id field in the dai is not same as the id
-> in dai_driver when dai driver count == 1. This is due to the legacy
-
-Applied, thanks.
-
---HlZi+g8Ywt2nzGP6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVXkyNAAoJECTWi3JdVIfQtpgH/iqSHq5p7o1Wj2tXxpL9qwf9
-GW4hFcH5zb6xAq0frB9e5Iv7B66MVmhdIxih7X3xpcO4oKoKR+yomEllVjmA0cQf
-c+242qFPOp7LTuo0x6NeLQHSMcUS8MCO0GSiJh+aPFz/7OoRDzDfUfzh1JBo654Y
-U9NesYY4FQLC/6OzctpDU+MCQw1P+sVNPTPKjPATn4uREW7HVW5UESmQZPMMHjhW
-PfCZRG86qnFQExNH5y3Cfhx3wpOVUsOaKwzU4MV3I3qbz9U3Vk/Zl+ORfZH6LPWn
-G61e7R5swBUEWVFbhjRzoQ6VZjq0ZHvQQCtqvcfidUtXlee3NVKFnmHuxIC3b5I=
-=LT4C
------END PGP SIGNATURE-----
-
---HlZi+g8Ywt2nzGP6--
+	Arnd
