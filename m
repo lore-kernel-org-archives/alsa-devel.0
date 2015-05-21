@@ -1,70 +1,63 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mop500_ab8500: Add a NULL pointer
- check in mop500_ab8500_machine_init()
-Date: Thu, 21 May 2015 12:05:55 +0100
-Message-ID: <20150521110555.GY21577@sirena.org.uk>
-References: <1432097454-3643-1-git-send-email-rajan.vaja@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: rockchip: add rockchip machine
+ driver
+Date: Thu, 21 May 2015 12:10:28 +0100
+Message-ID: <20150521111028.GZ21577@sirena.org.uk>
+References: <1431422797-31903-1-git-send-email-zhengxing@rock-chips.com>
+ <1431422797-31903-2-git-send-email-zhengxing@rock-chips.com>
+ <20150512192215.GZ3066@sirena.org.uk>
+ <55535035.5070608@rock-chips.com>
+ <20150513164250.GB2761@sirena.org.uk>
+ <CAEUnVG5+PqhkZ4TBMnfdbUr66-EaLVGDEewJ_=XZnfbvBEn13w@mail.gmail.com>
+ <CAEUnVG5nkagx7CZC3t=-oOAyXOBaxxVynBxaGMf0NJpfr9ZVbA@mail.gmail.com>
+ <555659DB.9010204@metafoo.de>
+ <20150519111602.GG2761@sirena.org.uk>
+ <CAEUnVG6QLtV3AXjdPAp5mYDTnmNVsyLfYQmLykeLMd-KgnX+5A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8850962487526770940=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 287142658DF
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 13:06:09 +0200 (CEST)
-In-Reply-To: <1432097454-3643-1-git-send-email-rajan.vaja@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rajan Vaja <rajan.vaja@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1RfOVxRbNnn9f8MI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAEUnVG6QLtV3AXjdPAp5mYDTnmNVsyLfYQmLykeLMd-KgnX+5A@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, zhengxing <zhengxing@rock-chips.com>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Douglas Anderson <dianders@chromium.org>, Xing Zheng <acgzxing@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Sonny Rao <sonnyrao@chromium.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8850962487526770940==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TuzloVs6SlI5NjIZ"
-Content-Disposition: inline
-
-
---TuzloVs6SlI5NjIZ
+--1RfOVxRbNnn9f8MI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 20, 2015 at 10:20:54AM +0530, Rajan Vaja wrote:
-> Avoid possible crash (NULL pointer dereference) by making
-> sure that dem_kzalloc() is successful.
+On Tue, May 19, 2015 at 09:37:58AM -0700, Dylan Reid wrote:
 
-Applied, thanks.
+> Can the jacks can each be an aux_dev?  The jack driver would create
+> the jack at probe time and register it with the card in aux_dev->init.
+> cht_bsw_max98090_ti.c is already doing something similar, although all
+> contained in the machine driver.
 
---TuzloVs6SlI5NjIZ
+Yes, that's just a CODEC driver registered without any DAIs connected so
+it'd just be another CODEC driver.
+
+> Then simple-card can have an optional property to specify aux devs.  A
+> GPIO jack device could handle simple switch-based jack detection.
+
+That's useful anyway for external headphone/speaker drivers.
+
+--1RfOVxRbNnn9f8MI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXbwSAAoJECTWi3JdVIfQtvoH/1BDLHNKc/p0+xjguvlLAG0Z
-X33kR5/a1Hfnu3Fa3FTVNbCgG0SwdY/vT+sJ9+a94D9nDmhJ6PEnVbo/xJ2faJuk
-PFvR9TJI9mXm7sXXuAaysIr8HISqFWiJrFBBukttwXxAigFWrUJlgIKgt4VhAnv0
-a3v12oS48E5lttm8veRZE94WezpPj+b7DPwO1+x6OW+ATd/54qQT7dGVnDGUFnfB
-989o6+PNIXHtSC7S1oVE50VDJKtVCWnjn0DU7RWx/H+Bsme30UfBrNls7xXjhrKf
-sG+y0o0V8L5aKPGgYl0YLMpdrS7YL5cHS5Na/aUzxOahM/sztkz37y8JdOvKRIc=
-=Fnj3
+iQEcBAEBCAAGBQJVXb0jAAoJECTWi3JdVIfQJUYH+gO3w1Ghdn1mUnB5DC2vOhgx
+9uMgzaWOjYWjLQA1oFtQp59OXnD7bYg981hLDLea9QIHvm/rZ/IGyWcG/+SpSbPG
+cebVsl3tdyH7aoBawRQHV4Xp/AfXcvg9Vcn18LNm0ADGkuVETSKk1LP5BAgPZCiw
+HpCU+ObmTS3qFStJRyE/ah0NnvULI32wJBAWHYaklOK+cHrzi6zatGiipJ4+V0rM
+TKHW7WO0Pmj+2vALvgWBwCEcaiOdaDTOngiB5hWiOkg9YmrUCx5zSlRQoI+ldYgm
+qRPm3KLA8tws2bDqHB8o9xzBIDIGD6y6zdm6GmFtQes0u9g+plUpmlY7to7WLSI=
+=avT0
 -----END PGP SIGNATURE-----
 
---TuzloVs6SlI5NjIZ--
-
---===============8850962487526770940==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8850962487526770940==--
+--1RfOVxRbNnn9f8MI--
