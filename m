@@ -1,28 +1,66 @@
-From: Matthew Garrett <matthew.garrett@coreos.com>
-Subject: Re: [PATCH 2/4] acpi: allow for an override to set _REV
-Date: Thu, 21 May 2015 11:10:20 -0700
-Message-ID: <CAPeXnHv07HkvcHrYFmZMr8OTp7U7F=k_k=LPYnUtp89iPn2d2Q@mail.gmail.com>
-References: <20150517174144.GA17503@light.dominikbrodowski.net>
-	<3695901.X9t2lWziuY@vostro.rjw.lan>
-	<20150518044711.GA3401@air.dominikbrodowski.net>
-	<6154326.X9FC8ZVDIy@vostro.rjw.lan>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Assert in pcm_params.c
+Date: Thu, 21 May 2015 19:10:30 +0100
+Message-ID: <201505211910.30903.gineera@aspect135.co.uk>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201505211656.04334.gineera@aspect135.co.uk> <s5hpp5t4zae.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <6154326.X9FC8ZVDIy@vostro.rjw.lan>
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>, linux-acpi@vger.kernel.org, Mario Limonciello <mario_limonciello@dell.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from 3.array2.smtp.34sp.com (3.array2.smtp.34sp.com [46.183.9.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9657626168C
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 20:10:12 +0200 (CEST)
+Received: from smtpauth1.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
+ by 3.array2.smtp.34sp.com (Postfix) with ESMTP id 7D4F66C6E9
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 19:10:08 +0100 (BST)
+In-Reply-To: <s5hpp5t4zae.wl-tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 20, 2015 at 6:24 PM, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+On Thursday 21 May 2015 18:26, Takashi Iwai wrote:
+> At Thu, 21 May 2015 16:56:04 +0100,
+>
+> Alan Horstmann wrote:
+> > On Wednesday 20 May 2015 07:36, Takashi Iwai wrote:
 
-> Which doesn't explain why we need a config option per quirk.  To me, such config
-> options don't add any value, because (a) everyone will set them anyway and (b)
-> removing the quirks from the source is trivial if needed.
+<snip>
 
-We'd disable this quirk in Fedora the moment jack detection works,
-because we've got the userspace to handle it and using I2S is
-preferable to using HDA - but in doing so we might break battery
-detection on the other Dell that's playing _REV tricks. This seems
-like a suboptimal choice to have to make.
+> > > In anyway, the fix would be simple, the patch like below.  Could you
+> > > check whether it actually fixes your issue?
+> >
+> > I've had a positive confirmation that the patch removing the asserts does
+> > fix the 'crash' in the reporter's system.  So instead it is simply a
+> > failure of the snd_pcm_hw_params() call, which ultimately can be handled
+> > in the users code.
+>
+> OK, I pushed the fix to git repo now.
+
+Is this something that should go to stable so it is more likely to be 
+backported to slower moving distros, eg Debian Jessie, or is that not how it 
+works?
+
+> > I do wonder (as does Raymond) why this fails.  Is 6-chans expected to
+> > fail on 'front'?  In particular the earlier setting of
+> > channels/rate/format does not fail?  Perhaps I will ask for RULES_DEBUG
+> > enabled?
+>
+> Likely the alignment issue: 6 channels can't fit always with 128 byte
+> constraint that are required by some hardware chips.
+
+Hmm, it is only an issue with the pcms like front, surround though, not hw?
+
+Regards
+
+Alan
