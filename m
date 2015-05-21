@@ -1,48 +1,63 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Assert in pcm_params.c
-Date: Fri, 22 May 2015 04:29:40 +0800
-Message-ID: <CAN8cciahbz-BbySy_0CUxDZ8Ce4cmv7DX48wdbuXfGGj8=x2KQ@mail.gmail.com>
-References: <201504180908.47022.gineera@aspect135.co.uk>
- <201505192022.50591.gineera@aspect135.co.uk>
- <s5h4mn7u54s.wl-tiwai@suse.de>
- <201505211656.04334.gineera@aspect135.co.uk>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: remove incorrect dependencies
+Date: Thu, 21 May 2015 14:00:00 -0700
+Message-ID: <20150521205952.GA31005@kwestfie-linux.qualcomm.com>
+References: <2324031.cqS0mEEEhQ@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
- [209.85.214.178])
- by alsa0.perex.cz (Postfix) with ESMTP id E633626587B
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 22:29:41 +0200 (CEST)
-Received: by obfe9 with SMTP id e9so68986757obf.1
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 13:29:41 -0700 (PDT)
-In-Reply-To: <201505211656.04334.gineera@aspect135.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2324031.cqS0mEEEhQ@wuerfel>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, Kenneth Westfield <kwestfie@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-> I've had a positive confirmation that the patch removing the asserts does
-fix
-> the 'crash' in the reporter's system.  So instead it is simply a failure
-of
-> the snd_pcm_hw_params() call, which ultimately can be handled in the users
-> code.
->
-> I do wonder (as does Raymond) why this fails.  Is 6-chans expected to
-fail on
-> 'front'?  In particular the earlier setting of channels/rate/format does
-not
-> fail?  Perhaps I will ask for RULES_DEBUG enabled?
->
->
+On Thu, May 21, 2015 at 11:07:08AM +0200, Arnd Bergmann wrote:
+> Compile-tests show a warning for the newly added SND_SOC_STORM
+> symbol:
+> 
+> warning: (SND_SOC_STORM) selects SND_SOC_LPASS_CPU which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && SND_SOC_QCOM)
+> 
+> The problem is that it can be selected for COMPILE_TEST on non-QCOM
+> builds, but the symbols it selects have a dependency.
+> Dropping the dependencies makes it work without warnings and no
+> other side-effects, because these are not user-visible.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: f380dd3f3cd ("ASoC: qcom: Add ability to build QCOM drivers")
+> 
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index 5f58e4f1bca9..b07f183fc47f 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -6,12 +6,10 @@ config SND_SOC_QCOM
+>  
+>  config SND_SOC_LPASS_CPU
+>  	tristate
+> -	depends on SND_SOC_QCOM
 
-period_max is only 32 , this mean that some combination are not possible
+Rather than remove the dependency (which I would like to keep), would
+the following change work for SND_SOC_LPASS_CPU and
+SND_SOC_LPASS_PLATFORM?
+-	depends on SND_SOC_QCOM
++	depends on SND_SOC_QCOM || COMPILE_TEST
+
+If so, I will submit a patch (I know this has been applied already) on
+top of this one.
+
+>  	select REGMAP_MMIO
+>  
+>  config SND_SOC_LPASS_PLATFORM
+>  	tristate
+> -	depends on SND_SOC_QCOM
+>  	select REGMAP_MMIO
+>  
+>  config SND_SOC_STORM
+> 
+
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
