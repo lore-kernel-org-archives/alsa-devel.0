@@ -1,53 +1,41 @@
-From: Cao Minh Hiep <cm-hiep@jinso.co.jp>
-Subject: Re: [PATCH 0/4 v2] ASoC: rsnd: fixup interrupt / spin lock issue
-Date: Fri, 22 May 2015 10:41:17 +0900
-Message-ID: <555E893D.2060705@jinso.co.jp>
-References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?Q?jean=2Dno=C3=ABl_chardron?= <rondrach@gmail.com>
+Subject: how to ask you to write a new ALSA driver
+Date: Thu, 21 May 2015 12:28:00 +0200
+Message-ID: <CABi1v2YRv3g1VU0OCJVZ3+zdKyAotyMn7dSmuQ-E+ug7uMboOQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BF472606D1
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 12:28:02 +0200 (CEST)
+Received: by obfe9 with SMTP id e9so57002694obf.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 03:28:01 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
-Sorry for late replying.
+hello,
 
-On 2015=E5=B9=B405=E6=9C=8821=E6=97=A5 12:47, Kuninori Morimoto wrote:
-> Hi Mark, Vinod
-> Cc Laurent, Hiep-san
->
-> These are v2 of fixup unknown interrupt issue patch which was reporte=
-d by
-> Hiep-san in v4.1-rcX kernel. It was not happened in v4.0 because ARM
-> platform side couldn't use DMA transfer.
->
-> We tested these same as v1 patches, and confirmed these solved proble=
-m
->
-> Hiep-san, can you please re-test these patches ?
->
-> Kuninori Morimoto (4):
->        1) dmaengine: rcar-dmac: fixup spinlock in rcar-dmac
->        2) ASoC: rsnd: indicate unknown HW start
->        3) ASoC: rsnd: add rsnd_dai_stream_quit()
->        4) ASoC: rsnd: spin lock for interrupt handler
->
->   drivers/dma/sh/rcar-dmac.c | 55 +++++++++++++++++++++++++++++++----=
---------------------
->   sound/soc/sh/rcar/core.c   | 25 ++++++++++++++++++-------
->   sound/soc/sh/rcar/rsnd.h   |  3 +--
->   sound/soc/sh/rcar/src.c    | 11 ++++++++---
->   sound/soc/sh/rcar/ssi.c    | 18 ++++++++++++++----
->   5 files changed, 72 insertions(+), 40 deletions(-)
-We re-tested these patches on our Lager board.
-(30 times playback + 10 minutes recode and playback)
-It works very well without any problems,
+Last week I got a Komplet Audio 6 from Native intruments.
+The driver exist in ALSA driver for this king of interface audio
+(snd-usb-audio) (thanks for the team who write this) but for the model
+where Id Vendor is 0x17cc and Id product is 0x1000.
 
-Best Regards,
-Cao Minh Hiep.
+The KA6 that I got has not the same ID product (0x1001) therefore I don't
+have any device capture even with the driver snd-usb-audio.
 
+The challenge is to write the modification for this new model.
+Who could do that ?
+If necessary I could send log, compile kernel source and so on.
+thanks,
+Jean-noel
