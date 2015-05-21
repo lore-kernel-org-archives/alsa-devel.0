@@ -1,54 +1,45 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 0/8] ASoC: Intel: refactor common SST
-	IPC handling
-Date: Thu, 21 May 2015 22:14:51 +0100
-Message-ID: <1432242891.6818.26.camel@loki>
-References: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: skip legacy dai naming if dai driver has all the
+ information
+Date: Thu, 21 May 2015 22:22:22 +0100
+Message-ID: <20150521212222.GQ21577@sirena.org.uk>
+References: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F0392658EE
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 23:14:56 +0200 (CEST)
-In-Reply-To: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HlZi+g8Ywt2nzGP6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1431682707-26452-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-05-19 at 15:00 +0530, Vinod Koul wrote:
-> This series refactors the common SST IPC code to remove some hardcoded
-> assumption which are no longer valid for future platforms like Skylake,
-> These are made configurable and right configuration applied for respective
-> drivers. The changes are mailbox sizes and dsp busy checks.
-> 
-> changes in v2:
->  - fix the mem allocation for IPC mailbox
-> 
-> Subhransu S. Prusty (8):
->   ASoC: Intel: Create an ops to check for DSP busy
->   ASoC: Intel: Move the busy check to ops for Baytrail
->   ASoC: Intel: Move the busy check to ops for HSW
->   ASoC: Intel: Remove the direct register reference from common ipc
->   ASoC: Intel: Allow to configure max size for mailbox data
->   ASoC: Intel: Initialize max mailbox size for baytrail
->   ASoC: Intel: Initialize max mailbox size for haswell
->   ASoC: Intel: Allocate for the mailbox with max size
-> 
->  sound/soc/intel/baytrail/sst-baytrail-ipc.c | 11 ++++++++++
->  sound/soc/intel/common/sst-ipc.c            | 34 +++++++++++++++++++++++++----
->  sound/soc/intel/common/sst-ipc.h            |  7 ++++--
->  sound/soc/intel/haswell/sst-haswell-ipc.c   | 12 ++++++++++
->  4 files changed, 58 insertions(+), 6 deletions(-)
-> 
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+--HlZi+g8Ywt2nzGP6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 15, 2015 at 10:38:27AM +0100, Srinivas Kandagatla wrote:
+> Original issue is that the id field in the dai is not same as the id
+> in dai_driver when dai driver count == 1. This is due to the legacy
+
+Applied, thanks.
+
+--HlZi+g8Ywt2nzGP6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVXkyNAAoJECTWi3JdVIfQtpgH/iqSHq5p7o1Wj2tXxpL9qwf9
+GW4hFcH5zb6xAq0frB9e5Iv7B66MVmhdIxih7X3xpcO4oKoKR+yomEllVjmA0cQf
+c+242qFPOp7LTuo0x6NeLQHSMcUS8MCO0GSiJh+aPFz/7OoRDzDfUfzh1JBo654Y
+U9NesYY4FQLC/6OzctpDU+MCQw1P+sVNPTPKjPATn4uREW7HVW5UESmQZPMMHjhW
+PfCZRG86qnFQExNH5y3Cfhx3wpOVUsOaKwzU4MV3I3qbz9U3Vk/Zl+ORfZH6LPWn
+G61e7R5swBUEWVFbhjRzoQ6VZjq0ZHvQQCtqvcfidUtXlee3NVKFnmHuxIC3b5I=
+=LT4C
+-----END PGP SIGNATURE-----
+
+--HlZi+g8Ywt2nzGP6--
