@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 05/10] ASoC: qcom: Add ability to handle interrupts per dma channel
-Date: Thu, 21 May 2015 22:53:14 +0100
-Message-ID: <1432245194-9190-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 07/10] ASoC: qcom: Add apq8016 lpass driver support
+Date: Thu, 21 May 2015 22:53:30 +0100
+Message-ID: <1432245210-9276-1-git-send-email-srinivas.kandagatla@linaro.org>
 References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org>
@@ -10,193 +10,334 @@ To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ablity to lpass driver to handle interrupt per dma
-channel. Without this patch its not possible to use multipl ports on the
-lpass.
+This patch adds apq8016 lpass driver support. APQ8016 has 4 MI2S which
+can be routed to one internal codec and 2 external codec interfaces.
+
+Primary, Secondary, Quaternary I2S can do Rx(playback) and Tertiary and
+Quaternary can do Tx(capture).
 
 Tested-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Acked-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/lpass-platform.c | 94 ++++++++++++++++++++++++++---------------
- sound/soc/qcom/lpass.h          |  4 ++
- 2 files changed, 63 insertions(+), 35 deletions(-)
+ include/dt-bindings/sound/apq8016-lpass.h |   9 ++
+ sound/soc/qcom/Kconfig                    |   6 +
+ sound/soc/qcom/Makefile                   |   2 +
+ sound/soc/qcom/lpass-apq8016.c            | 242 ++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h                    |   4 +
+ 5 files changed, 263 insertions(+)
+ create mode 100644 include/dt-bindings/sound/apq8016-lpass.h
+ create mode 100644 sound/soc/qcom/lpass-apq8016.c
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 8ab0ac1..79688aa 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -356,27 +356,15 @@ static struct snd_pcm_ops lpass_platform_pcm_ops = {
- 	.mmap		= lpass_platform_pcmops_mmap,
- };
+diff --git a/include/dt-bindings/sound/apq8016-lpass.h b/include/dt-bindings/sound/apq8016-lpass.h
+new file mode 100644
+index 0000000..499076e
+--- /dev/null
++++ b/include/dt-bindings/sound/apq8016-lpass.h
+@@ -0,0 +1,9 @@
++#ifndef __DT_APQ8016_LPASS_H
++#define __DT_APQ8016_LPASS_H
++
++#define MI2S_PRIMARY	0
++#define MI2S_SECONDARY	1
++#define MI2S_TERTIARY	2
++#define MI2S_QUATERNARY	3
++
++#endif /* __DT_APQ8016_LPASS_H */
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 190c27d..eb2447b 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -20,6 +20,12 @@ config SND_SOC_LPASS_IPQ806X
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
  
--static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
-+static irqreturn_t lpass_dma_interrupt_handler(
-+			struct snd_pcm_substream *substream,
-+			struct lpass_data *drvdata,
-+			int chan, u32 interrupts)
- {
--	struct snd_pcm_substream *substream = data;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct lpass_data *drvdata =
--		snd_soc_platform_get_drvdata(soc_runtime->platform);
- 	struct lpass_variant *v = drvdata->variant;
--	struct lpass_pcm_data *pcm_data = snd_soc_pcm_get_drvdata(soc_runtime);
--	unsigned int interrupts;
- 	irqreturn_t ret = IRQ_NONE;
--	int rv, chan = pcm_data->rdma_ch;
--
--	rv = regmap_read(drvdata->lpaif_map,
--			LPAIF_IRQSTAT_REG(v, LPAIF_IRQ_PORT_HOST), &interrupts);
--	if (rv) {
--		dev_err(soc_runtime->dev, "%s() error reading from irqstat reg: %d\n",
--				__func__, rv);
--		return IRQ_NONE;
--	}
--
--	interrupts &= LPAIF_IRQ_ALL(chan);
-+	int rv;
++config SND_SOC_LPASS_APQ8016
++	tristate
++	depends on SND_SOC_QCOM
++	select SND_SOC_LPASS_CPU
++	select SND_SOC_LPASS_PLATFORM
++
+ config SND_SOC_STORM
+ 	tristate "ASoC I2S support for Storm boards"
+ 	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+index f8aab91..ac76308 100644
+--- a/sound/soc/qcom/Makefile
++++ b/sound/soc/qcom/Makefile
+@@ -2,10 +2,12 @@
+ snd-soc-lpass-cpu-objs := lpass-cpu.o
+ snd-soc-lpass-platform-objs := lpass-platform.o
+ snd-soc-lpass-ipq806x-objs := lpass-ipq806x.o
++snd-soc-lpass-apq8016-objs := lpass-apq8016.o
  
- 	if (interrupts & LPAIF_IRQ_PER(chan)) {
- 		rv = regmap_write(drvdata->lpaif_map,
-@@ -422,6 +410,35 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
- 	return ret;
- }
+ obj-$(CONFIG_SND_SOC_LPASS_CPU) += snd-soc-lpass-cpu.o
+ obj-$(CONFIG_SND_SOC_LPASS_PLATFORM) += snd-soc-lpass-platform.o
+ obj-$(CONFIG_SND_SOC_LPASS_IPQ806X) += snd-soc-lpass-ipq806x.o
++obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
  
-+static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
+ # Machine
+ snd-soc-storm-objs := storm.o
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+new file mode 100644
+index 0000000..367fc46
+--- /dev/null
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -0,0 +1,242 @@
++/*
++ * Copyright (c) 2010-2011,2013-2015 The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * lpass-apq8016.c -- ALSA SoC CPU DAI driver for APQ8016 LPASS
++ *
++ */
++
++
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
++#include <dt-bindings/sound/apq8016-lpass.h>
++#include "lpass-lpaif-reg.h"
++#include "lpass.h"
++
++static struct snd_soc_dai_driver apq8016_lpass_cpu_dai_driver[] = {
++	[MI2S_PRIMARY] =  {
++		.id = MI2S_PRIMARY,
++		.name = "Primary MI2S",
++		.playback = {
++			.stream_name	= "Primary Playback",
++			.formats	= SNDRV_PCM_FMTBIT_S16 |
++						SNDRV_PCM_FMTBIT_S24 |
++						SNDRV_PCM_FMTBIT_S32,
++			.rates		= SNDRV_PCM_RATE_8000 |
++						SNDRV_PCM_RATE_16000 |
++						SNDRV_PCM_RATE_32000 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_96000,
++			.rate_min	= 8000,
++			.rate_max	= 96000,
++			.channels_min	= 1,
++			.channels_max	= 8,
++		},
++		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
++		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++	},
++	[MI2S_SECONDARY] =  {
++		.id = MI2S_SECONDARY,
++		.name = "Secondary MI2S",
++		.playback = {
++			.stream_name	= "Secondary Playback",
++			.formats	= SNDRV_PCM_FMTBIT_S16 |
++						SNDRV_PCM_FMTBIT_S24 |
++						SNDRV_PCM_FMTBIT_S32,
++			.rates		= SNDRV_PCM_RATE_8000 |
++						SNDRV_PCM_RATE_16000 |
++						SNDRV_PCM_RATE_32000 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_96000,
++			.rate_min	= 8000,
++			.rate_max	= 96000,
++			.channels_min	= 1,
++			.channels_max	= 8,
++		},
++		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
++		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++	},
++	[MI2S_TERTIARY] =  {
++		.id = MI2S_TERTIARY,
++		.name = "Tertiary MI2S",
++		.capture = {
++			.stream_name	= "Tertiary Capture",
++			.formats	= SNDRV_PCM_FMTBIT_S16 |
++						SNDRV_PCM_FMTBIT_S24 |
++						SNDRV_PCM_FMTBIT_S32,
++			.rates		= SNDRV_PCM_RATE_8000 |
++						SNDRV_PCM_RATE_16000 |
++						SNDRV_PCM_RATE_32000 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_96000,
++			.rate_min	= 8000,
++			.rate_max	= 96000,
++			.channels_min	= 1,
++			.channels_max	= 8,
++		},
++		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
++		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++	},
++	[MI2S_QUATERNARY] =  {
++		.id = MI2S_QUATERNARY,
++		.name = "Quatenary MI2S",
++		.playback = {
++			.stream_name	= "Quatenary Playback",
++			.formats	= SNDRV_PCM_FMTBIT_S16 |
++						SNDRV_PCM_FMTBIT_S24 |
++						SNDRV_PCM_FMTBIT_S32,
++			.rates		= SNDRV_PCM_RATE_8000 |
++						SNDRV_PCM_RATE_16000 |
++						SNDRV_PCM_RATE_32000 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_96000,
++			.rate_min	= 8000,
++			.rate_max	= 96000,
++			.channels_min	= 1,
++			.channels_max	= 8,
++		},
++		.capture = {
++			.stream_name	= "Quatenary Capture",
++			.formats	= SNDRV_PCM_FMTBIT_S16 |
++						SNDRV_PCM_FMTBIT_S24 |
++						SNDRV_PCM_FMTBIT_S32,
++			.rates		= SNDRV_PCM_RATE_8000 |
++						SNDRV_PCM_RATE_16000 |
++						SNDRV_PCM_RATE_32000 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_96000,
++			.rate_min	= 8000,
++			.rate_max	= 96000,
++			.channels_min	= 1,
++			.channels_max	= 8,
++		},
++		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
++		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++	},
++};
++
++static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata)
 +{
-+	struct lpass_data *drvdata = data;
 +	struct lpass_variant *v = drvdata->variant;
-+	unsigned int irqs;
-+	int rv, chan;
++	int chan = find_first_zero_bit(&drvdata->rdma_ch_bit_map,
++					v->rdma_channels);
 +
-+	rv = regmap_read(drvdata->lpaif_map,
-+			LPAIF_IRQSTAT_REG(v, LPAIF_IRQ_PORT_HOST), &irqs);
-+	if (rv) {
-+		pr_err("%s() error reading from irqstat reg: %d\n",
-+				__func__, rv);
-+		return IRQ_NONE;
-+	}
++	if (chan >= v->rdma_channels)
++		return -EBUSY;
 +
-+	/* Handle per channel interrupts */
-+	for (chan = 0; chan < LPASS_MAX_DMA_CHANNELS; chan++) {
-+		if (irqs & LPAIF_IRQ_ALL(chan) && drvdata->substream[chan]) {
-+			rv = lpass_dma_interrupt_handler(
-+						drvdata->substream[chan],
-+						drvdata, chan, irqs);
-+			if (rv != IRQ_HANDLED)
-+				return rv;
-+		}
-+	}
++	set_bit(chan, &drvdata->rdma_ch_bit_map);
 +
-+	return IRQ_HANDLED;
++	return chan;
 +}
 +
- static int lpass_platform_alloc_buffer(struct snd_pcm_substream *substream,
- 		struct snd_soc_pcm_runtime *soc_runtime)
- {
-@@ -477,6 +494,7 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 	if (IS_ERR_VALUE(data->rdma_ch))
- 		return data->rdma_ch;
- 
-+	drvdata->substream[data->rdma_ch] = substream;
- 	data->i2s_port = cpu_dai->driver->id;
- 
- 	snd_soc_pcm_set_drvdata(soc_runtime, data);
-@@ -488,29 +506,12 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 	if (ret)
- 		return ret;
- 
--	ret = devm_request_irq(soc_runtime->dev, drvdata->lpaif_irq,
--			lpass_platform_lpaif_irq, IRQF_TRIGGER_RISING,
--			"lpass-irq-lpaif", substream);
--	if (ret) {
--		dev_err(soc_runtime->dev, "%s() irq request failed: %d\n",
--				__func__, ret);
--		goto err_buf;
--	}
--
--	/* ensure audio hardware is disabled */
--	ret = regmap_write(drvdata->lpaif_map,
--			LPAIF_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST), 0);
--	if (ret) {
--		dev_err(soc_runtime->dev, "%s() error writing to irqen reg: %d\n",
--				__func__, ret);
--		return ret;
--	}
- 	ret = regmap_write(drvdata->lpaif_map,
- 			LPAIF_RDMACTL_REG(v, data->rdma_ch), 0);
- 	if (ret) {
- 		dev_err(soc_runtime->dev, "%s() error writing to rdmactl reg: %d\n",
- 				__func__, ret);
--		return ret;
-+		goto err_buf;
- 	}
- 
- 	return 0;
-@@ -530,6 +531,8 @@ static void lpass_platform_pcm_free(struct snd_pcm *pcm)
- 	struct lpass_pcm_data *data = snd_soc_pcm_get_drvdata(soc_runtime);
- 	struct lpass_variant *v = drvdata->variant;
- 
-+	drvdata->substream[data->rdma_ch] = NULL;
++static int apq8016_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
++{
++	clear_bit(chan, &drvdata->rdma_ch_bit_map);
 +
- 	if (v->free_dma_channel)
- 		v->free_dma_channel(drvdata, data->rdma_ch);
- 
-@@ -545,6 +548,8 @@ static struct snd_soc_platform_driver lpass_platform_driver = {
- int asoc_qcom_lpass_platform_register(struct platform_device *pdev)
- {
- 	struct lpass_data *drvdata = platform_get_drvdata(pdev);
-+	struct lpass_variant *v = drvdata->variant;
++	return 0;
++}
++
++static int apq8016_lpass_init(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata = platform_get_drvdata(pdev);
++	struct device *dev = &pdev->dev;
 +	int ret;
- 
- 	drvdata->lpaif_irq = platform_get_irq_byname(pdev, "lpass-irq-lpaif");
- 	if (drvdata->lpaif_irq < 0) {
-@@ -553,6 +558,25 @@ int asoc_qcom_lpass_platform_register(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	/* ensure audio hardware is disabled */
-+	ret = regmap_write(drvdata->lpaif_map,
-+			LPAIF_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST), 0);
++
++	drvdata->pcnoc_mport_clk = devm_clk_get(dev, "pcnoc-mport-clk");
++	if (IS_ERR(drvdata->pcnoc_mport_clk)) {
++		dev_err(&pdev->dev, "%s() error getting pcnoc-mport-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->pcnoc_mport_clk));
++		return PTR_ERR(drvdata->pcnoc_mport_clk);
++	}
++
++	ret = clk_prepare_enable(drvdata->pcnoc_mport_clk);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() error writing to irqen reg: %d\n",
++		dev_err(&pdev->dev, "%s() Error enabling pcnoc-mport-clk: %d\n",
 +				__func__, ret);
 +		return ret;
 +	}
 +
-+	ret = devm_request_irq(&pdev->dev, drvdata->lpaif_irq,
-+			lpass_platform_lpaif_irq, IRQF_TRIGGER_RISING,
-+			"lpass-irq-lpaif", drvdata);
++	drvdata->pcnoc_sway_clk = devm_clk_get(dev, "pcnoc-sway-clk");
++	if (IS_ERR(drvdata->pcnoc_sway_clk)) {
++		dev_err(&pdev->dev, "%s() error getting pcnoc-sway-clk: %ld\n",
++				__func__, PTR_ERR(drvdata->pcnoc_sway_clk));
++		return PTR_ERR(drvdata->pcnoc_sway_clk);
++	}
++
++	ret = clk_prepare_enable(drvdata->pcnoc_sway_clk);
 +	if (ret) {
-+		dev_err(&pdev->dev, "%s() irq request failed: %d\n",
++		dev_err(&pdev->dev, "%s() Error enabling pcnoc_sway_clk: %d\n",
 +				__func__, ret);
 +		return ret;
 +	}
 +
++	return 0;
++}
 +
- 	return devm_snd_soc_register_platform(&pdev->dev,
- 			&lpass_platform_driver);
- }
++static int apq8016_lpass_exit(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata = platform_get_drvdata(pdev);
++
++	clk_disable_unprepare(drvdata->pcnoc_mport_clk);
++	clk_disable_unprepare(drvdata->pcnoc_sway_clk);
++
++	return 0;
++}
++
++
++struct lpass_variant apq8016_data = {
++	.i2sctrl_reg_base	= 0x1000,
++	.i2sctrl_reg_stride	= 0x1000,
++	.i2s_ports		= 4,
++	.irq_reg_base		= 0x6000,
++	.irq_reg_stride		= 0x1000,
++	.irq_ports		= 3,
++	.rdma_reg_base		= 0x8400,
++	.rdma_reg_stride	= 0x1000,
++	.rdma_channels		= 2,
++	.rdmactl_audif_start	= 1,
++	.dai_driver		= apq8016_lpass_cpu_dai_driver,
++	.num_dai		= ARRAY_SIZE(apq8016_lpass_cpu_dai_driver),
++	.init			= apq8016_lpass_init,
++	.exit			= apq8016_lpass_exit,
++	.alloc_dma_channel	= apq8016_lpass_alloc_dma_channel,
++	.free_dma_channel	= apq8016_lpass_free_dma_channel,
++};
++
++static const struct of_device_id apq8016_lpass_cpu_device_id[] = {
++	{ .compatible = "qcom,lpass-cpu-apq8016", .data = &apq8016_data },
++	{}
++};
++MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
++
++static struct platform_driver apq8016_lpass_cpu_platform_driver = {
++	.driver	= {
++		.name		= "apq8016-lpass-cpu",
++		.of_match_table	= of_match_ptr(apq8016_lpass_cpu_device_id),
++	},
++	.probe	= asoc_qcom_lpass_cpu_platform_probe,
++	.remove	= asoc_qcom_lpass_cpu_platform_remove,
++};
++module_platform_driver(apq8016_lpass_cpu_platform_driver);
++
++MODULE_DESCRIPTION("APQ8016 LPASS CPU Driver");
++MODULE_LICENSE("GPL v2");
++
 diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 023170a..d572e7b 100644
+index deecae9..d6e86c1 100644
 --- a/sound/soc/qcom/lpass.h
 +++ b/sound/soc/qcom/lpass.h
-@@ -23,6 +23,7 @@
+@@ -54,6 +54,10 @@ struct lpass_data {
  
- #define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
- #define LPASS_MAX_MI2S_PORTS			(8)
-+#define LPASS_MAX_DMA_CHANNELS			(8)
- 
- /* Both the CPU DAI and platform drivers will access this data */
- struct lpass_data {
-@@ -47,6 +48,9 @@ struct lpass_data {
- 
- 	/* SOC specific variations in the LPASS IP integration */
- 	struct lpass_variant *variant;
+ 	/* used it for handling interrupt per dma channel */
+ 	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
 +
-+	/* used it for handling interrupt per dma channel */
-+	struct snd_pcm_substream *substream[LPASS_MAX_DMA_CHANNELS];
++	/* 8016 specific */
++	struct clk *pcnoc_mport_clk;
++	struct clk *pcnoc_sway_clk;
  };
  
  /* Vairant data per each SOC */
