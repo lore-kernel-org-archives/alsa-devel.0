@@ -1,18 +1,29 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: prealloc_buffer_size and buffer_bytes_max
-Date: Thu, 21 May 2015 14:59:14 +0200
-Message-ID: <20150521125914.GA30345@piout.net>
-References: <555DCF69.9090008@lysator.liu.se>
+From: Simon Derr <ddrsimon@gmail.com>
+Subject: Re: snd-hda-intel : issues with mic boost on ALC3236
+Date: Thu, 21 May 2015 16:00:02 +0200
+Message-ID: <CAP1KSYezQVk7e-zs6OaAPF-HGUCM-jHc8kv4=qT13dvcjh2P_w@mail.gmail.com>
+References: <CAP1KSYf_wsief6OCx8hMta5Bq0zN8meCzfxkyjt2ab8hXettMg@mail.gmail.com>
+ <s5h618e92w5.wl-tiwai@suse.de>
+ <CAP1KSYfB8Gk6kQG0XdJdj7+92WHN5cVHjdzJgA5VFq5gZ3SvXA@mail.gmail.com>
+ <s5hy4la6vgn.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A0F7BA@RTITMBSV09.realtek.com.tw>
+ <CAP1KSYcsp5JsAJJjHetvAaLr3J4Syhe7t0TuhEm-quTjSc2OiQ@mail.gmail.com>
+ <CAP1KSYcYSn53Q1ivK9Kxi7G03P71vNWSzdPA6Nagscd=x=iuTw@mail.gmail.com>
+ <s5hbni4kbxb.wl-tiwai@suse.de>
+ <CAP1KSYfwo+O0vo3raRFn8VzB1szWT+CQjYictkwkUuv_ZxLLnQ@mail.gmail.com>
+ <CAP1KSYfpP+Q8=xEteLXh6fia2=tSUe2+WYb_pgDkoead_hD3uQ@mail.gmail.com>
+ <s5hiobp131c.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 57393261469
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 14:59:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <555DCF69.9090008@lysator.liu.se>
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83ABE261483
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:00:23 +0200 (CEST)
+Received: by wibt6 with SMTP id t6so15015792wib.0
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 07:00:23 -0700 (PDT)
+In-Reply-To: <s5hiobp131c.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +33,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@lysator.liu.se>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, May 19, 2015 at 8:42 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-On 21/05/2015 at 14:28:25 +0200, Peter Rosin wrote :
-> I got my hopes up when I read the commit message for c14e2591bf54
-> ASoC: atmel-pcm-dma: increase buffer_bytes_max. Quoting it:
-> 
-> 	atmel-pcm-dma is not limited to a buffer size of 64kB like
-> 	atmel-pcm-pdc. Increase buffer_bytes_max to 512kB to allow
-> 	for higher bit rates (i.e. 32bps at 192kHz) to work correctly.
-> 	By default, keep the prealloc at 64kB.
-> 
-> However, as I (think I) request a bigger buffer it still caps out at 64kB.
-> I'm using the latency argument of snd_pcm_set_params to control the buffer:
-> 
-> 	snd_pcm_set_params(pcm,
-> 		SND_PCM_FORMAT_S32_LE,
-> 		SND_PCM_ACCESS_RW_INTERLEAVED,
-> 		2,      /* channels */
-> 		250000, /* rate */
-> 		0,      /* do not resample */
-> 		90000); /* latency in us */
-> 
-> But snd_pcm_hw_params_get_buffer_size "only" returns 8192 frames (64kB)
-> even if I request 9us * 250kHz * 2 * 4 = 180kB. If I change the prealloc
-> from 64kB to 256kB I get a bigger buffer (and it works better too!).
-> 
-> Admittedly I backported this patch on top of the linux-3.18-at91
-> branch from the Atmel git repo, so there might be some support
-> missing that has gone in after 3.18?
-> 
-> Or have I completely misunderstood, and these are unrelated buffers?
-> 
-
-Those are somewhat related but not the same.
-
-> Any insight in how I can get a big enough buffer without hacking the
-> prealloc is appreciated!
+> Maybe the pin setup for Dell multi headset doesn't match with yours.
+> There are a few other headset quirks, but they aren't exposed as
+> selectable via model option.  You need to patch the kernel.
 >
+> For example, below is to use ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC for
+> your device.  Does it work better?
 
-You can change the prealloc size in
-/proc/asound/card0/pcm0p/sub0/prealloc or by using
-snd_pcm_lib_preallocate_pages_for_all(). I never experienced the issue
-but what I did solved it for someone doing 32bits per sample at 192kHz.
+Hello Takashi,
 
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Unfortunately, I cannot test your patch.
+I got rid of that laptop, there were just too many issues with it.
+Thanks anyway,
+
+  Simon
