@@ -1,17 +1,21 @@
-From: Peter Rosin <peda@lysator.liu.se>
-Subject: Re: prealloc_buffer_size and buffer_bytes_max
-Date: Thu, 21 May 2015 16:40:32 +0200
-Message-ID: <555DEE60.7050602@lysator.liu.se>
-References: <555DCF69.9090008@lysator.liu.se>
- <20150521125914.GA30345@piout.net>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Assert in pcm_params.c
+Date: Thu, 21 May 2015 16:56:04 +0100
+Message-ID: <201505211656.04334.gineera@aspect135.co.uk>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201505192022.50591.gineera@aspect135.co.uk> <s5h4mn7u54s.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 634782614DD
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:40:35 +0200 (CEST)
-In-Reply-To: <20150521125914.GA30345@piout.net>
+Received: from 4.array2.smtp.34sp.com (4.array2.smtp.34sp.com [46.183.8.157])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCB372614F6
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 17:55:47 +0200 (CEST)
+Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
+ by 4.array2.smtp.34sp.com (Postfix) with ESMTP id 2C2C99F39E
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:55:43 +0100 (BST)
+In-Reply-To: <s5h4mn7u54s.wl-tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,79 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2015-05-21 14:59, Alexandre Belloni wrote:
-> Hi,
-> 
-> On 21/05/2015 at 14:28:25 +0200, Peter Rosin wrote :
->> I got my hopes up when I read the commit message for c14e2591bf54
->> ASoC: atmel-pcm-dma: increase buffer_bytes_max. Quoting it:
->>
->> 	atmel-pcm-dma is not limited to a buffer size of 64kB like
->> 	atmel-pcm-pdc. Increase buffer_bytes_max to 512kB to allow
->> 	for higher bit rates (i.e. 32bps at 192kHz) to work correctly.
->> 	By default, keep the prealloc at 64kB.
->>
->> However, as I (think I) request a bigger buffer it still caps out at 64kB.
->> I'm using the latency argument of snd_pcm_set_params to control the buffer:
->>
->> 	snd_pcm_set_params(pcm,
->> 		SND_PCM_FORMAT_S32_LE,
->> 		SND_PCM_ACCESS_RW_INTERLEAVED,
->> 		2,      /* channels */
->> 		250000, /* rate */
->> 		0,      /* do not resample */
->> 		90000); /* latency in us */
->>
->> But snd_pcm_hw_params_get_buffer_size "only" returns 8192 frames (64kB)
->> even if I request 9us * 250kHz * 2 * 4 = 180kB. If I change the prealloc
->> from 64kB to 256kB I get a bigger buffer (and it works better too!).
->>
->> Admittedly I backported this patch on top of the linux-3.18-at91
->> branch from the Atmel git repo, so there might be some support
->> missing that has gone in after 3.18?
->>
->> Or have I completely misunderstood, and these are unrelated buffers?
->>
-> 
-> Those are somewhat related but not the same.
-> 
->> Any insight in how I can get a big enough buffer without hacking the
->> prealloc is appreciated!
->>
-> 
-> You can change the prealloc size in
-> /proc/asound/card0/pcm0p/sub0/prealloc or by using
-> snd_pcm_lib_preallocate_pages_for_all(). I never experienced the issue
-> but what I did solved it for someone doing 32bits per sample at 192kHz.
-
-Great, exactly the sort of thing I was looking for, many thanks!
-
-The bug I have been chasing (hopefully gone now, running without
-incidents for 16 hours and counting) manifests as follows:
-
-1. It all runs fine for somewhere between half an hour and several hours
-   (probably a Poisson distribution)
-2. Something bad happens and data from the wrong part of the buffer is
-   fed to i2s (i.e. phase shift if playing sine wave) at 8192 byte
-   intervals (the pcm period). In this bad mode there is also some
-   probability of a whole series of these phase shifts (i.e. several
-   phase shifts in a couple of dozen samples, essentially noise), in
-   particular if the system is busy with some unrelated calculation.
-3. After five minutes to an hour or so, something good happens, bringing
-   the system back to state 1. I.e. it seems easier to exit the bad mode
-   than it is to enter it.
-
-The overall rate in the bad 2 state seems right, i.e. the sample
-count appears to be right. However, no underrun or other errors are
-reported. So, this corruption is silent (if you disconnect all
-speakers, that is...).
-
-Should there not -- ideally -- be some sort of error reported back
-to a program that asks for more than the system can handle?
-
-Cheers,
-Peter
+T24gV2VkbmVzZGF5IDIwIE1heSAyMDE1IDA3OjM2LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gQXQg
+VHVlLCAxOSBNYXkgMjAxNSAyMDoyMjo1MCArMDEwMCwKPgo+IEFsYW4gSG9yc3RtYW5uIHdyb3Rl
+Ogo+ID4gT24gVHVlc2RheSAxOSBNYXkgMjAxNSAxMzowMSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
+ID4gPiBBdCBGcmksIDEgTWF5IDIwMTUgMDg6MzY6NDcgKzAxMDAsIEFsYW4gSG9yc3RtYW5uIHdy
+b3RlOgo+ID4gPiA+IEEgbWluaW1hbCBzZWxmLWNvbnRhaW5lZCBkZW1vIHByb2dyYW0gKCd0ZXN0
+LWZvcm1hdCcpIGhhcyBiZWVuCj4gPiA+ID4gZGV2ZWxvcGVkIGFuZCBpcyBhdHRhY2hlZCwgdGhh
+dCBkZW1vbnN0cmF0ZXMgdGhlIGlzc3VlIDEwMCUgb24gdGhlCj4gPiA+ID4gcmVwb3J0ZXJzIG1h
+Y2hpbmUgKEhEQS1JbnRlbCwgNi1jaCBJIGJlbGlldmUpLiAgVGhlIG91dHB1dCBpczoKPiA+ID4g
+Pgo+ID4gPiA+IHJvb3RAWGVvbjovaG9tZS9wYXRlc3QjIC4vdGVzdC1mb3JtYXQKPiA+ID4gPiBU
+ZXN0aW5nIGRldmljZSBmcm9udAo+ID4gPiA+IE51bSBjaGFubmVscyA2Cj4gPiA+ID4gVGVzdGlu
+ZyByYXRlOiAyMjA1MCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUgUmF0ZQo+ID4gPiA+IFRl
+c3RpbmcgcmF0ZTogMzIwMDAgwqAgUmVzdWx0Oi4uLkludmFsaWQgU2FtcGxlIFJhdGUKPiA+ID4g
+PiB0ZXN0LWZvcm1hdDogcGNtX3BhcmFtcy5jOjIyNDk6IHNuZDFfcGNtX2h3X3BhcmFtc19zbGF2
+ZTogQXNzZXJ0aW9uCj4gPiA+ID4gYGVycgo+ID4gPiA+Cj4gPiA+ID4gPj0gMCcgZmFpbGVkLgo+
+ID4gPiA+Cj4gPiA+ID4gVGVzdGluZyByYXRlOiA0NDEwMCDCoCBBYm9ydGVkCj4gPiA+ID4KPiA+
+ID4gPiBBbHNhLWluZm8gaXMgYXQ6Cj4gPiA+ID4KPiA+ID4gPiBodHRwOi8vd3d3LmFsc2EtcHJv
+amVjdC5vcmcvZGIvP2Y9MTlkZmVlZTI5ZjczMDA3ZTYxYTAwYThmYWJlM2M5NThmN2MKPiA+ID4g
+PmI4ZTggNwo+ID4gPiA+Cj4gPiA+ID4gVGhpcyBhcHBhcmVudGx5IGhhcHBlbnMgd2l0aCBvciB3
+aXRob3V0IFB1bHNlYXVkaW8gcnVubmluZywgd2l0aCBqdXN0Cj4gPiA+ID4gdGhlIHNpbmdsZSA0
+NDEwMCByYXRlLCBhbmQgYWxzbyB3aXRoIHN1cnJvdW5kIGRldmljZXMuICBBbHNvLCBvbiBhbGwK
+PiA+ID4gPiBjdXJyZW50IERlYmlhbiBhbmQgVWJ1bnR1IC0gd2UgaGF2ZSBmb2N1c2VkIG9uIEpl
+c3NpZS4KPiA+ID4gPgo+ID4gPiA+IEkgZG8gbm90IGhhdmUgYSBtYWNoaW5lIHdpdGggc2ltaWxh
+ciBoYXJkd2FyZSwgc28gY2Fubm90IGR1cGxpY2F0ZQo+ID4gPiA+IHRoZSByZXN1bHRzLgo+ID4g
+PiA+Cj4gPiA+ID4gQW55IGNvbW1lbnRzLCBpZGVhcyBldGMgd291bGQgYmUgYXBwcmVjaWF0ZWQu
+Cj4gPiA+Cj4gPiA+IEkgYWxzbyBjYW4ndCByZXByb2R1Y2UgdGhpcy4gIFNvIHRoaXMgbXVzdCBi
+ZSBwcmV0dHkgc3BlY2lmaWMgdG8gdGhlCj4gPiA+IHNldHVwLgo+ID4gPgo+ID4gPiBDb3VsZCB5
+b3UgZ2l2ZSB0aGUgZXhhY3QgY29uZGl0aW9uIHRvIHRyaWdnZXIgdGhlIHByb2JsZW0/ICBBbHNv
+LCB0aGlzCj4gPiA+IGhhcHBlbnMgY2VydGFpbmx5IHdpdGggdGhlIGxhdGVzdCBhbHNhLWxpYj8K
+PiA+Cj4gPiBUaGFua3MgZm9yIHRha2luZyBhIGxvb2suICBKdXN0IGNvbXBpbGluZyBhbmQgcnVu
+bmluZyB0aGF0IHRlc3QgcHJvZ3JhbSwKPiA+IG9uIHRoZSByZXBvcnRlcidzIG1hY2hpbmUsIHdo
+aWNoIGhhcyBzb21lIHNvcnQgb2YgbXVsdGktY2hhbm5lbAo+ID4gSERBLUludGVsLCBpcyAxMDAl
+IHJlcHJvZHVjaWJsZS4gVGhlIEFsc2EtbGliIG11c3QgYmUgdGhlIG9uZSBwcm92aWRlZCBieQo+
+ID4gRGViaWFuIEplc3NpZSAod2hpY2ggd2FzIHJlbGVhc2VkIDI1LjQuMjAxNSk7IDEuMC4yOCBJ
+IHRoaW5rLiAgRG9lcyB0aGUKPiA+IEFsc2EtaW5mbyBnaXZlIGVub3VnaCBkZXRhaWxzIC0gSSBj
+YW4gYXNrIGFueSBzcGVjaWZpYyBxdWVzdGlvbnMuCj4gPgo+ID4gSG93ZXZlciwgUmF5bW9uZCBz
+ZWVtcyB0byBoYXZlIHNvbWUgaWRlYXMgb2YgYSBwb3NzaWJsZSBjYXVzZSwgaW4KPiA+IGNvbm5l
+Y3Rpb24gd2l0aCBhcmJpdHJhcnkgcGVyaW9kIHNpemUgYW5kIHNvZnR2b2w7IGlzIHRoYXQgcGxh
+dXNpYmxlPwo+Cj4gUG9zc2libHksIGJ1dCBJIHdvbmRlciB3aHkgSSBjb3VsZG4ndCBzZWUgaXQg
+d2hlbiBJIHRyaWVkIHdpdGgKPiBkaWZmZXJlbnQgbW9kdWxlIG9wdGlvbnMuCj4KPiBJbiBhbnl3
+YXksIHRoZSBmaXggd291bGQgYmUgc2ltcGxlLCB0aGUgcGF0Y2ggbGlrZSBiZWxvdy4gIENvdWxk
+IHlvdQo+IGNoZWNrIHdoZXRoZXIgaXQgYWN0dWFsbHkgZml4ZXMgeW91ciBpc3N1ZT8KCkkndmUg
+aGFkIGEgcG9zaXRpdmUgY29uZmlybWF0aW9uIHRoYXQgdGhlIHBhdGNoIHJlbW92aW5nIHRoZSBh
+c3NlcnRzIGRvZXMgZml4IAp0aGUgJ2NyYXNoJyBpbiB0aGUgcmVwb3J0ZXIncyBzeXN0ZW0uICBT
+byBpbnN0ZWFkIGl0IGlzIHNpbXBseSBhIGZhaWx1cmUgb2YgCnRoZSBzbmRfcGNtX2h3X3BhcmFt
+cygpIGNhbGwsIHdoaWNoIHVsdGltYXRlbHkgY2FuIGJlIGhhbmRsZWQgaW4gdGhlIHVzZXJzIApj
+b2RlLgoKSSBkbyB3b25kZXIgKGFzIGRvZXMgUmF5bW9uZCkgd2h5IHRoaXMgZmFpbHMuICBJcyA2
+LWNoYW5zIGV4cGVjdGVkIHRvIGZhaWwgb24gCidmcm9udCc/ICBJbiBwYXJ0aWN1bGFyIHRoZSBl
+YXJsaWVyIHNldHRpbmcgb2YgY2hhbm5lbHMvcmF0ZS9mb3JtYXQgZG9lcyBub3QgCmZhaWw/ICBQ
+ZXJoYXBzIEkgd2lsbCBhc2sgZm9yIFJVTEVTX0RFQlVHIGVuYWJsZWQ/CgpSZWdhcmRzCgpBbGFu
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
