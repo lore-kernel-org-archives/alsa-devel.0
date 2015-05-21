@@ -1,53 +1,42 @@
-From: Rajan Vaja <rajan.vaja@gmail.com>
-Subject: [PATCH] ASoC: mop500_ab8500: Add a NULL pointer check
-	in mop500_ab8500_machine_init()
-Date: Wed, 20 May 2015 10:20:54 +0530
-Message-ID: <1432097454-3643-1-git-send-email-rajan.vaja@gmail.com>
+From: Cao Minh Hiep <cm-hiep@jinso.co.jp>
+Subject: Re: [PATCH 0/4 v2] ASoC: rsnd: fixup interrupt / spin lock issue
+Date: Thu, 21 May 2015 15:32:46 +0900
+Message-ID: <555D7C0E.6090506@jinso.co.jp>
+References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id B55E826043E
- for <alsa-devel@alsa-project.org>; Wed, 20 May 2015 06:51:06 +0200 (CEST)
-Received: by padbw4 with SMTP id bw4so52771841pad.0
- for <alsa-devel@alsa-project.org>; Tue, 19 May 2015 21:51:05 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, rajan.vaja@gmail.com, lars@metafoo.de, tiwai@suse.de, broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Avoid possible crash (NULL pointer dereference) by making
-sure that dem_kzalloc() is successful.
+Hi Morimoto-san,
 
-Signed-off-by: Rajan Vaja <rajan.vaja@gmail.com>
----
- sound/soc/ux500/mop500_ab8500.c |    4 ++++
- 1 file changed, 4 insertions(+)
+On 2015=E5=B9=B405=E6=9C=8821=E6=97=A5 12:47, Kuninori Morimoto wrote:
+> Hi Mark, Vinod
+> Cc Laurent, Hiep-san
+>
+> These are v2 of fixup unknown interrupt issue patch which was reporte=
+d by
+> Hiep-san in v4.1-rcX kernel. It was not happened in v4.0 because ARM
+> platform side couldn't use DMA transfer.
+>
+> We tested these same as v1 patches, and confirmed these solved proble=
+m
+>
+> Hiep-san, can you please re-test these patches ?
+>
+> Kuninori Morimoto (4):
+>        1) dmaengine: rcar-dmac: fixup spinlock in rcar-dmac
+>        2) ASoC: rsnd: indicate unknown HW start
+>        3) ASoC: rsnd: add rsnd_dai_stream_quit()
+>        4) ASoC: rsnd: spin lock for interrupt handler
+Thanks for your patch!
+I'll re-test these patches now.
 
-diff --git a/sound/soc/ux500/mop500_ab8500.c b/sound/soc/ux500/mop500_ab8500.c
-index b81a7a4c..85d810d 100644
---- a/sound/soc/ux500/mop500_ab8500.c
-+++ b/sound/soc/ux500/mop500_ab8500.c
-@@ -372,6 +372,10 @@ int mop500_ab8500_machine_init(struct snd_soc_pcm_runtime *rtd)
- 	/* Create driver private-data struct */
- 	drvdata = devm_kzalloc(dev, sizeof(struct mop500_ab8500_drvdata),
- 			GFP_KERNEL);
-+
-+	if (!drvdata)
-+		return -ENOMEM;
-+
- 	snd_soc_card_set_drvdata(rtd->card, drvdata);
- 
- 	/* Setup clocks */
--- 
-1.7.9.5
+Best Regards,
+Hiep.
