@@ -1,17 +1,24 @@
-From: =?UTF-8?Q?jean=2Dno=C3=ABl_chardron?= <rondrach@gmail.com>
-Subject: how to ask you to write a new ALSA driver
-Date: Thu, 21 May 2015 12:28:00 +0200
-Message-ID: <CABi1v2YRv3g1VU0OCJVZ3+zdKyAotyMn7dSmuQ-E+ug7uMboOQ@mail.gmail.com>
+From: Michele Curti <michele.curti@gmail.com>
+Subject: writing an alsa driver
+Date: Thu, 21 May 2015 16:52:32 +0200
+Message-ID: <20150521145232.GA12157@dellaz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
- [209.85.214.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BF472606D1
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 12:28:02 +0200 (CEST)
-Received: by obfe9 with SMTP id e9so57002694obf.1
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 03:28:01 -0700 (PDT)
+Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
+ [209.85.212.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF9472614DD
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:52:37 +0200 (CEST)
+Received: by wizk4 with SMTP id k4so17764919wiz.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 07:52:37 -0700 (PDT)
+Received: from dellaz (host79-90-static.72-81-b.business.telecomitalia.it.
+ [81.72.90.79])
+ by mx.google.com with ESMTPSA id v20sm32500536wjr.49.2015.05.21.07.52.35
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Thu, 21 May 2015 07:52:36 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,18 +31,25 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hello,
+Hi all,
+I'm going to *try* to "write" a driver for the sound card on my new laptop,
+an asus x205ta.
 
-Last week I got a Komplet Audio 6 from Native intruments.
-The driver exist in ALSA driver for this king of interface audio
-(snd-usb-audio) (thanks for the team who write this) but for the model
-where Id Vendor is 0x17cc and Id product is 0x1000.
+To be fair I have almost no experience but I'm hoping that all the code is
+already present and it only needs some adaptations.
 
-The KA6 that I got has not the same ID product (0x1001) therefore I don't
-have any device capture even with the driver snd-usb-audio.
+The cpu is a intel bay trail z3735f, the sound card is a realtek rt5648 that
+has the same product Id of the rt5645 (0x6308).
 
-The challenge is to write the modification for this new model.
-Who could do that ?
-If necessary I could send log, compile kernel source and so on.
-thanks,
-Jean-noel
+I see in kernel sources:
+ - the codec driver
+	sound/soc/codecs/rt5645.c
+ - a baytrail board that uses the rt5640
+	sound/soc/intel/boards/byt-rt5640.c
+ - a braswell board that uses the rt5645
+	sound/soc/intel/boards/cht_bsw_rt5645.c
+
+What do you think?  Is it feasible, given a good amount of free-time? :p
+
+Thanks,
+Michele
