@@ -1,51 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4 v2] ASoC: rsnd: spin lock for interrupt handler
-Date: Thu, 21 May 2015 11:59:40 +0100
-Message-ID: <20150521105940.GV21577@sirena.org.uk>
-References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
- <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: qcom: remove incorrect dependencies
+Date: Thu, 21 May 2015 12:00:06 +0100
+Message-ID: <20150521110006.GW21577@sirena.org.uk>
+References: <2324031.cqS0mEEEhQ@wuerfel>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="87MiR7gHvrw39A9h"
-Return-path: <linux-sh-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="NYEXl3WhqsXurSTm"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
+In-Reply-To: <2324031.cqS0mEEEhQ@wuerfel>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, Kenneth Westfield <kwestfie@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---87MiR7gHvrw39A9h
+--NYEXl3WhqsXurSTm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 21, 2015 at 03:50:23AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Renesas R-Car driver interrupt handler was not locked before.
-> But now, SSI/SRC interrupt handler calls restart function
-> which should be called under spin lock.
-> Below error might happen witout this patch.
+On Thu, May 21, 2015 at 11:07:08AM +0200, Arnd Bergmann wrote:
+> Compile-tests show a warning for the newly added SND_SOC_STORM
+> symbol:
 
-This looks fine but I guess it depends on patch 1 otherwise more errors
-will be introduced?
+Applied, thanks.
 
---87MiR7gHvrw39A9h
+--NYEXl3WhqsXurSTm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXbqcAAoJECTWi3JdVIfQCroH/29G/PQMVeqOX+wgFatlYVn0
-wBPiWzz2fqgPbsd3q+/cjziyg9WzxJjWvLO97K7XouXKAx4yGdAN1p7m24sCDAuj
-w73cfFVyMz4p6cEAbS3/VVaBCHpM8vEyBXJJgJsUZbhtEr/shAuC20ZWPXC4b7Ej
-57F8hF/3mz+85VRHlLlSzrUTsG51uEVYCE9BBKy6dvXnXEN5LGHbcCGCglHrKxEK
-uNpSGjWxtWiGpoTUBJwGSWGn8pBIJdZz1rWhEhbkpIiwumj+P9CeI31leWE838IU
-ddWk7N3RDQuesuQcZL83I1KrNyXu/VrlhIW0bq8/SpKUgCD3LYJAVVzTIj12pI0=
-=V6Ee
+iQEcBAEBCAAGBQJVXbq1AAoJECTWi3JdVIfQJxwH/0NlKgoNRYEYm3MOgchRRy5J
+al1Pr82yBnaI8U5/ocxjXF0lqST29agTYKqCuoKNJFUlD5Oui/OGNgNiuFOH2/S4
+7D1eczoEeA7YZv3YLzTtG+zle1Q5bt/fwaAsa1wpJD+BucdOsk4ArHzx4KoN8FXR
+zDAGxh/SsjbR3NyBFYEUSBR5xF8AhRN9cGQLC+t+coedWboi+vPE741milYyMNg3
+W5ce2eLmi1EyRG8hZ3uIHP7gmHg8nhCcN0D/yBLDsKT/gYV4HH6qVly/DZIvav+r
+JrX/m9Eel/cL5rXSFUBIi3D29CHwAjdcO4ETEc9w7SbFVKrHbeiQjNEnI4C577g=
+=CP2l
 -----END PGP SIGNATURE-----
 
---87MiR7gHvrw39A9h--
+--NYEXl3WhqsXurSTm--
