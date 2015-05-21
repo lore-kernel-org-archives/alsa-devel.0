@@ -1,138 +1,92 @@
-From: Yogesh Soni <yksoni@gmail.com>
-Subject: Re: [PATCH]: No sound when using software based mmap
-	support and dmix plugin
-Date: Thu, 21 May 2015 14:48:00 -0700
-Message-ID: <CAHK=agvr7-Yvbns1GbbwbhbOiTh1P-NMjxTD6Fa9kC2O6fuJSA@mail.gmail.com>
-References: <CAHK=aguXV_4zK+=FBmrMKZrVmBPSMoCdVvdK_P9i0HQVJXPcrw@mail.gmail.com>
- <s5hfv6szt4w.wl-tiwai@suse.de>
- <CAHK=agsOJnT6DSYDZHVjYez4PY9JYjERfvikNeSeG+xfP0uP_g@mail.gmail.com>
- <s5h617m5sib.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f51.google.com (mail-qg0-f51.google.com
- [209.85.192.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ACFB2658ED
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 23:48:01 +0200 (CEST)
-Received: by qgew3 with SMTP id w3so312023qge.2
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 14:48:00 -0700 (PDT)
-In-Reply-To: <s5h617m5sib.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 00/10] ASoC: qcom: add support to apq8016 audio
+Date: Thu, 21 May 2015 22:52:05 +0100
+Message-ID: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Yes Takashi. You are right. Freewheeling mode doesn't necessarily mean that
-appl_ptr is invalid. I conveniently used stop_threshold check,  to infer if
-dmix plugin is being used. I am definitely looking for a cleaner way to do
-this. Would there be any negative implications (performance or otherwise)
-of relying on xrun status? The diff should contain bytes_to_copy, instead
-of a boolean value, right?
+Hi Mark, 
 
-Thanks
-Yogesh
+Am resending the the patches with rebased on top of topic/qcom branch.
 
-On Wed, May 20, 2015 at 11:55 PM, Takashi Iwai <tiwai@suse.de> wrote:
+All these patches are tested and Acked.
 
-> At Tue, 19 May 2015 11:14:13 -0700,
-> Yogesh Soni wrote:
-> >
-> > Hi Takashi,
-> >
-> > Thanks for your reply. Please consider the following snippet from
-> > pcm-indirect.h.  When using other plugins (like softvol), appl_ptr was
-> > updated correctly and below code worked well. In case of dmix, The
-> samples
-> > are never copied to substream because
-> >    appl_ptr = rec->appl_ptr = diff = 0  --> rec->sw_ready = 0 .
-> >
-> > *snd_pcm_sframes_t diff = appl_ptr - rec->appl_ptr;*
-> > .....
-> > if (*diff*) {
-> > .......
-> > rec->sw_ready += (int)frames_to_bytes(runtime, diff);
-> > .......
-> > }
-> >  while (rec->hw_ready < qsize &&* rec->sw_ready > 0*) {
-> >  *copy(substream, rec, bytes);*
-> >          }
->
-> I see.  But, the free wheeling mode doesn't mean that appl_ptr is
-> always invalid.  It means nothing but we don't do any xrun checks and
-> keeps the stream running.
->
-> So, instead of checking only the stop_threshold, how about to check if
-> it's in xrun, and then use it as diff?
->
->
-> thanks,
->
-> Takashi
->
->
-> >
-> > Regards
-> > Yogesh
-> >
-> > On Tue, May 19, 2015 at 4:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > At Wed, 13 May 2015 17:12:33 -0700,
-> > > Yogesh Soni wrote:
-> > > >
-> > > > Hi all,
-> > > >
-> > > > I am trying to have dmix plugin work ( I succeeded) with the audio
-> card
-> > > > that does not have hardware mmap support and uses pcm_indirect
-> method to
-> > > > map software buffer for mmap feature.
-> > > >
-> > > > Most of the plugins were working quite well with mmap/pcm_indirect
-> combo.
-> > > > However, dmix plugin did not work (no sound). I debugged and realized
-> > > that
-> > > > appl_ptr in pcm_direct.h(snd_pcm_indirect_playback_transfer()) was
-> > > always 0
-> > > > and hence nothing got copied to slave pcm buffer. I then discovered
-> that
-> > > > dmix operates in freewheeling-mode..
-> > > >
-> > > > I have made a small workaround patch (I believe it can be cleaned
-> up) in
-> > > > case of free-wheeling mode, basically using sw_ready to hold bytes
-> that
-> > > > need to be copied. I used rec->sw_ready because it looked safest to
-> use
-> > > for
-> > > > this purpose. As a result of this patch, normally period_size bytes
-> are
-> > > > copied to pcm buffer every period and sound is playing smooth.
-> > > >
-> > > > I am a noob in alsa and linux in general. So, I would like your
-> opinion
-> > > on
-> > > > the patch. I would much prefer if I could write a patch that is
-> generic
-> > > and
-> > > > clean enough, so that it could be used by others. patch is attached.
-> > >
-> > > Thanks for reporting and the patch.
-> > >
-> > > So, what actually prevents working with the current code in the free
-> > > wheeling mode?
-> > >
-> > >
-> > > Takashi
-> > >
-> > [2  <text/html; UTF-8 (quoted-printable)>]
-> >
->
+Thankyou for reviewing the v2 patches, here is the v3 patchset after
+incorporating review comments and testing on Storm Board.
+This patchset adds apq8016 audio support into lpass driver. Existing
+Lpass driver can not be used as-it-is for apq8016 as it contains code
+specific to ipq806x. Also the driver only supports single i2s port,
+single dma channel and single bitclk control.
+
+APQ8016 has 4 MI2S( Primary, Secondary, Tertiary, Quaternary) which can be routed
+to internal wcd codec or external codecs. This routing is controlled by 2 mux
+registers.
+
+This patch series firstly re-organizes the lpass driver such that the SOC
+specific bits are moved away from the driver. And secondly the SOC specifics
+are now passed as lpass variant data which would include various register
+offsets, dma channel allocations and SOC specific clock handling.
+
+Finally the last few patchs add apq8016 lpass and machine driver.
+
+All these patches are tested for HDMI audio via adv7533 bridge and Analog audio
+on APQ8016-SBC, msm8916-mtp boards and Kenneth tested this patchset on
+ipq806x Storm board too.
+
+Changes since v2(https://lkml.org/lkml/2015/5/16/236)
+ - dropped 3 patches which are already applied by Mark.
+ - rebased on top of topic/qcom branch.
+ - changed dev_err to dev_warn spotted by Kenneth.
+ - fixed typo spotted by kenneth.
+
+Changes since v1(https://lwn.net/Articles/644266/)
+ - Fixed Kconfig dependencies spotted by Kenneth
+ - Fixed compilation error on ipq806x spotted by Kenneth
+ - Fixed clk error messages spotted by Kenneth
+
+Changes since RFC(https://lwn.net/Articles/642661/)
+ - droped cleanup patches, as they are already applied by Mark.
+ - prefixed shared functions with asoc_qcom_* as suggested by Kenneth
+ - made LPASS driver depended on OF.
+ - removed ipq806x specific bits from ipaif_reg.h
+ - removed no_osr clk flag as suggested by Mark and Kenneth
+ - fixed irq return values spotted by Kenneth
+ - renamed the machine file to apq8016-sbc.c as suggested by Kenneth.
+ - use dai->driver->id instead of dai->id as it breaks on Storm board.
+
+
+--srini
+
+Srinivas Kandagatla (10):
+  ASoC: qcom: make lpass driver depend on OF
+  ASoC: qcom: support bitclk and osrclk per i2s port
+  ASoC: qcom: make osr clock optional
+  ASoC: qcom: add dma channel control offset to variant data
+  ASoC: qcom: Add ability to handle interrupts per dma channel
+  ASoC: qcom: add bit map to track static dma channel allocations
+  ASoC: qcom: Add apq8016 lpass driver support
+  ASoC: qcom: add apq8016 sound card support
+  ASoC: qcom: Document apq8016 bindings.
+  ASoC: qcom: document apq8016 sbc machine driver bindings
+
+ .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |  61 ++++++
+ .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  13 +-
+ include/dt-bindings/sound/apq8016-lpass.h          |   9 +
+ sound/soc/qcom/Kconfig                             |  17 ++
+ sound/soc/qcom/Makefile                            |   4 +
+ sound/soc/qcom/apq8016_sbc.c                       | 215 ++++++++++++++++++
+ sound/soc/qcom/lpass-apq8016.c                     | 242 +++++++++++++++++++++
+ sound/soc/qcom/lpass-cpu.c                         |  77 +++++--
+ sound/soc/qcom/lpass-platform.c                    |  96 +++++---
+ sound/soc/qcom/lpass.h                             |  21 +-
+ 10 files changed, 692 insertions(+), 63 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+ create mode 100644 include/dt-bindings/sound/apq8016-lpass.h
+ create mode 100644 sound/soc/qcom/apq8016_sbc.c
+ create mode 100644 sound/soc/qcom/lpass-apq8016.c
+
+-- 
+1.9.1
