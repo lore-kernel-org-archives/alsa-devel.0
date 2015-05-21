@@ -1,63 +1,54 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [PATCH] ASoC: qcom: remove incorrect dependencies
-Date: Thu, 21 May 2015 14:00:00 -0700
-Message-ID: <20150521205952.GA31005@kwestfie-linux.qualcomm.com>
-References: <2324031.cqS0mEEEhQ@wuerfel>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH v2 0/8] ASoC: Intel: refactor common SST
+	IPC handling
+Date: Thu, 21 May 2015 22:14:51 +0100
+Message-ID: <1432242891.6818.26.camel@loki>
+References: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2324031.cqS0mEEEhQ@wuerfel>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, Kenneth Westfield <kwestfie@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F0392658EE
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 23:14:56 +0200 (CEST)
+In-Reply-To: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 21, 2015 at 11:07:08AM +0200, Arnd Bergmann wrote:
-> Compile-tests show a warning for the newly added SND_SOC_STORM
-> symbol:
+On Tue, 2015-05-19 at 15:00 +0530, Vinod Koul wrote:
+> This series refactors the common SST IPC code to remove some hardcoded
+> assumption which are no longer valid for future platforms like Skylake,
+> These are made configurable and right configuration applied for respective
+> drivers. The changes are mailbox sizes and dsp busy checks.
 > 
-> warning: (SND_SOC_STORM) selects SND_SOC_LPASS_CPU which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && SND_SOC_QCOM)
+> changes in v2:
+>  - fix the mem allocation for IPC mailbox
 > 
-> The problem is that it can be selected for COMPILE_TEST on non-QCOM
-> builds, but the symbols it selects have a dependency.
-> Dropping the dependencies makes it work without warnings and no
-> other side-effects, because these are not user-visible.
+> Subhransu S. Prusty (8):
+>   ASoC: Intel: Create an ops to check for DSP busy
+>   ASoC: Intel: Move the busy check to ops for Baytrail
+>   ASoC: Intel: Move the busy check to ops for HSW
+>   ASoC: Intel: Remove the direct register reference from common ipc
+>   ASoC: Intel: Allow to configure max size for mailbox data
+>   ASoC: Intel: Initialize max mailbox size for baytrail
+>   ASoC: Intel: Initialize max mailbox size for haswell
+>   ASoC: Intel: Allocate for the mailbox with max size
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Fixes: f380dd3f3cd ("ASoC: qcom: Add ability to build QCOM drivers")
-> 
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index 5f58e4f1bca9..b07f183fc47f 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -6,12 +6,10 @@ config SND_SOC_QCOM
->  
->  config SND_SOC_LPASS_CPU
->  	tristate
-> -	depends on SND_SOC_QCOM
-
-Rather than remove the dependency (which I would like to keep), would
-the following change work for SND_SOC_LPASS_CPU and
-SND_SOC_LPASS_PLATFORM?
--	depends on SND_SOC_QCOM
-+	depends on SND_SOC_QCOM || COMPILE_TEST
-
-If so, I will submit a patch (I know this has been applied already) on
-top of this one.
-
->  	select REGMAP_MMIO
->  
->  config SND_SOC_LPASS_PLATFORM
->  	tristate
-> -	depends on SND_SOC_QCOM
->  	select REGMAP_MMIO
->  
->  config SND_SOC_STORM
+>  sound/soc/intel/baytrail/sst-baytrail-ipc.c | 11 ++++++++++
+>  sound/soc/intel/common/sst-ipc.c            | 34 +++++++++++++++++++++++++----
+>  sound/soc/intel/common/sst-ipc.h            |  7 ++++--
+>  sound/soc/intel/haswell/sst-haswell-ipc.c   | 12 ++++++++++
+>  4 files changed, 58 insertions(+), 6 deletions(-)
 > 
 
--- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
