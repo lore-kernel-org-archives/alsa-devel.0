@@ -1,56 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4 v2] ASoC: rsnd: spin lock for interrupt handler
-Date: Thu, 21 May 2015 17:46:30 +0100
-Message-ID: <20150521164630.GB21577@sirena.org.uk>
-References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
- <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
- <20150521105940.GV21577@sirena.org.uk>
- <20150521161552.GT3140@localhost>
+Subject: Re: [PATCH v2 00/13] ASoC: qcom: add support to apq8016 audio
+Date: Thu, 21 May 2015 18:05:51 +0100
+Message-ID: <20150521170550.GC21577@sirena.org.uk>
+References: <1430414148-10869-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="78WCQgNEg63vc82l"
-Return-path: <linux-sh-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="KtWcatouGV9Nk9BU"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150521161552.GT3140@localhost>
-Sender: linux-sh-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
+In-Reply-To: <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---78WCQgNEg63vc82l
+--KtWcatouGV9Nk9BU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 21, 2015 at 09:45:52PM +0530, Vinod Koul wrote:
-> On Thu, May 21, 2015 at 11:59:40AM +0100, Mark Brown wrote:
+On Sat, May 16, 2015 at 01:31:02PM +0100, Srinivas Kandagatla wrote:
+> Thankyou for reviewing the v1 patches, here is the v2 patchset after
+> incorporating review comments and testing on Storm Board.
 
-> > This looks fine but I guess it depends on patch 1 otherwise more errors
-> > will be introduced?
+Please don't send new serieses in reply to old ones, it makes them
+harder to notice.
 
-> The 1st one looks good to me and was about to apply, but saw this and to
-> sync would you the 1st patch thru ASoC tree or fine with me applying that
-> one
-
-Morimoto-san, do the two patches need to go through the same tree?  I
-guess it's better to have them both in the ASoC tree given how much work
-you're doing on these drivers.  Vinod, do you want to apply and send a
-pull request or do you just want to ack?
-
---78WCQgNEg63vc82l
+--KtWcatouGV9Nk9BU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXgvmAAoJECTWi3JdVIfQWXAH/iZctSRpTquEQMVPjhF57DWo
-sqvD/ABzXJSPja69I1U/mVxqJ4aOt0IFhSowehzviEbhFZ9HaUqh4ZpbDmt3VkGp
-xgAihIqu8nZREZoa/MmIy+E1UI1Vmg4AsivN88kU74Hc7KjHiv5l6P5AnucHfoMv
-M4vbz/6mZCqwaGUsTsm6JJEszhtvvsTF06i8PbFakzmttEAr+mzDwesDRIUh7hQ/
-hR3AoLZtxxHQOcruSr4SygVeZW5C7vNFas+4bod269gLS8TWT470pdknHBPGAu74
-ktOiCSAYiEX8m9Gg1fjPsHPl43yuB+QgnuiVVFqBsdFjPf3tY0yH7zGajP08P5c=
-=foG7
+iQEcBAEBCAAGBQJVXhBuAAoJECTWi3JdVIfQ6nwIAITbLGZvTBeB4ol1CNk6LYy5
+nkQznUY1QrYGQqJel+WAhIOzkDZ1uNU6N0JDR/sHAtNJsS5J/zu49qHY1sJAxtOL
+bNX4SbNhwOV0pdMwAshPXJv4PrhRSbOvLjRX7af0KK45bTsnBNL37SaYTivY5sXT
+x2kE0IBHEONEpXGVMlNZx7t13djvVVyfTyoPHxjBZxy2NIao6P+TGgVCk+kR9PKa
+CS8qHOoDDsUCRuMxKZyVQ7pX1suZ3nvHz4n2aqGTk0E41maO107/tjnKiBnBXUqq
+cv02Fs6h+dqderNVIag8Hfeacv8SZNu/xi9GRuT+8m0Aw8vi6YsNtPKa4lALc8I=
+=uVdR
 -----END PGP SIGNATURE-----
 
---78WCQgNEg63vc82l--
+--KtWcatouGV9Nk9BU--
