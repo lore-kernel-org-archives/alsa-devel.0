@@ -1,83 +1,35 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Assert in pcm_params.c
-Date: Thu, 21 May 2015 16:56:04 +0100
-Message-ID: <201505211656.04334.gineera@aspect135.co.uk>
-References: <201504180908.47022.gineera@aspect135.co.uk>
- <201505192022.50591.gineera@aspect135.co.uk> <s5h4mn7u54s.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 4/4 v2] ASoC: rsnd: spin lock for interrupt handler
+Date: Thu, 21 May 2015 21:45:52 +0530
+Message-ID: <20150521161552.GT3140@localhost>
+References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
+ <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
+ <20150521105940.GV21577@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 4.array2.smtp.34sp.com (4.array2.smtp.34sp.com [46.183.8.157])
- by alsa0.perex.cz (Postfix) with ESMTP id DCB372614F6
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 17:55:47 +0200 (CEST)
-Received: from smtpauth2.array1.smtp.34sp.com (lvs3.34sp.com [80.82.124.221])
- by 4.array2.smtp.34sp.com (Postfix) with ESMTP id 2C2C99F39E
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:55:43 +0100 (BST)
-In-Reply-To: <s5h4mn7u54s.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20150521105940.GV21577@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkbmVzZGF5IDIwIE1heSAyMDE1IDA3OjM2LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gQXQg
-VHVlLCAxOSBNYXkgMjAxNSAyMDoyMjo1MCArMDEwMCwKPgo+IEFsYW4gSG9yc3RtYW5uIHdyb3Rl
-Ogo+ID4gT24gVHVlc2RheSAxOSBNYXkgMjAxNSAxMzowMSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
-ID4gPiBBdCBGcmksIDEgTWF5IDIwMTUgMDg6MzY6NDcgKzAxMDAsIEFsYW4gSG9yc3RtYW5uIHdy
-b3RlOgo+ID4gPiA+IEEgbWluaW1hbCBzZWxmLWNvbnRhaW5lZCBkZW1vIHByb2dyYW0gKCd0ZXN0
-LWZvcm1hdCcpIGhhcyBiZWVuCj4gPiA+ID4gZGV2ZWxvcGVkIGFuZCBpcyBhdHRhY2hlZCwgdGhh
-dCBkZW1vbnN0cmF0ZXMgdGhlIGlzc3VlIDEwMCUgb24gdGhlCj4gPiA+ID4gcmVwb3J0ZXJzIG1h
-Y2hpbmUgKEhEQS1JbnRlbCwgNi1jaCBJIGJlbGlldmUpLiAgVGhlIG91dHB1dCBpczoKPiA+ID4g
-Pgo+ID4gPiA+IHJvb3RAWGVvbjovaG9tZS9wYXRlc3QjIC4vdGVzdC1mb3JtYXQKPiA+ID4gPiBU
-ZXN0aW5nIGRldmljZSBmcm9udAo+ID4gPiA+IE51bSBjaGFubmVscyA2Cj4gPiA+ID4gVGVzdGlu
-ZyByYXRlOiAyMjA1MCDCoCBSZXN1bHQ6Li4uSW52YWxpZCBTYW1wbGUgUmF0ZQo+ID4gPiA+IFRl
-c3RpbmcgcmF0ZTogMzIwMDAgwqAgUmVzdWx0Oi4uLkludmFsaWQgU2FtcGxlIFJhdGUKPiA+ID4g
-PiB0ZXN0LWZvcm1hdDogcGNtX3BhcmFtcy5jOjIyNDk6IHNuZDFfcGNtX2h3X3BhcmFtc19zbGF2
-ZTogQXNzZXJ0aW9uCj4gPiA+ID4gYGVycgo+ID4gPiA+Cj4gPiA+ID4gPj0gMCcgZmFpbGVkLgo+
-ID4gPiA+Cj4gPiA+ID4gVGVzdGluZyByYXRlOiA0NDEwMCDCoCBBYm9ydGVkCj4gPiA+ID4KPiA+
-ID4gPiBBbHNhLWluZm8gaXMgYXQ6Cj4gPiA+ID4KPiA+ID4gPiBodHRwOi8vd3d3LmFsc2EtcHJv
-amVjdC5vcmcvZGIvP2Y9MTlkZmVlZTI5ZjczMDA3ZTYxYTAwYThmYWJlM2M5NThmN2MKPiA+ID4g
-PmI4ZTggNwo+ID4gPiA+Cj4gPiA+ID4gVGhpcyBhcHBhcmVudGx5IGhhcHBlbnMgd2l0aCBvciB3
-aXRob3V0IFB1bHNlYXVkaW8gcnVubmluZywgd2l0aCBqdXN0Cj4gPiA+ID4gdGhlIHNpbmdsZSA0
-NDEwMCByYXRlLCBhbmQgYWxzbyB3aXRoIHN1cnJvdW5kIGRldmljZXMuICBBbHNvLCBvbiBhbGwK
-PiA+ID4gPiBjdXJyZW50IERlYmlhbiBhbmQgVWJ1bnR1IC0gd2UgaGF2ZSBmb2N1c2VkIG9uIEpl
-c3NpZS4KPiA+ID4gPgo+ID4gPiA+IEkgZG8gbm90IGhhdmUgYSBtYWNoaW5lIHdpdGggc2ltaWxh
-ciBoYXJkd2FyZSwgc28gY2Fubm90IGR1cGxpY2F0ZQo+ID4gPiA+IHRoZSByZXN1bHRzLgo+ID4g
-PiA+Cj4gPiA+ID4gQW55IGNvbW1lbnRzLCBpZGVhcyBldGMgd291bGQgYmUgYXBwcmVjaWF0ZWQu
-Cj4gPiA+Cj4gPiA+IEkgYWxzbyBjYW4ndCByZXByb2R1Y2UgdGhpcy4gIFNvIHRoaXMgbXVzdCBi
-ZSBwcmV0dHkgc3BlY2lmaWMgdG8gdGhlCj4gPiA+IHNldHVwLgo+ID4gPgo+ID4gPiBDb3VsZCB5
-b3UgZ2l2ZSB0aGUgZXhhY3QgY29uZGl0aW9uIHRvIHRyaWdnZXIgdGhlIHByb2JsZW0/ICBBbHNv
-LCB0aGlzCj4gPiA+IGhhcHBlbnMgY2VydGFpbmx5IHdpdGggdGhlIGxhdGVzdCBhbHNhLWxpYj8K
-PiA+Cj4gPiBUaGFua3MgZm9yIHRha2luZyBhIGxvb2suICBKdXN0IGNvbXBpbGluZyBhbmQgcnVu
-bmluZyB0aGF0IHRlc3QgcHJvZ3JhbSwKPiA+IG9uIHRoZSByZXBvcnRlcidzIG1hY2hpbmUsIHdo
-aWNoIGhhcyBzb21lIHNvcnQgb2YgbXVsdGktY2hhbm5lbAo+ID4gSERBLUludGVsLCBpcyAxMDAl
-IHJlcHJvZHVjaWJsZS4gVGhlIEFsc2EtbGliIG11c3QgYmUgdGhlIG9uZSBwcm92aWRlZCBieQo+
-ID4gRGViaWFuIEplc3NpZSAod2hpY2ggd2FzIHJlbGVhc2VkIDI1LjQuMjAxNSk7IDEuMC4yOCBJ
-IHRoaW5rLiAgRG9lcyB0aGUKPiA+IEFsc2EtaW5mbyBnaXZlIGVub3VnaCBkZXRhaWxzIC0gSSBj
-YW4gYXNrIGFueSBzcGVjaWZpYyBxdWVzdGlvbnMuCj4gPgo+ID4gSG93ZXZlciwgUmF5bW9uZCBz
-ZWVtcyB0byBoYXZlIHNvbWUgaWRlYXMgb2YgYSBwb3NzaWJsZSBjYXVzZSwgaW4KPiA+IGNvbm5l
-Y3Rpb24gd2l0aCBhcmJpdHJhcnkgcGVyaW9kIHNpemUgYW5kIHNvZnR2b2w7IGlzIHRoYXQgcGxh
-dXNpYmxlPwo+Cj4gUG9zc2libHksIGJ1dCBJIHdvbmRlciB3aHkgSSBjb3VsZG4ndCBzZWUgaXQg
-d2hlbiBJIHRyaWVkIHdpdGgKPiBkaWZmZXJlbnQgbW9kdWxlIG9wdGlvbnMuCj4KPiBJbiBhbnl3
-YXksIHRoZSBmaXggd291bGQgYmUgc2ltcGxlLCB0aGUgcGF0Y2ggbGlrZSBiZWxvdy4gIENvdWxk
-IHlvdQo+IGNoZWNrIHdoZXRoZXIgaXQgYWN0dWFsbHkgZml4ZXMgeW91ciBpc3N1ZT8KCkkndmUg
-aGFkIGEgcG9zaXRpdmUgY29uZmlybWF0aW9uIHRoYXQgdGhlIHBhdGNoIHJlbW92aW5nIHRoZSBh
-c3NlcnRzIGRvZXMgZml4IAp0aGUgJ2NyYXNoJyBpbiB0aGUgcmVwb3J0ZXIncyBzeXN0ZW0uICBT
-byBpbnN0ZWFkIGl0IGlzIHNpbXBseSBhIGZhaWx1cmUgb2YgCnRoZSBzbmRfcGNtX2h3X3BhcmFt
-cygpIGNhbGwsIHdoaWNoIHVsdGltYXRlbHkgY2FuIGJlIGhhbmRsZWQgaW4gdGhlIHVzZXJzIApj
-b2RlLgoKSSBkbyB3b25kZXIgKGFzIGRvZXMgUmF5bW9uZCkgd2h5IHRoaXMgZmFpbHMuICBJcyA2
-LWNoYW5zIGV4cGVjdGVkIHRvIGZhaWwgb24gCidmcm9udCc/ICBJbiBwYXJ0aWN1bGFyIHRoZSBl
-YXJsaWVyIHNldHRpbmcgb2YgY2hhbm5lbHMvcmF0ZS9mb3JtYXQgZG9lcyBub3QgCmZhaWw/ICBQ
-ZXJoYXBzIEkgd2lsbCBhc2sgZm9yIFJVTEVTX0RFQlVHIGVuYWJsZWQ/CgpSZWdhcmRzCgpBbGFu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, May 21, 2015 at 11:59:40AM +0100, Mark Brown wrote:
+> On Thu, May 21, 2015 at 03:50:23AM +0000, Kuninori Morimoto wrote:
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > Renesas R-Car driver interrupt handler was not locked before.
+> > But now, SSI/SRC interrupt handler calls restart function
+> > which should be called under spin lock.
+> > Below error might happen witout this patch.
+> 
+> This looks fine but I guess it depends on patch 1 otherwise more errors
+> will be introduced?
+The 1st one looks good to me and was about to apply, but saw this and to
+sync would you the 1st patch thru ASoC tree or fine with me applying that
+one
+
+-- 
+~Vinod
