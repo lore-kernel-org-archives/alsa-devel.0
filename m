@@ -1,47 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 04/13] ASoC: qcom: remove hardcoded dma channel
-Date: Thu, 21 May 2015 21:12:01 +0100
-Message-ID: <20150521201201.GH21577@sirena.org.uk>
-References: <1431779462-1732-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1431779554-1992-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Assert in pcm_params.c
+Date: Fri, 22 May 2015 04:29:40 +0800
+Message-ID: <CAN8cciahbz-BbySy_0CUxDZ8Ce4cmv7DX48wdbuXfGGj8=x2KQ@mail.gmail.com>
+References: <201504180908.47022.gineera@aspect135.co.uk>
+ <201505192022.50591.gineera@aspect135.co.uk>
+ <s5h4mn7u54s.wl-tiwai@suse.de>
+ <201505211656.04334.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WVhxcSV8VTJlfoH7"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1431779554-1992-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
+ [209.85.214.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id E633626587B
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 22:29:41 +0200 (CEST)
+Received: by obfe9 with SMTP id e9so68986757obf.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 13:29:41 -0700 (PDT)
+In-Reply-To: <201505211656.04334.gineera@aspect135.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> I've had a positive confirmation that the patch removing the asserts does
+fix
+> the 'crash' in the reporter's system.  So instead it is simply a failure
+of
+> the snd_pcm_hw_params() call, which ultimately can be handled in the users
+> code.
+>
+> I do wonder (as does Raymond) why this fails.  Is 6-chans expected to
+fail on
+> 'front'?  In particular the earlier setting of channels/rate/format does
+not
+> fail?  Perhaps I will ask for RULES_DEBUG enabled?
+>
+>
 
---WVhxcSV8VTJlfoH7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, May 16, 2015 at 01:32:34PM +0100, Srinivas Kandagatla wrote:
-> This patch removes hardcoded dma channel value in lpass driver, Now the
-> dma channel allocation happens in the SOC specific layer. This will
-> allow different LPASS integrations to use the lpass driver in more
-> generic way.
-
-Applied, thanks.
-
---WVhxcSV8VTJlfoH7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVXjwRAAoJECTWi3JdVIfQrtUH/0aOd5z5G1Wro8yAqC2w7BRY
-21Nu7PYtZjOCiDSxBSKZUxYv1nE1blfxoX44npOuGBukE5340dO9BCChOcMpwsKn
-FcTQRJXdg7EPPV9na+o9pw64sLFe+nnRi3Ynv2bZdnSLud64kD7y+6pMUMfzBUj6
-xNmtTA7N1j6clsfhZOif87L7SE8Q/+QhirQUQ8Y4SdERDaM5TP93+vd8KT2FluFf
-mHS+FP1qnQeoapchAsTUnP/E7fFCWt1X+igxY6Wu8WQUBlPtZcWKgf1mMdKixQsV
-ZICsBO52PdGTEtuzXGyaAUZ9MC52JcJdhUXn41ptN4oNNWvSzGGMQAn0sAJYwcg=
-=vTiq
------END PGP SIGNATURE-----
-
---WVhxcSV8VTJlfoH7--
+period_max is only 32 , this mean that some combination are not possible
