@@ -1,73 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2 v2] ASoC: soc-pcm: DPCM cares BE format
-Date: Fri, 22 May 2015 13:38:49 +0100
-Message-ID: <20150522123849.GT21391@sirena.org.uk>
-References: <87wq0ebllq.wl%kuninori.morimoto.gx@renesas.com>
- <87vbfyblke.wl%kuninori.morimoto.gx@renesas.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH 10/13] sound/core: add DRM ELD helper
+Date: Fri, 22 May 2015 14:15:35 +0100
+Message-ID: <20150522131534.GF2067@n2100.arm.linux.org.uk>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
+ <20150522122009.GK21391@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4312191578420322610=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 10EBE265B69
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:08:20 +0200 (CEST)
-In-Reply-To: <87vbfyblke.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20150522122009.GK21391@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4312191578420322610==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qKhyKP9HH88saeqA"
-Content-Disposition: inline
-
-
---qKhyKP9HH88saeqA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, May 12, 2015 at 02:03:33AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current DPCM is caring only FE format. but it will be no sound
-> if FE/BE was below style, and user selects S24_LE format.
-
-Applied, thanks.
-
---qKhyKP9HH88saeqA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVXyNYAAoJECTWi3JdVIfQVfwH/0Swih9qcRRTt88nndzaU/kQ
-WB6YjOANt3Bq6LgYnMEmwbBw719XIp2jPgOMLfsJlvQ+b6kWEYIccKC9CDZoYbGN
-ya9UM1Rpe+MSgE3o8FYpCnSn1kj8dIp9n5AIDbpBc41dAQ8KJ//TJ0jiYU+EDHPz
-7q2hpg0kmDo+oJEvRTm6tJBSY78wS+5QT845Bx5VtOFnu1zbPvDyfx5qHmLBXnAe
-XajfcvHuIymXCxQBmvPngQZrfu0Hzw0blW6iAOQb00MemVTXLIztBR3rPh8oOSr2
-CNgKFKlAlA9NXuy3ri/USSzJnr5YypvNK2w8gcFAq3uOBmHSl1EsKWjDKtvYNmg=
-=gC6n
------END PGP SIGNATURE-----
-
---qKhyKP9HH88saeqA--
-
---===============4312191578420322610==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4312191578420322610==--
+T24gRnJpLCBNYXkgMjIsIDIwMTUgYXQgMDE6MjA6MDlQTSArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBPbiBTYXQsIE1heSAwOSwgMjAxNSBhdCAxMToyNjo0MkFNICswMTAwLCBSdXNzZWxsIEtp
+bmcgd3JvdGU6Cj4gPiBBZGQgYSBoZWxwZXIgZm9yIHRoZSBFRElEIGxpa2UgZGF0YSBzdHJ1Y3R1
+cmUsIHdoaWNoIGlzIHR5cGljYWxseSBwYXNzZWQKPiA+IGZyb20gYSBIRE1JIGFkYXB0ZXIgdG8g
+aXRzIGFzc29jaWF0ZWQgYXVkaW8gZHJpdmVyLiAgVGhpcyBpbmZvcm1zIHRoZQo+ID4gYXVkaW8g
+ZHJpdmVyIG9mIHRoZSBjYXBhYmlsaXRpZXMgb2YgdGhlIGF0dGFjaGVkIEhETUkgc2luay4KPiAK
+PiBBcyBmYXIgYXMgSSBjYW4gdGVsbCBwZW9wbGUgYXJlIGZhaXJseSBoYXBweSB3aXRoIHRoZSBp
+bXBsZW1lbnRhdGlvbgo+IGhlcmUgYW5kIHVubGVzcyBJJ20gbWlzc2luZyBzb21ldGhpbmcgYXJl
+IGRlZmluaXRlbHkgaGFwcHkgd2l0aCB0aGUKPiBpbnRlcmZhY2UuICBJZiB0aGF0J3MgdGhlIGNh
+c2UgY2FuIHdlIGdldCB0aGlzIGludG8gLW5leHQ/ICBUaGVyZSdzIGEKPiBsb3Qgb2YgaW50ZXJl
+c3QgaW4gSERNSSByaWdodCBub3cgKHdoaWNoIGlzIGdyZWF0KSBhbmQgdGhpcyB3b3VsZCBiZQo+
+IGhlbHBmdWwgZm9yIHRoYXQsIGl0IHNlZW1zIGxpa2UgZXZlbiBpZiB0aGVyZSBhcmUgaXNzdWVz
+IHdpdGggdGhlCj4gaW1wbGVtZW50YXRpb24gaXQgd291bGQgYmUgd29ydGggbWVyZ2luZyBhcyBp
+cyBzbyB3ZSBjYW4gc3RhcnQgYWRkaW5nCj4gdXNlcnMgYW5kIHRoZW4gZG8gYW55IGltcHJvdmVt
+ZW50cyB0byB0aGUgaW50ZXJmYWNlIGluIHBhcmFsbGVsLgo+IAo+IEZyb20gYW4gaW50ZXJmYWNl
+IHBvaW50IG9mIHZpZXc6Cj4gCj4gUmV2aWV3ZWQtYnk6IE1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
+bmVsLm9yZz4KCkknZCBiZSBtb3JlIHRoYW4gaGFwcHkgaWYgVGFrYXNoaSBJd2FpIHdhbnRzIHRv
+IHRha2UgdGhlbSAtIEknbSBub3QKcGxhbm5pbmcgb24gdGhlIGF1ZGlvIGRyaXZlciBpdHNlbGYg
+YmVpbmcgbWVyZ2VkIGp1c3QgeWV0IGFzIHdlIHN0aWxsCm5lZWQgdG8gcHJvcGVybHkgaGFtbWVy
+IG91dCB0aGUgZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUgQUhCIGF1ZGlvIChmb3IKaU1YNikgYW5k
+IEkyUyBhdWRpbyAoZm9yIFJvY2tjaGlwKSBmb3IgdGhpcyBkZXZpY2UuCgpBbHRlcm5hdGl2ZWx5
+LCBJIGNvdWxkIG1vdmUgdGhlc2UgdHdvIHBhdGNoZXMgdG8gdGhlIGJlZ2lubmluZyBvZiBteQpz
+ZXJpZXMsIGFuZCBtZXJnZSB0aGF0IHBvaW50IGludG8gbXkgZm9yLW5leHQgYW5kL29yIHB1Ymxp
+c2ggaXQgYXMgYQpzZXBhcmF0ZSBzdWItYnJhbmNoLi4uIHdoYXRldmVyIHBlb3BsZSB3YW50LCBq
+dXN0IGxldCBtZSBrbm93LgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1
+cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVz
+dC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
+aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
