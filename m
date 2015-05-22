@@ -1,104 +1,65 @@
-From: =?UTF-8?Q?jean=2Dno=C3=ABl_chardron?= <rondrach@gmail.com>
-Subject: Re: how to ask you to write a new ALSA driver
-Date: Fri, 22 May 2015 12:26:19 +0200
-Message-ID: <CABi1v2aDQmw+aw2ewkgGevtexioeHoXT0aX2rTwuLwHvCG3eYA@mail.gmail.com>
-References: <CABi1v2YRv3g1VU0OCJVZ3+zdKyAotyMn7dSmuQ-E+ug7uMboOQ@mail.gmail.com>
- <20150522111040.e517d4743fb51514762f1e61@ao2.it>
- <CABi1v2ZMZ=b+kRrGOgyN+tBOJ81j5vaY96yO4OJ9Kik2VxrDvg@mail.gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 01/10] ASoC: qcom: make lpass driver depend on OF
+Date: Fri, 22 May 2015 12:53:44 +0100
+Message-ID: <555F18C8.8090902@linaro.org>
+References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org> <1432245161-8990-1-git-send-email-srinivas.kandagatla@linaro.org> <2534276.hIjFJK74Zh@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f179.google.com (mail-ob0-f179.google.com
- [209.85.214.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 739AE261B14
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 12:26:20 +0200 (CEST)
-Received: by obbnx5 with SMTP id nx5so10023903obb.0
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 03:26:19 -0700 (PDT)
-In-Reply-To: <CABi1v2ZMZ=b+kRrGOgyN+tBOJ81j5vaY96yO4OJ9Kik2VxrDvg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <2534276.hIjFJK74Zh@wuerfel>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNS0wNS0yMiAxMjowNCBHTVQrMDI6MDAgamVhbi1ub8OrbCBjaGFyZHJvbiA8cm9uZHJhY2hA
-Z21haWwuY29tPjoKCj4gVGhhbmsgeW91IGZvciB5b3VyIGFuc3dlciwKPgo+Cj4gMjAxNS0wNS0y
-MiAxMToxMCBHTVQrMDI6MDAgQW50b25pbyBPc3BpdGUgPGFvMkBhbzIuaXQ+Ogo+Cj4+IE9uIFRo
-dSwgMjEgTWF5IDIwMTUgMTI6Mjg6MDAgKzAyMDAKPj4gamVhbi1ub8OrbCBjaGFyZHJvbiA8cm9u
-ZHJhY2hAZ21haWwuY29tPiB3cm90ZToKPj4KPj4gPiBoZWxsbywKPj4gPgo+PiA+IExhc3Qgd2Vl
-ayBJIGdvdCBhIEtvbXBsZXQgQXVkaW8gNiBmcm9tIE5hdGl2ZSBpbnRydW1lbnRzLgo+PiA+IFRo
-ZSBkcml2ZXIgZXhpc3QgaW4gQUxTQSBkcml2ZXIgZm9yIHRoaXMga2luZyBvZiBpbnRlcmZhY2Ug
-YXVkaW8KPj4gPiAoc25kLXVzYi1hdWRpbykgKHRoYW5rcyBmb3IgdGhlIHRlYW0gd2hvIHdyaXRl
-IHRoaXMpIGJ1dCBmb3IgdGhlIG1vZGVsCj4+ID4gd2hlcmUgSWQgVmVuZG9yIGlzIDB4MTdjYyBh
-bmQgSWQgcHJvZHVjdCBpcyAweDEwMDAuCj4+ID4KPj4gPiBUaGUgS0E2IHRoYXQgSSBnb3QgaGFz
-IG5vdCB0aGUgc2FtZSBJRCBwcm9kdWN0ICgweDEwMDEpIHRoZXJlZm9yZSBJCj4+IGRvbid0Cj4+
-ID4gaGF2ZSBhbnkgZGV2aWNlIGNhcHR1cmUgZXZlbiB3aXRoIHRoZSBkcml2ZXIgc25kLXVzYi1h
-dWRpby4KPj4gPgo+PiA+IFRoZSBjaGFsbGVuZ2UgaXMgdG8gd3JpdGUgdGhlIG1vZGlmaWNhdGlv
-biBmb3IgdGhpcyBuZXcgbW9kZWwuCj4+ID4gV2hvIGNvdWxkIGRvIHRoYXQgPwo+Pgo+PiBZb3Ug
-Y2FuIHRyeSB5b3Vyc2VsZi4KPj4KPiBodW0sIGl0J3MgaW5kZWVkIGJleW9uZCBteSBrbm93bGVk
-Z2UKPgo+Cj4+Cj4+IElmIHlvdSBrbm93IG9yIHN1c3BlY3QgdGhhdCB5b3VyIGRldmljZSBpcyBz
-aW1pbGFyIHRvIHRoZSBzdXBwb3J0ZWQgb25lcwo+PiBsb29rIHdoZXJlIHRoZSAweDE3Y2MgdmVu
-ZG9yIGlkIGlzIHVzZWQgYW5kIHRyeSB0byBmb2xsb3cgdGhlIGV4aXN0aW5nCj4+IGNvZGUsIGFu
-ZCB0cnkgdG8gY29tZSB1cCB3aXRoIHRoZSBfbWluaW11bV8gYW1vdW50IG9mIGNoYW5nZXMgcmVx
-dWlyZWQgdG8KPj4gbWFrZSB0aGUgZGV2aWNlIHdvcmsuCj4+Cj4+IEZvciBpbnN0YW5jZSwgYWZ0
-ZXIgYSAiZ2l0IGdyZXAgMHgxN2NjIC0tIHNvdW5kLyIgSSBjYW1lIHVwIHdpdGggdGhpcwo+PiBk
-aWZmOgo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIGIvc291bmQv
-dXNiL3F1aXJrcy10YWJsZS5oCj4+IGluZGV4IDJmNmQzZTkuLmQyNTRiMTQgMTAwNjQ0Cj4+IC0t
-LSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAo+PiArKysgYi9zb3VuZC91c2IvcXVpcmtzLXRh
-YmxlLmgKPj4gQEAgLTI3NDAsNiArMjc0MCwxMiBAQCBZQU1BSEFfREVWSUNFKDB4NzAxMCwgIlVC
-OTkiKSwKPj4gICAgICAgICAuaWRQcm9kdWN0ID0gMHgxMDAwLAo+PiAgfSwKPj4gIHsKPj4gKyAg
-ICAgICAvKiBLb21wbGV0ZSBBdWRpbyA2ICovCj4+ICsgICAgICAgLm1hdGNoX2ZsYWdzID0gVVNC
-X0RFVklDRV9JRF9NQVRDSF9ERVZJQ0UsCj4+ICsgICAgICAgLmlkVmVuZG9yID0gMHgxN2NjLAo+
-PiArICAgICAgIC5pZFByb2R1Y3QgPSAweDEwMDEsCj4+ICt9LAo+PiArewo+PiAgICAgICAgIC8q
-IFRyYWt0b3IgQXVkaW8gNiAqLwo+PiAgICAgICAgIC5tYXRjaF9mbGFncyA9IFVTQl9ERVZJQ0Vf
-SURfTUFUQ0hfREVWSUNFLAo+PiAgICAgICAgIC5pZFZlbmRvciA9IDB4MTdjYywKPj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwo+PiBpbmRleCA3
-YzVhNzAxLi4yZjllZTgyNCAxMDA2NDQKPj4gLS0tIGEvc291bmQvdXNiL3F1aXJrcy5jCj4+ICsr
-KyBiL3NvdW5kL3VzYi9xdWlya3MuYwo+PiBAQCAtMTAwNyw2ICsxMDA3LDcgQEAgaW50IHNuZF91
-c2JfYXBwbHlfYm9vdF9xdWlyayhzdHJ1Y3QgdXNiX2RldmljZSAqZGV2LAo+PiAgICAgICAgICAg
-ICAgICAgcmV0dXJuIHNuZF91c2JfYWNjZXNzbXVzaWNfYm9vdF9xdWlyayhkZXYpOwo+Pgo+PiAg
-ICAgICAgIGNhc2UgVVNCX0lEKDB4MTdjYywgMHgxMDAwKTogLyogS29tcGxldGUgQXVkaW8gNiAq
-Lwo+PiArICAgICAgIGNhc2UgVVNCX0lEKDB4MTdjYywgMHgxMDAxKTogLyogS29tcGxldGUgQXVk
-aW8gNiAqLwo+PiAgICAgICAgIGNhc2UgVVNCX0lEKDB4MTdjYywgMHgxMDEwKTogLyogVHJha3Rv
-ciBBdWRpbyA2ICovCj4+ICAgICAgICAgY2FzZSBVU0JfSUQoMHgxN2NjLCAweDEwMjApOiAvKiBU
-cmFrdG9yIEF1ZGlvIDEwICovCj4+ICAgICAgICAgICAgICAgICByZXR1cm4gc25kX3VzYl9uYXRp
-dmVpbnN0cnVtZW50c19ib290X3F1aXJrKGRldik7Cj4+Cj4KPgo+Cj4KPj4gSG93ZXZlciB3aXRo
-b3V0IGtub3dpbmcgdGhlIGRldmljZSBJIGFtIG5vdCBzdXJlIGlmIHRoZSBzZWNvbmQgY2hhbmdl
-IGlzCj4+IHN0cmljdGx5IG5lY2Vzc2FyeSwgb3IgaWYgdGhlIHR3byBhcmUgZXZlbiBlbm91Z2gu
-Cj4+Cj4+IFNvIHBsZWFzZSB0cnkgdG8gYXBwbHkgb25lIG9mIHRoZW0gYXQgdGhlIHRpbWUsIHJl
-Y29tcGlsZSwgdGVzdCwgYW5kIGxldAo+PiB1cyBrbm93Lgo+Pgo+PiBJIGhhdmUgdHJpZWQgdGhh
-dCB5b3Ugd3JpdGUgaW4gZmlyc3QgIHdpdGggbm8gbHVjay4KPiBJIGVkaXQgdGhlIGZpbGVzIDoK
-Pgo+IGVkaXQgOnF1aXJrcy5jIGFuZCB8IG9yIHF1aXJrcy10YWJsZS5oIC0+IHJlc3VsdAo+IGVk
-aXQgOiAgIHllcyAgICAgICAgYW5kICAgICAgeWVzICAgICAgIC0+IGVyciA9IC0xMSBpbiBzbmQt
-dXNiLWF1ZGlvCj4gZWRpdCA6ICAgbm8gICAgICAgICAgICAgICAgICB5ZXMgICAgICAgLT4gZHJp
-dmVyIG5vdCBsb2FkaW5nCj4gZWRpdCA6ICAgeWVzICAgICAgICAgICAgICAgICBubyAgICAgICAg
-LT4gZXJyID0tMjIKPiBlZGl0IDogICBubyAgICAgICAgICAgICAgICAgIG5vICAgICAgICAtPiBk
-cml2ZXIgbG9hZCBidXQgbm8gZGV2aWNlIGNhcHR1cmUKPgo+Cj4KPj4gPiBJZiBuZWNlc3Nhcnkg
-SSBjb3VsZCBzZW5kIGxvZywgY29tcGlsZSBrZXJuZWwgc291cmNlIGFuZCBzbyBvbi4KPj4gPiB0
-aGFua3MsCj4+Cj4+IEtlZXAgbG9ncyBiZWZvcmUgYW5kIGFmdGVyIGNoYW5nZXMgeW91IG1ha2Ug
-c28gdGhhdCB5b3UgY2FuIGNvbXBhcmUgdGhlCj4+IHJlc3VsdCBvZiB0aGUgY2hhbmdlcy4KPj4K
-Pj4gQ2lhbywKPj4gICAgQW50b25pbwo+Pgo+PiAtLQo+PiBBbnRvbmlvIE9zcGl0ZQo+PiBodHRw
-Oi8vYW8yLml0Cj4+Cj4+IEE6IEJlY2F1c2UgaXQgbWVzc2VzIHVwIHRoZSBvcmRlciBpbiB3aGlj
-aCBwZW9wbGUgbm9ybWFsbHkgcmVhZCB0ZXh0Lgo+PiAgICBTZWUgaHR0cDovL2VuLndpa2lwZWRp
-YS5vcmcvd2lraS9Qb3N0aW5nX3N0eWxlCj4+IFE6IFdoeSBpcyB0b3AtcG9zdGluZyBzdWNoIGEg
-YmFkIHRoaW5nPwo+Pgo+Cj4KSSBmb3JnZXQgOiB0b28sIEkgaGF2ZSB0cmllZCB0byBlZGl0IHRo
-ZSBmaWxlICBpbiBzb3VuZC91c2IvY2FpYXEvZGV2aWNlLmMKdG8gYWN0aXZlIHRoZSBzbmQtdXNi
-LWNhaWFxIGRyaXZlciBhbmQgYWRkIHRoZSBLQTYgIGRldmljZSB3aXRoIG5vIG1vcmUKbHVjay4K
-ZGlmZiBkZXZpY2UuaC5vbGQgZGV2aWNlLmgKMjBhMjEKPiAjZGVmaW5lIFVTQl9QSURfS0E2IDB4
-MTAwMQoKZGlmZiBkZXZpY2UuYy5vbGQgZGV2aWNlLmN+CjU0YTU1Cj4gICJ7TmF0aXZlIEluc3Ry
-dW1lbnRzLEtvbXBsZXRlIEF1ZGlvIDYgdjJ9LCIKMTQ4YTE1MCwxNTQKPiB9LAo+IHsKPiAubWF0
-Y2hfZmxhZ3MgPSAgVVNCX0RFVklDRV9JRF9NQVRDSF9ERVZJQ0UsCj4gLmlkVmVuZG9yID0gICAg
-IFVTQl9WSURfTkFUSVZFSU5TVFJVTUVOVFMsCj4gLmlkUHJvZHVjdCA9ICAgIFVTQl9QSURfS0E2
-CgoKbWFueSBlcnJvcnMgaW4gbG9ncyB3aXRoIGVycm9yIC01IGFuZCBjb21wbGFpbnQgYWJvdXQg
-ImNhbid0IHNldCBhbHQKaW50ZXJmYWNlIgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Thanks for looking at this patch.
+
+On 22/05/15 08:24, Arnd Bergmann wrote:
+> On Thursday 21 May 2015 22:52:41 Srinivas Kandagatla wrote:
+>>
+>>   config SND_SOC_LPASS_CPU
+>>          tristate
+>> +       depends on OF
+>>          select REGMAP_MMIO
+>>
+>>   config SND_SOC_LPASS_PLATFORM
+>>          tristate
+>> +       depends on OF
+>>          select REGMAP_MMIO
+>>
+>>   config SND_SOC_LPASS_IPQ806X
+>>
+>
+> Could you instead make the drivers compile without OF being set?
+>
+> I see that patch 7 and 8 introduces another two options doing
+>
+>
+> +config SND_SOC_LPASS_APQ8016
+> +       tristate
+> +       depends on SND_SOC_QCOM
+> +       select SND_SOC_LPASS_CPU
+> +       select SND_SOC_LPASS_PLATFORM
+> +
+>
+> +config SND_SOC_APQ8016_SBC
+> +       tristate "SoC Audio support for APQ8016 SBC platforms"
+> +       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
+> +       select SND_SOC_LPASS_APQ8016
+> +       help
+>
+> so you get an obvious build failure here when SND_SOC_APQ8016_SBC
+> gets selected with COMPILE_TEST on a platform that does not support OF.
+>
+
+Yes, this would fail.
+I think moving of_device_id structures in drivers under #ifdef CONFIG_OF 
+and removing the depends on OF would fix it.
+
+--srini
+
+
+> 	Arnd
+>
+>
