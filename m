@@ -1,74 +1,68 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 01/10] ASoC: qcom: make lpass driver depend on OF
-Date: Fri, 22 May 2015 14:50:50 +0100
-Message-ID: <555F343A.3040009@linaro.org>
-References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org> <2534276.hIjFJK74Zh@wuerfel> <555F18C8.8090902@linaro.org> <2125335.kSmCnV68xe@wuerfel>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH 10/13] sound/core: add DRM ELD helper
+Date: Fri, 22 May 2015 14:53:31 +0100
+Message-ID: <20150522135331.GG2067@n2100.arm.linux.org.uk>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
+ <20150522122009.GK21391@sirena.org.uk>
+ <20150522131534.GF2067@n2100.arm.linux.org.uk>
+ <s5hzj4weo35.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <2125335.kSmCnV68xe@wuerfel>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hzj4weo35.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 22/05/15 14:21, Arnd Bergmann wrote:
-> On Friday 22 May 2015 12:53:44 Srinivas Kandagatla wrote:
->> Thanks for looking at this patch.
->>
->> On 22/05/15 08:24, Arnd Bergmann wrote:
->>> On Thursday 21 May 2015 22:52:41 Srinivas Kandagatla wrote:
->>>>
->>>>    config SND_SOC_LPASS_CPU
->>>>           tristate
->>>> +       depends on OF
->>>>           select REGMAP_MMIO
->>>>
->>>>    config SND_SOC_LPASS_PLATFORM
->>>>           tristate
->>>> +       depends on OF
->>>>           select REGMAP_MMIO
->>>>
->>>>    config SND_SOC_LPASS_IPQ806X
->>>>
->>>
->>> Could you instead make the drivers compile without OF being set?
->>>
->>> I see that patch 7 and 8 introduces another two options doing
->>>
->>>
->>> +config SND_SOC_LPASS_APQ8016
->>> +       tristate
->>> +       depends on SND_SOC_QCOM
->>> +       select SND_SOC_LPASS_CPU
->>> +       select SND_SOC_LPASS_PLATFORM
->>> +
->>>
->>> +config SND_SOC_APQ8016_SBC
->>> +       tristate "SoC Audio support for APQ8016 SBC platforms"
->>> +       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
->>> +       select SND_SOC_LPASS_APQ8016
->>> +       help
->>>
->>> so you get an obvious build failure here when SND_SOC_APQ8016_SBC
->>> gets selected with COMPILE_TEST on a platform that does not support OF.
->>>
->>
->> Yes, this would fail.
->> I think moving of_device_id structures in drivers under #ifdef CONFIG_OF
->> and removing the depends on OF would fix it.
->>
->
-> Why?
-
-Yes, you are correct we don't need the ifdef's anymore. I will send a 
-fixup patch on top of what Mark has already applied.
-
---srini
->
-> 	Arnd
->
->
+T24gRnJpLCBNYXkgMjIsIDIwMTUgYXQgMDM6MzA6NTRQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IEZyaSwgMjIgTWF5IDIwMTUgMTQ6MTU6MzUgKzAxMDAsCj4gUnVzc2VsbCBLaW5n
+IC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gCj4gPiBPbiBGcmksIE1heSAyMiwgMjAxNSBhdCAwMToy
+MDowOVBNICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOgo+ID4gPiBPbiBTYXQsIE1heSAwOSwgMjAx
+NSBhdCAxMToyNjo0MkFNICswMTAwLCBSdXNzZWxsIEtpbmcgd3JvdGU6Cj4gPiA+ID4gQWRkIGEg
+aGVscGVyIGZvciB0aGUgRURJRCBsaWtlIGRhdGEgc3RydWN0dXJlLCB3aGljaCBpcyB0eXBpY2Fs
+bHkgcGFzc2VkCj4gPiA+ID4gZnJvbSBhIEhETUkgYWRhcHRlciB0byBpdHMgYXNzb2NpYXRlZCBh
+dWRpbyBkcml2ZXIuICBUaGlzIGluZm9ybXMgdGhlCj4gPiA+ID4gYXVkaW8gZHJpdmVyIG9mIHRo
+ZSBjYXBhYmlsaXRpZXMgb2YgdGhlIGF0dGFjaGVkIEhETUkgc2luay4KPiA+ID4gCj4gPiA+IEFz
+IGZhciBhcyBJIGNhbiB0ZWxsIHBlb3BsZSBhcmUgZmFpcmx5IGhhcHB5IHdpdGggdGhlIGltcGxl
+bWVudGF0aW9uCj4gPiA+IGhlcmUgYW5kIHVubGVzcyBJJ20gbWlzc2luZyBzb21ldGhpbmcgYXJl
+IGRlZmluaXRlbHkgaGFwcHkgd2l0aCB0aGUKPiA+ID4gaW50ZXJmYWNlLiAgSWYgdGhhdCdzIHRo
+ZSBjYXNlIGNhbiB3ZSBnZXQgdGhpcyBpbnRvIC1uZXh0PyAgVGhlcmUncyBhCj4gPiA+IGxvdCBv
+ZiBpbnRlcmVzdCBpbiBIRE1JIHJpZ2h0IG5vdyAod2hpY2ggaXMgZ3JlYXQpIGFuZCB0aGlzIHdv
+dWxkIGJlCj4gPiA+IGhlbHBmdWwgZm9yIHRoYXQsIGl0IHNlZW1zIGxpa2UgZXZlbiBpZiB0aGVy
+ZSBhcmUgaXNzdWVzIHdpdGggdGhlCj4gPiA+IGltcGxlbWVudGF0aW9uIGl0IHdvdWxkIGJlIHdv
+cnRoIG1lcmdpbmcgYXMgaXMgc28gd2UgY2FuIHN0YXJ0IGFkZGluZwo+ID4gPiB1c2VycyBhbmQg
+dGhlbiBkbyBhbnkgaW1wcm92ZW1lbnRzIHRvIHRoZSBpbnRlcmZhY2UgaW4gcGFyYWxsZWwuCj4g
+PiA+IAo+ID4gPiBGcm9tIGFuIGludGVyZmFjZSBwb2ludCBvZiB2aWV3Ogo+ID4gPiAKPiA+ID4g
+UmV2aWV3ZWQtYnk6IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4KPiA+IAo+ID4gSSdk
+IGJlIG1vcmUgdGhhbiBoYXBweSBpZiBUYWthc2hpIEl3YWkgd2FudHMgdG8gdGFrZSB0aGVtIC0g
+SSdtIG5vdAo+ID4gcGxhbm5pbmcgb24gdGhlIGF1ZGlvIGRyaXZlciBpdHNlbGYgYmVpbmcgbWVy
+Z2VkIGp1c3QgeWV0IGFzIHdlIHN0aWxsCj4gPiBuZWVkIHRvIHByb3Blcmx5IGhhbW1lciBvdXQg
+dGhlIGRpZmZlcmVuY2VzIGJldHdlZW4gdGhlIEFIQiBhdWRpbyAoZm9yCj4gPiBpTVg2KSBhbmQg
+STJTIGF1ZGlvIChmb3IgUm9ja2NoaXApIGZvciB0aGlzIGRldmljZS4KPiAKPiBTb3JyeSwgSSd2
+ZSBiZWVuIG9uIHZhY2F0aW9uIGluIHRoZSBsYXN0IHR3byB3ZWVrcywgc28gc2xvd2x5Cj4gZGln
+ZXN0aW5nIGFsbCBiYWNrbG9ncyBub3cuCj4gCj4gPiBBbHRlcm5hdGl2ZWx5LCBJIGNvdWxkIG1v
+dmUgdGhlc2UgdHdvIHBhdGNoZXMgdG8gdGhlIGJlZ2lubmluZyBvZiBteQo+ID4gc2VyaWVzLCBh
+bmQgbWVyZ2UgdGhhdCBwb2ludCBpbnRvIG15IGZvci1uZXh0IGFuZC9vciBwdWJsaXNoIGl0IGFz
+IGEKPiA+IHNlcGFyYXRlIHN1Yi1icmFuY2guLi4gd2hhdGV2ZXIgcGVvcGxlIHdhbnQsIGp1c3Qg
+bGV0IG1lIGtub3cuCj4gCj4gSSdtIGZpbmUgdG8gdGFrZSB0aGUgc291bmQgcGFydC4gIEl0J3Mg
+b25seSBwYXRjaGVzIDEwIGFuZCAxMSwgcmlnaHQ/Cj4gVGhlbiBJIGNhbiBwcm92aWRlIGEgYnJh
+bmNoIHRoYXQgY2FuIGJlIG1lcmdlZCBmb3IgdGhlIHJlc3QgZHJtCj4gc3R1ZmYuCgpZZXAsIGp1
+c3QgcGF0Y2hlcyAxMCBhbmQgMTEuICBJZiBwb3NzaWJsZSwgcGxlYXNlIGJhc2UgdGhlc2UgcGF0
+Y2hlcyBvbgp2NC4xLXJjMSwgdGhhbmtzLgoKVGhhbmtzLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZv
+ciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNj
+b3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vZHJpLWRldmVsCg==
