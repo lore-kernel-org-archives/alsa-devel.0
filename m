@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2 v2] ASoC: rsnd: rsrc-card uses FE/BE
- merged format when DPCM
-Date: Fri, 22 May 2015 14:13:18 +0100
-Message-ID: <20150522131318.GB21391@sirena.org.uk>
-References: <87wq0ebllq.wl%kuninori.morimoto.gx@renesas.com>
- <87twvibljv.wl%kuninori.morimoto.gx@renesas.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2 1/9] ASoC: sti: add binding for ASoc
+	driver
+Date: Fri, 22 May 2015 15:24:10 +0200
+Message-ID: <555F2DFA.306@st.com>
+References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+ <1431951176-24670-2-git-send-email-arnaud.pouliquen@st.com>
+ <20150522124328.GV21391@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7366012389558365594=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 271F1266096
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:13:30 +0200 (CEST)
-In-Reply-To: <87twvibljv.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C238265E23
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:24:15 +0200 (CEST)
+In-Reply-To: <20150522124328.GV21391@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Oops...sorry, i missed to clean these lines...
+I suppressed standby mode in my V2. I plan to propose this mode in a 
+separate patch based on DAPM...
+I let you check the rest of the patches then will clean lines in the V3
 
---===============7366012389558365594==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="F+wU6CH2q8RBGewX"
-Content-Disposition: inline
-
-
---F+wU6CH2q8RBGewX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 12, 2015 at 02:03:51AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-Applied, thanks.
-
---F+wU6CH2q8RBGewX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVXyttAAoJECTWi3JdVIfQyPEH/0qvMp84GqR2gsMRUhcG8slZ
-RoXJCKcFZIZgGAdxhNJVWvnu+WwxBQ6V5rKOcjPhcNYUzfTaKcelPK/qoy5ZylZy
-G4YVn237XasgESyFbNRREaNjutJHOUnXxWTe6Jb3snHUDUJYCFueaw1taKmujHkG
-gwocPvFXJ3oUm3XvlhPo3cMu18PDO17GGYgELxIi+sC5YLU6lOosAiH1o2S32u5W
-VAuxuO9uGDgM5xSlJrVO+fO9/sWql489VTbvbLeQEqcjwjHAilGA/jbJcCppjRoV
-y+Jox7ns37p1jVDyYGQFGiY7RIT9eqLJoytd6IPZ+ZfJsJdJMsl0VQnDHw2r1VA=
-=yCxm
------END PGP SIGNATURE-----
-
---F+wU6CH2q8RBGewX--
-
---===============7366012389558365594==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7366012389558365594==--
+On 05/22/2015 02:43 PM, Mark Brown wrote:
+> On Mon, May 18, 2015 at 02:12:48PM +0200, Arnaud Pouliquen wrote:
+>
+>> Add Asoc driver bindings documentation.
+>
+> ASoC.
+>
+>> +  - standby:  standby mode activation deactivation. this mode is specific to
+>> +	      Uni player IP and allows to transmit bus clock and a pattern data
+>> +	      while audio stream is stopped or paused.
+>> +  - auto-suspend-delay: runtime auto suspend delay (in ms) before deactivating
+>> +			stanby mode. Equivalent to the DAPM mechanism but for
+>> +			CPU DAI.
+>
+> It's still not clear to me that these are things that should be
+> configured via the DT.  Otherwise this looks OK.
+>
