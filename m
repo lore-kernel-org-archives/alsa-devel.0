@@ -1,36 +1,51 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 3/3] ASoC: qcom: fix STORM board Kconfig
-Date: Fri, 22 May 2015 18:33:10 +0200
-Message-ID: <11006188.h6ZK0CVLeu@wuerfel>
-References: <1432309956-5228-1-git-send-email-srinivas.kandagatla@linaro.org> <1432310057-5358-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Armin Ranjbar <zoup@zoup.org>
+Subject: Sennheiser HDVD 800 Support
+Date: Fri, 22 May 2015 21:37:33 +0430
+Message-ID: <CAOvx4-2g3V+Sdju3YGRBeaUFPK+1TMSQ=KXSmCrm1jV4VWE7Cw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1432310057-5358-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
+ [209.85.212.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D09F26041D
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 19:07:54 +0200 (CEST)
+Received: by wicmc15 with SMTP id mc15so45791646wic.1
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 10:07:54 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 May 2015 16:54:17 Srinivas Kandagatla wrote:
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index 6ecac6c..f50197e 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -26,7 +26,7 @@ config SND_SOC_LPASS_APQ8016
->  
->  config SND_SOC_STORM
->         tristate "ASoC I2S support for Storm boards"
-> -       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-> +       depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
->         select SND_SOC_LPASS_IPQ806X
->         select SND_SOC_MAX98357A
->         help
-> -- 
+Dear everyone,
 
-Do you still have the problem that you are selecting another symbol
-that 'depends on OF', but this one does not have that dependency,
-or did you drop that patch now before it could get picked up?
+i have noticed that alas doesn't support HDVD-800 USB DAC, i can not hear
+anything.
+note that this device requires it's own driver under windows/mac.
 
-	Arnd
+this is my alsa-info output:
+http://www.alsa-project.org/db/?f=fe56e65add73248baf5307a04b6b9deb2b236004
+
+output of pasuspender -- aplay -Dplughw:2  some_file.wav:
+ALSA lib pcm_hw.c:1667:(_snd_pcm_hw_open) Invalid value for card
+main:722: audio open error: No such file or directory
+
+output of aplay -v -fdat --dump-hw-params -d1 -Dhw:S20 /dev/zero:
+http://pastebin.com/p2Daxza6
+
+speaker-test -c2 -twav -Dplughw:S20 starts OK, but i can't hear anything/
+
+product page:
+http://en-us.sennheiser.com/headphone-audio-amplification-hdvd-800-acoustic
+
+
+I'm open to help if you need anything to be done.
+---
+Armin ranjbar
