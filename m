@@ -1,50 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4 v2] ASoC: rsnd: spin lock for interrupt handler
-Date: Fri, 22 May 2015 14:15:35 +0100
-Message-ID: <20150522131535.GD21391@sirena.org.uk>
-References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
- <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v4 0/7] ASoC: intel - add skylake PCM driver
+Date: Fri, 22 May 2015 14:12:36 +0100
+Message-ID: <20150522131236.GA21391@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <20150522122049.GU3140@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="VZLKKa0PG5KXlQhV"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7813202388890843442=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FE8D26601B
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:12:49 +0200 (CEST)
+In-Reply-To: <20150522122049.GU3140@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---VZLKKa0PG5KXlQhV
+--===============7813202388890843442==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gBii9oQw/U9UOygZ"
+Content-Disposition: inline
+
+
+--gBii9oQw/U9UOygZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 21, 2015 at 03:50:23AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Renesas R-Car driver interrupt handler was not locked before.
-> But now, SSI/SRC interrupt handler calls restart function
-> which should be called under spin lock.
-> Below error might happen witout this patch.
+On Fri, May 22, 2015 at 05:50:49PM +0530, Vinod Koul wrote:
+> On Mon, May 11, 2015 at 04:23:58PM +0530, Vinod Koul wrote:
 
-Applied, thanks.
+> Any word on this series ..
 
---VZLKKa0PG5KXlQhV
+Don't send contentless pings.  They just add to mail volume and take
+even more time.  In this case you're chasing after less than two weeks
+which is very fast especially for large, new bits of code that need
+careful review.
+
+--gBii9oQw/U9UOygZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXyv2AAoJECTWi3JdVIfQNgAIAIK5c4/1r8BVsWwwu/JjEO4+
-VLlizzzD9JU3Fk7TsU6y20ldn30Pu+5AFsGj1K50P4eQj5Wf4WKc9vL8LV1LSdmK
-FLb1wIxOcV0o7ETI8WAXwqUSrhtTjDMjecP66XbiGWOyQVaeAlwP/JNs324pK095
-tCLRiCZH92sX3yyhxAUHyTe6/MCDDMdyvog9B0K5UPdAnrfFQThYK0CoFbEiU2Oh
-jzocsv4ihNbSAr2BrO1gOgaUhMcdnmuMszBPrLFfgo/WIjIkb/ooErausQnmgbWP
-J6muqx9cCJ+ybGEsE8m2j7UNVtJG87zIV82BFsyM8hqxLMlQFkEiN4J0s+hooTE=
-=5O2O
+iQEcBAEBCAAGBQJVXytDAAoJECTWi3JdVIfQCZAH/AoGNFwG9WH8g8SCVWE4HRR5
+QriN1BsSNg9ysfvUTVhTrWiz+Q1bqffDJ2dJaZSHFUb8kdI3Velj77iF+i0SRyuv
+pJBp1k1/Iw6HyA9Wmsgulut7kgUNjQZZ1GJu4EPo7rD5oL0DPSLEXkw9L/LFG2mo
+PX5ou0oEWKPZwXiiSFjdoBzad7s8vTXKSku+/8HaGMEci+EAJ5rs0pi2d9ISsjNx
+oCdV/2nWfKaLehCNTN7KHf/JrLwwzqT9wfNfbt+GB1yNI2vMWwFkwgQ8QsoBlbey
+MG4zjEOBWQMPAncDye3rqAIb9o842X2enzQjOY+jPXkggTk3uLYcY80OWeFcg7Y=
+=unNy
 -----END PGP SIGNATURE-----
 
---VZLKKa0PG5KXlQhV--
+--gBii9oQw/U9UOygZ--
+
+--===============7813202388890843442==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7813202388890843442==--
