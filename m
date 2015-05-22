@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/3] ASoC: zx: Add zx296702 SPDIF support
-Date: Fri, 22 May 2015 13:09:14 +0100
-Message-ID: <20150522120914.GI21391@sirena.org.uk>
-References: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
- <1430915885-30656-2-git-send-email-jun.nie@linaro.org>
+Subject: Re: [PATCH v4 2/7] ALSA: hda - add new HDA registers
+Date: Fri, 22 May 2015 13:58:17 +0100
+Message-ID: <20150522125817.GY21391@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3974997829955774051=="
+Content-Type: multipart/mixed; boundary="===============8928966735165423802=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6D11265AFE
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:07:39 +0200 (CEST)
-In-Reply-To: <1430915885-30656-2-git-send-email-jun.nie@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 61FBE265B3F
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:07:44 +0200 (CEST)
+In-Reply-To: <1431341645-2457-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com, zte-lt@lists.linaro.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3974997829955774051==
+--===============8928966735165423802==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MFZs98Tklfu0WsCO"
+	protocol="application/pgp-signature"; boundary="dwN3S3mscniL3FCL"
 Content-Disposition: inline
 
 
---MFZs98Tklfu0WsCO
+--dwN3S3mscniL3FCL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 06, 2015 at 08:38:04PM +0800, Jun Nie wrote:
-> Add driver for zx296702 SPDIF controller
+On Mon, May 11, 2015 at 04:24:00PM +0530, Vinod Koul wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> This patch adds new registers as per HD audio Spec like capability regist=
+ers
+> for processing pipe, software position based FIFO, Multiple Links and Glo=
+bal
+> Time Synchronization.
 
-This all seems fine apart from the fact that you're adding a new DT
-binding with no binding documentation - all new DT binndings require
-binnding documentation.
+This appears to have some dependency on Takashi's tree - Takashi, is
+there a tag I can pull?
 
---MFZs98Tklfu0WsCO
+--dwN3S3mscniL3FCL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXxxpAAoJECTWi3JdVIfQSgoH/0Wrb5R6+4cdJRVOT9KPUNt6
-NIhcA4n6xrhQd551EKvowkGQzzL5oe7Q1EBlYih1lJIKCz8e8Ud1fLRp0r8n/nuJ
-ONb8VPFtkfxWcDXdCHKFqGYorzMGRxOKc/nEmlz7u0fc9rswaG5UCkOWx0/hlERi
-SQ5hoYm5+lYGl6FlNgNvs+cyBzY967ruepGm1IPY7iLBRq4fkbG68ftYr3Xy6kJW
-rToQxwSI6jnfSS+H4K0krnLlhagGjRPvHXeVpCWHc3dPb3ppoiV/C1NNTAvduHUs
-bCxbQg03uIfyRO3kRndS90CTq7v7SOcfFeSg9sFAb/EIO4ohChY0k7lZG1TNuzg=
-=2AG8
+iQEcBAEBCAAGBQJVXyfoAAoJECTWi3JdVIfQQXAH+QEgL+3PpqFwadQnszEUBViW
+q8OE0ZThWp/b+JO81aj3fJaGDIL8EGhgUs/Z+dwfVhBxmFoBcbjlZFQDSbx8UaKl
+sCvkXjoYUniyZZVtY109zFymnUbOFpJQL7jT0nFA1oTcDNWtvPFUi5McblsQwV7g
+J+8qs6q5pVE4oMe4C5maMDcuHLWqsKaDhbenpC2nAgt52tIbpjNK5DISUGcUnY1G
+exvw4vqDA5Ng5VRn12ROf1tnwmR13wVA5URM7B3yUYgJ6A/xrxcXWh/z629dnQN/
+mQ1JsTeJYYPzVCjeouzXqhtG4crwiludZCquQmmqO0kDMssOhODJl9jLvcatFB8=
+=4pDt
 -----END PGP SIGNATURE-----
 
---MFZs98Tklfu0WsCO--
+--dwN3S3mscniL3FCL--
 
---===============3974997829955774051==
+--===============8928966735165423802==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3974997829955774051==--
+--===============8928966735165423802==--
