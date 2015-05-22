@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/5] ALSA: firewire-lib: simplify function to calculate the
-	number of data blocks
-Date: Fri, 22 May 2015 23:00:51 +0900
-Message-ID: <1432303254-4192-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/5] ALSA: firewire-lib: add buffer-over-run protection at
+	receiving more data blocks than expected
+Date: Fri, 22 May 2015 23:00:50 +0900
+Message-ID: <1432303254-4192-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1432303254-4192-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,95 +21,131 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This function is called according to conditions between the value of
-syt and streaming mode(blocking or non-blocking).
+In IEC 61883-6, the number of data blocks in a packet is limited up to
+the value of SYT_INTERVAL. Current implementation is compliant to the
+limitation, while it can cause buffer-over-run when the value of dbs
+field in received packet is illegally large.
 
-To simplify caller's work, this commit push these conditions to the
-function.
+This commit adds a validator to detect such illegal packets to prevent
+the buffer-over-run. Actually, the buffer is aligned to the size of memory
+ page, thus this issue hardly causes system errors due to the room to page
+alignment, as long as a few packets includes such jumbo payload; i.e.
+a packet to several received packets.
+
+Here, Behringer F-Control Audio 202 (based on OXFW 960) has a quirk to
+postpone transferring isochronous packet till finish handling any
+asynchronous packets. In this case, this model is lazy, transfers no
+packets according to several cycle-start packets. After finishing, this
+model pushes required data in next isochronous packet. As a result, the
+packet include more data blocks than IEC 61883-6 defines.
+
+To continue to support this model, this commit adds a new flag to extend
+the length of calculated payload. This flag allows the size of payload
+5 times as large as IEC 61883-6 defines. As a result, packets from this
+model passed the validator successfully.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp.c | 49 +++++++++++++++++++++++++++----------------------
- 1 file changed, 27 insertions(+), 22 deletions(-)
+ sound/firewire/amdtp.c            | 21 +++++++++++++++++++--
+ sound/firewire/amdtp.h            |  4 ++++
+ sound/firewire/oxfw/oxfw-stream.c | 10 ++++++++--
+ 3 files changed, 31 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 4eb8dc9..ab75ed9 100644
+index d882ca5..4eb8dc9 100644
 --- a/sound/firewire/amdtp.c
 +++ b/sound/firewire/amdtp.c
-@@ -325,17 +325,25 @@ void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
- }
- EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
- 
--static unsigned int calculate_data_blocks(struct amdtp_stream *s)
-+static unsigned int calculate_data_blocks(struct amdtp_stream *s,
-+					  unsigned int syt)
+@@ -255,7 +255,12 @@ EXPORT_SYMBOL(amdtp_stream_set_parameters);
+  */
+ unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
  {
- 	unsigned int phase, data_blocks;
+-	return 8 + s->syt_interval * s->data_block_quadlets * 4;
++	unsigned int multiplier = 1;
++
++	if (s->flags & CIP_JUMBO_PAYLOAD)
++		multiplier = 5;
++
++	return 8 + s->syt_interval * s->data_block_quadlets * 4 * multiplier;
+ }
+ EXPORT_SYMBOL(amdtp_stream_get_max_payload);
  
--	if (s->flags & CIP_BLOCKING)
--		data_blocks = s->syt_interval;
--	else if (!cip_sfc_is_base_44100(s->sfc)) {
--		/* Sample_rate / 8000 is an integer, and precomputed. */
--		data_blocks = s->data_block_state;
-+	/* Blocking mode. */
-+	if (s->flags & CIP_BLOCKING) {
-+		/* This module generate empty packet for 'no data'. */
-+		if (syt == CIP_SYT_NO_INFO)
-+			data_blocks = 0;
-+		else
-+			data_blocks = s->syt_interval;
-+	/* Non-blocking mode. */
- 	} else {
--		phase = s->data_block_state;
-+		if (!cip_sfc_is_base_44100(s->sfc)) {
-+			/* Sample_rate / 8000 is an integer, and precomputed. */
-+			data_blocks = s->data_block_state;
-+		} else {
-+			phase = s->data_block_state;
+@@ -811,12 +816,16 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			       void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
+-	unsigned int p, syt, packets, payload_quadlets;
++	unsigned int p, syt, packets;
++	unsigned int payload_quadlets, max_payload_quadlets;
+ 	__be32 *buffer, *headers = header;
  
- 		/*
- 		 * This calculates the number of data blocks per packet so that
-@@ -345,16 +353,17 @@ static unsigned int calculate_data_blocks(struct amdtp_stream *s)
- 		 *    as possible in the sequence (to prevent underruns of the
- 		 *    device's buffer).
- 		 */
--		if (s->sfc == CIP_SFC_44100)
--			/* 6 6 5 6 5 6 5 ... */
--			data_blocks = 5 + ((phase & 1) ^
--					   (phase == 0 || phase >= 40));
--		else
--			/* 12 11 11 11 11 ... or 23 22 22 22 22 ... */
--			data_blocks = 11 * (s->sfc >> 1) + (phase == 0);
--		if (++phase >= (80 >> (s->sfc >> 1)))
--			phase = 0;
--		s->data_block_state = phase;
-+			if (s->sfc == CIP_SFC_44100)
-+				/* 6 6 5 6 5 6 5 ... */
-+				data_blocks = 5 + ((phase & 1) ^
-+						   (phase == 0 || phase >= 40));
-+			else
-+				/* 12 11 11 11 11 ... or 23 22 22 22 22 ... */
-+				data_blocks = 11 * (s->sfc >> 1) + (phase == 0);
-+			if (++phase >= (80 >> (s->sfc >> 1)))
-+				phase = 0;
-+			s->data_block_state = phase;
+ 	/* The number of packets in buffer */
+ 	packets = header_length / IN_PACKET_HEADER_SIZE;
+ 
++	/* For buffer-over-run prevention. */
++	max_payload_quadlets = amdtp_stream_get_max_payload(s) / 4;
++
+ 	for (p = 0; p < packets; p++) {
+ 		if (s->packet_index < 0)
+ 			break;
+@@ -832,6 +841,14 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		/* The number of quadlets in this packet */
+ 		payload_quadlets =
+ 			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
++		if (payload_quadlets > max_payload_quadlets) {
++			dev_err(&s->unit->device,
++				"Detect jumbo payload: %02x %02x\n",
++				payload_quadlets, max_payload_quadlets);
++			s->packet_index = -1;
++			break;
 +		}
++
+ 		handle_in_packet(s, payload_quadlets, buffer);
  	}
  
- 	return data_blocks;
-@@ -651,11 +660,7 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int syt)
- 	if (s->packet_index < 0)
- 		return;
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
+index 8a03a91..26b9093 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp.h
+@@ -29,6 +29,9 @@
+  *	packet is not continuous from an initial value.
+  * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
+  *	packet is wrong but the others are correct.
++ * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
++ *	packet is larger than IEC 61883-6 defines. Current implementation
++ *	allows 5 times as large as IEC 61883-6 defines.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -40,6 +43,7 @@ enum cip_flags {
+ 	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
+ 	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
+ 	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
++	CIP_JUMBO_PAYLOAD	= 0x100,
+ };
  
--	/* this module generate empty packet for 'no data' */
--	if (!(s->flags & CIP_BLOCKING) || (syt != CIP_SYT_NO_INFO))
--		data_blocks = calculate_data_blocks(s);
--	else
--		data_blocks = 0;
-+	data_blocks = calculate_data_blocks(s, syt);
+ /**
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index e6757cd..873d40f 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -232,9 +232,15 @@ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
+ 		goto end;
+ 	}
  
- 	buffer = s->buffer.packets[s->packet_index].buffer;
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+-	/* OXFW starts to transmit packets with non-zero dbc. */
++	/*
++	 * OXFW starts to transmit packets with non-zero dbc.
++	 * OXFW postpone transferring packets till handling any asynchronous
++	 * packets. As a result, next isochronous packet includes more data
++	 * blocks than IEC 61883-6 defines.
++	 */
+ 	if (stream == &oxfw->tx_stream)
+-		oxfw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
++		oxfw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK |
++					 CIP_JUMBO_PAYLOAD;
+ end:
+ 	return err;
+ }
 -- 
 2.1.4
 
