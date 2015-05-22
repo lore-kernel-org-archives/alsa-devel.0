@@ -1,74 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 7/8] ASoC: Intel: Initialize max mailbox
- size for haswell
-Date: Fri, 22 May 2015 19:23:37 +0100
-Message-ID: <20150522182337.GZ21577@sirena.org.uk>
-References: <1432027840-18711-1-git-send-email-vinod.koul@intel.com>
- <1432027840-18711-8-git-send-email-vinod.koul@intel.com>
+From: "Vittorio G (VittGam)" <linuxbugs@vittgam.net>
+Subject: [PATCH] ALSA: usb-audio: Add quirk for MS LifeCam HD-3000
+Date: Fri, 22 May 2015 21:15:19 +0200
+Message-ID: <fffbee5b1d6a62456b10a9ca132298fb@vittgam.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2580821369454238612=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC19260422
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 20:23:43 +0200 (CEST)
-In-Reply-To: <1432027840-18711-8-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, patches.audio@intel.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Microsoft LifeCam HD-3000 (045e:0779) needs a similar quirk for
+suppressing the unsupported sample rate inquiry.
 
---===============2580821369454238612==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nuo3pj+LxAUL1L82"
-Content-Disposition: inline
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=98481
+Cc: <stable@vger.kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Vittorio Gambaletta <linuxbugs@vittgam.net>
+---
 
+The dmesg is showing this every time the ALSA audio is opened
+by the application:
 
---nuo3pj+LxAUL1L82
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[3759907.370000] 2:3:1: cannot get freq at ep 0x82
 
-On Tue, May 19, 2015 at 03:00:39PM +0530, Vinod Koul wrote:
-> From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
->=20
-> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+And in fact I had to initialize ALSA and v4l2 in a specific order
+in my application in order for them to both work.
 
-Applied up to here, thanks.
-
---nuo3pj+LxAUL1L82
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVX3QoAAoJECTWi3JdVIfQCQkH/2adR9gP5xiA2b8GXam21j/M
-e+pQK5hVSDRvgWkWe3pE+ET780uyrZd6pLKFvYh850DFszxSISCeMMFQeVtvz21Y
-sIK+zcF1mvHNcah7vs7a0heYYQMXdsvandLhYkIwLmafCC7iO+FNN4LKjwxFlyxh
-kLUZql4O2iHNsitqflrnkdpsF0f/sWEmcXFErbZdTCLuUPhjD0SwBvXO/9k8k++K
-1BWzuNYgW8sxwf7IN4Vo5bi9X1beU64gfTYGjDhfkntX+crSRsd03W1mdLxYCKuI
-d3tx4qBt9Xs7+FlFbCiupd2YBGfabrrwcnTPU1+IKegafYwBzjPYGEEgVdf8HgM=
-=LgYn
------END PGP SIGNATURE-----
-
---nuo3pj+LxAUL1L82--
-
---===============2580821369454238612==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2580821369454238612==--
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 46facfc..2917534 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1118,6 +1118,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+  	case USB_ID(0x045E, 0x075D): /* MS Lifecam Cinema  */
+  	case USB_ID(0x045E, 0x076D): /* MS Lifecam HD-5000 */
+  	case USB_ID(0x045E, 0x0772): /* MS Lifecam Studio */
++	case USB_ID(0x045E, 0x0779): /* MS Lifecam HD-3000 */
+  	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
+  		return true;
+  	}
