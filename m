@@ -1,46 +1,43 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 02/10] ASoC: qcom: support bitclk and osrclk per i2s
- port
-Date: Fri, 22 May 2015 13:27:20 +0100
-Message-ID: <20150522122720.GM21391@sirena.org.uk>
-References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1432245169-9032-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs-ac97: make selectable in config
+Date: Fri, 22 May 2015 13:41:49 +0100
+Message-ID: <20150522124149.GA25012@sirena.org.uk>
+References: <554E8634.2010008@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yklP1rR72f9kjNtc"
+	protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1432245169-9032-1-git-send-email-srinivas.kandagatla@linaro.org>
+In-Reply-To: <554E8634.2010008@maciej.szmigiero.name>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---yklP1rR72f9kjNtc
+--OgqxwSJOaUobr8KG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 21, 2015 at 10:52:49PM +0100, Srinivas Kandagatla wrote:
-> This patch adds support to allow bitclk and osrclk per i2s dai port.
-> on APQ8016 there are 4 i2s ports each one has its own bit clks.
+On Sun, May 10, 2015 at 12:12:04AM +0200, Maciej S. Szmigiero wrote:
+> Make generic ASoC AC'97 CODEC selectable in config.
 
 Applied, thanks.
 
---yklP1rR72f9kjNtc
+--OgqxwSJOaUobr8KG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXyCnAAoJECTWi3JdVIfQ8XoIAIBH4i6eYV5fw+Ygwwp6OFAn
-D7NJsAEU0aRfhgsjhQ+fUqoZn68TRaaHvlY4bsWkywEJWyAHX6OVDIWoEpePAEzq
-60zE9po8usj5csnTxyQ7pgXcFIWv+9no6Rid2QfB7hwfYNTy6wb8zG7Fc4Bs5xCn
-sIcImz60sVlD3oTfCXlwkOBS94hkTNwnvXwZWSDXj6FZAIeQGpkOLr7QRlj4005M
-N6llzW6dpW1amtoUTBVgP2FIQ46ZAZYdXKNj5E65CcfLC5447QlHH6P/AD6NjkLl
-GCiaI47DSpIQ1T/mZmW7D8nG24CyjyGVebQU6FVoMPeW/DAbC+/PEa7hjZcVfUA=
-=qAT3
+iQEcBAEBCAAGBQJVXyQMAAoJECTWi3JdVIfQgDsH+wYYJxHKuDXzFWy7NU/bIbqu
+FkLefuzh7wWVXgYpuF7VVG6TZBX0YcjQv6qfM2SYQvgg7j7K4iAKUP8tmLJNxPxe
+XYa50G4adCSTo/ZVq7iOeoG+E2q9/Fc2Cbebn6wvpK1+sh2iOgiWSeTLtt+s8+JJ
+UnWB3Hrski2/lV0AKG+uShmBvF35VlMhU8tA4OXJ2nH0K961OKlMmlVpNI0ebEft
+PQnJB24A8FuK22Ibp4IiKAgQgCNWYhc/db1ud0nKKZSrGOXI3etQW+/5a6VzgwKT
+7D/03/+XC0N0K2qsUQljEdtEfVoa7Q6gfNxc2XfE1SJnPb/nW/dubHEgIMvi3ic=
+=TxKV
 -----END PGP SIGNATURE-----
 
---yklP1rR72f9kjNtc--
+--OgqxwSJOaUobr8KG--
