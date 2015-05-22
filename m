@@ -1,16 +1,20 @@
-From: Antonio Ospite <ao2@ao2.it>
+From: =?UTF-8?Q?jean=2Dno=C3=ABl_chardron?= <rondrach@gmail.com>
 Subject: Re: how to ask you to write a new ALSA driver
-Date: Fri, 22 May 2015 11:10:40 +0200
-Message-ID: <20150522111040.e517d4743fb51514762f1e61@ao2.it>
+Date: Fri, 22 May 2015 12:04:55 +0200
+Message-ID: <CABi1v2ZMZ=b+kRrGOgyN+tBOJ81j5vaY96yO4OJ9Kik2VxrDvg@mail.gmail.com>
 References: <CABi1v2YRv3g1VU0OCJVZ3+zdKyAotyMn7dSmuQ-E+ug7uMboOQ@mail.gmail.com>
+ <20150522111040.e517d4743fb51514762f1e61@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id B871E2606D1
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 11:10:52 +0200 (CEST)
-In-Reply-To: <CABi1v2YRv3g1VU0OCJVZ3+zdKyAotyMn7dSmuQ-E+ug7uMboOQ@mail.gmail.com>
+Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
+ [209.85.218.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id D25F7261AFF
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 12:04:58 +0200 (CEST)
+Received: by oiww2 with SMTP id w2so10253257oiw.0
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 03:04:57 -0700 (PDT)
+In-Reply-To: <20150522111040.e517d4743fb51514762f1e61@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,90 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?jean-no=EBl?= chardron <rondrach@gmail.com>
+To: Antonio Ospite <ao2@ao2.it>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 21 May 2015 12:28:00 +0200
-jean-no=EBl chardron <rondrach@gmail.com> wrote:
-
-> hello,
-> =
-
-> Last week I got a Komplet Audio 6 from Native intruments.
-> The driver exist in ALSA driver for this king of interface audio
-> (snd-usb-audio) (thanks for the team who write this) but for the model
-> where Id Vendor is 0x17cc and Id product is 0x1000.
-> =
-
-> The KA6 that I got has not the same ID product (0x1001) therefore I don't
-> have any device capture even with the driver snd-usb-audio.
-> =
-
-> The challenge is to write the modification for this new model.
-> Who could do that ?
-
-You can try yourself.
-
-If you know or suspect that your device is similar to the supported ones
-look where the 0x17cc vendor id is used and try to follow the existing
-code, and try to come up with the _minimum_ amount of changes required to
-make the device work.
-
-For instance, after a "git grep 0x17cc -- sound/" I came up with this
-diff:
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 2f6d3e9..d254b14 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2740,6 +2740,12 @@ YAMAHA_DEVICE(0x7010, "UB99"),
-        .idProduct =3D 0x1000,
- },
- {
-+       /* Komplete Audio 6 */
-+       .match_flags =3D USB_DEVICE_ID_MATCH_DEVICE,
-+       .idVendor =3D 0x17cc,
-+       .idProduct =3D 0x1001,
-+},
-+{
-        /* Traktor Audio 6 */
-        .match_flags =3D USB_DEVICE_ID_MATCH_DEVICE,
-        .idVendor =3D 0x17cc,
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 7c5a701..2f9ee824 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1007,6 +1007,7 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
-                return snd_usb_accessmusic_boot_quirk(dev);
-
-        case USB_ID(0x17cc, 0x1000): /* Komplete Audio 6 */
-+       case USB_ID(0x17cc, 0x1001): /* Komplete Audio 6 */
-        case USB_ID(0x17cc, 0x1010): /* Traktor Audio 6 */
-        case USB_ID(0x17cc, 0x1020): /* Traktor Audio 10 */
-                return snd_usb_nativeinstruments_boot_quirk(dev);
-
-
-However without knowing the device I am not sure if the second change is
-strictly necessary, or if the two are even enough.
-
-So please try to apply one of them at the time, recompile, test, and let
-us know.
-
-> If necessary I could send log, compile kernel source and so on.
-> thanks,
-
-Keep logs before and after changes you make so that you can compare the
-result of the changes.
-
-Ciao,
-   Antonio
-
--- =
-
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+VGhhbmsgeW91IGZvciB5b3VyIGFuc3dlciwKCgoyMDE1LTA1LTIyIDExOjEwIEdNVCswMjowMCBB
+bnRvbmlvIE9zcGl0ZSA8YW8yQGFvMi5pdD46Cgo+IE9uIFRodSwgMjEgTWF5IDIwMTUgMTI6Mjg6
+MDAgKzAyMDAKPiBqZWFuLW5vw6tsIGNoYXJkcm9uIDxyb25kcmFjaEBnbWFpbC5jb20+IHdyb3Rl
+Ogo+Cj4gPiBoZWxsbywKPiA+Cj4gPiBMYXN0IHdlZWsgSSBnb3QgYSBLb21wbGV0IEF1ZGlvIDYg
+ZnJvbSBOYXRpdmUgaW50cnVtZW50cy4KPiA+IFRoZSBkcml2ZXIgZXhpc3QgaW4gQUxTQSBkcml2
+ZXIgZm9yIHRoaXMga2luZyBvZiBpbnRlcmZhY2UgYXVkaW8KPiA+IChzbmQtdXNiLWF1ZGlvKSAo
+dGhhbmtzIGZvciB0aGUgdGVhbSB3aG8gd3JpdGUgdGhpcykgYnV0IGZvciB0aGUgbW9kZWwKPiA+
+IHdoZXJlIElkIFZlbmRvciBpcyAweDE3Y2MgYW5kIElkIHByb2R1Y3QgaXMgMHgxMDAwLgo+ID4K
+PiA+IFRoZSBLQTYgdGhhdCBJIGdvdCBoYXMgbm90IHRoZSBzYW1lIElEIHByb2R1Y3QgKDB4MTAw
+MSkgdGhlcmVmb3JlIEkgZG9uJ3QKPiA+IGhhdmUgYW55IGRldmljZSBjYXB0dXJlIGV2ZW4gd2l0
+aCB0aGUgZHJpdmVyIHNuZC11c2ItYXVkaW8uCj4gPgo+ID4gVGhlIGNoYWxsZW5nZSBpcyB0byB3
+cml0ZSB0aGUgbW9kaWZpY2F0aW9uIGZvciB0aGlzIG5ldyBtb2RlbC4KPiA+IFdobyBjb3VsZCBk
+byB0aGF0ID8KPgo+IFlvdSBjYW4gdHJ5IHlvdXJzZWxmLgo+Cmh1bSwgaXQncyBpbmRlZWQgYmV5
+b25kIG15IGtub3dsZWRnZQoKCj4KPiBJZiB5b3Uga25vdyBvciBzdXNwZWN0IHRoYXQgeW91ciBk
+ZXZpY2UgaXMgc2ltaWxhciB0byB0aGUgc3VwcG9ydGVkIG9uZXMKPiBsb29rIHdoZXJlIHRoZSAw
+eDE3Y2MgdmVuZG9yIGlkIGlzIHVzZWQgYW5kIHRyeSB0byBmb2xsb3cgdGhlIGV4aXN0aW5nCj4g
+Y29kZSwgYW5kIHRyeSB0byBjb21lIHVwIHdpdGggdGhlIF9taW5pbXVtXyBhbW91bnQgb2YgY2hh
+bmdlcyByZXF1aXJlZCB0bwo+IG1ha2UgdGhlIGRldmljZSB3b3JrLgo+Cj4gRm9yIGluc3RhbmNl
+LCBhZnRlciBhICJnaXQgZ3JlcCAweDE3Y2MgLS0gc291bmQvIiBJIGNhbWUgdXAgd2l0aCB0aGlz
+Cj4gZGlmZjoKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmggYi9zb3Vu
+ZC91c2IvcXVpcmtzLXRhYmxlLmgKPiBpbmRleCAyZjZkM2U5Li5kMjU0YjE0IDEwMDY0NAo+IC0t
+LSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAo+ICsrKyBiL3NvdW5kL3VzYi9xdWlya3MtdGFi
+bGUuaAo+IEBAIC0yNzQwLDYgKzI3NDAsMTIgQEAgWUFNQUhBX0RFVklDRSgweDcwMTAsICJVQjk5
+IiksCj4gICAgICAgICAuaWRQcm9kdWN0ID0gMHgxMDAwLAo+ICB9LAo+ICB7Cj4gKyAgICAgICAv
+KiBLb21wbGV0ZSBBdWRpbyA2ICovCj4gKyAgICAgICAubWF0Y2hfZmxhZ3MgPSBVU0JfREVWSUNF
+X0lEX01BVENIX0RFVklDRSwKPiArICAgICAgIC5pZFZlbmRvciA9IDB4MTdjYywKPiArICAgICAg
+IC5pZFByb2R1Y3QgPSAweDEwMDEsCj4gK30sCj4gK3sKPiAgICAgICAgIC8qIFRyYWt0b3IgQXVk
+aW8gNiAqLwo+ICAgICAgICAgLm1hdGNoX2ZsYWdzID0gVVNCX0RFVklDRV9JRF9NQVRDSF9ERVZJ
+Q0UsCj4gICAgICAgICAuaWRWZW5kb3IgPSAweDE3Y2MsCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Vz
+Yi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwo+IGluZGV4IDdjNWE3MDEuLjJmOWVlODI0
+IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3VzYi9xdWlya3MuYwo+ICsrKyBiL3NvdW5kL3VzYi9xdWly
+a3MuYwo+IEBAIC0xMDA3LDYgKzEwMDcsNyBAQCBpbnQgc25kX3VzYl9hcHBseV9ib290X3F1aXJr
+KHN0cnVjdCB1c2JfZGV2aWNlICpkZXYsCj4gICAgICAgICAgICAgICAgIHJldHVybiBzbmRfdXNi
+X2FjY2Vzc211c2ljX2Jvb3RfcXVpcmsoZGV2KTsKPgo+ICAgICAgICAgY2FzZSBVU0JfSUQoMHgx
+N2NjLCAweDEwMDApOiAvKiBLb21wbGV0ZSBBdWRpbyA2ICovCj4gKyAgICAgICBjYXNlIFVTQl9J
+RCgweDE3Y2MsIDB4MTAwMSk6IC8qIEtvbXBsZXRlIEF1ZGlvIDYgKi8KPiAgICAgICAgIGNhc2Ug
+VVNCX0lEKDB4MTdjYywgMHgxMDEwKTogLyogVHJha3RvciBBdWRpbyA2ICovCj4gICAgICAgICBj
+YXNlIFVTQl9JRCgweDE3Y2MsIDB4MTAyMCk6IC8qIFRyYWt0b3IgQXVkaW8gMTAgKi8KPiAgICAg
+ICAgICAgICAgICAgcmV0dXJuIHNuZF91c2JfbmF0aXZlaW5zdHJ1bWVudHNfYm9vdF9xdWlyayhk
+ZXYpOwo+CgoKCgo+IEhvd2V2ZXIgd2l0aG91dCBrbm93aW5nIHRoZSBkZXZpY2UgSSBhbSBub3Qg
+c3VyZSBpZiB0aGUgc2Vjb25kIGNoYW5nZSBpcwo+IHN0cmljdGx5IG5lY2Vzc2FyeSwgb3IgaWYg
+dGhlIHR3byBhcmUgZXZlbiBlbm91Z2guCj4KPiBTbyBwbGVhc2UgdHJ5IHRvIGFwcGx5IG9uZSBv
+ZiB0aGVtIGF0IHRoZSB0aW1lLCByZWNvbXBpbGUsIHRlc3QsIGFuZCBsZXQKPiB1cyBrbm93Lgo+
+Cj4gSSBoYXZlIHRyaWVkIHRoYXQgeW91IHdyaXRlIGluIGZpcnN0ICB3aXRoIG5vIGx1Y2suCkkg
+ZWRpdCB0aGUgZmlsZXMgOgoKZWRpdCA6cXVpcmtzLmMgYW5kIHwgb3IgcXVpcmtzLXRhYmxlLmgg
+LT4gcmVzdWx0CmVkaXQgOiAgIHllcyAgICAgICAgYW5kICAgICAgeWVzICAgICAgIC0+IGVyciA9
+IC0xMSBpbiBzbmQtdXNiLWF1ZGlvCmVkaXQgOiAgIG5vICAgICAgICAgICAgICAgICAgeWVzICAg
+ICAgIC0+IGRyaXZlciBub3QgbG9hZGluZwplZGl0IDogICB5ZXMgICAgICAgICAgICAgICAgIG5v
+ICAgICAgICAtPiBlcnIgPS0yMgplZGl0IDogICBubyAgICAgICAgICAgICAgICAgIG5vICAgICAg
+ICAtPiBkcml2ZXIgbG9hZCBidXQgbm8gZGV2aWNlIGNhcHR1cmUKCgoKPiA+IElmIG5lY2Vzc2Fy
+eSBJIGNvdWxkIHNlbmQgbG9nLCBjb21waWxlIGtlcm5lbCBzb3VyY2UgYW5kIHNvIG9uLgo+ID4g
+dGhhbmtzLAo+Cj4gS2VlcCBsb2dzIGJlZm9yZSBhbmQgYWZ0ZXIgY2hhbmdlcyB5b3UgbWFrZSBz
+byB0aGF0IHlvdSBjYW4gY29tcGFyZSB0aGUKPiByZXN1bHQgb2YgdGhlIGNoYW5nZXMuCj4KPiBD
+aWFvLAo+ICAgIEFudG9uaW8KPgo+IC0tCj4gQW50b25pbyBPc3BpdGUKPiBodHRwOi8vYW8yLml0
+Cj4KPiBBOiBCZWNhdXNlIGl0IG1lc3NlcyB1cCB0aGUgb3JkZXIgaW4gd2hpY2ggcGVvcGxlIG5v
+cm1hbGx5IHJlYWQgdGV4dC4KPiAgICBTZWUgaHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9Q
+b3N0aW5nX3N0eWxlCj4gUTogV2h5IGlzIHRvcC1wb3N0aW5nIHN1Y2ggYSBiYWQgdGhpbmc/Cj4K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
