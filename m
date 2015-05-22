@@ -1,529 +1,118 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: [RESEND PATCH v1 2/2] drm: bridge/dw_hdmi-i2s-audio: add audio driver
-Date: Fri, 22 May 2015 10:14:56 -0500
-Message-ID: <1432307696-7806-1-git-send-email-ykk@rock-chips.com>
-References: <1432307631-7667-1-git-send-email-ykk@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1432307631-7667-1-git-send-email-ykk@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel <alsa-devel@alsa-project.org>, dri-devel <dri-devel@lists.freedesktop.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Yakir Yang <ykk@rock-chips.com>, Thierry Reding <treding@nvidia.com>, Philipp Zabel <p.zabel@pengutronix.de>, linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>, Andy Yan <andy.yan@rock-chips.com>, David Airlie <airlied@linux.ie>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ajay Kumar <ajaykumar.rs@samsung.com>, Dave Airlie <airlied@redhat.com>
+From: Yakir <ykk@rock-chips.com>
+Subject: Re: [PATCH 02/13] drm: bridge/dw_hdmi: clean up phy
+	configuration
+Date: Fri, 22 May 2015 23:19:26 +0800
+Message-ID: <555F48FE.4070301@rock-chips.com>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1xJ-0006kc-GE@rmk-PC.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 764D6265D8A
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 17:19:30 +0200 (CEST)
+In-Reply-To: <E1Yr1xJ-0006kc-GE@rmk-PC.arm.linux.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add ALSA based HDMI I2S audio driver for dw_hdmi. Sound card
-driver could connect to this codec through the codec dai name
-"dw-hdmi-i2s-audio".
-
-Signed-off-by: Yakir Yang <ykk@rock-chips.com>
----
- drivers/gpu/drm/bridge/Kconfig             |   9 +
- drivers/gpu/drm/bridge/Makefile            |   1 +
- drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c | 412 +++++++++++++++++++++++++++++
- drivers/gpu/drm/bridge/dw_hdmi.c           |  24 +-
- drivers/gpu/drm/bridge/dw_hdmi.h           |   3 +
- 5 files changed, 440 insertions(+), 9 deletions(-)
- create mode 100644 drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c
-
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 9fff41e..fa8a9d2 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -14,6 +14,15 @@ config DRM_DW_HDMI_AHB_AUDIO
- 	  Designware HDMI block.  This is used in conjunction with
- 	  the i.MX6 HDMI driver.
- 
-+config DRM_DW_HDMI_I2S_AUDIO
-+	tristate "Synopsis Designware I2S Audio interface"
-+	depends on DRM_DW_HDMI && SND
-+	select SND_PCM
-+	help
-+	  Support the I2S Audio interface which is part of the Synopsis
-+	  Designware HDMI block.  This is used in conjunction with the
-+	  RK3288 HDMI driver.
-+
- config DRM_PTN3460
- 	tristate "PTN3460 DP/LVDS bridge"
- 	depends on DRM
-diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-index ebc5190..4aa566a 100644
---- a/drivers/gpu/drm/bridge/Makefile
-+++ b/drivers/gpu/drm/bridge/Makefile
-@@ -3,3 +3,4 @@ ccflags-y := -Iinclude/drm
- obj-$(CONFIG_DRM_PTN3460) += ptn3460.o
- obj-$(CONFIG_DRM_DW_HDMI) += dw_hdmi.o
- obj-$(CONFIG_DRM_DW_HDMI_AHB_AUDIO) += dw_hdmi-ahb-audio.o
-+obj-$(CONFIG_DRM_DW_HDMI_I2S_AUDIO) += dw_hdmi-i2s-audio.o
-diff --git a/drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c b/drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c
-new file mode 100644
-index 0000000..e0b5b9d
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c
-@@ -0,0 +1,412 @@
-+/*
-+ * DesignWare HDMI audio driver
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * Written and tested against the Designware HDMI Tx found in RK3288.
-+ */
-+#include <linux/io.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/moduleparam.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/initval.h>
-+#include <sound/pcm_params.h>
-+#include <drm/bridge/dw_hdmi.h>
-+
-+#include "dw_hdmi-audio.h"
-+
-+#define DRIVER_NAME "dw-hdmi-i2s-audio"
-+
-+enum {
-+	AUDIO_CONF1_DATWIDTH_MSK = 0x1F,
-+	AUDIO_CONF1_DATAMODE_MSK = 0xE0,
-+	AUDIO_DAIFMT_IIS = 0x0,
-+	AUDIO_DAIFMT_RIGHT_J = 0x20,
-+	AUDIO_DAIFMT_LEFT_J = 0x40,
-+	AUDIO_DAIFMT_BURST_1 = 0x60,
-+	AUDIO_DAIFMT_BURST_2 = 0x80,
-+	AUDIO_CONF0_INTERFACE_MSK = BIT(5),
-+	AUDIO_INPUTTYPE_IIS = 0x20,
-+	AUDIO_INPUTTYPE_SPDIF = 0x00,
-+	AUDIO_CONF0_I2SINEN_MSK = 0x0F,
-+	AUDIO_CHANNELNUM_2 = 0x01,
-+	AUDIO_CHANNELNUM_4 = 0x03,
-+	AUDIO_CHANNELNUM_6 = 0x07,
-+	AUDIO_CHANNELNUM_8 = 0x0F,
-+	HDMI_PHY_HPD = BIT(1),
-+	HDMI_PHY_STAT0 = 0x3004,
-+	HDMI_AUD_CONF0 = 0x3100,
-+	HDMI_AUD_CONF1 = 0x3101,
-+	HDMI_AUD_INPUTCLKFS = 0x3206,
-+};
-+
-+struct dw_audio_fmt {
-+	int input_type;
-+	int chan_num;
-+	int sample_rate;
-+	int word_length;
-+	int dai_fmt;
-+};
-+
-+struct snd_dw_hdmi {
-+	struct device *dev;
-+	struct dw_hdmi_audio_data data;
-+
-+	u8 jack_status;
-+	bool is_jack_ready;
-+	struct snd_soc_jack jack;
-+
-+	bool is_playback_status;
-+	struct dw_audio_fmt fmt;
-+};
-+
-+static void hdmi_writel(struct snd_dw_hdmi *dw, u8 val, int offset)
-+{
-+	writel(val, dw->data.base + (offset << 2));
-+}
-+
-+static u8 hdmi_readl(struct snd_dw_hdmi *dw, int offset)
-+{
-+	return readl(dw->data.base + (offset << 2));
-+}
-+
-+static void hdmi_modl(struct snd_dw_hdmi *dw, u8 data,
-+		      u8 mask, unsigned reg)
-+{
-+	u8 val = hdmi_readl(dw, reg) & ~mask;
-+
-+	val |= data & mask;
-+	hdmi_writel(dw, val, reg);
-+}
-+
-+int snd_dw_hdmi_jack_detect(struct snd_dw_hdmi *dw)
-+{
-+	u8 jack_status;
-+
-+	if (!dw->is_jack_ready)
-+		return -EINVAL;
-+
-+	jack_status = !!(hdmi_readl(dw, HDMI_PHY_STAT0) & HDMI_PHY_HPD) ?
-+			SND_JACK_LINEOUT : 0;
-+
-+	if (jack_status != dw->jack_status) {
-+		snd_soc_jack_report(&dw->jack, jack_status, SND_JACK_LINEOUT);
-+		dw->jack_status = jack_status;
-+	}
-+
-+	return 0;
-+}
-+
-+static irqreturn_t snd_dw_hdmi_irq(int irq, void *dev_id)
-+{
-+	struct snd_dw_hdmi *dw = dev_id;
-+
-+	snd_dw_hdmi_jack_detect(dw);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void dw_hdmi_audio_set_fmt(struct snd_dw_hdmi *dw,
-+				  const struct dw_audio_fmt *fmt)
-+{
-+	hdmi_modl(dw, fmt->input_type, AUDIO_CONF0_INTERFACE_MSK,
-+		  HDMI_AUD_CONF0);
-+
-+	hdmi_modl(dw, fmt->chan_num, AUDIO_CONF0_I2SINEN_MSK,
-+		  HDMI_AUD_CONF0);
-+
-+	hdmi_modl(dw, fmt->word_length, AUDIO_CONF1_DATWIDTH_MSK,
-+		  HDMI_AUD_CONF1);
-+
-+	hdmi_modl(dw, fmt->dai_fmt, AUDIO_CONF1_DATAMODE_MSK,
-+		  HDMI_AUD_CONF1);
-+
-+	hdmi_writel(dw, 0, HDMI_AUD_INPUTCLKFS);
-+
-+	dw_hdmi_set_sample_rate(dw->data.hdmi, fmt->sample_rate);
-+}
-+
-+static void dw_audio_set_fmt(struct snd_dw_hdmi *dw,
-+			     const struct dw_audio_fmt *fmt)
-+{
-+	if (fmt)
-+		dw->fmt = *fmt;
-+	dw_hdmi_audio_set_fmt(dw, &dw->fmt);
-+}
-+
-+static int snd_dw_hdmi_dai_startup(struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *dw = snd_soc_dai_get_drvdata(codec_dai);
-+
-+	dw->is_playback_status = true;
-+	dw_hdmi_audio_enable(dw->data.hdmi);
-+
-+	return 0;
-+}
-+
-+static int snd_dw_hdmi_dai_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params,
-+				     struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *dw = snd_soc_dai_get_drvdata(codec_dai);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct dw_audio_fmt dw_fmt;
-+	unsigned int fmt, rate, chan, width;
-+
-+	fmt = rtd->dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-+	switch (fmt) {
-+	case SND_SOC_DAIFMT_I2S:
-+		dw_fmt.dai_fmt = AUDIO_DAIFMT_IIS;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		dw_fmt.dai_fmt = AUDIO_DAIFMT_LEFT_J;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		dw_fmt.dai_fmt = AUDIO_DAIFMT_RIGHT_J;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "DAI format unsupported");
-+		return -EINVAL;
-+	}
-+
-+	width = params_width(params);
-+	switch (width) {
-+	case 16:
-+	case 24:
-+		dw_fmt.word_length = width;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "width[%d] not support!\n", width);
-+		return -EINVAL;
-+	}
-+
-+	chan = params_channels(params);
-+	switch (chan) {
-+	case 2:
-+		dw_fmt.chan_num = AUDIO_CHANNELNUM_2;
-+		break;
-+	case 4:
-+		dw_fmt.chan_num = AUDIO_CHANNELNUM_4;
-+		break;
-+	case 6:
-+		dw_fmt.chan_num = AUDIO_CHANNELNUM_6;
-+		break;
-+	case 8:
-+		dw_fmt.chan_num = AUDIO_CHANNELNUM_8;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "channel[%d] not support!\n", chan);
-+		return -EINVAL;
-+	}
-+
-+	rate = params_rate(params);
-+	switch (rate) {
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+	case 88200:
-+	case 96000:
-+	case 176400:
-+	case 192000:
-+		dw_fmt.sample_rate = rate;
-+		break;
-+	default:
-+		dev_err(codec_dai->dev, "rate[%d] not support!\n", rate);
-+		return -EINVAL;
-+	}
-+
-+	dw_fmt.input_type = AUDIO_INPUTTYPE_IIS;
-+
-+	dw_audio_set_fmt(dw, &dw_fmt);
-+
-+	return 0;
-+}
-+
-+static int snd_dw_hdmi_dai_trigger(struct snd_pcm_substream *substream,
-+				   int cmd, struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *dw = snd_soc_dai_get_drvdata(codec_dai);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		dw_hdmi_audio_enable(dw->data.hdmi);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dw_hdmi_audio_disable(dw->data.hdmi);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void snd_dw_hdmi_dai_shutdown(struct snd_pcm_substream *substream,
-+				     struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_dw_hdmi *dw = snd_soc_dai_get_drvdata(codec_dai);
-+
-+	dw->is_playback_status = false;
-+	dw_hdmi_audio_disable(dw->data.hdmi);
-+}
-+
-+static int snd_dw_hdmi_audio_probe(struct snd_soc_codec *codec)
-+{
-+	struct snd_dw_hdmi *dw = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	ret = snd_soc_jack_new(codec, "dw Jack", SND_JACK_LINEOUT,
-+			       &dw->jack);
-+	if (ret) {
-+		dev_err(dw->dev, "jack new failed (%d)\n", ret);
-+		dw->is_jack_ready = false;
-+		return ret;
-+	}
-+
-+	dw->is_jack_ready = true;
-+
-+	return snd_dw_hdmi_jack_detect(dw);
-+}
-+
-+static const struct snd_soc_dapm_widget snd_dw_hdmi_audio_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("TX"),
-+};
-+
-+static const struct snd_soc_dapm_route snd_dw_hdmi_audio_routes[] = {
-+	{ "TX", NULL, "Playback" },
-+};
-+
-+static const struct snd_soc_dai_ops dw_hdmi_dai_ops = {
-+	.startup = snd_dw_hdmi_dai_startup,
-+	.hw_params = snd_dw_hdmi_dai_hw_params,
-+	.trigger = snd_dw_hdmi_dai_trigger,
-+	.shutdown = snd_dw_hdmi_dai_shutdown,
-+};
-+
-+static struct snd_soc_dai_driver dw_hdmi_audio_dai = {
-+	.name = "dw-hdmi-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+			 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.ops = &dw_hdmi_dai_ops,
-+};
-+
-+static const struct snd_soc_codec_driver dw_hdmi_audio = {
-+	.probe = snd_dw_hdmi_audio_probe,
-+	.dapm_widgets = snd_dw_hdmi_audio_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(snd_dw_hdmi_audio_widgets),
-+	.dapm_routes = snd_dw_hdmi_audio_routes,
-+	.num_dapm_routes = ARRAY_SIZE(snd_dw_hdmi_audio_routes),
-+};
-+
-+static int dw_hdmi_audio_probe(struct platform_device *pdev)
-+{
-+	struct dw_hdmi_audio_data *data = pdev->dev.platform_data;
-+	struct snd_dw_hdmi *dw;
-+	int ret;
-+
-+	dw = devm_kzalloc(&pdev->dev, sizeof(*dw), GFP_KERNEL);
-+	if (!dw)
-+		return -ENOMEM;
-+
-+	dw->data = *data;
-+	dw->dev = &pdev->dev;
-+	dw->is_jack_ready = false;
-+	platform_set_drvdata(pdev, dw);
-+
-+	ret = request_irq(dw->data.irq, snd_dw_hdmi_irq, IRQF_SHARED,
-+			  "dw-dw-audio", dw);
-+	if (ret) {
-+		dev_err(&pdev->dev, "request irq failed (%d)\n", ret);
-+		goto free_dw_data;
-+	}
-+
-+	ret = snd_soc_register_codec(&pdev->dev, &dw_hdmi_audio,
-+				     &dw_hdmi_audio_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register codec failed (%d)\n", ret);
-+		goto free_irq;
-+	}
-+
-+	dev_dbg(&pdev->dev, "dw audio init success.\n");
-+
-+	return 0;
-+
-+free_irq:
-+	free_irq(dw->data.irq, dw);
-+free_dw_data:
-+	devm_kfree(&pdev->dev, dw);
-+
-+	return ret;
-+}
-+
-+static int dw_hdmi_audio_remove(struct platform_device *pdev)
-+{
-+	struct snd_dw_hdmi *dw = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_codec(&pdev->dev);
-+	devm_free_irq(&pdev->dev, dw->data.irq, dw);
-+	devm_kfree(&pdev->dev, dw);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int dw_hdmi_audio_resume(struct device *dev)
-+{
-+	struct snd_dw_hdmi *dw = dev_get_drvdata(dev);
-+
-+	snd_dw_hdmi_jack_detect(dw);
-+
-+	if (dw->is_playback_status)
-+		dw_hdmi_audio_set_fmt(dw, &dw->fmt);
-+
-+	return 0;
-+}
-+
-+static int dw_hdmi_audio_suspend(struct device *dev)
-+{
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops dw_hdmi_audio_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(dw_hdmi_audio_suspend, dw_hdmi_audio_resume)
-+};
-+
-+static struct platform_driver dw_hdmi_audio_driver = {
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.owner = THIS_MODULE,
-+		.pm = &dw_hdmi_audio_pm,
-+	},
-+	.probe = dw_hdmi_audio_probe,
-+	.remove = dw_hdmi_audio_remove,
-+};
-+module_platform_driver(dw_hdmi_audio_driver);
-+
-+MODULE_AUTHOR("Yakir Yang <ykk@rock-chips.com>");
-+MODULE_DESCRIPTION("DW dw Audio ASoC Interface");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS(PLATFORM_MODULE_PREFIX DRIVER_NAME);
-diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
-index 7b70619..5f092de 100644
---- a/drivers/gpu/drm/bridge/dw_hdmi.c
-+++ b/drivers/gpu/drm/bridge/dw_hdmi.c
-@@ -1720,20 +1720,26 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
- 
- 	memset(&pdevinfo, 0, sizeof(pdevinfo));
- 	pdevinfo.parent = dev;
--	pdevinfo.id = PLATFORM_DEVID_AUTO;
- 
--	if (hdmi_readb(hdmi, HDMI_CONFIG1_ID) & HDMI_CONFIG1_AHB) {
--		audio.phys = iores->start;
--		audio.base = hdmi->regs;
--		audio.irq = irq;
--		audio.hdmi = hdmi;
--		audio.eld = hdmi->connector.eld;
-+	audio.phys = iores->start;
-+	audio.base = hdmi->regs;
-+	audio.irq = irq;
-+	audio.hdmi = hdmi;
-+	audio.eld = hdmi->connector.eld;
-+
-+	pdevinfo.data = &audio;
-+	pdevinfo.size_data = sizeof(audio);
- 
-+	if (hdmi_readb(hdmi, HDMI_CONFIG1_ID) & HDMI_CONFIG1_AHB) {
- 		pdevinfo.name = "dw-hdmi-ahb-audio";
--		pdevinfo.data = &audio;
--		pdevinfo.size_data = sizeof(audio);
-+		pdevinfo.id = PLATFORM_DEVID_AUTO;
- 		pdevinfo.dma_mask = DMA_BIT_MASK(32);
- 		hdmi->audio = platform_device_register_full(&pdevinfo);
-+
-+	} else if (hdmi_readb(hdmi, HDMI_CONFIG0_ID) & HDMI_CONFIG0_I2S) {
-+		pdevinfo.name = "dw-hdmi-ahb-audio";
-+		pdevinfo.id = PLATFORM_DEVID_NONE;
-+		hdmi->audio = platform_device_register_full(&pdevinfo);
- 	}
- 
- 	dev_set_drvdata(dev, hdmi);
-diff --git a/drivers/gpu/drm/bridge/dw_hdmi.h b/drivers/gpu/drm/bridge/dw_hdmi.h
-index 78e54e8..9c22377 100644
---- a/drivers/gpu/drm/bridge/dw_hdmi.h
-+++ b/drivers/gpu/drm/bridge/dw_hdmi.h
-@@ -545,6 +545,9 @@
- #define HDMI_I2CM_FS_SCL_LCNT_0_ADDR            0x7E12
- 
- enum {
-+/* CONFIG0_ID field values */
-+	HDMI_CONFIG0_I2S = 0x01,
-+
- /* CONFIG1_ID field values */
- 	HDMI_CONFIG1_AHB = 0x01,
- 
--- 
-2.1.2
+SGkgUnVzc2VsbCwKCuWcqCAyMDE1LzUvOSAxODoyNiwgUnVzc2VsbCBLaW5nIOWGmemBkzoKPiBU
+aGUgcGh5IGNvbmZpZ3VyYXRpb24gaXMgZGVwZW5kZW50IG9uIHRoZSBTb0MsIGFuZCB3ZSBsb29r
+IHVwIHZhbHVlcyBmb3IKPiBzb21lIG9mIHRoZSByZWdpc3RlcnMgaW4gU29DIHNwZWNpZmljIGRh
+dGEuICBIb3dldmVyLCB3ZSBoYWQgcGFydGlhbGx5Cj4gcHJvZ3JhbW1lZCB0aGUgcGh5IGJlZm9y
+ZSB3ZSBoYWQgc3VjY2Vzc2Z1bGx5IGxvb2tlZCB1cCB0aGUgY2xvY2sgcmF0ZS4KPiBBbHNvLCB3
+ZSB3ZXJlIG9ubHkgY2hlY2tpbmcgdGhhdCB3ZSBoYWQgYSB2YWxpZCBjb25maWd1cmF0aW9uIGZv
+ciB0aGUKPiBjdXJyY3RybCByZWdpc3Rlci4KPgo+IE1vdmUgYWxsIHRoZXNlIGxvb2t1cHMgdG8g
+dGhlIHN0YXJ0IG9mIHRoaXMgZnVuY3Rpb24gaW5zdGVhZCwgc28gd2UgY2FuCj4gY2hlY2sgdGhh
+dCBhbGwgbG9va3VwcyB3ZXJlIHN1Y2Nlc3NmdWwgYmVmb3JlIGJlZ2lubmluZyB0byBwcm9ncmFt
+IHRoZQo+IHBoeS4KPgo+IFNpZ25lZC1vZmYtYnk6IFJ1c3NlbGwgS2luZyA8cm1rK2tlcm5lbEBh
+cm0ubGludXgub3JnLnVrPgoKVGVzdCBvbiBSSzMyODggcGxhdGZvcm0sIGl0IHdvcmtzIHdlbGxz
+ICA6LSkKClRlc3QtYnk6IDx5a2tAcm9jay1jaGlwcy5jb20+CgpCZXN0IHJlZ2FyZHMsCllha2ly
+IFlhbmcKPiAtLS0KPiAgIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS5jIHwgNjggKysr
+KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDM1IGluc2VydGlvbnMoKyksIDMzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS5jIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19o
+ZG1pLmMKPiBpbmRleCAzNDk0MzkxZTQxOTkuLjIzZWE4YzVjODViNiAxMDA2NDQKPiAtLS0gYS9k
+cml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9i
+cmlkZ2UvZHdfaGRtaS5jCj4gQEAgLTc1MywxMiArNzUzLDEyIEBAIHN0YXRpYyB2b2lkIGR3X2hk
+bWlfcGh5X3NlbF9pbnRlcmZhY2VfY29udHJvbChzdHJ1Y3QgZHdfaGRtaSAqaGRtaSwgdTggZW5h
+YmxlKQo+ICAgc3RhdGljIGludCBoZG1pX3BoeV9jb25maWd1cmUoc3RydWN0IGR3X2hkbWkgKmhk
+bWksIHVuc2lnbmVkIGNoYXIgcHJlcCwKPiAgIAkJCSAgICAgIHVuc2lnbmVkIGNoYXIgcmVzLCBp
+bnQgY3Njb24pCj4gICB7Cj4gLQl1bnNpZ25lZCByZXNfaWR4LCBpOwo+ICsJdW5zaWduZWQgcmVz
+X2lkeDsKPiAgIAl1OCB2YWwsIG1zZWM7Cj4gLQljb25zdCBzdHJ1Y3QgZHdfaGRtaV9wbGF0X2Rh
+dGEgKnBsYXRfZGF0YSA9IGhkbWktPnBsYXRfZGF0YTsKPiAtCWNvbnN0IHN0cnVjdCBkd19oZG1p
+X21wbGxfY29uZmlnICptcGxsX2NvbmZpZyA9IHBsYXRfZGF0YS0+bXBsbF9jZmc7Cj4gLQljb25z
+dCBzdHJ1Y3QgZHdfaGRtaV9jdXJyX2N0cmwgKmN1cnJfY3RybCA9IHBsYXRfZGF0YS0+Y3VyX2N0
+cjsKPiAtCWNvbnN0IHN0cnVjdCBkd19oZG1pX3BoeV9jb25maWcgKnBoeV9jb25maWcgPSBwbGF0
+X2RhdGEtPnBoeV9jb25maWc7Cj4gKwljb25zdCBzdHJ1Y3QgZHdfaGRtaV9wbGF0X2RhdGEgKnBk
+YXRhID0gaGRtaS0+cGxhdF9kYXRhOwo+ICsJY29uc3Qgc3RydWN0IGR3X2hkbWlfbXBsbF9jb25m
+aWcgKm1wbGxfY29uZmlnID0gcGRhdGEtPm1wbGxfY2ZnOwo+ICsJY29uc3Qgc3RydWN0IGR3X2hk
+bWlfY3Vycl9jdHJsICpjdXJyX2N0cmwgPSBwZGF0YS0+Y3VyX2N0cjsKPiArCWNvbnN0IHN0cnVj
+dCBkd19oZG1pX3BoeV9jb25maWcgKnBoeV9jb25maWcgPSBwZGF0YS0+cGh5X2NvbmZpZzsKPiAg
+IAo+ICAgCWlmIChwcmVwKQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsKPiBAQCAtNzc4LDYgKzc3OCwz
+MCBAQCBzdGF0aWMgaW50IGhkbWlfcGh5X2NvbmZpZ3VyZShzdHJ1Y3QgZHdfaGRtaSAqaGRtaSwg
+dW5zaWduZWQgY2hhciBwcmVwLAo+ICAgCQlyZXR1cm4gLUVJTlZBTDsKPiAgIAl9Cj4gICAKPiAr
+CS8qIFBMTC9NUExMIENmZyAtIGFsd2F5cyBtYXRjaCBvbiBmaW5hbCBlbnRyeSAqLwo+ICsJZm9y
+ICg7IG1wbGxfY29uZmlnLT5tcGl4ZWxjbG9jayAhPSB+MFVMOyBtcGxsX2NvbmZpZysrKQo+ICsJ
+CWlmIChoZG1pLT5oZG1pX2RhdGEudmlkZW9fbW9kZS5tcGl4ZWxjbG9jayA8PQo+ICsJCSAgICBt
+cGxsX2NvbmZpZy0+bXBpeGVsY2xvY2spCj4gKwkJCWJyZWFrOwo+ICsKPiArCWZvciAoOyBjdXJy
+X2N0cmwtPm1waXhlbGNsb2NrICE9IH4wVUw7IGN1cnJfY3RybCsrKQo+ICsJCWlmIChoZG1pLT5o
+ZG1pX2RhdGEudmlkZW9fbW9kZS5tcGl4ZWxjbG9jayA8PQo+ICsJCSAgICBjdXJyX2N0cmwtPm1w
+aXhlbGNsb2NrKQo+ICsJCQlicmVhazsKPiArCj4gKwlmb3IgKDsgcGh5X2NvbmZpZy0+bXBpeGVs
+Y2xvY2sgIT0gfjBVTDsgcGh5X2NvbmZpZysrKQo+ICsJCWlmIChoZG1pLT5oZG1pX2RhdGEudmlk
+ZW9fbW9kZS5tcGl4ZWxjbG9jayA8PQo+ICsJCSAgICBwaHlfY29uZmlnLT5tcGl4ZWxjbG9jaykK
+PiArCQkJYnJlYWs7Cj4gKwo+ICsJaWYgKG1wbGxfY29uZmlnLT5tcGl4ZWxjbG9jayA9PSB+MFVM
+IHx8Cj4gKwkgICAgY3Vycl9jdHJsLT5tcGl4ZWxjbG9jayA9PSB+MFVMIHx8Cj4gKwkgICAgcGh5
+X2NvbmZpZy0+bXBpeGVsY2xvY2sgPT0gfjBVTCkgewo+ICsJCWRldl9lcnIoaGRtaS0+ZGV2LCAi
+UGl4ZWwgY2xvY2sgJWQgLSB1bnN1cHBvcnRlZCBieSBIRE1JXG4iLAo+ICsJCQloZG1pLT5oZG1p
+X2RhdGEudmlkZW9fbW9kZS5tcGl4ZWxjbG9jayk7Cj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4gKwl9
+Cj4gKwo+ICAgCS8qIEVuYWJsZSBjc2MgcGF0aCAqLwo+ICAgCWlmIChjc2NvbikKPiAgIAkJdmFs
+ID0gSERNSV9NQ19GTE9XQ1RSTF9GRUVEX1RIUk9VR0hfT0ZGX0NTQ19JTl9QQVRIOwo+IEBAIC04
+MDMsNDAgKzgyNywxOCBAQCBzdGF0aWMgaW50IGhkbWlfcGh5X2NvbmZpZ3VyZShzdHJ1Y3QgZHdf
+aGRtaSAqaGRtaSwgdW5zaWduZWQgY2hhciBwcmVwLAo+ICAgCQkgICAgSERNSV9QSFlfSTJDTV9T
+TEFWRV9BRERSKTsKPiAgIAloZG1pX3BoeV90ZXN0X2NsZWFyKGhkbWksIDApOwo+ICAgCj4gLQkv
+KiBQTEwvTVBMTCBDZmcgLSBhbHdheXMgbWF0Y2ggb24gZmluYWwgZW50cnkgKi8KPiAtCWZvciAo
+aSA9IDA7IG1wbGxfY29uZmlnW2ldLm1waXhlbGNsb2NrICE9ICh+MFVMKTsgaSsrKQo+IC0JCWlm
+IChoZG1pLT5oZG1pX2RhdGEudmlkZW9fbW9kZS5tcGl4ZWxjbG9jayA8PQo+IC0JCSAgICBtcGxs
+X2NvbmZpZ1tpXS5tcGl4ZWxjbG9jaykKPiAtCQkJYnJlYWs7Cj4gLQo+IC0JaGRtaV9waHlfaTJj
+X3dyaXRlKGhkbWksIG1wbGxfY29uZmlnW2ldLnJlc1tyZXNfaWR4XS5jcGNlLCAweDA2KTsKPiAt
+CWhkbWlfcGh5X2kyY193cml0ZShoZG1pLCBtcGxsX2NvbmZpZ1tpXS5yZXNbcmVzX2lkeF0uZ21w
+LCAweDE1KTsKPiAtCj4gLQlmb3IgKGkgPSAwOyBjdXJyX2N0cmxbaV0ubXBpeGVsY2xvY2sgIT0g
+KH4wVUwpOyBpKyspCj4gLQkJaWYgKGhkbWktPmhkbWlfZGF0YS52aWRlb19tb2RlLm1waXhlbGNs
+b2NrIDw9Cj4gLQkJICAgIGN1cnJfY3RybFtpXS5tcGl4ZWxjbG9jaykKPiAtCQkJYnJlYWs7Cj4g
+LQo+IC0JaWYgKGN1cnJfY3RybFtpXS5tcGl4ZWxjbG9jayA9PSAofjBVTCkpIHsKPiAtCQlkZXZf
+ZXJyKGhkbWktPmRldiwgIlBpeGVsIGNsb2NrICVkIC0gdW5zdXBwb3J0ZWQgYnkgSERNSVxuIiwK
+PiAtCQkJaGRtaS0+aGRtaV9kYXRhLnZpZGVvX21vZGUubXBpeGVsY2xvY2spOwo+IC0JCXJldHVy
+biAtRUlOVkFMOwo+IC0JfQo+ICsJaGRtaV9waHlfaTJjX3dyaXRlKGhkbWksIG1wbGxfY29uZmln
+LT5yZXNbcmVzX2lkeF0uY3BjZSwgMHgwNik7Cj4gKwloZG1pX3BoeV9pMmNfd3JpdGUoaGRtaSwg
+bXBsbF9jb25maWctPnJlc1tyZXNfaWR4XS5nbXAsIDB4MTUpOwo+ICAgCj4gICAJLyogQ1VSUkNU
+UkwgKi8KPiAtCWhkbWlfcGh5X2kyY193cml0ZShoZG1pLCBjdXJyX2N0cmxbaV0uY3VycltyZXNf
+aWR4XSwgMHgxMCk7Cj4gKwloZG1pX3BoeV9pMmNfd3JpdGUoaGRtaSwgY3Vycl9jdHJsLT5jdXJy
+W3Jlc19pZHhdLCAweDEwKTsKPiAgIAo+ICAgCWhkbWlfcGh5X2kyY193cml0ZShoZG1pLCAweDAw
+MDAsIDB4MTMpOyAgLyogUExMUEhCWUNUUkwgKi8KPiAgIAloZG1pX3BoeV9pMmNfd3JpdGUoaGRt
+aSwgMHgwMDA2LCAweDE3KTsKPiAgIAo+IC0JZm9yIChpID0gMDsgcGh5X2NvbmZpZ1tpXS5tcGl4
+ZWxjbG9jayAhPSAofjBVTCk7IGkrKykKPiAtCQlpZiAoaGRtaS0+aGRtaV9kYXRhLnZpZGVvX21v
+ZGUubXBpeGVsY2xvY2sgPD0KPiAtCQkgICAgcGh5X2NvbmZpZ1tpXS5tcGl4ZWxjbG9jaykKPiAt
+CQkJYnJlYWs7Cj4gLQo+IC0JaGRtaV9waHlfaTJjX3dyaXRlKGhkbWksIHBoeV9jb25maWdbaV0u
+dGVybSwgMHgxOSk7ICAvKiBUWFRFUk0gKi8KPiAtCWhkbWlfcGh5X2kyY193cml0ZShoZG1pLCBw
+aHlfY29uZmlnW2ldLnN5bV9jdHIsIDB4MDkpOyAvKiBDS1NZTVRYQ1RSTCAqLwo+IC0JaGRtaV9w
+aHlfaTJjX3dyaXRlKGhkbWksIHBoeV9jb25maWdbaV0udmxldl9jdHIsIDB4MEUpOyAvKiBWTEVW
+Q1RSTCAqLwo+ICsJaGRtaV9waHlfaTJjX3dyaXRlKGhkbWksIHBoeV9jb25maWctPnRlcm0sIDB4
+MTkpOyAgLyogVFhURVJNICovCj4gKwloZG1pX3BoeV9pMmNfd3JpdGUoaGRtaSwgcGh5X2NvbmZp
+Zy0+c3ltX2N0ciwgMHgwOSk7IC8qIENLU1lNVFhDVFJMICovCj4gKwloZG1pX3BoeV9pMmNfd3Jp
+dGUoaGRtaSwgcGh5X2NvbmZpZy0+dmxldl9jdHIsIDB4MEUpOyAvKiBWTEVWQ1RSTCAqLwo+ICAg
+Cj4gICAJLyogUkVNT1ZFIENMSyBURVJNICovCj4gICAJaGRtaV9waHlfaTJjX3dyaXRlKGhkbWks
+IDB4ODAwMCwgMHgwNSk7ICAvKiBDS0NBTENUUkwgKi8KCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
