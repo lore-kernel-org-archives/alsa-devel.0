@@ -1,64 +1,70 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 01/10] ASoC: qcom: make lpass driver depend on OF
-Date: Fri, 22 May 2015 15:21:49 +0200
-Message-ID: <2125335.kSmCnV68xe@wuerfel>
-References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org> <2534276.hIjFJK74Zh@wuerfel> <555F18C8.8090902@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2 v2] ASoC: rsnd: rsrc-card uses FE/BE
+ merged format when DPCM
+Date: Fri, 22 May 2015 14:13:18 +0100
+Message-ID: <20150522131318.GB21391@sirena.org.uk>
+References: <87wq0ebllq.wl%kuninori.morimoto.gx@renesas.com>
+ <87twvibljv.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <555F18C8.8090902@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7366012389558365594=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 271F1266096
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:13:30 +0200 (CEST)
+In-Reply-To: <87twvibljv.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 May 2015 12:53:44 Srinivas Kandagatla wrote:
-> Thanks for looking at this patch.
-> 
-> On 22/05/15 08:24, Arnd Bergmann wrote:
-> > On Thursday 21 May 2015 22:52:41 Srinivas Kandagatla wrote:
-> >>
-> >>   config SND_SOC_LPASS_CPU
-> >>          tristate
-> >> +       depends on OF
-> >>          select REGMAP_MMIO
-> >>
-> >>   config SND_SOC_LPASS_PLATFORM
-> >>          tristate
-> >> +       depends on OF
-> >>          select REGMAP_MMIO
-> >>
-> >>   config SND_SOC_LPASS_IPQ806X
-> >>
-> >
-> > Could you instead make the drivers compile without OF being set?
-> >
-> > I see that patch 7 and 8 introduces another two options doing
-> >
-> >
-> > +config SND_SOC_LPASS_APQ8016
-> > +       tristate
-> > +       depends on SND_SOC_QCOM
-> > +       select SND_SOC_LPASS_CPU
-> > +       select SND_SOC_LPASS_PLATFORM
-> > +
-> >
-> > +config SND_SOC_APQ8016_SBC
-> > +       tristate "SoC Audio support for APQ8016 SBC platforms"
-> > +       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-> > +       select SND_SOC_LPASS_APQ8016
-> > +       help
-> >
-> > so you get an obvious build failure here when SND_SOC_APQ8016_SBC
-> > gets selected with COMPILE_TEST on a platform that does not support OF.
-> >
-> 
-> Yes, this would fail.
-> I think moving of_device_id structures in drivers under #ifdef CONFIG_OF 
-> and removing the depends on OF would fix it.
-> 
 
-Why?
+--===============7366012389558365594==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="F+wU6CH2q8RBGewX"
+Content-Disposition: inline
 
-	Arnd
+
+--F+wU6CH2q8RBGewX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 12, 2015 at 02:03:51AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+Applied, thanks.
+
+--F+wU6CH2q8RBGewX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVXyttAAoJECTWi3JdVIfQyPEH/0qvMp84GqR2gsMRUhcG8slZ
+RoXJCKcFZIZgGAdxhNJVWvnu+WwxBQ6V5rKOcjPhcNYUzfTaKcelPK/qoy5ZylZy
+G4YVn237XasgESyFbNRREaNjutJHOUnXxWTe6Jb3snHUDUJYCFueaw1taKmujHkG
+gwocPvFXJ3oUm3XvlhPo3cMu18PDO17GGYgELxIi+sC5YLU6lOosAiH1o2S32u5W
+VAuxuO9uGDgM5xSlJrVO+fO9/sWql489VTbvbLeQEqcjwjHAilGA/jbJcCppjRoV
+y+Jox7ns37p1jVDyYGQFGiY7RIT9eqLJoytd6IPZ+ZfJsJdJMsl0VQnDHw2r1VA=
+=yCxm
+-----END PGP SIGNATURE-----
+
+--F+wU6CH2q8RBGewX--
+
+--===============7366012389558365594==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7366012389558365594==--
