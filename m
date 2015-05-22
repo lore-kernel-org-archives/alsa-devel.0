@@ -1,85 +1,144 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 10/13] sound/core: add DRM ELD helper
-Date: Fri, 22 May 2015 15:00:10 +0100
-Message-ID: <20150522140009.GH2067@n2100.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
- <20150522122009.GK21391@sirena.org.uk>
- <20150522131534.GF2067@n2100.arm.linux.org.uk>
- <s5hzj4weo35.wl-tiwai@suse.de>
- <20150522135331.GG2067@n2100.arm.linux.org.uk>
- <s5hsiaoemz3.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/5] ALSA: firewire-lib: set streaming error outside of
+	packetization
+Date: Fri, 22 May 2015 23:00:53 +0900
+Message-ID: <1432303254-4192-5-git-send-email-o-takashi@sakamocchi.jp>
+References: <1432303254-4192-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hsiaoemz3.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1432303254-4192-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMjIsIDIwMTUgYXQgMDM6NTQ6NTZQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IEZyaSwgMjIgTWF5IDIwMTUgMTQ6NTM6MzEgKzAxMDAsCj4gUnVzc2VsbCBLaW5n
-IC0gQVJNIExpbnV4IHdyb3RlOgo+ID4gCj4gPiBPbiBGcmksIE1heSAyMiwgMjAxNSBhdCAwMzoz
-MDo1NFBNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+IEF0IEZyaSwgMjIgTWF5IDIw
-MTUgMTQ6MTU6MzUgKzAxMDAsCj4gPiA+IFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCB3cm90ZToK
-PiA+ID4gPiAKPiA+ID4gPiBPbiBGcmksIE1heSAyMiwgMjAxNSBhdCAwMToyMDowOVBNICswMTAw
-LCBNYXJrIEJyb3duIHdyb3RlOgo+ID4gPiA+ID4gT24gU2F0LCBNYXkgMDksIDIwMTUgYXQgMTE6
-MjY6NDJBTSArMDEwMCwgUnVzc2VsbCBLaW5nIHdyb3RlOgo+ID4gPiA+ID4gPiBBZGQgYSBoZWxw
-ZXIgZm9yIHRoZSBFRElEIGxpa2UgZGF0YSBzdHJ1Y3R1cmUsIHdoaWNoIGlzIHR5cGljYWxseSBw
-YXNzZWQKPiA+ID4gPiA+ID4gZnJvbSBhIEhETUkgYWRhcHRlciB0byBpdHMgYXNzb2NpYXRlZCBh
-dWRpbyBkcml2ZXIuICBUaGlzIGluZm9ybXMgdGhlCj4gPiA+ID4gPiA+IGF1ZGlvIGRyaXZlciBv
-ZiB0aGUgY2FwYWJpbGl0aWVzIG9mIHRoZSBhdHRhY2hlZCBIRE1JIHNpbmsuCj4gPiA+ID4gPiAK
-PiA+ID4gPiA+IEFzIGZhciBhcyBJIGNhbiB0ZWxsIHBlb3BsZSBhcmUgZmFpcmx5IGhhcHB5IHdp
-dGggdGhlIGltcGxlbWVudGF0aW9uCj4gPiA+ID4gPiBoZXJlIGFuZCB1bmxlc3MgSSdtIG1pc3Np
-bmcgc29tZXRoaW5nIGFyZSBkZWZpbml0ZWx5IGhhcHB5IHdpdGggdGhlCj4gPiA+ID4gPiBpbnRl
-cmZhY2UuICBJZiB0aGF0J3MgdGhlIGNhc2UgY2FuIHdlIGdldCB0aGlzIGludG8gLW5leHQ/ICBU
-aGVyZSdzIGEKPiA+ID4gPiA+IGxvdCBvZiBpbnRlcmVzdCBpbiBIRE1JIHJpZ2h0IG5vdyAod2hp
-Y2ggaXMgZ3JlYXQpIGFuZCB0aGlzIHdvdWxkIGJlCj4gPiA+ID4gPiBoZWxwZnVsIGZvciB0aGF0
-LCBpdCBzZWVtcyBsaWtlIGV2ZW4gaWYgdGhlcmUgYXJlIGlzc3VlcyB3aXRoIHRoZQo+ID4gPiA+
-ID4gaW1wbGVtZW50YXRpb24gaXQgd291bGQgYmUgd29ydGggbWVyZ2luZyBhcyBpcyBzbyB3ZSBj
-YW4gc3RhcnQgYWRkaW5nCj4gPiA+ID4gPiB1c2VycyBhbmQgdGhlbiBkbyBhbnkgaW1wcm92ZW1l
-bnRzIHRvIHRoZSBpbnRlcmZhY2UgaW4gcGFyYWxsZWwuCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEZy
-b20gYW4gaW50ZXJmYWNlIHBvaW50IG9mIHZpZXc6Cj4gPiA+ID4gPiAKPiA+ID4gPiA+IFJldmll
-d2VkLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4gPiA+ID4gCj4gPiA+ID4g
-SSdkIGJlIG1vcmUgdGhhbiBoYXBweSBpZiBUYWthc2hpIEl3YWkgd2FudHMgdG8gdGFrZSB0aGVt
-IC0gSSdtIG5vdAo+ID4gPiA+IHBsYW5uaW5nIG9uIHRoZSBhdWRpbyBkcml2ZXIgaXRzZWxmIGJl
-aW5nIG1lcmdlZCBqdXN0IHlldCBhcyB3ZSBzdGlsbAo+ID4gPiA+IG5lZWQgdG8gcHJvcGVybHkg
-aGFtbWVyIG91dCB0aGUgZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUgQUhCIGF1ZGlvIChmb3IKPiA+
-ID4gPiBpTVg2KSBhbmQgSTJTIGF1ZGlvIChmb3IgUm9ja2NoaXApIGZvciB0aGlzIGRldmljZS4K
-PiA+ID4gCj4gPiA+IFNvcnJ5LCBJJ3ZlIGJlZW4gb24gdmFjYXRpb24gaW4gdGhlIGxhc3QgdHdv
-IHdlZWtzLCBzbyBzbG93bHkKPiA+ID4gZGlnZXN0aW5nIGFsbCBiYWNrbG9ncyBub3cuCj4gPiA+
-IAo+ID4gPiA+IEFsdGVybmF0aXZlbHksIEkgY291bGQgbW92ZSB0aGVzZSB0d28gcGF0Y2hlcyB0
-byB0aGUgYmVnaW5uaW5nIG9mIG15Cj4gPiA+ID4gc2VyaWVzLCBhbmQgbWVyZ2UgdGhhdCBwb2lu
-dCBpbnRvIG15IGZvci1uZXh0IGFuZC9vciBwdWJsaXNoIGl0IGFzIGEKPiA+ID4gPiBzZXBhcmF0
-ZSBzdWItYnJhbmNoLi4uIHdoYXRldmVyIHBlb3BsZSB3YW50LCBqdXN0IGxldCBtZSBrbm93Lgo+
-ID4gPiAKPiA+ID4gSSdtIGZpbmUgdG8gdGFrZSB0aGUgc291bmQgcGFydC4gIEl0J3Mgb25seSBw
-YXRjaGVzIDEwIGFuZCAxMSwgcmlnaHQ/Cj4gPiA+IFRoZW4gSSBjYW4gcHJvdmlkZSBhIGJyYW5j
-aCB0aGF0IGNhbiBiZSBtZXJnZWQgZm9yIHRoZSByZXN0IGRybQo+ID4gPiBzdHVmZi4KPiA+IAo+
-ID4gWWVwLCBqdXN0IHBhdGNoZXMgMTAgYW5kIDExLiAgSWYgcG9zc2libGUsIHBsZWFzZSBiYXNl
-IHRoZXNlIHBhdGNoZXMgb24KPiA+IHY0LjEtcmMxLCB0aGFua3MuCj4gCj4gSSBhcHBsaWVkIHRo
-ZW0gb24gdG9wIG9mIC1yYzQsIEkgc3VwcG9zZSBpdCdzIE9LPwoKSXQgaXMsIGJ1dCB3aGF0IGl0
-IG1lYW5zIGlzIHRoYXQgSSdsbCBrZWVwIG15IGNvcHkgb2YgdGhlIHBhdGNoZXMgaW4gbXkKdHJl
-ZSByYXRoZXIgdGhhbiBwdWxsaW5nIHlvdXIgdHJlZS4gIEhhdmluZyBicmFuY2hlcyBzcHJlYWQg
-b24gZGlmZmVyZW50CnN0YXJ0IHBvaW50cyBtYWtlcyBpdCBkaWZmaWN1bHQgdG8gZ2VuZXJhdGUg
-YSBwYXRjaCBzZXJpZXMgZnJvbSB0aGUgZ2l0CnRyZWUgLSB3aGljaCBpcyBzb21ldGhpbmcgSSBj
-b250aW51ZSB0byBkbyBmb3IgdGhlIFNvbGlkUnVuIGlNWDYgcGxhdGZvcm1zCihwdWJsaXNoaW5n
-IGl0IGFzIHNlcGFyYXRlIHBhdGNoZXMsIHRhcmJhbGwgb2YgdGhvc2UgcGF0Y2hlcyBhbmQgYSBj
-b21iaW5lZApwYXRjaC4pCgpBcyBJIHNheSwgaXQgZG9lc24ndCBtYXR0ZXIgdGhhdCBtdWNoLCBJ
-IGNhbiBqdXN0IGtlZXAgbXkgY29waWVzIG9mIHRoZQpwYXRjaGVzLCBhbmQgd2hlbiB0aGlzIHN0
-dWZmIGdldHMgcmViYXNlZCB0byA0LjItcmMxLCBnaXQgcmViYXNlIHNob3VsZAplbGltaW5hdGUg
-dGhlbSBhdXRvbWF0aWNhbGx5LgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6
-IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVk
-dGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
-dHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+In previous commit, error handling for incoming packet processing is
+outside of packetization. This is nice for reading the codes.
+
+This commit applies this idea for outgoing packet processing, too.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
+
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index c5034e7..5c0e3ce 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -651,16 +651,13 @@ static inline int queue_in_packet(struct amdtp_stream *s)
+ 			    amdtp_stream_get_max_payload(s), false);
+ }
+ 
+-static void handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
+-			      unsigned int syt)
++static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
++			     unsigned int syt)
+ {
+ 	__be32 *buffer;
+ 	unsigned int payload_length;
+ 	struct snd_pcm_substream *pcm;
+ 
+-	if (s->packet_index < 0)
+-		return;
+-
+ 	buffer = s->buffer.packets[s->packet_index].buffer;
+ 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+ 				(s->data_block_quadlets << AMDTP_DBS_SHIFT) |
+@@ -680,14 +677,14 @@ static void handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
+ 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
+ 
+ 	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+-	if (queue_out_packet(s, payload_length, false) < 0) {
+-		s->packet_index = -1;
+-		amdtp_stream_pcm_abort(s);
+-		return;
+-	}
++	if (queue_out_packet(s, payload_length, false) < 0)
++		return -EIO;
+ 
+ 	if (pcm)
+ 		update_pcm_pointers(s, pcm, data_blocks);
++
++	/* No need to return the number of handled data blocks. */
++	return 0;
+ }
+ 
+ static int handle_in_packet(struct amdtp_stream *s,
+@@ -799,6 +796,9 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	unsigned int i, syt, packets = header_length / 4;
+ 	unsigned int data_blocks;
+ 
++	if (s->packet_index < 0)
++		return;
++
+ 	/*
+ 	 * Compute the cycle of the last queued packet.
+ 	 * (We need only the four lowest bits for the SYT, so we can ignore
+@@ -810,8 +810,13 @@ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		syt = calculate_syt(s, ++cycle);
+ 		data_blocks = calculate_data_blocks(s, syt);
+ 
+-		handle_out_packet(s, data_blocks, syt);
++		if (handle_out_packet(s, data_blocks, syt) < 0) {
++			s->packet_index = -1;
++			amdtp_stream_pcm_abort(s);
++			return;
++		}
+ 	}
++
+ 	fw_iso_context_queue_flush(s->context);
+ }
+ 
+@@ -825,6 +830,9 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	unsigned int data_blocks;
+ 	__be32 *buffer, *headers = header;
+ 
++	if (s->packet_index < 0)
++		return;
++
+ 	/* The number of packets in buffer */
+ 	packets = header_length / IN_PACKET_HEADER_SIZE;
+ 
+@@ -832,9 +840,6 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 	max_payload_quadlets = amdtp_stream_get_max_payload(s) / 4;
+ 
+ 	for (p = 0; p < packets; p++) {
+-		if (s->packet_index < 0)
+-			break;
+-
+ 		buffer = s->buffer.packets[s->packet_index].buffer;
+ 
+ 		/* The number of quadlets in this packet */
+@@ -857,7 +862,11 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 		/* Process sync slave stream */
+ 		if (s->sync_slave && s->sync_slave->callbacked) {
+ 			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
+-			handle_out_packet(s->sync_slave, data_blocks, syt);
++			if (handle_out_packet(s->sync_slave,
++					      data_blocks, syt) < 0) {
++				s->packet_index = -1;
++				break;
++			}
+ 		}
+ 	}
+ 
+-- 
+2.1.4
+
+
+------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
