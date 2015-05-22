@@ -1,55 +1,50 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 10/13] sound/core: add DRM ELD helper
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4 v2] ASoC: rsnd: spin lock for interrupt handler
 Date: Fri, 22 May 2015 14:15:35 +0100
-Message-ID: <20150522131534.GF2067@n2100.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
- <20150522122009.GK21391@sirena.org.uk>
+Message-ID: <20150522131535.GD21391@sirena.org.uk>
+References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
+ <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="VZLKKa0PG5KXlQhV"
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150522122009.GK21391@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <87382qtwto.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMjIsIDIwMTUgYXQgMDE6MjA6MDlQTSArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBTYXQsIE1heSAwOSwgMjAxNSBhdCAxMToyNjo0MkFNICswMTAwLCBSdXNzZWxsIEtp
-bmcgd3JvdGU6Cj4gPiBBZGQgYSBoZWxwZXIgZm9yIHRoZSBFRElEIGxpa2UgZGF0YSBzdHJ1Y3R1
-cmUsIHdoaWNoIGlzIHR5cGljYWxseSBwYXNzZWQKPiA+IGZyb20gYSBIRE1JIGFkYXB0ZXIgdG8g
-aXRzIGFzc29jaWF0ZWQgYXVkaW8gZHJpdmVyLiAgVGhpcyBpbmZvcm1zIHRoZQo+ID4gYXVkaW8g
-ZHJpdmVyIG9mIHRoZSBjYXBhYmlsaXRpZXMgb2YgdGhlIGF0dGFjaGVkIEhETUkgc2luay4KPiAK
-PiBBcyBmYXIgYXMgSSBjYW4gdGVsbCBwZW9wbGUgYXJlIGZhaXJseSBoYXBweSB3aXRoIHRoZSBp
-bXBsZW1lbnRhdGlvbgo+IGhlcmUgYW5kIHVubGVzcyBJJ20gbWlzc2luZyBzb21ldGhpbmcgYXJl
-IGRlZmluaXRlbHkgaGFwcHkgd2l0aCB0aGUKPiBpbnRlcmZhY2UuICBJZiB0aGF0J3MgdGhlIGNh
-c2UgY2FuIHdlIGdldCB0aGlzIGludG8gLW5leHQ/ICBUaGVyZSdzIGEKPiBsb3Qgb2YgaW50ZXJl
-c3QgaW4gSERNSSByaWdodCBub3cgKHdoaWNoIGlzIGdyZWF0KSBhbmQgdGhpcyB3b3VsZCBiZQo+
-IGhlbHBmdWwgZm9yIHRoYXQsIGl0IHNlZW1zIGxpa2UgZXZlbiBpZiB0aGVyZSBhcmUgaXNzdWVz
-IHdpdGggdGhlCj4gaW1wbGVtZW50YXRpb24gaXQgd291bGQgYmUgd29ydGggbWVyZ2luZyBhcyBp
-cyBzbyB3ZSBjYW4gc3RhcnQgYWRkaW5nCj4gdXNlcnMgYW5kIHRoZW4gZG8gYW55IGltcHJvdmVt
-ZW50cyB0byB0aGUgaW50ZXJmYWNlIGluIHBhcmFsbGVsLgo+IAo+IEZyb20gYW4gaW50ZXJmYWNl
-IHBvaW50IG9mIHZpZXc6Cj4gCj4gUmV2aWV3ZWQtYnk6IE1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4KCkknZCBiZSBtb3JlIHRoYW4gaGFwcHkgaWYgVGFrYXNoaSBJd2FpIHdhbnRzIHRv
-IHRha2UgdGhlbSAtIEknbSBub3QKcGxhbm5pbmcgb24gdGhlIGF1ZGlvIGRyaXZlciBpdHNlbGYg
-YmVpbmcgbWVyZ2VkIGp1c3QgeWV0IGFzIHdlIHN0aWxsCm5lZWQgdG8gcHJvcGVybHkgaGFtbWVy
-IG91dCB0aGUgZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUgQUhCIGF1ZGlvIChmb3IKaU1YNikgYW5k
-IEkyUyBhdWRpbyAoZm9yIFJvY2tjaGlwKSBmb3IgdGhpcyBkZXZpY2UuCgpBbHRlcm5hdGl2ZWx5
-LCBJIGNvdWxkIG1vdmUgdGhlc2UgdHdvIHBhdGNoZXMgdG8gdGhlIGJlZ2lubmluZyBvZiBteQpz
-ZXJpZXMsIGFuZCBtZXJnZSB0aGF0IHBvaW50IGludG8gbXkgZm9yLW5leHQgYW5kL29yIHB1Ymxp
-c2ggaXQgYXMgYQpzZXBhcmF0ZSBzdWItYnJhbmNoLi4uIHdoYXRldmVyIHBlb3BsZSB3YW50LCBq
-dXN0IGxldCBtZSBrbm93LgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1
-cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVz
-dC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
-aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--VZLKKa0PG5KXlQhV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, May 21, 2015 at 03:50:23AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Renesas R-Car driver interrupt handler was not locked before.
+> But now, SSI/SRC interrupt handler calls restart function
+> which should be called under spin lock.
+> Below error might happen witout this patch.
+
+Applied, thanks.
+
+--VZLKKa0PG5KXlQhV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVXyv2AAoJECTWi3JdVIfQNgAIAIK5c4/1r8BVsWwwu/JjEO4+
+VLlizzzD9JU3Fk7TsU6y20ldn30Pu+5AFsGj1K50P4eQj5Wf4WKc9vL8LV1LSdmK
+FLb1wIxOcV0o7ETI8WAXwqUSrhtTjDMjecP66XbiGWOyQVaeAlwP/JNs324pK095
+tCLRiCZH92sX3yyhxAUHyTe6/MCDDMdyvog9B0K5UPdAnrfFQThYK0CoFbEiU2Oh
+jzocsv4ihNbSAr2BrO1gOgaUhMcdnmuMszBPrLFfgo/WIjIkb/ooErausQnmgbWP
+J6muqx9cCJ+ybGEsE8m2j7UNVtJG87zIV82BFsyM8hqxLMlQFkEiN4J0s+hooTE=
+=5O2O
+-----END PGP SIGNATURE-----
+
+--VZLKKa0PG5KXlQhV--
