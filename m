@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/3] dt: Add documentation for the ZTE
-	SPDIF controller
-Date: Fri, 22 May 2015 13:10:15 +0100
-Message-ID: <20150522121015.GJ21391@sirena.org.uk>
-References: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
- <1430915885-30656-3-git-send-email-jun.nie@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: zx: Add ZTE zx296702 I2S DAI
+	driver
+Date: Fri, 22 May 2015 13:36:57 +0100
+Message-ID: <20150522123657.GS21391@sirena.org.uk>
+References: <1432119972-6934-1-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8111694985737508212=="
+Content-Type: multipart/mixed; boundary="===============4282606926232080845=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BFFB6265B4C
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:07:57 +0200 (CEST)
-In-Reply-To: <1430915885-30656-3-git-send-email-jun.nie@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id CCCB3265AEA
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:07:39 +0200 (CEST)
+In-Reply-To: <1432119972-6934-1-git-send-email-jun.nie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,47 +26,56 @@ Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lg
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8111694985737508212==
+--===============4282606926232080845==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HcccYpVZDxQ8hzPO"
+	protocol="application/pgp-signature"; boundary="yLfVvEQOBD/VeTNx"
 Content-Disposition: inline
 
 
---HcccYpVZDxQ8hzPO
+--yLfVvEQOBD/VeTNx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 06, 2015 at 08:38:05PM +0800, Jun Nie wrote:
-> This patch adds the devicetree documentation for the ZTE
-> zx296702 SPDIF audio controller.
+On Wed, May 20, 2015 at 07:06:11PM +0800, Jun Nie wrote:
+> Add ZTE zx296702 I2S DAI driver
 
-...and here it is!  Sorry - the DT binding is normally before the code
-in the patch series.  This is fine, it's just patch 1 that needs to be
-resolved then.
+This looks good but depends on the DMA driver and a couple of small
+nits:
 
---HcccYpVZDxQ8hzPO
+> +config ZX296702_I2S
+> +	bool "ZX296702 i2s"
+
+I see no reason for this to be bool as opposed to a tristate - why not
+let people build it as a module?
+
+> +	default:
+> +		dev_err(cpu_dai->dev, "Unknwon master/slave format\n");
+
+The driver consistently misspells unknown.
+
+--yLfVvEQOBD/VeTNx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXxymAAoJECTWi3JdVIfQhrYIAIN7MeBA33CwHDUx/Y7vgllk
-x/hlpWgQPygXrghynRoX9UZ37aSf/9GWXBE474QBAX5NI80F9pUws7V2iAarPjAp
-P6bbwz3YKN9ty+ycX8hp0JSgAr+UinDtnRMuyct/43XBdsXexM7ZicQ880JGP7Yi
-mN65sO8+Qfgq9E40Btbv92t1R8yt8QEiJPtFm8RhVzvZz+DwRMCb6HkkCP2pwAkU
-GfZ7dpSZ0jM5bO+kwNsVNRn/tjTo9KHJ2fkXfsGcYe6ArKVRoESrP3D9DLF/v+gl
-zbvs8y6eEkPb73DC/xKdN631QHz5XG6nMa+ZA0Pa/mVpw60gsZ7kIo1rUmk3huE=
-=4YYT
+iQEcBAEBCAAGBQJVXyLpAAoJECTWi3JdVIfQ3lYH/jGVN0ZzwI7x+tyEO2fvbx6d
+KWi6IZOocjHbDuP5r5R2KKEgrVqo79NkJQ3+lmuUdFTunoob2CB1VrJ9aiTlEPcb
+pH3Sbf+wRy+mLy0JNIEvMnZho9JR9mB1Lbqao3DtJsm8jGNx+k7P5M4C4ILVY3eC
+UdqBzsW3qFue4Xt8NcshqfyVViLTDSo5mDqbUobrX2BXIsmpvVnHiclm5dtunuGr
+g57b5AkTil4hRl8XH9RMrOevDX6U4BkbD52Uf92fyLVeVQNCFEd3viZLNGOF1IMX
+YTvcTeaOZNRmyBN+yZXfyIMcbMPHyRuyx7v7ZvgH747/J6utDijPi+FNgM+AyQE=
+=jOcM
 -----END PGP SIGNATURE-----
 
---HcccYpVZDxQ8hzPO--
+--yLfVvEQOBD/VeTNx--
 
---===============8111694985737508212==
+--===============4282606926232080845==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8111694985737508212==--
+--===============4282606926232080845==--
