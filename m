@@ -1,55 +1,52 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: writing an alsa driver
-Date: Thu, 21 May 2015 16:52:32 +0200
-Message-ID: <20150521145232.GA12157@dellaz>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 01/10] ASoC: qcom: make lpass driver depend on OF
+Date: Fri, 22 May 2015 09:24:35 +0200
+Message-ID: <2534276.hIjFJK74Zh@wuerfel>
+References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org> <1432245161-8990-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
- [209.85.212.171])
- by alsa0.perex.cz (Postfix) with ESMTP id AF9472614DD
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 16:52:37 +0200 (CEST)
-Received: by wizk4 with SMTP id k4so17764919wiz.1
- for <alsa-devel@alsa-project.org>; Thu, 21 May 2015 07:52:37 -0700 (PDT)
-Received: from dellaz (host79-90-static.72-81-b.business.telecomitalia.it.
- [81.72.90.79])
- by mx.google.com with ESMTPSA id v20sm32500536wjr.49.2015.05.21.07.52.35
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
- Thu, 21 May 2015 07:52:36 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1432245161-8990-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I'm going to *try* to "write" a driver for the sound card on my new laptop,
-an asus x205ta.
+On Thursday 21 May 2015 22:52:41 Srinivas Kandagatla wrote:
+> 
+>  config SND_SOC_LPASS_CPU
+>         tristate
+> +       depends on OF
+>         select REGMAP_MMIO
+>  
+>  config SND_SOC_LPASS_PLATFORM
+>         tristate
+> +       depends on OF
+>         select REGMAP_MMIO
+>  
+>  config SND_SOC_LPASS_IPQ806X
+> 
 
-To be fair I have almost no experience but I'm hoping that all the code is
-already present and it only needs some adaptations.
+Could you instead make the drivers compile without OF being set?
 
-The cpu is a intel bay trail z3735f, the sound card is a realtek rt5648 that
-has the same product Id of the rt5645 (0x6308).
+I see that patch 7 and 8 introduces another two options doing
 
-I see in kernel sources:
- - the codec driver
-	sound/soc/codecs/rt5645.c
- - a baytrail board that uses the rt5640
-	sound/soc/intel/boards/byt-rt5640.c
- - a braswell board that uses the rt5645
-	sound/soc/intel/boards/cht_bsw_rt5645.c
 
-What do you think?  Is it feasible, given a good amount of free-time? :p
++config SND_SOC_LPASS_APQ8016
++       tristate
++       depends on SND_SOC_QCOM
++       select SND_SOC_LPASS_CPU
++       select SND_SOC_LPASS_PLATFORM
++
 
-Thanks,
-Michele
++config SND_SOC_APQ8016_SBC
++       tristate "SoC Audio support for APQ8016 SBC platforms"
++       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
++       select SND_SOC_LPASS_APQ8016
++       help
+
+so you get an obvious build failure here when SND_SOC_APQ8016_SBC
+gets selected with COMPILE_TEST on a platform that does not support OF.
+
+	Arnd
