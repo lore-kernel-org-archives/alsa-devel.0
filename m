@@ -1,83 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 10/13] sound/core: add DRM ELD helper
-Date: Fri, 22 May 2015 13:20:09 +0100
-Message-ID: <20150522122009.GK21391@sirena.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
+Subject: Re: [PATCH v2 2/3] ASoC: zx: Add zx296702 SPDIF support
+Date: Fri, 22 May 2015 13:09:14 +0100
+Message-ID: <20150522120914.GI21391@sirena.org.uk>
+References: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
+ <1430915885-30656-2-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5007001467297377479=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <E1Yr1xy-0006l8-Ft@rmk-PC.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============3974997829955774051=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6D11265AFE
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:07:39 +0200 (CEST)
+In-Reply-To: <1430915885-30656-2-git-send-email-jun.nie@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com, zte-lt@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5007001467297377479==
+--===============3974997829955774051==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="W2ydbIOJmkm74tJ2"
+	protocol="application/pgp-signature"; boundary="MFZs98Tklfu0WsCO"
 Content-Disposition: inline
 
 
---W2ydbIOJmkm74tJ2
+--MFZs98Tklfu0WsCO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 09, 2015 at 11:26:42AM +0100, Russell King wrote:
-> Add a helper for the EDID like data structure, which is typically passed
-> from a HDMI adapter to its associated audio driver.  This informs the
-> audio driver of the capabilities of the attached HDMI sink.
+On Wed, May 06, 2015 at 08:38:04PM +0800, Jun Nie wrote:
+> Add driver for zx296702 SPDIF controller
 
-As far as I can tell people are fairly happy with the implementation
-here and unless I'm missing something are definitely happy with the
-interface.  If that's the case can we get this into -next?  There's a
-lot of interest in HDMI right now (which is great) and this would be
-helpful for that, it seems like even if there are issues with the
-implementation it would be worth merging as is so we can start adding
-users and then do any improvements to the interface in parallel.
+This all seems fine apart from the fact that you're adding a new DT
+binding with no binding documentation - all new DT binndings require
+binnding documentation.
 
-=46rom an interface point of view:
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---W2ydbIOJmkm74tJ2
+--MFZs98Tklfu0WsCO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXx74AAoJECTWi3JdVIfQWVoH/jcveKvlD11gss44pjGC+m4E
-SeKJgqTeMoaqmszVWLGMpGrmqjW7yTHsQ65RGS7P7+A6gDcxAUvtCOB501PljOob
-g7Yp6bXg0konqYmWKucRP0+6G46l71p/WYeMdL9+3jxXnY6qF4FEQWwlaMbhjHMP
-qgB6XKSFMqL9xp5f9fTnFDISaH6yB1tqBbok7osUvUVjFs4//oOscMtJGnGXeeis
-xRaytpp20u62Y4oXYu7Y3f1YAOPIecPoSf84AVVv43oCYfBAayDiypZIu6gxE2XQ
-urR1psmYibSo3x0KwWc6ygxNme+WolLxhMI1iRoIfj40EWircZ0J/u0S5qe2ReM=
-=2HID
+iQEcBAEBCAAGBQJVXxxpAAoJECTWi3JdVIfQSgoH/0Wrb5R6+4cdJRVOT9KPUNt6
+NIhcA4n6xrhQd551EKvowkGQzzL5oe7Q1EBlYih1lJIKCz8e8Ud1fLRp0r8n/nuJ
+ONb8VPFtkfxWcDXdCHKFqGYorzMGRxOKc/nEmlz7u0fc9rswaG5UCkOWx0/hlERi
+SQ5hoYm5+lYGl6FlNgNvs+cyBzY967ruepGm1IPY7iLBRq4fkbG68ftYr3Xy6kJW
+rToQxwSI6jnfSS+H4K0krnLlhagGjRPvHXeVpCWHc3dPb3ppoiV/C1NNTAvduHUs
+bCxbQg03uIfyRO3kRndS90CTq7v7SOcfFeSg9sFAb/EIO4ohChY0k7lZG1TNuzg=
+=2AG8
 -----END PGP SIGNATURE-----
 
---W2ydbIOJmkm74tJ2--
+--MFZs98Tklfu0WsCO--
 
-
---===============5007001467297377479==
+--===============3974997829955774051==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5007001467297377479==--
+--===============3974997829955774051==--
