@@ -1,48 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4 v2] dmaengine: rcar-dmac: fixup spinlock in rcar-dmac
-Date: Fri, 22 May 2015 14:14:30 +0100
-Message-ID: <20150522131430.GC21391@sirena.org.uk>
-References: <878ucitwyh.wl%kuninori.morimoto.gx@renesas.com>
- <877fs2twwm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 1/3] ASoC: zx: Add ZTE zx296702 pcm
+	support
+Date: Fri, 22 May 2015 13:07:03 +0100
+Message-ID: <20150522120703.GH21391@sirena.org.uk>
+References: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UvwuEPigQXXfOf7G"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <877fs2twwm.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Simon <horms@verge.net.au>, Nguyen Viet Dung <nv-dung@jinso.co.jp>, Magnus <magnus.damm@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Laurent <laurent.pinchart@ideasonboard.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Cao Minh Hiep <cm-hiep@jinso.co.jp>, sakato <ryusuke.sakato.bx@renesas.com>, dmaengine@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============8329046617393638339=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC54265B5B
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:08:16 +0200 (CEST)
+In-Reply-To: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com, zte-lt@lists.linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 
---UvwuEPigQXXfOf7G
+--===============8329046617393638339==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
+Content-Disposition: inline
+
+
+--CNfT9TXqV7nd4cfk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 21, 2015 at 03:48:38AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current rcar-dmac driver is using spin_lock_irq() / spin_unlock_irq()
-> in some functions. But, some other driver might call DMAEngine API
+On Wed, May 06, 2015 at 08:38:03PM +0800, Jun Nie wrote:
 
-Applied, thanks.
+> +static const struct snd_pcm_hardware snd_zx_hardware = {
+> +	.info			= SNDRV_PCM_INFO_MMAP |
+> +				  SNDRV_PCM_INFO_MMAP_VALID |
+> +				  SNDRV_PCM_INFO_INTERLEAVED |
+> +				  SNDRV_PCM_INFO_PAUSE |
+> +				  SNDRV_PCM_INFO_RESUME |
+> +				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+> +	.period_bytes_min	= 32,
+> +	.period_bytes_max	= 16 * 1024,
+> +	.periods_min		= 2,
+> +	.periods_max		= 32,
+> +	.buffer_bytes_max       = 64 * 1024,
+> +};
 
---UvwuEPigQXXfOf7G
+As I said last time I'm not sure why you are manually defining these -
+the capabilities of the DMA controller should be being enumerated from
+the DMA controller driver.  See dmaengine_pcm_set_runtime_hwparams().
+
+--CNfT9TXqV7nd4cfk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVXyu1AAoJECTWi3JdVIfQqp0IAIETrPNeX1MlJ7jBU2mm6H+A
-wqHtLuY1DGVIcIi5Qp1p6sYSLvrpusz408WhC1FPxjlkdA7pV4VBONYlZReMRdrc
-GU/hVyNjcej4YWIgRMhxd3cswRXZkciIl74Os3RG9z/qGrelG3I4e5dJNK8BzO0s
-67bGrIsqZsEaZs6VbfkETCCWoFS6Hi0Aspa/AgCmbA6zNXaQw8G1qNO9s/Xbt1vh
-LGrHc+hmeIypARUnw5fKd899nStCgLJUIdTGbAkMToxp85psVFelbX3uxF7FItf3
-ftZPdigs6L72Syrpa1hk8QdRwkQAOMh7idaT8c/nJZH3WuMNgLG+pZ3Mc1xtyJY=
-=gpe5
+iQEcBAEBCAAGBQJVXxvnAAoJECTWi3JdVIfQmu4H/jmPnnfQiV5HyiMTcnYaZQrs
+CyaE2ennx0uaxVvJSS1hCwoW8eyg/3Z22h1UHjdNEKRtz2Fmd7uaop0hmwUrOOpa
+T5skHIYlycZaC38PM4yrYfUwhl+r7CkyXfRn9g9DgdauzKM0iLZk3q5WcjKN82xp
+kEoQmhNwDfquEpfmCAr7SvY+wLQQFz4MQHKpH23/yurMsiuZe2IYpBv5uiHYs+FD
+IZ+Uh4Kk+HLt5t3d2GSLGZAYVBvfZkahCTsK4daL5SZYyJbAuz3uGIS2TFRgDYS6
+DQy0iA7X8U3RUVdj05+50+9HnnyeUflG8fNGdf40x9EAXyAUViX5Gd9+jiFKbuU=
+=wf6b
 -----END PGP SIGNATURE-----
 
---UvwuEPigQXXfOf7G--
+--CNfT9TXqV7nd4cfk--
+
+--===============8329046617393638339==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8329046617393638339==--
