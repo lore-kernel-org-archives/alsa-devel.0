@@ -1,62 +1,73 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 01/10] ASoC: qcom: make lpass driver depend on OF
-Date: Fri, 22 May 2015 15:15:15 +0200
-Message-ID: <2168878.0V0FR6oKgi@wuerfel>
-References: <1432245125-8939-1-git-send-email-srinivas.kandagatla@linaro.org> <1432245161-8990-1-git-send-email-srinivas.kandagatla@linaro.org> <2534276.hIjFJK74Zh@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2 v2] ASoC: soc-pcm: DPCM cares BE format
+Date: Fri, 22 May 2015 13:38:49 +0100
+Message-ID: <20150522123849.GT21391@sirena.org.uk>
+References: <87wq0ebllq.wl%kuninori.morimoto.gx@renesas.com>
+ <87vbfyblke.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <2534276.hIjFJK74Zh@wuerfel>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4312191578420322610=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10EBE265B69
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:08:20 +0200 (CEST)
+In-Reply-To: <87vbfyblke.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 22 May 2015 09:24:35 Arnd Bergmann wrote:
-> Could you instead make the drivers compile without OF being set?
-> 
-> I see that patch 7 and 8 introduces another two options doing
-> 
-> 
-> +config SND_SOC_LPASS_APQ8016
-> +       tristate
-> +       depends on SND_SOC_QCOM
-> +       select SND_SOC_LPASS_CPU
-> +       select SND_SOC_LPASS_PLATFORM
-> +
-> 
-> +config SND_SOC_APQ8016_SBC
-> +       tristate "SoC Audio support for APQ8016 SBC platforms"
-> +       depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-> +       select SND_SOC_LPASS_APQ8016
-> +       help
-> 
-> so you get an obvious build failure here when SND_SOC_APQ8016_SBC
-> gets selected with COMPILE_TEST on a platform that does not support OF.
-> 
-> 
 
-Actually, the patch 9bae4880acee ("ASoC: qcom: move ipq806x specific
-bits out of lpass driver.") already broke things more after I fixed it
-up. Please fold in this bit too before you send it again, and
-try to test the changes you send:
-
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index b30c2baa7501..08ebc9b8f915 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -20,7 +20,7 @@ config SND_SOC_LPASS_IPQ806X
- 
- config SND_SOC_STORM
- 	tristate "ASoC I2S support for Storm boards"
--	depends on (ARCH_QCOM && SND_SOC_QCOM) || COMPILE_TEST
-+	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
- 	select SND_SOC_LPASS_IPQ806X
- 	select SND_SOC_MAX98357A
- 	help
+--===============4312191578420322610==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qKhyKP9HH88saeqA"
+Content-Disposition: inline
 
 
+--qKhyKP9HH88saeqA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, May 12, 2015 at 02:03:33AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Current DPCM is caring only FE format. but it will be no sound
+> if FE/BE was below style, and user selects S24_LE format.
+
+Applied, thanks.
+
+--qKhyKP9HH88saeqA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVXyNYAAoJECTWi3JdVIfQVfwH/0Swih9qcRRTt88nndzaU/kQ
+WB6YjOANt3Bq6LgYnMEmwbBw719XIp2jPgOMLfsJlvQ+b6kWEYIccKC9CDZoYbGN
+ya9UM1Rpe+MSgE3o8FYpCnSn1kj8dIp9n5AIDbpBc41dAQ8KJ//TJ0jiYU+EDHPz
+7q2hpg0kmDo+oJEvRTm6tJBSY78wS+5QT845Bx5VtOFnu1zbPvDyfx5qHmLBXnAe
+XajfcvHuIymXCxQBmvPngQZrfu0Hzw0blW6iAOQb00MemVTXLIztBR3rPh8oOSr2
+CNgKFKlAlA9NXuy3ri/USSzJnr5YypvNK2w8gcFAq3uOBmHSl1EsKWjDKtvYNmg=
+=gC6n
+-----END PGP SIGNATURE-----
+
+--qKhyKP9HH88saeqA--
+
+--===============4312191578420322610==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-	Arnd
+--===============4312191578420322610==--
