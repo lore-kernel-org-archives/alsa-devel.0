@@ -1,107 +1,73 @@
-From: Yakir <ykk@rock-chips.com>
-Subject: Re: [PATCH 08/13] drm: bridge/dw_hdmi: introduce
- interfaces to enable and disable audio
-Date: Fri, 22 May 2015 23:28:58 +0800
-Message-ID: <555F4B3A.3070907@rock-chips.com>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1xo-0006l0-8E@rmk-PC.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 56E91265CC7
- for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 17:29:00 +0200 (CEST)
-In-Reply-To: <E1Yr1xo-0006l0-8E@rmk-PC.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 0/3] ASoC: qcom: add support to apq8016 audio
+Date: Fri, 22 May 2015 16:52:36 +0100
+Message-ID: <1432309956-5228-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUnVzc2VsbCwKCuWcqCAyMDE1LzUvOSAxODoyNiwgUnVzc2VsbCBLaW5nIOWGmemBkzoKPiBp
-TVg2IGRldmljZXMgc3VmZmVyIGZyb20gYW4gZXJyYXRhIChFUlIwMDUxNzQpIHdoZXJlIHRoZSBh
-dWRpbyBGSUZPIGNhbgo+IGJlIGVtcHRpZWQgd2hpbGUgaXQgaXMgcGFydGlhbGx5IGZ1bGwsIHJl
-c3VsdGluZyBpbiBtaXNhbGlnbm1lbnQgb2YgdGhlCj4gYXVkaW8gc2FtcGxlcy4KPgo+IFRvIHBy
-ZXZlbnQgdGhpcywgdGhlIGVycmF0YSB3b3JrYXJvdW5kIHJlY29tbWVuZHMgd3JpdGluZyBOIGFz
-IHplcm8KPiB1bnRpbCB0aGUgYXVkaW8gRklGTyBoYXMgYmVlbiBsb2FkZWQgYnkgRE1BLiAgV3Jp
-dGluZyBOPTAgcHJldmVudHMgdGhlCj4gSERNSSBicmlkZ2UgZnJvbSByZWFkaW5nIGZyb20gdGhl
-IGF1ZGlvIEZJRk8sIGVmZmVjdGl2ZWx5IGRpc2FibGluZwo+IGF1ZGlvLgo+Cj4gVGhpcyBtZWFu
-cyB3ZSBuZWVkIHRvIHByb3ZpZGUgdGhlIGF1ZGlvIGRyaXZlciB3aXRoIGEgcGFpciBvZiBmdW5j
-dGlvbnMKPiB0byBlbmFibGUvZGlzYWJsZSBhdWRpby4gIFRoZXNlIGFyZSBkd19oZG1pX2F1ZGlv
-X2VuYWJsZSgpIGFuZAo+IGR3X2hkbWlfYXVkaW9fZGlzYWJsZSgpLgo+Cj4gQSBzcGlubG9jayBp
-cyBpbnRyb2R1Y2VkIHRvIGVuc3VyZSB0aGF0IHNldHRpbmcgdGhlIENUUy9OIHZhbHVlcyBjYW4n
-dAo+IHJhY2UsIGVuc3VyaW5nIHRoYXQgdGhlIGF1ZGlvIGRyaXZlciBjYWxsaW5nIHRoZSBlbmFi
-bGUvZGlzYWJsZQo+IGZ1bmN0aW9ucyAod2hpY2ggYXJlIGNhbGxlZCBpbiBhbiBhdG9taWMgY29u
-dGV4dCkgY2FuJ3QgcmFjZSB3aXRoIGEKPiBtb2Rlc2V0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogUnVz
-c2VsbCBLaW5nIDxybWsra2VybmVsQGFybS5saW51eC5vcmcudWs+CgpUZXN0IG9uIFJLMzI4OCBw
-bGF0Zm9ybSwgaXQgd29ya3Mgd2VsbHMuIFByZXZpb3VzbHkgSSB1c2UgdG8gc3dpdGNoIG9mZgp0
-aGUgaTJzIGF1ZGlvIGNsb2NrLCBmb3Igbm93IHNlZW1zIGl0IGlzIG5vdCBuZWNlc3NhcnkuCgpU
-ZXN0LWJ5OiBZYWtpciBZYW5nIDx5a2tAcm9jay1jaGlwcy5jb20+CgpUaGFua3MsCllha2lyIFlh
-bmcKCj4gLS0tCj4gICBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYyB8IDM0ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPiAgIGluY2x1ZGUvZHJtL2JyaWRnZS9kd19o
-ZG1pLmggICAgIHwgIDIgKysKPiAgIDIgZmlsZXMgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKSwg
-MSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdf
-aGRtaS5jIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmMKPiBpbmRleCAwMzY5ZmFi
-NWM2OTUuLmFkZGEzYTk4OGYzNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdl
-L2R3X2hkbWkuYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS5jCj4gQEAg
-LTE4LDYgKzE4LDcgQEAKPiAgICNpbmNsdWRlIDxsaW51eC9oZG1pLmg+Cj4gICAjaW5jbHVkZSA8
-bGludXgvbXV0ZXguaD4KPiAgICNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4KPiArI2luY2x1
-ZGUgPGxpbnV4L3NwaW5sb2NrLmg+Cj4gICAKPiAgICNpbmNsdWRlIDxkcm0vZHJtX29mLmg+Cj4g
-ICAjaW5jbHVkZSA8ZHJtL2RybVAuaD4KPiBAQCAtMTI0LDggKzEyNSwxMiBAQCBzdHJ1Y3QgZHdf
-aGRtaSB7Cj4gICAJc3RydWN0IGkyY19hZGFwdGVyICpkZGM7Cj4gICAJdm9pZCBfX2lvbWVtICpy
-ZWdzOwo+ICAgCj4gKwlzcGlubG9ja190IGF1ZGlvX2xvY2s7Cj4gICAJc3RydWN0IG11dGV4IGF1
-ZGlvX211dGV4Owo+ICAgCXVuc2lnbmVkIGludCBzYW1wbGVfcmF0ZTsKPiArCXVuc2lnbmVkIGlu
-dCBhdWRpb19jdHM7Cj4gKwl1bnNpZ25lZCBpbnQgYXVkaW9fbjsKPiArCWJvb2wgYXVkaW9fZW5h
-YmxlOwo+ICAgCWludCByYXRpbzsKPiAgIAo+ICAgCXZvaWQgKCp3cml0ZSkoc3RydWN0IGR3X2hk
-bWkgKmhkbWksIHU4IHZhbCwgaW50IG9mZnNldCk7Cj4gQEAgLTM0Nyw3ICszNTIsMTEgQEAgc3Rh
-dGljIHZvaWQgaGRtaV9zZXRfY2xrX3JlZ2VuZXJhdG9yKHN0cnVjdCBkd19oZG1pICpoZG1pLAo+
-ICAgCWRldl9kYmcoaGRtaS0+ZGV2LCAiJXM6IHNhbXBsZXJhdGU9JXVrSHogcmF0aW89JWQgcGl4
-ZWxjbGs9JWx1TUh6IE49JWQgY3RzPSVkXG4iLAo+ICAgCQlfX2Z1bmNfXywgc2FtcGxlX3JhdGUs
-IHJhdGlvLCBwaXhlbF9jbGssIG4sIGN0cyk7Cj4gICAKPiAtCWhkbWlfc2V0X2N0c19uKGhkbWks
-IGN0cywgbik7Cj4gKwlzcGluX2xvY2tfaXJxKCZoZG1pLT5hdWRpb19sb2NrKTsKPiArCWhkbWkt
-PmF1ZGlvX24gPSBuOwo+ICsJaGRtaS0+YXVkaW9fY3RzID0gY3RzOwo+ICsJaGRtaV9zZXRfY3Rz
-X24oaGRtaSwgY3RzLCBoZG1pLT5hdWRpb19lbmFibGUgPyBuIDogMCk7Cj4gKwlzcGluX3VubG9j
-a19pcnEoJmhkbWktPmF1ZGlvX2xvY2spOwo+ICAgfQo+ICAgCj4gICBzdGF0aWMgdm9pZCBoZG1p
-X2luaXRfY2xrX3JlZ2VuZXJhdG9yKHN0cnVjdCBkd19oZG1pICpoZG1pKQo+IEBAIC0zNzYsNiAr
-Mzg1LDI4IEBAIHZvaWQgZHdfaGRtaV9zZXRfc2FtcGxlX3JhdGUoc3RydWN0IGR3X2hkbWkgKmhk
-bWksIHVuc2lnbmVkIGludCByYXRlKQo+ICAgfQo+ICAgRVhQT1JUX1NZTUJPTF9HUEwoZHdfaGRt
-aV9zZXRfc2FtcGxlX3JhdGUpOwo+ICAgCj4gK3ZvaWQgZHdfaGRtaV9hdWRpb19lbmFibGUoc3Ry
-dWN0IGR3X2hkbWkgKmhkbWkpCj4gK3sKPiArCXVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4gKwo+ICsJ
-c3Bpbl9sb2NrX2lycXNhdmUoJmhkbWktPmF1ZGlvX2xvY2ssIGZsYWdzKTsKPiArCWhkbWktPmF1
-ZGlvX2VuYWJsZSA9IHRydWU7Cj4gKwloZG1pX3NldF9jdHNfbihoZG1pLCBoZG1pLT5hdWRpb19j
-dHMsIGhkbWktPmF1ZGlvX24pOwo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmaGRtaS0+YXVk
-aW9fbG9jaywgZmxhZ3MpOwo+ICt9Cj4gK0VYUE9SVF9TWU1CT0xfR1BMKGR3X2hkbWlfYXVkaW9f
-ZW5hYmxlKTsKPiArCj4gK3ZvaWQgZHdfaGRtaV9hdWRpb19kaXNhYmxlKHN0cnVjdCBkd19oZG1p
-ICpoZG1pKQo+ICt7Cj4gKwl1bnNpZ25lZCBsb25nIGZsYWdzOwo+ICsKPiArCXNwaW5fbG9ja19p
-cnFzYXZlKCZoZG1pLT5hdWRpb19sb2NrLCBmbGFncyk7Cj4gKwloZG1pLT5hdWRpb19lbmFibGUg
-PSBmYWxzZTsKPiArCWhkbWlfc2V0X2N0c19uKGhkbWksIGhkbWktPmF1ZGlvX2N0cywgMCk7Cj4g
-KwlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZoZG1pLT5hdWRpb19sb2NrLCBmbGFncyk7Cj4gK30K
-PiArRVhQT1JUX1NZTUJPTF9HUEwoZHdfaGRtaV9hdWRpb19kaXNhYmxlKTsKPiArCj4gICAvKgo+
-ICAgICogdGhpcyBzdWJtb2R1bGUgaXMgcmVzcG9uc2libGUgZm9yIHRoZSB2aWRlbyBkYXRhIHN5
-bmNocm9uaXphdGlvbi4KPiAgICAqIGZvciBleGFtcGxlLCBmb3IgUkdCIDQ6NDo0IGlucHV0LCB0
-aGUgZGF0YSBtYXAgaXMgZGVmaW5lZCBhcwo+IEBAIC0xNTc4LDYgKzE2MDksNyBAQCBpbnQgZHdf
-aGRtaV9iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZSAqbWFzdGVyLAo+ICAg
-CWhkbWktPmVuY29kZXIgPSBlbmNvZGVyOwo+ICAgCj4gICAJbXV0ZXhfaW5pdCgmaGRtaS0+YXVk
-aW9fbXV0ZXgpOwo+ICsJc3Bpbl9sb2NrX2luaXQoJmhkbWktPmF1ZGlvX2xvY2spOwo+ICAgCj4g
-ICAJb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJyZWctaW8td2lkdGgiLCAmdmFsKTsKPiAgIAo+
-IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9icmlkZ2UvZHdfaGRtaS5oIGIvaW5jbHVkZS9kcm0v
-YnJpZGdlL2R3X2hkbWkuaAo+IGluZGV4IDc2M2FmNTFlMWQ2MC4uYmFlNzlmM2M0ZDI4IDEwMDY0
-NAo+IC0tLSBhL2luY2x1ZGUvZHJtL2JyaWRnZS9kd19oZG1pLmgKPiArKysgYi9pbmNsdWRlL2Ry
-bS9icmlkZ2UvZHdfaGRtaS5oCj4gQEAgLTYzLDUgKzYzLDcgQEAgaW50IGR3X2hkbWlfYmluZChz
-dHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2UgKm1hc3RlciwKPiAgIAkJIGNvbnN0IHN0
-cnVjdCBkd19oZG1pX3BsYXRfZGF0YSAqcGxhdF9kYXRhKTsKPiAgIAo+ICAgdm9pZCBkd19oZG1p
-X3NldF9zYW1wbGVfcmF0ZShzdHJ1Y3QgZHdfaGRtaSAqaGRtaSwgdW5zaWduZWQgaW50IHJhdGUp
-Owo+ICt2b2lkIGR3X2hkbWlfYXVkaW9fZW5hYmxlKHN0cnVjdCBkd19oZG1pICpoZG1pKTsKPiAr
-dm9pZCBkd19oZG1pX2F1ZGlvX2Rpc2FibGUoc3RydWN0IGR3X2hkbWkgKmhkbWkpOwo+ICAgCj4g
-ICAjZW5kaWYgLyogX19JTVhfSERNSV9IX18gKi8KCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Mark, 
+
+Thanks for applying the patches.
+
+Am resending the leftover patches rebased on top of topic/qcom branch.
+I have funtionally tested these patches on AP8016-SBC board and also
+ compile tested them without CONFIG_OF on x86 to make sure nothing breaks.
+All these patches are tested and Acked.
+
+I Also included Arnd's Patch to fix Kconfig dependency on STORM board.
+
+APQ8016 has 4 MI2S( Primary, Secondary, Tertiary, Quaternary) which can be routed
+to internal wcd codec or external codecs. This routing is controlled by 2 mux
+registers.
+
+Changes since v3
+ - dropped OF dependency patch
+ - dropped 6 patches which are already applied by Mark.
+ - fixed Kconfig as suggested by Arnd.
+
+Changes since v2(https://lkml.org/lkml/2015/5/16/236)
+ - dropped 3 patches which are already applied by Mark.
+ - rebased on top of topic/qcom branch.
+ - changed dev_err to dev_warn spotted by Kenneth.
+ - fixed typo spotted by kenneth.
+
+Changes since v1(https://lwn.net/Articles/644266/)
+ - Fixed Kconfig dependencies spotted by Kenneth
+ - Fixed compilation error on ipq806x spotted by Kenneth
+ - Fixed clk error messages spotted by Kenneth
+
+Changes since RFC(https://lwn.net/Articles/642661/)
+ - droped cleanup patches, as they are already applied by Mark.
+ - prefixed shared functions with asoc_qcom_* as suggested by Kenneth
+ - made LPASS driver depended on OF.
+ - removed ipq806x specific bits from ipaif_reg.h
+ - removed no_osr clk flag as suggested by Mark and Kenneth
+ - fixed irq return values spotted by Kenneth
+ - renamed the machine file to apq8016-sbc.c as suggested by Kenneth.
+ - use dai->driver->id instead of dai->id as it breaks on Storm board.
+
+
+--srini
+Arnd Bergmann (1):
+  ASoC: qcom: fix STORM board Kconfig
+
+Srinivas Kandagatla (2):
+  ASoC: qcom: Add apq8016 lpass driver support
+  ASoC: qcom: add apq8016 sound card support
+
+ include/dt-bindings/sound/apq8016-lpass.h |   9 ++
+ sound/soc/qcom/Kconfig                    |  17 ++-
+ sound/soc/qcom/Makefile                   |   4 +
+ sound/soc/qcom/apq8016_sbc.c              | 215 ++++++++++++++++++++++++++
+ sound/soc/qcom/lpass-apq8016.c            | 242 ++++++++++++++++++++++++++++++
+ sound/soc/qcom/lpass.h                    |   4 +
+ 6 files changed, 490 insertions(+), 1 deletion(-)
+ create mode 100644 include/dt-bindings/sound/apq8016-lpass.h
+ create mode 100644 sound/soc/qcom/apq8016_sbc.c
+ create mode 100644 sound/soc/qcom/lpass-apq8016.c
+
+-- 
+1.9.1
