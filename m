@@ -1,39 +1,56 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH 2/4] acpi: allow for an override to set _REV
-Date: Sat, 23 May 2015 00:15:54 +0200
-Message-ID: <23116293.JAxziy2cCE@vostro.rjw.lan>
-References: <20150517174144.GA17503@light.dominikbrodowski.net> <2098590.Jj0ekzOVtF@vostro.rjw.lan> <DB6E482E89290547898851B8CC9D8110016A5EBC17@AUSX7MCPS302.AMER.DELL.COM>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [RFC 1/5] ALSA: Add jack types to dt-bindings
+Date: Fri, 22 May 2015 15:09:19 -0700
+Message-ID: <1432332563-15447-2-git-send-email-dgreid@chromium.org>
+References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <DB6E482E89290547898851B8CC9D8110016A5EBC17@AUSX7MCPS302.AMER.DELL.COM>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Mario_Limonciello@dell.com
-Cc: matthew.garrett@coreos.com, linux@dominikbrodowski.net, linux-acpi@vger.kernel.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f202.google.com (mail-ig0-f202.google.com
+ [209.85.213.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7BA4260425
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 00:10:55 +0200 (CEST)
+Received: by igdh15 with SMTP id h15so100964igd.0
+ for <alsa-devel@alsa-project.org>; Fri, 22 May 2015 15:10:54 -0700 (PDT)
+In-Reply-To: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: lars@metafoo.de, zhengxing@rock-chips.com, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, May 22, 2015 04:19:05 PM Mario_Limonciello@Dell.com wrote:
-> > OK, so do we have any proof that anything in addition to the sound thing is broken by returning 2 from _REV?
-> > 
-> > If not, then we're probably spending too much time discussing this.
-> 
-> From a Dell perspective I'm not aware of anything else breaking, but I'll be sure to raise its attention and any associated details if I become privy to them.  I'm working with architecture to ensure that future products are not relying on _REV values as well.
-> I know Matthew had mentioned that another OEM's product was using this as well, but I don't know what for.
+Adding the jack type to the dt-bindings directory will allow for device
+tree files to specify the type of audio jacks that are present for a
+board.
 
-OK, here's a deal.
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ include/dt-bindings/sound/audio-jack-events.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+ create mode 100644 include/dt-bindings/sound/audio-jack-events.h
 
-I'll wait for the next few days for someone to tell me if there's any
-known system in addition to the XPS 13 (2015) which breaks as a result
-of the change to return 2 from _REV.  If none are reported before the
-next Friday, I'll just apply the patch I posted some time ago.  If any
-reports come in later, we'll still be able to rearrange things during
-the 4.2 cycle or even later.
-
-If *something* is reported next week, I'll reconsider the approach depending
-on what that thing is.
-
-
+diff --git a/include/dt-bindings/sound/audio-jack-events.h b/include/dt-bindings/sound/audio-jack-events.h
+new file mode 100644
+index 0000000..378349f
+--- /dev/null
++++ b/include/dt-bindings/sound/audio-jack-events.h
+@@ -0,0 +1,9 @@
++#ifndef __AUDIO_JACK_EVENTS_H
++#define __AUDIO_JACK_EVENTS_H
++
++#define JACK_HEADPHONE		1
++#define JACK_MICROPHONE		2
++#define JACK_LINEOUT		3
++#define JACK_LINEIN		4
++
++#endif /* __AUDIO_JACK_EVENTS_H */
 -- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+2.2.1.62.g3f15098
