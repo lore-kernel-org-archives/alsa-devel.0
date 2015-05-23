@@ -1,33 +1,14 @@
-From: "Christian Gleerup" <cromozon@swn.nu>
-Subject: Re: getting the sound to work on my asus m6s00v
-Date: Sat, 23 May 2015 00:21:45 +0200
-Message-ID: <cc2e6064157731a7187e16f46a619190@swn.nu>
-References: <5a713868662bb9ea47f5a30bd1849ce8@swn.nu>
- <5508DD4D.3040901@canonical.com>
- <CAN8cciaU_U+UwpJkayz2RhpSjfur9TC+X_HVC1=AGY2ypbcEmA@mail.gmail.com>
- <e137111e5526d3424e7ce1f219bcfa88@swn.nu>
- <CAN8cciY7zPaM1kGbky3st_V5G=vg_aeLrm2QrNbpVinYOU=qyA@mail.gmail.com>
- <64443a816660f3098fc300c7d7b5a01f@swn.nu>
- <CAN8cciY-K-FkQp1H6Bj0v51CRHrOyFrJ2=ZaY5YLvkRmNU8TRg@mail.gmail.com>
- <ec6b05bc169224058a4835e2139cbcb4@swn.nu>
- <CAN8cciYo-SSeoBg69qaj+aYBx+ZRbVuhbgkURutuBWGwCxauWA@mail.gmail.com>
- <CAN8cciam2=TE3zhWNB_GQEr1Q1z_X7S+k34fAgajE_XNYJzo0Q@mail.gmail.com>
- <CAN8cciZhtL_C-DAErzhM4E3t3nn7KdAbjQXQEPk3iVcBvm4aUw@mail.gmail.com>
- <CAN8cciZqdwONrrpWc0EKNfGz9Xwibh9Xj+=JnZ=ieK+m1rbF8w@mail.gmail.com>
- <CAN8cciZNz1TGSQah+KzRGGhRwGWR4U3LbMVUxV+=0mtX1gdM=w@mail.gmail.com>
- <f7a08a5262537ca8764cb91177f85646@swn.nu>
- <s5hiodlz116.wl-tiwai@suse.de>
- <CAN8cciatm9MjVkc9wy-dOwQow9i9KuffxE-XcyqkbSi=78Se7w@mail.gmail.com>
- <10d760a1b9c16c5388124146d090f3e0@swn.nu>
- <CAN8cciZMN0XkOjKQHSJBHgsq-4JsgC8nqDWns1=9WWOwTbLL4w@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: bebob: add Digidesign Mbox 2 Pro support
+Date: Sat, 23 May 2015 12:36:36 +0900
+Message-ID: <1432352196-16157-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.itoverblik.dk (mail.itoverblik.dk [81.7.162.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 1806C260425
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 00:18:18 +0200 (CEST)
-In-Reply-To: <CAN8cciZMN0XkOjKQHSJBHgsq-4JsgC8nqDWns1=9WWOwTbLL4w@mail.gmail.com>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43F002604BC
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 05:36:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,56 +18,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, Hui Wang <hui.wang@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, nb <nb@dagami.org>, korobka@en.gov.ua
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello Raymond, 
+This device is based on DM1000E and BeBoB version 1 is installed.
 
-I have upgraded from Debian 7 to 8, 
-Now I am not able to get the sound to work properly again.
+$ cat /proc/asound/cards
+ 0 [Pro            ]: BeBoB - Mbox 2 Pro
+                      DIGIDESIGN Mbox 2 Pro (id:1, rev:1),
+		      GUID 00a07e0100a90000 at fw1.0, S400
 
-right now it seems very very strange.
-I have very very low sound, but the sound is coupled to the 'PCM' part in Alsa mixer.
-even if I mute all outputs, I can still hear PCM channel,
-what makes me more crazy, is that the sound doesn't seem to directly from the speaker, but more towards the center of the labtob.... 
+$ cat /proc/asound/Pro/firewire/firmware
+Manufacturer:	bridgeCo
+Protocol Ver:	1
+Build Ver:		0
+GUID:		0x00A07E0100A90000
+Model ID:		0x01
+Model Rev:		1
+Firmware Date:	20071031
+Firmware Time:	034402
+Firmware ID:	0xA9
+Firmware Ver:	16777215
+Base Addr:		0x20080000
+Max Size:		1572864
+Loader Date:	20051207
+Loader Time:	205554
 
-does the above problem sound any bells?
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/Kconfig       | 1 +
+ sound/firewire/bebob/bebob.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
-I am considering taking one channel of the time, and enabling sound output as internal speaker to see what happens 
-
-
------Original Message----- 
-> From: "Raymond Yau" <superquad.vortex2@gmail.com> 
-> To: "Christian Gleerup" <cromozon@swn.nu> 
-> Cc: "Hui Wang" <hui.wang@canonical.com>, tiwai@suse.de, "ALSA Development Mailing List" <alsa-devel@alsa-project.org>, nb <nb@dagami.org>, korobka@en.gov.ua 
-> Date: 19/05/2015 03:08 
-> Subject: Re: [alsa-devel] getting the sound to work on my asus m6s00v 
-> 
-> >
-> > I manged to get sound working again while playing arround with hdaretask.
-> > but initially i tried setting up the outputs as suggest,
-> > which didn't giveanything, then a then I tried setting 0.15 as internal
-> speaker also.
-> >
-> > For the first few seconds there where no sound, and then the sound slowly
-> started to increase, but not the sound i was playing just some noise, not
-> continously but.. erhm like this:
-> > .|.|.|.|.|.|.|.|.|.|.|.|.|.|
-> >
-> > I was not able to kill the sound even when muting all channels in alsa
-> mixer.
-> 
-> > then I removed all overrides (expect ch0x18), after clicking apply the
-> repeating periodic sound dis-apered, and I was able to play sound.
-> >
-> > So now I am able to play sound through the internal speaker
-> > I have toggled ho_mic_detect=false, set model=auto.
-> 
-> You have to post output of alsa-info.sh for your patched driver if it work
-> 
-> Do you mean you cannot get correct impedence value for your jacks ?
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index ecec547..2a0a9aa 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -114,6 +114,7 @@ config SND_BEBOB
+ 	  * M-Audio FireWire410/AudioPhile/Solo
+ 	  * M-Audio Ozonic/NRV10/ProfireLightBridge
+ 	  * M-Audio FireWire 1814/ProjectMix IO
++	  * Digidesign Mbox 2 Pro
+ 
+           To compile this driver as a module, choose M here: the module
+           will be called snd-bebob.
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 611b7da..e71bd35 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -57,6 +57,7 @@ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ #define VEN_FOCUSRITE	0x0000130e
+ #define VEN_MAUDIO1	0x00000d6c
+ #define VEN_MAUDIO2	0x000007f5
++#define VEN_DIGIDESIGN	0x00a07e
+ 
+ #define MODEL_FOCUSRITE_SAFFIRE_BOTH	0x00000000
+ #define MODEL_MAUDIO_AUDIOPHILE_BOTH	0x00010060
+@@ -433,6 +434,8 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* M-Audio ProjectMix */
+ 	SND_BEBOB_DEV_ENTRY(VEN_MAUDIO1, MODEL_MAUDIO_PROJECTMIX,
+ 			    &maudio_special_spec),
++	/* Digidesign Mbox 2 Pro */
++	SND_BEBOB_DEV_ENTRY(VEN_DIGIDESIGN, 0x0000a9, &spec_normal),
+ 	/* IDs are unknown but able to be supported */
+ 	/*  Apogee, Mini-ME Firewire */
+ 	/*  Apogee, Mini-DAC Firewire */
+-- 
+2.1.4
