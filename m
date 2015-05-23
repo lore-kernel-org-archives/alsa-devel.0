@@ -1,23 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
-	match function
-Date: Sat, 23 May 2015 11:21:56 +0530
-Message-ID: <20150523055156.GZ3140@localhost>
-References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
- <1431341645-2457-2-git-send-email-vinod.koul@intel.com>
- <20150522125634.GX21391@sirena.org.uk>
- <s5hwq00enw8.wl-tiwai@suse.de>
- <20150522174106.GV21577@sirena.org.uk>
- <s5hsiao32g6.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 3/4] ALSA: firewire-lib: use dev_err()
+ when	detecting incoming streaming error
+Date: Sat, 23 May 2015 16:00:52 +0900
+Message-ID: <556025A4.2030101@sakamocchi.jp>
+References: <1432304474-6533-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1432304474-6533-4-git-send-email-o-takashi@sakamocchi.jp>
+ <555F6FD6.8090809@ladisch.de> <555FFF25.5030602@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F7CD2604AC
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 07:50:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hsiao32g6.wl-tiwai@suse.de>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AC742604C6
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 09:00:57 +0200 (CEST)
+In-Reply-To: <555FFF25.5030602@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,79 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 22, 2015 at 08:13:45PM +0200, Takashi Iwai wrote:
-> At Fri, 22 May 2015 18:41:06 +0100,
-> Mark Brown wrote:
-> > 
-> > On Fri, May 22, 2015 at 03:35:03PM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > 
-> > > > I'm sorry but I still don't entirely understand what this is supposed to
-> > > > do.  It *looks* like it's trying to create a bus for HDA with this:
-> > 
-> > > > but it's not actually defining a driver model bus type (though it does
-> > > > use driver_register()) and I'd expect the bus type to be provided by the
-> > > > generic HDA code.  Looking (fairly quickly admittedly) at the HDA code
-> > > > it's not entirely obvious how it all fits together and the changelog for
-> > > > that just talks about moving code around.
-> > 
-> > > The bus is already defined in sound/hda.  There, the actual binding is
-> > 
-> > I see there's a bus_type defined there but this is calling raw
-> > device_register() and providing a match function so it seems like
-> > there's something missing or an abstraction problem.  I'd expect a bus
-> > to be providing things like match functions and bus specific
-> > registration functions.
-> 
-> This was intentionally left in that way, so that the upper core layer
-> (HDA ASoC or legacy core parts) can implement the matching method more
-> specifically.  It can be done in the hdac_bus itself, but currently
-> still leaves more room until we see the exact matching condition for
-> ASoC.
-> 
-> Once when the matching method can be unified, we can move the it to
-> hdac_bus.  But it's not necessarily done now.
-> 
-> > This is all setting off alarm bells, both the code and the very
-> > aggressive pushing.
-> > 
-> > > done in each hda driver specifics, i.e. in sound/soc/hda and
-> > > sound/pci/hda.  It's the way to allow binding completely different
-> > > drivers for the very same PCI ID.
-> > 
-> > I don't really understand this, sorry.  What impact would HDA bus
-> > implementation have on PCI device drivers (by the time you're
-> > registering HDA devices presumably the PCI device will already be
-> > enumerated)?  
-> >
-> > Having two drivers for the same PCI function doesn't sound like an
-> > *obviously* good idea (as we discussed recently) but that's a bit of a
-> > separate thing.
-> 
-> Suggesting two PCI IDs might have been confusing, sorry.
-> 
-> The point is that a HD-audio object can be inherited to two different
-> level of objects, legacy and ASoC.  Both are bound on the same bus,
-> but to the corresponding drivers.  Both objects use the very same bus
-> ops, thus they share the same hdac_bus.
-Thanks a bunch Takashi for clarifying :)
+On May 23 2015 13:16, Takashi Sakamoto wrote:
+> This means that there're a gap between the generated
+> error messages, approximately several hundred seconds because it cost
+> expensive for devices to restart isochronous streams. In my opinion,
+> this is not such flooding.
 
-Mark,
+Oops, "several hundred mili-seconds"...
 
-I guess one clarification may still help, The SKL Audio controller is PCI
-device, the PCM driver in this series will load against the PCI device.
-Now the driver will go ahead and initialize the HDA bus. Also we provide our
-own matching function here.
 
-The matching function is for matching the devices on HDA link. The probing
-of the bus will find the HDA codecs present in the bus and we will match
-them based on Vendor ID and Device ID in match function above.
+Regards
 
-Let us know if you have more questions
-
--- 
-~Vinod
+Takashi Sakamoto
