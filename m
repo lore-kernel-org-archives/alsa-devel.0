@@ -1,21 +1,22 @@
 From: Jun Nie <jun.nie@linaro.org>
-Subject: Re: [PATCH 1/2] ASoC: zx: Add ZTE zx296702 I2S DAI
-	driver
-Date: Sat, 23 May 2015 22:02:52 +0800
-Message-ID: <CABymUCPEhe5pWrEskDE664Ca588LkC03pbumqUnTAj_6rkagbQ@mail.gmail.com>
-References: <1432119972-6934-1-git-send-email-jun.nie@linaro.org>
- <20150522123657.GS21391@sirena.org.uk>
+Subject: Re: [PATCH v2 3/3] dt: Add documentation for the ZTE
+	SPDIF controller
+Date: Sat, 23 May 2015 22:04:35 +0800
+Message-ID: <CABymUCPv2dXqM=BfzDdXampzvaWie49FDSReGHXhs26n7daPnA@mail.gmail.com>
+References: <1430915885-30656-1-git-send-email-jun.nie@linaro.org>
+ <1430915885-30656-3-git-send-email-jun.nie@linaro.org>
+ <20150522121015.GJ21391@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
- [209.85.217.178])
- by alsa0.perex.cz (Postfix) with ESMTP id A6E792604AB
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 16:02:53 +0200 (CEST)
-Received: by lbcmx3 with SMTP id mx3so28866934lbc.1
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 07:02:53 -0700 (PDT)
-In-Reply-To: <20150522123657.GS21391@sirena.org.uk>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9C052604AB
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 16:04:35 +0200 (CEST)
+Received: by lbbqq2 with SMTP id qq2so28811583lbb.3
+ for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 07:04:35 -0700 (PDT)
+In-Reply-To: <20150522121015.GJ21391@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,24 +30,16 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, ZTE-LT Mailman List <zte-lt@lists.linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-05-22 20:36 GMT+08:00 Mark Brown <broonie@kernel.org>:
-> On Wed, May 20, 2015 at 07:06:11PM +0800, Jun Nie wrote:
->> Add ZTE zx296702 I2S DAI driver
+2015-05-22 20:10 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> On Wed, May 06, 2015 at 08:38:05PM +0800, Jun Nie wrote:
+>> This patch adds the devicetree documentation for the ZTE
+>> zx296702 SPDIF audio controller.
 >
-> This looks good but depends on the DMA driver and a couple of small
-> nits:
->
->> +config ZX296702_I2S
->> +     bool "ZX296702 i2s"
->
-> I see no reason for this to be bool as opposed to a tristate - why not
-> let people build it as a module?
->
->> +     default:
->> +             dev_err(cpu_dai->dev, "Unknwon master/slave format\n");
->
-> The driver consistently misspells unknown.
+> ...and here it is!  Sorry - the DT binding is normally before the code
+> in the patch series.  This is fine, it's just patch 1 that needs to be
+> resolved then.
 
-Will fix the two issues. Thanks!
+Learn another community execution rule. I will add dts doc before code
+next time :)
 
 Jun
