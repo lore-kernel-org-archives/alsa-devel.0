@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 0/4] ALSA: firewire-lib: code cleanup
-Date: Sat, 23 May 2015 21:16:23 +0200
-Message-ID: <5560D207.3010404@ladisch.de>
-References: <1432304474-6533-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] Revert "ALSA: hda - Add mute-LED mode control
+	to Thinkpad"
+Date: Sun, 24 May 2015 08:34:35 +0200
+Message-ID: <1432449275-29789-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CB741260550
- for <alsa-devel@alsa-project.org>; Sat, 23 May 2015 21:16:49 +0200 (CEST)
-In-Reply-To: <1432304474-6533-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B55E3260614
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2015 08:34:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,24 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Martin Steigerwald <martin@lichtvoll.de>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> Current implementation includes several macros and functions with improper
-> name, hard-coded numerical value and so on.
->
-> This patchset is for code cleanup.
->
-> Takashi Sakamoto (4):
->   ALSA: firewire-lib: rename local functions for code cleanup
->   ALSA: firewire-lib: macro arrangement for code cleanup
->   ALSA: firewire-lib: use dev_err() when detecting incoming streaming error
->   ALSA: firewire-lib: use protocol error when detecting wrong value in CIP header
-
-All four:
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
-
->  sound/firewire/amdtp.c | 104 ++++++++++++++++++++++++++-----------------------
->  1 file changed, 55 insertions(+), 49 deletions(-)
+VGhpcyByZXZlcnRzIGNvbW1pdCA3MjkwMDA2ZDhjMDkwMGM1NmQ4YzU4NDI4MTM0ZjAyYzM1MTA5
+ZDE3LgoKVGhyb3VnaCB0aGUgcmVncmVzc2lvbiByZXBvcnQsIGl0IHdhcyByZXZlYWxlZCB0aGF0
+IHRoZQp0cGFjcGlfbGVkX3NldCgpIGNhbGwgdG8gdGhpbmtwYWRfYWNwaSBoZWxwZXIgZG9lc24n
+dCBvbmx5IHRvZ2dsZSB0aGUKbXV0ZSBMRUQgYnV0IGFjdHVhbGx5IG11dGVzIHRoZSBzb3VuZC4g
+IFRoaXMgaXMgY29udHJhZGljdGlvbiB0byB0aGUKZXhwZWN0YXRpb24sIGFuZCByYXRoZXIgY29u
+ZnVzZXMgdXNlci4KCkFjY29yZGluZyB0byBIZW5yaXF1ZSwgaXQncyBub3QgdHJpdmlhbCB0byBq
+dWRnZSB3aGljaCBUUCBtb2RlbApiZWhhdmVzICJMRUQtb25seSIgYW5kIHdoaWNoIG1vZGVsIGRv
+ZXMgd2hhdGV2ZXIgbW9yZSBpbnRydXNpdmUsIGFzCkxlbm92bydzIGltcGxlbWVudGF0aW9ucyB2
+YXJ5IG1vZGVsIGJ5IG1vZGVsLiAgU28sIGZyb20gdGhlIHNhZmV0eQpyZWFzb24sIHdlIHNob3Vs
+ZCByZXZlcnQgdGhlIHBhdGNoIGZvciBub3cuCgpSZXBvcnRlZC1ieTogTWFydGluIFN0ZWlnZXJ3
+YWxkIDxtYXJ0aW5AbGljaHR2b2xsLmRlPgpDYzogUGFsaSBSb2jDoXIgPHBhbGkucm9oYXJAZ21h
+aWwuY29tPgpDYzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6IFRha2Fz
+aGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCiBzb3VuZC9wY2kvaGRhL3RoaW5rcGFkX2hlbHBl
+ci5jIHwgMSAtCiAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3Nv
+dW5kL3BjaS9oZGEvdGhpbmtwYWRfaGVscGVyLmMgYi9zb3VuZC9wY2kvaGRhL3RoaW5rcGFkX2hl
+bHBlci5jCmluZGV4IGQ1MTcwM2UzMDUyMy4uMGE0YWQ1ZmViODJlIDEwMDY0NAotLS0gYS9zb3Vu
+ZC9wY2kvaGRhL3RoaW5rcGFkX2hlbHBlci5jCisrKyBiL3NvdW5kL3BjaS9oZGEvdGhpbmtwYWRf
+aGVscGVyLmMKQEAgLTcyLDcgKzcyLDYgQEAgc3RhdGljIHZvaWQgaGRhX2ZpeHVwX3RoaW5rcGFk
+X2FjcGkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJCWlmIChsZWRfc2V0X2Z1bmMoVFBBQ1BJ
+X0xFRF9NVVRFLCBmYWxzZSkgPj0gMCkgewogCQkJb2xkX3ZtYXN0ZXJfaG9vayA9IHNwZWMtPnZt
+YXN0ZXJfbXV0ZS5ob29rOwogCQkJc3BlYy0+dm1hc3Rlcl9tdXRlLmhvb2sgPSB1cGRhdGVfdHBh
+Y3BpX211dGVfbGVkOwotCQkJc3BlYy0+dm1hc3Rlcl9tdXRlX2VudW0gPSAxOwogCQkJcmVtb3Zl
+ZnVuYyA9IGZhbHNlOwogCQl9CiAJCWlmIChsZWRfc2V0X2Z1bmMoVFBBQ1BJX0xFRF9NSUNNVVRF
+LCBmYWxzZSkgPj0gMCkgewotLSAKMi40LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
