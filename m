@@ -1,60 +1,43 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_spdif: Don't try to round-up for clock divisor calculation
-Date: Sun, 24 May 2015 01:12:41 -0700
-Message-ID: <1432455161-4924-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, fabio.estevam@freescale.com, zidan.wang@freescale.com
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: snd-bebob and PrismSound Orpheus fails with
+	snd_pcm_hw_params_set_channels
+Date: Sun, 24 May 2015 20:40:14 +0900
+Message-ID: <5561B89E.6000608@sakamocchi.jp>
+References: <CAJ0eYfWCoqBBLdXpfitc1KZczZmPYXVy9n4-3YEU2Fw0sTRMNQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAC4E260668
+ for <alsa-devel@alsa-project.org>; Sun, 24 May 2015 13:40:17 +0200 (CEST)
+In-Reply-To: <CAJ0eYfWCoqBBLdXpfitc1KZczZmPYXVy9n4-3YEU2Fw0sTRMNQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mike Ood <jh1ood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As commit 6c8ca30eec7b ("ASoC: fsl_ssi: Don't try to round-up for PM
-divisor calculation") mentioned that there's no more need to use a
-round up work around to get a better divisor since the clk-divider
-driver has been refined a lot.
+Hi Mike,
 
-So this patch applies the same modification to fsl_spdif driver.
+Recently, I found some devices which have similar issue as your Orpheus
+has and I wrote an patch for it. If possible, would you please test this
+branch with your model?
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: Zidan Wang <zidan.wang@freescale.com>
----
+https://github.com/takaswie/snd-firewire-improve/commits/bebob3
 
-Fabio and Zidan,
-Theoretically, it should have the same problem as fsl_ssi driver had.
-But I don't have an S/PDIF test environment. So I need your helps to
-confirm it. Thank you.
+About the way to test this repository, please refer to README file.
+Then, you need to switch your branch to bebob3, like.
+(in your local repository)
+$ git checkout bebob3
 
- sound/soc/fsl/fsl_spdif.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 91eb3ae..8e93221 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -417,11 +417,9 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	if (clk != STC_TXCLK_SPDIF_ROOT)
- 		goto clk_set_bypass;
- 
--	/*
--	 * The S/PDIF block needs a clock of 64 * fs * txclk_df.
--	 * So request 64 * fs * (txclk_df + 1) to get rounded.
--	 */
--	ret = clk_set_rate(spdif_priv->txclk[rate], 64 * sample_rate * (txclk_df + 1));
-+	/* The S/PDIF block needs a clock of 64 * fs * txclk_df */
-+	ret = clk_set_rate(spdif_priv->txclk[rate],
-+			   64 * sample_rate * txclk_df);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to set tx clock rate\n");
- 		return ret;
-@@ -1060,7 +1058,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 
- 	for (sysclk_df = sysclk_dfmin; sysclk_df <= sysclk_dfmax; sysclk_df++) {
- 		for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
--			rate_ideal = rate[index] * (txclk_df + 1) * 64;
-+			rate_ideal = rate[index] * txclk_df * 64;
- 			if (round)
- 				rate_actual = clk_round_rate(clk, rate_ideal);
- 			else
--- 
-1.9.1
+Regards
+
+Takashi Sakamoto
