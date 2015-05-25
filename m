@@ -1,45 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: use SNDRV_PCM_FMTBIT_* for format bitmask
-Date: Mon, 25 May 2015 13:00:41 +0100
-Message-ID: <20150525120041.GI21391@sirena.org.uk>
-References: <5560AB9D.1010807@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Don't try to round-up for clock divisor
+ calculation
+Date: Mon, 25 May 2015 12:58:12 +0100
+Message-ID: <20150525115812.GG21391@sirena.org.uk>
+References: <1432455161-4924-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ry3qE+viRNtbc3l7"
+	protocol="application/pgp-signature"; boundary="ov6R7U0hl+EAcYoD"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5560AB9D.1010807@maciej.szmigiero.name>
+In-Reply-To: <1432455161-4924-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <daniel@zonque.org>, Wolfram Sang <wsa@the-dreams.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Matt Reimer <mreimer@sdgsystems.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, fabio.estevam@freescale.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---Ry3qE+viRNtbc3l7
+--ov6R7U0hl+EAcYoD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, May 23, 2015 at 06:32:29PM +0200, Maciej S. Szmigiero wrote:
-> snd_soc_pcm_stream.formats is a bitmask of SNDRV_PCM_FMTBIT_*,
-> not of SNDRV_PCM_FORMAT_* (which are sequential integers),
-> however some of ASoC CODEC drivers use these values instead.
+On Sun, May 24, 2015 at 01:12:41AM -0700, Nicolin Chen wrote:
+> As commit 6c8ca30eec7b ("ASoC: fsl_ssi: Don't try to round-up for PM
+> divisor calculation") mentioned that there's no more need to use a
+> round up work around to get a better divisor since the clk-divider
+> driver has been refined a lot.
 
-Applied, htanks.
+Applied, thanks.
 
---Ry3qE+viRNtbc3l7
+--ov6R7U0hl+EAcYoD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVYw7oAAoJECTWi3JdVIfQZooIAIGZQ0nYr2PhEO12tor8vCX3
-vwwxuYZfLWWmQiABWxw5Cbv+UlmkvF2ZoFg+9jZQYR3T6usnxSwc5JB3SlLyUeLF
-EI0zx07O+WFP2f9x7ChwHmRNACaPyirBqzEEp8jIS+Gq63Zxcf0sFIfXBuJnNfgj
-39PZCt7scGqSjB1lWp2MzMPrV9adOMgaea8uLzUtKmgMJLIpx10e/K5tCwNQBV2+
-BpNVkkvA961zpyhOYYflO6bpMneTHQfDTPcA5HEkPcqqFGp10TkjZzAhBJHyelwD
-4NiIjsqgkHDK6YrlhAkoQ6ntJVRgqJj+Tz1ALj5JKv2pM0UhfaVxRuy0tDXAOyA=
-=zH8Z
+iQEcBAEBCAAGBQJVYw5TAAoJECTWi3JdVIfQ1PsH/1DoaslX7SwxMS299PW1fdPU
+dbNxwOQLCyNfrN2UwKfu44I0VlVfiksuHQMtbPZfqI3ioGMwPd+OyAxmyu5oWFc3
+yJp1VvXGQPmBvkKyLfkX/EVFcsHwkotIPXq76GvWG7eq9PDXPsGkK5kGOwW2FVe5
+skd0wg1NxvoF84Lc6nBb16/ea0EP5ODDX5L6BUZzFVD4XshC02zclBUmDc9vlYuA
+aGdy7gHinhq52Cs4B/VMJe9m6iQKcnCoWIUovVbf1mMDRFR+KjuhnsxQIRPpgk4L
+MMDmWV0sqdTHkAg0XpRhjAB4Yub0NccpDQv5kOANXbPTfdou8V3XEv6pKIgdJZo=
+=qEqZ
 -----END PGP SIGNATURE-----
 
---Ry3qE+viRNtbc3l7--
+--ov6R7U0hl+EAcYoD--
