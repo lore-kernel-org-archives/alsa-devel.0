@@ -1,18 +1,24 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/9] ASoC: sti: Add CPU DAI driver for
-	playback
-Date: Mon, 25 May 2015 13:37:45 +0100
-Message-ID: <20150525123745.GO21391@sirena.org.uk>
-References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
- <1431951176-24670-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
+	match function
+Date: Mon, 25 May 2015 14:58:54 +0100
+Message-ID: <20150525135854.GV21391@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-2-git-send-email-vinod.koul@intel.com>
+ <20150522125634.GX21391@sirena.org.uk>
+ <s5hwq00enw8.wl-tiwai@suse.de>
+ <20150522174106.GV21577@sirena.org.uk>
+ <s5hsiao32g6.wl-tiwai@suse.de> <20150523055156.GZ3140@localhost>
+ <20150525104828.GA21577@sirena.org.uk>
+ <20150525112150.GE3140@localhost> <s5hbnh827n4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4973284454138069085=="
+Content-Type: multipart/mixed; boundary="===============8912491991725592873=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EA2A261555
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 15:04:14 +0200 (CEST)
-In-Reply-To: <1431951176-24670-4-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E4D2426048D
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 15:59:08 +0200 (CEST)
+In-Reply-To: <s5hbnh827n4.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,202 +28,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4973284454138069085==
+--===============8912491991725592873==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CMx2Qe8y1jN1ar4Y"
+	protocol="application/pgp-signature"; boundary="gkEBo/XPSfx+3zOU"
 Content-Disposition: inline
 
 
---CMx2Qe8y1jN1ar4Y
+--gkEBo/XPSfx+3zOU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 18, 2015 at 02:12:50PM +0200, Arnaud Pouliquen wrote:
+On Mon, May 25, 2015 at 01:55:59PM +0200, Takashi Iwai wrote:
+> Vinod Koul wrote:
 
-> Add code to manage Uniperipheral player IP instances.
-> These DAIs are dedicated to playback and support I2S and IEC mode.
+> > The hdac core doesn't actually do matching. If you see the match
+> > function provided by core (hda_bus_match), it is a wrapper and
+> > actual matching for legacy devices is being done in legacy code, see
+> > hda_codec_match. This match function expects the hdac_device to be
+> > wrapped in legacy hda_codec, which we don't need here.
 
-There's some small things below but the main thing is that I'm still
-unclear about the driver internal abstraction layers.  Perhaps that will
-become obvious later in the series...
+> > So for ASoC we are embedding hdac_device in soc_hda_codec and using
+> > the vendor_id and revision_id to match, so hda to write a new one.
 
-> +struct uniperif_ops {
-> +	int (*open)(struct uniperif *player);
-> +	void (*close)(struct uniperif *player);
-> +	int (*prepare)(struct uniperif *player,
-> +		       struct snd_pcm_runtime *runtime);
-> +	int (*trigger)(struct uniperif *player, int cmd);
-> +};
+You keep on describing what the code does; I can mostly see what the
+code does (and could probably figure out extra bits if I wasn't getting
+scared off by what I do see) - that's basically what I'm flagging as an
+issue.  What I'm having trouble seeing is why this makes sense.  The
+question isn't what, it's why.
 
-These ops still look suspiciously like the ALSA level ops which suggests
-a driver internal abstraction layer.  Why is that happening?
+> > I do not mind if we commonize this and have common match function in
+> > hdac, if legacy is happy with it. Or perhaps the move to core later on
+> > as ASoC HDA matures, either way whatever you n Takashi agree with
+> > would be okay by me.
 
-> +static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
-> +{
-> +	irqreturn_t ret = IRQ_NONE;
-> +	struct uniperif *player = dev_id;
-> +	unsigned int status;
-> +	unsigned int tmp;
-> +
-> +	if (player->state == UNIPERIF_STATE_STOPPED) {
-> +		/* Unexpected IRQ: do nothing */
-> +		dev_warn(player->dev, "unexpected IRQ");
-> +		return IRQ_HANDLED;
-> +	}
+> This is the next step.  It would need a fairly big amount of rewrite
+> in each legacy HDA codec driver, and I don't want it for 4.2.
 
-Just return IRQ_NONE here - as well as coping with any sharing of
-interrupts that ends up happening in the future one of the reasons for
-reporting if we handled things or not is to allow us to reuse the
-support that genirq has for handling things like spurious interrupts.
-In this case if something goes seriously wrong it'll complain and
-eventually shut down the interrupt while this will result in a continual
-spam to the console with no error handling.
+So how does this actually work then?  If we need to rework all the HDA
+CODEC drivers before they work with this new HDA bus (or at least this
+new HDA bus when used with controllers that implement a custom match
+function) then does it make sense to start trying to use it now?
 
-> +	/* Error on unhandled interrupt */
-> +	if (ret != IRQ_HANDLED)
-> +		dev_err(player->dev, "IRQ status : %#x", status);
+I would have expected this to be the /first/ step - refactor the
+existing HDA code, then add new users.
 
-Let genirq worry about this.
+> Once when we get the common criteria for matching (both for asoc and
+> legacy), we can move to the unified match method.
 
-> +static void uni_player_set_channel_status(struct uniperif *player,
-> +					  struct snd_pcm_runtime *runtime)
-> +{
-> +	int n;
-> +	unsigned int status;
-> +
-> +	/*
-> +	 * Some AVRs and TVs require the channel status to contain a correct
-> +	 * sampling frequency. If no sample rate is already specified, then
-> +	 * set one.
-> +	 */
+I really don't understand this idea that we need to work out what the
+common criteria for matching are, HDA is an enumerable bus isn't it?
 
-Please take a look at Russell King's patch "sound/core: add IEC958
-channel status helper" (currently in review though I'd expect it to hit
--next the next time it's built) - it does this (or most of it anyway) in
-a factored out function that can be shared between drivers.
+> That said, the reason for individual match mechanism is not to break
+> the legacy hda code.  If anyone can provide a patch to achieve that
+> within 100 LOCs and without regression, I'd happily take it :)
 
-> +	/* No sample rates below 32kHz are supported for iec958 */
-> +	if (runtime->rate < MIN_IEC958_SAMPLE_RATE) {
-> +		dev_err(player->dev, "Invalid rate (%d)", runtime->rate);
-> +		return -EINVAL;
-> +	}
+Another way of looking at this is to ask why the CODEC driver matching
+can't continue to work the way it currently does - we're transitioning
+to a bus (which makes sense as a cleanup) but I've not seen any reason
+articulated for tying that up the merge of the Sky Lake code and it
+seems like we're not very near being in a position to be able to do
+that.  Or could we just keep the bigger hda_codec struct around in the
+bus code for now even if it winds up being bloated?
 
-The driver should be imposing constraints which prevent this happening
-either by using a different driver structure or by registering new
-constraints from code on open.
+Like I say it's all the why questions that aren't making sense to me
+beyond the "we're too scared to touch the existing code" ones.
 
-> +	/* Set the number of channels (maximum supported by spdif is 2) */
-> +	if (UNIPERIF_PLAYER_TYPE_IS_SPDIF(player) &&
-> +	    (runtime->channels != 2)) {
-> +		dev_err(player->dev, "invalid nb of channels");
-> +		return -EINVAL;
-> +	}
+I'm also wondering how this interacts with the Tegra HDA device by the
+way...
 
-Similarly here.
-
-> +	/* Calculate number of empty cells available before asserting DREQ */
-> +	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-> +		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
-> +	else
-> +		/*
-> +		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
-> +		 * FDMA_TRIGGER_LIMIT also controls when the state switches
-> +		 * from OFF or STANDBY to AUDIO DATA.
-> +		 */
-> +		trigger_limit = transfer_size;
-
-Please use braces for multi-line branches of if statements even if the
-extra lines are just comments, it makes things easier to read.
-
-> +	switch (player->daifmt & SND_SOC_DAIFMT_INV_MASK) {
-> +	case SND_SOC_DAIFMT_IB_IF:
-> +	case SND_SOC_DAIFMT_NB_IF:
-> +		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
-> +		break;
-
-I didn't spot the code where the inverted and normal bit clock
-polarities are handled?
-
-> +const struct uniperif_ops uni_player_ops = {
-> +	.close = uni_player_close,
-> +	.prepare = uni_player_prepare,
-> +	.trigger = uni_player_trigger
-> +};
-
-Again a driver internal abstraction layer...
-
-> +	player->mem_region = platform_get_resource(pdev, IORESOURCE_MEM, idx);
-> +
-> +	if (!player->mem_region) {
-> +		dev_err(&pdev->dev, "Failed to get memory resource");
-> +		return -ENODEV;
-> +	}
-> +
-> +	player->base = devm_ioremap_resource(&pdev->dev,
-
-devm_ioremap_resource() will do the null check for you.
-
-> +	ret = devm_request_irq(&pdev->dev, player->irq,
-> +			       uni_player_irq_handler, IRQF_SHARED,
-> +			       dev_name(&pdev->dev), player);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "Failed to request IRQ");
-> +		return -EBUSY;
-> +	}
-
-Use the error code you got, don't ignore it.
-
-> +	/* request_irq() enables the interrupt immediately; as it is
-> +	 * lethal in concurrent audio environment, we want to have
-> +	 * it disabled for most of the time...
-> +	 */
-> +	disable_irq(player->irq);
-
-That's a bit worrying...  can you expand on what problems you see if the
-interrupt is left enabled?
-
-> +int uni_player_remove(struct platform_device *pdev)
-> +{
-> +	struct uniperif *player = platform_get_drvdata(pdev);
-> +
-> +	if (player->clk)
-> +		clk_put(player->clk);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(uni_player_remove);
-
-What's this about - if nothing else shouldn't we be using
-devm_clk_get()?
-
---CMx2Qe8y1jN1ar4Y
+--gkEBo/XPSfx+3zOU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVYxeZAAoJECTWi3JdVIfQFHMH/0HGHLd0OtkeFozYv+lkPoim
-5WFEyVmwQvwTGfikyaqtlJrMs1CQDqCj2tVXPDGqJTZJO0Z9ouoQXtOaZUstRPog
-0za3KQUuUpbKQUHt37PA5WsOo1Bbuz1OnGCARJsl5qqSBmFrQyv6J5OvJDswZ0Dy
-PRj4k2DUdes/bnOlWImiB4DIIHbtlsgaUojy2soypplrNtdsyZHQr1fs6S3CB+/s
-fLadSGb9q1Bf5loVX/HXOduGepR+VQfUQ8lkwRCbGCZptaT4Up1ZcnORKNMh1m3t
-VCZbzhKrK3CNU3fIGIp0OvC2AetIcquWLSJRw/4aLN773XHxI0rY7DFLe+P64pk=
-=kTAd
+iQEcBAEBCAAGBQJVYyqdAAoJECTWi3JdVIfQOpsH/jUXs2E2FiVv2LXrCb2vaoCW
+cEp6CRIFUrS+b4JcrfPrkeJjbz30XCxJ1uZHDu1us5EZLHqHefBZXUBO/mQKtQf1
+iZo0a7Wl4xWKyBWqqy0bcDVhuAocvvH/hdsJ7hCr1p1TUf92OctiSb+6qESQQWHr
+SXeAZUfMIXm/9llZLzu/SlRsIPgwhkDQmMiCYK1addyILIgkEid0F2eYDCf+d7AH
+uZg7YERhS8tL6qRuZkbvHKUwE5S/0ObCSHF6rBDLqV94FnOAOao/dlg/Z3n//5r7
+W1rJVxW6nObY4bLIXbOxwAXtY+IU2r12vvYCVFLVCglrWDx32DI7Wt4xCOSPWMs=
+=iJGA
 -----END PGP SIGNATURE-----
 
---CMx2Qe8y1jN1ar4Y--
+--gkEBo/XPSfx+3zOU--
 
---===============4973284454138069085==
+--===============8912491991725592873==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4973284454138069085==--
+--===============8912491991725592873==--
