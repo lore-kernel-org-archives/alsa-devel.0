@@ -1,49 +1,77 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: ASoC: regmap_config.max_register value wrong?
-Date: Mon, 25 May 2015 22:46:25 +0200
-Message-ID: <55638A21.50208@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B2462625EE
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 22:46:30 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, dan.carpenter@oracle.com
-Cc: alsa-devel@alsa-project.org
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH 1/2] ASoC: atmel: simplify Kconfig
+Date: Tue, 26 May 2015 00:04:18 +0200
+Message-ID: <1432591459-22613-1-git-send-email-alexandre.belloni@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolas Ferre <nicolas.ferre@atmel.com>, Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Alexandre Belloni <alexandre.belloni@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear all,
+Enclose the options in if SND_ATMEL_SOC ... endif to remove the dependency.
+Also remove the useless description for SND_ATMEL_SOC_SSC.
 
-The following snippet is from the wm8741 codec driver. Shouldn't the
-.max_register field be set to WM8741_REGISTER_COUNT-1 (10) instead of
-WM8741_MAX_REGISTER (0x20)?
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
+ sound/soc/atmel/Kconfig | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-[...]
-static const struct regmap_config wm8741_regmap = {
-	.reg_bits = 7,
-	.val_bits = 9,
-	.max_register = WM8741_MAX_REGISTER,
-[...]
-
-WM8741_MAX_REGISTER is the address of the last register.
-WM8741_REGISTER_COUNT is the number of registers.
-
-The regmap_config documentation says: "@max_register: Optional,
-specifies the maximum valid register index."
-
-So it should be the *register index* and not the register address.
-Do I understand it correctly?
-
-Many thanks in advance.
-Best regards,
-Sergej
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index e7d08806f3e9..93abe4e6d596 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -6,27 +6,22 @@ config SND_ATMEL_SOC
+ 	  the ATMEL SSC interface. You will also need
+ 	  to select the audio interfaces to support below.
+ 
++if SND_ATMEL_SOC
++
+ config SND_ATMEL_SOC_PDC
+ 	tristate
+-	depends on SND_ATMEL_SOC
+ 
+ config SND_ATMEL_SOC_DMA
+ 	tristate
+-	depends on SND_ATMEL_SOC
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
+ config SND_ATMEL_SOC_SSC
+ 	tristate
+-	depends on SND_ATMEL_SOC
+-	help
+-	  Say Y or M if you want to add support for codecs the
+-	  ATMEL SSC interface. You will also needs to select the individual
+-	  machine drivers to support below.
+ 
+ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	depends on ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
++	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
+ 	select SND_ATMEL_SOC_PDC
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_SOC_WM8731
+@@ -37,7 +32,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
+ config SND_ATMEL_SOC_WM8904
+ 	tristate "Atmel ASoC driver for boards using WM8904 codec"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	depends on ATMEL_SSC && SND_ATMEL_SOC && I2C
++	depends on ATMEL_SSC && I2C
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_SOC_WM8904
+@@ -48,10 +43,11 @@ config SND_ATMEL_SOC_WM8904
+ config SND_AT91_SOC_SAM9X5_WM8731
+ 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	depends on ATMEL_SSC && SND_ATMEL_SOC && SND_SOC_I2C_AND_SPI
++	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
+ 	select SND_ATMEL_SOC_SSC
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_SOC_WM8731
+ 	help
+ 	  Say Y if you want to add support for audio SoC on an
+ 	  at91sam9x5 based board that is using WM8731 codec.
++endif
+-- 
+2.1.4
