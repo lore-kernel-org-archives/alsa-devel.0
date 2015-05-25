@@ -1,49 +1,99 @@
-From: Yakir <ykk@rock-chips.com>
-Subject: Re: [RESEND PATCH v1 2/2] drm: bridge/dw_hdmi-i2s-audio: add audio
- driver
-Date: Mon, 25 May 2015 17:38:48 +0800
-Message-ID: <5562EDA8.1000609@rock-chips.com>
-References: <1432307631-7667-1-git-send-email-ykk@rock-chips.com>	 <1432307696-7806-1-git-send-email-ykk@rock-chips.com> <1432542247.27695.137.camel@x220>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
+	match function
+Date: Mon, 25 May 2015 11:48:28 +0100
+Message-ID: <20150525104828.GA21577@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-2-git-send-email-vinod.koul@intel.com>
+ <20150522125634.GX21391@sirena.org.uk>
+ <s5hwq00enw8.wl-tiwai@suse.de>
+ <20150522174106.GV21577@sirena.org.uk>
+ <s5hsiao32g6.wl-tiwai@suse.de> <20150523055156.GZ3140@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1432542247.27695.137.camel@x220>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, dri-devel <dri-devel@lists.freedesktop.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Fabio Estevam <fabio.estevam@freescale.com>, Russell King <rmk+kernel@arm.linux.org.uk>, Thierry Reding <treding@nvidia.com>, Philipp Zabel <p.zabel@pengutronix.de>, linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>, Andy Yan <andy.yan@rock-chips.com>, David Airlie <airlied@linux.ie>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ajay Kumar <ajaykumar.rs@samsung.com>, Dave Airlie <airlied@redhat.com>
+Content-Type: multipart/mixed; boundary="===============3380998970186636063=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 394D826043C
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 12:48:36 +0200 (CEST)
+In-Reply-To: <20150523055156.GZ3140@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
 
-=E5=9C=A8 2015/5/25 16:24, Paul Bolle =E5=86=99=E9=81=93:
-> Just a nit: a license mismatch.
->
-> On Fri, 2015-05-22 at 10:14 -0500, Yakir Yang wrote:
->> --- /dev/null
->> +++ b/drivers/gpu/drm/bridge/dw_hdmi-i2s-audio.c
->> + * This program is free software; you can redistribute it and/or mo=
-dify
->> + * it under the terms of the GNU General Public License version 2 a=
-s
->> + * published by the Free Software Foundation.
-> This states the license is GPL v2.
->
->> +MODULE_LICENSE("GPL");
-> And, according to include/linux/module.h, this states the license is =
-GPL
-> v2 or later. So I think that either the comment at the top of this fi=
-le
-> or the ident used in the MODULE_LICENSE() macro should change.
+--===============3380998970186636063==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YzDuxKLL0xGMARRp"
+Content-Disposition: inline
 
-Thanks for your catch, got it  :-)
 
-Yakir Yang
+--YzDuxKLL0xGMARRp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> Paul Bolle
->
->
->
->
+On Sat, May 23, 2015 at 11:21:56AM +0530, Vinod Koul wrote:
+> On Fri, May 22, 2015 at 08:13:45PM +0200, Takashi Iwai wrote:
+
+> > The point is that a HD-audio object can be inherited to two different
+> > level of objects, legacy and ASoC.  Both are bound on the same bus,
+> > but to the corresponding drivers.  Both objects use the very same bus
+> > ops, thus they share the same hdac_bus.
+
+> Thanks a bunch Takashi for clarifying :)
+
+> I guess one clarification may still help, The SKL Audio controller is PCI
+> device, the PCM driver in this series will load against the PCI device.
+> Now the driver will go ahead and initialize the HDA bus. Also we provide our
+> own matching function here.
+
+> The matching function is for matching the devices on HDA link. The probing
+> of the bus will find the HDA codecs present in the bus and we will match
+> them based on Vendor ID and Device ID in match function above.
+
+> Let us know if you have more questions
+
+To be honest the above isn't really clarifying things for me.  I know
+what a matching function is for, the thing that is really worrying about
+this is that we've got different matching functions depending on how the
+HDA bus is instantiated.  Given that HDA is an enumerable bus why would
+we want or need that - why and how does the matching differ depending on
+the driver we're using for the bus?  I would not expect that matching
+using the HDA identification registers would be something that varies
+depending on how we register the bus.
+
+--YzDuxKLL0xGMARRp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVYv37AAoJECTWi3JdVIfQKrcH/1AUUPezZQoYSZqpd86EjwuB
+Vme7+mN7hbOfdpIBmimwk1WmKstAZfDf7/DNvRR/1WfAlqpGPmW2zXIWYc59gm40
+HvvyS4uIk1mSr98273S7ueYtO50KH+9fh/ILoDf7YwW6IpAxGe5bkr4/bo049GIc
+Bvih894nBlPewxf4bUO1j+4SVE9nAQFeLcyVKsWZAaJkNzsh4JW696rO5lEUcNIM
+lKnSCEzsGueRa9y2PddQ2SqUb1pOWraLwnnrappmZUSaiUSJsQ84hA57RSIZOJk1
+rEMvGzf+AcCHFUrSn39tKUKrlc5nIorctuHwSOKIYPHAZBSCCsqlzVxcQFyvonU=
+=MSw5
+-----END PGP SIGNATURE-----
+
+--YzDuxKLL0xGMARRp--
+
+--===============3380998970186636063==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3380998970186636063==--
