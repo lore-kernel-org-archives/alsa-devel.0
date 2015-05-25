@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 1/5] ALSA: Add jack types to dt-bindings
-Date: Mon, 25 May 2015 13:11:54 +0100
-Message-ID: <20150525121154.GK21391@sirena.org.uk>
-References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
- <1432332563-15447-2-git-send-email-dgreid@chromium.org>
+Subject: Re: [PATCH v2 4/9] ASoC: sti: Add CPU DAI driver for
+	capture
+Date: Mon, 25 May 2015 13:39:01 +0100
+Message-ID: <20150525123901.GP21391@sirena.org.uk>
+References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+ <1431951176-24670-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3876578743982858750=="
+Content-Type: multipart/mixed; boundary="===============0693345397212189903=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BBA612607B6
- for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 15:02:49 +0200 (CEST)
-In-Reply-To: <1432332563-15447-2-git-send-email-dgreid@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id E6F2D26129B
+ for <alsa-devel@alsa-project.org>; Mon, 25 May 2015 15:03:13 +0200 (CEST)
+In-Reply-To: <1431951176-24670-5-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, zhengxing@rock-chips.com
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3876578743982858750==
+--===============0693345397212189903==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="X1nVygsiVWPqOX6k"
+	protocol="application/pgp-signature"; boundary="zOr5JpMIiGv/Oaxu"
 Content-Disposition: inline
 
 
---X1nVygsiVWPqOX6k
+--zOr5JpMIiGv/Oaxu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 22, 2015 at 03:09:19PM -0700, Dylan Reid wrote:
-> Adding the jack type to the dt-bindings directory will allow for device
-> tree files to specify the type of audio jacks that are present for a
-> board.
+On Mon, May 18, 2015 at 02:12:51PM +0200, Arnaud Pouliquen wrote:
+> Add code to manage Uniperipheral reader IP instances.
+> These DAIs are dedicated to capture and support I2S and IEC mode.
 
-Applied, thanks.
+Basically the same things apply here as apply to the playback patch.
+This is still making me think there should be more code sharing...
 
---X1nVygsiVWPqOX6k
+--zOr5JpMIiGv/Oaxu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVYxGKAAoJECTWi3JdVIfQ578H/3yMp43C3QnAARt4wcl5l148
-XjY5WRkh25FwSlhG05ZCJ2TGLJl/vQt1Ydmgi50L5TiDqDEyEQKZ5xYno8YS2ZEm
-dsd4rOmMTelUjiqJR0YG1xVY2EvWv1Ltet11PBb2cG5QN0Fdf3Dd31mpEck2bBQ1
-93xP1FrAqRS6rgY88s4e45kI7zTUiX7LdUxEJuGvRCo6sd+dRSp1+Kkam6abSghW
-M7frwZiuyJz2rxRNExnC5/3TJFucAVTGxKvDV7Egvtz6q9fBMqMb6RhiyeRUXEo/
-vvsZ3t7VBgcJXgBvkflpTGESpNyvRVhwJNxic6WHwxekt9YVEFElidYuthdG6vw=
-=4EkK
+iQEcBAEBCAAGBQJVYxflAAoJECTWi3JdVIfQSyUH/01T/20XB4iXNd1oJBxJCR9K
+h0hJX5PVRF7Rxm09bd/SkPM4mVNrxckvNHDS0HGInNvbbjo8Z1hVT8SZf9THzeoO
+BAdYEOzQ3IQAIyMx0JkBcZ3+wg2MhZD7ebZzv40sKuL464M1RYZh+U8+phkBhP/o
+X8tN8MPHi2ZCJfZUQ1mU7b5e2ma0TEBwhJy6yVjdy+5TJVUQGPvTPin8KCuD5VYv
+ViVTndFZpbjWJHGEQ90FEZZZFrBiI04Iw2OIB3ROq5GJOmz6Qf0viKcchX7NPpBE
+zKG/xNF/ionFL9y41OkXgPCeVC+ppsPCZix1Hf4EXCxTCFEXCubJoGwzhcmnvEI=
+=Fsb6
 -----END PGP SIGNATURE-----
 
---X1nVygsiVWPqOX6k--
+--zOr5JpMIiGv/Oaxu--
 
---===============3876578743982858750==
+--===============0693345397212189903==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3876578743982858750==--
+--===============0693345397212189903==--
