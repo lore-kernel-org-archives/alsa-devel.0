@@ -1,17 +1,24 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 07/13] mmc: davinci_mmc: Support for deferred
-	probing when requesting DMA channels
-Date: Tue, 26 May 2015 16:26:02 +0300
-Message-ID: <1432646768-12532-8-git-send-email-peter.ujfalusi@ti.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
+	match function
+Date: Tue, 26 May 2015 14:32:56 +0100
+Message-ID: <20150526133256.GQ21577@sirena.org.uk>
+References: <20150522125634.GX21391@sirena.org.uk>
+ <s5hwq00enw8.wl-tiwai@suse.de>
+ <20150522174106.GV21577@sirena.org.uk>
+ <s5hsiao32g6.wl-tiwai@suse.de> <20150523055156.GZ3140@localhost>
+ <20150525104828.GA21577@sirena.org.uk>
+ <20150525112150.GE3140@localhost> <s5hbnh827n4.wl-tiwai@suse.de>
+ <20150525135854.GV21391@sirena.org.uk>
+ <s5h617f29os.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0312607323940687203=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 768A5261A64
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 15:26:45 +0200 (CEST)
-In-Reply-To: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C81EC26589D
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 15:33:04 +0200 (CEST)
+In-Reply-To: <s5h617f29os.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com, tony@atomide.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>, linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org, dmaengine@vger.kernel.org, dan.j.williams@intel.com, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Switch to use ma_request_slave_channel_compat_reason() to request the DMA
-channels. Only fall back to pio mode if the error code returned is not
--EPROBE_DEFER, otherwise return from the probe with the -EPROBE_DEFER.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/mmc/host/davinci_mmc.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+--===============0312607323940687203==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tjqVXn9sJ2F3KEH2"
+Content-Disposition: inline
 
-diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
-index b2b3f8bbfd8c..df81e4e2f662 100644
---- a/drivers/mmc/host/davinci_mmc.c
-+++ b/drivers/mmc/host/davinci_mmc.c
-@@ -530,20 +530,20 @@ static int __init davinci_acquire_dma_channels(struct mmc_davinci_host *host)
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
- 
--	host->dma_tx =
--		dma_request_slave_channel_compat(mask, edma_filter_fn,
--				&host->txdma, mmc_dev(host->mmc), "tx");
--	if (!host->dma_tx) {
-+	host->dma_tx = dma_request_slave_channel_compat_reason(mask,
-+				edma_filter_fn, &host->txdma,
-+				mmc_dev(host->mmc), "tx");
-+	if (IS_ERR(host->dma_tx)) {
- 		dev_err(mmc_dev(host->mmc), "Can't get dma_tx channel\n");
--		return -ENODEV;
-+		return PTR_ERR(host->dma_tx);
- 	}
- 
--	host->dma_rx =
--		dma_request_slave_channel_compat(mask, edma_filter_fn,
--				&host->rxdma, mmc_dev(host->mmc), "rx");
--	if (!host->dma_rx) {
-+	host->dma_rx = dma_request_slave_channel_compat_reason(mask,
-+				edma_filter_fn, &host->rxdma,
-+				mmc_dev(host->mmc), "rx");
-+	if (IS_ERR(host->dma_rx)) {
- 		dev_err(mmc_dev(host->mmc), "Can't get dma_rx channel\n");
--		r = -ENODEV;
-+		r = PTR_ERR(host->dma_rx);
- 		goto free_master_write;
- 	}
- 
-@@ -1307,8 +1307,12 @@ static int __init davinci_mmcsd_probe(struct platform_device *pdev)
- 	host->mmc_irq = irq;
- 	host->sdio_irq = platform_get_irq(pdev, 1);
- 
--	if (host->use_dma && davinci_acquire_dma_channels(host) != 0)
-+	if (host->use_dma) {
-+		ret = davinci_acquire_dma_channels(host);
-+		if (ret == -EPROBE_DEFER)
-+			goto out;
- 		host->use_dma = 0;
-+	}
- 
- 	/* REVISIT:  someday, support IRQ-driven card detection.  */
- 	mmc->caps |= MMC_CAP_NEEDS_POLL;
--- 
-2.3.5
+
+--tjqVXn9sJ2F3KEH2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 26, 2015 at 07:24:03AM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
+> > On Mon, May 25, 2015 at 01:55:59PM +0200, Takashi Iwai wrote:
+
+> > > Once when we get the common criteria for matching (both for asoc and
+> > > legacy), we can move to the unified match method.
+
+> > I really don't understand this idea that we need to work out what the
+> > common criteria for matching are, HDA is an enumerable bus isn't it?
+
+> The common match method *does* exist.  It's just shifted to two parts,
+> one for ASoC and one for legacy, because of two different objects.
+
+What are these objects supposed to be then and why does the bus for HDA
+CODECs know about the differences between them?  They're both called HDA
+CODECs which might lead one to think that they are supposed to represent
+the same thing.
+
+> > I'm also wondering how this interacts with the Tegra HDA device by the
+> > way...
+
+> It's a part of HDA legacy.  No difference from any other HDA devices.
+> What's the problem with Tegra?
+
+People keep talking about PCI as being a differentator here, though
+apparently the Intel systems are all PCI so perhaps not.
+
+--tjqVXn9sJ2F3KEH2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZHYHAAoJECTWi3JdVIfQBJYH/RmPDmk/jMkjThZg9ghxodB9
+y3nYbKEWRs+c3rbDl+qS4ifxkW4X96LLvOQQ0R8Bv3+boqSr54znROtiw4QhvFJB
+cQ5ZB7N3pFnIq87GyJpLBYz/oNHHc22lNemg1j1wep+ej6M1IShEr5GxzkDNIPeo
+WqtnPmtdxFmHa5wVUHzhdklXMvyz3GHFzSXLEG8+cG3iBlQmUIxi8s2acH2oK4u/
+5S3wJlxN5K+j8IPQC6v5voMzhXJS7CH0GS18TXtCa1NOt++/NSITxiIk8Ic7H6IJ
+GEVSWhsz6TsFeBfS1d5w4rU7thqOejLbN7Ih6RYLyyTge5+NJTQj8mCh+KaRTRM=
+=gVka
+-----END PGP SIGNATURE-----
+
+--tjqVXn9sJ2F3KEH2--
+
+--===============0312607323940687203==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0312607323940687203==--
