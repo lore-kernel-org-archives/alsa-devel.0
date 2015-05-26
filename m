@@ -1,52 +1,83 @@
-From: Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v4 04/18] input: locomokbd: differentiate between two
- Enter keys
-Date: Tue, 26 May 2015 10:45:02 -0700
-Message-ID: <20150526174502.GB10571@dtor-ws>
-References: <1432554113-26280-1-git-send-email-dbaryshkov@gmail.com>
- <1432554113-26280-5-git-send-email-dbaryshkov@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 0/5] Add a gpio jack device
+Date: Tue, 26 May 2015 20:43:34 +0200
+Message-ID: <5564BED6.3070604@metafoo.de>
+References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
+ <55633CED.2090600@metafoo.de> <20150525171501.GC21577@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1432554113-26280-5-git-send-email-dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jingoo Han <jg1.han-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0916B262606
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 20:43:36 +0200 (CEST)
+In-Reply-To: <20150525171501.GC21577@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 25, 2015 at 02:41:39PM +0300, Dmitry Eremin-Solenikov wrote:
-> There are two Enter keys on collie/poodle keyboards. Make one of them to
-> generate KEY_KPENTER rather than just KEY_ENTER.
-> 
-> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On 05/25/2015 07:15 PM, Mark Brown wrote:
+> On Mon, May 25, 2015 at 05:17:01PM +0200, Lars-Peter Clausen wrote:
+>> On 05/23/2015 12:09 AM, Dylan Reid wrote:
+>
+>>> The first three changes add a gpio audio jack device.  This device can
+>>> be used on systems that report headphone or mic plug through GPIOS.
+>>> There can be 0-N of these devices created per board each can report one
+>>> of several events.  For example, this allows for a single jack for
+>>> HP/Mic and a separate jack for line out.
+>
+>> I'm not convinced that this series is the right approach and I don't think
+>> it helps us to solve the problem.
+>
+> I think it solves the 90% case well enough for simple-card (which is to
+> the main target user here) and the situation with jack detection is
+> already fragmented enough that we're not likely to make things
+> that much worse.  Though now I think about it just taking the gpio out
+> of the device name would help with binding reuse for other users.
+>
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Yea, but 90% of those 90% are already covered by the existing bindings. The 
+existing simple-card bindings and driver support GPIO based jack detection, 
+albeit not as flexible as this. But we don't actually gain that much with 
+this series and most importantly it does not fix the underlying problem. 
+What it does though is introduce a set of bindings which are not proper 
+DT-ish bindings which describe the hardware, but which are a workaround for 
+the quirks of the current ASoC framework. And once these bindings are 
+applied we have to maintain them forever, which also means we have to 
+maintain these quirks in the ASoC implementation forever.
 
-> ---
->  drivers/input/keyboard/locomokbd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
-> index 9742c79..7645053 100644
-> --- a/drivers/input/keyboard/locomokbd.c
-> +++ b/drivers/input/keyboard/locomokbd.c
-> @@ -50,7 +50,7 @@ locomokbd_keycode[LOCOMOKBD_NUMKEYS] = {
->  	0, 0, 0, KEY_CENTER, 0, KEY_MAIL, 0, 0, 0, 0,				/* 30 - 39 */
->  	0, 0, 0, 0, 0, 0, 0, 0, 0, KEY_RIGHT,					/* 40 - 49 */
->  	KEY_UP, KEY_LEFT, 0, 0, KEY_P, 0, KEY_O, KEY_I, KEY_Y, KEY_T,		/* 50 - 59 */
-> -	KEY_E, KEY_W, 0, 0, 0, 0, KEY_DOWN, KEY_ENTER, 0, 0,			/* 60 - 69 */
-> +	KEY_E, KEY_W, 0, 0, 0, 0, KEY_DOWN, KEY_KPENTER, 0, 0,			/* 60 - 69 */
->  	KEY_BACKSPACE, 0, KEY_L, KEY_U, KEY_H, KEY_R, KEY_D, KEY_Q, 0, 0,	/* 70 - 79 */
->  	0, 0, 0, 0, 0, 0, KEY_ENTER, KEY_RIGHTSHIFT, KEY_K, KEY_J,		/* 80 - 89 */
->  	KEY_G, KEY_F, KEY_X, KEY_S, 0, 0, 0, 0, 0, 0,				/* 90 - 99 */
-> -- 
-> 2.1.4
-> 
+>> I think what we need to get the layering and encapsulation right is to
+>> introduce a distinction between jacks and jack detection logic. The jacks
+>> are part of the fabric and should be registered by the machine driver. The
+>> jack detection logic can be implemented by either GPIOs, a dedicated jack
+>> detection chip, like the TS3A227E, or can be part of a more complex CODEC.
+>> The jack detection logic is a function that is provided by these. The audio
+>> fabric, which makes up the sound card, is a consumer of this functionality.
+>
+>> To be able to properly abstract this changes to the framework are necessary
+>> to introduce the concept of jack detection logic providers and consumers.
+>
+>> The chip/driver that implements the jack detection logic register a jack
+>> detection logic provider, the machine driver registers the jack and
+>> specifies which jack detection provider is used for each jack.
+>
+> Yes, this is the complete solution - and it's not an audio specific
+> thing either, there's a reasonable case to be made for saying that that
+> this should be resolved in extcon rather than in any one consumer
+> subsystem.
 
--- 
-Dmitry
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+If the bindings are good it doesn't really matter which framework eventually 
+picks them up, but in this case the bindings are awfully ASoC specific and 
+leak a lot of the shortcomings of the current implementation.
+
+- Lars
