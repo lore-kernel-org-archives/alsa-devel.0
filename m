@@ -1,19 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: lx6464es: Fix duplicated SSID entries
-Date: Tue, 26 May 2015 14:41:49 +0200
-Message-ID: <1432644112-16543-3-git-send-email-tiwai@suse.de>
-References: <1432644112-16543-1-git-send-email-tiwai@suse.de>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for
+ reduced memory footprint
+Date: Tue, 26 May 2015 12:50:08 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553AAC7@SHSMSX101.ccr.corp.intel.com>
+References: <1432638265-16646-1-git-send-email-yang.jie@intel.com>
+ <1432638265-16646-2-git-send-email-yang.jie@intel.com>
+ <s5h8ucbeh18.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90553AA71@SHSMSX101.ccr.corp.intel.com>
+ <s5hy4kbcy2u.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 034752619F0
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 14:41:54 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BC7FBAD21
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 12:41:53 +0000 (UTC)
-In-Reply-To: <1432644112-16543-1-git-send-email-tiwai@suse.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A6522614AF
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 14:50:14 +0200 (CEST)
+In-Reply-To: <s5hy4kbcy2u.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +26,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Zhang, Vivian" <vivian.zhang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-PCI_DEVICE() macro itself defines SSID entries while we override them
-after that.  Replace with a more appropriate macro, PCI_DEVICE_SUB()
-to define all ID values properly.
-
-Spotted by sparse:
-  sound/pci/lx6464es/lx6464es.c:60:11: warning: Initializer entry defined twice
-  sound/pci/lx6464es/lx6464es.c:61:12:   also defined here
-  sound/pci/lx6464es/lx6464es.c:64:11: warning: Initializer entry defined twice
-  sound/pci/lx6464es/lx6464es.c:65:12:   also defined here
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/lx6464es/lx6464es.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
-index 32c6f6ba1442..611b9a88784e 100644
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -57,13 +57,13 @@ static const char card_name[] = "LX6464ES";
- #define PCI_DEVICE_ID_PLX_LX6464ES		PCI_DEVICE_ID_PLX_9056
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, May 26, 2015 8:39 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-
+> kernel@vger.kernel.org; Girdwood, Liam R; Zhang, Vivian
+> Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for reduced
+> memory footprint
+> 
+> At Tue, 26 May 2015 12:32:43 +0000,
+> Jie, Yang wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Tuesday, May 26, 2015 7:05 PM
+> > > To: Jie, Yang
+> > > Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-
+> > > kernel@vger.kernel.org; Girdwood, Liam R; Zhang, Vivian
+> > > Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for reduced
+> > > memory footprint
+> > >
+> > > At Tue, 26 May 2015 19:04:24 +0800,
+> > > Jie Yang wrote:
+> > > >
+> > > > For some embedded devices, we need reduce code size and data
+> > > > footprint as much as possible, e.g. disabling procfs, hw/sw params
+> > > > refinement, mmap, dpcm, dapm, compressed API...
+> > > >
+> > > > Here add root config menu for those configuration, and disable
+> > > > procfs once reduced memory footprint is selected.
+> > > >
+> > > > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > > > ---
+> > > >  sound/Kconfig | 16 ++++++++++++++++
+> > > >  1 file changed, 16 insertions(+)
+> > > >
+> > > > diff --git a/sound/Kconfig b/sound/Kconfig index 5a240e0..6760dfa
+> > > > 100644
+> > > > --- a/sound/Kconfig
+> > > > +++ b/sound/Kconfig
+> > > > @@ -68,6 +68,22 @@ menuconfig SND
+> > > >
+> > > >  if SND
+> > > >
+> > > > +menuconfig SND_REDUCED_MEMORY_FOOTPRINT
+> > > > +	bool "Reduced Memory Footprint Support"
+> > > > +	default n
+> > > > +	help
+> > > > +	  Say 'Y' to enable Reduced Memory Footprint Support, which may
+> > > > +	  reduce code size and data footprint as much as possible.
+> > >
+> > > I'd like to move this into sound/core.
+> > > Also, the kconfig name appears a bit too lengthy to me.
+> > >
+> > > > +config SND_PROC_FS
+> > > > +	bool "Sound Proc FS Support"
+> > > > +	depends on PROC_FS && !SND_REDUCED_MEMORY_FOOTPRINT
+> > >
+> > > This should be
+> > > 	bool "Sound Proc FS Support"
+> > > if !SND_REDUCED_MEMORY_FOOTPRINT
+> > > 	depends on PROC_FS
+> > >
+> > > In this way, this prompt would appear only when
+> > > SND_REDUCED_MEMORY_FOOTPRINT is set, i.e. only for experts.
+> >
+> > Takashi, I tested and found same for these two way, the prompt will
+> > appear only when PROC_FS=y and SND_REDUCED_MEMORY_FOOTPRINT
+> is *not*
+> > set. BTW, seems here we should use without '!'?
+> >
+> >  	bool "Sound Proc FS Support" if
+> SND_REDUCED_MEMORY_FOOTPRINT
+> 
+> Yes.  It was my typo.  An expression 'type "prompt" if xxx' means that the
+> prompt appears only if xxx is true.
  
- static const struct pci_device_id snd_lx6464es_ids[] = {
--	{ PCI_DEVICE(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES),
--	  .subvendor = PCI_VENDOR_ID_DIGIGRAM,
--	  .subdevice = PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_SERIAL_SUBSYSTEM
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES,
-+			 PCI_VENDOR_ID_DIGIGRAM,
-+			 PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_SERIAL_SUBSYSTEM),
- 	},			/* LX6464ES */
--	{ PCI_DEVICE(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES),
--	  .subvendor = PCI_VENDOR_ID_DIGIGRAM,
--	  .subdevice = PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_CAE_SERIAL_SUBSYSTEM
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_LX6464ES,
-+			 PCI_VENDOR_ID_DIGIGRAM,
-+			 PCI_SUBDEVICE_ID_DIGIGRAM_LX6464ES_CAE_SERIAL_SUBSYSTEM),
- 	},			/* LX6464ES-CAE */
- 	{ 0, },
- };
--- 
-2.4.1
+Got it, thanks. Will update and resend the patch soon.
+
+~Keyon
+
+> 
+> 
+> Takashi
+> 
+> >  	depends on PROC_FS
+> >
+> > ~Keyon
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> > >
+> > > > +	default y
+> > > > +	help
+> > > > +	  Say 'N' to disable Sound proc FS, which may reduce code size about
+> > > > +	  9KB on x86_64 platform.
+> > > > +	  If unsure say Y.
+> > > > +
+> > > >  source "sound/core/Kconfig"
+> > > >
+> > > >  source "sound/drivers/Kconfig"
+> > > > --
+> > > > 1.9.1
+> > > >
+> >
