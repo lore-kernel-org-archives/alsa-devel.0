@@ -1,28 +1,59 @@
-From: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Subject: Re: [PATCH 03/13] serial: 8250_dma: Support for deferred probing
- when requesting DMA channels
-Date: Tue, 26 May 2015 07:44:32 -0700
-Message-ID: <20150526144432.GA23156@kroah.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-4-git-send-email-peter.ujfalusi@ti.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: ALSA: firewire-lib: pass the number of data blocks
+ in incoming packets to outgoing packets
+Date: Tue, 26 May 2015 23:46:22 +0900
+Message-ID: <5564873E.9020409@sakamocchi.jp>
+References: <20150526084924.GA25178@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1432646768-12532-4-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD91D261469
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 16:46:28 +0200 (CEST)
+In-Reply-To: <20150526084924.GA25178@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2015 at 04:25:58PM +0300, Peter Ujfalusi wrote:
-> Switch to use ma_request_slave_channel_compat_reason() to request the DMA
-> channels. In case of error, return the error code we received including
-> -EPROBE_DEFER
+Hi Dan,
 
-I think you typed the function name wrong here :(
+On May 26 2015 17:49, Dan Carpenter wrote:
+> Hello Takashi Sakamoto,
+> 
+> The patch 6fc6b9ce41c6: "ALSA: firewire-lib: pass the number of data
+> blocks in incoming packets to outgoing packets" from May 22, 2015,
+> leads to the following static checker warning:
+> 
+> 	sound/firewire/amdtp.c:857 in_stream_callback()
+> 	warn: unsigned 'data_blocks' is never less than zero.
+> 
+> sound/firewire/amdtp.c
+>    855  
+>    856                  data_blocks = handle_in_packet(s, payload_quadlets, buffer);
+>    857                  if (data_blocks < 0) {
+>                             ^^^^^^^^^^^^^^^
+> Never true.  But handle_in_packet() does return negative error codes.
+> 
+>    858                          s->packet_index = -1;
+>    859                          break;
+>    860                  }
+>    861  
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Exactly. And this is a cause of my system hangup. Under compiler
+optimization, the condition statement is removed and error handling is
+not executed...
+
+Thanks for your indication!
+
+
+Takashi Sakamoto
