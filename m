@@ -1,19 +1,17 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 03/13] serial: 8250_dma: Support for
- deferred probing when requesting DMA channels
-Date: Tue, 26 May 2015 08:08:53 -0700
-Message-ID: <20150526150852.GC16525@atomide.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-4-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Simplify format_register_str()
+	without stack usages
+Date: Tue, 26 May 2015 16:22:04 +0100
+Message-ID: <20150526152204.GS21577@sirena.org.uk>
+References: <1432644014-16475-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3366874124588281950=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D75E261469
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 17:08:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1432646768-12532-4-git-send-email-peter.ujfalusi@ti.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BAD826158C
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 17:22:14 +0200 (CEST)
+In-Reply-To: <1432644014-16475-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, vinod.koul@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org, dmaengine@vger.kernel.org, dan.j.williams@intel.com, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [150526 06:28]:
-> Switch to use ma_request_slave_channel_compat_reason() to request the DMA
-> channels. In case of error, return the error code we received including
-> -EPROBE_DEFER
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/tty/serial/8250/8250_dma.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_dma.c b/drivers/tty/serial/8250/8250_dma.c
-> index 21d01a491405..a617eca4e97d 100644
-> --- a/drivers/tty/serial/8250/8250_dma.c
-> +++ b/drivers/tty/serial/8250/8250_dma.c
-> @@ -182,21 +182,19 @@ int serial8250_request_dma(struct uart_8250_port *p)
->  	dma_cap_set(DMA_SLAVE, mask);
->  
->  	/* Get a channel for RX */
-> -	dma->rxchan = dma_request_slave_channel_compat(mask,
-> -						       dma->fn, dma->rx_param,
-> -						       p->port.dev, "rx");
-> -	if (!dma->rxchan)
-> -		return -ENODEV;
-> +	dma->rxchan = dma_request_slave_channel_compat_reason(mask, dma->fn,
-> +					dma->rx_param, p->port.dev, "rx");
-> +	if (IS_ERR(dma->rxchan))
-> +		return PTR_ERR(dma->rxchan);
->  
->  	dmaengine_slave_config(dma->rxchan, &dma->rxconf);
->  
->  	/* Get a channel for TX */
-> -	dma->txchan = dma_request_slave_channel_compat(mask,
-> -						       dma->fn, dma->tx_param,
-> -						       p->port.dev, "tx");
-> -	if (!dma->txchan) {
-> +	dma->txchan = dma_request_slave_channel_compat_reason(mask, dma->fn,
-> +					dma->tx_param, p->port.dev, "tx");
-> +	if (IS_ERR(dma->txchan)) {
->  		dma_release_channel(dma->rxchan);
-> -		return -ENODEV;
-> +		return PTR_ERR(dma->txchan);
->  	}
->  
->  	dmaengine_slave_config(dma->txchan, &dma->txconf);
 
-In general the drivers need to work just fine also without DMA.
+--===============3366874124588281950==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/7rxiSAA1JAos7i8"
+Content-Disposition: inline
 
-Does this handle the case properly where no DMA channel is configured
-for the driver in the dts file?
 
-Regards,
+--/7rxiSAA1JAos7i8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Tony
+On Tue, May 26, 2015 at 02:40:14PM +0200, Takashi Iwai wrote:
+> Instead of allocating two string buffers on stack and copying them
+> back, manipulate directly the target string buffer.  This simplifies
+> the code well.
+
+Applied, thanks.
+
+--/7rxiSAA1JAos7i8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZI+cAAoJECTWi3JdVIfQFAgH/R7hhY3UKIwCkdHOFr3OHGLV
+CPoHMMpwnTEcC6HhW8SFCqiu0vcI5jzxiUWqQGWkARY2CRqyQ+Z0EdzSPIGKGyjz
+CIGCplniBpFfvZZrbBSiG0/rGznZ1kg0DleSRvdS+ic0d4XWP3nM7ySlwXB74ONX
++ouXyuioJ+ghBm14T0Yp7wmP0EmwrUk5chajBM/DIDO6k/xloudpjUtVhQ9ZStSm
+4VnyYZQtgWNT3wHoLOrPj4FsP0v97gvLh1ihGkX8/a1G7tXjvhXQUwLpWLdJQGAn
+NOK9fe8Prz2jjn3qHRiR5wdiIJeOioSoGRh4XAdssS7zYhcFev/k+KVLgwqUTqk=
+=9A5F
+-----END PGP SIGNATURE-----
+
+--/7rxiSAA1JAos7i8--
+
+--===============3366874124588281950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3366874124588281950==--
