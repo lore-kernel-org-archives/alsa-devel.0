@@ -1,18 +1,14 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] ASoC: atmel: compile pcm driver in
-	snd-soc-atmel_ssc_dai
-Date: Tue, 26 May 2015 12:53:52 +0200
-Message-ID: <4338609.rFs5DCIUWR@wuerfel>
-References: <1432591459-22613-1-git-send-email-alexandre.belloni@free-electrons.com>
- <1432591459-22613-2-git-send-email-alexandre.belloni@free-electrons.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH 0/2] reducing memory footprint of ALSA
+Date: Tue, 26 May 2015 19:04:23 +0800
+Message-ID: <1432638265-16646-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 0920126510A
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 12:54:23 +0200 (CEST)
-In-Reply-To: <1432591459-22613-2-git-send-email-alexandre.belloni@free-electrons.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3270826510B
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 13:00:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-kernel@vger.kernel.org
+To: tiwai@suse.de, broonie@kernel.org
+Cc: vivian.zhang@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 26 May 2015 00:04:19 Alexandre Belloni wrote:
-> index b327e5cc8de3..4fa7ac91f972 100644
-> --- a/sound/soc/atmel/Makefile
-> +++ b/sound/soc/atmel/Makefile
-> @@ -1,10 +1,8 @@
->  # AT91 Platform Support
-> -snd-soc-atmel-pcm-pdc-objs := atmel-pcm-pdc.o
-> -snd-soc-atmel-pcm-dma-objs := atmel-pcm-dma.o
-> -snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o
-> +snd-soc-atmel-pcm-$(CONFIG_SND_ATMEL_SOC_PDC) := atmel-pcm-pdc.o
-> +snd-soc-atmel-pcm-$(CONFIG_SND_ATMEL_SOC_DMA) += atmel-pcm-dma.o
-> +snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o $(snd-soc-atmel-pcm-y)
+We are planning to work on reducing memory footprint of ALSA,
+targeting on small memory embedded devices(e.g. IoT), this
+series focuses on disabling procfs, hw/sw params refinement,
+mmap, dpcm, dapm, compressed API, compat code APIs...
 
-While technically correct, you could have written this (slightly)
-simpler as:
+These first two patches is a start, add config menu in Kconfig,
+and disable ALSA proc FS once reducing memory footprint is
+selected, which can save about 9KB code size on x86_64 platform.
 
-snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o
-snd-soc-atmel-ssc_dai-$(CONFIG_SND_ATMEL_SOC_PDC) += atmel-pcm-pdc.o
-snd-soc-atmel-ssc_dai-$(CONFIG_SND_ATMEL_SOC_DMA) += atmel-pcm-dma.o
+Comments are welcomed.
 
-No need to change the patch again after it's applied now.
+~Keyon
 
-	Arnd
+Jie Yang (2):
+  ALSA: Kconfig: add config menu for reduced memory footprint
+  ALSA: set no sound proc fs for reduced memory footprint
+
+ include/sound/info.h               |  8 ++++----
+ sound/Kconfig                      | 16 ++++++++++++++++
+ sound/core/Makefile                |  2 +-
+ sound/core/hwdep.c                 |  6 +++---
+ sound/core/init.c                  |  8 ++++----
+ sound/core/oss/mixer_oss.c         |  6 +++---
+ sound/core/pcm.c                   |  6 +++---
+ sound/core/seq/oss/seq_oss.c       |  6 +++---
+ sound/core/seq/oss/seq_oss_init.c  |  5 ++---
+ sound/core/seq/oss/seq_oss_midi.c  |  4 ++--
+ sound/core/seq/oss/seq_oss_readq.c |  4 ++--
+ sound/core/seq/oss/seq_oss_synth.c |  4 ++--
+ sound/core/seq/seq_clientmgr.c     |  4 ++--
+ sound/core/seq/seq_device.c        |  2 +-
+ sound/core/seq/seq_info.h          |  2 +-
+ sound/core/seq/seq_queue.c         |  4 ++--
+ sound/core/seq/seq_timer.c         |  4 ++--
+ sound/core/sound.c                 |  4 ++--
+ sound/core/sound_oss.c             |  4 ++--
+ sound/core/timer.c                 |  4 ++--
+ sound/pci/hda/Makefile             |  3 ++-
+ sound/pci/hda/hda_eld.c            |  4 ++--
+ sound/pci/hda/hda_local.h          |  4 ++--
+ sound/pci/hda/patch_hdmi.c         |  4 ++--
+ sound/pci/hda/patch_sigmatel.c     |  2 +-
+ 25 files changed, 68 insertions(+), 52 deletions(-)
+
+-- 
+1.9.1
