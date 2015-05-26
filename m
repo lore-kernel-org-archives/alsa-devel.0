@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: use SNDRV_PCM_FMTBIT_* for
-	format bitmask
-Date: Tue, 26 May 2015 10:44:22 +0100
-Message-ID: <20150526094422.GI21577@sirena.org.uk>
-References: <5560AB9D.1010807@maciej.szmigiero.name>
- <s5h382j29ey.wl-tiwai@suse.de>
+Subject: Re: [PATCH 1/2] ASoC: atmel: simplify Kconfig
+Date: Tue, 26 May 2015 10:53:06 +0100
+Message-ID: <20150526095306.GJ21577@sirena.org.uk>
+References: <1432591459-22613-1-git-send-email-alexandre.belloni@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5682221619159809832=="
+Content-Type: multipart/mixed; boundary="===============0327260140986046681=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 473DD2614A9
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 11:44:38 +0200 (CEST)
-In-Reply-To: <s5h382j29ey.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C2C76260690
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 11:53:18 +0200 (CEST)
+In-Reply-To: <1432591459-22613-1-git-send-email-alexandre.belloni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Lars-Peter Clausen <lars@metafoo.de>, Matt Reimer <mreimer@sdgsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Mack <daniel@zonque.org>
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5682221619159809832==
+--===============0327260140986046681==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="67L3nkltNbzPAvlZ"
+	protocol="application/pgp-signature"; boundary="ibQy1PD9BIJOeb75"
 Content-Disposition: inline
 
 
---67L3nkltNbzPAvlZ
+--ibQy1PD9BIJOeb75
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 26, 2015 at 07:29:57AM +0200, Takashi Iwai wrote:
-> Maciej S. Szmigiero wrote:
+On Tue, May 26, 2015 at 12:04:18AM +0200, Alexandre Belloni wrote:
+> Enclose the options in if SND_ATMEL_SOC ... endif to remove the dependency.
+> Also remove the useless description for SND_ATMEL_SOC_SSC.
 
-> > Found out by sparse on 0-day kernel tester.
+Applied, thanks.
 
-> Wow, that made me wonder how these drivers could actually work.
-
-AFAICT the bits were being set by being ored in from the sequential
-values.
-
-> BTW, how did you detect it?  Any static analyzer like sparse or
-> smatch?  sparse didn't detect it at the last time I tried, IIRC...
-
-Commit log says sparse.
-
---67L3nkltNbzPAvlZ
+--ibQy1PD9BIJOeb75
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVZEB1AAoJECTWi3JdVIfQoYAH/R8qifIhxg3A7I0iS21tnnW6
-lRp2JcWBHWY/2zF2cn9jl9ocVC2SGqA+VUXcA6NkduSSwUWuQzqK9frmaIG2I1Sk
-hYh1faw1b4f2J1gDSWYxxRbVFy0HZTtUbQYwXkybhVpOjilg2PRMJSJ4bYQJbEe4
-KvCH6t+WNwd2KYrtxfitJHNyrHG2xNEOcG/q05VceZmqCQYan652K6iROaRPzd+B
-UbMwSIyWyISnAT0XBjDdXsPcnkCeWpREX0bSDSOsvRQLe3wuQXSpPHtKYxJp1KBM
-jQbbCU9QN0oH963Om0rNGzKTjomb/jImX9KWejD/Y6KTvQ+xuK92fOnyxtYxMNg=
-=vLCk
+iQEcBAEBCAAGBQJVZEKBAAoJECTWi3JdVIfQppYH/3nXO8vUVA8xkF4vodPzi2at
+LYhQ/QyEyxyTqxUcYYacUCC+4kP9sCxdJMuiQYlnGhOcg3lo0DShWGxL4zrVprdk
+8VHJGaqqaqlHE3R8sS6i0kLOAnIundSDhlUxKzaoWup5xQLeoOCA6POGC6FjKiC3
+qnKoEN2PSXEYGQ1MM6j6FD3TE/afFGlA0EgEb71VZwqPt1hLxtHnJZA4RKzrAR1G
+qC/Z8EUIo6WXPvMTINXXFGKXPN7A4XCza1CIhWL0CcVCSev+7QocQMqXr1E7BLHn
+VGYogFH55+Qrq1FwYRjWU60JIsW7wo82wojf2rO7mOMSkXMsu7G4MjiX2Fq/YZg=
+=XOs+
 -----END PGP SIGNATURE-----
 
---67L3nkltNbzPAvlZ--
+--ibQy1PD9BIJOeb75--
 
---===============5682221619159809832==
+--===============0327260140986046681==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5682221619159809832==--
+--===============0327260140986046681==--
