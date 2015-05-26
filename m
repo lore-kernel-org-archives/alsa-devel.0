@@ -1,18 +1,16 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v4 15/18] ARM: pxa: poodle: use new LoCoMo
-	driver
-Date: Tue, 26 May 2015 23:18:07 +0200
-Message-ID: <87wpzvyr5c.fsf@belgarion.home>
-References: <1432554113-26280-1-git-send-email-dbaryshkov@gmail.com>
- <1432554113-26280-16-git-send-email-dbaryshkov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: Add GPIO based jack device
+Date: Tue, 26 May 2015 23:10:34 +0100
+Message-ID: <20150526221034.GC21577@sirena.org.uk>
+References: <1432661622-4901-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6326449463601952795=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
- by alsa0.perex.cz (Postfix) with ESMTP id 69F7F2652C3
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 23:19:40 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C337261ADE
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 00:10:42 +0200 (CEST)
+In-Reply-To: <1432661622-4901-1-git-send-email-dgreid@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Jingoo Han <jg1.han@samsung.com>, Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+To: Dylan Reid <dgreid@chromium.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, zhengxing@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> writes:
 
-> Convert poodle to use new mfd-based LoCoMo driver.
->
-> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+--===============6326449463601952795==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eFSocvuHqSR2dX+c"
+Content-Disposition: inline
 
-Cheers.
 
---
-Robert
+--eFSocvuHqSR2dX+c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 26, 2015 at 10:33:42AM -0700, Dylan Reid wrote:
+
+> +Required properties:
+> +
+> +- compatible				: "linux,gpio-audio-jack"
+
+As mentioned in the discussion of v1 I think we should drop gpio- from
+this - Lars is right that we should really be more generic and there's
+no reason this can't serve as a non-GPIO jack especially given that...
+
+> +
+> +Optional properties:
+> +
+> +- gpio-audio-jack,jack-name		: Name of the jack. Normally
+> +					  'Headphone Jack', 'Mic Jack', or
+> +					  'Headset Jack'
+> +- gpio-audio-jack,sw-det-gpios		: Reference to GPIOs that signals when
+> +					  a jack is plugged.
+
+...GPIOs are optional anyway!  However I think Lars had further concerns
+about abstraction which I seem to have missed.
+
+--eFSocvuHqSR2dX+c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZO9aAAoJECTWi3JdVIfQ5yQH/0uzYZXnpZAxyKGB6ybYHOS/
+gCQ6/VyDo/ezkz9OMvIfp3D35s2ewSwUQ4HlKOqcdFC+gf6Y0E2YyIOP/Erc4r/Z
+04y7lrY35Dn5/p/4wPb+7T/Jskj6DIBsjUj3OC/LzNS6hnynO5COQjfY3Egskrrj
+sCYoJJ9n7Z9GMbUKjx2XKQ3ekobvTASLoVFbfYty5KVdTO2Sq9kp0ys+EjMATGnB
+Rw377W8E8qm/dpQuUNx5Hujst+oDXQwRYa8VQZJolfGaK7bvr9XBcMZ6ng5uIHdu
+7sWMomm856l2ev3o5tclviqtkpNJhFHwqXCHNVq5BNZjshX8pNb+rw1da8N124o=
+=7NAm
+-----END PGP SIGNATURE-----
+
+--eFSocvuHqSR2dX+c--
+
+--===============6326449463601952795==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6326449463601952795==--
