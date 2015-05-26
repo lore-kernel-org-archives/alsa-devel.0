@@ -1,22 +1,14 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for
- reduced memory footprint
-Date: Tue, 26 May 2015 12:50:08 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553AAC7@SHSMSX101.ccr.corp.intel.com>
-References: <1432638265-16646-1-git-send-email-yang.jie@intel.com>
- <1432638265-16646-2-git-send-email-yang.jie@intel.com>
- <s5h8ucbeh18.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A90553AA71@SHSMSX101.ccr.corp.intel.com>
- <s5hy4kbcy2u.wl-tiwai@suse.de>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH 0/2] reducing memory footprint of ALSA
+Date: Tue, 26 May 2015 21:13:55 +0800
+Message-ID: <1432646037-23803-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A6522614AF
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 14:50:14 +0200 (CEST)
-In-Reply-To: <s5hy4kbcy2u.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 77ABE2612D1
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 15:10:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,115 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Zhang, Vivian" <vivian.zhang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: tiwai@suse.de, broonie@kernel.org
+Cc: vivian.zhang@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, May 26, 2015 8:39 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-
-> kernel@vger.kernel.org; Girdwood, Liam R; Zhang, Vivian
-> Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for reduced
-> memory footprint
-> 
-> At Tue, 26 May 2015 12:32:43 +0000,
-> Jie, Yang wrote:
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, May 26, 2015 7:05 PM
-> > > To: Jie, Yang
-> > > Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-
-> > > kernel@vger.kernel.org; Girdwood, Liam R; Zhang, Vivian
-> > > Subject: Re: [PATCH 1/2] ALSA: Kconfig: add config menu for reduced
-> > > memory footprint
-> > >
-> > > At Tue, 26 May 2015 19:04:24 +0800,
-> > > Jie Yang wrote:
-> > > >
-> > > > For some embedded devices, we need reduce code size and data
-> > > > footprint as much as possible, e.g. disabling procfs, hw/sw params
-> > > > refinement, mmap, dpcm, dapm, compressed API...
-> > > >
-> > > > Here add root config menu for those configuration, and disable
-> > > > procfs once reduced memory footprint is selected.
-> > > >
-> > > > Signed-off-by: Jie Yang <yang.jie@intel.com>
-> > > > ---
-> > > >  sound/Kconfig | 16 ++++++++++++++++
-> > > >  1 file changed, 16 insertions(+)
-> > > >
-> > > > diff --git a/sound/Kconfig b/sound/Kconfig index 5a240e0..6760dfa
-> > > > 100644
-> > > > --- a/sound/Kconfig
-> > > > +++ b/sound/Kconfig
-> > > > @@ -68,6 +68,22 @@ menuconfig SND
-> > > >
-> > > >  if SND
-> > > >
-> > > > +menuconfig SND_REDUCED_MEMORY_FOOTPRINT
-> > > > +	bool "Reduced Memory Footprint Support"
-> > > > +	default n
-> > > > +	help
-> > > > +	  Say 'Y' to enable Reduced Memory Footprint Support, which may
-> > > > +	  reduce code size and data footprint as much as possible.
-> > >
-> > > I'd like to move this into sound/core.
-> > > Also, the kconfig name appears a bit too lengthy to me.
-> > >
-> > > > +config SND_PROC_FS
-> > > > +	bool "Sound Proc FS Support"
-> > > > +	depends on PROC_FS && !SND_REDUCED_MEMORY_FOOTPRINT
-> > >
-> > > This should be
-> > > 	bool "Sound Proc FS Support"
-> > > if !SND_REDUCED_MEMORY_FOOTPRINT
-> > > 	depends on PROC_FS
-> > >
-> > > In this way, this prompt would appear only when
-> > > SND_REDUCED_MEMORY_FOOTPRINT is set, i.e. only for experts.
-> >
-> > Takashi, I tested and found same for these two way, the prompt will
-> > appear only when PROC_FS=y and SND_REDUCED_MEMORY_FOOTPRINT
-> is *not*
-> > set. BTW, seems here we should use without '!'?
-> >
-> >  	bool "Sound Proc FS Support" if
-> SND_REDUCED_MEMORY_FOOTPRINT
-> 
-> Yes.  It was my typo.  An expression 'type "prompt" if xxx' means that the
-> prompt appears only if xxx is true.
- 
-Got it, thanks. Will update and resend the patch soon.
+We are planning to work on reducing memory footprint of ALSA,
+targeting on small memory embedded devices(e.g. IoT), this
+series focuses on disabling procfs, hw/sw params refinement,
+mmap, dpcm, dapm, compressed API, compat code APIs...
 
-~Keyon
+These first two patches is a start, add config menu in Kconfig,
+and disable ALSA proc FS once reducing memory footprint is
+selected, which can save about 9KB code size on x86_64 platform.
 
-> 
-> 
-> Takashi
-> 
-> >  	depends on PROC_FS
-> >
-> > ~Keyon
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > >
-> > > > +	default y
-> > > > +	help
-> > > > +	  Say 'N' to disable Sound proc FS, which may reduce code size about
-> > > > +	  9KB on x86_64 platform.
-> > > > +	  If unsure say Y.
-> > > > +
-> > > >  source "sound/core/Kconfig"
-> > > >
-> > > >  source "sound/drivers/Kconfig"
-> > > > --
-> > > > 1.9.1
-> > > >
-> >
+Changes in v2:
+Prompt "Sound Proc FS Support" appears only when
+SND_REDUCED_MEMORY_FOOTPRINT is true.
+
+Jie Yang (2):
+  ALSA: Kconfig: add config menu for reduced memory footprint
+  ALSA: set no sound proc fs for reduced memory footprint
+
+ include/sound/info.h               |  8 ++++----
+ sound/Kconfig                      | 16 ++++++++++++++++
+ sound/core/Makefile                |  2 +-
+ sound/core/hwdep.c                 |  6 +++---
+ sound/core/init.c                  |  8 ++++----
+ sound/core/oss/mixer_oss.c         |  6 +++---
+ sound/core/pcm.c                   |  6 +++---
+ sound/core/seq/oss/seq_oss.c       |  6 +++---
+ sound/core/seq/oss/seq_oss_init.c  |  5 ++---
+ sound/core/seq/oss/seq_oss_midi.c  |  4 ++--
+ sound/core/seq/oss/seq_oss_readq.c |  4 ++--
+ sound/core/seq/oss/seq_oss_synth.c |  4 ++--
+ sound/core/seq/seq_clientmgr.c     |  4 ++--
+ sound/core/seq/seq_device.c        |  2 +-
+ sound/core/seq/seq_info.h          |  2 +-
+ sound/core/seq/seq_queue.c         |  4 ++--
+ sound/core/seq/seq_timer.c         |  4 ++--
+ sound/core/sound.c                 |  4 ++--
+ sound/core/sound_oss.c             |  4 ++--
+ sound/core/timer.c                 |  4 ++--
+ sound/pci/hda/Makefile             |  3 ++-
+ sound/pci/hda/hda_eld.c            |  4 ++--
+ sound/pci/hda/hda_local.h          |  4 ++--
+ sound/pci/hda/patch_hdmi.c         |  4 ++--
+ sound/pci/hda/patch_sigmatel.c     |  2 +-
+ 25 files changed, 68 insertions(+), 52 deletions(-)
+
+-- 
+1.9.1
