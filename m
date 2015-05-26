@@ -1,60 +1,65 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_spdif: Don't try to round-up for
- clock divisor calculation
-Date: Tue, 26 May 2015 16:00:49 -0700
-Message-ID: <20150526230048.GA2752@Asurada-GSX>
-References: <1432455161-4924-1-git-send-email-nicoleotsuka@gmail.com>
- <20150525115812.GG21391@sirena.org.uk>
- <20150525151127.GA8184@Asurada>
- <CAOMZO5B+GQdXZDfKV6Hz3wXmJCUcXBeWWQxR_jY0n28OnA_gJg@mail.gmail.com>
- <20150525152424.GA8164@Asurada>
- <20150526110246.GA13725@shlinux2>
+From: yang.a.fang@intel.com
+Subject: [PATCH 1/3] ASoC: max98090: read micbias from device
+	property
+Date: Tue, 26 May 2015 16:58:04 -0700
+Message-ID: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150526110246.GA13725@shlinux2>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F4922652E6
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 01:58:58 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, "Fang,
+ Yang A" <yang.a.fang@intel.com>, praveen.k.jain@intel.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2015 at 07:02:48PM +0800, Zidan Wang wrote:
-> On Mon, May 25, 2015 at 08:24:25AM -0700, Nicolin Chen wrote:
-> > On Mon, May 25, 2015 at 12:13:45PM -0300, Fabio Estevam wrote:
-> > > Hi Nicolin,
-> > > 
-> > > On Mon, May 25, 2015 at 12:11 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> > > 
-> > > > Hi Mark,
-> > > >
-> > > > Is that possible for you to provisionally revert this patch?
-> > > > I wanted to wait for the test result from Fabio or Zidan in
-> > > > the Cc list because I don't have a test environment for SPDIF
-> > > > even though this change seems to make sense.
-> > > 
-> > > I currently don't have access to a SPDIF receiver to test it.
-> > 
-> > Okay, let's wait for Zidan then. We only need to test the
-> > playback route of supporting sample rates.
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-> I don't have the board which supported by community to test spdif out. So i used the imx7 board
+This patch reads max98090 micbias from acpi or dt
 
-i.MX6 ARM2, the one with the square green base board, should work,
-although you may add some device nodes in dts to make it work.
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/codecs/max98090.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> and test it with internal branch.
-> I found that (txclk_df + 1) is better than txclk_df.
-> I suspect the patch for clk_round_rate() is not in our branch. Could you please tell me which
-> patch is for clk_round_rate? I want to cherry-pick it to our branch and test it.
-
-https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/log/drivers/clk/clk-divider.c
-
-Here is commit logs for the clock driver. You can check git-log of
-your local one and cherry-pick those incremental patches. Another
-clue is that after updating the clock driver to the latest version,
-SSI master mode in your local branch would become abnormal since
-it's still using pm + 2 to round the calculation.
-
-Thanks a lot
-Nicolin
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index c230626..27df17e 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2419,6 +2419,8 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	struct max98090_cdata *cdata;
+ 	enum max98090_type devtype;
+ 	int ret = 0;
++	int err;
++	unsigned int micbias;
+ 
+ 	dev_dbg(codec->dev, "max98090_probe\n");
+ 
+@@ -2503,8 +2505,13 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, M98090_REG_BIAS_CONTROL,
+ 		M98090_VCM_MODE_MASK);
+ 
++	err = device_property_read_u32(codec->dev, "max,micbias", &micbias);
++
++	if (err)
++		micbias = M98090_MBVSEL_2V8;
++
+ 	snd_soc_update_bits(codec, M98090_REG_MIC_BIAS_VOLTAGE,
+-		M98090_MBVSEL_MASK, M98090_MBVSEL_2V8);
++		M98090_MBVSEL_MASK, micbias);
+ 
+ 	max98090_add_widgets(codec);
+ 
+-- 
+1.7.9.5
