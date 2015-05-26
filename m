@@ -1,17 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ALSA: firewire-lib: pass the number of data blocks
- in incoming packets to outgoing packets
-Date: Tue, 26 May 2015 23:46:22 +0900
-Message-ID: <5564873E.9020409@sakamocchi.jp>
-References: <20150526084924.GA25178@mwanda>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 03/13] serial: 8250_dma: Support for
+ deferred probing when requesting DMA channels
+Date: Tue, 26 May 2015 08:08:53 -0700
+Message-ID: <20150526150852.GC16525@atomide.com>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id AD91D261469
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 16:46:28 +0200 (CEST)
-In-Reply-To: <20150526084924.GA25178@mwanda>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D75E261469
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 17:08:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1432646768-12532-4-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, vinod.koul@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org, dmaengine@vger.kernel.org, dan.j.williams@intel.com, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dan,
-
-On May 26 2015 17:49, Dan Carpenter wrote:
-> Hello Takashi Sakamoto,
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [150526 06:28]:
+> Switch to use ma_request_slave_channel_compat_reason() to request the DMA
+> channels. In case of error, return the error code we received including
+> -EPROBE_DEFER
 > 
-> The patch 6fc6b9ce41c6: "ALSA: firewire-lib: pass the number of data
-> blocks in incoming packets to outgoing packets" from May 22, 2015,
-> leads to the following static checker warning:
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/tty/serial/8250/8250_dma.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
 > 
-> 	sound/firewire/amdtp.c:857 in_stream_callback()
-> 	warn: unsigned 'data_blocks' is never less than zero.
-> 
-> sound/firewire/amdtp.c
->    855  
->    856                  data_blocks = handle_in_packet(s, payload_quadlets, buffer);
->    857                  if (data_blocks < 0) {
->                             ^^^^^^^^^^^^^^^
-> Never true.  But handle_in_packet() does return negative error codes.
-> 
->    858                          s->packet_index = -1;
->    859                          break;
->    860                  }
->    861  
+> diff --git a/drivers/tty/serial/8250/8250_dma.c b/drivers/tty/serial/8250/8250_dma.c
+> index 21d01a491405..a617eca4e97d 100644
+> --- a/drivers/tty/serial/8250/8250_dma.c
+> +++ b/drivers/tty/serial/8250/8250_dma.c
+> @@ -182,21 +182,19 @@ int serial8250_request_dma(struct uart_8250_port *p)
+>  	dma_cap_set(DMA_SLAVE, mask);
+>  
+>  	/* Get a channel for RX */
+> -	dma->rxchan = dma_request_slave_channel_compat(mask,
+> -						       dma->fn, dma->rx_param,
+> -						       p->port.dev, "rx");
+> -	if (!dma->rxchan)
+> -		return -ENODEV;
+> +	dma->rxchan = dma_request_slave_channel_compat_reason(mask, dma->fn,
+> +					dma->rx_param, p->port.dev, "rx");
+> +	if (IS_ERR(dma->rxchan))
+> +		return PTR_ERR(dma->rxchan);
+>  
+>  	dmaengine_slave_config(dma->rxchan, &dma->rxconf);
+>  
+>  	/* Get a channel for TX */
+> -	dma->txchan = dma_request_slave_channel_compat(mask,
+> -						       dma->fn, dma->tx_param,
+> -						       p->port.dev, "tx");
+> -	if (!dma->txchan) {
+> +	dma->txchan = dma_request_slave_channel_compat_reason(mask, dma->fn,
+> +					dma->tx_param, p->port.dev, "tx");
+> +	if (IS_ERR(dma->txchan)) {
+>  		dma_release_channel(dma->rxchan);
+> -		return -ENODEV;
+> +		return PTR_ERR(dma->txchan);
+>  	}
+>  
+>  	dmaengine_slave_config(dma->txchan, &dma->txconf);
 
-Exactly. And this is a cause of my system hangup. Under compiler
-optimization, the condition statement is removed and error handling is
-not executed...
+In general the drivers need to work just fine also without DMA.
 
-Thanks for your indication!
+Does this handle the case properly where no DMA channel is configured
+for the driver in the dts file?
 
+Regards,
 
-Takashi Sakamoto
+Tony
