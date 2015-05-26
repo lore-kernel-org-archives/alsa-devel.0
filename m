@@ -1,85 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Add GPIO based jack device
-Date: Tue, 26 May 2015 23:10:34 +0100
-Message-ID: <20150526221034.GC21577@sirena.org.uk>
-References: <1432661622-4901-1-git-send-email-dgreid@chromium.org>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_spdif: Don't try to round-up for
+ clock divisor calculation
+Date: Tue, 26 May 2015 16:00:49 -0700
+Message-ID: <20150526230048.GA2752@Asurada-GSX>
+References: <1432455161-4924-1-git-send-email-nicoleotsuka@gmail.com>
+ <20150525115812.GG21391@sirena.org.uk>
+ <20150525151127.GA8184@Asurada>
+ <CAOMZO5B+GQdXZDfKV6Hz3wXmJCUcXBeWWQxR_jY0n28OnA_gJg@mail.gmail.com>
+ <20150525152424.GA8164@Asurada>
+ <20150526110246.GA13725@shlinux2>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6326449463601952795=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C337261ADE
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 00:10:42 +0200 (CEST)
-In-Reply-To: <1432661622-4901-1-git-send-email-dgreid@chromium.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, zhengxing@rock-chips.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150526110246.GA13725@shlinux2>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, May 26, 2015 at 07:02:48PM +0800, Zidan Wang wrote:
+> On Mon, May 25, 2015 at 08:24:25AM -0700, Nicolin Chen wrote:
+> > On Mon, May 25, 2015 at 12:13:45PM -0300, Fabio Estevam wrote:
+> > > Hi Nicolin,
+> > > 
+> > > On Mon, May 25, 2015 at 12:11 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > > 
+> > > > Hi Mark,
+> > > >
+> > > > Is that possible for you to provisionally revert this patch?
+> > > > I wanted to wait for the test result from Fabio or Zidan in
+> > > > the Cc list because I don't have a test environment for SPDIF
+> > > > even though this change seems to make sense.
+> > > 
+> > > I currently don't have access to a SPDIF receiver to test it.
+> > 
+> > Okay, let's wait for Zidan then. We only need to test the
+> > playback route of supporting sample rates.
 
---===============6326449463601952795==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eFSocvuHqSR2dX+c"
-Content-Disposition: inline
+> I don't have the board which supported by community to test spdif out. So i used the imx7 board
 
+i.MX6 ARM2, the one with the square green base board, should work,
+although you may add some device nodes in dts to make it work.
 
---eFSocvuHqSR2dX+c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> and test it with internal branch.
+> I found that (txclk_df + 1) is better than txclk_df.
+> I suspect the patch for clk_round_rate() is not in our branch. Could you please tell me which
+> patch is for clk_round_rate? I want to cherry-pick it to our branch and test it.
 
-On Tue, May 26, 2015 at 10:33:42AM -0700, Dylan Reid wrote:
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/log/drivers/clk/clk-divider.c
 
-> +Required properties:
-> +
-> +- compatible				: "linux,gpio-audio-jack"
+Here is commit logs for the clock driver. You can check git-log of
+your local one and cherry-pick those incremental patches. Another
+clue is that after updating the clock driver to the latest version,
+SSI master mode in your local branch would become abnormal since
+it's still using pm + 2 to round the calculation.
 
-As mentioned in the discussion of v1 I think we should drop gpio- from
-this - Lars is right that we should really be more generic and there's
-no reason this can't serve as a non-GPIO jack especially given that...
-
-> +
-> +Optional properties:
-> +
-> +- gpio-audio-jack,jack-name		: Name of the jack. Normally
-> +					  'Headphone Jack', 'Mic Jack', or
-> +					  'Headset Jack'
-> +- gpio-audio-jack,sw-det-gpios		: Reference to GPIOs that signals when
-> +					  a jack is plugged.
-
-...GPIOs are optional anyway!  However I think Lars had further concerns
-about abstraction which I seem to have missed.
-
---eFSocvuHqSR2dX+c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVZO9aAAoJECTWi3JdVIfQ5yQH/0uzYZXnpZAxyKGB6ybYHOS/
-gCQ6/VyDo/ezkz9OMvIfp3D35s2ewSwUQ4HlKOqcdFC+gf6Y0E2YyIOP/Erc4r/Z
-04y7lrY35Dn5/p/4wPb+7T/Jskj6DIBsjUj3OC/LzNS6hnynO5COQjfY3Egskrrj
-sCYoJJ9n7Z9GMbUKjx2XKQ3ekobvTASLoVFbfYty5KVdTO2Sq9kp0ys+EjMATGnB
-Rw377W8E8qm/dpQuUNx5Hujst+oDXQwRYa8VQZJolfGaK7bvr9XBcMZ6ng5uIHdu
-7sWMomm856l2ev3o5tclviqtkpNJhFHwqXCHNVq5BNZjshX8pNb+rw1da8N124o=
-=7NAm
------END PGP SIGNATURE-----
-
---eFSocvuHqSR2dX+c--
-
---===============6326449463601952795==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6326449463601952795==--
+Thanks a lot
+Nicolin
