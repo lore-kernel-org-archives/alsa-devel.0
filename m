@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC 0/5] Add a gpio jack device
-Date: Tue, 26 May 2015 20:43:34 +0200
-Message-ID: <5564BED6.3070604@metafoo.de>
-References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
- <55633CED.2090600@metafoo.de> <20150525171501.GC21577@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 3/7] ASoC: hda - add asoc hda core bus,
+ controller and stream helpers
+Date: Tue, 26 May 2015 19:51:51 +0100
+Message-ID: <20150526185151.GA12911@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0683029337919424177=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 0916B262606
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 20:43:36 +0200 (CEST)
-In-Reply-To: <20150525171501.GC21577@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AAF6264F39
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 20:51:58 +0200 (CEST)
+In-Reply-To: <1431341645-2457-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/25/2015 07:15 PM, Mark Brown wrote:
-> On Mon, May 25, 2015 at 05:17:01PM +0200, Lars-Peter Clausen wrote:
->> On 05/23/2015 12:09 AM, Dylan Reid wrote:
->
->>> The first three changes add a gpio audio jack device.  This device can
->>> be used on systems that report headphone or mic plug through GPIOS.
->>> There can be 0-N of these devices created per board each can report one
->>> of several events.  For example, this allows for a single jack for
->>> HP/Mic and a separate jack for line out.
->
->> I'm not convinced that this series is the right approach and I don't think
->> it helps us to solve the problem.
->
-> I think it solves the 90% case well enough for simple-card (which is to
-> the main target user here) and the situation with jack detection is
-> already fragmented enough that we're not likely to make things
-> that much worse.  Though now I think about it just taking the gpio out
-> of the device name would help with binding reuse for other users.
->
 
-Yea, but 90% of those 90% are already covered by the existing bindings. The 
-existing simple-card bindings and driver support GPIO based jack detection, 
-albeit not as flexible as this. But we don't actually gain that much with 
-this series and most importantly it does not fix the underlying problem. 
-What it does though is introduce a set of bindings which are not proper 
-DT-ish bindings which describe the hardware, but which are a workaround for 
-the quirks of the current ASoC framework. And once these bindings are 
-applied we have to maintain them forever, which also means we have to 
-maintain these quirks in the ASoC implementation forever.
+--===============0683029337919424177==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
 
->> I think what we need to get the layering and encapsulation right is to
->> introduce a distinction between jacks and jack detection logic. The jacks
->> are part of the fabric and should be registered by the machine driver. The
->> jack detection logic can be implemented by either GPIOs, a dedicated jack
->> detection chip, like the TS3A227E, or can be part of a more complex CODEC.
->> The jack detection logic is a function that is provided by these. The audio
->> fabric, which makes up the sound card, is a consumer of this functionality.
->
->> To be able to properly abstract this changes to the framework are necessary
->> to introduce the concept of jack detection logic providers and consumers.
->
->> The chip/driver that implements the jack detection logic register a jack
->> detection logic provider, the machine driver registers the jack and
->> specifies which jack detection provider is used for each jack.
->
-> Yes, this is the complete solution - and it's not an audio specific
-> thing either, there's a reasonable case to be made for saying that that
-> this should be resolved in extcon rather than in any one consumer
-> subsystem.
 
-If the bindings are good it doesn't really matter which framework eventually 
-picks them up, but in this case the bindings are awfully ASoC specific and 
-leak a lot of the shortcomings of the current implementation.
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Mon, May 11, 2015 at 04:24:01PM +0530, Vinod Koul wrote:
+
+> +#ifndef __SOUND_SOC_HDAUDIO_H
+> +#define __SOUND_SOC_HDAUDIO_H
+> +
+> +#include <sound/core.h>
+> +#include <sound/initval.h>
+> +#include <sound/hda_register.h>
+> +#include <sound/hdaudio.h>
+
+...
+
+> +#include <linux/kernel.h>
+> +#include <linux/delay.h>
+> +#include <linux/export.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <sound/core.h>
+> +#include <sound/soc-hdaudio.h>
+
+...
+
+> +#include <linux/kernel.h>
+> +#include <linux/delay.h>
+> +#include <linux/export.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/hdaudio.h>
+> +#include <sound/hda_register.h>
+> +#include <sound/soc-hdaudio.h>
+
+This includes no ASoC specific headers, what is ASoC specific about it?
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZMDGAAoJECTWi3JdVIfQq9oH/joC2ytKY967zI5xzRoeT0/w
+FovVOhZJT0h4Gpdjxld0IeNOl0Z8Pi5/rWieFWbp3sRcZMk4BMY7vVdVlol2Nl8C
+47RwKewRq6axKHkMwNv4Srk0B4UD5rvOF7kh7Ta/0Bgd7RHtRheuKTb1SZJBB7S3
+jqryFPmh+x38r6Mav9q532mCRg9pg/pLmwnMy/RfQYvO2DF9MTy7ZdCQOcTROVEe
+nG9Ci1+oTz2lS0T3suMaYNB5OkK2yAbG1EwTdIrNeVxhDPOQLZ12eQLK5scHwDPF
+gTUpz1gW+2L4l6VOeYruLHyx0xUZN5o02Zg1VsFE3akCLXy+kG/ZSAg0WSw+dA0=
+=1tca
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
+
+--===============0683029337919424177==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0683029337919424177==--
