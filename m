@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 3/7] ASoC: hda - add asoc hda core bus,
- controller and stream helpers
-Date: Tue, 26 May 2015 19:51:51 +0100
-Message-ID: <20150526185151.GA12911@sirena.org.uk>
-References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
- <1431341645-2457-4-git-send-email-vinod.koul@intel.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC v2 0/7] Implement generic ASoC HDMI codec
+Date: Tue, 26 May 2015 21:59:04 +0300
+Message-ID: <1432666751-24794-1-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0683029337919424177=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AAF6264F39
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 20:51:58 +0200 (CEST)
-In-Reply-To: <1431341645-2457-4-git-send-email-vinod.koul@intel.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B76F262606
+ for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 20:59:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, moinejf@free.fr, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
+Only the first three patches are meant for serious review.
 
---===============0683029337919424177==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
+The ASoC part should be ready for review in other respects but the
+EDID SADs handling is waiting for Russell King's DRM ELD helper
+patches. There is a copy-pasted not-to-be-merged patch with the same
+functionality in the patch series.
 
+The tda998x part is not complete and I do not think Jean-Francois'
+binding are ready as such either. At least the usage of reg property in
+a port node for something that is not an address or even guaranteed to
+be unique is not a good idea. Some documentation of how to configure
+AP0-AP4 pins (REG_ENA_AP?) would help in making a proper binding for
+the tda998x audio configuration.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+These patches, my tilcdc refactoring[1], and my latest BCLK fixes for
+davinci-mcasp driver [2], can be found in a branch that produces
+working HDMI audio on Beaglebone-Black here:
 
-On Mon, May 11, 2015 at 04:24:01PM +0530, Vinod Koul wrote:
+https://github.com/jsarha/linux.git linux-master-bbb-hdmi-20150512
 
-> +#ifndef __SOUND_SOC_HDAUDIO_H
-> +#define __SOUND_SOC_HDAUDIO_H
-> +
-> +#include <sound/core.h>
-> +#include <sound/initval.h>
-> +#include <sound/hda_register.h>
-> +#include <sound/hdaudio.h>
+[1] http://lists.freedesktop.org/archives/dri-devel/2015-May/082537.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090974.html
 
-...
+Jean-Francois Moine (1):
+  drm/i2c: tda998x: Add support of a DT graph of ports DO NOT MERGE
 
-> +#include <linux/kernel.h>
-> +#include <linux/delay.h>
-> +#include <linux/export.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <sound/core.h>
-> +#include <sound/soc-hdaudio.h>
+Jyri Sarha (6):
+  ASoC: core: If component doesn't have of_node use parent's node
+    instead
+  ASoC: hdmi: Remove obsolete dummy HDMI codec
+  ASoC: hdmi-codec: Add hdmi-codec for external HDMI-encoders
+  ASoC: hdmi-codec: Add ELD based audio pcm rules DO NOT MERGE
+  drm/i2c: tda998x: Register ASoC HDMI codec for audio functionality DO
+    NOT MERGE
+  ARM: dts: am335x-boneblack: Add HDMI audio support DO NOT MERGE
 
-...
+ .../devicetree/bindings/drm/i2c/tda998x.txt        |  51 ++
+ arch/arm/boot/dts/am335x-boneblack.dts             |  78 ++-
+ drivers/gpu/drm/i2c/Kconfig                        |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 328 +++++++++++-
+ include/sound/hdmi-codec.h                         |  99 ++++
+ include/sound/tda998x.h                            |   8 +
+ sound/soc/codecs/Kconfig                           |   2 +-
+ sound/soc/codecs/Makefile                          |   4 +-
+ sound/soc/codecs/hdmi-codec.c                      | 560 +++++++++++++++++++++
+ sound/soc/codecs/hdmi.c                            | 109 ----
+ sound/soc/soc-core.c                               |  14 +-
+ 11 files changed, 1129 insertions(+), 125 deletions(-)
+ create mode 100644 include/sound/hdmi-codec.h
+ create mode 100644 include/sound/tda998x.h
+ create mode 100644 sound/soc/codecs/hdmi-codec.c
+ delete mode 100644 sound/soc/codecs/hdmi.c
 
-> +#include <linux/kernel.h>
-> +#include <linux/delay.h>
-> +#include <linux/export.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/hdaudio.h>
-> +#include <sound/hda_register.h>
-> +#include <sound/soc-hdaudio.h>
-
-This includes no ASoC specific headers, what is ASoC specific about it?
-
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVZMDGAAoJECTWi3JdVIfQq9oH/joC2ytKY967zI5xzRoeT0/w
-FovVOhZJT0h4Gpdjxld0IeNOl0Z8Pi5/rWieFWbp3sRcZMk4BMY7vVdVlol2Nl8C
-47RwKewRq6axKHkMwNv4Srk0B4UD5rvOF7kh7Ta/0Bgd7RHtRheuKTb1SZJBB7S3
-jqryFPmh+x38r6Mav9q532mCRg9pg/pLmwnMy/RfQYvO2DF9MTy7ZdCQOcTROVEe
-nG9Ci1+oTz2lS0T3suMaYNB5OkK2yAbG1EwTdIrNeVxhDPOQLZ12eQLK5scHwDPF
-gTUpz1gW+2L4l6VOeYruLHyx0xUZN5o02Zg1VsFE3akCLXy+kG/ZSAg0WSw+dA0=
-=1tca
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
-
---===============0683029337919424177==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0683029337919424177==--
+-- 
+1.9.1
