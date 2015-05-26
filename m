@@ -1,71 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Simplify format_register_str()
-	without stack usages
-Date: Tue, 26 May 2015 16:22:04 +0100
-Message-ID: <20150526152204.GS21577@sirena.org.uk>
-References: <1432644014-16475-1-git-send-email-tiwai@suse.de>
+Subject: Re: [PATCH 11/13] spi: omap2-mcspi: Support for deferred probing
+ when requesting DMA channels
+Date: Tue, 26 May 2015 16:27:30 +0100
+Message-ID: <20150526152730.GT21577@sirena.org.uk>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-12-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3366874124588281950=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BAD826158C
- for <alsa-devel@alsa-project.org>; Tue, 26 May 2015 17:22:14 +0200 (CEST)
-In-Reply-To: <1432644014-16475-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cCVGH4QhGbYkRKO5"
+Return-path: <linux-crypto-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1432646768-12532-12-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-crypto-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: vinod.koul@intel.com, tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-crypto@vger.kernel.org, linux-spi@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3366874124588281950==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/7rxiSAA1JAos7i8"
-Content-Disposition: inline
-
-
---/7rxiSAA1JAos7i8
+--cCVGH4QhGbYkRKO5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 26, 2015 at 02:40:14PM +0200, Takashi Iwai wrote:
-> Instead of allocating two string buffers on stack and copying them
-> back, manipulate directly the target string buffer.  This simplifies
-> the code well.
+On Tue, May 26, 2015 at 04:26:06PM +0300, Peter Ujfalusi wrote:
 
-Applied, thanks.
+> Switch to use ma_request_slave_channel_compat_reason() to request the DMA
+> channels. Only fall back to pio mode if the error code returned is not
+> -EPROBE_DEFER, otherwise return from the probe with the -EPROBE_DEFER.
 
---/7rxiSAA1JAos7i8
+I've got two patches from a patch series here with no cover letter...
+I'm guessing there's no interdependencies or anything?  Please always
+ensure that when sending a patch series everyone getting the patches can
+tell what the series as a whole looks like (if there's no dependencies
+consider posting as individual patches rather than a series).
+
+--cCVGH4QhGbYkRKO5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVZI+cAAoJECTWi3JdVIfQFAgH/R7hhY3UKIwCkdHOFr3OHGLV
-CPoHMMpwnTEcC6HhW8SFCqiu0vcI5jzxiUWqQGWkARY2CRqyQ+Z0EdzSPIGKGyjz
-CIGCplniBpFfvZZrbBSiG0/rGznZ1kg0DleSRvdS+ic0d4XWP3nM7ySlwXB74ONX
-+ouXyuioJ+ghBm14T0Yp7wmP0EmwrUk5chajBM/DIDO6k/xloudpjUtVhQ9ZStSm
-4VnyYZQtgWNT3wHoLOrPj4FsP0v97gvLh1ihGkX8/a1G7tXjvhXQUwLpWLdJQGAn
-NOK9fe8Prz2jjn3qHRiR5wdiIJeOioSoGRh4XAdssS7zYhcFev/k+KVLgwqUTqk=
-=9A5F
+iQEcBAEBCAAGBQJVZJDhAAoJECTWi3JdVIfQii8H/1dNPl+UQ4hYgOsQbXMiYH/e
+613k9/0lY7U0SMHKZ0pKlQNnbkrEDfY1qniWMTAYfBjxhcP97iACvq/Dhf8hPBoX
+UsaJGnpjmbMBw9OKGo3aSFQW3OA84ifW7VZK51316IwlL9weniqOJlQ7zRAl8nJe
+mBwR9lhFKAfUexsHRZkfqeoxIiZkCM4DU9pqPNeZUI4cu7uiGPGWmwonZ/+K0Zr5
+Vm5pe7A4BAyKUYoJatAOfektb0ODeNvo8ogFbsYGThHghm4+24fRQdNDiw/jYGTP
+TUJQRHR2/KRHvi2EjdlTMKdG7c/EhnPtH6jS8H2ryIDYtLte+1nBs8lL2EzQJRE=
+=GuJ4
 -----END PGP SIGNATURE-----
 
---/7rxiSAA1JAos7i8--
-
---===============3366874124588281950==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3366874124588281950==--
+--cCVGH4QhGbYkRKO5--
