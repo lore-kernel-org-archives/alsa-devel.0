@@ -1,51 +1,86 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 11/13] spi: omap2-mcspi: Support for deferred probing
- when requesting DMA channels
-Date: Wed, 27 May 2015 14:15:12 +0300
-Message-ID: <5565A740.2020707@ti.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com> <1432646768-12532-12-git-send-email-peter.ujfalusi@ti.com> <20150526152730.GT21577@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 0/5] Add a gpio jack device
+Date: Wed, 27 May 2015 13:15:12 +0200
+Message-ID: <5565A740.2050502@metafoo.de>
+References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
+ <55633CED.2090600@metafoo.de> <20150525171501.GC21577@sirena.org.uk>
+ <5564BED6.3070604@metafoo.de> <20150526201426.GA21577@sirena.org.uk>
+ <CAEUnVG4FT-U_iwB573VchtQqe9p8jnMYYSptFoYHmzSiwOiG7A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <20150526152730.GT21577@sirena.org.uk>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: vinod.koul@intel.com, tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-crypto@vger.kernel.org, linux-spi@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0183261AFF
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 13:15:13 +0200 (CEST)
+In-Reply-To: <CAEUnVG4FT-U_iwB573VchtQqe9p8jnMYYSptFoYHmzSiwOiG7A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dylan Reid <dgreid@chromium.org>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xing Zheng <zhengxing@rock-chips.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+On 05/27/2015 06:22 AM, Dylan Reid wrote:
+> On Tue, May 26, 2015 at 1:14 PM, Mark Brown <broonie@kernel.org> wrote:
+>> On Tue, May 26, 2015 at 08:43:34PM +0200, Lars-Peter Clausen wrote:
+>>> On 05/25/2015 07:15 PM, Mark Brown wrote:
+>>
+>>>> I think it solves the 90% case well enough for simple-card (which is to
+>>>> the main target user here) and the situation with jack detection is
+>>>> already fragmented enough that we're not likely to make things
+>>>> that much worse.  Though now I think about it just taking the gpio out
+>>>> of the device name would help with binding reuse for other users.
+>>
+>>> Yea, but 90% of those 90% are already covered by the existing bindings. The
+>>
+>> I'm not sure what this thing with "yea" is (I've seen some other people
+>> use it too) but the normal word is "yes"...
+>>
+>>> existing simple-card bindings and driver support GPIO based jack detection,
+>>> albeit not as flexible as this. But we don't actually gain that much with
+>>
+>> Huh, so they do.  Ugh.
+>>
+>>>> Yes, this is the complete solution - and it's not an audio specific
+>>>> thing either, there's a reasonable case to be made for saying that that
+>>>> this should be resolved in extcon rather than in any one consumer
+>>>> subsystem.
+>>
+>>> If the bindings are good it doesn't really matter which framework eventually
+>>> picks them up, but in this case the bindings are awfully ASoC specific and
+>>> leak a lot of the shortcomings of the current implementation.
+>>
+>> Could you expand on the abstraction problems you see please?  It looks
+>> like a fairly direct mapping of GPIOs to a jack to me (like I say I
+>> don't see having GPIOs directly on the jack object as a problem - having
+>> to create a separate node to put the GPIOs in doesn't seem to solve
+>> anything) and we're not likely to have enough GPIOs to make the usual
+>> problems with lists of values too severe.
+>>
+>> The only things that concerned me particularly were the name (which I
+>> did agree on once you mentioned it) and the use of a bitmask to describe
+>> what's being reported but it's hard to think of anything much better
+>> than that.
+>
+> Is just "audio-jack" too generic?  There are a lot of audio jacks that
+> wouldn't be described by this binding, such as those reported by the
+> 227e or 5650.  The original goal here was to describe a jack that has
+> one or more gpios, each representing a particular type of device being
+> attached.  This doesn't overlap with the binding for a jack that is
+> handled by a headset detect chip.  Does this seem like the right goal,
+> or is there a benefit to having an "audio-jack" binding that tries to
+> cover all different types of jacks?
 
-On 05/26/2015 06:27 PM, Mark Brown wrote:
-> On Tue, May 26, 2015 at 04:26:06PM +0300, Peter Ujfalusi wrote:
->=20
->> Switch to use ma_request_slave_channel_compat_reason() to request th=
-e DMA
->> channels. Only fall back to pio mode if the error code returned is n=
-ot
->> -EPROBE_DEFER, otherwise return from the probe with the -EPROBE_DEFE=
-R.
->=20
-> I've got two patches from a patch series here with no cover letter...
-> I'm guessing there's no interdependencies or anything?  Please always
-> ensure that when sending a patch series everyone getting the patches =
-can
-> tell what the series as a whole looks like (if there's no dependencie=
-s
-> consider posting as individual patches rather than a series).
+Ideally we'd have a binding which is generic enough to cover not only audio 
+jacks but be a bit more generic. I think Laurent already has some thoughts 
+on how such a binding should look like.
 
-I have put the maintainers of the relevant subsystems as CC in the comm=
-it
-message and sent the series to all of the mailing lists. This series wa=
-s
-touching 7 subsystems and I thought not spamming every maintainer with =
-all the
-mails might be better.
-
-In v2 I will keep this in mind.
-
-The series depends on the first two patch, which adds the
-dma_request_slave_channel_compat_reason() function.
-
---=20
-P=E9ter
+- Lars
