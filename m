@@ -1,17 +1,21 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: ASoC: regmap_config.max_register value wrong?
-Date: Wed, 27 May 2015 19:05:55 +0200
-Message-ID: <D379CAFA-170A-44D1-862E-946318EA5E84@gmx.de>
-References: <55638A21.50208@gmx.de> <556415F2.4060809@metafoo.de>
- <20150526081446.GD31187@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 0/5] Add a gpio jack device
+Date: Wed, 27 May 2015 18:26:31 +0100
+Message-ID: <20150527172631.GG21577@sirena.org.uk>
+References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
+ <55633CED.2090600@metafoo.de>
+ <20150525171501.GC21577@sirena.org.uk>
+ <5564BED6.3070604@metafoo.de>
+ <20150526201426.GA21577@sirena.org.uk>
+ <CAEUnVG4FT-U_iwB573VchtQqe9p8jnMYYSptFoYHmzSiwOiG7A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1282135263628097657=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ABB026044B
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 19:06:10 +0200 (CEST)
-In-Reply-To: <20150526081446.GD31187@opensource.wolfsonmicro.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 632BE26044E
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 19:26:41 +0200 (CEST)
+In-Reply-To: <CAEUnVG4FT-U_iwB573VchtQqe9p8jnMYYSptFoYHmzSiwOiG7A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>Charles Keepax <ckeepax@opensource.wolfsonmicro.com>Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dan.carpenter@oracle.com
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Xing Zheng <zhengxing@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============1282135263628097657==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="MWrNmmo+n+ez9Z40"
+Content-Disposition: inline
 
-Am 26. Mai 2015 10:14:46 MESZ, schrieb Charles Keepax <ckeepax@opensource.wolfsonmicro.com>:
->On Tue, May 26, 2015 at 08:42:58AM +0200, Lars-Peter Clausen wrote:
->> On 05/25/2015 10:46 PM, Sergej Sawazki wrote:
->>> Dear all,
->>>
->>> The following snippet is from the wm8741 codec driver. Shouldn't the
->>> .max_register field be set to WM8741_REGISTER_COUNT-1 (10) instead
->of
->>> WM8741_MAX_REGISTER (0x20)?
->>>
->>> [...]
->>> static const struct regmap_config wm8741_regmap = {
->>>      .reg_bits = 7,
->>>      .val_bits = 9,
->>>      .max_register = WM8741_MAX_REGISTER,
->>> [...]
->>>
->>> WM8741_MAX_REGISTER is the address of the last register.
->>> WM8741_REGISTER_COUNT is the number of registers.
->>>
->>> The regmap_config documentation says: "@max_register: Optional,
->>> specifies the maximum valid register index."
->>>
->>> So it should be the *register index* and not the register address.
->>> Do I understand it correctly?
->>
->> What the documentation means is the index into the physical register
->map, 
->> which is the address. So the code is probably correct.
->>
->
->Yeah the documentation there is maybe not entirely clear here, but
->the code is correct.
 
-Lars-Peter, Charles,
+--MWrNmmo+n+ez9Z40
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-many thanks for your replies.
+On Tue, May 26, 2015 at 09:22:53PM -0700, Dylan Reid wrote:
+> On Tue, May 26, 2015 at 1:14 PM, Mark Brown <broonie@kernel.org> wrote:
 
-Sergej
+> > The only things that concerned me particularly were the name (which I
+> > did agree on once you mentioned it) and the use of a bitmask to describe
+> > what's being reported but it's hard to think of anything much better
+> > than that.
+
+> Is just "audio-jack" too generic?  There are a lot of audio jacks that
+> wouldn't be described by this binding, such as those reported by the
+> 227e or 5650.  The original goal here was to describe a jack that has
+
+I think it's fine - I think we can use this as a jack object and have
+other things reference it to supply additional detection mechanism.
+Lars' point about jacks not just being for audio is a valid one, though.
+
+> one or more gpios, each representing a particular type of device being
+> attached.  This doesn't overlap with the binding for a jack that is
+> handled by a headset detect chip.  Does this seem like the right goal,
+> or is there a benefit to having an "audio-jack" binding that tries to
+> cover all different types of jacks?
+
+So like I say I was thinking that either the jack object has a list of
+detection method phandles which point to other devices or the other
+devices point at the jack object.
+
+--MWrNmmo+n+ez9Z40
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZf5HAAoJECTWi3JdVIfQlOYH/2WZqZs4aa7jKjpvUUH2nd87
+iEP6n4sRhVhlzqSM8qIpkb/Shvo7YW996uOa1BTMVReRT3R8ZGg9rH66ksVYs5va
+YDIXdAWkvq6tvI2+igQqNydJ+dEo5nKc1WmpkdJiAmaCoOAZlZorLE0vnoLQs04q
+aCk8ubEQL7TYixv+KVBT0u0J6YT7X9Osg9bZPS9M0egqaznjayhs41q2RmQdRE1w
+yEeBhXEUvZy+nwDyCgBRgtyhx7WlOWK6PVY8t949iJz+66PiNKrcwe1Ntml8S6af
+m2UoVbBYJ3bdb3TrNWVeHfXPBK1Ostz1uLcSl/So6zSd2oBDSRQxVY00iZglfNk=
+=8a05
+-----END PGP SIGNATURE-----
+
+--MWrNmmo+n+ez9Z40--
+
+--===============1282135263628097657==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1282135263628097657==--
