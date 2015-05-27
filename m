@@ -1,88 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 13/13] drm: bridge/dw_hdmi-ahb-audio: parse
- ELD from HDMI driver
-Date: Wed, 27 May 2015 12:43:33 +0100
-Message-ID: <20150527114333.GD21577@sirena.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1yD-0006lK-RC@rmk-PC.arm.linux.org.uk>
- <20150527104308.GA8341@phenom.ffwll.local>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC: codecs: use SNDRV_PCM_FMTBIT_* for format bitmask
+Date: Wed, 27 May 2015 14:04:32 +0200
+Message-ID: <5565B2D0.6080506@maciej.szmigiero.name>
+References: <5560AB9D.1010807@maciej.szmigiero.name>	<s5h382j29ey.wl-tiwai@suse.de>	<55647D25.80807@maciej.szmigiero.name> <s5hk2vvctx6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4615583935014568713=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 16A50265998
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 13:43:51 +0200 (CEST)
-In-Reply-To: <20150527104308.GA8341@phenom.ffwll.local>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Yakir Yang <ykk@rock-chips.com>, Russell King <rmk+kernel@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hk2vvctx6.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <daniel@zonque.org>, Wolfram Sang <wsa@the-dreams.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Matt Reimer <mreimer@sdgsystems.com>
 List-Id: alsa-devel@alsa-project.org
 
+W dniu 26.05.2015 16:09, Takashi Iwai pisze:
+> At Tue, 26 May 2015 16:03:17 +0200,
+> Maciej S. Szmigiero wrote:
+>>
+>> Hello Takashi,
+>>
+>> W dniu 26.05.2015 07:29, Takashi Iwai pisze:
+>>> At Sat, 23 May 2015 18:32:29 +0200,
+>>> Maciej S. Szmigiero wrote:
+>>>>
+>>>> snd_soc_pcm_stream.formats is a bitmask of SNDRV_PCM_FMTBIT_*,
+>>>> not of SNDRV_PCM_FORMAT_* (which are sequential integers),
+>>>> however some of ASoC CODEC drivers use these values instead.
+>>>>
+>>>> Found out by sparse on 0-day kernel tester.
+>>>>
+>>>> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
+>>>
+>>> Wow, that made me wonder how these drivers could actually work.
+>>
+>> Maybe, by coincidence, the wrong defines contained enough bits
+>> set to actually select some common, working format with their
+>> controllers?
+> 
+> Well, FORMAT_S16_LE = 2, and FORMAT_S18_3LE = 40.  So bits 1, 3 and 5
+> are set, which corresponds to U8, S16_BE and U16_BE.  Hmm.
+> 
+>>> BTW, how did you detect it?  Any static analyzer like sparse or
+>>> smatch?  sparse didn't detect it at the last time I tried, IIRC...
+>>
+>> I've received an e-mail from "kbuild test robot" at
+>> "0-DAY kernel test infrastructure" that automated testing there
+>> using sparse found this issue on wm9713 and stac9766 CODECs.
+>>
+>> The exact warning was:
+>>>> sound/soc/codecs/stac9766.c:324:28: sparse: incorrect type in initializer (different base types)
+>>    sound/soc/codecs/stac9766.c:324:28:    expected unsigned long long [unsigned] [usertype] formats
+>>    sound/soc/codecs/stac9766.c:324:28:    got restricted snd_pcm_format_t [usertype] <noident>
+>>
+>> What is important the warning doesn't show unless a check build
+>> is made with CF=-D__CHECK_ENDIAN__ .
+> 
+> Ah, thanks, that was the missing piece.
+> 
+>> Upon checking I've found the same issue also in two other CODECs,
+>> which aren't normally being built on x86_64 (target architecture
+>> for above automated build) even when SND_SOC_ALL_CODECS is selected.
+> 
+> Oh it'd be great if you submit fixes :)
 
---===============4615583935014568713==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="517pCzpsiLFBzq6n"
-Content-Disposition: inline
+The fixes for these two remaining CODECs were included in the patch
+(I've meant that these two weren't in the automated checking report
+I've received).
 
+Upon looking again at it the "0-DAY kernel test infrastructure"
+have to be using some limited config, since all of the CODECs
+with this issue are being built/checked in allyesconfig
+(it selects the required dependences for them even on x86_64).
 
---517pCzpsiLFBzq6n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> thanks,
+> 
+> Takashi
+> 
 
-On Wed, May 27, 2015 at 12:43:08PM +0200, Daniel Vetter wrote:
-
-> Just curious questions really, I probably don't understand what's exactly
-> going on. But I do think that we need a more formal way for drm/snd to
-> talk to each another (i915 is growing quite a few hairy things in that
-> area outside of eld atm). Problems we have are around shared power wells
-
-Yes, I agree strongly with this - I've been asking for a while for more
-code sharing and common code in this path, the helpers in here are
-really good from that point of view and I'm very pleased we've got them
-applied.
-
-> and clocks (x86 doesn't help here without all the dt goodness). But
-> there's also stuff like figuring out the right dividers for a given
-> audio/video clock. eld and hotplug is still done in hw, but I've heard
-> noises that we need to have a sw approach too on some platforms at least.
-
-That seems to be the case, yes - FWIW quite a few of the embedded
-systems are basically connecting a standard S/PDIF or I2S output to a
-HDMI encoder chip or IP block so the audio controller knows nothing of
-HDMI directly.
-
---517pCzpsiLFBzq6n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVZa3kAAoJECTWi3JdVIfQ+LkH/i7CSKsKIBwWIVgPk6ByfUrb
-WxSdM0v/HwKIEoldDGhfPy++mjJl1e179GcNvuV8VdS+uAZYHR4CqkmHj8juXsKF
-ySX7d5qJ2QrWj7KikcAeM+srz5NM9vNhlcnJXYPSg8X3dbo3zC+W9wajhJj1grO1
-J8soaTb/9/bf8511jHb6mZLXC0VxEejIBPz7vRPuwCaeJ7ix+3BWHqoLtR6w5l/v
-FQcc4zz4ZxPgbAuaY1+VLK+UtPAKvwmzQSUSD3tkasS3cquX1qWe4c9AL/obDVSB
-yq6r2IetHGVUveAqGi5nQCTbGqxwtSAqIlAbR4/c+rar/q1fdM2U+hoJxWb3h4M=
-=sbRY
------END PGP SIGNATURE-----
-
---517pCzpsiLFBzq6n--
-
---===============4615583935014568713==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4615583935014568713==--
+Thanks,
+Maciej Szmigiero
