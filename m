@@ -1,47 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND v3 2/2] ALSA: replace CONFIG_PROC_FS with
- CONFIG_SND_PROC_FS
-Date: Wed, 27 May 2015 17:32:04 +0100
-Message-ID: <20150527163204.GF21577@sirena.org.uk>
-References: <1432727145-6504-1-git-send-email-yang.jie@intel.com>
- <1432727145-6504-3-git-send-email-yang.jie@intel.com>
+From: Sergej Sawazki <ce3a@gmx.de>
+Subject: Re: ASoC: regmap_config.max_register value wrong?
+Date: Wed, 27 May 2015 19:05:55 +0200
+Message-ID: <D379CAFA-170A-44D1-862E-946318EA5E84@gmx.de>
+References: <55638A21.50208@gmx.de> <556415F2.4060809@metafoo.de>
+ <20150526081446.GD31187@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5psUoSEXadgnVfkT"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1432727145-6504-3-git-send-email-yang.jie@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com, vivian.zhang@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ABB026044B
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 19:06:10 +0200 (CEST)
+In-Reply-To: <20150526081446.GD31187@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>Charles Keepax <ckeepax@opensource.wolfsonmicro.com>Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
 
---5psUoSEXadgnVfkT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, May 27, 2015 at 07:45:45PM +0800, Jie Yang wrote:
-> We may disable proc fs only for sound part, to reduce ALSA
-> memory footprint. So add CONFIG_SND_PROC_FS and replace the
-> old CONFIG_PROC_FSs in alsa code.
+Am 26. Mai 2015 10:14:46 MESZ, schrieb Charles Keepax <ckeepax@opensource.wolfsonmicro.com>:
+>On Tue, May 26, 2015 at 08:42:58AM +0200, Lars-Peter Clausen wrote:
+>> On 05/25/2015 10:46 PM, Sergej Sawazki wrote:
+>>> Dear all,
+>>>
+>>> The following snippet is from the wm8741 codec driver. Shouldn't the
+>>> .max_register field be set to WM8741_REGISTER_COUNT-1 (10) instead
+>of
+>>> WM8741_MAX_REGISTER (0x20)?
+>>>
+>>> [...]
+>>> static const struct regmap_config wm8741_regmap = {
+>>>      .reg_bits = 7,
+>>>      .val_bits = 9,
+>>>      .max_register = WM8741_MAX_REGISTER,
+>>> [...]
+>>>
+>>> WM8741_MAX_REGISTER is the address of the last register.
+>>> WM8741_REGISTER_COUNT is the number of registers.
+>>>
+>>> The regmap_config documentation says: "@max_register: Optional,
+>>> specifies the maximum valid register index."
+>>>
+>>> So it should be the *register index* and not the register address.
+>>> Do I understand it correctly?
+>>
+>> What the documentation means is the index into the physical register
+>map, 
+>> which is the address. So the code is probably correct.
+>>
+>
+>Yeah the documentation there is maybe not entirely clear here, but
+>the code is correct.
 
-Reviwed-by: Mark Brown <broonie@kernel.org>
+Lars-Peter, Charles,
 
---5psUoSEXadgnVfkT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+many thanks for your replies.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVZfGEAAoJECTWi3JdVIfQd3cH/38Mo91LiU04iXrmx9/+qTCL
-/LtQe4EOy/AAsGK3aOv+m/QAUE/L/FEUMwg0FKwiV23uAtcu98sFhbVkFiR2jK2N
-AV5+q/PTYeK1g4B6vp0vzrWS/VCC6uk8kLIe1hr1ZD2zK9nxHDLRtAcvJ+ImXraz
-yNPSCl8nxOQ+lo/tWjFT8JnfmHaB6jlMY9SfwsY52LNM/EUEY/DmO0K7TkYm2XLV
-ZIRzaQ6UpPHYaKvPsIIb/oX4H4gVynj+0Lv/x0sZ6pb2ZX6FupAO8GWEBQzKnYdy
-H5qXVSPF9nDjaNQxYFrEOANumiHOK66RsN9fUg03jY2D4gKdB1sd5KBOJmN41zc=
-=yb7x
------END PGP SIGNATURE-----
-
---5psUoSEXadgnVfkT--
+Sergej
