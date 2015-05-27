@@ -1,60 +1,159 @@
-From: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v4 01/18] mfd: add new driver for Sharp LoCoMo
-Date: Wed, 27 May 2015 17:55:56 +0300
-Message-ID: <CALT56yO5Eu4Bk+_4sn2WgURh9YTsym9inWkvJftKUi_aLy5XXw@mail.gmail.com>
-References: <1432554113-26280-1-git-send-email-dbaryshkov@gmail.com>
-	<1432554113-26280-2-git-send-email-dbaryshkov@gmail.com>
-	<20150527102756.GH11677@x1>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: firewire-lib: fix buffer-over-run when
+	detecting packet discontinuity
+Date: Thu, 28 May 2015 00:02:59 +0900
+Message-ID: <1432738979-13562-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150527102756.GH11677@x1>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jingoo Han <jg1.han-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-input <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-spi <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43270265ACA
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 17:03:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, dan.carpenter@oracle.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-2015-05-27 13:27 GMT+03:00 Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>:
-> On Mon, 25 May 2015, Dmitry Eremin-Solenikov wrote:
->
->> LoCoMo is a GA used on Sharp Zaurus SL-5x00. Current driver does has
->> several design issues (special bus instead of platform bus, doesn't use
->> mfd-core, etc).
->>
->> Implement 'core' parts of locomo support as an mfd driver.
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->> ---
->
-> These things are much easier to re-review if you keep a change-log
-> here.
->
->>  drivers/mfd/Kconfig        |  10 ++
->>  drivers/mfd/Makefile       |   1 +
->>  drivers/mfd/locomo.c       | 336 +++++++++++++++++++++++++++++++++++++++++++++
->>  include/linux/mfd/locomo.h | 169 +++++++++++++++++++++++
->>  4 files changed, 516 insertions(+)
->>  create mode 100644 drivers/mfd/locomo.c
->>  create mode 100644 include/linux/mfd/locomo.h
->
-> Looks good now though:
->   Acked-by: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
->
-> How do you plan for this to be merged?
+When detecting packet discontinuity, handle_in_packet() returns minus value
+and this value is assigned to unsigned int variable, then the variable has
+huge value. As a result, the variable causes buffer-over-run in
+handle_out_packet(). This brings invalid page request and system hangup.
 
-I'd like for this to be merged either through mfd tree or through the
-arm-soc (or rmk's ARM) tree.
-Some of the respective maintainers already gave their blessing for
-this patchset to be merged
-not through their subsystem trees.
+This commit fixes the bug to add a new argument into handle_in_packet()
+and the number of handled data blocks is assignd to it. The function
+return value is just used to check error.
 
-[skipped the patch]
+I also considered to change the type of local variable to 'int' in
+in_stream_callback(). This idea is based on type-conversion in C standard,
+while it may cause future problems when adding more works. Thus, I dropped
+this idea.
 
+Fixes: 6fc6b9ce41c6('ALSA: firewire-lib: pass the number of data blocks in incoming packets to outgoing packets')
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
+index 2b3e8b1..7bb988f 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp.c
+@@ -688,10 +688,10 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
+ }
+ 
+ static int handle_in_packet(struct amdtp_stream *s,
+-			    unsigned int payload_quadlets, __be32 *buffer)
++			    unsigned int payload_quadlets, __be32 *buffer,
++			    unsigned int *data_blocks)
+ {
+ 	u32 cip_header[2];
+-	unsigned int data_blocks;
+ 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
+ 	struct snd_pcm_substream *pcm = NULL;
+ 	bool lost;
+@@ -709,7 +709,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		dev_info_ratelimited(&s->unit->device,
+ 				"Invalid CIP header for AMDTP: %08X:%08X\n",
+ 				cip_header[0], cip_header[1]);
+-		data_blocks = 0;
++		*data_blocks = 0;
+ 		goto end;
+ 	}
+ 
+@@ -717,7 +717,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	if (payload_quadlets < 3 ||
+ 	    ((cip_header[1] & CIP_FDF_MASK) ==
+ 				(AMDTP_FDF_NO_DATA << CIP_FDF_SHIFT))) {
+-		data_blocks = 0;
++		*data_blocks = 0;
+ 	} else {
+ 		data_block_quadlets =
+ 			(cip_header[0] & CIP_DBS_MASK) >> CIP_DBS_SHIFT;
+@@ -731,12 +731,12 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		if (s->flags & CIP_WRONG_DBS)
+ 			data_block_quadlets = s->data_block_quadlets;
+ 
+-		data_blocks = (payload_quadlets - 2) / data_block_quadlets;
++		*data_blocks = (payload_quadlets - 2) / data_block_quadlets;
+ 	}
+ 
+ 	/* Check data block counter continuity */
+ 	data_block_counter = cip_header[0] & CIP_DBC_MASK;
+-	if (data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
++	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
+ 	    s->data_block_counter != UINT_MAX)
+ 		data_block_counter = s->data_block_counter;
+ 
+@@ -746,10 +746,10 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
+ 		lost = data_block_counter != s->data_block_counter;
+ 	} else {
+-		if ((data_blocks > 0) && (s->tx_dbc_interval > 0))
++		if ((*data_blocks > 0) && (s->tx_dbc_interval > 0))
+ 			dbc_interval = s->tx_dbc_interval;
+ 		else
+-			dbc_interval = data_blocks;
++			dbc_interval = *data_blocks;
+ 
+ 		lost = data_block_counter !=
+ 		       ((s->data_block_counter + dbc_interval) & 0xff);
+@@ -762,30 +762,30 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 		return -EIO;
+ 	}
+ 
+-	if (data_blocks > 0) {
++	if (*data_blocks > 0) {
+ 		buffer += 2;
+ 
+ 		pcm = ACCESS_ONCE(s->pcm);
+ 		if (pcm)
+-			s->transfer_samples(s, pcm, buffer, data_blocks);
++			s->transfer_samples(s, pcm, buffer, *data_blocks);
+ 
+ 		if (s->midi_ports)
+-			read_midi_messages(s, buffer, data_blocks);
++			read_midi_messages(s, buffer, *data_blocks);
+ 	}
+ 
+ 	if (s->flags & CIP_DBC_IS_END_EVENT)
+ 		s->data_block_counter = data_block_counter;
+ 	else
+ 		s->data_block_counter =
+-				(data_block_counter + data_blocks) & 0xff;
++				(data_block_counter + *data_blocks) & 0xff;
+ end:
+ 	if (queue_in_packet(s) < 0)
+ 		return -EIO;
+ 
+ 	if (pcm)
+-		update_pcm_pointers(s, pcm, data_blocks);
++		update_pcm_pointers(s, pcm, *data_blocks);
+ 
+-	return data_blocks;
++	return 0;
+ }
+ 
+ static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
+@@ -853,8 +853,8 @@ static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
+ 			break;
+ 		}
+ 
+-		data_blocks = handle_in_packet(s, payload_quadlets, buffer);
+-		if (data_blocks < 0) {
++		if (handle_in_packet(s, payload_quadlets, buffer,
++							&data_blocks) < 0) {
+ 			s->packet_index = -1;
+ 			break;
+ 		}
 -- 
-With best wishes
-Dmitry
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.1.4
