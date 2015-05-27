@@ -1,86 +1,56 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 13/13] drm: bridge/dw_hdmi-ahb-audio: parse ELD from HDMI
- driver
-Date: Wed, 27 May 2015 18:31:25 +0100
-Message-ID: <20150527173125.GS2067@n2100.arm.linux.org.uk>
-References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
- <E1Yr1yD-0006lK-RC@rmk-PC.arm.linux.org.uk>
- <20150527104308.GA8341@phenom.ffwll.local>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 11/13] spi: omap2-mcspi: Support for deferred probing
+ when requesting DMA channels
+Date: Wed, 27 May 2015 18:48:14 +0100
+Message-ID: <20150527174814.GJ21577@sirena.org.uk>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-12-git-send-email-peter.ujfalusi@ti.com>
+ <20150526152730.GT21577@sirena.org.uk>
+ <5565A740.2020707@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="9BaSWpvdCbxAh9tt"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20150527104308.GA8341@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <5565A740.2020707-l0cyMroinI0@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
+Cc: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXkgMjcsIDIwMTUgYXQgMTI6NDM6MDhQTSArMDIwMCwgRGFuaWVsIFZldHRlciB3
-cm90ZToKPiBPbiBTYXQsIE1heSAwOSwgMjAxNSBhdCAxMToyNjo1N0FNICswMTAwLCBSdXNzZWxs
-IEtpbmcgd3JvdGU6Cj4gPiBQYXJzZSB0aGUgRUxEIChFRElEIGxpa2UgZGF0YSkgc3RvcmVkIGZy
-b20gdGhlIEhETUkgZHJpdmVyIHRvIHJlc3RyaWN0Cj4gPiB0aGUgc2FtcGxlIHJhdGVzIGFuZCBj
-aGFubmVscyB3aGljaCBhcmUgYXZhaWxhYmxlIHRvIEFMU0EuICBUaGlzIGNhdXNlcwo+ID4gdGhl
-IEFMU0EgZGV2aWNlIHRvIHJlZmxlY3QgdGhlIGNhcGFiaWxpdGllcyBvZiB0aGUgb3ZlcmFsbCBh
-dWRpbyBwYXRoLAo+ID4gbm90IGp1c3Qgd2hhdCBpcyBzdXBwb3J0ZWQgYXQgdGhlIEhETUkgc291
-cmNlIGludGVyZmFjZSBsZXZlbC4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogUnVzc2VsbCBLaW5n
-IDxybWsra2VybmVsQGFybS5saW51eC5vcmcudWs+Cj4gCj4gSSBjb21wbGV0ZWx5IG1pc3NlZCB0
-aGUgbmV3IGVsZCBoZWxwZXJzIGluIHRoaXMgc2VyaWVzLCBzbyBmYWlybHkgbGF0ZQo+IHdpdGgg
-YSBmZXcgcXVlc3Rpb25zIGhlcmUuCj4gCj4gSW4geDg2L2Rlc2t0b3AgZ3B1cyB3ZSBwYXNzIGFy
-b3VuZCB0aGUgZWxkIGluIGh3LCBhbmQgdGhlcmUncyBhbiBpbnRlcnJ1cHQKPiBvbiB0aGUgc25k
-IHNpZGUgZXZlcnkgdGltZSB0aGF0IG1hdGVyaWFsbHkgY2hhbmdlcy4gU2FtZSBnb2VzIGZvciBv
-dGhlcgo+IHN0YXRlIGNoYW5nZXMgbGlrZSB0aGUgZGlzcGxheSBwaXBlIGdldHRpbmcgbGl0IHVw
-L2Rpc2FibGVkIGFnYWluLgo+IAo+IEhvdyBpcyBob3RwbHVnIGhhbmRsaW5nIGRvbmUgaGVyZT8g
-WW91IHVwZGF0ZSB0aGUgZWxkIGluIGdldF9tb2RlcywgYnV0IEkKPiBkb24ndCBzZWUgYW55IG5v
-dGlmaWNhdGlvbiBmcm9tIGhkbWktPmF1ZGlvIChpdCBvbmx5IHNlZW1zIHRvIGdldCB1cGRhdGVk
-Cj4gYXQgb3BlbiB0aW1lLCBubyBpZGVhIHdoZXRoZXIgdGhhdCdzIGVub3VnaCkuIEFuZCBpdCBs
-b29rcyBsaWtlIHRoZXJlJ3MgYQo+IHBvdGVudGlhbCB1c2UtYWZ0ZXItZnJlZSB3aGVuIHRoZSBk
-cm0gc2lkZSB1cGRhdGVzIHRoZSBlbGQgYW5kIGZyZWVzIHRoZQo+IG9sZCBvbmUsIHdoaWxlIHRo
-ZSBzbmQgc2lkZSB0cmllcyB0byBhY2Nlc3MgdGhpcy4KCkl0IGRvZXNuJ3QgaGFuZGxlIGhvdHBs
-dWcgYXQgYWxsLCBwZXIgc2UuCgpUaGUgcHJvYmxlbSB3aXRoIGhvdHBsdWcgaXMgdGhhdCAoYWZh
-aWspIEFMU0EgaGFzIG5vIHdheSB0byBub3RpZnkKdXNlcnNwYWNlIHRoYXQgc29tZXRoaW5nIGhh
-cyBjaGFuZ2VkOiBpZiBJIHdlcmUgdG8gYWRkIHN1Y2ggYQpub3RpZmljYXRpb24gZnJvbSB0aGUg
-RFJNIHNpZGUgb2YgdGhlIGRyaXZlciB0byB0aGUgYXVkaW8gc2lkZSwgSQp3b3VsZG4ndCBrbm93
-IHdoYXQgdG8gZG8gd2l0aCBpdCB3aGVuIHRoZSBhdWRpbyBzaWRlIHJlY2VpdmVkIGl0LgoKSW4g
-YW55IGNhc2UsIEkgdGVuZCB0byB0aGluayBvZiB1bnBsdWdnaW5nIHRoZSBkaXNwbGF5IGFzIGJl
-aW5nIG11Y2gKbGlrZSB1bnBsdWdnaW5nIHRoZSAzLjVtbSBsaW5lIG91dCBqYWNrIHRvIHlvdXIg
-aGlmaSBzeXN0ZW0gLSBqdXN0CmJlY2F1c2UgeW91J3ZlIGRpc2Nvbm5lY3RlZCB0aGUgc3BlYWtl
-cnMgZG9lcyBub3Qgc3RvcCB0aGUgYXVkaW8KcGxheWluZyAtIHRoZSBhdWRpbyBjb250aW51ZXMg
-ZGVzcGl0ZSB5b3Ugbm90IGJlaW5nIGFibGUgdG8gaGVhciBpdC4KClN1cmUsIHRoZXJlJ3MgdGhl
-IHByb2JsZW0gdGhhdCBpZiB5b3UgcGx1ZyBpbiBhIGRpc3BsYXkgd2l0aCBkaWZmZXJlbnQKY2Fw
-YWJpbGl0aWVzLCB0aGUgZXhpc3RpbmcgZm9ybWF0IG1heSBub3QgYmUgc3VwcG9ydGVkLCBidXQg
-SSBkb24ndApzZWUgYSByZWFzb25hYmxlIG1ldGhvZCB3aGljaCBjb3VsZCBwcm92b2tlIHdoYXQg
-ZWZmZWN0aXZlbHkgd291bGQgYmUKYSByZXN0YXJ0IG9uIHRoZSBBTFNBIHNpZGUuCgpJbiBhbnkg
-Y2FzZSwgaG90cGx1ZyBpcyBraW5kLW9mIG91dHNpZGUgb2YgdGhlIHJlbWl0IG9mIHRoZXNlIGhl
-bHBlcnMgLQp0aGVzZSBoZWxwZXJzIGFyZSBtb3JlIHRvIGRvIHdpdGggZGVjb2RpbmcgYW4gZXhp
-c3RpbmcgRUxEIGFuZCBsaW1pdGluZwp0aGUgY2FwYWJpbGl0aWVzIG9mIHRoZSBhdWRpbyBzaWRl
-IHRvIHRoYXQgc3BlY2lmaWVkIGluIHRoZSBFTEQuICBJdCdzCnVwIHRvIHRoZSBkcml2ZXIgaG93
-IGl0IGdldHMgdGhlIEVMRCwgYW5kIGl0J3MgbGVmdCB0byB0aGUgZHJpdmVyIHRvCmRldGVybWlu
-ZSBob3cgdG8gaGFuZGxlIHRoZSBjaGFuZ2Utb2YtRUxEIG5vdGlmaWNhdGlvbi4KCkdpdmVuIHlv
-dXIgZGVzY3JpcHRpb24gb2YgaTkxNSBoYXJkd2FyZSBhYm92ZSwgSSB0aGluayB0aGlzIG1ha2Vz
-IHNlbnNlCmFueXdheTogaWYgeW91IGhhdmUgYSBoYXJkd2FyZSBub3RpZmljYXRpb24gc3lzdGVt
-LCBpdCBtYWtlcyBzZW5zZSB0byB1c2UKdGhhdCByYXRoZXIgdGhhbiBzb21lIHNvZnR3YXJlIGlt
-cGxlbWVudGF0aW9uLCBhbmQgcmVxdWlyaW5nIGEgc29mdHdhcmUKaW1wbGVtZW50YXRpb24gZm9y
-IGV2ZXJ5dGhpbmcgdG8gbWUgc291bmRzIHRvbyBsaW1pdGluZy4KClRoYXQncyBub3QgdG8gc2F5
-IHRoYXQgd2UgY291bGRuJ3QgaGF2ZSBhIHNvZnR3YXJlIGltcGxlbWVudGF0aW9uIGluIHRoZQpm
-dXR1cmU6IHJpZ2h0IG5vdywgSSBtZXJlbHkgY29uY2VudHJhdGVkIG9uIHRoZSBwYXJzaW5nIGlz
-c3VlLgoKVGhlIGR3LWhkbWkgYXVkaW8gZHJpdmVyIGlzbid0IHJlYWR5IGZvciBtYWlubGluaW5n
-IHlldCAtIHRoZXJlJ3MgdHdvCnZhcmlhbnRzIG9mIHRoaXMgYXQgdGhlIG1vbWVudCAob25lIGZv
-ciBpTVg2IGFuZCBhIGRpZmZlcmVudCBvbmUgZm9yClJvY2tjaGlwIC0gc2FtZSBJUCBidXQgY29u
-ZmlndXJlZCB3aXRoIGRpZmZlcmVudCBpbnRlcmZhY2VzIGZvciBnZXR0aW5nCnRoZSBhdWRpbyBk
-YXRhIGludG8gdGhlIEhETUkgYmxvY2suKSAgVGhlcmUncyBzdGlsbCBzb21lIHdvcmsgdG8gYmUg
-ZG9uZQp0byBwcm9wZXJseSB1bmlmeSB0aGUgdHdvIGFwcHJvYWNoZXMgaW50byBzb21ldGhpbmcg
-c2FuZS4KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQg
-MTAuNU1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFp
-bGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZy
-ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--9BaSWpvdCbxAh9tt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 27, 2015 at 02:15:12PM +0300, Peter Ujfalusi wrote:
+
+> I have put the maintainers of the relevant subsystems as CC in the commit
+> message and sent the series to all of the mailing lists. This series was
+> touching 7 subsystems and I thought not spamming every maintainer with all the
+> mails might be better.
+
+You need to at least include people on the cover letter, otherwise
+they'll have no idea what's going on.
+
+--9BaSWpvdCbxAh9tt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZgNeAAoJECTWi3JdVIfQ+fQH/3RUAsyi76DjZZ0jvTPJTYNb
+dEmuvdMbEj9fTeutH/6xnbGT95c8tLNOZ8Pmn436SwZJ08AHG+e4SqJ1Xl7Uu58q
+DLb6ZCxjGRaLfMqXf6XxWsX4KF3kb5ZBNIK2QH6dqTWb3qptSxGvBhP4hzGEb0fV
+FJzPl7QByw+m8e5LQK2mUW0on4ZWOT5/oNPSkWmGcTlTkpQeS1i1ZELcpd0zdsF1
+jTQJwoGgvL5lNkuTfw807uB8v/mciRSDv9phV353E4ea6API0YP26k8jftTb2ex3
+48E1xb2nzLGb/bt6D3wNO0GzidwQ4heN8J/1zmlLWMbX03UxtT6Pt2BYKGxF11M=
+=UYw3
+-----END PGP SIGNATURE-----
+
+--9BaSWpvdCbxAh9tt--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
