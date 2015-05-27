@@ -1,82 +1,86 @@
-From: Yang Fang <yang.a.fang@intel.com>
-Subject: Re: [PATCH 1/3] ASoC: max98090: read micbias from
-	device property
-Date: Wed, 27 May 2015 10:26:48 -0700
-Message-ID: <20150527172648.GA16313@mocha>
-References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
- <CAEUnVG4C-ND7YT-ZGg-9ceCEQ9e4NdHSpBp=XRsnqEp15W+t=A@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 13/13] drm: bridge/dw_hdmi-ahb-audio: parse ELD from HDMI
+ driver
+Date: Wed, 27 May 2015 18:31:25 +0100
+Message-ID: <20150527173125.GS2067@n2100.arm.linux.org.uk>
+References: <20150509102501.GO2067@n2100.arm.linux.org.uk>
+ <E1Yr1yD-0006lK-RC@rmk-PC.arm.linux.org.uk>
+ <20150527104308.GA8341@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B68BA265E24
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 19:27:33 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <CAEUnVG4C-ND7YT-ZGg-9ceCEQ9e4NdHSpBp=XRsnqEp15W+t=A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, Mark Brown <broonie@kernel.org>, "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com
+In-Reply-To: <20150527104308.GA8341@phenom.ffwll.local>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2015 at 09:39:54PM -0700, Dylan Reid wrote:
-> On Tue, May 26, 2015 at 4:58 PM,  <yang.a.fang@intel.com> wrote:
-> > From: "Fang, Yang A" <yang.a.fang@intel.com>
-> >
-> > This patch reads max98090 micbias from acpi or dt
-> >
-> > Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-> > ---
-> >  sound/soc/codecs/max98090.c |    9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-> > index c230626..27df17e 100644
-> > --- a/sound/soc/codecs/max98090.c
-> > +++ b/sound/soc/codecs/max98090.c
-> > @@ -2419,6 +2419,8 @@ static int max98090_probe(struct snd_soc_codec *codec)
-> >         struct max98090_cdata *cdata;
-> >         enum max98090_type devtype;
-> >         int ret = 0;
-> > +       int err;
-> > +       unsigned int micbias;
-> >
-> >         dev_dbg(codec->dev, "max98090_probe\n");
-> >
-> > @@ -2503,8 +2505,13 @@ static int max98090_probe(struct snd_soc_codec *codec)
-> >         snd_soc_write(codec, M98090_REG_BIAS_CONTROL,
-> >                 M98090_VCM_MODE_MASK);
-> >
-> > +       err = device_property_read_u32(codec->dev, "max,micbias", &micbias);
-> 
-> Should this be "maxim,micbias" to be consistent with  "maxim,dmic-freq"?
-> It should also be added to the Documentation for the max98090, as an
-> optional parameter.
-Agreed . i will change it in v2 and update the Documentation
-> 
-> > +
-> 
-> Extra newline.
-will fix in v2
-> 
-> > +       if (err)
-> > +               micbias = M98090_MBVSEL_2V8;
-> > +
-> >         snd_soc_update_bits(codec, M98090_REG_MIC_BIAS_VOLTAGE,
-> > -               M98090_MBVSEL_MASK, M98090_MBVSEL_2V8);
-> > +               M98090_MBVSEL_MASK, micbias);
-> >
-> >         max98090_add_widgets(codec);
-> >
-> > --
-> > 1.7.9.5
-> >
+T24gV2VkLCBNYXkgMjcsIDIwMTUgYXQgMTI6NDM6MDhQTSArMDIwMCwgRGFuaWVsIFZldHRlciB3
+cm90ZToKPiBPbiBTYXQsIE1heSAwOSwgMjAxNSBhdCAxMToyNjo1N0FNICswMTAwLCBSdXNzZWxs
+IEtpbmcgd3JvdGU6Cj4gPiBQYXJzZSB0aGUgRUxEIChFRElEIGxpa2UgZGF0YSkgc3RvcmVkIGZy
+b20gdGhlIEhETUkgZHJpdmVyIHRvIHJlc3RyaWN0Cj4gPiB0aGUgc2FtcGxlIHJhdGVzIGFuZCBj
+aGFubmVscyB3aGljaCBhcmUgYXZhaWxhYmxlIHRvIEFMU0EuICBUaGlzIGNhdXNlcwo+ID4gdGhl
+IEFMU0EgZGV2aWNlIHRvIHJlZmxlY3QgdGhlIGNhcGFiaWxpdGllcyBvZiB0aGUgb3ZlcmFsbCBh
+dWRpbyBwYXRoLAo+ID4gbm90IGp1c3Qgd2hhdCBpcyBzdXBwb3J0ZWQgYXQgdGhlIEhETUkgc291
+cmNlIGludGVyZmFjZSBsZXZlbC4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogUnVzc2VsbCBLaW5n
+IDxybWsra2VybmVsQGFybS5saW51eC5vcmcudWs+Cj4gCj4gSSBjb21wbGV0ZWx5IG1pc3NlZCB0
+aGUgbmV3IGVsZCBoZWxwZXJzIGluIHRoaXMgc2VyaWVzLCBzbyBmYWlybHkgbGF0ZQo+IHdpdGgg
+YSBmZXcgcXVlc3Rpb25zIGhlcmUuCj4gCj4gSW4geDg2L2Rlc2t0b3AgZ3B1cyB3ZSBwYXNzIGFy
+b3VuZCB0aGUgZWxkIGluIGh3LCBhbmQgdGhlcmUncyBhbiBpbnRlcnJ1cHQKPiBvbiB0aGUgc25k
+IHNpZGUgZXZlcnkgdGltZSB0aGF0IG1hdGVyaWFsbHkgY2hhbmdlcy4gU2FtZSBnb2VzIGZvciBv
+dGhlcgo+IHN0YXRlIGNoYW5nZXMgbGlrZSB0aGUgZGlzcGxheSBwaXBlIGdldHRpbmcgbGl0IHVw
+L2Rpc2FibGVkIGFnYWluLgo+IAo+IEhvdyBpcyBob3RwbHVnIGhhbmRsaW5nIGRvbmUgaGVyZT8g
+WW91IHVwZGF0ZSB0aGUgZWxkIGluIGdldF9tb2RlcywgYnV0IEkKPiBkb24ndCBzZWUgYW55IG5v
+dGlmaWNhdGlvbiBmcm9tIGhkbWktPmF1ZGlvIChpdCBvbmx5IHNlZW1zIHRvIGdldCB1cGRhdGVk
+Cj4gYXQgb3BlbiB0aW1lLCBubyBpZGVhIHdoZXRoZXIgdGhhdCdzIGVub3VnaCkuIEFuZCBpdCBs
+b29rcyBsaWtlIHRoZXJlJ3MgYQo+IHBvdGVudGlhbCB1c2UtYWZ0ZXItZnJlZSB3aGVuIHRoZSBk
+cm0gc2lkZSB1cGRhdGVzIHRoZSBlbGQgYW5kIGZyZWVzIHRoZQo+IG9sZCBvbmUsIHdoaWxlIHRo
+ZSBzbmQgc2lkZSB0cmllcyB0byBhY2Nlc3MgdGhpcy4KCkl0IGRvZXNuJ3QgaGFuZGxlIGhvdHBs
+dWcgYXQgYWxsLCBwZXIgc2UuCgpUaGUgcHJvYmxlbSB3aXRoIGhvdHBsdWcgaXMgdGhhdCAoYWZh
+aWspIEFMU0EgaGFzIG5vIHdheSB0byBub3RpZnkKdXNlcnNwYWNlIHRoYXQgc29tZXRoaW5nIGhh
+cyBjaGFuZ2VkOiBpZiBJIHdlcmUgdG8gYWRkIHN1Y2ggYQpub3RpZmljYXRpb24gZnJvbSB0aGUg
+RFJNIHNpZGUgb2YgdGhlIGRyaXZlciB0byB0aGUgYXVkaW8gc2lkZSwgSQp3b3VsZG4ndCBrbm93
+IHdoYXQgdG8gZG8gd2l0aCBpdCB3aGVuIHRoZSBhdWRpbyBzaWRlIHJlY2VpdmVkIGl0LgoKSW4g
+YW55IGNhc2UsIEkgdGVuZCB0byB0aGluayBvZiB1bnBsdWdnaW5nIHRoZSBkaXNwbGF5IGFzIGJl
+aW5nIG11Y2gKbGlrZSB1bnBsdWdnaW5nIHRoZSAzLjVtbSBsaW5lIG91dCBqYWNrIHRvIHlvdXIg
+aGlmaSBzeXN0ZW0gLSBqdXN0CmJlY2F1c2UgeW91J3ZlIGRpc2Nvbm5lY3RlZCB0aGUgc3BlYWtl
+cnMgZG9lcyBub3Qgc3RvcCB0aGUgYXVkaW8KcGxheWluZyAtIHRoZSBhdWRpbyBjb250aW51ZXMg
+ZGVzcGl0ZSB5b3Ugbm90IGJlaW5nIGFibGUgdG8gaGVhciBpdC4KClN1cmUsIHRoZXJlJ3MgdGhl
+IHByb2JsZW0gdGhhdCBpZiB5b3UgcGx1ZyBpbiBhIGRpc3BsYXkgd2l0aCBkaWZmZXJlbnQKY2Fw
+YWJpbGl0aWVzLCB0aGUgZXhpc3RpbmcgZm9ybWF0IG1heSBub3QgYmUgc3VwcG9ydGVkLCBidXQg
+SSBkb24ndApzZWUgYSByZWFzb25hYmxlIG1ldGhvZCB3aGljaCBjb3VsZCBwcm92b2tlIHdoYXQg
+ZWZmZWN0aXZlbHkgd291bGQgYmUKYSByZXN0YXJ0IG9uIHRoZSBBTFNBIHNpZGUuCgpJbiBhbnkg
+Y2FzZSwgaG90cGx1ZyBpcyBraW5kLW9mIG91dHNpZGUgb2YgdGhlIHJlbWl0IG9mIHRoZXNlIGhl
+bHBlcnMgLQp0aGVzZSBoZWxwZXJzIGFyZSBtb3JlIHRvIGRvIHdpdGggZGVjb2RpbmcgYW4gZXhp
+c3RpbmcgRUxEIGFuZCBsaW1pdGluZwp0aGUgY2FwYWJpbGl0aWVzIG9mIHRoZSBhdWRpbyBzaWRl
+IHRvIHRoYXQgc3BlY2lmaWVkIGluIHRoZSBFTEQuICBJdCdzCnVwIHRvIHRoZSBkcml2ZXIgaG93
+IGl0IGdldHMgdGhlIEVMRCwgYW5kIGl0J3MgbGVmdCB0byB0aGUgZHJpdmVyIHRvCmRldGVybWlu
+ZSBob3cgdG8gaGFuZGxlIHRoZSBjaGFuZ2Utb2YtRUxEIG5vdGlmaWNhdGlvbi4KCkdpdmVuIHlv
+dXIgZGVzY3JpcHRpb24gb2YgaTkxNSBoYXJkd2FyZSBhYm92ZSwgSSB0aGluayB0aGlzIG1ha2Vz
+IHNlbnNlCmFueXdheTogaWYgeW91IGhhdmUgYSBoYXJkd2FyZSBub3RpZmljYXRpb24gc3lzdGVt
+LCBpdCBtYWtlcyBzZW5zZSB0byB1c2UKdGhhdCByYXRoZXIgdGhhbiBzb21lIHNvZnR3YXJlIGlt
+cGxlbWVudGF0aW9uLCBhbmQgcmVxdWlyaW5nIGEgc29mdHdhcmUKaW1wbGVtZW50YXRpb24gZm9y
+IGV2ZXJ5dGhpbmcgdG8gbWUgc291bmRzIHRvbyBsaW1pdGluZy4KClRoYXQncyBub3QgdG8gc2F5
+IHRoYXQgd2UgY291bGRuJ3QgaGF2ZSBhIHNvZnR3YXJlIGltcGxlbWVudGF0aW9uIGluIHRoZQpm
+dXR1cmU6IHJpZ2h0IG5vdywgSSBtZXJlbHkgY29uY2VudHJhdGVkIG9uIHRoZSBwYXJzaW5nIGlz
+c3VlLgoKVGhlIGR3LWhkbWkgYXVkaW8gZHJpdmVyIGlzbid0IHJlYWR5IGZvciBtYWlubGluaW5n
+IHlldCAtIHRoZXJlJ3MgdHdvCnZhcmlhbnRzIG9mIHRoaXMgYXQgdGhlIG1vbWVudCAob25lIGZv
+ciBpTVg2IGFuZCBhIGRpZmZlcmVudCBvbmUgZm9yClJvY2tjaGlwIC0gc2FtZSBJUCBidXQgY29u
+ZmlndXJlZCB3aXRoIGRpZmZlcmVudCBpbnRlcmZhY2VzIGZvciBnZXR0aW5nCnRoZSBhdWRpbyBk
+YXRhIGludG8gdGhlIEhETUkgYmxvY2suKSAgVGhlcmUncyBzdGlsbCBzb21lIHdvcmsgdG8gYmUg
+ZG9uZQp0byBwcm9wZXJseSB1bmlmeSB0aGUgdHdvIGFwcHJvYWNoZXMgaW50byBzb21ldGhpbmcg
+c2FuZS4KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQg
+MTAuNU1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFp
+bGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZy
+ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
