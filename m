@@ -1,69 +1,51 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC 0/5] Add a gpio jack device
-Date: Wed, 27 May 2015 13:12:51 +0200
-Message-ID: <5565A6B3.6040509@metafoo.de>
-References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
- <55633CED.2090600@metafoo.de> <20150525171501.GC21577@sirena.org.uk>
- <5564BED6.3070604@metafoo.de> <20150526201426.GA21577@sirena.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 11/13] spi: omap2-mcspi: Support for deferred probing
+ when requesting DMA channels
+Date: Wed, 27 May 2015 14:15:12 +0300
+Message-ID: <5565A740.2020707@ti.com>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com> <1432646768-12532-12-git-send-email-peter.ujfalusi@ti.com> <20150526152730.GT21577@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
- [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 937FD265923
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 13:12:53 +0200 (CEST)
-In-Reply-To: <20150526201426.GA21577@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20150526152730.GT21577@sirena.org.uk>
+Sender: linux-mmc-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, lgirdwood@gmail.com
+Cc: vinod.koul@intel.com, tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-crypto@vger.kernel.org, linux-spi@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/26/2015 10:14 PM, Mark Brown wrote:
-[...]
->
->>> Yes, this is the complete solution - and it's not an audio specific
->>> thing either, there's a reasonable case to be made for saying that that
->>> this should be resolved in extcon rather than in any one consumer
->>> subsystem.
->
->> If the bindings are good it doesn't really matter which framework eventually
->> picks them up, but in this case the bindings are awfully ASoC specific and
->> leak a lot of the shortcomings of the current implementation.
->
-> Could you expand on the abstraction problems you see please?  It looks
-> like a fairly direct mapping of GPIOs to a jack to me (like I say I
-> don't see having GPIOs directly on the jack object as a problem - having
-> to create a separate node to put the GPIOs in doesn't seem to solve
-> anything) and we're not likely to have enough GPIOs to make the usual
-> problems with lists of values too severe.
+Mark,
 
-Sorry, I overlooked something which lead to a bit of misunderstanding. I 
-though that the gpio-audio-jack driver also sets up the DAPM pins for the 
-jack, based on that patch 4 removes the DAPM jack pin setup from 
-tegra_max98090 driver. This would have resulted in a weired dependency chain 
-where the gpio-audio-jack driver sets references DAPM pins by name which 
-belong to the audio fabric that references the gpio-audio-jack node as its 
-jack detection chip. But the driver doesn't actually do that so there is no 
-real implicit dependency to the audio-fabric in the binding itself and it is 
-all internal to the implementation. So that is OK.
+On 05/26/2015 06:27 PM, Mark Brown wrote:
+> On Tue, May 26, 2015 at 04:26:06PM +0300, Peter Ujfalusi wrote:
+>=20
+>> Switch to use ma_request_slave_channel_compat_reason() to request th=
+e DMA
+>> channels. Only fall back to pio mode if the error code returned is n=
+ot
+>> -EPROBE_DEFER, otherwise return from the probe with the -EPROBE_DEFE=
+R.
+>=20
+> I've got two patches from a patch series here with no cover letter...
+> I'm guessing there's no interdependencies or anything?  Please always
+> ensure that when sending a patch series everyone getting the patches =
+can
+> tell what the series as a whole looks like (if there's no dependencie=
+s
+> consider posting as individual patches rather than a series).
 
-I'm still a bit uncomfortable with mixing up jacks and jack detection logic. 
-For the GPIO based jack detection logic this isn't that bad since we could 
-argue that the DT node represents the jack. But I'm a bit afraid that this 
-sets a precedence and we'll soon see bindings where the description of the 
-jack becomes part of the description of the jack detection chip or CODEC. 
-And the component or CODEC driver is responsible for registering the jack.
+I have put the maintainers of the relevant subsystems as CC in the comm=
+it
+message and sent the series to all of the mailing lists. This series wa=
+s
+touching 7 subsystems and I thought not spamming every maintainer with =
+all the
+mails might be better.
 
-And the other problem is how do we match up DAPM widgets to a jack. This is 
-functionality from the tegra_max98090 driver that is lost in this series.
+In v2 I will keep this in mind.
 
-- Lars
+The series depends on the first two patch, which adds the
+dma_request_slave_channel_compat_reason() function.
+
+--=20
+P=E9ter
