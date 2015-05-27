@@ -1,81 +1,76 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH] ASoC: codecs: use SNDRV_PCM_FMTBIT_* for format bitmask
-Date: Wed, 27 May 2015 14:04:32 +0200
-Message-ID: <5565B2D0.6080506@maciej.szmigiero.name>
-References: <5560AB9D.1010807@maciej.szmigiero.name>	<s5h382j29ey.wl-tiwai@suse.de>	<55647D25.80807@maciej.szmigiero.name> <s5hk2vvctx6.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 5/9] ASoC: sti: Add platform driver
+Date: Wed, 27 May 2015 14:06:20 +0200
+Message-ID: <5565B33C.2000300@metafoo.de>
+References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+ <1431951176-24670-6-git-send-email-arnaud.pouliquen@st.com>
+ <20150525125002.GQ21391@sirena.org.uk> <556584C4.3080004@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk2vvctx6.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Daniel Mack <daniel@zonque.org>, Wolfram Sang <wsa@the-dreams.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Matt Reimer <mreimer@sdgsystems.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id 381E1265998
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 14:06:22 +0200 (CEST)
+In-Reply-To: <556584C4.3080004@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 26.05.2015 16:09, Takashi Iwai pisze:
-> At Tue, 26 May 2015 16:03:17 +0200,
-> Maciej S. Szmigiero wrote:
+On 05/27/2015 10:48 AM, Arnaud Pouliquen wrote:
+[...]
+>>> +static int sti_platform_engine_probe(struct platform_device *pdev)
+>>> +{
+>>> +    /*
+>>> +     * Driver can not use snd_dmaengine_pcm_register.
+>>> +     * Reason is that DMA needs to load a firmware.
+>>> +     * This firmware is loaded on request_channel from file system.
+>>> +     * So can not be done in probe while alsa card enumerated before
+>>> +     * file system is mounted
+>>> +     */
 >>
->> Hello Takashi,
+>> This is not the only driver with similar needs, the Intel drivers use
+>> firmwares as well (all the DMA is done by the DSP which needs firmware)
+>> and even if it were we should be able to arrange for this to work rather
+>> than having to open code things.  That might mean having the dmaengine
+>> driver requesting firmware with _nowait() and then waiting until the
+>> firmware appears before registering as a DMA controller for example.  We
+>> may also be able to have the DMA engine only load the firmware when it's
+>> used rather than at probe (that might allow us to keep the DMA
+>> controller powered off for longer which would be a power win if possible).
 >>
->> W dniu 26.05.2015 07:29, Takashi Iwai pisze:
->>> At Sat, 23 May 2015 18:32:29 +0200,
->>> Maciej S. Szmigiero wrote:
->>>>
->>>> snd_soc_pcm_stream.formats is a bitmask of SNDRV_PCM_FMTBIT_*,
->>>> not of SNDRV_PCM_FORMAT_* (which are sequential integers),
->>>> however some of ASoC CODEC drivers use these values instead.
->>>>
->>>> Found out by sparse on 0-day kernel tester.
->>>>
->>>> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
->>>
->>> Wow, that made me wonder how these drivers could actually work.
+>> It's not just restricted to audio either.
 >>
->> Maybe, by coincidence, the wrong defines contained enough bits
->> set to actually select some common, working format with their
->> controllers?
-> 
-> Well, FORMAT_S16_LE = 2, and FORMAT_S18_3LE = 40.  So bits 1, 3 and 5
-> are set, which corresponds to U8, S16_BE and U16_BE.  Hmm.
-> 
->>> BTW, how did you detect it?  Any static analyzer like sparse or
->>> smatch?  sparse didn't detect it at the last time I tried, IIRC...
->>
->> I've received an e-mail from "kbuild test robot" at
->> "0-DAY kernel test infrastructure" that automated testing there
->> using sparse found this issue on wm9713 and stac9766 CODECs.
->>
->> The exact warning was:
->>>> sound/soc/codecs/stac9766.c:324:28: sparse: incorrect type in initializer (different base types)
->>    sound/soc/codecs/stac9766.c:324:28:    expected unsigned long long [unsigned] [usertype] formats
->>    sound/soc/codecs/stac9766.c:324:28:    got restricted snd_pcm_format_t [usertype] <noident>
->>
->> What is important the warning doesn't show unless a check build
->> is made with CF=-D__CHECK_ENDIAN__ .
-> 
-> Ah, thanks, that was the missing piece.
-> 
->> Upon checking I've found the same issue also in two other CODECs,
->> which aren't normally being built on x86_64 (target architecture
->> for above automated build) even when SND_SOC_ALL_CODECS is selected.
-> 
-> Oh it'd be great if you submit fixes :)
+>
+> Move dmaengine_pcm_request_chan from register to open could be a good
+> compromise with (i hope) no impact on drivers that already use
+> soc_generic_dma_engine. This is the implementation already proposed in of
+> pcm_dmaengine.c
+> Another issue i'm facing, is that i have one DMA channel per CPU_DAI
+> instance. As simple card imposes to define CPU_DAIs in one platform device,
+> i need to define specific DMA name per CPU_DAI.
+> What is your recommendation on this point:
+> Do you want that i use snd_dmaengine_pcm_register and propose
+> soc_gebneric_dmaengine driver patches?
+> or simply reuse pcm_dmaengine helper functions as much as possible.
 
-The fixes for these two remaining CODECs were included in the patch
-(I've meant that these two weren't in the automated checking report
-I've received).
+You really want to request the DMA channels in the probe callback of the 
+driver (and also use the the generic-dmaengine-pcm driver). This makes sure 
+that you have proper support for probe deferral, etc. The DMA driver should 
+probably not request the firmware inside the channel_request() callback. As 
+Mark sad this will not only affect audio, but all usecases that involve 
+DMAengine.
 
-Upon looking again at it the "0-DAY kernel test infrastructure"
-have to be using some limited config, since all of the CODECs
-with this issue are being built/checked in allyesconfig
-(it selects the required dependences for them even on x86_64).
+Btw. what is the DMA driver you are using, is it already upstream?
 
-> thanks,
-> 
-> Takashi
-> 
-
-Thanks,
-Maciej Szmigiero
+- Lars
