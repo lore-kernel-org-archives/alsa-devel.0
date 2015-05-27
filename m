@@ -1,130 +1,50 @@
-From: Chris J Arges <chris.j.arges@canonical.com>
-Subject: Re: Scarlett 18i8 hardware out of sync with AlsaMixer
-Date: Wed, 27 May 2015 08:53:26 -0500
-Message-ID: <20150527135325.GA12862@canonical.com>
-References: <CADN=WdobTC9qdHjKD3PyPW99f2pX-j82vVzZ32zp4ed-C0Gbgg@mail.gmail.com>
- <s5h8ucaed12.wl-tiwai@suse.de>
- <CADN=WdpM_gUD=TpxP9cJmS3VXRwzgODgNeNE0Z2EwC71mZ8yAw@mail.gmail.com>
- <s5hzj4q9mri.wl-tiwai@suse.de>
+From: "Enrico Weigelt, metux IT consult" <weigelt@melag.de>
+Subject: Re: [PATCH RESEND v3 2/2] ALSA: replace CONFIG_PROC_FS with CONFIG_SND_PROC_FS
+Date: Wed, 27 May 2015 15:56:14 +0200
+Message-ID: <5565CCFE.702@melag.de>
+References: <1432727145-6504-1-git-send-email-yang.jie@intel.com> <1432727145-6504-3-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AAC2265A70
- for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 15:53:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hzj4q9mri.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam Goode <adam@spicenitz.org>, alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>
+Content-Type: text/plain; charset=iso-8859-15;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1432727145-6504-3-git-send-email-yang.jie@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jie Yang <yang.jie@intel.com>, tiwai@suse.de, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com, vivian.zhang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 27, 2015 at 03:24:17PM +0200, Takashi Iwai wrote:
-> [Added more people to Cc]
-> 
-> At Wed, 27 May 2015 08:55:21 -0400,
-> Adam Goode wrote:
-> > 
-> > The settings were not reset across a mem sleep (echo mem > /sys/power/state).
-> > 
-> > Hard power off / power on does make the settings get out of sync.
+Am 27.05.2015 um 13:45 schrieb Jie Yang:
+> We may disable proc fs only for sound part, to reduce ALSA
+> memory footprint. So add CONFIG_SND_PROC_FS and replace the
+> old CONFIG_PROC_FSs in alsa code.
 >
+> With sound proc fs disabled, we can save about 9KB memory
+> size on X86_64 platform.
 
-Ok did some testing on my Scarlett 18i8:
- suspend/resume -> settings not reset
- poweroff/poweron -> settings not reset
- unplug/replug usb -> settings not reset
- powercycle unit -> settings not reset
+=46or consistency, both patches should be squashed into one, IMHO.
 
-Is there a more consistent method to trigger this issue?
-In addition are you manually triggering 'alsactl restore/save' in this process?
 
-I'll do some additional testing to see if I can trigger this.
- 
-> Then maybe the problem is that the device keeps the old setting while
-> the driver resets to the default.  I vaguely remember that scarlett
-> could save the default state in a persistent area, and the original
-> driver patch had a kctl to trigger it.  We didn't take it because it
-> might be dangerous.
-> 
->
+cu
+--
+Enrico Weigelt, metux IT consult
++49-151-27565287
+MELAG Medizintechnik oHG Sitz Berlin Registergericht AG Charlottenburg =
+HRA 21333 B
 
-The original issue was this:
-  Hey, as Tobias mentioned this is a HW saving (to the mixer's NVRAM)
-  function used for using the mixer disconnected from a computer. We
-  wouldn't want to continually write the NVRAM on every control update as
-  I'm unsure of how many write-cycles the device is capable of.
-
-So if we wrote to NVRAM on each control update we might wear out the memory
-very quickly. I think this functionality is more for using the device
-disconnected from a computer.
- 
-> Takashi
-> 
-> 
-> > Adam
-> > 
-> > 
-> > On Wed, May 27, 2015 at 2:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > At Tue, 26 May 2015 21:39:22 -0400,
-> > > Adam Goode wrote:
-> > >>
-> > >> Linux 4.0.2-300.fc22.x86_64
-> > >>
-> > >> Hi,
-> > >>
-> > >> I have the Scarlett 18i8 USB device that is supported by the new
-> > >> scarlett_mixer.c code. I am happy to say that the mixer code works in
-> > >> most cases. But under some conditions, I cannot get any sound out of
-> > >> the device until I go and toggle the "Matrix 01 Input" and "Matrix 02
-> > >> Input" enums up and then down (from PCM 1 and PCM 2). This appears to
-> > >> me to be some kind of cache invalidation bug, where the device is out
-> > >> of sync with kernel mixer state.
-> > >>
-> > >> I will take a look at the code myself at some point, but not for a
-> > >> while. But I am happy to try patches if anyone comes up with anything
-> > >> in the mean time.
-> > >
-
-Does this change anything (untested)? And are non-enum settings affected?
-
-diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
-index 7438e7c..ad4a452 100644
---- a/sound/usb/mixer_scarlett.c
-+++ b/sound/usb/mixer_scarlett.c
-@@ -438,11 +438,9 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
- 
- 	val = ucontrol->value.integer.value[0];
- 	val = val + opt->start;
--	if (val != oval) {
--		snd_usb_set_cur_mix_value(elem, 0, 0, val);
--		return 1;
--	}
--	return 0;
-+	/* always set cur mix value */
-+	snd_usb_set_cur_mix_value(elem, 0, 0, val);
-+	return 1;
- }
- 
- static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
-
---chris
-
-> > > Does it happen after some S3/S4 or even during a normal operation
-> > > without power-saving?  The USB-audio device supports autopm, so this
-> > > needs to be checked, too.
-> > >
-> > >
-> > > Takashi
-> > 
-> 
+Wichtiger Hinweis: Diese Nachricht kann vertrauliche oder nur f=FCr ein=
+en begrenzten Personenkreis bestimmte Informationen enthalten. Sie ist =
+ausschlie=DFlich f=FCr denjenigen bestimmt, an den sie gerichtet worden=
+ ist. Wenn Sie nicht der Adressat dieser E-Mail sind, d=FCrfen Sie dies=
+e nicht kopieren, weiterleiten, weitergeben oder sie ganz oder teilweis=
+e in irgendeiner Weise nutzen. Sollten Sie diese E-Mail irrt=FCmlich er=
+halten haben, so benachrichtigen Sie bitte den Absender, indem Sie auf =
+diese Nachricht antworten. Bitte l=F6schen Sie in diesem Fall diese Nac=
+hricht und alle Anh=E4nge, ohne eine Kopie zu behalten.
+Important Notice: This message may contain confidential or privileged i=
+nformation. It is intended only for the person it was addressed to. If =
+you are not the intended recipient of this email you may not copy, forw=
+ard, disclose or otherwise use it or any part of it in any form whatsoe=
+ver. If you received this email in error please notify the sender by re=
+plying and delete this message and any attachments without retaining a =
+copy.
