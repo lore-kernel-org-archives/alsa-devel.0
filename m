@@ -1,7 +1,7 @@
 From: Quentin Lambert <lambert.quentin@gmail.com>
 Subject: Re: [PATCH] ALSA: aoa: convert bus code to use dev_groups
-Date: Thu, 28 May 2015 15:59:50 +0200
-Message-ID: <55671F56.6080402@gmail.com>
+Date: Thu, 28 May 2015 15:59:57 +0200
+Message-ID: <55671F5D.6060807@gmail.com>
 References: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com> <s5hwpzs7qrz.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
