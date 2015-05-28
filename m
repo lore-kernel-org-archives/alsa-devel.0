@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
-	failed issue
-Date: Thu, 28 May 2015 10:28:03 +0100
-Message-ID: <20150528092803.GQ21577@sirena.org.uk>
-References: <1432793658-9463-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: max98090: read micbias from
+	device property
+Date: Thu, 28 May 2015 10:28:59 +0100
+Message-ID: <20150528092859.GR21577@sirena.org.uk>
+References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4684825232250184834=="
+Content-Type: multipart/mixed; boundary="===============1691773747862388948=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ABF72604A7
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 11:28:10 +0200 (CEST)
-In-Reply-To: <1432793658-9463-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 218DF2604EA
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 11:29:05 +0200 (CEST)
+In-Reply-To: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4684825232250184834==
+--===============1691773747862388948==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="P33sUzWjYpDtphzm"
+	protocol="application/pgp-signature"; boundary="5hPnlvMVk0oUI7Ca"
 Content-Disposition: inline
 
 
---P33sUzWjYpDtphzm
+--5hPnlvMVk0oUI7Ca
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 28, 2015 at 02:14:18PM +0800, Jie Yang wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+On Tue, May 26, 2015 at 04:58:04PM -0700, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
 >=20
-> In haswell-pcm module unloading, we can't free runtime modules
-> directly, for they may be already freed in runtime suspend.
+> This patch reads max98090 micbias from acpi or dt
 
-Applied, thanks.
+This is adding a new DT binding, the DT binding needs to be documented.
 
---P33sUzWjYpDtphzm
+--5hPnlvMVk0oUI7Ca
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVZt+iAAoJECTWi3JdVIfQiZYH/RqnkPbxHeZLQUxGs0OxbTRP
-3bwVLlW2+vSqlfN3I5fy6e53NeAtfxaOCxJTDHesNmN16j/VrqeYFu/IiBevIUgp
-+D9D1zia4We1PMawgVRB8Fqcudlxnx69BcNdX5VLVHl6Fkg75FUjAtfmsMfX35Pl
-U2ClrAlNZaWGAgDM+26xvfl0rOnoHXBW75gQdBwPVkqacEsSN7A0cWTx9JBdCNIs
-APVV+YF/3vMrAYqeROIkaeW/0QBnDjgiG168tvhViN95loLgn/68FhBOysHnGr8o
-KAIdQ8I/VIEG1O+TWj2px9zke2aeD63PVvEtd3cuHDSW6hNm6YuIhsZZAMolXZs=
-=o9Sr
+iQEcBAEBCAAGBQJVZt/bAAoJECTWi3JdVIfQ+TQIAIEvh1pibkEOce5dVt5iLRNM
+aHxY7+32BzsWOuMUZ29S0L01eCfHA1yu2YzSxNJ+gk4sEfYOv9BqyuUDIm6wWzfn
+TEqpOzUWzE4IrvlSkN+/wtS9xlozPFWeyP7nxClqjpgekV2zLZ99pInfshzUfeEl
+CQTjZURlauTR1seAMtfDcmAo7d+Ngtv5hv1zb4hrza6g+P83lsIbFc9CCLrWBKUb
+RNUT4ZimydHIEv6nWKHPSVU5FCdLxrZWjDC32B9WZJw+jEiuiSKOOcg6+4WWLvwb
+Q60YZSmPaReWU+MFcx2FAC5LUBuVUxbQG0KbbUnCl/c/uctsnoYc/fJOmci9Xhc=
+=jjL+
 -----END PGP SIGNATURE-----
 
---P33sUzWjYpDtphzm--
+--5hPnlvMVk0oUI7Ca--
 
---===============4684825232250184834==
+--===============1691773747862388948==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4684825232250184834==--
+--===============1691773747862388948==--
