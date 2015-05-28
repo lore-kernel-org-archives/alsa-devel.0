@@ -1,18 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 2/3] ASoC: topology: Add topology core
-Date: Thu, 28 May 2015 15:33:29 +0100
-Message-ID: <1432823609.2726.42.camel@loki>
-References: <1432574570-7436-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1432574570-7436-2-git-send-email-liam.r.girdwood@linux.intel.com>
- <20150527190021.GO21577@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm_adsp: Dump DSP_SCRATCH1 on DSP
+	shutdown
+Date: Thu, 28 May 2015 15:37:24 +0100
+Message-ID: <20150528143724.GY21577@sirena.org.uk>
+References: <1432820714-31850-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20150528135751.GV21577@sirena.org.uk>
+ <20150528142431.GA19558@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7000898161443182579=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 17AF82604AB
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 16:33:32 +0200 (CEST)
-In-Reply-To: <20150527190021.GO21577@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7084D2604AB
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 16:37:31 +0200 (CEST)
+In-Reply-To: <20150528142431.GA19558@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, alsa-devel@alsa-project.org, "Koul, Vinod" <vinod.koul@intel.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-05-27 at 20:00 +0100, Mark Brown wrote:
-> On Mon, May 25, 2015 at 06:22:49PM +0100, Liam Girdwood wrote:
-> 
-> This looks really nice at a high level, obviously it's a lot of code so
-> there might be detail problems but I expect we can fix those up later.
-> 
-> > @@ -564,6 +565,7 @@ struct snd_soc_dapm_widget {
-> >  	int num_kcontrols;
-> >  	const struct snd_kcontrol_new *kcontrol_news;
-> >  	struct snd_kcontrol **kcontrols;
-> > +	struct snd_soc_dobj dobj;
-> >  
-> >  	/* widget input and outputs */
-> >  	struct list_head sources;
-> 
-> This adds the dynamic object (which isn't enormous but isn't tiny) to
-> every widget which could add up a bit.  I don't know if it's worth
-> making it a pointer to a dobj and allocating that separately?  OTOH it's
-> really routes rather than widgets that are the big cost, and it depends
-> on allocators being friendly and not putting lots of padding round
-> dobjs.  Definitely fixable incrementally if it is an issue though.
-> 
 
-Fwiw, we are planning to shrink DAPM a bit as part of the reduced memory
-work that Keyon and Vivian are doing. This will be on the list.
+--===============7000898161443182579==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6i9pF6wS+qS3ofr4"
+Content-Disposition: inline
 
-> > +	/* external kcontrol init - used to set ext funcs + private data */
-> > +	int (*control_load)(struct snd_soc_component *,
-> > +		struct snd_kcontrol_new *, struct snd_soc_tplg_ctl_hdr *);
-> > +	int (*control_unload)(struct snd_soc_component *,
-> > +		struct snd_soc_dobj *);
-> 
-> Do we have examples of all these external users yet?  Just thinking
-> about what happens if we need a load/unload function but the kernel
-> doesn't know about this particular firmware type - the file didn't say
-> code would be needed and perhaps the code is optional anyway (some
-> optimisation or something).  Is that something that was thought about
-> yet, what sort of uses are we expecting?
 
-Vinod has some example code that has the callback on SKL (dont know if
-it's on public git atm). The intention here was to allow the driver to
-setup any configuration outside the standard kcontrol registration, so
-it would be used for things like sending DSP IPC messages to create the
-control in FW, or loading the private data into the DSP for that control
-etc. The comment is probably misleading since the get/put/info function
-binding is done in the core. I'll fix the comment for V3. 
+--6i9pF6wS+qS3ofr4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> > +/* pass vendor data to component driver for processing */
-> > +static int soc_tplg_vendor_load_(struct soc_tplg *tplg,
-> > +	struct snd_soc_tplg_hdr *hdr)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (tplg->comp && tplg->ops && tplg->ops->vendor_load)
-> > +		ret = tplg->ops->vendor_load(tplg->comp, hdr);
-> > +
-> > +	if (ret < 0)
-> > +		dev_err(tplg->dev,
-> > +			"ASoC: vendor load failed at hdr offset %ld/0x%lx for type %d:%d\n",
-> > +			soc_tplg_get_hdr_offset(tplg),
-> > +			soc_tplg_get_hdr_offset(tplg),
-> > +			hdr->type, hdr->vendor_type);
-> > +	return ret;
-> > +}
-> 
-> For example I wonder if we should warn if we don't have a handler for
-> vendor data that we see?
+On Thu, May 28, 2015 at 03:24:39PM +0100, Richard Fitzgerald wrote:
+> On Thu, May 28, 2015 at 02:57:51PM +0100, Mark Brown wrote:
 
-Yes, will fix in V3.
+> > > -		adsp_dbg(dsp, "Shutdown complete\n");
+> > > +		adsp_info(dsp, "Shutdown complete (SCRATCH1:0x%x)\n", scratch1);
+
+> > That seems a bit loud for a diagnostic message, why raise the severity?
+
+> It's a diagnostic of the firmware, not the driver, and we can't assume that
+> people trying to use a firmware have the ability to build and flash a kernel
+> with a debug version of the driver
+
+The default is that dev_dbg() is available in dmesg but not on the
+console which usually seems like a reasonable balance for this sort of
+thing - it's there if people want it but not included in the default
+logging.
+
+--6i9pF6wS+qS3ofr4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZygjAAoJECTWi3JdVIfQ/SYH/0wlkr2UVYm1AnE2qsEAK7zD
+/YEqw+yTjv9g2wB+dvKvqHSngRa+A+s8QvBabjklF/92kxYnNv4BIWpNqh0xigUe
+uPJMys+8+9b5yg9Vi4b6ea1eLrBi5IodF+mKO2op3RTKqxyRnOQmaQ4GLemTBBDk
+CQYUerMQpeQci2ZykYGrdKLU7+QPVEYB6FozZSrMoe7VPiLsK6KoBcWQ+HWU7MYO
+e6+iPAO8o8V3jQGvoOBi6+TUd1FtbC6PgtdQSlXoZ5eGKjcmjPaQPzvz0I8uc39q
+z6R2wGjnG/AUP8110s17TrPrA23/Z6BAszhM3mBanoPKnBoIsvydhh0Al2vb/Tc=
+=/sSc
+-----END PGP SIGNATURE-----
+
+--6i9pF6wS+qS3ofr4--
+
+--===============7000898161443182579==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7000898161443182579==--
