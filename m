@@ -1,19 +1,21 @@
-From: Sander Smeenk <ssmeenk@freshdot.net>
-Subject: Re: Realtek ALC892 / snd-hda-intel breakage between
- 3.16 & 3.19
-Date: Thu, 28 May 2015 17:17:24 +0200
-Message-ID: <20150528151724.GC12158@dot.dmz.freshdot.net>
-References: <20150527190106.GA12158@dot.dmz.freshdot.net>
- <CAN8cciY_PGVKaDWpOGmaZgRetS9oQpCoPqH5PpZdVdNgrk26YQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/3] ASoC: topology: Add topology core
+Date: Thu, 28 May 2015 16:23:36 +0100
+Message-ID: <20150528152336.GC21577@sirena.org.uk>
+References: <1432574570-7436-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1432574570-7436-2-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20150527190021.GO21577@sirena.org.uk>
+ <55661997.2050800@metafoo.de>
+ <20150527194827.GP21577@sirena.org.uk>
+ <1432824309.2726.44.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3271169304938059145=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dot.freshdot.net (dot.freshdot.net [213.154.236.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 00B1D2604C2
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 17:17:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAN8cciY_PGVKaDWpOGmaZgRetS9oQpCoPqH5PpZdVdNgrk26YQ@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4379A2604C2
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 17:23:46 +0200 (CEST)
+In-Reply-To: <1432824309.2726.44.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Raymond Yau (superquad.vortex2@gmail.com):
 
-> > After upgrading from 3.16.0-38-generic (Ubuntu Utopic) to
-> > 3.19.0-18-generic (Ubuntu Vivid) my audio stopped working.
-> > The issue appears to be in the snd-hda-intel driver.
-[ .. ]
-> HDMI fail because drm/i915 fail
-
-So it appears. I hadn't noticed these: 
-| [000d00h02m01s] Could not create debugfs 'i915_pipe_update_start' directory
-| [000d00h02m01s] snd_hda_intel 0000:00:03.0: Cannot turn on display power on i915
+--===============3271169304938059145==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OERHbdkVeNHCzTtR"
+Content-Disposition: inline
 
 
-> > | ALSA lib pcm_pulse.c:752:(pulse_prepare) PulseAudio: Unable to create stream: No such entity
-> This seem pulseaudio fail
+--OERHbdkVeNHCzTtR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes. This error is because PulseAudio is also unable to communicate with
-the soundcard while 3.19 is running. However, the issue at hand is not
-PulseAudio related. Even with no Pulse running, aplay and friends fail
-to work the card.
+On Thu, May 28, 2015 at 03:45:09PM +0100, Liam Girdwood wrote:
+> On Wed, 2015-05-27 at 20:48 +0100, Mark Brown wrote:
 
-Thnx,
--Sndr
--- 
-| Decafalon (n.): The grueling event of getting through the day consuming
-| only things that are good for you.
-| 4096R/20CC6CD2 - 6D40 1A20 B9AA 87D4 84C7  FBD6 F3A9 9442 20CC 6CD2
+> > Yeah, I was thinking something along those lines might be good long term
+> > but it's definitely a separate thing to getting the topology stuff in
+> > and I started worrying about things like multiple inheritance.
+
+> Yeah this would also help in reducing memory footprint. Probably a topic
+> for the audio mini conf ?
+
+I think so.
+
+--OERHbdkVeNHCzTtR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZzL3AAoJECTWi3JdVIfQlFMH/j/tWWbltHNUWcjn8N1fNuFN
+ougzt/gqBiTl1k9pbqOLXvV5oVZzfHSf4E+8UIxv3lYC8sM3LBkuhZTqEkdH8Bnp
+C5y88m02RZS1zmogUUIWXHnjAFJFPA1zdUAyMmlUphLTlGhd4LIrjMppjCJ0X9d+
+ms27eSfgIvGacxzXGPzk87w1S+GFtf8vssYfo0ELzg9WRKptZjOKhUKfocnGIiLE
+7fJtri/oWn8SqQb3JMFUZW7J+sLZA+4YUrPVz8+AGesHSJ5okoDp/51iJQaJU/Z7
+XdI1W9QvLfTxu8FKDorJMwqCZ7n7ldx/hmbpqHQc2P8R2DE2Zl4PRBfKPo69LxY=
+=6aPi
+-----END PGP SIGNATURE-----
+
+--OERHbdkVeNHCzTtR--
+
+--===============3271169304938059145==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3271169304938059145==--
