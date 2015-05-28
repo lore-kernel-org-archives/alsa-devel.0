@@ -1,76 +1,67 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Fix noise generator gain TLV
-Date: Thu, 28 May 2015 14:28:12 +0100
-Message-ID: <1432819692-30122-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E9A2265EAB
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 15:30:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH] ASoC: wm_adsp: Dump DSP_SCRATCH1 on DSP shutdown
+Date: Thu, 28 May 2015 14:45:14 +0100
+Message-ID: <1432820714-31850-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Arizona codec drivers had an incorrect dB scaling for the
-noise generator gain that started at 0dB and went upwards.
-Actually the highest setting is 0dB.
+The DSP_SCRATCH1 register is used by firmwares to hold diagnostic
+information. Include this in the shutdown message - it can be
+useful for debugging.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5102.c |    2 +-
- sound/soc/codecs/wm5110.c |    2 +-
- sound/soc/codecs/wm8997.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 0c6d1bc..d476221 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -42,7 +42,7 @@ struct wm5102_priv {
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
--static DECLARE_TLV_DB_SCALE(noise_tlv, 0, 600, 0);
-+static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f6642c1..9b7c03c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -121,6 +121,11 @@
+ #define ADSP2_WDMA_CONFIG_2 0x31
+ #define ADSP2_RDMA_CONFIG_1 0x34
  
- static const struct wm_adsp_region wm5102_dsp1_regions[] = {
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index fbaeddb..3ee6cfd 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -167,7 +167,7 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
--static DECLARE_TLV_DB_SCALE(noise_tlv, 0, 600, 0);
-+static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
++#define ADSP2_SCRATCH0        0x40
++#define ADSP2_SCRATCH1        0x41
++#define ADSP2_SCRATCH2        0x42
++#define ADSP2_SCRATCH3        0x43
++
+ /*
+  * ADSP2 Control
+  */
+@@ -1880,6 +1885,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+ 	struct wm_adsp_alg_region *alg_region;
+ 	struct wm_coeff_ctl *ctl;
++	unsigned int scratch1 = 0xFFFFFFFF;
+ 	int ret;
  
- #define WM5110_NG_SRC(name, base) \
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index a4d1177..e7c81ba 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -40,7 +40,7 @@ struct wm8997_priv {
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
--static DECLARE_TLV_DB_SCALE(noise_tlv, 0, 600, 0);
-+static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
+ 	switch (event) {
+@@ -1898,6 +1904,12 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		break;
  
- static const struct reg_default wm8997_sysclk_reva_patch[] = {
+ 	case SND_SOC_DAPM_PRE_PMD:
++		/* Capture DSP_SCRATCH1, it can be useful for analysis */
++		ret = regmap_read(dsp->regmap, dsp->base + ADSP2_SCRATCH1,
++				  &scratch1);
++		if (ret)
++			adsp_err(dsp, "Failed to read SCRATCH1 %d\n", ret);
++
+ 		dsp->running = false;
+ 
+ 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+@@ -1935,7 +1947,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 			kfree(alg_region);
+ 		}
+ 
+-		adsp_dbg(dsp, "Shutdown complete\n");
++		adsp_info(dsp, "Shutdown complete (SCRATCH1:0x%x)\n", scratch1);
+ 		break;
+ 
+ 	default:
 -- 
 1.7.2.5
