@@ -1,19 +1,18 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 2/3] ASoC: topology: Add topology core
-Date: Thu, 28 May 2015 15:45:09 +0100
-Message-ID: <1432824309.2726.44.camel@loki>
+Subject: Re: [PATCH v2 3/3] ALSA: topology: Export ID types for
+	TLV controls.
+Date: Thu, 28 May 2015 15:47:36 +0100
+Message-ID: <1432824456.2726.46.camel@loki>
 References: <1432574570-7436-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1432574570-7436-2-git-send-email-liam.r.girdwood@linux.intel.com>
- <20150527190021.GO21577@sirena.org.uk> <55661997.2050800@metafoo.de>
- <20150527194827.GP21577@sirena.org.uk>
+ <1432574570-7436-3-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 64CD22604BE
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 16:45:14 +0200 (CEST)
-In-Reply-To: <20150527194827.GP21577@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98A9C2604BE
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 16:47:39 +0200 (CEST)
+In-Reply-To: <1432574570-7436-3-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-05-27 at 20:48 +0100, Mark Brown wrote:
-> On Wed, May 27, 2015 at 09:23:03PM +0200, Lars-Peter Clausen wrote:
+On Mon, 2015-05-25 at 18:22 +0100, Liam Girdwood wrote:
+> Make sure userspace can define TLV controls for topolofy using the correct
+> type numbers.
 > 
-> > Ideally we'd turn the dependency chain the other way around and have a
-> > snd_soc_dobj_widget struct which inherits snd_soc_dapm_widget and
-> > snd_soc_dobj. In the dobj callbacks you can then still use container_of to
-> > get it. This comes at the expense that we have to add a free() callback to
-> > snd_soc_dapm_widget. But it opens up the possibility to have other
-> > specialized widgets sub-classes. snd_soc_dapm_widget is already rather large
-> > given how many instance we have of it and quite a few of the fields are only
-> > used by a particular type of widget. Another good candidate for example
-> > would be the DAI link widget with all its params fields.
+> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> ---
+>  include/sound/tlv.h      |  7 +------
+>  include/uapi/sound/tlv.h | 23 +++++++++++++++++++++++
+>  2 files changed, 24 insertions(+), 6 deletions(-)
+>  create mode 100644 include/uapi/sound/tlv.h
 > 
-> Yeah, I was thinking something along those lines might be good long term
-> but it's definitely a separate thing to getting the topology stuff in
-> and I started worrying about things like multiple inheritance.
+> diff --git a/include/sound/tlv.h b/include/sound/tlv.h
 
-Yeah this would also help in reducing memory footprint. Probably a topic
-for the audio mini conf ?
+Takashi, do you want this rolled into uapi/sound/asound.h or is it fine
+as a separate file ?
 
 Liam
+
+> index e11e179..7209331 100644
+> --- a/include/sound/tlv.h
+> +++ b/include/sound/tlv.h
+> @@ -31,12 +31,7 @@
+>   *                       ~(sizeof(unsigned int) - 1)) ....
+>   */
+>  
+> -#define SNDRV_CTL_TLVT_CONTAINER 0	/* one level down - group of TLVs */
+> -#define SNDRV_CTL_TLVT_DB_SCALE	1       /* dB scale */
+> -#define SNDRV_CTL_TLVT_DB_LINEAR 2	/* linear volume */
+> -#define SNDRV_CTL_TLVT_DB_RANGE 3	/* dB range container */
+> -#define SNDRV_CTL_TLVT_DB_MINMAX 4	/* dB scale with min/max */
+> -#define SNDRV_CTL_TLVT_DB_MINMAX_MUTE 5	/* dB scale with min/max with mute */
+> +#include <uapi/sound/tlv.h>
+>  
+>  #define TLV_ITEM(type, ...) \
+>  	(type), TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
+> diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
+> new file mode 100644
+> index 0000000..33d747d
+> --- /dev/null
+> +++ b/include/uapi/sound/tlv.h
+> @@ -0,0 +1,23 @@
+> +/*
+> + *   This program is free software; you can redistribute it and/or modify
+> + *   it under the terms of the GNU General Public License as published by
+> + *   the Free Software Foundation; either version 2 of the License, or
+> + *   (at your option) any later version.
+> + *
+> + *   This program is distributed in the hope that it will be useful,
+> + *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *   GNU General Public License for more details.
+> + */
+> +
+> +#ifndef __UAPI_SOUND_TLV_H
+> +#define __UAPI_SOUND_TLV_H
+> +
+> +#define SNDRV_CTL_TLVT_CONTAINER 0	/* one level down - group of TLVs */
+> +#define SNDRV_CTL_TLVT_DB_SCALE	1       /* dB scale */
+> +#define SNDRV_CTL_TLVT_DB_LINEAR 2	/* linear volume */
+> +#define SNDRV_CTL_TLVT_DB_RANGE 3	/* dB range container */
+> +#define SNDRV_CTL_TLVT_DB_MINMAX 4	/* dB scale with min/max */
+> +#define SNDRV_CTL_TLVT_DB_MINMAX_MUTE 5	/* dB scale with min/max with mute */
+> +
+> +#endif
