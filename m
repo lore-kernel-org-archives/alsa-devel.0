@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC: PATCH: wm8731 - reinitialize regmap cache
- after hardware reset
-Date: Thu, 28 May 2015 17:52:46 +0100
-Message-ID: <1432831966.2726.63.camel@loki>
-References: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+From: yang.a.fang@intel.com
+Subject: [PATCH v2 1/3] ASoC: max98090: read micbias from
+	device property
+Date: Thu, 28 May 2015 11:00:46 -0700
+Message-ID: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E062260502
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 18:53:28 +0200 (CEST)
-In-Reply-To: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7724E2604FF
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 20:01:41 +0200 (CEST)
+In-Reply-To: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,87 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergey Kiselev <skiselev@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
+ Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sergey,
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-Best to always CC Mark on any ASoC patches, I've also added Richard from
-Wolfson. Best to read submitting patches from the Documentation
-directory too :) 
+This patch reads max98090 micbias from acpi or dt
 
-On Thu, 2015-05-28 at 09:34 -0700, Sergey Kiselev wrote:
-> Hi,
-> 
-> I am working on a machine driver that uses wm8731 codec and I've
-> noticed that it will not work after rmmod/modprobe of that machine
-> driver. The issue is that wm8731_probe() resets the hardware, but it
-> doesn't reinitialize the regmap cache to the default values.
-> 
-> The patch below fixes this issue.
-> 
-> I also skimmed through other codecs, and some of them might have
-> similar issue (wm8510.c, wm8711.c, wm8750.c, wm8753.c, wm8940.c,
-> wm8960.c, wm8971.c, wm8974.c, wm8988.c, wm8990.c)
-> 
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ .../devicetree/bindings/sound/max98090.txt         |    2 ++
+ sound/soc/codecs/max98090.c                        |    8 +++++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-Richard, can Wolfson take care of these ones. I guess some of the older
-codecs have no way to reset the registers ?
-
-> Another way to avoid this issue might be resetting the codec in the
-> *_spi_probe()/*_i2c_probe(), so that it only gets reset once when
-> codec is loading.
-> 
-> Thanks in advance for any comments/suggestions on the patch.
-> 
-> Thanks,
-> Sergey
-> 
-> Signed-off-by: Sergey Kiselev <skiselev@gmail.com>
-> 
-> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-> index 2245b6a..76af75b 100644
-> --- a/sound/soc/codecs/wm8731.c
-> +++ b/sound/soc/codecs/wm8731.c
-> @@ -84,7 +84,7 @@ static bool wm8731_writeable(struct device *dev,
-> unsigned int reg)
->   return reg <= WM8731_RESET;
->  }
-> 
-> -#define wm8731_reset(c) snd_soc_write(c, WM8731_RESET, 0)
-
-I would have expected this to reset the register values so I'm not sure
-why it's failing in your case ?
-
-> +static int wm8731_reset(struct snd_soc_codec *codec);
-> 
->  static const char *wm8731_input_select[] = {"Line In", "Mic"};
-> 
-> @@ -665,6 +665,21 @@ static const struct regmap_config wm8731_regmap = {
->   .num_reg_defaults = ARRAY_SIZE(wm8731_reg_defaults),
->  };
-> 
-> +static int wm8731_reset(struct snd_soc_codec *codec)
-> +{
-> + int ret;
-> + struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-> +
-> + ret = snd_soc_write(codec, WM8731_RESET, 0);
-> +
-> + if (ret != 0)
-> + return ret;
-> +
-> + regmap_reinit_cache(wm8731->regmap, &wm8731_regmap);
-> +
-> + return 0;
-> +}
-> +
-
-Your mailer has screwed up the formatting here :(
-
->  #if defined(CONFIG_SPI_MASTER)
->  static int wm8731_spi_probe(struct spi_device *spi)
->  {
-
-Liam
+diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+index aa802a2..eecb710 100644
+--- a/Documentation/devicetree/bindings/sound/max98090.txt
++++ b/Documentation/devicetree/bindings/sound/max98090.txt
+@@ -18,6 +18,8 @@ Optional properties:
+ 
+ - maxim,dmic-freq: Frequency at which to clock DMIC
+ 
++- maxim,micbias: Micbias voltage applies to the analog mic
++
+ Pins on the device (for linking into audio routes):
+ 
+   * MIC1
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index c230626..4b61db7 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2419,6 +2419,8 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	struct max98090_cdata *cdata;
+ 	enum max98090_type devtype;
+ 	int ret = 0;
++	int err;
++	unsigned int micbias;
+ 
+ 	dev_dbg(codec->dev, "max98090_probe\n");
+ 
+@@ -2503,8 +2505,12 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, M98090_REG_BIAS_CONTROL,
+ 		M98090_VCM_MODE_MASK);
+ 
++	err = device_property_read_u32(codec->dev, "maxim,micbias", &micbias);
++	if (err || micbias < M98090_MBVSEL_2V2  || micbias > M98090_MBVSEL_2V8)
++		micbias = M98090_MBVSEL_2V8;
++
+ 	snd_soc_update_bits(codec, M98090_REG_MIC_BIAS_VOLTAGE,
+-		M98090_MBVSEL_MASK, M98090_MBVSEL_2V8);
++		M98090_MBVSEL_MASK, micbias);
+ 
+ 	max98090_add_widgets(codec);
+ 
+-- 
+1.7.9.5
