@@ -1,35 +1,70 @@
-From: Quentin Lambert <lambert.quentin@gmail.com>
-Subject: Re: [PATCH] ALSA: aoa: convert bus code to use dev_groups
-Date: Thu, 28 May 2015 15:59:57 +0200
-Message-ID: <55671F5D.6060807@gmail.com>
-References: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com> <s5hwpzs7qrz.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: arizona: Fix noise generator gain TLV
+Date: Thu, 28 May 2015 15:02:31 +0100
+Message-ID: <20150528140231.GW21577@sirena.org.uk>
+References: <1432819692-30122-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <s5hwpzs7qrz.wl-tiwai@suse.de>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1368176915339391759=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EA1E26610B
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 16:02:37 +0200 (CEST)
+In-Reply-To: <1432819692-30122-1-git-send-email-rf@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============1368176915339391759==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1KGYfHOCPIQBbQil"
+Content-Disposition: inline
 
-On 28/05/2015 15:52, Takashi Iwai wrote:
-> At Thu, 28 May 2015 14:48:27 +0200,
-> Quentin Lambert wrote:
->> You should use dev_groups instead of the dev_attrs field of struct
->> bus_type. This converts the MDIO bus code to use the correct field.
->>
->> These modifications were made using Coccinelle.
->>
->> Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
-> What's wrong with dev_attrs?
-> (Not offending, I'm just curious where the preference for dev_groups
->   is referred...)
 
-This patch is based on commit 4192c74940e23da727eb02b7b4ee779dde2f670,
-its message indicates that dev_attrs is going away.
+--1KGYfHOCPIQBbQil
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Quentin
+On Thu, May 28, 2015 at 02:28:12PM +0100, Richard Fitzgerald wrote:
+> The Arizona codec drivers had an incorrect dB scaling for the
+> noise generator gain that started at 0dB and went upwards.
+> Actually the highest setting is 0dB.
 
+Applied, thanks.
+
+--1KGYfHOCPIQBbQil
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVZx/2AAoJECTWi3JdVIfQG/AH/AyGXw6rukqbewB4oSbmj0i4
+96EFnFWS/rFmdNx7lemE7uOmpQFlNKDkVt/jCvT45pliZyLtOtlVVI1Y9QGf5P0/
+RfanRfu99AjS6L35pGZFxJ5tEZcxG3teJQ262JuPWw1FcC/az2rFLBLA4RcGbHzJ
+9MwHf5TGAyrocJSBIem8WdhAXZLa71MO3DacEixa8q7fAkUNIq9ElejHi1pb+Toz
+v/iOl0YnBgoJpv2cflqnq0hvJjrOoAzpnLNW7qJwdLc7Wq1pmv5/rCBaJJw0IXCP
+2yjlvDCqd9pYKs9drDHKlhLQSR7aaot+zV8tMafJKjJNW7P2+jb0Eea9sX3UCpU=
+=DJak
+-----END PGP SIGNATURE-----
+
+--1KGYfHOCPIQBbQil--
+
+--===============1368176915339391759==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1368176915339391759==--
