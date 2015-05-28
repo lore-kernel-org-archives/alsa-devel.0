@@ -1,72 +1,75 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 01/18] mfd: add new driver for Sharp LoCoMo
-Date: Thu, 28 May 2015 12:58:23 +0100
-Message-ID: <20150528115823.GQ11677@x1>
-References: <1432554113-26280-1-git-send-email-dbaryshkov@gmail.com>
- <1432554113-26280-2-git-send-email-dbaryshkov@gmail.com>
- <20150527102756.GH11677@x1>
- <CALT56yO5Eu4Bk+_4sn2WgURh9YTsym9inWkvJftKUi_aLy5XXw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CALT56yO5Eu4Bk+_4sn2WgURh9YTsym9inWkvJftKUi_aLy5XXw@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, linux-input <linux-input@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Quentin Lambert <lambert.quentin@gmail.com>
+Subject: [PATCH] ALSA: aoa: convert bus code to use dev_groups
+Date: Thu, 28 May 2015 14:48:27 +0200
+Message-ID: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, Quentin Lambert <lambert.quentin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 May 2015, Dmitry Eremin-Solenikov wrote:
+You should use dev_groups instead of the dev_attrs field of struct
+bus_type. This converts the MDIO bus code to use the correct field.
 
-> 2015-05-27 13:27 GMT+03:00 Lee Jones <lee.jones@linaro.org>:
-> > On Mon, 25 May 2015, Dmitry Eremin-Solenikov wrote:
-> >
-> >> LoCoMo is a GA used on Sharp Zaurus SL-5x00. Current driver does h=
-as
-> >> several design issues (special bus instead of platform bus, doesn'=
-t use
-> >> mfd-core, etc).
-> >>
-> >> Implement 'core' parts of locomo support as an mfd driver.
-> >>
-> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> >> ---
-> >
-> > These things are much easier to re-review if you keep a change-log
-> > here.
-> >
-> >>  drivers/mfd/Kconfig        |  10 ++
-> >>  drivers/mfd/Makefile       |   1 +
-> >>  drivers/mfd/locomo.c       | 336 ++++++++++++++++++++++++++++++++=
-+++++++++++++
-> >>  include/linux/mfd/locomo.h | 169 +++++++++++++++++++++++
-> >>  4 files changed, 516 insertions(+)
-> >>  create mode 100644 drivers/mfd/locomo.c
-> >>  create mode 100644 include/linux/mfd/locomo.h
-> >
-> > Looks good now though:
-> >   Acked-by: Lee Jones <lee.jones@linaro.org>
-> >
-> > How do you plan for this to be merged?
->=20
-> I'd like for this to be merged either through mfd tree or through the
-> arm-soc (or rmk's ARM) tree.
-> Some of the respective maintainers already gave their blessing for
-> this patchset to be merged
-> not through their subsystem trees.
+These modifications were made using Coccinelle.
 
-I can take it through MFD.  Once you have all the required Acks,
-resubmit the set with them all applied with a note in the cover-letter
-to that affect and I'll apply.
+Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
+---
+ sound/aoa/soundbus/core.c     |    3 ++-
+ sound/aoa/soundbus/soundbus.h |    2 +-
+ sound/aoa/soundbus/sysfs.c    |   13 ++++++++-----
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe linux-gpio" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--- a/sound/aoa/soundbus/core.c
++++ b/sound/aoa/soundbus/core.c
+@@ -150,6 +150,7 @@ static int soundbus_device_resume(struct
+ 
+ #endif /* CONFIG_PM */
+ 
++ATTRIBUTE_GROUPS(soundbus_dev);
+ static struct bus_type soundbus_bus_type = {
+ 	.name		= "aoa-soundbus",
+ 	.probe		= soundbus_probe,
+@@ -160,7 +161,7 @@ static struct bus_type soundbus_bus_type
+ 	.suspend	= soundbus_device_suspend,
+ 	.resume		= soundbus_device_resume,
+ #endif
+-	.dev_attrs	= soundbus_dev_attrs,
++	.dev_groups	= soundbus_dev_groups,
+ };
+ 
+ int soundbus_add_one(struct soundbus_dev *dev)
+--- a/sound/aoa/soundbus/soundbus.h
++++ b/sound/aoa/soundbus/soundbus.h
+@@ -199,6 +199,6 @@ struct soundbus_driver {
+ extern int soundbus_register_driver(struct soundbus_driver *drv);
+ extern void soundbus_unregister_driver(struct soundbus_driver *drv);
+ 
+-extern struct device_attribute soundbus_dev_attrs[];
++extern struct attribute *soundbus_dev_attrs[];
+ 
+ #endif /* __SOUNDBUS_H */
+--- a/sound/aoa/soundbus/sysfs.c
++++ b/sound/aoa/soundbus/sysfs.c
+@@ -30,13 +30,16 @@ static ssize_t modalias_show(struct devi
+ 
+ 	return length;
+ }
++static DEVICE_ATTR_RO(modalias);
+ 
+ soundbus_config_of_attr (name, "%s\n");
++static DEVICE_ATTR_RO(name);
+ soundbus_config_of_attr (type, "%s\n");
++static DEVICE_ATTR_RO(type);
+ 
+-struct device_attribute soundbus_dev_attrs[] = {
+-	__ATTR_RO(name),
+-	__ATTR_RO(type),
+-	__ATTR_RO(modalias),
+-	__ATTR_NULL
++struct attribute *soundbus_dev_attrs[] = {
++	&dev_attr_name.attr,
++	&dev_attr_type.attr,
++	&dev_attr_modalias.attr,
++	NULL,
+ };
