@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 0/5] Add a gpio jack device
-Date: Thu, 28 May 2015 20:35:22 +0100
-Message-ID: <20150528193522.GF21577@sirena.org.uk>
-References: <1432332563-15447-1-git-send-email-dgreid@chromium.org>
- <55633CED.2090600@metafoo.de>
- <20150525171501.GC21577@sirena.org.uk>
- <5564BED6.3070604@metafoo.de>
- <20150526201426.GA21577@sirena.org.uk>
- <5565A6B3.6040509@metafoo.de>
+Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
+	match function
+Date: Thu, 28 May 2015 20:53:59 +0100
+Message-ID: <20150528195359.GG21577@sirena.org.uk>
+References: <20150525112150.GE3140@localhost> <s5hbnh827n4.wl-tiwai@suse.de>
+ <20150525135854.GV21391@sirena.org.uk>
+ <s5h617f29os.wl-tiwai@suse.de>
+ <20150526133256.GQ21577@sirena.org.uk>
+ <s5hr3q3cv77.wl-tiwai@suse.de>
+ <20150526194316.GY21577@sirena.org.uk>
+ <s5hfv6ieero.wl-tiwai@suse.de>
+ <20150527183406.GM21577@sirena.org.uk>
+ <s5hpp5lde48.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1284831403081903700=="
+Content-Type: multipart/mixed; boundary="===============8648834648424487014=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9458F260502
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 21:35:38 +0200 (CEST)
-In-Reply-To: <5565A6B3.6040509@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D3FB260502
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 21:54:07 +0200 (CEST)
+In-Reply-To: <s5hpp5lde48.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,86 +29,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, zhengxing@rock-chips.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1284831403081903700==
+--===============8648834648424487014==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4qmSKZ4wRjDlc0ae"
+	protocol="application/pgp-signature"; boundary="2ta6wqIeGcGmxVy2"
 Content-Disposition: inline
 
 
---4qmSKZ4wRjDlc0ae
+--2ta6wqIeGcGmxVy2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 27, 2015 at 01:12:51PM +0200, Lars-Peter Clausen wrote:
-> On 05/26/2015 10:14 PM, Mark Brown wrote:
+On Wed, May 27, 2015 at 09:17:27PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> >Could you expand on the abstraction problems you see please?  It looks
-> >like a fairly direct mapping of GPIOs to a jack to me (like I say I
-> >don't see having GPIOs directly on the jack object as a problem - having
-> >to create a separate node to put the GPIOs in doesn't seem to solve
-> >anything) and we're not likely to have enough GPIOs to make the usual
-> >problems with lists of values too severe.
+> > I'm unclear how that would (practically speaking) be accomplished if
+> > they're in two separate worlds for matching.  Come to think of it how
+> > does this work if we have more than one matching system in use - how
+> > does the driver model code cope with that, what happens if one match
+> > function ends up looking at data for another match type?
 
-> Sorry, I overlooked something which lead to a bit of misunderstanding. I
-> though that the gpio-audio-jack driver also sets up the DAPM pins for the
-> jack, based on that patch 4 removes the DAPM jack pin setup from
-> tegra_max98090 driver. This would have resulted in a weired dependency chain
-> where the gpio-audio-jack driver sets references DAPM pins by name which
-> belong to the audio fabric that references the gpio-audio-jack node as its
-> jack detection chip. But the driver doesn't actually do that so there is no
-> real implicit dependency to the audio-fabric in the binding itself and it is
-> all internal to the implementation. So that is OK.
+> The matching function does the same thing, but it just looks at the
+> different embedded id tables.  The bus match function already checks
+> each device/driver type beforehand.
 
-Ah, yes - that would indeed have been bad.
+How do we safely do the looking at different tables bit though?  I
+should probably go back and look again at the original patch...
 
-> I'm still a bit uncomfortable with mixing up jacks and jack detection logic.
-> For the GPIO based jack detection logic this isn't that bad since we could
-> argue that the DT node represents the jack. But I'm a bit afraid that this
-> sets a precedence and we'll soon see bindings where the description of the
-> jack becomes part of the description of the jack detection chip or CODEC.
-> And the component or CODEC driver is responsible for registering the jack.
+> > > The fact you might be missing from the beginning of the story is that
+> > > we need to implement two different driver sets for ASoC, both for
+> > > controller and codec drivers.  They can't be unified with legacy HDA
+> > > unless we merge ASoC core codes into ALSA core (e.g. DPCM or DAPM into
+> > > ALSA core).  Also ASoC has the different ways of registration, too.
+> >=20
+> > Wow, that's not what I'd have expected to be happening at all and really
+> > should have been mentioned at some point.  I need to think about this
+> > further.
 
-Yes, we do need to make it *the* binding for a jack when things are put
-into DT.  Hopefully that's fairly easy to police, and if we can get some
-detection drivers using a binding that works with a jack object (ideally
-with helpers) then that will provide positive examples too.
+> > What I had expected to see for ASoC/HDA integration was something where
+> > ASoC devices were providing a standard HDA controller and then use the
+> > same CODEC drivers as everything else.  Not doing that means that we
+> > inveitably have some duplication for at least things like CODEC quirks
+> > and device specific support which doesn't seem like the best idea.
+> > There's also userspace interfaces for things like the HDA device graph
+> > that'd need looking at.
 
-> And the other problem is how do we match up DAPM widgets to a jack. This is
-> functionality from the tegra_max98090 driver that is lost in this series.
+> Actually that's the exact plan -- the codec graph will be parsed in
+> user-space (or pre-parsed) and mapped via DFW.
 
-That is going to be an issue when we start hooking things up isn't it.
-Off the top if my head if we define some standard set of widgets that
-get created then it just becomes another device for the machine to route
-to/from (which is the logical extension of making it an auxdev).
+OK, more surprises!
 
---4qmSKZ4wRjDlc0ae
+Looking at the Broadwell based I2S systems that don't work with any
+released set of upstream software (they need alsa-lib from git) I'm
+wondering how close these systems are to getting into the hands of users
+and what the transition from existing HDA to userspace parsing HDA is
+going to look like.
+
+I guess older distros will just bind the existing HDA controller drivers
+to them and use the hardware without any of the shiny new features which
+ought to be fine and I'm sure that once everyone has got the new stuff
+it will all be glorious, it's the space where people are upgrading
+(possibly upgrading the kernel or userspace separately) that worries me.
+Especially the bit where people ask me to make their sound work when
+they see their system uses ASoC!
+
+> The quirks are still open questions.  Currently, ASoC HDA is targeted
+> only to the new systems with SKL.  The rest will keep supported by the
+> existing driver.  So, we expect that the amount of quirks can be
+> reduced much (starting from zero).
+
+I'm sure that our hardware engineering colleagues wouldn't want us to be
+bored and will give us something to do there :)
+
+> > Having HDA use ASoC doesn't seem like a terrible idea, there are aspects
+> > of HDA that map quite well onto ASoC, but doesn't seem to be the
+> > intention here and I'm ambivalent about it being worth the effort.  I
+> > don't think it would need us to move ASoC into the core any more than
+> > any other driver, it'd just make it much more widely used.
+
+> Heh, that's the very reason why we started implementing a different
+> driver set, after all.  The new driver code is written in minimalistic
+> manner to fit better with ASoC.  The heavy part has been already
+> shifted into HDA core side, that is basically a stripped version from
+> the old HDA code.
+
+> ASoC implementation was requested rather due to DPCM, compress
+> support, etc, which is currently ASoC-specific features.  The current
+> patchset we've seen is really a tip of iceberg...
+
+Right, and I'm aware of the reuse potential with sharing features with
+the embedded side (like we're already seeing with the I2S Broadwells) so
+if we don't integrate the two somehow we end up with duplicated drivers
+which would be sad.  It's just that I'd anticipated that this would be
+being handled by black boxing the HDA part of the system from the ASoC
+point of view.
+
+--2ta6wqIeGcGmxVy2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVZ235AAoJECTWi3JdVIfQju4H/jQa+7hPJGsLtBy18AiIan1X
-8cr7envbgEUR4kJA4q+zDTSLpn+z0WNU04s9O2iigiFFq1OLc2MzTibQWXS0YMzy
-FTLx2q/a9dQ92uUypLlppNJ+omwETBj+vQVsg7UqVPdTB3EJMAi8c/8H/2SyZDpb
-Eg9Tdn6viwTePA+wMet3vQlcinNJGUVrS/oczO/3k21IB6skqgeBTGZDw/kVpbnx
-+vtqO+rKYJDN77Y1yIOUlH8Yn38PFi59A524dVTrtH0lXieC59oZ7hWC7Z19gtGN
-ChNpMXoPL3vu3cIMFog0hPwi98d4cCcjKBHyfBnHjhZOtLH7aXTPRTXbAj6xnV8=
-=i9z0
+iQEcBAEBCAAGBQJVZ3JXAAoJECTWi3JdVIfQ9wEH/0QsXCpZ3fKdCXSN6E1ECTSl
+f8GL16IedZuSdnuStc6fmgX89yQ0x9j9NDdUgGMq33tVXQLOHUBMiysFOWChO7I8
+3woiw7qKVS8VRcPyIOo44fGsjjXMF8lob2Y7J1Ls5/FFGb4yHRg1kceWEN6lddxd
+R+xy76DTvrTJqcqYx/vxttWRqC1CtEc2WErSXEHihB8wzv+7NDmBUmwECmZv9shK
+WhaNHoPpBRU/AJ4LQldi9amOb35g8feIUFdUKT62JJEUFh4AwuPoeL86QfnVZKKZ
+UJDirHfK2o7bIPlJyYQOxk7XPmE1C9KNYR87DKAVcRZJlwKmdh8UAUahs7Ax6BY=
+=rz6z
 -----END PGP SIGNATURE-----
 
---4qmSKZ4wRjDlc0ae--
+--2ta6wqIeGcGmxVy2--
 
---===============1284831403081903700==
+--===============8648834648424487014==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1284831403081903700==--
+--===============8648834648424487014==--
