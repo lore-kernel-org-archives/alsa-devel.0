@@ -1,93 +1,78 @@
-From: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 05/13] mmc: omap_hsmmc: Support for deferred probing when
- requesting DMA channels
-Date: Thu, 28 May 2015 09:23:25 +0200
-Message-ID: <CAPDyKFocEvZnV=BpPB8L3+XvS4YrMB9OJUW4_x=7H43mDww45Q@mail.gmail.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
-	<1432646768-12532-6-git-send-email-peter.ujfalusi@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - Disable Headphone Mic boost
+	for ALC662
+Date: Thu, 28 May 2015 09:25:41 +0200
+Message-ID: <5566C2F5.2090705@canonical.com>
+References: <1432797346-2742-1-git-send-email-david.henningsson@canonical.com>
+ <s5h4mmxcgq7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1432646768-12532-6-git-send-email-peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-mmc <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DC41260459
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 09:25:42 +0200 (CEST)
+In-Reply-To: <s5h4mmxcgq7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, 1454235@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-On 26 May 2015 at 15:26, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org> wrote:
-> Switch to use ma_request_slave_channel_compat_reason() to request the DMA
 
-I guess it should be dma_request_slave_... huh, that was a long name. :-)
 
-> channels. In case of error, return the error code we received including
-> -EPROBE_DEFER
+On 2015-05-28 09:18, Takashi Iwai wrote:
+> At Thu, 28 May 2015 09:15:46 +0200,
+> David Henningsson wrote:
+>>
+>> When headphone mic boost is above zero, some 10 - 20 second delay
+>> might occur before the headphone mic is operational.
+>> Therefore disable the headphone mic boost control (recording gain is
+>> sufficient even without it).
+>>
+>> (Note: this patch is not about the headset mic, it's about the less
+>> common mic-in only mode.)
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/1454235
+>> Suggested-by: Kailang Yang <kailang@realtek.com>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_realtek.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index d0fa455..87605fc 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -4240,6 +4240,10 @@ static void alc_fixup_headset_mode_alc662(struct hda_codec *codec,
+>>   	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+>>   		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
+>>   		spec->gen.hp_mic = 1; /* Mic-in is same pin as headphone */
+>> +
+>> +		/* Disable boost for mic-in permanently */
+>> +		snd_hda_codec_write(codec, 0x1b, 0, AC_VERB_SET_AMP_GAIN_MUTE, 0x7000);
+>> +		snd_hda_override_wcaps(codec, 0x1b, get_wcaps(codec, 0x1b) & ~AC_WCAP_IN_AMP);
 >
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>
-> CC: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> Can we really hard-code NID 0x1b here...?
 
-With the minor change above.
+alc_fixup_headset_mode_alc662 is currently only called from a pin fixup 
+quirk (via ALC662_FIXUP_DELL_MIC_NO_PRESENCE), and that pin quirk has 
+headphone at 0x1b, so yes.
 
-Acked-by: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+It would we better if we could make it more generic, but I think doing 
+this at HDA_FIXUP_PROBE instead would be too late (the boost control, 
+paths, etc, would already be created)...?
 
-Kind regards
-Uffe
+Do you have a better suggestion?
 
-> ---
->  drivers/mmc/host/omap_hsmmc.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
-> index 57bb85930f81..d252478391ee 100644
-> --- a/drivers/mmc/host/omap_hsmmc.c
-> +++ b/drivers/mmc/host/omap_hsmmc.c
-> @@ -2088,23 +2088,21 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
->         dma_cap_zero(mask);
->         dma_cap_set(DMA_SLAVE, mask);
->
-> -       host->rx_chan =
-> -               dma_request_slave_channel_compat(mask, omap_dma_filter_fn,
-> -                                                &rx_req, &pdev->dev, "rx");
-> +       host->rx_chan = dma_request_slave_channel_compat_reason(mask,
-> +                               omap_dma_filter_fn, &rx_req, &pdev->dev, "rx");
->
-> -       if (!host->rx_chan) {
-> +       if (IS_ERR(host->rx_chan)) {
->                 dev_err(mmc_dev(host->mmc), "unable to obtain RX DMA engine channel %u\n", rx_req);
-> -               ret = -ENXIO;
-> +               ret = PTR_ERR(host->rx_chan);
->                 goto err_irq;
->         }
->
-> -       host->tx_chan =
-> -               dma_request_slave_channel_compat(mask, omap_dma_filter_fn,
-> -                                                &tx_req, &pdev->dev, "tx");
-> +       host->tx_chan = dma_request_slave_channel_compat_reason(mask,
-> +                               omap_dma_filter_fn, &tx_req, &pdev->dev, "tx");
->
-> -       if (!host->tx_chan) {
-> +       if (IS_ERR(host->tx_chan)) {
->                 dev_err(mmc_dev(host->mmc), "unable to obtain TX DMA engine channel %u\n", tx_req);
-> -               ret = -ENXIO;
-> +               ret = PTR_ERR(host->tx_chan);
->                 goto err_irq;
->         }
->
-> @@ -2166,9 +2164,9 @@ err_slot_name:
->         if (host->use_reg)
->                 omap_hsmmc_reg_put(host);
->  err_irq:
-> -       if (host->tx_chan)
-> +       if (!IS_ERR_OR_NULL(host->tx_chan))
->                 dma_release_channel(host->tx_chan);
-> -       if (host->rx_chan)
-> +       if (!IS_ERR_OR_NULL(host->rx_chan))
->                 dma_release_channel(host->rx_chan);
->         pm_runtime_put_sync(host->dev);
->         pm_runtime_disable(host->dev);
-> --
-> 2.3.5
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
