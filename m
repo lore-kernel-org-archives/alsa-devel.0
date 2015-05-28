@@ -1,18 +1,20 @@
-From: Yang Fang <yang.a.fang@intel.com>
-Subject: Re: [PATCH 1/3] ASoC: max98090: read micbias from
- device property
-Date: Wed, 27 May 2015 16:40:41 -0700
-Message-ID: <20150527234041.GA61746@mocha>
-References: <B03A893ADFE80748942D13AFAF28451924E7176368@ITSVLEX06.it.maxim-ic.internal>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Realtek ALC892 / snd-hda-intel breakage between
+ 3.16 & 3.19
+Date: Thu, 28 May 2015 10:03:54 +0800
+Message-ID: <CAN8cciY_PGVKaDWpOGmaZgRetS9oQpCoPqH5PpZdVdNgrk26YQ@mail.gmail.com>
+References: <20150527190106.GA12158@dot.dmz.freshdot.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id AAB54260444
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 01:41:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <B03A893ADFE80748942D13AFAF28451924E7176368@ITSVLEX06.it.maxim-ic.internal>
+Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
+ [209.85.214.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50DE0260448
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 04:04:00 +0200 (CEST)
+Received: by obbea2 with SMTP id ea2so22058696obb.3
+ for <alsa-devel@alsa-project.org>; Wed, 27 May 2015 19:03:55 -0700 (PDT)
+In-Reply-To: <20150527190106.GA12158@dot.dmz.freshdot.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anish Kumar <Anish.Kumar@maximintegrated.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "srinivas.sripathi@intel.com" <srinivas.sripathi@intel.com>, "praveen.k.jain@intel.com" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "denny.iriawan@intel.com" <denny.iriawan@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "sathyanarayana.nujella@intel.com" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 27, 2015 at 02:35:40PM -0700, Anish Kumar wrote:
-> > From: "Fang, Yang A" <yang.a.fang@intel.com>
-> >
-> > This patch reads max98090 micbias from acpi or dt
-> >
-> > Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-> > ---
-> > =A0sound/soc/codecs/max98090.c | =A0 =A09 ++++++++-
-> > =A01 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-> > index c230626..27df17e 100644
-> > --- a/sound/soc/codecs/max98090.c
-> > +++ b/sound/soc/codecs/max98090.c
-> > @@ -2419,6 +2419,8 @@ static int max98090_probe(struct snd_soc_codec *c=
-odec)
-> > =A0 =A0 =A0 =A0 struct max98090_cdata *cdata;
-> > =A0 =A0 =A0 =A0 enum max98090_type devtype;
-> > =A0 =A0 =A0 =A0 int ret =3D 0;
-> > + =A0 =A0 =A0 int err;
-> > + =A0 =A0 =A0 unsigned int micbias;
-> >
-> > =A0 =A0 =A0 =A0 dev_dbg(codec->dev, "max98090_probe\n");
-> >
-> > @@ -2503,8 +2505,13 @@ static int max98090_probe(struct snd_soc_codec *=
-codec)
-> > =A0 =A0 =A0 =A0 snd_soc_write(codec, M98090_REG_BIAS_CONTROL,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 M98090_VCM_MODE_MASK);
-> >
-> > + =A0 =A0 =A0 err =3D device_property_read_u32(codec->dev, "max,micbias=
-", &micbias);
-> =
-
->       =A0 =A0 =A0 if (err || micbias < M98090_MBVSEL_2V2 || micbias > M98=
-090_MBVSEL_2V8)
->    =A0 =A0 =A0 =A0 =A0 =A0 =A0 micbias =3D M98090_MBVSEL_2V8;
-> Just stick sanity as well.
-thanks.will include in v2. waiting for more comments
+MjAxNS01LTI4IOS4iuWNiDM6MDEg5pa8ICJTYW5kZXIgU21lZW5rIiA8c3NtZWVua0BmcmVzaGRv
+dC5uZXQ+IOWvq+mBk++8mgo+Cj4gSGksCj4KPiBBZnRlciB1cGdyYWRpbmcgZnJvbSAzLjE2LjAt
+MzgtZ2VuZXJpYyAoVWJ1bnR1IFV0b3BpYykgdG8KPiAzLjE5LjAtMTgtZ2VuZXJpYyAoVWJ1bnR1
+IFZpdmlkKSBteSBhdWRpbyBzdG9wcGVkIHdvcmtpbmcuCj4gVGhlIGlzc3VlIGFwcGVhcnMgdG8g
+YmUgaW4gdGhlIHNuZC1oZGEtaW50ZWwgZHJpdmVyLgo+Cj4gJ0Fsc2EtaW5mbycgaXMgYXR0YWNo
+ZWQgYXMgZ3ppcCB0ZXh0LCBvciBvbmxpbmUgaW4gcGFzdGUgYmluczoKPiAtIDMuMTksIGJyb2tl
+bjogIGh0dHBzOi8vOG4xLm9yZy8xMDU3NS9lNWMxCj4gLSAzLjE2LCB3b3JraW5nOiBodHRwczov
+LzhuMS5vcmcvMTA1NzYvMDYzMQo+Cj4gV2l0aCAzLjE5LCB0b29scyBmYWlsIGxpa2U6Cj4gfCBb
+c2FuZGVyc0Btc2k6fl0gJSBhcGxheSB0ZXN0Lndhdgo+IHwgUGxheWluZyBXQVZFICd0ZXN0Lndh
+dicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUgNDQxMDAgSHosClN0ZXJlbwo+
+IHwgQUxTQSBsaWIgcGNtX3B1bHNlLmM6NzUyOihwdWxzZV9wcmVwYXJlKSBQdWxzZUF1ZGlvOiBV
+bmFibGUgdG8gY3JlYXRlCnN0cmVhbTogTm8gc3VjaCBlbnRpdHkKPiB8IGFwbGF5OiBzZXRfcGFy
+YW1zOjEyOTc6IFVuYWJsZSB0byBpbnN0YWxsIGh3IHBhcmFtczoKPiB8IFsgLi4gXQo+IHwKPiB8
+IFtzYW5kZXJzQG1zaTp+XSAlIG1wbGF5ZXIgLWFvIGFsc2EgdGVzdC53YXYKPiB8IFNlbGVjdGVk
+IGF1ZGlvIGNvZGVjOiBVbmNvbXByZXNzZWQgUENNIFtwY21dCj4gfCBbIC4uIF0KPiB8IEFVRElP
+OiA0NDEwMCBIeiwgMiBjaCwgczE2bGUsIDE0MTEuMiBrYml0LzEwMC4wMCUgKHJhdGlvOgo+IHwg
+MTc2NDAwLT4xNzY0MDApCj4gfCBbQU9fQUxTQV0gYWxzYS1saWI6IHBjbV9wdWxzZS5jOjc1Mjoo
+cHVsc2VfcHJlcGFyZSkgUHVsc2VBdWRpbzogVW5hYmxlCnRvIGNyZWF0ZSBzdHJlYW06IE5vIHN1
+Y2ggZW50aXR5Cj4gfCBbQU9fQUxTQV0gVW5hYmxlIHRvIHNldCBody1wYXJhbWV0ZXJzOiBJbnB1
+dC9vdXRwdXQgZXJyb3IKPiB8IEZhaWxlZCB0byBpbml0aWFsaXplIGF1ZGlvIGRyaXZlciAnYWxz
+YScKPiB8IENvdWxkIG5vdCBvcGVuL2luaXRpYWxpemUgYXVkaW8gZGV2aWNlIC0+IG5vIHNvdW5k
+Lgo+Cj4gQW5kIGkgaGF2ZSBvbmx5IG9uZSBjYXJkIGxpc3RlZCBpbiAvcHJvYy9hc291bmQvY2Fy
+ZHMsIGluZGV4IDEgbm90IDA6Cj4gfCBbc2FuZGVyc0Btc2k6fl0gJSBjYXQgL3Byb2MvYXNvdW5k
+L2NhcmRzCj4gfCAgMSBbUENIICAgICAgICAgICAgXTogSERBLUludGVsIC0gSERBIEludGVsIFBD
+SAo+IHwgICAgICAgICAgICAgICAgICAgICAgIEhEQSBJbnRlbCBQQ0ggYXQgMHhmN2IxMDAwMCBp
+cnEgMzYKPgo+IFRoaXMgYWxsIHdvcmtzIHBlcmZlY3RseSBmaW5lIHdpdGggMy4xNi4KPgo+IFBs
+ZWFzZSBsZXQgbWUga25vdyB3aGVuIGkgY2FuIHN1cHBseSBtb3JlIGluZm9ybWF0aW9uIHRvIGRp
+ZyBpbnRvIHRoaXMhCj4KCkhETUkgZmFpbCBiZWNhdXNlIGRybS9pOTE1IGZhaWwKCj4gfCBBTFNB
+IGxpYiBwY21fcHVsc2UuYzo3NTI6KHB1bHNlX3ByZXBhcmUpIFB1bHNlQXVkaW86IFVuYWJsZSB0
+byBjcmVhdGUKc3RyZWFtOiBObyBzdWNoIGVudGl0eQoKVGhpcyBzZWVtIHB1bHNlYXVkaW8gZmFp
+bAoKWzAwMGQwMGgwMm0wMXNdIFtkcm1dIEluaXRpYWxpemVkIGk5MTUgMS42LjAgMjAxNDExMjEg
+Zm9yIDAwMDA6MDA6MDIuMCBvbgptaW5vciAwClswMDBkMDBoMDJtMDFzXSBzbmRfaGRhX2ludGVs
+IDAwMDA6MDA6MDMuMDogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpClswMDBkMDBoMDJt
+MDFzXSBzbmRfaGRhX2ludGVsIDAwMDA6MDA6MWIuMDogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+
+IDAwMDIpClswMDBkMDBoMDJtMDFzXSBmYmNvbjogaW50ZWxkcm1mYiAoZmIwKSBpcyBwcmltYXJ5
+IGRldmljZQotLQpbMDAwZDAwaDAybTAxc10gaXdsd2lmaSAwMDAwOjA1OjAwLjA6IGVuYWJsaW5n
+IGRldmljZSAoMDAwMCAtPiAwMDAyKQpbMDAwZDAwaDAybTAxc10gc291bmQgaGRhdWRpb0MxRDA6
+IGF1dG9jb25maWc6IGxpbmVfb3V0cz0xCigweDFiLzB4MC8weDAvMHgwLzB4MCkgdHlwZTpzcGVh
+a2VyClswMDBkMDBoMDJtMDFzXSBzb3VuZCBoZGF1ZGlvQzFEMDogICAgc3BlYWtlcl9vdXRzPTAg
+KDB4MC8weDAvMHgwLzB4MC8weDApClswMDBkMDBoMDJtMDFzXSBzb3VuZCBoZGF1ZGlvQzFEMDog
+ICAgaHBfb3V0cz0xICgweDE0LzB4MC8weDAvMHgwLzB4MCkKWzAwMGQwMGgwMm0wMXNdIHNvdW5k
+IGhkYXVkaW9DMUQwOiAgICBtb25vOiBtb25vX291dD0weDAKWzAwMGQwMGgwMm0wMXNdIHNvdW5k
+IGhkYXVkaW9DMUQwOiAgICBkaWctb3V0PTB4MWUvMHgwClswMDBkMDBoMDJtMDFzXSBzb3VuZCBo
+ZGF1ZGlvQzFEMDogICAgaW5wdXRzOgpbMDAwZDAwaDAybTAxc10gc291bmQgaGRhdWRpb0MxRDA6
+ICAgICAgSW50ZXJuYWwgTWljPTB4MTkKWzAwMGQwMGgwMm0wMXNdIHNvdW5kIGhkYXVkaW9DMUQw
+OiAgICAgIE1pYz0weDE4ClswMDBkMDBoMDJtMDFzXSBpbnB1dDogSERBIEludGVsIFBDSCBNaWMg
+YXMKL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDEvaW5wdXQxMApb
+MDAwZDAwaDAybTAxc10gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggSGVhZHBob25lIGFzCi9kZXZpY2Vz
+L3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQxL2lucHV0MTEKWzAwMGQwMGgwMm0w
+MXNdIGl3bHdpZmkgMDAwMDowNTowMC4wOiBsb2FkZWQgZmlybXdhcmUgdmVyc2lvbiAyNS4xNy4x
+Mi4wCm9wX21vZGUgaXdsbXZtCi0tClswMDBkMDBoMDJtMDFzXSBDb3VsZCBub3QgY3JlYXRlIGRl
+YnVnZnMgJ2k5MTVfcGlwZV91cGRhdGVfc3RhcnQnIGRpcmVjdG9yeQpbMDAwZDAwaDAybTAxc10g
+c25kX2hkYV9pbnRlbCAwMDAwOjAwOjAzLjA6IENhbm5vdCB0dXJuIG9uIGRpc3BsYXkgcG93ZXIg
+b24KaTkxNQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
