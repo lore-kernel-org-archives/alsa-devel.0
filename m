@@ -1,64 +1,36 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
-	failed issue
-Date: Thu, 28 May 2015 16:44:34 +0100
-Message-ID: <1432827874.2726.57.camel@loki>
-References: <1432793658-9463-1-git-send-email-yang.jie@intel.com>
- <s5hegm07n7v.wl-tiwai@suse.de>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: Dump DSP_SCRATCH1 on DSP shutdown
+Date: Thu, 28 May 2015 17:13:13 +0100
+Message-ID: <20150528161313.GB19558@opensource.wolfsonmicro.com>
+References: <1432820714-31850-1-git-send-email-rf@opensource.wolfsonmicro.com> <20150528135751.GV21577@sirena.org.uk> <20150528142431.GA19558@opensource.wolfsonmicro.com> <20150528143724.GY21577@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 564F42604BC
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 17:44:50 +0200 (CEST)
-In-Reply-To: <s5hegm07n7v.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150528143724.GY21577@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-05-28 at 17:09 +0200, Takashi Iwai wrote:
-> At Thu, 28 May 2015 14:14:18 +0800,
-> Jie Yang wrote:
-> > 
-> > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > 
-> > In haswell-pcm module unloading, we can't free runtime modules
-> > directly, for they may be already freed in runtime suspend.
-> > 
-> > Here add executing suspend call to unload runtime modules, only
-> > for status not equal to RPM_SUSPEND, to fix broadwell module
-> > removing failed issue.
+On Thu, May 28, 2015 at 03:37:24PM +0100, Mark Brown wrote:
+> On Thu, May 28, 2015 at 03:24:39PM +0100, Richard Fitzgerald wrote:
+> > On Thu, May 28, 2015 at 02:57:51PM +0100, Mark Brown wrote:
 > 
-> What if a kernel is built without PM support?  (Practically seen, it's
-> never any serious problem, though.)
+> > > > -		adsp_dbg(dsp, "Shutdown complete\n");
+> > > > +		adsp_info(dsp, "Shutdown complete (SCRATCH1:0x%x)\n", scratch1);
 > 
+> > > That seems a bit loud for a diagnostic message, why raise the severity?
+> 
+> > It's a diagnostic of the firmware, not the driver, and we can't assume that
+> > people trying to use a firmware have the ability to build and flash a kernel
+> > with a debug version of the driver
+> 
+> The default is that dev_dbg() is available in dmesg but not on the
+> console which usually seems like a reasonable balance for this sort of
+> thing - it's there if people want it but not included in the default
+> logging.
 
-Keyon, it sounds like you will still need hsw_pcm_free_modules() and
-should call it after the PM put/disable on module remove. You will need
-to add some code too that will check the memory state prior to doing any
-unloading though....
-
-Liam
-
-
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+What you're describing seems to be the default for dev_info().
+For me I don't get any dev_dbg() output in the dmesg log unless the source
+file has a #define DEBUG at the top.
