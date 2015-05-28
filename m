@@ -1,101 +1,70 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v2 3/3] ASoC: Intel: fixed TI button detection
-Date: Thu, 28 May 2015 11:00:48 -0700
-Message-ID: <1432836048-102175-3-git-send-email-yang.a.fang@intel.com>
-References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
- <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH v4 01/18] mfd: add new driver for Sharp LoCoMo
+Date: Thu, 28 May 2015 22:07:40 +0300
+Message-ID: <CALT56yPJ=Y7oq00PyRT4zguNcaetT=ozQ6nE8eknr9P2co9nxg@mail.gmail.com>
+References: <1432554113-26280-1-git-send-email-dbaryshkov@gmail.com>
+	<1432554113-26280-2-git-send-email-dbaryshkov@gmail.com>
+	<20150527102756.GH11677@x1>
+	<CALT56yO5Eu4Bk+_4sn2WgURh9YTsym9inWkvJftKUi_aLy5XXw@mail.gmail.com>
+	<20150528115823.GQ11677@x1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id ED0AA260508
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 20:01:42 +0200 (CEST)
-In-Reply-To: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20150528115823.GQ11677@x1>
+Sender: linux-input-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, linux-input <linux-input@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+2015-05-28 14:58 GMT+03:00 Lee Jones <lee.jones@linaro.org>:
+> On Wed, 27 May 2015, Dmitry Eremin-Solenikov wrote:
+>
+>> 2015-05-27 13:27 GMT+03:00 Lee Jones <lee.jones@linaro.org>:
+>> > On Mon, 25 May 2015, Dmitry Eremin-Solenikov wrote:
+>> >
+>> >> LoCoMo is a GA used on Sharp Zaurus SL-5x00. Current driver does has
+>> >> several design issues (special bus instead of platform bus, doesn't use
+>> >> mfd-core, etc).
+>> >>
+>> >> Implement 'core' parts of locomo support as an mfd driver.
+>> >>
+>> >> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>> >> ---
+>> >
+>> > These things are much easier to re-review if you keep a change-log
+>> > here.
+>> >
+>> >>  drivers/mfd/Kconfig        |  10 ++
+>> >>  drivers/mfd/Makefile       |   1 +
+>> >>  drivers/mfd/locomo.c       | 336 +++++++++++++++++++++++++++++++++++++++++++++
+>> >>  include/linux/mfd/locomo.h | 169 +++++++++++++++++++++++
+>> >>  4 files changed, 516 insertions(+)
+>> >>  create mode 100644 drivers/mfd/locomo.c
+>> >>  create mode 100644 include/linux/mfd/locomo.h
+>> >
+>> > Looks good now though:
+>> >   Acked-by: Lee Jones <lee.jones@linaro.org>
+>> >
+>> > How do you plan for this to be merged?
+>>
+>> I'd like for this to be merged either through mfd tree or through the
+>> arm-soc (or rmk's ARM) tree.
+>> Some of the respective maintainers already gave their blessing for
+>> this patchset to be merged
+>> not through their subsystem trees.
+>
+> I can take it through MFD.  Once you have all the required Acks,
+> resubmit the set with them all applied with a note in the cover-letter
+> to that affect and I'll apply.
 
-In order to make TI button interrupt working max98090 codec
-Need provide mic bias all the time as long as mic is present
-so SHDN and micbias pin are forced on.we also need set max98090
-codec bias close or lower than TI bias.We set them in bios/coreboot
-kernel reads them from device property
+Thank you. This is what I still miss:
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/boards/cht_bsw_max98090_ti.c |   40 ++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+* Russell, could you please review sa1100 parts?
+* Jingoo, could you please review the backlight part?
+* Mark, same question for the updated SPI driver.
+* Linus, can I assume that yours 'Reviewed-by' mean
+  'Acked-by' for the GPIO-related parts?
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 1be0794..3e5842d 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -101,6 +101,43 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int cht_ti_jack_event(struct notifier_block *nb,
-+		unsigned long event, void *data)
-+{
-+
-+	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
-+	struct snd_soc_dai *codec_dai = jack->card->rtd->codec_dai;
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	int pin_status;
-+
-+	if (event & SND_JACK_MICROPHONE) {
-+
-+		pin_status = snd_soc_dapm_get_pin_status(&codec->dapm, "SHDN");
-+		if (!pin_status)
-+			snd_soc_dapm_force_enable_pin(&codec->dapm, "SHDN");
-+
-+		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_sync(&codec->dapm);
-+	} else {
-+
-+		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_sync(&codec->dapm);
-+		/**
-+		* SHDN is max980090 shutdown pin we can not disable
-+		* it in case we are in the middle of playabck or record
-+		* we mark it unlock only so dapm will take care of it
-+		* next time
-+		*/
-+		snd_soc_dapm_disable_pin_unlocked(&codec->dapm, "SHDN");
-+	}
-+
-+	return 0;
-+}
-+
-+static struct notifier_block cht_jack_nb = {
-+	.notifier_call = cht_ti_jack_event,
-+};
-+
- static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
-@@ -130,6 +167,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	if (ctx->ts3a227e_present)
-+		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
-+
- 	return ret;
- }
- 
 -- 
-1.7.9.5
+With best wishes
+Dmitry
