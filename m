@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: max98090: read micbias from
-	device property
-Date: Thu, 28 May 2015 10:28:59 +0100
-Message-ID: <20150528092859.GR21577@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: ts3a227e: use device property api
+Date: Thu, 28 May 2015 10:29:44 +0100
+Message-ID: <20150528092944.GS21577@sirena.org.uk>
 References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
+ <1432684686-14460-2-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1691773747862388948=="
+Content-Type: multipart/mixed; boundary="===============7580511209247360145=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 218DF2604EA
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 11:29:05 +0200 (CEST)
-In-Reply-To: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A32232604A7
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 11:29:49 +0200 (CEST)
+In-Reply-To: <1432684686-14460-2-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +26,47 @@ Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, praveen.k.jain@int
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1691773747862388948==
+--===============7580511209247360145==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5hPnlvMVk0oUI7Ca"
+	protocol="application/pgp-signature"; boundary="0ZWebnVuwrdgwVag"
 Content-Disposition: inline
 
 
---5hPnlvMVk0oUI7Ca
+--0ZWebnVuwrdgwVag
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 26, 2015 at 04:58:04PM -0700, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> This patch reads max98090 micbias from acpi or dt
+On Tue, May 26, 2015 at 04:58:05PM -0700, yang.a.fang@intel.com wrote:
 
-This is adding a new DT binding, the DT binding needs to be documented.
+> -static int ts3a227e_parse_dt(struct ts3a227e *ts3a227e, struct device_node *np)
+> +static int ts3a227e_parse_dt(struct ts3a227e *ts3a227e, struct device *dev)
 
---5hPnlvMVk0oUI7Ca
+You should rename the function - it's not just parsing DT, it's also
+parsing ACPI (and any other firmware interface that comes along) now.
+
+--0ZWebnVuwrdgwVag
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVZt/bAAoJECTWi3JdVIfQ+TQIAIEvh1pibkEOce5dVt5iLRNM
-aHxY7+32BzsWOuMUZ29S0L01eCfHA1yu2YzSxNJ+gk4sEfYOv9BqyuUDIm6wWzfn
-TEqpOzUWzE4IrvlSkN+/wtS9xlozPFWeyP7nxClqjpgekV2zLZ99pInfshzUfeEl
-CQTjZURlauTR1seAMtfDcmAo7d+Ngtv5hv1zb4hrza6g+P83lsIbFc9CCLrWBKUb
-RNUT4ZimydHIEv6nWKHPSVU5FCdLxrZWjDC32B9WZJw+jEiuiSKOOcg6+4WWLvwb
-Q60YZSmPaReWU+MFcx2FAC5LUBuVUxbQG0KbbUnCl/c/uctsnoYc/fJOmci9Xhc=
-=jjL+
+iQEcBAEBCAAGBQJVZuAHAAoJECTWi3JdVIfQ4aUH/i0iRPzpd1JTn4NpsxMgRYBz
+wA8VwcKTvL9nQxxW22grfWgRbr1QTkX4F8fXU2O/D+/onGUGIjXeZakBsTYUNZcA
+TTchDlT0TzxcOLj66FMiqRccL2cPN8rju1w+SA0bS3caedzi6djZjqDf8Ou3g6Ge
+8tjCgm65EW6eRLU3nuL+UCZCiVjUdc1RPY4O/GyeVjDdIMO5Es2GOWekkg52q7lx
+vrIroz6xE0WpSDhFAJkVCXnwYTqCp9/z+oh9ficENrmSR6llqwBNodRkvX/HW5ci
+6L+27VJbOQRG1RSZOze/P9MXU8laQDd9q62v4FTTkWi/fGodYJKosJKtx69FRi0=
+=t3PO
 -----END PGP SIGNATURE-----
 
---5hPnlvMVk0oUI7Ca--
+--0ZWebnVuwrdgwVag--
 
---===============1691773747862388948==
+--===============7580511209247360145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1691773747862388948==--
+--===============7580511209247360145==--
