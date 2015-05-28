@@ -1,20 +1,16 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: Re: Freescale iMX6SL SSI (I2S master mode) Rising edge
- vs Falling edge
-Date: Thu, 28 May 2015 15:15:22 +0800
-Message-ID: <5566C08A.6060804@gmail.com>
-References: <5566BD87.6040505@gmail.com> <20150528070943.GA3532@Asurada>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Disable Headphone Mic boost for
+	ALC662
+Date: Thu, 28 May 2015 09:15:46 +0200
+Message-ID: <1432797346-2742-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AB19260431
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 09:15:28 +0200 (CEST)
-Received: by iebgx4 with SMTP id gx4so31772354ieb.0
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 00:15:27 -0700 (PDT)
-In-Reply-To: <20150528070943.GA3532@Asurada>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE5B22605FF
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 09:15:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, niranjan Patil <Niranjan.Patil@infocus.com>, fabio Estevam <festevam@gmail.com>, richard Jiang <Richard.Jiang@infocus.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: 14545235@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+When headphone mic boost is above zero, some 10 - 20 second delay
+might occur before the headphone mic is operational.
+Therefore disable the headphone mic boost control (recording gain is
+sufficient even without it).
 
-On 05/28/2015 03:09 PM, Nicolin Chen wrote:
-> On Thu, May 28, 2015 at 03:02:31PM +0800, Xuebing Wang wrote:
->
->> According to iMX6SL reference manual, 'TSCKP = 1' means "Data clocked out on
->> *falling* edge of bit clock." (for I2S master mode), rather than "Data on
->> rising edge of bclk in the comments". This means this comment in the source
->> code is *partially* WRONG, am I correct?
-> As you can see, it says "clock out on falling edge" which means
-> for the receiver is still latching the data at the rising edge.
->
+(Note: this patch is not about the headset mic, it's about the less
+common mic-in only mode.)
 
-Nicolin,
+BugLink: https://bugs.launchpad.net/bugs/1454235
+Suggested-by: Kailang Yang <kailang@realtek.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thank you very much. Got you now.
-
-> Nicolin
->
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d0fa455..87605fc 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4240,6 +4240,10 @@ static void alc_fixup_headset_mode_alc662(struct hda_codec *codec,
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
+ 		spec->gen.hp_mic = 1; /* Mic-in is same pin as headphone */
++
++		/* Disable boost for mic-in permanently */
++		snd_hda_codec_write(codec, 0x1b, 0, AC_VERB_SET_AMP_GAIN_MUTE, 0x7000);
++		snd_hda_override_wcaps(codec, 0x1b, get_wcaps(codec, 0x1b) & ~AC_WCAP_IN_AMP);
+ 	} else
+ 		alc_fixup_headset_mode(codec, fix, action);
+ }
 -- 
--- Xuebing
+1.9.1
