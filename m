@@ -1,73 +1,107 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Dump scratch registers on DSP shutdown
-Date: Thu, 28 May 2015 17:32:29 +0100
-Message-ID: <1432830749-1252-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: ASoC: PATCH: wm8731 - reinitialize regmap cache
+ after hardware reset
+Date: Thu, 28 May 2015 17:52:46 +0100
+Message-ID: <1432831966.2726.63.camel@loki>
+References: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E062260502
+ for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 18:53:28 +0200 (CEST)
+In-Reply-To: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergey Kiselev <skiselev@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The SCRATCH registers are used by firmwares to hold diagnostic
-information. Log this during shutdown to assist analysis and debug
-of firmwares.
+Hi Sergey,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
+Best to always CC Mark on any ASoC patches, I've also added Richard from
+Wolfson. Best to read submitting patches from the Documentation
+directory too :) 
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f6642c1..6e7a7000 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -121,6 +121,11 @@
- #define ADSP2_WDMA_CONFIG_2 0x31
- #define ADSP2_RDMA_CONFIG_1 0x34
- 
-+#define ADSP2_SCRATCH0        0x40
-+#define ADSP2_SCRATCH1        0x41
-+#define ADSP2_SCRATCH2        0x42
-+#define ADSP2_SCRATCH3        0x43
-+
- /*
-  * ADSP2 Control
-  */
-@@ -364,6 +369,25 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *mem,
- 	}
- }
- 
-+static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
-+{
-+	u16 scratch[4];
-+	int ret;
-+
-+	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2_SCRATCH0,
-+				scratch, sizeof(scratch));
-+	if (ret) {
-+		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
-+		return;
-+	}
-+
-+	adsp_info(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
-+		  be16_to_cpu(scratch[0]),
-+		  be16_to_cpu(scratch[1]),
-+		  be16_to_cpu(scratch[2]),
-+		  be16_to_cpu(scratch[3]));
-+}
-+
- static int wm_coeff_info(struct snd_kcontrol *kcontrol,
- 			 struct snd_ctl_elem_info *uinfo)
- {
-@@ -1898,6 +1922,9 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-+		/* Log firmware state, it can be useful for analysis */
-+		wm_adsp2_show_fw_status(dsp);
-+
- 		dsp->running = false;
- 
- 		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--- 
-1.7.2.5
+On Thu, 2015-05-28 at 09:34 -0700, Sergey Kiselev wrote:
+> Hi,
+> 
+> I am working on a machine driver that uses wm8731 codec and I've
+> noticed that it will not work after rmmod/modprobe of that machine
+> driver. The issue is that wm8731_probe() resets the hardware, but it
+> doesn't reinitialize the regmap cache to the default values.
+> 
+> The patch below fixes this issue.
+> 
+> I also skimmed through other codecs, and some of them might have
+> similar issue (wm8510.c, wm8711.c, wm8750.c, wm8753.c, wm8940.c,
+> wm8960.c, wm8971.c, wm8974.c, wm8988.c, wm8990.c)
+> 
+
+Richard, can Wolfson take care of these ones. I guess some of the older
+codecs have no way to reset the registers ?
+
+> Another way to avoid this issue might be resetting the codec in the
+> *_spi_probe()/*_i2c_probe(), so that it only gets reset once when
+> codec is loading.
+> 
+> Thanks in advance for any comments/suggestions on the patch.
+> 
+> Thanks,
+> Sergey
+> 
+> Signed-off-by: Sergey Kiselev <skiselev@gmail.com>
+> 
+> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+> index 2245b6a..76af75b 100644
+> --- a/sound/soc/codecs/wm8731.c
+> +++ b/sound/soc/codecs/wm8731.c
+> @@ -84,7 +84,7 @@ static bool wm8731_writeable(struct device *dev,
+> unsigned int reg)
+>   return reg <= WM8731_RESET;
+>  }
+> 
+> -#define wm8731_reset(c) snd_soc_write(c, WM8731_RESET, 0)
+
+I would have expected this to reset the register values so I'm not sure
+why it's failing in your case ?
+
+> +static int wm8731_reset(struct snd_soc_codec *codec);
+> 
+>  static const char *wm8731_input_select[] = {"Line In", "Mic"};
+> 
+> @@ -665,6 +665,21 @@ static const struct regmap_config wm8731_regmap = {
+>   .num_reg_defaults = ARRAY_SIZE(wm8731_reg_defaults),
+>  };
+> 
+> +static int wm8731_reset(struct snd_soc_codec *codec)
+> +{
+> + int ret;
+> + struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+> +
+> + ret = snd_soc_write(codec, WM8731_RESET, 0);
+> +
+> + if (ret != 0)
+> + return ret;
+> +
+> + regmap_reinit_cache(wm8731->regmap, &wm8731_regmap);
+> +
+> + return 0;
+> +}
+> +
+
+Your mailer has screwed up the formatting here :(
+
+>  #if defined(CONFIG_SPI_MASTER)
+>  static int wm8731_spi_probe(struct spi_device *spi)
+>  {
+
+Liam
