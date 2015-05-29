@@ -1,21 +1,21 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5645: change gpio to gpiod
- APIs
-Date: Fri, 29 May 2015 16:23:25 +0200
-Message-ID: <20150529142325.GA539@asus>
-References: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce
+	dma_request_slave_channel_compat_reason()
+Date: Fri, 29 May 2015 17:32:50 +0300
+Message-ID: <55687892.7050606@ti.com>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
+ <20150529093317.GF3140@localhost>
+ <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
+ <20150529101846.GG3140@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id F25472606BF
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:23:30 +0200 (CEST)
-Received: by wicmx19 with SMTP id mx19so17534791wic.0
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 07:23:30 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E64626681E
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:32:57 +0200 (CEST)
+In-Reply-To: <20150529101846.GG3140@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,141 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Linux MMC List <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, linux-crypto@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 29, 2015 at 06:16:46PM +0800, Bard Liao wrote:
-> Move gpio to gpio_desc and use gpiod APIs in codec driver.
+On 05/29/2015 01:18 PM, Vinod Koul wrote:
+> On Fri, May 29, 2015 at 11:42:27AM +0200, Geert Uytterhoeven wrote:
+>> On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul@intel.com> wrot=
+e:
+>>> On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
+>>>> dma_request_slave_channel_compat() 'eats' up the returned error codes =
+which
+>>>> prevents drivers using the compat call to be able to do deferred probi=
+ng.
+>>>>
+>>>> The new wrapper is identical in functionality but it will return with =
+error
+>>>> code in case of failure and will pass the -EPROBE_DEFER to the caller =
+in
+>>>> case dma_request_slave_channel_reason() returned with it.
+>>> This is okay but am worried about one more warpper, how about fixing
+>>> dma_request_slave_channel_compat()
+>>
+>> Then all callers of dma_request_slave_channel_compat() have to be
+>> modified to handle ERR_PTR first.
+>>
+>> The same is true for (the existing) dma_request_slave_channel_reason()
+>> vs. dma_request_slave_channel().
+> Good point, looking again, I think we should rather fix
+> dma_request_slave_channel_reason() as it was expected to return err code =
+and
+> add new users. Anyway users of this API do expect the reason...
 
-I don't get these errors anymore :)
+Hrm, they are for different use.dma_request_slave_channel()/_reason() is for
+drivers only working via DT or ACPI while
+dma_request_slave_channel_compat()/_reason() is for drivers expected to run=
+ in
+DT/ACPI or legacy mode as well.
 
-[    1.805330] rt5645 i2c-10EC5648:00: Fail gpio_request hp_det_gpio
-[    1.805439] rt5645 i2c-10EC5648:00: Fail gpio_direction hp_det_gpio
+I added the dma_request_slave_channel_compat_reason() because OMAP/daVinci
+drivers are using this to request channels - they need to support DT and
+legacy mode.
 
-Thanks,
-Michele
+But it is doable to do this for both the non _compat and _compat version:
+1. change all users to check IS_ERR_OR_NULL(chan)
+ return the PTR_ERR if not NULL, or do whatever the driver was doing in case
+of chan =3D=3D NULL.
+2. change the non _compat and _compat versions to do the same as the _reason
+variants, #define the _reason ones to the non _reason names
+3. Rename the _reason use to non _reason function in drivers
+4. Remove the #defines for the _reason functions
+5. Change the IS_ERR_OR_NULL(chan) to IS_ERR(chan) in all drivers
+The result:
+Both dma_request_slave_channel() and dma_request_slave_channel_compat() will
+return ERR_PTR in case of failure or in success they will return the pinter=
+ to
+chan.
 
-> 
-> Signed-off-by: Bard Liao <bardliao@realtek.com>
-> ---
->  include/sound/rt5645.h    |  3 ---
->  sound/soc/codecs/rt5645.c | 47 +++++++++++++----------------------------------
->  sound/soc/codecs/rt5645.h |  1 +
->  3 files changed, 14 insertions(+), 37 deletions(-)
-> 
-> diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
-> index 652cb9e..22734bc 100644
-> --- a/include/sound/rt5645.h
-> +++ b/include/sound/rt5645.h
-> @@ -20,9 +20,6 @@ struct rt5645_platform_data {
->  	unsigned int dmic2_data_pin;
->  	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
->  
-> -	unsigned int hp_det_gpio;
-> -	bool gpio_hp_det_active_high;
-> -
->  	unsigned int jd_mode;
->  };
->  
-> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-> index aaede45..0cb4942 100644
-> --- a/sound/soc/codecs/rt5645.c
-> +++ b/sound/soc/codecs/rt5645.c
-> @@ -2938,17 +2938,11 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
->  
->  	switch (rt5645->pdata.jd_mode) {
->  	case 0: /* Not using rt5645 JD */
-> -		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
-> -			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
-> -			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
-> -				rt5645->pdata.hp_det_gpio, gpio_state);
-> -		}
-> -		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
-> -			(!rt5645->pdata.gpio_hp_det_active_high &&
-> -			 !gpio_state)) {
-> -			report = rt5645_jack_detect(rt5645->codec, 1);
-> -		} else {
-> -			report = rt5645_jack_detect(rt5645->codec, 0);
-> +		if (rt5645->gpiod_hp_det) {
-> +			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
-> +			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
-> +				gpio_state);
-> +			report = rt5645_jack_detect(rt5645->codec, gpio_state);
->  		}
->  		snd_soc_jack_report(rt5645->hp_jack,
->  				    report, SND_JACK_HEADPHONE);
-> @@ -3253,19 +3247,17 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->  	} else {
->  		if (dmi_check_system(dmi_platform_intel_braswell)) {
->  			rt5645->pdata = *rt5645_pdata;
-> -			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
-> -
-> -			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
-> -				rt5645->pdata.hp_det_gpio = -1;
-> -				dev_err(&i2c->dev, "failed to initialize gpiod\n");
-> -			} else {
-> -				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
-> -				rt5645->pdata.gpio_hp_det_active_high
-> -						= !gpiod_is_active_low(gpiod);
-> -			}
->  		}
->  	}
->  
-> +	rt5645->gpiod_hp_det = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
-> +
-> +	if (IS_ERR(rt5645->gpiod_hp_det) ||
-> +	    gpiod_direction_input(rt5645->gpiod_hp_det)) {
-> +		rt5645->gpiod_hp_det = NULL;
-> +		dev_err(&i2c->dev, "failed to initialize gpiod\n");
-> +	}
-> +
->  	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
->  	if (IS_ERR(rt5645->regmap)) {
->  		ret = PTR_ERR(rt5645->regmap);
-> @@ -3425,16 +3417,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->  			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
->  	}
->  
-> -	if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
-> -		ret = gpio_request(rt5645->pdata.hp_det_gpio, "rt5645");
-> -		if (ret)
-> -			dev_err(&i2c->dev, "Fail gpio_request hp_det_gpio\n");
-> -
-> -		ret = gpio_direction_input(rt5645->pdata.hp_det_gpio);
-> -		if (ret)
-> -			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
-> -	}
-> -
->  	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
->  
->  	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
-> @@ -3450,9 +3432,6 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
->  
->  	cancel_delayed_work_sync(&rt5645->jack_detect_work);
->  
-> -	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
-> -		gpio_free(rt5645->pdata.hp_det_gpio);
-> -
->  	snd_soc_unregister_codec(&i2c->dev);
->  
->  	return 0;
-> diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-> index 9ec4e89..0353a6a 100644
-> --- a/sound/soc/codecs/rt5645.h
-> +++ b/sound/soc/codecs/rt5645.h
-> @@ -2182,6 +2182,7 @@ struct rt5645_priv {
->  	struct rt5645_platform_data pdata;
->  	struct regmap *regmap;
->  	struct i2c_client *i2c;
-> +	struct gpio_desc *gpiod_hp_det;
->  	struct snd_soc_jack *hp_jack;
->  	struct snd_soc_jack *mic_jack;
->  	struct snd_soc_jack *btn_jack;
-> -- 
-> 1.8.1.1.439.g50a6b54
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Is this what you were asking?
+It is a bit broader than what this series was doing: taking care of
+OMAP/daVinci drivers for deferred probing regarding to dmaengine ;)
+
+-- =
+
+P=E9ter
