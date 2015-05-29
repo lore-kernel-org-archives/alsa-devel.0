@@ -1,69 +1,101 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Audio play problem with tlv320aic3106 in mainline.
-Date: Fri, 29 May 2015 15:16:45 +0300
-Message-ID: <556858AD.1030609@ti.com>
-References: <CAFqH_5332TNp+3cTH6O-UgqP8Ah-ZUiZpaTJpy3ZoL4-42fo_g@mail.gmail.com>	<5568133A.6010006@ti.com>
- <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [RFC][PATCH] x86: remove vmalloc.h from asm/io.h
+Date: Fri, 29 May 2015 22:40:06 +1000
+Message-ID: <20150529224006.23096056@canb.auug.org.au>
+References: <20150529191847.2d4cb3a7@canb.auug.org.au>
+	<20150529092105.GA30603@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 40AB92606B2
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 14:16:53 +0200 (CEST)
-In-Reply-To: <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Enric Balletbo Serra <eballetbo@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/m2oxYVLmcp9uyI4uBDEUKwI"; protocol="application/pgp-signature"
+Return-path: <linux-pm-owner@vger.kernel.org>
+In-Reply-To: <20150529092105.GA30603@gmail.com>
+Sender: linux-pm-owner@vger.kernel.org
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Kristen Carlson Accardi <kristen@linux.intel.com>, Viresh Kumar <viresh.kumar@linaro.org>, Vinod Koul <vinod.koul@intel.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Hiral Patel <hiralpat@cisco.com>, Suma Ramars <sramars@cisco.com>, Brian Uchino <buchino@cisco.com>, "James E.J. Bottomley" <JBottomley@odin.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.d>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDUvMjkvMjAxNSAxMjoyNCBQTSwgRW5yaWMgQmFsbGV0Ym8gU2VycmEgd3JvdGU6Cj4+IEl0
-IG1pZ2h0IGJlIHJlYWxseSAyNE1Iei4KPj4gSWYgdGhlIE1DTEsgaW4geW91ciBib2FyZCBpcyB3
-aXJlZCBsaWtlIGFtMzM1eC1ldm1zayBvciBob3cgQmVhZ2xlQm9uZSdzIGF1ZGlvCj4+IGNhcGVz
-IGFyZSB3aXJlZCAoTUNMSyBpcyBjb21pbmcgZnJvbSBBTTMzNXgncyBFVkVOVF9JTlRSMC8xIHBp
-biBhcyBDTEtPVVQxLzIpCj4+IHRoZW4gMjRNSHogaXMgY29ycmVjdC4gT24gdGhlIGFtMzM1eC1l
-dm0gdGhlcmUgaXMgYSBkZWRpY2F0ZWQgY3J5c3RhbAo+PiBwcm92aWRpbmcgdGhlIDEyTUh6Lgo+
-Pgo+IFdlbGwsIGluIG15IGJvYXJkIHRoZXJlIGlzIGFsc28gYSBkZWRpY2F0ZWQgY3J5c3RhbCBw
-cm92aWRpbmcgdGhlCj4gMTJNSHosIHNvIEkgZXhwZWN0IHRoYXQgdGhlIGNvcnJlY3QgdmFsdWUg
-Zm9yIGNsb2NrLWZyZXF1ZW5jeSBpcyAxMk1Iego+IG5vdCAyNE1Iei4KCkkgd2FzIHdyb25nIHdp
-dGggdGhlIEJCVyBhdWRpbyBjYXBlLi4gQXQgbGVhc3QgdGhlIFJldkEgd2hpY2ggSSBoYXZlIGRv
-ZXMgaGF2ZQoxMk1IeiBjcnlzdGFsIGNvbm5lY3RlZCB0byBhaWMzMTA2IE1DTEssIGJ1dCB0aGVy
-ZSBpcyBhIGxpbmUgdG8gdGhlIFNvQydzCkNMS09VVDIuIEJ5IGRlZmF1bHQgdGhlIGNvZGVjIHJ1
-bnMgdXNpbmcgdGhlIDEyTUh6LgpJIGhhdmUgY2hlY2tlZCB3aXRoIGEgc2NvcGUgYW5kIHllcCwg
-SSBoYXZlIDEyTUh6IGZvciBNQ0xLLgoKPiAKPiAgICAgY2xvY2tzIHsKPiAgICAgICAgIGNvbXBh
-dGlibGUgPSAic2ltcGxlLWJ1cyI7Cj4gICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAg
-ICAgICAgICNzaXplLWNlbGxzID0gPDA+Owo+IAo+ICAgICAgICAgLyogYXVkaW8gZXh0ZXJuYWwg
-b3NjaWxsYXRvciAqLwo+ICAgICAgICAgdGx2MzIwYWljM3hfbWNsazogb3NjaWxsYXRvckAwIHsK
-PiAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsKPiAgICAgICAgICAgICAj
-Y2xvY2stY2VsbHMgPSA8MD47Cj4gICAgICAgICAgICAgY2xvY2stZnJlcXVlbmN5ICA9IDwxMjAw
-MDAwMD47ICAgIC8qIDEyTUh6ICovCj4gICAgICAgICB9Owo+ICAgICB9Owo+IAo+ICAgICBzb3Vu
-ZCB7Cj4gICAgICAgICBjb21wYXRpYmxlID0gInRpLGRhODMwLWV2bS1hdWRpbyI7Cj4gICAgICAg
-ICB0aSxtb2RlbCA9ICJBTTMzNXgtU0w1MCI7Cj4gICAgICAgICB0aSxhdWRpby1jb2RlYyA9IDwm
-YXVkaW9fY29kZWM+Owo+ICAgICAgICAgdGksbWNhc3AtY29udHJvbGxlciA9IDwmbWNhc3AwPjsK
-PiAKPiAgICAgICAgIGNsb2NrcyA9IDwmdGx2MzIwYWljM3hfbWNsaz47Cj4gICAgICAgICBjbG9j
-ay1uYW1lcyA9ICJtY2xrIjsKPiAKPiAgICAgICAgIHRpLGF1ZGlvLXJvdXRpbmcgPQo+ICAgICAg
-ICAgICAgICJIZWFkcGhvbmUgSmFjayIsICAgICJIUExPVVQiLAo+ICAgICAgICAgICAgICJIZWFk
-cGhvbmUgSmFjayIsICAgICJIUFJPVVQiLAo+ICAgICAgICAgICAgICJMSU5FMVIiLCAgICAgICAg
-ICAgICAgICJMaW5lIEluIiwKPiAgICAgICAgICAgICAiTElORTFMIiwgICAgICAgICJMaW5lIElu
-IjsKPiAgICAgfTsKCklmIEkgdXNlIHRoaXMgd2l0aCBteSBCQlcrQXVkaW8gY2FwZTogYXVkaW8g
-aXMgZmluZS4KCj4gCj4gRm9yIG1lIGl0J3MgcmVhbGx5IG9kZCBoYXZlIHRvIHNldCB0aGUgY2xv
-Y2stZnJlcXVlbmN5IHRvIDI0TUh6IHRvIG1ha2UgaXQgd29yawo+IAo+ICAgICAgICAgICAgIGNs
-b2NrLWZyZXF1ZW5jeSAgPSA8MjQwMDAwMDA+OwoKSWYgSSBjaGFuZ2UgaXQgdG8gdGhpcywgSSB3
-aWxsIGhhdmUgc2xvdyBtb3Rpb24gcGxheWJhY2ssIGFzIGV4cGVjdGVkLgoKPiBGb3IgdGhhdCBy
-ZWFzb24gSSdtIHdvbmRlcmluZyBpZiB0aGVyZSBpcyBhIGJ1ZyBpbiB0aGUgZHJpdmVyLCBkaWQK
-PiBhbnlvbmUgdGVzdCB3aXRoIGFuIGFtMzM1eC1ldm0gYm9hcmQgPwoKSSdtIHVzaW5nIGxpbnV4
-LW5leHQuCk5vdCBzdXJlIHdoYXQgY291bGQgYmUgdGhlIGlzc3VlLgoKPiAKPj4+Cj4+PiBbMV0g
-aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC82NDgwMDcxLwo+Pj4KPj4+IFRoYW5r
-cyBpbiBhZHZhbmNlLAo+Pj4gRW5yaWMKPj4+Cj4+Cj4+IC0tCj4+IFDDqXRlcgo+IAo+IFRoYW5r
-cywKPiBFbnJpYwo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+--Sig_/m2oxYVLmcp9uyI4uBDEUKwI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Ingo,
+
+On Fri, 29 May 2015 11:21:05 +0200 Ingo Molnar <mingo@kernel.org> wrote:
+>
+> Good idea.
+>=20
+> Acked-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks.
+
+> Please also test x86 allnoconfig and defconfig 32/64, that tends to unear=
+th the=20
+> remaining places. People doing randconfig testing will find the rest.
+
+Good idea.  the allnoconfigs produced this further patch.  I will
+squash it into the original.  The defconfigs built ok.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 29 May 2015 22:01:41 +1000
+Subject: [PATCH] x86: more fixes for removing vmalloc.h fron asm/io.h
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/x86/include/asm/io.h | 1 +
+ include/linux/io.h        | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index 5791e7ace9db..2a3543a4db1d 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -40,6 +40,7 @@
+ #include <linux/compiler.h>
+ #include <asm/page.h>
+ #include <asm/early_ioremap.h>
++#include <asm/pgtable_types.h>
+=20
+ #define build_mmio_read(name, size, type, reg, barrier) \
+ static inline type name(const volatile void __iomem *addr) \
+diff --git a/include/linux/io.h b/include/linux/io.h
+index 986f2bffea1e..cb753a2450b8 100644
+--- a/include/linux/io.h
++++ b/include/linux/io.h
+@@ -19,6 +19,7 @@
+ #define _LINUX_IO_H
+=20
+ #include <linux/types.h>
++#include <linux/init.h>
+ #include <asm/io.h>
+ #include <asm/page.h>
+=20
+--=20
+2.1.4
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+
+--Sig_/m2oxYVLmcp9uyI4uBDEUKwI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVaF4rAAoJEMDTa8Ir7ZwVyUsP/3lsZTXAKBUx1B+VSbd52xKZ
+czRQM69RveRyZOGZiE0EMloECrKUtAOdtWfaEgjswg1RMgy56thrKhmh5WOtzZrO
+UjuYr8Fm68G8b0YCLRpQtYQpAC60hMAMktHo42cjIXgEXkdlCwgmACDWFqo513Ly
+PR1vK2Kl4XWIrPxJhGZ7OgtOJw2K+vK+UWHdyBVWxNlRC4xuWwVjHcipGWKVn3/G
+6Go0H3DeER82IajdGPfS5Tz54YaPEtGguWfeslyIih0C1va3EOQG8adnqlvbL1m7
+u3FW23yCCHZSMsl58tc/1g/YzSL03zE3UWYNeiTPqV2HjHYjzzba7VIQlW2STIzS
+Nwfy8affcs2I50EOFO3Ywox5MChPjCmRHkZTnSuVwAtxNFxzBQy5LyKjWgzxDqiU
+YpNoLFASZ4Z2eIKb4QkeRxarzE8gVM4Y8JTCJXX0T6FQZfQsB2cahpTucgY/9KEK
+FQ3FSCl1vprDj9qWpYrkLaXefNF3G2JGE7IhbzDCuuyMAVROvLY1B3ZGmzeeE0Tn
+/jacO3VRoCODQ5NmvCv50UtEog6Yx9dTOWco0nE7wJt2rLsVb8c/c7McJOwmpu7P
+I3apK9RHmeK5YKXOAvYEdEYvqKXrS2FU3KRdwRGdxD9ADbOP/o1hcD28FOg5eB/k
+5sODwUNoWjP8B4FAm3GV
+=DvK0
+-----END PGP SIGNATURE-----
+
+--Sig_/m2oxYVLmcp9uyI4uBDEUKwI--
