@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: control: add dimension validator for
-	kernel driver
-Date: Fri, 29 May 2015 17:58:57 +0900
-Message-ID: <1432889937-15413-3-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2] ALSA: control: add dimension validator for
+	userspace element
+Date: Fri, 29 May 2015 17:58:56 +0900
+Message-ID: <1432889937-15413-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1432889937-15413-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,83 +22,66 @@ To: tiwai@alsa-project.org, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, kernel drivers are allowed to set arbitrary dimen
-information to control elements. The total number of channels
-calculated by the dimen information should be within the number
-of channels in the control element, while there's no validator.
-When userspace applications have quite simple implementation,
-this can cause buffer-over-run over struct snd_ctl_elem_value
-data.
+The 'dimen' field in struct snd_ctl_elem_info is used to compose
+all of channels in the control element as multi-dimensional matrix.
+The field has four members. Each member represents the number in
+each dimension level. For example, if the channels consist of typical
+two dimensional matrix, the dimen[0] represents the number of rows
+and dimen[1] represents the number of columns, or vise-versa.
 
-This commit adds the validation. Unfortunately, the dimen information
-is set at runtime, thus the validation cannot run in advance.
+The total elements in the matrix should be within the number of
+channels in the control element, while current implementation has
+no validator of this information. In a view of userspace applications,
+the information must be valid so that it cannot cause any bugs such as
+buffer-over-run.
 
-As of Linux 4.1, there's no drivers to use the dimen information
-except for Echo Audio PCI cards. All of them already have valid dimen
-information. This patch doesn't cause any regressions.
+This commit adds a validator of dimen information for userspace
+applications which add new control elements. When they add the elements
+with wrong dimen information, they receive EINVAL.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ sound/core/control.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 9b77afd..1370a39 100644
+index 196a6fe..9b77afd 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -836,28 +836,37 @@ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
- 	down_read(&card->controls_rwsem);
- 	kctl = snd_ctl_find_id(card, &info->id);
- 	if (kctl == NULL) {
--		up_read(&card->controls_rwsem);
--		return -ENOENT;
-+		result = -ENOENT;
-+		goto end;
- 	}
- #ifdef CONFIG_SND_DEBUG
- 	info->access = 0;
- #endif
- 	result = kctl->info(kctl, info);
--	if (result >= 0) {
--		snd_BUG_ON(info->access);
--		index_offset = snd_ctl_get_ioff(kctl, &info->id);
--		vd = &kctl->vd[index_offset];
--		snd_ctl_build_ioff(&info->id, kctl, index_offset);
--		info->access = vd->access;
--		if (vd->owner) {
--			info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
--			if (vd->owner == ctl)
--				info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
--			info->owner = pid_vnr(vd->owner->pid);
--		} else {
--			info->owner = -1;
--		}
-+	if (result < 0)
-+		goto end;
+@@ -805,6 +805,25 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	return 0;
+ }
+ 
++static bool validate_dimen(struct snd_ctl_elem_info *info)
++{
++	unsigned int elements;
++	unsigned int i;
 +
-+	snd_BUG_ON(info->access);
-+
-+	/* This is a driver bug. */
-+	if (!validate_dimen(info)) {
-+		result = -ENODATA;
-+		goto end;
++	/*
++	 * When drivers don't use dimen field, this value is zero and pass the
++	 * validation. Else, calculated number of elements is validated.
++	 */
++	elements = info->dimen.d[0];
++	for (i = 1; i < ARRAY_SIZE(info->dimen.d); ++i) {
++		if (info->dimen.d[i] == 0)
++			break;
++		elements *= info->dimen.d[i];
 +	}
 +
-+	index_offset = snd_ctl_get_ioff(kctl, &info->id);
-+	vd = &kctl->vd[index_offset];
-+	snd_ctl_build_ioff(&info->id, kctl, index_offset);
-+	info->access = vd->access;
-+	if (vd->owner) {
-+		info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
-+		if (vd->owner == ctl)
-+			info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
-+		info->owner = pid_vnr(vd->owner->pid);
-+	} else {
-+		info->owner = -1;
- 	}
-+end:
- 	up_read(&card->controls_rwsem);
- 	return result;
- }
++	return elements <= info->count;
++}
++
+ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
+ 			     struct snd_ctl_elem_info *info)
+ {
+@@ -1272,6 +1291,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	if (info->count < 1 ||
+ 	    info->count > max_value_counts[info->type])
+ 		return -EINVAL;
++	if (!validate_dimen(info))
++		return -EINVAL;
+ 	private_size = value_sizes[info->type] * info->count;
+ 
+ 	/*
 -- 
 2.1.4
