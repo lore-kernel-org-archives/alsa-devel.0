@@ -1,7 +1,7 @@
 From: yang.a.fang@intel.com
-Subject: [PATCH v3 2/3] ASoC: ts3a227e: use device property api
-Date: Fri, 29 May 2015 11:56:11 -0700
-Message-ID: <1432925772-117760-2-git-send-email-yang.a.fang@intel.com>
+Subject: [PATCH v3 3/3] ASoC: Intel: fixed TI button detection
+Date: Fri, 29 May 2015 11:56:12 -0700
+Message-ID: <1432925772-117760-3-git-send-email-yang.a.fang@intel.com>
 References: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
  <1432925772-117760-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EAFCD26690B
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 20:57:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E0B51266919
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 20:57:03 +0200 (CEST)
 In-Reply-To: <1432925772-117760-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,49 +28,74 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-replace of_property_read_u32 with device_property_read_u32
+In order to make TI button interrupt working max98090 codec
+Need provide mic bias all the time as long as mic is present
+so SHDN and micbias pin are forced on.we also need set max98090
+codec bias close or lower than TI bias.We set them in bios/coreboot
+kernel reads them from device property
 
 Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
 ---
- sound/soc/codecs/ts3a227e.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c |   40 ++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 9fd80ac..12232d7 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -254,12 +254,13 @@ static const struct regmap_config ts3a227e_regmap_config = {
- 	.num_reg_defaults = ARRAY_SIZE(ts3a227e_reg_defaults),
- };
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 1be0794..3e5842d 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -101,6 +101,43 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
--static int ts3a227e_parse_dt(struct ts3a227e *ts3a227e, struct device_node *np)
-+static int ts3a227e_parse_device_property(struct ts3a227e *ts3a227e,
-+				struct device *dev)
++static int cht_ti_jack_event(struct notifier_block *nb,
++		unsigned long event, void *data)
++{
++
++	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
++	struct snd_soc_dai *codec_dai = jack->card->rtd->codec_dai;
++	struct snd_soc_codec *codec = codec_dai->codec;
++	int pin_status;
++
++	if (event & SND_JACK_MICROPHONE) {
++
++		pin_status = snd_soc_dapm_get_pin_status(&codec->dapm, "SHDN");
++		if (!pin_status)
++			snd_soc_dapm_force_enable_pin(&codec->dapm, "SHDN");
++
++		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
++		snd_soc_dapm_sync(&codec->dapm);
++	} else {
++
++		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
++		snd_soc_dapm_sync(&codec->dapm);
++		/**
++		* SHDN is max980090 shutdown pin we can not disable
++		* it in case we are in the middle of playabck or record
++		* we mark it unlock only so dapm will take care of it
++		* next time
++		*/
++		snd_soc_dapm_disable_pin_unlocked(&codec->dapm, "SHDN");
++	}
++
++	return 0;
++}
++
++static struct notifier_block cht_jack_nb = {
++	.notifier_call = cht_ti_jack_event,
++};
++
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
  {
- 	u32 micbias;
- 	int err;
- 
--	err = of_property_read_u32(np, "ti,micbias", &micbias);
-+	err = device_property_read_u32(dev, "ti,micbias", &micbias);
- 	if (!err) {
- 		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
- 			MICBIAS_SETTING_MASK,
-@@ -287,12 +288,10 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(ts3a227e->regmap))
- 		return PTR_ERR(ts3a227e->regmap);
- 
--	if (dev->of_node) {
--		ret = ts3a227e_parse_dt(ts3a227e, dev->of_node);
--		if (ret) {
--			dev_err(dev, "Failed to parse device tree: %d\n", ret);
--			return ret;
--		}
-+	ret = ts3a227e_parse_device_property(ts3a227e, dev);
-+	if (ret) {
-+		dev_err(dev, "Failed to parse device property: %d\n", ret);
-+		return ret;
+ 	int ret;
+@@ -130,6 +167,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
  	}
  
- 	ret = devm_request_threaded_irq(dev, i2c->irq, NULL, ts3a227e_interrupt,
++	if (ctx->ts3a227e_present)
++		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
++
+ 	return ret;
+ }
+ 
 -- 
 1.7.9.5
