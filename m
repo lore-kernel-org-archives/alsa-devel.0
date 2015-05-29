@@ -1,41 +1,79 @@
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] x86: remove vmalloc.h from asm/io.h
-Date: Fri, 29 May 2015 11:21:05 +0200
-Message-ID: <20150529092105.GA30603@gmail.com>
-References: <20150529191847.2d4cb3a7@canb.auug.org.au>
+From: Enric Balletbo Serra <eballetbo@gmail.com>
+Subject: Re: Audio play problem with tlv320aic3106 in mainline.
+Date: Fri, 29 May 2015 11:24:50 +0200
+Message-ID: <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
+References: <CAFqH_5332TNp+3cTH6O-UgqP8Ah-ZUiZpaTJpy3ZoL4-42fo_g@mail.gmail.com>
+ <5568133A.6010006@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150529191847.2d4cb3a7@canb.auug.org.au>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Anton Vorontsov <anton@enomsg.org>, Colin Cross <ccross@android.com>, Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Kristen Carlson Accardi <kristen@linux.intel.com>, Viresh Kumar <viresh.kumar@linaro.org>, Vinod Koul <vinod.koul@intel.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Hiral Patel <hiralpat@cisco.com>, Suma Ramars <sramars@cisco.com>, Brian Uchino <buchino@cisco.com>, "James E.J. Bottomley" <JBottomley@odin.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.d>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 616D6260670
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:24:52 +0200 (CEST)
+Received: by iesa3 with SMTP id a3so58396205ies.2
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 02:24:51 -0700 (PDT)
+In-Reply-To: <5568133A.6010006@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Nothing in asm/io.h uses anything from vmalloc.h, so remove the include
-> and fix up the build problems in an allmodconfig (64 bit and 32 bit)
-> build.
-> 
-> This may be the place where x86 builds get vmalloc.h implicitly included
-> and that tends to hide places where vmalloc() et al are added to files
-> but the include of vmalloc.h is forgotten.
-
-Good idea.
-
-Acked-by: Ingo Molnar <mingo@kernel.org>
-
-> Based in Linus' tree of today.
-> 
-> There are probably more places that need vmalloc.h included, but this passes 64 
-> bit and 32 bit allmodconfig builds, so is a place to start.
-
-Please also test x86 allnoconfig and defconfig 32/64, that tends to unearth the 
-remaining places. People doing randconfig testing will find the rest.
-
-Thanks,
-
-	Ingo
+VGhhbmtzIGZvciB0aGUgYW5zd2VyIFBldGVyLAoKMjAxNS0wNS0yOSA5OjIwIEdNVCswMjowMCBQ
+ZXRlciBVamZhbHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPjoKPiBPbiAwNS8yOC8yMDE1IDAy
+OjM2IFBNLCBFbnJpYyBCYWxsZXRibyBTZXJyYSB3cm90ZToKPj4gRGVhciBhbGwsCj4+Cj4+IFJl
+Y2VudGx5IEkgc2VudCBzb21lIHBhdGNoZXMgdG8gYWRkIHN1cHBvcnQgZm9yIGEgbmV3IGJvYXJk
+IGJhc2VkIG9uCj4+IEFNMzM1eCBwcm9jZXNzb3IgWzFdLiBUaGUgYm9hcmQgaGFzIHRoZSBUTFYz
+MjBBSUMzMTA2IGF1ZGlvIGNvZGVjLCB0aGUKPj4gTUNMSyBzaWduYWwgaXMgcHJvdmlkZWQgYnkg
+YW4gZXh0ZXJuYWwgb3NjaWxsYXRvciBvZiAxMk1Iei4gVGhlCj4+IHByb2JsZW0gaXMgdGhhdCB3
+aGVuIEkgcGxheSBhIHdhdiBmaWxlIGZvciBleGFtcGxlIEkgaGVhcmQgdGhlIHNvbmcgYQo+PiBk
+b3VibGUgc3BlZWQuIFRoaXMgaXMgd2l0aCB2NC4wIGFuZCBjdXJyZW50IG1haW5saW5lLgo+Pgo+
+PiBJbiBkdHMgZmlsZSBJIGRlZmluZWQgInRpLGNvZGVjLWNsb2NrLXJhdGUgPSA8MTIwMDAwMDA+
+OyIgd2hpY2ggaXMgdGhlCj4+IGNvcnJlY3QgdmFsdWUuIEN1cmlvdXNseSB3aGVuIEkgY2hhbmdl
+ZCB0aGUgY2xvY2sgcmF0ZSB2YWx1ZSB0bwo+PiAyNDAwMDAwMCBJIGhlYXJkIHRoZSBzb25nIGF0
+IG5vcm1hbCBzcGVlZC4gQUZBSUsgdGhlIGNvcnJlY3QgdmFsdWUgZm9yCj4+IGNsb2NrLXJhdGUg
+aXMgMTJNSHogc28gSSBzdXNwZWN0IHRoYXQgc29tZXRoaW5nIGlzIHdyb25nIGluIHRoZQo+PiBk
+cml2ZXIsIG1heWJlIGl0IHNldHMgYSB3cm9uZyBjbG9jayBkaXZpZGVyL211bHRpcGxpZXIgPyBB
+bnlvbmUgY2FuCj4+IHBvaW50IG1lIGluIHRoZSByaWdodCBkaXJlY3Rpb24gdG8gZml4IHRoZSBp
+c3N1ZSA/IEkgc2VlIHRoYXQKPj4gYW0zMzV4LWV2bSBhbmQgYW0zMzV4LXBlcHBlciBib2FyZHMg
+YWxzbyB1c2VzIHRoaXMgYXVkaW8gY29kZWMsIGRpZAo+PiBhbnlvbmUgd2l0aCB0aG9zZSBib2Fy
+ZHMgaGF2ZSB0aGUgc2FtZSBwcm9ibGVtPwo+Cj4gSXQgbWlnaHQgYmUgcmVhbGx5IDI0TUh6Lgo+
+IElmIHRoZSBNQ0xLIGluIHlvdXIgYm9hcmQgaXMgd2lyZWQgbGlrZSBhbTMzNXgtZXZtc2sgb3Ig
+aG93IEJlYWdsZUJvbmUncyBhdWRpbwo+IGNhcGVzIGFyZSB3aXJlZCAoTUNMSyBpcyBjb21pbmcg
+ZnJvbSBBTTMzNXgncyBFVkVOVF9JTlRSMC8xIHBpbiBhcyBDTEtPVVQxLzIpCj4gdGhlbiAyNE1I
+eiBpcyBjb3JyZWN0LiBPbiB0aGUgYW0zMzV4LWV2bSB0aGVyZSBpcyBhIGRlZGljYXRlZCBjcnlz
+dGFsCj4gcHJvdmlkaW5nIHRoZSAxMk1Iei4KPgoKV2VsbCwgaW4gbXkgYm9hcmQgdGhlcmUgaXMg
+YWxzbyBhIGRlZGljYXRlZCBjcnlzdGFsIHByb3ZpZGluZyB0aGUKMTJNSHosIHNvIEkgZXhwZWN0
+IHRoYXQgdGhlIGNvcnJlY3QgdmFsdWUgZm9yIGNsb2NrLWZyZXF1ZW5jeSBpcyAxMk1Iegpub3Qg
+MjRNSHouCgogICAgY2xvY2tzIHsKICAgICAgICBjb21wYXRpYmxlID0gInNpbXBsZS1idXMiOwog
+ICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+OwogICAgICAgICNzaXplLWNlbGxzID0gPDA+OwoK
+ICAgICAgICAvKiBhdWRpbyBleHRlcm5hbCBvc2NpbGxhdG9yICovCiAgICAgICAgdGx2MzIwYWlj
+M3hfbWNsazogb3NjaWxsYXRvckAwIHsKICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmaXhlZC1j
+bG9jayI7CiAgICAgICAgICAgICNjbG9jay1jZWxscyA9IDwwPjsKICAgICAgICAgICAgY2xvY2st
+ZnJlcXVlbmN5ICA9IDwxMjAwMDAwMD47ICAgIC8qIDEyTUh6ICovCiAgICAgICAgfTsKICAgIH07
+CgogICAgc291bmQgewogICAgICAgIGNvbXBhdGlibGUgPSAidGksZGE4MzAtZXZtLWF1ZGlvIjsK
+ICAgICAgICB0aSxtb2RlbCA9ICJBTTMzNXgtU0w1MCI7CiAgICAgICAgdGksYXVkaW8tY29kZWMg
+PSA8JmF1ZGlvX2NvZGVjPjsKICAgICAgICB0aSxtY2FzcC1jb250cm9sbGVyID0gPCZtY2FzcDA+
+OwoKICAgICAgICBjbG9ja3MgPSA8JnRsdjMyMGFpYzN4X21jbGs+OwogICAgICAgIGNsb2NrLW5h
+bWVzID0gIm1jbGsiOwoKICAgICAgICB0aSxhdWRpby1yb3V0aW5nID0KICAgICAgICAgICAgIkhl
+YWRwaG9uZSBKYWNrIiwgICAgIkhQTE9VVCIsCiAgICAgICAgICAgICJIZWFkcGhvbmUgSmFjayIs
+ICAgICJIUFJPVVQiLAogICAgICAgICAgICAiTElORTFSIiwgICAgICAgICAgICAgICAiTGluZSBJ
+biIsCiAgICAgICAgICAgICJMSU5FMUwiLCAgICAgICAgIkxpbmUgSW4iOwogICAgfTsKCkZvciBt
+ZSBpdCdzIHJlYWxseSBvZGQgaGF2ZSB0byBzZXQgdGhlIGNsb2NrLWZyZXF1ZW5jeSB0byAyNE1I
+eiB0byBtYWtlIGl0IHdvcmsKCiAgICAgICAgICAgIGNsb2NrLWZyZXF1ZW5jeSAgPSA8MjQwMDAw
+MDA+OwoKRm9yIHRoYXQgcmVhc29uIEknbSB3b25kZXJpbmcgaWYgdGhlcmUgaXMgYSBidWcgaW4g
+dGhlIGRyaXZlciwgZGlkCmFueW9uZSB0ZXN0IHdpdGggYW4gYW0zMzV4LWV2bSBib2FyZCA/Cgo+
+Pgo+PiBbMV0gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC82NDgwMDcxLwo+Pgo+
+PiBUaGFua3MgaW4gYWR2YW5jZSwKPj4gRW5yaWMKPj4KPgo+IC0tCj4gUMOpdGVyCgpUaGFua3Ms
+CkVucmljCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
