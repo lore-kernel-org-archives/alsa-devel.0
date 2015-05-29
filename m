@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
-	driver
-Date: Fri, 29 May 2015 18:41:15 +0100
-Message-ID: <20150529174115.GR21577@sirena.org.uk>
-References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
- <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v3 0/3] ASoC topology
+Date: Fri, 29 May 2015 19:05:42 +0100
+Message-ID: <1432922742.2732.22.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6692771911347057399=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A0D0D260714
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 19:41:20 +0200 (CEST)
-In-Reply-To: <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36DE52668C5
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 20:05:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +18,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+ASoC topology (formerly called dynamic firmware) allows audio DSP
+topology to be defined as part of the firmware package and not hard
+coded into the driver. This allows DSP vendors to ship multiple
+different firmwares or firmwares with programmable topologies for
+different devices (i.e. phones, tablets, TVs) using a single DSP driver.
+The DSP topology can be contained as part of the firmware file or exist
+as separate files. The topology core and file format is generic text and
+not tied to any single vendor or device. 
 
---===============6692771911347057399==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZRuRcbQpTG2MazvN"
-Content-Disposition: inline
+The topology core consists of kernel and userspace components :-
 
+Kernel. The kernel core reads in the topology data and builds the driver
+capabilities and audio topology based on this data. This includes
+building the DAPM graph, setting PCM and DAI capabilities, registering
+kcontrols and registering DAPM widgets.
 
---ZRuRcbQpTG2MazvN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The userspace tool allows the creation of binary DSP FW topology files
+based on a topology text files. The tool is temporarily available on
+github and its intended to be merged into the alsa-utils package after a
+clean up.
 
-On Mon, May 11, 2015 at 04:24:03PM +0530, Vinod Koul wrote:
-
-> +static void azx_free_streams(struct soc_hdac_bus *sbus)
-> +{
-> +	struct hdac_stream *s;
-> +	struct soc_hdac_stream *stream;
-> +	struct hdac_bus *bus = hdac_bus(sbus);
-> +
-> +	while (!list_empty(&bus->stream_list)) {
-> +		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
-> +		stream = stream_to_soc_hdac_stream(s);
-> +		list_del(&s->list);
-> +		kfree(stream);
-> +	}
-> +}
-
-Why is this (and the equivalent link function) device specific code?
-They look very generic...
-
-> +static int azx_acquire_irq(struct soc_hdac_bus *sbus, int do_disconnect)
-> +{
-> +	struct hda_skl *hda = to_hda_skl(sbus);
-> +	struct hdac_bus *bus = hdac_bus(sbus);
-> +	int ret = 0;
-> +
-> +	ret = request_threaded_irq(hda->pci->irq, azx_interrupt,
-> +			azx_threaded_handler,
-> +			hda->msi ? 0 : IRQF_SHARED,
-> +			KBUILD_MODNAME, sbus);
-
-Why not just always request the interrupt as shared - we don't seem to
-care in the interrupt handling code?
-
-> +/* PCI register access. */
-> +static void pci_azx_writel(u32 value, u32 __iomem *addr)
-> +{
-> +	writel(value, addr);
-> +}
-
-These wrappers are setting off alarm bells - why can't we just use the
-called functions directly, and given the parameters (which have just a
-raw pointer and value) what else could the implementation be?
-
---ZRuRcbQpTG2MazvN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVaKS6AAoJECTWi3JdVIfQZCcH/1iXYyRn3/g2hUO8jCUR4d2H
-R/+HsLFCihUm/KbqoXflAbO0TvuPOtfvi69DUFBV9xQU5GU/exz6riVjfWzk41na
-4TtFFf3Hy1hdj7t1Rx7aDWmRUkBkC2btQkIztQJsu94TL3lkWtlsYTTfMCFquzb5
-k6++TyAZYdQ/xZU/bUCGi+qhHawYC5KmXivG00lCv3reCYGOtlh6FOkphluY52x5
-4pmdoAfDSTTGFGSso4SwBL0IktZ3KkYhQRETaNPbAynK0jO8uNl6+AzDHgBph5VO
-GZYmN1oqYaLl/cphiuJgR+nmH8WmZBmc7nzY0fFZ4GoyEIKMu8mqJv9h5AX+90E=
-=2u9C
------END PGP SIGNATURE-----
-
---ZRuRcbQpTG2MazvN--
-
---===============6692771911347057399==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+https://github.com/lgirdwood/topology.git
 
 
---===============6692771911347057399==--
+Changes since V2 :-
+
+ o Moved TLV channel maps into TLV UAPI header.
+ o Report error in logs when no handler exists for vendor data types.
+ o Fix comments on kcontrol/widget ops to match core code.
+
+Changes since RFC :-
+
+ o Fixed patch series to survive bisection builds.
+ o Removed widget ID enum from UAPI.
+ o Added channel mappings to controls.
+ o Added TLV macro patch to UAPI.
+ o Fixed locking for runtime and init time topology loading.
+ o Moved the UAPI group index field to the block header.
+
+Changes since V1 (back in 2012) :-
+
+ o Name changed to ASoC Topology
+ o Structures from soc.h and soc-dapm.h no longer exposed as UAPIs
+ o Moved to component model from codec/platform model.
+ o Added reserved fields in each UAPI structure.
+ o UAPI structures packed and endianess defined for each structure.
+ o Added support for PCM, DAI and codec <-> codec link capabilities.
+ o Added support for client drivers manifests.
+ o Added support for private data for each dynamic object type.
+ o Single list of dynamic objects rather than list of each object type.
+
+Liam
