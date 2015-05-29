@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
-Date: Fri, 29 May 2015 16:10:54 +0200
-Message-ID: <5568736E.5090801@metafoo.de>
-References: <1432906281-27698-1-git-send-email-jun.nie@linaro.org>
- <1432906281-27698-7-git-send-email-jun.nie@linaro.org>
+From: Michele Curti <michele.curti@gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: rt5645: change gpio to gpiod
+ APIs
+Date: Fri, 29 May 2015 16:23:25 +0200
+Message-ID: <20150529142325.GA539@asus>
+References: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-025.synserver.de (smtp-out-026.synserver.de
- [212.40.185.26])
- by alsa0.perex.cz (Postfix) with ESMTP id CB7EB2606BF
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:10:55 +0200 (CEST)
-In-Reply-To: <1432906281-27698-7-git-send-email-jun.nie@linaro.org>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id F25472606BF
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:23:30 +0200 (CEST)
+Received: by wicmx19 with SMTP id mx19so17534791wic.0
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 07:23:30 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +25,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>, broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn
+To: Bard Liao <bardliao@realtek.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/29/2015 03:31 PM, Jun Nie wrote:
-> Add zx296702 hdmi codec to enable SPDIF and I2S output
-> via HDMI. The SPDIF/I2S route is exclusive with current
-> software config and need specify which is valid in
-> defconfig.
+On Fri, May 29, 2015 at 06:16:46PM +0800, Bard Liao wrote:
+> Move gpio to gpio_desc and use gpiod APIs in codec driver.
 
-That's an issue, the hardware configuration should not depend on kernel 
-configuration setting. This makes it impossible to run the same kernel on 
-platforms with conflicting settings. It should be possible to configure this 
-dynamically at boot time based on platform_data/devicetree, etc.
+I don't get these errors anymore :)
 
-But is this device real hardware anyway?
+[    1.805330] rt5645 i2c-10EC5648:00: Fail gpio_request hp_det_gpio
+[    1.805439] rt5645 i2c-10EC5648:00: Fail gpio_direction hp_det_gpio
 
->
-> Signed-off-by: Jun Nie <jun.nie@linaro.org>
+Thanks,
+Michele
+
+> 
+> Signed-off-by: Bard Liao <bardliao@realtek.com>
 > ---
->   include/sound/zx_hdmi_audio.h    |   7 +++
->   sound/soc/codecs/Kconfig         |   3 +
->   sound/soc/codecs/Makefile        |   1 +
->   sound/soc/codecs/zx296702_hdmi.c | 121 +++++++++++++++++++++++++++++++++++++++
->   4 files changed, 132 insertions(+)
->   create mode 100644 include/sound/zx_hdmi_audio.h
->   create mode 100644 sound/soc/codecs/zx296702_hdmi.c
->
-> diff --git a/include/sound/zx_hdmi_audio.h b/include/sound/zx_hdmi_audio.h
-> new file mode 100644
-> index 0000000..7eb0e81
-> --- /dev/null
-> +++ b/include/sound/zx_hdmi_audio.h
-> @@ -0,0 +1,7 @@
-> +#ifndef __ZX_HDMI_AUDIO_H__
-> +#define __ZX_HDMI_AUDIO_H__
+>  include/sound/rt5645.h    |  3 ---
+>  sound/soc/codecs/rt5645.c | 47 +++++++++++++----------------------------------
+>  sound/soc/codecs/rt5645.h |  1 +
+>  3 files changed, 14 insertions(+), 37 deletions(-)
+> 
+> diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+> index 652cb9e..22734bc 100644
+> --- a/include/sound/rt5645.h
+> +++ b/include/sound/rt5645.h
+> @@ -20,9 +20,6 @@ struct rt5645_platform_data {
+>  	unsigned int dmic2_data_pin;
+>  	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+>  
+> -	unsigned int hp_det_gpio;
+> -	bool gpio_hp_det_active_high;
+> -
+>  	unsigned int jd_mode;
+>  };
+>  
+> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+> index aaede45..0cb4942 100644
+> --- a/sound/soc/codecs/rt5645.c
+> +++ b/sound/soc/codecs/rt5645.c
+> @@ -2938,17 +2938,11 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+>  
+>  	switch (rt5645->pdata.jd_mode) {
+>  	case 0: /* Not using rt5645 JD */
+> -		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+> -			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
+> -			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
+> -				rt5645->pdata.hp_det_gpio, gpio_state);
+> -		}
+> -		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
+> -			(!rt5645->pdata.gpio_hp_det_active_high &&
+> -			 !gpio_state)) {
+> -			report = rt5645_jack_detect(rt5645->codec, 1);
+> -		} else {
+> -			report = rt5645_jack_detect(rt5645->codec, 0);
+> +		if (rt5645->gpiod_hp_det) {
+> +			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
+> +			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
+> +				gpio_state);
+> +			report = rt5645_jack_detect(rt5645->codec, gpio_state);
+>  		}
+>  		snd_soc_jack_report(rt5645->hp_jack,
+>  				    report, SND_JACK_HEADPHONE);
+> @@ -3253,19 +3247,17 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+>  	} else {
+>  		if (dmi_check_system(dmi_platform_intel_braswell)) {
+>  			rt5645->pdata = *rt5645_pdata;
+> -			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+> -
+> -			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
+> -				rt5645->pdata.hp_det_gpio = -1;
+> -				dev_err(&i2c->dev, "failed to initialize gpiod\n");
+> -			} else {
+> -				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
+> -				rt5645->pdata.gpio_hp_det_active_high
+> -						= !gpiod_is_active_low(gpiod);
+> -			}
+>  		}
+>  	}
+>  
+> +	rt5645->gpiod_hp_det = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
 > +
-> +int zx_hdmi_audio_cfg(int audio_codec, int audio_way,
-> +		      u32 sample_rate, u32 sample_len);
-> +void zx_hdmi_audio_en(int on);
-
-Where is the implementation for these functions? The fact that they seem to 
-operate on global state indicates that something is wrong wit this API.
-
-> +#endif /* __ZX_HDMI_AUDIO_H__ */
+> +	if (IS_ERR(rt5645->gpiod_hp_det) ||
+> +	    gpiod_direction_input(rt5645->gpiod_hp_det)) {
+> +		rt5645->gpiod_hp_det = NULL;
+> +		dev_err(&i2c->dev, "failed to initialize gpiod\n");
+> +	}
+> +
+>  	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
+>  	if (IS_ERR(rt5645->regmap)) {
+>  		ret = PTR_ERR(rt5645->regmap);
+> @@ -3425,16 +3417,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+>  			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
+>  	}
+>  
+> -	if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+> -		ret = gpio_request(rt5645->pdata.hp_det_gpio, "rt5645");
+> -		if (ret)
+> -			dev_err(&i2c->dev, "Fail gpio_request hp_det_gpio\n");
+> -
+> -		ret = gpio_direction_input(rt5645->pdata.hp_det_gpio);
+> -		if (ret)
+> -			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
+> -	}
+> -
+>  	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+>  
+>  	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
+> @@ -3450,9 +3432,6 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+>  
+>  	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+>  
+> -	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
+> -		gpio_free(rt5645->pdata.hp_det_gpio);
+> -
+>  	snd_soc_unregister_codec(&i2c->dev);
+>  
+>  	return 0;
+> diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+> index 9ec4e89..0353a6a 100644
+> --- a/sound/soc/codecs/rt5645.h
+> +++ b/sound/soc/codecs/rt5645.h
+> @@ -2182,6 +2182,7 @@ struct rt5645_priv {
+>  	struct rt5645_platform_data pdata;
+>  	struct regmap *regmap;
+>  	struct i2c_client *i2c;
+> +	struct gpio_desc *gpiod_hp_det;
+>  	struct snd_soc_jack *hp_jack;
+>  	struct snd_soc_jack *mic_jack;
+>  	struct snd_soc_jack *btn_jack;
+> -- 
+> 1.8.1.1.439.g50a6b54
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
