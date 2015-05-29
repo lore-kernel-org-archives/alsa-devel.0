@@ -1,21 +1,21 @@
-From: gianluca <gianlucarenzi@eurekelettronica.it>
-Subject: Re: Still have problems/issues using SGTL5000 with
- i.MX28 CPU
-Date: Fri, 29 May 2015 16:48:04 +0200
-Message-ID: <55687C24.3090809@eurekelettronica.it>
-References: <55681B8B.6010700@eurekelettronica.it>
- <CAOMZO5DQg6=nbvn31eMMraLdzGN+jG6kgufy2N7KRCW36dxidQ@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
+	failed issue
+Date: Fri, 29 May 2015 15:06:09 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553BDA1@SHSMSX101.ccr.corp.intel.com>
+References: <1432793658-9463-1-git-send-email-yang.jie@intel.com>
+ <s5hegm07n7v.wl-tiwai@suse.de>	<1432827874.2726.57.camel@loki>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90553BB6C@SHSMSX101.ccr.corp.intel.com>
+ <s5htwuv64i3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx7.acantho.net (mx7.acantho.net [213.174.182.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 5684D266837
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:48:21 +0200 (CEST)
-Received: (from root@localhost)
- by mx7.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id t4TEmLcg029648
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:48:21 +0200
-In-Reply-To: <CAOMZO5DQg6=nbvn31eMMraLdzGN+jG6kgufy2N7KRCW36dxidQ@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6D6E266838
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 17:06:18 +0200 (CEST)
+In-Reply-To: <s5htwuv64i3.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,156 +25,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, Peter Chen <peter.chen@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/29/2015 03:50 PM, Fabio Estevam wrote:
->> Now we need to record some sounds as soon as the SGTL5000 has the SAIF1 line
->> used for caputure (line in / mic in).
->
-> Does recording work on mx28evk with 4.0.4?
->
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, May 29, 2015 6:52 PM
+> To: Jie, Yang
+> Cc: Girdwood, Liam R; broonie@kernel.org; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing failed issue
+> 
+> At Fri, 29 May 2015 07:46:37 +0000,
+> Jie, Yang wrote:
+> >
+> > > -----Original Message-----
+> > > From: Girdwood, Liam R
+> > > Sent: Thursday, May 28, 2015 11:45 PM
+> > > To: Takashi Iwai
+> > > Cc: Jie, Yang; broonie@kernel.org; alsa-devel@alsa-project.org
+> > > Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
+> > > failed issue
+> > >
+> > > On Thu, 2015-05-28 at 17:09 +0200, Takashi Iwai wrote:
+> > > > At Thu, 28 May 2015 14:14:18 +0800, Jie Yang wrote:
+> > > > >
+> > > > > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> > > > >
+> > > > > In haswell-pcm module unloading, we can't free runtime modules
+> > > > > directly, for they may be already freed in runtime suspend.
+> > > > >
+> > > > > Here add executing suspend call to unload runtime modules, only
+> > > > > for status not equal to RPM_SUSPEND, to fix broadwell module
+> > > > > removing failed issue.
+> > > >
+> > > > What if a kernel is built without PM support?  (Practically seen,
+> > > > it's never any serious problem, though.)
+> >
+> > I think or kernel built without PM, empty pm_runtime_xxx()s are called
+> > and no problems for that.
+> 
+> Well, but what about the modules?  Where will they be freed?  Your patch
+> description sounds as if they are freed in the runtime suspend path.
 
-Well, is that linux kernel version so important? I can surely say it 
-works with 3.12.1.
+The freeing of modules is actually done in fw_unload() stage.
 
-Porting to 4.0.4 means a (partial) rewrite of some device-tree files. I 
-can do in a couple of days if you want. But I think I can check out what 
-is really happened in our board. Something related to dma / irq??
+> 
+> Also, I'm not quite certain whether it's allowed to do runtime suspend at
+> driver free.  Usually it's even forcibly powered up, as we can't leave the
+> device as suspended state after free (who can wake up rightly if no driver is
+> bound?)
+ 
+You are right. Will change it to that descripted below.
 
-In IMX28EVK it works out-of-the-box, in EK340 it does not.
+> 
+> 
+> > > Keyon, it sounds like you will still need hsw_pcm_free_modules() and
+> > > should call it after the PM put/disable on module remove. You will
+> > > need to add some code too that will check the memory state prior to
+> > > doing any unloading though....
+> >
+> > Yes, I plan to add both check before runtime_module_free() and set
+> > pcm_data->runtime to NULL after that. At the same time, make sure
+> > hsw_pcm_free_modules() is called before fw_unload() called.
+> >
+> > With those implemented, suppose the issue can be fixed neatly.
+> >
+> > I will test it and submit then.
+> 
+> Yes, this looks like the missing piece.
+ 
+OK, then I will follow this.
 
-Regarding at the last mail I can clearly see:
+Hi Mark, can you help revert these 2 commits? Sorry for the inconvenience
+caused.
 
-> When recording from IMX28EVK boards here is the SAIF1_STAT register (0x80046010):
-> 0x80000001 (BIT31 PRESENT and BIT0 BUSY)
-> ...
-> 0x80010001 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT0 BUSY)
-> ...
-> 0x80000001 (BIT31 PRESENT and BIT0 BUSY)
-> ...
-> 0x80010001 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT0 BUSY)
->
-> and when finishing recording:
->
-> 0x80010010 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT4 FIFO_SERVICE_IRQ)
->
-> in the EK340 while recording (0x80046010):
-> 0x80000000 (BIT31 PRESENT)
-> ...
-> ...
-> ...
-> 0x80000000 (BIT31 PRESENT)
->
-> and finally:
->> # arecord: pcm_read:1801: read error: Input/output error
->
->> # devmem2 0x80046010
->> /dev/mem opened.
->> Memory mapped at address 0xb6f07000.
->> Value at address 0x80046010 (0xb6f07010): 0x80000000
->
-> It seems no IRQ or DMA actions are involved in EK340 for recording.
-> May be I have some DMA Clash or IRQ bad handling? In the device tree I cannot see anything wrong... Some other driver is using the same DMA Channel for SAIF1 ?????
->
-> Anyway here is the cat /proc/interrupts for IMX28EVK:
->>
->> # cat /proc/interrupts
->>            CPU0
->>  16:      32790         -  48  MXS Timer Tick
->>  17:       5327         -  82  mxs-dma
->>  18:          0         -  83  mxs-dma
->>  25:          6         -  96  mxs-mmc
->>  26:          0         -  97  mxs-mmc
->> 195:          0         -  80  mxs-dma
->> 196:        141         -  81  mxs-dma
->> 197:         73         -  68  mxs-dma
->> 213:          0         -  59  mxs-saif
->> 214:          2         -  58  mxs-saif
->> 215:          0         -  10  mxs-lradc-touchscreen
->> 216:          0         -  14  mxs-lradc-thresh0
->> 217:          0         -  15  mxs-lradc-thresh1
->> 218:          0         -  16  mxs-lradc-channel0
->> 219:          0         -  17  mxs-lradc-channel1
->> 220:          0         -  18  mxs-lradc-channel2
->> 221:          0         -  19  mxs-lradc-channel3
->> 222:          0         -  20  mxs-lradc-channel4
->> 223:          0         -  21  mxs-lradc-channel5
->> 224:          0         -  22  mxs-lradc-channel6
->> 225:          0         -  23  mxs-lradc-channel7
->> 226:          0         -  24  mxs-lradc-button0
->> 227:          0         -  25  mxs-lradc-button1
->> 228:          0         -  29  RTC alarm
->> 229:         79         - 111  80058000.i2c
->> 233:          0         - 112  8006a000.serial
->> 234:          0         - 115  80070000.serial
->> 235:       1759         -  47  uart-pl011
->> 236:          0         -  93  ci_hdrc_imx
->> 237:          0         -  92  ci_hdrc_imx
->> 238:         64         - 101  800f0000.ethernet
->> 239:          0         - 102  800f4000.ethernet
->> Err:          0
->
-> I suppose IRQ 196 and 197 are used for SAIF core because I can see them changing when recording...
->
->
-> and here the same for EK340:
->
->> # cat /proc/interrupts
->>            CPU0
->>  16:      28189         -  48  MXS Timer Tick
->>  17:       6735         -  82  mxs-dma
->>  18:          0         -  83  mxs-dma
->>  20:        989         -  85  mxs-dma
->>  25:         11         -  96  mxs-mmc
->>  26:          0         -  97  mxs-mmc
->>  27:         24         -  99  mxs-sdio
->>  48:          0  gpio-mxs  19  80064000.pwm
->> 196:          0         -  80  mxs-dma
->> 197:          0         -  81  mxs-dma
->> 198:         76         -  68  mxs-dma
->> 199:          0         -  69  mxs-dma
->> 213:          0         -  59  mxs-saif
->> 214:          3         -  58  mxs-saif
->> 215:          1         -  10  mxs-lradc-touchscreen
->> 216:          0         -  14  mxs-lradc-thresh0
->> 217:          0         -  15  mxs-lradc-thresh1
->> 218:          0         -  16  mxs-lradc-channel0
->> 219:          0         -  17  mxs-lradc-channel1
->> 220:          0         -  18  mxs-lradc-channel2
->> 221:          0         -  19  mxs-lradc-channel3
->> 222:          0         -  20  mxs-lradc-channel4
->> 223:          0         -  21  mxs-lradc-channel5
->> 224:          0         -  22  mxs-lradc-channel6
->> 225:          0         -  23  mxs-lradc-channel7
->> 226:          0         -  24  mxs-lradc-button0
->> 227:          0         -  25  mxs-lradc-button1
->> 228:          0         -  29  RTC alarm
->> 229:         84         - 111  80058000.i2c
->> 230:          0         - 110  8005a000.i2c
->> 234:          0         - 113  8006c000.serial
->> 235:          0         - 114  8006e000.serial
->> 236:       2062         -  47  uart-pl011
->> 237:          0         -  93  ci_hdrc_imx
->> 238:          0         -  92  ci_hdrc_imx
->> 239:         64         - 101  800f0000.ethernet
->> Err:          0
->
-> When recording in EK340, the only IRQ is changing between recording sessions is the 198, but it is not present in the IMX28EVK...
->
-> Some device-tree clash???
+ASoC: Intel: fix broadwell module removing failed issue
+ASoC: Intel: remove unused function hsw_pcm_free_modules()
 
-On the EK340 I have 3 sdconnector and I use the SDIO3 for wifi. On the 
-IMX28EVK I still have only two sd-card connector.
-Is it something related to it?
+~Keyon
 
-the IRQs number 198 and 199 what do they mean?? How can I check where 
-they are claimed??
-
-Regards,
--- 
-Eurek s.r.l.                          |
-Electronic Engineering                | http://www.eurek.it
-via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
-p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
+> 
+> 
+> Takashi
