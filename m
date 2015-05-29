@@ -1,149 +1,42 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v2 2/2] ASoC: rt5645: add device tree support
-Date: Fri, 29 May 2015 18:16:47 +0800
-Message-ID: <1432894607-28489-2-git-send-email-bardliao@realtek.com>
-References: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce
+ dma_request_slave_channel_compat_reason()
+Date: Fri, 29 May 2015 15:48:46 +0530
+Message-ID: <20150529101846.GG3140@localhost>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
+ <20150529093317.GF3140@localhost>
+ <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id EF4FA26068F
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 12:17:11 +0200 (CEST)
-In-Reply-To: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, koro.chen@mediatek.com, john.lin@realtek.com, Leilk.Liu@mediatek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-crypto-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
+Sender: linux-crypto-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>, linux-crypto@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Modify the RT5645 driver to parse platform data from device tree.
-Write a DT binding document to describe those properties.
+On Fri, May 29, 2015 at 11:42:27AM +0200, Geert Uytterhoeven wrote:
+> On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul@intel.com> wrote:
+> > On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
+> >> dma_request_slave_channel_compat() 'eats' up the returned error codes which
+> >> prevents drivers using the compat call to be able to do deferred probing.
+> >>
+> >> The new wrapper is identical in functionality but it will return with error
+> >> code in case of failure and will pass the -EPROBE_DEFER to the caller in
+> >> case dma_request_slave_channel_reason() returned with it.
+> > This is okay but am worried about one more warpper, how about fixing
+> > dma_request_slave_channel_compat()
+> 
+> Then all callers of dma_request_slave_channel_compat() have to be
+> modified to handle ERR_PTR first.
+> 
+> The same is true for (the existing) dma_request_slave_channel_reason()
+> vs. dma_request_slave_channel().
+Good point, looking again, I think we should rather fix
+dma_request_slave_channel_reason() as it was expected to return err code and
+add new users. Anyway users of this API do expect the reason...
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
-* Change of_property_ APIs to device_property_ APIs
----
- Documentation/devicetree/bindings/sound/rt5645.txt | 68 ++++++++++++++++++++++
- sound/soc/codecs/rt5645.c                          | 16 +++++
- 2 files changed, 84 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5645.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5645.txt b/Documentation/devicetree/bindings/sound/rt5645.txt
-new file mode 100644
-index 0000000..f21e9af
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5645.txt
-@@ -0,0 +1,68 @@
-+RT5650/RT5645 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+- compatible : One of "realtek,rt5645" or "realtek,rt5650".
-+
-+- reg : The I2C address of the device.
-+
-+- interrupts : The CODEC's interrupt output.
-+
-+Optional properties:
-+
-+- realtek,in2-differential
-+  Boolean. Indicate MIC2 input are differential, rather than single-ended.
-+
-+- realtek,dmic1-data-pin
-+  0: dmic1 is not used
-+  1: using IN2P pin as dmic1 data pin
-+  2: using GPIO6 pin as dmic1 data pin
-+  3: using GPIO10 pin as dmic1 data pin
-+  4: using GPIO12 pin as dmic1 data pin
-+
-+- realtek,dmic2-data-pin
-+  0: dmic2 is not used
-+  1: using IN2N pin as dmic2 data pin
-+  2: using GPIO5 pin as dmic2 data pin
-+  3: using GPIO11 pin as dmic2 data pin
-+
-+-- realtek,jd-mode : The JD mode of rt5645/rt5650
-+   0 : rt5645/rt5650 JD function is not used
-+   1 : Mode-0 (VDD=3.3V), two port jack detection
-+   2 : Mode-1 (VDD=3.3V), one port jack detection
-+   3 : Mode-2 (VDD=1.8V), one port jack detection
-+
-+Pins on the device (for linking into audio routes) for RT5645/RT5650:
-+
-+  * DMIC L1
-+  * DMIC R1
-+  * DMIC L2
-+  * DMIC R2
-+  * IN1P
-+  * IN1N
-+  * IN2P
-+  * IN2N
-+  * Haptic Generator
-+  * HPOL
-+  * HPOR
-+  * LOUTL
-+  * LOUTR
-+  * PDM1L
-+  * PDM1R
-+  * SPOL
-+  * SPOR
-+
-+Example:
-+
-+codec: rt5650@1a {
-+	compatible = "realtek,rt5650";
-+	reg = <0x1a>;
-+	rt5645-gpios = <&gpio 19 0>;
-+	interrupt-parent = <&gpio>;
-+	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+	realtek,dmic-en = "true";
-+	realtek,en-jd-func = "true";
-+	realtek,jd-mode = <3>;
-+};
-\ No newline at end of file
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 0cb4942..76b1efd 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3225,6 +3225,20 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
- 	{ }
- };
- 
-+static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device_node *np)
-+{
-+	rt5645->pdata.in2_diff = device_property_read_bool(np,
-+		"realtek,in2-differential");
-+	device_property_read_u32(np,
-+		"realtek,dmic1-data-pin", &rt5645->pdata.dmic1_data_pin);
-+	device_property_read_u32(np,
-+		"realtek,dmic2-data-pin", &rt5645->pdata.dmic2_data_pin);
-+	device_property_read_u32(np,
-+		"realtek,jd-mode", &rt5645->pdata.jd_mode);
-+
-+	return 0;
-+}
-+
- static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -3244,6 +3258,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 
- 	if (pdata) {
- 		rt5645->pdata = *pdata;
-+	} else if (i2c->dev.of_node) {
-+		rt5645_parse_dt(rt5645, i2c->dev.of_node);
- 	} else {
- 		if (dmi_check_system(dmi_platform_intel_braswell)) {
- 			rt5645->pdata = *rt5645_pdata;
 -- 
-1.8.1.1.439.g50a6b54
+~Vinod
