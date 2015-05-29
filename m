@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/10] ALSA: ac97: Fix ifdef CONFIG_PROC_FS
-Date: Fri, 29 May 2015 08:06:06 +0200
-Message-ID: <1432879571-3359-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 06/10] ALSA: ca0106: Fix/cleanup ifdef
+	CONFIG_PROC_FS
+Date: Fri, 29 May 2015 08:06:07 +0200
+Message-ID: <1432879571-3359-7-git-send-email-tiwai@suse.de>
 References: <1432879571-3359-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A00E2666D5
+ by alsa0.perex.cz (Postfix) with ESMTP id 88CBF2666D8
  for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 08:06:14 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 26AD8AD33
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2E687AD3B
  for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 06:06:14 +0000 (UTC)
 In-Reply-To: <1432879571-3359-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,39 +27,57 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Replaced with the new CONFIG_SND_PROC_FS.
+Build ca0106_proc.o conditionally to drop unneeded ifdef.
+Some are replaced with the new CONFIG_SND_PROC_FS.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ac97/Makefile     | 2 +-
- sound/pci/ac97/ac97_local.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/ca0106/Makefile      | 3 ++-
+ sound/pci/ca0106/ca0106_main.c | 2 +-
+ sound/pci/ca0106/ca0106_proc.c | 4 ----
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/ac97/Makefile b/sound/pci/ac97/Makefile
-index 41fa322f0971..526175333710 100644
---- a/sound/pci/ac97/Makefile
-+++ b/sound/pci/ac97/Makefile
-@@ -4,7 +4,7 @@
- #
+diff --git a/sound/pci/ca0106/Makefile b/sound/pci/ca0106/Makefile
+index dcbae7b31546..c1455fc5588c 100644
+--- a/sound/pci/ca0106/Makefile
++++ b/sound/pci/ca0106/Makefile
+@@ -1,3 +1,4 @@
+-snd-ca0106-objs := ca0106_main.o ca0106_proc.o ca0106_mixer.o ca_midi.o
++snd-ca0106-objs := ca0106_main.o ca0106_mixer.o ca_midi.o
++snd-ca0106-$(CONFIG_SND_PROC_FS) += ca0106_proc.o
  
- snd-ac97-codec-y := ac97_codec.o ac97_pcm.o
--snd-ac97-codec-$(CONFIG_PROC_FS) += ac97_proc.o
-+snd-ac97-codec-$(CONFIG_SND_PROC_FS) += ac97_proc.o
+ obj-$(CONFIG_SND_CA0106) += snd-ca0106.o
+diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
+index 0b31732eb4dc..d3cd95633ee2 100644
+--- a/sound/pci/ca0106/ca0106_main.c
++++ b/sound/pci/ca0106/ca0106_main.c
+@@ -1885,7 +1885,7 @@ static int snd_ca0106_probe(struct pci_dev *pci,
+ 		goto error;
+ 	dev_dbg(card->dev, " done.\n");
  
- # Toplevel Module Dependency
- obj-$(CONFIG_SND_AC97_CODEC) += snd-ac97-codec.o
-diff --git a/sound/pci/ac97/ac97_local.h b/sound/pci/ac97/ac97_local.h
-index c276a5e3f7ac..941a5062cc20 100644
---- a/sound/pci/ac97/ac97_local.h
-+++ b/sound/pci/ac97/ac97_local.h
-@@ -28,7 +28,7 @@ int snd_ac97_update_bits_nolock(struct snd_ac97 *ac97, unsigned short reg,
- 				unsigned short mask, unsigned short value);
- 
- /* ac97_proc.c */
 -#ifdef CONFIG_PROC_FS
 +#ifdef CONFIG_SND_PROC_FS
- void snd_ac97_bus_proc_init(struct snd_ac97_bus * ac97);
- void snd_ac97_bus_proc_done(struct snd_ac97_bus * ac97);
- void snd_ac97_proc_init(struct snd_ac97 * ac97);
+ 	snd_ca0106_proc_init(chip);
+ #endif
+ 
+diff --git a/sound/pci/ca0106/ca0106_proc.c b/sound/pci/ca0106/ca0106_proc.c
+index 2c5c28adbefd..9b2b8b38122f 100644
+--- a/sound/pci/ca0106/ca0106_proc.c
++++ b/sound/pci/ca0106/ca0106_proc.c
+@@ -75,8 +75,6 @@
+ #include "ca0106.h"
+ 
+ 
+-#ifdef CONFIG_PROC_FS
+-
+ struct snd_ca0106_category_str {
+ 	int val;
+ 	const char *name;
+@@ -453,5 +451,3 @@ int snd_ca0106_proc_init(struct snd_ca0106 *emu)
+ 		snd_info_set_text_ops(entry, emu, snd_ca0106_proc_reg_read2);
+ 	return 0;
+ }
+-
+-#endif /* CONFIG_PROC_FS */
 -- 
 2.4.2
