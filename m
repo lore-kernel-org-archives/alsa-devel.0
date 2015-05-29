@@ -1,56 +1,106 @@
-From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Subject: Re: [alsa-devel] [RFC] sound: ppc: keywest: check if DEQ was already
- instantiated
-Date: Fri, 29 May 2015 20:06:09 +0900
-Message-ID: <20150529110559.GB4282@katana>
-References: <1432397711-3186-1-git-send-email-wsa@the-dreams.de>
- <1432631974.85649.YahooMailBasic@web141501.mail.bf1.yahoo.com>
- <s5htwuxb1h4.wl-tiwai@suse.de>
- <20150529105020.GB3168@katana>
- <s5hsiaf6489.wl-tiwai@suse.de>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two way
+	call	to the real sound card UDA1345TS
+Date: Fri, 29 May 2015 11:20:33 +0000
+Message-ID: <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de>
+ <1429877130444.23317@tataelxsi.co.in>,<553A3ADB.7040108@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <s5hsiaf6489.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Dan DeVoto <dand1972-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Elliott <txlitebeer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from APAC01-SG1-obe.outbound.protection.outlook.com
+ (mail-sg1on0130.outbound.protection.outlook.com [134.170.132.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C9B3266748
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 13:20:37 +0200 (CEST)
+In-Reply-To: <553A3ADB.7040108@ladisch.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Clemens,
 
---jho1yZJdad60DJr+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+As you suggested am using jack plugin, but am facing the below error
 
-> Do you think from which stable kernel version can this be applied?
+etc/asound.conf
 
-The offending commit is 3a3dd0186f619b74e61e6f29dddcaf59af7d3cac
-("i2c/powermac: Improve detection of devices from device-tree") which
-came in with v3.6 if I read correctly.
+pcm.!default {
+    type plug
+    slave { pcm "jack" }
+}
+
+pcm.jack {
+    type jack
+    playback_ports {
+        0 alsa_pcm:playback_1
+        1 alsa_pcm:playback_2
+    }
+    capture_ports {
+        0 alsa_pcm:capture_1
+        1 alsa_pcm:capture_2
+    }
+}
+
+ctl.mixer0 {
+    type hw
+    card 0
+}
+
+root@am335x-evm:/# aplay -D pcm.jack TangoForTajMusic11.wav
+ALSA lib 
+/home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/pcm/pcm.c:2239:(snd_pcm_open_noupdate) 
+Unknown PCM pcm.jack
+aplay: main:722: audio open error: No such file or directory
+root@am335x-evm:/#
 
 
---jho1yZJdad60DJr+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Pls find the details of the architecture as below:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+what ever the GSM analog audio out data is pumped as VINR to stereo codec & the output of the stereo codec ie., VOUTR is pumped to the Speaker of the custom board
 
-iQIcBAEBAgAGBQJVaEgXAAoJEBQN5MwUoCm29EwQAJlAm6rwP7/KulvtQ6DbnSkY
-hOhSvuFzZDfkYE/j+oBsgvflqs9WeySZmCctqTABJbEe9HcbZXk6O28oZ7olo8PZ
-OG+vDxcf5jl4e7ilsbhAh4rLGY2qV6NGM4FSVhrsDN8mwB8SMV4ibgAc58q+pL4z
-Yu5JqjBV88TQqS5CDEfK4p+X6Pu90DxBfBJdaW9Pr1oPsX7PRCViNt5e9s3PtETS
-WExeU7PeRrWofYdrowtiz+XDrvRae0gY1A5J7XQueJCdNsy/pwiX3mUW5fvrSoUc
-5ReA/PoFIuVud/QDGIeWckwfRSze+3s7lhumOmEBUKwXPbe77hXrftFsURVQxnz0
-wHwt0Uu+sbNJgDFFnJNnuQCCS9cPPPzZRl6V2yC1yY+KTHUYzCZuHMpA7viATmMC
-Uu2+nL/1ucESdJa3DN6fmi5hGHdHL7wQlv7/fA4zuOW0LFWGzEfJ9oijOatfck4V
-kXN+ftAVp7PfLhsFvCqZZAUgx1xwlLncBY23fJUiLUG30zbBgc2ib0kgfBpiESGo
-FNYsOAlJhQnmSuHsbC9Zj3ceiscgNamHW3duCi9khBGjYNEaoWkrgWR2/m2bsZnJ
-qH4tne14DJ7fohkyIJB43CIoESLJYbq9b7yU70vshOSN+wO007/NZX8avLWq32oX
-nLb3LQ02giOrUxnvgllE
-=+uBG
------END PGP SIGNATURE-----
+what ever the GSM analog audio out data is pumped as VINR to stereo codec & the output of the stereo codec ie., VOUTR is pumped to the Speaker of the custom board
+GSM MIC-> VINR -> stereo codec->VOUTR -> board speaker
 
---jho1yZJdad60DJr+--
+what ever the board MIC data is pumped as VINL to stereo codec & the output of the stereo codec ie., VOUTL is pumped as analog input to the GSM Speaker
+Board Mic -> VINL-> stereo codec -> VOUTL ->GSM speaker
+
+Pls let me know if any other details is required from my side
+
+Kindly do the needful as early as possible
+Awaiting for your suggestions
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Friday, April 24, 2015 6:15 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+
+Srinivasan S wrote:
+> did you mean that , If I use Jack plugin , does it resolve this
+> problem (ie., does the CPU consumption reduce drastically instead of
+> dshare)
+
+It is unlikely that running your two programs on top of Jack will use
+less CPU than with dshare.  However, I don't know the details of your
+architecture, so the only way to find out would be for you to try it.
+
+
+Regards,
+Clemens
