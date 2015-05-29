@@ -1,14 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/2] ALSA: control: add dimension validator for
-	userspace element
-Date: Fri, 29 May 2015 17:58:56 +0900
-Message-ID: <1432889937-15413-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1432889937-15413-1-git-send-email-o-takashi@sakamocchi.jp>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ALSA: fix building with CONFIG_SND_PROC_FS
+	disabled
+Date: Fri, 29 May 2015 09:03:35 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553BC12@SHSMSX101.ccr.corp.intel.com>
+References: <4218314.pT4WQLSW4C@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1432889937-15413-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53EEA260492
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:03:47 +0200 (CEST)
+In-Reply-To: <4218314.pT4WQLSW4C@wuerfel>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,70 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@alsa-project.org, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-The 'dimen' field in struct snd_ctl_elem_info is used to compose
-all of channels in the control element as multi-dimensional matrix.
-The field has four members. Each member represents the number in
-each dimension level. For example, if the channels consist of typical
-two dimensional matrix, the dimen[0] represents the number of rows
-and dimen[1] represents the number of columns, or vise-versa.
-
-The total elements in the matrix should be within the number of
-channels in the control element, while current implementation has
-no validator of this information. In a view of userspace applications,
-the information must be valid so that it cannot cause any bugs such as
-buffer-over-run.
-
-This commit adds a validator of dimen information for userspace
-applications which add new control elements. When they add the elements
-with wrong dimen information, they receive EINVAL.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 196a6fe..9b77afd 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -805,6 +805,25 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 	return 0;
- }
+> -----Original Message-----
+> From: Arnd Bergmann [mailto:arnd@arndb.de]
+> Sent: Friday, May 29, 2015 4:47 PM
+> To: Takashi Iwai
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-arm-
+> kernel@lists.infradead.org; Jie, Yang
+> Subject: [PATCH] ALSA: fix building with CONFIG_SND_PROC_FS disabled
+> 
+> A recent change to split the procfs support for ALSA turned out to be
+> incomplete, leading to build errors:
+> 
+> sound/core/seq/seq_info.c:61:12: error: redefinition of 'snd_seq_info_init'
+> sound/core/seq/seq_device.c: In function 'seq_dev_proc_init':
+> sound/core/seq/seq_device.c:276:2: error: 'info_entry' undeclared (first use
+> in this function)
+> sound/core/seq/seq_device.c: In function 'alsa_seq_device_exit':
+> sound/core/seq/seq_device.c:309:22: error: 'info_entry' undeclared (first
+> use in this function)
+> 
+> This replaces some more instances of CONFIG_PROC_FS with
+> CONFIG_SND_PROC_FS, as the original patch started. It is enough to avoid all
+> randconfig regressions I saw on ARM because of the CONFIG_SND_PROC_FS
+> introduction.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: cd6a65036f0e ("ALSA: replace CONFIG_PROC_FS with
+> CONFIG_SND_PROC_FS")
+> ---
+> 
+> I assume this was already reported. If not, please apply my patch or fold it
+> into the original commit.
  
-+static bool validate_dimen(struct snd_ctl_elem_info *info)
-+{
-+	unsigned int elements;
-+	unsigned int i;
-+
-+	/*
-+	 * When drivers don't use dimen field, this value is zero and pass the
-+	 * validation. Else, calculated number of elements is validated.
-+	 */
-+	elements = info->dimen.d[0];
-+	for (i = 1; i < ARRAY_SIZE(info->dimen.d); ++i) {
-+		if (info->dimen.d[i] == 0)
-+			break;
-+		elements *= info->dimen.d[i];
-+	}
-+
-+	return elements <= info->count;
-+}
-+
- static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
- 			     struct snd_ctl_elem_info *info)
- {
-@@ -1272,6 +1291,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (info->count < 1 ||
- 	    info->count > max_value_counts[info->type])
- 		return -EINVAL;
-+	if (!validate_dimen(info))
-+		return -EINVAL;
- 	private_size = value_sizes[info->type] * info->count;
- 
- 	/*
--- 
-2.1.4
+Thank you, Seems this already fixed by Takashi's latest series? 
+
+~Keyon
+
+> 
+> diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile index
+> b29ffe835205..b65fa5a1943b 100644
+> --- a/sound/core/seq/Makefile
+> +++ b/sound/core/seq/Makefile
+> @@ -7,7 +7,7 @@ snd-seq-device-objs := seq_device.o  snd-seq-objs :=
+> seq.o seq_lock.o seq_clientmgr.o seq_memory.o seq_queue.o \
+>                  seq_fifo.o seq_prioq.o seq_timer.o \
+>                  seq_system.o seq_ports.o
+> -snd-seq-$(CONFIG_PROC_FS) += seq_info.o
+> +snd-seq-$(CONFIG_SND_PROC_FS) += seq_info.o
+>  snd-seq-midi-objs := seq_midi.o
+>  snd-seq-midi-emul-objs := seq_midi_emul.o  snd-seq-midi-event-objs :=
+> seq_midi_event.o diff --git a/sound/core/seq/seq_device.c
+> b/sound/core/seq/seq_device.c index 288af56a43cd..c4acf17e9f5e 100644
+> --- a/sound/core/seq/seq_device.c
+> +++ b/sound/core/seq/seq_device.c
+> @@ -272,7 +272,7 @@ EXPORT_SYMBOL_GPL(snd_seq_driver_unregister);
+> 
+>  static int __init seq_dev_proc_init(void)  { -#ifdef CONFIG_PROC_FS
+> +#ifdef CONFIG_SND_PROC_FS
+>  	info_entry = snd_info_create_module_entry(THIS_MODULE,
+> "drivers",
+>  						  snd_seq_root);
+>  	if (info_entry == NULL)
+> @@ -305,7 +305,7 @@ static void __exit alsa_seq_device_exit(void)  #ifdef
+> CONFIG_MODULES
+>  	cancel_work_sync(&autoload_work);
+>  #endif
+> -#ifdef CONFIG_PROC_FS
+> +#ifdef CONFIG_SND_PROC_FS
+>  	snd_info_free_entry(info_entry);
+>  #endif
+>  	bus_unregister(&snd_seq_bus_type);
