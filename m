@@ -1,25 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
-	match function
-Date: Fri, 29 May 2015 18:35:03 +0100
-Message-ID: <20150529173503.GQ21577@sirena.org.uk>
-References: <s5h617f29os.wl-tiwai@suse.de>
- <20150526133256.GQ21577@sirena.org.uk>
- <s5hr3q3cv77.wl-tiwai@suse.de>
- <20150526194316.GY21577@sirena.org.uk>
- <s5hfv6ieero.wl-tiwai@suse.de>
- <20150527183406.GM21577@sirena.org.uk>
- <s5hpp5lde48.wl-tiwai@suse.de>
- <20150528195359.GG21577@sirena.org.uk>
- <s5hk2vsasjz.wl-tiwai@suse.de> <20150529081544.GC3140@localhost>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH v2 1/3] ASoC: max98090: read micbias from
+	device property
+Date: Fri, 29 May 2015 17:37:45 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CFB9F6@ORSMSX113.amr.corp.intel.com>
+References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
+ <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+ <20150529095858.GM21577@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1272642757280408868=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A998260714
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 19:35:12 +0200 (CEST)
-In-Reply-To: <20150529081544.GC3140@localhost>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47A4A260714
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 19:37:47 +0200 (CEST)
+In-Reply-To: <20150529095858.GM21577@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,78 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>, patches.audio@intel.com
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
+ Denny" <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1272642757280408868==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="grGpQMk/ccQQb7wU"
-Content-Disposition: inline
 
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, May 29, 2015 2:59 AM
+> To: Fang, Yang A
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> dgreid@chromium.org; Nujella, Sathyanarayana;
+> kevin.strasser@linux.intel.com; Sripathi, Srinivas; Iriawan, Denny; Jain,
+> Praveen K; Koul, Vinod
+> Subject: Re: [PATCH v2 1/3] ASoC: max98090: read micbias from device
+> property
+> 
+> On Thu, May 28, 2015 at 11:00:46AM -0700, yang.a.fang@intel.com wrote:
+> 
+> >  - maxim,dmic-freq: Frequency at which to clock DMIC
+> >
+> > +- maxim,micbias: Micbias voltage applies to the analog mic
+> 
+> This needs to be more specific about what the value is - it looks like it's the
+> value to be written into a particular register?
+> 
+Yes it is written into the register. I will put more information
 
---grGpQMk/ccQQb7wU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 29, 2015 at 01:45:44PM +0530, Vinod Koul wrote:
-
-> well userspace parsing is only for the pin mapping and changes which
-> users want to do on their systems. For basic things the default graph
-> will be read by existing HDA parser and codec driver will create
-> widgets based on that. The generic HDA codec library should do most and
-> the HDA ASoC codecs should do device specfic work (like existing
-> patch_xxx)
-
-So we *are* planning to continue to use the existing CODEC support but
-with some different interfacing on top of it?
-
-> > And it's the reason I suggested for pending merge until the codec side
-> > is ready.  We need the topology stuff merged at first, then HDA-codec
-> > driver together with user-space side.
-
-> I dont mind if code doesnt get merged into next merge window and put
-> in one after that. But in needs to get accepted is some topic branch
-> so that subsequent series can be  psted and reviewed, merged. Btw
-> users will not see unless we have machine driver. I will add the
-> disable feature after this series, so no user conflicts occur
-
-I need to have another look through.  TBH I suspect it would be easier
-with something that was more of a minimum viable prototype than with a
-part of the system - with something like this it's as much the overall
-shape of the solution that's being reviewed as anything else.
-
-> Now that we have debated this and I guess all have the big picture
-> here, how do we go about this. Do you guys need changes in this series
-> or this is good for now?
-
-Like I say I really need to review it again, and I'm still not entirely
-convinced I understand what's going on well enough.
-
---grGpQMk/ccQQb7wU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVaKNGAAoJECTWi3JdVIfQWZ4H/1JA+q94tYnZVZdSkGin5NxR
-s5t3ahOhpl1Wv52jEC15Mjm2WRJh++y8u6LO+jwhlPPQt0aCDVRTDJmPIe7eWddf
-bZRbnAhGULCAUWKe+F16epWaobd53ZjgIHb4hXJRm6PbbgEfczplLNHbSeS0hXdc
-l+Um50hqIu24UiHeCh0U5N4tLDzogNc3gz3GWwIybdbsAr+lP+gqSBeLuYt8GLG5
-Wm49kRq55GaKoFggEBdB4+FgbVJ0Vj0dUq0FNVok+oqU9b0sPSEVHEk2cC8olAzO
-FBtJ25PwAkNdf6V+Y11hgKaM13uq8o1aNYWuac3/luOIMu+6C8y7qV4XNTNQEaY=
-=DEGx
------END PGP SIGNATURE-----
-
---grGpQMk/ccQQb7wU--
-
---===============1272642757280408868==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1272642757280408868==--
+> > +	err = device_property_read_u32(codec->dev, "maxim,micbias",
+> &micbias);
+> > +	if (err || micbias < M98090_MBVSEL_2V2  || micbias >
+> M98090_MBVSEL_2V8)
+> > +		micbias = M98090_MBVSEL_2V8;
+> 
+> We should be logging an error if we read and out of range value here - it's
+> expected that the value might be missing but if we manage to read
+> something and it's invalid we should say so rather than silently ignore it.
+Okay, will put log if out of range .
