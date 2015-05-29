@@ -1,18 +1,15 @@
-From: Sergey Kiselev <skiselev@gmail.com>
-Subject: ASoC: PATCH: wm8731 - reinitialize regmap cache after
-	hardware reset
-Date: Thu, 28 May 2015 09:34:09 -0700
-Message-ID: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: core: Fix randconfig build wrt
+	CONFIG_PROC_FS
+Date: Fri, 29 May 2015 08:04:07 +0200
+Message-ID: <1432879447-3299-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f180.google.com (mail-ig0-f180.google.com
- [209.85.213.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 180D42604BD
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 18:34:10 +0200 (CEST)
-Received: by igbsb11 with SMTP id sb11so43765578igb.0
- for <alsa-devel@alsa-project.org>; Thu, 28 May 2015 09:34:09 -0700 (PDT)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EB5A26666B
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 08:04:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Jim Davis <jim.epost@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+There are a few leftover CONFIG_PROC_FS forgotten to replace with
+CONFIG_SND_PROC_FS.
 
-I am working on a machine driver that uses wm8731 codec and I've
-noticed that it will not work after rmmod/modprobe of that machine
-driver. The issue is that wm8731_probe() resets the hardware, but it
-doesn't reinitialize the regmap cache to the default values.
+Fixes: cd6a65036f0e ('ALSA: replace CONFIG_PROC_FS with CONFIG_SND_PROC_FS')
+Reported-by: Jim Davis <jim.epost@gmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/Makefile     | 2 +-
+ sound/core/seq/seq_device.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-The patch below fixes this issue.
-
-I also skimmed through other codecs, and some of them might have
-similar issue (wm8510.c, wm8711.c, wm8750.c, wm8753.c, wm8940.c,
-wm8960.c, wm8971.c, wm8974.c, wm8988.c, wm8990.c)
-
-Another way to avoid this issue might be resetting the codec in the
-*_spi_probe()/*_i2c_probe(), so that it only gets reset once when
-codec is loading.
-
-Thanks in advance for any comments/suggestions on the patch.
-
-Thanks,
-Sergey
-
-Signed-off-by: Sergey Kiselev <skiselev@gmail.com>
-
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 2245b6a..76af75b 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -84,7 +84,7 @@ static bool wm8731_writeable(struct device *dev,
-unsigned int reg)
-  return reg <= WM8731_RESET;
- }
-
--#define wm8731_reset(c) snd_soc_write(c, WM8731_RESET, 0)
-+static int wm8731_reset(struct snd_soc_codec *codec);
-
- static const char *wm8731_input_select[] = {"Line In", "Mic"};
-
-@@ -665,6 +665,21 @@ static const struct regmap_config wm8731_regmap = {
-  .num_reg_defaults = ARRAY_SIZE(wm8731_reg_defaults),
- };
-
-+static int wm8731_reset(struct snd_soc_codec *codec)
-+{
-+ int ret;
-+ struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
-+
-+ ret = snd_soc_write(codec, WM8731_RESET, 0);
-+
-+ if (ret != 0)
-+ return ret;
-+
-+ regmap_reinit_cache(wm8731->regmap, &wm8731_regmap);
-+
-+ return 0;
-+}
-+
- #if defined(CONFIG_SPI_MASTER)
- static int wm8731_spi_probe(struct spi_device *spi)
+diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile
+index b29ffe835205..b65fa5a1943b 100644
+--- a/sound/core/seq/Makefile
++++ b/sound/core/seq/Makefile
+@@ -7,7 +7,7 @@ snd-seq-device-objs := seq_device.o
+ snd-seq-objs := seq.o seq_lock.o seq_clientmgr.o seq_memory.o seq_queue.o \
+                 seq_fifo.o seq_prioq.o seq_timer.o \
+                 seq_system.o seq_ports.o
+-snd-seq-$(CONFIG_PROC_FS) += seq_info.o
++snd-seq-$(CONFIG_SND_PROC_FS) += seq_info.o
+ snd-seq-midi-objs := seq_midi.o
+ snd-seq-midi-emul-objs := seq_midi_emul.o
+ snd-seq-midi-event-objs := seq_midi_event.o
+diff --git a/sound/core/seq/seq_device.c b/sound/core/seq/seq_device.c
+index 288af56a43cd..c4acf17e9f5e 100644
+--- a/sound/core/seq/seq_device.c
++++ b/sound/core/seq/seq_device.c
+@@ -272,7 +272,7 @@ EXPORT_SYMBOL_GPL(snd_seq_driver_unregister);
+ 
+ static int __init seq_dev_proc_init(void)
  {
+-#ifdef CONFIG_PROC_FS
++#ifdef CONFIG_SND_PROC_FS
+ 	info_entry = snd_info_create_module_entry(THIS_MODULE, "drivers",
+ 						  snd_seq_root);
+ 	if (info_entry == NULL)
+@@ -305,7 +305,7 @@ static void __exit alsa_seq_device_exit(void)
+ #ifdef CONFIG_MODULES
+ 	cancel_work_sync(&autoload_work);
+ #endif
+-#ifdef CONFIG_PROC_FS
++#ifdef CONFIG_SND_PROC_FS
+ 	snd_info_free_entry(info_entry);
+ #endif
+ 	bus_unregister(&snd_seq_bus_type);
+-- 
+2.4.2
