@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: max98090: read micbias from
-	device property
-Date: Fri, 29 May 2015 10:58:58 +0100
-Message-ID: <20150529095858.GM21577@sirena.org.uk>
-References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
- <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2 1/2] ASoC: rt5645: change gpio to gpiod APIs
+Date: Fri, 29 May 2015 18:16:46 +0800
+Message-ID: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1689930498360405815=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 364C7260673
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:59:06 +0200 (CEST)
-In-Reply-To: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5180260673
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 12:17:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +18,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, koro.chen@mediatek.com, john.lin@realtek.com, Leilk.Liu@mediatek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Move gpio to gpio_desc and use gpiod APIs in codec driver.
 
---===============1689930498360405815==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oB61DKt4BTdhjpGI"
-Content-Disposition: inline
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ include/sound/rt5645.h    |  3 ---
+ sound/soc/codecs/rt5645.c | 47 +++++++++++++----------------------------------
+ sound/soc/codecs/rt5645.h |  1 +
+ 3 files changed, 14 insertions(+), 37 deletions(-)
 
-
---oB61DKt4BTdhjpGI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 28, 2015 at 11:00:46AM -0700, yang.a.fang@intel.com wrote:
-
->  - maxim,dmic-freq: Frequency at which to clock DMIC
-> =20
-> +- maxim,micbias: Micbias voltage applies to the analog mic
-
-This needs to be more specific about what the value is - it looks like
-it's the value to be written into a particular register?
-
-> +	err =3D device_property_read_u32(codec->dev, "maxim,micbias", &micbias);
-> +	if (err || micbias < M98090_MBVSEL_2V2  || micbias > M98090_MBVSEL_2V8)
-> +		micbias =3D M98090_MBVSEL_2V8;
-
-We should be logging an error if we read and out of range value here -
-it's expected that the value might be missing but if we manage to read
-something and it's invalid we should say so rather than silently ignore
-it.
-
---oB61DKt4BTdhjpGI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVaDhiAAoJECTWi3JdVIfQJZwH/0zJ4nv3EmJvZ87N/m6bnD72
-aO2uVf+vxT4aXYb3ZOWt/Ka440/CzIDNohDur9+Jcw/ks85ROc1M5e48ubr0VCR4
-CXlzvkRqJqvsO3zETWnVRx6K8fr4NfiOB9imIodqeNWwaHZzKHUgwrMAEa31S09U
-3AOM4rdsMH4jYAa/27+3ho3S2z+MBFvuefKsYRy9AO0sxbIcZPFjA9pFu3aCicHc
-sAWHIRpEhYkMFE+LiBpgMv4YPNlkkmx7NoFG2MClTJJTL+Fdxr6ie4xUMidbFaTX
-aGe2kHdBhgBVwcZFEbj6anEQps9txM8LuSveSygBQfVbhzkeP1/d5e5B1N3l3AA=
-=GKVW
------END PGP SIGNATURE-----
-
---oB61DKt4BTdhjpGI--
-
---===============1689930498360405815==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1689930498360405815==--
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index 652cb9e..22734bc 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -20,9 +20,6 @@ struct rt5645_platform_data {
+ 	unsigned int dmic2_data_pin;
+ 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+ 
+-	unsigned int hp_det_gpio;
+-	bool gpio_hp_det_active_high;
+-
+ 	unsigned int jd_mode;
+ };
+ 
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index aaede45..0cb4942 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2938,17 +2938,11 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ 
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+-		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+-			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
+-			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
+-				rt5645->pdata.hp_det_gpio, gpio_state);
+-		}
+-		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
+-			(!rt5645->pdata.gpio_hp_det_active_high &&
+-			 !gpio_state)) {
+-			report = rt5645_jack_detect(rt5645->codec, 1);
+-		} else {
+-			report = rt5645_jack_detect(rt5645->codec, 0);
++		if (rt5645->gpiod_hp_det) {
++			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
++			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
++				gpio_state);
++			report = rt5645_jack_detect(rt5645->codec, gpio_state);
+ 		}
+ 		snd_soc_jack_report(rt5645->hp_jack,
+ 				    report, SND_JACK_HEADPHONE);
+@@ -3253,19 +3247,17 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	} else {
+ 		if (dmi_check_system(dmi_platform_intel_braswell)) {
+ 			rt5645->pdata = *rt5645_pdata;
+-			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+-
+-			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
+-				rt5645->pdata.hp_det_gpio = -1;
+-				dev_err(&i2c->dev, "failed to initialize gpiod\n");
+-			} else {
+-				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
+-				rt5645->pdata.gpio_hp_det_active_high
+-						= !gpiod_is_active_low(gpiod);
+-			}
+ 		}
+ 	}
+ 
++	rt5645->gpiod_hp_det = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
++
++	if (IS_ERR(rt5645->gpiod_hp_det) ||
++	    gpiod_direction_input(rt5645->gpiod_hp_det)) {
++		rt5645->gpiod_hp_det = NULL;
++		dev_err(&i2c->dev, "failed to initialize gpiod\n");
++	}
++
+ 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
+ 	if (IS_ERR(rt5645->regmap)) {
+ 		ret = PTR_ERR(rt5645->regmap);
+@@ -3425,16 +3417,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
+ 	}
+ 
+-	if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+-		ret = gpio_request(rt5645->pdata.hp_det_gpio, "rt5645");
+-		if (ret)
+-			dev_err(&i2c->dev, "Fail gpio_request hp_det_gpio\n");
+-
+-		ret = gpio_direction_input(rt5645->pdata.hp_det_gpio);
+-		if (ret)
+-			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
+-	}
+-
+ 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+ 
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
+@@ -3450,9 +3432,6 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+ 
+ 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+ 
+-	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
+-		gpio_free(rt5645->pdata.hp_det_gpio);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 
+ 	return 0;
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 9ec4e89..0353a6a 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -2182,6 +2182,7 @@ struct rt5645_priv {
+ 	struct rt5645_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct i2c_client *i2c;
++	struct gpio_desc *gpiod_hp_det;
+ 	struct snd_soc_jack *hp_jack;
+ 	struct snd_soc_jack *mic_jack;
+ 	struct snd_soc_jack *btn_jack;
+-- 
+1.8.1.1.439.g50a6b54
