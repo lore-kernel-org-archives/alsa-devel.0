@@ -1,14 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: jack: Fix the id uniqueness check
-Date: Fri, 29 May 2015 14:09:04 +0200
-Message-ID: <1432901344-27034-1-git-send-email-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Audio play problem with tlv320aic3106 in mainline.
+Date: Fri, 29 May 2015 15:16:45 +0300
+Message-ID: <556858AD.1030609@ti.com>
+References: <CAFqH_5332TNp+3cTH6O-UgqP8Ah-ZUiZpaTJpy3ZoL4-42fo_g@mail.gmail.com>	<5568133A.6010006@ti.com>
+ <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EE0A2606B2
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 14:09:06 +0200 (CEST)
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40AB92606B2
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 14:16:53 +0200 (CEST)
+In-Reply-To: <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,32 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Enric Balletbo Serra <eballetbo@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_kctl_jack_new() tries to assign a unique index number when a name
-string that has been already registered is passed.  However, it checks
-with the base string without "Jack" suffix, so it never hits.
-Fix the call with the properly processed name string instead.
-
-Fixes: b8dd086674cf 'ALSA: Jack: handle jack embedded kcontrol creating within ctljack')
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/ctljack.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/core/ctljack.c b/sound/core/ctljack.c
-index 8f8d1033425c..9149a4aefa95 100644
---- a/sound/core/ctljack.c
-+++ b/sound/core/ctljack.c
-@@ -70,7 +70,7 @@ snd_kctl_jack_new(const char *name, struct snd_card *card)
- 		return NULL;
- 
- 	jack_kctl_name_gen(kctl->id.name, name, sizeof(kctl->id.name));
--	kctl->id.index = get_available_index(card, name);
-+	kctl->id.index = get_available_index(card, kctl->id.name);
- 	kctl->private_value = 0;
- 	return kctl;
- }
--- 
-2.4.2
+T24gMDUvMjkvMjAxNSAxMjoyNCBQTSwgRW5yaWMgQmFsbGV0Ym8gU2VycmEgd3JvdGU6Cj4+IEl0
+IG1pZ2h0IGJlIHJlYWxseSAyNE1Iei4KPj4gSWYgdGhlIE1DTEsgaW4geW91ciBib2FyZCBpcyB3
+aXJlZCBsaWtlIGFtMzM1eC1ldm1zayBvciBob3cgQmVhZ2xlQm9uZSdzIGF1ZGlvCj4+IGNhcGVz
+IGFyZSB3aXJlZCAoTUNMSyBpcyBjb21pbmcgZnJvbSBBTTMzNXgncyBFVkVOVF9JTlRSMC8xIHBp
+biBhcyBDTEtPVVQxLzIpCj4+IHRoZW4gMjRNSHogaXMgY29ycmVjdC4gT24gdGhlIGFtMzM1eC1l
+dm0gdGhlcmUgaXMgYSBkZWRpY2F0ZWQgY3J5c3RhbAo+PiBwcm92aWRpbmcgdGhlIDEyTUh6Lgo+
+Pgo+IFdlbGwsIGluIG15IGJvYXJkIHRoZXJlIGlzIGFsc28gYSBkZWRpY2F0ZWQgY3J5c3RhbCBw
+cm92aWRpbmcgdGhlCj4gMTJNSHosIHNvIEkgZXhwZWN0IHRoYXQgdGhlIGNvcnJlY3QgdmFsdWUg
+Zm9yIGNsb2NrLWZyZXF1ZW5jeSBpcyAxMk1Iego+IG5vdCAyNE1Iei4KCkkgd2FzIHdyb25nIHdp
+dGggdGhlIEJCVyBhdWRpbyBjYXBlLi4gQXQgbGVhc3QgdGhlIFJldkEgd2hpY2ggSSBoYXZlIGRv
+ZXMgaGF2ZQoxMk1IeiBjcnlzdGFsIGNvbm5lY3RlZCB0byBhaWMzMTA2IE1DTEssIGJ1dCB0aGVy
+ZSBpcyBhIGxpbmUgdG8gdGhlIFNvQydzCkNMS09VVDIuIEJ5IGRlZmF1bHQgdGhlIGNvZGVjIHJ1
+bnMgdXNpbmcgdGhlIDEyTUh6LgpJIGhhdmUgY2hlY2tlZCB3aXRoIGEgc2NvcGUgYW5kIHllcCwg
+SSBoYXZlIDEyTUh6IGZvciBNQ0xLLgoKPiAKPiAgICAgY2xvY2tzIHsKPiAgICAgICAgIGNvbXBh
+dGlibGUgPSAic2ltcGxlLWJ1cyI7Cj4gICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAg
+ICAgICAgICNzaXplLWNlbGxzID0gPDA+Owo+IAo+ICAgICAgICAgLyogYXVkaW8gZXh0ZXJuYWwg
+b3NjaWxsYXRvciAqLwo+ICAgICAgICAgdGx2MzIwYWljM3hfbWNsazogb3NjaWxsYXRvckAwIHsK
+PiAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsKPiAgICAgICAgICAgICAj
+Y2xvY2stY2VsbHMgPSA8MD47Cj4gICAgICAgICAgICAgY2xvY2stZnJlcXVlbmN5ICA9IDwxMjAw
+MDAwMD47ICAgIC8qIDEyTUh6ICovCj4gICAgICAgICB9Owo+ICAgICB9Owo+IAo+ICAgICBzb3Vu
+ZCB7Cj4gICAgICAgICBjb21wYXRpYmxlID0gInRpLGRhODMwLWV2bS1hdWRpbyI7Cj4gICAgICAg
+ICB0aSxtb2RlbCA9ICJBTTMzNXgtU0w1MCI7Cj4gICAgICAgICB0aSxhdWRpby1jb2RlYyA9IDwm
+YXVkaW9fY29kZWM+Owo+ICAgICAgICAgdGksbWNhc3AtY29udHJvbGxlciA9IDwmbWNhc3AwPjsK
+PiAKPiAgICAgICAgIGNsb2NrcyA9IDwmdGx2MzIwYWljM3hfbWNsaz47Cj4gICAgICAgICBjbG9j
+ay1uYW1lcyA9ICJtY2xrIjsKPiAKPiAgICAgICAgIHRpLGF1ZGlvLXJvdXRpbmcgPQo+ICAgICAg
+ICAgICAgICJIZWFkcGhvbmUgSmFjayIsICAgICJIUExPVVQiLAo+ICAgICAgICAgICAgICJIZWFk
+cGhvbmUgSmFjayIsICAgICJIUFJPVVQiLAo+ICAgICAgICAgICAgICJMSU5FMVIiLCAgICAgICAg
+ICAgICAgICJMaW5lIEluIiwKPiAgICAgICAgICAgICAiTElORTFMIiwgICAgICAgICJMaW5lIElu
+IjsKPiAgICAgfTsKCklmIEkgdXNlIHRoaXMgd2l0aCBteSBCQlcrQXVkaW8gY2FwZTogYXVkaW8g
+aXMgZmluZS4KCj4gCj4gRm9yIG1lIGl0J3MgcmVhbGx5IG9kZCBoYXZlIHRvIHNldCB0aGUgY2xv
+Y2stZnJlcXVlbmN5IHRvIDI0TUh6IHRvIG1ha2UgaXQgd29yawo+IAo+ICAgICAgICAgICAgIGNs
+b2NrLWZyZXF1ZW5jeSAgPSA8MjQwMDAwMDA+OwoKSWYgSSBjaGFuZ2UgaXQgdG8gdGhpcywgSSB3
+aWxsIGhhdmUgc2xvdyBtb3Rpb24gcGxheWJhY2ssIGFzIGV4cGVjdGVkLgoKPiBGb3IgdGhhdCBy
+ZWFzb24gSSdtIHdvbmRlcmluZyBpZiB0aGVyZSBpcyBhIGJ1ZyBpbiB0aGUgZHJpdmVyLCBkaWQK
+PiBhbnlvbmUgdGVzdCB3aXRoIGFuIGFtMzM1eC1ldm0gYm9hcmQgPwoKSSdtIHVzaW5nIGxpbnV4
+LW5leHQuCk5vdCBzdXJlIHdoYXQgY291bGQgYmUgdGhlIGlzc3VlLgoKPiAKPj4+Cj4+PiBbMV0g
+aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC82NDgwMDcxLwo+Pj4KPj4+IFRoYW5r
+cyBpbiBhZHZhbmNlLAo+Pj4gRW5yaWMKPj4+Cj4+Cj4+IC0tCj4+IFDDqXRlcgo+IAo+IFRoYW5r
+cywKPiBFbnJpYwo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
