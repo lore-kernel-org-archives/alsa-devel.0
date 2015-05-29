@@ -1,47 +1,84 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce dma_request_slave_channel_compat_reason()
-Date: Fri, 29 May 2015 11:42:27 +0200
-Message-ID: <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
-	<1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
-	<20150529093317.GF3140@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/3] ASoC: max98090: read micbias from
+	device property
+Date: Fri, 29 May 2015 10:58:58 +0100
+Message-ID: <20150529095858.GM21577@sirena.org.uk>
+References: <1432684686-14460-1-git-send-email-yang.a.fang@intel.com>
+ <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150529093317.GF3140@localhost>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux MMC List <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-crypto-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi <linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Media Mailing List <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1689930498360405815=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 364C7260673
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:59:06 +0200 (CEST)
+In-Reply-To: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org> wrote:
-> On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
->> dma_request_slave_channel_compat() 'eats' up the returned error codes which
->> prevents drivers using the compat call to be able to do deferred probing.
->>
->> The new wrapper is identical in functionality but it will return with error
->> code in case of failure and will pass the -EPROBE_DEFER to the caller in
->> case dma_request_slave_channel_reason() returned with it.
-> This is okay but am worried about one more warpper, how about fixing
-> dma_request_slave_channel_compat()
 
-Then all callers of dma_request_slave_channel_compat() have to be
-modified to handle ERR_PTR first.
+--===============1689930498360405815==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oB61DKt4BTdhjpGI"
+Content-Disposition: inline
 
-The same is true for (the existing) dma_request_slave_channel_reason()
-vs. dma_request_slave_channel().
 
-Gr{oetje,eeting}s,
+--oB61DKt4BTdhjpGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-                        Geert
+On Thu, May 28, 2015 at 11:00:46AM -0700, yang.a.fang@intel.com wrote:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+>  - maxim,dmic-freq: Frequency at which to clock DMIC
+> =20
+> +- maxim,micbias: Micbias voltage applies to the analog mic
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This needs to be more specific about what the value is - it looks like
+it's the value to be written into a particular register?
+
+> +	err =3D device_property_read_u32(codec->dev, "maxim,micbias", &micbias);
+> +	if (err || micbias < M98090_MBVSEL_2V2  || micbias > M98090_MBVSEL_2V8)
+> +		micbias =3D M98090_MBVSEL_2V8;
+
+We should be logging an error if we read and out of range value here -
+it's expected that the value might be missing but if we manage to read
+something and it's invalid we should say so rather than silently ignore
+it.
+
+--oB61DKt4BTdhjpGI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVaDhiAAoJECTWi3JdVIfQJZwH/0zJ4nv3EmJvZ87N/m6bnD72
+aO2uVf+vxT4aXYb3ZOWt/Ka440/CzIDNohDur9+Jcw/ks85ROc1M5e48ubr0VCR4
+CXlzvkRqJqvsO3zETWnVRx6K8fr4NfiOB9imIodqeNWwaHZzKHUgwrMAEa31S09U
+3AOM4rdsMH4jYAa/27+3ho3S2z+MBFvuefKsYRy9AO0sxbIcZPFjA9pFu3aCicHc
+sAWHIRpEhYkMFE+LiBpgMv4YPNlkkmx7NoFG2MClTJJTL+Fdxr6ie4xUMidbFaTX
+aGe2kHdBhgBVwcZFEbj6anEQps9txM8LuSveSygBQfVbhzkeP1/d5e5B1N3l3AA=
+=GKVW
+-----END PGP SIGNATURE-----
+
+--oB61DKt4BTdhjpGI--
+
+--===============1689930498360405815==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1689930498360405815==--
