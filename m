@@ -1,21 +1,18 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
-	failed issue
-Date: Fri, 29 May 2015 15:06:09 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553BDA1@SHSMSX101.ccr.corp.intel.com>
-References: <1432793658-9463-1-git-send-email-yang.jie@intel.com>
- <s5hegm07n7v.wl-tiwai@suse.de>	<1432827874.2726.57.camel@loki>
- <E7B1D079BA13FB44A978CC8F69C7D6A90553BB6C@SHSMSX101.ccr.corp.intel.com>
- <s5htwuv64i3.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
+Date: Fri, 29 May 2015 16:18:06 +0100
+Message-ID: <20150529151806.GO21577@sirena.org.uk>
+References: <1432906281-27698-1-git-send-email-jun.nie@linaro.org>
+ <1432906281-27698-7-git-send-email-jun.nie@linaro.org>
+ <5568736E.5090801@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0359108086963992222=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B6D6E266838
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 17:06:18 +0200 (CEST)
-In-Reply-To: <s5htwuv64i3.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3486C266838
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 17:18:18 +0200 (CEST)
+In-Reply-To: <5568736E.5090801@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,87 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Jun Nie <jun.nie@linaro.org>, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Friday, May 29, 2015 6:52 PM
-> To: Jie, Yang
-> Cc: Girdwood, Liam R; broonie@kernel.org; alsa-devel@alsa-project.org
-> Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing failed issue
-> 
-> At Fri, 29 May 2015 07:46:37 +0000,
-> Jie, Yang wrote:
-> >
-> > > -----Original Message-----
-> > > From: Girdwood, Liam R
-> > > Sent: Thursday, May 28, 2015 11:45 PM
-> > > To: Takashi Iwai
-> > > Cc: Jie, Yang; broonie@kernel.org; alsa-devel@alsa-project.org
-> > > Subject: Re: [PATCH] ASoC: Intel: fix broadwell module removing
-> > > failed issue
-> > >
-> > > On Thu, 2015-05-28 at 17:09 +0200, Takashi Iwai wrote:
-> > > > At Thu, 28 May 2015 14:14:18 +0800, Jie Yang wrote:
-> > > > >
-> > > > > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > > > >
-> > > > > In haswell-pcm module unloading, we can't free runtime modules
-> > > > > directly, for they may be already freed in runtime suspend.
-> > > > >
-> > > > > Here add executing suspend call to unload runtime modules, only
-> > > > > for status not equal to RPM_SUSPEND, to fix broadwell module
-> > > > > removing failed issue.
-> > > >
-> > > > What if a kernel is built without PM support?  (Practically seen,
-> > > > it's never any serious problem, though.)
-> >
-> > I think or kernel built without PM, empty pm_runtime_xxx()s are called
-> > and no problems for that.
-> 
-> Well, but what about the modules?  Where will they be freed?  Your patch
-> description sounds as if they are freed in the runtime suspend path.
 
-The freeing of modules is actually done in fw_unload() stage.
+--===============0359108086963992222==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="GZNgVBfHx+h6FEHh"
+Content-Disposition: inline
 
-> 
-> Also, I'm not quite certain whether it's allowed to do runtime suspend at
-> driver free.  Usually it's even forcibly powered up, as we can't leave the
-> device as suspended state after free (who can wake up rightly if no driver is
-> bound?)
- 
-You are right. Will change it to that descripted below.
 
-> 
-> 
-> > > Keyon, it sounds like you will still need hsw_pcm_free_modules() and
-> > > should call it after the PM put/disable on module remove. You will
-> > > need to add some code too that will check the memory state prior to
-> > > doing any unloading though....
-> >
-> > Yes, I plan to add both check before runtime_module_free() and set
-> > pcm_data->runtime to NULL after that. At the same time, make sure
-> > hsw_pcm_free_modules() is called before fw_unload() called.
-> >
-> > With those implemented, suppose the issue can be fixed neatly.
-> >
-> > I will test it and submit then.
-> 
-> Yes, this looks like the missing piece.
- 
-OK, then I will follow this.
+--GZNgVBfHx+h6FEHh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Mark, can you help revert these 2 commits? Sorry for the inconvenience
-caused.
+On Fri, May 29, 2015 at 04:10:54PM +0200, Lars-Peter Clausen wrote:
+> On 05/29/2015 03:31 PM, Jun Nie wrote:
 
-ASoC: Intel: fix broadwell module removing failed issue
-ASoC: Intel: remove unused function hsw_pcm_free_modules()
+> >Add zx296702 hdmi codec to enable SPDIF and I2S output
+> >via HDMI. The SPDIF/I2S route is exclusive with current
+> >software config and need specify which is valid in
+> >defconfig.
 
-~Keyon
+> That's an issue, the hardware configuration should not depend on kernel
+> configuration setting. This makes it impossible to run the same kernel on
+> platforms with conflicting settings. It should be possible to configure this
+> dynamically at boot time based on platform_data/devicetree, etc.
 
-> 
-> 
-> Takashi
+> But is this device real hardware anyway?
+
+See previous discussions - the SoC has an internal HDMI encoder
+connected to a S/PDIF IP which can also be brought out directly as that.
+The solution suggested in the previous discussions was to represent the
+HDMI IP as a CODEC and connect the S/PDIF IP up to it with a machine
+driver, I've not looked at this patch yet though.
+
+--GZNgVBfHx+h6FEHh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVaIMtAAoJECTWi3JdVIfQu9AIAINiJT3Gcb78Sl1dbjU0gMO4
+0CMvPq60OoAQe2sVt4usTwNAolo5a4a4/x1+ye5R+u0EiksjyajOjcYdCTIBMcIn
+2ArMhml7w0tzsCWwRFZ/xhPq4cDs4UBrx+GZaUFyckyOc70P8J58Gulqq9AK/C6t
+KB87+HMp3g/8pKqeeKGhZxbwxuoS4QoK9hEEstW00RbPrw0My3TjS5QEHGuAdCeN
+c9QrPOm543+r/ok4k4Op0nKWaV54F69lVV/Gyo2pEXV1neK+wriC5ffGXmryLmjM
+RzXP+kqN5tAQisKCOCwKso8neoSzOGrhN8t6itYfeiyKRGzm7pFa0pRmsUT54Ok=
+=76EN
+-----END PGP SIGNATURE-----
+
+--GZNgVBfHx+h6FEHh--
+
+--===============0359108086963992222==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0359108086963992222==--
