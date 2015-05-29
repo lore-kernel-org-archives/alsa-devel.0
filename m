@@ -1,71 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: DAPM: Add APIs to create individual
-	DAPM controls.
-Date: Fri, 29 May 2015 11:24:44 +0100
-Message-ID: <20150529102444.GN21577@sirena.org.uk>
-References: <1432574477-7350-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH 1/2] media: new media controller API for device resource
+ support
+Date: Fri, 29 May 2015 12:34:03 +0200
+Message-ID: <5568409B.1040108@xs4all.nl>
+References: <cover.1431110739.git.shuahkh@osg.samsung.com> <c7f3e48e130dd397046f59383921960a43f6eed8.1431110739.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4247598958204349665=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 19A22260692
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 12:24:50 +0200 (CEST)
-In-Reply-To: <1432574477-7350-1-git-send-email-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <c7f3e48e130dd397046f59383921960a43f6eed8.1431110739.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>, mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, normalperson@yhbt.net, fisch602@gmail.com, joe@oampo.co.uk
+Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 05/08/2015 09:31 PM, Shuah Khan wrote:
+> Add new media controller API to allocate media device as a
+> device resource. When a media device is created on the main
+> struct device which is the parent device for the interface
+> device, it will be available to all drivers associated with
+> that interface. For example, if a usb media device driver
+> creates the media device on the main struct device which is
+> common for all the drivers that control the media device,
+> including the non-media ALSA driver, media controller API
+> can be used to share access to the resources on the media
+> device. This new interface provides the above described
+> feature. A second interface that finds and returns the media
+> device is added to allow drivers to find the media device
+> created by any of the drivers associated with the device.
+> 
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>  drivers/media/media-device.c | 33 +++++++++++++++++++++++++++++++++
+>  include/media/media-device.h |  2 ++
+>  2 files changed, 35 insertions(+)
+> 
+> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+> index 7b39440..1c32752 100644
+> --- a/drivers/media/media-device.c
+> +++ b/drivers/media/media-device.c
+> @@ -462,3 +462,36 @@ void media_device_unregister_entity(struct media_entity *entity)
+>  	entity->parent = NULL;
+>  }
+>  EXPORT_SYMBOL_GPL(media_device_unregister_entity);
+> +
+> +static void media_device_release_dr(struct device *dev, void *res)
+> +{
+> +}
+> +
+> +/*
+> + * media_device_get_dr() - get media device as device resource
+> + *			creates if one doesn't exist
+> +*/
+> +struct media_device *media_device_get_dr(struct device *dev)
 
---===============4247598958204349665==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3EIvqNBXxBDuQt3l"
-Content-Disposition: inline
+I'd use get_devres rather than get_dr. I keep thinking that get_dr means
+get_driver. It's too ambiguous, I think.
 
+Regards,
 
---3EIvqNBXxBDuQt3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	Hans
 
-On Mon, May 25, 2015 at 06:21:17PM +0100, Liam Girdwood wrote:
-> The topology core needs to be able to create individual widget controls at
-> runtime and driver init. Add a regular locked and unlocked API calls to
-> facilitate this requirement.
-
-Applied, thanks.
-
---3EIvqNBXxBDuQt3l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVaD5sAAoJECTWi3JdVIfQ/zoH/RV8uFhBaW6OaAj6fBIzMZQ4
-vWjS9VhhCIF/QaGDOgpUCuE25Xy6cfsjCFI+3wddEnC32GXUJxUvbx4d6kRPSjve
-wRSsJriAK5CzVCVGWiva92XDwOUVeSuXqorB8tfcYtvl/NMHsNpxpi8yACdW0l9a
-gz6N60WQ0xZeEYQThmTWYSbrV071wmQtKtfL0yHg4/uNFbgPi0pVMqEGY2VPN4zk
-9CvfwXb2ILBD4ZcPy9w+5D4kr/VTmJBGsUqnqsRL3KxmGbVVu3MMWmohLiIS8H6/
-O37r8bnhSwtKRSRFK+YNwNneRY+FdkrdwI2R2zD1oecwRkMNir5ww6gTfFzmarM=
-=8RIt
------END PGP SIGNATURE-----
-
---3EIvqNBXxBDuQt3l--
-
---===============4247598958204349665==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4247598958204349665==--
+> +{
+> +	struct media_device *mdev;
+> +
+> +	mdev = devres_find(dev, media_device_release_dr, NULL, NULL);
+> +	if (mdev)
+> +		return mdev;
+> +
+> +	mdev = devres_alloc(media_device_release_dr,
+> +				sizeof(struct media_device), GFP_KERNEL);
+> +	if (!mdev)
+> +		return NULL;
+> +	return devres_get(dev, mdev, NULL, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_get_dr);
+> +
+> +/*
+> + * media_device_find_dr() - find media device as device resource
+> +*/
+> +struct media_device *media_device_find_dr(struct device *dev)
+> +{
+> +	return devres_find(dev, media_device_release_dr, NULL, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(media_device_find_dr);
+> diff --git a/include/media/media-device.h b/include/media/media-device.h
+> index 6e6db78..53d0fc3 100644
+> --- a/include/media/media-device.h
+> +++ b/include/media/media-device.h
+> @@ -95,6 +95,8 @@ void media_device_unregister(struct media_device *mdev);
+>  int __must_check media_device_register_entity(struct media_device *mdev,
+>  					      struct media_entity *entity);
+>  void media_device_unregister_entity(struct media_entity *entity);
+> +struct media_device *media_device_get_dr(struct device *dev);
+> +struct media_device *media_device_find_dr(struct device *dev);
+>  
+>  /* Iterate over all entities. */
+>  #define media_device_for_each_entity(entity, mdev)			\
+> 
