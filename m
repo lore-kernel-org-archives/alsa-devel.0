@@ -1,20 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Still have problems/issues using SGTL5000 with
- i.MX28 CPU
-Date: Fri, 29 May 2015 10:50:40 -0300
-Message-ID: <CAOMZO5DQg6=nbvn31eMMraLdzGN+jG6kgufy2N7KRCW36dxidQ@mail.gmail.com>
-References: <55681B8B.6010700@eurekelettronica.it>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3 4/6] ASoC: zx: Add zx296702 SPDIF support
+Date: Fri, 29 May 2015 16:03:38 +0200
+Message-ID: <556871BA.3030408@metafoo.de>
+References: <1432906281-27698-1-git-send-email-jun.nie@linaro.org>
+ <1432906281-27698-5-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id F237C26068A
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 15:50:43 +0200 (CEST)
-Received: by lagv1 with SMTP id v1so56205609lag.3
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 06:50:41 -0700 (PDT)
-In-Reply-To: <55681B8B.6010700@eurekelettronica.it>
+Received: from smtp-out-025.synserver.de (smtp-out-026.synserver.de
+ [212.40.185.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id 217A326068A
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:03:40 +0200 (CEST)
+In-Reply-To: <1432906281-27698-5-git-send-email-jun.nie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: gianluca <gianlucarenzi@eurekelettronica.it>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, Peter Chen <peter.chen@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jun Nie <jun.nie@linaro.org>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 29, 2015 at 4:55 AM, gianluca
-<gianlucarenzi@eurekelettronica.it> wrote:
-> Hello everybody!
->
-> I put all those people on Cc: because of I think every guy can be able to
-> handle the issue for its side easly.
->
-> I started a discussion in FreeScale Community website:
->
-> https://community.freescale.com/thread/356362
->
-> Basically I designed 4 boards using the IMX28EVK board as reference.
-> Usually the audio section was a buzzer (pwm), or simply using a SGTL5000 as
-> playback only.
->
-> Now we need to record some sounds as soon as the SGTL5000 has the SAIF1 line
-> used for caputure (line in / mic in).
+On 05/29/2015 03:31 PM, Jun Nie wrote:
+[...]
+> +static int zx_spdif_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res;
+> +	struct zx_spdif_info *zx_spdif;
+> +	int ret;
+> +
+> +	zx_spdif =  kzalloc(sizeof(*zx_spdif), GFP_KERNEL);
 
-Does recording work on mx28evk with 4.0.4?
+extra space and devm_
 
-Regards,
+> +	if (!zx_spdif)
+> +		return -ENOMEM;
+> +
+> +	zx_spdif->dai_clk = devm_clk_get(&pdev->dev, "tx");
+> +	if (IS_ERR(zx_spdif->dai_clk)) {
+> +		dev_err(&pdev->dev, "Fail to get clk\n");
+> +		return PTR_ERR(zx_spdif->dai_clk);
+> +	}
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	zx_spdif->mapbase = res->start;
+> +	zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (!zx_spdif->reg_base) {
+> +		dev_err(&pdev->dev, "ioremap failed!\n");
+> +		return -EIO;
+> +	}
+> +
+> +	zx_spdif_dev_init(zx_spdif->reg_base);
+> +	platform_set_drvdata(pdev, zx_spdif);
+> +
+> +	ret = snd_soc_register_component(&pdev->dev, &zx_spdif_component,
+> +					 &zx_spdif_dai, 1);
 
-Fabio Estevam
+devm_
+
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "Register platform PCM failed: %d\n", ret);
+> +
+> +	return ret;
