@@ -1,21 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce
-	dma_request_slave_channel_compat_reason()
-Date: Fri, 29 May 2015 17:32:50 +0300
-Message-ID: <55687892.7050606@ti.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
- <20150529093317.GF3140@localhost>
- <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
- <20150529101846.GG3140@localhost>
+From: gianluca <gianlucarenzi@eurekelettronica.it>
+Subject: Re: Still have problems/issues using SGTL5000 with
+ i.MX28 CPU
+Date: Fri, 29 May 2015 16:48:04 +0200
+Message-ID: <55687C24.3090809@eurekelettronica.it>
+References: <55681B8B.6010700@eurekelettronica.it>
+ <CAOMZO5DQg6=nbvn31eMMraLdzGN+jG6kgufy2N7KRCW36dxidQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E64626681E
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:32:57 +0200 (CEST)
-In-Reply-To: <20150529101846.GG3140@localhost>
+Received: from mx7.acantho.net (mx7.acantho.net [213.174.182.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5684D266837
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:48:21 +0200 (CEST)
+Received: (from root@localhost)
+ by mx7.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id t4TEmLcg029648
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 16:48:21 +0200
+In-Reply-To: <CAOMZO5DQg6=nbvn31eMMraLdzGN+jG6kgufy2N7KRCW36dxidQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,67 +25,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Linux MMC List <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, linux-crypto@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, Peter Chen <peter.chen@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/29/2015 01:18 PM, Vinod Koul wrote:
-> On Fri, May 29, 2015 at 11:42:27AM +0200, Geert Uytterhoeven wrote:
->> On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul@intel.com> wrot=
-e:
->>> On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
->>>> dma_request_slave_channel_compat() 'eats' up the returned error codes =
-which
->>>> prevents drivers using the compat call to be able to do deferred probi=
-ng.
->>>>
->>>> The new wrapper is identical in functionality but it will return with =
-error
->>>> code in case of failure and will pass the -EPROBE_DEFER to the caller =
-in
->>>> case dma_request_slave_channel_reason() returned with it.
->>> This is okay but am worried about one more warpper, how about fixing
->>> dma_request_slave_channel_compat()
+On 05/29/2015 03:50 PM, Fabio Estevam wrote:
+>> Now we need to record some sounds as soon as the SGTL5000 has the SAIF1 line
+>> used for caputure (line in / mic in).
+>
+> Does recording work on mx28evk with 4.0.4?
+>
+
+Well, is that linux kernel version so important? I can surely say it 
+works with 3.12.1.
+
+Porting to 4.0.4 means a (partial) rewrite of some device-tree files. I 
+can do in a couple of days if you want. But I think I can check out what 
+is really happened in our board. Something related to dma / irq??
+
+In IMX28EVK it works out-of-the-box, in EK340 it does not.
+
+Regarding at the last mail I can clearly see:
+
+> When recording from IMX28EVK boards here is the SAIF1_STAT register (0x80046010):
+> 0x80000001 (BIT31 PRESENT and BIT0 BUSY)
+> ...
+> 0x80010001 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT0 BUSY)
+> ...
+> 0x80000001 (BIT31 PRESENT and BIT0 BUSY)
+> ...
+> 0x80010001 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT0 BUSY)
+>
+> and when finishing recording:
+>
+> 0x80010010 (BIT31 PRESENT, BIT16 DMA_PREQ and BIT4 FIFO_SERVICE_IRQ)
+>
+> in the EK340 while recording (0x80046010):
+> 0x80000000 (BIT31 PRESENT)
+> ...
+> ...
+> ...
+> 0x80000000 (BIT31 PRESENT)
+>
+> and finally:
+>> # arecord: pcm_read:1801: read error: Input/output error
+>
+>> # devmem2 0x80046010
+>> /dev/mem opened.
+>> Memory mapped at address 0xb6f07000.
+>> Value at address 0x80046010 (0xb6f07010): 0x80000000
+>
+> It seems no IRQ or DMA actions are involved in EK340 for recording.
+> May be I have some DMA Clash or IRQ bad handling? In the device tree I cannot see anything wrong... Some other driver is using the same DMA Channel for SAIF1 ?????
+>
+> Anyway here is the cat /proc/interrupts for IMX28EVK:
 >>
->> Then all callers of dma_request_slave_channel_compat() have to be
->> modified to handle ERR_PTR first.
->>
->> The same is true for (the existing) dma_request_slave_channel_reason()
->> vs. dma_request_slave_channel().
-> Good point, looking again, I think we should rather fix
-> dma_request_slave_channel_reason() as it was expected to return err code =
-and
-> add new users. Anyway users of this API do expect the reason...
+>> # cat /proc/interrupts
+>>            CPU0
+>>  16:      32790         -  48  MXS Timer Tick
+>>  17:       5327         -  82  mxs-dma
+>>  18:          0         -  83  mxs-dma
+>>  25:          6         -  96  mxs-mmc
+>>  26:          0         -  97  mxs-mmc
+>> 195:          0         -  80  mxs-dma
+>> 196:        141         -  81  mxs-dma
+>> 197:         73         -  68  mxs-dma
+>> 213:          0         -  59  mxs-saif
+>> 214:          2         -  58  mxs-saif
+>> 215:          0         -  10  mxs-lradc-touchscreen
+>> 216:          0         -  14  mxs-lradc-thresh0
+>> 217:          0         -  15  mxs-lradc-thresh1
+>> 218:          0         -  16  mxs-lradc-channel0
+>> 219:          0         -  17  mxs-lradc-channel1
+>> 220:          0         -  18  mxs-lradc-channel2
+>> 221:          0         -  19  mxs-lradc-channel3
+>> 222:          0         -  20  mxs-lradc-channel4
+>> 223:          0         -  21  mxs-lradc-channel5
+>> 224:          0         -  22  mxs-lradc-channel6
+>> 225:          0         -  23  mxs-lradc-channel7
+>> 226:          0         -  24  mxs-lradc-button0
+>> 227:          0         -  25  mxs-lradc-button1
+>> 228:          0         -  29  RTC alarm
+>> 229:         79         - 111  80058000.i2c
+>> 233:          0         - 112  8006a000.serial
+>> 234:          0         - 115  80070000.serial
+>> 235:       1759         -  47  uart-pl011
+>> 236:          0         -  93  ci_hdrc_imx
+>> 237:          0         -  92  ci_hdrc_imx
+>> 238:         64         - 101  800f0000.ethernet
+>> 239:          0         - 102  800f4000.ethernet
+>> Err:          0
+>
+> I suppose IRQ 196 and 197 are used for SAIF core because I can see them changing when recording...
+>
+>
+> and here the same for EK340:
+>
+>> # cat /proc/interrupts
+>>            CPU0
+>>  16:      28189         -  48  MXS Timer Tick
+>>  17:       6735         -  82  mxs-dma
+>>  18:          0         -  83  mxs-dma
+>>  20:        989         -  85  mxs-dma
+>>  25:         11         -  96  mxs-mmc
+>>  26:          0         -  97  mxs-mmc
+>>  27:         24         -  99  mxs-sdio
+>>  48:          0  gpio-mxs  19  80064000.pwm
+>> 196:          0         -  80  mxs-dma
+>> 197:          0         -  81  mxs-dma
+>> 198:         76         -  68  mxs-dma
+>> 199:          0         -  69  mxs-dma
+>> 213:          0         -  59  mxs-saif
+>> 214:          3         -  58  mxs-saif
+>> 215:          1         -  10  mxs-lradc-touchscreen
+>> 216:          0         -  14  mxs-lradc-thresh0
+>> 217:          0         -  15  mxs-lradc-thresh1
+>> 218:          0         -  16  mxs-lradc-channel0
+>> 219:          0         -  17  mxs-lradc-channel1
+>> 220:          0         -  18  mxs-lradc-channel2
+>> 221:          0         -  19  mxs-lradc-channel3
+>> 222:          0         -  20  mxs-lradc-channel4
+>> 223:          0         -  21  mxs-lradc-channel5
+>> 224:          0         -  22  mxs-lradc-channel6
+>> 225:          0         -  23  mxs-lradc-channel7
+>> 226:          0         -  24  mxs-lradc-button0
+>> 227:          0         -  25  mxs-lradc-button1
+>> 228:          0         -  29  RTC alarm
+>> 229:         84         - 111  80058000.i2c
+>> 230:          0         - 110  8005a000.i2c
+>> 234:          0         - 113  8006c000.serial
+>> 235:          0         - 114  8006e000.serial
+>> 236:       2062         -  47  uart-pl011
+>> 237:          0         -  93  ci_hdrc_imx
+>> 238:          0         -  92  ci_hdrc_imx
+>> 239:         64         - 101  800f0000.ethernet
+>> Err:          0
+>
+> When recording in EK340, the only IRQ is changing between recording sessions is the 198, but it is not present in the IMX28EVK...
+>
+> Some device-tree clash???
 
-Hrm, they are for different use.dma_request_slave_channel()/_reason() is for
-drivers only working via DT or ACPI while
-dma_request_slave_channel_compat()/_reason() is for drivers expected to run=
- in
-DT/ACPI or legacy mode as well.
+On the EK340 I have 3 sdconnector and I use the SDIO3 for wifi. On the 
+IMX28EVK I still have only two sd-card connector.
+Is it something related to it?
 
-I added the dma_request_slave_channel_compat_reason() because OMAP/daVinci
-drivers are using this to request channels - they need to support DT and
-legacy mode.
+the IRQs number 198 and 199 what do they mean?? How can I check where 
+they are claimed??
 
-But it is doable to do this for both the non _compat and _compat version:
-1. change all users to check IS_ERR_OR_NULL(chan)
- return the PTR_ERR if not NULL, or do whatever the driver was doing in case
-of chan =3D=3D NULL.
-2. change the non _compat and _compat versions to do the same as the _reason
-variants, #define the _reason ones to the non _reason names
-3. Rename the _reason use to non _reason function in drivers
-4. Remove the #defines for the _reason functions
-5. Change the IS_ERR_OR_NULL(chan) to IS_ERR(chan) in all drivers
-The result:
-Both dma_request_slave_channel() and dma_request_slave_channel_compat() will
-return ERR_PTR in case of failure or in success they will return the pinter=
- to
-chan.
-
-Is this what you were asking?
-It is a bit broader than what this series was doing: taking care of
-OMAP/daVinci drivers for deferred probing regarding to dmaengine ;)
-
--- =
-
-P=E9ter
+Regards,
+-- 
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
