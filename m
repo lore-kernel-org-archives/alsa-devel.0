@@ -1,18 +1,16 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ALSA: fix building with CONFIG_SND_PROC_FS
-	disabled
-Date: Fri, 29 May 2015 09:03:35 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553BC12@SHSMSX101.ccr.corp.intel.com>
-References: <4218314.pT4WQLSW4C@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: codec register dump in debugfs
+Date: Fri, 29 May 2015 10:04:40 +0100
+Message-ID: <20150529090440.GH21577@sirena.org.uk>
+References: <55681268.1050508@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5273990724783995700=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 53EEA260492
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:03:47 +0200 (CEST)
-In-Reply-To: <4218314.pT4WQLSW4C@wuerfel>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AAA7F260492
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:04:50 +0200 (CEST)
+In-Reply-To: <55681268.1050508@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Sergej Sawazki <ce3a@gmx.de>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Arnd Bergmann [mailto:arnd@arndb.de]
-> Sent: Friday, May 29, 2015 4:47 PM
-> To: Takashi Iwai
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; linux-arm-
-> kernel@lists.infradead.org; Jie, Yang
-> Subject: [PATCH] ALSA: fix building with CONFIG_SND_PROC_FS disabled
-> 
-> A recent change to split the procfs support for ALSA turned out to be
-> incomplete, leading to build errors:
-> 
-> sound/core/seq/seq_info.c:61:12: error: redefinition of 'snd_seq_info_init'
-> sound/core/seq/seq_device.c: In function 'seq_dev_proc_init':
-> sound/core/seq/seq_device.c:276:2: error: 'info_entry' undeclared (first use
-> in this function)
-> sound/core/seq/seq_device.c: In function 'alsa_seq_device_exit':
-> sound/core/seq/seq_device.c:309:22: error: 'info_entry' undeclared (first
-> use in this function)
-> 
-> This replaces some more instances of CONFIG_PROC_FS with
-> CONFIG_SND_PROC_FS, as the original patch started. It is enough to avoid all
-> randconfig regressions I saw on ARM because of the CONFIG_SND_PROC_FS
-> introduction.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Fixes: cd6a65036f0e ("ALSA: replace CONFIG_PROC_FS with
-> CONFIG_SND_PROC_FS")
-> ---
-> 
-> I assume this was already reported. If not, please apply my patch or fold it
-> into the original commit.
- 
-Thank you, Seems this already fixed by Takashi's latest series? 
 
-~Keyon
+--===============5273990724783995700==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="JjcuUTh8vXoLXC5Z"
+Content-Disposition: inline
 
-> 
-> diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile index
-> b29ffe835205..b65fa5a1943b 100644
-> --- a/sound/core/seq/Makefile
-> +++ b/sound/core/seq/Makefile
-> @@ -7,7 +7,7 @@ snd-seq-device-objs := seq_device.o  snd-seq-objs :=
-> seq.o seq_lock.o seq_clientmgr.o seq_memory.o seq_queue.o \
->                  seq_fifo.o seq_prioq.o seq_timer.o \
->                  seq_system.o seq_ports.o
-> -snd-seq-$(CONFIG_PROC_FS) += seq_info.o
-> +snd-seq-$(CONFIG_SND_PROC_FS) += seq_info.o
->  snd-seq-midi-objs := seq_midi.o
->  snd-seq-midi-emul-objs := seq_midi_emul.o  snd-seq-midi-event-objs :=
-> seq_midi_event.o diff --git a/sound/core/seq/seq_device.c
-> b/sound/core/seq/seq_device.c index 288af56a43cd..c4acf17e9f5e 100644
-> --- a/sound/core/seq/seq_device.c
-> +++ b/sound/core/seq/seq_device.c
-> @@ -272,7 +272,7 @@ EXPORT_SYMBOL_GPL(snd_seq_driver_unregister);
-> 
->  static int __init seq_dev_proc_init(void)  { -#ifdef CONFIG_PROC_FS
-> +#ifdef CONFIG_SND_PROC_FS
->  	info_entry = snd_info_create_module_entry(THIS_MODULE,
-> "drivers",
->  						  snd_seq_root);
->  	if (info_entry == NULL)
-> @@ -305,7 +305,7 @@ static void __exit alsa_seq_device_exit(void)  #ifdef
-> CONFIG_MODULES
->  	cancel_work_sync(&autoload_work);
->  #endif
-> -#ifdef CONFIG_PROC_FS
-> +#ifdef CONFIG_SND_PROC_FS
->  	snd_info_free_entry(info_entry);
->  #endif
->  	bus_unregister(&snd_seq_bus_type);
+
+--JjcuUTh8vXoLXC5Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 29, 2015 at 09:16:56AM +0200, Sergej Sawazki wrote:
+
+> I'm writing a ASoC machine driver. The board has two wm8741 codecs.
+> I would like to see the codec register dumps in debugfs.
+
+Use the regmap debugfs interface for devices that use regmap.  The ASoC
+level one will be removed once all drivers are converted to regmap.
+
+--JjcuUTh8vXoLXC5Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEbBAEBCAAGBQJVaCunAAoJECTWi3JdVIfQMSUH+K8+ivqvfnxMp1ZLPU2upzAt
+TIPJBnNSRMO4AHgunbiXuNw0T6flKZauf0vdl0tiGSASFj4mkZf5s7z6uz09+NlK
+BOH+JxOpSHMsS68WDlgXDvQ+7a6pogyNC96xwFKUrD3jj0/Y7Kd9qxfleUVrO6n4
+SeDzu50WtgAXkTy6u8IZ1qu5sx6dHBuDtHRMvElmwVCesMqXhQ3RBRnl8+IbpE8h
+5wmV+yppG7wB3L59V/r8TDgoCZae6DL5nqPeyi+JIh8ZtmQtIPPPzDAN1AtPEyu5
+k5RdVYuUOrWwKK+ri/3Dz51Vt8croIz7ynrzNOhOw9U6IyHvFyeADULClr9xbg==
+=iTBP
+-----END PGP SIGNATURE-----
+
+--JjcuUTh8vXoLXC5Z--
+
+--===============5273990724783995700==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5273990724783995700==--
