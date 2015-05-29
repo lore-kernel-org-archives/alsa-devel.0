@@ -1,366 +1,665 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH 2/2] sound/usb: Update ALSA driver to use media controller
- API
-Date: Fri, 29 May 2015 12:43:34 +0200
-Message-ID: <556842D6.7030807@xs4all.nl>
-References: <cover.1431110739.git.shuahkh@osg.samsung.com> <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Set patch_ops before calling
+	auto-parser
+Date: Fri, 29 May 2015 12:43:55 +0200
+Message-ID: <1432896235-14437-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <dd21d1282a85d620be1aae497b66ccb355e458ba.1431110739.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>, mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, normalperson@yhbt.net, fisch602@gmail.com, joe@oampo.co.uk
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CE1F26673D
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 12:43:58 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C7255AD1F
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 10:43:57 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shuah,
+... so that the parser code can overwrite some optional ops.  For
+Realtek and others, it can be set solely in the spec allocator, so it
+results in a good code cleanup, too.
 
-Here are some comments:
+With this change, we can finally remove the local stream_pm setup and
+rely on the generic parser's automatic setting.
 
-On 05/08/2015 09:31 PM, Shuah Khan wrote:
-> Change ALSA driver to use media controller API to share tuner
-> with DVB and V4L2 drivers that control AU0828 media device.
-> Media device is created based on a newly added field value
-> in the struct snd_usb_audio_quirk. Using this approach, the
-> media controller API usage can be added for a specific device.
-> In this patch, media controller API is enabled for AU0828 hw.
-> snd_usb_create_quirk() will check this new field, if set will
-> create a media device using media_device_get_dr() interface.
-> media_device_get_dr() will allocate a new media device device
-> resource or return an existing one if it exists. During probe,
-> media usb driver could have created the media device. It will
-> then register the media device if it isn't already registered.
-> Media device unregister is done from usb_audio_disconnect().
-> 
-> New fields to add support for media entity and links are
-> added to struct snd_usb_substream. A new media entity for
-> ALSA and a link from tuner entity to the newly registered
-> ALSA entity are created from snd_usb_init_substream() and
-> removed from free_substream(). The state is kept to indicate
-> if tuner is linked. This is to account for case when tuner
-> entity doesn't exist. Media pipeline gets started to mark
-> the tuner busy from snd_usb_substream_capture_trigger in
-> response to SNDRV_PCM_TRIGGER_START and pipeline is stopped
-> in response to SNDRV_PCM_TRIGGER_STOP. snd_usb_pcm_close()
-> stops pipeline to cover the case when SNDRV_PCM_TRIGGER_STOP
-> isn't issued. Pipeline start and stop are done only when
-> tuner_linked is set.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_analog.c   |  3 +--
+ sound/pci/hda/patch_ca0110.c   |  3 +--
+ sound/pci/hda/patch_ca0132.c   |  8 +++---
+ sound/pci/hda/patch_cirrus.c   | 12 ++++-----
+ sound/pci/hda/patch_cmedia.c   |  4 +--
+ sound/pci/hda/patch_conexant.c |  3 +--
+ sound/pci/hda/patch_realtek.c  | 61 ++++++++++++++++--------------------------
+ sound/pci/hda/patch_sigmatel.c | 20 +-------------
+ sound/pci/hda/patch_via.c      | 21 +++++----------
+ 9 files changed, 44 insertions(+), 91 deletions(-)
 
-What happens if you start streaming (TRIGGER START), stop, streaming
-(TRIGGER_STOP) and close the pcm? Wouldn't media_entity_pipeline_stop()
-be called twice? Or is that harmless?
-
-> 
-> Tested with and without CONFIG_MEDIA_CONTROLLER enabled.
-> Tested tuner entity doesn't exist case as au0828 v4l2
-> driver is the one that will create the tuner when it gets
-> updated to use media controller API.
-> 
-> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-> ---
->  sound/usb/card.c         |  5 +++++
->  sound/usb/card.h         | 12 ++++++++++
->  sound/usb/pcm.c          | 23 ++++++++++++++++++-
->  sound/usb/quirks-table.h |  1 +
->  sound/usb/quirks.c       | 58 +++++++++++++++++++++++++++++++++++++++++++++++-
->  sound/usb/quirks.h       |  6 +++++
->  sound/usb/stream.c       | 40 +++++++++++++++++++++++++++++++++
->  sound/usb/usbaudio.h     |  1 +
->  8 files changed, 144 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 1fab977..587fc24 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -621,6 +621,11 @@ static void usb_audio_disconnect(struct usb_interface *intf)
->  		}
->  	}
->  
-> +	/* Nice to check quirk && quirk->media_device
-> +	 * need some special handlings. Doesn't look like
-> +	 * we have access to quirk here */
-> +	media_device_delete(intf);
-> +
->  	chip->num_interfaces--;
->  	if (chip->num_interfaces <= 0) {
->  		usb_chip[chip->index] = NULL;
-> diff --git a/sound/usb/card.h b/sound/usb/card.h
-> index ef580b4..477bdcd 100644
-> --- a/sound/usb/card.h
-> +++ b/sound/usb/card.h
-> @@ -1,6 +1,11 @@
->  #ifndef __USBAUDIO_CARD_H
->  #define __USBAUDIO_CARD_H
->  
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +#include <media/media-device.h>
-> +#include <media/media-entity.h>
-> +#endif
-> +
->  #define MAX_NR_RATES	1024
->  #define MAX_PACKS	6		/* per URB */
->  #define MAX_PACKS_HS	(MAX_PACKS * 8)	/* in high speed mode */
-> @@ -155,6 +160,13 @@ struct snd_usb_substream {
->  	} dsd_dop;
->  
->  	bool trigger_tstamp_pending_update; /* trigger timestamp being updated from initial estimate */
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	struct media_device *media_dev;
-> +	struct media_entity media_entity;
-> +	struct media_pad media_pads;
-> +	struct media_pipeline media_pipe;
-> +	bool   tuner_linked;
-> +#endif
->  };
->  
->  struct snd_usb_stream {
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index b4ef410..c2a40a9 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -1225,6 +1225,10 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
->  
->  	subs->pcm_substream = NULL;
->  	snd_usb_autosuspend(subs->stream->chip);
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	if (subs->tuner_linked)
-> +		media_entity_pipeline_stop(&subs->media_entity);
-> +#endif
->  
->  	return 0;
->  }
-> @@ -1587,9 +1591,22 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
->  
->  	switch (cmd) {
->  	case SNDRV_PCM_TRIGGER_START:
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +		if (subs->tuner_linked) {
-> +			err = media_entity_pipeline_start(&subs->media_entity,
-> +							  &subs->media_pipe);
-> +			if (err)
-> +				return err;
-> +		}
-> +#endif
->  		err = start_endpoints(subs, false);
-> -		if (err < 0)
-> +		if (err < 0) {
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +			if (subs->tuner_linked)
-> +				media_entity_pipeline_stop(&subs->media_entity);
-> +#endif
->  			return err;
-> +		}
->  
->  		subs->data_endpoint->retire_data_urb = retire_capture_urb;
->  		subs->running = 1;
-> @@ -1597,6 +1614,10 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
->  	case SNDRV_PCM_TRIGGER_STOP:
->  		stop_endpoints(subs, false);
->  		subs->running = 0;
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +		if (subs->tuner_linked)
-> +			media_entity_pipeline_stop(&subs->media_entity);
-> +#endif
->  		return 0;
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->  		subs->data_endpoint->retire_data_urb = NULL;
-> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> index 2f6d3e9..51c544f 100644
-> --- a/sound/usb/quirks-table.h
-> +++ b/sound/usb/quirks-table.h
-> @@ -2798,6 +2798,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
->  		.product_name = pname, \
->  		.ifnum = QUIRK_ANY_INTERFACE, \
->  		.type = QUIRK_AUDIO_ALIGN_TRANSFER, \
-> +		.media_device = 1, \
->  	} \
->  }
->  
-> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> index 7c5a701..468e10f 100644
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -503,6 +503,56 @@ static int create_standard_mixer_quirk(struct snd_usb_audio *chip,
->  	return snd_usb_create_mixer(chip, quirk->ifnum, 0);
->  }
->  
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +static int media_device_init(struct usb_interface *iface)
-> +{
-> +	struct media_device *mdev;
-> +	struct usb_device *usbdev = interface_to_usbdev(iface);
-> +	int ret;
-> +
-> +	mdev = media_device_get_dr(&usbdev->dev);
-> +	if (!mdev)
-> +		return -ENOMEM;
-> +	if (!media_devnode_is_registered(&mdev->devnode)) {
-> +		/* register media device */
-> +		mdev->dev = &usbdev->dev;
-> +		if (usbdev->product)
-> +			strlcpy(mdev->model, usbdev->product,
-> +				sizeof(mdev->model));
-> +		if (usbdev->serial)
-> +			strlcpy(mdev->serial, usbdev->serial,
-> +				sizeof(mdev->serial));
-> +		strcpy(mdev->bus_info, usbdev->devpath);
-> +		mdev->hw_revision = le16_to_cpu(usbdev->descriptor.bcdDevice);
-> +		ret = media_device_register(mdev);
-> +		if (ret) {
-> +			dev_err(&usbdev->dev,
-> +				"Couldn't create a media device. Error: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +	}
-> +	dev_info(&usbdev->dev, "Created media device.\n");
-> +	return 0;
-> +}
-> +
-> +void media_device_delete(struct usb_interface *iface)
-> +{
-> +	struct media_device *mdev;
-> +	struct usb_device *usbdev = interface_to_usbdev(iface);
-> +
-> +	mdev = media_device_find_dr(&usbdev->dev);
-> +	if (mdev && media_devnode_is_registered(&mdev->devnode))
-> +		media_device_unregister(mdev);
-> +	dev_info(&usbdev->dev, "Deleted media device.\n");
-> +}
-> +#else
-> +static inline int media_device_init(struct usb_interface *iface)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->  /*
->   * audio-interface quirks
->   *
-> @@ -541,13 +591,19 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
->  		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
->  		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
->  	};
-> +	int ret;
->  
-> +	if (quirk->media_device) {
-> +		/* don't want to fail when media_device_init() doesn't work */
-> +		ret = media_device_init(iface);
-> +	}
->  	if (quirk->type < QUIRK_TYPE_COUNT) {
-> -		return quirk_funcs[quirk->type](chip, iface, driver, quirk);
-> +		ret = quirk_funcs[quirk->type](chip, iface, driver, quirk);
->  	} else {
->  		usb_audio_err(chip, "invalid quirk type %d\n", quirk->type);
->  		return -ENXIO;
->  	}
-> +	return ret;
->  }
->  
->  /*
-> diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-> index 2cd71ed..7782f03 100644
-> --- a/sound/usb/quirks.h
-> +++ b/sound/usb/quirks.h
-> @@ -40,4 +40,10 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
->  					struct audioformat *fp,
->  					unsigned int sample_bytes);
->  
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +void media_device_delete(struct usb_interface *iface);
-> +#else
-> +static inline void media_device_delete(struct usb_interface *iface) {}
-> +#endif
-> +
->  #endif /* __USBAUDIO_QUIRKS_H */
-> diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-> index 310a382..d19f870 100644
-> --- a/sound/usb/stream.c
-> +++ b/sound/usb/stream.c
-> @@ -52,6 +52,17 @@ static void free_substream(struct snd_usb_substream *subs)
->  		kfree(fp);
->  	}
->  	kfree(subs->rate_list.list);
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	if (subs->media_dev) {
-> +		subs->media_dev = NULL;
-> +		subs->tuner_linked = 0;
-> +		media_entity_remove_links(&subs->media_entity);
-> +		media_device_unregister_entity(&subs->media_entity);
-> +		media_entity_cleanup(&subs->media_entity);
-> +		pr_info("free_substream(): tuner_linked = %d\n",
-> +			subs->tuner_linked);
-> +	}
-> +#endif
->  }
->  
->  
-> @@ -75,6 +86,34 @@ static void snd_usb_audio_pcm_free(struct snd_pcm *pcm)
->  	}
->  }
->  
-> +static void media_stream_init(struct snd_usb_substream *subs)
-> +{
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	struct media_entity *entity;
-> +	int ret;
-> +
-> +	subs->media_dev = media_device_find_dr(&subs->dev->dev);
-> +	if (!subs->media_dev)
-> +		return;
-> +	subs->media_entity.type = MEDIA_ENT_T_DEVNODE_ALSA;
-> +	media_entity_init(&subs->media_entity, 1, &subs->media_pads, 0);
-> +	media_device_register_entity(subs->media_dev, &subs->media_entity);
-> +	media_device_for_each_entity(entity, subs->media_dev) {
-> +		switch (entity->type) {
-> +		case MEDIA_ENT_T_V4L2_SUBDEV_TUNER:
-> +			ret = media_entity_create_link(entity, 0,
-> +						 &subs->media_entity, 0,
-> +						 MEDIA_LNK_FL_ENABLED);
-
-I'm pretty sure this will change. It certainly will not work in all cases. There are
-devices that have two tuners, one for radio, one for TV. Just just picking the first
-one wouldn't be sufficient. However, this is something we will need to discuss as part
-of the larger MC discussions. A property might help here.
-
-That said, for now this is OK.
-
-Regards,
-
-	Hans
-
-> +			if (ret == 0)
-> +				subs->tuner_linked = 1;
-> +		break;
-> +		}
-> +	}
-> +	pr_info("media_stream_init(): tuner_linked = %d\n",
-> +		subs->tuner_linked);
-> +#endif
-> +}
-> +
->  /*
->   * initialize the substream instance.
->   */
-> @@ -104,6 +143,7 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
->  	subs->ep_num = fp->endpoint;
->  	if (fp->channels > subs->channels_max)
->  		subs->channels_max = fp->channels;
-> +	media_stream_init(subs);
->  }
->  
->  /* kctl callbacks for usb-audio channel maps */
-> diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-> index 91d0380..c2dbf1d 100644
-> --- a/sound/usb/usbaudio.h
-> +++ b/sound/usb/usbaudio.h
-> @@ -108,6 +108,7 @@ struct snd_usb_audio_quirk {
->  	const char *product_name;
->  	int16_t ifnum;
->  	uint16_t type;
-> +	bool media_device;
->  	const void *data;
->  };
->  
-> 
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 231f89029779..c033a4ee6547 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -205,8 +205,6 @@ static int ad198x_parse_auto_config(struct hda_codec *codec, bool indep_hp)
+ 	if (err < 0)
+ 		return err;
+ 
+-	codec->patch_ops = ad198x_auto_patch_ops;
+-
+ 	return 0;
+ }
+ 
+@@ -223,6 +221,7 @@ static int alloc_ad_spec(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 	codec->spec = spec;
+ 	snd_hda_gen_spec_init(&spec->gen);
++	codec->patch_ops = ad198x_auto_patch_ops;
+ 	return 0;
+ }
+ 
+diff --git a/sound/pci/hda/patch_ca0110.c b/sound/pci/hda/patch_ca0110.c
+index 447302695195..484bbf4134cd 100644
+--- a/sound/pci/hda/patch_ca0110.c
++++ b/sound/pci/hda/patch_ca0110.c
+@@ -63,6 +63,7 @@ static int patch_ca0110(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 	snd_hda_gen_spec_init(spec);
+ 	codec->spec = spec;
++	codec->patch_ops = ca0110_patch_ops;
+ 
+ 	spec->multi_cap_vol = 1;
+ 	codec->bus->needs_damn_long_delay = 1;
+@@ -71,8 +72,6 @@ static int patch_ca0110(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = ca0110_patch_ops;
+-
+ 	return 0;
+ 
+  error:
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 8dec790dae45..0f039abe9673 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -4709,6 +4709,10 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	spec->codec = codec;
+ 
++	codec->patch_ops = ca0132_patch_ops;
++	codec->pcm_format_first = 1;
++	codec->no_sticky_stream = 1;
++
+ 	/* Detect codec quirk */
+ 	quirk = snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
+ 	if (quirk)
+@@ -4737,10 +4741,6 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	if (err < 0)
+ 		return err;
+ 
+-	codec->patch_ops = ca0132_patch_ops;
+-	codec->pcm_format_first = 1;
+-	codec->no_sticky_stream = 1;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 50e9dd675579..25ccf781fbe7 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -584,6 +584,7 @@ static int patch_cs420x(struct hda_codec *codec)
+ 	if (!spec)
+ 		return -ENOMEM;
+ 
++	codec->patch_ops = cs_patch_ops;
+ 	spec->gen.automute_hook = cs_automute;
+ 	codec->single_adc_amp = 1;
+ 
+@@ -595,8 +596,6 @@ static int patch_cs420x(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cs_patch_ops;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -738,6 +737,7 @@ static int patch_cs4208(struct hda_codec *codec)
+ 	if (!spec)
+ 		return -ENOMEM;
+ 
++	codec->patch_ops = cs_patch_ops;
+ 	spec->gen.automute_hook = cs_automute;
+ 	/* exclude NID 0x10 (HP) from output volumes due to different steps */
+ 	spec->gen.out_vol_mask = 1ULL << 0x10;
+@@ -756,8 +756,6 @@ static int patch_cs4208(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cs_patch_ops;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -1150,6 +1148,7 @@ static int patch_cs4210(struct hda_codec *codec)
+ 	if (!spec)
+ 		return -ENOMEM;
+ 
++	codec->patch_ops = cs421x_patch_ops;
+ 	spec->gen.automute_hook = cs_automute;
+ 
+ 	snd_hda_pick_fixup(codec, cs421x_models, cs421x_fixup_tbl,
+@@ -1167,8 +1166,6 @@ static int patch_cs4210(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cs421x_patch_ops;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -1187,11 +1184,12 @@ static int patch_cs4213(struct hda_codec *codec)
+ 	if (!spec)
+ 		return -ENOMEM;
+ 
++	codec->patch_ops = cs421x_patch_ops;
++
+ 	err = cs421x_parse_auto_config(codec);
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cs421x_patch_ops;
+ 	return 0;
+ 
+  error:
+diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
+index 617d9012e78a..f5ed078710f8 100644
+--- a/sound/pci/hda/patch_cmedia.c
++++ b/sound/pci/hda/patch_cmedia.c
+@@ -57,6 +57,7 @@ static int patch_cmi9880(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	codec->spec = spec;
++	codec->patch_ops = cmi_auto_patch_ops;
+ 	cfg = &spec->gen.autocfg;
+ 	snd_hda_gen_spec_init(&spec->gen);
+ 
+@@ -67,7 +68,6 @@ static int patch_cmi9880(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cmi_auto_patch_ops;
+ 	return 0;
+ 
+  error:
+@@ -86,6 +86,7 @@ static int patch_cmi8888(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 
+ 	codec->spec = spec;
++	codec->patch_ops = cmi_auto_patch_ops;
+ 	cfg = &spec->gen.autocfg;
+ 	snd_hda_gen_spec_init(&spec->gen);
+ 
+@@ -112,7 +113,6 @@ static int patch_cmi8888(struct hda_codec *codec)
+ 		}
+ 	}
+ 
+-	codec->patch_ops = cmi_auto_patch_ops;
+ 	return 0;
+ 
+  error:
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 78b719b5b34d..f788a91b544a 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -850,6 +850,7 @@ static int patch_conexant_auto(struct hda_codec *codec)
+ 		return -ENOMEM;
+ 	snd_hda_gen_spec_init(&spec->gen);
+ 	codec->spec = spec;
++	codec->patch_ops = cx_auto_patch_ops;
+ 
+ 	cx_auto_parse_beep(codec);
+ 	cx_auto_parse_eapd(codec);
+@@ -908,8 +909,6 @@ static int patch_conexant_auto(struct hda_codec *codec)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	codec->patch_ops = cx_auto_patch_ops;
+-
+ 	/* Some laptops with Conexant chips show stalls in S3 resume,
+ 	 * which falls into the single-cmd mode.
+ 	 * Better to make reset, then.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index da2d37158d70..376444a9f11e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1003,6 +1003,7 @@ static int alc_alloc_spec(struct hda_codec *codec, hda_nid_t mixer_nid)
+ 	codec->single_adc_amp = 1;
+ 	/* FIXME: do we need this for all Realtek codec models? */
+ 	codec->spdif_status_reset = 1;
++	codec->patch_ops = alc_patch_ops;
+ 
+ 	err = alc_codec_rename_from_preset(codec);
+ 	if (err < 0) {
+@@ -1447,6 +1448,8 @@ static int patch_alc880(struct hda_codec *codec)
+ 	spec->gen.need_dac_fix = 1;
+ 	spec->gen.beep_nid = 0x01;
+ 
++	codec->patch_ops.unsol_event = alc880_unsol_event;
++
+ 	snd_hda_pick_fixup(codec, alc880_fixup_models, alc880_fixup_tbl,
+ 		       alc880_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -1459,10 +1462,6 @@ static int patch_alc880(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	codec->patch_ops.unsol_event = alc880_unsol_event;
+-
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -1699,6 +1698,8 @@ static int patch_alc260(struct hda_codec *codec)
+ 	spec->gen.prefer_hp_amp = 1;
+ 	spec->gen.beep_nid = 0x01;
+ 
++	spec->shutup = alc_eapd_shutup;
++
+ 	snd_hda_pick_fixup(codec, alc260_fixup_models, alc260_fixup_tbl,
+ 			   alc260_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -1711,9 +1712,6 @@ static int patch_alc260(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog)
+ 		set_beep_amp(spec, 0x07, 0x05, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	spec->shutup = alc_eapd_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -2298,8 +2296,6 @@ static int patch_alc882(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog && spec->gen.beep_nid)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -2435,6 +2431,8 @@ static int patch_alc262(struct hda_codec *codec)
+ 	spec = codec->spec;
+ 	spec->gen.shared_mic_vref_pin = 0x18;
+ 
++	spec->shutup = alc_eapd_shutup;
++
+ #if 0
+ 	/* pshou 07/11/05  set a zero PCM sample to DAC when FIFO is
+ 	 * under-run
+@@ -2460,9 +2458,6 @@ static int patch_alc262(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog && spec->gen.beep_nid)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	spec->shutup = alc_eapd_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -2566,6 +2561,8 @@ static int patch_alc268(struct hda_codec *codec)
+ 	spec = codec->spec;
+ 	spec->gen.beep_nid = 0x01;
+ 
++	spec->shutup = alc_eapd_shutup;
++
+ 	snd_hda_pick_fixup(codec, alc268_fixup_models, alc268_fixup_tbl, alc268_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ 
+@@ -2587,9 +2584,6 @@ static int patch_alc268(struct hda_codec *codec)
+ 					  (0 << AC_AMPCAP_MUTE_SHIFT));
+ 	}
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	spec->shutup = alc_eapd_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -5672,6 +5666,12 @@ static int patch_alc269(struct hda_codec *codec)
+ 	if (codec->core.vendor_id != 0x10ec0292)
+ 		codec->power_save_node = 1;
+ 
++#ifdef CONFIG_PM
++	codec->patch_ops.suspend = alc269_suspend;
++	codec->patch_ops.resume = alc269_resume;
++#endif
++	spec->shutup = alc269_shutup;
++
+ 	snd_hda_pick_fixup(codec, alc269_fixup_models,
+ 		       alc269_fixup_tbl, alc269_fixups);
+ 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
+@@ -5768,15 +5768,6 @@ static int patch_alc269(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog && spec->gen.beep_nid && spec->gen.mixer_nid)
+ 		set_beep_amp(spec, spec->gen.mixer_nid, 0x04, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	codec->patch_ops.stream_pm = snd_hda_gen_stream_pm;
+-#ifdef CONFIG_PM
+-	codec->patch_ops.suspend = alc269_suspend;
+-	codec->patch_ops.resume = alc269_resume;
+-#endif
+-	if (!spec->shutup)
+-		spec->shutup = alc269_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -5892,6 +5883,10 @@ static int patch_alc861(struct hda_codec *codec)
+ 	spec = codec->spec;
+ 	spec->gen.beep_nid = 0x23;
+ 
++#ifdef CONFIG_PM
++	spec->power_hook = alc_power_eapd;
++#endif
++
+ 	snd_hda_pick_fixup(codec, NULL, alc861_fixup_tbl, alc861_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ 
+@@ -5903,11 +5898,6 @@ static int patch_alc861(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog)
+ 		set_beep_amp(spec, 0x23, 0, HDA_OUTPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-#ifdef CONFIG_PM
+-	spec->power_hook = alc_power_eapd;
+-#endif
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -5984,6 +5974,8 @@ static int patch_alc861vd(struct hda_codec *codec)
+ 	spec = codec->spec;
+ 	spec->gen.beep_nid = 0x23;
+ 
++	spec->shutup = alc_eapd_shutup;
++
+ 	snd_hda_pick_fixup(codec, NULL, alc861vd_fixup_tbl, alc861vd_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ 
+@@ -5995,10 +5987,6 @@ static int patch_alc861vd(struct hda_codec *codec)
+ 	if (!spec->gen.no_analog)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 
+-	codec->patch_ops = alc_patch_ops;
+-
+-	spec->shutup = alc_eapd_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -6599,6 +6587,8 @@ static int patch_alc662(struct hda_codec *codec)
+ 
+ 	spec = codec->spec;
+ 
++	spec->shutup = alc_eapd_shutup;
++
+ 	/* handle multiple HPs as is */
+ 	spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
+ 
+@@ -6650,9 +6640,6 @@ static int patch_alc662(struct hda_codec *codec)
+ 		}
+ 	}
+ 
+-	codec->patch_ops = alc_patch_ops;
+-	spec->shutup = alc_eapd_shutup;
+-
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
+ 
+ 	return 0;
+@@ -6689,8 +6676,6 @@ static int patch_alc680(struct hda_codec *codec)
+ 		return err;
+ 	}
+ 
+-	codec->patch_ops = alc_patch_ops;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 6ff92aba0f57..bdcda6a41032 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -4417,6 +4417,7 @@ static int alloc_stac_spec(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	codec->no_trigger_sense = 1; /* seems common with STAC/IDT codecs */
+ 	spec->gen.dac_min_mute = true;
++	codec->patch_ops = stac_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -4433,7 +4434,6 @@ static int patch_stac9200(struct hda_codec *codec)
+ 	spec->linear_tone_beep = 1;
+ 	spec->gen.own_eapd_ctl = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+ 	codec->power_filter = snd_hda_codec_eapd_power_filter;
+ 
+ 	snd_hda_add_verbs(codec, stac9200_eapd_init);
+@@ -4466,8 +4466,6 @@ static int patch_stac925x(struct hda_codec *codec)
+ 	spec->linear_tone_beep = 1;
+ 	spec->gen.own_eapd_ctl = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_add_verbs(codec, stac925x_core_init);
+ 
+ 	snd_hda_pick_fixup(codec, stac925x_models, stac925x_fixup_tbl,
+@@ -4537,8 +4535,6 @@ static int patch_stac92hd73xx(struct hda_codec *codec)
+ 	spec->gen.own_eapd_ctl = 1;
+ 	spec->gen.power_down_unused = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_pick_fixup(codec, stac92hd73xx_models, stac92hd73xx_fixup_tbl,
+ 			   stac92hd73xx_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -4614,8 +4610,6 @@ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd83xxx_pwr_nids);
+ 	spec->default_polarity = -1; /* no default cfg */
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_add_verbs(codec, stac92hd83xxx_core_init);
+ 
+ 	snd_hda_pick_fixup(codec, stac92hd83xxx_models, stac92hd83xxx_fixup_tbl,
+@@ -4664,8 +4658,6 @@ static int patch_stac92hd95(struct hda_codec *codec)
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd95_pwr_nids);
+ 	spec->default_polarity = 0;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_pick_fixup(codec, stac92hd95_models, stac92hd95_fixup_tbl,
+ 			   stac92hd95_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -4704,8 +4696,6 @@ static int patch_stac92hd71bxx(struct hda_codec *codec)
+ 	spec->gen.mixer_nid = 0x17;
+ 	spec->have_spdif_mux = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	/* GPIO0 = EAPD */
+ 	spec->gpio_mask = 0x01;
+ 	spec->gpio_dir = 0x01;
+@@ -4784,8 +4774,6 @@ static int patch_stac922x(struct hda_codec *codec)
+ 	spec->linear_tone_beep = 1;
+ 	spec->gen.own_eapd_ctl = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_add_verbs(codec, stac922x_core_init);
+ 
+ 	/* Fix Mux capture level; max to 2 */
+@@ -4841,8 +4829,6 @@ static int patch_stac927x(struct hda_codec *codec)
+ 	spec->aloopback_shift = 0;
+ 	spec->eapd_switch = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_pick_fixup(codec, stac927x_models, stac927x_fixup_tbl,
+ 			   stac927x_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -4904,8 +4890,6 @@ static int patch_stac9205(struct hda_codec *codec)
+ 	/* Turn on/off EAPD per HP plugging */
+ 	spec->eapd_switch = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_pick_fixup(codec, stac9205_models, stac9205_fixup_tbl,
+ 			   stac9205_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+@@ -4977,8 +4961,6 @@ static int patch_stac9872(struct hda_codec *codec)
+ 	spec->linear_tone_beep = 1;
+ 	spec->gen.own_eapd_ctl = 1;
+ 
+-	codec->patch_ops = stac_patch_ops;
+-
+ 	snd_hda_add_verbs(codec, stac9872_core_init);
+ 
+ 	snd_hda_pick_fixup(codec, stac9872_models, stac9872_fixup_tbl,
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 31a95cca015d..2c6c6727ca93 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -117,6 +117,8 @@ static void via_playback_pcm_hook(struct hda_pcm_stream *hinfo,
+ 				  struct snd_pcm_substream *substream,
+ 				  int action);
+ 
++static const struct hda_codec_ops via_patch_ops; /* defined below */
++
+ static struct via_spec *via_new_spec(struct hda_codec *codec)
+ {
+ 	struct via_spec *spec;
+@@ -137,6 +139,7 @@ static struct via_spec *via_new_spec(struct hda_codec *codec)
+ 	spec->gen.add_stereo_mix_input = HDA_HINT_STEREO_MIX_AUTO;
+ 	codec->power_save_node = 1;
+ 	spec->gen.power_down_unused = 1;
++	codec->patch_ops = via_patch_ops;
+ 	return spec;
+ }
+ 
+@@ -472,7 +475,6 @@ static const struct hda_codec_ops via_patch_ops = {
+ 	.init = via_init,
+ 	.free = via_free,
+ 	.unsol_event = snd_hda_jack_unsol_event,
+-	.stream_pm = snd_hda_gen_stream_pm,
+ #ifdef CONFIG_PM
+ 	.suspend = via_suspend,
+ 	.check_power_status = via_check_power_status,
+@@ -651,6 +653,9 @@ static int patch_vt1708(struct hda_codec *codec)
+ 	if (spec == NULL)
+ 		return -ENOMEM;
+ 
++	/* override some patch_ops */
++	codec->patch_ops.build_controls = vt1708_build_controls;
++	codec->patch_ops.build_pcms = vt1708_build_pcms;
+ 	spec->gen.mixer_nid = 0x17;
+ 
+ 	/* set jackpoll_interval while parsing the codec */
+@@ -679,10 +684,6 @@ static int patch_vt1708(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1708_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+-	codec->patch_ops.build_controls = vt1708_build_controls;
+-	codec->patch_ops.build_pcms = vt1708_build_pcms;
+-
+ 	/* clear jackpoll_interval again; it's set dynamically */
+ 	codec->jackpoll_interval = 0;
+ 
+@@ -707,8 +708,6 @@ static int patch_vt1709(struct hda_codec *codec)
+ 		return err;
+ 	}
+ 
+-	codec->patch_ops = via_patch_ops;
+-
+ 	return 0;
+ }
+ 
+@@ -735,7 +734,6 @@ static int patch_vt1708B(struct hda_codec *codec)
+ 		return err;
+ 	}
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -800,7 +798,6 @@ static int patch_vt1708S(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1708S_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -842,7 +839,6 @@ static int patch_vt1702(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1702_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -915,7 +911,6 @@ static int patch_vt1718S(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1718S_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -1015,7 +1010,6 @@ static int patch_vt1716S(struct hda_codec *codec)
+ 	spec->mixers[spec->num_mixers++] = vt1716s_dmic_mixer;
+ 	spec->mixers[spec->num_mixers++] = vt1716S_mono_out_mixer;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -1123,7 +1117,6 @@ static int patch_vt2002P(struct hda_codec *codec)
+ 	else
+ 		spec->init_verbs[spec->num_iverbs++] = vt2002P_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -1162,7 +1155,6 @@ static int patch_vt1812(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++]  = vt1812_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+@@ -1200,7 +1192,6 @@ static int patch_vt3476(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt3476_init_verbs;
+ 
+-	codec->patch_ops = via_patch_ops;
+ 	return 0;
+ }
+ 
+-- 
+2.4.2
