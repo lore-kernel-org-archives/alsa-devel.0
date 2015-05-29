@@ -1,72 +1,84 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce
- dma_request_slave_channel_compat_reason()
-Date: Fri, 29 May 2015 15:03:17 +0530
-Message-ID: <20150529093317.GF3140@localhost>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: PATCH: wm8731 - reinitialize regmap cache
+ after hardware reset
+Date: Fri, 29 May 2015 10:32:37 +0100
+Message-ID: <20150529093237.GI21577@sirena.org.uk>
+References: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+ <1432831966.2726.63.camel@loki>
+ <20150528192619.GE21577@sirena.org.uk>
+ <CA+abuVeO4=au_X0Z_MjPsq40b1fHbjezKRy_fTOgQ=SzmaPK5Q@mail.gmail.com>
+ <20150528145548.fa5a0f2d78c0bb2549088fc2@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-crypto-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dan.j.williams@intel.com, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-crypto@vger.kernel.org, linux-spi@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3813646648635609867=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6337326059D
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 11:32:44 +0200 (CEST)
+In-Reply-To: <20150528145548.fa5a0f2d78c0bb2549088fc2@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergey Kiselev <sergey.kiselev@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, skiselev@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
-> dma_request_slave_channel_compat() 'eats' up the returned error codes which
-> prevents drivers using the compat call to be able to do deferred probing.
-> 
-> The new wrapper is identical in functionality but it will return with error
-> code in case of failure and will pass the -EPROBE_DEFER to the caller in
-> case dma_request_slave_channel_reason() returned with it.
-This is okay but am worried about one more warpper, how about fixing
-dma_request_slave_channel_compat()
+
+--===============3813646648635609867==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Vv1mEC2IAGDct2wW"
+Content-Disposition: inline
 
 
--- 
-~Vinod
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  include/linux/dmaengine.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index abf63ceabef9..6c777394835c 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -1120,4 +1120,26 @@ static inline struct dma_chan
->  
->  	return __dma_request_channel(mask, fn, fn_param);
->  }
-> +
-> +#define dma_request_slave_channel_compat_reason(mask, x, y, dev, name) \
-> +	__dma_request_slave_channel_compat_reason(&(mask), x, y, dev, name)
-> +
-> +static inline struct dma_chan
-> +*__dma_request_slave_channel_compat_reason(const dma_cap_mask_t *mask,
-> +				  dma_filter_fn fn, void *fn_param,
-> +				  struct device *dev, char *name)
-> +{
-> +	struct dma_chan *chan;
-> +
-> +	chan = dma_request_slave_channel_reason(dev, name);
-> +	/* Try via legacy API if not requesting for deferred probing */
-> +	if (IS_ERR(chan) && PTR_ERR(chan) != -EPROBE_DEFER)
-> +		chan = __dma_request_channel(mask, fn, fn_param);
-> +
-> +	if (!chan)
-> +		chan = ERR_PTR(-ENODEV);
-> +
-> +	return chan;
-> +}
-> +
->  #endif /* DMAENGINE_H */
-> -- 
-> 2.3.5
-> 
+--Vv1mEC2IAGDct2wW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
+On Thu, May 28, 2015 at 02:55:48PM -0700, Sergey Kiselev wrote:
+
+Please fix your mail client to word wrap within paragraphs, it makes
+your mail more readable.
+
+> On Thu, May 28, 2015 at 12:26 PM, Mark Brown wrote:
+
+> OK, I was trying to move the request supplies and reset code to
+> wm8731_{i2c|spi}_probe(). And I noticed the following weirdness with
+> the supplies: The current code in wm8731_probe() requests and enables
+> regulators, resets the codec hardware, tweaks some registers, and then
+> disables all the regulators:
+
+That's totally normal, the new register values will be rewritten as part
+of resyncing the register cache when the device is powered back up.
+
+--Vv1mEC2IAGDct2wW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVaDI0AAoJECTWi3JdVIfQ6j4H/0vjcg/anblkktnkzz64h2Ci
+OuXLBR6JEmc8z/bNl19IREn33lv2Q2PM6CjDlTd+Gk4L63E004lr9HbvJ6SkBXDH
+9RBEpDdj5xmt4CBz5CI5vAdR3GGL44GDBJnS8AERP6TuEjwNB3n5NlIpZDsVTmHz
+9+qk7kHvv9tIsOKu7TdGEjcpfXlHNMzRsNFy2qN9fqB5rGYVx+rleEkEhO4nT31z
+CdX3kG5aeWeLfO87JGHQKRwF2kQXKMVRf618c6gOVa0yAvnyJ60uZCgI3uEdu6kZ
+ihZEr+7g8JJ7C3cVR8Y9oC2OoosrBi9gSNMlAiFEudADBnbXe8CJEvytueM7og0=
+=hvl0
+-----END PGP SIGNATURE-----
+
+--Vv1mEC2IAGDct2wW--
+
+--===============3813646648635609867==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3813646648635609867==--
