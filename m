@@ -1,42 +1,71 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce
- dma_request_slave_channel_compat_reason()
-Date: Fri, 29 May 2015 15:48:46 +0530
-Message-ID: <20150529101846.GG3140@localhost>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
- <20150529093317.GF3140@localhost>
- <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: DAPM: Add APIs to create individual
+	DAPM controls.
+Date: Fri, 29 May 2015 11:24:44 +0100
+Message-ID: <20150529102444.GN21577@sirena.org.uk>
+References: <1432574477-7350-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-crypto-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
-Sender: linux-crypto-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>, linux-crypto@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============4247598958204349665=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19A22260692
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 12:24:50 +0200 (CEST)
+In-Reply-To: <1432574477-7350-1-git-send-email-liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 29, 2015 at 11:42:27AM +0200, Geert Uytterhoeven wrote:
-> On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul@intel.com> wrote:
-> > On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
-> >> dma_request_slave_channel_compat() 'eats' up the returned error codes which
-> >> prevents drivers using the compat call to be able to do deferred probing.
-> >>
-> >> The new wrapper is identical in functionality but it will return with error
-> >> code in case of failure and will pass the -EPROBE_DEFER to the caller in
-> >> case dma_request_slave_channel_reason() returned with it.
-> > This is okay but am worried about one more warpper, how about fixing
-> > dma_request_slave_channel_compat()
-> 
-> Then all callers of dma_request_slave_channel_compat() have to be
-> modified to handle ERR_PTR first.
-> 
-> The same is true for (the existing) dma_request_slave_channel_reason()
-> vs. dma_request_slave_channel().
-Good point, looking again, I think we should rather fix
-dma_request_slave_channel_reason() as it was expected to return err code and
-add new users. Anyway users of this API do expect the reason...
 
--- 
-~Vinod
+--===============4247598958204349665==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3EIvqNBXxBDuQt3l"
+Content-Disposition: inline
+
+
+--3EIvqNBXxBDuQt3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 25, 2015 at 06:21:17PM +0100, Liam Girdwood wrote:
+> The topology core needs to be able to create individual widget controls at
+> runtime and driver init. Add a regular locked and unlocked API calls to
+> facilitate this requirement.
+
+Applied, thanks.
+
+--3EIvqNBXxBDuQt3l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVaD5sAAoJECTWi3JdVIfQ/zoH/RV8uFhBaW6OaAj6fBIzMZQ4
+vWjS9VhhCIF/QaGDOgpUCuE25Xy6cfsjCFI+3wddEnC32GXUJxUvbx4d6kRPSjve
+wRSsJriAK5CzVCVGWiva92XDwOUVeSuXqorB8tfcYtvl/NMHsNpxpi8yACdW0l9a
+gz6N60WQ0xZeEYQThmTWYSbrV071wmQtKtfL0yHg4/uNFbgPi0pVMqEGY2VPN4zk
+9CvfwXb2ILBD4ZcPy9w+5D4kr/VTmJBGsUqnqsRL3KxmGbVVu3MMWmohLiIS8H6/
+O37r8bnhSwtKRSRFK+YNwNneRY+FdkrdwI2R2zD1oecwRkMNir5ww6gTfFzmarM=
+=8RIt
+-----END PGP SIGNATURE-----
+
+--3EIvqNBXxBDuQt3l--
+
+--===============4247598958204349665==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4247598958204349665==--
