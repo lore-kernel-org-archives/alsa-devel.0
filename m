@@ -1,18 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5645: change gpio to gpiod
- APIs
-Date: Fri, 29 May 2015 18:31:08 +0200
-Message-ID: <5568944C.2060509@metafoo.de>
+Subject: Re: [PATCH v2 2/2] ASoC: rt5645: add device tree
+	support
+Date: Fri, 29 May 2015 18:31:55 +0200
+Message-ID: <5568947B.3040309@metafoo.de>
 References: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
+ <1432894607-28489-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-030.synserver.de (smtp-out-030.synserver.de
  [212.40.185.30])
- by alsa0.perex.cz (Postfix) with ESMTP id D8D732606E1
- for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 18:31:16 +0200 (CEST)
-In-Reply-To: <1432894607-28489-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 22C2126691F
+ for <alsa-devel@alsa-project.org>; Fri, 29 May 2015 18:31:57 +0200 (CEST)
+In-Reply-To: <1432894607-28489-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +28,20 @@ Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, zhengxing@rock-chips.co
 List-Id: alsa-devel@alsa-project.org
 
 On 05/29/2015 12:16 PM, Bard Liao wrote:
-> @@ -3253,19 +3247,17 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->   	} else {
->   		if (dmi_check_system(dmi_platform_intel_braswell)) {
->   			rt5645->pdata = *rt5645_pdata;
-> -			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
-> -
-> -			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
-> -				rt5645->pdata.hp_det_gpio = -1;
-> -				dev_err(&i2c->dev, "failed to initialize gpiod\n");
-> -			} else {
-> -				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
-> -				rt5645->pdata.gpio_hp_det_active_high
-> -						= !gpiod_is_active_low(gpiod);
-> -			}
->   		}
->   	}
->
-> +	rt5645->gpiod_hp_det = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+[...]
+> +
+> +Example:
+> +
+> +codec: rt5650@1a {
+> +	compatible = "realtek,rt5650";
+> +	reg = <0x1a>;
+> +	rt5645-gpios = <&gpio 19 0>;
 
-Three things, don't use the _index API if there is only a single gpio for 
-the property, either don't use a name at all or use a descriptive name 
-something like "hp-detect" and use the new version of the API which has the 
-flags parameter.
+The gpio is missing from the property documentation.
 
-So this should be: devm_gpiod_get(&i2c->dev, NULL, GPIOD_IN);
-
-and then drop the gpiod_direction_input()...
+> +	interrupt-parent = <&gpio>;
+> +	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
+> +	realtek,dmic-en = "true";
+> +	realtek,en-jd-func = "true";
+> +	realtek,jd-mode = <3>;
+> +};
