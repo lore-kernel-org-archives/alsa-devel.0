@@ -1,39 +1,49 @@
-From: Eric Wong <normalperson@yhbt.net>
-Subject: [PATCH] ALSA: usb-audio: don't try to get Outlaw RR2150 sample rate
-Date: Sat, 30 May 2015 09:15:39 +0000
-Message-ID: <1432977339-8918-1-git-send-email-normalperson@yhbt.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Eric Wong <normalperson@yhbt.net>, Joe Turner <joe@oampo.co.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Realtek ALC892 / snd-hda-intel breakage between
+ 3.16 & 3.19
+Date: Sat, 30 May 2015 20:03:01 +0800
+Message-ID: <CAN8ccibgmUhwE8UJPBF4GS+Lws4F+MtWKb5e=z1DjU0T1xSTLA@mail.gmail.com>
+References: <20150527190106.GA12158@dot.dmz.freshdot.net>
+ <CAN8cciY_PGVKaDWpOGmaZgRetS9oQpCoPqH5PpZdVdNgrk26YQ@mail.gmail.com>
+ <20150528151724.GC12158@dot.dmz.freshdot.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id E20EC260601
+ for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 14:03:02 +0200 (CEST)
+Received: by oifu123 with SMTP id u123so73773311oif.1
+ for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 05:03:01 -0700 (PDT)
+In-Reply-To: <20150528151724.GC12158@dot.dmz.freshdot.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This quirk allows us to avoid the noisy:
+>
+> > > After upgrading from 3.16.0-38-generic (Ubuntu Utopic) to
+> > > 3.19.0-18-generic (Ubuntu Vivid) my audio stopped working.
+> > > The issue appears to be in the snd-hda-intel driver.
+> [ .. ]
+> > HDMI fail because drm/i915 fail
+>
+> So it appears. I hadn't noticed these:
+> | [000d00h02m01s] Could not create debugfs 'i915_pipe_update_start'
+directory
+> | [000d00h02m01s] snd_hda_intel 0000:00:03.0: Cannot turn on display
+power on i915
+>
+>
 
-	current rate 0 is different from the runtime rate
+This patch add the error messge " Cannot turn on display power on i915"
 
-message every time playback starts.  While USB DAC in the RR2150
-supports reading the sample rate, it never returns a sample rate
-other than zero in my observation with common sample rates.
-
-Signed-off-by: Eric Wong <normalperson@yhbt.net>
-Cc: Joe Turner <joe@oampo.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 32631a8..2ea5b33 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1118,6 +1118,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x045E, 0x075D): /* MS Lifecam Cinema  */
- 	case USB_ID(0x045E, 0x076D): /* MS Lifecam HD-5000 */
- 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
-+	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
- 		return true;
- 	}
- 	return false;
--- 
-EW
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/patch/sound/pci/hda/hda_intel.c?id=74b0c2d75fb4cc89173944e6d8f9eb47aca0c343
