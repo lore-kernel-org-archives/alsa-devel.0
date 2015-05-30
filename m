@@ -1,17 +1,17 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH 3/4] ASoC: Intel: check and clear runtime
-	module pointer
-Date: Sat, 30 May 2015 22:33:58 +0800
-Message-ID: <1432996439-8052-4-git-send-email-yang.jie@intel.com>
-References: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
+From: Mikko Rapeli <mikko.rapeli@iki.fi>
+Subject: [PATCH 18/98] include/uapi/sound/emu10k1.h: added
+	EMU10K1 version of DECLARE_BITMAP etc macros
+Date: Sat, 30 May 2015 17:38:10 +0200
+Message-ID: <1433000370-19509-19-git-send-email-mikko.rapeli@iki.fi>
+References: <1433000370-19509-1-git-send-email-mikko.rapeli@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B6382606AC
- for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 16:29:59 +0200 (CEST)
-In-Reply-To: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
+Received: from mail.kapsi.fi (mail.kapsi.fi [217.30.184.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 064C4260668
+ for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 17:40:30 +0200 (CEST)
+In-Reply-To: <1433000370-19509-1-git-send-email-mikko.rapeli@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mikko Rapeli <mikko.rapeli@iki.fi>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add check runtime module pointers before freeing them, and clear
-them to NULL after freed.
-
-With this implemented, we can avoid NULL pointer dereference or
-double free errors.
-
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/haswell/sst-haswell-pcm.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 23ae040..f97fa5a 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -928,10 +928,15 @@ static void hsw_pcm_free_modules(struct hsw_priv_data *pdata)
- 
- 	for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
- 		pcm_data = &pdata->pcm[mod_map[i].dai_id][mod_map[i].stream];
--		sst_hsw_runtime_module_free(pcm_data->runtime);
-+		if (pcm_data->runtime){
-+			sst_hsw_runtime_module_free(pcm_data->runtime);
-+			pcm_data->runtime = NULL;
-+		}
- 	}
--	if (sst_hsw_is_module_loaded(hsw, SST_HSW_MODULE_WAVES)) {
-+	if (sst_hsw_is_module_loaded(hsw, SST_HSW_MODULE_WAVES) &&
-+				pdata->runtime_waves) {
- 		sst_hsw_runtime_module_free(pdata->runtime_waves);
-+		pdata->runtime_waves = NULL;
- 	}
- }
- 
--- 
-1.9.1
+Rml4ZXMgdXNlcnNwYWNlIGNvbXBpbGF0aW9uIGVycm9yOgoKZXJyb3I6IGV4cGVjdGVkIHNwZWNp
+Zmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg4oCYREVDTEFSRV9CSVRNQVDigJkKICBERUNMQVJF
+X0JJVE1BUChncHJfdmFsaWQsIDB4MjAwKTsgLyogYml0bWFzayBvZiB2YWxpZCBpbml0aWFsaXpl
+cnMgKi8KCkRFQ0xBUkVfQklUTUFQIGV0YyBtYWNyb3MgYXJlIG5vdCBtZWFudCBmb3IgdXNlcnNw
+YWNlIGhlYWRlcnMgYW5kIHRodXMKYWRkZWQgaGVyZSBhcyBwcml2YXRlIGNvcGllcyBmb3IgZW11
+MTBrLmguCgpGaXggd2FzIHN1Z2dlc3RlZCBieSBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRl
+PiBpbiBtZXNzYWdlCjwyMTY4ODA3LjRZeGg1Z2wxMVFAd3VlcmZlbD4gb24gbGttbC4KClNpZ25l
+ZC1vZmYtYnk6IE1pa2tvIFJhcGVsaSA8bWlra28ucmFwZWxpQGlraS5maT4KLS0tCiBpbmNsdWRl
+L3VhcGkvc291bmQvZW11MTBrMS5oIHwgMjMgKysrKysrKysrKysrKysrKysrKystLS0KIDEgZmls
+ZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvdWFwaS9zb3VuZC9lbXUxMGsxLmggYi9pbmNsdWRlL3VhcGkvc291bmQvZW11MTBr
+MS5oCmluZGV4IGVjMTUzNWIuLjc1NzVmMGYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvdWFwaS9zb3Vu
+ZC9lbXUxMGsxLmgKKysrIGIvaW5jbHVkZS91YXBpL3NvdW5kL2VtdTEwazEuaApAQCAtMzQsNiAr
+MzQsMjMgQEAKIAogI2RlZmluZSBFTVUxMEsxX0ZYODAxMF9QQ01fQ09VTlQJCTgKIAorLyoKKyAq
+IEZvbGxvd2luZyBkZWZpbml0aW9ucyBhcmUgY29waWVzIGZyb20ga2VybmVsIGhlYWRlcnMgdG8g
+c3VwcG9ydCBjb21waWxpbmcKKyAqIHRoaXMgaGVhZGVyIGZpbGUgaW4gdXNlcnNwYWNlLiBUaGUg
+ZGVmaW5pdGlvbnMgYXJlIG5vdCBnZW5lcmFsbHkgYXZhaWxhYmxlCisgKiBpbiB1YXBpIGhlYWRl
+cnMgc28gdGhlIG5lZWRlZCB0aGluZ3MgYXJlIGNvcGllZCBoZXJlIHd0aWggX19FTVUxMGsxIHBy
+ZWZpeC4KKyAqLworCisvKiBGcm9tIGluY2x1ZGUvbGludXgvYml0b3BzLmggKi8KKyNkZWZpbmUg
+X19FTVUxMEsxX0JJVFNfUEVSX0JZVEUgICAgICAgICAgIDgKKy8qIEZyb20gaW5jbHVkZS9saW51
+eC9rZXJuZWwuaCAqLworI2RlZmluZSBfX0VNVTEwSzFfRElWX1JPVU5EX1VQKG4sZCkgKCgobikg
+KyAoZCkgLSAxKSAvIChkKSkKKy8qIEZyb20gaW5jbHVkZS9saW51eC9iaXRvcHMuaCAqLworI2Rl
+ZmluZSBfX0VNVTEwSzFfQklUU19UT19MT05HUyhucikgXAorICAgICAgICBfX0VNVTEwSzFfRElW
+X1JPVU5EX1VQKG5yLCBfX0VNVTEwSzFfQklUU19QRVJfQllURSAqIHNpemVvZihsb25nKSkKKy8q
+IEZyb20gaW5jbHVkZS9saW51eC90eXBlcy5oICovCisjZGVmaW5lIF9fRU1VMTBLMV9ERUNMQVJF
+X0JJVE1BUChuYW1lLGJpdHMpIFwKKyAgICAgICAgdW5zaWduZWQgbG9uZyBuYW1lW19fRU1VMTBL
+MV9CSVRTX1RPX0xPTkdTKGJpdHMpXQorCiAvKiBpbnN0cnVjdGlvbiBzZXQgKi8KICNkZWZpbmUg
+aU1BQzAJIDB4MDAJLyogUiA9IEEgKyAoWCAqIFkgPj4gMzEpICAgOyBzYXR1cmF0aW9uICovCiAj
+ZGVmaW5lIGlNQUMxCSAweDAxCS8qIFIgPSBBICsgKC1YICogWSA+PiAzMSkgIDsgc2F0dXJhdGlv
+biAqLwpAQCAtMzAwLDcgKzMxNyw3IEBAIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29udHJv
+bF9vbGRfZ3ByIHsKIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29kZSB7CiAJY2hhciBuYW1l
+WzEyOF07CiAKLQlERUNMQVJFX0JJVE1BUChncHJfdmFsaWQsIDB4MjAwKTsgLyogYml0bWFzayBv
+ZiB2YWxpZCBpbml0aWFsaXplcnMgKi8KKwlfX0VNVTEwSzFfREVDTEFSRV9CSVRNQVAoZ3ByX3Zh
+bGlkLCAweDIwMCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5pdGlhbGl6ZXJzICovCiAJX191MzIg
+X191c2VyICpncHJfbWFwOwkJLyogaW5pdGlhbGl6ZXJzICovCiAKIAl1bnNpZ25lZCBpbnQgZ3By
+X2FkZF9jb250cm9sX2NvdW50OyAvKiBjb3VudCBvZiBHUFIgY29udHJvbHMgdG8gYWRkL3JlcGxh
+Y2UgKi8KQEAgLTMxMywxMSArMzMwLDExIEBAIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29k
+ZSB7CiAJdW5zaWduZWQgaW50IGdwcl9saXN0X2NvbnRyb2xfdG90YWw7IC8qIHRvdGFsIGNvdW50
+IG9mIEdQUiBjb250cm9scyAqLwogCXN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29udHJvbF9n
+cHIgX191c2VyICpncHJfbGlzdF9jb250cm9sczsgLyogbGlzdGVkIEdQUiBjb250cm9scyAqLwog
+Ci0JREVDTEFSRV9CSVRNQVAodHJhbV92YWxpZCwgMHgxMDApOyAvKiBiaXRtYXNrIG9mIHZhbGlk
+IGluaXRpYWxpemVycyAqLworCV9fRU1VMTBLMV9ERUNMQVJFX0JJVE1BUCh0cmFtX3ZhbGlkLCAw
+eDEwMCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5pdGlhbGl6ZXJzICovCiAJX191MzIgX191c2Vy
+ICp0cmFtX2RhdGFfbWFwOwkgIC8qIGRhdGEgaW5pdGlhbGl6ZXJzICovCiAJX191MzIgX191c2Vy
+ICp0cmFtX2FkZHJfbWFwOwkgIC8qIG1hcCBpbml0aWFsaXplcnMgKi8KIAotCURFQ0xBUkVfQklU
+TUFQKGNvZGVfdmFsaWQsIDEwMjQpOyAvKiBiaXRtYXNrIG9mIHZhbGlkIGluc3RydWN0aW9ucyAq
+LworCV9fRU1VMTBLMV9ERUNMQVJFX0JJVE1BUChjb2RlX3ZhbGlkLCAxMDI0KTsgLyogYml0bWFz
+ayBvZiB2YWxpZCBpbnN0cnVjdGlvbnMgKi8KIAlfX3UzMiBfX3VzZXIgKmNvZGU7CQkgIC8qIG9u
+ZSBpbnN0cnVjdGlvbiAtIDY0IGJpdHMgKi8KIH07CiAKLS0gCjIuMS40CgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
