@@ -1,79 +1,108 @@
-From: Mikko Rapeli <mikko.rapeli@iki.fi>
-Subject: [PATCH 18/98] include/uapi/sound/emu10k1.h: added
-	EMU10K1 version of DECLARE_BITMAP etc macros
-Date: Sat, 30 May 2015 17:38:10 +0200
-Message-ID: <1433000370-19509-19-git-send-email-mikko.rapeli@iki.fi>
+From: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>
+Subject: [PATCH 30/98] hdspm.h: use __u8, __u32 and __u64 from linux/types.h
+Date: Sat, 30 May 2015 17:38:22 +0200
+Message-ID: <1433000370-19509-31-git-send-email-mikko.rapeli@iki.fi>
 References: <1433000370-19509-1-git-send-email-mikko.rapeli@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kapsi.fi (mail.kapsi.fi [217.30.184.167])
- by alsa0.perex.cz (Postfix) with ESMTP id 064C4260668
- for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 17:40:30 +0200 (CEST)
-In-Reply-To: <1433000370-19509-1-git-send-email-mikko.rapeli@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mikko Rapeli <mikko.rapeli@iki.fi>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1433000370-19509-1-git-send-email-mikko.rapeli-X3B1VOXEql0@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Rml4ZXMgdXNlcnNwYWNlIGNvbXBpbGF0aW9uIGVycm9yOgoKZXJyb3I6IGV4cGVjdGVkIHNwZWNp
-Zmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg4oCYREVDTEFSRV9CSVRNQVDigJkKICBERUNMQVJF
-X0JJVE1BUChncHJfdmFsaWQsIDB4MjAwKTsgLyogYml0bWFzayBvZiB2YWxpZCBpbml0aWFsaXpl
-cnMgKi8KCkRFQ0xBUkVfQklUTUFQIGV0YyBtYWNyb3MgYXJlIG5vdCBtZWFudCBmb3IgdXNlcnNw
-YWNlIGhlYWRlcnMgYW5kIHRodXMKYWRkZWQgaGVyZSBhcyBwcml2YXRlIGNvcGllcyBmb3IgZW11
-MTBrLmguCgpGaXggd2FzIHN1Z2dlc3RlZCBieSBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRl
-PiBpbiBtZXNzYWdlCjwyMTY4ODA3LjRZeGg1Z2wxMVFAd3VlcmZlbD4gb24gbGttbC4KClNpZ25l
-ZC1vZmYtYnk6IE1pa2tvIFJhcGVsaSA8bWlra28ucmFwZWxpQGlraS5maT4KLS0tCiBpbmNsdWRl
-L3VhcGkvc291bmQvZW11MTBrMS5oIHwgMjMgKysrKysrKysrKysrKysrKysrKystLS0KIDEgZmls
-ZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L2luY2x1ZGUvdWFwaS9zb3VuZC9lbXUxMGsxLmggYi9pbmNsdWRlL3VhcGkvc291bmQvZW11MTBr
-MS5oCmluZGV4IGVjMTUzNWIuLjc1NzVmMGYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvdWFwaS9zb3Vu
-ZC9lbXUxMGsxLmgKKysrIGIvaW5jbHVkZS91YXBpL3NvdW5kL2VtdTEwazEuaApAQCAtMzQsNiAr
-MzQsMjMgQEAKIAogI2RlZmluZSBFTVUxMEsxX0ZYODAxMF9QQ01fQ09VTlQJCTgKIAorLyoKKyAq
-IEZvbGxvd2luZyBkZWZpbml0aW9ucyBhcmUgY29waWVzIGZyb20ga2VybmVsIGhlYWRlcnMgdG8g
-c3VwcG9ydCBjb21waWxpbmcKKyAqIHRoaXMgaGVhZGVyIGZpbGUgaW4gdXNlcnNwYWNlLiBUaGUg
-ZGVmaW5pdGlvbnMgYXJlIG5vdCBnZW5lcmFsbHkgYXZhaWxhYmxlCisgKiBpbiB1YXBpIGhlYWRl
-cnMgc28gdGhlIG5lZWRlZCB0aGluZ3MgYXJlIGNvcGllZCBoZXJlIHd0aWggX19FTVUxMGsxIHBy
-ZWZpeC4KKyAqLworCisvKiBGcm9tIGluY2x1ZGUvbGludXgvYml0b3BzLmggKi8KKyNkZWZpbmUg
-X19FTVUxMEsxX0JJVFNfUEVSX0JZVEUgICAgICAgICAgIDgKKy8qIEZyb20gaW5jbHVkZS9saW51
-eC9rZXJuZWwuaCAqLworI2RlZmluZSBfX0VNVTEwSzFfRElWX1JPVU5EX1VQKG4sZCkgKCgobikg
-KyAoZCkgLSAxKSAvIChkKSkKKy8qIEZyb20gaW5jbHVkZS9saW51eC9iaXRvcHMuaCAqLworI2Rl
-ZmluZSBfX0VNVTEwSzFfQklUU19UT19MT05HUyhucikgXAorICAgICAgICBfX0VNVTEwSzFfRElW
-X1JPVU5EX1VQKG5yLCBfX0VNVTEwSzFfQklUU19QRVJfQllURSAqIHNpemVvZihsb25nKSkKKy8q
-IEZyb20gaW5jbHVkZS9saW51eC90eXBlcy5oICovCisjZGVmaW5lIF9fRU1VMTBLMV9ERUNMQVJF
-X0JJVE1BUChuYW1lLGJpdHMpIFwKKyAgICAgICAgdW5zaWduZWQgbG9uZyBuYW1lW19fRU1VMTBL
-MV9CSVRTX1RPX0xPTkdTKGJpdHMpXQorCiAvKiBpbnN0cnVjdGlvbiBzZXQgKi8KICNkZWZpbmUg
-aU1BQzAJIDB4MDAJLyogUiA9IEEgKyAoWCAqIFkgPj4gMzEpICAgOyBzYXR1cmF0aW9uICovCiAj
-ZGVmaW5lIGlNQUMxCSAweDAxCS8qIFIgPSBBICsgKC1YICogWSA+PiAzMSkgIDsgc2F0dXJhdGlv
-biAqLwpAQCAtMzAwLDcgKzMxNyw3IEBAIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29udHJv
-bF9vbGRfZ3ByIHsKIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29kZSB7CiAJY2hhciBuYW1l
-WzEyOF07CiAKLQlERUNMQVJFX0JJVE1BUChncHJfdmFsaWQsIDB4MjAwKTsgLyogYml0bWFzayBv
-ZiB2YWxpZCBpbml0aWFsaXplcnMgKi8KKwlfX0VNVTEwSzFfREVDTEFSRV9CSVRNQVAoZ3ByX3Zh
-bGlkLCAweDIwMCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5pdGlhbGl6ZXJzICovCiAJX191MzIg
-X191c2VyICpncHJfbWFwOwkJLyogaW5pdGlhbGl6ZXJzICovCiAKIAl1bnNpZ25lZCBpbnQgZ3By
-X2FkZF9jb250cm9sX2NvdW50OyAvKiBjb3VudCBvZiBHUFIgY29udHJvbHMgdG8gYWRkL3JlcGxh
-Y2UgKi8KQEAgLTMxMywxMSArMzMwLDExIEBAIHN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29k
-ZSB7CiAJdW5zaWduZWQgaW50IGdwcl9saXN0X2NvbnRyb2xfdG90YWw7IC8qIHRvdGFsIGNvdW50
-IG9mIEdQUiBjb250cm9scyAqLwogCXN0cnVjdCBzbmRfZW11MTBrMV9meDgwMTBfY29udHJvbF9n
-cHIgX191c2VyICpncHJfbGlzdF9jb250cm9sczsgLyogbGlzdGVkIEdQUiBjb250cm9scyAqLwog
-Ci0JREVDTEFSRV9CSVRNQVAodHJhbV92YWxpZCwgMHgxMDApOyAvKiBiaXRtYXNrIG9mIHZhbGlk
-IGluaXRpYWxpemVycyAqLworCV9fRU1VMTBLMV9ERUNMQVJFX0JJVE1BUCh0cmFtX3ZhbGlkLCAw
-eDEwMCk7IC8qIGJpdG1hc2sgb2YgdmFsaWQgaW5pdGlhbGl6ZXJzICovCiAJX191MzIgX191c2Vy
-ICp0cmFtX2RhdGFfbWFwOwkgIC8qIGRhdGEgaW5pdGlhbGl6ZXJzICovCiAJX191MzIgX191c2Vy
-ICp0cmFtX2FkZHJfbWFwOwkgIC8qIG1hcCBpbml0aWFsaXplcnMgKi8KIAotCURFQ0xBUkVfQklU
-TUFQKGNvZGVfdmFsaWQsIDEwMjQpOyAvKiBiaXRtYXNrIG9mIHZhbGlkIGluc3RydWN0aW9ucyAq
-LworCV9fRU1VMTBLMV9ERUNMQVJFX0JJVE1BUChjb2RlX3ZhbGlkLCAxMDI0KTsgLyogYml0bWFz
-ayBvZiB2YWxpZCBpbnN0cnVjdGlvbnMgKi8KIAlfX3UzMiBfX3VzZXIgKmNvZGU7CQkgIC8qIG9u
-ZSBpbnN0cnVjdGlvbiAtIDY0IGJpdHMgKi8KIH07CiAKLS0gCjIuMS40CgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+=46ixes userspace compilation errors like:
+
+sound/hdspm.h:43:2: error: unknown type name =E2=80=98uint32_t=E2=80=99
+
+Signed-off-by: Mikko Rapeli <mikko.rapeli-X3B1VOXEql0@public.gmane.org>
+---
+ include/uapi/sound/hdspm.h | 40 ++++++++++++++++++--------------------=
+--
+ 1 file changed, 18 insertions(+), 22 deletions(-)
+
+diff --git a/include/uapi/sound/hdspm.h b/include/uapi/sound/hdspm.h
+index 5737332..c4db6f5 100644
+--- a/include/uapi/sound/hdspm.h
++++ b/include/uapi/sound/hdspm.h
+@@ -20,11 +20,7 @@
+  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+=20
+-#ifdef __KERNEL__
+ #include <linux/types.h>
+-#else
+-#include <stdint.h>
+-#endif
+=20
+ /* Maximum channels is 64 even on 56Mode you have 64playbacks to matri=
+x */
+ #define HDSPM_MAX_CHANNELS      64
+@@ -46,15 +42,15 @@ enum hdspm_speed {
+ /* -------------------- IOCTL Peak/RMS Meters -------------------- */
+=20
+ struct hdspm_peak_rms {
+-	uint32_t input_peaks[64];
+-	uint32_t playback_peaks[64];
+-	uint32_t output_peaks[64];
++	__u32 input_peaks[64];
++	__u32 playback_peaks[64];
++	__u32 output_peaks[64];
+=20
+-	uint64_t input_rms[64];
+-	uint64_t playback_rms[64];
+-	uint64_t output_rms[64];
++	__u64 input_rms[64];
++	__u64 playback_rms[64];
++	__u64 output_rms[64];
+=20
+-	uint8_t speed; /* enum {ss, ds, qs} */
++	__u8 speed; /* enum {ss, ds, qs} */
+ 	int status2;
+ };
+=20
+@@ -155,21 +151,21 @@ enum hdspm_syncsource {
+ };
+=20
+ struct hdspm_status {
+-	uint8_t card_type; /* enum hdspm_io_type */
++	__u8 card_type; /* enum hdspm_io_type */
+ 	enum hdspm_syncsource autosync_source;
+=20
+-	uint64_t card_clock;
+-	uint32_t master_period;
++	__u64 card_clock;
++	__u32 master_period;
+=20
+ 	union {
+ 		struct {
+-			uint8_t sync_wc; /* enum hdspm_sync */
+-			uint8_t sync_madi; /* enum hdspm_sync */
+-			uint8_t sync_tco; /* enum hdspm_sync */
+-			uint8_t sync_in; /* enum hdspm_sync */
+-			uint8_t madi_input; /* enum hdspm_madi_input */
+-			uint8_t channel_format; /* enum hdspm_madi_channel_format */
+-			uint8_t frame_format; /* enum hdspm_madi_frame_format */
++			__u8 sync_wc; /* enum hdspm_sync */
++			__u8 sync_madi; /* enum hdspm_sync */
++			__u8 sync_tco; /* enum hdspm_sync */
++			__u8 sync_in; /* enum hdspm_sync */
++			__u8 madi_input; /* enum hdspm_madi_input */
++			__u8 channel_format; /* enum hdspm_madi_channel_format */
++			__u8 frame_format; /* enum hdspm_madi_frame_format */
+ 		} madi;
+ 	} card_specific;
+ };
+@@ -184,7 +180,7 @@ struct hdspm_status {
+ #define HDSPM_ADDON_TCO 1
+=20
+ struct hdspm_version {
+-	uint8_t card_type; /* enum hdspm_io_type */
++	__u8 card_type; /* enum hdspm_io_type */
+ 	char cardname[20];
+ 	unsigned int serial;
+ 	unsigned short firmware_rev;
+--=20
+2.1.4
