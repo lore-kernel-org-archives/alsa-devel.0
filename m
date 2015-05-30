@@ -1,15 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ALSA: control: add dimension validator
- for kernel driver
-Date: Sat, 30 May 2015 11:05:39 +0900
-Message-ID: <55691AF3.5010105@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: control: add dimension validator
+ for userspace element
+Date: Sat, 30 May 2015 11:08:36 +0900
+Message-ID: <55691BA4.40601@sakamocchi.jp>
 References: <1432889937-15413-1-git-send-email-o-takashi@sakamocchi.jp>
- <1432889937-15413-3-git-send-email-o-takashi@sakamocchi.jp>
+ <1432889937-15413-2-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h617b7mlm.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1432889937-15413-3-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1289E2669B8
+ for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 04:08:40 +0200 (CEST)
+In-Reply-To: <s5h617b7mlm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,102 +23,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@alsa-project.org, perex@perex.cz
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On May 29 2015 17:58, Takashi Sakamoto wrote:
-> Currently, kernel drivers are allowed to set arbitrary dimen
-> information to control elements. The total number of channels
-> calculated by the dimen information should be within the number
-> of channels in the control element, while there's no validator.
-> When userspace applications have quite simple implementation,
-> this can cause buffer-over-run over struct snd_ctl_elem_value
-> data.
+On May 29 2015 18:35, Takashi Iwai wrote:
+> At Fri, 29 May 2015 17:58:56 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> The 'dimen' field in struct snd_ctl_elem_info is used to compose
+>> all of channels in the control element as multi-dimensional matrix.
+>> The field has four members. Each member represents the number in
+>> each dimension level. For example, if the channels consist of typical
+>> two dimensional matrix, the dimen[0] represents the number of rows
+>> and dimen[1] represents the number of columns, or vise-versa.
+>>
+>> The total elements in the matrix should be within the number of
+>> channels in the control element, while current implementation has
+>> no validator of this information. In a view of userspace applications,
+>> the information must be valid so that it cannot cause any bugs such as
+>> buffer-over-run.
+>>
+>> This commit adds a validator of dimen information for userspace
+>> applications which add new control elements. When they add the elements
+>> with wrong dimen information, they receive EINVAL.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>  sound/core/control.c | 21 +++++++++++++++++++++
+>>  1 file changed, 21 insertions(+)
+>>
+>> diff --git a/sound/core/control.c b/sound/core/control.c
+>> index 196a6fe..9b77afd 100644
+>> --- a/sound/core/control.c
+>> +++ b/sound/core/control.c
+>> @@ -805,6 +805,25 @@ static int snd_ctl_elem_list(struct snd_card *card,
+>>  	return 0;
+>>  }
+>>  
+>> +static bool validate_dimen(struct snd_ctl_elem_info *info)
+>> +{
+>> +	unsigned int elements;
+>> +	unsigned int i;
+>> +
+>> +	/*
+>> +	 * When drivers don't use dimen field, this value is zero and pass the
+>> +	 * validation. Else, calculated number of elements is validated.
+>> +	 */
+>> +	elements = info->dimen.d[0];
+>> +	for (i = 1; i < ARRAY_SIZE(info->dimen.d); ++i) {
+>> +		if (info->dimen.d[i] == 0)
+>> +			break;
 > 
-> This commit adds the validation. Unfortunately, the dimen information
-> is set at runtime, thus the validation cannot run in advance.
+> It'd be better to have a value sanity check, also for avoiding an
+> overflow.  A simple one like below should suffice:
 > 
-> As of Linux 4.1, there's no drivers to use the dimen information
-> except for Echo Audio PCI cards. All of them already have valid dimen
-> information. This patch doesn't cause any regressions.
+> 	if (info->dimens.d[i] > info->count)
+> 		return false;
 
-Oops. This patch brings a bug for control elements added by Echo Audio
-PCI card drivers...
+Indeed, thanks.
 
-The drivers add 'Monitor Mixer Volume', 'VMixer Volume' and 'VU-meters'
-with dimen information. They have 'count = 1' except for the last one,
-even if the dimen information shows it has more elements in its matrix.
-
-As long as seeing userspace application (echomixer), for these control
-elements, the count is ignored to process them. They just evaluate dimen
-information.
-
-
-Regards
+>> +		elements *= info->dimen.d[i];
+>> +	}
+>> +
+>> +	return elements <= info->count;
+>> +}
+>> +
+>>  static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
+>>  			     struct snd_ctl_elem_info *info)
+>>  {
+>> @@ -1272,6 +1291,8 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+>>  	if (info->count < 1 ||
+>>  	    info->count > max_value_counts[info->type])
+>>  		return -EINVAL;
+>> +	if (!validate_dimen(info))
+>> +		return -EINVAL;
+>>  	private_size = value_sizes[info->type] * info->count;
+>>  
+>>  	/*
+>> -- 
+>> 2.1.4
 
 Takashi Sakamoto
-
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  sound/core/control.c | 41 +++++++++++++++++++++++++----------------
->  1 file changed, 25 insertions(+), 16 deletions(-)
-> 
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index 9b77afd..1370a39 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -836,28 +836,37 @@ static int snd_ctl_elem_info(struct snd_ctl_file *ctl,
->  	down_read(&card->controls_rwsem);
->  	kctl = snd_ctl_find_id(card, &info->id);
->  	if (kctl == NULL) {
-> -		up_read(&card->controls_rwsem);
-> -		return -ENOENT;
-> +		result = -ENOENT;
-> +		goto end;
->  	}
->  #ifdef CONFIG_SND_DEBUG
->  	info->access = 0;
->  #endif
->  	result = kctl->info(kctl, info);
-> -	if (result >= 0) {
-> -		snd_BUG_ON(info->access);
-> -		index_offset = snd_ctl_get_ioff(kctl, &info->id);
-> -		vd = &kctl->vd[index_offset];
-> -		snd_ctl_build_ioff(&info->id, kctl, index_offset);
-> -		info->access = vd->access;
-> -		if (vd->owner) {
-> -			info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
-> -			if (vd->owner == ctl)
-> -				info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
-> -			info->owner = pid_vnr(vd->owner->pid);
-> -		} else {
-> -			info->owner = -1;
-> -		}
-> +	if (result < 0)
-> +		goto end;
-> +
-> +	snd_BUG_ON(info->access);
-> +
-> +	/* This is a driver bug. */
-> +	if (!validate_dimen(info)) {
-> +		result = -ENODATA;
-> +		goto end;
-> +	}
-> +
-> +	index_offset = snd_ctl_get_ioff(kctl, &info->id);
-> +	vd = &kctl->vd[index_offset];
-> +	snd_ctl_build_ioff(&info->id, kctl, index_offset);
-> +	info->access = vd->access;
-> +	if (vd->owner) {
-> +		info->access |= SNDRV_CTL_ELEM_ACCESS_LOCK;
-> +		if (vd->owner == ctl)
-> +			info->access |= SNDRV_CTL_ELEM_ACCESS_OWNER;
-> +		info->owner = pid_vnr(vd->owner->pid);
-> +	} else {
-> +		info->owner = -1;
->  	}
-> +end:
->  	up_read(&card->controls_rwsem);
->  	return result;
->  }
