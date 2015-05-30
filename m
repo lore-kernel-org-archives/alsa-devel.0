@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH 4/4] ASoC: Intel: handle haswell pcm suspend
-	including runtime modules freeing
-Date: Sat, 30 May 2015 22:33:59 +0800
-Message-ID: <1432996439-8052-5-git-send-email-yang.jie@intel.com>
+Subject: [PATCH 2/4] Revert "ASoC: Intel: fix broadwell module
+	removing failed issue"
+Date: Sat, 30 May 2015 22:33:57 +0800
+Message-ID: <1432996439-8052-3-git-send-email-yang.jie@intel.com>
 References: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AF422606C2
- for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 16:30:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B43C260668
+ for <alsa-devel@alsa-project.org>; Sat, 30 May 2015 16:29:58 +0200 (CEST)
 In-Reply-To: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,63 +25,33 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-It needs free pcm runtime modules before unloading firmware, here
-add hsw_pcm_suspend() to handle this procedure:
-suspends firmware ==> frees runtime modules ==> unloads firmware.
+This reverts commit 01f202c7b4b40025f3ea4721c52e7f78545e3b07.
 
-This fixes the broadwell module unload failed issue.
+We shouldn't leave the device as suspended state after module freed,
+it is not good to do runtime suspend at driver free, here revert
+this fixing, and replace it with the procedure:
+suspends firmware ==> frees runtime modules ==> unloads firmware.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/intel/haswell/sst-haswell-pcm.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-pcm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index f97fa5a..e593e7a 100644
+index bd96629..23ae040 100644
 --- a/sound/soc/intel/haswell/sst-haswell-pcm.c
 +++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -1209,6 +1209,20 @@ static int hsw_pcm_runtime_idle(struct device *dev)
- 	return 0;
- }
+@@ -1118,10 +1118,8 @@ static int hsw_pcm_remove(struct snd_soc_platform *platform)
+ 		snd_soc_platform_get_drvdata(platform);
+ 	int i;
  
-+static int hsw_pcm_suspend(struct device *dev)
-+{
-+	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
-+	struct sst_hsw *hsw = pdata->hsw;
-+
-+	/* enter D3 state and stall */
-+	sst_hsw_dsp_runtime_suspend(hsw);
-+	/* free all runtime modules */
-+	hsw_pcm_free_modules(pdata);
-+	/* put the DSP to sleep, fw unloaded after runtime modules freed */
-+	sst_hsw_dsp_runtime_sleep(hsw);
-+	return 0;
-+}
-+
- static int hsw_pcm_runtime_suspend(struct device *dev)
- {
- 	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
-@@ -1225,8 +1239,7 @@ static int hsw_pcm_runtime_suspend(struct device *dev)
- 			return ret;
- 		sst_hsw_set_module_enabled_rtd3(hsw, SST_HSW_MODULE_WAVES);
- 	}
--	sst_hsw_dsp_runtime_suspend(hsw);
--	sst_hsw_dsp_runtime_sleep(hsw);
-+	hsw_pcm_suspend(dev);
- 	pdata->pm_state = HSW_PM_STATE_RTD3;
+-	/* execute a suspend call to unload all FW resources */
+-	if (!pm_runtime_status_suspended(platform->dev))
+-		pm_runtime_put_sync_suspend(platform->dev);
+ 	pm_runtime_disable(platform->dev);
++	hsw_pcm_free_modules(priv_data);
  
- 	return 0;
-@@ -1366,10 +1379,7 @@ static int hsw_pcm_prepare(struct device *dev)
- 			if (err < 0)
- 				dev_err(dev, "failed to save context for PCM %d\n", i);
- 		}
--		/* enter D3 state and stall */
--		sst_hsw_dsp_runtime_suspend(hsw);
--		/* put the DSP to sleep */
--		sst_hsw_dsp_runtime_sleep(hsw);
-+		hsw_pcm_suspend(dev);
- 	}
- 
- 	snd_soc_suspend(pdata->soc_card->dev);
+ 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
+ 		if (hsw_dais[i].playback.channels_min)
 -- 
 1.9.1
