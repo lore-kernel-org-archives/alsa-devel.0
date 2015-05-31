@@ -1,87 +1,36 @@
-From: Christophe Lohr <christophe.lohr@cegetel.net>
-Subject: Remarks about  alsa-lib-1.0.29/test/pcm*.c
-Date: Sun, 31 May 2015 13:51:26 +0200
-Message-ID: <556AF5BE.1070409@cegetel.net>
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC] sound: ppc: keywest: check if DEQ was already
+ instantiated
+Date: Mon, 1 Jun 2015 08:30:19 +0900
+Message-ID: <20150531233018.GC17187@katana>
+References: <1432397711-3186-1-git-send-email-wsa@the-dreams.de>
+ <1432631974.85649.YahooMailBasic@web141501.mail.bf1.yahoo.com>
+ <s5htwuxb1h4.wl-tiwai@suse.de>
+ <20150529105020.GB3168@katana>
+ <s5hsiaf6489.wl-tiwai@suse.de>
+ <20150529110559.GB4282@katana>
+ <s5hoal3621l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=------------070405040709080809070705
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp22.services.sfr.fr (smtp22.services.sfr.fr [93.17.128.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B2F2261536
- for <alsa-devel@alsa-project.org>; Sun, 31 May 2015 13:51:27 +0200 (CEST)
-Received: from filter.sfr.fr (localhost [79.94.58.129])
- by msfrf2209.sfr.fr (SMTP Server) with ESMTP id CCF7A7000071
- for <alsa-devel@alsa-project.org>; Sun, 31 May 2015 13:51:26 +0200 (CEST)
-Received: from [192.168.1.4] (129.58.94.79.rev.sfr.net [79.94.58.129])
- by msfrf2209.sfr.fr (SMTP Server) with ESMTP id A8E9A70000A5
- for <alsa-devel@alsa-project.org>; Sun, 31 May 2015 13:51:26 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <s5hoal3621l.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Dan DeVoto <dand1972-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Elliott <txlitebeer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070405040709080809070705
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Fri, May 29, 2015 at 01:44:38PM +0200, Takashi Iwai wrote:
+> At Fri, 29 May 2015 20:06:09 +0900,
+> Wolfram Sang wrote:
+> > 
+> > > Do you think from which stable kernel version can this be applied?
+> > 
+> > The offending commit is 3a3dd0186f619b74e61e6f29dddcaf59af7d3cac
+> > ("i2c/powermac: Improve detection of devices from device-tree") which
+> > came in with v3.6 if I read correctly.
+> 
+> OK, thanks!
 
-Hello,
-   I'm looking about examples in alsa-lib-1.0.29/test/
-
-I have two questions about:
-
-pcm.c line 71: In case of a FLOAT format, maxval is 1.0, isn't it?
-
-pcm_min.c lin 79: Variable err does not refers to the previous call?
-
-Did I understood well?
-
-Best regards
-Christophe
-
---------------070405040709080809070705
-Content-Type: text/x-patch;
- name="misc.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="misc.patch"
-
-diff -uprN alsa-lib-1.0.29.origin/test/pcm.c alsa-lib-1.0.29/test/pcm.c
---- alsa-lib-1.0.29.origin/test/pcm.c	2015-02-26 13:34:52.000000000 +0100
-+++ alsa-lib-1.0.29/test/pcm.c	2015-05-31 13:36:42.806463600 +0200
-@@ -68,7 +68,7 @@ static void generate_sine(const snd_pcm_
- 		} fval;
- 		int res, i;
- 		if (is_float) {
--			fval.f = sin(phase) * maxval;
-+			fval.f = sin(phase);
- 			res = fval.i;
- 		} else
- 			res = sin(phase) * maxval;
-diff -uprN alsa-lib-1.0.29.origin/test/pcm_min.c alsa-lib-1.0.29/test/pcm_min.c
---- alsa-lib-1.0.29.origin/test/pcm_min.c	2015-02-26 13:34:52.000000000 +0100
-+++ alsa-lib-1.0.29/test/pcm_min.c	2015-05-31 13:38:58.166156767 +0200
-@@ -39,7 +39,7 @@ int main(void)
-                 if (frames < 0)
-                         frames = snd_pcm_recover(handle, frames, 0);
-                 if (frames < 0) {
--                        printf("snd_pcm_writei failed: %s\n", snd_strerror(err));
-+                        printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
-                         break;
-                 }
-                 if (frames > 0 && frames < (long)sizeof(buffer))
-
---------------070405040709080809070705
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------070405040709080809070705--
+Just to make sure: Keep in mind that it depends on "sound: ppc: keywest:
+drop using attach adapter" which needs to go to stable, then, too.
