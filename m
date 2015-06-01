@@ -1,26 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 1/7] ASoC: hda - add ASoC HDA codec
- match function
-Date: Mon, 1 Jun 2015 10:35:04 +0530
-Message-ID: <20150601050504.GH3140@localhost>
-References: <20150526133256.GQ21577@sirena.org.uk>
- <s5hr3q3cv77.wl-tiwai@suse.de>
- <20150526194316.GY21577@sirena.org.uk>
- <s5hfv6ieero.wl-tiwai@suse.de>
- <20150527183406.GM21577@sirena.org.uk>
- <s5hpp5lde48.wl-tiwai@suse.de>
- <20150528195359.GG21577@sirena.org.uk>
- <s5hk2vsasjz.wl-tiwai@suse.de> <20150529081544.GC3140@localhost>
- <20150529173503.GQ21577@sirena.org.uk>
+Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
+	driver
+Date: Mon, 1 Jun 2015 10:43:58 +0530
+Message-ID: <20150601051358.GI3140@localhost>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
+ <20150529174115.GR21577@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C146A2619D8
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 07:03:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 73AC92617A4
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 07:12:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150529173503.GQ21577@sirena.org.uk>
+In-Reply-To: <20150529174115.GR21577@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,45 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 29, 2015 at 06:35:03PM +0100, Mark Brown wrote:
-> On Fri, May 29, 2015 at 01:45:44PM +0530, Vinod Koul wrote:
+On Fri, May 29, 2015 at 06:41:15PM +0100, Mark Brown wrote:
+> On Mon, May 11, 2015 at 04:24:03PM +0530, Vinod Koul wrote:
 > 
-> > well userspace parsing is only for the pin mapping and changes which
-> > users want to do on their systems. For basic things the default graph
-> > will be read by existing HDA parser and codec driver will create
-> > widgets based on that. The generic HDA codec library should do most and
-> > the HDA ASoC codecs should do device specfic work (like existing
-> > patch_xxx)
+> > +static void azx_free_streams(struct soc_hdac_bus *sbus)
+> > +{
+> > +	struct hdac_stream *s;
+> > +	struct soc_hdac_stream *stream;
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +
+> > +	while (!list_empty(&bus->stream_list)) {
+> > +		s = list_first_entry(&bus->stream_list, struct hdac_stream, list);
+> > +		stream = stream_to_soc_hdac_stream(s);
+> > +		list_del(&s->list);
+> > +		kfree(stream);
+> > +	}
+> > +}
 > 
-> So we *are* planning to continue to use the existing CODEC support but
-> with some different interfacing on top of it?
-Nope. Existing codecs wont be reused here.
+> Why is this (and the equivalent link function) device specific code?
+> They look very generic...
+In HDA we will have only one stream, but here we can have multiple links so
+need to free each of them.
+Also if you notice most of the code in this patch uses hdac_xxx helpers to
+do the actual job
 
-We are doing new ASoC HDA codec drivers which use common hdac parsing logic.
-Since some codecs need own methods we can't write a single HDA generic
-codec, and had to do with generic codec parser and then specfic driver
-(HDMI, ALC to start with) on top.
-
 > 
-> > > And it's the reason I suggested for pending merge until the codec side
-> > > is ready.  We need the topology stuff merged at first, then HDA-codec
-> > > driver together with user-space side.
+> > +static int azx_acquire_irq(struct soc_hdac_bus *sbus, int do_disconnect)
+> > +{
+> > +	struct hda_skl *hda = to_hda_skl(sbus);
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	int ret = 0;
+> > +
+> > +	ret = request_threaded_irq(hda->pci->irq, azx_interrupt,
+> > +			azx_threaded_handler,
+> > +			hda->msi ? 0 : IRQF_SHARED,
+> > +			KBUILD_MODNAME, sbus);
 > 
-> > I dont mind if code doesnt get merged into next merge window and put
-> > in one after that. But in needs to get accepted is some topic branch
-> > so that subsequent series can be  psted and reviewed, merged. Btw
-> > users will not see unless we have machine driver. I will add the
-> > disable feature after this series, so no user conflicts occur
-> 
-> I need to have another look through.  TBH I suspect it would be easier
-> with something that was more of a minimum viable prototype than with a
-> part of the system - with something like this it's as much the overall
-> shape of the solution that's being reviewed as anything else.
-Sure, please do let us know if you have more questions on this and overall
-approach.
+> Why not just always request the interrupt as shared - we don't seem to
+> care in the interrupt handling code?
+I think we can move this to shared only
 
 -- 
 ~Vinod
