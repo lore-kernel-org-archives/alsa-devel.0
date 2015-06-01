@@ -1,64 +1,49 @@
-From: Santiago Zarate <santiago@zarate.net.ve>
-Subject: Override default behavior when headphones are
- connected upon user request on wm8962
-Date: Mon, 1 Jun 2015 22:21:24 +0800
-Message-ID: <CAD_eom_M30VZs+seV6RWB4C_ZVXCQ6yyT-+P800cG_PRPiJPug@mail.gmail.com>
+From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Subject: Re: [LAD] [alsa-devel] Fw: Using loopback card to Connect GSM two
+	way call	to the real sound card UDA1345TS
+Date: Mon, 01 Jun 2015 16:39:52 +0200
+Message-ID: <556C6EB8.7030401@ladisch.de>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,
+ <54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de> <1429877130444.23317@tataelxsi.co.in>,
+ <553A3ADB.7040108@ladisch.de>,
+ <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>
+ <HKXPR04MB277B58064C140058C37487EC3B60@HKXPR04MB277.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
- [209.85.214.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 2291C260584
- for <Alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 16:21:26 +0200 (CEST)
-Received: by obbnx5 with SMTP id nx5so104162608obb.0
- for <Alsa-devel@alsa-project.org>; Mon, 01 Jun 2015 07:21:25 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <HKXPR04MB277B58064C140058C37487EC3B60-T1ls2vrYf5VLAZUorM51PQfhPeD8jYilXA4E9RH9d+qIuWR1G4zioA@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev/>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+To: Srinivasan S <srinivasan.s-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org" <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpDdXJyZW50bHkgaSdtIHRyeWluZyB0byBvdmVycmlkZSB0aGUgZGVmYXVsdCBiZWhh
-dmlvciB3aGVuIGhlYWRwaG9uZXMgYXJlCnBsdWdnZWQsIFdlIGFjdHVhbGx5IG5lZWQgdG8gcGxh
-eSBhdWRpbyB1bmRlciBjZXJ0YWluIHNpdHVhdGlvbnMsIGFuZCBvbmUKb2YgdGhlIHVzZSBjYXNl
-cyBpcyB3aGVuIHRoZSBoZWFkcGhvbmVzIGFyZSBjb25uZWN0ZWQsIGJ1dCBhIHNvdW5kIG5lZWRz
-IHRvCmJlIHBsYXllZCBvdmVyIHRoZSBzcGVha2Vycywgc28gc29tZW9uZSBlbHNlIGlzIGF3YXJl
-IG9mIHdoYXQncyBoYXBwZW5pbmcuCgpXZSdyZSB0aGlua2luZyBhYm91dCB1c2luZyBhIEdQSU8g
-dGhhdCBpdCdzIGF2YWlsYWJsZSBmcm9tIG91ciBhcHBsaWNhdGlvbgpvciBhIHNpbXBsZSBtb2R1
-bGUgcGFyYW1ldGVyLCBidXQgdGhlIHByb2JsZW0gaSdtIGZhY2luZyByaWdodCBub3cgaXM6Cgox
-OiBXaGVyZSB0byBzcGVjaWZ5IHRoYXQgcGFydGljdWxhciBwYXRoIG9yIHRoZSBiZWhhdmlvciBp
-IG5lZWQsIGkndmUgYmVlbgpsb29raW5nIGF0IFsyXSwgYW5kIGFkZGluZyBhIFNPQ19EQVBNX1BJ
-Tl9TV0lUQ0hbMV0gYnV0IGRvZXNuJ3QgbWF0dGVyIHdoYXQKdGhlIHN0YXRlIGlzLCBpZiB0aGUg
-aGVhZHBob25lcyBhcmUgb24sIGkgY2FuJ3QgdHVybiBvbiB0aGUgc3BlYWtlcnMgdG8KcGxheSBz
-b3VuZHMgYXQgdGhlIHNhbWUgdGltZS4KCmknbSBhYmxlIHRvIGRvIGl0LCBieSBkaXNhYmxpbmcg
-dGhlIGhwIGRldGVjdGlvbiBwaW4sIGFuZCBjb250cm9sbGluZyB0aGUKYXVkaW8gb3ZlciB1ZGV2
-IGV2ZW50cy4gc28gaSdtIHByZXR0eSBzdXJlIHRoYXQgaXQgd291bGQgYmUgcG9zc2libGUgdG8g
-ZG8KdGhpcywgd2l0aCB0aGUgaHAgZGV0ZWN0aW9uIHBpbi4gd2hpY2ggdGFrZXMgdXMgdG8gIzI6
-CgoyOiBIb3cgY2FuIGkgdHJpZ2dlciBhbiBldmVudCBiYXNlZCBvbiB0aGUgY2hhbmdlIG9mIGEg
-bW9kdWxlIHBhcmFtZXRlciAgb3IKYSBncGlvIHBvcnQgKFRoaW5raW5nIGJvdGggd291bGQgYmUg
-dGhlIHNhbWUpLi4uCgppJ3ZlIHRyaWVkIHRvIGFsdGVyIGhwX2V2ZW50CjxodHRwOi8vbHhyLmZy
-ZWUtZWxlY3Ryb25zLmNvbS9pZGVudD92PTMuMTY7aT1ocF9ldmVudD4gd2l0aG91dCBhbnkKc3Vj
-Y2Vzcy4uLiBldmVuIHJldHVybmluZyAwIG9uIGFueSBldmVudCBhbmQgc3RpbGwgbm90aGluZywg
-d2hpY2ggZHJpdmVzIG1lCnRvIGJlbGl2ZSB0aGF0IGknbSBkb2luZyBzb21ldGhpbmcgY29tcGxl
-dGVseSB3cm9uZyBBTkQgdGhlIGNvZGVjL2RyaXZlciBpcwphbW9uZyB0aGUgbGFzdCBvbmVzIHRv
-IGdldCBub3RpZmllZCBvZiB0aGUgcHJlc2VuY2Ugb2YgdGhlIGhwCgoKVGhlIGlkZWEgaXM6Cgpp
-ZiBvdmVycmlkZSBwb3J0IG9yIHBhcmFtZXRlciBpcyBzZXQgdG8gdHJ1ZSwgdHJpZ2dlciAgdGhl
-IGF1ZGlvIG92ZXJyaWRlIGFuZApwbGF5IHNvdW5kIG9uIFNwZWFrZXIgYW5kIEhQIGF0IHRoZSBz
-YW1lIHRpbWUuCgoKcmlnaHQgbm93IGknbSB3b3JraW5nIHdpdGggaW14LXdtODk2MiBkcml2ZXIg
-YW5kIHRoZSBtYXRjaGluZyBjb2RlYywKCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-cGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMS1GZWJydWFyeS8wMzYzNzAuaHRtbApbMV0KaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDEwLURlY2Vt
-YmVyLzAzNTA1NS5odG1sCiBbMl0KCgpUaGFua3MgaW4gYWR2YW5jZSEKLS0gCgpTYW50aWFnbyBa
-YXJhdGUKICBodHRwOi8vZm91cnNpeG5pbmUuaW8KCuKAnERyZWFtcyBwZXJtaXQgZWFjaCBhbmQg
-ZXZlcnkgb25lIG9mIHVzIHRvIGJlIHF1aWV0bHkgYW5kIHNhZmVseSBpbnNhbmUKZXZlcnkgbmln
-aHQgb2Ygb3VyIGxpdmVzLuKAnSAtIFdpbGxpYW0gRGVtZW50Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Srinivasan S wrote:
+> 2. Could you please let me know, I have downloaded jack-1.9.10.tar.bz2, how this needs to be installed in my rootfs
+
+IIRC Jack uses some non-standard build system.  Try asking on the Jack
+mailing list how to cross-compile it.
+
+Please note that the ALSA Jack plugin is part of the alsa-plugins
+package.
+
+And as I already mentioned, it is unlikely that Jack will use less CPU
+than dshare.
+
+
+Regards,
+Clemens
