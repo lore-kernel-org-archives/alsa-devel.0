@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/47] ASoC: wm5100: Replace direct
+Subject: [PATCH 06/47] ASoC: wm0010: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:26 +0200
-Message-ID: <1433146266-1599-7-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:25 +0200
+Message-ID: <1433146266-1599-6-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 47EBA260511
+ by alsa0.perex.cz (Postfix) with ESMTP id 4352726050C
  for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:15 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,44 +27,33 @@ Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Charles
 List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to codec->dapm
-with snd_soc_codec_get_dapm().
+removed, in preparation for this replace all manual access to
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm5100.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm0010.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 9674037..98495dd 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -2101,7 +2101,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
- int wm5100_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- {
- 	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 3358dd6..6560a66 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -751,13 +751,13 @@ static int wm0010_set_bias_level(struct snd_soc_codec *codec,
  
- 	if (jack) {
- 		wm5100->jack = jack;
-@@ -2336,6 +2336,7 @@ static void wm5100_free_gpio(struct i2c_client *i2c)
- 
- static int wm5100_probe(struct snd_soc_codec *codec)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct i2c_client *i2c = to_i2c_client(codec->dev);
- 	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
- 	int ret, i;
-@@ -2353,8 +2354,7 @@ static int wm5100_probe(struct snd_soc_codec *codec)
- 	/* TODO: check if we're symmetric */
- 
- 	if (i2c->irq)
--		snd_soc_dapm_new_controls(&codec->dapm,
--					  wm5100_dapm_widgets_noirq,
-+		snd_soc_dapm_new_controls(dapm, wm5100_dapm_widgets_noirq,
- 					  ARRAY_SIZE(wm5100_dapm_widgets_noirq));
- 
- 	if (wm5100->pdata.hp_pol) {
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_PREPARE)
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE)
+ 			wm0010_boot(codec);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_PREPARE) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_PREPARE) {
+ 			mutex_lock(&wm0010->lock);
+ 			wm0010_halt(codec);
+ 			mutex_unlock(&wm0010->lock);
 -- 
 2.1.4
