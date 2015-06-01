@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 26/47] ASoC: wm8904: Replace direct
+Subject: [PATCH 27/47] ASoC: wm8940: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:45 +0200
-Message-ID: <1433146266-1599-26-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:46 +0200
+Message-ID: <1433146266-1599-27-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id E7EDA260511
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 68B2F2612E3
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:24 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,35 +28,25 @@ List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
 removed, in preparation for this replace all manual access to
-codec->dapm.bias_level with snd_soc_codec_get_bias_level() and replace all
-other manual access to codec->dapm with snd_soc_codec_get_dapm().
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8904.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8940.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index a7a8fa0..265a4a5 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1168,7 +1168,7 @@ static const struct snd_soc_dapm_route wm8912_intercon[] = {
- static int wm8904_add_widgets(struct snd_soc_codec *codec)
- {
- 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 
- 	snd_soc_dapm_new_controls(dapm, wm8904_core_dapm_widgets,
- 				  ARRAY_SIZE(wm8904_core_dapm_widgets));
-@@ -1852,7 +1852,7 @@ static int wm8904_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index f2d6a49..98ef0ba 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -492,7 +492,7 @@ static int wm8940_set_bias_level(struct snd_soc_codec *codec,
+ 		ret = snd_soc_write(codec, WM8940_POWER1, pwr_reg | 0x1);
  		break;
- 
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8904->supplies),
- 						    wm8904->supplies);
- 			if (ret != 0) {
+ 			ret = regcache_sync(wm8940->regmap);
+ 			if (ret < 0) {
+ 				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
 -- 
 2.1.4
