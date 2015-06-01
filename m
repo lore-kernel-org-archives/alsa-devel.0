@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 16/47] ASoC: wm8728: Replace direct
+Subject: [PATCH 19/47] ASoC: wm8750: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:35 +0200
-Message-ID: <1433146266-1599-16-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:38 +0200
+Message-ID: <1433146266-1599-19-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 515DB260420
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BDE8D260612
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:20 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,21 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8728.c | 2 +-
+ sound/soc/codecs/wm8750.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
-index a737068..f1a173e 100644
---- a/sound/soc/codecs/wm8728.c
-+++ b/sound/soc/codecs/wm8728.c
-@@ -170,7 +170,7 @@ static int wm8728_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_ON:
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index d6ff25a..56d89b0 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -634,7 +634,7 @@ static int wm8750_set_bias_level(struct snd_soc_codec *codec,
  	case SND_SOC_BIAS_PREPARE:
+ 		break;
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			/* Power everything up... */
- 			reg = snd_soc_read(codec, WM8728_DACCTL);
- 			snd_soc_write(codec, WM8728_DACCTL, reg & ~0x4);
+ 			snd_soc_cache_sync(codec);
+ 
+ 			/* Set VMID to 5k */
 -- 
 2.1.4
