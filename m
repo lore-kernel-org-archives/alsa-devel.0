@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/47] ASoC: cs42l52: Replace direct
+Subject: [PATCH 02/47] ASoC: cs42l56: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:20 +0200
-Message-ID: <1433146266-1599-1-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:21 +0200
+Message-ID: <1433146266-1599-2-git-send-email-lars@metafoo.de>
+References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 00687260420
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C4BB260481
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:12 +0200 (CEST)
+In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,28 +33,26 @@ other manual access to codec->dapm with snd_soc_codec_get_dapm().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-Series depends on topic/dapm
----
- sound/soc/codecs/cs42l52.c | 4 ++--
+ sound/soc/codecs/cs42l56.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 3c49a75..4de52c9 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -897,7 +897,7 @@ static int cs42l52_set_bias_level(struct snd_soc_codec *codec,
- 				    CS42L52_PWRCTL1_PDN_CODEC, 0);
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index a7638c5..1e11ba4 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -953,7 +953,7 @@ static int cs42l56_set_bias_level(struct snd_soc_codec *codec,
+ 				    CS42L56_PDN_ALL_MASK, 0);
  		break;
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			regcache_cache_only(cs42l52->regmap, false);
- 			regcache_sync(cs42l52->regmap);
- 		}
-@@ -955,7 +955,7 @@ static void cs42l52_beep_work(struct work_struct *work)
- 	struct cs42l52_private *cs42l52 =
- 		container_of(work, struct cs42l52_private, beep_work);
- 	struct snd_soc_codec *codec = cs42l52->codec;
+ 			regcache_cache_only(cs42l56->regmap, false);
+ 			regcache_sync(cs42l56->regmap);
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(cs42l56->supplies),
+@@ -1025,7 +1025,7 @@ static void cs42l56_beep_work(struct work_struct *work)
+ 	struct cs42l56_private *cs42l56 =
+ 		container_of(work, struct cs42l56_private, beep_work);
+ 	struct snd_soc_codec *codec = cs42l56->codec;
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
 +	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
  	int i;
