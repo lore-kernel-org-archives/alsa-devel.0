@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 20/47] ASoC: wm8753: Replace direct
+Subject: [PATCH 21/47] ASoC: wm8770: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:39 +0200
-Message-ID: <1433146266-1599-20-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:40 +0200
+Message-ID: <1433146266-1599-21-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 4332F2606CB
+ by alsa0.perex.cz (Postfix) with ESMTP id ACECE260709
  for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:21 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,21 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8753.c | 2 +-
+ sound/soc/codecs/wm8770.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index b7d38f7..feb2997a 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1352,7 +1352,7 @@ static int wm8753_set_bias_level(struct snd_soc_codec *codec,
- 		flush_delayed_work(&wm8753->charge_work);
+diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
+index c24db80..66c1f15 100644
+--- a/sound/soc/codecs/wm8770.c
++++ b/sound/soc/codecs/wm8770.c
+@@ -510,7 +510,7 @@ static int wm8770_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
  		break;
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			/* set vmid to 5k for quick power up */
- 			snd_soc_write(codec, WM8753_PWR1, pwr_reg | 0x01c1);
- 			schedule_delayed_work(&wm8753->charge_work,
+ 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8770->supplies),
+ 						    wm8770->supplies);
+ 			if (ret) {
 -- 
 2.1.4
