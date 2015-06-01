@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 1/4] ASoC: arizona: Export functions to
- control subsystem DVFS
-Date: Mon, 1 Jun 2015 17:36:04 +0100
-Message-ID: <20150601163604.GE14071@sirena.org.uk>
-References: <1433163891-10084-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <20150601161047.GC14071@sirena.org.uk>
- <20150601162241.GA13681@opensource.wolfsonmicro.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2 7/9] ASoC: Codec: Add sti platform codec
+Date: Mon, 1 Jun 2015 19:41:54 +0200
+Message-ID: <556C9962.4040508@st.com>
+References: <1431951176-24670-1-git-send-email-arnaud.pouliquen@st.com>
+ <1431951176-24670-8-git-send-email-arnaud.pouliquen@st.com>
+ <20150525130124.GS21391@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7550097739373392484=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B6F64260654
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 18:36:11 +0200 (CEST)
-In-Reply-To: <20150601162241.GA13681@opensource.wolfsonmicro.com>
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47EBC260654
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 19:41:58 +0200 (CEST)
+In-Reply-To: <20150525130124.GS21391@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7550097739373392484==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gm5TwAJMO0F2iVRz"
-Content-Disposition: inline
 
+On 05/25/2015 03:01 PM, Mark Brown wrote:
+>> +static int  stih407_sas_dac_supply(struct snd_soc_dapm_widget *w,
+>> +				   struct snd_kcontrol *kcontrol, int event) {
+>> +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+>> +	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
+>> +	struct sti_dac_audio *dac = &drvdata->dac;
+>> +	int ret = 0;
+>> +
+>> +	switch (event) {
+>> +	case SND_SOC_DAPM_PRE_PMU:
+>> +		/* Enable analog */
+>> +		ret = regmap_field_write(dac->field[STIH407_DAC_STANDBY_ANA],
+>> +					 0);
+>> +		/* Disable standby */
+>> +		if (!ret)
+>> +			ret = regmap_field_write(
+>> +				dac->field[STIH407_DAC_STANDBY], 0);
+>> +		break;
+>
+> These event functions all look very similar and I can't help but think
+> that they look awfully like the sort of register write sequences that
+> DAPM normally generates anyway.  Is there any great reason for not doing
+> these by registering multiple widgets with routes between them rather
+> than with custom code?
+>
+I need to respect the sequence for power up /power down. for sure I 
+could manage it using 3 DAPMs with routes, but how to ensure sequence?
+Moreover, i will need to implement a cpu dai DAPM to manage 
+uniperipheral clock. This clock need to be enabled/disabled before/after 
+DAC to avoid plop. So would prefer to manage the DAC sequence in a 
+single function...
 
---gm5TwAJMO0F2iVRz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> +static int sti_sas_hw_params(struct snd_pcm_substream *substream,
+>> +			     struct snd_pcm_hw_params *params,
+>> +			     struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>> +	int div;
+>> +
+>> +	div = sti_sas_dai_clk_div[dai->id];
+>> +	if (cpu_dai->driver->ops->set_clkdiv)
+>> +		return cpu_dai->driver->ops->set_clkdiv(cpu_dai,
+>> +							SND_SOC_CLOCK_OUT, div);
+>> +	dev_warn(codec->dev, "WARN: CPU DAI not support sysclk div");
+>
+> This is worrying, we shouldn't be peering inside the CPU DAI like this.
+> I'd expect this to either be done autonomously by the CPU DAI or handled
+> in a machine driver.
+>
+I think i misunderstand your remark in V1...but i still not understand 
+how you want that i implement it, if i can't neither use 
+snd_soc_dai_set_clkdiv (except implement it in simple_card).
+Please could you precise how you would like that i implement the feature?
 
-On Mon, Jun 01, 2015 at 05:22:51PM +0100, Richard Fitzgerald wrote:
-> On Mon, Jun 01, 2015 at 05:10:47PM +0100, Mark Brown wrote:
-
-> > > +		if (priv->dvfs_reqs)
-> > > +			ret = arizona_dvfs_disable(codec);
-
-> > Are you sure that the function shouldn't check for requests?  It seems
-> > like every caller is repeating the same check.
-
-> Sorry, I don't understand your comment here. When SYSCLK is disabled
-> we need to disable DVFS so that the codec can't go into suspend in the
-> illegal state of DVFS enabled but insifficient DCVDD. However, if
-> dvfs_reqs==0 DVFS is already disabled so we can save some time.
-
-Sure, but you repeat the same tests for dvfs_reqs at every call site
-which suggests it should be factored into the functions.
-
---gm5TwAJMO0F2iVRz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVbInzAAoJECTWi3JdVIfQTzEH/RIMCaBqF/UnCjbcMHf6CCG7
-/rELoJLzm+lGaIJDoH1te60vl9h50FeNNFNwPPsGBmxURQ9UQhDypojJ4cRrxGDQ
-MDn+6b2sH0vSQOf1Nqhq1SOAmmfv5z3zZIQ5WU0FWRwHo7bXLgfqHEUWIKnduk9s
-Zncn9aRcJ5bFitTzclrfbxFcXS8owySa/r85XRyHFuObovPNSt7j2rFs3jBgd0dR
-0h+HDOz67Di0KhaNmuNEftQTs2Qqx0GI+WHC8BvXN+UxEiWI9AZSY/8FpQPee2eS
-HNYNI0/mVfdKfwtR13oX0jfd9SJT41xXyKzTXXQFpArqGn+piDnFXdF2q141IrU=
-=DW0C
------END PGP SIGNATURE-----
-
---gm5TwAJMO0F2iVRz--
-
---===============7550097739373392484==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7550097739373392484==--
+I'm kind surprise that nobody else have this kind of setup. I know at 
+least one codec that should need this kind of service: AK4628.
+For this codec, depending on runtime frequency, a division value should 
+be apply between MCLK and SCLK...
