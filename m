@@ -1,39 +1,59 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 03/47] ASoC: cs42l73: Replace direct
- snd_soc_codec dapm field access
-Date: Mon, 1 Jun 2015 07:12:24 -0500
-Message-ID: <alpine.DEB.2.10.1506010711480.9160@heelroid>
-References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
- <1433146266-1599-3-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m0077474.ppops.net (mx0b-001ae601.pphosted.com [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F1CE260668
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 14:11:17 +0200 (CEST)
-In-Reply-To: <1433146266-1599-3-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v7 3/4] ASoC: arizona: Add DVFS handling for sample rate control
+Date: Mon,  1 Jun 2015 14:04:50 +0100
+Message-ID: <1433163891-10084-3-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1433163891-10084-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1433163891-10084-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Jun 2015, Lars-Peter Clausen wrote:
+The WM8997 and WM5102 codecs need to boost DVFS for higher sample rates.
 
-> The dapm field of the snd_soc_codec struct is eventually going to be
-> removed, in preparation for this replace all manual access to
-> codec->dapm.bias_level with snd_soc_codec_get_bias_level().
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-For the Cirrus Ones...
-Thanks,
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   19 ++++++++++++++++++-
+ 1 files changed, 18 insertions(+), 1 deletions(-)
 
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 69965ae..f4f3022 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1393,7 +1393,7 @@ static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct arizona_dai_priv *dai_priv = &priv->dai[dai->id - 1];
+ 	int base = dai->driver->base;
+-	int i, sr_val;
++	int i, sr_val, ret;
+ 
+ 	/*
+ 	 * We will need to be more flexible than this in future,
+@@ -1409,6 +1409,23 @@ static int arizona_hw_params_rate(struct snd_pcm_substream *substream,
+ 	}
+ 	sr_val = i;
+ 
++	switch (priv->arizona->type) {
++	case WM5102:
++	case WM8997:
++		if (arizona_sr_vals[sr_val] >= 88200)
++			ret = arizona_dvfs_up(codec, ARIZONA_DVFS_SR1_RQ);
++		else
++			ret = arizona_dvfs_down(codec, ARIZONA_DVFS_SR1_RQ);
++
++		if (ret) {
++			arizona_aif_err(dai, "Failed to change DVFS %d\n", ret);
++			return ret;
++		}
++		break;
++	default:
++		break;
++	}
++
+ 	switch (dai_priv->clk) {
+ 	case ARIZONA_CLK_SYSCLK:
+ 		switch (priv->arizona->type) {
+-- 
+1.7.2.5
