@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 09/47] ASoC: wm5110: Replace direct
+Subject: [PATCH 12/47] ASoC: wm8510: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:28 +0200
-Message-ID: <1433146266-1599-9-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:31 +0200
+Message-ID: <1433146266-1599-12-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 1729626056A
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CBC5260590
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:17 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,44 +27,26 @@ Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Charles
 List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to codec->dapm
-with snd_soc_codec_get_dapm().
-
-While we are at it also remove the duplicated initialization of
-priv->core.arizona->dapm.
+removed, in preparation for this replace all manual access to
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm5110.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8510.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index fbaeddb..6796000 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -1598,10 +1598,11 @@ static struct snd_soc_dai_driver wm5110_dai[] = {
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index a380c10..dac5beb 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -519,7 +519,7 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_STANDBY:
+ 		power1 |= WM8510_POWER1_BIASEN | WM8510_POWER1_BUFIOEN;
  
- static int wm5110_codec_probe(struct snd_soc_codec *codec)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
- 	int ret;
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			regcache_sync(wm8510->regmap);
  
--	priv->core.arizona->dapm = &codec->dapm;
-+	priv->core.arizona->dapm = dapm;
- 
- 	arizona_init_spk(codec);
- 	arizona_init_gpio(codec);
-@@ -1611,9 +1612,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
- 	if (ret != 0)
- 		return ret;
- 
--	snd_soc_dapm_disable_pin(&codec->dapm, "HAPTICS");
--
--	priv->core.arizona->dapm = &codec->dapm;
-+	snd_soc_dapm_disable_pin(dapm, "HAPTICS");
- 
- 	return 0;
- }
+ 			/* Initial cap charge at VMID 5k */
 -- 
 2.1.4
