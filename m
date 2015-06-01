@@ -1,92 +1,37 @@
-From: Enric Balletbo Serra <eballetbo@gmail.com>
-Subject: Re: Audio play problem with tlv320aic3106 in mainline.
-Date: Mon, 1 Jun 2015 11:16:35 +0200
-Message-ID: <CAFqH_527Ttu5wAVJ2ZtXZH0yMAg3J0YSGWdV_nvX6Ao0ub80cg@mail.gmail.com>
-References: <CAFqH_5332TNp+3cTH6O-UgqP8Ah-ZUiZpaTJpy3ZoL4-42fo_g@mail.gmail.com>
- <5568133A.6010006@ti.com>
- <CAFqH_511rLmDPEBLmXou6_iqNTj9t2uFNVvaW=+RmpumM9GmyA@mail.gmail.com>
- <556858AD.1030609@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
- [209.85.213.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 7600C2604F4
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 11:16:36 +0200 (CEST)
-Received: by igbpi8 with SMTP id pi8so56343229igb.1
- for <alsa-devel@alsa-project.org>; Mon, 01 Jun 2015 02:16:35 -0700 (PDT)
-In-Reply-To: <556858AD.1030609@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+From: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
+Subject: [PATCH] ASoC: rsnd: Document r8a7778-specific binding
+Date: Mon,  1 Jun 2015 12:44:15 +0200
+Message-ID: <1433155455-28827-1-git-send-email-geert+renesas@glider.be>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgoyMDE1LTA1LTI5IDE0OjE2IEdNVCswMjowMCBQZXRlciBVamZhbHVzaSA8cGV0ZXIudWpm
-YWx1c2lAdGkuY29tPjoKPiBPbiAwNS8yOS8yMDE1IDEyOjI0IFBNLCBFbnJpYyBCYWxsZXRibyBT
-ZXJyYSB3cm90ZToKPj4+IEl0IG1pZ2h0IGJlIHJlYWxseSAyNE1Iei4KPj4+IElmIHRoZSBNQ0xL
-IGluIHlvdXIgYm9hcmQgaXMgd2lyZWQgbGlrZSBhbTMzNXgtZXZtc2sgb3IgaG93IEJlYWdsZUJv
-bmUncyBhdWRpbwo+Pj4gY2FwZXMgYXJlIHdpcmVkIChNQ0xLIGlzIGNvbWluZyBmcm9tIEFNMzM1
-eCdzIEVWRU5UX0lOVFIwLzEgcGluIGFzIENMS09VVDEvMikKPj4+IHRoZW4gMjRNSHogaXMgY29y
-cmVjdC4gT24gdGhlIGFtMzM1eC1ldm0gdGhlcmUgaXMgYSBkZWRpY2F0ZWQgY3J5c3RhbAo+Pj4g
-cHJvdmlkaW5nIHRoZSAxMk1Iei4KPj4+Cj4+IFdlbGwsIGluIG15IGJvYXJkIHRoZXJlIGlzIGFs
-c28gYSBkZWRpY2F0ZWQgY3J5c3RhbCBwcm92aWRpbmcgdGhlCj4+IDEyTUh6LCBzbyBJIGV4cGVj
-dCB0aGF0IHRoZSBjb3JyZWN0IHZhbHVlIGZvciBjbG9jay1mcmVxdWVuY3kgaXMgMTJNSHoKPj4g
-bm90IDI0TUh6Lgo+Cj4gSSB3YXMgd3Jvbmcgd2l0aCB0aGUgQkJXIGF1ZGlvIGNhcGUuLiBBdCBs
-ZWFzdCB0aGUgUmV2QSB3aGljaCBJIGhhdmUgZG9lcyBoYXZlCj4gMTJNSHogY3J5c3RhbCBjb25u
-ZWN0ZWQgdG8gYWljMzEwNiBNQ0xLLCBidXQgdGhlcmUgaXMgYSBsaW5lIHRvIHRoZSBTb0Mncwo+
-IENMS09VVDIuIEJ5IGRlZmF1bHQgdGhlIGNvZGVjIHJ1bnMgdXNpbmcgdGhlIDEyTUh6Lgo+IEkg
-aGF2ZSBjaGVja2VkIHdpdGggYSBzY29wZSBhbmQgeWVwLCBJIGhhdmUgMTJNSHogZm9yIE1DTEsu
-Cj4KPj4KPj4gICAgIGNsb2NrcyB7Cj4+ICAgICAgICAgY29tcGF0aWJsZSA9ICJzaW1wbGUtYnVz
-IjsKPj4gICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPj4gICAgICAgICAjc2l6ZS1jZWxs
-cyA9IDwwPjsKPj4KPj4gICAgICAgICAvKiBhdWRpbyBleHRlcm5hbCBvc2NpbGxhdG9yICovCj4+
-ICAgICAgICAgdGx2MzIwYWljM3hfbWNsazogb3NjaWxsYXRvckAwIHsKPj4gICAgICAgICAgICAg
-Y29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7Cj4+ICAgICAgICAgICAgICNjbG9jay1jZWxscyA9
-IDwwPjsKPj4gICAgICAgICAgICAgY2xvY2stZnJlcXVlbmN5ICA9IDwxMjAwMDAwMD47ICAgIC8q
-IDEyTUh6ICovCj4+ICAgICAgICAgfTsKPj4gICAgIH07Cj4+Cj4+ICAgICBzb3VuZCB7Cj4+ICAg
-ICAgICAgY29tcGF0aWJsZSA9ICJ0aSxkYTgzMC1ldm0tYXVkaW8iOwo+PiAgICAgICAgIHRpLG1v
-ZGVsID0gIkFNMzM1eC1TTDUwIjsKPj4gICAgICAgICB0aSxhdWRpby1jb2RlYyA9IDwmYXVkaW9f
-Y29kZWM+Owo+PiAgICAgICAgIHRpLG1jYXNwLWNvbnRyb2xsZXIgPSA8Jm1jYXNwMD47Cj4+Cj4+
-ICAgICAgICAgY2xvY2tzID0gPCZ0bHYzMjBhaWMzeF9tY2xrPjsKPj4gICAgICAgICBjbG9jay1u
-YW1lcyA9ICJtY2xrIjsKPj4KPj4gICAgICAgICB0aSxhdWRpby1yb3V0aW5nID0KPj4gICAgICAg
-ICAgICAgIkhlYWRwaG9uZSBKYWNrIiwgICAgIkhQTE9VVCIsCj4+ICAgICAgICAgICAgICJIZWFk
-cGhvbmUgSmFjayIsICAgICJIUFJPVVQiLAo+PiAgICAgICAgICAgICAiTElORTFSIiwgICAgICAg
-ICAgICAgICAiTGluZSBJbiIsCj4+ICAgICAgICAgICAgICJMSU5FMUwiLCAgICAgICAgIkxpbmUg
-SW4iOwo+PiAgICAgfTsKPgo+IElmIEkgdXNlIHRoaXMgd2l0aCBteSBCQlcrQXVkaW8gY2FwZTog
-YXVkaW8gaXMgZmluZS4KPgoKVGVzdGVkIHdpdGggbGludXgtbmV4dCBhbmQgc2FtZSBwcm9ibGVt
-IGhlcmUsIEkgYWxzbyBjaGVja2VkIHdpdGggYQpzY29wZSBteSBjbG9jayBhbmQgaXQncyAxMk1I
-eiBidXQgSSBuZWVkIHRvIGFwcGx5IHRoaXMgcGF0Y2ggdG8gbWFrZQppdCB3b3JrLgoKZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktZXZtLmMgYi9zb3VuZC9zb2MvZGF2aW5j
-aS9kYXZpbmNpLWV2bS5jCmluZGV4IDczMWZiMGQuLjhjZTBkMzIgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3NvYy9kYXZpbmNpL2RhdmluY2ktZXZtLmMKKysrIGIvc291bmQvc29jL2RhdmluY2kvZGF2aW5j
-aS1ldm0uYwpAQCAtNjQsNiArNjQsMTEgQEAgc3RhdGljIGludCBldm1faHdfcGFyYW1zKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogICAgICAgIHVuc2lnbmVkIHN5c2NsayA9
-ICgoc3RydWN0IHNuZF9zb2NfY2FyZF9kcnZkYXRhX2RhdmluY2kgKikKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgc25kX3NvY19jYXJkX2dldF9kcnZkYXRhKHNvY19jYXJkKSktPnN5c2NsazsK
-CisgICAgcmV0ID0gc25kX3NvY19kYWlfc2V0X2Nsa2RpdihjcHVfZGFpLCAwLCAyKTsKKyAgICBp
-ZiAocmV0IDwgMCkKKyAgICAgICAgICAgIHJldHVybiByZXQ7CisKICAgICAgICAvKiBzZXQgdGhl
-IGNvZGVjIHN5c3RlbSBjbG9jayAqLwogICAgICAgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNj
-bGsoY29kZWNfZGFpLCAwLCBzeXNjbGssIFNORF9TT0NfQ0xPQ0tfT1VUKTsKICAgICAgICBpZiAo
-cmV0IDwgMCkKClJlYWxseSBvZGQsIHNvIHdlJ2xsIGhhdmUgc29tZXRoaW5nIGRpZmZlcmVudCwg
-YXQgdGhlIG1vbWVudCBJIGRvbid0Cmtub3cgd2hhdCBjb3VsZCBiZSB0aGUgZGlmZmVyZW5jZS4K
-Cgo+Pgo+PiBGb3IgbWUgaXQncyByZWFsbHkgb2RkIGhhdmUgdG8gc2V0IHRoZSBjbG9jay1mcmVx
-dWVuY3kgdG8gMjRNSHogdG8gbWFrZSBpdCB3b3JrCj4+Cj4+ICAgICAgICAgICAgIGNsb2NrLWZy
-ZXF1ZW5jeSAgPSA8MjQwMDAwMDA+Owo+Cj4gSWYgSSBjaGFuZ2UgaXQgdG8gdGhpcywgSSB3aWxs
-IGhhdmUgc2xvdyBtb3Rpb24gcGxheWJhY2ssIGFzIGV4cGVjdGVkLgo+Cj4+IEZvciB0aGF0IHJl
-YXNvbiBJJ20gd29uZGVyaW5nIGlmIHRoZXJlIGlzIGEgYnVnIGluIHRoZSBkcml2ZXIsIGRpZAo+
-PiBhbnlvbmUgdGVzdCB3aXRoIGFuIGFtMzM1eC1ldm0gYm9hcmQgPwo+Cj4gSSdtIHVzaW5nIGxp
-bnV4LW5leHQuCj4gTm90IHN1cmUgd2hhdCBjb3VsZCBiZSB0aGUgaXNzdWUuCj4KPj4KPj4+Pgo+
-Pj4+IFsxXSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzY0ODAwNzEvCj4+Pj4K
-Pj4+PiBUaGFua3MgaW4gYWR2YW5jZSwKPj4+PiBFbnJpYwo+Pj4+Cj4+Pgo+Pj4gLS0KPj4+IFDD
-qXRlcgo+Pgo+PiBUaGFua3MsCj4+IEVucmljCj4+Cj4KPgo+IC0tCj4gUMOpdGVyCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Add the missing r8a7778-specific compatible value, which is already in
+use since v4.1-rc1.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 62ece4c59da759a4..b6b3a786855f275b 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -5,6 +5,7 @@ Required properties:
+ 				  "renesas,rcar_sound-gen1" if generation1, and
+ 				  "renesas,rcar_sound-gen2" if generation2
+ 				  Examples with soctypes are:
++				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
+ 				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
+ 				    - "renesas,rcar_sound-r8a7791" (R-Car M2-W)
+ - reg				: Should contain the register physical address.
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
