@@ -1,44 +1,64 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v7 4/4] regulator: arizona-ldo1: Do not control DVFS clocking from regulator
-Date: Mon,  1 Jun 2015 14:04:51 +0100
-Message-ID: <1433163891-10084-4-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1433163891-10084-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1433163891-10084-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Santiago Zarate <santiago@zarate.net.ve>
+Subject: Override default behavior when headphones are
+ connected upon user request on wm8962
+Date: Mon, 1 Jun 2015 22:21:24 +0800
+Message-ID: <CAD_eom_M30VZs+seV6RWB4C_ZVXCQ6yyT-+P800cG_PRPiJPug@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
+ [209.85.214.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2291C260584
+ for <Alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 16:21:26 +0200 (CEST)
+Received: by obbnx5 with SMTP id nx5so104162608obb.0
+ for <Alsa-devel@alsa-project.org>; Mon, 01 Jun 2015 07:21:25 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Using the driver for the internal regulator to also enable/disable
-the codec internal clock frequency controller is an unexpected
-side-effect for a regulator, and also means that the core clocks
-won't be changed as expected if an external regulator is used to
-power the codec.
-
-The DVFS is now handled by the codec driver so can be removed from
-the LDO1 driver.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- drivers/regulator/arizona-ldo1.c |    5 -----
- 1 files changed, 0 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
-index 9094163..5e947a8 100644
---- a/drivers/regulator/arizona-ldo1.c
-+++ b/drivers/regulator/arizona-ldo1.c
-@@ -78,11 +78,6 @@ static int arizona_ldo1_hc_set_voltage_sel(struct regulator_dev *rdev,
- 	if (ret != 0)
- 		return ret;
- 
--	ret = regmap_update_bits(regmap, ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
--				 ARIZONA_SUBSYS_MAX_FREQ, val);
--	if (ret != 0)
--		return ret;
--
- 	if (val)
- 		return 0;
- 
--- 
-1.7.2.5
+SGVsbG8sCgpDdXJyZW50bHkgaSdtIHRyeWluZyB0byBvdmVycmlkZSB0aGUgZGVmYXVsdCBiZWhh
+dmlvciB3aGVuIGhlYWRwaG9uZXMgYXJlCnBsdWdnZWQsIFdlIGFjdHVhbGx5IG5lZWQgdG8gcGxh
+eSBhdWRpbyB1bmRlciBjZXJ0YWluIHNpdHVhdGlvbnMsIGFuZCBvbmUKb2YgdGhlIHVzZSBjYXNl
+cyBpcyB3aGVuIHRoZSBoZWFkcGhvbmVzIGFyZSBjb25uZWN0ZWQsIGJ1dCBhIHNvdW5kIG5lZWRz
+IHRvCmJlIHBsYXllZCBvdmVyIHRoZSBzcGVha2Vycywgc28gc29tZW9uZSBlbHNlIGlzIGF3YXJl
+IG9mIHdoYXQncyBoYXBwZW5pbmcuCgpXZSdyZSB0aGlua2luZyBhYm91dCB1c2luZyBhIEdQSU8g
+dGhhdCBpdCdzIGF2YWlsYWJsZSBmcm9tIG91ciBhcHBsaWNhdGlvbgpvciBhIHNpbXBsZSBtb2R1
+bGUgcGFyYW1ldGVyLCBidXQgdGhlIHByb2JsZW0gaSdtIGZhY2luZyByaWdodCBub3cgaXM6Cgox
+OiBXaGVyZSB0byBzcGVjaWZ5IHRoYXQgcGFydGljdWxhciBwYXRoIG9yIHRoZSBiZWhhdmlvciBp
+IG5lZWQsIGkndmUgYmVlbgpsb29raW5nIGF0IFsyXSwgYW5kIGFkZGluZyBhIFNPQ19EQVBNX1BJ
+Tl9TV0lUQ0hbMV0gYnV0IGRvZXNuJ3QgbWF0dGVyIHdoYXQKdGhlIHN0YXRlIGlzLCBpZiB0aGUg
+aGVhZHBob25lcyBhcmUgb24sIGkgY2FuJ3QgdHVybiBvbiB0aGUgc3BlYWtlcnMgdG8KcGxheSBz
+b3VuZHMgYXQgdGhlIHNhbWUgdGltZS4KCmknbSBhYmxlIHRvIGRvIGl0LCBieSBkaXNhYmxpbmcg
+dGhlIGhwIGRldGVjdGlvbiBwaW4sIGFuZCBjb250cm9sbGluZyB0aGUKYXVkaW8gb3ZlciB1ZGV2
+IGV2ZW50cy4gc28gaSdtIHByZXR0eSBzdXJlIHRoYXQgaXQgd291bGQgYmUgcG9zc2libGUgdG8g
+ZG8KdGhpcywgd2l0aCB0aGUgaHAgZGV0ZWN0aW9uIHBpbi4gd2hpY2ggdGFrZXMgdXMgdG8gIzI6
+CgoyOiBIb3cgY2FuIGkgdHJpZ2dlciBhbiBldmVudCBiYXNlZCBvbiB0aGUgY2hhbmdlIG9mIGEg
+bW9kdWxlIHBhcmFtZXRlciAgb3IKYSBncGlvIHBvcnQgKFRoaW5raW5nIGJvdGggd291bGQgYmUg
+dGhlIHNhbWUpLi4uCgppJ3ZlIHRyaWVkIHRvIGFsdGVyIGhwX2V2ZW50CjxodHRwOi8vbHhyLmZy
+ZWUtZWxlY3Ryb25zLmNvbS9pZGVudD92PTMuMTY7aT1ocF9ldmVudD4gd2l0aG91dCBhbnkKc3Vj
+Y2Vzcy4uLiBldmVuIHJldHVybmluZyAwIG9uIGFueSBldmVudCBhbmQgc3RpbGwgbm90aGluZywg
+d2hpY2ggZHJpdmVzIG1lCnRvIGJlbGl2ZSB0aGF0IGknbSBkb2luZyBzb21ldGhpbmcgY29tcGxl
+dGVseSB3cm9uZyBBTkQgdGhlIGNvZGVjL2RyaXZlciBpcwphbW9uZyB0aGUgbGFzdCBvbmVzIHRv
+IGdldCBub3RpZmllZCBvZiB0aGUgcHJlc2VuY2Ugb2YgdGhlIGhwCgoKVGhlIGlkZWEgaXM6Cgpp
+ZiBvdmVycmlkZSBwb3J0IG9yIHBhcmFtZXRlciBpcyBzZXQgdG8gdHJ1ZSwgdHJpZ2dlciAgdGhl
+IGF1ZGlvIG92ZXJyaWRlIGFuZApwbGF5IHNvdW5kIG9uIFNwZWFrZXIgYW5kIEhQIGF0IHRoZSBz
+YW1lIHRpbWUuCgoKcmlnaHQgbm93IGknbSB3b3JraW5nIHdpdGggaW14LXdtODk2MiBkcml2ZXIg
+YW5kIHRoZSBtYXRjaGluZyBjb2RlYywKCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+cGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMS1GZWJydWFyeS8wMzYzNzAuaHRtbApbMV0KaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDEwLURlY2Vt
+YmVyLzAzNTA1NS5odG1sCiBbMl0KCgpUaGFua3MgaW4gYWR2YW5jZSEKLS0gCgpTYW50aWFnbyBa
+YXJhdGUKICBodHRwOi8vZm91cnNpeG5pbmUuaW8KCuKAnERyZWFtcyBwZXJtaXQgZWFjaCBhbmQg
+ZXZlcnkgb25lIG9mIHVzIHRvIGJlIHF1aWV0bHkgYW5kIHNhZmVseSBpbnNhbmUKZXZlcnkgbmln
+aHQgb2Ygb3VyIGxpdmVzLuKAnSAtIFdpbGxpYW0gRGVtZW50Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
