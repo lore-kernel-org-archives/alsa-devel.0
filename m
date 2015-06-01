@@ -1,16 +1,16 @@
 From: Vladimir Zapolskiy <vz@mleia.com>
-Subject: [PATCH 7/7] ASoC: wm8996: remove bitwise operations
+Subject: [PATCH 5/7] ASoC: wm5100: remove bitwise operations
 	involving GPIO level value
-Date: Tue,  2 Jun 2015 02:09:18 +0300
-Message-ID: <1433200158-6890-7-git-send-email-vz@mleia.com>
+Date: Tue,  2 Jun 2015 02:09:16 +0300
+Message-ID: <1433200158-6890-5-git-send-email-vz@mleia.com>
 References: <1433200031-6748-1-git-send-email-vz@mleia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.mleia.com (li271-223.members.linode.com [178.79.152.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E5442604B5
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 01:09:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DE7D2604A9
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 01:09:47 +0200 (CEST)
 In-Reply-To: <1433200031-6748-1-git-send-email-vz@mleia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,39 +37,50 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>
 Cc: Axel Lin <axel.lin@ingics.com>
 Cc: patches@opensource.wolfsonmicro.com
 ---
- sound/soc/codecs/wm8996.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm5100.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 3dd063f..0dce3a0 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2147,18 +2147,23 @@ static inline struct wm8996_priv *gpio_to_wm8996(struct gpio_chip *chip)
- static void wm8996_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 4c10cd8..fae9d13 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2244,26 +2244,27 @@ static inline struct wm5100_priv *gpio_to_wm5100(struct gpio_chip *chip)
+ static void wm5100_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
  {
- 	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
 +	unsigned int val = 0;
 +
 +	if (value)
-+		val = 0x1 << WM8996_GP1_LVL_SHIFT;
++		val = 0x1 << WM5100_GP1_LVL_SHIFT;
  
- 	regmap_update_bits(wm8996->regmap, WM8996_GPIO_1 + offset,
--			   WM8996_GP1_LVL, !!value << WM8996_GP1_LVL_SHIFT);
-+			   WM8996_GP1_LVL, val);
+ 	regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
+-			   WM5100_GP1_LVL, !!value << WM5100_GP1_LVL_SHIFT);
++			   WM5100_GP1_LVL, val);
  }
  
- static int wm8996_gpio_direction_out(struct gpio_chip *chip,
+ static int wm5100_gpio_direction_out(struct gpio_chip *chip,
  				     unsigned offset, int value)
  {
- 	struct wm8996_priv *wm8996 = gpio_to_wm8996(chip);
--	int val;
-+	unsigned int val = 0x1 << WM8996_GP1_FN_SHIFT;
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
+-	int val, ret;
++	unsigned int val = 0x1 << WM5100_GP1_FN_SHIFT;
  
--	val = (1 << WM8996_GP1_FN_SHIFT) | (!!value << WM8996_GP1_LVL_SHIFT);
+-	val = (1 << WM5100_GP1_FN_SHIFT) | (!!value << WM5100_GP1_LVL_SHIFT);
 +	if (value)
-+		val |= 0x1 << WM8996_GP1_LVL_SHIFT;
++		val |= 0x1 << WM5100_GP1_LVL_SHIFT;
  
- 	return regmap_update_bits(wm8996->regmap, WM8996_GPIO_1 + offset,
- 				  WM8996_GP1_FN_MASK | WM8996_GP1_DIR |
+-	ret = regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
+-				 WM5100_GP1_FN_MASK | WM5100_GP1_DIR |
+-				 WM5100_GP1_LVL, val);
+-	if (ret < 0)
+-		return ret;
+-	else
+-		return 0;
++	return regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
++				  WM5100_GP1_FN_MASK | WM5100_GP1_DIR |
++				  WM5100_GP1_LVL, val);
+ }
+ 
+ static int wm5100_gpio_get(struct gpio_chip *chip, unsigned offset)
 -- 
 2.1.4
