@@ -1,35 +1,58 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [RFC][PATCH] x86: remove vmalloc.h from asm/io.h
-Date: Mon, 01 Jun 2015 15:59:31 -0700 (PDT)
-Message-ID: <20150601.155931.1230241015446814769.davem@davemloft.net>
-References: <20150529191847.2d4cb3a7@canb.auug.org.au>
+From: Vladimir Zapolskiy <vz@mleia.com>
+Subject: [PATCH 0/7] ASoC: remove bitwise operations on GPIO
+	level value
+Date: Tue,  2 Jun 2015 02:07:11 +0300
+Message-ID: <1433200031-6748-1-git-send-email-vz@mleia.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <20150529191847.2d4cb3a7@canb.auug.org.au>
-Sender: linux-pm-owner@vger.kernel.org
-To: sfr@canb.auug.org.au
-Cc: tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, konrad.wilk@oracle.com, boris.ostrovsky@oracle.com, david.vrabel@citrix.com, anton@enomsg.org, ccross@android.com, keescook@chromium.org, tony.luck@intel.com, rjw@rjwysocki.net, lenb@kernel.org, kristen@linux.intel.com, viresh.kumar@linaro.org, vinod.koul@intel.com, kys@microsoft.com, haiyangz@microsoft.com, hiralpat@cisco.com, sramars@cisco.com, buchino@cisco.com, JBottomley@odin.com, perex@perex.cz, tiwai@suse.de, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, dmaengine@vger.kernel.org, devel@linuxdriverproject.org, netdev@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.mleia.com (li271-223.members.linode.com [178.79.152.223])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64C16260425
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 01:07:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 29 May 2015 19:18:47 +1000
+The series does not contain any functional changes, it touches only
+implementation of gpiolib .set and .direction_output callbacks.
 
-> Nothing in asm/io.h uses anything from vmalloc.h, so remove the include
-> and fix up the build problems in an allmodconfig (64 bit and 32 bit)
-> build.
-> 
-> This may be the place where x86 builds get vmalloc.h implicitly included
-> and that tends to hide places where vmalloc() et al are added to files
-> but the include of vmalloc.h is forgotten.
-> 
- ...
-> Suggested-by: David Miller <davem@davemloft.net>
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+The main intention of the change is to remove bitwise operations on
+GPIO high/low level value as a preceding change before updating
+gpiolib callback signatures to utilize bool type as a representation
+of GPIO level.
 
-With the follow-on allnoconfig fixes:
+The change covers all input cases of GPIO level (i.e. .set
+and .direction_output) in sound/*, also the series contains a small
+clean-ups in rt5677 and wm8903 codec drivers related to gpiolib
+callbacks.
 
-Acked-by: David S. Miller <davem@davemloft.net>
+Vladimir Zapolskiy (7):
+  ASoC: rt5677: add GPIO helper macros
+  ASoC: rt5677: clean up gpiolib callbacks
+  ASoC: wm8903: generalize GPIO control register bits
+  ASoC: wm8903: simplify gpiolib callbacks
+  ASoC: wm5100: remove bitwise operations involving GPIO level value
+  ASoC: wm8962: remove bitwise operations involving GPIO level value
+  ASoC: wm8996: remove bitwise operations involving GPIO level value
 
-Thanks a lot for doing this!
+ include/sound/wm8903.h    | 222 ++++++++--------------------------------------
+ sound/soc/codecs/rt5677.c |  32 +++++--
+ sound/soc/codecs/rt5677.h |   6 ++
+ sound/soc/codecs/wm5100.c |  21 ++---
+ sound/soc/codecs/wm8903.c |  44 ++++-----
+ sound/soc/codecs/wm8962.c |  13 ++-
+ sound/soc/codecs/wm8996.c |  11 ++-
+ 7 files changed, 112 insertions(+), 237 deletions(-)
+
+-- 
+2.1.4
