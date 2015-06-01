@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 23/47] ASoC: wm8804: Replace direct
+Subject: [PATCH 24/47] ASoC: wm8900: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:42 +0200
-Message-ID: <1433146266-1599-23-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:43 +0200
+Message-ID: <1433146266-1599-24-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id AD255261492
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 180B326050C
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:23 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,26 +27,26 @@ Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Charles
 List-Id: alsa-devel@alsa-project.org
 
 The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to codec->dapm
-with snd_soc_codec_get_dapm().
+removed, in preparation for this replace all manual access to
+codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8804.c | 2 +-
+ sound/soc/codecs/wm8900.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 1e403f6..c195c2e 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -162,7 +162,7 @@ static int txsrc_put(struct snd_kcontrol *kcontrol,
- 		     struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int val = ucontrol->value.enumerated.item[0] << e->shift_l;
- 	unsigned int mask = 1 << e->shift_l;
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index e7d2ecd..ecc7b47 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -1049,7 +1049,7 @@ static int wm8900_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+ 		/* Charge capacitors if initial power up */
+-		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+ 			/* STARTUP_BIAS_ENA on */
+ 			snd_soc_write(codec, WM8900_REG_POWER1,
+ 				     WM8900_REG_POWER1_STARTUP_BIAS_ENA);
 -- 
 2.1.4
