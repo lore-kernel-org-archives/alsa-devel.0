@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 36/47] ASoC: wm8985: Replace direct
+Subject: [PATCH 37/47] ASoC: wm8988: Replace direct
 	snd_soc_codec dapm field access
-Date: Mon,  1 Jun 2015 10:10:55 +0200
-Message-ID: <1433146266-1599-36-git-send-email-lars@metafoo.de>
+Date: Mon,  1 Jun 2015 10:10:56 +0200
+Message-ID: <1433146266-1599-37-git-send-email-lars@metafoo.de>
 References: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-051.synserver.de (smtp-out-058.synserver.de
  [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id ED6B5261A7C
- for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 671A7261A83
+ for <alsa-devel@alsa-project.org>; Mon,  1 Jun 2015 10:11:29 +0200 (CEST)
 In-Reply-To: <1433146266-1599-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,21 +32,21 @@ codec->dapm.bias_level with snd_soc_codec_get_bias_level().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8985.c | 2 +-
+ sound/soc/codecs/wm8988.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index 4e6901b..8a85f50 100644
---- a/sound/soc/codecs/wm8985.c
-+++ b/sound/soc/codecs/wm8985.c
-@@ -897,7 +897,7 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
- 				    1 << WM8985_VMIDSEL_SHIFT);
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 92680c6..f13a995 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -738,7 +738,7 @@ static int wm8988_set_bias_level(struct snd_soc_codec *codec,
  		break;
+ 
  	case SND_SOC_BIAS_STANDBY:
 -		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			ret = regulator_bulk_enable(ARRAY_SIZE(wm8985->supplies),
- 						    wm8985->supplies);
- 			if (ret) {
+ 			regcache_sync(wm8988->regmap);
+ 
+ 			/* VREF, VMID=2x5k */
 -- 
 2.1.4
