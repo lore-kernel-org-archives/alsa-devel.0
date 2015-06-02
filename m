@@ -1,24 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
-	driver
-Date: Tue, 2 Jun 2015 15:30:42 +0100
-Message-ID: <20150602143042.GS14071@sirena.org.uk>
-References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
- <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
- <20150529174115.GR21577@sirena.org.uk>
- <s5h4mmv9r7m.wl-tiwai@suse.de>
- <20150602104516.GH14071@sirena.org.uk>
- <s5htwuqe60j.wl-tiwai@suse.de>
- <20150602110732.GO14071@sirena.org.uk>
- <20150602123943.GP3140@localhost>
+Subject: Re: [PATCH 0/4] new fix for broadwell module removing
+	failed issue
+Date: Tue, 2 Jun 2015 15:34:43 +0100
+Message-ID: <20150602143443.GT14071@sirena.org.uk>
+References: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0369559072749845990=="
+Content-Type: multipart/mixed; boundary="===============0879726935173155477=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3C84265080
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 16:30:53 +0200 (CEST)
-In-Reply-To: <20150602123943.GP3140@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id 590EB265104
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 16:34:48 +0200 (CEST)
+In-Reply-To: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,55 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0369559072749845990==
+--===============0879726935173155477==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aQ0PHH3iiKbaMI5N"
+	protocol="application/pgp-signature"; boundary="nT6ukc3bqTvTgwkF"
 Content-Disposition: inline
 
 
---aQ0PHH3iiKbaMI5N
+--nT6ukc3bqTvTgwkF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 02, 2015 at 06:09:43PM +0530, Vinod Koul wrote:
+On Sat, May 30, 2015 at 10:33:55PM +0800, Jie Yang wrote:
+> This patch series are based on broonie/sound.git for-next branch, commit
+> 01a4d5083562fcdeab99d42b0873aabc5fcca018.
 
-> This is fairly *common* in drivers to use wrappers for hw accesses and yes
-> for overall HDA we can perhaps optimize these as Takashi pointed out but
-> hardly a worrying aspect/sign
+Applied all, thanks.  Please use subject lines matcing the style for the
+subsystem, even for reverts.
 
-It's not the fact that there are wrappers that is worrying, it's the
-contents of the wrappers combined with the interfaces.  The interfaces
-make the wrappers complete noops yet the driver has to manually go
-through and rewrap everything.
-
---aQ0PHH3iiKbaMI5N
+--nT6ukc3bqTvTgwkF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVbb4SAAoJECTWi3JdVIfQAKwH/26vC53keSYaKU7HhuREcnBY
-mrG5phy3/1gdYXfar0daVxxu3GLHCGeOIuPDecCaNzXdQ5BxC5no4v31B8Ot9gfJ
-SuFeYSRk43F+50tZ59CzZquwyDCINFQFUukFyh5K8iSOMhmjkIL84zipiKVRqxTs
-8JVv15/53ryl9JIe4m6XB+a5IF9hf7TxgcuQWtG254snrBaGR5iaWFVvZbl1o7Ox
-tAmjgm5ZHXqGOLfSoXVox7NYucGJjpM0nJYuwZ7fKH47apltBa6SO6m14Gsu/9BU
-XDdEUSI7rw1EQsaXTQn4GJ81ag33oHYqLs8hNnHOtdUprsMvXjMKjdCPfnJmuEo=
-=Q2ay
+iQEcBAEBCAAGBQJVbb8DAAoJECTWi3JdVIfQB04H/j98QUZzlBgJOSQ5zRfxzrco
+ttJLdLZcXFwAajFp8nWw0E+cDq6p6G63iphxMAyY2VFbjkUy2N9nCvbBYkJJTyvd
+Q5tJq+CB4E15F6kazl7LFMhz9pTZgwd+U/o4cuEmwk/yvrmNvTCkoS39MY5ITQQ/
+05gkHmewbXp2saZUFKSYHVFsYFP3ElajrDFXDFvrDyK6NbaSstrMygKLAtZozM/r
+YClfBYVMN4K5NdwqpqIYyi3hF3kwQEJ9dTGzhIyPQs0RDfgz2TBUKr40eclRRSX5
+ARTmhreniwtfBzsyzC2C6s/f560B0WKR80jmGUgQx+u3Bv/tRrWoaTshPFHvvXM=
+=fOVE
 -----END PGP SIGNATURE-----
 
---aQ0PHH3iiKbaMI5N--
+--nT6ukc3bqTvTgwkF--
 
---===============0369559072749845990==
+--===============0879726935173155477==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0369559072749845990==--
+--===============0879726935173155477==--
