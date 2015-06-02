@@ -1,49 +1,54 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] ASoC: rsnd: Document r8a7778-specific binding
-Date: Tue, 2 Jun 2015 09:34:58 +0900
-Message-ID: <20150602003457.GB4781@verge.net.au>
-References: <1433155455-28827-1-git-send-email-geert+renesas@glider.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1433155455-28827-1-git-send-email-geert+renesas@glider.be>
-Sender: linux-sh-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sh@vger.kernel.org
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [PATCH] ASoC: qcom: Remove QCOM dependency from LPASS variants
+Date: Mon,  1 Jun 2015 22:05:32 -0700
+Message-ID: <1433221532-9489-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Jim Davis <jim.epost@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Kumar Gala <galak@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 01, 2015 at 12:44:15PM +0200, Geert Uytterhoeven wrote:
-> Add the missing r8a7778-specific compatible value, which is already in
-> use since v4.1-rc1.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Apologies for not noticing this myself.
+Remove the dependency on SND_SOC_QCOM from the user-
+invisible LPASS variant options.  This will fix
+randconfig build errors.
 
-Acked-by: Simon Horman <horms+renesas@verge.net.au>
+Reported-by: Jim Davis <jim.epost@gmail.com>
+Fixes: dc1ebd1811e9 ("ASoC: qcom: Add apq8016 lpass driver support")
+Fixes: 9bae4880acee ("ASoC: qcom: move ipq806x specific bits out of lpass
+driver")
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+---
 
-> ---
->  Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> index 62ece4c59da759a4..b6b3a786855f275b 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> @@ -5,6 +5,7 @@ Required properties:
->  				  "renesas,rcar_sound-gen1" if generation1, and
->  				  "renesas,rcar_sound-gen2" if generation2
->  				  Examples with soctypes are:
-> +				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
->  				    - "renesas,rcar_sound-r8a7790" (R-Car H2)
->  				    - "renesas,rcar_sound-r8a7791" (R-Car M2-W)
->  - reg				: Should contain the register physical address.
-> -- 
-> 1.9.1
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+ Created fix in response to Jim's bug report:
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/092870.html
+ 
+ Note: I did some searching but didn't see an example of a fix for the
+ same type of bug introduced by 2 commits.  If this needs to be split into
+ two fixes, let me know.
+
+ sound/soc/qcom/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 29fff6d..10837bd 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -14,13 +14,11 @@ config SND_SOC_LPASS_PLATFORM
+ 
+ config SND_SOC_LPASS_IPQ806X
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
+ 
+ config SND_SOC_LPASS_APQ8016
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
