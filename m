@@ -1,71 +1,141 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] new fix for broadwell module removing
-	failed issue
-Date: Tue, 2 Jun 2015 15:34:43 +0100
-Message-ID: <20150602143443.GT14071@sirena.org.uk>
-References: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
+From: Misael Lopez Cruz <misael.lopez@ti.com>
+Subject: Re: [PATCH v2] ASoC: davinci-mcasp: Choose PCM driver based on configured
+ DMA controller
+Date: Tue, 2 Jun 2015 11:16:43 -0500
+Message-ID: <556DD6EB.5010504@ti.com>
+References: <7230089f10ea27a9bd76eb8bfffcef754e71f274.1433252849.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0879726935173155477=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 590EB265104
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 16:34:48 +0200 (CEST)
-In-Reply-To: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <7230089f10ea27a9bd76eb8bfffcef754e71f274.1433252849.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
+Jyri,
 
---===============0879726935173155477==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nT6ukc3bqTvTgwkF"
-Content-Disposition: inline
+On 06/02/2015 08:49 AM, Jyri Sarha wrote:
+> Find the configured DMA controller by asking for a DMA channel in the
+> probe phase and releasing it right after. The controller device can be
+> found via the dma_chan struct and the controller is recognized from
+> the compatible property of its device node. The patch assumes EDMA if
+> there is no device node.
+>
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+> Changes since first patch version:
+> - Change enum names from MCASP_?DMA to PCM_?DMA
+> - Return PCM_EDMA if !mcasp->dev->of_node
+> - Do not ignore possible error code returned by
+>    davinci_mcasp_get_dma_type()
+>
+>   sound/soc/davinci/davinci-mcasp.c | 68 +++++++++++++++++++++++++++++++++------
+>   1 file changed, 58 insertions(+), 10 deletions(-)
+>
+> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+> index d793494..3b78c3e 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -1565,6 +1565,49 @@ static int davinci_mcasp_init_ch_constraints(struct davinci_mcasp *mcasp)
+>   	return ret;
+>   }
+>
+> +enum {
+> +	PCM_EDMA,
+> +	PCM_SDMA,
+> +};
+> +static const char *sdma_prefix = "ti,omap";
+> +
+> +static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+> +{
+> +	struct dma_chan *chan;
+> +	const char *tmp;
+> +	int ret = PCM_EDMA;
+> +
+> +	if (!mcasp->dev->of_node)
+> +		return PCM_EDMA;
+> +
+> +	tmp = mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data;
+> +	chan = dma_request_slave_channel_reason(mcasp->dev, tmp);
+> +	if (IS_ERR(chan)) {
+> +		if (PTR_ERR(chan) != -EPROBE_DEFER)
+> +			dev_err(mcasp->dev,
+> +				"Can't verify DMA configuration (%ld)\n",
+> +				PTR_ERR(chan));
+> +		return PTR_ERR(chan);
+> +	}
+> +	BUG_ON(!chan->device || !chan->device->dev);
+> +
+> +	if (chan->device->dev->of_node)
+> +		ret = of_property_read_string(chan->device->dev->of_node,
+> +					      "compatible", &tmp);
 
+I wonder how this is going to play out when the DMA crossbar is present 
+(i.e. dra7 family).
 
---nT6ukc3bqTvTgwkF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In that case, isn't the 'compatible' string here that of the DMA 
+crossbar (not the one from the DMA controller)?
 
-On Sat, May 30, 2015 at 10:33:55PM +0800, Jie Yang wrote:
-> This patch series are based on broonie/sound.git for-next branch, commit
-> 01a4d5083562fcdeab99d42b0873aabc5fcca018.
-
-Applied all, thanks.  Please use subject lines matcing the style for the
-subsystem, even for reverts.
-
---nT6ukc3bqTvTgwkF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVbb8DAAoJECTWi3JdVIfQB04H/j98QUZzlBgJOSQ5zRfxzrco
-ttJLdLZcXFwAajFp8nWw0E+cDq6p6G63iphxMAyY2VFbjkUy2N9nCvbBYkJJTyvd
-Q5tJq+CB4E15F6kazl7LFMhz9pTZgwd+U/o4cuEmwk/yvrmNvTCkoS39MY5ITQQ/
-05gkHmewbXp2saZUFKSYHVFsYFP3ElajrDFXDFvrDyK6NbaSstrMygKLAtZozM/r
-YClfBYVMN4K5NdwqpqIYyi3hF3kwQEJ9dTGzhIyPQs0RDfgz2TBUKr40eclRRSX5
-ARTmhreniwtfBzsyzC2C6s/f560B0WKR80jmGUgQx+u3Bv/tRrWoaTshPFHvvXM=
-=fOVE
------END PGP SIGNATURE-----
-
---nT6ukc3bqTvTgwkF--
-
---===============0879726935173155477==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0879726935173155477==--
+> +	else
+> +		dev_dbg(mcasp->dev, "DMA controller has no of-node\n");
+> +
+> +	dma_release_channel(chan);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev_dbg(mcasp->dev, "DMA controller compatible = \"%s\"\n", tmp);
+> +	if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
+> +		return PCM_SDMA;
+> +
+> +	return PCM_EDMA;
+> +}
+> +
+>   static int davinci_mcasp_probe(struct platform_device *pdev)
+>   {
+>   	struct snd_dmaengine_dai_dma_data *dma_data;
+> @@ -1763,27 +1806,32 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+>   	if (ret != 0)
+>   		goto err;
+>
+> -	switch (mcasp->version) {
+> +	ret = davinci_mcasp_get_dma_type(mcasp);
+> +	switch (ret) {
+> +	case PCM_EDMA:
+>   #if IS_BUILTIN(CONFIG_SND_EDMA_SOC) || \
+>   	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
+>   	 IS_MODULE(CONFIG_SND_EDMA_SOC))
+> -	case MCASP_VERSION_1:
+> -	case MCASP_VERSION_2:
+> -	case MCASP_VERSION_3:
+>   		ret = edma_pcm_platform_register(&pdev->dev);
+> -		break;
+> +#else
+> +		dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
+> +		ret = -EINVAL;
+>   #endif
+> +		break;
+> +	case PCM_SDMA:
+>   #if IS_BUILTIN(CONFIG_SND_OMAP_SOC) || \
+>   	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
+>   	 IS_MODULE(CONFIG_SND_OMAP_SOC))
+> -	case MCASP_VERSION_4:
+>   		ret = omap_pcm_platform_register(&pdev->dev);
+> -		break;
+> +#else
+> +		dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
+> +		ret = -EINVAL;
+>   #endif
+> +		break;
+> +	case -EPROBE_DEFER:
+> +		break;
+>   	default:
+> -		dev_err(&pdev->dev, "Invalid McASP version: %d\n",
+> -			mcasp->version);
+> -		ret = -EINVAL;
+> +		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+>   		break;
+>   	}
+>
+>
