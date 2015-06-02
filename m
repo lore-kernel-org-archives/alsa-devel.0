@@ -1,36 +1,53 @@
-From: Mikko Rapeli <mikko.rapeli@iki.fi>
-Subject: Re: [PATCH 30/98] hdspm.h: use __u8, __u32 and __u64 from
- linux/types.h
-Date: Tue, 2 Jun 2015 22:18:56 +0300
-Message-ID: <20150602191856.GR12550@lakka.kapsi.fi>
-References: <1433000370-19509-1-git-send-email-mikko.rapeli@iki.fi>
- <1433000370-19509-31-git-send-email-mikko.rapeli@iki.fi>
- <s5ha8wl8blx.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/7] ASoC: rt5677: clean up gpiolib callbacks
+Date: Tue, 2 Jun 2015 20:38:18 +0100
+Message-ID: <20150602193818.GG14071@sirena.org.uk>
+References: <1433200158-6890-2-git-send-email-vz@mleia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hNweOTLwwbnii4NA"
+Return-path: <linux-gpio-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5ha8wl8blx.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-api@vger.kernel.org
+In-Reply-To: <1433200158-6890-2-git-send-email-vz@mleia.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Vladimir Zapolskiy <vz@mleia.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 31, 2015 at 09:11:54AM +0200, Takashi Iwai wrote:
-> At Sat, 30 May 2015 17:38:22 +0200,
-> Mikko Rapeli wrote:
-> >=20
-> > Fixes userspace compilation errors like:
-> >=20
-> > sound/hdspm.h:43:2: error: unknown type name =E2=80=98uint32_t=E2=80=
-=99
->=20
-> Hmm, how do you get this error at all?
-> The header includes stdint.h for user-space.
 
-Yes, sorry. This patch removes the stdint.h include and uses kernel __u=
-32
-types instead. Will fix the commit message. Thanks!
+--hNweOTLwwbnii4NA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--Mikko
+On Tue, Jun 02, 2015 at 02:09:13AM +0300, Vladimir Zapolskiy wrote:
+
+> +		if (value)
+> +			val = RT5677_GPIO_OUT_HI(offset);
+
+It seems like a greater variation in variable names might be called for
+here.
+
+>  		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
+> -			0x1 << (offset * 3 + 1), !!value << (offset * 3 + 1));
+> +				   RT5677_GPIO_OUT_MASK(offset), val);
+
+Besides, isn't the minimal change here just to remove the !! (or do
+nothing)?  C defines a mapping between boolean and integer values.
+
+--hNweOTLwwbnii4NA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbgYpAAoJECTWi3JdVIfQtiwH/0DUGHn1jhStZSh/9Ppfm3hJ
+vOaQ6AtLLg6obEzU5Ay+vueBXEaXR/dindckYezVWIdpTX/Gqd0l4o9q5Ubp6CUi
+JYmVR1sfTP3PjZk048cqbnetwgyGYQTZ1k+tV1xvSE09Zm26wtXNbg+PPCwRzM2I
+sJ9DfOyxmlPs0UgcLWyy9eQymywHFu2Y+b8H0yekIKKOB/QciCiXcw/o/P+2kndY
+Whkndu3dk40dv9jL9gWWgkv601GFC938OjHpJtm3JhCyj2Tf3TT3O/3v/X4g6cRa
+1krqjwlq/AadA9wx27u/6ilmfUXGQNdqQnbSY0T2E7rWkecWs+62HolR9A9XGjA=
+=T4hH
+-----END PGP SIGNATURE-----
+
+--hNweOTLwwbnii4NA--
