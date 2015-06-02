@@ -1,20 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [WM5102/ARIZONA] spi driver needs to support ACPI
-Date: Tue, 02 Jun 2015 13:13:57 -0500
-Message-ID: <556DF265.6000209@linux.intel.com>
-References: <CAKor6TdtBEf9cN-EFw0BpRd4EbAKYXgfWh_PbSiG5=EhC1peew@mail.gmail.com>
- <555A1357.3090905@linux.intel.com>
- <CAKor6TerixSeaVYUs6uprcPwUvoNkkPhHx8Ap9apTbPW+1o4aA@mail.gmail.com>
- <CAKor6TfK_m2LLAKsCwaHq47wQCfK_g6ps_tAWr5CRVqnbfsrNw@mail.gmail.com>
- <CAKor6TdCBoh91XoGMKj1qWAAx0AV8MnPb_Oq8T7YsCj1m7rycA@mail.gmail.com>
+From: Sergey Kiselev <sergey.kiselev@intel.com>
+Subject: Re: [PATCH] ASoC: wm8731: initialize the hardware when
+ loading the codec driver; use regmap for I/O
+Date: Tue, 2 Jun 2015 11:33:18 -0700
+Message-ID: <20150602113318.918151bd4112a407da314099@intel.com>
+References: <20150530003455.4c4d67eb444b1ceb45d3148c@intel.com>
+ <556C1FCD.1070905@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C7EC02652E8
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 20:14:20 +0200 (CEST)
-In-Reply-To: <CAKor6TdCBoh91XoGMKj1qWAAx0AV8MnPb_Oq8T7YsCj1m7rycA@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41D9E26058D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 20:33:21 +0200 (CEST)
+In-Reply-To: <556C1FCD.1070905@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,354 +22,222 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Hartmann <cornogle@googlemail.com>, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/02/2015 03:34 AM, Christian Hartmann wrote:
-> hi list again,
-> 
-> I have patched the torvalds/master branch currently rc6
-> and I have no NULL pointer exception anymore.
-> 
-> I will send each patch separately
-> 
-> Of course no (working) soundcard yet..
-> 
-> so let be try to describe what is actually open or resolved for me:
-> 
-> * the spi master 37622 (pxa2xx) does not fail to add the SPI slave spi-WM510205
-> pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-> 
-> * ALSA device list: no soundcards found
-> * in dmesg I found two message indicating that something seems to be
-> missing yet:
-> 
-> sst-acpi 80860F28:00: No matching ASoC machine driver found
-> intel-sst-acpi 80860F28:00: No matching machine driver found
-> 
-> 
-> snip of dmesg 4.1.0.42-rc6
-> 
-> 
-> [    6.075170] sst-acpi 80860F28:00: No matching ASoC machine driver found
-> [    6.106787] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
-> [    6.106865] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
-> [    6.107058] spi spi-WM510205:00: 8333333 Hz actual, PIO
-> [    6.107065] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
-> [    6.107151] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-> [    6.114510] rfkill_gpio LNV4752:00: GPIO lookup for consumer reset
-> [    6.114519] rfkill_gpio LNV4752:00: using ACPI for GPIO lookup
-> [    6.114526] acpi LNV4752:00: GPIO: looking up reset-gpios
-> [    6.114533] acpi LNV4752:00: GPIO: _DSD returned LNV4752:00 3 0 0 0
-> [    6.114607] no flags found for reset
-> [    6.114619] rfkill_gpio LNV4752:00: GPIO lookup for consumer shutdown
-> [    6.114623] rfkill_gpio LNV4752:00: using ACPI for GPIO lookup
-> [    6.114628] acpi LNV4752:00: GPIO: looking up shutdown-gpios
-> [    6.114633] acpi LNV4752:00: GPIO: _DSD returned LNV4752:00 3 1 0 0
-> [    6.114669] acpi LNV4752:00: GPIO: looking up shutdown-gpio
-> [    6.114675] acpi LNV4752:00: GPIO: looking up 0 in _CRS
-> [    6.114711] gpio-411 (reset): gpiod_request: status -16
-> [    6.114849] rfkill_gpio LNV4752:00: LNV4752:00 device registered.
-> [    6.247784] intel_sst_acpi 80860F28:00: No matching machine driver found
-> 
-> 
-> I have grepped the string 80860F28 in the ACPI DSDT table (->
-> dsdt.dsl) and found
-> 
->     {
->         Device (LPEA)
->         {
->             Name (_ADR, Zero)  // _ADR: Address
->             Name (_HID, "80860F28" /* Intel SST Audio DSP */)  //
-> _HID: Hardware ID
->             Name (_CID, "80860F28" /* Intel SST Audio DSP */)  //
-> _CID: Compatible ID
->             Name (_DDN, "Intel(R) Low Power Audio Controller -
-> 80860F28")  // _DDN: DOS Device Name
->             Name (_SUB, "17AA7004")  // _SUB: Subsystem ID
->             Name (_UID, One)  // _UID: Unique ID
->             Name (_DEP, Package (0x01)  // _DEP: Dependencies
->             {
->                 ^SPI1.AUDI
->             })
->             Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
->             {
->                 PLPE
->             })
->             Method (_STA, 0, NotSerialized)  // _STA: Status
->             {
->                 If (LAnd (LEqual (LPEE, 0x02), LEqual (LPED, Zero)))
->                 {
->                     Return (0x0F)
->                 }
-> 
->                 Return (Zero)
->             }
-> 
-> So how to bind the intel_sst_acpi with the WM5102 arizona coded and
-> its hub named arizone ???
-> 
-> Any suggestions or new directions?
+Hi,
 
-In your DSDT table, you need to leave the LPEA device alone. this is Intel only
+I generated a new patch that fixes the issues indicated by Lars.
 
-You will need to have a second device for your codec that is either a child of the I2C (or SPI?) controllers. This second device will have an HID that you need to include in the sst-acpi.c code. when the LPEA driver starts, it will look if this codec HID is present and if yes load the relevant machine driver and firmware.
-
-see for example the baytrail code, it uses the codec ID to identify which machine driver is needed. this is where you would need to add the wolfson HID.
-
-static struct sst_acpi_mach baytrail_machines[] = {
-	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
-	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master" },
-	{}
-};
-
-
-Maybe you can share your DSDT table (factory settings) if you want more help.
-Also note that HIDs are specified based on rules defined by uefi.org, the "WM5102" does not follow any of the usual conventions. My guess is that the HID should be prefixed by the Wolfson PCI vendor ID.
-
-
-> ....
->  
+On Mon, 1 Jun 2015 11:03:09 +0200
+Lars-Peter Clausen <lars@metafoo.de> wrote:
+> It looks like the patch has been made against an older tree. It will 
+> not apply on-top of ASoC for-next branch.
 > 
-> cheers
-> chris
+
+Rebased.
+
+> There is no need to replace all the snd_soc_${io}() calls with 
+> regmap_${io}(). The snd_soc methods will just call the corresponding 
+> regmap method internally. But if you really want to do it this should 
+> be done in a separate patch.
+> 
+
+I kept the snd_soc_${io} except of reset and wm8731_hw_init, that are called before codec is registered (so snd_soc_${io} can't be used there). I'll generate a separate patch for regmap transistion.
+
+> This is not necessary, the core will put the CODEC into BIAS_STANDBY 
+> mode, after the probe callback has been called. So the whole probe 
+> function can be dropped.
 > 
 > 
-> 2015-05-19 15:39 GMT+02:00 Christian Hartmann <cornogle@googlemail.com>:
->> Hi,
->>
->> at the moment I am totally confused. I thought adding an ACPI ID is
->> trivial, but it is not.
->>
->> I have again a null pointer exception in arizona_spi_probe()
->>
->> could it be with the new num_chipselect value in spi-pxa2xx.c ??
->> I attach the trace of the last try
->>
->> Any hints or tips are welcome.
->>
->> cheers
->> chris
->>
->> 2015-05-19 11:04 GMT+02:00 Christian Hartmann <cornogle@googlemail.com>:
->>> Hi,
->>>
->>> so the ACPI id string, which I want to add to arizona-spi.c should be
->>>
->>> WM510205 ??
->>>
->>> I have changed the ACPI string to
->>>
->>> {"WM510205", WM5102},
->>>
->>> now and give it a try.
->>>
->>> cheers
->>> chris
->>>
->>> 2015-05-18 18:29 GMT+02:00 Pierre-Louis Bossart
->>> <pierre-louis.bossart@linux.intel.com>:
->>>> On 5/15/15 4:16 AM, Christian Hartmann wrote:
->>>>>
->>>>> Hi list,
->>>>>
->>>>>
->>>>> I need ACPI support for the arizona-core / arizona-spi driver for the
->>>>> ACPI ID WM5102.
->>>>> This audio codec is build into the Lenovo Yoga 851F. This device is a
->>>>> 32Bit (UEFI) system
->>>>>
->>>>>
->>>>> http://support.lenovo.com/de/de/products/tablets/yoga-series/yoga-tablet-2-851
->>>>>
->>>>>
->>>>> I have tested with vanilla kernels from kernel.org 3.19.y ,4.0.y and
->>>>> master (from torvalds) currently its 4.1.0-rc3. As distribution I am
->>>>> working with Fedora / Fedlet was the initial install image.
->>>>>
->>>>> With all vanilla kernels I got at first an error message from spi32766:
->>>>>
->>>>> [ 0.296297] pxa2xx-spi 80860F0E:00: cs1 >= max 1
->>>>> [ 0.296311] spi_master spi32766: failed to add SPI device
->>>>> WM510205:00 from ACPI
->>>>>
->>>>> so I have at first patched as suggested by broonie the arizona-core
->>>>>
->>>>> commit 48203a0fede057d6a8c5f6872c53326395350f45
->>>>> Author: somebody anybody <somebody@foobar.com>
->>>>> Date:   Mon May 11 13:35:43 2015 +0200
->>>>>
->>>>>      spi-pxa2xx : raise chipselect
->>>>>
->>>>>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>>>>
->>>>> diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
->>>>> index e3223ac..9c919ea 100644
->>>>> --- a/drivers/spi/spi-pxa2xx.c
->>>>> +++ b/drivers/spi/spi-pxa2xx.c
->>>>> @@ -1279,7 +1279,7 @@ pxa2xx_spi_acpi_get_pdata(struct platform_device
->>>>> *pdev)
->>>>>          if (adev->pnp.unique_id && !kstrtoint(adev->pnp.unique_id, 0,
->>>>> &devid))
->>>>>                  ssp->port_id = devid;
->>>>>
->>>>> -       pdata->num_chipselect = 1;
->>>>> +       pdata->num_chipselect = 20;
->>>>>          pdata->enable_dma = true;
->>>>>
->>>>>          return pdata;
->>>>>
->>>>> This leds the spi master do the further ACPI configuration and inital
->>>>> setup for the arizona-spi device, but adding the ACPI ID to it
->>>>> does not work yet as expected:
->>>>>
->>>>> The current last patchset on top of master is
->>>>>
->>>>>
->>>>> Author: somebody anybody <somebody@foobar.com>
->>>>> Date:   Wed May 13 11:36:25 2015 +0200
->>>>>
->>>>>      arizona : added ACPI id of wm5102 to SPI driver, too
->>>>>
->>>>>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>>>>
->>>>> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
->>>>> index 1e845f6..c19a4c1 100644
->>>>> --- a/drivers/mfd/arizona-spi.c
->>>>> +++ b/drivers/mfd/arizona-spi.c
->>>>> @@ -17,6 +17,7 @@
->>>>>   #include <linux/regulator/consumer.h>
->>>>>   #include <linux/slab.h>
->>>>>   #include <linux/spi/spi.h>
->>>>> +#include <linux/acpi.h>
->>>>>   #include <linux/of.h>
->>>>>
->>>>>   #include <linux/mfd/arizona/core.h>
->>>>> @@ -82,6 +83,15 @@ static int arizona_spi_remove(struct spi_device *spi)
->>>>>          return 0;
->>>>>   }
->>>>>
->>>>> +#ifdef CONFIG_ACPI
->>>>> +static struct acpi_device_id wm5102_acpi_match[] = {
->>>>> +               { "WM5102", 0},
->>>>> +               { "WM510205", 0},
->>>>> +               { },
->>>>> +};
->>>>> +MODULE_DEVICE_TABLE(acpi, wm5102_acpi_match);
->>>>> +#endif
->>>>> +
->>>>>   static const struct spi_device_id arizona_spi_ids[] = {
->>>>>          { "wm5102", WM5102 },
->>>>>          { "wm5110", WM5110 },
->>>>> @@ -96,6 +106,9 @@ static struct spi_driver arizona_spi_driver = {
->>>>>                  .owner  = THIS_MODULE,
->>>>>                  .pm     = &arizona_pm_ops,
->>>>>                  .of_match_table = of_match_ptr(arizona_of_match),
->>>>> +#ifdef CONFIG_ACPI
->>>>> +               .acpi_match_table = ACPI_PTR(wm5102_acpi_match),
->>>>> +#endif
->>>>>          },
->>>>>          .probe          = arizona_spi_probe,
->>>>>          .remove         = arizona_spi_remove,
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> commit 268e21d29c942205e40f749c6d71c77839dc67da
->>>>> Author: somebody anybody <somebody@foobar.com>
->>>>> Date:   Wed May 13 11:36:04 2015 +0200
->>>>>
->>>>>      arizona : added ACPI id of wm5102 to i2c driver
->>>>>
->>>>>      Signed-off-by: somebody anybody <somebody@foobar.com>
->>>>>
->>>>> diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
->>>>> index ff782a5..45ece1b 100644
->>>>> --- a/drivers/mfd/arizona-i2c.c
->>>>> +++ b/drivers/mfd/arizona-i2c.c
->>>>> @@ -18,6 +18,7 @@
->>>>>   #include <linux/regulator/consumer.h>
->>>>>   #include <linux/slab.h>
->>>>>   #include <linux/of.h>
->>>>> +#include <linux/acpi.h>
->>>>>
->>>>>   #include <linux/mfd/arizona/core.h>
->>>>>
->>>>> @@ -85,6 +86,15 @@ static int arizona_i2c_remove(struct i2c_client *i2c)
->>>>>          return 0;
->>>>>   }
->>>>>
->>>>> +#ifdef CONFIG_ACPI
->>>>> +static struct acpi_device_id wm5102_acpi_match[] = {
->>>>> +               { "WM5102", 0},
->>>>> +               { "WM510205", 0},
->>>>> +               { },
->>>>
->>>>
->>>> Those IDs don't really look like ACPI ones? Isn't there a rule that the _HID
->>>> is represented by a 4-letter vendor ID followed by part ID? see
->>>> http://www.uefi.org/PNP_ACPI_Registry
->>>>
->>>>
->>>>> +};
->>>>> +MODULE_DEVICE_TABLE(acpi, wm5102_acpi_match);
->>>>> +#endif
->>>>> +
->>>>>   static const struct i2c_device_id arizona_i2c_id[] = {
->>>>>          { "wm5102", WM5102 },
->>>>>          { "wm5110", WM5110 },
->>>>> @@ -100,6 +110,9 @@ static struct i2c_driver arizona_i2c_driver = {
->>>>>                  .owner  = THIS_MODULE,
->>>>>                  .pm     = &arizona_pm_ops,
->>>>>                  .of_match_table = of_match_ptr(arizona_of_match),
->>>>> +#ifdef CONFIG_ACPI
->>>>> +               .acpi_match_table = ACPI_PTR(wm5102_acpi_match),
->>>>> +#endif
->>>>>          },
->>>>>          .probe          = arizona_i2c_probe,
->>>>>          .remove         = arizona_i2c_remove,
->>>>>
->>>>>
->>>>>
->>>>> with these two patches the local master branch compiles fine, but at
->>>>> initialzing the arizona-spi driver gots a NULL pointer exception.
->>>>>
->>>>> I attach the whole dmesg of 4.1.0-rc3 (build 4.1.0.24-rc3).
->>>>>
->>>>> I need some assistance or hints to the right direction, I am looking
->>>>> myself and I also try what I can, but I think it would be easy peasy
->>>>> with some experts like here on this list :)
->>>>>
->>>>>
->>>>> PS: the message : spi_master spi32766: raised num_chipselect to 20 for
->>>>> WM510205:00
->>>>>
->>>>> is a dev_err() line added to the function static acpi_status
->>>>> acpi_spi_add_device(), there I had raised the num_chipselect first
->>>>> (that was wrong, the raise is now done as in the first patch above.
->>>>> this is only a debug message and will be removed soon)
->>>>>
->>>>>
->>>>> PPS: for me it seems that there is a missing 'link' from WM5102 to the
->>>>> sst-acpi 80860F28:00 device, which complaints NOW / the first time
->>>>> with the three patches applied on top on master.... will have a look
->>>>> into it.
->>>>>
->>>>> I hope I got this device working with some more help from you.
->>>>>
->>>>> cheers
->>>>> chris
->>>>>
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> Alsa-devel mailing list
->>>>> Alsa-devel@alsa-project.org
->>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>>>
->>>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Same here, the core already puts the CODEC into BIAS_OFF mode before 
+> the remove callback is called.
 > 
+
+wm8731_probe and wm8731_remove callbacks removed.
+
+This patch moves the request supplies and hardware reset and initialization from wm8731_probe to wm8731_i2c_probe and wm8731_spi_probe. So that the codec hardware is initialized when loading the codec driver, and not when loading the machine driver.
+
+Signed-off-by: Sergey Kiselev <sergey.kiselev@intel.com>
+---
+ wm8731.c |   82 +++++++++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 52 insertions(+), 30 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 915ea11..8b19205 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -84,7 +84,7 @@ static bool wm8731_writeable(struct device *dev, unsigned int reg)
+ 	return reg <= WM8731_RESET;
+ }
+ 
+-#define wm8731_reset(c)	snd_soc_write(c, WM8731_RESET, 0)
++#define wm8731_reset(m)	regmap_write(m, WM8731_RESET, 0)
+ 
+ static const char *wm8731_input_select[] = {"Line In", "Mic"};
+ 
+@@ -571,44 +571,48 @@ static struct snd_soc_dai_driver wm8731_dai = {
+ 	.symmetric_rates = 1,
+ };
+ 
+-static int wm8731_probe(struct snd_soc_codec *codec)
++static int wm8731_request_supplies(struct device *dev,
++		struct wm8731_priv *wm8731)
+ {
+-	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0, i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm8731->supplies); i++)
+ 		wm8731->supplies[i].supply = wm8731_supply_names[i];
+ 
+-	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8731->supplies),
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(wm8731->supplies),
+ 				 wm8731->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
++		dev_err(dev, "Failed to request supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8731->supplies),
+ 				    wm8731->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		dev_err(dev, "Failed to enable supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = wm8731_reset(codec);
++	return 0;
++}
++
++static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
++{
++	int ret = 0;
++
++	ret = wm8731_reset(wm8731->regmap);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
++		dev_err(dev, "Failed to issue reset: %d\n", ret);
+ 		goto err_regulator_enable;
+ 	}
+ 
+-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	/* Latch the update bits */
+-	snd_soc_update_bits(codec, WM8731_LOUT1V, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_ROUT1V, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_LINVOL, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_RINVOL, 0x100, 0);
++	/* Clear POWEROFF, keep everything else disabled */
++	regmap_write(wm8731->regmap, WM8731_PWR, 0x7f);
+ 
+ 	/* Disable bypass path by default */
+-	snd_soc_update_bits(codec, WM8731_APANA, 0x8, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_APANA, 0x8, 0);
++
++	regcache_mark_dirty(wm8731->regmap);
+ 
+ 	/* Regulators will have been enabled by bias management */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+@@ -621,19 +625,7 @@ err_regulator_enable:
+ 	return ret;
+ }
+ 
+-/* power down chip */
+-static int wm8731_remove(struct snd_soc_codec *codec)
+-{
+-	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+-
+-	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+-
+-	return 0;
+-}
+-
+ static struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
+-	.probe =	wm8731_probe,
+-	.remove =	wm8731_remove,
+ 	.set_bias_level = wm8731_set_bias_level,
+ 	.suspend_bias_off = true,
+ 
+@@ -690,6 +682,13 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 
+ 	mutex_init(&wm8731->lock);
+ 
++	spi_set_drvdata(spi, wm8731);
++
++	ret = wm8731_request_supplies(&spi->dev, wm8731);
++	if (ret != 0) {
++		return ret;
++	}
++
+ 	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
+ 	if (IS_ERR(wm8731->regmap)) {
+ 		ret = PTR_ERR(wm8731->regmap);
+@@ -698,7 +697,10 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
+-	spi_set_drvdata(spi, wm8731);
++	ret = wm8731_hw_init(&spi->dev, wm8731);
++	if (ret != 0) {
++		return ret;
++	}
+ 
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+@@ -712,7 +714,12 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 
+ static int wm8731_spi_remove(struct spi_device *spi)
+ {
++	struct wm8731_priv *wm8731 = spi_get_drvdata(spi);
++
+ 	snd_soc_unregister_codec(&spi->dev);
++
++	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
++
+ 	return 0;
+ }
+ 
+@@ -754,6 +761,13 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 
+ 	mutex_init(&wm8731->lock);
+ 
++	i2c_set_clientdata(i2c, wm8731);
++
++	ret = wm8731_request_supplies(&i2c->dev, wm8731);
++	if (ret != 0) {
++		return ret;
++	}
++
+ 	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
+ 	if (IS_ERR(wm8731->regmap)) {
+ 		ret = PTR_ERR(wm8731->regmap);
+@@ -762,7 +776,10 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	i2c_set_clientdata(i2c, wm8731);
++	ret = wm8731_hw_init(&i2c->dev, wm8731);
++	if (ret != 0) {
++		return ret;
++	}
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+@@ -776,7 +793,12 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 
+ static int wm8731_i2c_remove(struct i2c_client *client)
+ {
++	struct wm8731_priv *wm8731 = i2c_get_clientdata(client);
++
+ 	snd_soc_unregister_codec(&client->dev);
++
++	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
++
+ 	return 0;
+ }
+ 
+--
+Sergey
