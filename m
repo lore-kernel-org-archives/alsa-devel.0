@@ -1,18 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda/realtek - Add a fixup for another
-	Acer Aspire 9420
-Date: Tue,  2 Jun 2015 20:00:27 +0200
-Message-ID: <1433268027-4975-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
+Date: Tue, 2 Jun 2015 19:13:26 +0100
+Message-ID: <20150602181326.GB14071@sirena.org.uk>
+References: <CABymUCNvM=k4tWJutpzoK-VFvKhBC4EGjh_OzWYMMRppUqvSOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6489624969728516948=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0365D2605A2
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 20:00:29 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 69B9DAB5F
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 18:00:28 +0000 (UTC)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B78A32652CE
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 20:13:36 +0200 (CEST)
+In-Reply-To: <CABymUCNvM=k4tWJutpzoK-VFvKhBC4EGjh_OzWYMMRppUqvSOA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Acer Aspire 9420 with ALC883 (1025:0107) needs the fixup for EAPD to
-make the sound working like other Aspire models.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=94111
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+--===============6489624969728516948==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2vfFyZRy2guiefOI"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 80be33ce1a9e..0320cb523d9e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2168,6 +2168,7 @@ static const struct hda_fixup alc882_fixups[] = {
- static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x006c, "Acer Aspire 9810", ALC883_FIXUP_ACER_EAPD),
- 	SND_PCI_QUIRK(0x1025, 0x0090, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
-+	SND_PCI_QUIRK(0x1025, 0x0107, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
- 	SND_PCI_QUIRK(0x1025, 0x010a, "Acer Ferrari 5000", ALC883_FIXUP_ACER_EAPD),
- 	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
- 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_FIXUP_ACER_EAPD),
--- 
-2.4.2
+
+--2vfFyZRy2guiefOI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 01, 2015 at 09:42:34AM +0800, Jun Nie wrote:
+
+> So I need implement dai link in machine audio card driver, while not
+> use simple card and device tree initialization. In this way, I surely
+> can embed HDMI audio codec in HDMI driver. Is that right?
+
+I'm sorry, I don't entirely follow what you're saying here.
+
+> I had try to initialize audio all from dts, so need a HDMI codec dt
+> node to connect with DAI. However, I cannot find a way to create an
+> independent HDMI CODEC dt node because it is brought up from HDMI
+> driver. If my above understanding is correct, a machine level DAI link
+> shall resolve this issue with dropping simple card and DAI link in
+> dts. Thanks for your comments!
+
+If the HDMI encoder is simple I'd expect it to be possible to use it
+with simple-card.  If it isn't then we can look at why.
+
+> BTW: HDMI driver is far from mature, so you did not see HDMI function
+> implementation in this patch serial.
+
+Sure, no problem.
+
+--2vfFyZRy2guiefOI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbfJGAAoJECTWi3JdVIfQaRcH/0FOck7LcqQpBRJ8SpEsqyUd
+NQORMyaujcBH2OXDpE90tVPMZxDIdl885QQw/p1mhTCFgEk3lC18QwgnNnkkx/a2
+dFdwLA/jnZIwWq8C8iIkmW/5Ln+3raG4w7tOpQg+rTfYjvGj37KPrVLybqoUmW38
+xAdw0HO1/t92ToPXMn8nYBS4rZv++fa/gv4ksnpDMAu/a7Us4UVQUIydqmZhYkZk
+iLO4bfbS+mEbN2wVk1j/Vu4gSe+cNDBp1ld3SSrBqGQ/eDEanKYwUeZlYxu0qYjP
+/qRrBql9EonLOLxVxP/IqUdYe/E4OAdQChRYGWXD5mW5uJD4VjdX1EjDtlwRu/E=
+=Kudx
+-----END PGP SIGNATURE-----
+
+--2vfFyZRy2guiefOI--
+
+--===============6489624969728516948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6489624969728516948==--
