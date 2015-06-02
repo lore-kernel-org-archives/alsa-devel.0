@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
 	driver
-Date: Tue, 2 Jun 2015 11:42:33 +0100
-Message-ID: <20150602104233.GG14071@sirena.org.uk>
+Date: Tue, 2 Jun 2015 11:45:16 +0100
+Message-ID: <20150602104516.GH14071@sirena.org.uk>
 References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
  <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
  <20150529174115.GR21577@sirena.org.uk>
- <20150601051358.GI3140@localhost> <s5hy4k46lk1.wl-tiwai@suse.de>
+ <s5h4mmv9r7m.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3923644412540551382=="
+Content-Type: multipart/mixed; boundary="===============0919468100893607679=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D301126059E
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 12:42:37 +0200 (CEST)
-In-Reply-To: <s5hy4k46lk1.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6509F260517
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 12:45:21 +0200 (CEST)
+In-Reply-To: <s5h4mmv9r7m.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,59 +29,58 @@ Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, liam.r.girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3923644412540551382==
+--===============0919468100893607679==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N8NGGaQn1mzfvaPg"
+	protocol="application/pgp-signature"; boundary="nywXBoy70X0GaB8B"
 Content-Disposition: inline
 
 
---N8NGGaQn1mzfvaPg
+--nywXBoy70X0GaB8B
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 01, 2015 at 07:32:14AM +0200, Takashi Iwai wrote:
-> Vinod Koul wrote:
+On Fri, May 29, 2015 at 08:25:01PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> > > > +	ret = request_threaded_irq(hda->pci->irq, azx_interrupt,
-> > > > +			azx_threaded_handler,
-> > > > +			hda->msi ? 0 : IRQF_SHARED,
-> > > > +			KBUILD_MODNAME, sbus);
+> > > +/* PCI register access. */
+> > > +static void pci_azx_writel(u32 value, u32 __iomem *addr)
+> > > +{
+> > > +	writel(value, addr);
+> > > +}
 
-> > > Why not just always request the interrupt as shared - we don't seem to
-> > > care in the interrupt handling code?
+> > These wrappers are setting off alarm bells - why can't we just use the
+> > called functions directly, and given the parameters (which have just a
+> > raw pointer and value) what else could the implementation be?
 
-> > I think we can move this to shared only
+> Tegra has no direct byte access but only aligned 32bit accesses.
+> That's why we have the redirection.
 
-> MSI is the exclusive irq, thus shouldn't be shared.
+Ugh, and the functions are macros so can't be used directly.  I'd still
+expect to see these ops be defined in some central place and reused.
 
-Why does the driver care though?  IRQF_SHARED is advertising the
-capabilities of the hander, not a requirement on the hardware - if the
-interrupt physically can't be shared then the ability to share it will
-never get used but that shouldn't matter.
-
---N8NGGaQn1mzfvaPg
+--nywXBoy70X0GaB8B
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVbYiYAAoJECTWi3JdVIfQ3EUH/jUoHLI+X9eUWIwpiNkuPtVJ
-euwZPXMppN0Xae7ocirpdBW4nfQrCXR3Td3j2AuCYfuS4DOGWFV/fazYrRYacieP
-2hF7S9bfEd4CCieaEckj5p1rqm/h73o60sehUOB6IdXVZbrZVXkwCWRJ+WpG4p2A
-aBo8OwUFFwO9y9p5DfE849Ns8NpDQ+xDAEBLec6obYcsnQPAg8KjaXxuc1YfakFO
-ukZUVBZRETOIf8v/le0cqlEOicp3TmwRaZyMQyAOQUbrT7lL/w5dlk6FPSCA1/aU
-Kd4F4FyUPAzNg3u7Ety8kMOW4D5m4QcrtQPiLg4oSDeLTNnwSL7tQFdOGy6W108=
-=q8Ym
+iQEcBAEBCAAGBQJVbYk7AAoJECTWi3JdVIfQh/0H/jvBg9W/VG9hGZ9vbmNA5yPD
+p7gTmKjFXQ7Tdd8KbD5iDbkHNoM5P7a7qnRkGaOadgYGiVmEU4OvLjOWezJhNMvy
+rpeONW7IQO67VXpjB4ugDWZe83z9fEo+Zhx+IdOtOR5r7dl95ZIEm+lskfUt3NkM
+DsCGWp88kl0A03yehRnCgjY5mf8EooMVGDWd8nx/aQx2KDbSIGWlTEwRbxuURPhH
+hVlNSH3JnOoFqezutvrW/HSQrRcud4dSutxMaD4V95mdrWj+Eh/0uVtbqU0CEr8/
+WhXt3wqM6ItzitUNuQ1urTxnDf4P7bMtMUjy6KeNrIcww7mHWT5qshfuuZy2UAA=
+=Gux4
 -----END PGP SIGNATURE-----
 
---N8NGGaQn1mzfvaPg--
+--nywXBoy70X0GaB8B--
 
---===============3923644412540551382==
+--===============0919468100893607679==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3923644412540551382==--
+--===============0919468100893607679==--
