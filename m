@@ -1,17 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: don't need compress offload
-	for broadwell
-Date: Tue, 2 Jun 2015 11:58:53 +0100
-Message-ID: <20150602105853.GN14071@sirena.org.uk>
-References: <1432972727-9602-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
+	driver
+Date: Tue, 2 Jun 2015 12:07:32 +0100
+Message-ID: <20150602110732.GO14071@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
+ <20150529174115.GR21577@sirena.org.uk>
+ <s5h4mmv9r7m.wl-tiwai@suse.de>
+ <20150602104516.GH14071@sirena.org.uk>
+ <s5htwuqe60j.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2927335234989942990=="
+Content-Type: multipart/mixed; boundary="===============5229908483907237804=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D97EF26060C
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 12:58:57 +0200 (CEST)
-In-Reply-To: <1432972727-9602-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 24F29260517
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 13:07:38 +0200 (CEST)
+In-Reply-To: <s5htwuqe60j.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2927335234989942990==
+--===============5229908483907237804==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="R3SAtXwgGp429mN7"
+	protocol="application/pgp-signature"; boundary="sBcizk6cgRZY6rnJ"
 Content-Disposition: inline
 
 
---R3SAtXwgGp429mN7
+--sBcizk6cgRZY6rnJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, May 30, 2015 at 03:58:47PM +0800, Jie Yang wrote:
-> We don't need compress offload feature for broadwell broadwell machine,
-> here remove the non exist dependency.
+On Tue, Jun 02, 2015 at 12:53:00PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Applied, thanks.
+> > Ugh, and the functions are macros so can't be used directly.  I'd still
+> > expect to see these ops be defined in some central place and reused.
 
---R3SAtXwgGp429mN7
+> Maybe we can lift up some time later, but it's nothing more than an
+> optimization, so in a low priority for now.
+
+It's not like it's hard to do and given that my concerns around this
+series mostly center around code reuse and abstraction I'd rather not
+have big warning signs type issues sitting there obscuring other things.
+
+--sBcizk6cgRZY6rnJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVbYxsAAoJECTWi3JdVIfQGo4H/RdFiYIlkAoKVfIolWvvGHyL
-YNjFuEEHhU9/IB7IuzHjjYYJV7m8ukgFkEqVGskP6J/LFliJm1KM5B/rJ0sgjCOM
-cPQEdlgkxjPU20oitVsnZYMmUtcLJWdyelOyjqIhd8mVCuTUHaU+CPgGuD1hbLvo
-ULubRjfgWeBBTOacPlBE/JP8PRVdvUzaixNRdhIUr3eZs5T1Z77q7LPtqzqEtwsa
-EyYBVenHnkqil6cO4/1gBNloq8rpdP3HcA0FRpm2bFLHgeMEft+AIB6oewBepRt7
-M0jzpi9j+DZSRVCXfy4jadnxJnWIL6lytr7n45Ow+BUFhiRYfYJMNoGe1bv5DZw=
-=psFo
+iQEcBAEBCAAGBQJVbY5zAAoJECTWi3JdVIfQsIEH/R1YwGXYmgQwDOZYhNmIHRYm
+y4V7UDg77r1P1XK+QxZL+33oDouW11xkzX9Ca342VvFlAMtOQ35KiQ1+FD78FJKL
+r48tdPlE8NIuOPkxJMOFumSSgmIhEo2fMPk8zRmMZpEybuuzQjWRAdvduzH/ROyY
+oPHIwd9vmIZAObMNWzDDpXj/alHVH35N3bWj4gtbPomrOuwD4BOV6qW5BkDXtxUb
+LhNdKL5PJQdMD/amJkGjdI4X4/+yhdR2fZXHxmP4dTRwT5NiBKiaIQk77krta96z
+84Z3JOuJ4aW9GiGKggkda+lJdv8vr/fhyEDXY9zA5W6kIqEd39zZ2wAzdwPXZbE=
+=L2As
 -----END PGP SIGNATURE-----
 
---R3SAtXwgGp429mN7--
+--sBcizk6cgRZY6rnJ--
 
---===============2927335234989942990==
+--===============5229908483907237804==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2927335234989942990==--
+--===============5229908483907237804==--
