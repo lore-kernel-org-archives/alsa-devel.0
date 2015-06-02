@@ -1,69 +1,61 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Choose PCM driver based on configured
- DMA controller
-Date: Tue, 2 Jun 2015 14:55:10 +0300
-Message-ID: <556D999E.8000306@ti.com>
-References: <bcd986aa18bf41643f1d190739381a890313ac61.1433235274.git.jsarha@ti.com> <556D8600.1060204@ti.com> <556D8F7F.7090803@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: PATCH: wm8731 - reinitialize regmap
+	cache	after hardware reset
+Date: Tue, 2 Jun 2015 12:55:43 +0100
+Message-ID: <20150602115543.GF3449@opensource.wolfsonmicro.com>
+References: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <556D8F7F.7090803@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, misael.lopez@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C90326506E
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 13:55:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CA+abuVebbr9Cif_SfB+JcNhUOMV70fdWa-Q-nk+gFv9H5MRtgQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergey Kiselev <skiselev@gmail.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/02/2015 02:11 PM, Jyri Sarha wrote:
->>> -    switch (mcasp->version) {
->>> +    ret =3D -EINVAL;
->>
->> Why? What was the problem with setting the ret in the default case?
->>
->=20
-> I would need to have that I three places now for the #else cases, whe=
-n
-> devicetree tries to configure pcm driver that has not been compiled.
+On Thu, May 28, 2015 at 09:34:09AM -0700, Sergey Kiselev wrote:
+> Hi,
+> 
+> I am working on a machine driver that uses wm8731 codec and I've
+> noticed that it will not work after rmmod/modprobe of that machine
+> driver. The issue is that wm8731_probe() resets the hardware, but it
+> doesn't reinitialize the regmap cache to the default values.
+> 
+> The patch below fixes this issue.
+> 
+> I also skimmed through other codecs, and some of them might have
+> similar issue (wm8510.c, wm8711.c, wm8750.c, wm8753.c, wm8940.c,
+> wm8960.c, wm8971.c, wm8974.c, wm8988.c, wm8990.c)
+> 
+> Another way to avoid this issue might be resetting the codec in the
+> *_spi_probe()/*_i2c_probe(), so that it only gets reset once when
+> codec is loading.
+> 
+> Thanks in advance for any comments/suggestions on the patch.
+> 
+> Thanks,
+> Sergey
+> 
+> Signed-off-by: Sergey Kiselev <skiselev@gmail.com>
+> 
 
-I see now, thanks for pointing out ;)
+In addition to the comments from Mark and Liam, if you could CC
+patches@opensource.wolfsonmicro.com when submitting patches to
+the Wolfson stuff, ensures we will see them going through, it is
+easy to miss stuff on the generic lists.
 
->>> +    switch (davinci_mcasp_get_dma_type(mcasp)) {
->>> +    case MCASP_EDMA:
->>>   #if IS_BUILTIN(CONFIG_SND_EDMA_SOC) || \
->>>       (IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
->>>        IS_MODULE(CONFIG_SND_EDMA_SOC))
->>> -    case MCASP_VERSION_1:
->>> -    case MCASP_VERSION_2:
->>> -    case MCASP_VERSION_3:
->>>           ret =3D edma_pcm_platform_register(&pdev->dev);
->>> -        break;
->>> +#else
->>> +        dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
->>>   #endif
->>> +        break;
->>> +    case MCASP_SDMA:
->>>   #if IS_BUILTIN(CONFIG_SND_OMAP_SOC) || \
->>>       (IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
->>>        IS_MODULE(CONFIG_SND_OMAP_SOC))
->>> -    case MCASP_VERSION_4:
->>>           ret =3D omap_pcm_platform_register(&pdev->dev);
->>> -        break;
->>> +#else
->>> +        dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
->>>   #endif
->>> +        break;
->>>       default:
->>> -        dev_err(&pdev->dev, "Invalid McASP version: %d\n",
->>> -            mcasp->version);
->>> -        ret =3D -EINVAL;
->>> +        dev_err(&pdev->dev, "No DMA controller found\n");
->>>           break;
->>>       }
-
---=20
-P=C3=A9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Charles
