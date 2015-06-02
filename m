@@ -1,129 +1,82 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v2] ASoC: davinci-mcasp: Choose PCM driver based on configured DMA controller
-Date: Tue, 2 Jun 2015 16:49:56 +0300
-Message-ID: <7230089f10ea27a9bd76eb8bfffcef754e71f274.1433252849.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 5/7] ASoC: intel - add Skylake HDA audio
+	driver
+Date: Tue, 2 Jun 2015 15:30:42 +0100
+Message-ID: <20150602143042.GS14071@sirena.org.uk>
+References: <1431341645-2457-1-git-send-email-vinod.koul@intel.com>
+ <1431341645-2457-6-git-send-email-vinod.koul@intel.com>
+ <20150529174115.GR21577@sirena.org.uk>
+ <s5h4mmv9r7m.wl-tiwai@suse.de>
+ <20150602104516.GH14071@sirena.org.uk>
+ <s5htwuqe60j.wl-tiwai@suse.de>
+ <20150602110732.GO14071@sirena.org.uk>
+ <20150602123943.GP3140@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, misael.lopez@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============0369559072749845990=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3C84265080
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 16:30:53 +0200 (CEST)
+In-Reply-To: <20150602123943.GP3140@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Find the configured DMA controller by asking for a DMA channel in the
-probe phase and releasing it right after. The controller device can be
-found via the dma_chan struct and the controller is recognized from
-the compatible property of its device node. The patch assumes EDMA if
-there is no device node.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
-Changes since first patch version:
-- Change enum names from MCASP_?DMA to PCM_?DMA
-- Return PCM_EDMA if !mcasp->dev->of_node
-- Do not ignore possible error code returned by
-  davinci_mcasp_get_dma_type()
+--===============0369559072749845990==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aQ0PHH3iiKbaMI5N"
+Content-Disposition: inline
 
- sound/soc/davinci/davinci-mcasp.c | 68 +++++++++++++++++++++++++++++++++------
- 1 file changed, 58 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index d793494..3b78c3e 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1565,6 +1565,49 @@ static int davinci_mcasp_init_ch_constraints(struct davinci_mcasp *mcasp)
- 	return ret;
- }
- 
-+enum {
-+	PCM_EDMA,
-+	PCM_SDMA,
-+};
-+static const char *sdma_prefix = "ti,omap";
-+
-+static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
-+{
-+	struct dma_chan *chan;
-+	const char *tmp;
-+	int ret = PCM_EDMA;
-+
-+	if (!mcasp->dev->of_node)
-+		return PCM_EDMA;
-+
-+	tmp = mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data;
-+	chan = dma_request_slave_channel_reason(mcasp->dev, tmp);
-+	if (IS_ERR(chan)) {
-+		if (PTR_ERR(chan) != -EPROBE_DEFER)
-+			dev_err(mcasp->dev,
-+				"Can't verify DMA configuration (%ld)\n",
-+				PTR_ERR(chan));
-+		return PTR_ERR(chan);
-+	}
-+	BUG_ON(!chan->device || !chan->device->dev);
-+
-+	if (chan->device->dev->of_node)
-+		ret = of_property_read_string(chan->device->dev->of_node,
-+					      "compatible", &tmp);
-+	else
-+		dev_dbg(mcasp->dev, "DMA controller has no of-node\n");
-+
-+	dma_release_channel(chan);
-+	if (ret)
-+		return ret;
-+
-+	dev_dbg(mcasp->dev, "DMA controller compatible = \"%s\"\n", tmp);
-+	if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
-+		return PCM_SDMA;
-+
-+	return PCM_EDMA;
-+}
-+
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-@@ -1763,27 +1806,32 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	if (ret != 0)
- 		goto err;
- 
--	switch (mcasp->version) {
-+	ret = davinci_mcasp_get_dma_type(mcasp);
-+	switch (ret) {
-+	case PCM_EDMA:
- #if IS_BUILTIN(CONFIG_SND_EDMA_SOC) || \
- 	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
- 	 IS_MODULE(CONFIG_SND_EDMA_SOC))
--	case MCASP_VERSION_1:
--	case MCASP_VERSION_2:
--	case MCASP_VERSION_3:
- 		ret = edma_pcm_platform_register(&pdev->dev);
--		break;
-+#else
-+		dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
-+		ret = -EINVAL;
- #endif
-+		break;
-+	case PCM_SDMA:
- #if IS_BUILTIN(CONFIG_SND_OMAP_SOC) || \
- 	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
- 	 IS_MODULE(CONFIG_SND_OMAP_SOC))
--	case MCASP_VERSION_4:
- 		ret = omap_pcm_platform_register(&pdev->dev);
--		break;
-+#else
-+		dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
-+		ret = -EINVAL;
- #endif
-+		break;
-+	case -EPROBE_DEFER:
-+		break;
- 	default:
--		dev_err(&pdev->dev, "Invalid McASP version: %d\n",
--			mcasp->version);
--		ret = -EINVAL;
-+		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
- 		break;
- 	}
- 
--- 
-1.9.1
+--aQ0PHH3iiKbaMI5N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Jun 02, 2015 at 06:09:43PM +0530, Vinod Koul wrote:
+
+> This is fairly *common* in drivers to use wrappers for hw accesses and yes
+> for overall HDA we can perhaps optimize these as Takashi pointed out but
+> hardly a worrying aspect/sign
+
+It's not the fact that there are wrappers that is worrying, it's the
+contents of the wrappers combined with the interfaces.  The interfaces
+make the wrappers complete noops yet the driver has to manually go
+through and rewrap everything.
+
+--aQ0PHH3iiKbaMI5N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbb4SAAoJECTWi3JdVIfQAKwH/26vC53keSYaKU7HhuREcnBY
+mrG5phy3/1gdYXfar0daVxxu3GLHCGeOIuPDecCaNzXdQ5BxC5no4v31B8Ot9gfJ
+SuFeYSRk43F+50tZ59CzZquwyDCINFQFUukFyh5K8iSOMhmjkIL84zipiKVRqxTs
+8JVv15/53ryl9JIe4m6XB+a5IF9hf7TxgcuQWtG254snrBaGR5iaWFVvZbl1o7Ox
+tAmjgm5ZHXqGOLfSoXVox7NYucGJjpM0nJYuwZ7fKH47apltBa6SO6m14Gsu/9BU
+XDdEUSI7rw1EQsaXTQn4GJ81ag33oHYqLs8hNnHOtdUprsMvXjMKjdCPfnJmuEo=
+=Q2ay
+-----END PGP SIGNATURE-----
+
+--aQ0PHH3iiKbaMI5N--
+
+--===============0369559072749845990==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0369559072749845990==--
