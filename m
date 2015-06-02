@@ -1,56 +1,155 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 3/3] ASoC: qcom: fix STORM board Kconfig
-Date: Tue, 2 Jun 2015 20:56:38 +0100
-Message-ID: <20150602195638.GK14071@sirena.org.uk>
-References: <1432309956-5228-1-git-send-email-srinivas.kandagatla@linaro.org>
- <1432310057-5358-1-git-send-email-srinivas.kandagatla@linaro.org>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2] ASoC: davinci-mcasp: Choose PCM driver based on configured
+ DMA controller
+Date: Tue, 2 Jun 2015 23:04:46 +0300
+Message-ID: <556E0C5E.6040603@ti.com>
+References: <7230089f10ea27a9bd76eb8bfffcef754e71f274.1433252849.git.jsarha@ti.com> <556DD6EB.5010504@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Y9FGoQKSF2AxjRbT"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1432310057-5358-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Kenneth Westfield <kwestfie@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <556DD6EB.5010504@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com
 List-Id: alsa-devel@alsa-project.org
 
+On 06/02/15 19:16, Misael Lopez Cruz wrote:
+> Jyri,
+>
+> On 06/02/2015 08:49 AM, Jyri Sarha wrote:
+>> Find the configured DMA controller by asking for a DMA channel in the
+>> probe phase and releasing it right after. The controller device can be
+>> found via the dma_chan struct and the controller is recognized from
+>> the compatible property of its device node. The patch assumes EDMA if
+>> there is no device node.
+>>
+>> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+>> ---
+>> Changes since first patch version:
+>> - Change enum names from MCASP_?DMA to PCM_?DMA
+>> - Return PCM_EDMA if !mcasp->dev->of_node
+>> - Do not ignore possible error code returned by
+>>    davinci_mcasp_get_dma_type()
+>>
+>>   sound/soc/davinci/davinci-mcasp.c | 68
+>> +++++++++++++++++++++++++++++++++------
+>>   1 file changed, 58 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/sound/soc/davinci/davinci-mcasp.c
+>> b/sound/soc/davinci/davinci-mcasp.c
+>> index d793494..3b78c3e 100644
+>> --- a/sound/soc/davinci/davinci-mcasp.c
+>> +++ b/sound/soc/davinci/davinci-mcasp.c
+>> @@ -1565,6 +1565,49 @@ static int
+>> davinci_mcasp_init_ch_constraints(struct davinci_mcasp *mcasp)
+>>       return ret;
+>>   }
+>>
+>> +enum {
+>> +    PCM_EDMA,
+>> +    PCM_SDMA,
+>> +};
+>> +static const char *sdma_prefix = "ti,omap";
+>> +
+>> +static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+>> +{
+>> +    struct dma_chan *chan;
+>> +    const char *tmp;
+>> +    int ret = PCM_EDMA;
+>> +
+>> +    if (!mcasp->dev->of_node)
+>> +        return PCM_EDMA;
+>> +
+>> +    tmp = mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data;
+>> +    chan = dma_request_slave_channel_reason(mcasp->dev, tmp);
+>> +    if (IS_ERR(chan)) {
+>> +        if (PTR_ERR(chan) != -EPROBE_DEFER)
+>> +            dev_err(mcasp->dev,
+>> +                "Can't verify DMA configuration (%ld)\n",
+>> +                PTR_ERR(chan));
+>> +        return PTR_ERR(chan);
+>> +    }
+>> +    BUG_ON(!chan->device || !chan->device->dev);
+>> +
+>> +    if (chan->device->dev->of_node)
+>> +        ret = of_property_read_string(chan->device->dev->of_node,
+>> +                          "compatible", &tmp);
+>
+> I wonder how this is going to play out when the DMA crossbar is present
+> (i.e. dra7 family).
+>
+> In that case, isn't the 'compatible' string here that of the DMA
+> crossbar (not the one from the DMA controller)?
 
---Y9FGoQKSF2AxjRbT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That is exactly why I am requesting a channel and going from there. The 
+DMA router will do its thing in the middle and the device pointer found 
+via the returned dma_chan is pointing at the actual DMA controller.
 
-On Fri, May 22, 2015 at 04:54:17PM +0100, Srinivas Kandagatla wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> This patch is a fixup to correct dependencies in patch 9bae4880acee
-> ("ASoC: qcom: move ipq806x specific bits out of lpass driver.")
->=20
-> Originally this change-set was suggested by Arnd on mailing list.
->=20
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+I have tested the code on am57xx-beagle-x15, which is also using the DMA 
+crossbar.
 
-Did you write this or did Arnd?  The authorship suggests that he wrote
-it but your signoff appears before his.  I've assumed Arnd wrote it and
-reordered but please be more careful and let me know if my assumption is
-wrong...
+>
+>> +    else
+>> +        dev_dbg(mcasp->dev, "DMA controller has no of-node\n");
+>> +
+>> +    dma_release_channel(chan);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    dev_dbg(mcasp->dev, "DMA controller compatible = \"%s\"\n", tmp);
+>> +    if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
+>> +        return PCM_SDMA;
+>> +
+>> +    return PCM_EDMA;
+>> +}
+>> +
+>>   static int davinci_mcasp_probe(struct platform_device *pdev)
+>>   {
+>>       struct snd_dmaengine_dai_dma_data *dma_data;
+>> @@ -1763,27 +1806,32 @@ static int davinci_mcasp_probe(struct
+>> platform_device *pdev)
+>>       if (ret != 0)
+>>           goto err;
+>>
+>> -    switch (mcasp->version) {
+>> +    ret = davinci_mcasp_get_dma_type(mcasp);
+>> +    switch (ret) {
+>> +    case PCM_EDMA:
+>>   #if IS_BUILTIN(CONFIG_SND_EDMA_SOC) || \
+>>       (IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
+>>        IS_MODULE(CONFIG_SND_EDMA_SOC))
+>> -    case MCASP_VERSION_1:
+>> -    case MCASP_VERSION_2:
+>> -    case MCASP_VERSION_3:
+>>           ret = edma_pcm_platform_register(&pdev->dev);
+>> -        break;
+>> +#else
+>> +        dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
+>> +        ret = -EINVAL;
+>>   #endif
+>> +        break;
+>> +    case PCM_SDMA:
+>>   #if IS_BUILTIN(CONFIG_SND_OMAP_SOC) || \
+>>       (IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
+>>        IS_MODULE(CONFIG_SND_OMAP_SOC))
+>> -    case MCASP_VERSION_4:
+>>           ret = omap_pcm_platform_register(&pdev->dev);
+>> -        break;
+>> +#else
+>> +        dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
+>> +        ret = -EINVAL;
+>>   #endif
+>> +        break;
+>> +    case -EPROBE_DEFER:
+>> +        break;
+>>       default:
+>> -        dev_err(&pdev->dev, "Invalid McASP version: %d\n",
+>> -            mcasp->version);
+>> -        ret = -EINVAL;
+>> +        dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+>>           break;
+>>       }
+>>
+>>
 
---Y9FGoQKSF2AxjRbT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVbgp2AAoJECTWi3JdVIfQWzgIAIZnMpy+HhcA4sBX3mjDOPcE
-8Zt+nUk746gC7oZY1AY9aJYFjdqWtTLduQ0sbwN34TLx4/QxYvJWHtvYBOPz43rn
-3y6aqln7DMeCTe8aKAC9j1uFiApxXu+BfuR5mekc9v2MEM8PPReZo5ZHno94f9+g
-zhd3PVIT0ycpZZemuwDbpwXa5mrdzU8pCY+a+/dH30Dq7QvtFJU/L4Qsux6d9HUc
-InppN4oapz5ia/xnhL4FKQYIrIfgafKat/2MPBOUptnUr7NbhfVPvCFfWTaJiWHm
-SnNDwDs3fbzgfVAJFXEaAQS3Hex6/0opt+ukN5TiUEEGiyTip/eCussLih/Me2s=
-=81hq
------END PGP SIGNATURE-----
-
---Y9FGoQKSF2AxjRbT--
