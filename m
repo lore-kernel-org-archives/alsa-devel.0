@@ -1,89 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/7] ASoC: rt5677: clean up gpiolib callbacks
-Date: Tue, 2 Jun 2015 21:50:17 +0100
-Message-ID: <20150602205017.GY14071@sirena.org.uk>
-References: <1433200158-6890-2-git-send-email-vz@mleia.com>
- <20150602193818.GG14071@sirena.org.uk>
- <556E1467.9030406@mleia.com>
+From: Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [PATCH 5/7] ASoC: wm5100: remove bitwise operations involving
+ GPIO level value
+Date: Tue, 02 Jun 2015 23:58:25 +0300
+Message-ID: <556E18F1.7030008@mleia.com>
+References: <1433200031-6748-1-git-send-email-vz@mleia.com> <1433200158-6890-5-git-send-email-vz@mleia.com> <20150602194558.GI14071@sirena.org.uk> <556E10CD.3090301@mleia.com> <20150602203631.GV14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0q9y5TNQq+E02vJE"
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <556E1467.9030406@mleia.com>
+In-Reply-To: <20150602203631.GV14071@sirena.org.uk>
 Sender: linux-gpio-owner@vger.kernel.org
-To: Vladimir Zapolskiy <vz@mleia.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+Hello Mark,
 
---0q9y5TNQq+E02vJE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 02.06.2015 23:36, Mark Brown wrote:
+> On Tue, Jun 02, 2015 at 11:23:41PM +0300, Vladimir Zapolskiy wrote:
+>> On 02.06.2015 22:45, Mark Brown wrote:
+>>> On Tue, Jun 02, 2015 at 02:09:16AM +0300, Vladimir Zapolskiy wrote:
+> 
+>>>> +	unsigned int val = 0;
+>>>> +
+>>>> +	if (value)
+>>>> +		val = 0x1 << WM5100_GP1_LVL_SHIFT;
+> 
+>>> Write this as an if/else so the reader doesn't have to wonder why you've
+>>> missed the handling of the false case.  
+> 
+>> the only objection I have is that the resulting code will be two lines
+>> longer. If you think this code is not clear enough (is "val" vs. "value"
+>> misleading?), I'll change the rest of my patches, which contain the same
+>> logic structure, please let me know.
+> 
+> Especially after the unrelated style change thing earlier on (which
+> meant I was reading things more carefully than usual) it'd be good to
+> make things as clear as possible - you're right that the val vs value
+> thing isn't helping either.  
 
-On Tue, Jun 02, 2015 at 11:39:03PM +0300, Vladimir Zapolskiy wrote:
-> On 02.06.2015 22:38, Mark Brown wrote:
-> > On Tue, Jun 02, 2015 at 02:09:13AM +0300, Vladimir Zapolskiy wrote:
+got your concern, will send an update.
 
-> >> +		if (value)
-> >> +			val = RT5677_GPIO_OUT_HI(offset);
+> Like I say I am a bit surprised that the int/bool conversion doesn't do
+> the right thing without any code changes other than the type of the
+> parameter but ICBW, I didn't actually check.
+> 
 
-> > It seems like a greater variation in variable names might be called for
-> > here.
+My tested compilers do the work right, but I can not be sure about the
+whole variety of compilers, well, probably I should just follow the
+standard, which in turn is expected to be quite volatile in future
+revisions regarding usage of "_Bool" or future "bool" type.
 
-> thank you for review, you mean "val" vs. "value" I guess. May be you
-> have a better register value naming in mind?
+If we assume the preferred Linux kernel style to use true/false
+constants for boolean variables only (see the reference to
+bool{init,return}.cocci), then even if bitwise and arithmetic operations
+on bool type are understandable to a compiler, but probably "false <<
+true" (or whatever is hidden under a variable name) is not quite
+aesthetic for a human eye. This is not a technical argument though, and
+I'm not sure if any clear code style policy related to the case is agreed.
 
-I mean val vs value, yes.
-
-> >>  		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
-> >> -			0x1 << (offset * 3 + 1), !!value << (offset * 3 + 1));
-> >> +				   RT5677_GPIO_OUT_MASK(offset), val);
-
-> > Besides, isn't the minimal change here just to remove the !! (or do
-> > nothing)?
-
-> this particular change mainly addresses "clean up gpiolib callbacks"
-> target as it is stated in subject/commit message. Removing of "!!" might
-> be unsafe, because the input value is not necessary 0 or 1 at the moment.
-
-Sure, but if we use that we could also just not make any change to the
-code except for changing the type of the argument when that's needed.
-
-> >  C defines a mapping between boolean and integer values.
-
-> As for today it is correct. In the kernel right now there is a movement
-> of replacing for instance explicit integer constants to false/true, when
-> they are used with variables of bool type, e.g. see
-> scripts/coccinelle/misc/bool{init,return}.cocci.
-
-Hrm, right.  I suppose it's more useful than checkpatch cleanups.  In
-any case I'm not sure it's relevant here where we're reading a value?
-
-> In my opinion changing GPIO level argument from int to bool should be
-> done, when all confusing cases like "!!false << (offset * 3 + 1)" above
-> (if just type of "value" is modified) are cleaned up in the code firstly.
-
-I have to say I'm not sure I'm finding this is actually adding to the
-clarity - it was partly a cheap trick for compiler implementation but
-the int as boolean thing C has does also make this sort of code for
-mapping values onto bitfields more direct which is handy for low level
-systems programming like drivers.
-
---0q9y5TNQq+E02vJE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVbhcIAAoJECTWi3JdVIfQUSAH/2MPdH+FS3sapbBwL2mXCg4D
-yGKvz6a2aISY4Cec+SFrfTg59QOgbAK1AkFDU/m9B1ePt1e9swf2Sog0lH7/zzvd
-//hgoc/7lB2mxJWgzM/ptWC3Pp3WQWt+3sa2yGLY6dj44x/x0QykI7xMNcqtLufD
-8NLCAuuZWucf0Oh1m95W//j2hOUF+SBCCajE8miiq5RZ+Ku7LvPjcd3qba2GV4rH
-K4a5ncAC5bSVMa4k2FwkijS5GtyCNZemTZSee7Nl/od97xp/eG6ZL8a/WZEJ5Pql
-jCpQYDx456GvWGLi43FLfOCmS2THqRsdwM1yQqGMAfyV26sYdosLkZoRchaSl+4=
-=isxT
------END PGP SIGNATURE-----
-
---0q9y5TNQq+E02vJE--
+--
+With best wishes,
+Vladimir
