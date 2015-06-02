@@ -1,59 +1,89 @@
-From: Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH 4/7] ASoC: wm8903: simplify gpiolib callbacks
-Date: Tue, 02 Jun 2015 23:41:01 +0300
-Message-ID: <556E14DD.5040606@mleia.com>
-References: <1433200031-6748-1-git-send-email-vz@mleia.com> <1433200158-6890-4-git-send-email-vz@mleia.com> <20150602194153.GH14071@sirena.org.uk> <556E0F8F.1050307@mleia.com> <20150602203130.GU14071@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/7] ASoC: rt5677: clean up gpiolib callbacks
+Date: Tue, 2 Jun 2015 21:50:17 +0100
+Message-ID: <20150602205017.GY14071@sirena.org.uk>
+References: <1433200158-6890-2-git-send-email-vz@mleia.com>
+ <20150602193818.GG14071@sirena.org.uk>
+ <556E1467.9030406@mleia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0q9y5TNQq+E02vJE"
 Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <20150602203130.GU14071@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <556E1467.9030406@mleia.com>
 Sender: linux-gpio-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, patches@opensource.wolfsonmicro.com
+To: Vladimir Zapolskiy <vz@mleia.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02.06.2015 23:31, Mark Brown wrote:
-> On Tue, Jun 02, 2015 at 11:18:23PM +0300, Vladimir Zapolskiy wrote:
->> On 02.06.2015 22:41, Mark Brown wrote:
->>> On Tue, Jun 02, 2015 at 02:09:15AM +0300, Vladimir Zapolskiy wrote:
-> 
->>>> @@ -1783,18 +1783,13 @@ static int wm8903_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
->>>>  {
->>>>  	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
->>>>  	unsigned int mask, val;
->>>> -	int ret;
->>>>  
->>>>  	mask = WM8903_GPn_FN_MASK | WM8903_GPn_DIR_MASK;
->>>>  	val = (WM8903_GPn_FN_GPIO_INPUT << WM8903_GPn_FN_SHIFT) |
->>>>  		WM8903_GPn_DIR;
->>>>  
->>>> -	ret = regmap_update_bits(wm8903->regmap,
->>>> -				 WM8903_GPIO_CONTROL_1 + offset, mask, val);
->>>> -	if (ret < 0)
->>>> -		return ret;
->>>> -
->>>> -	return 0;
->>>> +	return regmap_update_bits(wm8903->regmap,
->>>> +				  WM8903_GPIO_CONTROL_1 + offset, mask, val);
->>>>  }
->>>>  
->>>>  static int wm8903_gpio_get(struct gpio_chip *chip, unsigned offset)
-> 
->>> This appears to be an unrelated coding style change.
-> 
->> this particular patch is named "simplify gpiolib callbacks".
-> 
->> Do you prefer to separate the change here in .direction_in
->> implementation from the rest?
-> 
-> It doesn't appear to make any changes related to boolean variables
-> (AFAICT it's just removing the ret variable) so it shouldn't be in a
-> change about boolean variables.
-> 
 
-Okay, will split the change then.
+--0q9y5TNQq+E02vJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-With best wishes,
-Vladimir
+On Tue, Jun 02, 2015 at 11:39:03PM +0300, Vladimir Zapolskiy wrote:
+> On 02.06.2015 22:38, Mark Brown wrote:
+> > On Tue, Jun 02, 2015 at 02:09:13AM +0300, Vladimir Zapolskiy wrote:
+
+> >> +		if (value)
+> >> +			val = RT5677_GPIO_OUT_HI(offset);
+
+> > It seems like a greater variation in variable names might be called for
+> > here.
+
+> thank you for review, you mean "val" vs. "value" I guess. May be you
+> have a better register value naming in mind?
+
+I mean val vs value, yes.
+
+> >>  		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
+> >> -			0x1 << (offset * 3 + 1), !!value << (offset * 3 + 1));
+> >> +				   RT5677_GPIO_OUT_MASK(offset), val);
+
+> > Besides, isn't the minimal change here just to remove the !! (or do
+> > nothing)?
+
+> this particular change mainly addresses "clean up gpiolib callbacks"
+> target as it is stated in subject/commit message. Removing of "!!" might
+> be unsafe, because the input value is not necessary 0 or 1 at the moment.
+
+Sure, but if we use that we could also just not make any change to the
+code except for changing the type of the argument when that's needed.
+
+> >  C defines a mapping between boolean and integer values.
+
+> As for today it is correct. In the kernel right now there is a movement
+> of replacing for instance explicit integer constants to false/true, when
+> they are used with variables of bool type, e.g. see
+> scripts/coccinelle/misc/bool{init,return}.cocci.
+
+Hrm, right.  I suppose it's more useful than checkpatch cleanups.  In
+any case I'm not sure it's relevant here where we're reading a value?
+
+> In my opinion changing GPIO level argument from int to bool should be
+> done, when all confusing cases like "!!false << (offset * 3 + 1)" above
+> (if just type of "value" is modified) are cleaned up in the code firstly.
+
+I have to say I'm not sure I'm finding this is actually adding to the
+clarity - it was partly a cheap trick for compiler implementation but
+the int as boolean thing C has does also make this sort of code for
+mapping values onto bitfields more direct which is handy for low level
+systems programming like drivers.
+
+--0q9y5TNQq+E02vJE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbhcIAAoJECTWi3JdVIfQUSAH/2MPdH+FS3sapbBwL2mXCg4D
+yGKvz6a2aISY4Cec+SFrfTg59QOgbAK1AkFDU/m9B1ePt1e9swf2Sog0lH7/zzvd
+//hgoc/7lB2mxJWgzM/ptWC3Pp3WQWt+3sa2yGLY6dj44x/x0QykI7xMNcqtLufD
+8NLCAuuZWucf0Oh1m95W//j2hOUF+SBCCajE8miiq5RZ+Ku7LvPjcd3qba2GV4rH
+K4a5ncAC5bSVMa4k2FwkijS5GtyCNZemTZSee7Nl/od97xp/eG6ZL8a/WZEJ5Pql
+jCpQYDx456GvWGLi43FLfOCmS2THqRsdwM1yQqGMAfyV26sYdosLkZoRchaSl+4=
+=isxT
+-----END PGP SIGNATURE-----
+
+--0q9y5TNQq+E02vJE--
