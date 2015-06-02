@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: DAPM: fix snd_soc_dapm_new_control()
- implicit declaration
-Date: Tue, 2 Jun 2015 18:18:30 +0100
-Message-ID: <20150602171830.GZ14071@sirena.org.uk>
-References: <1433195873-29889-1-git-send-email-vz@mleia.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Add a fixup for another
+	Acer Aspire 9420
+Date: Tue,  2 Jun 2015 20:00:27 +0200
+Message-ID: <1433268027-4975-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5887924973396194919=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 33CC2260560
- for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 19:18:40 +0200 (CEST)
-In-Reply-To: <1433195873-29889-1-git-send-email-vz@mleia.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0365D2605A2
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 20:00:29 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 69B9DAB5F
+ for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2015 18:00:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vladimir Zapolskiy <vz@mleia.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Acer Aspire 9420 with ALC883 (1025:0107) needs the fixup for EAPD to
+make the sound working like other Aspire models.
 
---===============5887924973396194919==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lUFOiBjYbj2M+tdK"
-Content-Disposition: inline
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=94111
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
---lUFOiBjYbj2M+tdK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 02, 2015 at 12:57:53AM +0300, Vladimir Zapolskiy wrote:
-> The change fixes the following compilation problem:
-
-Applied, thanks.
-
---lUFOiBjYbj2M+tdK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVbeVlAAoJECTWi3JdVIfQEmsH/2blXsMCcRMX2aRQfhrrBkUz
-JKXtGDTlm293DJyFwgsLWa6NNJA3pYep8suIPE8oh3tBzlsXc08Rz1KtS75GgkU4
-DzL4b26tMNa+chLM9GerBiP84DPwCxWZT1HDOvOqBvDMkUJxUsrXZMf8bBX6SNLa
-sKe/bQozg2e95ChEiCvxfyXt74qiTadYzGQTWVqAy/3Ss5GXJclaEnQhIm7De0po
-yb2JzAg4Lpcihqr7NOFf1fidrjKMDx7DWSMZJ6uKCGmIukKkVljM710PWMJZjdvK
-ZeMIhLys4hDVyVxZxcRFWlD8T6zkk+3oJpkXiVjhX+j20CgfhK/wWzJecNw4PvQ=
-=eokl
------END PGP SIGNATURE-----
-
---lUFOiBjYbj2M+tdK--
-
---===============5887924973396194919==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5887924973396194919==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 80be33ce1a9e..0320cb523d9e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2168,6 +2168,7 @@ static const struct hda_fixup alc882_fixups[] = {
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x006c, "Acer Aspire 9810", ALC883_FIXUP_ACER_EAPD),
+ 	SND_PCI_QUIRK(0x1025, 0x0090, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
++	SND_PCI_QUIRK(0x1025, 0x0107, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
+ 	SND_PCI_QUIRK(0x1025, 0x010a, "Acer Ferrari 5000", ALC883_FIXUP_ACER_EAPD),
+ 	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_FIXUP_ACER_EAPD),
+ 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_FIXUP_ACER_EAPD),
+-- 
+2.4.2
