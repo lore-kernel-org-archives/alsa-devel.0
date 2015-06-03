@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v5 1/2] ALSA: hda - add HDA default codec match
-	function
-Date: Wed,  3 Jun 2015 12:24:31 +0530
-Message-ID: <1433314472-24965-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v5 2/2] ALSA: hda - add new HDA registers
+Date: Wed,  3 Jun 2015 12:24:32 +0530
+Message-ID: <1433314472-24965-3-git-send-email-vinod.koul@intel.com>
 References: <1433314472-24965-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id AD87E2604EB
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 08:53:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 15547260517
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 08:53:24 +0200 (CEST)
 In-Reply-To: <1433314472-24965-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,115 +24,131 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-HDA codec drivers can be matched using vendor id and revision id typically.
-So provide a match function which does this and is loaded when driver hasn't
-provided one (default behaviour)
+From: Jeeja KP <jeeja.kp@intel.com>
+
+This patch adds new registers as per HD audio Spec like capability registers
+for processing pipe, software position based FIFO, Multiple Links and Global
+Time Synchronization.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h  | 14 ++++++++++++++
- sound/hda/hda_bus_type.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+ include/sound/hda_register.h | 88 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 64fff4db81bb..4caf1fde8a4f 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -28,6 +28,16 @@ struct hdac_widget_tree;
- extern struct bus_type snd_hda_bus_type;
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 0c7536e30fa4..ae995e523ff8 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -28,6 +28,10 @@
+ #define AZX_REG_STATESTS		0x0e
+ #define AZX_REG_GSTS			0x10
+ #define   AZX_GSTS_FSTS		(1 << 1)   /* flush status */
++#define AZX_REG_GCAP2			0x12
++#define AZX_REG_LLCH			0x14
++#define AZX_REG_OUTSTRMPAY		0x18
++#define AZX_REG_INSTRMPAY		0x1A
+ #define AZX_REG_INTCTL			0x20
+ #define AZX_REG_INTSTS			0x24
+ #define AZX_REG_WALLCLK			0x30	/* 24Mhz source */
+@@ -81,6 +85,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_SD_FIFOW		0x0e
+ #define AZX_REG_SD_FIFOSIZE		0x10
+ #define AZX_REG_SD_FORMAT		0x12
++#define AZX_REG_SD_FIFOL		0x14
+ #define AZX_REG_SD_BDLPL		0x18
+ #define AZX_REG_SD_BDLPU		0x1c
  
+@@ -138,6 +143,89 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_MAX_CORB_ENTRIES	256
+ #define AZX_MAX_RIRB_ENTRIES	256
+ 
++/* Capability header  Structure */
++#define AZX_REG_CAP_HDR			0x0
++#define AZX_CAP_HDR_VER_OFF		28
++#define AZX_CAP_HDR_VER_MASK		(0xF << AZX_CAP_HDR_VER_OFF)
++#define AZX_CAP_HDR_ID_OFF		16
++#define AZX_CAP_HDR_ID_MASK		(0xFFF << AZX_CAP_HDR_ID_OFF)
++#define AZX_CAP_HDR_NXT_PTR_MASK	0xFFFF
++
++/* registers of Software Position Based FIFO Capability Structure */
++#define AZX_SPB_CAP_ID			0x4
++#define AZX_REG_SPB_BASE_ADDR		0x700
++#define AZX_REG_SPB_SPBFCH		0x00
++#define AZX_REG_SPB_SPBFCCTL		0x04
++/* Base used to calculate the iterating register offset */
++#define AZX_SPB_BASE			0x08
++/* Interval used to calculate the iterating register offset */
++#define AZX_SPB_INTERVAL		0x08
++
++/* registers of Global Time Synchronization Capability Structure */
++#define AZX_GTS_CAP_ID			0x1
++#define AZX_REG_GTS_GTSCH		0x00
++#define AZX_REG_GTS_GTSCD		0x04
++#define AZX_REG_GTS_GTSCTLAC		0x0C
++#define AZX_GTS_BASE			0x20
++#define AZX_GTS_INTERVAL		0x20
++
++/* registers for Processing Pipe Capability Structure */
++#define AZX_PP_CAP_ID			0x3
++#define AZX_REG_PP_PPCH			0x10
++#define AZX_REG_PP_PPCTL		0x04
++#define AZX_PPCTL_PIE			(1<<31)
++#define AZX_PPCTL_GPROCEN		(1<<30)
++/* _X_ = dma engine # and cannot * exceed 29 (per spec max 30 dma engines) */
++#define AZX_PPCTL_PROCEN(_X_)		(1<<(_X_))
++
++#define AZX_REG_PP_PPSTS		0x08
++
++#define AZX_PPHC_BASE			0x10
++#define AZX_PPHC_INTERVAL		0x10
++
++#define AZX_REG_PPHCLLPL		0x0
++#define AZX_REG_PPHCLLPU		0x4
++#define AZX_REG_PPHCLDPL		0x8
++#define AZX_REG_PPHCLDPU		0xC
++
++#define AZX_PPLC_BASE			0x10
++#define AZX_PPLC_MULTI			0x10
++#define AZX_PPLC_INTERVAL		0x10
++
++#define AZX_REG_PPLCCTL			0x0
++#define AZX_PPLCCTL_STRM_BITS		4
++#define AZX_PPLCCTL_STRM_SHIFT		20
++#define AZX_REG_MASK(bit_num, offset) \
++	(((1 << (bit_num)) - 1) << (offset))
++#define AZX_PPLCCTL_STRM_MASK \
++	AZX_REG_MASK(AZX_PPLCCTL_STRM_BITS, AZX_PPLCCTL_STRM_SHIFT)
++#define AZX_PPLCCTL_RUN			(1<<1)
++#define AZX_PPLCCTL_STRST		(1<<0)
++
++#define AZX_REG_PPLCFMT			0x4
++#define AZX_REG_PPLCLLPL		0x8
++#define AZX_REG_PPLCLLPU		0xC
++
++/* registers for Multiple Links Capability Structure */
++#define AZX_ML_CAP_ID			0x2
++#define AZX_REG_ML_MLCH			0x00
++#define AZX_REG_ML_MLCD			0x04
++#define AZX_ML_BASE			0x40
++#define AZX_ML_INTERVAL			0x40
++
++#define AZX_REG_ML_LCAP			0x00
++#define AZX_REG_ML_LCTL			0x04
++#define AZX_REG_ML_LOSIDV		0x08
++#define AZX_REG_ML_LSDIID		0x0C
++#define AZX_REG_ML_LPSOO		0x10
++#define AZX_REG_ML_LPSIO		0x12
++#define AZX_REG_ML_LWALFC		0x18
++#define AZX_REG_ML_LOUTPAY		0x20
++#define AZX_REG_ML_LINPAY		0x30
++
++#define AZX_MLCTL_SPA			(1<<16)
++#define AZX_MLCTL_CPA			23
++
  /*
-+ * HDA device table
-+ */
-+struct hda_device_id {
-+	__u32 vendor_id;
-+	__u32 rev_id;
-+	const char *name;
-+	unsigned long driver_data;
-+};
-+
-+/*
-  * generic arrays
+  * helpers to read the stream position
   */
- struct snd_array {
-@@ -171,12 +181,16 @@ static inline void snd_hdac_power_down_pm(struct hdac_device *codec) {}
- struct hdac_driver {
- 	struct device_driver driver;
- 	int type;
-+	const struct hda_device_id *id_table;
- 	int (*match)(struct hdac_device *dev, struct hdac_driver *drv);
- 	void (*unsol_event)(struct hdac_device *dev, unsigned int event);
- };
- 
- #define drv_to_hdac_driver(_drv) container_of(_drv, struct hdac_driver, driver)
- 
-+const struct hda_device_id *
-+hdac_get_device_id(struct hdac_device *hdev, struct hdac_driver *drv);
-+
- /*
-  * Bus verb operators
-  */
-diff --git a/sound/hda/hda_bus_type.c b/sound/hda/hda_bus_type.c
-index 519914a12e8a..89c2711baaaf 100644
---- a/sound/hda/hda_bus_type.c
-+++ b/sound/hda/hda_bus_type.c
-@@ -10,6 +10,40 @@
- MODULE_DESCRIPTION("HD-audio bus");
- MODULE_LICENSE("GPL");
- 
-+/**
-+ * hdac_get_device_id - gets the hdac device id entry
-+ * @hdev: HD-audio core device
-+ * @drv: HD-audio codec driver
-+ *
-+ * Compares the hdac device vendor_id and revision_id to the hdac_device
-+ * driver id_table and returns the matching device id entry.
-+ */
-+const struct hda_device_id *
-+hdac_get_device_id(struct hdac_device *hdev, struct hdac_driver *drv)
-+{
-+	if (drv->id_table) {
-+		const struct hda_device_id *id  = drv->id_table;
-+
-+		while (id->vendor_id) {
-+			if (hdev->vendor_id == id->vendor_id &&
-+				(!id->rev_id || id->rev_id == hdev->revision_id))
-+				return id;
-+			id++;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(hdac_get_device_id);
-+
-+static int hdac_codec_match(struct hdac_device *dev, struct hdac_driver *drv)
-+{
-+	if (hdac_get_device_id(dev, drv))
-+		return 1;
-+	else
-+		return 0;
-+}
-+
- static int hda_bus_match(struct device *dev, struct device_driver *drv)
- {
- 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
-@@ -17,8 +51,15 @@ static int hda_bus_match(struct device *dev, struct device_driver *drv)
- 
- 	if (hdev->type != hdrv->type)
- 		return 0;
-+
-+	/*
-+	 * if driver provided a match function use that otherwise we will
-+	 * use hdac_codec_match function
-+	 */
- 	if (hdrv->match)
- 		return hdrv->match(hdev, hdrv);
-+	else
-+		return hdac_codec_match(hdev, hdrv);
- 	return 1;
- }
- 
 -- 
 1.9.1
