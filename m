@@ -1,56 +1,81 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: [PATCH] ASoC: core: Pass kcontrol pointer to bytes tlv callbacks
-Date: Tue,  2 Jun 2015 15:24:03 -0700
-Message-ID: <1433283843-33856-1-git-send-email-benzh@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Vinod Koul <vinod.koul@intel.com>, Dylan Reid <dgreid@chromium.org>, Ben Zhang <benzh@chromium.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: libin.yang@intel.com
+Subject: [PATCH] ALSA: hda - remove controller dependency on
+	i915 power well for SKL
+Date: Wed,  3 Jun 2015 09:30:15 +0800
+Message-ID: <1433295015-547-1-git-send-email-libin.yang@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A55C2657F4
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 03:38:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Libin Yang <libin.yang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The get/put callbacks need the kcontrol pointer to get context
-information like snd_soc_codec and drvdata.
+From: Libin Yang <libin.yang@intel.com>
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+For SKL, only the HDMI codec is in the display power well while the
+HD-A controller isn't. So the controller flag 'need_i915_power' is
+not set to release the display power after probe, and the codec flag
+'link_power_control" is set to request/release the display power via
+bus link_power ops.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- include/sound/soc.h | 6 ++++--
- sound/soc/soc-ops.c | 4 ++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_intel.c  | 9 +++++++--
+ sound/pci/hda/patch_hdmi.c | 2 +-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index fcb312b..404265d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1169,8 +1169,10 @@ struct soc_bytes {
- struct soc_bytes_ext {
- 	int max;
- 	/* used for TLV byte control */
--	int (*get)(unsigned int __user *bytes, unsigned int size);
--	int (*put)(const unsigned int __user *bytes, unsigned int size);
-+	int (*get)(struct snd_kcontrol *kcontrol,
-+		   unsigned int __user *bytes, unsigned int size);
-+	int (*put)(struct snd_kcontrol *kcontrol,
-+		   const unsigned int __user *bytes, unsigned int size);
- };
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 391e4f8..e5597fd 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -345,6 +345,11 @@ enum {
+ #define use_vga_switcheroo(chip)	0
+ #endif
  
- /* multi register control */
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 100d92b..7f53da9 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -751,11 +751,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
- 	switch (op_flag) {
- 	case SNDRV_CTL_TLV_OP_READ:
- 		if (params->get)
--			ret = params->get(tlv, count);
-+			ret = params->get(kcontrol, tlv, count);
- 		break;
- 	case SNDRV_CTL_TLV_OP_WRITE:
- 		if (params->put)
--			ret = params->put(tlv, count);
-+			ret = params->put(kcontrol, tlv, count);
- 		break;
- 	}
- 	return ret;
++#define CONTROLLER_IN_GPU(pci) (((pci)->device == 0x0a0c) || \
++					((pci)->device == 0x0c0c) || \
++					((pci)->device == 0x0d0c) || \
++					((pci)->device == 0x160c))
++
+ static char *driver_short_names[] = {
+ 	[AZX_DRIVER_ICH] = "HDA Intel",
+ 	[AZX_DRIVER_PCH] = "HDA Intel PCH",
+@@ -1976,8 +1981,8 @@ static int azx_probe_continue(struct azx *chip)
+ 	 * display codec needs the power and it can be released after probe.
+ 	 */
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+-		/* Baytral/Braswell controllers don't need this power */
+-		if (pci->device != 0x0f04 && pci->device != 0x2284)
++		/* HSW/BDW controllers need this power */
++		if (CONTROLLER_IN_GPU(pci))
+ 			hda->need_i915_power = 1;
+ 
+ 		err = snd_hdac_i915_init(bus);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 73c20c0..407978b 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2339,7 +2339,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	 * can cover the codec power request, and so need not set this flag.
+ 	 * For previous platforms, there is no such power well feature.
+ 	 */
+-	if (is_valleyview_plus(codec))
++	if (is_valleyview_plus(codec) || is_skylake(codec))
+ 		codec->core.link_power_control = 1;
+ 
+ 	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
 -- 
-2.2.0.rc0.207.ga3a616c
+1.9.1
