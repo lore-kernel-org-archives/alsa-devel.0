@@ -1,47 +1,64 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH 0/4] new fix for broadwell module removing
-	failed issue
-Date: Wed, 3 Jun 2015 02:40:39 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90553CC6D@SHSMSX101.ccr.corp.intel.com>
-References: <1432996439-8052-1-git-send-email-yang.jie@intel.com>
- <20150602143443.GT14071@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 147C02657F4
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 04:40:43 +0200 (CEST)
-In-Reply-To: <20150602143443.GT14071@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [PATCH v2] ASoC: qcom: Remove QCOM dependency from LPASS variants
+Date: Tue,  2 Jun 2015 21:28:37 -0700
+Message-ID: <1433305717-8691-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jim Davis <jim.epost@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Kumar Gala <galak@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, June 02, 2015 10:35 PM
-> To: Jie, Yang
-> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH 0/4] new fix for broadwell module removing failed issue
-> 
-> On Sat, May 30, 2015 at 10:33:55PM +0800, Jie Yang wrote:
-> > This patch series are based on broonie/sound.git for-next branch,
-> > commit 01a4d5083562fcdeab99d42b0873aabc5fcca018.
-> 
-> Applied all, thanks.  Please use subject lines matcing the style for the
-> subsystem, even for reverts.
- 
-Got it, will notice that next time, thanks.
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-~Keyon
+Building with the following config options ...
+
+ CONFIG_COMPILE_TEST=y
+ # CONFIG_SND_SOC_QCOM is not set
+ CONFIG_SND_SOC_LPASS_IPQ806X=m
+ CONFIG_SND_SOC_STORM=m
+
+... causes the following build warning:
+
+ warning: (SND_SOC_STORM) selects SND_SOC_LPASS_IPQ806X
+ which has unmet direct dependencies (SOUND && !M68K &&
+ !UML && SND && SND_SOC && SND_SOC_QCOM)
+
+To fix this, the dependency on SND_SOC_QCOM from the
+user-invisible LPASS variant config options has been
+removed.  This will allow for successful randconfig
+builds that use COMPILE_TEST.
+
+Reported-by: Jim Davis <jim.epost@gmail.com>
+Fixes: dc1ebd1811e9 ("ASoC: qcom: Add apq8016 lpass driver support")
+Fixes: 9bae4880acee ("ASoC: qcom: move ipq806x specific bits out of lpass
+driver")
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+---
+
+ Created fix in response to Jim's bug report:
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/092870.html
+ 
+ sound/soc/qcom/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 938144c..290b056 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -14,13 +14,11 @@ config SND_SOC_LPASS_PLATFORM
+ 
+ config SND_SOC_LPASS_IPQ806X
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
+ 
+ config SND_SOC_LPASS_APQ8016
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
