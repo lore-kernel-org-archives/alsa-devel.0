@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/3] ALSA: topology: Export ID types for
-	TLV controls.
-Date: Wed, 3 Jun 2015 19:23:00 +0100
-Message-ID: <20150603182300.GS14071@sirena.org.uk>
-References: <1432922775-6583-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1432922775-6583-3-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: Correct FSL_SAI_CR2_MSEL_MASK
+	definition
+Date: Wed, 3 Jun 2015 11:47:15 -0700
+Message-ID: <20150603184714.GA8196@Asurada>
+References: <1433335861-31474-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7504429539019247432=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B64B260703
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 20:23:08 +0200 (CEST)
-In-Reply-To: <1432922775-6583-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
+ [209.85.220.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF463260703
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 20:47:24 +0200 (CEST)
+Received: by qkx62 with SMTP id 62so10912557qkx.3
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 11:47:24 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1433335861-31474-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Iwai-san,
 
---===============7504429539019247432==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Kz6eUT30PReluLpA"
-Content-Disposition: inline
+On Wed, Jun 03, 2015 at 02:51:01PM +0200, Takashi Iwai wrote:
+> The bit mask FSL_SAI_CR2_MSEL_MASK is defined as (0xff << 26) and this
+> obviously overflows the 32bit integer.  Also this clears other bits
+> than the needed ones (FSL_SAI_CR2_MSEL_XXX) wrongly.
+> 
+> This patch fixes the definition only to mask bits 26 and 27.
 
+An identical fix was included in the Commit c3ecef21c3f26bf47
+(ASoC: fsl_sai: add sai master mode support) by Zidan Wang.
+And it's already in the linux-next tree.
 
---Kz6eUT30PReluLpA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you
+Nicolin
 
-On Fri, May 29, 2015 at 07:06:15PM +0100, Liam Girdwood wrote:
-> Make sure userspace can define TLV controls for topology using the correct
-> type numbers and channel mappings.
-
-Takashi, are you OK with this move?
-
---Kz6eUT30PReluLpA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVb0YDAAoJECTWi3JdVIfQ/hQH/Ahli0bHErfumPI0L868NmnR
-torNjMM222mlkUGSUzMgWJCBa6/feBvDJXRPQiu3Ux0P5jlBgUPRvFZeRHqqZCvk
-pVlG8Xq3iR6L7mTpUTntrbyv39MPUQ2arUKcVh4pIVsbov6wFVDVE5XYh5YoFuOM
-XnXiHPqNUI5bd95e+NsWcJwncBbkzL52tvs7uVd5bgMohZRcl1SacdKSGpH+hZqN
-L5r57iIJscKj8FNLGMd0EXLglrv2G5Wj9szEk0rbx/K8BYOonGRFQSvhS06dyCIx
-XJlcp38Vsr5n+diepQ8J7KG9FlzPesSIVSUqYIXSV3Q36Z+H4ZzyMrwM0Y0PrTM=
-=34BY
------END PGP SIGNATURE-----
-
---Kz6eUT30PReluLpA--
-
---===============7504429539019247432==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7504429539019247432==--
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=84351
+> Reported-by: David Binderman <dcb314@hotmail.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/soc/fsl/fsl_sai.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+> index 34667209b607..0e33a17ddd01 100644
+> --- a/sound/soc/fsl/fsl_sai.h
+> +++ b/sound/soc/fsl/fsl_sai.h
+> @@ -72,7 +72,7 @@
+>  
+>  /* SAI Transmit and Recieve Configuration 2 Register */
+>  #define FSL_SAI_CR2_SYNC	BIT(30)
+> -#define FSL_SAI_CR2_MSEL_MASK	(0xff << 26)
+> +#define FSL_SAI_CR2_MSEL_MASK	(0x03 << 26)
+>  #define FSL_SAI_CR2_MSEL_BUS	0
+>  #define FSL_SAI_CR2_MSEL_MCLK1	BIT(26)
+>  #define FSL_SAI_CR2_MSEL_MCLK2	BIT(27)
+> -- 
+> 2.4.2
+> 
