@@ -1,22 +1,15 @@
-From: Jun Nie <jun.nie@linaro.org>
-Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
-Date: Wed, 3 Jun 2015 20:40:31 +0800
-Message-ID: <CABymUCMC3mZidbD6FPf=wSqbQoSwWL5z2uLgrXOS6jx96EFMtA@mail.gmail.com>
-References: <CABymUCNvM=k4tWJutpzoK-VFvKhBC4EGjh_OzWYMMRppUqvSOA@mail.gmail.com>
- <20150602181326.GB14071@sirena.org.uk>
- <CABymUCOWiHERfvw9c5ihsvgXXko1HLwv+7ectLOiQd3rGSHHPQ@mail.gmail.com>
- <20150603110123.GB14071@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: fsl: Correct FSL_SAI_CR2_MSEL_MASK
+	definition
+Date: Wed,  3 Jun 2015 14:51:01 +0200
+Message-ID: <1433335861-31474-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f172.google.com (mail-lb0-f172.google.com
- [209.85.217.172])
- by alsa0.perex.cz (Postfix) with ESMTP id BA55B2606B4
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 14:40:35 +0200 (CEST)
-Received: by lbbqq2 with SMTP id qq2so5934354lbb.3
- for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 05:40:32 -0700 (PDT)
-In-Reply-To: <20150603110123.GB14071@sirena.org.uk>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7FC22606DA
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 14:51:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,67 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-06-03 19:01 GMT+08:00 Mark Brown <broonie@kernel.org>:
-> On Wed, Jun 03, 2015 at 09:47:46AM +0800, Jun Nie wrote:
->> 2015-06-03 2:13 GMT+08:00 Mark Brown <broonie@kernel.org>:
->> > On Mon, Jun 01, 2015 at 09:42:34AM +0800, Jun Nie wrote:
->
->> >> So I need implement dai link in machine audio card driver, while not
->> >> use simple card and device tree initialization. In this way, I surely
->> >> can embed HDMI audio codec in HDMI driver. Is that right?
->
->> > I'm sorry, I don't entirely follow what you're saying here.
->
->> I am guessing you suggest me to implement a ASoC board driver, like
->> sound/soc/omap/omap3pandora.c. I can link HDMI codec with DAI with
->> snd_soc_dai_link structure to avoid specify the connection in dts.
->
-> You can do that if you like, but it's also fine to show the link between
-> the S/PDIF and HDMI IPs in DT if you like.
->
->> >> I had try to initialize audio all from dts, so need a HDMI codec dt
->> >> node to connect with DAI. However, I cannot find a way to create an
->> >> independent HDMI CODEC dt node because it is brought up from HDMI
->> >> driver. If my above understanding is correct, a machine level DAI link
->> >> shall resolve this issue with dropping simple card and DAI link in
->> >> dts. Thanks for your comments!
->
->> > If the HDMI encoder is simple I'd expect it to be possible to use it
->> > with simple-card.  If it isn't then we can look at why.
->
->> Most of devices is initialized from devicetree if not all on my board.
->> So I need fill CODEC/DAI dt node for imple-card in dts. I experience
->> the difficulty that I cannot create HDMI CODEC dt node. Because HDMI
->> CODEC shall be part of HDMI driver and be brought up with direct call
->> to snd_soc_register_codec in HDMI driver probe function per my
->> understanding. Then I do not have an independent dt node for HDMI
->> CODEC, thus cannot link the CODEC to DAI with dts information. Do you
->> see any chance to connect a DAI to an embedded CODEC of HDMI video
->> device? Thank you!
->
-> Are you saying that the HDMI IP doesn't appear in DT at all?  If the
-> HDMI IP appears in DT it should be possible to reference it.
-Thanks for confirmation. Seems I have much to learn in DT. Will create
-a CODEC device in HDMI display driver and feed HDMI device to simple
-card as below to have a try. Thanks!
-Do you think other patches are OK to merge except the two HDMI patches?
+The bit mask FSL_SAI_CR2_MSEL_MASK is defined as (0xff << 26) and this
+obviously overflows the 32bit integer.  Also this clears other bits
+than the needed ones (FSL_SAI_CR2_MSEL_XXX) wrongly.
 
-hdmi: hdmi@0x12340000 {
-        compatible = "zte,zx296702-hdmi";
-        reg = <0x12340000 0x1000>;
-     };
+This patch fixes the definition only to mask bits 26 and 27.
 
-sound {
-        compatible = "simple-audio-card";
-        simple-audio-card,name = "zx296702_snd";
-        simple-audio-card,cpu {
-                sound-dai = <&spdif0>;
-        };
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=84351
+Reported-by: David Binderman <dcb314@hotmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/fsl/fsl_sai.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-        simple-audio-card,codec {
-                sound-dai = <&hdmi>;
-        };
-};
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 34667209b607..0e33a17ddd01 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -72,7 +72,7 @@
+ 
+ /* SAI Transmit and Recieve Configuration 2 Register */
+ #define FSL_SAI_CR2_SYNC	BIT(30)
+-#define FSL_SAI_CR2_MSEL_MASK	(0xff << 26)
++#define FSL_SAI_CR2_MSEL_MASK	(0x03 << 26)
+ #define FSL_SAI_CR2_MSEL_BUS	0
+ #define FSL_SAI_CR2_MSEL_MCLK1	BIT(26)
+ #define FSL_SAI_CR2_MSEL_MCLK2	BIT(27)
+-- 
+2.4.2
