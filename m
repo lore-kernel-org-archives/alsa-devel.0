@@ -1,15 +1,18 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5677: Avoid recursive locking in the
-	DEADLOCK detector
-Date: Wed, 3 Jun 2015 23:53:17 +0800
-Message-ID: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 5/6] ASoC: zx: Add ZTE zx296702 I2S DAI
+	driver
+Date: Wed, 3 Jun 2015 17:02:18 +0100
+Message-ID: <20150603160218.GO14071@sirena.org.uk>
+References: <1432906281-27698-1-git-send-email-jun.nie@linaro.org>
+ <1432906281-27698-6-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3339227126540946281=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id A4A03265AF3
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 17:53:40 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59739265AED
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 18:02:28 +0200 (CEST)
+In-Reply-To: <1432906281-27698-6-git-send-email-jun.nie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,64 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, bardliao@realtek.com, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch is for to avoid recursive locking in the DEADLOCK detector.
-In the driver, it encountered the warnning message of the recursive locking
-in the function "regmap_lock_mutex".
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+--===============3339227126540946281==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="P7peSLPSdcfcL2or"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 31d969a..ee5b570 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4998,6 +4998,22 @@ static const struct regmap_config rt5677_regmap_physical = {
- 	.num_ranges = ARRAY_SIZE(rt5677_ranges),
- };
- 
-+static void rt5677_regmap_lock_mutex(void *__lock)
-+{
-+	struct mutex *lock = __lock;
-+
-+	mutex_lock(lock);
-+}
-+
-+static void rt5677_regmap_unlock_mutex(void *__lock)
-+{
-+	struct mutex *lock = __lock;
-+
-+	mutex_unlock(lock);
-+}
-+
-+static struct mutex rt5677_regmap_lock;
-+
- static const struct regmap_config rt5677_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
-@@ -5009,6 +5025,9 @@ static const struct regmap_config rt5677_regmap = {
- 	.readable_reg = rt5677_readable_register,
- 	.reg_read = rt5677_read,
- 	.reg_write = rt5677_write,
-+	.lock = rt5677_regmap_lock_mutex,
-+	.unlock = rt5677_regmap_unlock_mutex,
-+	.lock_arg = &rt5677_regmap_lock,
- 
- 	.cache_type = REGCACHE_RBTREE,
- 	.reg_defaults = rt5677_reg,
-@@ -5206,6 +5225,8 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	mutex_init(&rt5677_regmap_lock);
-+
- 	regmap_read(rt5677->regmap, RT5677_VENDOR_ID2, &val);
- 	if (val != RT5677_DEVICE_ID) {
- 		dev_err(&i2c->dev,
--- 
-1.9.1
+
+--P7peSLPSdcfcL2or
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 29, 2015 at 09:31:20PM +0800, Jun Nie wrote:
+> Add ZTE zx296702 I2S interface DAI driver
+
+This looks good but the Kconfig and Makefile changes depend on the
+previous patch.
+
+--P7peSLPSdcfcL2or
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbyUKAAoJECTWi3JdVIfQISEH/jiS5wQsFQGMSgdvbbra5hhj
+09nJ2nbX8aORym0EIjDtT4nIW7S3WE17OEFv/OZrpe2hxi4oAedqT8iD+j+5nF7Y
+pPTZ1XMnHnr6ZK/PBC1srXbAzjdr+koIhkF468b/O5rbp1iZCfs6cHBjMBinDeGh
+r1+arGAD3RSBWzt9B5BOOj7U3uxsmyH2zK4No5+Rpmp9s7gsNeDsjgPPWuLHDi4l
+bTcRU6wXF6P99pETzTZQ4pmZsLlmwMuyZaUgpNFUIm7zom3y37mkuk0I2Xq3iGxA
+1v1yp3a6znkev1ESByTPJldiXuHhG13jPj0sfnAE/zqQz3DkK/cpGw62EIg+Uqw=
+=wmqK
+-----END PGP SIGNATURE-----
+
+--P7peSLPSdcfcL2or--
+
+--===============3339227126540946281==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3339227126540946281==--
