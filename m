@@ -1,90 +1,55 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v4] ASoC: Intel: fixed TI button detection
-Date: Wed,  3 Jun 2015 15:07:41 -0700
-Message-ID: <1433369261-98343-1-git-send-email-yang.a.fang@intel.com>
-References: <1432925772-117760-3-git-send-email-yang.a.fang@intel.com>
+From: Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [alsa-devel] [PATCH 5/7] ASoC: wm5100: remove bitwise operations
+ involving GPIO level value
+Date: Thu, 04 Jun 2015 01:58:37 +0300
+Message-ID: <556F869D.6060601@mleia.com>
+References: <1433200031-6748-1-git-send-email-vz@mleia.com>	<1433200158-6890-5-git-send-email-vz@mleia.com>	<20150602194558.GI14071@sirena.org.uk>	<556E10CD.3090301@mleia.com>	<CA+7tXijtaM4tn3Mb+tbsd7JFbGjeh1yT=zTXPuCiFjqnvRjdvg@mail.gmail.com>	<556F51CF.1000807@mleia.com> <CA+7tXigF6LginxQGUBKqLZorecPp7B8wydzDA4jb4iKOi7CdBA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 54120265DB9
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 00:08:32 +0200 (CEST)
-In-Reply-To: <1432925772-117760-3-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <CA+7tXigF6LginxQGUBKqLZorecPp7B8wydzDA4jb4iKOi7CdBA@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Trent Piepho <tpiepho@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-gpio <linux-gpio@vger.kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+Hello Trent,
 
-In order to make TI button interrupt working max98090 codec
-Need provide mic bias all the time as long as mic is present
-so SHDN and micbias pin are forced on.we also need set max98090
-codec bias close or lower than TI bias.We set them in bios/coreboot
-kernel reads them from device property
+On 04.06.2015 00:51, Trent Piepho wrote:
+> On Wed, Jun 3, 2015 at 12:13 PM, Vladimir Zapolskiy <vz@mleia.com> wrote:
+>>>
+>>> BTW, with a little C algebra:
+>>> const unsigned int val = value ?  0x1 << WM5100_GP1_LVL_SHIFT : 0;
+>>> const unsigned int val = (value ?  0x1 : 0) << WM5100_GP1_LVL_SHIFT;
+>>> const unsigned int val = (!!value) << WM5100_GP1_LVL_SHIFT;  //
+>>> definition of ! operator
+>>>
+>>> And now we're back to where we started, so I don't really see why this
+>>> is even necessary.  The semantics of the ! operator will be changed in a
+>>> future C version?
+>>
+>> I don't think it makes sense to discuss technical aspects of the
+>> proposed change, as I mentioned in the discussion yesterday I see no
+>> technical issues at this point, and my changes are described as
+>> nonfunctional.
+>>
+>> The _nontechnical_ problem I see (well, may be I'm just blowing it up)
+>> is a Linux kernel code style policy problem, to my knowledge the policy
+>> of using bitwise and arithmetic operations on bool type variables and
+>> constants is not defined, and since the policy is not yet defined I'm
+>> glad to take part in its discussion now.
+> 
+> I don't believe this is the case.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/boards/cht_bsw_max98090_ti.c |   30 ++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+please excuse me for possible misunderstanding, you don't believe that
+I'm interested in discussing a _nontechnical_ problem stated above?
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 1be0794..d604ee8 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -101,6 +101,33 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int cht_ti_jack_event(struct notifier_block *nb,
-+		unsigned long event, void *data)
-+{
-+
-+	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
-+	struct snd_soc_dai *codec_dai = jack->card->rtd->codec_dai;
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+
-+	if (event & SND_JACK_MICROPHONE) {
-+
-+		snd_soc_dapm_force_enable_pin(&codec->dapm, "SHDN");
-+		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_sync(&codec->dapm);
-+	} else {
-+
-+		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "SHDN");
-+		snd_soc_dapm_sync(&codec->dapm);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct notifier_block cht_jack_nb = {
-+	.notifier_call = cht_ti_jack_event,
-+};
-+
- static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	int ret;
-@@ -130,6 +157,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	if (ctx->ts3a227e_present)
-+		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
-+
- 	return ret;
- }
- 
--- 
-1.7.9.5
+>  From C99, section 6.5.3.3, paragraph 5:
+
+C99 is a strict superset over Linux coding style (e.g. remember //
+comments or "register" specifier), so let's forget about.
+
+--
+With best wishes,
+Vladimir
