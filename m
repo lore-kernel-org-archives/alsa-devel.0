@@ -1,54 +1,83 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: qcom: Remove QCOM dependency from LPASS variants
-Date: Wed, 3 Jun 2015 12:06:20 +0100
-Message-ID: <20150603110620.GC14071@sirena.org.uk>
-References: <1433305717-8691-1-git-send-email-kwestfie@codeaurora.org>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Different codecs for playback and capture?
+Date: Wed, 3 Jun 2015 13:06:36 +0200
+Message-ID: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cC4dCx2W6DcYPM7t"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1433305717-8691-1-git-send-email-kwestfie@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jim Davis <jim.epost@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Kumar Gala <galak@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30D3326058B
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 77AB92E0D0
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:45 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id gCqwaqv490uB for <alsa-devel@alsa-project.org>;
+ Wed,  3 Jun 2015 13:06:44 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id E20052E09D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:39 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id C0BAE140A
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:39 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id B084812DA
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:39 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by seth.se.axis.com (Postfix) with ESMTP id AE3B23E049
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:06:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---cC4dCx2W6DcYPM7t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi,
 
-On Tue, Jun 02, 2015 at 09:28:37PM -0700, Kenneth Westfield wrote:
+I'm developing a machine driver for a system where we have two different =
 
-> Building with the following config options ...
+codecs for input and output, connected to the same I2S interface. Normally =
 
->  CONFIG_COMPILE_TEST=y
->  # CONFIG_SND_SOC_QCOM is not set
->  CONFIG_SND_SOC_LPASS_IPQ806X=m
->  CONFIG_SND_SOC_STORM=m
+a machine driver specifies which codec the I2S interface is connected to, =
 
-> ... causes the following build warning:
+but in this case there should really be two different ones, one for record =
 
-It's not obvious to me that the above set of options should be allowed
-in the first place - surely the machine drivers depend on SND_SOC_QCOM
-so the fix should be to add the missing dependency to the machine
-drivers?
+and one for playback. I'm working on how to put this together, and just =
 
---cC4dCx2W6DcYPM7t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+thought I'd try and get some input before going too far down the wrong =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+track. The options I see are:
 
-iQEcBAEBCAAGBQJVbt+rAAoJECTWi3JdVIfQ68AH/2HlNylVpD5LU8/DaJAJjZAO
-SFv3VGq0l3kg8vaT3MNKVqUobQ/0UE9im6IRSeUhXocWHSgbA97QmTEoqvWOmJFf
-XoXHuR+nptH4QZxJvEOXS5KiqNYSWQfu/qIBMVRx5UL5AWOFbcKESo+uJDGZNx8N
-Zl9v4gQRkcWrPp4RByu47b8KeqVyUqfDvUrJ7F1qoScnK4vV+g+uz+NZcJeokY5q
-RRDMvKstegkdW0NkpkvFfS/x5kw7LBhCa6GzdA1WB6JeVF6Xtm6IlGS3HH3VGDkI
-dO90ZtAB8rWfLtn1Fu/03VWy6GuMExohNkmfLlcRd3IplBLg3QihbiDkY6QQdPo=
-=pGwG
------END PGP SIGNATURE-----
+1. Specify two different codecs in the machine driver. Since one can =
 
---cC4dCx2W6DcYPM7t--
+specify several dai_links this would seem to be doable, however, I'm not =
+
+sure ALSA can handle two codecs sharing a single CPU DAI in this way?
+
+2. Use two separate machine drivers, one for each codec? Again, sharing a =
+
+single CPU DAI would seem to be an issue here?
+
+3. Write a special codec driver that is a merge between the two codecs, =
+
+one for input and one for output. Seems like a bit of a hack, but should =
+
+be possible.
+
+Any spontaneous thoughts?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
