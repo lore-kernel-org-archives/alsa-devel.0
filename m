@@ -1,22 +1,18 @@
-From: Trent Piepho <tpiepho@gmail.com>
-Subject: Re: [PATCH 5/7] ASoC: wm5100: remove bitwise
- operations involving GPIO level value
-Date: Wed, 3 Jun 2015 03:50:04 -0700
-Message-ID: <CA+7tXijtaM4tn3Mb+tbsd7JFbGjeh1yT=zTXPuCiFjqnvRjdvg@mail.gmail.com>
-References: <1433200031-6748-1-git-send-email-vz@mleia.com>
- <1433200158-6890-5-git-send-email-vz@mleia.com>
- <20150602194558.GI14071@sirena.org.uk> <556E10CD.3090301@mleia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
+Date: Wed, 3 Jun 2015 12:01:23 +0100
+Message-ID: <20150603110123.GB14071@sirena.org.uk>
+References: <CABymUCNvM=k4tWJutpzoK-VFvKhBC4EGjh_OzWYMMRppUqvSOA@mail.gmail.com>
+ <20150602181326.GB14071@sirena.org.uk>
+ <CABymUCOWiHERfvw9c5ihsvgXXko1HLwv+7ectLOiQd3rGSHHPQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5509132293811562315=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f170.google.com (mail-ig0-f170.google.com
- [209.85.213.170])
- by alsa0.perex.cz (Postfix) with ESMTP id E63E1260535
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 12:50:05 +0200 (CEST)
-Received: by igbpi8 with SMTP id pi8so107831886igb.0
- for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 03:50:04 -0700 (PDT)
-In-Reply-To: <556E10CD.3090301@mleia.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E860926058B
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 13:01:34 +0200 (CEST)
+In-Reply-To: <CABymUCOWiHERfvw9c5ihsvgXXko1HLwv+7ectLOiQd3rGSHHPQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vladimir Zapolskiy <vz@mleia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, Takashi Iwai <tiwai@suse.de>, Linus Walleij <linus.walleij@linaro.org>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Alexandre Courbot <acourbot@nvidia.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 2, 2015 at 1:23 PM, Vladimir Zapolskiy <vz@mleia.com> wrote:
 
-> Hello Mark,
->
-> On 02.06.2015 22:45, Mark Brown wrote:
-> > On Tue, Jun 02, 2015 at 02:09:16AM +0300, Vladimir Zapolskiy wrote:
-> >
-> >> @@ -2244,26 +2244,27 @@ static inline struct wm5100_priv
-> *gpio_to_wm5100(struct gpio_chip *chip)
-> >>  static void wm5100_gpio_set(struct gpio_chip *chip, unsigned offset,
-> int value)
-> >>  {
-> >>      struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
-> >> +    unsigned int val = 0;
-> >> +
-> >> +    if (value)
-> >> +            val = 0x1 << WM5100_GP1_LVL_SHIFT;
-> >
-> > Write this as an if/else so the reader doesn't have to wonder why you've
-> > missed the handling of the false case.
-> >
->
-> the only objection I have is that the resulting code will be two lines
-> longer. If you think this code is not clear enough (is "val" vs. "value"
-> misleading?), I'll change the rest of my patches, which contain the same
-> logic structure, please let me know.
->
+--===============5509132293811562315==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="veZQh2nSsG1B2+Ku"
+Content-Disposition: inline
 
-const unsigned int val = value ?  (0x1 << WM5100_GP1_LVL_SHIFT) : 0;
 
-Two lines shorter....
+--veZQh2nSsG1B2+Ku
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Have you measured the effect of going from int to bool on code size and
-speed?  Clearly, the C code is getting longer as '!!' is transformed into
-an if-then-else to set a new scratch variable.  But the compiler likely
-converts both to a conditional branch or cmov type instruction.  What I
-wonder is if converting gpiolib to use bools instead of ints is better just
-because someone likes it more that way or if there are objective metrics
-that show improvement.
+On Wed, Jun 03, 2015 at 09:47:46AM +0800, Jun Nie wrote:
+> 2015-06-03 2:13 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> > On Mon, Jun 01, 2015 at 09:42:34AM +0800, Jun Nie wrote:
 
-BTW, with a little C algebra:
-const unsigned int val = value ?  0x1 << WM5100_GP1_LVL_SHIFT : 0;
-const unsigned int val = (value ?  0x1 : 0) << WM5100_GP1_LVL_SHIFT;
-const unsigned int val = (!!value) << WM5100_GP1_LVL_SHIFT;  // definition
-of ! operator
+> >> So I need implement dai link in machine audio card driver, while not
+> >> use simple card and device tree initialization. In this way, I surely
+> >> can embed HDMI audio codec in HDMI driver. Is that right?
 
-And now we're back to where we started, so I don't really see why this is
-even necessary.  The semantics of the ! operator will be changed in a
-future C version?
+> > I'm sorry, I don't entirely follow what you're saying here.
+
+> I am guessing you suggest me to implement a ASoC board driver, like
+> sound/soc/omap/omap3pandora.c. I can link HDMI codec with DAI with
+> snd_soc_dai_link structure to avoid specify the connection in dts.
+
+You can do that if you like, but it's also fine to show the link between
+the S/PDIF and HDMI IPs in DT if you like.
+
+> >> I had try to initialize audio all from dts, so need a HDMI codec dt
+> >> node to connect with DAI. However, I cannot find a way to create an
+> >> independent HDMI CODEC dt node because it is brought up from HDMI
+> >> driver. If my above understanding is correct, a machine level DAI link
+> >> shall resolve this issue with dropping simple card and DAI link in
+> >> dts. Thanks for your comments!
+
+> > If the HDMI encoder is simple I'd expect it to be possible to use it
+> > with simple-card.  If it isn't then we can look at why.
+
+> Most of devices is initialized from devicetree if not all on my board.
+> So I need fill CODEC/DAI dt node for imple-card in dts. I experience
+> the difficulty that I cannot create HDMI CODEC dt node. Because HDMI
+> CODEC shall be part of HDMI driver and be brought up with direct call
+> to snd_soc_register_codec in HDMI driver probe function per my
+> understanding. Then I do not have an independent dt node for HDMI
+> CODEC, thus cannot link the CODEC to DAI with dts information. Do you
+> see any chance to connect a DAI to an embedded CODEC of HDMI video
+> device? Thank you!
+
+Are you saying that the HDMI IP doesn't appear in DT at all?  If the
+HDMI IP appears in DT it should be possible to reference it.
+
+--veZQh2nSsG1B2+Ku
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVbt6CAAoJECTWi3JdVIfQHN0H/1sRFpgeUHcFuAjEhw4Yyfg2
+r6Oue6pCdPxS6kbvuNlrdG0nVPMGNAqXz/h/0zXPRJblcIOB9xHjQoH7RSsCTveB
+3mQmgznZ3odvv5tTkFpYw3FL1k5ak5J0U2y7P3Kjq3LTJllw15q8MZzz4lajRc0T
+h6ydc8KzBkdgYXVNA+rDOBQHa46Wad6H2Bq90qjXKkdsCKw5xehoi0VWfm/Bp3aa
+x4PvgALH2VEf5I+9gaIpvLgkN8Q7DwhoZonNoX7NI5HJ+iqaAUH1GcMG7p6CgYpn
+fw9VcsDAeiYFaBlnPNlui9GUlCQQvQG7H3EkZTlB1Nd0gccxkh9XvJ3JEgxUzLM=
+=P3+V
+-----END PGP SIGNATURE-----
+
+--veZQh2nSsG1B2+Ku--
+
+--===============5509132293811562315==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5509132293811562315==--
