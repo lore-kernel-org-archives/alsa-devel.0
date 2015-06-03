@@ -1,21 +1,21 @@
-From: "Fang, Yang A" <yang.a.fang@intel.com>
-Subject: Re: [PATCH v3 3/3] ASoC: Intel: fixed TI button
-	detection
-Date: Wed, 3 Jun 2015 20:54:23 +0000
-Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718CFFCA8@ORSMSX113.amr.corp.intel.com>
-References: <1432836048-102175-1-git-send-email-yang.a.fang@intel.com>
- <1432925772-117760-1-git-send-email-yang.a.fang@intel.com>
- <1432925772-117760-3-git-send-email-yang.a.fang@intel.com>
- <20150603181551.GR14071@sirena.org.uk>
+From: Ben Zhang <benzh@chromium.org>
+Subject: Re: [PATCH] ASoC: core: Pass kcontrol pointer to bytes
+	tlv callbacks
+Date: Wed, 3 Jun 2015 14:10:28 -0700
+Message-ID: <CAOV7ByLAwtv1n4wdww=5r7wvCDOtwh7+g_3AqZAaPF=R8zmsTg@mail.gmail.com>
+References: <1433283843-33856-1-git-send-email-benzh@chromium.org>
+ <20150603115951.GG14071@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E49B2265DB5
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 23:06:52 +0200 (CEST)
-In-Reply-To: <20150603181551.GR14071@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08B73265DB9
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 23:10:30 +0200 (CEST)
+Received: by pdbnf5 with SMTP id nf5so15512989pdb.2
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 14:10:28 -0700 (PDT)
+In-Reply-To: <20150603115951.GG14071@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,68 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
- Denny" <denny.iriawan@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Dylan Reid <dgreid@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jun 3, 2015 at 4:59 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jun 02, 2015 at 03:24:03PM -0700, Ben Zhang wrote:
+>
+>> -     int (*get)(unsigned int __user *bytes, unsigned int size);
+>> -     int (*put)(const unsigned int __user *bytes, unsigned int size);
+>> +     int (*get)(struct snd_kcontrol *kcontrol,
+>> +                unsigned int __user *bytes, unsigned int size);
+>> +     int (*put)(struct snd_kcontrol *kcontrol,
+>> +                const unsigned int __user *bytes, unsigned int size);
+>
+> This doesn't update any users and we do have some like the Haswell PCM
+> driver.
 
+Hi Mark,
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Wednesday, June 03, 2015 11:16 AM
-> To: Fang, Yang A
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
-> dgreid@chromium.org; Nujella, Sathyanarayana;
-> kevin.strasser@linux.intel.com; Sripathi, Srinivas; Iriawan, Denny; Jain,
-> Praveen K; Koul, Vinod
-> Subject: Re: [PATCH v3 3/3] ASoC: Intel: fixed TI button detection
-> 
-> On Fri, May 29, 2015 at 11:56:12AM -0700, yang.a.fang@intel.com wrote:
-> 
-> > +	if (event & SND_JACK_MICROPHONE) {
-> > +
-> > +		pin_status = snd_soc_dapm_get_pin_status(&codec->dapm,
-> "SHDN");
-> > +		if (!pin_status)
-> > +			snd_soc_dapm_force_enable_pin(&codec->dapm,
-> "SHDN");
-> 
-> This seems wrong - either we need the pin enabled or we don't.  If it's
-> currently enabled for something transient like playback then it might get
-> turned off later so we should still force it on.
-Got it.  I will remove the condition.
-> 
-> > +		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
-> > +		snd_soc_dapm_sync(&codec->dapm);
-> > +		/**
-> > +		* SHDN is max980090 shutdown pin we can not disable
-> > +		* it in case we are in the middle of playabck or record
-> > +		* we mark it unlock only so dapm will take care of it
-> > +		* next time
-> > +		*/
-> > +		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
-> "SHDN");
-> 
-> This is wrong, you're mixing locked and unlocked versions of the DAPM
-> operations which can't be right - the difference between locked and
-> unlocked versions of the operations is that the locked versions is if the locks
-> for DAPM are already held and clearly there's no locking code here.  This last
-> operation shuld be a normal _disable_pin().
-> 
-Thanks Mark.  I will use snd_soc_dapm_disable_pin
-> I'd also expect it to be before the sync - there's no telling how long it'll be till
-> the next sync otherwise and no reason to leave the pin forced on if it's not
-> needed.  If it is in use due to some other thing then DAPM should ensure
-> that the state doesn't get changed by the disable.
-> 
-I was thinking widget will be disabled right after calling snd_soc_dapm_sync
-I just tried to move SHDN before calling snd_soc_dapm_sync  .as you said 
-if it is in use dapm will not turn it off immediately  for example if playback is
- ongoing.It will be turned off few seconds after playback stops.
+I couldn't find any existing users of the callbacks. It looks like the
+modified callbacks are used by SND_SOC_BYTES_TLV only, and there is no
+reference to SND_SOC_BYTES_TLV in the kernel.
 
-> Indentation is broken for the comment too.
-I will remove the comments since I will move the disable SHDN pin code 
-before calling snd_soc_dapm_sync
+The Haswell PCM driver uses SND_SOC_BYTES_EXT which doesn't use the
+callbacks in struct soc_bytes_ext. The xhandler_get/put are assigned
+to snd_kcontrol_new.get/put instead.
+
+Ben
