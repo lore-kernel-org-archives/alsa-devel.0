@@ -1,16 +1,17 @@
-From: Jack Mitchell <ml@embed.me.uk>
-Subject: Re: simple-audio-card with omap4-dmic
-Date: Wed, 03 Jun 2015 17:39:19 +0100
-Message-ID: <556F2DB7.50003@embed.me.uk>
-References: <556F1F1E.8040405@embed.me.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Avoid recursive locking in
+ the DEADLOCK detector
+Date: Wed, 3 Jun 2015 17:44:53 +0100
+Message-ID: <20150603164453.GP14071@sirena.org.uk>
+References: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4974154439931936295=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from owm.eumx.net (eumx.net [91.82.101.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 67065265ADF
- for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 18:39:12 +0200 (CEST)
-In-Reply-To: <556F1F1E.8040405@embed.me.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DE10265AEF
+ for <alsa-devel@alsa-project.org>; Wed,  3 Jun 2015 18:44:59 +0200 (CEST)
+In-Reply-To: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,88 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com, john.lin@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/06/15 16:37, Jack Mitchell wrote:
-> I'm currently working with a PandaBoard clone (OMAP44xx) which doesn't 
-> have the usual twl6040 codec, however I would like to attach a digital 
-> microphone directly into the OMAP.
->
-> I have added the following to my device tree:
->
->         sound {
->                 compatible = "simple-audio-card";
->                 simple-audio-card,name = "dmic-card";
->
->                 simple-audio-card,format = "pdm";
->
->                 status = "okay";
->
->                 simple-audio-card,dai-link@0 {
->                         cpu {
->                                 sound-dai = <&dmic>;
->                         };
->
->                         codec {
->                                 sound-dai = <&dmic_codec>;
->                         };
->                 };
->         };
->
->         dmic_codec: dmic_codec {
->                 #sound-dai-cells = <0>;
->                 compatible = "linux,dmic-codec";
->         };
->
-> and created a small patch to allow the generic dmic-hifi codec to be 
-> instantiated from device tree.
->
-> diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-> index fde5325..67b9198 100644
-> --- a/sound/soc/codecs/dmic.c
-> +++ b/sound/soc/codecs/dmic.c
-> @@ -69,11 +69,18 @@ static int dmic_dev_remove(struct platform_device 
-> *pdev)
->         return 0;
->  }
->
-> -MODULE_ALIAS("platform:dmic-codec");
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id dmic_dt_ids[] = {
-> +        { .compatible = "linux,dmic-codec", },
-> +        { }
-> +};
-> +MODULE_DEVICE_TABLE(of, dmic_dt_ids);
-> +#endif
->
->  static struct platform_driver dmic_driver = {
->         .driver = {
->                 .name = "dmic-codec",
-> +               .of_match_table = of_match_ptr(dmic_dt_ids),
->         },
->         .probe = dmic_dev_probe,
->         .remove = dmic_dev_remove,
-> @@ -81,6 +88,7 @@ static struct platform_driver dmic_driver = {
->
->  module_platform_driver(dmic_driver);
->
-> +MODULE_ALIAS("platform:dmic-codec");
->  MODULE_DESCRIPTION("Generic DMIC driver");
->  MODULE_AUTHOR("Liam Girdwood <lrg@slimlogic.co.uk>");
->  MODULE_LICENSE("GPL");
->
-> However, no soundcards get loaded, and I don't get error or warnings 
-> in dmesg, so I'm at a bit of a loss at where I'm going wrong. Can 
-> anybody see any glaring mistakes? I know the driver is definitely 
-> getting loaded as I have seen errors relating to me not specifying the 
-> sound-dai-cells from the simple-audio-card driver.
->
-> Any ideas would be greatly recieved!
->
-> Cheers,
->
->
-Ok, playing with this a bit more and I find if I manually modprobe 
-snd-soc-dmic then it fires into life. There are other problems with 
-capturing but I'll fight those myself for a bit first.
+
+--===============4974154439931936295==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2DMJGKatbWMtT1aQ"
+Content-Disposition: inline
+
+
+--2DMJGKatbWMtT1aQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jun 03, 2015 at 11:53:17PM +0800, Oder Chiou wrote:
+
+> The patch is for to avoid recursive locking in the DEADLOCK detector.
+> In the driver, it encountered the warnning message of the recursive locking
+> in the function "regmap_lock_mutex".
+
+Could you be more specific about the deadlock you're seeing?  This isn't
+really enough to understand either what the problem is or why this fixes
+it.  Converting all the per-regmap mutexes into a single global mutex
+isn't an immediately obvious step.
+
+--2DMJGKatbWMtT1aQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVby8EAAoJECTWi3JdVIfQvzkH/1robYBiyty3RBdqyN5XXZiG
+FHTYmt1Y8CBJQc87NAqVxGIect/IQNnAjDerRC1O4DacinlrUTz00r+uNt3cpXa5
+LmyFKyXRgDvAEU3VezM1ov9gu0yqp1QGfQ1j2JPSfqpzzsJ0gKNbQtn+vhNREwSe
+q5AhazNwkb8JqyVHceYVP/jgpgRI3TXuKGK7UU5Hf263PkcX9GpY5CXX87t0ALO6
+IEQtsCZ8JfVCZervSYbaRA0IfX3+9Zd1BnpUHA5jfbvpVvxibqk/DVNzAcew9eVj
+k0v+3NP5qOxoIlOB4QUmkF6Q9WGNIfX8WX5Y2wougWjTmMgwxMUjZBdJsWgMXzo=
+=Jkoo
+-----END PGP SIGNATURE-----
+
+--2DMJGKatbWMtT1aQ--
+
+--===============4974154439931936295==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4974154439931936295==--
