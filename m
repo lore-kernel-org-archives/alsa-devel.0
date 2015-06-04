@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: zx: fix platform_no_drv_owner.cocci
-	warnings
-Date: Thu, 4 Jun 2015 18:53:00 +0100
-Message-ID: <20150604175300.GP14071@sirena.org.uk>
-References: <201506050116.40gO5c34%fengguang.wu@intel.com>
- <20150604171126.GA226227@ivytown2>
- <20150604171659.GO14071@sirena.org.uk>
+Subject: Re: [RFC PATCH] ALSA: split params refinement to
+	seperated file
+Date: Thu, 4 Jun 2015 20:15:48 +0100
+Message-ID: <20150604191548.GR14071@sirena.org.uk>
+References: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6179192846595984754=="
+Content-Type: multipart/mixed; boundary="===============3867515137754577452=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05910260601
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 19:53:12 +0200 (CEST)
-In-Reply-To: <20150604171659.GO14071@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 965352606C8
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 21:15:55 +0200 (CEST)
+In-Reply-To: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, kbuild-all@01.org, Jun Nie <jun.nie@linaro.org>
+To: Jie Yang <yang.jie@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, vivian.zhang@intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6179192846595984754==
+--===============3867515137754577452==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8RzCspYsRAU9V6Ra"
+	protocol="application/pgp-signature"; boundary="j5904Piqecmxrsp+"
 Content-Disposition: inline
 
 
---8RzCspYsRAU9V6Ra
+--j5904Piqecmxrsp+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 04, 2015 at 06:16:59PM +0100, Mark Brown wrote:
-> On Fri, Jun 05, 2015 at 01:11:27AM +0800, kbuild test robot wrote:
-> > sound/soc/zte/zx296702-i2s.c:428:3-8: No need to set .owner here. The c=
-ore will do it.
-> >=20
-> >  Remove .owner field if calls are used which set it automatically
->=20
-> Applied, thanks.
+On Thu, Jun 04, 2015 at 10:47:45PM +0800, Jie Yang wrote:
 
-These mails are CCed to kbuild-all@01.org which is generating
-backscatter since it's subscribers only (not even moderated for
-non-subscribers) - you can you please disable the mails to
-non-subscribers or open the list up?
+> The change moves refinement functions from original pcm_native.c and
+> pcm_lib.c, to pcm_refine.c(similarly the declaration from pcm.h to
+> pcm_refine.h), so it is not so big as it looks like.
 
---8RzCspYsRAU9V6Ra
+I'd suggest that for review it'd be easier to have one patch for the
+move and another for the change in behaviour: it's a bit hard to find
+the actual change in what the kernel does in this diff and that's the
+bit that needs most careful consideration.
+
+git format-patch -M may also help.
+
+--j5904Piqecmxrsp+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVcJB7AAoJECTWi3JdVIfQkeEH/1w1xzDm6LB4sC/XK6jL+deQ
-Py7BoRkVCQzJuyyWaRBFLApky60UichVRyqizDAzYMDbYvndTx4jbihSkSG9UAkY
-oRdrn4wQIpl5QxQm1mw+8QIxqyfYWc838QK/Tmkzq5bpjKi/ofIBXGkB9SWYWPni
-Br4MClpqKJCi9Zg0rNU/nf0GG5NQq971PrjSg7vK9cF5kbRISgWW9SUxWh+3Vhno
-F556UXzY2Ddq2cZE49yZE43E0BQ0b54SUExZu87IJbOCN1LXn4GSsXC36Kow19Hm
-9VlIkVvbetJOiqtaWm19/xsE0II3ZoN1Uxw1awt07WhUq5alNKbgNlNBRP3W+nM=
-=yXCc
+iQEcBAEBCAAGBQJVcKPjAAoJECTWi3JdVIfQO+YH/3/8+F0AYP5bJ4rTq4zuWa+3
+LdZk0xWtZ3wvcCjuijGFgfwwsh67FeXUXQ3Pp1Y3nT4vFvzELzag6F+MyU3aK6wr
+VrsCrKbcSZAY2p6rD2xINXaoJBpBeOCOHV8BKMrvhc9CPo5oWp4mhk7SID1P1Exp
+qyWZqvZazzeh1Ava7sJZQK/Yoe5PV1EfyX8c7ZK8UAeUV0AKSweYRiyGAS2MDglh
+SNAUQSP9Vv3DTv077dBOdVgyOgjv6GdTW4PNt/MhHKOiVu/UKXY4cm1csWhKou9E
+y4lZFcOrTAgsE4kmeq/rrfI29aQgAuKKhm8w7dmFgNFO8CSarkwSAOnSVSq27Gc=
+=HOdr
 -----END PGP SIGNATURE-----
 
---8RzCspYsRAU9V6Ra--
+--j5904Piqecmxrsp+--
 
---===============6179192846595984754==
+--===============3867515137754577452==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6179192846595984754==--
+--===============3867515137754577452==--
