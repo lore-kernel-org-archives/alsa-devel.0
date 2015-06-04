@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 20/22] ASoC: tas2552: Correct Output Data
-	register usage
-Date: Thu, 4 Jun 2015 15:22:46 +0300
-Message-ID: <1433420571-5421-23-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 22/22] ASoC: tas2552: Code,
+	define alignment changes for uniformity
+Date: Thu, 4 Jun 2015 15:22:49 +0300
+Message-ID: <1433420571-5421-26-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B8A426651C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:45 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93B7E266537
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:52 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,62 +25,60 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do not write to DOUT Tristate register at probe time, specially not write
-data which is defined to be used in Output Data Register.
-Fix the defines for the Output Data Register and correct the register write
-at probe time.
+Align the numbers in the header file to the same column.
+At the same time change the wrapping of CFG_2 register write in the probe
+function to be uniform with the other calls.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c |  5 +++--
- sound/soc/codecs/tas2552.h | 19 +++++++++++++++----
- 2 files changed, 18 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tas2552.c |  4 ++--
+ sound/soc/codecs/tas2552.h | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 64abc932732d..d9a637020214 100644
+index fe8a988e0a4a..21d8e1d764a2 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -601,8 +601,9 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, TAS2552_MUTE);
- 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
- 					    TAS2552_DIN_SRC_SEL_AVG_L_R);
--	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
--	snd_soc_write(codec, TAS2552_OUTPUT_DATA, TAS2552_PDM_DATA_V_I | 0x8);
-+	snd_soc_write(codec, TAS2552_OUTPUT_DATA,
-+		      TAS2552_PDM_DATA_SEL_V_I |
-+		      TAS2552_R_DATA_OUT(TAS2552_DATA_OUT_V_DATA));
- 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
- 				TAS2552_APT_THRESH_2_1_7);
+@@ -607,8 +607,8 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, TAS2552_BOOST_APT_CTRL, TAS2552_APT_DELAY_200 |
+ 						     TAS2552_APT_THRESH_20_17);
+ 
+-	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
+-				  TAS2552_APT_EN | TAS2552_LIM_EN);
++	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN | TAS2552_APT_EN |
++					    TAS2552_LIM_EN);
+ 
+ 	return 0;
  
 diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index f04d9e6db0aa..14d40ef645c4 100644
+index 364c6dd8e79b..13f8d1be1e06 100644
 --- a/sound/soc/codecs/tas2552.h
 +++ b/sound/soc/codecs/tas2552.h
-@@ -103,10 +103,21 @@
- #define TAS2552_WCLKDIR			(1 << 7)
+@@ -19,7 +19,7 @@
+ #define __TAS2552_H__
  
- /* OUTPUT_DATA register */
--#define TAS2552_PDM_DATA_I		0x00
--#define TAS2552_PDM_DATA_V		(1 << 6)
--#define TAS2552_PDM_DATA_I_V	(1 << 7)
--#define TAS2552_PDM_DATA_V_I	(0x11 << 6)
-+#define TAS2552_DATA_OUT_I_DATA		(0x0)
-+#define TAS2552_DATA_OUT_V_DATA		(0x1)
-+#define TAS2552_DATA_OUT_VBAT_DATA	(0x2)
-+#define TAS2552_DATA_OUT_VBOOST_DATA	(0x3)
-+#define TAS2552_DATA_OUT_PGA_GAIN	(0x4)
-+#define TAS2552_DATA_OUT_IV_DATA	(0x5)
-+#define TAS2552_DATA_OUT_VBAT_VBOOST_GAIN	(0x6)
-+#define TAS2552_DATA_OUT_DISABLED	(0x7)
-+#define TAS2552_L_DATA_OUT(x)		((x) << 0)
-+#define TAS2552_R_DATA_OUT(x)		((x) << 3)
-+#define TAS2552_PDM_DATA_SEL_I		(0x0 << 6)
-+#define TAS2552_PDM_DATA_SEL_V		(0x1 << 6)
-+#define TAS2552_PDM_DATA_SEL_I_V	(0x2 << 6)
-+#define TAS2552_PDM_DATA_SEL_V_I	(0x3 << 6)
-+#define TAS2552_PDM_DATA_SEL_MASK	TAS2552_PDM_DATA_SEL_V_I
- 
- /* PDM CFG Register */
- #define TAS2552_PDM_CLK_SEL_PLL		(0x0 << 0)
+ /* Register Address Map */
+-#define TAS2552_DEVICE_STATUS	0x00
++#define TAS2552_DEVICE_STATUS		0x00
+ #define TAS2552_CFG_1			0x01
+ #define TAS2552_CFG_2			0x02
+ #define TAS2552_CFG_3			0x03
+@@ -33,12 +33,12 @@
+ #define TAS2552_BTIP			0x0b
+ #define TAS2552_BTS_CTRL		0x0c
+ #define TAS2552_RESERVED_0D		0x0d
+-#define TAS2552_LIMIT_RATE_HYS	0x0e
+-#define TAS2552_LIMIT_RELEASE	0x0f
+-#define TAS2552_LIMIT_INT_COUNT	0x10
++#define TAS2552_LIMIT_RATE_HYS		0x0e
++#define TAS2552_LIMIT_RELEASE		0x0f
++#define TAS2552_LIMIT_INT_COUNT		0x10
+ #define TAS2552_PDM_CFG			0x11
+ #define TAS2552_PGA_GAIN		0x12
+-#define TAS2552_EDGE_RATE_CTRL	0x13
++#define TAS2552_EDGE_RATE_CTRL		0x13
+ #define TAS2552_BOOST_APT_CTRL		0x14
+ #define TAS2552_VER_NUM			0x16
+ #define TAS2552_VBAT_DATA		0x19
 -- 
 2.4.2
