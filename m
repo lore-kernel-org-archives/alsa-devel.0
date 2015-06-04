@@ -1,16 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 10/22] ASoC: tas2552: Add support for pll and
-	pdm source clock selection
-Date: Thu, 4 Jun 2015 15:22:34 +0300
-Message-ID: <1433420571-5421-11-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 11/22] ASoC: tas2552: Correct dai format support
+Date: Thu, 4 Jun 2015 15:22:35 +0300
+Message-ID: <1433420571-5421-12-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id CDF1226067D
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 97B322664C2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:22 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,83 +24,77 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Instead of hard wiring the PLL_CLKIN and PDM_CLK to be sourced from BCLK add
-proper clock configuration via the set_dai_sysclk callback.
+DSP_A mode require one bit delay from the FS, DSP_B is without data delay.
+When checking the requested format, also match the bit and fs inversion
+flag along with the format since it is not possible to change inversion.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tas2552.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index e29b29b279d9..34495241c674 100644
+index 34495241c674..2f4c2b52a9fa 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -34,6 +34,7 @@
- #include <sound/soc-dapm.h>
- #include <sound/tlv.h>
- #include <sound/tas2552-plat.h>
-+#include <dt-bindings/sound/tas2552.h>
+@@ -188,11 +188,14 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
- #include "tas2552.h"
- 
-@@ -76,6 +77,7 @@ struct tas2552_data {
- 	struct gpio_desc *enable_gpio;
- 	unsigned char regs[TAS2552_VBAT_DATA];
- 	unsigned int pll_clkin;
-+	unsigned int pdm_clk;
- };
- 
- /* Input mux controls */
-@@ -244,8 +246,33 @@ static int tas2552_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
++#define TAS2552_DAI_FMT_MASK	(TAS2552_BIT_CLK_MASK | \
++				 TAS2552_WORD_CLK_MASK | \
++				 TAS2552_DATA_FORMAT_MASK)
+ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
  	struct snd_soc_codec *codec = dai->codec;
- 	struct tas2552_data *tas2552 = dev_get_drvdata(codec->dev);
-+	u8 reg, mask, val;
-+
-+	switch (clk_id) {
-+	case TAS2552_PLL_CLKIN_MCLK:
-+	case TAS2552_PLL_CLKIN_BCLK:
-+	case TAS2552_PLL_CLKIN_IVCLKIN:
-+	case TAS2552_PLL_CLKIN_1_8_FIXED:
-+		mask = TAS2552_PLL_SRC_MASK;
-+		val = (clk_id << 3) & mask; /* bit 4:5 in the register */
-+		reg = TAS2552_CFG_1;
-+		tas2552->pll_clkin = freq;
-+		break;
-+	case TAS2552_PDM_CLK_PLL:
-+	case TAS2552_PDM_CLK_IVCLKIN:
-+	case TAS2552_PDM_CLK_BCLK:
-+	case TAS2552_PDM_CLK_MCLK:
-+		mask = TAS2552_PDM_CLK_SEL_MASK;
-+		val = (clk_id >> 1) & mask; /* bit 0:1 in the register */
-+		reg = TAS2552_PDM_CFG;
-+		tas2552->pdm_clk = freq;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid clk id: %d\n", clk_id);
-+		return -EINVAL;
-+	}
++	u8 delay = 0;
+ 	u8 serial_format;
+-	u8 serial_control_mask;
  
--	tas2552->pll_clkin = freq;
-+	snd_soc_update_bits(codec, reg, mask, val);
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -212,19 +215,19 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	serial_control_mask = TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK;
+-
+-	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+-	case SND_SOC_DAIFMT_I2S:
+-		serial_format &= TAS2552_DAIFMT_I2S_MASK;
++	switch (fmt & (SND_SOC_DAIFMT_FORMAT_MASK |
++		       SND_SOC_DAIFMT_INV_MASK)) {
++	case (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF):
+ 		break;
+-	case SND_SOC_DAIFMT_DSP_A:
++	case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF):
++		delay = 1;
++	case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF):
+ 		serial_format |= TAS2552_DAIFMT_DSP;
+ 		break;
+-	case SND_SOC_DAIFMT_RIGHT_J:
++	case (SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_NB_NF):
+ 		serial_format |= TAS2552_DAIFMT_RIGHT_J;
+ 		break;
+-	case SND_SOC_DAIFMT_LEFT_J:
++	case (SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF):
+ 		serial_format |= TAS2552_DAIFMT_LEFT_J;
+ 		break;
+ 	default:
+@@ -232,11 +235,9 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (fmt & SND_SOC_DAIFMT_FORMAT_MASK)
+-		serial_control_mask |= TAS2552_DATA_FORMAT_MASK;
+-
+-	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, serial_control_mask,
+-						serial_format);
++	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, TAS2552_DAI_FMT_MASK,
++			    serial_format);
++	snd_soc_write(codec, TAS2552_SER_CTRL_2, delay);
  
  	return 0;
  }
-@@ -366,13 +393,11 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 		goto probe_fail;
- 	}
- 
--	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE |
--				TAS2552_PLL_SRC_BCLK);
-+	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE);
- 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
- 				TAS2552_DIN_SRC_SEL_AVG_L_R | TAS2552_88_96KHZ);
- 	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
- 	snd_soc_write(codec, TAS2552_OUTPUT_DATA, TAS2552_PDM_DATA_V_I | 0x8);
--	snd_soc_write(codec, TAS2552_PDM_CFG, TAS2552_PDM_CLK_SEL_PLL);
- 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
- 				TAS2552_APT_THRESH_2_1_7);
- 
 -- 
 2.4.2
