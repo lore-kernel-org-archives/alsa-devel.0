@@ -1,15 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 11/22] ASoC: tas2552: Correct dai format support
-Date: Thu, 4 Jun 2015 15:22:35 +0300
-Message-ID: <1433420571-5421-12-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 12/22] ASoC: tas2552: Correct and clean up data
+	format and BCLK/WCLK direction
+Date: Thu, 4 Jun 2015 15:22:36 +0300
+Message-ID: <1433420571-5421-13-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 97B322664C2
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B12C0260601
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:24 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,77 +25,93 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-DSP_A mode require one bit delay from the FS, DSP_B is without data delay.
-When checking the requested format, also match the bit and fs inversion
-flag along with the format since it is not possible to change inversion.
+Use names from the datasheet for the definitions.
+Correct the data format definitions since they were not correct.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ sound/soc/codecs/tas2552.c | 18 +++++++++---------
+ sound/soc/codecs/tas2552.h | 17 ++++++++---------
+ 2 files changed, 17 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 34495241c674..2f4c2b52a9fa 100644
+index 2f4c2b52a9fa..7615d1bc5f5d 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -188,11 +188,14 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
+@@ -188,9 +188,9 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
-+#define TAS2552_DAI_FMT_MASK	(TAS2552_BIT_CLK_MASK | \
-+				 TAS2552_WORD_CLK_MASK | \
-+				 TAS2552_DATA_FORMAT_MASK)
+-#define TAS2552_DAI_FMT_MASK	(TAS2552_BIT_CLK_MASK | \
+-				 TAS2552_WORD_CLK_MASK | \
+-				 TAS2552_DATA_FORMAT_MASK)
++#define TAS2552_DAI_FMT_MASK	(TAS2552_BCLKDIR | \
++				 TAS2552_WCLKDIR | \
++				 TAS2552_DATAFORMAT_MASK)
  static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
  	struct snd_soc_codec *codec = dai->codec;
-+	u8 delay = 0;
- 	u8 serial_format;
--	u8 serial_control_mask;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
-@@ -212,19 +215,19 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
--	serial_control_mask = TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK;
--
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_I2S:
--		serial_format &= TAS2552_DAIFMT_I2S_MASK;
-+	switch (fmt & (SND_SOC_DAIFMT_FORMAT_MASK |
-+		       SND_SOC_DAIFMT_INV_MASK)) {
-+	case (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF):
+@@ -202,13 +202,13 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		serial_format = 0x00;
  		break;
--	case SND_SOC_DAIFMT_DSP_A:
-+	case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF):
-+		delay = 1;
-+	case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF):
- 		serial_format |= TAS2552_DAIFMT_DSP;
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+-		serial_format = TAS2552_WORD_CLK_MASK;
++		serial_format = TAS2552_WCLKDIR;
  		break;
--	case SND_SOC_DAIFMT_RIGHT_J:
-+	case (SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_NB_NF):
- 		serial_format |= TAS2552_DAIFMT_RIGHT_J;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+-		serial_format = TAS2552_BIT_CLK_MASK;
++		serial_format = TAS2552_BCLKDIR;
  		break;
--	case SND_SOC_DAIFMT_LEFT_J:
-+	case (SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF):
- 		serial_format |= TAS2552_DAIFMT_LEFT_J;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		serial_format = (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
++		serial_format = (TAS2552_BCLKDIR | TAS2552_WCLKDIR);
  		break;
  	default:
-@@ -232,11 +235,9 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
+ 		dev_vdbg(codec->dev, "DAI Format master is not found\n");
+@@ -222,13 +222,13 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	case (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF):
+ 		delay = 1;
+ 	case (SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF):
+-		serial_format |= TAS2552_DAIFMT_DSP;
++		serial_format |= TAS2552_DATAFORMAT_DSP;
+ 		break;
+ 	case (SND_SOC_DAIFMT_RIGHT_J | SND_SOC_DAIFMT_NB_NF):
+-		serial_format |= TAS2552_DAIFMT_RIGHT_J;
++		serial_format |= TAS2552_DATAFORMAT_RIGHT_J;
+ 		break;
+ 	case (SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF):
+-		serial_format |= TAS2552_DAIFMT_LEFT_J;
++		serial_format |= TAS2552_DATAFORMAT_LEFT_J;
+ 		break;
+ 	default:
+ 		dev_vdbg(codec->dev, "DAI Format is not found\n");
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+index 0725befb4c41..0a12b511e951 100644
+--- a/sound/soc/codecs/tas2552.h
++++ b/sound/soc/codecs/tas2552.h
+@@ -62,15 +62,14 @@
+ #define TAS2552_LIM_EN			(1 << 2)
+ #define TAS2552_IVSENSE_EN		(1 << 1)
  
--	if (fmt & SND_SOC_DAIFMT_FORMAT_MASK)
--		serial_control_mask |= TAS2552_DATA_FORMAT_MASK;
+-/* CFG3 Register Masks */
+-#define TAS2552_WORD_CLK_MASK		(1 << 7)
+-#define TAS2552_BIT_CLK_MASK		(1 << 6)
+-#define TAS2552_DATA_FORMAT_MASK	(0x11 << 2)
 -
--	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, serial_control_mask,
--						serial_format);
-+	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, TAS2552_DAI_FMT_MASK,
-+			    serial_format);
-+	snd_soc_write(codec, TAS2552_SER_CTRL_2, delay);
+-#define TAS2552_DAIFMT_I2S_MASK		0xf3
+-#define TAS2552_DAIFMT_DSP			(1 << 3)
+-#define TAS2552_DAIFMT_RIGHT_J		(1 << 4)
+-#define TAS2552_DAIFMT_LEFT_J		(0x11 << 3)
++/* Serial Interface Control Register Masks */
++#define TAS2552_DATAFORMAT_I2S		(0x0 << 2)
++#define TAS2552_DATAFORMAT_DSP		(0x1 << 2)
++#define TAS2552_DATAFORMAT_RIGHT_J	(0x2 << 2)
++#define TAS2552_DATAFORMAT_LEFT_J	(0x3 << 2)
++#define TAS2552_DATAFORMAT_MASK		TAS2552_DATAFORMAT_LEFT_J
++#define TAS2552_BCLKDIR			(1 << 6)
++#define TAS2552_WCLKDIR			(1 << 7)
  
- 	return 0;
- }
+ #define TAS2552_DIN_SRC_SEL_MUTED	0x00
+ #define TAS2552_DIN_SRC_SEL_LEFT	(1 << 4)
 -- 
 2.4.2
