@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Different codecs for playback and capture?
-Date: Thu, 04 Jun 2015 15:58:36 +0200
-Message-ID: <5570598C.3020103@metafoo.de>
-References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
- <556F0E7F.80802@metafoo.de>
- <alpine.DEB.2.02.1506041000080.15001@lnxricardw1.se.axis.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [asoc:topic/topology 104/105] :undefined reference
+ to `snd_soc_dapm_new_control'
+Date: Thu, 04 Jun 2015 15:13:09 +0100
+Message-ID: <1433427189.19747.53.camel@loki>
+References: <201506041837.OFTVnhYj%fengguang.wu@intel.com>
+ <20150604120418.GE14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-080.synserver.de (smtp-out-080.synserver.de
- [212.40.185.80])
- by alsa0.perex.cz (Postfix) with ESMTP id A2EFB260661
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:58:37 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1506041000080.15001@lnxricardw1.se.axis.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 368F326061E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:13:19 +0200 (CEST)
+In-Reply-To: <20150604120418.GE14071@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/04/2015 10:06 AM, Ricard Wanderlof wrote:
->
-> On Wed, 3 Jun 2015, Lars-Peter Clausen wrote:
->
->> There has been support for multiple CODECs on the same DAI link for a while
->> now. Have a look at
->> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=88bd870f02dff5c9445286e185f21873f25a977f.
->>
->> Instead of setting the codec_name/codec_dai_name fields in the dai_link
->> create a snd_soc_link_component array with a entry for each of the CODECs
->> and assign that to the codecs field in the DAI link.
->>
->> I'm not too sure how well it works if one CODEC is playback only and the
->> other is capture only and there might be some issues. But this is the way to
->> go and if there are problems fix them.
->
-> Ok, thanks.
->
-> Actually, in the case in question, there is no real codec for capture,
-> it's a MEMS microphone with an I2S output. So patching the codec (which is
-> playback only) driver to simply allow capture actually accomplishes the
-> desired result, but that's not a viable solution of course, and is only
-> proof-of-hardware.
->
-> I can't seem to find a simple driver for a MEMS microphone though,
-> although since there is actually nothing really to configure on the device
-> itself (it has no configuration port, just an I2S output), perhaps I
-> should simply be using a dummy driver (snd-soc-dummy) that basically
-> enables capture?
+On Thu, 2015-06-04 at 13:04 +0100, Mark Brown wrote:
+> On Thu, Jun 04, 2015 at 06:58:38PM +0800, kbuild test robot wrote:
+> 
+> > All error/warnings (new ones prefixed by >>):
+> > 
+> >    sound/built-in.o: In function `soc_tplg_dapm_widget_create':
+> > >> :(.text+0x25a90): undefined reference to `snd_soc_dapm_new_control'
+> 
+> The fix for the build bug in your patch exporting this was to add a
+> static prototype (you were in the CC for that fix) so now the topology
+> code still doesn't have the export.
+> 
+> Can you send a fixup please?
 
-snd-soc-dummy is only meant to be used for links which do not have any CODEC 
-at all. It is kind of a stop-gap solution until the framework gains the 
-capability to support such links natively.
+Sorry, appended below. I can resend separately if required.
 
-Even if your device does not have any configuration registers it will still 
-have constraints like the supported sample rates, sample-widths, etc. You 
-should create a driver describing these capabilities. This ensures that the 
-driver will work when the device is connected to a host side CPU DAI that 
-supports e.g. sample-rates outside the microphones range. The AK4554 driver 
-is an example of such a driver.
 
-- Lars
+>From 3df449a45fcde9f63dd34683d4216a73bd900f98 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Thu, 4 Jun 2015 15:08:34 +0100
+Subject: [PATCH] ASoC: DAPM: fix build errors for missing
+ snd_soc_dapm_new_control symbol
+
+Fix the following error:-
+
+All error/warnings (new ones prefixed by >>):
+>
+>    sound/built-in.o: In function `soc_tplg_dapm_widget_create':
+> >> :(.text+0x25a90): undefined reference to `snd_soc_dapm_new_control'
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 92d57a9..1b4a6eb 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -53,7 +53,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
+ 	int (*connected)(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink));
+ 
+-static struct snd_soc_dapm_widget *
++struct snd_soc_dapm_widget *
+ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 			 const struct snd_soc_dapm_widget *widget);
+ 
+@@ -3270,7 +3270,7 @@ int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_pin_switch);
+ 
+-static struct snd_soc_dapm_widget *
++struct snd_soc_dapm_widget *
+ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	const struct snd_soc_dapm_widget *widget)
+ {
+-- 
+2.1.4
