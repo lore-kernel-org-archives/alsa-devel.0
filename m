@@ -1,17 +1,17 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Different codecs for playback and capture?
-Date: Thu, 4 Jun 2015 13:46:51 +0200
-Message-ID: <alpine.DEB.2.02.1506041343450.15001@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
- <556F0E7F.80802@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [asoc:topic/topology 104/105] :undefined reference
+ to `snd_soc_dapm_new_control'
+Date: Thu, 4 Jun 2015 13:04:18 +0100
+Message-ID: <20150604120418.GE14071@sirena.org.uk>
+References: <201506041837.OFTVnhYj%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6903727714655236478=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 171D6266198
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 13:46:53 +0200 (CEST)
-In-Reply-To: <556F0E7F.80802@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B99B0266198
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:04:31 +0200 (CEST)
+In-Reply-To: <201506041837.OFTVnhYj%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Wed, 3 Jun 2015, Lars-Peter Clausen wrote:
+--===============6903727714655236478==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1NucUmLGa7VWJfBD"
+Content-Disposition: inline
 
-> There has been support for multiple CODECs on the same DAI link for a whi=
-le =
 
-> now. Have a look at =
+--1NucUmLGa7VWJfBD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
-=3D88bd870f02dff5c9445286e185f21873f25a977f.
-> =
+On Thu, Jun 04, 2015 at 06:58:38PM +0800, kbuild test robot wrote:
 
-> Instead of setting the codec_name/codec_dai_name fields in the dai_link =
+> All error/warnings (new ones prefixed by >>):
+>=20
+>    sound/built-in.o: In function `soc_tplg_dapm_widget_create':
+> >> :(.text+0x25a90): undefined reference to `snd_soc_dapm_new_control'
 
-> create a snd_soc_link_component array with a entry for each of the CODECs =
+The fix for the build bug in your patch exporting this was to add a
+static prototype (you were in the CC for that fix) so now the topology
+code still doesn't have the export.
 
-> and assign that to the codecs field in the DAI link.
-> =
+Can you send a fixup please?
 
-> I'm not too sure how well it works if one CODEC is playback only and the =
+--1NucUmLGa7VWJfBD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> other is capture only and there might be some issues. But this is the way=
- to =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> go and if there are problems fix them.
+iQEcBAEBCAAGBQJVcD7BAAoJECTWi3JdVIfQg7wH/21LgTFfm4I1QsAYXHS5dJgq
+rpCpiIh68AkKx7hFg/iZMMUsbzSK7Z911IFLsdlJS54Sri7Wzp7F3AZyELzD7pqc
+wKRKygDHzOX4HMvBWx8LZD+rDOXHPp1KXZKss9+CsqqmBwdNGhuWJ8J4hOpw/O2q
+t2rsVK1GfBR1GMGTnVonpwypYAp2crK6yJ9txM4DlFWQZsceC6YVqyJVnZim/TDW
+/CpmUPSSSp2XXetTyrUAYL0+Xg+ZitymUGAhJrq44salz4lrW6B6nAuAKrbavr+n
+Hqml8LzI7tSRWvsZ8UybLGCQEV06bFHXJn0wAzNO7d9xBMD/ZpL3tReZeeKRnaY=
+=5BXL
+-----END PGP SIGNATURE-----
 
-It doesn't seem as if snd_soc_dai_link_component is used in any (in-tree) =
+--1NucUmLGa7VWJfBD--
 
-driver; a grep in sound/soc just returns soc-core.c . Perhaps some =
+--===============6903727714655236478==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-out-of-tree driver has been used to test it?
 
-How are the different component codecs accessed when accessing the device? =
-
-Or does this happen automatically? For instance, normally I would register =
-
-one card with the single dai and coec, which would come up as #0, so I =
-
-could access the resulting device with hw:0,0 . But when I have two codecs =
-
-on the same dai_link, what mechanism does ALSA use to differentiate =
-
-between the two? Or is it supposed to happen automatically depending on =
-
-the capabilities of the respective codecs.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--===============6903727714655236478==--
