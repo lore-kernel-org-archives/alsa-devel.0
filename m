@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 16/23] ASoC: tas2552: Implement startup/stop
-	sequence as per TRM
-Date: Thu, 4 Jun 2015 16:04:28 +0300
-Message-ID: <1433423075-14142-17-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 17/23] ASoC: tas2552: Add support for word
+	length configuration
+Date: Thu, 4 Jun 2015 16:04:29 +0300
+Message-ID: <1433423075-14142-18-git-send-email-peter.ujfalusi@ti.com>
 References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B13426656B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:05:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FD392606E0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:05:18 +0200 (CEST)
 In-Reply-To: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,120 +25,91 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Certain sequence need to be followed in order to have smooth power up and
-power down performance.
-Execute this sequence via DAPM_POST widget.
-Remove patching the RESERVED_0D register at probe time since it has to be
-handled every time when we stop or start the amplifier.
-In order to be able to execute the sequence at the correct time, the driver
-need to request to ignore the pmdown time.
+Configure the word length based on the params_width of the stream.
+Also configure the clock per frame value which is used when tas2552 is bus
+master.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 44 ++++++++++++++++++++++++++++----------------
- 1 file changed, 28 insertions(+), 16 deletions(-)
+ sound/soc/codecs/tas2552.c | 38 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tas2552.h | 10 ++++++++++
+ 2 files changed, 48 insertions(+)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index fe2e4d384a00..9c081344bd90 100644
+index 9c081344bd90..13b435f9a9b1 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -46,7 +46,7 @@ static struct reg_default tas2552_reg_defs[] = {
- 	{TAS2552_PDM_CFG, 0x01},
- 	{TAS2552_PGA_GAIN, 0x00},
- 	{TAS2552_BOOST_PT_CTRL, 0x0f},
--	{TAS2552_RESERVED_0D, 0x00},
-+	{TAS2552_RESERVED_0D, 0xbe},
- 	{TAS2552_LIMIT_RATE_HYS, 0x08},
- 	{TAS2552_CFG_2, 0xef},
- 	{TAS2552_SER_CTRL_1, 0x00},
-@@ -83,6 +83,29 @@ struct tas2552_data {
- 	unsigned int tdm_delay;
- };
- 
-+static int tas2552_post_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+@@ -166,7 +166,45 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
+ 	struct tas2552_data *tas2552 = dev_get_drvdata(codec->dev);
+ 	int sample_rate, pll_clk;
+ 	int d;
++	int cpf;
+ 	u8 p, j;
++	u8 ser_ctrl1_reg;
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_write(codec, TAS2552_RESERVED_0D, 0xc0);
-+		snd_soc_update_bits(codec, TAS2552_LIMIT_RATE_HYS, (1 << 5),
-+				    (1 << 5));
-+		snd_soc_update_bits(codec, TAS2552_CFG_2, 1, 0);
-+		snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_SWS, 0);
++	switch (params_width(params)) {
++	case 16:
++		ser_ctrl1_reg = TAS2552_WORDLENGTH_16BIT;
++		cpf = 32 + tas2552->tdm_delay;
 +		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_SWS,
-+				    TAS2552_SWS);
-+		snd_soc_update_bits(codec, TAS2552_CFG_2, 1, 1);
-+		snd_soc_update_bits(codec, TAS2552_LIMIT_RATE_HYS, (1 << 5), 0);
-+		snd_soc_write(codec, TAS2552_RESERVED_0D, 0xbe);
++	case 20:
++		ser_ctrl1_reg = TAS2552_WORDLENGTH_20BIT;
++		cpf = 64 + tas2552->tdm_delay;
 +		break;
++	case 24:
++		ser_ctrl1_reg = TAS2552_WORDLENGTH_24BIT;
++		cpf = 64 + tas2552->tdm_delay;
++		break;
++	case 32:
++		ser_ctrl1_reg = TAS2552_WORDLENGTH_32BIT;
++		cpf = 64 + tas2552->tdm_delay;
++		break;
++	default:
++		dev_err(codec->dev, "Not supported sample size: %d\n",
++			params_width(params));
++		return -EINVAL;
 +	}
-+	return 0;
-+}
- 
- /* Input mux controls */
- static const char * const tas2552_input_texts[] = {
-@@ -105,6 +128,7 @@ static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
- 	SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_OUT_DRV("ClassD", TAS2552_CFG_2, 7, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("PLL", TAS2552_CFG_2, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_POST("Post Event", tas2552_post_event),
- 
- 	SND_SOC_DAPM_OUTPUT("OUT")
- };
-@@ -413,10 +437,6 @@ static const struct snd_kcontrol_new tas2552_snd_controls[] = {
- 			 TAS2552_PGA_GAIN, 0, 0x1f, 0, dac_tlv),
- };
- 
--static const struct reg_default tas2552_init_regs[] = {
--	{ TAS2552_RESERVED_0D, 0xc0 },
--};
--
- static int tas2552_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
-@@ -443,7 +463,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 		goto probe_fail;
- 	}
- 
--	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE);
-+	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, TAS2552_MUTE);
- 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
- 				TAS2552_DIN_SRC_SEL_AVG_L_R | TAS2552_88_96KHZ);
- 	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
-@@ -451,21 +471,11 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
- 				TAS2552_APT_THRESH_2_1_7);
- 
--	ret = regmap_register_patch(tas2552->regmap, tas2552_init_regs,
--					    ARRAY_SIZE(tas2552_init_regs));
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to write init registers: %d\n",
--			ret);
--		goto patch_fail;
--	}
--
- 	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
- 				  TAS2552_APT_EN | TAS2552_LIM_EN);
- 
- 	return 0;
- 
--patch_fail:
--	pm_runtime_put(codec->dev);
- probe_fail:
- 	if (tas2552->enable_gpio)
- 		gpiod_set_value(tas2552->enable_gpio, 0);
-@@ -527,6 +537,8 @@ static struct snd_soc_codec_driver soc_codec_dev_tas2552 = {
- 	.remove = tas2552_codec_remove,
- 	.suspend =	tas2552_suspend,
- 	.resume = tas2552_resume,
-+	.ignore_pmdown_time = true,
 +
- 	.controls = tas2552_snd_controls,
- 	.num_controls = ARRAY_SIZE(tas2552_snd_controls),
- 	.dapm_widgets = tas2552_dapm_widgets,
++	if (cpf <= 32)
++		ser_ctrl1_reg |= TAS2552_CLKSPERFRAME_32;
++	else if (cpf <= 64)
++		ser_ctrl1_reg |= TAS2552_CLKSPERFRAME_64;
++	else if (cpf <= 128)
++		ser_ctrl1_reg |= TAS2552_CLKSPERFRAME_128;
++	else
++		ser_ctrl1_reg |= TAS2552_CLKSPERFRAME_256;
++
++	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1,
++			    TAS2552_WORDLENGTH_MASK | TAS2552_CLKSPERFRAME_MASK,
++			    ser_ctrl1_reg);
+ 
+ 	if (!tas2552->pll_clkin)
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+index 5bdc7eaaddea..de0ab0d27520 100644
+--- a/sound/soc/codecs/tas2552.h
++++ b/sound/soc/codecs/tas2552.h
+@@ -66,11 +66,21 @@
+ #define TAS2552_SDOUT_TRISTATE		(1 << 2)
+ 
+ /* Serial Interface Control Register Masks */
++#define TAS2552_WORDLENGTH_16BIT	(0x0 << 0)
++#define TAS2552_WORDLENGTH_20BIT	(0x1 << 0)
++#define TAS2552_WORDLENGTH_24BIT	(0x2 << 0)
++#define TAS2552_WORDLENGTH_32BIT	(0x3 << 0)
++#define TAS2552_WORDLENGTH_MASK		TAS2552_WORDLENGTH_32BIT
+ #define TAS2552_DATAFORMAT_I2S		(0x0 << 2)
+ #define TAS2552_DATAFORMAT_DSP		(0x1 << 2)
+ #define TAS2552_DATAFORMAT_RIGHT_J	(0x2 << 2)
+ #define TAS2552_DATAFORMAT_LEFT_J	(0x3 << 2)
+ #define TAS2552_DATAFORMAT_MASK		TAS2552_DATAFORMAT_LEFT_J
++#define TAS2552_CLKSPERFRAME_32		(0x0 << 4)
++#define TAS2552_CLKSPERFRAME_64		(0x1 << 4)
++#define TAS2552_CLKSPERFRAME_128	(0x2 << 4)
++#define TAS2552_CLKSPERFRAME_256	(0x3 << 4)
++#define TAS2552_CLKSPERFRAME_MASK	TAS2552_CLKSPERFRAME_256
+ #define TAS2552_BCLKDIR			(1 << 6)
+ #define TAS2552_WCLKDIR			(1 << 7)
+ 
 -- 
 2.4.2
