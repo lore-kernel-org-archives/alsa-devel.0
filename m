@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 20/23] ASoC: tas2552: Add control for
-	selecting DIN source
-Date: Thu, 4 Jun 2015 16:04:32 +0300
-Message-ID: <1433423075-14142-21-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 21/23] ASoC: tas2552: Correct Output Data
+	register usage
+Date: Thu, 4 Jun 2015 16:04:33 +0300
+Message-ID: <1433423075-14142-22-git-send-email-peter.ujfalusi@ti.com>
 References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id A402426659F
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:05:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id CA189266480
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:05:27 +0200 (CEST)
 In-Reply-To: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,62 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'DIN source' enum can be used to select the DIN Source (muted, left, right
-or average of left and right channels).
+Do not write to DOUT Tristate register at probe time, specially not write
+data which is defined to be used in Output Data Register.
+Fix the defines for the Output Data Register and correct the register write
+at probe time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/tas2552.c |  5 +++--
+ sound/soc/codecs/tas2552.h | 19 +++++++++++++++----
+ 2 files changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 01230395b61d..64abc932732d 100644
+index 64abc932732d..d9a637020214 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -556,9 +556,20 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
-  */
- static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 0);
+@@ -601,8 +601,9 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ 	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, TAS2552_MUTE);
+ 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
+ 					    TAS2552_DIN_SRC_SEL_AVG_L_R);
+-	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
+-	snd_soc_write(codec, TAS2552_OUTPUT_DATA, TAS2552_PDM_DATA_V_I | 0x8);
++	snd_soc_write(codec, TAS2552_OUTPUT_DATA,
++		      TAS2552_PDM_DATA_SEL_V_I |
++		      TAS2552_R_DATA_OUT(TAS2552_DATA_OUT_V_DATA));
+ 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
+ 				TAS2552_APT_THRESH_2_1_7);
  
-+static const char * const tas2552_din_source_select[] = {
-+	"Muted",
-+	"Left",
-+	"Right",
-+	"Left + Right average",
-+};
-+static SOC_ENUM_SINGLE_DECL(tas2552_din_source_enum,
-+			    TAS2552_CFG_3, 3,
-+			    tas2552_din_source_select);
-+
- static const struct snd_kcontrol_new tas2552_snd_controls[] = {
- 	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
- 			 TAS2552_PGA_GAIN, 0, 0x1f, 0, dac_tlv),
-+	SOC_ENUM("DIN source", tas2552_din_source_enum),
- };
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+index f04d9e6db0aa..14d40ef645c4 100644
+--- a/sound/soc/codecs/tas2552.h
++++ b/sound/soc/codecs/tas2552.h
+@@ -103,10 +103,21 @@
+ #define TAS2552_WCLKDIR			(1 << 7)
  
- static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ /* OUTPUT_DATA register */
+-#define TAS2552_PDM_DATA_I		0x00
+-#define TAS2552_PDM_DATA_V		(1 << 6)
+-#define TAS2552_PDM_DATA_I_V	(1 << 7)
+-#define TAS2552_PDM_DATA_V_I	(0x11 << 6)
++#define TAS2552_DATA_OUT_I_DATA		(0x0)
++#define TAS2552_DATA_OUT_V_DATA		(0x1)
++#define TAS2552_DATA_OUT_VBAT_DATA	(0x2)
++#define TAS2552_DATA_OUT_VBOOST_DATA	(0x3)
++#define TAS2552_DATA_OUT_PGA_GAIN	(0x4)
++#define TAS2552_DATA_OUT_IV_DATA	(0x5)
++#define TAS2552_DATA_OUT_VBAT_VBOOST_GAIN	(0x6)
++#define TAS2552_DATA_OUT_DISABLED	(0x7)
++#define TAS2552_L_DATA_OUT(x)		((x) << 0)
++#define TAS2552_R_DATA_OUT(x)		((x) << 3)
++#define TAS2552_PDM_DATA_SEL_I		(0x0 << 6)
++#define TAS2552_PDM_DATA_SEL_V		(0x1 << 6)
++#define TAS2552_PDM_DATA_SEL_I_V	(0x2 << 6)
++#define TAS2552_PDM_DATA_SEL_V_I	(0x3 << 6)
++#define TAS2552_PDM_DATA_SEL_MASK	TAS2552_PDM_DATA_SEL_V_I
+ 
+ /* PDM CFG Register */
+ #define TAS2552_PDM_CLK_SEL_PLL		(0x0 << 0)
 -- 
 2.4.2
