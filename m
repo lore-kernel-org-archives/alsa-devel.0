@@ -1,48 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: zx: fix platform_no_drv_owner.cocci warnings
-Date: Thu, 4 Jun 2015 18:16:59 +0100
-Message-ID: <20150604171659.GO14071@sirena.org.uk>
-References: <201506050116.40gO5c34%fengguang.wu@intel.com>
- <20150604171126.GA226227@ivytown2>
+From: Juergen Bausa <Juergen.Bausa@online.de>
+Subject: Re: writing an alsa driver
+Date: Thu, 4 Jun 2015 17:44:19 +0000 (UTC)
+Message-ID: <loom.20150604T193845-568@post.gmane.org>
+References: <20150527085440.GA4445@dellaz> <1432752116.8235.25.camel@loki>
+ <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>
+ <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
+ <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
+ <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150604085933.GA8494@dellaz> <1433414017.19747.36.camel@loki>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CYbV4jyGkzCEppMb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150604171126.GA226227@ivytown2>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Jun Nie <jun.nie@linaro.org>, kbuild-all@01.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13A32260601
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 19:50:12 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Z0ZHJ-0003qJ-Hz
+ for alsa-devel@alsa-project.org; Thu, 04 Jun 2015 19:50:05 +0200
+Received: from p57938D4C.dip0.t-ipconnect.de ([87.147.141.76])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 19:50:05 +0200
+Received: from Juergen.Bausa by p57938D4C.dip0.t-ipconnect.de with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 19:50:05 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Liam Girdwood <liam.r.girdwood <at> linux.intel.com> writes:
 
---CYbV4jyGkzCEppMb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> > and the sound card showed up.  So I tried to play a bit with alsamixer
+> > and got
+> > some cracking noise.
+> > 
+> 
+> The speakers are probably being over powered so best to make sure with
+> alsamixer that all the gains are low or muted and all unused
+> inputs/outputs are muted or off before playing any audio. You can then
+> gradually increase the volume to the desired level. 
+> 
 
-On Fri, Jun 05, 2015 at 01:11:27AM +0800, kbuild test robot wrote:
-> sound/soc/zte/zx296702-i2s.c:428:3-8: No need to set .owner here. The cor=
-e will do it.
->=20
->  Remove .owner field if calls are used which set it automatically
+Just found this thread. Really nice to hear, that some peaople are working
+on this and that there is some progress (hope you didn't kill your soundchip).
+I also have the x205 and really apreciate that you guys are putting
+so much effort on it. Realy would like to help, but I have no knowledge
+on sound or kernel programming.
 
-Applied, thanks.
-
---CYbV4jyGkzCEppMb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVcIgLAAoJECTWi3JdVIfQkowH/2AJyHR8XJlv76FjCCD9QIKi
-RfMV5edc/ulo3XbWCkl9LY3kWkt4nBCJFK4/YwhY2CIVLd7zskQ6HazFMzNei6If
-pBWasL/97pbZ5nwGzgRfJs7pCol7+U5fjhpWfi5NjMYY7YhJuBlCGjOH8mfMmPqC
-q3fffEW+2znb3BinzA3pp44bCPNyK98LNvE2/UQ8Yqy96ODGvsmmwUODbGHFxAiE
-nfe4vkydHbUU/dLW11pxeI73s5kPH4V5ezgn6us7OeHse5fC+EhTshsCCGBdSmU7
-TgYpyx4qiI6dg4e7LYz0swXVlCroat/GqnJlPV1bLIwDka7tXThnBrcX91G6pX4=
-=dVI/
------END PGP SIGNATURE-----
-
---CYbV4jyGkzCEppMb--
+Juergen
