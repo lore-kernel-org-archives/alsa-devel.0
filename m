@@ -1,62 +1,79 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/7] ASoC: wm8903: generalize GPIO control register bits
-Date: Thu, 4 Jun 2015 11:34:18 +0100
-Message-ID: <20150604103418.GC14071@sirena.org.uk>
-References: <1433200031-6748-1-git-send-email-vz@mleia.com>
- <1433200158-6890-3-git-send-email-vz@mleia.com>
- <CACRpkdaGf+oQA3OF5HnVGXh5exz2L8RSye1Fj=r-=wzsMay_ag@mail.gmail.com>
- <20150604091924.GZ14071@sirena.org.uk>
- <20150604092439.GC3902@opensource.wolfsonmicro.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Different codecs for playback and capture?
+Date: Thu, 4 Jun 2015 13:46:51 +0200
+Message-ID: <alpine.DEB.2.02.1506041343450.15001@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
+ <556F0E7F.80802@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="o+hUPwk7FawzfnFh"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150604092439.GC3902@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Vladimir Zapolskiy <vz@mleia.com>, Liam Girdwood <lgirdwood@gmail.com>, Alexandre Courbot <acourbot@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 171D6266198
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 13:46:53 +0200 (CEST)
+In-Reply-To: <556F0E7F.80802@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---o+hUPwk7FawzfnFh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 3 Jun 2015, Lars-Peter Clausen wrote:
 
-On Thu, Jun 04, 2015 at 10:24:39AM +0100, Charles Keepax wrote:
-> On Thu, Jun 04, 2015 at 10:19:24AM +0100, Mark Brown wrote:
+> There has been support for multiple CODECs on the same DAI link for a whi=
+le =
 
-> > There's that as well, but more generally I'm not sure if there's even
-> > any use of those defines for the driver (without looking at the source
-> > to check).
+> now. Have a look at =
 
-> Many of the drivers contain a gpio defaults style entry in the
-> pdata, which basically is doing what pin control should be and
-> setting up the pulls/functions etc. But replacing that in all
-> the legacy CODECs would be a massive task.
+> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=
+=3D88bd870f02dff5c9445286e185f21873f25a977f.
+> =
 
-Sure, I just don't know without looking if this particular driver ever
-bothered doing that.  The defines aren't pinctrl support by themselves
-they're just mechanically generated defines.
+> Instead of setting the codec_name/codec_dai_name fields in the dai_link =
 
-To be honest I'm not sure pinctrl is actually making life easier for
-these devices, especially without ACPI bindings given that people are
-now deploying ACPI based systems.  There's also the whole MFD thing.
+> create a snd_soc_link_component array with a entry for each of the CODECs =
 
---o+hUPwk7FawzfnFh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> and assign that to the codecs field in the DAI link.
+> =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> I'm not too sure how well it works if one CODEC is playback only and the =
 
-iQEcBAEBCAAGBQJVcCmqAAoJECTWi3JdVIfQDdYH/iy4ghGKuGhPM06DfTBYHpc5
-M1cnPiCfiO/nLBcy+1ppan7btjBtR4skSoSXbWgE7ZGlgZl87N3TP79t9spReR+L
-+SZKwFJFwv4C62BIuoGjhexfCAYyXboJ7Yi4N43jd3w4AzRxnTgoLIg45CkaHz+S
-g1sLamlQfRVusFWmQGAPpWypn7Cqh/XGw3FDEh5+vR0KLVzmC/KGFsQJD/OnRV7H
-hYpc44e4fRMYrZW8EFf1cXcpbrq/iDoU/I1sh7dfmGMQzxLKT6MnDIzbJFd7T66s
-1WGUlufX1tNiIleUYsw4e7VcnadYGuk+0EW3QNt5uQpZ4YH5MQ6SEQSczeLjzR0=
-=gUTm
------END PGP SIGNATURE-----
+> other is capture only and there might be some issues. But this is the way=
+ to =
 
---o+hUPwk7FawzfnFh--
+> go and if there are problems fix them.
+
+It doesn't seem as if snd_soc_dai_link_component is used in any (in-tree) =
+
+driver; a grep in sound/soc just returns soc-core.c . Perhaps some =
+
+out-of-tree driver has been used to test it?
+
+How are the different component codecs accessed when accessing the device? =
+
+Or does this happen automatically? For instance, normally I would register =
+
+one card with the single dai and coec, which would come up as #0, so I =
+
+could access the resulting device with hw:0,0 . But when I have two codecs =
+
+on the same dai_link, what mechanism does ALSA use to differentiate =
+
+between the two? Or is it supposed to happen automatically depending on =
+
+the capabilities of the respective codecs.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
