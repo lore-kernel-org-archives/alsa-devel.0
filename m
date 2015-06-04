@@ -1,17 +1,20 @@
 From: Jun Nie <jun.nie@linaro.org>
-Subject: [PATCH v4 0/4] Support ZTE zx296702 SPDIF/I2S
-Date: Thu,  4 Jun 2015 11:41:19 +0800
-Message-ID: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
+Subject: [PATCH v4 1/4] dt: Add documentation for the ZTE SPDIF
+	controller
+Date: Thu,  4 Jun 2015 11:41:20 +0800
+Message-ID: <1433389283-15694-2-git-send-email-jun.nie@linaro.org>
+References: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id E75B7265DCD
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 05:42:08 +0200 (CEST)
-Received: by padj3 with SMTP id j3so20379904pad.0
- for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 20:42:07 -0700 (PDT)
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B16E265DD3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 05:42:14 +0200 (CEST)
+Received: by pdbnf5 with SMTP id nf5so21340301pdb.2
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 20:42:13 -0700 (PDT)
+In-Reply-To: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,36 +28,48 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: jason.liu@linaro.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, Jun Nie <jun.nie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Changes vs v3:
-  - remove HDMI stuff and will add it in video side later
-  - Polish SPDIF driver with devm_*
+This patch adds the devicetree documentation for the ZTE
+zx296702 SPDIF audio controller.
 
-Changes vs v2:
-  - remove pcm dma driver and merge the related call into DAI driver
-  - Add zx HDMI codec with direct HDMI function call
-  - Other typo and minor fix
-
-Jun Nie (4):
-  dt: Add documentation for the ZTE SPDIF controller
-  dt: Add documentation for the ZTE I2S controller
-  ASoC: zx: Add zx296702 SPDIF support
-  ASoC: zx: Add ZTE zx296702 I2S DAI driver
-
- .../devicetree/bindings/sound/zte,zx-i2s.txt       |  44 +++
- .../devicetree/bindings/sound/zte,zx-spdif.txt     |  28 ++
- sound/soc/Kconfig                                  |   1 +
- sound/soc/Makefile                                 |   1 +
- sound/soc/zte/Kconfig                              |  17 +
- sound/soc/zte/Makefile                             |   2 +
- sound/soc/zte/zx296702-i2s.c                       | 437 +++++++++++++++++++++
- sound/soc/zte/zx296702-spdif.c                     | 370 +++++++++++++++++
- 8 files changed, 900 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+Signed-off-by: Jun Nie <jun.nie@linaro.org>
+---
+ .../devicetree/bindings/sound/zte,zx-spdif.txt     | 28 ++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
- create mode 100644 sound/soc/zte/Kconfig
- create mode 100644 sound/soc/zte/Makefile
- create mode 100644 sound/soc/zte/zx296702-i2s.c
- create mode 100644 sound/soc/zte/zx296702-spdif.c
 
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt b/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
+new file mode 100644
+index 0000000..989544e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
+@@ -0,0 +1,28 @@
++ZTE ZX296702 SPDIF controller
++
++Required properties:
++ - compatible : Must be "zte,zx296702-spdif"
++ - reg : Must contain SPDIF core's registers location and length
++ - clocks : Pairs of phandle and specifier referencing the controller's clocks.
++ - clock-names: "tx" for the clock to the SPDIF interface.
++ - dmas: Pairs of phandle and specifier for the DMA channel that is used by
++   the core. The core expects one dma channel for transmit.
++ - dma-names : Must be "tx"
++
++For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
++please check:
++	* resource-names.txt
++	* clock/clock-bindings.txt
++	* dma/dma.txt
++
++Example:
++	spdif0: spdif0@0b004000 {
++		compatible = "zte,zx296702-spdif";
++		reg = <0x0b004000 0x1000>;
++		clocks = <&lsp0clk ZX296702_SPDIF0_DIV>;
++		clock-names = "tx";
++		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++		dmas = <&dma 4>;
++		dma-names = "tx";
++		status = "okay";
++	};
 -- 
 1.9.1
