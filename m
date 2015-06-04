@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/4] Support ZTE zx296702 SPDIF/I2S
-Date: Thu, 4 Jun 2015 16:04:43 +0100
-Message-ID: <20150604150443.GH14071@sirena.org.uk>
-References: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
- <20150604120525.GF14071@sirena.org.uk>
- <CABymUCNTFX-YVJ4jg35gzmJnuv4oDQOm8MgkpesvU2rx4=7mFQ@mail.gmail.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Different codecs for playback and capture?
+Date: Thu, 4 Jun 2015 17:20:37 +0200
+Message-ID: <alpine.DEB.2.02.1506041700100.15001@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
+ <556F0E7F.80802@metafoo.de>
+ <alpine.DEB.2.02.1506041343450.15001@lnxricardw1.se.axis.com>
+ <55705831.7060305@metafoo.de>
+ <alpine.DEB.2.02.1506041607040.15001@lnxricardw1.se.axis.com>
+ <557066A3.7090804@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1795912354871320059=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C228C2606A2
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 17:04:56 +0200 (CEST)
-In-Reply-To: <CABymUCNTFX-YVJ4jg35gzmJnuv4oDQOm8MgkpesvU2rx4=7mFQ@mail.gmail.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F6892606C8
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 17:20:39 +0200 (CEST)
+In-Reply-To: <557066A3.7090804@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +25,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>
-Cc: Jason Liu <jason.liu@linaro.org>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1795912354871320059==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="U50CbOr64UnCgK/4"
-Content-Disposition: inline
+On Thu, 4 Jun 2015, Lars-Peter Clausen wrote:
 
+> > Ideally it would have been some sort of 'if (!codec_stream->defined)' b=
+ut
+> > there isn't such a member in struct snd_soc_dai . I've gone with 'if
+> > (!codec_stream->rates && !codec_stream->formats)', thinking that if a
+> > codec doesn't support any rates or formats, it probably doesn't support
+> > that mode at all (else it's rather meaningless). In fact, one of these
+> > (rates or formats) would probably suffice, with a comment explaining wh=
+at
+> > we're really trying to do.
+> >
+> > The next problem is that when trying to set hw params, something in the
+> > framework or the individual codec driver hw_params() bails out saying it
+> > can't set the intended parameters. Looking at that right now to see if =
+it
+> > can be solved in a similar way.
+> =
 
---U50CbOr64UnCgK/4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The best way to solve this is probably to introduce a helper function boo=
+l =
 
-On Thu, Jun 04, 2015 at 09:34:43PM +0800, Jun Nie wrote:
-> 2015-06-04 20:05 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream) that =
 
-> > Applied all, thanks.
+> implements the logic for detecting whether a DAI supports a playback or =
 
-> Simple error is found and fixed in v5. Sorry for inconvenience :(
+> capture stream. And then whenever iterating over the codec_dais field for =
 
-If things have been applied please send incremental patches rather than
-total replacements (as the mail you get when I push the patches says!).
+> stream operations skip those which don't support the stream.
 
---U50CbOr64UnCgK/4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Yes. The question is, exactly what should the helper function use to =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+determine stream support. Is it sufficient to check for =
 
-iQEcBAEBCAAGBQJVcGkLAAoJECTWi3JdVIfQIOAH/j9feXNF1k+ZqlkU38psOq+y
-CXpxBseY7+dR7O3J/9tt17QkiLnkOjXUZwomkexle7NZDFmk+GW4ajpxhAUI7pmO
-KqtkEBH/LzWDyIIN2ZiFbAlgtHRIY3S4T+vVl9BPwSX6+CRKgs94yqLf8QdRb5Dm
-vXHQvNZ0AeTba36MQ/5k3cZH0q+5vFelsXNr8OThrtxvMQp2a2/senSfFBiLcMCX
-gd2rcI5sKd58b4wv4OmoI7n1FYN7h5wltp+aN3CV5L635Sq6h1WseJJCzAKzq2QS
-TfDjYMe+oWBVmnJC7e7gZuVaBKeoeKllWAgVaMn+tCGB9t8iyO9XcMkMLtptw68=
-=Dx/e
------END PGP SIGNATURE-----
+dai->driver->playback/capture->rates !=3D 0 ?
 
---U50CbOr64UnCgK/4--
+I'm a bit worried at the 'whenever iterating over the codec_dais field'. =
 
---===============1795912354871320059==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+There are 50+ places which iterate over codec_dais, mostly in soc-pcm.c =
 
+and soc-core.c . Of course code could be added to all locations, but it =
 
---===============1795912354871320059==--
+starts to feel like the wrong approach, i.e. like the iteration itself =
+
+should be done in a separate function (which doesn't really seem viable in =
+
+itself; this isn't glib).
+
+For the hardware I have here, there are two places where it is necessary; =
+
+admittedly, this particular hardware is pretty simple (on the other hand, =
+
+I would suppose that most situations with this type of split =
+
+playback/capture would be for cases where there are simple codecs or I2S =
+
+microphones that only support one of the modes).
+
+What I'm getting at is that, disregarding the helper function which is =
+
+needed anyway, perhaps I should just fix the two locations needed for now, =
+
+and leave the rest to be fixed when the need arises? I'm not sure they all =
+
+need to be modified in this way.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
