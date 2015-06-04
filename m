@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 0/4] Support ZTE zx296702 SPDIF/I2S
-Date: Thu, 4 Jun 2015 17:16:13 +0100
-Message-ID: <20150604161613.GI14071@sirena.org.uk>
-References: <1433424887-11694-1-git-send-email-jun.nie@linaro.org>
+Subject: [PATCH] ASoC: zte: Fix missing dev in devm operation
+Date: Thu,  4 Jun 2015 17:23:10 +0100
+Message-ID: <1433434990-4806-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1929221332646631944=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E5E726061E
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 18:16:27 +0200 (CEST)
-In-Reply-To: <1433424887-11694-1-git-send-email-jun.nie@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D7DA326061E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 18:23:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jun Nie <jun.nie@linaro.org>
-Cc: jason.liu@linaro.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/zte/zx296702-spdif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============1929221332646631944==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CmWxRWyFvh6D3sQF"
-Content-Disposition: inline
-
-
---CmWxRWyFvh6D3sQF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 04, 2015 at 09:34:43PM +0800, Jun Nie wrote:
-> Changes vs v4:
->   - Fix devm_zalloc argument issue in SPDIF driver and static issue in i2s.
-
-I already did the devm fix by hand and I applied some fixes from
-Fengguang for other issues.  Please send incremental fixes for any other
-issues.
-
---CmWxRWyFvh6D3sQF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVcHnNAAoJECTWi3JdVIfQl38H/2TIoz70+dJ9Ba5/yIACvW4r
-xwmV1rknDnuGqa604qYbp2ZlQ/pbpcekxT/lIYUxet1ZHr0yFu8kgPyKpvBenWBQ
-OPESDfKej4JMiaRvwacuCd7f0gL9tN37FxQoTZOC0PdJxRy0KTMWNcq8ym1mI7Z7
-dNRkM27pD4EzU0kYlE14MN4bau+yuLENagvPX3TZHM+m5uNUZA/5jKDV2At1OCOW
-u8v6e9bNbtoBnlxEL6vVIrfFlXuoF56IOc1S2/XNF9xfmO47hVJJiJeK++yq1vFe
-nmTAtGrLbJRBCVLEoE/wLx+iJMFSxO2I3uo0cFPn3Mk5VVV5RtxjjV1tviYj+OM=
-=VYpJ
------END PGP SIGNATURE-----
-
---CmWxRWyFvh6D3sQF--
-
---===============1929221332646631944==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1929221332646631944==--
+diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx296702-spdif.c
+index 4a93bca232ff..11a0e46a1156 100644
+--- a/sound/soc/zte/zx296702-spdif.c
++++ b/sound/soc/zte/zx296702-spdif.c
+@@ -309,7 +309,7 @@ static int zx_spdif_probe(struct platform_device *pdev)
+ 	struct zx_spdif_info *zx_spdif;
+ 	int ret;
+ 
+-	zx_spdif = devm_kzalloc(sizeof(*zx_spdif), GFP_KERNEL);
++	zx_spdif = devm_kzalloc(&pdev->dev, sizeof(*zx_spdif), GFP_KERNEL);
+ 	if (!zx_spdif)
+ 		return -ENOMEM;
+ 
+-- 
+2.1.4
