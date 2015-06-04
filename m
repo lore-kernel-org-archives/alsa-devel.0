@@ -1,16 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: rx51: Automatically disconnect
-	non-connected pins
-Date: Thu,  4 Jun 2015 16:13:51 +0200
-Message-ID: <1433427231-21756-1-git-send-email-lars@metafoo.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Different codecs for playback and capture?
+Date: Thu, 4 Jun 2015 16:22:29 +0200
+Message-ID: <alpine.DEB.2.02.1506041607040.15001@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
+ <556F0E7F.80802@metafoo.de>
+ <alpine.DEB.2.02.1506041343450.15001@lnxricardw1.se.axis.com>
+ <55705831.7060305@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-080.synserver.de (smtp-out-080.synserver.de
- [212.40.185.80])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC452665A3
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:14:03 +0200 (CEST)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6450B2606A2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:22:31 +0200 (CEST)
+In-Reply-To: <55705831.7060305@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +23,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-According to the schematics the external speaker is differential, so the
-HPLCOM and HPRCOM pins of the CODEC should be connected to it.
 
-Otherwise the routing looks complete, so add the missing routes and set the
-fully_routed flag of the card instead of manually marking the unused inputs
-and outputs as not connected. This makes the code a bit shorter and
-cleaner.
+On Thu, 4 Jun 2015, Lars-Peter Clausen wrote:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/omap/rx51.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+> >> I'm not too sure how well it works if one CODEC is playback only and =
 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index fded993..3bebfb1 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -245,6 +245,8 @@ static const struct snd_soc_dapm_widget aic34_dapm_widgets[] = {
- static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Ext Spk", NULL, "HPLOUT"},
- 	{"Ext Spk", NULL, "HPROUT"},
-+	{"Ext Spk", NULL, "HPLCOM"},
-+	{"Ext Spk", NULL, "HPRCOM"},
- 	{"Headphone Jack", NULL, "LLOUT"},
- 	{"Headphone Jack", NULL, "RLOUT"},
- 	{"FM Transmitter", NULL, "LLOUT"},
-@@ -288,15 +290,8 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_card *card = rtd->card;
- 	struct rx51_audio_pdata *pdata = snd_soc_card_get_drvdata(card);
--
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int err;
- 
--	/* Set up NC codec pins */
--	snd_soc_dapm_nc_pin(dapm, "MIC3L");
--	snd_soc_dapm_nc_pin(dapm, "MIC3R");
--	snd_soc_dapm_nc_pin(dapm, "LINE1R");
--
- 	err = tpa6130a2_add_controls(codec);
- 	if (err < 0) {
- 		dev_err(card->dev, "Failed to add TPA6130A2 controls\n");
-@@ -383,6 +378,7 @@ static struct snd_soc_card rx51_sound_card = {
- 	.num_aux_devs = ARRAY_SIZE(rx51_aux_dev),
- 	.codec_conf = rx51_codec_conf,
- 	.num_configs = ARRAY_SIZE(rx51_codec_conf),
-+	.fully_routed = true,
- 
- 	.controls = aic34_rx51_controls,
- 	.num_controls = ARRAY_SIZE(aic34_rx51_controls),
--- 
-2.1.4
+> >> the other is capture only and there might be some issues. But this is =
+
+> >> the way to go and if there are problems fix them.
+> >
+> > It doesn't seem as if snd_soc_dai_link_component is used in any (in-tre=
+e)
+> > driver; a grep in sound/soc just returns soc-core.c . Perhaps some
+> > out-of-tree driver has been used to test it?
+> =
+
+> This is the only example I'm aware of:
+> http://wiki.analog.com/resources/tools-software/linux-drivers/sound/ssm45=
+67#multi_ssm4567_example_configuration
+
+Ok, thanks. As you mentioned previously this is an example of a left-right =
+
+split codec configuration.
+
+> Even if your device does not have any configuration registers it will =
+
+> still have constraints like the supported sample rates, sample-widths, =
+
+> etc. You should create a driver describing these capabilities. This =
+
+> ensures that the driver will work when the device is connected to a host =
+
+> side CPU DAI that supports e.g. sample-rates outside the microphones =
+
+> range. The AK4554 driver is an example of such a driver.
+
+Yes, makes sense.
+
+An mildly interesting aspect is that the resulting device doesn't belong =
+
+to anything in the device tree, it just floats around by itself, as the =
+
+device tree doesn't model I2S as a bus. A minor observation, don't know if =
+
+it should be done differently.
+
+> > How are the different component codecs accessed when accessing the devi=
+ce?
+> > Or does this happen automatically? For instance, normally I would regis=
+ter
+> > one card with the single dai and coec, which would come up as #0, so I
+> > could access the resulting device with hw:0,0 . But when I have two cod=
+ecs
+> > on the same dai_link, what mechanism does ALSA use to differentiate
+> > between the two? Or is it supposed to happen automatically depending on
+> > the capabilities of the respective codecs.
+> =
+
+> It will be exposed as a single card with one capture and one playback PCM=
+. =
+
+> So it will be the same as if the CODEC side was only a single device =
+
+> supporting both.
+
+Ok.
+
+I've experimented with this.
+
+The first problem is that the framework intersects the two codec drivers' =
+
+capabilities, and since one of them supports playback only and the other =
+
+capture only, the intersected rates and formats are always 0.
+
+I've fixed this by jumping out of the loop early in =
+
+soc_pcm_init_runtime_hw() if the codec in question doesn't seem to support =
+
+the mode (playback vs. capture) that's being considered, indicating that =
+
+it doesn't care about the rate or format for that mode.
+
+Ideally it would have been some sort of 'if (!codec_stream->defined)' but =
+
+there isn't such a member in struct snd_soc_dai . I've gone with 'if =
+
+(!codec_stream->rates && !codec_stream->formats)', thinking that if a =
+
+codec doesn't support any rates or formats, it probably doesn't support =
+
+that mode at all (else it's rather meaningless). In fact, one of these =
+
+(rates or formats) would probably suffice, with a comment explaining what =
+
+we're really trying to do.
+
+The next problem is that when trying to set hw params, something in the =
+
+framework or the individual codec driver hw_params() bails out saying it =
+
+can't set the intended parameters. Looking at that right now to see if it =
+
+can be solved in a similar way.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
