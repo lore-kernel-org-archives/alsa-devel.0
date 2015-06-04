@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 20/23] ASoC: tas2552: Add control for selecting
-	DIN source
-Date: Thu, 4 Jun 2015 15:22:45 +0300
-Message-ID: <1433420571-5421-22-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 21/22] ASoC: tas2552: Correct Boost Auto-Pass
+	Through Control register usage
+Date: Thu, 4 Jun 2015 15:22:47 +0300
+Message-ID: <1433420571-5421-24-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 131D5266518
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:43 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 266F8266523
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:47 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,78 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'DIN source' enum can be used to select the DIN Source (muted, left, right
-or average of left and right channels).
+Correct the bit definition so the code will change the bits what it
+supposed to change. Also rename the register define to
+TAS2552_BOOST_APT_CTRL.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/tas2552.c |  6 +++---
+ sound/soc/codecs/tas2552.h | 21 ++++++++++-----------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 060b90abe256..cf21413a7c1e 100644
+index d9a637020214..fe8a988e0a4a 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -556,9 +556,20 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
-  */
- static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 0);
+@@ -45,7 +45,7 @@ static struct reg_default tas2552_reg_defs[] = {
+ 	{TAS2552_OUTPUT_DATA, 0xc0},
+ 	{TAS2552_PDM_CFG, 0x01},
+ 	{TAS2552_PGA_GAIN, 0x00},
+-	{TAS2552_BOOST_PT_CTRL, 0x0f},
++	{TAS2552_BOOST_APT_CTRL, 0x0f},
+ 	{TAS2552_RESERVED_0D, 0xbe},
+ 	{TAS2552_LIMIT_RATE_HYS, 0x08},
+ 	{TAS2552_CFG_2, 0xef},
+@@ -604,8 +604,8 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, TAS2552_OUTPUT_DATA,
+ 		      TAS2552_PDM_DATA_SEL_V_I |
+ 		      TAS2552_R_DATA_OUT(TAS2552_DATA_OUT_V_DATA));
+-	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
+-				TAS2552_APT_THRESH_2_1_7);
++	snd_soc_write(codec, TAS2552_BOOST_APT_CTRL, TAS2552_APT_DELAY_200 |
++						     TAS2552_APT_THRESH_20_17);
  
-+static const char * const tas2552_din_source_select[] = {
-+	"Muted",
-+	"Left",
-+	"Right",
-+	"Left + Right average",
-+};
-+static SOC_ENUM_SINGLE_DECL(tas2552_din_source_enum,
-+			    TAS2552_CFG_3, 3,
-+			    tas2552_din_source_select);
-+
- static const struct snd_kcontrol_new tas2552_snd_controls[] = {
- 	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
- 			 TAS2552_PGA_GAIN, 0, 0x1f, 0, dac_tlv),
-+	SOC_ENUM("DIN source", tas2552_din_source_enum),
- };
+ 	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
+ 				  TAS2552_APT_EN | TAS2552_LIM_EN);
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+index 14d40ef645c4..364c6dd8e79b 100644
+--- a/sound/soc/codecs/tas2552.h
++++ b/sound/soc/codecs/tas2552.h
+@@ -39,7 +39,7 @@
+ #define TAS2552_PDM_CFG			0x11
+ #define TAS2552_PGA_GAIN		0x12
+ #define TAS2552_EDGE_RATE_CTRL	0x13
+-#define TAS2552_BOOST_PT_CTRL	0x14
++#define TAS2552_BOOST_APT_CTRL		0x14
+ #define TAS2552_VER_NUM			0x16
+ #define TAS2552_VBAT_DATA		0x19
+ #define TAS2552_MAX_REG			0x20
+@@ -127,16 +127,15 @@
+ #define TAS2552_PDM_CLK_SEL_MASK	TAS2552_PDM_CLK_SEL_MCLK
+ #define TAS2552_PDM_DATA_ES	 	(1 << 2)
  
- static int tas2552_codec_probe(struct snd_soc_codec *codec)
+-/* Boost pass-through register */
+-#define TAS2552_APT_DELAY_50	0x00
+-#define TAS2552_APT_DELAY_75	(1 << 1)
+-#define TAS2552_APT_DELAY_125	(1 << 2)
+-#define TAS2552_APT_DELAY_200	(1 << 3)
+-
+-#define TAS2552_APT_THRESH_2_5		0x00
+-#define TAS2552_APT_THRESH_1_7		(1 << 3)
+-#define TAS2552_APT_THRESH_1_4_1_1	(1 << 4)
+-#define TAS2552_APT_THRESH_2_1_7	(0x11 << 2)
++/* Boost Auto-pass through register */
++#define TAS2552_APT_DELAY_50		(0x0 << 0)
++#define TAS2552_APT_DELAY_75		(0x1 << 0)
++#define TAS2552_APT_DELAY_125		(0x2 << 0)
++#define TAS2552_APT_DELAY_200		(0x3 << 0)
++#define TAS2552_APT_THRESH_05_02	(0x0 << 2)
++#define TAS2552_APT_THRESH_10_07	(0x1 << 2)
++#define TAS2552_APT_THRESH_14_11	(0x2 << 2)
++#define TAS2552_APT_THRESH_20_17	(0x3 << 2)
+ 
+ /* PLL Control Register */
+ #define TAS2552_PLL_J_MASK		0x7f
 -- 
 2.4.2
