@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 21/23] ASoC: tas2552: Correct Output Data
-	register usage
-Date: Thu, 4 Jun 2015 15:22:48 +0300
-Message-ID: <1433420571-5421-25-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 00/22] ASoC: tas2552: Fixes,
+ cleanups and improvements
+Date: Thu, 4 Jun 2015 15:34:11 +0300
+Message-ID: <557045C3.2090407@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id CD412266530
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:50 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10C9E266748
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:34:15 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,62 +25,72 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do not write to DOUT Tristate register at probe time, specially not write
-data which is defined to be used in Output Data Register.
-Fix the defines for the Output Data Register and correct the register write
-at probe time.
+Hi,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/tas2552.c |  5 +++--
- sound/soc/codecs/tas2552.h | 19 +++++++++++++++----
- 2 files changed, 18 insertions(+), 6 deletions(-)
+On 06/04/2015 03:22 PM, Peter Ujfalusi wrote:
+> Hi,
+> =
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index cf21413a7c1e..c7a08ab74f99 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -601,8 +601,9 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, TAS2552_MUTE);
- 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
- 					    TAS2552_DIN_SRC_SEL_AVG_L_R);
--	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
--	snd_soc_write(codec, TAS2552_OUTPUT_DATA, TAS2552_PDM_DATA_V_I | 0x8);
-+	snd_soc_write(codec, TAS2552_OUTPUT_DATA,
-+		      TAS2552_PDM_DATA_SEL_V_I |
-+		      TAS2552_R_DATA_OUT(TAS2552_DATA_OUT_V_DATA));
- 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
- 				TAS2552_APT_THRESH_2_1_7);
- 
-diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index f04d9e6db0aa..14d40ef645c4 100644
---- a/sound/soc/codecs/tas2552.h
-+++ b/sound/soc/codecs/tas2552.h
-@@ -103,10 +103,21 @@
- #define TAS2552_WCLKDIR			(1 << 7)
- 
- /* OUTPUT_DATA register */
--#define TAS2552_PDM_DATA_I		0x00
--#define TAS2552_PDM_DATA_V		(1 << 6)
--#define TAS2552_PDM_DATA_I_V	(1 << 7)
--#define TAS2552_PDM_DATA_V_I	(0x11 << 6)
-+#define TAS2552_DATA_OUT_I_DATA		(0x0)
-+#define TAS2552_DATA_OUT_V_DATA		(0x1)
-+#define TAS2552_DATA_OUT_VBAT_DATA	(0x2)
-+#define TAS2552_DATA_OUT_VBOOST_DATA	(0x3)
-+#define TAS2552_DATA_OUT_PGA_GAIN	(0x4)
-+#define TAS2552_DATA_OUT_IV_DATA	(0x5)
-+#define TAS2552_DATA_OUT_VBAT_VBOOST_GAIN	(0x6)
-+#define TAS2552_DATA_OUT_DISABLED	(0x7)
-+#define TAS2552_L_DATA_OUT(x)		((x) << 0)
-+#define TAS2552_R_DATA_OUT(x)		((x) << 3)
-+#define TAS2552_PDM_DATA_SEL_I		(0x0 << 6)
-+#define TAS2552_PDM_DATA_SEL_V		(0x1 << 6)
-+#define TAS2552_PDM_DATA_SEL_I_V	(0x2 << 6)
-+#define TAS2552_PDM_DATA_SEL_V_I	(0x3 << 6)
-+#define TAS2552_PDM_DATA_SEL_MASK	TAS2552_PDM_DATA_SEL_V_I
- 
- /* PDM CFG Register */
- #define TAS2552_PDM_CLK_SEL_PLL		(0x0 << 0)
--- 
-2.4.2
+> I have used the TAS2552-EVM to verify that my setup is in working conditi=
+on for
+> a work on other audio product.
+> During the bringup of the EVM I have faced some issues and limitation wit=
+h the
+> driver. The result is this series against the tas2552 driver.
+
+Something messed up my branch it seams while fixing couple of checkpatch
+errors... Aargh. I will resend as soon as I figure out what happened.
+
+Sorry,
+P=E9ter
+
+> Notable changes:
+> - Fixes for kernel crashes
+> - The enable-gpio was not optional as it was documented in the DTS
+> - Register bit definitions were not correct in several places
+> - Adding recommended startup/stop sequence
+> - Handling of sample formats the driver claims to support
+> - PLL configuration fixes and reference clock selection
+> - TDM support
+> - Gain control fix and control to select DIN source
+> =
+
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (22):
+>   ASoC: tas2552: Make the enable-gpio really optional
+>   ASoC: tas2552: Fix kernel crash when the codec is loaded but not part
+>     of a card
+>   ASoC: tas2552: Fix kernel crash caused by wrong kcontrol entry
+>   ASoC: tas2552: Correct PDM configuration register bit definitions
+>   ASoC: tas2552: Correct CFG1 register bit definitions
+>   ASoC: tas2552: Simplify the tas2552_mute function
+>   ASoC: tas2552: Simplify and reverse the functionality of
+>     tas2552_sw_shutdown
+>   ASoC: tas2552: Rename mclk parameter to pll_clkin to match with the
+>     datasheet
+>   DT/sound: bindings header file for tas2552 codec
+>   ASoC: tas2552: Add support for pll and pdm source clock selection
+>   ASoC: tas2552: Correct dai format support
+>   ASoC: tas2552: Correct and clean up data format and BCLK/WCLK
+>     direction
+>   ASoC: tas2552: Add TDM support
+>   ASoC: tas2552: Clean up the Digital - Analog DAPM route definition
+>   ASoC: tas2552: Correct the Speaker Driver Playback Volume (PGA_GAIN)
+>   ASoC: tas2552: Implement startup/stop sequence as per TRM
+>   ASoC: tas2552: Add support for word length configuration
+>   ASoC: tas2552: Configure the WCLK frequency based on the stream
+>   ASoC: tas2552: Add control for selecting DIN source
+>   ASoC: tas2552: Correct Output Data register usage
+>   ASoC: tas2552: Correct Boost Auto-Pass Through Control register usage
+>   ASoC: tas2552: Code, define alignment changes for uniformity
+> =
+
+>  include/dt-bindings/sound/tas2552.h |  18 ++
+>  sound/soc/codecs/tas2552.c          | 435 +++++++++++++++++++++++++++---=
+------
+>  sound/soc/codecs/tas2552.h          | 149 ++++++------
+>  3 files changed, 431 insertions(+), 171 deletions(-)
+>  create mode 100644 include/dt-bindings/sound/tas2552.h
+> =
