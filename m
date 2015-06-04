@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v6 2/3] ALSA: hdac_ext: add hdac extended
-	controller
-Date: Thu,  4 Jun 2015 15:23:21 +0530
-Message-ID: <1433411602-5444-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v6 3/3] ALSA: hdac_ext: add extended stream
+	capabilities
+Date: Thu,  4 Jun 2015 15:23:22 +0530
+Message-ID: <1433411602-5444-4-git-send-email-vinod.koul@intel.com>
 References: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7638B26069E
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 11:52:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AB079265E0D
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 11:52:13 +0200 (CEST)
 In-Reply-To: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,220 +25,170 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The controller needs to support the new capabilities and allow reading,
-parsing and initializing of these capabilities, so this patch does it
+Now we have the bus and controller code added to find and initialize the
+extended capabilities. Now we need to use them in stream code to decouple
+stream, manage links etc
+
+So this patch adds the stream handling code for extended capabilities
+introduced in preceding patches
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio_ext.h         | 174 +++++++++++++++++++++
- sound/hda/ext/Makefile              |   2 +-
- sound/hda/ext/hdac_ext_controller.c | 295 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 470 insertions(+), 1 deletion(-)
- create mode 100644 sound/hda/ext/hdac_ext_controller.c
+ include/sound/hdaudio_ext.h     | 118 ++++++++++++
+ sound/hda/ext/Makefile          |   2 +-
+ sound/hda/ext/hdac_ext_stream.c | 414 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 533 insertions(+), 1 deletion(-)
+ create mode 100644 sound/hda/ext/hdac_ext_stream.c
 
 diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index df1f8ae64693..b17d7f91f6ac 100644
+index b17d7f91f6ac..05982dc7e3cc 100644
 --- a/include/sound/hdaudio_ext.h
 +++ b/include/sound/hdaudio_ext.h
-@@ -90,4 +90,178 @@ void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
- 			       (snd_hdac_ext_bus_ppcap_readb(dev, reg) & \
- 				~(mask)) | (val))
+@@ -212,6 +212,124 @@ enum hdac_ext_stream_type {
+ 	HDAC_EXT_STREAM_TYPE_LINK
+ };
  
-+void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *chip,
-+				 bool enable, int index);
-+/*
-+ * macros for spcap register read/write
++/**
++ * hdac_ext_stream: HDAC extended stream for extended HDA caps
++ *
++ * @hstream: hdac_stream
++ * @pphc_addr: processing pipe host stream pointer
++ * @pplc_addr: processing pipe link stream pointer
++ * @decoupled: stream host and link is decoupled
++ * @link_locked: link is locked
++ * @link_prepared: link is prepared
++ * link_substream: link substream
 + */
-+#define _snd_hdac_ext_bus_spbcap_write(type, dev, reg, value)	\
-+	((dev)->bus.io_ops->reg_write ## type(value,		\
-+	(dev)->spbcap_addr + (reg)))
-+#define _snd_hdac_ext_bus_spbcap_read(type, dev, reg)		\
-+	((dev)->bus.io_ops->reg_read ## type((dev)->spbcap_addr + (reg)))
++struct hdac_ext_stream {
++	struct hdac_stream hstream;
 +
-+/* read/write a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_spbcap_writel(dev, reg, value) \
-+	_snd_hdac_ext_bus_spbcap_write(l, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_spbcap_writew(dev, reg, value) \
-+	_snd_hdac_ext_bus_spbcap_write(w, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_spbcap_writeb(dev, reg, value) \
-+	_snd_hdac_ext_bus_spbcap_write(b, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_spbcap_readl(dev, reg) \
-+	_snd_hdac_ext_bus_spbcap_read(l, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_spbcap_readw(dev, reg) \
-+	_snd_hdac_ext_bus_spbcap_read(w, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_spbcap_readb(dev, reg) \
-+	_snd_hdac_ext_bus_spbcap_read(b, dev, AZX_REG_ ## reg)
++	void __iomem *pphc_addr;
++	void __iomem *pplc_addr;
 +
-+/* update a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_spbcap_updatel(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_spbcap_writel(dev, reg, \
-+			       (snd_hdac_ext_bus_spbcap_readl(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_spbcap_updatew(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_spbcap_writew(dev, reg, \
-+			       (snd_hdac_ext_bus_spbcap_readw(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_spbcap_updateb(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_spbcap_writeb(dev, reg, \
-+			       (snd_hdac_ext_bus_spbcap_readb(dev, reg) & \
-+				~(mask)) | (val))
++	bool decoupled:1;
++	bool link_locked:1;
++	bool link_prepared;
 +
-+int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *bus);
-+int snd_hdac_ext_bus_map_codec_to_link(struct hdac_ext_bus *bus, int addr);
-+struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *bus,
-+						const char *codec_name);
-+
-+/*
-+ * macros for mlcap register read/write
-+ */
-+#define _snd_hdac_ext_bus_mlcap_write(type, dev, reg, value)		\
-+	((dev)->bus.io_ops->reg_write ## type(value, (dev)->mlcap_addr + (reg)))
-+#define _snd_hdac_ext_bus_mlcap_read(type, dev, reg)			\
-+	((dev)->bus.io_ops->reg_read ## type((dev)->mlcap_addr + (reg)))
-+
-+/* read/write a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_mlcap_writel(dev, reg, value) \
-+	_snd_hdac_ext_bus_mlcap_write(l, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_mlcap_writew(dev, reg, value) \
-+	_snd_hdac_ext_bus_mlcap_write(w, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_mlcap_writeb(dev, reg, value) \
-+	_snd_hdac_ext_bus_mlcap_write(b, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_mlcap_readl(dev, reg) \
-+	_snd_hdac_ext_bus_mlcap_read(l, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_mlcap_readw(dev, reg) \
-+	_snd_hdac_ext_bus_mlcap_read(w, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_mlcap_readb(dev, reg) \
-+	_snd_hdac_ext_bus_mlcap_read(b, dev, AZX_REG_ ## reg)
-+
-+/* update a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_mlcap_updatel(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_mlcap_writel(dev, reg, \
-+			       (snd_hdac_ext_bus_mlcap_readl(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_mlcap_updatew(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_mlcap_writew(dev, reg, \
-+			       (snd_hdac_ext_bus_mlcap_readw(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_mlcap_updateb(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_mlcap_writeb(dev, reg, \
-+			       (snd_hdac_ext_bus_mlcap_readb(dev, reg) & \
-+				~(mask)) | (val))
-+
-+/*
-+ * macros for gtscap register read/write
-+ */
-+#define _snd_hdac_ext_bus_gtscap_write(type, dev, reg, value)	\
-+	((dev)->bus.io_ops->reg_write ## type(value,		\
-+	(dev)->gtscap_addr + (reg)))
-+#define _snd_hdac_ext_bus_gtscap_read(type, dev, reg)		\
-+	((dev)->bus.io_ops->reg_read ## type((dev)->gtscap_addr + (reg)))
-+
-+/* read/write a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_gtscap_writel(dev, reg, value) \
-+	_snd_hdac_ext_bus_gtscap_write(l, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_gtscap_writew(dev, reg, value) \
-+	_snd_hdac_ext_bus_gtscap_write(w, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_gtscap_writeb(dev, reg, value) \
-+	_snd_hdac_ext_bus_gtscap_write(b, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_bus_gtscap_readl(dev, reg) \
-+	_snd_hdac_ext_bus_gtscap_read(l, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_gtscap_readw(dev, reg) \
-+	_snd_hdac_ext_bus_gtscap_read(w, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_bus_gtscap_readb(dev, reg) \
-+	_snd_hdac_ext_bus_gtscap_read(b, dev, AZX_REG_ ## reg)
-+
-+/* update a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_bus_gtscap_updatel(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_gtscap_writel(dev, reg, \
-+			       (snd_hdac_ext_bus_gtscap_readl(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_gtscap_updatew(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_gtscap_writew(dev, reg, \
-+			       (snd_hdac_ext_bus_gtscap_readw(dev, reg) & \
-+				~(mask)) | (val))
-+#define snd_hdac_ext_bus_gtscap_updateb(dev, reg, mask, val) \
-+	snd_hdac_ext_bus_gtscap_writeb(dev, reg, \
-+			       (snd_hdac_ext_bus_gtscap_readb(dev, reg) & \
-+				~(mask)) | (val))
-+enum hdac_ext_stream_type {
-+	HDAC_EXT_STREAM_TYPE_COUPLED = 0,
-+	HDAC_EXT_STREAM_TYPE_HOST,
-+	HDAC_EXT_STREAM_TYPE_LINK
++	struct snd_pcm_substream *link_substream;
 +};
 +
-+struct hdac_ext_link {
-+	struct hdac_bus *bus;
-+	int index;
-+	void __iomem *ml_addr; /* link output stream reg pointer */
-+	u32 lcaps;   /* link capablities */
-+	u16 lsdiid;  /* link sdi identifier */
-+	char codec[HDA_MAX_CODECS][32]; /* codecs connectes to the link */
-+	struct list_head list;
-+};
++#define hdac_stream(s)		(&(s)->hstream)
++#define stream_to_hdac_ext_stream(s) \
++	container_of(s, struct hdac_ext_stream, hstream)
 +
-+int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link);
-+int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link);
-+void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
-+				 int stream);
-+void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
-+				 int stream);
++void snd_hdac_ext_stream_init(struct hdac_ext_bus *bus,
++				struct hdac_ext_stream *stream, int idx,
++				int direction, int tag);
++struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *bus,
++					   struct snd_pcm_substream *substream,
++					   int type);
++void snd_hdac_ext_stream_release(struct hdac_ext_stream *azx_dev, int type);
++void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *bus,
++				struct hdac_ext_stream *azx_dev, bool decouple);
++void snd_hdac_ext_stop_streams(struct hdac_ext_bus *sbus);
 +
 +/*
-+ * macros for mutilink register read/ write
++ * macros for host stream register read/write
 + */
-+#define _snd_hdac_ext_link_write(type, dev, reg, value)			\
-+	((dev)->bus->io_ops->reg_write ## type(value, (dev)->ml_addr + (reg)))
-+#define _snd_hdac_ext_link_read(type, dev, reg)				\
-+	((dev)->bus->io_ops->reg_read ## type((dev)->ml_addr + (reg)))
++#define _snd_hdac_ext_host_stream_write(type, dev, reg, value)	\
++	((dev)->hstream.bus->io_ops->reg_write ## type(value,	\
++	(dev)->pphc_addr + (reg)))
++#define _snd_hdac_ext_host_stream_read(type, dev, reg)		\
++	((dev)->hstream.bus->io_ops->reg_read ## type(		\
++	(dev)->pphc_addr + (reg)))
 +
 +/* read/write a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_link_writel(dev, reg, value) \
-+	_snd_hdac_ext_link_write(l, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_link_writew(dev, reg, value) \
-+	_snd_hdac_ext_link_write(w, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_link_writeb(dev, reg, value) \
-+	_snd_hdac_ext_link_write(b, dev, AZX_REG_ ## reg, value)
-+#define snd_hdac_ext_link_readl(dev, reg) \
-+	_snd_hdac_ext_link_read(l, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_link_readw(dev, reg) \
-+	_snd_hdac_ext_link_read(w, dev, AZX_REG_ ## reg)
-+#define snd_hdac_ext_link_readb(dev, reg) \
-+	_snd_hdac_ext_link_read(b, dev, AZX_REG_ ## reg)
++#define snd_hdac_ext_host_stream_writel(dev, reg, value) \
++	_snd_hdac_ext_host_stream_write(l, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_host_stream_writew(dev, reg, value) \
++	_snd_hdac_ext_host_stream_write(w, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_host_stream_writeb(dev, reg, value) \
++	_snd_hdac_ext_host_stream_write(b, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_host_stream_readl(dev, reg) \
++	_snd_hdac_ext_host_stream_read(l, dev, AZX_REG_ ## reg)
++#define snd_hdac_ext_host_stream_readw(dev, reg) \
++	_snd_hdac_ext_host_stream_read(w, dev, AZX_REG_ ## reg)
++#define snd_hdac_ext_host_stream_readb(dev, reg) \
++	_snd_hdac_ext_host_stream_read(b, dev, AZX_REG_ ## reg)
 +
 +/* update a register, pass without AZX_REG_ prefix */
-+#define snd_hdac_ext_link_updatel(dev, reg, mask, val) \
-+	snd_hdac_ext_link_writel(dev, reg, \
-+			       (snd_hdac_ext_link_readl(dev, reg) & \
++#define snd_hdac_ext_host_stream_updatel(dev, reg, mask, val) \
++	snd_hdac_ext_host_stream_writel(dev, reg, \
++			       (snd_hdac_ext_host_stream_readl(dev, reg) & \
 +				~(mask)) | (val))
-+#define snd_hdac_ext_link_updatew(dev, reg, mask, val) \
-+	snd_hdac_ext_link_writew(dev, reg, \
-+			       (snd_hdac_ext_link_readw(dev, reg) & \
++#define snd_hdac_ext_host_stream_updatew(dev, reg, mask, val) \
++	snd_hdac_ext_host_stream_writew(dev, reg, \
++			       (snd_hdac_ext_host_stream_readw(dev, reg) & \
 +				~(mask)) | (val))
-+#define snd_hdac_ext_link_updateb(dev, reg, mask, val) \
-+	snd_hdac_ext_link_writeb(dev, reg, \
-+			       (snd_hdac_ext_link_readb(dev, reg) & \
++#define snd_hdac_ext_host_stream_updateb(dev, reg, mask, val) \
++	snd_hdac_ext_host_stream_writeb(dev, reg, \
++			       (snd_hdac_ext_host_stream_readb(dev, reg) & \
 +				~(mask)) | (val))
- #endif /* __SOUND_HDAUDIO_EXT_H */
++
++void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *hstream);
++void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *hstream);
++void snd_hdac_ext_link_stream_reset(struct hdac_ext_stream *hstream);
++int snd_hdac_ext_link_stream_setup(struct hdac_ext_stream *stream, int fmt);
++
++/*
++ * macros for link stream register read/write
++ */
++#define _snd_hdac_ext_link_stream_write(type, dev, reg, value)	\
++	((dev)->hstream.bus->io_ops->reg_write ## type(value,	\
++	(dev)->pplc_addr + (reg)))
++#define _snd_hdac_ext_link_stream_read(type, dev, reg)		\
++	((dev)->hstream.bus->io_ops->reg_read ## type((dev)->pplc_addr + (reg)))
++
++/* read/write a register, pass without AZX_REG_ prefix */
++#define snd_hdac_ext_link_stream_writel(dev, reg, value) \
++	_snd_hdac_ext_link_stream_write(l, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_link_stream_writew(dev, reg, value) \
++	_snd_hdac_ext_link_stream_write(w, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_link_stream_writeb(dev, reg, value) \
++	_snd_hdac_ext_link_stream_write(b, dev, AZX_REG_ ## reg, value)
++#define snd_hdac_ext_link_stream_readl(dev, reg) \
++	_snd_hdac_ext_link_stream_read(l, dev, AZX_REG_ ## reg)
++#define snd_hdac_ext_link_stream_readw(dev, reg) \
++	_snd_hdac_ext_link_stream_read(w, dev, AZX_REG_ ## reg)
++#define snd_hdac_ext_link_stream_readb(dev, reg) \
++	_snd_hdac_ext_link_stream_read(b, dev, AZX_REG_ ## reg)
++
++/* update a register, pass without AZX_REG_ prefix */
++#define snd_hdac_ext_link_stream_updatel(dev, reg, mask, val) \
++	snd_hdac_ext_link_stream_writel(dev, reg, \
++			       (snd_hdac_ext_link_stream_readl(dev, reg) & \
++				~(mask)) | (val))
++#define snd_hdac_ext_link_stream_updatew(dev, reg, mask, val) \
++	snd_hdac_ext_link_stream_writew(dev, reg, \
++			       (snd_hdac_ext_link_stream_readw(dev, reg) & \
++				~(mask)) | (val))
++#define snd_hdac_ext_link_stream_updateb(dev, reg, mask, val) \
++	snd_hdac_ext_link_stream_writeb(dev, reg, \
++			       (snd_hdac_ext_link_stream_readb(dev, reg) & \
++				~(mask)) | (val))
+ struct hdac_ext_link {
+ 	struct hdac_bus *bus;
+ 	int index;
 diff --git a/sound/hda/ext/Makefile b/sound/hda/ext/Makefile
-index 2e583e664916..934b7bf5d87f 100644
+index 934b7bf5d87f..9b6f641c7777 100644
 --- a/sound/hda/ext/Makefile
 +++ b/sound/hda/ext/Makefile
 @@ -1,3 +1,3 @@
--snd-hda-ext-core-objs := hdac_ext_bus.o
-+snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o
+-snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o
++snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o hdac_ext_stream.o
  
  obj-$(CONFIG_SND_HDA_EXT_CORE) += snd-hda-ext-core.o
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
 new file mode 100644
-index 000000000000..ab68d8165085
+index 000000000000..f95dce6b9d0a
 --- /dev/null
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -0,0 +1,295 @@
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -0,0 +1,414 @@
 +/*
-+ *  hdac-ext-controller.c - HD-audio extended controller functions.
++ *  hdac-ext-stream.c - HD-audio extended stream operations.
 + *
-+ *  Copyright (C) 2014-2015 Intel Corp
++ *  Copyright (C) 2015 Intel Corp
 + *  Author: Jeeja KP <jeeja.kp@intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
@@ -257,278 +207,397 @@ index 000000000000..ab68d8165085
 +#include <linux/kernel.h>
 +#include <linux/delay.h>
 +#include <linux/export.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
 +#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/hdaudio.h>
 +#include <sound/hda_register.h>
 +#include <sound/hdaudio_ext.h>
 +
 +/**
-+ * snd_hdac_ext_bus_parse_capabilities - parse capablity structure
-+ * @sbus: the pointer to extended bus object
++ * snd_hdac_ext_stream_init - initialize each stream (aka device)
++ * @sbus: HD-audio ext core bus
++ * @stream: HD-audio ext core stream object to initialize
++ * @idx: stream index number
++ * @direction: stream direction (SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CAPTURE)
++ * @tag: the tag id to assign
 + *
-+ * Returns 0 if successful, or a negative error code.
++ * initialize teh stream, if ppcap is enabled then init those and then
++ * invoke hdac stream initialization routine
 + */
-+int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus)
-+{
-+	unsigned int cur_cap;
-+	unsigned int offset;
-+	struct hdac_bus *bus = &sbus->bus;
-+
-+	offset = snd_hdac_chip_readl(bus, LLCH);
-+
-+	if (offset < 0)
-+		return -EIO;
-+
-+	sbus->ppcap = false;
-+	sbus->mlcap = false;
-+	sbus->spbcap = false;
-+	sbus->gtscap = false;
-+
-+	/* Lets walk the linked capabilities list */
-+	do {
-+		cur_cap = _snd_hdac_chip_read(l, bus, offset);
-+
-+		if (cur_cap < 0)
-+			return -EIO;
-+
-+		dev_dbg(bus->dev, "Capability version: 0x%x\n",
-+				((cur_cap & AZX_CAP_HDR_VER_MASK) >> AZX_CAP_HDR_VER_OFF));
-+
-+		dev_dbg(bus->dev, "HDA capability ID: 0x%x\n",
-+				(cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF);
-+
-+		switch ((cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF) {
-+		case AZX_ML_CAP_ID:
-+			dev_dbg(bus->dev, "Found ML capability\n");
-+			sbus->mlcap = true;
-+			sbus->mlcap_addr = bus->remap_addr + offset;
-+			break;
-+
-+		case AZX_GTS_CAP_ID:
-+			dev_dbg(bus->dev, "Found GTS capability offset=%x\n", offset);
-+			sbus->gtscap = true;
-+			sbus->gtscap_addr = bus->remap_addr + offset;
-+			break;
-+
-+		case AZX_PP_CAP_ID:
-+			/* PP capability found, the Audio DSP is present */
-+			dev_dbg(bus->dev, "Found PP capability offset=%x\n", offset);
-+			sbus->ppcap = true;
-+			sbus->ppcap_addr = bus->remap_addr + offset;
-+			break;
-+
-+		case AZX_SPB_CAP_ID:
-+			/* SPIB capability found, handler function */
-+			dev_dbg(bus->dev, "Found SPB capability\n");
-+			sbus->spbcap = true;
-+			sbus->spbcap_addr = bus->remap_addr + offset;
-+			break;
-+
-+		default:
-+			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
-+			break;
-+		}
-+
-+		/* read the offset of next capabiity */
-+		offset = cur_cap & AZX_CAP_HDR_NXT_PTR_MASK;
-+	} while (offset);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_parse_capabilities);
-+
-+/*
-+ * processing pipe helpers - these helpers are useful for dealing with HDA
-+ * new capability of processing pipelines
-+ */
-+
-+/**
-+ * snd_hdac_ext_bus_ppcap_enable - enable/disable processing pipe capability
-+ * @sbus: HD-audio extended core bus
-+ * @enable: flag to turn on/off the capability
-+ */
-+void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *sbus, bool enable)
++void snd_hdac_ext_stream_init(struct hdac_ext_bus *sbus,
++				struct hdac_ext_stream *stream,
++				int idx, int direction, int tag)
 +{
 +	struct hdac_bus *bus = &sbus->bus;
 +
-+	if (!sbus->ppcap) {
-+		dev_err(bus->dev, "Address of PP capability is NULL");
-+		return;
++	if (sbus->ppcap) {
++		stream->pphc_addr = sbus->ppcap_addr +
++					AZX_PPHC_BASE +
++					AZX_PPHC_INTERVAL *
++					idx;
++
++		stream->pplc_addr = sbus->ppcap_addr +
++					AZX_PPLC_BASE +
++					AZX_PPLC_MULTI *
++					sbus->num_streams +
++					AZX_PPLC_INTERVAL *
++					idx;
 +	}
 +
-+	if (enable)
-+		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL, 0, AZX_PPCTL_GPROCEN);
++	stream->decoupled = false;
++	snd_hdac_stream_init(bus, &stream->hstream, idx, direction, tag);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init);
++
++/**
++ * snd_hdac_ext_stream_decouple - decouple the hdac stream
++ * @sbus: HD-audio ext core bus
++ * @stream: HD-audio ext core stream object to initialize
++ * @decouple: flag to decouple
++ */
++void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *sbus,
++				struct hdac_ext_stream *stream, bool decouple)
++{
++	struct hdac_stream *hstream = &stream->hstream;
++	struct hdac_bus *bus = &sbus->bus;
++
++	spin_lock_irq(&bus->reg_lock);
++	if (decouple)
++		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL, 0,
++						AZX_PPCTL_PROCEN(hstream->index));
 +	else
-+		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL, AZX_PPCTL_GPROCEN, 0);
++		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL,
++					AZX_PPCTL_PROCEN(hstream->index), 0);
++	stream->decoupled = decouple;
++	spin_unlock_irq(&bus->reg_lock);
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_enable);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_decouple);
 +
 +/**
-+ * snd_hdac_ext_bus_ppcap_int_enable - ppcap interrupt enable/disable
-+ * @sbus: HD-audio extended core bus
-+ * @enable: flag to enable/disable interrupt
++ * snd_hdac_ext_linkstream_start - start a stream
++ * @stream: HD-audio ext core stream to start
 + */
-+void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *sbus, bool enable)
++void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *stream)
 +{
-+	struct hdac_bus *bus = &sbus->bus;
-+
-+	if (!sbus->ppcap) {
-+		dev_err(bus->dev, "Address of PP capability is NULL\n");
-+		return;
-+	}
-+
-+	if (enable)
-+		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL, 0, AZX_PPCTL_PIE);
-+	else
-+		snd_hdac_ext_bus_ppcap_updatel(sbus, PP_PPCTL, AZX_PPCTL_PIE, 0);
++	snd_hdac_ext_link_stream_updatel(stream, PPLCCTL,
++				0, AZX_PPLCCTL_RUN);
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_int_enable);
-+
-+/*
-+ * Multilink helpers - these helpers are useful for dealing with HDA
-+ * new multilink capability
-+ */
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_start);
 +
 +/**
-+ * snd_hdac_ext_bus_get_ml_capabilities - get multilink capability
-+ * @sbus: HD-audio extended core bus
-+ *
-+ * This will parse all links and read the mlink capabilities and add them
-+ * in hlink_list of extended hdac bus
-+ * Note: this will be freed on bus exit by driver
++ * snd_hdac_ext_link_stream_clear - stop a stream DMA
++ * @stream: HD-audio ext core stream to stop
 + */
-+int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *sbus)
++void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *stream)
 +{
-+	int idx;
-+	u32 link_count;
-+	struct hdac_ext_link *hlink;
-+	struct hdac_bus *bus = &sbus->bus;
-+
-+	link_count = snd_hdac_ext_bus_mlcap_readl(sbus, ML_MLCD) + 1;
-+
-+	dev_dbg(bus->dev, "In %s Link count: %d\n", __func__, link_count);
-+
-+	for (idx = 0; idx < link_count; idx++) {
-+		hlink  = kzalloc(sizeof(*hlink), GFP_KERNEL);
-+		if (!hlink)
-+			return -ENOMEM;
-+		hlink->index = idx;
-+		hlink->bus = bus;
-+		hlink->ml_addr = sbus->mlcap_addr +
-+					AZX_ML_BASE +
-+					(AZX_ML_INTERVAL *
-+					idx);
-+		hlink->lcaps  = snd_hdac_ext_link_readl(hlink, ML_LCAP);
-+		hlink->lsdiid = snd_hdac_ext_link_readw(hlink, ML_LSDIID);
-+
-+		list_add_tail(&hlink->list, &sbus->hlink_list);
-+	}
-+
-+	return 0;
++	snd_hdac_ext_link_stream_updatel(stream, PPLCCTL,
++					AZX_PPLCCTL_RUN, 0);
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_ml_capabilities);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_clear);
 +
 +/**
-+ * snd_hdac_ext_bus_map_codec_to_link - maps codec to link
-+ * @sbus: HD-audio extended core bus
-+ * @addr: codec address
++ * snd_hdac_ext_link_stream_reset - reset a stream
++ * @stream: HD-audio ext core stream to reset
 + */
-+int snd_hdac_ext_bus_map_codec_to_link(struct hdac_ext_bus *sbus, int addr)
++void snd_hdac_ext_link_stream_reset(struct hdac_ext_stream *stream)
 +{
-+	struct hdac_ext_link *hlink;
-+	struct hdac_bus *bus = &sbus->bus;
-+
-+	list_for_each_entry(hlink, &sbus->hlink_list, list) {
-+		/* check if SDI bit number is same as Codec address */
-+		dev_dbg(bus->dev, "lsdid for %d link %x\n", hlink->index, hlink->lsdiid);
-+		if (!hlink->lsdiid)
-+			continue;
-+
-+		if (hlink->lsdiid && (0x1 << addr)) {
-+			snprintf(hlink->codec[addr],
-+					sizeof(hlink->codec[addr]),
-+					"codec#%d", addr);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_map_codec_to_link);
-+
-+/**
-+ * snd_hdac_ext_bus_get_link_index - get link based on codec name
-+ * @sbus: HD-audio extended core bus
-+ * @codec_name: codec name
-+ */
-+struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *sbus,
-+						 const char *codec_name)
-+{
-+	int i;
-+	struct hdac_ext_link *hlink = NULL;
-+
-+	list_for_each_entry(hlink, &sbus->hlink_list, list) {
-+		for (i = 0; i < HDA_MAX_CODECS; i++) {
-+			if (!hlink->codec[i][0])
-+				break;
-+			if (!strncmp(hlink->codec[i], codec_name,
-+					strlen(codec_name)))
-+				return hlink;
-+		}
-+	}
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_link);
-+
-+static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
-+{
++	unsigned char val;
 +	int timeout;
-+	u32 val;
-+	int mask = (1 << AZX_MLCTL_CPA);
 +
++	snd_hdac_ext_link_stream_clear(stream);
++
++	snd_hdac_ext_link_stream_updatel(stream, PPLCCTL, 0, AZX_PPLCCTL_STRST);
 +	udelay(3);
 +	timeout = 50;
-+
 +	do {
-+		val = snd_hdac_ext_link_readl(link, ML_LCTL);
-+		if (enable) {
-+			if (((val & mask) >> AZX_MLCTL_CPA))
-+				return 0;
-+		} else {
-+			if (!((val & mask) >> AZX_MLCTL_CPA))
-+				return 0;
-+		}
++		val = snd_hdac_ext_link_stream_readl(stream, PPLCCTL) &
++			AZX_PPLCCTL_STRST;
++		if (val)
++			break;
++		udelay(3);
++	} while (--timeout);
++	val &= ~AZX_PPLCCTL_STRST;
++	snd_hdac_ext_link_stream_writel(stream, PPLCCTL, val);
++	udelay(3);
++
++	timeout = 50;
++	/* waiting for hardware to report that the stream is out of reset */
++	do {
++		val = snd_hdac_ext_link_stream_readl(stream, PPLCCTL) &
++			AZX_PPLCCTL_STRST;
++		if (!val)
++			break;
 +		udelay(3);
 +	} while (--timeout);
 +
-+	return -EIO;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_reset);
++
++/**
++ * snd_hdac_ext_link_stream_setup -  set up the SD for streaming
++ * @stream: HD-audio ext core stream to set up
++ * @fmt: stream format
++ */
++int snd_hdac_ext_link_stream_setup(struct hdac_ext_stream *stream, int fmt)
++{
++	struct hdac_stream *hstream = &stream->hstream;
++	unsigned int val;
++
++	/* make sure the run bit is zero for SD */
++	snd_hdac_ext_link_stream_clear(stream);
++	/* program the stream_tag */
++	val = snd_hdac_ext_link_stream_readl(stream, PPLCCTL);
++	val = (val & ~AZX_PPLCCTL_STRM_MASK) |
++		(hstream->stream_tag << AZX_PPLCCTL_STRM_SHIFT);
++	snd_hdac_ext_link_stream_writel(stream, PPLCCTL, val);
++
++	/* program the stream format */
++	snd_hdac_ext_link_stream_writew(stream, PPLCFMT, fmt);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_setup);
++
++/**
++ * snd_hdac_ext_link_set_stream_id - maps stream id to link output
++ * @link: HD-audio ext link to set up
++ * @stream: stream id
++ */
++void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
++				 int stream)
++{
++	snd_hdac_ext_link_updatew(link, ML_LOSIDV, (1 << stream), 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_set_stream_id);
++
++/**
++ * snd_hdac_ext_link_clear_stream_id - maps stream id to link output
++ * @link: HD-audio ext link to set up
++ * @stream: stream id
++ */
++void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
++				 int stream)
++{
++	snd_hdac_ext_link_updatew(link, ML_LOSIDV, 0, (1 << stream));
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_link_clear_stream_id);
++
++static struct hdac_ext_stream *
++hdac_ext_link_stream_assign(struct hdac_ext_bus *sbus,
++				struct snd_pcm_substream *substream)
++{
++	struct hdac_ext_stream *res = NULL;
++	struct hdac_stream *stream = NULL;
++	struct hdac_bus *hbus = &sbus->bus;
++
++	if (!sbus->ppcap) {
++		dev_err(hbus->dev, "stream type not supported\n");
++		return NULL;
++	}
++
++	list_for_each_entry(stream, &hbus->stream_list, list) {
++		struct hdac_ext_stream *hstream = container_of(stream,
++						struct hdac_ext_stream,
++						hstream);
++		if (stream->direction != substream->stream)
++			continue;
++
++		/* check if decoupled stream and not in use is available */
++		if (hstream->decoupled && !hstream->link_locked) {
++			res = hstream;
++			break;
++		}
++
++		if (!hstream->link_locked) {
++			snd_hdac_ext_stream_decouple(sbus, hstream, true);
++			res = hstream;
++			break;
++		}
++	}
++	if (res) {
++		spin_lock_irq(&hbus->reg_lock);
++		res->link_locked = 1;
++		res->link_substream = substream;
++		spin_unlock_irq(&hbus->reg_lock);
++	}
++	return res;
++}
++
++static struct hdac_ext_stream *
++hdac_ext_host_stream_assign(struct hdac_ext_bus *sbus,
++				struct snd_pcm_substream *substream)
++{
++	struct hdac_ext_stream *res = NULL;
++	struct hdac_stream *stream = NULL;
++	struct hdac_bus *hbus = &sbus->bus;
++	int key;
++
++	if (!sbus->ppcap) {
++		dev_err(hbus->dev, "stream type not supported\n");
++		return NULL;
++	}
++
++	/* make a non-zero unique key for the substream */
++	key = (substream->pcm->device << 16) | (substream->number << 2) |
++			(substream->stream + 1);
++
++	list_for_each_entry(stream, &hbus->stream_list, list) {
++		struct hdac_ext_stream *hstream = container_of(stream,
++						struct hdac_ext_stream,
++						hstream);
++		if (stream->direction != substream->stream)
++			continue;
++
++		if (stream->opened) {
++			if (!hstream->decoupled)
++				snd_hdac_ext_stream_decouple(sbus, hstream, true);
++			res = hstream;
++			break;
++		}
++	}
++	if (res) {
++		spin_lock_irq(&hbus->reg_lock);
++		res->hstream.opened = 1;
++		res->hstream.running = 0;
++		res->hstream.assigned_key = key;
++		res->hstream.substream = substream;
++		spin_unlock_irq(&hbus->reg_lock);
++	}
++
++	return res;
 +}
 +
 +/**
-+ * snd_hdac_ext_bus_link_power_up -power up hda link
-+ * @link: HD-audio extended link
++ * snd_hdac_ext_stream_assign - assign a stream for the PCM
++ * @sbus: HD-audio ext core bus
++ * @substream: PCM substream to assign
++ * @type: type of stream (coupled, host or link stream)
++ *
++ * This assigns the stream based on the type (coupled/host/link), for the
++ * given PCM substream, assigns it and returns the stream object
++ *
++ * coupled: Looks for an unused stream
++ * host: Looks for an unused decoupled host stream
++ * link: Looks for an unused decoupled link stream
++ *
++ * If no stream is free, returns NULL. The function tries to keep using
++ * the same stream object when it's used beforehand.  when a stream is
++ * decoupled, it becomes a host stream and link stream.
 + */
-+int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link)
++struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *sbus,
++					   struct snd_pcm_substream *substream,
++					   int type)
 +{
-+	snd_hdac_ext_link_updatel(link, ML_LCTL, 0, AZX_MLCTL_SPA);
++	struct hdac_ext_stream *hstream = NULL;
++	struct hdac_stream *stream = NULL;
++	struct hdac_bus *hbus = &sbus->bus;
 +
-+	return check_hdac_link_power_active(link, true);
++	switch (type) {
++	case HDAC_EXT_STREAM_TYPE_COUPLED:
++		stream = snd_hdac_stream_assign(hbus, substream);
++		if (stream)
++			hstream = container_of(stream,
++					struct hdac_ext_stream, hstream);
++		return hstream;
++
++	case HDAC_EXT_STREAM_TYPE_HOST:
++		return hdac_ext_host_stream_assign(sbus, substream);
++
++	case HDAC_EXT_STREAM_TYPE_LINK:
++		return hdac_ext_link_stream_assign(sbus, substream);
++
++	default:
++		return NULL;
++	}
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_assign);
 +
 +/**
-+ * snd_hdac_ext_bus_link_power_down -power down hda link
-+ * @link: HD-audio extended link
++ * snd_hdac_ext_stream_release - release the assigned stream
++ * @stream: HD-audio ext core stream to release
++ * @type: type of stream (coupled, host or link stream)
++ *
++ * Release the stream that has been assigned by snd_hdac_ext_stream_assign().
 + */
-+int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link)
++void snd_hdac_ext_stream_release(struct hdac_ext_stream *stream, int type)
 +{
-+	snd_hdac_ext_link_updatel(link, ML_LCTL, AZX_MLCTL_SPA, 0);
++	struct hdac_bus *bus = stream->hstream.bus;
++	struct hdac_ext_bus *sbus = bus_to_hdac_ext_bus(bus);
 +
-+	return check_hdac_link_power_active(link, false);
++	switch (type) {
++	case HDAC_EXT_STREAM_TYPE_COUPLED:
++		snd_hdac_stream_release(&stream->hstream);
++		break;
++
++	case HDAC_EXT_STREAM_TYPE_HOST:
++		if (stream->decoupled) {
++			snd_hdac_ext_stream_decouple(sbus, stream, false);
++			snd_hdac_stream_release(&stream->hstream);
++		}
++		break;
++
++	case HDAC_EXT_STREAM_TYPE_LINK:
++		if (stream->decoupled)
++			snd_hdac_ext_stream_decouple(sbus, stream, false);
++		spin_lock_irq(&bus->reg_lock);
++		stream->link_locked = 0;
++		stream->link_substream = NULL;
++		spin_unlock_irq(&bus->reg_lock);
++		break;
++
++	default:
++		dev_dbg(bus->dev, "Invalid type %d\n", type);
++	}
++
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_release);
 +
-+MODULE_DESCRIPTION("HDA extended core");
-+MODULE_LICENSE("GPL v2");
++/**
++ * snd_hdac_ext_stream_spbcap_enable - enable SPIB for a stream
++ * @sbus: HD-audio ext core bus
++ * @enable: flag to enable/disable SPIB
++ * @index: stream index for which SPIB need to be enabled
++ */
++void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *sbus,
++				 bool enable, int index)
++{
++	u32 mask = 0;
++	u32 register_mask = 0;
++	struct hdac_bus *bus = &sbus->bus;
++
++	if (!sbus->spbcap) {
++		dev_err(bus->dev, "Address of SPB capability is NULL");
++		return;
++	}
++
++	mask |= (1 << index);
++
++	register_mask = snd_hdac_ext_bus_spbcap_readl(sbus, SPB_SPBFCCTL);
++
++	mask |= register_mask;
++
++	if (enable)
++		snd_hdac_ext_bus_spbcap_updatel(sbus, SPB_SPBFCCTL, 0, mask);
++	else
++		snd_hdac_ext_bus_spbcap_updatel(sbus, SPB_SPBFCCTL, mask, 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_spbcap_enable);
++
++/**
++ * snd_hdac_ext_stop_streams - stop all stream if running
++ * @sbus: HD-audio ext core bus
++ */
++void snd_hdac_ext_stop_streams(struct hdac_ext_bus *sbus)
++{
++	struct hdac_bus *bus = hdac_bus(sbus);
++	struct hdac_stream *stream;
++
++	if (bus->chip_init) {
++		list_for_each_entry(stream, &bus->stream_list, list)
++			snd_hdac_stream_stop(stream);
++		snd_hdac_bus_stop_chip(bus);
++	}
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stop_streams);
 -- 
 1.9.1
