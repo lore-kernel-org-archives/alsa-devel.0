@@ -1,15 +1,15 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/topology 104/105] :undefined reference to
- `snd_soc_dapm_new_control'
-Date: Thu, 4 Jun 2015 18:58:38 +0800
-Message-ID: <201506041837.OFTVnhYj%fengguang.wu@intel.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [RFC PATCH] ALSA: split params refinement to seperated
+	file
+Date: Thu,  4 Jun 2015 22:47:45 +0800
+Message-ID: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="xHFwDpU9dbj6ez1V"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 881D8266195
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 12:59:20 +0200 (CEST)
-Content-Disposition: inline
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01078260661
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:43:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,3063 +19,3607 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: tiwai@suse.de, broonie@kernel.org
+Cc: vivian.zhang@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+ALSA parameter refinement takes up about 13kB of memory. The refinement
+is useful on the desktop but is not usually required for some bespoke
+applications typically found on small inexpensive devices with reduced
+memory. These bespoke applications will typically configure the audio
+configuration with the exact requirements that will not require any
+further refinement from the kernel.
 
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The change moves refinement functions from original pcm_native.c and
+pcm_lib.c, to pcm_refine.c(similarly the declaration from pcm.h to
+pcm_refine.h), so it is not so big as it looks like.
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/topology
-head:   932ae8809469770a07ce19d6967d2ce303befa08
-commit: 8a9782346dccd82cf912552735bda619de4efd8c [104/105] ASoC: topology: Add topology core
-config: arm-at91_dt_defconfig (attached as .config)
-reproduce:
-  wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
-  chmod +x ~/bin/make.cross
-  git checkout 8a9782346dccd82cf912552735bda619de4efd8c
-  # save the attached .config to linux build tree
-  make.cross ARCH=arm 
+Please be noticed that this change may block alsa-lib usage, user app
+such as aplay/arecord doesn't work when CONFIG_SND_PARAMS_REFINEMENT
+is unselected. But it may be still worthy, some small player(e.g.
+tinyplay) can work with fixed params passed in(some small changes for
+the player may be needed), at this case, the change here will save
+about 13KB footprint on x86_64 platform for those small inexpensive
+devices(e.g. IoT ones).
 
-All error/warnings (new ones prefixed by >>):
-
-   sound/built-in.o: In function `soc_tplg_dapm_widget_create':
->> :(.text+0x25a90): undefined reference to `snd_soc_dapm_new_control'
-
+Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
-
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=".config"
-
-#
-# Automatically generated file; DO NOT EDIT.
-# Linux/arm 4.1.0-rc1 Kernel Configuration
-#
-CONFIG_ARM=y
-CONFIG_ARM_HAS_SG_CHAIN=y
-CONFIG_MIGHT_HAVE_PCI=y
-CONFIG_SYS_SUPPORTS_APM_EMULATION=y
-CONFIG_HAVE_PROC_CPU=y
-CONFIG_STACKTRACE_SUPPORT=y
-CONFIG_HAVE_LATENCYTOP_SUPPORT=y
-CONFIG_LOCKDEP_SUPPORT=y
-CONFIG_TRACE_IRQFLAGS_SUPPORT=y
-CONFIG_RWSEM_XCHGADD_ALGORITHM=y
-CONFIG_GENERIC_HWEIGHT=y
-CONFIG_GENERIC_CALIBRATE_DELAY=y
-CONFIG_NEED_DMA_MAP_STATE=y
-CONFIG_ARCH_SUPPORTS_UPROBES=y
-CONFIG_VECTORS_BASE=0xffff0000
-CONFIG_ARM_PATCH_PHYS_VIRT=y
-CONFIG_GENERIC_BUG=y
-CONFIG_PGTABLE_LEVELS=2
-CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
-CONFIG_IRQ_WORK=y
-CONFIG_BUILDTIME_EXTABLE_SORT=y
-
-#
-# General setup
-#
-CONFIG_BROKEN_ON_SMP=y
-CONFIG_INIT_ENV_ARG_LIMIT=32
-CONFIG_CROSS_COMPILE=""
-# CONFIG_COMPILE_TEST is not set
-CONFIG_LOCALVERSION=""
-# CONFIG_LOCALVERSION_AUTO is not set
-CONFIG_HAVE_KERNEL_GZIP=y
-CONFIG_HAVE_KERNEL_LZMA=y
-CONFIG_HAVE_KERNEL_XZ=y
-CONFIG_HAVE_KERNEL_LZO=y
-CONFIG_HAVE_KERNEL_LZ4=y
-CONFIG_KERNEL_GZIP=y
-# CONFIG_KERNEL_LZMA is not set
-# CONFIG_KERNEL_XZ is not set
-# CONFIG_KERNEL_LZO is not set
-# CONFIG_KERNEL_LZ4 is not set
-CONFIG_DEFAULT_HOSTNAME="(none)"
-# CONFIG_SWAP is not set
-CONFIG_SYSVIPC=y
-CONFIG_SYSVIPC_SYSCTL=y
-# CONFIG_POSIX_MQUEUE is not set
-CONFIG_CROSS_MEMORY_ATTACH=y
-# CONFIG_FHANDLE is not set
-CONFIG_USELIB=y
-# CONFIG_AUDIT is not set
-CONFIG_HAVE_ARCH_AUDITSYSCALL=y
-
-#
-# IRQ subsystem
-#
-CONFIG_GENERIC_IRQ_PROBE=y
-CONFIG_GENERIC_IRQ_SHOW=y
-CONFIG_GENERIC_IRQ_SHOW_LEVEL=y
-CONFIG_HARDIRQS_SW_RESEND=y
-CONFIG_GENERIC_IRQ_CHIP=y
-CONFIG_IRQ_DOMAIN=y
-CONFIG_HANDLE_DOMAIN_IRQ=y
-# CONFIG_IRQ_DOMAIN_DEBUG is not set
-CONFIG_IRQ_FORCED_THREADING=y
-CONFIG_SPARSE_IRQ=y
-CONFIG_GENERIC_CLOCKEVENTS=y
-
-#
-# Timers subsystem
-#
-CONFIG_HZ_PERIODIC=y
-# CONFIG_NO_HZ_IDLE is not set
-# CONFIG_NO_HZ is not set
-# CONFIG_HIGH_RES_TIMERS is not set
-
-#
-# CPU/Task time and stats accounting
-#
-CONFIG_TICK_CPU_ACCOUNTING=y
-# CONFIG_VIRT_CPU_ACCOUNTING_GEN is not set
-# CONFIG_IRQ_TIME_ACCOUNTING is not set
-# CONFIG_BSD_PROCESS_ACCT is not set
-# CONFIG_TASKSTATS is not set
-
-#
-# RCU Subsystem
-#
-CONFIG_TINY_RCU=y
-CONFIG_SRCU=y
-# CONFIG_TASKS_RCU is not set
-# CONFIG_RCU_STALL_COMMON is not set
-# CONFIG_TREE_RCU_TRACE is not set
-CONFIG_RCU_KTHREAD_PRIO=0
-# CONFIG_RCU_EXPEDITE_BOOT is not set
-# CONFIG_BUILD_BIN2C is not set
-# CONFIG_IKCONFIG is not set
-CONFIG_LOG_BUF_SHIFT=14
-CONFIG_GENERIC_SCHED_CLOCK=y
-# CONFIG_CGROUPS is not set
-# CONFIG_CHECKPOINT_RESTORE is not set
-# CONFIG_NAMESPACES is not set
-# CONFIG_SCHED_AUTOGROUP is not set
-# CONFIG_SYSFS_DEPRECATED is not set
-# CONFIG_RELAY is not set
-CONFIG_BLK_DEV_INITRD=y
-CONFIG_INITRAMFS_SOURCE=""
-CONFIG_RD_GZIP=y
-CONFIG_RD_BZIP2=y
-CONFIG_RD_LZMA=y
-CONFIG_RD_XZ=y
-CONFIG_RD_LZO=y
-CONFIG_RD_LZ4=y
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-CONFIG_SYSCTL=y
-CONFIG_ANON_INODES=y
-CONFIG_HAVE_UID16=y
-CONFIG_BPF=y
-CONFIG_EXPERT=y
-CONFIG_UID16=y
-CONFIG_MULTIUSER=y
-# CONFIG_SGETMASK_SYSCALL is not set
-CONFIG_SYSFS_SYSCALL=y
-# CONFIG_SYSCTL_SYSCALL is not set
-CONFIG_KALLSYMS=y
-CONFIG_KALLSYMS_ALL=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_ELF_CORE=y
-CONFIG_BASE_FULL=y
-CONFIG_FUTEX=y
-CONFIG_EPOLL=y
-CONFIG_SIGNALFD=y
-CONFIG_TIMERFD=y
-CONFIG_EVENTFD=y
-# CONFIG_BPF_SYSCALL is not set
-CONFIG_SHMEM=y
-CONFIG_AIO=y
-CONFIG_ADVISE_SYSCALLS=y
-CONFIG_EMBEDDED=y
-CONFIG_HAVE_PERF_EVENTS=y
-CONFIG_PERF_USE_VMALLOC=y
-
-#
-# Kernel Performance Events And Counters
-#
-# CONFIG_PERF_EVENTS is not set
-CONFIG_VM_EVENT_COUNTERS=y
-CONFIG_COMPAT_BRK=y
-CONFIG_SLAB=y
-# CONFIG_SLUB is not set
-# CONFIG_SLOB is not set
-# CONFIG_PROFILING is not set
-CONFIG_HAVE_OPROFILE=y
-# CONFIG_KPROBES is not set
-# CONFIG_JUMP_LABEL is not set
-# CONFIG_UPROBES is not set
-# CONFIG_HAVE_64BIT_ALIGNED_ACCESS is not set
-CONFIG_ARCH_USE_BUILTIN_BSWAP=y
-CONFIG_HAVE_KPROBES=y
-CONFIG_HAVE_KRETPROBES=y
-CONFIG_HAVE_OPTPROBES=y
-CONFIG_HAVE_ARCH_TRACEHOOK=y
-CONFIG_HAVE_DMA_ATTRS=y
-CONFIG_HAVE_DMA_CONTIGUOUS=y
-CONFIG_GENERIC_SMP_IDLE_THREAD=y
-CONFIG_GENERIC_IDLE_POLL_SETUP=y
-CONFIG_HAVE_REGS_AND_STACK_ACCESS_API=y
-CONFIG_HAVE_CLK=y
-CONFIG_HAVE_DMA_API_DEBUG=y
-CONFIG_HAVE_PERF_REGS=y
-CONFIG_HAVE_PERF_USER_STACK_DUMP=y
-CONFIG_HAVE_ARCH_JUMP_LABEL=y
-CONFIG_ARCH_WANT_IPC_PARSE_VERSION=y
-CONFIG_HAVE_ARCH_SECCOMP_FILTER=y
-CONFIG_HAVE_CC_STACKPROTECTOR=y
-# CONFIG_CC_STACKPROTECTOR is not set
-CONFIG_CC_STACKPROTECTOR_NONE=y
-# CONFIG_CC_STACKPROTECTOR_REGULAR is not set
-# CONFIG_CC_STACKPROTECTOR_STRONG is not set
-CONFIG_HAVE_CONTEXT_TRACKING=y
-CONFIG_HAVE_VIRT_CPU_ACCOUNTING_GEN=y
-CONFIG_HAVE_IRQ_TIME_ACCOUNTING=y
-CONFIG_HAVE_MOD_ARCH_SPECIFIC=y
-CONFIG_MODULES_USE_ELF_REL=y
-CONFIG_ARCH_HAS_ELF_RANDOMIZE=y
-CONFIG_CLONE_BACKWARDS=y
-CONFIG_OLD_SIGSUSPEND3=y
-CONFIG_OLD_SIGACTION=y
-
-#
-# GCOV-based kernel profiling
-#
-# CONFIG_GCOV_KERNEL is not set
-CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
-CONFIG_HAVE_GENERIC_DMA_COHERENT=y
-CONFIG_SLABINFO=y
-CONFIG_RT_MUTEXES=y
-CONFIG_BASE_SMALL=0
-CONFIG_MODULES=y
-# CONFIG_MODULE_FORCE_LOAD is not set
-CONFIG_MODULE_UNLOAD=y
-# CONFIG_MODULE_FORCE_UNLOAD is not set
-# CONFIG_MODVERSIONS is not set
-# CONFIG_MODULE_SRCVERSION_ALL is not set
-# CONFIG_MODULE_SIG is not set
-# CONFIG_MODULE_COMPRESS is not set
-CONFIG_BLOCK=y
-# CONFIG_LBDAF is not set
-# CONFIG_BLK_DEV_BSG is not set
-# CONFIG_BLK_DEV_BSGLIB is not set
-# CONFIG_BLK_DEV_INTEGRITY is not set
-# CONFIG_BLK_CMDLINE_PARSER is not set
-
-#
-# Partition Types
-#
-# CONFIG_PARTITION_ADVANCED is not set
-CONFIG_MSDOS_PARTITION=y
-CONFIG_EFI_PARTITION=y
-
-#
-# IO Schedulers
-#
-CONFIG_IOSCHED_NOOP=y
-# CONFIG_IOSCHED_DEADLINE is not set
-# CONFIG_IOSCHED_CFQ is not set
-CONFIG_DEFAULT_NOOP=y
-CONFIG_DEFAULT_IOSCHED="noop"
-CONFIG_INLINE_SPIN_UNLOCK_IRQ=y
-CONFIG_INLINE_READ_UNLOCK=y
-CONFIG_INLINE_READ_UNLOCK_IRQ=y
-CONFIG_INLINE_WRITE_UNLOCK=y
-CONFIG_INLINE_WRITE_UNLOCK_IRQ=y
-CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
-CONFIG_FREEZER=y
-
-#
-# System Type
-#
-CONFIG_MMU=y
-CONFIG_ARCH_MULTIPLATFORM=y
-# CONFIG_ARCH_REALVIEW is not set
-# CONFIG_ARCH_VERSATILE is not set
-# CONFIG_ARCH_CLPS711X is not set
-# CONFIG_ARCH_GEMINI is not set
-# CONFIG_ARCH_EBSA110 is not set
-# CONFIG_ARCH_EP93XX is not set
-# CONFIG_ARCH_FOOTBRIDGE is not set
-# CONFIG_ARCH_NETX is not set
-# CONFIG_ARCH_IOP13XX is not set
-# CONFIG_ARCH_IOP32X is not set
-# CONFIG_ARCH_IOP33X is not set
-# CONFIG_ARCH_IXP4XX is not set
-# CONFIG_ARCH_DOVE is not set
-# CONFIG_ARCH_MV78XX0 is not set
-# CONFIG_ARCH_ORION5X is not set
-# CONFIG_ARCH_MMP is not set
-# CONFIG_ARCH_KS8695 is not set
-# CONFIG_ARCH_W90X900 is not set
-# CONFIG_ARCH_LPC32XX is not set
-# CONFIG_ARCH_PXA is not set
-# CONFIG_ARCH_SHMOBILE_LEGACY is not set
-# CONFIG_ARCH_RPC is not set
-# CONFIG_ARCH_SA1100 is not set
-# CONFIG_ARCH_S3C24XX is not set
-# CONFIG_ARCH_S3C64XX is not set
-# CONFIG_ARCH_DAVINCI is not set
-# CONFIG_ARCH_OMAP1 is not set
-
-#
-# Multiple platform selection
-#
-
-#
-# CPU Core family selection
-#
-# CONFIG_ARCH_MULTI_V4 is not set
-CONFIG_ARCH_MULTI_V4T=y
-CONFIG_ARCH_MULTI_V5=y
-CONFIG_ARCH_MULTI_V4_V5=y
-# CONFIG_ARCH_MULTI_V6 is not set
-# CONFIG_ARCH_MULTI_V7 is not set
-# CONFIG_ARCH_MULTI_CPU_AUTO is not set
-# CONFIG_ARCH_MVEBU is not set
-# CONFIG_MACH_ASM9260 is not set
-CONFIG_ARCH_AT91=y
-CONFIG_SOC_AT91RM9200=y
-CONFIG_SOC_AT91SAM9=y
-CONFIG_HAVE_AT91_UTMI=y
-CONFIG_HAVE_AT91_USB_CLK=y
-CONFIG_COMMON_CLK_AT91=y
-CONFIG_HAVE_AT91_SMD=y
-CONFIG_SOC_SAM_V4_V5=y
-# CONFIG_ARCH_INTEGRATOR is not set
-# CONFIG_ARCH_MXC is not set
-# CONFIG_ARCH_MXS is not set
-# CONFIG_ARCH_NOMADIK is not set
-# CONFIG_ARCH_NSPIRE is not set
-# CONFIG_PLAT_SPEAR is not set
-# CONFIG_ARCH_U300 is not set
-# CONFIG_ARCH_WM8505 is not set
-
-#
-# Processor Type
-#
-CONFIG_CPU_ARM920T=y
-CONFIG_CPU_ARM926T=y
-CONFIG_CPU_32v4T=y
-CONFIG_CPU_32v5=y
-CONFIG_CPU_ABRT_EV4T=y
-CONFIG_CPU_ABRT_EV5TJ=y
-CONFIG_CPU_PABRT_LEGACY=y
-CONFIG_CPU_CACHE_V4WT=y
-CONFIG_CPU_CACHE_VIVT=y
-CONFIG_CPU_COPY_V4WB=y
-CONFIG_CPU_TLB_V4WBI=y
-CONFIG_CPU_CP15=y
-CONFIG_CPU_CP15_MMU=y
-CONFIG_CPU_USE_DOMAINS=y
-
-#
-# Processor Features
-#
-# CONFIG_ARCH_PHYS_ADDR_T_64BIT is not set
-CONFIG_ARM_THUMB=y
-# CONFIG_CPU_ICACHE_DISABLE is not set
-# CONFIG_CPU_DCACHE_DISABLE is not set
-# CONFIG_CPU_DCACHE_WRITETHROUGH is not set
-# CONFIG_CPU_CACHE_ROUND_ROBIN is not set
-CONFIG_NEED_KUSER_HELPERS=y
-CONFIG_KUSER_HELPERS=y
-# CONFIG_CACHE_L2X0 is not set
-CONFIG_ARM_L1_CACHE_SHIFT=5
-# CONFIG_ARM_KERNMEM_PERMS is not set
-CONFIG_MULTI_IRQ_HANDLER=y
-
-#
-# Bus support
-#
-# CONFIG_PCI is not set
-# CONFIG_PCI_DOMAINS_GENERIC is not set
-# CONFIG_PCI_SYSCALL is not set
-# CONFIG_PCCARD is not set
-
-#
-# Kernel Features
-#
-CONFIG_VMSPLIT_3G=y
-# CONFIG_VMSPLIT_2G is not set
-# CONFIG_VMSPLIT_1G is not set
-CONFIG_PAGE_OFFSET=0xC0000000
-CONFIG_ARCH_NR_GPIO=0
-CONFIG_PREEMPT_NONE=y
-# CONFIG_PREEMPT_VOLUNTARY is not set
-# CONFIG_PREEMPT is not set
-CONFIG_HZ_FIXED=128
-CONFIG_HZ=128
-# CONFIG_SCHED_HRTICK is not set
-CONFIG_AEABI=y
-# CONFIG_OABI_COMPAT is not set
-# CONFIG_ARCH_SPARSEMEM_DEFAULT is not set
-# CONFIG_ARCH_SELECT_MEMORY_MODEL is not set
-CONFIG_HAVE_ARCH_PFN_VALID=y
-# CONFIG_HIGHMEM is not set
-CONFIG_ARCH_WANT_GENERAL_HUGETLB=y
-CONFIG_FLATMEM=y
-CONFIG_FLAT_NODE_MEM_MAP=y
-CONFIG_HAVE_MEMBLOCK=y
-CONFIG_NO_BOOTMEM=y
-# CONFIG_HAVE_BOOTMEM_INFO_NODE is not set
-CONFIG_PAGEFLAGS_EXTENDED=y
-CONFIG_SPLIT_PTLOCK_CPUS=999999
-CONFIG_COMPACTION=y
-CONFIG_MIGRATION=y
-# CONFIG_PHYS_ADDR_T_64BIT is not set
-CONFIG_ZONE_DMA_FLAG=0
-# CONFIG_KSM is not set
-CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
-CONFIG_NEED_PER_CPU_KM=y
-# CONFIG_CLEANCACHE is not set
-# CONFIG_CMA is not set
-# CONFIG_ZPOOL is not set
-# CONFIG_ZBUD is not set
-# CONFIG_ZSMALLOC is not set
-CONFIG_FORCE_MAX_ZONEORDER=11
-CONFIG_ALIGNMENT_TRAP=y
-CONFIG_UACCESS_WITH_MEMCPY=y
-# CONFIG_SECCOMP is not set
-CONFIG_SWIOTLB=y
-CONFIG_IOMMU_HELPER=y
-
-#
-# Boot options
-#
-CONFIG_USE_OF=y
-CONFIG_ATAGS=y
-# CONFIG_DEPRECATED_PARAM_STRUCT is not set
-CONFIG_ZBOOT_ROM_TEXT=0x0
-CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_ARM_APPENDED_DTB=y
-CONFIG_ARM_ATAG_DTB_COMPAT=y
-CONFIG_ARM_ATAG_DTB_COMPAT_CMDLINE_FROM_BOOTLOADER=y
-# CONFIG_ARM_ATAG_DTB_COMPAT_CMDLINE_EXTEND is not set
-CONFIG_CMDLINE="console=ttyS0,115200 initrd=0x21100000,25165824 root=/dev/ram0 rw"
-CONFIG_CMDLINE_FROM_BOOTLOADER=y
-# CONFIG_CMDLINE_EXTEND is not set
-# CONFIG_CMDLINE_FORCE is not set
-CONFIG_KEXEC=y
-CONFIG_ATAGS_PROC=y
-# CONFIG_CRASH_DUMP is not set
-CONFIG_AUTO_ZRELADDR=y
-
-#
-# CPU Power Management
-#
-
-#
-# CPU Frequency scaling
-#
-# CONFIG_CPU_FREQ is not set
-
-#
-# CPU Idle
-#
-# CONFIG_CPU_IDLE is not set
-# CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED is not set
-
-#
-# Floating point emulation
-#
-
-#
-# At least one emulation must be selected
-#
-# CONFIG_VFP is not set
-
-#
-# Userspace binary formats
-#
-CONFIG_BINFMT_ELF=y
-# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-CONFIG_BINFMT_SCRIPT=y
-# CONFIG_HAVE_AOUT is not set
-# CONFIG_BINFMT_MISC is not set
-CONFIG_COREDUMP=y
-
-#
-# Power management options
-#
-CONFIG_SUSPEND=y
-CONFIG_SUSPEND_FREEZER=y
-CONFIG_PM_SLEEP=y
-# CONFIG_PM_AUTOSLEEP is not set
-# CONFIG_PM_WAKELOCKS is not set
-CONFIG_PM=y
-# CONFIG_PM_DEBUG is not set
-# CONFIG_APM_EMULATION is not set
-CONFIG_PM_CLK=y
-# CONFIG_WQ_POWER_EFFICIENT_DEFAULT is not set
-CONFIG_CPU_PM=y
-CONFIG_ARCH_SUSPEND_POSSIBLE=y
-CONFIG_ARM_CPU_SUSPEND=y
-CONFIG_ARCH_HIBERNATION_POSSIBLE=y
-CONFIG_NET=y
-
-#
-# Networking options
-#
-CONFIG_PACKET=y
-# CONFIG_PACKET_DIAG is not set
-CONFIG_UNIX=y
-# CONFIG_UNIX_DIAG is not set
-# CONFIG_XFRM_USER is not set
-# CONFIG_NET_KEY is not set
-CONFIG_INET=y
-CONFIG_IP_MULTICAST=y
-# CONFIG_IP_ADVANCED_ROUTER is not set
-CONFIG_IP_PNP=y
-CONFIG_IP_PNP_DHCP=y
-CONFIG_IP_PNP_BOOTP=y
-CONFIG_IP_PNP_RARP=y
-# CONFIG_NET_IPIP is not set
-# CONFIG_NET_IPGRE_DEMUX is not set
-CONFIG_NET_IP_TUNNEL=y
-# CONFIG_IP_MROUTE is not set
-# CONFIG_SYN_COOKIES is not set
-# CONFIG_NET_UDP_TUNNEL is not set
-# CONFIG_NET_FOU is not set
-# CONFIG_NET_FOU_IP_TUNNELS is not set
-# CONFIG_GENEVE is not set
-# CONFIG_INET_AH is not set
-# CONFIG_INET_ESP is not set
-# CONFIG_INET_IPCOMP is not set
-# CONFIG_INET_XFRM_TUNNEL is not set
-CONFIG_INET_TUNNEL=y
-# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
-# CONFIG_INET_XFRM_MODE_TUNNEL is not set
-# CONFIG_INET_XFRM_MODE_BEET is not set
-CONFIG_INET_LRO=y
-# CONFIG_INET_DIAG is not set
-# CONFIG_TCP_CONG_ADVANCED is not set
-CONFIG_TCP_CONG_CUBIC=y
-CONFIG_DEFAULT_TCP_CONG="cubic"
-# CONFIG_TCP_MD5SIG is not set
-CONFIG_IPV6=y
-# CONFIG_IPV6_ROUTER_PREF is not set
-# CONFIG_IPV6_OPTIMISTIC_DAD is not set
-# CONFIG_INET6_AH is not set
-# CONFIG_INET6_ESP is not set
-# CONFIG_INET6_IPCOMP is not set
-# CONFIG_IPV6_MIP6 is not set
-# CONFIG_INET6_XFRM_TUNNEL is not set
-# CONFIG_INET6_TUNNEL is not set
-# CONFIG_INET6_XFRM_MODE_TRANSPORT is not set
-# CONFIG_INET6_XFRM_MODE_TUNNEL is not set
-# CONFIG_INET6_XFRM_MODE_BEET is not set
-# CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION is not set
-CONFIG_IPV6_SIT=y
-CONFIG_IPV6_SIT_6RD=y
-CONFIG_IPV6_NDISC_NODETYPE=y
-# CONFIG_IPV6_TUNNEL is not set
-# CONFIG_IPV6_GRE is not set
-# CONFIG_IPV6_MULTIPLE_TABLES is not set
-# CONFIG_IPV6_MROUTE is not set
-# CONFIG_NETWORK_SECMARK is not set
-# CONFIG_NET_PTP_CLASSIFY is not set
-# CONFIG_NETWORK_PHY_TIMESTAMPING is not set
-# CONFIG_NETFILTER is not set
-# CONFIG_IP_DCCP is not set
-# CONFIG_IP_SCTP is not set
-# CONFIG_RDS is not set
-# CONFIG_TIPC is not set
-# CONFIG_ATM is not set
-# CONFIG_L2TP is not set
-# CONFIG_BRIDGE is not set
-CONFIG_HAVE_NET_DSA=y
-# CONFIG_VLAN_8021Q is not set
-# CONFIG_DECNET is not set
-# CONFIG_LLC2 is not set
-# CONFIG_IPX is not set
-# CONFIG_ATALK is not set
-# CONFIG_X25 is not set
-# CONFIG_LAPB is not set
-# CONFIG_PHONET is not set
-# CONFIG_6LOWPAN is not set
-# CONFIG_IEEE802154 is not set
-# CONFIG_NET_SCHED is not set
-# CONFIG_DCB is not set
-# CONFIG_BATMAN_ADV is not set
-# CONFIG_OPENVSWITCH is not set
-# CONFIG_VSOCKETS is not set
-# CONFIG_NETLINK_MMAP is not set
-# CONFIG_NETLINK_DIAG is not set
-# CONFIG_MPLS is not set
-# CONFIG_HSR is not set
-# CONFIG_NET_SWITCHDEV is not set
-CONFIG_NET_RX_BUSY_POLL=y
-CONFIG_BQL=y
-# CONFIG_BPF_JIT is not set
-
-#
-# Network testing
-#
-# CONFIG_NET_PKTGEN is not set
-# CONFIG_HAMRADIO is not set
-# CONFIG_CAN is not set
-# CONFIG_IRDA is not set
-# CONFIG_BT is not set
-# CONFIG_AF_RXRPC is not set
-CONFIG_WIRELESS=y
-CONFIG_WIRELESS_EXT=y
-CONFIG_WEXT_CORE=y
-CONFIG_WEXT_PROC=y
-CONFIG_WEXT_SPY=y
-CONFIG_CFG80211=y
-# CONFIG_NL80211_TESTMODE is not set
-# CONFIG_CFG80211_DEVELOPER_WARNINGS is not set
-# CONFIG_CFG80211_REG_DEBUG is not set
-# CONFIG_CFG80211_CERTIFICATION_ONUS is not set
-CONFIG_CFG80211_DEFAULT_PS=y
-# CONFIG_CFG80211_DEBUGFS is not set
-# CONFIG_CFG80211_INTERNAL_REGDB is not set
-# CONFIG_CFG80211_WEXT is not set
-CONFIG_LIB80211=m
-# CONFIG_LIB80211_DEBUG is not set
-CONFIG_MAC80211=y
-CONFIG_MAC80211_HAS_RC=y
-CONFIG_MAC80211_RC_MINSTREL=y
-CONFIG_MAC80211_RC_MINSTREL_HT=y
-# CONFIG_MAC80211_RC_MINSTREL_VHT is not set
-CONFIG_MAC80211_RC_DEFAULT_MINSTREL=y
-CONFIG_MAC80211_RC_DEFAULT="minstrel_ht"
-# CONFIG_MAC80211_MESH is not set
-# CONFIG_MAC80211_LEDS is not set
-# CONFIG_MAC80211_DEBUGFS is not set
-# CONFIG_MAC80211_MESSAGE_TRACING is not set
-# CONFIG_MAC80211_DEBUG_MENU is not set
-# CONFIG_WIMAX is not set
-# CONFIG_RFKILL is not set
-# CONFIG_NET_9P is not set
-# CONFIG_CAIF is not set
-# CONFIG_CEPH_LIB is not set
-# CONFIG_NFC is not set
-CONFIG_HAVE_BPF_JIT=y
-
-#
-# Device Drivers
-#
-
-#
-# Generic Driver Options
-#
-CONFIG_UEVENT_HELPER=y
-CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-CONFIG_DEVTMPFS=y
-CONFIG_DEVTMPFS_MOUNT=y
-# CONFIG_STANDALONE is not set
-# CONFIG_PREVENT_FIRMWARE_BUILD is not set
-CONFIG_FW_LOADER=y
-CONFIG_FIRMWARE_IN_KERNEL=y
-CONFIG_EXTRA_FIRMWARE=""
-# CONFIG_FW_LOADER_USER_HELPER_FALLBACK is not set
-CONFIG_ALLOW_DEV_COREDUMP=y
-# CONFIG_DEBUG_DRIVER is not set
-# CONFIG_DEBUG_DEVRES is not set
-# CONFIG_SYS_HYPERVISOR is not set
-# CONFIG_GENERIC_CPU_DEVICES is not set
-CONFIG_SOC_BUS=y
-CONFIG_REGMAP=y
-CONFIG_REGMAP_I2C=y
-CONFIG_REGMAP_SPI=y
-CONFIG_REGMAP_MMIO=y
-# CONFIG_DMA_SHARED_BUFFER is not set
-
-#
-# Bus devices
-#
-# CONFIG_BRCMSTB_GISB_ARB is not set
-# CONFIG_VEXPRESS_CONFIG is not set
-# CONFIG_CONNECTOR is not set
-CONFIG_MTD=y
-# CONFIG_MTD_TESTS is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-CONFIG_MTD_CMDLINE_PARTS=y
-# CONFIG_MTD_AFS_PARTS is not set
-CONFIG_MTD_OF_PARTS=y
-# CONFIG_MTD_AR7_PARTS is not set
-
-#
-# User Modules And Translation Layers
-#
-CONFIG_MTD_BLKDEVS=y
-CONFIG_MTD_BLOCK=y
-# CONFIG_FTL is not set
-# CONFIG_NFTL is not set
-# CONFIG_INFTL is not set
-# CONFIG_RFD_FTL is not set
-# CONFIG_SSFDC is not set
-# CONFIG_SM_FTL is not set
-# CONFIG_MTD_OOPS is not set
-# CONFIG_MTD_PARTITIONED_MASTER is not set
-
-#
-# RAM/ROM/Flash chip drivers
-#
-# CONFIG_MTD_CFI is not set
-# CONFIG_MTD_JEDECPROBE is not set
-CONFIG_MTD_MAP_BANK_WIDTH_1=y
-CONFIG_MTD_MAP_BANK_WIDTH_2=y
-CONFIG_MTD_MAP_BANK_WIDTH_4=y
-# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-CONFIG_MTD_CFI_I1=y
-CONFIG_MTD_CFI_I2=y
-# CONFIG_MTD_CFI_I4 is not set
-# CONFIG_MTD_CFI_I8 is not set
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-
-#
-# Mapping drivers for chip access
-#
-# CONFIG_MTD_COMPLEX_MAPPINGS is not set
-# CONFIG_MTD_PLATRAM is not set
-
-#
-# Self-contained MTD device drivers
-#
-CONFIG_MTD_DATAFLASH=y
-# CONFIG_MTD_DATAFLASH_WRITE_VERIFY is not set
-# CONFIG_MTD_DATAFLASH_OTP is not set
-# CONFIG_MTD_SST25L is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_PHRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_MTD_BLOCK2MTD is not set
-
-#
-# Disk-On-Chip Device Drivers
-#
-# CONFIG_MTD_DOCG3 is not set
-CONFIG_MTD_NAND_ECC=y
-# CONFIG_MTD_NAND_ECC_SMC is not set
-CONFIG_MTD_NAND=y
-# CONFIG_MTD_NAND_ECC_BCH is not set
-# CONFIG_MTD_SM_COMMON is not set
-# CONFIG_MTD_NAND_DENALI is not set
-# CONFIG_MTD_NAND_GPIO is not set
-# CONFIG_MTD_NAND_OMAP_BCH_BUILD is not set
-CONFIG_MTD_NAND_IDS=y
-# CONFIG_MTD_NAND_DISKONCHIP is not set
-# CONFIG_MTD_NAND_DOCG4 is not set
-CONFIG_MTD_NAND_ATMEL=y
-# CONFIG_MTD_NAND_NANDSIM is not set
-# CONFIG_MTD_NAND_PLATFORM is not set
-# CONFIG_MTD_NAND_HISI504 is not set
-# CONFIG_MTD_ONENAND is not set
-
-#
-# LPDDR & LPDDR2 PCM memory drivers
-#
-# CONFIG_MTD_LPDDR is not set
-# CONFIG_MTD_LPDDR2_NVM is not set
-# CONFIG_MTD_SPI_NOR is not set
-CONFIG_MTD_UBI=y
-CONFIG_MTD_UBI_WL_THRESHOLD=4096
-CONFIG_MTD_UBI_BEB_LIMIT=20
-# CONFIG_MTD_UBI_FASTMAP is not set
-CONFIG_MTD_UBI_GLUEBI=y
-# CONFIG_MTD_UBI_BLOCK is not set
-CONFIG_DTC=y
-CONFIG_OF=y
-
-#
-# Device Tree and Open Firmware support
-#
-# CONFIG_OF_UNITTEST is not set
-CONFIG_OF_FLATTREE=y
-CONFIG_OF_EARLY_FLATTREE=y
-CONFIG_OF_ADDRESS=y
-CONFIG_OF_IRQ=y
-CONFIG_OF_NET=y
-CONFIG_OF_MDIO=y
-CONFIG_OF_MTD=y
-CONFIG_OF_RESERVED_MEM=y
-# CONFIG_OF_OVERLAY is not set
-CONFIG_ARCH_MIGHT_HAVE_PC_PARPORT=y
-# CONFIG_PARPORT is not set
-CONFIG_BLK_DEV=y
-# CONFIG_BLK_DEV_NULL_BLK is not set
-# CONFIG_BLK_DEV_COW_COMMON is not set
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_BLK_DEV_LOOP_MIN_COUNT=8
-# CONFIG_BLK_DEV_CRYPTOLOOP is not set
-# CONFIG_BLK_DEV_DRBD is not set
-# CONFIG_BLK_DEV_NBD is not set
-CONFIG_BLK_DEV_RAM=y
-CONFIG_BLK_DEV_RAM_COUNT=4
-CONFIG_BLK_DEV_RAM_SIZE=8192
-# CONFIG_BLK_DEV_PMEM is not set
-# CONFIG_CDROM_PKTCDVD is not set
-# CONFIG_ATA_OVER_ETH is not set
-# CONFIG_MG_DISK is not set
-# CONFIG_BLK_DEV_RBD is not set
-
-#
-# Misc devices
-#
-# CONFIG_SENSORS_LIS3LV02D is not set
-# CONFIG_AD525X_DPOT is not set
-CONFIG_ATMEL_TCLIB=y
-CONFIG_ATMEL_TCB_CLKSRC=y
-CONFIG_ATMEL_TCB_CLKSRC_BLOCK=0
-# CONFIG_DUMMY_IRQ is not set
-# CONFIG_ICS932S401 is not set
-CONFIG_ATMEL_SSC=y
-# CONFIG_ENCLOSURE_SERVICES is not set
-# CONFIG_APDS9802ALS is not set
-# CONFIG_ISL29003 is not set
-# CONFIG_ISL29020 is not set
-# CONFIG_SENSORS_TSL2550 is not set
-# CONFIG_SENSORS_BH1780 is not set
-# CONFIG_SENSORS_BH1770 is not set
-# CONFIG_SENSORS_APDS990X is not set
-# CONFIG_HMC6352 is not set
-# CONFIG_DS1682 is not set
-# CONFIG_TI_DAC7512 is not set
-# CONFIG_BMP085_I2C is not set
-# CONFIG_BMP085_SPI is not set
-# CONFIG_USB_SWITCH_FSA9480 is not set
-# CONFIG_LATTICE_ECP3_CONFIG is not set
-CONFIG_SRAM=y
-# CONFIG_C2PORT is not set
-
-#
-# EEPROM support
-#
-# CONFIG_EEPROM_AT24 is not set
-# CONFIG_EEPROM_AT25 is not set
-# CONFIG_EEPROM_LEGACY is not set
-# CONFIG_EEPROM_MAX6875 is not set
-CONFIG_EEPROM_93CX6=m
-# CONFIG_EEPROM_93XX46 is not set
-
-#
-# Texas Instruments shared transport line discipline
-#
-# CONFIG_TI_ST is not set
-# CONFIG_SENSORS_LIS3_SPI is not set
-# CONFIG_SENSORS_LIS3_I2C is not set
-
-#
-# Altera FPGA firmware download module
-#
-# CONFIG_ALTERA_STAPL is not set
-
-#
-# Intel MIC Bus Driver
-#
-
-#
-# Intel MIC Host Driver
-#
-
-#
-# Intel MIC Card Driver
-#
-# CONFIG_ECHO is not set
-# CONFIG_CXL_BASE is not set
-
-#
-# SCSI device support
-#
-CONFIG_SCSI_MOD=y
-# CONFIG_RAID_ATTRS is not set
-CONFIG_SCSI=y
-CONFIG_SCSI_DMA=y
-# CONFIG_SCSI_NETLINK is not set
-# CONFIG_SCSI_MQ_DEFAULT is not set
-CONFIG_SCSI_PROC_FS=y
-
-#
-# SCSI support type (disk, tape, CD-ROM)
-#
-CONFIG_BLK_DEV_SD=y
-# CONFIG_CHR_DEV_ST is not set
-# CONFIG_CHR_DEV_OSST is not set
-# CONFIG_BLK_DEV_SR is not set
-# CONFIG_CHR_DEV_SG is not set
-# CONFIG_CHR_DEV_SCH is not set
-# CONFIG_SCSI_CONSTANTS is not set
-# CONFIG_SCSI_LOGGING is not set
-# CONFIG_SCSI_SCAN_ASYNC is not set
-
-#
-# SCSI Transports
-#
-# CONFIG_SCSI_SPI_ATTRS is not set
-# CONFIG_SCSI_FC_ATTRS is not set
-# CONFIG_SCSI_ISCSI_ATTRS is not set
-# CONFIG_SCSI_SAS_ATTRS is not set
-# CONFIG_SCSI_SAS_LIBSAS is not set
-# CONFIG_SCSI_SRP_ATTRS is not set
-# CONFIG_SCSI_LOWLEVEL is not set
-# CONFIG_SCSI_DH is not set
-# CONFIG_SCSI_OSD_INITIATOR is not set
-# CONFIG_ATA is not set
-# CONFIG_MD is not set
-# CONFIG_TARGET_CORE is not set
-CONFIG_NETDEVICES=y
-CONFIG_MII=y
-CONFIG_NET_CORE=y
-# CONFIG_BONDING is not set
-# CONFIG_DUMMY is not set
-# CONFIG_EQUALIZER is not set
-# CONFIG_NET_TEAM is not set
-# CONFIG_MACVLAN is not set
-# CONFIG_IPVLAN is not set
-# CONFIG_VXLAN is not set
-# CONFIG_NETCONSOLE is not set
-# CONFIG_NETPOLL is not set
-# CONFIG_NET_POLL_CONTROLLER is not set
-# CONFIG_TUN is not set
-# CONFIG_VETH is not set
-# CONFIG_NLMON is not set
-
-#
-# CAIF transport drivers
-#
-
-#
-# Distributed Switch Architecture drivers
-#
-# CONFIG_NET_DSA_MV88E6XXX is not set
-# CONFIG_NET_DSA_MV88E6XXX_NEED_PPU is not set
-CONFIG_ETHERNET=y
-# CONFIG_ALTERA_TSE is not set
-# CONFIG_NET_XGENE is not set
-CONFIG_NET_VENDOR_ARC=y
-# CONFIG_ARC_EMAC is not set
-CONFIG_NET_CADENCE=y
-CONFIG_MACB=y
-# CONFIG_NET_VENDOR_BROADCOM is not set
-CONFIG_NET_VENDOR_CIRRUS=y
-# CONFIG_CS89x0 is not set
-CONFIG_DM9000=y
-# CONFIG_DM9000_FORCE_SIMPLE_PHY_POLL is not set
-# CONFIG_DNET is not set
-# CONFIG_NET_VENDOR_FARADAY is not set
-CONFIG_NET_VENDOR_HISILICON=y
-# CONFIG_HIX5HD2_GMAC is not set
-# CONFIG_HIP04_ETH is not set
-# CONFIG_NET_VENDOR_INTEL is not set
-# CONFIG_NET_VENDOR_MARVELL is not set
-# CONFIG_NET_VENDOR_MICREL is not set
-CONFIG_NET_VENDOR_MICROCHIP=y
-# CONFIG_ENC28J60 is not set
-# CONFIG_NET_VENDOR_NATSEMI is not set
-# CONFIG_ETHOC is not set
-CONFIG_NET_VENDOR_QUALCOMM=y
-# CONFIG_QCA7000 is not set
-CONFIG_NET_VENDOR_ROCKER=y
-CONFIG_NET_VENDOR_SAMSUNG=y
-# CONFIG_SXGBE_ETH is not set
-# CONFIG_NET_VENDOR_SEEQ is not set
-# CONFIG_NET_VENDOR_SMSC is not set
-# CONFIG_NET_VENDOR_STMICRO is not set
-CONFIG_NET_VENDOR_VIA=y
-# CONFIG_VIA_RHINE is not set
-# CONFIG_VIA_VELOCITY is not set
-CONFIG_NET_VENDOR_WIZNET=y
-# CONFIG_WIZNET_W5100 is not set
-# CONFIG_WIZNET_W5300 is not set
-CONFIG_PHYLIB=y
-
-#
-# MII PHY device drivers
-#
-# CONFIG_AT803X_PHY is not set
-# CONFIG_AMD_PHY is not set
-# CONFIG_AMD_XGBE_PHY is not set
-# CONFIG_MARVELL_PHY is not set
-CONFIG_DAVICOM_PHY=y
-# CONFIG_QSEMI_PHY is not set
-# CONFIG_LXT_PHY is not set
-# CONFIG_CICADA_PHY is not set
-# CONFIG_VITESSE_PHY is not set
-# CONFIG_SMSC_PHY is not set
-# CONFIG_BROADCOM_PHY is not set
-# CONFIG_BCM7XXX_PHY is not set
-# CONFIG_BCM87XX_PHY is not set
-# CONFIG_ICPLUS_PHY is not set
-# CONFIG_REALTEK_PHY is not set
-# CONFIG_NATIONAL_PHY is not set
-# CONFIG_STE10XP is not set
-# CONFIG_LSI_ET1011C_PHY is not set
-CONFIG_MICREL_PHY=y
-# CONFIG_FIXED_PHY is not set
-# CONFIG_MDIO_BITBANG is not set
-# CONFIG_MDIO_BUS_MUX_GPIO is not set
-# CONFIG_MDIO_BUS_MUX_MMIOREG is not set
-# CONFIG_MDIO_BCM_UNIMAC is not set
-# CONFIG_MICREL_KS8995MA is not set
-# CONFIG_PPP is not set
-# CONFIG_SLIP is not set
-CONFIG_USB_NET_DRIVERS=y
-# CONFIG_USB_CATC is not set
-# CONFIG_USB_KAWETH is not set
-# CONFIG_USB_PEGASUS is not set
-# CONFIG_USB_RTL8150 is not set
-# CONFIG_USB_RTL8152 is not set
-# CONFIG_USB_USBNET is not set
-# CONFIG_USB_IPHETH is not set
-CONFIG_WLAN=y
-# CONFIG_LIBERTAS_THINFIRM is not set
-# CONFIG_AT76C50X_USB is not set
-# CONFIG_USB_ZD1201 is not set
-# CONFIG_USB_NET_RNDIS_WLAN is not set
-CONFIG_RTL8187=m
-# CONFIG_MAC80211_HWSIM is not set
-# CONFIG_ATH_CARDS is not set
-# CONFIG_B43 is not set
-# CONFIG_B43LEGACY is not set
-# CONFIG_BRCMSMAC is not set
-# CONFIG_BRCMFMAC is not set
-# CONFIG_HOSTAP is not set
-CONFIG_LIBERTAS=m
-# CONFIG_LIBERTAS_USB is not set
-CONFIG_LIBERTAS_SDIO=m
-CONFIG_LIBERTAS_SPI=m
-# CONFIG_LIBERTAS_DEBUG is not set
-# CONFIG_LIBERTAS_MESH is not set
-# CONFIG_P54_COMMON is not set
-CONFIG_RT2X00=m
-CONFIG_RT2500USB=m
-CONFIG_RT73USB=m
-CONFIG_RT2800USB=m
-CONFIG_RT2800USB_RT33XX=y
-CONFIG_RT2800USB_RT35XX=y
-# CONFIG_RT2800USB_RT3573 is not set
-CONFIG_RT2800USB_RT53XX=y
-CONFIG_RT2800USB_RT55XX=y
-CONFIG_RT2800USB_UNKNOWN=y
-CONFIG_RT2800_LIB=m
-CONFIG_RT2X00_LIB_USB=m
-CONFIG_RT2X00_LIB=m
-CONFIG_RT2X00_LIB_FIRMWARE=y
-CONFIG_RT2X00_LIB_CRYPTO=y
-CONFIG_RT2X00_LIB_LEDS=y
-# CONFIG_RT2X00_DEBUG is not set
-CONFIG_RTL_CARDS=y
-CONFIG_RTL8192CU=m
-CONFIG_RTLWIFI=m
-CONFIG_RTLWIFI_USB=m
-# CONFIG_RTLWIFI_DEBUG is not set
-CONFIG_RTL8192C_COMMON=m
-# CONFIG_WL_TI is not set
-# CONFIG_ZD1211RW is not set
-CONFIG_MWIFIEX=m
-CONFIG_MWIFIEX_SDIO=m
-CONFIG_MWIFIEX_USB=m
-# CONFIG_CW1200 is not set
-# CONFIG_RSI_91X is not set
-
-#
-# Enable WiMAX (Networking options) to see the WiMAX drivers
-#
-# CONFIG_WAN is not set
-# CONFIG_ISDN is not set
-
-#
-# Input device support
-#
-CONFIG_INPUT=y
-# CONFIG_INPUT_FF_MEMLESS is not set
-CONFIG_INPUT_POLLDEV=y
-# CONFIG_INPUT_SPARSEKMAP is not set
-# CONFIG_INPUT_MATRIXKMAP is not set
-
-#
-# Userland interfaces
-#
-CONFIG_INPUT_MOUSEDEV=y
-# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
-CONFIG_INPUT_MOUSEDEV_SCREEN_X=480
-CONFIG_INPUT_MOUSEDEV_SCREEN_Y=272
-CONFIG_INPUT_JOYDEV=y
-CONFIG_INPUT_EVDEV=y
-# CONFIG_INPUT_EVBUG is not set
-
-#
-# Input Device Drivers
-#
-CONFIG_INPUT_KEYBOARD=y
-# CONFIG_KEYBOARD_ADP5588 is not set
-# CONFIG_KEYBOARD_ADP5589 is not set
-# CONFIG_KEYBOARD_ATKBD is not set
-CONFIG_KEYBOARD_QT1070=y
-# CONFIG_KEYBOARD_QT2160 is not set
-# CONFIG_KEYBOARD_LKKBD is not set
-CONFIG_KEYBOARD_GPIO=y
-# CONFIG_KEYBOARD_GPIO_POLLED is not set
-# CONFIG_KEYBOARD_TCA6416 is not set
-# CONFIG_KEYBOARD_TCA8418 is not set
-# CONFIG_KEYBOARD_MATRIX is not set
-# CONFIG_KEYBOARD_LM8323 is not set
-# CONFIG_KEYBOARD_LM8333 is not set
-# CONFIG_KEYBOARD_MAX7359 is not set
-# CONFIG_KEYBOARD_MCS is not set
-# CONFIG_KEYBOARD_MPR121 is not set
-# CONFIG_KEYBOARD_NEWTON is not set
-# CONFIG_KEYBOARD_OPENCORES is not set
-# CONFIG_KEYBOARD_SAMSUNG is not set
-# CONFIG_KEYBOARD_STOWAWAY is not set
-# CONFIG_KEYBOARD_SUNKBD is not set
-# CONFIG_KEYBOARD_OMAP4 is not set
-# CONFIG_KEYBOARD_XTKBD is not set
-# CONFIG_KEYBOARD_CAP11XX is not set
-# CONFIG_KEYBOARD_BCM is not set
-# CONFIG_INPUT_MOUSE is not set
-# CONFIG_INPUT_JOYSTICK is not set
-# CONFIG_INPUT_TABLET is not set
-CONFIG_INPUT_TOUCHSCREEN=y
-CONFIG_OF_TOUCHSCREEN=y
-CONFIG_TOUCHSCREEN_ADS7846=y
-# CONFIG_TOUCHSCREEN_AD7877 is not set
-# CONFIG_TOUCHSCREEN_AD7879 is not set
-# CONFIG_TOUCHSCREEN_AR1021_I2C is not set
-# CONFIG_TOUCHSCREEN_ATMEL_MXT is not set
-# CONFIG_TOUCHSCREEN_AUO_PIXCIR is not set
-# CONFIG_TOUCHSCREEN_BU21013 is not set
-# CONFIG_TOUCHSCREEN_CHIPONE_ICN8318 is not set
-# CONFIG_TOUCHSCREEN_CY8CTMG110 is not set
-# CONFIG_TOUCHSCREEN_CYTTSP_CORE is not set
-# CONFIG_TOUCHSCREEN_CYTTSP4_CORE is not set
-# CONFIG_TOUCHSCREEN_DYNAPRO is not set
-# CONFIG_TOUCHSCREEN_HAMPSHIRE is not set
-# CONFIG_TOUCHSCREEN_EETI is not set
-# CONFIG_TOUCHSCREEN_EGALAX is not set
-# CONFIG_TOUCHSCREEN_FUJITSU is not set
-# CONFIG_TOUCHSCREEN_GOODIX is not set
-# CONFIG_TOUCHSCREEN_ILI210X is not set
-# CONFIG_TOUCHSCREEN_GUNZE is not set
-# CONFIG_TOUCHSCREEN_ELAN is not set
-# CONFIG_TOUCHSCREEN_ELO is not set
-# CONFIG_TOUCHSCREEN_WACOM_W8001 is not set
-# CONFIG_TOUCHSCREEN_WACOM_I2C is not set
-# CONFIG_TOUCHSCREEN_MAX11801 is not set
-# CONFIG_TOUCHSCREEN_MCS5000 is not set
-# CONFIG_TOUCHSCREEN_MMS114 is not set
-# CONFIG_TOUCHSCREEN_MTOUCH is not set
-# CONFIG_TOUCHSCREEN_INEXIO is not set
-# CONFIG_TOUCHSCREEN_MK712 is not set
-# CONFIG_TOUCHSCREEN_PENMOUNT is not set
-# CONFIG_TOUCHSCREEN_EDT_FT5X06 is not set
-# CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
-# CONFIG_TOUCHSCREEN_TOUCHWIN is not set
-# CONFIG_TOUCHSCREEN_PIXCIR is not set
-# CONFIG_TOUCHSCREEN_USB_COMPOSITE is not set
-# CONFIG_TOUCHSCREEN_TOUCHIT213 is not set
-# CONFIG_TOUCHSCREEN_TSC_SERIO is not set
-# CONFIG_TOUCHSCREEN_TSC2005 is not set
-# CONFIG_TOUCHSCREEN_TSC2007 is not set
-# CONFIG_TOUCHSCREEN_ST1232 is not set
-# CONFIG_TOUCHSCREEN_SX8654 is not set
-# CONFIG_TOUCHSCREEN_TPS6507X is not set
-# CONFIG_TOUCHSCREEN_ZFORCE is not set
-# CONFIG_INPUT_MISC is not set
-
-#
-# Hardware I/O ports
-#
-# CONFIG_SERIO is not set
-# CONFIG_GAMEPORT is not set
-
-#
-# Character devices
-#
-CONFIG_TTY=y
-CONFIG_VT=y
-CONFIG_CONSOLE_TRANSLATIONS=y
-CONFIG_VT_CONSOLE=y
-CONFIG_VT_CONSOLE_SLEEP=y
-CONFIG_HW_CONSOLE=y
-CONFIG_VT_HW_CONSOLE_BINDING=y
-CONFIG_UNIX98_PTYS=y
-# CONFIG_DEVPTS_MULTIPLE_INSTANCES is not set
-CONFIG_LEGACY_PTYS=y
-CONFIG_LEGACY_PTY_COUNT=4
-# CONFIG_SERIAL_NONSTANDARD is not set
-# CONFIG_N_GSM is not set
-# CONFIG_TRACE_SINK is not set
-CONFIG_DEVMEM=y
-CONFIG_DEVKMEM=y
-
-#
-# Serial drivers
-#
-# CONFIG_SERIAL_8250 is not set
-
-#
-# Non-8250 serial port support
-#
-# CONFIG_SERIAL_EARLYCON_ARM_SEMIHOST is not set
-CONFIG_SERIAL_ATMEL=y
-CONFIG_SERIAL_ATMEL_CONSOLE=y
-CONFIG_SERIAL_ATMEL_PDC=y
-# CONFIG_SERIAL_ATMEL_TTYAT is not set
-# CONFIG_SERIAL_MAX3100 is not set
-# CONFIG_SERIAL_MAX310X is not set
-CONFIG_SERIAL_CORE=y
-CONFIG_SERIAL_CORE_CONSOLE=y
-# CONFIG_SERIAL_SCCNXP is not set
-# CONFIG_SERIAL_SC16IS7XX is not set
-# CONFIG_SERIAL_BCM63XX is not set
-# CONFIG_SERIAL_ALTERA_JTAGUART is not set
-# CONFIG_SERIAL_ALTERA_UART is not set
-# CONFIG_SERIAL_IFX6X60 is not set
-# CONFIG_SERIAL_XILINX_PS_UART is not set
-# CONFIG_SERIAL_ARC is not set
-# CONFIG_SERIAL_FSL_LPUART is not set
-# CONFIG_SERIAL_CONEXANT_DIGICOLOR is not set
-# CONFIG_SERIAL_ST_ASC is not set
-CONFIG_SERIAL_MCTRL_GPIO=y
-# CONFIG_TTY_PRINTK is not set
-# CONFIG_HVC_DCC is not set
-# CONFIG_IPMI_HANDLER is not set
-CONFIG_HW_RANDOM=y
-# CONFIG_HW_RANDOM_TIMERIOMEM is not set
-CONFIG_HW_RANDOM_ATMEL=y
-# CONFIG_R3964 is not set
-# CONFIG_RAW_DRIVER is not set
-# CONFIG_TCG_TPM is not set
-# CONFIG_XILLYBUS is not set
-
-#
-# I2C support
-#
-CONFIG_I2C=y
-CONFIG_I2C_BOARDINFO=y
-CONFIG_I2C_COMPAT=y
-# CONFIG_I2C_CHARDEV is not set
-# CONFIG_I2C_MUX is not set
-CONFIG_I2C_HELPER_AUTO=y
-CONFIG_I2C_ALGOBIT=y
-
-#
-# I2C Hardware Bus support
-#
-
-#
-# I2C system bus drivers (mostly embedded / system-on-chip)
-#
-CONFIG_I2C_AT91=y
-# CONFIG_I2C_CBUS_GPIO is not set
-# CONFIG_I2C_DESIGNWARE_PLATFORM is not set
-CONFIG_I2C_GPIO=y
-# CONFIG_I2C_OCORES is not set
-# CONFIG_I2C_PCA_PLATFORM is not set
-# CONFIG_I2C_PXA_PCI is not set
-# CONFIG_I2C_RK3X is not set
-# CONFIG_I2C_SIMTEC is not set
-# CONFIG_I2C_XILINX is not set
-
-#
-# External I2C/SMBus adapter drivers
-#
-# CONFIG_I2C_DIOLAN_U2C is not set
-# CONFIG_I2C_PARPORT_LIGHT is not set
-# CONFIG_I2C_ROBOTFUZZ_OSIF is not set
-# CONFIG_I2C_TAOS_EVM is not set
-# CONFIG_I2C_TINY_USB is not set
-
-#
-# Other I2C/SMBus bus drivers
-#
-# CONFIG_I2C_STUB is not set
-# CONFIG_I2C_SLAVE is not set
-# CONFIG_I2C_DEBUG_CORE is not set
-# CONFIG_I2C_DEBUG_ALGO is not set
-# CONFIG_I2C_DEBUG_BUS is not set
-CONFIG_SPI=y
-# CONFIG_SPI_DEBUG is not set
-CONFIG_SPI_MASTER=y
-
-#
-# SPI Master Controller Drivers
-#
-# CONFIG_SPI_ALTERA is not set
-CONFIG_SPI_ATMEL=y
-# CONFIG_SPI_BITBANG is not set
-# CONFIG_SPI_CADENCE is not set
-# CONFIG_SPI_GPIO is not set
-# CONFIG_SPI_FSL_SPI is not set
-# CONFIG_SPI_OC_TINY is not set
-# CONFIG_SPI_PXA2XX_PCI is not set
-# CONFIG_SPI_ROCKCHIP is not set
-# CONFIG_SPI_SC18IS602 is not set
-# CONFIG_SPI_XCOMM is not set
-# CONFIG_SPI_XILINX is not set
-# CONFIG_SPI_DESIGNWARE is not set
-
-#
-# SPI Protocol Masters
-#
-# CONFIG_SPI_SPIDEV is not set
-# CONFIG_SPI_TLE62X0 is not set
-# CONFIG_SPMI is not set
-# CONFIG_HSI is not set
-
-#
-# PPS support
-#
-# CONFIG_PPS is not set
-
-#
-# PPS generators support
-#
-
-#
-# PTP clock support
-#
-# CONFIG_PTP_1588_CLOCK is not set
-
-#
-# Enable PHYLIB and NETWORK_PHY_TIMESTAMPING to see the additional clocks.
-#
-CONFIG_PINCTRL=y
-
-#
-# Pin controllers
-#
-CONFIG_PINMUX=y
-CONFIG_PINCONF=y
-# CONFIG_DEBUG_PINCTRL is not set
-CONFIG_PINCTRL_AT91=y
-# CONFIG_PINCTRL_AMD is not set
-# CONFIG_PINCTRL_SINGLE is not set
-CONFIG_ARCH_HAVE_CUSTOM_GPIO_H=y
-CONFIG_ARCH_WANT_OPTIONAL_GPIOLIB=y
-CONFIG_ARCH_REQUIRE_GPIOLIB=y
-CONFIG_GPIOLIB=y
-CONFIG_GPIO_DEVRES=y
-CONFIG_OF_GPIO=y
-CONFIG_GPIOLIB_IRQCHIP=y
-# CONFIG_DEBUG_GPIO is not set
-# CONFIG_GPIO_SYSFS is not set
-
-#
-# Memory mapped GPIO drivers
-#
-# CONFIG_GPIO_74XX_MMIO is not set
-# CONFIG_GPIO_ALTERA is not set
-# CONFIG_GPIO_DWAPB is not set
-# CONFIG_GPIO_EM is not set
-# CONFIG_GPIO_GENERIC_PLATFORM is not set
-# CONFIG_GPIO_GRGPIO is not set
-# CONFIG_GPIO_SCH311X is not set
-# CONFIG_GPIO_SYSCON is not set
-# CONFIG_GPIO_ZEVIO is not set
-
-#
-# I2C GPIO expanders
-#
-# CONFIG_GPIO_ADP5588 is not set
-# CONFIG_GPIO_ADNP is not set
-# CONFIG_GPIO_MAX7300 is not set
-# CONFIG_GPIO_MAX732X is not set
-# CONFIG_GPIO_PCA953X is not set
-# CONFIG_GPIO_PCF857X is not set
-# CONFIG_GPIO_SX150X is not set
-
-#
-# MFD GPIO expanders
-#
-
-#
-# SPI GPIO expanders
-#
-# CONFIG_GPIO_74X164 is not set
-# CONFIG_GPIO_MAX7301 is not set
-# CONFIG_GPIO_MCP23S08 is not set
-# CONFIG_GPIO_MC33880 is not set
-
-#
-# USB GPIO expanders
-#
-# CONFIG_W1 is not set
-CONFIG_POWER_SUPPLY=y
-# CONFIG_POWER_SUPPLY_DEBUG is not set
-# CONFIG_PDA_POWER is not set
-# CONFIG_GENERIC_ADC_BATTERY is not set
-# CONFIG_TEST_POWER is not set
-# CONFIG_BATTERY_DS2780 is not set
-# CONFIG_BATTERY_DS2781 is not set
-# CONFIG_BATTERY_DS2782 is not set
-# CONFIG_BATTERY_SBS is not set
-# CONFIG_BATTERY_BQ27x00 is not set
-# CONFIG_BATTERY_MAX17040 is not set
-# CONFIG_BATTERY_MAX17042 is not set
-# CONFIG_CHARGER_MAX8903 is not set
-# CONFIG_CHARGER_LP8727 is not set
-# CONFIG_CHARGER_GPIO is not set
-# CONFIG_CHARGER_BQ2415X is not set
-# CONFIG_CHARGER_BQ24190 is not set
-# CONFIG_CHARGER_BQ24735 is not set
-# CONFIG_CHARGER_SMB347 is not set
-# CONFIG_BATTERY_GAUGE_LTC2941 is not set
-CONFIG_POWER_RESET=y
-CONFIG_POWER_RESET_AT91_POWEROFF=y
-CONFIG_POWER_RESET_AT91_RESET=y
-# CONFIG_POWER_RESET_BRCMSTB is not set
-# CONFIG_POWER_RESET_GPIO is not set
-# CONFIG_POWER_RESET_GPIO_RESTART is not set
-# CONFIG_POWER_RESET_LTC2952 is not set
-# CONFIG_POWER_RESET_RESTART is not set
-# CONFIG_POWER_RESET_VERSATILE is not set
-# CONFIG_POWER_RESET_SYSCON is not set
-# CONFIG_POWER_RESET_SYSCON_POWEROFF is not set
-# CONFIG_POWER_AVS is not set
-# CONFIG_HWMON is not set
-# CONFIG_THERMAL is not set
-CONFIG_WATCHDOG=y
-CONFIG_WATCHDOG_CORE=y
-# CONFIG_WATCHDOG_NOWAYOUT is not set
-
-#
-# Watchdog Device Drivers
-#
-# CONFIG_SOFT_WATCHDOG is not set
-# CONFIG_GPIO_WATCHDOG is not set
-# CONFIG_XILINX_WATCHDOG is not set
-# CONFIG_AT91RM9200_WATCHDOG is not set
-CONFIG_AT91SAM9X_WATCHDOG=y
-# CONFIG_CADENCE_WATCHDOG is not set
-# CONFIG_DW_WATCHDOG is not set
-# CONFIG_MAX63XX_WATCHDOG is not set
-# CONFIG_MEN_A21_WDT is not set
-
-#
-# USB-based Watchdog Cards
-#
-# CONFIG_USBPCWATCHDOG is not set
-CONFIG_SSB_POSSIBLE=y
-
-#
-# Sonics Silicon Backplane
-#
-CONFIG_SSB=m
-CONFIG_SSB_SDIOHOST_POSSIBLE=y
-# CONFIG_SSB_SDIOHOST is not set
-# CONFIG_SSB_SILENT is not set
-# CONFIG_SSB_DEBUG is not set
-# CONFIG_SSB_DRIVER_GPIO is not set
-CONFIG_BCMA_POSSIBLE=y
-
-#
-# Broadcom specific AMBA
-#
-# CONFIG_BCMA is not set
-
-#
-# Multifunction device drivers
-#
-# CONFIG_MFD_CORE is not set
-# CONFIG_MFD_AS3711 is not set
-# CONFIG_MFD_AS3722 is not set
-# CONFIG_PMIC_ADP5520 is not set
-# CONFIG_MFD_AAT2870_CORE is not set
-# CONFIG_MFD_ATMEL_HLCDC is not set
-# CONFIG_MFD_BCM590XX is not set
-# CONFIG_MFD_AXP20X is not set
-# CONFIG_MFD_CROS_EC is not set
-# CONFIG_MFD_ASIC3 is not set
-# CONFIG_PMIC_DA903X is not set
-# CONFIG_MFD_DA9052_SPI is not set
-# CONFIG_MFD_DA9052_I2C is not set
-# CONFIG_MFD_DA9055 is not set
-# CONFIG_MFD_DA9063 is not set
-# CONFIG_MFD_DA9150 is not set
-# CONFIG_MFD_DLN2 is not set
-# CONFIG_MFD_MC13XXX_SPI is not set
-# CONFIG_MFD_MC13XXX_I2C is not set
-# CONFIG_MFD_HI6421_PMIC is not set
-# CONFIG_HTC_EGPIO is not set
-# CONFIG_HTC_PASIC3 is not set
-# CONFIG_HTC_I2CPLD is not set
-# CONFIG_INTEL_SOC_PMIC is not set
-# CONFIG_MFD_KEMPLD is not set
-# CONFIG_MFD_88PM800 is not set
-# CONFIG_MFD_88PM805 is not set
-# CONFIG_MFD_88PM860X is not set
-# CONFIG_MFD_MAX14577 is not set
-# CONFIG_MFD_MAX77686 is not set
-# CONFIG_MFD_MAX77693 is not set
-# CONFIG_MFD_MAX77843 is not set
-# CONFIG_MFD_MAX8907 is not set
-# CONFIG_MFD_MAX8925 is not set
-# CONFIG_MFD_MAX8997 is not set
-# CONFIG_MFD_MAX8998 is not set
-# CONFIG_MFD_MT6397 is not set
-# CONFIG_MFD_MENF21BMC is not set
-# CONFIG_EZX_PCAP is not set
-# CONFIG_MFD_VIPERBOARD is not set
-# CONFIG_MFD_RETU is not set
-# CONFIG_MFD_PCF50633 is not set
-# CONFIG_MFD_PM8921_CORE is not set
-# CONFIG_MFD_RT5033 is not set
-# CONFIG_MFD_RTSX_USB is not set
-# CONFIG_MFD_RC5T583 is not set
-# CONFIG_MFD_RK808 is not set
-# CONFIG_MFD_RN5T618 is not set
-# CONFIG_MFD_SEC_CORE is not set
-# CONFIG_MFD_SI476X_CORE is not set
-# CONFIG_MFD_SM501 is not set
-# CONFIG_MFD_SKY81452 is not set
-# CONFIG_MFD_SMSC is not set
-# CONFIG_ABX500_CORE is not set
-# CONFIG_MFD_STMPE is not set
-CONFIG_MFD_SYSCON=y
-# CONFIG_MFD_TI_AM335X_TSCADC is not set
-# CONFIG_MFD_LP3943 is not set
-# CONFIG_MFD_LP8788 is not set
-# CONFIG_MFD_PALMAS is not set
-# CONFIG_TPS6105X is not set
-# CONFIG_TPS65010 is not set
-# CONFIG_TPS6507X is not set
-# CONFIG_MFD_TPS65090 is not set
-# CONFIG_MFD_TPS65217 is not set
-# CONFIG_MFD_TPS65218 is not set
-# CONFIG_MFD_TPS6586X is not set
-# CONFIG_MFD_TPS65910 is not set
-# CONFIG_MFD_TPS65912 is not set
-# CONFIG_MFD_TPS65912_I2C is not set
-# CONFIG_MFD_TPS65912_SPI is not set
-# CONFIG_MFD_TPS80031 is not set
-# CONFIG_TWL4030_CORE is not set
-# CONFIG_TWL6040_CORE is not set
-# CONFIG_MFD_WL1273_CORE is not set
-# CONFIG_MFD_LM3533 is not set
-# CONFIG_MFD_TC3589X is not set
-# CONFIG_MFD_TMIO is not set
-# CONFIG_MFD_T7L66XB is not set
-# CONFIG_MFD_TC6387XB is not set
-# CONFIG_MFD_TC6393XB is not set
-# CONFIG_MFD_ARIZONA_I2C is not set
-# CONFIG_MFD_ARIZONA_SPI is not set
-# CONFIG_MFD_WM8400 is not set
-# CONFIG_MFD_WM831X_I2C is not set
-# CONFIG_MFD_WM831X_SPI is not set
-# CONFIG_MFD_WM8350_I2C is not set
-# CONFIG_MFD_WM8994 is not set
-# CONFIG_REGULATOR is not set
-# CONFIG_MEDIA_SUPPORT is not set
-
-#
-# Graphics support
-#
-CONFIG_HAVE_FB_ATMEL=y
-
-#
-# Direct Rendering Manager
-#
-# CONFIG_DRM is not set
-
-#
-# Frame buffer Devices
-#
-CONFIG_FB=y
-# CONFIG_FIRMWARE_EDID is not set
-CONFIG_FB_CMDLINE=y
-# CONFIG_FB_DDC is not set
-# CONFIG_FB_BOOT_VESA_SUPPORT is not set
-CONFIG_FB_CFB_FILLRECT=y
-CONFIG_FB_CFB_COPYAREA=y
-CONFIG_FB_CFB_IMAGEBLIT=y
-# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
-# CONFIG_FB_SYS_FILLRECT is not set
-# CONFIG_FB_SYS_COPYAREA is not set
-# CONFIG_FB_SYS_IMAGEBLIT is not set
-# CONFIG_FB_FOREIGN_ENDIAN is not set
-# CONFIG_FB_SYS_FOPS is not set
-# CONFIG_FB_SVGALIB is not set
-# CONFIG_FB_MACMODES is not set
-CONFIG_FB_BACKLIGHT=y
-CONFIG_FB_MODE_HELPERS=y
-# CONFIG_FB_TILEBLITTING is not set
-
-#
-# Frame buffer hardware drivers
-#
-# CONFIG_FB_OPENCORES is not set
-# CONFIG_FB_S1D13XXX is not set
-CONFIG_FB_ATMEL=y
-# CONFIG_FB_SMSCUFX is not set
-# CONFIG_FB_UDL is not set
-# CONFIG_FB_VIRTUAL is not set
-# CONFIG_FB_METRONOME is not set
-# CONFIG_FB_BROADSHEET is not set
-# CONFIG_FB_AUO_K190X is not set
-# CONFIG_FB_SIMPLE is not set
-# CONFIG_FB_SSD1307 is not set
-CONFIG_BACKLIGHT_LCD_SUPPORT=y
-# CONFIG_LCD_CLASS_DEVICE is not set
-CONFIG_BACKLIGHT_CLASS_DEVICE=y
-CONFIG_BACKLIGHT_ATMEL_LCDC=y
-# CONFIG_BACKLIGHT_GENERIC is not set
-# CONFIG_BACKLIGHT_PWM is not set
-# CONFIG_BACKLIGHT_ADP8860 is not set
-# CONFIG_BACKLIGHT_ADP8870 is not set
-# CONFIG_BACKLIGHT_LM3630A is not set
-# CONFIG_BACKLIGHT_LM3639 is not set
-# CONFIG_BACKLIGHT_LP855X is not set
-# CONFIG_BACKLIGHT_GPIO is not set
-# CONFIG_BACKLIGHT_LV5207LP is not set
-# CONFIG_BACKLIGHT_BD6107 is not set
-# CONFIG_VGASTATE is not set
-CONFIG_VIDEOMODE_HELPERS=y
-
-#
-# Console display driver support
-#
-CONFIG_DUMMY_CONSOLE=y
-CONFIG_FRAMEBUFFER_CONSOLE=y
-CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
-# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
-CONFIG_LOGO=y
-CONFIG_LOGO_LINUX_MONO=y
-CONFIG_LOGO_LINUX_VGA16=y
-CONFIG_LOGO_LINUX_CLUT224=y
-CONFIG_SOUND=y
-# CONFIG_SOUND_OSS_CORE is not set
-CONFIG_SND=y
-CONFIG_SND_TIMER=y
-CONFIG_SND_PCM=y
-CONFIG_SND_DMAENGINE_PCM=y
-CONFIG_SND_COMPRESS_OFFLOAD=y
-CONFIG_SND_JACK=y
-# CONFIG_SND_SEQUENCER is not set
-# CONFIG_SND_MIXER_OSS is not set
-# CONFIG_SND_PCM_OSS is not set
-# CONFIG_SND_DYNAMIC_MINORS is not set
-CONFIG_SND_SUPPORT_OLD_API=y
-CONFIG_SND_VERBOSE_PROCFS=y
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-# CONFIG_SND_RAWMIDI_SEQ is not set
-# CONFIG_SND_OPL3_LIB_SEQ is not set
-# CONFIG_SND_OPL4_LIB_SEQ is not set
-# CONFIG_SND_SBAWE_SEQ is not set
-# CONFIG_SND_EMU10K1_SEQ is not set
-CONFIG_SND_DRIVERS=y
-# CONFIG_SND_DUMMY is not set
-# CONFIG_SND_ALOOP is not set
-# CONFIG_SND_MTPAV is not set
-# CONFIG_SND_SERIAL_U16550 is not set
-# CONFIG_SND_MPU401 is not set
-
-#
-# HD-Audio
-#
-CONFIG_SND_ARM=y
-
-#
-# Atmel devices (AVR32 and AT91)
-#
-# CONFIG_SND_ATMEL_AC97C is not set
-CONFIG_SND_SPI=y
-# CONFIG_SND_AT73C213 is not set
-CONFIG_SND_USB=y
-# CONFIG_SND_USB_AUDIO is not set
-# CONFIG_SND_USB_UA101 is not set
-# CONFIG_SND_USB_CAIAQ is not set
-# CONFIG_SND_USB_6FIRE is not set
-# CONFIG_SND_USB_HIFACE is not set
-# CONFIG_SND_BCD2000 is not set
-# CONFIG_SND_USB_POD is not set
-# CONFIG_SND_USB_PODHD is not set
-# CONFIG_SND_USB_TONEPORT is not set
-# CONFIG_SND_USB_VARIAX is not set
-CONFIG_SND_SOC=y
-CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM=y
-CONFIG_SND_ATMEL_SOC=y
-CONFIG_SND_ATMEL_SOC_PDC=y
-CONFIG_SND_ATMEL_SOC_DMA=y
-CONFIG_SND_ATMEL_SOC_SSC=y
-CONFIG_SND_AT91_SOC_SAM9G20_WM8731=y
-CONFIG_SND_ATMEL_SOC_WM8904=y
-CONFIG_SND_AT91_SOC_SAM9X5_WM8731=y
-# CONFIG_SND_DESIGNWARE_I2S is not set
-
-#
-# SoC Audio for Freescale CPUs
-#
-
-#
-# Common SoC Audio options for Freescale CPUs:
-#
-# CONFIG_SND_SOC_FSL_ASRC is not set
-# CONFIG_SND_SOC_FSL_SAI is not set
-# CONFIG_SND_SOC_FSL_SSI is not set
-# CONFIG_SND_SOC_FSL_SPDIF is not set
-# CONFIG_SND_SOC_FSL_ESAI is not set
-# CONFIG_SND_SOC_IMX_AUDMUX is not set
-# CONFIG_SND_SOC_QCOM is not set
-# CONFIG_SND_SOC_XTFPGA_I2S is not set
-CONFIG_SND_SOC_I2C_AND_SPI=y
-
-#
-# CODEC drivers
-#
-# CONFIG_SND_SOC_ADAU1701 is not set
-# CONFIG_SND_SOC_AK4104 is not set
-# CONFIG_SND_SOC_AK4554 is not set
-# CONFIG_SND_SOC_AK4642 is not set
-# CONFIG_SND_SOC_AK5386 is not set
-# CONFIG_SND_SOC_ALC5623 is not set
-# CONFIG_SND_SOC_CS35L32 is not set
-# CONFIG_SND_SOC_CS42L51_I2C is not set
-# CONFIG_SND_SOC_CS42L52 is not set
-# CONFIG_SND_SOC_CS42L56 is not set
-# CONFIG_SND_SOC_CS42L73 is not set
-# CONFIG_SND_SOC_CS4265 is not set
-# CONFIG_SND_SOC_CS4270 is not set
-# CONFIG_SND_SOC_CS4271_I2C is not set
-# CONFIG_SND_SOC_CS4271_SPI is not set
-# CONFIG_SND_SOC_CS42XX8_I2C is not set
-# CONFIG_SND_SOC_HDMI_CODEC is not set
-# CONFIG_SND_SOC_ES8328 is not set
-# CONFIG_SND_SOC_PCM1681 is not set
-# CONFIG_SND_SOC_PCM1792A is not set
-# CONFIG_SND_SOC_PCM512x_I2C is not set
-# CONFIG_SND_SOC_PCM512x_SPI is not set
-# CONFIG_SND_SOC_RT5631 is not set
-# CONFIG_SND_SOC_RT5677_SPI is not set
-# CONFIG_SND_SOC_SGTL5000 is not set
-# CONFIG_SND_SOC_SIRF_AUDIO_CODEC is not set
-# CONFIG_SND_SOC_SPDIF is not set
-# CONFIG_SND_SOC_SSM2602_SPI is not set
-# CONFIG_SND_SOC_SSM2602_I2C is not set
-# CONFIG_SND_SOC_SSM4567 is not set
-# CONFIG_SND_SOC_STA32X is not set
-# CONFIG_SND_SOC_STA350 is not set
-# CONFIG_SND_SOC_TAS2552 is not set
-# CONFIG_SND_SOC_TAS5086 is not set
-# CONFIG_SND_SOC_TFA9879 is not set
-# CONFIG_SND_SOC_TLV320AIC23_I2C is not set
-# CONFIG_SND_SOC_TLV320AIC23_SPI is not set
-# CONFIG_SND_SOC_TLV320AIC31XX is not set
-# CONFIG_SND_SOC_TLV320AIC3X is not set
-# CONFIG_SND_SOC_TS3A227E is not set
-# CONFIG_SND_SOC_WM8510 is not set
-# CONFIG_SND_SOC_WM8523 is not set
-# CONFIG_SND_SOC_WM8580 is not set
-# CONFIG_SND_SOC_WM8711 is not set
-# CONFIG_SND_SOC_WM8728 is not set
-CONFIG_SND_SOC_WM8731=y
-# CONFIG_SND_SOC_WM8737 is not set
-# CONFIG_SND_SOC_WM8741 is not set
-# CONFIG_SND_SOC_WM8750 is not set
-# CONFIG_SND_SOC_WM8753 is not set
-# CONFIG_SND_SOC_WM8770 is not set
-# CONFIG_SND_SOC_WM8776 is not set
-# CONFIG_SND_SOC_WM8804_I2C is not set
-# CONFIG_SND_SOC_WM8804_SPI is not set
-# CONFIG_SND_SOC_WM8903 is not set
-CONFIG_SND_SOC_WM8904=y
-# CONFIG_SND_SOC_WM8962 is not set
-# CONFIG_SND_SOC_WM8978 is not set
-# CONFIG_SND_SOC_TPA6130A2 is not set
-# CONFIG_SND_SIMPLE_CARD is not set
-# CONFIG_SOUND_PRIME is not set
-
-#
-# HID support
-#
-CONFIG_HID=y
-# CONFIG_HID_BATTERY_STRENGTH is not set
-# CONFIG_HIDRAW is not set
-# CONFIG_UHID is not set
-CONFIG_HID_GENERIC=y
-
-#
-# Special HID drivers
-#
-# CONFIG_HID_A4TECH is not set
-# CONFIG_HID_ACRUX is not set
-# CONFIG_HID_APPLE is not set
-# CONFIG_HID_APPLEIR is not set
-# CONFIG_HID_AUREAL is not set
-# CONFIG_HID_BELKIN is not set
-# CONFIG_HID_BETOP_FF is not set
-# CONFIG_HID_CHERRY is not set
-# CONFIG_HID_CHICONY is not set
-# CONFIG_HID_PRODIKEYS is not set
-# CONFIG_HID_CP2112 is not set
-# CONFIG_HID_CYPRESS is not set
-# CONFIG_HID_DRAGONRISE is not set
-# CONFIG_HID_EMS_FF is not set
-# CONFIG_HID_ELECOM is not set
-# CONFIG_HID_ELO is not set
-# CONFIG_HID_EZKEY is not set
-# CONFIG_HID_HOLTEK is not set
-# CONFIG_HID_GT683R is not set
-# CONFIG_HID_KEYTOUCH is not set
-# CONFIG_HID_KYE is not set
-# CONFIG_HID_UCLOGIC is not set
-# CONFIG_HID_WALTOP is not set
-# CONFIG_HID_GYRATION is not set
-# CONFIG_HID_ICADE is not set
-# CONFIG_HID_TWINHAN is not set
-# CONFIG_HID_KENSINGTON is not set
-# CONFIG_HID_LCPOWER is not set
-# CONFIG_HID_LENOVO is not set
-# CONFIG_HID_LOGITECH is not set
-# CONFIG_HID_MAGICMOUSE is not set
-# CONFIG_HID_MICROSOFT is not set
-# CONFIG_HID_MONTEREY is not set
-# CONFIG_HID_MULTITOUCH is not set
-# CONFIG_HID_NTRIG is not set
-# CONFIG_HID_ORTEK is not set
-# CONFIG_HID_PANTHERLORD is not set
-# CONFIG_HID_PENMOUNT is not set
-# CONFIG_HID_PETALYNX is not set
-# CONFIG_HID_PICOLCD is not set
-# CONFIG_HID_PLANTRONICS is not set
-# CONFIG_HID_PRIMAX is not set
-# CONFIG_HID_ROCCAT is not set
-# CONFIG_HID_SAITEK is not set
-# CONFIG_HID_SAMSUNG is not set
-# CONFIG_HID_SONY is not set
-# CONFIG_HID_SPEEDLINK is not set
-# CONFIG_HID_STEELSERIES is not set
-# CONFIG_HID_SUNPLUS is not set
-# CONFIG_HID_RMI is not set
-# CONFIG_HID_GREENASIA is not set
-# CONFIG_HID_SMARTJOYPLUS is not set
-# CONFIG_HID_TIVO is not set
-# CONFIG_HID_TOPSEED is not set
-# CONFIG_HID_THINGM is not set
-# CONFIG_HID_THRUSTMASTER is not set
-# CONFIG_HID_WACOM is not set
-# CONFIG_HID_WIIMOTE is not set
-# CONFIG_HID_XINMO is not set
-# CONFIG_HID_ZEROPLUS is not set
-# CONFIG_HID_ZYDACRON is not set
-# CONFIG_HID_SENSOR_HUB is not set
-
-#
-# USB HID support
-#
-CONFIG_USB_HID=y
-# CONFIG_HID_PID is not set
-# CONFIG_USB_HIDDEV is not set
-
-#
-# I2C HID support
-#
-# CONFIG_I2C_HID is not set
-CONFIG_USB_OHCI_LITTLE_ENDIAN=y
-CONFIG_USB_SUPPORT=y
-CONFIG_USB_COMMON=y
-CONFIG_USB_ARCH_HAS_HCD=y
-CONFIG_USB=y
-CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
-
-#
-# Miscellaneous USB options
-#
-CONFIG_USB_DEFAULT_PERSIST=y
-# CONFIG_USB_DYNAMIC_MINORS is not set
-# CONFIG_USB_OTG is not set
-# CONFIG_USB_OTG_WHITELIST is not set
-# CONFIG_USB_OTG_BLACKLIST_HUB is not set
-# CONFIG_USB_OTG_FSM is not set
-# CONFIG_USB_MON is not set
-# CONFIG_USB_WUSB_CBAF is not set
-
-#
-# USB Host Controller Drivers
-#
-# CONFIG_USB_C67X00_HCD is not set
-# CONFIG_USB_XHCI_HCD is not set
-CONFIG_USB_EHCI_HCD=y
-# CONFIG_USB_EHCI_ROOT_HUB_TT is not set
-CONFIG_USB_EHCI_TT_NEWSCHED=y
-CONFIG_USB_EHCI_HCD_AT91=y
-# CONFIG_USB_EHCI_HCD_PLATFORM is not set
-# CONFIG_USB_OXU210HP_HCD is not set
-# CONFIG_USB_ISP116X_HCD is not set
-# CONFIG_USB_ISP1362_HCD is not set
-# CONFIG_USB_FUSBH200_HCD is not set
-# CONFIG_USB_FOTG210_HCD is not set
-# CONFIG_USB_MAX3421_HCD is not set
-CONFIG_USB_OHCI_HCD=y
-CONFIG_USB_OHCI_HCD_AT91=y
-# CONFIG_USB_OHCI_HCD_PLATFORM is not set
-# CONFIG_USB_SL811_HCD is not set
-# CONFIG_USB_R8A66597_HCD is not set
-# CONFIG_USB_HCD_SSB is not set
-# CONFIG_USB_HCD_TEST_MODE is not set
-
-#
-# USB Device Class drivers
-#
-CONFIG_USB_ACM=y
-# CONFIG_USB_PRINTER is not set
-# CONFIG_USB_WDM is not set
-# CONFIG_USB_TMC is not set
-
-#
-# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
-#
-
-#
-# also be needed; see USB_STORAGE Help for more info
-#
-CONFIG_USB_STORAGE=y
-# CONFIG_USB_STORAGE_DEBUG is not set
-# CONFIG_USB_STORAGE_REALTEK is not set
-# CONFIG_USB_STORAGE_DATAFAB is not set
-# CONFIG_USB_STORAGE_FREECOM is not set
-# CONFIG_USB_STORAGE_ISD200 is not set
-# CONFIG_USB_STORAGE_USBAT is not set
-# CONFIG_USB_STORAGE_SDDR09 is not set
-# CONFIG_USB_STORAGE_SDDR55 is not set
-# CONFIG_USB_STORAGE_JUMPSHOT is not set
-# CONFIG_USB_STORAGE_ALAUDA is not set
-# CONFIG_USB_STORAGE_ONETOUCH is not set
-# CONFIG_USB_STORAGE_KARMA is not set
-# CONFIG_USB_STORAGE_CYPRESS_ATACB is not set
-# CONFIG_USB_STORAGE_ENE_UB6250 is not set
-# CONFIG_USB_UAS is not set
-
-#
-# USB Imaging devices
-#
-# CONFIG_USB_MDC800 is not set
-# CONFIG_USB_MICROTEK is not set
-# CONFIG_USBIP_CORE is not set
-# CONFIG_USB_MUSB_HDRC is not set
-# CONFIG_USB_DWC3 is not set
-# CONFIG_USB_DWC2 is not set
-# CONFIG_USB_CHIPIDEA is not set
-# CONFIG_USB_ISP1760 is not set
-
-#
-# USB port drivers
-#
-CONFIG_USB_SERIAL=y
-# CONFIG_USB_SERIAL_CONSOLE is not set
-CONFIG_USB_SERIAL_GENERIC=y
-# CONFIG_USB_SERIAL_SIMPLE is not set
-# CONFIG_USB_SERIAL_AIRCABLE is not set
-# CONFIG_USB_SERIAL_ARK3116 is not set
-# CONFIG_USB_SERIAL_BELKIN is not set
-# CONFIG_USB_SERIAL_CH341 is not set
-# CONFIG_USB_SERIAL_WHITEHEAT is not set
-# CONFIG_USB_SERIAL_DIGI_ACCELEPORT is not set
-# CONFIG_USB_SERIAL_CP210X is not set
-# CONFIG_USB_SERIAL_CYPRESS_M8 is not set
-# CONFIG_USB_SERIAL_EMPEG is not set
-CONFIG_USB_SERIAL_FTDI_SIO=y
-# CONFIG_USB_SERIAL_VISOR is not set
-# CONFIG_USB_SERIAL_IPAQ is not set
-# CONFIG_USB_SERIAL_IR is not set
-# CONFIG_USB_SERIAL_EDGEPORT is not set
-# CONFIG_USB_SERIAL_EDGEPORT_TI is not set
-# CONFIG_USB_SERIAL_F81232 is not set
-# CONFIG_USB_SERIAL_GARMIN is not set
-# CONFIG_USB_SERIAL_IPW is not set
-# CONFIG_USB_SERIAL_IUU is not set
-# CONFIG_USB_SERIAL_KEYSPAN_PDA is not set
-# CONFIG_USB_SERIAL_KEYSPAN is not set
-# CONFIG_USB_SERIAL_KLSI is not set
-# CONFIG_USB_SERIAL_KOBIL_SCT is not set
-# CONFIG_USB_SERIAL_MCT_U232 is not set
-# CONFIG_USB_SERIAL_METRO is not set
-# CONFIG_USB_SERIAL_MOS7720 is not set
-# CONFIG_USB_SERIAL_MOS7840 is not set
-# CONFIG_USB_SERIAL_MXUPORT is not set
-# CONFIG_USB_SERIAL_NAVMAN is not set
-CONFIG_USB_SERIAL_PL2303=y
-# CONFIG_USB_SERIAL_OTI6858 is not set
-# CONFIG_USB_SERIAL_QCAUX is not set
-# CONFIG_USB_SERIAL_QUALCOMM is not set
-# CONFIG_USB_SERIAL_SPCP8X5 is not set
-# CONFIG_USB_SERIAL_SAFE is not set
-# CONFIG_USB_SERIAL_SIERRAWIRELESS is not set
-# CONFIG_USB_SERIAL_SYMBOL is not set
-# CONFIG_USB_SERIAL_TI is not set
-# CONFIG_USB_SERIAL_CYBERJACK is not set
-# CONFIG_USB_SERIAL_XIRCOM is not set
-# CONFIG_USB_SERIAL_OPTION is not set
-# CONFIG_USB_SERIAL_OMNINET is not set
-# CONFIG_USB_SERIAL_OPTICON is not set
-# CONFIG_USB_SERIAL_XSENS_MT is not set
-# CONFIG_USB_SERIAL_WISHBONE is not set
-# CONFIG_USB_SERIAL_SSU100 is not set
-# CONFIG_USB_SERIAL_QT2 is not set
-# CONFIG_USB_SERIAL_DEBUG is not set
-
-#
-# USB Miscellaneous drivers
-#
-# CONFIG_USB_EMI62 is not set
-# CONFIG_USB_EMI26 is not set
-# CONFIG_USB_ADUTUX is not set
-# CONFIG_USB_SEVSEG is not set
-# CONFIG_USB_RIO500 is not set
-# CONFIG_USB_LEGOTOWER is not set
-# CONFIG_USB_LCD is not set
-# CONFIG_USB_LED is not set
-# CONFIG_USB_CYPRESS_CY7C63 is not set
-# CONFIG_USB_CYTHERM is not set
-# CONFIG_USB_IDMOUSE is not set
-# CONFIG_USB_FTDI_ELAN is not set
-# CONFIG_USB_APPLEDISPLAY is not set
-# CONFIG_USB_SISUSBVGA is not set
-# CONFIG_USB_LD is not set
-# CONFIG_USB_TRANCEVIBRATOR is not set
-# CONFIG_USB_IOWARRIOR is not set
-# CONFIG_USB_TEST is not set
-# CONFIG_USB_EHSET_TEST_FIXTURE is not set
-# CONFIG_USB_ISIGHTFW is not set
-# CONFIG_USB_YUREX is not set
-# CONFIG_USB_EZUSB_FX2 is not set
-# CONFIG_USB_HSIC_USB3503 is not set
-# CONFIG_USB_LINK_LAYER_TEST is not set
-# CONFIG_USB_CHAOSKEY is not set
-
-#
-# USB Physical Layer drivers
-#
-# CONFIG_USB_PHY is not set
-# CONFIG_NOP_USB_XCEIV is not set
-# CONFIG_AM335X_PHY_USB is not set
-# CONFIG_USB_GPIO_VBUS is not set
-# CONFIG_USB_ISP1301 is not set
-# CONFIG_USB_ULPI is not set
-CONFIG_USB_GADGET=y
-# CONFIG_USB_GADGET_DEBUG is not set
-# CONFIG_USB_GADGET_DEBUG_FILES is not set
-# CONFIG_USB_GADGET_DEBUG_FS is not set
-CONFIG_USB_GADGET_VBUS_DRAW=2
-CONFIG_USB_GADGET_STORAGE_NUM_BUFFERS=2
-
-#
-# USB Peripheral Controller
-#
-CONFIG_USB_AT91=y
-CONFIG_USB_ATMEL_USBA=y
-# CONFIG_USB_FUSB300 is not set
-# CONFIG_USB_FOTG210_UDC is not set
-# CONFIG_USB_GR_UDC is not set
-# CONFIG_USB_R8A66597 is not set
-# CONFIG_USB_PXA27X is not set
-# CONFIG_USB_MV_UDC is not set
-# CONFIG_USB_MV_U3D is not set
-# CONFIG_USB_M66592 is not set
-# CONFIG_USB_BDC_UDC is not set
-# CONFIG_USB_NET2272 is not set
-# CONFIG_USB_GADGET_XILINX is not set
-# CONFIG_USB_DUMMY_HCD is not set
-CONFIG_USB_LIBCOMPOSITE=y
-CONFIG_USB_F_ACM=y
-CONFIG_USB_U_SERIAL=y
-CONFIG_USB_F_SERIAL=y
-CONFIG_USB_F_OBEX=y
-# CONFIG_USB_CONFIGFS is not set
-# CONFIG_USB_ZERO is not set
-# CONFIG_USB_AUDIO is not set
-# CONFIG_USB_ETH is not set
-# CONFIG_USB_G_NCM is not set
-# CONFIG_USB_GADGETFS is not set
-# CONFIG_USB_FUNCTIONFS is not set
-# CONFIG_USB_MASS_STORAGE is not set
-CONFIG_USB_G_SERIAL=y
-# CONFIG_USB_MIDI_GADGET is not set
-# CONFIG_USB_G_PRINTER is not set
-# CONFIG_USB_CDC_COMPOSITE is not set
-# CONFIG_USB_G_ACM_MS is not set
-# CONFIG_USB_G_MULTI is not set
-# CONFIG_USB_G_HID is not set
-# CONFIG_USB_G_DBGP is not set
-# CONFIG_USB_LED_TRIG is not set
-# CONFIG_UWB is not set
-CONFIG_MMC=y
-# CONFIG_MMC_DEBUG is not set
-# CONFIG_MMC_CLKGATE is not set
-
-#
-# MMC/SD/SDIO Card Drivers
-#
-CONFIG_MMC_BLOCK=y
-CONFIG_MMC_BLOCK_MINORS=8
-CONFIG_MMC_BLOCK_BOUNCE=y
-# CONFIG_SDIO_UART is not set
-# CONFIG_MMC_TEST is not set
-
-#
-# MMC/SD/SDIO Host Controller Drivers
-#
-# CONFIG_MMC_SDHCI is not set
-CONFIG_MMC_ATMELMCI=y
-CONFIG_MMC_SPI=y
-# CONFIG_MMC_DW is not set
-# CONFIG_MMC_VUB300 is not set
-# CONFIG_MMC_USHC is not set
-# CONFIG_MMC_USDHI6ROL0 is not set
-# CONFIG_MEMSTICK is not set
-CONFIG_NEW_LEDS=y
-CONFIG_LEDS_CLASS=y
-# CONFIG_LEDS_CLASS_FLASH is not set
-
-#
-# LED drivers
-#
-# CONFIG_LEDS_LM3530 is not set
-# CONFIG_LEDS_LM3642 is not set
-# CONFIG_LEDS_PCA9532 is not set
-CONFIG_LEDS_GPIO=y
-# CONFIG_LEDS_LP3944 is not set
-# CONFIG_LEDS_LP5521 is not set
-# CONFIG_LEDS_LP5523 is not set
-# CONFIG_LEDS_LP5562 is not set
-# CONFIG_LEDS_LP8501 is not set
-# CONFIG_LEDS_LP8860 is not set
-# CONFIG_LEDS_PCA955X is not set
-# CONFIG_LEDS_PCA963X is not set
-# CONFIG_LEDS_DAC124S085 is not set
-CONFIG_LEDS_PWM=y
-# CONFIG_LEDS_BD2802 is not set
-# CONFIG_LEDS_LT3593 is not set
-# CONFIG_LEDS_TCA6507 is not set
-# CONFIG_LEDS_LM355x is not set
-
-#
-# LED driver for blink(1) USB RGB LED is under Special HID drivers (HID_THINGM)
-#
-# CONFIG_LEDS_BLINKM is not set
-# CONFIG_LEDS_SYSCON is not set
-# CONFIG_LEDS_PM8941_WLED is not set
-
-#
-# LED Triggers
-#
-CONFIG_LEDS_TRIGGERS=y
-CONFIG_LEDS_TRIGGER_TIMER=y
-# CONFIG_LEDS_TRIGGER_ONESHOT is not set
-CONFIG_LEDS_TRIGGER_HEARTBEAT=y
-# CONFIG_LEDS_TRIGGER_BACKLIGHT is not set
-# CONFIG_LEDS_TRIGGER_CPU is not set
-CONFIG_LEDS_TRIGGER_GPIO=y
-# CONFIG_LEDS_TRIGGER_DEFAULT_ON is not set
-
-#
-# iptables trigger is under Netfilter config (LED target)
-#
-# CONFIG_LEDS_TRIGGER_TRANSIENT is not set
-# CONFIG_LEDS_TRIGGER_CAMERA is not set
-# CONFIG_ACCESSIBILITY is not set
-# CONFIG_EDAC is not set
-CONFIG_RTC_LIB=y
-CONFIG_RTC_CLASS=y
-CONFIG_RTC_HCTOSYS=y
-CONFIG_RTC_SYSTOHC=y
-CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
-# CONFIG_RTC_DEBUG is not set
-
-#
-# RTC interfaces
-#
-CONFIG_RTC_INTF_SYSFS=y
-CONFIG_RTC_INTF_PROC=y
-CONFIG_RTC_INTF_DEV=y
-# CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
-# CONFIG_RTC_DRV_TEST is not set
-
-#
-# I2C RTC drivers
-#
-# CONFIG_RTC_DRV_ABB5ZES3 is not set
-# CONFIG_RTC_DRV_DS1307 is not set
-# CONFIG_RTC_DRV_DS1374 is not set
-# CONFIG_RTC_DRV_DS1672 is not set
-# CONFIG_RTC_DRV_DS3232 is not set
-# CONFIG_RTC_DRV_HYM8563 is not set
-# CONFIG_RTC_DRV_MAX6900 is not set
-# CONFIG_RTC_DRV_RS5C372 is not set
-# CONFIG_RTC_DRV_ISL1208 is not set
-# CONFIG_RTC_DRV_ISL12022 is not set
-# CONFIG_RTC_DRV_ISL12057 is not set
-# CONFIG_RTC_DRV_X1205 is not set
-# CONFIG_RTC_DRV_PCF2127 is not set
-# CONFIG_RTC_DRV_PCF8523 is not set
-# CONFIG_RTC_DRV_PCF8563 is not set
-# CONFIG_RTC_DRV_PCF85063 is not set
-# CONFIG_RTC_DRV_PCF8583 is not set
-# CONFIG_RTC_DRV_M41T80 is not set
-# CONFIG_RTC_DRV_BQ32K is not set
-# CONFIG_RTC_DRV_S35390A is not set
-# CONFIG_RTC_DRV_FM3130 is not set
-# CONFIG_RTC_DRV_RX8581 is not set
-# CONFIG_RTC_DRV_RX8025 is not set
-# CONFIG_RTC_DRV_EM3027 is not set
-CONFIG_RTC_DRV_RV3029C2=y
-
-#
-# SPI RTC drivers
-#
-# CONFIG_RTC_DRV_M41T93 is not set
-# CONFIG_RTC_DRV_M41T94 is not set
-# CONFIG_RTC_DRV_DS1305 is not set
-# CONFIG_RTC_DRV_DS1343 is not set
-# CONFIG_RTC_DRV_DS1347 is not set
-# CONFIG_RTC_DRV_DS1390 is not set
-# CONFIG_RTC_DRV_MAX6902 is not set
-# CONFIG_RTC_DRV_R9701 is not set
-# CONFIG_RTC_DRV_RS5C348 is not set
-# CONFIG_RTC_DRV_DS3234 is not set
-# CONFIG_RTC_DRV_PCF2123 is not set
-# CONFIG_RTC_DRV_RX4581 is not set
-# CONFIG_RTC_DRV_MCP795 is not set
-
-#
-# Platform RTC drivers
-#
-# CONFIG_RTC_DRV_CMOS is not set
-# CONFIG_RTC_DRV_DS1286 is not set
-# CONFIG_RTC_DRV_DS1511 is not set
-# CONFIG_RTC_DRV_DS1553 is not set
-# CONFIG_RTC_DRV_DS1685_FAMILY is not set
-# CONFIG_RTC_DRV_DS1742 is not set
-# CONFIG_RTC_DRV_DS2404 is not set
-# CONFIG_RTC_DRV_STK17TA8 is not set
-# CONFIG_RTC_DRV_M48T86 is not set
-# CONFIG_RTC_DRV_M48T35 is not set
-# CONFIG_RTC_DRV_M48T59 is not set
-# CONFIG_RTC_DRV_MSM6242 is not set
-# CONFIG_RTC_DRV_BQ4802 is not set
-# CONFIG_RTC_DRV_RP5C01 is not set
-# CONFIG_RTC_DRV_V3020 is not set
-
-#
-# on-CPU RTC drivers
-#
-CONFIG_RTC_DRV_AT91RM9200=y
-CONFIG_RTC_DRV_AT91SAM9=y
-# CONFIG_RTC_DRV_SNVS is not set
-# CONFIG_RTC_DRV_XGENE is not set
-
-#
-# HID Sensor RTC drivers
-#
-# CONFIG_RTC_DRV_HID_SENSOR_TIME is not set
-CONFIG_DMADEVICES=y
-# CONFIG_DMADEVICES_DEBUG is not set
-
-#
-# DMA Devices
-#
-# CONFIG_DW_DMAC is not set
-CONFIG_AT_HDMAC=y
-# CONFIG_AT_XDMAC is not set
-# CONFIG_FSL_EDMA is not set
-# CONFIG_NBPFAXI_DMA is not set
-# CONFIG_XGENE_DMA is not set
-CONFIG_DMA_ENGINE=y
-CONFIG_DMA_OF=y
-
-#
-# DMA Clients
-#
-# CONFIG_ASYNC_TX_DMA is not set
-# CONFIG_DMATEST is not set
-# CONFIG_AUXDISPLAY is not set
-# CONFIG_UIO is not set
-# CONFIG_VIRT_DRIVERS is not set
-
-#
-# Virtio drivers
-#
-# CONFIG_VIRTIO_MMIO is not set
-
-#
-# Microsoft Hyper-V guest support
-#
-# CONFIG_STAGING is not set
-# CONFIG_CHROME_PLATFORMS is not set
-CONFIG_CLKDEV_LOOKUP=y
-CONFIG_HAVE_CLK_PREPARE=y
-CONFIG_COMMON_CLK=y
-
-#
-# Common Clock Framework
-#
-# CONFIG_COMMON_CLK_SI5351 is not set
-# CONFIG_COMMON_CLK_SI570 is not set
-# CONFIG_CLK_QORIQ is not set
-# CONFIG_COMMON_CLK_PWM is not set
-# CONFIG_COMMON_CLK_PXA is not set
-# CONFIG_COMMON_CLK_CDCE706 is not set
-
-#
-# Hardware Spinlock drivers
-#
-
-#
-# Clock Source drivers
-#
-CONFIG_CLKSRC_OF=y
-CONFIG_ATMEL_PIT=y
-CONFIG_ATMEL_ST=y
-# CONFIG_SH_TIMER_CMT is not set
-# CONFIG_SH_TIMER_MTU2 is not set
-# CONFIG_SH_TIMER_TMU is not set
-# CONFIG_EM_TIMER_STI is not set
-# CONFIG_MAILBOX is not set
-# CONFIG_IOMMU_SUPPORT is not set
-
-#
-# Remoteproc drivers
-#
-# CONFIG_STE_MODEM_RPROC is not set
-
-#
-# Rpmsg drivers
-#
-
-#
-# SOC (System On Chip) specific Drivers
-#
-# CONFIG_SOC_TI is not set
-# CONFIG_PM_DEVFREQ is not set
-# CONFIG_EXTCON is not set
-CONFIG_MEMORY=y
-CONFIG_ATMEL_SDRAMC=y
-CONFIG_IIO=y
-CONFIG_IIO_BUFFER=y
-# CONFIG_IIO_BUFFER_CB is not set
-CONFIG_IIO_KFIFO_BUF=y
-CONFIG_IIO_TRIGGERED_BUFFER=y
-CONFIG_IIO_TRIGGER=y
-CONFIG_IIO_CONSUMERS_PER_TRIGGER=2
-
-#
-# Accelerometers
-#
-# CONFIG_BMA180 is not set
-# CONFIG_BMC150_ACCEL is not set
-# CONFIG_IIO_ST_ACCEL_3AXIS is not set
-# CONFIG_KXSD9 is not set
-# CONFIG_MMA8452 is not set
-# CONFIG_KXCJK1013 is not set
-# CONFIG_MMA9551 is not set
-# CONFIG_MMA9553 is not set
-
-#
-# Analog to digital converters
-#
-# CONFIG_AD7266 is not set
-# CONFIG_AD7291 is not set
-# CONFIG_AD7298 is not set
-# CONFIG_AD7476 is not set
-# CONFIG_AD7791 is not set
-# CONFIG_AD7793 is not set
-# CONFIG_AD7887 is not set
-# CONFIG_AD7923 is not set
-# CONFIG_AD799X is not set
-CONFIG_AT91_ADC=y
-# CONFIG_CC10001_ADC is not set
-# CONFIG_MAX1027 is not set
-# CONFIG_MAX1363 is not set
-# CONFIG_MCP320X is not set
-# CONFIG_MCP3422 is not set
-# CONFIG_NAU7802 is not set
-# CONFIG_TI_ADC081C is not set
-# CONFIG_TI_ADC128S052 is not set
-# CONFIG_VF610_ADC is not set
-
-#
-# Amplifiers
-#
-# CONFIG_AD8366 is not set
-
-#
-# Hid Sensor IIO Common
-#
-
-#
-# SSP Sensor Common
-#
-# CONFIG_IIO_SSP_SENSORHUB is not set
-
-#
-# Digital to analog converters
-#
-# CONFIG_AD5064 is not set
-# CONFIG_AD5360 is not set
-# CONFIG_AD5380 is not set
-# CONFIG_AD5421 is not set
-# CONFIG_AD5446 is not set
-# CONFIG_AD5449 is not set
-# CONFIG_AD5504 is not set
-# CONFIG_AD5624R_SPI is not set
-# CONFIG_AD5686 is not set
-# CONFIG_AD5755 is not set
-# CONFIG_AD5764 is not set
-# CONFIG_AD5791 is not set
-# CONFIG_AD7303 is not set
-# CONFIG_MAX517 is not set
-# CONFIG_MAX5821 is not set
-# CONFIG_MCP4725 is not set
-# CONFIG_MCP4922 is not set
-
-#
-# Frequency Synthesizers DDS/PLL
-#
-
-#
-# Clock Generator/Distribution
-#
-# CONFIG_AD9523 is not set
-
-#
-# Phase-Locked Loop (PLL) frequency synthesizers
-#
-# CONFIG_ADF4350 is not set
-
-#
-# Digital gyroscope sensors
-#
-# CONFIG_ADIS16080 is not set
-# CONFIG_ADIS16130 is not set
-# CONFIG_ADIS16136 is not set
-# CONFIG_ADIS16260 is not set
-# CONFIG_ADXRS450 is not set
-# CONFIG_BMG160 is not set
-# CONFIG_IIO_ST_GYRO_3AXIS is not set
-# CONFIG_ITG3200 is not set
-
-#
-# Humidity sensors
-#
-# CONFIG_DHT11 is not set
-# CONFIG_SI7005 is not set
-# CONFIG_SI7020 is not set
-
-#
-# Inertial measurement units
-#
-# CONFIG_ADIS16400 is not set
-# CONFIG_ADIS16480 is not set
-# CONFIG_KMX61 is not set
-# CONFIG_INV_MPU6050_IIO is not set
-
-#
-# Light sensors
-#
-# CONFIG_ADJD_S311 is not set
-# CONFIG_AL3320A is not set
-# CONFIG_APDS9300 is not set
-# CONFIG_CM32181 is not set
-# CONFIG_CM3232 is not set
-# CONFIG_CM3323 is not set
-# CONFIG_CM36651 is not set
-# CONFIG_GP2AP020A00F is not set
-# CONFIG_ISL29125 is not set
-# CONFIG_JSA1212 is not set
-# CONFIG_LTR501 is not set
-# CONFIG_TCS3414 is not set
-# CONFIG_TCS3472 is not set
-# CONFIG_SENSORS_TSL2563 is not set
-# CONFIG_TSL4531 is not set
-# CONFIG_VCNL4000 is not set
-
-#
-# Magnetometer sensors
-#
-# CONFIG_AK8975 is not set
-# CONFIG_AK09911 is not set
-# CONFIG_MAG3110 is not set
-# CONFIG_IIO_ST_MAGN_3AXIS is not set
-
-#
-# Inclinometer sensors
-#
-
-#
-# Triggers - standalone
-#
-# CONFIG_IIO_INTERRUPT_TRIGGER is not set
-# CONFIG_IIO_SYSFS_TRIGGER is not set
-
-#
-# Pressure sensors
-#
-# CONFIG_BMP280 is not set
-# CONFIG_MPL115 is not set
-# CONFIG_MPL3115 is not set
-# CONFIG_MS5611 is not set
-# CONFIG_IIO_ST_PRESS is not set
-# CONFIG_T5403 is not set
-
-#
-# Lightning sensors
-#
-# CONFIG_AS3935 is not set
-
-#
-# Proximity sensors
-#
-# CONFIG_SX9500 is not set
-
-#
-# Temperature sensors
-#
-# CONFIG_MLX90614 is not set
-# CONFIG_TMP006 is not set
-CONFIG_PWM=y
-CONFIG_PWM_SYSFS=y
-CONFIG_PWM_ATMEL=y
-CONFIG_PWM_ATMEL_TCB=y
-# CONFIG_PWM_FSL_FTM is not set
-# CONFIG_PWM_PCA9685 is not set
-CONFIG_IRQCHIP=y
-CONFIG_ATMEL_AIC_IRQ=y
-# CONFIG_IPACK_BUS is not set
-# CONFIG_RESET_CONTROLLER is not set
-# CONFIG_FMC is not set
-
-#
-# PHY Subsystem
-#
-# CONFIG_GENERIC_PHY is not set
-# CONFIG_BCM_KONA_USB2_PHY is not set
-# CONFIG_POWERCAP is not set
-# CONFIG_MCB is not set
-
-#
-# Android
-#
-# CONFIG_ANDROID is not set
-
-#
-# Firmware Drivers
-#
-# CONFIG_FIRMWARE_MEMMAP is not set
-
-#
-# File systems
-#
-# CONFIG_EXT2_FS is not set
-# CONFIG_EXT3_FS is not set
-CONFIG_EXT4_FS=y
-CONFIG_EXT4_USE_FOR_EXT23=y
-# CONFIG_EXT4_FS_POSIX_ACL is not set
-# CONFIG_EXT4_FS_SECURITY is not set
-# CONFIG_EXT4_FS_ENCRYPTION is not set
-# CONFIG_EXT4_DEBUG is not set
-CONFIG_JBD2=y
-# CONFIG_JBD2_DEBUG is not set
-CONFIG_FS_MBCACHE=y
-# CONFIG_REISERFS_FS is not set
-# CONFIG_JFS_FS is not set
-# CONFIG_OCFS2_FS is not set
-# CONFIG_BTRFS_FS is not set
-# CONFIG_NILFS2_FS is not set
-# CONFIG_F2FS_FS is not set
-# CONFIG_FS_POSIX_ACL is not set
-CONFIG_FILE_LOCKING=y
-CONFIG_FSNOTIFY=y
-CONFIG_DNOTIFY=y
-CONFIG_INOTIFY_USER=y
-CONFIG_FANOTIFY=y
-# CONFIG_QUOTA is not set
-# CONFIG_QUOTACTL is not set
-# CONFIG_AUTOFS4_FS is not set
-# CONFIG_FUSE_FS is not set
-# CONFIG_OVERLAY_FS is not set
-
-#
-# Caches
-#
-# CONFIG_FSCACHE is not set
-
-#
-# CD-ROM/DVD Filesystems
-#
-# CONFIG_ISO9660_FS is not set
-# CONFIG_UDF_FS is not set
-
-#
-# DOS/FAT/NT Filesystems
-#
-CONFIG_FAT_FS=y
-# CONFIG_MSDOS_FS is not set
-CONFIG_VFAT_FS=y
-CONFIG_FAT_DEFAULT_CODEPAGE=437
-CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
-# CONFIG_NTFS_FS is not set
-
-#
-# Pseudo filesystems
-#
-CONFIG_PROC_FS=y
-CONFIG_PROC_SYSCTL=y
-CONFIG_PROC_PAGE_MONITOR=y
-CONFIG_KERNFS=y
-CONFIG_SYSFS=y
-CONFIG_TMPFS=y
-# CONFIG_TMPFS_POSIX_ACL is not set
-# CONFIG_TMPFS_XATTR is not set
-# CONFIG_HUGETLB_PAGE is not set
-CONFIG_CONFIGFS_FS=y
-CONFIG_MISC_FILESYSTEMS=y
-# CONFIG_ADFS_FS is not set
-# CONFIG_AFFS_FS is not set
-# CONFIG_HFS_FS is not set
-# CONFIG_HFSPLUS_FS is not set
-# CONFIG_BEFS_FS is not set
-# CONFIG_BFS_FS is not set
-# CONFIG_EFS_FS is not set
-# CONFIG_JFFS2_FS is not set
-CONFIG_UBIFS_FS=y
-CONFIG_UBIFS_FS_ADVANCED_COMPR=y
-CONFIG_UBIFS_FS_LZO=y
-CONFIG_UBIFS_FS_ZLIB=y
-# CONFIG_LOGFS is not set
-# CONFIG_CRAMFS is not set
-# CONFIG_SQUASHFS is not set
-# CONFIG_VXFS_FS is not set
-# CONFIG_MINIX_FS is not set
-# CONFIG_OMFS_FS is not set
-# CONFIG_HPFS_FS is not set
-# CONFIG_QNX4FS_FS is not set
-# CONFIG_QNX6FS_FS is not set
-# CONFIG_ROMFS_FS is not set
-# CONFIG_PSTORE is not set
-# CONFIG_SYSV_FS is not set
-# CONFIG_UFS_FS is not set
-CONFIG_NETWORK_FILESYSTEMS=y
-CONFIG_NFS_FS=y
-CONFIG_NFS_V2=y
-CONFIG_NFS_V3=y
-# CONFIG_NFS_V3_ACL is not set
-# CONFIG_NFS_V4 is not set
-# CONFIG_NFS_SWAP is not set
-CONFIG_ROOT_NFS=y
-# CONFIG_NFSD is not set
-CONFIG_GRACE_PERIOD=y
-CONFIG_LOCKD=y
-CONFIG_LOCKD_V4=y
-CONFIG_NFS_COMMON=y
-CONFIG_SUNRPC=y
-# CONFIG_SUNRPC_DEBUG is not set
-# CONFIG_CEPH_FS is not set
-# CONFIG_CIFS is not set
-# CONFIG_NCP_FS is not set
-# CONFIG_CODA_FS is not set
-# CONFIG_AFS_FS is not set
-CONFIG_NLS=y
-CONFIG_NLS_DEFAULT="iso8859-1"
-CONFIG_NLS_CODEPAGE_437=y
-# CONFIG_NLS_CODEPAGE_737 is not set
-# CONFIG_NLS_CODEPAGE_775 is not set
-CONFIG_NLS_CODEPAGE_850=y
-# CONFIG_NLS_CODEPAGE_852 is not set
-# CONFIG_NLS_CODEPAGE_855 is not set
-# CONFIG_NLS_CODEPAGE_857 is not set
-# CONFIG_NLS_CODEPAGE_860 is not set
-# CONFIG_NLS_CODEPAGE_861 is not set
-# CONFIG_NLS_CODEPAGE_862 is not set
-# CONFIG_NLS_CODEPAGE_863 is not set
-# CONFIG_NLS_CODEPAGE_864 is not set
-# CONFIG_NLS_CODEPAGE_865 is not set
-# CONFIG_NLS_CODEPAGE_866 is not set
-# CONFIG_NLS_CODEPAGE_869 is not set
-# CONFIG_NLS_CODEPAGE_936 is not set
-# CONFIG_NLS_CODEPAGE_950 is not set
-# CONFIG_NLS_CODEPAGE_932 is not set
-# CONFIG_NLS_CODEPAGE_949 is not set
-# CONFIG_NLS_CODEPAGE_874 is not set
-# CONFIG_NLS_ISO8859_8 is not set
-# CONFIG_NLS_CODEPAGE_1250 is not set
-# CONFIG_NLS_CODEPAGE_1251 is not set
-# CONFIG_NLS_ASCII is not set
-CONFIG_NLS_ISO8859_1=y
-# CONFIG_NLS_ISO8859_2 is not set
-# CONFIG_NLS_ISO8859_3 is not set
-# CONFIG_NLS_ISO8859_4 is not set
-# CONFIG_NLS_ISO8859_5 is not set
-# CONFIG_NLS_ISO8859_6 is not set
-# CONFIG_NLS_ISO8859_7 is not set
-# CONFIG_NLS_ISO8859_9 is not set
-# CONFIG_NLS_ISO8859_13 is not set
-# CONFIG_NLS_ISO8859_14 is not set
-# CONFIG_NLS_ISO8859_15 is not set
-# CONFIG_NLS_KOI8_R is not set
-# CONFIG_NLS_KOI8_U is not set
-# CONFIG_NLS_MAC_ROMAN is not set
-# CONFIG_NLS_MAC_CELTIC is not set
-# CONFIG_NLS_MAC_CENTEURO is not set
-# CONFIG_NLS_MAC_CROATIAN is not set
-# CONFIG_NLS_MAC_CYRILLIC is not set
-# CONFIG_NLS_MAC_GAELIC is not set
-# CONFIG_NLS_MAC_GREEK is not set
-# CONFIG_NLS_MAC_ICELAND is not set
-# CONFIG_NLS_MAC_INUIT is not set
-# CONFIG_NLS_MAC_ROMANIAN is not set
-# CONFIG_NLS_MAC_TURKISH is not set
-CONFIG_NLS_UTF8=y
-# CONFIG_DLM is not set
-
-#
-# Kernel hacking
-#
-
-#
-# printk and dmesg options
-#
-# CONFIG_PRINTK_TIME is not set
-CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
-# CONFIG_BOOT_PRINTK_DELAY is not set
-# CONFIG_DYNAMIC_DEBUG is not set
-
-#
-# Compile-time checks and compiler options
-#
-# CONFIG_DEBUG_INFO is not set
-CONFIG_ENABLE_WARN_DEPRECATED=y
-CONFIG_ENABLE_MUST_CHECK=y
-CONFIG_FRAME_WARN=1024
-CONFIG_STRIP_ASM_SYMS=y
-# CONFIG_READABLE_ASM is not set
-# CONFIG_UNUSED_SYMBOLS is not set
-# CONFIG_PAGE_OWNER is not set
-CONFIG_DEBUG_FS=y
-CONFIG_HEADERS_CHECK=y
-# CONFIG_DEBUG_SECTION_MISMATCH is not set
-# CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
-# CONFIG_MAGIC_SYSRQ is not set
-CONFIG_DEBUG_KERNEL=y
-
-#
-# Memory Debugging
-#
-# CONFIG_PAGE_EXTENSION is not set
-# CONFIG_DEBUG_PAGEALLOC is not set
-# CONFIG_DEBUG_OBJECTS is not set
-# CONFIG_DEBUG_SLAB is not set
-CONFIG_HAVE_DEBUG_KMEMLEAK=y
-# CONFIG_DEBUG_KMEMLEAK is not set
-# CONFIG_DEBUG_STACK_USAGE is not set
-# CONFIG_DEBUG_VM is not set
-# CONFIG_DEBUG_MEMORY_INIT is not set
-# CONFIG_DEBUG_SHIRQ is not set
-
-#
-# Debug Lockups and Hangs
-#
-# CONFIG_LOCKUP_DETECTOR is not set
-# CONFIG_DETECT_HUNG_TASK is not set
-# CONFIG_PANIC_ON_OOPS is not set
-CONFIG_PANIC_ON_OOPS_VALUE=0
-CONFIG_PANIC_TIMEOUT=0
-# CONFIG_SCHED_DEBUG is not set
-# CONFIG_SCHEDSTATS is not set
-# CONFIG_SCHED_STACK_END_CHECK is not set
-# CONFIG_DEBUG_TIMEKEEPING is not set
-# CONFIG_TIMER_STATS is not set
-
-#
-# Lock Debugging (spinlocks, mutexes, etc...)
-#
-# CONFIG_DEBUG_RT_MUTEXES is not set
-# CONFIG_DEBUG_SPINLOCK is not set
-# CONFIG_DEBUG_MUTEXES is not set
-# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set
-# CONFIG_DEBUG_LOCK_ALLOC is not set
-# CONFIG_PROVE_LOCKING is not set
-# CONFIG_LOCK_STAT is not set
-# CONFIG_DEBUG_ATOMIC_SLEEP is not set
-# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
-# CONFIG_LOCK_TORTURE_TEST is not set
-# CONFIG_STACKTRACE is not set
-# CONFIG_DEBUG_KOBJECT is not set
-# CONFIG_DEBUG_BUGVERBOSE is not set
-# CONFIG_DEBUG_LIST is not set
-# CONFIG_DEBUG_PI_LIST is not set
-# CONFIG_DEBUG_SG is not set
-# CONFIG_DEBUG_NOTIFIERS is not set
-# CONFIG_DEBUG_CREDENTIALS is not set
-
-#
-# RCU Debugging
-#
-# CONFIG_PROVE_RCU is not set
-# CONFIG_SPARSE_RCU_POINTER is not set
-# CONFIG_TORTURE_TEST is not set
-# CONFIG_RCU_TORTURE_TEST is not set
-CONFIG_RCU_TORTURE_TEST_SLOW_INIT_DELAY=3
-# CONFIG_RCU_TRACE is not set
-# CONFIG_DEBUG_BLOCK_EXT_DEVT is not set
-# CONFIG_NOTIFIER_ERROR_INJECTION is not set
-# CONFIG_FAULT_INJECTION is not set
-# CONFIG_LATENCYTOP is not set
-CONFIG_HAVE_FUNCTION_TRACER=y
-CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
-CONFIG_HAVE_DYNAMIC_FTRACE=y
-CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
-CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
-CONFIG_HAVE_C_RECORDMCOUNT=y
-CONFIG_TRACING_SUPPORT=y
-# CONFIG_FTRACE is not set
-
-#
-# Runtime Testing
-#
-# CONFIG_LKDTM is not set
-# CONFIG_TEST_LIST_SORT is not set
-# CONFIG_BACKTRACE_SELF_TEST is not set
-# CONFIG_RBTREE_TEST is not set
-# CONFIG_INTERVAL_TREE_TEST is not set
-# CONFIG_PERCPU_TEST is not set
-# CONFIG_ATOMIC64_SELFTEST is not set
-# CONFIG_TEST_HEXDUMP is not set
-# CONFIG_TEST_STRING_HELPERS is not set
-# CONFIG_TEST_KSTRTOX is not set
-# CONFIG_TEST_RHASHTABLE is not set
-CONFIG_BUILD_DOCSRC=y
-# CONFIG_DMA_API_DEBUG is not set
-# CONFIG_TEST_LKM is not set
-# CONFIG_TEST_USER_COPY is not set
-# CONFIG_TEST_BPF is not set
-# CONFIG_TEST_FIRMWARE is not set
-# CONFIG_TEST_UDELAY is not set
-# CONFIG_MEMTEST is not set
-# CONFIG_SAMPLES is not set
-CONFIG_HAVE_ARCH_KGDB=y
-# CONFIG_KGDB is not set
-# CONFIG_ARM_PTDUMP is not set
-# CONFIG_STRICT_DEVMEM is not set
-CONFIG_ARM_UNWIND=y
-CONFIG_DEBUG_USER=y
-# CONFIG_DEBUG_LL is not set
-CONFIG_DEBUG_LL_INCLUDE="mach/debug-macro.S"
-# CONFIG_DEBUG_UART_8250 is not set
-# CONFIG_DEBUG_UART_BCM63XX is not set
-CONFIG_UNCOMPRESS_INCLUDE="debug/uncompress.h"
-# CONFIG_DEBUG_SET_MODULE_RONX is not set
-# CONFIG_CORESIGHT is not set
-
-#
-# Security options
-#
-# CONFIG_KEYS is not set
-# CONFIG_SECURITY_DMESG_RESTRICT is not set
-# CONFIG_SECURITY is not set
-# CONFIG_SECURITYFS is not set
-CONFIG_DEFAULT_SECURITY_DAC=y
-CONFIG_DEFAULT_SECURITY=""
-CONFIG_CRYPTO=y
-
-#
-# Crypto core or helper
-#
-CONFIG_CRYPTO_ALGAPI=y
-CONFIG_CRYPTO_ALGAPI2=y
-CONFIG_CRYPTO_AEAD=y
-CONFIG_CRYPTO_AEAD2=y
-CONFIG_CRYPTO_BLKCIPHER=y
-CONFIG_CRYPTO_BLKCIPHER2=y
-CONFIG_CRYPTO_HASH=y
-CONFIG_CRYPTO_HASH2=y
-CONFIG_CRYPTO_RNG=y
-CONFIG_CRYPTO_RNG2=y
-CONFIG_CRYPTO_PCOMP2=y
-CONFIG_CRYPTO_MANAGER=y
-CONFIG_CRYPTO_MANAGER2=y
-# CONFIG_CRYPTO_USER is not set
-CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y
-CONFIG_CRYPTO_GF128MUL=y
-CONFIG_CRYPTO_NULL=y
-CONFIG_CRYPTO_WORKQUEUE=y
-# CONFIG_CRYPTO_CRYPTD is not set
-# CONFIG_CRYPTO_MCRYPTD is not set
-# CONFIG_CRYPTO_AUTHENC is not set
-# CONFIG_CRYPTO_TEST is not set
-
-#
-# Authenticated Encryption with Associated Data
-#
-CONFIG_CRYPTO_CCM=y
-CONFIG_CRYPTO_GCM=y
-CONFIG_CRYPTO_SEQIV=y
-
-#
-# Block modes
-#
-# CONFIG_CRYPTO_CBC is not set
-CONFIG_CRYPTO_CTR=y
-# CONFIG_CRYPTO_CTS is not set
-CONFIG_CRYPTO_ECB=y
-# CONFIG_CRYPTO_LRW is not set
-# CONFIG_CRYPTO_PCBC is not set
-# CONFIG_CRYPTO_XTS is not set
-
-#
-# Hash modes
-#
-# CONFIG_CRYPTO_CMAC is not set
-# CONFIG_CRYPTO_HMAC is not set
-# CONFIG_CRYPTO_XCBC is not set
-# CONFIG_CRYPTO_VMAC is not set
-
-#
-# Digest
-#
-CONFIG_CRYPTO_CRC32C=y
-# CONFIG_CRYPTO_CRC32 is not set
-# CONFIG_CRYPTO_CRCT10DIF is not set
-CONFIG_CRYPTO_GHASH=y
-# CONFIG_CRYPTO_MD4 is not set
-# CONFIG_CRYPTO_MD5 is not set
-# CONFIG_CRYPTO_MICHAEL_MIC is not set
-# CONFIG_CRYPTO_RMD128 is not set
-# CONFIG_CRYPTO_RMD160 is not set
-# CONFIG_CRYPTO_RMD256 is not set
-# CONFIG_CRYPTO_RMD320 is not set
-# CONFIG_CRYPTO_SHA1 is not set
-# CONFIG_CRYPTO_SHA256 is not set
-# CONFIG_CRYPTO_SHA512 is not set
-# CONFIG_CRYPTO_TGR192 is not set
-# CONFIG_CRYPTO_WP512 is not set
-
-#
-# Ciphers
-#
-CONFIG_CRYPTO_AES=y
-# CONFIG_CRYPTO_ANUBIS is not set
-CONFIG_CRYPTO_ARC4=y
-# CONFIG_CRYPTO_BLOWFISH is not set
-# CONFIG_CRYPTO_CAMELLIA is not set
-# CONFIG_CRYPTO_CAST5 is not set
-# CONFIG_CRYPTO_CAST6 is not set
-# CONFIG_CRYPTO_DES is not set
-# CONFIG_CRYPTO_FCRYPT is not set
-# CONFIG_CRYPTO_KHAZAD is not set
-# CONFIG_CRYPTO_SALSA20 is not set
-# CONFIG_CRYPTO_SEED is not set
-# CONFIG_CRYPTO_SERPENT is not set
-# CONFIG_CRYPTO_TEA is not set
-# CONFIG_CRYPTO_TWOFISH is not set
-
-#
-# Compression
-#
-CONFIG_CRYPTO_DEFLATE=y
-# CONFIG_CRYPTO_ZLIB is not set
-CONFIG_CRYPTO_LZO=y
-# CONFIG_CRYPTO_LZ4 is not set
-# CONFIG_CRYPTO_LZ4HC is not set
-
-#
-# Random Number Generation
-#
-# CONFIG_CRYPTO_ANSI_CPRNG is not set
-# CONFIG_CRYPTO_DRBG_MENU is not set
-CONFIG_CRYPTO_USER_API=m
-CONFIG_CRYPTO_USER_API_HASH=m
-CONFIG_CRYPTO_USER_API_SKCIPHER=m
-# CONFIG_CRYPTO_USER_API_RNG is not set
-# CONFIG_CRYPTO_USER_API_AEAD is not set
-# CONFIG_CRYPTO_HW is not set
-# CONFIG_ARM_CRYPTO is not set
-# CONFIG_BINARY_PRINTF is not set
-
-#
-# Library routines
-#
-CONFIG_BITREVERSE=y
-# CONFIG_HAVE_ARCH_BITREVERSE is not set
-CONFIG_GENERIC_STRNCPY_FROM_USER=y
-CONFIG_GENERIC_STRNLEN_USER=y
-CONFIG_GENERIC_NET_UTILS=y
-CONFIG_GENERIC_PCI_IOMAP=y
-CONFIG_GENERIC_IO=y
-CONFIG_ARCH_USE_CMPXCHG_LOCKREF=y
-CONFIG_CRC_CCITT=y
-CONFIG_CRC16=y
-# CONFIG_CRC_T10DIF is not set
-CONFIG_CRC_ITU_T=y
-CONFIG_CRC32=y
-# CONFIG_CRC32_SELFTEST is not set
-CONFIG_CRC32_SLICEBY8=y
-# CONFIG_CRC32_SLICEBY4 is not set
-# CONFIG_CRC32_SARWATE is not set
-# CONFIG_CRC32_BIT is not set
-CONFIG_CRC7=y
-# CONFIG_LIBCRC32C is not set
-# CONFIG_CRC8 is not set
-# CONFIG_AUDIT_ARCH_COMPAT_GENERIC is not set
-# CONFIG_RANDOM32_SELFTEST is not set
-CONFIG_ZLIB_INFLATE=y
-CONFIG_ZLIB_DEFLATE=y
-CONFIG_LZO_COMPRESS=y
-CONFIG_LZO_DECOMPRESS=y
-CONFIG_LZ4_DECOMPRESS=y
-CONFIG_XZ_DEC=y
-CONFIG_XZ_DEC_X86=y
-CONFIG_XZ_DEC_POWERPC=y
-CONFIG_XZ_DEC_IA64=y
-CONFIG_XZ_DEC_ARM=y
-CONFIG_XZ_DEC_ARMTHUMB=y
-CONFIG_XZ_DEC_SPARC=y
-CONFIG_XZ_DEC_BCJ=y
-# CONFIG_XZ_DEC_TEST is not set
-CONFIG_DECOMPRESS_GZIP=y
-CONFIG_DECOMPRESS_BZIP2=y
-CONFIG_DECOMPRESS_LZMA=y
-CONFIG_DECOMPRESS_XZ=y
-CONFIG_DECOMPRESS_LZO=y
-CONFIG_DECOMPRESS_LZ4=y
-CONFIG_GENERIC_ALLOCATOR=y
-CONFIG_HAS_IOMEM=y
-CONFIG_HAS_IOPORT_MAP=y
-CONFIG_HAS_DMA=y
-CONFIG_DQL=y
-CONFIG_NLATTR=y
-CONFIG_GENERIC_ATOMIC64=y
-CONFIG_ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE=y
-CONFIG_AVERAGE=y
-# CONFIG_CORDIC is not set
-# CONFIG_DDR is not set
-CONFIG_LIBFDT=y
-CONFIG_FONT_SUPPORT=y
-CONFIG_FONTS=y
-CONFIG_FONT_8x8=y
-# CONFIG_FONT_8x16 is not set
-# CONFIG_FONT_6x11 is not set
-# CONFIG_FONT_7x14 is not set
-# CONFIG_FONT_PEARL_8x8 is not set
-CONFIG_FONT_ACORN_8x8=y
-CONFIG_FONT_MINI_4x6=y
-# CONFIG_FONT_6x10 is not set
-# CONFIG_FONT_SUN8x16 is not set
-# CONFIG_FONT_SUN12x22 is not set
-# CONFIG_FONT_10x18 is not set
-CONFIG_ARCH_HAS_SG_CHAIN=y
-# CONFIG_VIRTUALIZATION is not set
-
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---xHFwDpU9dbj6ez1V--
+ include/sound/pcm.h        |  123 +---
+ include/sound/pcm_refine.h |  307 +++++++++
+ sound/core/Kconfig         |    9 +
+ sound/core/Makefile        |    1 +
+ sound/core/pcm_lib.c       |  982 ----------------------------
+ sound/core/pcm_native.c    |  505 ---------------
+ sound/core/pcm_refine.c    | 1519 ++++++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 1837 insertions(+), 1609 deletions(-)
+ create mode 100644 include/sound/pcm_refine.h
+ create mode 100644 sound/core/pcm_refine.c
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 691e7ee..f2d6425 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -26,6 +26,7 @@
+ #include <sound/asound.h>
+ #include <sound/memalloc.h>
+ #include <sound/minors.h>
++#include <sound/pcm_refine.h>
+ #include <linux/poll.h>
+ #include <linux/mm.h>
+ #include <linux/bitops.h>
+@@ -213,34 +214,6 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
+ #endif
+ 
+-struct snd_pcm_file {
+-	struct snd_pcm_substream *substream;
+-	int no_compat_mmap;
+-};
+-
+-struct snd_pcm_hw_rule;
+-typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
+-				      struct snd_pcm_hw_rule *rule);
+-
+-struct snd_pcm_hw_rule {
+-	unsigned int cond;
+-	int var;
+-	int deps[4];
+-
+-	snd_pcm_hw_rule_func_t func;
+-	void *private;
+-};
+-
+-struct snd_pcm_hw_constraints {
+-	struct snd_mask masks[SNDRV_PCM_HW_PARAM_LAST_MASK - 
+-			 SNDRV_PCM_HW_PARAM_FIRST_MASK + 1];
+-	struct snd_interval intervals[SNDRV_PCM_HW_PARAM_LAST_INTERVAL -
+-			     SNDRV_PCM_HW_PARAM_FIRST_INTERVAL + 1];
+-	unsigned int rules_num;
+-	unsigned int rules_all;
+-	struct snd_pcm_hw_rule *rules;
+-};
+-
+ static inline struct snd_mask *constrs_mask(struct snd_pcm_hw_constraints *constrs,
+ 					    snd_pcm_hw_param_t var)
+ {
+@@ -253,38 +226,6 @@ static inline struct snd_interval *constrs_interval(struct snd_pcm_hw_constraint
+ 	return &constrs->intervals[var - SNDRV_PCM_HW_PARAM_FIRST_INTERVAL];
+ }
+ 
+-struct snd_ratnum {
+-	unsigned int num;
+-	unsigned int den_min, den_max, den_step;
+-};
+-
+-struct snd_ratden {
+-	unsigned int num_min, num_max, num_step;
+-	unsigned int den;
+-};
+-
+-struct snd_pcm_hw_constraint_ratnums {
+-	int nrats;
+-	struct snd_ratnum *rats;
+-};
+-
+-struct snd_pcm_hw_constraint_ratdens {
+-	int nrats;
+-	struct snd_ratden *rats;
+-};
+-
+-struct snd_pcm_hw_constraint_list {
+-	const unsigned int *list;
+-	unsigned int count;
+-	unsigned int mask;
+-};
+-
+-struct snd_pcm_hw_constraint_ranges {
+-	unsigned int count;
+-	const struct snd_interval *ranges;
+-	unsigned int mask;
+-};
+-
+ struct snd_pcm_hwptr_log;
+ 
+ /*
+@@ -968,72 +909,10 @@ static inline unsigned int params_buffer_bytes(const struct snd_pcm_hw_params *p
+ 	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_BUFFER_BYTES)->min;
+ }
+ 
+-int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v);
+-void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
+-void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
+-void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b, 
+-			  unsigned int k, struct snd_interval *c);
+-void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
+-			  const struct snd_interval *b, struct snd_interval *c);
+-int snd_interval_list(struct snd_interval *i, unsigned int count,
+-		      const unsigned int *list, unsigned int mask);
+-int snd_interval_ranges(struct snd_interval *i, unsigned int count,
+-			const struct snd_interval *list, unsigned int mask);
+-int snd_interval_ratnum(struct snd_interval *i,
+-			unsigned int rats_count, struct snd_ratnum *rats,
+-			unsigned int *nump, unsigned int *denp);
+-
+ void _snd_pcm_hw_params_any(struct snd_pcm_hw_params *params);
+ void _snd_pcm_hw_param_setempty(struct snd_pcm_hw_params *params, snd_pcm_hw_param_t var);
+ int snd_pcm_hw_params_choose(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
+ 
+-int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
+-
+-int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
+-int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
+-
+-int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-			       u_int32_t mask);
+-int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-				 u_int64_t mask);
+-int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-				 unsigned int min, unsigned int max);
+-int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var);
+-int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime, 
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var,
+-			       const struct snd_pcm_hw_constraint_list *l);
+-int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
+-				 unsigned int cond,
+-				 snd_pcm_hw_param_t var,
+-				 const struct snd_pcm_hw_constraint_ranges *r);
+-int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
+-				  unsigned int cond,
+-				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratnums *r);
+-int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
+-				  unsigned int cond,
+-				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratdens *r);
+-int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
+-				 unsigned int cond,
+-				 unsigned int width,
+-				 unsigned int msbits);
+-int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var,
+-			       unsigned long step);
+-int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var);
+-int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
+-			       unsigned int base_rate);
+-int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
+-			unsigned int cond,
+-			int var,
+-			snd_pcm_hw_rule_func_t func, void *private,
+-			int dep, ...);
+-
+ int snd_pcm_format_signed(snd_pcm_format_t format);
+ int snd_pcm_format_unsigned(snd_pcm_format_t format);
+ int snd_pcm_format_linear(snd_pcm_format_t format);
+diff --git a/include/sound/pcm_refine.h b/include/sound/pcm_refine.h
+new file mode 100644
+index 0000000..2e47620
+--- /dev/null
++++ b/include/sound/pcm_refine.h
+@@ -0,0 +1,307 @@
++#ifndef __SOUND_PCM_REFINE_H
++#define __SOUND_PCM_REFINE_H
++
++/*
++ *  Digital Audio (PCM) HW/SW params refinement layer
++ *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   Abramo Bagnara <abramo@alsa-project.org>
++ *                   Jie Yang <yang.jie@intel.com>
++ *
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
++
++struct snd_pcm_file {
++	struct snd_pcm_substream *substream;
++	int no_compat_mmap;
++};
++
++struct snd_pcm_hw_rule;
++typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
++				      struct snd_pcm_hw_rule *rule);
++
++struct snd_pcm_hw_rule {
++	unsigned int cond;
++	int var;
++	int deps[4];
++
++	snd_pcm_hw_rule_func_t func;
++	void *private;
++};
++
++struct snd_pcm_hw_constraints {
++	struct snd_mask masks[SNDRV_PCM_HW_PARAM_LAST_MASK -
++			 SNDRV_PCM_HW_PARAM_FIRST_MASK + 1];
++	struct snd_interval intervals[SNDRV_PCM_HW_PARAM_LAST_INTERVAL -
++			     SNDRV_PCM_HW_PARAM_FIRST_INTERVAL + 1];
++	unsigned int rules_num;
++	unsigned int rules_all;
++	struct snd_pcm_hw_rule *rules;
++};
++
++struct snd_ratnum {
++	unsigned int num;
++	unsigned int den_min, den_max, den_step;
++};
++
++struct snd_ratden {
++	unsigned int num_min, num_max, num_step;
++	unsigned int den;
++};
++
++struct snd_pcm_hw_constraint_ratnums {
++	int nrats;
++	struct snd_ratnum *rats;
++};
++
++struct snd_pcm_hw_constraint_ratdens {
++	int nrats;
++	struct snd_ratden *rats;
++};
++
++struct snd_pcm_hw_constraint_list {
++	const unsigned int *list;
++	unsigned int count;
++	unsigned int mask;
++};
++
++struct snd_pcm_hw_constraint_ranges {
++	unsigned int count;
++	const struct snd_interval *ranges;
++	unsigned int mask;
++};
++
++struct snd_pcm_runtime;
++
++#ifdef CONFIG_SND_PARAMS_REFINEMENT
++int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v);
++void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
++void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
++void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
++			  unsigned int k, struct snd_interval *c);
++void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
++			  const struct snd_interval *b, struct snd_interval *c);
++int snd_interval_list(struct snd_interval *i, unsigned int count,
++		      const unsigned int *list, unsigned int mask);
++int snd_interval_ranges(struct snd_interval *i, unsigned int count,
++			const struct snd_interval *list, unsigned int mask);
++int snd_interval_ratnum(struct snd_interval *i,
++			unsigned int rats_count, struct snd_ratnum *rats,
++			unsigned int *nump, unsigned int *denp);
++
++
++int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
++
++int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
++int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
++
++int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++			       u_int32_t mask);
++int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 u_int64_t mask);
++int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 unsigned int min, unsigned int max);
++int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var);
++int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       const struct snd_pcm_hw_constraint_list *l);
++int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 snd_pcm_hw_param_t var,
++				 const struct snd_pcm_hw_constraint_ranges *r);
++int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratnums *r);
++int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratdens *r);
++int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 unsigned int width,
++				 unsigned int msbits);
++int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       unsigned long step);
++int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var);
++int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
++			       unsigned int base_rate);
++int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
++			unsigned int cond,
++			int var,
++			snd_pcm_hw_rule_func_t func, void *private,
++			int dep, ...);
++
++#else
++static inline int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
++{
++	return 0;
++}
++
++static inline void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
++{
++}
++
++static inline void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
++{
++}
++
++static inline void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
++			  unsigned int k, struct snd_interval *c)
++{
++}
++
++static inline void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
++			  const struct snd_interval *b, struct snd_interval *c)
++{
++}
++
++static inline int snd_interval_list(struct snd_interval *i, unsigned int count,
++			  const unsigned int *list, unsigned int mask)
++{
++	return 0;
++}
++
++static inline int snd_interval_ranges(struct snd_interval *i, unsigned int count,
++			const struct snd_interval *list, unsigned int mask)
++{
++	return 0;
++}
++
++static inline int snd_interval_ratnum(struct snd_interval *i,
++			unsigned int rats_count, struct snd_ratnum *rats,
++			unsigned int *nump, unsigned int *denp)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++			       u_int32_t mask)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 u_int64_t mask)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 unsigned int min, unsigned int max)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       const struct snd_pcm_hw_constraint_list *l)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 snd_pcm_hw_param_t var,
++				 const struct snd_pcm_hw_constraint_ranges *r)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratnums *r)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratdens *r)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 unsigned int width,
++				 unsigned int msbits)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       unsigned long step)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
++			       unsigned int base_rate)
++{
++	return 0;
++}
++
++static inline int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
++			unsigned int cond,
++			int var,
++			snd_pcm_hw_rule_func_t func, void *private,
++			int dep, ...)
++{
++	return 0;
++}
++
++#endif
++
++#endif /* __SOUND_PCM_REFINE_H */
++
+diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+index 6c96fee..644e837 100644
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -191,6 +191,15 @@ config SND_PROC_FS
+           9KB on x86_64 platform.
+           If unsure say Y.
+ 
++config SND_PARAMS_REFINEMENT
++        bool "HW/SW Params Refinement Support" if EXPERT
++        default y
++        help
++          Say 'N' to disable the HW/SW Params Refinement feature, which may
++	  save about 13KB code size on x86_64 object target.
++          Please be noted that enabling this may break alsa on the desktop,
++          only use it with tinyalsa/tinyplay for device such as IoT.
++
+ config SND_VERBOSE_PROCFS
+ 	bool "Verbose procfs contents"
+ 	depends on SND_PROC_FS
+diff --git a/sound/core/Makefile b/sound/core/Makefile
+index 3354f91..c615404 100644
+--- a/sound/core/Makefile
++++ b/sound/core/Makefile
+@@ -18,6 +18,7 @@ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
+ snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
+ snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
+ snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
++snd-pcm-$(CONFIG_SND_PARAMS_REFINEMENT) += pcm_refine.o
+ 
+ # for trace-points
+ CFLAGS_pcm_lib.o := -I$(src)
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7d45645..0bcc3ec 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -532,119 +532,6 @@ EXPORT_SYMBOL(snd_pcm_set_sync);
+  *  Standard ioctl routine
+  */
+ 
+-static inline unsigned int div32(unsigned int a, unsigned int b, 
+-				 unsigned int *r)
+-{
+-	if (b == 0) {
+-		*r = 0;
+-		return UINT_MAX;
+-	}
+-	*r = a % b;
+-	return a / b;
+-}
+-
+-static inline unsigned int div_down(unsigned int a, unsigned int b)
+-{
+-	if (b == 0)
+-		return UINT_MAX;
+-	return a / b;
+-}
+-
+-static inline unsigned int div_up(unsigned int a, unsigned int b)
+-{
+-	unsigned int r;
+-	unsigned int q;
+-	if (b == 0)
+-		return UINT_MAX;
+-	q = div32(a, b, &r);
+-	if (r)
+-		++q;
+-	return q;
+-}
+-
+-static inline unsigned int mul(unsigned int a, unsigned int b)
+-{
+-	if (a == 0)
+-		return 0;
+-	if (div_down(UINT_MAX, a) < b)
+-		return UINT_MAX;
+-	return a * b;
+-}
+-
+-static inline unsigned int muldiv32(unsigned int a, unsigned int b,
+-				    unsigned int c, unsigned int *r)
+-{
+-	u_int64_t n = (u_int64_t) a * b;
+-	if (c == 0) {
+-		snd_BUG_ON(!n);
+-		*r = 0;
+-		return UINT_MAX;
+-	}
+-	n = div_u64_rem(n, c, r);
+-	if (n >= UINT_MAX) {
+-		*r = 0;
+-		return UINT_MAX;
+-	}
+-	return n;
+-}
+-
+-/**
+- * snd_interval_refine - refine the interval value of configurator
+- * @i: the interval value to refine
+- * @v: the interval value to refer to
+- *
+- * Refines the interval value with the reference value.
+- * The interval is changed to the range satisfying both intervals.
+- * The interval status (min, max, integer, etc.) are evaluated.
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
+-{
+-	int changed = 0;
+-	if (snd_BUG_ON(snd_interval_empty(i)))
+-		return -EINVAL;
+-	if (i->min < v->min) {
+-		i->min = v->min;
+-		i->openmin = v->openmin;
+-		changed = 1;
+-	} else if (i->min == v->min && !i->openmin && v->openmin) {
+-		i->openmin = 1;
+-		changed = 1;
+-	}
+-	if (i->max > v->max) {
+-		i->max = v->max;
+-		i->openmax = v->openmax;
+-		changed = 1;
+-	} else if (i->max == v->max && !i->openmax && v->openmax) {
+-		i->openmax = 1;
+-		changed = 1;
+-	}
+-	if (!i->integer && v->integer) {
+-		i->integer = 1;
+-		changed = 1;
+-	}
+-	if (i->integer) {
+-		if (i->openmin) {
+-			i->min++;
+-			i->openmin = 0;
+-		}
+-		if (i->openmax) {
+-			i->max--;
+-			i->openmax = 0;
+-		}
+-	} else if (!i->openmin && !i->openmax && i->min == i->max)
+-		i->integer = 1;
+-	if (snd_interval_checkempty(i)) {
+-		snd_interval_none(i);
+-		return -EINVAL;
+-	}
+-	return changed;
+-}
+-
+-EXPORT_SYMBOL(snd_interval_refine);
+-
+ static int snd_interval_refine_first(struct snd_interval *i)
+ {
+ 	if (snd_BUG_ON(snd_interval_empty(i)))
+@@ -671,875 +558,6 @@ static int snd_interval_refine_last(struct snd_interval *i)
+ 	return 1;
+ }
+ 
+-void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
+-{
+-	if (a->empty || b->empty) {
+-		snd_interval_none(c);
+-		return;
+-	}
+-	c->empty = 0;
+-	c->min = mul(a->min, b->min);
+-	c->openmin = (a->openmin || b->openmin);
+-	c->max = mul(a->max,  b->max);
+-	c->openmax = (a->openmax || b->openmax);
+-	c->integer = (a->integer && b->integer);
+-}
+-
+-/**
+- * snd_interval_div - refine the interval value with division
+- * @a: dividend
+- * @b: divisor
+- * @c: quotient
+- *
+- * c = a / b
+- *
+- * Returns non-zero if the value is changed, zero if not changed.
+- */
+-void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
+-{
+-	unsigned int r;
+-	if (a->empty || b->empty) {
+-		snd_interval_none(c);
+-		return;
+-	}
+-	c->empty = 0;
+-	c->min = div32(a->min, b->max, &r);
+-	c->openmin = (r || a->openmin || b->openmax);
+-	if (b->min > 0) {
+-		c->max = div32(a->max, b->min, &r);
+-		if (r) {
+-			c->max++;
+-			c->openmax = 1;
+-		} else
+-			c->openmax = (a->openmax || b->openmin);
+-	} else {
+-		c->max = UINT_MAX;
+-		c->openmax = 0;
+-	}
+-	c->integer = 0;
+-}
+-
+-/**
+- * snd_interval_muldivk - refine the interval value
+- * @a: dividend 1
+- * @b: dividend 2
+- * @k: divisor (as integer)
+- * @c: result
+-  *
+- * c = a * b / k
+- *
+- * Returns non-zero if the value is changed, zero if not changed.
+- */
+-void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
+-		      unsigned int k, struct snd_interval *c)
+-{
+-	unsigned int r;
+-	if (a->empty || b->empty) {
+-		snd_interval_none(c);
+-		return;
+-	}
+-	c->empty = 0;
+-	c->min = muldiv32(a->min, b->min, k, &r);
+-	c->openmin = (r || a->openmin || b->openmin);
+-	c->max = muldiv32(a->max, b->max, k, &r);
+-	if (r) {
+-		c->max++;
+-		c->openmax = 1;
+-	} else
+-		c->openmax = (a->openmax || b->openmax);
+-	c->integer = 0;
+-}
+-
+-/**
+- * snd_interval_mulkdiv - refine the interval value
+- * @a: dividend 1
+- * @k: dividend 2 (as integer)
+- * @b: divisor
+- * @c: result
+- *
+- * c = a * k / b
+- *
+- * Returns non-zero if the value is changed, zero if not changed.
+- */
+-void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
+-		      const struct snd_interval *b, struct snd_interval *c)
+-{
+-	unsigned int r;
+-	if (a->empty || b->empty) {
+-		snd_interval_none(c);
+-		return;
+-	}
+-	c->empty = 0;
+-	c->min = muldiv32(a->min, k, b->max, &r);
+-	c->openmin = (r || a->openmin || b->openmax);
+-	if (b->min > 0) {
+-		c->max = muldiv32(a->max, k, b->min, &r);
+-		if (r) {
+-			c->max++;
+-			c->openmax = 1;
+-		} else
+-			c->openmax = (a->openmax || b->openmin);
+-	} else {
+-		c->max = UINT_MAX;
+-		c->openmax = 0;
+-	}
+-	c->integer = 0;
+-}
+-
+-/* ---- */
+-
+-
+-/**
+- * snd_interval_ratnum - refine the interval value
+- * @i: interval to refine
+- * @rats_count: number of ratnum_t 
+- * @rats: ratnum_t array
+- * @nump: pointer to store the resultant numerator
+- * @denp: pointer to store the resultant denominator
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_interval_ratnum(struct snd_interval *i,
+-			unsigned int rats_count, struct snd_ratnum *rats,
+-			unsigned int *nump, unsigned int *denp)
+-{
+-	unsigned int best_num, best_den;
+-	int best_diff;
+-	unsigned int k;
+-	struct snd_interval t;
+-	int err;
+-	unsigned int result_num, result_den;
+-	int result_diff;
+-
+-	best_num = best_den = best_diff = 0;
+-	for (k = 0; k < rats_count; ++k) {
+-		unsigned int num = rats[k].num;
+-		unsigned int den;
+-		unsigned int q = i->min;
+-		int diff;
+-		if (q == 0)
+-			q = 1;
+-		den = div_up(num, q);
+-		if (den < rats[k].den_min)
+-			continue;
+-		if (den > rats[k].den_max)
+-			den = rats[k].den_max;
+-		else {
+-			unsigned int r;
+-			r = (den - rats[k].den_min) % rats[k].den_step;
+-			if (r != 0)
+-				den -= r;
+-		}
+-		diff = num - q * den;
+-		if (diff < 0)
+-			diff = -diff;
+-		if (best_num == 0 ||
+-		    diff * best_den < best_diff * den) {
+-			best_diff = diff;
+-			best_den = den;
+-			best_num = num;
+-		}
+-	}
+-	if (best_den == 0) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	t.min = div_down(best_num, best_den);
+-	t.openmin = !!(best_num % best_den);
+-	
+-	result_num = best_num;
+-	result_diff = best_diff;
+-	result_den = best_den;
+-	best_num = best_den = best_diff = 0;
+-	for (k = 0; k < rats_count; ++k) {
+-		unsigned int num = rats[k].num;
+-		unsigned int den;
+-		unsigned int q = i->max;
+-		int diff;
+-		if (q == 0) {
+-			i->empty = 1;
+-			return -EINVAL;
+-		}
+-		den = div_down(num, q);
+-		if (den > rats[k].den_max)
+-			continue;
+-		if (den < rats[k].den_min)
+-			den = rats[k].den_min;
+-		else {
+-			unsigned int r;
+-			r = (den - rats[k].den_min) % rats[k].den_step;
+-			if (r != 0)
+-				den += rats[k].den_step - r;
+-		}
+-		diff = q * den - num;
+-		if (diff < 0)
+-			diff = -diff;
+-		if (best_num == 0 ||
+-		    diff * best_den < best_diff * den) {
+-			best_diff = diff;
+-			best_den = den;
+-			best_num = num;
+-		}
+-	}
+-	if (best_den == 0) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	t.max = div_up(best_num, best_den);
+-	t.openmax = !!(best_num % best_den);
+-	t.integer = 0;
+-	err = snd_interval_refine(i, &t);
+-	if (err < 0)
+-		return err;
+-
+-	if (snd_interval_single(i)) {
+-		if (best_diff * result_den < result_diff * best_den) {
+-			result_num = best_num;
+-			result_den = best_den;
+-		}
+-		if (nump)
+-			*nump = result_num;
+-		if (denp)
+-			*denp = result_den;
+-	}
+-	return err;
+-}
+-
+-EXPORT_SYMBOL(snd_interval_ratnum);
+-
+-/**
+- * snd_interval_ratden - refine the interval value
+- * @i: interval to refine
+- * @rats_count: number of struct ratden
+- * @rats: struct ratden array
+- * @nump: pointer to store the resultant numerator
+- * @denp: pointer to store the resultant denominator
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-static int snd_interval_ratden(struct snd_interval *i,
+-			       unsigned int rats_count, struct snd_ratden *rats,
+-			       unsigned int *nump, unsigned int *denp)
+-{
+-	unsigned int best_num, best_diff, best_den;
+-	unsigned int k;
+-	struct snd_interval t;
+-	int err;
+-
+-	best_num = best_den = best_diff = 0;
+-	for (k = 0; k < rats_count; ++k) {
+-		unsigned int num;
+-		unsigned int den = rats[k].den;
+-		unsigned int q = i->min;
+-		int diff;
+-		num = mul(q, den);
+-		if (num > rats[k].num_max)
+-			continue;
+-		if (num < rats[k].num_min)
+-			num = rats[k].num_max;
+-		else {
+-			unsigned int r;
+-			r = (num - rats[k].num_min) % rats[k].num_step;
+-			if (r != 0)
+-				num += rats[k].num_step - r;
+-		}
+-		diff = num - q * den;
+-		if (best_num == 0 ||
+-		    diff * best_den < best_diff * den) {
+-			best_diff = diff;
+-			best_den = den;
+-			best_num = num;
+-		}
+-	}
+-	if (best_den == 0) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	t.min = div_down(best_num, best_den);
+-	t.openmin = !!(best_num % best_den);
+-	
+-	best_num = best_den = best_diff = 0;
+-	for (k = 0; k < rats_count; ++k) {
+-		unsigned int num;
+-		unsigned int den = rats[k].den;
+-		unsigned int q = i->max;
+-		int diff;
+-		num = mul(q, den);
+-		if (num < rats[k].num_min)
+-			continue;
+-		if (num > rats[k].num_max)
+-			num = rats[k].num_max;
+-		else {
+-			unsigned int r;
+-			r = (num - rats[k].num_min) % rats[k].num_step;
+-			if (r != 0)
+-				num -= r;
+-		}
+-		diff = q * den - num;
+-		if (best_num == 0 ||
+-		    diff * best_den < best_diff * den) {
+-			best_diff = diff;
+-			best_den = den;
+-			best_num = num;
+-		}
+-	}
+-	if (best_den == 0) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	t.max = div_up(best_num, best_den);
+-	t.openmax = !!(best_num % best_den);
+-	t.integer = 0;
+-	err = snd_interval_refine(i, &t);
+-	if (err < 0)
+-		return err;
+-
+-	if (snd_interval_single(i)) {
+-		if (nump)
+-			*nump = best_num;
+-		if (denp)
+-			*denp = best_den;
+-	}
+-	return err;
+-}
+-
+-/**
+- * snd_interval_list - refine the interval value from the list
+- * @i: the interval value to refine
+- * @count: the number of elements in the list
+- * @list: the value list
+- * @mask: the bit-mask to evaluate
+- *
+- * Refines the interval value from the list.
+- * When mask is non-zero, only the elements corresponding to bit 1 are
+- * evaluated.
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_interval_list(struct snd_interval *i, unsigned int count,
+-		      const unsigned int *list, unsigned int mask)
+-{
+-        unsigned int k;
+-	struct snd_interval list_range;
+-
+-	if (!count) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	snd_interval_any(&list_range);
+-	list_range.min = UINT_MAX;
+-	list_range.max = 0;
+-        for (k = 0; k < count; k++) {
+-		if (mask && !(mask & (1 << k)))
+-			continue;
+-		if (!snd_interval_test(i, list[k]))
+-			continue;
+-		list_range.min = min(list_range.min, list[k]);
+-		list_range.max = max(list_range.max, list[k]);
+-        }
+-	return snd_interval_refine(i, &list_range);
+-}
+-
+-EXPORT_SYMBOL(snd_interval_list);
+-
+-/**
+- * snd_interval_ranges - refine the interval value from the list of ranges
+- * @i: the interval value to refine
+- * @count: the number of elements in the list of ranges
+- * @ranges: the ranges list
+- * @mask: the bit-mask to evaluate
+- *
+- * Refines the interval value from the list of ranges.
+- * When mask is non-zero, only the elements corresponding to bit 1 are
+- * evaluated.
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_interval_ranges(struct snd_interval *i, unsigned int count,
+-			const struct snd_interval *ranges, unsigned int mask)
+-{
+-	unsigned int k;
+-	struct snd_interval range_union;
+-	struct snd_interval range;
+-
+-	if (!count) {
+-		snd_interval_none(i);
+-		return -EINVAL;
+-	}
+-	snd_interval_any(&range_union);
+-	range_union.min = UINT_MAX;
+-	range_union.max = 0;
+-	for (k = 0; k < count; k++) {
+-		if (mask && !(mask & (1 << k)))
+-			continue;
+-		snd_interval_copy(&range, &ranges[k]);
+-		if (snd_interval_refine(&range, i) < 0)
+-			continue;
+-		if (snd_interval_empty(&range))
+-			continue;
+-
+-		if (range.min < range_union.min) {
+-			range_union.min = range.min;
+-			range_union.openmin = 1;
+-		}
+-		if (range.min == range_union.min && !range.openmin)
+-			range_union.openmin = 0;
+-		if (range.max > range_union.max) {
+-			range_union.max = range.max;
+-			range_union.openmax = 1;
+-		}
+-		if (range.max == range_union.max && !range.openmax)
+-			range_union.openmax = 0;
+-	}
+-	return snd_interval_refine(i, &range_union);
+-}
+-EXPORT_SYMBOL(snd_interval_ranges);
+-
+-static int snd_interval_step(struct snd_interval *i, unsigned int step)
+-{
+-	unsigned int n;
+-	int changed = 0;
+-	n = i->min % step;
+-	if (n != 0 || i->openmin) {
+-		i->min += step - n;
+-		i->openmin = 0;
+-		changed = 1;
+-	}
+-	n = i->max % step;
+-	if (n != 0 || i->openmax) {
+-		i->max -= n;
+-		i->openmax = 0;
+-		changed = 1;
+-	}
+-	if (snd_interval_checkempty(i)) {
+-		i->empty = 1;
+-		return -EINVAL;
+-	}
+-	return changed;
+-}
+-
+-/* Info constraints helpers */
+-
+-/**
+- * snd_pcm_hw_rule_add - add the hw-constraint rule
+- * @runtime: the pcm runtime instance
+- * @cond: condition bits
+- * @var: the variable to evaluate
+- * @func: the evaluation function
+- * @private: the private data pointer passed to function
+- * @dep: the dependent variables
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+-			int var,
+-			snd_pcm_hw_rule_func_t func, void *private,
+-			int dep, ...)
+-{
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	struct snd_pcm_hw_rule *c;
+-	unsigned int k;
+-	va_list args;
+-	va_start(args, dep);
+-	if (constrs->rules_num >= constrs->rules_all) {
+-		struct snd_pcm_hw_rule *new;
+-		unsigned int new_rules = constrs->rules_all + 16;
+-		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
+-		if (!new) {
+-			va_end(args);
+-			return -ENOMEM;
+-		}
+-		if (constrs->rules) {
+-			memcpy(new, constrs->rules,
+-			       constrs->rules_num * sizeof(*c));
+-			kfree(constrs->rules);
+-		}
+-		constrs->rules = new;
+-		constrs->rules_all = new_rules;
+-	}
+-	c = &constrs->rules[constrs->rules_num];
+-	c->cond = cond;
+-	c->func = func;
+-	c->var = var;
+-	c->private = private;
+-	k = 0;
+-	while (1) {
+-		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
+-			va_end(args);
+-			return -EINVAL;
+-		}
+-		c->deps[k++] = dep;
+-		if (dep < 0)
+-			break;
+-		dep = va_arg(args, int);
+-	}
+-	constrs->rules_num++;
+-	va_end(args);
+-	return 0;
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_rule_add);
+-
+-/**
+- * snd_pcm_hw_constraint_mask - apply the given bitmap mask constraint
+- * @runtime: PCM runtime instance
+- * @var: hw_params variable to apply the mask
+- * @mask: the bitmap mask
+- *
+- * Apply the constraint of the given bitmap mask to a 32-bit mask parameter.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-			       u_int32_t mask)
+-{
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	struct snd_mask *maskp = constrs_mask(constrs, var);
+-	*maskp->bits &= mask;
+-	memset(maskp->bits + 1, 0, (SNDRV_MASK_MAX-32) / 8); /* clear rest */
+-	if (*maskp->bits == 0)
+-		return -EINVAL;
+-	return 0;
+-}
+-
+-/**
+- * snd_pcm_hw_constraint_mask64 - apply the given bitmap mask constraint
+- * @runtime: PCM runtime instance
+- * @var: hw_params variable to apply the mask
+- * @mask: the 64bit bitmap mask
+- *
+- * Apply the constraint of the given bitmap mask to a 64-bit mask parameter.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-				 u_int64_t mask)
+-{
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	struct snd_mask *maskp = constrs_mask(constrs, var);
+-	maskp->bits[0] &= (u_int32_t)mask;
+-	maskp->bits[1] &= (u_int32_t)(mask >> 32);
+-	memset(maskp->bits + 2, 0, (SNDRV_MASK_MAX-64) / 8); /* clear rest */
+-	if (! maskp->bits[0] && ! maskp->bits[1])
+-		return -EINVAL;
+-	return 0;
+-}
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_mask64);
+-
+-/**
+- * snd_pcm_hw_constraint_integer - apply an integer constraint to an interval
+- * @runtime: PCM runtime instance
+- * @var: hw_params variable to apply the integer constraint
+- *
+- * Apply the constraint of integer to an interval parameter.
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
+-{
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	return snd_interval_setinteger(constrs_interval(constrs, var));
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_integer);
+-
+-/**
+- * snd_pcm_hw_constraint_minmax - apply a min/max range constraint to an interval
+- * @runtime: PCM runtime instance
+- * @var: hw_params variable to apply the range
+- * @min: the minimal value
+- * @max: the maximal value
+- * 
+- * Apply the min/max range constraint to an interval parameter.
+- *
+- * Return: Positive if the value is changed, zero if it's not changed, or a
+- * negative error code.
+- */
+-int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
+-				 unsigned int min, unsigned int max)
+-{
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	struct snd_interval t;
+-	t.min = min;
+-	t.max = max;
+-	t.openmin = t.openmax = 0;
+-	t.integer = 0;
+-	return snd_interval_refine(constrs_interval(constrs, var), &t);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_minmax);
+-
+-static int snd_pcm_hw_rule_list(struct snd_pcm_hw_params *params,
+-				struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_hw_constraint_list *list = rule->private;
+-	return snd_interval_list(hw_param_interval(params, rule->var), list->count, list->list, list->mask);
+-}		
+-
+-
+-/**
+- * snd_pcm_hw_constraint_list - apply a list of constraints to a parameter
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the list constraint
+- * @l: list
+- * 
+- * Apply the list of constraints to an interval parameter.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var,
+-			       const struct snd_pcm_hw_constraint_list *l)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_list, (void *)l,
+-				   var, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_list);
+-
+-static int snd_pcm_hw_rule_ranges(struct snd_pcm_hw_params *params,
+-				  struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_hw_constraint_ranges *r = rule->private;
+-	return snd_interval_ranges(hw_param_interval(params, rule->var),
+-				   r->count, r->ranges, r->mask);
+-}
+-
+-
+-/**
+- * snd_pcm_hw_constraint_ranges - apply list of range constraints to a parameter
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the list of range constraints
+- * @r: ranges
+- *
+- * Apply the list of range constraints to an interval parameter.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
+-				 unsigned int cond,
+-				 snd_pcm_hw_param_t var,
+-				 const struct snd_pcm_hw_constraint_ranges *r)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_ranges, (void *)r,
+-				   var, -1);
+-}
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_ranges);
+-
+-static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
+-				   struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_hw_constraint_ratnums *r = rule->private;
+-	unsigned int num = 0, den = 0;
+-	int err;
+-	err = snd_interval_ratnum(hw_param_interval(params, rule->var),
+-				  r->nrats, r->rats, &num, &den);
+-	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
+-		params->rate_num = num;
+-		params->rate_den = den;
+-	}
+-	return err;
+-}
+-
+-/**
+- * snd_pcm_hw_constraint_ratnums - apply ratnums constraint to a parameter
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the ratnums constraint
+- * @r: struct snd_ratnums constriants
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
+-				  unsigned int cond,
+-				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratnums *r)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_ratnums, r,
+-				   var, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
+-
+-static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
+-				   struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_hw_constraint_ratdens *r = rule->private;
+-	unsigned int num = 0, den = 0;
+-	int err = snd_interval_ratden(hw_param_interval(params, rule->var),
+-				  r->nrats, r->rats, &num, &den);
+-	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
+-		params->rate_num = num;
+-		params->rate_den = den;
+-	}
+-	return err;
+-}
+-
+-/**
+- * snd_pcm_hw_constraint_ratdens - apply ratdens constraint to a parameter
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the ratdens constraint
+- * @r: struct snd_ratdens constriants
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
+-				  unsigned int cond,
+-				  snd_pcm_hw_param_t var,
+-				  struct snd_pcm_hw_constraint_ratdens *r)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var,
+-				   snd_pcm_hw_rule_ratdens, r,
+-				   var, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_ratdens);
+-
+-static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
+-				  struct snd_pcm_hw_rule *rule)
+-{
+-	unsigned int l = (unsigned long) rule->private;
+-	int width = l & 0xffff;
+-	unsigned int msbits = l >> 16;
+-	struct snd_interval *i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+-
+-	if (!snd_interval_single(i))
+-		return 0;
+-
+-	if ((snd_interval_value(i) == width) ||
+-	    (width == 0 && snd_interval_value(i) > msbits))
+-		params->msbits = min_not_zero(params->msbits, msbits);
+-
+-	return 0;
+-}
+-
+-/**
+- * snd_pcm_hw_constraint_msbits - add a hw constraint msbits rule
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @width: sample bits width
+- * @msbits: msbits width
+- *
+- * This constraint will set the number of most significant bits (msbits) if a
+- * sample format with the specified width has been select. If width is set to 0
+- * the msbits will be set for any sample format with a width larger than the
+- * specified msbits.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
+-				 unsigned int cond,
+-				 unsigned int width,
+-				 unsigned int msbits)
+-{
+-	unsigned long l = (msbits << 16) | width;
+-	return snd_pcm_hw_rule_add(runtime, cond, -1,
+-				    snd_pcm_hw_rule_msbits,
+-				    (void*) l,
+-				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
+-
+-static int snd_pcm_hw_rule_step(struct snd_pcm_hw_params *params,
+-				struct snd_pcm_hw_rule *rule)
+-{
+-	unsigned long step = (unsigned long) rule->private;
+-	return snd_interval_step(hw_param_interval(params, rule->var), step);
+-}
+-
+-/**
+- * snd_pcm_hw_constraint_step - add a hw constraint step rule
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the step constraint
+- * @step: step size
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var,
+-			       unsigned long step)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var, 
+-				   snd_pcm_hw_rule_step, (void *) step,
+-				   var, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_step);
+-
+-static int snd_pcm_hw_rule_pow2(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
+-{
+-	static unsigned int pow2_sizes[] = {
+-		1<<0, 1<<1, 1<<2, 1<<3, 1<<4, 1<<5, 1<<6, 1<<7,
+-		1<<8, 1<<9, 1<<10, 1<<11, 1<<12, 1<<13, 1<<14, 1<<15,
+-		1<<16, 1<<17, 1<<18, 1<<19, 1<<20, 1<<21, 1<<22, 1<<23,
+-		1<<24, 1<<25, 1<<26, 1<<27, 1<<28, 1<<29, 1<<30
+-	};
+-	return snd_interval_list(hw_param_interval(params, rule->var),
+-				 ARRAY_SIZE(pow2_sizes), pow2_sizes, 0);
+-}		
+-
+-/**
+- * snd_pcm_hw_constraint_pow2 - add a hw constraint power-of-2 rule
+- * @runtime: PCM runtime instance
+- * @cond: condition bits
+- * @var: hw_params variable to apply the power-of-2 constraint
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
+-			       unsigned int cond,
+-			       snd_pcm_hw_param_t var)
+-{
+-	return snd_pcm_hw_rule_add(runtime, cond, var, 
+-				   snd_pcm_hw_rule_pow2, NULL,
+-				   var, -1);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_constraint_pow2);
+-
+-static int snd_pcm_hw_rule_noresample_func(struct snd_pcm_hw_params *params,
+-					   struct snd_pcm_hw_rule *rule)
+-{
+-	unsigned int base_rate = (unsigned int)(uintptr_t)rule->private;
+-	struct snd_interval *rate;
+-
+-	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	return snd_interval_list(rate, 1, &base_rate, 0);
+-}
+-
+-/**
+- * snd_pcm_hw_rule_noresample - add a rule to allow disabling hw resampling
+- * @runtime: PCM runtime instance
+- * @base_rate: the rate at which the hardware does not resample
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+- */
+-int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
+-			       unsigned int base_rate)
+-{
+-	return snd_pcm_hw_rule_add(runtime, SNDRV_PCM_HW_PARAMS_NORESAMPLE,
+-				   SNDRV_PCM_HW_PARAM_RATE,
+-				   snd_pcm_hw_rule_noresample_func,
+-				   (void *)(uintptr_t)base_rate,
+-				   SNDRV_PCM_HW_PARAM_RATE, -1);
+-}
+-EXPORT_SYMBOL(snd_pcm_hw_rule_noresample);
+-
+ static void _snd_pcm_hw_param_any(struct snd_pcm_hw_params *params,
+ 				  snd_pcm_hw_param_t var)
+ {
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index d126c03..b4c4829 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -227,21 +227,6 @@ int snd_pcm_info_user(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 
+-static bool hw_support_mmap(struct snd_pcm_substream *substream)
+-{
+-	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
+-		return false;
+-	/* check architectures that return -EINVAL from dma_mmap_coherent() */
+-	/* FIXME: this should be some global flag */
+-#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
+-	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
+-	if (!substream->ops->mmap &&
+-	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
+-		return false;
+-#endif
+-	return true;
+-}
+-
+ #undef RULES_DEBUG
+ 
+ #ifdef RULES_DEBUG
+@@ -265,184 +250,6 @@ static const char * const snd_pcm_hw_param_names[] = {
+ };
+ #endif
+ 
+-int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
+-		      struct snd_pcm_hw_params *params)
+-{
+-	unsigned int k;
+-	struct snd_pcm_hardware *hw;
+-	struct snd_interval *i = NULL;
+-	struct snd_mask *m = NULL;
+-	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
+-	unsigned int rstamps[constrs->rules_num];
+-	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
+-	unsigned int stamp = 2;
+-	int changed, again;
+-
+-	params->info = 0;
+-	params->fifo_size = 0;
+-	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
+-		params->msbits = 0;
+-	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
+-		params->rate_num = 0;
+-		params->rate_den = 0;
+-	}
+-
+-	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
+-		m = hw_param_mask(params, k);
+-		if (snd_mask_empty(m))
+-			return -EINVAL;
+-		if (!(params->rmask & (1 << k)))
+-			continue;
+-#ifdef RULES_DEBUG
+-		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
+-		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
+-#endif
+-		changed = snd_mask_refine(m, constrs_mask(constrs, k));
+-#ifdef RULES_DEBUG
+-		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
+-#endif
+-		if (changed)
+-			params->cmask |= 1 << k;
+-		if (changed < 0)
+-			return changed;
+-	}
+-
+-	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
+-		i = hw_param_interval(params, k);
+-		if (snd_interval_empty(i))
+-			return -EINVAL;
+-		if (!(params->rmask & (1 << k)))
+-			continue;
+-#ifdef RULES_DEBUG
+-		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
+-		if (i->empty)
+-			pr_cont("empty");
+-		else
+-			pr_cont("%c%u %u%c",
+-			       i->openmin ? '(' : '[', i->min,
+-			       i->max, i->openmax ? ')' : ']');
+-		pr_cont(" -> ");
+-#endif
+-		changed = snd_interval_refine(i, constrs_interval(constrs, k));
+-#ifdef RULES_DEBUG
+-		if (i->empty)
+-			pr_cont("empty\n");
+-		else 
+-			pr_cont("%c%u %u%c\n",
+-			       i->openmin ? '(' : '[', i->min,
+-			       i->max, i->openmax ? ')' : ']');
+-#endif
+-		if (changed)
+-			params->cmask |= 1 << k;
+-		if (changed < 0)
+-			return changed;
+-	}
+-
+-	for (k = 0; k < constrs->rules_num; k++)
+-		rstamps[k] = 0;
+-	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) 
+-		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
+-	do {
+-		again = 0;
+-		for (k = 0; k < constrs->rules_num; k++) {
+-			struct snd_pcm_hw_rule *r = &constrs->rules[k];
+-			unsigned int d;
+-			int doit = 0;
+-			if (r->cond && !(r->cond & params->flags))
+-				continue;
+-			for (d = 0; r->deps[d] >= 0; d++) {
+-				if (vstamps[r->deps[d]] > rstamps[k]) {
+-					doit = 1;
+-					break;
+-				}
+-			}
+-			if (!doit)
+-				continue;
+-#ifdef RULES_DEBUG
+-			pr_debug("Rule %d [%p]: ", k, r->func);
+-			if (r->var >= 0) {
+-				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
+-				if (hw_is_mask(r->var)) {
+-					m = hw_param_mask(params, r->var);
+-					pr_cont("%x", *m->bits);
+-				} else {
+-					i = hw_param_interval(params, r->var);
+-					if (i->empty)
+-						pr_cont("empty");
+-					else
+-						pr_cont("%c%u %u%c",
+-						       i->openmin ? '(' : '[', i->min,
+-						       i->max, i->openmax ? ')' : ']');
+-				}
+-			}
+-#endif
+-			changed = r->func(params, r);
+-#ifdef RULES_DEBUG
+-			if (r->var >= 0) {
+-				pr_cont(" -> ");
+-				if (hw_is_mask(r->var))
+-					pr_cont("%x", *m->bits);
+-				else {
+-					if (i->empty)
+-						pr_cont("empty");
+-					else
+-						pr_cont("%c%u %u%c",
+-						       i->openmin ? '(' : '[', i->min,
+-						       i->max, i->openmax ? ')' : ']');
+-				}
+-			}
+-			pr_cont("\n");
+-#endif
+-			rstamps[k] = stamp;
+-			if (changed && r->var >= 0) {
+-				params->cmask |= (1 << r->var);
+-				vstamps[r->var] = stamp;
+-				again = 1;
+-			}
+-			if (changed < 0)
+-				return changed;
+-			stamp++;
+-		}
+-	} while (again);
+-	if (!params->msbits) {
+-		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+-		if (snd_interval_single(i))
+-			params->msbits = snd_interval_value(i);
+-	}
+-
+-	if (!params->rate_den) {
+-		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-		if (snd_interval_single(i)) {
+-			params->rate_num = snd_interval_value(i);
+-			params->rate_den = 1;
+-		}
+-	}
+-
+-	hw = &substream->runtime->hw;
+-	if (!params->info) {
+-		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
+-					    SNDRV_PCM_INFO_DRAIN_TRIGGER);
+-		if (!hw_support_mmap(substream))
+-			params->info &= ~(SNDRV_PCM_INFO_MMAP |
+-					  SNDRV_PCM_INFO_MMAP_VALID);
+-	}
+-	if (!params->fifo_size) {
+-		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-		if (snd_mask_min(m) == snd_mask_max(m) &&
+-                    snd_interval_min(i) == snd_interval_max(i)) {
+-			changed = substream->ops->ioctl(substream,
+-					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
+-			if (changed < 0)
+-				return changed;
+-		}
+-	}
+-	params->rmask = 0;
+-	return 0;
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_hw_refine);
+-
+ static int snd_pcm_hw_refine_user(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params __user * _params)
+ {
+@@ -1888,89 +1695,6 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
+ /*
+  * hw configurator
+  */
+-static int snd_pcm_hw_rule_mul(struct snd_pcm_hw_params *params,
+-			       struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	snd_interval_mul(hw_param_interval_c(params, rule->deps[0]),
+-		     hw_param_interval_c(params, rule->deps[1]), &t);
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}
+-
+-static int snd_pcm_hw_rule_div(struct snd_pcm_hw_params *params,
+-			       struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	snd_interval_div(hw_param_interval_c(params, rule->deps[0]),
+-		     hw_param_interval_c(params, rule->deps[1]), &t);
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}
+-
+-static int snd_pcm_hw_rule_muldivk(struct snd_pcm_hw_params *params,
+-				   struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	snd_interval_muldivk(hw_param_interval_c(params, rule->deps[0]),
+-			 hw_param_interval_c(params, rule->deps[1]),
+-			 (unsigned long) rule->private, &t);
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}
+-
+-static int snd_pcm_hw_rule_mulkdiv(struct snd_pcm_hw_params *params,
+-				   struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	snd_interval_mulkdiv(hw_param_interval_c(params, rule->deps[0]),
+-			 (unsigned long) rule->private,
+-			 hw_param_interval_c(params, rule->deps[1]), &t);
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}
+-
+-static int snd_pcm_hw_rule_format(struct snd_pcm_hw_params *params,
+-				  struct snd_pcm_hw_rule *rule)
+-{
+-	unsigned int k;
+-	struct snd_interval *i = hw_param_interval(params, rule->deps[0]);
+-	struct snd_mask m;
+-	struct snd_mask *mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-	snd_mask_any(&m);
+-	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
+-		int bits;
+-		if (! snd_mask_test(mask, k))
+-			continue;
+-		bits = snd_pcm_format_physical_width(k);
+-		if (bits <= 0)
+-			continue; /* ignore invalid formats */
+-		if ((unsigned)bits < i->min || (unsigned)bits > i->max)
+-			snd_mask_reset(&m, k);
+-	}
+-	return snd_mask_refine(mask, &m);
+-}
+-
+-static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
+-				       struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	unsigned int k;
+-	t.min = UINT_MAX;
+-	t.max = 0;
+-	t.openmin = 0;
+-	t.openmax = 0;
+-	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
+-		int bits;
+-		if (! snd_mask_test(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), k))
+-			continue;
+-		bits = snd_pcm_format_physical_width(k);
+-		if (bits <= 0)
+-			continue; /* ignore invalid formats */
+-		if (t.min > (unsigned)bits)
+-			t.min = bits;
+-		if (t.max < (unsigned)bits)
+-			t.max = bits;
+-	}
+-	t.integer = 1;
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}
+ 
+ #if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
+ #error "Change this table"
+@@ -1984,235 +1708,6 @@ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
+ 	.list = rates,
+ };
+ 
+-static int snd_pcm_hw_rule_rate(struct snd_pcm_hw_params *params,
+-				struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_pcm_hardware *hw = rule->private;
+-	return snd_interval_list(hw_param_interval(params, rule->var),
+-				 snd_pcm_known_rates.count,
+-				 snd_pcm_known_rates.list, hw->rates);
+-}		
+-
+-static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
+-					    struct snd_pcm_hw_rule *rule)
+-{
+-	struct snd_interval t;
+-	struct snd_pcm_substream *substream = rule->private;
+-	t.min = 0;
+-	t.max = substream->buffer_bytes_max;
+-	t.openmin = 0;
+-	t.openmax = 0;
+-	t.integer = 1;
+-	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+-}		
+-
+-int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
+-	int k, err;
+-
+-	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
+-		snd_mask_any(constrs_mask(constrs, k));
+-	}
+-
+-	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
+-		snd_interval_any(constrs_interval(constrs, k));
+-	}
+-
+-	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_CHANNELS));
+-	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_SIZE));
+-	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_BYTES));
+-	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_SAMPLE_BITS));
+-	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_FRAME_BITS));
+-
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
+-				   snd_pcm_hw_rule_format, NULL,
+-				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, 
+-				  snd_pcm_hw_rule_sample_bits, NULL,
+-				  SNDRV_PCM_HW_PARAM_FORMAT, 
+-				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, 
+-				  snd_pcm_hw_rule_div, NULL,
+-				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
+-				  snd_pcm_hw_rule_mul, NULL,
+-				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS, 
+-				  snd_pcm_hw_rule_div, NULL,
+-				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_TIME, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_BUFFER_TIME, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIODS, 
+-				  snd_pcm_hw_rule_div, NULL,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
+-				  snd_pcm_hw_rule_div, NULL,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
+-				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
+-				  snd_pcm_hw_rule_mul, NULL,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
+-				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 
+-				  snd_pcm_hw_rule_muldivk, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 
+-				  snd_pcm_hw_rule_muldivk, (void*) 8,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_TIME, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 
+-				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (err < 0)
+-		return err;
+-	return 0;
+-}
+-
+-int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_pcm_hardware *hw = &runtime->hw;
+-	int err;
+-	unsigned int mask = 0;
+-
+-        if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
+-		mask |= 1 << SNDRV_PCM_ACCESS_RW_INTERLEAVED;
+-        if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
+-		mask |= 1 << SNDRV_PCM_ACCESS_RW_NONINTERLEAVED;
+-	if (hw_support_mmap(substream)) {
+-		if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
+-			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_INTERLEAVED;
+-		if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
+-			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED;
+-		if (hw->info & SNDRV_PCM_INFO_COMPLEX)
+-			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_COMPLEX;
+-	}
+-	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_ACCESS, mask);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT, hw->formats);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT, 1 << SNDRV_PCM_SUBFORMAT_STD);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
+-					   hw->channels_min, hw->channels_max);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE,
+-					   hw->rate_min, hw->rate_max);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+-					   hw->period_bytes_min, hw->period_bytes_max);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS,
+-					   hw->periods_min, hw->periods_max);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+-					   hw->period_bytes_min, hw->buffer_bytes_max);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 
+-				  snd_pcm_hw_rule_buffer_bytes_max, substream,
+-				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
+-	if (err < 0)
+-		return err;
+-
+-	/* FIXME: remove */
+-	if (runtime->dma_bytes) {
+-		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
+-		err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
+-					  snd_pcm_hw_rule_rate, hw,
+-					  SNDRV_PCM_HW_PARAM_RATE, -1);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	/* FIXME: this belong to lowlevel */
+-	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
+-
+-	return 0;
+-}
+-
+ static void pcm_release_private(struct snd_pcm_substream *substream)
+ {
+ 	snd_pcm_unlink(substream);
+diff --git a/sound/core/pcm_refine.c b/sound/core/pcm_refine.c
+new file mode 100644
+index 0000000..40ae80e
+--- /dev/null
++++ b/sound/core/pcm_refine.c
+@@ -0,0 +1,1519 @@
++/*
++ *  Digital Audio (PCM) abstract layer
++ *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   Abramo Bagnara <abramo@alsa-project.org>
++ *                   Jie Yang <yang.jie@intel.com>
++ *
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
++
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++
++
++static bool hw_support_mmap(struct snd_pcm_substream *substream)
++{
++	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
++		return false;
++	/* check architectures that return -EINVAL from dma_mmap_coherent() */
++	/* FIXME: this should be some global flag */
++#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
++	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
++	if (!substream->ops->mmap &&
++	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
++		return false;
++#endif
++	return true;
++}
++
++int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
++		      struct snd_pcm_hw_params *params)
++{
++	unsigned int k;
++	struct snd_pcm_hardware *hw;
++	struct snd_interval *i = NULL;
++	struct snd_mask *m = NULL;
++	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
++	unsigned int rstamps[constrs->rules_num];
++	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
++	unsigned int stamp = 2;
++	int changed, again;
++
++	params->info = 0;
++	params->fifo_size = 0;
++	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
++		params->msbits = 0;
++	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
++		params->rate_num = 0;
++		params->rate_den = 0;
++	}
++
++	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
++		m = hw_param_mask(params, k);
++		if (snd_mask_empty(m))
++			return -EINVAL;
++		if (!(params->rmask & (1 << k)))
++			continue;
++#ifdef RULES_DEBUG
++		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
++		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
++#endif
++		changed = snd_mask_refine(m, constrs_mask(constrs, k));
++#ifdef RULES_DEBUG
++		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
++#endif
++		if (changed)
++			params->cmask |= 1 << k;
++		if (changed < 0)
++			return changed;
++	}
++
++	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
++		i = hw_param_interval(params, k);
++		if (snd_interval_empty(i))
++			return -EINVAL;
++		if (!(params->rmask & (1 << k)))
++			continue;
++#ifdef RULES_DEBUG
++		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
++		if (i->empty)
++			pr_cont("empty");
++		else
++			pr_cont("%c%u %u%c",
++			       i->openmin ? '(' : '[', i->min,
++			       i->max, i->openmax ? ')' : ']');
++		pr_cont(" -> ");
++#endif
++		changed = snd_interval_refine(i, constrs_interval(constrs, k));
++#ifdef RULES_DEBUG
++		if (i->empty)
++			pr_cont("empty\n");
++		else
++			pr_cont("%c%u %u%c\n",
++			       i->openmin ? '(' : '[', i->min,
++			       i->max, i->openmax ? ')' : ']');
++#endif
++		if (changed)
++			params->cmask |= 1 << k;
++		if (changed < 0)
++			return changed;
++	}
++
++	for (k = 0; k < constrs->rules_num; k++)
++		rstamps[k] = 0;
++	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
++		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
++	do {
++		again = 0;
++		for (k = 0; k < constrs->rules_num; k++) {
++			struct snd_pcm_hw_rule *r = &constrs->rules[k];
++			unsigned int d;
++			int doit = 0;
++			if (r->cond && !(r->cond & params->flags))
++				continue;
++			for (d = 0; r->deps[d] >= 0; d++) {
++				if (vstamps[r->deps[d]] > rstamps[k]) {
++					doit = 1;
++					break;
++				}
++			}
++			if (!doit)
++				continue;
++#ifdef RULES_DEBUG
++			pr_debug("Rule %d [%p]: ", k, r->func);
++			if (r->var >= 0) {
++				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
++				if (hw_is_mask(r->var)) {
++					m = hw_param_mask(params, r->var);
++					pr_cont("%x", *m->bits);
++				} else {
++					i = hw_param_interval(params, r->var);
++					if (i->empty)
++						pr_cont("empty");
++					else
++						pr_cont("%c%u %u%c",
++						       i->openmin ? '(' : '[', i->min,
++						       i->max, i->openmax ? ')' : ']');
++				}
++			}
++#endif
++			changed = r->func(params, r);
++#ifdef RULES_DEBUG
++			if (r->var >= 0) {
++				pr_cont(" -> ");
++				if (hw_is_mask(r->var))
++					pr_cont("%x", *m->bits);
++				else {
++					if (i->empty)
++						pr_cont("empty");
++					else
++						pr_cont("%c%u %u%c",
++						       i->openmin ? '(' : '[', i->min,
++						       i->max, i->openmax ? ')' : ']');
++				}
++			}
++			pr_cont("\n");
++#endif
++			rstamps[k] = stamp;
++			if (changed && r->var >= 0) {
++				params->cmask |= (1 << r->var);
++				vstamps[r->var] = stamp;
++				again = 1;
++			}
++			if (changed < 0)
++				return changed;
++			stamp++;
++		}
++	} while (again);
++	if (!params->msbits) {
++		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
++		if (snd_interval_single(i))
++			params->msbits = snd_interval_value(i);
++	}
++
++	if (!params->rate_den) {
++		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++		if (snd_interval_single(i)) {
++			params->rate_num = snd_interval_value(i);
++			params->rate_den = 1;
++		}
++	}
++
++	hw = &substream->runtime->hw;
++	if (!params->info) {
++		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
++					    SNDRV_PCM_INFO_DRAIN_TRIGGER);
++		if (!hw_support_mmap(substream))
++			params->info &= ~(SNDRV_PCM_INFO_MMAP |
++					  SNDRV_PCM_INFO_MMAP_VALID);
++	}
++	if (!params->fifo_size) {
++		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++		if (snd_mask_min(m) == snd_mask_max(m) &&
++                    snd_interval_min(i) == snd_interval_max(i)) {
++			changed = substream->ops->ioctl(substream,
++					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
++			if (changed < 0)
++				return changed;
++		}
++	}
++	params->rmask = 0;
++	return 0;
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_refine);
++
++static int snd_pcm_hw_rule_mul(struct snd_pcm_hw_params *params,
++			       struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	snd_interval_mul(hw_param_interval_c(params, rule->deps[0]),
++		     hw_param_interval_c(params, rule->deps[1]), &t);
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++static int snd_pcm_hw_rule_div(struct snd_pcm_hw_params *params,
++			       struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	snd_interval_div(hw_param_interval_c(params, rule->deps[0]),
++		     hw_param_interval_c(params, rule->deps[1]), &t);
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++static int snd_pcm_hw_rule_muldivk(struct snd_pcm_hw_params *params,
++				   struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	snd_interval_muldivk(hw_param_interval_c(params, rule->deps[0]),
++			 hw_param_interval_c(params, rule->deps[1]),
++			 (unsigned long) rule->private, &t);
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++static int snd_pcm_hw_rule_mulkdiv(struct snd_pcm_hw_params *params,
++				   struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	snd_interval_mulkdiv(hw_param_interval_c(params, rule->deps[0]),
++			 (unsigned long) rule->private,
++			 hw_param_interval_c(params, rule->deps[1]), &t);
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++static int snd_pcm_hw_rule_format(struct snd_pcm_hw_params *params,
++				  struct snd_pcm_hw_rule *rule)
++{
++	unsigned int k;
++	struct snd_interval *i = hw_param_interval(params, rule->deps[0]);
++	struct snd_mask m;
++	struct snd_mask *mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++	snd_mask_any(&m);
++	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
++		int bits;
++		if (! snd_mask_test(mask, k))
++			continue;
++		bits = snd_pcm_format_physical_width(k);
++		if (bits <= 0)
++			continue; /* ignore invalid formats */
++		if ((unsigned)bits < i->min || (unsigned)bits > i->max)
++			snd_mask_reset(&m, k);
++	}
++	return snd_mask_refine(mask, &m);
++}
++
++static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
++				       struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	unsigned int k;
++	t.min = UINT_MAX;
++	t.max = 0;
++	t.openmin = 0;
++	t.openmax = 0;
++	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
++		int bits;
++		if (! snd_mask_test(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), k))
++			continue;
++		bits = snd_pcm_format_physical_width(k);
++		if (bits <= 0)
++			continue; /* ignore invalid formats */
++		if (t.min > (unsigned)bits)
++			t.min = bits;
++		if (t.max < (unsigned)bits)
++			t.max = bits;
++	}
++	t.integer = 1;
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++static int snd_pcm_hw_rule_rate(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_hardware *hw = rule->private;
++	return snd_interval_list(hw_param_interval(params, rule->var),
++				 snd_pcm_known_rates.count,
++				 snd_pcm_known_rates.list, hw->rates);
++}
++
++static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
++					    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_interval t;
++	struct snd_pcm_substream *substream = rule->private;
++	t.min = 0;
++	t.max = substream->buffer_bytes_max;
++	t.openmin = 0;
++	t.openmax = 0;
++	t.integer = 1;
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
++int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	int k, err;
++
++	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
++		snd_mask_any(constrs_mask(constrs, k));
++	}
++
++	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
++		snd_interval_any(constrs_interval(constrs, k));
++	}
++
++	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_CHANNELS));
++	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_SIZE));
++	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_BYTES));
++	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_SAMPLE_BITS));
++	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_FRAME_BITS));
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
++				   snd_pcm_hw_rule_format, NULL,
++				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
++				  snd_pcm_hw_rule_sample_bits, NULL,
++				  SNDRV_PCM_HW_PARAM_FORMAT,
++				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
++				  snd_pcm_hw_rule_div, NULL,
++				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
++				  snd_pcm_hw_rule_mul, NULL,
++				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  snd_pcm_hw_rule_div, NULL,
++				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_TIME, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_BUFFER_TIME, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIODS,
++				  snd_pcm_hw_rule_div, NULL,
++				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++				  snd_pcm_hw_rule_div, NULL,
++				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
++				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_PERIOD_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++				  snd_pcm_hw_rule_mul, NULL,
++				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
++				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_BUFFER_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++				  snd_pcm_hw_rule_muldivk, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++				  snd_pcm_hw_rule_muldivk, (void*) 8,
++				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_TIME,
++				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
++				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++	return 0;
++}
++
++int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_pcm_hardware *hw = &runtime->hw;
++	int err;
++	unsigned int mask = 0;
++
++        if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
++		mask |= 1 << SNDRV_PCM_ACCESS_RW_INTERLEAVED;
++        if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
++		mask |= 1 << SNDRV_PCM_ACCESS_RW_NONINTERLEAVED;
++	if (hw_support_mmap(substream)) {
++		if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
++			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_INTERLEAVED;
++		if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
++			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED;
++		if (hw->info & SNDRV_PCM_INFO_COMPLEX)
++			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_COMPLEX;
++	}
++	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_ACCESS, mask);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT, hw->formats);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT, 1 << SNDRV_PCM_SUBFORMAT_STD);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
++					   hw->channels_min, hw->channels_max);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE,
++					   hw->rate_min, hw->rate_max);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++					   hw->period_bytes_min, hw->period_bytes_max);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS,
++					   hw->periods_min, hw->periods_max);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++					   hw->period_bytes_min, hw->buffer_bytes_max);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++				  snd_pcm_hw_rule_buffer_bytes_max, substream,
++				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
++	if (err < 0)
++		return err;
++
++	/* FIXME: remove */
++	if (runtime->dma_bytes) {
++		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
++		if (err < 0)
++			return err;
++	}
++
++	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
++		err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++					  snd_pcm_hw_rule_rate, hw,
++					  SNDRV_PCM_HW_PARAM_RATE, -1);
++		if (err < 0)
++			return err;
++	}
++
++	/* FIXME: this belong to lowlevel */
++	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++
++	return 0;
++}
++
++static inline unsigned int div32(unsigned int a, unsigned int b,
++				 unsigned int *r)
++{
++	if (b == 0) {
++		*r = 0;
++		return UINT_MAX;
++	}
++	*r = a % b;
++	return a / b;
++}
++
++static inline unsigned int div_down(unsigned int a, unsigned int b)
++{
++	if (b == 0)
++		return UINT_MAX;
++	return a / b;
++}
++
++static inline unsigned int div_up(unsigned int a, unsigned int b)
++{
++	unsigned int r;
++	unsigned int q;
++	if (b == 0)
++		return UINT_MAX;
++	q = div32(a, b, &r);
++	if (r)
++		++q;
++	return q;
++}
++
++static inline unsigned int mul(unsigned int a, unsigned int b)
++{
++	if (a == 0)
++		return 0;
++	if (div_down(UINT_MAX, a) < b)
++		return UINT_MAX;
++	return a * b;
++}
++
++static inline unsigned int muldiv32(unsigned int a, unsigned int b,
++				    unsigned int c, unsigned int *r)
++{
++	u_int64_t n = (u_int64_t) a * b;
++	if (c == 0) {
++		snd_BUG_ON(!n);
++		*r = 0;
++		return UINT_MAX;
++	}
++	n = div_u64_rem(n, c, r);
++	if (n >= UINT_MAX) {
++		*r = 0;
++		return UINT_MAX;
++	}
++	return n;
++}
++
++/**
++ * snd_interval_refine - refine the interval value of configurator
++ * @i: the interval value to refine
++ * @v: the interval value to refer to
++ *
++ * Refines the interval value with the reference value.
++ * The interval is changed to the range satisfying both intervals.
++ * The interval status (min, max, integer, etc.) are evaluated.
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
++{
++	int changed = 0;
++	if (snd_BUG_ON(snd_interval_empty(i)))
++		return -EINVAL;
++	if (i->min < v->min) {
++		i->min = v->min;
++		i->openmin = v->openmin;
++		changed = 1;
++	} else if (i->min == v->min && !i->openmin && v->openmin) {
++		i->openmin = 1;
++		changed = 1;
++	}
++	if (i->max > v->max) {
++		i->max = v->max;
++		i->openmax = v->openmax;
++		changed = 1;
++	} else if (i->max == v->max && !i->openmax && v->openmax) {
++		i->openmax = 1;
++		changed = 1;
++	}
++	if (!i->integer && v->integer) {
++		i->integer = 1;
++		changed = 1;
++	}
++	if (i->integer) {
++		if (i->openmin) {
++			i->min++;
++			i->openmin = 0;
++		}
++		if (i->openmax) {
++			i->max--;
++			i->openmax = 0;
++		}
++	} else if (!i->openmin && !i->openmax && i->min == i->max)
++		i->integer = 1;
++	if (snd_interval_checkempty(i)) {
++		snd_interval_none(i);
++		return -EINVAL;
++	}
++	return changed;
++}
++
++EXPORT_SYMBOL(snd_interval_refine);
++
++void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
++{
++	if (a->empty || b->empty) {
++		snd_interval_none(c);
++		return;
++	}
++	c->empty = 0;
++	c->min = mul(a->min, b->min);
++	c->openmin = (a->openmin || b->openmin);
++	c->max = mul(a->max,  b->max);
++	c->openmax = (a->openmax || b->openmax);
++	c->integer = (a->integer && b->integer);
++}
++
++/**
++ * snd_interval_div - refine the interval value with division
++ * @a: dividend
++ * @b: divisor
++ * @c: quotient
++ *
++ * c = a / b
++ *
++ * Returns non-zero if the value is changed, zero if not changed.
++ */
++void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
++{
++	unsigned int r;
++	if (a->empty || b->empty) {
++		snd_interval_none(c);
++		return;
++	}
++	c->empty = 0;
++	c->min = div32(a->min, b->max, &r);
++	c->openmin = (r || a->openmin || b->openmax);
++	if (b->min > 0) {
++		c->max = div32(a->max, b->min, &r);
++		if (r) {
++			c->max++;
++			c->openmax = 1;
++		} else
++			c->openmax = (a->openmax || b->openmin);
++	} else {
++		c->max = UINT_MAX;
++		c->openmax = 0;
++	}
++	c->integer = 0;
++}
++
++/**
++ * snd_interval_muldivk - refine the interval value
++ * @a: dividend 1
++ * @b: dividend 2
++ * @k: divisor (as integer)
++ * @c: result
++  *
++ * c = a * b / k
++ *
++ * Returns non-zero if the value is changed, zero if not changed.
++ */
++void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
++		      unsigned int k, struct snd_interval *c)
++{
++	unsigned int r;
++	if (a->empty || b->empty) {
++		snd_interval_none(c);
++		return;
++	}
++	c->empty = 0;
++	c->min = muldiv32(a->min, b->min, k, &r);
++	c->openmin = (r || a->openmin || b->openmin);
++	c->max = muldiv32(a->max, b->max, k, &r);
++	if (r) {
++		c->max++;
++		c->openmax = 1;
++	} else
++		c->openmax = (a->openmax || b->openmax);
++	c->integer = 0;
++}
++
++/**
++ * snd_interval_mulkdiv - refine the interval value
++ * @a: dividend 1
++ * @k: dividend 2 (as integer)
++ * @b: divisor
++ * @c: result
++ *
++ * c = a * k / b
++ *
++ * Returns non-zero if the value is changed, zero if not changed.
++ */
++void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
++		      const struct snd_interval *b, struct snd_interval *c)
++{
++	unsigned int r;
++	if (a->empty || b->empty) {
++		snd_interval_none(c);
++		return;
++	}
++	c->empty = 0;
++	c->min = muldiv32(a->min, k, b->max, &r);
++	c->openmin = (r || a->openmin || b->openmax);
++	if (b->min > 0) {
++		c->max = muldiv32(a->max, k, b->min, &r);
++		if (r) {
++			c->max++;
++			c->openmax = 1;
++		} else
++			c->openmax = (a->openmax || b->openmin);
++	} else {
++		c->max = UINT_MAX;
++		c->openmax = 0;
++	}
++	c->integer = 0;
++}
++
++/* ---- */
++
++
++/**
++ * snd_interval_ratnum - refine the interval value
++ * @i: interval to refine
++ * @rats_count: number of ratnum_t
++ * @rats: ratnum_t array
++ * @nump: pointer to store the resultant numerator
++ * @denp: pointer to store the resultant denominator
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_interval_ratnum(struct snd_interval *i,
++			unsigned int rats_count, struct snd_ratnum *rats,
++			unsigned int *nump, unsigned int *denp)
++{
++	unsigned int best_num, best_den;
++	int best_diff;
++	unsigned int k;
++	struct snd_interval t;
++	int err;
++	unsigned int result_num, result_den;
++	int result_diff;
++
++	best_num = best_den = best_diff = 0;
++	for (k = 0; k < rats_count; ++k) {
++		unsigned int num = rats[k].num;
++		unsigned int den;
++		unsigned int q = i->min;
++		int diff;
++		if (q == 0)
++			q = 1;
++		den = div_up(num, q);
++		if (den < rats[k].den_min)
++			continue;
++		if (den > rats[k].den_max)
++			den = rats[k].den_max;
++		else {
++			unsigned int r;
++			r = (den - rats[k].den_min) % rats[k].den_step;
++			if (r != 0)
++				den -= r;
++		}
++		diff = num - q * den;
++		if (diff < 0)
++			diff = -diff;
++		if (best_num == 0 ||
++		    diff * best_den < best_diff * den) {
++			best_diff = diff;
++			best_den = den;
++			best_num = num;
++		}
++	}
++	if (best_den == 0) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	t.min = div_down(best_num, best_den);
++	t.openmin = !!(best_num % best_den);
++
++	result_num = best_num;
++	result_diff = best_diff;
++	result_den = best_den;
++	best_num = best_den = best_diff = 0;
++	for (k = 0; k < rats_count; ++k) {
++		unsigned int num = rats[k].num;
++		unsigned int den;
++		unsigned int q = i->max;
++		int diff;
++		if (q == 0) {
++			i->empty = 1;
++			return -EINVAL;
++		}
++		den = div_down(num, q);
++		if (den > rats[k].den_max)
++			continue;
++		if (den < rats[k].den_min)
++			den = rats[k].den_min;
++		else {
++			unsigned int r;
++			r = (den - rats[k].den_min) % rats[k].den_step;
++			if (r != 0)
++				den += rats[k].den_step - r;
++		}
++		diff = q * den - num;
++		if (diff < 0)
++			diff = -diff;
++		if (best_num == 0 ||
++		    diff * best_den < best_diff * den) {
++			best_diff = diff;
++			best_den = den;
++			best_num = num;
++		}
++	}
++	if (best_den == 0) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	t.max = div_up(best_num, best_den);
++	t.openmax = !!(best_num % best_den);
++	t.integer = 0;
++	err = snd_interval_refine(i, &t);
++	if (err < 0)
++		return err;
++
++	if (snd_interval_single(i)) {
++		if (best_diff * result_den < result_diff * best_den) {
++			result_num = best_num;
++			result_den = best_den;
++		}
++		if (nump)
++			*nump = result_num;
++		if (denp)
++			*denp = result_den;
++	}
++	return err;
++}
++
++EXPORT_SYMBOL(snd_interval_ratnum);
++
++/**
++ * snd_interval_ratden - refine the interval value
++ * @i: interval to refine
++ * @rats_count: number of struct ratden
++ * @rats: struct ratden array
++ * @nump: pointer to store the resultant numerator
++ * @denp: pointer to store the resultant denominator
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++static int snd_interval_ratden(struct snd_interval *i,
++			       unsigned int rats_count, struct snd_ratden *rats,
++			       unsigned int *nump, unsigned int *denp)
++{
++	unsigned int best_num, best_diff, best_den;
++	unsigned int k;
++	struct snd_interval t;
++	int err;
++
++	best_num = best_den = best_diff = 0;
++	for (k = 0; k < rats_count; ++k) {
++		unsigned int num;
++		unsigned int den = rats[k].den;
++		unsigned int q = i->min;
++		int diff;
++		num = mul(q, den);
++		if (num > rats[k].num_max)
++			continue;
++		if (num < rats[k].num_min)
++			num = rats[k].num_max;
++		else {
++			unsigned int r;
++			r = (num - rats[k].num_min) % rats[k].num_step;
++			if (r != 0)
++				num += rats[k].num_step - r;
++		}
++		diff = num - q * den;
++		if (best_num == 0 ||
++		    diff * best_den < best_diff * den) {
++			best_diff = diff;
++			best_den = den;
++			best_num = num;
++		}
++	}
++	if (best_den == 0) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	t.min = div_down(best_num, best_den);
++	t.openmin = !!(best_num % best_den);
++
++	best_num = best_den = best_diff = 0;
++	for (k = 0; k < rats_count; ++k) {
++		unsigned int num;
++		unsigned int den = rats[k].den;
++		unsigned int q = i->max;
++		int diff;
++		num = mul(q, den);
++		if (num < rats[k].num_min)
++			continue;
++		if (num > rats[k].num_max)
++			num = rats[k].num_max;
++		else {
++			unsigned int r;
++			r = (num - rats[k].num_min) % rats[k].num_step;
++			if (r != 0)
++				num -= r;
++		}
++		diff = q * den - num;
++		if (best_num == 0 ||
++		    diff * best_den < best_diff * den) {
++			best_diff = diff;
++			best_den = den;
++			best_num = num;
++		}
++	}
++	if (best_den == 0) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	t.max = div_up(best_num, best_den);
++	t.openmax = !!(best_num % best_den);
++	t.integer = 0;
++	err = snd_interval_refine(i, &t);
++	if (err < 0)
++		return err;
++
++	if (snd_interval_single(i)) {
++		if (nump)
++			*nump = best_num;
++		if (denp)
++			*denp = best_den;
++	}
++	return err;
++}
++
++/**
++ * snd_interval_list - refine the interval value from the list
++ * @i: the interval value to refine
++ * @count: the number of elements in the list
++ * @list: the value list
++ * @mask: the bit-mask to evaluate
++ *
++ * Refines the interval value from the list.
++ * When mask is non-zero, only the elements corresponding to bit 1 are
++ * evaluated.
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_interval_list(struct snd_interval *i, unsigned int count,
++		      const unsigned int *list, unsigned int mask)
++{
++        unsigned int k;
++	struct snd_interval list_range;
++
++	if (!count) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	snd_interval_any(&list_range);
++	list_range.min = UINT_MAX;
++	list_range.max = 0;
++        for (k = 0; k < count; k++) {
++		if (mask && !(mask & (1 << k)))
++			continue;
++		if (!snd_interval_test(i, list[k]))
++			continue;
++		list_range.min = min(list_range.min, list[k]);
++		list_range.max = max(list_range.max, list[k]);
++        }
++	return snd_interval_refine(i, &list_range);
++}
++
++EXPORT_SYMBOL(snd_interval_list);
++
++/**
++ * snd_interval_ranges - refine the interval value from the list of ranges
++ * @i: the interval value to refine
++ * @count: the number of elements in the list of ranges
++ * @ranges: the ranges list
++ * @mask: the bit-mask to evaluate
++ *
++ * Refines the interval value from the list of ranges.
++ * When mask is non-zero, only the elements corresponding to bit 1 are
++ * evaluated.
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_interval_ranges(struct snd_interval *i, unsigned int count,
++			const struct snd_interval *ranges, unsigned int mask)
++{
++	unsigned int k;
++	struct snd_interval range_union;
++	struct snd_interval range;
++
++	if (!count) {
++		snd_interval_none(i);
++		return -EINVAL;
++	}
++	snd_interval_any(&range_union);
++	range_union.min = UINT_MAX;
++	range_union.max = 0;
++	for (k = 0; k < count; k++) {
++		if (mask && !(mask & (1 << k)))
++			continue;
++		snd_interval_copy(&range, &ranges[k]);
++		if (snd_interval_refine(&range, i) < 0)
++			continue;
++		if (snd_interval_empty(&range))
++			continue;
++
++		if (range.min < range_union.min) {
++			range_union.min = range.min;
++			range_union.openmin = 1;
++		}
++		if (range.min == range_union.min && !range.openmin)
++			range_union.openmin = 0;
++		if (range.max > range_union.max) {
++			range_union.max = range.max;
++			range_union.openmax = 1;
++		}
++		if (range.max == range_union.max && !range.openmax)
++			range_union.openmax = 0;
++	}
++	return snd_interval_refine(i, &range_union);
++}
++EXPORT_SYMBOL(snd_interval_ranges);
++
++static int snd_interval_step(struct snd_interval *i, unsigned int step)
++{
++	unsigned int n;
++	int changed = 0;
++	n = i->min % step;
++	if (n != 0 || i->openmin) {
++		i->min += step - n;
++		i->openmin = 0;
++		changed = 1;
++	}
++	n = i->max % step;
++	if (n != 0 || i->openmax) {
++		i->max -= n;
++		i->openmax = 0;
++		changed = 1;
++	}
++	if (snd_interval_checkempty(i)) {
++		i->empty = 1;
++		return -EINVAL;
++	}
++	return changed;
++}
++
++/* Info constraints helpers */
++
++/**
++ * snd_pcm_hw_rule_add - add the hw-constraint rule
++ * @runtime: the pcm runtime instance
++ * @cond: condition bits
++ * @var: the variable to evaluate
++ * @func: the evaluation function
++ * @private: the private data pointer passed to function
++ * @dep: the dependent variables
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
++			int var,
++			snd_pcm_hw_rule_func_t func, void *private,
++			int dep, ...)
++{
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	struct snd_pcm_hw_rule *c;
++	unsigned int k;
++	va_list args;
++	va_start(args, dep);
++	if (constrs->rules_num >= constrs->rules_all) {
++		struct snd_pcm_hw_rule *new;
++		unsigned int new_rules = constrs->rules_all + 16;
++		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
++		if (!new) {
++			va_end(args);
++			return -ENOMEM;
++		}
++		if (constrs->rules) {
++			memcpy(new, constrs->rules,
++			       constrs->rules_num * sizeof(*c));
++			kfree(constrs->rules);
++		}
++		constrs->rules = new;
++		constrs->rules_all = new_rules;
++	}
++	c = &constrs->rules[constrs->rules_num];
++	c->cond = cond;
++	c->func = func;
++	c->var = var;
++	c->private = private;
++	k = 0;
++	while (1) {
++		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
++			va_end(args);
++			return -EINVAL;
++		}
++		c->deps[k++] = dep;
++		if (dep < 0)
++			break;
++		dep = va_arg(args, int);
++	}
++	constrs->rules_num++;
++	va_end(args);
++	return 0;
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_rule_add);
++
++/**
++ * snd_pcm_hw_constraint_mask - apply the given bitmap mask constraint
++ * @runtime: PCM runtime instance
++ * @var: hw_params variable to apply the mask
++ * @mask: the bitmap mask
++ *
++ * Apply the constraint of the given bitmap mask to a 32-bit mask parameter.
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++			       u_int32_t mask)
++{
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	struct snd_mask *maskp = constrs_mask(constrs, var);
++	*maskp->bits &= mask;
++	memset(maskp->bits + 1, 0, (SNDRV_MASK_MAX-32) / 8); /* clear rest */
++	if (*maskp->bits == 0)
++		return -EINVAL;
++	return 0;
++}
++
++/**
++ * snd_pcm_hw_constraint_mask64 - apply the given bitmap mask constraint
++ * @runtime: PCM runtime instance
++ * @var: hw_params variable to apply the mask
++ * @mask: the 64bit bitmap mask
++ *
++ * Apply the constraint of the given bitmap mask to a 64-bit mask parameter.
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 u_int64_t mask)
++{
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	struct snd_mask *maskp = constrs_mask(constrs, var);
++	maskp->bits[0] &= (u_int32_t)mask;
++	maskp->bits[1] &= (u_int32_t)(mask >> 32);
++	memset(maskp->bits + 2, 0, (SNDRV_MASK_MAX-64) / 8); /* clear rest */
++	if (! maskp->bits[0] && ! maskp->bits[1])
++		return -EINVAL;
++	return 0;
++}
++EXPORT_SYMBOL(snd_pcm_hw_constraint_mask64);
++
++/**
++ * snd_pcm_hw_constraint_integer - apply an integer constraint to an interval
++ * @runtime: PCM runtime instance
++ * @var: hw_params variable to apply the integer constraint
++ *
++ * Apply the constraint of integer to an interval parameter.
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
++{
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	return snd_interval_setinteger(constrs_interval(constrs, var));
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_integer);
++
++/**
++ * snd_pcm_hw_constraint_minmax - apply a min/max range constraint to an interval
++ * @runtime: PCM runtime instance
++ * @var: hw_params variable to apply the range
++ * @min: the minimal value
++ * @max: the maximal value
++ *
++ * Apply the min/max range constraint to an interval parameter.
++ *
++ * Return: Positive if the value is changed, zero if it's not changed, or a
++ * negative error code.
++ */
++int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
++				 unsigned int min, unsigned int max)
++{
++	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
++	struct snd_interval t;
++	t.min = min;
++	t.max = max;
++	t.openmin = t.openmax = 0;
++	t.integer = 0;
++	return snd_interval_refine(constrs_interval(constrs, var), &t);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_minmax);
++
++static int snd_pcm_hw_rule_list(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_hw_constraint_list *list = rule->private;
++	return snd_interval_list(hw_param_interval(params, rule->var), list->count, list->list, list->mask);
++}
++
++
++/**
++ * snd_pcm_hw_constraint_list - apply a list of constraints to a parameter
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the list constraint
++ * @l: list
++ *
++ * Apply the list of constraints to an interval parameter.
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       const struct snd_pcm_hw_constraint_list *l)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_list, (void *)l,
++				   var, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_list);
++
++static int snd_pcm_hw_rule_ranges(struct snd_pcm_hw_params *params,
++				  struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_hw_constraint_ranges *r = rule->private;
++	return snd_interval_ranges(hw_param_interval(params, rule->var),
++				   r->count, r->ranges, r->mask);
++}
++
++
++/**
++ * snd_pcm_hw_constraint_ranges - apply list of range constraints to a parameter
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the list of range constraints
++ * @r: ranges
++ *
++ * Apply the list of range constraints to an interval parameter.
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 snd_pcm_hw_param_t var,
++				 const struct snd_pcm_hw_constraint_ranges *r)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_ranges, (void *)r,
++				   var, -1);
++}
++EXPORT_SYMBOL(snd_pcm_hw_constraint_ranges);
++
++static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
++				   struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_hw_constraint_ratnums *r = rule->private;
++	unsigned int num = 0, den = 0;
++	int err;
++	err = snd_interval_ratnum(hw_param_interval(params, rule->var),
++				  r->nrats, r->rats, &num, &den);
++	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
++		params->rate_num = num;
++		params->rate_den = den;
++	}
++	return err;
++}
++
++/**
++ * snd_pcm_hw_constraint_ratnums - apply ratnums constraint to a parameter
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the ratnums constraint
++ * @r: struct snd_ratnums constriants
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratnums *r)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_ratnums, r,
++				   var, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
++
++static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
++				   struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_hw_constraint_ratdens *r = rule->private;
++	unsigned int num = 0, den = 0;
++	int err = snd_interval_ratden(hw_param_interval(params, rule->var),
++				  r->nrats, r->rats, &num, &den);
++	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
++		params->rate_num = num;
++		params->rate_den = den;
++	}
++	return err;
++}
++
++/**
++ * snd_pcm_hw_constraint_ratdens - apply ratdens constraint to a parameter
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the ratdens constraint
++ * @r: struct snd_ratdens constriants
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
++				  unsigned int cond,
++				  snd_pcm_hw_param_t var,
++				  struct snd_pcm_hw_constraint_ratdens *r)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_ratdens, r,
++				   var, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_ratdens);
++
++static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
++				  struct snd_pcm_hw_rule *rule)
++{
++	unsigned int l = (unsigned long) rule->private;
++	int width = l & 0xffff;
++	unsigned int msbits = l >> 16;
++	struct snd_interval *i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
++
++	if (!snd_interval_single(i))
++		return 0;
++
++	if ((snd_interval_value(i) == width) ||
++	    (width == 0 && snd_interval_value(i) > msbits))
++		params->msbits = min_not_zero(params->msbits, msbits);
++
++	return 0;
++}
++
++/**
++ * snd_pcm_hw_constraint_msbits - add a hw constraint msbits rule
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @width: sample bits width
++ * @msbits: msbits width
++ *
++ * This constraint will set the number of most significant bits (msbits) if a
++ * sample format with the specified width has been select. If width is set to 0
++ * the msbits will be set for any sample format with a width larger than the
++ * specified msbits.
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
++				 unsigned int cond,
++				 unsigned int width,
++				 unsigned int msbits)
++{
++	unsigned long l = (msbits << 16) | width;
++	return snd_pcm_hw_rule_add(runtime, cond, -1,
++				    snd_pcm_hw_rule_msbits,
++				    (void*) l,
++				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
++
++static int snd_pcm_hw_rule_step(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
++{
++	unsigned long step = (unsigned long) rule->private;
++	return snd_interval_step(hw_param_interval(params, rule->var), step);
++}
++
++/**
++ * snd_pcm_hw_constraint_step - add a hw constraint step rule
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the step constraint
++ * @step: step size
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var,
++			       unsigned long step)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_step, (void *) step,
++				   var, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_step);
++
++static int snd_pcm_hw_rule_pow2(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
++{
++	static unsigned int pow2_sizes[] = {
++		1<<0, 1<<1, 1<<2, 1<<3, 1<<4, 1<<5, 1<<6, 1<<7,
++		1<<8, 1<<9, 1<<10, 1<<11, 1<<12, 1<<13, 1<<14, 1<<15,
++		1<<16, 1<<17, 1<<18, 1<<19, 1<<20, 1<<21, 1<<22, 1<<23,
++		1<<24, 1<<25, 1<<26, 1<<27, 1<<28, 1<<29, 1<<30
++	};
++	return snd_interval_list(hw_param_interval(params, rule->var),
++				 ARRAY_SIZE(pow2_sizes), pow2_sizes, 0);
++}
++
++/**
++ * snd_pcm_hw_constraint_pow2 - add a hw constraint power-of-2 rule
++ * @runtime: PCM runtime instance
++ * @cond: condition bits
++ * @var: hw_params variable to apply the power-of-2 constraint
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
++			       unsigned int cond,
++			       snd_pcm_hw_param_t var)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, var,
++				   snd_pcm_hw_rule_pow2, NULL,
++				   var, -1);
++}
++
++EXPORT_SYMBOL(snd_pcm_hw_constraint_pow2);
++
++static int snd_pcm_hw_rule_noresample_func(struct snd_pcm_hw_params *params,
++					   struct snd_pcm_hw_rule *rule)
++{
++	unsigned int base_rate = (unsigned int)(uintptr_t)rule->private;
++	struct snd_interval *rate;
++
++	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	return snd_interval_list(rate, 1, &base_rate, 0);
++}
++
++/**
++ * snd_pcm_hw_rule_noresample - add a rule to allow disabling hw resampling
++ * @runtime: PCM runtime instance
++ * @base_rate: the rate at which the hardware does not resample
++ *
++ * Return: Zero if successful, or a negative error code on failure.
++ */
++int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
++			       unsigned int base_rate)
++{
++	return snd_pcm_hw_rule_add(runtime, SNDRV_PCM_HW_PARAMS_NORESAMPLE,
++				   SNDRV_PCM_HW_PARAM_RATE,
++				   snd_pcm_hw_rule_noresample_func,
++				   (void *)(uintptr_t)base_rate,
++				   SNDRV_PCM_HW_PARAM_RATE, -1);
++}
++EXPORT_SYMBOL(snd_pcm_hw_rule_noresample);
++
++
+-- 
+1.9.1
