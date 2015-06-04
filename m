@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 05/23] ASoC: tas2552: Correct CFG1 register
-	bit definitions
-Date: Thu, 4 Jun 2015 16:04:17 +0300
-Message-ID: <1433423075-14142-6-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 07/23] ASoC: tas2552: Simplify and reverse
+	the functionality of tas2552_sw_shutdown
+Date: Thu, 4 Jun 2015 16:04:19 +0300
+Message-ID: <1433423075-14142-8-git-send-email-peter.ujfalusi@ti.com>
 References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id D7DC226069C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:04:51 +0200 (CEST)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 657B626651C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:04:56 +0200 (CEST)
 In-Reply-To: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,91 +25,56 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove the _MASK postfix of the bit definitions, collect the CFG1 bit
-definition in one place and correct the bit shifts at the same time.
+The function name and parameters of:
+tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+
+implies that if sw_shutdown is 1 we should be entering to the software
+shutdown mode.
+
+The code can be simplified as well within the function.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 14 +++++++-------
- sound/soc/codecs/tas2552.h | 17 ++++++++---------
- 2 files changed, 15 insertions(+), 16 deletions(-)
+ sound/soc/codecs/tas2552.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 07a0ec03905d..681b868a9e8c 100644
+index 2d52a397161d..61419e2f833b 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -126,10 +126,10 @@ static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+@@ -118,14 +118,12 @@ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
+ #ifdef CONFIG_PM
+ static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+ {
+-	u8 cfg1_reg;
++	u8 cfg1_reg = 0;
+ 
+ 	if (!tas_data->codec)
+ 		return;
+ 
  	if (sw_shutdown)
- 		cfg1_reg = 0;
- 	else
--		cfg1_reg = TAS2552_SWS_MASK;
-+		cfg1_reg = TAS2552_SWS;
+-		cfg1_reg = 0;
+-	else
+ 		cfg1_reg = TAS2552_SWS;
  
--	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1,
--						 TAS2552_SWS_MASK, cfg1_reg);
-+	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1, TAS2552_SWS,
-+			    cfg1_reg);
- }
- #endif
+ 	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1, TAS2552_SWS,
+@@ -270,7 +268,7 @@ static int tas2552_runtime_suspend(struct device *dev)
+ {
+ 	struct tas2552_data *tas2552 = dev_get_drvdata(dev);
  
-@@ -258,11 +258,11 @@ static int tas2552_mute(struct snd_soc_dai *dai, int mute)
- 	struct snd_soc_codec *codec = dai->codec;
+-	tas2552_sw_shutdown(tas2552, 0);
++	tas2552_sw_shutdown(tas2552, 1);
  
- 	if (mute)
--		cfg1_reg = TAS2552_MUTE_MASK;
-+		cfg1_reg = TAS2552_MUTE;
- 	else
--		cfg1_reg = ~TAS2552_MUTE_MASK;
-+		cfg1_reg = ~TAS2552_MUTE;
+ 	regcache_cache_only(tas2552->regmap, true);
+ 	regcache_mark_dirty(tas2552->regmap);
+@@ -288,7 +286,7 @@ static int tas2552_runtime_resume(struct device *dev)
+ 	if (tas2552->enable_gpio)
+ 		gpiod_set_value(tas2552->enable_gpio, 1);
  
--	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE_MASK, cfg1_reg);
-+	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, cfg1_reg);
+-	tas2552_sw_shutdown(tas2552, 1);
++	tas2552_sw_shutdown(tas2552, 0);
  
- 	return 0;
- }
-@@ -370,7 +370,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 		goto probe_fail;
- 	}
- 
--	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE_MASK |
-+	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE |
- 				TAS2552_PLL_SRC_BCLK);
- 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
- 				TAS2552_DIN_SRC_SEL_AVG_L_R | TAS2552_88_96KHZ);
-diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index 938d90f1cab9..0725befb4c41 100644
---- a/sound/soc/codecs/tas2552.h
-+++ b/sound/soc/codecs/tas2552.h
-@@ -45,10 +45,14 @@
- #define TAS2552_MAX_REG			0x20
- 
- /* CFG1 Register Masks */
--#define TAS2552_MUTE_MASK		(1 << 2)
--#define TAS2552_SWS_MASK		(1 << 1)
--#define TAS2552_WCLK_MASK		0x07
--#define TAS2552_CLASSD_EN_MASK	(1 << 7)
-+#define TAS2552_DEV_RESET		(1 << 0)
-+#define TAS2552_SWS			(1 << 1)
-+#define TAS2552_MUTE			(1 << 2)
-+#define TAS2552_PLL_SRC_MCLK		(0x0 << 4)
-+#define TAS2552_PLL_SRC_BCLK		(0x1 << 4)
-+#define TAS2552_PLL_SRC_IVCLKIN		(0x2 << 4)
-+#define TAS2552_PLL_SRC_1_8_FIXED 	(0x3 << 4)
-+#define TAS2552_PLL_SRC_MASK	 	TAS2552_PLL_SRC_1_8_FIXED
- 
- /* CFG2 Register Masks */
- #define TAS2552_CLASSD_EN		(1 << 7)
-@@ -68,11 +72,6 @@
- #define TAS2552_DAIFMT_RIGHT_J		(1 << 4)
- #define TAS2552_DAIFMT_LEFT_J		(0x11 << 3)
- 
--#define TAS2552_PLL_SRC_MCLK	0x00
--#define TAS2552_PLL_SRC_BCLK	(1 << 3)
--#define TAS2552_PLL_SRC_IVCLKIN	(1 << 4)
--#define TAS2552_PLL_SRC_1_8_FIXED (0x11 << 3)
--
- #define TAS2552_DIN_SRC_SEL_MUTED	0x00
- #define TAS2552_DIN_SRC_SEL_LEFT	(1 << 4)
- #define TAS2552_DIN_SRC_SEL_RIGHT	(1 << 5)
+ 	regcache_cache_only(tas2552->regmap, false);
+ 	regcache_sync(tas2552->regmap);
 -- 
 2.4.2
