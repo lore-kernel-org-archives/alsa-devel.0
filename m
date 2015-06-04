@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/4] Support ZTE zx296702 SPDIF/I2S
-Date: Thu, 4 Jun 2015 13:05:25 +0100
-Message-ID: <20150604120525.GF14071@sirena.org.uk>
-References: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 00/22] ASoC: tas2552: Fixes,
+	cleanups and improvements
+Date: Thu, 4 Jun 2015 15:22:24 +0300
+Message-ID: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6458018479849259579=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 82FBB266198
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:05:37 +0200 (CEST)
-In-Reply-To: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F3D92606BC
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:22:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>
-Cc: jason.liu@linaro.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurphy@ti.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============6458018479849259579==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kBbg7yasUFfE4QK4"
-Content-Disposition: inline
+I have used the TAS2552-EVM to verify that my setup is in working condition for
+a work on other audio product.
+During the bringup of the EVM I have faced some issues and limitation with the
+driver. The result is this series against the tas2552 driver.
 
+Notable changes:
+- Fixes for kernel crashes
+- The enable-gpio was not optional as it was documented in the DTS
+- Register bit definitions were not correct in several places
+- Adding recommended startup/stop sequence
+- Handling of sample formats the driver claims to support
+- PLL configuration fixes and reference clock selection
+- TDM support
+- Gain control fix and control to select DIN source
 
---kBbg7yasUFfE4QK4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Regards,
+Peter
+---
+Peter Ujfalusi (22):
+  ASoC: tas2552: Make the enable-gpio really optional
+  ASoC: tas2552: Fix kernel crash when the codec is loaded but not part
+    of a card
+  ASoC: tas2552: Fix kernel crash caused by wrong kcontrol entry
+  ASoC: tas2552: Correct PDM configuration register bit definitions
+  ASoC: tas2552: Correct CFG1 register bit definitions
+  ASoC: tas2552: Simplify the tas2552_mute function
+  ASoC: tas2552: Simplify and reverse the functionality of
+    tas2552_sw_shutdown
+  ASoC: tas2552: Rename mclk parameter to pll_clkin to match with the
+    datasheet
+  DT/sound: bindings header file for tas2552 codec
+  ASoC: tas2552: Add support for pll and pdm source clock selection
+  ASoC: tas2552: Correct dai format support
+  ASoC: tas2552: Correct and clean up data format and BCLK/WCLK
+    direction
+  ASoC: tas2552: Add TDM support
+  ASoC: tas2552: Clean up the Digital - Analog DAPM route definition
+  ASoC: tas2552: Correct the Speaker Driver Playback Volume (PGA_GAIN)
+  ASoC: tas2552: Implement startup/stop sequence as per TRM
+  ASoC: tas2552: Add support for word length configuration
+  ASoC: tas2552: Configure the WCLK frequency based on the stream
+  ASoC: tas2552: Add control for selecting DIN source
+  ASoC: tas2552: Correct Output Data register usage
+  ASoC: tas2552: Correct Boost Auto-Pass Through Control register usage
+  ASoC: tas2552: Code, define alignment changes for uniformity
 
-On Thu, Jun 04, 2015 at 11:41:19AM +0800, Jun Nie wrote:
-> Changes vs v3:
->   - remove HDMI stuff and will add it in video side later
->   - Polish SPDIF driver with devm_*
+ include/dt-bindings/sound/tas2552.h |  18 ++
+ sound/soc/codecs/tas2552.c          | 435 +++++++++++++++++++++++++++---------
+ sound/soc/codecs/tas2552.h          | 149 ++++++------
+ 3 files changed, 431 insertions(+), 171 deletions(-)
+ create mode 100644 include/dt-bindings/sound/tas2552.h
 
-Applied all, thanks.
-
---kBbg7yasUFfE4QK4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVcD8EAAoJECTWi3JdVIfQ4LQH/AsPLm0jWF30INLnnvNfYBCE
-yOAvbhDjPRMf7JNu7CLLV0fgJrp2MIetZzczvqvwfIr3wUHnVobtoWnKgPqVvsVM
-gl0RVTFSJ1TBSosB5dCEMuK7/zwqkFlTr7JBwz3hDObIL8SyEVrZ+iq1zdnJQUIp
-gNEbxrYSvMk3aNgbSf+X8+rMLR3qX0ael0s3oVHXS0bbn5ammwTlyhBtjkLoyhv3
-z89ADmhi7vvEvze48o+zosRLGDSgXMG6FpLFWVYK+T1mQBjl+cxtF/1BrTm/Kpsn
-0Nc+cPDwli4BT/Y2G/Nzkb6y2a6HUbfpLmkfxnadNzUtcamL0PhdjdBwLhPc4CU=
-=VtPD
------END PGP SIGNATURE-----
-
---kBbg7yasUFfE4QK4--
-
---===============6458018479849259579==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6458018479849259579==--
+-- 
+2.4.2
