@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/23] ASoC: tas2552: Rename mclk
- parameter to pll_clkin to match with the datasheet
-Date: Thu, 4 Jun 2015 17:51:11 +0100
-Message-ID: <20150604165111.GL14071@sirena.org.uk>
-References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
- <1433423075-14142-9-git-send-email-peter.ujfalusi@ti.com>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:topic/zx 2/8]
+ sound/soc/zte/zx296702-i2s.c:428:3-8: No need to set .owner here. The core
+ will do it.
+Date: Fri, 5 Jun 2015 01:11:26 +0800
+Message-ID: <201506050116.40gO5c34%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0643079808716805046=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ECC7626661C
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 18:51:18 +0200 (CEST)
-In-Reply-To: <1433423075-14142-9-git-send-email-peter.ujfalusi@ti.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F22A26061E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 19:12:22 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dmurphy@ti.com
+To: Jun Nie <jun.nie@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0643079808716805046==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RFt7YL+UU4NXVfbH"
-Content-Disposition: inline
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/zx
+head:   69ccc50231eca9a57dc06a5514103c0f17ef402e
+commit: e5d4cd87800ce12c356e7eb571e565e839ab3a90 [2/8] ASoC: zx: Add ZTE zx296702 I2S DAI driver
 
 
---RFt7YL+UU4NXVfbH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+coccinelle warnings: (new ones prefixed by >>)
 
-On Thu, Jun 04, 2015 at 04:04:20PM +0300, Peter Ujfalusi wrote:
-> MCLK is one of the possible source for the pll_clkin frequency. Make this
-> clear by renaming the variable.
+>> sound/soc/zte/zx296702-i2s.c:428:3-8: No need to set .owner here. The core will do it.
 
-Applied all up to here, thanks (not looked at the rest yet and it's
-about the end of the day today).
+Please review and possibly fold the followup patch.
 
---RFt7YL+UU4NXVfbH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVcIH/AAoJECTWi3JdVIfQoPMH/iApvQIqhzsV/imaG4hiCut5
-vMEH/PsCa+jSeRhrdaZh3R0P+DlwJ5Zez7OBVX3okuRwmWfEAJias/+4PM2ZfCw3
-Ixiq4Oe1Dbh3PswA6eSP0ZRLtwe7pcBoBkph9bFNb+xRDoP60YgNgR/V/XTxi+eI
-Pbu6h+QgngCEA6cbOV1sSQahYxB7M+Q1+PArE81bsV9AukEaKI+CXWo13Nnqa0LT
-2+O5N7h2mIryYgHsuHfURNGlvc+I6eoRTXJM22ojESkgstex9eh4CijQfZQshQWg
-Fbwa4q4pHNjVo+EGaZk+xz2sPqs0wU/SjFLP06v2lfX9JqfFxY8tgXFuCa5nTrg=
-=s5jb
------END PGP SIGNATURE-----
-
---RFt7YL+UU4NXVfbH--
-
---===============0643079808716805046==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0643079808716805046==--
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
