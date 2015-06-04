@@ -1,139 +1,46 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Different codecs for playback and capture?
-Date: Thu, 4 Jun 2015 16:22:29 +0200
-Message-ID: <alpine.DEB.2.02.1506041607040.15001@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1506031045380.22011@lnxricardw1.se.axis.com>
- <556F0E7F.80802@metafoo.de>
- <alpine.DEB.2.02.1506041343450.15001@lnxricardw1.se.axis.com>
- <55705831.7060305@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH asoc] ASoC: zx: zx_i2s_dai can be static
+Date: Thu, 4 Jun 2015 15:39:42 +0100
+Message-ID: <20150604143942.GG14071@sirena.org.uk>
+References: <201506042120.M9liQXGN%fengguang.wu@intel.com>
+ <20150604130050.GA216990@lkp-ib03>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 6450B2606A2
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:22:31 +0200 (CEST)
-In-Reply-To: <55705831.7060305@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XO56YmfyBH8vAq+5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150604130050.GA216990@lkp-ib03>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Jun Nie <jun.nie@linaro.org>, kbuild-all@01.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Thu, 4 Jun 2015, Lars-Peter Clausen wrote:
+--XO56YmfyBH8vAq+5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >> I'm not too sure how well it works if one CODEC is playback only and =
+On Thu, Jun 04, 2015 at 09:00:50PM +0800, kbuild test robot wrote:
+>=20
+> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 
-> >> the other is capture only and there might be some issues. But this is =
+Applied, thanks.
 
-> >> the way to go and if there are problems fix them.
-> >
-> > It doesn't seem as if snd_soc_dai_link_component is used in any (in-tre=
-e)
-> > driver; a grep in sound/soc just returns soc-core.c . Perhaps some
-> > out-of-tree driver has been used to test it?
-> =
+--XO56YmfyBH8vAq+5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> This is the only example I'm aware of:
-> http://wiki.analog.com/resources/tools-software/linux-drivers/sound/ssm45=
-67#multi_ssm4567_example_configuration
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Ok, thanks. As you mentioned previously this is an example of a left-right =
+iQEcBAEBCAAGBQJVcGMuAAoJECTWi3JdVIfQRuIH/3Uph/RySzO9GHFiT6sslprP
+Svc9tnxurCFnWM5ZnQLz4S/mHRjx2iTuxk/Ca73yVHOgTwEj39QL46lc/hcsgIfq
+sg6Dca8ViVira5tGwbYTsYeKfklpYPYJ7PZPxubUdOaNV9qNt4ZSKKjTua65BYIN
+9pz2HQuXHbxuS9uvUIEV/MhpwvknHDFijcJogf+5Cn7qkJ0APMAERPhQw2k0d9iH
+OpODfiHAU5MdmTDV83GT/igXkmJUavETWyDYJrKHllHgiF9Zfy3CRTH1XpkXSw3b
+r2Eg/37tL+k4V3aIfo6qVwVXLVR1eOcmuizRL+Gao8NHyasOS8wNCbTsPB5BHHE=
+=m0Fc
+-----END PGP SIGNATURE-----
 
-split codec configuration.
-
-> Even if your device does not have any configuration registers it will =
-
-> still have constraints like the supported sample rates, sample-widths, =
-
-> etc. You should create a driver describing these capabilities. This =
-
-> ensures that the driver will work when the device is connected to a host =
-
-> side CPU DAI that supports e.g. sample-rates outside the microphones =
-
-> range. The AK4554 driver is an example of such a driver.
-
-Yes, makes sense.
-
-An mildly interesting aspect is that the resulting device doesn't belong =
-
-to anything in the device tree, it just floats around by itself, as the =
-
-device tree doesn't model I2S as a bus. A minor observation, don't know if =
-
-it should be done differently.
-
-> > How are the different component codecs accessed when accessing the devi=
-ce?
-> > Or does this happen automatically? For instance, normally I would regis=
-ter
-> > one card with the single dai and coec, which would come up as #0, so I
-> > could access the resulting device with hw:0,0 . But when I have two cod=
-ecs
-> > on the same dai_link, what mechanism does ALSA use to differentiate
-> > between the two? Or is it supposed to happen automatically depending on
-> > the capabilities of the respective codecs.
-> =
-
-> It will be exposed as a single card with one capture and one playback PCM=
-. =
-
-> So it will be the same as if the CODEC side was only a single device =
-
-> supporting both.
-
-Ok.
-
-I've experimented with this.
-
-The first problem is that the framework intersects the two codec drivers' =
-
-capabilities, and since one of them supports playback only and the other =
-
-capture only, the intersected rates and formats are always 0.
-
-I've fixed this by jumping out of the loop early in =
-
-soc_pcm_init_runtime_hw() if the codec in question doesn't seem to support =
-
-the mode (playback vs. capture) that's being considered, indicating that =
-
-it doesn't care about the rate or format for that mode.
-
-Ideally it would have been some sort of 'if (!codec_stream->defined)' but =
-
-there isn't such a member in struct snd_soc_dai . I've gone with 'if =
-
-(!codec_stream->rates && !codec_stream->formats)', thinking that if a =
-
-codec doesn't support any rates or formats, it probably doesn't support =
-
-that mode at all (else it's rather meaningless). In fact, one of these =
-
-(rates or formats) would probably suffice, with a comment explaining what =
-
-we're really trying to do.
-
-The next problem is that when trying to set hw params, something in the =
-
-framework or the individual codec driver hw_params() bails out saying it =
-
-can't set the intended parameters. Looking at that right now to see if it =
-
-can be solved in a similar way.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--XO56YmfyBH8vAq+5--
