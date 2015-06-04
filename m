@@ -1,21 +1,17 @@
 From: Jun Nie <jun.nie@linaro.org>
-Subject: Re: [PATCH v3 6/6] ASoC: zx: add zx296702 hdmi codec
-Date: Thu, 4 Jun 2015 11:35:55 +0800
-Message-ID: <CABymUCPN0dymyyLsY7WyEqnjCH-fOOHq32n+qqiwywBebks5fw@mail.gmail.com>
-References: <1432906281-27698-1-git-send-email-jun.nie@linaro.org>
- <1432906281-27698-7-git-send-email-jun.nie@linaro.org>
- <20150603175801.GQ14071@sirena.org.uk>
+Subject: [PATCH v4 0/4] Support ZTE zx296702 SPDIF/I2S
+Date: Thu,  4 Jun 2015 11:41:19 +0800
+Message-ID: <1433389283-15694-1-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 2055C265DCD
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 05:35:56 +0200 (CEST)
-Received: by lbcue7 with SMTP id ue7so19196409lbc.0
- for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 20:35:55 -0700 (PDT)
-In-Reply-To: <20150603175801.GQ14071@sirena.org.uk>
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id E75B7265DCD
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 05:42:08 +0200 (CEST)
+Received: by padj3 with SMTP id j3so20379904pad.0
+ for <alsa-devel@alsa-project.org>; Wed, 03 Jun 2015 20:42:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jason Liu <jason.liu@linaro.org>, alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, "wan.zhijun" <wan.zhijun@zte.com.cn>, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: jason.liu@linaro.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, Jun Nie <jun.nie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-06-04 1:58 GMT+08:00 Mark Brown <broonie@kernel.org>:
-> On Fri, May 29, 2015 at 09:31:21PM +0800, Jun Nie wrote:
->
->> +int zx_hdmi_audio_cfg(int audio_codec, int audio_way,
->> +                   u32 sample_rate, u32 sample_len);
->> +void zx_hdmi_audio_en(int on);
->
-> It's a bit hard to review this properly without knowing what these
-> functions do.
->
->> +static int zx_hw_params(struct snd_pcm_substream *substream,
->> +                     struct snd_pcm_hw_params *params,
->> +                     struct snd_soc_dai *dai)
->> +{
->> +#ifdef CONFIG_ZX_HDMI_SND_SPDIF
->> +     zx_hdmi_audio_cfg(1, 0, params_rate(params),
->> +#endif
->> +#ifdef CONFIG_ZX_HDMI_SND_I2S
->> +     zx_hdmi_audio_cfg(1, 1, params_rate(params),
->> +#endif
->> +                       params_physical_width(params));
->> +     return 0;
->> +}
->
-> The magic numbers aren't great and it does seem a bit odd to call both
-> I2S and S/PDIF versions always - but I guess this will be restructured
-> following our discussion in the other thread anyway.
+Changes vs v3:
+  - remove HDMI stuff and will add it in video side later
+  - Polish SPDIF driver with devm_*
 
-Yes, HDMI audio will be moved into video driver side and I will add a
-DT property to indicate active HDMI I2S or SPDIF from machine dts.
+Changes vs v2:
+  - remove pcm dma driver and merge the related call into DAI driver
+  - Add zx HDMI codec with direct HDMI function call
+  - Other typo and minor fix
 
-Will post patches with taking Lars's comments with dropping HDMI stuff.
+Jun Nie (4):
+  dt: Add documentation for the ZTE SPDIF controller
+  dt: Add documentation for the ZTE I2S controller
+  ASoC: zx: Add zx296702 SPDIF support
+  ASoC: zx: Add ZTE zx296702 I2S DAI driver
+
+ .../devicetree/bindings/sound/zte,zx-i2s.txt       |  44 +++
+ .../devicetree/bindings/sound/zte,zx-spdif.txt     |  28 ++
+ sound/soc/Kconfig                                  |   1 +
+ sound/soc/Makefile                                 |   1 +
+ sound/soc/zte/Kconfig                              |  17 +
+ sound/soc/zte/Makefile                             |   2 +
+ sound/soc/zte/zx296702-i2s.c                       | 437 +++++++++++++++++++++
+ sound/soc/zte/zx296702-spdif.c                     | 370 +++++++++++++++++
+ 8 files changed, 900 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-spdif.txt
+ create mode 100644 sound/soc/zte/Kconfig
+ create mode 100644 sound/soc/zte/Makefile
+ create mode 100644 sound/soc/zte/zx296702-i2s.c
+ create mode 100644 sound/soc/zte/zx296702-spdif.c
+
+-- 
+1.9.1
