@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 22/22] ASoC: tas2552: Code,
+Subject: [PATCH 23/23] ASoC: tas2552: Code,
 	define alignment changes for uniformity
-Date: Thu, 4 Jun 2015 15:22:49 +0300
-Message-ID: <1433420571-5421-26-git-send-email-peter.ujfalusi@ti.com>
+Date: Thu, 4 Jun 2015 15:22:51 +0300
+Message-ID: <1433420571-5421-28-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 93B7E266537
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:52 +0200 (CEST)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id D33E1266536
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:56 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,7 +36,7 @@ Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
  2 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index fe8a988e0a4a..21d8e1d764a2 100644
+index 1237456f81f7..522e5272f326 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
 @@ -607,8 +607,8 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
