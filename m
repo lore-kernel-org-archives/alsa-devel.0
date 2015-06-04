@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 01/22] ASoC: tas2552: Make the enable-gpio
-	really optional
-Date: Thu, 4 Jun 2015 15:22:25 +0300
-Message-ID: <1433420571-5421-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 03/22] ASoC: tas2552: Fix kernel crash caused
+	by wrong kcontrol entry
+Date: Thu, 4 Jun 2015 15:22:27 +0300
+Message-ID: <1433420571-5421-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 959E7266198
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:02 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26231266267
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:04 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,32 +25,25 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do not fail the probe if the enable-gpio is not specifiedbut handle
-deferred probe case.
+SOC_DAPM_SINGLE("Playback AMP", ..) should not be under kcontrols. It
+causes kernel crash (NULL pointer) when the mixers are listed.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tas2552.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index dfb4ff5cc9ea..ff82f46ba504 100644
+index df89947f1032..9954bd4c14f3 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -486,8 +486,12 @@ static int tas2552_probe(struct i2c_client *client,
- 		return -ENOMEM;
+@@ -338,7 +338,6 @@ static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 24);
+ static const struct snd_kcontrol_new tas2552_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
+ 			 TAS2552_PGA_GAIN, 0, 0x1f, 1, dac_tlv),
+-	SOC_DAPM_SINGLE("Playback AMP", SND_SOC_NOPM, 0, 1, 0),
+ };
  
- 	data->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
--	if (IS_ERR(data->enable_gpio))
--		return PTR_ERR(data->enable_gpio);
-+	if (IS_ERR(data->enable_gpio)) {
-+		if (PTR_ERR(data->enable_gpio) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+
-+		data->enable_gpio = NULL;;
-+	}
- 
- 	data->tas2552_client = client;
- 	data->regmap = devm_regmap_init_i2c(client, &tas2552_regmap_config);
+ static const struct reg_default tas2552_init_regs[] = {
 -- 
 2.4.2
