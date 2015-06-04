@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 04/23] ASoC: tas2552: Correct PDM
-	configuration register bit definitions
-Date: Thu, 4 Jun 2015 16:04:16 +0300
-Message-ID: <1433423075-14142-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 05/23] ASoC: tas2552: Correct CFG1 register
+	bit definitions
+Date: Thu, 4 Jun 2015 16:04:17 +0300
+Message-ID: <1433423075-14142-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 8738E26061B
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:04:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D7DC226069C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:04:51 +0200 (CEST)
 In-Reply-To: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,55 +25,91 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The PDM clock can be selected via bit0-1.
-PDM_DATA_ES bit is at bit2.
-
-The code were trying to select BCLK as PDM reference clock but instead
-it was selecting PLL and set the DATA_ES bit to 1.
-Selecting the PLL output as reference clock as default does make sense,
-but the driver should not change the PDM data edge.
+Remove the _MASK postfix of the bit definitions, collect the CFG1 bit
+definition in one place and correct the bit shifts at the same time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c |  2 +-
- sound/soc/codecs/tas2552.h | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/tas2552.c | 14 +++++++-------
+ sound/soc/codecs/tas2552.h | 17 ++++++++---------
+ 2 files changed, 15 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 9954bd4c14f3..07a0ec03905d 100644
+index 07a0ec03905d..681b868a9e8c 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -376,7 +376,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 				TAS2552_DIN_SRC_SEL_AVG_L_R | TAS2552_88_96KHZ);
- 	snd_soc_write(codec, TAS2552_DOUT, TAS2552_PDM_DATA_I);
- 	snd_soc_write(codec, TAS2552_OUTPUT_DATA, TAS2552_PDM_DATA_V_I | 0x8);
--	snd_soc_write(codec, TAS2552_PDM_CFG, TAS2552_PDM_BCLK_SEL);
-+	snd_soc_write(codec, TAS2552_PDM_CFG, TAS2552_PDM_CLK_SEL_PLL);
- 	snd_soc_write(codec, TAS2552_BOOST_PT_CTRL, TAS2552_APT_DELAY_200 |
- 				TAS2552_APT_THRESH_2_1_7);
+@@ -126,10 +126,10 @@ static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+ 	if (sw_shutdown)
+ 		cfg1_reg = 0;
+ 	else
+-		cfg1_reg = TAS2552_SWS_MASK;
++		cfg1_reg = TAS2552_SWS;
  
+-	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1,
+-						 TAS2552_SWS_MASK, cfg1_reg);
++	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1, TAS2552_SWS,
++			    cfg1_reg);
+ }
+ #endif
+ 
+@@ -258,11 +258,11 @@ static int tas2552_mute(struct snd_soc_dai *dai, int mute)
+ 	struct snd_soc_codec *codec = dai->codec;
+ 
+ 	if (mute)
+-		cfg1_reg = TAS2552_MUTE_MASK;
++		cfg1_reg = TAS2552_MUTE;
+ 	else
+-		cfg1_reg = ~TAS2552_MUTE_MASK;
++		cfg1_reg = ~TAS2552_MUTE;
+ 
+-	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE_MASK, cfg1_reg);
++	snd_soc_update_bits(codec, TAS2552_CFG_1, TAS2552_MUTE, cfg1_reg);
+ 
+ 	return 0;
+ }
+@@ -370,7 +370,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ 		goto probe_fail;
+ 	}
+ 
+-	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE_MASK |
++	snd_soc_write(codec, TAS2552_CFG_1, TAS2552_MUTE |
+ 				TAS2552_PLL_SRC_BCLK);
+ 	snd_soc_write(codec, TAS2552_CFG_3, TAS2552_I2S_OUT_SEL |
+ 				TAS2552_DIN_SRC_SEL_AVG_L_R | TAS2552_88_96KHZ);
 diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index 6cea8f31bf88..938d90f1cab9 100644
+index 938d90f1cab9..0725befb4c41 100644
 --- a/sound/soc/codecs/tas2552.h
 +++ b/sound/soc/codecs/tas2552.h
-@@ -99,12 +99,12 @@
- #define TAS2552_PDM_DATA_V_I	(0x11 << 6)
+@@ -45,10 +45,14 @@
+ #define TAS2552_MAX_REG			0x20
  
- /* PDM CFG Register */
--#define TAS2552_PDM_DATA_ES_RISE 0x4
+ /* CFG1 Register Masks */
+-#define TAS2552_MUTE_MASK		(1 << 2)
+-#define TAS2552_SWS_MASK		(1 << 1)
+-#define TAS2552_WCLK_MASK		0x07
+-#define TAS2552_CLASSD_EN_MASK	(1 << 7)
++#define TAS2552_DEV_RESET		(1 << 0)
++#define TAS2552_SWS			(1 << 1)
++#define TAS2552_MUTE			(1 << 2)
++#define TAS2552_PLL_SRC_MCLK		(0x0 << 4)
++#define TAS2552_PLL_SRC_BCLK		(0x1 << 4)
++#define TAS2552_PLL_SRC_IVCLKIN		(0x2 << 4)
++#define TAS2552_PLL_SRC_1_8_FIXED 	(0x3 << 4)
++#define TAS2552_PLL_SRC_MASK	 	TAS2552_PLL_SRC_1_8_FIXED
+ 
+ /* CFG2 Register Masks */
+ #define TAS2552_CLASSD_EN		(1 << 7)
+@@ -68,11 +72,6 @@
+ #define TAS2552_DAIFMT_RIGHT_J		(1 << 4)
+ #define TAS2552_DAIFMT_LEFT_J		(0x11 << 3)
+ 
+-#define TAS2552_PLL_SRC_MCLK	0x00
+-#define TAS2552_PLL_SRC_BCLK	(1 << 3)
+-#define TAS2552_PLL_SRC_IVCLKIN	(1 << 4)
+-#define TAS2552_PLL_SRC_1_8_FIXED (0x11 << 3)
 -
--#define TAS2552_PDM_PLL_CLK_SEL 0x00
--#define TAS2552_PDM_IV_CLK_SEL	(1 << 1)
--#define TAS2552_PDM_BCLK_SEL	(1 << 2)
--#define TAS2552_PDM_MCLK_SEL	(1 << 3)
-+#define TAS2552_PDM_CLK_SEL_PLL		(0x0 << 0)
-+#define TAS2552_PDM_CLK_SEL_IVCLKIN	(0x1 << 0)
-+#define TAS2552_PDM_CLK_SEL_BCLK	(0x2 << 0)
-+#define TAS2552_PDM_CLK_SEL_MCLK	(0x3 << 0)
-+#define TAS2552_PDM_CLK_SEL_MASK	TAS2552_PDM_CLK_SEL_MCLK
-+#define TAS2552_PDM_DATA_ES	 	(1 << 2)
- 
- /* Boost pass-through register */
- #define TAS2552_APT_DELAY_50	0x00
+ #define TAS2552_DIN_SRC_SEL_MUTED	0x00
+ #define TAS2552_DIN_SRC_SEL_LEFT	(1 << 4)
+ #define TAS2552_DIN_SRC_SEL_RIGHT	(1 << 5)
 -- 
 2.4.2
