@@ -1,18 +1,19 @@
 From: Jun Nie <jun.nie@linaro.org>
-Subject: [PATCH v5 3/4] ASoC: zx: Add zx296702 SPDIF support
-Date: Thu,  4 Jun 2015 21:34:46 +0800
-Message-ID: <1433424887-11694-4-git-send-email-jun.nie@linaro.org>
+Subject: [PATCH v5 4/4] ASoC: zx: Add ZTE zx296702 I2S DAI
+	driver
+Date: Thu,  4 Jun 2015 21:34:47 +0800
+Message-ID: <1433424887-11694-5-git-send-email-jun.nie@linaro.org>
 References: <1433424887-11694-1-git-send-email-jun.nie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
- [209.85.192.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 97553266536
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:35:29 +0200 (CEST)
-Received: by pdbqa5 with SMTP id qa5so31274525pdb.0
- for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 06:35:28 -0700 (PDT)
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B2952606A2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 15:35:36 +0200 (CEST)
+Received: by pdbki1 with SMTP id ki1so31203972pdb.1
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 06:35:35 -0700 (PDT)
 In-Reply-To: <1433424887-11694-1-git-send-email-jun.nie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,68 +28,46 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: jason.liu@linaro.org, alsa-devel@alsa-project.org, shawn.guo@linaro.org, wan.zhijun@zte.com.cn, Jun Nie <jun.nie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add driver for zx296702 SPDIF controller
+Add ZTE zx296702 I2S interface DAI driver
 
 Signed-off-by: Jun Nie <jun.nie@linaro.org>
 ---
- sound/soc/Kconfig              |   1 +
- sound/soc/Makefile             |   1 +
- sound/soc/zte/Kconfig          |   8 +
- sound/soc/zte/Makefile         |   1 +
- sound/soc/zte/zx296702-spdif.c | 370 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 381 insertions(+)
- create mode 100644 sound/soc/zte/Kconfig
- create mode 100644 sound/soc/zte/Makefile
- create mode 100644 sound/soc/zte/zx296702-spdif.c
+ sound/soc/zte/Kconfig        |   9 +
+ sound/soc/zte/Makefile       |   1 +
+ sound/soc/zte/zx296702-i2s.c | 437 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 447 insertions(+)
+ create mode 100644 sound/soc/zte/zx296702-i2s.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 3ba52da..e2828e1 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -57,6 +57,7 @@ source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
- source "sound/soc/xtensa/Kconfig"
-+source "sound/soc/zte/Kconfig"
- 
- # Supported codecs
- source "sound/soc/codecs/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 974ba70..57bf32d 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -38,3 +38,4 @@ obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
- obj-$(CONFIG_SND_SOC)	+= xtensa/
-+obj-$(CONFIG_SND_SOC)	+= zte/
 diff --git a/sound/soc/zte/Kconfig b/sound/soc/zte/Kconfig
-new file mode 100644
-index 0000000..4f05573
---- /dev/null
+index 4f05573..c47eb25 100644
+--- a/sound/soc/zte/Kconfig
 +++ b/sound/soc/zte/Kconfig
-@@ -0,0 +1,8 @@
-+config ZX296702_SPDIF
-+	tristate "ZX296702 spdif"
+@@ -6,3 +6,12 @@ config ZX296702_SPDIF
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+ 	  zx296702 spdif interface
++
++config ZX296702_I2S
++	tristate "ZX296702 i2s"
 +	depends on SOC_ZX296702 || COMPILE_TEST
 +	depends on COMMON_CLK
 +	select SND_SOC_GENERIC_DMAENGINE_PCM
 +	help
 +	  Say Y or M if you want to add support for codecs attached to the
-+	  zx296702 spdif interface
++	  zx296702 i2s interface
 diff --git a/sound/soc/zte/Makefile b/sound/soc/zte/Makefile
-new file mode 100644
-index 0000000..fb3a4a0
---- /dev/null
+index fb3a4a0..254ed2c 100644
+--- a/sound/soc/zte/Makefile
 +++ b/sound/soc/zte/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_ZX296702_SPDIF)	+= zx296702-spdif.o
-diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx296702-spdif.c
+@@ -1 +1,2 @@
+ obj-$(CONFIG_ZX296702_SPDIF)	+= zx296702-spdif.o
++obj-$(CONFIG_ZX296702_I2S)	+= zx296702-i2s.o
+diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx296702-i2s.c
 new file mode 100644
-index 0000000..789d07f
+index 0000000..472fde3
 --- /dev/null
-+++ b/sound/soc/zte/zx296702-spdif.c
-@@ -0,0 +1,370 @@
++++ b/sound/soc/zte/zx296702-i2s.c
+@@ -0,0 +1,437 @@
 +/*
 + * Copyright (C) 2015 Linaro
 + *
@@ -99,231 +78,315 @@ index 0000000..789d07f
 +
 +#include <linux/clk.h>
 +#include <linux/device.h>
-+#include <linux/dmaengine.h>
 +#include <linux/init.h>
 +#include <linux/io.h>
 +#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <sound/asoundef.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
 +#include <sound/core.h>
 +#include <sound/dmaengine_pcm.h>
 +#include <sound/initval.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include <sound/soc-dai.h>
 +
-+#define ZX_CTRL				0x04
-+#define ZX_FIFOCTRL			0x08
-+#define ZX_INT_STATUS			0x10
-+#define ZX_INT_MASK			0x14
-+#define ZX_DATA				0x18
-+#define ZX_VALID_BIT			0x1c
-+#define ZX_CH_STA_1			0x20
-+#define ZX_CH_STA_2			0x24
-+#define ZX_CH_STA_3			0x28
-+#define ZX_CH_STA_4			0x2c
-+#define ZX_CH_STA_5			0x30
-+#define ZX_CH_STA_6			0x34
++#define ZX_I2S_PROCESS_CTRL	0x04
++#define ZX_I2S_TIMING_CTRL	0x08
++#define	ZX_I2S_FIFO_CTRL	0x0C
++#define	ZX_I2S_FIFO_STATUS	0x10
++#define ZX_I2S_INT_EN		0x14
++#define ZX_I2S_INT_STATUS	0x18
++#define ZX_I2S_DATA		0x1C
++#define ZX_I2S_FRAME_CNTR	0x20
 +
-+#define ZX_CTRL_MODA_16			(0 << 6)
-+#define ZX_CTRL_MODA_18			BIT(6)
-+#define ZX_CTRL_MODA_20			(2 << 6)
-+#define ZX_CTRL_MODA_24			(3 << 6)
-+#define ZX_CTRL_MODA_MASK		(3 << 6)
++#define I2S_DEAGULT_FIFO_THRES	(0x10)
++#define I2S_MAX_FIFO_THRES	(0x20)
 +
-+#define ZX_CTRL_ENB			BIT(4)
-+#define ZX_CTRL_DNB			(0 << 4)
-+#define ZX_CTRL_ENB_MASK		BIT(4)
++#define ZX_I2S_PROCESS_TX_EN	(1 << 0)
++#define ZX_I2S_PROCESS_TX_DIS	(0 << 0)
++#define ZX_I2S_PROCESS_RX_EN	(1 << 1)
++#define ZX_I2S_PROCESS_RX_DIS	(0 << 1)
++#define ZX_I2S_PROCESS_I2S_EN	(1 << 2)
++#define ZX_I2S_PROCESS_I2S_DIS	(0 << 2)
 +
-+#define ZX_CTRL_TX_OPEN			BIT(0)
-+#define ZX_CTRL_TX_CLOSE		(0 << 0)
-+#define ZX_CTRL_TX_MASK			BIT(0)
++#define ZX_I2S_TIMING_MAST		(1 << 0)
++#define ZX_I2S_TIMING_SLAVE		(0 << 0)
++#define ZX_I2S_TIMING_MS_MASK		(1 << 0)
++#define ZX_I2S_TIMING_LOOP		(1 << 1)
++#define ZX_I2S_TIMING_NOR		(0 << 1)
++#define ZX_I2S_TIMING_LOOP_MASK		(1 << 1)
++#define ZX_I2S_TIMING_PTNR		(1 << 2)
++#define ZX_I2S_TIMING_NTPR		(0 << 2)
++#define ZX_I2S_TIMING_PHASE_MASK	(1 << 2)
++#define ZX_I2S_TIMING_TDM		(1 << 3)
++#define ZX_I2S_TIMING_I2S		(0 << 3)
++#define ZX_I2S_TIMING_TIMING_MASK	(1 << 3)
++#define ZX_I2S_TIMING_LONG_SYNC		(1 << 4)
++#define ZX_I2S_TIMING_SHORT_SYNC	(0 << 4)
++#define ZX_I2S_TIMING_SYNC_MASK		(1 << 4)
++#define ZX_I2S_TIMING_TEAK_EN		(1 << 5)
++#define ZX_I2S_TIMING_TEAK_DIS		(0 << 5)
++#define ZX_I2S_TIMING_TEAK_MASK		(1 << 5)
++#define ZX_I2S_TIMING_STD_I2S		(0 << 6)
++#define ZX_I2S_TIMING_MSB_JUSTIF	(1 << 6)
++#define ZX_I2S_TIMING_LSB_JUSTIF	(2 << 6)
++#define ZX_I2S_TIMING_ALIGN_MASK	(3 << 6)
++#define ZX_I2S_TIMING_CHN_MASK		(7 << 8)
++#define ZX_I2S_TIMING_CHN(x)		((x - 1) << 8)
++#define ZX_I2S_TIMING_LANE_MASK		(3 << 11)
++#define ZX_I2S_TIMING_LANE(x)		((x - 1) << 11)
++#define ZX_I2S_TIMING_TSCFG_MASK	(7 << 13)
++#define ZX_I2S_TIMING_TSCFG(x)		(x << 13)
++#define ZX_I2S_TIMING_TS_WIDTH_MASK	(0x1f << 16)
++#define ZX_I2S_TIMING_TS_WIDTH(x)	((x - 1) << 16)
++#define ZX_I2S_TIMING_DATA_SIZE_MASK	(0x1f << 21)
++#define ZX_I2S_TIMING_DATA_SIZE(x)	((x - 1) << 21)
++#define ZX_I2S_TIMING_CFG_ERR_MASK	(1 << 31)
 +
-+#define ZX_CTRL_OPEN			(ZX_CTRL_TX_OPEN | ZX_CTRL_ENB)
-+#define ZX_CTRL_CLOSE			(ZX_CTRL_TX_CLOSE | ZX_CTRL_DNB)
++#define ZX_I2S_FIFO_CTRL_TX_RST		(1 << 0)
++#define ZX_I2S_FIFO_CTRL_TX_RST_MASK	(1 << 0)
++#define ZX_I2S_FIFO_CTRL_RX_RST		(1 << 1)
++#define ZX_I2S_FIFO_CTRL_RX_RST_MASK	(1 << 1)
++#define ZX_I2S_FIFO_CTRL_TX_DMA_EN	(1 << 4)
++#define ZX_I2S_FIFO_CTRL_TX_DMA_DIS	(0 << 4)
++#define ZX_I2S_FIFO_CTRL_TX_DMA_MASK	(1 << 4)
++#define ZX_I2S_FIFO_CTRL_RX_DMA_EN	(1 << 5)
++#define ZX_I2S_FIFO_CTRL_RX_DMA_DIS	(0 << 5)
++#define ZX_I2S_FIFO_CTRL_RX_DMA_MASK	(1 << 5)
++#define ZX_I2S_FIFO_CTRL_TX_THRES_MASK	(0x1F << 8)
++#define ZX_I2S_FIFO_CTRL_RX_THRES_MASK	(0x1F << 16)
 +
-+#define ZX_CTRL_DOUBLE_TRACK		(0 << 8)
-+#define ZX_CTRL_LEFT_TRACK		BIT(8)
-+#define ZX_CTRL_RIGHT_TRACK		(2 << 8)
-+#define ZX_CTRL_TRACK_MASK		(3 << 8)
++#define CLK_RAT (32 * 4)
 +
-+#define ZX_FIFOCTRL_TXTH_MASK		(0x1f << 8)
-+#define ZX_FIFOCTRL_TXTH(x)		(x << 8)
-+#define ZX_FIFOCTRL_TX_DMA_EN		BIT(2)
-+#define ZX_FIFOCTRL_TX_DMA_DIS		(0 << 2)
-+#define ZX_FIFOCTRL_TX_DMA_EN_MASK	BIT(2)
-+#define ZX_FIFOCTRL_TX_FIFO_RST		BIT(0)
-+#define ZX_FIFOCTRL_TX_FIFO_RST_MASK	BIT(0)
-+
-+#define ZX_VALID_DOUBLE_TRACK		(0 << 0)
-+#define ZX_VALID_LEFT_TRACK		BIT(1)
-+#define ZX_VALID_RIGHT_TRACK		(2 << 0)
-+#define ZX_VALID_TRACK_MASK		(3 << 0)
-+
-+#define ZX_SPDIF_CLK_RAT		(4 * 32)
-+
-+struct zx_spdif_info {
-+	struct snd_dmaengine_dai_dma_data	dma_data;
++struct zx_i2s_info {
++	struct snd_dmaengine_dai_dma_data	dma_playback;
++	struct snd_dmaengine_dai_dma_data	dma_capture;
 +	struct clk				*dai_clk;
 +	void __iomem				*reg_base;
++	int					master;
 +	resource_size_t				mapbase;
 +};
 +
-+static int zx_spdif_dai_probe(struct snd_soc_dai *dai)
++static void zx_i2s_tx_en(void __iomem *base, bool on)
 +{
-+	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
++	unsigned long val;
 +
-+	snd_soc_dai_set_drvdata(dai, zx_spdif);
-+	zx_spdif->dma_data.addr = zx_spdif->mapbase + ZX_DATA;
-+	zx_spdif->dma_data.maxburst = 8;
-+	snd_soc_dai_init_dma_data(dai, &zx_spdif->dma_data, NULL);
++	val = readl_relaxed(base + ZX_I2S_PROCESS_CTRL);
++	if (on)
++		val |= ZX_I2S_PROCESS_TX_EN | ZX_I2S_PROCESS_I2S_EN;
++	else
++		val &= ~(ZX_I2S_PROCESS_TX_EN | ZX_I2S_PROCESS_I2S_EN);
++	writel_relaxed(val, base + ZX_I2S_PROCESS_CTRL);
++}
++
++static void zx_i2s_rx_en(void __iomem *base, bool on)
++{
++	unsigned long val;
++
++	val = readl_relaxed(base + ZX_I2S_PROCESS_CTRL);
++	if (on)
++		val |= ZX_I2S_PROCESS_RX_EN | ZX_I2S_PROCESS_I2S_EN;
++	else
++		val &= ~(ZX_I2S_PROCESS_RX_EN | ZX_I2S_PROCESS_I2S_EN);
++	writel_relaxed(val, base + ZX_I2S_PROCESS_CTRL);
++}
++
++static void zx_i2s_tx_dma_en(void __iomem *base, bool on)
++{
++	unsigned long val;
++
++	val = readl_relaxed(base + ZX_I2S_FIFO_CTRL);
++	val |= ZX_I2S_FIFO_CTRL_TX_RST | (I2S_DEAGULT_FIFO_THRES << 8);
++	if (on)
++		val |= ZX_I2S_FIFO_CTRL_TX_DMA_EN;
++	else
++		val &= ~ZX_I2S_FIFO_CTRL_TX_DMA_EN;
++	writel_relaxed(val, base + ZX_I2S_FIFO_CTRL);
++}
++
++static void zx_i2s_rx_dma_en(void __iomem *base, bool on)
++{
++	unsigned long val;
++
++	val = readl_relaxed(base + ZX_I2S_FIFO_CTRL);
++	val |= ZX_I2S_FIFO_CTRL_RX_RST | (I2S_DEAGULT_FIFO_THRES << 16);
++	if (on)
++		val |= ZX_I2S_FIFO_CTRL_RX_DMA_EN;
++	else
++		val &= ~ZX_I2S_FIFO_CTRL_RX_DMA_EN;
++	writel_relaxed(val, base + ZX_I2S_FIFO_CTRL);
++}
++
++#define ZX_I2S_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	 SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000| \
++	 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
++
++#define ZX_I2S_FMTBIT \
++	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
++	SNDRV_PCM_FMTBIT_S32_LE)
++
++static int zx_i2s_dai_probe(struct snd_soc_dai *dai)
++{
++	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
++
++	snd_soc_dai_set_drvdata(dai, zx_i2s);
++	zx_i2s->dma_playback.addr = zx_i2s->mapbase + ZX_I2S_DATA;
++	zx_i2s->dma_playback.maxburst = 16;
++	zx_i2s->dma_capture.addr = zx_i2s->mapbase + ZX_I2S_DATA;
++	zx_i2s->dma_capture.maxburst = 16;
++	snd_soc_dai_init_dma_data(dai, &zx_i2s->dma_playback,
++				  &zx_i2s->dma_capture);
 +	return 0;
 +}
 +
-+static int zx_spdif_chanstats(void __iomem *base, unsigned int rate)
++static int zx_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 +{
-+	u32 cstas1;
++	struct zx_i2s_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
++	unsigned long val;
 +
-+	switch (rate) {
-+	case 22050:
-+		cstas1 = IEC958_AES3_CON_FS_22050;
++	val = readl_relaxed(i2s->reg_base + ZX_I2S_TIMING_CTRL);
++	val &= ~(ZX_I2S_TIMING_TIMING_MASK | ZX_I2S_TIMING_ALIGN_MASK |
++			ZX_I2S_TIMING_TEAK_MASK | ZX_I2S_TIMING_SYNC_MASK |
++			ZX_I2S_TIMING_MS_MASK);
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_STD_I2S);
 +		break;
-+	case 24000:
-+		cstas1 = IEC958_AES3_CON_FS_24000;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_MSB_JUSTIF);
 +		break;
-+	case 32000:
-+		cstas1 = IEC958_AES3_CON_FS_32000;
-+		break;
-+	case 44100:
-+		cstas1 = IEC958_AES3_CON_FS_44100;
-+		break;
-+	case 48000:
-+		cstas1 = IEC958_AES3_CON_FS_48000;
-+		break;
-+	case 88200:
-+		cstas1 = IEC958_AES3_CON_FS_88200;
-+		break;
-+	case 96000:
-+		cstas1 = IEC958_AES3_CON_FS_96000;
-+		break;
-+	case 176400:
-+		cstas1 = IEC958_AES3_CON_FS_176400;
-+		break;
-+	case 192000:
-+		cstas1 = IEC958_AES3_CON_FS_192000;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_LSB_JUSTIF);
 +		break;
 +	default:
++		dev_err(cpu_dai->dev, "Unknown i2s timeing\n");
 +		return -EINVAL;
 +	}
-+	cstas1 = cstas1 << 24;
-+	cstas1 |= IEC958_AES0_CON_NOT_COPYRIGHT;
 +
-+	writel_relaxed(cstas1, base + ZX_CH_STA_1);
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		i2s->master = 1;
++		val |= ZX_I2S_TIMING_MAST;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		i2s->master = 0;
++		val |= ZX_I2S_TIMING_SLAVE;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Unknown master/slave format\n");
++		return -EINVAL;
++	}
++
++	writel_relaxed(val, i2s->reg_base + ZX_I2S_TIMING_CTRL);
 +	return 0;
 +}
 +
-+static int zx_spdif_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *socdai)
++static int zx_i2s_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *socdai)
 +{
-+	struct zx_spdif_info *zx_spdif = dev_get_drvdata(socdai->dev);
-+	struct zx_spdif_info *spdif = snd_soc_dai_get_drvdata(socdai);
-+	struct snd_dmaengine_dai_dma_data *dma_data = &zx_spdif->dma_data;
-+	u32 val, ch_num, rate;
-+	int ret;
++	struct zx_i2s_info *i2s = snd_soc_dai_get_drvdata(socdai);
++	struct snd_dmaengine_dai_dma_data *dma_data;
++	unsigned int lane, ch_num, len, ret = 0;
++	unsigned long val, format;
++	unsigned long chn_cfg;
 +
 +	dma_data = snd_soc_dai_get_dma_data(socdai, substream);
 +	dma_data->addr_width = params_width(params) >> 3;
 +
-+	val = readl_relaxed(zx_spdif->reg_base + ZX_CTRL);
-+	val &= ~ZX_CTRL_MODA_MASK;
++	val = readl_relaxed(i2s->reg_base + ZX_I2S_TIMING_CTRL);
++	val &= ~(ZX_I2S_TIMING_TS_WIDTH_MASK | ZX_I2S_TIMING_DATA_SIZE_MASK |
++		ZX_I2S_TIMING_LANE_MASK | ZX_I2S_TIMING_CHN_MASK |
++		ZX_I2S_TIMING_TSCFG_MASK);
++
 +	switch (params_format(params)) {
 +	case SNDRV_PCM_FORMAT_S16_LE:
-+		val |= ZX_CTRL_MODA_16;
++		format = 0;
++		len = 16;
 +		break;
-+
-+	case SNDRV_PCM_FORMAT_S18_3LE:
-+		val |= ZX_CTRL_MODA_18;
-+		break;
-+
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		val |= ZX_CTRL_MODA_20;
-+		break;
-+
 +	case SNDRV_PCM_FORMAT_S24_LE:
-+		val |= ZX_CTRL_MODA_24;
++		format = 1;
++		len = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		format = 2;
++		len = 32;
 +		break;
 +	default:
-+		dev_err(socdai->dev, "Format not support!\n");
++		dev_err(socdai->dev, "Unknown data format\n");
 +		return -EINVAL;
 +	}
++	val |= ZX_I2S_TIMING_TS_WIDTH(len) | ZX_I2S_TIMING_DATA_SIZE(len);
 +
 +	ch_num = params_channels(params);
-+	if (ch_num == 2)
-+		val |= ZX_CTRL_DOUBLE_TRACK;
-+	else
-+		val |= ZX_CTRL_LEFT_TRACK;
-+	writel_relaxed(val, zx_spdif->reg_base + ZX_CTRL);
++	switch (ch_num) {
++	case 1:
++		lane = 1;
++		chn_cfg = 2;
++		break;
++	case 2:
++	case 4:
++	case 6:
++	case 8:
++		lane = ch_num / 2;
++		chn_cfg = 3;
++		break;
++	default:
++		dev_err(socdai->dev, "Not support channel num %d\n", ch_num);
++		return -EINVAL;
++	}
++	val |= ZX_I2S_TIMING_LANE(lane);
++	val |= ZX_I2S_TIMING_TSCFG(chn_cfg);
++	val |= ZX_I2S_TIMING_CHN(ch_num);
++	writel_relaxed(val, i2s->reg_base + ZX_I2S_TIMING_CTRL);
 +
-+	val = readl_relaxed(zx_spdif->reg_base + ZX_VALID_BIT);
-+	val &= ~ZX_VALID_TRACK_MASK;
-+	if (ch_num == 2)
-+		val |= ZX_VALID_DOUBLE_TRACK;
-+	else
-+		val |= ZX_VALID_RIGHT_TRACK;
-+	writel_relaxed(val, zx_spdif->reg_base + ZX_VALID_BIT);
-+
-+	rate = params_rate(params);
-+	ret = zx_spdif_chanstats(zx_spdif->reg_base, rate);
-+	if (ret)
-+		return ret;
-+	ret = clk_set_rate(spdif->dai_clk, rate * ch_num * ZX_SPDIF_CLK_RAT);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
++	if (i2s->master)
++		ret = clk_set_rate(i2s->dai_clk,
++				   params_rate(params) * ch_num * CLK_RAT);
++	return ret;
 +}
 +
-+static void zx_spdif_cfg_tx(void __iomem *base, int on)
++static int zx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
++			  struct snd_soc_dai *dai)
 +{
-+	u32 val;
-+
-+	val = readl_relaxed(base + ZX_CTRL);
-+	val &= ~(ZX_CTRL_ENB_MASK | ZX_CTRL_TX_MASK);
-+	val |= on ? ZX_CTRL_OPEN : ZX_CTRL_CLOSE;
-+	writel_relaxed(val, base + ZX_CTRL);
-+
-+	val = readl_relaxed(base + ZX_FIFOCTRL);
-+	val &= ~ZX_FIFOCTRL_TX_DMA_EN_MASK;
-+	if (on)
-+		val |= ZX_FIFOCTRL_TX_DMA_EN;
-+	writel_relaxed(val, base + ZX_FIFOCTRL);
-+}
-+
-+static int zx_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
-+			    struct snd_soc_dai *dai)
-+{
-+	u32 val;
-+	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
-+	int  ret = 0;
++	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
++	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
++	int ret = 0;
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
-+		val = readl_relaxed(zx_spdif->reg_base + ZX_FIFOCTRL);
-+		val |= ZX_FIFOCTRL_TX_FIFO_RST;
-+		writel_relaxed(val, zx_spdif->reg_base + ZX_FIFOCTRL);
++		if (capture)
++			zx_i2s_rx_dma_en(zx_i2s->reg_base, true);
++		else
++			zx_i2s_tx_dma_en(zx_i2s->reg_base, true);
 +	/* fall thru */
 +	case SNDRV_PCM_TRIGGER_RESUME:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		zx_spdif_cfg_tx(zx_spdif->reg_base, true);
++		if (capture)
++			zx_i2s_rx_en(zx_i2s->reg_base, true);
++		else
++			zx_i2s_tx_en(zx_i2s->reg_base, true);
 +		break;
 +
 +	case SNDRV_PCM_TRIGGER_STOP:
++		if (capture)
++			zx_i2s_rx_dma_en(zx_i2s->reg_base, false);
++		else
++			zx_i2s_tx_dma_en(zx_i2s->reg_base, false);
++	/* fall thru */
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		zx_spdif_cfg_tx(zx_spdif->reg_base, false);
++		if (capture)
++			zx_i2s_rx_en(zx_i2s->reg_base, false);
++		else
++			zx_i2s_tx_en(zx_i2s->reg_base, false);
 +		break;
 +
 +	default:
@@ -334,99 +397,82 @@ index 0000000..789d07f
 +	return ret;
 +}
 +
-+static int zx_spdif_startup(struct snd_pcm_substream *substream,
++static int zx_i2s_startup(struct snd_pcm_substream *substream,
++			  struct snd_soc_dai *dai)
++{
++	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
++
++	return clk_prepare_enable(zx_i2s->dai_clk);
++}
++
++static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
 +			    struct snd_soc_dai *dai)
 +{
-+	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
++	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
 +
-+	return clk_prepare_enable(zx_spdif->dai_clk);
++	clk_disable_unprepare(zx_i2s->dai_clk);
 +}
 +
-+static void zx_spdif_shutdown(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct zx_spdif_info *zx_spdif = dev_get_drvdata(dai->dev);
-+
-+	clk_disable_unprepare(zx_spdif->dai_clk);
-+}
-+
-+#define ZX_RATES \
-+	(SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |\
-+	SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
-+
-+#define ZX_FORMAT \
-+	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE \
-+	| SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static struct snd_soc_dai_ops zx_spdif_dai_ops = {
-+	.trigger	= zx_spdif_trigger,
-+	.startup	= zx_spdif_startup,
-+	.shutdown	= zx_spdif_shutdown,
-+	.hw_params	= zx_spdif_hw_params,
++static struct snd_soc_dai_ops zx_i2s_dai_ops = {
++	.trigger	= zx_i2s_trigger,
++	.hw_params	= zx_i2s_hw_params,
++	.set_fmt	= zx_i2s_set_fmt,
++	.startup	= zx_i2s_startup,
++	.shutdown	= zx_i2s_shutdown,
 +};
 +
-+static struct snd_soc_dai_driver zx_spdif_dai = {
-+	.name = "spdif",
-+	.id = 0,
-+	.probe = zx_spdif_dai_probe,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = ZX_RATES,
-+		.formats = ZX_FORMAT,
++static const struct snd_soc_component_driver zx_i2s_component = {
++	.name			= "zx-i2s",
++};
++
++static struct snd_soc_dai_driver zx_i2s_dai = {
++	.name	= "zx-i2s-dai",
++	.id	= 0,
++	.probe	= zx_i2s_dai_probe,
++	.playback   = {
++		.channels_min	= 1,
++		.channels_max	= 8,
++		.rates		= ZX_I2S_RATES,
++		.formats	= ZX_I2S_FMTBIT,
 +	},
-+	.ops = &zx_spdif_dai_ops,
++	.capture = {
++		.channels_min	= 1,
++		.channels_max	= 2,
++		.rates		= ZX_I2S_RATES,
++		.formats	= ZX_I2S_FMTBIT,
++	},
++	.ops	= &zx_i2s_dai_ops,
 +};
 +
-+static const struct snd_soc_component_driver zx_spdif_component = {
-+	.name	= "spdif",
-+};
-+
-+static void zx_spdif_dev_init(void __iomem *base)
-+{
-+	u32 val;
-+
-+	writel_relaxed(0, base + ZX_CTRL);
-+	writel_relaxed(0, base + ZX_INT_MASK);
-+	writel_relaxed(0xf, base + ZX_INT_STATUS);
-+	writel_relaxed(0x1, base + ZX_FIFOCTRL);
-+
-+	val = readl_relaxed(base + ZX_FIFOCTRL);
-+	val &= ~(ZX_FIFOCTRL_TXTH_MASK | ZX_FIFOCTRL_TX_FIFO_RST_MASK);
-+	val |= ZX_FIFOCTRL_TXTH(8);
-+	writel_relaxed(val, base + ZX_FIFOCTRL);
-+}
-+
-+static int zx_spdif_probe(struct platform_device *pdev)
++static int zx_i2s_probe(struct platform_device *pdev)
 +{
 +	struct resource *res;
-+	struct zx_spdif_info *zx_spdif;
++	struct zx_i2s_info *zx_i2s;
 +	int ret;
 +
-+	zx_spdif = devm_kzalloc(&pdev->dev, sizeof(*zx_spdif), GFP_KERNEL);
-+	if (!zx_spdif)
++	zx_i2s =  kzalloc(sizeof(*zx_i2s), GFP_KERNEL);
++	if (!zx_i2s)
 +		return -ENOMEM;
 +
-+	zx_spdif->dai_clk = devm_clk_get(&pdev->dev, "tx");
-+	if (IS_ERR(zx_spdif->dai_clk)) {
++	zx_i2s->dai_clk = devm_clk_get(&pdev->dev, "tx");
++	if (IS_ERR(zx_i2s->dai_clk)) {
 +		dev_err(&pdev->dev, "Fail to get clk\n");
-+		return PTR_ERR(zx_spdif->dai_clk);
++		return PTR_ERR(zx_i2s->dai_clk);
 +	}
 +
 +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	zx_spdif->mapbase = res->start;
-+	zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (!zx_spdif->reg_base) {
++	zx_i2s->mapbase = res->start;
++	zx_i2s->reg_base = devm_ioremap_resource(&pdev->dev, res);
++	if (!zx_i2s->reg_base) {
 +		dev_err(&pdev->dev, "ioremap failed!\n");
 +		return -EIO;
 +	}
 +
-+	zx_spdif_dev_init(zx_spdif->reg_base);
-+	platform_set_drvdata(pdev, zx_spdif);
++	writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
++	platform_set_drvdata(pdev, zx_i2s);
 +
-+	ret = devm_snd_soc_register_component(&pdev->dev, &zx_spdif_component,
-+					 &zx_spdif_dai, 1);
++	ret = snd_soc_register_component(&pdev->dev, &zx_i2s_component,
++					 &zx_i2s_dai, 1);
 +	if (ret) {
 +		dev_err(&pdev->dev, "Register DAI failed: %d\n", ret);
 +		return ret;
@@ -439,25 +485,25 @@ index 0000000..789d07f
 +	return ret;
 +}
 +
-+static const struct of_device_id zx_spdif_dt_ids[] = {
-+	{ .compatible = "zte,zx296702-spdif", },
++static const struct of_device_id zx_i2s_dt_ids[] = {
++	{ .compatible = "zte,zx296702-i2s", },
 +	{}
 +};
-+MODULE_DEVICE_TABLE(of, zx_spdif_dt_ids);
++MODULE_DEVICE_TABLE(of, zx_i2s_dt_ids);
 +
-+static struct platform_driver spdif_driver = {
-+	.probe = zx_spdif_probe,
++static struct platform_driver i2s_driver = {
++	.probe = zx_i2s_probe,
 +	.driver = {
-+		.name = "zx-spdif",
++		.name = "zx-i2s",
 +		.owner = THIS_MODULE,
-+		.of_match_table = zx_spdif_dt_ids,
++		.of_match_table = zx_i2s_dt_ids,
 +	},
 +};
 +
-+module_platform_driver(spdif_driver);
++module_platform_driver(i2s_driver);
 +
 +MODULE_AUTHOR("Jun Nie <jun.nie@linaro.org>");
-+MODULE_DESCRIPTION("ZTE SPDIF SoC DAI");
++MODULE_DESCRIPTION("ZTE I2S SoC DAI");
 +MODULE_LICENSE("GPL");
 -- 
 1.9.1
