@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 08/22] ASoC: tas2552: Rename mclk parameter to
-	pll_clkin to match with the datasheet
-Date: Thu, 4 Jun 2015 15:22:32 +0300
-Message-ID: <1433420571-5421-9-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 09/22] DT/sound: bindings header file for
+	tas2552 codec
+Date: Thu, 4 Jun 2015 15:22:33 +0300
+Message-ID: <1433420571-5421-10-git-send-email-peter.ujfalusi@ti.com>
 References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id DDBBD2664AD
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:15 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2910B2664B2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:18 +0200 (CEST)
 In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,63 +25,37 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MCLK is one of the possible source for the pll_clkin frequency. Make this
-clear by renaming the variable.
+Binding header file for clock input selection and configuration.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/dt-bindings/sound/tas2552.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+ create mode 100644 include/dt-bindings/sound/tas2552.h
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 61419e2f833b..e29b29b279d9 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -75,7 +75,7 @@ struct tas2552_data {
- 	struct regulator_bulk_data supplies[TAS2552_NUM_SUPPLIES];
- 	struct gpio_desc *enable_gpio;
- 	unsigned char regs[TAS2552_VBAT_DATA];
--	unsigned int mclk;
-+	unsigned int pll_clkin;
- };
- 
- /* Input mux controls */
-@@ -141,13 +141,13 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
- 	int d;
- 	u8 p, j;
- 
--	if (!tas2552->mclk)
-+	if (!tas2552->pll_clkin)
- 		return -EINVAL;
- 
- 	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
- 
--	if (tas2552->mclk == TAS2552_245MHZ_CLK ||
--		tas2552->mclk == TAS2552_225MHZ_CLK) {
-+	if (tas2552->pll_clkin == TAS2552_245MHZ_CLK ||
-+	    tas2552->pll_clkin == TAS2552_225MHZ_CLK) {
- 		/* By pass the PLL configuration */
- 		snd_soc_update_bits(codec, TAS2552_PLL_CTRL_2,
- 				    TAS2552_PLL_BYPASS_MASK,
-@@ -171,8 +171,8 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
- 			return -EINVAL;
- 		}
- 
--		j = (pll_clk * 2 * (1 << p)) / tas2552->mclk;
--		d = (pll_clk * 2 * (1 << p)) % tas2552->mclk;
-+		j = (pll_clk * 2 * (1 << p)) / tas2552->pll_clkin;
-+		d = (pll_clk * 2 * (1 << p)) % tas2552->pll_clkin;
- 
- 		snd_soc_update_bits(codec, TAS2552_PLL_CTRL_1,
- 				TAS2552_PLL_J_MASK, j);
-@@ -245,7 +245,7 @@ static int tas2552_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct tas2552_data *tas2552 = dev_get_drvdata(codec->dev);
- 
--	tas2552->mclk = freq;
-+	tas2552->pll_clkin = freq;
- 
- 	return 0;
- }
+diff --git a/include/dt-bindings/sound/tas2552.h b/include/dt-bindings/sound/tas2552.h
+new file mode 100644
+index 000000000000..a4e1a079980b
+--- /dev/null
++++ b/include/dt-bindings/sound/tas2552.h
+@@ -0,0 +1,18 @@
++#ifndef __DT_TAS2552_H
++#define __DT_TAS2552_H
++
++#define TAS2552_PLL_CLKIN		(0)
++#define TAS2552_PDM_CLK			(1)
++#define TAS2552_CLK_TARGET_MASK		(1)
++
++#define TAS2552_PLL_CLKIN_MCLK		((0 << 1) | TAS2552_PLL_CLKIN)
++#define TAS2552_PLL_CLKIN_BCLK		((1 << 1) | TAS2552_PLL_CLKIN)
++#define TAS2552_PLL_CLKIN_IVCLKIN	((2 << 1) | TAS2552_PLL_CLKIN)
++#define TAS2552_PLL_CLKIN_1_8_FIXED	((3 << 1) | TAS2552_PLL_CLKIN)
++
++#define TAS2552_PDM_CLK_PLL		((0 << 1) | TAS2552_PDM_CLK)
++#define TAS2552_PDM_CLK_IVCLKIN		((1 << 1) | TAS2552_PDM_CLK)
++#define TAS2552_PDM_CLK_BCLK		((2 << 1) | TAS2552_PDM_CLK)
++#define TAS2552_PDM_CLK_MCLK		((3 << 1) | TAS2552_PDM_CLK)
++
++#endif /* __DT_TAS2552_H */
 -- 
 2.4.2
