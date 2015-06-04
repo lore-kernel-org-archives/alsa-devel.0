@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 00/22] ASoC: tas2552: Fixes,
-	cleanups and improvements
-Date: Thu, 4 Jun 2015 15:22:24 +0300
-Message-ID: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 01/22] ASoC: tas2552: Make the enable-gpio
+	really optional
+Date: Thu, 4 Jun 2015 15:22:25 +0300
+Message-ID: <1433420571-5421-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F3D92606BC
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:22:59 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 959E7266198
+ for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 14:23:02 +0200 (CEST)
+In-Reply-To: <1433420571-5421-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,32 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, dmurph
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Do not fail the probe if the enable-gpio is not specifiedbut handle
+deferred probe case.
 
-I have used the TAS2552-EVM to verify that my setup is in working condition for
-a work on other audio product.
-During the bringup of the EVM I have faced some issues and limitation with the
-driver. The result is this series against the tas2552 driver.
-
-Notable changes:
-- Fixes for kernel crashes
-- The enable-gpio was not optional as it was documented in the DTS
-- Register bit definitions were not correct in several places
-- Adding recommended startup/stop sequence
-- Handling of sample formats the driver claims to support
-- PLL configuration fixes and reference clock selection
-- TDM support
-- Gain control fix and control to select DIN source
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (22):
-  ASoC: tas2552: Make the enable-gpio really optional
-  ASoC: tas2552: Fix kernel crash when the codec is loaded but not part
-    of a card
-  ASoC: tas2552: Fix kernel crash caused by wrong kcontrol entry
-  ASoC: tas2552: Correct PDM configuration register bit definitions
-  ASoC: tas2552: Correct CFG1 register bit definitions
-  ASoC: tas2552: Simplify the tas2552_mute function
-  ASoC: tas2552: Simplify and reverse the functionality of
-    tas2552_sw_shutdown
-  ASoC: tas2552: Rename mclk parameter to pll_clkin to match with the
-    datasheet
-  DT/sound: bindings header file for tas2552 codec
-  ASoC: tas2552: Add support for pll and pdm source clock selection
-  ASoC: tas2552: Correct dai format support
-  ASoC: tas2552: Correct and clean up data format and BCLK/WCLK
-    direction
-  ASoC: tas2552: Add TDM support
-  ASoC: tas2552: Clean up the Digital - Analog DAPM route definition
-  ASoC: tas2552: Correct the Speaker Driver Playback Volume (PGA_GAIN)
-  ASoC: tas2552: Implement startup/stop sequence as per TRM
-  ASoC: tas2552: Add support for word length configuration
-  ASoC: tas2552: Configure the WCLK frequency based on the stream
-  ASoC: tas2552: Add control for selecting DIN source
-  ASoC: tas2552: Correct Output Data register usage
-  ASoC: tas2552: Correct Boost Auto-Pass Through Control register usage
-  ASoC: tas2552: Code, define alignment changes for uniformity
+ sound/soc/codecs/tas2552.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
- include/dt-bindings/sound/tas2552.h |  18 ++
- sound/soc/codecs/tas2552.c          | 435 +++++++++++++++++++++++++++---------
- sound/soc/codecs/tas2552.h          | 149 ++++++------
- 3 files changed, 431 insertions(+), 171 deletions(-)
- create mode 100644 include/dt-bindings/sound/tas2552.h
-
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index dfb4ff5cc9ea..ff82f46ba504 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -486,8 +486,12 @@ static int tas2552_probe(struct i2c_client *client,
+ 		return -ENOMEM;
+ 
+ 	data->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+-	if (IS_ERR(data->enable_gpio))
+-		return PTR_ERR(data->enable_gpio);
++	if (IS_ERR(data->enable_gpio)) {
++		if (PTR_ERR(data->enable_gpio) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
++		data->enable_gpio = NULL;;
++	}
+ 
+ 	data->tas2552_client = client;
+ 	data->regmap = devm_regmap_init_i2c(client, &tas2552_regmap_config);
 -- 
 2.4.2
