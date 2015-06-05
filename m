@@ -1,24 +1,21 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: Re: writing an alsa driver
-Date: Thu, 4 Jun 2015 21:39:22 +0200
-Message-ID: <20150604193922.GA627@asus>
-References: <20150527085440.GA4445@dellaz> <1432752116.8235.25.camel@loki>
- <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>
- <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
- <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
- <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [PATCH] ASoC: rt5677: Avoid recursive locking in
+ the DEADLOCK detector
+Date: Fri, 5 Jun 2015 08:53:54 +0800
+Message-ID: <CANMq1KCFwFppzAx5NiotP_0uy93Ga436PYEbhhA6iM0JCXWtaA@mail.gmail.com>
+References: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
+ <20150603164453.GP14071@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id E613C261480
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 21:39:40 +0200 (CEST)
-Received: by wiwd19 with SMTP id d19so31967248wiw.0
- for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 12:39:39 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1433156768.2642.21.camel@loki>
+Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
+ [209.85.218.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 669A5261481
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 02:53:55 +0200 (CEST)
+Received: by oiww2 with SMTP id w2so43334633oiw.0
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 17:53:54 -0700 (PDT)
+In-Reply-To: <20150603164453.GP14071@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,176 +25,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, "Nikula, Jarkko" <jarkko.nikula@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 01, 2015 at 12:06:08PM +0100, Liam Girdwood wrote:
-> + Jarkko
-> 
-> On Fri, 2015-05-29 at 15:17 +0200, Michele Curti wrote:
-> > On Fri, May 29, 2015 at 10:42:01AM +0100, Liam Girdwood wrote:
-> > > On Thu, 2015-05-28 at 21:17 +0200, Michele Curti wrote:
-> > > 
-> > > > to let the probe continue, the system become quite unusable but I get the 
-> > > > logs.
-> > > > 
-> > > > May 28 20:34:00 asus kernel: byt-rt5645 byt-rt5645: ASoC: CPU DAI baytrail-pcm-audio not registered
-> > > > May 28 20:34:00 asus kernel: baytrail-pcm-audio baytrail-pcm-audio: initialising Byt DSP IPC
-> > > > May 28 20:34:00 asus kernel: baytrail-pcm-audio baytrail-pcm-audio: initialising audio DSP id 0xf28
-> > > > May 28 20:34:00 asus kernel: irq used for dsp = 6
-> > > > 
-> > > > ---> The IRQ number used is 6
-> > > > 
-> 
-> Jarkko thinks the IRQ may be incorrectly reported by ACPI and that it
-> could be using another ACPI index. This could probably be checked by
-> decompiling the ACPi data and searching for the audio DSP.
+Hi Mark,
+
+On Thu, Jun 4, 2015 at 12:44 AM, Mark Brown <broonie@kernel.org> wrote:
 >
+> On Wed, Jun 03, 2015 at 11:53:17PM +0800, Oder Chiou wrote:
+>
+> > The patch is for to avoid recursive locking in the DEADLOCK detector.
+> > In the driver, it encountered the warnning message of the recursive locking
+> > in the function "regmap_lock_mutex".
+>
+> Could you be more specific about the deadlock you're seeing?  This isn't
+> really enough to understand either what the problem is or why this fixes
+> it.  Converting all the per-regmap mutexes into a single global mutex
+> isn't an immediately obvious step.
 
-Done an acpidump/iasl and (I think) the interesting part is:
+We originally reported the issue to Realtek:
 
-    Scope (_SB)
-    {
-        Device (LPEA)
-        {
-            Name (_ADR, Zero)  // _ADR: Address
-            Name (_HID, "80860F28" /* Intel SST Audio DSP */)  // _HID: Hardware ID
-            Name (_CID, "80860F28" /* Intel SST Audio DSP */)  // _CID: Compatible ID
-            Name (_DDN, "Intel(R) Low Power Audio Controller - 80860F28")  // _DDN: DOS Device Name
-            Name (_SUB, "1043182D")  // _SUB: Subsystem ID
-            Name (_UID, One)  // _UID: Unique ID
-            Name (ADEP, Package (0x01)
-            {
-                ^I2C2.TTLV
-            })
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
-            {
-                ^I2C2.RTEK
-            })
-            Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
-            {
-                PLPE
-            })
-            Method (_STA, 0, NotSerialized)  // _STA: Status
-            {
-                If (((LPEE == 0x02) && (LPED == Zero)))
-                {
-                    Return (0x0F)
-                }
+[    2.569449] =============================================
+[    2.569451] [ INFO: possible recursive locking detected ]
+[    2.569454] 3.18.0 #311 Tainted: G S
+[    2.569456] ---------------------------------------------
+[    2.569458] swapper/0/1 is trying to acquire lock:
+[    2.569469]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
+regmap_lock_mutex+0x10/0x18
+[    2.569470]
+[    2.569470] but task is already holding lock:
+[    2.569476]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
+regmap_lock_mutex+0x10/0x18
+[    2.569478]
+[    2.569478] other info that might help us debug this:
+[    2.569479]  Possible unsafe locking scenario:
+[    2.569479]
+[    2.569480]        CPU0
+[    2.569481]        ----
+[    2.569484]   lock(&map->mutex);
+[    2.569486]   lock(&map->mutex);
+[    2.569487]
+[    2.569487]  *** DEADLOCK ***
+[    2.569487]
+[    2.569489]  May be due to missing lock nesting notation
+[    2.569489]
+[    2.569491] 3 locks held by swapper/0/1:
+[    2.569499]  #0:  (&dev->mutex){......}, at: [<ffffffc000369e80>]
+__driver_attach+0x38/0x98
+[    2.569505]  #1:  (&dev->mutex){......}, at: [<ffffffc000369ea0>]
+__driver_attach+0x58/0x98
+[    2.569512]  #2:  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
+regmap_lock_mutex+0x10/0x18
+[    2.569513]
+[    2.569513] stack backtrace:
+[    2.569517] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G S
+3.18.0 #311
+[    2.569521] Call trace:
+[    2.569527] [<ffffffc000089198>] dump_backtrace+0x0/0x108
+[    2.569530] [<ffffffc0000892b0>] show_stack+0x10/0x1c
+[    2.569535] [<ffffffc0005e09b4>] dump_stack+0x74/0x94
+[    2.569540] [<ffffffc0000d5d1c>] __lock_acquire+0x73c/0x1910
+[    2.569544] [<ffffffc0000d7674>] lock_acquire+0xec/0x128
+[    2.569548] [<ffffffc0005e3870>] mutex_lock_nested+0x58/0x354
+[    2.569551] [<ffffffc00037db9c>] regmap_lock_mutex+0xc/0x18
+[    2.569554] [<ffffffc00037ef50>] regmap_read+0x34/0x68
+[    2.569559] [<ffffffc0004ddc84>] rt5677_read+0x9c/0xb4
+[    2.569562] [<ffffffc00037ee8c>] _regmap_read+0xa8/0x138
+[    2.569565] [<ffffffc00037ef60>] regmap_read+0x44/0x68
+[    2.569569] [<ffffffc0004dd6a4>] rt5677_i2c_probe+0x25c/0x4a4
+[    2.569574] [<ffffffc00042984c>] i2c_device_probe+0xfc/0x130
+[    2.569577] [<ffffffc000369c58>] driver_probe_device+0xd4/0x23c
+[    2.569580] [<ffffffc000369eb0>] __driver_attach+0x68/0x98
+[    2.569584] [<ffffffc000368dc8>] bus_for_each_dev+0x70/0x90
+[    2.569588] [<ffffffc0003697e4>] driver_attach+0x1c/0x28
+[    2.569591] [<ffffffc000369400>] bus_add_driver+0xd8/0x1e0
+[    2.569594] [<ffffffc00036a7f0>] driver_register+0xbc/0x10c
+[    2.569598] [<ffffffc00042a4bc>] i2c_register_driver+0x48/0xac
+[    2.569601] [<ffffffc0008d523c>] rt5677_i2c_driver_init+0x14/0x20
+[    2.569605] [<ffffffc0000828dc>] do_one_initcall+0xf4/0x18c
+[    2.569609] [<ffffffc0008a4ae8>] kernel_init_freeable+0x144/0x1e4
+[    2.569613] [<ffffffc0005de3a4>] kernel_init+0x10/0xd4
 
-                Return (Zero)
-            }
+It's actually a false alarm, the warning is triggered because 2 locks
+are acquired, from the same location:
+ - rt5677_i2c_probe calls regmap_read(rt5677->regmap, RT5677_VENDOR_ID2, &val);
+ - This locks rt5677->regmap->mutex (1st lock), then calls rt5677_read
+ - Since rt5677->is_dsp_mode is false,
+regmap_read(rt5677->regmap_physical, reg, val); is called
+ - This locks rt5677->regmap_physical->mutex (2nd lock).
+ - The value is read, then both locks are released, in reverse order.
 
-            Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
-            {
-            }
+AFAIK there is no code that would acquire the locks in the reverse
+order, so I don't think this can deadlock.
 
-            Name (RBUF, ResourceTemplate ()
-            {
-                Memory32Fixed (ReadWrite,
-                    0x12345678,         // Address Base
-                    0x00200000,         // Address Length
-                    _Y04)
-                Memory32Fixed (ReadWrite,
-                    0xFE830000,         // Address Base
-                    0x00001000,         // Address Length
-                    _Y05)
-                Memory32Fixed (ReadWrite,
-                    0x55AA55AA,         // Address Base
-                    0x00200000,         // Address Length
-                    _Y06)
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x0000001D,
-                }
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x00000018,
-                }
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x00000019,
-                }
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x0000001A,
-                }
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x0000001B,
-                }
-                Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-                {
-                    0x0000001C,
-                }
-            })
-            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-            {
-                CreateDWordField (RBUF, \_SB.LPEA._Y04._BAS, B0BA)  // _BAS: Base Address
-                B0BA = LPE0 /* \LPE0 */
-                CreateDWordField (RBUF, \_SB.LPEA._Y05._BAS, B1BA)  // _BAS: Base Address
-                B1BA = LPE1 /* \LPE1 */
-                CreateDWordField (RBUF, \_SB.LPEA._Y06._BAS, B2BA)  // _BAS: Base Address
-                B2BA = LPE2 /* \LPE2 */
-                Return (RBUF) /* \_SB_.LPEA.RBUF */
-            }
+I suggested reworking the register read/write calls in rt5677.c to
+direct them to the correct regmap earlier on (rt5677->regmap or
+rt5677->regmap_physical), before locks are acquired. But the patch
+above also fixes the issue (that is, it removes the warning).
 
-            OperationRegion (KEYS, SystemMemory, LPE1, 0x0100)
-            Field (KEYS, DWordAcc, NoLock, WriteAsZeros)
-            {
-                Offset (0x84), 
-                PSAT,   32
-            }
+Thanks,
 
-            PowerResource (PLPE, 0x05, 0x0000)
-            {
-                Method (_STA, 0, NotSerialized)  // _STA: Status
-                {
-                    Return (One)
-                }
-
-                Method (_ON, 0, NotSerialized)  // _ON_: Power On
-                {
-                    PSAT &= 0xFFFFFFFC
-                    Local0 = PSAT /* \_SB_.LPEA.PSAT */
-                }
-
-                Method (_OFF, 0, NotSerialized)  // _OFF: Power Off
-                {
-                    PSAT |= 0x03
-                    Local0 = PSAT /* \_SB_.LPEA.PSAT */
-                }
-            }
-
-So, 6 possible IRQs for the LPE core, from 0x18 to 0x1D?
-
-Changed the code and tried all six
-
-diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-index bb28e84..a306502 100644
---- a/sound/soc/intel/common/sst-acpi.c
-+++ b/sound/soc/intel/common/sst-acpi.c
-@@ -149,8 +149,12 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		sst_pdata->dma_size = desc->dma_size;
- 	}
- 
--	if (desc->irqindex_host_ipc >= 0)
--		sst_pdata->irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
-+	if (desc->irqindex_host_ipc >= 0) {
-+		sst_pdata->irq = 0x1D; /* acpi-dump, from 0x18 to 0x1D */
-+		pr_info("audio dsp: IRQ # was %d, force to %d\n",
-+				platform_get_irq(pdev, desc->irqindex_host_ipc),
-+				sst_pdata->irq);
-+	}
- 
- 	if (desc->resindex_lpe_base >= 0) {
- 		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
-
-without success, I get always the "dsp boot timeout".
-
-I'm going to investigate why platform_get_irq() returns 6 instead of something
-in the range 0x18-0x1D.. :)
-
-Thanks for the time spent,
-Michele
+Nicolas
