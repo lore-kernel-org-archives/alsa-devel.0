@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8731: initialize the hardware when
+From: Sergey Kiselev <sergey.kiselev@intel.com>
+Subject: [PATCH v2] ASoC: wm8731: initialize the hardware when
  loading the codec driver
-Date: Fri, 5 Jun 2015 19:27:46 +0100
-Message-ID: <20150605182746.GF14071@sirena.org.uk>
-References: <20150603131926.eba497d0b22010838fb094f4@intel.com>
- <20150605162546.GB32730@opensource.wolfsonmicro.com>
- <20150605112026.5ec1809046fdd1817691ce05@intel.com>
+Date: Fri, 5 Jun 2015 11:55:27 -0700
+Message-ID: <20150605115527.d7c116e0dfbc751f066d417c@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1065988527001478414=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C71BB2668DA
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 20:27:56 +0200 (CEST)
-In-Reply-To: <20150605112026.5ec1809046fdd1817691ce05@intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31BE12668DA
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 20:55:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +19,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergey Kiselev <sergey.kiselev@intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Sergey Kiselev <sergey.kiselev@intel.com>
 
---===============1065988527001478414==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iDVed5OELLBB+kAD"
-Content-Disposition: inline
+This patch moves the requesting supplies, hardware reset and
+initialization from wm8731_probe to wm8731_i2c_probe and wm8731_spi_probe.
+So that the codec hardware is initialized when loading the codec driver,
+and not when loading the machine driver. This avoids unnecesary hardware
+resets and re-initializations when re-loading the machine driver.
 
+Signed-off-by: Sergey Kiselev <sergey.kiselev@intel.com>
+---
+ sound/soc/codecs/wm8731.c | 74 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 32 deletions(-)
 
---iDVed5OELLBB+kAD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 05, 2015 at 11:20:26AM -0700, Sergey Kiselev wrote:
-> Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > On Wed, Jun 03, 2015 at 01:19:26PM -0700, Sergey Kiselev wrote:
-
-> > >  	/* Regulators will have been enabled by bias management */
-
-> > This comment needs an update because this function is only called
-> > from the bus probe so no bias management will have been called
-> > yet. Basically we are powering down here after probe is complete
-> > and the bias management will power us up again.
-
-> I think that's what the comment says (future perfect tense?!). I can
-> rephrase it with something simpler like "regulators will be enabled by
-> bias management". English is not my mother tongue, and I appreciate any
-> corrections. :-)
-
-Yes, will be is better - it binds "will (have been)", that is "it will
-at this time be the case that the regulators have been enabled".
-
---iDVed5OELLBB+kAD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVceohAAoJECTWi3JdVIfQ744H/1/7s2ElXh/tVAtRaqkxyaHK
-M0MLfYNFryCODk1qS6uU2llnZ2gkh4sN8F1QWHeOpxKBHjPa4jkemNgRh92cFF6a
-dsxsZwNtNG5jhyn2ABeNsgPtPnBdCmbEokQhGlaCfwc6P5JEKEvL+Nw2u0CGUo9e
-dqErGpt9t8MxSWQXIEA/9iKHpBWn46DRp3b/HwpYnVxD32kI5pWib2IPaLgJhYb8
-tFiIEqOx3B6NtPML8ODtdE2KznCw2IfMGc1nSrtQUIL2OkLKVTafQGqLA5dPh0DU
-g2I+COA5n+qtmWtHF6huYwSNYmXFtBH/OVlp/Yw7XKYkLO5CvKgWvXHNgZW4kC8=
-=NokY
------END PGP SIGNATURE-----
-
---iDVed5OELLBB+kAD--
-
---===============1065988527001478414==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1065988527001478414==--
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 915ea11..f22935a 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -84,7 +84,7 @@ static bool wm8731_writeable(struct device *dev, unsigned int reg)
+ 	return reg <= WM8731_RESET;
+ }
+ 
+-#define wm8731_reset(c)	snd_soc_write(c, WM8731_RESET, 0)
++#define wm8731_reset(m)	regmap_write(m, WM8731_RESET, 0)
+ 
+ static const char *wm8731_input_select[] = {"Line In", "Mic"};
+ 
+@@ -571,69 +571,63 @@ static struct snd_soc_dai_driver wm8731_dai = {
+ 	.symmetric_rates = 1,
+ };
+ 
+-static int wm8731_probe(struct snd_soc_codec *codec)
++static int wm8731_request_supplies(struct device *dev,
++		struct wm8731_priv *wm8731)
+ {
+-	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0, i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm8731->supplies); i++)
+ 		wm8731->supplies[i].supply = wm8731_supply_names[i];
+ 
+-	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8731->supplies),
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(wm8731->supplies),
+ 				 wm8731->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
++		dev_err(dev, "Failed to request supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8731->supplies),
+ 				    wm8731->supplies);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		dev_err(dev, "Failed to enable supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = wm8731_reset(codec);
++	return 0;
++}
++
++static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
++{
++	int ret = 0;
++
++	ret = wm8731_reset(wm8731->regmap);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
++		dev_err(dev, "Failed to issue reset: %d\n", ret);
+ 		goto err_regulator_enable;
+ 	}
+ 
+-	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	/* Clear POWEROFF, keep everything else disabled */
++	regmap_write(wm8731->regmap, WM8731_PWR, 0x7f);
+ 
+ 	/* Latch the update bits */
+-	snd_soc_update_bits(codec, WM8731_LOUT1V, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_ROUT1V, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_LINVOL, 0x100, 0);
+-	snd_soc_update_bits(codec, WM8731_RINVOL, 0x100, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_LOUT1V, 0x100, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_ROUT1V, 0x100, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_LINVOL, 0x100, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_RINVOL, 0x100, 0);
+ 
+ 	/* Disable bypass path by default */
+-	snd_soc_update_bits(codec, WM8731_APANA, 0x8, 0);
++	regmap_update_bits(wm8731->regmap, WM8731_APANA, 0x8, 0);
+ 
+-	/* Regulators will have been enabled by bias management */
+-	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+-
+-	return 0;
++	regcache_mark_dirty(wm8731->regmap);
+ 
+ err_regulator_enable:
++	/* Regulators will be enabled by bias management */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+ 
+ 	return ret;
+ }
+ 
+-/* power down chip */
+-static int wm8731_remove(struct snd_soc_codec *codec)
+-{
+-	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+-
+-	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+-
+-	return 0;
+-}
+-
+ static struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
+-	.probe =	wm8731_probe,
+-	.remove =	wm8731_remove,
+ 	.set_bias_level = wm8731_set_bias_level,
+ 	.suspend_bias_off = true,
+ 
+@@ -690,6 +684,12 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 
+ 	mutex_init(&wm8731->lock);
+ 
++	spi_set_drvdata(spi, wm8731);
++
++	ret = wm8731_request_supplies(&spi->dev, wm8731);
++	if (ret != 0)
++		return ret;
++
+ 	wm8731->regmap = devm_regmap_init_spi(spi, &wm8731_regmap);
+ 	if (IS_ERR(wm8731->regmap)) {
+ 		ret = PTR_ERR(wm8731->regmap);
+@@ -698,7 +698,9 @@ static int wm8731_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
+-	spi_set_drvdata(spi, wm8731);
++	ret = wm8731_hw_init(&spi->dev, wm8731);
++	if (ret != 0)
++		return ret;
+ 
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+@@ -754,6 +756,12 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 
+ 	mutex_init(&wm8731->lock);
+ 
++	i2c_set_clientdata(i2c, wm8731);
++
++	ret = wm8731_request_supplies(&i2c->dev, wm8731);
++	if (ret != 0)
++		return ret;
++
+ 	wm8731->regmap = devm_regmap_init_i2c(i2c, &wm8731_regmap);
+ 	if (IS_ERR(wm8731->regmap)) {
+ 		ret = PTR_ERR(wm8731->regmap);
+@@ -762,7 +770,9 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	i2c_set_clientdata(i2c, wm8731);
++	ret = wm8731_hw_init(&i2c->dev, wm8731);
++	if (ret != 0)
++		return ret;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
+-- 
+1.9.1
