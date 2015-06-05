@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: wm8741: Allow master clock
- switching
-Date: Fri, 5 Jun 2015 20:00:37 +0100
-Message-ID: <20150605190037.GG14071@sirena.org.uk>
-References: <1433505944-3961-1-git-send-email-ce3a@gmx.de>
- <20150605152219.GA32730@opensource.wolfsonmicro.com>
- <5571F0CA.4040405@gmx.de>
+From: Sergey Kiselev <sergey.kiselev@intel.com>
+Subject: wm8731 - redundant register initialization,
+ stream name vs DAPM widgets, snd_soc_io to regmap_io conversion
+Date: Fri, 5 Jun 2015 12:27:48 -0700
+Message-ID: <20150605122748.b7534fc4900573ed497928ce@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3871426459895998584=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AF5A2668F8
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 21:00:50 +0200 (CEST)
-In-Reply-To: <5571F0CA.4040405@gmx.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9593D266911
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 21:27:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <ce3a@gmx.de>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, dan.carpenter@oracle.com
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============3871426459895998584==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Bmpniq+Thlljzm46"
-Content-Disposition: inline
+I have a few questions regarding wm8731. Some might be applicable to other
+codecs as well.
 
+1. According to the datasheet bit #8 of all the registers below is set to
+'0' by the hardware reset. Is there a good reason to set them anyway?
+(Perhaps an errata in previous chip version?)
+	/* Latch the update bits */
+	snd_soc_update_bits(codec, WM8731_LOUT1V, 0x100, 0);
+	snd_soc_update_bits(codec, WM8731_ROUT1V, 0x100, 0);
+	snd_soc_update_bits(codec, WM8731_LINVOL, 0x100, 0);
+	snd_soc_update_bits(codec, WM8731_RINVOL, 0x100, 0);
 
---Bmpniq+Thlljzm46
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+2. In wm8731's snd_soc_dai_driver structure the steam names are 'Playback'
+and 'Capture', while DAPM widgets have 'HiFi' prepended to the names:
+SND_SOC_DAPM_DAC("DAC", "HiFi Playback", WM8731_PWR, 3, 1),
+SND_SOC_DAPM_ADC("ADC", "HiFi Capture", WM8731_PWR, 2, 1),
+Should the name match? DAPM.txt says so, but the DAPM code actually looks
+for a substring match (DAI name as a substring in widget name).
 
-On Fri, Jun 05, 2015 at 08:56:10PM +0200, Sergej Sawazki wrote:
-> On 2015-06-05 at 05:22PM, Charles Keepax wrote:
+3. Do I understand correctly the direction is to move from snd_soc_${io}
+to more generic regmap_${io}? If so, I'll submit a patch.
 
-> >Then you can keep this error check here and fail if we reach
-> >hw_params and still don't have a SYSCLK. You will probably need
-> >to provide a way to clear the SYSCLK though set_dai_sysclk as
-> >well.
-
-> Is snd_soc_dai_set_sysclk( , , 0, ) the right way to clear the SYSCLK?
-
-Yes.
-
---Bmpniq+Thlljzm46
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVcfHUAAoJECTWi3JdVIfQ28gH/i//SCL1sP80YmaF8vmEwolH
-B8OzJa69YaLpRnw8rjk7q57OUdgp6mvIwDRxCa+xhAqMTa4ULNCmw8EVL9FXPKle
-X3O+Y+Xqy4xDbA9UItYYEJNmVq0GoIYlU079mreMTeADS9WvYDSlSVvDrextdT6u
-pendoCh4a1dv8OGCqc7j6ac5rC2QkVkbX9TDja2T13JWXGJr+ObYtytorwdNbufO
-sF8r9nAlqyrxW8NP0dglUVE6vgF8x6C7WTlrluQc5+F61w+0En+Vyp86yitVtQnY
-c79ZvILIrLgZcOql2T+hEvHvsDTTB0YPyOMuJ4vOaUX+f4Qz9Tn2Hqja+p+zs5g=
-=1DII
------END PGP SIGNATURE-----
-
---Bmpniq+Thlljzm46--
-
---===============3871426459895998584==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3871426459895998584==--
+Thanks
+-- 
+Sergey
