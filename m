@@ -1,17 +1,18 @@
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [PATCH v2] ASoC: dapm: fix prefixed stream name
-	matching in snd_soc_dapm_link_dai_widgets
-Date: Fri,  5 Jun 2015 18:38:25 +0200
-Message-ID: <1433522305-10339-1-git-send-email-arnaud.mouiche@invoxia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH] ASoC: wm8741: Allow master clock
+ switching
+Date: Fri, 5 Jun 2015 17:56:45 +0100
+Message-ID: <20150605165645.GX14071@sirena.org.uk>
+References: <1433505944-3961-1-git-send-email-ce3a@gmx.de>
+ <20150605152219.GA32730@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0938547642556508514=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id AC67A26688E
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 18:38:48 +0200 (CEST)
-Received: by wgme6 with SMTP id e6so61001117wgm.2
- for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2015 09:38:48 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FDC126689A
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 18:57:00 +0200 (CEST)
+In-Reply-To: <20150605152219.GA32730@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Sergej Sawazki <ce3a@gmx.de>, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-commit "ASoC: dapm: Modify widget stream name according to prefix"
-fixed a part of the problem when dai_w->name and w->sname are equal
-before being prefixed.
 
-Remains the case where w->sname is only a sub string of dai_w->name.
+--===============0938547642556508514==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Wqp2XNkat9H91DRI"
+Content-Disposition: inline
 
-For example, TLV320AIC3x codec defines the widget
-	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", DAC_PWR, 7, 0)
 
-In snd_soc_dapm_link_dai_widgets, we will failed to match
-	"[prefix] Left Playback"
-with
-	"[prefix] Playback".
+--Wqp2XNkat9H91DRI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Since dai_w and w necessarily belongs to the same dapm when strstr()
-is called, they necessarily have the same prefix which allow us to
-compare 'w->sname + prefix_len' with  'dai_w->name + prefix_len' directly
-without length check.
+On Fri, Jun 05, 2015 at 04:22:19PM +0100, Charles Keepax wrote:
+> On Fri, Jun 05, 2015 at 02:05:44PM +0200, Sergej Sawazki wrote:
+> > The set of supported sample rates depends on the master clock supplied
+> > to the codec. Allow the machine driver to set the required master clock
 
-Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
----
- sound/soc/soc-dapm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Please delete undeleted context when replying.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e19a676..fc4408b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3392,6 +3392,9 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 
- 	/* For each DAI widget... */
- 	list_for_each_entry(dai_w, &card->widgets, list) {
-+		const char *prefix = soc_dapm_prefix(dai_w->dapm);
-+		size_t prefix_len = prefix ? strlen(prefix)+1 : 0;
-+
- 		switch (dai_w->id) {
- 		case snd_soc_dapm_dai_in:
- 		case snd_soc_dapm_dai_out:
-@@ -3415,7 +3418,8 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 				break;
- 			}
- 
--			if (!w->sname || !strstr(w->sname, dai_w->name))
-+			if (!w->sname ||
-+			    !strstr(w->sname + prefix_len, dai_w->name + prefix_len))
- 				continue;
- 
- 			if (dai_w->id == snd_soc_dapm_dai_in) {
--- 
-1.9.1
+> I think rather than removing the constraints entirely here,
+> perhaps just don't set any constraints if there is no SYSCLK yet.
+> That way we get the benefits of the constraints for single clock
+> systems (such as user-space being able to arrange appropriate
+> software resampling) but those like yours can configure the clock
+> later.
+
+Yes, that's the ideal thing.  The machine driver should reset the clock
+back to zero when things go idle.
+
+--Wqp2XNkat9H91DRI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVcdTNAAoJECTWi3JdVIfQWAMH/iuUey616NbTaAp4AE8kisp6
+JaT575A2wSAeVXY+24mUqdDIuckkdFMdyXj0LiDVsx8bCpEgtXLG6vEnfSzpv72f
+5PqFBTdkCF7SGavm2jpWB6TtVF23CUTB7kJAr6c6T40L7vPa3uZkA9rzTWY01fAM
+UGEvctoi1J4EyrG09NWM3Xp3ciDY0rGx1fo4z9CnB/v0pt6h4xOehVPDc32Y4DIA
+9rp1tGtP6PuLHJPEZd83ypPFKqBiaNgEbunxhgTpAWjXfR8dBqfYXHaPTQlgJ3op
+wPTgybiJ8yRZR4TQEAkjd3DaL1gEzeRZl5YvauC3dan1vZN1hNbPPgEyboFyJ1A=
+=Hd2P
+-----END PGP SIGNATURE-----
+
+--Wqp2XNkat9H91DRI--
+
+--===============0938547642556508514==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0938547642556508514==--
