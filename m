@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 09/23] DT/sound: bindings header file
-	for tas2552 codec
-Date: Fri, 5 Jun 2015 18:54:11 +0100
-Message-ID: <20150605175411.GE14071@sirena.org.uk>
-References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
- <1433423075-14142-10-git-send-email-peter.ujfalusi@ti.com>
+From: Sergey Kiselev <sergey.kiselev@intel.com>
+Subject: Re: [PATCH] ASoC: wm8731: initialize the hardware when
+ loading the codec driver
+Date: Fri, 5 Jun 2015 11:20:26 -0700
+Message-ID: <20150605112026.5ec1809046fdd1817691ce05@intel.com>
+References: <20150603131926.eba497d0b22010838fb094f4@intel.com>
+ <20150605162546.GB32730@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2528022026354642008=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 402082668C3
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 19:54:17 +0200 (CEST)
-In-Reply-To: <1433423075-14142-10-git-send-email-peter.ujfalusi@ti.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AC052668DA
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 20:20:28 +0200 (CEST)
+In-Reply-To: <20150605162546.GB32730@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dmurphy@ti.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 5 Jun 2015 17:25:46 +0100
+Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
 
---===============2528022026354642008==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QOjJmUVDSeCbcRTl"
-Content-Disposition: inline
+> On Wed, Jun 03, 2015 at 01:19:26PM -0700, Sergey Kiselev wrote:
+> > From: Sergey Kiselev <sergey.kiselev@intel.com>
+> [] 
+> >  	/* Regulators will have been enabled by bias management */
+> 
+> This comment needs an update because this function is only called
+> from the bus probe so no bias management will have been called
+> yet. Basically we are powering down here after probe is complete
+> and the bias management will power us up again.
 
+I think that's what the comment says (future perfect tense?!). I can
+rephrase it with something simpler like "regulators will be enabled by
+bias management". English is not my mother tongue, and I appreciate any
+corrections. :-)
 
---QOjJmUVDSeCbcRTl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> 
+> >  	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+> > @@ -621,19 +631,7 @@ err_regulator_enable:
+> 
+> Looks like you really should just combine the error and normal
+> exit paths for this function.
+> 
 
-On Thu, Jun 04, 2015 at 04:04:21PM +0300, Peter Ujfalusi wrote:
-> Binding header file for clock input selection and configuration.
+Will do.
 
-These should probably be mentioned in the binding document too?
+> >  	return ret;
+> > +	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+> > +
+> 
+> Do we actually need to bulk_disable here? The enable we did
+> during bus probe is balanced with the disable we do there two.
+> Then I would expect that ASoC has put us back into bias off
+> before we are removing the i2c. Not a 100% sure on this one but
+> it looks like it is redundant.
+> 
 
---QOjJmUVDSeCbcRTl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I think you're correct. Actually the DAPM will turn the bias off when
+machine driver is removed, which must happen before codec is removed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> Thanks,
+> Charles
 
-iQEcBAEBCAAGBQJVceJCAAoJECTWi3JdVIfQhGEH/3leBBysWePFpSYpFVCaJg4a
-SWAiBbOPIWT4zPRp3HVcdRPW8Er9DtRfINdCFvSvM0uLOEOQdFJ7Vbjxg1UmiBLE
-fwu54LbnR17sfLu1yRjLue3kHC0D4iVom62lL7GL67emhFfLeZwexMDgyJpY7SJ4
-UTDaNZg3PE9AgNsuoVmwqdnR+fs6T9Kbpf4HtosFueujU5WCBEh9REBe8/QfYmIL
-PRm/TCoAjP25BscTRQsbvW018y+Ygz6HY+HKdCZJbl19qOlI+cIz20+QHve3QjY7
-lvBrP5IcN7pKo7cFabXJmBQSZISz3/mdko0QKBhxFW3zwdo/842/cf3ENwspkUQ=
-=NUuK
------END PGP SIGNATURE-----
-
---QOjJmUVDSeCbcRTl--
-
---===============2528022026354642008==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2528022026354642008==--
+-- 
+Sergey
