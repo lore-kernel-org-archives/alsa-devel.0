@@ -1,16 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v3 2/3] ASoC: rt5645: change gpio to gpiod APIs
-Date: Fri, 5 Jun 2015 13:24:16 +0800
-Message-ID: <1433481857-28437-2-git-send-email-bardliao@realtek.com>
-References: <1433481857-28437-1-git-send-email-bardliao@realtek.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [asoc:topic/tas2552 1/8]
+ sound/soc/codecs/tas2552.c:493:27-28: Unneeded semicolon
+Date: Fri, 5 Jun 2015 09:50:24 +0300
+Message-ID: <557146B0.9060800@ti.com>
+References: <201506050350.VWBQIwkL%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AB9726671A
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 07:24:31 +0200 (CEST)
-In-Reply-To: <1433481857-28437-1-git-send-email-bardliao@realtek.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id C377A26672E
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 08:50:29 +0200 (CEST)
+In-Reply-To: <201506050350.VWBQIwkL%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,136 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, zhengxing@rock-chips.com, yang.a.fang@intel.com, koro.chen@mediatek.com, john.lin@realtek.com, drinkcat@chromium.org, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Move gpio to gpio_desc and use gpiod APIs in codec driver.
+On 06/04/2015 10:21 PM, kbuild test robot wrote:
+> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git t=
+opic/tas2552
+> head:   16bd395259cf3e9966d40478891e0e610da109d4
+> commit: ea178d1456dcf88875d5edd148f2df8ea0de1794 [1/8] ASoC: tas2552: Mak=
+e the enable-gpio really optional
+> =
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
-* Change gpio name from rt5645 to hp-detect
-* Use devm_gpiod_get API to get gpiod
----
- include/sound/rt5645.h    |  3 ---
- sound/soc/codecs/rt5645.c | 47 ++++++++++++-----------------------------------
- sound/soc/codecs/rt5645.h |  1 +
- 3 files changed, 13 insertions(+), 38 deletions(-)
+> =
 
-diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
-index 652cb9e..22734bc 100644
---- a/include/sound/rt5645.h
-+++ b/include/sound/rt5645.h
-@@ -20,9 +20,6 @@ struct rt5645_platform_data {
- 	unsigned int dmic2_data_pin;
- 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
- 
--	unsigned int hp_det_gpio;
--	bool gpio_hp_det_active_high;
--
- 	unsigned int jd_mode;
- };
- 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index d12da40..27a9492 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2939,17 +2939,11 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
- 
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
--		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
--			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
--			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
--				rt5645->pdata.hp_det_gpio, gpio_state);
--		}
--		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
--			(!rt5645->pdata.gpio_hp_det_active_high &&
--			 !gpio_state)) {
--			report = rt5645_jack_detect(rt5645->codec, 1);
--		} else {
--			report = rt5645_jack_detect(rt5645->codec, 0);
-+		if (rt5645->gpiod_hp_det) {
-+			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
-+			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
-+				gpio_state);
-+			report = rt5645_jack_detect(rt5645->codec, gpio_state);
- 		}
- 		snd_soc_jack_report(rt5645->hp_jack,
- 				    report, SND_JACK_HEADPHONE);
-@@ -3239,7 +3233,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	struct rt5645_priv *rt5645;
- 	int ret;
- 	unsigned int val;
--	struct gpio_desc *gpiod;
- 
- 	rt5645 = devm_kzalloc(&i2c->dev, sizeof(struct rt5645_priv),
- 				GFP_KERNEL);
-@@ -3254,19 +3247,16 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	} else {
- 		if (dmi_check_system(dmi_platform_intel_braswell)) {
- 			rt5645->pdata = *rt5645_pdata;
--			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
--
--			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
--				rt5645->pdata.hp_det_gpio = -1;
--				dev_err(&i2c->dev, "failed to initialize gpiod\n");
--			} else {
--				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
--				rt5645->pdata.gpio_hp_det_active_high
--						= !gpiod_is_active_low(gpiod);
--			}
- 		}
- 	}
- 
-+	rt5645->gpiod_hp_det = devm_gpiod_get(&i2c->dev, "hp-detect", GPIOD_IN);
-+
-+	if (IS_ERR(rt5645->gpiod_hp_det)) {
-+		rt5645->gpiod_hp_det = NULL;
-+		dev_err(&i2c->dev, "failed to initialize gpiod\n");
-+	}
-+
- 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
- 	if (IS_ERR(rt5645->regmap)) {
- 		ret = PTR_ERR(rt5645->regmap);
-@@ -3426,16 +3416,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
- 	}
- 
--	if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
--		ret = gpio_request(rt5645->pdata.hp_det_gpio, "rt5645");
--		if (ret)
--			dev_err(&i2c->dev, "Fail gpio_request hp_det_gpio\n");
--
--		ret = gpio_direction_input(rt5645->pdata.hp_det_gpio);
--		if (ret)
--			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
--	}
--
- 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
- 
- 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
-@@ -3451,9 +3431,6 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
- 
- 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
- 
--	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
--		gpio_free(rt5645->pdata.hp_det_gpio);
--
- 	snd_soc_unregister_codec(&i2c->dev);
- 
- 	return 0;
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 9ec4e89..0353a6a 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2182,6 +2182,7 @@ struct rt5645_priv {
- 	struct rt5645_platform_data pdata;
- 	struct regmap *regmap;
- 	struct i2c_client *i2c;
-+	struct gpio_desc *gpiod_hp_det;
- 	struct snd_soc_jack *hp_jack;
- 	struct snd_soc_jack *mic_jack;
- 	struct snd_soc_jack *btn_jack;
--- 
-1.8.1.1.439.g50a6b54
+> coccinelle warnings: (new ones prefixed by >>)
+> =
+
+>>> sound/soc/codecs/tas2552.c:493:27-28: Unneeded semicolon
+> =
+
+> vim +493 sound/soc/codecs/tas2552.c
+> =
+
+>    477	{
+>    478		struct device *dev;
+>    479		struct tas2552_data *data;
+>    480		int ret;
+>    481		int i;
+>    482	=
+
+>    483		dev =3D &client->dev;
+>    484		data =3D devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>    485		if (data =3D=3D NULL)
+>    486			return -ENOMEM;
+>    487	=
+
+>    488		data->enable_gpio =3D devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW=
+);
+>    489		if (IS_ERR(data->enable_gpio)) {
+>    490			if (PTR_ERR(data->enable_gpio) =3D=3D -EPROBE_DEFER)
+>    491				return -EPROBE_DEFER;
+>    492	=
+
+>  > 493			data->enable_gpio =3D NULL;;
+
+I did run checkpatch.pl --strict...
+Either checkpatch or I missed to spot this, I will send a followup patch to
+fix it.
+
+>    494		}
+>    495	=
+
+>    496		data->tas2552_client =3D client;
+>    497		data->regmap =3D devm_regmap_init_i2c(client, &tas2552_regmap_con=
+fig);
+>    498		if (IS_ERR(data->regmap)) {
+>    499			ret =3D PTR_ERR(data->regmap);
+>    500			dev_err(&client->dev, "Failed to allocate register map: %d\n",
+>    501				ret);
+> =
+
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology Ce=
+nter
+> http://lists.01.org/mailman/listinfo/kbuild                 Intel Corpora=
+tion
+> =
+
+
+
+-- =
+
+P=E9ter
