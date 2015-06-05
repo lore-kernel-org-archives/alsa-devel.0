@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 02/23] ASoC: tas2552: Fix kernel crash
- when the codec is loaded but not part of a card
-Date: Fri, 5 Jun 2015 09:57:59 +0300
-Message-ID: <55714877.8060509@ti.com>
-References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
- <1433423075-14142-3-git-send-email-peter.ujfalusi@ti.com>
- <20150604162527.GJ14071@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@intel.com>
+Subject: Re: writing an alsa driver
+Date: Fri, 05 Jun 2015 10:00:50 +0300
+Message-ID: <55714922.1080906@intel.com>
+References: <20150527085440.GA4445@dellaz> <1432752116.8235.25.camel@loki>
+ <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>
+ <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
+ <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
+ <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150604193922.GA627@asus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id EF2B026672E
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 08:58:02 +0200 (CEST)
-In-Reply-To: <20150604162527.GJ14071@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF91426672E
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 09:00:54 +0200 (CEST)
+In-Reply-To: <20150604193922.GA627@asus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +25,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dmurphy@ti.com
+To: Michele Curti <michele.curti@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/04/2015 07:25 PM, Mark Brown wrote:
-> On Thu, Jun 04, 2015 at 04:04:14PM +0300, Peter Ujfalusi wrote:
->> If the card is not part of any card the tas_data->codec is NULL since it=
- is
->> set only during snd_soc_codec_driver.probe, which is not yet called.
-> =
+Hi
 
->> @@ -120,6 +120,9 @@ static void tas2552_sw_shutdown(struct tas2552_data =
-*tas_data, int sw_shutdown)
->>  {
->>  	u8 cfg1_reg;
->>  =
+On 06/04/2015 10:39 PM, Michele Curti wrote:
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x0000001D,
+>                  }
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x00000018,
+>                  }
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x00000019,
+>                  }
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x0000001A,
+>                  }
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x0000001B,
+>                  }
+>                  Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+>                  {
+>                      0x0000001C,
+>                  }
+...
+>
+> So, 6 possible IRQs for the LPE core, from 0x18 to 0x1D?
+>
+2 for DMA, 3 for SSP ports and 1 for host IPC. I don't know does Windows 
+use those others as BIOS is exposing them but Linux needs only the host 
+IPC irq 0x1d and Linux DSP FW is managing itself the rest.
 
->> +	if (!tas_data->codec)
->> +		return;
->> +
-> =
+> Changed the code and tried all six
+>
+> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+> index bb28e84..a306502 100644
+> --- a/sound/soc/intel/common/sst-acpi.c
+> +++ b/sound/soc/intel/common/sst-acpi.c
+> @@ -149,8 +149,12 @@ static int sst_acpi_probe(struct platform_device *pdev)
+>   		sst_pdata->dma_size = desc->dma_size;
+>   	}
+>
+> -	if (desc->irqindex_host_ipc >= 0)
+> -		sst_pdata->irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
+> +	if (desc->irqindex_host_ipc >= 0) {
+> +		sst_pdata->irq = 0x1D; /* acpi-dump, from 0x18 to 0x1D */
+> +		pr_info("audio dsp: IRQ # was %d, force to %d\n",
+> +				platform_get_irq(pdev, desc->irqindex_host_ipc),
+> +				sst_pdata->irq);
+> +	}
+>
+>   	if (desc->resindex_lpe_base >= 0) {
+>   		mmio = platform_get_resource(pdev, IORESOURCE_MEM,
+>
+> without success, I get always the "dsp boot timeout".
+>
+Above probably won't work as it doesn't set the trigger flags as 
+platform_get_irq() does and the Linux irq number is not necessarily the 
+same than the HW irq number through the IOAPIC routing.
 
-> This fixes the crash but isn't whatever the function is doing important
-> (so we should fix by using regmap for the I/O or something)?
+Your earlier irqindex_host_ipc change should get the right interrupt for 
+Linux on your machine.
 
-If the driver's snd_soc_codec_driver->probe is not called we do not initial=
-ize
-the amplifier.
-This function would put the amp to software shutdown, which is the power up
-state of the amp.
+-	.irqindex_host_ipc = 5,
++	.irqindex_host_ipc = 0,
 
-Hrm, it should use tas2552 instead of tas_dat for the tas2552_data to be
-consistent with the rest of the driver.
-I will add a patch for this in v3.
+Unfortunately this index is machine specific and when I looked a few 
+DSDT tables earlier I didn't figure out a clean way at which index the 
+interrupt should be used in runtime. Probably having quirks for index 5 
+needs least amount of quirks as index 0 seems to be constantly used on 
+newer machines.
 
--- =
+-- 
+Jarkko
+---------------------------------------------------------------------
+Intel Finland Oy
+Registered Address: PL 281, 00181 Helsinki 
+Business Identity Code: 0357606 - 4 
+Domiciled in Helsinki 
 
-P=E9ter
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
