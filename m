@@ -1,18 +1,17 @@
 From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [PATCH] ASoC: dapm: fix prefixed stream name matching
-	in snd_soc_dapm_link_dai_widgets
-Date: Fri,  5 Jun 2015 15:41:14 +0200
-Message-ID: <1433511674-29156-1-git-send-email-arnaud.mouiche@invoxia.com>
+Subject: [PATCH] ASoC: fsl_ssi: Fixing invalid fmt
+	SND_SOC_DAIFMT_AC97 test
+Date: Fri,  5 Jun 2015 15:43:14 +0200
+Message-ID: <1433511794-29284-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 57D542615B7
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 15:41:50 +0200 (CEST)
-Received: by wiam3 with SMTP id m3so19694586wia.1
- for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2015 06:41:50 -0700 (PDT)
+Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51BBD2667CE
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 15:43:24 +0200 (CEST)
+Received: by wgbgq6 with SMTP id gq6so57238923wgb.3
+ for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2015 06:43:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +25,36 @@ To: alsa-devel@alsa-project.org
 Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 List-Id: alsa-devel@alsa-project.org
 
-commit "ASoC: dapm: Modify widget stream name according to prefix"
-fixed a part of the problem when dai_w->name and w->sname are equal
-before being prefixed.
-
-Remains the case where w->sname is only a sub string of dai_w->name.
-
-For example, TLV320AIC3x codec defines the widget
-	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", DAC_PWR, 7, 0)
-
-In snd_soc_dapm_link_dai_widgets, we will failed to match
-	"[prefix] Left Playback"
-with
-	"[prefix] Playback".
-
-Since dai_w and w necessarily belongs to the same dapm when strstr()
-is called, they necessarily have the same prefix which allow us to
-compare 'w->sname + prefix_len' with  'dai_w->name + prefix_len' directly
-without length check.
+SND_SOC_DAIFMT_AC97 (6) has similar bits than SND_SOC_DAIFMT_DSP_A (4)
+and can't be tested with a simple AND operation
 
 Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 ---
- sound/soc/soc-dapm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/fsl/fsl_ssi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e19a676..7194df4 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3392,6 +3392,9 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 6b0c8f7..c25a1e8 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -249,7 +249,8 @@ MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
  
- 	/* For each DAI widget... */
- 	list_for_each_entry(dai_w, &card->widgets, list) {
-+		const char *prefix = soc_dapm_prefix(dai_w->dapm);
-+		size_t prefix_len = prefix ? strlen(prefix)+1 : 0;
-+
- 		switch (dai_w->id) {
- 		case snd_soc_dapm_dai_in:
- 		case snd_soc_dapm_dai_out:
-@@ -3416,6 +3419,8 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 			}
+ static bool fsl_ssi_is_ac97(struct fsl_ssi_private *ssi_private)
+ {
+-	return !!(ssi_private->dai_fmt & SND_SOC_DAIFMT_AC97);
++	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
++		SND_SOC_DAIFMT_AC97;
+ }
  
- 			if (!w->sname || !strstr(w->sname, dai_w->name))
-+			if (!w->sname ||
-+			    !strstr(w->sname + prefix_len, dai_w->name + prefix_len))
- 				continue;
+ static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
+@@ -945,7 +946,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 				CCSR_SSI_SCR_TCH_EN);
+ 	}
  
- 			if (dai_w->id == snd_soc_dapm_dai_in) {
+-	if (fmt & SND_SOC_DAIFMT_AC97)
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_AC97)
+ 		fsl_ssi_setup_ac97(ssi_private);
+ 
+ 	return 0;
 -- 
 1.9.1
