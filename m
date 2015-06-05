@@ -1,18 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: wm8741: Allow master clock
- switching
-Date: Fri, 5 Jun 2015 17:56:45 +0100
-Message-ID: <20150605165645.GX14071@sirena.org.uk>
-References: <1433505944-3961-1-git-send-email-ce3a@gmx.de>
- <20150605152219.GA32730@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: rt5677: Avoid recursive locking in
+ the DEADLOCK detector
+Date: Fri, 5 Jun 2015 18:13:51 +0100
+Message-ID: <20150605171351.GZ14071@sirena.org.uk>
+References: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
+ <20150603164453.GP14071@sirena.org.uk>
+ <CANMq1KCFwFppzAx5NiotP_0uy93Ga436PYEbhhA6iM0JCXWtaA@mail.gmail.com>
+ <20150605103144.GS14071@sirena.org.uk>
+ <55717FA7.8030005@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0938547642556508514=="
+Content-Type: multipart/mixed; boundary="===============5506877884071900081=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FDC126689A
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 18:57:00 +0200 (CEST)
-In-Reply-To: <20150605152219.GA32730@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB4832668BC
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 19:14:02 +0200 (CEST)
+In-Reply-To: <55717FA7.8030005@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Sergej Sawazki <ce3a@gmx.de>, dan.carpenter@oracle.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>, lgirdwood@gmail.com, john.lin@realtek.com, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0938547642556508514==
+--===============5506877884071900081==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Wqp2XNkat9H91DRI"
+	protocol="application/pgp-signature"; boundary="Sao9idefCFjK9Dt3"
 Content-Disposition: inline
 
 
---Wqp2XNkat9H91DRI
+--Sao9idefCFjK9Dt3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 05, 2015 at 04:22:19PM +0100, Charles Keepax wrote:
-> On Fri, Jun 05, 2015 at 02:05:44PM +0200, Sergej Sawazki wrote:
-> > The set of supported sample rates depends on the master clock supplied
-> > to the codec. Allow the machine driver to set the required master clock
+On Fri, Jun 05, 2015 at 12:53:27PM +0200, Lars-Peter Clausen wrote:
 
-Please delete undeleted context when replying.
+> Now the issue here is that we have nested regmap instances, meaning one
+> regmap instances uses another instance in its read/write implementation.
 
-> I think rather than removing the constraints entirely here,
-> perhaps just don't set any constraints if there is no SYSCLK yet.
-> That way we get the benefits of the constraints for single clock
-> systems (such as user-space being able to arrange appropriate
-> software resampling) but those like yours can configure the clock
-> later.
+Ah, that sounds more familiar than unlocking in different orders.
 
-Yes, that's the ideal thing.  The machine driver should reset the clock
-back to zero when things go idle.
+> I think Antti submitted some patches to attend to fix this, but there were
+> still issues with the patches and they never got merged.
 
---Wqp2XNkat9H91DRI
+IIRC his patch was adding the ability for drivers to override the lock
+class which wasn't exactly fixing the problem but rather providing a
+different way to try to work around it in drivers.
+
+--Sao9idefCFjK9Dt3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVcdTNAAoJECTWi3JdVIfQWAMH/iuUey616NbTaAp4AE8kisp6
-JaT575A2wSAeVXY+24mUqdDIuckkdFMdyXj0LiDVsx8bCpEgtXLG6vEnfSzpv72f
-5PqFBTdkCF7SGavm2jpWB6TtVF23CUTB7kJAr6c6T40L7vPa3uZkA9rzTWY01fAM
-UGEvctoi1J4EyrG09NWM3Xp3ciDY0rGx1fo4z9CnB/v0pt6h4xOehVPDc32Y4DIA
-9rp1tGtP6PuLHJPEZd83ypPFKqBiaNgEbunxhgTpAWjXfR8dBqfYXHaPTQlgJ3op
-wPTgybiJ8yRZR4TQEAkjd3DaL1gEzeRZl5YvauC3dan1vZN1hNbPPgEyboFyJ1A=
-=Hd2P
+iQEcBAEBCAAGBQJVcdjOAAoJECTWi3JdVIfQw04H/0P9xRvOperSpzM87fV4nt82
+Reulj6TLM2k7KrxJB+eHCIHY5TITmBQuqWkIKFv8Zd8KeHYgSqcDabaAEnu0eyk3
+Jjb9lf4+tqhp0JngdfuWj+ftkPFmNMi8nyHcB5siFDnJy4sCNtgyQLChk1aeYw+x
+mwTNiZu0f3SGpdXfFXA6FLi322QmJUb6iaii06qKgTdMTGCOCEGQuLUEJ6ZLhBZd
+lcYHKG7I2prXuFbGGyqHcGubf8CU42P7Z96Gh6vsGTsD5F0/xC1Eu1MDpvUFvv0L
+/r5C85mV33/RXs5X3G7VnH0YO0NgzIMPm2hUPVmhiZUGLj9y4TaFGdaSdsJCGI4=
+=4uwg
 -----END PGP SIGNATURE-----
 
---Wqp2XNkat9H91DRI--
+--Sao9idefCFjK9Dt3--
 
---===============0938547642556508514==
+--===============5506877884071900081==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0938547642556508514==--
+--===============5506877884071900081==--
