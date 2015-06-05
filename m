@@ -1,21 +1,18 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [PATCH] ASoC: rt5677: Avoid recursive locking in
- the DEADLOCK detector
-Date: Fri, 5 Jun 2015 08:53:54 +0800
-Message-ID: <CANMq1KCFwFppzAx5NiotP_0uy93Ga436PYEbhhA6iM0JCXWtaA@mail.gmail.com>
-References: <1433346797-1908-1-git-send-email-oder_chiou@realtek.com>
- <20150603164453.GP14071@sirena.org.uk>
+From: Adam Goode <agoode@google.com>
+Subject: [PATCH - seq 1/1] ALSA seq: expose the card number of
+	ALSA seq clients
+Date: Thu,  4 Jun 2015 21:04:50 -0400
+Message-ID: <1433466290-31244-1-git-send-email-agoode@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 669A5261481
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 02:53:55 +0200 (CEST)
-Received: by oiww2 with SMTP id w2so43334633oiw.0
- for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 17:53:54 -0700 (PDT)
-In-Reply-To: <20150603164453.GP14071@sirena.org.uk>
+Received: from mail-yh0-f53.google.com (mail-yh0-f53.google.com
+ [209.85.213.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id B071E26669E
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 03:05:05 +0200 (CEST)
+Received: by yhpn97 with SMTP id n97so15073233yhp.0
+ for <alsa-devel@alsa-project.org>; Thu, 04 Jun 2015 18:05:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,105 +22,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: patch@alsa-project.org
+Cc: Adam Goode <agoode@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Expose the card number of seq clients. This allows interested userspace
+programs to discover the hardware device that backs a particular seq
+client. Before this change, the only way to get information about the
+hardware for a client was by using brittle heuristics.
 
-On Thu, Jun 4, 2015 at 12:44 AM, Mark Brown <broonie@kernel.org> wrote:
->
-> On Wed, Jun 03, 2015 at 11:53:17PM +0800, Oder Chiou wrote:
->
-> > The patch is for to avoid recursive locking in the DEADLOCK detector.
-> > In the driver, it encountered the warnning message of the recursive locking
-> > in the function "regmap_lock_mutex".
->
-> Could you be more specific about the deadlock you're seeing?  This isn't
-> really enough to understand either what the problem is or why this fixes
-> it.  Converting all the per-regmap mutexes into a single global mutex
-> isn't an immediately obvious step.
+Signed-off-by: Adam Goode <agoode@google.com>
 
-We originally reported the issue to Realtek:
-
-[    2.569449] =============================================
-[    2.569451] [ INFO: possible recursive locking detected ]
-[    2.569454] 3.18.0 #311 Tainted: G S
-[    2.569456] ---------------------------------------------
-[    2.569458] swapper/0/1 is trying to acquire lock:
-[    2.569469]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569470]
-[    2.569470] but task is already holding lock:
-[    2.569476]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569478]
-[    2.569478] other info that might help us debug this:
-[    2.569479]  Possible unsafe locking scenario:
-[    2.569479]
-[    2.569480]        CPU0
-[    2.569481]        ----
-[    2.569484]   lock(&map->mutex);
-[    2.569486]   lock(&map->mutex);
-[    2.569487]
-[    2.569487]  *** DEADLOCK ***
-[    2.569487]
-[    2.569489]  May be due to missing lock nesting notation
-[    2.569489]
-[    2.569491] 3 locks held by swapper/0/1:
-[    2.569499]  #0:  (&dev->mutex){......}, at: [<ffffffc000369e80>]
-__driver_attach+0x38/0x98
-[    2.569505]  #1:  (&dev->mutex){......}, at: [<ffffffc000369ea0>]
-__driver_attach+0x58/0x98
-[    2.569512]  #2:  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569513]
-[    2.569513] stack backtrace:
-[    2.569517] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G S
-3.18.0 #311
-[    2.569521] Call trace:
-[    2.569527] [<ffffffc000089198>] dump_backtrace+0x0/0x108
-[    2.569530] [<ffffffc0000892b0>] show_stack+0x10/0x1c
-[    2.569535] [<ffffffc0005e09b4>] dump_stack+0x74/0x94
-[    2.569540] [<ffffffc0000d5d1c>] __lock_acquire+0x73c/0x1910
-[    2.569544] [<ffffffc0000d7674>] lock_acquire+0xec/0x128
-[    2.569548] [<ffffffc0005e3870>] mutex_lock_nested+0x58/0x354
-[    2.569551] [<ffffffc00037db9c>] regmap_lock_mutex+0xc/0x18
-[    2.569554] [<ffffffc00037ef50>] regmap_read+0x34/0x68
-[    2.569559] [<ffffffc0004ddc84>] rt5677_read+0x9c/0xb4
-[    2.569562] [<ffffffc00037ee8c>] _regmap_read+0xa8/0x138
-[    2.569565] [<ffffffc00037ef60>] regmap_read+0x44/0x68
-[    2.569569] [<ffffffc0004dd6a4>] rt5677_i2c_probe+0x25c/0x4a4
-[    2.569574] [<ffffffc00042984c>] i2c_device_probe+0xfc/0x130
-[    2.569577] [<ffffffc000369c58>] driver_probe_device+0xd4/0x23c
-[    2.569580] [<ffffffc000369eb0>] __driver_attach+0x68/0x98
-[    2.569584] [<ffffffc000368dc8>] bus_for_each_dev+0x70/0x90
-[    2.569588] [<ffffffc0003697e4>] driver_attach+0x1c/0x28
-[    2.569591] [<ffffffc000369400>] bus_add_driver+0xd8/0x1e0
-[    2.569594] [<ffffffc00036a7f0>] driver_register+0xbc/0x10c
-[    2.569598] [<ffffffc00042a4bc>] i2c_register_driver+0x48/0xac
-[    2.569601] [<ffffffc0008d523c>] rt5677_i2c_driver_init+0x14/0x20
-[    2.569605] [<ffffffc0000828dc>] do_one_initcall+0xf4/0x18c
-[    2.569609] [<ffffffc0008a4ae8>] kernel_init_freeable+0x144/0x1e4
-[    2.569613] [<ffffffc0005de3a4>] kernel_init+0x10/0xd4
-
-It's actually a false alarm, the warning is triggered because 2 locks
-are acquired, from the same location:
- - rt5677_i2c_probe calls regmap_read(rt5677->regmap, RT5677_VENDOR_ID2, &val);
- - This locks rt5677->regmap->mutex (1st lock), then calls rt5677_read
- - Since rt5677->is_dsp_mode is false,
-regmap_read(rt5677->regmap_physical, reg, val); is called
- - This locks rt5677->regmap_physical->mutex (2nd lock).
- - The value is read, then both locks are released, in reverse order.
-
-AFAIK there is no code that would acquire the locks in the reverse
-order, so I don't think this can deadlock.
-
-I suggested reworking the register read/write calls in rt5677.c to
-direct them to the correct regmap earlier on (rt5677->regmap or
-rt5677->regmap_physical), before locks are acquired. But the patch
-above also fixes the issue (that is, it removes the warning).
-
-Thanks,
-
-Nicolas
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 5a5fa49..c2a659be 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -25,7 +25,7 @@
+ #include <sound/asound.h>
+ 
+ /** version of the sequencer */
+-#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 1)
++#define SNDRV_SEQ_VERSION SNDRV_PROTOCOL_VERSION (1, 0, 2)
+ 
+ /**
+  * definition of sequencer event types
+@@ -357,7 +357,8 @@ struct snd_seq_client_info {
+ 	unsigned char event_filter[32];	/* event filter bitmap */
+ 	int num_ports;			/* RO: number of ports */
+ 	int event_lost;			/* number of lost events */
+-	char reserved[64];		/* for future use */
++	int card_number;		/* RO: card number, or -1 if no card. Added in protocol version 1.0.2 */
++	char reserved[60];		/* for future use */
+ };
+ 
+ 
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index edbdab8..fcae784 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -216,7 +216,7 @@ int __init client_init_data(void)
+ }
+ 
+ 
+-static struct snd_seq_client *seq_create_client1(int client_index, int poolsize)
++static struct snd_seq_client *seq_create_client1(int client_index, int poolsize, int card_number)
+ {
+ 	unsigned long flags;
+ 	int c;
+@@ -232,6 +232,7 @@ static struct snd_seq_client *seq_create_client1(int client_index, int poolsize)
+ 		return NULL;
+ 	}
+ 	client->type = NO_CLIENT;
++	client->card_number = card_number;
+ 	snd_use_lock_init(&client->use_lock);
+ 	rwlock_init(&client->ports_lock);
+ 	mutex_init(&client->ports_mutex);
+@@ -327,7 +328,7 @@ static int snd_seq_open(struct inode *inode, struct file *file)
+ 
+ 	if (mutex_lock_interruptible(&register_mutex))
+ 		return -ERESTARTSYS;
+-	client = seq_create_client1(-1, SNDRV_SEQ_DEFAULT_EVENTS);
++	client = seq_create_client1(-1, SNDRV_SEQ_DEFAULT_EVENTS, -1);
+ 	if (client == NULL) {
+ 		mutex_unlock(&register_mutex);
+ 		return -ENOMEM;	/* failure code */
+@@ -1194,6 +1195,7 @@ static void get_client_info(struct snd_seq_client *cptr,
+ 	info->event_lost = cptr->event_lost;
+ 	memcpy(info->event_filter, cptr->event_filter, 32);
+ 	info->num_ports = cptr->num_ports;
++	info->card_number = cptr->card_number;
+ 	memset(info->reserved, 0, sizeof(info->reserved));
+ }
+ 
+@@ -2239,6 +2241,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ {
+ 	struct snd_seq_client *client;
+ 	va_list args;
++	int card_number = -1;
+ 
+ 	if (snd_BUG_ON(in_interrupt()))
+ 		return -EBUSY;
+@@ -2252,6 +2255,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 		return -ERESTARTSYS;
+ 
+ 	if (card) {
++		card_number = card->number;
+ 		client_index += SNDRV_SEQ_GLOBAL_CLIENTS
+ 			+ card->number * SNDRV_SEQ_CLIENTS_PER_CARD;
+ 		if (client_index >= SNDRV_SEQ_DYNAMIC_CLIENTS_BEGIN)
+@@ -2259,7 +2263,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 	}
+ 
+ 	/* empty write queue as default */
+-	client = seq_create_client1(client_index, 0);
++	client = seq_create_client1(client_index, 0, card_number);
+ 	if (client == NULL) {
+ 		mutex_unlock(&register_mutex);
+ 		return -EBUSY;	/* failure code */
+@@ -2533,9 +2537,13 @@ void snd_seq_info_clients_read(struct snd_info_entry *entry,
+ 			continue;
+ 		}
+ 
+-		snd_iprintf(buffer, "Client %3d : \"%s\" [%s]\n",
++		snd_iprintf(buffer, "Client %3d : \"%s\" [%s]",
+ 			    c, client->name,
+ 			    client->type == USER_CLIENT ? "User" : "Kernel");
++		if (client->card_number != -1) {
++			snd_iprintf(buffer, ", card %d", client->card_number);
++		}
++		snd_iprintf(buffer, "\n");
+ 		snd_seq_info_dump_ports(buffer, client);
+ 		if (snd_seq_write_pool_allocated(client)) {
+ 			snd_iprintf(buffer, "  Output pool :\n");
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index 20f0a72..627be9d 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -50,6 +50,7 @@ struct snd_seq_client {
+ 		accept_output: 1;
+ 	char name[64];		/* client name */
+ 	int number;		/* client number */
++	int card_number;	/* card number, or -1 if no card */
+ 	unsigned int filter;	/* filter flags */
+ 	DECLARE_BITMAP(event_filter, 256);
+ 	snd_use_lock_t use_lock;
+-- 
+2.2.0.rc0.207.ga3a616c
