@@ -1,14 +1,18 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: [RFC PATCH] ASoC: wm8741: Allow master clock switching
-Date: Fri,  5 Jun 2015 14:05:44 +0200
-Message-ID: <1433505944-3961-1-git-send-email-ce3a@gmx.de>
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: [PATCH] ASoC: dapm: fix prefixed stream name matching
+	in snd_soc_dapm_link_dai_widgets
+Date: Fri,  5 Jun 2015 15:41:14 +0200
+Message-ID: <1433511674-29156-1-git-send-email-arnaud.mouiche@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id E57D22614D6
- for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 14:07:50 +0200 (CEST)
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57D542615B7
+ for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2015 15:41:50 +0200 (CEST)
+Received: by wiam3 with SMTP id m3so19694586wia.1
+ for <alsa-devel@alsa-project.org>; Fri, 05 Jun 2015 06:41:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,127 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
-Cc: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com, dan.carpenter@oracle.com
+To: alsa-devel@alsa-project.org
+Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The set of supported sample rates depends on the master clock supplied
-to the codec. Allow the machine driver to set the required master clock
-in hw_params().
+commit "ASoC: dapm: Modify widget stream name according to prefix"
+fixed a part of the problem when dai_w->name and w->sname are equal
+before being prefixed.
 
-Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
+Remains the case where w->sname is only a sub string of dai_w->name.
+
+For example, TLV320AIC3x codec defines the widget
+	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", DAC_PWR, 7, 0)
+
+In snd_soc_dapm_link_dai_widgets, we will failed to match
+	"[prefix] Left Playback"
+with
+	"[prefix] Playback".
+
+Since dai_w and w necessarily belongs to the same dapm when strstr()
+is called, they necessarily have the same prefix which allow us to
+compare 'w->sname + prefix_len' with  'dai_w->name + prefix_len' directly
+without length check.
+
+Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
 ---
+ sound/soc/soc-dapm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-This patch has been tested on a board with two master clocks, 22.5792MHz
-(for 44.1kHz, 88.2kHz, ...) and 24.576MHz (for 48kHz, 96kHz, ...).
-
- sound/soc/codecs/wm8741.c | 63 +++++++++++++----------------------------------
- 1 file changed, 17 insertions(+), 46 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 09ff01f..47c5577 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -125,18 +125,6 @@ static const struct snd_soc_dapm_route wm8741_dapm_routes[] = {
- 	{ "VOUTRN", NULL, "DACR" },
- };
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index e19a676..7194df4 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3392,6 +3392,9 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
  
--static struct {
--	int value;
--	int ratio;
--} lrclk_ratios[WM8741_NUM_RATES] = {
--	{ 1, 128 },
--	{ 2, 192 },
--	{ 3, 256 },
--	{ 4, 384 },
--	{ 5, 512 },
--	{ 6, 768 },
--};
--
- static const unsigned int rates_11289[] = {
- 	44100, 88200,
- };
-@@ -209,29 +197,6 @@ static const struct snd_pcm_hw_constraint_list constraints_36864 = {
- 	.list	= rates_36864,
- };
- 
--
--static int wm8741_startup(struct snd_pcm_substream *substream,
--			  struct snd_soc_dai *dai)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
--
--	/* The set of sample rates that can be supported depends on the
--	 * MCLK supplied to the CODEC - enforce this.
--	 */
--	if (!wm8741->sysclk) {
--		dev_err(codec->dev,
--			"No MCLK configured, call set_sysclk() on init\n");
--		return -EINVAL;
--	}
--
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   wm8741->sysclk_constraints);
--
--	return 0;
--}
--
- static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
-@@ -241,17 +206,24 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 	u16 iface = snd_soc_read(codec, WM8741_FORMAT_CONTROL) & 0x1FC;
- 	int i;
- 
--	/* Find a supported LRCLK ratio */
--	for (i = 0; i < ARRAY_SIZE(lrclk_ratios); i++) {
--		if (wm8741->sysclk / params_rate(params) ==
--		    lrclk_ratios[i].ratio)
-+	/* The set of sample rates that can be supported depends on the
-+	 * MCLK supplied to the CODEC - enforce this.
-+	 */
-+	if (!wm8741->sysclk) {
-+		dev_err(codec->dev,
-+			"No MCLK configured, call set_sysclk() on hw_params\n");
-+		return -EINVAL;
-+	}
+ 	/* For each DAI widget... */
+ 	list_for_each_entry(dai_w, &card->widgets, list) {
++		const char *prefix = soc_dapm_prefix(dai_w->dapm);
++		size_t prefix_len = prefix ? strlen(prefix)+1 : 0;
 +
-+	/* Find a supported LRCLK rate */
-+	for (i = 0; i < wm8741->sysclk_constraints->count; i++) {
-+		if (wm8741->sysclk_constraints->list[i] == params_rate(params))
- 			break;
- 	}
+ 		switch (dai_w->id) {
+ 		case snd_soc_dapm_dai_in:
+ 		case snd_soc_dapm_dai_out:
+@@ -3416,6 +3419,8 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 			}
  
--	/* Should never happen, should be handled by constraints */
--	if (i == ARRAY_SIZE(lrclk_ratios)) {
--		dev_err(codec->dev, "MCLK/fs ratio %d unsupported\n",
--			wm8741->sysclk / params_rate(params));
-+	if (i == wm8741->sysclk_constraints->count) {
-+		dev_err(codec->dev, "LRCLK %d unsupported with MCLK %d\n",
-+			params_rate(params), wm8741->sysclk);
- 		return -EINVAL;
- 	}
+ 			if (!w->sname || !strstr(w->sname, dai_w->name))
++			if (!w->sname ||
++			    !strstr(w->sname + prefix_len, dai_w->name + prefix_len))
+ 				continue;
  
-@@ -274,8 +246,8 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	dev_dbg(codec->dev, "wm8741_hw_params:    bit size param = %d",
--		params_width(params));
-+	dev_dbg(codec->dev, "wm8741_hw_params:    bit size param = %d, rate param = %d",
-+		params_width(params), params_rate(params));
- 
- 	snd_soc_write(codec, WM8741_FORMAT_CONTROL, iface);
- 	return 0;
-@@ -403,7 +375,6 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops wm8741_dai_ops = {
--	.startup	= wm8741_startup,
- 	.hw_params	= wm8741_hw_params,
- 	.set_sysclk	= wm8741_set_dai_sysclk,
- 	.set_fmt	= wm8741_set_dai_fmt,
+ 			if (dai_w->id == snd_soc_dapm_dai_in) {
 -- 
 1.9.1
