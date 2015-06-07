@@ -1,159 +1,151 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: [PATCH v2] ASoC: wm8741: Allow master clock switching
-Date: Sat,  6 Jun 2015 11:25:48 +0200
-Message-ID: <1433582748-30086-1-git-send-email-ce3a@gmx.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [alsa-devel] Front speakers doesn't work
+ in multichannel output, regression in ALC888
+Date: Sun, 7 Jun 2015 20:44:24 +0800
+Message-ID: <CAN8ccibhDdGcJMcZS60mjkGLN6igXeLop+oYU6DbUczT_XJNfQ@mail.gmail.com>
+References: <2927807.UsnFnTlWVL@luklap.workgroup>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 9861A260525
- for <alsa-devel@alsa-project.org>; Sat,  6 Jun 2015 11:27:16 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
-Cc: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org, lars@metafoo.de, patches@opensource.wolfsonmicro.com, dan.carpenter@oracle.com
+Content-Type: multipart/mixed; boundary="===============0801813506=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <2927807.UsnFnTlWVL@luklap.workgroup>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: =?UTF-8?B?xYF1a2FzeiBXb2puacWCb3dpY3o=?= <lukasz.wojnilowicz@gmail.com>, pulseaudio-discuss@lists.freedesktop.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The set of supported sample rates depends on the master clock supplied
-to the codec. Allow the machine driver to set the required master clock
-in hw_params().
+--===============0801813506==
+Content-Type: multipart/alternative; boundary=001a113de17697a5f70517ece29a
 
-Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
----
+--001a113de17697a5f70517ece29a
+Content-Type: text/plain; charset=UTF-8
 
-Charles, Mark,
-thanks for your comments.
+>
+> My problem is that when I set channel output to "Analog output surround
+5.1"
+> (or 2.1 or 4.1), I hear no sound in front speakers, but in case of 5.1 or
+4.1
+> I can hear sound in rear speakers. I use kernel 3.19.5 and it didn't
+happen in
+> earlier kernels that is 3.18 and in 3.17 for sure.
+>
+> My configuration is:
+> OS: Fedora 21 64 bit
+> SoundCard: ALC888
+> Model name: acer-aspire-4930g
+> Laptop: Acer Aspire 5930g
+> Speakers: external 5.1 with 3 jacks
+> Sound channel configuration module is standard configuration module from
+KDE.
+>
+> Additional info:
+> 1) When channel output is 5.1 and I unplug green jack and leave two others
+> jacks connected then I can hear sound in laptop internal speakers.
+> 2) Earlier (kernel 3.18 and 3.17) I didn't have possibility to choose 2.1
+> configuration and additionally to 4.1 configuration I could also choose
+4.0
+> configuration.
 
-This patch has been tested on a board with two master clocks, 22.5792MHz
-(for 44.1kHz, 88.2kHz, ...) and 24.576MHz (for 48kHz, 96kHz, ...).
+You have to provide pulseaudio verbose log
 
-Changes since v1 (Suggested by Charles Keepax):
- - Do not entirely delete the startup() method, just don't set any constraints 
-   if there is no SYSCLK configured.
- - Clear the SYSCLK in set_dai_sysclk() if freq is 0.
+If driver create channel mode which allow you to support surround5.1 with
+your headphone,  line in and mic jack
 
-Many thanks for your time and effort,
-Sergej
+It is possible for pulseaudio mute two of your external 5.1 speaker when
+headphone jack is plugged
 
- sound/soc/codecs/wm8741.c | 61 ++++++++++++++++++++---------------------------
- 1 file changed, 26 insertions(+), 35 deletions(-)
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-output-headphones.conf
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 09ff01f..b346237 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -125,18 +125,6 @@ static const struct snd_soc_dapm_route wm8741_dapm_routes[] = {
- 	{ "VOUTRN", NULL, "DACR" },
- };
- 
--static struct {
--	int value;
--	int ratio;
--} lrclk_ratios[WM8741_NUM_RATES] = {
--	{ 1, 128 },
--	{ 2, 192 },
--	{ 3, 256 },
--	{ 4, 384 },
--	{ 5, 512 },
--	{ 6, 768 },
--};
--
- static const unsigned int rates_11289[] = {
- 	44100, 88200,
- };
-@@ -209,25 +197,16 @@ static const struct snd_pcm_hw_constraint_list constraints_36864 = {
- 	.list	= rates_36864,
- };
- 
--
- static int wm8741_startup(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
- 
--	/* The set of sample rates that can be supported depends on the
--	 * MCLK supplied to the CODEC - enforce this.
--	 */
--	if (!wm8741->sysclk) {
--		dev_err(codec->dev,
--			"No MCLK configured, call set_sysclk() on init\n");
--		return -EINVAL;
--	}
--
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   wm8741->sysclk_constraints);
-+	if (wm8741->sysclk)
-+		snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE,
-+				wm8741->sysclk_constraints);
- 
- 	return 0;
- }
-@@ -241,17 +220,24 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 	u16 iface = snd_soc_read(codec, WM8741_FORMAT_CONTROL) & 0x1FC;
- 	int i;
- 
--	/* Find a supported LRCLK ratio */
--	for (i = 0; i < ARRAY_SIZE(lrclk_ratios); i++) {
--		if (wm8741->sysclk / params_rate(params) ==
--		    lrclk_ratios[i].ratio)
-+	/* The set of sample rates that can be supported depends on the
-+	 * MCLK supplied to the CODEC - enforce this.
-+	 */
-+	if (!wm8741->sysclk) {
-+		dev_err(codec->dev,
-+			"No MCLK configured, call set_sysclk() on init or in hw_params\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Find a supported LRCLK rate */
-+	for (i = 0; i < wm8741->sysclk_constraints->count; i++) {
-+		if (wm8741->sysclk_constraints->list[i] == params_rate(params))
- 			break;
- 	}
- 
--	/* Should never happen, should be handled by constraints */
--	if (i == ARRAY_SIZE(lrclk_ratios)) {
--		dev_err(codec->dev, "MCLK/fs ratio %d unsupported\n",
--			wm8741->sysclk / params_rate(params));
-+	if (i == wm8741->sysclk_constraints->count) {
-+		dev_err(codec->dev, "LRCLK %d unsupported with MCLK %d\n",
-+			params_rate(params), wm8741->sysclk);
- 		return -EINVAL;
- 	}
- 
-@@ -274,8 +260,8 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	dev_dbg(codec->dev, "wm8741_hw_params:    bit size param = %d",
--		params_width(params));
-+	dev_dbg(codec->dev, "wm8741_hw_params:    bit size param = %d, rate param = %d",
-+		params_width(params), params_rate(params));
- 
- 	snd_soc_write(codec, WM8741_FORMAT_CONTROL, iface);
- 	return 0;
-@@ -290,6 +276,11 @@ static int wm8741_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	dev_dbg(codec->dev, "wm8741_set_dai_sysclk info: freq=%dHz\n", freq);
- 
- 	switch (freq) {
-+	case 0:
-+		wm8741->sysclk_constraints = NULL;
-+		wm8741->sysclk = freq;
-+		return 0;
-+
- 	case 11289600:
- 		wm8741->sysclk_constraints = &constraints_11289;
- 		wm8741->sysclk = freq;
--- 
-1.9.1
+[Element Rear]
+switch = off
+volume = off
+
+[Element Surround]
+switch = off
+volume = off
+
+[Element Center]
+switch = off
+volume = off
+
+[Element LFE]
+switch = off
+volume = off
+
+--001a113de17697a5f70517ece29a
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p><br>
+&gt;<br>
+&gt; My problem is that when I set channel output to &quot;Analog output su=
+rround 5.1&quot;<br>
+&gt; (or 2.1 or 4.1), I hear no sound in front speakers, but in case of 5.1=
+ or 4.1<br>
+&gt; I can hear sound in rear speakers. I use kernel 3.19.5 and it didn&#39=
+;t happen in<br>
+&gt; earlier kernels that is 3.18 and in 3.17 for sure.<br>
+&gt;<br>
+&gt; My configuration is:<br>
+&gt; OS: Fedora 21 64 bit<br>
+&gt; SoundCard: ALC888<br>
+&gt; Model name: acer-aspire-4930g<br>
+&gt; Laptop: Acer Aspire 5930g<br>
+&gt; Speakers: external 5.1 with 3 jacks<br>
+&gt; Sound channel configuration module is standard configuration module fr=
+om KDE.<br>
+&gt;<br>
+&gt; Additional info:<br>
+&gt; 1) When channel output is 5.1 and I unplug green jack and leave two ot=
+hers<br>
+&gt; jacks connected then I can hear sound in laptop internal speakers.<br>
+&gt; 2) Earlier (kernel 3.18 and 3.17) I didn&#39;t have possibility to cho=
+ose 2.1<br>
+&gt; configuration and additionally to 4.1 configuration I could also choos=
+e 4.0<br>
+&gt; configuration.</p>
+<p>You have to provide pulseaudio verbose log</p>
+<p>If driver create channel mode which allow you to support surround5.1 wit=
+h your headphone,=C2=A0 line in and mic jack</p>
+<p>It is possible for pulseaudio mute two of your external 5.1 speaker when=
+ headphone jack is plugged</p>
+<p><a href=3D"http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/mo=
+dules/alsa/mixer/paths/analog-output-headphones.conf">http://cgit.freedeskt=
+op.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-outpu=
+t-headphones.conf</a></p>
+<p>[Element Rear]<br>
+switch =3D off<br>
+volume =3D off</p>
+<p>[Element Surround]<br>
+switch =3D off<br>
+volume =3D off</p>
+<p>[Element Center]<br>
+switch =3D off<br>
+volume =3D off</p>
+<p>[Element LFE]<br>
+switch =3D off<br>
+volume =3D off</p>
+
+--001a113de17697a5f70517ece29a--
+
+--===============0801813506==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
+by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxz
+ZWF1ZGlvLWRpc2N1c3MK
+
+--===============0801813506==--
