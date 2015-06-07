@@ -1,15 +1,10 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [RFC PATCH] ALSA: split params refinement to seperated
-	file
-Date: Thu,  4 Jun 2015 22:47:45 +0800
-Message-ID: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
+From: Nicolae Rosia <nicolae.rosia@gmail.com>
+Subject: Intel HDA & Realtek issues on ASUS G751JM
+Date: Sun, 7 Jun 2015 18:15:54 +0300
+Message-ID: <CAH=tA9HzZisOzmvxzh9oun-uF+SzxYjiDPHVKAoM2hxjq1rvEQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=089e0117690364fa1a0517ef0040
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 01078260661
- for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2015 16:43:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,3607 +14,2246 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, broonie@kernel.org
-Cc: vivian.zhang@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA parameter refinement takes up about 13kB of memory. The refinement
-is useful on the desktop but is not usually required for some bespoke
-applications typically found on small inexpensive devices with reduced
-memory. These bespoke applications will typically configure the audio
-configuration with the exact requirements that will not require any
-further refinement from the kernel.
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=UTF-8
 
-The change moves refinement functions from original pcm_native.c and
-pcm_lib.c, to pcm_refine.c(similarly the declaration from pcm.h to
-pcm_refine.h), so it is not so big as it looks like.
+Hello,
 
-Please be noticed that this change may block alsa-lib usage, user app
-such as aplay/arecord doesn't work when CONFIG_SND_PARAMS_REFINEMENT
-is unselected. But it may be still worthy, some small player(e.g.
-tinyplay) can work with fixed params passed in(some small changes for
-the player may be needed), at this case, the change here will save
-about 13KB footprint on x86_64 platform for those small inexpensive
-devices(e.g. IoT ones).
+I can't get 4.0/5.1 sound working on my laptop [0] [1] with Fedora 22.
+With Linux 4.0 there is no output on jacks but with 4.1-rc6 I'm
+getting sound only on one output.
+Switching between
+pacmd set-card-profile alsa_card.pci-0000_00_1b.0 output:analog-stereo and
+pacmd set-card-profile alsa_card.pci-0000_00_1b.0
+output:analog-surround-40 only boosts the volume on the first output.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- include/sound/pcm.h        |  123 +---
- include/sound/pcm_refine.h |  307 +++++++++
- sound/core/Kconfig         |    9 +
- sound/core/Makefile        |    1 +
- sound/core/pcm_lib.c       |  982 ----------------------------
- sound/core/pcm_native.c    |  505 ---------------
- sound/core/pcm_refine.c    | 1519 ++++++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 1837 insertions(+), 1609 deletions(-)
- create mode 100644 include/sound/pcm_refine.h
- create mode 100644 sound/core/pcm_refine.c
+Attached is dmesg, lsmod, result of lspci -vv and pacmd list-cards and
+list-sinks and output of various information from /proc/asound while
+runnig 4.1-rc6.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 691e7ee..f2d6425 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -26,6 +26,7 @@
- #include <sound/asound.h>
- #include <sound/memalloc.h>
- #include <sound/minors.h>
-+#include <sound/pcm_refine.h>
- #include <linux/poll.h>
- #include <linux/mm.h>
- #include <linux/bitops.h>
-@@ -213,34 +214,6 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
- #endif
- 
--struct snd_pcm_file {
--	struct snd_pcm_substream *substream;
--	int no_compat_mmap;
--};
--
--struct snd_pcm_hw_rule;
--typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
--				      struct snd_pcm_hw_rule *rule);
--
--struct snd_pcm_hw_rule {
--	unsigned int cond;
--	int var;
--	int deps[4];
--
--	snd_pcm_hw_rule_func_t func;
--	void *private;
--};
--
--struct snd_pcm_hw_constraints {
--	struct snd_mask masks[SNDRV_PCM_HW_PARAM_LAST_MASK - 
--			 SNDRV_PCM_HW_PARAM_FIRST_MASK + 1];
--	struct snd_interval intervals[SNDRV_PCM_HW_PARAM_LAST_INTERVAL -
--			     SNDRV_PCM_HW_PARAM_FIRST_INTERVAL + 1];
--	unsigned int rules_num;
--	unsigned int rules_all;
--	struct snd_pcm_hw_rule *rules;
--};
--
- static inline struct snd_mask *constrs_mask(struct snd_pcm_hw_constraints *constrs,
- 					    snd_pcm_hw_param_t var)
- {
-@@ -253,38 +226,6 @@ static inline struct snd_interval *constrs_interval(struct snd_pcm_hw_constraint
- 	return &constrs->intervals[var - SNDRV_PCM_HW_PARAM_FIRST_INTERVAL];
- }
- 
--struct snd_ratnum {
--	unsigned int num;
--	unsigned int den_min, den_max, den_step;
--};
--
--struct snd_ratden {
--	unsigned int num_min, num_max, num_step;
--	unsigned int den;
--};
--
--struct snd_pcm_hw_constraint_ratnums {
--	int nrats;
--	struct snd_ratnum *rats;
--};
--
--struct snd_pcm_hw_constraint_ratdens {
--	int nrats;
--	struct snd_ratden *rats;
--};
--
--struct snd_pcm_hw_constraint_list {
--	const unsigned int *list;
--	unsigned int count;
--	unsigned int mask;
--};
--
--struct snd_pcm_hw_constraint_ranges {
--	unsigned int count;
--	const struct snd_interval *ranges;
--	unsigned int mask;
--};
--
- struct snd_pcm_hwptr_log;
- 
- /*
-@@ -968,72 +909,10 @@ static inline unsigned int params_buffer_bytes(const struct snd_pcm_hw_params *p
- 	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_BUFFER_BYTES)->min;
- }
- 
--int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v);
--void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
--void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
--void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b, 
--			  unsigned int k, struct snd_interval *c);
--void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
--			  const struct snd_interval *b, struct snd_interval *c);
--int snd_interval_list(struct snd_interval *i, unsigned int count,
--		      const unsigned int *list, unsigned int mask);
--int snd_interval_ranges(struct snd_interval *i, unsigned int count,
--			const struct snd_interval *list, unsigned int mask);
--int snd_interval_ratnum(struct snd_interval *i,
--			unsigned int rats_count, struct snd_ratnum *rats,
--			unsigned int *nump, unsigned int *denp);
--
- void _snd_pcm_hw_params_any(struct snd_pcm_hw_params *params);
- void _snd_pcm_hw_param_setempty(struct snd_pcm_hw_params *params, snd_pcm_hw_param_t var);
- int snd_pcm_hw_params_choose(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
- 
--int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
--
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
--
--int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--			       u_int32_t mask);
--int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--				 u_int64_t mask);
--int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--				 unsigned int min, unsigned int max);
--int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var);
--int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime, 
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var,
--			       const struct snd_pcm_hw_constraint_list *l);
--int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
--				 unsigned int cond,
--				 snd_pcm_hw_param_t var,
--				 const struct snd_pcm_hw_constraint_ranges *r);
--int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
--				  unsigned int cond,
--				  snd_pcm_hw_param_t var,
--				  struct snd_pcm_hw_constraint_ratnums *r);
--int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
--				  unsigned int cond,
--				  snd_pcm_hw_param_t var,
--				  struct snd_pcm_hw_constraint_ratdens *r);
--int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
--				 unsigned int cond,
--				 unsigned int width,
--				 unsigned int msbits);
--int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var,
--			       unsigned long step);
--int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var);
--int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
--			       unsigned int base_rate);
--int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
--			unsigned int cond,
--			int var,
--			snd_pcm_hw_rule_func_t func, void *private,
--			int dep, ...);
--
- int snd_pcm_format_signed(snd_pcm_format_t format);
- int snd_pcm_format_unsigned(snd_pcm_format_t format);
- int snd_pcm_format_linear(snd_pcm_format_t format);
-diff --git a/include/sound/pcm_refine.h b/include/sound/pcm_refine.h
-new file mode 100644
-index 0000000..2e47620
---- /dev/null
-+++ b/include/sound/pcm_refine.h
-@@ -0,0 +1,307 @@
-+#ifndef __SOUND_PCM_REFINE_H
-+#define __SOUND_PCM_REFINE_H
-+
-+/*
-+ *  Digital Audio (PCM) HW/SW params refinement layer
-+ *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
-+ *                   Abramo Bagnara <abramo@alsa-project.org>
-+ *                   Jie Yang <yang.jie@intel.com>
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+struct snd_pcm_file {
-+	struct snd_pcm_substream *substream;
-+	int no_compat_mmap;
-+};
-+
-+struct snd_pcm_hw_rule;
-+typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
-+				      struct snd_pcm_hw_rule *rule);
-+
-+struct snd_pcm_hw_rule {
-+	unsigned int cond;
-+	int var;
-+	int deps[4];
-+
-+	snd_pcm_hw_rule_func_t func;
-+	void *private;
-+};
-+
-+struct snd_pcm_hw_constraints {
-+	struct snd_mask masks[SNDRV_PCM_HW_PARAM_LAST_MASK -
-+			 SNDRV_PCM_HW_PARAM_FIRST_MASK + 1];
-+	struct snd_interval intervals[SNDRV_PCM_HW_PARAM_LAST_INTERVAL -
-+			     SNDRV_PCM_HW_PARAM_FIRST_INTERVAL + 1];
-+	unsigned int rules_num;
-+	unsigned int rules_all;
-+	struct snd_pcm_hw_rule *rules;
-+};
-+
-+struct snd_ratnum {
-+	unsigned int num;
-+	unsigned int den_min, den_max, den_step;
-+};
-+
-+struct snd_ratden {
-+	unsigned int num_min, num_max, num_step;
-+	unsigned int den;
-+};
-+
-+struct snd_pcm_hw_constraint_ratnums {
-+	int nrats;
-+	struct snd_ratnum *rats;
-+};
-+
-+struct snd_pcm_hw_constraint_ratdens {
-+	int nrats;
-+	struct snd_ratden *rats;
-+};
-+
-+struct snd_pcm_hw_constraint_list {
-+	const unsigned int *list;
-+	unsigned int count;
-+	unsigned int mask;
-+};
-+
-+struct snd_pcm_hw_constraint_ranges {
-+	unsigned int count;
-+	const struct snd_interval *ranges;
-+	unsigned int mask;
-+};
-+
-+struct snd_pcm_runtime;
-+
-+#ifdef CONFIG_SND_PARAMS_REFINEMENT
-+int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v);
-+void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
-+void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
-+void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
-+			  unsigned int k, struct snd_interval *c);
-+void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
-+			  const struct snd_interval *b, struct snd_interval *c);
-+int snd_interval_list(struct snd_interval *i, unsigned int count,
-+		      const unsigned int *list, unsigned int mask);
-+int snd_interval_ranges(struct snd_interval *i, unsigned int count,
-+			const struct snd_interval *list, unsigned int mask);
-+int snd_interval_ratnum(struct snd_interval *i,
-+			unsigned int rats_count, struct snd_ratnum *rats,
-+			unsigned int *nump, unsigned int *denp);
-+
-+
-+int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
-+
-+int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
-+int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
-+
-+int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+			       u_int32_t mask);
-+int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 u_int64_t mask);
-+int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 unsigned int min, unsigned int max);
-+int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var);
-+int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       const struct snd_pcm_hw_constraint_list *l);
-+int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 snd_pcm_hw_param_t var,
-+				 const struct snd_pcm_hw_constraint_ranges *r);
-+int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratnums *r);
-+int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratdens *r);
-+int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 unsigned int width,
-+				 unsigned int msbits);
-+int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       unsigned long step);
-+int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var);
-+int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
-+			       unsigned int base_rate);
-+int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
-+			unsigned int cond,
-+			int var,
-+			snd_pcm_hw_rule_func_t func, void *private,
-+			int dep, ...);
-+
-+#else
-+static inline int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
-+{
-+	return 0;
-+}
-+
-+static inline void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
-+{
-+}
-+
-+static inline void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
-+{
-+}
-+
-+static inline void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
-+			  unsigned int k, struct snd_interval *c)
-+{
-+}
-+
-+static inline void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
-+			  const struct snd_interval *b, struct snd_interval *c)
-+{
-+}
-+
-+static inline int snd_interval_list(struct snd_interval *i, unsigned int count,
-+			  const unsigned int *list, unsigned int mask)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_interval_ranges(struct snd_interval *i, unsigned int count,
-+			const struct snd_interval *list, unsigned int mask)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_interval_ratnum(struct snd_interval *i,
-+			unsigned int rats_count, struct snd_ratnum *rats,
-+			unsigned int *nump, unsigned int *denp)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+			       u_int32_t mask)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 u_int64_t mask)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 unsigned int min, unsigned int max)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       const struct snd_pcm_hw_constraint_list *l)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 snd_pcm_hw_param_t var,
-+				 const struct snd_pcm_hw_constraint_ranges *r)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratnums *r)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratdens *r)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 unsigned int width,
-+				 unsigned int msbits)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       unsigned long step)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
-+			       unsigned int base_rate)
-+{
-+	return 0;
-+}
-+
-+static inline int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime,
-+			unsigned int cond,
-+			int var,
-+			snd_pcm_hw_rule_func_t func, void *private,
-+			int dep, ...)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
-+#endif /* __SOUND_PCM_REFINE_H */
-+
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index 6c96fee..644e837 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -191,6 +191,15 @@ config SND_PROC_FS
-           9KB on x86_64 platform.
-           If unsure say Y.
- 
-+config SND_PARAMS_REFINEMENT
-+        bool "HW/SW Params Refinement Support" if EXPERT
-+        default y
-+        help
-+          Say 'N' to disable the HW/SW Params Refinement feature, which may
-+	  save about 13KB code size on x86_64 object target.
-+          Please be noted that enabling this may break alsa on the desktop,
-+          only use it with tinyalsa/tinyplay for device such as IoT.
-+
- config SND_VERBOSE_PROCFS
- 	bool "Verbose procfs contents"
- 	depends on SND_PROC_FS
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index 3354f91..c615404 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -18,6 +18,7 @@ snd-pcm-y := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
- snd-pcm-$(CONFIG_SND_DMA_SGBUF) += sgbuf.o
- snd-pcm-$(CONFIG_SND_PCM_ELD) += pcm_drm_eld.o
- snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
-+snd-pcm-$(CONFIG_SND_PARAMS_REFINEMENT) += pcm_refine.o
- 
- # for trace-points
- CFLAGS_pcm_lib.o := -I$(src)
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 7d45645..0bcc3ec 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -532,119 +532,6 @@ EXPORT_SYMBOL(snd_pcm_set_sync);
-  *  Standard ioctl routine
-  */
- 
--static inline unsigned int div32(unsigned int a, unsigned int b, 
--				 unsigned int *r)
--{
--	if (b == 0) {
--		*r = 0;
--		return UINT_MAX;
--	}
--	*r = a % b;
--	return a / b;
--}
--
--static inline unsigned int div_down(unsigned int a, unsigned int b)
--{
--	if (b == 0)
--		return UINT_MAX;
--	return a / b;
--}
--
--static inline unsigned int div_up(unsigned int a, unsigned int b)
--{
--	unsigned int r;
--	unsigned int q;
--	if (b == 0)
--		return UINT_MAX;
--	q = div32(a, b, &r);
--	if (r)
--		++q;
--	return q;
--}
--
--static inline unsigned int mul(unsigned int a, unsigned int b)
--{
--	if (a == 0)
--		return 0;
--	if (div_down(UINT_MAX, a) < b)
--		return UINT_MAX;
--	return a * b;
--}
--
--static inline unsigned int muldiv32(unsigned int a, unsigned int b,
--				    unsigned int c, unsigned int *r)
--{
--	u_int64_t n = (u_int64_t) a * b;
--	if (c == 0) {
--		snd_BUG_ON(!n);
--		*r = 0;
--		return UINT_MAX;
--	}
--	n = div_u64_rem(n, c, r);
--	if (n >= UINT_MAX) {
--		*r = 0;
--		return UINT_MAX;
--	}
--	return n;
--}
--
--/**
-- * snd_interval_refine - refine the interval value of configurator
-- * @i: the interval value to refine
-- * @v: the interval value to refer to
-- *
-- * Refines the interval value with the reference value.
-- * The interval is changed to the range satisfying both intervals.
-- * The interval status (min, max, integer, etc.) are evaluated.
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
--{
--	int changed = 0;
--	if (snd_BUG_ON(snd_interval_empty(i)))
--		return -EINVAL;
--	if (i->min < v->min) {
--		i->min = v->min;
--		i->openmin = v->openmin;
--		changed = 1;
--	} else if (i->min == v->min && !i->openmin && v->openmin) {
--		i->openmin = 1;
--		changed = 1;
--	}
--	if (i->max > v->max) {
--		i->max = v->max;
--		i->openmax = v->openmax;
--		changed = 1;
--	} else if (i->max == v->max && !i->openmax && v->openmax) {
--		i->openmax = 1;
--		changed = 1;
--	}
--	if (!i->integer && v->integer) {
--		i->integer = 1;
--		changed = 1;
--	}
--	if (i->integer) {
--		if (i->openmin) {
--			i->min++;
--			i->openmin = 0;
--		}
--		if (i->openmax) {
--			i->max--;
--			i->openmax = 0;
--		}
--	} else if (!i->openmin && !i->openmax && i->min == i->max)
--		i->integer = 1;
--	if (snd_interval_checkempty(i)) {
--		snd_interval_none(i);
--		return -EINVAL;
--	}
--	return changed;
--}
--
--EXPORT_SYMBOL(snd_interval_refine);
--
- static int snd_interval_refine_first(struct snd_interval *i)
- {
- 	if (snd_BUG_ON(snd_interval_empty(i)))
-@@ -671,875 +558,6 @@ static int snd_interval_refine_last(struct snd_interval *i)
- 	return 1;
- }
- 
--void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
--{
--	if (a->empty || b->empty) {
--		snd_interval_none(c);
--		return;
--	}
--	c->empty = 0;
--	c->min = mul(a->min, b->min);
--	c->openmin = (a->openmin || b->openmin);
--	c->max = mul(a->max,  b->max);
--	c->openmax = (a->openmax || b->openmax);
--	c->integer = (a->integer && b->integer);
--}
--
--/**
-- * snd_interval_div - refine the interval value with division
-- * @a: dividend
-- * @b: divisor
-- * @c: quotient
-- *
-- * c = a / b
-- *
-- * Returns non-zero if the value is changed, zero if not changed.
-- */
--void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
--{
--	unsigned int r;
--	if (a->empty || b->empty) {
--		snd_interval_none(c);
--		return;
--	}
--	c->empty = 0;
--	c->min = div32(a->min, b->max, &r);
--	c->openmin = (r || a->openmin || b->openmax);
--	if (b->min > 0) {
--		c->max = div32(a->max, b->min, &r);
--		if (r) {
--			c->max++;
--			c->openmax = 1;
--		} else
--			c->openmax = (a->openmax || b->openmin);
--	} else {
--		c->max = UINT_MAX;
--		c->openmax = 0;
--	}
--	c->integer = 0;
--}
--
--/**
-- * snd_interval_muldivk - refine the interval value
-- * @a: dividend 1
-- * @b: dividend 2
-- * @k: divisor (as integer)
-- * @c: result
--  *
-- * c = a * b / k
-- *
-- * Returns non-zero if the value is changed, zero if not changed.
-- */
--void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
--		      unsigned int k, struct snd_interval *c)
--{
--	unsigned int r;
--	if (a->empty || b->empty) {
--		snd_interval_none(c);
--		return;
--	}
--	c->empty = 0;
--	c->min = muldiv32(a->min, b->min, k, &r);
--	c->openmin = (r || a->openmin || b->openmin);
--	c->max = muldiv32(a->max, b->max, k, &r);
--	if (r) {
--		c->max++;
--		c->openmax = 1;
--	} else
--		c->openmax = (a->openmax || b->openmax);
--	c->integer = 0;
--}
--
--/**
-- * snd_interval_mulkdiv - refine the interval value
-- * @a: dividend 1
-- * @k: dividend 2 (as integer)
-- * @b: divisor
-- * @c: result
-- *
-- * c = a * k / b
-- *
-- * Returns non-zero if the value is changed, zero if not changed.
-- */
--void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
--		      const struct snd_interval *b, struct snd_interval *c)
--{
--	unsigned int r;
--	if (a->empty || b->empty) {
--		snd_interval_none(c);
--		return;
--	}
--	c->empty = 0;
--	c->min = muldiv32(a->min, k, b->max, &r);
--	c->openmin = (r || a->openmin || b->openmax);
--	if (b->min > 0) {
--		c->max = muldiv32(a->max, k, b->min, &r);
--		if (r) {
--			c->max++;
--			c->openmax = 1;
--		} else
--			c->openmax = (a->openmax || b->openmin);
--	} else {
--		c->max = UINT_MAX;
--		c->openmax = 0;
--	}
--	c->integer = 0;
--}
--
--/* ---- */
--
--
--/**
-- * snd_interval_ratnum - refine the interval value
-- * @i: interval to refine
-- * @rats_count: number of ratnum_t 
-- * @rats: ratnum_t array
-- * @nump: pointer to store the resultant numerator
-- * @denp: pointer to store the resultant denominator
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_interval_ratnum(struct snd_interval *i,
--			unsigned int rats_count, struct snd_ratnum *rats,
--			unsigned int *nump, unsigned int *denp)
--{
--	unsigned int best_num, best_den;
--	int best_diff;
--	unsigned int k;
--	struct snd_interval t;
--	int err;
--	unsigned int result_num, result_den;
--	int result_diff;
--
--	best_num = best_den = best_diff = 0;
--	for (k = 0; k < rats_count; ++k) {
--		unsigned int num = rats[k].num;
--		unsigned int den;
--		unsigned int q = i->min;
--		int diff;
--		if (q == 0)
--			q = 1;
--		den = div_up(num, q);
--		if (den < rats[k].den_min)
--			continue;
--		if (den > rats[k].den_max)
--			den = rats[k].den_max;
--		else {
--			unsigned int r;
--			r = (den - rats[k].den_min) % rats[k].den_step;
--			if (r != 0)
--				den -= r;
--		}
--		diff = num - q * den;
--		if (diff < 0)
--			diff = -diff;
--		if (best_num == 0 ||
--		    diff * best_den < best_diff * den) {
--			best_diff = diff;
--			best_den = den;
--			best_num = num;
--		}
--	}
--	if (best_den == 0) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	t.min = div_down(best_num, best_den);
--	t.openmin = !!(best_num % best_den);
--	
--	result_num = best_num;
--	result_diff = best_diff;
--	result_den = best_den;
--	best_num = best_den = best_diff = 0;
--	for (k = 0; k < rats_count; ++k) {
--		unsigned int num = rats[k].num;
--		unsigned int den;
--		unsigned int q = i->max;
--		int diff;
--		if (q == 0) {
--			i->empty = 1;
--			return -EINVAL;
--		}
--		den = div_down(num, q);
--		if (den > rats[k].den_max)
--			continue;
--		if (den < rats[k].den_min)
--			den = rats[k].den_min;
--		else {
--			unsigned int r;
--			r = (den - rats[k].den_min) % rats[k].den_step;
--			if (r != 0)
--				den += rats[k].den_step - r;
--		}
--		diff = q * den - num;
--		if (diff < 0)
--			diff = -diff;
--		if (best_num == 0 ||
--		    diff * best_den < best_diff * den) {
--			best_diff = diff;
--			best_den = den;
--			best_num = num;
--		}
--	}
--	if (best_den == 0) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	t.max = div_up(best_num, best_den);
--	t.openmax = !!(best_num % best_den);
--	t.integer = 0;
--	err = snd_interval_refine(i, &t);
--	if (err < 0)
--		return err;
--
--	if (snd_interval_single(i)) {
--		if (best_diff * result_den < result_diff * best_den) {
--			result_num = best_num;
--			result_den = best_den;
--		}
--		if (nump)
--			*nump = result_num;
--		if (denp)
--			*denp = result_den;
--	}
--	return err;
--}
--
--EXPORT_SYMBOL(snd_interval_ratnum);
--
--/**
-- * snd_interval_ratden - refine the interval value
-- * @i: interval to refine
-- * @rats_count: number of struct ratden
-- * @rats: struct ratden array
-- * @nump: pointer to store the resultant numerator
-- * @denp: pointer to store the resultant denominator
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--static int snd_interval_ratden(struct snd_interval *i,
--			       unsigned int rats_count, struct snd_ratden *rats,
--			       unsigned int *nump, unsigned int *denp)
--{
--	unsigned int best_num, best_diff, best_den;
--	unsigned int k;
--	struct snd_interval t;
--	int err;
--
--	best_num = best_den = best_diff = 0;
--	for (k = 0; k < rats_count; ++k) {
--		unsigned int num;
--		unsigned int den = rats[k].den;
--		unsigned int q = i->min;
--		int diff;
--		num = mul(q, den);
--		if (num > rats[k].num_max)
--			continue;
--		if (num < rats[k].num_min)
--			num = rats[k].num_max;
--		else {
--			unsigned int r;
--			r = (num - rats[k].num_min) % rats[k].num_step;
--			if (r != 0)
--				num += rats[k].num_step - r;
--		}
--		diff = num - q * den;
--		if (best_num == 0 ||
--		    diff * best_den < best_diff * den) {
--			best_diff = diff;
--			best_den = den;
--			best_num = num;
--		}
--	}
--	if (best_den == 0) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	t.min = div_down(best_num, best_den);
--	t.openmin = !!(best_num % best_den);
--	
--	best_num = best_den = best_diff = 0;
--	for (k = 0; k < rats_count; ++k) {
--		unsigned int num;
--		unsigned int den = rats[k].den;
--		unsigned int q = i->max;
--		int diff;
--		num = mul(q, den);
--		if (num < rats[k].num_min)
--			continue;
--		if (num > rats[k].num_max)
--			num = rats[k].num_max;
--		else {
--			unsigned int r;
--			r = (num - rats[k].num_min) % rats[k].num_step;
--			if (r != 0)
--				num -= r;
--		}
--		diff = q * den - num;
--		if (best_num == 0 ||
--		    diff * best_den < best_diff * den) {
--			best_diff = diff;
--			best_den = den;
--			best_num = num;
--		}
--	}
--	if (best_den == 0) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	t.max = div_up(best_num, best_den);
--	t.openmax = !!(best_num % best_den);
--	t.integer = 0;
--	err = snd_interval_refine(i, &t);
--	if (err < 0)
--		return err;
--
--	if (snd_interval_single(i)) {
--		if (nump)
--			*nump = best_num;
--		if (denp)
--			*denp = best_den;
--	}
--	return err;
--}
--
--/**
-- * snd_interval_list - refine the interval value from the list
-- * @i: the interval value to refine
-- * @count: the number of elements in the list
-- * @list: the value list
-- * @mask: the bit-mask to evaluate
-- *
-- * Refines the interval value from the list.
-- * When mask is non-zero, only the elements corresponding to bit 1 are
-- * evaluated.
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_interval_list(struct snd_interval *i, unsigned int count,
--		      const unsigned int *list, unsigned int mask)
--{
--        unsigned int k;
--	struct snd_interval list_range;
--
--	if (!count) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	snd_interval_any(&list_range);
--	list_range.min = UINT_MAX;
--	list_range.max = 0;
--        for (k = 0; k < count; k++) {
--		if (mask && !(mask & (1 << k)))
--			continue;
--		if (!snd_interval_test(i, list[k]))
--			continue;
--		list_range.min = min(list_range.min, list[k]);
--		list_range.max = max(list_range.max, list[k]);
--        }
--	return snd_interval_refine(i, &list_range);
--}
--
--EXPORT_SYMBOL(snd_interval_list);
--
--/**
-- * snd_interval_ranges - refine the interval value from the list of ranges
-- * @i: the interval value to refine
-- * @count: the number of elements in the list of ranges
-- * @ranges: the ranges list
-- * @mask: the bit-mask to evaluate
-- *
-- * Refines the interval value from the list of ranges.
-- * When mask is non-zero, only the elements corresponding to bit 1 are
-- * evaluated.
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_interval_ranges(struct snd_interval *i, unsigned int count,
--			const struct snd_interval *ranges, unsigned int mask)
--{
--	unsigned int k;
--	struct snd_interval range_union;
--	struct snd_interval range;
--
--	if (!count) {
--		snd_interval_none(i);
--		return -EINVAL;
--	}
--	snd_interval_any(&range_union);
--	range_union.min = UINT_MAX;
--	range_union.max = 0;
--	for (k = 0; k < count; k++) {
--		if (mask && !(mask & (1 << k)))
--			continue;
--		snd_interval_copy(&range, &ranges[k]);
--		if (snd_interval_refine(&range, i) < 0)
--			continue;
--		if (snd_interval_empty(&range))
--			continue;
--
--		if (range.min < range_union.min) {
--			range_union.min = range.min;
--			range_union.openmin = 1;
--		}
--		if (range.min == range_union.min && !range.openmin)
--			range_union.openmin = 0;
--		if (range.max > range_union.max) {
--			range_union.max = range.max;
--			range_union.openmax = 1;
--		}
--		if (range.max == range_union.max && !range.openmax)
--			range_union.openmax = 0;
--	}
--	return snd_interval_refine(i, &range_union);
--}
--EXPORT_SYMBOL(snd_interval_ranges);
--
--static int snd_interval_step(struct snd_interval *i, unsigned int step)
--{
--	unsigned int n;
--	int changed = 0;
--	n = i->min % step;
--	if (n != 0 || i->openmin) {
--		i->min += step - n;
--		i->openmin = 0;
--		changed = 1;
--	}
--	n = i->max % step;
--	if (n != 0 || i->openmax) {
--		i->max -= n;
--		i->openmax = 0;
--		changed = 1;
--	}
--	if (snd_interval_checkempty(i)) {
--		i->empty = 1;
--		return -EINVAL;
--	}
--	return changed;
--}
--
--/* Info constraints helpers */
--
--/**
-- * snd_pcm_hw_rule_add - add the hw-constraint rule
-- * @runtime: the pcm runtime instance
-- * @cond: condition bits
-- * @var: the variable to evaluate
-- * @func: the evaluation function
-- * @private: the private data pointer passed to function
-- * @dep: the dependent variables
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
--			int var,
--			snd_pcm_hw_rule_func_t func, void *private,
--			int dep, ...)
--{
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	struct snd_pcm_hw_rule *c;
--	unsigned int k;
--	va_list args;
--	va_start(args, dep);
--	if (constrs->rules_num >= constrs->rules_all) {
--		struct snd_pcm_hw_rule *new;
--		unsigned int new_rules = constrs->rules_all + 16;
--		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
--		if (!new) {
--			va_end(args);
--			return -ENOMEM;
--		}
--		if (constrs->rules) {
--			memcpy(new, constrs->rules,
--			       constrs->rules_num * sizeof(*c));
--			kfree(constrs->rules);
--		}
--		constrs->rules = new;
--		constrs->rules_all = new_rules;
--	}
--	c = &constrs->rules[constrs->rules_num];
--	c->cond = cond;
--	c->func = func;
--	c->var = var;
--	c->private = private;
--	k = 0;
--	while (1) {
--		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
--			va_end(args);
--			return -EINVAL;
--		}
--		c->deps[k++] = dep;
--		if (dep < 0)
--			break;
--		dep = va_arg(args, int);
--	}
--	constrs->rules_num++;
--	va_end(args);
--	return 0;
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_rule_add);
--
--/**
-- * snd_pcm_hw_constraint_mask - apply the given bitmap mask constraint
-- * @runtime: PCM runtime instance
-- * @var: hw_params variable to apply the mask
-- * @mask: the bitmap mask
-- *
-- * Apply the constraint of the given bitmap mask to a 32-bit mask parameter.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--			       u_int32_t mask)
--{
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	struct snd_mask *maskp = constrs_mask(constrs, var);
--	*maskp->bits &= mask;
--	memset(maskp->bits + 1, 0, (SNDRV_MASK_MAX-32) / 8); /* clear rest */
--	if (*maskp->bits == 0)
--		return -EINVAL;
--	return 0;
--}
--
--/**
-- * snd_pcm_hw_constraint_mask64 - apply the given bitmap mask constraint
-- * @runtime: PCM runtime instance
-- * @var: hw_params variable to apply the mask
-- * @mask: the 64bit bitmap mask
-- *
-- * Apply the constraint of the given bitmap mask to a 64-bit mask parameter.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--				 u_int64_t mask)
--{
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	struct snd_mask *maskp = constrs_mask(constrs, var);
--	maskp->bits[0] &= (u_int32_t)mask;
--	maskp->bits[1] &= (u_int32_t)(mask >> 32);
--	memset(maskp->bits + 2, 0, (SNDRV_MASK_MAX-64) / 8); /* clear rest */
--	if (! maskp->bits[0] && ! maskp->bits[1])
--		return -EINVAL;
--	return 0;
--}
--EXPORT_SYMBOL(snd_pcm_hw_constraint_mask64);
--
--/**
-- * snd_pcm_hw_constraint_integer - apply an integer constraint to an interval
-- * @runtime: PCM runtime instance
-- * @var: hw_params variable to apply the integer constraint
-- *
-- * Apply the constraint of integer to an interval parameter.
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
--{
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	return snd_interval_setinteger(constrs_interval(constrs, var));
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_integer);
--
--/**
-- * snd_pcm_hw_constraint_minmax - apply a min/max range constraint to an interval
-- * @runtime: PCM runtime instance
-- * @var: hw_params variable to apply the range
-- * @min: the minimal value
-- * @max: the maximal value
-- * 
-- * Apply the min/max range constraint to an interval parameter.
-- *
-- * Return: Positive if the value is changed, zero if it's not changed, or a
-- * negative error code.
-- */
--int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
--				 unsigned int min, unsigned int max)
--{
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	struct snd_interval t;
--	t.min = min;
--	t.max = max;
--	t.openmin = t.openmax = 0;
--	t.integer = 0;
--	return snd_interval_refine(constrs_interval(constrs, var), &t);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_minmax);
--
--static int snd_pcm_hw_rule_list(struct snd_pcm_hw_params *params,
--				struct snd_pcm_hw_rule *rule)
--{
--	struct snd_pcm_hw_constraint_list *list = rule->private;
--	return snd_interval_list(hw_param_interval(params, rule->var), list->count, list->list, list->mask);
--}		
--
--
--/**
-- * snd_pcm_hw_constraint_list - apply a list of constraints to a parameter
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the list constraint
-- * @l: list
-- * 
-- * Apply the list of constraints to an interval parameter.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var,
--			       const struct snd_pcm_hw_constraint_list *l)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var,
--				   snd_pcm_hw_rule_list, (void *)l,
--				   var, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_list);
--
--static int snd_pcm_hw_rule_ranges(struct snd_pcm_hw_params *params,
--				  struct snd_pcm_hw_rule *rule)
--{
--	struct snd_pcm_hw_constraint_ranges *r = rule->private;
--	return snd_interval_ranges(hw_param_interval(params, rule->var),
--				   r->count, r->ranges, r->mask);
--}
--
--
--/**
-- * snd_pcm_hw_constraint_ranges - apply list of range constraints to a parameter
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the list of range constraints
-- * @r: ranges
-- *
-- * Apply the list of range constraints to an interval parameter.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
--				 unsigned int cond,
--				 snd_pcm_hw_param_t var,
--				 const struct snd_pcm_hw_constraint_ranges *r)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var,
--				   snd_pcm_hw_rule_ranges, (void *)r,
--				   var, -1);
--}
--EXPORT_SYMBOL(snd_pcm_hw_constraint_ranges);
--
--static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
--				   struct snd_pcm_hw_rule *rule)
--{
--	struct snd_pcm_hw_constraint_ratnums *r = rule->private;
--	unsigned int num = 0, den = 0;
--	int err;
--	err = snd_interval_ratnum(hw_param_interval(params, rule->var),
--				  r->nrats, r->rats, &num, &den);
--	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
--		params->rate_num = num;
--		params->rate_den = den;
--	}
--	return err;
--}
--
--/**
-- * snd_pcm_hw_constraint_ratnums - apply ratnums constraint to a parameter
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the ratnums constraint
-- * @r: struct snd_ratnums constriants
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime, 
--				  unsigned int cond,
--				  snd_pcm_hw_param_t var,
--				  struct snd_pcm_hw_constraint_ratnums *r)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var,
--				   snd_pcm_hw_rule_ratnums, r,
--				   var, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
--
--static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
--				   struct snd_pcm_hw_rule *rule)
--{
--	struct snd_pcm_hw_constraint_ratdens *r = rule->private;
--	unsigned int num = 0, den = 0;
--	int err = snd_interval_ratden(hw_param_interval(params, rule->var),
--				  r->nrats, r->rats, &num, &den);
--	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
--		params->rate_num = num;
--		params->rate_den = den;
--	}
--	return err;
--}
--
--/**
-- * snd_pcm_hw_constraint_ratdens - apply ratdens constraint to a parameter
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the ratdens constraint
-- * @r: struct snd_ratdens constriants
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime, 
--				  unsigned int cond,
--				  snd_pcm_hw_param_t var,
--				  struct snd_pcm_hw_constraint_ratdens *r)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var,
--				   snd_pcm_hw_rule_ratdens, r,
--				   var, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_ratdens);
--
--static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
--				  struct snd_pcm_hw_rule *rule)
--{
--	unsigned int l = (unsigned long) rule->private;
--	int width = l & 0xffff;
--	unsigned int msbits = l >> 16;
--	struct snd_interval *i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
--
--	if (!snd_interval_single(i))
--		return 0;
--
--	if ((snd_interval_value(i) == width) ||
--	    (width == 0 && snd_interval_value(i) > msbits))
--		params->msbits = min_not_zero(params->msbits, msbits);
--
--	return 0;
--}
--
--/**
-- * snd_pcm_hw_constraint_msbits - add a hw constraint msbits rule
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @width: sample bits width
-- * @msbits: msbits width
-- *
-- * This constraint will set the number of most significant bits (msbits) if a
-- * sample format with the specified width has been select. If width is set to 0
-- * the msbits will be set for any sample format with a width larger than the
-- * specified msbits.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime, 
--				 unsigned int cond,
--				 unsigned int width,
--				 unsigned int msbits)
--{
--	unsigned long l = (msbits << 16) | width;
--	return snd_pcm_hw_rule_add(runtime, cond, -1,
--				    snd_pcm_hw_rule_msbits,
--				    (void*) l,
--				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
--
--static int snd_pcm_hw_rule_step(struct snd_pcm_hw_params *params,
--				struct snd_pcm_hw_rule *rule)
--{
--	unsigned long step = (unsigned long) rule->private;
--	return snd_interval_step(hw_param_interval(params, rule->var), step);
--}
--
--/**
-- * snd_pcm_hw_constraint_step - add a hw constraint step rule
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the step constraint
-- * @step: step size
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var,
--			       unsigned long step)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var, 
--				   snd_pcm_hw_rule_step, (void *) step,
--				   var, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_step);
--
--static int snd_pcm_hw_rule_pow2(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
--{
--	static unsigned int pow2_sizes[] = {
--		1<<0, 1<<1, 1<<2, 1<<3, 1<<4, 1<<5, 1<<6, 1<<7,
--		1<<8, 1<<9, 1<<10, 1<<11, 1<<12, 1<<13, 1<<14, 1<<15,
--		1<<16, 1<<17, 1<<18, 1<<19, 1<<20, 1<<21, 1<<22, 1<<23,
--		1<<24, 1<<25, 1<<26, 1<<27, 1<<28, 1<<29, 1<<30
--	};
--	return snd_interval_list(hw_param_interval(params, rule->var),
--				 ARRAY_SIZE(pow2_sizes), pow2_sizes, 0);
--}		
--
--/**
-- * snd_pcm_hw_constraint_pow2 - add a hw constraint power-of-2 rule
-- * @runtime: PCM runtime instance
-- * @cond: condition bits
-- * @var: hw_params variable to apply the power-of-2 constraint
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
--			       unsigned int cond,
--			       snd_pcm_hw_param_t var)
--{
--	return snd_pcm_hw_rule_add(runtime, cond, var, 
--				   snd_pcm_hw_rule_pow2, NULL,
--				   var, -1);
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_constraint_pow2);
--
--static int snd_pcm_hw_rule_noresample_func(struct snd_pcm_hw_params *params,
--					   struct snd_pcm_hw_rule *rule)
--{
--	unsigned int base_rate = (unsigned int)(uintptr_t)rule->private;
--	struct snd_interval *rate;
--
--	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	return snd_interval_list(rate, 1, &base_rate, 0);
--}
--
--/**
-- * snd_pcm_hw_rule_noresample - add a rule to allow disabling hw resampling
-- * @runtime: PCM runtime instance
-- * @base_rate: the rate at which the hardware does not resample
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
--			       unsigned int base_rate)
--{
--	return snd_pcm_hw_rule_add(runtime, SNDRV_PCM_HW_PARAMS_NORESAMPLE,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   snd_pcm_hw_rule_noresample_func,
--				   (void *)(uintptr_t)base_rate,
--				   SNDRV_PCM_HW_PARAM_RATE, -1);
--}
--EXPORT_SYMBOL(snd_pcm_hw_rule_noresample);
--
- static void _snd_pcm_hw_param_any(struct snd_pcm_hw_params *params,
- 				  snd_pcm_hw_param_t var)
- {
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index d126c03..b4c4829 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -227,21 +227,6 @@ int snd_pcm_info_user(struct snd_pcm_substream *substream,
- 	return err;
- }
- 
--static bool hw_support_mmap(struct snd_pcm_substream *substream)
--{
--	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
--		return false;
--	/* check architectures that return -EINVAL from dma_mmap_coherent() */
--	/* FIXME: this should be some global flag */
--#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
--	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
--	if (!substream->ops->mmap &&
--	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
--		return false;
--#endif
--	return true;
--}
--
- #undef RULES_DEBUG
- 
- #ifdef RULES_DEBUG
-@@ -265,184 +250,6 @@ static const char * const snd_pcm_hw_param_names[] = {
- };
- #endif
- 
--int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
--		      struct snd_pcm_hw_params *params)
--{
--	unsigned int k;
--	struct snd_pcm_hardware *hw;
--	struct snd_interval *i = NULL;
--	struct snd_mask *m = NULL;
--	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
--	unsigned int rstamps[constrs->rules_num];
--	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
--	unsigned int stamp = 2;
--	int changed, again;
--
--	params->info = 0;
--	params->fifo_size = 0;
--	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
--		params->msbits = 0;
--	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
--		params->rate_num = 0;
--		params->rate_den = 0;
--	}
--
--	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
--		m = hw_param_mask(params, k);
--		if (snd_mask_empty(m))
--			return -EINVAL;
--		if (!(params->rmask & (1 << k)))
--			continue;
--#ifdef RULES_DEBUG
--		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
--		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
--#endif
--		changed = snd_mask_refine(m, constrs_mask(constrs, k));
--#ifdef RULES_DEBUG
--		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
--#endif
--		if (changed)
--			params->cmask |= 1 << k;
--		if (changed < 0)
--			return changed;
--	}
--
--	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
--		i = hw_param_interval(params, k);
--		if (snd_interval_empty(i))
--			return -EINVAL;
--		if (!(params->rmask & (1 << k)))
--			continue;
--#ifdef RULES_DEBUG
--		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
--		if (i->empty)
--			pr_cont("empty");
--		else
--			pr_cont("%c%u %u%c",
--			       i->openmin ? '(' : '[', i->min,
--			       i->max, i->openmax ? ')' : ']');
--		pr_cont(" -> ");
--#endif
--		changed = snd_interval_refine(i, constrs_interval(constrs, k));
--#ifdef RULES_DEBUG
--		if (i->empty)
--			pr_cont("empty\n");
--		else 
--			pr_cont("%c%u %u%c\n",
--			       i->openmin ? '(' : '[', i->min,
--			       i->max, i->openmax ? ')' : ']');
--#endif
--		if (changed)
--			params->cmask |= 1 << k;
--		if (changed < 0)
--			return changed;
--	}
--
--	for (k = 0; k < constrs->rules_num; k++)
--		rstamps[k] = 0;
--	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) 
--		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
--	do {
--		again = 0;
--		for (k = 0; k < constrs->rules_num; k++) {
--			struct snd_pcm_hw_rule *r = &constrs->rules[k];
--			unsigned int d;
--			int doit = 0;
--			if (r->cond && !(r->cond & params->flags))
--				continue;
--			for (d = 0; r->deps[d] >= 0; d++) {
--				if (vstamps[r->deps[d]] > rstamps[k]) {
--					doit = 1;
--					break;
--				}
--			}
--			if (!doit)
--				continue;
--#ifdef RULES_DEBUG
--			pr_debug("Rule %d [%p]: ", k, r->func);
--			if (r->var >= 0) {
--				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
--				if (hw_is_mask(r->var)) {
--					m = hw_param_mask(params, r->var);
--					pr_cont("%x", *m->bits);
--				} else {
--					i = hw_param_interval(params, r->var);
--					if (i->empty)
--						pr_cont("empty");
--					else
--						pr_cont("%c%u %u%c",
--						       i->openmin ? '(' : '[', i->min,
--						       i->max, i->openmax ? ')' : ']');
--				}
--			}
--#endif
--			changed = r->func(params, r);
--#ifdef RULES_DEBUG
--			if (r->var >= 0) {
--				pr_cont(" -> ");
--				if (hw_is_mask(r->var))
--					pr_cont("%x", *m->bits);
--				else {
--					if (i->empty)
--						pr_cont("empty");
--					else
--						pr_cont("%c%u %u%c",
--						       i->openmin ? '(' : '[', i->min,
--						       i->max, i->openmax ? ')' : ']');
--				}
--			}
--			pr_cont("\n");
--#endif
--			rstamps[k] = stamp;
--			if (changed && r->var >= 0) {
--				params->cmask |= (1 << r->var);
--				vstamps[r->var] = stamp;
--				again = 1;
--			}
--			if (changed < 0)
--				return changed;
--			stamp++;
--		}
--	} while (again);
--	if (!params->msbits) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
--		if (snd_interval_single(i))
--			params->msbits = snd_interval_value(i);
--	}
--
--	if (!params->rate_den) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--		if (snd_interval_single(i)) {
--			params->rate_num = snd_interval_value(i);
--			params->rate_den = 1;
--		}
--	}
--
--	hw = &substream->runtime->hw;
--	if (!params->info) {
--		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
--					    SNDRV_PCM_INFO_DRAIN_TRIGGER);
--		if (!hw_support_mmap(substream))
--			params->info &= ~(SNDRV_PCM_INFO_MMAP |
--					  SNDRV_PCM_INFO_MMAP_VALID);
--	}
--	if (!params->fifo_size) {
--		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--		if (snd_mask_min(m) == snd_mask_max(m) &&
--                    snd_interval_min(i) == snd_interval_max(i)) {
--			changed = substream->ops->ioctl(substream,
--					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
--			if (changed < 0)
--				return changed;
--		}
--	}
--	params->rmask = 0;
--	return 0;
--}
--
--EXPORT_SYMBOL(snd_pcm_hw_refine);
--
- static int snd_pcm_hw_refine_user(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params __user * _params)
- {
-@@ -1888,89 +1695,6 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
- /*
-  * hw configurator
-  */
--static int snd_pcm_hw_rule_mul(struct snd_pcm_hw_params *params,
--			       struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	snd_interval_mul(hw_param_interval_c(params, rule->deps[0]),
--		     hw_param_interval_c(params, rule->deps[1]), &t);
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}
--
--static int snd_pcm_hw_rule_div(struct snd_pcm_hw_params *params,
--			       struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	snd_interval_div(hw_param_interval_c(params, rule->deps[0]),
--		     hw_param_interval_c(params, rule->deps[1]), &t);
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}
--
--static int snd_pcm_hw_rule_muldivk(struct snd_pcm_hw_params *params,
--				   struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	snd_interval_muldivk(hw_param_interval_c(params, rule->deps[0]),
--			 hw_param_interval_c(params, rule->deps[1]),
--			 (unsigned long) rule->private, &t);
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}
--
--static int snd_pcm_hw_rule_mulkdiv(struct snd_pcm_hw_params *params,
--				   struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	snd_interval_mulkdiv(hw_param_interval_c(params, rule->deps[0]),
--			 (unsigned long) rule->private,
--			 hw_param_interval_c(params, rule->deps[1]), &t);
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}
--
--static int snd_pcm_hw_rule_format(struct snd_pcm_hw_params *params,
--				  struct snd_pcm_hw_rule *rule)
--{
--	unsigned int k;
--	struct snd_interval *i = hw_param_interval(params, rule->deps[0]);
--	struct snd_mask m;
--	struct snd_mask *mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--	snd_mask_any(&m);
--	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
--		int bits;
--		if (! snd_mask_test(mask, k))
--			continue;
--		bits = snd_pcm_format_physical_width(k);
--		if (bits <= 0)
--			continue; /* ignore invalid formats */
--		if ((unsigned)bits < i->min || (unsigned)bits > i->max)
--			snd_mask_reset(&m, k);
--	}
--	return snd_mask_refine(mask, &m);
--}
--
--static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
--				       struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	unsigned int k;
--	t.min = UINT_MAX;
--	t.max = 0;
--	t.openmin = 0;
--	t.openmax = 0;
--	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
--		int bits;
--		if (! snd_mask_test(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), k))
--			continue;
--		bits = snd_pcm_format_physical_width(k);
--		if (bits <= 0)
--			continue; /* ignore invalid formats */
--		if (t.min > (unsigned)bits)
--			t.min = bits;
--		if (t.max < (unsigned)bits)
--			t.max = bits;
--	}
--	t.integer = 1;
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}
- 
- #if SNDRV_PCM_RATE_5512 != 1 << 0 || SNDRV_PCM_RATE_192000 != 1 << 12
- #error "Change this table"
-@@ -1984,235 +1708,6 @@ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
- 	.list = rates,
- };
- 
--static int snd_pcm_hw_rule_rate(struct snd_pcm_hw_params *params,
--				struct snd_pcm_hw_rule *rule)
--{
--	struct snd_pcm_hardware *hw = rule->private;
--	return snd_interval_list(hw_param_interval(params, rule->var),
--				 snd_pcm_known_rates.count,
--				 snd_pcm_known_rates.list, hw->rates);
--}		
--
--static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
--					    struct snd_pcm_hw_rule *rule)
--{
--	struct snd_interval t;
--	struct snd_pcm_substream *substream = rule->private;
--	t.min = 0;
--	t.max = substream->buffer_bytes_max;
--	t.openmin = 0;
--	t.openmax = 0;
--	t.integer = 1;
--	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
--}		
--
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
--	int k, err;
--
--	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
--		snd_mask_any(constrs_mask(constrs, k));
--	}
--
--	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
--		snd_interval_any(constrs_interval(constrs, k));
--	}
--
--	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_CHANNELS));
--	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_SIZE));
--	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_BYTES));
--	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_SAMPLE_BITS));
--	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_FRAME_BITS));
--
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
--				   snd_pcm_hw_rule_format, NULL,
--				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, 
--				  snd_pcm_hw_rule_sample_bits, NULL,
--				  SNDRV_PCM_HW_PARAM_FORMAT, 
--				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, 
--				  snd_pcm_hw_rule_div, NULL,
--				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
--				  snd_pcm_hw_rule_mul, NULL,
--				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS, 
--				  snd_pcm_hw_rule_div, NULL,
--				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_TIME, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_BUFFER_TIME, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIODS, 
--				  snd_pcm_hw_rule_div, NULL,
--				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
--				  snd_pcm_hw_rule_div, NULL,
--				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 
--				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_PERIOD_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
--				  snd_pcm_hw_rule_mul, NULL,
--				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 
--				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_BUFFER_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 
--				  snd_pcm_hw_rule_muldivk, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 
--				  snd_pcm_hw_rule_muldivk, (void*) 8,
--				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_TIME, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 
--				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
--				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
--	return 0;
--}
--
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_pcm_hardware *hw = &runtime->hw;
--	int err;
--	unsigned int mask = 0;
--
--        if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
--		mask |= 1 << SNDRV_PCM_ACCESS_RW_INTERLEAVED;
--        if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
--		mask |= 1 << SNDRV_PCM_ACCESS_RW_NONINTERLEAVED;
--	if (hw_support_mmap(substream)) {
--		if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
--			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_INTERLEAVED;
--		if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
--			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED;
--		if (hw->info & SNDRV_PCM_INFO_COMPLEX)
--			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_COMPLEX;
--	}
--	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_ACCESS, mask);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT, hw->formats);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT, 1 << SNDRV_PCM_SUBFORMAT_STD);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
--					   hw->channels_min, hw->channels_max);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE,
--					   hw->rate_min, hw->rate_max);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
--					   hw->period_bytes_min, hw->period_bytes_max);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS,
--					   hw->periods_min, hw->periods_max);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
--					   hw->period_bytes_min, hw->buffer_bytes_max);
--	if (err < 0)
--		return err;
--
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 
--				  snd_pcm_hw_rule_buffer_bytes_max, substream,
--				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
--	if (err < 0)
--		return err;
--
--	/* FIXME: remove */
--	if (runtime->dma_bytes) {
--		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
--		if (err < 0)
--			return err;
--	}
--
--	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
--		err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, 
--					  snd_pcm_hw_rule_rate, hw,
--					  SNDRV_PCM_HW_PARAM_RATE, -1);
--		if (err < 0)
--			return err;
--	}
--
--	/* FIXME: this belong to lowlevel */
--	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
--
--	return 0;
--}
--
- static void pcm_release_private(struct snd_pcm_substream *substream)
- {
- 	snd_pcm_unlink(substream);
-diff --git a/sound/core/pcm_refine.c b/sound/core/pcm_refine.c
-new file mode 100644
-index 0000000..40ae80e
---- /dev/null
-+++ b/sound/core/pcm_refine.c
-@@ -0,0 +1,1519 @@
-+/*
-+ *  Digital Audio (PCM) abstract layer
-+ *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
-+ *                   Abramo Bagnara <abramo@alsa-project.org>
-+ *                   Jie Yang <yang.jie@intel.com>
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+
-+
-+
-+static bool hw_support_mmap(struct snd_pcm_substream *substream)
-+{
-+	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
-+		return false;
-+	/* check architectures that return -EINVAL from dma_mmap_coherent() */
-+	/* FIXME: this should be some global flag */
-+#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
-+	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
-+	if (!substream->ops->mmap &&
-+	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
-+		return false;
-+#endif
-+	return true;
-+}
-+
-+int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
-+		      struct snd_pcm_hw_params *params)
-+{
-+	unsigned int k;
-+	struct snd_pcm_hardware *hw;
-+	struct snd_interval *i = NULL;
-+	struct snd_mask *m = NULL;
-+	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
-+	unsigned int rstamps[constrs->rules_num];
-+	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
-+	unsigned int stamp = 2;
-+	int changed, again;
-+
-+	params->info = 0;
-+	params->fifo_size = 0;
-+	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
-+		params->msbits = 0;
-+	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
-+		params->rate_num = 0;
-+		params->rate_den = 0;
-+	}
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
-+		m = hw_param_mask(params, k);
-+		if (snd_mask_empty(m))
-+			return -EINVAL;
-+		if (!(params->rmask & (1 << k)))
-+			continue;
-+#ifdef RULES_DEBUG
-+		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
-+		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
-+#endif
-+		changed = snd_mask_refine(m, constrs_mask(constrs, k));
-+#ifdef RULES_DEBUG
-+		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
-+#endif
-+		if (changed)
-+			params->cmask |= 1 << k;
-+		if (changed < 0)
-+			return changed;
-+	}
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
-+		i = hw_param_interval(params, k);
-+		if (snd_interval_empty(i))
-+			return -EINVAL;
-+		if (!(params->rmask & (1 << k)))
-+			continue;
-+#ifdef RULES_DEBUG
-+		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
-+		if (i->empty)
-+			pr_cont("empty");
-+		else
-+			pr_cont("%c%u %u%c",
-+			       i->openmin ? '(' : '[', i->min,
-+			       i->max, i->openmax ? ')' : ']');
-+		pr_cont(" -> ");
-+#endif
-+		changed = snd_interval_refine(i, constrs_interval(constrs, k));
-+#ifdef RULES_DEBUG
-+		if (i->empty)
-+			pr_cont("empty\n");
-+		else
-+			pr_cont("%c%u %u%c\n",
-+			       i->openmin ? '(' : '[', i->min,
-+			       i->max, i->openmax ? ')' : ']');
-+#endif
-+		if (changed)
-+			params->cmask |= 1 << k;
-+		if (changed < 0)
-+			return changed;
-+	}
-+
-+	for (k = 0; k < constrs->rules_num; k++)
-+		rstamps[k] = 0;
-+	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
-+		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
-+	do {
-+		again = 0;
-+		for (k = 0; k < constrs->rules_num; k++) {
-+			struct snd_pcm_hw_rule *r = &constrs->rules[k];
-+			unsigned int d;
-+			int doit = 0;
-+			if (r->cond && !(r->cond & params->flags))
-+				continue;
-+			for (d = 0; r->deps[d] >= 0; d++) {
-+				if (vstamps[r->deps[d]] > rstamps[k]) {
-+					doit = 1;
-+					break;
-+				}
-+			}
-+			if (!doit)
-+				continue;
-+#ifdef RULES_DEBUG
-+			pr_debug("Rule %d [%p]: ", k, r->func);
-+			if (r->var >= 0) {
-+				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
-+				if (hw_is_mask(r->var)) {
-+					m = hw_param_mask(params, r->var);
-+					pr_cont("%x", *m->bits);
-+				} else {
-+					i = hw_param_interval(params, r->var);
-+					if (i->empty)
-+						pr_cont("empty");
-+					else
-+						pr_cont("%c%u %u%c",
-+						       i->openmin ? '(' : '[', i->min,
-+						       i->max, i->openmax ? ')' : ']');
-+				}
-+			}
-+#endif
-+			changed = r->func(params, r);
-+#ifdef RULES_DEBUG
-+			if (r->var >= 0) {
-+				pr_cont(" -> ");
-+				if (hw_is_mask(r->var))
-+					pr_cont("%x", *m->bits);
-+				else {
-+					if (i->empty)
-+						pr_cont("empty");
-+					else
-+						pr_cont("%c%u %u%c",
-+						       i->openmin ? '(' : '[', i->min,
-+						       i->max, i->openmax ? ')' : ']');
-+				}
-+			}
-+			pr_cont("\n");
-+#endif
-+			rstamps[k] = stamp;
-+			if (changed && r->var >= 0) {
-+				params->cmask |= (1 << r->var);
-+				vstamps[r->var] = stamp;
-+				again = 1;
-+			}
-+			if (changed < 0)
-+				return changed;
-+			stamp++;
-+		}
-+	} while (again);
-+	if (!params->msbits) {
-+		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
-+		if (snd_interval_single(i))
-+			params->msbits = snd_interval_value(i);
-+	}
-+
-+	if (!params->rate_den) {
-+		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+		if (snd_interval_single(i)) {
-+			params->rate_num = snd_interval_value(i);
-+			params->rate_den = 1;
-+		}
-+	}
-+
-+	hw = &substream->runtime->hw;
-+	if (!params->info) {
-+		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
-+					    SNDRV_PCM_INFO_DRAIN_TRIGGER);
-+		if (!hw_support_mmap(substream))
-+			params->info &= ~(SNDRV_PCM_INFO_MMAP |
-+					  SNDRV_PCM_INFO_MMAP_VALID);
-+	}
-+	if (!params->fifo_size) {
-+		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+		if (snd_mask_min(m) == snd_mask_max(m) &&
-+                    snd_interval_min(i) == snd_interval_max(i)) {
-+			changed = substream->ops->ioctl(substream,
-+					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
-+			if (changed < 0)
-+				return changed;
-+		}
-+	}
-+	params->rmask = 0;
-+	return 0;
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_refine);
-+
-+static int snd_pcm_hw_rule_mul(struct snd_pcm_hw_params *params,
-+			       struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	snd_interval_mul(hw_param_interval_c(params, rule->deps[0]),
-+		     hw_param_interval_c(params, rule->deps[1]), &t);
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+static int snd_pcm_hw_rule_div(struct snd_pcm_hw_params *params,
-+			       struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	snd_interval_div(hw_param_interval_c(params, rule->deps[0]),
-+		     hw_param_interval_c(params, rule->deps[1]), &t);
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+static int snd_pcm_hw_rule_muldivk(struct snd_pcm_hw_params *params,
-+				   struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	snd_interval_muldivk(hw_param_interval_c(params, rule->deps[0]),
-+			 hw_param_interval_c(params, rule->deps[1]),
-+			 (unsigned long) rule->private, &t);
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+static int snd_pcm_hw_rule_mulkdiv(struct snd_pcm_hw_params *params,
-+				   struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	snd_interval_mulkdiv(hw_param_interval_c(params, rule->deps[0]),
-+			 (unsigned long) rule->private,
-+			 hw_param_interval_c(params, rule->deps[1]), &t);
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+static int snd_pcm_hw_rule_format(struct snd_pcm_hw_params *params,
-+				  struct snd_pcm_hw_rule *rule)
-+{
-+	unsigned int k;
-+	struct snd_interval *i = hw_param_interval(params, rule->deps[0]);
-+	struct snd_mask m;
-+	struct snd_mask *mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+	snd_mask_any(&m);
-+	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
-+		int bits;
-+		if (! snd_mask_test(mask, k))
-+			continue;
-+		bits = snd_pcm_format_physical_width(k);
-+		if (bits <= 0)
-+			continue; /* ignore invalid formats */
-+		if ((unsigned)bits < i->min || (unsigned)bits > i->max)
-+			snd_mask_reset(&m, k);
-+	}
-+	return snd_mask_refine(mask, &m);
-+}
-+
-+static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
-+				       struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	unsigned int k;
-+	t.min = UINT_MAX;
-+	t.max = 0;
-+	t.openmin = 0;
-+	t.openmax = 0;
-+	for (k = 0; k <= SNDRV_PCM_FORMAT_LAST; ++k) {
-+		int bits;
-+		if (! snd_mask_test(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT), k))
-+			continue;
-+		bits = snd_pcm_format_physical_width(k);
-+		if (bits <= 0)
-+			continue; /* ignore invalid formats */
-+		if (t.min > (unsigned)bits)
-+			t.min = bits;
-+		if (t.max < (unsigned)bits)
-+			t.max = bits;
-+	}
-+	t.integer = 1;
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+static int snd_pcm_hw_rule_rate(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_hardware *hw = rule->private;
-+	return snd_interval_list(hw_param_interval(params, rule->var),
-+				 snd_pcm_known_rates.count,
-+				 snd_pcm_known_rates.list, hw->rates);
-+}
-+
-+static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
-+					    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval t;
-+	struct snd_pcm_substream *substream = rule->private;
-+	t.min = 0;
-+	t.max = substream->buffer_bytes_max;
-+	t.openmin = 0;
-+	t.openmax = 0;
-+	t.integer = 1;
-+	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
-+}
-+
-+int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	int k, err;
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
-+		snd_mask_any(constrs_mask(constrs, k));
-+	}
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
-+		snd_interval_any(constrs_interval(constrs, k));
-+	}
-+
-+	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_CHANNELS));
-+	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_SIZE));
-+	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_BUFFER_BYTES));
-+	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_SAMPLE_BITS));
-+	snd_interval_setinteger(constrs_interval(constrs, SNDRV_PCM_HW_PARAM_FRAME_BITS));
-+
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
-+				   snd_pcm_hw_rule_format, NULL,
-+				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+				  snd_pcm_hw_rule_sample_bits, NULL,
-+				  SNDRV_PCM_HW_PARAM_FORMAT,
-+				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+				  snd_pcm_hw_rule_div, NULL,
-+				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
-+				  snd_pcm_hw_rule_mul, NULL,
-+				  SNDRV_PCM_HW_PARAM_SAMPLE_BITS, SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FRAME_BITS,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  snd_pcm_hw_rule_div, NULL,
-+				  SNDRV_PCM_HW_PARAM_FRAME_BITS, SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_TIME, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_BUFFER_TIME, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIODS,
-+				  snd_pcm_hw_rule_div, NULL,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				  snd_pcm_hw_rule_div, NULL,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-+				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-+				  snd_pcm_hw_rule_mul, NULL,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_PERIODS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-+				  snd_pcm_hw_rule_muldivk, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_TIME, SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-+				  snd_pcm_hw_rule_muldivk, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+				  snd_pcm_hw_rule_muldivk, (void*) 8,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_FRAME_BITS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_PERIOD_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_TIME,
-+				  snd_pcm_hw_rule_mulkdiv, (void*) 1000000,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_SIZE, SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+
-+int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_hardware *hw = &runtime->hw;
-+	int err;
-+	unsigned int mask = 0;
-+
-+        if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
-+		mask |= 1 << SNDRV_PCM_ACCESS_RW_INTERLEAVED;
-+        if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
-+		mask |= 1 << SNDRV_PCM_ACCESS_RW_NONINTERLEAVED;
-+	if (hw_support_mmap(substream)) {
-+		if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
-+			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_INTERLEAVED;
-+		if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
-+			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED;
-+		if (hw->info & SNDRV_PCM_INFO_COMPLEX)
-+			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_COMPLEX;
-+	}
-+	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_ACCESS, mask);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT, hw->formats);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT, 1 << SNDRV_PCM_SUBFORMAT_STD);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
-+					   hw->channels_min, hw->channels_max);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE,
-+					   hw->rate_min, hw->rate_max);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-+					   hw->period_bytes_min, hw->period_bytes_max);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIODS,
-+					   hw->periods_min, hw->periods_max);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+					   hw->period_bytes_min, hw->buffer_bytes_max);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+				  snd_pcm_hw_rule_buffer_bytes_max, substream,
-+				  SNDRV_PCM_HW_PARAM_BUFFER_BYTES, -1);
-+	if (err < 0)
-+		return err;
-+
-+	/* FIXME: remove */
-+	if (runtime->dma_bytes) {
-+		err = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	if (!(hw->rates & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))) {
-+		err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+					  snd_pcm_hw_rule_rate, hw,
-+					  SNDRV_PCM_HW_PARAM_RATE, -1);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	/* FIXME: this belong to lowlevel */
-+	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
-+
-+	return 0;
-+}
-+
-+static inline unsigned int div32(unsigned int a, unsigned int b,
-+				 unsigned int *r)
-+{
-+	if (b == 0) {
-+		*r = 0;
-+		return UINT_MAX;
-+	}
-+	*r = a % b;
-+	return a / b;
-+}
-+
-+static inline unsigned int div_down(unsigned int a, unsigned int b)
-+{
-+	if (b == 0)
-+		return UINT_MAX;
-+	return a / b;
-+}
-+
-+static inline unsigned int div_up(unsigned int a, unsigned int b)
-+{
-+	unsigned int r;
-+	unsigned int q;
-+	if (b == 0)
-+		return UINT_MAX;
-+	q = div32(a, b, &r);
-+	if (r)
-+		++q;
-+	return q;
-+}
-+
-+static inline unsigned int mul(unsigned int a, unsigned int b)
-+{
-+	if (a == 0)
-+		return 0;
-+	if (div_down(UINT_MAX, a) < b)
-+		return UINT_MAX;
-+	return a * b;
-+}
-+
-+static inline unsigned int muldiv32(unsigned int a, unsigned int b,
-+				    unsigned int c, unsigned int *r)
-+{
-+	u_int64_t n = (u_int64_t) a * b;
-+	if (c == 0) {
-+		snd_BUG_ON(!n);
-+		*r = 0;
-+		return UINT_MAX;
-+	}
-+	n = div_u64_rem(n, c, r);
-+	if (n >= UINT_MAX) {
-+		*r = 0;
-+		return UINT_MAX;
-+	}
-+	return n;
-+}
-+
-+/**
-+ * snd_interval_refine - refine the interval value of configurator
-+ * @i: the interval value to refine
-+ * @v: the interval value to refer to
-+ *
-+ * Refines the interval value with the reference value.
-+ * The interval is changed to the range satisfying both intervals.
-+ * The interval status (min, max, integer, etc.) are evaluated.
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
-+{
-+	int changed = 0;
-+	if (snd_BUG_ON(snd_interval_empty(i)))
-+		return -EINVAL;
-+	if (i->min < v->min) {
-+		i->min = v->min;
-+		i->openmin = v->openmin;
-+		changed = 1;
-+	} else if (i->min == v->min && !i->openmin && v->openmin) {
-+		i->openmin = 1;
-+		changed = 1;
-+	}
-+	if (i->max > v->max) {
-+		i->max = v->max;
-+		i->openmax = v->openmax;
-+		changed = 1;
-+	} else if (i->max == v->max && !i->openmax && v->openmax) {
-+		i->openmax = 1;
-+		changed = 1;
-+	}
-+	if (!i->integer && v->integer) {
-+		i->integer = 1;
-+		changed = 1;
-+	}
-+	if (i->integer) {
-+		if (i->openmin) {
-+			i->min++;
-+			i->openmin = 0;
-+		}
-+		if (i->openmax) {
-+			i->max--;
-+			i->openmax = 0;
-+		}
-+	} else if (!i->openmin && !i->openmax && i->min == i->max)
-+		i->integer = 1;
-+	if (snd_interval_checkempty(i)) {
-+		snd_interval_none(i);
-+		return -EINVAL;
-+	}
-+	return changed;
-+}
-+
-+EXPORT_SYMBOL(snd_interval_refine);
-+
-+void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
-+{
-+	if (a->empty || b->empty) {
-+		snd_interval_none(c);
-+		return;
-+	}
-+	c->empty = 0;
-+	c->min = mul(a->min, b->min);
-+	c->openmin = (a->openmin || b->openmin);
-+	c->max = mul(a->max,  b->max);
-+	c->openmax = (a->openmax || b->openmax);
-+	c->integer = (a->integer && b->integer);
-+}
-+
-+/**
-+ * snd_interval_div - refine the interval value with division
-+ * @a: dividend
-+ * @b: divisor
-+ * @c: quotient
-+ *
-+ * c = a / b
-+ *
-+ * Returns non-zero if the value is changed, zero if not changed.
-+ */
-+void snd_interval_div(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c)
-+{
-+	unsigned int r;
-+	if (a->empty || b->empty) {
-+		snd_interval_none(c);
-+		return;
-+	}
-+	c->empty = 0;
-+	c->min = div32(a->min, b->max, &r);
-+	c->openmin = (r || a->openmin || b->openmax);
-+	if (b->min > 0) {
-+		c->max = div32(a->max, b->min, &r);
-+		if (r) {
-+			c->max++;
-+			c->openmax = 1;
-+		} else
-+			c->openmax = (a->openmax || b->openmin);
-+	} else {
-+		c->max = UINT_MAX;
-+		c->openmax = 0;
-+	}
-+	c->integer = 0;
-+}
-+
-+/**
-+ * snd_interval_muldivk - refine the interval value
-+ * @a: dividend 1
-+ * @b: dividend 2
-+ * @k: divisor (as integer)
-+ * @c: result
-+  *
-+ * c = a * b / k
-+ *
-+ * Returns non-zero if the value is changed, zero if not changed.
-+ */
-+void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interval *b,
-+		      unsigned int k, struct snd_interval *c)
-+{
-+	unsigned int r;
-+	if (a->empty || b->empty) {
-+		snd_interval_none(c);
-+		return;
-+	}
-+	c->empty = 0;
-+	c->min = muldiv32(a->min, b->min, k, &r);
-+	c->openmin = (r || a->openmin || b->openmin);
-+	c->max = muldiv32(a->max, b->max, k, &r);
-+	if (r) {
-+		c->max++;
-+		c->openmax = 1;
-+	} else
-+		c->openmax = (a->openmax || b->openmax);
-+	c->integer = 0;
-+}
-+
-+/**
-+ * snd_interval_mulkdiv - refine the interval value
-+ * @a: dividend 1
-+ * @k: dividend 2 (as integer)
-+ * @b: divisor
-+ * @c: result
-+ *
-+ * c = a * k / b
-+ *
-+ * Returns non-zero if the value is changed, zero if not changed.
-+ */
-+void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
-+		      const struct snd_interval *b, struct snd_interval *c)
-+{
-+	unsigned int r;
-+	if (a->empty || b->empty) {
-+		snd_interval_none(c);
-+		return;
-+	}
-+	c->empty = 0;
-+	c->min = muldiv32(a->min, k, b->max, &r);
-+	c->openmin = (r || a->openmin || b->openmax);
-+	if (b->min > 0) {
-+		c->max = muldiv32(a->max, k, b->min, &r);
-+		if (r) {
-+			c->max++;
-+			c->openmax = 1;
-+		} else
-+			c->openmax = (a->openmax || b->openmin);
-+	} else {
-+		c->max = UINT_MAX;
-+		c->openmax = 0;
-+	}
-+	c->integer = 0;
-+}
-+
-+/* ---- */
-+
-+
-+/**
-+ * snd_interval_ratnum - refine the interval value
-+ * @i: interval to refine
-+ * @rats_count: number of ratnum_t
-+ * @rats: ratnum_t array
-+ * @nump: pointer to store the resultant numerator
-+ * @denp: pointer to store the resultant denominator
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_interval_ratnum(struct snd_interval *i,
-+			unsigned int rats_count, struct snd_ratnum *rats,
-+			unsigned int *nump, unsigned int *denp)
-+{
-+	unsigned int best_num, best_den;
-+	int best_diff;
-+	unsigned int k;
-+	struct snd_interval t;
-+	int err;
-+	unsigned int result_num, result_den;
-+	int result_diff;
-+
-+	best_num = best_den = best_diff = 0;
-+	for (k = 0; k < rats_count; ++k) {
-+		unsigned int num = rats[k].num;
-+		unsigned int den;
-+		unsigned int q = i->min;
-+		int diff;
-+		if (q == 0)
-+			q = 1;
-+		den = div_up(num, q);
-+		if (den < rats[k].den_min)
-+			continue;
-+		if (den > rats[k].den_max)
-+			den = rats[k].den_max;
-+		else {
-+			unsigned int r;
-+			r = (den - rats[k].den_min) % rats[k].den_step;
-+			if (r != 0)
-+				den -= r;
-+		}
-+		diff = num - q * den;
-+		if (diff < 0)
-+			diff = -diff;
-+		if (best_num == 0 ||
-+		    diff * best_den < best_diff * den) {
-+			best_diff = diff;
-+			best_den = den;
-+			best_num = num;
-+		}
-+	}
-+	if (best_den == 0) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	t.min = div_down(best_num, best_den);
-+	t.openmin = !!(best_num % best_den);
-+
-+	result_num = best_num;
-+	result_diff = best_diff;
-+	result_den = best_den;
-+	best_num = best_den = best_diff = 0;
-+	for (k = 0; k < rats_count; ++k) {
-+		unsigned int num = rats[k].num;
-+		unsigned int den;
-+		unsigned int q = i->max;
-+		int diff;
-+		if (q == 0) {
-+			i->empty = 1;
-+			return -EINVAL;
-+		}
-+		den = div_down(num, q);
-+		if (den > rats[k].den_max)
-+			continue;
-+		if (den < rats[k].den_min)
-+			den = rats[k].den_min;
-+		else {
-+			unsigned int r;
-+			r = (den - rats[k].den_min) % rats[k].den_step;
-+			if (r != 0)
-+				den += rats[k].den_step - r;
-+		}
-+		diff = q * den - num;
-+		if (diff < 0)
-+			diff = -diff;
-+		if (best_num == 0 ||
-+		    diff * best_den < best_diff * den) {
-+			best_diff = diff;
-+			best_den = den;
-+			best_num = num;
-+		}
-+	}
-+	if (best_den == 0) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	t.max = div_up(best_num, best_den);
-+	t.openmax = !!(best_num % best_den);
-+	t.integer = 0;
-+	err = snd_interval_refine(i, &t);
-+	if (err < 0)
-+		return err;
-+
-+	if (snd_interval_single(i)) {
-+		if (best_diff * result_den < result_diff * best_den) {
-+			result_num = best_num;
-+			result_den = best_den;
-+		}
-+		if (nump)
-+			*nump = result_num;
-+		if (denp)
-+			*denp = result_den;
-+	}
-+	return err;
-+}
-+
-+EXPORT_SYMBOL(snd_interval_ratnum);
-+
-+/**
-+ * snd_interval_ratden - refine the interval value
-+ * @i: interval to refine
-+ * @rats_count: number of struct ratden
-+ * @rats: struct ratden array
-+ * @nump: pointer to store the resultant numerator
-+ * @denp: pointer to store the resultant denominator
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+static int snd_interval_ratden(struct snd_interval *i,
-+			       unsigned int rats_count, struct snd_ratden *rats,
-+			       unsigned int *nump, unsigned int *denp)
-+{
-+	unsigned int best_num, best_diff, best_den;
-+	unsigned int k;
-+	struct snd_interval t;
-+	int err;
-+
-+	best_num = best_den = best_diff = 0;
-+	for (k = 0; k < rats_count; ++k) {
-+		unsigned int num;
-+		unsigned int den = rats[k].den;
-+		unsigned int q = i->min;
-+		int diff;
-+		num = mul(q, den);
-+		if (num > rats[k].num_max)
-+			continue;
-+		if (num < rats[k].num_min)
-+			num = rats[k].num_max;
-+		else {
-+			unsigned int r;
-+			r = (num - rats[k].num_min) % rats[k].num_step;
-+			if (r != 0)
-+				num += rats[k].num_step - r;
-+		}
-+		diff = num - q * den;
-+		if (best_num == 0 ||
-+		    diff * best_den < best_diff * den) {
-+			best_diff = diff;
-+			best_den = den;
-+			best_num = num;
-+		}
-+	}
-+	if (best_den == 0) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	t.min = div_down(best_num, best_den);
-+	t.openmin = !!(best_num % best_den);
-+
-+	best_num = best_den = best_diff = 0;
-+	for (k = 0; k < rats_count; ++k) {
-+		unsigned int num;
-+		unsigned int den = rats[k].den;
-+		unsigned int q = i->max;
-+		int diff;
-+		num = mul(q, den);
-+		if (num < rats[k].num_min)
-+			continue;
-+		if (num > rats[k].num_max)
-+			num = rats[k].num_max;
-+		else {
-+			unsigned int r;
-+			r = (num - rats[k].num_min) % rats[k].num_step;
-+			if (r != 0)
-+				num -= r;
-+		}
-+		diff = q * den - num;
-+		if (best_num == 0 ||
-+		    diff * best_den < best_diff * den) {
-+			best_diff = diff;
-+			best_den = den;
-+			best_num = num;
-+		}
-+	}
-+	if (best_den == 0) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	t.max = div_up(best_num, best_den);
-+	t.openmax = !!(best_num % best_den);
-+	t.integer = 0;
-+	err = snd_interval_refine(i, &t);
-+	if (err < 0)
-+		return err;
-+
-+	if (snd_interval_single(i)) {
-+		if (nump)
-+			*nump = best_num;
-+		if (denp)
-+			*denp = best_den;
-+	}
-+	return err;
-+}
-+
-+/**
-+ * snd_interval_list - refine the interval value from the list
-+ * @i: the interval value to refine
-+ * @count: the number of elements in the list
-+ * @list: the value list
-+ * @mask: the bit-mask to evaluate
-+ *
-+ * Refines the interval value from the list.
-+ * When mask is non-zero, only the elements corresponding to bit 1 are
-+ * evaluated.
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_interval_list(struct snd_interval *i, unsigned int count,
-+		      const unsigned int *list, unsigned int mask)
-+{
-+        unsigned int k;
-+	struct snd_interval list_range;
-+
-+	if (!count) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	snd_interval_any(&list_range);
-+	list_range.min = UINT_MAX;
-+	list_range.max = 0;
-+        for (k = 0; k < count; k++) {
-+		if (mask && !(mask & (1 << k)))
-+			continue;
-+		if (!snd_interval_test(i, list[k]))
-+			continue;
-+		list_range.min = min(list_range.min, list[k]);
-+		list_range.max = max(list_range.max, list[k]);
-+        }
-+	return snd_interval_refine(i, &list_range);
-+}
-+
-+EXPORT_SYMBOL(snd_interval_list);
-+
-+/**
-+ * snd_interval_ranges - refine the interval value from the list of ranges
-+ * @i: the interval value to refine
-+ * @count: the number of elements in the list of ranges
-+ * @ranges: the ranges list
-+ * @mask: the bit-mask to evaluate
-+ *
-+ * Refines the interval value from the list of ranges.
-+ * When mask is non-zero, only the elements corresponding to bit 1 are
-+ * evaluated.
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_interval_ranges(struct snd_interval *i, unsigned int count,
-+			const struct snd_interval *ranges, unsigned int mask)
-+{
-+	unsigned int k;
-+	struct snd_interval range_union;
-+	struct snd_interval range;
-+
-+	if (!count) {
-+		snd_interval_none(i);
-+		return -EINVAL;
-+	}
-+	snd_interval_any(&range_union);
-+	range_union.min = UINT_MAX;
-+	range_union.max = 0;
-+	for (k = 0; k < count; k++) {
-+		if (mask && !(mask & (1 << k)))
-+			continue;
-+		snd_interval_copy(&range, &ranges[k]);
-+		if (snd_interval_refine(&range, i) < 0)
-+			continue;
-+		if (snd_interval_empty(&range))
-+			continue;
-+
-+		if (range.min < range_union.min) {
-+			range_union.min = range.min;
-+			range_union.openmin = 1;
-+		}
-+		if (range.min == range_union.min && !range.openmin)
-+			range_union.openmin = 0;
-+		if (range.max > range_union.max) {
-+			range_union.max = range.max;
-+			range_union.openmax = 1;
-+		}
-+		if (range.max == range_union.max && !range.openmax)
-+			range_union.openmax = 0;
-+	}
-+	return snd_interval_refine(i, &range_union);
-+}
-+EXPORT_SYMBOL(snd_interval_ranges);
-+
-+static int snd_interval_step(struct snd_interval *i, unsigned int step)
-+{
-+	unsigned int n;
-+	int changed = 0;
-+	n = i->min % step;
-+	if (n != 0 || i->openmin) {
-+		i->min += step - n;
-+		i->openmin = 0;
-+		changed = 1;
-+	}
-+	n = i->max % step;
-+	if (n != 0 || i->openmax) {
-+		i->max -= n;
-+		i->openmax = 0;
-+		changed = 1;
-+	}
-+	if (snd_interval_checkempty(i)) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	return changed;
-+}
-+
-+/* Info constraints helpers */
-+
-+/**
-+ * snd_pcm_hw_rule_add - add the hw-constraint rule
-+ * @runtime: the pcm runtime instance
-+ * @cond: condition bits
-+ * @var: the variable to evaluate
-+ * @func: the evaluation function
-+ * @private: the private data pointer passed to function
-+ * @dep: the dependent variables
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
-+			int var,
-+			snd_pcm_hw_rule_func_t func, void *private,
-+			int dep, ...)
-+{
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	struct snd_pcm_hw_rule *c;
-+	unsigned int k;
-+	va_list args;
-+	va_start(args, dep);
-+	if (constrs->rules_num >= constrs->rules_all) {
-+		struct snd_pcm_hw_rule *new;
-+		unsigned int new_rules = constrs->rules_all + 16;
-+		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
-+		if (!new) {
-+			va_end(args);
-+			return -ENOMEM;
-+		}
-+		if (constrs->rules) {
-+			memcpy(new, constrs->rules,
-+			       constrs->rules_num * sizeof(*c));
-+			kfree(constrs->rules);
-+		}
-+		constrs->rules = new;
-+		constrs->rules_all = new_rules;
-+	}
-+	c = &constrs->rules[constrs->rules_num];
-+	c->cond = cond;
-+	c->func = func;
-+	c->var = var;
-+	c->private = private;
-+	k = 0;
-+	while (1) {
-+		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
-+			va_end(args);
-+			return -EINVAL;
-+		}
-+		c->deps[k++] = dep;
-+		if (dep < 0)
-+			break;
-+		dep = va_arg(args, int);
-+	}
-+	constrs->rules_num++;
-+	va_end(args);
-+	return 0;
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_rule_add);
-+
-+/**
-+ * snd_pcm_hw_constraint_mask - apply the given bitmap mask constraint
-+ * @runtime: PCM runtime instance
-+ * @var: hw_params variable to apply the mask
-+ * @mask: the bitmap mask
-+ *
-+ * Apply the constraint of the given bitmap mask to a 32-bit mask parameter.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+			       u_int32_t mask)
-+{
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	struct snd_mask *maskp = constrs_mask(constrs, var);
-+	*maskp->bits &= mask;
-+	memset(maskp->bits + 1, 0, (SNDRV_MASK_MAX-32) / 8); /* clear rest */
-+	if (*maskp->bits == 0)
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_mask64 - apply the given bitmap mask constraint
-+ * @runtime: PCM runtime instance
-+ * @var: hw_params variable to apply the mask
-+ * @mask: the 64bit bitmap mask
-+ *
-+ * Apply the constraint of the given bitmap mask to a 64-bit mask parameter.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 u_int64_t mask)
-+{
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	struct snd_mask *maskp = constrs_mask(constrs, var);
-+	maskp->bits[0] &= (u_int32_t)mask;
-+	maskp->bits[1] &= (u_int32_t)(mask >> 32);
-+	memset(maskp->bits + 2, 0, (SNDRV_MASK_MAX-64) / 8); /* clear rest */
-+	if (! maskp->bits[0] && ! maskp->bits[1])
-+		return -EINVAL;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_mask64);
-+
-+/**
-+ * snd_pcm_hw_constraint_integer - apply an integer constraint to an interval
-+ * @runtime: PCM runtime instance
-+ * @var: hw_params variable to apply the integer constraint
-+ *
-+ * Apply the constraint of integer to an interval parameter.
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var)
-+{
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	return snd_interval_setinteger(constrs_interval(constrs, var));
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_integer);
-+
-+/**
-+ * snd_pcm_hw_constraint_minmax - apply a min/max range constraint to an interval
-+ * @runtime: PCM runtime instance
-+ * @var: hw_params variable to apply the range
-+ * @min: the minimal value
-+ * @max: the maximal value
-+ *
-+ * Apply the min/max range constraint to an interval parameter.
-+ *
-+ * Return: Positive if the value is changed, zero if it's not changed, or a
-+ * negative error code.
-+ */
-+int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
-+				 unsigned int min, unsigned int max)
-+{
-+	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-+	struct snd_interval t;
-+	t.min = min;
-+	t.max = max;
-+	t.openmin = t.openmax = 0;
-+	t.integer = 0;
-+	return snd_interval_refine(constrs_interval(constrs, var), &t);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_minmax);
-+
-+static int snd_pcm_hw_rule_list(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_hw_constraint_list *list = rule->private;
-+	return snd_interval_list(hw_param_interval(params, rule->var), list->count, list->list, list->mask);
-+}
-+
-+
-+/**
-+ * snd_pcm_hw_constraint_list - apply a list of constraints to a parameter
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the list constraint
-+ * @l: list
-+ *
-+ * Apply the list of constraints to an interval parameter.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       const struct snd_pcm_hw_constraint_list *l)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_list, (void *)l,
-+				   var, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_list);
-+
-+static int snd_pcm_hw_rule_ranges(struct snd_pcm_hw_params *params,
-+				  struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_hw_constraint_ranges *r = rule->private;
-+	return snd_interval_ranges(hw_param_interval(params, rule->var),
-+				   r->count, r->ranges, r->mask);
-+}
-+
-+
-+/**
-+ * snd_pcm_hw_constraint_ranges - apply list of range constraints to a parameter
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the list of range constraints
-+ * @r: ranges
-+ *
-+ * Apply the list of range constraints to an interval parameter.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_ranges(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 snd_pcm_hw_param_t var,
-+				 const struct snd_pcm_hw_constraint_ranges *r)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_ranges, (void *)r,
-+				   var, -1);
-+}
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_ranges);
-+
-+static int snd_pcm_hw_rule_ratnums(struct snd_pcm_hw_params *params,
-+				   struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_hw_constraint_ratnums *r = rule->private;
-+	unsigned int num = 0, den = 0;
-+	int err;
-+	err = snd_interval_ratnum(hw_param_interval(params, rule->var),
-+				  r->nrats, r->rats, &num, &den);
-+	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
-+		params->rate_num = num;
-+		params->rate_den = den;
-+	}
-+	return err;
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_ratnums - apply ratnums constraint to a parameter
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the ratnums constraint
-+ * @r: struct snd_ratnums constriants
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratnums *r)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_ratnums, r,
-+				   var, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
-+
-+static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
-+				   struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_hw_constraint_ratdens *r = rule->private;
-+	unsigned int num = 0, den = 0;
-+	int err = snd_interval_ratden(hw_param_interval(params, rule->var),
-+				  r->nrats, r->rats, &num, &den);
-+	if (err >= 0 && den && rule->var == SNDRV_PCM_HW_PARAM_RATE) {
-+		params->rate_num = num;
-+		params->rate_den = den;
-+	}
-+	return err;
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_ratdens - apply ratdens constraint to a parameter
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the ratdens constraint
-+ * @r: struct snd_ratdens constriants
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
-+				  unsigned int cond,
-+				  snd_pcm_hw_param_t var,
-+				  struct snd_pcm_hw_constraint_ratdens *r)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_ratdens, r,
-+				   var, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_ratdens);
-+
-+static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
-+				  struct snd_pcm_hw_rule *rule)
-+{
-+	unsigned int l = (unsigned long) rule->private;
-+	int width = l & 0xffff;
-+	unsigned int msbits = l >> 16;
-+	struct snd_interval *i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
-+
-+	if (!snd_interval_single(i))
-+		return 0;
-+
-+	if ((snd_interval_value(i) == width) ||
-+	    (width == 0 && snd_interval_value(i) > msbits))
-+		params->msbits = min_not_zero(params->msbits, msbits);
-+
-+	return 0;
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_msbits - add a hw constraint msbits rule
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @width: sample bits width
-+ * @msbits: msbits width
-+ *
-+ * This constraint will set the number of most significant bits (msbits) if a
-+ * sample format with the specified width has been select. If width is set to 0
-+ * the msbits will be set for any sample format with a width larger than the
-+ * specified msbits.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
-+				 unsigned int cond,
-+				 unsigned int width,
-+				 unsigned int msbits)
-+{
-+	unsigned long l = (msbits << 16) | width;
-+	return snd_pcm_hw_rule_add(runtime, cond, -1,
-+				    snd_pcm_hw_rule_msbits,
-+				    (void*) l,
-+				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
-+
-+static int snd_pcm_hw_rule_step(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	unsigned long step = (unsigned long) rule->private;
-+	return snd_interval_step(hw_param_interval(params, rule->var), step);
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_step - add a hw constraint step rule
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the step constraint
-+ * @step: step size
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var,
-+			       unsigned long step)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_step, (void *) step,
-+				   var, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_step);
-+
-+static int snd_pcm_hw_rule_pow2(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
-+{
-+	static unsigned int pow2_sizes[] = {
-+		1<<0, 1<<1, 1<<2, 1<<3, 1<<4, 1<<5, 1<<6, 1<<7,
-+		1<<8, 1<<9, 1<<10, 1<<11, 1<<12, 1<<13, 1<<14, 1<<15,
-+		1<<16, 1<<17, 1<<18, 1<<19, 1<<20, 1<<21, 1<<22, 1<<23,
-+		1<<24, 1<<25, 1<<26, 1<<27, 1<<28, 1<<29, 1<<30
-+	};
-+	return snd_interval_list(hw_param_interval(params, rule->var),
-+				 ARRAY_SIZE(pow2_sizes), pow2_sizes, 0);
-+}
-+
-+/**
-+ * snd_pcm_hw_constraint_pow2 - add a hw constraint power-of-2 rule
-+ * @runtime: PCM runtime instance
-+ * @cond: condition bits
-+ * @var: hw_params variable to apply the power-of-2 constraint
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
-+			       unsigned int cond,
-+			       snd_pcm_hw_param_t var)
-+{
-+	return snd_pcm_hw_rule_add(runtime, cond, var,
-+				   snd_pcm_hw_rule_pow2, NULL,
-+				   var, -1);
-+}
-+
-+EXPORT_SYMBOL(snd_pcm_hw_constraint_pow2);
-+
-+static int snd_pcm_hw_rule_noresample_func(struct snd_pcm_hw_params *params,
-+					   struct snd_pcm_hw_rule *rule)
-+{
-+	unsigned int base_rate = (unsigned int)(uintptr_t)rule->private;
-+	struct snd_interval *rate;
-+
-+	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	return snd_interval_list(rate, 1, &base_rate, 0);
-+}
-+
-+/**
-+ * snd_pcm_hw_rule_noresample - add a rule to allow disabling hw resampling
-+ * @runtime: PCM runtime instance
-+ * @base_rate: the rate at which the hardware does not resample
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+int snd_pcm_hw_rule_noresample(struct snd_pcm_runtime *runtime,
-+			       unsigned int base_rate)
-+{
-+	return snd_pcm_hw_rule_add(runtime, SNDRV_PCM_HW_PARAMS_NORESAMPLE,
-+				   SNDRV_PCM_HW_PARAM_RATE,
-+				   snd_pcm_hw_rule_noresample_func,
-+				   (void *)(uintptr_t)base_rate,
-+				   SNDRV_PCM_HW_PARAM_RATE, -1);
-+}
-+EXPORT_SYMBOL(snd_pcm_hw_rule_noresample);
-+
-+
--- 
-1.9.1
+Let me know if you need more information or how I can help.
+
+Best regards,
+Nicolae Rosia
+
+[rosia@localhost ~]$ cat /proc/asound/devices
+  1:        : sequencer
+  2: [ 0]   : control
+  3: [ 0- 3]: digital audio playback
+  4: [ 0- 7]: digital audio playback
+  5: [ 0- 8]: digital audio playback
+  6: [ 0- 0]: hardware dependent
+  7: [ 1]   : control
+  8: [ 1- 0]: digital audio playback
+  9: [ 1- 0]: digital audio capture
+ 10: [ 1- 1]: digital audio playback
+ 11: [ 1- 0]: hardware dependent
+ 33:        : timer
+[rosia@localhost ~]$ cat /proc/asound/cards
+ 0 [HDMI           ]: HDA-Intel - HDA Intel HDMI
+                      HDA Intel HDMI at 0xeda14000 irq 33
+ 1 [PCH            ]: HDA-Intel - HDA Intel PCH
+                      HDA Intel PCH at 0xeda10000 irq 32
+[rosia@localhost ~]$ cat /proc/asound/modules
+ 0 snd_hda_intel
+ 1 snd_hda_intel
+[rosia@localhost ~]$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version
+k4.1.0-0.rc6.git2.1.fc23.x86_64.
+
+[0] http://www.emag.ro/laptop-gaming-asus-cu-procesor-intelr-coretm-i7-4710hq-2-50ghz-haswelltm-17-3-full-hd-touch-screen-24gb-2tb-256gb-ssd-dvd-rw-nvidia-geforce-gtx-860m-2gb-microsoft-windows-8-1-black-g751jm-t3044h/pd/DKK4WBBBM/
+[1] https://www.asus.com/Notebooks_Ultrabooks/ASUS_ROG_G751JM/specifications/
+
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=US-ASCII; name="lspci.txt"
+Content-Disposition: attachment; filename="lspci.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iamly1c20
+
+MDA6MDAuMCBIb3N0IGJyaWRnZTogSW50ZWwgQ29ycG9yYXRpb24gWGVvbiBFMy0xMjAwIHYzLzR0
+aCBHZW4gQ29yZSBQcm9jZXNzb3IgRFJBTSBDb250cm9sbGVyIChyZXYgMDYpCglTdWJzeXN0ZW06
+IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBEZXZpY2UgMTcxZAoJQ29udHJvbDogSS9PLSBNZW0rIEJ1
+c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0g
+U0VSUi0gRmFzdEIyQi0gRGlzSU5UeC0KCVN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJC
+KyBQYXJFcnItIERFVlNFTD1mYXN0ID5UQWJvcnQtIDxUQWJvcnQtIDxNQWJvcnQrID5TRVJSLSA8
+UEVSUi0gSU5UeC0KCUxhdGVuY3k6IDAKCUNhcGFiaWxpdGllczogW2UwXSBWZW5kb3IgU3BlY2lm
+aWMgSW5mb3JtYXRpb246IExlbj0wYyA8Pz4KCUtlcm5lbCBtb2R1bGVzOiBpZTMxMjAwX2VkYWMK
+CjAwOjAxLjAgUENJIGJyaWRnZTogSW50ZWwgQ29ycG9yYXRpb24gWGVvbiBFMy0xMjAwIHYzLzR0
+aCBHZW4gQ29yZSBQcm9jZXNzb3IgUENJIEV4cHJlc3MgeDE2IENvbnRyb2xsZXIgKHJldiAwNikg
+KHByb2ctaWYgMDAgW05vcm1hbCBkZWNvZGVdKQoJQ29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3Rl
+cisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0g
+RmFzdEIyQi0gRGlzSU5UeCsKCVN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJF
+cnItIERFVlNFTD1mYXN0ID5UQWJvcnQtIDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0g
+SU5UeC0KCUxhdGVuY3k6IDAsIENhY2hlIExpbmUgU2l6ZTogNjQgYnl0ZXMKCUludGVycnVwdDog
+cGluIEEgcm91dGVkIHRvIElSUSAyNgoJQnVzOiBwcmltYXJ5PTAwLCBzZWNvbmRhcnk9MDEsIHN1
+Ym9yZGluYXRlPTAxLCBzZWMtbGF0ZW5jeT0wCglJL08gYmVoaW5kIGJyaWRnZTogMDAwMGUwMDAt
+MDAwMGVmZmYKCU1lbW9yeSBiZWhpbmQgYnJpZGdlOiBlYzAwMDAwMC1lZDBmZmZmZgoJUHJlZmV0
+Y2hhYmxlIG1lbW9yeSBiZWhpbmQgYnJpZGdlOiAwMDAwMDAwMGMwMDAwMDAwLTAwMDAwMDAwZDFm
+ZmZmZmYKCVNlY29uZGFyeSBzdGF0dXM6IDY2TUh6LSBGYXN0QjJCLSBQYXJFcnItIERFVlNFTD1m
+YXN0ID5UQWJvcnQtIDxUQWJvcnQtIDxNQWJvcnQrIDxTRVJSLSA8UEVSUi0KCUJyaWRnZUN0bDog
+UGFyaXR5LSBTRVJSLSBOb0lTQS0gVkdBLSBNQWJvcnQtID5SZXNldC0gRmFzdEIyQi0KCQlQcmlE
+aXNjVG1yLSBTZWNEaXNjVG1yLSBEaXNjVG1yU3RhdC0gRGlzY1RtclNFUlJFbi0KCUNhcGFiaWxp
+dGllczogWzg4XSBTdWJzeXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBEZXZpY2UgMTcxZAoJ
+Q2FwYWJpbGl0aWVzOiBbODBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAzCgkJRmxhZ3M6IFBN
+RUNsay0gRFNJLSBEMS0gRDItIEF1eEN1cnJlbnQ9MG1BIFBNRShEMCssRDEtLEQyLSxEM2hvdCss
+RDNjb2xkKykKCQlTdGF0dXM6IEQwIE5vU29mdFJzdCsgUE1FLUVuYWJsZS0gRFNlbD0wIERTY2Fs
+ZT0wIFBNRS0KCUNhcGFiaWxpdGllczogWzkwXSBNU0k6IEVuYWJsZSsgQ291bnQ9MS8xIE1hc2th
+YmxlLSA2NGJpdC0KCQlBZGRyZXNzOiBmZWUwMDJkOCAgRGF0YTogMDAwMAoJQ2FwYWJpbGl0aWVz
+OiBbYTBdIEV4cHJlc3MgKHYyKSBSb290IFBvcnQgKFNsb3QrKSwgTVNJIDAwCgkJRGV2Q2FwOglN
+YXhQYXlsb2FkIDI1NiBieXRlcywgUGhhbnRGdW5jIDAKCQkJRXh0VGFnLSBSQkUrCgkJRGV2Q3Rs
+OglSZXBvcnQgZXJyb3JzOiBDb3JyZWN0YWJsZS0gTm9uLUZhdGFsLSBGYXRhbC0gVW5zdXBwb3J0
+ZWQtCgkJCVJseGRPcmQtIEV4dFRhZy0gUGhhbnRGdW5jLSBBdXhQd3ItIE5vU25vb3AtCgkJCU1h
+eFBheWxvYWQgMjU2IGJ5dGVzLCBNYXhSZWFkUmVxIDEyOCBieXRlcwoJCURldlN0YToJQ29yckVy
+ci0gVW5jb3JyRXJyLSBGYXRhbEVyci0gVW5zdXBwUmVxLSBBdXhQd3ItIFRyYW5zUGVuZC0KCQlM
+bmtDYXA6CVBvcnQgIzIsIFNwZWVkIDhHVC9zLCBXaWR0aCB4MTYsIEFTUE0gTDBzIEwxLCBFeGl0
+IExhdGVuY3kgTDBzIDwyNTZucywgTDEgPDh1cwoJCQlDbG9ja1BNLSBTdXJwcmlzZS0gTExBY3RS
+ZXAtIEJ3Tm90KyBBU1BNT3B0Q29tcCsKCQlMbmtDdGw6CUFTUE0gRGlzYWJsZWQ7IFJDQiA2NCBi
+eXRlcyBEaXNhYmxlZC0gQ29tbUNsaysKCQkJRXh0U3luY2gtIENsb2NrUE0tIEF1dFdpZERpcy0g
+QldJbnQtIEF1dEJXSW50LQoJCUxua1N0YToJU3BlZWQgOEdUL3MsIFdpZHRoIHgxNiwgVHJFcnIt
+IFRyYWluLSBTbG90Q2xrKyBETEFjdGl2ZS0gQldNZ210KyBBQldNZ210KwoJCVNsdENhcDoJQXR0
+bkJ0bi0gUHdyQ3RybC0gTVJMLSBBdHRuSW5kLSBQd3JJbmQtIEhvdFBsdWctIFN1cnByaXNlLQoJ
+CQlTbG90ICMxLCBQb3dlckxpbWl0IDc1LjAwMFc7IEludGVybG9jay0gTm9Db21wbCsKCQlTbHRD
+dGw6CUVuYWJsZTogQXR0bkJ0bi0gUHdyRmx0LSBNUkwtIFByZXNEZXQtIENtZENwbHQtIEhQSXJx
+LSBMaW5rQ2hnLQoJCQlDb250cm9sOiBBdHRuSW5kIFVua25vd24sIFB3ckluZCBVbmtub3duLCBQ
+b3dlci0gSW50ZXJsb2NrLQoJCVNsdFN0YToJU3RhdHVzOiBBdHRuQnRuLSBQb3dlckZsdC0gTVJM
+LSBDbWRDcGx0LSBQcmVzRGV0KyBJbnRlcmxvY2stCgkJCUNoYW5nZWQ6IE1STC0gUHJlc0RldCsg
+TGlua1N0YXRlLQoJCVJvb3RDdGw6IEVyckNvcnJlY3RhYmxlLSBFcnJOb24tRmF0YWwtIEVyckZh
+dGFsLSBQTUVJbnRFbmEtIENSU1Zpc2libGUtCgkJUm9vdENhcDogQ1JTVmlzaWJsZS0KCQlSb290
+U3RhOiBQTUUgUmVxSUQgMDAwMCwgUE1FU3RhdHVzLSBQTUVQZW5kaW5nLQoJCURldkNhcDI6IENv
+bXBsZXRpb24gVGltZW91dDogTm90IFN1cHBvcnRlZCwgVGltZW91dERpcy0sIExUUissIE9CRkYg
+VmlhIFdBS0UjIEFSSUZ3ZC0KCQlEZXZDdGwyOiBDb21wbGV0aW9uIFRpbWVvdXQ6IDUwdXMgdG8g
+NTBtcywgVGltZW91dERpcy0sIExUUissIE9CRkYgVmlhIFdBS0UjIEFSSUZ3ZC0KCQlMbmtDdGwy
+OiBUYXJnZXQgTGluayBTcGVlZDogOEdUL3MsIEVudGVyQ29tcGxpYW5jZS0gU3BlZWREaXMtCgkJ
+CSBUcmFuc21pdCBNYXJnaW46IE5vcm1hbCBPcGVyYXRpbmcgUmFuZ2UsIEVudGVyTW9kaWZpZWRD
+b21wbGlhbmNlLSBDb21wbGlhbmNlU09TLQoJCQkgQ29tcGxpYW5jZSBEZS1lbXBoYXNpczogLTZk
+QgoJCUxua1N0YTI6IEN1cnJlbnQgRGUtZW1waGFzaXMgTGV2ZWw6IC02ZEIsIEVxdWFsaXphdGlv
+bkNvbXBsZXRlKywgRXF1YWxpemF0aW9uUGhhc2UxKwoJCQkgRXF1YWxpemF0aW9uUGhhc2UyKywg
+RXF1YWxpemF0aW9uUGhhc2UzKywgTGlua0VxdWFsaXphdGlvblJlcXVlc3QtCglDYXBhYmlsaXRp
+ZXM6IFsxMDAgdjFdIFZpcnR1YWwgQ2hhbm5lbAoJCUNhcHM6CUxQRVZDPTAgUmVmQ2xrPTEwMG5z
+IFBBVEVudHJ5Qml0cz0xCgkJQXJiOglGaXhlZC0gV1JSMzItIFdSUjY0LSBXUlIxMjgtCgkJQ3Ry
+bDoJQXJiU2VsZWN0PUZpeGVkCgkJU3RhdHVzOglJblByb2dyZXNzLQoJCVZDMDoJQ2FwczoJUEFU
+T2Zmc2V0PTAwIE1heFRpbWVTbG90cz0xIFJlalNub29wVHJhbnMtCgkJCUFyYjoJRml4ZWQrIFdS
+UjMyLSBXUlI2NC0gV1JSMTI4LSBUV1JSMTI4LSBXUlIyNTYtCgkJCUN0cmw6CUVuYWJsZSsgSUQ9
+MCBBcmJTZWxlY3Q9Rml4ZWQgVEMvVkM9ZmYKCQkJU3RhdHVzOglOZWdvUGVuZGluZy0gSW5Qcm9n
+cmVzcy0KCUNhcGFiaWxpdGllczogWzE0MCB2MV0gUm9vdCBDb21wbGV4IExpbmsKCQlEZXNjOglQ
+b3J0TnVtYmVyPTAyIENvbXBvbmVudElEPTAxIEVsdFR5cGU9Q29uZmlnCgkJTGluazA6CURlc2M6
+CVRhcmdldFBvcnQ9MDAgVGFyZ2V0Q29tcG9uZW50PTAxIEFzc29jUkNSQi0gTGlua1R5cGU9TWVt
+TWFwcGVkIExpbmtWYWxpZCsKCQkJQWRkcjoJMDAwMDAwMDBmZWQxOTAwMAoJQ2FwYWJpbGl0aWVz
+OiBbZDk0IHYxXSAjMTkKCUtlcm5lbCBkcml2ZXIgaW4gdXNlOiBwY2llcG9ydAoJS2VybmVsIG1v
+ZHVsZXM6IHNocGNocAoKMDA6MDIuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBJbnRlbCBD
+b3Jwb3JhdGlvbiA0dGggR2VuIENvcmUgUHJvY2Vzc29yIEludGVncmF0ZWQgR3JhcGhpY3MgQ29u
+dHJvbGxlciAocmV2IDA2KSAocHJvZy1pZiAwMCBbVkdBIGNvbnRyb2xsZXJdKQoJU3Vic3lzdGVt
+OiBBU1VTVGVLIENvbXB1dGVyIEluYy4gRGV2aWNlIDE3MWQKCUNvbnRyb2w6IEkvTysgTWVtKyBC
+dXNNYXN0ZXIrIFNwZWNDeWNsZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmct
+IFNFUlItIEZhc3RCMkItIERpc0lOVHgrCglTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIy
+QisgUGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0g
+PFBFUlItIElOVHgtCglMYXRlbmN5OiAwCglJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJUlEg
+MjkKCVJlZ2lvbiAwOiBNZW1vcnkgYXQgZWQ0MDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJs
+ZSkgW3NpemU9NE1dCglSZWdpb24gMjogTWVtb3J5IGF0IDgwMDAwMDAwICg2NC1iaXQsIHByZWZl
+dGNoYWJsZSkgW3NpemU9MjU2TV0KCVJlZ2lvbiA0OiBJL08gcG9ydHMgYXQgZjAwMCBbc2l6ZT02
+NF0KCUV4cGFuc2lvbiBST00gYXQgPHVuYXNzaWduZWQ+IFtkaXNhYmxlZF0KCUNhcGFiaWxpdGll
+czogWzkwXSBNU0k6IEVuYWJsZSsgQ291bnQ9MS8xIE1hc2thYmxlLSA2NGJpdC0KCQlBZGRyZXNz
+OiBmZWUwMDAxOCAgRGF0YTogMDAwMAoJQ2FwYWJpbGl0aWVzOiBbZDBdIFBvd2VyIE1hbmFnZW1l
+bnQgdmVyc2lvbiAyCgkJRmxhZ3M6IFBNRUNsay0gRFNJKyBEMS0gRDItIEF1eEN1cnJlbnQ9MG1B
+IFBNRShEMC0sRDEtLEQyLSxEM2hvdC0sRDNjb2xkLSkKCQlTdGF0dXM6IEQwIE5vU29mdFJzdC0g
+UE1FLUVuYWJsZS0gRFNlbD0wIERTY2FsZT0wIFBNRS0KCUNhcGFiaWxpdGllczogW2E0XSBQQ0kg
+QWR2YW5jZWQgRmVhdHVyZXMKCQlBRkNhcDogVFArIEZMUisKCQlBRkN0cmw6IEZMUi0KCQlBRlN0
+YXR1czogVFAtCglLZXJuZWwgZHJpdmVyIGluIHVzZTogaTkxNQoJS2VybmVsIG1vZHVsZXM6IGk5
+MTUKCjAwOjAzLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiBYZW9uIEUzLTEyMDAg
+djMvNHRoIEdlbiBDb3JlIFByb2Nlc3NvciBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYgMDYpCglT
+dWJzeXN0ZW06IEludGVsIENvcnBvcmF0aW9uIERldmljZSAyMDEwCglDb250cm9sOiBJL08tIE1l
+bSsgQnVzTWFzdGVyKyBTcGVjQ3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBw
+aW5nLSBTRVJSLSBGYXN0QjJCLSBEaXNJTlR4KwoJU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZh
+c3RCMkItIFBhckVyci0gREVWU0VMPWZhc3QgPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNF
+UlItIDxQRVJSLSBJTlR4LQoJTGF0ZW5jeTogMCwgQ2FjaGUgTGluZSBTaXplOiA2NCBieXRlcwoJ
+SW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8gSVJRIDMzCglSZWdpb24gMDogTWVtb3J5IGF0IGVk
+YTE0MDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2S10KCUNhcGFiaWxpdGll
+czogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgoJCUZsYWdzOiBQTUVDbGstIERTSS0g
+RDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUoRDAtLEQxLSxEMi0sRDNob3QtLEQzY29sZC0pCgkJ
+U3RhdHVzOiBEMCBOb1NvZnRSc3QtIFBNRS1FbmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtCglD
+YXBhYmlsaXRpZXM6IFs2MF0gTVNJOiBFbmFibGUrIENvdW50PTEvMSBNYXNrYWJsZS0gNjRiaXQt
+CgkJQWRkcmVzczogZmVlMDA0MTggIERhdGE6IDAwMDAKCUNhcGFiaWxpdGllczogWzcwXSBFeHBy
+ZXNzICh2MSkgUm9vdCBDb21wbGV4IEludGVncmF0ZWQgRW5kcG9pbnQsIE1TSSAwMAoJCURldkNh
+cDoJTWF4UGF5bG9hZCAxMjggYnl0ZXMsIFBoYW50RnVuYyAwCgkJCUV4dFRhZy0gUkJFLQoJCURl
+dkN0bDoJUmVwb3J0IGVycm9yczogQ29ycmVjdGFibGUtIE5vbi1GYXRhbC0gRmF0YWwtIFVuc3Vw
+cG9ydGVkLQoJCQlSbHhkT3JkLSBFeHRUYWctIFBoYW50RnVuYy0gQXV4UHdyLSBOb1Nub29wLQoJ
+CQlNYXhQYXlsb2FkIDEyOCBieXRlcywgTWF4UmVhZFJlcSAxMjggYnl0ZXMKCQlEZXZTdGE6CUNv
+cnJFcnItIFVuY29yckVyci0gRmF0YWxFcnItIFVuc3VwcFJlcS0gQXV4UHdyLSBUcmFuc1BlbmQt
+CglLZXJuZWwgZHJpdmVyIGluIHVzZTogc25kX2hkYV9pbnRlbAoJS2VybmVsIG1vZHVsZXM6IHNu
+ZF9oZGFfaW50ZWwKCjAwOjE0LjAgVVNCIGNvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIDgg
+U2VyaWVzL0MyMjAgU2VyaWVzIENoaXBzZXQgRmFtaWx5IFVTQiB4SENJIChyZXYgMDUpIChwcm9n
+LWlmIDMwIFtYSENJXSkKCVN1YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmljZSAy
+MDFmCglDb250cm9sOiBJL08tIE1lbSsgQnVzTWFzdGVyKyBTcGVjQ3ljbGUtIE1lbVdJTlYtIFZH
+QVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0QjJCLSBEaXNJTlR4KwoJU3RhdHVz
+OiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkIrIFBhckVyci0gREVWU0VMPW1lZGl1bSA+VEFib3J0
+LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItIElOVHgtCglMYXRlbmN5OiAwCglJbnRl
+cnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJUlEgMjgKCVJlZ2lvbiAwOiBNZW1vcnkgYXQgZWRhMDAw
+MDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9NjRLXQoJQ2FwYWJpbGl0aWVzOiBb
+NzBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCgkJRmxhZ3M6IFBNRUNsay0gRFNJLSBEMS0g
+RDItIEF1eEN1cnJlbnQ9Mzc1bUEgUE1FKEQwLSxEMS0sRDItLEQzaG90KyxEM2NvbGQrKQoJCVN0
+YXR1czogRDAgTm9Tb2Z0UnN0KyBQTUUtRW5hYmxlLSBEU2VsPTAgRFNjYWxlPTAgUE1FLQoJQ2Fw
+YWJpbGl0aWVzOiBbODBdIE1TSTogRW5hYmxlKyBDb3VudD0xLzggTWFza2FibGUtIDY0Yml0KwoJ
+CUFkZHJlc3M6IDAwMDAwMDAwZmVlMDAzNTggIERhdGE6IDAwMDAKCUtlcm5lbCBkcml2ZXIgaW4g
+dXNlOiB4aGNpX2hjZAoKMDA6MTYuMCBDb21tdW5pY2F0aW9uIGNvbnRyb2xsZXI6IEludGVsIENv
+cnBvcmF0aW9uIDggU2VyaWVzL0MyMjAgU2VyaWVzIENoaXBzZXQgRmFtaWx5IE1FSSBDb250cm9s
+bGVyICMxIChyZXYgMDQpCglTdWJzeXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBEZXZpY2Ug
+MTcxZAoJQ29udHJvbDogSS9PLSBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBW
+R0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeCsKCVN0YXR1
+czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERFVlNFTD1mYXN0ID5UQWJvcnQt
+IDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0gSU5UeC0KCUxhdGVuY3k6IDAKCUludGVy
+cnVwdDogcGluIEEgcm91dGVkIHRvIElSUSAzMAoJUmVnaW9uIDA6IE1lbW9yeSBhdCBlZGExZTAw
+MCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNl0KCUNhcGFiaWxpdGllczogWzUw
+XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJCUZsYWdzOiBQTUVDbGstIERTSS0gRDEtIEQy
+LSBBdXhDdXJyZW50PTBtQSBQTUUoRDArLEQxLSxEMi0sRDNob3QrLEQzY29sZCspCgkJU3RhdHVz
+OiBEMCBOb1NvZnRSc3QrIFBNRS1FbmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtCglDYXBhYmls
+aXRpZXM6IFs4Y10gTVNJOiBFbmFibGUrIENvdW50PTEvMSBNYXNrYWJsZS0gNjRiaXQrCgkJQWRk
+cmVzczogMDAwMDAwMDBmZWUwMDM5OCAgRGF0YTogMDAwMAoJS2VybmVsIGRyaXZlciBpbiB1c2U6
+IG1laV9tZQoJS2VybmVsIG1vZHVsZXM6IG1laV9tZQoKMDA6MWEuMCBVU0IgY29udHJvbGxlcjog
+SW50ZWwgQ29ycG9yYXRpb24gOCBTZXJpZXMvQzIyMCBTZXJpZXMgQ2hpcHNldCBGYW1pbHkgVVNC
+IEVIQ0kgIzIgKHJldiAwNSkgKHByb2ctaWYgMjAgW0VIQ0ldKQoJU3Vic3lzdGVtOiBBU1VTVGVL
+IENvbXB1dGVyIEluYy4gRGV2aWNlIDIwMWYKCUNvbnRyb2w6IEkvTy0gTWVtKyBCdXNNYXN0ZXIr
+IFNwZWNDeWNsZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmctIFNFUlItIEZh
+c3RCMkItIERpc0lOVHgtCglTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIyQisgUGFyRXJy
+LSBERVZTRUw9bWVkaXVtID5UQWJvcnQtIDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0g
+SU5UeC0KCUxhdGVuY3k6IDAKCUludGVycnVwdDogcGluIEEgcm91dGVkIHRvIElSUSAxNgoJUmVn
+aW9uIDA6IE1lbW9yeSBhdCBlZGExYzAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6
+ZT0xS10KCUNhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgoJCUZs
+YWdzOiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTM3NW1BIFBNRShEMCssRDEtLEQy
+LSxEM2hvdCssRDNjb2xkKykKCQlTdGF0dXM6IEQwIE5vU29mdFJzdC0gUE1FLUVuYWJsZS0gRFNl
+bD0wIERTY2FsZT0wIFBNRS0KCUNhcGFiaWxpdGllczogWzU4XSBEZWJ1ZyBwb3J0OiBCQVI9MSBv
+ZmZzZXQ9MDBhMAoJQ2FwYWJpbGl0aWVzOiBbOThdIFBDSSBBZHZhbmNlZCBGZWF0dXJlcwoJCUFG
+Q2FwOiBUUCsgRkxSKwoJCUFGQ3RybDogRkxSLQoJCUFGU3RhdHVzOiBUUC0KCUtlcm5lbCBkcml2
+ZXIgaW4gdXNlOiBlaGNpLXBjaQoKMDA6MWIuMCBBdWRpbyBkZXZpY2U6IEludGVsIENvcnBvcmF0
+aW9uIDggU2VyaWVzL0MyMjAgU2VyaWVzIENoaXBzZXQgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIENv
+bnRyb2xsZXIgKHJldiAwNSkKCVN1YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmlj
+ZSAxNzFkCglDb250cm9sOiBJL08tIE1lbSsgQnVzTWFzdGVyKyBTcGVjQ3ljbGUtIE1lbVdJTlYt
+IFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0QjJCLSBEaXNJTlR4KwoJU3Rh
+dHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkItIFBhckVyci0gREVWU0VMPWZhc3QgPlRBYm9y
+dC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQRVJSLSBJTlR4LQoJTGF0ZW5jeTogMCwgQ2Fj
+aGUgTGluZSBTaXplOiA2NCBieXRlcwoJSW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8gSVJRIDMy
+CglSZWdpb24gMDogTWVtb3J5IGF0IGVkYTEwMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRjaGFibGUp
+IFtzaXplPTE2S10KCUNhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24g
+MgoJCUZsYWdzOiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTU1bUEgUE1FKEQwKyxE
+MS0sRDItLEQzaG90KyxEM2NvbGQrKQoJCVN0YXR1czogRDAgTm9Tb2Z0UnN0LSBQTUUtRW5hYmxl
+LSBEU2VsPTAgRFNjYWxlPTAgUE1FLQoJQ2FwYWJpbGl0aWVzOiBbNjBdIE1TSTogRW5hYmxlKyBD
+b3VudD0xLzEgTWFza2FibGUtIDY0Yml0KwoJCUFkZHJlc3M6IDAwMDAwMDAwZmVlMDAzZjggIERh
+dGE6IDAwMDAKCUNhcGFiaWxpdGllczogWzcwXSBFeHByZXNzICh2MSkgUm9vdCBDb21wbGV4IElu
+dGVncmF0ZWQgRW5kcG9pbnQsIE1TSSAwMAoJCURldkNhcDoJTWF4UGF5bG9hZCAxMjggYnl0ZXMs
+IFBoYW50RnVuYyAwCgkJCUV4dFRhZy0gUkJFLQoJCURldkN0bDoJUmVwb3J0IGVycm9yczogQ29y
+cmVjdGFibGUtIE5vbi1GYXRhbC0gRmF0YWwtIFVuc3VwcG9ydGVkLQoJCQlSbHhkT3JkLSBFeHRU
+YWctIFBoYW50RnVuYy0gQXV4UHdyLSBOb1Nub29wLQoJCQlNYXhQYXlsb2FkIDEyOCBieXRlcywg
+TWF4UmVhZFJlcSAxMjggYnl0ZXMKCQlEZXZTdGE6CUNvcnJFcnItIFVuY29yckVyci0gRmF0YWxF
+cnItIFVuc3VwcFJlcS0gQXV4UHdyKyBUcmFuc1BlbmQtCglDYXBhYmlsaXRpZXM6IFsxMDAgdjFd
+IFZpcnR1YWwgQ2hhbm5lbAoJCUNhcHM6CUxQRVZDPTAgUmVmQ2xrPTEwMG5zIFBBVEVudHJ5Qml0
+cz0xCgkJQXJiOglGaXhlZC0gV1JSMzItIFdSUjY0LSBXUlIxMjgtCgkJQ3RybDoJQXJiU2VsZWN0
+PUZpeGVkCgkJU3RhdHVzOglJblByb2dyZXNzLQoJCVZDMDoJQ2FwczoJUEFUT2Zmc2V0PTAwIE1h
+eFRpbWVTbG90cz0xIFJlalNub29wVHJhbnMtCgkJCUFyYjoJRml4ZWQtIFdSUjMyLSBXUlI2NC0g
+V1JSMTI4LSBUV1JSMTI4LSBXUlIyNTYtCgkJCUN0cmw6CUVuYWJsZSsgSUQ9MCBBcmJTZWxlY3Q9
+Rml4ZWQgVEMvVkM9MDEKCQkJU3RhdHVzOglOZWdvUGVuZGluZy0gSW5Qcm9ncmVzcy0KCQlWQzE6
+CUNhcHM6CVBBVE9mZnNldD0wMCBNYXhUaW1lU2xvdHM9MSBSZWpTbm9vcFRyYW5zLQoJCQlBcmI6
+CUZpeGVkLSBXUlIzMi0gV1JSNjQtIFdSUjEyOC0gVFdSUjEyOC0gV1JSMjU2LQoJCQlDdHJsOglF
+bmFibGUrIElEPTIgQXJiU2VsZWN0PUZpeGVkIFRDL1ZDPTA0CgkJCVN0YXR1czoJTmVnb1BlbmRp
+bmctIEluUHJvZ3Jlc3MtCglLZXJuZWwgZHJpdmVyIGluIHVzZTogc25kX2hkYV9pbnRlbAoJS2Vy
+bmVsIG1vZHVsZXM6IHNuZF9oZGFfaW50ZWwKCjAwOjFjLjAgUENJIGJyaWRnZTogSW50ZWwgQ29y
+cG9yYXRpb24gOCBTZXJpZXMvQzIyMCBTZXJpZXMgQ2hpcHNldCBGYW1pbHkgUENJIEV4cHJlc3Mg
+Um9vdCBQb3J0ICMxIChyZXYgZDUpIChwcm9nLWlmIDAwIFtOb3JtYWwgZGVjb2RlXSkKCUNvbnRy
+b2w6IEkvTysgTWVtKyBCdXNNYXN0ZXIrIFNwZWNDeWNsZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBh
+ckVyci0gU3RlcHBpbmctIFNFUlItIEZhc3RCMkItIERpc0lOVHgtCglTdGF0dXM6IENhcCsgNjZN
+SHotIFVERi0gRmFzdEIyQi0gUGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0LSA8VEFib3J0LSA8
+TUFib3J0LSA+U0VSUi0gPFBFUlItIElOVHgtCglMYXRlbmN5OiAwLCBDYWNoZSBMaW5lIFNpemU6
+IDEyOCBieXRlcwoJSW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8gSVJRIDE2CglCdXM6IHByaW1h
+cnk9MDAsIHNlY29uZGFyeT0wMiwgc3Vib3JkaW5hdGU9M2EsIHNlYy1sYXRlbmN5PTAKCUkvTyBi
+ZWhpbmQgYnJpZGdlOiAwMDAwMjAwMC0wMDAwMmZmZgoJTWVtb3J5IGJlaGluZCBicmlkZ2U6IGQ0
+MDAwMDAwLWViZmZmZmZmCglQcmVmZXRjaGFibGUgbWVtb3J5IGJlaGluZCBicmlkZ2U6IDAwMDAw
+MDAwOTAwMDAwMDAtMDAwMDAwMDBiZmZmZmZmZgoJU2Vjb25kYXJ5IHN0YXR1czogNjZNSHotIEZh
+c3RCMkItIFBhckVyci0gREVWU0VMPWZhc3QgPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydCsgPFNF
+UlItIDxQRVJSLQoJQnJpZGdlQ3RsOiBQYXJpdHktIFNFUlItIE5vSVNBLSBWR0EtIE1BYm9ydC0g
+PlJlc2V0LSBGYXN0QjJCLQoJCVByaURpc2NUbXItIFNlY0Rpc2NUbXItIERpc2NUbXJTdGF0LSBE
+aXNjVG1yU0VSUkVuLQoJQ2FwYWJpbGl0aWVzOiBbNDBdIEV4cHJlc3MgKHYyKSBSb290IFBvcnQg
+KFNsb3QrKSwgTVNJIDAwCgkJRGV2Q2FwOglNYXhQYXlsb2FkIDEyOCBieXRlcywgUGhhbnRGdW5j
+IDAKCQkJRXh0VGFnLSBSQkUrCgkJRGV2Q3RsOglSZXBvcnQgZXJyb3JzOiBDb3JyZWN0YWJsZS0g
+Tm9uLUZhdGFsLSBGYXRhbC0gVW5zdXBwb3J0ZWQtCgkJCVJseGRPcmQtIEV4dFRhZy0gUGhhbnRG
+dW5jLSBBdXhQd3ItIE5vU25vb3AtCgkJCU1heFBheWxvYWQgMTI4IGJ5dGVzLCBNYXhSZWFkUmVx
+IDEyOCBieXRlcwoJCURldlN0YToJQ29yckVycisgVW5jb3JyRXJyLSBGYXRhbEVyci0gVW5zdXBw
+UmVxLSBBdXhQd3IrIFRyYW5zUGVuZC0KCQlMbmtDYXA6CVBvcnQgIzEsIFNwZWVkIDVHVC9zLCBX
+aWR0aCB4MiwgQVNQTSBMMHMgTDEsIEV4aXQgTGF0ZW5jeSBMMHMgPDF1cywgTDEgPDE2dXMKCQkJ
+Q2xvY2tQTS0gU3VycHJpc2UtIExMQWN0UmVwKyBCd05vdCsgQVNQTU9wdENvbXAtCgkJTG5rQ3Rs
+OglBU1BNIEwxIEVuYWJsZWQ7IFJDQiA2NCBieXRlcyBEaXNhYmxlZC0gQ29tbUNsay0KCQkJRXh0
+U3luY2gtIENsb2NrUE0tIEF1dFdpZERpcy0gQldJbnQtIEF1dEJXSW50LQoJCUxua1N0YToJU3Bl
+ZWQgMi41R1QvcywgV2lkdGggeDIsIFRyRXJyLSBUcmFpbi0gU2xvdENsaysgRExBY3RpdmUtIEJX
+TWdtdCsgQUJXTWdtdC0KCQlTbHRDYXA6CUF0dG5CdG4tIFB3ckN0cmwtIE1STC0gQXR0bkluZC0g
+UHdySW5kLSBIb3RQbHVnKyBTdXJwcmlzZSsKCQkJU2xvdCAjMCwgUG93ZXJMaW1pdCAwLjAwMFc7
+IEludGVybG9jay0gTm9Db21wbCsKCQlTbHRDdGw6CUVuYWJsZTogQXR0bkJ0bi0gUHdyRmx0LSBN
+UkwtIFByZXNEZXQrIENtZENwbHQtIEhQSXJxLSBMaW5rQ2hnLQoJCQlDb250cm9sOiBBdHRuSW5k
+IFVua25vd24sIFB3ckluZCBVbmtub3duLCBQb3dlci0gSW50ZXJsb2NrLQoJCVNsdFN0YToJU3Rh
+dHVzOiBBdHRuQnRuLSBQb3dlckZsdC0gTVJMLSBDbWRDcGx0LSBQcmVzRGV0LSBJbnRlcmxvY2st
+CgkJCUNoYW5nZWQ6IE1STC0gUHJlc0RldC0gTGlua1N0YXRlKwoJCVJvb3RDdGw6IEVyckNvcnJl
+Y3RhYmxlLSBFcnJOb24tRmF0YWwtIEVyckZhdGFsLSBQTUVJbnRFbmEtIENSU1Zpc2libGUtCgkJ
+Um9vdENhcDogQ1JTVmlzaWJsZS0KCQlSb290U3RhOiBQTUUgUmVxSUQgMDAwMCwgUE1FU3RhdHVz
+LSBQTUVQZW5kaW5nLQoJCURldkNhcDI6IENvbXBsZXRpb24gVGltZW91dDogUmFuZ2UgQUJDLCBU
+aW1lb3V0RGlzKywgTFRSKywgT0JGRiBOb3QgU3VwcG9ydGVkIEFSSUZ3ZC0KCQlEZXZDdGwyOiBD
+b21wbGV0aW9uIFRpbWVvdXQ6IDUwdXMgdG8gNTBtcywgVGltZW91dERpcy0sIExUUi0sIE9CRkYg
+RGlzYWJsZWQgQVJJRndkLQoJCUxua0N0bDI6IFRhcmdldCBMaW5rIFNwZWVkOiA1R1QvcywgRW50
+ZXJDb21wbGlhbmNlLSBTcGVlZERpcy0KCQkJIFRyYW5zbWl0IE1hcmdpbjogTm9ybWFsIE9wZXJh
+dGluZyBSYW5nZSwgRW50ZXJNb2RpZmllZENvbXBsaWFuY2UtIENvbXBsaWFuY2VTT1MtCgkJCSBD
+b21wbGlhbmNlIERlLWVtcGhhc2lzOiAtNmRCCgkJTG5rU3RhMjogQ3VycmVudCBEZS1lbXBoYXNp
+cyBMZXZlbDogLTMuNWRCLCBFcXVhbGl6YXRpb25Db21wbGV0ZS0sIEVxdWFsaXphdGlvblBoYXNl
+MS0KCQkJIEVxdWFsaXphdGlvblBoYXNlMi0sIEVxdWFsaXphdGlvblBoYXNlMy0sIExpbmtFcXVh
+bGl6YXRpb25SZXF1ZXN0LQoJQ2FwYWJpbGl0aWVzOiBbODBdIE1TSTogRW5hYmxlLSBDb3VudD0x
+LzEgTWFza2FibGUtIDY0Yml0LQoJCUFkZHJlc3M6IDAwMDAwMDAwICBEYXRhOiAwMDAwCglDYXBh
+YmlsaXRpZXM6IFs5MF0gU3Vic3lzdGVtOiBBU1VTVGVLIENvbXB1dGVyIEluYy4gRGV2aWNlIDE3
+MWQKCUNhcGFiaWxpdGllczogW2EwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJCUZsYWdz
+OiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUoRDArLEQxLSxEMi0sRDNo
+b3QrLEQzY29sZCspCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QtIFBNRS1FbmFibGUtIERTZWw9MCBE
+U2NhbGU9MCBQTUUtCglLZXJuZWwgZHJpdmVyIGluIHVzZTogcGNpZXBvcnQKCUtlcm5lbCBtb2R1
+bGVzOiBzaHBjaHAKCjAwOjFjLjIgUENJIGJyaWRnZTogSW50ZWwgQ29ycG9yYXRpb24gOCBTZXJp
+ZXMvQzIyMCBTZXJpZXMgQ2hpcHNldCBGYW1pbHkgUENJIEV4cHJlc3MgUm9vdCBQb3J0ICMzIChy
+ZXYgZDUpIChwcm9nLWlmIDAwIFtOb3JtYWwgZGVjb2RlXSkKCUNvbnRyb2w6IEkvTysgTWVtKyBC
+dXNNYXN0ZXIrIFNwZWNDeWNsZS0gTWVtV0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmct
+IFNFUlItIEZhc3RCMkItIERpc0lOVHgtCglTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIy
+Qi0gUGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0g
+PFBFUlItIElOVHgtCglMYXRlbmN5OiAwLCBDYWNoZSBMaW5lIFNpemU6IDY0IGJ5dGVzCglJbnRl
+cnJ1cHQ6IHBpbiBDIHJvdXRlZCB0byBJUlEgMTgKCUJ1czogcHJpbWFyeT0wMCwgc2Vjb25kYXJ5
+PTNiLCBzdWJvcmRpbmF0ZT0zYiwgc2VjLWxhdGVuY3k9MAoJSS9PIGJlaGluZCBicmlkZ2U6IDAw
+MDAzMDAwLTAwMDAzZmZmCglNZW1vcnkgYmVoaW5kIGJyaWRnZTogZWQ5MDAwMDAtZWQ5ZmZmZmYK
+CVByZWZldGNoYWJsZSBtZW1vcnkgYmVoaW5kIGJyaWRnZTogMDAwMDAwMDA3ZmUwMDAwMC0wMDAw
+MDAwMDdmZmZmZmZmCglTZWNvbmRhcnkgc3RhdHVzOiA2Nk1Iei0gRmFzdEIyQi0gUGFyRXJyLSBE
+RVZTRUw9ZmFzdCA+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0KyA8U0VSUi0gPFBFUlItCglCcmlk
+Z2VDdGw6IFBhcml0eS0gU0VSUi0gTm9JU0EtIFZHQS0gTUFib3J0LSA+UmVzZXQtIEZhc3RCMkIt
+CgkJUHJpRGlzY1Rtci0gU2VjRGlzY1Rtci0gRGlzY1RtclN0YXQtIERpc2NUbXJTRVJSRW4tCglD
+YXBhYmlsaXRpZXM6IFs0MF0gRXhwcmVzcyAodjIpIFJvb3QgUG9ydCAoU2xvdCspLCBNU0kgMDAK
+CQlEZXZDYXA6CU1heFBheWxvYWQgMTI4IGJ5dGVzLCBQaGFudEZ1bmMgMAoJCQlFeHRUYWctIFJC
+RSsKCQlEZXZDdGw6CVJlcG9ydCBlcnJvcnM6IENvcnJlY3RhYmxlLSBOb24tRmF0YWwtIEZhdGFs
+LSBVbnN1cHBvcnRlZC0KCQkJUmx4ZE9yZC0gRXh0VGFnLSBQaGFudEZ1bmMtIEF1eFB3ci0gTm9T
+bm9vcC0KCQkJTWF4UGF5bG9hZCAxMjggYnl0ZXMsIE1heFJlYWRSZXEgMTI4IGJ5dGVzCgkJRGV2
+U3RhOglDb3JyRXJyLSBVbmNvcnJFcnItIEZhdGFsRXJyLSBVbnN1cHBSZXEtIEF1eFB3cisgVHJh
+bnNQZW5kLQoJCUxua0NhcDoJUG9ydCAjMywgU3BlZWQgNUdUL3MsIFdpZHRoIHgxLCBBU1BNIEww
+cyBMMSwgRXhpdCBMYXRlbmN5IEwwcyA8NTEybnMsIEwxIDwxNnVzCgkJCUNsb2NrUE0tIFN1cnBy
+aXNlLSBMTEFjdFJlcCsgQndOb3QrIEFTUE1PcHRDb21wLQoJCUxua0N0bDoJQVNQTSBMMSBFbmFi
+bGVkOyBSQ0IgNjQgYnl0ZXMgRGlzYWJsZWQtIENvbW1DbGsrCgkJCUV4dFN5bmNoLSBDbG9ja1BN
+LSBBdXRXaWREaXMtIEJXSW50LSBBdXRCV0ludC0KCQlMbmtTdGE6CVNwZWVkIDIuNUdUL3MsIFdp
+ZHRoIHgxLCBUckVyci0gVHJhaW4tIFNsb3RDbGsrIERMQWN0aXZlKyBCV01nbXQrIEFCV01nbXQt
+CgkJU2x0Q2FwOglBdHRuQnRuLSBQd3JDdHJsLSBNUkwtIEF0dG5JbmQtIFB3ckluZC0gSG90UGx1
+ZysgU3VycHJpc2UrCgkJCVNsb3QgIzAsIFBvd2VyTGltaXQgMC4wMDBXOyBJbnRlcmxvY2stIE5v
+Q29tcGwrCgkJU2x0Q3RsOglFbmFibGU6IEF0dG5CdG4tIFB3ckZsdC0gTVJMLSBQcmVzRGV0LSBD
+bWRDcGx0LSBIUElycS0gTGlua0NoZy0KCQkJQ29udHJvbDogQXR0bkluZCBVbmtub3duLCBQd3JJ
+bmQgVW5rbm93biwgUG93ZXItIEludGVybG9jay0KCQlTbHRTdGE6CVN0YXR1czogQXR0bkJ0bi0g
+UG93ZXJGbHQtIE1STC0gQ21kQ3BsdC0gUHJlc0RldCsgSW50ZXJsb2NrLQoJCQlDaGFuZ2VkOiBN
+UkwtIFByZXNEZXQtIExpbmtTdGF0ZSsKCQlSb290Q3RsOiBFcnJDb3JyZWN0YWJsZS0gRXJyTm9u
+LUZhdGFsLSBFcnJGYXRhbC0gUE1FSW50RW5hLSBDUlNWaXNpYmxlLQoJCVJvb3RDYXA6IENSU1Zp
+c2libGUtCgkJUm9vdFN0YTogUE1FIFJlcUlEIDAwMDAsIFBNRVN0YXR1cy0gUE1FUGVuZGluZy0K
+CQlEZXZDYXAyOiBDb21wbGV0aW9uIFRpbWVvdXQ6IFJhbmdlIEFCQywgVGltZW91dERpcyssIExU
+UissIE9CRkYgTm90IFN1cHBvcnRlZCBBUklGd2QtCgkJRGV2Q3RsMjogQ29tcGxldGlvbiBUaW1l
+b3V0OiA1MHVzIHRvIDUwbXMsIFRpbWVvdXREaXMtLCBMVFIrLCBPQkZGIERpc2FibGVkIEFSSUZ3
+ZC0KCQlMbmtDdGwyOiBUYXJnZXQgTGluayBTcGVlZDogNUdUL3MsIEVudGVyQ29tcGxpYW5jZS0g
+U3BlZWREaXMtCgkJCSBUcmFuc21pdCBNYXJnaW46IE5vcm1hbCBPcGVyYXRpbmcgUmFuZ2UsIEVu
+dGVyTW9kaWZpZWRDb21wbGlhbmNlLSBDb21wbGlhbmNlU09TLQoJCQkgQ29tcGxpYW5jZSBEZS1l
+bXBoYXNpczogLTZkQgoJCUxua1N0YTI6IEN1cnJlbnQgRGUtZW1waGFzaXMgTGV2ZWw6IC0zLjVk
+QiwgRXF1YWxpemF0aW9uQ29tcGxldGUtLCBFcXVhbGl6YXRpb25QaGFzZTEtCgkJCSBFcXVhbGl6
+YXRpb25QaGFzZTItLCBFcXVhbGl6YXRpb25QaGFzZTMtLCBMaW5rRXF1YWxpemF0aW9uUmVxdWVz
+dC0KCUNhcGFiaWxpdGllczogWzgwXSBNU0k6IEVuYWJsZS0gQ291bnQ9MS8xIE1hc2thYmxlLSA2
+NGJpdC0KCQlBZGRyZXNzOiAwMDAwMDAwMCAgRGF0YTogMDAwMAoJQ2FwYWJpbGl0aWVzOiBbOTBd
+IFN1YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmljZSAxNzFkCglDYXBhYmlsaXRp
+ZXM6IFthMF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCQlGbGFnczogUE1FQ2xrLSBEU0kt
+IEQxLSBEMi0gQXV4Q3VycmVudD0wbUEgUE1FKEQwKyxEMS0sRDItLEQzaG90KyxEM2NvbGQrKQoJ
+CVN0YXR1czogRDAgTm9Tb2Z0UnN0LSBQTUUtRW5hYmxlLSBEU2VsPTAgRFNjYWxlPTAgUE1FLQoJ
+S2VybmVsIGRyaXZlciBpbiB1c2U6IHBjaWVwb3J0CglLZXJuZWwgbW9kdWxlczogc2hwY2hwCgow
+MDoxYy4zIFBDSSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIDggU2VyaWVzL0MyMjAgU2VyaWVz
+IENoaXBzZXQgRmFtaWx5IFBDSSBFeHByZXNzIFJvb3QgUG9ydCAjNCAocmV2IGQ1KSAocHJvZy1p
+ZiAwMCBbTm9ybWFsIGRlY29kZV0pCglDb250cm9sOiBJL08rIE1lbSsgQnVzTWFzdGVyKyBTcGVj
+Q3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0QjJC
+LSBEaXNJTlR4LQoJU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkItIFBhckVyci0gREVW
+U0VMPWZhc3QgPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQRVJSLSBJTlR4LQoJ
+TGF0ZW5jeTogMCwgQ2FjaGUgTGluZSBTaXplOiA2NCBieXRlcwoJSW50ZXJydXB0OiBwaW4gRCBy
+b3V0ZWQgdG8gSVJRIDE5CglCdXM6IHByaW1hcnk9MDAsIHNlY29uZGFyeT0zYywgc3Vib3JkaW5h
+dGU9M2MsIHNlYy1sYXRlbmN5PTAKCUkvTyBiZWhpbmQgYnJpZGdlOiAwMDAwZDAwMC0wMDAwZGZm
+ZgoJTWVtb3J5IGJlaGluZCBicmlkZ2U6IGVkODAwMDAwLWVkOGZmZmZmCglTZWNvbmRhcnkgc3Rh
+dHVzOiA2Nk1Iei0gRmFzdEIyQi0gUGFyRXJyLSBERVZTRUw9ZmFzdCA+VEFib3J0LSA8VEFib3J0
+LSA8TUFib3J0KyA8U0VSUi0gPFBFUlItCglCcmlkZ2VDdGw6IFBhcml0eS0gU0VSUi0gTm9JU0Et
+IFZHQS0gTUFib3J0LSA+UmVzZXQtIEZhc3RCMkItCgkJUHJpRGlzY1Rtci0gU2VjRGlzY1Rtci0g
+RGlzY1RtclN0YXQtIERpc2NUbXJTRVJSRW4tCglDYXBhYmlsaXRpZXM6IFs0MF0gRXhwcmVzcyAo
+djIpIFJvb3QgUG9ydCAoU2xvdCspLCBNU0kgMDAKCQlEZXZDYXA6CU1heFBheWxvYWQgMTI4IGJ5
+dGVzLCBQaGFudEZ1bmMgMAoJCQlFeHRUYWctIFJCRSsKCQlEZXZDdGw6CVJlcG9ydCBlcnJvcnM6
+IENvcnJlY3RhYmxlLSBOb24tRmF0YWwtIEZhdGFsLSBVbnN1cHBvcnRlZC0KCQkJUmx4ZE9yZC0g
+RXh0VGFnLSBQaGFudEZ1bmMtIEF1eFB3ci0gTm9Tbm9vcC0KCQkJTWF4UGF5bG9hZCAxMjggYnl0
+ZXMsIE1heFJlYWRSZXEgMTI4IGJ5dGVzCgkJRGV2U3RhOglDb3JyRXJyLSBVbmNvcnJFcnItIEZh
+dGFsRXJyLSBVbnN1cHBSZXEtIEF1eFB3cisgVHJhbnNQZW5kLQoJCUxua0NhcDoJUG9ydCAjNCwg
+U3BlZWQgNUdUL3MsIFdpZHRoIHgxLCBBU1BNIEwwcyBMMSwgRXhpdCBMYXRlbmN5IEwwcyA8NTEy
+bnMsIEwxIDwxNnVzCgkJCUNsb2NrUE0tIFN1cnByaXNlLSBMTEFjdFJlcCsgQndOb3QrIEFTUE1P
+cHRDb21wLQoJCUxua0N0bDoJQVNQTSBEaXNhYmxlZDsgUkNCIDY0IGJ5dGVzIERpc2FibGVkLSBD
+b21tQ2xrKwoJCQlFeHRTeW5jaC0gQ2xvY2tQTS0gQXV0V2lkRGlzLSBCV0ludC0gQXV0QldJbnQt
+CgkJTG5rU3RhOglTcGVlZCAyLjVHVC9zLCBXaWR0aCB4MSwgVHJFcnItIFRyYWluLSBTbG90Q2xr
+KyBETEFjdGl2ZSsgQldNZ210KyBBQldNZ210LQoJCVNsdENhcDoJQXR0bkJ0bi0gUHdyQ3RybC0g
+TVJMLSBBdHRuSW5kLSBQd3JJbmQtIEhvdFBsdWctIFN1cnByaXNlLQoJCQlTbG90ICMzLCBQb3dl
+ckxpbWl0IDEwLjAwMFc7IEludGVybG9jay0gTm9Db21wbCsKCQlTbHRDdGw6CUVuYWJsZTogQXR0
+bkJ0bi0gUHdyRmx0LSBNUkwtIFByZXNEZXQtIENtZENwbHQtIEhQSXJxLSBMaW5rQ2hnLQoJCQlD
+b250cm9sOiBBdHRuSW5kIFVua25vd24sIFB3ckluZCBVbmtub3duLCBQb3dlci0gSW50ZXJsb2Nr
+LQoJCVNsdFN0YToJU3RhdHVzOiBBdHRuQnRuLSBQb3dlckZsdC0gTVJMLSBDbWRDcGx0LSBQcmVz
+RGV0KyBJbnRlcmxvY2stCgkJCUNoYW5nZWQ6IE1STC0gUHJlc0RldC0gTGlua1N0YXRlKwoJCVJv
+b3RDdGw6IEVyckNvcnJlY3RhYmxlLSBFcnJOb24tRmF0YWwtIEVyckZhdGFsLSBQTUVJbnRFbmEt
+IENSU1Zpc2libGUtCgkJUm9vdENhcDogQ1JTVmlzaWJsZS0KCQlSb290U3RhOiBQTUUgUmVxSUQg
+MDAwMCwgUE1FU3RhdHVzLSBQTUVQZW5kaW5nLQoJCURldkNhcDI6IENvbXBsZXRpb24gVGltZW91
+dDogUmFuZ2UgQUJDLCBUaW1lb3V0RGlzKywgTFRSKywgT0JGRiBOb3QgU3VwcG9ydGVkIEFSSUZ3
+ZC0KCQlEZXZDdGwyOiBDb21wbGV0aW9uIFRpbWVvdXQ6IDUwdXMgdG8gNTBtcywgVGltZW91dERp
+cy0sIExUUissIE9CRkYgRGlzYWJsZWQgQVJJRndkLQoJCUxua0N0bDI6IFRhcmdldCBMaW5rIFNw
+ZWVkOiA1R1QvcywgRW50ZXJDb21wbGlhbmNlLSBTcGVlZERpcy0KCQkJIFRyYW5zbWl0IE1hcmdp
+bjogTm9ybWFsIE9wZXJhdGluZyBSYW5nZSwgRW50ZXJNb2RpZmllZENvbXBsaWFuY2UtIENvbXBs
+aWFuY2VTT1MtCgkJCSBDb21wbGlhbmNlIERlLWVtcGhhc2lzOiAtNmRCCgkJTG5rU3RhMjogQ3Vy
+cmVudCBEZS1lbXBoYXNpcyBMZXZlbDogLTMuNWRCLCBFcXVhbGl6YXRpb25Db21wbGV0ZS0sIEVx
+dWFsaXphdGlvblBoYXNlMS0KCQkJIEVxdWFsaXphdGlvblBoYXNlMi0sIEVxdWFsaXphdGlvblBo
+YXNlMy0sIExpbmtFcXVhbGl6YXRpb25SZXF1ZXN0LQoJQ2FwYWJpbGl0aWVzOiBbODBdIE1TSTog
+RW5hYmxlLSBDb3VudD0xLzEgTWFza2FibGUtIDY0Yml0LQoJCUFkZHJlc3M6IDAwMDAwMDAwICBE
+YXRhOiAwMDAwCglDYXBhYmlsaXRpZXM6IFs5MF0gU3Vic3lzdGVtOiBBU1VTVGVLIENvbXB1dGVy
+IEluYy4gRGV2aWNlIDE3MWQKCUNhcGFiaWxpdGllczogW2EwXSBQb3dlciBNYW5hZ2VtZW50IHZl
+cnNpb24gMwoJCUZsYWdzOiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUo
+RDArLEQxLSxEMi0sRDNob3QrLEQzY29sZCspCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QtIFBNRS1F
+bmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtCglLZXJuZWwgZHJpdmVyIGluIHVzZTogcGNpZXBv
+cnQKCUtlcm5lbCBtb2R1bGVzOiBzaHBjaHAKCjAwOjFkLjAgVVNCIGNvbnRyb2xsZXI6IEludGVs
+IENvcnBvcmF0aW9uIDggU2VyaWVzL0MyMjAgU2VyaWVzIENoaXBzZXQgRmFtaWx5IFVTQiBFSENJ
+ICMxIChyZXYgMDUpIChwcm9nLWlmIDIwIFtFSENJXSkKCVN1YnN5c3RlbTogQVNVU1RlSyBDb21w
+dXRlciBJbmMuIERldmljZSAyMDFmCglDb250cm9sOiBJL08tIE1lbSsgQnVzTWFzdGVyKyBTcGVj
+Q3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0QjJC
+LSBEaXNJTlR4LQoJU3RhdHVzOiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkIrIFBhckVyci0gREVW
+U0VMPW1lZGl1bSA+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItIElOVHgt
+CglMYXRlbmN5OiAwCglJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJUlEgMjMKCVJlZ2lvbiAw
+OiBNZW1vcnkgYXQgZWRhMWIwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MUtd
+CglDYXBhYmlsaXRpZXM6IFs1MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKCQlGbGFnczog
+UE1FQ2xrLSBEU0ktIEQxLSBEMi0gQXV4Q3VycmVudD0zNzVtQSBQTUUoRDArLEQxLSxEMi0sRDNo
+b3QrLEQzY29sZCspCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QtIFBNRS1FbmFibGUtIERTZWw9MCBE
+U2NhbGU9MCBQTUUtCglDYXBhYmlsaXRpZXM6IFs1OF0gRGVidWcgcG9ydDogQkFSPTEgb2Zmc2V0
+PTAwYTAKCUNhcGFiaWxpdGllczogWzk4XSBQQ0kgQWR2YW5jZWQgRmVhdHVyZXMKCQlBRkNhcDog
+VFArIEZMUisKCQlBRkN0cmw6IEZMUi0KCQlBRlN0YXR1czogVFAtCglLZXJuZWwgZHJpdmVyIGlu
+IHVzZTogZWhjaS1wY2kKCjAwOjFmLjAgSVNBIGJyaWRnZTogSW50ZWwgQ29ycG9yYXRpb24gSE04
+NyBFeHByZXNzIExQQyBDb250cm9sbGVyIChyZXYgMDUpCglTdWJzeXN0ZW06IEFTVVNUZUsgQ29t
+cHV0ZXIgSW5jLiBEZXZpY2UgMTcxZAoJQ29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3RlcisgU3Bl
+Y0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIy
+Qi0gRGlzSU5UeC0KCVN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERF
+VlNFTD1tZWRpdW0gPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQRVJSLSBJTlR4
+LQoJTGF0ZW5jeTogMAoJQ2FwYWJpbGl0aWVzOiBbZTBdIFZlbmRvciBTcGVjaWZpYyBJbmZvcm1h
+dGlvbjogTGVuPTBjIDw/PgoJS2VybmVsIGRyaXZlciBpbiB1c2U6IGxwY19pY2gKCUtlcm5lbCBt
+b2R1bGVzOiBscGNfaWNoCgowMDoxZi4yIFNBVEEgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRp
+b24gOCBTZXJpZXMvQzIyMCBTZXJpZXMgQ2hpcHNldCBGYW1pbHkgNi1wb3J0IFNBVEEgQ29udHJv
+bGxlciAxIFtBSENJIG1vZGVdIChyZXYgMDUpIChwcm9nLWlmIDAxIFtBSENJIDEuMF0pCglTdWJz
+eXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBEZXZpY2UgMTcxZAoJQ29udHJvbDogSS9PKyBN
+ZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0gUGFyRXJyLSBTdGVw
+cGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeCsKCVN0YXR1czogQ2FwKyA2Nk1IeisgVURGLSBG
+YXN0QjJCKyBQYXJFcnItIERFVlNFTD1tZWRpdW0gPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0g
+PlNFUlItIDxQRVJSLSBJTlR4LQoJTGF0ZW5jeTogMAoJSW50ZXJydXB0OiBwaW4gQiByb3V0ZWQg
+dG8gSVJRIDI3CglSZWdpb24gMDogSS9PIHBvcnRzIGF0IGYwYjAgW3NpemU9OF0KCVJlZ2lvbiAx
+OiBJL08gcG9ydHMgYXQgZjBhMCBbc2l6ZT00XQoJUmVnaW9uIDI6IEkvTyBwb3J0cyBhdCBmMDkw
+IFtzaXplPThdCglSZWdpb24gMzogSS9PIHBvcnRzIGF0IGYwODAgW3NpemU9NF0KCVJlZ2lvbiA0
+OiBJL08gcG9ydHMgYXQgZjA2MCBbc2l6ZT0zMl0KCVJlZ2lvbiA1OiBNZW1vcnkgYXQgZWRhMWEw
+MDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MktdCglDYXBhYmlsaXRpZXM6IFs4
+MF0gTVNJOiBFbmFibGUrIENvdW50PTEvMSBNYXNrYWJsZS0gNjRiaXQtCgkJQWRkcmVzczogZmVl
+MDAzMzggIERhdGE6IDAwMDAKCUNhcGFiaWxpdGllczogWzcwXSBQb3dlciBNYW5hZ2VtZW50IHZl
+cnNpb24gMwoJCUZsYWdzOiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUo
+RDAtLEQxLSxEMi0sRDNob3QrLEQzY29sZC0pCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QrIFBNRS1F
+bmFibGUtIERTZWw9MCBEU2NhbGU9MCBQTUUtCglDYXBhYmlsaXRpZXM6IFthOF0gU0FUQSBIQkEg
+djEuMCBCQVI0IE9mZnNldD0wMDAwMDAwNAoJS2VybmVsIGRyaXZlciBpbiB1c2U6IGFoY2kKCjAw
+OjFmLjMgU01CdXM6IEludGVsIENvcnBvcmF0aW9uIDggU2VyaWVzL0MyMjAgU2VyaWVzIENoaXBz
+ZXQgRmFtaWx5IFNNQnVzIENvbnRyb2xsZXIgKHJldiAwNSkKCVN1YnN5c3RlbTogQVNVU1RlSyBD
+b21wdXRlciBJbmMuIERldmljZSAxNzFkCglDb250cm9sOiBJL08rIE1lbSsgQnVzTWFzdGVyLSBT
+cGVjQ3ljbGUtIE1lbVdJTlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0
+QjJCLSBEaXNJTlR4LQoJU3RhdHVzOiBDYXAtIDY2TUh6LSBVREYtIEZhc3RCMkIrIFBhckVyci0g
+REVWU0VMPW1lZGl1bSA+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItIElO
+VHgtCglJbnRlcnJ1cHQ6IHBpbiBDIHJvdXRlZCB0byBJUlEgMTgKCVJlZ2lvbiAwOiBNZW1vcnkg
+YXQgZWRhMTkwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MjU2XQoJUmVnaW9u
+IDQ6IEkvTyBwb3J0cyBhdCBmMDQwIFtzaXplPTMyXQoJS2VybmVsIG1vZHVsZXM6IGkyY19pODAx
+CgowMTowMC4wIDNEIGNvbnRyb2xsZXI6IE5WSURJQSBDb3Jwb3JhdGlvbiBHTTEwN00gW0dlRm9y
+Y2UgR1RYIDg2ME1dIChyZXYgYTIpCglTdWJzeXN0ZW06IEFTVVNUZUsgQ29tcHV0ZXIgSW5jLiBE
+ZXZpY2UgMTcxZAoJQ29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1X
+SU5WLSBWR0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeC0K
+CVN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERFVlNFTD1mYXN0ID5U
+QWJvcnQtIDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0gSU5UeC0KCUxhdGVuY3k6IDAs
+IENhY2hlIExpbmUgU2l6ZTogNjQgYnl0ZXMKCUludGVycnVwdDogcGluIEEgcm91dGVkIHRvIElS
+USAxMQoJUmVnaW9uIDA6IE1lbW9yeSBhdCBlYzAwMDAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hh
+YmxlKSBbc2l6ZT0xNk1dCglSZWdpb24gMTogTWVtb3J5IGF0IGMwMDAwMDAwICg2NC1iaXQsIHBy
+ZWZldGNoYWJsZSkgW3NpemU9MjU2TV0KCVJlZ2lvbiAzOiBNZW1vcnkgYXQgZDAwMDAwMDAgKDY0
+LWJpdCwgcHJlZmV0Y2hhYmxlKSBbc2l6ZT0zMk1dCglSZWdpb24gNTogSS9PIHBvcnRzIGF0IGUw
+MDAgW3NpemU9MTI4XQoJRXhwYW5zaW9uIFJPTSBhdCBlZDAwMDAwMCBbZGlzYWJsZWRdIFtzaXpl
+PTUxMktdCglDYXBhYmlsaXRpZXM6IFs2MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCQlG
+bGFnczogUE1FQ2xrLSBEU0ktIEQxLSBEMi0gQXV4Q3VycmVudD0wbUEgUE1FKEQwLSxEMS0sRDIt
+LEQzaG90LSxEM2NvbGQtKQoJCVN0YXR1czogRDAgTm9Tb2Z0UnN0KyBQTUUtRW5hYmxlLSBEU2Vs
+PTAgRFNjYWxlPTAgUE1FLQoJQ2FwYWJpbGl0aWVzOiBbNjhdIE1TSTogRW5hYmxlLSBDb3VudD0x
+LzEgTWFza2FibGUtIDY0Yml0KwoJCUFkZHJlc3M6IDAwMDAwMDAwMDAwMDAwMDAgIERhdGE6IDAw
+MDAKCUNhcGFiaWxpdGllczogWzc4XSBFeHByZXNzICh2MikgTGVnYWN5IEVuZHBvaW50LCBNU0kg
+MDAKCQlEZXZDYXA6CU1heFBheWxvYWQgMjU2IGJ5dGVzLCBQaGFudEZ1bmMgMCwgTGF0ZW5jeSBM
+MHMgdW5saW1pdGVkLCBMMSA8NjR1cwoJCQlFeHRUYWcrIEF0dG5CdG4tIEF0dG5JbmQtIFB3cklu
+ZC0gUkJFKyBGTFJlc2V0LQoJCURldkN0bDoJUmVwb3J0IGVycm9yczogQ29ycmVjdGFibGUtIE5v
+bi1GYXRhbC0gRmF0YWwtIFVuc3VwcG9ydGVkLQoJCQlSbHhkT3JkKyBFeHRUYWcrIFBoYW50RnVu
+Yy0gQXV4UHdyLSBOb1Nub29wKwoJCQlNYXhQYXlsb2FkIDI1NiBieXRlcywgTWF4UmVhZFJlcSA1
+MTIgYnl0ZXMKCQlEZXZTdGE6CUNvcnJFcnItIFVuY29yckVyci0gRmF0YWxFcnItIFVuc3VwcFJl
+cS0gQXV4UHdyLSBUcmFuc1BlbmQtCgkJTG5rQ2FwOglQb3J0ICMwLCBTcGVlZCA4R1QvcywgV2lk
+dGggeDE2LCBBU1BNIEwwcyBMMSwgRXhpdCBMYXRlbmN5IEwwcyA8MXVzLCBMMSA8NHVzCgkJCUNs
+b2NrUE0rIFN1cnByaXNlLSBMTEFjdFJlcC0gQndOb3QtIEFTUE1PcHRDb21wKwoJCUxua0N0bDoJ
+QVNQTSBEaXNhYmxlZDsgUkNCIDY0IGJ5dGVzIERpc2FibGVkLSBDb21tQ2xrKwoJCQlFeHRTeW5j
+aC0gQ2xvY2tQTS0gQXV0V2lkRGlzLSBCV0ludC0gQXV0QldJbnQtCgkJTG5rU3RhOglTcGVlZCA4
+R1QvcywgV2lkdGggeDE2LCBUckVyci0gVHJhaW4tIFNsb3RDbGsrIERMQWN0aXZlLSBCV01nbXQt
+IEFCV01nbXQtCgkJRGV2Q2FwMjogQ29tcGxldGlvbiBUaW1lb3V0OiBSYW5nZSBBQiwgVGltZW91
+dERpcyssIExUUissIE9CRkYgVmlhIG1lc3NhZ2UKCQlEZXZDdGwyOiBDb21wbGV0aW9uIFRpbWVv
+dXQ6IDUwdXMgdG8gNTBtcywgVGltZW91dERpcy0sIExUUissIE9CRkYgRGlzYWJsZWQKCQlMbmtD
+dGwyOiBUYXJnZXQgTGluayBTcGVlZDogOEdUL3MsIEVudGVyQ29tcGxpYW5jZS0gU3BlZWREaXMt
+CgkJCSBUcmFuc21pdCBNYXJnaW46IE5vcm1hbCBPcGVyYXRpbmcgUmFuZ2UsIEVudGVyTW9kaWZp
+ZWRDb21wbGlhbmNlLSBDb21wbGlhbmNlU09TLQoJCQkgQ29tcGxpYW5jZSBEZS1lbXBoYXNpczog
+LTZkQgoJCUxua1N0YTI6IEN1cnJlbnQgRGUtZW1waGFzaXMgTGV2ZWw6IC0zLjVkQiwgRXF1YWxp
+emF0aW9uQ29tcGxldGUrLCBFcXVhbGl6YXRpb25QaGFzZTErCgkJCSBFcXVhbGl6YXRpb25QaGFz
+ZTItLCBFcXVhbGl6YXRpb25QaGFzZTMtLCBMaW5rRXF1YWxpemF0aW9uUmVxdWVzdC0KCUNhcGFi
+aWxpdGllczogWzEwMCB2MV0gVmlydHVhbCBDaGFubmVsCgkJQ2FwczoJTFBFVkM9MCBSZWZDbGs9
+MTAwbnMgUEFURW50cnlCaXRzPTEKCQlBcmI6CUZpeGVkLSBXUlIzMi0gV1JSNjQtIFdSUjEyOC0K
+CQlDdHJsOglBcmJTZWxlY3Q9Rml4ZWQKCQlTdGF0dXM6CUluUHJvZ3Jlc3MtCgkJVkMwOglDYXBz
+OglQQVRPZmZzZXQ9MDAgTWF4VGltZVNsb3RzPTEgUmVqU25vb3BUcmFucy0KCQkJQXJiOglGaXhl
+ZC0gV1JSMzItIFdSUjY0LSBXUlIxMjgtIFRXUlIxMjgtIFdSUjI1Ni0KCQkJQ3RybDoJRW5hYmxl
+KyBJRD0wIEFyYlNlbGVjdD1GaXhlZCBUQy9WQz1mZgoJCQlTdGF0dXM6CU5lZ29QZW5kaW5nLSBJ
+blByb2dyZXNzLQoJQ2FwYWJpbGl0aWVzOiBbMjUwIHYxXSBMYXRlbmN5IFRvbGVyYW5jZSBSZXBv
+cnRpbmcKCQlNYXggc25vb3AgbGF0ZW5jeTogNzE2ODBucwoJCU1heCBubyBzbm9vcCBsYXRlbmN5
+OiA3MTY4MG5zCglDYXBhYmlsaXRpZXM6IFsyNTggdjFdIEwxIFBNIFN1YnN0YXRlcwoJCUwxU3Vi
+Q2FwOiBQQ0ktUE1fTDEuMisgUENJLVBNX0wxLjErIEFTUE1fTDEuMisgQVNQTV9MMS4xKyBMMV9Q
+TV9TdWJzdGF0ZXMrCgkJCSAgUG9ydENvbW1vbk1vZGVSZXN0b3JlVGltZT0yNTV1cyBQb3J0VFBv
+d2VyT25UaW1lPTEwdXMKCUNhcGFiaWxpdGllczogWzEyOCB2MV0gUG93ZXIgQnVkZ2V0aW5nIDw/
+PgoJQ2FwYWJpbGl0aWVzOiBbNjAwIHYxXSBWZW5kb3IgU3BlY2lmaWMgSW5mb3JtYXRpb246IElE
+PTAwMDEgUmV2PTEgTGVuPTAyNCA8Pz4KCUNhcGFiaWxpdGllczogWzkwMCB2MV0gIzE5CglLZXJu
+ZWwgbW9kdWxlczogbm91dmVhdQoKM2I6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IEludGVsIENv
+cnBvcmF0aW9uIFdpcmVsZXNzIDcyNjAgKHJldiA3MykKCVN1YnN5c3RlbTogSW50ZWwgQ29ycG9y
+YXRpb24gRHVhbCBCYW5kIFdpcmVsZXNzLU4gNzI2MAoJUGh5c2ljYWwgU2xvdDogMQoJQ29udHJv
+bDogSS9PLSBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FTbm9vcC0gUGFy
+RXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeCsKCVN0YXR1czogQ2FwKyA2Nk1I
+ei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERFVlNFTD1mYXN0ID5UQWJvcnQtIDxUQWJvcnQtIDxN
+QWJvcnQtID5TRVJSLSA8UEVSUi0gSU5UeC0KCUxhdGVuY3k6IDAsIENhY2hlIExpbmUgU2l6ZTog
+NjQgYnl0ZXMKCUludGVycnVwdDogcGluIEEgcm91dGVkIHRvIElSUSAzMQoJUmVnaW9uIDA6IE1l
+bW9yeSBhdCBlZDkwMDAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT04S10KCUNh
+cGFiaWxpdGllczogW2M4XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJCUZsYWdzOiBQTUVD
+bGstIERTSSsgRDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUoRDArLEQxLSxEMi0sRDNob3QrLEQz
+Y29sZCspCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QtIFBNRS1FbmFibGUtIERTZWw9MCBEU2NhbGU9
+MCBQTUUtCglDYXBhYmlsaXRpZXM6IFtkMF0gTVNJOiBFbmFibGUrIENvdW50PTEvMSBNYXNrYWJs
+ZS0gNjRiaXQrCgkJQWRkcmVzczogMDAwMDAwMDBmZWUwMDNiOCAgRGF0YTogMDAwMAoJQ2FwYWJp
+bGl0aWVzOiBbNDBdIEV4cHJlc3MgKHYyKSBFbmRwb2ludCwgTVNJIDAwCgkJRGV2Q2FwOglNYXhQ
+YXlsb2FkIDEyOCBieXRlcywgUGhhbnRGdW5jIDAsIExhdGVuY3kgTDBzIDw1MTJucywgTDEgdW5s
+aW1pdGVkCgkJCUV4dFRhZy0gQXR0bkJ0bi0gQXR0bkluZC0gUHdySW5kLSBSQkUrIEZMUmVzZXQr
+CgkJRGV2Q3RsOglSZXBvcnQgZXJyb3JzOiBDb3JyZWN0YWJsZS0gTm9uLUZhdGFsLSBGYXRhbC0g
+VW5zdXBwb3J0ZWQtCgkJCVJseGRPcmQrIEV4dFRhZy0gUGhhbnRGdW5jLSBBdXhQd3IrIE5vU25v
+b3ArIEZMUmVzZXQtCgkJCU1heFBheWxvYWQgMTI4IGJ5dGVzLCBNYXhSZWFkUmVxIDEyOCBieXRl
+cwoJCURldlN0YToJQ29yckVycisgVW5jb3JyRXJyLSBGYXRhbEVyci0gVW5zdXBwUmVxKyBBdXhQ
+d3IrIFRyYW5zUGVuZC0KCQlMbmtDYXA6CVBvcnQgIzAsIFNwZWVkIDIuNUdUL3MsIFdpZHRoIHgx
+LCBBU1BNIEwwcyBMMSwgRXhpdCBMYXRlbmN5IEwwcyA8NHVzLCBMMSA8MzJ1cwoJCQlDbG9ja1BN
+KyBTdXJwcmlzZS0gTExBY3RSZXAtIEJ3Tm90LSBBU1BNT3B0Q29tcC0KCQlMbmtDdGw6CUFTUE0g
+TDEgRW5hYmxlZDsgUkNCIDY0IGJ5dGVzIERpc2FibGVkLSBDb21tQ2xrKwoJCQlFeHRTeW5jaC0g
+Q2xvY2tQTSsgQXV0V2lkRGlzLSBCV0ludC0gQXV0QldJbnQtCgkJTG5rU3RhOglTcGVlZCAyLjVH
+VC9zLCBXaWR0aCB4MSwgVHJFcnItIFRyYWluLSBTbG90Q2xrKyBETEFjdGl2ZS0gQldNZ210LSBB
+QldNZ210LQoJCURldkNhcDI6IENvbXBsZXRpb24gVGltZW91dDogUmFuZ2UgQiwgVGltZW91dERp
+cyssIExUUissIE9CRkYgVmlhIFdBS0UjCgkJRGV2Q3RsMjogQ29tcGxldGlvbiBUaW1lb3V0OiAx
+Nm1zIHRvIDU1bXMsIFRpbWVvdXREaXMtLCBMVFIrLCBPQkZGIERpc2FibGVkCgkJTG5rQ3RsMjog
+VGFyZ2V0IExpbmsgU3BlZWQ6IDIuNUdUL3MsIEVudGVyQ29tcGxpYW5jZS0gU3BlZWREaXMtCgkJ
+CSBUcmFuc21pdCBNYXJnaW46IE5vcm1hbCBPcGVyYXRpbmcgUmFuZ2UsIEVudGVyTW9kaWZpZWRD
+b21wbGlhbmNlLSBDb21wbGlhbmNlU09TLQoJCQkgQ29tcGxpYW5jZSBEZS1lbXBoYXNpczogLTZk
+QgoJCUxua1N0YTI6IEN1cnJlbnQgRGUtZW1waGFzaXMgTGV2ZWw6IC0zLjVkQiwgRXF1YWxpemF0
+aW9uQ29tcGxldGUtLCBFcXVhbGl6YXRpb25QaGFzZTEtCgkJCSBFcXVhbGl6YXRpb25QaGFzZTIt
+LCBFcXVhbGl6YXRpb25QaGFzZTMtLCBMaW5rRXF1YWxpemF0aW9uUmVxdWVzdC0KCUNhcGFiaWxp
+dGllczogWzEwMCB2MV0gQWR2YW5jZWQgRXJyb3IgUmVwb3J0aW5nCgkJVUVTdGE6CURMUC0gU0RF
+Uy0gVExQLSBGQ1AtIENtcGx0VE8tIENtcGx0QWJydC0gVW54Q21wbHQtIFJ4T0YtIE1hbGZUTFAt
+IEVDUkMtIFVuc3VwUmVxLSBBQ1NWaW9sLQoJCVVFTXNrOglETFAtIFNERVMtIFRMUC0gRkNQLSBD
+bXBsdFRPLSBDbXBsdEFicnQtIFVueENtcGx0LSBSeE9GLSBNYWxmVExQLSBFQ1JDLSBVbnN1cFJl
+cS0gQUNTVmlvbC0KCQlVRVN2cnQ6CURMUCsgU0RFUysgVExQLSBGQ1ArIENtcGx0VE8tIENtcGx0
+QWJydC0gVW54Q21wbHQtIFJ4T0YrIE1hbGZUTFArIEVDUkMtIFVuc3VwUmVxLSBBQ1NWaW9sLQoJ
+CUNFU3RhOglSeEVyci0gQmFkVExQKyBCYWRETExQLSBSb2xsb3Zlci0gVGltZW91dC0gTm9uRmF0
+YWxFcnIrCgkJQ0VNc2s6CVJ4RXJyLSBCYWRUTFAtIEJhZERMTFAtIFJvbGxvdmVyLSBUaW1lb3V0
+LSBOb25GYXRhbEVycisKCQlBRVJDYXA6CUZpcnN0IEVycm9yIFBvaW50ZXI6IDAwLCBHZW5DYXAt
+IENHZW5Fbi0gQ2hrQ2FwLSBDaGtFbi0KCUNhcGFiaWxpdGllczogWzE0MCB2MV0gRGV2aWNlIFNl
+cmlhbCBOdW1iZXIgZjgtMTYtNTQtZmYtZmYtYjgtMzctZTcKCUNhcGFiaWxpdGllczogWzE0YyB2
+MV0gTGF0ZW5jeSBUb2xlcmFuY2UgUmVwb3J0aW5nCgkJTWF4IHNub29wIGxhdGVuY3k6IDcxNjgw
+bnMKCQlNYXggbm8gc25vb3AgbGF0ZW5jeTogNzE2ODBucwoJQ2FwYWJpbGl0aWVzOiBbMTU0IHYx
+XSBWZW5kb3IgU3BlY2lmaWMgSW5mb3JtYXRpb246IElEPWNhZmUgUmV2PTEgTGVuPTAxNCA8Pz4K
+CUtlcm5lbCBkcml2ZXIgaW4gdXNlOiBpd2x3aWZpCglLZXJuZWwgbW9kdWxlczogaXdsd2lmaQoK
+M2M6MDAuMCBFdGhlcm5ldCBjb250cm9sbGVyOiBRdWFsY29tbSBBdGhlcm9zIFFDQTgxNzEgR2ln
+YWJpdCBFdGhlcm5ldCAocmV2IDEwKQoJU3Vic3lzdGVtOiBBU1VTVGVLIENvbXB1dGVyIEluYy4g
+RGV2aWNlIDIwMGYKCUNvbnRyb2w6IEkvTysgTWVtKyBCdXNNYXN0ZXIrIFNwZWNDeWNsZS0gTWVt
+V0lOVi0gVkdBU25vb3AtIFBhckVyci0gU3RlcHBpbmctIFNFUlItIEZhc3RCMkItIERpc0lOVHgt
+CglTdGF0dXM6IENhcCsgNjZNSHotIFVERi0gRmFzdEIyQi0gUGFyRXJyLSBERVZTRUw9ZmFzdCA+
+VEFib3J0LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItIElOVHgtCglMYXRlbmN5OiAw
+LCBDYWNoZSBMaW5lIFNpemU6IDY0IGJ5dGVzCglJbnRlcnJ1cHQ6IHBpbiBBIHJvdXRlZCB0byBJ
+UlEgMzQKCVJlZ2lvbiAwOiBNZW1vcnkgYXQgZWQ4MDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNo
+YWJsZSkgW3NpemU9MjU2S10KCVJlZ2lvbiAyOiBJL08gcG9ydHMgYXQgZDAwMCBbc2l6ZT0xMjhd
+CglDYXBhYmlsaXRpZXM6IFs0MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCQlGbGFnczog
+UE1FQ2xrLSBEU0ktIEQxLSBEMi0gQXV4Q3VycmVudD0zNzVtQSBQTUUoRDArLEQxKyxEMissRDNo
+b3QrLEQzY29sZCspCgkJU3RhdHVzOiBEMCBOb1NvZnRSc3QrIFBNRS1FbmFibGUtIERTZWw9MCBE
+U2NhbGU9MCBQTUUtCglDYXBhYmlsaXRpZXM6IFs1OF0gRXhwcmVzcyAodjEpIEVuZHBvaW50LCBN
+U0kgMDAKCQlEZXZDYXA6CU1heFBheWxvYWQgNDA5NiBieXRlcywgUGhhbnRGdW5jIDAsIExhdGVu
+Y3kgTDBzIHVubGltaXRlZCwgTDEgdW5saW1pdGVkCgkJCUV4dFRhZy0gQXR0bkJ0bisgQXR0bklu
+ZCsgUHdySW5kKyBSQkUrIEZMUmVzZXQtCgkJRGV2Q3RsOglSZXBvcnQgZXJyb3JzOiBDb3JyZWN0
+YWJsZSsgTm9uLUZhdGFsKyBGYXRhbCsgVW5zdXBwb3J0ZWQrCgkJCVJseGRPcmQtIEV4dFRhZy0g
+UGhhbnRGdW5jLSBBdXhQd3ItIE5vU25vb3AtCgkJCU1heFBheWxvYWQgMTI4IGJ5dGVzLCBNYXhS
+ZWFkUmVxIDUxMiBieXRlcwoJCURldlN0YToJQ29yckVyci0gVW5jb3JyRXJyKyBGYXRhbEVyci0g
+VW5zdXBwUmVxKyBBdXhQd3IrIFRyYW5zUGVuZC0KCQlMbmtDYXA6CVBvcnQgIzAsIFNwZWVkIDIu
+NUdUL3MsIFdpZHRoIHgxLCBBU1BNIEwwcyBMMSwgRXhpdCBMYXRlbmN5IEwwcyB1bmxpbWl0ZWQs
+IEwxIHVubGltaXRlZAoJCQlDbG9ja1BNKyBTdXJwcmlzZS0gTExBY3RSZXAtIEJ3Tm90LSBBU1BN
+T3B0Q29tcC0KCQlMbmtDdGw6CUFTUE0gRGlzYWJsZWQ7IFJDQiA2NCBieXRlcyBEaXNhYmxlZC0g
+Q29tbUNsaysKCQkJRXh0U3luY2gtIENsb2NrUE0rIEF1dFdpZERpcy0gQldJbnQtIEF1dEJXSW50
+LQoJCUxua1N0YToJU3BlZWQgMi41R1QvcywgV2lkdGggeDEsIFRyRXJyLSBUcmFpbi0gU2xvdENs
+aysgRExBY3RpdmUtIEJXTWdtdC0gQUJXTWdtdC0KCUNhcGFiaWxpdGllczogW2MwXSBNU0k6IEVu
+YWJsZSsgQ291bnQ9MS8xNiBNYXNrYWJsZSsgNjRiaXQrCgkJQWRkcmVzczogMDAwMDAwMDBmZWUw
+MDQzOCAgRGF0YTogMDAwMAoJCU1hc2tpbmc6IDAwMDBmZmZlICBQZW5kaW5nOiAwMDAwMDAwMAoJ
+Q2FwYWJpbGl0aWVzOiBbZDhdIE1TSS1YOiBFbmFibGUtIENvdW50PTE2IE1hc2tlZC0KCQlWZWN0
+b3IgdGFibGU6IEJBUj0wIG9mZnNldD0wMDAwMjAwMAoJCVBCQTogQkFSPTAgb2Zmc2V0PTAwMDAz
+MDAwCglDYXBhYmlsaXRpZXM6IFsxMDAgdjFdIEFkdmFuY2VkIEVycm9yIFJlcG9ydGluZwoJCVVF
+U3RhOglETFAtIFNERVMtIFRMUC0gRkNQLSBDbXBsdFRPLSBDbXBsdEFicnQtIFVueENtcGx0LSBS
+eE9GLSBNYWxmVExQLSBFQ1JDLSBVbnN1cFJlcSsgQUNTVmlvbC0KCQlVRU1zazoJRExQLSBTREVT
+LSBUTFAtIEZDUC0gQ21wbHRUTy0gQ21wbHRBYnJ0LSBVbnhDbXBsdC0gUnhPRi0gTWFsZlRMUC0g
+RUNSQy0gVW5zdXBSZXEtIEFDU1Zpb2wtCgkJVUVTdnJ0OglETFAtIFNERVMrIFRMUC0gRkNQLSBD
+bXBsdFRPLSBDbXBsdEFicnQtIFVueENtcGx0LSBSeE9GKyBNYWxmVExQKyBFQ1JDLSBVbnN1cFJl
+cS0gQUNTVmlvbC0KCQlDRVN0YToJUnhFcnItIEJhZFRMUC0gQmFkRExMUC0gUm9sbG92ZXItIFRp
+bWVvdXQtIE5vbkZhdGFsRXJyLQoJCUNFTXNrOglSeEVyci0gQmFkVExQLSBCYWRETExQLSBSb2xs
+b3Zlci0gVGltZW91dC0gTm9uRmF0YWxFcnIrCgkJQUVSQ2FwOglGaXJzdCBFcnJvciBQb2ludGVy
+OiAxNCwgR2VuQ2FwKyBDR2VuRW4tIENoa0NhcCsgQ2hrRW4tCglDYXBhYmlsaXRpZXM6IFsxODAg
+djFdIERldmljZSBTZXJpYWwgTnVtYmVyIGZmLWNlLWMzLWQ0LTA4LTYyLTY2LWZmCglLZXJuZWwg
+ZHJpdmVyIGluIHVzZTogYWx4CglLZXJuZWwgbW9kdWxlczogYWx4Cgo=
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=US-ASCII; name="pacmd_list-cards.txt"
+Content-Disposition: attachment; filename="pacmd_list-cards.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iamly6g71
+
+cGFjbWQgbGlzdC1jYXJkcwoyIGNhcmQocykgYXZhaWxhYmxlLgogICAgaW5kZXg6IDAKCW5hbWU6
+IDxhbHNhX2NhcmQucGNpLTAwMDBfMDBfMDMuMD4KCWRyaXZlcjogPG1vZHVsZS1hbHNhLWNhcmQu
+Yz4KCW93bmVyIG1vZHVsZTogNgoJcHJvcGVydGllczoKCQlhbHNhLmNhcmQgPSAiMCIKCQlhbHNh
+LmNhcmRfbmFtZSA9ICJIREEgSW50ZWwgSERNSSIKCQlhbHNhLmxvbmdfY2FyZF9uYW1lID0gIkhE
+QSBJbnRlbCBIRE1JIGF0IDB4ZWRhMTQwMDAgaXJxIDMzIgoJCWFsc2EuZHJpdmVyX25hbWUgPSAi
+c25kX2hkYV9pbnRlbCIKCQlkZXZpY2UuYnVzX3BhdGggPSAicGNpLTAwMDA6MDA6MDMuMCIKCQlz
+eXNmcy5wYXRoID0gIi9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMy4wL3NvdW5kL2NhcmQw
+IgoJCWRldmljZS5idXMgPSAicGNpIgoJCWRldmljZS52ZW5kb3IuaWQgPSAiODA4NiIKCQlkZXZp
+Y2UudmVuZG9yLm5hbWUgPSAiSW50ZWwgQ29ycG9yYXRpb24iCgkJZGV2aWNlLnByb2R1Y3QuaWQg
+PSAiMGMwYyIKCQlkZXZpY2UucHJvZHVjdC5uYW1lID0gIlhlb24gRTMtMTIwMCB2My80dGggR2Vu
+IENvcmUgUHJvY2Vzc29yIEhEIEF1ZGlvIENvbnRyb2xsZXIiCgkJZGV2aWNlLmZvcm1fZmFjdG9y
+ID0gImludGVybmFsIgoJCWRldmljZS5zdHJpbmcgPSAiMCIKCQlkZXZpY2UuZGVzY3JpcHRpb24g
+PSAiQnVpbHQtaW4gQXVkaW8iCgkJbW9kdWxlLXVkZXYtZGV0ZWN0LmRpc2NvdmVyZWQgPSAiMSIK
+CQlkZXZpY2UuaWNvbl9uYW1lID0gImF1ZGlvLWNhcmQtcGNpIgoJcHJvZmlsZXM6CgkJb3V0cHV0
+OmhkbWktc3RlcmVvOiBEaWdpdGFsIFN0ZXJlbyAoSERNSSkgT3V0cHV0IChwcmlvcml0eSA1NDAw
+LCBhdmFpbGFibGU6IHVua25vd24pCgkJb3V0cHV0OmhkbWktc3Vycm91bmQ6IERpZ2l0YWwgU3Vy
+cm91bmQgNS4xIChIRE1JKSBPdXRwdXQgKHByaW9yaXR5IDMwMCwgYXZhaWxhYmxlOiB1bmtub3du
+KQoJCW91dHB1dDpoZG1pLXN1cnJvdW5kNzE6IERpZ2l0YWwgU3Vycm91bmQgNy4xIChIRE1JKSBP
+dXRwdXQgKHByaW9yaXR5IDMwMCwgYXZhaWxhYmxlOiB1bmtub3duKQoJCW91dHB1dDpoZG1pLXN0
+ZXJlby1leHRyYTE6IERpZ2l0YWwgU3RlcmVvIChIRE1JIDIpIE91dHB1dCAocHJpb3JpdHkgNTIw
+MCwgYXZhaWxhYmxlOiB1bmtub3duKQoJCW91dHB1dDpoZG1pLXN1cnJvdW5kLWV4dHJhMTogRGln
+aXRhbCBTdXJyb3VuZCA1LjEgKEhETUkgMikgT3V0cHV0IChwcmlvcml0eSAxMDAsIGF2YWlsYWJs
+ZTogdW5rbm93bikKCQlvdXRwdXQ6aGRtaS1zdXJyb3VuZDcxLWV4dHJhMTogRGlnaXRhbCBTdXJy
+b3VuZCA3LjEgKEhETUkgMikgT3V0cHV0IChwcmlvcml0eSAxMDAsIGF2YWlsYWJsZTogdW5rbm93
+bikKCQlvdXRwdXQ6aGRtaS1zdGVyZW8tZXh0cmEyOiBEaWdpdGFsIFN0ZXJlbyAoSERNSSAzKSBP
+dXRwdXQgKHByaW9yaXR5IDUyMDAsIGF2YWlsYWJsZTogdW5rbm93bikKCQlvdXRwdXQ6aGRtaS1z
+dXJyb3VuZC1leHRyYTI6IERpZ2l0YWwgU3Vycm91bmQgNS4xIChIRE1JIDMpIE91dHB1dCAocHJp
+b3JpdHkgMTAwLCBhdmFpbGFibGU6IHVua25vd24pCgkJb3V0cHV0OmhkbWktc3Vycm91bmQ3MS1l
+eHRyYTI6IERpZ2l0YWwgU3Vycm91bmQgNy4xIChIRE1JIDMpIE91dHB1dCAocHJpb3JpdHkgMTAw
+LCBhdmFpbGFibGU6IHVua25vd24pCgkJb2ZmOiBPZmYgKHByaW9yaXR5IDAsIGF2YWlsYWJsZTog
+dW5rbm93bikKCWFjdGl2ZSBwcm9maWxlOiA8b3V0cHV0OmhkbWktc3RlcmVvPgoJc2lua3M6CgkJ
+YWxzYV9vdXRwdXQucGNpLTAwMDBfMDBfMDMuMC5oZG1pLXN0ZXJlby8jMDogQnVpbHQtaW4gQXVk
+aW8gRGlnaXRhbCBTdGVyZW8gKEhETUkpCglzb3VyY2VzOgoJCWFsc2Ffb3V0cHV0LnBjaS0wMDAw
+XzAwXzAzLjAuaGRtaS1zdGVyZW8ubW9uaXRvci8jMDogTW9uaXRvciBvZiBCdWlsdC1pbiBBdWRp
+byBEaWdpdGFsIFN0ZXJlbyAoSERNSSkKCXBvcnRzOgoJCWhkbWktb3V0cHV0LTA6IEhETUkgLyBE
+aXNwbGF5UG9ydCAocHJpb3JpdHkgNTkwMCwgbGF0ZW5jeSBvZmZzZXQgMCB1c2VjLCBhdmFpbGFi
+bGU6IG5vKQoJCQlwcm9wZXJ0aWVzOgoJCQkJZGV2aWNlLmljb25fbmFtZSA9ICJ2aWRlby1kaXNw
+bGF5IgoJCWhkbWktb3V0cHV0LTE6IEhETUkgLyBEaXNwbGF5UG9ydCAyIChwcmlvcml0eSA1ODAw
+LCBsYXRlbmN5IG9mZnNldCAwIHVzZWMsIGF2YWlsYWJsZTogbm8pCgkJCXByb3BlcnRpZXM6CgkJ
+CQlkZXZpY2UuaWNvbl9uYW1lID0gInZpZGVvLWRpc3BsYXkiCgkJaGRtaS1vdXRwdXQtMjogSERN
+SSAvIERpc3BsYXlQb3J0IDMgKHByaW9yaXR5IDU3MDAsIGxhdGVuY3kgb2Zmc2V0IDAgdXNlYywg
+YXZhaWxhYmxlOiBubykKCQkJcHJvcGVydGllczoKCQkJCWRldmljZS5pY29uX25hbWUgPSAidmlk
+ZW8tZGlzcGxheSIKICAgIGluZGV4OiAxCgluYW1lOiA8YWxzYV9jYXJkLnBjaS0wMDAwXzAwXzFi
+LjA+Cglkcml2ZXI6IDxtb2R1bGUtYWxzYS1jYXJkLmM+Cglvd25lciBtb2R1bGU6IDcKCXByb3Bl
+cnRpZXM6CgkJYWxzYS5jYXJkID0gIjEiCgkJYWxzYS5jYXJkX25hbWUgPSAiSERBIEludGVsIFBD
+SCIKCQlhbHNhLmxvbmdfY2FyZF9uYW1lID0gIkhEQSBJbnRlbCBQQ0ggYXQgMHhlZGExMDAwMCBp
+cnEgMzIiCgkJYWxzYS5kcml2ZXJfbmFtZSA9ICJzbmRfaGRhX2ludGVsIgoJCWRldmljZS5idXNf
+cGF0aCA9ICJwY2ktMDAwMDowMDoxYi4wIgoJCXN5c2ZzLnBhdGggPSAiL2RldmljZXMvcGNpMDAw
+MDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDEiCgkJZGV2aWNlLmJ1cyA9ICJwY2kiCgkJZGV2
+aWNlLnZlbmRvci5pZCA9ICI4MDg2IgoJCWRldmljZS52ZW5kb3IubmFtZSA9ICJJbnRlbCBDb3Jw
+b3JhdGlvbiIKCQlkZXZpY2UucHJvZHVjdC5pZCA9ICI4YzIwIgoJCWRldmljZS5wcm9kdWN0Lm5h
+bWUgPSAiOCBTZXJpZXMvQzIyMCBTZXJpZXMgQ2hpcHNldCBIaWdoIERlZmluaXRpb24gQXVkaW8g
+Q29udHJvbGxlciIKCQlkZXZpY2UuZm9ybV9mYWN0b3IgPSAiaW50ZXJuYWwiCgkJZGV2aWNlLnN0
+cmluZyA9ICIxIgoJCWRldmljZS5kZXNjcmlwdGlvbiA9ICJCdWlsdC1pbiBBdWRpbyIKCQltb2R1
+bGUtdWRldi1kZXRlY3QuZGlzY292ZXJlZCA9ICIxIgoJCWRldmljZS5pY29uX25hbWUgPSAiYXVk
+aW8tY2FyZC1wY2kiCglwcm9maWxlczoKCQlpbnB1dDphbmFsb2ctc3RlcmVvOiBBbmFsb2cgU3Rl
+cmVvIElucHV0IChwcmlvcml0eSA2MCwgYXZhaWxhYmxlOiB1bmtub3duKQoJCW91dHB1dDphbmFs
+b2ctc3RlcmVvOiBBbmFsb2cgU3RlcmVvIE91dHB1dCAocHJpb3JpdHkgNjAwMCwgYXZhaWxhYmxl
+OiB1bmtub3duKQoJCW91dHB1dDphbmFsb2ctc3RlcmVvK2lucHV0OmFuYWxvZy1zdGVyZW86IEFu
+YWxvZyBTdGVyZW8gRHVwbGV4IChwcmlvcml0eSA2MDYwLCBhdmFpbGFibGU6IHVua25vd24pCgkJ
+b3V0cHV0OmFuYWxvZy1zdXJyb3VuZC00MDogQW5hbG9nIFN1cnJvdW5kIDQuMCBPdXRwdXQgKHBy
+aW9yaXR5IDcwMCwgYXZhaWxhYmxlOiB1bmtub3duKQoJCW91dHB1dDphbmFsb2ctc3Vycm91bmQt
+NDAraW5wdXQ6YW5hbG9nLXN0ZXJlbzogQW5hbG9nIFN1cnJvdW5kIDQuMCBPdXRwdXQgKyBBbmFs
+b2cgU3RlcmVvIElucHV0IChwcmlvcml0eSA3NjAsIGF2YWlsYWJsZTogdW5rbm93bikKCQlvdXRw
+dXQ6aWVjOTU4LXN0ZXJlbzogRGlnaXRhbCBTdGVyZW8gKElFQzk1OCkgT3V0cHV0IChwcmlvcml0
+eSA1NTAwLCBhdmFpbGFibGU6IHVua25vd24pCgkJb3V0cHV0OmllYzk1OC1zdGVyZW8raW5wdXQ6
+YW5hbG9nLXN0ZXJlbzogRGlnaXRhbCBTdGVyZW8gKElFQzk1OCkgT3V0cHV0ICsgQW5hbG9nIFN0
+ZXJlbyBJbnB1dCAocHJpb3JpdHkgNTU2MCwgYXZhaWxhYmxlOiB1bmtub3duKQoJCW9mZjogT2Zm
+IChwcmlvcml0eSAwLCBhdmFpbGFibGU6IHVua25vd24pCglhY3RpdmUgcHJvZmlsZTogPG91dHB1
+dDphbmFsb2ctc3RlcmVvPgoJc2lua3M6CgkJYWxzYV9vdXRwdXQucGNpLTAwMDBfMDBfMWIuMC5h
+bmFsb2ctc3RlcmVvLyM4OiBCdWlsdC1pbiBBdWRpbyBBbmFsb2cgU3RlcmVvCglzb3VyY2VzOgoJ
+CWFsc2Ffb3V0cHV0LnBjaS0wMDAwXzAwXzFiLjAuYW5hbG9nLXN0ZXJlby5tb25pdG9yLyMxMTog
+TW9uaXRvciBvZiBCdWlsdC1pbiBBdWRpbyBBbmFsb2cgU3RlcmVvCglwb3J0czoKCQlhbmFsb2ct
+aW5wdXQtaW50ZXJuYWwtbWljOiBJbnRlcm5hbCBNaWNyb3Bob25lIChwcmlvcml0eSA4OTAwLCBs
+YXRlbmN5IG9mZnNldCAwIHVzZWMsIGF2YWlsYWJsZTogdW5rbm93bikKCQkJcHJvcGVydGllczoK
+CQkJCWRldmljZS5pY29uX25hbWUgPSAiYXVkaW8taW5wdXQtbWljcm9waG9uZSIKCQlhbmFsb2ct
+aW5wdXQtbWljOiBNaWNyb3Bob25lIChwcmlvcml0eSA4NzAwLCBsYXRlbmN5IG9mZnNldCAwIHVz
+ZWMsIGF2YWlsYWJsZTogbm8pCgkJCXByb3BlcnRpZXM6CgkJCQlkZXZpY2UuaWNvbl9uYW1lID0g
+ImF1ZGlvLWlucHV0LW1pY3JvcGhvbmUiCgkJYW5hbG9nLW91dHB1dC1saW5lb3V0OiBMaW5lIE91
+dCAocHJpb3JpdHkgOTkwMCwgbGF0ZW5jeSBvZmZzZXQgMCB1c2VjLCBhdmFpbGFibGU6IHllcykK
+CQkJcHJvcGVydGllczoKCQkJCQoJCWFuYWxvZy1vdXRwdXQtc3BlYWtlcjogU3BlYWtlcnMgKHBy
+aW9yaXR5IDEwMDAwLCBsYXRlbmN5IG9mZnNldCAwIHVzZWMsIGF2YWlsYWJsZTogbm8pCgkJCXBy
+b3BlcnRpZXM6CgkJCQlkZXZpY2UuaWNvbl9uYW1lID0gImF1ZGlvLXNwZWFrZXJzIgoJCWllYzk1
+OC1zdGVyZW8tb3V0cHV0OiBEaWdpdGFsIE91dHB1dCAoUy9QRElGKSAocHJpb3JpdHkgMCwgbGF0
+ZW5jeSBvZmZzZXQgMCB1c2VjLCBhdmFpbGFibGU6IHVua25vd24pCgkJCXByb3BlcnRpZXM6CgkJ
+CQo=
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=US-ASCII; name="pacmd_list-sinks.txt"
+Content-Disposition: attachment; filename="pacmd_list-sinks.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iamly6go2
+
+MiBzaW5rKHMpIGF2YWlsYWJsZS4KICAgIGluZGV4OiAwCgluYW1lOiA8YWxzYV9vdXRwdXQucGNp
+LTAwMDBfMDBfMDMuMC5oZG1pLXN0ZXJlbz4KCWRyaXZlcjogPG1vZHVsZS1hbHNhLWNhcmQuYz4K
+CWZsYWdzOiBIQVJEV0FSRSBERUNJQkVMX1ZPTFVNRSBMQVRFTkNZIEZMQVRfVk9MVU1FIERZTkFN
+SUNfTEFURU5DWQoJc3RhdGU6IFNVU1BFTkRFRAoJc3VzcGVuZCBjYXVzZTogSURMRSAKCXByaW9y
+aXR5OiA5OTUwCgl2b2x1bWU6IGZyb250LWxlZnQ6IDY1NTM2IC8gMTAwJSAvIDAuMDAgZEIsICAg
+ZnJvbnQtcmlnaHQ6IDY1NTM2IC8gMTAwJSAvIDAuMDAgZEIKCSAgICAgICAgYmFsYW5jZSAwLjAw
+CgliYXNlIHZvbHVtZTogNjU1MzYgLyAxMDAlIC8gMC4wMCBkQgoJdm9sdW1lIHN0ZXBzOiA2NTUz
+NwoJbXV0ZWQ6IG5vCgljdXJyZW50IGxhdGVuY3k6IDAuMDAgbXMKCW1heCByZXF1ZXN0OiAwIEtp
+QgoJbWF4IHJld2luZDogMCBLaUIKCW1vbml0b3Igc291cmNlOiAwCglzYW1wbGUgc3BlYzogczE2
+bGUgMmNoIDQ0MTAwSHoKCWNoYW5uZWwgbWFwOiBmcm9udC1sZWZ0LGZyb250LXJpZ2h0CgkgICAg
+ICAgICAgICAgU3RlcmVvCgl1c2VkIGJ5OiAwCglsaW5rZWQgYnk6IDAKCWNvbmZpZ3VyZWQgbGF0
+ZW5jeTogMC4wMCBtczsgcmFuZ2UgaXMgMC41MCAuLiAxOTk5LjgyIG1zCgljYXJkOiAwIDxhbHNh
+X2NhcmQucGNpLTAwMDBfMDBfMDMuMD4KCW1vZHVsZTogNgoJcHJvcGVydGllczoKCQlhbHNhLnJl
+c29sdXRpb25fYml0cyA9ICIxNiIKCQlkZXZpY2UuYXBpID0gImFsc2EiCgkJZGV2aWNlLmNsYXNz
+ID0gInNvdW5kIgoJCWFsc2EuY2xhc3MgPSAiZ2VuZXJpYyIKCQlhbHNhLnN1YmNsYXNzID0gImdl
+bmVyaWMtbWl4IgoJCWFsc2EubmFtZSA9ICJIRE1JIDAiCgkJYWxzYS5pZCA9ICJIRE1JIDAiCgkJ
+YWxzYS5zdWJkZXZpY2UgPSAiMCIKCQlhbHNhLnN1YmRldmljZV9uYW1lID0gInN1YmRldmljZSAj
+MCIKCQlhbHNhLmRldmljZSA9ICIzIgoJCWFsc2EuY2FyZCA9ICIwIgoJCWFsc2EuY2FyZF9uYW1l
+ID0gIkhEQSBJbnRlbCBIRE1JIgoJCWFsc2EubG9uZ19jYXJkX25hbWUgPSAiSERBIEludGVsIEhE
+TUkgYXQgMHhlZGExNDAwMCBpcnEgMzMiCgkJYWxzYS5kcml2ZXJfbmFtZSA9ICJzbmRfaGRhX2lu
+dGVsIgoJCWRldmljZS5idXNfcGF0aCA9ICJwY2ktMDAwMDowMDowMy4wIgoJCXN5c2ZzLnBhdGgg
+PSAiL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjAzLjAvc291bmQvY2FyZDAiCgkJZGV2aWNl
+LmJ1cyA9ICJwY2kiCgkJZGV2aWNlLnZlbmRvci5pZCA9ICI4MDg2IgoJCWRldmljZS52ZW5kb3Iu
+bmFtZSA9ICJJbnRlbCBDb3Jwb3JhdGlvbiIKCQlkZXZpY2UucHJvZHVjdC5pZCA9ICIwYzBjIgoJ
+CWRldmljZS5wcm9kdWN0Lm5hbWUgPSAiWGVvbiBFMy0xMjAwIHYzLzR0aCBHZW4gQ29yZSBQcm9j
+ZXNzb3IgSEQgQXVkaW8gQ29udHJvbGxlciIKCQlkZXZpY2UuZm9ybV9mYWN0b3IgPSAiaW50ZXJu
+YWwiCgkJZGV2aWNlLnN0cmluZyA9ICJoZG1pOjAiCgkJZGV2aWNlLmJ1ZmZlcmluZy5idWZmZXJf
+c2l6ZSA9ICIzNTI3NjgiCgkJZGV2aWNlLmJ1ZmZlcmluZy5mcmFnbWVudF9zaXplID0gIjE3NjM4
+NCIKCQlkZXZpY2UuYWNjZXNzX21vZGUgPSAibW1hcCt0aW1lciIKCQlkZXZpY2UucHJvZmlsZS5u
+YW1lID0gImhkbWktc3RlcmVvIgoJCWRldmljZS5wcm9maWxlLmRlc2NyaXB0aW9uID0gIkRpZ2l0
+YWwgU3RlcmVvIChIRE1JKSIKCQlkZXZpY2UuZGVzY3JpcHRpb24gPSAiQnVpbHQtaW4gQXVkaW8g
+RGlnaXRhbCBTdGVyZW8gKEhETUkpIgoJCWFsc2EubWl4ZXJfbmFtZSA9ICJJbnRlbCBIYXN3ZWxs
+IEhETUkiCgkJYWxzYS5jb21wb25lbnRzID0gIkhEQTo4MDg2MjgwNyw4MDg2MDEwMSwwMDEwMDAw
+MCIKCQltb2R1bGUtdWRldi1kZXRlY3QuZGlzY292ZXJlZCA9ICIxIgoJCWRldmljZS5pY29uX25h
+bWUgPSAiYXVkaW8tY2FyZC1wY2kiCglwb3J0czoKCQloZG1pLW91dHB1dC0wOiBIRE1JIC8gRGlz
+cGxheVBvcnQgKHByaW9yaXR5IDU5MDAsIGxhdGVuY3kgb2Zmc2V0IDAgdXNlYywgYXZhaWxhYmxl
+OiBubykKCQkJcHJvcGVydGllczoKCQkJCWRldmljZS5pY29uX25hbWUgPSAidmlkZW8tZGlzcGxh
+eSIKCWFjdGl2ZSBwb3J0OiA8aGRtaS1vdXRwdXQtMD4KICAqIGluZGV4OiA5CgluYW1lOiA8YWxz
+YV9vdXRwdXQucGNpLTAwMDBfMDBfMWIuMC5hbmFsb2ctc3Vycm91bmQtNDA+Cglkcml2ZXI6IDxt
+b2R1bGUtYWxzYS1jYXJkLmM+CglmbGFnczogSEFSRFdBUkUgSFdfTVVURV9DVFJMIEhXX1ZPTFVN
+RV9DVFJMIERFQ0lCRUxfVk9MVU1FIExBVEVOQ1kgRkxBVF9WT0xVTUUgRFlOQU1JQ19MQVRFTkNZ
+CglzdGF0ZTogUlVOTklORwoJc3VzcGVuZCBjYXVzZTogCglwcmlvcml0eTogOTk1OQoJdm9sdW1l
+OiBmcm9udC1sZWZ0OiA1OTA3NCAvICA5MCUgLyAtMi43MSBkQiwgICBmcm9udC1yaWdodDogNTkw
+NzQgLyAgOTAlIC8gLTIuNzEgZEIsICAgcmVhci1sZWZ0OiA1OTA3NCAvICA5MCUgLyAtMi43MSBk
+QiwgICByZWFyLXJpZ2h0OiA1OTA3NCAvICA5MCUgLyAtMi43MSBkQgoJICAgICAgICBiYWxhbmNl
+IDAuMDAKCWJhc2Ugdm9sdW1lOiA2NTUzNiAvIDEwMCUgLyAwLjAwIGRCCgl2b2x1bWUgc3RlcHM6
+IDY1NTM3CgltdXRlZDogbm8KCWN1cnJlbnQgbGF0ZW5jeTogNDkuNDEgbXMKCW1heCByZXF1ZXN0
+OiAxNyBLaUIKCW1heCByZXdpbmQ6IDY4OSBLaUIKCW1vbml0b3Igc291cmNlOiAxMgoJc2FtcGxl
+IHNwZWM6IHMxNmxlIDRjaCA0NDEwMEh6CgljaGFubmVsIG1hcDogZnJvbnQtbGVmdCxmcm9udC1y
+aWdodCxyZWFyLWxlZnQscmVhci1yaWdodAoJICAgICAgICAgICAgIFN1cnJvdW5kIDQuMAoJdXNl
+ZCBieTogMQoJbGlua2VkIGJ5OiAxCgljb25maWd1cmVkIGxhdGVuY3k6IDUwLjAyIG1zOyByYW5n
+ZSBpcyAwLjUwIC4uIDIwMDAuMDAgbXMKCWNhcmQ6IDEgPGFsc2FfY2FyZC5wY2ktMDAwMF8wMF8x
+Yi4wPgoJbW9kdWxlOiA3Cglwcm9wZXJ0aWVzOgoJCWFsc2EucmVzb2x1dGlvbl9iaXRzID0gIjE2
+IgoJCWRldmljZS5hcGkgPSAiYWxzYSIKCQlkZXZpY2UuY2xhc3MgPSAic291bmQiCgkJYWxzYS5j
+bGFzcyA9ICJnZW5lcmljIgoJCWFsc2Euc3ViY2xhc3MgPSAiZ2VuZXJpYy1taXgiCgkJYWxzYS5u
+YW1lID0gIkFMQzY2OCBBbmFsb2ciCgkJYWxzYS5pZCA9ICJBTEM2NjggQW5hbG9nIgoJCWFsc2Eu
+c3ViZGV2aWNlID0gIjAiCgkJYWxzYS5zdWJkZXZpY2VfbmFtZSA9ICJzdWJkZXZpY2UgIzAiCgkJ
+YWxzYS5kZXZpY2UgPSAiMCIKCQlhbHNhLmNhcmQgPSAiMSIKCQlhbHNhLmNhcmRfbmFtZSA9ICJI
+REEgSW50ZWwgUENIIgoJCWFsc2EubG9uZ19jYXJkX25hbWUgPSAiSERBIEludGVsIFBDSCBhdCAw
+eGVkYTEwMDAwIGlycSAzMiIKCQlhbHNhLmRyaXZlcl9uYW1lID0gInNuZF9oZGFfaW50ZWwiCgkJ
+ZGV2aWNlLmJ1c19wYXRoID0gInBjaS0wMDAwOjAwOjFiLjAiCgkJc3lzZnMucGF0aCA9ICIvZGV2
+aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMSIKCQlkZXZpY2UuYnVzID0g
+InBjaSIKCQlkZXZpY2UudmVuZG9yLmlkID0gIjgwODYiCgkJZGV2aWNlLnZlbmRvci5uYW1lID0g
+IkludGVsIENvcnBvcmF0aW9uIgoJCWRldmljZS5wcm9kdWN0LmlkID0gIjhjMjAiCgkJZGV2aWNl
+LnByb2R1Y3QubmFtZSA9ICI4IFNlcmllcy9DMjIwIFNlcmllcyBDaGlwc2V0IEhpZ2ggRGVmaW5p
+dGlvbiBBdWRpbyBDb250cm9sbGVyIgoJCWRldmljZS5mb3JtX2ZhY3RvciA9ICJpbnRlcm5hbCIK
+CQlkZXZpY2Uuc3RyaW5nID0gInN1cnJvdW5kNDA6MSIKCQlkZXZpY2UuYnVmZmVyaW5nLmJ1ZmZl
+cl9zaXplID0gIjcwNTYwMCIKCQlkZXZpY2UuYnVmZmVyaW5nLmZyYWdtZW50X3NpemUgPSAiMzUy
+ODAwIgoJCWRldmljZS5hY2Nlc3NfbW9kZSA9ICJtbWFwK3RpbWVyIgoJCWRldmljZS5wcm9maWxl
+Lm5hbWUgPSAiYW5hbG9nLXN1cnJvdW5kLTQwIgoJCWRldmljZS5wcm9maWxlLmRlc2NyaXB0aW9u
+ID0gIkFuYWxvZyBTdXJyb3VuZCA0LjAiCgkJZGV2aWNlLmRlc2NyaXB0aW9uID0gIkJ1aWx0LWlu
+IEF1ZGlvIEFuYWxvZyBTdXJyb3VuZCA0LjAiCgkJYWxzYS5taXhlcl9uYW1lID0gIlJlYWx0ZWsg
+QUxDNjY4IgoJCWFsc2EuY29tcG9uZW50cyA9ICJIREE6MTBlYzA2NjgsMTA0MzE3MWQsMDAxMDAw
+MDMiCgkJbW9kdWxlLXVkZXYtZGV0ZWN0LmRpc2NvdmVyZWQgPSAiMSIKCQlkZXZpY2UuaWNvbl9u
+YW1lID0gImF1ZGlvLWNhcmQtcGNpIgoJcG9ydHM6CgkJYW5hbG9nLW91dHB1dC1saW5lb3V0OiBM
+aW5lIE91dCAocHJpb3JpdHkgOTkwMCwgbGF0ZW5jeSBvZmZzZXQgMCB1c2VjLCBhdmFpbGFibGU6
+IHllcykKCQkJcHJvcGVydGllczoKCQkJCQoJCWFuYWxvZy1vdXRwdXQtc3BlYWtlcjogU3BlYWtl
+cnMgKHByaW9yaXR5IDEwMDAwLCBsYXRlbmN5IG9mZnNldCAwIHVzZWMsIGF2YWlsYWJsZTogbm8p
+CgkJCXByb3BlcnRpZXM6CgkJCQlkZXZpY2UuaWNvbl9uYW1lID0gImF1ZGlvLXNwZWFrZXJzIgoJ
+YWN0aXZlIHBvcnQ6IDxhbmFsb2ctb3V0cHV0LWxpbmVvdXQ+Cg==
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=US-ASCII; name="dmesg.txt"
+Content-Disposition: attachment; filename="dmesg.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iamlypzd3
+
+WyAgICAwLjAwMDAwMF0gbWljcm9jb2RlOiBDUFUwIG1pY3JvY29kZSB1cGRhdGVkIGVhcmx5IHRv
+IHJldmlzaW9uIDB4MWMsIGRhdGUgPSAyMDE0LTA3LTAzClsgICAgMC4wMDAwMDBdIEluaXRpYWxp
+emluZyBjZ3JvdXAgc3Vic3lzIGNwdXNldApbICAgIDAuMDAwMDAwXSBJbml0aWFsaXppbmcgY2dy
+b3VwIHN1YnN5cyBjcHUKWyAgICAwLjAwMDAwMF0gSW5pdGlhbGl6aW5nIGNncm91cCBzdWJzeXMg
+Y3B1YWNjdApbICAgIDAuMDAwMDAwXSBMaW51eCB2ZXJzaW9uIDQuMS4wLTAucmM2LmdpdDIuMS5m
+YzIzLng4Nl82NCAobW9ja2J1aWxkQGJrZXJuZWwwMi5waHgyLmZlZG9yYXByb2plY3Qub3JnKSAo
+Z2NjIHZlcnNpb24gNS4xLjEgMjAxNTA0MjIgKFJlZCBIYXQgNS4xLjEtMSkgKEdDQykgKSAjMSBT
+TVAgVGh1IEp1biA0IDE5OjA3OjIyIFVUQyAyMDE1ClsgICAgMC4wMDAwMDBdIENvbW1hbmQgbGlu
+ZTogQk9PVF9JTUFHRT0vYm9vdC92bWxpbnV6LTQuMS4wLTAucmM2LmdpdDIuMS5mYzIzLng4Nl82
+NCByb290PVVVSUQ9NDBhMDVjYTQtYjc0NS00MWI1LWI2YjgtN2VjNDU2ZDg2YzIwIHJvIHJoZ2Ig
+cXVpZXQgTEFORz1lbl9VUy5VVEYtOApbICAgIDAuMDAwMDAwXSBlODIwOiBCSU9TLXByb3ZpZGVk
+IHBoeXNpY2FsIFJBTSBtYXA6ClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAw
+MDAwMDAwMDAwMDAtMHgwMDAwMDAwMDAwMDljN2ZmXSB1c2FibGUKWyAgICAwLjAwMDAwMF0gQklP
+Uy1lODIwOiBbbWVtIDB4MDAwMDAwMDAwMDA5YzgwMC0weDAwMDAwMDAwMDAwOWZmZmZdIHJlc2Vy
+dmVkClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwMDAwZTAwMDAtMHgw
+MDAwMDAwMDAwMGZmZmZmXSByZXNlcnZlZApbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0g
+MHgwMDAwMDAwMDAwMTAwMDAwLTB4MDAwMDAwMDA2OTVjOWZmZl0gdXNhYmxlClsgICAgMC4wMDAw
+MDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwNjk1Y2EwMDAtMHgwMDAwMDAwMDY5NWQwZmZm
+XSBBQ1BJIE5WUwpbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0gMHgwMDAwMDAwMDY5NWQx
+MDAwLTB4MDAwMDAwMDA2OWU0M2ZmZl0gdXNhYmxlClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDog
+W21lbSAweDAwMDAwMDAwNjllNDQwMDAtMHgwMDAwMDAwMDZhMGUwZmZmXSByZXNlcnZlZApbICAg
+IDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0gMHgwMDAwMDAwMDZhMGUxMDAwLTB4MDAwMDAwMDA3
+OTg4ZWZmZl0gdXNhYmxlClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAw
+Nzk4OGYwMDAtMHgwMDAwMDAwMDc5YTk3ZmZmXSByZXNlcnZlZApbICAgIDAuMDAwMDAwXSBCSU9T
+LWU4MjA6IFttZW0gMHgwMDAwMDAwMDc5YTk4MDAwLTB4MDAwMDAwMDA3OWRlN2ZmZl0gdXNhYmxl
+ClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwNzlkZTgwMDAtMHgwMDAw
+MDAwMDdhYWYyZmZmXSBBQ1BJIE5WUwpbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0gMHgw
+MDAwMDAwMDdhYWYzMDAwLTB4MDAwMDAwMDA3YWZmZWZmZl0gcmVzZXJ2ZWQKWyAgICAwLjAwMDAw
+MF0gQklPUy1lODIwOiBbbWVtIDB4MDAwMDAwMDA3YWZmZjAwMC0weDAwMDAwMDAwN2FmZmZmZmZd
+IHVzYWJsZQpbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0gMHgwMDAwMDAwMDdiYzAwMDAw
+LTB4MDAwMDAwMDA3ZmRmZmZmZl0gcmVzZXJ2ZWQKWyAgICAwLjAwMDAwMF0gQklPUy1lODIwOiBb
+bWVtIDB4MDAwMDAwMDBmMDAwMDAwMC0weDAwMDAwMDAwZjdmZmZmZmZdIHJlc2VydmVkClsgICAg
+MC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwZmVjMDAwMDAtMHgwMDAwMDAwMGZl
+YzAwZmZmXSByZXNlcnZlZApbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0gMHgwMDAwMDAw
+MGZlZDAwMDAwLTB4MDAwMDAwMDBmZWQwM2ZmZl0gcmVzZXJ2ZWQKWyAgICAwLjAwMDAwMF0gQklP
+Uy1lODIwOiBbbWVtIDB4MDAwMDAwMDBmZWQxYzAwMC0weDAwMDAwMDAwZmVkMWZmZmZdIHJlc2Vy
+dmVkClsgICAgMC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwZmVlMDAwMDAtMHgw
+MDAwMDAwMGZlZTAwZmZmXSByZXNlcnZlZApbICAgIDAuMDAwMDAwXSBCSU9TLWU4MjA6IFttZW0g
+MHgwMDAwMDAwMGZmMDAwMDAwLTB4MDAwMDAwMDBmZmZmZmZmZl0gcmVzZXJ2ZWQKWyAgICAwLjAw
+MDAwMF0gQklPUy1lODIwOiBbbWVtIDB4MDAwMDAwMDEwMDAwMDAwMC0weDAwMDAwMDA2N2YxZmZm
+ZmZdIHVzYWJsZQpbICAgIDAuMDAwMDAwXSBOWCAoRXhlY3V0ZSBEaXNhYmxlKSBwcm90ZWN0aW9u
+OiBhY3RpdmUKWyAgICAwLjAwMDAwMF0gU01CSU9TIDIuNyBwcmVzZW50LgpbICAgIDAuMDAwMDAw
+XSBETUk6IEFTVVNUZUsgQ09NUFVURVIgSU5DLiBHNzUxSk0vRzc1MUpNLCBCSU9TIEc3NTFKTS4y
+MDYgMDkvMTUvMjAxNApbICAgIDAuMDAwMDAwXSBlODIwOiB1cGRhdGUgW21lbSAweDAwMDAwMDAw
+LTB4MDAwMDBmZmZdIHVzYWJsZSA9PT4gcmVzZXJ2ZWQKWyAgICAwLjAwMDAwMF0gZTgyMDogcmVt
+b3ZlIFttZW0gMHgwMDBhMDAwMC0weDAwMGZmZmZmXSB1c2FibGUKWyAgICAwLjAwMDAwMF0gZTgy
+MDogbGFzdF9wZm4gPSAweDY3ZjIwMCBtYXhfYXJjaF9wZm4gPSAweDQwMDAwMDAwMApbICAgIDAu
+MDAwMDAwXSBNVFJSIGRlZmF1bHQgdHlwZTogdW5jYWNoYWJsZQpbICAgIDAuMDAwMDAwXSBNVFJS
+IGZpeGVkIHJhbmdlcyBlbmFibGVkOgpbICAgIDAuMDAwMDAwXSAgIDAwMDAwLTlGRkZGIHdyaXRl
+LWJhY2sKWyAgICAwLjAwMDAwMF0gICBBMDAwMC1CRkZGRiB1bmNhY2hhYmxlClsgICAgMC4wMDAw
+MDBdICAgQzAwMDAtQ0ZGRkYgd3JpdGUtcHJvdGVjdApbICAgIDAuMDAwMDAwXSAgIEQwMDAwLUU3
+RkZGIHVuY2FjaGFibGUKWyAgICAwLjAwMDAwMF0gICBFODAwMC1GRkZGRiB3cml0ZS1wcm90ZWN0
+ClsgICAgMC4wMDAwMDBdIE1UUlIgdmFyaWFibGUgcmFuZ2VzIGVuYWJsZWQ6ClsgICAgMC4wMDAw
+MDBdICAgMCBiYXNlIDAwMDAwMDAwMDAgbWFzayA3QzAwMDAwMDAwIHdyaXRlLWJhY2sKWyAgICAw
+LjAwMDAwMF0gICAxIGJhc2UgMDQwMDAwMDAwMCBtYXNrIDdFMDAwMDAwMDAgd3JpdGUtYmFjawpb
+ICAgIDAuMDAwMDAwXSAgIDIgYmFzZSAwNjAwMDAwMDAwIG1hc2sgN0Y4MDAwMDAwMCB3cml0ZS1i
+YWNrClsgICAgMC4wMDAwMDBdICAgMyBiYXNlIDAwODAwMDAwMDAgbWFzayA3RjgwMDAwMDAwIHVu
+Y2FjaGFibGUKWyAgICAwLjAwMDAwMF0gICA0IGJhc2UgMDA3QzAwMDAwMCBtYXNrIDdGRkMwMDAw
+MDAgdW5jYWNoYWJsZQpbICAgIDAuMDAwMDAwXSAgIDUgYmFzZSAwMDdCQzAwMDAwIG1hc2sgN0ZG
+RkMwMDAwMCB1bmNhY2hhYmxlClsgICAgMC4wMDAwMDBdICAgNiBiYXNlIDA2N0Y4MDAwMDAgbWFz
+ayA3RkZGODAwMDAwIHVuY2FjaGFibGUKWyAgICAwLjAwMDAwMF0gICA3IGJhc2UgMDY3RjQwMDAw
+MCBtYXNrIDdGRkZDMDAwMDAgdW5jYWNoYWJsZQpbICAgIDAuMDAwMDAwXSAgIDggYmFzZSAwNjdG
+MjAwMDAwIG1hc2sgN0ZGRkUwMDAwMCB1bmNhY2hhYmxlClsgICAgMC4wMDAwMDBdICAgOSBkaXNh
+YmxlZApbICAgIDAuMDAwMDAwXSBQQVQgY29uZmlndXJhdGlvbiBbMC03XTogV0IgIFdDICBVQy0g
+VUMgIFdCICBXQyAgVUMtIFVDICAKWyAgICAwLjAwMDAwMF0gZTgyMDogdXBkYXRlIFttZW0gMHg3
+YmMwMDAwMC0weGZmZmZmZmZmXSB1c2FibGUgPT0+IHJlc2VydmVkClsgICAgMC4wMDAwMDBdIGU4
+MjA6IGxhc3RfcGZuID0gMHg3YjAwMCBtYXhfYXJjaF9wZm4gPSAweDQwMDAwMDAwMApbICAgIDAu
+MDAwMDAwXSBmb3VuZCBTTVAgTVAtdGFibGUgYXQgW21lbSAweDAwMGZkODYwLTB4MDAwZmQ4NmZd
+IG1hcHBlZCBhdCBbZmZmZjg4MDAwMDBmZDg2MF0KWyAgICAwLjAwMDAwMF0gQmFzZSBtZW1vcnkg
+dHJhbXBvbGluZSBhdCBbZmZmZjg4MDAwMDA5NjAwMF0gOTYwMDAgc2l6ZSAyNDU3NgpbICAgIDAu
+MDAwMDAwXSBVc2luZyBHQiBwYWdlcyBmb3IgZGlyZWN0IG1hcHBpbmcKWyAgICAwLjAwMDAwMF0g
+aW5pdF9tZW1vcnlfbWFwcGluZzogW21lbSAweDAwMDAwMDAwLTB4MDAwZmZmZmZdClsgICAgMC4w
+MDAwMDBdICBbbWVtIDB4MDAwMDAwMDAtMHgwMDBmZmZmZl0gcGFnZSA0awpbICAgIDAuMDAwMDAw
+XSBCUksgWzB4MDIwMzkwMDAsIDB4MDIwMzlmZmZdIFBHVEFCTEUKWyAgICAwLjAwMDAwMF0gQlJL
+IFsweDAyMDNhMDAwLCAweDAyMDNhZmZmXSBQR1RBQkxFClsgICAgMC4wMDAwMDBdIEJSSyBbMHgw
+MjAzYjAwMCwgMHgwMjAzYmZmZl0gUEdUQUJMRQpbICAgIDAuMDAwMDAwXSBpbml0X21lbW9yeV9t
+YXBwaW5nOiBbbWVtIDB4NjdmMDAwMDAwLTB4NjdmMWZmZmZmXQpbICAgIDAuMDAwMDAwXSAgW21l
+bSAweDY3ZjAwMDAwMC0weDY3ZjFmZmZmZl0gcGFnZSAyTQpbICAgIDAuMDAwMDAwXSBCUksgWzB4
+MDIwM2MwMDAsIDB4MDIwM2NmZmZdIFBHVEFCTEUKWyAgICAwLjAwMDAwMF0gaW5pdF9tZW1vcnlf
+bWFwcGluZzogW21lbSAweDY2MDAwMDAwMC0weDY3ZWZmZmZmZl0KWyAgICAwLjAwMDAwMF0gIFtt
+ZW0gMHg2NjAwMDAwMDAtMHg2N2VmZmZmZmZdIHBhZ2UgMk0KWyAgICAwLjAwMDAwMF0gaW5pdF9t
+ZW1vcnlfbWFwcGluZzogW21lbSAweDY0MDAwMDAwMC0weDY1ZmZmZmZmZl0KWyAgICAwLjAwMDAw
+MF0gIFttZW0gMHg2NDAwMDAwMDAtMHg2NWZmZmZmZmZdIHBhZ2UgMk0KWyAgICAwLjAwMDAwMF0g
+aW5pdF9tZW1vcnlfbWFwcGluZzogW21lbSAweDAwMTAwMDAwLTB4Njk1YzlmZmZdClsgICAgMC4w
+MDAwMDBdICBbbWVtIDB4MDAxMDAwMDAtMHgwMDFmZmZmZl0gcGFnZSA0awpbICAgIDAuMDAwMDAw
+XSAgW21lbSAweDAwMjAwMDAwLTB4NjkzZmZmZmZdIHBhZ2UgMk0KWyAgICAwLjAwMDAwMF0gIFtt
+ZW0gMHg2OTQwMDAwMC0weDY5NWM5ZmZmXSBwYWdlIDRrClsgICAgMC4wMDAwMDBdIGluaXRfbWVt
+b3J5X21hcHBpbmc6IFttZW0gMHg2OTVkMTAwMC0weDY5ZTQzZmZmXQpbICAgIDAuMDAwMDAwXSAg
+W21lbSAweDY5NWQxMDAwLTB4Njk1ZmZmZmZdIHBhZ2UgNGsKWyAgICAwLjAwMDAwMF0gIFttZW0g
+MHg2OTYwMDAwMC0weDY5ZGZmZmZmXSBwYWdlIDJNClsgICAgMC4wMDAwMDBdICBbbWVtIDB4Njll
+MDAwMDAtMHg2OWU0M2ZmZl0gcGFnZSA0awpbICAgIDAuMDAwMDAwXSBCUksgWzB4MDIwM2QwMDAs
+IDB4MDIwM2RmZmZdIFBHVEFCTEUKWyAgICAwLjAwMDAwMF0gaW5pdF9tZW1vcnlfbWFwcGluZzog
+W21lbSAweDZhMGUxMDAwLTB4Nzk4OGVmZmZdClsgICAgMC4wMDAwMDBdICBbbWVtIDB4NmEwZTEw
+MDAtMHg2YTFmZmZmZl0gcGFnZSA0awpbICAgIDAuMDAwMDAwXSAgW21lbSAweDZhMjAwMDAwLTB4
+Nzk3ZmZmZmZdIHBhZ2UgMk0KWyAgICAwLjAwMDAwMF0gIFttZW0gMHg3OTgwMDAwMC0weDc5ODhl
+ZmZmXSBwYWdlIDRrClsgICAgMC4wMDAwMDBdIEJSSyBbMHgwMjAzZTAwMCwgMHgwMjAzZWZmZl0g
+UEdUQUJMRQpbICAgIDAuMDAwMDAwXSBpbml0X21lbW9yeV9tYXBwaW5nOiBbbWVtIDB4NzlhOTgw
+MDAtMHg3OWRlN2ZmZl0KWyAgICAwLjAwMDAwMF0gIFttZW0gMHg3OWE5ODAwMC0weDc5ZGU3ZmZm
+XSBwYWdlIDRrClsgICAgMC4wMDAwMDBdIGluaXRfbWVtb3J5X21hcHBpbmc6IFttZW0gMHg3YWZm
+ZjAwMC0weDdhZmZmZmZmXQpbICAgIDAuMDAwMDAwXSAgW21lbSAweDdhZmZmMDAwLTB4N2FmZmZm
+ZmZdIHBhZ2UgNGsKWyAgICAwLjAwMDAwMF0gaW5pdF9tZW1vcnlfbWFwcGluZzogW21lbSAweDEw
+MDAwMDAwMC0weDYzZmZmZmZmZl0KWyAgICAwLjAwMDAwMF0gIFttZW0gMHgxMDAwMDAwMDAtMHg2
+M2ZmZmZmZmZdIHBhZ2UgMUcKWyAgICAwLjAwMDAwMF0gUkFNRElTSzogW21lbSAweDM2MDE0MDAw
+LTB4MzcwMDFmZmZdClsgICAgMC4wMDAwMDBdIEFDUEk6IEVhcmx5IHRhYmxlIGNoZWNrc3VtIHZl
+cmlmaWNhdGlvbiBkaXNhYmxlZApbICAgIDAuMDAwMDAwXSBBQ1BJOiBSU0RQIDB4MDAwMDAwMDAw
+MDBGMDQ5MCAwMDAwMjQgKHYwMiBfQVNVU18pClsgICAgMC4wMDAwMDBdIEFDUEk6IFhTRFQgMHgw
+MDAwMDAwMDc5RTcwMDg4IDAwMDA5QyAodjAxIF9BU1VTXyBOb3RlYm9vayAwMTA3MjAwOSBBTUkg
+IDAwMDEwMDEzKQpbICAgIDAuMDAwMDAwXSBBQ1BJOiBGQUNQIDB4MDAwMDAwMDA3OUU4NEJDMCAw
+MDAxMEMgKHYwNSBfQVNVU18gTm90ZWJvb2sgMDEwNzIwMDkgQU1JICAwMDAxMDAxMykKWyAgICAw
+LjAwMDAwMF0gQUNQSTogRFNEVCAweDAwMDAwMDAwNzlFNzAyNDAgMDE0OTgwICh2MDIgX0FTVVNf
+IE5vdGVib29rIDAwMDAwMDEyIElOVEwgMjAxMjA3MTEpClsgICAgMC4wMDAwMDBdIEFDUEk6IEZB
+Q1MgMHgwMDAwMDAwMDdBQUYwRjgwIDAwMDA0MApbICAgIDAuMDAwMDAwXSBBQ1BJOiBBUElDIDB4
+MDAwMDAwMDA3OUU4NENEMCAwMDAwOTIgKHYwMyBfQVNVU18gTm90ZWJvb2sgMDEwNzIwMDkgQU1J
+ICAwMDAxMDAxMykKWyAgICAwLjAwMDAwMF0gQUNQSTogRlBEVCAweDAwMDAwMDAwNzlFODRENjgg
+MDAwMDQ0ICh2MDEgX0FTVVNfIE5vdGVib29rIDAxMDcyMDA5IEFNSSAgMDAwMTAwMTMpClsgICAg
+MC4wMDAwMDBdIEFDUEk6IEVDRFQgMHgwMDAwMDAwMDc5RTg0REIwIDAwMDBDMSAodjAxIF9BU1VT
+XyBOb3RlYm9vayAwMTA3MjAwOSBBTUkuIDAwMDAwMDA1KQpbICAgIDAuMDAwMDAwXSBBQ1BJOiBT
+U0RUIDB4MDAwMDAwMDA3OUU4NEU3OCAwMDAxOUQgKHYwMSBJbnRlbCAgenBvZGQgICAgMDAwMDEw
+MDAgSU5UTCAyMDEyMDcxMSkKWyAgICAwLjAwMDAwMF0gQUNQSTogU1NEVCAweDAwMDAwMDAwNzlF
+ODUwMTggMDAwNTM5ICh2MDEgUG1SZWYgIENwdTBJc3QgIDAwMDAzMDAwIElOVEwgMjAxMjA3MTEp
+ClsgICAgMC4wMDAwMDBdIEFDUEk6IFNTRFQgMHgwMDAwMDAwMDc5RTg1NTU4IDAwMEFEOCAodjAx
+IFBtUmVmICBDcHVQbSAgICAwMDAwMzAwMCBJTlRMIDIwMTIwNzExKQpbICAgIDAuMDAwMDAwXSBB
+Q1BJOiBNQ0ZHIDB4MDAwMDAwMDA3OUU4NjAzMCAwMDAwM0MgKHYwMSBfQVNVU18gTm90ZWJvb2sg
+MDEwNzIwMDkgTVNGVCAwMDAwMDA5NykKWyAgICAwLjAwMDAwMF0gQUNQSTogSFBFVCAweDAwMDAw
+MDAwNzlFODYwNzAgMDAwMDM4ICh2MDEgX0FTVVNfIE5vdGVib29rIDAxMDcyMDA5IEFNSS4gMDAw
+MDAwMDUpClsgICAgMC4wMDAwMDBdIEFDUEk6IFNTRFQgMHgwMDAwMDAwMDc5RTg2MEE4IDAwMDI5
+OCAodjAxIFNhdGFSZSBTYXRhVGFibCAwMDAwMTAwMCBJTlRMIDIwMTIwNzExKQpbICAgIDAuMDAw
+MDAwXSBBQ1BJOiBTU0RUIDB4MDAwMDAwMDA3OUU4NjM0MCAwMDQ1MDAgKHYwMSBTYVNzZHQgU2FT
+c2R0ICAgMDAwMDMwMDAgSU5UTCAyMDA5MTExMikKWyAgICAwLjAwMDAwMF0gQUNQSTogU1NEVCAw
+eDAwMDAwMDAwNzlFOEE4NDAgMDAxQTM2ICh2MDEgU2dSZWYgIFNnUGVnICAgIDAwMDAxMDAwIElO
+VEwgMjAxMjA3MTEpClsgICAgMC4wMDAwMDBdIEFDUEk6IERNQVIgMHgwMDAwMDAwMDc5RThDMjc4
+IDAwMDBCOCAodjAxIElOVEVMICBIU1cgICAgICAwMDAwMDAwMSBJTlRMIDAwMDAwMDAxKQpbICAg
+IDAuMDAwMDAwXSBBQ1BJOiBTU0RUIDB4MDAwMDAwMDA3OUU4QzMzMCAwMDE5QjEgKHYwMSBPcHRS
+ZWYgT3B0VGFibCAgMDAwMDEwMDAgSU5UTCAyMDEyMDcxMSkKWyAgICAwLjAwMDAwMF0gQUNQSTog
+TVNETSAweDAwMDAwMDAwNzlBOTZFMTggMDAwMDU1ICh2MDMgX0FTVVNfIE5vdGVib29rIDAwMDAw
+MDAwIEFTVVMgMDAwMDAwMDEpClsgICAgMC4wMDAwMDBdIEFDUEk6IExvY2FsIEFQSUMgYWRkcmVz
+cyAweGZlZTAwMDAwClsgICAgMC4wMDAwMDBdIE5vIE5VTUEgY29uZmlndXJhdGlvbiBmb3VuZApb
+ICAgIDAuMDAwMDAwXSBGYWtpbmcgYSBub2RlIGF0IFttZW0gMHgwMDAwMDAwMDAwMDAwMDAwLTB4
+MDAwMDAwMDY3ZjFmZmZmZl0KWyAgICAwLjAwMDAwMF0gTk9ERV9EQVRBKDApIGFsbG9jYXRlZCBb
+bWVtIDB4NjdmMWU2MDAwLTB4NjdmMWY5ZmZmXQpbICAgIDAuMDAwMDAwXSAgW2ZmZmZlYTAwMDAw
+MDAwMDAtZmZmZmVhMDAxOWZmZmZmZl0gUE1EIC0+IFtmZmZmODgwNjY2ODAwMDAwLWZmZmY4ODA2
+N2U3ZmZmZmZdIG9uIG5vZGUgMApbICAgIDAuMDAwMDAwXSBab25lIHJhbmdlczoKWyAgICAwLjAw
+MDAwMF0gICBETUEgICAgICBbbWVtIDB4MDAwMDAwMDAwMDAwMTAwMC0weDAwMDAwMDAwMDBmZmZm
+ZmZdClsgICAgMC4wMDAwMDBdICAgRE1BMzIgICAgW21lbSAweDAwMDAwMDAwMDEwMDAwMDAtMHgw
+MDAwMDAwMGZmZmZmZmZmXQpbICAgIDAuMDAwMDAwXSAgIE5vcm1hbCAgIFttZW0gMHgwMDAwMDAw
+MTAwMDAwMDAwLTB4MDAwMDAwMDY3ZjFmZmZmZl0KWyAgICAwLjAwMDAwMF0gTW92YWJsZSB6b25l
+IHN0YXJ0IGZvciBlYWNoIG5vZGUKWyAgICAwLjAwMDAwMF0gRWFybHkgbWVtb3J5IG5vZGUgcmFu
+Z2VzClsgICAgMC4wMDAwMDBdICAgbm9kZSAgIDA6IFttZW0gMHgwMDAwMDAwMDAwMDAxMDAwLTB4
+MDAwMDAwMDAwMDA5YmZmZl0KWyAgICAwLjAwMDAwMF0gICBub2RlICAgMDogW21lbSAweDAwMDAw
+MDAwMDAxMDAwMDAtMHgwMDAwMDAwMDY5NWM5ZmZmXQpbICAgIDAuMDAwMDAwXSAgIG5vZGUgICAw
+OiBbbWVtIDB4MDAwMDAwMDA2OTVkMTAwMC0weDAwMDAwMDAwNjllNDNmZmZdClsgICAgMC4wMDAw
+MDBdICAgbm9kZSAgIDA6IFttZW0gMHgwMDAwMDAwMDZhMGUxMDAwLTB4MDAwMDAwMDA3OTg4ZWZm
+Zl0KWyAgICAwLjAwMDAwMF0gICBub2RlICAgMDogW21lbSAweDAwMDAwMDAwNzlhOTgwMDAtMHgw
+MDAwMDAwMDc5ZGU3ZmZmXQpbICAgIDAuMDAwMDAwXSAgIG5vZGUgICAwOiBbbWVtIDB4MDAwMDAw
+MDA3YWZmZjAwMC0weDAwMDAwMDAwN2FmZmZmZmZdClsgICAgMC4wMDAwMDBdICAgbm9kZSAgIDA6
+IFttZW0gMHgwMDAwMDAwMTAwMDAwMDAwLTB4MDAwMDAwMDY3ZjFmZmZmZl0KWyAgICAwLjAwMDAw
+MF0gSW5pdG1lbSBzZXR1cCBub2RlIDAgW21lbSAweDAwMDAwMDAwMDAwMDEwMDAtMHgwMDAwMDAw
+NjdmMWZmZmZmXQpbICAgIDAuMDAwMDAwXSBPbiBub2RlIDAgdG90YWxwYWdlczogNjI2MTQ2Mwpb
+ICAgIDAuMDAwMDAwXSAgIERNQSB6b25lOiA2NCBwYWdlcyB1c2VkIGZvciBtZW1tYXAKWyAgICAw
+LjAwMDAwMF0gICBETUEgem9uZTogMjEgcGFnZXMgcmVzZXJ2ZWQKWyAgICAwLjAwMDAwMF0gICBE
+TUEgem9uZTogMzk5NSBwYWdlcywgTElGTyBiYXRjaDowClsgICAgMC4wMDAwMDBdICAgRE1BMzIg
+em9uZTogNzcxNyBwYWdlcyB1c2VkIGZvciBtZW1tYXAKWyAgICAwLjAwMDAwMF0gICBETUEzMiB6
+b25lOiA0OTM4ODQgcGFnZXMsIExJRk8gYmF0Y2g6MzEKWyAgICAwLjAwMDAwMF0gICBOb3JtYWwg
+em9uZTogOTAwNTYgcGFnZXMgdXNlZCBmb3IgbWVtbWFwClsgICAgMC4wMDAwMDBdICAgTm9ybWFs
+IHpvbmU6IDU3NjM1ODQgcGFnZXMsIExJRk8gYmF0Y2g6MzEKWyAgICAwLjAwMDAwMF0gUmVzZXJ2
+aW5nIEludGVsIGdyYXBoaWNzIHN0b2xlbiBtZW1vcnkgYXQgMHg3YmUwMDAwMC0weDdmZGZmZmZm
+ClsgICAgMC4wMDAwMDBdIEFDUEk6IFBNLVRpbWVyIElPIFBvcnQ6IDB4MTgwOApbICAgIDAuMDAw
+MDAwXSBBQ1BJOiBMb2NhbCBBUElDIGFkZHJlc3MgMHhmZWUwMDAwMApbICAgIDAuMDAwMDAwXSBB
+Q1BJOiBMQVBJQ19OTUkgKGFjcGlfaWRbMHhmZl0gaGlnaCBlZGdlIGxpbnRbMHgxXSkKWyAgICAw
+LjAwMDAwMF0gSU9BUElDWzBdOiBhcGljX2lkIDgsIHZlcnNpb24gMzIsIGFkZHJlc3MgMHhmZWMw
+MDAwMCwgR1NJIDAtMjMKWyAgICAwLjAwMDAwMF0gQUNQSTogSU5UX1NSQ19PVlIgKGJ1cyAwIGJ1
+c19pcnEgMCBnbG9iYWxfaXJxIDIgZGZsIGRmbCkKWyAgICAwLjAwMDAwMF0gQUNQSTogSU5UX1NS
+Q19PVlIgKGJ1cyAwIGJ1c19pcnEgOSBnbG9iYWxfaXJxIDkgaGlnaCBsZXZlbCkKWyAgICAwLjAw
+MDAwMF0gQUNQSTogSVJRMCB1c2VkIGJ5IG92ZXJyaWRlLgpbICAgIDAuMDAwMDAwXSBBQ1BJOiBJ
+UlE5IHVzZWQgYnkgb3ZlcnJpZGUuClsgICAgMC4wMDAwMDBdIFVzaW5nIEFDUEkgKE1BRFQpIGZv
+ciBTTVAgY29uZmlndXJhdGlvbiBpbmZvcm1hdGlvbgpbICAgIDAuMDAwMDAwXSBBQ1BJOiBIUEVU
+IGlkOiAweDgwODZhNzAxIGJhc2U6IDB4ZmVkMDAwMDAKWyAgICAwLjAwMDAwMF0gc21wYm9vdDog
+QWxsb3dpbmcgOCBDUFVzLCAwIGhvdHBsdWcgQ1BVcwpbICAgIDAuMDAwMDAwXSBQTTogUmVnaXN0
+ZXJlZCBub3NhdmUgbWVtb3J5OiBbbWVtIDB4MDAwMDAwMDAtMHgwMDAwMGZmZl0KWyAgICAwLjAw
+MDAwMF0gUE06IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweDAwMDljMDAwLTB4MDAw
+OWNmZmZdClsgICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFttZW0g
+MHgwMDA5ZDAwMC0weDAwMDlmZmZmXQpbICAgIDAuMDAwMDAwXSBQTTogUmVnaXN0ZXJlZCBub3Nh
+dmUgbWVtb3J5OiBbbWVtIDB4MDAwYTAwMDAtMHgwMDBkZmZmZl0KWyAgICAwLjAwMDAwMF0gUE06
+IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweDAwMGUwMDAwLTB4MDAwZmZmZmZdClsg
+ICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFttZW0gMHg2OTVjYTAw
+MC0weDY5NWQwZmZmXQpbICAgIDAuMDAwMDAwXSBQTTogUmVnaXN0ZXJlZCBub3NhdmUgbWVtb3J5
+OiBbbWVtIDB4NjllNDQwMDAtMHg2YTBlMGZmZl0KWyAgICAwLjAwMDAwMF0gUE06IFJlZ2lzdGVy
+ZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweDc5ODhmMDAwLTB4NzlhOTdmZmZdClsgICAgMC4wMDAw
+MDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFttZW0gMHg3OWRlODAwMC0weDdhYWYy
+ZmZmXQpbICAgIDAuMDAwMDAwXSBQTTogUmVnaXN0ZXJlZCBub3NhdmUgbWVtb3J5OiBbbWVtIDB4
+N2FhZjMwMDAtMHg3YWZmZWZmZl0KWyAgICAwLjAwMDAwMF0gUE06IFJlZ2lzdGVyZWQgbm9zYXZl
+IG1lbW9yeTogW21lbSAweDdiMDAwMDAwLTB4N2JiZmZmZmZdClsgICAgMC4wMDAwMDBdIFBNOiBS
+ZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFttZW0gMHg3YmMwMDAwMC0weDdmZGZmZmZmXQpbICAg
+IDAuMDAwMDAwXSBQTTogUmVnaXN0ZXJlZCBub3NhdmUgbWVtb3J5OiBbbWVtIDB4N2ZlMDAwMDAt
+MHhlZmZmZmZmZl0KWyAgICAwLjAwMDAwMF0gUE06IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTog
+W21lbSAweGYwMDAwMDAwLTB4ZjdmZmZmZmZdClsgICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVk
+IG5vc2F2ZSBtZW1vcnk6IFttZW0gMHhmODAwMDAwMC0weGZlYmZmZmZmXQpbICAgIDAuMDAwMDAw
+XSBQTTogUmVnaXN0ZXJlZCBub3NhdmUgbWVtb3J5OiBbbWVtIDB4ZmVjMDAwMDAtMHhmZWMwMGZm
+Zl0KWyAgICAwLjAwMDAwMF0gUE06IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweGZl
+YzAxMDAwLTB4ZmVjZmZmZmZdClsgICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBt
+ZW1vcnk6IFttZW0gMHhmZWQwMDAwMC0weGZlZDAzZmZmXQpbICAgIDAuMDAwMDAwXSBQTTogUmVn
+aXN0ZXJlZCBub3NhdmUgbWVtb3J5OiBbbWVtIDB4ZmVkMDQwMDAtMHhmZWQxYmZmZl0KWyAgICAw
+LjAwMDAwMF0gUE06IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweGZlZDFjMDAwLTB4
+ZmVkMWZmZmZdClsgICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFtt
+ZW0gMHhmZWQyMDAwMC0weGZlZGZmZmZmXQpbICAgIDAuMDAwMDAwXSBQTTogUmVnaXN0ZXJlZCBu
+b3NhdmUgbWVtb3J5OiBbbWVtIDB4ZmVlMDAwMDAtMHhmZWUwMGZmZl0KWyAgICAwLjAwMDAwMF0g
+UE06IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeTogW21lbSAweGZlZTAxMDAwLTB4ZmVmZmZmZmZd
+ClsgICAgMC4wMDAwMDBdIFBNOiBSZWdpc3RlcmVkIG5vc2F2ZSBtZW1vcnk6IFttZW0gMHhmZjAw
+MDAwMC0weGZmZmZmZmZmXQpbICAgIDAuMDAwMDAwXSBlODIwOiBbbWVtIDB4N2ZlMDAwMDAtMHhl
+ZmZmZmZmZl0gYXZhaWxhYmxlIGZvciBQQ0kgZGV2aWNlcwpbICAgIDAuMDAwMDAwXSBCb290aW5n
+IHBhcmF2aXJ0dWFsaXplZCBrZXJuZWwgb24gYmFyZSBoYXJkd2FyZQpbICAgIDAuMDAwMDAwXSBj
+bG9ja3NvdXJjZSByZWZpbmVkLWppZmZpZXM6IG1hc2s6IDB4ZmZmZmZmZmYgbWF4X2N5Y2xlczog
+MHhmZmZmZmZmZiwgbWF4X2lkbGVfbnM6IDE5MTA5Njk5NDAzOTE0MTkgbnMKWyAgICAwLjAwMDAw
+MF0gc2V0dXBfcGVyY3B1OiBOUl9DUFVTOjEwMjQgbnJfY3B1bWFza19iaXRzOjggbnJfY3B1X2lk
+czo4IG5yX25vZGVfaWRzOjEKWyAgICAwLjAwMDAwMF0gUEVSQ1BVOiBFbWJlZGRlZCAzNCBwYWdl
+cy9jcHUgQGZmZmY4ODA2N2VlMDAwMDAgczEwMDQ0MCByODE5MiBkMzA2MzIgdTI2MjE0NApbICAg
+IDAuMDAwMDAwXSBwY3B1LWFsbG9jOiBzMTAwNDQwIHI4MTkyIGQzMDYzMiB1MjYyMTQ0IGFsbG9j
+PTEqMjA5NzE1MgpbICAgIDAuMDAwMDAwXSBwY3B1LWFsbG9jOiBbMF0gMCAxIDIgMyA0IDUgNiA3
+IApbICAgIDAuMDAwMDAwXSBCdWlsdCAxIHpvbmVsaXN0cyBpbiBOb2RlIG9yZGVyLCBtb2JpbGl0
+eSBncm91cGluZyBvbi4gIFRvdGFsIHBhZ2VzOiA2MTYzNjA1ClsgICAgMC4wMDAwMDBdIFBvbGlj
+eSB6b25lOiBOb3JtYWwKWyAgICAwLjAwMDAwMF0gS2VybmVsIGNvbW1hbmQgbGluZTogQk9PVF9J
+TUFHRT0vYm9vdC92bWxpbnV6LTQuMS4wLTAucmM2LmdpdDIuMS5mYzIzLng4Nl82NCByb290PVVV
+SUQ9NDBhMDVjYTQtYjc0NS00MWI1LWI2YjgtN2VjNDU2ZDg2YzIwIHJvIHJoZ2IgcXVpZXQgTEFO
+Rz1lbl9VUy5VVEYtOApbICAgIDAuMDAwMDAwXSBQSUQgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2
+IChvcmRlcjogMywgMzI3NjggYnl0ZXMpClsgICAgMC4wMDAwMDBdIHhzYXZlOiBlbmFibGVkIHhz
+dGF0ZV9idiAweDcsIGNudHh0IHNpemUgMHgzNDAgdXNpbmcgc3RhbmRhcmQgZm9ybQpbICAgIDAu
+MDAwMDAwXSBNZW1vcnk6IDI0NTUyMTA0Sy8yNTA0NTg1MksgYXZhaWxhYmxlICg3ODM1SyBrZXJu
+ZWwgY29kZSwgMTI0M0sgcndkYXRhLCAzMjY4SyByb2RhdGEsIDE1MTZLIGluaXQsIDE1MjRLIGJz
+cywgNDkzNzQ4SyByZXNlcnZlZCwgMEsgY21hLXJlc2VydmVkKQpbICAgIDAuMDAwMDAwXSBTTFVC
+OiBIV2FsaWduPTY0LCBPcmRlcj0wLTMsIE1pbk9iamVjdHM9MCwgQ1BVcz04LCBOb2Rlcz0xClsg
+ICAgMC4wMDAwMDBdIEhpZXJhcmNoaWNhbCBSQ1UgaW1wbGVtZW50YXRpb24uClsgICAgMC4wMDAw
+MDBdIAlSQ1UgZHludGljay1pZGxlIGdyYWNlLXBlcmlvZCBhY2NlbGVyYXRpb24gaXMgZW5hYmxl
+ZC4KWyAgICAwLjAwMDAwMF0gCVJDVSByZXN0cmljdGluZyBDUFVzIGZyb20gTlJfQ1BVUz0xMDI0
+IHRvIG5yX2NwdV9pZHM9OC4KWyAgICAwLjAwMDAwMF0gUkNVOiBBZGp1c3RpbmcgZ2VvbWV0cnkg
+Zm9yIHJjdV9mYW5vdXRfbGVhZj0xNiwgbnJfY3B1X2lkcz04ClsgICAgMC4wMDAwMDBdIE5SX0lS
+UVM6NjU3OTIgbnJfaXJxczo0ODggMTYKWyAgICAwLjAwMDAwMF0gCU9mZmxvYWQgUkNVIGNhbGxi
+YWNrcyBmcm9tIGFsbCBDUFVzClsgICAgMC4wMDAwMDBdIAlPZmZsb2FkIFJDVSBjYWxsYmFja3Mg
+ZnJvbSBDUFVzOiAwLTcuClsgICAgMC4wMDAwMDBdIENvbnNvbGU6IGNvbG91ciBWR0ErIDgweDI1
+ClsgICAgMC4wMDAwMDBdIGNvbnNvbGUgW3R0eTBdIGVuYWJsZWQKWyAgICAwLjAwMDAwMF0gY2xv
+Y2tzb3VyY2UgaHBldDogbWFzazogMHhmZmZmZmZmZiBtYXhfY3ljbGVzOiAweGZmZmZmZmZmLCBt
+YXhfaWRsZV9uczogMTMzNDg0ODgyODQ4IG5zClsgICAgMC4wMDAwMDBdIGhwZXQgY2xvY2tldmVu
+dCByZWdpc3RlcmVkClsgICAgMC4wMDAwMDBdIHRzYzogRmFzdCBUU0MgY2FsaWJyYXRpb24gdXNp
+bmcgUElUClsgICAgMC4wMDAwMDBdIHNwdXJpb3VzIDgyNTlBIGludGVycnVwdDogSVJRNy4KWyAg
+ICAwLjAwMDAwMF0gdHNjOiBEZXRlY3RlZCAyNDk0LjE0MyBNSHogcHJvY2Vzc29yClsgICAgMC4w
+MDAwMjddIENhbGlicmF0aW5nIGRlbGF5IGxvb3AgKHNraXBwZWQpLCB2YWx1ZSBjYWxjdWxhdGVk
+IHVzaW5nIHRpbWVyIGZyZXF1ZW5jeS4uIDQ5ODguMjggQm9nb01JUFMgKGxwaj0yNDk0MTQzKQpb
+ICAgIDAuMDAwMDI5XSBwaWRfbWF4OiBkZWZhdWx0OiAzMjc2OCBtaW5pbXVtOiAzMDEKWyAgICAw
+LjAwMDAzNV0gQUNQSTogQ29yZSByZXZpc2lvbiAyMDE1MDQxMApbICAgIDAuMDIwNDM2XSBBQ1BJ
+OiBBbGwgQUNQSSBUYWJsZXMgc3VjY2Vzc2Z1bGx5IGFjcXVpcmVkClsgICAgMC4wMjE3NjZdIFNl
+Y3VyaXR5IEZyYW1ld29yayBpbml0aWFsaXplZApbICAgIDAuMDIxNzczXSBTRUxpbnV4OiAgSW5p
+dGlhbGl6aW5nLgpbICAgIDAuMDIxNzc5XSBTRUxpbnV4OiAgU3RhcnRpbmcgaW4gcGVybWlzc2l2
+ZSBtb2RlClsgICAgMC4wMjE3ODBdIFlhbWE6IGJlY29taW5nIG1pbmRmdWwuClsgICAgMC4wMjM4
+MjFdIERlbnRyeSBjYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDQxOTQzMDQgKG9yZGVyOiAxMywg
+MzM1NTQ0MzIgYnl0ZXMpClsgICAgMC4wMjk1NDVdIElub2RlLWNhY2hlIGhhc2ggdGFibGUgZW50
+cmllczogMjA5NzE1MiAob3JkZXI6IDEyLCAxNjc3NzIxNiBieXRlcykKWyAgICAwLjAzMTk0M10g
+TW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA2NTUzNiAob3JkZXI6IDcsIDUyNDI4OCBi
+eXRlcykKWyAgICAwLjAzMTk3Nl0gTW91bnRwb2ludC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6
+IDY1NTM2IChvcmRlcjogNywgNTI0Mjg4IGJ5dGVzKQpbICAgIDAuMDMyMjQzXSBJbml0aWFsaXpp
+bmcgY2dyb3VwIHN1YnN5cyBibGtpbwpbICAgIDAuMDMyMjQ1XSBJbml0aWFsaXppbmcgY2dyb3Vw
+IHN1YnN5cyBtZW1vcnkKWyAgICAwLjAzMjI1Ml0gSW5pdGlhbGl6aW5nIGNncm91cCBzdWJzeXMg
+ZGV2aWNlcwpbICAgIDAuMDMyMjU0XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBmcmVlemVy
+ClsgICAgMC4wMzIyNTVdIEluaXRpYWxpemluZyBjZ3JvdXAgc3Vic3lzIG5ldF9jbHMKWyAgICAw
+LjAzMjI1N10gSW5pdGlhbGl6aW5nIGNncm91cCBzdWJzeXMgcGVyZl9ldmVudApbICAgIDAuMDMy
+MjU5XSBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBuZXRfcHJpbwpbICAgIDAuMDMyMjYxXSBJ
+bml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBodWdldGxiClsgICAgMC4wMzIyODNdIENQVTogUGh5
+c2ljYWwgUHJvY2Vzc29yIElEOiAwClsgICAgMC4wMzIyODRdIENQVTogUHJvY2Vzc29yIENvcmUg
+SUQ6IDAKWyAgICAwLjAzMjI4OF0gRU5FUkdZX1BFUkZfQklBUzogU2V0IHRvICdub3JtYWwnLCB3
+YXMgJ3BlcmZvcm1hbmNlJwpbICAgIDAuMDMyMjg5XSBFTkVSR1lfUEVSRl9CSUFTOiBWaWV3IGFu
+ZCB1cGRhdGUgd2l0aCB4ODZfZW5lcmd5X3BlcmZfcG9saWN5KDgpClsgICAgMC4wMzMxODJdIG1j
+ZTogQ1BVIHN1cHBvcnRzIDkgTUNFIGJhbmtzClsgICAgMC4wMzMxOTVdIENQVTA6IFRoZXJtYWwg
+bW9uaXRvcmluZyBlbmFibGVkIChUTTEpClsgICAgMC4wMzMyMDRdIHByb2Nlc3M6IHVzaW5nIG13
+YWl0IGluIGlkbGUgdGhyZWFkcwpbICAgIDAuMDMzMjA3XSBMYXN0IGxldmVsIGlUTEIgZW50cmll
+czogNEtCIDEwMjQsIDJNQiAxMDI0LCA0TUIgMTAyNApbICAgIDAuMDMzMjA4XSBMYXN0IGxldmVs
+IGRUTEIgZW50cmllczogNEtCIDEwMjQsIDJNQiAxMDI0LCA0TUIgMTAyNCwgMUdCIDQKWyAgICAw
+LjAzMzMxOF0gRnJlZWluZyBTTVAgYWx0ZXJuYXRpdmVzIG1lbW9yeTogMjhLIChmZmZmZmZmZjgx
+ZWIzMDAwIC0gZmZmZmZmZmY4MWViYTAwMCkKWyAgICAwLjAzNDIxMV0gZnRyYWNlOiBhbGxvY2F0
+aW5nIDI4MTQxIGVudHJpZXMgaW4gMTEwIHBhZ2VzClsgICAgMC4wNDUxNDhdIGRtYXI6IEhvc3Qg
+YWRkcmVzcyB3aWR0aCAzOQpbICAgIDAuMDQ1MTUxXSBkbWFyOiBEUkhEIGJhc2U6IDB4MDAwMDAw
+ZmVkOTAwMDAgZmxhZ3M6IDB4MApbICAgIDAuMDQ1MTU5XSBkbWFyOiBJT01NVSAwOiByZWdfYmFz
+ZV9hZGRyIGZlZDkwMDAwIHZlciAxOjAgY2FwIGMwMDAwMDIwNjYwNDYyIGVjYXAgZjAxMDFhClsg
+ICAgMC4wNDUxNjBdIGRtYXI6IERSSEQgYmFzZTogMHgwMDAwMDBmZWQ5MTAwMCBmbGFnczogMHgx
+ClsgICAgMC4wNDUxNjVdIGRtYXI6IElPTU1VIDE6IHJlZ19iYXNlX2FkZHIgZmVkOTEwMDAgdmVy
+IDE6MCBjYXAgZDIwMDgwMjA2NjA0NjIgZWNhcCBmMDEwZGEKWyAgICAwLjA0NTE2Nl0gZG1hcjog
+Uk1SUiBiYXNlOiAweDAwMDAwMDc5YTFmMDAwIGVuZDogMHgwMDAwMDA3OWEyYmZmZgpbICAgIDAu
+MDQ1MTY3XSBkbWFyOiBSTVJSIGJhc2U6IDB4MDAwMDAwN2JjMDAwMDAgZW5kOiAweDAwMDAwMDdm
+ZGZmZmZmClsgICAgMC4wNDUxNjldIElPQVBJQyBpZCA4IHVuZGVyIERSSEQgYmFzZSAgMHhmZWQ5
+MTAwMCBJT01NVSAxClsgICAgMC4wNDUxNzBdIEhQRVQgaWQgMCB1bmRlciBEUkhEIGJhc2UgMHhm
+ZWQ5MTAwMApbICAgIDAuMDQ1Mzc0XSBRdWV1ZWQgaW52YWxpZGF0aW9uIHdpbGwgYmUgZW5hYmxl
+ZCB0byBzdXBwb3J0IHgyYXBpYyBhbmQgSW50ci1yZW1hcHBpbmcuClsgICAgMC4wNDUzODFdIEVu
+YWJsZWQgSVJRIHJlbWFwcGluZyBpbiB4MmFwaWMgbW9kZQpbICAgIDAuMDQ1MzgyXSB4MmFwaWMg
+ZW5hYmxlZApbICAgIDAuMDQ1Mzg3XSBTd2l0Y2hlZCBBUElDIHJvdXRpbmcgdG8gY2x1c3RlciB4
+MmFwaWMuClsgICAgMC4wNDU4MjFdIC4uVElNRVI6IHZlY3Rvcj0weDMwIGFwaWMxPTAgcGluMT0y
+IGFwaWMyPS0xIHBpbjI9LTEKWyAgICAwLjA1NTgzN10gVFNDIGRlYWRsaW5lIHRpbWVyIGVuYWJs
+ZWQKWyAgICAwLjA1NTg0MF0gc21wYm9vdDogQ1BVMDogSW50ZWwoUikgQ29yZShUTSkgaTctNDcx
+MEhRIENQVSBAIDIuNTBHSHogKGZhbTogMDYsIG1vZGVsOiAzYywgc3RlcHBpbmc6IDAzKQpbICAg
+IDAuMDU1ODU5XSBQZXJmb3JtYW5jZSBFdmVudHM6IFBFQlMgZm10MissIDE2LWRlZXAgTEJSLCBI
+YXN3ZWxsIGV2ZW50cywgZnVsbC13aWR0aCBjb3VudGVycywgSW50ZWwgUE1VIGRyaXZlci4KWyAg
+ICAwLjA1NTg3N10gLi4uIHZlcnNpb246ICAgICAgICAgICAgICAgIDMKWyAgICAwLjA1NTg3OF0g
+Li4uIGJpdCB3aWR0aDogICAgICAgICAgICAgIDQ4ClsgICAgMC4wNTU4NzhdIC4uLiBnZW5lcmlj
+IHJlZ2lzdGVyczogICAgICA0ClsgICAgMC4wNTU4NzldIC4uLiB2YWx1ZSBtYXNrOiAgICAgICAg
+ICAgICAwMDAwZmZmZmZmZmZmZmZmClsgICAgMC4wNTU4ODBdIC4uLiBtYXggcGVyaW9kOiAgICAg
+ICAgICAgICAwMDAwZmZmZmZmZmZmZmZmClsgICAgMC4wNTU4ODFdIC4uLiBmaXhlZC1wdXJwb3Nl
+IGV2ZW50czogICAzClsgICAgMC4wNTU4ODFdIC4uLiBldmVudCBtYXNrOiAgICAgICAgICAgICAw
+MDAwMDAwNzAwMDAwMDBmClsgICAgMC4wNTY1NTldIHg4NjogQm9vdGluZyBTTVAgY29uZmlndXJh
+dGlvbjoKWyAgICAwLjA1NjU2MV0gLi4uLiBub2RlICAjMCwgQ1BVczogICAgICAjMQpbICAgIDAu
+MDY4NjgzXSBtaWNyb2NvZGU6IENQVTEgbWljcm9jb2RlIHVwZGF0ZWQgZWFybHkgdG8gcmV2aXNp
+b24gMHgxYywgZGF0ZSA9IDIwMTQtMDctMDMKWyAgICAwLjA3MTc3MF0gTk1JIHdhdGNoZG9nOiBl
+bmFibGVkIG9uIGFsbCBDUFVzLCBwZXJtYW5lbnRseSBjb25zdW1lcyBvbmUgaHctUE1VIGNvdW50
+ZXIuClsgICAgMC4wNzE4NDhdICAjMgpbICAgIDAuMDgzOTY5XSBtaWNyb2NvZGU6IENQVTIgbWlj
+cm9jb2RlIHVwZGF0ZWQgZWFybHkgdG8gcmV2aXNpb24gMHgxYywgZGF0ZSA9IDIwMTQtMDctMDMK
+WyAgICAwLjA4NzA2NF0gICMzClsgICAgMC4wOTkxODhdIG1pY3JvY29kZTogQ1BVMyBtaWNyb2Nv
+ZGUgdXBkYXRlZCBlYXJseSB0byByZXZpc2lvbiAweDFjLCBkYXRlID0gMjAxNC0wNy0wMwpbICAg
+IDAuMTAyMjc3XSAgIzQgIzUgIzYgIzcKWyAgICAwLjE1ODcwOF0geDg2OiBCb290ZWQgdXAgMSBu
+b2RlLCA4IENQVXMKWyAgICAwLjE1ODcxMl0gc21wYm9vdDogVG90YWwgb2YgOCBwcm9jZXNzb3Jz
+IGFjdGl2YXRlZCAoMzk5MDYuMjggQm9nb01JUFMpClsgICAgMC4xNjYxMDFdIGRldnRtcGZzOiBp
+bml0aWFsaXplZApbICAgIDAuMTY5MzE1XSBQTTogUmVnaXN0ZXJpbmcgQUNQSSBOVlMgcmVnaW9u
+IFttZW0gMHg2OTVjYTAwMC0weDY5NWQwZmZmXSAoMjg2NzIgYnl0ZXMpClsgICAgMC4xNjkzMTdd
+IFBNOiBSZWdpc3RlcmluZyBBQ1BJIE5WUyByZWdpb24gW21lbSAweDc5ZGU4MDAwLTB4N2FhZjJm
+ZmZdICgxMzY3NjU0NCBieXRlcykKWyAgICAwLjE2OTUyOF0gY2xvY2tzb3VyY2UgamlmZmllczog
+bWFzazogMHhmZmZmZmZmZiBtYXhfY3ljbGVzOiAweGZmZmZmZmZmLCBtYXhfaWRsZV9uczogMTkx
+MTI2MDQ0NjI3NTAwMCBucwpbICAgIDAuMTY5NjA3XSBhdG9taWM2NF90ZXN0OiBwYXNzZWQgZm9y
+IHg4Ni02NCBwbGF0Zm9ybSB3aXRoIENYOCBhbmQgd2l0aCBTU0UKWyAgICAwLjE2OTYwOV0gcGlu
+Y3RybCBjb3JlOiBpbml0aWFsaXplZCBwaW5jdHJsIHN1YnN5c3RlbQpbICAgIDAuMTY5NjQ3XSBS
+VEMgdGltZTogMTI6NDk6NDAsIGRhdGU6IDA2LzA3LzE1ClsgICAgMC4xNjk3NTFdIE5FVDogUmVn
+aXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTYKWyAgICAwLjE3MTk0MV0gY3B1aWRsZTogdXNpbmcg
+Z292ZXJub3IgbWVudQpbICAgIDAuMTcxOTkyXSBBQ1BJIEZBRFQgZGVjbGFyZXMgdGhlIHN5c3Rl
+bSBkb2Vzbid0IHN1cHBvcnQgUENJZSBBU1BNLCBzbyBkaXNhYmxlIGl0ClsgICAgMC4xNzE5OTNd
+IEFDUEk6IGJ1cyB0eXBlIFBDSSByZWdpc3RlcmVkClsgICAgMC4xNzE5OTVdIGFjcGlwaHA6IEFD
+UEkgSG90IFBsdWcgUENJIENvbnRyb2xsZXIgRHJpdmVyIHZlcnNpb246IDAuNQpbICAgIDAuMTcy
+MDYwXSBQQ0k6IE1NQ09ORklHIGZvciBkb21haW4gMDAwMCBbYnVzIDAwLTdmXSBhdCBbbWVtIDB4
+ZjAwMDAwMDAtMHhmN2ZmZmZmZl0gKGJhc2UgMHhmMDAwMDAwMCkKWyAgICAwLjE3MjA2Ml0gUENJ
+OiBNTUNPTkZJRyBhdCBbbWVtIDB4ZjAwMDAwMDAtMHhmN2ZmZmZmZl0gcmVzZXJ2ZWQgaW4gRTgy
+MApbICAgIDAuMTcyMjA4XSBQQ0k6IFVzaW5nIGNvbmZpZ3VyYXRpb24gdHlwZSAxIGZvciBiYXNl
+IGFjY2VzcwpbICAgIDAuMTcyNjMyXSBwZXJmX2V2ZW50X2ludGVsOiBQTVUgZXJyYXR1bSBCSjEy
+MiwgQlY5OCwgSFNEMjkgd29ya2VkIGFyb3VuZCwgSFQgaXMgb24KWyAgICAwLjE3NjIzN10gQUNQ
+STogQWRkZWQgX09TSShNb2R1bGUgRGV2aWNlKQpbICAgIDAuMTc2MjM4XSBBQ1BJOiBBZGRlZCBf
+T1NJKFByb2Nlc3NvciBEZXZpY2UpClsgICAgMC4xNzYyMzldIEFDUEk6IEFkZGVkIF9PU0koMy4w
+IF9TQ1AgRXh0ZW5zaW9ucykKWyAgICAwLjE3NjI0MF0gQUNQSTogQWRkZWQgX09TSShQcm9jZXNz
+b3IgQWdncmVnYXRvciBEZXZpY2UpClsgICAgMC4xNzg0NzJdIEFDUEkgOiBFQzogRUMgZGVzY3Jp
+cHRpb24gdGFibGUgaXMgZm91bmQsIGNvbmZpZ3VyaW5nIGJvb3QgRUMKWyAgICAwLjE3ODQ4MV0g
+QUNQSSA6IEVDOiBFQyBzdGFydGVkClsgICAgMC4xODA4NDhdIEFDUEk6IEV4ZWN1dGVkIDIgYmxv
+Y2tzIG9mIG1vZHVsZS1sZXZlbCBleGVjdXRhYmxlIEFNTCBjb2RlClsgICAgMC4xODM3NzRdIFtG
+aXJtd2FyZSBCdWddOiBBQ1BJOiBCSU9TIF9PU0koTGludXgpIHF1ZXJ5IGlnbm9yZWQKWyAgICAw
+LjE4NjE5OF0gQUNQSTogRHluYW1pYyBPRU0gVGFibGUgTG9hZDoKWyAgICAwLjE4NjIwNF0gQUNQ
+STogU1NEVCAweEZGRkY4ODA2NjJBMzQ4MDAgMDAwM0QzICh2MDEgUG1SZWYgIENwdTBDc3QgIDAw
+MDAzMDAxIElOVEwgMjAxMjA3MTEpClsgICAgMC4xODY5NThdIEFDUEk6IER5bmFtaWMgT0VNIFRh
+YmxlIExvYWQ6ClsgICAgMC4xODY5NjNdIEFDUEk6IFNTRFQgMHhGRkZGODgwNjYyOUQ0ODAwIDAw
+MDVBQSAodjAxIFBtUmVmICBBcElzdCAgICAwMDAwMzAwMCBJTlRMIDIwMTIwNzExKQpbICAgIDAu
+MTg3NzYxXSBBQ1BJOiBEeW5hbWljIE9FTSBUYWJsZSBMb2FkOgpbICAgIDAuMTg3NzY0XSBBQ1BJ
+OiBTU0RUIDB4RkZGRjg4MDY2MkFDNEMwMCAwMDAxMTkgKHYwMSBQbVJlZiAgQXBDc3QgICAgMDAw
+MDMwMDAgSU5UTCAyMDEyMDcxMSkKWyAgICAwLjE4OTQ5NV0gQUNQSTogSW50ZXJwcmV0ZXIgZW5h
+YmxlZApbICAgIDAuMTg5NTA0XSBBQ1BJIEV4Y2VwdGlvbjogQUVfTk9UX0ZPVU5ELCBXaGlsZSBl
+dmFsdWF0aW5nIFNsZWVwIFN0YXRlIFtcX1MxX10gKDIwMTUwNDEwL2h3eGZhY2UtNTgwKQpbICAg
+IDAuMTg5NTEwXSBBQ1BJIEV4Y2VwdGlvbjogQUVfTk9UX0ZPVU5ELCBXaGlsZSBldmFsdWF0aW5n
+IFNsZWVwIFN0YXRlIFtcX1MyX10gKDIwMTUwNDEwL2h3eGZhY2UtNTgwKQpbICAgIDAuMTg5NTI4
+XSBBQ1BJOiAoc3VwcG9ydHMgUzAgUzMgUzQgUzUpClsgICAgMC4xODk1MjldIEFDUEk6IFVzaW5n
+IElPQVBJQyBmb3IgaW50ZXJydXB0IHJvdXRpbmcKWyAgICAwLjE4OTU1MV0gUENJOiBVc2luZyBo
+b3N0IGJyaWRnZSB3aW5kb3dzIGZyb20gQUNQSTsgaWYgbmVjZXNzYXJ5LCB1c2UgInBjaT1ub2Ny
+cyIgYW5kIHJlcG9ydCBhIGJ1ZwpbICAgIDAuMTk0NDc3XSBBQ1BJOiBQb3dlciBSZXNvdXJjZSBb
+UEcwMF0gKG9uKQpbICAgIDAuMTk4OTE3XSBBQ1BJOiBQQ0kgUm9vdCBCcmlkZ2UgW1BDSTBdIChk
+b21haW4gMDAwMCBbYnVzIDAwLTdlXSkKWyAgICAwLjE5ODkyMl0gYWNwaSBQTlAwQTA4OjAwOiBf
+T1NDOiBPUyBzdXBwb3J0cyBbRXh0ZW5kZWRDb25maWcgQVNQTSBDbG9ja1BNIFNlZ21lbnRzIE1T
+SV0KWyAgICAwLjE5OTE3M10gYWNwaSBQTlAwQTA4OjAwOiBfT1NDOiBwbGF0Zm9ybSBkb2VzIG5v
+dCBzdXBwb3J0IFtQQ0llSG90cGx1ZyBQTUVdClsgICAgMC4xOTkzMzVdIGFjcGkgUE5QMEEwODow
+MDogX09TQzogT1Mgbm93IGNvbnRyb2xzIFtBRVIgUENJZUNhcGFiaWxpdHldClsgICAgMC4xOTkz
+MzZdIGFjcGkgUE5QMEEwODowMDogRkFEVCBpbmRpY2F0ZXMgQVNQTSBpcyB1bnN1cHBvcnRlZCwg
+dXNpbmcgQklPUyBjb25maWd1cmF0aW9uClsgICAgMC4xOTk2NDZdIFBDSSBob3N0IGJyaWRnZSB0
+byBidXMgMDAwMDowMApbICAgIDAuMTk5NjQ5XSBwY2lfYnVzIDAwMDA6MDA6IHJvb3QgYnVzIHJl
+c291cmNlIFtidXMgMDAtN2VdClsgICAgMC4xOTk2NTFdIHBjaV9idXMgMDAwMDowMDogcm9vdCBi
+dXMgcmVzb3VyY2UgW2lvICAweDAwMDAtMHgwY2Y3IHdpbmRvd10KWyAgICAwLjE5OTY1Ml0gcGNp
+X2J1cyAwMDAwOjAwOiByb290IGJ1cyByZXNvdXJjZSBbaW8gIDB4MGQwMC0weGZmZmYgd2luZG93
+XQpbICAgIDAuMTk5NjUzXSBwY2lfYnVzIDAwMDA6MDA6IHJvb3QgYnVzIHJlc291cmNlIFttZW0g
+MHgwMDBhMDAwMC0weDAwMGJmZmZmIHdpbmRvd10KWyAgICAwLjE5OTY1NV0gcGNpX2J1cyAwMDAw
+OjAwOiByb290IGJ1cyByZXNvdXJjZSBbbWVtIDB4MDAwZDAwMDAtMHgwMDBkM2ZmZiB3aW5kb3dd
+ClsgICAgMC4xOTk2NTZdIHBjaV9idXMgMDAwMDowMDogcm9vdCBidXMgcmVzb3VyY2UgW21lbSAw
+eDAwMGQ0MDAwLTB4MDAwZDdmZmYgd2luZG93XQpbICAgIDAuMTk5NjU3XSBwY2lfYnVzIDAwMDA6
+MDA6IHJvb3QgYnVzIHJlc291cmNlIFttZW0gMHgwMDBkODAwMC0weDAwMGRiZmZmIHdpbmRvd10K
+WyAgICAwLjE5OTY1OF0gcGNpX2J1cyAwMDAwOjAwOiByb290IGJ1cyByZXNvdXJjZSBbbWVtIDB4
+MDAwZGMwMDAtMHgwMDBkZmZmZiB3aW5kb3ddClsgICAgMC4xOTk2NjBdIHBjaV9idXMgMDAwMDow
+MDogcm9vdCBidXMgcmVzb3VyY2UgW21lbSAweDAwMGUwMDAwLTB4MDAwZTNmZmYgd2luZG93XQpb
+ICAgIDAuMTk5NjYxXSBwY2lfYnVzIDAwMDA6MDA6IHJvb3QgYnVzIHJlc291cmNlIFttZW0gMHgw
+MDBlNDAwMC0weDAwMGU3ZmZmIHdpbmRvd10KWyAgICAwLjE5OTY2Ml0gcGNpX2J1cyAwMDAwOjAw
+OiByb290IGJ1cyByZXNvdXJjZSBbbWVtIDB4N2ZlMDAwMDAtMHhmZWFmZmZmZiB3aW5kb3ddClsg
+ICAgMC4xOTk2NjhdIHBjaSAwMDAwOjAwOjAwLjA6IFs4MDg2OjBjMDRdIHR5cGUgMDAgY2xhc3Mg
+MHgwNjAwMDAKWyAgICAwLjE5OTc0MV0gcGNpIDAwMDA6MDA6MDEuMDogWzgwODY6MGMwMV0gdHlw
+ZSAwMSBjbGFzcyAweDA2MDQwMApbICAgIDAuMTk5NzcwXSBwY2kgMDAwMDowMDowMS4wOiBQTUUj
+IHN1cHBvcnRlZCBmcm9tIEQwIEQzaG90IEQzY29sZApbICAgIDAuMTk5ODM2XSBwY2kgMDAwMDow
+MDowMS4wOiBTeXN0ZW0gd2FrZXVwIGRpc2FibGVkIGJ5IEFDUEkKWyAgICAwLjE5OTg3MF0gcGNp
+IDAwMDA6MDA6MDIuMDogWzgwODY6MDQxNl0gdHlwZSAwMCBjbGFzcyAweDAzMDAwMApbICAgIDAu
+MTk5ODc5XSBwY2kgMDAwMDowMDowMi4wOiByZWcgMHgxMDogW21lbSAweGVkNDAwMDAwLTB4ZWQ3
+ZmZmZmYgNjRiaXRdClsgICAgMC4xOTk4ODRdIHBjaSAwMDAwOjAwOjAyLjA6IHJlZyAweDE4OiBb
+bWVtIDB4ODAwMDAwMDAtMHg4ZmZmZmZmZiA2NGJpdCBwcmVmXQpbICAgIDAuMTk5ODg4XSBwY2kg
+MDAwMDowMDowMi4wOiByZWcgMHgyMDogW2lvICAweGYwMDAtMHhmMDNmXQpbICAgIDAuMTk5OTU0
+XSBwY2kgMDAwMDowMDowMy4wOiBbODA4NjowYzBjXSB0eXBlIDAwIGNsYXNzIDB4MDQwMzAwClsg
+ICAgMC4xOTk5NjFdIHBjaSAwMDAwOjAwOjAzLjA6IHJlZyAweDEwOiBbbWVtIDB4ZWRhMTQwMDAt
+MHhlZGExN2ZmZiA2NGJpdF0KWyAgICAwLjIwMDA0N10gcGNpIDAwMDA6MDA6MTQuMDogWzgwODY6
+OGMzMV0gdHlwZSAwMCBjbGFzcyAweDBjMDMzMApbICAgIDAuMjAwMDY4XSBwY2kgMDAwMDowMDox
+NC4wOiByZWcgMHgxMDogW21lbSAweGVkYTAwMDAwLTB4ZWRhMGZmZmYgNjRiaXRdClsgICAgMC4y
+MDAxMjJdIHBjaSAwMDAwOjAwOjE0LjA6IFBNRSMgc3VwcG9ydGVkIGZyb20gRDNob3QgRDNjb2xk
+ClsgICAgMC4yMDAxNTJdIHBjaSAwMDAwOjAwOjE0LjA6IFN5c3RlbSB3YWtldXAgZGlzYWJsZWQg
+YnkgQUNQSQpbICAgIDAuMjAwMTgzXSBwY2kgMDAwMDowMDoxNi4wOiBbODA4Njo4YzNhXSB0eXBl
+IDAwIGNsYXNzIDB4MDc4MDAwClsgICAgMC4yMDAyMDBdIHBjaSAwMDAwOjAwOjE2LjA6IHJlZyAw
+eDEwOiBbbWVtIDB4ZWRhMWUwMDAtMHhlZGExZTAwZiA2NGJpdF0KWyAgICAwLjIwMDI1Nl0gcGNp
+IDAwMDA6MDA6MTYuMDogUE1FIyBzdXBwb3J0ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQKWyAgICAw
+LjIwMDMyMl0gcGNpIDAwMDA6MDA6MWEuMDogWzgwODY6OGMyZF0gdHlwZSAwMCBjbGFzcyAweDBj
+MDMyMApbICAgIDAuMjAwMzM4XSBwY2kgMDAwMDowMDoxYS4wOiByZWcgMHgxMDogW21lbSAweGVk
+YTFjMDAwLTB4ZWRhMWMzZmZdClsgICAgMC4yMDA0MTFdIHBjaSAwMDAwOjAwOjFhLjA6IFBNRSMg
+c3VwcG9ydGVkIGZyb20gRDAgRDNob3QgRDNjb2xkClsgICAgMC4yMDA0NTNdIHBjaSAwMDAwOjAw
+OjFhLjA6IFN5c3RlbSB3YWtldXAgZGlzYWJsZWQgYnkgQUNQSQpbICAgIDAuMjAwNDg3XSBwY2kg
+MDAwMDowMDoxYi4wOiBbODA4Njo4YzIwXSB0eXBlIDAwIGNsYXNzIDB4MDQwMzAwClsgICAgMC4y
+MDA1MDJdIHBjaSAwMDAwOjAwOjFiLjA6IHJlZyAweDEwOiBbbWVtIDB4ZWRhMTAwMDAtMHhlZGEx
+M2ZmZiA2NGJpdF0KWyAgICAwLjIwMDU2Ml0gcGNpIDAwMDA6MDA6MWIuMDogUE1FIyBzdXBwb3J0
+ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQKWyAgICAwLjIwMDU5M10gcGNpIDAwMDA6MDA6MWIuMDog
+U3lzdGVtIHdha2V1cCBkaXNhYmxlZCBieSBBQ1BJClsgICAgMC4yMDA2MjJdIHBjaSAwMDAwOjAw
+OjFjLjA6IFs4MDg2OjhjMTBdIHR5cGUgMDEgY2xhc3MgMHgwNjA0MDAKWyAgICAwLjIwMDY3N10g
+cGNpIDAwMDA6MDA6MWMuMDogUE1FIyBzdXBwb3J0ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQKWyAg
+ICAwLjIwMDczNF0gcGNpIDAwMDA6MDA6MWMuMDogU3lzdGVtIHdha2V1cCBkaXNhYmxlZCBieSBB
+Q1BJClsgICAgMC4yMDA3NjhdIHBjaSAwMDAwOjAwOjFjLjI6IFs4MDg2OjhjMTRdIHR5cGUgMDEg
+Y2xhc3MgMHgwNjA0MDAKWyAgICAwLjIwMDgyNF0gcGNpIDAwMDA6MDA6MWMuMjogUE1FIyBzdXBw
+b3J0ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQKWyAgICAwLjIwMDg3OF0gcGNpIDAwMDA6MDA6MWMu
+MjogU3lzdGVtIHdha2V1cCBkaXNhYmxlZCBieSBBQ1BJClsgICAgMC4yMDA5MDldIHBjaSAwMDAw
+OjAwOjFjLjM6IFs4MDg2OjhjMTZdIHR5cGUgMDEgY2xhc3MgMHgwNjA0MDAKWyAgICAwLjIwMDk2
+NF0gcGNpIDAwMDA6MDA6MWMuMzogUE1FIyBzdXBwb3J0ZWQgZnJvbSBEMCBEM2hvdCBEM2NvbGQK
+WyAgICAwLjIwMTAxOF0gcGNpIDAwMDA6MDA6MWMuMzogU3lzdGVtIHdha2V1cCBkaXNhYmxlZCBi
+eSBBQ1BJClsgICAgMC4yMDEwNTNdIHBjaSAwMDAwOjAwOjFkLjA6IFs4MDg2OjhjMjZdIHR5cGUg
+MDAgY2xhc3MgMHgwYzAzMjAKWyAgICAwLjIwMTA3NF0gcGNpIDAwMDA6MDA6MWQuMDogcmVnIDB4
+MTA6IFttZW0gMHhlZGExYjAwMC0weGVkYTFiM2ZmXQpbICAgIDAuMjAxMTQ4XSBwY2kgMDAwMDow
+MDoxZC4wOiBQTUUjIHN1cHBvcnRlZCBmcm9tIEQwIEQzaG90IEQzY29sZApbICAgIDAuMjAxMTg5
+XSBwY2kgMDAwMDowMDoxZC4wOiBTeXN0ZW0gd2FrZXVwIGRpc2FibGVkIGJ5IEFDUEkKWyAgICAw
+LjIwMTIyM10gcGNpIDAwMDA6MDA6MWYuMDogWzgwODY6OGM0Yl0gdHlwZSAwMCBjbGFzcyAweDA2
+MDEwMApbICAgIDAuMjAxMzY2XSBwY2kgMDAwMDowMDoxZi4yOiBbODA4Njo4YzAzXSB0eXBlIDAw
+IGNsYXNzIDB4MDEwNjAxClsgICAgMC4yMDEzNzhdIHBjaSAwMDAwOjAwOjFmLjI6IHJlZyAweDEw
+OiBbaW8gIDB4ZjBiMC0weGYwYjddClsgICAgMC4yMDEzODZdIHBjaSAwMDAwOjAwOjFmLjI6IHJl
+ZyAweDE0OiBbaW8gIDB4ZjBhMC0weGYwYTNdClsgICAgMC4yMDEzOTNdIHBjaSAwMDAwOjAwOjFm
+LjI6IHJlZyAweDE4OiBbaW8gIDB4ZjA5MC0weGYwOTddClsgICAgMC4yMDEzOTldIHBjaSAwMDAw
+OjAwOjFmLjI6IHJlZyAweDFjOiBbaW8gIDB4ZjA4MC0weGYwODNdClsgICAgMC4yMDE0MDddIHBj
+aSAwMDAwOjAwOjFmLjI6IHJlZyAweDIwOiBbaW8gIDB4ZjA2MC0weGYwN2ZdClsgICAgMC4yMDE0
+MTRdIHBjaSAwMDAwOjAwOjFmLjI6IHJlZyAweDI0OiBbbWVtIDB4ZWRhMWEwMDAtMHhlZGExYTdm
+Zl0KWyAgICAwLjIwMTQ0M10gcGNpIDAwMDA6MDA6MWYuMjogUE1FIyBzdXBwb3J0ZWQgZnJvbSBE
+M2hvdApbICAgIDAuMjAxNDk4XSBwY2kgMDAwMDowMDoxZi4zOiBbODA4Njo4YzIyXSB0eXBlIDAw
+IGNsYXNzIDB4MGMwNTAwClsgICAgMC4yMDE1MTNdIHBjaSAwMDAwOjAwOjFmLjM6IHJlZyAweDEw
+OiBbbWVtIDB4ZWRhMTkwMDAtMHhlZGExOTBmZiA2NGJpdF0KWyAgICAwLjIwMTUzMl0gcGNpIDAw
+MDA6MDA6MWYuMzogcmVnIDB4MjA6IFtpbyAgMHhmMDQwLTB4ZjA1Zl0KWyAgICAwLjIwMTYzOF0g
+cGNpIDAwMDA6MDE6MDAuMDogWzEwZGU6MTM5Ml0gdHlwZSAwMCBjbGFzcyAweDAzMDIwMApbICAg
+IDAuMjAxNjQ2XSBwY2kgMDAwMDowMTowMC4wOiByZWcgMHgxMDogW21lbSAweGVjMDAwMDAwLTB4
+ZWNmZmZmZmZdClsgICAgMC4yMDE2NTRdIHBjaSAwMDAwOjAxOjAwLjA6IHJlZyAweDE0OiBbbWVt
+IDB4YzAwMDAwMDAtMHhjZmZmZmZmZiA2NGJpdCBwcmVmXQpbICAgIDAuMjAxNjYxXSBwY2kgMDAw
+MDowMTowMC4wOiByZWcgMHgxYzogW21lbSAweGQwMDAwMDAwLTB4ZDFmZmZmZmYgNjRiaXQgcHJl
+Zl0KWyAgICAwLjIwMTY2Nl0gcGNpIDAwMDA6MDE6MDAuMDogcmVnIDB4MjQ6IFtpbyAgMHhlMDAw
+LTB4ZTA3Zl0KWyAgICAwLjIwMTY3Ml0gcGNpIDAwMDA6MDE6MDAuMDogcmVnIDB4MzA6IFttZW0g
+MHhlZDAwMDAwMC0weGVkMDdmZmZmIHByZWZdClsgICAgMC4yMDE3NDBdIHBjaSAwMDAwOjAxOjAw
+LjA6IFN5c3RlbSB3YWtldXAgZGlzYWJsZWQgYnkgQUNQSQpbICAgIDAuMjAzMDczXSBwY2kgMDAw
+MDowMDowMS4wOiBQQ0kgYnJpZGdlIHRvIFtidXMgMDFdClsgICAgMC4yMDMwNzVdIHBjaSAwMDAw
+OjAwOjAxLjA6ICAgYnJpZGdlIHdpbmRvdyBbaW8gIDB4ZTAwMC0weGVmZmZdClsgICAgMC4yMDMw
+NzddIHBjaSAwMDAwOjAwOjAxLjA6ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4ZWMwMDAwMDAtMHhl
+ZDBmZmZmZl0KWyAgICAwLjIwMzA4MF0gcGNpIDAwMDA6MDA6MDEuMDogICBicmlkZ2Ugd2luZG93
+IFttZW0gMHhjMDAwMDAwMC0weGQxZmZmZmZmIDY0Yml0IHByZWZdClsgICAgMC4yMDMxNDNdIHBj
+aSAwMDAwOjAwOjFjLjA6IFBDSSBicmlkZ2UgdG8gW2J1cyAwMi0zYV0KWyAgICAwLjIwMzE0OF0g
+cGNpIDAwMDA6MDA6MWMuMDogICBicmlkZ2Ugd2luZG93IFttZW0gMHhkNDAwMDAwMC0weGViZmZm
+ZmZmXQpbICAgIDAuMjAzMTUzXSBwY2kgMDAwMDowMDoxYy4wOiAgIGJyaWRnZSB3aW5kb3cgW21l
+bSAweDkwMDAwMDAwLTB4YmZmZmZmZmYgNjRiaXQgcHJlZl0KWyAgICAwLjIwMzIyMl0gYWNwaXBo
+cDogU2xvdCBbMV0gcmVnaXN0ZXJlZApbICAgIDAuMjAzMjkzXSBwY2kgMDAwMDozYjowMC4wOiBb
+ODA4NjowOGIxXSB0eXBlIDAwIGNsYXNzIDB4MDI4MDAwClsgICAgMC4yMDMzNDddIHBjaSAwMDAw
+OjNiOjAwLjA6IHJlZyAweDEwOiBbbWVtIDB4ZWQ5MDAwMDAtMHhlZDkwMWZmZiA2NGJpdF0KWyAg
+ICAwLjIwMzU2Nl0gcGNpIDAwMDA6M2I6MDAuMDogUE1FIyBzdXBwb3J0ZWQgZnJvbSBEMCBEM2hv
+dCBEM2NvbGQKWyAgICAwLjIwNTA5OV0gcGNpIDAwMDA6MDA6MWMuMjogUENJIGJyaWRnZSB0byBb
+YnVzIDNiXQpbICAgIDAuMjA1MTA0XSBwY2kgMDAwMDowMDoxYy4yOiAgIGJyaWRnZSB3aW5kb3cg
+W21lbSAweGVkOTAwMDAwLTB4ZWQ5ZmZmZmZdClsgICAgMC4yMDUxOTBdIHBjaSAwMDAwOjNjOjAw
+LjA6IFsxOTY5OjEwYTFdIHR5cGUgMDAgY2xhc3MgMHgwMjAwMDAKWyAgICAwLjIwNTIxNl0gcGNp
+IDAwMDA6M2M6MDAuMDogcmVnIDB4MTA6IFttZW0gMHhlZDgwMDAwMC0weGVkODNmZmZmIDY0Yml0
+XQpbICAgIDAuMjA1MjI4XSBwY2kgMDAwMDozYzowMC4wOiByZWcgMHgxODogW2lvICAweGQwMDAt
+MHhkMDdmXQpbICAgIDAuMjA1MzI4XSBwY2kgMDAwMDozYzowMC4wOiBQTUUjIHN1cHBvcnRlZCBm
+cm9tIEQwIEQxIEQyIEQzaG90IEQzY29sZApbICAgIDAuMjA3MDkyXSBwY2kgMDAwMDowMDoxYy4z
+OiBQQ0kgYnJpZGdlIHRvIFtidXMgM2NdClsgICAgMC4yMDcwOTZdIHBjaSAwMDAwOjAwOjFjLjM6
+ICAgYnJpZGdlIHdpbmRvdyBbaW8gIDB4ZDAwMC0weGRmZmZdClsgICAgMC4yMDcwOTldIHBjaSAw
+MDAwOjAwOjFjLjM6ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4ZWQ4MDAwMDAtMHhlZDhmZmZmZl0K
+WyAgICAwLjIwNzc5NF0gQUNQSTogUENJIEludGVycnVwdCBMaW5rIFtMTktBXSAoSVJRcyAzIDQg
+NSA2IDcgMTAgKjExIDEyKQpbICAgIDAuMjA3ODM0XSBBQ1BJOiBQQ0kgSW50ZXJydXB0IExpbmsg
+W0xOS0JdIChJUlFzIDMgNCA1IDYgNyAxMCAxMikgKjAsIGRpc2FibGVkLgpbICAgIDAuMjA3ODcy
+XSBBQ1BJOiBQQ0kgSW50ZXJydXB0IExpbmsgW0xOS0NdIChJUlFzICozIDQgNSA2IDcgMTAgMTIp
+ClsgICAgMC4yMDc5MDldIEFDUEk6IFBDSSBJbnRlcnJ1cHQgTGluayBbTE5LRF0gKElSUXMgMyA0
+IDUgNiA3ICoxMCAxMikKWyAgICAwLjIwNzk0N10gQUNQSTogUENJIEludGVycnVwdCBMaW5rIFtM
+TktFXSAoSVJRcyAzIDQgNSA2IDcgMTAgMTIpICowLCBkaXNhYmxlZC4KWyAgICAwLjIwNzk4Nl0g
+QUNQSTogUENJIEludGVycnVwdCBMaW5rIFtMTktGXSAoSVJRcyAzIDQgNSA2IDcgMTAgMTIpICow
+LCBkaXNhYmxlZC4KWyAgICAwLjIwODAyMl0gQUNQSTogUENJIEludGVycnVwdCBMaW5rIFtMTktH
+XSAoSVJRcyAzIDQgKjUgNiA3IDEwIDEyKQpbICAgIDAuMjA4MDU4XSBBQ1BJOiBQQ0kgSW50ZXJy
+dXB0IExpbmsgW0xOS0hdIChJUlFzIDMgKjQgNSA2IDcgMTAgMTIpClsgICAgMC4yMDgyOTRdIEFD
+UEk6IEVuYWJsZWQgNSBHUEVzIGluIGJsb2NrIDAwIHRvIDNGClsgICAgMC4yMDg0MTldIEFDUEkg
+OiBFQzogR1BFID0gMHgxOSwgSS9POiBjb21tYW5kL3N0YXR1cyA9IDB4NjYsIGRhdGEgPSAweDYy
+ClsgICAgMC4yMDg1MjRdIHZnYWFyYjogc2V0dGluZyBhcyBib290IGRldmljZTogUENJOjAwMDA6
+MDA6MDIuMApbICAgIDAuMjA4NTI2XSB2Z2FhcmI6IGRldmljZSBhZGRlZDogUENJOjAwMDA6MDA6
+MDIuMCxkZWNvZGVzPWlvK21lbSxvd25zPWlvK21lbSxsb2Nrcz1ub25lClsgICAgMC4yMDg1Mjld
+IHZnYWFyYjogbG9hZGVkClsgICAgMC4yMDg1MzBdIHZnYWFyYjogYnJpZGdlIGNvbnRyb2wgcG9z
+c2libGUgMDAwMDowMDowMi4wClsgICAgMC4yMDg1ODZdIFNDU0kgc3Vic3lzdGVtIGluaXRpYWxp
+emVkClsgICAgMC4yMDg2MTRdIGxpYmF0YSB2ZXJzaW9uIDMuMDAgbG9hZGVkLgpbICAgIDAuMjA4
+NjM3XSBBQ1BJOiBidXMgdHlwZSBVU0IgcmVnaXN0ZXJlZApbICAgIDAuMjA4NjUyXSB1c2Jjb3Jl
+OiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHVzYmZzClsgICAgMC4yMDg2NTldIHVz
+YmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgaHViClsgICAgMC4yMDg2NzVd
+IHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGRldmljZSBkcml2ZXIgdXNiClsgICAgMC4yMDg3NjVd
+IFBDSTogVXNpbmcgQUNQSSBmb3IgSVJRIHJvdXRpbmcKWyAgICAwLjIxMTU3NF0gUENJOiBwY2lf
+Y2FjaGVfbGluZV9zaXplIHNldCB0byA2NCBieXRlcwpbICAgIDAuMjExNjM5XSBlODIwOiByZXNl
+cnZlIFJBTSBidWZmZXIgW21lbSAweDAwMDljODAwLTB4MDAwOWZmZmZdClsgICAgMC4yMTE2NDFd
+IGU4MjA6IHJlc2VydmUgUkFNIGJ1ZmZlciBbbWVtIDB4Njk1Y2EwMDAtMHg2YmZmZmZmZl0KWyAg
+ICAwLjIxMTY0Ml0gZTgyMDogcmVzZXJ2ZSBSQU0gYnVmZmVyIFttZW0gMHg2OWU0NDAwMC0weDZi
+ZmZmZmZmXQpbICAgIDAuMjExNjQzXSBlODIwOiByZXNlcnZlIFJBTSBidWZmZXIgW21lbSAweDc5
+ODhmMDAwLTB4N2JmZmZmZmZdClsgICAgMC4yMTE2NDRdIGU4MjA6IHJlc2VydmUgUkFNIGJ1ZmZl
+ciBbbWVtIDB4NzlkZTgwMDAtMHg3YmZmZmZmZl0KWyAgICAwLjIxMTY0NV0gZTgyMDogcmVzZXJ2
+ZSBSQU0gYnVmZmVyIFttZW0gMHg3YjAwMDAwMC0weDdiZmZmZmZmXQpbICAgIDAuMjExNjQ2XSBl
+ODIwOiByZXNlcnZlIFJBTSBidWZmZXIgW21lbSAweDY3ZjIwMDAwMC0weDY3ZmZmZmZmZl0KWyAg
+ICAwLjIxMTc0MV0gTmV0TGFiZWw6IEluaXRpYWxpemluZwpbICAgIDAuMjExNzQyXSBOZXRMYWJl
+bDogIGRvbWFpbiBoYXNoIHNpemUgPSAxMjgKWyAgICAwLjIxMTc0M10gTmV0TGFiZWw6ICBwcm90
+b2NvbHMgPSBVTkxBQkVMRUQgQ0lQU092NApbICAgIDAuMjExNzUzXSBOZXRMYWJlbDogIHVubGFi
+ZWxlZCB0cmFmZmljIGFsbG93ZWQgYnkgZGVmYXVsdApbICAgIDAuMjExNzg5XSBocGV0MDogYXQg
+TU1JTyAweGZlZDAwMDAwLCBJUlFzIDIsIDgsIDAsIDAsIDAsIDAsIDAsIDAKWyAgICAwLjIxMTc5
+M10gaHBldDA6IDggY29tcGFyYXRvcnMsIDY0LWJpdCAxNC4zMTgxODAgTUh6IGNvdW50ZXIKWyAg
+ICAwLjIxMzgyNV0gU3dpdGNoZWQgdG8gY2xvY2tzb3VyY2UgaHBldApbICAgIDAuMjE5NTcwXSBw
+bnA6IFBuUCBBQ1BJIGluaXQKWyAgICAwLjIxOTY1MF0gc3lzdGVtIDAwOjAwOiBbbWVtIDB4ZmVk
+NDAwMDAtMHhmZWQ0NGZmZl0gaGFzIGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIxOTY1NF0gc3lzdGVt
+IDAwOjAwOiBQbHVnIGFuZCBQbGF5IEFDUEkgZGV2aWNlLCBJRHMgUE5QMGMwMSAoYWN0aXZlKQpb
+ICAgIDAuMjE5ODY0XSBzeXN0ZW0gMDA6MDE6IFtpbyAgMHgwNjgwLTB4MDY5Zl0gaGFzIGJlZW4g
+cmVzZXJ2ZWQKWyAgICAwLjIxOTg2Nl0gc3lzdGVtIDAwOjAxOiBbaW8gIDB4ZmZmZl0gaGFzIGJl
+ZW4gcmVzZXJ2ZWQKWyAgICAwLjIxOTg2N10gc3lzdGVtIDAwOjAxOiBbaW8gIDB4ZmZmZl0gaGFz
+IGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIxOTg2OF0gc3lzdGVtIDAwOjAxOiBbaW8gIDB4ZmZmZl0g
+aGFzIGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIxOTg3MF0gc3lzdGVtIDAwOjAxOiBbaW8gIDB4MWMw
+MC0weDFjZmVdIGhhcyBiZWVuIHJlc2VydmVkClsgICAgMC4yMTk4NzFdIHN5c3RlbSAwMDowMTog
+W2lvICAweDFkMDAtMHgxZGZlXSBoYXMgYmVlbiByZXNlcnZlZApbICAgIDAuMjE5ODczXSBzeXN0
+ZW0gMDA6MDE6IFtpbyAgMHgxZTAwLTB4MWVmZV0gaGFzIGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIx
+OTg3NF0gc3lzdGVtIDAwOjAxOiBbaW8gIDB4MWYwMC0weDFmZmVdIGhhcyBiZWVuIHJlc2VydmVk
+ClsgICAgMC4yMTk4NzVdIHN5c3RlbSAwMDowMTogW2lvICAweDE4MDAtMHgxOGZlXSBjb3VsZCBu
+b3QgYmUgcmVzZXJ2ZWQKWyAgICAwLjIxOTg3N10gc3lzdGVtIDAwOjAxOiBbaW8gIDB4MTY0ZS0w
+eDE2NGZdIGhhcyBiZWVuIHJlc2VydmVkClsgICAgMC4yMTk4NzldIHN5c3RlbSAwMDowMTogUGx1
+ZyBhbmQgUGxheSBBQ1BJIGRldmljZSwgSURzIFBOUDBjMDIgKGFjdGl2ZSkKWyAgICAwLjIxOTkw
+NV0gcG5wIDAwOjAyOiBQbHVnIGFuZCBQbGF5IEFDUEkgZGV2aWNlLCBJRHMgUE5QMGIwMCAoYWN0
+aXZlKQpbICAgIDAuMjE5OTQzXSBzeXN0ZW0gMDA6MDM6IFtpbyAgMHgxODU0LTB4MTg1N10gaGFz
+IGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIxOTk0NV0gc3lzdGVtIDAwOjAzOiBQbHVnIGFuZCBQbGF5
+IEFDUEkgZGV2aWNlLCBJRHMgSU5UM2YwZCBQTlAwYzAyIChhY3RpdmUpClsgICAgMC4yMTk5ODNd
+IHN5c3RlbSAwMDowNDogW2lvICAweDA0ZDAtMHgwNGQxXSBoYXMgYmVlbiByZXNlcnZlZApbICAg
+IDAuMjE5OTg1XSBzeXN0ZW0gMDA6MDQ6IFBsdWcgYW5kIFBsYXkgQUNQSSBkZXZpY2UsIElEcyBQ
+TlAwYzAyIChhY3RpdmUpClsgICAgMC4yMjAwMDldIHN5c3RlbSAwMDowNTogW2lvICAweDAyNDAt
+MHgwMjU5XSBoYXMgYmVlbiByZXNlcnZlZApbICAgIDAuMjIwMDExXSBzeXN0ZW0gMDA6MDU6IFBs
+dWcgYW5kIFBsYXkgQUNQSSBkZXZpY2UsIElEcyBQTlAwYzAyIChhY3RpdmUpClsgICAgMC4yMjAw
+NThdIHBucCAwMDowNjogUGx1ZyBhbmQgUGxheSBBQ1BJIGRldmljZSwgSURzIEVURDAxMGQgU1lO
+MGEwMCBTWU4wMDAyIFBOUDBmMDMgUE5QMGYxMyBQTlAwZjEyIEVURDAwMDAgKGFjdGl2ZSkKWyAg
+ICAwLjIyMDA5MF0gcG5wIDAwOjA3OiBQbHVnIGFuZCBQbGF5IEFDUEkgZGV2aWNlLCBJRHMgQVRL
+MzAwMSBQTlAwMzBiIChhY3RpdmUpClsgICAgMC4yMjAzNzNdIHN5c3RlbSAwMDowODogW21lbSAw
+eGZlZDFjMDAwLTB4ZmVkMWZmZmZdIGhhcyBiZWVuIHJlc2VydmVkClsgICAgMC4yMjAzNzVdIHN5
+c3RlbSAwMDowODogW21lbSAweGZlZDEwMDAwLTB4ZmVkMTdmZmZdIGhhcyBiZWVuIHJlc2VydmVk
+ClsgICAgMC4yMjAzNzZdIHN5c3RlbSAwMDowODogW21lbSAweGZlZDE4MDAwLTB4ZmVkMThmZmZd
+IGhhcyBiZWVuIHJlc2VydmVkClsgICAgMC4yMjAzNzhdIHN5c3RlbSAwMDowODogW21lbSAweGZl
+ZDE5MDAwLTB4ZmVkMTlmZmZdIGhhcyBiZWVuIHJlc2VydmVkClsgICAgMC4yMjAzNzldIHN5c3Rl
+bSAwMDowODogW21lbSAweGYwMDAwMDAwLTB4ZjdmZmZmZmZdIGhhcyBiZWVuIHJlc2VydmVkClsg
+ICAgMC4yMjAzODFdIHN5c3RlbSAwMDowODogW21lbSAweGZlZDIwMDAwLTB4ZmVkM2ZmZmZdIGhh
+cyBiZWVuIHJlc2VydmVkClsgICAgMC4yMjAzODJdIHN5c3RlbSAwMDowODogW21lbSAweGZlZDkw
+MDAwLTB4ZmVkOTNmZmZdIGNvdWxkIG5vdCBiZSByZXNlcnZlZApbICAgIDAuMjIwMzg0XSBzeXN0
+ZW0gMDA6MDg6IFttZW0gMHhmZWQ0NTAwMC0weGZlZDhmZmZmXSBoYXMgYmVlbiByZXNlcnZlZApb
+ICAgIDAuMjIwMzg1XSBzeXN0ZW0gMDA6MDg6IFttZW0gMHhmZjAwMDAwMC0weGZmZmZmZmZmXSBo
+YXMgYmVlbiByZXNlcnZlZApbICAgIDAuMjIwMzg3XSBzeXN0ZW0gMDA6MDg6IFttZW0gMHhmZWUw
+MDAwMC0weGZlZWZmZmZmXSBjb3VsZCBub3QgYmUgcmVzZXJ2ZWQKWyAgICAwLjIyMDM4OF0gc3lz
+dGVtIDAwOjA4OiBbbWVtIDB4ZWZmZGYwMDAtMHhlZmZkZmZmZl0gaGFzIGJlZW4gcmVzZXJ2ZWQK
+WyAgICAwLjIyMDM4OV0gc3lzdGVtIDAwOjA4OiBbbWVtIDB4ZWZmZTAwMDAtMHhlZmZlZmZmZl0g
+aGFzIGJlZW4gcmVzZXJ2ZWQKWyAgICAwLjIyMDM5MV0gc3lzdGVtIDAwOjA4OiBQbHVnIGFuZCBQ
+bGF5IEFDUEkgZGV2aWNlLCBJRHMgUE5QMGMwMiAoYWN0aXZlKQpbICAgIDAuMjIwNDUwXSBzeXN0
+ZW0gMDA6MDk6IFBsdWcgYW5kIFBsYXkgQUNQSSBkZXZpY2UsIElEcyBQTlAwYzAyIChhY3RpdmUp
+ClsgICAgMC4yMjA2NzBdIHBucDogUG5QIEFDUEk6IGZvdW5kIDEwIGRldmljZXMKWyAgICAwLjIy
+Njc1N10gY2xvY2tzb3VyY2UgYWNwaV9wbTogbWFzazogMHhmZmZmZmYgbWF4X2N5Y2xlczogMHhm
+ZmZmZmYsIG1heF9pZGxlX25zOiAyMDg1NzAxMDI0IG5zClsgICAgMC4yMjY3NzRdIHBjaSAwMDAw
+OjAwOjFjLjA6IGJyaWRnZSB3aW5kb3cgW2lvICAweDEwMDAtMHgwZmZmXSB0byBbYnVzIDAyLTNh
+XSBhZGRfc2l6ZSAxMDAwClsgICAgMC4yMjY3ODFdIHBjaSAwMDAwOjAwOjFjLjI6IGJyaWRnZSB3
+aW5kb3cgW2lvICAweDEwMDAtMHgwZmZmXSB0byBbYnVzIDNiXSBhZGRfc2l6ZSAxMDAwClsgICAg
+MC4yMjY3ODRdIHBjaSAwMDAwOjAwOjFjLjI6IGJyaWRnZSB3aW5kb3cgW21lbSAweDAwMTAwMDAw
+LTB4MDAwZmZmZmYgNjRiaXQgcHJlZl0gdG8gW2J1cyAzYl0gYWRkX3NpemUgMjAwMDAwIGFkZF9h
+bGlnbiAxMDAwMDAKWyAgICAwLjIyNjc5NF0gcGNpIDAwMDA6MDA6MWMuMjogcmVzWzE1XT1bbWVt
+IDB4MDAxMDAwMDAtMHgwMDBmZmZmZiA2NGJpdCBwcmVmXSByZXNfdG9fZGV2X3JlcyBhZGRfc2l6
+ZSAyMDAwMDAgbWluX2FsaWduIDEwMDAwMApbICAgIDAuMjI2Nzk1XSBwY2kgMDAwMDowMDoxYy4y
+OiByZXNbMTVdPVttZW0gMHgwMDEwMDAwMC0weDAwMmZmZmZmIDY0Yml0IHByZWZdIHJlc190b19k
+ZXZfcmVzIGFkZF9zaXplIDIwMDAwMCBtaW5fYWxpZ24gMTAwMDAwClsgICAgMC4yMjY3OTddIHBj
+aSAwMDAwOjAwOjFjLjA6IHJlc1sxM109W2lvICAweDEwMDAtMHgwZmZmXSByZXNfdG9fZGV2X3Jl
+cyBhZGRfc2l6ZSAxMDAwIG1pbl9hbGlnbiAxMDAwClsgICAgMC4yMjY3OThdIHBjaSAwMDAwOjAw
+OjFjLjA6IHJlc1sxM109W2lvICAweDEwMDAtMHgxZmZmXSByZXNfdG9fZGV2X3JlcyBhZGRfc2l6
+ZSAxMDAwIG1pbl9hbGlnbiAxMDAwClsgICAgMC4yMjY3OTldIHBjaSAwMDAwOjAwOjFjLjI6IHJl
+c1sxM109W2lvICAweDEwMDAtMHgwZmZmXSByZXNfdG9fZGV2X3JlcyBhZGRfc2l6ZSAxMDAwIG1p
+bl9hbGlnbiAxMDAwClsgICAgMC4yMjY4MDFdIHBjaSAwMDAwOjAwOjFjLjI6IHJlc1sxM109W2lv
+ICAweDEwMDAtMHgxZmZmXSByZXNfdG9fZGV2X3JlcyBhZGRfc2l6ZSAxMDAwIG1pbl9hbGlnbiAx
+MDAwClsgICAgMC4yMjY4MDldIHBjaSAwMDAwOjAwOjFjLjI6IEJBUiAxNTogYXNzaWduZWQgW21l
+bSAweDdmZTAwMDAwLTB4N2ZmZmZmZmYgNjRiaXQgcHJlZl0KWyAgICAwLjIyNjgxMV0gcGNpIDAw
+MDA6MDA6MWMuMDogQkFSIDEzOiBhc3NpZ25lZCBbaW8gIDB4MjAwMC0weDJmZmZdClsgICAgMC4y
+MjY4MTNdIHBjaSAwMDAwOjAwOjFjLjI6IEJBUiAxMzogYXNzaWduZWQgW2lvICAweDMwMDAtMHgz
+ZmZmXQpbICAgIDAuMjI2ODE1XSBwY2kgMDAwMDowMDowMS4wOiBQQ0kgYnJpZGdlIHRvIFtidXMg
+MDFdClsgICAgMC4yMjY4MTddIHBjaSAwMDAwOjAwOjAxLjA6ICAgYnJpZGdlIHdpbmRvdyBbaW8g
+IDB4ZTAwMC0weGVmZmZdClsgICAgMC4yMjY4MTldIHBjaSAwMDAwOjAwOjAxLjA6ICAgYnJpZGdl
+IHdpbmRvdyBbbWVtIDB4ZWMwMDAwMDAtMHhlZDBmZmZmZl0KWyAgICAwLjIyNjgyMl0gcGNpIDAw
+MDA6MDA6MDEuMDogICBicmlkZ2Ugd2luZG93IFttZW0gMHhjMDAwMDAwMC0weGQxZmZmZmZmIDY0
+Yml0IHByZWZdClsgICAgMC4yMjY4MjVdIHBjaSAwMDAwOjAwOjFjLjA6IFBDSSBicmlkZ2UgdG8g
+W2J1cyAwMi0zYV0KWyAgICAwLjIyNjgyOF0gcGNpIDAwMDA6MDA6MWMuMDogICBicmlkZ2Ugd2lu
+ZG93IFtpbyAgMHgyMDAwLTB4MmZmZl0KWyAgICAwLjIyNjgzMl0gcGNpIDAwMDA6MDA6MWMuMDog
+ICBicmlkZ2Ugd2luZG93IFttZW0gMHhkNDAwMDAwMC0weGViZmZmZmZmXQpbICAgIDAuMjI2ODM2
+XSBwY2kgMDAwMDowMDoxYy4wOiAgIGJyaWRnZSB3aW5kb3cgW21lbSAweDkwMDAwMDAwLTB4YmZm
+ZmZmZmYgNjRiaXQgcHJlZl0KWyAgICAwLjIyNjg0Nl0gcGNpIDAwMDA6MDA6MWMuMjogUENJIGJy
+aWRnZSB0byBbYnVzIDNiXQpbICAgIDAuMjI2ODQ4XSBwY2kgMDAwMDowMDoxYy4yOiAgIGJyaWRn
+ZSB3aW5kb3cgW2lvICAweDMwMDAtMHgzZmZmXQpbICAgIDAuMjI2ODUzXSBwY2kgMDAwMDowMDox
+Yy4yOiAgIGJyaWRnZSB3aW5kb3cgW21lbSAweGVkOTAwMDAwLTB4ZWQ5ZmZmZmZdClsgICAgMC4y
+MjY4NTddIHBjaSAwMDAwOjAwOjFjLjI6ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4N2ZlMDAwMDAt
+MHg3ZmZmZmZmZiA2NGJpdCBwcmVmXQpbICAgIDAuMjI2ODYyXSBwY2kgMDAwMDowMDoxYy4zOiBQ
+Q0kgYnJpZGdlIHRvIFtidXMgM2NdClsgICAgMC4yMjY4NjVdIHBjaSAwMDAwOjAwOjFjLjM6ICAg
+YnJpZGdlIHdpbmRvdyBbaW8gIDB4ZDAwMC0weGRmZmZdClsgICAgMC4yMjY4NjldIHBjaSAwMDAw
+OjAwOjFjLjM6ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4ZWQ4MDAwMDAtMHhlZDhmZmZmZl0KWyAg
+ICAwLjIyNjg3N10gcGNpX2J1cyAwMDAwOjAwOiByZXNvdXJjZSA0IFtpbyAgMHgwMDAwLTB4MGNm
+NyB3aW5kb3ddClsgICAgMC4yMjY4NzhdIHBjaV9idXMgMDAwMDowMDogcmVzb3VyY2UgNSBbaW8g
+IDB4MGQwMC0weGZmZmYgd2luZG93XQpbICAgIDAuMjI2ODc5XSBwY2lfYnVzIDAwMDA6MDA6IHJl
+c291cmNlIDYgW21lbSAweDAwMGEwMDAwLTB4MDAwYmZmZmYgd2luZG93XQpbICAgIDAuMjI2ODgx
+XSBwY2lfYnVzIDAwMDA6MDA6IHJlc291cmNlIDcgW21lbSAweDAwMGQwMDAwLTB4MDAwZDNmZmYg
+d2luZG93XQpbICAgIDAuMjI2ODgyXSBwY2lfYnVzIDAwMDA6MDA6IHJlc291cmNlIDggW21lbSAw
+eDAwMGQ0MDAwLTB4MDAwZDdmZmYgd2luZG93XQpbICAgIDAuMjI2ODgzXSBwY2lfYnVzIDAwMDA6
+MDA6IHJlc291cmNlIDkgW21lbSAweDAwMGQ4MDAwLTB4MDAwZGJmZmYgd2luZG93XQpbICAgIDAu
+MjI2ODg0XSBwY2lfYnVzIDAwMDA6MDA6IHJlc291cmNlIDEwIFttZW0gMHgwMDBkYzAwMC0weDAw
+MGRmZmZmIHdpbmRvd10KWyAgICAwLjIyNjg4Nl0gcGNpX2J1cyAwMDAwOjAwOiByZXNvdXJjZSAx
+MSBbbWVtIDB4MDAwZTAwMDAtMHgwMDBlM2ZmZiB3aW5kb3ddClsgICAgMC4yMjY4ODddIHBjaV9i
+dXMgMDAwMDowMDogcmVzb3VyY2UgMTIgW21lbSAweDAwMGU0MDAwLTB4MDAwZTdmZmYgd2luZG93
+XQpbICAgIDAuMjI2ODg4XSBwY2lfYnVzIDAwMDA6MDA6IHJlc291cmNlIDEzIFttZW0gMHg3ZmUw
+MDAwMC0weGZlYWZmZmZmIHdpbmRvd10KWyAgICAwLjIyNjg4OV0gcGNpX2J1cyAwMDAwOjAxOiBy
+ZXNvdXJjZSAwIFtpbyAgMHhlMDAwLTB4ZWZmZl0KWyAgICAwLjIyNjg5MV0gcGNpX2J1cyAwMDAw
+OjAxOiByZXNvdXJjZSAxIFttZW0gMHhlYzAwMDAwMC0weGVkMGZmZmZmXQpbICAgIDAuMjI2ODky
+XSBwY2lfYnVzIDAwMDA6MDE6IHJlc291cmNlIDIgW21lbSAweGMwMDAwMDAwLTB4ZDFmZmZmZmYg
+NjRiaXQgcHJlZl0KWyAgICAwLjIyNjg5M10gcGNpX2J1cyAwMDAwOjAyOiByZXNvdXJjZSAwIFtp
+byAgMHgyMDAwLTB4MmZmZl0KWyAgICAwLjIyNjg5NF0gcGNpX2J1cyAwMDAwOjAyOiByZXNvdXJj
+ZSAxIFttZW0gMHhkNDAwMDAwMC0weGViZmZmZmZmXQpbICAgIDAuMjI2ODk2XSBwY2lfYnVzIDAw
+MDA6MDI6IHJlc291cmNlIDIgW21lbSAweDkwMDAwMDAwLTB4YmZmZmZmZmYgNjRiaXQgcHJlZl0K
+WyAgICAwLjIyNjg5N10gcGNpX2J1cyAwMDAwOjNiOiByZXNvdXJjZSAwIFtpbyAgMHgzMDAwLTB4
+M2ZmZl0KWyAgICAwLjIyNjg5OF0gcGNpX2J1cyAwMDAwOjNiOiByZXNvdXJjZSAxIFttZW0gMHhl
+ZDkwMDAwMC0weGVkOWZmZmZmXQpbICAgIDAuMjI2ODk5XSBwY2lfYnVzIDAwMDA6M2I6IHJlc291
+cmNlIDIgW21lbSAweDdmZTAwMDAwLTB4N2ZmZmZmZmYgNjRiaXQgcHJlZl0KWyAgICAwLjIyNjkw
+MV0gcGNpX2J1cyAwMDAwOjNjOiByZXNvdXJjZSAwIFtpbyAgMHhkMDAwLTB4ZGZmZl0KWyAgICAw
+LjIyNjkwMl0gcGNpX2J1cyAwMDAwOjNjOiByZXNvdXJjZSAxIFttZW0gMHhlZDgwMDAwMC0weGVk
+OGZmZmZmXQpbICAgIDAuMjI2OTMxXSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDIK
+WyAgICAwLjIyNzE5Ml0gVENQIGVzdGFibGlzaGVkIGhhc2ggdGFibGUgZW50cmllczogMjYyMTQ0
+IChvcmRlcjogOSwgMjA5NzE1MiBieXRlcykKWyAgICAwLjIyNzUwOF0gVENQIGJpbmQgaGFzaCB0
+YWJsZSBlbnRyaWVzOiA2NTUzNiAob3JkZXI6IDgsIDEwNDg1NzYgYnl0ZXMpClsgICAgMC4yMjc2
+MTddIFRDUDogSGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0YWJsaXNoZWQgMjYyMTQ0IGJpbmQg
+NjU1MzYpClsgICAgMC4yMjc2NjNdIFVEUCBoYXNoIHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRl
+cjogNywgNTI0Mjg4IGJ5dGVzKQpbICAgIDAuMjI3NzUyXSBVRFAtTGl0ZSBoYXNoIHRhYmxlIGVu
+dHJpZXM6IDE2Mzg0IChvcmRlcjogNywgNTI0Mjg4IGJ5dGVzKQpbICAgIDAuMjI3ODU5XSBORVQ6
+IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDEKWyAgICAwLjIyNzg3Ml0gcGNpIDAwMDA6MDA6
+MDIuMDogVmlkZW8gZGV2aWNlIHdpdGggc2hhZG93ZWQgUk9NClsgICAgMC4yNDQ5NDhdIFBDSTog
+Q0xTIG1pc21hdGNoICg2NCAhPSAxMjgpLCB1c2luZyA2NCBieXRlcwpbICAgIDAuMjU5OTYwXSBw
+Y2kgMDAwMDozYzowMC4wOiBzZXQgTVNJX0lOVFhfRElTQUJMRV9CVUcgZmxhZwpbICAgIDAuMjYw
+MDAyXSBVbnBhY2tpbmcgaW5pdHJhbWZzLi4uClsgICAgMC40NzI0NTddIEZyZWVpbmcgaW5pdHJk
+IG1lbW9yeTogMTYzMTJLIChmZmZmODgwMDM2MDE0MDAwIC0gZmZmZjg4MDAzNzAwMjAwMCkKWyAg
+ICAwLjQ3MjQ4OV0gUENJLURNQTogVXNpbmcgc29mdHdhcmUgYm91bmNlIGJ1ZmZlcmluZyBmb3Ig
+SU8gKFNXSU9UTEIpClsgICAgMC40NzI0OTFdIHNvZnR3YXJlIElPIFRMQiBbbWVtIDB4NzU4OGYw
+MDAtMHg3OTg4ZjAwMF0gKDY0TUIpIG1hcHBlZCBhdCBbZmZmZjg4MDA3NTg4ZjAwMC1mZmZmODgw
+MDc5ODhlZmZmXQpbICAgIDAuNDcyNTQ2XSBSQVBMIFBNVSBkZXRlY3RlZCwgQVBJIHVuaXQgaXMg
+Ml4tMzIgSm91bGVzLCA0IGZpeGVkIGNvdW50ZXJzIDY1NTM2MCBtcyBvdmZsIHRpbWVyClsgICAg
+MC40NzI1NDddIGh3IHVuaXQgb2YgZG9tYWluIHBwMC1jb3JlIDJeLTE0IEpvdWxlcwpbICAgIDAu
+NDcyNTQ4XSBodyB1bml0IG9mIGRvbWFpbiBwYWNrYWdlIDJeLTE0IEpvdWxlcwpbICAgIDAuNDcy
+NTQ4XSBodyB1bml0IG9mIGRvbWFpbiBkcmFtIDJeLTE0IEpvdWxlcwpbICAgIDAuNDcyNTQ5XSBo
+dyB1bml0IG9mIGRvbWFpbiBwcDEtZ3B1IDJeLTE0IEpvdWxlcwpbICAgIDAuNDcyNjQxXSBtaWNy
+b2NvZGU6IENQVTAgc2lnPTB4MzA2YzMsIHBmPTB4MjAsIHJldmlzaW9uPTB4MWMKWyAgICAwLjQ3
+MjY0NV0gbWljcm9jb2RlOiBDUFUxIHNpZz0weDMwNmMzLCBwZj0weDIwLCByZXZpc2lvbj0weDFj
+ClsgICAgMC40NzI2NTNdIG1pY3JvY29kZTogQ1BVMiBzaWc9MHgzMDZjMywgcGY9MHgyMCwgcmV2
+aXNpb249MHgxYwpbICAgIDAuNDcyNjYwXSBtaWNyb2NvZGU6IENQVTMgc2lnPTB4MzA2YzMsIHBm
+PTB4MjAsIHJldmlzaW9uPTB4MWMKWyAgICAwLjQ3MjY2N10gbWljcm9jb2RlOiBDUFU0IHNpZz0w
+eDMwNmMzLCBwZj0weDIwLCByZXZpc2lvbj0weDFjClsgICAgMC40NzI2NzRdIG1pY3JvY29kZTog
+Q1BVNSBzaWc9MHgzMDZjMywgcGY9MHgyMCwgcmV2aXNpb249MHgxYwpbICAgIDAuNDcyNjgxXSBt
+aWNyb2NvZGU6IENQVTYgc2lnPTB4MzA2YzMsIHBmPTB4MjAsIHJldmlzaW9uPTB4MWMKWyAgICAw
+LjQ3MjY4OF0gbWljcm9jb2RlOiBDUFU3IHNpZz0weDMwNmMzLCBwZj0weDIwLCByZXZpc2lvbj0w
+eDFjClsgICAgMC40NzI3MjhdIG1pY3JvY29kZTogTWljcm9jb2RlIFVwZGF0ZSBEcml2ZXI6IHYy
+LjAwIDx0aWdyYW5AYWl2YXppYW4uZnNuZXQuY28udWs+LCBQZXRlciBPcnViYQpbICAgIDAuNDcz
+MTkzXSBBVlgyIHZlcnNpb24gb2YgZ2NtX2VuYy9kZWMgZW5nYWdlZC4KWyAgICAwLjQ3MzE5NF0g
+QUVTIENUUiBtb2RlIGJ5OCBvcHRpbWl6YXRpb24gZW5hYmxlZApbICAgIDAuNDc0OTcyXSBhbGc6
+IE5vIHRlc3QgZm9yIF9fZ2NtLWFlcy1hZXNuaSAoX19kcml2ZXItZ2NtLWFlcy1hZXNuaSkKWyAg
+ICAwLjQ3NTM4N10gZnV0ZXggaGFzaCB0YWJsZSBlbnRyaWVzOiAyMDQ4IChvcmRlcjogNSwgMTMx
+MDcyIGJ5dGVzKQpbICAgIDAuNDc1NDA5XSBJbml0aWFsaXNlIHN5c3RlbSB0cnVzdGVkIGtleXJp
+bmcKWyAgICAwLjQ3NTQzMV0gYXVkaXQ6IGluaXRpYWxpemluZyBuZXRsaW5rIHN1YnN5cyAoZGlz
+YWJsZWQpClsgICAgMC40NzU0NDZdIGF1ZGl0OiB0eXBlPTIwMDAgYXVkaXQoMTQzMzY4MTM3OS40
+NTM6MSk6IGluaXRpYWxpemVkClsgICAgMC40NzU3NjddIEh1Z2VUTEIgcmVnaXN0ZXJlZCAyIE1C
+IHBhZ2Ugc2l6ZSwgcHJlLWFsbG9jYXRlZCAwIHBhZ2VzClsgICAgMC40NzcwMThdIHpwb29sOiBs
+b2FkZWQKWyAgICAwLjQ3NzAyMV0gemJ1ZDogbG9hZGVkClsgICAgMC40NzcxNzNdIFZGUzogRGlz
+ayBxdW90YXMgZHF1b3RfNi42LjAKWyAgICAwLjQ3NzIwMl0gVkZTOiBEcXVvdC1jYWNoZSBoYXNo
+IHRhYmxlIGVudHJpZXM6IDUxMiAob3JkZXIgMCwgNDA5NiBieXRlcykKWyAgICAwLjQ3NzUyNl0g
+S2V5IHR5cGUgYmlnX2tleSByZWdpc3RlcmVkClsgICAgMC40Nzc1MzBdIFNFTGludXg6ICBSZWdp
+c3RlcmluZyBuZXRmaWx0ZXIgaG9va3MKWyAgICAwLjQ3ODQ2OV0gYWxnOiBObyB0ZXN0IGZvciBz
+dGRybmcgKGtybmcpClsgICAgMC40Nzg0NzhdIE5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1p
+bHkgMzgKWyAgICAwLjQ3ODQ4OF0gS2V5IHR5cGUgYXN5bW1ldHJpYyByZWdpc3RlcmVkClsgICAg
+MC40Nzg0OTJdIEFzeW1tZXRyaWMga2V5IHBhcnNlciAneDUwOScgcmVnaXN0ZXJlZApbICAgIDAu
+NDc4NTIzXSBCbG9jayBsYXllciBTQ1NJIGdlbmVyaWMgKGJzZykgZHJpdmVyIHZlcnNpb24gMC40
+IGxvYWRlZCAobWFqb3IgMjUyKQpbICAgIDAuNDc4NTY0XSBpbyBzY2hlZHVsZXIgbm9vcCByZWdp
+c3RlcmVkClsgICAgMC40Nzg1NjddIGlvIHNjaGVkdWxlciBkZWFkbGluZSByZWdpc3RlcmVkClsg
+ICAgMC40Nzg1OTRdIGlvIHNjaGVkdWxlciBjZnEgcmVnaXN0ZXJlZCAoZGVmYXVsdCkKWyAgICAw
+LjQ3OTA2Nl0gcGNpX2hvdHBsdWc6IFBDSSBIb3QgUGx1ZyBQQ0kgQ29yZSB2ZXJzaW9uOiAwLjUK
+WyAgICAwLjQ3OTA3OF0gcGNpZWhwOiBQQ0kgRXhwcmVzcyBIb3QgUGx1ZyBDb250cm9sbGVyIERy
+aXZlciB2ZXJzaW9uOiAwLjQKWyAgICAwLjQ3OTEwNF0gaW50ZWxfaWRsZTogTVdBSVQgc3Vic3Rh
+dGVzOiAweDQyMTIwClsgICAgMC40NzkxMDVdIGludGVsX2lkbGU6IHYwLjQgbW9kZWwgMHgzQwpb
+ICAgIDAuNDc5MTA2XSBpbnRlbF9pZGxlOiBsYXBpY190aW1lcl9yZWxpYWJsZV9zdGF0ZXMgMHhm
+ZmZmZmZmZgpbICAgIDAuNDc5NDcxXSBBQ1BJOiBBQyBBZGFwdGVyIFtBQzBdIChvbi1saW5lKQpb
+ICAgIDAuNDc5NTc3XSBpbnB1dDogTGlkIFN3aXRjaCBhcyAvZGV2aWNlcy9MTlhTWVNUTTowMC9M
+TlhTWUJVUzowMC9QTlAwQzBEOjAwL2lucHV0L2lucHV0MApbICAgIDAuNDgwMjk5XSBBQ1BJOiBM
+aWQgU3dpdGNoIFtMSURdClsgICAgMC40ODAzMzJdIGlucHV0OiBTbGVlcCBCdXR0b24gYXMgL2Rl
+dmljZXMvTE5YU1lTVE06MDAvTE5YU1lCVVM6MDAvUE5QMEMwRTowMC9pbnB1dC9pbnB1dDEKWyAg
+ICAwLjQ4MDMzNV0gQUNQSTogU2xlZXAgQnV0dG9uIFtTTFBCXQpbICAgIDAuNDgwMzYzXSBpbnB1
+dDogUG93ZXIgQnV0dG9uIGFzIC9kZXZpY2VzL0xOWFNZU1RNOjAwL0xOWFBXUkJOOjAwL2lucHV0
+L2lucHV0MgpbICAgIDAuNDgwMzY1XSBBQ1BJOiBQb3dlciBCdXR0b24gW1BXUkZdClsgICAgMC40
+ODEwMjRdIHRoZXJtYWwgTE5YVEhFUk06MDA6IHJlZ2lzdGVyZWQgYXMgdGhlcm1hbF96b25lMApb
+ICAgIDAuNDgxMDI2XSBBQ1BJOiBUaGVybWFsIFpvbmUgW1RIUk1dICg1NSBDKQpbICAgIDAuNDgx
+MDcyXSBHSEVTOiBIRVNUIGlzIG5vdCBlbmFibGVkIQpbICAgIDAuNDgxMTQ4XSBTZXJpYWw6IDgy
+NTAvMTY1NTAgZHJpdmVyLCA0IHBvcnRzLCBJUlEgc2hhcmluZyBlbmFibGVkClsgICAgMC40ODE3
+ODJdIE5vbi12b2xhdGlsZSBtZW1vcnkgZHJpdmVyIHYxLjMKWyAgICAwLjQ4MTg0N10gTGludXgg
+YWdwZ2FydCBpbnRlcmZhY2UgdjAuMTAzClsgICAgMC40ODI0NzRdIGFoY2kgMDAwMDowMDoxZi4y
+OiB2ZXJzaW9uIDMuMApbICAgIDAuNDgyNTkxXSBhaGNpIDAwMDA6MDA6MWYuMjogU1NTIGZsYWcg
+c2V0LCBwYXJhbGxlbCBidXMgc2NhbiBkaXNhYmxlZApbICAgIDAuNDgyNjMwXSBhaGNpIDAwMDA6
+MDA6MWYuMjogQUhDSSAwMDAxLjAzMDAgMzIgc2xvdHMgNCBwb3J0cyA2IEdicHMgMHg3IGltcGwg
+U0FUQSBtb2RlClsgICAgMC40ODI2MzNdIGFoY2kgMDAwMDowMDoxZi4yOiBmbGFnczogNjRiaXQg
+bmNxIHN0YWcgcG0gbGVkIGNsbyBwaW8gc2x1bSBwYXJ0IGVtcyBhcHN0IApbICAgIDAuNDg2NTcx
+XSBzY3NpIGhvc3QwOiBhaGNpClsgICAgMC40ODY3MjldIHNjc2kgaG9zdDE6IGFoY2kKWyAgICAw
+LjQ4Njg3M10gc2NzaSBob3N0MjogYWhjaQpbICAgIDAuNDg3MDI0XSBzY3NpIGhvc3QzOiBhaGNp
+ClsgICAgMC40ODcwNzJdIGF0YTE6IFNBVEEgbWF4IFVETUEvMTMzIGFiYXIgbTIwNDhAMHhlZGEx
+YTAwMCBwb3J0IDB4ZWRhMWExMDAgaXJxIDI3ClsgICAgMC40ODcwNzVdIGF0YTI6IFNBVEEgbWF4
+IFVETUEvMTMzIGFiYXIgbTIwNDhAMHhlZGExYTAwMCBwb3J0IDB4ZWRhMWExODAgaXJxIDI3Clsg
+ICAgMC40ODcwNzZdIGF0YTM6IFNBVEEgbWF4IFVETUEvMTMzIGFiYXIgbTIwNDhAMHhlZGExYTAw
+MCBwb3J0IDB4ZWRhMWEyMDAgaXJxIDI3ClsgICAgMC40ODcwNzddIGF0YTQ6IERVTU1ZClsgICAg
+MC40ODcxNzVdIGxpYnBoeTogRml4ZWQgTURJTyBCdXM6IHByb2JlZApbICAgIDAuNDg3MzY1XSB4
+aGNpX2hjZCAwMDAwOjAwOjE0LjA6IHhIQ0kgSG9zdCBDb250cm9sbGVyClsgICAgMC40ODc0Mjdd
+IHhoY2lfaGNkIDAwMDA6MDA6MTQuMDogbmV3IFVTQiBidXMgcmVnaXN0ZXJlZCwgYXNzaWduZWQg
+YnVzIG51bWJlciAxClsgICAgMC40ODc1MzRdIHhoY2lfaGNkIDAwMDA6MDA6MTQuMDogaGNjIHBh
+cmFtcyAweDIwMDA3N2MxIGhjaSB2ZXJzaW9uIDB4MTAwIHF1aXJrcyAweDAwMDA5ODEwClsgICAg
+MC40ODc1MzldIHhoY2lfaGNkIDAwMDA6MDA6MTQuMDogY2FjaGUgbGluZSBzaXplIG9mIDY0IGlz
+IG5vdCBzdXBwb3J0ZWQKWyAgICAwLjQ4NzYyM10gdXNiIHVzYjE6IE5ldyBVU0IgZGV2aWNlIGZv
+dW5kLCBpZFZlbmRvcj0xZDZiLCBpZFByb2R1Y3Q9MDAwMgpbICAgIDAuNDg3NjI0XSB1c2IgdXNi
+MTogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTMsIFByb2R1Y3Q9MiwgU2VyaWFsTnVtYmVy
+PTEKWyAgICAwLjQ4NzYyNl0gdXNiIHVzYjE6IFByb2R1Y3Q6IHhIQ0kgSG9zdCBDb250cm9sbGVy
+ClsgICAgMC40ODc2MjddIHVzYiB1c2IxOiBNYW51ZmFjdHVyZXI6IExpbnV4IDQuMS4wLTAucmM2
+LmdpdDIuMS5mYzIzLng4Nl82NCB4aGNpLWhjZApbICAgIDAuNDg3NjI4XSB1c2IgdXNiMTogU2Vy
+aWFsTnVtYmVyOiAwMDAwOjAwOjE0LjAKWyAgICAwLjQ4Nzc0MF0gaHViIDEtMDoxLjA6IFVTQiBo
+dWIgZm91bmQKWyAgICAwLjQ4Nzc2NV0gaHViIDEtMDoxLjA6IDE0IHBvcnRzIGRldGVjdGVkClsg
+ICAgMC40OTE1OTddIHhoY2lfaGNkIDAwMDA6MDA6MTQuMDogeEhDSSBIb3N0IENvbnRyb2xsZXIK
+WyAgICAwLjQ5MTY1MF0geGhjaV9oY2QgMDAwMDowMDoxNC4wOiBuZXcgVVNCIGJ1cyByZWdpc3Rl
+cmVkLCBhc3NpZ25lZCBidXMgbnVtYmVyIDIKWyAgICAwLjQ5MTY4MV0gdXNiIHVzYjI6IE5ldyBV
+U0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0xZDZiLCBpZFByb2R1Y3Q9MDAwMwpbICAgIDAuNDkx
+NjgzXSB1c2IgdXNiMjogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTMsIFByb2R1Y3Q9Miwg
+U2VyaWFsTnVtYmVyPTEKWyAgICAwLjQ5MTY4NF0gdXNiIHVzYjI6IFByb2R1Y3Q6IHhIQ0kgSG9z
+dCBDb250cm9sbGVyClsgICAgMC40OTE2ODVdIHVzYiB1c2IyOiBNYW51ZmFjdHVyZXI6IExpbnV4
+IDQuMS4wLTAucmM2LmdpdDIuMS5mYzIzLng4Nl82NCB4aGNpLWhjZApbICAgIDAuNDkxNjg2XSB1
+c2IgdXNiMjogU2VyaWFsTnVtYmVyOiAwMDAwOjAwOjE0LjAKWyAgICAwLjQ5MTc4OF0gaHViIDIt
+MDoxLjA6IFVTQiBodWIgZm91bmQKWyAgICAwLjQ5MTgwMF0gaHViIDItMDoxLjA6IDYgcG9ydHMg
+ZGV0ZWN0ZWQKWyAgICAwLjQ5MzE2OV0gZWhjaV9oY2Q6IFVTQiAyLjAgJ0VuaGFuY2VkJyBIb3N0
+IENvbnRyb2xsZXIgKEVIQ0kpIERyaXZlcgpbICAgIDAuNDkzMTc0XSBlaGNpLXBjaTogRUhDSSBQ
+Q0kgcGxhdGZvcm0gZHJpdmVyClsgICAgMC40OTMyNTVdIGVoY2ktcGNpIDAwMDA6MDA6MWEuMDog
+RUhDSSBIb3N0IENvbnRyb2xsZXIKWyAgICAwLjQ5MzMxMV0gZWhjaS1wY2kgMDAwMDowMDoxYS4w
+OiBuZXcgVVNCIGJ1cyByZWdpc3RlcmVkLCBhc3NpZ25lZCBidXMgbnVtYmVyIDMKWyAgICAwLjQ5
+MzMyNV0gZWhjaS1wY2kgMDAwMDowMDoxYS4wOiBkZWJ1ZyBwb3J0IDIKWyAgICAwLjQ5NzI0M10g
+ZWhjaS1wY2kgMDAwMDowMDoxYS4wOiBjYWNoZSBsaW5lIHNpemUgb2YgNjQgaXMgbm90IHN1cHBv
+cnRlZApbICAgIDAuNDk3MjU2XSBlaGNpLXBjaSAwMDAwOjAwOjFhLjA6IGlycSAxNiwgaW8gbWVt
+IDB4ZWRhMWMwMDAKWyAgICAwLjUwMTE3Ml0gQUNQSTogQmF0dGVyeSBTbG90IFtCQVQwXSAoYmF0
+dGVyeSBwcmVzZW50KQpbICAgIDAuNTAzMTc2XSBlaGNpLXBjaSAwMDAwOjAwOjFhLjA6IFVTQiAy
+LjAgc3RhcnRlZCwgRUhDSSAxLjAwClsgICAgMC41MDMyMDhdIHVzYiB1c2IzOiBOZXcgVVNCIGRl
+dmljZSBmb3VuZCwgaWRWZW5kb3I9MWQ2YiwgaWRQcm9kdWN0PTAwMDIKWyAgICAwLjUwMzIxMF0g
+dXNiIHVzYjM6IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6IE1mcj0zLCBQcm9kdWN0PTIsIFNlcmlh
+bE51bWJlcj0xClsgICAgMC41MDMyMTJdIHVzYiB1c2IzOiBQcm9kdWN0OiBFSENJIEhvc3QgQ29u
+dHJvbGxlcgpbICAgIDAuNTAzMjEzXSB1c2IgdXNiMzogTWFudWZhY3R1cmVyOiBMaW51eCA0LjEu
+MC0wLnJjNi5naXQyLjEuZmMyMy54ODZfNjQgZWhjaV9oY2QKWyAgICAwLjUwMzIxNF0gdXNiIHVz
+YjM6IFNlcmlhbE51bWJlcjogMDAwMDowMDoxYS4wClsgICAgMC41MDMzNDldIGh1YiAzLTA6MS4w
+OiBVU0IgaHViIGZvdW5kClsgICAgMC41MDMzNTVdIGh1YiAzLTA6MS4wOiAyIHBvcnRzIGRldGVj
+dGVkClsgICAgMC41MDM1MzBdIGVoY2ktcGNpIDAwMDA6MDA6MWQuMDogRUhDSSBIb3N0IENvbnRy
+b2xsZXIKWyAgICAwLjUwMzYwNl0gZWhjaS1wY2kgMDAwMDowMDoxZC4wOiBuZXcgVVNCIGJ1cyBy
+ZWdpc3RlcmVkLCBhc3NpZ25lZCBidXMgbnVtYmVyIDQKWyAgICAwLjUwMzYxN10gZWhjaS1wY2kg
+MDAwMDowMDoxZC4wOiBkZWJ1ZyBwb3J0IDIKWyAgICAwLjUwNzUxMF0gZWhjaS1wY2kgMDAwMDow
+MDoxZC4wOiBjYWNoZSBsaW5lIHNpemUgb2YgNjQgaXMgbm90IHN1cHBvcnRlZApbICAgIDAuNTA3
+NTIyXSBlaGNpLXBjaSAwMDAwOjAwOjFkLjA6IGlycSAyMywgaW8gbWVtIDB4ZWRhMWIwMDAKWyAg
+ICAwLjUxMzE3OF0gZWhjaS1wY2kgMDAwMDowMDoxZC4wOiBVU0IgMi4wIHN0YXJ0ZWQsIEVIQ0kg
+MS4wMApbICAgIDAuNTEzMjA2XSB1c2IgdXNiNDogTmV3IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVu
+ZG9yPTFkNmIsIGlkUHJvZHVjdD0wMDAyClsgICAgMC41MTMyMDhdIHVzYiB1c2I0OiBOZXcgVVNC
+IGRldmljZSBzdHJpbmdzOiBNZnI9MywgUHJvZHVjdD0yLCBTZXJpYWxOdW1iZXI9MQpbICAgIDAu
+NTEzMjA5XSB1c2IgdXNiNDogUHJvZHVjdDogRUhDSSBIb3N0IENvbnRyb2xsZXIKWyAgICAwLjUx
+MzIxMV0gdXNiIHVzYjQ6IE1hbnVmYWN0dXJlcjogTGludXggNC4xLjAtMC5yYzYuZ2l0Mi4xLmZj
+MjMueDg2XzY0IGVoY2lfaGNkClsgICAgMC41MTMyMTJdIHVzYiB1c2I0OiBTZXJpYWxOdW1iZXI6
+IDAwMDA6MDA6MWQuMApbICAgIDAuNTEzMzg3XSBodWIgNC0wOjEuMDogVVNCIGh1YiBmb3VuZApb
+ICAgIDAuNTEzMzkyXSBodWIgNC0wOjEuMDogMiBwb3J0cyBkZXRlY3RlZApbICAgIDAuNTEzNDg5
+XSBvaGNpX2hjZDogVVNCIDEuMSAnT3BlbicgSG9zdCBDb250cm9sbGVyIChPSENJKSBEcml2ZXIK
+WyAgICAwLjUxMzQ5NV0gb2hjaS1wY2k6IE9IQ0kgUENJIHBsYXRmb3JtIGRyaXZlcgpbICAgIDAu
+NTEzNTA0XSB1aGNpX2hjZDogVVNCIFVuaXZlcnNhbCBIb3N0IENvbnRyb2xsZXIgSW50ZXJmYWNl
+IGRyaXZlcgpbICAgIDAuNTEzNTQwXSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2Ug
+ZHJpdmVyIHVzYnNlcmlhbApbICAgIDAuNTEzNTQ1XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBp
+bnRlcmZhY2UgZHJpdmVyIHVzYnNlcmlhbF9nZW5lcmljClsgICAgMC41MTM1NTFdIHVzYnNlcmlh
+bDogVVNCIFNlcmlhbCBzdXBwb3J0IHJlZ2lzdGVyZWQgZm9yIGdlbmVyaWMKWyAgICAwLjUxMzU4
+NV0gaTgwNDI6IFBOUDogUFMvMiBDb250cm9sbGVyIFtQTlAwMzBiOlBTMkssUE5QMGYwMzpQUzJN
+XSBhdCAweDYwLDB4NjQgaXJxIDEsMTIKWyAgICAwLjUxNjIzMV0gaTgwNDI6IERldGVjdGVkIGFj
+dGl2ZSBtdWx0aXBsZXhpbmcgY29udHJvbGxlciwgcmV2IDEuMQpbICAgIDAuNTE5MDI4XSBzZXJp
+bzogaTgwNDIgS0JEIHBvcnQgYXQgMHg2MCwweDY0IGlycSAxClsgICAgMC41MTkwMzJdIHNlcmlv
+OiBpODA0MiBBVVgwIHBvcnQgYXQgMHg2MCwweDY0IGlycSAxMgpbICAgIDAuNTE5MDU3XSBzZXJp
+bzogaTgwNDIgQVVYMSBwb3J0IGF0IDB4NjAsMHg2NCBpcnEgMTIKWyAgICAwLjUxOTA3NV0gc2Vy
+aW86IGk4MDQyIEFVWDIgcG9ydCBhdCAweDYwLDB4NjQgaXJxIDEyClsgICAgMC41MTkwOTRdIHNl
+cmlvOiBpODA0MiBBVVgzIHBvcnQgYXQgMHg2MCwweDY0IGlycSAxMgpbICAgIDAuNTE5MjUzXSBt
+b3VzZWRldjogUFMvMiBtb3VzZSBkZXZpY2UgY29tbW9uIGZvciBhbGwgbWljZQpbICAgIDAuNTE5
+NzY0XSBydGNfY21vcyAwMDowMjogUlRDIGNhbiB3YWtlIGZyb20gUzQKWyAgICAwLjUxOTkwNV0g
+cnRjX2Ntb3MgMDA6MDI6IHJ0YyBjb3JlOiByZWdpc3RlcmVkIHJ0Y19jbW9zIGFzIHJ0YzAKWyAg
+ICAwLjUxOTkzMl0gcnRjX2Ntb3MgMDA6MDI6IGFsYXJtcyB1cCB0byBvbmUgbW9udGgsIHkzaywg
+MjQyIGJ5dGVzIG52cmFtLCBocGV0IGlycXMKWyAgICAwLjUxOTk3Ml0gZGV2aWNlLW1hcHBlcjog
+dWV2ZW50OiB2ZXJzaW9uIDEuMC4zClsgICAgMC41MjAwNDhdIGRldmljZS1tYXBwZXI6IGlvY3Rs
+OiA0LjMxLjAtaW9jdGwgKDIwMTUtMy0xMikgaW5pdGlhbGlzZWQ6IGRtLWRldmVsQHJlZGhhdC5j
+b20KWyAgICAwLjUyMDE1M10gSW50ZWwgUC1zdGF0ZSBkcml2ZXIgaW5pdGlhbGl6aW5nLgpbICAg
+IDAuNTIwNzY3XSBoaWRyYXc6IHJhdyBISUQgZXZlbnRzIGRyaXZlciAoQykgSmlyaSBLb3NpbmEK
+WyAgICAwLjUyMDg2N10gdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciB1
+c2JoaWQKWyAgICAwLjUyMDg2OV0gdXNiaGlkOiBVU0IgSElEIGNvcmUgZHJpdmVyClsgICAgMC41
+MjEwMDldIGRyb3BfbW9uaXRvcjogSW5pdGlhbGl6aW5nIG5ldHdvcmsgZHJvcCBtb25pdG9yIHNl
+cnZpY2UKWyAgICAwLjUyMTIyMl0gaXBfdGFibGVzOiAoQykgMjAwMC0yMDA2IE5ldGZpbHRlciBD
+b3JlIFRlYW0KWyAgICAwLjUyMTM4M10gSW5pdGlhbGl6aW5nIFhGUk0gbmV0bGluayBzb2NrZXQK
+WyAgICAwLjUyMTY1NF0gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxMApbICAgIDAu
+NTIyMjA2XSBtaXA2OiBNb2JpbGUgSVB2NgpbICAgIDAuNTIyMjE4XSBORVQ6IFJlZ2lzdGVyZWQg
+cHJvdG9jb2wgZmFtaWx5IDE3ClsgICAgMC41MjM0NzldIExvYWRpbmcgY29tcGlsZWQtaW4gWC41
+MDkgY2VydGlmaWNhdGVzClsgICAgMC41MjU4MzldIExvYWRlZCBYLjUwOSBjZXJ0ICdGZWRvcmEg
+a2VybmVsIHNpZ25pbmcga2V5OiA2NjBkYjU4NmIyZmRiNTlmZjk3NGUyMTdmM2M2MjFjNzE1MDkz
+MjBiJwpbICAgIDAuNTI1ODg4XSByZWdpc3RlcmVkIHRhc2tzdGF0cyB2ZXJzaW9uIDEKWyAgICAw
+LjUyNzEyNV0gICBNYWdpYyBudW1iZXI6IDM6NTg0OjgzNApbICAgIDAuNTI3MzU5XSBydGNfY21v
+cyAwMDowMjogc2V0dGluZyBzeXN0ZW0gY2xvY2sgdG8gMjAxNS0wNi0wNyAxMjo0OTo0MCBVVEMg
+KDE0MzM2ODEzODApClsgICAgMC41Mjc1NTddIFBNOiBIaWJlcm5hdGlvbiBpbWFnZSBub3QgcHJl
+c2VudCBvciBjb3VsZCBub3QgYmUgbG9hZGVkLgpbICAgIDAuNTYwODczXSBpbnB1dDogQVQgVHJh
+bnNsYXRlZCBTZXQgMiBrZXlib2FyZCBhcyAvZGV2aWNlcy9wbGF0Zm9ybS9pODA0Mi9zZXJpbzAv
+aW5wdXQvaW5wdXQzClsgICAgMC43OTI1MzBdIGF0YTE6IFNBVEEgbGluayB1cCA2LjAgR2JwcyAo
+U1N0YXR1cyAxMzMgU0NvbnRyb2wgMzAwKQpbICAgIDAuNzkzMDUyXSBhdGExLjAwOiBBQ1BJIGNt
+ZCBlZi8xMDowOTowMDowMDowMDpiMCAoU0VUIEZFQVRVUkVTKSBzdWNjZWVkZWQKWyAgICAwLjc5
+Mzk0N10gYXRhMS4wMDogQVRBLTk6IFNhbkRpc2sgU0Q3U0IzUTI1NkcxMDAyLCBYMjE1MDAwMCwg
+bWF4IFVETUEvMTMzClsgICAgMC43OTM5NTJdIGF0YTEuMDA6IDUwMDExODE5MiBzZWN0b3JzLCBt
+dWx0aSAxOiBMQkE0OCBOQ1EgKGRlcHRoIDMxLzMyKSwgQUEKWyAgICAwLjc5NDczOF0gYXRhMS4w
+MDogQUNQSSBjbWQgZWYvMTA6MDk6MDA6MDA6MDA6YjAgKFNFVCBGRUFUVVJFUykgc3VjY2VlZGVk
+ClsgICAgMC43OTYwMjJdIGF0YTEuMDA6IGNvbmZpZ3VyZWQgZm9yIFVETUEvMTMzClsgICAgMC43
+OTYyMDJdIHNjc2kgMDowOjA6MDogRGlyZWN0LUFjY2VzcyAgICAgQVRBICAgICAgU2FuRGlzayBT
+RDdTQjNRMiAwMDAwIFBROiAwIEFOU0k6IDUKWyAgICAwLjc5NjU1M10gc2QgMDowOjA6MDogW3Nk
+YV0gNTAwMTE4MTkyIDUxMi1ieXRlIGxvZ2ljYWwgYmxvY2tzOiAoMjU2IEdCLzIzOCBHaUIpClsg
+ICAgMC43OTY1NjhdIHNkIDA6MDowOjA6IEF0dGFjaGVkIHNjc2kgZ2VuZXJpYyBzZzAgdHlwZSAw
+ClsgICAgMC43OTY4MzZdIHNkIDA6MDowOjA6IFtzZGFdIFdyaXRlIFByb3RlY3QgaXMgb2ZmClsg
+ICAgMC43OTY4NDBdIHNkIDA6MDowOjA6IFtzZGFdIE1vZGUgU2Vuc2U6IDAwIDNhIDAwIDAwClsg
+ICAgMC43OTY5NTZdIHNkIDA6MDowOjA6IFtzZGFdIFdyaXRlIGNhY2hlOiBlbmFibGVkLCByZWFk
+IGNhY2hlOiBlbmFibGVkLCBkb2Vzbid0IHN1cHBvcnQgRFBPIG9yIEZVQQpbICAgIDAuNzk4Nzg4
+XSAgc2RhOiBzZGExIHNkYTIgc2RhMyBzZGE0IHNkYTUKWyAgICAwLjc5OTU0N10gc2QgMDowOjA6
+MDogW3NkYV0gQXR0YWNoZWQgU0NTSSBkaXNrClsgICAgMC44MDU1NDhdIHVzYiAzLTE6IG5ldyBo
+aWdoLXNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDIgdXNpbmcgZWhjaS1wY2kKWyAgICAwLjgxNTU2
+MF0gdXNiIDQtMTogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBudW1iZXIgMiB1c2luZyBlaGNp
+LXBjaQpbICAgIDAuODQ0NTgyXSB1c2IgMS0yOiBuZXcgbG93LXNwZWVkIFVTQiBkZXZpY2UgbnVt
+YmVyIDIgdXNpbmcgeGhjaV9oY2QKWyAgICAwLjkyMDA5MF0gdXNiIDMtMTogTmV3IFVTQiBkZXZp
+Y2UgZm91bmQsIGlkVmVuZG9yPTgwODcsIGlkUHJvZHVjdD04MDA4ClsgICAgMC45MjAwOTNdIHVz
+YiAzLTE6IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6IE1mcj0wLCBQcm9kdWN0PTAsIFNlcmlhbE51
+bWJlcj0wClsgICAgMC45MjA1MThdIGh1YiAzLTE6MS4wOiBVU0IgaHViIGZvdW5kClsgICAgMC45
+MjA3MzBdIGh1YiAzLTE6MS4wOiA2IHBvcnRzIGRldGVjdGVkClsgICAgMC45MzAxNzldIHVzYiA0
+LTE6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj04MDg3LCBpZFByb2R1Y3Q9ODAwMApb
+ICAgIDAuOTMwMTgzXSB1c2IgNC0xOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MCwgUHJv
+ZHVjdD0wLCBTZXJpYWxOdW1iZXI9MApbICAgIDAuOTMwNTAwXSBodWIgNC0xOjEuMDogVVNCIGh1
+YiBmb3VuZApbICAgIDAuOTMwNzM3XSBodWIgNC0xOjEuMDogOCBwb3J0cyBkZXRlY3RlZApbICAg
+IDEuMDEyNzI2XSB1c2IgMS0yOiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MDQ1ZSwg
+aWRQcm9kdWN0PTA3MzcKWyAgICAxLjAxMjcyOV0gdXNiIDEtMjogTmV3IFVTQiBkZXZpY2Ugc3Ry
+aW5nczogTWZyPTEsIFByb2R1Y3Q9MiwgU2VyaWFsTnVtYmVyPTAKWyAgICAxLjAxMjczMV0gdXNi
+IDEtMjogUHJvZHVjdDogQ29tcGFjdCBPcHRpY2FsIE1vdXNlIDUwMApbICAgIDEuMDEyNzMyXSB1
+c2IgMS0yOiBNYW51ZmFjdHVyZXI6IE1pY3Jvc29mdCAKWyAgICAxLjAxMjkxMl0gdXNiIDEtMjog
+ZXAgMHg4MSAtIHJvdW5kaW5nIGludGVydmFsIHRvIDY0IG1pY3JvZnJhbWVzLCBlcCBkZXNjIHNh
+eXMgODAgbWljcm9mcmFtZXMKWyAgICAxLjAxNjIxMV0gaW5wdXQ6IE1pY3Jvc29mdCAgQ29tcGFj
+dCBPcHRpY2FsIE1vdXNlIDUwMCBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MTQuMC91
+c2IxLzEtMi8xLTI6MS4wLzAwMDM6MDQ1RTowNzM3LjAwMDEvaW5wdXQvaW5wdXQxMgpbICAgIDEu
+MDE2NTUwXSBoaWQtZ2VuZXJpYyAwMDAzOjA0NUU6MDczNy4wMDAxOiBpbnB1dCxoaWRyYXcwOiBV
+U0IgSElEIHYxLjExIE1vdXNlIFtNaWNyb3NvZnQgIENvbXBhY3QgT3B0aWNhbCBNb3VzZSA1MDBd
+IG9uIHVzYi0wMDAwOjAwOjE0LjAtMi9pbnB1dDAKWyAgICAxLjEwMTg3MV0gYXRhMjogU0FUQSBs
+aW5rIHVwIDYuMCBHYnBzIChTU3RhdHVzIDEzMyBTQ29udHJvbCAzMDApClsgICAgMS4xMDg1MjVd
+IGF0YTIuMDA6IEFUQS04OiBTVDIwMDBMTTAwMyBITi1NMjAxUkFELCAyQkMxMDAwMiwgbWF4IFVE
+TUEvMTMzClsgICAgMS4xMDg1MjhdIGF0YTIuMDA6IDM5MDcwMjkxNjggc2VjdG9ycywgbXVsdGkg
+MTY6IExCQTQ4IE5DUSAoZGVwdGggMzEvMzIpLCBBQQpbICAgIDEuMTE1MjI1XSBhdGEyLjAwOiBj
+b25maWd1cmVkIGZvciBVRE1BLzEzMwpbICAgIDEuMTE1NDE2XSBzY3NpIDE6MDowOjA6IERpcmVj
+dC1BY2Nlc3MgICAgIEFUQSAgICAgIFNUMjAwMExNMDAzIEhOLU0gMDAwMiBQUTogMCBBTlNJOiA1
+ClsgICAgMS4xMTU3NjldIHNkIDE6MDowOjA6IFtzZGJdIDM5MDcwMjkxNjggNTEyLWJ5dGUgbG9n
+aWNhbCBibG9ja3M6ICgyLjAwIFRCLzEuODEgVGlCKQpbICAgIDEuMTE1NzcyXSBzZCAxOjA6MDow
+OiBbc2RiXSA0MDk2LWJ5dGUgcGh5c2ljYWwgYmxvY2tzClsgICAgMS4xMTU3OTJdIHNkIDE6MDow
+OjA6IEF0dGFjaGVkIHNjc2kgZ2VuZXJpYyBzZzEgdHlwZSAwClsgICAgMS4xMTU5NTRdIHNkIDE6
+MDowOjA6IFtzZGJdIFdyaXRlIFByb3RlY3QgaXMgb2ZmClsgICAgMS4xMTU5NTddIHNkIDE6MDow
+OjA6IFtzZGJdIE1vZGUgU2Vuc2U6IDAwIDNhIDAwIDAwClsgICAgMS4xMTYwNzNdIHNkIDE6MDow
+OjA6IFtzZGJdIFdyaXRlIGNhY2hlOiBlbmFibGVkLCByZWFkIGNhY2hlOiBlbmFibGVkLCBkb2Vz
+bid0IHN1cHBvcnQgRFBPIG9yIEZVQQpbICAgIDEuMTY5NzQ2XSB1c2IgMS01OiBuZXcgZnVsbC1z
+cGVlZCBVU0IgZGV2aWNlIG51bWJlciAzIHVzaW5nIHhoY2lfaGNkClsgICAgMS4xNzY5OThdICBz
+ZGI6IHNkYjEgc2RiMgpbICAgIDEuMTc3Nzk1XSBzZCAxOjA6MDowOiBbc2RiXSBBdHRhY2hlZCBT
+Q1NJIGRpc2sKWyAgICAxLjMxMjEwOV0gcHNtb3VzZSBzZXJpbzQ6IGVsYW50ZWNoOiBhc3N1bWlu
+ZyBoYXJkd2FyZSB2ZXJzaW9uIDQgKHdpdGggZmlybXdhcmUgdmVyc2lvbiAweDM2MGYwNikKWyAg
+ICAxLjMyNjcwN10gcHNtb3VzZSBzZXJpbzQ6IGVsYW50ZWNoOiBTeW5hcHRpY3MgY2FwYWJpbGl0
+aWVzIHF1ZXJ5IHJlc3VsdCAweDAwLCAweDE2LCAweDBjLgpbICAgIDEuMzM1MTM4XSB1c2IgMS01
+OiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9ODA4NywgaWRQcm9kdWN0PTA3ZGMKWyAg
+ICAxLjMzNTE0MV0gdXNiIDEtNTogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTAsIFByb2R1
+Y3Q9MCwgU2VyaWFsTnVtYmVyPTAKWyAgICAxLjQwMjA4Ml0gaW5wdXQ6IEVUUFMvMiBFbGFudGVj
+aCBUb3VjaHBhZCBhcyAvZGV2aWNlcy9wbGF0Zm9ybS9pODA0Mi9zZXJpbzQvaW5wdXQvaW5wdXQx
+MQpbICAgIDEuNDIxMjIxXSBhdGEzOiBTQVRBIGxpbmsgdXAgMS41IEdicHMgKFNTdGF0dXMgMTEz
+IFNDb250cm9sIDMwMCkKWyAgICAxLjQyMjc1OF0gYXRhMy4wMDogQVRBUEk6IE1BVFNISVRBRFZE
+LVJBTSBVSjhHNiwgMS4wMCwgbWF4IFVETUEvMTMzClsgICAgMS40MjM5NzldIGF0YTMuMDA6IGNv
+bmZpZ3VyZWQgZm9yIFVETUEvMTMzClsgICAgMS40MjU0MjFdIHNjc2kgMjowOjA6MDogQ0QtUk9N
+ICAgICAgICAgICAgTUFUU0hJVEEgRFZELVJBTSBVSjhHNiAgICAxLjAwIFBROiAwIEFOU0k6IDUK
+WyAgICAxLjQ0OTcyOF0gc3IgMjowOjA6MDogW3NyMF0gc2NzaTMtbW1jIGRyaXZlOiAyNHgvMjR4
+IHdyaXRlciBkdmQtcmFtIGNkL3J3IHhhL2Zvcm0yIGNkZGEgdHJheQpbICAgIDEuNDQ5NzMxXSBj
+ZHJvbTogVW5pZm9ybSBDRC1ST00gZHJpdmVyIFJldmlzaW9uOiAzLjIwClsgICAgMS40NDk5MThd
+IHNyIDI6MDowOjA6IEF0dGFjaGVkIHNjc2kgQ0QtUk9NIHNyMApbICAgIDEuNDUwMDIyXSBzciAy
+OjA6MDowOiBBdHRhY2hlZCBzY3NpIGdlbmVyaWMgc2cyIHR5cGUgNQpbICAgIDEuNDUwNjMyXSBG
+cmVlaW5nIHVudXNlZCBrZXJuZWwgbWVtb3J5OiAxNTE2SyAoZmZmZmZmZmY4MWQzODAwMCAtIGZm
+ZmZmZmZmODFlYjMwMDApClsgICAgMS40NTA2MzRdIFdyaXRlIHByb3RlY3RpbmcgdGhlIGtlcm5l
+bCByZWFkLW9ubHkgZGF0YTogMTIyODhrClsgICAgMS40NTA4NDddIEZyZWVpbmcgdW51c2VkIGtl
+cm5lbCBtZW1vcnk6IDM0NEsgKGZmZmY4ODAwMDE3YWEwMDAgLSBmZmZmODgwMDAxODAwMDAwKQpb
+ICAgIDEuNDUxMDA3XSBGcmVlaW5nIHVudXNlZCBrZXJuZWwgbWVtb3J5OiA4MjhLIChmZmZmODgw
+MDAxYjMxMDAwIC0gZmZmZjg4MDAwMWMwMDAwMCkKWyAgICAxLjQ1MjQyOF0gcmFuZG9tOiBzeXN0
+ZW1kIHVyYW5kb20gcmVhZCB3aXRoIDMyIGJpdHMgb2YgZW50cm9weSBhdmFpbGFibGUKWyAgICAx
+LjQ1MjkxMF0gc3lzdGVtZFsxXTogc3lzdGVtZCAyMTkgcnVubmluZyBpbiBzeXN0ZW0gbW9kZS4g
+KCtQQU0gK0FVRElUICtTRUxJTlVYICtJTUEgLUFQUEFSTU9SICtTTUFDSyArU1lTVklOSVQgK1VU
+TVAgK0xJQkNSWVBUU0VUVVAgK0dDUllQVCArR05VVExTICtBQ0wgK1haIC1MWjQgK1NFQ0NPTVAg
+K0JMS0lEICtFTEZVVElMUyArS01PRCArSUROKQpbICAgIDEuNDUzMDQ2XSBzeXN0ZW1kWzFdOiBE
+ZXRlY3RlZCBhcmNoaXRlY3R1cmUgeDg2LTY0LgpbICAgIDEuNDUzMDQ4XSBzeXN0ZW1kWzFdOiBS
+dW5uaW5nIGluIGluaXRpYWwgUkFNIGRpc2suClsgICAgMS40NTMwNTldIHN5c3RlbWRbMV06IFNl
+dCBob3N0bmFtZSB0byA8bG9jYWxob3N0LmxvY2FsZG9tYWluPi4KWyAgICAxLjQ3NTI0NV0gdHNj
+OiBSZWZpbmVkIFRTQyBjbG9ja3NvdXJjZSBjYWxpYnJhdGlvbjogMjQ5NC4yMjQgTUh6ClsgICAg
+MS40NzUyNDhdIGNsb2Nrc291cmNlIHRzYzogbWFzazogMHhmZmZmZmZmZmZmZmZmZmZmIG1heF9j
+eWNsZXM6IDB4MjNmM2U5YTM1M2EsIG1heF9pZGxlX25zOiA0NDA3OTUzMzA4MTUgbnMKWyAgICAx
+LjQ3NjE2Ml0gc3lzdGVtZFsxXTogQ3JlYXRlZCBzbGljZSAtLnNsaWNlLgpbICAgIDEuNDc2MTY5
+XSBzeXN0ZW1kWzFdOiBTdGFydGluZyAtLnNsaWNlLgpbICAgIDEuNDc2MTkwXSBzeXN0ZW1kWzFd
+OiBMaXN0ZW5pbmcgb24gSm91cm5hbCBBdWRpdCBTb2NrZXQuClsgICAgMS40NzYxOTRdIHN5c3Rl
+bWRbMV06IFN0YXJ0aW5nIEpvdXJuYWwgQXVkaXQgU29ja2V0LgpbICAgIDEuNDc2MjIzXSBzeXN0
+ZW1kWzFdOiBMaXN0ZW5pbmcgb24gSm91cm5hbCBTb2NrZXQgKC9kZXYvbG9nKS4KWyAgICAxLjQ3
+NjIyOF0gc3lzdGVtZFsxXTogU3RhcnRpbmcgSm91cm5hbCBTb2NrZXQgKC9kZXYvbG9nKS4KWyAg
+ICAxLjQ3NjIzNl0gc3lzdGVtZFsxXTogUmVhY2hlZCB0YXJnZXQgVGltZXJzLgpbICAgIDEuNDc2
+MjM5XSBzeXN0ZW1kWzFdOiBTdGFydGluZyBUaW1lcnMuClsgICAgMS40NzYyNThdIHN5c3RlbWRb
+MV06IExpc3RlbmluZyBvbiB1ZGV2IENvbnRyb2wgU29ja2V0LgpbICAgIDEuNDc2MjYyXSBzeXN0
+ZW1kWzFdOiBTdGFydGluZyB1ZGV2IENvbnRyb2wgU29ja2V0LgpbICAgIDEuNDc2MjcxXSBzeXN0
+ZW1kWzFdOiBSZWFjaGVkIHRhcmdldCBMb2NhbCBGaWxlIFN5c3RlbXMuClsgICAgMS40NzYyNzRd
+IHN5c3RlbWRbMV06IFN0YXJ0aW5nIExvY2FsIEZpbGUgU3lzdGVtcy4KWyAgICAxLjQ3NjI4MV0g
+c3lzdGVtZFsxXTogUmVhY2hlZCB0YXJnZXQgU3dhcC4KWyAgICAxLjQ3NjI4NV0gc3lzdGVtZFsx
+XTogU3RhcnRpbmcgU3dhcC4KWyAgICAxLjQ3NjMwNF0gc3lzdGVtZFsxXTogTGlzdGVuaW5nIG9u
+IEpvdXJuYWwgU29ja2V0LgpbICAgIDEuNDc2MzA4XSBzeXN0ZW1kWzFdOiBTdGFydGluZyBKb3Vy
+bmFsIFNvY2tldC4KWyAgICAxLjQ3NjMyN10gc3lzdGVtZFsxXTogTGlzdGVuaW5nIG9uIHVkZXYg
+S2VybmVsIFNvY2tldC4KWyAgICAxLjQ3NjMzMV0gc3lzdGVtZFsxXTogU3RhcnRpbmcgdWRldiBL
+ZXJuZWwgU29ja2V0LgpbICAgIDEuNDc2MzM5XSBzeXN0ZW1kWzFdOiBSZWFjaGVkIHRhcmdldCBT
+b2NrZXRzLgpbICAgIDEuNDc2MzQyXSBzeXN0ZW1kWzFdOiBTdGFydGluZyBTb2NrZXRzLgpbICAg
+IDEuNDc2MzgzXSBzeXN0ZW1kWzFdOiBDcmVhdGVkIHNsaWNlIFN5c3RlbSBTbGljZS4KWyAgICAx
+LjQ3NjM4N10gc3lzdGVtZFsxXTogU3RhcnRpbmcgU3lzdGVtIFNsaWNlLgpbICAgIDEuNDc2NjM5
+XSBzeXN0ZW1kWzFdOiBTdGFydGluZyBDcmVhdGUgbGlzdCBvZiByZXF1aXJlZCBzdGF0aWMgZGV2
+aWNlIG5vZGVzIGZvciB0aGUgY3VycmVudCBrZXJuZWwuLi4KWyAgICAxLjQ3Njg0NF0gc3lzdGVt
+ZFsxXTogU3RhcnRpbmcgU2V0dXAgVmlydHVhbCBDb25zb2xlLi4uClsgICAgMS40NzY4NjBdIHN5
+c3RlbWRbMV06IFJlYWNoZWQgdGFyZ2V0IFNsaWNlcy4KWyAgICAxLjQ3Njg2OV0gc3lzdGVtZFsx
+XTogU3RhcnRpbmcgU2xpY2VzLgpbICAgIDEuNDc2OTEyXSBzeXN0ZW1kWzFdOiBDcmVhdGVkIHNs
+aWNlIHN5c3RlbS1zeXN0ZW1kXHgyZGZzY2suc2xpY2UuClsgICAgMS40NzY5MTZdIHN5c3RlbWRb
+MV06IFN0YXJ0aW5nIHN5c3RlbS1zeXN0ZW1kXHgyZGZzY2suc2xpY2UuClsgICAgMS40NzY5NzFd
+IHN5c3RlbWRbMV06IFN0YXJ0ZWQgTG9hZCBLZXJuZWwgTW9kdWxlcy4KWyAgICAxLjQ3NzE4NV0g
+c3lzdGVtZFsxXTogU3RhcnRpbmcgQXBwbHkgS2VybmVsIFZhcmlhYmxlcy4uLgpbICAgIDEuNDc4
+MTk4XSBzeXN0ZW1kWzFdOiBTdGFydGluZyBKb3VybmFsIFNlcnZpY2UuLi4KWyAgICAxLjQ3ODIz
+Ml0gc3lzdGVtZFsxXTogU3RhcnRlZCBkcmFjdXQgYXNrIGZvciBhZGRpdGlvbmFsIGNtZGxpbmUg
+cGFyYW1ldGVycy4KWyAgICAxLjQ3ODQ3OV0gc3lzdGVtZFsxXTogU3RhcnRpbmcgZHJhY3V0IGNt
+ZGxpbmUgaG9vay4uLgpbICAgIDEuNDc4Njk1XSBzeXN0ZW1kWzFdOiBTdGFydGVkIENyZWF0ZSBs
+aXN0IG9mIHJlcXVpcmVkIHN0YXRpYyBkZXZpY2Ugbm9kZXMgZm9yIHRoZSBjdXJyZW50IGtlcm5l
+bC4KWyAgICAxLjQ3ODkzNF0gc3lzdGVtZFsxXTogU3RhcnRlZCBBcHBseSBLZXJuZWwgVmFyaWFi
+bGVzLgpbICAgIDEuNDc4OTQ5XSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2ODEzODEuNDQ4
+OjIpOiBwaWQ9MSB1aWQ9MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJu
+ZWwgbXNnPSd1bml0PXN5c3RlbWQtc3lzY3RsIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIv
+c3lzdGVtZC9zeXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNz
+JwpbICAgIDEuNDgwNDgyXSBzeXN0ZW1kWzFdOiBTdGFydGluZyBDcmVhdGUgU3RhdGljIERldmlj
+ZSBOb2RlcyBpbiAvZGV2Li4uClsgICAgMS40ODIwMTddIHN5c3RlbWRbMV06IFN0YXJ0ZWQgQ3Jl
+YXRlIFN0YXRpYyBEZXZpY2UgTm9kZXMgaW4gL2Rldi4KWyAgICAxLjQ4MjA0MV0gYXVkaXQ6IHR5
+cGU9MTEzMCBhdWRpdCgxNDMzNjgxMzgxLjQ1MTozKTogcGlkPTEgdWlkPTAgYXVpZD00Mjk0OTY3
+Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9a2VybmVsIG1zZz0ndW5pdD1zeXN0ZW1kLXRtcGZpbGVz
+LXNldHVwLWRldiBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lzdGVtZCIg
+aG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgICAxLjQ4ODI2M10g
+dXNiIDEtNzogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBudW1iZXIgNCB1c2luZyB4aGNpX2hj
+ZApbICAgIDEuNDk2MjE1XSBzeXN0ZW1kWzFdOiBTdGFydGVkIEpvdXJuYWwgU2VydmljZS4KWyAg
+ICAxLjQ5NjI4MV0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMzNjgxMzgxLjQ2Njo0KTogcGlk
+PTEgdWlkPTAgYXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9a2VybmVsIG1zZz0n
+dW5pdD1zeXN0ZW1kLWpvdXJuYWxkIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVt
+ZC9zeXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAg
+IDEuNTE2NjY3XSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2ODEzODEuNDg2OjUpOiBwaWQ9
+MSB1aWQ9MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1
+bml0PWRyYWN1dC1jbWRsaW5lIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9z
+eXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgIDEu
+NTE4OTc0XSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2ODEzODEuNDg4OjYpOiBwaWQ9MSB1
+aWQ9MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1bml0
+PXN5c3RlbWQtdmNvbnNvbGUtc2V0dXAgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0
+ZW1kL3N5c3RlbWQiIGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsg
+ICAgMS41MzY1NzldIGF1ZGl0OiB0eXBlPTExMzAgYXVkaXQoMTQzMzY4MTM4MS41MDY6Nyk6IHBp
+ZD0xIHVpZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9
+J3VuaXQ9ZHJhY3V0LXByZS11ZGV2IGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVt
+ZC9zeXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAg
+IDEuNTM5MTkzXSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2ODEzODEuNTA4OjgpOiBwaWQ9
+MSB1aWQ9MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1
+bml0PXN5c3RlbWQtdWRldmQgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1kL3N5
+c3RlbWQiIGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAgMS41
+NTQ5NjhdIGF1ZGl0OiB0eXBlPTExMzAgYXVkaXQoMTQzMzY4MTM4MS41MjQ6OSk6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9
+c3lzdGVtZC11ZGV2LXRyaWdnZXIgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1k
+L3N5c3RlbWQiIGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAg
+MS41NzQ3MzZdIFtkcm1dIEluaXRpYWxpemVkIGRybSAxLjEuMCAyMDA2MDgxMApbICAgIDEuNTc2
+MjgzXSBhbHggMDAwMDozYzowMC4wIGV0aDA6IFF1YWxjb21tIEF0aGVyb3MgQVI4MTZ4L0FSODE3
+eCBFdGhlcm5ldCBbMDg6NjI6NjY6Y2U6YzM6ZDRdClsgICAgMS41ODQ5NjhdIGFseCAwMDAwOjNj
+OjAwLjAgZW5wNjBzMDogcmVuYW1lZCBmcm9tIGV0aDAKWyAgICAxLjY0MTM2N10gW2RybV0gTWVt
+b3J5IHVzYWJsZSBieSBncmFwaGljcyBkZXZpY2UgPSAyMDQ4TQpbICAgIDEuNjQxMzcxXSBbZHJt
+XSBSZXBsYWNpbmcgVkdBIGNvbnNvbGUgZHJpdmVyClsgICAgMS42NDE5NzVdIENvbnNvbGU6IHN3
+aXRjaGluZyB0byBjb2xvdXIgZHVtbXkgZGV2aWNlIDgweDI1ClsgICAgMS42NDg4ODRdIFtkcm1d
+IFN1cHBvcnRzIHZibGFuayB0aW1lc3RhbXAgY2FjaGluZyBSZXYgMiAoMjEuMTAuMjAxMykuClsg
+ICAgMS42NDg4ODVdIFtkcm1dIERyaXZlciBzdXBwb3J0cyBwcmVjaXNlIHZibGFuayB0aW1lc3Rh
+bXAgcXVlcnkuClsgICAgMS42NDg5NjBdIHZnYWFyYjogZGV2aWNlIGNoYW5nZWQgZGVjb2Rlczog
+UENJOjAwMDA6MDA6MDIuMCxvbGRkZWNvZGVzPWlvK21lbSxkZWNvZGVzPWlvK21lbTpvd25zPWlv
+K21lbQpbICAgIDEuNjg3NTU3XSBbRmlybXdhcmUgQnVnXTogQUNQSShQRUdQKSBkZWZpbmVzIF9E
+T0QgYnV0IG5vdCBfRE9TClsgICAgMS42ODkxNzJdIEFDUEk6IFZpZGVvIERldmljZSBbUEVHUF0g
+KG11bHRpLWhlYWQ6IHllcyAgcm9tOiB5ZXMgIHBvc3Q6IG5vKQpbICAgIDEuNjkwMzkwXSB1c2Ig
+MS03OiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MDRmMiwgaWRQcm9kdWN0PWI0MTQK
+WyAgICAxLjY5MDM5Ml0gdXNiIDEtNzogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTMsIFBy
+b2R1Y3Q9MSwgU2VyaWFsTnVtYmVyPTIKWyAgICAxLjY5MDM5NF0gdXNiIDEtNzogUHJvZHVjdDog
+VVNCMi4wIEhEIFVWQyBXZWJDYW0KWyAgICAxLjY5MDM5NV0gdXNiIDEtNzogTWFudWZhY3R1cmVy
+OiBDaGljb255IEVsZWN0cm9uaWNzIENvLixMdGQuClsgICAgMS42OTAzOTZdIHVzYiAxLTc6IFNl
+cmlhbE51bWJlcjogMHgwMDAxClsgICAgMS42OTEyNjZdIGlucHV0OiBWaWRlbyBCdXMgYXMgL2Rl
+dmljZXMvTE5YU1lTVE06MDAvTE5YU1lCVVM6MDAvUE5QMEEwODowMC9kZXZpY2U6NWYvTE5YVklE
+RU86MDAvaW5wdXQvaW5wdXQxMwpbICAgIDEuNjkyMzk0XSBBQ1BJOiBWaWRlbyBEZXZpY2UgW0dG
+WDBdIChtdWx0aS1oZWFkOiB5ZXMgIHJvbTogbm8gIHBvc3Q6IG5vKQpbICAgIDEuNjk0Mzg4XSBp
+bnB1dDogVmlkZW8gQnVzIGFzIC9kZXZpY2VzL0xOWFNZU1RNOjAwL0xOWFNZQlVTOjAwL1BOUDBB
+MDg6MDAvTE5YVklERU86MDEvaW5wdXQvaW5wdXQxNApbICAgIDEuNjk0NDQ4XSBbZHJtXSBJbml0
+aWFsaXplZCBpOTE1IDEuNi4wIDIwMTUwMzI3IGZvciAwMDAwOjAwOjAyLjAgb24gbWlub3IgMApb
+ICAgIDEuNjk4ODg5XSBmYmNvbjogaW50ZWxkcm1mYiAoZmIwKSBpcyBwcmltYXJ5IGRldmljZQpb
+ICAgIDEuODQ0Njc3XSB1c2IgMS0xMDogbmV3IGZ1bGwtc3BlZWQgVVNCIGRldmljZSBudW1iZXIg
+NSB1c2luZyB4aGNpX2hjZApbICAgIDIuMDI2NzQ2XSB1c2IgMS0xMDogTmV3IFVTQiBkZXZpY2Ug
+Zm91bmQsIGlkVmVuZG9yPTBiMDUsIGlkUHJvZHVjdD0xN2ZkClsgICAgMi4wMjY3NDhdIHVzYiAx
+LTEwOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLCBTZXJpYWxOdW1i
+ZXI9MApbICAgIDIuMDI2NzQ5XSB1c2IgMS0xMDogUHJvZHVjdDogQVNVUyBST0cgTWFjcm9rZXkK
+WyAgICAyLjAyNjc1MF0gdXNiIDEtMTA6IE1hbnVmYWN0dXJlcjogQVNVUwpbICAgIDIuMDM0NDEy
+XSBpbnB1dDogQVNVUyBBU1VTIFJPRyBNYWNyb2tleSBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAw
+MDA6MDA6MTQuMC91c2IxLzEtMTAvMS0xMDoxLjAvMDAwMzowQjA1OjE3RkQuMDAwMi9pbnB1dC9p
+bnB1dDE1ClsgICAgMi4wODUxODNdIGhpZC1nZW5lcmljIDAwMDM6MEIwNToxN0ZELjAwMDI6IGlu
+cHV0LGhpZHJhdzE6IFVTQiBISUQgdjEuMTAgS2V5Ym9hcmQgW0FTVVMgQVNVUyBST0cgTWFjcm9r
+ZXldIG9uIHVzYi0wMDAwOjAwOjE0LjAtMTAvaW5wdXQwClsgICAgMi4wOTAyMzBdIGhpZCAobnVs
+bCk6IHVzYWdlIGluZGV4IGV4Y2VlZGVkClsgICAgMi4wOTA0MzJdIGhpZC1nZW5lcmljIDAwMDM6
+MEIwNToxN0ZELjAwMDM6IHVzYWdlIGluZGV4IGV4Y2VlZGVkClsgICAgMi4wOTA0MzNdIGhpZC1n
+ZW5lcmljIDAwMDM6MEIwNToxN0ZELjAwMDM6IGl0ZW0gMCAyIDIgMiBwYXJzaW5nIGZhaWxlZApb
+ICAgIDIuMDkwNDQwXSBoaWQtZ2VuZXJpYzogcHJvYmUgb2YgMDAwMzowQjA1OjE3RkQuMDAwMyBm
+YWlsZWQgd2l0aCBlcnJvciAtMjIKWyAgICAyLjQ3NjU5N10gU3dpdGNoZWQgdG8gY2xvY2tzb3Vy
+Y2UgdHNjClsgICAgMi43MTc2MjhdIENvbnNvbGU6IHN3aXRjaGluZyB0byBjb2xvdXIgZnJhbWUg
+YnVmZmVyIGRldmljZSAyNDB4NjcKWyAgICAyLjcyMDc1M10gaTkxNSAwMDAwOjAwOjAyLjA6IGZi
+MDogaW50ZWxkcm1mYiBmcmFtZSBidWZmZXIgZGV2aWNlClsgICAgMi43MjA3NTRdIGk5MTUgMDAw
+MDowMDowMi4wOiByZWdpc3RlcmVkIHBhbmljIG5vdGlmaWVyClsgICAgMi43NzE4NzNdIGF1ZGl0
+OiB0eXBlPTExMzAgYXVkaXQoMTQzMzY4MTM4Mi43NDE6MTApOiBwaWQ9MSB1aWQ9MCBhdWlkPTQy
+OTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1bml0PXBseW1vdXRoLXN0
+YXJ0IGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1kIiBob3N0bmFt
+ZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgIDcuMjIyMjY3XSByYW5kb206
+IG5vbmJsb2NraW5nIHBvb2wgaXMgaW5pdGlhbGl6ZWQKWyAgIDIyLjExODAzNF0gaGlkLWdlbmVy
+aWMgMDAwMzowQjA1OjE3RkQuMDAwNDogdXNiX3N1Ym1pdF91cmIoY3RybCkgZmFpbGVkOiAtMQpb
+ICAgMjIuMTE4MTM1XSBoaWQtZ2VuZXJpYyAwMDAzOjBCMDU6MTdGRC4wMDA0OiB0aW1lb3V0IGlu
+aXRpYWxpemluZyByZXBvcnRzClsgICAyMi4xMTg2NjFdIGhpZC1nZW5lcmljIDAwMDM6MEIwNTox
+N0ZELjAwMDQ6IGhpZGRldjAsaGlkcmF3MjogVVNCIEhJRCB2MS4xMCBEZXZpY2UgW0FTVVMgQVNV
+UyBST0cgTWFjcm9rZXldIG9uIHVzYi0wMDAwOjAwOjE0LjAtMTAvaW5wdXQyClsgICAyMi4yNzIx
+OTFdIHVzYiAxLTExOiBuZXcgZnVsbC1zcGVlZCBVU0IgZGV2aWNlIG51bWJlciA2IHVzaW5nIHho
+Y2lfaGNkClsgICAyMi40NDU0NjBdIHVzYiAxLTExOiBub3QgcnVubmluZyBhdCB0b3Agc3BlZWQ7
+IGNvbm5lY3QgdG8gYSBoaWdoIHNwZWVkIGh1YgpbICAgMjIuNDU4NTYxXSB1c2IgMS0xMTogTmV3
+IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVuZG9yPTA0NTcsIGlkUHJvZHVjdD0xMGM2ClsgICAyMi40
+NTg1NjldIHVzYiAxLTExOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0y
+LCBTZXJpYWxOdW1iZXI9MApbICAgMjIuNDU4NTc0XSB1c2IgMS0xMTogUHJvZHVjdDogU2lTIEhJ
+RCBUb3VjaCBDb250cm9sbGVyClsgICAyMi40NTg1NzddIHVzYiAxLTExOiBNYW51ZmFjdHVyZXI6
+IFVTQmVzdCBUZWNobm9sb2d5ClsgICAyMi41MjYxODddIGF1ZGl0X3ByaW50a19za2I6IDMgY2Fs
+bGJhY2tzIHN1cHByZXNzZWQKWyAgIDIyLjUyNjE5MF0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgx
+NDMzNjgxNDAyLjQ3MzoxMik6IHBpZD0xIHVpZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2
+NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9ZHJhY3V0LWluaXRxdWV1ZSBjb21tPSJzeXN0ZW1k
+IiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lzdGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWlu
+YWw9PyByZXM9c3VjY2VzcycKWyAgIDIyLjU0MzcxOF0gRVhUNC1mcyAoc2RiMSk6IG1vdW50ZWQg
+ZmlsZXN5c3RlbSB3aXRoIG9yZGVyZWQgZGF0YSBtb2RlLiBPcHRzOiAobnVsbCkKWyAgIDIzLjM4
+MDcxNl0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMzNjgxNDAzLjMyNzoxMyk6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9
+aW5pdHJkLXBhcnNlLWV0YyBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lz
+dGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDIzLjM4
+MDcyNF0gYXVkaXQ6IHR5cGU9MTEzMSBhdWRpdCgxNDMzNjgxNDAzLjMyNzoxNCk6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9
+aW5pdHJkLXBhcnNlLWV0YyBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lz
+dGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDIzLjUw
+MzQ4MF0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMzNjgxNDAzLjQ1MDoxNSk6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9
+ZHJhY3V0LXByZS1waXZvdCBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lz
+dGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDIzLjUw
+Njk0Nl0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMzNjgxNDAzLjQ1MzoxNik6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9
+aW5pdHJkLWNsZWFudXAgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1kL3N5c3Rl
+bWQiIGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAyMy41MDY5
+NTRdIGF1ZGl0OiB0eXBlPTExMzEgYXVkaXQoMTQzMzY4MTQwMy40NTM6MTcpOiBwaWQ9MSB1aWQ9
+MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1bml0PWlu
+aXRyZC1jbGVhbnVwIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1k
+IiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgMjMuNTA3ODk1
+XSBhdWRpdDogdHlwZT0xMTMxIGF1ZGl0KDE0MzM2ODE0MDMuNDU0OjE4KTogcGlkPTEgdWlkPTAg
+YXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9a2VybmVsIG1zZz0ndW5pdD1kcmFj
+dXQtcHJlLXBpdm90IGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1k
+IiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgMjMuNTA4NDEy
+XSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2ODE0MDMuNDU0OjE5KTogcGlkPTEgdWlkPTAg
+YXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9a2VybmVsIG1zZz0ndW5pdD1zeXN0
+ZW1kLXN5c2N0bCBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lzdGVtZCIg
+aG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDIzLjUwODQyNV0g
+YXVkaXQ6IHR5cGU9MTEzMSBhdWRpdCgxNDMzNjgxNDAzLjQ1NToyMCk6IHBpZD0xIHVpZD0wIGF1
+aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPWtlcm5lbCBtc2c9J3VuaXQ9c3lzdGVt
+ZC1zeXNjdGwgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1kL3N5c3RlbWQiIGhv
+c3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAyMy41MDkwOTldIGF1
+ZGl0OiB0eXBlPTExMzAgYXVkaXQoMTQzMzY4MTQwMy40NTU6MjEpOiBwaWQ9MSB1aWQ9MCBhdWlk
+PTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1rZXJuZWwgbXNnPSd1bml0PWRyYWN1dC1p
+bml0cXVldWUgY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1kL3N5c3RlbWQiIGhv
+c3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAyMy42NDY0OTBdIHN5
+c3RlbWQtam91cm5hbGRbMTczXTogUmVjZWl2ZWQgU0lHVEVSTSBmcm9tIFBJRCAxIChzeXN0ZW1k
+KS4KWyAgIDI0LjI0NTMwM10gU0VMaW51eDogMzI3NjggYXZ0YWIgaGFzaCBzbG90cywgMTEyMjIx
+IHJ1bGVzLgpbICAgMjQuMjU4NDk1XSBTRUxpbnV4OiAzMjc2OCBhdnRhYiBoYXNoIHNsb3RzLCAx
+MTIyMjEgcnVsZXMuClsgICAyNC4yNzY5OTBdIFNFTGludXg6ICA4IHVzZXJzLCAxMDMgcm9sZXMs
+IDUwMDAgdHlwZXMsIDI5MyBib29scywgMSBzZW5zLCAxMDI0IGNhdHMKWyAgIDI0LjI3Njk5M10g
+U0VMaW51eDogIDgzIGNsYXNzZXMsIDExMjIyMSBydWxlcwpbICAgMjQuMjc5NjA0XSBTRUxpbnV4
+OiAgUGVybWlzc2lvbiBhdWRpdF9yZWFkIGluIGNsYXNzIGNhcGFiaWxpdHkyIG5vdCBkZWZpbmVk
+IGluIHBvbGljeS4KWyAgIDI0LjI3OTYwNl0gU0VMaW51eDogIENsYXNzIGJpbmRlciBub3QgZGVm
+aW5lZCBpbiBwb2xpY3kuClsgICAyNC4yNzk2MDddIFNFTGludXg6IHRoZSBhYm92ZSB1bmtub3du
+IGNsYXNzZXMgYW5kIHBlcm1pc3Npb25zIHdpbGwgYmUgYWxsb3dlZApbICAgMjQuMjc5NjEyXSBT
+RUxpbnV4OiAgQ29tcGxldGluZyBpbml0aWFsaXphdGlvbi4KWyAgIDI0LjI3OTYxMl0gU0VMaW51
+eDogIFNldHRpbmcgdXAgZXhpc3Rpbmcgc3VwZXJibG9ja3MuClsgICAyNC4zMDE3ODJdIHN5c3Rl
+bWRbMV06IFN1Y2Nlc3NmdWxseSBsb2FkZWQgU0VMaW51eCBwb2xpY3kgaW4gMTU0LjE3M21zLgpb
+ICAgMjQuNDAzMDU2XSBzeXN0ZW1kWzFdOiBSVEMgY29uZmlndXJlZCBpbiBsb2NhbHRpbWUsIGFw
+cGx5aW5nIGRlbHRhIG9mIDE4MCBtaW51dGVzIHRvIHN5c3RlbSB0aW1lLgpbICAgMjQuNDIzNzA3
+XSBzeXN0ZW1kWzFdOiBSZWxhYmVsbGVkIC9kZXYgYW5kIC9ydW4gaW4gMTUuMjkwbXMuClsgICAy
+NC45NzE3MjhdIHN5c3RlbWQtc3lzdi1nZW5lcmF0b3JbNDMyXTogT3ZlcndyaXRpbmcgZXhpc3Rp
+bmcgc3ltbGluayAvcnVuL3N5c3RlbWQvZ2VuZXJhdG9yLmxhdGUvbmV0Y29uc29sZS5zZXJ2aWNl
+IHdpdGggcmVhbCBzZXJ2aWNlClsgICAyNC45NzE4MjBdIHN5c3RlbWQtc3lzdi1nZW5lcmF0b3Jb
+NDMyXTogT3ZlcndyaXRpbmcgZXhpc3Rpbmcgc3ltbGluayAvcnVuL3N5c3RlbWQvZ2VuZXJhdG9y
+LmxhdGUvbmV0d29yay5zZXJ2aWNlIHdpdGggcmVhbCBzZXJ2aWNlClsgICAyNi43ODEwMjBdIFJQ
+QzogUmVnaXN0ZXJlZCBuYW1lZCBVTklYIHNvY2tldCB0cmFuc3BvcnQgbW9kdWxlLgpbICAgMjYu
+NzgxMDIyXSBSUEM6IFJlZ2lzdGVyZWQgdWRwIHRyYW5zcG9ydCBtb2R1bGUuClsgICAyNi43ODEw
+MjJdIFJQQzogUmVnaXN0ZXJlZCB0Y3AgdHJhbnNwb3J0IG1vZHVsZS4KWyAgIDI2Ljc4MTAyM10g
+UlBDOiBSZWdpc3RlcmVkIHRjcCBORlN2NC4xIGJhY2tjaGFubmVsIHRyYW5zcG9ydCBtb2R1bGUu
+ClsgICAyNy4xMjMxNzVdIEluc3RhbGxpbmcga25mc2QgKGNvcHlyaWdodCAoQykgMTk5NiBva2ly
+QG1vbmFkLnN3Yi5kZSkuClsgICAyNy4zMDYwMzFdIEVYVDQtZnMgKHNkYjEpOiByZS1tb3VudGVk
+LiBPcHRzOiAobnVsbCkKWyAgIDI3LjUwMDUzM10gc3lzdGVtZC1qb3VybmFsZFs0MzZdOiBSZWNl
+aXZlZCByZXF1ZXN0IHRvIGZsdXNoIHJ1bnRpbWUgam91cm5hbCBmcm9tIFBJRCAxClsgICAyOC43
+MzE0ODFdIGF1ZGl0X3ByaW50a19za2I6IDExNCBjYWxsYmFja3Mgc3VwcHJlc3NlZApbICAgMjgu
+NzMxNDgyXSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2NzA2MDguNjcyOjYwKTogcGlkPTEg
+dWlkPTAgYXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9c3lzdGVtX3U6c3lzdGVt
+X3I6aW5pdF90OnMwIG1zZz0ndW5pdD1zeXN0ZW1kLXRtcGZpbGVzLXNldHVwLWRldiBjb21tPSJz
+eXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lzdGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8g
+dGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDI4LjkxNjUyMF0gYXVkaXQ6IHR5cGU9MTEzMCBh
+dWRpdCgxNDMzNjcwNjA4Ljg1Nzo2MSk6IHBpZD0xIHVpZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9
+NDI5NDk2NzI5NSBzdWJqPXN5c3RlbV91OnN5c3RlbV9yOmluaXRfdDpzMCBtc2c9J3VuaXQ9cGx5
+bW91dGgtcmVhZC13cml0ZSBjb21tPSJzeXN0ZW1kIiBleGU9Ii91c3IvbGliL3N5c3RlbWQvc3lz
+dGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9PyByZXM9c3VjY2VzcycKWyAgIDI4Ljkx
+NjUzNl0gYXVkaXQ6IHR5cGU9MTEzMSBhdWRpdCgxNDMzNjcwNjA4Ljg1Nzo2Mik6IHBpZD0xIHVp
+ZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPXN5c3RlbV91OnN5c3RlbV9y
+OmluaXRfdDpzMCBtc2c9J3VuaXQ9cGx5bW91dGgtcmVhZC13cml0ZSBjb21tPSJzeXN0ZW1kIiBl
+eGU9Ii91c3IvbGliL3N5c3RlbWQvc3lzdGVtZCIgaG9zdG5hbWU9PyBhZGRyPT8gdGVybWluYWw9
+PyByZXM9c3VjY2VzcycKWyAgIDI4Ljk0MTUzMl0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMz
+NjcwNjA4Ljg4Mjo2Myk6IHBpZD0xIHVpZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5
+NSBzdWJqPXN5c3RlbV91OnN5c3RlbV9yOmluaXRfdDpzMCBtc2c9J3VuaXQ9ZHJhY3V0LXNodXRk
+b3duIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1kIiBob3N0bmFt
+ZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgMjguOTkwNTIzXSBhdWRpdDog
+dHlwZT0xMTMwIGF1ZGl0KDE0MzM2NzA2MDguOTMxOjY0KTogcGlkPTEgdWlkPTAgYXVpZD00Mjk0
+OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9c3lzdGVtX3U6c3lzdGVtX3I6aW5pdF90OnMwIG1z
+Zz0ndW5pdD1uZnMtY29uZmlnIGNvbW09InN5c3RlbWQiIGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9z
+eXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5hbD0/IHJlcz1zdWNjZXNzJwpbICAgMjku
+MjI0ODQxXSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0MzM2NzA2MDkuMTY1OjY1KTogcGlkPTEg
+dWlkPTAgYXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3Mjk1IHN1Ymo9c3lzdGVtX3U6c3lzdGVt
+X3I6aW5pdF90OnMwIG1zZz0ndW5pdD1mZWRvcmEtaW1wb3J0LXN0YXRlIGNvbW09InN5c3RlbWQi
+IGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5h
+bD0/IHJlcz1zdWNjZXNzJwpbICAgMzAuNzIzNTI0XSBhdWRpdDogdHlwZT0xMTMwIGF1ZGl0KDE0
+MzM2NzA2MTAuNjYyOjY2KTogcGlkPTEgdWlkPTAgYXVpZD00Mjk0OTY3Mjk1IHNlcz00Mjk0OTY3
+Mjk1IHN1Ymo9c3lzdGVtX3U6c3lzdGVtX3I6aW5pdF90OnMwIG1zZz0ndW5pdD1zeXN0ZW1kLWpv
+dXJuYWwtZmx1c2ggY29tbT0ic3lzdGVtZCIgZXhlPSIvdXNyL2xpYi9zeXN0ZW1kL3N5c3RlbWQi
+IGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8gcmVzPXN1Y2Nlc3MnClsgICAzMC45MTQ2OTFd
+IGF1ZGl0OiB0eXBlPTExMzAgYXVkaXQoMTQzMzY3MDYxMC44NTM6NjcpOiBwaWQ9MSB1aWQ9MCBh
+dWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1zeXN0ZW1fdTpzeXN0ZW1fcjppbml0
+X3Q6czAgbXNnPSd1bml0PXN5c3RlbWQtdG1wZmlsZXMtc2V0dXAgY29tbT0ic3lzdGVtZCIgZXhl
+PSIvdXNyL2xpYi9zeXN0ZW1kL3N5c3RlbWQiIGhvc3RuYW1lPT8gYWRkcj0/IHRlcm1pbmFsPT8g
+cmVzPXN1Y2Nlc3MnClsgICAzMS4wNjM5NTRdIGF1ZGl0OiB0eXBlPTEzMDUgYXVkaXQoMTQzMzY3
+MDYxMS4wMDI6NjgpOiBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1zeXN0ZW1f
+dTpzeXN0ZW1fcjphdWRpdGN0bF90OnMwIG9wPSJhZGRfcnVsZSIga2V5PShudWxsKSBsaXN0PTEg
+cmVzPTEKWyAgIDMxLjA2NTQxNF0gYXVkaXQ6IHR5cGU9MTEzMCBhdWRpdCgxNDMzNjcwNjExLjAw
+Mzo2OSk6IHBpZD0xIHVpZD0wIGF1aWQ9NDI5NDk2NzI5NSBzZXM9NDI5NDk2NzI5NSBzdWJqPXN5
+c3RlbV91OnN5c3RlbV9yOmluaXRfdDpzMCBtc2c9J3VuaXQ9YXVkaXRkIGNvbW09InN5c3RlbWQi
+IGV4ZT0iL3Vzci9saWIvc3lzdGVtZC9zeXN0ZW1kIiBob3N0bmFtZT0/IGFkZHI9PyB0ZXJtaW5h
+bD0/IHJlcz1zdWNjZXNzJwpbICAgMzIuMDc2MTI5XSB3bWk6IE1hcHBlciBsb2FkZWQKWyAgIDMy
+LjExNTI3Ml0gc2hwY2hwOiBTdGFuZGFyZCBIb3QgUGx1ZyBQQ0kgQ29udHJvbGxlciBEcml2ZXIg
+dmVyc2lvbjogMC40ClsgICAzMi4xNjAxNTddIEFDUEkgV2FybmluZzogU3lzdGVtSU8gcmFuZ2Ug
+MHgwMDAwMDAwMDAwMDBGMDQwLTB4MDAwMDAwMDAwMDAwRjA1RiBjb25mbGljdHMgd2l0aCBPcFJl
+Z2lvbiAweDAwMDAwMDAwMDAwMEYwNDAtMHgwMDAwMDAwMDAwMDBGMDRGIChcU01CMCkgKDIwMTUw
+NDEwL3V0YWRkcmVzcy0yNTQpClsgICAzMi4xNjAxNjJdIEFDUEkgV2FybmluZzogU3lzdGVtSU8g
+cmFuZ2UgMHgwMDAwMDAwMDAwMDBGMDQwLTB4MDAwMDAwMDAwMDAwRjA1RiBjb25mbGljdHMgd2l0
+aCBPcFJlZ2lvbiAweDAwMDAwMDAwMDAwMEYwNDAtMHgwMDAwMDAwMDAwMDBGMDRGIChcX1NCXy5Q
+Q0kwLlNCVVMuU01CSSkgKDIwMTUwNDEwL3V0YWRkcmVzcy0yNTQpClsgICAzMi4xNjAxNjVdIEFD
+UEk6IElmIGFuIEFDUEkgZHJpdmVyIGlzIGF2YWlsYWJsZSBmb3IgdGhpcyBkZXZpY2UsIHlvdSBz
+aG91bGQgdXNlIGl0IGluc3RlYWQgb2YgdGhlIG5hdGl2ZSBkcml2ZXIKWyAgIDMyLjMwMjM5M10g
+RURBQyBNQzogVmVyOiAzLjAuMApbICAgMzIuMzAzNzg5XSBFREFDIGllMzEyMDA6IE5vIEVDQyBz
+dXBwb3J0ClsgICAzMi40NzY0NjddIGlUQ09fdmVuZG9yX3N1cHBvcnQ6IHZlbmRvci1zdXBwb3J0
+PTAKWyAgIDMyLjQ3ODAyMF0gaVRDT193ZHQ6IEludGVsIFRDTyBXYXRjaERvZyBUaW1lciBEcml2
+ZXIgdjEuMTEKWyAgIDMyLjQ3ODA2M10gaVRDT193ZHQ6IEZvdW5kIGEgTHlueCBQb2ludCBUQ08g
+ZGV2aWNlIChWZXJzaW9uPTIsIFRDT0JBU0U9MHgxODYwKQpbICAgMzIuNDc4MzQ5XSBpVENPX3dk
+dDogaW5pdGlhbGl6ZWQuIGhlYXJ0YmVhdD0zMCBzZWMgKG5vd2F5b3V0PTApClsgICAzMi42NTUz
+ODBdIEJsdWV0b290aDogQ29yZSB2ZXIgMi4yMApbICAgMzIuNjU1NDk0XSBORVQ6IFJlZ2lzdGVy
+ZWQgcHJvdG9jb2wgZmFtaWx5IDMxClsgICAzMi42NTU0OTVdIEJsdWV0b290aDogSENJIGRldmlj
+ZSBhbmQgY29ubmVjdGlvbiBtYW5hZ2VyIGluaXRpYWxpemVkClsgICAzMi42NTU0OTddIEJsdWV0
+b290aDogSENJIHNvY2tldCBsYXllciBpbml0aWFsaXplZApbICAgMzIuNjU1NDk5XSBCbHVldG9v
+dGg6IEwyQ0FQIHNvY2tldCBsYXllciBpbml0aWFsaXplZApbICAgMzIuNjU1NTAzXSBCbHVldG9v
+dGg6IFNDTyBzb2NrZXQgbGF5ZXIgaW5pdGlhbGl6ZWQKWyAgIDMyLjc3MDk1OF0gYXN1c193bWk6
+IEFTVVMgV01JIGdlbmVyaWMgZHJpdmVyIGxvYWRlZApbICAgMzIuNzg5NjE1XSBhc3VzX3dtaTog
+SW5pdGlhbGl6YXRpb246IDB4MQpbICAgMzIuNzg5NjM2XSBhc3VzX3dtaTogQklPUyBXTUkgdmVy
+c2lvbjogNy45ClsgICAzMi43ODk2NzZdIGFzdXNfd21pOiBTRlVOIHZhbHVlOiAweDRhMDg3Nwpb
+ICAgMzIuNzkwMTk4XSBpbnB1dDogQXN1cyBXTUkgaG90a2V5cyBhcyAvZGV2aWNlcy9wbGF0Zm9y
+bS9hc3VzLW5iLXdtaS9pbnB1dC9pbnB1dDE2ClsgICAzMi43OTg2NzJdIHVzYiAxLTU6IFVTQiBk
+aXNjb25uZWN0LCBkZXZpY2UgbnVtYmVyIDMKWyAgIDMyLjc5OTM2OV0gYXN1c193bWk6IEJhY2ts
+aWdodCBjb250cm9sbGVkIGJ5IEFDUEkgdmlkZW8gZHJpdmVyClsgICAzMi44NTE2MDFdIGNmZzgw
+MjExOiBDYWxsaW5nIENSREEgdG8gdXBkYXRlIHdvcmxkIHJlZ3VsYXRvcnkgZG9tYWluClsgICAz
+Mi45MTc4NTBdIEludGVsKFIpIFdpcmVsZXNzIFdpRmkgZHJpdmVyIGZvciBMaW51eApbICAgMzIu
+OTE3ODUzXSBDb3B5cmlnaHQoYykgMjAwMy0gMjAxNSBJbnRlbCBDb3Jwb3JhdGlvbgpbICAgMzMu
+MjA5NjAxXSBpd2x3aWZpIDAwMDA6M2I6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yIGl3
+bHdpZmktNzI2MC0xMy51Y29kZSBmYWlsZWQgd2l0aCBlcnJvciAtMgpbICAgMzMuMjcwMDA0XSB1
+c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIGJ0dXNiClsgICAzMy4zMDMx
+MDJdIGFsZzogTm8gdGVzdCBmb3IgY3JjMzIgKGNyYzMyLXBjbG11bCkKWyAgIDMzLjUyODE0Nl0g
+Y2ZnODAyMTE6IFdvcmxkIHJlZ3VsYXRvcnkgZG9tYWluIHVwZGF0ZWQ6ClsgICAzMy41MjgxNDld
+IGNmZzgwMjExOiAgREZTIE1hc3RlciByZWdpb246IHVuc2V0ClsgICAzMy41MjgxNTBdIGNmZzgw
+MjExOiAgIChzdGFydF9mcmVxIC0gZW5kX2ZyZXEgQCBiYW5kd2lkdGgpLCAobWF4X2FudGVubmFf
+Z2FpbiwgbWF4X2VpcnApLCAoZGZzX2NhY190aW1lKQpbICAgMzMuNTI4MTUyXSBjZmc4MDIxMTog
+ICAoMjQwMjAwMCBLSHogLSAyNDcyMDAwIEtIeiBAIDQwMDAwIEtIeiksIChOL0EsIDIwMDAgbUJt
+KSwgKE4vQSkKWyAgIDMzLjUyODE1NF0gY2ZnODAyMTE6ICAgKDI0NTcwMDAgS0h6IC0gMjQ4MjAw
+MCBLSHogQCA0MDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsgICAzMy41MjgxNTVd
+IGNmZzgwMjExOiAgICgyNDc0MDAwIEtIeiAtIDI0OTQwMDAgS0h6IEAgMjAwMDAgS0h6KSwgKE4v
+QSwgMjAwMCBtQm0pLCAoTi9BKQpbICAgMzMuNTI4MTU2XSBjZmc4MDIxMTogICAoNTE3MDAwMCBL
+SHogLSA1MjUwMDAwIEtIeiBAIDgwMDAwIEtIeiwgMTYwMDAwIEtIeiBBVVRPKSwgKE4vQSwgMjAw
+MCBtQm0pLCAoTi9BKQpbICAgMzMuNTI4MTU4XSBjZmc4MDIxMTogICAoNTI1MDAwMCBLSHogLSA1
+MzMwMDAwIEtIeiBAIDgwMDAwIEtIeiwgMTYwMDAwIEtIeiBBVVRPKSwgKE4vQSwgMjAwMCBtQm0p
+LCAoMCBzKQpbICAgMzMuNTI4MTU5XSBjZmc4MDIxMTogICAoNTQ5MDAwMCBLSHogLSA1NzMwMDAw
+IEtIeiBAIDE2MDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSksICgwIHMpClsgICAzMy41MjgxNjBd
+IGNmZzgwMjExOiAgICg1NzM1MDAwIEtIeiAtIDU4MzUwMDAgS0h6IEAgODAwMDAgS0h6KSwgKE4v
+QSwgMjAwMCBtQm0pLCAoTi9BKQpbICAgMzMuNTI4MTYxXSBjZmc4MDIxMTogICAoNTcyNDAwMDAg
+S0h6IC0gNjM3MjAwMDAgS0h6IEAgMjE2MDAwMCBLSHopLCAoTi9BLCAwIG1CbSksIChOL0EpClsg
+ICAzMy41NzUzNDRdIGl3bHdpZmkgMDAwMDozYjowMC4wOiBsb2FkZWQgZmlybXdhcmUgdmVyc2lv
+biAyNS4xNy4xMi4wIG9wX21vZGUgaXdsbXZtClsgICAzMy43MTc4MzhdIG1lZGlhOiBMaW51eCBt
+ZWRpYSBpbnRlcmZhY2U6IHYwLjEwClsgICAzMy43MzcyMzhdIExpbnV4IHZpZGVvIGNhcHR1cmUg
+aW50ZXJmYWNlOiB2Mi4wMApbICAgMzMuNzUxNDM2XSBpd2x3aWZpIDAwMDA6M2I6MDAuMDogRGV0
+ZWN0ZWQgSW50ZWwoUikgRHVhbCBCYW5kIFdpcmVsZXNzIE4gNzI2MCwgUkVWPTB4MTQ0ClsgICAz
+My43NTE1MDhdIGl3bHdpZmkgMDAwMDozYjowMC4wOiBMMSBFbmFibGVkIC0gTFRSIEVuYWJsZWQK
+WyAgIDMzLjc1MTc3MF0gaXdsd2lmaSAwMDAwOjNiOjAwLjA6IEwxIEVuYWJsZWQgLSBMVFIgRW5h
+YmxlZApbICAgMzMuODAwODMzXSBpbnB1dDogVVNCZXN0IFRlY2hub2xvZ3kgU2lTIEhJRCBUb3Vj
+aCBDb250cm9sbGVyIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxNC4wL3VzYjEvMS0x
+MS8xLTExOjEuMC8wMDAzOjA0NTc6MTBDNi4wMDA1L2lucHV0L2lucHV0MTcKWyAgIDMzLjgwMTEy
+NF0gaGlkLW11bHRpdG91Y2ggMDAwMzowNDU3OjEwQzYuMDAwNTogaW5wdXQsaGlkZGV2MCxoaWRy
+YXczOiBVU0IgSElEIHYxLjExIERldmljZSBbVVNCZXN0IFRlY2hub2xvZ3kgU2lTIEhJRCBUb3Vj
+aCBDb250cm9sbGVyXSBvbiB1c2ItMDAwMDowMDoxNC4wLTExL2lucHV0MApbICAgMzMuODEzNzIw
+XSBzbmRfaGRhX2ludGVsIDAwMDA6MDA6MDMuMDogYm91bmQgMDAwMDowMDowMi4wIChvcHMgaTkx
+NV9hdWRpb19jb21wb25lbnRfYmluZF9vcHMgW2k5MTVdKQpbICAgMzMuODQ3NDQ1XSBpbnB1dDog
+SERBIEludGVsIEhETUkgSERNSS9EUCxwY209MyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6
+MDA6MDMuMC9zb3VuZC9jYXJkMC9pbnB1dDE5ClsgICAzMy44NDc2MjJdIGlucHV0OiBIREEgSW50
+ZWwgSERNSSBIRE1JL0RQLHBjbT03IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMy4w
+L3NvdW5kL2NhcmQwL2lucHV0MjAKWyAgIDMzLjg0NzY5NF0gaW5wdXQ6IEhEQSBJbnRlbCBIRE1J
+IEhETUkvRFAscGNtPTggYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjAzLjAvc291bmQv
+Y2FyZDAvaW5wdXQyMQpbICAgMzMuODQ4MDgxXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRp
+b0MxRDA6IGF1dG9jb25maWcgZm9yIEFMQzY2ODogbGluZV9vdXRzPTEgKDB4MTUvMHgwLzB4MC8w
+eDAvMHgwKSB0eXBlOmxpbmUKWyAgIDMzLjg0ODA4NF0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhk
+YXVkaW9DMUQwOiAgICBzcGVha2VyX291dHM9MiAoMHgxNC8weDFhLzB4MC8weDAvMHgwKQpbICAg
+MzMuODQ4MDg2XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6ICAgIGhwX291dHM9
+MCAoMHgwLzB4MC8weDAvMHgwLzB4MCkKWyAgIDMzLjg0ODA4OF0gc25kX2hkYV9jb2RlY19yZWFs
+dGVrIGhkYXVkaW9DMUQwOiAgICBtb25vOiBtb25vX291dD0weDAKWyAgIDMzLjg0ODA4OV0gc25k
+X2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAgICBkaWctb3V0PTB4MWUvMHgwClsgICAz
+My44NDgwOTFdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzFEMDogICAgaW5wdXRzOgpb
+ICAgMzMuODQ4MDkzXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6ICAgICAgTWlj
+PTB4MTgKWyAgIDMzLjg0ODA5NV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAg
+ICAgIEludGVybmFsIE1pYz0weDEyClsgICAzMy44NTg3NTVdIGlucHV0OiBIREEgSW50ZWwgUENI
+IE1pYyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMS9pbnB1
+dDIyClsgICAzMy44NTg5MDNdIGlucHV0OiBIREEgSW50ZWwgUENIIExpbmUgT3V0IGFzIC9kZXZp
+Y2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQxL2lucHV0MjMKWyAgIDMzLjk3
+MTMxM10gaWVlZTgwMjExIHBoeTA6IFNlbGVjdGVkIHJhdGUgY29udHJvbCBhbGdvcml0aG0gJ2l3
+bC1tdm0tcnMnClsgICAzMy45NzgzMjRdIGl3bHdpZmkgMDAwMDozYjowMC4wIHdsczE6IHJlbmFt
+ZWQgZnJvbSB3bGFuMApbICAgMzQuMDEwNjMxXSBBZGRpbmcgMzE0NTcyNzZrIHN3YXAgb24gL2Rl
+di9zZGIyLiAgUHJpb3JpdHk6LTEgZXh0ZW50czoxIGFjcm9zczozMTQ1NzI3NmsgRlMKWyAgIDM0
+LjA2NzIxN10gdXZjdmlkZW86IEZvdW5kIFVWQyAxLjAwIGRldmljZSBVU0IyLjAgSEQgVVZDIFdl
+YkNhbSAoMDRmMjpiNDE0KQpbICAgMzQuMDY4MzU0XSBpbnB1dDogVVNCMi4wIEhEIFVWQyBXZWJD
+YW0gYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjE0LjAvdXNiMS8xLTcvMS03OjEuMC9p
+bnB1dC9pbnB1dDI0ClsgICAzNC4wNjg0MTZdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVy
+ZmFjZSBkcml2ZXIgdXZjdmlkZW8KWyAgIDM0LjA2ODQxN10gVVNCIFZpZGVvIENsYXNzIGRyaXZl
+ciAoMS4xLjEpClsgICAzNC4yMDIzOTNdIGludGVsX3JhcGw6IEZvdW5kIFJBUEwgZG9tYWluIHBh
+Y2thZ2UKWyAgIDM0LjIwMjM5Nl0gaW50ZWxfcmFwbDogRm91bmQgUkFQTCBkb21haW4gY29yZQpb
+ICAgMzQuMjAyMzk3XSBpbnRlbF9yYXBsOiBGb3VuZCBSQVBMIGRvbWFpbiB1bmNvcmUKWyAgIDM0
+LjIwMjM5OF0gaW50ZWxfcmFwbDogRm91bmQgUkFQTCBkb21haW4gZHJhbQpbICAgMzUuMjIxMjQ1
+XSBjZmc4MDIxMTogQ2FsbGluZyBDUkRBIGZvciBjb3VudHJ5OiBSTwpbICAgMzUuMjI0MDcwXSBj
+Zmc4MDIxMTogUmVndWxhdG9yeSBkb21haW4gY2hhbmdlZCB0byBjb3VudHJ5OiBSTwpbICAgMzUu
+MjI0MDcyXSBjZmc4MDIxMTogIERGUyBNYXN0ZXIgcmVnaW9uOiBFVFNJClsgICAzNS4yMjQwNzNd
+IGNmZzgwMjExOiAgIChzdGFydF9mcmVxIC0gZW5kX2ZyZXEgQCBiYW5kd2lkdGgpLCAobWF4X2Fu
+dGVubmFfZ2FpbiwgbWF4X2VpcnApLCAoZGZzX2NhY190aW1lKQpbICAgMzUuMjI0MDc1XSBjZmc4
+MDIxMTogICAoMjQwMjAwMCBLSHogLSAyNDgyMDAwIEtIeiBAIDQwMDAwIEtIeiksIChOL0EsIDIw
+MDAgbUJtKSwgKE4vQSkKWyAgIDM1LjIyNDA3N10gY2ZnODAyMTE6ICAgKDUxNzAwMDAgS0h6IC0g
+NTI1MDAwMCBLSHogQCA4MDAwMCBLSHosIDE2MDAwMCBLSHogQVVUTyksIChOL0EsIDIwMDAgbUJt
+KSwgKE4vQSkKWyAgIDM1LjIyNDA3OF0gY2ZnODAyMTE6ICAgKDUyNTAwMDAgS0h6IC0gNTMzMDAw
+MCBLSHogQCA4MDAwMCBLSHosIDE2MDAwMCBLSHogQVVUTyksIChOL0EsIDIwMDAgbUJtKSwgKDAg
+cykKWyAgIDM1LjIyNDA3OV0gY2ZnODAyMTE6ICAgKDU0OTAwMDAgS0h6IC0gNTcxMDAwMCBLSHog
+QCAxNjAwMDAgS0h6KSwgKE4vQSwgMjcwMCBtQm0pLCAoMCBzKQpbICAgMzUuMjI0MDgxXSBjZmc4
+MDIxMTogICAoNTcwMDAwMDAgS0h6IC0gNjYwMDAwMDAgS0h6IEAgMjE2MDAwMCBLSHopLCAoTi9B
+LCA0MDAwIG1CbSksIChOL0EpClsgICA0MS44OTEzOTRdIG5mX2Nvbm50cmFjayB2ZXJzaW9uIDAu
+NS4wICg2NTUzNiBidWNrZXRzLCAyNjIxNDQgbWF4KQpbICAgNDIuMDI4MDEwXSBpcDZfdGFibGVz
+OiAoQykgMjAwMC0yMDA2IE5ldGZpbHRlciBDb3JlIFRlYW0KWyAgIDQzLjE5MDg3Ml0gRWJ0YWJs
+ZXMgdjIuMCByZWdpc3RlcmVkClsgICA0My4zNzU5MDRdIGJyaWRnZTogYXV0b21hdGljIGZpbHRl
+cmluZyB2aWEgYXJwL2lwL2lwNnRhYmxlcyBoYXMgYmVlbiBkZXByZWNhdGVkLiBVcGRhdGUgeW91
+ciBzY3JpcHRzIHRvIGxvYWQgYnJfbmV0ZmlsdGVyIGlmIHlvdSBuZWVkIHRoaXMuClsgICA0Ny4w
+NDY1MDJdIElQdjY6IEFERFJDT05GKE5FVERFVl9VUCk6IGVucDYwczA6IGxpbmsgaXMgbm90IHJl
+YWR5ClsgICA0Ny4wNDY4MDddIElQdjY6IEFERFJDT05GKE5FVERFVl9VUCk6IGVucDYwczA6IGxp
+bmsgaXMgbm90IHJlYWR5ClsgICA0Ny4wNDc1NzNdIGFseCAwMDAwOjNjOjAwLjAgZW5wNjBzMDog
+TklDIFVwOiAxIEdicHMgRnVsbApbICAgNDcuMDQ3ODYxXSBJUHY2OiBBRERSQ09ORihORVRERVZf
+Q0hBTkdFKTogZW5wNjBzMDogbGluayBiZWNvbWVzIHJlYWR5ClsgICA0Ny4wNDg4MzldIElQdjY6
+IEFERFJDT05GKE5FVERFVl9VUCk6IHdsczE6IGxpbmsgaXMgbm90IHJlYWR5ClsgICA0Ny4wNDg5
+MzldIGl3bHdpZmkgMDAwMDozYjowMC4wOiBMMSBFbmFibGVkIC0gTFRSIEVuYWJsZWQKWyAgIDQ3
+LjA0OTE5N10gaXdsd2lmaSAwMDAwOjNiOjAwLjA6IEwxIEVuYWJsZWQgLSBMVFIgRW5hYmxlZApb
+ICAgNDcuMjUwODUxXSBpd2x3aWZpIDAwMDA6M2I6MDAuMDogTDEgRW5hYmxlZCAtIExUUiBFbmFi
+bGVkClsgICA0Ny4yNTExMTNdIGl3bHdpZmkgMDAwMDozYjowMC4wOiBMMSBFbmFibGVkIC0gTFRS
+IEVuYWJsZWQKWyAgIDQ3LjI2NjA5MF0gSVB2NjogQUREUkNPTkYoTkVUREVWX1VQKTogd2xzMTog
+bGluayBpcyBub3QgcmVhZHkKWyAgIDQ4LjEwMTgyOF0gSVB2NjogQUREUkNPTkYoTkVUREVWX1VQ
+KTogd2xzMTogbGluayBpcyBub3QgcmVhZHkKWyAgIDUwLjc1MDA5NF0gd2xzMTogYXV0aGVudGlj
+YXRlIHdpdGggYzA6NGE6MDA6N2E6YjE6ZTUKWyAgIDUwLjc1Mzk5OF0gd2xzMTogc2VuZCBhdXRo
+IHRvIGMwOjRhOjAwOjdhOmIxOmU1ICh0cnkgMS8zKQpbICAgNTAuNzU2Mjk5XSB3bHMxOiBhdXRo
+ZW50aWNhdGVkClsgICA1MC43NTY2NzRdIHdsczE6IGFzc29jaWF0ZSB3aXRoIGMwOjRhOjAwOjdh
+OmIxOmU1ICh0cnkgMS8zKQpbICAgNTAuNzYwMzU0XSB3bHMxOiBSWCBBc3NvY1Jlc3AgZnJvbSBj
+MDo0YTowMDo3YTpiMTplNSAoY2FwYWI9MHg0MzEgc3RhdHVzPTAgYWlkPTIpClsgICA1MC43NjE1
+NDldIHdsczE6IGFzc29jaWF0ZWQKWyAgIDUwLjc2MTU2NV0gSVB2NjogQUREUkNPTkYoTkVUREVW
+X0NIQU5HRSk6IHdsczE6IGxpbmsgYmVjb21lcyByZWFkeQpbICAgNTAuNzYxNjA1XSBjZmc4MDIx
+MTogQ2FsbGluZyBDUkRBIGZvciBjb3VudHJ5OiBSTwpbICAgNTAuNzY2MzAwXSBjZmc4MDIxMTog
+UmVndWxhdG9yeSBkb21haW4gY2hhbmdlZCB0byBjb3VudHJ5OiBSTwpbICAgNTAuNzY2MzAyXSBj
+Zmc4MDIxMTogIERGUyBNYXN0ZXIgcmVnaW9uOiBFVFNJClsgICA1MC43NjYzMDNdIGNmZzgwMjEx
+OiAgIChzdGFydF9mcmVxIC0gZW5kX2ZyZXEgQCBiYW5kd2lkdGgpLCAobWF4X2FudGVubmFfZ2Fp
+biwgbWF4X2VpcnApLCAoZGZzX2NhY190aW1lKQpbICAgNTAuNzY2MzA1XSBjZmc4MDIxMTogICAo
+MjQwMjAwMCBLSHogLSAyNDgyMDAwIEtIeiBAIDQwMDAwIEtIeiksIChOL0EsIDIwMDAgbUJtKSwg
+KE4vQSkKWyAgIDUwLjc2NjMwNl0gY2ZnODAyMTE6ICAgKDUxNzAwMDAgS0h6IC0gNTI1MDAwMCBL
+SHogQCA4MDAwMCBLSHosIDE2MDAwMCBLSHogQVVUTyksIChOL0EsIDIwMDAgbUJtKSwgKE4vQSkK
+WyAgIDUwLjc2NjMwN10gY2ZnODAyMTE6ICAgKDUyNTAwMDAgS0h6IC0gNTMzMDAwMCBLSHogQCA4
+MDAwMCBLSHosIDE2MDAwMCBLSHogQVVUTyksIChOL0EsIDIwMDAgbUJtKSwgKDAgcykKWyAgIDUw
+Ljc2NjMwOF0gY2ZnODAyMTE6ICAgKDU0OTAwMDAgS0h6IC0gNTcxMDAwMCBLSHogQCAxNjAwMDAg
+S0h6KSwgKE4vQSwgMjcwMCBtQm0pLCAoMCBzKQpbICAgNTAuNzY2MzA5XSBjZmc4MDIxMTogICAo
+NTcwMDAwMDAgS0h6IC0gNjYwMDAwMDAgS0h6IEAgMjE2MDAwMCBLSHopLCAoTi9BLCA0MDAwIG1C
+bSksIChOL0EpClsgICA3MC43Mzc2MjRdIGZ1c2UgaW5pdCAoQVBJIHZlcnNpb24gNy4yMykKWyAg
+IDcxLjMxOTg4Nl0gQmx1ZXRvb3RoOiBCTkVQIChFdGhlcm5ldCBFbXVsYXRpb24pIHZlciAxLjMK
+WyAgIDcxLjMxOTg4OF0gQmx1ZXRvb3RoOiBCTkVQIGZpbHRlcnM6IHByb3RvY29sIG11bHRpY2Fz
+dApbICAgNzEuMzE5ODkyXSBCbHVldG9vdGg6IEJORVAgc29ja2V0IGxheWVyIGluaXRpYWxpemVk
+ClsgNjE0OC44MzE3ODFdIHR1bjogVW5pdmVyc2FsIFRVTi9UQVAgZGV2aWNlIGRyaXZlciwgMS42
+ClsgNjE0OC44MzE3ODNdIHR1bjogKEMpIDE5OTktMjAwNCBNYXggS3Jhc255YW5za3kgPG1heGtA
+cXVhbGNvbW0uY29tPgpbIDY0NDUuMjUzNTk1XSBuZl9jb25udHJhY2s6IGF1dG9tYXRpYyBoZWxw
+ZXIgYXNzaWdubWVudCBpcyBkZXByZWNhdGVkIGFuZCBpdCB3aWxsIGJlIHJlbW92ZWQgc29vbi4g
+VXNlIHRoZSBpcHRhYmxlcyBDVCB0YXJnZXQgdG8gYXR0YWNoIGhlbHBlcnMgaW5zdGVhZC4KWyA3
+OTcxLjQ5NDI2N10gYXN1c193bWk6IFVua25vd24ga2V5IDk0IHByZXNzZWQKWzEwNjg5Ljc4NzU3
+N10gaXdsd2lmaSAwMDAwOjNiOjAwLjA6IFJGX0tJTEwgYml0IHRvZ2dsZWQgdG8gZGlzYWJsZSBy
+YWRpby4KWzEwNjg5Ljc4NzU4MV0gd2xzMTogZGVhdXRoZW50aWNhdGluZyBmcm9tIGMwOjRhOjAw
+OjdhOmIxOmU1IGJ5IGxvY2FsIGNob2ljZSAoUmVhc29uOiAzPURFQVVUSF9MRUFWSU5HKQpbMTA2
+ODkuNzkyMjA3XSBjZmc4MDIxMTogQ2FsbGluZyBDUkRBIHRvIHVwZGF0ZSB3b3JsZCByZWd1bGF0
+b3J5IGRvbWFpbgpbMTA2ODkuNzk2MTI1XSBjZmc4MDIxMTogV29ybGQgcmVndWxhdG9yeSBkb21h
+aW4gdXBkYXRlZDoKWzEwNjg5Ljc5NjEyOF0gY2ZnODAyMTE6ICBERlMgTWFzdGVyIHJlZ2lvbjog
+dW5zZXQKWzEwNjg5Ljc5NjEyOV0gY2ZnODAyMTE6ICAgKHN0YXJ0X2ZyZXEgLSBlbmRfZnJlcSBA
+IGJhbmR3aWR0aCksIChtYXhfYW50ZW5uYV9nYWluLCBtYXhfZWlycCksIChkZnNfY2FjX3RpbWUp
+ClsxMDY4OS43OTYxMzBdIGNmZzgwMjExOiAgICgyNDAyMDAwIEtIeiAtIDI0NzIwMDAgS0h6IEAg
+NDAwMDAgS0h6KSwgKE4vQSwgMjAwMCBtQm0pLCAoTi9BKQpbMTA2ODkuNzk2MTMxXSBjZmc4MDIx
+MTogICAoMjQ1NzAwMCBLSHogLSAyNDgyMDAwIEtIeiBAIDQwMDAwIEtIeiksIChOL0EsIDIwMDAg
+bUJtKSwgKE4vQSkKWzEwNjg5Ljc5NjEzMl0gY2ZnODAyMTE6ICAgKDI0NzQwMDAgS0h6IC0gMjQ5
+NDAwMCBLSHogQCAyMDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsxMDY4OS43OTYx
+MzNdIGNmZzgwMjExOiAgICg1MTcwMDAwIEtIeiAtIDUyNTAwMDAgS0h6IEAgODAwMDAgS0h6LCAx
+NjAwMDAgS0h6IEFVVE8pLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsxMDY4OS43OTYxMzVdIGNm
+ZzgwMjExOiAgICg1MjUwMDAwIEtIeiAtIDUzMzAwMDAgS0h6IEAgODAwMDAgS0h6LCAxNjAwMDAg
+S0h6IEFVVE8pLCAoTi9BLCAyMDAwIG1CbSksICgwIHMpClsxMDY4OS43OTYxMzVdIGNmZzgwMjEx
+OiAgICg1NDkwMDAwIEtIeiAtIDU3MzAwMDAgS0h6IEAgMTYwMDAwIEtIeiksIChOL0EsIDIwMDAg
+bUJtKSwgKDAgcykKWzEwNjg5Ljc5NjEzNl0gY2ZnODAyMTE6ICAgKDU3MzUwMDAgS0h6IC0gNTgz
+NTAwMCBLSHogQCA4MDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsxMDY4OS43OTYx
+MzddIGNmZzgwMjExOiAgICg1NzI0MDAwMCBLSHogLSA2MzcyMDAwMCBLSHogQCAyMTYwMDAwIEtI
+eiksIChOL0EsIDAgbUJtKSwgKE4vQSkKWzEwNjg5Ljc5NjE1MF0gY2ZnODAyMTE6IENhbGxpbmcg
+Q1JEQSBmb3IgY291bnRyeTogUk8KWzEwNjg5Ljc5Nzc2MV0gY2ZnODAyMTE6IFJlZ3VsYXRvcnkg
+ZG9tYWluIGNoYW5nZWQgdG8gY291bnRyeTogUk8KWzEwNjg5Ljc5Nzc2NF0gY2ZnODAyMTE6ICBE
+RlMgTWFzdGVyIHJlZ2lvbjogRVRTSQpbMTA2ODkuNzk3NzY2XSBjZmc4MDIxMTogICAoc3RhcnRf
+ZnJlcSAtIGVuZF9mcmVxIEAgYmFuZHdpZHRoKSwgKG1heF9hbnRlbm5hX2dhaW4sIG1heF9laXJw
+KSwgKGRmc19jYWNfdGltZSkKWzEwNjg5Ljc5Nzc2OF0gY2ZnODAyMTE6ICAgKDI0MDIwMDAgS0h6
+IC0gMjQ4MjAwMCBLSHogQCA0MDAwMCBLSHopLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsxMDY4
+OS43OTc3NzBdIGNmZzgwMjExOiAgICg1MTcwMDAwIEtIeiAtIDUyNTAwMDAgS0h6IEAgODAwMDAg
+S0h6LCAxNjAwMDAgS0h6IEFVVE8pLCAoTi9BLCAyMDAwIG1CbSksIChOL0EpClsxMDY4OS43OTc3
+NzJdIGNmZzgwMjExOiAgICg1MjUwMDAwIEtIeiAtIDUzMzAwMDAgS0h6IEAgODAwMDAgS0h6LCAx
+NjAwMDAgS0h6IEFVVE8pLCAoTi9BLCAyMDAwIG1CbSksICgwIHMpClsxMDY4OS43OTc3NzRdIGNm
+ZzgwMjExOiAgICg1NDkwMDAwIEtIeiAtIDU3MTAwMDAgS0h6IEAgMTYwMDAwIEtIeiksIChOL0Es
+IDI3MDAgbUJtKSwgKDAgcykKWzEwNjg5Ljc5Nzc3NV0gY2ZnODAyMTE6ICAgKDU3MDAwMDAwIEtI
+eiAtIDY2MDAwMDAwIEtIeiBAIDIxNjAwMDAgS0h6KSwgKE4vQSwgNDAwMCBtQm0pLCAoTi9BKQpb
+MTEyNTYuMDI0Nzk1XSBzeXN0ZW1kLXN5c3YtZ2VuZXJhdG9yWzk2NDddOiBPdmVyd3JpdGluZyBl
+eGlzdGluZyBzeW1saW5rIC9ydW4vc3lzdGVtZC9nZW5lcmF0b3IubGF0ZS9uZXRjb25zb2xlLnNl
+cnZpY2Ugd2l0aCByZWFsIHNlcnZpY2UKWzExMjU2LjAyNDg2NV0gc3lzdGVtZC1zeXN2LWdlbmVy
+YXRvcls5NjQ3XTogT3ZlcndyaXRpbmcgZXhpc3Rpbmcgc3ltbGluayAvcnVuL3N5c3RlbWQvZ2Vu
+ZXJhdG9yLmxhdGUvbmV0d29yay5zZXJ2aWNlIHdpdGggcmVhbCBzZXJ2aWNlClsxNzc5OS4wODY2
+NzhdIHBlcmYgaW50ZXJydXB0IHRvb2sgdG9vIGxvbmcgKDI1NTYgPiAyNTAwKSwgbG93ZXJpbmcg
+a2VybmVsLnBlcmZfZXZlbnRfbWF4X3NhbXBsZV9yYXRlIHRvIDUwMDAwCgo=
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset=US-ASCII; name="lsmod.txt"
+Content-Disposition: attachment; filename="lsmod.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iamlyv604
+
+TW9kdWxlICAgICAgICAgICAgICAgICAgU2l6ZSAgVXNlZCBieQp0dW4gICAgICAgICAgICAgICAg
+ICAgIDI4NjcyICAwIApibmVwICAgICAgICAgICAgICAgICAgIDI0NTc2ICAyIApmdXNlICAgICAg
+ICAgICAgICAgICAgIDk0MjA4ICAzIApjY20gICAgICAgICAgICAgICAgICAgIDIwNDgwICAwIApu
+Zl9jb25udHJhY2tfbmV0Ymlvc19ucyAgICAxNjM4NCAgMCAKbmZfY29ubnRyYWNrX2Jyb2FkY2Fz
+dCAgICAxNjM4NCAgMSBuZl9jb25udHJhY2tfbmV0Ymlvc19ucwppcDZ0X3JwZmlsdGVyICAgICAg
+ICAgIDE2Mzg0ICAxIAppcDZ0X1JFSkVDVCAgICAgICAgICAgIDE2Mzg0ICAyIApuZl9yZWplY3Rf
+aXB2NiAgICAgICAgIDE2Mzg0ICAxIGlwNnRfUkVKRUNUCnh0X2Nvbm50cmFjayAgICAgICAgICAg
+MTYzODQgIDE5IAplYnRhYmxlX25hdCAgICAgICAgICAgIDE2Mzg0ICAwIAplYnRhYmxlX2Jyb3V0
+ZSAgICAgICAgIDE2Mzg0ICAwIApicmlkZ2UgICAgICAgICAgICAgICAgMTE0Njg4ICAxIGVidGFi
+bGVfYnJvdXRlCnN0cCAgICAgICAgICAgICAgICAgICAgMTYzODQgIDEgYnJpZGdlCmxsYyAgICAg
+ICAgICAgICAgICAgICAgMTYzODQgIDIgc3RwLGJyaWRnZQplYnRhYmxlX2ZpbHRlciAgICAgICAg
+IDE2Mzg0ICAwIAplYnRhYmxlcyAgICAgICAgICAgICAgIDMyNzY4ICAzIGVidGFibGVfYnJvdXRl
+LGVidGFibGVfbmF0LGVidGFibGVfZmlsdGVyCmlwNnRhYmxlX25hdCAgICAgICAgICAgMTYzODQg
+IDEgCm5mX2Nvbm50cmFja19pcHY2ICAgICAgMjA0ODAgIDExIApuZl9kZWZyYWdfaXB2NiAgICAg
+ICAgIDM2ODY0ICAxIG5mX2Nvbm50cmFja19pcHY2Cm5mX25hdF9pcHY2ICAgICAgICAgICAgMTYz
+ODQgIDEgaXA2dGFibGVfbmF0CmlwNnRhYmxlX21hbmdsZSAgICAgICAgMTYzODQgIDEgCmlwNnRh
+YmxlX3NlY3VyaXR5ICAgICAgMTYzODQgIDEgCmlwNnRhYmxlX3JhdyAgICAgICAgICAgMTYzODQg
+IDEgCmlwNnRhYmxlX2ZpbHRlciAgICAgICAgMTYzODQgIDEgCmlwNl90YWJsZXMgICAgICAgICAg
+ICAgMjg2NzIgIDUgaXA2dGFibGVfZmlsdGVyLGlwNnRhYmxlX21hbmdsZSxpcDZ0YWJsZV9zZWN1
+cml0eSxpcDZ0YWJsZV9uYXQsaXA2dGFibGVfcmF3CmlwdGFibGVfbmF0ICAgICAgICAgICAgMTYz
+ODQgIDEgCm5mX2Nvbm50cmFja19pcHY0ICAgICAgMTYzODQgIDEwIApuZl9kZWZyYWdfaXB2NCAg
+ICAgICAgIDE2Mzg0ICAxIG5mX2Nvbm50cmFja19pcHY0Cm5mX25hdF9pcHY0ICAgICAgICAgICAg
+MTYzODQgIDEgaXB0YWJsZV9uYXQKbmZfbmF0ICAgICAgICAgICAgICAgICAyODY3MiAgMiBuZl9u
+YXRfaXB2NCxuZl9uYXRfaXB2NgpuZl9jb25udHJhY2sgICAgICAgICAgMTA2NDk2ICA4IG5mX2Nv
+bm50cmFja19uZXRiaW9zX25zLG5mX25hdCxuZl9uYXRfaXB2NCxuZl9uYXRfaXB2Nix4dF9jb25u
+dHJhY2ssbmZfY29ubnRyYWNrX2Jyb2FkY2FzdCxuZl9jb25udHJhY2tfaXB2NCxuZl9jb25udHJh
+Y2tfaXB2NgppcHRhYmxlX21hbmdsZSAgICAgICAgIDE2Mzg0ICAxIAppcHRhYmxlX3NlY3VyaXR5
+ICAgICAgIDE2Mzg0ICAxIAppcHRhYmxlX3JhdyAgICAgICAgICAgIDE2Mzg0ICAxIAppbnRlbF9y
+YXBsICAgICAgICAgICAgIDIwNDgwICAwIAp1dmN2aWRlbyAgICAgICAgICAgICAgIDkwMTEyICAw
+IAp2aWRlb2J1ZjJfdm1hbGxvYyAgICAgIDE2Mzg0ICAxIHV2Y3ZpZGVvCnZpZGVvYnVmMl9jb3Jl
+ICAgICAgICAgNDkxNTIgIDEgdXZjdmlkZW8KdmlkZW9idWYyX21lbW9wcyAgICAgICAxNjM4NCAg
+MSB2aWRlb2J1ZjJfdm1hbGxvYwppb3NmX21iaSAgICAgICAgICAgICAgIDE2Mzg0ICAxIGludGVs
+X3JhcGwKeDg2X3BrZ190ZW1wX3RoZXJtYWwgICAgMTYzODQgIDAgCmFyYzQgICAgICAgICAgICAg
+ICAgICAgMTYzODQgIDIgCmNvcmV0ZW1wICAgICAgICAgICAgICAgMTYzODQgIDAgCmt2bV9pbnRl
+bCAgICAgICAgICAgICAxNTk3NDQgIDAgCnNuZF9oZGFfY29kZWNfcmVhbHRlayAgICA4NjAxNiAg
+MSAKc25kX2hkYV9jb2RlY19oZG1pICAgICA1MzI0OCAgMSAKc25kX2hkYV9jb2RlY19nZW5lcmlj
+ICAgIDczNzI4ICAxIHNuZF9oZGFfY29kZWNfcmVhbHRlawprdm0gICAgICAgICAgICAgICAgICAg
+NDk1NjE2ICAxIGt2bV9pbnRlbApzbmRfaGRhX2ludGVsICAgICAgICAgIDMyNzY4ICAxMyAKc25k
+X2hkYV9jb250cm9sbGVyICAgICAzMjc2OCAgMSBzbmRfaGRhX2ludGVsCmhpZF9tdWx0aXRvdWNo
+ICAgICAgICAgMjA0ODAgIDAgCnNuZF9oZGFfY29kZWMgICAgICAgICAxMTA1OTIgIDUgc25kX2hk
+YV9jb2RlY19yZWFsdGVrLHNuZF9oZGFfY29kZWNfaGRtaSxzbmRfaGRhX2NvZGVjX2dlbmVyaWMs
+c25kX2hkYV9pbnRlbCxzbmRfaGRhX2NvbnRyb2xsZXIKaXdsbXZtICAgICAgICAgICAgICAgIDMw
+MzEwNCAgMCAKdjRsMl9jb21tb24gICAgICAgICAgICAxNjM4NCAgMSB2aWRlb2J1ZjJfY29yZQp2
+aWRlb2RldiAgICAgICAgICAgICAgMTU5NzQ0ICAzIHV2Y3ZpZGVvLHY0bDJfY29tbW9uLHZpZGVv
+YnVmMl9jb3JlCm1lZGlhICAgICAgICAgICAgICAgICAgMjQ1NzYgIDIgdXZjdmlkZW8sdmlkZW9k
+ZXYKbWFjODAyMTEgICAgICAgICAgICAgIDcxNjgwMCAgMSBpd2xtdm0Kc25kX2hkYV9jb3JlICAg
+ICAgICAgICAzMjc2OCAgNSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWssc25kX2hkYV9jb2RlY19oZG1p
+LHNuZF9oZGFfY29kZWNfZ2VuZXJpYyxzbmRfaGRhX2NvZGVjLHNuZF9oZGFfY29udHJvbGxlcgpj
+cmN0MTBkaWZfcGNsbXVsICAgICAgIDE2Mzg0ICAwIApzbmRfaHdkZXAgICAgICAgICAgICAgIDE2
+Mzg0ICAxIHNuZF9oZGFfY29kZWMKY3JjMzJfcGNsbXVsICAgICAgICAgICAxNjM4NCAgMCAKY3Jj
+MzJjX2ludGVsICAgICAgICAgICAyNDU3NiAgMCAKZ2hhc2hfY2xtdWxuaV9pbnRlbCAgICAxNjM4
+NCAgMCAKYnR1c2IgICAgICAgICAgICAgICAgICA0OTE1MiAgMCAKc25kX3NlcSAgICAgICAgICAg
+ICAgICA2OTYzMiAgMCAKYnRiY20gICAgICAgICAgICAgICAgICAxNjM4NCAgMSBidHVzYgppd2x3
+aWZpICAgICAgICAgICAgICAgMTQzMzYwICAxIGl3bG12bQpzbmRfc2VxX2RldmljZSAgICAgICAg
+IDE2Mzg0ICAxIHNuZF9zZXEKc25kX3BjbSAgICAgICAgICAgICAgIDExODc4NCAgNSBzbmRfaGRh
+X2NvZGVjX2hkbWksc25kX2hkYV9jb2RlYyxzbmRfaGRhX2ludGVsLHNuZF9oZGFfY29udHJvbGxl
+cgpjZmc4MDIxMSAgICAgICAgICAgICAgNTQ4ODY0ICAzIGl3bHdpZmksbWFjODAyMTEsaXdsbXZt
+CnNuZF90aW1lciAgICAgICAgICAgICAgMzI3NjggIDIgc25kX3BjbSxzbmRfc2VxCmJ0aW50ZWwg
+ICAgICAgICAgICAgICAgMTYzODQgIDEgYnR1c2IKYXN1c19uYl93bWkgICAgICAgICAgICAyNDU3
+NiAgMCAKYXN1c193bWkgICAgICAgICAgICAgICAyNDU3NiAgMSBhc3VzX25iX3dtaQpzcGFyc2Vf
+a2V5bWFwICAgICAgICAgIDE2Mzg0ICAxIGFzdXNfd21pCnNuZCAgICAgICAgICAgICAgICAgICAg
+Nzc4MjQgIDM1IHNuZF9oZGFfY29kZWNfcmVhbHRlayxzbmRfaHdkZXAsc25kX3RpbWVyLHNuZF9o
+ZGFfY29kZWNfaGRtaSxzbmRfcGNtLHNuZF9zZXEsc25kX2hkYV9jb2RlY19nZW5lcmljLHNuZF9o
+ZGFfY29kZWMsc25kX2hkYV9pbnRlbCxzbmRfc2VxX2RldmljZQpibHVldG9vdGggICAgICAgICAg
+ICAgNDkxNTIwICA4IGJuZXAsYnRiY20sYnR1c2IsYnRpbnRlbApteG1fd21pICAgICAgICAgICAg
+ICAgIDE2Mzg0ICAwIAppVENPX3dkdCAgICAgICAgICAgICAgIDE2Mzg0ICAwIAppVENPX3ZlbmRv
+cl9zdXBwb3J0ICAgIDE2Mzg0ICAxIGlUQ09fd2R0CnNvdW5kY29yZSAgICAgICAgICAgICAgMTYz
+ODQgIDEgc25kCnJma2lsbCAgICAgICAgICAgICAgICAgMjQ1NzYgIDUgY2ZnODAyMTEsYmx1ZXRv
+b3RoLGFzdXNfd21pCmxwY19pY2ggICAgICAgICAgICAgICAgMjQ1NzYgIDAgCmllMzEyMDBfZWRh
+YyAgICAgICAgICAgMTYzODQgIDAgCmVkYWNfY29yZSAgICAgICAgICAgICAgNTMyNDggIDEgaWUz
+MTIwMF9lZGFjCnNlcmlvX3JhdyAgICAgICAgICAgICAgMTYzODQgIDAgCm1laV9tZSAgICAgICAg
+ICAgICAgICAgMjQ1NzYgIDAgCm1laSAgICAgICAgICAgICAgICAgICAgOTAxMTIgIDEgbWVpX21l
+CmkyY19pODAxICAgICAgICAgICAgICAgMjA0ODAgIDAgCm1mZF9jb3JlICAgICAgICAgICAgICAg
+MTYzODQgIDEgbHBjX2ljaApzaHBjaHAgICAgICAgICAgICAgICAgIDQwOTYwICAwIAp3bWkgICAg
+ICAgICAgICAgICAgICAgIDIwNDgwICAyIG14bV93bWksYXN1c193bWkKbmZzZCAgICAgICAgICAg
+ICAgICAgIDMyMzU4NCAgMSAKYXV0aF9ycGNnc3MgICAgICAgICAgICA2NTUzNiAgMSBuZnNkCm5m
+c19hY2wgICAgICAgICAgICAgICAgMTYzODQgIDEgbmZzZApsb2NrZCAgICAgICAgICAgICAgICAg
+IDk0MjA4ICAxIG5mc2QKZ3JhY2UgICAgICAgICAgICAgICAgICAxNjM4NCAgMiBuZnNkLGxvY2tk
+CnN1bnJwYyAgICAgICAgICAgICAgICAzMTUzOTIgIDcgbmZzZCxhdXRoX3JwY2dzcyxsb2NrZCxu
+ZnNfYWNsCmk5MTUgICAgICAgICAgICAgICAgIDEwOTc3MjggIDggCmkyY19hbGdvX2JpdCAgICAg
+ICAgICAgMTYzODQgIDEgaTkxNQpkcm1fa21zX2hlbHBlciAgICAgICAgMTIyODgwICAxIGk5MTUK
+ZHJtICAgICAgICAgICAgICAgICAgIDMyNzY4MCAgOSBpOTE1LGRybV9rbXNfaGVscGVyCmFseCAg
+ICAgICAgICAgICAgICAgICAgMzY4NjQgIDAgCm1kaW8gICAgICAgICAgICAgICAgICAgMTYzODQg
+IDEgYWx4CnZpZGVvICAgICAgICAgICAgICAgICAgMjQ1NzYgIDIgaTkxNSxhc3VzX3dtaQo=
+--089e0117690364fa1a0517ef0040
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--089e0117690364fa1a0517ef0040--
