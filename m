@@ -1,10 +1,12 @@
 From: Nicolae Rosia <nicolae.rosia@gmail.com>
-Subject: Intel HDA & Realtek issues on ASUS G751JM
-Date: Sun, 7 Jun 2015 18:15:54 +0300
-Message-ID: <CAH=tA9HzZisOzmvxzh9oun-uF+SzxYjiDPHVKAoM2hxjq1rvEQ@mail.gmail.com>
+Subject: Fwd: Intel HDA & Realtek issues on ASUS G751JM
+Date: Mon, 8 Jun 2015 16:52:49 +0300
+Message-ID: <CAH=tA9GJ9BphkpBGWfK5L=GRyZwgTr0VDV21StkcJRG75MXsXg@mail.gmail.com>
+References: <CAH=tA9HzZisOzmvxzh9oun-uF+SzxYjiDPHVKAoM2hxjq1rvEQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=089e0117690364fa1a0517ef0040
+Content-Type: multipart/mixed; boundary=089e0158c026182d97051801f553
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <CAH=tA9HzZisOzmvxzh9oun-uF+SzxYjiDPHVKAoM2hxjq1rvEQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -14,11 +16,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=UTF-8
+
+PS. I can't seem to send this email through the mailing lists (??)
 
 Hello,
 
@@ -67,7 +71,7 @@ k4.1.0-0.rc6.git2.1.fc23.x86_64.
 [0] http://www.emag.ro/laptop-gaming-asus-cu-procesor-intelr-coretm-i7-4710hq-2-50ghz-haswelltm-17-3-full-hd-touch-screen-24gb-2tb-256gb-ssd-dvd-rw-nvidia-geforce-gtx-860m-2gb-microsoft-windows-8-1-black-g751jm-t3044h/pd/DKK4WBBBM/
 [1] https://www.asus.com/Notebooks_Ultrabooks/ASUS_ROG_G751JM/specifications/
 
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=US-ASCII; name="lspci.txt"
 Content-Disposition: attachment; filename="lspci.txt"
 Content-Transfer-Encoding: base64
@@ -608,7 +612,7 @@ b3Zlci0gVGltZW91dC0gTm9uRmF0YWxFcnIrCgkJQUVSQ2FwOglGaXJzdCBFcnJvciBQb2ludGVy
 OiAxNCwgR2VuQ2FwKyBDR2VuRW4tIENoa0NhcCsgQ2hrRW4tCglDYXBhYmlsaXRpZXM6IFsxODAg
 djFdIERldmljZSBTZXJpYWwgTnVtYmVyIGZmLWNlLWMzLWQ0LTA4LTYyLTY2LWZmCglLZXJuZWwg
 ZHJpdmVyIGluIHVzZTogYWx4CglLZXJuZWwgbW9kdWxlczogYWx4Cgo=
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=US-ASCII; name="pacmd_list-cards.txt"
 Content-Disposition: attachment; filename="pacmd_list-cards.txt"
 Content-Transfer-Encoding: base64
@@ -700,7 +704,7 @@ b3BlcnRpZXM6CgkJCQlkZXZpY2UuaWNvbl9uYW1lID0gImF1ZGlvLXNwZWFrZXJzIgoJCWllYzk1
 OC1zdGVyZW8tb3V0cHV0OiBEaWdpdGFsIE91dHB1dCAoUy9QRElGKSAocHJpb3JpdHkgMCwgbGF0
 ZW5jeSBvZmZzZXQgMCB1c2VjLCBhdmFpbGFibGU6IHVua25vd24pCgkJCXByb3BlcnRpZXM6CgkJ
 CQo=
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=US-ASCII; name="pacmd_list-sinks.txt"
 Content-Disposition: attachment; filename="pacmd_list-sinks.txt"
 Content-Transfer-Encoding: base64
@@ -786,7 +790,7 @@ IHllcykKCQkJcHJvcGVydGllczoKCQkJCQoJCWFuYWxvZy1vdXRwdXQtc3BlYWtlcjogU3BlYWtl
 cnMgKHByaW9yaXR5IDEwMDAwLCBsYXRlbmN5IG9mZnNldCAwIHVzZWMsIGF2YWlsYWJsZTogbm8p
 CgkJCXByb3BlcnRpZXM6CgkJCQlkZXZpY2UuaWNvbl9uYW1lID0gImF1ZGlvLXNwZWFrZXJzIgoJ
 YWN0aXZlIHBvcnQ6IDxhbmFsb2ctb3V0cHV0LWxpbmVvdXQ+Cg==
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=US-ASCII; name="dmesg.txt"
 Content-Disposition: attachment; filename="dmesg.txt"
 Content-Transfer-Encoding: base64
@@ -2159,7 +2163,7 @@ YXRvcls5NjQ3XTogT3ZlcndyaXRpbmcgZXhpc3Rpbmcgc3ltbGluayAvcnVuL3N5c3RlbWQvZ2Vu
 ZXJhdG9yLmxhdGUvbmV0d29yay5zZXJ2aWNlIHdpdGggcmVhbCBzZXJ2aWNlClsxNzc5OS4wODY2
 NzhdIHBlcmYgaW50ZXJydXB0IHRvb2sgdG9vIGxvbmcgKDI1NTYgPiAyNTAwKSwgbG93ZXJpbmcg
 a2VybmVsLnBlcmZfZXZlbnRfbWF4X3NhbXBsZV9yYXRlIHRvIDUwMDAwCgo=
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset=US-ASCII; name="lsmod.txt"
 Content-Disposition: attachment; filename="lsmod.txt"
 Content-Transfer-Encoding: base64
@@ -2249,11 +2253,11 @@ ICAgICAgMTYzODQgIDEgaTkxNQpkcm1fa21zX2hlbHBlciAgICAgICAgMTIyODgwICAxIGk5MTUK
 ZHJtICAgICAgICAgICAgICAgICAgIDMyNzY4MCAgOSBpOTE1LGRybV9rbXNfaGVscGVyCmFseCAg
 ICAgICAgICAgICAgICAgICAgMzY4NjQgIDAgCm1kaW8gICAgICAgICAgICAgICAgICAgMTYzODQg
 IDEgYWx4CnZpZGVvICAgICAgICAgICAgICAgICAgMjQ1NzYgIDIgaTkxNSxhc3VzX3dtaQo=
---089e0117690364fa1a0517ef0040
+--089e0158c026182d97051801f553
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---089e0117690364fa1a0517ef0040--
+--089e0158c026182d97051801f553--
