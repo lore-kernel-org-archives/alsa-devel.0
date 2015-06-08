@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/11] ALSA: bebob: preparation for replacing
-	string literals by normalized representation for
-	model-dependent structures
-Date: Mon,  8 Jun 2015 23:31:00 +0900
-Message-ID: <1433773868-17505-4-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/11] ALSA: bebob: use normalized
+	representation for the type of clock source
+Date: Mon,  8 Jun 2015 23:31:01 +0900
+Message-ID: <1433773868-17505-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id DEB3826044B
+ by alsa0.perex.cz (Postfix) with ESMTP id DECFB260459
  for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 16:31:15 +0200 (CEST)
 In-Reply-To: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,241 +25,212 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Previous commit adds a enumerator as a normalized representation of
-clock source, while model-dependent structures still use string literals
-for this purpose.
-
-This commit is a preparation for replacement.
+This commit changes function prototype and its processing. As a result,
+function caller can execute additional processing.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_focusrite.c | 27 +++++++++++++++++++++++----
- sound/firewire/bebob/bebob_maudio.c    | 13 ++++++++++---
- sound/firewire/bebob/bebob_terratec.c  | 26 +++++++++++++++++++++++---
- sound/firewire/bebob/bebob_yamaha.c    | 18 ++++++++++++++++--
- 4 files changed, 72 insertions(+), 12 deletions(-)
+ sound/firewire/bebob/bebob.h        |  4 ++--
+ sound/firewire/bebob/bebob_pcm.c    | 11 ++++++++---
+ sound/firewire/bebob/bebob_proc.c   | 22 ++++++++++++----------
+ sound/firewire/bebob/bebob_stream.c | 27 +++++++++++----------------
+ 4 files changed, 33 insertions(+), 31 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
-index fc67c1b..45c8f76 100644
---- a/sound/firewire/bebob/bebob_focusrite.c
-+++ b/sound/firewire/bebob/bebob_focusrite.c
-@@ -106,9 +106,21 @@ saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
- static const char *const saffirepro_10_clk_src_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
- };
-+static enum snd_bebob_clock_type saffirepro_10_clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-+};
- static const char *const saffirepro_26_clk_src_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "ADAT1", "ADAT2", "Word Clock"
- };
-+static enum snd_bebob_clock_type saffirepro_26_clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* ADAT1 */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* ADAT2 */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-+};
- /* Value maps between registers and labels for SaffirePro 10/26. */
- static const signed char saffirepro_clk_maps[][SAFFIREPRO_CLOCK_SOURCE_COUNT] = {
- 	/* SaffirePro 10 */
-@@ -178,7 +190,7 @@ saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index b69d0a3..f9f2180 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -211,8 +211,8 @@ int avc_bridgeco_get_plug_strm_fmt(struct fw_unit *unit,
+ /* for AMDTP streaming */
+ int snd_bebob_stream_get_rate(struct snd_bebob *bebob, unsigned int *rate);
+ int snd_bebob_stream_set_rate(struct snd_bebob *bebob, unsigned int rate);
+-int snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob,
+-					  bool *internal);
++int snd_bebob_stream_get_clock_src(struct snd_bebob *bebob,
++				   enum snd_bebob_clock_type *src);
+ int snd_bebob_stream_discover(struct snd_bebob *bebob);
+ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob);
+ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate);
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 4a55561..e3f65a0 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -157,7 +157,7 @@ pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_bebob *bebob = substream->private_data;
+ 	struct snd_bebob_rate_spec *spec = bebob->spec->rate;
+ 	unsigned int sampling_rate;
+-	bool internal;
++	enum snd_bebob_clock_type src;
+ 	int err;
+ 
+ 	err = snd_bebob_stream_lock_try(bebob);
+@@ -168,15 +168,20 @@ pcm_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto err_locked;
+ 
+-	err = snd_bebob_stream_check_internal_clock(bebob, &internal);
++	err = snd_bebob_stream_get_clock_src(bebob, &src);
+ 	if (err < 0)
+ 		goto err_locked;
++	/* SYT-Match is not supported. */
++	if (src == SND_BEBOB_CLOCK_TYPE_SYT) {
++		err = -EBUSY;
++		goto err_locked;
++	}
+ 
+ 	/*
+ 	 * When source of clock is internal or any PCM stream are running,
+ 	 * the available sampling rate is limited at current sampling rate.
+ 	 */
+-	if (!internal ||
++	if (src == SND_BEBOB_CLOCK_TYPE_EXTERNAL ||
+ 	    amdtp_stream_pcm_running(&bebob->tx_stream) ||
+ 	    amdtp_stream_pcm_running(&bebob->rx_stream)) {
+ 		err = spec->get(bebob, &sampling_rate);
+diff --git a/sound/firewire/bebob/bebob_proc.c b/sound/firewire/bebob/bebob_proc.c
+index 335da64..301cc6a 100644
+--- a/sound/firewire/bebob/bebob_proc.c
++++ b/sound/firewire/bebob/bebob_proc.c
+@@ -132,25 +132,27 @@ static void
+ proc_read_clock(struct snd_info_entry *entry,
+ 		struct snd_info_buffer *buffer)
+ {
++	static const char *const clk_labels[] = {
++		"Internal",
++		"External",
++		"SYT-Match",
++	};
+ 	struct snd_bebob *bebob = entry->private_data;
+ 	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
+ 	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+-	unsigned int rate, id;
+-	bool internal;
++	enum snd_bebob_clock_type src;
++	unsigned int rate;
+ 
+ 	if (rate_spec->get(bebob, &rate) >= 0)
+ 		snd_iprintf(buffer, "Sampling rate: %d\n", rate);
+ 
+-	if (clk_spec) {
+-		if (clk_spec->get(bebob, &id) >= 0)
++	if (snd_bebob_stream_get_clock_src(bebob, &src) >= 0) {
++		if (clk_spec)
+ 			snd_iprintf(buffer, "Clock Source: %s\n",
+-				    clk_spec->labels[id]);
+-	} else {
+-		if (snd_bebob_stream_check_internal_clock(bebob,
+-							  &internal) >= 0)
++				    clk_labels[src]);
++		else
+ 			snd_iprintf(buffer, "Clock Source: %s (MSU-dest: %d)\n",
+-				    (internal) ? "Internal" : "External",
+-				    bebob->sync_input_plug);
++				    clk_labels[src], bebob->sync_input_plug);
+ 	}
+ }
+ 
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 2ccef4ce..c8af8ff 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -116,8 +116,8 @@ end:
+ 	return err;
+ }
+ 
+-int
+-snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
++int snd_bebob_stream_get_clock_src(struct snd_bebob *bebob,
++				   enum snd_bebob_clock_type *src)
+ {
+ 	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	u8 addr[AVC_BRIDGECO_ADDR_BYTES], input[7];
+@@ -125,8 +125,6 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 	enum avc_bridgeco_plug_type type;
+ 	int err = 0;
+ 
+-	*internal = false;
+-
+ 	/* 1.The device has its own operation to switch source of clock */
+ 	if (clk_spec) {
+ 		err = clk_spec->get(bebob, &id);
+@@ -144,10 +142,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 			goto end;
+ 		}
+ 
+-		if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
+-			    strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
+-			*internal = true;
+-
++		*src = clk_spec->types[id];
  		goto end;
+ 	}
  
- 	/* depending on hardware, use a different mapping */
--	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels)
-+	if (bebob->spec->clock->types == saffirepro_10_clk_src_types)
- 		map = saffirepro_clk_maps[0];
- 	else
- 		map = saffirepro_clk_maps[1];
-@@ -198,6 +210,10 @@ struct snd_bebob_spec saffire_le_spec;
- static const char *const saffire_both_clk_src_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF"
- };
-+static enum snd_bebob_clock_type saffire_both_clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,
-+};
- static int
- saffire_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- {
-@@ -259,8 +275,9 @@ static struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
- };
- /* Saffire Pro 26 I/O  */
- static struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
--	.num	= ARRAY_SIZE(saffirepro_26_clk_src_labels),
-+	.num	= ARRAY_SIZE(saffirepro_26_clk_src_types),
- 	.labels	= saffirepro_26_clk_src_labels,
-+	.types	= saffirepro_26_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
- struct snd_bebob_spec saffirepro_26_spec = {
-@@ -270,8 +287,9 @@ struct snd_bebob_spec saffirepro_26_spec = {
- };
- /* Saffire Pro 10 I/O */
- static struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
--	.num	= ARRAY_SIZE(saffirepro_10_clk_src_labels),
-+	.num	= ARRAY_SIZE(saffirepro_10_clk_src_types),
- 	.labels	= saffirepro_10_clk_src_labels,
-+	.types	= saffirepro_10_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
- struct snd_bebob_spec saffirepro_10_spec = {
-@@ -285,8 +303,9 @@ static struct snd_bebob_rate_spec saffire_both_rate_spec = {
- 	.set	= &snd_bebob_stream_set_rate,
- };
- static struct snd_bebob_clock_spec saffire_both_clk_spec = {
--	.num	= ARRAY_SIZE(saffire_both_clk_src_labels),
-+	.num	= ARRAY_SIZE(saffire_both_clk_src_types),
- 	.labels	= saffire_both_clk_src_labels,
-+	.types	= saffire_both_clk_src_types,
- 	.get	= &saffire_both_clk_src_get,
- };
- /* Saffire LE */
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index 9ee25a6..7a43afc 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -343,6 +343,12 @@ end:
- static const char *const special_clk_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL " with Digital Mute", "Digital",
- 	"Word Clock", SND_BEBOB_CLOCK_INTERNAL};
-+static enum snd_bebob_clock_type special_clk_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,	/* With digital mute */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* SPDIF/ADAT */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+};
- static int special_clk_get(struct snd_bebob *bebob, unsigned int *id)
- {
- 	struct special_params *params = bebob->maudio_special_quirk;
-@@ -352,7 +358,7 @@ static int special_clk_get(struct snd_bebob *bebob, unsigned int *id)
- static int special_clk_ctl_info(struct snd_kcontrol *kctl,
- 				struct snd_ctl_elem_info *einf)
- {
--	return snd_ctl_enum_info(einf, 1, ARRAY_SIZE(special_clk_labels),
-+	return snd_ctl_enum_info(einf, 1, ARRAY_SIZE(special_clk_types),
- 				 special_clk_labels);
- }
- static int special_clk_ctl_get(struct snd_kcontrol *kctl,
-@@ -371,7 +377,7 @@ static int special_clk_ctl_put(struct snd_kcontrol *kctl,
- 	int err, id;
+@@ -156,7 +151,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 	 *   to use internal clock always
+ 	 */
+ 	if (bebob->sync_input_plug < 0) {
+-		*internal = true;
++		*src = SND_BEBOB_CLOCK_TYPE_INTERNAL;
+ 		goto end;
+ 	}
  
- 	id = uval->value.enumerated.item[0];
--	if (id >= ARRAY_SIZE(special_clk_labels))
-+	if (id >= ARRAY_SIZE(special_clk_types))
- 		return -EINVAL;
+@@ -179,7 +174,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 	 * Here check the first field. This field is used for direction.
+ 	 */
+ 	if (input[0] == 0xff) {
+-		*internal = true;
++		*src = SND_BEBOB_CLOCK_TYPE_INTERNAL;
+ 		goto end;
+ 	}
  
- 	mutex_lock(&bebob->mutex);
-@@ -708,8 +714,9 @@ static struct snd_bebob_rate_spec special_rate_spec = {
- 	.set	= &special_set_rate,
- };
- static struct snd_bebob_clock_spec special_clk_spec = {
--	.num	= ARRAY_SIZE(special_clk_labels),
-+	.num	= ARRAY_SIZE(special_clk_types),
- 	.labels	= special_clk_labels,
-+	.types	= special_clk_types,
- 	.get	= &special_clk_get,
- };
- static struct snd_bebob_meter_spec special_meter_spec = {
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-index ad63500..3b64d8d 100644
---- a/sound/firewire/bebob/bebob_terratec.c
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -11,6 +11,11 @@
- static const char *const phase88_rack_clk_src_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
- };
-+static enum snd_bebob_clock_type phase88_rack_clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-+};
- static int
- phase88_rack_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- {
-@@ -37,10 +42,23 @@ end:
- static const char *const phase24_series_clk_src_labels[] = {
- 	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
- };
-+static enum snd_bebob_clock_type phase24_series_clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-+};
- static int
- phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- {
--	return avc_audio_get_selector(bebob->unit, 0, 4, id);
-+	int err;
-+
-+	err = avc_audio_get_selector(bebob->unit, 0, 4, id);
-+	if (err < 0)
-+		return err;
-+
-+	if (*id >= ARRAY_SIZE(phase24_series_clk_src_types))
-+		return -EIO;
-+
-+	return 0;
- }
- 
- static struct snd_bebob_rate_spec phase_series_rate_spec = {
-@@ -50,8 +68,9 @@ static struct snd_bebob_rate_spec phase_series_rate_spec = {
- 
- /* PHASE 88 Rack FW */
- static struct snd_bebob_clock_spec phase88_rack_clk = {
--	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
-+	.num	= ARRAY_SIZE(phase88_rack_clk_src_types),
- 	.labels	= phase88_rack_clk_src_labels,
-+	.types	= phase88_rack_clk_src_types,
- 	.get	= &phase88_rack_clk_src_get,
- };
- struct snd_bebob_spec phase88_rack_spec = {
-@@ -62,8 +81,9 @@ struct snd_bebob_spec phase88_rack_spec = {
- 
- /* 'PHASE 24 FW' and 'PHASE X24 FW' */
- static struct snd_bebob_clock_spec phase24_series_clk = {
--	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
-+	.num	= ARRAY_SIZE(phase24_series_clk_src_types),
- 	.labels	= phase24_series_clk_src_labels,
-+	.types	= phase24_series_clk_src_types,
- 	.get	= &phase24_series_clk_src_get,
- };
- struct snd_bebob_spec phase24_series_spec = {
-diff --git a/sound/firewire/bebob/bebob_yamaha.c b/sound/firewire/bebob/bebob_yamaha.c
-index ef1fe38..2f59512 100644
---- a/sound/firewire/bebob/bebob_yamaha.c
-+++ b/sound/firewire/bebob/bebob_yamaha.c
-@@ -29,13 +29,27 @@
-  */
- 
- static const char *const clk_src_labels[] = {SND_BEBOB_CLOCK_INTERNAL, "SPDIF"};
-+static enum snd_bebob_clock_type clk_src_types[] = {
-+	SND_BEBOB_CLOCK_TYPE_INTERNAL,
-+	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-+};
- static int
- clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- {
--	return avc_audio_get_selector(bebob->unit, 0, 4, id);
-+	int err;
-+
-+	err = avc_audio_get_selector(bebob->unit, 0, 4, id);
-+	if (err < 0)
-+		return err;
-+
-+	if (*id >= ARRAY_SIZE(clk_src_types))
-+		return -EIO;
-+
-+	return 0;
- }
- static struct snd_bebob_clock_spec clock_spec = {
--	.num	= ARRAY_SIZE(clk_src_labels),
-+	.num	= ARRAY_SIZE(clk_src_types),
-+	.types	= clk_src_types,
- 	.labels	= clk_src_labels,
- 	.get	= &clk_src_get,
- };
+@@ -192,7 +187,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 		 */
+ 		if (input[1] == AVC_BRIDGECO_PLUG_MODE_SUBUNIT &&
+ 		    input[2] == 0x0c) {
+-			*internal = true;
++			*src = SND_BEBOB_CLOCK_TYPE_INTERNAL;
+ 			goto end;
+ 		}
+ 	/* The source from any input units is for several purposes. */
+@@ -206,7 +201,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 				 * short, this driver is the master of
+ 				 * synchronization.
+ 				 */
+-				err = -EIO;
++				*src = SND_BEBOB_CLOCK_TYPE_SYT;
+ 				goto end;
+ 			} else {
+ 				/*
+@@ -214,7 +209,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 				 * means that the synchronization stream is not
+ 				 * the Audio/MIDI compound stream.
+ 				 */
+-				*internal = false;
++				*src = SND_BEBOB_CLOCK_TYPE_EXTERNAL;
+ 				goto end;
+ 			}
+ 		} else if (input[2] == AVC_BRIDGECO_PLUG_UNIT_EXT) {
+@@ -233,18 +228,18 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 				 * SPDIF/ADAT or sometimes (not always) word
+ 				 * clock.
+ 				 */
+-				*internal = false;
++				*src = SND_BEBOB_CLOCK_TYPE_EXTERNAL;
+ 				goto end;
+ 			} else if (type == AVC_BRIDGECO_PLUG_TYPE_SYNC) {
+ 				/* Often word clock. */
+-				*internal = false;
++				*src = SND_BEBOB_CLOCK_TYPE_EXTERNAL;
+ 				goto end;
+ 			} else if (type == AVC_BRIDGECO_PLUG_TYPE_ADDITION) {
+ 				/*
+ 				 * Not standard.
+ 				 * Mostly, additional internal clock.
+ 				 */
+-				*internal = true;
++				*src = SND_BEBOB_CLOCK_TYPE_INTERNAL;
+ 				goto end;
+ 			}
+ 		}
 -- 
 2.1.4
