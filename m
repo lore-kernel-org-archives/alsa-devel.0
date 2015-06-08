@@ -1,19 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 1/3] ALSA: hdac_ext: add extended HDA bus
-Date: Mon, 8 Jun 2015 20:54:23 +0530
-Message-ID: <20150608152423.GM28601@localhost>
+Subject: Re: [PATCH v6 2/3] ALSA: hdac_ext: add hdac extended
+ controller
+Date: Mon, 8 Jun 2015 21:02:59 +0530
+Message-ID: <20150608153259.GO28601@localhost>
 References: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
- <1433411602-5444-2-git-send-email-vinod.koul@intel.com>
- <s5hfv62k1wv.wl-tiwai@suse.de> <20150608101008.GD28601@localhost>
+ <1433411602-5444-3-git-send-email-vinod.koul@intel.com>
+ <s5heglmk1gv.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 50E52260421
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 17:23:02 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D27826040E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 17:31:38 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150608101008.GD28601@localhost>
+In-Reply-To: <s5heglmk1gv.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,46 +28,109 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2015 at 03:40:08PM +0530, Vinod Koul wrote:
-> On Mon, Jun 08, 2015 at 11:03:12AM +0200, Takashi Iwai wrote:
-> > One thing forgot...
-> > 
-> > At Thu,  4 Jun 2015 15:23:20 +0530,
-> > Vinod Koul wrote:
-> > > 
-> > > +/**
-> > > + * snd_hdac_ext_device_init - initialize the HDA extended codec base device
-> > > + * @sbus: hdac extended bus to attach to
-> > > + * @addr: codec address
-> > > + *
-> > > + * Returns zero for success or a negative error code.
-> > > + */
-> > > +int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr)
-> > > +{
-> > > +	struct hdac_device *hdev = NULL;
-> > > +	struct hdac_bus *bus = hdac_bus(sbus);
-> > > +	char name[15];
-> > > +	int ret;
-> > > +
-> > > +	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-> > > +	if (!hdev)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	snprintf(name, sizeof(name), "hda-codec#%03x", addr);
-> > > +
-> > > +	ret  = snd_hdac_device_init(hdev, bus, name, addr);
-> > 
-> > The device name must be unique to the whole system.  Using only the
-> > codec address as an id would conflict if there are multiple cards.
-> > The legacy HDA device consists of "hdaudioC%dD%d" indicating both the
-> > card number and the codec address, for example.
-> Sorry my bad, you did comment on it before as well. I will fix it now, by
-> adding card name here.
-Okay and we have an issue here :(, We actually dont know the card number
-here and card number will be created after this enumeration is complete
-and we register the DAI with ASoC and then ASoC would create card later.
+On Mon, Jun 08, 2015 at 11:12:48AM +0200, Takashi Iwai wrote:
+> > +struct hdac_ext_link {
+> > +	struct hdac_bus *bus;
+> > +	int index;
+> > +	void __iomem *ml_addr; /* link output stream reg pointer */
+> > +	u32 lcaps;   /* link capablities */
+> > +	u16 lsdiid;  /* link sdi identifier */
+> > +	char codec[HDA_MAX_CODECS][32]; /* codecs connectes to the link */
+> 
+> Do we need to keep the codec name string?  Isn't it just codec address
+> we'd like to check the match...?  If so, we may use bitmasks instead,
+> too.
+This is not for matching stuff (this is link structure and not codec)
+So we keep name of codec found on this link. When ASoC BE triggers we use
+codec name to find the link and use
 
-So how do we solve this?
+> > +/**
+> > + * snd_hdac_ext_bus_parse_capabilities - parse capablity structure
+> > + * @sbus: the pointer to extended bus object
+> > + *
+> > + * Returns 0 if successful, or a negative error code.
+> > + */
+> > +int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus)
+> > +{
+> > +	unsigned int cur_cap;
+> > +	unsigned int offset;
+> > +	struct hdac_bus *bus = &sbus->bus;
+> > +
+> > +	offset = snd_hdac_chip_readl(bus, LLCH);
+> > +
+> > +	if (offset < 0)
+> > +		return -EIO;
+> > +
+> > +	sbus->ppcap = false;
+> > +	sbus->mlcap = false;
+> > +	sbus->spbcap = false;
+> > +	sbus->gtscap = false;
+> > +
+> > +	/* Lets walk the linked capabilities list */
+> > +	do {
+> > +		cur_cap = _snd_hdac_chip_read(l, bus, offset);
+> > +
+> > +		if (cur_cap < 0)
+> > +			return -EIO;
+> > +
+> > +		dev_dbg(bus->dev, "Capability version: 0x%x\n",
+> > +				((cur_cap & AZX_CAP_HDR_VER_MASK) >> AZX_CAP_HDR_VER_OFF));
+> > +
+> > +		dev_dbg(bus->dev, "HDA capability ID: 0x%x\n",
+> > +				(cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF);
+> > +
+> > +		switch ((cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF) {
+> > +		case AZX_ML_CAP_ID:
+> > +			dev_dbg(bus->dev, "Found ML capability\n");
+> > +			sbus->mlcap = true;
+> > +			sbus->mlcap_addr = bus->remap_addr + offset;
+> 
+> Can be flags (mlcap, gtscap, etc) removed by just NULL-checking the
+> corresponding address?
+Yes, removed these
+
+> > +			break;
+> > +
+> > +		case AZX_GTS_CAP_ID:
+> > +			dev_dbg(bus->dev, "Found GTS capability offset=%x\n", offset);
+> > +			sbus->gtscap = true;
+> > +			sbus->gtscap_addr = bus->remap_addr + offset;
+> > +			break;
+> > +
+> > +		case AZX_PP_CAP_ID:
+> > +			/* PP capability found, the Audio DSP is present */
+> > +			dev_dbg(bus->dev, "Found PP capability offset=%x\n", offset);
+> > +			sbus->ppcap = true;
+> > +			sbus->ppcap_addr = bus->remap_addr + offset;
+> > +			break;
+> > +
+> > +		case AZX_SPB_CAP_ID:
+> > +			/* SPIB capability found, handler function */
+> > +			dev_dbg(bus->dev, "Found SPB capability\n");
+> > +			sbus->spbcap = true;
+> > +			sbus->spbcap_addr = bus->remap_addr + offset;
+> > +			break;
+> > +
+> > +		default:
+> > +			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
+> > +			break;
+> > +		}
+> > +
+> > +		/* read the offset of next capabiity */
+> > +		offset = cur_cap & AZX_CAP_HDR_NXT_PTR_MASK;
+> > +	} while (offset);
+> 
+> Better to have a loop counter for avoiding the endless loop.
+> You should never trust the hardware.
+So we have 4 caps, so am going to put 10 as count for now and bail out on
+10th one...
+
+> 
+> > +MODULE_DESCRIPTION("HDA extended core");
+> > +MODULE_LICENSE("GPL v2");
+> 
+> These should have been added in the first patch.
+Yes will move
 
 -- 
 ~Vinod
