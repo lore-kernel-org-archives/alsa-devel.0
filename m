@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/11] ALSA: bebob: add support for Behringer
-	FCA 610/1616
-Date: Mon,  8 Jun 2015 23:31:08 +0900
-Message-ID: <1433773868-17505-12-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/11] ALSA: bebob: add 'version' member for
+	BeBoB protocol version
+Date: Mon,  8 Jun 2015 23:31:04 +0900
+Message-ID: <1433773868-17505-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id B20832604E4
+ by alsa0.perex.cz (Postfix) with ESMTP id 59DC52604D1
  for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 16:31:17 +0200 (CEST)
 In-Reply-To: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,66 +25,66 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-They're based on DM1500 (ArchWave produced), and BeBoB version 3 is
-installed.
+BeBoB installed devices have BeBoB register area. This are stores
+basic information about its firmware. A register has its protocol
+version.
 
-$ cat /proc/asound/FCA610/firewire/firmware
-Manufacturer:	bridgeCo
-Protocol Ver:	3
-Build Ver:	0
-GUID:		0x001564000002AD73
-Model ID:		0x03
-Model Rev:		0
-Firmware Date:	20121102
-Firmware Time:	153431
-Firmware ID:	0x610
-Firmware Ver:	8348
-Base Addr:		0x400C0080
-Max Size:		1422624
-Loader Date:	20121015
-Loader Time:	104710
+This commit adds 'version' member and store the device's protocol
+version to handle v3 quirks in following commits.
 
+Tested-by: Kim Tore Jensen <kim@incendio.no>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig       | 1 +
- sound/firewire/bebob/bebob.c | 6 ++++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/firewire/bebob/bebob.c | 8 ++++++++
+ sound/firewire/bebob/bebob.h | 3 +++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 2a0a9aa..8850b7d 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -95,6 +95,7 @@ config SND_BEBOB
- 	  * Tascam IF-FW/DM
- 	  * Behringer XENIX UFX 1204/1604
- 	  * Behringer Digital Mixer X32 series (X-UF Card)
-+	  * Behringer FCA610/1616
- 	  * Apogee Rosetta 200/400 (X-FireWire card)
- 	  * Apogee DA/AD/DD-16X (X-FireWire card)
- 	  * Apogee Ensemble
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 920571b..27a04ac 100644
+index e71bd35..920571b 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -373,6 +373,10 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x00001604, &spec_normal),
- 	/* Behringer, Digital Mixer X32 series (X-UF Card) */
- 	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x00000006, &spec_normal),
-+	/*  Behringer, F-Control Audio 1616 */
-+	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x001616, &spec_normal),
-+	/*  Behringer, F-Control Audio 610 */
-+	SND_BEBOB_DEV_ENTRY(VEN_BEHRINGER, 0x000610, &spec_normal),
- 	/* Apogee Electronics, Rosetta 200/400 (X-FireWire card) */
- 	/* Apogee Electronics, DA/AD/DD-16X (X-FireWire card) */
- 	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048, &spec_normal),
-@@ -447,8 +451,6 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* IDs are unknown but able to be supported */
- 	/*  Apogee, Mini-ME Firewire */
- 	/*  Apogee, Mini-DAC Firewire */
--	/*  Behringer, F-Control Audio 1616 */
--	/*  Behringer, F-Control Audio 610 */
- 	/*  Cakawalk, Sonar Power Studio 66 */
- 	/*  CME, UF400e */
- 	/*  ESI, Quotafire XL */
+@@ -33,6 +33,7 @@ static DEFINE_MUTEX(devices_mutex);
+ static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
+ 
+ /* Offsets from information register. */
++#define INFO_OFFSET_BEBOB_VERSION	0x08
+ #define INFO_OFFSET_GUID		0x10
+ #define INFO_OFFSET_HW_MODEL_ID		0x18
+ #define INFO_OFFSET_HW_MODEL_REVISION	0x1c
+@@ -73,6 +74,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+ 	u32 hw_id;
+ 	u32 data[2] = {0};
+ 	u32 revision;
++	u32 version;
+ 	int err;
+ 
+ 	/* get vendor name from root directory */
+@@ -105,6 +107,12 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+ 	if (err < 0)
+ 		goto end;
+ 
++	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_BEBOB_VERSION,
++				  &version);
++	if (err < 0)
++		goto end;
++	bebob->version = version;
++
+ 	strcpy(bebob->card->driver, "BeBoB");
+ 	strcpy(bebob->card->shortname, model);
+ 	strcpy(bebob->card->mixername, model);
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 76a65cc..6359fb0 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -115,6 +115,9 @@ struct snd_bebob {
+ 	/* for M-Audio special devices */
+ 	void *maudio_special_quirk;
+ 	bool deferred_registration;
++
++	/* For BeBoB version quirk. */
++	unsigned int version;
+ };
+ 
+ static inline int
 -- 
 2.1.4
