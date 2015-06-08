@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 00/23] ASoC: tas2552: Fixes,
-	cleanups and improvements
-Date: Mon, 8 Jun 2015 12:54:32 +0300
-Message-ID: <55756658.8090005@ti.com>
-References: <1433423075-14142-1-git-send-email-peter.ujfalusi@ti.com>
- <20150605175319.GD14071@sirena.org.uk> <557549A1.2020103@ti.com>
- <20150608092448.GI14071@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v6 1/3] ALSA: hdac_ext: add extended HDA bus
+Date: Mon, 8 Jun 2015 15:38:22 +0530
+Message-ID: <20150608100822.GC28601@localhost>
+References: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
+ <1433411602-5444-2-git-send-email-vinod.koul@intel.com>
+ <s5hh9qik21f.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 630BE260418
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 11:54:37 +0200 (CEST)
-In-Reply-To: <20150608092448.GI14071@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93DB3260418
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 12:07:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hh9qik21f.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +23,149 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, dmurphy@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/08/2015 12:24 PM, Mark Brown wrote:
-> On Mon, Jun 08, 2015 at 10:52:01AM +0300, Peter Ujfalusi wrote:
->> On 06/05/2015 08:53 PM, Mark Brown wrote:
-> =
+On Mon, Jun 08, 2015 at 11:00:28AM +0200, Takashi Iwai wrote:
+> At Thu,  4 Jun 2015 15:23:20 +0530,
+> Vinod Koul wrote:
+> > 
+> > The new HDA controllers from Intel support new capabilities like multilink,
+> > pipe processing, SPIB, GTS etc In order to use them we create an extended HDA
+> > bus which embed the hdac bus and contains the fields for extended
+> > configurations
+> > 
+> > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > ---
+> >  include/sound/hdaudio_ext.h  |  93 ++++++++++++++++++++++++++++++++++
+> >  sound/hda/Kconfig            |   4 ++
+> >  sound/hda/Makefile           |   3 ++
+> >  sound/hda/ext/Makefile       |   3 ++
+> >  sound/hda/ext/hdac_ext_bus.c | 115 +++++++++++++++++++++++++++++++++++++++++++
+> >  5 files changed, 218 insertions(+)
+> >  create mode 100644 include/sound/hdaudio_ext.h
+> >  create mode 100644 sound/hda/ext/Makefile
+> >  create mode 100644 sound/hda/ext/hdac_ext_bus.c
+> > 
+> > diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+> > new file mode 100644
+> > index 000000000000..df1f8ae64693
+> > --- /dev/null
+> > +++ b/include/sound/hdaudio_ext.h
+> > @@ -0,0 +1,93 @@
+> > +#ifndef __SOUND_HDAUDIO_EXT_H
+> > +#define __SOUND_HDAUDIO_EXT_H
+> > +
+> > +#include <sound/core.h>
+> > +#include <sound/initval.h>
+> 
+> Do we need this header?
+I dont think so will confirm and update this
 
->>> Applied all, thanks.  Please use subject lines matching the style for
->>> the subsystem.
-> =
+> 
+> > +#include <sound/hda_register.h>
+> > +#include <sound/hdaudio.h>
+> > +
+> > +/**
+> > + * hdac_ext_bus: HDAC extended bus for extended HDA caps
+> > + *
+> > + * @bus: hdac bus
+> > + * @num_streams: streams supported
+> > + * @ppcap: HDA ext post processing caps supported
+> > + * @spbcap: HDA ext Software Position in Buffer cap support
+> > + * @mlcap: HDA ext MultiLink cap support
+> > + * @gtscap: HDA ext Global Time Sync cap support
+> > + * @ppcap_addr: pp capabilities pointer
+> > + * @spbcap_addr: SPIB capabilities pointer
+> > + * @mlcap_addr: MultiLink capabilities pointer
+> > + * @gtscap_addr: gts capabilities pointer
+> > + * @hlink_list: link list of HDA links
+> > + */
+> > +struct hdac_ext_bus {
+> > +	struct hdac_bus bus;
+> > +	int num_streams;
+> > +
+> > +	bool ppcap:1;
+> > +	bool spbcap:1;
+> > +	bool mlcap:1;
+> > +	bool gtscap:1;
+> > +
+> > +	void __iomem *ppcap_addr;
+> > +	void __iomem *spbcap_addr;
+> > +	void __iomem *mlcap_addr;
+> > +	void __iomem *gtscap_addr;
+> > +
+> > +	struct list_head hlink_list;
+> > +};
+> > +
+> > +int snd_hdac_ext_bus_init(struct hdac_ext_bus *sbus, struct device *dev,
+> > +		      const struct hdac_bus_ops *ops,
+> > +		      const struct hdac_io_ops *io_ops);
+> > +
+> > +void snd_hdac_ext_bus_exit(struct hdac_ext_bus *sbus);
+> > +int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr);
+> > +void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
+> > +
+> > +#define hdac_bus(sbus)	(&(sbus)->bus)
+> 
+> This macro name is a bit too ambiguous.  If it were really a generic
+> cast, I wouldn't mind.  But it's specific to this type.
+Yes would ebus_to_hdac_bus() make it better or something else
 
->> I believe 'ASoC: tas2552: bla-bla-bla' should be fine. Or did I missed s=
-omething?
-> =
+> 
+> > +#define bus_to_hdac_ext_bus(_bus) \
+> > +	container_of(_bus, struct hdac_ext_bus, bus)
+> > +
+> > +int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
+> > +void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+> > +void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
+> > +
+> > +/*
+> > + * macros for ppcap register read/write
+> > + */
+> > +#define _snd_hdac_ext_bus_ppcap_write(type, dev, reg, value)		\
+> > +	((dev)->bus.io_ops->reg_write ## type(value, (dev)->ppcap_addr + (reg)))
+> > +#define _snd_hdac_ext_bus_ppcap_read(type, dev, reg)			\
+> > +	((dev)->bus.io_ops->reg_read ## type((dev)->ppcap_addr + (reg)))
+> > +
+> > +/* read/write a register, pass without AZX_REG_ prefix */
+> > +#define snd_hdac_ext_bus_ppcap_writel(dev, reg, value) \
+> > +	_snd_hdac_ext_bus_ppcap_write(l, dev, AZX_REG_ ## reg, value)
+> > +#define snd_hdac_ext_bus_ppcap_writew(dev, reg, value) \
+> > +	_snd_hdac_ext_bus_ppcap_write(w, dev, AZX_REG_ ## reg, value)
+> > +#define snd_hdac_ext_bus_ppcap_writeb(dev, reg, value) \
+> > +	_snd_hdac_ext_bus_ppcap_write(b, dev, AZX_REG_ ## reg, value)
+> > +#define snd_hdac_ext_bus_ppcap_readl(dev, reg) \
+> > +	_snd_hdac_ext_bus_ppcap_read(l, dev, AZX_REG_ ## reg)
+> > +#define snd_hdac_ext_bus_ppcap_readw(dev, reg) \
+> > +	_snd_hdac_ext_bus_ppcap_read(w, dev, AZX_REG_ ## reg)
+> > +#define snd_hdac_ext_bus_ppcap_readb(dev, reg) \
+> > +	_snd_hdac_ext_bus_ppcap_read(b, dev, AZX_REG_ ## reg)
+> > +
+> > +/* update a register, pass without AZX_REG_ prefix */
+> > +#define snd_hdac_ext_bus_ppcap_updatel(dev, reg, mask, val) \
+> > +	snd_hdac_ext_bus_ppcap_writel(dev, reg, \
+> > +			       (snd_hdac_ext_bus_ppcap_readl(dev, reg) & \
+> > +				~(mask)) | (val))
+> > +#define snd_hdac_ext_bus_ppcap_updatew(dev, reg, mask, val) \
+> > +	snd_hdac_ext_bus_ppcap_writew(dev, reg, \
+> > +			       (snd_hdac_ext_bus_ppcap_readw(dev, reg) & \
+> > +				~(mask)) | (val))
+> > +#define snd_hdac_ext_bus_ppcap_updateb(dev, reg, mask, val) \
+> > +	snd_hdac_ext_bus_ppcap_writeb(dev, reg, \
+> > +			       (snd_hdac_ext_bus_ppcap_readb(dev, reg) & \
+> > +				~(mask)) | (val))
+> 
+> It's not necessarily good to wrap all with such macros.
+> For azx_write*(), I kept them as is for reducing the amount of useless
+> code rewrites.  But for new codes, I don't think it's always worth...
+Actually while updating the patch for ext I was wondering about this too.
 
-> That wasn't what you used for your DT patch.
+So we cna remove these and use snd_hdac_chip_writel/w/b here 
 
-true, I forgot to look at the history of the directory. Sorry.
+let me update it here and for other caps
 
--- =
-
-P=E9ter
+-- 
+~Vinod
