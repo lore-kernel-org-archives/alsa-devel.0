@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 00/11] improve support for DM1500/BeBoBv3
-Date: Mon,  8 Jun 2015 23:30:57 +0900
-Message-ID: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/11] ALSA: bebob: improve signal mode
+	detection for clock source
+Date: Mon,  8 Jun 2015 23:30:58 +0900
+Message-ID: <1433773868-17505-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id DE0DA26040E
+ by alsa0.perex.cz (Postfix) with ESMTP id DE240260421
  for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 16:31:15 +0200 (CEST)
+In-Reply-To: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +25,142 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+With BeBoB version 3, current ALSA BeBoB driver detects the type of
+current clock signal source wrongly. This is due to a lack of proper
+implementation to parse the information.
 
-This patchset is to improve support for DM1500 and BeBoBv3; DM1500 is
-an ASIC which ArchWave produced. BeBoB is an interface protocol for
-DM series firmware.
+This commit renews the parser. As a result, this driver detects
+SYT-Match clock signal, thus it can start streams with two modes;
+SYT-Match mode and the others. SYT-Match mode will be supported in future
+commits.
 
-Currently, Some devices are reported not to work with current ALSA
-BeBoB driver.
+There's a restriction about detected internal/external clock source.
+When detecting external clock source, this driver don't manage to
+change sampling rate as userspace applications request. This is due to
+consider abour synchronization to external clock sources as S/PDIF,
+ADAT or word clock.
 
-[FFADO-user]
-Support Behringer UFX1604
-http://sourceforge.net/p/ffado/mailman/message/32846563/
-    
-[alsa-devel]
-snd-bebob and PrismSound Orpheus fails with snd_pcm_hw_params_set_channels
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-April/090967.html
+To judge depending on several information from some devices, I guesss
+that the internal clock of most devices synchronize to IEEE 1394 cycle
+start packet.  In this case, by a usual way, it's detect as 'Sync type
+of output Music Sub-Unit' connected to 'Sync type of PCR output Unit
+(oPCR)' and this driver judges it as internal clock. Therefore, userspace
+applications is allowed to request arbitrary supported sampling rates.
 
-They commonly install BeBoB version 3 firmware. As long as seeing these
-devices, they may have below quirks comparing to version 1 and 2.
-Furthermore, DM1500 seems to have its own quirks.
+On the other hand, several devices based on BeBoB version 3 have
+additional internal clock. In this case, by a usual way, it's detect as
+'Sync/Additional type of External input Unit'. Unfortunately, there's no
+way to distinguish this sync type from the other external clock sources
+like word clock. In this case, this driver handles it as external and
+userspace applications is forced to use current sampling rate.
 
-The first half of this patchset is for improvement of clock detection, the
-rest is for quirks. The latter is tested by Kim Tore Jensen (Thanks!), while
-the first half is not widely tested. 
+I note that when the source of clock is detected as 'Isochronous stream
+type of input PCR[0]', it's under 'SYT-Match' mode. In this mode, the
+synchronization clock is generated according to SYT-series in received
+packets. In this case, this driver generates the series by myself. I
+experienced this mode often make the device silent suddenly during
+playbacking. This means that the mode is easy to lost synchronization.
 
-I hope someone to test it till opening next merge window (but just one week
-rest!). I push these patches into my own repository. It's DKMS available.
-https://github.com/takaswie/snd-firewire-improve/tree/bebob3
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob_stream.c | 78 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 70 insertions(+), 8 deletions(-)
 
-Regards
-
-Takashi Sakamoto (11):
-  ALSA: bebob: improve signal mode detection for clock source
-  ALSA: bebob: apply new enumerator to normalize the type of clock
-    source
-  ALSA: bebob: preparation for replacing string literals by normalized
-    representation for model-dependent structures
-  ALSA: bebob: use normalized representation for the type of clock
-    source
-  ALSA: bebob: obsolete string literal expression for clock source
-  ALSA: bebob: add SYT-Match support
-  ALSA: bebob: add 'version' member for BeBoB protocol version
-  ALSA: bebob: expand timeout for DM1500 quirk
-  ALSA: bebob: loosen up severity of checking continuity for BeBoB v3
-    quirk
-  ALSA: bebob: keep duplex streams always to keep internal multiplexer
-    properly
-  ALSA: bebob: add support for Behringer FCA 610/1616
-
- sound/firewire/Kconfig                 |   1 +
- sound/firewire/bebob/bebob.c           |  14 ++-
- sound/firewire/bebob/bebob.h           |  17 ++--
- sound/firewire/bebob/bebob_focusrite.c |  33 +++++---
- sound/firewire/bebob/bebob_maudio.c    |  23 +++--
- sound/firewire/bebob/bebob_midi.c      |   8 +-
- sound/firewire/bebob/bebob_pcm.c       |  14 +--
- sound/firewire/bebob/bebob_proc.c      |  22 ++---
- sound/firewire/bebob/bebob_stream.c    | 150 ++++++++++++++++++++++++---------
- sound/firewire/bebob/bebob_terratec.c  |  30 +++++--
- sound/firewire/bebob/bebob_yamaha.c    |  20 ++++-
- 11 files changed, 233 insertions(+), 99 deletions(-)
-
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 98e4fc8..2ccef4ce 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -122,6 +122,7 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 	struct snd_bebob_clock_spec *clk_spec = bebob->spec->clock;
+ 	u8 addr[AVC_BRIDGECO_ADDR_BYTES], input[7];
+ 	unsigned int id;
++	enum avc_bridgeco_plug_type type;
+ 	int err = 0;
+ 
+ 	*internal = false;
+@@ -182,14 +183,75 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+ 		goto end;
+ 	}
+ 
+-	/*
+-	 * If source of clock is internal CSR, Music Sub Unit Sync Input is
+-	 * a destination of Music Sub Unit Sync Output.
+-	 */
+-	*internal = ((input[0] == AVC_BRIDGECO_PLUG_DIR_OUT) &&
+-		     (input[1] == AVC_BRIDGECO_PLUG_MODE_SUBUNIT) &&
+-		     (input[2] == 0x0c) &&
+-		     (input[3] == 0x00));
++	/* The source from any output plugs is for one purpose only. */
++	if (input[0] == AVC_BRIDGECO_PLUG_DIR_OUT) {
++		/*
++		 * In BeBoB architecture, the source from music subunit may
++		 * bypass from oPCR[0]. This means that this source gives
++		 * synchronization to IEEE 1394 cycle start packet.
++		 */
++		if (input[1] == AVC_BRIDGECO_PLUG_MODE_SUBUNIT &&
++		    input[2] == 0x0c) {
++			*internal = true;
++			goto end;
++		}
++	/* The source from any input units is for several purposes. */
++	} else if (input[1] == AVC_BRIDGECO_PLUG_MODE_UNIT) {
++		if (input[2] == AVC_BRIDGECO_PLUG_UNIT_ISOC) {
++			if (input[3] == 0x00) {
++				/*
++				 * This source comes from iPCR[0]. This means
++				 * that presentation timestamp calculated by
++				 * SYT series of the received packets. In
++				 * short, this driver is the master of
++				 * synchronization.
++				 */
++				err = -EIO;
++				goto end;
++			} else {
++				/*
++				 * This source comes from iPCR[1-29]. This
++				 * means that the synchronization stream is not
++				 * the Audio/MIDI compound stream.
++				 */
++				*internal = false;
++				goto end;
++			}
++		} else if (input[2] == AVC_BRIDGECO_PLUG_UNIT_EXT) {
++			/* Check type of this plug.  */
++			avc_bridgeco_fill_unit_addr(addr,
++						    AVC_BRIDGECO_PLUG_DIR_IN,
++						    AVC_BRIDGECO_PLUG_UNIT_EXT,
++						    input[3]);
++			err = avc_bridgeco_get_plug_type(bebob->unit, addr,
++							 &type);
++			if (err < 0)
++				goto end;
++
++			if (type == AVC_BRIDGECO_PLUG_TYPE_DIG) {
++				/*
++				 * SPDIF/ADAT or sometimes (not always) word
++				 * clock.
++				 */
++				*internal = false;
++				goto end;
++			} else if (type == AVC_BRIDGECO_PLUG_TYPE_SYNC) {
++				/* Often word clock. */
++				*internal = false;
++				goto end;
++			} else if (type == AVC_BRIDGECO_PLUG_TYPE_ADDITION) {
++				/*
++				 * Not standard.
++				 * Mostly, additional internal clock.
++				 */
++				*internal = true;
++				goto end;
++			}
++		}
++	}
++
++	/* Not supported. */
++	err = -EIO;
+ end:
+ 	return err;
+ }
 -- 
 2.1.4
