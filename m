@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: [PATCH v6 1/3] ALSA: hdac_ext: add extended HDA bus
-Date: Mon, 8 Jun 2015 15:38:22 +0530
-Message-ID: <20150608100822.GC28601@localhost>
+Date: Mon, 8 Jun 2015 15:40:08 +0530
+Message-ID: <20150608101008.GD28601@localhost>
 References: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
  <1433411602-5444-2-git-send-email-vinod.koul@intel.com>
- <s5hh9qik21f.wl-tiwai@suse.de>
+ <s5hfv62k1wv.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 93DB3260418
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 12:07:02 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FC23260418
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 12:08:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hh9qik21f.wl-tiwai@suse.de>
+In-Reply-To: <s5hfv62k1wv.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,145 +27,40 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2015 at 11:00:28AM +0200, Takashi Iwai wrote:
+On Mon, Jun 08, 2015 at 11:03:12AM +0200, Takashi Iwai wrote:
+> One thing forgot...
+> 
 > At Thu,  4 Jun 2015 15:23:20 +0530,
 > Vinod Koul wrote:
 > > 
-> > The new HDA controllers from Intel support new capabilities like multilink,
-> > pipe processing, SPIB, GTS etc In order to use them we create an extended HDA
-> > bus which embed the hdac bus and contains the fields for extended
-> > configurations
-> > 
-> > Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  include/sound/hdaudio_ext.h  |  93 ++++++++++++++++++++++++++++++++++
-> >  sound/hda/Kconfig            |   4 ++
-> >  sound/hda/Makefile           |   3 ++
-> >  sound/hda/ext/Makefile       |   3 ++
-> >  sound/hda/ext/hdac_ext_bus.c | 115 +++++++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 218 insertions(+)
-> >  create mode 100644 include/sound/hdaudio_ext.h
-> >  create mode 100644 sound/hda/ext/Makefile
-> >  create mode 100644 sound/hda/ext/hdac_ext_bus.c
-> > 
-> > diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-> > new file mode 100644
-> > index 000000000000..df1f8ae64693
-> > --- /dev/null
-> > +++ b/include/sound/hdaudio_ext.h
-> > @@ -0,0 +1,93 @@
-> > +#ifndef __SOUND_HDAUDIO_EXT_H
-> > +#define __SOUND_HDAUDIO_EXT_H
-> > +
-> > +#include <sound/core.h>
-> > +#include <sound/initval.h>
-> 
-> Do we need this header?
-I dont think so will confirm and update this
-
-> 
-> > +#include <sound/hda_register.h>
-> > +#include <sound/hdaudio.h>
-> > +
 > > +/**
-> > + * hdac_ext_bus: HDAC extended bus for extended HDA caps
+> > + * snd_hdac_ext_device_init - initialize the HDA extended codec base device
+> > + * @sbus: hdac extended bus to attach to
+> > + * @addr: codec address
 > > + *
-> > + * @bus: hdac bus
-> > + * @num_streams: streams supported
-> > + * @ppcap: HDA ext post processing caps supported
-> > + * @spbcap: HDA ext Software Position in Buffer cap support
-> > + * @mlcap: HDA ext MultiLink cap support
-> > + * @gtscap: HDA ext Global Time Sync cap support
-> > + * @ppcap_addr: pp capabilities pointer
-> > + * @spbcap_addr: SPIB capabilities pointer
-> > + * @mlcap_addr: MultiLink capabilities pointer
-> > + * @gtscap_addr: gts capabilities pointer
-> > + * @hlink_list: link list of HDA links
+> > + * Returns zero for success or a negative error code.
 > > + */
-> > +struct hdac_ext_bus {
-> > +	struct hdac_bus bus;
-> > +	int num_streams;
+> > +int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr)
+> > +{
+> > +	struct hdac_device *hdev = NULL;
+> > +	struct hdac_bus *bus = hdac_bus(sbus);
+> > +	char name[15];
+> > +	int ret;
 > > +
-> > +	bool ppcap:1;
-> > +	bool spbcap:1;
-> > +	bool mlcap:1;
-> > +	bool gtscap:1;
+> > +	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
+> > +	if (!hdev)
+> > +		return -ENOMEM;
 > > +
-> > +	void __iomem *ppcap_addr;
-> > +	void __iomem *spbcap_addr;
-> > +	void __iomem *mlcap_addr;
-> > +	void __iomem *gtscap_addr;
+> > +	snprintf(name, sizeof(name), "hda-codec#%03x", addr);
 > > +
-> > +	struct list_head hlink_list;
-> > +};
-> > +
-> > +int snd_hdac_ext_bus_init(struct hdac_ext_bus *sbus, struct device *dev,
-> > +		      const struct hdac_bus_ops *ops,
-> > +		      const struct hdac_io_ops *io_ops);
-> > +
-> > +void snd_hdac_ext_bus_exit(struct hdac_ext_bus *sbus);
-> > +int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr);
-> > +void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
-> > +
-> > +#define hdac_bus(sbus)	(&(sbus)->bus)
+> > +	ret  = snd_hdac_device_init(hdev, bus, name, addr);
 > 
-> This macro name is a bit too ambiguous.  If it were really a generic
-> cast, I wouldn't mind.  But it's specific to this type.
-Yes would ebus_to_hdac_bus() make it better or something else
-
-> 
-> > +#define bus_to_hdac_ext_bus(_bus) \
-> > +	container_of(_bus, struct hdac_ext_bus, bus)
-> > +
-> > +int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
-> > +void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
-> > +void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
-> > +
-> > +/*
-> > + * macros for ppcap register read/write
-> > + */
-> > +#define _snd_hdac_ext_bus_ppcap_write(type, dev, reg, value)		\
-> > +	((dev)->bus.io_ops->reg_write ## type(value, (dev)->ppcap_addr + (reg)))
-> > +#define _snd_hdac_ext_bus_ppcap_read(type, dev, reg)			\
-> > +	((dev)->bus.io_ops->reg_read ## type((dev)->ppcap_addr + (reg)))
-> > +
-> > +/* read/write a register, pass without AZX_REG_ prefix */
-> > +#define snd_hdac_ext_bus_ppcap_writel(dev, reg, value) \
-> > +	_snd_hdac_ext_bus_ppcap_write(l, dev, AZX_REG_ ## reg, value)
-> > +#define snd_hdac_ext_bus_ppcap_writew(dev, reg, value) \
-> > +	_snd_hdac_ext_bus_ppcap_write(w, dev, AZX_REG_ ## reg, value)
-> > +#define snd_hdac_ext_bus_ppcap_writeb(dev, reg, value) \
-> > +	_snd_hdac_ext_bus_ppcap_write(b, dev, AZX_REG_ ## reg, value)
-> > +#define snd_hdac_ext_bus_ppcap_readl(dev, reg) \
-> > +	_snd_hdac_ext_bus_ppcap_read(l, dev, AZX_REG_ ## reg)
-> > +#define snd_hdac_ext_bus_ppcap_readw(dev, reg) \
-> > +	_snd_hdac_ext_bus_ppcap_read(w, dev, AZX_REG_ ## reg)
-> > +#define snd_hdac_ext_bus_ppcap_readb(dev, reg) \
-> > +	_snd_hdac_ext_bus_ppcap_read(b, dev, AZX_REG_ ## reg)
-> > +
-> > +/* update a register, pass without AZX_REG_ prefix */
-> > +#define snd_hdac_ext_bus_ppcap_updatel(dev, reg, mask, val) \
-> > +	snd_hdac_ext_bus_ppcap_writel(dev, reg, \
-> > +			       (snd_hdac_ext_bus_ppcap_readl(dev, reg) & \
-> > +				~(mask)) | (val))
-> > +#define snd_hdac_ext_bus_ppcap_updatew(dev, reg, mask, val) \
-> > +	snd_hdac_ext_bus_ppcap_writew(dev, reg, \
-> > +			       (snd_hdac_ext_bus_ppcap_readw(dev, reg) & \
-> > +				~(mask)) | (val))
-> > +#define snd_hdac_ext_bus_ppcap_updateb(dev, reg, mask, val) \
-> > +	snd_hdac_ext_bus_ppcap_writeb(dev, reg, \
-> > +			       (snd_hdac_ext_bus_ppcap_readb(dev, reg) & \
-> > +				~(mask)) | (val))
-> 
-> It's not necessarily good to wrap all with such macros.
-> For azx_write*(), I kept them as is for reducing the amount of useless
-> code rewrites.  But for new codes, I don't think it's always worth...
-Actually while updating the patch for ext I was wondering about this too.
-
-So we cna remove these and use snd_hdac_chip_writel/w/b here 
-
-let me update it here and for other caps
+> The device name must be unique to the whole system.  Using only the
+> codec address as an id would conflict if there are multiple cards.
+> The legacy HDA device consists of "hdaudioC%dD%d" indicating both the
+> card number and the codec address, for example.
+Sorry my bad, you did comment on it before as well. I will fix it now, by
+adding card name here.
 
 -- 
 ~Vinod
