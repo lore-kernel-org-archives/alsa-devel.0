@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 05/11] ALSA: bebob: obsolete string literal
-	expression for clock source
-Date: Mon,  8 Jun 2015 23:31:02 +0900
-Message-ID: <1433773868-17505-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/11] ALSA: bebob: keep duplex streams always
+	to keep internal multiplexer properly
+Date: Mon,  8 Jun 2015 23:31:07 +0900
+Message-ID: <1433773868-17505-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AFF62604B8
+ by alsa0.perex.cz (Postfix) with ESMTP id A3F352604D5
  for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 16:31:17 +0200 (CEST)
 In-Reply-To: <1433773868-17505-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,182 +25,199 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The old string literals were completely replaced by new normalized
-representation.
+Behringer FCA610 transmits packets with periodic noisy PCM samples
+when receiving no streams, and generates a bit noisy sound.
 
-This commit obsoletes it.
+ALSA BeBoB driver is programmed to establish both in/out connections
+when starting streaming, then transfers packets as userspace applications
+requested. This means that there's a case that one of incoming/outgoing
+streams is running, to save CPU and bandwidth usage. Although, it's natural
+to start transferring packets in both direction.
 
+This commit makes this driver to keeps duplex streams always.
+
+Tested-by: Kim Tore Jensen <kim@incendio.no>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.h           |  1 -
- sound/firewire/bebob/bebob_focusrite.c | 12 ------------
- sound/firewire/bebob/bebob_maudio.c    | 10 ++++++----
- sound/firewire/bebob/bebob_terratec.c  |  8 --------
- sound/firewire/bebob/bebob_yamaha.c    |  2 --
- 5 files changed, 6 insertions(+), 27 deletions(-)
+ sound/firewire/bebob/bebob.h        |  3 +--
+ sound/firewire/bebob/bebob_midi.c   |  8 ++++----
+ sound/firewire/bebob/bebob_pcm.c    |  8 ++++----
+ sound/firewire/bebob/bebob_stream.c | 24 +++++++-----------------
+ 4 files changed, 16 insertions(+), 27 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index f9f2180..76a65cc 100644
+index 6359fb0..d9a8ab8 100644
 --- a/sound/firewire/bebob/bebob.h
 +++ b/sound/firewire/bebob/bebob.h
-@@ -49,7 +49,6 @@ struct snd_bebob_stream_formation {
- extern const unsigned int snd_bebob_rate_table[SND_BEBOB_STRM_FMT_ENTRIES];
+@@ -97,8 +97,7 @@ struct snd_bebob {
+ 	struct amdtp_stream rx_stream;
+ 	struct cmp_connection out_conn;
+ 	struct cmp_connection in_conn;
+-	atomic_t capture_substreams;
+-	atomic_t playback_substreams;
++	atomic_t substreams_counter;
  
- /* device specific operations */
--#define SND_BEBOB_CLOCK_INTERNAL	"Internal"
- enum snd_bebob_clock_type {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL = 0,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,
-diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
-index 45c8f76..a1a3949 100644
---- a/sound/firewire/bebob/bebob_focusrite.c
-+++ b/sound/firewire/bebob/bebob_focusrite.c
-@@ -103,17 +103,11 @@ saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
- 				  &data, sizeof(__be32), 0);
- }
+ 	struct snd_bebob_stream_formation
+ 		tx_stream_formations[SND_BEBOB_STRM_FMT_ENTRIES];
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+index 63343d5..5681143 100644
+--- a/sound/firewire/bebob/bebob_midi.c
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -17,7 +17,7 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
+ 		goto end;
  
--static const char *const saffirepro_10_clk_src_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
--};
- static enum snd_bebob_clock_type saffirepro_10_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
- };
--static const char *const saffirepro_26_clk_src_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "ADAT1", "ADAT2", "Word Clock"
--};
- static enum snd_bebob_clock_type saffirepro_26_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-@@ -207,9 +201,6 @@ end:
- }
+-	atomic_inc(&bebob->capture_substreams);
++	atomic_inc(&bebob->substreams_counter);
+ 	err = snd_bebob_stream_start_duplex(bebob, 0);
+ 	if (err < 0)
+ 		snd_bebob_stream_lock_release(bebob);
+@@ -34,7 +34,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	if (err < 0)
+ 		goto end;
  
- struct snd_bebob_spec saffire_le_spec;
--static const char *const saffire_both_clk_src_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF"
--};
- static enum snd_bebob_clock_type saffire_both_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,
-@@ -276,7 +267,6 @@ static struct snd_bebob_rate_spec saffirepro_both_rate_spec = {
- /* Saffire Pro 26 I/O  */
- static struct snd_bebob_clock_spec saffirepro_26_clk_spec = {
- 	.num	= ARRAY_SIZE(saffirepro_26_clk_src_types),
--	.labels	= saffirepro_26_clk_src_labels,
- 	.types	= saffirepro_26_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
-@@ -288,7 +278,6 @@ struct snd_bebob_spec saffirepro_26_spec = {
- /* Saffire Pro 10 I/O */
- static struct snd_bebob_clock_spec saffirepro_10_clk_spec = {
- 	.num	= ARRAY_SIZE(saffirepro_10_clk_src_types),
--	.labels	= saffirepro_10_clk_src_labels,
- 	.types	= saffirepro_10_clk_src_types,
- 	.get	= &saffirepro_both_clk_src_get,
- };
-@@ -304,7 +293,6 @@ static struct snd_bebob_rate_spec saffire_both_rate_spec = {
- };
- static struct snd_bebob_clock_spec saffire_both_clk_spec = {
- 	.num	= ARRAY_SIZE(saffire_both_clk_src_types),
--	.labels	= saffire_both_clk_src_labels,
- 	.types	= saffire_both_clk_src_types,
- 	.get	= &saffire_both_clk_src_get,
- };
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index 7a43afc..057495d 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -340,9 +340,6 @@ end:
- }
- 
- /* Clock source control for special firmware */
--static const char *const special_clk_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL " with Digital Mute", "Digital",
--	"Word Clock", SND_BEBOB_CLOCK_INTERNAL};
- static enum snd_bebob_clock_type special_clk_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,	/* With digital mute */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* SPDIF/ADAT */
-@@ -358,6 +355,12 @@ static int special_clk_get(struct snd_bebob *bebob, unsigned int *id)
- static int special_clk_ctl_info(struct snd_kcontrol *kctl,
- 				struct snd_ctl_elem_info *einf)
+-	atomic_inc(&bebob->playback_substreams);
++	atomic_inc(&bebob->substreams_counter);
+ 	err = snd_bebob_stream_start_duplex(bebob, 0);
+ 	if (err < 0)
+ 		snd_bebob_stream_lock_release(bebob);
+@@ -46,7 +46,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
  {
-+	static const char *const special_clk_labels[] = {
-+		"Internal with Digital Mute",
-+		"Digital",
-+		"Word Clock",
-+		"Internal"
-+	};
- 	return snd_ctl_enum_info(einf, 1, ARRAY_SIZE(special_clk_types),
- 				 special_clk_labels);
- }
-@@ -715,7 +718,6 @@ static struct snd_bebob_rate_spec special_rate_spec = {
- };
- static struct snd_bebob_clock_spec special_clk_spec = {
- 	.num	= ARRAY_SIZE(special_clk_types),
--	.labels	= special_clk_labels,
- 	.types	= special_clk_types,
- 	.get	= &special_clk_get,
- };
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-index 3b64d8d..9242e33 100644
---- a/sound/firewire/bebob/bebob_terratec.c
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -8,9 +8,6 @@
+ 	struct snd_bebob *bebob = substream->rmidi->private_data;
  
- #include "./bebob.h"
+-	atomic_dec(&bebob->capture_substreams);
++	atomic_dec(&bebob->substreams_counter);
+ 	snd_bebob_stream_stop_duplex(bebob);
  
--static const char *const phase88_rack_clk_src_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL, "Digital In", "Word Clock"
--};
- static enum snd_bebob_clock_type phase88_rack_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-@@ -39,9 +36,6 @@ end:
- 	return err;
- }
+ 	snd_bebob_stream_lock_release(bebob);
+@@ -57,7 +57,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_bebob *bebob = substream->rmidi->private_data;
  
--static const char *const phase24_series_clk_src_labels[] = {
--	SND_BEBOB_CLOCK_INTERNAL, "Digital In"
--};
- static enum snd_bebob_clock_type phase24_series_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-@@ -69,7 +63,6 @@ static struct snd_bebob_rate_spec phase_series_rate_spec = {
- /* PHASE 88 Rack FW */
- static struct snd_bebob_clock_spec phase88_rack_clk = {
- 	.num	= ARRAY_SIZE(phase88_rack_clk_src_types),
--	.labels	= phase88_rack_clk_src_labels,
- 	.types	= phase88_rack_clk_src_types,
- 	.get	= &phase88_rack_clk_src_get,
- };
-@@ -82,7 +75,6 @@ struct snd_bebob_spec phase88_rack_spec = {
- /* 'PHASE 24 FW' and 'PHASE X24 FW' */
- static struct snd_bebob_clock_spec phase24_series_clk = {
- 	.num	= ARRAY_SIZE(phase24_series_clk_src_types),
--	.labels	= phase24_series_clk_src_labels,
- 	.types	= phase24_series_clk_src_types,
- 	.get	= &phase24_series_clk_src_get,
- };
-diff --git a/sound/firewire/bebob/bebob_yamaha.c b/sound/firewire/bebob/bebob_yamaha.c
-index 2f59512..5810170 100644
---- a/sound/firewire/bebob/bebob_yamaha.c
-+++ b/sound/firewire/bebob/bebob_yamaha.c
-@@ -28,7 +28,6 @@
-  * reccomend users to close ffado-mixer at 192.0kHz if mixer is needless.
-  */
+-	atomic_dec(&bebob->playback_substreams);
++	atomic_dec(&bebob->substreams_counter);
+ 	snd_bebob_stream_stop_duplex(bebob);
  
--static const char *const clk_src_labels[] = {SND_BEBOB_CLOCK_INTERNAL, "SPDIF"};
- static enum snd_bebob_clock_type clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
-@@ -50,7 +49,6 @@ clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- static struct snd_bebob_clock_spec clock_spec = {
- 	.num	= ARRAY_SIZE(clk_src_types),
- 	.types	= clk_src_types,
--	.labels	= clk_src_labels,
- 	.get	= &clk_src_get,
- };
- static struct snd_bebob_rate_spec rate_spec = {
+ 	snd_bebob_stream_lock_release(bebob);
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index e0a6b06..7a2c1f5 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -213,7 +213,7 @@ pcm_capture_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_bebob *bebob = substream->private_data;
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-		atomic_inc(&bebob->capture_substreams);
++		atomic_inc(&bebob->substreams_counter);
+ 	amdtp_stream_set_pcm_format(&bebob->tx_stream,
+ 				    params_format(hw_params));
+ 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+@@ -226,7 +226,7 @@ pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_bebob *bebob = substream->private_data;
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-		atomic_inc(&bebob->playback_substreams);
++		atomic_inc(&bebob->substreams_counter);
+ 	amdtp_stream_set_pcm_format(&bebob->rx_stream,
+ 				    params_format(hw_params));
+ 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+@@ -239,7 +239,7 @@ pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_bebob *bebob = substream->private_data;
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		atomic_dec(&bebob->capture_substreams);
++		atomic_dec(&bebob->substreams_counter);
+ 
+ 	snd_bebob_stream_stop_duplex(bebob);
+ 
+@@ -251,7 +251,7 @@ pcm_playback_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_bebob *bebob = substream->private_data;
+ 
+ 	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
+-		atomic_dec(&bebob->playback_substreams);
++		atomic_dec(&bebob->substreams_counter);
+ 
+ 	snd_bebob_stream_stop_duplex(bebob);
+ 
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index d0df6c1..5be5242 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -574,7 +574,6 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ {
+ 	struct snd_bebob_rate_spec *rate_spec = bebob->spec->rate;
+ 	struct amdtp_stream *master, *slave;
+-	atomic_t *slave_substreams;
+ 	enum cip_flags sync_mode;
+ 	unsigned int curr_rate;
+ 	bool updated = false;
+@@ -599,8 +598,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 	mutex_lock(&bebob->mutex);
+ 
+ 	/* Need no substreams */
+-	if (atomic_read(&bebob->playback_substreams) == 0 &&
+-	    atomic_read(&bebob->capture_substreams)  == 0)
++	if (atomic_read(&bebob->substreams_counter) == 0)
+ 		goto end;
+ 
+ 	err = get_sync_mode(bebob, &sync_mode);
+@@ -609,11 +607,9 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 	if (sync_mode == CIP_SYNC_TO_DEVICE) {
+ 		master = &bebob->tx_stream;
+ 		slave  = &bebob->rx_stream;
+-		slave_substreams = &bebob->playback_substreams;
+ 	} else {
+ 		master = &bebob->rx_stream;
+ 		slave  = &bebob->tx_stream;
+-		slave_substreams = &bebob->capture_substreams;
+ 	}
+ 
+ 	/*
+@@ -714,7 +710,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 	}
+ 
+ 	/* start slave if needed */
+-	if (atomic_read(slave_substreams) > 0 && !amdtp_stream_running(slave)) {
++	if (!amdtp_stream_running(slave)) {
+ 		err = start_stream(bebob, slave, rate);
+ 		if (err < 0) {
+ 			dev_err(&bebob->unit->device,
+@@ -740,31 +736,25 @@ end:
+ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
+ {
+ 	struct amdtp_stream *master, *slave;
+-	atomic_t *master_substreams, *slave_substreams;
+ 
+ 	if (bebob->master == &bebob->rx_stream) {
+ 		slave  = &bebob->tx_stream;
+ 		master = &bebob->rx_stream;
+-		slave_substreams  = &bebob->capture_substreams;
+-		master_substreams = &bebob->playback_substreams;
+ 	} else {
+ 		slave  = &bebob->rx_stream;
+ 		master = &bebob->tx_stream;
+-		slave_substreams  = &bebob->playback_substreams;
+-		master_substreams = &bebob->capture_substreams;
+ 	}
+ 
+ 	mutex_lock(&bebob->mutex);
+ 
+-	if (atomic_read(slave_substreams) == 0) {
++	if (atomic_read(&bebob->substreams_counter) == 0) {
++		amdtp_stream_pcm_abort(master);
++		amdtp_stream_stop(master);
++
+ 		amdtp_stream_pcm_abort(slave);
+ 		amdtp_stream_stop(slave);
+ 
+-		if (atomic_read(master_substreams) == 0) {
+-			amdtp_stream_pcm_abort(master);
+-			amdtp_stream_stop(master);
+-			break_both_connections(bebob);
+-		}
++		break_both_connections(bebob);
+ 	}
+ 
+ 	mutex_unlock(&bebob->mutex);
 -- 
 2.1.4
