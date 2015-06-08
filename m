@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 8/9] ASoC: tas2552: Use consistent name for
-	'struct tas2552_data'
-Date: Mon, 8 Jun 2015 15:19:55 +0300
-Message-ID: <1433765996-28930-9-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 9/9] ASoC: tas2552: Update DT binding
+	document regarding clkock configuration
+Date: Mon, 8 Jun 2015 15:19:56 +0300
+Message-ID: <1433765996-28930-10-git-send-email-peter.ujfalusi@ti.com>
 References: <1433765996-28930-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
- by alsa0.perex.cz (Postfix) with ESMTP id A5567260412
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 14:20:17 +0200 (CEST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AB4A260481
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 14:20:19 +0200 (CEST)
 In-Reply-To: <1433765996-28930-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,29 @@ To: broonie@kernel.org, lgirdwood@gmail.com, dmurphy@ti.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In tas2552_sw_shutdown() tas_data is used while the rest of the driver uses
-tas2552 when dealing with the 'struct tas2552_data'
+Add overview of tas2552's clock configuration and selection.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/tas2552.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 534b57bff03d..169a7035d7e3 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -145,17 +145,17 @@ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
- };
+diff --git a/Documentation/devicetree/bindings/sound/tas2552.txt b/Documentation/devicetree/bindings/sound/tas2552.txt
+index 55e2a0af5645..c49992c0b62a 100644
+--- a/Documentation/devicetree/bindings/sound/tas2552.txt
++++ b/Documentation/devicetree/bindings/sound/tas2552.txt
+@@ -14,6 +14,12 @@ Required properties:
+ Optional properties:
+ 	- enable-gpio - gpio pin to enable/disable the device
  
- #ifdef CONFIG_PM
--static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
-+static void tas2552_sw_shutdown(struct tas2552_data *tas2552, int sw_shutdown)
- {
- 	u8 cfg1_reg = 0;
++tas2552 can receive it's reference clock via MCLK, BCLK, IVCLKIN pin or use the
++internal 1.8MHz. This CLKIN is used by the PLL. In addition to PLL, the PDM
++reference clock is also selectable: PLL, IVCLKIN, BCLK or MCLK.
++For system integration the dt-bindings/sound/tas2552.h header file provides
++defined values to selct and configure the PLL and PDM reference clocks.
++
+ Example:
  
--	if (!tas_data->codec)
-+	if (!tas2552->codec)
- 		return;
- 
- 	if (sw_shutdown)
- 		cfg1_reg = TAS2552_SWS;
- 
--	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1, TAS2552_SWS,
-+	snd_soc_update_bits(tas2552->codec, TAS2552_CFG_1, TAS2552_SWS,
- 			    cfg1_reg);
- }
- #endif
+ tas2552: tas2552@41 {
 -- 
 2.4.2
