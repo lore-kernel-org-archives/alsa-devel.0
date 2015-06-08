@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 5/9] ASoC: tas2552: Code,
-	define alignment changes for uniformity
-Date: Mon, 8 Jun 2015 15:19:52 +0300
-Message-ID: <1433765996-28930-6-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 2/9] ASoC: tas2552: Add control for
+	selecting DIN source
+Date: Mon, 8 Jun 2015 15:19:49 +0300
+Message-ID: <1433765996-28930-3-git-send-email-peter.ujfalusi@ti.com>
 References: <1433765996-28930-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 70BCD2602AD
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 14:20:11 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97A42260410
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 14:20:07 +0200 (CEST)
 In-Reply-To: <1433765996-28930-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,60 +25,38 @@ To: broonie@kernel.org, lgirdwood@gmail.com, dmurphy@ti.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Align the numbers in the header file to the same column.
-At the same time change the wrapping of CFG_2 register write in the probe
-function to be uniform with the other calls.
+'DIN source' enum can be used to select the DIN Source (muted, left, right
+or average of left and right channels).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tas2552.c |  4 ++--
- sound/soc/codecs/tas2552.h | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/tas2552.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 202c3f4a6390..5e6490c19b7e 100644
+index 0ca55aaeaaf2..067ea6e5e521 100644
 --- a/sound/soc/codecs/tas2552.c
 +++ b/sound/soc/codecs/tas2552.c
-@@ -604,8 +604,8 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 	snd_soc_write(codec, TAS2552_BOOST_APT_CTRL, TAS2552_APT_DELAY_200 |
- 						     TAS2552_APT_THRESH_20_17);
+@@ -553,9 +553,20 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
+  */
+ static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 0);
  
--	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
--				  TAS2552_APT_EN | TAS2552_LIM_EN);
-+	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN | TAS2552_APT_EN |
-+					    TAS2552_LIM_EN);
++static const char * const tas2552_din_source_select[] = {
++	"Muted",
++	"Left",
++	"Right",
++	"Left + Right average",
++};
++static SOC_ENUM_SINGLE_DECL(tas2552_din_source_enum,
++			    TAS2552_CFG_3, 3,
++			    tas2552_din_source_select);
++
+ static const struct snd_kcontrol_new tas2552_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
+ 			 TAS2552_PGA_GAIN, 0, 0x1f, 0, dac_tlv),
++	SOC_ENUM("DIN source", tas2552_din_source_enum),
+ };
  
- 	return 0;
- 
-diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index f62a1bcb2e49..5746f8fd0afd 100644
---- a/sound/soc/codecs/tas2552.h
-+++ b/sound/soc/codecs/tas2552.h
-@@ -19,7 +19,7 @@
- #define __TAS2552_H__
- 
- /* Register Address Map */
--#define TAS2552_DEVICE_STATUS	0x00
-+#define TAS2552_DEVICE_STATUS		0x00
- #define TAS2552_CFG_1			0x01
- #define TAS2552_CFG_2			0x02
- #define TAS2552_CFG_3			0x03
-@@ -33,12 +33,12 @@
- #define TAS2552_BTIP			0x0b
- #define TAS2552_BTS_CTRL		0x0c
- #define TAS2552_RESERVED_0D		0x0d
--#define TAS2552_LIMIT_RATE_HYS	0x0e
--#define TAS2552_LIMIT_RELEASE	0x0f
--#define TAS2552_LIMIT_INT_COUNT	0x10
-+#define TAS2552_LIMIT_RATE_HYS		0x0e
-+#define TAS2552_LIMIT_RELEASE		0x0f
-+#define TAS2552_LIMIT_INT_COUNT		0x10
- #define TAS2552_PDM_CFG			0x11
- #define TAS2552_PGA_GAIN		0x12
--#define TAS2552_EDGE_RATE_CTRL	0x13
-+#define TAS2552_EDGE_RATE_CTRL		0x13
- #define TAS2552_BOOST_APT_CTRL		0x14
- #define TAS2552_VER_NUM			0x16
- #define TAS2552_VBAT_DATA		0x19
+ static int tas2552_codec_probe(struct snd_soc_codec *codec)
 -- 
 2.4.2
