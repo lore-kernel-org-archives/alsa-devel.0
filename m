@@ -1,22 +1,16 @@
-From: Dan Nicholson <nicholson@endlessm.com>
-Subject: Re: [PATCH] alsactl: Try to create state file directory
-Date: Mon, 08 Jun 2015 09:17:49 -0700
-Message-ID: <1433780269.8893.5.camel@midnight>
-References: <1433541647-300-1-git-send-email-nicholson@endlessm.com>
- <s5hpp56ig55.wl-tiwai@suse.de>
- <CAJAOzpBuEC5=5p3-aChEf3dqWC4TXsK=JV5jzKp7u09Ju2Y2Xg@mail.gmail.com>
- <s5hd216ic86.wl-tiwai@suse.de> <s5h8ubuibby.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm_adsp: Add basic debugfs entries
+Date: Mon, 8 Jun 2015 18:40:41 +0100
+Message-ID: <20150608174041.GK14071@sirena.org.uk>
+References: <1433774222-25103-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6546632606704732438=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f172.google.com (mail-qk0-f172.google.com
- [209.85.220.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F575260442
- for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 18:17:53 +0200 (CEST)
-Received: by qkhq76 with SMTP id q76so80421346qkh.2
- for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2015 09:17:52 -0700 (PDT)
-In-Reply-To: <s5h8ubuibby.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 086292604C7
+ for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2015 19:40:50 +0200 (CEST)
+In-Reply-To: <1433774222-25103-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,149 +20,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-06-08 at 15:22 +0200, Takashi Iwai wrote:
-> At Mon, 08 Jun 2015 15:03:21 +0200,
-> Takashi Iwai wrote:
-> > 
-> > At Mon, 8 Jun 2015 05:52:18 -0700,
-> > Dan Nicholson wrote:
-> > > 
-> > > On Jun 8, 2015 4:38 AM, "Takashi Iwai" <tiwai@suse.de> wrote:
-> > > >
-> > > > At Fri,  5 Jun 2015 15:00:47 -0700,
-> > > > Dan Nicholson wrote:
-> > > > >
-> > > > > Try to create the directory for the state file when saving so we don't
-> > > > > depend on it being created ahead of time. This only checks for failures
-> > > > > on existing directories and doesn't try to create the leading
-> > > > > directories or workaround any other errors. This should catch the common
-> > > > > case where /var/lib exists, but /var/lib/alsa doesn't.
-> > > >
-> > > > I don't think it's the role of alsactl.  It saves a file on the
-> > > > certain directory.  If it doesn't exist, it's a failure of the
-> > > > installed package.
-> > > 
-> > > Sure, that's understandable, but there's a couple reasons I think this is
-> > > helpful addition.
-> > > 
-> > > First, if no path is supplied, store will save to /var/lib/alsa. So, it's
-> > > not as of the user has supplied a path it didn't setup correctly. It would
-> > > be nice if alsactl worked out of the box without additional integration by
-> > > packagers.
-> > 
-> > For that, a safer way would be to create /var/lib/alsa in the
-> > installation.'s 
 
-Sure, as I said, we can do that if necessary. It's just another custom
-thing to maintain, and I think it would be nice if alsactl could manage
-this on its own.
+--===============6546632606704732438==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="e4HPWByEyAOAEWhK"
+Content-Disposition: inline
 
-> > > Second, my real motivation for fixing this is to support stateless type of
-> > > systems that come with a clean /var. At Endless we're using ostree. The OS
-> > > is composed by Debian packages, and indeed alsa-utils is setup to create
-> > > /var/lib/alsa on install. However, to use the same OS snapshot for all
-> > > users, the contents of /var are stripped since they represent local system
-> > > state. We can certainly add a method for creating the directory at runtime,
-> > > but we believe it's more robust to have the program manage its own state as
-> > > much as possible.
-> > 
-> > Why not specifying the proper directory via alsactl -f option for
-> > user?
-> 
-> Also, your patch seems to care only the top directory.  For example,
-> if alsactl is configured to use /var/lib/alsa/more/deep/dir, it won't
-> work.
 
-Here's another version that creates all leading directories.
+--e4HPWByEyAOAEWhK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->From e1f75388682ad662dd5bdbb057d12b00e0aa80a8 Mon Sep 17 00:00:00 2001
-From: Dan Nicholson <nicholson@endlessm.com>
-Date: Fri, 5 Jun 2015 14:39:15 -0700
-Subject: [PATCH] alsactl: Try to create state file directory
+On Mon, Jun 08, 2015 at 03:37:02PM +0100, Richard Fitzgerald wrote:
 
-Try to create the directory for the state file when saving so we don't
-depend on it being created ahead of time. This only checks for failures
-on existing directories. This should catch the common case where
-/var/lib exists, but /var/lib/alsa doesn't.
+> +++ b/sound/soc/codecs/wm5102.c
+> @@ -1875,6 +1875,8 @@ static int wm5102_codec_probe(struct snd_soc_codec =
+*codec)
+>  	struct wm5102_priv *priv =3D snd_soc_codec_get_drvdata(codec);
+>  	int ret;
+> =20
+> +	wm_adsp_init_debugfs(&priv->core.adsp[0], codec);
+> +
 
-Signed-off-by: Dan Nicholson <nicholson@endlessm.com>
----
-v3: Create all leading directories
+Why are we adding this init to every individual CODEC rather than doing
+it when we initialize the DSP (which there are calls for already)?
 
- alsactl/state.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+> +#ifdef CONFIG_DEBUG_FS
+> +static void wm_adsp_debugfs_save_wmfwname(struct wm_adsp *dsp, const cha=
+r *s);
+> +static void wm_adsp_debugfs_save_binname(struct wm_adsp *dsp, const char=
+ *s);
+> +static void wm_adsp_debugfs_clear(struct wm_adsp *dsp);
+> +#else
+> +static inline void wm_adsp_debugfs_save_wmfwname(struct wm_adsp *dsp,
+> +						 const char *s)
+> +{
+> +}
+> +
+> +static inline void wm_adsp_debugfs_save_binname(struct wm_adsp *dsp,
+> +						const char *s)
+> +{
+> +}
+> +
+> +static inline void wm_adsp_debugfs_clear(struct wm_adsp *dsp)
+> +{
+> +}
+> +#endif
+> +
 
-diff --git a/alsactl/state.c b/alsactl/state.c
-index 3908ec4..10b3567 100644
---- a/alsactl/state.c
-+++ b/alsactl/state.c
-@@ -27,6 +27,9 @@
- #include <stdio.h>
- #include <assert.h>
- #include <errno.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
- #include <alsa/asoundlib.h>
- #include "alsactl.h"
- 
-@@ -1536,6 +1539,41 @@ static int set_controls(int card, snd_config_t
-*top, int doit)
- 	return err;
- }
- 
-+static int create_directories(const char *file)
-+{
-+	int err = 0;
-+	char *filedir, *cur;
-+
-+	filedir = strdup(file);
-+	if (filedir == NULL) {
-+		error("Not enough memory...");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	cur = filedir;
-+	/* skip leading /s */
-+	while (*cur && *cur == '/')
-+		cur++;
-+	while ((cur = strchr(cur, '/')) != NULL) {
-+		mode_t mode = S_IRWXU | S_IRWXG | S_IRWXO;
-+
-+		*cur = '\0';
-+		if (mkdir(filedir, mode) != 0 && errno != EEXIST) {
-+			error("Could not create directory %s: %s",
-+			      filedir, strerror(errno));
-+			err = -errno;
-+			goto out;
-+		}
-+		/* restore path element */
-+		*cur++ = '/';
-+	}
-+
-+out:
-+	free(filedir);
-+	return err;
-+}
-+
- int save_state(const char *file, const char *cardname)
- {
- 	int err;
-@@ -1561,6 +1599,9 @@ int save_state(const char *file, const char
-*cardname)
- 		}
- 		strcpy(nfile, file);
- 		strcat(nfile, ".new");
-+		err = create_directories(file);
-+		if (err < 0)
-+			goto out;
- 		lock_fd = state_lock(file, 10);
- 		if (lock_fd < 0) {
- 			err = lock_fd;
--- 
-1.8.1.2
+Why not just put the functions here rather than prototypes?
+
+> +static ssize_t wm_adsp_debugfs_string_read(struct wm_adsp *dsp,
+> +					  char __user *user_buf,
+> +					  size_t count, loff_t *ppos,
+> +					  const char *string)
+> +{
+> +	char *temp;
+> +	int len;
+> +	ssize_t ret;
+> +
+> +	if (!string || !dsp->running)
+> +		return 0;
+
+Does debugfs ensure that the right thing happens and this gets treated
+as EOF rather than a "zero length read, please retry" (which something
+might decide to busy wait trying)?  I'd have expected either an error or
+substituting in an empty/informative string here.
+
+> +	temp =3D kmalloc(PAGE_SIZE, GFP_KERNEL);
+> +	if (!temp)
+> +		return -ENOMEM;
+> +
+> +	len =3D snprintf(temp, PAGE_SIZE, "%s\n", string);
+
+Given that we already have the string I don't understand why we're
+allocating the temporary buffer - if it's just the length we're looking
+for then strlen() should be enough?
+
+> +} wm_adsp_debugfs_fops[] =3D {
+> +	{
+> +		.name =3D "wmfw_file",
+
+> +		.name =3D "bin_file",
+
+Bikeshedding but _name not _file perhaps?  It's not going to give you a
+copy of the firmware/coefficients.
+
+--e4HPWByEyAOAEWhK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVddOYAAoJECTWi3JdVIfQOWUH+gPiJCLrnctvlqRszErUIDQp
+F6FEHqomdeVJoHWisl140IrmNH3Uox9NAHUaYOeAk7IjsspKhOUA8fK2staUDP4e
+AJOY6+5Zz+ebCX4fM9AZ8z8IxWzwdzRmGKNj+uWuPqttxTVuPa5Cs+wn/q26Ur2r
+p0FELXajhalVhVMXKWGpc7A1ndWtXoEHpAcpIhVUqp1zqCgrdQErNn9zBIFeYJz8
+ZZZ9rUZBT4pB77VqV7XM8LvboHVWu3UmLLHNQDBwCTLIUzQYbBh0mXfGwSuB4Grk
+AGppxw3mPZAC1CfuP6BbB/QF9Hc59bahWiPmYhWcXTpWo5kBgQz19f1obcgE2y4=
+=1GwS
+-----END PGP SIGNATURE-----
+
+--e4HPWByEyAOAEWhK--
+
+--===============6546632606704732438==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6546632606704732438==--
