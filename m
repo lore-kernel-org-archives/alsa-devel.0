@@ -1,52 +1,59 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3] ASoC: davinci-mcasp: Choose PCM driver based on
- configured DMA controller
-Date: Tue, 9 Jun 2015 19:01:11 +0100
-Message-ID: <20150609180111.GU14071@sirena.org.uk>
-References: <e5dbf0a5fbb101792fd106461929c4b814dffc06.1433275670.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 2/2] ASoC: qcom: add apq8016 sound card support
+Date: Tue, 9 Jun 2015 19:04:35 +0100
+Message-ID: <20150609180435.GV14071@sirena.org.uk>
+References: <1433854702-23654-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1433854776-23852-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <20150609170738.GI14071@sirena.org.uk>
+ <557727BF.8040807@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HFKwn2g6R1ux/FzN"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="OpkDJjDTRXa+mPUW"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <e5dbf0a5fbb101792fd106461929c4b814dffc06.1433275670.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, misael.lopez-l0cyMroinI0@public.gmane.org
+In-Reply-To: <557727BF.8040807@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---HFKwn2g6R1ux/FzN
+--OpkDJjDTRXa+mPUW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 02, 2015 at 11:09:34PM +0300, Jyri Sarha wrote:
-> Find the configured DMA controller by asking for a DMA channel in the
-> probe phase and releasing it right after. The controller device can be
-> found via the dma_chan struct and the controller is recognized from
-> the compatible property of its device node. The patch assumes EDMA if
-> there is no device node.
+On Tue, Jun 09, 2015 at 06:51:59PM +0100, Srinivas Kandagatla wrote:
+> On 09/06/15 18:07, Mark Brown wrote:
 
-Applied, thanks.
+> >Why not just do these one time at probe, we don't undo them when we shut
+> >the DAI down?
 
---HFKwn2g6R1ux/FzN
+> If I do that Am afraid that the driver would loose the flexibility of
+> selecting different MI2S from DT level. Hardcoding which MI2S can got to
+> external or internal codec is something that I wanted to avoid from the
+> start.
+
+I don't understand why we'd loose anything - we get init() callbacks on
+the DAIs when they're instantiated?
+
+> I will add the shutdown code to reset the configuration.
+
+OK.
+
+--OpkDJjDTRXa+mPUW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVdynnAAoJECTWi3JdVIfQxugH/2lIDBFlmjb6GmcMns7HwqCC
-J53opTwP2govMthznEGtQd/smw3VXdzdNnHv8VKH3jU9emVBQ33OSQ3wsUlscaYQ
-MVSXMuxqDXlWt7xYgX+RS0CWu0+/t4/S4ON7AuNHmrzY5AAw33V5w0pRX8MF5CEl
-2NmOq8ydR4tUBrlFC+pjl7xHAmn8QAxBBdZqB9So4V11BAbtkHwhQLMAaXhe05Ls
-A7AJ3dslHd2EsQZsNR44zDCoKQHM2AW+LnadAXWkgIXWOt34dJCv31l+x9yhnk9l
-txBs44l0eBvwt90fbC0SF5nDtCG04n/lprs6zPd/orTFjag0d2UTOhPpHuf9myw=
-=vSwc
+iQEcBAEBCAAGBQJVdyqzAAoJECTWi3JdVIfQmz0H/ig1ESYG4BU4SB0Ctdm/affi
+544StIDP7PRu5FVc7EJnWIjYLQK5vjYar7HX3P2mm/fs4BWzL6FZqjqYbMjm3iKz
+iuAZlV4dYjqJ1Qm1PEdLf/t4j+16s5jTrMynPEu5D0OPXf9PLDwlNXn95bSqB3Us
+MKmeMqlV9BS60FrtLTKWnRWrt1LYTqg6GkScYJs+fkIksw54on+P6OPwT8LIO4An
+773z8E3FdVXWy+PofEvlyPESLXwa+lngPmOG51mtRqVREd1HtJ0t1rvhE4ys3f6S
+k+T8NKMkB4u6KBnWqhSI55H1s2i1yuofI7O6MKCG3Xj8aN0ZAOVSPBEHu/WZsls=
+=qgbG
 -----END PGP SIGNATURE-----
 
---HFKwn2g6R1ux/FzN--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--OpkDJjDTRXa+mPUW--
