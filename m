@@ -1,47 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: qcom: storm: allocate snd_soc_card struct
- dynamically.
-Date: Tue, 9 Jun 2015 17:19:09 +0100
-Message-ID: <20150609161909.GE14071@sirena.org.uk>
-References: <1433856861-15433-1-git-send-email-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 1/2] ASoC: wm_adsp: Add code_probe and codec_remove
+ stubs
+Date: Tue, 9 Jun 2015 17:20:45 +0100
+Message-ID: <20150609162045.GF14071@sirena.org.uk>
+References: <1433863017-25349-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20150609160043.GD14071@sirena.org.uk>
+ <20150609161356.GB27675@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mKGVDr+iJdqKOcjA"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="Gi2vSq8QtPYbuTNa"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1433856861-15433-1-git-send-email-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Patrick Lai <plai@codeaurora.org>, kwestfie@codeaurora.org, Rob Herring <robh+dt@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
+In-Reply-To: <20150609161356.GB27675@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---mKGVDr+iJdqKOcjA
+--Gi2vSq8QtPYbuTNa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 09, 2015 at 02:34:21PM +0100, Srinivas Kandagatla wrote:
-> This patch moves static allocation of snd_soc_card to dynamic allocation,
-> the reason to do this is to avoid holding up any dangling pointers
-> in this static structures. And I see no use for having this struct as static
-> given that the card->name is also populated dynamically from dt.
+On Tue, Jun 09, 2015 at 05:13:56PM +0100, Richard Fitzgerald wrote:
+> On Tue, Jun 09, 2015 at 05:00:43PM +0100, Mark Brown wrote:
 
-Applied both, thanks.
+> > I'm still not a big fan of the double registration that's being done -
+> > if nothing else the fact that it's not also factoring out the creation
+> > of the DSP controls seems wrong.
 
---mKGVDr+iJdqKOcjA
+> I don't see the point of trying to fight against the design of ASoC with
+> the second probe. ASoC gives us what we need at the codec_probe stage
+> so why try to invent something different?
+
+Well, you could've still hung things off the struct device - it's not
+like the ASoC level device is a requirement here - and like I say the
+fact that it's not actually factoring out the initialisation that's
+already happening at the ASoC probe isn't good.
+
+--Gi2vSq8QtPYbuTNa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVdxH8AAoJECTWi3JdVIfQBCAH/i/Rz4xPlyha2SNHl+DkYUoq
-MbnIhKOfPGRLDeU+GAwSE+fXluqF02r6nKt4TfNH44Hx1ZJwn8BvoIAlKbtNMvBA
-4NeUEzet4gGEG0BiGMkiNwvAgC2iVm+QqsNfmwP2ScHhzl8+fwHEaA/A90T3EhE3
-PaM6Vv37EAYqnDT/DBvgucy6QmiVKPHor4g3BN+gqLvhLMlwfcCh3uObHGrYLeTZ
-0Ta31zf3j1KqIbApfkPpPln0I9vE70txo0PeeP9ATiIy67Iba25NnwRCg1z6LowH
-dVJo/A/R6M5b4TnlPFyBJnn8OoosBoJXqbFzjYGh19YHhxAhMgSg2GvQkeF46rE=
-=q3jC
+iQEcBAEBCAAGBQJVdxJcAAoJECTWi3JdVIfQ/2cH/2hPBo4q0bAZUAY9sgGrUIbO
+RzZBhQankNKFiDa7jC25NoA96UJsRw9mT/n4rOttqUFK34176QMNDkifV3drFAjY
+RQrEX73UV9/J1pVL2m5ZYRhLN6dcU6UcmeKCQyNFa/xNR+hOTLS3vMpz/Dpg3eo8
+8NuR5Ig5ep5CpfSAk/gkkwnoJSN109LnxcgtSrur0Nu6s+yKTQ55R3OyJMZI1CZR
+3DtPo0adhk925vW4sdG7Jp7xLcCvzQpmNVu4qSadM1m7Bh6oOtNDMNBJSTy8ifrR
+kJ8IbVWETi2JT9ZNKIkCAsn+bllQUmjeS9EDCoLpSmRSedALdGkZZBNi1S3KBUY=
+=u9cT
 -----END PGP SIGNATURE-----
 
---mKGVDr+iJdqKOcjA--
+--Gi2vSq8QtPYbuTNa--
