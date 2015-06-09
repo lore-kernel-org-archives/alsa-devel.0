@@ -1,157 +1,106 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3] ASoC: davinci-mcasp: Choose PCM driver based on configured
- DMA controller
-Date: Tue, 9 Jun 2015 17:52:26 +0300
-Message-ID: <5576FDAA.8030701@ti.com>
-References: <e5dbf0a5fbb101792fd106461929c4b814dffc06.1433275670.git.jsarha@ti.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: Add basic debugfs entries
+Date: Tue, 9 Jun 2015 15:57:07 +0100
+Message-ID: <20150609145707.GA27675@opensource.wolfsonmicro.com>
+References: <1433774222-25103-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20150608174041.GK14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <e5dbf0a5fbb101792fd106461929c4b814dffc06.1433275670.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, misael.lopez@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E05CE2606D7
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 16:57:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150608174041.GK14071@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/02/2015 11:09 PM, Jyri Sarha wrote:
-> Find the configured DMA controller by asking for a DMA channel in the
-> probe phase and releasing it right after. The controller device can b=
-e
-> found via the dma_chan struct and the controller is recognized from
-> the compatible property of its device node. The patch assumes EDMA if
-> there is no device node.
+On Mon, Jun 08, 2015 at 06:40:41PM +0100, Mark Brown wrote:
+> On Mon, Jun 08, 2015 at 03:37:02PM +0100, Richard Fitzgerald wrote:
+> 
+> > +++ b/sound/soc/codecs/wm5102.c
+> > @@ -1875,6 +1875,8 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
+> >  	struct wm5102_priv *priv = snd_soc_codec_get_drvdata(codec);
+> >  	int ret;
+> >  
+> > +	wm_adsp_init_debugfs(&priv->core.adsp[0], codec);
+> > +
+> 
+> Why are we adding this init to every individual CODEC rather than doing
+> it when we initialize the DSP (which there are calls for already)?
+> 
+> > +#ifdef CONFIG_DEBUG_FS
+> > +static void wm_adsp_debugfs_save_wmfwname(struct wm_adsp *dsp, const char *s);
+> > +static void wm_adsp_debugfs_save_binname(struct wm_adsp *dsp, const char *s);
+> > +static void wm_adsp_debugfs_clear(struct wm_adsp *dsp);
+> > +#else
+> > +static inline void wm_adsp_debugfs_save_wmfwname(struct wm_adsp *dsp,
+> > +						 const char *s)
+> > +{
+> > +}
+> > +
+> > +static inline void wm_adsp_debugfs_save_binname(struct wm_adsp *dsp,
+> > +						const char *s)
+> > +{
+> > +}
+> > +
+> > +static inline void wm_adsp_debugfs_clear(struct wm_adsp *dsp)
+> > +{
+> > +}
+> > +#endif
+> > +
+> 
+> Why not just put the functions here rather than prototypes?
+> 
+> > +static ssize_t wm_adsp_debugfs_string_read(struct wm_adsp *dsp,
+> > +					  char __user *user_buf,
+> > +					  size_t count, loff_t *ppos,
+> > +					  const char *string)
+> > +{
+> > +	char *temp;
+> > +	int len;
+> > +	ssize_t ret;
+> > +
+> > +	if (!string || !dsp->running)
+> > +		return 0;
+> 
+> Does debugfs ensure that the right thing happens and this gets treated
+> as EOF rather than a "zero length read, please retry" (which something
+> might decide to busy wait trying)?  I'd have expected either an error or
+> substituting in an empty/informative string here.
+> 
 
-Thanks Jyri,
+If simple_read_from_buffer() is off the end of the buffer or count is 0
+it returns 0 not EOF.
+Also I checked procfs for cases where things aren't always valid and it returns 0.
+So this seems to be accepted behaviour.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
->=20
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
-> Changes since v2:
-> - Print only one error message if DMA "probing" fails
->   and none in case of -EPROBE_DEFER
->=20
-> Changes since first patch version:
-> - Change enum names from MCASP_?DMA to PCM_?DMA
-> - Return PCM_EDMA if !mcasp->dev->of_node
-> - Do not ignore possible error code returned by
->   davinci_mcasp_get_dma_type()
->=20
->  sound/soc/davinci/davinci-mcasp.c | 70 +++++++++++++++++++++++++++++=
-++++------
->  1 file changed, 60 insertions(+), 10 deletions(-)
->=20
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/da=
-vinci-mcasp.c
-> index d793494..a73cd57 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -1565,6 +1565,49 @@ static int davinci_mcasp_init_ch_constraints(s=
-truct davinci_mcasp *mcasp)
->  	return ret;
->  }
-> =20
-> +enum {
-> +	PCM_EDMA,
-> +	PCM_SDMA,
-> +};
-> +static const char *sdma_prefix =3D "ti,omap";
-> +
-> +static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
-> +{
-> +	struct dma_chan *chan;
-> +	const char *tmp;
-> +	int ret =3D PCM_EDMA;
-> +
-> +	if (!mcasp->dev->of_node)
-> +		return PCM_EDMA;
-> +
-> +	tmp =3D mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK].filter_data;
-> +	chan =3D dma_request_slave_channel_reason(mcasp->dev, tmp);
-> +	if (IS_ERR(chan)) {
-> +		if (PTR_ERR(chan) !=3D -EPROBE_DEFER)
-> +			dev_err(mcasp->dev,
-> +				"Can't verify DMA configuration (%ld)\n",
-> +				PTR_ERR(chan));
-> +		return PTR_ERR(chan);
-> +	}
-> +	BUG_ON(!chan->device || !chan->device->dev);
-> +
-> +	if (chan->device->dev->of_node)
-> +		ret =3D of_property_read_string(chan->device->dev->of_node,
-> +					      "compatible", &tmp);
-> +	else
-> +		dev_dbg(mcasp->dev, "DMA controller has no of-node\n");
-> +
-> +	dma_release_channel(chan);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(mcasp->dev, "DMA controller compatible =3D \"%s\"\n", tmp);
-> +	if (!strncmp(tmp, sdma_prefix, strlen(sdma_prefix)))
-> +		return PCM_SDMA;
-> +
-> +	return PCM_EDMA;
-> +}
-> +
->  static int davinci_mcasp_probe(struct platform_device *pdev)
->  {
->  	struct snd_dmaengine_dai_dma_data *dma_data;
-> @@ -1763,27 +1806,34 @@ static int davinci_mcasp_probe(struct platfor=
-m_device *pdev)
->  	if (ret !=3D 0)
->  		goto err;
-> =20
-> -	switch (mcasp->version) {
-> +	ret =3D davinci_mcasp_get_dma_type(mcasp);
-> +	switch (ret) {
-> +	case PCM_EDMA:
->  #if IS_BUILTIN(CONFIG_SND_EDMA_SOC) || \
->  	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
->  	 IS_MODULE(CONFIG_SND_EDMA_SOC))
-> -	case MCASP_VERSION_1:
-> -	case MCASP_VERSION_2:
-> -	case MCASP_VERSION_3:
->  		ret =3D edma_pcm_platform_register(&pdev->dev);
-> -		break;
-> +#else
-> +		dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
-> +		ret =3D -EINVAL;
-> +		goto err;
->  #endif
-> +		break;
-> +	case PCM_SDMA:
->  #if IS_BUILTIN(CONFIG_SND_OMAP_SOC) || \
->  	(IS_MODULE(CONFIG_SND_DAVINCI_SOC_MCASP) && \
->  	 IS_MODULE(CONFIG_SND_OMAP_SOC))
-> -	case MCASP_VERSION_4:
->  		ret =3D omap_pcm_platform_register(&pdev->dev);
-> -		break;
-> +#else
-> +		dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
-> +		ret =3D -EINVAL;
-> +		goto err;
->  #endif
-> +		break;
->  	default:
-> -		dev_err(&pdev->dev, "Invalid McASP version: %d\n",
-> -			mcasp->version);
-> -		ret =3D -EINVAL;
-> +		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-> +	case -EPROBE_DEFER:
-> +		goto err;
->  		break;
->  	}
-> =20
->=20
-
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > +	temp = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> > +	if (!temp)
+> > +		return -ENOMEM;
+> > +
+> > +	len = snprintf(temp, PAGE_SIZE, "%s\n", string);
+> 
+> Given that we already have the string I don't understand why we're
+> allocating the temporary buffer - if it's just the length we're looking
+> for then strlen() should be enough?
+> 
+> > +} wm_adsp_debugfs_fops[] = {
+> > +	{
+> > +		.name = "wmfw_file",
+> 
+> > +		.name = "bin_file",
+> 
+> Bikeshedding but _name not _file perhaps?  It's not going to give you a
+> copy of the firmware/coefficients.
