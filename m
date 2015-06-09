@@ -1,50 +1,35 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: qcom: storm: remove special casing EPROBE_DEFER
-Date: Tue,  9 Jun 2015 14:35:22 +0100
-Message-ID: <1433856922-15541-1-git-send-email-srinivas.kandagatla@linaro.org>
-References: <1433856861-15433-1-git-send-email-srinivas.kandagatla@linaro.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1433856861-15433-1-git-send-email-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Patrick Lai <plai-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, kwestfie-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Banajit Goswami <bgoswami-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] mfd: wm8994: Fix NULL pointer exception
+	on missing pdata
+Date: Tue, 9 Jun 2015 14:56:06 +0100
+Message-ID: <20150609135606.GF32730@opensource.wolfsonmicro.com>
+References: <1433845112-371-1-git-send-email-ideal.song@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1433845112-371-1-git-send-email-ideal.song@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: broonie@kernel.org, lee.jones@linaro.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes special casing the EPROBE_DEFER error handling in the
-driver.
+On Tue, Jun 09, 2015 at 07:18:32PM +0900, Inha Song wrote:
+> If we use the dev_get_platdata, pdata can be NULL in DT environments.
+> Actually, NULL pointer exception is occurs with error messages like this:
+> 
+> [    1.226583] Unable to handle kernel NULL pointer dereference at virtual address 00000044
+> [    1.467910] [<c02f1e38>] (wm8994_irq_init) from [<c02f1bd4>] (wm8994_i2c_probe+0x684/0x858)
+> [    1.476241] [<c02f1bd4>] (wm8994_i2c_probe) from [<c0371c78>] (i2c_device_probe+0x11c/0x17c)
+> 
+> In wm8994-core, we already checked wheter platform data is NULL and set the
+> wm8994->pdata to platform data if platform data is not NULL.
+> So, we can use wm8994->pdata instead of platform data.
+> 
+> Signed-off-by: Inha Song <ideal.song@samsung.com>
+> ---
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
----
- sound/soc/qcom/storm.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
-index ee06613..2d833bf 100644
---- a/sound/soc/qcom/storm.c
-+++ b/sound/soc/qcom/storm.c
-@@ -122,15 +122,12 @@ static int storm_platform_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
--	if (ret == -EPROBE_DEFER) {
--		return ret;
--	} else if (ret) {
-+	if (ret)
- 		dev_err(&pdev->dev, "%s() error registering soundcard: %d\n",
- 				__func__, ret);
--		return ret;
--	}
- 
--	return 0;
-+	return ret;
-+
- }
- 
- #ifdef CONFIG_OF
--- 
-1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Charles
