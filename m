@@ -1,20 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 1/3] ALSA: hdac_ext: add extended HDA bus
-Date: Tue, 9 Jun 2015 15:36:51 +0530
-Message-ID: <20150609100651.GT28601@localhost>
-References: <1433411602-5444-1-git-send-email-vinod.koul@intel.com>
- <1433411602-5444-2-git-send-email-vinod.koul@intel.com>
- <s5hh9qik21f.wl-tiwai@suse.de> <20150608100822.GC28601@localhost>
- <20150608153014.GN28601@localhost> <s5hmw0aqkch.wl-tiwai@suse.de>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [PATCH] mfd: wm8994: Fix NULL pointer exception on
+ missing pdata
+Date: Tue, 09 Jun 2015 19:18:32 +0900
+Message-ID: <1433845112-371-1-git-send-email-ideal.song@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id BD3EC26065C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 12:05:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hmw0aqkch.wl-tiwai@suse.de>
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21CA226065C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 12:18:57 +0200 (CEST)
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7.0.5.31.0
+ 64bit (built May  5 2014))
+ with ESMTP id <0NPO00EVN9YVLG40@mailout1.samsung.com> for
+ alsa-devel@alsa-project.org; Tue, 09 Jun 2015 19:18:31 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,47 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: broonie@kernel.org, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Inha Song <ideal.song@samsung.com>, sameo@linux.intel.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 08, 2015 at 05:40:46PM +0200, Takashi Iwai wrote:
-> At Mon, 8 Jun 2015 21:00:14 +0530,
-> Vinod Koul wrote:
-> > 
-> > On Mon, Jun 08, 2015 at 03:38:22PM +0530, Vinod Koul wrote:
-> > > > > +#define snd_hdac_ext_bus_ppcap_updateb(dev, reg, mask, val) \
-> > > > > +	snd_hdac_ext_bus_ppcap_writeb(dev, reg, \
-> > > > > +			       (snd_hdac_ext_bus_ppcap_readb(dev, reg) & \
-> > > > > +				~(mask)) | (val))
-> > > > 
-> > > > It's not necessarily good to wrap all with such macros.
-> > > > For azx_write*(), I kept them as is for reducing the amount of useless
-> > > > code rewrites.  But for new codes, I don't think it's always worth...
-> > > Actually while updating the patch for ext I was wondering about this too.
-> > > 
-> > > So we cna remove these and use snd_hdac_chip_writel/w/b here
-> > As Jeeja pointed we can't use snd_hdac_chip_writel as we need to use a
-> > different base. So we cna move this to use plain writel only
-> > 
-> > Any other ideas?
-> 
-> I don't think you need to access via io_ops redirection as these are
-> SKL specific registers.  Use plain readl()/writel() and keep things
-> as simple as possible.
-> 
-> (And better to avoid w and b variants.)
-Okay I have removed all these macros but ended up defining one generic update
-macros (most of the places we are doing read and write, so better to use
-update macro
+If we use the dev_get_platdata, pdata can be NULL in DT environments.
+Actually, NULL pointer exception is occurs with error messages like this:
 
-/* update register macro */
-#define snd_hdac_updatel(addr, reg, mask, val) \
-	writel(addr, reg, (readl(addr, reg) & ~(mask)) | (val))
+[    1.226583] Unable to handle kernel NULL pointer dereference at virtual address 00000044
+[    1.467910] [<c02f1e38>] (wm8994_irq_init) from [<c02f1bd4>] (wm8994_i2c_probe+0x684/0x858)
+[    1.476241] [<c02f1bd4>] (wm8994_i2c_probe) from [<c0371c78>] (i2c_device_probe+0x11c/0x17c)
 
-yes its updatel to signify that it uses writel and readl
+In wm8994-core, we already checked wheter platform data is NULL and set the
+wm8994->pdata to platform data if platform data is not NULL.
+So, we can use wm8994->pdata instead of platform data.
 
-Let me know if you are fine with this approach
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ drivers/mfd/wm8994-irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
+index a14407e..ec2c891 100644
+--- a/drivers/mfd/wm8994-irq.c
++++ b/drivers/mfd/wm8994-irq.c
+@@ -193,7 +193,7 @@ int wm8994_irq_init(struct wm8994 *wm8994)
+ {
+ 	int ret;
+ 	unsigned long irqflags;
+-	struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
++	struct wm8994_pdata *pdata = &wm8994->pdata;
+ 
+ 	if (!wm8994->irq) {
+ 		dev_warn(wm8994->dev,
 -- 
-~Vinod
+2.0.0.390.gcb682f8
