@@ -1,25 +1,17 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Softvol only after device has opened
-Date: Tue, 9 Jun 2015 17:53:12 +0200
-Message-ID: <alpine.DEB.2.02.1506091752490.15001@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1506091304020.15001@lnxricardw1.se.axis.com>
- <5576D38C.4030907@ladisch.de>
- <alpine.DEB.2.02.1506091416530.15001@lnxricardw1.se.axis.com>
- <5576DA39.7090105@ladisch.de>
- <alpine.DEB.2.02.1506091428130.15001@lnxricardw1.se.axis.com>
- <5576DE6B.4050301@ladisch.de>
- <alpine.DEB.2.02.1506091632010.15001@lnxricardw1.se.axis.com>
- <s5h4mmhoskw.wl-tiwai@suse.de>
- <alpine.DEB.2.02.1506091644110.15001@lnxricardw1.se.axis.com>
- <s5h1thlorz1.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] ASoC: wm_adsp: Add code_probe and
+ codec_remove stubs
+Date: Tue, 9 Jun 2015 17:00:43 +0100
+Message-ID: <20150609160043.GD14071@sirena.org.uk>
+References: <1433863017-25349-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4378655852458202502=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id EB24E2606F9
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 17:53:13 +0200 (CEST)
-In-Reply-To: <s5h1thlorz1.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87990260532
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 18:00:51 +0200 (CEST)
+In-Reply-To: <1433863017-25349-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,41 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Tue, 9 Jun 2015, Takashi Iwai wrote:
+--===============4378655852458202502==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3RfTNxEu1XWqbbj+"
+Content-Disposition: inline
 
-> > > There is other way, of course.  It's no magic.  alsactl just creates a
-> > > user-space control element using the normal API.
-> > =
 
-> > Yes, of course that's doable, I was wondering if there's some other =
+--3RfTNxEu1XWqbbj+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > application that I don't know about that could do it. I.e. if there's a =
+On Tue, Jun 09, 2015 at 04:16:56PM +0100, Richard Fitzgerald wrote:
 
-> > startup script that normally uses amixer to set up default settings, is=
- it =
+> +	ret = wm_adsp2_codec_probe(&priv->core.adsp[0], codec);
+> +	if (ret)
+> +		return ret;
+> +
 
-> > possible to add something to that script rather than to write a separat=
-e =
+I'm still not a big fan of the double registration that's being done -
+if nothing else the fact that it's not also factoring out the creation
+of the DSP controls seems wrong.
 
-> > application to create the user control, which of course is doable too.
-> =
+--3RfTNxEu1XWqbbj+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> Just open PCM once and close.  That should suffice :)
-> =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> Other than that, an easy way is to run alsactl restore with a snippet
-> of user-space ctl element definition as Clemens suggested.
+iQEcBAEBCAAGBQJVdw2qAAoJECTWi3JdVIfQIP8H/RIowccXd0z4EMqmYUPVNqNH
+QnHqeeBzJkUywYXnV2uKXEHa2vG5F9p6Bcd3uykKM0v8Lo/xtqTwYiEJTMlkbVd/
+O0Z2v1WaRFgolDEBwx5qMyiD5gZfggTzNVRb3cvEzY/jRE8XOv5pEBvqMJVuz3Qx
++MDpVPdlTp0BdyMP/p16oswQaOpnIgwu2ooLm3yR/7Mx9HJLxYj8xUu/gYN8RQjh
+qf2aS0ceRMcp2ZbRTYi7Iu/NvHpugal9ZHpwPxG3d0h6yzlME/f2/2FCbqBr/p0A
+6BhibaTQv6ndlcZFTVzMqe2uyy719sFPUu7g647HRYEOhiTxQ/xQ+oXzdb7iSAs=
+=uxhP
+-----END PGP SIGNATURE-----
 
-Ok. Thanks!
+--3RfTNxEu1XWqbbj+--
 
-/Ricard
--- =
+--===============4378655852458202502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+--===============4378655852458202502==--
