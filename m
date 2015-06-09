@@ -1,33 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Softvol only after device has opened
-Date: Tue, 9 Jun 2015 13:08:26 +0200
-Message-ID: <alpine.DEB.2.02.1506091304020.15001@lnxricardw1.se.axis.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: 2 speakers are assigned to the same DAC,
+ this can't support 4.0/2.1 channles
+Date: Tue, 9 Jun 2015 19:50:30 +0800
+Message-ID: <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
+References: <5576B419.5010505@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id BFD4D265173
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bes.se.axis.com (Postfix) with ESMTP id 62C662E086
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:28 +0200 (CEST)
-Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id L4jBB0csFBpS for <alsa-devel@alsa-project.org>;
- Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by bes.se.axis.com (Postfix) with ESMTP id 933FA2E085
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id 7B600100C
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
-Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
- by boulder.se.axis.com (Postfix) with ESMTP id 6FA82208
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by seth.se.axis.com (Postfix) with ESMTP id 6DB083E049
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
+Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
+ [209.85.214.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BE2A2605A1
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:50:32 +0200 (CEST)
+Received: by obbgp2 with SMTP id gp2so10696145obb.2
+ for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 04:50:31 -0700 (PDT)
+In-Reply-To: <5576B419.5010505@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,37 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: hwang4 <hui.wang@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-I'm working on implementing support for a MEMS microphone with an I2S =
-
-connection. Since the microphone has no controls but simply outputs I2S =
-
-data from the word go, this means that any gain must be applied later. =
-
-(Microphones of this type are generally specified at outputting 0 dB FS at =
-
-some rediculously high SPL, 120 dB SPL being typical). =
-
-
-Since we use 16 bit audio in our (SOC) system, I'm trying to apply gain =
-
-using the softvol ALSA plugin, before converting to 16 bit audio (the =
-
-microphone outputs 24 bit audio).
-
-One thing though, the 'softvol' plugin very correctly creates a mixer
-control and it all works fine, but only after the device has been opened.
-Before that the mixer control doesn't seem to exist, which means that we
-cannot adjust the gain until the device is opened by some application.
-
-Is this intentional, a bug, or something that is misconfigured on my part?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+MjAxNS02LTkg5LiL5Y2INTozOSDmlrwgImh3YW5nNCIgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+
+IOWvq+mBk++8mgo+Cj4gSSBhbSB0cnlpbmcgdG8gZW5hYmxlIHRoZSBzdWJ3b29mZXIgc3BlYWtl
+ciBvbiBhIEhQIGxhcHRvcCwgb24gdGhpcwo+IG1hY2hpbmUsIHRoZXJlIGFyZSB0d28gc3BlYWtl
+cnMgYW5kIG9uZSBoZWFkcGhvbmUsIGJ1dCB0aGUgQklPUyB2ZXJiCj4gb25seSBlbmFibGVkIG9u
+ZSBzcGVha2VyKG5pZCAweGQpIGFuZCBvbmUgaGVhZHBob25lKG5pZCAweGIpLCBJIG5lZWQKPiB0
+byB1c2UgcXVpcmsgaW4gdGhlIGtlcm5lbCBkcml2ZXIgdG8gY29uZmlndXJlIHRoZSBzZWNvbmQg
+c3BlYWtlcgo+IChzdWJ3b29mZXIgc3BlYWtlciwgbmlkIDB4MTApLiBVbmRlciBjdXJyZW50IGFs
+c2EgZHJpdmVyLCB0aGUKPiBoZWFkcGhvbmUgd2lsbCBiZSBhc3NpZ25lZCBhIGRhYyAobmlkIDB4
+MTMpIGFuZCB0aGUgMiBzcGVha2VycyB3aWxsCj4gYmUgYXNzaWduZWQgYSBkYWMgKG5pZCAweDE0
+KSwgdGhpcyBhc3NpZ25tZW50IGlzIG5vdCBnb29kIHNpbmNlIDIKPiBzcGVha2VycyBzaGFyZSB0
+aGUgc2FtZSBkYWMsIHRoaXMgbWVhbnMgMiBzcGVha2VycyBjYW4ndCB3b3JrCj4gYXQgdGhlIHNh
+bWUgdGltZSB0byBzdXBwb3J0IDQuMC8yLjEgY2hhbm5lbHMuCj4KPiBPbiBhbm90aGVyIERlbGwg
+bWFjaGluZSB3aXRoIHJlYWx0ZWsgY29kZWMsIHRoZXJlIGFyZSBhbHNvIDIgc3BlYWtlcnMsCj4g
+MSBoZWFkcGhvbmUgYW5kIDIgZGFjcywgb24gdGhpcyBtYWNoaW5lLCAxIHNwZWFrZXIgYW5kIDEg
+aGVhZHBob25lIGFyZQphc3NpZ25lZAo+IDEgZGFjLCBhbmQgdGhlIG90aGVyIHNwZWFrZXIgaXMg
+YXNzaWduZWQgYW5vdGhlciBkYWMsIHNvIHRoZXJlIGlzIG5vCj4gcHJvYmxlbSBmb3IgdGhpcyBt
+YWNoaW5lIHRvIHN1cHBvcnQgNC4wLzIuMSBjaGFubmVscy4KPgo+IFRocm91Z2ggZGVidWdnaW5n
+LCBJIGZvdW5kIG9uIERlbGwgbWFjaGluZSwgdGhlIHNwZWFrZXIgbmlkIG9ubHkgaGFzCj4gb25l
+IGNvbm5lY3Rpb24gdG8gZGFjIChoYXJkd2lyZWQpLCBzbyB3aGVuIGRyaXZlciBhc3NpZ24gZGFj
+IHRvIGl0LCB0aGUKPiBtYXBfc2luZ2xlKCkgY2FuIHN1Y2Nlc3NmdWxseSBhc3NpZ24gdGhlIGVh
+Y2ggZGFjIHRvIHRoZSAyIHNwZWFrZXJzCnJlc3BlY3RpdmVseS4KPiBCdXQgb24gdGhhdCBIUCBt
+YWNoaW5lLCB0aGUgc3BlYWtlciBoYXMgbXVsdGlwbGUgY29ubmVjdGlvbnMgZm9yIGRhYywgdGhl
+Cj4gbWFwX3NpbmdsZSgpIGNhbid0IHdvcmsgZm9yIHRoaXMgbWFjaGluZS4KPgo+Cj4gVGhlIGFs
+c2EtaW5mby50eHQgZm9yIHRoYXQgSFAgbWFjaGluZSBpcyBhdApodHRwOi8vcGFzdGViaW4udWJ1
+bnR1LmNvbS8xMTY2Nzk0Ny8KClJlZmVyIHRvIDkySEQ5MSwgeW91IGRvbid0IG5lZWQgNCBjaGFu
+bmVsIHdoZW4gdGhlcmUgaXMgYmFuZCBwYXNzIGZpbHRlcgpmb3IgdGhlIHN1Yndvb2ZlciBhdCB0
+aGUgbW9ubyBwaW4KCjIuMi4gTW9ubyBPdXRwdXQKVGhlIE1vbm8gT3V0IHBvcnQgc291cmNlIHNl
+bGVjdGlvbiwgcG93ZXIgc3RhdGUsIGFuZCBtdXRlIGNoYXJhY3RlcmlzdGljcwphcmUgYWxsIGlu
+ZGVwZW5kZW50bHkKY29udHJvbGxlZCBieSB0aGUgbW9ubyBvdXRwdXQgcG9ydCBjb250cm9scy4g
+RVEgZG9lcyBub3QgYXBwbHkgdG8gdGhpcwpwYXRoLiBBbiBpbnRlcm5hbCAybmQgb3JkZXIgYmFu
+ZC1wYXNzIGZpbHRlciBpcyBwcm92aWRlZCB0byByZXN0cmljdCB0aGUKb3V0cHV0IGZyZXF1ZW5j
+aWVzIHdoZW4gdXNpbmcgbW9ubyBvdXQgdG8gZHJpdmUgYW4gZXh0ZXItCm5hbCBhbXBsaWZpZWQg
+c3ViLXdvb2ZlcgoKPiBUaGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhhdCBEZWxsIG1hY2hpbmUgaXMg
+YXQKaHR0cDovL3Bhc3RlYmluLnVidW50dS5jb20vMTE2Njc5ODIvCgpUaGUgc3Vid29vZmVyIGlz
+IGFsc28gYXQgbW9ubyBwaW4gY29tcGxleCwgYXJlICB0aGVyZSBhbnkgbG93IHBhc3MgZmlsdGVy
+CmZvciB0aGUgc3Vid29vZmVyIG9yIHZlbmRvciBjb2VmZiBuZWVkIHRvIGJlIHNldCA/Cgo+Cj4g
+VG8gZml4IHRoaXMgcHJvYmxlbSwgSSBjYW4gdXNlIHRoZSBxdWlyayBpbiB0aGUgZHJpdmVyIHRv
+IG1ha2UgdGhlCnNwZWFrZXIgaGF2ZQo+IG9ubHkgb25lIGNvbm5lY3Rpb24gZm9yIGRhYyBvciBk
+byBzb21lIGNoYW5nZSBpbiB0aGUgaGRhX2dlbmVyaWMuYyBsaWtlCmJlbG93LCBpbgo+IHlvdXIg
+b3Bpbmlvbiwgd2hpY2ggb25lIGlzIGJldHRlciBvciBwcm9iYWJseSB5b3UgaGF2ZSBhIGRpZmZl
+cmVudCBpZGVhCnRvIGZpeCB0aGlzIHByb2JsZW0/Cj4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
