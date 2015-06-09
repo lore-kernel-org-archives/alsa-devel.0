@@ -1,19 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - PCH HDA controller not
- controlled by i915 power
-Date: Tue, 09 Jun 2015 10:51:19 +0200
-Message-ID: <5576A907.9050305@canonical.com>
-References: <1433829918-5807-1-git-send-email-libin.yang@intel.com>	<s5h1thlbder.wl-tiwai@suse.de>	<55768BCB.3060001@canonical.com>
- <s5hy4jt9td4.wl-tiwai@suse.de>
+From: han.lu@intel.com
+Subject: [PATCH-v2 1/1] HDA: Intel: enable automatic runtime pm
+	for HDMI codecs by default
+Date: Tue,  9 Jun 2015 16:50:38 +0800
+Message-ID: <1433839838-16893-1-git-send-email-han.lu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AD152606CD
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 10:51:18 +0200 (CEST)
-In-Reply-To: <s5hy4jt9td4.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7CE52606CD
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 10:52:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: libin.yang@intel.com, alsa-devel@alsa-project.org
+To: tiwai@suse.de, daniel.vetter@intel.com
+Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: "Lu, Han" <han.lu@intel.com>
 
+Enable runtime PM of the HDMI audio codec on the latest Intel platforms.
+So the HD-A controller or HDMI codec can suspend when idle timeout by
+default and release the GFX power well.
+The patch influences HSW/BDW/BYT/BSW/SKL. Eariler platforms and third
+party analog codecs will not be influenced.
 
-On 2015-06-09 10:30, Takashi Iwai wrote:
-> At Tue, 09 Jun 2015 08:46:35 +0200,
-> David Henningsson wrote:
->>
->>
->>
->> On 2015-06-09 08:31, Takashi Iwai wrote:
->>> At Tue,  9 Jun 2015 14:05:18 +0800,
->>> libin.yang@intel.com wrote:
->>>>
->>>> From: Libin Yang <libin.yang@intel.com>
->>>>
->>>> On some Intel platforms, the HDMI codec is connected to PCH HDA
->>>> controller. In this case, AZX_DCAPS_I915_POWERWELL is set and
->>>> the i915 power well failure should not block the hda controller
->>>> initialization.
->>>>
->>>> Signed-off-by: Libin Yang <libin.yang@intel.com>
->>>
->>> Is this fix needed for 4.1, or it's only for 4.2?
->>
->> It's a bug fix, and as such should go to all kernels, even with cc to
->> stable. That said, it mainly concerns Skylake, so kernels that don't
->> support Skylake would not need a backport.
->
-> The patch can't be applied even to 4.1 as is because of the code
-> structure change.  So, Cc to stable doesn't work, in anyway.
->
->>> I vaguely remember of a bug report.  If there is any relevant bug
->>> report, please give the link, too.
->>
->> I think this was raised to Intel by us. The use case is when the
->> integrated GPU is disabled and a discrete GPU is used. In this case the
->> i915 module fails to load. If then the HDMI and analog codec are both on
->> the same controller, the entire controller fails instead of just the
->> HDMI codec.
->>
->> I'll see if I can get the patch tested ASAP.
->
-> OK, the bug seems needed for 4.1 and earlier.  But Libin's patch is
-> only for 4.2.  And even worse, backporting this isn't
-> straightforward due to the lack of need_i915_power field.  Hmm.
->
-> I think we can make it easier by just allowing to continue the probe.
-> A totally untested patch for 4.1 is below.
+Signed-off-by: Lu, Han <han.lu@intel.com>
 
-As part of the wider discussion, I think we could continue instead of 
-failing also on Haswell and Broadwell. This is to some degree 
-hypothetical, but if the i915 module does not load for some reason, then 
-the i915 module would not turn the power well off either, so it remains 
-on the entire time (and then audio could potentially work).
-
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 54380ed..e9f274b6 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3495,6 +3495,9 @@ static void codec_set_power_save(struct hda_codec *codec, int delay)
+ {
+ 	struct device *dev = hda_codec_dev(codec);
+ 
++	if (delay == 0 && codec->auto_runtime_pm)
++		delay = 3000;
++
+ 	if (delay > 0) {
+ 		pm_runtime_set_autosuspend_delay(dev, delay);
+ 		pm_runtime_use_autosuspend(dev);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 6c57258..12837ab 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -251,6 +251,7 @@ struct hda_codec {
+ 	unsigned int dp_mst:1; /* support DP1.2 Multi-stream transport */
+ 	unsigned int dump_coef:1; /* dump processing coefs in codec proc file */
+ 	unsigned int power_save_node:1; /* advanced PM for each widget */
++	unsigned int auto_runtime_pm:1; /* enable automatic codec runtime pm */
+ #ifdef CONFIG_PM
+ 	unsigned long power_on_acct;
+ 	unsigned long power_off_acct;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 407978b..f852734 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2356,6 +2356,10 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		codec->dp_mst = true;
+ 	}
+ 
++	/* Enable runtime pm for HDMI audio codec of HSW/BDW/SKL/BYT/BSW */
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
++		codec->auto_runtime_pm = 1;
++
+ 	generic_hdmi_init_per_pins(codec);
+ 
+ 	init_channel_allocations();
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.9.1
