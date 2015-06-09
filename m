@@ -1,22 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ALSA: split params refinement to
-	seperated file
-Date: Tue, 9 Jun 2015 20:03:06 +0100
-Message-ID: <20150609190306.GZ14071@sirena.org.uk>
-References: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
- <20150604191548.GR14071@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90553DD1E@SHSMSX101.ccr.corp.intel.com>
- <s5hd216k12q.wl-tiwai@suse.de>
- <20150609175711.GR14071@sirena.org.uk>
- <s5hlhfsaf79.wl-tiwai@suse.de>
+From: Adam Goode <adam@spicenitz.org>
+Subject: Re: Scarlett 18i8 hardware out of sync with AlsaMixer
+Date: Tue, 9 Jun 2015 17:44:36 -0400
+Message-ID: <CADN=WdqTjFPeFeTsEHxwbqR8YmTwqhNvp6d3eJP3BPgCNeUGnw@mail.gmail.com>
+References: <CADN=WdobTC9qdHjKD3PyPW99f2pX-j82vVzZ32zp4ed-C0Gbgg@mail.gmail.com>
+ <s5h8ucaed12.wl-tiwai@suse.de>
+ <CADN=WdpM_gUD=TpxP9cJmS3VXRwzgODgNeNE0Z2EwC71mZ8yAw@mail.gmail.com>
+ <s5hzj4q9mri.wl-tiwai@suse.de> <20150527135325.GA12862@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5269825357957181529=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 62FC926147D
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 21:03:13 +0200 (CEST)
-In-Reply-To: <s5hlhfsaf79.wl-tiwai@suse.de>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20CD12657A5
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 23:44:58 +0200 (CEST)
+Received: by oigz2 with SMTP id z2so20227951oig.1
+ for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 14:44:57 -0700 (PDT)
+In-Reply-To: <20150527135325.GA12862@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,64 +26,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Zhang, Vivian" <vivian.zhang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Chris J Arges <chris.j.arges@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>
 List-Id: alsa-devel@alsa-project.org
 
+I haven't tried the patch yet, but I will try to this week.
 
---===============5269825357957181529==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4zpRouf6TsWqWFjU"
-Content-Disposition: inline
+Non-enum settings are affected.
 
-
---4zpRouf6TsWqWFjU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 09, 2015 at 08:50:50PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > Indeed, part of the reason I was asking about the split was to help me
-> > figure out what takes the place of constraints - sounds like nothing?  I
-> > wonder if we could have cards support this by providing fixed
-> > configurations that we could check against using less code or something.
-
-> I think it's possible to reduce the hw refine part.  But, the question
-> is whether a kernel driver should trust user-space blindly.  The
-> removal of *full* hw constraints means that, and I'm worried by lack
-> of safety.
-
-Quite, I think you're right on the blind trust.  It seems like too much
-potential for people to break their systems.  The code reorganisation to
-make it easier to modify the kernel if you really know what you're doing
-seems much less worrying but that final step with no further safeguards
-is a bit too much.
-
---4zpRouf6TsWqWFjU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVdzhpAAoJECTWi3JdVIfQqh8H/1lsLYrlf5Hll3D7QjjqkaVf
-56OVi4+AlsQRx6v5GQmVcsgXfoKgx+fiVDkXlg4UT/xi6Qv3KCrQ8UeBKNFdL9pi
-BVLrhZ17lI+/UuufdpyQwHMvO8XGiATNcelK90XUg2DoPD8wJUeLIxaAbHRnshCf
-2cMAO/16vdk599/y1Zr8LZD/KraGixTO7OQ/jfzpwoJD4MAwXS6PSp3TI7YpjPCM
-AcRXZ0y4DzfDkRtLze4sLrVdggNe5XFWFAphmXp5GmFdhOy3IbkmFsfSBlG0ilU8
-cVjuTCs0fiIbhl1jqpKxUVXCyfil2ShNLg4eXUvW7cfYk0V8DAM1m4YVJdUlqGw=
-=JZ13
------END PGP SIGNATURE-----
-
---4zpRouf6TsWqWFjU--
-
---===============5269825357957181529==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+What firmware are you running? I have the newest beta firmware
+(Scarlett MixControl 1.9b4)
+http://beta.focusrite.com/releases/scarlett_mixcontrol/
 
 
---===============5269825357957181529==--
+The other thing to try is to use Mixcontrol and save some settings
+into the hardware. I did this once on Windows to use the device before
+ALSA supported its mixer.
+
+
+Adam
+
+
+
+On Wed, May 27, 2015 at 9:53 AM, Chris J Arges
+<chris.j.arges@canonical.com> wrote:
+> On Wed, May 27, 2015 at 03:24:17PM +0200, Takashi Iwai wrote:
+>> [Added more people to Cc]
+>>
+>> At Wed, 27 May 2015 08:55:21 -0400,
+>> Adam Goode wrote:
+>> >
+>> > The settings were not reset across a mem sleep (echo mem > /sys/power/state).
+>> >
+>> > Hard power off / power on does make the settings get out of sync.
+>>
+>
+> Ok did some testing on my Scarlett 18i8:
+>  suspend/resume -> settings not reset
+>  poweroff/poweron -> settings not reset
+>  unplug/replug usb -> settings not reset
+>  powercycle unit -> settings not reset
+>
+> Is there a more consistent method to trigger this issue?
+> In addition are you manually triggering 'alsactl restore/save' in this process?
+>
+> I'll do some additional testing to see if I can trigger this.
+>
+>> Then maybe the problem is that the device keeps the old setting while
+>> the driver resets to the default.  I vaguely remember that scarlett
+>> could save the default state in a persistent area, and the original
+>> driver patch had a kctl to trigger it.  We didn't take it because it
+>> might be dangerous.
+>>
+>>
+>
+> The original issue was this:
+>   Hey, as Tobias mentioned this is a HW saving (to the mixer's NVRAM)
+>   function used for using the mixer disconnected from a computer. We
+>   wouldn't want to continually write the NVRAM on every control update as
+>   I'm unsure of how many write-cycles the device is capable of.
+>
+> So if we wrote to NVRAM on each control update we might wear out the memory
+> very quickly. I think this functionality is more for using the device
+> disconnected from a computer.
+>
+>> Takashi
+>>
+>>
+>> > Adam
+>> >
+>> >
+>> > On Wed, May 27, 2015 at 2:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > > At Tue, 26 May 2015 21:39:22 -0400,
+>> > > Adam Goode wrote:
+>> > >>
+>> > >> Linux 4.0.2-300.fc22.x86_64
+>> > >>
+>> > >> Hi,
+>> > >>
+>> > >> I have the Scarlett 18i8 USB device that is supported by the new
+>> > >> scarlett_mixer.c code. I am happy to say that the mixer code works in
+>> > >> most cases. But under some conditions, I cannot get any sound out of
+>> > >> the device until I go and toggle the "Matrix 01 Input" and "Matrix 02
+>> > >> Input" enums up and then down (from PCM 1 and PCM 2). This appears to
+>> > >> me to be some kind of cache invalidation bug, where the device is out
+>> > >> of sync with kernel mixer state.
+>> > >>
+>> > >> I will take a look at the code myself at some point, but not for a
+>> > >> while. But I am happy to try patches if anyone comes up with anything
+>> > >> in the mean time.
+>> > >
+>
+> Does this change anything (untested)? And are non-enum settings affected?
+>
+> diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
+> index 7438e7c..ad4a452 100644
+> --- a/sound/usb/mixer_scarlett.c
+> +++ b/sound/usb/mixer_scarlett.c
+> @@ -438,11 +438,9 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
+>
+>         val = ucontrol->value.integer.value[0];
+>         val = val + opt->start;
+> -       if (val != oval) {
+> -               snd_usb_set_cur_mix_value(elem, 0, 0, val);
+> -               return 1;
+> -       }
+> -       return 0;
+> +       /* always set cur mix value */
+> +       snd_usb_set_cur_mix_value(elem, 0, 0, val);
+> +       return 1;
+>  }
+>
+>  static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
+>
+> --chris
+>
+>> > > Does it happen after some S3/S4 or even during a normal operation
+>> > > without power-saving?  The USB-audio device supports autopm, so this
+>> > > needs to be checked, too.
+>> > >
+>> > >
+>> > > Takashi
+>> >
+>>
