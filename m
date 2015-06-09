@@ -1,52 +1,42 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Softvol only after device has opened
-Date: Tue, 09 Jun 2015 14:39:07 +0200
-Message-ID: <5576DE6B.4050301@ladisch.de>
-References: <alpine.DEB.2.02.1506091304020.15001@lnxricardw1.se.axis.com>
- <5576D38C.4030907@ladisch.de>
- <alpine.DEB.2.02.1506091416530.15001@lnxricardw1.se.axis.com>
- <5576DA39.7090105@ladisch.de>
- <alpine.DEB.2.02.1506091428130.15001@lnxricardw1.se.axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 80D4C26528B
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 14:39:09 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1506091428130.15001@lnxricardw1.se.axis.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 0/2] ASoC: qcom: add support to apq8016 sbc machine driver
+Date: Tue,  9 Jun 2015 13:58:22 +0100
+Message-ID: <1433854702-23654-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Rob Herring <robh+dt@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ricard Wanderlof wrote:
-> What I was getting at was that although I can't do:
->
-> $ amixer sset Capture 192
->
-> if Capture is defined by the softvol plugin, and I haven't opened the
-> device prior to running amixer, however
->
-> $ alsactl restore 0:
->
-> works, assuming that I've saved the settings previously, even before the
-> device is opened. I can understand that this is very useful and desired,
-> but given that the underlying control does not yet exist, it puzzles me
-> that it actually works.
+This patchset adds sound card support to APQ8016 SBC board aka DB410c.
+APQ8016 has 4 MI2S( Primary, Secondary, Tertiary, Quaternary) which can be routed
+to internal wcd codec or external codecs. This routing and various board specifics
+are controlled by 2 mux registers.
 
-Have a look at /var/lib/asound.state.  "alsactl store" marks any user-
-space controls; when "alsactl restore" sees this flag, it will explicitly
-recreate the control.
+All these patches are tested for HDMI audio via adv7533 bridge and Analog audio
+on APQ8016-SBC, msm8916-mtp boards.
 
+Changes since v4 (https://lkml.org/lkml/2015/5/22/628)
+  - moved all the dt parsing to single function, spotted by Mark.
+  - removed unnecessary setting of card->dev = NULL spotted by Mark.
+  - renamed the dai links to the correct codec names.
+  - removed the special case for EPROBE_DEFER in probe, spotted by Mark.
+  - Dropped all the Changes since comments as most of the patches
+   in last series are merged to topic/qcom branch.
 
-Regards,
-Clemens
+--srini
+
+Srinivas Kandagatla (2):
+  ASoC: qcom: document apq8016 sbc machine driver bindings
+  ASoC: qcom: add apq8016 sound card support
+
+ .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |  61 ++++++
+ sound/soc/qcom/Kconfig                             |   9 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/apq8016_sbc.c                       | 208 +++++++++++++++++++++
+ 4 files changed, 280 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+ create mode 100644 sound/soc/qcom/apq8016_sbc.c
+
+-- 
+1.9.1
