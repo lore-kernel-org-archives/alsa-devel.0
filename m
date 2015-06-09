@@ -1,19 +1,18 @@
 From: Hui Wang <hui.wang@canonical.com>
 Subject: Re: 2 speakers are assigned to the same DAC,
  this can't support 4.0/2.1 channles
-Date: Tue, 09 Jun 2015 21:20:31 +0800
-Message-ID: <5576E81F.9070703@canonical.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
+Date: Tue, 09 Jun 2015 21:26:44 +0800
+Message-ID: <5576E994.2080300@canonical.com>
+References: <5576B419.5010505@canonical.com> <s5h1thlqeus.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id DFAB22606F3
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 15:20:41 +0200 (CEST)
-In-Reply-To: <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F05992652C5
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 15:26:49 +0200 (CEST)
+In-Reply-To: <s5h1thlqeus.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +22,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYvMDkvMjAxNSAwNzo1MCBQTSwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4gMjAxNS02LTkg5LiL
-5Y2INTozOSDmlrwgImh3YW5nNCIgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+IOWvq+mBk++8mgo+
-PiBJIGFtIHRyeWluZyB0byBlbmFibGUgdGhlIHN1Yndvb2ZlciBzcGVha2VyIG9uIGEgSFAgbGFw
-dG9wLCBvbiB0aGlzCj4+IG1hY2hpbmUsIHRoZXJlIGFyZSB0d28gc3BlYWtlcnMgYW5kIG9uZSBo
-ZWFkcGhvbmUsIGJ1dCB0aGUgQklPUyB2ZXJiCj4+IG9ubHkgZW5hYmxlZCBvbmUgc3BlYWtlcihu
-aWQgMHhkKSBhbmQgb25lIGhlYWRwaG9uZShuaWQgMHhiKSwgSSBuZWVkCj4+IHRvIHVzZSBxdWly
-ayBpbiB0aGUga2VybmVsIGRyaXZlciB0byBjb25maWd1cmUgdGhlIHNlY29uZCBzcGVha2VyCj4+
-IChzdWJ3b29mZXIgc3BlYWtlciwgbmlkIDB4MTApLiBVbmRlciBjdXJyZW50IGFsc2EgZHJpdmVy
-LCB0aGUKPj4gaGVhZHBob25lIHdpbGwgYmUgYXNzaWduZWQgYSBkYWMgKG5pZCAweDEzKSBhbmQg
-dGhlIDIgc3BlYWtlcnMgd2lsbAo+PiBiZSBhc3NpZ25lZCBhIGRhYyAobmlkIDB4MTQpLCB0aGlz
-IGFzc2lnbm1lbnQgaXMgbm90IGdvb2Qgc2luY2UgMgo+PiBzcGVha2VycyBzaGFyZSB0aGUgc2Ft
-ZSBkYWMsIHRoaXMgbWVhbnMgMiBzcGVha2VycyBjYW4ndCB3b3JrCj4+IGF0IHRoZSBzYW1lIHRp
-bWUgdG8gc3VwcG9ydCA0LjAvMi4xIGNoYW5uZWxzLgo+Pgo+PiBPbiBhbm90aGVyIERlbGwgbWFj
-aGluZSB3aXRoIHJlYWx0ZWsgY29kZWMsIHRoZXJlIGFyZSBhbHNvIDIgc3BlYWtlcnMsCj4+IDEg
-aGVhZHBob25lIGFuZCAyIGRhY3MsIG9uIHRoaXMgbWFjaGluZSwgMSBzcGVha2VyIGFuZCAxIGhl
-YWRwaG9uZSBhcmUKPiBhc3NpZ25lZAo+PiAxIGRhYywgYW5kIHRoZSBvdGhlciBzcGVha2VyIGlz
-IGFzc2lnbmVkIGFub3RoZXIgZGFjLCBzbyB0aGVyZSBpcyBubwo+PiBwcm9ibGVtIGZvciB0aGlz
-IG1hY2hpbmUgdG8gc3VwcG9ydCA0LjAvMi4xIGNoYW5uZWxzLgo+Pgo+PiBUaHJvdWdoIGRlYnVn
-Z2luZywgSSBmb3VuZCBvbiBEZWxsIG1hY2hpbmUsIHRoZSBzcGVha2VyIG5pZCBvbmx5IGhhcwo+
-PiBvbmUgY29ubmVjdGlvbiB0byBkYWMgKGhhcmR3aXJlZCksIHNvIHdoZW4gZHJpdmVyIGFzc2ln
-biBkYWMgdG8gaXQsIHRoZQo+PiBtYXBfc2luZ2xlKCkgY2FuIHN1Y2Nlc3NmdWxseSBhc3NpZ24g
-dGhlIGVhY2ggZGFjIHRvIHRoZSAyIHNwZWFrZXJzCj4gcmVzcGVjdGl2ZWx5Lgo+PiBCdXQgb24g
-dGhhdCBIUCBtYWNoaW5lLCB0aGUgc3BlYWtlciBoYXMgbXVsdGlwbGUgY29ubmVjdGlvbnMgZm9y
-IGRhYywgdGhlCj4+IG1hcF9zaW5nbGUoKSBjYW4ndCB3b3JrIGZvciB0aGlzIG1hY2hpbmUuCj4+
-Cj4+Cj4+IFRoZSBhbHNhLWluZm8udHh0IGZvciB0aGF0IEhQIG1hY2hpbmUgaXMgYXQKPiBodHRw
-Oi8vcGFzdGViaW4udWJ1bnR1LmNvbS8xMTY2Nzk0Ny8KPgo+IFJlZmVyIHRvIDkySEQ5MSwgeW91
-IGRvbid0IG5lZWQgNCBjaGFubmVsIHdoZW4gdGhlcmUgaXMgYmFuZCBwYXNzIGZpbHRlcgo+IGZv
-ciB0aGUgc3Vid29vZmVyIGF0IHRoZSBtb25vIHBpbgpZZXMsIHlvdSBhcmUgcmlnaHQuCj4KPiAy
-LjIuIE1vbm8gT3V0cHV0Cj4gVGhlIE1vbm8gT3V0IHBvcnQgc291cmNlIHNlbGVjdGlvbiwgcG93
-ZXIgc3RhdGUsIGFuZCBtdXRlIGNoYXJhY3RlcmlzdGljcwo+IGFyZSBhbGwgaW5kZXBlbmRlbnRs
-eQo+IGNvbnRyb2xsZWQgYnkgdGhlIG1vbm8gb3V0cHV0IHBvcnQgY29udHJvbHMuIEVRIGRvZXMg
-bm90IGFwcGx5IHRvIHRoaXMKPiBwYXRoLiBBbiBpbnRlcm5hbCAybmQgb3JkZXIgYmFuZC1wYXNz
-IGZpbHRlciBpcyBwcm92aWRlZCB0byByZXN0cmljdCB0aGUKPiBvdXRwdXQgZnJlcXVlbmNpZXMg
-d2hlbiB1c2luZyBtb25vIG91dCB0byBkcml2ZSBhbiBleHRlci0KPiBuYWwgYW1wbGlmaWVkIHN1
-Yi13b29mZXIKV2hlcmUgZGlkIHlvdSBmaW5kIHRoaXMgdGV4dD8gRG9lcyBpdCBtZWFuIHRoZXJl
-IGlzIGEgaGFyZHdhcmUgbG93IApmcmVxdWVuY3kgcGFzcyBmaWx0ZXIgaW5zaWRlIHRoZSBjb2Rl
-Yz8KPgo+PiBUaGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhhdCBEZWxsIG1hY2hpbmUgaXMgYXQKPiBo
-dHRwOi8vcGFzdGViaW4udWJ1bnR1LmNvbS8xMTY2Nzk4Mi8KPgo+IFRoZSBzdWJ3b29mZXIgaXMg
-YWxzbyBhdCBtb25vIHBpbiBjb21wbGV4LCBhcmUgIHRoZXJlIGFueSBsb3cgcGFzcyBmaWx0ZXIK
-PiBmb3IgdGhlIHN1Yndvb2ZlciBvciB2ZW5kb3IgY29lZmYgbmVlZCB0byBiZSBzZXQgPwpJIGRv
-bid0IGtub3cgaXQsIEkgZ3Vlc3MgdGhlcmUgaXMgbm8gaGFyZHdhcmUgZmlsdGVyLCBpdCB3aWxs
-IHdvcmsgd2l0aCAKdGhlIHNvZnR3YXJlIGxvdyBwYXNzIGZpbHRlciBpbiB0aGUgcHVsc2VhdWRp
-by4KPgo+PiBUbyBmaXggdGhpcyBwcm9ibGVtLCBJIGNhbiB1c2UgdGhlIHF1aXJrIGluIHRoZSBk
-cml2ZXIgdG8gbWFrZSB0aGUKPiBzcGVha2VyIGhhdmUKPj4gb25seSBvbmUgY29ubmVjdGlvbiBm
-b3IgZGFjIG9yIGRvIHNvbWUgY2hhbmdlIGluIHRoZSBoZGFfZ2VuZXJpYy5jIGxpa2UKPiBiZWxv
-dywgaW4KPj4geW91ciBvcGluaW9uLCB3aGljaCBvbmUgaXMgYmV0dGVyIG9yIHByb2JhYmx5IHlv
-dSBoYXZlIGEgZGlmZmVyZW50IGlkZWEKPiB0byBmaXggdGhpcyBwcm9ibGVtPwo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 06/09/2015 07:51 PM, Takashi Iwai wrote:
+> At Tue, 09 Jun 2015 17:38:33 +0800,
+> hwang4 wrote:
+>> I am trying to enable the subwoofer speaker on a HP laptop, on this
+>> machine, there are two speakers and one headphone, but the BIOS verb
+>> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
+>> to use quirk in the kernel driver to configure the second speaker
+>> (subwoofer speaker, nid 0x10). Under current alsa driver, the
+>> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
+>> be assigned a dac (nid 0x14), this assignment is not good since 2
+>> speakers share the same dac, this means 2 speakers can't work
+>> at the same time to support 4.0/2.1 channels.
+>>
+>> On another Dell machine with realtek codec, there are also 2 speakers,
+>> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone are
+>> assigned
+>> 1 dac, and the other speaker is assigned another dac, so there is no
+>> problem for this machine to support 4.0/2.1 channels.
+>>
+>> Through debugging, I found on Dell machine, the speaker nid only has
+>> one connection to dac (hardwired), so when driver assign dac to it, the
+>> map_single() can successfully assign the each dac to the 2 speakers
+>> respectively.
+>> But on that HP machine, the speaker has multiple connections for dac, the
+>> map_single() can't work for this machine.
+>>
+>>
+>> The alsa-info.txt for that HP machine is at
+>> http://pastebin.ubuntu.com/11667947/
+>> The alsa-info.txt for that Dell machine is at
+>> http://pastebin.ubuntu.com/11667982/
+>>
+>> To fix this problem, I can use the quirk in the driver to make the
+>> speaker have
+>> only one connection for dac or do some change in the hda_generic.c like
+>> below, in
+>> your opinion, which one is better or probably you have a different idea
+>> to fix this problem?
+>>
+>> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+>> index ac0db16..8194ff1 100644
+>> --- a/sound/pci/hda/hda_generic.c
+>> +++ b/sound/pci/hda/hda_generic.c
+>> @@ -1363,6 +1363,7 @@ static int try_assign_dacs(struct hda_codec
+>> *codec, int num_outs,
+>>                                   dac = try_dac(codec,
+>> get_primary_out(codec, i), pin);
+>>                           if (!dac)
+>>                                   dac = try_dac(codec, dacs[0], pin);
+>>                           if (!dac)
+>>                                   dac = try_dac(codec,
+>> get_primary_out(codec, i), pin);
+>>                           if (dac) {
+>> @@ -1762,6 +1763,12 @@ static int fill_and_eval_dacs(struct hda_codec
+>> *codec,
+>>                   if (err < 0)
+>>                           return err;
+>>                   badness += err;
+>> +               /* if there are 2 speakers and both of them are assigned
+>> to the same dac,
+>> +                  we need to increase the badness for this situation,
+>> because in this situation
+>> +                  the 2 speakers can't work together to support 4.0/2.1
+>> channels */
+>> +               if (cfg->speaker_outs == 2 && err <
+>> spec->extra_out_badness->no_dac &&
+>> +                   spec->multiout.extra_out_nid[1] == 0)
+>> +                       badness += spec->extra_out_badness->no_dac;
+> This doesn't look like the correct place to add badness for the
+> missing surround speaker.  This function is called for each path, so
+> it's evaluated not only for speakers.
+>
+> A cleaner way would be to prepare a different badness table for the
+> speaker, and increase the value for shared_surr.  An untested patch is
+> below.
+Got it, I will test it soon. Thanks.
+
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index ac0db1679f09..ee03fb884426 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -1292,6 +1292,15 @@ const struct badness_table hda_extra_out_badness = {
+>   };
+>   EXPORT_SYMBOL_GPL(hda_extra_out_badness);
+>   
+> +static const struct badness_table hda_speaker_out_badness = {
+> +	.no_primary_dac = BAD_NO_DAC,
+> +	.no_dac = BAD_NO_DAC,
+> +	.shared_primary = BAD_NO_EXTRA_DAC,
+> +	.shared_surr = BAD_NO_EXTRA_DAC,
+> +	.shared_clfe = BAD_SHARED_EXTRA_SURROUND,
+> +	.shared_surr_main = BAD_NO_EXTRA_SURR_DAC,
+> +};
+> +
+>   /* get the DAC of the primary output corresponding to the given array index */
+>   static hda_nid_t get_primary_out(struct hda_codec *codec, int idx)
+>   {
+> @@ -1758,7 +1767,7 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+>   				      cfg->speaker_pins,
+>   				      spec->multiout.extra_out_nid,
+>   				      spec->speaker_paths,
+> -				      spec->extra_out_badness);
+> +				      spec->speaker_out_badness);
+>   		if (err < 0)
+>   			return err;
+>   		badness += err;
+> @@ -4789,6 +4798,8 @@ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
+>   		spec->main_out_badness = &hda_main_out_badness;
+>   	if (!spec->extra_out_badness)
+>   		spec->extra_out_badness = &hda_extra_out_badness;
+> +	if (!spec->speaker_out_badness)
+> +		spec->speaker_out_badness = &hda_speaker_out_badness;
+>   
+>   	fill_all_dac_nids(codec);
+>   
+> diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+> index 56e4139b9032..1f868de1aec4 100644
+> --- a/sound/pci/hda/hda_generic.h
+> +++ b/sound/pci/hda/hda_generic.h
+> @@ -246,6 +246,7 @@ struct hda_gen_spec {
+>   	/* badness tables for output path evaluations */
+>   	const struct badness_table *main_out_badness;
+>   	const struct badness_table *extra_out_badness;
+> +	const struct badness_table *speaker_out_badness;
+>   
+>   	/* preferred pin/DAC pairs; an array of paired NIDs */
+>   	const hda_nid_t *preferred_dacs;
+> diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+> index 0521be8d46a8..9e9d0456dab7 100644
+> --- a/sound/pci/hda/patch_via.c
+> +++ b/sound/pci/hda/patch_via.c
+> @@ -579,6 +579,7 @@ static int via_parse_auto_config(struct hda_codec *codec)
+>   
+>   	spec->gen.main_out_badness = &via_main_out_badness;
+>   	spec->gen.extra_out_badness = &via_extra_out_badness;
+> +	spec->gen.speaker_out_badness = &via_extra_out_badness;
+>   
+>   	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, NULL, 0);
+>   	if (err < 0)
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
