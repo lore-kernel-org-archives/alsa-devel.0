@@ -1,141 +1,87 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - PCH HDA controller not
- controlled by i915 power
-Date: Tue, 09 Jun 2015 08:46:35 +0200
-Message-ID: <55768BCB.3060001@canonical.com>
-References: <1433829918-5807-1-git-send-email-libin.yang@intel.com>
- <s5h1thlbder.wl-tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_pcm_avail no reliable
+Date: Tue, 9 Jun 2015 16:08:30 +0800
+Message-ID: <CAN8cciY+f4b6ZbvFrKVN9eayEbH5vunMzQpKCKneSEhGOk_Gew@mail.gmail.com>
+References: <55765481.8020008@gmail.com>
+ <CAN8cciZ7fsgFxzrQTHs_6cOMERsU5kzTXkFHF-WCgjrRV8jDqg@mail.gmail.com>
+ <5576683F.4080605@gmail.com>
+ <CAN8ccibd2aXx66ypAB-a3nu0KSk1N40rOCf22QbN3XN3tBkJLA@mail.gmail.com>
+ <5576795A.4080200@gmail.com>
+ <CAN8cciZZ7TR0NbX-SaxkO6S4X2d+wfsEB_AMn+_f_g1CQuNh6A@mail.gmail.com>
+ <CACuU-+h9LKBaq4=e9ev2+cm_LdbMHYR8MhLjAsQNzFNrtyvU6A@mail.gmail.com>
+ <CAN8cciaq7vXiF_U67rikGgD+kQHtvEF0VPb-=TESbvVuoQBKxw@mail.gmail.com>
+ <CACuU-+hi85K0=3W5YOWt3yY5H9kRK4trECJAfDfmA4WXtn6+Yw@mail.gmail.com>
+ <5576950A.9040405@gmail.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 256F7260508
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 08:46:37 +0200 (CEST)
-In-Reply-To: <s5h1thlbder.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, libin.yang@intel.com
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============1129347987=="
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <5576950A.9040405@gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: lijian <lijian@pset.suntec.net>, wangwei <wangwei@pset.suntec.net>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1129347987==
+Content-Type: multipart/alternative; boundary=089e01538c5c8b54c705181143e0
 
-
-On 2015-06-09 08:31, Takashi Iwai wrote:
-> At Tue,  9 Jun 2015 14:05:18 +0800,
-> libin.yang@intel.com wrote:
->>
->> From: Libin Yang <libin.yang@intel.com>
->>
->> On some Intel platforms, the HDMI codec is connected to PCH HDA
->> controller. In this case, AZX_DCAPS_I915_POWERWELL is set and
->> the i915 power well failure should not block the hda controller
->> initialization.
->>
->> Signed-off-by: Libin Yang <libin.yang@intel.com>
->
-> Is this fix needed for 4.1, or it's only for 4.2?
-
-It's a bug fix, and as such should go to all kernels, even with cc to 
-stable. That said, it mainly concerns Skylake, so kernels that don't 
-support Skylake would not need a backport.
-
-> I vaguely remember of a bug report.  If there is any relevant bug
-> report, please give the link, too.
-
-I think this was raised to Intel by us. The use case is when the 
-integrated GPU is disabled and a discrete GPU is used. In this case the 
-i915 module fails to load. If then the HDMI and analog codec are both on 
-the same controller, the entire controller fails instead of just the 
-HDMI codec.
-
-I'll see if I can get the patch tested ASAP.
+--089e01538c5c8b54c705181143e0
+Content-Type: text/plain; charset=UTF-8
 
 >
+>     I tried using a smaller period_size (about 1/16 of hwbuf_size),
+snd_pcm_avail returned a better value.
+
+Period bytes  = 2Kbytes which is still larger than the default
+rewind_safeguard 512 bytes
+
+>     But cpu usage moved from 1% to 4%, since we are using it in a
+automotive, we don`t care about power saving,  I think it is acceptable.
 >
-> Takashi
+>     But I`m not sure if there is any other down side about "time based
+scheduling" ?
 >
->> ---
->>   sound/hda/hdac_i915.c     |  6 +++---
->>   sound/pci/hda/hda_intel.c | 11 +++++++++--
->>   2 files changed, 12 insertions(+), 5 deletions(-)
->>
->> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
->> index cb78c25..4f4036a 100644
->> --- a/sound/hda/hdac_i915.c
->> +++ b/sound/hda/hdac_i915.c
->> @@ -27,7 +27,7 @@ int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
->>   {
->>   	struct i915_audio_component *acomp = bus->audio_component;
->>
->> -	if (!acomp->ops)
->> +	if (!acomp || !acomp->ops)
->>   		return -ENODEV;
->>
->>   	if (!acomp->ops->codec_wake_override) {
->> @@ -49,7 +49,7 @@ int snd_hdac_display_power(struct hdac_bus *bus, bool enable)
->>   {
->>   	struct i915_audio_component *acomp = bus->audio_component;
->>
->> -	if (!acomp->ops)
->> +	if (!acomp || !acomp->ops)
->>   		return -ENODEV;
->>
->>   	dev_dbg(bus->dev, "display power %s\n",
->> @@ -72,7 +72,7 @@ int snd_hdac_get_display_clk(struct hdac_bus *bus)
->>   {
->>   	struct i915_audio_component *acomp = bus->audio_component;
->>
->> -	if (!acomp->ops)
->> +	if (!acomp || !acomp->ops)
->>   		return -ENODEV;
->>
->>   	return acomp->ops->get_cdclk_freq(acomp->dev);
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 7933fb0..775e020 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -1986,14 +1986,21 @@ static int azx_probe_continue(struct azx *chip)
->>   			hda->need_i915_power = 1;
->>
->>   		err = snd_hdac_i915_init(bus);
->> +		/* if controller is located in powerwell,
->> +		 * the initialization should be stopped.
->> +		 * if only codec is located in powerwell,
->> +		 * the hd audio is still ok for analog audio
->> +		 */
->>   		if (err < 0)
->> -			goto i915_power_fail;
->> +			if (hda->need_i915_power)
->> +				goto i915_power_fail;
->>
->>   		err = snd_hdac_display_power(bus, true);
->>   		if (err < 0) {
->>   			dev_err(chip->card->dev,
->>   				"Cannot turn on display power on i915\n");
->> -			goto i915_power_fail;
->> +			if (hda->need_i915_power)
->> +				goto i915_power_fail;
->>   		}
->>   	}
->>
->> --
->> 1.9.1
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--089e01538c5c8b54c705181143e0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p><br>
+&gt;<br>
+&gt; =C2=A0 =C2=A0 I tried using a smaller period_size (about 1/16 of hwbuf=
+_size), snd_pcm_avail returned a better value.<br></p>
+<p>Period bytes=C2=A0 =3D 2Kbytes which is still larger than the default re=
+wind_safeguard 512 bytes</p>
+<p>&gt; =C2=A0 =C2=A0 But cpu usage moved from 1% to 4%, since we are using=
+ it in a automotive, we don`t care about power saving,=C2=A0 I think it is =
+acceptable.<br>
+&gt;<br>
+&gt; =C2=A0 =C2=A0 But I`m not sure if there is any other down side about &=
+quot;time based scheduling&quot; ?<br>
+&gt;<br>
+&gt; </p>
+
+--089e01538c5c8b54c705181143e0--
+
+--===============1129347987==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
+by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxz
+ZWF1ZGlvLWRpc2N1c3MK
+
+--===============1129347987==--
