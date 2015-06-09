@@ -1,18 +1,33 @@
-From: arun@accosted.net
-Subject: [PATCH] control: Allow cset'ing specific values in the
-	multi-value case
-Date: Tue,  9 Jun 2015 16:25:07 +0530
-Message-ID: <1433847307-26125-1-git-send-email-arun@accosted.net>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Softvol only after device has opened
+Date: Tue, 9 Jun 2015 13:08:26 +0200
+Message-ID: <alpine.DEB.2.02.1506091304020.15001@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 15A20265173
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 12:55:42 +0200 (CEST)
-Received: by pdjn11 with SMTP id n11so12562565pdj.0
- for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 03:55:40 -0700 (PDT)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFD4D265173
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 62C662E086
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:28 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id L4jBB0csFBpS for <alsa-devel@alsa-project.org>;
+ Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 933FA2E085
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 7B600100C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+ by boulder.se.axis.com (Postfix) with ESMTP id 6FA82208
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by seth.se.axis.com (Postfix) with ESMTP id 6DB083E049
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 13:08:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +38,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Arun Raghavan <git@arunraghavan.net>
 List-Id: alsa-devel@alsa-project.org
 
-From: Arun Raghavan <git@arunraghavan.net>
 
-This works with syntax like ...
+I'm working on implementing support for a MEMS microphone with an I2S =
 
-  amixer cset 'IIR1 Band1'  ,,200
+connection. Since the microphone has no controls but simply outputs I2S =
 
-... to set the third value of the control to 200.
----
- src/control/ctlparse.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+data from the word go, this means that any gain must be applied later. =
 
-diff --git a/src/control/ctlparse.c b/src/control/ctlparse.c
-index 8d6c385..64c6480 100644
---- a/src/control/ctlparse.c
-+++ b/src/control/ctlparse.c
-@@ -48,9 +48,9 @@ static inline long int convert_prange1(long val, long min, long max)
- #define check_range(val, min, max) \
- 	((val < min) ? (min) : ((val > max) ? (max) : (val)))
- 
--static long get_integer(const char **ptr, long min, long max)
-+static long get_integer(const char **ptr, long def, long min, long max)
- {
--	long val = min;
-+	long val = def;
- 	char *p = (char *)*ptr, *s;
- 
- 	if (*p == ':')
-@@ -351,6 +351,8 @@ int snd_ctl_ascii_value_parse(snd_ctl_t *handle,
- 			break;
- 		case SND_CTL_ELEM_TYPE_INTEGER:
- 			tmp = get_integer(&ptr,
-+					  snd_ctl_elem_value_get_integer(dst,
-+									 idx),
- 					  snd_ctl_elem_info_get_min(info),
- 					  snd_ctl_elem_info_get_max(info));
- 			snd_ctl_elem_value_set_integer(dst, idx, tmp);
-@@ -364,12 +366,12 @@ int snd_ctl_ascii_value_parse(snd_ctl_t *handle,
- 		case SND_CTL_ELEM_TYPE_ENUMERATED:
- 			tmp = get_ctl_enum_item_index(handle, info, &ptr);
- 			if (tmp < 0)
--				tmp = get_integer(&ptr, 0,
-+				tmp = get_integer(&ptr, 0, 0,
- 					snd_ctl_elem_info_get_items(info) - 1);
- 			snd_ctl_elem_value_set_enumerated(dst, idx, tmp);
- 			break;
- 		case SND_CTL_ELEM_TYPE_BYTES:
--			tmp = get_integer(&ptr, 0, 255);
-+			tmp = get_integer(&ptr, 0, 0, 255);
- 			snd_ctl_elem_value_set_byte(dst, idx, tmp);
- 			break;
- 		default:
--- 
-2.4.2
+(Microphones of this type are generally specified at outputting 0 dB FS at =
+
+some rediculously high SPL, 120 dB SPL being typical). =
+
+
+Since we use 16 bit audio in our (SOC) system, I'm trying to apply gain =
+
+using the softvol ALSA plugin, before converting to 16 bit audio (the =
+
+microphone outputs 24 bit audio).
+
+One thing though, the 'softvol' plugin very correctly creates a mixer
+control and it all works fine, but only after the device has been opened.
+Before that the mixer control doesn't seem to exist, which means that we
+cannot adjust the gain until the device is opened by some application.
+
+Is this intentional, a bug, or something that is misconfigured on my part?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
