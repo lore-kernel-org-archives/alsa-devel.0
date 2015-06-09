@@ -1,35 +1,64 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] mfd: wm8994: Fix NULL pointer exception
-	on missing pdata
-Date: Tue, 9 Jun 2015 14:56:06 +0100
-Message-ID: <20150609135606.GF32730@opensource.wolfsonmicro.com>
-References: <1433845112-371-1-git-send-email-ideal.song@samsung.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Softvol only after device has opened
+Date: Tue, 9 Jun 2015 16:32:35 +0200
+Message-ID: <alpine.DEB.2.02.1506091632010.15001@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1506091304020.15001@lnxricardw1.se.axis.com>
+ <5576D38C.4030907@ladisch.de>
+ <alpine.DEB.2.02.1506091416530.15001@lnxricardw1.se.axis.com>
+ <5576DA39.7090105@ladisch.de>
+ <alpine.DEB.2.02.1506091428130.15001@lnxricardw1.se.axis.com>
+ <5576DE6B.4050301@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1433845112-371-1-git-send-email-ideal.song@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: broonie@kernel.org, lee.jones@linaro.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEFEC26067D
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 16:32:38 +0200 (CEST)
+In-Reply-To: <5576DE6B.4050301@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 09, 2015 at 07:18:32PM +0900, Inha Song wrote:
-> If we use the dev_get_platdata, pdata can be NULL in DT environments.
-> Actually, NULL pointer exception is occurs with error messages like this:
-> 
-> [    1.226583] Unable to handle kernel NULL pointer dereference at virtual address 00000044
-> [    1.467910] [<c02f1e38>] (wm8994_irq_init) from [<c02f1bd4>] (wm8994_i2c_probe+0x684/0x858)
-> [    1.476241] [<c02f1bd4>] (wm8994_i2c_probe) from [<c0371c78>] (i2c_device_probe+0x11c/0x17c)
-> 
-> In wm8994-core, we already checked wheter platform data is NULL and set the
-> wm8994->pdata to platform data if platform data is not NULL.
-> So, we can use wm8994->pdata instead of platform data.
-> 
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Tue, 9 Jun 2015, Clemens Ladisch wrote:
 
-Thanks,
-Charles
+> Ricard Wanderlof wrote:
+> > What I was getting at was that although I can't do:
+> >
+> > $ amixer sset Capture 192
+> >
+> > if Capture is defined by the softvol plugin, and I haven't opened the
+> > device prior to running amixer, however
+> >
+> > $ alsactl restore 0:
+> >
+> > works, assuming that I've saved the settings previously, even before the
+> > device is opened. I can understand that this is very useful and desired,
+> > but given that the underlying control does not yet exist, it puzzles me
+> > that it actually works.
+> =
+
+> Have a look at /var/lib/asound.state.  "alsactl store" marks any user-
+> space controls; when "alsactl restore" sees this flag, it will explicitly
+> recreate the control.
+
+And there is no other way to recreate the control using an application =
+
+than to use alsactl then?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
