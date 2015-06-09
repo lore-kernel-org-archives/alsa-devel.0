@@ -1,17 +1,19 @@
-From: Dave Airlie <airlied@gmail.com>
-Subject: regression in device count on hotplug
-Date: Tue, 9 Jun 2015 12:53:55 +1000
-Message-ID: <CAPM=9txvcgQ9YcMkC2mNrZWhESPtwXREhr-Abjgjw+ftHsPd1w@mail.gmail.com>
+From: airlied@gmail.com
+Subject: [PATCH] alsa: hda_codec: fix number of devices query
+	on hotplug
+Date: Tue,  9 Jun 2015 13:39:31 +1000
+Message-ID: <1433821171-23519-1-git-send-email-airlied@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f44.google.com (mail-la0-f44.google.com
- [209.85.215.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 634AB261B36
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 04:53:56 +0200 (CEST)
-Received: by laar3 with SMTP id r3so3296850laa.3
- for <alsa-devel@alsa-project.org>; Mon, 08 Jun 2015 19:53:55 -0700 (PDT)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BEDC261B33
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 05:39:43 +0200 (CEST)
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+ (int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+ by mx1.redhat.com (Postfix) with ESMTPS id C82008F31A
+ for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 03:39:41 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, mengdong.lin@intel.com
+To: alsa-devel@alsa-project.org
+Cc: Dave Airlie <airlied@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Dave Airlie <airlied@redhat.com>
 
-I've been looking at mst support a bit more, and noticed a regression
-in the number of devices probing between 4.0 and 4.1
+The new regmap code seems to cache this, which isn't helpful
+for the hotplug dock situation where this gets updated.
 
-On 4.0 if I boot with no dock, and cat /proc/asound/HDMI/codec#0
+Use the uncached query for this.
 
-Node 0x06 has Devices: 0
-if I dock
-I get
-Devices: 3, and the info about the 3 devices.
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+---
+ sound/pci/hda/hda_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 4.1-rc6 if I boot with no dock, and cat
-I get Devices:0,
-however when I dock,
-I still get Devices: 0
-
-I haven't had time to bisect yet, but was hoping someone might be able
-to spot it from the symptoms.
-
-Dave.
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index b49feff..b778221 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -436,7 +436,7 @@ static unsigned int get_num_devices(struct hda_codec *codec, hda_nid_t nid)
+ 	    get_wcaps_type(wcaps) != AC_WID_PIN)
+ 		return 0;
+ 
+-	parm = snd_hda_param_read(codec, nid, AC_PAR_DEVLIST_LEN);
++	parm = snd_hdac_read_parm_uncached(&codec->core, nid, AC_PAR_DEVLIST_LEN);
+ 	if (parm == -1 && codec->bus->rirb_error)
+ 		parm = 0;
+ 	return parm & AC_DEV_LIST_LEN_MASK;
+-- 
+2.4.1
