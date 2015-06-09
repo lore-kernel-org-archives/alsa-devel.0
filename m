@@ -1,176 +1,66 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Tue, 09 Jun 2015 21:26:44 +0800
-Message-ID: <5576E994.2080300@canonical.com>
-References: <5576B419.5010505@canonical.com> <s5h1thlqeus.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id F05992652C5
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 15:26:49 +0200 (CEST)
-In-Reply-To: <s5h1thlqeus.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] ASoC: qcom: storm: allocate snd_soc_card struct dynamically.
+Date: Tue,  9 Jun 2015 14:34:21 +0100
+Message-ID: <1433856861-15433-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, kwestfie@codeaurora.org
+Cc: Rob Herring <robh+dt@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/2015 07:51 PM, Takashi Iwai wrote:
-> At Tue, 09 Jun 2015 17:38:33 +0800,
-> hwang4 wrote:
->> I am trying to enable the subwoofer speaker on a HP laptop, on this
->> machine, there are two speakers and one headphone, but the BIOS verb
->> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
->> to use quirk in the kernel driver to configure the second speaker
->> (subwoofer speaker, nid 0x10). Under current alsa driver, the
->> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
->> be assigned a dac (nid 0x14), this assignment is not good since 2
->> speakers share the same dac, this means 2 speakers can't work
->> at the same time to support 4.0/2.1 channels.
->>
->> On another Dell machine with realtek codec, there are also 2 speakers,
->> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone are
->> assigned
->> 1 dac, and the other speaker is assigned another dac, so there is no
->> problem for this machine to support 4.0/2.1 channels.
->>
->> Through debugging, I found on Dell machine, the speaker nid only has
->> one connection to dac (hardwired), so when driver assign dac to it, the
->> map_single() can successfully assign the each dac to the 2 speakers
->> respectively.
->> But on that HP machine, the speaker has multiple connections for dac, the
->> map_single() can't work for this machine.
->>
->>
->> The alsa-info.txt for that HP machine is at
->> http://pastebin.ubuntu.com/11667947/
->> The alsa-info.txt for that Dell machine is at
->> http://pastebin.ubuntu.com/11667982/
->>
->> To fix this problem, I can use the quirk in the driver to make the
->> speaker have
->> only one connection for dac or do some change in the hda_generic.c like
->> below, in
->> your opinion, which one is better or probably you have a different idea
->> to fix this problem?
->>
->> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
->> index ac0db16..8194ff1 100644
->> --- a/sound/pci/hda/hda_generic.c
->> +++ b/sound/pci/hda/hda_generic.c
->> @@ -1363,6 +1363,7 @@ static int try_assign_dacs(struct hda_codec
->> *codec, int num_outs,
->>                                   dac = try_dac(codec,
->> get_primary_out(codec, i), pin);
->>                           if (!dac)
->>                                   dac = try_dac(codec, dacs[0], pin);
->>                           if (!dac)
->>                                   dac = try_dac(codec,
->> get_primary_out(codec, i), pin);
->>                           if (dac) {
->> @@ -1762,6 +1763,12 @@ static int fill_and_eval_dacs(struct hda_codec
->> *codec,
->>                   if (err < 0)
->>                           return err;
->>                   badness += err;
->> +               /* if there are 2 speakers and both of them are assigned
->> to the same dac,
->> +                  we need to increase the badness for this situation,
->> because in this situation
->> +                  the 2 speakers can't work together to support 4.0/2.1
->> channels */
->> +               if (cfg->speaker_outs == 2 && err <
->> spec->extra_out_badness->no_dac &&
->> +                   spec->multiout.extra_out_nid[1] == 0)
->> +                       badness += spec->extra_out_badness->no_dac;
-> This doesn't look like the correct place to add badness for the
-> missing surround speaker.  This function is called for each path, so
-> it's evaluated not only for speakers.
->
-> A cleaner way would be to prepare a different badness table for the
-> speaker, and increase the value for shared_surr.  An untested patch is
-> below.
-Got it, I will test it soon. Thanks.
+This patch moves static allocation of snd_soc_card to dynamic allocation,
+the reason to do this is to avoid holding up any dangling pointers
+in this static structures. And I see no use for having this struct as static
+given that the card->name is also populated dynamically from dt.
 
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-> index ac0db1679f09..ee03fb884426 100644
-> --- a/sound/pci/hda/hda_generic.c
-> +++ b/sound/pci/hda/hda_generic.c
-> @@ -1292,6 +1292,15 @@ const struct badness_table hda_extra_out_badness = {
->   };
->   EXPORT_SYMBOL_GPL(hda_extra_out_badness);
->   
-> +static const struct badness_table hda_speaker_out_badness = {
-> +	.no_primary_dac = BAD_NO_DAC,
-> +	.no_dac = BAD_NO_DAC,
-> +	.shared_primary = BAD_NO_EXTRA_DAC,
-> +	.shared_surr = BAD_NO_EXTRA_DAC,
-> +	.shared_clfe = BAD_SHARED_EXTRA_SURROUND,
-> +	.shared_surr_main = BAD_NO_EXTRA_SURR_DAC,
-> +};
-> +
->   /* get the DAC of the primary output corresponding to the given array index */
->   static hda_nid_t get_primary_out(struct hda_codec *codec, int idx)
->   {
-> @@ -1758,7 +1767,7 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
->   				      cfg->speaker_pins,
->   				      spec->multiout.extra_out_nid,
->   				      spec->speaker_paths,
-> -				      spec->extra_out_badness);
-> +				      spec->speaker_out_badness);
->   		if (err < 0)
->   			return err;
->   		badness += err;
-> @@ -4789,6 +4798,8 @@ int snd_hda_gen_parse_auto_config(struct hda_codec *codec,
->   		spec->main_out_badness = &hda_main_out_badness;
->   	if (!spec->extra_out_badness)
->   		spec->extra_out_badness = &hda_extra_out_badness;
-> +	if (!spec->speaker_out_badness)
-> +		spec->speaker_out_badness = &hda_speaker_out_badness;
->   
->   	fill_all_dac_nids(codec);
->   
-> diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-> index 56e4139b9032..1f868de1aec4 100644
-> --- a/sound/pci/hda/hda_generic.h
-> +++ b/sound/pci/hda/hda_generic.h
-> @@ -246,6 +246,7 @@ struct hda_gen_spec {
->   	/* badness tables for output path evaluations */
->   	const struct badness_table *main_out_badness;
->   	const struct badness_table *extra_out_badness;
-> +	const struct badness_table *speaker_out_badness;
->   
->   	/* preferred pin/DAC pairs; an array of paired NIDs */
->   	const hda_nid_t *preferred_dacs;
-> diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-> index 0521be8d46a8..9e9d0456dab7 100644
-> --- a/sound/pci/hda/patch_via.c
-> +++ b/sound/pci/hda/patch_via.c
-> @@ -579,6 +579,7 @@ static int via_parse_auto_config(struct hda_codec *codec)
->   
->   	spec->gen.main_out_badness = &via_main_out_badness;
->   	spec->gen.extra_out_badness = &via_extra_out_badness;
-> +	spec->gen.speaker_out_badness = &via_extra_out_badness;
->   
->   	err = snd_hda_parse_pin_defcfg(codec, &spec->gen.autocfg, NULL, 0);
->   	if (err < 0)
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/storm.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
+index b8bd296..ee06613 100644
+--- a/sound/soc/qcom/storm.c
++++ b/sound/soc/qcom/storm.c
+@@ -69,11 +69,6 @@ static struct snd_soc_dai_link storm_dai_link = {
+ 	.ops		= &storm_soc_ops,
+ };
+ 
+-static struct snd_soc_card storm_soc_card = {
+-	.name	= "ipq806x-storm",
+-	.dev	= NULL,
+-};
+-
+ static int storm_parse_of(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dai_link *dai_link = card->dai_link;
+@@ -99,14 +94,13 @@ static int storm_parse_of(struct snd_soc_card *card)
+ 
+ static int storm_platform_probe(struct platform_device *pdev)
+ {
+-	struct snd_soc_card *card = &storm_soc_card;
++	struct snd_soc_card *card;
+ 	int ret;
+ 
+-	if (card->dev) {
+-		dev_err(&pdev->dev, "%s() error, existing soundcard\n",
+-				__func__);
+-		return -ENODEV;
+-	}
++	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+ 
+@@ -129,7 +123,6 @@ static int storm_platform_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret == -EPROBE_DEFER) {
+-		card->dev = NULL;
+ 		return ret;
+ 	} else if (ret) {
+ 		dev_err(&pdev->dev, "%s() error registering soundcard: %d\n",
+-- 
+1.9.1
