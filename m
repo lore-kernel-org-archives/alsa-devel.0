@@ -1,22 +1,24 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Wed, 10 Jun 2015 09:30:50 +0800
-Message-ID: <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
- <5576E81F.9070703@canonical.com>
+Subject: Re: [pulseaudio-discuss] (alsa-lib)pcm_hw.c:
+ SNDRV_PCM_IOCTL_HW_PARAMS failed (-5)
+Date: Wed, 10 Jun 2015 10:37:46 +0800
+Message-ID: <CAN8cciZaiz+_J=1uHRXE6Wo5b4xUcVb8QouurC80eK9QeA-M_Q@mail.gmail.com>
+References: <CAN8ccib1mKvT+yYczAmsDZTsK7JY3h+J1u0X3qvHYy=31J=6pQ@mail.gmail.com>
+ <CAN8ccib=4Jix+FiAg7TihxGZvgM=bYVHctTV=rEpR-jFn1arCw@mail.gmail.com>
+ <5571ABCD.1020909@mokrynskyi.com>
+ <CAN8cciaPqLYOT3GiGPvD=Vg2J8uujvYNeUVj0ebv2vOcqKHkVw@mail.gmail.com>
+ <55773DCF.9010007@mokrynskyi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id E0690265846
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 03:30:51 +0200 (CEST)
-Received: by obbqz1 with SMTP id qz1so24808156obb.3
- for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 18:30:51 -0700 (PDT)
-In-Reply-To: <5576E81F.9070703@canonical.com>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08F59265846
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 04:37:48 +0200 (CEST)
+Received: by oiha141 with SMTP id a141so23566423oih.0
+ for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 19:37:47 -0700 (PDT)
+In-Reply-To: <55773DCF.9010007@mokrynskyi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,81 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>>
->>> I am trying to enable the subwoofer speaker on a HP laptop, on this
->>> machine, there are two speakers and one headphone, but the BIOS verb
->>> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
->>> to use quirk in the kernel driver to configure the second speaker
->>> (subwoofer speaker, nid 0x10). Under current alsa driver, the
->>> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
->>> be assigned a dac (nid 0x14), this assignment is not good since 2
->>> speakers share the same dac, this means 2 speakers can't work
->>> at the same time to support 4.0/2.1 channels.
->>>
->>> On another Dell machine with realtek codec, there are also 2 speakers,
->>> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone are
 >>
->> assigned
->>>
->>> 1 dac, and the other speaker is assigned another dac, so there is no
->>> problem for this machine to support 4.0/2.1 channels.
->>>
->>> Through debugging, I found on Dell machine, the speaker nid only has
->>> one connection to dac (hardwired), so when driver assign dac to it, the
->>> map_single() can successfully assign the each dac to the 2 speakers
+>> Some error messages can be reproduced by set default-sample-format to
+s24le
 >>
->> respectively.
->>>
->>> But on that HP machine, the speaker has multiple connections for dac,
-the
->>> map_single() can't work for this machine.
->>>
->>>
->>> The alsa-info.txt for that HP machine is at
+>> But cannot reproduce  SNDRV_PCM_IOCTL_HW_PARAMS
 >>
->> http://pastebin.ubuntu.com/11667947/
+>> Any error meesage in system log , it seem snd_usb_pcm_hw_params return
+error with your usb sound car
 >>
->> Refer to 92HD91, you don't need 4 channel when there is band pass filter
->> for the subwoofer at the mono pin
+> The only thing related to sound card found in log, last 3 lines are
+multiple times repeated afterwards:
 >
-> Yes, you are right.
+> [ 1306.010420] usb 1-6: new full-speed USB device number 23 using xhci_hcd
+> [ 1306.177219] usb 1-6: New USB device found, idVendor=041e,
+idProduct=322c
+> [ 1306.177222] usb 1-6: New USB device strings: Mfr=1, Product=2,
+SerialNumber=3
+> [ 1306.177223] usb 1-6: Product: SB Omni Surround 5.1
+> [ 1306.177225] usb 1-6: Manufacturer: Creative Technology Ltd
+> [ 1306.177226] usb 1-6: SerialNumber: 000000Q6
+> [ 1306.177381] usb 1-6: ep 0x83 - rounding interval to 64 microframes, ep
+desc says 80 microframes
+> [ 1306.208636] input: Creative Technology Ltd SB Omni Surround 5.1 as
+/devices/pci0000:00/0000:00:14.0/usb1/1-6/1-6:1.4/0003:041E:322C.0013/input/input42
+> [ 1306.259885] hid-generic 0003:041E:322C.0013: input,hidraw0: USB HID
+v1.11 Keyboard [Creative Technology Ltd SB Omni Surround 5.1] on
+usb-0000:00:14.0-6/input4
+> [ 1306.292463] usb 1-6: Not enough bandwidth for new device state.
+> [ 1306.292470] usb 1-6: Not enough bandwidth for altsetting 2
+> [ 1306.292472] usb 1-6: 3:2: usb_set_interface failed (-28)
 >
->>
->> 2.2. Mono Output
->> The Mono Out port source selection, power state, and mute characteristics
->> are all independently
->> controlled by the mono output port controls. EQ does not apply to this
->> path. An internal 2nd order band-pass filter is provided to restrict the
->> output frequencies when using mono out to drive an exter-
->> nal amplified sub-woofer
+> I have no idea why is that the case, device is USB 2.0, even disabling
+all other external USB devices and pluggin it into USB 3.0 doesn't help.
+> Nothing more in log.
 >
-> Where did you find this text? Does it mean there is a hardware low
-frequency pass filter inside the codec?
 
-http://www.temposemi.com/products/pclaptop-hd/92hd91/
-
-2.3. Mono output Band-Pass Filter
-For many applications, the primary speakers are incapable of reproducing
-low frequency audio. Therefore it is desirable to implement a woofer or
-sub-woofer speaker. The mono output is ideal for this task. However, the
-frequency response should be restricted to prevent interference with the
-primary speakers. Typically an external filter, known as a cross-over
-filter, is used. The mono processing path includes a band-pass filter with
-programmable high and low cut-off frequencies to eliminate the need for an
-external filter.
-
-2.3.1. Mixer Filter Description The band-pass filter is derived from the
-common biquadratic filter and provides a 12dB/octave roll-off. The filter
-may be programmed for a -3dB lower band edge of: 63Hz, 80Hz, 100Hz, 120Hz,
-150Hz, 200Hz, 315Hz, or 400Hz.
-
-The filter may be programmed for a -3dB upper band edge of: 150Hz, 200Hz,
-250Hz, 315Hz, 400Hz, 500Hz, 630Hz, or 800Hz.
-
-The band-pass filter is enabled by default with a cut-off frequencies at
-120Hz and 250Hz. The filter may be bypassed using the associated verb
-(processing state verb
+Can "not enough bandwidth" or "usb_set_interface failed (-28)" message
+repoduced by using aplay or  arecord with s24le/s16le at different rate
+instead of using pulseaudio ?
