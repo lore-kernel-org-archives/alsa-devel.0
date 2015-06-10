@@ -1,22 +1,21 @@
-From: Adam Goode <adam@spicenitz.org>
-Subject: Re: Scarlett 18i8 hardware out of sync with AlsaMixer
-Date: Tue, 9 Jun 2015 17:44:36 -0400
-Message-ID: <CADN=WdqTjFPeFeTsEHxwbqR8YmTwqhNvp6d3eJP3BPgCNeUGnw@mail.gmail.com>
-References: <CADN=WdobTC9qdHjKD3PyPW99f2pX-j82vVzZ32zp4ed-C0Gbgg@mail.gmail.com>
- <s5h8ucaed12.wl-tiwai@suse.de>
- <CADN=WdpM_gUD=TpxP9cJmS3VXRwzgODgNeNE0Z2EwC71mZ8yAw@mail.gmail.com>
- <s5hzj4q9mri.wl-tiwai@suse.de> <20150527135325.GA12862@canonical.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - PCH HDA controller not
+ controlled by i915 power
+Date: Wed, 10 Jun 2015 00:41:38 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1967247C@SHSMSX103.ccr.corp.intel.com>
+References: <1433829918-5807-1-git-send-email-libin.yang@intel.com>
+ <s5h1thlbder.wl-tiwai@suse.de>	<55768BCB.3060001@canonical.com>
+ <s5hy4jt9td4.wl-tiwai@suse.de>	<5576A907.9050305@canonical.com>
+ <s5hsia19rpa.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 20CD12657A5
- for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2015 23:44:58 +0200 (CEST)
-Received: by oigz2 with SMTP id z2so20227951oig.1
- for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 14:44:57 -0700 (PDT)
-In-Reply-To: <20150527135325.GA12862@canonical.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BB8226583C
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 02:41:43 +0200 (CEST)
+In-Reply-To: <s5hsia19rpa.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,126 +25,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chris J Arges <chris.j.arges@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>
+To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I haven't tried the patch yet, but I will try to this week.
++ Mengdong
 
-Non-enum settings are affected.
+Hi Takashi & David,
 
-What firmware are you running? I have the newest beta firmware
-(Scarlett MixControl 1.9b4)
-http://beta.focusrite.com/releases/scarlett_mixcontrol/
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, June 09, 2015 5:06 PM
+> To: David Henningsson
+> Cc: Yang, Libin; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - PCH HDA controller not
+> controlled by i915 power
+> 
+> At Tue, 09 Jun 2015 10:51:19 +0200,
+> David Henningsson wrote:
+> >
+> >
+> >
+> > On 2015-06-09 10:30, Takashi Iwai wrote:
+> > > At Tue, 09 Jun 2015 08:46:35 +0200,
+> > > David Henningsson wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 2015-06-09 08:31, Takashi Iwai wrote:
+> > >>> At Tue,  9 Jun 2015 14:05:18 +0800,
+> > >>> libin.yang@intel.com wrote:
+> > >>>>
+> > >>>> From: Libin Yang <libin.yang@intel.com>
+> > >>>>
+> > >>>> On some Intel platforms, the HDMI codec is connected to PCH
+> HDA
+> > >>>> controller. In this case, AZX_DCAPS_I915_POWERWELL is set
+> and
+> > >>>> the i915 power well failure should not block the hda controller
+> > >>>> initialization.
+> > >>>>
+> > >>>> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > >>>
+> > >>> Is this fix needed for 4.1, or it's only for 4.2?
+> > >>
+> > >> It's a bug fix, and as such should go to all kernels, even with cc to
+> > >> stable. That said, it mainly concerns Skylake, so kernels that don't
+> > >> support Skylake would not need a backport.
+> > >
+> > > The patch can't be applied even to 4.1 as is because of the code
+> > > structure change.  So, Cc to stable doesn't work, in anyway.
+> > >
+> > >>> I vaguely remember of a bug report.  If there is any relevant bug
+> > >>> report, please give the link, too.
+> > >>
+> > >> I think this was raised to Intel by us. The use case is when the
+> > >> integrated GPU is disabled and a discrete GPU is used. In this case
+> the
+> > >> i915 module fails to load. If then the HDMI and analog codec are
+> both on
+> > >> the same controller, the entire controller fails instead of just the
+> > >> HDMI codec.
+> > >>
+> > >> I'll see if I can get the patch tested ASAP.
+> > >
+> > > OK, the bug seems needed for 4.1 and earlier.  But Libin's patch is
+> > > only for 4.2.  And even worse, backporting this isn't
+> > > straightforward due to the lack of need_i915_power field.  Hmm.
+> > >
+> > > I think we can make it easier by just allowing to continue the probe.
+> > > A totally untested patch for 4.1 is below.
+> >
+> > As part of the wider discussion, I think we could continue instead of
+> > failing also on Haswell and Broadwell. This is to some degree
+> > hypothetical, but if the i915 module does not load for some reason,
+> then
+> > the i915 module would not turn the power well off either, so it
+> remains
+> > on the entire time (and then audio could potentially work).
+> 
+> Without graphics HDMI/DP never works, so practically it's useless.
+> The problem can be reproduced easily by passing nomodeset boot
+> option.
+> 
+> OTOH, it'd simplify the change, and this was indeed my initial patch
+> before posting.  Then I thought this might lead to a regression; a
+> non-working HDMI/DP sound card appears while it wasn't before.  So I
+> added the check of HSW/BDW.
+> 
+> Meanwhile, nomodeset or failing i915 is a more or less special
+> situation, so we might not consider about this behavior change so
+> much, and take rather for the code simplicity.
+> 
+> Comments?
+
+Yes, HDMI/DP depends on gfx.
+
+BDW/HSW has 2 controllers: one is in power well, the other is not.
+The one in powerwell connects HDMI/DP codec.
+The one in PCH connects analog codec.
+
+SKL/BSW/BYT has one controller and it connects both HDMI/DP codec
+and analog codec.
+
+So we get the conclusion:
+1. whatever power well is turned on, BDW/HSW PCH HDA controller
+will work.
+2. If power well is turned off, BDW/HSW HDA controller in gfx will not
+work.
+3. if power well is turned off, SKL/BSW/BYT controller will work (analog
+audio will use it), but HDMI/DP audio will not work.
 
 
-The other thing to try is to use Mixcontrol and save some settings
-into the hardware. I did this once on Windows to use the device before
-ALSA supported its mixer.
 
-
-Adam
-
-
-
-On Wed, May 27, 2015 at 9:53 AM, Chris J Arges
-<chris.j.arges@canonical.com> wrote:
-> On Wed, May 27, 2015 at 03:24:17PM +0200, Takashi Iwai wrote:
->> [Added more people to Cc]
->>
->> At Wed, 27 May 2015 08:55:21 -0400,
->> Adam Goode wrote:
->> >
->> > The settings were not reset across a mem sleep (echo mem > /sys/power/state).
->> >
->> > Hard power off / power on does make the settings get out of sync.
->>
->
-> Ok did some testing on my Scarlett 18i8:
->  suspend/resume -> settings not reset
->  poweroff/poweron -> settings not reset
->  unplug/replug usb -> settings not reset
->  powercycle unit -> settings not reset
->
-> Is there a more consistent method to trigger this issue?
-> In addition are you manually triggering 'alsactl restore/save' in this process?
->
-> I'll do some additional testing to see if I can trigger this.
->
->> Then maybe the problem is that the device keeps the old setting while
->> the driver resets to the default.  I vaguely remember that scarlett
->> could save the default state in a persistent area, and the original
->> driver patch had a kctl to trigger it.  We didn't take it because it
->> might be dangerous.
->>
->>
->
-> The original issue was this:
->   Hey, as Tobias mentioned this is a HW saving (to the mixer's NVRAM)
->   function used for using the mixer disconnected from a computer. We
->   wouldn't want to continually write the NVRAM on every control update as
->   I'm unsure of how many write-cycles the device is capable of.
->
-> So if we wrote to NVRAM on each control update we might wear out the memory
-> very quickly. I think this functionality is more for using the device
-> disconnected from a computer.
->
->> Takashi
->>
->>
->> > Adam
->> >
->> >
->> > On Wed, May 27, 2015 at 2:43 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > > At Tue, 26 May 2015 21:39:22 -0400,
->> > > Adam Goode wrote:
->> > >>
->> > >> Linux 4.0.2-300.fc22.x86_64
->> > >>
->> > >> Hi,
->> > >>
->> > >> I have the Scarlett 18i8 USB device that is supported by the new
->> > >> scarlett_mixer.c code. I am happy to say that the mixer code works in
->> > >> most cases. But under some conditions, I cannot get any sound out of
->> > >> the device until I go and toggle the "Matrix 01 Input" and "Matrix 02
->> > >> Input" enums up and then down (from PCM 1 and PCM 2). This appears to
->> > >> me to be some kind of cache invalidation bug, where the device is out
->> > >> of sync with kernel mixer state.
->> > >>
->> > >> I will take a look at the code myself at some point, but not for a
->> > >> while. But I am happy to try patches if anyone comes up with anything
->> > >> in the mean time.
->> > >
->
-> Does this change anything (untested)? And are non-enum settings affected?
->
-> diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
-> index 7438e7c..ad4a452 100644
-> --- a/sound/usb/mixer_scarlett.c
-> +++ b/sound/usb/mixer_scarlett.c
-> @@ -438,11 +438,9 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
->
->         val = ucontrol->value.integer.value[0];
->         val = val + opt->start;
-> -       if (val != oval) {
-> -               snd_usb_set_cur_mix_value(elem, 0, 0, val);
-> -               return 1;
-> -       }
-> -       return 0;
-> +       /* always set cur mix value */
-> +       snd_usb_set_cur_mix_value(elem, 0, 0, val);
-> +       return 1;
->  }
->
->  static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
->
-> --chris
->
->> > > Does it happen after some S3/S4 or even during a normal operation
->> > > without power-saving?  The USB-audio device supports autopm, so this
->> > > needs to be checked, too.
->> > >
->> > >
->> > > Takashi
->> >
->>
+> 
+> 
+> Takashi
