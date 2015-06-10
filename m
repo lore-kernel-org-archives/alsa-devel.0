@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v7 1/3] ALSA: hdac_ext: add extended HDA bus
-Date: Wed, 10 Jun 2015 17:03:34 +0530
-Message-ID: <1433936016-446-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v7 2/3] ALSA: hdac_ext: add hdac extended
+	controller
+Date: Wed, 10 Jun 2015 17:03:35 +0530
+Message-ID: <1433936016-446-3-git-send-email-vinod.koul@intel.com>
 References: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id AEAC1265173
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:32:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EF902657AE
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:32:16 +0200 (CEST)
 In-Reply-To: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,115 +27,80 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-The new HDA controllers from Intel support new capabilities like multilink,
-pipe processing, SPIB, GTS etc In order to use them we create an extended HDA
-bus which embed the hdac bus and contains the fields for extended
-configurations
+The controller needs to support the new capabilities and allow reading,
+parsing and initializing of these capabilities, so this patch does it
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio_ext.h  |  45 +++++++++++++++++
- sound/hda/Kconfig            |   4 ++
- sound/hda/Makefile           |   3 ++
- sound/hda/ext/Makefile       |   3 ++
- sound/hda/ext/hdac_ext_bus.c | 116 +++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 include/sound/hdaudio_ext.h
- create mode 100644 sound/hda/ext/Makefile
- create mode 100644 sound/hda/ext/hdac_ext_bus.c
+ include/sound/hdaudio_ext.h         |  36 +++++
+ sound/hda/ext/Makefile              |   2 +-
+ sound/hda/ext/hdac_ext_controller.c | 297 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 334 insertions(+), 1 deletion(-)
+ create mode 100644 sound/hda/ext/hdac_ext_controller.c
 
 diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-new file mode 100644
-index 000000000000..5b67b367367d
---- /dev/null
+index 5b67b367367d..5031df7cfe60 100644
+--- a/include/sound/hdaudio_ext.h
 +++ b/include/sound/hdaudio_ext.h
-@@ -0,0 +1,45 @@
-+#ifndef __SOUND_HDAUDIO_EXT_H
-+#define __SOUND_HDAUDIO_EXT_H
+@@ -42,4 +42,40 @@ int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
+ void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
+ void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
+ 
++void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *chip,
++				 bool enable, int index);
 +
-+#include <sound/hdaudio.h>
++int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *bus);
++int snd_hdac_ext_bus_map_codec_to_link(struct hdac_ext_bus *bus, int addr);
++struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *bus,
++						const char *codec_name);
 +
-+/**
-+ * hdac_ext_bus: HDAC extended bus for extended HDA caps
-+ *
-+ * @bus: hdac bus
-+ * @num_streams: streams supported
-+ * @ppcap: pp capabilities pointer
-+ * @spbcap: SPIB capabilities pointer
-+ * @mlcap: MultiLink capabilities pointer
-+ * @gtscap: gts capabilities pointer
-+ * @hlink_list: link list of HDA links
-+ */
-+struct hdac_ext_bus {
-+	struct hdac_bus bus;
-+	int num_streams;
-+
-+	void __iomem *ppcap;
-+	void __iomem *spbcap;
-+	void __iomem *mlcap;
-+	void __iomem *gtscap;
-+
-+	struct list_head hlink_list;
++enum hdac_ext_stream_type {
++	HDAC_EXT_STREAM_TYPE_COUPLED = 0,
++	HDAC_EXT_STREAM_TYPE_HOST,
++	HDAC_EXT_STREAM_TYPE_LINK
 +};
 +
-+int snd_hdac_ext_bus_init(struct hdac_ext_bus *sbus, struct device *dev,
-+		      const struct hdac_bus_ops *ops,
-+		      const struct hdac_io_ops *io_ops);
++struct hdac_ext_link {
++	struct hdac_bus *bus;
++	int index;
++	void __iomem *ml_addr; /* link output stream reg pointer */
++	u32 lcaps;   /* link capablities */
++	u16 lsdiid;  /* link sdi identifier */
++	u16 codec[HDA_MAX_CODECS]; /* codecs connectes to the link */
++	struct list_head list;
++};
 +
-+void snd_hdac_ext_bus_exit(struct hdac_ext_bus *sbus);
-+int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *sbus, int addr);
-+void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
++int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link);
++int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link);
++void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
++				 int stream);
++void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
++				 int stream);
 +
-+#define ebus_to_hbus(ebus)	(&(ebus)->bus)
-+#define hbus_to_ebus(_bus) \
-+	container_of(_bus, struct hdac_ext_bus, bus)
++/* update register macro */
++#define snd_hdac_updatel(addr, reg, mask, val)		\
++	writel(((readl(addr + reg) & ~(mask)) | (val)), \
++		addr + reg)
 +
-+int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *sbus);
-+void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *chip, bool enable);
-+void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *chip, bool enable);
-+
-+#endif /* __SOUND_HDAUDIO_EXT_H */
-diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-index ac5ffac2a272..6dc3914fd28b 100644
---- a/sound/hda/Kconfig
-+++ b/sound/hda/Kconfig
-@@ -10,3 +10,7 @@ config SND_HDA_I915
- 	default y
- 	depends on DRM_I915
- 	depends on SND_HDA_CORE
-+
-+config SND_HDA_EXT_CORE
-+       tristate
-+       select SND_HDA_CORE
-diff --git a/sound/hda/Makefile b/sound/hda/Makefile
-index 55dd465c7042..7e999c995cdc 100644
---- a/sound/hda/Makefile
-+++ b/sound/hda/Makefile
-@@ -8,3 +8,6 @@ CFLAGS_trace.o := -I$(src)
- snd-hda-core-$(CONFIG_SND_HDA_I915) += hdac_i915.o
- 
- obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
-+
-+#extended hda
-+obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
+ #endif /* __SOUND_HDAUDIO_EXT_H */
 diff --git a/sound/hda/ext/Makefile b/sound/hda/ext/Makefile
-new file mode 100644
-index 000000000000..2e583e664916
---- /dev/null
+index 2e583e664916..934b7bf5d87f 100644
+--- a/sound/hda/ext/Makefile
 +++ b/sound/hda/ext/Makefile
-@@ -0,0 +1,3 @@
-+snd-hda-ext-core-objs := hdac_ext_bus.o
-+
-+obj-$(CONFIG_SND_HDA_EXT_CORE) += snd-hda-ext-core.o
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+@@ -1,3 +1,3 @@
+-snd-hda-ext-core-objs := hdac_ext_bus.o
++snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o
+ 
+ obj-$(CONFIG_SND_HDA_EXT_CORE) += snd-hda-ext-core.o
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
 new file mode 100644
-index 000000000000..905b3e3fd7d8
+index 000000000000..7ecc2a62ddb3
 --- /dev/null
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -0,0 +1,116 @@
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -0,0 +1,297 @@
 +/*
-+ *  hdac-ext-bus.c - HD-audio extended core bus functions.
++ *  hdac-ext-controller.c - HD-audio extended controller functions.
 + *
 + *  Copyright (C) 2014-2015 Intel Corp
 + *  Author: Jeeja KP <jeeja.kp@intel.com>
@@ -152,102 +118,283 @@ index 000000000000..905b3e3fd7d8
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
 +
-+#include <linux/module.h>
++#include <linux/delay.h>
 +#include <linux/slab.h>
++#include <sound/hda_register.h>
 +#include <sound/hdaudio_ext.h>
 +
-+MODULE_DESCRIPTION("HDA extended core");
-+MODULE_LICENSE("GPL v2");
++/*
++ * maximum HDAC capablities we should parse to avoid endless looping:
++ * currently we have 4 extended caps, so this is future proof for now.
++ * extend when this limit is seen meeting in real HW
++ */
++#define HDAC_MAX_CAPS 10
 +
 +/**
-+ * snd_hdac_ext_bus_init - initialize a HD-audio extended bus
++ * snd_hdac_ext_bus_parse_capabilities - parse capablity structure
 + * @ebus: the pointer to extended bus object
-+ * @dev: device pointer
-+ * @ops: bus verb operators
-+ * @io_ops: lowlevel I/O operators
 + *
 + * Returns 0 if successful, or a negative error code.
 + */
-+int snd_hdac_ext_bus_init(struct hdac_ext_bus *ebus, struct device *dev,
-+			const struct hdac_bus_ops *ops,
-+			const struct hdac_io_ops *io_ops)
++int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
 +{
-+	int ret;
++	unsigned int cur_cap;
++	unsigned int offset;
++	struct hdac_bus *bus = &ebus->bus;
++	unsigned int counter = 0;
 +
-+	ret = snd_hdac_bus_init(&ebus->bus, dev, ops, io_ops);
-+	if (ret < 0)
-+		return ret;
++	offset = snd_hdac_chip_readl(bus, LLCH);
 +
-+	INIT_LIST_HEAD(&ebus->hlink_list);
++	if (offset < 0)
++		return -EIO;
++
++	/* Lets walk the linked capabilities list */
++	do {
++		cur_cap = _snd_hdac_chip_read(l, bus, offset);
++
++		if (cur_cap < 0)
++			return -EIO;
++
++		dev_dbg(bus->dev, "Capability version: 0x%x\n",
++				((cur_cap & AZX_CAP_HDR_VER_MASK) >> AZX_CAP_HDR_VER_OFF));
++
++		dev_dbg(bus->dev, "HDA capability ID: 0x%x\n",
++				(cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF);
++
++		switch ((cur_cap & AZX_CAP_HDR_ID_MASK) >> AZX_CAP_HDR_ID_OFF) {
++		case AZX_ML_CAP_ID:
++			dev_dbg(bus->dev, "Found ML capability\n");
++			ebus->mlcap = bus->remap_addr + offset;
++			break;
++
++		case AZX_GTS_CAP_ID:
++			dev_dbg(bus->dev, "Found GTS capability offset=%x\n", offset);
++			ebus->gtscap = bus->remap_addr + offset;
++			break;
++
++		case AZX_PP_CAP_ID:
++			/* PP capability found, the Audio DSP is present */
++			dev_dbg(bus->dev, "Found PP capability offset=%x\n", offset);
++			ebus->ppcap = bus->remap_addr + offset;
++			break;
++
++		case AZX_SPB_CAP_ID:
++			/* SPIB capability found, handler function */
++			dev_dbg(bus->dev, "Found SPB capability\n");
++			ebus->spbcap = bus->remap_addr + offset;
++			break;
++
++		default:
++			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
++			break;
++		}
++
++		counter++;
++
++		if (counter > HDAC_MAX_CAPS) {
++			dev_err(bus->dev, "We exceeded HDAC Ext capablities!!!\n");
++			break;
++		}
++
++		/* read the offset of next capabiity */
++		offset = cur_cap & AZX_CAP_HDR_NXT_PTR_MASK;
++
++	} while (offset);
++
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_init);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_parse_capabilities);
 +
-+/**
-+ * snd_hdac_ext_bus_exit - clean up a HD-audio extended bus
-+ * @ebus: the pointer to extended bus object
++/*
++ * processing pipe helpers - these helpers are useful for dealing with HDA
++ * new capability of processing pipelines
 + */
-+void snd_hdac_ext_bus_exit(struct hdac_ext_bus *ebus)
-+{
-+	snd_hdac_bus_exit(&ebus->bus);
-+	WARN_ON(!list_empty(&ebus->hlink_list));
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_exit);
-+
-+static void default_release(struct device *dev)
-+{
-+	snd_hdac_ext_bus_device_exit(container_of(dev, struct hdac_device, dev));
-+}
 +
 +/**
-+ * snd_hdac_ext_device_init - initialize the HDA extended codec base device
-+ * @ebus: hdac extended bus to attach to
-+ * @addr: codec address
++ * snd_hdac_ext_bus_ppcap_enable - enable/disable processing pipe capability
++ * @ebus: HD-audio extended core bus
++ * @enable: flag to turn on/off the capability
++ */
++void snd_hdac_ext_bus_ppcap_enable(struct hdac_ext_bus *ebus, bool enable)
++{
++	struct hdac_bus *bus = &ebus->bus;
++	u32 reg;
++
++	if (!ebus->ppcap) {
++		dev_err(bus->dev, "Address of PP capability is NULL");
++		return;
++	}
++
++	//HACK
++
++	reg = readl(ebus->ppcap + AZX_REG_PP_PPCTL);
++	//writel(ebus->ppcap + AZX_REG_PP_PPCTL, ((reg & ~0) | AZX_PPCTL_GPROCEN));
++	writel(((reg & ~0) | AZX_PPCTL_GPROCEN), ebus->ppcap + AZX_REG_PP_PPCTL);
++
++	if (enable)
++		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL, 0, AZX_PPCTL_GPROCEN);
++	else
++		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL, AZX_PPCTL_GPROCEN, 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_enable);
++
++/**
++ * snd_hdac_ext_bus_ppcap_int_enable - ppcap interrupt enable/disable
++ * @ebus: HD-audio extended core bus
++ * @enable: flag to enable/disable interrupt
++ */
++void snd_hdac_ext_bus_ppcap_int_enable(struct hdac_ext_bus *ebus, bool enable)
++{
++	struct hdac_bus *bus = &ebus->bus;
++
++	if (!ebus->ppcap) {
++		dev_err(bus->dev, "Address of PP capability is NULL\n");
++		return;
++	}
++
++	if (enable)
++		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL, 0, AZX_PPCTL_PIE);
++	else
++		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL, AZX_PPCTL_PIE, 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_ppcap_int_enable);
++
++/*
++ * Multilink helpers - these helpers are useful for dealing with HDA
++ * new multilink capability
++ */
++
++/**
++ * snd_hdac_ext_bus_get_ml_capabilities - get multilink capability
++ * @ebus: HD-audio extended core bus
 + *
-+ * Returns zero for success or a negative error code.
++ * This will parse all links and read the mlink capabilities and add them
++ * in hlink_list of extended hdac bus
++ * Note: this will be freed on bus exit by driver
 + */
-+int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
++int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *ebus)
 +{
-+	struct hdac_device *hdev = NULL;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	static unsigned int idx = 0;
-+	char name[15];
-+	int ret;
++	int idx;
++	u32 link_count;
++	struct hdac_ext_link *hlink;
++	struct hdac_bus *bus = &ebus->bus;
 +
-+	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	if (!hdev)
-+		return -ENOMEM;
++	link_count = readl(ebus->mlcap + AZX_REG_ML_MLCD) + 1;
 +
-+	snprintf(name, sizeof(name), "ehdaudio%dD%d", idx, addr);
-+	idx++;
++	dev_dbg(bus->dev, "In %s Link count: %d\n", __func__, link_count);
 +
-+	ret  = snd_hdac_device_init(hdev, bus, name, addr);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "device init failed for hdac device\n");
-+		return ret;
++	for (idx = 0; idx < link_count; idx++) {
++		hlink  = kzalloc(sizeof(*hlink), GFP_KERNEL);
++		if (!hlink)
++			return -ENOMEM;
++		hlink->index = idx;
++		hlink->bus = bus;
++		hlink->ml_addr = ebus->mlcap + AZX_ML_BASE +
++					(AZX_ML_INTERVAL * idx);
++		hlink->lcaps  = snd_hdac_chip_readl(bus, ML_LCAP);
++		hlink->lsdiid = snd_hdac_chip_readw(bus, ML_LSDIID);
++
++		list_add_tail(&hlink->list, &ebus->hlink_list);
 +	}
-+	hdev->type = HDA_DEV_ASOC;
-+	hdev->dev.release = default_release;
 +
-+	ret = snd_hdac_device_register(hdev);
-+	if (ret) {
-+		dev_err(bus->dev, "failed to register hdac device\n");
-+		snd_hdac_ext_bus_device_exit(hdev);
-+		return ret;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_ml_capabilities);
++
++/**
++ * snd_hdac_ext_bus_map_codec_to_link - maps codec to link
++ * @ebus: HD-audio extended core bus
++ * @addr: codec address
++ */
++int snd_hdac_ext_bus_map_codec_to_link(struct hdac_ext_bus *ebus, int addr)
++{
++	struct hdac_ext_link *hlink;
++	struct hdac_bus *bus = &ebus->bus;
++
++	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		/* check if SDI bit number is same as Codec address */
++		dev_dbg(bus->dev, "lsdid for %d link %x\n", hlink->index, hlink->lsdiid);
++		if (!hlink->lsdiid)
++			continue;
++
++		if (hlink->lsdiid && (0x1 << addr)) {
++			hlink->codec[addr] = addr;
++			break;
++		}
 +	}
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_map_codec_to_link);
 +
 +/**
-+ * snd_hdac_ext_bus_device_exit - clean up a HD-audio extended codec base device
-+ * @hdev: hdac device to clean up
++ * snd_hdac_ext_bus_get_link_index - get link based on codec name
++ * @ebus: HD-audio extended core bus
++ * @codec_name: codec name
 + */
-+void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
++struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
++						 const char *codec_name)
 +{
-+	snd_hdac_device_exit(hdev);
-+	kfree(hdev);
++	int i;
++	struct hdac_ext_link *hlink = NULL;
++	char name[32];
++
++	list_for_each_entry(hlink, &ebus->hlink_list, list) {
++		for (i = 0; i < HDA_MAX_CODECS; i++) {
++			snprintf(name, sizeof(name), "codec#%03x", hlink->codec[i]);
++			if (!strncmp(name, codec_name, strlen(codec_name)))
++				return hlink;
++		}
++	}
++	return NULL;
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_get_link);
++
++static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
++{
++	int timeout;
++	u32 val;
++	int mask = (1 << AZX_MLCTL_CPA);
++
++	udelay(3);
++	timeout = 50;
++
++	do {
++		val = snd_hdac_chip_readl(link->bus, ML_LCTL);
++		if (enable) {
++			if (((val & mask) >> AZX_MLCTL_CPA))
++				return 0;
++		} else {
++			if (!((val & mask) >> AZX_MLCTL_CPA))
++				return 0;
++		}
++		udelay(3);
++	} while (--timeout);
++
++	return -EIO;
++}
++
++/**
++ * snd_hdac_ext_bus_link_power_up -power up hda link
++ * @link: HD-audio extended link
++ */
++int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link)
++{
++	snd_hdac_chip_updatel(link->bus, ML_LCTL, 0, AZX_MLCTL_SPA);
++
++	return check_hdac_link_power_active(link, true);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up);
++
++/**
++ * snd_hdac_ext_bus_link_power_down -power down hda link
++ * @link: HD-audio extended link
++ */
++int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link)
++{
++	snd_hdac_chip_updatel(link->bus, ML_LCTL, AZX_MLCTL_SPA, 0);
++
++	return check_hdac_link_power_active(link, false);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down);
 -- 
 1.9.1
