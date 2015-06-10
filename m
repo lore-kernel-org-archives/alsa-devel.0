@@ -1,52 +1,69 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [patch] ASoC: fsl: add an error check
-Date: Wed, 10 Jun 2015 09:55:45 -0700
-Message-ID: <20150610165544.GA8552@Asurada>
-References: <20150610153723.GB10549@mwanda>
+From: Adam Goode <agoode@google.com>
+Subject: Re: [PATCH - alsa-lib 1/1] Introduce
+ snd_seq_client_info_get_card_number,
+ for getting the card number of a seq client on recent kernels
+Date: Wed, 10 Jun 2015 13:09:05 -0400
+Message-ID: <CAOf41N=vag=z1UA-GEUCbOJdq5=aMG=YV_08fmJTOh+fvONODA@mail.gmail.com>
+References: <1433466312-31444-1-git-send-email-agoode@google.com>
+ <557146C5.90209@ladisch.de> <s5hy4jrn95j.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150610153723.GB10549@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vn0-f44.google.com (mail-vn0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4D75265CBA
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 19:09:27 +0200 (CEST)
+Received: by vnbg7 with SMTP id g7so9157171vnb.10
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 10:09:26 -0700 (PDT)
+In-Reply-To: <s5hy4jrn95j.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 10, 2015 at 06:37:23PM +0300, Dan Carpenter wrote:
-> My static checker complains that:
-> 
-> 	sound/soc/fsl/imx-wm8962.c:196 imx_wm8962_probe() warn:
-> 	we tested 'ret' before and it was 'false'
-> 
-> The intent was that we use "ret" to check imx_audmux_v2_configure_port().
-> 
-> Fixes: 8de2ae2a7f1f ('ASoC: fsl: add imx-wm8962 machine driver')
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, Jun 10, 2015 at 6:35 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Could you please use an subject like:
-ASoC: imx-wm8962: Add a missing error check
-(Since it only applies to this file)
+> At Fri, 05 Jun 2015 08:50:45 +0200,
+> Clemens Ladisch wrote:
+> >
+> > Adam Goode wrote:
+> > >  /**
+> > > + * \brief Get the card number of a client_info container
+> > > + * \param info client_info container
+> > > + * \return the card number, -1 if no card associated with this
+> client, or -ENOSYS if the
+> > > + *         kernel does not support reporting this field
+> > > + */
+> >
+> > -1 is used as an out-of-range value when enumerating cards.  However,
+> > I don't think this convention can be applied here, because the return
+> > value is also used for error codes, and -1 would correspond to -EPERM.
+> >
+> > Squashing all error codes into -1 is not a good idea, so I think the
+> > value -1 should be converted into an appropriate error code, probably
+> > -ENXIO.
+>
+> Agreed.
+>
+> Also, please don't include irrelevant changes in configure.ac.
+>
+>
+> thanks,
+>
+> Takashi
+>
 
-Otherwise, Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-Thank you indeed for the fix
-Nicolin
+Thanks for the feedback, I should have time this week to get back to you.
 
-> ---
-> I assume checking for an error here will not change anything but I have
-> not tested this patch.
-> 
-> diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-> index cd146d4..b38b98c 100644
-> --- a/sound/soc/fsl/imx-wm8962.c
-> +++ b/sound/soc/fsl/imx-wm8962.c
-> @@ -190,7 +190,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "audmux internal port setup failed\n");
->  		return ret;
->  	}
-> -	imx_audmux_v2_configure_port(ext_port,
-> +	ret = imx_audmux_v2_configure_port(ext_port,
->  			IMX_AUDMUX_V2_PTCR_SYN,
->  			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
->  	if (ret) {
+
+Adam
