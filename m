@@ -1,81 +1,84 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 0/3] HDA: add extended HDA
-Date: Wed, 10 Jun 2015 18:40:41 +0530
-Message-ID: <20150610131041.GU28601@localhost>
-References: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
- <20150610112624.GA4355@vinod.koul@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 82B01261551
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 15:09:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150610112624.GA4355@vinod.koul@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: [PATCH v3 0/2] Update ALSA driver to use media controller API
+Date: Wed, 10 Jun 2015 08:21:55 -0600
+Message-ID: <cover.1433904553.git.shuahkh@osg.samsung.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+Sender: linux-media-owner@vger.kernel.org
+To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, normalperson@yhbt.net, fisch602@gmail.com, joe@oampo.co.uk
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 10, 2015 at 04:56:28PM +0530, Subhransu S. Prusty wrote:
-> There is an error in this series. Vinod will resend shortly.
-> 
-Yes some dead code crept in and checkpatch wasnt too happy with few lines,
-so I have updated this and resent the fixed series.
+This patch series updates ALSA driver to use media controller
+API to share tuner with DVB and V4L2 drivers that control AU0828
+media device. Two new interfaces are added to media controller
+API to enable creating media device as a device resource. This
+allows creating media device as a device resource on the main
+struct device that is common to all drivers that control a single
+media hardware and share resources on it. Drivers then can find
+the common media device to register entities and manage links,
+and pipelines.
 
-Sorry about the noise
+Tested with and without CONFIG_MEDIA_CONTROLLER enabled.
+Tested tuner entity doesn't exist case as au0828 v4l2
+driver is the one that will create the tuner when it gets
+updated to use media controller API.
+
+Please note that au0828 updates media controller are necessary
+before the resource sharing can work across ALSA and au0828
+dvb and v4l2 drivers. This work is in progress and another
+developer is working on it.
+
+Changes since v1:
+- Moved media specific code into new header and source file
+- Created a new structure for media controller specific fields
+- Added a new define USE_MEDIA_CONTROLLER to add media specific
+  code. This new define is defined only when Media Controller
+  support is enabled. New media specific code is active only
+  when this define is defined.
+- Moved media_deviced_delete() check under !was_shutdown block
+- Removed return check for media_device_init()
+- Changed new Media Controller interface names for clarity. Now
+  they are named media_device_get_devres() and
+  media_device_find_devres().
+- Calling media_entity_pipeline_stop() on a pipe that isn't active
+  appears to be safe. This needs further testing once AU0828
+  media controller patches are ready.
+
+Changes since v2:
+- Moved checks to define USE_MEDIA_CONTROLLER to Makefile 
+- Moved stubs for media controller specific functions to header
+  file.
+- Added new register_notify operation to media_entity_operations
+  structure. This new hook is called when a new entity is
+  registered to allow other entities associated with the
+  media device to create link as needed.
+- Added a new field to struct media_entity for entity owners
+  to save their private data.
+- Is it safe for ALSA to call media_entity_remove_links()?
+  Laurent Pinchart, please comment.
+- Do start/stop pipeline functions have to be concered about
+  V4l2? Are they safe the way they are?
+  Hans, please comment.
+
+Shuah Khan (2):
+  media: media controller entity framework enhancements for ALSA
+  sound/usb: Update ALSA driver to use media controller API
+
+ drivers/media/media-device.c |   7 ++
+ include/media/media-entity.h |   4 +
+ sound/usb/Makefile           |  15 +++-
+ sound/usb/card.c             |   5 ++
+ sound/usb/card.h             |   1 +
+ sound/usb/media.c            | 185 +++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/media.h            |  47 +++++++++++
+ sound/usb/pcm.c              |  10 ++-
+ sound/usb/quirks-table.h     |   1 +
+ sound/usb/quirks.c           |   9 ++-
+ sound/usb/stream.c           |   3 +
+ sound/usb/usbaudio.h         |   1 +
+ 12 files changed, 285 insertions(+), 3 deletions(-)
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
 
 -- 
-~Vinod
-> On Wed, Jun 10, 2015 at 05:03:33PM +0530, Vinod Koul wrote:
-> > New HDA controllers from Intel have extended HDA capabilities like multilink,
-> > pipe processing, SPIB, GTS etc In order to use them we create an extended
-> > HDA bus, controller and stream which uses the extended configuration
-> > 
-> > Changes in v7:
-> > - Feedback from Takashi
-> > - removed the macros for register read/writes
-> > - add new macros for reg update
-> > - fix bus pointer macro
-> > - header cleanup on c/h files
-> > - new device name ehdaudioiDn
-> > - removed flags for ext caps, use pointer only
-> > - moved module info to patch 1
-> > - sparse check on series
-> > - remove codec name in link
-> > 
-> > Jeeja KP (3):
-> >   ALSA: hdac_ext: add extended HDA bus
-> >   ALSA: hdac_ext: add hdac extended controller
-> >   ALSA: hdac_ext: add extended stream capabilities
-> > 
-> >  include/sound/hdaudio_ext.h         | 129 ++++++++++++
-> >  sound/hda/Kconfig                   |   4 +
-> >  sound/hda/Makefile                  |   3 +
-> >  sound/hda/ext/Makefile              |   3 +
-> >  sound/hda/ext/hdac_ext_bus.c        | 116 +++++++++++
-> >  sound/hda/ext/hdac_ext_controller.c | 297 ++++++++++++++++++++++++++
-> >  sound/hda/ext/hdac_ext_stream.c     | 402 ++++++++++++++++++++++++++++++++++++
-> >  7 files changed, 954 insertions(+)
-> >  create mode 100644 include/sound/hdaudio_ext.h
-> >  create mode 100644 sound/hda/ext/Makefile
-> >  create mode 100644 sound/hda/ext/hdac_ext_bus.c
-> >  create mode 100644 sound/hda/ext/hdac_ext_controller.c
-> >  create mode 100644 sound/hda/ext/hdac_ext_stream.c
-> > 
-> > -- 
-> > 1.9.1
-> > 
-> 
-> -- 
-
--- 
+2.1.4
