@@ -1,22 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Wed, 10 Jun 2015 12:59:53 +0800
-Message-ID: <CAN8cciY3w+6NZOutzDJZHgHV2Q_LeZqD6zeEwy=tis7aff0tDQ@mail.gmail.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
- <5576E81F.9070703@canonical.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v4 2/3] ASoC: rt5645: change gpio to gpiod APIs
+Date: Wed, 10 Jun 2015 14:27:57 +0800
+Message-ID: <1433917678-13166-2-git-send-email-oder_chiou@realtek.com>
+References: <1433917678-13166-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D1D38265876
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 06:59:54 +0200 (CEST)
-Received: by oihd6 with SMTP id d6so25031466oih.2
- for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 21:59:53 -0700 (PDT)
-In-Reply-To: <5576E81F.9070703@canonical.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 326E62658A0
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 08:28:07 +0200 (CEST)
+In-Reply-To: <1433917678-13166-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,27 +20,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
->
->>
->>> The alsa-info.txt for that Dell machine is at
->>
->> http://pastebin.ubuntu.com/11667982/
->>
->> The subwoofer is also at mono pin complex, are  there any low pass filter
->> for the subwoofer or vendor coeff need to be set ?
->
-> I don't know it, I guess there is no hardware filter, it will work with
-the software low pass filter in the pulseaudio.
->>
+Move gpio to gpio_desc and use gpiod APIs in codec driver.
 
-http://www.realtek.com.tw/products/productsView.aspx?Langid=1&PFid=27&Level=5&Conn=4&ProdID=166
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+* Change gpio name from rt5645 to hp-detect
+* Use devm_gpiod_get API to get gpiod
+---
+ include/sound/rt5645.h    |  3 ---
+ sound/soc/codecs/rt5645.c | 47 ++++++++++++-----------------------------------
+ sound/soc/codecs/rt5645.h |  1 +
+ 3 files changed, 13 insertions(+), 38 deletions(-)
 
-The ALC269 integrates five hardware equalizer bands composed of one
-low-pass filter, one high-pass filter, and three band-pass filters to
-compensate for mini-speaker frequency response
-
-Do you mean alc255 does not have tbr hardware equalizer ?
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index 652cb9e..22734bc 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -20,9 +20,6 @@ struct rt5645_platform_data {
+ 	unsigned int dmic2_data_pin;
+ 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+ 
+-	unsigned int hp_det_gpio;
+-	bool gpio_hp_det_active_high;
+-
+ 	unsigned int jd_mode;
+ };
+ 
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index b86474a..41bd47e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2938,17 +2938,11 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ 
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+-		if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+-			gpio_state = gpio_get_value(rt5645->pdata.hp_det_gpio);
+-			dev_dbg(rt5645->codec->dev, "gpio = %d(%d)\n",
+-				rt5645->pdata.hp_det_gpio, gpio_state);
+-		}
+-		if ((rt5645->pdata.gpio_hp_det_active_high && gpio_state) ||
+-			(!rt5645->pdata.gpio_hp_det_active_high &&
+-			 !gpio_state)) {
+-			report = rt5645_jack_detect(rt5645->codec, 1);
+-		} else {
+-			report = rt5645_jack_detect(rt5645->codec, 0);
++		if (rt5645->gpiod_hp_det) {
++			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
++			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
++				gpio_state);
++			report = rt5645_jack_detect(rt5645->codec, gpio_state);
+ 		}
+ 		snd_soc_jack_report(rt5645->hp_jack,
+ 				    report, SND_JACK_HEADPHONE);
+@@ -3238,7 +3232,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	struct rt5645_priv *rt5645;
+ 	int ret;
+ 	unsigned int val;
+-	struct gpio_desc *gpiod;
+ 
+ 	rt5645 = devm_kzalloc(&i2c->dev, sizeof(struct rt5645_priv),
+ 				GFP_KERNEL);
+@@ -3253,19 +3246,16 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	} else {
+ 		if (dmi_check_system(dmi_platform_intel_braswell)) {
+ 			rt5645->pdata = *rt5645_pdata;
+-			gpiod = devm_gpiod_get_index(&i2c->dev, "rt5645", 0);
+-
+-			if (IS_ERR(gpiod) || gpiod_direction_input(gpiod)) {
+-				rt5645->pdata.hp_det_gpio = -1;
+-				dev_err(&i2c->dev, "failed to initialize gpiod\n");
+-			} else {
+-				rt5645->pdata.hp_det_gpio = desc_to_gpio(gpiod);
+-				rt5645->pdata.gpio_hp_det_active_high
+-						= !gpiod_is_active_low(gpiod);
+-			}
+ 		}
+ 	}
+ 
++	rt5645->gpiod_hp_det = devm_gpiod_get(&i2c->dev, "hp-detect", GPIOD_IN);
++
++	if (IS_ERR(rt5645->gpiod_hp_det)) {
++		rt5645->gpiod_hp_det = NULL;
++		dev_err(&i2c->dev, "failed to initialize gpiod\n");
++	}
++
+ 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
+ 	if (IS_ERR(rt5645->regmap)) {
+ 		ret = PTR_ERR(rt5645->regmap);
+@@ -3427,16 +3417,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
+ 	}
+ 
+-	if (gpio_is_valid(rt5645->pdata.hp_det_gpio)) {
+-		ret = gpio_request(rt5645->pdata.hp_det_gpio, "rt5645");
+-		if (ret)
+-			dev_err(&i2c->dev, "Fail gpio_request hp_det_gpio\n");
+-
+-		ret = gpio_direction_input(rt5645->pdata.hp_det_gpio);
+-		if (ret)
+-			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
+-	}
+-
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
+ 				      rt5645_dai, ARRAY_SIZE(rt5645_dai));
+ }
+@@ -3450,9 +3430,6 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+ 
+ 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+ 
+-	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
+-		gpio_free(rt5645->pdata.hp_det_gpio);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 
+ 	return 0;
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index 9ec4e89..0353a6a 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -2182,6 +2182,7 @@ struct rt5645_priv {
+ 	struct rt5645_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct i2c_client *i2c;
++	struct gpio_desc *gpiod_hp_det;
+ 	struct snd_soc_jack *hp_jack;
+ 	struct snd_soc_jack *mic_jack;
+ 	struct snd_soc_jack *btn_jack;
+-- 
+1.8.1.1.439.g50a6b54
