@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3 RESEND] ASoC: rt5645: make
-	RT5650_TDM_CTRL_4 readable
-Date: Wed, 10 Jun 2015 18:30:52 +0100
-Message-ID: <20150610173052.GK14071@sirena.org.uk>
-References: <1433918069-21917-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH v4 2/3] ASoC: rt5645: change gpio to gpiod
+	APIs
+Date: Wed, 10 Jun 2015 18:32:23 +0100
+Message-ID: <20150610173223.GL14071@sirena.org.uk>
+References: <1433917678-13166-1-git-send-email-oder_chiou@realtek.com>
+ <1433917678-13166-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8631141403821957764=="
+Content-Type: multipart/mixed; boundary="===============0053890884985626857=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 770FA265DEA
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 19:30:57 +0200 (CEST)
-In-Reply-To: <1433918069-21917-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD8BC265E10
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 19:32:27 +0200 (CEST)
+In-Reply-To: <1433917678-13166-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,45 +27,44 @@ Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gma
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8631141403821957764==
+--===============0053890884985626857==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xCod2j9FiOMpaQ8M"
+	protocol="application/pgp-signature"; boundary="hyrpr+DJ/h10HsVE"
 Content-Disposition: inline
 
 
---xCod2j9FiOMpaQ8M
+--hyrpr+DJ/h10HsVE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 10, 2015 at 02:34:29PM +0800, Oder Chiou wrote:
-> Register RT5650_TDM_CTRL_4(0x7A) is readable and used for mixer
-> setting. It should be added in rt5645_readable_register function.
+On Wed, Jun 10, 2015 at 02:27:57PM +0800, Oder Chiou wrote:
+> Move gpio to gpio_desc and use gpiod APIs in codec driver.
 
 Applied, thanks.
 
---xCod2j9FiOMpaQ8M
+--hyrpr+DJ/h10HsVE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVeHRMAAoJECTWi3JdVIfQCi8H/2nI8v7rXFjFRvmec70iAvfU
-x5Bdr2s9pZyWMIK9lA7hcQSSok/FCuXOmD8SmbEQbNiDDn/fhuvE68OM47JbBQrH
-KURox5X8qymWzy5d1upV1JTBlJd2Cf1D/kOX8YPVmjxUOBSOnh0SBqHcx269q373
-UyYDyDPuHPFyDbt2W2Hy/X9mdPrx31zaMgM2h7RlEZ5U5mIXWnAsCVQbBnwXU5E8
-6aqRwJ6oT97yJnPrr9tLwzgmevxgbSZcLw5M7+jorzNbqD+a8sNZrCFOY9RiNQxT
-lEXvTQ+2tOYjkhzWKkGM9TKTkwD0NXbGGh4LZwLQSXObh3WzqWfo4Rm7L/vU2XM=
-=gY/q
+iQEcBAEBCAAGBQJVeHSmAAoJECTWi3JdVIfQgw8H/1aWuHawgiWMmfkLxGjuVoQN
+inidzuC4SBojMC6cMsFUdNcgj0ZM3Dabqcc2X2IdQt2JdqyhwO6rRKwSlI698aob
+SL8Xs+GViMJAWNbE3T2RvB3H83nYmJL2VCr4rD+gDiKlDmcnAYIktP/sjujrocPn
+dJmH2kjav7vlUXJFmgLsNkSC8+W22gCi3hHr0HgiVTTIV/rjCd1BE2VpESDOA99O
+x2ix4ADK2lNNPbvJHDgvUerbGPlZn0bkGc6GT80wG8O8/WhaKKZ6eJ12bhZnvpo9
+saztTiApkRt4mv4iBvfhHgBxUEAsFAPrx8hDmBnRsS+JpMFm7eUhlAUbHYtja7w=
+=fhjG
 -----END PGP SIGNATURE-----
 
---xCod2j9FiOMpaQ8M--
+--hyrpr+DJ/h10HsVE--
 
---===============8631141403821957764==
+--===============0053890884985626857==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8631141403821957764==--
+--===============0053890884985626857==--
