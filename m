@@ -1,21 +1,18 @@
-From: hwang4 <hui.wang@canonical.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Wed, 10 Jun 2015 11:18:46 +0800
-Message-ID: <5577AC96.9020605@canonical.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
- <5576E81F.9070703@canonical.com>
- <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [PATCH] ASoC: rt5645: Lock mutex in
+	rt5645_enable_push_button_irq
+Date: Wed, 10 Jun 2015 11:54:13 +0800
+Message-ID: <1433908453-9548-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D1FF265846
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 05:18:52 +0200 (CEST)
-In-Reply-To: <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7617265846
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 05:54:20 +0200 (CEST)
+Received: by pdbnf5 with SMTP id nf5so28270130pdb.2
+ for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 20:54:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE15bm0MDbmnIgxMOaXpSAwOTozMCwgUmF5bW9uZCBZYXUgd3JvdGU6Cj4+Pj4gSSBh
-bSB0cnlpbmcgdG8gZW5hYmxlIHRoZSBzdWJ3b29mZXIgc3BlYWtlciBvbiBhIEhQIGxhcHRvcCwg
-b24gdGhpcwo+Pj4+IG1hY2hpbmUsIHRoZXJlIGFyZSB0d28gc3BlYWtlcnMgYW5kIG9uZSBoZWFk
-cGhvbmUsIGJ1dCB0aGUgQklPUyB2ZXJiCj4+Pj4gb25seSBlbmFibGVkIG9uZSBzcGVha2VyKG5p
-ZCAweGQpIGFuZCBvbmUgaGVhZHBob25lKG5pZCAweGIpLCBJIG5lZWQKPj4+PiB0byB1c2UgcXVp
-cmsgaW4gdGhlIGtlcm5lbCBkcml2ZXIgdG8gY29uZmlndXJlIHRoZSBzZWNvbmQgc3BlYWtlcgo+
-Pj4+IChzdWJ3b29mZXIgc3BlYWtlciwgbmlkIDB4MTApLiBVbmRlciBjdXJyZW50IGFsc2EgZHJp
-dmVyLCB0aGUKPj4+PiBoZWFkcGhvbmUgd2lsbCBiZSBhc3NpZ25lZCBhIGRhYyAobmlkIDB4MTMp
-IGFuZCB0aGUgMiBzcGVha2VycyB3aWxsCj4+Pj4gYmUgYXNzaWduZWQgYSBkYWMgKG5pZCAweDE0
-KSwgdGhpcyBhc3NpZ25tZW50IGlzIG5vdCBnb29kIHNpbmNlIDIKPj4+PiBzcGVha2VycyBzaGFy
-ZSB0aGUgc2FtZSBkYWMsIHRoaXMgbWVhbnMgMiBzcGVha2VycyBjYW4ndCB3b3JrCj4+Pj4gYXQg
-dGhlIHNhbWUgdGltZSB0byBzdXBwb3J0IDQuMC8yLjEgY2hhbm5lbHMuCj4+Pj4KPj4+PiBPbiBh
-bm90aGVyIERlbGwgbWFjaGluZSB3aXRoIHJlYWx0ZWsgY29kZWMsIHRoZXJlIGFyZSBhbHNvIDIg
-c3BlYWtlcnMsCj4+Pj4gMSBoZWFkcGhvbmUgYW5kIDIgZGFjcywgb24gdGhpcyBtYWNoaW5lLCAx
-IHNwZWFrZXIgYW5kIDEgaGVhZHBob25lIGFyZQo+Pj4gYXNzaWduZWQKPj4+PiAxIGRhYywgYW5k
-IHRoZSBvdGhlciBzcGVha2VyIGlzIGFzc2lnbmVkIGFub3RoZXIgZGFjLCBzbyB0aGVyZSBpcyBu
-bwo+Pj4+IHByb2JsZW0gZm9yIHRoaXMgbWFjaGluZSB0byBzdXBwb3J0IDQuMC8yLjEgY2hhbm5l
-bHMuCj4+Pj4KPj4+PiBUaHJvdWdoIGRlYnVnZ2luZywgSSBmb3VuZCBvbiBEZWxsIG1hY2hpbmUs
-IHRoZSBzcGVha2VyIG5pZCBvbmx5IGhhcwo+Pj4+IG9uZSBjb25uZWN0aW9uIHRvIGRhYyAoaGFy
-ZHdpcmVkKSwgc28gd2hlbiBkcml2ZXIgYXNzaWduIGRhYyB0byBpdCwgdGhlCj4+Pj4gbWFwX3Np
-bmdsZSgpIGNhbiBzdWNjZXNzZnVsbHkgYXNzaWduIHRoZSBlYWNoIGRhYyB0byB0aGUgMiBzcGVh
-a2Vycwo+Pj4gcmVzcGVjdGl2ZWx5Lgo+Pj4+IEJ1dCBvbiB0aGF0IEhQIG1hY2hpbmUsIHRoZSBz
-cGVha2VyIGhhcyBtdWx0aXBsZSBjb25uZWN0aW9ucyBmb3IgZGFjLAo+IHRoZQo+Pj4+IG1hcF9z
-aW5nbGUoKSBjYW4ndCB3b3JrIGZvciB0aGlzIG1hY2hpbmUuCj4+Pj4KPj4+Pgo+Pj4+IFRoZSBh
-bHNhLWluZm8udHh0IGZvciB0aGF0IEhQIG1hY2hpbmUgaXMgYXQKPj4+IGh0dHA6Ly9wYXN0ZWJp
-bi51YnVudHUuY29tLzExNjY3OTQ3Lwo+Pj4KPj4+IFJlZmVyIHRvIDkySEQ5MSwgeW91IGRvbid0
-IG5lZWQgNCBjaGFubmVsIHdoZW4gdGhlcmUgaXMgYmFuZCBwYXNzIGZpbHRlcgo+Pj4gZm9yIHRo
-ZSBzdWJ3b29mZXIgYXQgdGhlIG1vbm8gcGluCj4+IFllcywgeW91IGFyZSByaWdodC4KPj4KPj4+
-IDIuMi4gTW9ubyBPdXRwdXQKPj4+IFRoZSBNb25vIE91dCBwb3J0IHNvdXJjZSBzZWxlY3Rpb24s
-IHBvd2VyIHN0YXRlLCBhbmQgbXV0ZSBjaGFyYWN0ZXJpc3RpY3MKPj4+IGFyZSBhbGwgaW5kZXBl
-bmRlbnRseQo+Pj4gY29udHJvbGxlZCBieSB0aGUgbW9ubyBvdXRwdXQgcG9ydCBjb250cm9scy4g
-RVEgZG9lcyBub3QgYXBwbHkgdG8gdGhpcwo+Pj4gcGF0aC4gQW4gaW50ZXJuYWwgMm5kIG9yZGVy
-IGJhbmQtcGFzcyBmaWx0ZXIgaXMgcHJvdmlkZWQgdG8gcmVzdHJpY3QgdGhlCj4+PiBvdXRwdXQg
-ZnJlcXVlbmNpZXMgd2hlbiB1c2luZyBtb25vIG91dCB0byBkcml2ZSBhbiBleHRlci0KPj4+IG5h
-bCBhbXBsaWZpZWQgc3ViLXdvb2Zlcgo+PiBXaGVyZSBkaWQgeW91IGZpbmQgdGhpcyB0ZXh0PyBE
-b2VzIGl0IG1lYW4gdGhlcmUgaXMgYSBoYXJkd2FyZSBsb3cKPiBmcmVxdWVuY3kgcGFzcyBmaWx0
-ZXIgaW5zaWRlIHRoZSBjb2RlYz8KPgo+IGh0dHA6Ly93d3cudGVtcG9zZW1pLmNvbS9wcm9kdWN0
-cy9wY2xhcHRvcC1oZC85MmhkOTEvCj4KPiAyLjMuIE1vbm8gb3V0cHV0IEJhbmQtUGFzcyBGaWx0
-ZXIKPiBGb3IgbWFueSBhcHBsaWNhdGlvbnMsIHRoZSBwcmltYXJ5IHNwZWFrZXJzIGFyZSBpbmNh
-cGFibGUgb2YgcmVwcm9kdWNpbmcKPiBsb3cgZnJlcXVlbmN5IGF1ZGlvLiBUaGVyZWZvcmUgaXQg
-aXMgZGVzaXJhYmxlIHRvIGltcGxlbWVudCBhIHdvb2ZlciBvcgo+IHN1Yi13b29mZXIgc3BlYWtl
-ci4gVGhlIG1vbm8gb3V0cHV0IGlzIGlkZWFsIGZvciB0aGlzIHRhc2suIEhvd2V2ZXIsIHRoZQo+
-IGZyZXF1ZW5jeSByZXNwb25zZSBzaG91bGQgYmUgcmVzdHJpY3RlZCB0byBwcmV2ZW50IGludGVy
-ZmVyZW5jZSB3aXRoIHRoZQo+IHByaW1hcnkgc3BlYWtlcnMuIFR5cGljYWxseSBhbiBleHRlcm5h
-bCBmaWx0ZXIsIGtub3duIGFzIGEgY3Jvc3Mtb3Zlcgo+IGZpbHRlciwgaXMgdXNlZC4gVGhlIG1v
-bm8gcHJvY2Vzc2luZyBwYXRoIGluY2x1ZGVzIGEgYmFuZC1wYXNzIGZpbHRlciB3aXRoCj4gcHJv
-Z3JhbW1hYmxlIGhpZ2ggYW5kIGxvdyBjdXQtb2ZmIGZyZXF1ZW5jaWVzIHRvIGVsaW1pbmF0ZSB0
-aGUgbmVlZCBmb3IgYW4KPiBleHRlcm5hbCBmaWx0ZXIuCj4KPiAyLjMuMS4gTWl4ZXIgRmlsdGVy
-IERlc2NyaXB0aW9uIFRoZSBiYW5kLXBhc3MgZmlsdGVyIGlzIGRlcml2ZWQgZnJvbSB0aGUKPiBj
-b21tb24gYmlxdWFkcmF0aWMgZmlsdGVyIGFuZCBwcm92aWRlcyBhIDEyZEIvb2N0YXZlIHJvbGwt
-b2ZmLiBUaGUgZmlsdGVyCj4gbWF5IGJlIHByb2dyYW1tZWQgZm9yIGEgLTNkQiBsb3dlciBiYW5k
-IGVkZ2Ugb2Y6IDYzSHosIDgwSHosIDEwMEh6LCAxMjBIeiwKPiAxNTBIeiwgMjAwSHosIDMxNUh6
-LCBvciA0MDBIei4KPgo+IFRoZSBmaWx0ZXIgbWF5IGJlIHByb2dyYW1tZWQgZm9yIGEgLTNkQiB1
-cHBlciBiYW5kIGVkZ2Ugb2Y6IDE1MEh6LCAyMDBIeiwKPiAyNTBIeiwgMzE1SHosIDQwMEh6LCA1
-MDBIeiwgNjMwSHosIG9yIDgwMEh6Lgo+Cj4gVGhlIGJhbmQtcGFzcyBmaWx0ZXIgaXMgZW5hYmxl
-ZCBieSBkZWZhdWx0IHdpdGggYSBjdXQtb2ZmIGZyZXF1ZW5jaWVzIGF0Cj4gMTIwSHogYW5kIDI1
-MEh6LiBUaGUgZmlsdGVyIG1heSBiZSBieXBhc3NlZCB1c2luZyB0aGUgYXNzb2NpYXRlZCB2ZXJi
-Cj4gKHByb2Nlc3Npbmcgc3RhdGUgdmVyYgpUaGFua3MgdmVyeSBtdWNoLCB2ZXJ5IHVzZWZ1bCBp
-bmZvcm1hdGlvbi4KCgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo+Cj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+rt5645_enable_push_button_irq uses snd_soc_dapm_*_unlocked
+functions, so it needs to lock the required dapm mutex.
+
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+ sound/soc/codecs/rt5645.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index d5f0f56..025cf14 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2761,6 +2761,7 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (enable) {
++		snd_soc_dapm_mutex_lock(&codec->dapm);
+ 		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+ 							"ADC L power");
+ 		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+@@ -2770,6 +2771,8 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+ 							"Mic Det Power");
+ 		snd_soc_dapm_sync_unlocked(&codec->dapm);
++		snd_soc_dapm_mutex_unlock(&codec->dapm);
++
+ 		snd_soc_update_bits(codec,
+ 					RT5645_INT_IRQ_ST, 0x8, 0x8);
+ 		snd_soc_update_bits(codec,
+@@ -2780,6 +2783,8 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 	} else {
+ 		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
+ 		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
++
++		snd_soc_dapm_mutex_lock(&codec->dapm);
+ 		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+ 							"ADC L power");
+ 		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+@@ -2790,6 +2795,7 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+ 							"Mic Det Power");
+ 		snd_soc_dapm_sync_unlocked(&codec->dapm);
++		snd_soc_dapm_mutex_unlock(&codec->dapm);
+ 	}
+ }
+ 
+-- 
+2.2.0.rc0.207.ga3a616c
