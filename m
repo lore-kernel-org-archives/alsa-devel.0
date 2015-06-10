@@ -1,27 +1,17 @@
-From: Mihai =?UTF-8?B?RG9uyJt1?= <mihai.dontu@gmail.com>
-Subject: Re: Audio crackles with 4.1-rc1
-Date: Wed, 10 Jun 2015 14:45:51 +0300
-Message-ID: <20150610144551.4578ee99@mdontu-l.dsd.bitdefender.biz>
-References: <s5hpp6ov1wv.wl-tiwai@suse.de> <s5ha8xsuxe3.wl-tiwai@suse.de>
- <20150429112859.GY10148@earth.li> <s5h4mnzgne6.wl-tiwai@suse.de>
- <20150430150131.GA10148@earth.li> <s5hd22l7dgo.wl-tiwai@suse.de>
- <20150502150513.GF10148@earth.li> <s5hk2w514aj.wl-tiwai@suse.de>
- <20150519161911.GD28070@earth.li> <s5hr3qctryf.wl-tiwai@suse.de>
- <20150519215310.GF28070@earth.li> <s5hd21vu9k7.wl-tiwai@suse.de>
- <20150610131755.0b906783@mdontu-l.dsd.bitdefender.biz>
- <s5h4mmfooaq.wl-tiwai@suse.de>
- <20150610134135.327e2bdc@mdontu-l.dsd.bitdefender.biz>
- <s5hvbevn8gh.wl-tiwai@suse.de>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v7 0/3] HDA: add extended HDA
+Date: Wed, 10 Jun 2015 16:56:28 +0530
+Message-ID: <9443.00627238608$1433937498@news.gmane.org>
+References: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 681D6261497
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:45:54 +0200 (CEST)
-Received: by wgme6 with SMTP id e6so33601764wgm.2
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 04:45:54 -0700 (PDT)
-In-Reply-To: <s5hvbevn8gh.wl-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F21152614C4
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:57:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,88 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, linux-kernel@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMCBKdW4gMjAxNSAxMjo1MDoyMiArMDIwMCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-QXQgV2VkLCAxMCBKdW4gMjAxNSAxMzo0MTozNSArMDMwMCwgTWloYWkgRG9uyJt1IHdyb3RlOgo+
-ID4gT24gV2VkLCAxMCBKdW4gMjAxNSAxMjoyMjo1MyArMDIwMCBUYWthc2hpIEl3YWkgd3JvdGU6
-Cj4gPiA+IEF0IFdlZCwgMTAgSnVuIDIwMTUgMTM6MTc6NTUgKzAzMDAsIE1paGFpIERvbsibdSB3
-cm90ZToKPiA+ID4gPiBPbiBXZWQsIDIwIE1heSAyMDE1IDA3OjAxOjEyICswMjAwIFRha2FzaGkg
-SXdhaSB3cm90ZToKPiA+ID4gPiA+IEZyb206IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4K
-PiA+ID4gPiA+IFN1YmplY3Q6IFtQQVRDSF0gQUxTQTogaGRhIC0gRGlzYWJsZSB3aWRnZXQgcG93
-ZXItc2F2aW5nIGZvciBBTEMyOTIgJiBjbwo+ID4gPiA+ID4gCj4gPiA+ID4gPiBXZSd2ZSBnb3Qg
-cmVwb3J0cyB0aGF0IEFMQzMyMjYgKGEgRGVsbCB2YXJpYW50IG9mIEFMQzI5MikgZ2l2ZXMgY2xp
-Y2sKPiA+ID4gPiA+IG5vaXNlcyBhdCB0cmFuc2l0aW9uIGZyb20gRDMgdG8gRDAgd2hlbiB0aGUg
-d2lkZ2V0IHBvd2VyLXNhdmluZyBpcwo+ID4gPiA+ID4gZW5hYmxlZC4gIEZ1cnRoZXIgZGVidWdn
-aW5nIHNlc3Npb24gc2hvd2VkIHRoYXQgYXZvaWRpbmcgaXQgaXNuJ3QKPiA+ID4gPiA+IHRyaXZp
-YWwsIHVuZm9ydHVuYXRlbHksIHNpbmNlIHBhdGhzIGFyZSBiYXNpY2FsbHkgYWN0aXZhdGVkCj4g
-PiA+ID4gPiBkeW5hbWljYWxseSB3aGlsZSB0aGUgcGlucyBoYXZlIGJlZW4gYWxyZWFkeSBlbmFi
-bGVkLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBUaGlzIHBhdGNoIGRpc2FibGVzIHRoZSB3aWRnZXQg
-cG93ZXItc2F2aW5nIGZvciBzdWNoIGNvZGVjcy4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gUmVwb3J0
-ZWQtYnk6IEpvbmF0aGFuIE1jRG93ZWxsIDxub29kbGVzQGVhcnRoLmxpPgo+ID4gPiA+ID4gU2ln
-bmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+ID4gPiA+ID4gLS0tCj4g
-PiA+ID4gPiAgc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCAzICsrLQo+ID4gPiA+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiA+ID4gPiA+
-IAo+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
-c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKPiA+ID4gPiA+IGluZGV4IDJlMjQ2ZmU0OTVm
-Ni4uMzFmOGYxM2JlOTA3IDEwMDY0NAo+ID4gPiA+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRj
-aF9yZWFsdGVrLmMKPiA+ID4gPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5j
-Cj4gPiA+ID4gPiBAQCAtNTYyMyw3ICs1NjIzLDggQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjko
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCj4gPiA+ID4gPiAgCj4gPiA+ID4gPiAgCXNwZWMgPSBj
-b2RlYy0+c3BlYzsKPiA+ID4gPiA+ICAJc3BlYy0+Z2VuLnNoYXJlZF9taWNfdnJlZl9waW4gPSAw
-eDE4Owo+ID4gPiA+ID4gLQljb2RlYy0+cG93ZXJfc2F2ZV9ub2RlID0gMTsKPiA+ID4gPiA+ICsJ
-aWYgKGNvZGVjLT5jb3JlLnZlbmRvcl9pZCAhPSAweDEwZWMwMjkyKQo+ID4gPiA+ID4gKwkJY29k
-ZWMtPnBvd2VyX3NhdmVfbm9kZSA9IDE7Cj4gPiA+ID4gPiAgCj4gPiA+ID4gPiAgCXNuZF9oZGFf
-cGlja19maXh1cChjb2RlYywgYWxjMjY5X2ZpeHVwX21vZGVscywKPiA+ID4gPiA+ICAJCSAgICAg
-ICBhbGMyNjlfZml4dXBfdGJsLCBhbGMyNjlfZml4dXBzKTsKPiA+ID4gPiAKPiA+ID4gPiBJJ20g
-b24gNC4xLXJjNyB3aGljaCBhcHBlYXJzIHRvIGNvbnRhaW4gdGhpcyBwYXRjaCwgaG93ZXZlciwg
-SSBzdGlsbAo+ID4gPiA+IGdldCB0aGUgYXVkaW8gYXJ0aWZhY3RzIChjcmFja2xlcykgd2hlbiBJ
-IGJvb3QgbXkgbGFwdG9wIChMYXRpdHVkZQo+ID4gPiA+IEU3NDQwKToKPiA+ID4gPiAKPiA+ID4g
-PiBbICAgIDEuMDU4ODM5XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6IGF1dG9j
-b25maWcgZm9yIEFMQzMyMjY6IGxpbmVfb3V0cz0xICgweDE2LzB4MC8weDAvMHgwLzB4MCkgdHlw
-ZTpsaW5lCj4gPiA+ID4gWyAgICAxLjA1ODg0M10gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVk
-aW9DMUQwOiAgICBzcGVha2VyX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApCj4gPiA+ID4g
-WyAgICAxLjA1ODg0Nl0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAgICBocF9v
-dXRzPTEgKDB4MTUvMHgwLzB4MC8weDAvMHgwKQo+ID4gPiA+IFsgICAgMS4wNTg4NDldIHNuZF9o
-ZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzFEMDogICAgbW9ubzogbW9ub19vdXQ9MHgwCj4gPiA+
-ID4gWyAgICAxLjA1ODg1MV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAgICBp
-bnB1dHM6Cj4gPiA+ID4gWyAgICAxLjA1ODg1NV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVk
-aW9DMUQwOiAgICAgIERvY2sgTWljPTB4MTkKPiA+ID4gPiBbICAgIDEuMDU4ODU5XSBzbmRfaGRh
-X2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6ICAgICAgSGVhZHNldCBNaWM9MHgxYQo+ID4gPiA+
-IFsgICAgMS4wNTg4NjJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzFEMDogICAgICBJ
-bnRlcm5hbCBNaWM9MHgxMgo+ID4gPiA+IAo+ID4gPiA+IDQuMC40IHdhcyBmaW5lLgo+ID4gPiAK
-PiA+ID4gRG9lcyBpdCBoYXBwZW4gb25seSBvbmNlIGF0IGJvb3QgKGkuZS4gYXQgcG93ZXIgdXAp
-LCBvciBoYXBwZW5zIGFsd2F5cwo+ID4gPiBhdCBydW50aW1lIFBNPyAgSWYgaXQncyBhIG9uY2Ut
-b2ZmIGJvb3QgdGhpbmcsIHRoZSBwYXRjaCBzaG91bGRuJ3QKPiA+ID4gaGF2ZSBtdWNoIGVmZmVj
-dC4gIFNvbWV0aGluZyBlbHNlLCB2ZXJ5IHN1YnRsZSB0aGluZywgZS5nLiB0aGUgb3JkZXIKPiA+
-ID4gb2YgdmVyYiBleGVjdXRpb24sIG1pZ2h0IGNhdXNlIHRoaXMga2luZCBvZiBwcm9ibGVtLgo+
-ID4gCj4gPiBPbmx5IGF0IHBvd2VyIHVwLiBJJ3ZlIGFsc28gc3VzcGVuZC1yZXN1bWVkIHR3aWNl
-IGFuZCBjYW4gY29uZmlybSBpdCdzCj4gPiBPSy4KPiA+IAo+ID4gVGhlcmUncyBhIF92ZXJ5XyBi
-cmllZiBjbGljayBhdCBzdXNwZW5kICh3aGVuIHRoZSBwb3dlciBpcyBjdXQpLCBidXQgaXQKPiA+
-IGxvb2tzIGxpa2UgYSBwbGFpbiBjaXJjdWl0cnkgdGhpbmcuIEkgcHJvYmFibHkgZGlkbid0IG5v
-dGljZSBpdCBiZWZvcmUKPiA+IGJlY2F1c2UgSSB3YXNuJ3QgbG9va2luZyBmb3IgaXQuCj4gCj4g
-VGhhbmtzLiAgRG8geW91IGdldCB0aGUgc2FtZSBjbGljayBub2lzZSB3aGVuIHJlbG9hZGluZyBz
-bmQtaGRhLWludGVsCj4gZHJpdmVyPyAgQWxzbywgZG9lcyBpdCBoYXBwZW4gd2hlbiBib290aW5n
-IGluIHJ1bmxldmVsIDM/Cj4gCj4gTGFzdCBidXQgbm90IGxlYXN0LCBhIHBhdGNoIGxpa2UgYmVs
-b3cgaGFzIGFueSBlZmZlY3Q/Cj4gCj4gCj4gVGFrYXNoaQo+IAo+IC0tLQo+IGRpZmYgLS1naXQg
-YS9zb3VuZC9wY2kvaGRhL2hkYV9jb2RlYy5jIGIvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+
-IC0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL2hk
-YV9jb2RlYy5jCj4gQEAgLTMwNzcsNiArMzA3Nyw4IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgaGRh
-X3NldF9wb3dlcl9zdGF0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKPiAgCQkJYnJlYWs7Cj4g
-IAl9Cj4gIAo+ICsJaWYgKHBvd2VyX3N0YXRlID09IEFDX1BXUlNUX0QwKQo+ICsJCW1zbGVlcCgx
-MDApOwo+ICAJcmV0dXJuIHN0YXRlOwo+ICB9Cj4gIAoKUmVsb2FkaW5nIHNuZC1oZGEtaW50ZWwg
-ZG9lcyBub3QgdHJpZ2dlciB0aGUgbm9pc2UsIGJ1dCBpdCBoZWxwcy4gSSd2ZQpub3RpY2VkIHRo
-YXQgdGhlIGNsaWNrcyBhcHBlYXIgd2hlbiBsb2FkaW5nL3JlbG9hZGluZyBwdWxzZWF1ZGlvLgoK
-ICAkIHB1bHNlYXVkaW8gLWsKCndpbGwgc3Bhd24gYSBuZXcgY2hpbGQgaW4gYmFja2dyb3VuZCAo
-cHJvYmFibHkgYXNrZWQgYnkga21peCkgYW5kCmltbWVkaWF0ZWx5IEkgaGVhciB0aGUgbm9pc2Uu
-IFJlbG9hZGluZyB0aGUgZHJpdmVyIG1ha2VzIHRoZSBwcm9ibGVtIGdvCmF3YXkuCgp0ZWxpbml0
-IDMgZG9lcyBub3RoaW5nIGZvciBtZSAoR2VudG9vIHNlZW1zIHRvIGhhdmUgdGhpbmdzIHdpcmVk
-CmRpZmZlcmVudGx5KS4gTWFudWFsbHkgcmVsb2FkaW5nIGFsc2Fzb3VuZCAoL2V0Yy9pbml0LmQv
-YWxzYXNvdW5kKSBkaWQKbm90IHRyaWdnZXIgdGhlIHByb2JsZW0gZWl0aGVyLgoKSG93ZXZlciEg
-WW91ciBwYXRjaCBzZWVtcyB0byB3b3JrLiBDb2xkIGJvb3QsIHB1bHNlYXVkaW8gcmVzdGFydCBh
-bmQKbm90aGluZy4gTm90IGEgcGVlcC4gOi0pCgotLSAKTWloYWkgRG9uyJt1Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+There is an error in this series. Vinod will resend shortly.
+
+On Wed, Jun 10, 2015 at 05:03:33PM +0530, Vinod Koul wrote:
+> New HDA controllers from Intel have extended HDA capabilities like multilink,
+> pipe processing, SPIB, GTS etc In order to use them we create an extended
+> HDA bus, controller and stream which uses the extended configuration
+> 
+> Changes in v7:
+> - Feedback from Takashi
+> - removed the macros for register read/writes
+> - add new macros for reg update
+> - fix bus pointer macro
+> - header cleanup on c/h files
+> - new device name ehdaudioiDn
+> - removed flags for ext caps, use pointer only
+> - moved module info to patch 1
+> - sparse check on series
+> - remove codec name in link
+> 
+> Jeeja KP (3):
+>   ALSA: hdac_ext: add extended HDA bus
+>   ALSA: hdac_ext: add hdac extended controller
+>   ALSA: hdac_ext: add extended stream capabilities
+> 
+>  include/sound/hdaudio_ext.h         | 129 ++++++++++++
+>  sound/hda/Kconfig                   |   4 +
+>  sound/hda/Makefile                  |   3 +
+>  sound/hda/ext/Makefile              |   3 +
+>  sound/hda/ext/hdac_ext_bus.c        | 116 +++++++++++
+>  sound/hda/ext/hdac_ext_controller.c | 297 ++++++++++++++++++++++++++
+>  sound/hda/ext/hdac_ext_stream.c     | 402 ++++++++++++++++++++++++++++++++++++
+>  7 files changed, 954 insertions(+)
+>  create mode 100644 include/sound/hdaudio_ext.h
+>  create mode 100644 sound/hda/ext/Makefile
+>  create mode 100644 sound/hda/ext/hdac_ext_bus.c
+>  create mode 100644 sound/hda/ext/hdac_ext_controller.c
+>  create mode 100644 sound/hda/ext/hdac_ext_stream.c
+> 
+> -- 
+> 1.9.1
+> 
+
+-- 
