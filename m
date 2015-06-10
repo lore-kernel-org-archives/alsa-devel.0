@@ -1,17 +1,27 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v7 3/3] ALSA: hdac_ext: add extended stream
-	capabilities
-Date: Wed, 10 Jun 2015 17:03:36 +0530
-Message-ID: <1433936016-446-4-git-send-email-vinod.koul@intel.com>
-References: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
+From: Mihai =?UTF-8?B?RG9uyJt1?= <mihai.dontu@gmail.com>
+Subject: Re: Audio crackles with 4.1-rc1
+Date: Wed, 10 Jun 2015 14:45:51 +0300
+Message-ID: <20150610144551.4578ee99@mdontu-l.dsd.bitdefender.biz>
+References: <s5hpp6ov1wv.wl-tiwai@suse.de> <s5ha8xsuxe3.wl-tiwai@suse.de>
+ <20150429112859.GY10148@earth.li> <s5h4mnzgne6.wl-tiwai@suse.de>
+ <20150430150131.GA10148@earth.li> <s5hd22l7dgo.wl-tiwai@suse.de>
+ <20150502150513.GF10148@earth.li> <s5hk2w514aj.wl-tiwai@suse.de>
+ <20150519161911.GD28070@earth.li> <s5hr3qctryf.wl-tiwai@suse.de>
+ <20150519215310.GF28070@earth.li> <s5hd21vu9k7.wl-tiwai@suse.de>
+ <20150610131755.0b906783@mdontu-l.dsd.bitdefender.biz>
+ <s5h4mmfooaq.wl-tiwai@suse.de>
+ <20150610134135.327e2bdc@mdontu-l.dsd.bitdefender.biz>
+ <s5hvbevn8gh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 34FAC26145A
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:32:18 +0200 (CEST)
-In-Reply-To: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-wg0-f49.google.com (mail-wg0-f49.google.com [74.125.82.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 681D6261497
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:45:54 +0200 (CEST)
+Received: by wgme6 with SMTP id e6so33601764wgm.2
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 04:45:54 -0700 (PDT)
+In-Reply-To: <s5hvbevn8gh.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,508 +31,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jonathan McDowell <noodles@earth.li>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
-
-Now we have the bus and controller code added to find and initialize the
-extended capabilities. Now we need to use them in stream code to decouple
-stream, manage links etc
-
-So this patch adds the stream handling code for extended capabilities
-introduced in preceding patches
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/hdaudio_ext.h     |  48 +++++
- sound/hda/ext/Makefile          |   2 +-
- sound/hda/ext/hdac_ext_stream.c | 402 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 451 insertions(+), 1 deletion(-)
- create mode 100644 sound/hda/ext/hdac_ext_stream.c
-
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 5031df7cfe60..b5341ca50e4e 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -56,6 +56,50 @@ enum hdac_ext_stream_type {
- 	HDAC_EXT_STREAM_TYPE_LINK
- };
- 
-+/**
-+ * hdac_ext_stream: HDAC extended stream for extended HDA caps
-+ *
-+ * @hstream: hdac_stream
-+ * @pphc_addr: processing pipe host stream pointer
-+ * @pplc_addr: processing pipe link stream pointer
-+ * @decoupled: stream host and link is decoupled
-+ * @link_locked: link is locked
-+ * @link_prepared: link is prepared
-+ * link_substream: link substream
-+ */
-+struct hdac_ext_stream {
-+	struct hdac_stream hstream;
-+
-+	void __iomem *pphc_addr;
-+	void __iomem *pplc_addr;
-+
-+	bool decoupled:1;
-+	bool link_locked:1;
-+	bool link_prepared;
-+
-+	struct snd_pcm_substream *link_substream;
-+};
-+
-+#define hdac_stream(s)		(&(s)->hstream)
-+#define stream_to_hdac_ext_stream(s) \
-+	container_of(s, struct hdac_ext_stream, hstream)
-+
-+void snd_hdac_ext_stream_init(struct hdac_ext_bus *bus,
-+				struct hdac_ext_stream *stream, int idx,
-+				int direction, int tag);
-+struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *bus,
-+					   struct snd_pcm_substream *substream,
-+					   int type);
-+void snd_hdac_ext_stream_release(struct hdac_ext_stream *azx_dev, int type);
-+void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *bus,
-+				struct hdac_ext_stream *azx_dev, bool decouple);
-+void snd_hdac_ext_stop_streams(struct hdac_ext_bus *sbus);
-+
-+void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *hstream);
-+void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *hstream);
-+void snd_hdac_ext_link_stream_reset(struct hdac_ext_stream *hstream);
-+int snd_hdac_ext_link_stream_setup(struct hdac_ext_stream *stream, int fmt);
-+
- struct hdac_ext_link {
- 	struct hdac_bus *bus;
- 	int index;
-@@ -78,4 +122,8 @@ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
- 	writel(((readl(addr + reg) & ~(mask)) | (val)), \
- 		addr + reg)
- 
-+#define snd_hdac_updatew(addr, reg, mask, val)		\
-+	writew(((readw(addr + reg) & ~(mask)) | (val)), \
-+		addr + reg)
-+
- #endif /* __SOUND_HDAUDIO_EXT_H */
-diff --git a/sound/hda/ext/Makefile b/sound/hda/ext/Makefile
-index 934b7bf5d87f..9b6f641c7777 100644
---- a/sound/hda/ext/Makefile
-+++ b/sound/hda/ext/Makefile
-@@ -1,3 +1,3 @@
--snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o
-+snd-hda-ext-core-objs := hdac_ext_bus.o hdac_ext_controller.o hdac_ext_stream.o
- 
- obj-$(CONFIG_SND_HDA_EXT_CORE) += snd-hda-ext-core.o
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-new file mode 100644
-index 000000000000..ce604e14f877
---- /dev/null
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -0,0 +1,402 @@
-+/*
-+ *  hdac-ext-stream.c - HD-audio extended stream operations.
-+ *
-+ *  Copyright (C) 2015 Intel Corp
-+ *  Author: Jeeja KP <jeeja.kp@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ */
-+
-+#include <linux/delay.h>
-+#include <sound/pcm.h>
-+#include <sound/hda_register.h>
-+#include <sound/hdaudio_ext.h>
-+
-+/**
-+ * snd_hdac_ext_stream_init - initialize each stream (aka device)
-+ * @ebus: HD-audio ext core bus
-+ * @stream: HD-audio ext core stream object to initialize
-+ * @idx: stream index number
-+ * @direction: stream direction (SNDRV_PCM_STREAM_PLAYBACK or SNDRV_PCM_STREAM_CAPTURE)
-+ * @tag: the tag id to assign
-+ *
-+ * initialize the stream, if ppcap is enabled then init those and then
-+ * invoke hdac stream initialization routine
-+ */
-+void snd_hdac_ext_stream_init(struct hdac_ext_bus *ebus,
-+				struct hdac_ext_stream *stream,
-+				int idx, int direction, int tag)
-+{
-+	struct hdac_bus *bus = &ebus->bus;
-+
-+	if (ebus->ppcap) {
-+		stream->pphc_addr = ebus->ppcap+ AZX_PPHC_BASE +
-+				AZX_PPHC_INTERVAL * idx;
-+
-+		stream->pplc_addr = ebus->ppcap + AZX_PPLC_BASE +
-+				AZX_PPLC_MULTI * ebus->num_streams +
-+				AZX_PPLC_INTERVAL * idx;
-+	}
-+
-+	stream->decoupled = false;
-+	snd_hdac_stream_init(bus, &stream->hstream, idx, direction, tag);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_init);
-+
-+/**
-+ * snd_hdac_ext_stream_decouple - decouple the hdac stream
-+ * @ebus: HD-audio ext core bus
-+ * @stream: HD-audio ext core stream object to initialize
-+ * @decouple: flag to decouple
-+ */
-+void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
-+				struct hdac_ext_stream *stream, bool decouple)
-+{
-+	struct hdac_stream *hstream = &stream->hstream;
-+	struct hdac_bus *bus = &ebus->bus;
-+
-+	spin_lock_irq(&bus->reg_lock);
-+	if (decouple)
-+		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL, 0,
-+				AZX_PPCTL_PROCEN(hstream->index));
-+	else
-+		snd_hdac_updatel(ebus->ppcap, AZX_REG_PP_PPCTL,
-+					AZX_PPCTL_PROCEN(hstream->index), 0);
-+	stream->decoupled = decouple;
-+	spin_unlock_irq(&bus->reg_lock);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_decouple);
-+
-+/**
-+ * snd_hdac_ext_linkstream_start - start a stream
-+ * @stream: HD-audio ext core stream to start
-+ */
-+void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *stream)
-+{
-+	snd_hdac_updatel(stream->pplc_addr, AZX_REG_PPLCCTL, 0, AZX_PPLCCTL_RUN);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_start);
-+
-+/**
-+ * snd_hdac_ext_link_stream_clear - stop a stream DMA
-+ * @stream: HD-audio ext core stream to stop
-+ */
-+void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *stream)
-+{
-+	snd_hdac_updatel(stream->pplc_addr, AZX_REG_PPLCCTL, AZX_PPLCCTL_RUN, 0);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_clear);
-+
-+/**
-+ * snd_hdac_ext_link_stream_reset - reset a stream
-+ * @stream: HD-audio ext core stream to reset
-+ */
-+void snd_hdac_ext_link_stream_reset(struct hdac_ext_stream *stream)
-+{
-+	unsigned char val;
-+	int timeout;
-+
-+	snd_hdac_ext_link_stream_clear(stream);
-+
-+	snd_hdac_updatel(stream->pplc_addr, AZX_REG_PPLCCTL, 0, AZX_PPLCCTL_STRST);
-+	udelay(3);
-+	timeout = 50;
-+	do {
-+		val = readl(stream->pplc_addr + AZX_REG_PPLCCTL) &
-+				AZX_PPLCCTL_STRST;
-+		if (val)
-+			break;
-+		udelay(3);
-+	} while (--timeout);
-+	val &= ~AZX_PPLCCTL_STRST;
-+	writel(val, stream->pplc_addr + AZX_REG_PPLCCTL);
-+	udelay(3);
-+
-+	timeout = 50;
-+	/* waiting for hardware to report that the stream is out of reset */
-+	do {
-+		val = readl(stream->pplc_addr + AZX_REG_PPLCCTL) & AZX_PPLCCTL_STRST;
-+		if (!val)
-+			break;
-+		udelay(3);
-+	} while (--timeout);
-+
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_reset);
-+
-+/**
-+ * snd_hdac_ext_link_stream_setup -  set up the SD for streaming
-+ * @stream: HD-audio ext core stream to set up
-+ * @fmt: stream format
-+ */
-+int snd_hdac_ext_link_stream_setup(struct hdac_ext_stream *stream, int fmt)
-+{
-+	struct hdac_stream *hstream = &stream->hstream;
-+	unsigned int val;
-+
-+	/* make sure the run bit is zero for SD */
-+	snd_hdac_ext_link_stream_clear(stream);
-+	/* program the stream_tag */
-+	val = readl(stream->pplc_addr + AZX_REG_PPLCCTL);
-+	val = (val & ~AZX_PPLCCTL_STRM_MASK) |
-+		(hstream->stream_tag << AZX_PPLCCTL_STRM_SHIFT);
-+	writel(val, stream->pplc_addr + AZX_REG_PPLCCTL);
-+
-+	/* program the stream format */
-+	writew(fmt, stream->pplc_addr + AZX_REG_PPLCFMT);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_stream_setup);
-+
-+/**
-+ * snd_hdac_ext_link_set_stream_id - maps stream id to link output
-+ * @link: HD-audio ext link to set up
-+ * @stream: stream id
-+ */
-+void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
-+				 int stream)
-+{
-+	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, (1 << stream), 0);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_set_stream_id);
-+
-+/**
-+ * snd_hdac_ext_link_clear_stream_id - maps stream id to link output
-+ * @link: HD-audio ext link to set up
-+ * @stream: stream id
-+ */
-+void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
-+				 int stream)
-+{
-+	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, 0, (1 << stream));
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_link_clear_stream_id);
-+
-+static struct hdac_ext_stream *
-+hdac_ext_link_stream_assign(struct hdac_ext_bus *ebus,
-+				struct snd_pcm_substream *substream)
-+{
-+	struct hdac_ext_stream *res = NULL;
-+	struct hdac_stream *stream = NULL;
-+	struct hdac_bus *hbus = &ebus->bus;
-+
-+	if (!ebus->ppcap) {
-+		dev_err(hbus->dev, "stream type not supported\n");
-+		return NULL;
-+	}
-+
-+	list_for_each_entry(stream, &hbus->stream_list, list) {
-+		struct hdac_ext_stream *hstream = container_of(stream,
-+						struct hdac_ext_stream,
-+						hstream);
-+		if (stream->direction != substream->stream)
-+			continue;
-+
-+		/* check if decoupled stream and not in use is available */
-+		if (hstream->decoupled && !hstream->link_locked) {
-+			res = hstream;
-+			break;
-+		}
-+
-+		if (!hstream->link_locked) {
-+			snd_hdac_ext_stream_decouple(ebus, hstream, true);
-+			res = hstream;
-+			break;
-+		}
-+	}
-+	if (res) {
-+		spin_lock_irq(&hbus->reg_lock);
-+		res->link_locked = 1;
-+		res->link_substream = substream;
-+		spin_unlock_irq(&hbus->reg_lock);
-+	}
-+	return res;
-+}
-+
-+static struct hdac_ext_stream *
-+hdac_ext_host_stream_assign(struct hdac_ext_bus *ebus,
-+				struct snd_pcm_substream *substream)
-+{
-+	struct hdac_ext_stream *res = NULL;
-+	struct hdac_stream *stream = NULL;
-+	struct hdac_bus *hbus = &ebus->bus;
-+	int key;
-+
-+	if (!ebus->ppcap) {
-+		dev_err(hbus->dev, "stream type not supported\n");
-+		return NULL;
-+	}
-+
-+	/* make a non-zero unique key for the substream */
-+	key = (substream->pcm->device << 16) | (substream->number << 2) |
-+			(substream->stream + 1);
-+
-+	list_for_each_entry(stream, &hbus->stream_list, list) {
-+		struct hdac_ext_stream *hstream = container_of(stream,
-+						struct hdac_ext_stream,
-+						hstream);
-+		if (stream->direction != substream->stream)
-+			continue;
-+
-+		if (stream->opened) {
-+			if (!hstream->decoupled)
-+				snd_hdac_ext_stream_decouple(ebus, hstream, true);
-+			res = hstream;
-+			break;
-+		}
-+	}
-+	if (res) {
-+		spin_lock_irq(&hbus->reg_lock);
-+		res->hstream.opened = 1;
-+		res->hstream.running = 0;
-+		res->hstream.assigned_key = key;
-+		res->hstream.substream = substream;
-+		spin_unlock_irq(&hbus->reg_lock);
-+	}
-+
-+	return res;
-+}
-+
-+/**
-+ * snd_hdac_ext_stream_assign - assign a stream for the PCM
-+ * @ebus: HD-audio ext core bus
-+ * @substream: PCM substream to assign
-+ * @type: type of stream (coupled, host or link stream)
-+ *
-+ * This assigns the stream based on the type (coupled/host/link), for the
-+ * given PCM substream, assigns it and returns the stream object
-+ *
-+ * coupled: Looks for an unused stream
-+ * host: Looks for an unused decoupled host stream
-+ * link: Looks for an unused decoupled link stream
-+ *
-+ * If no stream is free, returns NULL. The function tries to keep using
-+ * the same stream object when it's used beforehand.  when a stream is
-+ * decoupled, it becomes a host stream and link stream.
-+ */
-+struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_ext_bus *ebus,
-+					   struct snd_pcm_substream *substream,
-+					   int type)
-+{
-+	struct hdac_ext_stream *hstream = NULL;
-+	struct hdac_stream *stream = NULL;
-+	struct hdac_bus *hbus = &ebus->bus;
-+
-+	switch (type) {
-+	case HDAC_EXT_STREAM_TYPE_COUPLED:
-+		stream = snd_hdac_stream_assign(hbus, substream);
-+		if (stream)
-+			hstream = container_of(stream,
-+					struct hdac_ext_stream, hstream);
-+		return hstream;
-+
-+	case HDAC_EXT_STREAM_TYPE_HOST:
-+		return hdac_ext_host_stream_assign(ebus, substream);
-+
-+	case HDAC_EXT_STREAM_TYPE_LINK:
-+		return hdac_ext_link_stream_assign(ebus, substream);
-+
-+	default:
-+		return NULL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_assign);
-+
-+/**
-+ * snd_hdac_ext_stream_release - release the assigned stream
-+ * @stream: HD-audio ext core stream to release
-+ * @type: type of stream (coupled, host or link stream)
-+ *
-+ * Release the stream that has been assigned by snd_hdac_ext_stream_assign().
-+ */
-+void snd_hdac_ext_stream_release(struct hdac_ext_stream *stream, int type)
-+{
-+	struct hdac_bus *bus = stream->hstream.bus;
-+	struct hdac_ext_bus *ebus = hbus_to_ebus(bus);
-+
-+	switch (type) {
-+	case HDAC_EXT_STREAM_TYPE_COUPLED:
-+		snd_hdac_stream_release(&stream->hstream);
-+		break;
-+
-+	case HDAC_EXT_STREAM_TYPE_HOST:
-+		if (stream->decoupled) {
-+			snd_hdac_ext_stream_decouple(ebus, stream, false);
-+			snd_hdac_stream_release(&stream->hstream);
-+		}
-+		break;
-+
-+	case HDAC_EXT_STREAM_TYPE_LINK:
-+		if (stream->decoupled)
-+			snd_hdac_ext_stream_decouple(ebus, stream, false);
-+		spin_lock_irq(&bus->reg_lock);
-+		stream->link_locked = 0;
-+		stream->link_substream = NULL;
-+		spin_unlock_irq(&bus->reg_lock);
-+		break;
-+
-+	default:
-+		dev_dbg(bus->dev, "Invalid type %d\n", type);
-+	}
-+
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_release);
-+
-+/**
-+ * snd_hdac_ext_stream_spbcap_enable - enable SPIB for a stream
-+ * @ebus: HD-audio ext core bus
-+ * @enable: flag to enable/disable SPIB
-+ * @index: stream index for which SPIB need to be enabled
-+ */
-+void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *ebus,
-+				 bool enable, int index)
-+{
-+	u32 mask = 0;
-+	u32 register_mask = 0;
-+	struct hdac_bus *bus = &ebus->bus;
-+
-+	if (!ebus->spbcap) {
-+		dev_err(bus->dev, "Address of SPB capability is NULL");
-+		return;
-+	}
-+
-+	mask |= (1 << index);
-+
-+	register_mask = snd_hdac_chip_readl(bus, SPB_SPBFCCTL);
-+
-+	mask |= register_mask;
-+
-+	if (enable)
-+		snd_hdac_updatel(ebus->spbcap, AZX_REG_SPB_SPBFCCTL, 0, mask);
-+	else
-+		snd_hdac_updatel(ebus->spbcap, AZX_REG_SPB_SPBFCCTL, mask, 0);
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_spbcap_enable);
-+
-+/**
-+ * snd_hdac_ext_stop_streams - stop all stream if running
-+ * @ebus: HD-audio ext core bus
-+ */
-+void snd_hdac_ext_stop_streams(struct hdac_ext_bus *ebus)
-+{
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct hdac_stream *stream;
-+
-+	if (bus->chip_init) {
-+		list_for_each_entry(stream, &bus->stream_list, list)
-+			snd_hdac_stream_stop(stream);
-+		snd_hdac_bus_stop_chip(bus);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_stop_streams);
--- 
-1.9.1
+T24gV2VkLCAxMCBKdW4gMjAxNSAxMjo1MDoyMiArMDIwMCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+QXQgV2VkLCAxMCBKdW4gMjAxNSAxMzo0MTozNSArMDMwMCwgTWloYWkgRG9uyJt1IHdyb3RlOgo+
+ID4gT24gV2VkLCAxMCBKdW4gMjAxNSAxMjoyMjo1MyArMDIwMCBUYWthc2hpIEl3YWkgd3JvdGU6
+Cj4gPiA+IEF0IFdlZCwgMTAgSnVuIDIwMTUgMTM6MTc6NTUgKzAzMDAsIE1paGFpIERvbsibdSB3
+cm90ZToKPiA+ID4gPiBPbiBXZWQsIDIwIE1heSAyMDE1IDA3OjAxOjEyICswMjAwIFRha2FzaGkg
+SXdhaSB3cm90ZToKPiA+ID4gPiA+IEZyb206IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4K
+PiA+ID4gPiA+IFN1YmplY3Q6IFtQQVRDSF0gQUxTQTogaGRhIC0gRGlzYWJsZSB3aWRnZXQgcG93
+ZXItc2F2aW5nIGZvciBBTEMyOTIgJiBjbwo+ID4gPiA+ID4gCj4gPiA+ID4gPiBXZSd2ZSBnb3Qg
+cmVwb3J0cyB0aGF0IEFMQzMyMjYgKGEgRGVsbCB2YXJpYW50IG9mIEFMQzI5MikgZ2l2ZXMgY2xp
+Y2sKPiA+ID4gPiA+IG5vaXNlcyBhdCB0cmFuc2l0aW9uIGZyb20gRDMgdG8gRDAgd2hlbiB0aGUg
+d2lkZ2V0IHBvd2VyLXNhdmluZyBpcwo+ID4gPiA+ID4gZW5hYmxlZC4gIEZ1cnRoZXIgZGVidWdn
+aW5nIHNlc3Npb24gc2hvd2VkIHRoYXQgYXZvaWRpbmcgaXQgaXNuJ3QKPiA+ID4gPiA+IHRyaXZp
+YWwsIHVuZm9ydHVuYXRlbHksIHNpbmNlIHBhdGhzIGFyZSBiYXNpY2FsbHkgYWN0aXZhdGVkCj4g
+PiA+ID4gPiBkeW5hbWljYWxseSB3aGlsZSB0aGUgcGlucyBoYXZlIGJlZW4gYWxyZWFkeSBlbmFi
+bGVkLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBUaGlzIHBhdGNoIGRpc2FibGVzIHRoZSB3aWRnZXQg
+cG93ZXItc2F2aW5nIGZvciBzdWNoIGNvZGVjcy4KPiA+ID4gPiA+IAo+ID4gPiA+ID4gUmVwb3J0
+ZWQtYnk6IEpvbmF0aGFuIE1jRG93ZWxsIDxub29kbGVzQGVhcnRoLmxpPgo+ID4gPiA+ID4gU2ln
+bmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+ID4gPiA+ID4gLS0tCj4g
+PiA+ID4gPiAgc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCAzICsrLQo+ID4gPiA+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiA+ID4gPiA+
+IAo+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKPiA+ID4gPiA+IGluZGV4IDJlMjQ2ZmU0OTVm
+Ni4uMzFmOGYxM2JlOTA3IDEwMDY0NAo+ID4gPiA+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMKPiA+ID4gPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5j
+Cj4gPiA+ID4gPiBAQCAtNTYyMyw3ICs1NjIzLDggQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjko
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCj4gPiA+ID4gPiAgCj4gPiA+ID4gPiAgCXNwZWMgPSBj
+b2RlYy0+c3BlYzsKPiA+ID4gPiA+ICAJc3BlYy0+Z2VuLnNoYXJlZF9taWNfdnJlZl9waW4gPSAw
+eDE4Owo+ID4gPiA+ID4gLQljb2RlYy0+cG93ZXJfc2F2ZV9ub2RlID0gMTsKPiA+ID4gPiA+ICsJ
+aWYgKGNvZGVjLT5jb3JlLnZlbmRvcl9pZCAhPSAweDEwZWMwMjkyKQo+ID4gPiA+ID4gKwkJY29k
+ZWMtPnBvd2VyX3NhdmVfbm9kZSA9IDE7Cj4gPiA+ID4gPiAgCj4gPiA+ID4gPiAgCXNuZF9oZGFf
+cGlja19maXh1cChjb2RlYywgYWxjMjY5X2ZpeHVwX21vZGVscywKPiA+ID4gPiA+ICAJCSAgICAg
+ICBhbGMyNjlfZml4dXBfdGJsLCBhbGMyNjlfZml4dXBzKTsKPiA+ID4gPiAKPiA+ID4gPiBJJ20g
+b24gNC4xLXJjNyB3aGljaCBhcHBlYXJzIHRvIGNvbnRhaW4gdGhpcyBwYXRjaCwgaG93ZXZlciwg
+SSBzdGlsbAo+ID4gPiA+IGdldCB0aGUgYXVkaW8gYXJ0aWZhY3RzIChjcmFja2xlcykgd2hlbiBJ
+IGJvb3QgbXkgbGFwdG9wIChMYXRpdHVkZQo+ID4gPiA+IEU3NDQwKToKPiA+ID4gPiAKPiA+ID4g
+PiBbICAgIDEuMDU4ODM5XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6IGF1dG9j
+b25maWcgZm9yIEFMQzMyMjY6IGxpbmVfb3V0cz0xICgweDE2LzB4MC8weDAvMHgwLzB4MCkgdHlw
+ZTpsaW5lCj4gPiA+ID4gWyAgICAxLjA1ODg0M10gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVk
+aW9DMUQwOiAgICBzcGVha2VyX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApCj4gPiA+ID4g
+WyAgICAxLjA1ODg0Nl0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAgICBocF9v
+dXRzPTEgKDB4MTUvMHgwLzB4MC8weDAvMHgwKQo+ID4gPiA+IFsgICAgMS4wNTg4NDldIHNuZF9o
+ZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzFEMDogICAgbW9ubzogbW9ub19vdXQ9MHgwCj4gPiA+
+ID4gWyAgICAxLjA1ODg1MV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMUQwOiAgICBp
+bnB1dHM6Cj4gPiA+ID4gWyAgICAxLjA1ODg1NV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVk
+aW9DMUQwOiAgICAgIERvY2sgTWljPTB4MTkKPiA+ID4gPiBbICAgIDEuMDU4ODU5XSBzbmRfaGRh
+X2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MxRDA6ICAgICAgSGVhZHNldCBNaWM9MHgxYQo+ID4gPiA+
+IFsgICAgMS4wNTg4NjJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzFEMDogICAgICBJ
+bnRlcm5hbCBNaWM9MHgxMgo+ID4gPiA+IAo+ID4gPiA+IDQuMC40IHdhcyBmaW5lLgo+ID4gPiAK
+PiA+ID4gRG9lcyBpdCBoYXBwZW4gb25seSBvbmNlIGF0IGJvb3QgKGkuZS4gYXQgcG93ZXIgdXAp
+LCBvciBoYXBwZW5zIGFsd2F5cwo+ID4gPiBhdCBydW50aW1lIFBNPyAgSWYgaXQncyBhIG9uY2Ut
+b2ZmIGJvb3QgdGhpbmcsIHRoZSBwYXRjaCBzaG91bGRuJ3QKPiA+ID4gaGF2ZSBtdWNoIGVmZmVj
+dC4gIFNvbWV0aGluZyBlbHNlLCB2ZXJ5IHN1YnRsZSB0aGluZywgZS5nLiB0aGUgb3JkZXIKPiA+
+ID4gb2YgdmVyYiBleGVjdXRpb24sIG1pZ2h0IGNhdXNlIHRoaXMga2luZCBvZiBwcm9ibGVtLgo+
+ID4gCj4gPiBPbmx5IGF0IHBvd2VyIHVwLiBJJ3ZlIGFsc28gc3VzcGVuZC1yZXN1bWVkIHR3aWNl
+IGFuZCBjYW4gY29uZmlybSBpdCdzCj4gPiBPSy4KPiA+IAo+ID4gVGhlcmUncyBhIF92ZXJ5XyBi
+cmllZiBjbGljayBhdCBzdXNwZW5kICh3aGVuIHRoZSBwb3dlciBpcyBjdXQpLCBidXQgaXQKPiA+
+IGxvb2tzIGxpa2UgYSBwbGFpbiBjaXJjdWl0cnkgdGhpbmcuIEkgcHJvYmFibHkgZGlkbid0IG5v
+dGljZSBpdCBiZWZvcmUKPiA+IGJlY2F1c2UgSSB3YXNuJ3QgbG9va2luZyBmb3IgaXQuCj4gCj4g
+VGhhbmtzLiAgRG8geW91IGdldCB0aGUgc2FtZSBjbGljayBub2lzZSB3aGVuIHJlbG9hZGluZyBz
+bmQtaGRhLWludGVsCj4gZHJpdmVyPyAgQWxzbywgZG9lcyBpdCBoYXBwZW4gd2hlbiBib290aW5n
+IGluIHJ1bmxldmVsIDM/Cj4gCj4gTGFzdCBidXQgbm90IGxlYXN0LCBhIHBhdGNoIGxpa2UgYmVs
+b3cgaGFzIGFueSBlZmZlY3Q/Cj4gCj4gCj4gVGFrYXNoaQo+IAo+IC0tLQo+IGRpZmYgLS1naXQg
+YS9zb3VuZC9wY2kvaGRhL2hkYV9jb2RlYy5jIGIvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+
+IC0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL2hk
+YV9jb2RlYy5jCj4gQEAgLTMwNzcsNiArMzA3Nyw4IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgaGRh
+X3NldF9wb3dlcl9zdGF0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKPiAgCQkJYnJlYWs7Cj4g
+IAl9Cj4gIAo+ICsJaWYgKHBvd2VyX3N0YXRlID09IEFDX1BXUlNUX0QwKQo+ICsJCW1zbGVlcCgx
+MDApOwo+ICAJcmV0dXJuIHN0YXRlOwo+ICB9Cj4gIAoKUmVsb2FkaW5nIHNuZC1oZGEtaW50ZWwg
+ZG9lcyBub3QgdHJpZ2dlciB0aGUgbm9pc2UsIGJ1dCBpdCBoZWxwcy4gSSd2ZQpub3RpY2VkIHRo
+YXQgdGhlIGNsaWNrcyBhcHBlYXIgd2hlbiBsb2FkaW5nL3JlbG9hZGluZyBwdWxzZWF1ZGlvLgoK
+ICAkIHB1bHNlYXVkaW8gLWsKCndpbGwgc3Bhd24gYSBuZXcgY2hpbGQgaW4gYmFja2dyb3VuZCAo
+cHJvYmFibHkgYXNrZWQgYnkga21peCkgYW5kCmltbWVkaWF0ZWx5IEkgaGVhciB0aGUgbm9pc2Uu
+IFJlbG9hZGluZyB0aGUgZHJpdmVyIG1ha2VzIHRoZSBwcm9ibGVtIGdvCmF3YXkuCgp0ZWxpbml0
+IDMgZG9lcyBub3RoaW5nIGZvciBtZSAoR2VudG9vIHNlZW1zIHRvIGhhdmUgdGhpbmdzIHdpcmVk
+CmRpZmZlcmVudGx5KS4gTWFudWFsbHkgcmVsb2FkaW5nIGFsc2Fzb3VuZCAoL2V0Yy9pbml0LmQv
+YWxzYXNvdW5kKSBkaWQKbm90IHRyaWdnZXIgdGhlIHByb2JsZW0gZWl0aGVyLgoKSG93ZXZlciEg
+WW91ciBwYXRjaCBzZWVtcyB0byB3b3JrLiBDb2xkIGJvb3QsIHB1bHNlYXVkaW8gcmVzdGFydCBh
+bmQKbm90aGluZy4gTm90IGEgcGVlcC4gOi0pCgotLSAKTWloYWkgRG9uyJt1Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
