@@ -1,47 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch] ASoC: fsl: add an error check
-Date: Wed, 10 Jun 2015 18:33:22 +0100
-Message-ID: <20150610173322.GN14071@sirena.org.uk>
-References: <20150610153723.GB10549@mwanda>
+Subject: Re: [PATCH v3 1/3] ASoC: wm_adsp: Add code_probe and codec_remove
+ stubs
+Date: Wed, 10 Jun 2015 18:47:40 +0100
+Message-ID: <20150610174740.GO14071@sirena.org.uk>
+References: <1433949168-25615-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6PH4sE4TNvTKzKhJ"
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="PlWN2or5MzbGPm4Y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150610153723.GB10549@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <1433949168-25615-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---6PH4sE4TNvTKzKhJ
+--PlWN2or5MzbGPm4Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 10, 2015 at 06:37:23PM +0300, Dan Carpenter wrote:
-> My static checker complains that:
->=20
-> 	sound/soc/fsl/imx-wm8962.c:196 imx_wm8962_probe() warn:
-> 	we tested 'ret' before and it was 'false'
+On Wed, Jun 10, 2015 at 04:12:46PM +0100, Richard Fitzgerald wrote:
+> Currently the only init function in wm_adsp is called by the
+> codec driver early in its probe before the codec has been
+> registered with SOC.
 
-Applied, thanks.
+This doesn't apply against current code, please check and resend (bits
+of the series do apply to topic/arizona but not all).
 
---6PH4sE4TNvTKzKhJ
+--PlWN2or5MzbGPm4Y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVeHThAAoJECTWi3JdVIfQSaUH/1tsyvDV53+1YCX/srzK2hrX
-iACRMxDjE/SUz/lPGaEkhGWT3a7Y40szgW6h2HnNVX9/RksSAHuTQeFHzvCgVgS2
-Scfdl6uNkzuwGTqTqV5j4wlE5ir966+D5uI0L5mhSjrnyEeIbPPT61PSY1O3OXIQ
-4g0Vac4AcCkWGGCdPlHBtrfsZO9KuIn1seR03hut1MmBrKiPfAr+f/crOCND+Sm6
-yQH9I1WSSpWPFlIlaVtL8TKt3ZSP5F73ReUc9PojIc4B2mif/4hM8gHkj2nXeRKH
-g6VpN2kwpUqI1VvCdJWxfNZlCk8HhYMzN1i0B3XZtB/wwhREkkZMyZeK6pIEcSI=
-=wzMN
+iQEcBAEBCAAGBQJVeHg7AAoJECTWi3JdVIfQdqMH/0vDIa3QyHlq8JM/wOW/8Kew
+r8Mi6bWkEDlT7SvauIUpdTRCvGgstx5NWKtGYo0SkJUTusH0tlY1FtZyWjUkr1WQ
+15u/MgT9yEEbb0PODr/67SrfDztangdWQsaJKPecn9ToiVW9CLhFSmZ1nkOUqgI4
+EiPP9NcUB9v3bBpFNTm1zdNPdqMAIeg3j9ecRn64NQ9UGEfzT7UpFI3iV+DWbjHM
+KZ5Mvx/veavqWk61W6zMBrS0OJVyLr30VI6bd1FLYJRmVJDnjdtfAoyEbbFm92S5
+DnkUq7zZJq07R46ICcrlGok1LUhS0YVi5Ehf52asMslSDGD8PbbOgglGaWIQ4FU=
+=aLk5
 -----END PGP SIGNATURE-----
 
---6PH4sE4TNvTKzKhJ--
+--PlWN2or5MzbGPm4Y--
