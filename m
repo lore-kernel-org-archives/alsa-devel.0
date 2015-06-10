@@ -1,70 +1,48 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v7 0/3] HDA: add extended HDA
-Date: Wed, 10 Jun 2015 16:56:28 +0530
-Message-ID: <9443.00627238608$1433937498@news.gmane.org>
-References: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id F21152614C4
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 13:57:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1433936016-446-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 0/2] ASoC: qcom: add support to apq8016 sbc machine driver
+Date: Wed, 10 Jun 2015 13:15:05 +0100
+Message-ID: <1433938505-18006-1-git-send-email-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Rob Herring <robh+dt@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is an error in this series. Vinod will resend shortly.
+This patchset adds sound card support to APQ8016 SBC board aka DB410c.
+APQ8016 has 4 MI2S( Primary, Secondary, Tertiary, Quaternary) which can be routed
+to internal wcd codec or external codecs. This routing and various board specifics
+are controlled by 2 mux registers.
 
-On Wed, Jun 10, 2015 at 05:03:33PM +0530, Vinod Koul wrote:
-> New HDA controllers from Intel have extended HDA capabilities like multilink,
-> pipe processing, SPIB, GTS etc In order to use them we create an extended
-> HDA bus, controller and stream which uses the extended configuration
-> 
-> Changes in v7:
-> - Feedback from Takashi
-> - removed the macros for register read/writes
-> - add new macros for reg update
-> - fix bus pointer macro
-> - header cleanup on c/h files
-> - new device name ehdaudioiDn
-> - removed flags for ext caps, use pointer only
-> - moved module info to patch 1
-> - sparse check on series
-> - remove codec name in link
-> 
-> Jeeja KP (3):
->   ALSA: hdac_ext: add extended HDA bus
->   ALSA: hdac_ext: add hdac extended controller
->   ALSA: hdac_ext: add extended stream capabilities
-> 
->  include/sound/hdaudio_ext.h         | 129 ++++++++++++
->  sound/hda/Kconfig                   |   4 +
->  sound/hda/Makefile                  |   3 +
->  sound/hda/ext/Makefile              |   3 +
->  sound/hda/ext/hdac_ext_bus.c        | 116 +++++++++++
->  sound/hda/ext/hdac_ext_controller.c | 297 ++++++++++++++++++++++++++
->  sound/hda/ext/hdac_ext_stream.c     | 402 ++++++++++++++++++++++++++++++++++++
->  7 files changed, 954 insertions(+)
->  create mode 100644 include/sound/hdaudio_ext.h
->  create mode 100644 sound/hda/ext/Makefile
->  create mode 100644 sound/hda/ext/hdac_ext_bus.c
->  create mode 100644 sound/hda/ext/hdac_ext_controller.c
->  create mode 100644 sound/hda/ext/hdac_ext_stream.c
-> 
-> -- 
-> 1.9.1
-> 
+All these patches are tested for HDMI audio via adv7533 bridge and Analog audio
+on APQ8016-SBC, msm8916-mtp boards.
+
+Changes since v5:
+  - converted if-else to switch case as suggested by Mark.
+  - moved usage of startup() to dai link init() as suggested by Mark.
+  - replaced "external" boolean property with "link-name" property as
+    suggested by Mark.
+
+Changes since v4 (https://lkml.org/lkml/2015/5/22/628)
+  - moved all the dt parsing to single function, spotted by Mark.
+  - removed unnecessary setting of card->dev = NULL spotted by Mark.
+  - renamed the dai links to the correct codec names.
+  - removed the special case for EPROBE_DEFER in probe, spotted by Mark.
+  - Dropped all the Changes since comments as most of the patches
+   in last series are merged to topic/qcom branch.
+
+--srini
+
+Srinivas Kandagatla (2):
+  ASoC: qcom: document apq8016 sbc machine driver bindings
+  ASoC: qcom: add apq8016 sound card support
+
+ .../devicetree/bindings/sound/qcom,apq8016-sbc.txt |  60 +++++++
+ sound/soc/qcom/Kconfig                             |   9 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/apq8016_sbc.c                       | 198 +++++++++++++++++++++
+ 4 files changed, 269 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
+ create mode 100644 sound/soc/qcom/apq8016_sbc.c
 
 -- 
+1.9.1
