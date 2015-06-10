@@ -1,69 +1,48 @@
-From: Adam Goode <agoode@google.com>
-Subject: Re: [PATCH - alsa-lib 1/1] Introduce
- snd_seq_client_info_get_card_number,
- for getting the card number of a seq client on recent kernels
-Date: Wed, 10 Jun 2015 13:09:05 -0400
-Message-ID: <CAOf41N=vag=z1UA-GEUCbOJdq5=aMG=YV_08fmJTOh+fvONODA@mail.gmail.com>
-References: <1433466312-31444-1-git-send-email-agoode@google.com>
- <557146C5.90209@ladisch.de> <s5hy4jrn95j.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 1/2] ASoC: qcom: document apq8016 sbc machine driver
+ bindings
+Date: Wed, 10 Jun 2015 18:29:43 +0100
+Message-ID: <20150610172943.GI14071@sirena.org.uk>
+References: <1433938505-18006-1-git-send-email-srinivas.kandagatla@linaro.org>
+ <1433938544-18076-1-git-send-email-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f44.google.com (mail-vn0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id B4D75265CBA
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 19:09:27 +0200 (CEST)
-Received: by vnbg7 with SMTP id g7so9157171vnb.10
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 10:09:26 -0700 (PDT)
-In-Reply-To: <s5hy4jrn95j.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HpDjbfe7vL9q4QWh"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1433938544-18076-1-git-send-email-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kwestfie@codeaurora.org, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 10, 2015 at 6:35 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Fri, 05 Jun 2015 08:50:45 +0200,
-> Clemens Ladisch wrote:
-> >
-> > Adam Goode wrote:
-> > >  /**
-> > > + * \brief Get the card number of a client_info container
-> > > + * \param info client_info container
-> > > + * \return the card number, -1 if no card associated with this
-> client, or -ENOSYS if the
-> > > + *         kernel does not support reporting this field
-> > > + */
-> >
-> > -1 is used as an out-of-range value when enumerating cards.  However,
-> > I don't think this convention can be applied here, because the return
-> > value is also used for error codes, and -1 would correspond to -EPERM.
-> >
-> > Squashing all error codes into -1 is not a good idea, so I think the
-> > value -1 should be converted into an appropriate error code, probably
-> > -ENXIO.
->
-> Agreed.
->
-> Also, please don't include irrelevant changes in configure.ac.
->
->
-> thanks,
->
-> Takashi
->
+--HpDjbfe7vL9q4QWh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Jun 10, 2015 at 01:15:44PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings for apq8016 sbc machine driver.
+> APQ8016 has 4 MI2S which can be configured to different sinks like
+> internal codec/external codec, this connection and various parameters
+> are controlled via 2 iomux registers.
 
-Thanks for the feedback, I should have time this week to get back to you.
+Applied both, thanks.
 
+--HpDjbfe7vL9q4QWh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Adam
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVeHQHAAoJECTWi3JdVIfQr1cH/j49ZJ5Y7wCDmVU53fn7Llxl
+qQrRhovEb0ffXOYPAXoVYf4YAG3VX452ssMFK3H8jkdhDfIMWIo7pbsCgQQpjpex
+bhLmKsSMOabzNLRQejavDVw53gMcRowtho9PXRmFOZ73dVTAVnZ4GiwwuuJ6GaM6
+ic/tTdFignZUPC2//qG1PbLIz3uQtY+7EzjO86BS67r/YzGY3R1o7oyM/CYbbtMx
+JHTvF75NSBFPH5vYzpayZM8PVPfiKoQe6j5qPKAe1XqAs4ksqY0uX07MXHjZgsxm
+ykR/s9k3KI2Pyb1YkuAbUdcH2Ka3+tPADCNaYm1Cr4dOi2zHeoDDDS4RhRCisXo=
+=AKi/
+-----END PGP SIGNATURE-----
+
+--HpDjbfe7vL9q4QWh--
