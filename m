@@ -1,84 +1,86 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v3 0/2] Update ALSA driver to use media controller API
-Date: Wed, 10 Jun 2015 08:21:55 -0600
-Message-ID: <cover.1433904553.git.shuahkh@osg.samsung.com>
+Subject: [PATCH v3 1/2] media: media controller entity framework enhancements for ALSA
+Date: Wed, 10 Jun 2015 08:21:56 -0600
+Message-ID: <3f740931e63a551c75aeed1c36955c468d448ef2.1433904553.git.shuahkh@osg.samsung.com>
+References: <cover.1433904553.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1433904553.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1433904553.git.shuahkh@osg.samsung.com>
+References: <cover.1433904553.git.shuahkh@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, vladcatoi@gmail.com, damien@zamaudio.com, chris.j.arges@canonical.com, takamichiho@gmail.com, misterpib@gmail.com, daniel@zonque.org, pmatilai@laiskiainen.org, jussi@sonarnerd.net, normalperson@yhbt.net, fisch602@gmail.com, joe@oampo.co.uk
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series updates ALSA driver to use media controller
-API to share tuner with DVB and V4L2 drivers that control AU0828
-media device. Two new interfaces are added to media controller
-API to enable creating media device as a device resource. This
-allows creating media device as a device resource on the main
-struct device that is common to all drivers that control a single
-media hardware and share resources on it. Drivers then can find
-the common media device to register entities and manage links,
-and pipelines.
+Add a new media entity operation register_notify is added
+to media_entity_operations structure. This hook is called
+from media_device_register_entity() whenever a new entity
+is registered to notify other entities attached to that
+media device of the newly created entity. Entity owners
+can register the hook to create links and take any other
+action when a new entity is registered. A new field is
+added to the struct media_entity for entity owners to save
+their private data that is used in the register_notify hook.
 
-Tested with and without CONFIG_MEDIA_CONTROLLER enabled.
-Tested tuner entity doesn't exist case as au0828 v4l2
-driver is the one that will create the tuner when it gets
-updated to use media controller API.
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ drivers/media/media-device.c | 7 +++++++
+ include/media/media-entity.h | 4 ++++
+ 2 files changed, 11 insertions(+)
 
-Please note that au0828 updates media controller are necessary
-before the resource sharing can work across ALSA and au0828
-dvb and v4l2 drivers. This work is in progress and another
-developer is working on it.
-
-Changes since v1:
-- Moved media specific code into new header and source file
-- Created a new structure for media controller specific fields
-- Added a new define USE_MEDIA_CONTROLLER to add media specific
-  code. This new define is defined only when Media Controller
-  support is enabled. New media specific code is active only
-  when this define is defined.
-- Moved media_deviced_delete() check under !was_shutdown block
-- Removed return check for media_device_init()
-- Changed new Media Controller interface names for clarity. Now
-  they are named media_device_get_devres() and
-  media_device_find_devres().
-- Calling media_entity_pipeline_stop() on a pipe that isn't active
-  appears to be safe. This needs further testing once AU0828
-  media controller patches are ready.
-
-Changes since v2:
-- Moved checks to define USE_MEDIA_CONTROLLER to Makefile 
-- Moved stubs for media controller specific functions to header
-  file.
-- Added new register_notify operation to media_entity_operations
-  structure. This new hook is called when a new entity is
-  registered to allow other entities associated with the
-  media device to create link as needed.
-- Added a new field to struct media_entity for entity owners
-  to save their private data.
-- Is it safe for ALSA to call media_entity_remove_links()?
-  Laurent Pinchart, please comment.
-- Do start/stop pipeline functions have to be concered about
-  V4l2? Are they safe the way they are?
-  Hans, please comment.
-
-Shuah Khan (2):
-  media: media controller entity framework enhancements for ALSA
-  sound/usb: Update ALSA driver to use media controller API
-
- drivers/media/media-device.c |   7 ++
- include/media/media-entity.h |   4 +
- sound/usb/Makefile           |  15 +++-
- sound/usb/card.c             |   5 ++
- sound/usb/card.h             |   1 +
- sound/usb/media.c            | 185 +++++++++++++++++++++++++++++++++++++++++++
- sound/usb/media.h            |  47 +++++++++++
- sound/usb/pcm.c              |  10 ++-
- sound/usb/quirks-table.h     |   1 +
- sound/usb/quirks.c           |   9 ++-
- sound/usb/stream.c           |   3 +
- sound/usb/usbaudio.h         |   1 +
- 12 files changed, 285 insertions(+), 3 deletions(-)
- create mode 100644 sound/usb/media.c
- create mode 100644 sound/usb/media.h
-
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index c55ab50..76590ba 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -428,6 +428,8 @@ EXPORT_SYMBOL_GPL(media_device_unregister);
+ int __must_check media_device_register_entity(struct media_device *mdev,
+ 					      struct media_entity *entity)
+ {
++	struct media_entity *eptr;
++
+ 	/* Warn if we apparently re-register an entity */
+ 	WARN_ON(entity->parent != NULL);
+ 	entity->parent = mdev;
+@@ -440,6 +442,11 @@ int __must_check media_device_register_entity(struct media_device *mdev,
+ 	list_add_tail(&entity->list, &mdev->entities);
+ 	spin_unlock(&mdev->lock);
+ 
++	media_device_for_each_entity(eptr, mdev) {
++		if (eptr != entity)
++			media_entity_call(eptr, register_notify);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(media_device_register_entity);
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 0c003d8..0bc4c2f 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -46,6 +46,7 @@ struct media_pad {
+ 
+ /**
+  * struct media_entity_operations - Media entity operations
++ * @register_notify	Notify entity of newly registered entity
+  * @link_setup:		Notify the entity of link changes. The operation can
+  *			return an error, in which case link setup will be
+  *			cancelled. Optional.
+@@ -54,6 +55,7 @@ struct media_pad {
+  *			validates all links by calling this operation. Optional.
+  */
+ struct media_entity_operations {
++	int (*register_notify)(struct media_entity *entity);
+ 	int (*link_setup)(struct media_entity *entity,
+ 			  const struct media_pad *local,
+ 			  const struct media_pad *remote, u32 flags);
+@@ -101,6 +103,8 @@ struct media_entity {
+ 		/* Sub-device specifications */
+ 		/* Nothing needed yet */
+ 	} info;
++
++	void *private;			/* private data for the entity */
+ };
+ 
+ static inline u32 media_entity_type(struct media_entity *entity)
 -- 
 2.1.4
