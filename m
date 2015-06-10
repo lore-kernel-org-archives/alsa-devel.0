@@ -1,20 +1,19 @@
-From: Adam Goode <adam@spicenitz.org>
-Subject: Re: OPL3 on cmipci doesn't survive suspend/resume
-Date: Wed, 10 Jun 2015 00:02:26 -0400
-Message-ID: <CADN=WdpdVt4AiBn0qdnMXHbh5RBNT-Y4CGtDNXh1Trc-jF+ggw@mail.gmail.com>
-References: <CADN=WdrzMgQCSYA_vp0VVWm0guVWdRXyhVO7CFXXJpvQCgPfqw@mail.gmail.com>
- <s5hy4ka9mg9.wl-tiwai@suse.de> <s5hoal69jw2.wl-tiwai@suse.de>
+From: hwang4 <hui.wang@canonical.com>
+Subject: Re: 2 speakers are assigned to the same DAC,
+ this can't support 4.0/2.1 channles
+Date: Wed, 10 Jun 2015 12:19:58 +0800
+Message-ID: <5577BAEE.50506@canonical.com>
+References: <5576B419.5010505@canonical.com> <s5h1thlqeus.wl-tiwai@suse.de>
+ <5576E994.2080300@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
- [209.85.214.180])
- by alsa0.perex.cz (Postfix) with ESMTP id B9E4F265846
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 06:02:47 +0200 (CEST)
-Received: by obcej4 with SMTP id ej4so26755489obc.0
- for <alsa-devel@alsa-project.org>; Tue, 09 Jun 2015 21:02:47 -0700 (PDT)
-In-Reply-To: <s5hoal69jw2.wl-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BDD6265846
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 06:20:04 +0200 (CEST)
+In-Reply-To: <5576E994.2080300@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,88 +24,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 27, 2015 at 10:26 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 27 May 2015 15:31:02 +0200,
-> Takashi Iwai wrote:
->>
->> At Wed, 27 May 2015 09:23:17 -0400,
->> Adam Goode wrote:
->> >
->> > Hi,
->> >
->> > I have this card:
->> >
->> > 05:00.0 Multimedia audio controller: C-Media Electronics Inc
->> > CMI8738/CMI8768 PCI Audio (rev 10)
->> > Subsystem: C-Media Electronics Inc CMI8738/C3DX PCI Audio Device
->> > Flags: bus master, stepping, medium devsel, latency 32, IRQ 19
->> > I/O ports at d000 [size=256]
->> > Capabilities: [c0] Power Management version 2
->> > Kernel driver in use: snd_cmipci
->> > Kernel modules: snd_cmipci
->> >
->> >
->> > When I suspend/resume, the sound from the OPL3 is permanently
->> > distorted. It sounds like not all of the operators are active. I can
->> > fix this by doing a full PCI remove/rescan cycle: the driver correctly
->> > initializes the card at this time.
->> >
->> > Any ideas before I peek into the code?
->>
->> OPL3 stuff lacks of PM code completely.  Maybe calling snd_opl3_init()
->> again should enable the minimal stuff.
->
-> That said, a patch like below.  The whole synth setup still needs to
-> be reset, I suppose.
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-> index 6cf464d9043d..f03fd5f2e043 100644
-> --- a/sound/pci/cmipci.c
-> +++ b/sound/pci/cmipci.c
-> @@ -498,6 +498,8 @@ struct cmipci {
->         /* external MIDI */
->         struct snd_rawmidi *rmidi;
->
-> +       struct snd_opl3 *opl3;
-> +
->  #ifdef SUPPORT_JOYSTICK
->         struct gameport *gameport;
->  #endif
-> @@ -3005,6 +3007,7 @@ static int snd_cmipci_create_fm(struct cmipci *cm, long fm_port)
->                 dev_err(cm->card->dev, "cannot create OPL3 hwdep\n");
->                 return err;
->         }
-> +       cm->opl3 = opl3;
->         return 0;
->
->   disable_fm:
-> @@ -3386,6 +3389,8 @@ static int snd_cmipci_resume(struct device *dev)
->         for (i = 0; i < ARRAY_SIZE(saved_mixers); i++)
->                 snd_cmipci_mixer_write(cm, saved_mixers[i], cm->saved_mixers[i]);
->
-> +       if (cm->opl3)
-> +               snd_opl3_init(cm->opl3);
->         snd_power_change_state(card, SNDRV_CTL_POWER_D0);
->         return 0;
->  }
-
-
-Yes, it is better with this patch. I still get the same distorted
-sounds after resume, but a subsequent sbiload will restore the
-instruments correctly. Before the patch, sbiload had no effect and I
-had to remove/rescan the card..
-
-Ideally, suspend/resume would restore the patches so that sbiload
-would not be necessary. But this is exactly as urgent as it seems. :)
-
-
-Thanks,
-
-Adam
+CgpPbiAyMDE15bm0MDbmnIgwOeaXpSAyMToyNiwgSHVpIFdhbmcgd3JvdGU6Cj4gT24gMDYvMDkv
+MjAxNSAwNzo1MSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiBBdCBUdWUsIDA5IEp1biAyMDE1
+IDE3OjM4OjMzICswODAwLAo+PiBod2FuZzQgd3JvdGU6Cj4+PiBJIGFtIHRyeWluZyB0byBlbmFi
+bGUgdGhlIHN1Yndvb2ZlciBzcGVha2VyIG9uIGEgSFAgbGFwdG9wLCBvbiB0aGlzCj4+PiBtYWNo
+aW5lLCB0aGVyZSBhcmUgdHdvIHNwZWFrZXJzIGFuZCBvbmUgaGVhZHBob25lLCBidXQgdGhlIEJJ
+T1MgdmVyYgo+Pj4gb25seSBlbmFibGVkIG9uZSBzcGVha2VyKG5pZCAweGQpIGFuZCBvbmUgaGVh
+ZHBob25lKG5pZCAweGIpLCBJIG5lZWQKPj4+IHRvIHVzZSBxdWlyayBpbiB0aGUga2VybmVsIGRy
+aXZlciB0byBjb25maWd1cmUgdGhlIHNlY29uZCBzcGVha2VyCj4+PiAoc3Vid29vZmVyIHNwZWFr
+ZXIsIG5pZCAweDEwKS4gVW5kZXIgY3VycmVudCBhbHNhIGRyaXZlciwgdGhlCj4+PiBoZWFkcGhv
+bmUgd2lsbCBiZSBhc3NpZ25lZCBhIGRhYyAobmlkIDB4MTMpIGFuZCB0aGUgMiBzcGVha2VycyB3
+aWxsCj4+PiBiZSBhc3NpZ25lZCBhIGRhYyAobmlkIDB4MTQpLCB0aGlzIGFzc2lnbm1lbnQgaXMg
+bm90IGdvb2Qgc2luY2UgMgo+Pj4gc3BlYWtlcnMgc2hhcmUgdGhlIHNhbWUgZGFjLCB0aGlzIG1l
+YW5zIDIgc3BlYWtlcnMgY2FuJ3Qgd29yawo+Pj4gYXQgdGhlIHNhbWUgdGltZSB0byBzdXBwb3J0
+IDQuMC8yLjEgY2hhbm5lbHMuCj4+Pgo+Pj4gT24gYW5vdGhlciBEZWxsIG1hY2hpbmUgd2l0aCBy
+ZWFsdGVrIGNvZGVjLCB0aGVyZSBhcmUgYWxzbyAyIHNwZWFrZXJzLAo+Pj4gMSBoZWFkcGhvbmUg
+YW5kIDIgZGFjcywgb24gdGhpcyBtYWNoaW5lLCAxIHNwZWFrZXIgYW5kIDEgaGVhZHBob25lIGFy
+ZQo+Pj4gYXNzaWduZWQKPj4+IDEgZGFjLCBhbmQgdGhlIG90aGVyIHNwZWFrZXIgaXMgYXNzaWdu
+ZWQgYW5vdGhlciBkYWMsIHNvIHRoZXJlIGlzIG5vCj4+PiBwcm9ibGVtIGZvciB0aGlzIG1hY2hp
+bmUgdG8gc3VwcG9ydCA0LjAvMi4xIGNoYW5uZWxzLgo+Pj4KPj4+IFRocm91Z2ggZGVidWdnaW5n
+LCBJIGZvdW5kIG9uIERlbGwgbWFjaGluZSwgdGhlIHNwZWFrZXIgbmlkIG9ubHkgaGFzCj4+PiBv
+bmUgY29ubmVjdGlvbiB0byBkYWMgKGhhcmR3aXJlZCksIHNvIHdoZW4gZHJpdmVyIGFzc2lnbiBk
+YWMgdG8gaXQsIHRoZQo+Pj4gbWFwX3NpbmdsZSgpIGNhbiBzdWNjZXNzZnVsbHkgYXNzaWduIHRo
+ZSBlYWNoIGRhYyB0byB0aGUgMiBzcGVha2Vycwo+Pj4gcmVzcGVjdGl2ZWx5Lgo+Pj4gQnV0IG9u
+IHRoYXQgSFAgbWFjaGluZSwgdGhlIHNwZWFrZXIgaGFzIG11bHRpcGxlIGNvbm5lY3Rpb25zIGZv
+ciAKPj4+IGRhYywgdGhlCj4+PiBtYXBfc2luZ2xlKCkgY2FuJ3Qgd29yayBmb3IgdGhpcyBtYWNo
+aW5lLgo+Pj4KPj4+Cj4+PiBUaGUgYWxzYS1pbmZvLnR4dCBmb3IgdGhhdCBIUCBtYWNoaW5lIGlz
+IGF0Cj4+PiBodHRwOi8vcGFzdGViaW4udWJ1bnR1LmNvbS8xMTY2Nzk0Ny8KPj4+IFRoZSBhbHNh
+LWluZm8udHh0IGZvciB0aGF0IERlbGwgbWFjaGluZSBpcyBhdAo+Pj4gaHR0cDovL3Bhc3RlYmlu
+LnVidW50dS5jb20vMTE2Njc5ODIvCj4+Pgo+Pj4gVG8gZml4IHRoaXMgcHJvYmxlbSwgSSBjYW4g
+dXNlIHRoZSBxdWlyayBpbiB0aGUgZHJpdmVyIHRvIG1ha2UgdGhlCj4+PiBzcGVha2VyIGhhdmUK
+Pj4+IG9ubHkgb25lIGNvbm5lY3Rpb24gZm9yIGRhYyBvciBkbyBzb21lIGNoYW5nZSBpbiB0aGUg
+aGRhX2dlbmVyaWMuYyBsaWtlCj4+PiBiZWxvdywgaW4KPj4+IHlvdXIgb3Bpbmlvbiwgd2hpY2gg
+b25lIGlzIGJldHRlciBvciBwcm9iYWJseSB5b3UgaGF2ZSBhIGRpZmZlcmVudCBpZGVhCj4+PiB0
+byBmaXggdGhpcyBwcm9ibGVtPwo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hk
+YV9nZW5lcmljLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9nZW5lcmljLmMKPj4+IGluZGV4IGFjMGRi
+MTYuLjgxOTRmZjEgMTAwNjQ0Cj4+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9nZW5lcmljLmMK
+Pj4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2dlbmVyaWMuYwo+Pj4gQEAgLTEzNjMsNiArMTM2
+Myw3IEBAIHN0YXRpYyBpbnQgdHJ5X2Fzc2lnbl9kYWNzKHN0cnVjdCBoZGFfY29kZWMKPj4+ICpj
+b2RlYywgaW50IG51bV9vdXRzLAo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGRhYyA9IHRyeV9kYWMoY29kZWMsCj4+PiBnZXRfcHJpbWFyeV9vdXQoY29kZWMsIGkpLCBwaW4p
+Owo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIWRhYykKPj4+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBkYWMgPSB0cnlfZGFjKGNvZGVjLCBkYWNzWzBdLCBwaW4p
+Owo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIWRhYykKPj4+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBkYWMgPSB0cnlfZGFjKGNvZGVjLAo+Pj4gZ2V0X3ByaW1h
+cnlfb3V0KGNvZGVjLCBpKSwgcGluKTsKPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYg
+KGRhYykgewo+Pj4gQEAgLTE3NjIsNiArMTc2MywxMiBAQCBzdGF0aWMgaW50IGZpbGxfYW5kX2V2
+YWxfZGFjcyhzdHJ1Y3QgaGRhX2NvZGVjCj4+PiAqY29kZWMsCj4+PiAgICAgICAgICAgICAgICAg
+ICBpZiAoZXJyIDwgMCkKPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsK
+Pj4+ICAgICAgICAgICAgICAgICAgIGJhZG5lc3MgKz0gZXJyOwo+Pj4gKyAgICAgICAgICAgICAg
+IC8qIGlmIHRoZXJlIGFyZSAyIHNwZWFrZXJzIGFuZCBib3RoIG9mIHRoZW0gYXJlIAo+Pj4gYXNz
+aWduZWQKPj4+IHRvIHRoZSBzYW1lIGRhYywKPj4+ICsgICAgICAgICAgICAgICAgICB3ZSBuZWVk
+IHRvIGluY3JlYXNlIHRoZSBiYWRuZXNzIGZvciB0aGlzIHNpdHVhdGlvbiwKPj4+IGJlY2F1c2Ug
+aW4gdGhpcyBzaXR1YXRpb24KPj4+ICsgICAgICAgICAgICAgICAgICB0aGUgMiBzcGVha2VycyBj
+YW4ndCB3b3JrIHRvZ2V0aGVyIHRvIHN1cHBvcnQgCj4+PiA0LjAvMi4xCj4+PiBjaGFubmVscyAq
+Lwo+Pj4gKyAgICAgICAgICAgICAgIGlmIChjZmctPnNwZWFrZXJfb3V0cyA9PSAyICYmIGVyciA8
+Cj4+PiBzcGVjLT5leHRyYV9vdXRfYmFkbmVzcy0+bm9fZGFjICYmCj4+PiArICAgICAgICAgICAg
+ICAgICAgIHNwZWMtPm11bHRpb3V0LmV4dHJhX291dF9uaWRbMV0gPT0gMCkKPj4+ICsgICAgICAg
+ICAgICAgICAgICAgICAgIGJhZG5lc3MgKz0gc3BlYy0+ZXh0cmFfb3V0X2JhZG5lc3MtPm5vX2Rh
+YzsKPj4gVGhpcyBkb2Vzbid0IGxvb2sgbGlrZSB0aGUgY29ycmVjdCBwbGFjZSB0byBhZGQgYmFk
+bmVzcyBmb3IgdGhlCj4+IG1pc3Npbmcgc3Vycm91bmQgc3BlYWtlci4gIFRoaXMgZnVuY3Rpb24g
+aXMgY2FsbGVkIGZvciBlYWNoIHBhdGgsIHNvCj4+IGl0J3MgZXZhbHVhdGVkIG5vdCBvbmx5IGZv
+ciBzcGVha2Vycy4KPj4KPj4gQSBjbGVhbmVyIHdheSB3b3VsZCBiZSB0byBwcmVwYXJlIGEgZGlm
+ZmVyZW50IGJhZG5lc3MgdGFibGUgZm9yIHRoZQo+PiBzcGVha2VyLCBhbmQgaW5jcmVhc2UgdGhl
+IHZhbHVlIGZvciBzaGFyZWRfc3Vyci4gIEFuIHVudGVzdGVkIHBhdGNoIGlzCj4+IGJlbG93Lgo+
+IEdvdCBpdCwgSSB3aWxsIHRlc3QgaXQgc29vbi4gVGhhbmtzLgo+CkhpIFRha2FzaGksCgpZb3Vy
+IHBhdGNoIGNhbiBmaXggdGhlIHByb2JsZW0sIGl0IHdvcmtzIHZlcnkgd2VsbC4KClRoYW5rcywK
+SHVpLgo+Pgo+PiBUYWthc2hpCj4+Cj4+IC0tLQo+PiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hk
+YS9oZGFfZ2VuZXJpYy5jIGIvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jCj4+IGluZGV4IGFj
+MGRiMTY3OWYwOS4uZWUwM2ZiODg0NDI2IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hk
+YV9nZW5lcmljLmMKPj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jCj4+IEBAIC0x
+MjkyLDYgKzEyOTIsMTUgQEAgY29uc3Qgc3RydWN0IGJhZG5lc3NfdGFibGUgCj4+IGhkYV9leHRy
+YV9vdXRfYmFkbmVzcyA9IHsKPj4gICB9Owo+PiAgIEVYUE9SVF9TWU1CT0xfR1BMKGhkYV9leHRy
+YV9vdXRfYmFkbmVzcyk7Cj4+ICAgK3N0YXRpYyBjb25zdCBzdHJ1Y3QgYmFkbmVzc190YWJsZSBo
+ZGFfc3BlYWtlcl9vdXRfYmFkbmVzcyA9IHsKPj4gKyAgICAubm9fcHJpbWFyeV9kYWMgPSBCQURf
+Tk9fREFDLAo+PiArICAgIC5ub19kYWMgPSBCQURfTk9fREFDLAo+PiArICAgIC5zaGFyZWRfcHJp
+bWFyeSA9IEJBRF9OT19FWFRSQV9EQUMsCj4+ICsgICAgLnNoYXJlZF9zdXJyID0gQkFEX05PX0VY
+VFJBX0RBQywKPj4gKyAgICAuc2hhcmVkX2NsZmUgPSBCQURfU0hBUkVEX0VYVFJBX1NVUlJPVU5E
+LAo+PiArICAgIC5zaGFyZWRfc3Vycl9tYWluID0gQkFEX05PX0VYVFJBX1NVUlJfREFDLAo+PiAr
+fTsKPj4gKwo+PiAgIC8qIGdldCB0aGUgREFDIG9mIHRoZSBwcmltYXJ5IG91dHB1dCBjb3JyZXNw
+b25kaW5nIHRvIHRoZSBnaXZlbiAKPj4gYXJyYXkgaW5kZXggKi8KPj4gICBzdGF0aWMgaGRhX25p
+ZF90IGdldF9wcmltYXJ5X291dChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaW50IGlkeCkKPj4g
+ICB7Cj4+IEBAIC0xNzU4LDcgKzE3NjcsNyBAQCBzdGF0aWMgaW50IGZpbGxfYW5kX2V2YWxfZGFj
+cyhzdHJ1Y3QgaGRhX2NvZGVjIAo+PiAqY29kZWMsCj4+ICAgICAgICAgICAgICAgICAgICAgICAg
+IGNmZy0+c3BlYWtlcl9waW5zLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICBzcGVjLT5tdWx0
+aW91dC5leHRyYV9vdXRfbmlkLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICBzcGVjLT5zcGVh
+a2VyX3BhdGhzLAo+PiAtICAgICAgICAgICAgICAgICAgICAgIHNwZWMtPmV4dHJhX291dF9iYWRu
+ZXNzKTsKPj4gKyAgICAgICAgICAgICAgICAgICAgICBzcGVjLT5zcGVha2VyX291dF9iYWRuZXNz
+KTsKPj4gICAgICAgICAgIGlmIChlcnIgPCAwKQo+PiAgICAgICAgICAgICAgIHJldHVybiBlcnI7
+Cj4+ICAgICAgICAgICBiYWRuZXNzICs9IGVycjsKPj4gQEAgLTQ3ODksNiArNDc5OCw4IEBAIGlu
+dCBzbmRfaGRhX2dlbl9wYXJzZV9hdXRvX2NvbmZpZyhzdHJ1Y3QgCj4+IGhkYV9jb2RlYyAqY29k
+ZWMsCj4+ICAgICAgICAgICBzcGVjLT5tYWluX291dF9iYWRuZXNzID0gJmhkYV9tYWluX291dF9i
+YWRuZXNzOwo+PiAgICAgICBpZiAoIXNwZWMtPmV4dHJhX291dF9iYWRuZXNzKQo+PiAgICAgICAg
+ICAgc3BlYy0+ZXh0cmFfb3V0X2JhZG5lc3MgPSAmaGRhX2V4dHJhX291dF9iYWRuZXNzOwo+PiAr
+ICAgIGlmICghc3BlYy0+c3BlYWtlcl9vdXRfYmFkbmVzcykKPj4gKyAgICAgICAgc3BlYy0+c3Bl
+YWtlcl9vdXRfYmFkbmVzcyA9ICZoZGFfc3BlYWtlcl9vdXRfYmFkbmVzczsKPj4gICAgICAgICBm
+aWxsX2FsbF9kYWNfbmlkcyhjb2RlYyk7Cj4+ICAgZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEv
+aGRhX2dlbmVyaWMuaCBiL3NvdW5kL3BjaS9oZGEvaGRhX2dlbmVyaWMuaAo+PiBpbmRleCA1NmU0
+MTM5YjkwMzIuLjFmODY4ZGUxYWVjNCAxMDA2NDQKPj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFf
+Z2VuZXJpYy5oCj4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2dlbmVyaWMuaAo+PiBAQCAtMjQ2
+LDYgKzI0Niw3IEBAIHN0cnVjdCBoZGFfZ2VuX3NwZWMgewo+PiAgICAgICAvKiBiYWRuZXNzIHRh
+YmxlcyBmb3Igb3V0cHV0IHBhdGggZXZhbHVhdGlvbnMgKi8KPj4gICAgICAgY29uc3Qgc3RydWN0
+IGJhZG5lc3NfdGFibGUgKm1haW5fb3V0X2JhZG5lc3M7Cj4+ICAgICAgIGNvbnN0IHN0cnVjdCBi
+YWRuZXNzX3RhYmxlICpleHRyYV9vdXRfYmFkbmVzczsKPj4gKyAgICBjb25zdCBzdHJ1Y3QgYmFk
+bmVzc190YWJsZSAqc3BlYWtlcl9vdXRfYmFkbmVzczsKPj4gICAgICAgICAvKiBwcmVmZXJyZWQg
+cGluL0RBQyBwYWlyczsgYW4gYXJyYXkgb2YgcGFpcmVkIE5JRHMgKi8KPj4gICAgICAgY29uc3Qg
+aGRhX25pZF90ICpwcmVmZXJyZWRfZGFjczsKPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfdmlhLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3ZpYS5jCj4+IGluZGV4IDA1MjFiZThk
+NDZhOC4uOWU5ZDA0NTZkYWI3IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3Zp
+YS5jCj4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfdmlhLmMKPj4gQEAgLTU3OSw2ICs1Nzks
+NyBAQCBzdGF0aWMgaW50IHZpYV9wYXJzZV9hdXRvX2NvbmZpZyhzdHJ1Y3QgaGRhX2NvZGVjIAo+
+PiAqY29kZWMpCj4+ICAgICAgICAgc3BlYy0+Z2VuLm1haW5fb3V0X2JhZG5lc3MgPSAmdmlhX21h
+aW5fb3V0X2JhZG5lc3M7Cj4+ICAgICAgIHNwZWMtPmdlbi5leHRyYV9vdXRfYmFkbmVzcyA9ICZ2
+aWFfZXh0cmFfb3V0X2JhZG5lc3M7Cj4+ICsgICAgc3BlYy0+Z2VuLnNwZWFrZXJfb3V0X2JhZG5l
+c3MgPSAmdmlhX2V4dHJhX291dF9iYWRuZXNzOwo+PiAgICAgICAgIGVyciA9IHNuZF9oZGFfcGFy
+c2VfcGluX2RlZmNmZyhjb2RlYywgJnNwZWMtPmdlbi5hdXRvY2ZnLCAKPj4gTlVMTCwgMCk7Cj4+
+ICAgICAgIGlmIChlcnIgPCAwKQo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
