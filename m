@@ -1,15 +1,15 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v4 1/3] SoC: rt5645: make RT5650_TDM_CTRL_4
-	readable
-Date: Wed, 10 Jun 2015 14:27:56 +0800
-Message-ID: <1433917678-13166-1-git-send-email-oder_chiou@realtek.com>
+Subject: [PATCH 1/3 RESEND] ASoC: rt5645: make
+	RT5650_TDM_CTRL_4 readable
+Date: Wed, 10 Jun 2015 14:34:29 +0800
+Message-ID: <1433918069-21917-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 3029626586D
- for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 08:28:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EC21A26586D
+ for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2015 08:34:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
