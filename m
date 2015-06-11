@@ -1,177 +1,159 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Thu, 11 Jun 2015 15:37:55 +0800
-Message-ID: <CAN8cciYXJ7sBr3iorNQ5j4ZB2VcStzaHZKu-A701QaBPJghxcw@mail.gmail.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
- <5576E81F.9070703@canonical.com>
- <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
- <5577AC96.9020605@canonical.com>
- <CAN8ccibcps699P9LFGVtgFVcYgAZ+eXfrnnj0FGmvjMhTK1b3Q@mail.gmail.com>
- <5578EF41.5010105@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f174.google.com (mail-ob0-f174.google.com
- [209.85.214.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F328261B36
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 09:37:57 +0200 (CEST)
-Received: by obbsn1 with SMTP id sn1so25765097obb.1
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 00:37:56 -0700 (PDT)
-In-Reply-To: <5578EF41.5010105@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+From: Quentin Lambert <lambert.quentin@gmail.com>
+Subject: [PATCH v2] ALSA: aoa: convert bus code to use dev_groups
+Date: Thu, 11 Jun 2015 10:03:38 +0200
+Message-ID: <1434009818-16711-1-git-send-email-lambert.quentin@gmail.com>
+References: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, Quentin Lambert <lambert.quentin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->>>>>>>
->>>>>>> I am trying to enable the subwoofer speaker on a HP laptop, on this
->>>>>>> machine, there are two speakers and one headphone, but the BIOS verb
->>>>>>> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
->>>>>>> to use quirk in the kernel driver to configure the second speaker
->>>>>>> (subwoofer speaker, nid 0x10). Under current alsa driver, the
->>>>>>> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
->>>>>>> be assigned a dac (nid 0x14), this assignment is not good since 2
->>>>>>> speakers share the same dac, this means 2 speakers can't work
->>>>>>> at the same time to support 4.0/2.1 channels.
->>>>>>>
->>>>>>> On another Dell machine with realtek codec, there are also 2
-speakers,
->>>>>>> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone
-are
->>>>>>
->>>>>> assigned
->>>>>>>
->>>>>>> 1 dac, and the other speaker is assigned another dac, so there is no
->>>>>>> problem for this machine to support 4.0/2.1 channels.
->>>>>>>
->>>>>>> Through debugging, I found on Dell machine, the speaker nid only has
->>>>>>> one connection to dac (hardwired), so when driver assign dac to it,
->>
->> the
->>>>>>>
->>>>>>> map_single() can successfully assign the each dac to the 2 speakers
->>>>>>
->>>>>> respectively.
->>>>>>>
->>>>>>> But on that HP machine, the speaker has multiple connections for
-dac,
->>>>
->>>> the
->>>>>>>
->>>>>>> map_single() can't work for this machine.
->>>>>>>
->>>>>>>
->>>>>>> The alsa-info.txt for that HP machine is at
->>>>>>
->>>>>> http://pastebin.ubuntu.com/11667947/
->>>>>>
->>>>>> Refer to 92HD91, you don't need 4 channel when there is band pass
->>
->> filter
->>>>>>
->>>>>> for the subwoofer at the mono pin
->>>>>
->>>>> Yes, you are right.
->>>>>
->>>>>> 2.2. Mono Output
->>>>>> The Mono Out port source selection, power state, and mute
->>
->> characteristics
->>>>>>
->>>>>> are all independently
->>>>>> controlled by the mono output port controls. EQ does not apply to
-this
->>>>>> path. An internal 2nd order band-pass filter is provided to restrict
->>
->> the
->>>>>>
->>>>>> output frequencies when using mono out to drive an exter-
->>>>>> nal amplified sub-woofer
->>>>>
->>>>> Where did you find this text? Does it mean there is a hardware low
->>>>
->>>> frequency pass filter inside the codec?
->>>>
->>>> http://www.temposemi.com/products/pclaptop-hd/92hd91/
->>>>
->>>> 2.3. Mono output Band-Pass Filter
->>>> For many applications, the primary speakers are incapable of
-reproducing
->>>> low frequency audio. Therefore it is desirable to implement a woofer or
->>>> sub-woofer speaker. The mono output is ideal for this task. However,
-the
->>>> frequency response should be restricted to prevent interference with
-the
->>>> primary speakers. Typically an external filter, known as a cross-over
->>>> filter, is used. The mono processing path includes a band-pass filter
->>
->> with
->>>>
->>>> programmable high and low cut-off frequencies to eliminate the need for
->>
->> an
->>>>
->>>> external filter.
->>>>
->>>> 2.3.1. Mixer Filter Description The band-pass filter is derived from
-the
->>>> common biquadratic filter and provides a 12dB/octave roll-off. The
-filter
->>>> may be programmed for a -3dB lower band edge of: 63Hz, 80Hz, 100Hz,
->>
->> 120Hz,
->>>>
->>>> 150Hz, 200Hz, 315Hz, or 400Hz.
->>>>
->>>> The filter may be programmed for a -3dB upper band edge of: 150Hz,
-200Hz,
->>>> 250Hz, 315Hz, 400Hz, 500Hz, 630Hz, or 800Hz.
->>>>
->>>> The band-pass filter is enabled by default with a cut-off frequencies
-at
->>>> 120Hz and 250Hz. The filter may be bypassed using the associated verb
->>>> (processing state verb
->>>
->>> Thanks very much, very useful information.
->>>
->>>
->> Do your codec revision support this mono out volume ?
->>
->> 7.4.31.AFG (NID = 01h): DAC3OutAmp (Mono Out Volume)
->
-> I looks like the current driver does not use this to control the volume.
->
->>
->> How do you assign the two volume control to headphone, speaker and
->> subwoofet ?
->
-> speaker and headphone are assigned to DAC0 (nid: 0x13), they use the DAC
-amplifier to control the volume.
->
-> subwoofer speaker is assigned to DAC1 (nid: 0x14), it use the DAC
-amplifier to contorl the volume.
->
 
-Do pulseaudio like this config since there is no mute switch at pin complex
-of idt codecs and no headphone playback volume/switch?
+The dev_attrs field of struct bus_type is going away, use dev_groups instead.
+This converts the soundbus code to use the correct field.
 
-After applied your patch
+Given that all other usages of the macro define the struct attribute
+*xxx_attrs[] in the same file they assign the .dev_groups field, this patch
+merges sysfs.c into core.c.
 
-Front playback volume/switch are shared by headphone and speaker
-Base speaker playback volume/switch
+These modifications were made using Coccinelle.
 
-But the other 4 channels  hda codecs vt1802 have speaker playback switch
-and subwoofer playback switch
+Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
+---
+ Changes since v1:
+  - Fix the commit message to actually talk about soundbus rather than MDIO
+  - This version attempt to fix a problem resulting from the macro
+    ATTRIBUTE_GROUPS declaring the structure as static by merging sysfs.c into
+    core.c. I understand that this may not be the prefered solution since 
+    Takashi suggested that adding a comment line to the previous version could
+    be acceptable. 
 
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/vt1802-asus-g75
+ sound/aoa/soundbus/Makefile   |    2 -
+ sound/aoa/soundbus/core.c     |   44 +++++++++++++++++++++++++++++++++++++++++-
+ sound/aoa/soundbus/soundbus.h |    2 -
+ sound/aoa/soundbus/sysfs.c    |   42 ----------------------------------------
+ 4 files changed, 44 insertions(+), 46 deletions(-)
+
+--- a/sound/aoa/soundbus/Makefile
++++ b/sound/aoa/soundbus/Makefile
+@@ -1,3 +1,3 @@
+ obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
+-snd-aoa-soundbus-objs := core.o sysfs.o
++snd-aoa-soundbus-objs := core.o
+ obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
+--- a/sound/aoa/soundbus/core.c
++++ b/sound/aoa/soundbus/core.c
+@@ -150,6 +150,48 @@ static int soundbus_device_resume(struct
+ 
+ #endif /* CONFIG_PM */
+ 
++#define soundbus_config_of_attr(field, format_string)			\
++static ssize_t								\
++field##_show (struct device *dev, struct device_attribute *attr,	\
++              char *buf)						\
++{									\
++	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
++	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
++}
++
++static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
++			     char *buf)
++{
++	struct soundbus_dev *sdev = to_soundbus_device(dev);
++	struct platform_device *of = &sdev->ofdev;
++	int length;
++
++	if (*sdev->modalias) {
++		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
++		strcat(buf, "\n");
++		length = strlen(buf);
++	} else {
++		length = sprintf(buf, "of:N%sT%s\n",
++				 of->dev.of_node->name, of->dev.of_node->type);
++	}
++
++	return length;
++}
++static DEVICE_ATTR_RO(modalias);
++
++soundbus_config_of_attr (name, "%s\n");
++static DEVICE_ATTR_RO(name);
++soundbus_config_of_attr (type, "%s\n");
++static DEVICE_ATTR_RO(type);
++
++struct attribute *soundbus_dev_attrs[] = {
++	&dev_attr_name.attr,
++	&dev_attr_type.attr,
++	&dev_attr_modalias.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(soundbus_dev);
++
+ static struct bus_type soundbus_bus_type = {
+ 	.name		= "aoa-soundbus",
+ 	.probe		= soundbus_probe,
+@@ -160,7 +202,7 @@ static struct bus_type soundbus_bus_type
+ 	.suspend	= soundbus_device_suspend,
+ 	.resume		= soundbus_device_resume,
+ #endif
+-	.dev_attrs	= soundbus_dev_attrs,
++	.dev_groups	= soundbus_dev_groups,
+ };
+ 
+ int soundbus_add_one(struct soundbus_dev *dev)
+--- a/sound/aoa/soundbus/soundbus.h
++++ b/sound/aoa/soundbus/soundbus.h
+@@ -199,6 +199,4 @@ struct soundbus_driver {
+ extern int soundbus_register_driver(struct soundbus_driver *drv);
+ extern void soundbus_unregister_driver(struct soundbus_driver *drv);
+ 
+-extern struct device_attribute soundbus_dev_attrs[];
+-
+ #endif /* __SOUNDBUS_H */
+--- a/sound/aoa/soundbus/sysfs.c
++++ /dev/null
+@@ -1,42 +0,0 @@
+-#include <linux/kernel.h>
+-#include <linux/stat.h>
+-/* FIX UP */
+-#include "soundbus.h"
+-
+-#define soundbus_config_of_attr(field, format_string)			\
+-static ssize_t								\
+-field##_show (struct device *dev, struct device_attribute *attr,	\
+-              char *buf)						\
+-{									\
+-	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
+-	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
+-}
+-
+-static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+-			     char *buf)
+-{
+-	struct soundbus_dev *sdev = to_soundbus_device(dev);
+-	struct platform_device *of = &sdev->ofdev;
+-	int length;
+-
+-	if (*sdev->modalias) {
+-		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
+-		strcat(buf, "\n");
+-		length = strlen(buf);
+-	} else {
+-		length = sprintf(buf, "of:N%sT%s\n",
+-				 of->dev.of_node->name, of->dev.of_node->type);
+-	}
+-
+-	return length;
+-}
+-
+-soundbus_config_of_attr (name, "%s\n");
+-soundbus_config_of_attr (type, "%s\n");
+-
+-struct device_attribute soundbus_dev_attrs[] = {
+-	__ATTR_RO(name),
+-	__ATTR_RO(type),
+-	__ATTR_RO(modalias),
+-	__ATTR_NULL
+-};
