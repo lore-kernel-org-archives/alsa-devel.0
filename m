@@ -1,56 +1,45 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: hdsp: silence a sprinft() overflow
-	warning
-Date: Thu, 11 Jun 2015 18:14:34 +0300
-Message-ID: <20150611151434.GE12192@mwanda>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel][PATCH] ASoC: fsl: add imx-wm8960 machine driver
+Date: Thu, 11 Jun 2015 08:51:07 -0700
+Message-ID: <20150611155106.GA3036@Asurada>
+References: <b2a3c323a0507f3706041e1da98da8375aa61576.1433923593.git.zidan.wang@freescale.com>
+ <20150610183619.GA3103@Asurada-CZ80>
+ <20150611110958.GA23742@shlinux2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id C5CC1266534
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 17:14:53 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Benoit Taine <benoit.taine@lip6.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+In-Reply-To: <20150611110958.GA23742@shlinux2>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, timur@tabi.org, Xiubo.Lee@gmail.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-card->shortname is a 32 char string so the sprintf() can theoretically
-overflow.  snd_rawmidi_new() can accept strings up to 64 bytes long.
+On Thu, Jun 11, 2015 at 07:10:00PM +0800, Zidan Wang wrote:
 
-I have made the temporay buf[] array 40 bytes long and changed the
-sprintf() to snprintf().
+> > > This imx-wm8960 device-tree-only machine driver works with sai driver
+> > > and have below feature.
+> > > * support codec master and slave mode
+> > > * support headphone jack detect
+> > > * support headphone and micphone jack event
+> > > * support asrc<->sai<->wm8960 mode
+> > > 
+> > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> > 
+> > Above all, could you merge this into fsl-asoc-card?
+> > 
+> > It'd be nicer to have jack detection over there. And we can
+> > put PLL settings to the codec driver as Mark suggested.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> I want to modify imx-wm8960 and upstream it because our release is using it now. After
+> upstreaming imx-wm8960, i will try to merge it to fsl-asoc-card.
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index c19e021..c1fe1d3 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -1526,7 +1526,7 @@ static struct snd_rawmidi_ops snd_hdsp_midi_input =
- 
- static int snd_hdsp_create_midi (struct snd_card *card, struct hdsp *hdsp, int id)
- {
--	char buf[32];
-+	char buf[40];
- 
- 	hdsp->midi[id].id = id;
- 	hdsp->midi[id].rmidi = NULL;
-@@ -1537,7 +1537,7 @@ static int snd_hdsp_create_midi (struct snd_card *card, struct hdsp *hdsp, int i
- 	hdsp->midi[id].pending = 0;
- 	spin_lock_init (&hdsp->midi[id].lock);
- 
--	sprintf (buf, "%s MIDI %d", card->shortname, id+1);
-+	snprintf(buf, sizeof(buf), "%s MIDI %d", card->shortname, id + 1);
- 	if (snd_rawmidi_new (card, buf, id, 1, 1, &hdsp->midi[id].rmidi) < 0)
- 		return -1;
- 
+I knew your intention. That's why I suggested you to merge it directly
+to fsl-asoc-card instead of making a duplicated copy of that. Remember
+that getting code upstream should be a chance for us to improve thing.
+
+If you find painstaking to handle it in parallel, you can focus on the
+improvements of the WM8960 driver while I would help you on the dai-
+link part. How about this?
+
+Nicolin
