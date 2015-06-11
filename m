@@ -1,22 +1,15 @@
-From: Nicolae Rosia <nicolae.rosia@gmail.com>
-Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Thu, 11 Jun 2015 19:37:58 +0300
-Message-ID: <CAH=tA9E_D7Nt0iS8j9GXp3duDYN=xDn5aDt2O_cZuf1gFRArJQ@mail.gmail.com>
-References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
- <s5hzj47n9d1.wl-tiwai@suse.de>
- <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
- <s5h616ul6o5.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ALSA: HDA: remove the unused function
+	declaration
+Date: Thu, 11 Jun 2015 22:11:49 +0530
+Message-ID: <1434040909-14813-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f195.google.com (mail-lb0-f195.google.com
- [209.85.217.195])
- by alsa0.perex.cz (Postfix) with ESMTP id AFC3726657D
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 18:37:58 +0200 (CEST)
-Received: by lbdu14 with SMTP id u14so2965147lbd.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 09:37:58 -0700 (PDT)
-In-Reply-To: <s5h616ul6o5.wl-tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE07326657D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 18:40:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Commit a1b3fda6ae ALSA: hdac_ext: add hdac extended controller,
+erroneously added snd_hdac_ext_bus_map_codec_to_link() function
+declaration, so remove it
 
-The laptop has 3 jacks. 5.1/4.0 works fine in Windows 8.1 and I'm not
-talking about HDMI/SPDIF.
-If you look at the laptop specification, it says
-1 x Microphone-in jack
-2 x Headphone-out jack (SPDIF)
-But the microphone-in jack can also be an output.
-Also, the laptop has two microphones, a pair of speakers and a subwoofer (?)
-I can also boot Windows and provide information, please let me know
-what you need.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio_ext.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Best regards,
-Nicolae Rosia
-
-On Thu, Jun 11, 2015 at 4:24 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 10 Jun 2015 22:43:49 +0300,
-> Nicolae Rosia wrote:
->>
->> > Could you give alsa-info.sh output?
->> >
->> > The first thing you should check is whether all jacks are properly
->> > recognized as output pins.  You can check the jack detection via
->> > hdajackretask or other programs and make 1:1 mapping between pin and
->> > jack.  Let us know the result.
->> >
->> >
->> > Takashi
->>
->> Yes. http://www.alsa-project.org/db/?f=50db7d46bff0178ca661c6c5b82e2bce95d80b0a
->
-> According to BIOS setup, the laptop has only one output jack one mic
-> jack.  What do you suppose to make 4.0 or 5.1 outputs working with
-> them?  Or do you mean about the surround outputs over HDMI or SPDIF?
->
-> Please clarify what you exactly tested and what didn't work in more
-> details.
->
->
-> Takashi
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 0044caa19155..202350a8eddb 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -47,7 +47,6 @@ void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *chip,
+ 				 bool enable, int index);
+ 
+ int snd_hdac_ext_bus_get_ml_capabilities(struct hdac_ext_bus *bus);
+-int snd_hdac_ext_bus_map_codec_to_link(struct hdac_ext_bus *bus, int addr);
+ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *bus,
+ 						const char *codec_name);
+ 
+-- 
+1.9.1
