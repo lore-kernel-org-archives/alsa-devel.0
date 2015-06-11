@@ -1,159 +1,44 @@
-From: Quentin Lambert <lambert.quentin@gmail.com>
-Subject: [PATCH v2] ALSA: aoa: convert bus code to use dev_groups
-Date: Thu, 11 Jun 2015 10:03:38 +0200
-Message-ID: <1434009818-16711-1-git-send-email-lambert.quentin@gmail.com>
-References: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <1432817307-28380-1-git-send-email-lambert.quentin@gmail.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, Quentin Lambert <lambert.quentin@gmail.com>
+From: =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
+Subject: [PATCH 1/1] usb-audio: Set correct type for some UAC2
+	mixer controls.
+Date: Thu, 11 Jun 2015 10:04:51 +0200
+Message-ID: <1434009891-16276-1-git-send-email-johan@oljud.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
 List-Id: alsa-devel@alsa-project.org
 
-
-The dev_attrs field of struct bus_type is going away, use dev_groups instead.
-This converts the soundbus code to use the correct field.
-
-Given that all other usages of the macro define the struct attribute
-*xxx_attrs[] in the same file they assign the .dev_groups field, this patch
-merges sysfs.c into core.c.
-
-These modifications were made using Coccinelle.
-
-Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
----
- Changes since v1:
-  - Fix the commit message to actually talk about soundbus rather than MDIO
-  - This version attempt to fix a problem resulting from the macro
-    ATTRIBUTE_GROUPS declaring the structure as static by merging sysfs.c into
-    core.c. I understand that this may not be the prefered solution since 
-    Takashi suggested that adding a comment line to the previous version could
-    be acceptable. 
-
- sound/aoa/soundbus/Makefile   |    2 -
- sound/aoa/soundbus/core.c     |   44 +++++++++++++++++++++++++++++++++++++++++-
- sound/aoa/soundbus/soundbus.h |    2 -
- sound/aoa/soundbus/sysfs.c    |   42 ----------------------------------------
- 4 files changed, 44 insertions(+), 46 deletions(-)
-
---- a/sound/aoa/soundbus/Makefile
-+++ b/sound/aoa/soundbus/Makefile
-@@ -1,3 +1,3 @@
- obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
--snd-aoa-soundbus-objs := core.o sysfs.o
-+snd-aoa-soundbus-objs := core.o
- obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
---- a/sound/aoa/soundbus/core.c
-+++ b/sound/aoa/soundbus/core.c
-@@ -150,6 +150,48 @@ static int soundbus_device_resume(struct
- 
- #endif /* CONFIG_PM */
- 
-+#define soundbus_config_of_attr(field, format_string)			\
-+static ssize_t								\
-+field##_show (struct device *dev, struct device_attribute *attr,	\
-+              char *buf)						\
-+{									\
-+	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
-+	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
-+}
-+
-+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
-+			     char *buf)
-+{
-+	struct soundbus_dev *sdev = to_soundbus_device(dev);
-+	struct platform_device *of = &sdev->ofdev;
-+	int length;
-+
-+	if (*sdev->modalias) {
-+		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
-+		strcat(buf, "\n");
-+		length = strlen(buf);
-+	} else {
-+		length = sprintf(buf, "of:N%sT%s\n",
-+				 of->dev.of_node->name, of->dev.of_node->type);
-+	}
-+
-+	return length;
-+}
-+static DEVICE_ATTR_RO(modalias);
-+
-+soundbus_config_of_attr (name, "%s\n");
-+static DEVICE_ATTR_RO(name);
-+soundbus_config_of_attr (type, "%s\n");
-+static DEVICE_ATTR_RO(type);
-+
-+struct attribute *soundbus_dev_attrs[] = {
-+	&dev_attr_name.attr,
-+	&dev_attr_type.attr,
-+	&dev_attr_modalias.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(soundbus_dev);
-+
- static struct bus_type soundbus_bus_type = {
- 	.name		= "aoa-soundbus",
- 	.probe		= soundbus_probe,
-@@ -160,7 +202,7 @@ static struct bus_type soundbus_bus_type
- 	.suspend	= soundbus_device_suspend,
- 	.resume		= soundbus_device_resume,
- #endif
--	.dev_attrs	= soundbus_dev_attrs,
-+	.dev_groups	= soundbus_dev_groups,
- };
- 
- int soundbus_add_one(struct soundbus_dev *dev)
---- a/sound/aoa/soundbus/soundbus.h
-+++ b/sound/aoa/soundbus/soundbus.h
-@@ -199,6 +199,4 @@ struct soundbus_driver {
- extern int soundbus_register_driver(struct soundbus_driver *drv);
- extern void soundbus_unregister_driver(struct soundbus_driver *drv);
- 
--extern struct device_attribute soundbus_dev_attrs[];
--
- #endif /* __SOUNDBUS_H */
---- a/sound/aoa/soundbus/sysfs.c
-+++ /dev/null
-@@ -1,42 +0,0 @@
--#include <linux/kernel.h>
--#include <linux/stat.h>
--/* FIX UP */
--#include "soundbus.h"
--
--#define soundbus_config_of_attr(field, format_string)			\
--static ssize_t								\
--field##_show (struct device *dev, struct device_attribute *attr,	\
--              char *buf)						\
--{									\
--	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
--	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
--}
--
--static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
--			     char *buf)
--{
--	struct soundbus_dev *sdev = to_soundbus_device(dev);
--	struct platform_device *of = &sdev->ofdev;
--	int length;
--
--	if (*sdev->modalias) {
--		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
--		strcat(buf, "\n");
--		length = strlen(buf);
--	} else {
--		length = sprintf(buf, "of:N%sT%s\n",
--				 of->dev.of_node->name, of->dev.of_node->type);
--	}
--
--	return length;
--}
--
--soundbus_config_of_attr (name, "%s\n");
--soundbus_config_of_attr (type, "%s\n");
--
--struct device_attribute soundbus_dev_attrs[] = {
--	__ATTR_RO(name),
--	__ATTR_RO(type),
--	__ATTR_RO(modalias),
--	__ATTR_NULL
--};
+Q2hhbmdlZCBjdGwgdHlwZSBmb3IgSW5wdXQgR2FpbiBDb250cm9sIGFuZCBJbnB1dCBHYWluIFBh
+ZCBDb250cm9sIHRvClVTQl9NSVhFUl9TMTYgYXMgcGVyIHNlY3Rpb24gNS4yLjUuNy4xMS0xMiBp
+biB0aGUgVVNCIEF1ZGlvIENsYXNzIDIuMApkZWZpbml0aW9uLgoKU2lnbmVkLW9mZi1ieTogSm9o
+YW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVy
+LmMgYi9zb3VuZC91c2IvbWl4ZXIuYwppbmRleCA4YjdlMzkxLi42YjNhY2JhIDEwMDY0NAotLS0g
+YS9zb3VuZC91c2IvbWl4ZXIuYworKysgYi9zb3VuZC91c2IvbWl4ZXIuYwpAQCAtODA5LDEyICs4
+MDksMTIgQEAgc3RhdGljIHN0cnVjdCB1c2JfZmVhdHVyZV9jb250cm9sX2luZm8gYXVkaW9fZmVh
+dHVyZV9pbmZvW10gPSB7CiAJeyAiVG9uZSBDb250cm9sIC0gVHJlYmxlIiwJVVNCX01JWEVSX1M4
+IH0sCiAJeyAiR3JhcGhpYyBFcXVhbGl6ZXIiLAkJVVNCX01JWEVSX1M4IH0sIC8qIEZJWE1FOiBu
+b3QgaW1wbGVtZXRlZCB5ZXQgKi8KIAl7ICJBdXRvIEdhaW4gQ29udHJvbCIsCQlVU0JfTUlYRVJf
+Qk9PTEVBTiB9LAotCXsgIkRlbGF5IENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LAorCXsgIkRl
+bGF5IENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LCAvKiBGSVhNRTogVTMyIGluIFVBQzIgKi8K
+IAl7ICJCYXNzIEJvb3N0IiwJCQlVU0JfTUlYRVJfQk9PTEVBTiB9LAogCXsgIkxvdWRuZXNzIiwJ
+CQlVU0JfTUlYRVJfQk9PTEVBTiB9LAogCS8qIFVBQzIgc3BlY2lmaWMgKi8KLQl7ICJJbnB1dCBH
+YWluIENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LAotCXsgIklucHV0IEdhaW4gUGFkIENvbnRy
+b2wiLAlVU0JfTUlYRVJfQk9PTEVBTiB9LAorCXsgIklucHV0IEdhaW4gQ29udHJvbCIsCQlVU0Jf
+TUlYRVJfUzE2IH0sCisJeyAiSW5wdXQgR2FpbiBQYWQgQ29udHJvbCIsCVVTQl9NSVhFUl9TMTYg
+fSwKIAl7ICJQaGFzZSBJbnZlcnRlciBDb250cm9sIiwJVVNCX01JWEVSX0JPT0xFQU4gfSwKIH07
+CiAKLS0gCjIuMS40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
