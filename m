@@ -1,12 +1,25 @@
-From: =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
-Subject: [PATCH 1/1] usb-audio: Set correct type for some UAC2
-	mixer controls.
-Date: Thu, 11 Jun 2015 10:04:51 +0200
-Message-ID: <1434009891-16276-1-git-send-email-johan@oljud.se>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: 2 speakers are assigned to the same DAC,
+ this can't support 4.0/2.1 channles
+Date: Thu, 11 Jun 2015 16:33:12 +0800
+Message-ID: <557947C8.6020102@canonical.com>
+References: <5576B419.5010505@canonical.com>
+ <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
+ <5576E81F.9070703@canonical.com>
+ <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
+ <5577AC96.9020605@canonical.com>
+ <CAN8ccibcps699P9LFGVtgFVcYgAZ+eXfrnnj0FGmvjMhTK1b3Q@mail.gmail.com>
+ <5578EF41.5010105@canonical.com>
+ <CAN8cciYXJ7sBr3iorNQ5j4ZB2VcStzaHZKu-A701QaBPJghxcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64DCF262631
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 10:33:21 +0200 (CEST)
+In-Reply-To: <CAN8cciYXJ7sBr3iorNQ5j4ZB2VcStzaHZKu-A701QaBPJghxcw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,29 +29,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Johan=20Rast=C3=A9n?= <johan@oljud.se>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Q2hhbmdlZCBjdGwgdHlwZSBmb3IgSW5wdXQgR2FpbiBDb250cm9sIGFuZCBJbnB1dCBHYWluIFBh
-ZCBDb250cm9sIHRvClVTQl9NSVhFUl9TMTYgYXMgcGVyIHNlY3Rpb24gNS4yLjUuNy4xMS0xMiBp
-biB0aGUgVVNCIEF1ZGlvIENsYXNzIDIuMApkZWZpbml0aW9uLgoKU2lnbmVkLW9mZi1ieTogSm9o
-YW4gUmFzdMOpbiA8am9oYW5Ab2xqdWQuc2U+CgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVy
-LmMgYi9zb3VuZC91c2IvbWl4ZXIuYwppbmRleCA4YjdlMzkxLi42YjNhY2JhIDEwMDY0NAotLS0g
-YS9zb3VuZC91c2IvbWl4ZXIuYworKysgYi9zb3VuZC91c2IvbWl4ZXIuYwpAQCAtODA5LDEyICs4
-MDksMTIgQEAgc3RhdGljIHN0cnVjdCB1c2JfZmVhdHVyZV9jb250cm9sX2luZm8gYXVkaW9fZmVh
-dHVyZV9pbmZvW10gPSB7CiAJeyAiVG9uZSBDb250cm9sIC0gVHJlYmxlIiwJVVNCX01JWEVSX1M4
-IH0sCiAJeyAiR3JhcGhpYyBFcXVhbGl6ZXIiLAkJVVNCX01JWEVSX1M4IH0sIC8qIEZJWE1FOiBu
-b3QgaW1wbGVtZXRlZCB5ZXQgKi8KIAl7ICJBdXRvIEdhaW4gQ29udHJvbCIsCQlVU0JfTUlYRVJf
-Qk9PTEVBTiB9LAotCXsgIkRlbGF5IENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LAorCXsgIkRl
-bGF5IENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LCAvKiBGSVhNRTogVTMyIGluIFVBQzIgKi8K
-IAl7ICJCYXNzIEJvb3N0IiwJCQlVU0JfTUlYRVJfQk9PTEVBTiB9LAogCXsgIkxvdWRuZXNzIiwJ
-CQlVU0JfTUlYRVJfQk9PTEVBTiB9LAogCS8qIFVBQzIgc3BlY2lmaWMgKi8KLQl7ICJJbnB1dCBH
-YWluIENvbnRyb2wiLAkJVVNCX01JWEVSX1UxNiB9LAotCXsgIklucHV0IEdhaW4gUGFkIENvbnRy
-b2wiLAlVU0JfTUlYRVJfQk9PTEVBTiB9LAorCXsgIklucHV0IEdhaW4gQ29udHJvbCIsCQlVU0Jf
-TUlYRVJfUzE2IH0sCisJeyAiSW5wdXQgR2FpbiBQYWQgQ29udHJvbCIsCVVTQl9NSVhFUl9TMTYg
-fSwKIAl7ICJQaGFzZSBJbnZlcnRlciBDb250cm9sIiwJVVNCX01JWEVSX0JPT0xFQU4gfSwKIH07
-CiAKLS0gCjIuMS40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 06/11/2015 03:37 PM, Raymond Yau wrote:
+>>>>>>>> I am trying to enable the subwoofer speaker on a HP laptop, on this
+>>>>>>>> machine, there are two speakers and one headphone, but the BIOS verb
+>>>>>>>> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
+>>>>>>>> to use quirk in the kernel driver to configure the second speaker
+>>>>>>>> (subwoofer speaker, nid 0x10). Under current alsa driver, the
+>>>>>>>> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
+>>>>>>>> be assigned a dac (nid 0x14), this assignment is not good since 2
+>>>>>>>> speakers share the same dac, this means 2 speakers can't work
+>>>>>>>> at the same time to support 4.0/2.1 channels.
+>>>>>>>>
+>>>>>>>> On another Dell machine with realtek codec, there are also 2
+> speakers,
+>>>>>>>> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone
+> are
+>>>>>>> assigned
+>>>>>>>> 1 dac, and the other speaker is assigned another dac, so there is no
+>>>>>>>> problem for this machine to support 4.0/2.1 channels.
+>>>>>>>>
+>>>>>>>> Through debugging, I found on Dell machine, the speaker nid only has
+>>>>>>>> one connection to dac (hardwired), so when driver assign dac to it,
+>>> the
+>>>>>>>> map_single() can successfully assign the each dac to the 2 speakers
+>>>>>>> respectively.
+>>>>>>>> But on that HP machine, the speaker has multiple connections for
+> dac,
+>>>>> the
+>>>>>>>> map_single() can't work for this machine.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> The alsa-info.txt for that HP machine is at
+>>>>>>> http://pastebin.ubuntu.com/11667947/
+>>>>>>>
+>>>>>>> Refer to 92HD91, you don't need 4 channel when there is band pass
+>>> filter
+>>>>>>> for the subwoofer at the mono pin
+>>>>>> Yes, you are right.
+>>>>>>
+>>>>>>> 2.2. Mono Output
+>>>>>>> The Mono Out port source selection, power state, and mute
+>>> characteristics
+>>>>>>> are all independently
+>>>>>>> controlled by the mono output port controls. EQ does not apply to
+> this
+>>>>>>> path. An internal 2nd order band-pass filter is provided to restrict
+>>> the
+>>>>>>> output frequencies when using mono out to drive an exter-
+>>>>>>> nal amplified sub-woofer
+>>>>>> Where did you find this text? Does it mean there is a hardware low
+>>>>> frequency pass filter inside the codec?
+>>>>>
+>>>>> http://www.temposemi.com/products/pclaptop-hd/92hd91/
+>>>>>
+>>>>> 2.3. Mono output Band-Pass Filter
+>>>>> For many applications, the primary speakers are incapable of
+> reproducing
+>>>>> low frequency audio. Therefore it is desirable to implement a woofer or
+>>>>> sub-woofer speaker. The mono output is ideal for this task. However,
+> the
+>>>>> frequency response should be restricted to prevent interference with
+> the
+>>>>> primary speakers. Typically an external filter, known as a cross-over
+>>>>> filter, is used. The mono processing path includes a band-pass filter
+>>> with
+>>>>> programmable high and low cut-off frequencies to eliminate the need for
+>>> an
+>>>>> external filter.
+>>>>>
+>>>>> 2.3.1. Mixer Filter Description The band-pass filter is derived from
+> the
+>>>>> common biquadratic filter and provides a 12dB/octave roll-off. The
+> filter
+>>>>> may be programmed for a -3dB lower band edge of: 63Hz, 80Hz, 100Hz,
+>>> 120Hz,
+>>>>> 150Hz, 200Hz, 315Hz, or 400Hz.
+>>>>>
+>>>>> The filter may be programmed for a -3dB upper band edge of: 150Hz,
+> 200Hz,
+>>>>> 250Hz, 315Hz, 400Hz, 500Hz, 630Hz, or 800Hz.
+>>>>>
+>>>>> The band-pass filter is enabled by default with a cut-off frequencies
+> at
+>>>>> 120Hz and 250Hz. The filter may be bypassed using the associated verb
+>>>>> (processing state verb
+>>>> Thanks very much, very useful information.
+>>>>
+>>>>
+>>> Do your codec revision support this mono out volume ?
+>>>
+>>> 7.4.31.AFG (NID = 01h): DAC3OutAmp (Mono Out Volume)
+>> I looks like the current driver does not use this to control the volume.
+>>
+>>> How do you assign the two volume control to headphone, speaker and
+>>> subwoofet ?
+>> speaker and headphone are assigned to DAC0 (nid: 0x13), they use the DAC
+> amplifier to control the volume.
+>> subwoofer speaker is assigned to DAC1 (nid: 0x14), it use the DAC
+> amplifier to contorl the volume.
+> Do pulseaudio like this config since there is no mute switch at pin complex
+> of idt codecs and no headphone playback volume/switch?
+>
+> After applied your patch
+>
+> Front playback volume/switch are shared by headphone and speaker
+> Base speaker playback volume/switch
+>
+> But the other 4 channels  hda codecs vt1802 have speaker playback switch
+> and subwoofer playback switch
+Even without this patch, the base speaker and headphone already shared 
+the same DAC and use single "Front Playback Volume" to control their 
+volume, I did not see any problem from the pulseaudio/desktop so far.
+
+http://pastebin.ubuntu.com/11667982/
+
+About the sharing the switch between headphone and base speaker, this is 
+a new situation, but I did not see obvious problem from 
+pusleaudio/desktop as well.
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/vt1802-asus-g75
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
