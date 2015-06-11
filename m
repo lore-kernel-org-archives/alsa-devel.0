@@ -1,85 +1,64 @@
-From: Quentin Lambert <lambert.quentin@gmail.com>
-Subject: Re: [PATCH v2] ALSA: aoa: convert bus code to use dev_groups
-Date: Thu, 11 Jun 2015 14:06:25 +0200
-Message-ID: <557979C1.2060608@gmail.com>
-References: <1434009818-16711-1-git-send-email-lambert.quentin@gmail.com> <5579774F.4010706@bfs.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix link power unbalance at device
+	removal
+Date: Thu, 11 Jun 2015 14:20:49 +0200
+Message-ID: <1434025249-12216-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <5579774F.4010706@bfs.de>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: wharms@bfs.de
-Cc: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0EF7261A84
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 14:20:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Libin Yang <libin.yang@intel.com>, Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+snd_hdac_link_power() has to be called after unregistering the codec
+device.  Otherwise the device might be already runtime-suspended, thus
+the refcount goes under zero, triggering a warning like:
 
+  WARNING: CPU: 7 PID: 2014 at sound/hda/hdac_i915.c:63 snd_hdac_display_power+0x106/0x120 [snd_hda_core]()
+  CPU: 7 PID: 2014 Comm: modprobe Not tainted 4.1.0-rc7-test+ #1
+  Call Trace:
+   [<ffffffff81697fe3>] dump_stack+0x4c/0x6e
+   [<ffffffff810696da>] warn_slowpath_common+0x8a/0xc0
+   [<ffffffff810697ca>] warn_slowpath_null+0x1a/0x20
+   [<ffffffffa02dd526>] snd_hdac_display_power+0x106/0x120 [snd_hda_core]
+   [<ffffffffa030b422>] azx_intel_link_power+0x12/0x20 [snd_hda_intel]
+   [<ffffffffa037139f>] azx_link_power+0x1f/0x30 [snd_hda_codec]
+   [<ffffffffa02d89fe>] snd_hdac_link_power+0x2e/0x40 [snd_hda_core]
+   [<ffffffffa0368524>] snd_hda_codec_dev_free+0x34/0x50 [snd_hda_codec]
+   [<ffffffffa0252061>] __snd_device_free+0x51/0xa0 [snd]
+   .....
 
-On 11/06/2015 13:55, walter harms wrote:
->
-> Am 11.06.2015 10:03, schrieb Quentin Lambert:
->> The dev_attrs field of struct bus_type is going away, use dev_groups instead.
->> This converts the soundbus code to use the correct field.
->>
->> Given that all other usages of the macro define the struct attribute
->> *xxx_attrs[] in the same file they assign the .dev_groups field, this patch
->> merges sysfs.c into core.c.
->>
->> These modifications were made using Coccinelle.
->>
->> Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
->> ---
->>   Changes since v1:
->>    - Fix the commit message to actually talk about soundbus rather than MDIO
->>    - This version attempt to fix a problem resulting from the macro
->>      ATTRIBUTE_GROUPS declaring the structure as static by merging sysfs.c into
->>      core.c. I understand that this may not be the prefered solution since
->>      Takashi suggested that adding a comment line to the previous version could
->>      be acceptable.
->>
->>   sound/aoa/soundbus/Makefile   |    2 -
->>   sound/aoa/soundbus/core.c     |   44 +++++++++++++++++++++++++++++++++++++++++-
->>   sound/aoa/soundbus/soundbus.h |    2 -
->>   sound/aoa/soundbus/sysfs.c    |   42 ----------------------------------------
->>   4 files changed, 44 insertions(+), 46 deletions(-)
->>
->> --- a/sound/aoa/soundbus/Makefile
->> +++ b/sound/aoa/soundbus/Makefile
->> @@ -1,3 +1,3 @@
->>   obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
->> -snd-aoa-soundbus-objs := core.o sysfs.o
->> +snd-aoa-soundbus-objs := core.o
->>   obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
->> --- a/sound/aoa/soundbus/core.c
->> +++ b/sound/aoa/soundbus/core.c
->> @@ -150,6 +150,48 @@ static int soundbus_device_resume(struct
->>   
->>   #endif /* CONFIG_PM */
->>   
->> +#define soundbus_config_of_attr(field, format_string)			\
->> +static ssize_t								\
->> +field##_show (struct device *dev, struct device_attribute *attr,	\
->> +              char *buf)						\
->> +{									\
->> +	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
->> +	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
->> +}
->> +
->> +static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
->> +			     char *buf)
->> +{
->> +	struct soundbus_dev *sdev = to_soundbus_device(dev);
->> +	struct platform_device *of = &sdev->ofdev;
->> +	int length;
->> +
->> +	if (*sdev->modalias) {
->> +		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
->> +		strcat(buf, "\n");
->> +		length = strlen(buf);
->
-> for my curiosity:
-> why not sprintf() ? almost any other code seems to use sprintf().
-I wouldn't be able to justify that as this is part is simply a copy 
-paste from sysfs.c to core.c
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Quentin
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index d70229841156..497bd0f9dcda 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -886,8 +886,8 @@ static int snd_hda_codec_dev_free(struct snd_device *device)
+ 	struct hda_codec *codec = device->device_data;
+ 
+ 	codec->in_freeing = 1;
+-	snd_hdac_link_power(&codec->core, false);
+ 	snd_hdac_device_unregister(&codec->core);
++	snd_hdac_link_power(&codec->core, false);
+ 	put_device(hda_codec_dev(codec));
+ 	return 0;
+ }
+-- 
+2.4.3
