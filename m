@@ -1,7 +1,7 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH 1/4] ASoC: wm8960: codec mclk should be enabled early to avoid jack detect error
-Date: Thu, 11 Jun 2015 19:14:33 +0800
-Message-ID: <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
+Subject: [alsa-devel][PATCH 3/4] ASoC: wm8960: add kcontrol to select ADC data output
+Date: Thu, 11 Jun 2015 19:14:35 +0800
+Message-ID: <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
 References: <cover.1434020423.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,137 +12,46 @@ To: broonie@kernel.org
 Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-It will playback from speaker in the first 2 seconds, then switch to
-headphone. Steps to reproduce this issue:
-1. plug out headphone and playback a wav.
-2. stop playback and wait for at least 5 seconds, then
-   plug in headphone and playback a wav.
+add kcontrol to select ADC data output.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/codecs/wm8960.c | 73 +++++++++++++++++++++--------------------------
- 1 file changed, 33 insertions(+), 40 deletions(-)
+ sound/soc/codecs/wm8960.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 761418f..729205f 100644
+index c1be15c..62246f1 100644
 --- a/sound/soc/codecs/wm8960.c
 +++ b/sound/soc/codecs/wm8960.c
-@@ -491,6 +491,34 @@ static int wm8960_add_widgets(struct snd_soc_codec *codec)
- 	return 0;
- }
+@@ -141,6 +141,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
+ static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
+ static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
+ static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
++static const char *wm8960_adc_data_sel[] = {
++	"ldata = left ADC; rdata = right ADC",
++	"ldata = left ADC; rdata = left ADC",
++	"ldata = right ADC; rdata = right ADC",
++	"ldata = right ADC; rdata = left ADC",
++};
  
-+int wm8960_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
+ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
+@@ -149,6 +155,7 @@ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_3D, 5, 2, wm8960_3d_lower_cutoff),
+ 	SOC_ENUM_SINGLE(WM8960_ALC1, 7, 4, wm8960_alcfunc),
+ 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
++	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_sel),
+ };
+ 
+ static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
+@@ -279,6 +286,8 @@ SOC_SINGLE_TLV("Right Output Mixer Boost Bypass Volume",
+ 	       WM8960_BYPASS2, 4, 7, 1, bypass_tlv),
+ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+ 	       WM8960_ROUTMIX, 4, 7, 1, bypass_tlv),
 +
-+	if (!IS_ERR(wm8960->mclk)) {
-+		ret = clk_prepare_enable(wm8960->mclk);
-+		if (ret) {
-+			dev_err(codec->dev,
-+				"Failed to enable MCLK: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+	return 0;
-+}
-+
-+void wm8960_shutdown(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *codec_dai)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (!IS_ERR(wm8960->mclk))
-+		clk_disable_unprepare(wm8960->mclk);
-+}
-+
- static int wm8960_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
-@@ -702,38 +730,14 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
- 				      enum snd_soc_bias_level level)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
--	int ret;
++SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
+ };
  
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
--		switch (snd_soc_codec_get_bias_level(codec)) {
--		case SND_SOC_BIAS_STANDBY:
--			if (!IS_ERR(wm8960->mclk)) {
--				ret = clk_prepare_enable(wm8960->mclk);
--				if (ret) {
--					dev_err(codec->dev,
--						"Failed to enable MCLK: %d\n",
--						ret);
--					return ret;
--				}
--			}
--
--			/* Set VMID to 2x50k */
--			snd_soc_update_bits(codec, WM8960_POWER1, 0x180, 0x80);
--			break;
--
--		case SND_SOC_BIAS_ON:
--			if (!IS_ERR(wm8960->mclk))
--				clk_disable_unprepare(wm8960->mclk);
--			break;
--
--		default:
--			break;
--		}
--
-+		/* Set VMID to 2x50k */
-+		snd_soc_update_bits(codec, WM8960_POWER1, 0x180, 0x80);
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -780,7 +784,7 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
- 					 enum snd_soc_bias_level level)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
--	int reg, ret;
-+	int reg;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -821,22 +825,9 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
- 					    WM8960_VREF, WM8960_VREF);
- 
- 			msleep(100);
--
--			if (!IS_ERR(wm8960->mclk)) {
--				ret = clk_prepare_enable(wm8960->mclk);
--				if (ret) {
--					dev_err(codec->dev,
--						"Failed to enable MCLK: %d\n",
--						ret);
--					return ret;
--				}
--			}
- 			break;
- 
- 		case SND_SOC_BIAS_ON:
--			if (!IS_ERR(wm8960->mclk))
--				clk_disable_unprepare(wm8960->mclk);
--
- 			/* Enable anti-pop mode */
- 			snd_soc_update_bits(codec, WM8960_APOP1,
- 					    WM8960_POBCTRL | WM8960_SOFT_ST |
-@@ -1059,6 +1050,8 @@ static int wm8960_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops wm8960_dai_ops = {
-+	.startup = wm8960_startup,
-+	.shutdown = wm8960_shutdown,
- 	.hw_params = wm8960_hw_params,
- 	.digital_mute = wm8960_mute,
- 	.set_fmt = wm8960_set_dai_fmt,
+ static const struct snd_kcontrol_new wm8960_lin_boost[] = {
 -- 
 1.9.1
