@@ -1,25 +1,14 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Thu, 11 Jun 2015 16:33:12 +0800
-Message-ID: <557947C8.6020102@canonical.com>
-References: <5576B419.5010505@canonical.com>
- <CAN8cciZLkpzNYRcKDxExX7WpaQJ1QVNnEecnYLLN4MqK=orKcA@mail.gmail.com>
- <5576E81F.9070703@canonical.com>
- <CAN8cciYSHi8oxzK=-JteeBfhyQNywGXO0Wjpz6Y+UEdxwoHFNw@mail.gmail.com>
- <5577AC96.9020605@canonical.com>
- <CAN8ccibcps699P9LFGVtgFVcYgAZ+eXfrnnj0FGmvjMhTK1b3Q@mail.gmail.com>
- <5578EF41.5010105@canonical.com>
- <CAN8cciYXJ7sBr3iorNQ5j4ZB2VcStzaHZKu-A701QaBPJghxcw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v9 0/3] HDA: add extended HDA
+Date: Thu, 11 Jun 2015 14:11:46 +0530
+Message-ID: <1434012109-20164-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 64DCF262631
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 10:33:21 +0200 (CEST)
-In-Reply-To: <CAN8cciYXJ7sBr3iorNQ5j4ZB2VcStzaHZKu-A701QaBPJghxcw@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 60CDD264EBF
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 10:40:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,131 +18,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/11/2015 03:37 PM, Raymond Yau wrote:
->>>>>>>> I am trying to enable the subwoofer speaker on a HP laptop, on this
->>>>>>>> machine, there are two speakers and one headphone, but the BIOS verb
->>>>>>>> only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
->>>>>>>> to use quirk in the kernel driver to configure the second speaker
->>>>>>>> (subwoofer speaker, nid 0x10). Under current alsa driver, the
->>>>>>>> headphone will be assigned a dac (nid 0x13) and the 2 speakers will
->>>>>>>> be assigned a dac (nid 0x14), this assignment is not good since 2
->>>>>>>> speakers share the same dac, this means 2 speakers can't work
->>>>>>>> at the same time to support 4.0/2.1 channels.
->>>>>>>>
->>>>>>>> On another Dell machine with realtek codec, there are also 2
-> speakers,
->>>>>>>> 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone
-> are
->>>>>>> assigned
->>>>>>>> 1 dac, and the other speaker is assigned another dac, so there is no
->>>>>>>> problem for this machine to support 4.0/2.1 channels.
->>>>>>>>
->>>>>>>> Through debugging, I found on Dell machine, the speaker nid only has
->>>>>>>> one connection to dac (hardwired), so when driver assign dac to it,
->>> the
->>>>>>>> map_single() can successfully assign the each dac to the 2 speakers
->>>>>>> respectively.
->>>>>>>> But on that HP machine, the speaker has multiple connections for
-> dac,
->>>>> the
->>>>>>>> map_single() can't work for this machine.
->>>>>>>>
->>>>>>>>
->>>>>>>> The alsa-info.txt for that HP machine is at
->>>>>>> http://pastebin.ubuntu.com/11667947/
->>>>>>>
->>>>>>> Refer to 92HD91, you don't need 4 channel when there is band pass
->>> filter
->>>>>>> for the subwoofer at the mono pin
->>>>>> Yes, you are right.
->>>>>>
->>>>>>> 2.2. Mono Output
->>>>>>> The Mono Out port source selection, power state, and mute
->>> characteristics
->>>>>>> are all independently
->>>>>>> controlled by the mono output port controls. EQ does not apply to
-> this
->>>>>>> path. An internal 2nd order band-pass filter is provided to restrict
->>> the
->>>>>>> output frequencies when using mono out to drive an exter-
->>>>>>> nal amplified sub-woofer
->>>>>> Where did you find this text? Does it mean there is a hardware low
->>>>> frequency pass filter inside the codec?
->>>>>
->>>>> http://www.temposemi.com/products/pclaptop-hd/92hd91/
->>>>>
->>>>> 2.3. Mono output Band-Pass Filter
->>>>> For many applications, the primary speakers are incapable of
-> reproducing
->>>>> low frequency audio. Therefore it is desirable to implement a woofer or
->>>>> sub-woofer speaker. The mono output is ideal for this task. However,
-> the
->>>>> frequency response should be restricted to prevent interference with
-> the
->>>>> primary speakers. Typically an external filter, known as a cross-over
->>>>> filter, is used. The mono processing path includes a band-pass filter
->>> with
->>>>> programmable high and low cut-off frequencies to eliminate the need for
->>> an
->>>>> external filter.
->>>>>
->>>>> 2.3.1. Mixer Filter Description The band-pass filter is derived from
-> the
->>>>> common biquadratic filter and provides a 12dB/octave roll-off. The
-> filter
->>>>> may be programmed for a -3dB lower band edge of: 63Hz, 80Hz, 100Hz,
->>> 120Hz,
->>>>> 150Hz, 200Hz, 315Hz, or 400Hz.
->>>>>
->>>>> The filter may be programmed for a -3dB upper band edge of: 150Hz,
-> 200Hz,
->>>>> 250Hz, 315Hz, 400Hz, 500Hz, 630Hz, or 800Hz.
->>>>>
->>>>> The band-pass filter is enabled by default with a cut-off frequencies
-> at
->>>>> 120Hz and 250Hz. The filter may be bypassed using the associated verb
->>>>> (processing state verb
->>>> Thanks very much, very useful information.
->>>>
->>>>
->>> Do your codec revision support this mono out volume ?
->>>
->>> 7.4.31.AFG (NID = 01h): DAC3OutAmp (Mono Out Volume)
->> I looks like the current driver does not use this to control the volume.
->>
->>> How do you assign the two volume control to headphone, speaker and
->>> subwoofet ?
->> speaker and headphone are assigned to DAC0 (nid: 0x13), they use the DAC
-> amplifier to control the volume.
->> subwoofer speaker is assigned to DAC1 (nid: 0x14), it use the DAC
-> amplifier to contorl the volume.
-> Do pulseaudio like this config since there is no mute switch at pin complex
-> of idt codecs and no headphone playback volume/switch?
->
-> After applied your patch
->
-> Front playback volume/switch are shared by headphone and speaker
-> Base speaker playback volume/switch
->
-> But the other 4 channels  hda codecs vt1802 have speaker playback switch
-> and subwoofer playback switch
-Even without this patch, the base speaker and headphone already shared 
-the same DAC and use single "Front Playback Volume" to control their 
-volume, I did not see any problem from the pulseaudio/desktop so far.
+New HDA controllers from Intel have extended HDA capabilities like
+multilink, pipe processing, SPIB, GTS etc In order to use them we create an
+extended HDA bus, controller and stream which uses the extended
+configuration
 
-http://pastebin.ubuntu.com/11667982/
+Changes in v9:
+- removed snd_hdac_ext_bus_map_codec_to_link
+- updated snd_hdac_ext_bus_get_link per Takahsi comment and drop the array
+- add index in bus instance
 
-About the sharing the switch between headphone and base speaker, this is 
-a new situation, but I did not see obvious problem from 
-pusleaudio/desktop as well.
-> http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/vt1802-asus-g75
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+Changes in v8:
+- fixed some dead code crept in
+- checkpatch cleanup
+
+Changes in v7:
+- Feedback from Takashi
+- removed the macros for register read/writes
+- add new macros for reg update
+- fix bus pointer macro
+- header cleanup on c/h files
+- new device name ehdaudioiDn
+- removed flags for ext caps, use pointer only
+- moved module info to patch 1
+- sparse check on series
+- remove codec name in link
+
+
+Jeeja KP (3):
+  ALSA: hdac_ext: add extended HDA bus
+  ALSA: hdac_ext: add hdac extended controller
+  ALSA: hdac_ext: add extended stream capabilities
+
+ include/sound/hdaudio_ext.h         | 129 ++++++++++++
+ sound/hda/Kconfig                   |   4 +
+ sound/hda/Makefile                  |   3 +
+ sound/hda/ext/Makefile              |   3 +
+ sound/hda/ext/hdac_ext_bus.c        | 117 +++++++++++
+ sound/hda/ext/hdac_ext_controller.c | 270 ++++++++++++++++++++++++
+ sound/hda/ext/hdac_ext_stream.c     | 402 ++++++++++++++++++++++++++++++++++++
+ 7 files changed, 928 insertions(+)
+ create mode 100644 include/sound/hdaudio_ext.h
+ create mode 100644 sound/hda/ext/Makefile
+ create mode 100644 sound/hda/ext/hdac_ext_bus.c
+ create mode 100644 sound/hda/ext/hdac_ext_controller.c
+ create mode 100644 sound/hda/ext/hdac_ext_stream.c
+
+-- 
+1.9.1
