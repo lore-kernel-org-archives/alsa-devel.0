@@ -1,57 +1,179 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH 3/4] ASoC: wm8960: add kcontrol to select ADC data output
-Date: Thu, 11 Jun 2015 19:14:35 +0800
-Message-ID: <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
-References: <cover.1434020423.git.zidan.wang@freescale.com>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [PATCH v2] ALSA: aoa: convert bus code to use dev_groups
+Date: Thu, 11 Jun 2015 13:55:59 +0200
+Message-ID: <5579774F.4010706@bfs.de>
+References: <1434009818-16711-1-git-send-email-lambert.quentin@gmail.com>
+Reply-To: wharms@bfs.de
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1434020423.git.zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1434009818-16711-1-git-send-email-lambert.quentin@gmail.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Quentin Lambert <lambert.quentin@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-add kcontrol to select ADC data output.
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
- sound/soc/codecs/wm8960.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index c1be15c..62246f1 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -141,6 +141,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
- static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
- static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
- static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
-+static const char *wm8960_adc_data_sel[] = {
-+	"ldata = left ADC; rdata = right ADC",
-+	"ldata = left ADC; rdata = left ADC",
-+	"ldata = right ADC; rdata = right ADC",
-+	"ldata = right ADC; rdata = left ADC",
-+};
- 
- static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
-@@ -149,6 +155,7 @@ static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_3D, 5, 2, wm8960_3d_lower_cutoff),
- 	SOC_ENUM_SINGLE(WM8960_ALC1, 7, 4, wm8960_alcfunc),
- 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
-+	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_sel),
- };
- 
- static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-@@ -279,6 +286,8 @@ SOC_SINGLE_TLV("Right Output Mixer Boost Bypass Volume",
- 	       WM8960_BYPASS2, 4, 7, 1, bypass_tlv),
- SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
- 	       WM8960_ROUTMIX, 4, 7, 1, bypass_tlv),
-+
-+SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
- };
- 
- static const struct snd_kcontrol_new wm8960_lin_boost[] = {
--- 
-1.9.1
+Am 11.06.2015 10:03, schrieb Quentin Lambert:
+> The dev_attrs field of struct bus_type is going away, use dev_groups instead.
+> This converts the soundbus code to use the correct field.
+> 
+> Given that all other usages of the macro define the struct attribute
+> *xxx_attrs[] in the same file they assign the .dev_groups field, this patch
+> merges sysfs.c into core.c.
+> 
+> These modifications were made using Coccinelle.
+> 
+> Signed-off-by: Quentin Lambert <lambert.quentin@gmail.com>
+> ---
+>  Changes since v1:
+>   - Fix the commit message to actually talk about soundbus rather than MDIO
+>   - This version attempt to fix a problem resulting from the macro
+>     ATTRIBUTE_GROUPS declaring the structure as static by merging sysfs.c into
+>     core.c. I understand that this may not be the prefered solution since 
+>     Takashi suggested that adding a comment line to the previous version could
+>     be acceptable. 
+> 
+>  sound/aoa/soundbus/Makefile   |    2 -
+>  sound/aoa/soundbus/core.c     |   44 +++++++++++++++++++++++++++++++++++++++++-
+>  sound/aoa/soundbus/soundbus.h |    2 -
+>  sound/aoa/soundbus/sysfs.c    |   42 ----------------------------------------
+>  4 files changed, 44 insertions(+), 46 deletions(-)
+> 
+> --- a/sound/aoa/soundbus/Makefile
+> +++ b/sound/aoa/soundbus/Makefile
+> @@ -1,3 +1,3 @@
+>  obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
+> -snd-aoa-soundbus-objs := core.o sysfs.o
+> +snd-aoa-soundbus-objs := core.o
+>  obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
+> --- a/sound/aoa/soundbus/core.c
+> +++ b/sound/aoa/soundbus/core.c
+> @@ -150,6 +150,48 @@ static int soundbus_device_resume(struct
+>  
+>  #endif /* CONFIG_PM */
+>  
+> +#define soundbus_config_of_attr(field, format_string)			\
+> +static ssize_t								\
+> +field##_show (struct device *dev, struct device_attribute *attr,	\
+> +              char *buf)						\
+> +{									\
+> +	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
+> +	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
+> +}
+> +
+> +static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+> +			     char *buf)
+> +{
+> +	struct soundbus_dev *sdev = to_soundbus_device(dev);
+> +	struct platform_device *of = &sdev->ofdev;
+> +	int length;
+> +
+> +	if (*sdev->modalias) {
+> +		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
+> +		strcat(buf, "\n");
+> +		length = strlen(buf);
+
+
+for my curiosity:
+why not sprintf() ? almost any other code seems to use sprintf().
+
+re,
+ wh
+
+
+> +	} else {
+> +		length = sprintf(buf, "of:N%sT%s\n",
+> +				 of->dev.of_node->name, of->dev.of_node->type);
+> +	}
+> +
+> +	return length;
+> +}
+> +static DEVICE_ATTR_RO(modalias);
+> +
+> +soundbus_config_of_attr (name, "%s\n");
+> +static DEVICE_ATTR_RO(name);
+> +soundbus_config_of_attr (type, "%s\n");
+> +static DEVICE_ATTR_RO(type);
+> +
+> +struct attribute *soundbus_dev_attrs[] = {
+> +	&dev_attr_name.attr,
+> +	&dev_attr_type.attr,
+> +	&dev_attr_modalias.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(soundbus_dev);
+> +
+>  static struct bus_type soundbus_bus_type = {
+>  	.name		= "aoa-soundbus",
+>  	.probe		= soundbus_probe,
+> @@ -160,7 +202,7 @@ static struct bus_type soundbus_bus_type
+>  	.suspend	= soundbus_device_suspend,
+>  	.resume		= soundbus_device_resume,
+>  #endif
+> -	.dev_attrs	= soundbus_dev_attrs,
+> +	.dev_groups	= soundbus_dev_groups,
+>  };
+>  
+>  int soundbus_add_one(struct soundbus_dev *dev)
+> --- a/sound/aoa/soundbus/soundbus.h
+> +++ b/sound/aoa/soundbus/soundbus.h
+> @@ -199,6 +199,4 @@ struct soundbus_driver {
+>  extern int soundbus_register_driver(struct soundbus_driver *drv);
+>  extern void soundbus_unregister_driver(struct soundbus_driver *drv);
+>  
+> -extern struct device_attribute soundbus_dev_attrs[];
+> -
+>  #endif /* __SOUNDBUS_H */
+> --- a/sound/aoa/soundbus/sysfs.c
+> +++ /dev/null
+> @@ -1,42 +0,0 @@
+> -#include <linux/kernel.h>
+> -#include <linux/stat.h>
+> -/* FIX UP */
+> -#include "soundbus.h"
+> -
+> -#define soundbus_config_of_attr(field, format_string)			\
+> -static ssize_t								\
+> -field##_show (struct device *dev, struct device_attribute *attr,	\
+> -              char *buf)						\
+> -{									\
+> -	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
+> -	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
+> -}
+> -
+> -static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+> -			     char *buf)
+> -{
+> -	struct soundbus_dev *sdev = to_soundbus_device(dev);
+> -	struct platform_device *of = &sdev->ofdev;
+> -	int length;
+> -
+> -	if (*sdev->modalias) {
+> -		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
+> -		strcat(buf, "\n");
+> -		length = strlen(buf);
+> -	} else {
+> -		length = sprintf(buf, "of:N%sT%s\n",
+> -				 of->dev.of_node->name, of->dev.of_node->type);
+> -	}
+> -
+> -	return length;
+> -}
+> -
+> -soundbus_config_of_attr (name, "%s\n");
+> -soundbus_config_of_attr (type, "%s\n");
+> -
+> -struct device_attribute soundbus_dev_attrs[] = {
+> -	__ATTR_RO(name),
+> -	__ATTR_RO(type),
+> -	__ATTR_RO(modalias),
+> -	__ATTR_NULL
+> -};
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
