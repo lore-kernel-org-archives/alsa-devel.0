@@ -1,45 +1,55 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel][PATCH] ASoC: fsl: add imx-wm8960 machine driver
-Date: Thu, 11 Jun 2015 08:51:07 -0700
-Message-ID: <20150611155106.GA3036@Asurada>
-References: <b2a3c323a0507f3706041e1da98da8375aa61576.1433923593.git.zidan.wang@freescale.com>
- <20150610183619.GA3103@Asurada-CZ80>
- <20150611110958.GA23742@shlinux2>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: codec mclk should be
+ enabled early to avoid jack detect error
+Date: Thu, 11 Jun 2015 17:20:28 +0100
+Message-ID: <20150611162028.GT14071@sirena.org.uk>
+References: <cover.1434020423.git.zidan.wang@freescale.com>
+ <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FUBn+A0X9P+7IcSo"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150611110958.GA23742@shlinux2>
+In-Reply-To: <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Zidan Wang <zidan.wang@freescale.com>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, timur@tabi.org, Xiubo.Lee@gmail.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2015 at 07:10:00PM +0800, Zidan Wang wrote:
 
-> > > This imx-wm8960 device-tree-only machine driver works with sai driver
-> > > and have below feature.
-> > > * support codec master and slave mode
-> > > * support headphone jack detect
-> > > * support headphone and micphone jack event
-> > > * support asrc<->sai<->wm8960 mode
-> > > 
-> > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > 
-> > Above all, could you merge this into fsl-asoc-card?
-> > 
-> > It'd be nicer to have jack detection over there. And we can
-> > put PLL settings to the codec driver as Mark suggested.
+--FUBn+A0X9P+7IcSo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I want to modify imx-wm8960 and upstream it because our release is using it now. After
-> upstreaming imx-wm8960, i will try to merge it to fsl-asoc-card.
+On Thu, Jun 11, 2015 at 07:14:33PM +0800, Zidan Wang wrote:
+> It will playback from speaker in the first 2 seconds, then switch to
+> headphone. Steps to reproduce this issue:
+> 1. plug out headphone and playback a wav.
+> 2. stop playback and wait for at least 5 seconds, then
+>    plug in headphone and playback a wav.
 
-I knew your intention. That's why I suggested you to merge it directly
-to fsl-asoc-card instead of making a duplicated copy of that. Remember
-that getting code upstream should be a chance for us to improve thing.
+I'd really like to understand the logic behind this in more detail -
+what is the actual problem here and how does this fix it?  You're moving
+the clock management from the bias level setting to the stream startup
+and teardown which doesn't seem directly related, if anything it seems
+like it'd be making things worse since it reduces the proportion of the
+time where the clock is enabled.  My guess is that the jack detection
+needs MCLK enabling.
 
-If you find painstaking to handle it in parallel, you can focus on the
-improvements of the WM8960 driver while I would help you on the dai-
-link part. How about this?
+--FUBn+A0X9P+7IcSo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Nicolin
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVebVLAAoJECTWi3JdVIfQ6m4IAIOitDwmP8F89tw67K0w0UUz
+MqaH5ikjzzvKVxyWJChsurfknxfEZ2gbEMhQNqA6Kc4fvSYUvdmXYSCaEXFegTkb
+nxR/yr2xJEerCSXo6LMPjWS/vt9IbvxHI/USaibo1x3GMG0HemzEnq6V0gMa/HXq
+/W1jKVPBDcv+Gax1e5gW3KNmeSCJ0kzXP/naYWlmrD3im8E00FvCEdnb03wqV0qd
+s//hTbci+g+8GcBq3xTx9ATsXb8XhYIZIVurJ/cT1qvpjaAA2fI+uKi+vBJL9QYB
+xgIFGN11Zoz8UADSjG5XhQ+bhPbbtGNh8POEP446EXfGbBZMD2r4/atD/xTbk+w=
+=wfoJ
+-----END PGP SIGNATURE-----
+
+--FUBn+A0X9P+7IcSo--
