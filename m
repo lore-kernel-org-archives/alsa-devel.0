@@ -1,114 +1,50 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V2] PCM: snd_pcm_xxxx_drain() maybe blocked
-	after suspend and resume
-Date: Fri, 12 Jun 2015 16:15:08 +0800
-Message-ID: <237099058d5e658610915f8f6a4724d782299a25.1434096300.git.shengjiu.wang@freescale.com>
+From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: mediatek: Add AFE platform driver
+Date: Fri, 12 Jun 2015 16:24:48 +0800
+Message-ID: <1434097488.29733.0.camel@mtksdaap41>
+References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
+	 <1433946276-25969-2-git-send-email-koro.chen@mediatek.com>
+	 <1434006187.24094.40.camel@x220> <1434074158.10969.5.camel@mtksdaap41>
+	 <1434094677.2271.125.camel@x220>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0124.outbound.protection.outlook.com [65.55.169.124])
- by alsa0.perex.cz (Postfix) with ESMTP id A5E412666D3
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 10:15:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1434094677.2271.125.camel@x220>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul Bolle <pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-After suspend and resume, the alsa driver is stopped. But if alsa-lib run
-into snd_pcm_xxxx_drain(), it need to wait avail >= pcm->stop_threshold,
-otherwise, it will not exit the loop, so finally it is blocked at poll() of
-snd_pcm_wait_nocheck(pcm, -1).
-This patch is to add state check after snd_pcm_wait_nocheck(pcm, -1), if
-the state is SND_PCM_STATE_SUSPENDED, then return error.
+On Fri, 2015-06-12 at 09:37 +0200, Paul Bolle wrote:
+> On Fri, 2015-06-12 at 09:55 +0800, Koro Chen wrote:
+> > On Thu, 2015-06-11 at 09:03 +0200, Paul Bolle wrote:
+> > > (What does negating a bool twice do?)
+> > > 
+> > Because bool actually can be unsigned char, although actually in this
+> > driver, the caller always passes "true" or "false" to this function.
+> 
+> bool is _Bool in the kernel (see include/linux/types.h). So whenever you
+> see a bool in the kernel you can assume it's either 0 or 1. Are there
+> any cases where this conveniently simple rule doesn't hold?
+> 
+> But here the discussion is moot, because as you say, the function will
+> only be passed false or true so we know "enable" is either 0 or 1 and
+> double negating will do nothing.
+> 
+> > Do you think if this is the case, should I still need to do !!?
+> 
+> So you should not, as it's confusing at best.
+> 
+OK, thank you. I will drop it in the next version of patch.
+> Thanks,
+> 
+> 
+> Paul Bolle
+> 
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
-changes in v2:
-- Add state check in beginning of drain()
-- Add fix for pcm_dshare()
-- Mov the state check to the place that is after
-snd_pcm_direct_clear_timer_queue(dmix). That the suspend may happen just before
-calling snd_pcm_direct_clear_timer_queue(dmix), which will force the next poll
-to wait. So move state check to new place may safty.
 
-
- src/pcm/pcm_dmix.c   |   14 ++++++++++++++
- src/pcm/pcm_dshare.c |   14 ++++++++++++++
- 2 files changed, 28 insertions(+)
-
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index babde6a..91148b9 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -616,6 +616,13 @@ static int snd_pcm_dmix_drain(snd_pcm_t *pcm)
- 	snd_pcm_uframes_t stop_threshold;
- 	int err;
- 
-+	switch (snd_pcm_state(dmix->spcm)) {
-+	case SND_PCM_STATE_SUSPENDED:
-+		return -ESTRPIPE;
-+	default:
-+		break;
-+	}
-+
- 	if (dmix->state == SND_PCM_STATE_OPEN)
- 		return -EBADFD;
- 	if (pcm->mode & SND_PCM_NONBLOCK)
-@@ -648,6 +655,13 @@ static int snd_pcm_dmix_drain(snd_pcm_t *pcm)
- 			snd_pcm_dmix_sync_area(pcm);
- 			snd_pcm_wait_nocheck(pcm, -1);
- 			snd_pcm_direct_clear_timer_queue(dmix); /* force poll to wait */
-+
-+			switch (snd_pcm_state(dmix->spcm)) {
-+			case SND_PCM_STATE_SUSPENDED:
-+				return -ESTRPIPE;
-+			default:
-+				break;
-+			}
- 		}
- 	} while (dmix->state == SND_PCM_STATE_DRAINING);
- 	pcm->stop_threshold = stop_threshold;
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 020e6f7..24975d4 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -367,6 +367,13 @@ static int snd_pcm_dshare_drain(snd_pcm_t *pcm)
- 	snd_pcm_uframes_t stop_threshold;
- 	int err;
- 
-+	switch (snd_pcm_state(dshare->spcm)) {
-+	case SND_PCM_STATE_SUSPENDED:
-+		return -ESTRPIPE;
-+	default:
-+		break;
-+	}
-+
- 	if (dshare->state == SND_PCM_STATE_OPEN)
- 		return -EBADFD;
- 	if (pcm->mode & SND_PCM_NONBLOCK)
-@@ -399,6 +406,13 @@ static int snd_pcm_dshare_drain(snd_pcm_t *pcm)
- 			snd_pcm_dshare_sync_area(pcm);
- 			snd_pcm_wait_nocheck(pcm, -1);
- 			snd_pcm_direct_clear_timer_queue(dshare); /* force poll to wait */
-+
-+			switch (snd_pcm_state(dshare->spcm)) {
-+			case SND_PCM_STATE_SUSPENDED:
-+				return -ESTRPIPE;
-+			default:
-+				break;
-+			}
- 		}
- 	} while (dshare->state == SND_PCM_STATE_DRAINING);
- 	pcm->stop_threshold = stop_threshold;
--- 
-1.7.9.5
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
