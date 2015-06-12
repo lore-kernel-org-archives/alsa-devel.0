@@ -1,19 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 1/2] ALSA: hda - Continue probing even if
- i915 binding fails
-Date: Fri, 12 Jun 2015 08:17:12 +0200
-Message-ID: <557A7968.1040801@canonical.com>
-References: <1433931965-12337-1-git-send-email-tiwai@suse.de>	<F46914AEC2663F4A9BB62374E5EEF8F82B88A8E4@SHSMSX101.ccr.corp.intel.com>	<s5hmw057bu3.wl-tiwai@suse.de>	<F46914AEC2663F4A9BB62374E5EEF8F82B88BA69@SHSMSX101.ccr.corp.intel.com>
- <s5hbngl7956.wl-tiwai@suse.de>
+From: Azizul Hakim <azizulfahim2002@gmail.com>
+Subject: Can't Unload ALSA Driver Without Disconnecting the
+	Device
+Date: Fri, 12 Jun 2015 02:28:16 -0400
+Message-ID: <CA+k7WwZ+vosLDQ8jz_3E+CtAokjerp_vUtK7bbBCRrD4ZxinOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 152602666A5
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 08:17:14 +0200 (CEST)
-In-Reply-To: <s5hbngl7956.wl-tiwai@suse.de>
+Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51D422666A5
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 08:28:17 +0200 (CEST)
+Received: by obcej4 with SMTP id ej4so17459107obc.0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 23:28:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,192 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
+I've been developing a sound card driver for a USB device using ALSA. My
+driver is almost working but I've got one small issue. If I try to unload
+the driver module using "rmmod" command  when the device is still connected
+to the USB port, it says "Module is in use" even though I'm not playing any
+sound files or anything.
 
 
-On 2015-06-12 08:06, Takashi Iwai wrote:
-> At Fri, 12 Jun 2015 05:50:43 +0000,
-> Lin, Mengdong wrote:
->>
->>
->>> -----Original Message-----
->>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>> Sent: Friday, June 12, 2015 1:09 PM
->>> To: Lin, Mengdong
->>> Cc: alsa-devel@alsa-project.org; David Henningsson; Yang, Libin
->>> Subject: Re: [PATCH 1/2] ALSA: hda - Continue probing even if i915 binding fails
->>>
->>> At Fri, 12 Jun 2015 02:08:50 +0000,
->>> Lin, Mengdong wrote:
->>>>> -----Original Message-----
->>>>> From: Takashi Iwai [mailto:tiwai@suse.de]
->>>>> Sent: Wednesday, June 10, 2015 6:26 PM
->>>>>
->>>>> Currently snd-hda-intel driver aborts the probing of Intel HD-audio
->>>>> controller with i915 power well management when binding with i915
->>>>> driver via
->>>>> hda_i915_init() fails.  This is no big problem for Haswell and
->>>>> Broadwell where the HD-audio controllers are dedicated to HDMI/DP,
->>>>> thus i915 link is mandatory.  However, Skylake, Baytrail and
->>>>> Braswell have only one controller and both HDMI/DP and analog codecs
->>>>> share the same bus.  Thus, even if HDMI/DP isn't usable, we should keep
->>> the controller working for other codecs.
->>>>> For fixing this, this patch simply allows continuing the probing
->>>>> even if
->>>>> hda_i915_init() call fails.  This may leave stale sound components
->>>>> for HDMI/DP devices that are unbound with graphics.  We could abort
->>>>> the probing selectively, but from the code simplicity POV, it's
->>>>> better to continue in all cases.
->>>>>
->>>>> Reported-by: Libin Yang <libin.yang@intel.com>
->>>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>>>> ---
->>>>> This is for 4.1.  Appying to 4.2 may result in trivial conflicts.
->>>>>
->>>>>   sound/pci/hda/hda_intel.c | 3 ++-
->>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->>>>> index fea198c58196..8a0af6770e1d 100644
->>>>> --- a/sound/pci/hda/hda_intel.c
->>>>> +++ b/sound/pci/hda/hda_intel.c
->>>>> @@ -1855,7 +1855,7 @@ static int azx_probe_continue(struct azx
->>>>> *chip) #ifdef CONFIG_SND_HDA_I915
->>>>>   		err = hda_i915_init(hda);
->>>>>   		if (err < 0)
->>>>> -			goto out_free;
->>>>> +			goto skip_i915;
->>>>>   		err = hda_display_power(hda, true);
->>>>>   		if (err < 0) {
->>>>>   			dev_err(chip->card->dev,
->>>>> @@ -1865,6 +1865,7 @@ static int azx_probe_continue(struct azx
->>>>> *chip) #endif
->>>>>   	}
->>>>>
->>>>> + skip_i915:
->>>>>   	err = azx_first_init(chip);
->>>>>   	if (err < 0)
->>>>>   		goto out_free;
->>>>> --
->>>>> 2.4.3
->>>> Thanks for your patch. But maybe we should not skip i915 for the
->>>> dedicated display HD-A controller on Haswell/Broadwell.
->>>>
->>>> For HSW/BDW, their HD-A controller for display audio (PCI dev#3) is
->>>> *partly* in GPU power domain:
->>>> - Its PCI configuration space is out of i915 power well, but in an
->>>> always-on  power well. So even if the BIOS disables the Intel GPU (PCI
->>>> dev#2), the HD-A  controller is still present, and we can still access
->>>> all standard registers in PCI  config space.
->>> Right, and changing this doesn't break things.
->>>
->>>> - Its audio functions are in the i915 power well. If hda_i915_init()
->>>> fails and
->>>>   I915 power well is unavailable, read/write to the audio register of
->>>> the  Controller will fail and we'll get kernel error messages. So I
->>>> feel it's better  to abort if hda_i915_init() fails for this HD-A controller.
->>> By skipping, the access to i915 power well won't happen later, since the
->>> component ops isn't set.
->>>
->>> I tested Haswell machines with nomodeset to simulate the situation, and there
->>> was no any kernel errors except for the first one indicating the failure of i915
->>> binding.
->>>
->>> I haven't tested Broadwell, though.
->> Hi Takashi,
->>
->> I think there is no error because the i915 power well is ON by default on
->> Haswell and BIOS does not touch this. However, it's possible that the BIOS may
->> disable this power well and depends on i915 driver to turn it on when need, or
->> just disable the power well when disabling the Intel GPU.
->>
->> I remember previously we met audio register I/O error when HSW introduced
->> this power well and i915 disabled it without sync with audio driver.
->>
->> Since we cannot expect the exact BIOS behavior, I feel it's safer not to use this
->> HD-A controller without i915 on HSW and BDW.
+If I try to execute the "lsmod" command I see that it is saying the usage
+count of my driver to be 1, but it doesn't say anything about who is using
+it. Once I disconnect the device from the USB port, I can easily unload the
+module.
 
-If BIOS disables the power well, then we would get the "audio register 
-I/O error" in the boot phase, there will be no codecs detected, and thus 
-no broken sound card showing up.
 
-The only issue is if the i915 driver disables the power well, but the 
-case that the i915 should be functioning enough to turn off the power 
-well at some point, and at the same time so broken that we can't bind to 
-it, seems extremely unlikely to me.
+So it seems to me it won't be possible to unload a sound card driver if the
+card is attached in the computer. Is my assumption correct? If not, what
+might be some key points to solve the issue?
 
-Either the i915 driver works, or it does not. In both cases, continuing 
-probing is the more useful option.
+Thanks for any suggestion
 
-> Fair enough.  Then I'm going to queue the patch below in addition to
-> for-linus branch.
-
-We'll have to agree to disagree on that, then.
-
->
->
-> thanks,
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Abort the probe without i915 binding for HSW/BDW
->
-> The previous patch tried to continue the probe if i915 binding fails.
-> For for simplicity reason, we haven't implemented abort even for
-> controller chips that are dedicated for HDMI/DP on HSW and BDW.
-> However, Mengdong suggested that this can be dangerous; BIOS may
-> disable gfx power well although the PCI entry for HD-audio is left,
-> and this may result in the unexpected behavior, kernel errors, etc.
->
-> For avoiding this situation, abort the probe at i915 binding failure
-> only for HSW/BDW chips selectively.  For other chips, it still
-> continues.
->
-> Fixes: bf06848bdbe5 ('ALSA: hda - Continue probing even if i915 binding fails')
-> Reported-by: Mengdong Lin <mengdong.lin@intel.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/pci/hda/hda_intel.c | 18 ++++++++++++++++--
->   1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 8a0af6770e1d..a244ba706317 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -340,6 +340,11 @@ enum {
->   #define use_vga_switcheroo(chip)	0
->   #endif
->   
-> +#define CONTROLLER_IN_GPU(pci) (((pci)->device == 0x0a0c) || \
-> +					((pci)->device == 0x0c0c) || \
-> +					((pci)->device == 0x0d0c) || \
-> +					((pci)->device == 0x160c))
-> +
->   static char *driver_short_names[] = {
->   	[AZX_DRIVER_ICH] = "HDA Intel",
->   	[AZX_DRIVER_PCH] = "HDA Intel PCH",
-> @@ -1854,8 +1859,17 @@ static int azx_probe_continue(struct azx *chip)
->   	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
->   #ifdef CONFIG_SND_HDA_I915
->   		err = hda_i915_init(hda);
-> -		if (err < 0)
-> -			goto skip_i915;
-> +		if (err < 0) {
-> +			/* if the controller is bound only with HDMI/DP
-> +			 * (for HSW and BDW), we need to abort the probe;
-> +			 * for other chips, still continue probing as other
-> +			 * codecs can be on the same link.
-> +			 */
-> +			if (CONTROLLER_IN_GPU(pci))
-> +				goto out_free;
-> +			else
-> +				goto skip_i915;
-> +		}
->   		err = hda_display_power(hda, true);
->   		if (err < 0) {
->   			dev_err(chip->card->dev,
+Regards
+Azizul Hakim
