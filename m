@@ -1,40 +1,115 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: mediatek: Add AFE platform driver
-Date: Fri, 12 Jun 2015 09:37:57 +0200
-Message-ID: <1434094677.2271.125.camel@x220>
-References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
-	 <1433946276-25969-2-git-send-email-koro.chen@mediatek.com>
-	 <1434006187.24094.40.camel@x220> <1434074158.10969.5.camel@mtksdaap41>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [RFC PATCH] ALSA: split params refinement to
+	seperated file
+Date: Fri, 12 Jun 2015 07:38:04 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A905549F99@SHSMSX101.ccr.corp.intel.com>
+References: <1433429265-22054-1-git-send-email-yang.jie@intel.com>
+ <20150604191548.GR14071@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90553DD1E@SHSMSX101.ccr.corp.intel.com>
+ <s5hd216k12q.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1434074158.10969.5.camel@mtksdaap41>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, s.hauer@pengutronix.de, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, galak@codeaurora.org, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80780266723
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 09:38:09 +0200 (CEST)
+In-Reply-To: <s5hd216k12q.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "Zhang, Vivian" <vivian.zhang@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-06-12 at 09:55 +0800, Koro Chen wrote:
-> On Thu, 2015-06-11 at 09:03 +0200, Paul Bolle wrote:
-> > (What does negating a bool twice do?)
-> > 
-> Because bool actually can be unsigned char, although actually in this
-> driver, the caller always passes "true" or "false" to this function.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, June 08, 2015 5:21 PM
+> To: Jie, Yang
+> Cc: Mark Brown; alsa-devel@alsa-project.org; Girdwood, Liam R; Zhang,
+> Vivian
+> Subject: Re: [RFC PATCH] ALSA: split params refinement to seperated file
+> 
+> At Mon, 8 Jun 2015 07:35:17 +0000,
+> Jie, Yang wrote:
+> >
+> > > -----Original Message-----
+> > > From: Mark Brown [mailto:broonie@kernel.org]
+> > > Sent: Friday, June 05, 2015 3:16 AM
+> > > To: Jie, Yang
+> > > Cc: tiwai@suse.de; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> > > Zhang, Vivian
+> > > Subject: Re: [RFC PATCH] ALSA: split params refinement to seperated
+> > > file
+> > >
+> > > On Thu, Jun 04, 2015 at 10:47:45PM +0800, Jie Yang wrote:
+> > >
+> > > > The change moves refinement functions from original pcm_native.c
+> > > > and pcm_lib.c, to pcm_refine.c(similarly the declaration from
+> > > > pcm.h to pcm_refine.h), so it is not so big as it looks like.
+> > >
+> > > I'd suggest that for review it'd be easier to have one patch for the
+> > > move and another for the change in behaviour: it's a bit hard to
+> > > find the actual change in what the kernel does in this diff and
+> > > that's the bit that needs most careful consideration.
+> > >
+> > > git format-patch -M may also help.
+> >
+> > Umm, Liam also suggested that, it's really hard for reviewing, but I
+> > found that "git format-patch -M" doesn't help for partially
+> > splitting/moving from a file to another/new file, I even tried '-M5%',
+> > but no luck. :(
+> >
+> > I can't find good way to make it better, any suggestion?
+> 
+> Just begin with adding ifdefs instead of reshuffling the code.  This will make
+> easier to understand what you're going to change.  At least, it's good enough
+> for RFC.  After that, we can refactor the code.
+ 
+That make sense.
 
-bool is _Bool in the kernel (see include/linux/types.h). So whenever you
-see a bool in the kernel you can assume it's either 0 or 1. Are there
-any cases where this conveniently simple rule doesn't hold?
+> 
+> But, before going further, I'd like to know the exact measurement you've
+> done, the target and the goal.  Measuring only the static code size doesn't
+ 
+Our target the minimum memory footprint usage for ALSA on small(e.g. IoT)
+devices, and using 'lsmod' to check the status(including memory footprint)
+of the modules.
 
-But here the discussion is moot, because as you say, the function will
-only be passed false or true so we know "enable" is either 0 or 1 and
-double negating will do nothing.
+> help much from the whole system POV.  Also, it's not clear which
+> functionality has to be kept with which drivers and which configuration.
+ 
+We suppose the bspoke application will pass down the specific params to
+ALSA on those small devices, then hw refinement may be not needed.
 
-> Do you think if this is the case, should I still need to do !!?
+We also made adapted change in tinyplay, did some testing and verified it works
+in this case.
 
-So you should not, as it's confusing at best.
+> 
+> Removing the hw constraints refinement is rather a radical change.
+> It's a part of the PCM core functionality, and removing it means that the
+> driver has no ways to refuse the incompatible parameters even if it knows
+ 
+Can we just return error and refuse doing stream playback/capture when we
+know it's broken?
 
-Thanks,
+> it's broken.  So, IMO, this is the very last resort.  We can start from ripping off
+> lower hanging fruits.
+ 
+Agree that it is very last resort, I realized that it is a radical change and impact a
+lot before sending this RFC. :|
 
-
-Paul Bolle
+thanks,
+~Keyon
+> 
+> 
+> thanks,
+> 
+> Takashi
