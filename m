@@ -1,25 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Fri, 12 Jun 2015 10:34:41 +0800
-Message-ID: <CAN8cciY8A-ecJVYyPKoRqZad+HhpOCvFtxdrrA=yTrk_q7QitQ@mail.gmail.com>
-References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
- <s5hzj47n9d1.wl-tiwai@suse.de>
- <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
- <s5h616ul6o5.wl-tiwai@suse.de>
- <CAH=tA9E_D7Nt0iS8j9GXp3duDYN=xDn5aDt2O_cZuf1gFRArJQ@mail.gmail.com>
- <CAN8ccib4f0O5TW6Z=QzrSoRkp=EA-Km6z15TTh+HXb5me-=+NQ@mail.gmail.com>
- <CAH=tA9FE_fNf9GtmxHTwA8+4EjMS31iYRoTZcroCLAbEZpn38w@mail.gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: 2 speakers are assigned to the same DAC,
+ this can't support 4.0/2.1 channles
+Date: Fri, 12 Jun 2015 11:25:09 +0800
+Message-ID: <557A5115.6050403@canonical.com>
+References: <5576B419.5010505@canonical.com> <s5h1thlqeus.wl-tiwai@suse.de>
+ <5576E994.2080300@canonical.com> <5577BAEE.50506@canonical.com>
+ <s5h1thjoo14.wl-tiwai@suse.de> <s5hoakmjn6i.wl-tiwai@suse.de>
+ <557A30CC.6030601@canonical.com>
+ <CAN8cciZSoKXRETza1BcDPBCJcFXsVL-4kOn6fCTsGYoF8qitwg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DFD0266640
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 04:34:42 +0200 (CEST)
-Received: by obbgp2 with SMTP id gp2so14867111obb.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 19:34:41 -0700 (PDT)
-In-Reply-To: <CAH=tA9FE_fNf9GtmxHTwA8+4EjMS31iYRoTZcroCLAbEZpn38w@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EC3266638
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 05:25:14 +0200 (CEST)
+In-Reply-To: <CAN8cciZSoKXRETza1BcDPBCJcFXsVL-4kOn6fCTsGYoF8qitwg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,55 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolae Rosia <nicolae.rosia@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 06/12/2015 09:22 AM, Raymond Yau wrote:
+>>>>>>> A cleaner way would be to prepare a different badness table for the
+>>>>>>> speaker, and increase the value for shared_surr.  An untested patch
+> is
+>>>>>>> below.
+>>>>>> Got it, I will test it soon. Thanks.
+>>>>>>
+>>>>> Hi Takashi,
+>>>>>
+>>>>> Your patch can fix the problem, it works very well.
+>>>> OK, good to know.  I'd like to test a bit more via hda-emu whether
+>>>> this gives any ill effects.  So far, this seems fixing a few other
+>>>> machines, too, so it's a good thing to have in general.
+>>> This change alone results in regressions on machines that are capable
+>>> of 4.0/5.1 surrounds.  For avoiding it, the badness for multi-io has
+>>> to be increased as well.  It's damn sensitive.
+>>>
+>>> But, now I wonder now whether blindly applying this is good.  Suppose
+>>> a machine with 2.1 speaker and one headphone, but the codec has only
+>>> two DACs.  With this setup, now the headphone and the speaker share
+>>> the same DAC, as the cost of having individual 2.1 speaker volume.
+>>> Is this more useful than having individual volumes for speaker and
+>>> headphone?
+>> If having individual volumes for speaker and headphone (the speakers
+> share the same DAC), there will be no "Front Speaker" and "Bass Speaker",
+> as a result, in the userspace, pulseaudio can't regard the 2.1 channels is
+> a valid profile.
+> Do you mean you can still hear high frequency from the subwoofer of 92hd91
+> (i.e. pulseaudio lfe filtering is much better than the band pass filter in
+> 92hd91)
+I don't mean we will definitely enable the lfe filter in the pulseaudio, 
+if the codec has HW filter, we can disable the lfe filter in the 
+pulseaudio. The problem is if we don't choose 2.1 channels, the 
+pulseaudio will not feed the data to the subwoofer speaker, so there is 
+no sound coming from the subwoofer speaker.
+
+2.1 channles != enabling lfe filter.
 >
-> Thank you very much!
-> I have compiled hdajacksensetest from source and found out that one
-> pin was marked as Not connected even though it was present, and
-> another one was marked as Microphone.
-> I have used hdajackretask to force the retask at boot time (it didn't
-> work at runtime - it always displays tee:
-> /sys/class/sound/hwC1D0/reconfig: Device or resource busy) and now it
-> looks like this:
-
-Do you mean hdajackretask cannot shutdown pulseaudio or you still have
-other applicaion using the sound card which prevent dynamic reconfiguration
-of snd-hda-intel ?
-
-> ./hdajacksensetest -c 1 -a
-> Pin 0x12 (Internal Mic): present = No
-> Pin 0x14 (Internal Speaker): present = No
-> Pin 0x15 (Green Line Out, Rear side): present = Yes
-> Pin 0x16 (Green Line Out, Rear side): present = Yes
-> Pin 0x18 (Green Line Out, Rear side): present = Yes
-> Pin 0x19 (Not connected): present = No
-> Pin 0x1a (Internal Speaker): present = No
-> Pin 0x1b (Not connected): present = No
-> Pin 0x1d (Not connected): present = No
-> Pin 0x1e (Internal SPDIF Out): present = No
-> Pin 0x1f (Not connected): present = No
-
-Can you post the output of alsa-info.sh after you patched the line out
-jacks ?
-
-Which node is the headphone spdif combo jack ?
-
-Do both headphone jacks have headphone , headset  or line out icon ?
-
-The normal fix is to add back the missing headphone jacks
-
->
-> After this, I have modified the pulseaudio config,
-> /etc/pulse/daemon.conf, by adding the following:
-> default-sample-channels = 6
-> enable-lfe-remixing = yes
-> and 5.1 works!
->
-> How can we fix this for other owners?
-
-Do you mean switch to 5.1 profile in sound preference is not enough ?
+> How much auddional cpu need to enable lfe filtering ?
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
 >
