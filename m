@@ -1,72 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: soc-compress: split soc-compress
-	to a module
-Date: Fri, 12 Jun 2015 13:15:49 +0100
-Message-ID: <20150612121549.GU1921@sirena.org.uk>
-References: <1434110356-23516-1-git-send-email-yang.jie@intel.com>
- <1434110356-23516-2-git-send-email-yang.jie@intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel][PATCH 3/4] ASoC: wm8960: add kcontrol to select
+	ADC data output
+Date: Fri, 12 Jun 2015 13:29:18 +0100
+Message-ID: <20150612122918.GG32730@opensource.wolfsonmicro.com>
+References: <cover.1434020423.git.zidan.wang@freescale.com> <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0997788414314396710=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 46A8E266926
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:16:01 +0200 (CEST)
-In-Reply-To: <1434110356-23516-2-git-send-email-yang.jie@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: ramesh.babu@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, vivian.zhang@intel.com, vinod.koul@linux.intel.com, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jun 11, 2015 at 07:14:35PM +0800, Zidan Wang wrote:
+> add kcontrol to select ADC data output.
+> 
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> ---
+>  sound/soc/codecs/wm8960.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+> index c1be15c..62246f1 100644
+> --- a/sound/soc/codecs/wm8960.c
+> +++ b/sound/soc/codecs/wm8960.c
+> @@ -141,6 +141,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
+>  static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
+>  static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
+>  static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
+> +static const char *wm8960_adc_data_sel[] = {
+> +	"ldata = left ADC; rdata = right ADC",
+> +	"ldata = left ADC; rdata = left ADC",
+> +	"ldata = right ADC; rdata = right ADC",
+> +	"ldata = right ADC; rdata = left ADC",
+> +};
 
---===============0997788414314396710==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8Tx+BDMK09J610+l"
-Content-Disposition: inline
+I see the datasheet lists this as one field but it would probably
+look nicer as two controls, one to select the left channel source
+and one for the right channel source.
 
-
---8Tx+BDMK09J610+l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 12, 2015 at 07:59:16PM +0800, Jie Yang wrote:
-
-> +MODULE_ALIAS("platform:soc-compress");
-
-Oh, and this is incorrect - there is no platform device driver in this
-file.
-
---8Tx+BDMK09J610+l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVes10AAoJECTWi3JdVIfQp8AH/0nWnwXBjdyLz50QJ/e+xlTL
-/9fLilPIDnnnRSHCMusPnqQaRr/2ziIufDUkSSZX2kj5TUm6cN1hk/XdpXzkb95L
-mI+4ydEVXsDGVbovAAizOYtKV5zfIdRa1Zzbbo4hpObacr1XW/8OhWHOFwYP/DDa
-lPBM40Gi+Qngqm3XNgus2IrIKlK28MFEkGYqngQ16PmzLPjcoXho7Scqvt+vZ28P
-DK3HPwjPcnXWMg5ZTmeSbkwXpAUU8Q+gXXzEcZ/3KrE4VEq8Ax/6yHzBIZo6M1d8
-s7xHZN+Xmr7de9g93ZDFE+4iK3v/6/Zsw2c83JcWAji4ClLqpoTSMe+KLMOxg2U=
-=mMcA
------END PGP SIGNATURE-----
-
---8Tx+BDMK09J610+l--
-
---===============0997788414314396710==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0997788414314396710==--
+Thanks,
+Charles
