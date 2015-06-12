@@ -1,70 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5645: Add the device tree parser
-Date: Fri, 12 Jun 2015 11:30:26 +0100
-Message-ID: <20150612103026.GD1921@sirena.org.uk>
-References: <1434091656-12800-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: codec mclk should be
+ enabled early to avoid jack detect error
+Date: Fri, 12 Jun 2015 11:33:49 +0100
+Message-ID: <20150612103349.GE1921@sirena.org.uk>
+References: <cover.1434020423.git.zidan.wang@freescale.com>
+ <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
+ <20150611162028.GT14071@sirena.org.uk>
+ <20150612063231.GA23608@shlinux2>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1155308625877131553=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 931F3266831
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 12:30:58 +0200 (CEST)
-In-Reply-To: <1434091656-12800-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com, john.lin@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+JUInw4efm7IfTNU"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150612063231.GA23608@shlinux2>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1155308625877131553==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="veXX9dWIonWZEC6h"
-Content-Disposition: inline
-
-
---veXX9dWIonWZEC6h
+--+JUInw4efm7IfTNU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 12, 2015 at 02:47:36PM +0800, Oder Chiou wrote:
-> Modify the RT5645 driver to parse platform data from device tree. This is
-> missing from previous patch in sound/soc/codecs/rt5645.c, that was present
-> in v3.
+On Fri, Jun 12, 2015 at 02:32:33PM +0800, Zidan Wang wrote:
 
-Applied, thanks.
+> I have done some test today, and found that after mclk enable, we should delay
+> at least 150ms to prepare the jack detect function. So no need to move mclk
+> enable to startup.
 
---veXX9dWIonWZEC6h
+No, this makes no sense - jack detection is not related to playback at
+all.  The system should be able to detect if something is connected at
+any time.  What this says is that you need to keep MCLK enabled while
+jack detection is available.
+
+--+JUInw4efm7IfTNU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVerTBAAoJECTWi3JdVIfQ4DsH/39/Qp0zjCH50TEQvfyTLeuq
-n1yXk4S5FNEocxSKb1+7hgJsYFlBBir/pqfhE50nvHxEPJgc11bU51FgIRIax29V
-2g6sx9TMZ1QiDV0iWWV73IDq4iWuaEsd09iCSscBQShHyJJZW0hktjo+zJjA4bQM
-IBtnMXaEOvGwZa68TqbvkCadOLrLty4QRpBe41+W/7OQplzsualS3sqSxBXVIIIb
-ZZ92Ww2piWji5SqDRCMzHkL/aQdds+jsqKYwl60DgPyjAi1mLRDMEbtreVXUy1nA
-lCNIJ7u8/RFWMaHfeDMbYJ1wIbUASnyLUIkXm2PAZMyrlW1Ym07iVy/AAGKrYdQ=
-=b5iU
+iQEcBAEBCAAGBQJVerWMAAoJECTWi3JdVIfQ884IAIDHwOTPor+QtQieXlLBo5QH
+LNBhHsPE5Oq0wym3T7kTkFmrMT3ZLCti3fx+u8VXAUOjxw1ZGF7oupIe3luabGJL
+bcNzB8hZXGejfMOkMEc4/kRhPN2T26DvLzULrXwqnuPg1bxn6TRqDCZhoC3WDHXz
+HMtJlBsTb5AYYWNgFyctWm54VjsytRLZ5vi8Ko/EpW2IaIP9akTkN2TknAZoNR9M
+2f3wOo87xRERUtRgYoxabt2ESlsB/o6Xn/Ihi5WuMmWcIWgbj6WhwZfl2PehAdz0
+JCPtfSgBMcVybJjZsGUpqtsgM+FwrwswnrWsTPm3pa3wT08r0uHycsBq9QusKbs=
+=HTiV
 -----END PGP SIGNATURE-----
 
---veXX9dWIonWZEC6h--
-
---===============1155308625877131553==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1155308625877131553==--
+--+JUInw4efm7IfTNU--
