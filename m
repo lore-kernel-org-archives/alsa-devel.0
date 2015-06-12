@@ -1,121 +1,95 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: mediatek: Add AFE platform driver
-Date: Fri, 12 Jun 2015 09:55:58 +0800
-Message-ID: <1434074158.10969.5.camel@mtksdaap41>
-References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
-	 <1433946276-25969-2-git-send-email-koro.chen@mediatek.com>
-	 <1434006187.24094.40.camel@x220>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Continue probing even if
+ i915 binding fails
+Date: Fri, 12 Jun 2015 02:08:50 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B88A8E4@SHSMSX101.ccr.corp.intel.com>
+References: <1433931965-12337-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1434006187.24094.40.camel@x220>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, s.hauer@pengutronix.de, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, galak@codeaurora.org, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6511B266638
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 04:08:57 +0200 (CEST)
+In-Reply-To: <1433931965-12337-1-git-send-email-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Yang, Libin" <libin.yang@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-06-11 at 09:03 +0200, Paul Bolle wrote:
-> On Wed, 2015-06-10 at 22:24 +0800, Koro Chen wrote:
-> > --- /dev/null
-> > +++ b/sound/soc/mediatek/Kconfig
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, June 10, 2015 6:26 PM
 > 
-> > +config SND_SOC_MEDIATEK
-> > +	bool "ASoC support for Mediatek chip"
-> > +	depends on ARCH_MEDIATEK
-> > +	help
-> > +	  This adds ASoC platform driver support for Mediatek chip
-> > +	  that can be used with other codecs.
-> > +	  Select Y if you have such device.
-> > +	  Ex: MT8173
+> Currently snd-hda-intel driver aborts the probing of Intel HD-audio controller
+> with i915 power well management when binding with i915 driver via
+> hda_i915_init() fails.  This is no big problem for Haswell and Broadwell where
+> the HD-audio controllers are dedicated to HDMI/DP, thus i915 link is
+> mandatory.  However, Skylake, Baytrail and Braswell have only one controller
+> and both HDMI/DP and analog codecs share the same bus.  Thus, even if
+> HDMI/DP isn't usable, we should keep the controller working for other codecs.
 > 
-> > --- /dev/null
-> > +++ b/sound/soc/mediatek/Makefile
+> For fixing this, this patch simply allows continuing the probing even if
+> hda_i915_init() call fails.  This may leave stale sound components for
+> HDMI/DP devices that are unbound with graphics.  We could abort the
+> probing selectively, but from the code simplicity POV, it's better to continue in
+> all cases.
 > 
-> > +obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
+> Reported-by: Libin Yang <libin.yang@intel.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> This is for 4.1.  Appying to 4.2 may result in trivial conflicts.
 > 
-> > --- /dev/null
-> > +++ b/sound/soc/mediatek/mtk-afe-pcm.c
+>  sound/pci/hda/hda_intel.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> > +#include <linux/module.h>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c index
+> fea198c58196..8a0af6770e1d 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1855,7 +1855,7 @@ static int azx_probe_continue(struct azx *chip)
+> #ifdef CONFIG_SND_HDA_I915
+>  		err = hda_i915_init(hda);
+>  		if (err < 0)
+> -			goto out_free;
+> +			goto skip_i915;
+>  		err = hda_display_power(hda, true);
+>  		if (err < 0) {
+>  			dev_err(chip->card->dev,
+> @@ -1865,6 +1865,7 @@ static int azx_probe_continue(struct azx *chip)
+> #endif
+>  	}
 > 
-> > +static void mtk_afe_set_i2s_enable(struct mtk_afe *afe, bool enable)
-> > +{
-> > +	unsigned int val;
-> > +
-> > +	regmap_read(afe->regmap, AFE_I2S_CON2, &val);
-> > +	if (!!(val & AFE_I2S_CON2_EN) == !!enable)
-> 
-> (What does negating a bool twice do?)
-> 
-Because bool actually can be unsigned char, although actually in this
-driver, the caller always passes "true" or "false" to this function.
-Do you think if this is the case, should I still need to do !!?
+> + skip_i915:
+>  	err = azx_first_init(chip);
+>  	if (err < 0)
+>  		goto out_free;
+> --
+> 2.4.3
 
-> > +		return; /* must skip soft reset */
-> > +
-> > +	/* I2S soft reset begin */
-> > +	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0x4);
-> > +
-> > +	/* input */
-> > +	regmap_update_bits(afe->regmap, AFE_I2S_CON2, 0x1, !!enable);
-> 
-> Ditto.
-> 
-> > +
-> > +	/* output */
-> > +	regmap_update_bits(afe->regmap, AFE_I2S_CON1, 0x1, !!enable);
-> 
-> Ditto.
-> 
-> > +
-> > +	/* I2S soft reset end */
-> > +	udelay(1);
-> > +	regmap_update_bits(afe->regmap, AUDIO_TOP_CON1, 0x4, 0);
-> > +}
-> 
-> > +static const struct of_device_id mtk_afe_pcm_dt_match[] = {
-> > +	{ .compatible = "mediatek,mt8173-afe-pcm", },
-> > +	{ }
-> > +}; 
-> 
-> > +static struct platform_driver mtk_afe_pcm_driver = {
-> > +	.driver = {
-> > +		   .name = "mtk-afe-pcm",
-> > +		   .owner = THIS_MODULE,
-> > +		   .of_match_table = mtk_afe_pcm_dt_match,
-> > +		   .pm = &mtk_afe_pm_ops,
-> > +	},
-> > +	.probe = mtk_afe_pcm_dev_probe,
-> > +	.remove = mtk_afe_pcm_dev_remove,
-> > +};
-> 
-> > +MODULE_DESCRIPTION("Mediatek ALSA SoC AFE platform driver");
-> > +MODULE_AUTHOR("Koro Chen <koro.chen@mediatek.com>");
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_DEVICE_TABLE(of, mtk_afe_pcm_dt_match);
-> 
-> (The common pattern is to have MODULE_DEVICE_TABLE() directly follow
-> that table.)
-> 
-Thank you for mentioning this, I will fix it.
-> SND_SOC_MEDIATEK is a bool symbol and mtk-afe-pcm.o is built-in only.
-> But the code uses a few module specific constructs. I spotted
-> THIS_MODULE, MODULE_DESCRIPTION, MODULE_AUTHOR, MODULE_LICENSE, and
-> MODULE_DEVICE_TABLE.
-> 
-> Is SND_SOC_MEDIATEK perhaps meant to be bool?
-> 
-> Likewise for SND_SOC_MT8173_MAX98090 (in 2/3) and
-> SND_SOC_MT8173_RT5650_RT5676 (in 3/3).
-> 
-OK, yes, I think I should replace it by tristate, thank you!
-> Thanks,
-> 
-> 
-> Paul Bolle
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thanks for your patch. But maybe we should not skip i915 for the dedicated
+display HD-A controller on Haswell/Broadwell.
+
+For HSW/BDW, their HD-A controller for display audio (PCI dev#3) is *partly*
+in GPU power domain:
+- Its PCI configuration space is out of i915 power well, but in an always-on
+ power well. So even if the BIOS disables the Intel GPU (PCI dev#2), the HD-A
+ controller is still present, and we can still access all standard registers in PCI
+ config space. 
+
+- Its audio functions are in the i915 power well. If hda_i915_init() fails and
+ I915 power well is unavailable, read/write to the audio register of the
+ Controller will fail and we'll get kernel error messages. So I feel it's better
+ to abort if hda_i915_init() fails for this HD-A controller.
+
+Thanks
+Mengdong
