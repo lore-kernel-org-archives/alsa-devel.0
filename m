@@ -1,60 +1,73 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: sst: use ; instead of , at the of a C
- statement
-Date: Fri, 12 Jun 2015 12:52:50 +0530
-Message-ID: <20150612072250.GB28601@localhost>
-References: <20150519213923.GA26363@linutronix.de>
- <55623BC2.80307@localhost>
- <20150611122227.GF16115@linutronix.de>
- <55798759.8000607@gmail.com>
- <20150611131434.GI16115@linutronix.de>
+Subject: Re: [PATCH] ASoC: core: Pass kcontrol pointer to bytes tlv callbacks
+Date: Fri, 12 Jun 2015 13:00:48 +0530
+Message-ID: <20150612073048.GC28601@localhost>
+References: <1433283843-33856-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150611131434.GI16115@linutronix.de>
+In-Reply-To: <1433283843-33856-1-git-send-email-benzh@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Mats Karrman <mats.dev.list@gmail.com>, Mark Brown <broonie@kernel.org>, linux-rt-users <linux-rt-users@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org, John Kacur <jkacur@redhat.com>, Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>, patches.audio@intel.com
+To: Ben Zhang <benzh@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2015 at 03:14:34PM +0200, Sebastian Andrzej Siewior wrote:
-> This was spotted by Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-> while he tried to compile a -RT kernel with this driver enabled.
-> "make C=2" would also warn about this. This is is based on his patch.
+On Tue, Jun 02, 2015 at 03:24:03PM -0700, Ben Zhang wrote:
+> The get/put callbacks need the kcontrol pointer to get context
+> information like snd_soc_codec and drvdata.
 > 
-> Reported-by: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+> Signed-off-by: Ben Zhang <benzh@chromium.org>
+I did have this change in my internal tree as well and is required, thanks
+for sending, I need this is SKL driver..
+
+Reviewed-by: Vinod Koul <vinod.koul@intel.com>
 
 -- 
 ~Vinod
+
 > ---
-> * Mats Karrman | 2015-06-11 15:04:25 [+0200]:
+>  include/sound/soc.h | 6 ++++--
+>  sound/soc/soc-ops.c | 4 ++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
 > 
-> >>+	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx):
-> >Don't you mean ';' and not ':'?
-> Interresting, yes I do. Thanks.
-> 
->  sound/soc/intel/atom/sst/sst.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-> index 96c2e420cce6..a4b458e77089 100644
-> --- a/sound/soc/intel/atom/sst/sst.c
-> +++ b/sound/soc/intel/atom/sst/sst.c
-> @@ -368,8 +368,8 @@ static inline void sst_restore_shim64(struct intel_sst_drv *ctx,
->  	 * initialize by FW or driver when firmware is loaded
->  	 */
->  	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
-> -	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx),
-> -	sst_shim_write64(shim, SST_CSR, shim_regs->csr),
-> +	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx);
-> +	sst_shim_write64(shim, SST_CSR, shim_regs->csr);
->  	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
->  }
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index fcb312b..404265d 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -1169,8 +1169,10 @@ struct soc_bytes {
+>  struct soc_bytes_ext {
+>  	int max;
+>  	/* used for TLV byte control */
+> -	int (*get)(unsigned int __user *bytes, unsigned int size);
+> -	int (*put)(const unsigned int __user *bytes, unsigned int size);
+> +	int (*get)(struct snd_kcontrol *kcontrol,
+> +		   unsigned int __user *bytes, unsigned int size);
+> +	int (*put)(struct snd_kcontrol *kcontrol,
+> +		   const unsigned int __user *bytes, unsigned int size);
+>  };
 >  
+>  /* multi register control */
+> diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+> index 100d92b..7f53da9 100644
+> --- a/sound/soc/soc-ops.c
+> +++ b/sound/soc/soc-ops.c
+> @@ -751,11 +751,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
+>  	switch (op_flag) {
+>  	case SNDRV_CTL_TLV_OP_READ:
+>  		if (params->get)
+> -			ret = params->get(tlv, count);
+> +			ret = params->get(kcontrol, tlv, count);
+>  		break;
+>  	case SNDRV_CTL_TLV_OP_WRITE:
+>  		if (params->put)
+> -			ret = params->put(tlv, count);
+> +			ret = params->put(kcontrol, tlv, count);
+>  		break;
+>  	}
+>  	return ret;
 > -- 
-> 2.1.4
+> 2.2.0.rc0.207.ga3a616c
+> 
 
 -- 
