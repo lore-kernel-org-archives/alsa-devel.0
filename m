@@ -1,53 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: codec mclk should be
- enabled early to avoid jack detect error
-Date: Fri, 12 Jun 2015 11:33:49 +0100
-Message-ID: <20150612103349.GE1921@sirena.org.uk>
-References: <cover.1434020423.git.zidan.wang@freescale.com>
- <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
- <20150611162028.GT14071@sirena.org.uk>
- <20150612063231.GA23608@shlinux2>
+Subject: Re: [PATCH 1/2] Revert "ASoC: atmel: compile pcm driver in
+ snd-soc-atmel_ssc_dai"
+Date: Fri, 12 Jun 2015 11:34:50 +0100
+Message-ID: <20150612103450.GF1921@sirena.org.uk>
+References: <1434013569-24745-1-git-send-email-alexandre.belloni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+JUInw4efm7IfTNU"
+	protocol="application/pgp-signature"; boundary="iBwuxWUsK/REspAd"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150612063231.GA23608@shlinux2>
+In-Reply-To: <1434013569-24745-1-git-send-email-alexandre.belloni@free-electrons.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---+JUInw4efm7IfTNU
+--iBwuxWUsK/REspAd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 12, 2015 at 02:32:33PM +0800, Zidan Wang wrote:
+On Thu, Jun 11, 2015 at 11:06:08AM +0200, Alexandre Belloni wrote:
+> After discussing with the Kconfig maintainer, we found a better fiw
+> allowing to keep each driver as modules.
 
-> I have done some test today, and found that after mclk enable, we should delay
-> at least 150ms to prepare the jack detect function. So no need to move mclk
-> enable to startup.
+Applied, but please use subject lines matching the style for the
+subsystem.
 
-No, this makes no sense - jack detection is not related to playback at
-all.  The system should be able to detect if something is connected at
-any time.  What this says is that you need to keep MCLK enabled while
-jack detection is available.
-
---+JUInw4efm7IfTNU
+--iBwuxWUsK/REspAd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVerWMAAoJECTWi3JdVIfQ884IAIDHwOTPor+QtQieXlLBo5QH
-LNBhHsPE5Oq0wym3T7kTkFmrMT3ZLCti3fx+u8VXAUOjxw1ZGF7oupIe3luabGJL
-bcNzB8hZXGejfMOkMEc4/kRhPN2T26DvLzULrXwqnuPg1bxn6TRqDCZhoC3WDHXz
-HMtJlBsTb5AYYWNgFyctWm54VjsytRLZ5vi8Ko/EpW2IaIP9akTkN2TknAZoNR9M
-2f3wOo87xRERUtRgYoxabt2ESlsB/o6Xn/Ihi5WuMmWcIWgbj6WhwZfl2PehAdz0
-JCPtfSgBMcVybJjZsGUpqtsgM+FwrwswnrWsTPm3pa3wT08r0uHycsBq9QusKbs=
-=HTiV
+iQEcBAEBCAAGBQJVerXKAAoJECTWi3JdVIfQhYMH/Ro6d+9IfS1pDNElW6OLG+qS
+P+vgmrS3x6Wmv5sweKFpDS564K7ngCmEDoTRot6OTWxHtSrrsZbL0zyoM26HOrg1
+9YlEWScteZcjw1UqYwCKIkBjQfoDE9DNFSDmTP5/bXkrlFu7OFvIabgnymIfZhG6
+vAl9ctMZnOn+C4lcv4NIQjBYfA87FG7K3DX5411zdX0WABZt3gaVH7YwH2cVYrvi
+bf00rjwnNf8DG1l1E2+I5fEycZR6/Cwzs+8SQodq4gzhI4oc2Qq50Hu/0akZLMzI
+u0yEwQrq3hVyBgaasgM/pPfR3YAoaZ5TrPAiZ3YRd4qhOopJeatMZrLN8sWFBwA=
+=DXh1
 -----END PGP SIGNATURE-----
 
---+JUInw4efm7IfTNU--
+--iBwuxWUsK/REspAd--
