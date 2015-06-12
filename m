@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/2] ASoC: soc-compress: split soc-compress
 	to a module
-Date: Fri, 12 Jun 2015 13:15:24 +0100
-Message-ID: <20150612121524.GT1921@sirena.org.uk>
+Date: Fri, 12 Jun 2015 13:15:49 +0100
+Message-ID: <20150612121549.GU1921@sirena.org.uk>
 References: <1434110356-23516-1-git-send-email-yang.jie@intel.com>
  <1434110356-23516-2-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3078705165562836704=="
+Content-Type: multipart/mixed; boundary="===============0997788414314396710=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DE05C2668E6
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:15:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 46A8E266926
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:16:01 +0200 (CEST)
 In-Reply-To: <1434110356-23516-2-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +27,46 @@ Cc: ramesh.babu@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, viv
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3078705165562836704==
+--===============0997788414314396710==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MET8MpPxp2u2c48q"
+	protocol="application/pgp-signature"; boundary="8Tx+BDMK09J610+l"
 Content-Disposition: inline
 
 
---MET8MpPxp2u2c48q
+--8Tx+BDMK09J610+l
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 On Fri, Jun 12, 2015 at 07:59:16PM +0800, Jie Yang wrote:
 
-> +static int __init soc_compress_init(void)
-> +{
-> +       return 0;
-> +}
-> +module_init(soc_compress_init);
-> +
-> +static void __exit soc_compress_exit(void)
-> +{
-> +}
-> +module_exit(soc_compress_exit);
+> +MODULE_ALIAS("platform:soc-compress");
 
-These are completely empty, why are they being added?
+Oh, and this is incorrect - there is no platform device driver in this
+file.
 
---MET8MpPxp2u2c48q
+--8Tx+BDMK09J610+l
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVes1bAAoJECTWi3JdVIfQ6E8H/jsyWOS7pOeGJVDxV5bVhv8S
-uEtNcXqFzyDm2uoFMtV5h5a4SRkEgBx2nEJPNV2AOkL7iho3HenB464aGIC1gJOh
-HtE7BerZx1UBq+fmLdDy0JZuAZT/FefTVDfMkw9YX0gOznesA3OJYq0ru4/YzCkd
-bA2J91LOqqtFF+cmAxIoc4jUy6S84f+Z1k8Ti/StkxZo7Wdx3aG+5L11dN/X/YQu
-KmoOF1CDL52+0z34VUnaTX3cnZou/4uEdfqZCTSQV3SMXYMWDmRRN1RagBaepbAK
-70amFVSAXcHi2Fpg53BkXoIIXSKaGP3N02Sy3Q+27PvnLewztMPRKg+wiGuC/Xs=
-=7dmk
+iQEcBAEBCAAGBQJVes10AAoJECTWi3JdVIfQp8AH/0nWnwXBjdyLz50QJ/e+xlTL
+/9fLilPIDnnnRSHCMusPnqQaRr/2ziIufDUkSSZX2kj5TUm6cN1hk/XdpXzkb95L
+mI+4ydEVXsDGVbovAAizOYtKV5zfIdRa1Zzbbo4hpObacr1XW/8OhWHOFwYP/DDa
+lPBM40Gi+Qngqm3XNgus2IrIKlK28MFEkGYqngQ16PmzLPjcoXho7Scqvt+vZ28P
+DK3HPwjPcnXWMg5ZTmeSbkwXpAUU8Q+gXXzEcZ/3KrE4VEq8Ax/6yHzBIZo6M1d8
+s7xHZN+Xmr7de9g93ZDFE+4iK3v/6/Zsw2c83JcWAji4ClLqpoTSMe+KLMOxg2U=
+=mMcA
 -----END PGP SIGNATURE-----
 
---MET8MpPxp2u2c48q--
+--8Tx+BDMK09J610+l--
 
---===============3078705165562836704==
+--===============0997788414314396710==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3078705165562836704==--
+--===============0997788414314396710==--
