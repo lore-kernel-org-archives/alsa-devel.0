@@ -1,73 +1,40 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: core: Pass kcontrol pointer to bytes tlv callbacks
-Date: Fri, 12 Jun 2015 13:00:48 +0530
-Message-ID: <20150612073048.GC28601@localhost>
-References: <1433283843-33856-1-git-send-email-benzh@chromium.org>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: mediatek: Add AFE platform driver
+Date: Fri, 12 Jun 2015 09:37:57 +0200
+Message-ID: <1434094677.2271.125.camel@x220>
+References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
+	 <1433946276-25969-2-git-send-email-koro.chen@mediatek.com>
+	 <1434006187.24094.40.camel@x220> <1434074158.10969.5.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1433283843-33856-1-git-send-email-benzh@chromium.org>
+In-Reply-To: <1434074158.10969.5.camel@mtksdaap41>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ben Zhang <benzh@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches.audio@intel.com
+To: Koro Chen <koro.chen@mediatek.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, s.hauer@pengutronix.de, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, galak@codeaurora.org, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 02, 2015 at 03:24:03PM -0700, Ben Zhang wrote:
-> The get/put callbacks need the kcontrol pointer to get context
-> information like snd_soc_codec and drvdata.
-> 
-> Signed-off-by: Ben Zhang <benzh@chromium.org>
-I did have this change in my internal tree as well and is required, thanks
-for sending, I need this is SKL driver..
+On Fri, 2015-06-12 at 09:55 +0800, Koro Chen wrote:
+> On Thu, 2015-06-11 at 09:03 +0200, Paul Bolle wrote:
+> > (What does negating a bool twice do?)
+> > 
+> Because bool actually can be unsigned char, although actually in this
+> driver, the caller always passes "true" or "false" to this function.
 
-Reviewed-by: Vinod Koul <vinod.koul@intel.com>
+bool is _Bool in the kernel (see include/linux/types.h). So whenever you
+see a bool in the kernel you can assume it's either 0 or 1. Are there
+any cases where this conveniently simple rule doesn't hold?
 
--- 
-~Vinod
+But here the discussion is moot, because as you say, the function will
+only be passed false or true so we know "enable" is either 0 or 1 and
+double negating will do nothing.
 
-> ---
->  include/sound/soc.h | 6 ++++--
->  sound/soc/soc-ops.c | 4 ++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index fcb312b..404265d 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1169,8 +1169,10 @@ struct soc_bytes {
->  struct soc_bytes_ext {
->  	int max;
->  	/* used for TLV byte control */
-> -	int (*get)(unsigned int __user *bytes, unsigned int size);
-> -	int (*put)(const unsigned int __user *bytes, unsigned int size);
-> +	int (*get)(struct snd_kcontrol *kcontrol,
-> +		   unsigned int __user *bytes, unsigned int size);
-> +	int (*put)(struct snd_kcontrol *kcontrol,
-> +		   const unsigned int __user *bytes, unsigned int size);
->  };
->  
->  /* multi register control */
-> diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-> index 100d92b..7f53da9 100644
-> --- a/sound/soc/soc-ops.c
-> +++ b/sound/soc/soc-ops.c
-> @@ -751,11 +751,11 @@ int snd_soc_bytes_tlv_callback(struct snd_kcontrol *kcontrol, int op_flag,
->  	switch (op_flag) {
->  	case SNDRV_CTL_TLV_OP_READ:
->  		if (params->get)
-> -			ret = params->get(tlv, count);
-> +			ret = params->get(kcontrol, tlv, count);
->  		break;
->  	case SNDRV_CTL_TLV_OP_WRITE:
->  		if (params->put)
-> -			ret = params->put(tlv, count);
-> +			ret = params->put(kcontrol, tlv, count);
->  		break;
->  	}
->  	return ret;
-> -- 
-> 2.2.0.rc0.207.ga3a616c
-> 
+> Do you think if this is the case, should I still need to do !!?
 
--- 
+So you should not, as it's confusing at best.
+
+Thanks,
+
+
+Paul Bolle
