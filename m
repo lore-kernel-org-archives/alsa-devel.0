@@ -1,70 +1,55 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5645: Add the device tree parser
-Date: Fri, 12 Jun 2015 14:28:42 +0800
-Message-ID: <1434090522-8101-1-git-send-email-oder_chiou@realtek.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: Re: [alsa-devel][PATCH 1/4] ASoC: wm8960: codec mclk should be
+ enabled early to avoid jack detect error
+Date: Fri, 12 Jun 2015 14:32:33 +0800
+Message-ID: <20150612063231.GA23608@shlinux2>
+References: <cover.1434020423.git.zidan.wang@freescale.com>
+ <880838f666b591f5ffb0de1e39df5e3734846246.1434020423.git.zidan.wang@freescale.com>
+ <20150611162028.GT14071@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 168612666F2
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 08:29:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150611162028.GT14071@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Modify the RT5645 driver to parse platform data from device tree. This is
-missing from previous patch in sound/soc/codecs/rt5645.c, that was present
-in v3.
+On Thu, Jun 11, 2015 at 05:20:28PM +0100, Mark Brown wrote:
+> On Thu, Jun 11, 2015 at 07:14:33PM +0800, Zidan Wang wrote:
+> > It will playback from speaker in the first 2 seconds, then switch to
+> > headphone. Steps to reproduce this issue:
+> > 1. plug out headphone and playback a wav.
+> > 2. stop playback and wait for at least 5 seconds, then
+> >    plug in headphone and playback a wav.
+> 
+> I'd really like to understand the logic behind this in more detail -
+> what is the actual problem here and how does this fix it?  You're moving
+> the clock management from the bias level setting to the stream startup
+> and teardown which doesn't seem directly related, if anything it seems
+> like it'd be making things worse since it reduces the proportion of the
+> time where the clock is enabled.  My guess is that the jack detection
+> needs MCLK enabling.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5645.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+I select RINPUT3/JD3 pins as headphone jack detect inputs. I found that
+it would detected as speaker sometimes even if headphone jack is plugged in.
+And it would be reproduced everytime when i followed below steps:
+1. Unplug headphone jack and playback a wav. It will playback from speaker.
+2. Stop playback and wait for at least 5 seconds, then plug in headphone jack
+   and playback a wav. I will playback from speaker in the first 1-2 seconds,
+   and then switch to headphone.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 7d04b1a..7bfc17e 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3231,6 +3231,20 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
- 	{ }
- };
- 
-+static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
-+{
-+	rt5645->pdata.in2_diff = device_property_read_bool(dev,
-+		"realtek,in2-differential");
-+	device_property_read_u32(dev,
-+		"realtek,dmic1-data-pin", &rt5645->pdata.dmic1_data_pin);
-+	device_property_read_u32(dev,
-+		"realtek,dmic2-data-pin", &rt5645->pdata.dmic2_data_pin);
-+	device_property_read_u32(dev,
-+		"realtek,jd-mode", &rt5645->pdata.jd_mode);
-+
-+	return 0;
-+}
-+
- static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -3249,6 +3263,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 
- 	if (pdata) {
- 		rt5645->pdata = *pdata;
-+	} else if (i2c->dev.of_node) {
-+		rt5645_parse_dt(rt5645, &i2c->dev);
- 	} else {
- 		if (dmi_check_system(dmi_platform_intel_braswell)) {
- 			rt5645->pdata = *rt5645_pdata;
--- 
-1.8.1.1.439.g50a6b54
+I suspect the codec need some time to prepare jack detect function after SYSCLK
+enable. When Unplug headphone jack and playback, it will detect as speaker. After
+this playback, the mclk will be disabled, and the detect function will be disabled
+too. So when you plug in the headphone jack in this moment, the codec can't detect
+as headphone. And when playback a wav, it will playback from speaker. After the
+headphone jack detect function works, it will switch to headphone.
+
+I have done some test today, and found that after mclk enable, we should delay
+at least 150ms to prepare the jack detect function. So no need to move mclk
+enable to startup.
+
+Best Regards,
+Zidan Wang
