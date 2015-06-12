@@ -1,18 +1,14 @@
-From: Azizul Hakim <azizulfahim2002@gmail.com>
-Subject: Can't Unload ALSA Driver Without Disconnecting the
-	Device
-Date: Fri, 12 Jun 2015 02:28:16 -0400
-Message-ID: <CA+k7WwZ+vosLDQ8jz_3E+CtAokjerp_vUtK7bbBCRrD4ZxinOg@mail.gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5645: Add the device tree parser
+Date: Fri, 12 Jun 2015 14:28:42 +0800
+Message-ID: <1434090522-8101-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f182.google.com (mail-ob0-f182.google.com
- [209.85.214.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 51D422666A5
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 08:28:17 +0200 (CEST)
-Received: by obcej4 with SMTP id ej4so17459107obc.0
- for <alsa-devel@alsa-project.org>; Thu, 11 Jun 2015 23:28:16 -0700 (PDT)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 168612666F2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 08:29:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Modify the RT5645 driver to parse platform data from device tree. This is
+missing from previous patch in sound/soc/codecs/rt5645.c, that was present
+in v3.
 
-I've been developing a sound card driver for a USB device using ALSA. My
-driver is almost working but I've got one small issue. If I try to unload
-the driver module using "rmmod" command  when the device is still connected
-to the USB port, it says "Module is in use" even though I'm not playing any
-sound files or anything.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-
-If I try to execute the "lsmod" command I see that it is saying the usage
-count of my driver to be 1, but it doesn't say anything about who is using
-it. Once I disconnect the device from the USB port, I can easily unload the
-module.
-
-
-So it seems to me it won't be possible to unload a sound card driver if the
-card is attached in the computer. Is my assumption correct? If not, what
-might be some key points to solve the issue?
-
-Thanks for any suggestion
-
-Regards
-Azizul Hakim
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 7d04b1a..7bfc17e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3231,6 +3231,20 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 	{ }
+ };
+ 
++static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
++{
++	rt5645->pdata.in2_diff = device_property_read_bool(dev,
++		"realtek,in2-differential");
++	device_property_read_u32(dev,
++		"realtek,dmic1-data-pin", &rt5645->pdata.dmic1_data_pin);
++	device_property_read_u32(dev,
++		"realtek,dmic2-data-pin", &rt5645->pdata.dmic2_data_pin);
++	device_property_read_u32(dev,
++		"realtek,jd-mode", &rt5645->pdata.jd_mode);
++
++	return 0;
++}
++
+ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -3249,6 +3263,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 
+ 	if (pdata) {
+ 		rt5645->pdata = *pdata;
++	} else if (i2c->dev.of_node) {
++		rt5645_parse_dt(rt5645, &i2c->dev);
+ 	} else {
+ 		if (dmi_check_system(dmi_platform_intel_braswell)) {
+ 			rt5645->pdata = *rt5645_pdata;
+-- 
+1.8.1.1.439.g50a6b54
