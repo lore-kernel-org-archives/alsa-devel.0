@@ -1,57 +1,37 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: rt5645: Use devm_gpiod_get_optional for
-	hp-detect
-Date: Fri, 12 Jun 2015 17:19:15 +0800
-Message-ID: <1434100755.7458.1.camel@ingics.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 2/2] genalloc: rename of_get_named_gen_pool() to
+ of_gen_pool_get()
+Date: Fri, 12 Jun 2015 14:54:24 +0530
+Message-ID: <20150612092424.GF28601@localhost>
+References: <1434029192-7082-1-git-send-email-vladimir_zapolskiy@mentor.com>
+ <1434029312-7288-1-git-send-email-vladimir_zapolskiy@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 495BF266723
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 11:19:20 +0200 (CEST)
-Received: by pabqy3 with SMTP id qy3so19520920pab.3
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 02:19:19 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1434029312-7288-1-git-send-email-vladimir_zapolskiy@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Philipp Zabel <p.zabel@pengutronix.de>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since hp-detect is optional, use devm_gpiod_get_optional instead.
-In additional, it should return error if devm_gpiod_get_optional fails.
+On Thu, Jun 11, 2015 at 04:28:32PM +0300, Vladimir Zapolskiy wrote:
+> To be consistent with other kernel interface namings, rename
+> of_get_named_gen_pool() to of_gen_pool_get(). In the original
+> function name "_named" suffix references to a device tree property,
+> which contains a phandle to a device and the corresponding
+> device driver is assumed to register a gen_pool object.
+> 
+> Due to a weak relation and to avoid any confusion (e.g. in future
+> possible scenario if gen_pool objects are named) the suffix is
+> removed.
+> 
+> Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
+> ---
+>  drivers/dma/mmp_tdma.c                    | 2 +-
+For this:
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rt5645.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 7d04b1a..04d9ff8 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3255,11 +3255,12 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		}
- 	}
- 
--	rt5645->gpiod_hp_det = devm_gpiod_get(&i2c->dev, "hp-detect", GPIOD_IN);
-+	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
-+						       GPIOD_IN);
- 
- 	if (IS_ERR(rt5645->gpiod_hp_det)) {
--		rt5645->gpiod_hp_det = NULL;
- 		dev_err(&i2c->dev, "failed to initialize gpiod\n");
-+		return PTR_ERR(rt5645->gpiod_hp_det);
- 	}
- 
- 	rt5645->regmap = devm_regmap_init_i2c(i2c, &rt5645_regmap);
 -- 
-2.1.0
+~Vinod
