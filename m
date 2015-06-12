@@ -1,17 +1,17 @@
-From: gianluca <gianlucarenzi@eurekelettronica.it>
-Subject: SoC/Codecs/SGTL5000 - Non working MIC_BIAS Voltage
-	settings
-Date: Fri, 12 Jun 2015 18:13:28 +0200
-Message-ID: <557B0528.2060404@eurekelettronica.it>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8523: Set bclk ratio for master
+	mode
+Date: Fri, 12 Jun 2015 17:17:44 +0100
+Message-ID: <20150612161744.GC1921@sirena.org.uk>
+References: <1434117452-25223-1-git-send-email-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000907090205030006050102"
+Content-Type: multipart/mixed; boundary="===============1902060162720637085=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx7.acantho.net (mx7.acantho.net [213.174.182.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BCE82604AA
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 18:13:44 +0200 (CEST)
-Received: (from root@localhost)
- by mx7.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id t5CGDiov001558
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 18:13:44 +0200
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5785B26048C
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 18:18:03 +0200 (CEST)
+In-Reply-To: <1434117452-25223-1-git-send-email-julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Julian Scheel <julian@jusst.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000907090205030006050102
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello,
-in attachment there is a small patch to ensure the correct register 
-value for MIC BIAS Voltage.
+--===============1902060162720637085==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2pi4Gp0KyRJpQ5Nw"
+Content-Disposition: inline
 
-Best regards
--- 
-Eurek s.r.l.                          |
-Electronic Engineering                | http://www.eurek.it
-via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
-p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
 
---------------000907090205030006050102
-Content-Type: text/x-patch;
- name="sgtl5000.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="sgtl5000.patch"
+--2pi4Gp0KyRJpQ5Nw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff -Nru linux-4.0.5.orig/sound/soc/codecs/sgtl5000.c linux-4.0.5/sound/soc/codecs/sgtl5000.c
---- linux-4.0.5.orig/sound/soc/codecs/sgtl5000.c	2015-06-06 17:21:22.000000000 +0200
-+++ linux-4.0.5/sound/soc/codecs/sgtl5000.c	2015-06-12 18:09:38.363381087 +0200
-@@ -1339,8 +1339,8 @@
- 			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
- 
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
--			SGTL5000_BIAS_R_MASK,
--			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
-+			SGTL5000_BIAS_VOLT_MASK,
-+			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
- 	/*
- 	 * disable DAP
- 	 * TODO:
+On Fri, Jun 12, 2015 at 03:57:32PM +0200, Julian Scheel wrote:
+> When running in master mode the bclk divider must be configured to generate a
+> sane bitclock. Pick the smallest fs multiplicator, which can hold all
+> transmitted bits.
 
---------------000907090205030006050102
+Applied, thanks.
+
+--2pi4Gp0KyRJpQ5Nw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVewYaAAoJECTWi3JdVIfQ2GMH/1GB866gwiAyALq6MZ9LiDz6
+U1kMI/RjtdHgy4GIoX0d6kd8dY4sjPtYjLsSq8xXre45H6EyG1LM5KaeXTUlugAw
+l6Xx3h0hUObrj0GQivKczAKCnFYSRQnJW/mCMBVwymf7AZ3p/WBvAoUm1XU69y7L
+n3a1cX4q33xncue7Nw5eA21Lag7zsOpLOSniaLyuYEPPSBJR2oHL7iWh4sJnt4ZD
+4sZ7/pH81gQbuWx0YLQ1G2YrZTo9wqhroAdsa5mymgpuKAhzZOSZx1sMXLz2ExRm
+1mdIMXfduNXl6H/PqPik5xSROU/V/0+2mu8NnV0Y+C3M39TfNlesED4DmLiG0D8=
+=I3hq
+-----END PGP SIGNATURE-----
+
+--2pi4Gp0KyRJpQ5Nw--
+
+--===============1902060162720637085==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------000907090205030006050102--
+--===============1902060162720637085==--
