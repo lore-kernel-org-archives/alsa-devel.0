@@ -1,88 +1,45 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: soc-compress: add a config item
- for soc-compress
-Date: Fri, 12 Jun 2015 14:00:02 +0100
-Message-ID: <20150612130002.GX1921@sirena.org.uk>
-References: <1434110356-23516-1-git-send-email-yang.jie@intel.com>
- <20150612121449.GS1921@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554A1FB@SHSMSX101.ccr.corp.intel.com>
+Subject: Re: [alsa-devel][PATCH 4/4] ASoC: wm8960: the enum of "DAC Polarity"
+ should be wm8960_enum[1]
+Date: Fri, 12 Jun 2015 14:02:05 +0100
+Message-ID: <20150612130205.GY1921@sirena.org.uk>
+References: <cover.1434020423.git.zidan.wang@freescale.com>
+ <a080e557e707453b09f7be7e027f1e4db15cb257.1434020423.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3524168578813539926=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 16B68266928
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 15:00:15 +0200 (CEST)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A90554A1FB@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/q/BUR4W+hUV5fU1"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <a080e557e707453b09f7be7e027f1e4db15cb257.1434020423.git.zidan.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3524168578813539926==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zuE2pCA56U4I9Fhk"
-Content-Disposition: inline
-
-
---zuE2pCA56U4I9Fhk
+--/q/BUR4W+hUV5fU1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 12, 2015 at 12:31:25PM +0000, Jie, Yang wrote:
+On Thu, Jun 11, 2015 at 07:14:36PM +0800, Zidan Wang wrote:
+> the enum of "DAC Polarity" should be wm8960_enum[1].
 
-> > here to make the drivers that do use compressed support select this sym=
-bol
+Applied, thanks.
 
-> As mentioned in commit message, we need add 'select SND_SOC_COMPRESS'
-> to driver  Kconfig(e.g. sound/soc/intel/Kconfig) when it is needed.
->=20
-> > and since there's no config text there's no way for users to enable thi=
-s on a
-> > per system basis so this breaks all existing compressed audio support.
-> =20
-> Do you mean I should add this message to 'Help' for this config item?
-> Per my understanding, no existing driver really uses this compressed audio
-> support currently, is that true?
-
-Some of the existing Intel machine drivers have references to compressed
-audio, it certainly looks like they're trying to use it.  Are you saying
-that this is not actually the case?
-
---zuE2pCA56U4I9Fhk
+--/q/BUR4W+hUV5fU1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVetfRAAoJECTWi3JdVIfQCdoH/R1G3scJu0gkj3CfyAFHmD9a
-/DDSNgjuK7cT3XmTaI4Gs82EXwNQLaMNaguAQVB2N14tbH3mf+5Fun30k7SXzaBf
-Bo6wKCU4JY5XjY5VMx9F5FKjCRCPY3pyNULYmnw18wUziaHfFOkQ4vqXvAS0beRT
-GhPXv0Ub0rDrxPevM03egjl8K6T830mMN8KTLhIPd3rhJkawiILbDJQyRqS6Y+zd
-7ayPTgHVOzZjBLzbgzNLBkOGcPw1SjkfZSBeieGYMRzx0I6OGDs1+Wd/id1zUQ/f
-7bYBYYxDV/3Yb4xYbKdwcxcHV3LrRFMq9RtbxKZjKdmnT/p3Rm7KRsTgAi/nxlc=
-=/yC2
+iQEcBAEBCAAGBQJVethNAAoJECTWi3JdVIfQmp4H/ApGOZ+LTrDDKFvylgGEj/6R
+A51Yjmdbzgn/7V6qSzaUb0mdV93AEBPMLSlJn9ZNeFQMeW7KR8n7R6Ky6nMksxrH
+TUU6Ji+YfgQzlczO8CjA7EeFTvHgMAj0PH8dudiMEFzVIcLsuZaqcpOjyo2vNO48
+GSe1fHnebaYnCWlmvZ20eTX+EPCSXE4Kzo+R0wMbIdOCiHzqKUIqcN3gyIte2Zb6
+0l5rB4tpNUFKqDeTLRo5KjB9ZeanwNJyW+32nOYp6DZ892Q/srfQgn8laJKDM0XL
+Finr5XIHFm77Dfps3NbS5g7AP8jtaPoxF/AYrywo4/y0fKMYZW3NayqTcFb+Ly0=
+=gAhY
 -----END PGP SIGNATURE-----
 
---zuE2pCA56U4I9Fhk--
-
---===============3524168578813539926==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3524168578813539926==--
+--/q/BUR4W+hUV5fU1--
