@@ -1,72 +1,67 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Added I2C dependency to two
- BSW machine drivers
-Date: Fri, 12 Jun 2015 11:54:47 +0100
-Message-ID: <20150612105447.GJ1921@sirena.org.uk>
-References: <1434063119-8849-1-git-send-email-yang.a.fang@intel.com>
+Subject: Re: [PATCH] ASoC: core: Pass kcontrol pointer to bytes tlv callbacks
+Date: Fri, 12 Jun 2015 12:22:07 +0100
+Message-ID: <20150612112207.GK1921@sirena.org.uk>
+References: <1433283843-33856-1-git-send-email-benzh@chromium.org>
+ <20150603115951.GG14071@sirena.org.uk>
+ <CAOV7ByLAwtv1n4wdww=5r7wvCDOtwh7+g_3AqZAaPF=R8zmsTg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8691241024848163495=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0736826688A
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 12:55:03 +0200 (CEST)
-In-Reply-To: <1434063119-8849-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.a.fang@intel.com
-Cc: alsa-devel@alsa-project.org, fengguang.wu@intel.com, lgirdwood@gmail.com, sathyanarayana.nujella@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4wkndigzIeYF6Hbg"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAOV7ByLAwtv1n4wdww=5r7wvCDOtwh7+g_3AqZAaPF=R8zmsTg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ben Zhang <benzh@chromium.org>
+Cc: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Vinod Koul <vinod.koul@intel.com>, Dylan Reid <dgreid@chromium.org>, alsa-devel <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8691241024848163495==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pWOmaDnDlrCGjNh4"
-Content-Disposition: inline
-
-
---pWOmaDnDlrCGjNh4
+--4wkndigzIeYF6Hbg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 11, 2015 at 03:51:59PM -0700, yang.a.fang@intel.com wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->=20
-> Fixed below error/warnings
+On Wed, Jun 03, 2015 at 02:10:28PM -0700, Ben Zhang wrote:
+> On Wed, Jun 3, 2015 at 4:59 AM, Mark Brown <broonie@kernel.org> wrote:
+> > On Tue, Jun 02, 2015 at 03:24:03PM -0700, Ben Zhang wrote:
 
-Applied, thanks.
+> >> -     int (*get)(unsigned int __user *bytes, unsigned int size);
+> >> -     int (*put)(const unsigned int __user *bytes, unsigned int size);
+> >> +     int (*get)(struct snd_kcontrol *kcontrol,
+> >> +                unsigned int __user *bytes, unsigned int size);
+> >> +     int (*put)(struct snd_kcontrol *kcontrol,
+> >> +                const unsigned int __user *bytes, unsigned int size);
 
---pWOmaDnDlrCGjNh4
+> > This doesn't update any users and we do have some like the Haswell PCM
+> > driver.
+
+> I couldn't find any existing users of the callbacks. It looks like the
+> modified callbacks are used by SND_SOC_BYTES_TLV only, and there is no
+> reference to SND_SOC_BYTES_TLV in the kernel.
+
+> The Haswell PCM driver uses SND_SOC_BYTES_EXT which doesn't use the
+> callbacks in struct soc_bytes_ext. The xhandler_get/put are assigned
+> to snd_kcontrol_new.get/put instead.
+
+This then begs the question why the fix isn't for the TLV version to use
+the same callbacks we're currently using?  It's not obvious looking at
+the definitions of the controls why we would want them to be using
+separate ones and TLV would normally not affect the I/O.
+
+--4wkndigzIeYF6Hbg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVerp2AAoJECTWi3JdVIfQ51MH/A5eL3/HoWxjThC+fwiM52Dp
-dcSCseLjbze/yJEaLw5GEMjsTQiwX8OT1hLOoVb+W8SrFQyJLoeCedp22tPRCQna
-2FawzggAyO3wypUcoCY/OSZrJ0lw5fsoNvfGZU6wGK/apRaJRdbFi2jYrgEXp/PO
-6CAAMjRKNyuzdITSF7FAxSP9GEc1MBb/DRHi7PQVNjMZ7Gw5t2C1dBXWxk1oFoEx
-Yw1grVoDmkU7ttu0eyoDaVtE+3zBUsQNGKot9s3nej9RAsisxIF+pUOcoDP0Qt42
-DdVeqzmncU4pTUJmSfkb+LIdx6fHoCsBqorNcTq387ANGSeUC5drXQSXxFfncUA=
-=oNF6
+iQEcBAEBCAAGBQJVesDaAAoJECTWi3JdVIfQHWUIAIb2q3HUK+B4NRHw4GL/yQRU
+KfNFIbuSH5cCHACqoqYL2XP3UJFY6pSTA+/MeEAyfJkAA5b/w1Ha1lYxK7HB0IBT
+2ydd13/DoQUDohZzSCHfSseloL6HwnCMf2/lg4dWa+Te5XVsQ1v6Ej6K4ymXNyfF
+ZGbKqeuFu6iEb/tKmchFULJx58MYnv8hbVDLssqkeeuPORYCedcMtS0kFiJsnsxc
+eCWuWpW7NJVE938zligfmL5SaDETrFZYGfCwSw25JcccqouIBj9U5FEYpRPXQFXR
+jIhNcUGTi50jtfJn70amRxAN+TtVNP5BLC+LzsF5S9fMgAMGOA3om9BSyroXa/s=
+=G/tV
 -----END PGP SIGNATURE-----
 
---pWOmaDnDlrCGjNh4--
-
---===============8691241024848163495==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8691241024848163495==--
+--4wkndigzIeYF6Hbg--
