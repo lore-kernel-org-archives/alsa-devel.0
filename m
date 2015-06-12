@@ -1,50 +1,76 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: wm8960: support
-	configure	headphone jack detect pin and polarity from device tree
-Date: Fri, 12 Jun 2015 13:50:05 +0100
-Message-ID: <20150612125005.GI32730@opensource.wolfsonmicro.com>
-References: <cover.1434020423.git.zidan.wang@freescale.com>
- <a9b871099c39cd0ef48e2b85ef93294e97ef8c70.1434020423.git.zidan.wang@freescale.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce
+ dma_request_slave_channel_compat_reason()
+Date: Fri, 12 Jun 2015 18:28:37 +0530
+Message-ID: <20150612125837.GJ28601@localhost>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
+ <20150529093317.GF3140@localhost>
+ <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
+ <20150529101846.GG3140@localhost>
+ <55687892.7050606@ti.com>
+ <20150602125535.GS3140@localhost>
+ <5570758E.6030302@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9FFA526682C
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:50:06 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-crypto-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <a9b871099c39cd0ef48e2b85ef93294e97ef8c70.1434020423.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, broonie@kernel.org
+In-Reply-To: <5570758E.6030302@ti.com>
+Sender: linux-crypto-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Tony Lindgren <tony@atomide.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>, linux-crypto@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2015 at 07:14:34PM +0800, Zidan Wang wrote:
-> The ADCLRC/GPIO1, LINPUT3/JD2 and RINPUT3/JD3 pins can be selected as
-> headphone jack detect inputs to automatically disable the speaker output
-> and enable the headphone.
+On Thu, Jun 04, 2015 at 06:58:06PM +0300, Peter Ujfalusi wrote:
+> Vinod,
 > 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> ---
+> On 06/02/2015 03:55 PM, Vinod Koul wrote:
+> > On Fri, May 29, 2015 at 05:32:50PM +0300, Peter Ujfalusi wrote:
+> >> On 05/29/2015 01:18 PM, Vinod Koul wrote:
+> >>> On Fri, May 29, 2015 at 11:42:27AM +0200, Geert Uytterhoeven wrote:
+> >>>> On Fri, May 29, 2015 at 11:33 AM, Vinod Koul <vinod.koul@intel.com> wrote:
+> >>>>> On Tue, May 26, 2015 at 04:25:57PM +0300, Peter Ujfalusi wrote:
+> >>>>>> dma_request_slave_channel_compat() 'eats' up the returned error codes which
+> >>>>>> prevents drivers using the compat call to be able to do deferred probing.
+> >>>>>>
+> >>>>>> The new wrapper is identical in functionality but it will return with error
+> >>>>>> code in case of failure and will pass the -EPROBE_DEFER to the caller in
+> >>>>>> case dma_request_slave_channel_reason() returned with it.
+> >>>>> This is okay but am worried about one more warpper, how about fixing
+> >>>>> dma_request_slave_channel_compat()
+> >>>>
+> >>>> Then all callers of dma_request_slave_channel_compat() have to be
+> >>>> modified to handle ERR_PTR first.
+> >>>>
+> >>>> The same is true for (the existing) dma_request_slave_channel_reason()
+> >>>> vs. dma_request_slave_channel().
+> >>> Good point, looking again, I think we should rather fix
+> >>> dma_request_slave_channel_reason() as it was expected to return err code and
+> >>> add new users. Anyway users of this API do expect the reason...
+> >>
+> >> Hrm, they are for different use.dma_request_slave_channel()/_reason() is for
+> >> drivers only working via DT or ACPI while
+> >> dma_request_slave_channel_compat()/_reason() is for drivers expected to run in
+> >> DT/ACPI or legacy mode as well.
+> >>
+> >> I added the dma_request_slave_channel_compat_reason() because OMAP/daVinci
+> >> drivers are using this to request channels - they need to support DT and
+> >> legacy mode.
+> > I think we should hide these things behind the API and do this behind the
+> > hood for ACPI/DT systems.
+> > 
+> > Also it makes sense to use right API and mark rest as depricated
+> 
+> So to convert the dma_request_slave_channel_compat() and not to create _reason
+> variant?
+> 
+> Or to have single API to request channel? The problem with that is that we
+> need different parameters for legacy and DT for example.
+Sorry this slipped thru
 
-This feels like this is missing some iteraction with DAPM, there
-are DAPM widgets that represent both the Speaker and the
-Headphone, in the case this feature is in use the power state
-DAPM shows may no longer accurately reflects the actual power
-state of the device.
+Thinking about it again, I think we should coverge to two APIs and mark the
+legacy depracuated and look to convert folks and phase that out
 
-That said I have no idea if the registers update on the chip to
-reflect this change (my guess is that they don't). I am not
-really sure what the correct way to handle this sort of hardware
-output switching would be in DAPM.
 
-Thanks,
-Charles
+-- 
+~Vinod
