@@ -1,46 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] Revert "ASoC: atmel: compile pcm driver in
- snd-soc-atmel_ssc_dai"
-Date: Fri, 12 Jun 2015 11:34:50 +0100
-Message-ID: <20150612103450.GF1921@sirena.org.uk>
-References: <1434013569-24745-1-git-send-email-alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH v2] ASoC: Intel: sst: use ; instead of , at the of a C
+ statement
+Date: Fri, 12 Jun 2015 11:37:06 +0100
+Message-ID: <20150612103706.GG1921@sirena.org.uk>
+References: <20150519213923.GA26363@linutronix.de>
+ <55623BC2.80307@localhost>
+ <20150611122227.GF16115@linutronix.de>
+ <55798759.8000607@gmail.com>
+ <20150611131434.GI16115@linutronix.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iBwuxWUsK/REspAd"
+	protocol="application/pgp-signature"; boundary="Cp3Cp8fzgozWLBWL"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1434013569-24745-1-git-send-email-alexandre.belloni@free-electrons.com>
+In-Reply-To: <20150611131434.GI16115@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Mats Karrman <mats.dev.list@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-rt-users <linux-rt-users@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org, John Kacur <jkacur@redhat.com>, Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---iBwuxWUsK/REspAd
+--Cp3Cp8fzgozWLBWL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 11, 2015 at 11:06:08AM +0200, Alexandre Belloni wrote:
-> After discussing with the Kconfig maintainer, we found a better fiw
-> allowing to keep each driver as modules.
+On Thu, Jun 11, 2015 at 03:14:34PM +0200, Sebastian Andrzej Siewior wrote:
+> This was spotted by Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+> while he tried to compile a -RT kernel with this driver enabled.
+> "make C=2" would also warn about this. This is is based on his patch.
 
-Applied, but please use subject lines matching the style for the
-subsystem.
+Applied, thanks.
 
---iBwuxWUsK/REspAd
+--Cp3Cp8fzgozWLBWL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVerXKAAoJECTWi3JdVIfQhYMH/Ro6d+9IfS1pDNElW6OLG+qS
-P+vgmrS3x6Wmv5sweKFpDS564K7ngCmEDoTRot6OTWxHtSrrsZbL0zyoM26HOrg1
-9YlEWScteZcjw1UqYwCKIkBjQfoDE9DNFSDmTP5/bXkrlFu7OFvIabgnymIfZhG6
-vAl9ctMZnOn+C4lcv4NIQjBYfA87FG7K3DX5411zdX0WABZt3gaVH7YwH2cVYrvi
-bf00rjwnNf8DG1l1E2+I5fEycZR6/Cwzs+8SQodq4gzhI4oc2Qq50Hu/0akZLMzI
-u0yEwQrq3hVyBgaasgM/pPfR3YAoaZ5TrPAiZ3YRd4qhOopJeatMZrLN8sWFBwA=
-=DXh1
+iQEcBAEBCAAGBQJVerZSAAoJECTWi3JdVIfQU64H/jnKxhOl9v1Hah/atkah0/1P
+aZISqGw8kt5+gSxO9R430LJRYRSd2liq2cWPzYXi/rOk/R56AQUNQizyWThcZQ1X
+P8VOn7uEA/pLhwINtuz+AXnz/+v19p9fB1lB4M7XzxphzX7R9Fgnu4OJO8a5akfl
+QLfootn6omflZaV0ImrxOEIYzlg/KXFnwFMiwUc25xVTlpw7P1OI+G2KpU051e47
+0K17nU4Cp1Y5jHsjcoUMZ8ulY7A9KdIVEMFf89mJThDv9/ZpdgOe4BbLFw7MSKyy
+IozxaP6xODZwb1nzeCYsI8U8f56jpKvS2Xcgg/OtuVirCLe22DkGbTg+06+NOZs=
+=X15Y
 -----END PGP SIGNATURE-----
 
---iBwuxWUsK/REspAd--
+--Cp3Cp8fzgozWLBWL--
