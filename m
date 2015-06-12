@@ -1,17 +1,17 @@
-From: Sergej Sawazki <ce3a@gmx.de>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: ASoC: How to declare volume TLV dB scale?
-Date: Fri, 12 Jun 2015 21:26:24 +0200
-Message-ID: <557B3260.30001@gmx.de>
+Date: Fri, 12 Jun 2015 21:47:46 +0200
+Message-ID: <557B3762.20603@ladisch.de>
 References: <trinity-71513ec1-9daf-4f51-b0b3-8df7a0e9a7ec-1434110572856@3capp-gmx-bs58>
- <557B08C6.7030300@ladisch.de>
+ <557B08C6.7030300@ladisch.de> <557B3260.30001@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 30D242604D3
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 21:26:27 +0200 (CEST)
-In-Reply-To: <557B08C6.7030300@ladisch.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id DD524266A04
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 21:48:37 +0200 (CEST)
+In-Reply-To: <557B3260.30001@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,28 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAxMiBKdW4gMjAxNSAxODoyODo1NCArMDIwMCwgQ2xlbWVucyBMYWRpc2NoIHdyb3Rl
-Ogo+IFNlcmdlaiBTYXdhemtpIHdyb3RlOgo+PiBjb3VsZCBzb21lb25lIHBsZWFzZSBoZWxwIG1l
-IHRvIHVuZGVyc3RhbmQgdGhlIG1peGVyIGNvbnRyb2xzIFRMViBzY2FsZT8KPj4gV2hhdCB3b3Vs
-ZCBiZSB0aGUgREVDTEFSRV9UTFZfREJfU0NBTEUgdmFsdWVzIGZvciB0aGUgZm9sbG93aW5nIGV4
-YW1wbGU/Cj4+Cj4+IHJlZy4gdmFsdWU6ICAwICAgIC4uICAweDNmZgo+PiBwaHlzLiB2YWx1ZTog
-MGRCICAuLiAtMTI4ZEIKPj4gdm9sdW1lOiAgICAgIDEwMCUgLi4gIDAlKG11dGUpCj4KPiAwJSB2
-b2x1bWUgd291bGQgYmUgLeKIniBkQi4KPgo+IEFuZCBob3cgYXJlIHRoZSByZWdpc3RlciB2YWx1
-ZXMgbWFwcGVkIGJldHdlZW4gdGhlIG1pbi9tYXggdmFsdWVzPwo+IERvZXMgMHgyMDAgY29ycmVz
-cG9uZCB0byAtNjQgZEIsIG9yIDUwICUgb2YgdGhlIHNhbXBsZSB2YWx1ZSwgb3IKPiA1MCAlIG9m
-IHRoZSB2b2x1bWU/Cj4KClRoZSBvdXRwdXQgb2YgdGhlIERBQyBjYW4gYmUgYXR0ZW51YXRlZCBp
-biAwLjEyNWRCIHN0ZXBzLCBzbyAweDIwMAp3b3VsZCBiZSAtNjRkQi4KCnJlZ2lzdGVyIHZhbHVl
-IHwgYXR0ZW51YXRpb24gbGV2ZWwgKGRCKSB8IHZvbHVtZSAoJSkKLS0tLS0tLS0tLS0tLS0tKy0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLQogICAweDAwMCAgICAgICAgfCAgICAg
-MC4wICAgICAgICAgICAgICAgIHwgIDEwMAogICAweDAwMSAgICAgICAgfCAgICAtMC4xMjUgICAg
-ICAgICAgICAgIHwKICAgIC4uLiAgICAgICAgIHwgICAgLi4uICAgICAgICAgICAgICAgICB8ICAu
-Li4KICAgMHgyMDAgICAgICAgIHwgICAtNjQuMCAgICAgICAgICAgICAgICB8CiAgICAuLi4gICAg
-ICAgICB8ICAgIC4uLiAgICAgICAgICAgICAgICAgfCAgLi4uCiAgIDB4M2ZlICAgICAgICB8ICAt
-MTI3Ljc1ICAgICAgICAgICAgICAgfAogICAweDNmZiAgICAgICAgfCAgICAt4oieIChtdXRlKSAg
-ICAgICAgICAgfCAgICAwCgpUaGFua3MsClNlcmdlagpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+U2VyZ2VqIFNhd2F6a2kgd3JvdGU6Cj4gT24gRnJpLCAxMiBKdW4gMjAxNSAxODoyODo1NCArMDIw
+MCwgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+PiBTZXJnZWogU2F3YXpraSB3cm90ZToKPj4+IGNv
+dWxkIHNvbWVvbmUgcGxlYXNlIGhlbHAgbWUgdG8gdW5kZXJzdGFuZCB0aGUgbWl4ZXIgY29udHJv
+bHMgVExWIHNjYWxlPwo+Pj4gV2hhdCB3b3VsZCBiZSB0aGUgREVDTEFSRV9UTFZfREJfU0NBTEUg
+dmFsdWVzIGZvciB0aGUgZm9sbG93aW5nIGV4YW1wbGU/Cj4+Pgo+Pj4gcmVnLiB2YWx1ZTogIDAg
+ICAgLi4gIDB4M2ZmCj4+PiBwaHlzLiB2YWx1ZTogMGRCICAuLiAtMTI4ZEIKPj4+IHZvbHVtZTog
+ICAgICAxMDAlIC4uICAwJShtdXRlKQo+Pgo+PiAwJSB2b2x1bWUgd291bGQgYmUgLeKIniBkQi4K
+Pj4KPj4gQW5kIGhvdyBhcmUgdGhlIHJlZ2lzdGVyIHZhbHVlcyBtYXBwZWQgYmV0d2VlbiB0aGUg
+bWluL21heCB2YWx1ZXM/Cj4+IERvZXMgMHgyMDAgY29ycmVzcG9uZCB0byAtNjQgZEIsIG9yIDUw
+ICUgb2YgdGhlIHNhbXBsZSB2YWx1ZSwgb3IKPj4gNTAgJSBvZiB0aGUgdm9sdW1lPwo+Cj4gVGhl
+IG91dHB1dCBvZiB0aGUgREFDIGNhbiBiZSBhdHRlbnVhdGVkIGluIDAuMTI1ZEIgc3RlcHMsIHNv
+IDB4MjAwCj4gd291bGQgYmUgLTY0ZEIuCj4KPiByZWdpc3RlciB2YWx1ZSB8IGF0dGVudWF0aW9u
+IGxldmVsIChkQikgfCB2b2x1bWUgKCUpCj4gLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLSstLS0tLS0tLS0tLQo+ICAgMHgwMDAgICAgICAgIHwgICAgIDAuMCAgICAgICAg
+ICAgICAgICB8ICAxMDAKPiAgIDB4MDAxICAgICAgICB8ICAgIC0wLjEyNSAgICAgICAgICAgICAg
+fAo+ICAgIC4uLiAgICAgICAgIHwgICAgLi4uICAgICAgICAgICAgICAgICB8ICAuLi4KPiAgIDB4
+MjAwICAgICAgICB8ICAgLTY0LjAgICAgICAgICAgICAgICAgfAo+ICAgIC4uLiAgICAgICAgIHwg
+ICAgLi4uICAgICAgICAgICAgICAgICB8ICAuLi4KPiAgIDB4M2ZlICAgICAgICB8ICAtMTI3Ljc1
+ICAgICAgICAgICAgICAgfAo+ICAgMHgzZmYgICAgICAgIHwgICAgLeKIniAobXV0ZSkgICAgICAg
+ICAgIHwgICAgMAoKMC4xMjUgZEIgaXMgdG9vIHNtYWxsIGZvciB0aGUgMC4wMSBkQiByZXNvbHV0
+aW9uIG9mIERFQ0xBUkVfVExWX0RCX1NDQUxFLApzbyB5b3UgaGF2ZSB0byB1c2UgREJfTUlOTUFY
+IGluc3RlYWQ6ICBUTFZfREJfTUlOTUFYX01VVEVfSVRFTSgtMTI4LCAwKQoKClJlZ2FyZHMsCkNs
+ZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
