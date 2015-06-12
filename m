@@ -1,123 +1,60 @@
-From: Azizul Hakim <azizulfahim2002@gmail.com>
-Subject: Re: Can't Unload ALSA Driver Without Disconnecting the
-	Device
-Date: Fri, 12 Jun 2015 03:08:07 -0400
-Message-ID: <CA+k7WwZ2J=0A-6we=AtfaLCOibCGr7KDvWM9qdjzSYD=WSkG3Q@mail.gmail.com>
-References: <CA+k7WwZ+vosLDQ8jz_3E+CtAokjerp_vUtK7bbBCRrD4ZxinOg@mail.gmail.com>
- <s5h616t77jd.wl-tiwai@suse.de>
- <CA+k7Wwbr=TE63GLLSbKzCLBeWSSg0EjdLJW-2TXagP5FSgrBLQ@mail.gmail.com>
- <s5h381x76v8.wl-tiwai@suse.de>
- <CA+k7WwY9vfXp0sKP-WgtOu6FwRouSd1yh_4Za2xmpiDPwd_wPQ@mail.gmail.com>
- <s5hwpz95s12.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: sst: use ; instead of , at the of a C
+ statement
+Date: Fri, 12 Jun 2015 12:52:50 +0530
+Message-ID: <20150612072250.GB28601@localhost>
+References: <20150519213923.GA26363@linutronix.de>
+ <55623BC2.80307@localhost>
+ <20150611122227.GF16115@linutronix.de>
+ <55798759.8000607@gmail.com>
+ <20150611131434.GI16115@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D2542667AE
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 09:08:08 +0200 (CEST)
-Received: by oihd6 with SMTP id d6so16624965oih.2
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 00:08:07 -0700 (PDT)
-In-Reply-To: <s5hwpz95s12.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150611131434.GI16115@linutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Mats Karrman <mats.dev.list@gmail.com>, Mark Brown <broonie@kernel.org>, linux-rt-users <linux-rt-users@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org, John Kacur <jkacur@redhat.com>, Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks. It was a great help :)
+On Thu, Jun 11, 2015 at 03:14:34PM +0200, Sebastian Andrzej Siewior wrote:
+> This was spotted by Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+> while he tried to compile a -RT kernel with this driver enabled.
+> "make C=2" would also warn about this. This is is based on his patch.
+> 
+> Reported-by: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-On Fri, Jun 12, 2015 at 3:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
+-- 
+~Vinod
+> ---
+> * Mats Karrman | 2015-06-11 15:04:25 [+0200]:
+> 
+> >>+	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx):
+> >Don't you mean ';' and not ':'?
+> Interresting, yes I do. Thanks.
+> 
+>  sound/soc/intel/atom/sst/sst.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+> index 96c2e420cce6..a4b458e77089 100644
+> --- a/sound/soc/intel/atom/sst/sst.c
+> +++ b/sound/soc/intel/atom/sst/sst.c
+> @@ -368,8 +368,8 @@ static inline void sst_restore_shim64(struct intel_sst_drv *ctx,
+>  	 * initialize by FW or driver when firmware is loaded
+>  	 */
+>  	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
+> -	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx),
+> -	sst_shim_write64(shim, SST_CSR, shim_regs->csr),
+> +	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx);
+> +	sst_shim_write64(shim, SST_CSR, shim_regs->csr);
+>  	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
+>  }
+>  
+> -- 
+> 2.1.4
 
-> At Fri, 12 Jun 2015 02:57:27 -0400,
-> Azizul Hakim wrote:
-> >
-> > I see. So in this scenario what'll be the way to unload the driver
-> > successfully? Is there a way to stop the mixer interface?
->
-> Kill pulseaudio properly.  It'll auto respawn itself usually, so for
-> killing PA, you'd have to change the PA configuration.
->
->
-> Takashi
->
-> >
-> > On Fri, Jun 12, 2015 at 2:55 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > At Fri, 12 Jun 2015 02:51:03 -0400,
-> > > Azizul Hakim wrote:
-> > > >
-> > > > I tried that command. The output is as below:
-> > > >
-> > > >                                     USER        PID ACCESS COMMAND
-> > > > /dev/snd/controlC0:  mhaki005   2043 F.... pulseaudio
-> > > > /dev/snd/controlC1:  mhaki005   2043 F.... pulseaudio
-> > > > /dev/snd/pcmC0D0c:   mhaki005   2043 F...m pulseaudio
-> > > >
-> > > >
-> > > > I think pcmC0D0c stands for "Capture" device. My device is a playback
-> > > > device. So I don't think it is being used by anyone.
-> > >
-> > > /dev/snd/controlC1 is being used.  It's the mixer interface.
-> > >
-> > >
-> > > Takashi
-> > >
-> > > >
-> > > >
-> > > > On Fri, Jun 12, 2015 at 2:41 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > >
-> > > > > At Fri, 12 Jun 2015 02:28:16 -0400,
-> > > > > Azizul Hakim wrote:
-> > > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > I've been developing a sound card driver for a USB device using
-> > > ALSA. My
-> > > > > > driver is almost working but I've got one small issue. If I try
-> to
-> > > unload
-> > > > > > the driver module using "rmmod" command  when the device is still
-> > > > > connected
-> > > > > > to the USB port, it says "Module is in use" even though I'm not
-> > > playing
-> > > > > any
-> > > > > > sound files or anything.
-> > > > > >
-> > > > > >
-> > > > > > If I try to execute the "lsmod" command I see that it is saying
-> the
-> > > usage
-> > > > > > count of my driver to be 1, but it doesn't say anything about
-> who is
-> > > > > using
-> > > > > > it. Once I disconnect the device from the USB port, I can easily
-> > > unload
-> > > > > the
-> > > > > > module.
-> > > > > >
-> > > > > >
-> > > > > > So it seems to me it won't be possible to unload a sound card
-> driver
-> > > if
-> > > > > the
-> > > > > > card is attached in the computer. Is my assumption correct? If
-> not,
-> > > what
-> > > > > > might be some key points to solve the issue?
-> > > > >
-> > > > > Check "fuser -v /dev/snd/*" as root.  Something (e.g. a mixer
-> > > > > application or sound backend) must be accessing the device.
-> > > > >
-> > > > >
-> > > > > Takashi
-> > > > >
->
+-- 
