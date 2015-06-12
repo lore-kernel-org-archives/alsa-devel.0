@@ -1,20 +1,16 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl: add imx-wm8960 machine driver
-Date: Fri, 12 Jun 2015 16:09:32 +0800
-Message-ID: <20150612080930.GB23608@shlinux2>
-References: <b2a3c323a0507f3706041e1da98da8375aa61576.1433923593.git.zidan.wang@freescale.com>
- <20150610183619.GA3103@Asurada-CZ80> <20150611110958.GA23742@shlinux2>
- <20150611155106.GA3036@Asurada>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V2] PCM: snd_pcm_xxxx_drain() maybe blocked
+	after suspend and resume
+Date: Fri, 12 Jun 2015 16:15:08 +0800
+Message-ID: <237099058d5e658610915f8f6a4724d782299a25.1434096300.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0144.outbound.protection.outlook.com [157.56.110.144])
- by alsa0.perex.cz (Postfix) with ESMTP id 66F702666D3
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 10:11:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150611155106.GA3036@Asurada>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0124.outbound.protection.outlook.com [65.55.169.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5E412666D3
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 10:15:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +20,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2015 at 08:51:07AM -0700, Nicolin Chen wrote:
-> On Thu, Jun 11, 2015 at 07:10:00PM +0800, Zidan Wang wrote:
-> 
-> > > > This imx-wm8960 device-tree-only machine driver works with sai driver
-> > > > and have below feature.
-> > > > * support codec master and slave mode
-> > > > * support headphone jack detect
-> > > > * support headphone and micphone jack event
-> > > > * support asrc<->sai<->wm8960 mode
-> > > > 
-> > > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > > 
-> > > Above all, could you merge this into fsl-asoc-card?
-> > > 
-> > > It'd be nicer to have jack detection over there. And we can
-> > > put PLL settings to the codec driver as Mark suggested.
-> 
-> > I want to modify imx-wm8960 and upstream it because our release is using it now. After
-> > upstreaming imx-wm8960, i will try to merge it to fsl-asoc-card.
-> 
-> I knew your intention. That's why I suggested you to merge it directly
-> to fsl-asoc-card instead of making a duplicated copy of that. Remember
-> that getting code upstream should be a chance for us to improve thing.
-> 
-> If you find painstaking to handle it in parallel, you can focus on the
-> improvements of the WM8960 driver while I would help you on the dai-
-> link part. How about this?
-> 
-> Nicolin
+After suspend and resume, the alsa driver is stopped. But if alsa-lib run
+into snd_pcm_xxxx_drain(), it need to wait avail >= pcm->stop_threshold,
+otherwise, it will not exit the loop, so finally it is blocked at poll() of
+snd_pcm_wait_nocheck(pcm, -1).
+This patch is to add state check after snd_pcm_wait_nocheck(pcm, -1), if
+the state is SND_PCM_STATE_SUSPENDED, then return error.
 
-The new imx7 release have two new codec wm8958 and wm8960. So we have two machine driver
-imx-wm8960 and imx-wm8958 which should be upstreamed. I am appreciate that you can help me
-merge the imx-wm8960 to fsl-asoc-card. And i will focus on wm8960 and wm8958 driver. And i
-will try to merge imx-wm8958 to fsl-asoc-card.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+---
+changes in v2:
+- Add state check in beginning of drain()
+- Add fix for pcm_dshare()
+- Mov the state check to the place that is after
+snd_pcm_direct_clear_timer_queue(dmix). That the suspend may happen just before
+calling snd_pcm_direct_clear_timer_queue(dmix), which will force the next poll
+to wait. So move state check to new place may safty.
 
-Best Regards,
-Zidan Wang 
+
+ src/pcm/pcm_dmix.c   |   14 ++++++++++++++
+ src/pcm/pcm_dshare.c |   14 ++++++++++++++
+ 2 files changed, 28 insertions(+)
+
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index babde6a..91148b9 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -616,6 +616,13 @@ static int snd_pcm_dmix_drain(snd_pcm_t *pcm)
+ 	snd_pcm_uframes_t stop_threshold;
+ 	int err;
+ 
++	switch (snd_pcm_state(dmix->spcm)) {
++	case SND_PCM_STATE_SUSPENDED:
++		return -ESTRPIPE;
++	default:
++		break;
++	}
++
+ 	if (dmix->state == SND_PCM_STATE_OPEN)
+ 		return -EBADFD;
+ 	if (pcm->mode & SND_PCM_NONBLOCK)
+@@ -648,6 +655,13 @@ static int snd_pcm_dmix_drain(snd_pcm_t *pcm)
+ 			snd_pcm_dmix_sync_area(pcm);
+ 			snd_pcm_wait_nocheck(pcm, -1);
+ 			snd_pcm_direct_clear_timer_queue(dmix); /* force poll to wait */
++
++			switch (snd_pcm_state(dmix->spcm)) {
++			case SND_PCM_STATE_SUSPENDED:
++				return -ESTRPIPE;
++			default:
++				break;
++			}
+ 		}
+ 	} while (dmix->state == SND_PCM_STATE_DRAINING);
+ 	pcm->stop_threshold = stop_threshold;
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 020e6f7..24975d4 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -367,6 +367,13 @@ static int snd_pcm_dshare_drain(snd_pcm_t *pcm)
+ 	snd_pcm_uframes_t stop_threshold;
+ 	int err;
+ 
++	switch (snd_pcm_state(dshare->spcm)) {
++	case SND_PCM_STATE_SUSPENDED:
++		return -ESTRPIPE;
++	default:
++		break;
++	}
++
+ 	if (dshare->state == SND_PCM_STATE_OPEN)
+ 		return -EBADFD;
+ 	if (pcm->mode & SND_PCM_NONBLOCK)
+@@ -399,6 +406,13 @@ static int snd_pcm_dshare_drain(snd_pcm_t *pcm)
+ 			snd_pcm_dshare_sync_area(pcm);
+ 			snd_pcm_wait_nocheck(pcm, -1);
+ 			snd_pcm_direct_clear_timer_queue(dshare); /* force poll to wait */
++
++			switch (snd_pcm_state(dshare->spcm)) {
++			case SND_PCM_STATE_SUSPENDED:
++				return -ESTRPIPE;
++			default:
++				break;
++			}
+ 		}
+ 	} while (dshare->state == SND_PCM_STATE_DRAINING);
+ 	pcm->stop_threshold = stop_threshold;
+-- 
+1.7.9.5
