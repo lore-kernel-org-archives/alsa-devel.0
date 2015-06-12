@@ -1,45 +1,54 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel][PATCH 3/4] ASoC: wm8960: add kcontrol to select
-	ADC data output
-Date: Fri, 12 Jun 2015 13:29:18 +0100
-Message-ID: <20150612122918.GG32730@opensource.wolfsonmicro.com>
-References: <cover.1434020423.git.zidan.wang@freescale.com> <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
+From: Arun Raghavan <arun@accosted.net>
+Subject: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Fri, 12 Jun 2015 17:59:55 +0530
+Message-ID: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <e7e1d4817ea6d4a1140a31ed21c5860cbaaaad3c.1434020423.git.zidan.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f50.google.com (mail-yh0-f50.google.com
+ [209.85.213.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3187A2668DD
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:30:17 +0200 (CEST)
+Received: by yhid80 with SMTP id d80so13310561yhi.1
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 05:30:16 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 11, 2015 at 07:14:35PM +0800, Zidan Wang wrote:
-> add kcontrol to select ADC data output.
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> ---
->  sound/soc/codecs/wm8960.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-> index c1be15c..62246f1 100644
-> --- a/sound/soc/codecs/wm8960.c
-> +++ b/sound/soc/codecs/wm8960.c
-> @@ -141,6 +141,12 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
->  static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
->  static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
->  static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
-> +static const char *wm8960_adc_data_sel[] = {
-> +	"ldata = left ADC; rdata = right ADC",
-> +	"ldata = left ADC; rdata = left ADC",
-> +	"ldata = right ADC; rdata = right ADC",
-> +	"ldata = right ADC; rdata = left ADC",
-> +};
+Hi folks,
+I'd like to bring this one up again, since we are currently in the
+sub-optimal position of forcing ~100 ms latency on USB devices. The
+original thread is here --
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
 
-I see the datasheet lists this as one field but it would probably
-look nicer as two controls, one to select the left channel source
-and one for the right channel source.
+I see two flags that are possibly of consequence here:
+SNDRV_PCM_INFO_BATCH and SNDRV_PCM_INFO_BLOCK_TRANSFER. I'm not sure
+what these mean -- the documentation mentions "double buffering" for
+the batch flag, and just that the block transfer means "block
+transfer". :-)
 
-Thanks,
-Charles
+We've spoken about batch meaning either transfers in period size
+chunks, or some fixed chunk size. It seems that it would make more
+sense for it to mean the former, and block transfer to mean the
+latter.
+
+So I guess the first thing that would be nice to have is a clear
+meaning of these two flags. With this done, we could potentially get
+to the API to report the transfer size from the driver.
+
+I did notice that there is a snd_pcm_hw_params_get_fifo_size(). Is
+this something we could use for the purpose of transfer size
+reporting, by any chance?
+
+Cheers,
+Arun
