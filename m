@@ -1,17 +1,19 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Fri, 12 Jun 2015 17:59:55 +0530
-Message-ID: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-compress: add a config item
+ for soc-compress
+Date: Fri, 12 Jun 2015 12:31:25 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554A1FB@SHSMSX101.ccr.corp.intel.com>
+References: <1434110356-23516-1-git-send-email-yang.jie@intel.com>
+ <20150612121449.GS1921@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f50.google.com (mail-yh0-f50.google.com
- [209.85.213.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 3187A2668DD
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:30:17 +0200 (CEST)
-Received: by yhid80 with SMTP id d80so13310561yhi.1
- for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 05:30:16 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58EE026681B
+ for <alsa-devel@alsa-project.org>; Fri, 12 Jun 2015 14:31:33 +0200 (CEST)
+In-Reply-To: <20150612121449.GS1921@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
-I'd like to bring this one up again, since we are currently in the
-sub-optimal position of forcing ~100 ms latency on USB devices. The
-original thread is here --
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, June 12, 2015 8:15 PM
+> To: Jie, Yang
+> Cc: tiwai@suse.de; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> vinod.koul@linux.intel.com; ramesh.babu@linux.intel.com; Zhang, Vivian
+> Subject: Re: [PATCH 1/2] ASoC: soc-compress: add a config item for soc-
+> compress
+> 
+> On Fri, Jun 12, 2015 at 07:59:15PM +0800, Jie Yang wrote:
+> 
+> > +config SND_SOC_COMPRESS
+> > +	tristate
+> > +	select SND_COMPRESS_OFFLOAD
+> > +	default n
+> > +
+> 
+> No need to specify default n, it is the default.  I'm not seeing any change
 
-I see two flags that are possibly of consequence here:
-SNDRV_PCM_INFO_BATCH and SNDRV_PCM_INFO_BLOCK_TRANSFER. I'm not sure
-what these mean -- the documentation mentions "double buffering" for
-the batch flag, and just that the block transfer means "block
-transfer". :-)
+OK, will remove this default setting.
 
-We've spoken about batch meaning either transfers in period size
-chunks, or some fixed chunk size. It seems that it would make more
-sense for it to mean the former, and block transfer to mean the
-latter.
+> here to make the drivers that do use compressed support select this symbol
+ 
+As mentioned in commit message, we need add 'select SND_SOC_COMPRESS'
+to driver  Kconfig(e.g. sound/soc/intel/Kconfig) when it is needed.
 
-So I guess the first thing that would be nice to have is a clear
-meaning of these two flags. With this done, we could potentially get
-to the API to report the transfer size from the driver.
+> and since there's no config text there's no way for users to enable this on a
+> per system basis so this breaks all existing compressed audio support.
+ 
+Do you mean I should add this message to 'Help' for this config item?
+Per my understanding, no existing driver really uses this compressed audio
+support currently, is that true?
 
-I did notice that there is a snd_pcm_hw_params_get_fifo_size(). Is
-this something we could use for the purpose of transfer size
-reporting, by any chance?
-
-Cheers,
-Arun
+~Keyon
