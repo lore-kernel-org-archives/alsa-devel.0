@@ -1,31 +1,30 @@
-From: Nicolae Rosia <nicolae.rosia@gmail.com>
-Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Sat, 13 Jun 2015 15:48:05 +0300
-Message-ID: <CAH=tA9H78dWaRk92Aojh2Z4Gw9MZyhQSb3BAqsJ6EhFB7cDVWw@mail.gmail.com>
-References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
- <s5hzj47n9d1.wl-tiwai@suse.de>
- <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
- <s5h616ul6o5.wl-tiwai@suse.de>
- <CAH=tA9E_D7Nt0iS8j9GXp3duDYN=xDn5aDt2O_cZuf1gFRArJQ@mail.gmail.com>
- <CAN8ccib4f0O5TW6Z=QzrSoRkp=EA-Km6z15TTh+HXb5me-=+NQ@mail.gmail.com>
- <CAH=tA9FE_fNf9GtmxHTwA8+4EjMS31iYRoTZcroCLAbEZpn38w@mail.gmail.com>
- <CAN8cciY8A-ecJVYyPKoRqZad+HhpOCvFtxdrrA=yTrk_q7QitQ@mail.gmail.com>
- <CAH=tA9G45ci85VvD1ZceiEcM3sp+3FKtA1B8LimENEVcC-dtFw@mail.gmail.com>
- <CAN8cciaQhhP3P-LU2KFJ8mCSTk5tcroEKpDMh4g_dtMkxV_q0A@mail.gmail.com>
- <CAN8ccib13ygePJWmQiQvmt-4wt49GnJ2BYVLAUKFckNNk0mf5A@mail.gmail.com>
- <CAH=tA9ECWF9WaeJvJcT3D-uXqr-r4Zp+TmBD88GJ6YhxQztJxA@mail.gmail.com>
- <CAN8ccibLHuYuqgypm8O7gZMwZoGUNs8-cg-1rHcPaErNGVs2Fw@mail.gmail.com>
+From: Luka Karinja <luka.karinja@gmail.com>
+Subject: Re: writing an alsa driver
+Date: Sat, 13 Jun 2015 13:47:13 +0000 (UTC)
+Message-ID: <loom.20150613T153708-781@post.gmane.org>
+References: <20150527085440.GA4445@dellaz> <1432752116.8235.25.camel@loki>
+ <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>
+ <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
+ <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
+ <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150608084951.GA7512@dellaz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f177.google.com (mail-lb0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 03FFF260415
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 14:48:06 +0200 (CEST)
-Received: by lbbtu8 with SMTP id tu8so31598732lbb.2
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 05:48:05 -0700 (PDT)
-In-Reply-To: <CAN8ccibLHuYuqgypm8O7gZMwZoGUNs8-cg-1rHcPaErNGVs2Fw@mail.gmail.com>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id B38FF260420
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 15:50:07 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Z3loz-0000wL-JJ
+ for alsa-devel@alsa-project.org; Sat, 13 Jun 2015 15:50:05 +0200
+Received: from server.bazdara.com ([84.255.206.229])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 15:50:05 +0200
+Received: from luka.karinja by server.bazdara.com with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 15:50:05 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,30 +34,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->
->> Neither specification nor user manual mention the support of surround 5.1
->> It is curious because I have selected Analog Surround 5.1 Output in Sound
->> Settings (GNOME), and I can test each individual speaker (5.1). It also
->> works in Windows 8.1
->
-> do windows 8.1 use mic jack as clfe or surround ?
-Windows 8.1 uses mic jack for Mic In or Center/Subwoofer Speaker out
-and Front Speakers are swapped with Rear Speakers.
+Hey guys i have a T100TAF which also has z3735f & rt5648 and 
+watching your development.
 
->
-> Since the user manual did not provide the mapping,
->
-> http://www.intel.com/support/motherboards/desktop/sb/CS-034198.htm
->
-> How do the other user know the mapping even if you implemented 5.1 ?
-I don't know (?)
+On the T100TA wich has the Z3740 and rt5645 a new /var/lib/alsa/asound.state
+was needed to get the sound working.
+It was making cracking sounds without it (saw in your previous post)
+found here:
+https://raw.githubusercontent.com/AdamWill/baytrail-m/master/alsa/t100_B.state
 
->
-> You have to follow up the above thread about the name of volume control if
-> you think your case are
->
-> D: 3DACs 2 HP 1Mic 2 Speaker
+Eagerly following the development and sorry for noob post.
