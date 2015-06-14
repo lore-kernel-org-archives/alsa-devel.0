@@ -1,21 +1,33 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2 speakers are assigned to the same DAC,
- this can't support 4.0/2.1 channles
-Date: Sun, 14 Jun 2015 14:48:07 +0800
-Message-ID: <CAN8cciadrCevB06xOdfsfK0CRv__A8Wtf77v=FZd_6fp5Hk3NQ@mail.gmail.com>
-References: <5576B419.5010505@canonical.com>
-	<s5h1thlqeus.wl-tiwai@suse.de>
+Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
+Date: Sun, 14 Jun 2015 16:25:42 +0800
+Message-ID: <CAN8cciYB26go1g9SqGcu2hjPUQRNSy0=8ts9KUkxDGgU6AqsXA@mail.gmail.com>
+References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
+ <s5hzj47n9d1.wl-tiwai@suse.de>
+ <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
+ <s5h616ul6o5.wl-tiwai@suse.de>
+ <CAH=tA9E_D7Nt0iS8j9GXp3duDYN=xDn5aDt2O_cZuf1gFRArJQ@mail.gmail.com>
+ <CAN8ccib4f0O5TW6Z=QzrSoRkp=EA-Km6z15TTh+HXb5me-=+NQ@mail.gmail.com>
+ <CAH=tA9FE_fNf9GtmxHTwA8+4EjMS31iYRoTZcroCLAbEZpn38w@mail.gmail.com>
+ <CAN8cciY8A-ecJVYyPKoRqZad+HhpOCvFtxdrrA=yTrk_q7QitQ@mail.gmail.com>
+ <CAH=tA9G45ci85VvD1ZceiEcM3sp+3FKtA1B8LimENEVcC-dtFw@mail.gmail.com>
+ <CAN8cciaQhhP3P-LU2KFJ8mCSTk5tcroEKpDMh4g_dtMkxV_q0A@mail.gmail.com>
+ <CAN8ccib13ygePJWmQiQvmt-4wt49GnJ2BYVLAUKFckNNk0mf5A@mail.gmail.com>
+ <CAH=tA9ECWF9WaeJvJcT3D-uXqr-r4Zp+TmBD88GJ6YhxQztJxA@mail.gmail.com>
+ <CAN8ccibLHuYuqgypm8O7gZMwZoGUNs8-cg-1rHcPaErNGVs2Fw@mail.gmail.com>
+ <CAH=tA9H78dWaRk92Aojh2Z4Gw9MZyhQSb3BAqsJ6EhFB7cDVWw@mail.gmail.com>
+ <CAN8cciY5NYuRGph7GBxWVR4LKAzKOJMPXpdH35hXwwyQwVUs-Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A6C8260502
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 08:48:08 +0200 (CEST)
-Received: by obpc2 with SMTP id c2so17283786obp.3
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 23:48:07 -0700 (PDT)
-In-Reply-To: <s5h1thlqeus.wl-tiwai@suse.de>
+Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
+ [209.85.214.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0D17260517
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 10:25:43 +0200 (CEST)
+Received: by obcej4 with SMTP id ej4so46652782obc.0
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 01:25:42 -0700 (PDT)
+In-Reply-To: <CAN8cciY5NYuRGph7GBxWVR4LKAzKOJMPXpdH35hXwwyQwVUs-Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,76 +37,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: hwang4 <hui.wang@canonical.com>, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Nicolae Rosia <nicolae.rosia@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 > >
-> > I am trying to enable the subwoofer speaker on a HP laptop, on this
-> > machine, there are two speakers and one headphone, but the BIOS verb
-> > only enabled one speaker(nid 0xd) and one headphone(nid 0xb), I need
-> > to use quirk in the kernel driver to configure the second speaker
-> > (subwoofer speaker, nid 0x10). Under current alsa driver, the
-> > headphone will be assigned a dac (nid 0x13) and the 2 speakers will
-> > be assigned a dac (nid 0x14), this assignment is not good since 2
-> > speakers share the same dac, this means 2 speakers can't work
-> > at the same time to support 4.0/2.1 channels.
-> >
-> > On another Dell machine with realtek codec, there are also 2 speakers,
-> > 1 headphone and 2 dacs, on this machine, 1 speaker and 1 headphone are
-> > assigned
-> > 1 dac, and the other speaker is assigned another dac, so there is no
-> > problem for this machine to support 4.0/2.1 channels.
-> >
-> > Through debugging, I found on Dell machine, the speaker nid only has
-> > one connection to dac (hardwired), so when driver assign dac to it, the
-> > map_single() can successfully assign the each dac to the 2 speakers
-> > respectively.
-> > But on that HP machine, the speaker has multiple connections for dac,
-the
-> > map_single() can't work for this machine.
-> >
-> >
-> > The alsa-info.txt for that HP machine is at
-> > http://pastebin.ubuntu.com/11667947/
+> > How do the other user know the mapping even if you implemented 5.1 ?
+> I don't know (?)
 
+https://rog.asus.com/forum/showthread.php?54685-Asus-G751JT-supports-5-1-analog-output
 
-
-Node 0x13 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="92HD91BXX Analog", type="Audio", device=0
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x80 0x80]
-  Converter: stream=5, channel=0
-  Power states:
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-Node 0x14 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x64 0x64]
-  Converter: stream=5, channel=0
-  Power states:
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-
-Do hda_proc.c or hda_codec use the correct verb to get amp out cap of idt
-codecs ?
-
-92hd91 datasheet has default values of amp out caps
-
-Why amp out caps are N/A ?
-
-7.14.2.DAC0 (NID = 13h): OutAmpLeft
-
-7.14.3.DAC0 (NID = 13h): OutAmpRight
-
-7.15.2.DAC1 (NID = 14h): OutAmpLeft
-
-7.15.3.DAC1 (NID = 14h): OutAmpRight
+Is the support of 5.1 done by realtek hda manager or asus audio wizard ?
