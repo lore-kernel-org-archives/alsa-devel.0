@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/11] ALSA: bebob: add 'version' member for
-	BeBoB protocol version
-Date: Sun, 14 Jun 2015 12:49:33 +0900
-Message-ID: <1434253777-433-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 06/11] ALSA: bebob: add SYT-Match support
+Date: Sun, 14 Jun 2015 12:49:32 +0900
+Message-ID: <1434253777-433-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1434253777-433-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id CDC882604EB
+ by alsa0.perex.cz (Postfix) with ESMTP id DEA832604FA
  for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 05:49:45 +0200 (CEST)
 In-Reply-To: <1434253777-433-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,66 +24,63 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-BeBoB installed devices have BeBoB register area. This area stores
-basic information about its firmware. A register has its protocol
-version.
+In previous commits, this driver can detect the source of clock as mush
+as possible. SYT-Match mode is also available.
 
-This commit adds 'version' member and store the device's protocol
-version to handle v3 quirks in following commits.
+This commit purge the restriction.
 
-Tested-by: Kim Tore Jensen <kim@incendio.no>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c | 8 ++++++++
- sound/firewire/bebob/bebob.h | 3 +++
- 2 files changed, 11 insertions(+)
+ sound/firewire/bebob/bebob_pcm.c    |  5 -----
+ sound/firewire/bebob/bebob_stream.c | 20 ++++++++++++++++++--
+ 2 files changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index e71bd35..920571b 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -33,6 +33,7 @@ static DEFINE_MUTEX(devices_mutex);
- static DECLARE_BITMAP(devices_used, SNDRV_CARDS);
- 
- /* Offsets from information register. */
-+#define INFO_OFFSET_BEBOB_VERSION	0x08
- #define INFO_OFFSET_GUID		0x10
- #define INFO_OFFSET_HW_MODEL_ID		0x18
- #define INFO_OFFSET_HW_MODEL_REVISION	0x1c
-@@ -73,6 +74,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 	u32 hw_id;
- 	u32 data[2] = {0};
- 	u32 revision;
-+	u32 version;
- 	int err;
- 
- 	/* get vendor name from root directory */
-@@ -105,6 +107,12 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index e3f65a0..e0a6b06 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -171,11 +171,6 @@ pcm_open(struct snd_pcm_substream *substream)
+ 	err = snd_bebob_stream_get_clock_src(bebob, &src);
  	if (err < 0)
- 		goto end;
+ 		goto err_locked;
+-	/* SYT-Match is not supported. */
+-	if (src == SND_BEBOB_CLOCK_TYPE_SYT) {
+-		err = -EBUSY;
+-		goto err_locked;
+-	}
  
-+	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_BEBOB_VERSION,
-+				  &version);
+ 	/*
+ 	 * When source of clock is internal or any PCM stream are running,
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index c8af8ff..5335c30 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -474,8 +474,24 @@ destroy_both_connections(struct snd_bebob *bebob)
+ static int
+ get_sync_mode(struct snd_bebob *bebob, enum cip_flags *sync_mode)
+ {
+-	/* currently this module doesn't support SYT-Match mode */
+-	*sync_mode = CIP_SYNC_TO_DEVICE;
++	enum snd_bebob_clock_type src;
++	int err;
++
++	err = snd_bebob_stream_get_clock_src(bebob, &src);
 +	if (err < 0)
-+		goto end;
-+	bebob->version = version;
++		return err;
 +
- 	strcpy(bebob->card->driver, "BeBoB");
- 	strcpy(bebob->card->shortname, model);
- 	strcpy(bebob->card->mixername, model);
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 11362b3..1520854 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -115,6 +115,9 @@ struct snd_bebob {
- 	/* for M-Audio special devices */
- 	void *maudio_special_quirk;
- 	bool deferred_registration;
++	switch (src) {
++	case SND_BEBOB_CLOCK_TYPE_INTERNAL:
++	case SND_BEBOB_CLOCK_TYPE_EXTERNAL:
++		*sync_mode = CIP_SYNC_TO_DEVICE;
++		break;
++	default:
++	case SND_BEBOB_CLOCK_TYPE_SYT:
++		*sync_mode = 0;
++		break;
++	}
 +
-+	/* For BeBoB version quirk. */
-+	unsigned int version;
- };
+ 	return 0;
+ }
  
- static inline int
 -- 
 2.1.4
