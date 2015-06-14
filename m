@@ -1,18 +1,15 @@
-From: Azizul Hakim <azizulfahim2002@gmail.com>
-Subject: Audio Driver Works In Ubuntu but Crash in Debian After
-	2nd Run
-Date: Sat, 13 Jun 2015 23:18:55 -0400
-Message-ID: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 00/11] ALSA: bebob: improve support for
+	DM1500/BeBoBv3
+Date: Sun, 14 Jun 2015 12:49:26 +0900
+Message-ID: <1434253777-433-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
- [209.85.214.169])
- by alsa0.perex.cz (Postfix) with ESMTP id AD9152604D1
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 05:18:56 +0200 (CEST)
-Received: by obpc2 with SMTP id c2so15946903obp.3
- for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 20:18:55 -0700 (PDT)
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 625E32604D6
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 05:49:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: kim@incendio.no, alsa-devel@alsa-project.org, jh1ood@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear altruists,
+Hi,
 
-I'm writing a sound card driver based on ALSA API. My driver works
-perfectly on Ubuntu 12.04, 13.10 and 14.04. There is no problem on how many
-times I play a sound file using my driver. Everything works great. But same
-driver has some issue on debian distribution.
+This patchset updates my previous one.
 
+[alsa-devel] [RFC][PATCH 00/11] improve support for DM1500/BeBoBv3
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093320.html
 
-I've been trying to test it on BeagleBone and during the first run the
-driver works pretty well. But as soon as I play a second sound file, it
-crash. I thought may be I did something wrong in releasing resources after
-1st run. But so far from my debugging it looks like there is no problem
-with resource release. Also same driver works on Ubuntu as many times as I
-test. I even tested with the same sound file.  On debian, I get the
-following message is kernel log-
+Changes since the RFC:
+ * re-gain missing enumerator member
+ * update commit comments
 
-Apr 23 20:26:41 beaglebone kernel: [  183.631905] ALSA
-sound/core/pcm_lib.c:1910 playback write error (DMA or IRQ trouble?)
+I hope them to be merged into upstream.
 
 
-It would be highly appreciated if I can get some suggestions on which
-direction I should try to resolve this issue. Is there any known issue with
-debian distribution or anyone faced similar kind of problem before?
+Takashi Sakamoto (11):
+  ALSA: bebob: improve signal mode detection for clock source
+  ALSA: bebob: apply new enumerator to normalize the type of clock
+    source
+  ALSA: bebob: preparation for replacing string literals by normalized
+    representation for model-dependent structures
+  ALSA: bebob: use normalized representation for the type of clock
+    source
+  ALSA: bebob: obsolete string literal expression for clock source
+  ALSA: bebob: add SYT-Match support
+  ALSA: bebob: add 'version' member for BeBoB protocol version
+  ALSA: bebob: expand timeout for DM1500 quirk
+  ALSA: bebob: loosen up severity of checking continuity for BeBoB v3
+    quirk
+  ALSA: bebob: keep duplex streams always to keep internal multiplexer
+    properly
+  ALSA: bebob: add support for Behringer FCA 610/1616
 
+ sound/firewire/Kconfig                 |   1 +
+ sound/firewire/bebob/bebob.c           |  14 ++-
+ sound/firewire/bebob/bebob.h           |  20 +++--
+ sound/firewire/bebob/bebob_focusrite.c |  33 +++++---
+ sound/firewire/bebob/bebob_maudio.c    |  23 +++--
+ sound/firewire/bebob/bebob_midi.c      |   8 +-
+ sound/firewire/bebob/bebob_pcm.c       |  14 +--
+ sound/firewire/bebob/bebob_proc.c      |  22 ++---
+ sound/firewire/bebob/bebob_stream.c    | 150 ++++++++++++++++++++++++---------
+ sound/firewire/bebob/bebob_terratec.c  |  30 +++++--
+ sound/firewire/bebob/bebob_yamaha.c    |  20 ++++-
+ 11 files changed, 235 insertions(+), 100 deletions(-)
 
-Thanks
-Azizul Hakim
+-- 
+2.1.4
