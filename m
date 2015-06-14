@@ -1,19 +1,29 @@
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH] mips/ad1843: convert time to jiffies HZ
-	independent
-Date: Sun, 14 Jun 2015 19:16:59 +0200
-Message-ID: <20150614171659.GA15401@opentech.at>
-References: <1434270059-20472-1-git-send-email-hofrat@osadl.org>
- <s5h4mma5izh.wl-tiwai@suse.de>
+From: Olivier <olivier.pierre@voila.fr>
+Subject: Re:
+	=?utf-8?q?M-Audio_Midisport_2x2_Anniversary_edition?=
+	=?utf-8?q?=2C=09latency=09problem?=
+Date: Sun, 14 Jun 2015 19:01:53 +0000 (UTC)
+Message-ID: <loom.20150614T205252-433@post.gmane.org>
+References: <1430209117.53049092@f91.i.mail.ru>	<1430230406.500088555@f412.i.mail.ru>
+ <553FB37B.3000802@ladisch.de> <1430239699.153166263@f195.i.mail.ru>
+ <554084BB.1090304@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.hofr.at (hofr.at [212.69.189.236])
- by alsa0.perex.cz (Postfix) with ESMTP id 35CF42605F9
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 19:17:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h4mma5izh.wl-tiwai@suse.de>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3432626061E
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 21:05:06 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Z4DDN-0007tg-2X
+ for alsa-devel@alsa-project.org; Sun, 14 Jun 2015 21:05:05 +0200
+Received: from bve69-1-88-181-228-107.fbx.proxad.net ([88.181.228.107])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 21:05:05 +0200
+Received: from olivier.pierre by bve69-1-88-181-228-107.fbx.proxad.net with
+ local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 21:05:05 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,92 +33,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 Jun 2015, Takashi Iwai wrote:
 
-> At Sun, 14 Jun 2015 10:20:59 +0200,
-> Nicholas Mc Guire wrote:
-> > 
-> > PI compliance scanning with coccinelle flagged:
-> > ./sound/mips/ad1843.c:503:2-32: WARNING: 
-> > 	timeout (5) seems HZ dependent
-> > 
-> > This was introduced in 'commit 862c2c0a61c5 ("ALSA: ALSA driver for SGI O2
-> > audio board")'. schedule_timeout_interruptible() expects a timeout in
-> > jiffies so the numeric constant makes the effective timeout HZ dependent.
-> > Simply put it through msecs_to_jiffies() to make it HZ independent.
-> > 
-> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> > ---
-> > 
-> > The loop here is bounded by 500 jiffies and it does not seem reasonable that
-> > it would loop 10 times faster on HZ=1000 configs over HZ=100 configs. The
-> > conversion via msecs_to_jiffies(5) ensures that it will loop at most 100
-> > times for all configs of HZ which seems reasonable (to me) but needs to be
-> > checked by someone that knows the details of this driver. 
-> 
-> Using 5ms looks reasonable for this case.  However,
-> schedule_timeout_interruptible() isn't.  This is a loop that won't
-> break.  So, the best would be to replace it with msleep() or its
-> friends.
-> 
-> > Note that the CONFIG_SND_PCM_OSS dependency was not listed in the 
-> > Depends on: in Kconfig (which it probably should)
-> 
-> Why at all?  It has nothing to do with OSS.
->
-the procedure to see the problem I used was
-(linux-next 20150612)
-make ip32_defconfig ARCH=mips
-make menuconfig ARCH=mips
-  Device Drivers
-    ...
-    <M> Sound card support  --->
-        <M>   Advanced Linux Sound Architecture  --->
-            [*]   MIPS sound devices  --->
-                  <M>   SGI O2 Audio
 
-compiling fails with:
-  MODPOST 95 modules
-ERROR: "snd_pcm_period_elapsed" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "snd_pcm_set_ops" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "snd_pcm_lib_get_vmalloc_page" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "snd_pcm_lib_ioctl" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "_snd_pcm_lib_alloc_vmalloc_buffer" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "snd_pcm_new" [sound/mips/snd-sgi-o2.ko] undefined!
-ERROR: "snd_pcm_lib_free_vmalloc_buffer" [sound/mips/snd-sgi-o2.ko] undefined!
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
+Hello
 
-as the pcm_lib functions depend on SND_PCM I added that - So
-if I add the below patch the problem goes away and the module 
-build correclty - not saying that this is the right fix though
-(did not look into it in more detail yet)
+I think I have similar problem on Debian 8 Jessie, M-Audio Midisport 2x2
+Anniversary edition and a synth keyboard. In my case the midi works fine for
+a moment but after a moment, the latency is about 5 seconds. GMidi monitor
+linked to Jack monitors note events 5 seconds later... I have to plug again
+the USB cable to make it work normaly. Did you find an issue to  that?
 
->From d9cb7d166613e6129f021a913f66f377f5ac56c0 Mon Sep 17 00:00:00 2001
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Date: Sun, 14 Jun 2015 19:06:19 +0200
-Subject: [PATCH] ALSA: let SND_SGI_O2 select SND_PCM
-
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
- sound/mips/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/mips/Kconfig b/sound/mips/Kconfig
-index d2f615a..7875af0 100644
---- a/sound/mips/Kconfig
-+++ b/sound/mips/Kconfig
-@@ -12,6 +12,7 @@ if SND_MIPS
- config SND_SGI_O2
- 	tristate "SGI O2 Audio"
- 	depends on SGI_IP32
-+	select SND_PCM
-         help
-                 Sound support for the SGI O2 Workstation. 
- 
--- 
-1.7.10.4
+Olivier
