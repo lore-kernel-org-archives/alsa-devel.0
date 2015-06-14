@@ -1,21 +1,17 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: Re: Scarlett 18i8 hardware out of sync with AlsaMixer
-Date: Sun, 14 Jun 2015 01:03:42 +0200
-Message-ID: <557CB6CE.4090702@gareus.org>
-References: <CADN=WdobTC9qdHjKD3PyPW99f2pX-j82vVzZ32zp4ed-C0Gbgg@mail.gmail.com>
- <s5h8ucaed12.wl-tiwai@suse.de>
- <CADN=WdpM_gUD=TpxP9cJmS3VXRwzgODgNeNE0Z2EwC71mZ8yAw@mail.gmail.com>
- <s5hzj4q9mri.wl-tiwai@suse.de> <20150527135325.GA12862@canonical.com>
- <CADN=WdpOfSDS+X_PSvx0UAXxGzfEWRKUDxWCc_5BPJQNKja2cg@mail.gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: ml26124: Remove duplicate code
+Date: Sun, 14 Jun 2015 10:28:01 +0800
+Message-ID: <1434248881.10956.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [81.169.146.219])
- by alsa0.perex.cz (Postfix) with ESMTP id A143C260464
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 01:03:45 +0200 (CEST)
-In-Reply-To: <CADN=WdpOfSDS+X_PSvx0UAXxGzfEWRKUDxWCc_5BPJQNKja2cg@mail.gmail.com>
+Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
+ [209.85.220.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CE552604C6
+ for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 04:28:09 +0200 (CEST)
+Received: by pacyx8 with SMTP id yx8so43849649pac.2
+ for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2015 19:28:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +21,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Goode <adam@spicenitz.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Chris J Arges <chris.j.arges@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tomoya MORINAGA <tomoya.rohm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/10/2015 06:24 AM, Adam Goode wrote:
-[..]
-> My guess is that the ALSA mixer settings are cached too soon, before
-> the device itself internally overwrites the settings from NVRAM. We
-> are either missing some invalidation event from the device itself, or
-> we don't do the right thing during initialization.
+Current code has duplicate code for 16000, 32000 and 48000 sample rates.
+get_srate() returns negative error code for unsupported rate, so we can
+remove the duplicate code in the swith cases by calling get_srate() first.
 
-I didn't follow the whole discussion, so please excuse me if this was
-mentioned before:
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/ml26124.c | 58 +++++++++-------------------------------------
+ 1 file changed, 11 insertions(+), 47 deletions(-)
 
-I'm pretty sure that the NVRAM is restored on the Scarlet before the
-device shows up on USB: Save a config with Hi-Z on but configuring it as
-off in software. When connecting & re-powering the device, the indicator
-LED will blink on and then go off.
-
-
-It is not possible to read the full state from the device itself.
-Trying to read the value from the device results in garbage for the most
-part. The values must be set by ALSA and ALSA must remember the state.
-That worked in the original alsa mixer even across suspend/resume for
-the 18i6. Either something was changed or has been lost since.
-
-This is also how the OSX and Windows drivers work for the Scarlett
-series. As soon as the device is [re]connected, software pushes the last
-known state (on that given machine) to the device. (At least it was that
-way ~2 years ago when I reverse engineered it).
-
-BTW the prop. driver saves state to the NVRAM quite often. I don't know
-if this is a marketing trick (intentionally wear it out quickly) or if
-it's OK to do that.
-
-
-best,
-robin
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index 62dda24..b74118e 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -341,6 +341,7 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct ml26124_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i = get_coeff(priv->mclk, params_rate(hw_params));
++	int srate;
+ 
+ 	if (i < 0)
+ 		return i;
+@@ -370,53 +371,16 @@ static int ml26124_hw_params(struct snd_pcm_substream *substream,
+ 				    BIT(0) | BIT(1), 0);
+ 	}
+ 
+-	switch (params_rate(hw_params)) {
+-	case 16000:
+-		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
+-				    get_srate(params_rate(hw_params)));
+-		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
+-				    coeff_div[i].pllnl);
+-		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
+-				    coeff_div[i].pllnh);
+-		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
+-				    coeff_div[i].pllml);
+-		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
+-				    coeff_div[i].pllmh);
+-		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
+-				    coeff_div[i].plldiv);
+-		break;
+-	case 32000:
+-		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
+-				    get_srate(params_rate(hw_params)));
+-		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
+-				    coeff_div[i].pllnl);
+-		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
+-				    coeff_div[i].pllnh);
+-		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
+-				    coeff_div[i].pllml);
+-		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
+-				    coeff_div[i].pllmh);
+-		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
+-				    coeff_div[i].plldiv);
+-		break;
+-	case 48000:
+-		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf,
+-				    get_srate(params_rate(hw_params)));
+-		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff,
+-				    coeff_div[i].pllnl);
+-		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1,
+-				    coeff_div[i].pllnh);
+-		snd_soc_update_bits(codec, ML26124_PLLML, 0xff,
+-				    coeff_div[i].pllml);
+-		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f,
+-				    coeff_div[i].pllmh);
+-		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f,
+-				    coeff_div[i].plldiv);
+-		break;
+-	default:
+-		pr_err("%s:this rate is no support for ml26124\n", __func__);
+-		return -EINVAL;
+-	}
++	srate = get_srate(params_rate(hw_params));
++	if (srate < 0)
++		return srate;
++
++	snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf, srate);
++	snd_soc_update_bits(codec, ML26124_PLLNL, 0xff, coeff_div[i].pllnl);
++	snd_soc_update_bits(codec, ML26124_PLLNH, 0x1, coeff_div[i].pllnh);
++	snd_soc_update_bits(codec, ML26124_PLLML, 0xff, coeff_div[i].pllml);
++	snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f, coeff_div[i].pllmh);
++	snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f, coeff_div[i].plldiv);
+ 
+ 	return 0;
+ }
+-- 
+2.1.0
