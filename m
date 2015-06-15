@@ -1,40 +1,35 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: M-Audio Midisport 2x2 Anniversary edition,
-	latency	problem
-Date: Sun, 14 Jun 2015 21:17:20 +0200
-Message-ID: <557DD340.6020200@ladisch.de>
-References: <1430209117.53049092@f91.i.mail.ru>	<1430230406.500088555@f412.i.mail.ru>
- <553FB37B.3000802@ladisch.de> <1430239699.153166263@f195.i.mail.ru>
- <554084BB.1090304@ladisch.de>
- <loom.20150614T205252-433@post.gmane.org>
+From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: mediatek: Add AFE platform driver
+Date: Mon, 15 Jun 2015 10:06:41 +0800
+Message-ID: <1434334001.14980.3.camel@mtksdaap41>
+References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
+	 <1433946276-25969-2-git-send-email-koro.chen@mediatek.com>
+	 <20150612130638.GZ1921@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9AAA0260623
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 21:18:15 +0200 (CEST)
-In-Reply-To: <loom.20150614T205252-433@post.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier <olivier.pierre@voila.fr>, alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150612130638.GZ1921-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Olivier wrote:
-> I think I have similar problem on Debian 8 Jessie, M-Audio Midisport 2x2
-> Anniversary edition and a synth keyboard. In my case the midi works fine for
-> a moment but after a moment, the latency is about 5 seconds. GMidi monitor
-> linked to Jack monitors note events 5 seconds later...
+On Fri, 2015-06-12 at 14:06 +0100, Mark Brown wrote:
+> On Wed, Jun 10, 2015 at 10:24:34PM +0800, Koro Chen wrote:
+> > This is the DPCM based platform driver of AFE (Audio Front End) unit.
+> > 
+> > Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+> > Signed-off-by: Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+> 
+> Your signoff should be last if you're the one sending the patch.
+> Otherwise this seems basically fine, but you said you were going to send
+> a new version so not applying.
+Thank you, I will fix this in the next version of patch along with
+fixups of Paul's comments.
 
-Do you get the same delay when monitoring with amidi or aseqdump?
 
-
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
