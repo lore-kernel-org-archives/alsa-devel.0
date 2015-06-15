@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: DAPM: fix build errors for missing
- snd_soc_dapm_new_control symbol
-Date: Mon, 15 Jun 2015 17:57:23 +0100
-Message-ID: <20150615165723.GY18309@sirena.org.uk>
-References: <1434386871-24325-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: writing an alsa driver
+Date: Mon, 15 Jun 2015 18:04:28 +0100
+Message-ID: <1434387868.2434.50.camel@loki>
+References: <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>
+ <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
+ <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
+ <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150608084951.GA7512@dellaz> <loom.20150613T153708-781@post.gmane.org>
+ <20150615164623.GA693@asus>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5700575086692636041=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BDBEC26520E
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 18:57:34 +0200 (CEST)
-In-Reply-To: <1434386871-24325-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D811626527F
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 19:04:50 +0200 (CEST)
+In-Reply-To: <20150615164623.GA693@asus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Michele Curti <michele.curti@gmail.com>
+Cc: Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, "Koul, Vinod" <vinod.koul@intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
++ Vinod,
 
---===============5700575086692636041==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tAdHiH28s3ybHVSb"
-Content-Disposition: inline
+On Mon, 2015-06-15 at 18:46 +0200, Michele Curti wrote:
+> On Sat, Jun 13, 2015 at 01:47:13PM +0000, Luka Karinja wrote:
+> > Hey guys i have a T100TAF which also has z3735f & rt5648 and 
+> > watching your development.
+> > 
+> > On the T100TA wich has the Z3740 and rt5645 a new /var/lib/alsa/asound.state
+> > was needed to get the sound working.
+> > It was making cracking sounds without it (saw in your previous post)
+> > found here:
+> > https://raw.githubusercontent.com/AdamWill/baytrail-m/master/alsa/t100_B.state
+> > 
+> > Eagerly following the development
+> 
+> Eheh :)
+> 
+> So far no news, sadly.
+> 
 
+We are also a little suspicious that this laptop is using SSP1 for the
+I2S audio connection to the codec. The bad news is that the FW used by
+this BYT ADSP driver does not support the SSP1 port. It's hard coded to
+use SSP0 (Jarrko, please correct the port numbering if it's wrong).
+There are going to be no further releases of this FW.
 
---tAdHiH28s3ybHVSb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, the other upstream BYT ADSP driver from Vinod's team is going
+to support the other SSP ports. It currently only supports SSP0, but I
+believe that a new FW will be released soon that will support SSP1.
+Vinod do you know the new FW release date ?
 
-On Mon, Jun 15, 2015 at 05:47:51PM +0100, Liam Girdwood wrote:
-> Fix the following error:-
->=20
-> All error/warnings (new ones prefixed by >>):
-> >
-> >    sound/built-in.o: In function `soc_tplg_dapm_widget_create':
-> > >> :(.text+0x25a90): undefined reference to `snd_soc_dapm_new_control'
->=20
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Michele, can you change your machine driver to use the Vinods BYT DSP
+PCM driver (base it on bytcr_rt5640.c). Please test probing/booting with
+the current FW release from Vinod too. That way you should be ready to
+integrate the new FW when it is released. Please also CC Vinod on any
+issues you have getting the FW to boot using the new driver/FW.
 
-This doesn't apply, I appear to have this already?
+Thanks
 
---tAdHiH28s3ybHVSb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVfwPyAAoJECTWi3JdVIfQ43MH/1XxjlrzBfLMT/Sq4/DhWxMY
-5Xy4ye9eFvfG40NP4kJWImRDdC5mwCYx5Fe87Va8RE8tRch+64XtR+hU/5CuBITR
-C6zfi7tNZQfJtAWu5X1c4BHgb65g/irzEzFTgRqBl76gcTfdRP0GjdCGs4GjIW4d
-enJOfI1yXGqECC7G1VAbd1bctxX7aPg+MBSacMth+Q+Q8cyeTogJX0bsRx8Nxe+r
-CJ78aiCYvNJKIwLkeh78mz/aoBKapMeB7tX8f/sUHCq2ZV+ZyeD96AEHqQCR7cgZ
-e78OgDNKmTL4V/NxRt+fNwnE2lCJQA+M+mrgfd7DY5dCiIBZaGvKoDg0aOGZ5qU=
-=w8VU
------END PGP SIGNATURE-----
-
---tAdHiH28s3ybHVSb--
-
---===============5700575086692636041==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5700575086692636041==--
+Liam
