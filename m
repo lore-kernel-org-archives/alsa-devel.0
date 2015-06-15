@@ -1,40 +1,296 @@
 From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2 0/3] ASoC: Mediatek: Add support for MT8173 SOC
-Date: Mon, 15 Jun 2015 22:38:01 +0800
-Message-ID: <1434379084-26026-1-git-send-email-koro.chen@mediatek.com>
+Subject: [PATCH v2 2/3] ASoC: mediatek: Add machine driver for MAX98090 codec
+Date: Mon, 15 Jun 2015 22:38:03 +0800
+Message-ID: <1434379084-26026-3-git-send-email-koro.chen@mediatek.com>
+References: <1434379084-26026-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1434379084-26026-1-git-send-email-koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
-Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds basic support for the Mediatek AFE (Audio Front End) unit of MT8173.
-This patch is based on Linux 4.1-rc1 and Sascha's SCPSYS power patch [1].
+This is the DPCM based machine driver with MAX98090
 
-The AFE unit comprises several memory interfaces that communicate with CPU, 
-a multi input multi output digital audio interconnect, 
-and several external interfaces (e.g. I2S).
+Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ .../devicetree/bindings/sound/mt8173-max98090.txt  |  13 ++
+ sound/soc/mediatek/Kconfig                         |  10 +
+ sound/soc/mediatek/Makefile                        |   2 +
+ sound/soc/mediatek/mt8173-max98090.c               | 213 +++++++++++++++++++++
+ 4 files changed, 238 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8173-max98090.txt
+ create mode 100644 sound/soc/mediatek/mt8173-max98090.c
 
-[1] https://lkml.org/lkml/2015/6/9/172
-
-changes since v1:
-- change Kconfig to tristate
-- remove unnecessary !! in the platform driver
-- let MODULE_DEVICE_TABLE follow the table
-- remove regulators from machine drivers
-
-changes since RFC:
-- Use DPCM to model AFE
-  AFE memory interfaces such as DL1, VUL are modeled as frontend DAIs,
-  and AFE IOs such as I2S, HDMI are backend DAIs.
-  Which memif and IO to be used can be set in the machine driver.
-  There is no need to indicate this in dts anymore so
-  include/dt-bindings/sound/mtk-afe.h is removed.
-  AFE connections are represented by DAPM widgets and routes, and
-  set connection APIs/tables are no longer required.
-  (mtk-afe-connection.c and mtk-afe-connection.h are removed)
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-max98090.txt b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
+new file mode 100644
+index 0000000..829bd26
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
+@@ -0,0 +1,13 @@
++MT8173 with MAX98090 CODEC
++
++Required properties:
++- compatible : "mediatek,mt8173-max98090"
++- mediatek,audio-codec: the phandle of the MAX98090 audio codec
++
++Example:
++
++	sound {
++		compatible = "mediatek,mt8173-max98090";
++		mediatek,audio-codec = <&max98090>;
++	};
++
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index c622280..0bfd2a0 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -7,3 +7,13 @@ config SND_SOC_MEDIATEK
+ 	  Select Y if you have such device.
+ 	  Ex: MT8173
+ 
++config SND_SOC_MT8173_MAX98090
++	tristate "ASoC Audio driver for MT8173 with MAX98090 codec"
++	depends on SND_SOC_MEDIATEK
++	select SND_SOC_MAX98090
++	help
++	  This adds ASoC driver for Mediatek MT8173 boards
++	  with the MAX98090 audio codec.
++	  Select Y if you have such device.
++	  If unsure select "N".
++
+diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
+index 5f27cc7..08fa765 100644
+--- a/sound/soc/mediatek/Makefile
++++ b/sound/soc/mediatek/Makefile
+@@ -1,2 +1,4 @@
+ # MTK Platform Support
+ obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
++# Machine support
++obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
+diff --git a/sound/soc/mediatek/mt8173-max98090.c b/sound/soc/mediatek/mt8173-max98090.c
+new file mode 100644
+index 0000000..4d44b58
+--- /dev/null
++++ b/sound/soc/mediatek/mt8173-max98090.c
+@@ -0,0 +1,213 @@
++/*
++ * mt8173-max98090.c  --  MT8173 MAX98090 ALSA SoC machine driver
++ *
++ * Copyright (c) 2015 MediaTek Inc.
++ * Author: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include <linux/gpio.h>
++#include "../codecs/max98090.h"
++
++static struct snd_soc_jack mt8173_max98090_jack;
++
++static struct snd_soc_jack_pin mt8173_max98090_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
++static const struct snd_soc_dapm_widget mt8173_max98090_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++};
++
++static const struct snd_soc_dapm_route mt8173_max98090_routes[] = {
++	{"Speaker", NULL, "SPKL"},
++	{"Speaker", NULL, "SPKR"},
++	{"DMICL", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPL"},
++	{"Headphone", NULL, "HPR"},
++	{"Headset Mic", NULL, "MICBIAS"},
++	{"IN34", NULL, "Headset Mic"},
++};
++
++static const struct snd_kcontrol_new mt8173_max98090_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
++
++static int mt8173_max98090_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
++	return snd_soc_dai_set_sysclk(codec_dai, 0, params_rate(params) * 256,
++				      SND_SOC_CLOCK_IN);
++}
++
++static struct snd_soc_ops mt8173_max98090_ops = {
++	.hw_params = mt8173_max98090_hw_params,
++};
++
++static int mt8173_max98090_init(struct snd_soc_pcm_runtime *runtime)
++{
++	int ret;
++	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_codec *codec = runtime->codec;
++
++	/* enable jack detection */
++	ret = snd_soc_card_jack_new(card, "Headphone", SND_JACK_HEADPHONE,
++				    &mt8173_max98090_jack, NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "Can't snd_soc_jack_new %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_jack_add_pins(&mt8173_max98090_jack,
++				    ARRAY_SIZE(mt8173_max98090_jack_pins),
++				    mt8173_max98090_jack_pins);
++	if (ret) {
++		dev_err(card->dev, "Can't snd_soc_jack_add_pins %d\n", ret);
++		return ret;
++	}
++
++	return max98090_mic_detect(codec, &mt8173_max98090_jack);
++}
++
++/* Digital audio interface glue - connects codec <---> CPU */
++static struct snd_soc_dai_link mt8173_max98090_dais[] = {
++	/* Front End DAI links */
++	{
++		.name = "MAX98090 Playback",
++		.stream_name = "MAX98090 Playback",
++		.cpu_dai_name = "DL1",
++		.platform_name = "11220000.mt8173-afe-pcm",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++	},
++	{
++		.name = "MAX98090 Capture",
++		.stream_name = "MAX98090 Capture",
++		.cpu_dai_name = "VUL",
++		.platform_name = "11220000.mt8173-afe-pcm",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_capture = 1,
++	},
++	/* Back End DAI links */
++	{
++		.name = "Codec",
++		.cpu_dai_name = "I2S",
++		.platform_name = "11220000.mt8173-afe-pcm",
++		.no_pcm = 1,
++		.codec_dai_name = "HiFi",
++		.init = mt8173_max98090_init,
++		.ops = &mt8173_max98090_ops,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			   SND_SOC_DAIFMT_CBS_CFS,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++};
++
++static struct snd_soc_card mt8173_max98090_card = {
++	.name = "mt8173-max98090",
++	.dai_link = mt8173_max98090_dais,
++	.num_links = ARRAY_SIZE(mt8173_max98090_dais),
++	.controls = mt8173_max98090_controls,
++	.num_controls = ARRAY_SIZE(mt8173_max98090_controls),
++	.dapm_widgets = mt8173_max98090_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt8173_max98090_widgets),
++	.dapm_routes = mt8173_max98090_routes,
++	.num_dapm_routes = ARRAY_SIZE(mt8173_max98090_routes),
++};
++
++static int mt8173_max98090_dev_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &mt8173_max98090_card;
++	struct device_node *codec_node;
++	int ret, i;
++
++	codec_node = of_parse_phandle(pdev->dev.of_node,
++				      "mediatek,audio-codec", 0);
++	if (!codec_node) {
++		dev_err(&pdev->dev,
++			"Property 'audio-codec' missing or invalid\n");
++		return -EINVAL;
++	}
++	for (i = 0; i < card->num_links; i++) {
++		if (mt8173_max98090_dais[i].codec_name)
++			continue;
++		mt8173_max98090_dais[i].codec_of_node = codec_node;
++	}
++	card->dev = &pdev->dev;
++
++	ret = snd_soc_register_card(card);
++	if (ret)
++		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
++			__func__, ret);
++	return ret;
++}
++
++static int mt8173_max98090_dev_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++	return 0;
++}
++
++static const struct of_device_id mt8173_max98090_dt_match[] = {
++	{ .compatible = "mediatek,mt8173-max98090", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, mt8173_max98090_dt_match);
++
++static struct platform_driver mt8173_max98090_driver = {
++	.driver = {
++		   .name = "mt8173-max98090",
++		   .owner = THIS_MODULE,
++		   .of_match_table = mt8173_max98090_dt_match,
++#ifdef CONFIG_PM
++		   .pm = &snd_soc_pm_ops,
++#endif
++	},
++	.probe = mt8173_max98090_dev_probe,
++	.remove = mt8173_max98090_dev_remove,
++};
++
++module_platform_driver(mt8173_max98090_driver);
++
++/* Module information */
++MODULE_DESCRIPTION("MT8173 MAX98090 ALSA SoC machine driver");
++MODULE_AUTHOR("Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:mt8173-max98090");
++
+-- 
+1.8.1.1.dirty
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
