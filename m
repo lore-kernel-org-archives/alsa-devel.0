@@ -1,48 +1,94 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Mon, 15 Jun 2015 11:42:59 +0800
-Message-ID: <CAN8ccia_Dy+WBD4NOi3ot4o9v0rbzG2CL3qEA+h1ZwQX_H5Ebw@mail.gmail.com>
-References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
- <CACuU-+gmSj7rw8h6scpokXgMrL8QFr8a+xt2hH-4yLy=3POc5A@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: mrfld: simplify sst_fill_widget_module_info
+Date: Mon, 15 Jun 2015 10:38:57 +0530
+Message-ID: <20150615050856.GQ28601@localhost>
+References: <1433405633-18656-1-git-send-email-linux@rasmusvillemoes.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
- [209.85.218.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 91B4E26067A
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 05:43:00 +0200 (CEST)
-Received: by oial131 with SMTP id l131so17635285oia.3
- for <alsa-devel@alsa-project.org>; Sun, 14 Jun 2015 20:42:59 -0700 (PDT)
-In-Reply-To: <CACuU-+gmSj7rw8h6scpokXgMrL8QFr8a+xt2hH-4yLy=3POc5A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun@accosted.net>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1433405633-18656-1-git-send-email-linux@rasmusvillemoes.dk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, yang.a.fang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> > I'd like to bring this one up again, since we are currently in the
-> > sub-optimal position of forcing ~100 ms latency on USB devices. The
-> > original thread is here --
-> >
-http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
->
-> While we sort this out, though, is there an upper bound on the USB
-> transfer size (that we could then use a rewind safety margin)? We
-> might be able to use this as a workaround till this can be fixed
-> properly.
+On Thu, Jun 04, 2015 at 10:13:53AM +0200, Rasmus Villemoes wrote:
+> Some tiny improvements, cutting 180 bytes off the generated code.
+> 
+> - use strchr() for single-character needle
+> 
+> - compute index using pointer subtraction instead of two strlen()
+>   calls
+> 
+> - factor out the common check for whether the initial part of
+>   kctl->id.name (before the space) is identical to w->name.
+Acked-by: Vinod Koul <vinod.koul@intel.com
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/usb?id=976b6c064a957445eb0573b270f2d0282630e9b9
+Also Terry did the tests on this patch so would be good to add
 
-Seem there are differences between high speed devices and others
+Tested-by: Fang, Yang A <yang.a.fang@intel.com>
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/usb?id=a93455e1c301ce2a4cae11682359fd2067a8fd30
+-- 
+~Vinod
 
-Do usb wireless audio different from others ?
+> 
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  sound/soc/intel/atom/sst-atom-controls.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+> index 90aa5c0476f3..16670feeee6a 100644
+> --- a/sound/soc/intel/atom/sst-atom-controls.c
+> +++ b/sound/soc/intel/atom/sst-atom-controls.c
+> @@ -1280,36 +1280,32 @@ static int sst_fill_widget_module_info(struct snd_soc_dapm_widget *w,
+>  	down_read(&card->controls_rwsem);
+>  
+>  	list_for_each_entry(kctl, &card->controls, list) {
+> -		idx = strstr(kctl->id.name, " ");
+> +		idx = strchr(kctl->id.name, ' ');
+>  		if (idx == NULL)
+>  			continue;
+> -		index  = strlen(kctl->id.name) - strlen(idx);
+> +		index = idx - (char*)kctl->id.name;
+> +		if (strncmp(kctl->id.name, w->name, index))
+> +			continue;
+>  
+> -		if (strstr(kctl->id.name, "Volume") &&
+> -		    !strncmp(kctl->id.name, w->name, index))
+> +		if (strstr(kctl->id.name, "Volume"))
+>  			ret = sst_fill_module_list(kctl, w, SST_MODULE_GAIN);
+>  
+> -		else if (strstr(kctl->id.name, "params") &&
+> -			 !strncmp(kctl->id.name, w->name, index))
+> +		else if (strstr(kctl->id.name, "params"))
+>  			ret = sst_fill_module_list(kctl, w, SST_MODULE_ALGO);
+>  
+>  		else if (strstr(kctl->id.name, "Switch") &&
+> -			 !strncmp(kctl->id.name, w->name, index) &&
+>  			 strstr(kctl->id.name, "Gain")) {
+>  			struct sst_gain_mixer_control *mc =
+>  						(void *)kctl->private_value;
+>  
+>  			mc->w = w;
+>  
+> -		} else if (strstr(kctl->id.name, "interleaver") &&
+> -			 !strncmp(kctl->id.name, w->name, index)) {
+> +		} else if (strstr(kctl->id.name, "interleaver")) {
+>  			struct sst_enum *e = (void *)kctl->private_value;
+>  
+>  			e->w = w;
+>  
+> -		} else if (strstr(kctl->id.name, "deinterleaver") &&
+> -			 !strncmp(kctl->id.name, w->name, index)) {
+> -
+> +		} else if (strstr(kctl->id.name, "deinterleaver")) {
+>  			struct sst_enum *e = (void *)kctl->private_value;
+>  
+>  			e->w = w;
+> -- 
+> 2.1.3
+> 
+
+-- 
