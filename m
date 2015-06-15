@@ -1,19 +1,18 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
- item for soc-compress
-Date: Mon, 15 Jun 2015 14:15:40 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
-References: <1434338445-31992-1-git-send-email-yang.jie@intel.com>
- <s5hmw01gq9c.wl-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Mon, 15 Jun 2015 16:16:02 +0200
+Message-ID: <557EDE22.7080808@metafoo.de>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>	<557E86DD.8020709@metafoo.de>	<CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>	<557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 65ADE2625ED
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 16:15:46 +0200 (CEST)
-In-Reply-To: <s5hmw01gq9c.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp-out-020.synserver.de (smtp-out-023.synserver.de
+ [212.40.185.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9486264F0D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 16:16:04 +0200 (CEST)
+In-Reply-To: <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,122 +22,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zhang,
- Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, June 15, 2015 7:34 PM
-> To: Jie, Yang
-> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
-> vinod.koul@linux.intel.com; ramesh.babu@linux.intel.com; Zhang, Vivian
-> Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config item for soc-
-> compress
-> 
-> At Mon, 15 Jun 2015 11:20:44 +0800,
-> Jie Yang wrote:
-> >
-> > We don't always need soc-compress in soc, here add a config item
-> > SND_SOC_COMPRESS, please add 'select SND_SOC_COMPRESS' to driver
-> > Kconfig when it is needed.
-> >
-> > Signed-off-by: Jie Yang <yang.jie@intel.com>
-> > ---
-> >  include/sound/soc.h     | 7 +++++++
-> >  sound/soc/Kconfig       | 5 ++++-
-> >  sound/soc/Makefile      | 3 ++-
-> >  sound/soc/intel/Kconfig | 1 +
-> >  4 files changed, 14 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/sound/soc.h b/include/sound/soc.h index
-> > 93df8bf..cc1cd4f 100644
-> > --- a/include/sound/soc.h
-> > +++ b/include/sound/soc.h
-> > @@ -440,7 +440,14 @@ int snd_soc_platform_read(struct
-> snd_soc_platform
-> > *platform,  int snd_soc_platform_write(struct snd_soc_platform *platform,
-> >  					unsigned int reg, unsigned int val);
-> int soc_new_pcm(struct
-> > snd_soc_pcm_runtime *rtd, int num);
-> > +#if IS_ENABLED(CONFIG_SND_SOC_COMPRESS)
-> >  int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-> > +#else
-> > +static inline int soc_new_compress(struct snd_soc_pcm_runtime *rtd,
-> > +int num) {
-> > +       return -EPERM;
-> > +}
-> > +#endif
-> 
-> A dummy function in such a case has both merit and demerit.  The demerit is
-> that you won't get errors if the driver really wants the compress support but
-> just forgot to select the dependency.
- 
-Here I used -EPERM to return and tell caller that compress operation is not
-permitted, does it make sense, Takashi?
+On 06/15/2015 03:34 PM, Raymond Yau wrote:
+>
+>  >>>>
+>  >>>>
+>  >>>> Hi folks,
+>  >>>> I'd like to bring this one up again, since we are currently in the
+>  >>>> sub-optimal position of forcing ~100 ms latency on USB devices. The
+>  >>>> original thread is here --
+>  >>>>
+>  >>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
+>  >>>>
+>  >>>>
+>  >>>> I see two flags that are possibly of consequence here:
+>  >>>> SNDRV_PCM_INFO_BATCH and SNDRV_PCM_INFO_BLOCK_TRANSFER. I'm not sure
+>  >>>> what these mean -- the documentation mentions "double buffering" for
+>  >>>> the batch flag, and just that the block transfer means "block
+>  >>>> transfer". :-)
+>  >>>>
+>  >>>> We've spoken about batch meaning either transfers in period size
+>  >>>> chunks, or some fixed chunk size. It seems that it would make more
+>  >>>> sense for it to mean the former, and block transfer to mean the
+>  >>>> latter.
+>  >>>>
+>  >>>> So I guess the first thing that would be nice to have is a clear
+>  >>>> meaning of these two flags. With this done, we could potentially get
+>  >>>> to the API to report the transfer size from the driver.
+>  >>>
+>  >>>
+>  >>>
+>  >>> Yeah, the meaning of those flags is somewhat fuzzy and may have changed
+>  >>
+>  >> over time as well. Here is my understanding of the flags, might not
+>  >> necessarily be 100% correct.
+>  >>>
+>  >>>
+>  >>> SNDRV_PCM_INFO_BLOCK_TRANSFER means that the data is copied from the user
+>  >>
+>  >> accessible buffer in blocks of one period. Typically these kinds of devices
+>  >> have some dedicated audio memory that is not accessible via normal memory
+>  >> access and a DMA is setup to copy data from main memory to the dedicated
+>  >> memory. This DMA transfers the data from the main memory to the dedicated
+>  >> memory in chunks of period size. But otherwise the controller might still
+>  >> be capable of reporting a accurate pointer position down to the
+>  >> sample/frame level.
+>  >>>
+>  >>>
+>  >>> So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind handling
+>  >>
+>  >> and devices with that flag set might need additional headroom since the
+>  >> data up to one period after the pointer position has already been copied to
+>  >> the dedicated memory and hence can no longer be overwritten.
+>  >>>
+>  >>>
+>  >>> SNDRV_PCM_INFO_BATCH on the other hand has become to mean that the device
+>  >>
+>  >> is only capable of reporting the audio pointer with a coarse granularity.
+>  >> Typically this means a period sized granularity, but there are some other
+>  >> cases as well.
+>  >>>
+>  >>>
+>  >>
+>  >> DSP_CAP_REALTIME bit tells if the device/operating system supports precise
+>  >> reporting of output pointer position using SNDCTL_DSP_GETxPTR. Precise
+>  >> means that accuracy of the reported playback pointer (time) is around few
+>  >> samples. Without this capability the playback/recording position is
+>  >> reported using precision of one fragment.
+>  >>
+>  >> DSP_CAP_BATCH bit means that the device has some kind of local storage for
+>  >> recording and/or playback. For this reason the information reported by
+>  >> SNDCTL_DSP_GETxPTR is very inaccurate.
+>  >>
+>  >> Are those alsa cap have the similar meaning of those oss cap ?
+>  >
+>  >
+>  > I would say historically SNDRV_PCM_INFO_BATCH had the same meaning as
+> DSP_CAP_BATCH, but it has also come to have the inverse meaning to
+> DSP_CAP_REALTIME. By default applications can assume that the pointer is
+> accurate down to a few samples, but if SNDRV_PCM_INFO_BATCH is set it is
+> less accurate and can be everything up to period size precession.
+>  >
+>  > SNDRV_PCM_INFO_BLOCK_TRANSFER is different from all of them though.
+>
+> DMA_RESIDUE_GRANULARITY_DESCRIPTOR
+> DMA_RESIDUE_GRANULARITY_SEGMENT
+> DMA_RESIDUE_GRANULARITY_BURST
+>
+> Can this be regard as bad, normal and good accuracy ?
 
-Or can you suggest a better solution, according to this specific case?
+DMA_RESIDUE_GRANULARITY_DESCRIPTOR is more like completely and utterly 
+useless. It means the driver can only tell whether the descriptor has 
+finished or not, in a cyclic transfer the descriptor will never finish so 
+the driver will always report the same. Currently we fall back to counting 
+the number of period completion callbacks we get in this mode. This is 
+slightly prone to race conditions since it is legal to coalesce two 
+completion callbacks if a second one is scheduled before the first has run. 
+This will only happen with a very high system load, but it can happen. 
+Luckily most DMA drivers that are used for audio do support 
+DMA_RESIDUE_GRANULARITY_SEGMENT now and there is a deprecation plan, 
+including eventually stopping to support them altogether, for drivers that 
+only support DMA_RESIDUE_GRANULARITY_DESCRIPTOR.
 
-Thanks,
-~Keyon
-> 
-> 
-> Takashi
-> 
-> >  struct snd_pcm_substream *snd_soc_get_dai_substream(struct
-> snd_soc_card *card,
-> >  		const char *dai_link, int stream);
-> > diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig index
-> > e2828e1..a124759 100644
-> > --- a/sound/soc/Kconfig
-> > +++ b/sound/soc/Kconfig
-> > @@ -9,7 +9,6 @@ menuconfig SND_SOC
-> >  	select SND_JACK if INPUT=y || INPUT=SND
-> >  	select REGMAP_I2C if I2C
-> >  	select REGMAP_SPI if SPI_MASTER
-> > -	select SND_COMPRESS_OFFLOAD
-> >  	---help---
-> >
-> >  	  If you want ASoC support, you should say Y here and also to the @@
-> > -30,6 +29,10 @@ config SND_SOC_GENERIC_DMAENGINE_PCM
-> >  	bool
-> >  	select SND_DMAENGINE_PCM
-> >
-> > +config SND_SOC_COMPRESS
-> > +	tristate
-> > +	select SND_COMPRESS_OFFLOAD
-> > +
-> >  # All the supported SoCs
-> >  source "sound/soc/adi/Kconfig"
-> >  source "sound/soc/atmel/Kconfig"
-> > diff --git a/sound/soc/Makefile b/sound/soc/Makefile index
-> > a0e1ee6..184c1e6 100644
-> > --- a/sound/soc/Makefile
-> > +++ b/sound/soc/Makefile
-> > @@ -1,6 +1,7 @@
-> >  snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o
-> > soc-utils.o -snd-soc-core-objs += soc-pcm.o soc-compress.o soc-io.o
-> > soc-devres.o soc-ops.o
-> > +snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
-> >  snd-soc-core-objs += soc-topology.o
-> > +snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
-> >
-> >  ifneq ($(CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM),)
-> >  snd-soc-core-objs += soc-generic-dmaengine-pcm.o diff --git
-> > a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig index
-> > 791953f..e559174 100644
-> > --- a/sound/soc/intel/Kconfig
-> > +++ b/sound/soc/intel/Kconfig
-> > @@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
-> >
-> >  config SND_SST_MFLD_PLATFORM
-> >  	tristate
-> > +	select SND_SOC_COMPRESS
-> >
-> >  config SND_SST_IPC
-> >  	tristate
-> > --
-> > 1.9.1
-> >
+
+DMA_RESIDUE_GRANULARITY_SEGMENT means the hardware/driver can report the 
+pointer position with a period precession. In this case the BATCH flag will 
+be set for the PCM.
+
+DMA_RESIDUE_GRANULARITY_BURST means it can report the position with a 
+granularity of a few samples. Typically half the audio FIFO size.
+
+>
+> https://bugs.freedesktop.org/show_bug.cgi?id=86262
+>
+> Although the resolution seem less than period size but the deviation is
+> quite large , can we still regard this result are accurate up to one period ?
+
+This looks like a separate issue that's just made visible by the BATCH flag 
+patch with that particular hardware.
+
+>
+> http://lists.freedesktop.org/archives/pulseaudio-discuss/2015-June/024022.html
+>
+> This is accurate up to one period
+>
+> Why do we need flag for exactly one period since most of the driver use irq
+> should increment one period when interrupt occur ?
+>
+> We only need to know those good accuracy can use timer base and those bad
+> accuracy need special care
+
+Yes, and that's what the BATCH flag tells us.
