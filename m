@@ -1,86 +1,85 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Mon, 15 Jun 2015 10:03:41 +0200
-Message-ID: <557E86DD.8020709@metafoo.de>
-References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-224.synserver.de (smtp-out-224.synserver.de
- [212.40.185.224])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B5E26069D
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 10:03:45 +0200 (CEST)
-In-Reply-To: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun@accosted.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - adding a DAC/pin preference map for a HP Envy TS machine
+Date: Mon, 15 Jun 2015 17:43:39 +0800
+Message-ID: <1434361419-16042-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/12/2015 02:29 PM, Arun Raghavan wrote:
-> Hi folks,
-> I'd like to bring this one up again, since we are currently in the
-> sub-optimal position of forcing ~100 ms latency on USB devices. The
-> original thread is here --
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
->
-> I see two flags that are possibly of consequence here:
-> SNDRV_PCM_INFO_BATCH and SNDRV_PCM_INFO_BLOCK_TRANSFER. I'm not sure
-> what these mean -- the documentation mentions "double buffering" for
-> the batch flag, and just that the block transfer means "block
-> transfer". :-)
->
-> We've spoken about batch meaning either transfers in period size
-> chunks, or some fixed chunk size. It seems that it would make more
-> sense for it to mean the former, and block transfer to mean the
-> latter.
->
-> So I guess the first thing that would be nice to have is a clear
-> meaning of these two flags. With this done, we could potentially get
-> to the API to report the transfer size from the driver.
+On a HP Envy TouchSmart laptop, there are 2 speakers (main speaker
+and subwoofer speaker), 1 headphone and 2 DACs, without this fixup,
+the headphone will be assigned to a DAC and the 2 speakers will be
+assigned to another DAC, this assignment makes the surround-2.1
+channels invalid.
 
-Yeah, the meaning of those flags is somewhat fuzzy and may have changed over 
-time as well. Here is my understanding of the flags, might not necessarily 
-be 100% correct.
+To fix it, here using a DAC/pin preference map to bind the main
+speaker to 1 DAC and the subwoofer speaker will be assigned to another
+DAC.
 
-SNDRV_PCM_INFO_BLOCK_TRANSFER means that the data is copied from the user 
-accessible buffer in blocks of one period. Typically these kinds of devices 
-have some dedicated audio memory that is not accessible via normal memory 
-access and a DMA is setup to copy data from main memory to the dedicated 
-memory. This DMA transfers the data from the main memory to the dedicated 
-memory in chunks of period size. But otherwise the controller might still be 
-capable of reporting a accurate pointer position down to the sample/frame level.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_sigmatel.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind handling and 
-devices with that flag set might need additional headroom since the data up 
-to one period after the pointer position has already been copied to the 
-dedicated memory and hence can no longer be overwritten.
-
-SNDRV_PCM_INFO_BATCH on the other hand has become to mean that the device is 
-only capable of reporting the audio pointer with a coarse granularity. 
-Typically this means a period sized granularity, but there are some other 
-cases as well.
-
->
-> I did notice that there is a snd_pcm_hw_params_get_fifo_size(). Is
-> this something we could use for the purpose of transfer size
-> reporting, by any chance?
-
-I think the idea with fifo_size() is mainly to aide with audio latency 
-measurement. I.e. how many samples before the pointer() position are still 
-inside the audio pipeline and have not yet reached the analog domain. But 
-since there are now users that rely on it a lot of driver don't really 
-bothered with setting it to the correct value. And for the use case here 
-data is on the wrong side of the pointer() value as well. What we need is 
-some kind of indication of the fuzziness of the pointer() value. E.g. how 
-far can it be away from the actual position in the stream.
-
-- Lars
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index bdcda6a..dcc7fe9 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -100,6 +100,7 @@ enum {
+ 	STAC_HP_ENVY_BASS,
+ 	STAC_HP_BNB13_EQ,
+ 	STAC_HP_ENVY_TS_BASS,
++	STAC_HP_ENVY_TS_DAC_BIND,
+ 	STAC_92HD83XXX_GPIO10_EAPD,
+ 	STAC_92HD83XXX_MODELS
+ };
+@@ -2171,6 +2172,22 @@ static void stac92hd83xxx_fixup_gpio10_eapd(struct hda_codec *codec,
+ 	spec->eapd_switch = 0;
+ }
+ 
++static void hp_envy_ts_fixup_dac_bind(struct hda_codec *codec,
++					    const struct hda_fixup *fix,
++					    int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	static hda_nid_t preferred_pairs[] = {
++		0xd, 0x13,
++		0
++	};
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	spec->gen.preferred_dacs = preferred_pairs;
++}
++
+ static const struct hda_verb hp_bnb13_eq_verbs[] = {
+ 	/* 44.1KHz base */
+ 	{ 0x22, 0x7A6, 0x3E },
+@@ -2686,6 +2703,12 @@ static const struct hda_fixup stac92hd83xxx_fixups[] = {
+ 			{}
+ 		},
+ 	},
++	[STAC_HP_ENVY_TS_DAC_BIND] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = hp_envy_ts_fixup_dac_bind,
++		.chained = true,
++		.chain_id = STAC_HP_ENVY_TS_BASS,
++	},
+ 	[STAC_92HD83XXX_GPIO10_EAPD] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = stac92hd83xxx_fixup_gpio10_eapd,
+@@ -2764,6 +2787,8 @@ static const struct snd_pci_quirk stac92hd83xxx_fixup_tbl[] = {
+ 			  "HP bNB13", STAC_HP_BNB13_EQ),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x190e,
+ 			  "HP ENVY TS", STAC_HP_ENVY_TS_BASS),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1967,
++			  "HP ENVY TS", STAC_HP_ENVY_TS_DAC_BIND),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1940,
+ 			  "HP bNB13", STAC_HP_BNB13_EQ),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1941,
+-- 
+1.9.1
