@@ -1,53 +1,54 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5645: move RT5650 muxes to
-	rt5650_specific_dapm_widgets
-Date: Mon, 15 Jun 2015 10:29:56 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694F802B8@RTITMBSV03.realtek.com.tw>
-References: <1434336251-21807-1-git-send-email-oder_chiou@realtek.com>
- <20150615100420.GF18309@sirena.org.uk>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [alsa-devel][PATCH] ASoC: wm8960: add two kcontrols to select ADC left/right channel source
+Date: Mon, 15 Jun 2015 18:34:33 +0800
+Message-ID: <1434364473-27130-1-git-send-email-zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F09F260870
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 12:29:58 +0200 (CEST)
-In-Reply-To: <20150615100420.GF18309@sirena.org.uk>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Michele Curti <michele.curti@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Monday, June 15, 2015 6:04 PM
-> To: Oder Chiou
-> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Bard Liao; John Lin;
-> Michele Curti
-> Subject: Re: [PATCH] ASoC: rt5645: move RT5650 muxes to
-> rt5650_specific_dapm_widgets
-> 
-> On Mon, Jun 15, 2015 at 10:44:11AM +0800, Oder Chiou wrote:
-> > Developing a driver for an Asus X205TA laptop I get these dmesg
-> > errors:
-> 
-> > Signed-off-by: Michele Curti <michele.curti@gmail.com>
-> > Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-> 
-> Did Michele write this patch or did you?  It doesn't matter so much when
-> all the signoffs come from within the same company but given that
-> Michele has a gmail rather than Realtek address the licensing parts of
-> the signoff start to matter.
+Add two kcontrols to select ADC left/right channel source, one to select
+the left channel source and one for the right channel source.
 
-The patch was written by Michele. She sent the patch to us and
-alsa-devel@alsa-project.org, but the mail address was not included you.
-So we forwarded the patch, thanks.
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/codecs/wm8960.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 023e898..8f9aed1 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -141,6 +141,8 @@ static const char *wm8960_3d_upper_cutoff[] = {"High", "Low"};
+ static const char *wm8960_3d_lower_cutoff[] = {"Low", "High"};
+ static const char *wm8960_alcfunc[] = {"Off", "Right", "Left", "Stereo"};
+ static const char *wm8960_alcmode[] = {"ALC", "Limiter"};
++static const char *wm8960_adc_left_source[] = {"left ADC", "right ADC"};
++static const char *wm8960_adc_right_source[] = {"right ADC", "left ADC"};
+ 
+ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
+@@ -149,6 +151,8 @@ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_3D, 5, 2, wm8960_3d_lower_cutoff),
+ 	SOC_ENUM_SINGLE(WM8960_ALC1, 7, 4, wm8960_alcfunc),
+ 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
++	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 3, 2, wm8960_adc_left_source),
++	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 2, wm8960_adc_right_source),
+ };
+ 
+ static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
+@@ -279,6 +283,9 @@ SOC_SINGLE_TLV("Right Output Mixer Boost Bypass Volume",
+ 	       WM8960_BYPASS2, 4, 7, 1, bypass_tlv),
+ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+ 	       WM8960_ROUTMIX, 4, 7, 1, bypass_tlv),
++
++SOC_ENUM("ADC Left Channel Source", wm8960_enum[6]),
++SOC_ENUM("ADC Right Channel Source", wm8960_enum[7]),
+ };
+ 
+ static const struct snd_kcontrol_new wm8960_lin_boost[] = {
+-- 
+1.9.1
