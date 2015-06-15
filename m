@@ -1,365 +1,187 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2 3/3] ASoC: mediatek: Add machine driver for rt5650 rt5676 codec
-Date: Mon, 15 Jun 2015 22:38:04 +0800
-Message-ID: <1434379084-26026-4-git-send-email-koro.chen@mediatek.com>
-References: <1434379084-26026-1-git-send-email-koro.chen@mediatek.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
+ item for soc-compress
+Date: Mon, 15 Jun 2015 14:46:23 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
+References: <1434338445-31992-1-git-send-email-yang.jie@intel.com>
+ <s5hmw01gq9c.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
+ <s5h4mm9gi8h.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1434379084-26026-1-git-send-email-koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
-Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Nicolas Boichat <drinkcat-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DD8D264F0D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 16:46:28 +0200 (CEST)
+In-Reply-To: <s5h4mm9gi8h.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zhang,
+ Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is the DPCM based machine driver with rt5650 and rt5676
-
-Signed-off-by: Nicolas Boichat <drinkcat-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
----
- .../bindings/sound/mt8173-rt5650-rt5676.txt        |  13 +
- sound/soc/mediatek/Kconfig                         |  11 +
- sound/soc/mediatek/Makefile                        |   1 +
- sound/soc/mediatek/mt8173-rt5650-rt5676.c          | 278 +++++++++++++++++++++
- 4 files changed, 303 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
- create mode 100644 sound/soc/mediatek/mt8173-rt5650-rt5676.c
-
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-new file mode 100644
-index 0000000..61e98c9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-@@ -0,0 +1,13 @@
-+MT8173 with RT5650 RT5676 CODECS
-+
-+Required properties:
-+- compatible : "mediatek,mt8173-rt5650-rt5676"
-+- mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
-+
-+Example:
-+
-+	sound {
-+		compatible = "mediatek,mt8173-rt5650-rt5676";
-+		mediatek,audio-codec = <&rt5650 &rt5676>;
-+	};
-+
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 0bfd2a0..15c04e2 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -17,3 +17,14 @@ config SND_SOC_MT8173_MAX98090
- 	  Select Y if you have such device.
- 	  If unsure select "N".
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, June 15, 2015 10:27 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> vinod.koul@linux.intel.com; ramesh.babu@linux.intel.com; Zhang, Vivian
+> Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config item for soc-
+> compress
+> 
+> At Mon, 15 Jun 2015 14:15:40 +0000,
+> Jie, Yang wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Monday, June 15, 2015 7:34 PM
+> > > To: Jie, Yang
+> > > Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam
+> > > R; vinod.koul@linux.intel.com; ramesh.babu@linux.intel.com; Zhang,
+> > > Vivian
+> > > Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config item
+> > > for soc- compress
+> > >
+> > > At Mon, 15 Jun 2015 11:20:44 +0800,
+> > > Jie Yang wrote:
+> > > >
+> > > > We don't always need soc-compress in soc, here add a config item
+> > > > SND_SOC_COMPRESS, please add 'select SND_SOC_COMPRESS' to
+> driver
+> > > > Kconfig when it is needed.
+> > > >
+> > > > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > > > ---
+> > > >  include/sound/soc.h     | 7 +++++++
+> > > >  sound/soc/Kconfig       | 5 ++++-
+> > > >  sound/soc/Makefile      | 3 ++-
+> > > >  sound/soc/intel/Kconfig | 1 +
+> > > >  4 files changed, 14 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/include/sound/soc.h b/include/sound/soc.h index
+> > > > 93df8bf..cc1cd4f 100644
+> > > > --- a/include/sound/soc.h
+> > > > +++ b/include/sound/soc.h
+> > > > @@ -440,7 +440,14 @@ int snd_soc_platform_read(struct
+> > > snd_soc_platform
+> > > > *platform,  int snd_soc_platform_write(struct snd_soc_platform
+> *platform,
+> > > >  					unsigned int reg, unsigned int val);
+> > > int soc_new_pcm(struct
+> > > > snd_soc_pcm_runtime *rtd, int num);
+> > > > +#if IS_ENABLED(CONFIG_SND_SOC_COMPRESS)
+> > > >  int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
+> > > > +#else
+> > > > +static inline int soc_new_compress(struct snd_soc_pcm_runtime
+> > > > +*rtd, int num) {
+> > > > +       return -EPERM;
+> > > > +}
+> > > > +#endif
+> > >
+> > > A dummy function in such a case has both merit and demerit.  The
+> > > demerit is that you won't get errors if the driver really wants the
+> > > compress support but just forgot to select the dependency.
+> >
+> > Here I used -EPERM to return and tell caller that compress operation
+> > is not permitted, does it make sense, Takashi?
+> 
+> The question is whether a runtime error is the best option.  A runtime error
+> won't be caught by build tests but only when actually running by a user.
  
-+config SND_SOC_MT8173_RT5650_RT5676
-+	tristate "ASoC Audio driver for MT8173 with RT5650 RT5676 codecs"
-+	depends on SND_SOC_MEDIATEK
-+	select SND_SOC_RT5645
-+	select SND_SOC_RT5677
-+	help
-+	  This adds ASoC driver for Mediatek MT8173 boards
-+	  with the RT5650 and RT5676 codecs.
-+	  Select Y if you have such device.
-+	  If unsure select "N".
-+
-diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
-index 08fa765..75effbe 100644
---- a/sound/soc/mediatek/Makefile
-+++ b/sound/soc/mediatek/Makefile
-@@ -2,3 +2,4 @@
- obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-pcm.o
- # Machine support
- obj-$(CONFIG_SND_SOC_MT8173_MAX98090) += mt8173-max98090.o
-+obj-$(CONFIG_SND_SOC_MT8173_RT5650_RT5676) += mt8173-rt5650-rt5676.o
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-new file mode 100644
-index 0000000..0940553
---- /dev/null
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -0,0 +1,278 @@
-+/*
-+ * mt8173-rt5650-rt5676.c  --  MT8173 machine driver with RT5650/5676 codecs
-+ *
-+ * Copyright (c) 2015 MediaTek Inc.
-+ * Author: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include "../codecs/rt5645.h"
-+#include "../codecs/rt5677.h"
-+
-+#define MCLK_FOR_CODECS		12288000
-+
-+static const struct snd_soc_dapm_widget mt8173_rt5650_rt5676_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route mt8173_rt5650_rt5676_routes[] = {
-+	{"Speaker", NULL, "SPOL"},
-+	{"Speaker", NULL, "SPOR"},
-+	{"Speaker", NULL, "Sub AIF2TX"}, /* IF2 ADC to 5650  */
-+	{"Sub DMIC L1", NULL, "Int Mic"}, /* DMIC from 5676 */
-+	{"Sub DMIC R1", NULL, "Int Mic"},
-+	{"Headphone", NULL, "HPOL"},
-+	{"Headphone", NULL, "HPOR"},
-+	{"Headphone", NULL, "Sub AIF2TX"}, /* IF2 ADC to 5650  */
-+	{"Headset Mic", NULL, "micbias1"},
-+	{"Headset Mic", NULL, "micbias2"},
-+	{"IN1P", NULL, "Headset Mic"},
-+	{"IN1N", NULL, "Headset Mic"},
-+	{"Sub AIF2RX", NULL, "Headset Mic"}, /* IF2 DAC from 5650  */
-+};
-+
-+static const struct snd_kcontrol_new mt8173_rt5650_rt5676_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
-+static int mt8173_rt5650_rt5676_hw_params(struct snd_pcm_substream *substream,
-+					  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int i, ret;
-+
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+
-+		/* pll from mclk 12.288M */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, MCLK_FOR_CODECS,
-+					  params_rate(params) * 512);
-+		if (ret)
-+			return ret;
-+
-+		/* sysclk from pll */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, 1,
-+					     params_rate(params) * 512,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret)
-+			return ret;
-+	}
-+	return 0;
-+}
-+
-+static struct snd_soc_ops mt8173_rt5650_rt5676_ops = {
-+	.hw_params = mt8173_rt5650_rt5676_hw_params,
-+};
-+
-+static struct snd_soc_jack mt8173_rt5650_rt5676_jack;
-+
-+static int mt8173_rt5650_rt5676_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec_dais[0]->codec;
-+	struct snd_soc_codec *codec_sub = runtime->codec_dais[1]->codec;
-+	int ret;
-+
-+	rt5645_sel_asrc_clk_src(codec,
-+				RT5645_DA_STEREO_FILTER |
-+				RT5645_AD_STEREO_FILTER,
-+				RT5645_CLK_SEL_I2S1_ASRC);
-+	rt5677_sel_asrc_clk_src(codec_sub,
-+				RT5677_DA_STEREO_FILTER |
-+				RT5677_AD_STEREO1_FILTER,
-+				RT5677_CLK_SEL_I2S1_ASRC);
-+	rt5677_sel_asrc_clk_src(codec_sub,
-+				RT5677_AD_STEREO2_FILTER |
-+				RT5677_I2S2_SOURCE,
-+				RT5677_CLK_SEL_I2S2_ASRC);
-+
-+	/* enable jack detection */
-+	ret = snd_soc_card_jack_new(card, "Headset Jack",
-+				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-+				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+				    &mt8173_rt5650_rt5676_jack, NULL, 0);
-+	if (ret) {
-+		dev_err(card->dev, "Can't new Headset Jack %d\n", ret);
-+		return ret;
-+	}
-+
-+	return rt5645_set_jack_detect(codec,
-+				      &mt8173_rt5650_rt5676_jack,
-+				      &mt8173_rt5650_rt5676_jack,
-+				      &mt8173_rt5650_rt5676_jack);
-+}
-+
-+static struct snd_soc_dai_link_component mt8173_rt5650_rt5676_codecs[] = {
-+	{
-+		.dai_name = "rt5645-aif1",
-+	},
-+	{
-+		.dai_name = "rt5677-aif1",
-+	},
-+};
-+
-+/* Digital audio interface glue - connects codec <---> CPU */
-+static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
-+	/* Front End DAI links */
-+	{
-+		.name = "rt5650_rt5676 Playback",
-+		.stream_name = "rt5650_rt5676 Playback",
-+		.cpu_dai_name = "DL1",
-+		.platform_name = "11220000.mt8173-afe-pcm",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+	},
-+	{
-+		.name = "rt5650_rt5676 Capture",
-+		.stream_name = "rt5650_rt5676 Capture",
-+		.cpu_dai_name = "VUL",
-+		.platform_name = "11220000.mt8173-afe-pcm",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_capture = 1,
-+	},
-+
-+	/* Back End DAI links */
-+	{
-+		.name = "Codec",
-+		.cpu_dai_name = "I2S",
-+		.platform_name = "11220000.mt8173-afe-pcm",
-+		.no_pcm = 1,
-+		.codecs = mt8173_rt5650_rt5676_codecs,
-+		.num_codecs = 2,
-+		.init = mt8173_rt5650_rt5676_init,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBS_CFS,
-+		.ops = &mt8173_rt5650_rt5676_ops,
-+		.ignore_pmdown_time = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+	},
-+	{ /* rt5676 <-> rt5650 intercodec link: Sets rt5676 I2S2 as master */
-+		.name = "rt5650_rt5676 intercodec",
-+		.stream_name = "rt5650_rt5676 intercodec",
-+		.cpu_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "snd-soc-dummy",
-+		.no_pcm = 1,
-+		.codec_dai_name = "rt5677-aif2",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBM_CFM,
-+	},
-+
-+};
-+
-+static struct snd_soc_codec_conf mt8173_rt5650_rt5676_codec_conf[] = {
-+	{
-+		.name_prefix = "Sub",
-+	},
-+};
-+
-+static struct snd_soc_card mt8173_rt5650_rt5676_card = {
-+	.name = "mtk-rt5650-rt5676",
-+	.dai_link = mt8173_rt5650_rt5676_dais,
-+	.num_links = ARRAY_SIZE(mt8173_rt5650_rt5676_dais),
-+	.codec_conf = mt8173_rt5650_rt5676_codec_conf,
-+	.num_configs = ARRAY_SIZE(mt8173_rt5650_rt5676_codec_conf),
-+	.controls = mt8173_rt5650_rt5676_controls,
-+	.num_controls = ARRAY_SIZE(mt8173_rt5650_rt5676_controls),
-+	.dapm_widgets = mt8173_rt5650_rt5676_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt8173_rt5650_rt5676_widgets),
-+	.dapm_routes = mt8173_rt5650_rt5676_routes,
-+	.num_dapm_routes = ARRAY_SIZE(mt8173_rt5650_rt5676_routes),
-+};
-+
-+static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &mt8173_rt5650_rt5676_card;
-+	int ret;
-+
-+	mt8173_rt5650_rt5676_codecs[0].of_node =
-+		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 0);
-+	if (!mt8173_rt5650_rt5676_codecs[0].of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+	mt8173_rt5650_rt5676_codecs[1].of_node =
-+		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 1);
-+	if (!mt8173_rt5650_rt5676_codecs[1].of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+	mt8173_rt5650_rt5676_codec_conf[0].of_node =
-+		mt8173_rt5650_rt5676_codecs[1].of_node;
-+
-+	mt8173_rt5650_rt5676_dais[3].codec_of_node =
-+		mt8173_rt5650_rt5676_codecs[1].of_node;
-+
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret)
-+		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
-+			__func__, ret);
-+	return ret;
-+}
-+
-+static int mt8173_rt5650_rt5676_dev_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+	return 0;
-+}
-+
-+static const struct of_device_id mt8173_rt5650_rt5676_dt_match[] = {
-+	{ .compatible = "mediatek,mt8173-rt5650-rt5676", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, mt8173_rt5650_rt5676_dt_match);
-+
-+static struct platform_driver mt8173_rt5650_rt5676_driver = {
-+	.driver = {
-+		   .name = "mtk-rt5650-rt5676",
-+		   .owner = THIS_MODULE,
-+		   .of_match_table = mt8173_rt5650_rt5676_dt_match,
-+#ifdef CONFIG_PM
-+		   .pm = &snd_soc_pm_ops,
-+#endif
-+	},
-+	.probe = mt8173_rt5650_rt5676_dev_probe,
-+	.remove = mt8173_rt5650_rt5676_dev_remove,
-+};
-+
-+module_platform_driver(mt8173_rt5650_rt5676_driver);
-+
-+/* Module information */
-+MODULE_DESCRIPTION("MT8173 RT5650 and RT5676 SoC machine driver");
-+MODULE_AUTHOR("Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:mtk-rt5650-rt5676");
-+
--- 
-1.8.1.1.dirty
+Unfortunately, here cpu_dai->driver->compress_dai is a runtime value,
+which means we need compress API when it is true. Seems it is not easy
+to decide it at compile stage?
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> > Or can you suggest a better solution, according to this specific case?
+> 
+> Well, there are several ways, obviously (e.g. give the preprocessor error if
+> CONFIG_SND_SOC_COMPRESS is enabled).  But I'm not sure what is the best
+ 
+Do you mean giving error, when CONFIG_SND_SOC_COMPRESS is disabled but
+the driver wants the compress support at the same time?
+
+As I stated above, it's not easy to detect whether the driver wants the compress
+support, at the preprocessor/compile stage. :(
+
+~Keyon
+
+> to fit, too.  It's rather a matter of taste.
+> 
+> 
+> Takashi
+> 
+> > Thanks,
+> > ~Keyon
+> > >
+> > >
+> > > Takashi
+> > >
+> > > >  struct snd_pcm_substream *snd_soc_get_dai_substream(struct
+> > > snd_soc_card *card,
+> > > >  		const char *dai_link, int stream); diff --git
+> > > > a/sound/soc/Kconfig b/sound/soc/Kconfig index
+> > > > e2828e1..a124759 100644
+> > > > --- a/sound/soc/Kconfig
+> > > > +++ b/sound/soc/Kconfig
+> > > > @@ -9,7 +9,6 @@ menuconfig SND_SOC
+> > > >  	select SND_JACK if INPUT=y || INPUT=SND
+> > > >  	select REGMAP_I2C if I2C
+> > > >  	select REGMAP_SPI if SPI_MASTER
+> > > > -	select SND_COMPRESS_OFFLOAD
+> > > >  	---help---
+> > > >
+> > > >  	  If you want ASoC support, you should say Y here and also to
+> > > > the @@
+> > > > -30,6 +29,10 @@ config SND_SOC_GENERIC_DMAENGINE_PCM
+> > > >  	bool
+> > > >  	select SND_DMAENGINE_PCM
+> > > >
+> > > > +config SND_SOC_COMPRESS
+> > > > +	tristate
+> > > > +	select SND_COMPRESS_OFFLOAD
+> > > > +
+> > > >  # All the supported SoCs
+> > > >  source "sound/soc/adi/Kconfig"
+> > > >  source "sound/soc/atmel/Kconfig"
+> > > > diff --git a/sound/soc/Makefile b/sound/soc/Makefile index
+> > > > a0e1ee6..184c1e6 100644
+> > > > --- a/sound/soc/Makefile
+> > > > +++ b/sound/soc/Makefile
+> > > > @@ -1,6 +1,7 @@
+> > > >  snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o
+> > > > soc-utils.o -snd-soc-core-objs += soc-pcm.o soc-compress.o
+> > > > soc-io.o soc-devres.o soc-ops.o
+> > > > +snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
+> > > >  snd-soc-core-objs += soc-topology.o
+> > > > +snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+> > > >
+> > > >  ifneq ($(CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM),)
+> > > >  snd-soc-core-objs += soc-generic-dmaengine-pcm.o diff --git
+> > > > a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig index
+> > > > 791953f..e559174 100644
+> > > > --- a/sound/soc/intel/Kconfig
+> > > > +++ b/sound/soc/intel/Kconfig
+> > > > @@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
+> > > >
+> > > >  config SND_SST_MFLD_PLATFORM
+> > > >  	tristate
+> > > > +	select SND_SOC_COMPRESS
+> > > >
+> > > >  config SND_SST_IPC
+> > > >  	tristate
+> > > > --
+> > > > 1.9.1
+> > > >
+> >
