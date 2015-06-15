@@ -1,43 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: mrfld: simplify sst_fill_widget_module_info
-Date: Mon, 15 Jun 2015 10:51:06 +0100
-Message-ID: <20150615095106.GC18309@sirena.org.uk>
-References: <1433405633-18656-1-git-send-email-linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v4] ASoC: Intel: fixed TI button detection
+Date: Mon, 15 Jun 2015 10:51:44 +0100
+Message-ID: <20150615095144.GD18309@sirena.org.uk>
+References: <1432925772-117760-3-git-send-email-yang.a.fang@intel.com>
+ <1433369261-98343-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eRtJSFbw+EEWtPj3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1433405633-18656-1-git-send-email-linux@rasmusvillemoes.dk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4283616321830590668=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2890261531
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 11:51:55 +0200 (CEST)
+In-Reply-To: <1433369261-98343-1-git-send-email-yang.a.fang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---eRtJSFbw+EEWtPj3
-Content-Type: text/plain; charset=us-ascii
+--===============4283616321830590668==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
 Content-Disposition: inline
 
-On Thu, Jun 04, 2015 at 10:13:53AM +0200, Rasmus Villemoes wrote:
-> Some tiny improvements, cutting 180 bytes off the generated code.
 
-Applied, thanks
+--d01dLTUuW90fS44H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---eRtJSFbw+EEWtPj3
+On Wed, Jun 03, 2015 at 03:07:41PM -0700, yang.a.fang@intel.com wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>=20
+> In order to make TI button interrupt working max98090 codec
+> Need provide mic bias all the time as long as mic is present
+> so SHDN and micbias pin are forced on.we also need set max98090
+> codec bias close or lower than TI bias.We set them in bios/coreboot
+> kernel reads them from device property
+
+Applied, thanks.
+
+--d01dLTUuW90fS44H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVfqAJAAoJECTWi3JdVIfQVVIH/jioc3xZtAHlvj1+S7Lwb+fW
-ZedxZB+rcRA3Ds9BFRTFd38A1CxqF6gCR1054enIXcVqf9JnkB6Fht44L4M9ihmR
-cHDeY0L0THKZkpSBVogHeWJRQ+Uv0uSe5pT9WhjWnTmygQpS4JG5NN0WKJzKuxtM
-haffHuFc2dIwiAWKbXv56qyNs0riEQTN7oImXTckRfoqVcLKjcvZ1acu4bXKLm0N
-buLqauaqRx4QtfVeuRllY8Fk4x7vfBYFNHoCVOivXu4mz/udFumIGPo/LyL1C6zV
-Ujm6o0s9IIdgNols7JGRZaw5zY3GTke7Vp5rg5S3FefYBZA2ypRAp9I27Qea/i4=
-=PcXV
+iQEcBAEBCAAGBQJVfqAwAAoJECTWi3JdVIfQSeYH/Rh/y7kp0lO/i3M4TXpl0tYy
+Z8fFWYSAdOAVR94RReY4bMuLgSmRhIwl2LpRr4lEkNNQYWlSbAchkVWxCQL2qPLh
+IyfRsanWO631vgl2DK6tdl5YLKB7+l/9Fo6ZZlYnb8Xq3NfH5fizzn6NvFPv3P81
+Sxp5+zyhri0SAl8setmVle2aCjj29yG1AybcEMAv6SKnvWJw9Up7z/tmVbKHgbcD
+Wysr280FoqS/IzsVMdXOLh2zlV1c5H8W8YBDVhGL7f3kc0uMjgVPeNa49bEHEaVY
+2ek0vbKj8ICDHqnE/vJdZtxDNlq2jOLiOW7UMLzrfB2ePvQZSQ+uc000xL3bloI=
+=rOqn
 -----END PGP SIGNATURE-----
 
---eRtJSFbw+EEWtPj3--
+--d01dLTUuW90fS44H--
+
+--===============4283616321830590668==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4283616321830590668==--
