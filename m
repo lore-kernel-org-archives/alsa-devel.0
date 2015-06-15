@@ -1,17 +1,22 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH 4/4] ASoC: intel: Constify ACPI device ids
-Date: Mon, 15 Jun 2015 16:07:22 +0300
-Message-ID: <557ECE0A.9050500@linux.intel.com>
-References: <1434198316-8400-1-git-send-email-minipli@googlemail.com>
- <1434198316-8400-5-git-send-email-minipli@googlemail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Mon, 15 Jun 2015 21:34:11 +0800
+Message-ID: <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A49A2614C4
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 15:07:26 +0200 (CEST)
-In-Reply-To: <1434198316-8400-5-git-send-email-minipli@googlemail.com>
+Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
+ [209.85.218.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5878A261B23
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 15:34:12 +0200 (CEST)
+Received: by oial131 with SMTP id l131so25469052oia.3
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 06:34:11 -0700 (PDT)
+In-Reply-To: <557EBEAA.70004@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,18 +26,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mathias Krause <minipli@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/13/2015 03:25 PM, Mathias Krause wrote:
-> Constify the ACPI device ID array, it doesn't need to be writable at
-> runtime.
+>>>>
+>>>>
+>>>> Hi folks,
+>>>> I'd like to bring this one up again, since we are currently in the
+>>>> sub-optimal position of forcing ~100 ms latency on USB devices. The
+>>>> original thread is here --
+>>>>
+>>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-December/069666.html
+>>>>
+>>>>
+>>>> I see two flags that are possibly of consequence here:
+>>>> SNDRV_PCM_INFO_BATCH and SNDRV_PCM_INFO_BLOCK_TRANSFER. I'm not sure
+>>>> what these mean -- the documentation mentions "double buffering" for
+>>>> the batch flag, and just that the block transfer means "block
+>>>> transfer". :-)
+>>>>
+>>>> We've spoken about batch meaning either transfers in period size
+>>>> chunks, or some fixed chunk size. It seems that it would make more
+>>>> sense for it to mean the former, and block transfer to mean the
+>>>> latter.
+>>>>
+>>>> So I guess the first thing that would be nice to have is a clear
+>>>> meaning of these two flags. With this done, we could potentially get
+>>>> to the API to report the transfer size from the driver.
+>>>
+>>>
+>>>
+>>> Yeah, the meaning of those flags is somewhat fuzzy and may have changed
+>>
+>> over time as well. Here is my understanding of the flags, might not
+>> necessarily be 100% correct.
+>>>
+>>>
+>>> SNDRV_PCM_INFO_BLOCK_TRANSFER means that the data is copied from the
+user
+>>
+>> accessible buffer in blocks of one period. Typically these kinds of
+devices
+>> have some dedicated audio memory that is not accessible via normal memory
+>> access and a DMA is setup to copy data from main memory to the dedicated
+>> memory. This DMA transfers the data from the main memory to the dedicated
+>> memory in chunks of period size. But otherwise the controller might still
+>> be capable of reporting a accurate pointer position down to the
+>> sample/frame level.
+>>>
+>>>
+>>> So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind handling
+>>
+>> and devices with that flag set might need additional headroom since the
+>> data up to one period after the pointer position has already been copied
+to
+>> the dedicated memory and hence can no longer be overwritten.
+>>>
+>>>
+>>> SNDRV_PCM_INFO_BATCH on the other hand has become to mean that the
+device
+>>
+>> is only capable of reporting the audio pointer with a coarse granularity.
+>> Typically this means a period sized granularity, but there are some other
+>> cases as well.
+>>>
+>>>
+>>
+>> DSP_CAP_REALTIME bit tells if the device/operating system supports
+precise
+>> reporting of output pointer position using SNDCTL_DSP_GETxPTR. Precise
+>> means that accuracy of the reported playback pointer (time) is around few
+>> samples. Without this capability the playback/recording position is
+>> reported using precision of one fragment.
+>>
+>> DSP_CAP_BATCH bit means that the device has some kind of local storage
+for
+>> recording and/or playback. For this reason the information reported by
+>> SNDCTL_DSP_GETxPTR is very inaccurate.
+>>
+>> Are those alsa cap have the similar meaning of those oss cap ?
 >
-> Signed-off-by: Mathias Krause <minipli@googlemail.com>
-> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> ---
->   sound/soc/intel/common/sst-acpi.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> I would say historically SNDRV_PCM_INFO_BATCH had the same meaning as
+DSP_CAP_BATCH, but it has also come to have the inverse meaning to
+DSP_CAP_REALTIME. By default applications can assume that the pointer is
+accurate down to a few samples, but if SNDRV_PCM_INFO_BATCH is set it is
+less accurate and can be everything up to period size precession.
+>
+> SNDRV_PCM_INFO_BLOCK_TRANSFER is different from all of them though.
+
+ DMA_RESIDUE_GRANULARITY_DESCRIPTOR
+DMA_RESIDUE_GRANULARITY_SEGMENT
+DMA_RESIDUE_GRANULARITY_BURST
+
+Can this be regard as bad, normal and good accuracy ?
+
+https://bugs.freedesktop.org/show_bug.cgi?id=86262
+
+Although the resolution seem less than period size but the deviation is
+quite large , can we still regard this result are accurate up to one period
+?
+
+http://lists.freedesktop.org/archives/pulseaudio-discuss/2015-June/024022.html
+
+This is accurate up to one period
+
+Why do we need flag for exactly one period since most of the driver use irq
+should increment one period when interrupt occur ?
+
+We only need to know those good accuracy can use timer base and those bad
+accuracy need special care
