@@ -1,23 +1,21 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: Re: [PATCH] ASoC: rt5645: move RT5650 muxes to
- rt5650_specific_dapm_widgets
-Date: Mon, 15 Jun 2015 17:04:46 +0200
-Message-ID: <20150615150446.GA1722@asus>
-References: <1434336251-21807-1-git-send-email-oder_chiou@realtek.com>
- <20150615100420.GF18309@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694F802B8@RTITMBSV03.realtek.com.tw>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
+ item for soc-compress
+Date: Mon, 15 Jun 2015 16:05:56 +0100
+Message-ID: <20150615150556.GQ18309@sirena.org.uk>
+References: <1434338445-31992-1-git-send-email-yang.jie@intel.com>
+ <s5hmw01gq9c.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
+ <s5h4mm9gi8h.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3781313690488676343=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id DD2DF2650C3
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 17:04:50 +0200 (CEST)
-Received: by wicnd19 with SMTP id nd19so27680535wic.1
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 08:04:50 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694F802B8@RTITMBSV03.realtek.com.tw>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78CDA26512B
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 17:06:10 +0200 (CEST)
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,37 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+To: "Jie, Yang" <yang.jie@intel.com>
+Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 15, 2015 at 10:29:56AM +0000, Oder Chiou wrote:
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-> > Sent: Monday, June 15, 2015 6:04 PM
-> > To: Oder Chiou
-> > Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Flove; Bard Liao; John Lin;
-> > Michele Curti
-> > Subject: Re: [PATCH] ASoC: rt5645: move RT5650 muxes to
-> > rt5650_specific_dapm_widgets
-> > 
-> > On Mon, Jun 15, 2015 at 10:44:11AM +0800, Oder Chiou wrote:
-> > > Developing a driver for an Asus X205TA laptop I get these dmesg
-> > > errors:
-> > 
-> > > Signed-off-by: Michele Curti <michele.curti@gmail.com>
-> > > Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-> > 
-> > Did Michele write this patch or did you?  It doesn't matter so much when
-> > all the signoffs come from within the same company but given that
-> > Michele has a gmail rather than Realtek address the licensing parts of
-> > the signoff start to matter.
-> 
-> The patch was written by Michele. She sent the patch to us and
-> alsa-devel@alsa-project.org, but the mail address was not included you.
-> So we forwarded the patch, thanks.
 
-Oh.. Yep, sorry.  I only added the maintainers and not the supporters.
+--===============3781313690488676343==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7a4X6VOqfbl9xMrG"
+Content-Disposition: inline
 
-Thanks,
-Michele
+
+--7a4X6VOqfbl9xMrG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 15, 2015 at 02:46:23PM +0000, Jie, Yang wrote:
+
+> > > Here I used -EPERM to return and tell caller that compress operation
+> > > is not permitted, does it make sense, Takashi?
+
+> > The question is whether a runtime error is the best option.  A runtime error
+> > won't be caught by build tests but only when actually running by a user.
+
+> Unfortunately, here cpu_dai->driver->compress_dai is a runtime value,
+> which means we need compress API when it is true. Seems it is not easy
+> to decide it at compile stage?
+
+The machine driver (which is presumably the thing that should be doing
+the select here, it's not user visible) really ought to know if the DAI
+links it is creating are for compressed audio.  This is why I'm still
+surprised there's no driver updates as part of this patch.  If the Intel
+drivers referencing compressed don't actually implement it then I'd
+expect to see patches cleaning up the references to compressed audio.
+
+--7a4X6VOqfbl9xMrG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVfunUAAoJECTWi3JdVIfQFOsH/2vtcULekHT5XKAIur1tU0jE
++S+/pW2onlUi0L851MkefZk7Ay8eSuvcJFk/6maZpWi6MnBq0anjSlv42P/yFXj9
+0MJdtYnSLZc3q1tIbgx0B7gVcOZC4Hda78gOidZxl1XIRPWaHH1Flm2037QyzvV0
+vI5xNPOM2QBvIDo6Pni9yKbi8K+mESvw4XZ+86e924fBVgPAIBzSwVKGBwlBxnPB
+YQiUVP5V7vRi8aSc7bzDJqVX6cSGi+lMEGXigXIQKjejRVIbX+SZj5JUtzx60M0V
+fZUesedyUW6COjmz/JacRYpi9n86Ih+X3gGttpm/rVwmTG3cuLJDp0VsmYcnvaE=
+=BWAO
+-----END PGP SIGNATURE-----
+
+--7a4X6VOqfbl9xMrG--
+
+--===============3781313690488676343==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3781313690488676343==--
