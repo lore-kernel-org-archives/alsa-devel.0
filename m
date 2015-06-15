@@ -1,18 +1,17 @@
-From: Timur Karaldin <karaldin@mcsplus.ru>
-Subject: AIC3106 problem with driver (MIC BIAS)
-Date: Mon, 15 Jun 2015 15:27:49 +0300
-Message-ID: <557EC4C5.2040806@mcsplus.ru>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH 4/4] ASoC: intel: Constify ACPI device ids
+Date: Mon, 15 Jun 2015 16:07:22 +0300
+Message-ID: <557ECE0A.9050500@linux.intel.com>
+References: <1434198316-8400-1-git-send-email-minipli@googlemail.com>
+ <1434198316-8400-5-git-send-email-minipli@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp26.mail.ru (smtp26.mail.ru [94.100.181.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 643242614CA
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 14:28:45 +0200 (CEST)
-Received: from [83.242.226.142] (port=29363 helo=[192.168.100.105])
- by smtp26.mail.ru with esmtpa (envelope-from <karaldin@mcsplus.ru>)
- id 1Z4TVM-0006tq-KX
- for alsa-devel@alsa-project.org; Mon, 15 Jun 2015 15:28:44 +0300
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A49A2614C4
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 15:07:26 +0200 (CEST)
+In-Reply-To: <1434198316-8400-5-git-send-email-minipli@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mathias Krause <minipli@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello, I'm using linux 3.12 kernel for TI SITARA ARM (am335x) with TI 
-AIC3106 codec ( tlv320aic3x.c driver).
-There is a mic bias support through device tree option aic3x-micbias-vg. 
-But in fact it's not working correctly. During kernel booting it's 
-setting (after 2-3 seconds) but after finish booting it's cleared. Even 
-if I change the default regs values in aic3x_reg, it's cleared after 
-booting.
-Could somebody point me to solution?
-Another thing I need to do is to get mic/headset detection in mixer. 
-There is some code in driver ("Detection" output) but actually I don't 
-understand right way of using it.
-
-Best regards,
-Tim Karaldin
+On 06/13/2015 03:25 PM, Mathias Krause wrote:
+> Constify the ACPI device ID array, it doesn't need to be writable at
+> runtime.
+>
+> Signed-off-by: Mathias Krause <minipli@googlemail.com>
+> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> ---
+>   sound/soc/intel/common/sst-acpi.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
