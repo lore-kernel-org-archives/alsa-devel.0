@@ -1,62 +1,107 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH 2/3] ASoC: mediatek: Add machine driver for MAX98090
- codec
-Date: Mon, 15 Jun 2015 10:31:45 +0800
-Message-ID: <1434335505.14980.13.camel@mtksdaap41>
-References: <1433946276-25969-1-git-send-email-koro.chen@mediatek.com>
-	 <1433946276-25969-3-git-send-email-koro.chen@mediatek.com>
-	 <20150612131325.GA1921@sirena.org.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5645: move RT5650 muxes to
+	rt5650_specific_dapm_widgets
+Date: Mon, 15 Jun 2015 10:44:11 +0800
+Message-ID: <1434336251-21807-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150612131325.GA1921-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA1AA260676
+ for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 04:44:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, Michele Curti <michele.curti@gmail.com>, alsa-devel@alsa-project.org, john.lin@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-06-12 at 14:13 +0100, Mark Brown wrote:
-> On Wed, Jun 10, 2015 at 10:24:35PM +0800, Koro Chen wrote:
-> 
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
-> > @@ -0,0 +1,17 @@
-> > +MT8173 with MAX98090 CODEC
-> > +
-> > +Required properties:
-> > +- compatible : "mediatek,mt8173-max98090"
-> > +- mediatek,audio-codec: the phandle of the MAX98090 audio codec
-> > +- dvdd-supply : the phandle of regulator to supply 1.2V
-> > +- avdd-supply : the phandle of regulator to supply 1.8V
-> 
-> Why are these supplies part of the machine driver?
-> 
-These are for the codec as you said. I think I should remove all these
-supplies as well as codes in machine drivers, since now the regulators
-are configured during the board's bootloader stage.
+Developing a driver for an Asus X205TA laptop I get these dmesg
+errors:
 
-> > +config SND_SOC_MT8173_MAX98090
-> > +	bool "ASoC Audio driver for MT8173 with MAX98090 codec"
-> 
-> Why bool?
-> 
-This should be tristate as Paul mentioned before. I will fix it.
-> > +	codec_node = of_parse_phandle(pdev->dev.of_node,
-> > +				      "mediatek,audio-codec", 0);
-> > +	if (!codec_node) {
-> > +		dev_err(&pdev->dev,
-> > +			"Property 'audio-codec' missing or invalid\n");
-> > +	} else {
-> 
-> Isn't this a fatal error?
-> 
-Thank you and yes it should be fatal, I will fix it.
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 ADC1 Swap Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 ADC2 Swap Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 ADC3 Swap Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 ADC Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 DAC1 L Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 DAC1 R Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 DAC2 L Mux has no paths
+ rt5645 i2c-10EC5648:00: ASoC: mux RT5650 IF1 DAC2 R Mux has no paths
 
+so, move these muxes to the rt5650_specific_dapm_widgets[] list.
 
+Signed-off-by: Michele Curti <michele.curti@gmail.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 4344043..9ce311e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1706,15 +1706,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("RT5645 IF1 ADC Mux", SND_SOC_NOPM,
+ 		0, 0, &rt5645_if1_adc_in_mux),
+ 
+-	SND_SOC_DAPM_MUX("RT5650 IF1 ADC1 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5650_if1_adc1_in_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 ADC2 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5650_if1_adc2_in_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 ADC3 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5650_if1_adc3_in_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 ADC Mux", SND_SOC_NOPM,
+-		0, 0, &rt5650_if1_adc_in_mux),
+-
+ 	SND_SOC_DAPM_MUX("IF2 ADC Mux", SND_SOC_NOPM,
+ 		0, 0, &rt5645_if2_adc_in_mux),
+ 
+@@ -1733,14 +1724,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 		&rt5645_if1_dac2_tdm_sel_mux),
+ 	SND_SOC_DAPM_MUX("RT5645 IF1 DAC2 R Mux", SND_SOC_NOPM, 0, 0,
+ 		&rt5645_if1_dac3_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 DAC1 L Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5650_if1_dac0_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 DAC1 R Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5650_if1_dac1_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 DAC2 L Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5650_if1_dac2_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5650 IF1 DAC2 R Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5650_if1_dac3_tdm_sel_mux),
+ 	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -1882,6 +1865,24 @@ static const struct snd_soc_dapm_widget rt5650_specific_dapm_widgets[] = {
+ 		0, 0, &rt5650_a_dac2_l_mux),
+ 	SND_SOC_DAPM_MUX("A DAC2 R Mux", SND_SOC_NOPM,
+ 		0, 0, &rt5650_a_dac2_r_mux),
++
++	SND_SOC_DAPM_MUX("RT5650 IF1 ADC1 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5650_if1_adc1_in_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 ADC2 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5650_if1_adc2_in_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 ADC3 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5650_if1_adc3_in_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 ADC Mux", SND_SOC_NOPM,
++		0, 0, &rt5650_if1_adc_in_mux),
++
++	SND_SOC_DAPM_MUX("RT5650 IF1 DAC1 L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5650_if1_dac0_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 DAC1 R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5650_if1_dac1_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 DAC2 L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5650_if1_dac2_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5650 IF1 DAC2 R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5650_if1_dac3_tdm_sel_mux),
+ };
+ 
+ static const struct snd_soc_dapm_route rt5645_dapm_routes[] = {
+-- 
+1.8.1.1.439.g50a6b54
