@@ -1,18 +1,20 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: ASoC : WM5102 Audio Codec needs ACPI support and a
-	baytrail machine driver
-Date: Tue, 16 Jun 2015 12:00:04 +0200
-Message-ID: <CAKor6TdbnLuJCsBPykPEmhGk-zBLggKxw4Z+=QuBb6Mz2ThD3g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 2/4] ASoC: Intel - add Skylake HDA audio
+	driver
+Date: Tue, 16 Jun 2015 11:28:26 +0100
+Message-ID: <20150616102826.GF18309@sirena.org.uk>
+References: <1434040438-14535-1-git-send-email-vinod.koul@intel.com>
+ <1434040438-14535-3-git-send-email-vinod.koul@intel.com>
+ <20150615155632.GU18309@sirena.org.uk>
+ <20150616035247.GT28601@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1625013721353531014=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
- [209.85.220.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AE25261AC1
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 12:00:05 +0200 (CEST)
-Received: by qkdm188 with SMTP id m188so5990379qkd.1
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 03:00:04 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1E32264ED5
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 12:28:46 +0200 (CEST)
+In-Reply-To: <20150616035247.GT28601@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-acpi <linux-acpi@vger.kernel.org>, patches@opensource.wolfsonmicro.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi list,
 
-I have a device "Lenovo Yoga 851 F" which have a WM510205 Audio codec
-on a Baytrail System.
+--===============1625013721353531014==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1YtYzP3stTOlsn9I"
+Content-Disposition: inline
 
-I have sent already one patch (spi-pxa2xx) raise num_chipselect by one, which
-fixes to bind the arizona WM5102 codec as a spi slave attachted on a
-pxa2xx spi master device.
 
-I have tried several times and added the ACPI id "WM510205"  to
-the arizona-spi.c driver.
+--1YtYzP3stTOlsn9I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The ACPI ID is extracted from the DSDT.dsl of this machine.
+On Tue, Jun 16, 2015 at 09:22:47AM +0530, Vinod Koul wrote:
+> On Mon, Jun 15, 2015 at 04:56:33PM +0100, Mark Brown wrote:
 
-But unfortunately it fails and I got only a NULL pointer deference error
-in arizona_spi_probe().
-I want to request ACPI support for this device and I cannot fix
-currently the NULL pointer.
+> > > +static const struct hdac_io_ops skl_io_ops = {
+> > > +	.reg_writel = skl_pci_writel,
+> > > +	.reg_readl = skl_pci_readl,
+> > > +	.reg_writew = skl_pci_writew,
+> > > +	.reg_readw = skl_pci_readw,
+> > > +	.reg_writeb = skl_pci_writeb,
+> > > +	.reg_readb = skl_pci_readb,
+> > > +	.dma_alloc_pages = skl_dma_alloc_pages,
+> > > +	.dma_free_pages = skl_dma_free_pages,
+> > > +};
 
-I do not know yet, if I have to add this ACPI id to the arizona-spi
-driver (sure,
-thats what I am trying and failing) or to the NEW baytrail machine driver.
+> > Still not thrilled at open coding these wrappers.
 
-In this case it should be the bytcr_wm5102.c and byt-wm5102.c, which
-does not exists yet.
+> If we have this is core, I will remove the part :)
 
-I have a branched tovalds/master and added (my first attempt) the
-above mentioned machine driver on a local branch. The result is only
-a dsp boot timeout error.
+You could always send changes to add default ops to the core!
 
-Any help, ideas, hints, patches to try would be appreciate
+--1YtYzP3stTOlsn9I
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-sincerely yours
-Christian Hartmann
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-a snap of the dsdt
+iQEcBAEBCAAGBQJVf/pGAAoJECTWi3JdVIfQBFQH/3yi/BnBEZpAxbqTCneqxgT0
+oa4Asi5vduaNqiaNac9s2cKTUxING/+YpirVCsgGWzJMUs/OFwGkVkLgHWB65JZc
+E48fhJtpe88UwQMBGR2NWKFlh6hxDVf1+sMjNzIqvCsgknzoPRwfS95Dy99ry725
+t4VKcXhCJ3zLhN5ZReQ5gTb/MfTlwO9EtWOPD87P9eKkH9UUJeTqeS8GHHgLgcot
+VyompijogdxPIU+p4tAEcsHA87T13n5+B+fsYHKjGj3HsJIA3qzDfWVhLjIX3UZf
+Oru7DYrMt0CukaKUIonr/4njZ0AU8KLxGqIMStGRMgXAVnajw9B5/OZh2jsB96c=
+=RGdT
+-----END PGP SIGNATURE-----
 
-Device (LPEA)
-        {
-            Name (_ADR, Zero)  // _ADR: Address
-            Name (_HID, "80860F28" /* Intel SST Audio DSP */)  //
-_HID: Hardware ID
-            Name (_CID, "80860F28" /* Intel SST Audio DSP */)  //
-_CID: Compatible ID
-            Name (_DDN, "Intel(R) Low Power Audio Controller -
-80860F28")  // _DDN: DOS Device Name
-            Name (_SUB, "17AA7004")  // _SUB: Subsystem ID
-            Name (_UID, One)  // _UID: Unique ID
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
-            {
-                ^SPI1.AUDI
-            })
-...
-...
-Device (AUDI)
-            {
-                Name (_HID, "WM510205")  // _HID: Hardware ID
-                Name (_CID, "WM510205")  // _CID: Compatible ID
-                Name (_DDN, "Wolfson Microelectronics Audio WM5102")
-// _DDN: DOS Device Name
-                Method (_CRS, 0, NotSerialized)  // _CRS: Current
-Resource Settings
-                {
-                    Name (SBUF, ResourceTemplate ()
-                    {
-                        SpiSerialBus (0x0001, PolarityLow, FourWireMode, 0x08,
-                            ControllerInitiated, 0x007A1200, ClockPolarityLow,
-                            ClockPhaseFirst, "\\_SB.SPI1",
-                            0x00, ResourceConsumer, ,
-                            )
-                        GpioInt (Edge, ActiveLow, ExclusiveAndWake,
-PullNone, 0x0000,
-                            "\\_SB.GPO2", 0x00, ResourceConsumer, ,
-                            )
-                            {   // Pin list
-                                0x0004
-                            }
-                        GpioIo (Exclusive, PullDefault, 0x0000,
-0x0000, IoRestrictionOutputOnly,
-                            "\\_SB.I2C7.PMIC", 0x00, ResourceConsumer, ,
-                            )
-                            {   // Pin list
-                                0x0003
-                            }
-                        GpioIo (Exclusive, PullDefault, 0x0000,
-0x0000, IoRestrictionOutputOnly,
-                            "\\_SB.GPO1", 0x00, ResourceConsumer, ,
-                            )
-                            {   // Pin list
-                                0x0017
-                            }
-                    })
+--1YtYzP3stTOlsn9I--
+
+--===============1625013721353531014==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1625013721353531014==--
