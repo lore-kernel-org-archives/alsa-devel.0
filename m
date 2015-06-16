@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: wm8995: Fix setting sysclk for
- WM8995_SYSCLK_MCLK2 case
-Date: Tue, 16 Jun 2015 19:39:09 +0800
-Message-ID: <1434454749.12886.1.camel@ingics.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/21] ASoC: rsnd: don't care under/over
+ run error when PIO
+Date: Tue, 16 Jun 2015 12:41:46 +0100
+Message-ID: <20150616114146.GK18309@sirena.org.uk>
+References: <87twu9v6kn.wl%kuninori.morimoto.gx@renesas.com>
+ <87si9tv6iv.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3911881689926297580=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
- [209.85.192.170])
- by alsa0.perex.cz (Postfix) with ESMTP id D1857261721
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 13:39:17 +0200 (CEST)
-Received: by pdjn11 with SMTP id n11so12739781pdj.0
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 04:39:16 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6235265554
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 13:41:59 +0200 (CEST)
+In-Reply-To: <87si9tv6iv.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix trivial typo.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-Hi Charles and Dimitris,
-This looks like a typo. Can you confirm?
-Thanks,
-Axel.
+--===============3911881689926297580==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x2HNTtYOBsOEDsnN"
+Content-Disposition: inline
 
- sound/soc/codecs/wm8995.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 687c4dd..505b65f 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -1930,7 +1930,7 @@ static int wm8995_set_dai_sysclk(struct snd_soc_dai *dai,
- 			dai->id + 1, freq);
- 		break;
- 	case WM8995_SYSCLK_MCLK2:
--		wm8995->sysclk[dai->id] = WM8995_SYSCLK_MCLK1;
-+		wm8995->sysclk[dai->id] = WM8995_SYSCLK_MCLK2;
- 		wm8995->mclk[1] = freq;
- 		dev_dbg(dai->dev, "AIF%d using MCLK2 at %uHz\n",
- 			dai->id + 1, freq);
--- 
-2.1.0
+--x2HNTtYOBsOEDsnN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 15, 2015 at 06:20:54AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> PIO is used only for checking data path / codec settings. And underrun
+> is very normal when PIO mode. Let's don't care about under/over run
+> error when PIO case. Otherwise, 1) too many HW restart happens, 2) some
+> sounds which need much data transfer can't play since it falls into
+> error detection method which was created for DMA transfer
+
+I've applied the whole series but I'm not thrilled with this one.  I
+guess what you mean to say is that this is only used during bringup of a
+new platform in which case it's not that big a deal but otherwise then
+the usual thing with PIO is to implement FIQ support to keep the
+hardware full.
+
+--x2HNTtYOBsOEDsnN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVgAt2AAoJECTWi3JdVIfQbi4H/ibxgQ89dwrPBGi8fsG3MDPZ
+E90rMdCe06X2so8zjilwRKieUPtdPwl69/QvqCc0izCkrqItVhewnaWXvkV7Gmyg
+5QLfeDraJkpy4irP8bmM8KM8gr7a6s/Qc2nY2x63adNx/EjBOYmpcWMicXuOautY
+fvt2xZWbkRXDCFDO+OIf1H+z06xsunKbbN2f2vnF1kf/fQ2wMeABz/UZKEwMPKtz
+/J/SeZjDD7iEhvvOxADBe7M5ksCYFV//W7F1ExVJG/zSEnwEp7OmUEdey6fnjLu2
+H3abRE2v6N35usQJ8NI/atXyBpdK/pzRpcF581trm/aCMOgN+xz0yIkHGJ8Dmw0=
+=Uc+4
+-----END PGP SIGNATURE-----
+
+--x2HNTtYOBsOEDsnN--
+
+--===============3911881689926297580==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3911881689926297580==--
