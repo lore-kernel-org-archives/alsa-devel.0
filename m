@@ -1,20 +1,22 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 2/4] ASoC: Intel - add Skylake HDA audio
-	driver
-Date: Tue, 16 Jun 2015 09:22:47 +0530
-Message-ID: <20150616035247.GT28601@localhost>
+Subject: Re: [PATCH v5 3/4] ASoC: Intel - add makefile support
+	for SKL driver
+Date: Tue, 16 Jun 2015 10:14:58 +0530
+Message-ID: <20150616044458.GU28601@localhost>
 References: <1434040438-14535-1-git-send-email-vinod.koul@intel.com>
- <1434040438-14535-3-git-send-email-vinod.koul@intel.com>
- <20150615155632.GU18309@sirena.org.uk>
+ <1434040438-14535-4-git-send-email-vinod.koul@intel.com>
+ <20150615155752.GV18309@sirena.org.uk>
+ <s5hmw00gby8.wl-tiwai@suse.de>
+ <20150615185405.GA18309@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 079C7260705
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 05:51:17 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37E3626070D
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 06:43:29 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150615155632.GU18309@sirena.org.uk>
+In-Reply-To: <20150615185405.GA18309@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +27,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 15, 2015 at 04:56:33PM +0100, Mark Brown wrote:
-> > +static int skl_suspend(struct device *dev)
-> > +{
-> > +	struct pci_dev *pci = to_pci_dev(dev);
-> > +	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
-> > +	struct hdac_bus *bus = ebus_to_hbus(ebus);
-> > +
-> > +	snd_hdac_bus_stop_chip(bus);
-> > +	snd_hdac_bus_enter_link_reset(bus);
-> > +	if (bus->irq >= 0) {
-> > +		free_irq(bus->irq, bus);
+On Mon, Jun 15, 2015 at 07:54:05PM +0100, Mark Brown wrote:
+> On Mon, Jun 15, 2015 at 06:42:39PM +0200, Takashi Iwai wrote:
+> > Mark Brown wrote:
+> > > On Thu, Jun 11, 2015 at 10:03:57PM +0530, Vinod Koul wrote:
 > 
+> > > > +	  HD-audio driver.  A larger buffer (e.g. 2048) is preferred
+> > > > +	  for systems using PulseAudio.  The default 64 is chosen just
+> > > > +	  for compatibility reasons.
 > 
-> Why are we freeing the interrupt over suspend?  That is very unusual
-> behaviour.
-As Takashi said, these maybe old HDA related, so I can check if we cna
-remove these. I we find an odd machine/BIOS we can always add this later
+> > > What are those compatibility reasons - why should users have to worry
+> > > about this?
+> 
+> > ... if a user wants to reduce the memory foot print.
+> > 2MB buffers for each stream are significant size, supposing that it
+> > can have 16 streams.
+> 
+> That doesn't sound like a compatibility thing though?  Compatibility
+> makes it sound like things will break rather than we'll just use too
+> much RAM.  Is there anything else going on?
+> 
+> > > Should this be a module parameter or something?
+> 
+> > The buffers can be reallocated dynamically via procfs in general, but
+> > it's not practical and intuitive.  That's why the similar option was
+> > provided for HDA legacy driver.  It was the time when PA started
+> > accepted slowly.  I don't know whether it makes sense for SKL ASoC
+> > driver, though -- it's up to you guys.
+> 
+> I'm not against having configuration, I just want it to be configuration
+> that people can understand and it seems better to make the default be
+> that for PulseAudio given how much of the common case it is now.
+> Something like "make this smaller to reduce the default memory
+> footprint" for example.
+We have been using defaults for our testing, and PA and other usermode
+entities seem happy :)
 
-> 
-> > +static int skl_dmic_device_register(struct skl *skl)
-> > +{
-> > +	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
-> > +	struct platform_device *pdev;
-> > +	int ret;
-> > +
-> > +	pdev = platform_device_alloc("dmic-codec", -1);
-> > +	if (!pdev) {
-> > +		dev_err(bus->dev, "failed to allocate dmic device\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	ret = platform_device_add(pdev);
-> > +	if (ret) {
-> > +		dev_err(bus->dev, "failed to add hda codec device\n");
-> > +		platform_device_put(pdev);
-> > +		return -1;
-> > +	}
-> 
-> Don't squash the error codes you get, return them - and if you must
-> return a fixed error code I'm pretty sure you don't mean -EPERM.
-Ah yes, will fix this
+Btw Mark, the text is not our invention. This exists in legacy driver
+as well.
 
-> 
-> > +	skl->dmic_dev = pdev;
-> 
-> There can only ever be one DMIC?
-One DMIC port, so we need only one DMIC codec device for creating the
-DAI-link.
+Said that, i see two thing to be done here, one is to remove this in SKL
+driver for now and if required add it later with better explanation as for
+now usermode seems happy atm, so may not be required right away
 
-> 
-> > +
-> > +static const struct hdac_io_ops skl_io_ops = {
-> > +	.reg_writel = skl_pci_writel,
-> > +	.reg_readl = skl_pci_readl,
-> > +	.reg_writew = skl_pci_writew,
-> > +	.reg_readw = skl_pci_readw,
-> > +	.reg_writeb = skl_pci_writeb,
-> > +	.reg_readb = skl_pci_readb,
-> > +	.dma_alloc_pages = skl_dma_alloc_pages,
-> > +	.dma_free_pages = skl_dma_free_pages,
-> > +};
-> 
-> Still not thrilled at open coding these wrappers.
-If we have this is core, I will remove the part :)
+Second one is to actually make this in core, move the flag in legacy driver to
+hdac parts and be used in legacy driver as well as anywhere else
 
+Let me know which one looks good to you guys
 
+Thanks
 -- 
 ~Vinod
