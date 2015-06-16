@@ -1,23 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
- item for soc-compress
-Date: Tue, 16 Jun 2015 11:54:29 +0100
-Message-ID: <20150616105429.GI18309@sirena.org.uk>
-References: <1434338445-31992-1-git-send-email-yang.jie@intel.com>
- <s5hmw01gq9c.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
- <s5h4mm9gi8h.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
- <20150615150556.GQ18309@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: wm8995: Fix setting sysclk for
+ WM8995_SYSCLK_MCLK2 case
+Date: Tue, 16 Jun 2015 19:39:09 +0800
+Message-ID: <1434454749.12886.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3269412341836707809=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 303052651B4
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 12:54:46 +0200 (CEST)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1857261721
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 13:39:17 +0200 (CEST)
+Received: by pdjn11 with SMTP id n11so12739781pdj.0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 04:39:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,58 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Fix trivial typo.
 
---===============3269412341836707809==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wnLTWEf+vlzHZaR9"
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Charles and Dimitris,
+This looks like a typo. Can you confirm?
+Thanks,
+Axel.
 
+ sound/soc/codecs/wm8995.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---wnLTWEf+vlzHZaR9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jun 16, 2015 at 12:49:37AM +0000, Jie, Yang wrote:
-
-> Mark, as you may see in this patch(1/2), I have added this selection to s=
-ound/
-> Soc/intel/Kconfig, we can find .compress_dai =3D1 in sst-mfld-platform-pc=
-m.c,
-> the compressed is referenced in sst-mfld-platform-pcm.c:sst_platform_dai,=
-=20
-> here copy the related part from the patch:
-
-OK, that should have been in the commit message.
-
---wnLTWEf+vlzHZaR9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVgABkAAoJECTWi3JdVIfQKFoH/RMPpnywBMuaoLEAM6ChBBNQ
-bMBZ7wDa+cQ9D6OZ1P11bcOCpsGT0dXCe+JSBHYUweXvBPDYqZXYlH7CTaMaDj4A
-rKCV3YGOh5xDFnyH7wiL9FfzQ6TwNsRtdPiJtizQjTKlU7wAIegzlgrA1EIx1YNn
-pmU0BjMLG2iSVf805wZhUuTzErLnFNzaB9WebAF7Vw44dbDaPR5b7Nftx61UsPG+
-WhiXscl1U94lE09VWJARmvpJGK+Eo7bb6/P6Pt+QPRyZN1HQPVkgkfthRXtTI9BY
-fz8zEtA0Qq3FNgJAcI1sVP0L7dohlEev0hm20LqsdVDY+sgmsWWw5JxjHDT+6r0=
-=ttGo
------END PGP SIGNATURE-----
-
---wnLTWEf+vlzHZaR9--
-
---===============3269412341836707809==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3269412341836707809==--
+diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
+index 687c4dd..505b65f 100644
+--- a/sound/soc/codecs/wm8995.c
++++ b/sound/soc/codecs/wm8995.c
+@@ -1930,7 +1930,7 @@ static int wm8995_set_dai_sysclk(struct snd_soc_dai *dai,
+ 			dai->id + 1, freq);
+ 		break;
+ 	case WM8995_SYSCLK_MCLK2:
+-		wm8995->sysclk[dai->id] = WM8995_SYSCLK_MCLK1;
++		wm8995->sysclk[dai->id] = WM8995_SYSCLK_MCLK2;
+ 		wm8995->mclk[1] = freq;
+ 		dev_dbg(dai->dev, "AIF%d using MCLK2 at %uHz\n",
+ 			dai->id + 1, freq);
+-- 
+2.1.0
