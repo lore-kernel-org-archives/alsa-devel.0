@@ -1,81 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/21] ASoC: rsnd: don't care under/over
- run error when PIO
-Date: Tue, 16 Jun 2015 12:41:46 +0100
-Message-ID: <20150616114146.GK18309@sirena.org.uk>
-References: <87twu9v6kn.wl%kuninori.morimoto.gx@renesas.com>
- <87si9tv6iv.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/3] ASoC: mediatek: Add AFE platform driver
+Date: Tue, 16 Jun 2015 12:51:30 +0100
+Message-ID: <20150616115130.GM18309@sirena.org.uk>
+References: <1434379084-26026-1-git-send-email-koro.chen@mediatek.com>
+ <1434379084-26026-2-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3911881689926297580=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E6235265554
- for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 13:41:59 +0200 (CEST)
-In-Reply-To: <87si9tv6iv.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oWg8wBefE/MWazfQ"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1434379084-26026-2-git-send-email-koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, pebolle-IWqWACnzNjzz+pZb47iToQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3911881689926297580==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x2HNTtYOBsOEDsnN"
-Content-Disposition: inline
-
-
---x2HNTtYOBsOEDsnN
+--oWg8wBefE/MWazfQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 15, 2015 at 06:20:54AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> PIO is used only for checking data path / codec settings. And underrun
-> is very normal when PIO mode. Let's don't care about under/over run
-> error when PIO case. Otherwise, 1) too many HW restart happens, 2) some
-> sounds which need much data transfer can't play since it falls into
-> error detection method which was created for DMA transfer
+On Mon, Jun 15, 2015 at 10:38:02PM +0800, Koro Chen wrote:
+> This is the DPCM based platform driver of AFE (Audio Front End) unit.
 
-I've applied the whole series but I'm not thrilled with this one.  I
-guess what you mean to say is that this is only used during bringup of a
-new platform in which case it's not that big a deal but otherwise then
-the usual thing with PIO is to implement FIQ support to keep the
-hardware full.
+Applied, thanks.
 
---x2HNTtYOBsOEDsnN
+--oWg8wBefE/MWazfQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVgAt2AAoJECTWi3JdVIfQbi4H/ibxgQ89dwrPBGi8fsG3MDPZ
-E90rMdCe06X2so8zjilwRKieUPtdPwl69/QvqCc0izCkrqItVhewnaWXvkV7Gmyg
-5QLfeDraJkpy4irP8bmM8KM8gr7a6s/Qc2nY2x63adNx/EjBOYmpcWMicXuOautY
-fvt2xZWbkRXDCFDO+OIf1H+z06xsunKbbN2f2vnF1kf/fQ2wMeABz/UZKEwMPKtz
-/J/SeZjDD7iEhvvOxADBe7M5ksCYFV//W7F1ExVJG/zSEnwEp7OmUEdey6fnjLu2
-H3abRE2v6N35usQJ8NI/atXyBpdK/pzRpcF581trm/aCMOgN+xz0yIkHGJ8Dmw0=
-=Uc+4
+iQEcBAEBCAAGBQJVgA3CAAoJECTWi3JdVIfQyq8H/RCXr329SuJ5pKqvwgPWpXd2
+1wavTaQ4g5aLeloC6emAmgWTApr/7wa6MlbiRVgh9FJn32EuD8cFELrcaBiiDmsL
+Nwiy02BEXAt2ALsFYHCQtyA/AJnRIM0BslRN6HhTWXRIEzOamuRIz0i9onkGyhRT
+HeKvl+6O5akw0ngVzEJuhjOm/2wv2MYJ6sX+qDZePKYYha27FHFuk8xaAgc7N/G+
+UVxizwihcqItcC03SxtFkIYU59dkAkEYcCr8gqMdt1/ECiZOY6mX4dl/dQKNwTM+
+OJ3sefpQ0YREnGnzQ2RPbh6IkTxlRGES/gKOLs0T2GszSQUPXPk705o8igRx5q0=
+=rjiO
 -----END PGP SIGNATURE-----
 
---x2HNTtYOBsOEDsnN--
-
---===============3911881689926297580==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3911881689926297580==--
+--oWg8wBefE/MWazfQ--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
