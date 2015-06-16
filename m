@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: constification patches
-Date: Mon, 15 Jun 2015 20:17:31 +0100
-Message-ID: <20150615191731.GD18309@sirena.org.uk>
-References: <1434198316-8400-1-git-send-email-minipli@googlemail.com>
- <20150615103238.GI18309@sirena.org.uk>
- <CA+rthh9Lbqwmc4o9Qbx4gZz-OSmuCY275YXdkmumwQxugkENtQ@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
+ item for soc-compress
+Date: Tue, 16 Jun 2015 00:49:37 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
+References: <1434338445-31992-1-git-send-email-yang.jie@intel.com>
+ <s5hmw01gq9c.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554AA25@SHSMSX101.ccr.corp.intel.com>
+ <s5h4mm9gi8h.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554AA81@SHSMSX101.ccr.corp.intel.com>
+ <20150615150556.GQ18309@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6387743690813430577=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 579C6260417
- for <alsa-devel@alsa-project.org>; Mon, 15 Jun 2015 21:17:45 +0200 (CEST)
-In-Reply-To: <CA+rthh9Lbqwmc4o9Qbx4gZz-OSmuCY275YXdkmumwQxugkENtQ@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48793260705
+ for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2015 02:50:03 +0200 (CEST)
+In-Reply-To: <20150615150556.GQ18309@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +27,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mathias Krause <minipli@googlemail.com>
-Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, Len Brown <lenb@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "ramesh.babu@linux.intel.com" <ramesh.babu@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Zhang, Vivian" <vivian.zhang@intel.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Monday, June 15, 2015 11:06 PM
+> To: Jie, Yang
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org; Girdwood, Liam R;
+> vinod.koul@linux.intel.com; ramesh.babu@linux.intel.com; Zhang, Vivian
+> Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config item for soc-
+> compress
+> 
+> On Mon, Jun 15, 2015 at 02:46:23PM +0000, Jie, Yang wrote:
+> 
+> > > > Here I used -EPERM to return and tell caller that compress
+> > > > operation is not permitted, does it make sense, Takashi?
+> 
+> > > The question is whether a runtime error is the best option.  A
+> > > runtime error won't be caught by build tests but only when actually
+> running by a user.
+> 
+> > Unfortunately, here cpu_dai->driver->compress_dai is a runtime value,
+> > which means we need compress API when it is true. Seems it is not easy
+> > to decide it at compile stage?
+> 
+> The machine driver (which is presumably the thing that should be doing the
+> select here, it's not user visible) really ought to know if the DAI links it is
+> creating are for compressed audio.  This is why I'm still surprised there's no
+> driver updates as part of this patch.  If the Intel drivers referencing
+> compressed don't actually implement it then I'd expect to see patches
+> cleaning up the references to compressed audio.
+ 
+Mark, as you may see in this patch(1/2), I have added this selection to sound/
+Soc/intel/Kconfig, we can find .compress_dai =1 in sst-mfld-platform-pcm.c,
+the compressed is referenced in sst-mfld-platform-pcm.c:sst_platform_dai, 
+here copy the related part from the patch:
 
---===============6387743690813430577==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lpbaaqEfWJan1gxl"
-Content-Disposition: inline
+b/sound/soc/intel/Kconfig index 791953f..e559174 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -12,6 +12,7 @@ config SND_MFLD_MACHINE
+ 
+ config SND_SST_MFLD_PLATFORM
+ 	tristate
++	select SND_SOC_COMPRESS
+ 
+ config SND_SST_IPC
+ 	tristate
 
-
---lpbaaqEfWJan1gxl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 15, 2015 at 07:59:30PM +0200, Mathias Krause wrote:
-
-> Sorry, actually I tried to. It's what get_maintainer.pl told me but I
-> tried to trim down the list because of the simpleness of the patches.
-> I omitted LKML to avoid cross-posting. I messed up patches 2 and 3,
-> admitted. But what else was wrong?
-
-I can't remember now, perhaps it was just the second Realtek patch.
-Like I say you shouldn't treat get_maintainer.pl as reliable (it can be
-a good start but without --git it often misses people and with --git it
-gets way too many false positives).
-
---lpbaaqEfWJan1gxl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVfyTKAAoJECTWi3JdVIfQO7MH+wSu+5MBUa/fJu2QlDps8LQ9
-D37lkWYK3MJDgwEZk+FWEkqRw584yReETPWD70h6QvR8oUnTB+UfmERcsDx27dcX
-QnQQ5UOcG3n14ITFrs1lUlo/68YYApu2T1lQRwXYEzv8xRHT+Pur7HfcfyPnOPVn
-dlFQr9b/5EEBtUIT2Y5HoCxMsA2wCbm0PQyQmIO7wW6oxKGXPDZMLv18l+fOYmF5
-vo3sDGSGzilxPm9SfkquXjHq5zRshuDWTTz/93R4QQfRKIKP4HjJnl3h8eyHgpZw
-OMRw5Fwlh4uoWvfFEeWmEL/YAemmjVbZz6/abSc0UJQ7Q2Y+I0gdzLXguiGFyYU=
-=Qiit
------END PGP SIGNATURE-----
-
---lpbaaqEfWJan1gxl--
-
---===============6387743690813430577==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6387743690813430577==--
+~Keyon
