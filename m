@@ -1,17 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/3] ALSA: HDA: provide default bus io ops
-	extended hdac
-Date: Wed, 17 Jun 2015 11:20:18 +0530
-Message-ID: <1434520218-14556-3-git-send-email-vinod.koul@intel.com>
-References: <1434520218-14556-1-git-send-email-vinod.koul@intel.com>
+Subject: [GIT PULL] Braswell firmware update
+Date: Wed, 17 Jun 2015 11:30:05 +0530
+Message-ID: <20150617060005.GC28601@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 26872265AA0
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 07:48:50 +0200 (CEST)
-In-Reply-To: <1434520218-14556-1-git-send-email-vinod.koul@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43B5F265A3E
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 07:58:47 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+To: linux-firmware@kernel.org
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A typical io ops use simple io accessors which can be common for most
-drivers, so provide a default ops which will be used if driver doesn't
-provide one
+Hello Linux firmware maintainers,
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/hda/ext/hdac_ext_bus.c | 59 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 58 insertions(+), 1 deletion(-)
+Please PULL to receive the updated BSW firmware binary which contains power
+management fixes. We have also updated the version of binary in WHENCE file
 
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index f1100354c591..0aa5d9eb6c3f 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -24,12 +24,65 @@
- MODULE_DESCRIPTION("HDA extended core");
- MODULE_LICENSE("GPL v2");
- 
-+static void hdac_ext_writel(u32 value, u32 __iomem *addr)
-+{
-+	writel(value, addr);
-+}
-+
-+static u32 hdac_ext_readl(u32 __iomem *addr)
-+{
-+	return readl(addr);
-+}
-+
-+static void hdac_ext_writew(u16 value, u16 __iomem *addr)
-+{
-+	writew(value, addr);
-+}
-+
-+static u16 hdac_ext_readw(u16 __iomem *addr)
-+{
-+	return readw(addr);
-+}
-+
-+static void hdac_ext_writeb(u8 value, u8 __iomem *addr)
-+{
-+	writeb(value, addr);
-+}
-+
-+static u8 hdac_ext_readb(u8 __iomem *addr)
-+{
-+	return readb(addr);
-+}
-+
-+static int hdac_ext_dma_alloc_pages(struct hdac_bus *bus, int type,
-+			   size_t size, struct snd_dma_buffer *buf)
-+{
-+	return snd_dma_alloc_pages(type, bus->dev, size, buf);
-+}
-+
-+static void hdac_ext_dma_free_pages(struct hdac_bus *bus, struct snd_dma_buffer *buf)
-+{
-+	snd_dma_free_pages(buf);
-+}
-+
-+static const struct hdac_io_ops hdac_ext_default_io = {
-+	.reg_writel = hdac_ext_writel,
-+	.reg_readl = hdac_ext_readl,
-+	.reg_writew = hdac_ext_writew,
-+	.reg_readw = hdac_ext_readw,
-+	.reg_writeb = hdac_ext_writeb,
-+	.reg_readb = hdac_ext_readb,
-+	.dma_alloc_pages = hdac_ext_dma_alloc_pages,
-+	.dma_free_pages = hdac_ext_dma_free_pages,
-+};
-+
- /**
-  * snd_hdac_ext_bus_init - initialize a HD-audio extended bus
-  * @ebus: the pointer to extended bus object
-  * @dev: device pointer
-  * @ops: bus verb operators
-- * @io_ops: lowlevel I/O operators
-+ * @io_ops: lowlevel I/O operators, can be NULL. If NULL core will use
-+ * default ops
-  *
-  * Returns 0 if successful, or a negative error code.
-  */
-@@ -40,6 +93,10 @@ int snd_hdac_ext_bus_init(struct hdac_ext_bus *ebus, struct device *dev,
- 	int ret;
- 	static int idx;
- 
-+	/* check if io ops are provided, if not load the defaults */
-+	if (io_ops == NULL)
-+		io_ops = &hdac_ext_default_io;
-+
- 	ret = snd_hdac_bus_init(&ebus->bus, dev, ops, io_ops);
- 	if (ret < 0)
- 		return ret;
+
+The following changes since commit 3161bfa479d5e9ed4f46b57df9bcecbbc4f8eb3c:
+
+  linux-firmware: Update firmware patch for Intel Bluetooth 7260 (B3/B4) (2015-05-13 11:12:48 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
+
+for you to fetch changes up to e5fa14afd09909124fc7618fc4a0ac00fa4f9347:
+
+  linux-firmware: update audio firmware for Braswell platform (2015-06-17 11:21:47 +0530)
+
+----------------------------------------------------------------
+Vinod Koul (1):
+      linux-firmware: update audio firmware for Braswell platform
+
+ WHENCE                |   1 +
+ intel/fw_sst_22a8.bin | Bin 647390 -> 701614 bytes
+ 2 files changed, 1 insertion(+)
+
+Thanks
 -- 
-1.9.1
+~Vinod
