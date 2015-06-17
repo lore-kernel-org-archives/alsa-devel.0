@@ -1,20 +1,14 @@
-From: Jo <contact@samplerbox.org>
-Subject: Default volume for all soundcards (-20dB by default?)
-Date: Wed, 17 Jun 2015 14:53:03 +0200
-Message-ID: <CA+BV=GU0V2_amovM43r5LUhycs67eYSKVAzbu=HQDJ23qDzmvw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v6 0/4] ASoC: intel - add skylake PCM driver
+Date: Wed, 17 Jun 2015 18:30:51 +0530
+Message-ID: <1434546055-28866-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 23DDF265D21
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 14:53:28 +0200 (CEST)
-Received: from mail-lb0-f175.google.com ([209.85.217.175]) by
- mrelayeu.kundenserver.de (mreue102) with ESMTPSA (Nemesis) id
- 0MC1MO-1ZDyHl3Dvs-008rPi for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015
- 14:53:25 +0200
-Received: by lbbwc1 with SMTP id wc1so31055229lbb.2
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 05:53:24 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91F19265CFA
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 14:59:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch series adds the SKL PCM driver in first two patches and then adds
+decoupling of the controller for splitting the links in last patch
 
-It seems that the default volume for any new soundcard is set by
-default to -20dB.
-Do you know where is it hardcoded ? In which source file (I used
-package "alsa-utils" in Debian)  or which configuration file?
+This version removes the stream object creation, freeup, link freeup and
+buffer prealloc flag as they have moved to hdac now. Also irq management is
+improved upon.
 
-Thanks,
-Jo
+Please note this series is dependent on sound next having hda core patches
+and extended bus patches
 
-PS: here's the context :
+Jeeja KP (3):
+  ASoC: Intel: add Skylake HDA platform driver
+  ASoC: Intel - add Skylake HDA audio driver
+  ASoC: Intel - add makefile support for SKL driver
 
-I woud like to set up the default sound volume once for all, for all
-ALSA devices that will be connected ever.
-Of course, I could do "amixer ..." or even "alsamixer" to modify the
-volume of _currently available_ soundcards.
-But I really want to modify the default volume even for future
-soundcards that will be added later.
-I've seen /var/lib/alsa/asound.state but the content is specific to
-_currently connected_ soundcards. What I want is a solution that will
-apply to any soundcard that will be connected in the future.
+Vinod Koul (1):
+  ASoC: intel - adds support for decoupled mode in skl driver
 
-Why do I want this? I'm providing a ready-to-use Debian image for my
-project http://www.samplerbox.org.
-User #1 might use the computer's built-in-soundcard, User #2 might
-have a USB DAC, User #3 might have another soundcard...
-I would like to provide a default -3dB volume that will work for any
-ALSA soundcard people could have...
+ sound/soc/intel/Kconfig           |   7 +
+ sound/soc/intel/Makefile          |   1 +
+ sound/soc/intel/skylake/Makefile  |   3 +
+ sound/soc/intel/skylake/skl-pcm.c | 935 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.c     | 543 ++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h     |  71 +++
+ 6 files changed, 1560 insertions(+)
+ create mode 100644 sound/soc/intel/skylake/Makefile
+ create mode 100644 sound/soc/intel/skylake/skl-pcm.c
+ create mode 100644 sound/soc/intel/skylake/skl.c
+ create mode 100644 sound/soc/intel/skylake/skl.h
+
+-- 
+1.9.1
