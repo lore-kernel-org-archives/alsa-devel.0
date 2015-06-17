@@ -1,23 +1,24 @@
-From: Azizul Hakim <azizulfahim2002@gmail.com>
-Subject: Re: Audio Driver Works In Ubuntu but Crash in Debian
- After 2nd Run
-Date: Wed, 17 Jun 2015 10:53:31 -0400
-Message-ID: <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
-References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
- <557FD536.3020906@ladisch.de>
- <CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>
- <55812940.5050906@ladisch.de> <1434531934.2471.9.camel@loki>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Wed, 17 Jun 2015 17:09:41 +0200
+Message-ID: <55818DB5.6050007@canonical.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+ <557EDE22.7080808@metafoo.de>
+ <CAN8cciaYSJVySbyAr_af+0f-govGXEp2CsmQkPLpr=mfc_Quhg@mail.gmail.com>
+ <55812F5C.8010502@metafoo.de> <s5h4mm68zfm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f169.google.com (mail-ob0-f169.google.com
- [209.85.214.169])
- by alsa0.perex.cz (Postfix) with ESMTP id E231F260499
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 16:53:32 +0200 (CEST)
-Received: by obbsn1 with SMTP id sn1so34612151obb.1
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 07:53:31 -0700 (PDT)
-In-Reply-To: <1434531934.2471.9.camel@loki>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72550260499
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 17:09:46 +0200 (CEST)
+In-Reply-To: <s5h4mm68zfm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,33 +28,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, clemens@ladisch.de, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, its good to learn something new on every day. So how do I configure
-McBSP port clocking? I'm very new on these things and was unable to find
-any useful link on this point. :(
 
-On Wed, Jun 17, 2015 at 5:05 AM, Liam Girdwood <
-liam.r.girdwood@linux.intel.com> wrote:
 
-> + Peter for Beaglebone
+On 2015-06-17 11:19, Takashi Iwai wrote:
+> Well, USB-audio has another problem.  USB-audio uses the intermediate
+> audio ring buffer, and the samples are copied to each URB buffer.  At
+> each packet complete, the driver copies the rest of sample chunk
+> again, and advances the hwptr when the packets.  So, the hwptr of
+> USB-audio is in advance of the actual sample position.  But we provide
+> the runtime delay information for user-space to correct to the more
+> accurate sample position.  So far, so good.
 >
-> On Wed, 2015-06-17 at 10:01 +0200, Clemens Ladisch wrote:
-> > Azizul Hakim wrote:
-> > > Driver didn't start the DMA: Not sure how to track on this point. Any
-> suggestion?
-> > > Interrupt do not arrive correctly: Is this the hardware issue or ALSA
-> issue?
-> >
-> > These would imply that some your driver, or some code used by your
-> driver,
-> > did not configure the DMA/interrupt correctly.
+> A missing piece in this picture is, however, the position of the
+> not-yet-queued samples in ring buffer.  Basically you can rewrite /
+> rewind the sample at most this point, but not farther -- such
+> in-flight samples can't be modified any longer.  This can be seen a
+> kind of hardware fifo with a pretty big and non-continuously variable
+> size during operation.
 >
-> On beaglebone it may also be that the McBSP port clocking is not
-> configured correctly.
+> In that sense, get_fifo() looks like a candidate for giving such
+> information, indeed.  But reviving the old (and rather bad working)
+> API appears dangerous to me.  I'd prefer creating a new API function
+> instead, if any.
 >
-> Liam
->
->
+> BTW, because of its design like above, a large (or no) period size
+> doesn't help for saving power at all with USB-audio.  This should be
+> considered before the further discussion...
+
+Hmm...I was trying to understand this power save argument. I tried to 
+figure out a "typical" URB size by just plugging my headset in, and I 
+saw wMaxPacketSize being 96 and/or 192 bytes.
+Then, MAX_PACKS is set to either 6 (or 48 for USB 2.0 devices, but this 
+is just a headset).
+
+Can this be correct? Does it mean that we are getting interrupts every 
+192 * 6 bytes (i e, every 6 ms for a 48kHz/stereo/16bit stream)?
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
