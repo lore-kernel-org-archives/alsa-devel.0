@@ -1,7 +1,7 @@
 From: Nicolae Rosia <nicolae.rosia@gmail.com>
 Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Wed, 17 Jun 2015 22:43:15 +0300
-Message-ID: <CAH=tA9H+SD81PtK_5XYUoJ62M4nC0dEhrz1RsLLKXfcv61_TUQ@mail.gmail.com>
+Date: Wed, 17 Jun 2015 22:45:17 +0300
+Message-ID: <CAH=tA9HZzjBrtvKsN0SODJKt-7w2aFmYFNxBcTy0+sS3Fp7FfA@mail.gmail.com>
 References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
  <s5hzj47n9d1.wl-tiwai@suse.de>
  <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
@@ -24,12 +24,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f50.google.com (mail-la0-f50.google.com
- [209.85.215.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 246B5265FCF
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 21:43:16 +0200 (CEST)
-Received: by laka10 with SMTP id a10so40470390lak.0
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 12:43:15 -0700 (PDT)
+Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
+ [209.85.217.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57BF92604AC
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 21:45:18 +0200 (CEST)
+Received: by lbbwc1 with SMTP id wc1so38772915lbb.2
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 12:45:18 -0700 (PDT)
 In-Reply-To: <CAN8cciaFiFhZ9e14mNoAAm7G4fJZV5A9ONiBxos1EgZx2UaC9w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -44,56 +44,10 @@ To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jack functions numbered as seen in Asus PDF, copied from Realtek HDA:
-Jack 1:
-Headphone
-Front Speaker Out
-
-Jack 2:
-Mic In
-Center/Subwoofer Speaker Out
-
-Jack 3:
-Headphone
-Rear Speaker Out
-
-On Windows I don't need any reboot. hdajackretask was giving a warning
-and it didn't work only after rebooting.
+Sorry for top posting earlier.
 
 On Wed, Jun 17, 2015 at 6:20 AM, Raymond Yau
 <superquad.vortex2@gmail.com> wrote:
->> >
->> >> >
->> >> > How do the other user know the mapping even if you implemented 5.1 ?
->> >> I don't know (?)
->> >
->> >
->> > https://rog.asus.com/forum/showthread.php?54685-Asus-G751JT-supports-5-1-analog-output
->> >
->> > Is the support of 5.1 done by realtek hda manager or asus audio wizard ?
->> I have only used Realtek HDA Manager. There's no "wizard", you just
->> have to select 5.1 Speaker in Speaker Configuration drop down menu.
->
-> Do your 2.1  work as expected after enable pulseaudio 2.1 lfe filter ?
->
-> Do your dual headphone jacks work as expected after you add back the missing
-> pin?
->
-> Do your dual headphone jack coexist with 2.1 speakers since you only have
-> three volume controls ?
->
-> After you change to 5.1 by realtek hda manger , do you need a reboot ?
-> If yes, Do this mean that you also need another reboot to use back 2.1
-> intenal speakers ?
->
-> Do HDA realtek manager  allow you to
->
-> a) change mic jack as Line in jack ?
-> b) disable the subwoofer ?
-> c) change any jack to line in, line out, headphone or mic ?
->
-> Since bios did not setup pin default for some jacks,
->
 > Do users expect the jacks are initialised by the driver
 >
 > 1) as the icon near the jack
@@ -102,3 +56,5 @@ On Wed, Jun 17, 2015 at 6:20 AM, Raymond Yau
 >
 > You need a simplified verion of hdajackretask which  allow you to change
 > from 2.1 to 5.1
+I don't care really. If a user sees that he has a 5.1 profile, he can
+use the audio UI to identify each channel.
