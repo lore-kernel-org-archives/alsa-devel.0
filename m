@@ -1,55 +1,69 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel][PATCH v2] ASoC: wm8960: add dapm kcontrols to
-	select left/right ADC input source
-Date: Wed, 17 Jun 2015 14:09:08 +0100
-Message-ID: <20150617130908.GO32730@opensource.wolfsonmicro.com>
-References: <1434435799-26829-1-git-send-email-zidan.wang@freescale.com> <20150616121839.GM32730@opensource.wolfsonmicro.com> <20150617085828.GA17972@shlinux2>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: SoC/Codecs/SGTL5000 - Non working MIC_BIAS Voltage
+	settings
+Date: Wed, 17 Jun 2015 16:08:44 +0200
+Message-ID: <CAOf5uw=ODmsGWU=8w4QSg-6rYk2jz5UTwg=yReb75kLm-EHRWQ@mail.gmail.com>
+References: <557B0528.2060404@eurekelettronica.it>
+ <55811FA6.4050408@eurekelettronica.it>
+ <CAOMZO5DTbJ1xp31oFcMbdxb1POj6o5mWdTRLq4t2_nch-81T7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150617085828.GA17972@shlinux2>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f181.google.com (mail-ig0-f181.google.com
+ [209.85.213.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF959265D33
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 16:08:46 +0200 (CEST)
+Received: by igboe5 with SMTP id oe5so80530678igb.1
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 07:08:45 -0700 (PDT)
+In-Reply-To: <CAOMZO5DTbJ1xp31oFcMbdxb1POj6o5mWdTRLq4t2_nch-81T7w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, alsa-devel@alsa-project.org, gianluca <gianlucarenzi@eurekelettronica.it>, Zeng Zhaoming <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 17, 2015 at 04:58:30PM +0800, Zidan Wang wrote:
-> On Tue, Jun 16, 2015 at 01:18:39PM +0100, Charles Keepax wrote:
-> > On Tue, Jun 16, 2015 at 02:23:19PM +0800, Zidan Wang wrote:
-> > > Add dapm kcontrols to select left/right ADC input source, one to select
-> > > the left ADC input source and one for the right ADC input source.
-> > > 
-> > > In default, the left ADC will select the left input, and the right ADC will
-> > > select the right input. When the left(right) ADC select the right(left) input,
-> > > the left(right) input path will be powered down.
-> > > 
-> > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > > ---
-> > > -	{ "Left ADC", NULL, "Left Input Mixer" },
-> > > -	{ "Right ADC", NULL, "Right Input Mixer" },
-> > > +	{ "ADCL Source", "Left", "Left Input Mixer" },
-> > > +	{ "ADCL Source", "Right", "Right Input Mixer" },
-> > > +
-> > > +	{ "ADCR Source", "Left", "Left Input Mixer" },
-> > > +	{ "ADCR Source", "Right", "Right Input Mixer" },
-> > > +
-> > > +	{ "Left ADC", NULL, "ADCL Source" },
-> > > +	{ "Right ADC", NULL, "ADCR Source" },
-> > 
-> > Are you sure this is correct? My reading is that those bits don't
-> > affect routing at all, they mearly determine how the channel is
-> > sent out on the AIF.
-> > 
-> I have tested on my board, it can works, but it has something wrong.
-> 
-> If set "ADCR Source" to "Left", RINPUT1(RINPUT2 and RINPUT3)->"Right Input Mixer" will
-> be powered down, but "Right ADC" is still powered up. Do you have some best method to 
-> set the audio route?
+Hi
 
-I think your last patch that didn't touch DAPM for this was
-closer to correct, I would revert back to something similar to
-that but fixing up for the other comments on it.
+On Jun 17, 2015 3:03 PM, "Fabio Estevam" <festevam@gmail.com> wrote:
+>
+> Hi Gianluca,
+>
+> On Wed, Jun 17, 2015 at 4:20 AM, gianluca
+> <gianlucarenzi@eurekelettronica.it> wrote:
+> > Hello,
+> > I didn't receive any feedback about this posting...
+>
+> Thanks for your patch.
+>
+> Please don't post patches as attachments. Better send them with 'git
+> send-email'.
+> Documentation/SubmittingPatches has the information you need.
+>
+> You also need to provide a commit log, proper Subject and your
+Signed-off-by.
+>
+> Then Cc the maintainer: ./scripts/get_maintainer.pl <yourpatch> can
+> help you listing the appropriate folks.
+>
 
-Thanks,
-Charles
+Already inform him about rule ;)
+
+He should send up a new one
+
+Michael
+
+> Regards,
+>
+> Fabio Estevam
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
