@@ -1,22 +1,24 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: SoC/Codecs/SGTL5000 - Non working MIC_BIAS Voltage
-	settings
-Date: Wed, 17 Jun 2015 16:08:44 +0200
-Message-ID: <CAOf5uw=ODmsGWU=8w4QSg-6rYk2jz5UTwg=yReb75kLm-EHRWQ@mail.gmail.com>
-References: <557B0528.2060404@eurekelettronica.it>
- <55811FA6.4050408@eurekelettronica.it>
- <CAOMZO5DTbJ1xp31oFcMbdxb1POj6o5mWdTRLq4t2_nch-81T7w@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Default volume for all soundcards (-20dB by
+	default?)
+Date: Wed, 17 Jun 2015 16:21:51 +0200
+Message-ID: <5581827F.1070708@canonical.com>
+References: <CA+BV=GU0V2_amovM43r5LUhycs67eYSKVAzbu=HQDJ23qDzmvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f181.google.com (mail-ig0-f181.google.com
- [209.85.213.181])
- by alsa0.perex.cz (Postfix) with ESMTP id CF959265D33
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 16:08:46 +0200 (CEST)
-Received: by igboe5 with SMTP id oe5so80530678igb.1
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 07:08:45 -0700 (PDT)
-In-Reply-To: <CAOMZO5DTbJ1xp31oFcMbdxb1POj6o5mWdTRLq4t2_nch-81T7w@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38490260483
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 16:21:52 +0200 (CEST)
+Received: from c83-254-134-211.bredband.comhem.se ([83.254.134.211]
+ helo=[192.168.8.102])
+ by youngberry.canonical.com with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16)
+ (Exim 4.76) (envelope-from <david.henningsson@canonical.com>)
+ id 1Z5EDv-0007e8-C6
+ for alsa-devel@alsa-project.org; Wed, 17 Jun 2015 14:21:51 +0000
+In-Reply-To: <CA+BV=GU0V2_amovM43r5LUhycs67eYSKVAzbu=HQDJ23qDzmvw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,44 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, alsa-devel@alsa-project.org, gianluca <gianlucarenzi@eurekelettronica.it>, Zeng Zhaoming <zengzm.kernel@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-On Jun 17, 2015 3:03 PM, "Fabio Estevam" <festevam@gmail.com> wrote:
->
-> Hi Gianluca,
->
-> On Wed, Jun 17, 2015 at 4:20 AM, gianluca
-> <gianlucarenzi@eurekelettronica.it> wrote:
-> > Hello,
-> > I didn't receive any feedback about this posting...
->
-> Thanks for your patch.
->
-> Please don't post patches as attachments. Better send them with 'git
-> send-email'.
-> Documentation/SubmittingPatches has the information you need.
->
-> You also need to provide a commit log, proper Subject and your
-Signed-off-by.
->
-> Then Cc the maintainer: ./scripts/get_maintainer.pl <yourpatch> can
-> help you listing the appropriate folks.
->
 
-Already inform him about rule ;)
-
-He should send up a new one
-
-Michael
-
-> Regards,
+On 2015-06-17 14:53, Jo wrote:
+> Hi,
 >
-> Fabio Estevam
+> It seems that the default volume for any new soundcard is set by
+> default to -20dB.
+> Do you know where is it hardcoded ? In which source file (I used
+> package "alsa-utils" in Debian)  or which configuration file?
+
+It's in /usr/share/alsa/init/default
+
+>
+> Thanks,
+> Jo
+>
+> PS: here's the context :
+>
+> I woud like to set up the default sound volume once for all, for all
+> ALSA devices that will be connected ever.
+> Of course, I could do "amixer ..." or even "alsamixer" to modify the
+> volume of _currently available_ soundcards.
+> But I really want to modify the default volume even for future
+> soundcards that will be added later.
+> I've seen /var/lib/alsa/asound.state but the content is specific to
+> _currently connected_ soundcards. What I want is a solution that will
+> apply to any soundcard that will be connected in the future.
+>
+> Why do I want this? I'm providing a ready-to-use Debian image for my
+> project http://www.samplerbox.org.
+> User #1 might use the computer's built-in-soundcard, User #2 might
+> have a USB DAC, User #3 might have another soundcard...
+> I would like to provide a default -3dB volume that will work for any
+> ALSA soundcard people could have...
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
