@@ -1,21 +1,20 @@
-From: Jarkko Nikula <jarkko.nikula@intel.com>
-Subject: Re: writing an alsa driver
-Date: Wed, 17 Jun 2015 09:39:24 +0300
-Message-ID: <5581161C.1060508@intel.com>
-References: <20150527201320.GA309@asus> <1432812668.2726.18.camel@loki>	
- <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>	
- <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>	
- <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>	
- <20150608084951.GA7512@dellaz> <loom.20150613T153708-781@post.gmane.org>	
- <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
+From: gianluca <gianlucarenzi@eurekelettronica.it>
+Subject: Re: SoC/Codecs/SGTL5000 - Non working MIC_BIAS Voltage
+	settings
+Date: Wed, 17 Jun 2015 09:20:06 +0200
+Message-ID: <55811FA6.4050408@eurekelettronica.it>
+References: <557B0528.2060404@eurekelettronica.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AF8F265AB3
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 08:39:31 +0200 (CEST)
-In-Reply-To: <1434387868.2434.50.camel@loki>
+Received: from mx7.acantho.net (mx7.acantho.net [213.174.182.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19B1E265AD5
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 09:20:20 +0200 (CEST)
+Received: (from root@localhost)
+ by mx7.acantho.net (8.14.3/8.13.4/Debian-3sarge1) id t5H7KJjH005870
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 09:20:19 +0200
+In-Reply-To: <557B0528.2060404@eurekelettronica.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Michele Curti <michele.curti@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Bard Liao <bardliao@realtek.com>, Luka Karinja <luka.karinja@gmail.com>, "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, Zeng Zhaoming <zengzm.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hello,
+I didn't receive any feedback about this posting...
 
-On 06/15/2015 08:04 PM, Liam Girdwood wrote:
-> We are also a little suspicious that this laptop is using SSP1 for the
-> I2S audio connection to the codec. The bad news is that the FW used by
-> this BYT ADSP driver does not support the SSP1 port. It's hard coded to
-> use SSP0 (Jarrko, please correct the port numbering if it's wrong).
-> There are going to be no further releases of this FW.
->
-That firmware is hardcoded for SSP2, i.e. 3rd port and low-pin count 
-Baytrail packages have only 2 SSP ports. Obviously machines using those 
-variants have to use either SSP0 or SSP1.
+On 06/12/2015 06:13 PM, gianluca wrote:
+> Hello,
+> in attachment there is a small patch to ensure the correct register
+> value for MIC BIAS Voltage.
 
-Please see pages 29-30 for Baytrail package differences:
-https://www-ssl.intel.com/content/www/us/en/processors/atom/atom-z36xxx-z37xxx-datasheet-vol-1.html
+diff -Nru linux-4.0.5.orig/sound/soc/codecs/sgtl5000.c 
+linux-4.0.5/sound/soc/codecs/sgtl5000.c
+--- linux-4.0.5.orig/sound/soc/codecs/sgtl5000.c	2015-06-06 
+17:21:22.000000000 +0200
++++ linux-4.0.5/sound/soc/codecs/sgtl5000.c	2015-06-12 
+18:09:38.363381087 +0200
+@@ -1339,8 +1339,8 @@
+  			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+
+  	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+-			SGTL5000_BIAS_R_MASK,
+-			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
++			SGTL5000_BIAS_VOLT_MASK,
++			sgtl5000->micbias_voltage << SGTL5000_BIAS_VOLT_SHIFT);
+  	/*
+  	 * disable DAP
+  	 * TODO:
+
 
 -- 
-Jarkko
----------------------------------------------------------------------
-Intel Finland Oy
-Registered Address: PL 281, 00181 Helsinki 
-Business Identity Code: 0357606 - 4 
-Domiciled in Helsinki 
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
