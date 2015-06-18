@@ -1,74 +1,53 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: [PATCH] ASoC: Intel Kconfig: add SND_SOC_INTEL_BOARDS
-	option
-Date: Thu, 18 Jun 2015 21:59:39 +0200
-Message-ID: <1434657579-21581-1-git-send-email-michele.curti@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
- [209.85.212.182])
- by alsa0.perex.cz (Postfix) with ESMTP id DAF472662CA
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 22:00:21 +0200 (CEST)
-Received: by wiga1 with SMTP id a1so3926306wig.0
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 13:00:22 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com
-Cc: Michele Curti <michele.curti@gmail.com>, alsa-devel@alsa-project.org, tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: [PATCH 1/2] ASoC: qcom: move board Kconfig deps to parent config
+Date: Thu, 18 Jun 2015 15:16:07 -0700
+Message-ID: <1434665768-29367-1-git-send-email-kwestfie@codeaurora.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jim Davis <jim.epost@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Kumar Gala <galak@codeaurora.org>, Bryan Huntsman <bryanh@codeaurora.org>, ALSA Mailing List <alsa-devel@alsa-project.org>, MSM Mailing List <linux-arm-msm@vger.kernel.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Kenneth Westfield <kwestfie@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Machine drivers under boards folder must be available for both
-SND_SST_MFLD_PLATFORM and SND_SOC_INTEL_SST.  This patch adds a
-new kernel option SND_SOC_INTEL_BOARD to permit this.
+From: Kenneth Westfield <kwestfie@codeaurora.org>
 
-Signed-off-by: Michele Curti <michele.curti@gmail.com>
+Rather than have each board define the same set of
+dependencies; move the common dependencies to the
+SND_SOC_QCOM parent config.
+
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 ---
- sound/soc/intel/Kconfig  | 5 +++++
- sound/soc/intel/Makefile | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/qcom/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index f3060a4..c442cd7 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -10,7 +10,11 @@ config SND_MFLD_MACHINE
-           Say Y if you have such a device
-           If unsure select "N".
- 
-+config SND_SOC_INTEL_BOARDS
-+	tristate
-+
- config SND_SST_MFLD_PLATFORM
-+	select SND_SOC_INTEL_BOARDS
- 	tristate
- 
- config SND_SST_IPC
-@@ -28,6 +32,7 @@ config SND_SST_IPC_ACPI
- config SND_SOC_INTEL_SST
- 	tristate "ASoC support for Intel(R) Smart Sound Technology"
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
-+	select SND_SOC_INTEL_BOARDS
- 	depends on (X86 || COMPILE_TEST)
- 	depends on DW_DMAC_CORE
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 807fedf..d6ccda7 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -1,5 +1,6 @@
+ config SND_SOC_QCOM
+ 	tristate "ASoC support for QCOM platforms"
++	depends on ARCH_QCOM || COMPILE_TEST
  	help
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 3853ec2..4c4bf74 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -7,4 +7,4 @@ obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
- obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += atom/
+           Say Y or M if you want to add support to use audio devices
+           in Qualcomm Technologies SOC-based platforms.
+@@ -26,7 +27,7 @@ config SND_SOC_LPASS_APQ8016
  
- # Machine support
--obj-$(CONFIG_SND_SOC_INTEL_SST) += boards/
-+obj-$(CONFIG_SND_SOC_INTEL_BOARDS) += boards/
+ config SND_SOC_STORM
+ 	tristate "ASoC I2S support for Storm boards"
+-	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
++	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_IPQ806X
+ 	select SND_SOC_MAX98357A
+ 	help
+@@ -35,7 +36,7 @@ config SND_SOC_STORM
+ 
+ config SND_SOC_APQ8016_SBC
+ 	tristate "SoC Audio support for APQ8016 SBC platforms"
+-	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
++	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_APQ8016
+ 	help
+           Support for Qualcomm Technologies LPASS audio block in
 -- 
-2.4.3
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
