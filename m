@@ -1,24 +1,26 @@
-From: Happy <happy.musicmaker@gmail.com>
-Subject: How to build alsa-driver ?
-Date: Thu, 18 Jun 2015 22:04:02 +0800
-Message-ID: <1434636242.4237.6.camel@gmail.com>
-References: <1433991854.2170.47.camel@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: No sound from Mac Pro headphone port
+Date: Thu, 18 Jun 2015 23:00:06 +0800
+Message-ID: <CAN8cciZesh=oO765REcCo=ce8vO63ASthWGFROM5p06Ms+nx1g@mail.gmail.com>
+References: <554CC0EC.5000506@todddailey.ca>
+ <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
+ <554CCCAF.6000608@todddailey.ca>
+ <CAN8cciaSiJBr4RKP6Rj3JurnrPEGufBsnLEACdvrhRLcRfPkcg@mail.gmail.com>
+ <5555460D.3060907@todddailey.ca>
+ <CAN8cciaEdt3zM_V7M4_8YVBHrs+GQsfs1jV32owfsR_2oO52AA@mail.gmail.com>
+ <CAN8cciaepxbsuprm+EFr4jE24so1-WMnNDOfdQQPaM9AsK2hNQ@mail.gmail.com>
+ <55819224.5090105@todddailey.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id C6BEF260425
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 16:04:07 +0200 (CEST)
-Received: by pabvl15 with SMTP id vl15so16084108pab.1
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 07:04:06 -0700 (PDT)
-Received: from [192.168.0.198] ([175.180.119.154])
- by mx.google.com with ESMTPSA id iv7sm8203218pbc.20.2015.06.18.07.04.05
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 18 Jun 2015 07:04:05 -0700 (PDT)
-In-Reply-To: <1433991854.2170.47.camel@gmail.com>
+Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
+ [209.85.218.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7296A26043A
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 17:00:08 +0200 (CEST)
+Received: by oiyy130 with SMTP id y130so42259450oiy.0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 08:00:07 -0700 (PDT)
+In-Reply-To: <55819224.5090105@todddailey.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,24 +30,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Todd Dailey <todd@todddailey.ca>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA developers,
+l
+> Has there been any progress on fixing this issue?
+>
+> It seems that no matter what combination of settings I try with
+hdajackretask, I cannot get sound from the headphone port.
 
-I am trying to get into ALSA development. I need some help.
+Can you post the output after you retasking ?
 
-I checked out to the head of the alsa-driver mirror branch (latest
-update 9 days ago).
+>
+> Jack in / out plugged status is correctly detected. However, selecting
+Headphones for output plays sound from the Line Out port. The Line Out port
+selection works as expected. I can set separate volume levels for both
+Headphone and Line Out but both selections play through the Line Out port.
 
-I made some changes to the usb/mixer_scarlett.c file. (just to test,
-change the text of the output channels only for the 18i20)
+Need your patched alsa-info when headpone unpluged and plugged
 
-Questions:
+For the headset mic
 
-How can I build this?
-How can I and update (Ubuntu 15.04) with this new build to this change?
+Seem need  to recompile alsa driver since spec->parser_flags cannot be
+changed by hint.
 
-Thank you very much!
+spec->parser_flags = HDA_PINCFG_HEADSET_MIC;
 
-Martin
+It also depend whether you alc889a need any vendor coeff
