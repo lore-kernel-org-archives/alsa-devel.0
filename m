@@ -1,37 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Thu, 18 Jun 2015 10:44:30 +0800
-Message-ID: <CAN8cciZgNgY-U2Wi2+vbp6nqNBfeTw=m_K8WJTptChJZy3gVAw@mail.gmail.com>
-References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
- <s5hzj47n9d1.wl-tiwai@suse.de>
- <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
- <s5h616ul6o5.wl-tiwai@suse.de>
- <CAH=tA9E_D7Nt0iS8j9GXp3duDYN=xDn5aDt2O_cZuf1gFRArJQ@mail.gmail.com>
- <CAN8ccib4f0O5TW6Z=QzrSoRkp=EA-Km6z15TTh+HXb5me-=+NQ@mail.gmail.com>
- <CAH=tA9FE_fNf9GtmxHTwA8+4EjMS31iYRoTZcroCLAbEZpn38w@mail.gmail.com>
- <CAN8cciY8A-ecJVYyPKoRqZad+HhpOCvFtxdrrA=yTrk_q7QitQ@mail.gmail.com>
- <CAH=tA9G45ci85VvD1ZceiEcM3sp+3FKtA1B8LimENEVcC-dtFw@mail.gmail.com>
- <CAN8cciaQhhP3P-LU2KFJ8mCSTk5tcroEKpDMh4g_dtMkxV_q0A@mail.gmail.com>
- <CAN8ccib13ygePJWmQiQvmt-4wt49GnJ2BYVLAUKFckNNk0mf5A@mail.gmail.com>
- <CAH=tA9ECWF9WaeJvJcT3D-uXqr-r4Zp+TmBD88GJ6YhxQztJxA@mail.gmail.com>
- <CAN8ccibLHuYuqgypm8O7gZMwZoGUNs8-cg-1rHcPaErNGVs2Fw@mail.gmail.com>
- <CAH=tA9H78dWaRk92Aojh2Z4Gw9MZyhQSb3BAqsJ6EhFB7cDVWw@mail.gmail.com>
- <CAN8cciY5NYuRGph7GBxWVR4LKAzKOJMPXpdH35hXwwyQwVUs-Q@mail.gmail.com>
- <CAN8cciYB26go1g9SqGcu2hjPUQRNSy0=8ts9KUkxDGgU6AqsXA@mail.gmail.com>
- <CAH=tA9Hm5Do+uGOJPnUGFMMUyj+UFpA_PitezXsYQgmurvgPvw@mail.gmail.com>
- <CAN8cciaFiFhZ9e14mNoAAm7G4fJZV5A9ONiBxos1EgZx2UaC9w@mail.gmail.com>
- <CAH=tA9H+SD81PtK_5XYUoJ62M4nC0dEhrz1RsLLKXfcv61_TUQ@mail.gmail.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
+ item for soc-compress
+Date: Thu, 18 Jun 2015 02:59:54 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554C827@SHSMSX101.ccr.corp.intel.com>
+References: <20150615150556.GQ18309@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
+ <20150616105429.GI18309@sirena.org.uk>
+ <E7B1D079BA13FB44A978CC8F69C7D6A90554B0BF@SHSMSX101.ccr.corp.intel.com>
+ <20150616160607.GT18309@sirena.org.uk> <s5hlhfj8wb3.wl-tiwai@suse.de>
+ <s5hioan8w6v.wl-tiwai@suse.de> <20150616162507.GA28601@localhost>
+ <s5h7fr38vax.wl-tiwai@suse.de> <20150617025448.GB28601@localhost>
+ <20150617122340.GC3214@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
- [209.85.218.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E3CB2660BD
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 04:44:32 +0200 (CEST)
-Received: by oigx81 with SMTP id x81so48154514oig.1
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 19:44:31 -0700 (PDT)
-In-Reply-To: <CAH=tA9H+SD81PtK_5XYUoJ62M4nC0dEhrz1RsLLKXfcv61_TUQ@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7CAC2660BD
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 05:00:00 +0200 (CEST)
+In-Reply-To: <20150617122340.GC3214@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -41,70 +29,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolae Rosia <nicolae.rosia@gmail.com>, sodmgerk@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zhang,
+ Vivian" <vivian.zhang@intel.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> Jack functions numbered as seen in Asus PDF, copied from Realtek HDA:
-> Jack 1:
-> Headphone
-> Front Speaker Out
->
-> Jack 2:
-> Mic In
-> Center/Subwoofer Speaker Out
->
-> Jack 3:
-> Headphone
-> Rear Speaker Out
->
-> On Windows I don't need any reboot. hdajackretask was giving a warning
-> and it didn't work only after rebooting.
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
+> bounces@alsa-project.org] On Behalf Of Mark Brown
+> Sent: Wednesday, June 17, 2015 8:24 PM
+> To: Koul, Vinod
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org; Zhang, Vivian; Babu, Ramesh;
+> Girdwood, Liam R
+> Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: soc-compress: add a config
+> item for soc-compress
+> 
+> On Wed, Jun 17, 2015 at 08:24:48AM +0530, Vinod Koul wrote:
+> > On Tue, Jun 16, 2015 at 06:36:22PM +0200, Takashi Iwai wrote:
+> 
+> Please remember to delete unneeded context from replies.
+> 
+> > > 	if (cpu_dai->driver->create)
+> > > 		ret = cpu_dai->driver->create(rtd, num);
+> 
+> 
+> > > and each driver passes soc_new_compress (or whatever) there.  This
+> > > is flexible and can be extended if any new stuff has to be handled.
+> > > Even PCM creation or dai widget links can be passed in that form,
+> > > too.
+> 
+> > and the default would be snd_pcm_new so that *most* drivers dont need
+> > to add this. Only Intel atom driver should add soc_new_compress() as
+> > create ops, hence direct reference so no gaurds required
+> 
+> > Looks good to me then, Mark you okay with this approach?
+> 
+> I'm not sure this fully helps.  This will put the reference in the CPU driver
+> which if there's sharing with non-compressed DAIs means that any machine
+> driver using the platform needs to select the compressed audio code.  It also
+> means that we're still in the situation whre if a machine
+> *can* support compressed audio it *must* support compressed audio, it's
+> not clear to me that people doing this sort of memory optimisation are
+> always going to be doing it on hardware that doesn't have the capacity for
+> compressed audio (or won't in the future).  But then I don't know exactly
+> how much memory is being saved here...
 
-For Toshiba QOSMIO G40, there are also two headphone jacks , mic jack, line
-in jacks  and one speaker but only  alc262 4 channel codecs
-
-https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1465167/+attachment/4414982/+files/AlsaInfo.txt
-
-Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Jack", index=1, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=01, enabled=1
-  Connection: 2
-     0x0c 0x0d*
-Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Line Out Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Control: name="Headphone Jack", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x042110f0: [Jack] HP Out at Ext Right
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=02, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-
-Do user prefer to support 4 channel by dual headphone jacks or two
-headphone jacks share volume control ?
-
-Do user prefer different name for two headphone jack kctl as playback
-switches instead of index=0 and index=1 as pulseaudio seem unable to use
-index=1 javk kctl in the pulseaudio verbose log
-
-https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1465167
+It saves ~12KB memory usage on i386 platform on my side.
+ 
+~Keyon
