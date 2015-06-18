@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Intel HDA & Realtek issues on ASUS G751JM
-Date: Thu, 18 Jun 2015 07:24:50 +0800
-Message-ID: <CAN8cciYaHv-TtgCGkcnxagZp7p2EO4b17c9An6ctka7wkT8AXw@mail.gmail.com>
+Date: Thu, 18 Jun 2015 10:44:30 +0800
+Message-ID: <CAN8cciZgNgY-U2Wi2+vbp6nqNBfeTw=m_K8WJTptChJZy3gVAw@mail.gmail.com>
 References: <CAH=tA9HdRbRrLrKW+OeYUibjs3StwmKOUD_6p=WMu5LDK4VYzg@mail.gmail.com>
  <s5hzj47n9d1.wl-tiwai@suse.de>
  <CAH=tA9FR7vb+dFS2Mzpd7RJGrbGNRAjj9pM3BCsdVxzG_i0YAA@mail.gmail.com>
@@ -25,12 +25,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 740792660BB
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 01:24:51 +0200 (CEST)
-Received: by obctg8 with SMTP id tg8so43503958obc.3
- for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 16:24:50 -0700 (PDT)
+Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
+ [209.85.218.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E3CB2660BD
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 04:44:32 +0200 (CEST)
+Received: by oigx81 with SMTP id x81so48154514oig.1
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 19:44:31 -0700 (PDT)
 In-Reply-To: <CAH=tA9H+SD81PtK_5XYUoJ62M4nC0dEhrz1RsLLKXfcv61_TUQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -41,7 +41,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolae Rosia <nicolae.rosia@gmail.com>
+To: Nicolae Rosia <nicolae.rosia@gmail.com>, sodmgerk@gmail.com
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
@@ -62,16 +62,49 @@ List-Id: alsa-devel@alsa-project.org
 > On Windows I don't need any reboot. hdajackretask was giving a warning
 > and it didn't work only after rebooting.
 
-Have you tested whether your dual headphone jacks work as expected ?
+For Toshiba QOSMIO G40, there are also two headphone jacks , mic jack, line
+in jacks  and one speaker but only  alc262 4 channel codecs
 
-When auto parser find two headphone jacks and no line out  jacks,  it use
-sequence number to check those headphone and dock headphone and put one
-headphone jack in spec->line_out_pins
+https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1465167/+attachment/4414982/+files/AlsaInfo.txt
 
-But your dual headphone jacks need sequence number to determine whether it
-is use as headphone for front and headphone for surround
+Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Control: name="Headphone Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Headphone Jack", index=1, device=0
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000003e: IN OUT HP Detect Trigger
+  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=01, enabled=1
+  Connection: 2
+     0x0c 0x0d*
+Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Control: name="Line Out Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Headphone Jack", index=0, device=0
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000003e: IN OUT HP Detect Trigger
+  Pin Default 0x042110f0: [Jack] HP Out at Ext Right
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=02, enabled=1
+  Connection: 2
+     0x0c* 0x0d
 
-http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-output-headphones-2.conf
+Do user prefer to support 4 channel by dual headphone jacks or two
+headphone jacks share volume control ?
 
-AFAIK, no alsa  driver create Headphone2 playback volume nor Headphone2
-playback switch controls
+Do user prefer different name for two headphone jack kctl as playback
+switches instead of index=0 and index=1 as pulseaudio seem unable to use
+index=1 javk kctl in the pulseaudio verbose log
+
+https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1465167
