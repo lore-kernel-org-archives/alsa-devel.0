@@ -1,25 +1,27 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-compress: add a config
- item for soc-compress
-Date: Thu, 18 Jun 2015 02:59:54 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90554C827@SHSMSX101.ccr.corp.intel.com>
-References: <20150615150556.GQ18309@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554ACF5@SHSMSX101.ccr.corp.intel.com>
- <20150616105429.GI18309@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A90554B0BF@SHSMSX101.ccr.corp.intel.com>
- <20150616160607.GT18309@sirena.org.uk> <s5hlhfj8wb3.wl-tiwai@suse.de>
- <s5hioan8w6v.wl-tiwai@suse.de> <20150616162507.GA28601@localhost>
- <s5h7fr38vax.wl-tiwai@suse.de> <20150617025448.GB28601@localhost>
- <20150617122340.GC3214@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Thu, 18 Jun 2015 11:15:32 +0800
+Message-ID: <CAN8cciYdGP5Q9eGT+tjE_1qxkxT3JT7vPECN0CCvpZf7H5_tzA@mail.gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+ <557EDE22.7080808@metafoo.de>
+ <CAN8cciaYSJVySbyAr_af+0f-govGXEp2CsmQkPLpr=mfc_Quhg@mail.gmail.com>
+ <55812F5C.8010502@metafoo.de> <s5h4mm68zfm.wl-tiwai@suse.de>
+ <55818DB5.6050007@canonical.com> <5581A4CB.7080300@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B7CAC2660BD
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 05:00:00 +0200 (CEST)
-In-Reply-To: <20150617122340.GC3214@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
+ [209.85.218.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA8BB2660BD
+ for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 05:15:33 +0200 (CEST)
+Received: by oigx81 with SMTP id x81so48509463oig.1
+ for <alsa-devel@alsa-project.org>; Wed, 17 Jun 2015 20:15:32 -0700 (PDT)
+In-Reply-To: <5581A4CB.7080300@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,51 +31,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Zhang,
- Vivian" <vivian.zhang@intel.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Mark Brown
-> Sent: Wednesday, June 17, 2015 8:24 PM
-> To: Koul, Vinod
-> Cc: Takashi Iwai; alsa-devel@alsa-project.org; Zhang, Vivian; Babu, Ramesh;
-> Girdwood, Liam R
-> Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: soc-compress: add a config
-> item for soc-compress
-> 
-> On Wed, Jun 17, 2015 at 08:24:48AM +0530, Vinod Koul wrote:
-> > On Tue, Jun 16, 2015 at 06:36:22PM +0200, Takashi Iwai wrote:
-> 
-> Please remember to delete unneeded context from replies.
-> 
-> > > 	if (cpu_dai->driver->create)
-> > > 		ret = cpu_dai->driver->create(rtd, num);
-> 
-> 
-> > > and each driver passes soc_new_compress (or whatever) there.  This
-> > > is flexible and can be extended if any new stuff has to be handled.
-> > > Even PCM creation or dai widget links can be passed in that form,
-> > > too.
-> 
-> > and the default would be snd_pcm_new so that *most* drivers dont need
-> > to add this. Only Intel atom driver should add soc_new_compress() as
-> > create ops, hence direct reference so no gaurds required
-> 
-> > Looks good to me then, Mark you okay with this approach?
-> 
-> I'm not sure this fully helps.  This will put the reference in the CPU driver
-> which if there's sharing with non-compressed DAIs means that any machine
-> driver using the platform needs to select the compressed audio code.  It also
-> means that we're still in the situation whre if a machine
-> *can* support compressed audio it *must* support compressed audio, it's
-> not clear to me that people doing this sort of memory optimisation are
-> always going to be doing it on hardware that doesn't have the capacity for
-> compressed audio (or won't in the future).  But then I don't know exactly
-> how much memory is being saved here...
+>>>
+>>> Well, USB-audio has another problem.  USB-audio uses the intermediate
+>>> audio ring buffer, and the samples are copied to each URB buffer.  At
+>>> each packet complete, the driver copies the rest of sample chunk
+>>> again, and advances the hwptr when the packets.  So, the hwptr of
+>>> USB-audio is in advance of the actual sample position.  But we provide
+>>> the runtime delay information for user-space to correct to the more
+>>> accurate sample position.  So far, so good.
+>>>
+>>> A missing piece in this picture is, however, the position of the
+>>> not-yet-queued samples in ring buffer.  Basically you can rewrite /
+>>> rewind the sample at most this point, but not farther -- such
+>>> in-flight samples can't be modified any longer.  This can be seen a
+>>> kind of hardware fifo with a pretty big and non-continuously variable
+>>> size during operation.
+>>>
+>>> In that sense, get_fifo() looks like a candidate for giving such
+>>> information, indeed.  But reviving the old (and rather bad working)
+>>> API appears dangerous to me.  I'd prefer creating a new API function
+>>> instead, if any.
+>>>
+>>> BTW, because of its design like above, a large (or no) period size
+>>> doesn't help for saving power at all with USB-audio.  This should be
+>>> considered before the further discussion...
+>>
+>>
+>> Hmm...I was trying to understand this power save argument. I tried to
+>> figure out a "typical" URB size by just plugging my headset in, and I
+>> saw wMaxPacketSize being 96 and/or 192 bytes.
+>> Then, MAX_PACKS is set to either 6 (or 48 for USB 2.0 devices, but this
+>> is just a headset).
+>>
+>> Can this be correct? Does it mean that we are getting interrupts every
+>> 192 * 6 bytes (i e, every 6 ms for a 48kHz/stereo/16bit stream)?
+>
+>
+> At least that's how often the position gets updated in the worst case. I
+have attached a report for a Logitech USB headset and a test program where
+you can modify the buffer and period sizes. A line is logged every time
+snd_pcm_avail() returns a different value.
+>
 
-It saves ~12KB memory usage on i386 platform on my side.
- 
-~Keyon
+How about the result using multiple of 48 frames as period size since min
+period size is 48 frames (1 ms) , it seem that your tests are not using the
+optimal period size
