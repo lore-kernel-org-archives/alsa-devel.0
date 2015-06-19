@@ -1,19 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Audio Driver Works In Ubuntu but Crash in
-	Debian	After 2nd Run
-Date: Fri, 19 Jun 2015 10:01:02 +0200
-Message-ID: <5583CC3E.1090601@ladisch.de>
-References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>	<557FD536.3020906@ladisch.de>	<CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>	<55812940.5050906@ladisch.de>
- <1434531934.2471.9.camel@loki>	<CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
- <CA+k7Wwb7i5n9dgGGVgkgbOpFC-+tsQnehMgkPLCnOebH5AE4oA@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel Kconfig: add
+	SND_SOC_INTEL_BOARDS option
+Date: Fri, 19 Jun 2015 13:38:06 +0530
+Message-ID: <20150619080806.GJ28601@localhost>
+References: <1434657579-21581-1-git-send-email-michele.curti@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B20CB26053B
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 10:01:06 +0200 (CEST)
-In-Reply-To: <CA+k7Wwb7i5n9dgGGVgkgbOpFC-+tsQnehMgkPLCnOebH5AE4oA@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28CEF26053B
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 10:06:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1434657579-21581-1-git-send-email-michele.curti@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Azizul Hakim <azizulfahim2002@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: Michele Curti <michele.curti@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, jarkko.nikula@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Azizul Hakim wrote:
-> So when a audio playback starts I initialize the buffer pointer to "0"
-> in the *.prepare* function.
+On Thu, Jun 18, 2015 at 09:59:39PM +0200, Michele Curti wrote:
+> Machine drivers under boards folder must be available for both
+> SND_SST_MFLD_PLATFORM and SND_SOC_INTEL_SST.  This patch adds a
+> new kernel option SND_SOC_INTEL_BOARD to permit this.
 
-This is correct.
+I dont think we need another config option, we should rather use SND_SOC :)
 
-> https://gist.github.com/azizulhakim/d24a36ef753f9a1536fa
-> https://gist.github.com/azizulhakim/b15b002f74e77f88cd5a
+Also Liam, do we need a prompt for SND_SOC_INTEL_SST, i am thinking of
+removing that one and have it selected by respective machine drivers?
 
-This is not; the code confuses bytes and frames.
-
-When in doubt, give _all_ variables a "_bytes" or "_frames" suffix, and
-check that _every_ access uses the correct units.
+-- 
+~Vinod
 
 
-Regards,
-Clemens
+> 
+> Signed-off-by: Michele Curti <michele.curti@gmail.com>
+> ---
+>  sound/soc/intel/Kconfig  | 5 +++++
+>  sound/soc/intel/Makefile | 2 +-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index f3060a4..c442cd7 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -10,7 +10,11 @@ config SND_MFLD_MACHINE
+>            Say Y if you have such a device
+>            If unsure select "N".
+>  
+> +config SND_SOC_INTEL_BOARDS
+> +	tristate
+> +
+>  config SND_SST_MFLD_PLATFORM
+> +	select SND_SOC_INTEL_BOARDS
+>  	tristate
+>  
+>  config SND_SST_IPC
+> @@ -28,6 +32,7 @@ config SND_SST_IPC_ACPI
+>  config SND_SOC_INTEL_SST
+>  	tristate "ASoC support for Intel(R) Smart Sound Technology"
+>  	select SND_SOC_INTEL_SST_ACPI if ACPI
+> +	select SND_SOC_INTEL_BOARDS
+>  	depends on (X86 || COMPILE_TEST)
+>  	depends on DW_DMAC_CORE
+>  	help
+> diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+> index 3853ec2..4c4bf74 100644
+> --- a/sound/soc/intel/Makefile
+> +++ b/sound/soc/intel/Makefile
+> @@ -7,4 +7,4 @@ obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
+>  obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += atom/
+>  
+>  # Machine support
+> -obj-$(CONFIG_SND_SOC_INTEL_SST) += boards/
+> +obj-$(CONFIG_SND_SOC_INTEL_BOARDS) += boards/
+> -- 
+> 2.4.3
+> 
+
+-- 
