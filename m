@@ -1,7 +1,7 @@
-From: Todd Dailey <todd@todddailey.ca>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: No sound from Mac Pro headphone port
-Date: Fri, 19 Jun 2015 08:38:01 -0400
-Message-ID: <55840D29.6010702@todddailey.ca>
+Date: Fri, 19 Jun 2015 21:12:41 +0800
+Message-ID: <CAN8ccia-MdiK0nGaiCgrJb9f+Ud2uuPUPx=+WBJ7AgLBOjhKMw@mail.gmail.com>
 References: <554CC0EC.5000506@todddailey.ca>
  <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
  <554CCCAF.6000608@todddailey.ca>
@@ -11,14 +11,18 @@ References: <554CC0EC.5000506@todddailey.ca>
  <CAN8cciaepxbsuprm+EFr4jE24so1-WMnNDOfdQQPaM9AsK2hNQ@mail.gmail.com>
  <55819224.5090105@todddailey.ca>
  <CAN8cciZesh=oO765REcCo=ce8vO63ASthWGFROM5p06Ms+nx1g@mail.gmail.com>
+ <55840D29.6010702@todddailey.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yonca.sibername.com (yonca.sibername.com [67.212.91.121])
- by alsa0.perex.cz (Postfix) with ESMTP id 884E8266501
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 14:38:35 +0200 (CEST)
-In-Reply-To: <CAN8cciZesh=oO765REcCo=ce8vO63ASthWGFROM5p06Ms+nx1g@mail.gmail.com>
+Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
+ [209.85.218.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94114260564
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 15:12:42 +0200 (CEST)
+Received: by oiyy130 with SMTP id y130so62390590oiy.0
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 06:12:41 -0700 (PDT)
+In-Reply-To: <55840D29.6010702@todddailey.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,49 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
+To: Todd Dailey <todd@todddailey.ca>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-As I have time to work on this ...
+>
+> As I have time to work on this ...
+>
+> ALSA info headphone unplugged:
+>
+> http://www.alsa-project.org/db/?f=df059dc59473b812033be118a26a553767879f41
+>
+> Headphone plugged:
+>
+> http://www.alsa-project.org/db/?f=b91b9b46a1abe043b9dfc3bc4802b203e6a6c2e5
+>
 
-ALSA info headphone unplugged:
+You did not retask correctly
 
-http://www.alsa-project.org/db/?f=df059dc59473b812033be118a26a553767879f41
+1) change hp from ext rear to ext front
+2) change Mic from ext rear to ext front
 
-Headphone plugged:
+The driver don't create channel mode when there is only two jacks at ext
+rear
 
-http://www.alsa-project.org/db/?f=b91b9b46a1abe043b9dfc3bc4802b203e6a6c2e5
+3) clear misc bit 8 of pin default of line out
 
-
--- 
-TD
-todd@todddailey.ca
-
-On 18/06/15 11:00 AM, Raymond Yau wrote:
-> l
->  > Has there been any progress on fixing this issue?
->  >
->  > It seems that no matter what combination of settings I try with
-> hdajackretask, I cannot get sound from the headphone port.
->
-> Can you post the output after you retasking ?
->
->  >
->  > Jack in / out plugged status is correctly detected. However,
-> selecting Headphones for output plays sound from the Line Out port. The
-> Line Out port selection works as expected. I can set separate volume
-> levels for both Headphone and Line Out but both selections play through
-> the Line Out port.
->
-> Need your patched alsa-info when headpone unpluged and plugged
->
-> For the headset mic
->
-> Seem need  to recompile alsa driver since spec->parser_flags cannot be
-> changed by hint.
->
-> spec->parser_flags = HDA_PINCFG_HEADSET_MIC;
->
-> It also depend whether you alc889a need any vendor coeff
->
+You should use save as boot default instead of dynamic reconfig and reboot
