@@ -1,43 +1,48 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel Kconfig: add
- SND_SOC_INTEL_BOARDS option
-Date: Fri, 19 Jun 2015 09:58:56 +0100
-Message-ID: <1434704336.19885.8.camel@loki>
-References: <1434657579-21581-1-git-send-email-michele.curti@gmail.com>
- <20150619080806.GJ28601@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm_adsp: Move DSP Rate controls into the codec
+Date: Fri, 19 Jun 2015 11:17:51 +0100
+Message-ID: <20150619101751.GI14071@sirena.org.uk>
+References: <1434631399-30102-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A8A1260545
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 10:59:06 +0200 (CEST)
-In-Reply-To: <20150619080806.GJ28601@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Michele Curti <michele.curti@gmail.com>, alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, jarkko.nikula@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YjQsDnI/3MvG4QUn"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1434631399-30102-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-06-19 at 13:38 +0530, Vinod Koul wrote:
-> On Thu, Jun 18, 2015 at 09:59:39PM +0200, Michele Curti wrote:
-> > Machine drivers under boards folder must be available for both
-> > SND_SST_MFLD_PLATFORM and SND_SOC_INTEL_SST.  This patch adds a
-> > new kernel option SND_SOC_INTEL_BOARD to permit this.
-> 
-> I dont think we need another config option, we should rather use SND_SOC :)
-> 
-> Also Liam, do we need a prompt for SND_SOC_INTEL_SST, i am thinking of
-> removing that one and have it selected by respective machine drivers?
 
-Yeah, lets simplify our Kconfig now that we have cleaned up the intel
-directory.
+--YjQsDnI/3MvG4QUn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Liam
+On Thu, Jun 18, 2015 at 01:43:19PM +0100, Richard Fitzgerald wrote:
+> The rate controls are codec-specific, it's not possible to
+> generically say what the range or the meaning of each control
+> is (or even if they exist at all) - that depends on the
+> particular codec.
+
+Applied after I managed to figure out what this was generated against
+(which appears to be a combinaton of topic/adsp, topic/arizona and
+topic/dapm).  As I said last time please indicate dependencies.
+
+--YjQsDnI/3MvG4QUn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVg+xPAAoJECTWi3JdVIfQbToH/3R9L38yJ0u19kOEefYZcB4O
+HsgLE3WUZoHf3v60p1q+5DCZKj233QGmPaT09w0zf0MkXPDwoKUCmL78Cekn0jDx
+JqTZVI8CT2li3E7odckssVy7BCrQBcBg/9rcUarZD1Ue2T/DTFwQ3+NkFUIZfxJ5
+yvWsAw5wQxiF8n14bTYX83F5UYDqteWbiwj5E7HTRlaOdFPvhAKHGzghqSfPW0cG
+K1C0bY9Hnd0y/lNh2b5jYXCQ3atqsfm9GYFnBUtj/srALZp8VaNGp65KXROsLNXP
+mr19xqgtEYGpwT38gPLJ2kGRY+9b+v1Aextzv2ni0HYVYv4mRIg2jA6ZiruUKvY=
+=SlDy
+-----END PGP SIGNATURE-----
+
+--YjQsDnI/3MvG4QUn--
