@@ -1,104 +1,96 @@
-From: Azizul Hakim <azizulfahim2002@gmail.com>
-Subject: Re: Audio Driver Works In Ubuntu but Crash in Debian
- After 2nd Run
-Date: Fri, 19 Jun 2015 00:32:23 -0400
-Message-ID: <CA+k7Wwb7i5n9dgGGVgkgbOpFC-+tsQnehMgkPLCnOebH5AE4oA@mail.gmail.com>
-References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
- <557FD536.3020906@ladisch.de>
- <CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>
- <55812940.5050906@ladisch.de> <1434531934.2471.9.camel@loki>
- <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [alsa-devel] DP MST audio support
+Date: Fri, 19 Jun 2015 05:33:07 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B894EEE@SHSMSX101.ccr.corp.intel.com>
+References: <CAPM=9tx74D8SaghkuY7qcJ5emAXdtQeZOQf8N6e=FEy9VsLJvA@mail.gmail.com>
+ <CAPM=9tyc70Xd4us2LFCCYNYT8MfgqNKFxG-f=Ne7dJ_cVNYjXw@mail.gmail.com>
+ <CAPM=9twBGjXmW854avAySJCdhbRSWA88aj40JNOFNn7GG1WWRg@mail.gmail.com>
+ <s5hwq061btc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F4A02604D5
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 06:32:24 +0200 (CEST)
-Received: by obctg8 with SMTP id tg8so67658475obc.3
- for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2015 21:32:23 -0700 (PDT)
-In-Reply-To: <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hwq061btc.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, Dave Airlie <airlied@gmail.com>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "Lu, Han" <han.lu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I discovered one thing which lead me to believe something is wrong in my
-*.pointer* callback. I would like to share it for expert suggestions.
-
-So when a audio playback starts I initialize the buffer pointer to "0" in
-the *.prepare* function. During my 1st playback the audio driver works
-great, I see the *.pointer* function getting called a lot of times.
-
-I update the buffer pointer  in the URB completion function. Here goes a
-code segment from my URB completion function:
-
-https://gist.github.com/azizulhakim/d24a36ef753f9a1536fa
-
-
-
-And this is my *.pointer* function:
-
-https://gist.github.com/azizulhakim/b15b002f74e77f88cd5a
-
-
-Now during the 2nd playback, the driver initializes the buffer pointer to
-"0" again inside the *.prepare* function. And then I see it calls the
-*.pointer* function only once and afterwards stop with the error message *ALSA
-sound/core/pcm_lib.c:1910 playback write error (DMA or IRQ trouble?)*
-
-
-So I stopped initializing the buffer pointer to "0" during the second
-playback assuming that the buffer pointer should stay at the place it
-stopped from previous playback. But that also didn't work for me. I get the
-same error message. Note that same driver works on Ubuntu without any
-problem and as many times as I want.
-
-
-It would be really helpful if I get some suggestion from the given code. In
-case you wonder, the full code is available here
-<https://github.com/azizulhakim/beagleusb/blob/master/beagle-audio.c>
-
-Thanks
-Azizul
-
-
-On Wed, Jun 17, 2015 at 10:53 AM, Azizul Hakim <azizulfahim2002@gmail.com>
-wrote:
-
-> Okay, its good to learn something new on every day. So how do I configure
-> McBSP port clocking? I'm very new on these things and was unable to find
-> any useful link on this point. :(
->
-> On Wed, Jun 17, 2015 at 5:05 AM, Liam Girdwood <
-> liam.r.girdwood@linux.intel.com> wrote:
->
->> + Peter for Beaglebone
->>
->> On Wed, 2015-06-17 at 10:01 +0200, Clemens Ladisch wrote:
->> > Azizul Hakim wrote:
->> > > Driver didn't start the DMA: Not sure how to track on this point. Any
->> suggestion?
->> > > Interrupt do not arrive correctly: Is this the hardware issue or ALSA
->> issue?
->> >
->> > These would imply that some your driver, or some code used by your
->> driver,
->> > did not configure the DMA/interrupt correctly.
->>
->> On beaglebone it may also be that the McBSP port clocking is not
->> configured correctly.
->>
->> Liam
->>
->>
->
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRv
+OnRpd2FpQHN1c2UuZGVdCj4gU2VudDogTW9uZGF5LCBNYXkgMTgsIDIwMTUgNToyMSBQTQogCj4g
+QXQgVGh1LCAxNCBNYXkgMjAxNSAwOToxMDozMyArMTAwMCwKPiBEYXZlIEFpcmxpZSB3cm90ZToK
+PiA+Cj4gPiBPbiAxMiBNYXkgMjAxNSBhdCAxMzoyNywgRGF2ZSBBaXJsaWUgPGFpcmxpZWRAZ21h
+aWwuY29tPiB3cm90ZToKPiA+ID4gT24gMTIgTWF5IDIwMTUgYXQgMTE6NTAsIERhdmUgQWlybGll
+IDxhaXJsaWVkQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+PiBIaSwKPiA+ID4+Cj4gPiA+PiBTbyBJ
+IGhhdmUgYSBicmFuY2ggdGhhdCBtYWtlcyBubyBzb3VuZCwKPiA+ID4+IGh0dHA6Ly9jZ2l0LmZy
+ZWVkZXNrdG9wLm9yZy9+YWlybGllZC9saW51eC9sb2cvP2g9ZHAtbXN0LWF1ZGlvCj4gPiA+Pgo+
+ID4gPj4gYW5kIEknbSBub3Qgc3VyZSB3aGVyZSBJIG5lZWQgdG8gdHVybiB0byBuZXh0LAo+ID4g
+Pj4KPiA+ID4+IFRoZSBJbnRlbCBkb2NzIEkndmUgcmVhZCBhcmUga2luZGEgdmFndWUsIGFzc3Vt
+aW5nIHlvdSBrbm93IGxvdHMgb2YKPiA+ID4+IHRoaW5ncyBJIGNsZWFybHkgZG9uJ3QuCj4gPiA+
+Pgo+ID4gPj4gc28gaW4gdGhlb3J5IG15IGJyYW5jaCwgc2V0cyB1cCB0aGUgU0RQIHN0cmVhbSB0
+byB0aGUgbW9uaXRvciBpbgo+ID4gPj4gdGhlIHBheWxvYWQgY3JlYXRpb24sIGVuYWJsZXMgdGhl
+IGNvZGVjIGluIHRoZSBpbnRlbCBHUFUgZHJpdmVyLAo+ID4gPj4gYW5kIHBhc3NlcyB0aGUgRUxE
+IHRvIHRoZSBhdWRpbyBkcml2ZXIuCj4gPiA+Pgo+ID4gPj4gVGhlIGF1ZGlvIGRyaXZlciB1c2Vz
+IHRoZSBkZXZpY2UgbGlzdCB0byBnZXQgdGhlIHByZXNlbmNlL3ZhbGlkCj4gPiA+PiBiaXRzIHBl
+ciBkZXZpY2UsIGFuZCBtYW5hZ2VzIHRvIHJldHJpZXZlIHRoZSBFTEQuIEkgZXZlbiBjcmVhdGUg
+RUxECj4gPiA+PiBmaWxlcyBpbiAvcHJvYy9hc291bmQvSERNSS8gdGhhdCBoYXZlIHNlbnNpYmxl
+IHZhbHVlcyBpbiB0aGVtCj4gPiA+Pgo+ID4gPj4gU28gaXQgbG9va3MgbGlrZSBJJ20ganVzdCBt
+aXNzaW5nIHNvbWUgcm91dGluZyBzb21ld2hlcmUsIG1vc3QKPiA+ID4+IGxpa2VseSBpbiB0aGUg
+YXVkaW8gZHJpdmVyLCB0aGVuIGFnYWluIEkgIGNvdWxkIGJlIG1pc3NpbmcgYSBsb3QKPiA+ID4+
+IG1vcmUgdGhhbiB0aGF0Lgo+ID4gPj4KPiA+ID4+IEp1c3QgbG9va2luZyBmb3IgYW55IGlkZWFz
+IG9yIGtub3dsZWRnZSBwZW9wbGUgbWF5IGhhdmUgbG9ja2VkIGluCj4gPiA+PiB0aGVpciBicmFp
+bnMgb3IgaW5zaWRlIHRoZWlyIGZpcmV3YWxscy4KPiA+ID4KPiA+ID4gT2theSB0aGUgYnJhbmNo
+IG5vdyBoYXMgYXVkaW8gb24gbXkgdGVzdCBzZXR1cCwKPiA+ID4KPiA+ID4gSSd2ZSBoYWQgdG8g
+aGFjayBvdXQgdGhlIGludGVsX25vdF9zaGFyZV9hc3NpZ25lZF9jdnQgZnVuY3Rpb24gaXQKPiA+
+ID4gYXBwZWFycyB0byBkbyBiYWQgdGhpbmdzLCBJIHNldCBwaW4gNiB0byBjb25uZWN0aW9uIDAg
+KHBpbiAyKSwgdGhlCj4gPiA+IGxhdGVyIHNldHMgb24gcGluIDUvNyB0byBjb25uZWN0aW9uIDEg
+YnkgdGhhdCBmdW5jdGlvbiBzZWVtcyB0byByZXByb2dyYW0KPiBwaW4gNi4KPiA+ID4KPiA+ID4g
+SSdtIGd1ZXNzaW5nIHRoZSBjb25uZWN0aW9uIGlzIGFzc2lnbmVkIHRvIGEgZGV2aWNlIG5vdCBh
+IHBpbiBpbiB0aGUKPiA+ID4gbmV3IGh3LCBhbmQgdGhlIHNhbWUgZGV2aWNlIGlzIHJvdXRlZCB2
+aWEgcGluIDUvNyBzbyBJIGVuZCB1cCB0cmFzaGluZyBpdC4KPiA+ID4KPiA+ID4gbXkgdGVzdCBz
+ZXR1cCBpcyBhIEhhc3dlbGwgTGVub3ZvIHQ0NDBzICsgZG9ja2luZyBzdGF0aW9uICsgRGVsbCBV
+MjQxMC4KPiA+IHBpbmcgYXVkaW8gZ3V5cz8KPiA+Cj4gPiBjYW4gc29tZW9uZSBmcm9tIGFsc2Eg
+cGxlYXNlIHRha2UgYSBsb29rIG9yIHNvbWUgaW50ZXJlc3QgaW4gdGhpcz8KPiAKPiBTb3JyeSwg
+SSd2ZSBiZWVuIG9uIHZhY2F0aW9uIGZvciBsYXN0IHR3byB3ZWVrcy4gIE5vdyBzdGlsbCBzd2lt
+bWluZyBpbiB0aGUKPiBmbG9vZCBvZiBiYWNrbG9ncy4uLgoKSGkgQXJ0aWUsCgpTb3JyeSBmb3Ig
+dGhlIGxhdGUgcmVwbHkuCgpXZSBkb24ndCBoYXZlIEhhc3dlbGwgTGVub3ZvIHQ0NDBzIGF0bSwg
+c28gY291bGQgeW91IHNoYXJlIG1vcmUgaW5mbz8KLSBEZWxsIFUyNDEwIHNob3VsZCBzdXBwb3J0
+IGJvdGggSERNSSBhbmQgRFAgaW5wdXQuIEJ1dCBJIGd1ZXNzIGl0IGNhbm5vdAogc3VwcG9ydCBE
+UCBNU1QsIHJpZ2h0PwotIEFyZSB5b3UgY29ubmVjdGluZyB0aGlzIG1vbml0b3IgYSBEUCBjYWJs
+ZT8gCiBXaGljaCBEREkgcG9ydCBpcyB1c2VkPyBEREkgQiwgQyBvciBEPwotIERvZXMgYXVkaW8g
+ZmFpbCBhZnRlciBpOTE1IGVuYWJsZXMgRFAgTVNUPwotIElzIHBhdGNoICJzbmQvaGRtaTogaGFj
+ayBvdXQgaGFzd2VsbCBjb2RlYyB3b3JrYXJvdW5kIiB0aGUgb25seSBjaGFuZ2UKIG9uIGF1ZGlv
+IGRyaXZlciBzaWRlPwoKPiA+IFRoZSBncmFwaGljcyBzaWRlIHBhdGNoZXMgYXJlIGZhaXJseSB0
+cml2aWFsLCBhbHNvIGl0IHdvdWxkIGJlIGdvb2QgdG8KPiA+IGdldCBhIGdvb2QgZXhwbGFpbmF0
+aW9uIG9mIGhvdyB0aGUgaHcgd29ya3MsCj4gPgo+ID4gZnJvbSB3aGF0IEkgY2FuIHNlZSBkZXZp
+Y2VzIGdldCBjb25uZWN0aW9ucyBub3QgcGlucyBvbiB0aGlzIGh3LCBhbmQgSQo+ID4gbm90aWNl
+IHRoYXQgSSBkb24ndCBhbHdheXMgZ2V0IDMgZGV2aWNlcywgc28gSSdtIG5vdCBzdXJlIGlmIGRl
+dmljZXMKPiA+IGFyZSBhIGR5bmFtaWMgdGhpbmcgd2Ugc2hvdWxkIGJlIHJlcHJvYmluZyBvbiBz
+b21lIHNpZ25hbC4KCkRvIHlvdSBtZWFuIDMgUENNIGRldmljZXMgaGVyZSwgbGlrZSBwY21DMEQz
+cCwgcGNtQzBEN3AsIHBjbUMwRDhwPwpOb3cgdGhlIGRldmljZXMgYXJlIG5vdCBkeW5hbWljLCBh
+IFBDTSBkZXZpY2UgaXMgY3JlYXRlZCBvbiBlYWNoIHBpbi4KSXQgc2VlbXMgd2UgbmVlZCB0byBy
+ZXZpc2UgdGhpcyBmb3IgRFAgTVNULCBzaW5jZSBhIHBpbiBjYW4gYmUgdXNlZCB0byBzZW5kCnVw
+IHRvIDMgaW5kZXBlbmRlbnQgc3RyZWFtcyBvbiBJbnRlbCBHUFUgd2hpY2ggaGFzIDMgZGlzcGxh
+eSBwaXBlbGluZXMuCgo+IAo+IFRoZSBpbnRlbF9ub3Rfc2hhcmVfYXNzaWduZWRfY3Z0KCkgd2Fz
+IG5lZWRlZCBmb3IgSGFzd2VsbCBIRE1JL0RQIGFzIHRoZXJlCj4gd2FzIHN0YXRpYyByb3V0aW5n
+IGJldHdlZW4gdGhlIHBpbiBhbmQgdGhlIGNvbnZlcnRlciB3aWRnZXRzIGFsdGhvdWdoIHRoZQo+
+IGNvZGVjIGdyYXBoIHNob3dzIGl0J3Mgc2VsZWN0YWJsZS4KCldlIG5lZWQgdG8gY2hlY2sgd2h5
+IHRoaXMgZmFpbHMuIEV2ZW4gaWYgTVNUIGlzIGVuYWJsZWQsIHRoZSBjb252ZXJ0b3JzIHNob3Vs
+ZAphbHNvIGJlIHNlbGVjdGFibGUuCgo+IFdhcyB0aGUgcGluIGRlZmF1bHQgY29uZmlnIG9mIHBp
+biA2IGVuYWJsZWQgYnkgQklPUyBwcm9wZXJseT8KPiAKPiBJbiBhbnl3YXksIEludGVsIHBlb3Bs
+ZSBzaG91bGQgaGF2ZSBhIGJldHRlciBjbHVlIGFib3V0IHRoaXM7IGl0J3MgYmVlbiBhbHdheXMg
+YQo+IHN0cmFuZ2UgYmVoYXZpb3IgdGhhdCBpcyB0aWVkIHdpdGggdGhlIGdyYXBoaWNzLi4uCj4g
+Cj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9pbnRlbC1nZngK
