@@ -1,30 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: No sound from Mac Pro headphone port
-Date: Sat, 20 Jun 2015 07:07:26 +0800
-Message-ID: <CAN8ccib=vJ4knVUtMQUahOEF8+u=f_14x7JV5mpxguy8O-eKtQ@mail.gmail.com>
-References: <554CC0EC.5000506@todddailey.ca>
- <CAN8cciYJdMeKyYL1mqUkN3bKmEhwqHN1-pZzCvBDazBPKdH7vw@mail.gmail.com>
- <554CCCAF.6000608@todddailey.ca>
- <CAN8cciaSiJBr4RKP6Rj3JurnrPEGufBsnLEACdvrhRLcRfPkcg@mail.gmail.com>
- <5555460D.3060907@todddailey.ca>
- <CAN8cciaEdt3zM_V7M4_8YVBHrs+GQsfs1jV32owfsR_2oO52AA@mail.gmail.com>
- <CAN8cciaepxbsuprm+EFr4jE24so1-WMnNDOfdQQPaM9AsK2hNQ@mail.gmail.com>
- <55819224.5090105@todddailey.ca>
- <CAN8cciZesh=oO765REcCo=ce8vO63ASthWGFROM5p06Ms+nx1g@mail.gmail.com>
- <55840D29.6010702@todddailey.ca>
- <CAN8ccia-MdiK0nGaiCgrJb9f+Ud2uuPUPx=+WBJ7AgLBOjhKMw@mail.gmail.com>
- <55844837.1080004@todddailey.ca>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Audio Driver Works In Ubuntu but Crash in Debian
+	After 2nd Run
+Date: Sat, 20 Jun 2015 11:52:40 +0900
+Message-ID: <5584D578.7060509@sakamocchi.jp>
+References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
+ <557FD536.3020906@ladisch.de>
+ <CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>
+ <55812940.5050906@ladisch.de> <1434531934.2471.9.camel@loki>
+ <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
+ <CA+k7Wwb7i5n9dgGGVgkgbOpFC-+tsQnehMgkPLCnOebH5AE4oA@mail.gmail.com>
+ <5583AF11.70503@sakamocchi.jp> <5583B4DE.3080409@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
- [209.85.214.181])
- by alsa0.perex.cz (Postfix) with ESMTP id E223C260647
- for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2015 01:07:26 +0200 (CEST)
-Received: by obpn3 with SMTP id n3so507934obp.0
- for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 16:07:26 -0700 (PDT)
-In-Reply-To: <55844837.1080004@todddailey.ca>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 786C7260674
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2015 04:52:45 +0200 (CEST)
+In-Reply-To: <5583B4DE.3080409@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,29 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Todd Dailey <todd@todddailey.ca>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Azizul Hakim <azizulfahim2002@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
->
-> I will need more instruction on how to accomplish step #3.
->
->
-> "3) clear misc bit 8 of pin default of line out"
->
-> Thus far, moving both HP and Mic to "Front" gives no improvement.
->
->
+On Jun 19 2015 14:56, Takashi Sakamoto wrote:>
+> When you see this log with playback PCM application, it means
+> that 'the application is running in blocking-mode (O_NONBLOCK) with
+> no-period-wakeup mode
 
-Many unconnected pin complex have been changed to line out jack
+Oops, again.
 
-Seem bug of hdajackretask if it allow you to change pin comple which pincap
-only support IN to line out jack
+'without non-period-wakeup mode' is correct...
 
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x00000100: [Jack] Line Out at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0x0, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
+
+# I'm a bit tired from the humidity in this rainy season...
+
+
+Regards
+
+Takashi Sakamoto
