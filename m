@@ -1,23 +1,27 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Audio Driver Works In Ubuntu but Crash in Debian
-	After 2nd Run
-Date: Sat, 20 Jun 2015 11:52:40 +0900
-Message-ID: <5584D578.7060509@sakamocchi.jp>
-References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
- <557FD536.3020906@ladisch.de>
- <CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>
- <55812940.5050906@ladisch.de> <1434531934.2471.9.camel@loki>
- <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
- <CA+k7Wwb7i5n9dgGGVgkgbOpFC-+tsQnehMgkPLCnOebH5AE4oA@mail.gmail.com>
- <5583AF11.70503@sakamocchi.jp> <5583B4DE.3080409@sakamocchi.jp>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Sat, 20 Jun 2015 11:24:31 +0800
+Message-ID: <CAN8ccibX8cimGEgushcDUMKkog9O1yN3Qb+GU9LvLRTLAWaHrg@mail.gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+ <557EDE22.7080808@metafoo.de>
+ <CAN8cciaYSJVySbyAr_af+0f-govGXEp2CsmQkPLpr=mfc_Quhg@mail.gmail.com>
+ <55812F5C.8010502@metafoo.de> <s5h4mm68zfm.wl-tiwai@suse.de>
+ <55818DB5.6050007@canonical.com> <s5hmvzw9bn9.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 786C7260674
- for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2015 04:52:45 +0200 (CEST)
-In-Reply-To: <5583B4DE.3080409@sakamocchi.jp>
+Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com
+ [209.85.214.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A2CB260687
+ for <alsa-devel@alsa-project.org>; Sat, 20 Jun 2015 05:24:32 +0200 (CEST)
+Received: by obctg8 with SMTP id tg8so85559455obc.3
+ for <alsa-devel@alsa-project.org>; Fri, 19 Jun 2015 20:24:31 -0700 (PDT)
+In-Reply-To: <s5hmvzw9bn9.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,23 +31,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Azizul Hakim <azizulfahim2002@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>, o-takashi@sakamocchi.jp
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, clemens@ladisch.de, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Jun 19 2015 14:56, Takashi Sakamoto wrote:>
-> When you see this log with playback PCM application, it means
-> that 'the application is running in blocking-mode (O_NONBLOCK) with
-> no-period-wakeup mode
+> > > Well, USB-audio has another problem.  USB-audio uses the intermediate
+> > > audio ring buffer, and the samples are copied to each URB buffer.  At
+> > > each packet complete, the driver copies the rest of sample chunk
+> > > again, and advances the hwptr when the packets.  So, the hwptr of
+> > > USB-audio is in advance of the actual sample position.  But we provide
+> > > the runtime delay information for user-space to correct to the more
+> > > accurate sample position.  So far, so good.
+> > >
+> > > A missing piece in this picture is, however, the position of the
+> > > not-yet-queued samples in ring buffer.  Basically you can rewrite /
+> > > rewind the sample at most this point, but not farther -- such
+> > > in-flight samples can't be modified any longer.  This can be seen a
+> > > kind of hardware fifo with a pretty big and non-continuously variable
+> > > size during operation.
+> > >
+> > > In that sense, get_fifo() looks like a candidate for giving such
+> > > information, indeed.  But reviving the old (and rather bad working)
+> > > API appears dangerous to me.  I'd prefer creating a new API function
+> > > instead, if any.
+> > >
+> > > BTW, because of its design like above, a large (or no) period size
+> > > doesn't help for saving power at all with USB-audio.  This should be
+> > > considered before the further discussion...
+> >
+> > Hmm...I was trying to understand this power save argument. I tried to
+> > figure out a "typical" URB size by just plugging my headset in, and I
+> > saw wMaxPacketSize being 96 and/or 192 bytes.
+> > Then, MAX_PACKS is set to either 6 (or 48 for USB 2.0 devices, but this
+> > is just a headset).
+> >
+> > Can this be correct? Does it mean that we are getting interrupts every
+> > 192 * 6 bytes (i e, every 6 ms for a 48kHz/stereo/16bit stream)?
+>
+> The driver can build up a URB containing multiple packets, so the
+> wakeups can be reduced in some level.  But, then the hwptr update also
+> suffers, and more badly, the in-flight size also increases -- both are
+> bad for sample mixing, obviously.
+>
 
-Oops, again.
+http://lxr.free-electrons.com/ident?i=SNDRV_PCM_INFO_BATCH
 
-'without non-period-wakeup mode' is correct...
+If info batch represent exact one period,
 
+do you mean snd-intel8x0 is worst or better ?
 
-# I'm a bit tired from the humidity in this rainy season...
-
-
-Regards
-
-Takashi Sakamoto
+How about firewire which also use packets ?
