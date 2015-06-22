@@ -1,23 +1,26 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 02/13] dmaengine: Introduce
- dma_request_slave_channel_compat_reason()
-Date: Mon, 22 Jun 2015 14:31:00 +0300
-Message-ID: <5587F1F4.1060905@ti.com>
-References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
- <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
- <20150529093317.GF3140@localhost>
- <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
- <20150529101846.GG3140@localhost> <55687892.7050606@ti.com>
- <20150602125535.GS3140@localhost> <5570758E.6030302@ti.com>
- <20150612125837.GJ28601@localhost>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Mon, 22 Jun 2015 19:54:19 +0800
+Message-ID: <CAN8ccibQvDmdydn3QjHH==mNNizWuH+FOwRMu_BFRYGAfu9ukw@mail.gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+ <557EDE22.7080808@metafoo.de>
+ <CAN8ccibPTkiayx_9ETOwjw1dSF+UPsxjgcqWJR+mm149c69WBg@mail.gmail.com>
+ <5587AE77.1020709@metafoo.de> <5587D845.4040309@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E2EE261B19
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 13:31:07 +0200 (CEST)
-In-Reply-To: <20150612125837.GJ28601@localhost>
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C1C0261B19
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 13:54:20 +0200 (CEST)
+Received: by oiyy130 with SMTP id y130so102461846oiy.0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 04:54:19 -0700 (PDT)
+In-Reply-To: <5587D845.4040309@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,77 +30,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Linux MMC List <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-crypto@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/12/2015 03:58 PM, Vinod Koul wrote:
-> Sorry this slipped thru
+> >> Are all soc audio driver use cyclic dma ?
+> >
+> > I'm not sure I understand the question. All audio drivers use some
+> > kind of cyclic DMA.
+>
+> The ALSA API requires the driver to provide a cyclic sample buffer (or
+> something that behaves like one).
+>
+> However, not all hardware works this way.  USB and FireWire require the
+> driver to continually queue new packets, whose size and timing are
+> determined by the bus clock and are not directly related to the ALSA
+> ring buffer.  These drivers use double buffering; the actual DMA happens
+> from those packets, not from the ring buffer.
+>
 
-I was away for a week anyways ;)
-
-> Thinking about it again, I think we should coverge to two APIs and mark t=
-he
-> legacy depracuated and look to convert folks and phase that out
-
-Currently, w/o this series we have these APIs:
-/* to be used with DT/ACPI */
-dma_request_slave_channel(dev, name)		/* NULL on failure */
-dma_request_slave_channel_reason(dev, name)	/* error code on failure */
-
-/* Legacy mode only - no DT/ACPI lookup */
-dma_request_channel(mask, fn, fn_param) /* NULL on failure */
-
-/* to be used with DT/ACPI or legacy boot */
-dma_request_slave_channel_compat(mask, fn, fn_param, dev, name)	/* NULL on
-failure */
-
-To request _any_ channel to be used for memcpy one has to use
-dma_request_channel(mask, NULL, NULL);
-
-If I did not missed something.
-
-As we need different types of parameters for DT/ACPI and legacy (non DT/ACPI
-lookup) and the good API names are already taken, we might need to settle:
-
-/* to be used with DT/ACPI */
-dma_request_slave_channel(dev, name) /* error code on failure */
-- Convert users to check IS_ERR_OR_NULL() instead against NULL
-- Mark dma_request_slave_channel_reason() deprecated and convert the curren=
-t users
-
-/* to be used with DT/ACPI or legacy boot */
-dma_request_slave_channel_compat(mask, fn, fn_param, dev, name) /* error co=
-de
-on failure */
-- Convert users to check IS_ERR_OR_NULL() instead against NULL
-- Do not try legacy mode if either OF or ACPI failed because of real error
-
-/* Legacy mode only - no DT/ACPI lookup */
-dma_request_channel_legacy(mask, fn, fn_param) /* error code on failure */
-- convert users of dma_request_channel()
-- mark dma_request_channel() deprecated
-
-/* to be used to get a channel for memcpy for example */
-dma_request_any_channel(mask) /* error code on failure */
-- Convert current dma_request_channel(mask, NULL, NULL) users
-I know, any of the other function could be prepared to handle this when
-parameters are missing, but it is a bit cleaner to have separate API for th=
-is.
-
-It would be nice to find another name for the
-dma_request_slave_channel_compat() so with the new name we could have chance
-to rearrange the parameters: (dev, name, mask, fn, fn_param)
-
-We would end up with the following APIs, all returning with error code on f=
-ailure:
-dma_request_slave_channel(dev, name);
-dma_request_channel_legacy(mask, fn, fn_param);
-dma_request_slave_channel_compat(mask, fn, fn_param, dev, name);
-dma_request_any_channel(mask);
-
-What do you think?
-
--- =
-
-P=E9ter
+If those queued packets/urb cannot be rewind, snd_pcm_rewindable should
+return zero for those driver
