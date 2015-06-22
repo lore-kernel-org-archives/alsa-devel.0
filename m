@@ -1,33 +1,100 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/gtm601 2/3] sound/soc/codecs/gtm601.c:36:27: sparse:
- symbol 'gtm601_dai' was not declared. Should it be static?
-Date: Mon, 22 Jun 2015 23:48:25 +0800
-Message-ID: <201506222333.SOsGGlVC%fengguang.wu@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Mon, 22 Jun 2015 23:50:52 +0800
+Message-ID: <CAN8ccib_DS2kOLzHCj8v_H90VqNZsCk4h_4Gb6Vkb=nQw30L_w@mail.gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
+ <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
+ <557EBEAA.70004@metafoo.de>
+ <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
+ <557EDE22.7080808@metafoo.de>
+ <CAN8ccibPTkiayx_9ETOwjw1dSF+UPsxjgcqWJR+mm149c69WBg@mail.gmail.com>
+ <5587AE77.1020709@metafoo.de> <5587D845.4040309@ladisch.de>
+ <CAN8ccibQvDmdydn3QjHH==mNNizWuH+FOwRMu_BFRYGAfu9ukw@mail.gmail.com>
+ <5587FB52.9070401@gmail.com>
+ <CAN8ccib-qYEFK95GYiN-PW9PLXkLZhC+Z2JbsLzdb7ye5aaFWA@mail.gmail.com>
+ <55880452.7000100@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marek Belisko <marek@goldelico.com>
-Cc: kbuild-all@01.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20F9D2651B7
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 17:50:53 +0200 (CEST)
+Received: by oigx81 with SMTP id x81so124673464oig.1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 08:50:53 -0700 (PDT)
+In-Reply-To: <55880452.7000100@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/gtm601
-head:   ac6e7c29ac12e1e285b0740bb671039ef436cf91
-commit: 600a2b098a87843d44ab2f54fde9eda421946b38 [2/3] ASoC: Add gtm601 codec driver
-reproduce:
-  # apt-get install sparse
-  git checkout 600a2b098a87843d44ab2f54fde9eda421946b38
-  make ARCH=x86_64 allmodconfig
-  make C=1 CF=-D__CHECK_ENDIAN__
+>>
+>>  >>>
+>>  >>> The ALSA API requires the driver to provide a cyclic sample buffer
+(or
+>>  >>> something that behaves like one).
+>>  >>>
+>>  >>> However, not all hardware works this way.  USB and FireWire require
+the
+>>  >>> driver to continually queue new packets, whose size and timing are
+>>  >>> determined by the bus clock and are not directly related to the ALSA
+>>  >>> ring buffer.  These drivers use double buffering; the actual DMA
+>> happens
+>>  >>> from those packets, not from the ring buffer.
+>>  >>>
+>>  >>
+>>  >> If those queued packets/urb cannot be rewind, snd_pcm_rewindable
+should
+>>  >> return zero for those driver
+>>  >
+>>  >
+>>  > Not really.
+>>  >
+>>  > As I understand it, the kernel periodically converts a piece of the
+>> ring buffer (located in RAM) into an URB, and it gets sent through the
+>> USB bus. Parts of the buffer that are not yet converted to URB are
+>> perfectly rewindable.
+>>  >
+>>  > In other words, for USB devices, the kernel already implements the
+>> "low-latency background thread that makes unrewindable devices
+>> rewindable" idea that I discussed (as a strawman proposal) here for
+>> userspace:
+>>  >
+>>  >
+>>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/080868.html
+>>  >
+>>
+>> This mean that SNDRV_PCM_INFO_BATCH represent exact one period is not
+>> correct for usb and firewire since hw_ptr does not increment in period
+size
+>
+>
+> Well, according to the new definition, "SNDRV_PCM_INFO_BATCH on the other
+hand has become to mean that the device is only capable of reporting the
+audio pointer with a coarse granularity". In the USB case, we indeed have
+coarse granularity (6 ms in the worst case), but not as bad as one period.
+>
+>
+>>
+>> Do this mean .period_bytes_min of snd-usb-audio is incorrect since
+>> .period_bytes_min should be at least size of urb/packet ?
+>>
+>
+> I don't see anything wrong here. With the USB device that my colleague
+has here at work, the minimum period size is 48 samples, i.e. 1 ms, which
+looks exactly like one USB data packet.
+>
 
-
-sparse warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/gtm601.c:36:27: sparse: symbol 'gtm601_dai' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+What is the smallest buffer time which your usb audio can playback without
+underrun using aplay with two periods (2ms or 12ms) ?
