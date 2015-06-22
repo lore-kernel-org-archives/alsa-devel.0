@@ -1,15 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 6/9] ASoC: Add ability to build sti drivers
-Date: Mon, 22 Jun 2015 16:31:10 +0200
-Message-ID: <1434983473-25092-7-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 7/9] ASoC: Codec: Add sti platform codec
+Date: Mon, 22 Jun 2015 16:31:11 +0200
+Message-ID: <1434983473-25092-8-git-send-email-arnaud.pouliquen@st.com>
 References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id D17E0265182
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:44 +0200 (CEST)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id BE5E026517E
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:43 +0200 (CEST)
 In-Reply-To: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,68 +24,692 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Define the platform and codec drivers, and how to build them.
+Codec part of the sti platform that supports codec IPs.
+This first version does not support HDMI, but only DAC and SPDIF out.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/Kconfig      |  1 +
- sound/soc/Makefile     |  1 +
- sound/soc/sti/Kconfig  | 11 +++++++++++
- sound/soc/sti/Makefile |  4 ++++
- 4 files changed, 17 insertions(+)
- create mode 100644 sound/soc/sti/Kconfig
- create mode 100644 sound/soc/sti/Makefile
+ sound/soc/codecs/Kconfig   |   5 +
+ sound/soc/codecs/Makefile  |   2 +
+ sound/soc/codecs/sti-sas.c | 627 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 634 insertions(+)
+ create mode 100644 sound/soc/codecs/sti-sas.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 3ba52da..791f2a6 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -53,6 +53,7 @@ source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
-+source "sound/soc/sti/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 974ba70..30b2d6d 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
-+obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
-new file mode 100644
-index 0000000..64a6900
---- /dev/null
-+++ b/sound/soc/sti/Kconfig
-@@ -0,0 +1,11 @@
-+#
-+# STM SoC audio configuration
-+#
-+menuconfig SND_SOC_STI
-+	tristate "SoC Audio support for STI System-On-Chip"
-+	depends on SND_SOC
-+	depends on ARCH_STI || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+		Say Y if you want to enable ASoC-support for
-+		any of the STI platforms (e.g. STIH416).
-diff --git a/sound/soc/sti/Makefile b/sound/soc/sti/Makefile
-new file mode 100644
-index 0000000..4b188d2
---- /dev/null
-+++ b/sound/soc/sti/Makefile
-@@ -0,0 +1,4 @@
-+# STI platform support
-+snd-soc-sti-objs := sti_uniperif.o uniperif_player.o uniperif_reader.o
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 186fe7f..7434a20 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -102,6 +102,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_STA350 if I2C
+ 	select SND_SOC_STA529 if I2C
+ 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
++	select SND_SOC_STI_SAS
+ 	select SND_SOC_TAS2552 if I2C
+ 	select SND_SOC_TAS5086 if I2C
+ 	select SND_SOC_TAS571X if I2C
+@@ -604,6 +605,10 @@ config SND_SOC_STA529
+ config SND_SOC_STAC9766
+ 	tristate
+ 
++config SND_SOC_STI_SAS
++	tristate "codec Audio support for STI SAS codec"
++	depends on SND_SOC_STI
 +
-+obj-$(CONFIG_SND_SOC_STI) += snd-soc-sti.o
+ config SND_SOC_TAS2552
+ 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
+ 	depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 3dcf5ac..1744e22 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -105,6 +105,7 @@ snd-soc-sta32x-objs := sta32x.o
+ snd-soc-sta350-objs := sta350.o
+ snd-soc-sta529-objs := sta529.o
+ snd-soc-stac9766-objs := stac9766.o
++snd-soc-sti-sas-objs := sti-sas.o
+ snd-soc-tas5086-objs := tas5086.o
+ snd-soc-tas571x-objs := tas571x.o
+ snd-soc-tfa9879-objs := tfa9879.o
+@@ -287,6 +288,7 @@ obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
+ obj-$(CONFIG_SND_SOC_STA350)   += snd-soc-sta350.o
+ obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
+ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
++obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
+ obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
+ obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
+ obj-$(CONFIG_SND_SOC_TAS571X)	+= snd-soc-tas571x.o
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+new file mode 100644
+index 0000000..32db2c2
+--- /dev/null
++++ b/sound/soc/codecs/sti-sas.c
+@@ -0,0 +1,627 @@
++/*
++ * Copyright (C) STMicroelectronics SA 2015
++ * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
++ *          for STMicroelectronics.
++ * License terms:  GNU General Public License (GPL), version 2
++ */
++
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/reset.h>
++#include <linux/mfd/syscon.h>
++
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++/* chipID supported */
++#define CHIPID_STIH416 0
++#define CHIPID_STIH407 1
++
++/* DAC definitions */
++
++/* stih416 DAC registers */
++/* sysconf 2517: Audio-DAC-Control */
++#define STIH416_AUDIO_DAC_CTRL 0x00000814
++/* sysconf 2519: Audio-Gue-Control */
++#define STIH416_AUDIO_GLUE_CTRL 0x0000081C
++
++#define STIH416_DAC_NOT_STANDBY	0x3
++#define STIH416_DAC_SOFTMUTE	0x4
++#define STIH416_DAC_ANA_NOT_PWR	0x5
++#define STIH416_DAC_NOT_PNDBG	0x6
++
++#define STIH416_DAC_NOT_STANDBY_MASK	BIT(STIH416_DAC_NOT_STANDBY)
++#define STIH416_DAC_SOFTMUTE_MASK	BIT(STIH416_DAC_SOFTMUTE)
++#define STIH416_DAC_ANA_NOT_PWR_MASK	BIT(STIH416_DAC_ANA_NOT_PWR)
++#define STIH416_DAC_NOT_PNDBG_MASK	BIT(STIH416_DAC_NOT_PNDBG)
++
++/* stih407 DAC registers */
++/* sysconf 5041: Audio-Gue-Control */
++#define STIH407_AUDIO_GLUE_CTRL 0x000000A4
++/* sysconf 5042: Audio-DAC-Control */
++#define STIH407_AUDIO_DAC_CTRL 0x000000A8
++
++/* DAC definitions */
++#define STIH407_DAC_SOFTMUTE		0x0
++#define STIH407_DAC_STANDBY_ANA		0x1
++#define STIH407_DAC_STANDBY		0x2
++
++#define STIH407_DAC_SOFTMUTE_MASK	BIT(STIH407_DAC_SOFTMUTE)
++#define STIH407_DAC_STANDBY_ANA_MASK    BIT(STIH407_DAC_STANDBY_ANA)
++#define STIH407_DAC_STANDBY_MASK        BIT(STIH407_DAC_STANDBY)
++
++/* SPDIF definitions */
++#define SPDIF_BIPHASE_ENABLE		0x6
++#define SPDIF_BIPHASE_IDLE		0x7
++
++#define SPDIF_BIPHASE_ENABLE_MASK	BIT(SPDIF_BIPHASE_ENABLE)
++#define SPDIF_BIPHASE_IDLE_MASK		BIT(SPDIF_BIPHASE_IDLE)
++
++enum {
++	STI_SAS_DAI_SPDIF_OUT,
++	STI_SAS_DAI_ANALOG_OUT,
++};
++
++static const struct reg_default stih416_sas_reg_defaults[] = {
++	{ STIH407_AUDIO_GLUE_CTRL, 0x00000040 },
++	{ STIH407_AUDIO_DAC_CTRL, 0x000000000 },
++};
++
++static const struct reg_default stih407_sas_reg_defaults[] = {
++	{ STIH416_AUDIO_DAC_CTRL, 0x000000000 },
++	{ STIH416_AUDIO_GLUE_CTRL, 0x00000040 },
++};
++
++struct sti_dac_audio {
++	struct regmap *regmap;
++	struct regmap *virt_regmap;
++	struct regmap_field  **field;
++	struct reset_control *rst;
++	int mclk;
++};
++
++struct sti_spdif_audio {
++	struct regmap *regmap;
++	struct regmap_field  **field;
++	int mclk;
++};
++
++/* device data structure */
++struct sti_sas_dev_data {
++	const int chipid; /* IC version */
++	const struct regmap_config *regmap;
++	const struct snd_soc_dai_ops *dac_ops;  /* DAC function callbacks */
++	const struct snd_soc_dapm_widget *dapm_widgets; /* dapms declaration */
++	const int num_dapm_widgets; /* dapms declaration */
++	const struct snd_soc_dapm_route *dapm_routes; /* route declaration */
++	const int num_dapm_routes; /* route declaration */
++};
++
++/* driver data structure */
++struct sti_sas_data {
++	struct device *dev;
++	const struct sti_sas_dev_data *dev_data;
++	struct sti_dac_audio dac;
++	struct sti_spdif_audio spdif;
++};
++
++/* Read a register from the sysconf reg bank */
++static int sti_sas_read_reg(void *context, unsigned int reg,
++			    unsigned int *value)
++{
++	struct sti_sas_data *drvdata = context;
++	int status;
++	u32 val;
++
++	status = regmap_read(drvdata->dac.regmap, reg, &val);
++	*value = (unsigned int)val;
++
++	return status;
++}
++
++/* Read a register from the sysconf reg bank */
++static int sti_sas_write_reg(void *context, unsigned int reg,
++			     unsigned int value)
++{
++	struct sti_sas_data *drvdata = context;
++	int status;
++
++	status = regmap_write(drvdata->dac.regmap, reg, value);
++
++	return status;
++}
++
++static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
++				       struct sti_sas_data *data)
++{
++	int ret;
++	/*
++	 * DAC and SPDIF are activated by default
++	 * put them in IDLE to save power
++	 */
++
++	/* Initialise bi-phase formatter to disabled */
++	ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
++				  SPDIF_BIPHASE_ENABLE_MASK, 0);
++
++	if (!ret)
++		/* Initialise bi-phase formatter idle value to 0 */
++		ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
++					  SPDIF_BIPHASE_IDLE_MASK, 0);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to update SPDIF registers");
++		return ret;
++	}
++
++	/* Init DAC configuration */
++	switch (data->dev_data->chipid) {
++	case CHIPID_STIH407:
++		/* init configuration */
++		ret =  snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++					   STIH407_DAC_STANDBY_MASK,
++					   STIH407_DAC_STANDBY_MASK);
++
++		if (!ret)
++			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++						  STIH407_DAC_STANDBY_ANA_MASK,
++						  STIH407_DAC_STANDBY_ANA_MASK);
++		if (!ret)
++			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++						  STIH407_DAC_SOFTMUTE_MASK,
++						  STIH407_DAC_SOFTMUTE_MASK);
++		break;
++	case CHIPID_STIH416:
++		ret =  snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
++					   STIH416_DAC_NOT_STANDBY_MASK, 0);
++		if (!ret)
++			ret =  snd_soc_update_bits(codec,
++						   STIH416_AUDIO_DAC_CTRL,
++						   STIH416_DAC_ANA_NOT_PWR, 0);
++		if (!ret)
++			ret =  snd_soc_update_bits(codec,
++						   STIH416_AUDIO_DAC_CTRL,
++						   STIH416_DAC_NOT_PNDBG_MASK,
++						   0);
++		if (!ret)
++			ret =  snd_soc_update_bits(codec,
++						   STIH416_AUDIO_DAC_CTRL,
++						   STIH416_DAC_SOFTMUTE_MASK,
++						   STIH416_DAC_SOFTMUTE_MASK);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to update DAC registers");
++		return ret;
++	}
++
++	return ret;
++}
++
++/*
++ * DAC
++ */
++static int sti_sas_dac_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	/* Sanity check only */
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: Unsupporter master mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int stih416_dac_probe(struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct sti_dac_audio *dac = &drvdata->dac;
++
++	/* Get reset control */
++	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
++	if (IS_ERR(dac->rst)) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: DAC reset control not defined (%d)!\n",
++			__func__, (int)dac->rst);
++		dac->rst = NULL;
++		return -EFAULT;
++	}
++	/* Put the DAC into reset */
++	reset_control_assert(dac->rst);
++
++	return 0;
++}
++
++const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
++	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
++			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
++	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
++			     STIH416_DAC_ANA_NOT_PWR, 0, NULL, 0),
++	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH416_AUDIO_DAC_CTRL,
++			 STIH416_DAC_NOT_STANDBY, 0),
++	SND_SOC_DAPM_OUTPUT("DAC Output"),
++};
++
++const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
++	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
++			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
++	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
++			 STIH407_DAC_STANDBY, 1),
++	SND_SOC_DAPM_OUTPUT("DAC Output"),
++};
++
++const struct snd_soc_dapm_route stih416_sas_route[] = {
++	{"DAC Output", NULL, "DAC bandgap"},
++	{"DAC Output", NULL, "DAC standby ana"},
++	{"DAC standby ana", NULL, "DAC standby"},
++};
++
++const struct snd_soc_dapm_route stih407_sas_route[] = {
++	{"DAC Output", NULL, "DAC standby ana"},
++	{"DAC standby ana", NULL, "DAC standby"},
++};
++
++static int stih416_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	if (mute) {
++		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
++					    STIH416_DAC_SOFTMUTE_MASK,
++					    STIH416_DAC_SOFTMUTE_MASK);
++	} else {
++		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
++					    STIH416_DAC_SOFTMUTE_MASK, 0);
++	}
++}
++
++static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	if (mute) {
++		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++					    STIH407_DAC_SOFTMUTE_MASK,
++					    STIH407_DAC_SOFTMUTE_MASK);
++	} else {
++		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
++					    STIH407_DAC_SOFTMUTE_MASK,
++					    0);
++	}
++}
++
++/*
++ * SPDIF
++ */
++static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
++				 unsigned int fmt)
++{
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
++		dev_err(dai->codec->dev,
++			"%s: ERROR: Unsupporter master mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/*
++ * sti_sas_spdif_trigger:
++ * Trigger function is used to ensure that BiPhase Formater is disabled
++ * before CPU dai is stopped.
++ * This is mandatory to avoid that BPF is stalled
++ */
++static int sti_sas_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
++				 struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
++					    SPDIF_BIPHASE_ENABLE_MASK,
++					    SPDIF_BIPHASE_ENABLE_MASK);
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
++					    SPDIF_BIPHASE_ENABLE_MASK,
++					    0);
++	default:
++		return -EINVAL;
++	}
++}
++
++static bool sti_sas_volatile_register(struct device *dev, unsigned int reg)
++{
++	if (reg == STIH407_AUDIO_GLUE_CTRL)
++		return true;
++
++	return false;
++}
++
++/*
++ * CODEC DAIS
++ */
++
++/*
++ * sti_sas_set_sysclk:
++ * get MCLK input frequency to check that MCLK-FS ratio is coherent
++ */
++static int sti_sas_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++			      unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++
++	if (dir == SND_SOC_CLOCK_OUT)
++		return 0;
++
++	if (clk_id != 0)
++		return -EINVAL;
++
++	switch (dai->id) {
++	case STI_SAS_DAI_SPDIF_OUT:
++		drvdata->spdif.mclk = freq;
++		break;
++
++	case STI_SAS_DAI_ANALOG_OUT:
++		drvdata->dac.mclk = freq;
++		break;
++	}
++
++	return 0;
++}
++
++static int sti_sas_prepare(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	switch (dai->id) {
++	case STI_SAS_DAI_SPDIF_OUT:
++		if ((drvdata->spdif.mclk / runtime->rate) != 128) {
++			dev_err(codec->dev, "unexpected mclk-fs ratio");
++			return -EINVAL;
++		}
++		break;
++	case STI_SAS_DAI_ANALOG_OUT:
++		if ((drvdata->dac.mclk / runtime->rate) != 256) {
++			dev_err(codec->dev, "unexpected mclk-fs ratio");
++			return -EINVAL;
++		}
++		break;
++	}
++
++	return 0;
++}
++
++const struct snd_soc_dai_ops stih416_dac_ops = {
++	.set_fmt = sti_sas_dac_set_fmt,
++	.mute_stream = stih416_sas_dac_mute,
++	.prepare = sti_sas_prepare,
++	.set_sysclk = sti_sas_set_sysclk,
++};
++
++const struct snd_soc_dai_ops stih407_dac_ops = {
++	.set_fmt = sti_sas_dac_set_fmt,
++	.mute_stream = stih407_sas_dac_mute,
++	.prepare = sti_sas_prepare,
++	.set_sysclk = sti_sas_set_sysclk,
++};
++
++const struct regmap_config stih407_sas_regmap = {
++	.reg_bits = 32,
++	.val_bits = 32,
++
++	.max_register = STIH407_AUDIO_DAC_CTRL,
++	.reg_defaults = stih407_sas_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(stih407_sas_reg_defaults),
++	.volatile_reg = sti_sas_volatile_register,
++	.cache_type = REGCACHE_RBTREE,
++	.reg_read = sti_sas_read_reg,
++	.reg_write = sti_sas_write_reg,
++};
++
++const struct regmap_config stih416_sas_regmap = {
++	.reg_bits = 32,
++	.val_bits = 32,
++
++	.max_register = STIH416_AUDIO_DAC_CTRL,
++	.reg_defaults = stih416_sas_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(stih416_sas_reg_defaults),
++	.volatile_reg = sti_sas_volatile_register,
++	.cache_type = REGCACHE_RBTREE,
++	.reg_read = sti_sas_read_reg,
++	.reg_write = sti_sas_write_reg,
++};
++
++const struct sti_sas_dev_data stih416_data = {
++	.chipid = CHIPID_STIH416,
++	.regmap = &stih416_sas_regmap,
++	.dac_ops = &stih416_dac_ops,
++	.dapm_widgets = stih416_sas_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(stih416_sas_dapm_widgets),
++	.dapm_routes =	stih416_sas_route,
++	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
++};
++
++const struct sti_sas_dev_data stih407_data = {
++	.chipid = CHIPID_STIH407,
++	.regmap = &stih407_sas_regmap,
++	.dac_ops = &stih407_dac_ops,
++	.dapm_widgets = stih407_sas_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(stih407_sas_dapm_widgets),
++	.dapm_routes =	stih407_sas_route,
++	.num_dapm_routes = ARRAY_SIZE(stih407_sas_route),
++};
++
++static struct snd_soc_dai_driver sti_sas_dai[] = {
++	{
++		.name = "sas-dai-spdif-out",
++		.id = STI_SAS_DAI_SPDIF_OUT,
++		.playback = {
++			.stream_name = "spdif_p",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
++				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |
++				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S32_LE,
++		},
++		.ops = (struct snd_soc_dai_ops[]) {
++			{
++				.set_fmt = sti_sas_spdif_set_fmt,
++				.trigger = sti_sas_spdif_trigger,
++				.set_sysclk = sti_sas_set_sysclk,
++				.prepare = sti_sas_prepare,
++			}
++		},
++	},
++	{
++		.name = "sas-dai-dac",
++		.id = STI_SAS_DAI_ANALOG_OUT,
++		.playback = {
++			.stream_name = "dac_p",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S32_LE,
++		},
++	},
++};
++
++#ifdef CONFIG_PM_SLEEP
++static int sti_sas_resume(struct snd_soc_codec *codec)
++{
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++
++	return sti_sas_init_sas_registers(codec, drvdata);
++}
++#else
++#define sti_sas_resume NULL
++#endif
++
++static int sti_sas_codec_probe(struct snd_soc_codec *codec)
++{
++	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
++	int ret;
++
++	ret = sti_sas_init_sas_registers(codec, drvdata);
++
++	return ret;
++}
++
++static struct snd_soc_codec_driver sti_sas_driver = {
++	.probe = sti_sas_codec_probe,
++	.resume = sti_sas_resume,
++};
++
++static const struct of_device_id sti_sas_dev_match[] = {
++	{
++		.compatible = "st,stih416-sas-codec",
++		.data = &stih416_data,
++	},
++	{
++		.compatible = "st,stih407-sas-codec",
++		.data = &stih407_data,
++	},
++	{},
++};
++
++static int sti_sas_driver_probe(struct platform_device *pdev)
++{
++	struct device_node *pnode = pdev->dev.of_node;
++	struct sti_sas_data *drvdata;
++
++	/* Allocate device structure */
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_data),
++			       GFP_KERNEL);
++	if (!drvdata)
++		return -ENOMEM;
++
++	/* Populate data structure depending on compatibility */
++	if (!of_match_node(sti_sas_dev_match, pnode)->data) {
++		dev_err(&pdev->dev, "data associated to device is missing");
++		return -EINVAL;
++	}
++
++	drvdata->dev_data = of_match_node(sti_sas_dev_match, pnode)->data;
++
++	/* Initialise device structure */
++	drvdata->dev = &pdev->dev;
++
++	/* Request the DAC & SPDIF registers memory region */
++	drvdata->dac.virt_regmap = devm_regmap_init(&pdev->dev, NULL, drvdata,
++						    drvdata->dev_data->regmap);
++	if (!drvdata->dac.virt_regmap) {
++		dev_err(&pdev->dev, "audio registers not enabled\n");
++		return -EFAULT;
++	}
++
++	/* Request the syscon region */
++	drvdata->dac.regmap =
++		syscon_regmap_lookup_by_phandle(pnode, "st,syscfg");
++	if (!drvdata->dac.regmap) {
++		dev_err(&pdev->dev, "syscon registers not available\n");
++		return -EFAULT;
++	}
++	drvdata->spdif.regmap = drvdata->dac.regmap;
++
++	/* Set DAC dai probe */
++	if (drvdata->dev_data->chipid == CHIPID_STIH416)
++		sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].probe = stih416_dac_probe;
++
++	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
++
++	/* Set dapms*/
++	sti_sas_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
++	sti_sas_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
++
++	sti_sas_driver.dapm_routes = drvdata->dev_data->dapm_routes;
++	sti_sas_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
++
++	/* Store context */
++	dev_set_drvdata(&pdev->dev, drvdata);
++
++	return snd_soc_register_codec(&pdev->dev, &sti_sas_driver,
++					sti_sas_dai,
++					ARRAY_SIZE(sti_sas_dai));
++}
++
++static int sti_sas_driver_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_codec(&pdev->dev);
++
++	return 0;
++}
++
++static struct platform_driver sti_sas_platform_driver = {
++	.driver = {
++		.name = "sti-sas-codec",
++		.owner = THIS_MODULE,
++		.of_match_table = sti_sas_dev_match,
++	},
++	.probe = sti_sas_driver_probe,
++	.remove = sti_sas_driver_remove,
++};
++
++module_platform_driver(sti_sas_platform_driver);
++
++MODULE_DESCRIPTION("audio codec for STMicroelectronics sti platforms");
++MODULE_AUTHOR("Arnaud.pouliquen@st.com");
++MODULE_LICENSE("GPL v2");
 -- 
 1.9.1
