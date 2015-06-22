@@ -1,58 +1,39 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Mon, 22 Jun 2015 15:49:16 +0800
-Message-ID: <CAN8cciZT2R=+qsokZR2XRUcAbh4XiexvP2kxzU7S_3uacH7sSw@mail.gmail.com>
-References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
- <557E86DD.8020709@metafoo.de>
- <CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>
- <557EBEAA.70004@metafoo.de>
- <CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>
- <557EDE22.7080808@metafoo.de>
- <CAN8ccibPTkiayx_9ETOwjw1dSF+UPsxjgcqWJR+mm149c69WBg@mail.gmail.com>
- <5587AE77.1020709@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
- [209.85.218.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 01EF1261615
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 09:49:18 +0200 (CEST)
-Received: by oiyy130 with SMTP id y130so98953245oiy.0
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 00:49:16 -0700 (PDT)
-In-Reply-To: <5587AE77.1020709@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: rsrc-card: Remove unused variable in rsrc_card_startup()
+Date: Mon, 22 Jun 2015 10:34:33 +0200
+Message-ID: <1434962073-9597-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxNS02LTIyIOS4i+WNiDI6NDMg5pa8ICJMYXJzLVBldGVyIENsYXVzZW4iIDxsYXJzQG1ldGFm
-b28uZGU+IOWvq+mBk++8mgo+Cj4gT24gMDYvMjIvMjAxNSAwNDozNSBBTSwgUmF5bW9uZCBZYXUg
-d3JvdGU6Cj4+Cj4+Cj4+ICA+Cj4+ICA+IERNQV9SRVNJRFVFX0dSQU5VTEFSSVRZX0JVUlNUIG1l
-YW5zIGl0IGNhbiByZXBvcnQgdGhlIHBvc2l0aW9uIHdpdGggYQo+PiBncmFudWxhcml0eSBvZiBh
-IGZldyBzYW1wbGVzLiBUeXBpY2FsbHkgaGFsZiB0aGUgYXVkaW8gRklGTyBzaXplLgo+PiAgPgo+
-PiAgPgo+Pgo+PiBIb3cgbWFueSBzb2MgZHJpdmVyL3BsYXRmb3JtIGRtYSBlbmdpbmUgc3VwcG9y
-dApETUFfUkVTSURVRV9HUkFOVUxBUklUWV9CVVJTVCA/Cj4KPgo+IE5vdCBzdXJlLCBtYXliZSBo
-YWxmIG9mIHRoZW0uIEJ1dCBtb3N0IG9mIHRoZSB0aW1lIGl0IGlzIGEgc29mdHdhcmUKcmVzdHJp
-Y3Rpb24gcmF0aGVyIHRoYW4gYSBoYXJkd2FyZSByZXN0cmljdGlvbiBhbmQgbW9yZSBhbmQgbW9y
-ZSBkcml2ZXJzCmFyZSBzdXBwb3J0aW5nIGl0LgoKaHR0cHM6Ly9idWdzLmZyZWVkZXNrdG9wLm9y
-Zy9hdHRhY2htZW50LmNnaT9pZD0xMDc2NTAKCnNuZF9ycGlfaGlmaWJlcnJ5X2FtcAoKZ3JhbnVs
-YXJpdHkgc2VlbSA0IGZyYW1lcyBtb3N0IG9mIHRoZSB0aW1lIGJ1dCBzb21ldGltZSB0aGVyZSBp
-cyBhIGxhcmdlCmRlbGF5IGJldHdlZW4gMzU4NCBhbmQgMzk4OCAsc2VlbSBjYW5ub3QgcmVhY2gg
-NDA5NgoKQXZhaWxhYmxlOiAzNTgwLCBsb29wIGl0ZXJhdGlvbjogNDIwCkF2YWlsYWJsZTogMzU4
-NCwgbG9vcCBpdGVyYXRpb246IDQyMQpBdmFpbGFibGU6IDM5ODgsIGxvb3AgaXRlcmF0aW9uOiA0
-MjIKQXZhaWxhYmxlOiAzOTk2LCBsb29wIGl0ZXJhdGlvbjogNDIzCkF2YWlsYWJsZTogNDAwNCwg
-bG9vcCBpdGVyYXRpb246IDQyNApBdmFpbGFibGU6IDQwMTIsIGxvb3AgaXRlcmF0aW9uOiA0MjUK
-CkFyZSB0aGUgcG9pbnRlciBjYWxsYmFjayByZWFsbHkgdXNlIHZhbHVlIHJlYWQgZnJvbSBoYXJk
-d2FyZSByZWdpc3RlciBvcgp2YWx1ZSBjYWxjdWxhdGVkIGZyb20gY2xvY2sgPwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+sound/soc/sh/rcar/rsrc-card.c: In function 'rsrc_card_startup':
+sound/soc/sh/rcar/rsrc-card.c:78:6: warning: unused variable 'ret' [-Wunused-variable]
+  int ret;
+      ^
+
+Fixes: 047000278da3a17f ("ASoC: rsrc-card: cleanup for DPCM")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ sound/soc/sh/rcar/rsrc-card.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/rsrc-card.c b/sound/soc/sh/rcar/rsrc-card.c
+index 8caca2e180c39122..84e935711e29e442 100644
+--- a/sound/soc/sh/rcar/rsrc-card.c
++++ b/sound/soc/sh/rcar/rsrc-card.c
+@@ -75,8 +75,6 @@ static int rsrc_card_startup(struct snd_pcm_substream *substream)
+ 	struct rsrc_card_priv *priv =	snd_soc_card_get_drvdata(rtd->card);
+ 	struct rsrc_card_dai *dai_props =
+ 		rsrc_priv_to_props(priv, rtd - rtd->card->rtd);
+-	int ret;
+-
+ 
+ 	return clk_prepare_enable(dai_props->clk);
+ }
+-- 
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-sh" in
