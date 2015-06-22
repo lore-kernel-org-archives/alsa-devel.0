@@ -1,15 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 3/9] ASoC: sti: Add CPU DAI driver for
-	playback
-Date: Mon, 22 Jun 2015 16:31:07 +0200
-Message-ID: <1434983473-25092-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 4/9] ASoC: sti: Add CPU DAI driver for
+	capture
+Date: Mon, 22 Jun 2015 16:31:08 +0200
+Message-ID: <1434983473-25092-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 08F80265122
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2E69265074
  for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:36 +0200 (CEST)
 In-Reply-To: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,153 +26,34 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Add code to manage Uniperipheral player IP instances.
-These DAIs are dedicated to playback and support I2S and IEC modes.
+Add code to manage Uniperipheral reader IP instances.
+These DAIs are dedicated to capture and support I2S and IEC modes.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif.h        | 116 ++++++
- sound/soc/sti/uniperif_player.c | 890 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 1006 insertions(+)
- create mode 100644 sound/soc/sti/uniperif_player.c
+ sound/soc/sti/uniperif.h        |   3 +
+ sound/soc/sti/uniperif_reader.c | 364 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 367 insertions(+)
+ create mode 100644 sound/soc/sti/uniperif_reader.c
 
 diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 043853e..a8d9e94 100644
+index a8d9e94..f396958 100644
 --- a/sound/soc/sti/uniperif.h
 +++ b/sound/soc/sti/uniperif.h
-@@ -10,6 +10,8 @@
+@@ -1212,4 +1212,7 @@ int uni_player_init(struct platform_device *pdev,
+ 		    struct uniperif *uni_player);
+ int uni_player_resume(struct uniperif *player);
  
- #include <linux/regmap.h>
- 
-+#include <sound/dmaengine_pcm.h>
-+
- /*
-  * Register access macros
-  */
-@@ -1097,3 +1099,117 @@
- 		UNIPERIF_DBG_STANDBY_LEFT_SP_OFFSET(ip), \
- 		UNIPERIF_DBG_STANDBY_LEFT_SP_SHIFT(ip), \
- 		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip), value)
-+
-+/*
-+ * uniperipheral IP capabilities
-+ */
-+
-+#define UNIPERIF_FIFO_SIZE		70 /* FIFO is 70 cells deep */
-+#define UNIPERIF_FIFO_FRAMES		4  /* FDMA trigger limit in frames */
-+
-+/*
-+ * Uniperipheral IP revisions
-+ */
-+enum uniperif_version {
-+	SND_ST_UNIPERIF_VERSION_UNKNOWN,
-+	/* SASG1 (Orly), Newman */
-+	SND_ST_UNIPERIF_VERSION_C6AUD0_UNI_1_0,
-+	/* SASC1, SASG2 (Orly2) */
-+	SND_ST_UNIPERIF_VERSION_UNI_PLR_1_0,
-+	/* SASC1, SASG2 (Orly2), TELSS, Cannes */
-+	SND_ST_UNIPERIF_VERSION_UNI_RDR_1_0,
-+	/* TELSS (SASC1) */
-+	SND_ST_UNIPERIF_VERSION_TDM_PLR_1_0,
-+	/* Cannes/Monaco */
-+	SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
-+};
-+
-+enum uniperif_type {
-+	SND_ST_UNIPERIF_PLAYER_TYPE_NONE,
-+	SND_ST_UNIPERIF_PLAYER_TYPE_HDMI,
-+	SND_ST_UNIPERIF_PLAYER_TYPE_PCM,
-+	SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF
-+};
-+
-+enum uniperif_state {
-+	UNIPERIF_STATE_STOPPED,
-+	UNIPERIF_STATE_STARTED,
-+	UNIPERIF_STATE_STANDBY,
-+	UNIPERIF_STATE_UNDERFLOW,
-+	UNIPERIF_STATE_OVERFLOW = UNIPERIF_STATE_UNDERFLOW,
-+	UNIPERIF_STATE_XRUN
-+};
-+
-+enum uniperif_iec958_encoding_mode {
-+	UNIPERIF_IEC958_ENCODING_MODE_PCM,
-+	UNIPERIF_IEC958_ENCODING_MODE_ENCODED
-+};
-+
-+struct uniperif_info {
-+	int id; /* instance value of the uniperipheral IP */
-+	enum uniperif_type player_type;
-+	int underflow_enabled;		/* Underflow recovery mode */
-+};
-+
-+struct uniperif_iec958_settings {
-+	enum uniperif_iec958_encoding_mode encoding_mode;
-+	struct snd_aes_iec958 iec958;
-+};
-+
-+struct uniperif {
-+	/* System information */
-+	struct uniperif_info *info;
-+	struct device *dev;
-+	int ver; /* IP version, used by register access macros */
-+	struct regmap_field *clk_sel;
-+
-+	/* capabilities */
-+	const struct snd_pcm_hardware *hw;
-+
-+	/* Resources */
-+	struct resource *mem_region;
-+	void *base;
-+	unsigned long fifo_phys_address;
-+	int irq;
-+
-+	/* Clocks */
-+	struct clk *clk;
-+	int mclk;
-+
-+	/* Runtime data */
-+	enum uniperif_state state;
-+
-+	struct snd_pcm_substream *substream;
-+
-+	/* Specific to IEC958 player */
-+	struct uniperif_iec958_settings stream_settings;
-+
-+	/*alsa ctrl*/
-+	struct snd_kcontrol_new *snd_ctrls;
-+	int num_ctrls;
-+
-+	/* dai properties */
-+	unsigned int daifmt;
-+
-+	/* DAI callbacks */
-+	const struct snd_soc_dai_ops *dai_ops;
-+};
-+
-+struct sti_uniperiph_dai {
-+	int stream;
-+	struct uniperif *uni;
-+	struct snd_dmaengine_dai_dma_data dma_data;
-+};
-+
-+struct sti_uniperiph_data {
-+	struct platform_device *pdev;
-+	struct snd_soc_dai_driver *dai;
-+	struct sti_uniperiph_dai dai_data;
-+};
-+
-+/* uniperiph player*/
-+int uni_player_init(struct platform_device *pdev,
-+		    struct uniperif *uni_player);
-+int uni_player_resume(struct uniperif *player);
-+
-+#endif
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
++/* uniperiph reader */
++int uni_reader_init(struct platform_device *pdev,
++		    struct uniperif *uni_reader);
+ #endif
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
 new file mode 100644
-index 0000000..d66d633
+index 0000000..b098c92
 --- /dev/null
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -0,0 +1,890 @@
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -0,0 +1,364 @@
 +/*
 + * Copyright (C) STMicroelectronics SA 2015
 + * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
@@ -182,39 +64,16 @@ index 0000000..d66d633
 +#include <linux/clk.h>
 +#include <linux/delay.h>
 +#include <linux/io.h>
-+#include <linux/mfd/syscon.h>
 +
-+#include <sound/asoundef.h>
 +#include <sound/soc.h>
 +
 +#include "uniperif.h"
 +
 +/*
-+ * Some hardware-related definitions
-+ */
-+
-+/* sys config registers definitions */
-+#define SYS_CFG_AUDIO_GLUE 0xA4
-+#define SYS_CFG_AUDI0_GLUE_PCM_CLKX 8
-+
-+/*
-+ * Driver specific types.
-+ */
-+#define UNIPERIF_PLAYER_TYPE_IS_HDMI(p) \
-+	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_HDMI)
-+#define UNIPERIF_PLAYER_TYPE_IS_PCM(p) \
-+	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_PCM)
-+#define UNIPERIF_PLAYER_TYPE_IS_SPDIF(p) \
-+	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF)
-+#define UNIPERIF_PLAYER_TYPE_IS_IEC958(p) \
-+	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
-+		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
-+
-+/*
 + * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-+ * integrate  DAI_CPU capability in term of rate and supported channels
++ * integrate unireader capability in term of rate and supported channels
 + */
-+const struct snd_pcm_hardware uni_player_pcm_hw = {
++const struct snd_pcm_hardware uni_reader_pcm_hw = {
 +	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
 +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
 +		SNDRV_PCM_INFO_MMAP_VALID,
@@ -222,7 +81,7 @@ index 0000000..d66d633
 +
 +	.rates = SNDRV_PCM_RATE_CONTINUOUS,
 +	.rate_min = 8000,
-+	.rate_max = 192000,
++	.rate_max = 96000,
 +
 +	.channels_min = 2,
 +	.channels_max = 8,
@@ -235,322 +94,94 @@ index 0000000..d66d633
 +	.buffer_bytes_max = 256 * PAGE_SIZE
 +};
 +
-+static inline int reset_player(struct uniperif *player)
-+{
-+	int count = 10;
-+
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
-+		while (GET_UNIPERIF_SOFT_RST_SOFT_RST(player) && count) {
-+			udelay(5);
-+			count--;
-+		}
-+	}
-+
-+	if (!count) {
-+		dev_err(player->dev, "Failed to reset uniperif");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
 +/*
-+ * uni_player_irq_handler
++ * uni_reader_irq_handler
 + * In case of error audio stream is stopped; stop action is protected via PCM
-+ * stream lock to avoid race condition with trigger callback.
++ * stream lock  to avoid race condition with trigger callback.
 + */
-+static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
++static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
 +{
 +	irqreturn_t ret = IRQ_NONE;
-+	struct uniperif *player = dev_id;
++	struct uniperif *reader = dev_id;
 +	unsigned int status;
-+	unsigned int tmp;
 +
-+	if (player->state == UNIPERIF_STATE_STOPPED) {
++	if (reader->state == UNIPERIF_STATE_STOPPED) {
 +		/* Unexpected IRQ: do nothing */
-+		return IRQ_NONE;
++		dev_warn(reader->dev, "unexpected IRQ ");
++		return IRQ_HANDLED;
 +	}
 +
 +	/* Get interrupt status & clear them immediately */
-+	status = GET_UNIPERIF_ITS(player);
-+	SET_UNIPERIF_ITS_BCLR(player, status);
++	status = GET_UNIPERIF_ITS(reader);
++	SET_UNIPERIF_ITS_BCLR(reader, status);
 +
-+	/* Check for fifo error (underrun) */
-+	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(player))) {
-+		dev_err(player->dev, "FIFO underflow error detected");
++	/* Check for fifo overflow error */
++	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
++		dev_err(reader->dev, "FIFO error detected");
 +
-+		/* Interrupt is just for information when underflow recovery */
-+		if (player->info->underflow_enabled) {
-+			/* Update state to underflow */
-+			player->state = UNIPERIF_STATE_UNDERFLOW;
++		snd_pcm_stream_lock(reader->substream);
++		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(reader->substream);
 +
-+		} else {
-+			/* Disable interrupt so doesn't continually fire */
-+			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
-+
-+			/* Stop the player */
-+			snd_pcm_stream_lock(player->substream);
-+			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
-+			snd_pcm_stream_unlock(player->substream);
-+		}
-+
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	/* Check for dma error (overrun) */
-+	if (unlikely(status & UNIPERIF_ITS_DMA_ERROR_MASK(player))) {
-+		dev_err(player->dev, "DMA error detected");
-+
-+		/* Disable interrupt so doesn't continually fire */
-+		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
-+
-+		/* Stop the player */
-+		snd_pcm_stream_lock(player->substream);
-+		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock(player->substream);
-+
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	/* Check for underflow recovery done */
-+	if (unlikely(status & UNIPERIF_ITM_UNDERFLOW_REC_DONE_MASK(player))) {
-+		if (!player->info->underflow_enabled) {
-+			dev_err(player->dev, "unexpected Underflow recovering");
-+			return -EPERM;
-+		}
-+		/* Read the underflow recovery duration */
-+		tmp = GET_UNIPERIF_STATUS_1_UNDERFLOW_DURATION(player);
-+
-+		/* Clear the underflow recovery duration */
-+		SET_UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION(player);
-+
-+		/* Update state to started */
-+		player->state = UNIPERIF_STATE_STARTED;
-+
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	/* Check if underflow recovery failed */
-+	if (unlikely(status &
-+		     UNIPERIF_ITM_UNDERFLOW_REC_FAILED_MASK(player))) {
-+		dev_err(player->dev, "Underflow recovery failed");
-+
-+		/* Stop the player */
-+		snd_pcm_stream_lock(player->substream);
-+		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stream_unlock(player->substream);
-+
-+		ret = IRQ_HANDLED;
++		return IRQ_HANDLED;
 +	}
 +
 +	return ret;
 +}
 +
-+static void uni_player_set_channel_status(struct uniperif *player,
-+					  struct snd_pcm_runtime *runtime)
++static int uni_reader_prepare(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
 +{
-+	int n;
-+	unsigned int status;
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *reader = priv->dai_data.uni;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int transfer_size, trigger_limit;
++	int slot_width;
++	int count = 10;
 +
-+	/*
-+	 * Some AVRs and TVs require the channel status to contain a correct
-+	 * sampling frequency. If no sample rate is already specified, then
-+	 * set one.
-+	 */
-+	if (runtime && (player->stream_settings.iec958.status[3]
-+					== IEC958_AES3_CON_FS_NOTID)) {
-+		switch (runtime->rate) {
-+		case 22050:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_22050;
-+			break;
-+		case 44100:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_44100;
-+			break;
-+		case 88200:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_88200;
-+			break;
-+		case 176400:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_176400;
-+			break;
-+		case 24000:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_24000;
-+			break;
-+		case 48000:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_48000;
-+			break;
-+		case 96000:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_96000;
-+			break;
-+		case 192000:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_192000;
-+			break;
-+		case 32000:
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_32000;
-+			break;
-+		default:
-+			/* Mark as sampling frequency not indicated */
-+			player->stream_settings.iec958.status[3] =
-+						IEC958_AES3_CON_FS_NOTID;
-+			break;
-+		}
-+	}
-+
-+	/* Audio mode:
-+	 * Use audio mode status to select PCM or encoded mode
-+	 */
-+	if (player->stream_settings.iec958.status[0] & IEC958_AES0_NONAUDIO)
-+		player->stream_settings.encoding_mode =
-+			UNIPERIF_IEC958_ENCODING_MODE_ENCODED;
-+	else
-+		player->stream_settings.encoding_mode =
-+			UNIPERIF_IEC958_ENCODING_MODE_PCM;
-+
-+	if (player->stream_settings.encoding_mode ==
-+		UNIPERIF_IEC958_ENCODING_MODE_PCM)
-+		/* Clear user validity bits */
-+		SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
-+	else
-+		/* Set user validity bits */
-+		SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 1);
-+
-+	/* Program the new channel status */
-+	for (n = 0; n < 6; ++n) {
-+		status  =
-+		player->stream_settings.iec958.status[0 + (n * 4)] & 0xf;
-+		status |=
-+		player->stream_settings.iec958.status[1 + (n * 4)] << 8;
-+		status |=
-+		player->stream_settings.iec958.status[2 + (n * 4)] << 16;
-+		status |=
-+		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
-+		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
-+	}
-+
-+	/* Update the channel status */
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		SET_UNIPERIF_CONFIG_CHL_STS_UPDATE(player);
-+	else
-+		SET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(player);
-+}
-+
-+static int uni_player_prepare_iec958(struct uniperif *player,
-+				     struct snd_pcm_runtime *runtime)
-+{
-+	int clk_div;
-+
-+	clk_div = player->mclk / runtime->rate;
-+
-+	/* Oversampling must be multiple of 128 as iec958 frame is 32-bits */
-+	if ((clk_div % 128) || (clk_div <= 0)) {
-+		dev_err(player->dev, "%s: invalid clk_div %d",
-+			__func__, clk_div);
++	/* The reader should be stopped */
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state %d", __func__,
++			reader->state);
 +		return -EINVAL;
 +	}
 +
-+	switch (runtime->format) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		/* 16/16 memory format */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(player);
-+		/* 16-bits per sub-frame */
-+		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
-+		/* Set 16-bit sample precision */
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(player);
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		/* 16/0 memory format */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(player);
-+		/* 32-bits per sub-frame */
-+		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
-+		/* Set 24-bit sample precision */
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_24(player);
++	/* Calculate transfer size (in fifo cells and bytes) for frame count */
++	transfer_size = runtime->channels * UNIPERIF_FIFO_FRAMES;
++
++	/* Calculate number of empty cells available before asserting DREQ */
++	if (reader->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
++	else
++		/*
++		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
++		 * FDMA_TRIGGER_LIMIT also controls when the state switches
++		 * from OFF or STANDBY to AUDIO DATA.
++		 */
++		trigger_limit = transfer_size;
++
++	/* Trigger limit must be an even number */
++	if ((!trigger_limit % 2) ||
++	    (trigger_limit != 1 && transfer_size % 2) ||
++	    (trigger_limit > UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(reader))) {
++		dev_err(reader->dev, "invalid trigger limit %d", trigger_limit);
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(reader, trigger_limit);
++
++	switch (reader->daifmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++	case SND_SOC_DAIFMT_NB_IF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(reader);
 +		break;
 +	default:
-+		dev_err(player->dev, "format not supported");
-+		return -EINVAL;
++		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(reader);
 +	}
 +
-+	/* Set parity to be calculated by the hardware */
-+	SET_UNIPERIF_CONFIG_PARITY_CNTR_BY_HW(player);
-+
-+	/* Set channel status bits to be inserted by the hardware */
-+	SET_UNIPERIF_CONFIG_CHANNEL_STA_CNTR_BY_HW(player);
-+
-+	/* Set user data bits to be inserted by the hardware */
-+	SET_UNIPERIF_CONFIG_USER_DAT_CNTR_BY_HW(player);
-+
-+	/* Set validity bits to be inserted by the hardware */
-+	SET_UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_BY_HW(player);
-+
-+	/* Set full software control to disabled */
-+	SET_UNIPERIF_CONFIG_SPDIF_SW_CTRL_DISABLE(player);
-+
-+	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
-+
-+	/* Update the channel status */
-+	uni_player_set_channel_status(player, runtime);
-+
-+	/* Clear the user validity user bits */
-+	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
-+
-+	/* Disable one-bit audio mode */
-+	SET_UNIPERIF_CONFIG_ONE_BIT_AUD_DISABLE(player);
-+
-+	/* Enable consecutive frames repetition of Z preamble (not for HBRA) */
-+	SET_UNIPERIF_CONFIG_REPEAT_CHL_STS_ENABLE(player);
-+
-+	/* Change to SUF0_SUBF1 and left/right channels swap! */
-+	SET_UNIPERIF_CONFIG_SUBFRAME_SEL_SUBF1_SUBF0(player);
-+
-+	/* Set data output as MSB first */
-+	SET_UNIPERIF_I2S_FMT_ORDER_MSB(player);
-+
-+	if (player->stream_settings.encoding_mode ==
-+				UNIPERIF_IEC958_ENCODING_MODE_ENCODED)
-+		SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_ON(player);
-+	else
-+		SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_OFF(player);
-+
-+	SET_UNIPERIF_I2S_FMT_NUM_CH(player, runtime->channels / 2);
-+
-+	/* Set rounding to off */
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-+
-+	/* Set clock divisor */
-+	SET_UNIPERIF_CTRL_DIVIDER(player, clk_div / 128);
-+
-+	/* Set the spdif latency to not wait before starting player */
-+	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
-+
-+	/*
-+	 * Ensure iec958 formatting is off. It will be enabled in function
-+	 * uni_player_start() at the same time as the operation
-+	 * mode is set to work around a silicon issue.
-+	 */
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		SET_UNIPERIF_CTRL_SPDIF_FMT_OFF(player);
-+	else
-+		SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
-+
-+	return 0;
-+}
-+
-+static int uni_player_prepare_pcm(struct uniperif *player,
-+				  struct snd_pcm_runtime *runtime)
-+{
-+	int output_frame_size, slot_width, clk_div;
-+
-+	/* Force slot width to 32 in I2S mode (HW constraint) */
-+	if ((player->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
-+		SND_SOC_DAIFMT_I2S) {
++	/* Force slot width to 32 in I2S mode */
++	if ((reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK)
++		== SND_SOC_DAIFMT_I2S) {
 +		slot_width = 32;
 +	} else {
 +		switch (runtime->format) {
@@ -562,38 +193,19 @@ index 0000000..d66d633
 +			break;
 +		}
 +	}
-+	output_frame_size = slot_width * runtime->channels;
 +
-+	clk_div = player->mclk / runtime->rate;
-+	/*
-+	 * For 32 bits subframe clk_div must be a multiple of 128,
-+	 * for 16 bits must be a multiple of 64
-+	 */
-+	if ((slot_width == 32) && (clk_div % 128)) {
-+		dev_err(player->dev, "%s: invalid clk_div", __func__);
-+		return -EINVAL;
-+	}
-+
-+	if ((slot_width == 16) && (clk_div % 64)) {
-+		dev_err(player->dev, "%s: invalid clk_div", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Number of bits per subframe (which is one channel sample)
-+	 * on output - Transfer 16 or 32 bits from FIFO
-+	 */
++	/* Number of bits per subframe (i.e one channel sample) on input. */
 +	switch (slot_width) {
 +	case 32:
-+		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(player);
++		SET_UNIPERIF_I2S_FMT_NBIT_32(reader);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(reader);
 +		break;
 +	case 16:
-+		SET_UNIPERIF_I2S_FMT_NBIT_16(player);
-+		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(player);
++		SET_UNIPERIF_I2S_FMT_NBIT_16(reader);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(reader);
 +		break;
 +	default:
-+		dev_err(player->dev, "subframe format not supported");
++		dev_err(reader->dev, "subframe format not supported");
 +		return -EINVAL;
 +	}
 +
@@ -601,466 +213,210 @@ index 0000000..d66d633
 +	switch (runtime->format) {
 +	case SNDRV_PCM_FORMAT_S16_LE:
 +		/* One data word contains two samples */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(player);
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(reader);
 +		break;
 +
 +	case SNDRV_PCM_FORMAT_S32_LE:
 +		/*
 +		 * Actually "16 bits/0 bits" means "32/28/24/20/18/16 bits
-+		 * on the left than zeros (if less than 32 bytes)"... ;-)
++		 * on the MSB then zeros (if less than 32 bytes)"...
 +		 */
-+		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(player);
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(reader);
 +		break;
 +
 +	default:
-+		dev_err(player->dev, "format not supported");
++		dev_err(reader->dev, "format not supported");
 +		return -EINVAL;
 +	}
 +
-+	/* Set rounding to off */
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-+
-+	/* Set clock divisor */
-+	SET_UNIPERIF_CTRL_DIVIDER(player, clk_div / (2 * output_frame_size));
-+
-+	/* Number of channelsmust be even*/
-+	if ((runtime->channels % 2) || (runtime->channels < 2) ||
-+	    (runtime->channels > 10)) {
-+		dev_err(player->dev, "%s: invalid nb of channels", __func__);
-+		return -EINVAL;
-+	}
-+
-+	SET_UNIPERIF_I2S_FMT_NUM_CH(player, runtime->channels / 2);
-+
-+	/* Set 1-bit audio format to disabled */
-+	SET_UNIPERIF_CONFIG_ONE_BIT_AUD_DISABLE(player);
-+
-+	SET_UNIPERIF_I2S_FMT_ORDER_MSB(player);
-+	SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
-+
-+	/* No iec958 formatting as outputting to DAC  */
-+	SET_UNIPERIF_CTRL_SPDIF_FMT_OFF(player);
-+
-+	return 0;
-+}
-+
-+static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+				 unsigned int freq, int dir)
-+{
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+
-+	if (dir == SND_SOC_CLOCK_IN)
-+		return 0;
-+
-+	if (clk_id != 0)
-+		return -EINVAL;
-+
-+	player->mclk = freq;
-+
-+	return clk_set_rate(player->clk, freq);
-+}
-+
-+static int uni_player_prepare(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int transfer_size, trigger_limit;
-+	int ret;
-+
-+	/* The player should be stopped */
-+	if (player->state != UNIPERIF_STATE_STOPPED) {
-+		dev_err(player->dev, "%s: invalid player state %d", __func__,
-+			player->state);
-+		return -EINVAL;
-+	}
-+
-+	/* Calculate transfer size (in fifo cells and bytes) for frame count */
-+	transfer_size = runtime->channels * UNIPERIF_FIFO_FRAMES;
-+
-+	/* Calculate number of empty cells available before asserting DREQ */
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
-+		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
-+	} else {
-+		/*
-+		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
-+		 * FDMA_TRIGGER_LIMIT also controls when the state switches
-+		 * from OFF or STANDBY to AUDIO DATA.
-+		 */
-+		trigger_limit = transfer_size;
-+	}
-+
-+	/* Trigger limit must be an even number */
-+	if ((!trigger_limit % 2) || (trigger_limit != 1 && transfer_size % 2) ||
-+	    (trigger_limit > UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(player))) {
-+		dev_err(player->dev, "invalid trigger limit %d", trigger_limit);
-+		return -EINVAL;
-+	}
-+
-+	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(player, trigger_limit);
-+
-+	/* Uniperipheral setup depends on player type */
-+	switch (player->info->player_type) {
-+	case SND_ST_UNIPERIF_PLAYER_TYPE_HDMI:
-+		ret = uni_player_prepare_iec958(player, runtime);
-+		break;
-+	case SND_ST_UNIPERIF_PLAYER_TYPE_PCM:
-+		ret = uni_player_prepare_pcm(player, runtime);
-+		break;
-+	case SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF:
-+		ret = uni_player_prepare_iec958(player, runtime);
-+		break;
-+	default:
-+		dev_err(player->dev, "invalid player type");
-+		return -EINVAL;
-+	}
-+
-+	if (ret)
-+		return ret;
-+
-+	switch (player->daifmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
-+		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(player);
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
-+		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(player);
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
-+		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
-+		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
-+	}
-+
-+	switch (player->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	switch (reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 +	case SND_SOC_DAIFMT_I2S:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(player);
-+		SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(player);
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(reader);
 +		break;
 +	case SND_SOC_DAIFMT_LEFT_J:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(player);
-+		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(player);
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
 +		break;
 +	case SND_SOC_DAIFMT_RIGHT_J:
-+		SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(player);
-+		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(player);
++		SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
 +		break;
 +	default:
-+		dev_err(player->dev, "format not supported");
++		dev_err(reader->dev, "format not supported");
 +		return -EINVAL;
 +	}
 +
-+	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(player, 0);
++	SET_UNIPERIF_I2S_FMT_ORDER_MSB(reader);
 +
-+	/* Reset uniperipheral player */
-+	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++	/* Data clocking (changing) on the rising edge */
++	SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(reader);
 +
-+	return reset_player(player);
-+}
++	/* Number of channels must be even */
 +
-+static int uni_player_start(struct uniperif *player)
-+{
-+	int ret;
-+
-+	/* The player should be stopped */
-+	if (player->state != UNIPERIF_STATE_STOPPED) {
-+		dev_err(player->dev, "%s: invalid player state", __func__);
++	if ((runtime->channels % 2) || (runtime->channels < 2) ||
++	    (runtime->channels > 10)) {
++		dev_err(reader->dev, "%s: invalid nb of channels", __func__);
 +		return -EINVAL;
 +	}
 +
-+	ret = clk_prepare_enable(player->clk);
-+	if (ret) {
-+		dev_err(player->dev, "%s: Failed to enable clock", __func__);
-+		return ret;
-+	}
++	SET_UNIPERIF_I2S_FMT_NUM_CH(reader, runtime->channels / 2);
 +
 +	/* Clear any pending interrupts */
-+	SET_UNIPERIF_ITS_BCLR(player, GET_UNIPERIF_ITS(player));
++	SET_UNIPERIF_ITS_BCLR(reader, GET_UNIPERIF_ITS(reader));
++
++	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(reader, 0);
 +
 +	/* Set the interrupt mask */
-+	SET_UNIPERIF_ITM_BSET_DMA_ERROR(player);
-+	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(player);
++	SET_UNIPERIF_ITM_BSET_DMA_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_MEM_BLK_READ(reader);
 +
 +	/* Enable underflow recovery interrupts */
-+	if (player->info->underflow_enabled) {
-+		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(player);
-+		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(player);
++	if (reader->info->underflow_enabled) {
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(reader);
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(reader);
 +	}
 +
-+	/* Reset uniperipheral player */
-+	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++	/* Reset uniperipheral reader */
++	SET_UNIPERIF_SOFT_RST_SOFT_RST(reader);
 +
-+	ret = reset_player(player);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * Does not use IEC61937 features of the uniperipheral hardware.
-+	 * Instead it performs IEC61937 in software and inserts it directly
-+	 * into the audio data stream. As such, when encoded mode is selected,
-+	 * linear pcm mode is still used, but with the differences of the
-+	 * channel status bits set for encoded mode and the validity bits set.
-+	 */
-+	SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(player);
-+
-+	/*
-+	 * If iec958 formatting is required for hdmi or spdif, then it must be
-+	 * enabled after the operation mode is set. If set prior to this, it
-+	 * will not take affect and hang the player.
-+	 */
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player))
-+				SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
-+
-+	/* Force channel status update (no update if clk disable) */
-+	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		SET_UNIPERIF_CONFIG_CHL_STS_UPDATE(player);
-+	else
-+		SET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(player);
-+
-+	/* Update state to started */
-+	player->state = UNIPERIF_STATE_STARTED;
++	while (GET_UNIPERIF_SOFT_RST_SOFT_RST(reader)) {
++		udelay(5);
++		count--;
++	}
++	if (!count) {
++		dev_err(reader->dev, "Failed to reset uniperif");
++		return -EIO;
++	}
 +
 +	return 0;
 +}
 +
-+static int uni_player_stop(struct uniperif *player)
++static int uni_reader_start(struct uniperif *reader)
 +{
-+	int ret;
-+
-+	/* The player should not be in stopped state */
-+	if (player->state == UNIPERIF_STATE_STOPPED) {
-+		dev_err(player->dev, "%s: invalid player state", __func__);
++	/* The reader should be stopped */
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state", __func__);
 +		return -EINVAL;
 +	}
 +
-+	/* Turn the player off */
-+	SET_UNIPERIF_CTRL_OPERATION_OFF(player);
++	/* Enable reader interrupts (and clear possible stalled ones) */
++	enable_irq(reader->irq);
++	SET_UNIPERIF_ITS_BCLR_FIFO_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
 +
-+	/* Soft reset the player */
-+	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++	/* Launch the reader */
++	SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(reader);
 +
-+	ret = reset_player(player);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable interrupts */
-+	SET_UNIPERIF_ITM_BCLR(player, GET_UNIPERIF_ITM(player));
-+
-+	/* Disable clock */
-+	clk_disable_unprepare(player->clk);
-+
-+	/* Update state to stopped and return */
-+	player->state = UNIPERIF_STATE_STOPPED;
-+
++	/* Update state to started */
++	reader->state = UNIPERIF_STATE_STARTED;
 +	return 0;
 +}
 +
-+int uni_player_resume(struct uniperif *player)
++static int uni_reader_stop(struct uniperif *reader)
 +{
-+	int ret;
-+
-+	/* Select the frequency synthesizer clock */
-+	if (player->clk_sel) {
-+		ret = regmap_field_write(player->clk_sel, 1);
-+		if (ret) {
-+			dev_err(player->dev,
-+				"%s: Failed to select freq synth clock",
-+				__func__);
-+			return ret;
-+		}
++	/* The reader should not be in stopped state */
++	if (reader->state == UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state", __func__);
++		return -EINVAL;
 +	}
 +
-+	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-+	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
-+	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
++	/* Turn the reader off */
++	SET_UNIPERIF_CTRL_OPERATION_OFF(reader);
++
++	/* Disable interrupts */
++	SET_UNIPERIF_ITM_BCLR(reader, GET_UNIPERIF_ITM(reader));
++	disable_irq_nosync(reader->irq);
++
++	/* Update state to stopped and return */
++	reader->state = UNIPERIF_STATE_STOPPED;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(uni_player_resume);
 +
-+static int uni_player_trigger(struct snd_pcm_substream *substream,
-+			      int cmd, struct snd_soc_dai *dai)
++static int  uni_reader_trigger(struct snd_pcm_substream *substream,
++			       int cmd, struct snd_soc_dai *dai)
 +{
 +	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
++	struct uniperif *reader = priv->dai_data.uni;
 +
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_START:
-+		return uni_player_start(player);
++		return  uni_reader_start(reader);
 +	case SNDRV_PCM_TRIGGER_STOP:
-+		return uni_player_stop(player);
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		return uni_player_resume(player);
++		return  uni_reader_stop(reader);
 +	default:
 +		return -EINVAL;
 +	}
 +}
 +
-+static void uni_player_shutdown(struct snd_pcm_substream *substream,
++static void uni_reader_shutdown(struct snd_pcm_substream *substream,
 +				struct snd_soc_dai *dai)
 +{
 +	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
++	struct uniperif *reader = priv->dai_data.uni;
 +
-+	if (player->state != UNIPERIF_STATE_STOPPED)
-+		/* Stop the player */
-+		uni_player_stop(player);
-+}
-+
-+static int uni_player_parse_dt_clk_glue(struct platform_device *pdev,
-+					struct uniperif *player)
-+{
-+	int bit_offset;
-+	struct device_node *node = pdev->dev.of_node;
-+	struct regmap *regmap;
-+
-+	bit_offset = SYS_CFG_AUDI0_GLUE_PCM_CLKX + player->info->id;
-+
-+	regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
-+
-+	if (regmap) {
-+		struct reg_field regfield =
-+			REG_FIELD(SYS_CFG_AUDIO_GLUE, bit_offset, bit_offset);
-+
-+		player->clk_sel = regmap_field_alloc(regmap, regfield);
-+	} else {
-+		dev_err(&pdev->dev, "sti-audio-clk-glue syscf not found\n");
-+		return -EINVAL;
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		/* Stop the reader */
++		uni_reader_stop(reader);
 +	}
-+
-+	return 0;
 +}
 +
-+static int uni_player_parse_dt(struct platform_device *pdev,
-+			       struct uniperif *player)
++static int uni_reader_parse_dt(struct platform_device *pdev,
++			       struct uniperif *reader)
 +{
 +	struct uniperif_info *info;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *pnode = pdev->dev.of_node;
-+	const char *mode;
++	struct device_node *node = pdev->dev.of_node;
 +
 +	/* Allocate memory for the info structure */
-+	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
++	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
 +	if (!info)
 +		return -ENOMEM;
 +
-+	of_property_read_u32(pnode, "version", &player->ver);
-+	if (player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
-+		dev_err(dev, "Unknown uniperipheral version ");
-+		return -EINVAL;
-+	}
-+	/* Underflow recovery is only supported on later ip revisions */
-+	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-+		info->underflow_enabled = 1;
-+
-+	of_property_read_u32(pnode, "uniperiph-id", &info->id);
-+
-+	/* Read the device mode property */
-+	of_property_read_string(pnode, "mode", &mode);
-+
-+	if (strcasecmp(mode, "hdmi") == 0)
-+		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
-+	else if (strcasecmp(mode, "pcm") == 0)
-+		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_PCM;
-+	else if (strcasecmp(mode, "spdif") == 0)
-+		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF;
-+	else
-+		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_NONE;
++	of_property_read_u32(node, "version", &reader->ver);
 +
 +	/* Save the info structure */
-+	player->info = info;
-+
-+	/* Get the PCM_CLK_SEL bit from audio-glue-ctrl SoC register */
-+	if (uni_player_parse_dt_clk_glue(pdev, player))
-+		return -EINVAL;
++	reader->info = info;
 +
 +	return 0;
 +}
 +
-+const struct snd_soc_dai_ops uni_player_dai_ops = {
-+		.shutdown = uni_player_shutdown,
-+		.prepare = uni_player_prepare,
-+		.trigger = uni_player_trigger,
++const struct snd_soc_dai_ops uni_reader_dai_ops = {
++		.shutdown = uni_reader_shutdown,
++		.prepare = uni_reader_prepare,
++		.trigger = uni_reader_trigger,
 +		.hw_params = sti_uniperiph_dai_hw_params,
 +		.set_fmt = sti_uniperiph_dai_set_fmt,
-+		.set_sysclk = uni_player_set_sysclk
 +};
 +
-+int uni_player_init(struct platform_device *pdev,
-+		    struct uniperif *player)
++int uni_reader_init(struct platform_device *pdev,
++		    struct uniperif *reader)
 +{
 +	int ret = 0;
 +
-+	player->dev = &pdev->dev;
-+	player->state = UNIPERIF_STATE_STOPPED;
-+	player->hw = &uni_player_pcm_hw;
-+	player->dai_ops = &uni_player_dai_ops;
++	reader->dev = &pdev->dev;
++	reader->state = UNIPERIF_STATE_STOPPED;
++	reader->hw = &uni_reader_pcm_hw;
++	reader->dai_ops = &uni_reader_dai_ops;
 +
-+	ret = uni_player_parse_dt(pdev, player);
-+
++	dev_err(reader->dev, "%s: enter\n", __func__);
++	ret = uni_reader_parse_dt(pdev, reader);
 +	if (ret < 0) {
-+		dev_err(player->dev, "Failed to parse DeviceTree");
++		dev_err(reader->dev, "Failed to parse DeviceTree");
 +		return ret;
 +	}
 +
-+	/* Get uniperif resource */
-+	player->clk = of_clk_get(pdev->dev.of_node, 0);
-+	if (IS_ERR(player->clk))
-+		ret = (int)PTR_ERR(player->clk);
-+
-+	/* Select the frequency synthesizer clock */
-+	if (player->clk_sel) {
-+		ret = regmap_field_write(player->clk_sel, 1);
-+		if (ret) {
-+			dev_err(player->dev,
-+				"%s: Failed to select freq synth clock",
-+				__func__);
-+			return ret;
-+		}
-+	}
-+
-+	ret = devm_request_irq(&pdev->dev, player->irq,
-+			       uni_player_irq_handler, IRQF_SHARED,
-+			       dev_name(&pdev->dev), player);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Ensure that disabled by default */
-+	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
-+	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-+	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
-+	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
-+
-+	if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player)) {
-+		/* Set default iec958 status bits  */
-+
-+		/* Consumer, PCM, copyright, 2ch, mode 0 */
-+		player->stream_settings.iec958.status[0] = 0x00;
-+		/* Broadcast reception category */
-+		player->stream_settings.iec958.status[1] =
-+					IEC958_AES1_CON_GENERAL;
-+		/* Do not take into account source or channel number */
-+		player->stream_settings.iec958.status[2] =
-+					IEC958_AES2_CON_SOURCE_UNSPEC;
-+		/* Sampling frequency not indicated */
-+		player->stream_settings.iec958.status[3] =
-+					IEC958_AES3_CON_FS_NOTID;
-+		/* Max sample word 24-bit, sample word length not indicated */
-+		player->stream_settings.iec958.status[4] =
-+					IEC958_AES4_CON_MAX_WORDLEN_24 |
-+					IEC958_AES4_CON_WORDLEN_24_20;
++	ret = devm_request_irq(&pdev->dev, reader->irq,
++			       uni_reader_irq_handler, IRQF_SHARED,
++			       dev_name(&pdev->dev), reader);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to request IRQ");
++		return -EBUSY;
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(uni_player_init);
++EXPORT_SYMBOL_GPL(uni_reader_init);
 -- 
 1.9.1
