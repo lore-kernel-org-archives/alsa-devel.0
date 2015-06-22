@@ -1,16 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 2/9] ASoC: sti: Add uniperipheral header file
-Date: Mon, 22 Jun 2015 16:31:06 +0200
-Message-ID: <1434983473-25092-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 3/9] ASoC: sti: Add CPU DAI driver for
+	playback
+Date: Mon, 22 Jun 2015 16:31:07 +0200
+Message-ID: <1434983473-25092-4-git-send-email-arnaud.pouliquen@st.com>
 References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B57CF2650F5
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:34 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 08F80265122
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:36 +0200 (CEST)
 In-Reply-To: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,20 +25,153 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the Uniperipheral header file for uniperipheral IPs registers definition.
+Add code to manage Uniperipheral player IP instances.
+These DAIs are dedicated to playback and support I2S and IEC modes.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif.h | 1099 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 1099 insertions(+)
- create mode 100644 sound/soc/sti/uniperif.h
+ sound/soc/sti/uniperif.h        | 116 ++++++
+ sound/soc/sti/uniperif_player.c | 890 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 1006 insertions(+)
+ create mode 100644 sound/soc/sti/uniperif_player.c
 
 diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-new file mode 100644
-index 0000000..043853e
---- /dev/null
+index 043853e..a8d9e94 100644
+--- a/sound/soc/sti/uniperif.h
 +++ b/sound/soc/sti/uniperif.h
-@@ -0,0 +1,1099 @@
+@@ -10,6 +10,8 @@
+ 
+ #include <linux/regmap.h>
+ 
++#include <sound/dmaengine_pcm.h>
++
+ /*
+  * Register access macros
+  */
+@@ -1097,3 +1099,117 @@
+ 		UNIPERIF_DBG_STANDBY_LEFT_SP_OFFSET(ip), \
+ 		UNIPERIF_DBG_STANDBY_LEFT_SP_SHIFT(ip), \
+ 		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip), value)
++
++/*
++ * uniperipheral IP capabilities
++ */
++
++#define UNIPERIF_FIFO_SIZE		70 /* FIFO is 70 cells deep */
++#define UNIPERIF_FIFO_FRAMES		4  /* FDMA trigger limit in frames */
++
++/*
++ * Uniperipheral IP revisions
++ */
++enum uniperif_version {
++	SND_ST_UNIPERIF_VERSION_UNKNOWN,
++	/* SASG1 (Orly), Newman */
++	SND_ST_UNIPERIF_VERSION_C6AUD0_UNI_1_0,
++	/* SASC1, SASG2 (Orly2) */
++	SND_ST_UNIPERIF_VERSION_UNI_PLR_1_0,
++	/* SASC1, SASG2 (Orly2), TELSS, Cannes */
++	SND_ST_UNIPERIF_VERSION_UNI_RDR_1_0,
++	/* TELSS (SASC1) */
++	SND_ST_UNIPERIF_VERSION_TDM_PLR_1_0,
++	/* Cannes/Monaco */
++	SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
++};
++
++enum uniperif_type {
++	SND_ST_UNIPERIF_PLAYER_TYPE_NONE,
++	SND_ST_UNIPERIF_PLAYER_TYPE_HDMI,
++	SND_ST_UNIPERIF_PLAYER_TYPE_PCM,
++	SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF
++};
++
++enum uniperif_state {
++	UNIPERIF_STATE_STOPPED,
++	UNIPERIF_STATE_STARTED,
++	UNIPERIF_STATE_STANDBY,
++	UNIPERIF_STATE_UNDERFLOW,
++	UNIPERIF_STATE_OVERFLOW = UNIPERIF_STATE_UNDERFLOW,
++	UNIPERIF_STATE_XRUN
++};
++
++enum uniperif_iec958_encoding_mode {
++	UNIPERIF_IEC958_ENCODING_MODE_PCM,
++	UNIPERIF_IEC958_ENCODING_MODE_ENCODED
++};
++
++struct uniperif_info {
++	int id; /* instance value of the uniperipheral IP */
++	enum uniperif_type player_type;
++	int underflow_enabled;		/* Underflow recovery mode */
++};
++
++struct uniperif_iec958_settings {
++	enum uniperif_iec958_encoding_mode encoding_mode;
++	struct snd_aes_iec958 iec958;
++};
++
++struct uniperif {
++	/* System information */
++	struct uniperif_info *info;
++	struct device *dev;
++	int ver; /* IP version, used by register access macros */
++	struct regmap_field *clk_sel;
++
++	/* capabilities */
++	const struct snd_pcm_hardware *hw;
++
++	/* Resources */
++	struct resource *mem_region;
++	void *base;
++	unsigned long fifo_phys_address;
++	int irq;
++
++	/* Clocks */
++	struct clk *clk;
++	int mclk;
++
++	/* Runtime data */
++	enum uniperif_state state;
++
++	struct snd_pcm_substream *substream;
++
++	/* Specific to IEC958 player */
++	struct uniperif_iec958_settings stream_settings;
++
++	/*alsa ctrl*/
++	struct snd_kcontrol_new *snd_ctrls;
++	int num_ctrls;
++
++	/* dai properties */
++	unsigned int daifmt;
++
++	/* DAI callbacks */
++	const struct snd_soc_dai_ops *dai_ops;
++};
++
++struct sti_uniperiph_dai {
++	int stream;
++	struct uniperif *uni;
++	struct snd_dmaengine_dai_dma_data dma_data;
++};
++
++struct sti_uniperiph_data {
++	struct platform_device *pdev;
++	struct snd_soc_dai_driver *dai;
++	struct sti_uniperiph_dai dai_data;
++};
++
++/* uniperiph player*/
++int uni_player_init(struct platform_device *pdev,
++		    struct uniperif *uni_player);
++int uni_player_resume(struct uniperif *player);
++
++#endif
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+new file mode 100644
+index 0000000..d66d633
+--- /dev/null
++++ b/sound/soc/sti/uniperif_player.c
+@@ -0,0 +1,890 @@
 +/*
 + * Copyright (C) STMicroelectronics SA 2015
 + * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
@@ -46,1097 +179,888 @@ index 0000000..043853e
 + * License terms:  GNU General Public License (GPL), version 2
 + */
 +
-+#ifndef __SND_ST_AUD_UNIPERIF_H
-+#define __SND_ST_AUD_UNIPERIF_H
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/mfd/syscon.h>
 +
-+#include <linux/regmap.h>
++#include <sound/asoundef.h>
++#include <sound/soc.h>
 +
-+/*
-+ * Register access macros
-+ */
-+
-+#define GET_UNIPERIF_REG(ip, offset, shift, mask) \
-+	((readl_relaxed(ip->base + offset) >> shift) & mask)
-+#define SET_UNIPERIF_REG(ip, offset, shift, mask, value) \
-+	writel_relaxed(((readl_relaxed(ip->base + offset) & \
-+	~(mask << shift)) | (((value) & mask) << shift)), ip->base + offset)
-+#define SET_UNIPERIF_BIT_REG(ip, offset, shift, mask, value) \
-+	writel_relaxed((((value) & mask) << shift), ip->base + offset)
++#include "uniperif.h"
 +
 +/*
-+ * AUD_UNIPERIF_SOFT_RST reg
++ * Some hardware-related definitions
 + */
 +
-+#define UNIPERIF_SOFT_RST_OFFSET(ip) 0x0000
-+#define GET_UNIPERIF_SOFT_RST(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		readl_relaxed(ip->base + UNIPERIF_SOFT_RST_OFFSET(ip)) : 0)
-+#define SET_UNIPERIF_SOFT_RST(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_SOFT_RST_OFFSET(ip))
-+
-+/* SOFT_RST */
-+#define UNIPERIF_SOFT_RST_SOFT_RST_SHIFT(ip) 0x0
-+#define UNIPERIF_SOFT_RST_SOFT_RST_MASK(ip) 0x1
-+#define SET_UNIPERIF_SOFT_RST_SOFT_RST(ip) \
-+	SET_UNIPERIF_BIT_REG(ip, \
-+		UNIPERIF_SOFT_RST_OFFSET(ip), \
-+		UNIPERIF_SOFT_RST_SOFT_RST_SHIFT(ip), \
-+		UNIPERIF_SOFT_RST_SOFT_RST_MASK(ip), 1)
-+#define GET_UNIPERIF_SOFT_RST_SOFT_RST(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_SOFT_RST_OFFSET(ip), \
-+		UNIPERIF_SOFT_RST_SOFT_RST_SHIFT(ip), \
-+		UNIPERIF_SOFT_RST_SOFT_RST_MASK(ip))
++/* sys config registers definitions */
++#define SYS_CFG_AUDIO_GLUE 0xA4
++#define SYS_CFG_AUDI0_GLUE_PCM_CLKX 8
 +
 +/*
-+ * AUD_UNIPERIF_FIFO_DATA reg
++ * Driver specific types.
 + */
-+
-+#define UNIPERIF_FIFO_DATA_OFFSET(ip) 0x0004
-+#define SET_UNIPERIF_DATA(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_FIFO_DATA_OFFSET(ip))
++#define UNIPERIF_PLAYER_TYPE_IS_HDMI(p) \
++	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_HDMI)
++#define UNIPERIF_PLAYER_TYPE_IS_PCM(p) \
++	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_PCM)
++#define UNIPERIF_PLAYER_TYPE_IS_SPDIF(p) \
++	((p)->info->player_type == SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF)
++#define UNIPERIF_PLAYER_TYPE_IS_IEC958(p) \
++	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
++		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
 +
 +/*
-+ * AUD_UNIPERIF_CHANNEL_STA_REGN reg
++ * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
++ * integrate  DAI_CPU capability in term of rate and supported channels
 + */
++const struct snd_pcm_hardware uni_player_pcm_hw = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID,
++	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE,
 +
-+#define UNIPERIF_CHANNEL_STA_REGN(ip, n) (0x0060 + (4 * n))
-+#define GET_UNIPERIF_CHANNEL_STA_REGN(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REGN(ip, n))
-+#define SET_UNIPERIF_CHANNEL_STA_REGN(ip, n, value) \
-+	writel_relaxed(value, ip->base + \
-+			UNIPERIF_CHANNEL_STA_REGN(ip, n))
++	.rates = SNDRV_PCM_RATE_CONTINUOUS,
++	.rate_min = 8000,
++	.rate_max = 192000,
 +
-+#define UNIPERIF_CHANNEL_STA_REG0_OFFSET(ip) 0x0060
-+#define GET_UNIPERIF_CHANNEL_STA_REG0(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG0_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG0(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG0_OFFSET(ip))
++	.channels_min = 2,
++	.channels_max = 8,
 +
-+#define UNIPERIF_CHANNEL_STA_REG1_OFFSET(ip) 0x0064
-+#define GET_UNIPERIF_CHANNEL_STA_REG1(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG1_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG1(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG1_OFFSET(ip))
++	.periods_min = 2,
++	.periods_max = 48,
 +
-+#define UNIPERIF_CHANNEL_STA_REG2_OFFSET(ip) 0x0068
-+#define GET_UNIPERIF_CHANNEL_STA_REG2(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG2_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG2(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG2_OFFSET(ip))
++	.period_bytes_min = 128,
++	.period_bytes_max = 64 * PAGE_SIZE,
++	.buffer_bytes_max = 256 * PAGE_SIZE
++};
 +
-+#define UNIPERIF_CHANNEL_STA_REG3_OFFSET(ip) 0x006C
-+#define GET_UNIPERIF_CHANNEL_STA_REG3(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG3_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG3(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG3_OFFSET(ip))
++static inline int reset_player(struct uniperif *player)
++{
++	int count = 10;
 +
-+#define UNIPERIF_CHANNEL_STA_REG4_OFFSET(ip) 0x0070
-+#define GET_UNIPERIF_CHANNEL_STA_REG4(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG4_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG4(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG4_OFFSET(ip))
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
++		while (GET_UNIPERIF_SOFT_RST_SOFT_RST(player) && count) {
++			udelay(5);
++			count--;
++		}
++	}
 +
-+#define UNIPERIF_CHANNEL_STA_REG5_OFFSET(ip) 0x0074
-+#define GET_UNIPERIF_CHANNEL_STA_REG5(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REG5_OFFSET(ip))
-+#define SET_UNIPERIF_CHANNEL_STA_REG5(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CHANNEL_STA_REG5_OFFSET(ip))
++	if (!count) {
++		dev_err(player->dev, "Failed to reset uniperif");
++		return -EIO;
++	}
++
++	return 0;
++}
 +
 +/*
-+ *  AUD_UNIPERIF_ITS reg
++ * uni_player_irq_handler
++ * In case of error audio stream is stopped; stop action is protected via PCM
++ * stream lock to avoid race condition with trigger callback.
 + */
-+
-+#define UNIPERIF_ITS_OFFSET(ip) 0x000C
-+#define GET_UNIPERIF_ITS(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_ITS_OFFSET(ip))
-+
-+/* MEM_BLK_READ */
-+#define UNIPERIF_ITS_MEM_BLK_READ_SHIFT(ip) 5
-+#define UNIPERIF_ITS_MEM_BLK_READ_MASK(ip) \
-+	(BIT(UNIPERIF_ITS_MEM_BLK_READ_SHIFT(ip)))
-+
-+/* FIFO_ERROR */
-+#define UNIPERIF_ITS_FIFO_ERROR_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 8)
-+#define UNIPERIF_ITS_FIFO_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITS_FIFO_ERROR_SHIFT(ip)))
-+
-+/* DMA_ERROR */
-+#define UNIPERIF_ITS_DMA_ERROR_SHIFT(ip) 9
-+#define UNIPERIF_ITS_DMA_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITS_DMA_ERROR_SHIFT(ip)))
-+
-+/* UNDERFLOW_REC_DONE */
-+#define UNIPERIF_ITS_UNDERFLOW_REC_DONE_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 12)
-+#define UNIPERIF_ITS_UNDERFLOW_REC_DONE_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITS_UNDERFLOW_REC_DONE_SHIFT(ip))))
-+
-+/* UNDERFLOW_REC_FAILED */
-+#define UNIPERIF_ITS_UNDERFLOW_REC_FAILED_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 13)
-+#define UNIPERIF_ITS_UNDERFLOW_REC_FAILED_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITS_UNDERFLOW_REC_FAILED_SHIFT(ip))))
-+
-+/*
-+ *  AUD_UNIPERIF_ITS_BCLR reg
-+ */
-+
-+/* FIFO_ERROR */
-+#define UNIPERIF_ITS_BCLR_FIFO_ERROR_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 8)
-+#define UNIPERIF_ITS_BCLR_FIFO_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITS_BCLR_FIFO_ERROR_SHIFT(ip)))
-+#define SET_UNIPERIF_ITS_BCLR_FIFO_ERROR(ip) \
-+	SET_UNIPERIF_ITS_BCLR(ip, \
-+		UNIPERIF_ITS_BCLR_FIFO_ERROR_MASK(ip))
-+
-+#define UNIPERIF_ITS_BCLR_OFFSET(ip) 0x0010
-+#define SET_UNIPERIF_ITS_BCLR(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_ITS_BCLR_OFFSET(ip))
-+
-+/*
-+ *  AUD_UNIPERIF_ITM reg
-+ */
-+
-+#define UNIPERIF_ITM_OFFSET(ip) 0x0018
-+#define GET_UNIPERIF_ITM(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_ITM_OFFSET(ip))
-+
-+/* FIFO_ERROR */
-+#define UNIPERIF_ITM_FIFO_ERROR_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 8)
-+#define UNIPERIF_ITM_FIFO_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_FIFO_ERROR_SHIFT(ip)))
-+
-+/* UNDERFLOW_REC_DONE */
-+#define UNIPERIF_ITM_UNDERFLOW_REC_DONE_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 12)
-+#define UNIPERIF_ITM_UNDERFLOW_REC_DONE_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITM_UNDERFLOW_REC_DONE_SHIFT(ip))))
-+
-+/* UNDERFLOW_REC_FAILED */
-+#define UNIPERIF_ITM_UNDERFLOW_REC_FAILED_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 13)
-+#define UNIPERIF_ITM_UNDERFLOW_REC_FAILED_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITM_UNDERFLOW_REC_FAILED_SHIFT(ip))))
-+
-+/*
-+ *  AUD_UNIPERIF_ITM_BCLR reg
-+ */
-+
-+#define UNIPERIF_ITM_BCLR_OFFSET(ip) 0x001c
-+#define SET_UNIPERIF_ITM_BCLR(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_ITM_BCLR_OFFSET(ip))
-+
-+/* FIFO_ERROR */
-+#define UNIPERIF_ITM_BCLR_FIFO_ERROR_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 8)
-+#define UNIPERIF_ITM_BCLR_FIFO_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_BCLR_FIFO_ERROR_SHIFT(ip)))
-+#define SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(ip) \
-+	SET_UNIPERIF_ITM_BCLR(ip, \
-+		UNIPERIF_ITM_BCLR_FIFO_ERROR_MASK(ip))
-+
-+/* DMA_ERROR */
-+#define UNIPERIF_ITM_BCLR_DMA_ERROR_SHIFT(ip) 9
-+#define UNIPERIF_ITM_BCLR_DMA_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_BCLR_DMA_ERROR_SHIFT(ip)))
-+#define SET_UNIPERIF_ITM_BCLR_DMA_ERROR(ip) \
-+	SET_UNIPERIF_ITM_BCLR(ip, \
-+		UNIPERIF_ITM_BCLR_DMA_ERROR_MASK(ip))
-+
-+/*
-+ *  AUD_UNIPERIF_ITM_BSET reg
-+ */
-+
-+#define UNIPERIF_ITM_BSET_OFFSET(ip) 0x0020
-+#define SET_UNIPERIF_ITM_BSET(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_ITM_BSET_OFFSET(ip))
-+
-+/* FIFO_ERROR */
-+#define UNIPERIF_ITM_BSET_FIFO_ERROR_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 8)
-+#define UNIPERIF_ITM_BSET_FIFO_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_BSET_FIFO_ERROR_SHIFT(ip)))
-+#define SET_UNIPERIF_ITM_BSET_FIFO_ERROR(ip) \
-+	SET_UNIPERIF_ITM_BSET(ip, \
-+		UNIPERIF_ITM_BSET_FIFO_ERROR_MASK(ip))
-+
-+/* MEM_BLK_READ */
-+#define UNIPERIF_ITM_BSET_MEM_BLK_READ_SHIFT(ip) 5
-+#define UNIPERIF_ITM_BSET_MEM_BLK_READ_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_BSET_MEM_BLK_READ_SHIFT(ip)))
-+#define SET_UNIPERIF_ITM_BSET_MEM_BLK_READ(ip) \
-+	SET_UNIPERIF_ITM_BSET(ip, \
-+		UNIPERIF_ITM_BSET_MEM_BLK_READ_MASK(ip))
-+
-+/* DMA_ERROR */
-+#define UNIPERIF_ITM_BSET_DMA_ERROR_SHIFT(ip) 9
-+#define UNIPERIF_ITM_BSET_DMA_ERROR_MASK(ip) \
-+	(BIT(UNIPERIF_ITM_BSET_DMA_ERROR_SHIFT(ip)))
-+#define SET_UNIPERIF_ITM_BSET_DMA_ERROR(ip) \
-+	SET_UNIPERIF_ITM_BSET(ip, \
-+		UNIPERIF_ITM_BSET_DMA_ERROR_MASK(ip))
-+
-+/* UNDERFLOW_REC_DONE */
-+#define UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 12)
-+#define UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE_SHIFT(ip))))
-+#define SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(ip) \
-+	SET_UNIPERIF_ITM_BSET(ip, \
-+		UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE_MASK(ip))
-+
-+/* UNDERFLOW_REC_FAILED */
-+#define UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 13)
-+#define UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? \
-+		0 : (BIT(UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED_SHIFT(ip))))
-+#define SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(ip) \
-+	SET_UNIPERIF_ITM_BSET(ip, \
-+		UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED_MASK(ip))
-+
-+/*
-+ * UNIPERIF_CONFIG reg
-+ */
-+
-+#define UNIPERIF_CONFIG_OFFSET(ip) 0x0040
-+#define GET_UNIPERIF_CONFIG(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CONFIG_OFFSET(ip))
-+#define SET_UNIPERIF_CONFIG(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CONFIG_OFFSET(ip))
-+
-+/* PARITY_CNTR */
-+#define UNIPERIF_CONFIG_PARITY_CNTR_SHIFT(ip) 0
-+#define UNIPERIF_CONFIG_PARITY_CNTR_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_PARITY_CNTR(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_PARITY_CNTR_BY_HW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_PARITY_CNTR_BY_SW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_PARITY_CNTR_MASK(ip), 1)
-+
-+/* CHANNEL_STA_CNTR */
-+#define UNIPERIF_CONFIG_CHANNEL_STA_CNTR_SHIFT(ip) 1
-+#define UNIPERIF_CONFIG_CHANNEL_STA_CNTR_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_CHANNEL_STA_CNTR(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_CHANNEL_STA_CNTR_BY_SW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_CHANNEL_STA_CNTR_BY_HW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip),    \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_CHANNEL_STA_CNTR_MASK(ip), 1)
-+
-+/* USER_DAT_CNTR */
-+#define UNIPERIF_CONFIG_USER_DAT_CNTR_SHIFT(ip) 2
-+#define UNIPERIF_CONFIG_USER_DAT_CNTR_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_USER_DAT_CNTR(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_USER_DAT_CNTR_BY_HW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_MASK(ip), 1)
-+#define SET_UNIPERIF_CONFIG_USER_DAT_CNTR_BY_SW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_USER_DAT_CNTR_MASK(ip), 0)
-+
-+/* VALIDITY_DAT_CNTR */
-+#define UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_SHIFT(ip) 3
-+#define UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_VALIDITY_DAT_CNTR(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_BY_SW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_BY_HW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_SHIFT(ip), \
-+		UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_MASK(ip), 1)
-+
-+/* ONE_BIT_AUD_SUPPORT */
-+#define UNIPERIF_CONFIG_ONE_BIT_AUD_SHIFT(ip) 4
-+#define UNIPERIF_CONFIG_ONE_BIT_AUD_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_ONE_BIT_AUD(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_ONE_BIT_AUD_DISABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_ONE_BIT_AUD_ENABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_ONE_BIT_AUD_MASK(ip), 1)
-+
-+/* MEMORY_FMT */
-+#define UNIPERIF_CONFIG_MEM_FMT_SHIFT(ip) 5
-+#define UNIPERIF_CONFIG_MEM_FMT_MASK(ip) 0x1
-+#define VALUE_UNIPERIF_CONFIG_MEM_FMT_16_0(ip) 0
-+#define VALUE_UNIPERIF_CONFIG_MEM_FMT_16_16(ip) 1
-+#define GET_UNIPERIF_CONFIG_MEM_FMT(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_MEM_FMT_SHIFT(ip), \
-+		UNIPERIF_CONFIG_MEM_FMT_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_MEM_FMT(ip, value)	\
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_MEM_FMT_SHIFT(ip), \
-+		UNIPERIF_CONFIG_MEM_FMT_MASK(ip), value)
-+#define SET_UNIPERIF_CONFIG_MEM_FMT_16_0(ip)   \
-+	SET_UNIPERIF_CONFIG_MEM_FMT(ip, \
-+		VALUE_UNIPERIF_CONFIG_MEM_FMT_16_0(ip))
-+#define SET_UNIPERIF_CONFIG_MEM_FMT_16_16(ip) \
-+	SET_UNIPERIF_CONFIG_MEM_FMT(ip, \
-+		VALUE_UNIPERIF_CONFIG_MEM_FMT_16_16(ip))
-+
-+/* REPEAT_CHL_STS */
-+#define UNIPERIF_CONFIG_REPEAT_CHL_STS_SHIFT(ip) 6
-+#define UNIPERIF_CONFIG_REPEAT_CHL_STS_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_REPEAT_CHL_STS(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_SHIFT(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_REPEAT_CHL_STS_ENABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_SHIFT(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_REPEAT_CHL_STS_DISABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_SHIFT(ip), \
-+		UNIPERIF_CONFIG_REPEAT_CHL_STS_MASK(ip), 1)
-+
-+/* BACK_STALL_REQ */
-+#define UNIPERIF_CONFIG_BACK_STALL_REQ_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 7 : -1)
-+#define UNIPERIF_CONFIG_BACK_STALL_REQ_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_BACK_STALL_REQ(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_SHIFT(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_SHIFT(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_BACK_STALL_REQ_ENABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_SHIFT(ip), \
-+		UNIPERIF_CONFIG_BACK_STALL_REQ_MASK(ip), 1)
-+
-+/* FDMA_TRIGGER_LIMIT */
-+#define UNIPERIF_CONFIG_DMA_TRIG_LIMIT_SHIFT(ip) 8
-+#define UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(ip) 0x7F
-+#define GET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_DMA_TRIG_LIMIT_SHIFT(ip), \
-+		UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_DMA_TRIG_LIMIT_SHIFT(ip), \
-+		UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(ip), value)
-+
-+/* CHL_STS_UPDATE */
-+#define UNIPERIF_CONFIG_CHL_STS_UPDATE_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 16 : -1)
-+#define UNIPERIF_CONFIG_CHL_STS_UPDATE_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_CHL_STS_UPDATE(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip),  \
-+		UNIPERIF_CONFIG_CHL_STS_UPDATE_SHIFT(ip), \
-+		UNIPERIF_CONFIG_CHL_STS_UPDATE_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_CHL_STS_UPDATE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_CHL_STS_UPDATE_SHIFT(ip), \
-+		UNIPERIF_CONFIG_CHL_STS_UPDATE_MASK(ip), 1)
-+
-+/* IDLE_MOD */
-+#define UNIPERIF_CONFIG_IDLE_MOD_SHIFT(ip) 18
-+#define UNIPERIF_CONFIG_IDLE_MOD_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_IDLE_MOD(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_MASK(ip), 0)
-+#define SET_UNIPERIF_CONFIG_IDLE_MOD_ENABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_SHIFT(ip), \
-+		UNIPERIF_CONFIG_IDLE_MOD_MASK(ip), 1)
-+
-+/* SUBFRAME_SELECTION */
-+#define UNIPERIF_CONFIG_SUBFRAME_SEL_SHIFT(ip) 19
-+#define UNIPERIF_CONFIG_SUBFRAME_SEL_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_SUBFRAME_SEL(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_SUBFRAME_SEL_SUBF1_SUBF0(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_MASK(ip), 1)
-+#define SET_UNIPERIF_CONFIG_SUBFRAME_SEL_SUBF0_SUBF1(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SUBFRAME_SEL_MASK(ip), 0)
-+
-+/* FULL_SW_CONTROL */
-+#define UNIPERIF_CONFIG_SPDIF_SW_CTRL_SHIFT(ip) 20
-+#define UNIPERIF_CONFIG_SPDIF_SW_CTRL_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_SPDIF_SW_CTRL(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_SPDIF_SW_CTRL_ENABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_MASK(ip), 1)
-+#define SET_UNIPERIF_CONFIG_SPDIF_SW_CTRL_DISABLE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_SHIFT(ip), \
-+		UNIPERIF_CONFIG_SPDIF_SW_CTRL_MASK(ip), 0)
-+
-+/* MASTER_CLKEDGE */
-+#define UNIPERIF_CONFIG_MSTR_CLKEDGE_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 24 : -1)
-+#define UNIPERIF_CONFIG_MSTR_CLKEDGE_MASK(ip) 0x1
-+#define GET_UNIPERIF_CONFIG_MSTR_CLKEDGE(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_SHIFT(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_MASK(ip))
-+#define SET_UNIPERIF_CONFIG_MSTR_CLKEDGE_FALLING(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_SHIFT(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_MASK(ip), 1)
-+#define SET_UNIPERIF_CONFIG_MSTR_CLKEDGE_RISING(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CONFIG_OFFSET(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_SHIFT(ip), \
-+		UNIPERIF_CONFIG_MSTR_CLKEDGE_MASK(ip), 0)
-+
-+/*
-+ * UNIPERIF_CTRL reg
-+ */
-+
-+#define UNIPERIF_CTRL_OFFSET(ip) 0x0044
-+#define GET_UNIPERIF_CTRL(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CTRL_OFFSET(ip))
-+#define SET_UNIPERIF_CTRL(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_CTRL_OFFSET(ip))
-+
-+/* OPERATION */
-+#define UNIPERIF_CTRL_OPERATION_SHIFT(ip) 0
-+#define UNIPERIF_CTRL_OPERATION_MASK(ip) 0x7
-+#define GET_UNIPERIF_CTRL_OPERATION(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_OFF(ip) 0
-+#define SET_UNIPERIF_CTRL_OPERATION_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_OFF(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_MUTE_PCM_NULL(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 1 : -1)
-+#define SET_UNIPERIF_CTRL_OPERATION_MUTE_PCM_NULL(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_MUTE_PCM_NULL(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_MUTE_PAUSE_BURST(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 2 : -1)
-+#define SET_UNIPERIF_CTRL_OPERATION_MUTE_PAUSE_BURST(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_MUTE_PAUSE_BURST(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_PCM_DATA(ip) 3
-+#define SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_PCM_DATA(ip))
-+/* This is the same as above! */
-+#define VALUE_UNIPERIF_CTRL_OPERATION_AUDIO_DATA(ip) 3
-+#define SET_UNIPERIF_CTRL_OPERATION_AUDIO_DATA(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_AUDIO_DATA(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_ENC_DATA(ip) 4
-+#define SET_UNIPERIF_CTRL_OPERATION_ENC_DATA(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_ENC_DATA(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_CD_DATA(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 5 : -1)
-+#define SET_UNIPERIF_CTRL_OPERATION_CD_DATA(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_CD_DATA(ip))
-+#define VALUE_UNIPERIF_CTRL_OPERATION_STANDBY(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 7)
-+#define SET_UNIPERIF_CTRL_OPERATION_STANDBY(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_OPERATION_SHIFT(ip), \
-+		UNIPERIF_CTRL_OPERATION_MASK(ip), \
-+		VALUE_UNIPERIF_CTRL_OPERATION_STANDBY(ip))
-+
-+/* EXIT_STBY_ON_EOBLOCK */
-+#define UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 3)
-+#define UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_SHIFT(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_MASK(ip))
-+#define SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_SHIFT(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_MASK(ip), 0)
-+#define SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_ON(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_SHIFT(ip), \
-+		UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_MASK(ip), 1)
-+
-+/* ROUNDING */
-+#define UNIPERIF_CTRL_ROUNDING_SHIFT(ip) 4
-+#define UNIPERIF_CTRL_ROUNDING_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_ROUNDING(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ROUNDING_SHIFT(ip), \
-+		UNIPERIF_CTRL_ROUNDING_MASK(ip))
-+#define SET_UNIPERIF_CTRL_ROUNDING_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ROUNDING_SHIFT(ip), \
-+		UNIPERIF_CTRL_ROUNDING_MASK(ip), 0)
-+#define SET_UNIPERIF_CTRL_ROUNDING_ON(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ROUNDING_SHIFT(ip), \
-+		UNIPERIF_CTRL_ROUNDING_MASK(ip), 1)
-+
-+/* DIVIDER */
-+#define UNIPERIF_CTRL_DIVIDER_SHIFT(ip) 5
-+#define UNIPERIF_CTRL_DIVIDER_MASK(ip) 0xff
-+#define GET_UNIPERIF_CTRL_DIVIDER(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_DIVIDER_SHIFT(ip), \
-+		UNIPERIF_CTRL_DIVIDER_MASK(ip))
-+#define SET_UNIPERIF_CTRL_DIVIDER(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_DIVIDER_SHIFT(ip), \
-+		UNIPERIF_CTRL_DIVIDER_MASK(ip), value)
-+
-+/* BYTE_SWAP */
-+#define UNIPERIF_CTRL_BYTE_SWP_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 13 : -1)
-+#define UNIPERIF_CTRL_BYTE_SWP_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_BYTE_SWP(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_SHIFT(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_MASK(ip))
-+#define SET_UNIPERIF_CTRL_BYTE_SWP_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_SHIFT(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_MASK(ip), 0)
-+#define SET_UNIPERIF_CTRL_BYTE_SWP_ON(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_SHIFT(ip), \
-+		UNIPERIF_CTRL_BYTE_SWP_MASK(ip), 1)
-+
-+/* ZERO_STUFFING_HW_SW */
-+#define UNIPERIF_CTRL_ZERO_STUFF_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 14 : -1)
-+#define UNIPERIF_CTRL_ZERO_STUFF_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_ZERO_STUFF(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_SHIFT(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_MASK(ip))
-+#define SET_UNIPERIF_CTRL_ZERO_STUFF_HW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_SHIFT(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_MASK(ip), 1)
-+#define SET_UNIPERIF_CTRL_ZERO_STUFF_SW(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_SHIFT(ip), \
-+		UNIPERIF_CTRL_ZERO_STUFF_MASK(ip), 0)
-+
-+/* SPDIF_LAT */
-+#define UNIPERIF_CTRL_SPDIF_LAT_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 16 : -1)
-+#define UNIPERIF_CTRL_SPDIF_LAT_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_SPDIF_LAT(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_MASK(ip))
-+#define SET_UNIPERIF_CTRL_SPDIF_LAT_ON(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_MASK(ip), 1)
-+#define SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_LAT_MASK(ip), 0)
-+
-+/* EN_SPDIF_FORMATTING */
-+#define UNIPERIF_CTRL_SPDIF_FMT_SHIFT(ip) 17
-+#define UNIPERIF_CTRL_SPDIF_FMT_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_SPDIF_FMT(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_MASK(ip))
-+#define SET_UNIPERIF_CTRL_SPDIF_FMT_ON(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_MASK(ip), 1)
-+#define SET_UNIPERIF_CTRL_SPDIF_FMT_OFF(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_SHIFT(ip), \
-+		UNIPERIF_CTRL_SPDIF_FMT_MASK(ip), 0)
-+
-+/* READER_OUT_SELECT */
-+#define UNIPERIF_CTRL_READER_OUT_SEL_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 18 : -1)
-+#define UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip) 0x1
-+#define GET_UNIPERIF_CTRL_READER_OUT_SEL(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_READER_OUT_SEL_SHIFT(ip), \
-+		UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip))
-+#define SET_UNIPERIF_CTRL_READER_OUT_SEL_IN_MEM(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_READER_OUT_SEL_SHIFT(ip), \
-+		UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip), 0)
-+#define SET_UNIPERIF_CTRL_READER_OUT_SEL_ON_I2S_LINE(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_READER_OUT_SEL_SHIFT(ip), \
-+		CORAUD_UNIPERIF_CTRL_READER_OUT_SEL_MASK(ip), 1)
-+
-+/* UNDERFLOW_REC_WINDOW */
-+#define UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_SHIFT(ip) 20
-+#define UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_MASK(ip) 0xff
-+#define GET_UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_SHIFT(ip), \
-+		UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_MASK(ip))
-+#define SET_UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_CTRL_OFFSET(ip), \
-+		UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_SHIFT(ip), \
-+		UNIPERIF_CTRL_UNDERFLOW_REC_WINDOW_MASK(ip), value)
-+
-+/*
-+ * UNIPERIF_I2S_FMT a.k.a UNIPERIF_FORMAT reg
-+ */
-+
-+#define UNIPERIF_I2S_FMT_OFFSET(ip) 0x0048
-+#define GET_UNIPERIF_I2S_FMT(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_I2S_FMT_OFFSET(ip))
-+#define SET_UNIPERIF_I2S_FMT(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_I2S_FMT_OFFSET(ip))
-+
-+/* NBIT */
-+#define UNIPERIF_I2S_FMT_NBIT_SHIFT(ip) 0
-+#define UNIPERIF_I2S_FMT_NBIT_MASK(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_NBIT(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_NBIT_32(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_MASK(ip), 0)
-+#define SET_UNIPERIF_I2S_FMT_NBIT_16(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NBIT_MASK(ip), 1)
-+
-+/* DATA_SIZE */
-+#define UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip) 1
-+#define UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip) 0x7
-+#define GET_UNIPERIF_I2S_FMT_DATA_SIZE(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 0)
-+#define SET_UNIPERIF_I2S_FMT_DATA_SIZE_18(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 1)
-+#define SET_UNIPERIF_I2S_FMT_DATA_SIZE_20(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 2)
-+#define SET_UNIPERIF_I2S_FMT_DATA_SIZE_24(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 3)
-+#define SET_UNIPERIF_I2S_FMTL_DATA_SIZE_28(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 4)
-+#define SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_DATA_SIZE_MASK(ip), 5)
-+
-+/* LR_POL */
-+#define UNIPERIF_I2S_FMT_LR_POL_SHIFT(ip) 4
-+#define UNIPERIF_I2S_FMT_LR_POL_MASK(ip) 0x1
-+#define VALUE_UNIPERIF_I2S_FMT_LR_POL_LOW(ip) 0x0
-+#define VALUE_UNIPERIF_I2S_FMT_LR_POL_HIG(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_LR_POL(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_LR_POL_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_LR_POL_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_LR_POL(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_LR_POL_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_LR_POL_MASK(ip), value)
-+#define SET_UNIPERIF_I2S_FMT_LR_POL_LOW(ip) \
-+	SET_UNIPERIF_I2S_FMT_LR_POL(ip, \
-+		VALUE_UNIPERIF_I2S_FMT_LR_POL_LOW(ip))
-+#define SET_UNIPERIF_I2S_FMT_LR_POL_HIG(ip) \
-+	SET_UNIPERIF_I2S_FMT_LR_POL(ip, \
-+		VALUE_UNIPERIF_I2S_FMT_LR_POL_HIG(ip))
-+
-+/* SCLK_EDGE */
-+#define UNIPERIF_I2S_FMT_SCLK_EDGE_SHIFT(ip) 5
-+#define UNIPERIF_I2S_FMT_SCLK_EDGE_MASK(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_SCLK_EDGE(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_MASK(ip), 0)
-+#define SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_SCLK_EDGE_MASK(ip), 1)
-+
-+/* PADDING */
-+#define UNIPERIF_I2S_FMT_PADDING_SHIFT(ip) 6
-+#define UNIPERIF_I2S_FMT_PADDING_MASK(ip) 0x1
-+#define UNIPERIF_I2S_FMT_PADDING_MASK(ip) 0x1
-+#define VALUE_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(ip) 0x0
-+#define VALUE_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_PADDING(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_PADDING_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_PADDING_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_PADDING(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_PADDING_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_PADDING_MASK(ip), value)
-+#define SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(ip) \
-+	SET_UNIPERIF_I2S_FMT_PADDING(ip, \
-+		VALUE_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(ip))
-+#define SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(ip) \
-+	SET_UNIPERIF_I2S_FMT_PADDING(ip, \
-+		VALUE_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(ip))
-+
-+/* ALIGN */
-+#define UNIPERIF_I2S_FMT_ALIGN_SHIFT(ip) 7
-+#define UNIPERIF_I2S_FMT_ALIGN_MASK(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_ALIGN(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_MASK(ip), 0)
-+#define SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ALIGN_MASK(ip), 1)
-+
-+/* ORDER */
-+#define UNIPERIF_I2S_FMT_ORDER_SHIFT(ip) 8
-+#define UNIPERIF_I2S_FMT_ORDER_MASK(ip) 0x1
-+#define GET_UNIPERIF_I2S_FMT_ORDER(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_ORDER_LSB(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_MASK(ip), 0)
-+#define SET_UNIPERIF_I2S_FMT_ORDER_MSB(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_ORDER_MASK(ip), 1)
-+
-+/* NUM_CH */
-+#define UNIPERIF_I2S_FMT_NUM_CH_SHIFT(ip) 9
-+#define UNIPERIF_I2S_FMT_NUM_CH_MASK(ip) 0x7
-+#define GET_UNIPERIF_I2S_FMT_NUM_CH(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NUM_CH_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NUM_CH_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_NUM_CH(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NUM_CH_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NUM_CH_MASK(ip), value)
-+
-+/* NO_OF_SAMPLES_TO_READ */
-+#define UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_SHIFT(ip) 12
-+#define UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_MASK(ip) 0xfffff
-+#define GET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_MASK(ip))
-+#define SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_I2S_FMT_OFFSET(ip), \
-+		UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_SHIFT(ip), \
-+		UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ_MASK(ip), value)
-+
-+/*
-+ * UNIPERIF_BIT_CONTROL reg
-+ */
-+
-+#define UNIPERIF_BIT_CONTROL_OFFSET(ip)  \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 0x004c)
-+#define GET_UNIPERIF_BIT_CONTROL(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_BIT_CONTROL_OFFSET(ip))
-+#define SET_UNIPERIF_BIT_CONTROL(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_BIT_CONTROL_OFFSET(ip))
-+
-+/* CLR_UNDERFLOW_DURATION */
-+#define UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_SHIFT(ip) 0
-+#define UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_MASK(ip) 0x1
-+#define GET_UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_BIT_CONTROL_OFFSET(ip), \
-+		UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_SHIFT(ip), \
-+		UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_MASK(ip))
-+#define SET_UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION(ip) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_BIT_CONTROL_OFFSET(ip), \
-+		UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_SHIFT(ip), \
-+		UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION_MASK(ip), 1)
-+
-+/* CHL_STS_UPDATE */
-+#define UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_SHIFT(ip) 1
-+#define UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_MASK(ip) 0x1
-+#define GET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_BIT_CONTROL_OFFSET(ip), \
-+		UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_SHIFT(ip), \
-+		UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_MASK(ip))
-+#define SET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(ip) \
-+	SET_UNIPERIF_BIT_REG(ip, \
-+		UNIPERIF_BIT_CONTROL_OFFSET(ip), \
-+		UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_SHIFT(ip), \
-+		UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE_MASK(ip), 1)
-+
-+/*
-+ * UNIPERIF_STATUS_1 reg
-+ */
-+
-+#define UNIPERIF_STATUS_1_OFFSET(ip) 0x0050
-+#define GET_UNIPERIF_STATUS_1(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_STATUS_1_OFFSET(ip))
-+#define SET_UNIPERIF_STATUS_1(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_STATUS_1_OFFSET(ip))
-+
-+/* UNDERFLOW_DURATION */
-+#define UNIPERIF_STATUS_1_UNDERFLOW_DURATION_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 0)
-+#define UNIPERIF_STATUS_1_UNDERFLOW_DURATION_MASK(ip) 0xff
-+#define GET_UNIPERIF_STATUS_1_UNDERFLOW_DURATION(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_STATUS_1_OFFSET(ip), \
-+		UNIPERIF_STATUS_1_UNDERFLOW_DURATION_SHIFT(ip), \
-+		UNIPERIF_STATUS_1_UNDERFLOW_DURATION_MASK(ip))
-+#define SET_UNIPERIF_STATUS_1_UNDERFLOW_DURATION(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_STATUS_1_OFFSET(ip), \
-+		UNIPERIF_STATUS_1_UNDERFLOW_DURATION_SHIFT(ip), \
-+		UNIPERIF_STATUS_1_UNDERFLOW_DURATION_MASK(ip), value)
-+
-+/*
-+ * AUD_UNIPERIF_CHANNEL_STA_REGN reg
-+ */
-+
-+#define UNIPERIF_CHANNEL_STA_REGN(ip, n) (0x0060 + (4 * n))
-+#define GET_UNIPERIF_CHANNEL_STA_REGN(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_CHANNEL_STA_REGN(ip, n))
-+#define SET_UNIPERIF_CHANNEL_STA_REGN(ip, n, value) \
-+	writel_relaxed(value, ip->base + \
-+			UNIPERIF_CHANNEL_STA_REGN(ip, n))
-+
-+/*
-+ * AUD_UNIPERIF_USER_VALIDITY reg
-+ */
-+
-+#define UNIPERIF_USER_VALIDITY_OFFSET(ip) 0x0090
-+#define GET_UNIPERIF_USER_VALIDITY(ip) \
-+	readl_relaxed(ip->base + UNIPERIF_USER_VALIDITY_OFFSET(ip))
-+#define SET_UNIPERIF_USER_VALIDITY(ip, value) \
-+	writel_relaxed(value, ip->base + UNIPERIF_USER_VALIDITY_OFFSET(ip))
-+
-+/* VALIDITY_LEFT_AND_RIGHT */
-+#define UNIPERIF_USER_VALIDITY_VALIDITY_LR_SHIFT(ip) 0
-+#define UNIPERIF_USER_VALIDITY_VALIDITY_LR_MASK(ip) 0x3
-+#define GET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_USER_VALIDITY_OFFSET(ip), \
-+		UNIPERIF_USER_VALIDITY_VALIDITY_LR_SHIFT(ip), \
-+		UNIPERIF_USER_VALIDITY_VALIDITY_LR_MASK(ip))
-+#define SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_USER_VALIDITY_OFFSET(ip), \
-+		UNIPERIF_USER_VALIDITY_VALIDITY_LR_SHIFT(ip), \
-+		UNIPERIF_USER_VALIDITY_VALIDITY_LR_MASK(ip), \
-+		value ? 0x3 : 0)
-+
-+/*
-+ * UNIPERIF_DBG_STANDBY_LEFT_SP reg
-+ */
-+#define UNIPERIF_DBG_STANDBY_LEFT_SP_OFFSET(ip) 0x0150
-+#define UNIPERIF_DBG_STANDBY_LEFT_SP_SHIFT(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? -1 : 0)
-+#define UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip) \
-+	((ip)->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0 ? 0 : 0xFFFFFF)
-+#define GET_UNIPERIF_DBG_STANDBY_LEFT_SP(ip) \
-+	GET_UNIPERIF_REG(ip, \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_OFFSET(ip), \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_SHIFT(ip), \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip))
-+#define SET_UNIPERIF_DBG_STANDBY_LEFT_SP(ip, value) \
-+	SET_UNIPERIF_REG(ip, \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_OFFSET(ip), \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_SHIFT(ip), \
-+		UNIPERIF_DBG_STANDBY_LEFT_SP_MASK(ip), value)
++static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
++{
++	irqreturn_t ret = IRQ_NONE;
++	struct uniperif *player = dev_id;
++	unsigned int status;
++	unsigned int tmp;
++
++	if (player->state == UNIPERIF_STATE_STOPPED) {
++		/* Unexpected IRQ: do nothing */
++		return IRQ_NONE;
++	}
++
++	/* Get interrupt status & clear them immediately */
++	status = GET_UNIPERIF_ITS(player);
++	SET_UNIPERIF_ITS_BCLR(player, status);
++
++	/* Check for fifo error (underrun) */
++	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(player))) {
++		dev_err(player->dev, "FIFO underflow error detected");
++
++		/* Interrupt is just for information when underflow recovery */
++		if (player->info->underflow_enabled) {
++			/* Update state to underflow */
++			player->state = UNIPERIF_STATE_UNDERFLOW;
++
++		} else {
++			/* Disable interrupt so doesn't continually fire */
++			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
++
++			/* Stop the player */
++			snd_pcm_stream_lock(player->substream);
++			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
++			snd_pcm_stream_unlock(player->substream);
++		}
++
++		ret = IRQ_HANDLED;
++	}
++
++	/* Check for dma error (overrun) */
++	if (unlikely(status & UNIPERIF_ITS_DMA_ERROR_MASK(player))) {
++		dev_err(player->dev, "DMA error detected");
++
++		/* Disable interrupt so doesn't continually fire */
++		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
++
++		/* Stop the player */
++		snd_pcm_stream_lock(player->substream);
++		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(player->substream);
++
++		ret = IRQ_HANDLED;
++	}
++
++	/* Check for underflow recovery done */
++	if (unlikely(status & UNIPERIF_ITM_UNDERFLOW_REC_DONE_MASK(player))) {
++		if (!player->info->underflow_enabled) {
++			dev_err(player->dev, "unexpected Underflow recovering");
++			return -EPERM;
++		}
++		/* Read the underflow recovery duration */
++		tmp = GET_UNIPERIF_STATUS_1_UNDERFLOW_DURATION(player);
++
++		/* Clear the underflow recovery duration */
++		SET_UNIPERIF_BIT_CONTROL_CLR_UNDERFLOW_DURATION(player);
++
++		/* Update state to started */
++		player->state = UNIPERIF_STATE_STARTED;
++
++		ret = IRQ_HANDLED;
++	}
++
++	/* Check if underflow recovery failed */
++	if (unlikely(status &
++		     UNIPERIF_ITM_UNDERFLOW_REC_FAILED_MASK(player))) {
++		dev_err(player->dev, "Underflow recovery failed");
++
++		/* Stop the player */
++		snd_pcm_stream_lock(player->substream);
++		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(player->substream);
++
++		ret = IRQ_HANDLED;
++	}
++
++	return ret;
++}
++
++static void uni_player_set_channel_status(struct uniperif *player,
++					  struct snd_pcm_runtime *runtime)
++{
++	int n;
++	unsigned int status;
++
++	/*
++	 * Some AVRs and TVs require the channel status to contain a correct
++	 * sampling frequency. If no sample rate is already specified, then
++	 * set one.
++	 */
++	if (runtime && (player->stream_settings.iec958.status[3]
++					== IEC958_AES3_CON_FS_NOTID)) {
++		switch (runtime->rate) {
++		case 22050:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_22050;
++			break;
++		case 44100:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_44100;
++			break;
++		case 88200:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_88200;
++			break;
++		case 176400:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_176400;
++			break;
++		case 24000:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_24000;
++			break;
++		case 48000:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_48000;
++			break;
++		case 96000:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_96000;
++			break;
++		case 192000:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_192000;
++			break;
++		case 32000:
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_32000;
++			break;
++		default:
++			/* Mark as sampling frequency not indicated */
++			player->stream_settings.iec958.status[3] =
++						IEC958_AES3_CON_FS_NOTID;
++			break;
++		}
++	}
++
++	/* Audio mode:
++	 * Use audio mode status to select PCM or encoded mode
++	 */
++	if (player->stream_settings.iec958.status[0] & IEC958_AES0_NONAUDIO)
++		player->stream_settings.encoding_mode =
++			UNIPERIF_IEC958_ENCODING_MODE_ENCODED;
++	else
++		player->stream_settings.encoding_mode =
++			UNIPERIF_IEC958_ENCODING_MODE_PCM;
++
++	if (player->stream_settings.encoding_mode ==
++		UNIPERIF_IEC958_ENCODING_MODE_PCM)
++		/* Clear user validity bits */
++		SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
++	else
++		/* Set user validity bits */
++		SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 1);
++
++	/* Program the new channel status */
++	for (n = 0; n < 6; ++n) {
++		status  =
++		player->stream_settings.iec958.status[0 + (n * 4)] & 0xf;
++		status |=
++		player->stream_settings.iec958.status[1 + (n * 4)] << 8;
++		status |=
++		player->stream_settings.iec958.status[2 + (n * 4)] << 16;
++		status |=
++		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
++		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
++	}
++
++	/* Update the channel status */
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		SET_UNIPERIF_CONFIG_CHL_STS_UPDATE(player);
++	else
++		SET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(player);
++}
++
++static int uni_player_prepare_iec958(struct uniperif *player,
++				     struct snd_pcm_runtime *runtime)
++{
++	int clk_div;
++
++	clk_div = player->mclk / runtime->rate;
++
++	/* Oversampling must be multiple of 128 as iec958 frame is 32-bits */
++	if ((clk_div % 128) || (clk_div <= 0)) {
++		dev_err(player->dev, "%s: invalid clk_div %d",
++			__func__, clk_div);
++		return -EINVAL;
++	}
++
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		/* 16/16 memory format */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(player);
++		/* 16-bits per sub-frame */
++		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
++		/* Set 16-bit sample precision */
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(player);
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		/* 16/0 memory format */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(player);
++		/* 32-bits per sub-frame */
++		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
++		/* Set 24-bit sample precision */
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_24(player);
++		break;
++	default:
++		dev_err(player->dev, "format not supported");
++		return -EINVAL;
++	}
++
++	/* Set parity to be calculated by the hardware */
++	SET_UNIPERIF_CONFIG_PARITY_CNTR_BY_HW(player);
++
++	/* Set channel status bits to be inserted by the hardware */
++	SET_UNIPERIF_CONFIG_CHANNEL_STA_CNTR_BY_HW(player);
++
++	/* Set user data bits to be inserted by the hardware */
++	SET_UNIPERIF_CONFIG_USER_DAT_CNTR_BY_HW(player);
++
++	/* Set validity bits to be inserted by the hardware */
++	SET_UNIPERIF_CONFIG_VALIDITY_DAT_CNTR_BY_HW(player);
++
++	/* Set full software control to disabled */
++	SET_UNIPERIF_CONFIG_SPDIF_SW_CTRL_DISABLE(player);
++
++	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
++
++	/* Update the channel status */
++	uni_player_set_channel_status(player, runtime);
++
++	/* Clear the user validity user bits */
++	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
++
++	/* Disable one-bit audio mode */
++	SET_UNIPERIF_CONFIG_ONE_BIT_AUD_DISABLE(player);
++
++	/* Enable consecutive frames repetition of Z preamble (not for HBRA) */
++	SET_UNIPERIF_CONFIG_REPEAT_CHL_STS_ENABLE(player);
++
++	/* Change to SUF0_SUBF1 and left/right channels swap! */
++	SET_UNIPERIF_CONFIG_SUBFRAME_SEL_SUBF1_SUBF0(player);
++
++	/* Set data output as MSB first */
++	SET_UNIPERIF_I2S_FMT_ORDER_MSB(player);
++
++	if (player->stream_settings.encoding_mode ==
++				UNIPERIF_IEC958_ENCODING_MODE_ENCODED)
++		SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_ON(player);
++	else
++		SET_UNIPERIF_CTRL_EXIT_STBY_ON_EOBLOCK_OFF(player);
++
++	SET_UNIPERIF_I2S_FMT_NUM_CH(player, runtime->channels / 2);
++
++	/* Set rounding to off */
++	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
++
++	/* Set clock divisor */
++	SET_UNIPERIF_CTRL_DIVIDER(player, clk_div / 128);
++
++	/* Set the spdif latency to not wait before starting player */
++	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
++
++	/*
++	 * Ensure iec958 formatting is off. It will be enabled in function
++	 * uni_player_start() at the same time as the operation
++	 * mode is set to work around a silicon issue.
++	 */
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		SET_UNIPERIF_CTRL_SPDIF_FMT_OFF(player);
++	else
++		SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
++
++	return 0;
++}
++
++static int uni_player_prepare_pcm(struct uniperif *player,
++				  struct snd_pcm_runtime *runtime)
++{
++	int output_frame_size, slot_width, clk_div;
++
++	/* Force slot width to 32 in I2S mode (HW constraint) */
++	if ((player->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) ==
++		SND_SOC_DAIFMT_I2S) {
++		slot_width = 32;
++	} else {
++		switch (runtime->format) {
++		case SNDRV_PCM_FORMAT_S16_LE:
++			slot_width = 16;
++			break;
++		default:
++			slot_width = 32;
++			break;
++		}
++	}
++	output_frame_size = slot_width * runtime->channels;
++
++	clk_div = player->mclk / runtime->rate;
++	/*
++	 * For 32 bits subframe clk_div must be a multiple of 128,
++	 * for 16 bits must be a multiple of 64
++	 */
++	if ((slot_width == 32) && (clk_div % 128)) {
++		dev_err(player->dev, "%s: invalid clk_div", __func__);
++		return -EINVAL;
++	}
++
++	if ((slot_width == 16) && (clk_div % 64)) {
++		dev_err(player->dev, "%s: invalid clk_div", __func__);
++		return -EINVAL;
++	}
++
++	/*
++	 * Number of bits per subframe (which is one channel sample)
++	 * on output - Transfer 16 or 32 bits from FIFO
++	 */
++	switch (slot_width) {
++	case 32:
++		SET_UNIPERIF_I2S_FMT_NBIT_32(player);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(player);
++		break;
++	case 16:
++		SET_UNIPERIF_I2S_FMT_NBIT_16(player);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(player);
++		break;
++	default:
++		dev_err(player->dev, "subframe format not supported");
++		return -EINVAL;
++	}
++
++	/* Configure data memory format */
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		/* One data word contains two samples */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(player);
++		break;
++
++	case SNDRV_PCM_FORMAT_S32_LE:
++		/*
++		 * Actually "16 bits/0 bits" means "32/28/24/20/18/16 bits
++		 * on the left than zeros (if less than 32 bytes)"... ;-)
++		 */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(player);
++		break;
++
++	default:
++		dev_err(player->dev, "format not supported");
++		return -EINVAL;
++	}
++
++	/* Set rounding to off */
++	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
++
++	/* Set clock divisor */
++	SET_UNIPERIF_CTRL_DIVIDER(player, clk_div / (2 * output_frame_size));
++
++	/* Number of channelsmust be even*/
++	if ((runtime->channels % 2) || (runtime->channels < 2) ||
++	    (runtime->channels > 10)) {
++		dev_err(player->dev, "%s: invalid nb of channels", __func__);
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_I2S_FMT_NUM_CH(player, runtime->channels / 2);
++
++	/* Set 1-bit audio format to disabled */
++	SET_UNIPERIF_CONFIG_ONE_BIT_AUD_DISABLE(player);
++
++	SET_UNIPERIF_I2S_FMT_ORDER_MSB(player);
++	SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
++
++	/* No iec958 formatting as outputting to DAC  */
++	SET_UNIPERIF_CTRL_SPDIF_FMT_OFF(player);
++
++	return 0;
++}
++
++static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
++				 unsigned int freq, int dir)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++
++	if (dir == SND_SOC_CLOCK_IN)
++		return 0;
++
++	if (clk_id != 0)
++		return -EINVAL;
++
++	player->mclk = freq;
++
++	return clk_set_rate(player->clk, freq);
++}
++
++static int uni_player_prepare(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int transfer_size, trigger_limit;
++	int ret;
++
++	/* The player should be stopped */
++	if (player->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(player->dev, "%s: invalid player state %d", __func__,
++			player->state);
++		return -EINVAL;
++	}
++
++	/* Calculate transfer size (in fifo cells and bytes) for frame count */
++	transfer_size = runtime->channels * UNIPERIF_FIFO_FRAMES;
++
++	/* Calculate number of empty cells available before asserting DREQ */
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0) {
++		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
++	} else {
++		/*
++		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
++		 * FDMA_TRIGGER_LIMIT also controls when the state switches
++		 * from OFF or STANDBY to AUDIO DATA.
++		 */
++		trigger_limit = transfer_size;
++	}
++
++	/* Trigger limit must be an even number */
++	if ((!trigger_limit % 2) || (trigger_limit != 1 && transfer_size % 2) ||
++	    (trigger_limit > UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(player))) {
++		dev_err(player->dev, "invalid trigger limit %d", trigger_limit);
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(player, trigger_limit);
++
++	/* Uniperipheral setup depends on player type */
++	switch (player->info->player_type) {
++	case SND_ST_UNIPERIF_PLAYER_TYPE_HDMI:
++		ret = uni_player_prepare_iec958(player, runtime);
++		break;
++	case SND_ST_UNIPERIF_PLAYER_TYPE_PCM:
++		ret = uni_player_prepare_pcm(player, runtime);
++		break;
++	case SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF:
++		ret = uni_player_prepare_iec958(player, runtime);
++		break;
++	default:
++		dev_err(player->dev, "invalid player type");
++		return -EINVAL;
++	}
++
++	if (ret)
++		return ret;
++
++	switch (player->daifmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
++		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(player);
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
++		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(player);
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
++		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
++		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
++	}
++
++	switch (player->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(player);
++		SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(player);
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(player);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(player);
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(player);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(player);
++		break;
++	default:
++		dev_err(player->dev, "format not supported");
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(player, 0);
++
++	/* Reset uniperipheral player */
++	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++
++	return reset_player(player);
++}
++
++static int uni_player_start(struct uniperif *player)
++{
++	int ret;
++
++	/* The player should be stopped */
++	if (player->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(player->dev, "%s: invalid player state", __func__);
++		return -EINVAL;
++	}
++
++	ret = clk_prepare_enable(player->clk);
++	if (ret) {
++		dev_err(player->dev, "%s: Failed to enable clock", __func__);
++		return ret;
++	}
++
++	/* Clear any pending interrupts */
++	SET_UNIPERIF_ITS_BCLR(player, GET_UNIPERIF_ITS(player));
++
++	/* Set the interrupt mask */
++	SET_UNIPERIF_ITM_BSET_DMA_ERROR(player);
++	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(player);
++
++	/* Enable underflow recovery interrupts */
++	if (player->info->underflow_enabled) {
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(player);
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(player);
++	}
++
++	/* Reset uniperipheral player */
++	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++
++	ret = reset_player(player);
++	if (ret < 0)
++		return ret;
++
++	/*
++	 * Does not use IEC61937 features of the uniperipheral hardware.
++	 * Instead it performs IEC61937 in software and inserts it directly
++	 * into the audio data stream. As such, when encoded mode is selected,
++	 * linear pcm mode is still used, but with the differences of the
++	 * channel status bits set for encoded mode and the validity bits set.
++	 */
++	SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(player);
++
++	/*
++	 * If iec958 formatting is required for hdmi or spdif, then it must be
++	 * enabled after the operation mode is set. If set prior to this, it
++	 * will not take affect and hang the player.
++	 */
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player))
++				SET_UNIPERIF_CTRL_SPDIF_FMT_ON(player);
++
++	/* Force channel status update (no update if clk disable) */
++	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		SET_UNIPERIF_CONFIG_CHL_STS_UPDATE(player);
++	else
++		SET_UNIPERIF_BIT_CONTROL_CHL_STS_UPDATE(player);
++
++	/* Update state to started */
++	player->state = UNIPERIF_STATE_STARTED;
++
++	return 0;
++}
++
++static int uni_player_stop(struct uniperif *player)
++{
++	int ret;
++
++	/* The player should not be in stopped state */
++	if (player->state == UNIPERIF_STATE_STOPPED) {
++		dev_err(player->dev, "%s: invalid player state", __func__);
++		return -EINVAL;
++	}
++
++	/* Turn the player off */
++	SET_UNIPERIF_CTRL_OPERATION_OFF(player);
++
++	/* Soft reset the player */
++	SET_UNIPERIF_SOFT_RST_SOFT_RST(player);
++
++	ret = reset_player(player);
++	if (ret < 0)
++		return ret;
++
++	/* Disable interrupts */
++	SET_UNIPERIF_ITM_BCLR(player, GET_UNIPERIF_ITM(player));
++
++	/* Disable clock */
++	clk_disable_unprepare(player->clk);
++
++	/* Update state to stopped and return */
++	player->state = UNIPERIF_STATE_STOPPED;
++
++	return 0;
++}
++
++int uni_player_resume(struct uniperif *player)
++{
++	int ret;
++
++	/* Select the frequency synthesizer clock */
++	if (player->clk_sel) {
++		ret = regmap_field_write(player->clk_sel, 1);
++		if (ret) {
++			dev_err(player->dev,
++				"%s: Failed to select freq synth clock",
++				__func__);
++			return ret;
++		}
++	}
++
++	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
++	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
++	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
++	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(uni_player_resume);
++
++static int uni_player_trigger(struct snd_pcm_substream *substream,
++			      int cmd, struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		return uni_player_start(player);
++	case SNDRV_PCM_TRIGGER_STOP:
++		return uni_player_stop(player);
++	case SNDRV_PCM_TRIGGER_RESUME:
++		return uni_player_resume(player);
++	default:
++		return -EINVAL;
++	}
++}
++
++static void uni_player_shutdown(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++
++	if (player->state != UNIPERIF_STATE_STOPPED)
++		/* Stop the player */
++		uni_player_stop(player);
++}
++
++static int uni_player_parse_dt_clk_glue(struct platform_device *pdev,
++					struct uniperif *player)
++{
++	int bit_offset;
++	struct device_node *node = pdev->dev.of_node;
++	struct regmap *regmap;
++
++	bit_offset = SYS_CFG_AUDI0_GLUE_PCM_CLKX + player->info->id;
++
++	regmap = syscon_regmap_lookup_by_phandle(node, "st,syscfg");
++
++	if (regmap) {
++		struct reg_field regfield =
++			REG_FIELD(SYS_CFG_AUDIO_GLUE, bit_offset, bit_offset);
++
++		player->clk_sel = regmap_field_alloc(regmap, regfield);
++	} else {
++		dev_err(&pdev->dev, "sti-audio-clk-glue syscf not found\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int uni_player_parse_dt(struct platform_device *pdev,
++			       struct uniperif *player)
++{
++	struct uniperif_info *info;
++	struct device *dev = &pdev->dev;
++	struct device_node *pnode = pdev->dev.of_node;
++	const char *mode;
++
++	/* Allocate memory for the info structure */
++	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
++	if (!info)
++		return -ENOMEM;
++
++	of_property_read_u32(pnode, "version", &player->ver);
++	if (player->ver == SND_ST_UNIPERIF_VERSION_UNKNOWN) {
++		dev_err(dev, "Unknown uniperipheral version ");
++		return -EINVAL;
++	}
++	/* Underflow recovery is only supported on later ip revisions */
++	if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		info->underflow_enabled = 1;
++
++	of_property_read_u32(pnode, "uniperiph-id", &info->id);
++
++	/* Read the device mode property */
++	of_property_read_string(pnode, "mode", &mode);
++
++	if (strcasecmp(mode, "hdmi") == 0)
++		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_HDMI;
++	else if (strcasecmp(mode, "pcm") == 0)
++		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_PCM;
++	else if (strcasecmp(mode, "spdif") == 0)
++		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_SPDIF;
++	else
++		info->player_type = SND_ST_UNIPERIF_PLAYER_TYPE_NONE;
++
++	/* Save the info structure */
++	player->info = info;
++
++	/* Get the PCM_CLK_SEL bit from audio-glue-ctrl SoC register */
++	if (uni_player_parse_dt_clk_glue(pdev, player))
++		return -EINVAL;
++
++	return 0;
++}
++
++const struct snd_soc_dai_ops uni_player_dai_ops = {
++		.shutdown = uni_player_shutdown,
++		.prepare = uni_player_prepare,
++		.trigger = uni_player_trigger,
++		.hw_params = sti_uniperiph_dai_hw_params,
++		.set_fmt = sti_uniperiph_dai_set_fmt,
++		.set_sysclk = uni_player_set_sysclk
++};
++
++int uni_player_init(struct platform_device *pdev,
++		    struct uniperif *player)
++{
++	int ret = 0;
++
++	player->dev = &pdev->dev;
++	player->state = UNIPERIF_STATE_STOPPED;
++	player->hw = &uni_player_pcm_hw;
++	player->dai_ops = &uni_player_dai_ops;
++
++	ret = uni_player_parse_dt(pdev, player);
++
++	if (ret < 0) {
++		dev_err(player->dev, "Failed to parse DeviceTree");
++		return ret;
++	}
++
++	/* Get uniperif resource */
++	player->clk = of_clk_get(pdev->dev.of_node, 0);
++	if (IS_ERR(player->clk))
++		ret = (int)PTR_ERR(player->clk);
++
++	/* Select the frequency synthesizer clock */
++	if (player->clk_sel) {
++		ret = regmap_field_write(player->clk_sel, 1);
++		if (ret) {
++			dev_err(player->dev,
++				"%s: Failed to select freq synth clock",
++				__func__);
++			return ret;
++		}
++	}
++
++	ret = devm_request_irq(&pdev->dev, player->irq,
++			       uni_player_irq_handler, IRQF_SHARED,
++			       dev_name(&pdev->dev), player);
++	if (ret < 0)
++		return ret;
++
++	/* Ensure that disabled by default */
++	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
++	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
++	SET_UNIPERIF_CTRL_SPDIF_LAT_OFF(player);
++	SET_UNIPERIF_CONFIG_IDLE_MOD_DISABLE(player);
++
++	if (UNIPERIF_PLAYER_TYPE_IS_IEC958(player)) {
++		/* Set default iec958 status bits  */
++
++		/* Consumer, PCM, copyright, 2ch, mode 0 */
++		player->stream_settings.iec958.status[0] = 0x00;
++		/* Broadcast reception category */
++		player->stream_settings.iec958.status[1] =
++					IEC958_AES1_CON_GENERAL;
++		/* Do not take into account source or channel number */
++		player->stream_settings.iec958.status[2] =
++					IEC958_AES2_CON_SOURCE_UNSPEC;
++		/* Sampling frequency not indicated */
++		player->stream_settings.iec958.status[3] =
++					IEC958_AES3_CON_FS_NOTID;
++		/* Max sample word 24-bit, sample word length not indicated */
++		player->stream_settings.iec958.status[4] =
++					IEC958_AES4_CON_MAX_WORDLEN_24 |
++					IEC958_AES4_CON_WORDLEN_24_20;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(uni_player_init);
 -- 
 1.9.1
