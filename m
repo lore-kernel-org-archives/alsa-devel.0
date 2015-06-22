@@ -1,15 +1,16 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 7/9] ASoC: Codec: Add sti platform codec
-Date: Mon, 22 Jun 2015 16:31:11 +0200
-Message-ID: <1434983473-25092-8-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 8/9] ASoC: sti: Add clock adjustement control
+Date: Mon, 22 Jun 2015 16:31:12 +0200
+Message-ID: <1434983473-25092-9-git-send-email-arnaud.pouliquen@st.com>
 References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id BE5E026517E
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:43 +0200 (CEST)
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B1612651AF
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 16:31:47 +0200 (CEST)
 In-Reply-To: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,692 +25,243 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Codec part of the sti platform that supports codec IPs.
-This first version does not support HDMI, but only DAC and SPDIF out.
+Add capability to adjust player clock, for clocks drift management.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/codecs/Kconfig   |   5 +
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/sti-sas.c | 627 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 634 insertions(+)
- create mode 100644 sound/soc/codecs/sti-sas.c
+ sound/soc/sti/uniperif.h        |   2 +
+ sound/soc/sti/uniperif_player.c | 152 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 153 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 186fe7f..7434a20 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -102,6 +102,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_STA350 if I2C
- 	select SND_SOC_STA529 if I2C
- 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
-+	select SND_SOC_STI_SAS
- 	select SND_SOC_TAS2552 if I2C
- 	select SND_SOC_TAS5086 if I2C
- 	select SND_SOC_TAS571X if I2C
-@@ -604,6 +605,10 @@ config SND_SOC_STA529
- config SND_SOC_STAC9766
- 	tristate
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index 9c4f75c..210f115 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1175,6 +1175,7 @@ struct uniperif {
+ 	/* Clocks */
+ 	struct clk *clk;
+ 	int mclk;
++	int clk_adj;
  
-+config SND_SOC_STI_SAS
-+	tristate "codec Audio support for STI SAS codec"
-+	depends on SND_SOC_STI
+ 	/* Runtime data */
+ 	enum uniperif_state state;
+@@ -1183,6 +1184,7 @@ struct uniperif {
+ 
+ 	/* Specific to IEC958 player */
+ 	struct uniperif_iec958_settings stream_settings;
++	struct mutex ctrl_lock; /* For resource updated by stream and controls*/
+ 
+ 	/*alsa ctrl*/
+ 	struct snd_kcontrol_new *snd_ctrls;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index d66d633..a1b0135 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -36,6 +36,9 @@
+ 	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
+ 		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
+ 
++#define UNIPERIF_PLAYER_CLK_ADJ_MIN  -999999
++#define UNIPERIF_PLAYER_CLK_ADJ_MAX  1000000
 +
- config SND_SOC_TAS2552
- 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 3dcf5ac..1744e22 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -105,6 +105,7 @@ snd-soc-sta32x-objs := sta32x.o
- snd-soc-sta350-objs := sta350.o
- snd-soc-sta529-objs := sta529.o
- snd-soc-stac9766-objs := stac9766.o
-+snd-soc-sti-sas-objs := sti-sas.o
- snd-soc-tas5086-objs := tas5086.o
- snd-soc-tas571x-objs := tas571x.o
- snd-soc-tfa9879-objs := tfa9879.o
-@@ -287,6 +288,7 @@ obj-$(CONFIG_SND_SOC_STA32X)   += snd-soc-sta32x.o
- obj-$(CONFIG_SND_SOC_STA350)   += snd-soc-sta350.o
- obj-$(CONFIG_SND_SOC_STA529)   += snd-soc-sta529.o
- obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
-+obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
- obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
- obj-$(CONFIG_SND_SOC_TAS5086)	+= snd-soc-tas5086.o
- obj-$(CONFIG_SND_SOC_TAS571X)	+= snd-soc-tas571x.o
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-new file mode 100644
-index 0000000..32db2c2
---- /dev/null
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -0,0 +1,627 @@
-+/*
-+ * Copyright (C) STMicroelectronics SA 2015
-+ * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-+ *          for STMicroelectronics.
-+ * License terms:  GNU General Public License (GPL), version 2
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+#include <linux/mfd/syscon.h>
-+
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+/* chipID supported */
-+#define CHIPID_STIH416 0
-+#define CHIPID_STIH407 1
-+
-+/* DAC definitions */
-+
-+/* stih416 DAC registers */
-+/* sysconf 2517: Audio-DAC-Control */
-+#define STIH416_AUDIO_DAC_CTRL 0x00000814
-+/* sysconf 2519: Audio-Gue-Control */
-+#define STIH416_AUDIO_GLUE_CTRL 0x0000081C
-+
-+#define STIH416_DAC_NOT_STANDBY	0x3
-+#define STIH416_DAC_SOFTMUTE	0x4
-+#define STIH416_DAC_ANA_NOT_PWR	0x5
-+#define STIH416_DAC_NOT_PNDBG	0x6
-+
-+#define STIH416_DAC_NOT_STANDBY_MASK	BIT(STIH416_DAC_NOT_STANDBY)
-+#define STIH416_DAC_SOFTMUTE_MASK	BIT(STIH416_DAC_SOFTMUTE)
-+#define STIH416_DAC_ANA_NOT_PWR_MASK	BIT(STIH416_DAC_ANA_NOT_PWR)
-+#define STIH416_DAC_NOT_PNDBG_MASK	BIT(STIH416_DAC_NOT_PNDBG)
-+
-+/* stih407 DAC registers */
-+/* sysconf 5041: Audio-Gue-Control */
-+#define STIH407_AUDIO_GLUE_CTRL 0x000000A4
-+/* sysconf 5042: Audio-DAC-Control */
-+#define STIH407_AUDIO_DAC_CTRL 0x000000A8
-+
-+/* DAC definitions */
-+#define STIH407_DAC_SOFTMUTE		0x0
-+#define STIH407_DAC_STANDBY_ANA		0x1
-+#define STIH407_DAC_STANDBY		0x2
-+
-+#define STIH407_DAC_SOFTMUTE_MASK	BIT(STIH407_DAC_SOFTMUTE)
-+#define STIH407_DAC_STANDBY_ANA_MASK    BIT(STIH407_DAC_STANDBY_ANA)
-+#define STIH407_DAC_STANDBY_MASK        BIT(STIH407_DAC_STANDBY)
-+
-+/* SPDIF definitions */
-+#define SPDIF_BIPHASE_ENABLE		0x6
-+#define SPDIF_BIPHASE_IDLE		0x7
-+
-+#define SPDIF_BIPHASE_ENABLE_MASK	BIT(SPDIF_BIPHASE_ENABLE)
-+#define SPDIF_BIPHASE_IDLE_MASK		BIT(SPDIF_BIPHASE_IDLE)
-+
-+enum {
-+	STI_SAS_DAI_SPDIF_OUT,
-+	STI_SAS_DAI_ANALOG_OUT,
-+};
-+
-+static const struct reg_default stih416_sas_reg_defaults[] = {
-+	{ STIH407_AUDIO_GLUE_CTRL, 0x00000040 },
-+	{ STIH407_AUDIO_DAC_CTRL, 0x000000000 },
-+};
-+
-+static const struct reg_default stih407_sas_reg_defaults[] = {
-+	{ STIH416_AUDIO_DAC_CTRL, 0x000000000 },
-+	{ STIH416_AUDIO_GLUE_CTRL, 0x00000040 },
-+};
-+
-+struct sti_dac_audio {
-+	struct regmap *regmap;
-+	struct regmap *virt_regmap;
-+	struct regmap_field  **field;
-+	struct reset_control *rst;
-+	int mclk;
-+};
-+
-+struct sti_spdif_audio {
-+	struct regmap *regmap;
-+	struct regmap_field  **field;
-+	int mclk;
-+};
-+
-+/* device data structure */
-+struct sti_sas_dev_data {
-+	const int chipid; /* IC version */
-+	const struct regmap_config *regmap;
-+	const struct snd_soc_dai_ops *dac_ops;  /* DAC function callbacks */
-+	const struct snd_soc_dapm_widget *dapm_widgets; /* dapms declaration */
-+	const int num_dapm_widgets; /* dapms declaration */
-+	const struct snd_soc_dapm_route *dapm_routes; /* route declaration */
-+	const int num_dapm_routes; /* route declaration */
-+};
-+
-+/* driver data structure */
-+struct sti_sas_data {
-+	struct device *dev;
-+	const struct sti_sas_dev_data *dev_data;
-+	struct sti_dac_audio dac;
-+	struct sti_spdif_audio spdif;
-+};
-+
-+/* Read a register from the sysconf reg bank */
-+static int sti_sas_read_reg(void *context, unsigned int reg,
-+			    unsigned int *value)
+ /*
+  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
+  * integrate  DAI_CPU capability in term of rate and supported channels
+@@ -172,6 +175,70 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+ 	return ret;
+ }
+ 
++int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
 +{
-+	struct sti_sas_data *drvdata = context;
-+	int status;
-+	u32 val;
++	int rate_adjusted, rate_achieved, delta, ret;
++	int adjustment = player->clk_adj;
 +
-+	status = regmap_read(drvdata->dac.regmap, reg, &val);
-+	*value = (unsigned int)val;
-+
-+	return status;
-+}
-+
-+/* Read a register from the sysconf reg bank */
-+static int sti_sas_write_reg(void *context, unsigned int reg,
-+			     unsigned int value)
-+{
-+	struct sti_sas_data *drvdata = context;
-+	int status;
-+
-+	status = regmap_write(drvdata->dac.regmap, reg, value);
-+
-+	return status;
-+}
-+
-+static int  sti_sas_init_sas_registers(struct snd_soc_codec *codec,
-+				       struct sti_sas_data *data)
-+{
-+	int ret;
 +	/*
-+	 * DAC and SPDIF are activated by default
-+	 * put them in IDLE to save power
++	 *             a
++	 * F = f + --------- * f = f + d
++	 *          1000000
++	 *
++	 *         a
++	 * d = --------- * f
++	 *      1000000
++	 *
++	 * where:
++	 *   f - nominal rate
++	 *   a - adjustment in ppm (parts per milion)
++	 *   F - rate to be set in synthesizer
++	 *   d - delta (difference) between f and F
 +	 */
-+
-+	/* Initialise bi-phase formatter to disabled */
-+	ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+				  SPDIF_BIPHASE_ENABLE_MASK, 0);
-+
-+	if (!ret)
-+		/* Initialise bi-phase formatter idle value to 0 */
-+		ret = snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+					  SPDIF_BIPHASE_IDLE_MASK, 0);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to update SPDIF registers");
-+		return ret;
++	if (adjustment < 0) {
++		/* div64_64 operates on unsigned values... */
++		delta = -1;
++		adjustment = -adjustment;
++	} else {
++		delta = 1;
 +	}
++	/* 500000 ppm is 0.5, which is used to round up values */
++	delta *= (int)div64_u64((uint64_t)rate *
++				(uint64_t)adjustment + 500000, 1000000);
++	rate_adjusted = rate + delta;
 +
-+	/* Init DAC configuration */
-+	switch (data->dev_data->chipid) {
-+	case CHIPID_STIH407:
-+		/* init configuration */
-+		ret =  snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+					   STIH407_DAC_STANDBY_MASK,
-+					   STIH407_DAC_STANDBY_MASK);
-+
-+		if (!ret)
-+			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+						  STIH407_DAC_STANDBY_ANA_MASK,
-+						  STIH407_DAC_STANDBY_ANA_MASK);
-+		if (!ret)
-+			ret = snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+						  STIH407_DAC_SOFTMUTE_MASK,
-+						  STIH407_DAC_SOFTMUTE_MASK);
-+		break;
-+	case CHIPID_STIH416:
-+		ret =  snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
-+					   STIH416_DAC_NOT_STANDBY_MASK, 0);
-+		if (!ret)
-+			ret =  snd_soc_update_bits(codec,
-+						   STIH416_AUDIO_DAC_CTRL,
-+						   STIH416_DAC_ANA_NOT_PWR, 0);
-+		if (!ret)
-+			ret =  snd_soc_update_bits(codec,
-+						   STIH416_AUDIO_DAC_CTRL,
-+						   STIH416_DAC_NOT_PNDBG_MASK,
-+						   0);
-+		if (!ret)
-+			ret =  snd_soc_update_bits(codec,
-+						   STIH416_AUDIO_DAC_CTRL,
-+						   STIH416_DAC_SOFTMUTE_MASK,
-+						   STIH416_DAC_SOFTMUTE_MASK);
-+		break;
-+	default:
++	/* Adjusted rate should never be == 0 */
++	if (!rate_adjusted)
 +		return -EINVAL;
-+	}
 +
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to update DAC registers");
++	ret = clk_set_rate(player->clk, rate_adjusted);
++	if (ret < 0)
 +		return ret;
++
++	rate_achieved = clk_get_rate(player->clk);
++	if (!rate_achieved)
++		/* If value is 0 means that clock or parent not valid */
++		return -EINVAL;
++
++	/*
++	 * Using ALSA's adjustment control, we can modify the rate to be up
++	 * to twice as much as requested, but no more
++	 */
++	delta = rate_achieved - rate;
++	if (delta < 0) {
++		/* div64_64 operates on unsigned values... */
++		delta = -delta;
++		adjustment = -1;
++	} else {
++		adjustment = 1;
 +	}
++	/* Frequency/2 is added to round up result */
++	adjustment *= (int)div64_u64((uint64_t)delta * 1000000 + rate / 2,
++				     rate);
++	player->clk_adj = adjustment;
++	return 0;
++}
++
+ static void uni_player_set_channel_status(struct uniperif *player,
+ 					  struct snd_pcm_runtime *runtime)
+ {
+@@ -470,11 +537,84 @@ static int uni_player_prepare_pcm(struct uniperif *player,
+ 	return 0;
+ }
+ 
++/*
++ * uniperif rate adjustement control
++ */
++static int snd_sti_clk_adjustment_info(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = UNIPERIF_PLAYER_CLK_ADJ_MIN;
++	uinfo->value.integer.max = UNIPERIF_PLAYER_CLK_ADJ_MAX;
++	uinfo->value.integer.step = 1;
++
++	return 0;
++}
++
++static int snd_sti_clk_adjustment_get(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++
++	ucontrol->value.integer.value[0] = player->clk_adj;
++
++	return 0;
++}
++
++static int snd_sti_clk_adjustment_put(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++	int ret = 0;
++
++	if ((ucontrol->value.integer.value[0] < UNIPERIF_PLAYER_CLK_ADJ_MIN) ||
++	    (ucontrol->value.integer.value[0] > UNIPERIF_PLAYER_CLK_ADJ_MAX))
++		return -EINVAL;
++
++	mutex_lock(&player->ctrl_lock);
++	player->clk_adj = ucontrol->value.integer.value[0];
++
++	if (player->mclk)
++		ret = uni_player_clk_set_rate(player, player->mclk);
++	mutex_unlock(&player->ctrl_lock);
 +
 +	return ret;
 +}
 +
-+/*
-+ * DAC
-+ */
-+static int sti_sas_dac_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
++	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++	.name = "PCM Playback Oversampling Freq. Adjustment",
++	.info = snd_sti_clk_adjustment_info,
++	.get = snd_sti_clk_adjustment_get,
++	.put = snd_sti_clk_adjustment_put,
++};
++
++static struct snd_kcontrol_new *snd_sti_ctl[] = {
++	&uni_player_clk_adj_ctl,
++};
++
++static int uni_player_startup(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
 +{
-+	/* Sanity check only */
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
-+		dev_err(dai->codec->dev,
-+			"%s: ERROR: Unsupporter master mask 0x%x\n",
-+			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
-+		return -EINVAL;
-+	}
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *player = priv->dai_data.uni;
++
++	player->clk_adj = 0;
 +
 +	return 0;
 +}
 +
-+static int stih416_dac_probe(struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct sti_dac_audio *dac = &drvdata->dac;
-+
-+	/* Get reset control */
-+	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
-+	if (IS_ERR(dac->rst)) {
-+		dev_err(dai->codec->dev,
-+			"%s: ERROR: DAC reset control not defined (%d)!\n",
-+			__func__, (int)dac->rst);
-+		dac->rst = NULL;
-+		return -EFAULT;
-+	}
-+	/* Put the DAC into reset */
-+	reset_control_assert(dac->rst);
-+
-+	return 0;
-+}
-+
-+const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
-+	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
-+			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
-+	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
-+			     STIH416_DAC_ANA_NOT_PWR, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH416_AUDIO_DAC_CTRL,
-+			 STIH416_DAC_NOT_STANDBY, 0),
-+	SND_SOC_DAPM_OUTPUT("DAC Output"),
-+};
-+
-+const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
-+			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
-+			 STIH407_DAC_STANDBY, 1),
-+	SND_SOC_DAPM_OUTPUT("DAC Output"),
-+};
-+
-+const struct snd_soc_dapm_route stih416_sas_route[] = {
-+	{"DAC Output", NULL, "DAC bandgap"},
-+	{"DAC Output", NULL, "DAC standby ana"},
-+	{"DAC standby ana", NULL, "DAC standby"},
-+};
-+
-+const struct snd_soc_dapm_route stih407_sas_route[] = {
-+	{"DAC Output", NULL, "DAC standby ana"},
-+	{"DAC standby ana", NULL, "DAC standby"},
-+};
-+
-+static int stih416_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	if (mute) {
-+		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
-+					    STIH416_DAC_SOFTMUTE_MASK,
-+					    STIH416_DAC_SOFTMUTE_MASK);
-+	} else {
-+		return snd_soc_update_bits(codec, STIH416_AUDIO_DAC_CTRL,
-+					    STIH416_DAC_SOFTMUTE_MASK, 0);
-+	}
-+}
-+
-+static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	if (mute) {
-+		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+					    STIH407_DAC_SOFTMUTE_MASK,
-+					    STIH407_DAC_SOFTMUTE_MASK);
-+	} else {
-+		return snd_soc_update_bits(codec, STIH407_AUDIO_DAC_CTRL,
-+					    STIH407_DAC_SOFTMUTE_MASK,
-+					    0);
-+	}
-+}
-+
-+/*
-+ * SPDIF
-+ */
-+static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
-+				 unsigned int fmt)
-+{
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
-+		dev_err(dai->codec->dev,
-+			"%s: ERROR: Unsupporter master mask 0x%x\n",
-+			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * sti_sas_spdif_trigger:
-+ * Trigger function is used to ensure that BiPhase Formater is disabled
-+ * before CPU dai is stopped.
-+ * This is mandatory to avoid that BPF is stalled
-+ */
-+static int sti_sas_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+					    SPDIF_BIPHASE_ENABLE_MASK,
-+					    SPDIF_BIPHASE_ENABLE_MASK);
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		return snd_soc_update_bits(codec, STIH407_AUDIO_GLUE_CTRL,
-+					    SPDIF_BIPHASE_ENABLE_MASK,
-+					    0);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static bool sti_sas_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	if (reg == STIH407_AUDIO_GLUE_CTRL)
-+		return true;
-+
-+	return false;
-+}
-+
-+/*
-+ * CODEC DAIS
-+ */
-+
-+/*
-+ * sti_sas_set_sysclk:
-+ * get MCLK input frequency to check that MCLK-FS ratio is coherent
-+ */
-+static int sti_sas_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+			      unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+
-+	if (dir == SND_SOC_CLOCK_OUT)
-+		return 0;
-+
-+	if (clk_id != 0)
-+		return -EINVAL;
-+
-+	switch (dai->id) {
-+	case STI_SAS_DAI_SPDIF_OUT:
-+		drvdata->spdif.mclk = freq;
-+		break;
-+
-+	case STI_SAS_DAI_ANALOG_OUT:
-+		drvdata->dac.mclk = freq;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sti_sas_prepare(struct snd_pcm_substream *substream,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	switch (dai->id) {
-+	case STI_SAS_DAI_SPDIF_OUT:
-+		if ((drvdata->spdif.mclk / runtime->rate) != 128) {
-+			dev_err(codec->dev, "unexpected mclk-fs ratio");
-+			return -EINVAL;
-+		}
-+		break;
-+	case STI_SAS_DAI_ANALOG_OUT:
-+		if ((drvdata->dac.mclk / runtime->rate) != 256) {
-+			dev_err(codec->dev, "unexpected mclk-fs ratio");
-+			return -EINVAL;
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct snd_soc_dai_ops stih416_dac_ops = {
-+	.set_fmt = sti_sas_dac_set_fmt,
-+	.mute_stream = stih416_sas_dac_mute,
-+	.prepare = sti_sas_prepare,
-+	.set_sysclk = sti_sas_set_sysclk,
-+};
-+
-+const struct snd_soc_dai_ops stih407_dac_ops = {
-+	.set_fmt = sti_sas_dac_set_fmt,
-+	.mute_stream = stih407_sas_dac_mute,
-+	.prepare = sti_sas_prepare,
-+	.set_sysclk = sti_sas_set_sysclk,
-+};
-+
-+const struct regmap_config stih407_sas_regmap = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+
-+	.max_register = STIH407_AUDIO_DAC_CTRL,
-+	.reg_defaults = stih407_sas_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(stih407_sas_reg_defaults),
-+	.volatile_reg = sti_sas_volatile_register,
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_read = sti_sas_read_reg,
-+	.reg_write = sti_sas_write_reg,
-+};
-+
-+const struct regmap_config stih416_sas_regmap = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+
-+	.max_register = STIH416_AUDIO_DAC_CTRL,
-+	.reg_defaults = stih416_sas_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(stih416_sas_reg_defaults),
-+	.volatile_reg = sti_sas_volatile_register,
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_read = sti_sas_read_reg,
-+	.reg_write = sti_sas_write_reg,
-+};
-+
-+const struct sti_sas_dev_data stih416_data = {
-+	.chipid = CHIPID_STIH416,
-+	.regmap = &stih416_sas_regmap,
-+	.dac_ops = &stih416_dac_ops,
-+	.dapm_widgets = stih416_sas_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(stih416_sas_dapm_widgets),
-+	.dapm_routes =	stih416_sas_route,
-+	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
-+};
-+
-+const struct sti_sas_dev_data stih407_data = {
-+	.chipid = CHIPID_STIH407,
-+	.regmap = &stih407_sas_regmap,
-+	.dac_ops = &stih407_dac_ops,
-+	.dapm_widgets = stih407_sas_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(stih407_sas_dapm_widgets),
-+	.dapm_routes =	stih407_sas_route,
-+	.num_dapm_routes = ARRAY_SIZE(stih407_sas_route),
-+};
-+
-+static struct snd_soc_dai_driver sti_sas_dai[] = {
-+	{
-+		.name = "sas-dai-spdif-out",
-+		.id = STI_SAS_DAI_SPDIF_OUT,
-+		.playback = {
-+			.stream_name = "spdif_p",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
-+				 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_64000 |
-+				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S32_LE,
-+		},
-+		.ops = (struct snd_soc_dai_ops[]) {
-+			{
-+				.set_fmt = sti_sas_spdif_set_fmt,
-+				.trigger = sti_sas_spdif_trigger,
-+				.set_sysclk = sti_sas_set_sysclk,
-+				.prepare = sti_sas_prepare,
-+			}
-+		},
-+	},
-+	{
-+		.name = "sas-dai-dac",
-+		.id = STI_SAS_DAI_ANALOG_OUT,
-+		.playback = {
-+			.stream_name = "dac_p",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S32_LE,
-+		},
-+	},
-+};
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int sti_sas_resume(struct snd_soc_codec *codec)
-+{
-+	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
-+
-+	return sti_sas_init_sas_registers(codec, drvdata);
-+}
-+#else
-+#define sti_sas_resume NULL
-+#endif
-+
-+static int sti_sas_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
+ static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 				 unsigned int freq, int dir)
+ {
+ 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct uniperif *player = priv->dai_data.uni;
 +	int ret;
-+
-+	ret = sti_sas_init_sas_registers(codec, drvdata);
+ 
+ 	if (dir == SND_SOC_CLOCK_IN)
+ 		return 0;
+@@ -484,7 +624,11 @@ static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ 	player->mclk = freq;
+ 
+-	return clk_set_rate(player->clk, freq);
++	mutex_lock(&player->ctrl_lock);
++	ret = uni_player_clk_set_rate(player, freq);
++	mutex_unlock(&player->ctrl_lock);
 +
 +	return ret;
-+}
+ }
+ 
+ static int uni_player_prepare(struct snd_pcm_substream *substream,
+@@ -812,6 +956,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+ }
+ 
+ const struct snd_soc_dai_ops uni_player_dai_ops = {
++		.startup = uni_player_startup,
+ 		.shutdown = uni_player_shutdown,
+ 		.prepare = uni_player_prepare,
+ 		.trigger = uni_player_trigger,
+@@ -859,6 +1004,8 @@ int uni_player_init(struct platform_device *pdev,
+ 	if (ret < 0)
+ 		return ret;
+ 
++	mutex_init(&player->ctrl_lock);
 +
-+static struct snd_soc_codec_driver sti_sas_driver = {
-+	.probe = sti_sas_codec_probe,
-+	.resume = sti_sas_resume,
-+};
+ 	/* Ensure that disabled by default */
+ 	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
+ 	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
+@@ -885,6 +1032,9 @@ int uni_player_init(struct platform_device *pdev,
+ 					IEC958_AES4_CON_WORDLEN_24_20;
+ 	}
+ 
++	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
++	player->snd_ctrls = snd_sti_ctl[0];
 +
-+static const struct of_device_id sti_sas_dev_match[] = {
-+	{
-+		.compatible = "st,stih416-sas-codec",
-+		.data = &stih416_data,
-+	},
-+	{
-+		.compatible = "st,stih407-sas-codec",
-+		.data = &stih407_data,
-+	},
-+	{},
-+};
-+
-+static int sti_sas_driver_probe(struct platform_device *pdev)
-+{
-+	struct device_node *pnode = pdev->dev.of_node;
-+	struct sti_sas_data *drvdata;
-+
-+	/* Allocate device structure */
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_data),
-+			       GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	/* Populate data structure depending on compatibility */
-+	if (!of_match_node(sti_sas_dev_match, pnode)->data) {
-+		dev_err(&pdev->dev, "data associated to device is missing");
-+		return -EINVAL;
-+	}
-+
-+	drvdata->dev_data = of_match_node(sti_sas_dev_match, pnode)->data;
-+
-+	/* Initialise device structure */
-+	drvdata->dev = &pdev->dev;
-+
-+	/* Request the DAC & SPDIF registers memory region */
-+	drvdata->dac.virt_regmap = devm_regmap_init(&pdev->dev, NULL, drvdata,
-+						    drvdata->dev_data->regmap);
-+	if (!drvdata->dac.virt_regmap) {
-+		dev_err(&pdev->dev, "audio registers not enabled\n");
-+		return -EFAULT;
-+	}
-+
-+	/* Request the syscon region */
-+	drvdata->dac.regmap =
-+		syscon_regmap_lookup_by_phandle(pnode, "st,syscfg");
-+	if (!drvdata->dac.regmap) {
-+		dev_err(&pdev->dev, "syscon registers not available\n");
-+		return -EFAULT;
-+	}
-+	drvdata->spdif.regmap = drvdata->dac.regmap;
-+
-+	/* Set DAC dai probe */
-+	if (drvdata->dev_data->chipid == CHIPID_STIH416)
-+		sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].probe = stih416_dac_probe;
-+
-+	sti_sas_dai[STI_SAS_DAI_ANALOG_OUT].ops = drvdata->dev_data->dac_ops;
-+
-+	/* Set dapms*/
-+	sti_sas_driver.dapm_widgets = drvdata->dev_data->dapm_widgets;
-+	sti_sas_driver.num_dapm_widgets = drvdata->dev_data->num_dapm_widgets;
-+
-+	sti_sas_driver.dapm_routes = drvdata->dev_data->dapm_routes;
-+	sti_sas_driver.num_dapm_routes = drvdata->dev_data->num_dapm_routes;
-+
-+	/* Store context */
-+	dev_set_drvdata(&pdev->dev, drvdata);
-+
-+	return snd_soc_register_codec(&pdev->dev, &sti_sas_driver,
-+					sti_sas_dai,
-+					ARRAY_SIZE(sti_sas_dai));
-+}
-+
-+static int sti_sas_driver_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver sti_sas_platform_driver = {
-+	.driver = {
-+		.name = "sti-sas-codec",
-+		.owner = THIS_MODULE,
-+		.of_match_table = sti_sas_dev_match,
-+	},
-+	.probe = sti_sas_driver_probe,
-+	.remove = sti_sas_driver_remove,
-+};
-+
-+module_platform_driver(sti_sas_platform_driver);
-+
-+MODULE_DESCRIPTION("audio codec for STMicroelectronics sti platforms");
-+MODULE_AUTHOR("Arnaud.pouliquen@st.com");
-+MODULE_LICENSE("GPL v2");
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(uni_player_init);
 -- 
 1.9.1
