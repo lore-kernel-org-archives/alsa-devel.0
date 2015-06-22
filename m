@@ -1,139 +1,128 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH 3/4] snd: add support for displayport
- multi-stream to hda codec.
-Date: Mon, 22 Jun 2015 14:29:29 +0100
-Message-ID: <1434979769.2503.32.camel@loki>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
- <s5h7fqv7u7s.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC updates for v4.2
+Date: Mon, 22 Jun 2015 14:57:29 +0100
+Message-ID: <20150622135729.GR14071@sirena.org.uk>
+References: <20150622092616.GN14071@sirena.org.uk>
+ <s5hmvzs6p4v.wl-tiwai@suse.de>
+ <20150622103034.GQ14071@sirena.org.uk>
+ <s5hfv5k6l65.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h7fqv7u7s.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============5807836603567971601=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF5AE265057
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 15:57:38 +0200 (CEST)
+In-Reply-To: <s5hfv5k6l65.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, "Kaskinen, Tanu" <tanu.kaskinen@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Lu,
- Han" <han.lu@intel.com>
+Cc: alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDE1LTA2LTIyIGF0IDE1OjIzICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-QXQgTW9uLCAyMiBKdW4gMjAxNSAxNDo1NDoyOSArMDIwMCwKPiBEYW5pZWwgVmV0dGVyIHdyb3Rl
-Ogo+ID4gCj4gPiBPbiBGcmksIEp1biAxOSwgMjAxNSBhdCAwMToxNTo1N1BNICswMjAwLCBUYWth
-c2hpIEl3YWkgd3JvdGU6Cj4gPiA+IEF0IEZyaSwgMTkgSnVuIDIwMTUgMjA6MzM6MzkgKzEwMDAs
-Cj4gPiA+IERhdmUgQWlybGllIHdyb3RlOgo+ID4gPiA+IAo+ID4gPiA+IE9uIDE5IEp1bmUgMjAx
-NSBhdCAxOTo1NCwgTGluLCBNZW5nZG9uZyA8bWVuZ2RvbmcubGluQGludGVsLmNvbT4gd3JvdGU6
-Cj4gPiA+ID4gPiBIaSBUYWthc2hpL0RhdmUsCj4gPiA+ID4gPgo+ID4gPiA+ID4gU2hhbGwgd2Ug
-bW92ZSBvciBjYyB0aGlzIGRpc2N1c3Npb24gb24gYXVkaW8gZHJpdmVyIHNpZGUgdG8gQUxTQSBN
-TD8KPiA+ID4gPiAKPiA+ID4gPiBPb3BzIEkgdGhvdWdodCBJIGhhZCBjYydlZCB0aGVzZSBwYXRj
-aGVzIHRvIGFsc2EtZGV2ZWwgYXMgd2VsbCB3aGVuIEkgc2VudCB0aGVtLgo+ID4gPiA+IAo+ID4g
-PiA+ID4gSSB0aGluayB3ZSBhbHNvIG5lZWQgdG8gZGVjaWRlIGhvdyB0byBtYW5hZ2UgUENNIGRl
-dmljZXMgZm9yIERQIE1TVC4KPiA+ID4gPiA+IE5vdyB0aGUgSEQtQSBkcml2ZXIgY3JlYXRlIGEg
-UENNIGRldmljZSBmb3IgZWFjaCBwaW4sIGFuZCB0aGUgc3Vic3RyZWFtCj4gPiA+ID4gPiBudW1i
-ZXIgaXMgMSBmb3IgZWFjaCBQQ00uIE5vdyB3aXRoIERQIE1TVCBlbmFibGVkLCBlYWNoIHBpbiBj
-YW4gc3VwcG9ydAo+ID4gPiA+ID4gbXVsdGlwbGUgc3RyZWFtcyAoZS5nLiAzIG9uIEludGVsIEhT
-Vy9CRFcvU0tMKS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBUaGVyZSBtYXkgYmUgMiBvcHRpb25zOgo+
-ID4gPiA+ID4gLSMxOiBMZXQgYW4gSERNSSBjb2RlYyBzcGVjaWZ5IG51bWJlciBvZiBzdWJzdHJl
-YW1zLCBzYW1lIGFzIHRoZSBudW1iZXIKPiA+ID4gPiA+IG9mIGRldmljZSBlbnRyaWVzIG9uIGEg
-cGluLiBXZSBjYW4gc3BlY2lmeSAzIGZvciBIU1cvQkRXL1NLTC4gT3RoZXIKPiA+ID4gPiA+IHZl
-bmRvcnMgY2FuIGFsc28gc3BlY2lmeSBhIHZhbHVlIGFjY29yZGluZyB0byBhY3R1YWwgSFcgY2Fw
-YWJpbGl0aWVzLgo+ID4gPiA+ID4KPiA+ID4gPiA+IFNvIGZvciBIU1csIHdlIGhhdmUgM3gzIHN1
-YnRyZWFtcyB0b3RhbGx5LiBCdXQgd2Ugb25seSBoYXZlIDMgY29udmVydG9ycwo+ID4gPiA+ID4g
-KGZvciAzIGRpc3BsYXkgcGlwZWxpbmVzKSwgc28gd2UgY2FuIG9wZW4gdXAgdG8gMyBzdWJzdHJl
-YW1zIGF0IHRoZSBzYW1lCj4gPiA+ID4gPiB0aW1lLiBXaGVuIHRoZSBhdWRpbyBkcml2ZXIgZmlu
-ZHMgYWxsIDMgY29udmVydG9ycyBhcmUgdXNlZCB3aGVuIG9wZW5pbmcKPiA+ID4gPiA+IGEgbmV3
-IHN1YnN0cmVhbSwgaXQgd2lsbCBmYWlsLgo+ID4gPiA+IAo+ID4gPiA+IE9uZSB0aGluZyBJIG5v
-dGljZWQgaXMgdGhlIG51bWJlciBvZiBkZXZpY2VzIG9uIGEgUElOIGlzIG9ubHkgdXBkYXRlZCB3
-aGVuCj4gPiA+ID4gdGhlIE1TVCBkZXZpY2UgaXMgcGx1Z2dlZCBpbiBzbyBub3JtYWxseSBwaW5z
-IDUsNiw3IGhhdmUgMCBkZXZpY2VzLCBhbmQgd2hlbgo+ID4gPiA+IEkgcGx1ZyBpbiBNU1QgZGV2
-aWNlLCBJIGdldCB0aGUgMyBkZXZpY2VzIG9uIHBvcnQgNi4gU28gaXQgc2VlbXMgZHluYW1pYwo+
-ID4gPiA+IGVub3VnaCBhdCB0aGlzIHBvaW50LCB0aG91Z2ggSSBndWVzcyBpdCdsbCBhbHdheXMg
-YmUgMCBvciAzLgo+ID4gPiA+ID4KPiA+ID4gPiA+IC0gIzI6IENyZWF0ZSBQQ00gZGV2aWNlIGR5
-bmFtaWNhbGx5LiBPbmx5IGNyZWF0ZSBhIFBDTSBkZXZpY2VzIGZvciBhIGRldmljZQo+ID4gPiA+
-ID4gZW50cnkgd2hpY2ggY29ubmVjdHMgdG8gbW9uaXRvciB3aXRoIGF1ZGlvIHN1cHBvcnQuIFdo
-ZW4gdGhlIG1vbml0b3IKPiA+ID4gPiA+IGlzIHJlbW92ZWQsIHRoZSBQQ00gZGV2aWNlIHdpbGwg
-YmUgZGlzY29ubmVjdGVkLCBjbG9zZWQgYW5kIHJlbW92ZWQsCj4gPiA+ID4gPiBzaW1pbGFyIHRv
-IHRoZSBVU0IgY2FzZS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBUaGlzIHdpbGwgY2hhbmdlIEFMU0Eg
-Y29yZS4gQnV0IHRoZXJlIHdpbGwgYmUgbGVzcyBQQ00gZGV2aWNlcyBhbmQKPiA+ID4gPiA+IHN1
-YnN0cmVhbXMsIHNpbmNlIHRoZSBudW1iZXIgb2YgY29ubmVjdGVkIG1vbml0b3JzIElzIGRlY2lk
-ZWQgYnkgdGhlCj4gPiA+ID4gPiBhY3R1YWwgR1BVIGRpc3BsYXkgcGlwZWxpbmUuCj4gPiA+ID4g
-Cj4gPiA+ID4gSSBsaWtlIHRoaXMgb3B0aW9uIG1vcmUsIHNpbmNlIEkgdGhpbmsgaXQgc2hvdWxk
-IGJlIG1vcmUgbGlrZSBVU0IsIGJ1dCBJJ3ZlCj4gPiA+ID4gbm8gaWRlYSBob3cgbXVjaCB3b3Jr
-IGl0IHdvdWxkIGJlIGZyb20gdGhlIGFsc2Egc2lkZSwgdGhpcyBwYXRjaCB3YXMKPiA+ID4gPiBw
-cm9iYWJseSBhcyBkZWVwIGludG8gYWxzYSBhcyBJJ3ZlIGdvbmUuCj4gPiA+IAo+ID4gPiBUd28g
-dGhpbmdzIGhhdmUgdG8gYmUgY29uc2lkZXJlZCBmb3IgY29tcGF0aWJpbGl0eToKPiA+ID4gLSBF
-TEQsIGNoYW5uZWwgbWFwIGFuZCBqYWNrIGRldGVjdGlvbjogdGhlc2UgYXJlIGNyZWF0ZWQgcGVy
-IFBDTQo+ID4gPiAgIGRldmljZSwgYW5kIGV4dGVuZGluZyB0byBzdWJzdHJlYW0gd291bGQgY29u
-ZnVzZSB1c2VyIHNwYWNlIGEgbG90Lgo+ID4gPiAgIEluIHRoZW9yeSwgaXQgY2FuIGJlIGV4dGVu
-ZGVkIHVzaW5nIHN1YmRldmljZSBudW1iZXIsIGJ1dCBpbiBhbnl3YXkKPiA+ID4gICB0aGlzIHdv
-bid0IHdvcmsgd2l0aCBQdWxzZUF1ZGlvIGFzIGlzLgo+ID4gPiAKPiA+ID4gLSBUaGUgcGVyLXBp
-biBhc3NpZ25tZW50IHByb3ZpZGVzIGEgbW9yZSBvciBsZXNzIHBlcnNpc3RlbnQgcm91dGUgdG8g
-YQo+ID4gPiAgIGNlcnRhaW4gZGV2aWNlLiAgQ2hhbmdpbmcgdGhlIGFzc2lnbm1lbnQgbWV0aG9k
-IG1heSBicmVhayB0aGUKPiA+ID4gICBwcmV2aW91cyBzZXR1cC4KPiA+ID4gCj4gPiA+IEFsc28s
-IHRoZSBkeW5hbWljIFBDTSBjcmVhdGlvbiAvIHJlbW92YWwgaXMgYW4gaXNzdWUgdGhhdCBoYXMg
-YmVlbgo+ID4gPiBkaXNjdXNzZWQgbWFueSB0aW1lcy4gIFVuZm9ydHVuYXRlbHkgaXQgd29uJ3Qg
-d29yayBhcyBpcywgYXQgbGVzdCBmb3IKPiA+ID4gUEEuICBDdXJyZW50bHkgUEEgZG9lcyBwcm9i
-aW5nIG9mIGRldmljZXMgb25seSBhdCB0aGUgY2FyZCBwcm9iZSB0aW1lLgo+ID4gPiBUaGUgaG90
-cGx1ZyBvZiBVU0ItYXVkaW8gd29ya3MgYmVjYXVzZSBpdCdzIGFsd2F5cyB0aWVkIHdpdGggdGhl
-Cj4gPiA+IGNhcmQuICBCdXQgaW4gdGhpcyBjYXNlLCB0aGUgY2FyZCByZW1haW5zIHdoaWxlIG9u
-bHkgdGhlIFBDTSBkZXZpY2VzCj4gPiA+IHdpbGwgYmUgY3JlYXRlZCAvIHJlbW92ZWQsIHRodXMg
-dGhlIHByb2JlIGluIFBBIHdvbid0IGJlIHRyaWdnZXJlZC4KPiA+IAo+ID4gSSBndWVzcyB0aGF0
-IG1lYW5zIHdlIGVpdGhlciBoYXZlIHRvIGhvdHBsdWcgZW50aXJlIChmYWtlKSBjYXJkcyBvciBm
-aXggdXAKPiA+IHVzZXJzcGFjZSB0byBzdXBwb3J0IG1zdCBhdWRpbyBwcm9wZXJseT8KPiAKPiBJ
-dCB3b3VsZCB3b3JrIGZvciBIU1cvQkRXLiAgQnV0IEJZVC9CU1cgYW5kIFNLTCBzaGFyZSB0aGUg
-c2FtZQo+IGNvbnRyb2xsZXIgZm9yIGJvdGggSERNSSBhbmQgYW5hbG9nIGNvZGVjcywgdGh1cyB0
-aGUgY2FyZCBjYW4ndCBiZQo+IGhhbmRsZWQgYXMgaG90cGx1Z2dlZC4KPiAKPiA+IFdlIGhhZCB0
-byBkbyBzb21lIG1pbmltYWwgY2hhbmdlcwo+ID4gdG8gdGhlIGRkeCBkcml2ZXJzIHRvbyB0byBt
-YWtlIHN1cmUgdGhleSdyZSByZXNjYW5uaW5nIHRoZSBjb25uZWN0b3IgbGlzdAo+ID4gcHJvcGVy
-bHkuIEltbyBzaW5jZSB0aGlzIGlzIGFsbCBuZXcgSSB0aGluayB3ZSBjb3VsZCByZXF1aXJlIFBB
-IHRvIHJlc2Nhbgo+ID4gdGhlIFBDTSBkZXYgbGlzdCBvbiBob3RwbHVnIGV2ZW50cyB0b28gdG8g
-c3VwcG9ydCBEUCBNU1QuIEFuZCB3ZSBraW5kYSBkbwo+ID4gbmVlZCBob3RwbHVnIGF0IHRoYXQg
-bGV2ZWwgc2luY2UgaWYgd2UnZCBob3RwbHVnIHRoZSBlbnRpcmUgY2FyZCB3ZSdkIGtpbGwKPiA+
-IGEgc3RyZWFtIHRoYXQncyBydW5uaW5nIG9uIHNvbWUgb3RoZXIgZGlzcGxheS4KPiA+IAo+ID4g
-QW5kIGFsd2F5cyByZWdpc3RlcmluZyBhbGwgb2YgdGhlbSBmZWVscyBsaWtlIGEgdmVyeSBiYWQg
-aGFjayB0b28uCj4gCj4gWWVhaCwgSSBwZXJzb25hbGx5IGFtIGZvciB0aGUgUENNIGhvdHBsdWcs
-IHRvby4gIEl0J3MgYSBjbGVhbmVyIHdheS4KPiAKPiAoVGhlIGN1cnJlbnQgc3RhdGljIGFzc2ln
-bm1lbnQgY29tZXMgZnJvbSB0aGUgY2hpcHMgd2hlcmUgdGhleSBoYWQgbm8KPiAgRUxEIGNvbW11
-bmljYXRpb24gLS0gdGhlIGhhcmR3YXJlIGJlZm9yZSB0aGUgcmVjZW50IG9uYm9hcmQgSW50ZWwg
-YW5kCj4gIEFNRCBnZnggYnV0IGNvbm5lY3RlZCBzb21laG93IGV4dGVybmFsbHkuICBGb3Igc3Vj
-aCBoYXJkd2FyZSwgd2UKPiAgc3RpbGwgbmVlZCB0aGUgc3RhdGljIGFzc2lnbm1lbnQuKQo+IAo+
-IE9UT0gsIHdlIGhhdmUgdG8ga2VlcCBzb21lIGNvbXBhdGliaWxpdHkuICBBbmQgbW92aW5nIHRv
-IHRoZSBob3RwbHVnCj4gd291bGQgYnJlYWsgY2VydGFpbmx5IHNvbWUgZXhpc3RpbmcgY29uZmln
-dXJhdGlvbiB0aGF0IGFzc3VtZXMgdGhlCj4gc3RhdGljIHBvcnQgLyBkZXZpY2UgYXNzaWdubWVu
-dC4KPiAKPiBTbywgYSBjb21wcm9taXNlIHdvdWxkIGJlOgo+IC0gY2hhbmdlIHRoZSBiZWhhdmlv
-ciB2aWEgZWl0aGVyIEtjb25maWcgb3IgbW9kdWxlIG9wdGlvbi4KPiAtIGNyZWF0ZSBtYW55IFBD
-TSBkZXZpY2VzIHN0YXRpY2FsbHkgYXMgbXVjaCBhcyBwb3NzaWJsZQo+IAo+IFRoZSBsYXR0ZXIg
-Y2FuIGJlIGEgcHJvYmxlbSBpbiB0aGUgY2FzZSBvZiBBTUQgb3IgTnZpZGlhIHdoZXJlIDggKG9y
-Cj4gbW9yZT8pIHBvcnRzIG1heSBleGlzdC4gIFRoZSBmb3JtZXIgaXMsIG9mIGNvdXJzZSwgbWVz
-c3kgYW5kIGNvbmZ1c2luZwo+IGZvciB1c2VycywgdG9vLgoKRndpdywgTWVuZ2RvbmcgaGFzIHNv
-bWUgcGF0Y2hlcyB0aGF0IGFyZSB3b3JrIGluIHByb2dyZXNzIGZvciB0aGUKZHluYW1pYyBQQ00g
-Y3JlYXRpb24vcmVtb3ZhbCBhcyBwYXJ0IG9mIHRoZSB0b3BvbG9neSB3b3JrLiBUaGUgdG9wb2xv
-Z3kKaGFzIHRvIHN1cHBvcnQgRFNQIEZXIHRoYXQgY2FuIGxvYWQvdW5sb2FkIGRpZmZlcmVudCBz
-ZXJ2aWNlcyB0aGF0IG1heQphbHNvIGluY2x1ZGUgYSBkeW5hbWljYWxseSByZWdpc3RlcmVkIFBD
-TS9jb21wcmVzc2VkIFBDTSBkZXZpY2UuCgpUYW51LCB3aGF0J3MgeW91ciB0YWtlIG9uIHRoZSBl
-ZmZvcnQgZm9yIGR5bmFtaWNhbGx5IGNyZWF0ZWQgUENNcwpzdXBwb3J0IGZvciBwdWxzZWF1ZGlv
-ID8gQnR3LCB0aGUgdG9wb2xvZ3kgY29yZSBub3cgYWxzbyBkeW5hbWljYWxseQpjcmVhdGVzL3Jl
-bW92ZXMgbWl4ZXIgY29udHJvbHMsIGNhbiBQQSBoYW5kbGUgdGhpcyBhdG0gPwoKVGhhbmtzCgpM
-aWFtCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgQ29ycG9yYXRpb24gKFVLKSBMaW1pdGVkClJlZ2lzdGVy
-ZWQgTm8uIDExMzQ5NDUgKEVuZ2xhbmQpClJlZ2lzdGVyZWQgT2ZmaWNlOiBQaXBlcnMgV2F5LCBT
-d2luZG9uIFNOMyAxUkoKVkFUIE5vOiA4NjAgMjE3MyA0NwoKVGhpcyBlLW1haWwgYW5kIGFueSBh
-dHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgbWF0ZXJpYWwgZm9yCnRoZSBzb2xl
-IHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBBbnkgcmV2aWV3IG9yIGRpc3RyaWJ1
-dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhl
-IGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBhbmQgZGVsZXRl
-IGFsbCBjb3BpZXMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9y
-ZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4
-Cg==
+
+--===============5807836603567971601==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c1TZOjW/0w0yugbT"
+Content-Disposition: inline
+
+
+--c1TZOjW/0w0yugbT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 22, 2015 at 01:24:02PM +0200, Takashi Iwai wrote:
+> At Mon, 22 Jun 2015 11:30:34 +0100,
+> Mark Brown wrote:
+> > On Mon, Jun 22, 2015 at 11:58:24AM +0200, Takashi Iwai wrote:
+
+> > > And, looking at the code, it seems calling runtime suspend in the
+> > > following way at probe:
+
+> > >         pm_runtime_enable(&pdev->dev);
+> > >         if (!pm_runtime_enabled(&pdev->dev)) {
+> > >                 ret = mtk_afe_runtime_resume(&pdev->dev);
+> > >                 if (ret)
+> > >                         goto err_pm_disable;
+> > >         }
+
+> > I'm confused, where's the call to runtime suspend?
+
+> It's in
+> static const struct dev_pm_ops mtk_afe_pm_ops = {
+> 	SET_RUNTIME_PM_OPS(mtk_afe_runtime_suspend, mtk_afe_runtime_resume,
+> 			   NULL)
+> };
+
+Sorry, I'm still confused about what you're seeing in the probe - I know
+where the callbacks for runtime PM are registered but I'm not seeing a
+call to suspend (or something that I'd expect to trigger one) in the
+above?
+
+> But my concern above isn't about the warning itself.  I just stumbled
+> on the code invoking runtime resume while looking at this warning, and
+> wondered the behavior with CONFIG_PM=n.
+
+> Usually this kind of warning could be simply fixed by adding a proper
+> ifdef.  But, this driver calls runtime resume in the probe manually.
+
+Sure, that's a fairly common pattern though?
+
+> > > I'm not sure whether this really behaves correctly, especially when a
+> > > kernel is built without CONFIG_PM.
+
+> > Could you be more specific about the problem you're seeing?  If runtime
+> > PM is disabled pm_runtime_enabled() will return false and we'll run
+> > through the resume path during probe() instead, otherwise we'll runtime
+> > resume whenever we need to use the hardware.
+
+> The runtime suspend is never called when CONFIG_PM=n.  OTOH, we call
+> runtime resume *always* at probe when CONFIG_PM=n.  This looks
+> inconsistent to me.
+
+Yeah, it should really resuspend the hardware in the remove path.
+
+> If it's a part of the mandatory initialization, it should be named
+> explicitly so, and make the runtime resume callback just calls it
+> instead.
+
+I disagree, I think either way is fine - if the clear intent and
+expectation is that the driver is used with runtime PM it seems fine to
+structure things to to say say "this is the special case path for !PM".
+I'd actually like to see this pattern better supported by the core so
+that drivers can enable runtime PM with calls that have !PM paths like
+in this driver, it'd make the whole !PM case a lot simpler.
+
+--c1TZOjW/0w0yugbT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJViBRJAAoJECTWi3JdVIfQKT8H/i+lwBb496vpRamfhch7mS27
+F9fZGpYfkILRiWxba+Ykh5GPkxRzfUU8wYtcKO4B6X4U5CODSk+sYDnKPgVtQnzz
+p17kmWSFWsrJnNjF8yibbkwhrfPvAMxzH9X6AmTV5hAanOIcVe+/gTK6+l0zzmxB
+pfosxQGtmvl7K8eKa1TDpfIcvkSMnYzslipeniP8Te80ZL4ckuMEBGzoBmw35Yw1
+TDDsxOim0pOoIs54dSqHbhXyQq/A8Jz+fIyGITsreWdJk47jOrZexzuKrVNiwmcJ
+7582/9QiITzpAglnJcSkLLW+J6lHE561tATfVhig6m9AyYCnwnfQckXor2jgXHA=
+=s1HD
+-----END PGP SIGNATURE-----
+
+--c1TZOjW/0w0yugbT--
+
+--===============5807836603567971601==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5807836603567971601==--
