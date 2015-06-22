@@ -1,22 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 3/4] ASoC: Intel - add makefile support
-	for SKL driver
-Date: Mon, 22 Jun 2015 11:03:37 +0530
-Message-ID: <20150622053337.GT28601@localhost>
-References: <1434546055-28866-1-git-send-email-vinod.koul@intel.com>
- <1434546055-28866-4-git-send-email-vinod.koul@intel.com>
- <20150619152748.GJ14071@sirena.org.uk>
- <20150619164824.GM28601@localhost>
- <20150620091535.GM14071@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Mon, 22 Jun 2015 08:43:03 +0200
+Message-ID: <5587AE77.1020709@metafoo.de>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>	<557E86DD.8020709@metafoo.de>	<CAN8cciYApKja0e0U7Uy2YG2ySemfhvKfLGUueGyFx5ajjyqKBA@mail.gmail.com>	<557EBEAA.70004@metafoo.de>	<CAN8cciZ4B2X+o4AXdCGEEAFCcX+iWqyf+FvMkEkrSu3Vt8Vx8Q@mail.gmail.com>	<557EDE22.7080808@metafoo.de>
+ <CAN8ccibPTkiayx_9ETOwjw1dSF+UPsxjgcqWJR+mm149c69WBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 75DF0261583
- for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 07:32:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150620091535.GM14071@sirena.org.uk>
+Received: from smtp-out-127.synserver.de (smtp-out-127.synserver.de
+ [212.40.185.127])
+ by alsa0.perex.cz (Postfix) with ESMTP id C36E3261583
+ for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2015 08:43:05 +0200 (CEST)
+In-Reply-To: <CAN8ccibPTkiayx_9ETOwjw1dSF+UPsxjgcqWJR+mm149c69WBg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 20, 2015 at 10:15:35AM +0100, Mark Brown wrote:
-> On Fri, Jun 19, 2015 at 10:18:24PM +0530, Vinod Koul wrote:
-> > On Fri, Jun 19, 2015 at 04:27:48PM +0100, Mark Brown wrote:
-> 
-> > > Should this be _SKYLAKE_HDA or something?  I may be confused on product
-> > > naming and terminology but I thought these processors had both HDA and
-> > > non-HDA support (possibly in the same silicon at times)?
-> 
-> > Unlike haswell or previous controllers, we dont have a separate HDA only
-> > controller and a separate I2S based controller, it is integrated now :)
-> 
-> > So there will be only one Skylake controller :)
-> 
-> But this is specifically the HDA bits - I'd expect that there will be
-> systems where people want Sky Lake support but don't need the HDA bits
-> (possibly some of these more memory constrained ones)?
-Nope, starting with SKL that is not possible. You get SKL HDA controller as
-interface to subsystem. The BE can be either HDA (legacy/or with aDSP) or
-I2S etc, but interface to subsystem is the HDA controller.
+On 06/22/2015 04:35 AM, Raymond Yau wrote:
+>
+>  >
+>  > DMA_RESIDUE_GRANULARITY_BURST means it can report the position with a
+> granularity of a few samples. Typically half the audio FIFO size.
+>  >
+>  >
+>
+> How many soc driver/platform dma engine support DMA_RESIDUE_GRANULARITY_BURST ?
 
-Thanks
--- 
-~Vinod
+Not sure, maybe half of them. But most of the time it is a software 
+restriction rather than a hardware restriction and more and more drivers are 
+supporting it.
+
+>
+> Are all soc audio driver use cyclic dma ?
+
+I'm not sure I understand the question. All audio drivers use some kind of 
+cyclic DMA. ASoC platforms which do not have a dedicated audio DMA typically 
+use dmaengine for this, while others which have dedicated audio DMA do the 
+DMA as part of the audio driver.
