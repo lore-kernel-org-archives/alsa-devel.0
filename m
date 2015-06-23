@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/6] ASoC: Intel: Add helper to poll register
-	for DSP status
-Date: Tue, 23 Jun 2015 16:16:51 +0530
-Message-ID: <1435056416-24653-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/6] ASoC: Intel: Reorganize the common dsp
+	structure
+Date: Tue, 23 Jun 2015 16:16:53 +0530
+Message-ID: <1435056416-24653-4-git-send-email-vinod.koul@intel.com>
 References: <1435056416-24653-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BB742654DF
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 12:45:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8886D2654E6
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 12:45:25 +0200 (CEST)
 In-Reply-To: <1435056416-24653-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,74 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Kp, Jeeja" <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-This patch adds helper to poll register for DSP status.
+We will add SKL platform data. So organizing common and platform
+specific data helps.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Kp, Jeeja <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/common/sst-dsp.c | 23 +++++++++++++++++++++++
- sound/soc/intel/common/sst-dsp.h |  2 ++
- 2 files changed, 25 insertions(+)
+ sound/soc/intel/common/sst-dsp-priv.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index 64e94212d2d2..3356792d6933 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -20,6 +20,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
-+#include <linux/delay.h>
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index 396d54510350..50af167b7bc7 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -258,6 +258,8 @@ struct sst_mem_block {
+  */
+ struct sst_dsp {
  
- #include "sst-dsp.h"
- #include "sst-dsp-priv.h"
-@@ -222,6 +223,28 @@ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
- }
- EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64);
++	/* Shared for all platforms */
++
+ 	/* runtime */
+ 	struct sst_dsp_device *sst_dev;
+ 	spinlock_t spinlock;	/* IPC locking */
+@@ -268,10 +270,6 @@ struct sst_dsp {
+ 	int irq;
+ 	u32 id;
  
-+int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
-+			 u32 expected_value, u32 timeout, char *operation)
-+{
-+	int time, ret;
-+	u32 reg;
-+
-+	/* check if set state successful */
-+	for (time = 0; time < timeout; time++) {
-+		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) == expected_value)
-+			break;
-+
-+		mdelay(1);
-+	}
-+	reg = sst_dsp_shim_read_unlocked(ctx, offset);
-+	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
-+			(time < timeout) ? "successful" : "timedout");
-+	ret = time < timeout ? 0 : -ETIME;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(sst_dsp_register_poll);
-+
- void sst_dsp_dump(struct sst_dsp *sst)
- {
- 	if (sst->ops->dump)
-diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index 96aeb2556ad4..cc3197be4cf7 100644
---- a/sound/soc/intel/common/sst-dsp.h
-+++ b/sound/soc/intel/common/sst-dsp.h
-@@ -278,6 +278,8 @@ void sst_dsp_inbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_outbox_write(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_outbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_mailbox_dump(struct sst_dsp *dsp, size_t bytes);
-+int sst_dsp_register_poll(struct sst_dsp  *dsp, u32 offset, u32 mask,
-+		 u32 expected_value, u32 timeout, char *operation);
+-	/* list of free and used ADSP memory blocks */
+-	struct list_head used_block_list;
+-	struct list_head free_block_list;
+-
+ 	/* operations */
+ 	struct sst_ops *ops;
  
- /* Debug */
- void sst_dsp_dump(struct sst_dsp *sst);
+@@ -284,6 +282,12 @@ struct sst_dsp {
+ 	/* mailbox */
+ 	struct sst_mailbox mailbox;
+ 
++	/* HSW/Byt data */
++
++	/* list of free and used ADSP memory blocks */
++	struct list_head used_block_list;
++	struct list_head free_block_list;
++
+ 	/* SST FW files loaded and their modules */
+ 	struct list_head module_list;
+ 	struct list_head fw_list;
 -- 
 1.9.1
