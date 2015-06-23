@@ -1,19 +1,15 @@
-From: Antonio Borneo <borneo.antonio@gmail.com>
-Subject: [PATCH 1/6] ASoC: wm0010: Remove redundant spi driver
-	bus initialization
-Date: Tue, 23 Jun 2015 22:52:12 +0800
-Message-ID: <1435071132-24409-1-git-send-email-borneo.antonio@gmail.com>
-References: <1435070714-24174-1-git-send-email-borneo.antonio@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 0/2] ASoC: Intel: skylake - match braces for
+	if-else
+Date: Tue, 23 Jun 2015 22:40:11 +0530
+Message-ID: <1435079413-28094-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 78BE926049D
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 16:52:37 +0200 (CEST)
-Received: by wgck11 with SMTP id k11so12005805wgc.0
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 07:52:37 -0700 (PDT)
-In-Reply-To: <1435070714-24174-1-git-send-email-borneo.antonio@gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3F7326049D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 19:08:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
-Cc: Antonio Borneo <borneo.antonio@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In ancient times it was necessary to manually initialize the bus
-field of an spi_driver to spi_bus_type. These days this is done in
-spi_register_driver(), so we can drop the manual assignment.
+Coding style mandates that if-else should match braces even if one of them
+is a single line statement. Fix it in two places missed earlier
 
-Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>
-To: Takashi Iwai <tiwai@suse.de>
-To: Liam Girdwood <lgirdwood@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org
-To: patches@opensource.wolfsonmicro.com
-Cc: linux-kernel@vger.kernel.org
----
- sound/soc/codecs/wm0010.c | 1 -
- 1 file changed, 1 deletion(-)
+Mark, you can also fold these two patches with SKL driver series (1st and
+2nd patch can fold in 1st and 2nd patch respectively) or apply independetly,
+either way okay
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index f37989e..61bfff4 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -1005,7 +1005,6 @@ static int wm0010_spi_remove(struct spi_device *spi)
- static struct spi_driver wm0010_spi_driver = {
- 	.driver = {
- 		.name	= "wm0010",
--		.bus 	= &spi_bus_type,
- 		.owner	= THIS_MODULE,
- 	},
- 	.probe		= wm0010_spi_probe,
+
+Vinod Koul (2):
+  ASoC: Intel: skl-pcm.c match braces for if-else
+  ASoC: Intel: skl.c match braces for if-else
+
+ sound/soc/intel/skylake/skl-pcm.c | 3 ++-
+ sound/soc/intel/skylake/skl.c     | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
 -- 
-2.4.4
+1.9.1
