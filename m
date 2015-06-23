@@ -1,20 +1,17 @@
-From: Yakir Yang <ykk@rock-chips.com>
-Subject: Re: [PATCH v5 4/6] drm: bridge/dw_hdmi-i2s-audio: add
-	audio driver
-Date: Tue, 23 Jun 2015 11:07:59 +0800
-Message-ID: <5588CD8F.2040600@rock-chips.com>
-References: <1434730417-10629-1-git-send-email-ykk@rock-chips.com>
- <1434731295-11060-1-git-send-email-ykk@rock-chips.com>
- <1434967564.31094.20.camel@x220>
- <20150622101038.GV7557@n2100.arm.linux.org.uk>
+From: =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: Internal speakers not working on HP ProBook 455 G2
+Date: Tue, 23 Jun 2015 15:37:05 +0900
+Message-ID: <5588FE91.5050106@daenzer.net>
+References: <54E5818F.9020105@daenzer.net> <s5h3862yvvp.wl-tiwai@suse.de>
+ <54EC399E.5050406@daenzer.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 82DD7265361
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 05:08:01 +0200 (CEST)
-In-Reply-To: <20150622101038.GV7557@n2100.arm.linux.org.uk>
+Received: from mail.gna.ch (darkcity.gna.ch [195.226.6.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C81A5260449
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 08:37:12 +0200 (CEST)
+In-Reply-To: <54EC399E.5050406@daenzer.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,20 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Paul Bolle <pebolle@tiscali.nl>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Daniel Kurtz <djkurtz@chromium.org>, Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UnVzc2VsbCwKCuWcqCAyMDE1LzYvMjIgMTg6MTAsIFJ1c3NlbGwgS2luZyAtIEFSTSBMaW51eCDl
-hpnpgZM6Cj4gT24gTW9uLCBKdW4gMjIsIDIwMTUgYXQgMTI6MDY6MDRQTSArMDIwMCwgUGF1bCBC
-b2xsZSB3cm90ZToKPj4gQnV0IEkgdGhpbmsgdGhlcmUncyBubyBwbGF0Zm9ybV9kZXZpY2Ugd2l0
-aCBhICJkdy1oZG1pLWkycy1hdWRpbyIgbmFtZS4KPj4gU28gSSB3b25kZXIgd2hldGhlciB0aGlz
-IE1PRFVMRV9BTElBUygpIGlzIGFjdHVhbGx5IG5lZWRlZC4gV2hhdCBicmVha3MKPj4gaWYgeW91
-IGxlYXZlIGl0IG91dD8KPiArICAgICAgIH0gZWxzZSBpZiAoaGRtaV9yZWFkYihoZG1pLCBIRE1J
-X0NPTkZJRzBfSUQpICYgSERNSV9DT05GSUcwX0kyUykgewo+ICsgICAgICAgICAgICAgICBwZGV2
-aW5mby5uYW1lID0gImR3LWhkbWktYWhiLWF1ZGlvIjsKPgo+IFRoaXMgc2hvdWxkIGJlICJkdy1o
-ZG1pLWkycy1hdWRpbyIgdG8gYXZvaWQgcGlja2luZyB1cCBvbiBteSBBSEIgYXVkaW8KPiBkcml2
-ZXIuClllcCwgdGhhbmtzIGEgbG90IDspCgotIFlha2lyCgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+T24gMjQuMDIuMjAxNSAxNzo0MywgTWljaGVsIETDpG56ZXIgd3JvdGU6Cj4gCj4gSW4gdGhlIG1l
+YW50aW1lLCBJJ3ZlIG5vdGljZWQgdGhhdCB0aG9zZSBzeW1wdG9tcyBhcmUgZHVlIHRvIHRoZQo+
+IGhlYWRwaG9uZSBqYWNrIGJlaW5nIGluY29ycmVjdGx5IGRldGVjdGVkIGFzIGNvbm5lY3RlZC4g
+QW5kIGluZGVlZCwgb24gYQo+IGRpZmZlcmVudCBsYXB0b3AgSSBnZXQgYWxsIHRoZSBzYW1lIHN5
+bXB0b21zIHdoaWxlIGhlYWRwaG9uZXMgYXJlCj4gcGx1Z2dlZCBpbi4KPiAKPiBTbywgaXQgb2Nj
+dXJyZWQgdG8gbWUgdG8gdHJ5ICd0aGUgb3RoZXIgT1MnIG9uIHRoaXMgbGFwdG9wLCBhbmQgdGhl
+Cj4gYmVoYXZpb3VyIHRoZXJlIGlzIHdlaXJkIGFzIHdlbGw6IE5vIHNvdW5kIGZyb20gdGhlIHNw
+ZWFrZXJzIGV2ZW4gd2hpbGUKPiBub3RoaW5nJ3MgcGx1Z2dlZCBpbnRvIHRoZSBoZWFkcGhvbmUg
+amFjay4gV2hlbiBJIHBsdWcgaW4gaGVhZHBob25lcywKPiB0aGVyZSdzIGEgbm90aWZpY2F0aW9u
+OiAiU29tZXRoaW5nIHdhcyBqdXN0IHVucGx1Z2dlZCBmcm9tIHlvdXIKPiBoZWFkcGhvbmUgamFj
+ayIgKCEpLCB0aGVuIHNvdW5kIHdvcmtzIGFzIGV4cGVjdGVkIHRocm91Z2ggdGhlCj4gaGVhZHBo
+b25lcy4gV2hlbiBJIHVucGx1ZyB0aGVtIGFnYWluLCB0aGVyZSdzIGEgbm90aWZpY2F0aW9uOiAi
+U29tZXRoaW5nCj4gd2FzIGp1c3QgcGx1Z2dlZCBpbnRvIHlvdXIgaGVhZHBob25lIGphY2siLgoK
+U2luY2UgdGhpcyB3YXMgaGFwcGVuaW5nIGluIHRoZSBwcmUtaW5zdGFsbGVkIFdpbmRvd3MgYXMg
+d2VsbCwgSSBmaW5hbGx5CmNvbnZpbmNlZCBteXNlbGYgdGhhdCB0aGlzIGNvdWxkbid0IGJlIChw
+dXJlbHkpIGEgc29mdHdhcmUgaXNzdWUgYW5kCmNvbnRhY3RlZCBIUCBzdXBwb3J0LiBUaGFua2Z1
+bGx5IEkgYm91Z2h0IGV4dGVuZGVkIHdhcnJhbnR5IGluY2x1ZGluZwpvbi1zaXRlIHN1cHBvcnQs
+IHNvIHRvZGF5IGEgdGVjaG5pY2lhbiBjYW1lLCBhbmQgYWZ0ZXIgaGUgZXhjaGFuZ2VkIHRoZQph
+dWRpbyBib2FyZCwgZXZlcnl0aGluZydzIHdvcmtpbmcgYXMgZXhwZWN0ZWQgb3V0IG9mIHRoZSBi
+b3ggaW4gYm90aApPU3MuIFRoYW5rcyB0byBldmVyeW9uZSB3aG8gbWFkZSB0aGF0IHBvc3NpYmxl
+IGluIExpbnV4LCBhbmQgZXNwZWNpYWxseQp0byB5b3UgVGFrYXNoaS1zYW4gZm9yIHRyeWluZyB0
+byBoZWxwIG1lIHdpdGggdGhpcyBwcm9ibGVtLCB3aGljaCB0dXJuZWQKb3V0IHRvIGJlIHVuc29s
+dmFibGUgaW4gc29mdHdhcmUuCgoKLS0gCkVhcnRobGluZyBNaWNoZWwgRMOkbnplciAgICAgICAg
+ICAgICAgIHwgICAgICAgICAgICAgICBodHRwOi8vd3d3LmFtZC5jb20KTGlicmUgc29mdHdhcmUg
+ZW50aHVzaWFzdCAgICAgICAgICAgICB8ICAgICAgICAgICAgIE1lc2EgYW5kIFggZGV2ZWxvcGVy
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
