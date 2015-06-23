@@ -1,21 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: writing an alsa driver
-Date: Tue, 23 Jun 2015 10:51:49 +0100
-Message-ID: <1435053109.7747.30.camel@loki>
-References: <20150528125325.GA418@asus> <1432819294.2726.33.camel@loki>
- <20150528191721.GA608@asus> <1432892521.2732.14.camel@loki>
- <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
- <20150608084951.GA7512@dellaz> <loom.20150613T153708-781@post.gmane.org>
- <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
- <20150623090932.GA6856@dellaz>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Fix pcm_class sysfs output
+Date: Tue, 23 Jun 2015 12:13:03 +0200
+Message-ID: <1435054383-17814-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A70952654CC
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 11:53:21 +0200 (CEST)
-In-Reply-To: <20150623090932.GA6856@dellaz>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A299B2654D7
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 12:13:04 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A5CE0AD8C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 10:13:04 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michele Curti <michele.curti@gmail.com>
-Cc: Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, "Koul, Vinod" <vinod.koul@intel.com>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-06-23 at 11:09 +0200, Michele Curti wrote:
-> On Mon, Jun 15, 2015 at 06:04:28PM +0100, Liam Girdwood wrote:
-> > Michele, can you change your machine driver to use the Vinods BYT DSP
-> > PCM driver (base it on bytcr_rt5640.c). Please test probing/booting with
-> > the current FW release from Vinod too. That way you should be ready to
-> > integrate the new FW when it is released. Please also CC Vinod on any
-> > issues you have getting the FW to boot using the new driver/FW.
-> >
-> 
-> Hi,
-> an update, thanks to Vinod now the driver compiles enabling only the (new)
-> CONFIG_SND_SOC_INTEL_BYTCR_RT5645_MACH option.
-> 
-> The sound card shows up:
-> [zio@asus ~]$ aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: baytrailcraudio [baytrailcraudio], device 0: Baytrail Audio (*) []
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> There are a lot of errors about missing backend dai:
-> [    7.195570]  Baytrail Audio Port: ASoC: no backend DAIs enabled for Baytrail Audio Port
+The pcm_class sysfs of each PCM substream gives only "none" since the
+recent code change to embed the struct device.  Fix the code to point
+directly to the embedded device object properly.
 
-This usually means that no DAPM route has been configured to route the
-audio from the PCM FE to the BE DAI link. Can you check your mixer
-settings with alsamixer and make sure a route exists. The DSP is in
-between the FE and BE so it's the DSP mixers that would need to be
-configured.
+Fixes: ef46c7af93f9 ('ALSA: pcm: Embed struct device')
+Cc: <stable@vger.kernel.org> # v4.0+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Btw, there is some debugFS files to help display the routing status for
-each widget so this can be used to check your DAPM DSP driver graph.
-
-Liam
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index e53794319ef3..02bd96954dc4 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -1027,7 +1027,8 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ static ssize_t show_pcm_class(struct device *dev,
+ 			      struct device_attribute *attr, char *buf)
+ {
+-	struct snd_pcm *pcm;
++	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
++	struct snd_pcm *pcm = pstr->pcm;
+ 	const char *str;
+ 	static const char *strs[SNDRV_PCM_CLASS_LAST + 1] = {
+ 		[SNDRV_PCM_CLASS_GENERIC] = "generic",
+@@ -1036,8 +1037,7 @@ static ssize_t show_pcm_class(struct device *dev,
+ 		[SNDRV_PCM_CLASS_DIGITIZER] = "digitizer",
+ 	};
+ 
+-	if (! (pcm = dev_get_drvdata(dev)) ||
+-	    pcm->dev_class > SNDRV_PCM_CLASS_LAST)
++	if (pcm->dev_class > SNDRV_PCM_CLASS_LAST)
+ 		str = "none";
+ 	else
+ 		str = strs[pcm->dev_class];
+-- 
+2.4.4
