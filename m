@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Add Skylake IPC library
-Date: Tue, 23 Jun 2015 16:16:55 +0530
-Message-ID: <1435056416-24653-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/6] ASoC: Intel: Add DSP init and boot up
+	functionality for SKL
+Date: Tue, 23 Jun 2015 16:16:56 +0530
+Message-ID: <1435056416-24653-7-git-send-email-vinod.koul@intel.com>
 References: <1435056416-24653-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 09DCA265745
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 12:45:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 89859265749
+ for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 12:45:34 +0200 (CEST)
 In-Reply-To: <1435056416-24653-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,938 +27,474 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-This adds base SKL IPC library which uses common SST IPC lib.
-Here we add definition for IPC types, sending and recieving IPC messages
-from aDSP, handling interrupt, sending different types of messages etc
+This patch adds code to enable, disable and boot DSP core.
+Also provide some helpers to reset and power up/down the core.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
  sound/soc/intel/common/sst-dsp-priv.h |   4 +
- sound/soc/intel/skylake/Makefile      |   5 +
- sound/soc/intel/skylake/skl-sst-ipc.c | 751 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst-ipc.h | 126 ++++++
- 4 files changed, 886 insertions(+)
- create mode 100644 sound/soc/intel/skylake/skl-sst-ipc.c
- create mode 100644 sound/soc/intel/skylake/skl-sst-ipc.h
+ sound/soc/intel/skylake/Makefile      |   2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c | 338 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-dsp.h |  61 ++++++
+ 4 files changed, 404 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-sst-dsp.c
 
 diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index 50af167b7bc7..cd6c7ecf6288 100644
+index cd6c7ecf6288..c1e5cbf7c580 100644
 --- a/sound/soc/intel/common/sst-dsp-priv.h
 +++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -303,6 +303,10 @@ struct sst_dsp {
- 	/* DMA FW loading */
- 	struct sst_dma *dma;
- 	bool fw_use_dma;
+@@ -22,6 +22,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/firmware.h>
+ 
++#include "../skylake/skl-sst-dsp.h"
 +
-+	/* SKL data */
-+
-+	u32 intr_status;
+ struct sst_mem_block;
+ struct sst_module;
+ struct sst_fw;
+@@ -306,6 +308,8 @@ struct sst_dsp {
+ 
+ 	/* SKL data */
+ 
++	struct skl_fw_ops fw_ops;
++	int sst_state;
+ 	u32 intr_status;
  };
  
- /* Size optimised DRAM/IRAM memcpy */
 diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 734d17cafde7..18fbe647abca 100644
+index 18fbe647abca..10c1319f7ed5 100644
 --- a/sound/soc/intel/skylake/Makefile
 +++ b/sound/soc/intel/skylake/Makefile
-@@ -1,3 +1,8 @@
- snd-soc-skl-objs := skl.o skl-pcm.o
- 
+@@ -3,6 +3,6 @@ snd-soc-skl-objs := skl.o skl-pcm.o
  obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
-+
-+# Skylake IPC Support
-+snd-soc-skl-ipc-objs := skl-sst-ipc.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+ 
+ # Skylake IPC Support
+-snd-soc-skl-ipc-objs := skl-sst-ipc.o
++snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
 new file mode 100644
-index 000000000000..ac40fad49caf
+index 000000000000..e75ba2a9c3df
 --- /dev/null
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -0,0 +1,751 @@
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -0,0 +1,338 @@
 +/*
-+ *  Intel skl IPC Support
++ *  skl-sst-dsp.c - SKL SST library generic function
 + *
-+ * Copyright (C) 2014-15, Intel Corporation. All rights reserved.
++ *  Copyright (C) 2014-15 Intel Corp
++ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *		Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
 + *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
 + *
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
-+#include <linux/device.h>
++
++#include <sound/pcm.h>
 +
 +#include "../common/sst-dsp.h"
++#include "../common/sst-ipc.h"
 +#include "../common/sst-dsp-priv.h"
-+#include "skl-sst-dsp.h"
 +#include "skl-sst-ipc.h"
 +
++/* various timeout values */
++#define SKL_DSP_PU_TO		50
++#define SKL_DSP_PD_TO		50
++#define SKL_DSP_RESET_TO	50
 +
-+#define IXC_STATUS_BITS			24
-+
-+/* Global Message - Generic */
-+#define IPC_GLB_TYPE_SHIFT		24
-+#define IPC_GLB_TYPE_MASK		(0xf << IPC_GLB_TYPE_SHIFT)
-+#define IPC_GLB_TYPE(x)			((x) << IPC_GLB_TYPE_SHIFT)
-+
-+/* Global Message - Reply */
-+#define IPC_GLB_REPLY_STATUS_SHIFT	24
-+#define IPC_GLB_REPLY_STATUS_MASK	((0x1 << IPC_GLB_REPLY_STATUS_SHIFT) - 1)
-+#define IPC_GLB_REPLY_STATUS(x)		((x) << IPC_GLB_REPLY_STATUS_SHIFT)
-+
-+#define IPC_TIMEOUT_MSECS		3000
-+
-+#define IPC_EMPTY_LIST_SIZE		8
-+
-+#define IPC_MSG_TARGET_SHIFT		30
-+#define IPC_MSG_TARGET_MASK		0x1
-+#define IPC_MSG_TARGET(x)		(((x) & IPC_MSG_TARGET_MASK) \
-+					<< IPC_MSG_TARGET_SHIFT)
-+
-+#define IPC_MSG_DIR_SHIFT		29
-+#define IPC_MSG_DIR_MASK		0x1
-+#define IPC_MSG_DIR(x)			(((x) & IPC_MSG_DIR_MASK) \
-+					<< IPC_MSG_DIR_SHIFT)
-+/* Global Notification Message */
-+#define IPC_GLB_NOTIFI_TYPE_SHIFT	16
-+#define IPC_GLB_NOTIFI_TYPE_MASK	0xFF
-+#define IPC_GLB_NOTIFI_TYPE(x)		(((x) >> IPC_GLB_NOTIFI_TYPE_SHIFT) \
-+					& IPC_GLB_NOTIFI_TYPE_MASK)
-+
-+#define IPC_GLB_NOTIFI_MSG_TYPE_SHIFT	24
-+#define IPC_GLB_NOTIFI_MSG_TYPE_MASK	0x1F
-+#define IPC_GLB_NOTIFI_MSG_TYPE(x)	(((x) >> IPC_GLB_NOTIFI_MSG_TYPE_SHIFT) & IPC_GLB_NOTIFI_MSG_TYPE_MASK)
-+
-+#define IPC_GLB_NOTIFI_RSP_SHIFT	29
-+#define IPC_GLB_NOTIFI_RSP_MASK		0x1
-+#define IPC_GLB_NOTIFI_RSP_TYPE(x)	(((x) >> IPC_GLB_NOTIFI_RSP_SHIFT) \
-+					& IPC_GLB_NOTIFI_RSP_MASK)
-+
-+/* Pipeline operations */
-+
-+/* Create pipeline message */
-+#define IPC_PPL_MEM_SIZE_SHIFT		0
-+#define IPC_PPL_MEM_SIZE_MASK		0x7FF
-+#define IPC_PPL_MEM_SIZE(x)		(((x) & IPC_PPL_MEM_SIZE_MASK) \
-+					<< IPC_PPL_MEM_SIZE_SHIFT)
-+
-+#define IPC_PPL_TYPE_SHIFT		11
-+#define IPC_PPL_TYPE_MASK		0x1F
-+#define IPC_PPL_TYPE(x)			(((x) & IPC_PPL_TYPE_MASK) \
-+					<< IPC_PPL_TYPE_SHIFT)
-+
-+#define IPC_INSTANCE_ID_SHIFT		16
-+#define IPC_INSTANCE_ID_MASK		0xFF
-+#define IPC_INSTANCE_ID(x)		(((x) & IPC_INSTANCE_ID_MASK) \
-+					<< IPC_INSTANCE_ID_SHIFT)
-+
-+/* Set pipeline state message */
-+#define IPC_PPL_STATE_SHIFT		0
-+#define IPC_PPL_STATE_MASK		0x1F
-+#define IPC_PPL_STATE(x)		(((x) & IPC_PPL_STATE_MASK) \
-+					<< IPC_PPL_STATE_SHIFT)
-+
-+/* Module operations primary register */
-+#define IPC_MODULE_ID_SHIFT		0
-+#define IPC_MODULE_ID_MASK		0xFFFF
-+#define IPC_MODULE_ID(x)		(((x) & IPC_MODULE_ID_MASK) \
-+					<< IPC_MODULE_ID_SHIFT)
-+
-+#define IPC_MODULE_INSTANCE_ID_SHIFT	16
-+#define IPC_MODULE_INSTANCE_ID_MASK	0xFF
-+#define IPC_MODULE_INSTANCE_ID(x)	(((x) & IPC_MODULE_INSTANCE_ID_MASK) \
-+					<< IPC_MODULE_INSTANCE_ID_SHIFT)
-+
-+/* Init instance message extension register */
-+#define IPC_PARAM_BLOCK_SIZE_SHIFT	0
-+#define IPC_PARAM_BLOCK_SIZE_MASK	0xFFFF
-+#define IPC_PARAM_BLOCK_SIZE(x)		(((x) & IPC_PARAM_BLOCK_SIZE_MASK) \
-+					<< IPC_PARAM_BLOCK_SIZE_SHIFT)
-+
-+#define IPC_PPL_INSTANCE_ID_SHIFT	16
-+#define IPC_PPL_INSTANCE_ID_MASK	0xFF
-+#define IPC_PPL_INSTANCE_ID(x)		(((x) & IPC_PPL_INSTANCE_ID_MASK) \
-+					<< IPC_PPL_INSTANCE_ID_SHIFT)
-+
-+#define IPC_CORE_ID_SHIFT		24
-+#define IPC_CORE_ID_MASK		0x1F
-+#define IPC_CORE_ID(x)			(((x) & IPC_CORE_ID_MASK) \
-+					<< IPC_CORE_ID_SHIFT)
-+
-+/* Bind/Unbind message extension register */
-+#define IPC_DST_MODULE_ID_SHIFT		0
-+#define IPC_DST_MODULE_ID(x)		(((x) & IPC_MODULE_ID_MASK) \
-+					<< IPC_DST_MODULE_ID_SHIFT)
-+
-+#define IPC_DST_MODULE_INSTANCE_ID_SHIFT 16
-+#define IPC_DST_MODULE_INSTANCE_ID(x)	(((x) & IPC_MODULE_INSTANCE_ID_MASK) \
-+					<< IPC_DST_MODULE_INSTANCE_ID_SHIFT)
-+
-+#define IPC_DST_QUEUE_SHIFT		24
-+#define IPC_DST_QUEUE_MASK		0x7
-+#define IPC_DST_QUEUE(x)		(((x) & IPC_DST_QUEUE_MASK) \
-+					<< IPC_DST_QUEUE_SHIFT)
-+
-+#define IPC_SRC_QUEUE_SHIFT		27
-+#define IPC_SRC_QUEUE_MASK		0x7
-+#define IPC_SRC_QUEUE(x)		(((x) & IPC_SRC_QUEUE_MASK) \
-+					<< IPC_SRC_QUEUE_SHIFT)
-+
-+/* Save pipeline messgae extension register */
-+#define IPC_DMA_ID_SHIFT		0
-+#define IPC_DMA_ID_MASK			0x1F
-+#define IPC_DMA_ID(x)			(((x) & IPC_DMA_ID_MASK) \
-+					<< IPC_DMA_ID_SHIFT)
-+/* Large Config message extension register */
-+#define IPC_DATA_OFFSET_SZ_SHIFT	0
-+#define IPC_DATA_OFFSET_SZ_MASK		0xFFFFF
-+#define IPC_DATA_OFFSET_SZ(x)		(((x) & IPC_DATA_OFFSET_SZ_MASK) \
-+					<< IPC_DATA_OFFSET_SZ_SHIFT)
-+#define IPC_DATA_OFFSET_SZ_CLEAR	~(IPC_DATA_OFFSET_SZ_MASK \
-+					  << IPC_DATA_OFFSET_SZ_SHIFT)
-+
-+#define IPC_LARGE_PARAM_ID_SHIFT	20
-+#define IPC_LARGE_PARAM_ID_MASK		0xFF
-+#define IPC_LARGE_PARAM_ID(x)		(((x) & IPC_LARGE_PARAM_ID_MASK) \
-+					<< IPC_LARGE_PARAM_ID_SHIFT)
-+
-+#define IPC_FINAL_BLOCK_SHIFT		28
-+#define IPC_FINAL_BLOCK_MASK		0x1
-+#define IPC_FINAL_BLOCK(x)		(((x) & IPC_FINAL_BLOCK_MASK) \
-+					<< IPC_FINAL_BLOCK_SHIFT)
-+
-+#define IPC_INITIAL_BLOCK_SHIFT		29
-+#define IPC_INITIAL_BLOCK_MASK		0x1
-+#define IPC_INITIAL_BLOCK(x)		(((x) & IPC_INITIAL_BLOCK_MASK) \
-+					<< IPC_INITIAL_BLOCK_SHIFT)
-+#define IPC_INITIAL_BLOCK_CLEAR		~(IPC_INITIAL_BLOCK_MASK \
-+					  << IPC_INITIAL_BLOCK_SHIFT)
-+
-+enum skl_ipc_msg_target {
-+	IPC_FW_GEN_MSG = 0,
-+	IPC_MODULE_MSG = 1
-+};
-+
-+enum skl_ipc_msg_direction {
-+	IPC_MSG_REQUEST = 0,
-+	IPC_MSG_REPLY = 1
-+};
-+
-+/* Global Message Types */
-+enum skl_ipc_glb_type {
-+	IPC_GLB_GET_FW_VERSION = 0, /* Retrieves firmware version */
-+	IPC_GLB_LOAD_MULTIPLE_MODULES = 15,
-+	IPC_GLB_UNLOAD_MULTIPLE_MODULES = 16,
-+	IPC_GLB_CREATE_PIPELINE = 17,
-+	IPC_GLB_DELETE_PIPELINE = 18,
-+	IPC_GLB_SET_PIPELINE_STATE = 19,
-+	IPC_GLB_GET_PIPELINE_STATE = 20,
-+	IPC_GLB_GET_PIPELINE_CONTEXT_SIZE = 21,
-+	IPC_GLB_SAVE_PIPELINE = 22,
-+	IPC_GLB_RESTORE_PIPELINE = 23,
-+	IPC_GLB_NOTIFICATION = 26,
-+	IPC_GLB_MAX_IPC_MESSAGE_NUMBER = 31 /* Maximum message number */
-+};
-+
-+enum skl_ipc_glb_reply {
-+	IPC_GLB_REPLY_SUCCESS = 0,
-+
-+	IPC_GLB_REPLY_UNKNOWN_MESSAGE_TYPE = 1,
-+	IPC_GLB_REPLY_ERROR_INVALID_PARAM = 2,
-+
-+	IPC_GLB_REPLY_BUSY = 3,
-+	IPC_GLB_REPLY_PENDING = 4,
-+	IPC_GLB_REPLY_FAILURE = 5,
-+	IPC_GLB_REPLY_INVALID_REQUEST = 6,
-+
-+	IPC_GLB_REPLY_OUT_OF_MEMORY = 7,
-+	IPC_GLB_REPLY_OUT_OF_MIPS = 8,
-+
-+	IPC_GLB_REPLY_INVALID_RESOURCE_ID = 9,
-+	IPC_GLB_REPLY_INVALID_RESOURCE_STATE = 10,
-+
-+	IPC_GLB_REPLY_MOD_MGMT_ERROR = 100,
-+	IPC_GLB_REPLY_MOD_LOAD_CL_FAILED = 101,
-+	IPC_GLB_REPLY_MOD_LOAD_INVALID_HASH = 102,
-+
-+	IPC_GLB_REPLY_MOD_UNLOAD_INST_EXIST = 103,
-+	IPC_GLB_REPLY_MOD_NOT_INITIALIZED = 104,
-+
-+	IPC_GLB_REPLY_INVALID_CONFIG_PARAM_ID = 120,
-+	IPC_GLB_REPLY_INVALID_CONFIG_DATA_LEN = 121,
-+	IPC_GLB_REPLY_GATEWAY_NOT_INITIALIZED = 140,
-+	IPC_GLB_REPLY_GATEWAY_NOT_EXIST = 141,
-+
-+	IPC_GLB_REPLY_PIPELINE_NOT_INITIALIZED = 160,
-+	IPC_GLB_REPLY_PIPELINE_NOT_EXIST = 161,
-+	IPC_GLB_REPLY_PIPELINE_SAVE_FAILED = 162,
-+	IPC_GLB_REPLY_PIPELINE_RESTORE_FAILED = 163,
-+
-+	IPC_MAX_STATUS = ((1<<IXC_STATUS_BITS)-1)
-+};
-+
-+enum skl_ipc_notification_type {
-+	IPC_GLB_NOTIFCATION_GLITCH = 0,
-+	IPC_GLB_NOTIFCATION_OVERRUN = 1,
-+	IPC_GLB_NOTIFCATION_UNDERRUN = 2,
-+	IPC_GLB_NOTIFCATION_END_STREAM = 3,
-+	IPC_GLB_NOTIFCATION_PHRASE_DETECTED = 4,
-+	IPC_GLB_NOTIFCATION_RESOURCE_EVENT = 5,
-+	IPC_GLB_NOTIFCATION_LOG_BUFFER_STATUS = 6,
-+	IPC_GLB_NOTIFCATION_TIMESTAMP_CAPTURED = 7,
-+	IPC_GLB_NOTIFCATION_FW_READY = 8
-+};
-+
-+/* Module Message Types */
-+enum skl_ipc_module_msg {
-+	IPC_MODULE_INIT_INSTANCE = 0,
-+	IPC_MODULE_CONFIG_GET = 1,
-+	IPC_MODULE_CONFIG_SET = 2,
-+	IPC_MODULE_LARGE_CONFIG_GET = 3,
-+	IPC_MODULE_LARGE_CONFIG_SET = 4,
-+	IPC_MODULE_BIND = 5,
-+	IPC_MODULE_UNBIND = 6,
-+	IPC_MODULE_SET_DX = 7
-+};
-+
-+static void skl_tx_data_copy(struct ipc_message *msg, char *tx_data,
-+		size_t tx_size)
++void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state)
 +{
-+	if (tx_size)
-+		memcpy(msg->tx_data, tx_data, tx_size);
++	mutex_lock(&ctx->mutex);
++	ctx->sst_state = state;
++	mutex_unlock(&ctx->mutex);
 +}
 +
-+static bool skl_is_dsp_busy(struct sst_dsp *dsp)
++static int skl_dsp_core_set_reset_state(struct sst_dsp  *ctx)
 +{
-+	u32 hipci;
-+
-+	hipci = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCI);
-+	return (hipci & SKL_ADSP_REG_HIPCI_BUSY);
-+}
-+
-+/* Lock to be held by caller */
-+static void skl_tx_msg(struct sst_generic_ipc *ipc, struct ipc_message *msg)
-+{
-+	struct skl_ipc_header *header = (struct skl_ipc_header *)(&msg->header);
-+
-+	if (msg->tx_size)
-+		sst_dsp_outbox_write(ipc->dsp, msg->tx_data, msg->tx_size);
-+	sst_dsp_shim_write_unlocked(ipc->dsp, SKL_ADSP_REG_HIPCIE, header->extension);
-+	sst_dsp_shim_write_unlocked(ipc->dsp, SKL_ADSP_REG_HIPCI,
-+		header->primary | SKL_ADSP_REG_HIPCI_BUSY);
-+}
-+
-+static struct ipc_message *skl_ipc_reply_find_msg(struct sst_generic_ipc *ipc,
-+		u64 ipc_header)
-+{
-+	struct ipc_message *msg = NULL;
-+	struct skl_ipc_header *header = (struct skl_ipc_header *)(&ipc_header);
-+
-+	if (list_empty(&ipc->rx_list)) {
-+		dev_err(ipc->dev, "ipc: rx list is empty but received 0x%x\n",
-+			header->primary);
-+		goto out;
-+	}
-+
-+	msg = list_first_entry(&ipc->rx_list, struct ipc_message, list);
-+
-+out:
-+	return msg;
-+}
-+
-+static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
-+		struct skl_ipc_header header)
-+{
-+	struct sst_skl *skl = container_of(ipc, struct sst_skl, ipc);
-+
-+	if (IPC_GLB_NOTIFI_MSG_TYPE(header.primary)) {
-+		switch (IPC_GLB_NOTIFI_TYPE(header.primary)) {
-+
-+		case IPC_GLB_NOTIFCATION_UNDERRUN:
-+			dev_err(ipc->dev, "FW Underrun %x\n", header.primary);
-+			break;
-+
-+		case IPC_GLB_NOTIFCATION_RESOURCE_EVENT:
-+			dev_err(ipc->dev, "MCPS Budget Violation: %x\n", header.primary);
-+			break;
-+
-+		case IPC_GLB_NOTIFCATION_FW_READY:
-+			skl->boot_complete = true;
-+			wake_up(&skl->boot_wait);
-+			break;
-+
-+		default:
-+			dev_err(ipc->dev, "ipc: error received unexpected msg=%x",
-+					header.primary);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
-+		struct skl_ipc_header header)
-+{
-+	struct ipc_message *msg;
-+	u32 reply = header.primary & IPC_GLB_REPLY_STATUS_MASK;
-+	u64 *ipc_header = (u64 *)(&header);
-+
-+	msg = skl_ipc_reply_find_msg(ipc, *ipc_header);
-+	if (msg == NULL) {
-+		dev_dbg(ipc->dev, "ipc: rx list is empty\n");
-+		return;
-+	}
-+
-+	/* first process the header */
-+	switch (reply) {
-+	case IPC_GLB_REPLY_SUCCESS:
-+		dev_info(ipc->dev, "ipc FW reply %x: success\n", header.primary);
-+		break;
-+
-+	case IPC_GLB_REPLY_OUT_OF_MEMORY:
-+		dev_err(ipc->dev, "ipc fw reply: %x: no memory\n", header.primary);
-+		msg->errno = -ENOMEM;
-+		break;
-+
-+	case IPC_GLB_REPLY_BUSY:
-+		dev_err(ipc->dev, "ipc fw reply: %x: Busy\n", header.primary);
-+		msg->errno = -EBUSY;
-+		break;
-+
-+	default:
-+		dev_err(ipc->dev, "Unknown ipc reply: 0x%x", reply);
-+		msg->errno = -EINVAL;
-+		break;
-+	}
-+
-+	list_del(&msg->list);
-+	sst_ipc_tx_msg_reply_complete(ipc, msg);
-+}
-+
-+irqreturn_t skl_irq_thread_handler(int irq, void *context)
-+{
-+	struct sst_dsp *dsp = (struct sst_dsp *)context;
-+	struct sst_skl *skl = sst_dsp_get_thread_context(dsp);
-+	struct sst_generic_ipc *ipc = &skl->ipc;
-+	struct skl_ipc_header header = {0};
-+	u32 hipcie, hipct, hipcte;
-+	int ipc_irq = 0;
-+
-+	/* Here we handle IPC interrupts only */
-+	if (!(dsp->intr_status & SKL_ADSPIS_IPC))
-+		return IRQ_HANDLED;
-+
-+	hipcie = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCIE);
-+	hipct = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCT);
-+
-+	/* reply message from DSP */
-+	if (hipcie & SKL_ADSP_REG_HIPCIE_DONE) {
-+		sst_dsp_shim_update_bits(dsp, SKL_ADSP_REG_HIPCCTL,
-+			SKL_ADSP_REG_HIPCCTL_DONE, 0);
-+
-+		/* clear DONE bit - tell DSP we have completed the operation */
-+		sst_dsp_shim_update_bits_forced(dsp, SKL_ADSP_REG_HIPCIE,
-+			SKL_ADSP_REG_HIPCIE_DONE, SKL_ADSP_REG_HIPCIE_DONE);
-+
-+		ipc_irq = 1;
-+
-+		/* unmask Done interrupt */
-+		sst_dsp_shim_update_bits(dsp, SKL_ADSP_REG_HIPCCTL,
-+			SKL_ADSP_REG_HIPCCTL_DONE, SKL_ADSP_REG_HIPCCTL_DONE);
-+	}
-+
-+	/* New message from DSP */
-+	if (hipct & SKL_ADSP_REG_HIPCT_BUSY) {
-+		hipcte = sst_dsp_shim_read_unlocked(dsp, SKL_ADSP_REG_HIPCTE);
-+		header.primary = hipct;
-+		header.extension = hipcte;
-+		dev_dbg(dsp->dev, "IPC irq: Firmware respond primary:%x", header.primary);
-+		dev_dbg(dsp->dev, "IPC irq: Firmware respond extension:%x", header.extension);
-+
-+		if (IPC_GLB_NOTIFI_RSP_TYPE(header.primary)) {
-+			/* Handle Immediate reply from DSP Core */
-+			skl_ipc_process_reply(ipc, header);
-+		} else {
-+			trace_printk("IPC irq: Notification from firmware\n");
-+			skl_ipc_process_notification(ipc, header);
-+		}
-+		/* clear  busy interrupt */
-+		sst_dsp_shim_update_bits_forced(dsp, SKL_ADSP_REG_HIPCT,
-+			SKL_ADSP_REG_HIPCT_BUSY, SKL_ADSP_REG_HIPCT_BUSY);
-+		ipc_irq = 1;
-+	}
-+
-+	if (ipc_irq == 0)
-+		return IRQ_HANDLED;
-+
-+	skl_ipc_int_enable(dsp);
-+
-+	/* continue to send any remaining messages... */
-+	queue_kthread_work(&ipc->kworker, &ipc->kwork);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+void skl_ipc_int_enable(struct sst_dsp *ctx)
-+{
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_ADSPIC,
-+			SKL_ADSPIC_IPC, SKL_ADSPIC_IPC);
-+}
-+
-+void skl_ipc_int_disable(struct sst_dsp *ctx)
-+{
-+	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPIC,
-+			SKL_ADSPIC_IPC, 0);
-+}
-+
-+void skl_ipc_op_int_enable(struct sst_dsp *ctx)
-+{
-+	/* enable IPC DONE interrupt */
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_HIPCCTL,
-+		SKL_ADSP_REG_HIPCCTL_DONE, SKL_ADSP_REG_HIPCCTL_DONE);
-+
-+	/* Enable IPC BUSY interrupt */
-+	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_HIPCCTL,
-+		SKL_ADSP_REG_HIPCCTL_BUSY, SKL_ADSP_REG_HIPCCTL_BUSY);
-+}
-+
-+bool skl_ipc_int_status(struct sst_dsp *ctx)
-+{
-+	return sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPIS) & SKL_ADSPIS_IPC;
-+}
-+
-+int skl_ipc_init(struct device *dev, struct sst_skl *skl)
-+{
-+	struct sst_generic_ipc *ipc;
-+	int err;
-+
-+	ipc = &skl->ipc;
-+	ipc->dsp = skl->dsp;
-+	ipc->dev = dev;
-+
-+	ipc->tx_data_max_size = SKL_ADSP_W1_SZ;
-+	ipc->rx_data_max_size = SKL_ADSP_W0_UP_SZ;
-+
-+	err = sst_ipc_init(ipc);
-+	if (err)
-+		return err;
-+
-+	ipc->ops.tx_msg = skl_tx_msg;
-+	ipc->ops.tx_data_copy = skl_tx_data_copy;
-+	ipc->ops.is_dsp_busy = skl_is_dsp_busy;
-+
-+	return 0;
-+}
-+
-+void skl_ipc_free(struct sst_generic_ipc *ipc)
-+{
-+	/* Disable IPC DONE interrupt */
-+	sst_dsp_shim_update_bits(ipc->dsp, SKL_ADSP_REG_HIPCCTL,
-+		SKL_ADSP_REG_HIPCCTL_DONE, 0);
-+
-+	/* Disable IPC BUSY interrupt */
-+	sst_dsp_shim_update_bits(ipc->dsp, SKL_ADSP_REG_HIPCCTL,
-+		SKL_ADSP_REG_HIPCCTL_BUSY, 0);
-+}
-+
-+int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
-+		u16 ppl_mem_size, u8 ppl_type, u8 instance_id)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
 +	int ret;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_CREATE_PIPELINE);
-+	header.primary |= IPC_INSTANCE_ID(instance_id);
-+	header.primary |= IPC_PPL_TYPE(ppl_type);
-+	header.primary |= IPC_PPL_MEM_SIZE(ppl_mem_size);
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx,  SKL_ADSP_REG_ADSPCS,
++			ADSPCS_CRST_MASK, ADSPCS_CRST(SKL_DSP_CORES_MASK));
 +
-+	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: create pipeline failed, err: %d\n", ret);
-+		return ret;
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			ADSPCS_CRST_MASK,
++			ADSPCS_CRST(SKL_DSP_CORES_MASK),
++			SKL_DSP_RESET_TO,
++			"Set reset");
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				ADSPCS_CRST(SKL_DSP_CORES_MASK)) !=
++				ADSPCS_CRST(SKL_DSP_CORES_MASK)) {
++		dev_err(ctx->dev, "Set reset state failed\n");
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_create_pipeline);
 +
-+int skl_ipc_delete_pipeline(struct sst_generic_ipc *ipc, u8 instance_id)
++static int skl_dsp_core_unset_reset_state(struct sst_dsp  *ctx)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
 +	int ret;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_DELETE_PIPELINE);
-+	header.primary |= IPC_INSTANCE_ID(instance_id);
++	dev_dbg(ctx->dev, "In %s\n", __func__);
 +
-+	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: delete pipeline failed, err %d\n", ret);
-+		return ret;
-+	}
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++					ADSPCS_CRST_MASK, 0);
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_delete_pipeline);
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			ADSPCS_CRST_MASK,
++			0,
++			SKL_DSP_RESET_TO,
++			"Unset reset");
 +
-+int skl_ipc_set_pipeline_state(struct sst_generic_ipc *ipc, u8 instance_id,
-+	enum skl_pipeline_state state)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_SET_PIPELINE_STATE);
-+	header.primary |= IPC_INSTANCE_ID(instance_id);
-+	header.primary |= IPC_PPL_STATE(state);
-+
-+	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: set pipeline state failed, err: %d\n", ret);
-+		return ret;
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_set_pipeline_state);
-+
-+int skl_ipc_save_pipeline(struct sst_generic_ipc *ipc, u8 instance_id, int dma_id)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_SAVE_PIPELINE);
-+	header.primary |= IPC_INSTANCE_ID(instance_id);
-+
-+	header.extension = IPC_DMA_ID(dma_id);
-+	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: save pipeline failed, err: %d\n", ret);
-+		return ret;
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				 ADSPCS_CRST(SKL_DSP_CORES_MASK)) != 0) {
++		dev_err(ctx->dev, "Unset reset state failed\n");
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_save_pipeline);
 +
-+int skl_ipc_restore_pipeline(struct sst_generic_ipc *ipc, u8 instance_id)
++static bool skl_is_dsp_core_enable(struct sst_dsp  *ctx)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
++	int val;
++	bool is_enable;
++
++	val = sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS);
++
++	is_enable = ((val & ADSPCS_CPA(SKL_DSP_CORES_MASK)) &&
++			(val & ADSPCS_SPA(SKL_DSP_CORES_MASK)) &&
++			!(val & ADSPCS_CRST(SKL_DSP_CORES_MASK)) &&
++			!(val & ADSPCS_CSTALL(SKL_DSP_CORES_MASK)));
++
++	dev_dbg(ctx->dev, "DSP core is enabled=%d\n", is_enable);
++	return is_enable;
++}
++
++static int skl_reset_dsp_core(struct sst_dsp *ctx)
++{
++	/* stall core */
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
++
++	/* set reset state */
++	return skl_dsp_core_set_reset_state(ctx);
++}
++
++static int skl_start_dsp_core(struct sst_dsp *ctx)
++{
 +	int ret;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_FW_GEN_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_GLB_RESTORE_PIPELINE);
-+	header.primary |= IPC_INSTANCE_ID(instance_id);
-+
-+	dev_dbg(ipc->dev, "In %s header=%d\n", __func__, header.primary);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
++	/* unset reset state */
++	ret = skl_dsp_core_unset_reset_state(ctx);
 +	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: restore  pipeline failed, err: %d\n", ret);
++		dev_dbg(ctx->dev, "dsp unset reset fails\n");
 +		return ret;
++	}
++
++	/* run core */
++	dev_dbg(ctx->dev, "run core...\n");
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				~ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
++
++	if (!skl_is_dsp_core_enable(ctx)) {
++		skl_reset_dsp_core(ctx);
++		dev_err(ctx->dev, "DSP core enable failed\n");
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_restore_pipeline);
 +
-+int skl_ipc_set_dx(struct sst_generic_ipc *ipc, u8 instance_id,
-+		u16 module_id, struct skl_dxstate_info *dx)
++static int skl_dsp_core_power_up(struct sst_dsp  *ctx)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
 +	int ret;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_MODULE_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_MODULE_SET_DX);
-+	header.primary |= IPC_MODULE_INSTANCE_ID(instance_id);
-+	header.primary |= IPC_MODULE_ID(module_id);
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			ADSPCS_SPA_MASK, ADSPCS_SPA(SKL_DSP_CORES_MASK));
 +
-+	dev_dbg(ipc->dev, "In %s primary =%x ext=%x\n", __func__,
-+			 header.primary, header.extension);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header,
-+			(void *)dx, sizeof(dx), NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: set dx failed, err %d\n", ret);
-+		return ret;
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			ADSPCS_CPA_MASK,
++			ADSPCS_CPA(SKL_DSP_CORES_MASK),
++			SKL_DSP_PU_TO,
++			"Power up");
++
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++			ADSPCS_CPA(SKL_DSP_CORES_MASK)) !=
++			ADSPCS_CPA(SKL_DSP_CORES_MASK)) {
++		dev_err(ctx->dev, "DSP core power up failed\n");
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_set_dx);
 +
-+int skl_ipc_init_instance(struct sst_generic_ipc *ipc,
-+		struct skl_init_instance_msg *msg, void *param_data)
++static int skl_dsp_core_power_down(struct sst_dsp  *ctx)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++					ADSPCS_SPA_MASK, 0);
++
++	/* poll with timeout to check if operation successful */
++	return sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			ADSPCS_SPA_MASK,
++			0,
++			SKL_DSP_PD_TO,
++			"Power down");
++}
++
++static int skl_enable_dsp_core(struct sst_dsp  *ctx)
++{
 +	int ret;
-+	u32 *buffer = (u32 *)param_data;
-+	 /* param_block_size must be in dwords */
-+	u16 param_block_size = msg->param_data_size / sizeof(u32);
 +
-+	print_hex_dump(KERN_DEBUG, NULL, DUMP_PREFIX_NONE,
-+		16, 4, buffer, param_block_size, false);
-+
-+	header.primary = IPC_MSG_TARGET(IPC_MODULE_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_MODULE_INIT_INSTANCE);
-+	header.primary |= IPC_MODULE_INSTANCE_ID(msg->instance_id);
-+	header.primary |= IPC_MODULE_ID(msg->module_id);
-+
-+	header.extension = IPC_CORE_ID(msg->core_id);
-+	header.extension |= IPC_PPL_INSTANCE_ID(msg->ppl_instance_id);
-+	header.extension |= IPC_PARAM_BLOCK_SIZE(param_block_size);
-+
-+	dev_dbg(ipc->dev, "In %s primary =%x ext=%x\n", __func__,
-+			 header.primary, header.extension);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, param_data,
-+			msg->param_data_size, NULL, 0);
-+
++	/* power up */
++	ret = skl_dsp_core_power_up(ctx);
 +	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: init instance failed\n");
++		dev_dbg(ctx->dev, "dsp core power up failed\n");
 +		return ret;
++	}
++
++	return skl_start_dsp_core(ctx);
++}
++
++int skl_disable_dsp_core(struct sst_dsp  *ctx)
++{
++	int ret;
++
++	ret = skl_reset_dsp_core(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "dsp core reset failed\n");
++		return ret;
++	}
++
++	/* power down core*/
++	ret = skl_dsp_core_power_down(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "dsp core power down failed\n");
++		return ret;
++	}
++
++	if (skl_is_dsp_core_enable(ctx)) {
++		dev_err(ctx->dev, "DSP core disable failed\n");
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_init_instance);
 +
-+int skl_ipc_bind_unbind(struct sst_generic_ipc *ipc,
-+		struct skl_bind_unbind_msg *msg)
++int skl_boot_dsp(struct sst_dsp *ctx)
 +{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	u8 bind_unbind = msg->bind ? IPC_MODULE_BIND : IPC_MODULE_UNBIND;
 +	int ret;
 +
-+	header.primary = IPC_MSG_TARGET(IPC_MODULE_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(bind_unbind);
-+	header.primary |= IPC_MODULE_INSTANCE_ID(msg->instance_id);
-+	header.primary |= IPC_MODULE_ID(msg->module_id);
-+
-+	header.extension = IPC_DST_MODULE_ID(msg->dst_module_id);
-+	header.extension |= IPC_DST_MODULE_INSTANCE_ID(msg->dst_instance_id);
-+	header.extension |= IPC_DST_QUEUE(msg->dst_queue);
-+	header.extension |= IPC_SRC_QUEUE(msg->src_queue);
-+
-+	dev_dbg(ipc->dev, "In %s hdr=%x ext=%x\n", __func__, header.primary,
-+			 header.extension);
-+	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (ret < 0) {
-+		dev_err(ipc->dev, "ipc: bind/unbind faileden");
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(skl_ipc_bind_unbind);
-+
-+int skl_ipc_set_large_config(struct sst_generic_ipc *ipc, struct skl_large_config_msg *msg,
-+		u32 *param)
-+{
-+	struct skl_ipc_header header = {0};
-+	u64 *ipc_header = (u64 *)(&header);
-+	int ret = 0;
-+	size_t sz_remaining, tx_size, data_offset;
-+
-+	header.primary = IPC_MSG_TARGET(IPC_MODULE_MSG);
-+	header.primary |= IPC_MSG_DIR(IPC_MSG_REQUEST);
-+	header.primary |= IPC_GLB_TYPE(IPC_MODULE_LARGE_CONFIG_SET);
-+	header.primary |= IPC_MODULE_INSTANCE_ID(msg->instance_id);
-+	header.primary |= IPC_MODULE_ID(msg->module_id);
-+
-+	header.extension = IPC_DATA_OFFSET_SZ(msg->param_data_size);
-+	header.extension |= IPC_LARGE_PARAM_ID(msg->large_param_id);
-+	header.extension |= IPC_FINAL_BLOCK(0);
-+	header.extension |= IPC_INITIAL_BLOCK(1);
-+
-+	sz_remaining = msg->param_data_size;
-+	data_offset = 0;
-+	while (sz_remaining != 0) {
-+		tx_size = sz_remaining > SKL_ADSP_W1_SZ
-+				? SKL_ADSP_W1_SZ : sz_remaining;
-+		if (tx_size == sz_remaining)
-+			header.extension |= IPC_FINAL_BLOCK(1);
-+
-+		dev_dbg(ipc->dev, "In %s primary=%#x ext=%#x\n", __func__,
-+			header.primary, header.extension);
-+		dev_dbg(ipc->dev, "transmitting offset: %#x, size: %#x\n",
-+			(unsigned)data_offset, (unsigned)tx_size);
-+		ret = sst_ipc_tx_message_wait(ipc, *ipc_header,
-+					  ((char *)param) + data_offset,
-+					  tx_size, NULL, 0);
++	if (skl_is_dsp_core_enable(ctx)) {
++		dev_dbg(ctx->dev, "dsp core is already enabled, so reset the dap core\n");
++		ret = skl_reset_dsp_core(ctx);
 +		if (ret < 0) {
-+			dev_err(ipc->dev, "ipc: set large config failed, err: %d\n", ret);
++			dev_err(ctx->dev, "dsp reset failed\n");
 +			return ret;
 +		}
-+		sz_remaining -= tx_size;
-+		data_offset = msg->param_data_size - sz_remaining;
 +
-+		/* clear the fields */
-+		header.extension &= IPC_INITIAL_BLOCK_CLEAR;
-+		header.extension &= IPC_DATA_OFFSET_SZ_CLEAR;
-+		/* fill the fields */
-+		header.extension |= IPC_INITIAL_BLOCK(0);
-+		header.extension |= IPC_DATA_OFFSET_SZ(data_offset);
++		ret = skl_start_dsp_core(ctx);
++		if (ret < 0) {
++			dev_err(ctx->dev, "dsp start failed\n");
++			return ret;
++		}
++	} else {
++		dev_dbg(ctx->dev, "disable and enable to make sure DSP is invalid state\n");
++		ret = skl_disable_dsp_core(ctx);
++
++		if (ret < 0) {
++			dev_err(ctx->dev, "dsp disable core failes\n");
++			return ret;
++		}
++		ret = skl_enable_dsp_core(ctx);
 +	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(skl_ipc_set_large_config);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-new file mode 100644
-index 000000000000..03508c00cede
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -0,0 +1,126 @@
-+/*
-+ *  Intel SKL IPC Support
-+ *
-+ * Copyright (C) 2014-15, Intel Corporation. All rights reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
 +
-+#ifndef __SKL_IPC_H
-+#define __SKL_IPC_H
++irqreturn_t skl_sst_interrupt(int irq, void *dev_id)
++{
++	struct sst_dsp *ctx = (struct sst_dsp *) dev_id;
++	u32 val;
++	irqreturn_t result = IRQ_NONE;
 +
-+#include <linux/kthread.h>
-+#include <linux/irqreturn.h>
-+#include "../common/sst-ipc.h"
++	spin_lock(&ctx->spinlock);
 +
-+struct sst_dsp;
++	val = sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPIS);
++	ctx->intr_status = val;
++
++	if (val & SKL_ADSPIS_IPC) {
++		skl_ipc_int_disable(ctx);
++		result = IRQ_WAKE_THREAD;
++	}
++
++	spin_unlock(&ctx->spinlock);
++
++	return result;
++}
++
++int skl_dsp_wake(struct sst_dsp *ctx)
++{
++	return ctx->fw_ops.set_state_D0(ctx);
++}
++
++void skl_dsp_sleep(struct sst_dsp *ctx)
++{
++	ctx->fw_ops.set_state_D3(ctx);
++}
++
++struct sst_dsp *skl_dsp_init(struct device *dev,
++		struct sst_dsp_device *sst_dev, int irq)
++{
++	int ret;
++	struct sst_dsp *sst;
++
++	sst = devm_kzalloc(dev, sizeof(*sst), GFP_KERNEL);
++	if (sst == NULL)
++		return NULL;
++
++	spin_lock_init(&sst->spinlock);
++	mutex_init(&sst->mutex);
++	sst->dev = dev;
++	sst->sst_dev = sst_dev;
++	sst->irq = irq;
++	sst->ops = sst_dev->ops;
++	sst->thread_context = sst_dev->thread_context;
++
++	/* Initialise SST Audio DSP */
++	if (sst->ops->init) {
++		ret = sst->ops->init(sst, NULL);
++		if (ret < 0)
++			return NULL;
++	}
++
++	/* Register the ISR */
++	ret = request_threaded_irq(sst->irq, sst->ops->irq_handler,
++		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
++	if (ret) {
++		dev_err(sst->dev, "unable to grab threaded IRQ %d, disabling device\n",
++			       sst->irq);
++		return NULL;
++	}
++
++	return sst;
++}
++
++void skl_dsp_free(struct sst_dsp *dsp)
++{
++	skl_ipc_int_disable(dsp);
++
++	free_irq(dsp->irq, dsp);
++	skl_disable_dsp_core(dsp);
++}
++EXPORT_SYMBOL_GPL(skl_dsp_free);
++
++bool skl_dsp_is_running(struct sst_dsp *ctx)
++{
++	return (ctx->sst_state == SST_DSP_RUNNING);
++}
++EXPORT_SYMBOL_GPL(skl_dsp_is_running);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 1eceddef4a98..e96968b1b8ba 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -17,6 +17,10 @@
+ #ifndef __SKL_SST_DSP_H__
+ #define __SKL_SST_DSP_H__
+ 
 +struct sst_skl;
-+struct sst_generic_ipc;
++struct sst_dsp_device;
++struct skl_dsp_loader_ops;
 +
-+enum skl_pipeline_state {
-+	PPL_INVALID_STATE =	0,
-+	PPL_UNINITIALIZED =	1,
-+	PPL_RESET =		2,
-+	PPL_PAUSED =		3,
-+	PPL_RUNNING =		4,
-+	PPL_ERROR_STOP =	5,
-+	PPL_SAVED =		6,
-+	PPL_RESTORED =		7
+ /* Intel HD Audio General DSP Registers */
+ #define SKL_ADSP_GEN_BASE		0x0
+ #define SKL_ADSP_REG_ADSPCS		(SKL_ADSP_GEN_BASE + 0x04)
+@@ -60,4 +64,61 @@
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
+ 
++/* ADSPCS - Audio DSP Control & Status */
++#define SKL_DSP_CORES		0
++#define SKL_DSP_CORE0_MASK		1
++#define SKL_DSP_CORES_MASK		((1 << SKL_DSP_CORES) - 1)
++
++/* Core Reset - asserted high */
++#define ADSPCS_CRST_SHIFT	0
++#define ADSPCS_CRST_MASK	(SKL_DSP_CORES_MASK << ADSPCS_CRST_SHIFT)
++#define ADSPCS_CRST(x)		((x << ADSPCS_CRST_SHIFT) & ADSPCS_CRST_MASK)
++
++/* Core run/stall - when set to '1' core is stalled */
++#define ADSPCS_CSTALL_SHIFT	8
++#define ADSPCS_CSTALL_MASK	(SKL_DSP_CORES_MASK << ADSPCS_CSTALL_SHIFT)
++#define ADSPCS_CSTALL(x)	((x << ADSPCS_CSTALL_SHIFT) & ADSPCS_CSTALL_MASK)
++
++/* Set Power Active - when set to '1' turn cores on */
++#define ADSPCS_SPA_SHIFT	16
++#define ADSPCS_SPA_MASK		(SKL_DSP_CORES_MASK << ADSPCS_SPA_SHIFT)
++#define ADSPCS_SPA(x)		((x << ADSPCS_SPA_SHIFT) & ADSPCS_SPA_MASK)
++
++/* Current Power Active - power status of cores, set by hardware */
++#define ADSPCS_CPA_SHIFT	24
++#define ADSPCS_CPA_MASK		(SKL_DSP_CORES_MASK << ADSPCS_CPA_SHIFT)
++#define ADSPCS_CPA(x)		((x << ADSPCS_CPA_SHIFT) & ADSPCS_CPA_MASK)
++
++#define SST_DSP_POWER_D0	0x0  /* full On */
++#define SST_DSP_POWER_D3	0x3  /* Off */
++
++enum skl_states {
++	SST_DSP_RUNNING = 1,
++	SST_DSP_RESET,
 +};
 +
-+struct skl_dxstate_info {
-+	u32 core_mask;
-+	u32 dx_mask;
++struct skl_fw_ops {
++	int (*load_fw)(struct sst_dsp  *ctx);
++	/* FW module parser/loader */
++	int (*parse_fw)(struct sst_dsp *ctx);
++	int (*set_state_D0)(struct sst_dsp *ctx);
++	int (*set_state_D3)(struct sst_dsp *ctx);
 +};
 +
-+struct skl_ipc_header {
-+	u32 primary;
-+	u32 extension;
-+};
++void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
++struct sst_dsp *skl_dsp_init(struct device *dev,
++		struct sst_dsp_device *sst_dev, int irq);
++int skl_disable_dsp_core(struct sst_dsp  *ctx);
++bool skl_dsp_is_running(struct sst_dsp *ctx);
++irqreturn_t skl_sst_interrupt(int irq, void *dev_id);
++int skl_dsp_wake(struct sst_dsp *ctx);
++void skl_dsp_sleep(struct sst_dsp *ctx);
++int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
++		struct skl_dsp_loader_ops dsp_ops, struct sst_skl **dsp);
++void skl_dsp_free(struct sst_dsp *dsp);
++void skl_cleanup(struct device *dev, struct sst_skl *ctx);
 +
-+struct sst_skl {
-+	struct device *dev;
-+	struct sst_dsp *dsp;
++int skl_boot_dsp(struct sst_dsp *ctx);
 +
-+	/* boot */
-+	wait_queue_head_t boot_wait;
-+	bool boot_complete;
 +
-+	/* IPC messaging */
-+	struct sst_generic_ipc ipc;
-+};
-+
-+struct skl_init_instance_msg {
-+	u32 module_id;
-+	u32 instance_id;
-+	u16 param_data_size;
-+	u8 ppl_instance_id;
-+	u8 core_id;
-+};
-+
-+struct skl_bind_unbind_msg {
-+	u32 module_id;
-+	u32 instance_id;
-+	u32 dst_module_id;
-+	u32 dst_instance_id;
-+	u8 src_queue;
-+	u8 dst_queue;
-+	bool bind;
-+};
-+
-+struct skl_large_config_msg {
-+	u32 module_id;
-+	u32 instance_id;
-+	u32 large_param_id;
-+	u32 param_data_size;
-+};
-+
-+#define IPC_BOOT_MSECS		3000
-+
-+#define ADSP_IPC_D3_MASK	0
-+#define ADSP_IPC_D0_MASK	3
-+
-+irqreturn_t skl_irq_thread_handler(int irq, void *context);
-+
-+int skl_ipc_create_pipeline(struct sst_generic_ipc *sst_ipc,
-+		u16 ppl_mem_size, u8 ppl_type, u8 instance_id);
-+
-+int skl_ipc_delete_pipeline(struct sst_generic_ipc *sst_ipc, u8 instance_id);
-+
-+int skl_ipc_set_pipeline_state(struct sst_generic_ipc *sst_ipc,
-+		u8 instance_id,	enum skl_pipeline_state state);
-+
-+int skl_ipc_save_pipeline(struct sst_generic_ipc *ipc,
-+		u8 instance_id, int dma_id);
-+
-+int skl_ipc_restore_pipeline(struct sst_generic_ipc *ipc, u8 instance_id);
-+
-+int skl_ipc_init_instance(struct sst_generic_ipc *sst_ipc,
-+		struct skl_init_instance_msg *msg, void *param_data);
-+
-+int skl_ipc_bind_unbind(struct sst_generic_ipc *sst_ipc,
-+		struct skl_bind_unbind_msg *msg);
-+
-+int skl_ipc_set_dx(struct sst_generic_ipc *ipc,
-+		u8 instance_id, u16 module_id, struct skl_dxstate_info *dx);
-+
-+int skl_ipc_set_large_config(struct sst_generic_ipc *ipc,
-+		struct skl_large_config_msg *msg, u32 *param);
-+
-+void skl_ipc_int_enable(struct sst_dsp *dsp);
-+void skl_ipc_op_int_enable(struct sst_dsp *ctx);
-+void skl_ipc_int_disable(struct sst_dsp *dsp);
-+
-+bool skl_ipc_int_status(struct sst_dsp *dsp);
-+void skl_ipc_free(struct sst_generic_ipc *ipc);
-+int skl_ipc_init(struct device *dev, struct sst_skl *skl);
-+
-+#endif /* __SKL_IPC_H */
+ #endif /*__SKL_SST_DSP_H__*/
 -- 
 1.9.1
