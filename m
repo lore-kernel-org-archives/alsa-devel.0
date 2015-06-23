@@ -1,84 +1,43 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Tue, 23 Jun 2015 13:16:54 +0200
-Message-ID: <CAKor6TeUOa6GdcscTWziw_q3GXj4wNh=8jnQigQfS7Se8iL+Nw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id BC2542654DF
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 13:16:54 +0200 (CEST)
-Received: by qkfe185 with SMTP id e185so2777042qkf.3
- for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2015 04:16:54 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+From: Antonio Borneo <borneo.antonio-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 0/6] Remove redundant spi driver bus initialization
+Date: Tue, 23 Jun 2015 22:45:08 +0800
+Message-ID: <1435070714-24174-1-git-send-email-borneo.antonio@gmail.com>
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Ott <alan-yzvJWuRpmD1zbRFIqnYvSA@public.gmane.org>, Alexander Aring <alex.aring-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Andrzej Hajda <a.hajda-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kalle Valo <kvalo-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Karol Wrona <k.wrona-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Kyungmin Park <kyungmin.park-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wpan-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Solomon Peachy <pizza-pCgMCH4qpMRg9hUCZPvPmw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Antonio Borneo <borneo.antonio-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+This cleanup was already completed between end 2011 and early 2012
+with a patch series from Lars-Peter Clausen:
+https://lkml.org/lkml/2011/11/24/190
 
-I have one patch that enables the spi initialization of the WM510205 audio codec
-Without the patch, this message indicates that the codec chip fails
-with the current chipselect number in spi-pxa2xx:
+Later on new redundant initialization re-appeared here and there.
+Time to cleanup again.
 
+And, yes, I'm lazy! I copy-paste the exact same commit message from
+Lars-Peter; only minor reformat to stay in 75 char/line and fix the
+name of spi_register_driver().
 
-[ 0.296256] pxa2xx-spi 80860F0E:00: cs1 >= max 1
-[ 0.296270] spi_master spi32766: failed to add SPI device
-WM510205:00 from ACPI
+Regards,
+Antonio
 
-So raise num_chipselect by one to enable the codec. The WM510202 is on
-chipselect = 1.
+Antonio Borneo (6):
+  ASoC: wm0010: Remove redundant spi driver bus initialization
+  iio: ssp_sensors: Remove redundant spi driver bus initialization
+  staging: mt29f_spinand: Remove redundant spi driver bus initialization
+  net: ieee802154: Remove redundant spi driver bus initialization
+  wireless: cw1200: Remove redundant spi driver bus initialization
+  [media] s5c73m3: Remove redundant spi driver bus initialization
 
-With the patch applied I got in dmesg now:
+ drivers/iio/common/ssp_sensors/ssp_dev.c      | 1 -
+ drivers/media/i2c/s5c73m3/s5c73m3-spi.c       | 1 -
+ drivers/net/ieee802154/cc2520.c               | 1 -
+ drivers/net/ieee802154/mrf24j40.c             | 1 -
+ drivers/net/wireless/cw1200/cw1200_spi.c      | 1 -
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 1 -
+ sound/soc/codecs/wm0010.c                     | 1 -
+ 7 files changed, 7 deletions(-)
 
-[    6.056829] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
-[    6.067035] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
-[    6.067214] spi spi-WM510205:00: 8333333 Hz actual, PIO
-[    6.067221] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
-[    6.067287] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-
-Signed-off-by: Christian Hartmann <cornogle@googlemail.com>
----
- drivers/spi/spi-pxa2xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index e3223ac..7b54b04 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1279,7 +1279,7 @@ pxa2xx_spi_acpi_get_pdata(struct platform_device *pdev)
-     if (adev->pnp.unique_id && !kstrtoint(adev->pnp.unique_id, 0, &devid))
-         ssp->port_id = devid;
-
--    pdata->num_chipselect = 1;
-+    pdata->num_chipselect = 2;
-     pdata->enable_dma = true;
-
-     return pdata;
 -- 
-1.8.3.1
-
-
-would be nice to hear some feedback or comments about this patch.
-
-Notice: That is my first attempt to make the codec chip via ACPI
-(DSDT) configuration
-working on Linux systems and some other patches are needed to let the
-codec work together with the intel_sst_acpi driver under baytrail systems.
-Currently I am trying to write the also needed machine driver which
-binds to this
-codec chip. Also the arizona-core / arizona-spi drivers have to be patched,
-but that patches will be landing later...
-
-cheers
-Christian Hartmann
+2.4.4
