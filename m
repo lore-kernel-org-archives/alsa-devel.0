@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: gtm601: Fix modalias
-Date: Wed, 24 Jun 2015 11:23:38 +0100
-Message-ID: <20150624102338.GF14071@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: gtm601: Remove .owner field from
+ platform driver
+Date: Wed, 24 Jun 2015 11:23:54 +0100
+Message-ID: <20150624102354.GG14071@sirena.org.uk>
 References: <1435114524.2082.1.camel@ingics.com>
+ <1435114591.2082.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5599830662807097081=="
+Content-Type: multipart/mixed; boundary="===============6756892968838334705=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C16D260536
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 12:23:55 +0200 (CEST)
-In-Reply-To: <1435114524.2082.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 631852658CB
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 12:24:04 +0200 (CEST)
+In-Reply-To: <1435114591.2082.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +27,46 @@ Cc: Marek Belisko <marek@goldelico.com>, Liam Girdwood <lgirdwood@gmail.com>, al
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5599830662807097081==
+--===============6756892968838334705==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rEeQd2vQToB/m911"
+	protocol="application/pgp-signature"; boundary="WYeHKcgVFLkBoQ16"
 Content-Disposition: inline
 
 
---rEeQd2vQToB/m911
+--WYeHKcgVFLkBoQ16
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 24, 2015 at 10:55:24AM +0800, Axel Lin wrote:
-> The MODULE_ALIAS needs to match the driver name to make module auto-loading
-> work. Also move MODULE_ALIAS close to other MODULE_* macro.
+On Wed, Jun 24, 2015 at 10:56:31AM +0800, Axel Lin wrote:
+> Remove .owner field because the core will set it.
+> Also clean up the code a bit to fix indent and make soc_codec_dev_gtm601
+> const.
 
-Applied, thanks.
+This doesn't apply against current code, please check and resend.
 
---rEeQd2vQToB/m911
+--WYeHKcgVFLkBoQ16
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVioUpAAoJECTWi3JdVIfQKacH/A+dFW/Az/8Jkl/OM5jPpU8j
-CQjV7bfcdtYnJ/sH+08mRfStsETUOkp/7TzETDgCn4C8L+uY4o98v8rSRqEPrKYr
-ByFc3uUdbm6X1b7upSa+xi0h0RajhjoQfgsuth6VSQ60OesP9KpvKzbnZJw8trEG
-n+SwiZ5yc7mLqR9Jmel/1b25JuPiHsO0KXD0fqxGXQxcdinFh9Se+GHhAINn24wx
-MmjUz8+XguqsiWrMY+qTiymNcB8dTG0XoQ3konjX/USDsuQuOxdZ53p6mQoJEBWs
-tZvfcefufjk6v3oMYXzKlnnt0RX/Ds6a6z0HIOyP7axbJOWPKRgSioRG3IVd6fs=
-=Aebx
+iQEcBAEBCAAGBQJVioU6AAoJECTWi3JdVIfQCj8IAIGIHoykC5RWFVDW9dbXFJg2
+RSj1Xhhy3BPnaCi3/4nKva8aGDuq+S5YhxBHqc9hrfVsJflihRg3OKfSct6zz9ep
+uVoRiuZ/7R6z2h0U9sr0LaJFT0z74BSukcbNU1jB9RaSy4U5OC+2q7IGvDAoP0YJ
+hzVwscb7GX+BL2MlK8F73sYatDblwjGxGK4f/sxiWo70V7R7/5WaBeZaijcVvmLC
+zX2g9eZQMDP5flfyxHZYePqPrzM5RoegrQjkLeHv2ZvWw3FNNsuVpWdVZt9dhj3q
+VqGo9/CRz0gCAH/C4PTRmd3nVZi6kxb91jDrEpC5EdDNzX/o8BgR52nCQoVF21Q=
+=/rWz
 -----END PGP SIGNATURE-----
 
---rEeQd2vQToB/m911--
+--WYeHKcgVFLkBoQ16--
 
---===============5599830662807097081==
+--===============6756892968838334705==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5599830662807097081==--
+--===============6756892968838334705==--
