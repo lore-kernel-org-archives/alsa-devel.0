@@ -1,38 +1,120 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH] ASoC: fsl: Add dedicated DMA buffer size
-	for each cpu dai
-Date: Wed, 24 Jun 2015 07:34:21 -0500
-Message-ID: <558AA3CD.3070802@tabi.org>
-References: <1435055033-12608-1-git-send-email-shengjiu.wang@freescale.com>
- <20150624070037.GA2926@Asurada-CZ80>
+From: "Kaskinen, Tanu" <tanu.kaskinen@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 3/4] snd: add support
+ for displayport multi-stream to hda codec.
+Date: Wed, 24 Jun 2015 12:41:50 +0000
+Message-ID: <1435149708.23893.55.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
+ <1434513719-3580-4-git-send-email-airlied@gmail.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
+ <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
+ <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
+ <s5h7fqv7u7s.wl-tiwai@suse.de> <1434979769.2503.32.camel@loki>
+ <1434986474.6176.53.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hioafeoj4.wl-tiwai@suse.de>
+ <1435045881.6176.76.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hmvzqyhk6.wl-tiwai@suse.de>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id C1D932616EF
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 14:33:55 +0200 (CEST)
-In-Reply-To: <20150624070037.GA2926@Asurada-CZ80>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hmvzqyhk6.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <EFEF51252ED98140B0C4673F741B380E@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "airlied@gmail.com" <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Nicolin Chen wrote:
->> >As the ssi is not the only cpu dai, there are esai, spdif, sai.
->> >and imx_pcm_dma can be used by all of them. Especially ESAI need
->> >a larger DMA buffer size. So Add dedicated DMA buffer for each cpu
->> >dai.
->> >
->> >Signed-off-by: Shengjiu Wang<shengjiu.wang@freescale.com>
-> Acked-by: Nicolin Chen<nicoleotsuka@gmail.com>
-
-Acked-by: Timur Tabi <timur@tabi.org>
+T24gVHVlLCAyMDE1LTA2LTIzIGF0IDEwOjA2ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+
+IEF0IFR1ZSwgMjMgSnVuIDIwMTUgMDc6NTE6MjIgKzAwMDAsDQo+IEthc2tpbmVuLCBUYW51IHdy
+b3RlOg0KPiA+IA0KPiA+IChBZGRlZCBwdWxzZWF1ZGlvLWRpc2N1c3MgdG8gQ0MuKQ0KPiA+IA0K
+PiA+IE9uIE1vbiwgMjAxNS0wNi0yMiBhdCAxNzo0NCArMDIwMCwgVGFrYXNoaSBJd2FpIHdyb3Rl
+Og0KPiA+ID4gQXQgTW9uLCAyMiBKdW4gMjAxNSAxNToyMToxNiArMDAwMCwNCj4gPiA+IEthc2tp
+bmVuLCBUYW51IHdyb3RlOg0KPiA+ID4gPiANCj4gPiA+ID4gT24gTW9uLCAyMDE1LTA2LTIyIGF0
+IDE0OjI5ICswMTAwLCBMaWFtIEdpcmR3b29kIHdyb3RlOg0KDQo8c25pcD4NCg0KPiA+ID4gPiA+
+IFRhbnUsIHdoYXQncyB5b3VyIHRha2Ugb24gdGhlIGVmZm9ydCBmb3IgZHluYW1pY2FsbHkgY3Jl
+YXRlZCBQQ01zDQo+ID4gPiA+ID4gc3VwcG9ydCBmb3IgcHVsc2VhdWRpbyA/DQo+ID4gPiA+IA0K
+PiA+ID4gPiBJdCdzIGEgc2lnbmlmaWNhbnQgYW1vdW50IG9mIHdvcmssIGJ1dCBJIHRoaW5rIFB1
+bHNlQXVkaW8gc2hvdWxkIGJlDQo+ID4gPiA+IGltcHJvdmVkIHRvIHN1cHBvcnQgdGhpcyBpbiBh
+bnkgY2FzZSwgaWYgb3RoZXIgYXBwcm9hY2hlcyBtYWtlIGxpZmUNCj4gPiA+ID4gbWlzZXJhYmxl
+IGZvciBkcml2ZXIgZGV2ZWxvcGVycy4NCj4gPiA+ID4gDQo+ID4gPiA+IFdoYXQgd291bGQgYmUg
+dGhlIGludGVyZmFjZSBmb3IgZ2V0dGluZyBub3RpZmljYXRpb25zIGFib3V0IG5ldyBhbmQNCj4g
+PiA+ID4gcmVtb3ZlZCBQQ00gZGV2aWNlcz8gdWRldj8NCj4gPiA+IA0KPiA+ID4gSW4gZ2VuZXJh
+bCwgeWVzLg0KPiA+ID4gDQo+ID4gPiA+IFB1bHNlQXVkaW8gKG1vc3RseSkgZG9lc24ndCB1c2Ug
+dGhlIGh3OlggZGV2aWNlcyBkaXJlY3RseS4gSW5zdGVhZCwgaXQNCj4gPiA+ID4gdXNlcyBsb2dp
+Y2FsIG5hbWVzIGxpa2UgImZyb250IiwgImhkbWkiLCAiaWVjOTU4IiwgZXRjLiBTcGVha2luZyBv
+ZiBIRE1JDQo+ID4gPiA+IHNwZWNpZmljYWxseSwgUHVsc2VBdWRpbyB1c2VzIGRldmljZXMgZnJv
+bSAiaGRtaTpYLDAiIHRvICJoZG1pOlgsNyIuDQo+ID4gPiA+IFdpdGggdGhpcyBuZXcgZHluYW1p
+YyBQQ00gc3lzdGVtLCBkbyB0aGVzZSBsb2dpY2FsIG5hbWVzIHN0aWxsIHdvcms/DQo+ID4gPiAN
+Cj4gPiA+IFVuZm9ydHVuYXRlbHksIHRoaXMgZG9lc24ndCB3b3JrIGZvciBIREEgYXMgaXMsIGJl
+Y2F1c2Ugb2YgdGhlDQo+ID4gPiB0ZXJyaWJseSBhcmNhbmUgc2VjcmV0LiAgRm9yIGtlZXBpbmcg
+dGhlIGNvbXBhdGliaWxpdHkgd2l0aCB0aGUgb2xkDQo+ID4gPiBjb25maWcsIHRoZXJlIGlzIGEg
+c3RhdGljIG1hcHBpbmcgb2YgdGhlIGhkbWk6eCx5IGFuZCBodzp4LHouDQo+ID4gPiANCj4gPiA+
+IE1heWJlIHdlIHNob3VsZCBpbnRyb2R1Y2UgYSBuZXcgZGV2aWNlIGNsYXNzIGZvciBkeW5hbWlj
+IEhETUkvRFANCj4gPiA+IGRldmljZSwgc29tZXRoaW5nIGxpa2UgZGhkbWk6eCx5LCB0byBtYWtl
+IHRoaW5ncyBzdHJhaWdodGZvcndhcmQuDQo+ID4gPiAoSnVzdCBhIGNvbmNlcHQgLS0gSSdtIG5v
+dCBnb29kIGF0IG5hbWluZy4pDQo+ID4gPiANCj4gPiA+IEFsdGVybmF0aXZlbHksIHdlIG1heSBp
+bnRyb2R1Y2UgYSBuZXcgYXJndW1lbnQgdG8gaGRtaSBQQ00gdG8gYWNjZXNzDQo+ID4gPiBsaWtl
+ICJoZG1pOkNBUkQ9eCxTWVNERVY9eSIuDQo+ID4gDQo+ID4gV2hhdCBoYXBwZW5zIGlmIFB1bHNl
+QXVkaW8gdHJpZXMgdG8gb3BlbiAiZGhkbWk6eCx5IiBvcg0KPiA+ICJoZG1pOkNBUkQ9eCxTWVNE
+RVY9eSIsIHdoZW4geSBwb2ludHMgdG8gYSBub24tSERNSSBkZXZpY2U/IElmIGl0IGZhaWxzLA0K
+PiA+IHRoZW4gUHVsc2VBdWRpbyBjYW4gcmVwbGFjZSBpdHMgY3VycmVudCAiaGRtaTp4LFswLTdd
+IiBkZXZpY2VzIHdpdGgNCj4gPiAiaGRtaTpDQVJEPVgsU1lTREVWPVswLTEzXSIgYW5kIGJsaW5k
+bHkgdHJ5IGV2ZXJ5IGh3IFBDTSBkZXZpY2UuIEJ1dCBpZg0KPiA+IG9wZW5pbmcgYSBub24tSERN
+SSBkZXZpY2UgdGhyb3VnaCAiaGRtaTpDQVJEPXgsU1lTREVWPXkiIHN1Y2NlZWRzLCB0aGVuDQo+
+ID4gaG93IGlzIFB1bHNlQXVkaW8gc3VwcG9zZWQgdG8ga25vdyB3aGljaCBodyBQQ00gZGV2aWNl
+cyBhcmUgSERNSQ0KPiA+IGRldmljZXM/DQo+IA0KPiBJdCdzIGEgZ29vZCBxdWVzdGlvbi4gIEkg
+dGhpbmsgdGhpcyBpcyB0aGUgY29yZSBwYXJ0IG9mIHRoZSBtaXNzaW5nDQo+IHBpZWNlcy4NCj4g
+DQo+IFdoYXQgSSBoYXZlIGluIG15IG1pbmQgaXMgdG8gZXh0ZW5kIFNORFJWX1BDTV9DTEFTU18q
+IGRlZmluaXRpb24gZm9yDQo+IGRlZGljYXRlZCB0byBIRE1JL0RQLCBlLmcuIFNORFJWX1BDTV9D
+TEFTU19IRE1JLiAgVGhlIGRpZmZlcmVuY2UNCj4gYmV0d2VlbiBEUCBhbmQgSERNSSBjYW4gYmUg
+c3BlY2lmaWVkIGluIHN1YmNsYXNzIG9wdGlvbmFsbHkuDQoNClNvdW5kcyBnb29kLiBLbm93aW5n
+IHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gSERNSSwgRGlzcGxheVBvcnQgYW5kDQpUaHVuZGVyYm9s
+dCB3b3VsZCBiZSB2ZXJ5IG5pY2UgdG9vLiBJdCB3b3VsZCBlbmFibGUgYmV0dGVyIGxhYmVsbGlu
+ZyBpbg0KVUlzLg0KDQpJIGhhdmUgb25lIG1pbm9yIGNvbmNlcm4sIHRob3VnaDogd2hhdCBpZiBh
+IFBDTSBkZXZpY2UgaXNuJ3Qgc3RhdGljYWxseQ0KYXNzaWduZWQgdG8gb25lIG91dHB1dCBjb25u
+ZWN0b3I/IElzIGl0IHBvc3NpYmxlIHRoYXQgc29tZSBEU1AgaXMgYWJsZQ0KdG8gZHluYW1pY2Fs
+bHkgY2hhbmdlIHRoZSBQQ00gcm91dGluZyBiZXR3ZWVuIGRpZmZlcmVudCBvdXRwdXRzPyBJbg0K
+dGhvc2UgY2FzZXMgdGhlIFBDTSBjbGFzcyB3b3VsZCBiZSB1c2VsZXNzIGluZm9ybWF0aW9uICh1
+bmxlc3MgdGhlcmUgYXJlDQpub3RpZmljYXRpb25zIHdoZW4gdGhlIGNsYXNzIGNoYW5nZXMpLiBJ
+IGRvbid0IGhhdmUgYW55IGJldHRlciBpZGVhcywNCnRob3VnaC4NCg0KSSBhbHNvIHdvbmRlciBh
+Ym91dCBjb21wYXRpYmlsaXR5IGJldHdlZW4gdmFyaW91cyBjb21iaW5hdGlvbnMgb2YNCmtlcm5l
+bCwgYWxzYS1saWIgYW5kIFBBIHZlcnNpb25zLiBBbiBvbGQga2VybmVsIGRvZXNuJ3QgaGF2ZSBk
+eW5hbWljIFBDTQ0KZGV2aWNlcywgYW5kIGRvZXNuJ3Qga25vdyBhYm91dCB0aGUgSERNSSBQQ00g
+Y2xhc3MuIEFuIG9sZCBhbHNhLWxpYg0KZG9lc24ndCBzdXBwb3J0IHRoZSBTWVNERVYgcGFyYW1l
+dGVyLCBhbmQgZG9lc24ndCBrbm93IGFib3V0IHRoZSBIRE1JDQpQQ00gY2xhc3MuIEFuIG9sZCBQ
+QSB2ZXJzaW9uIHdpbGwgb25seSB1c2UgdGhlIG9sZC1zdHlsZSAiaGRtaTp4LHkiDQpkZXZpY2Ug
+c3RyaW5ncywgYW5kIHdvbid0IGNoZWNrIHRoZSBQQ00gY2xhc3MuIFRoZXJlIGFyZSA4IGNhc2Vz
+Og0KDQoxOiBvbGQga2VybmVsLCBvbGQgYWxzYS1saWIsIG9sZCBQQTogTm8gY2hhbmNlIGZvciBy
+ZWdyZXNzaW9ucy4NCg0KMjogb2xkIGtlcm5lbCwgb2xkIGFsc2EtbGliLCBuZXcgUEE6IFRoZSBv
+bGQgYWxzYS1saWIgdmVyc2lvbiB3b24ndA0KcmVwb3J0IHRoZSBQQ00gY2xhc3MgY29ycmVjdGx5
+LiBUaGlzIGNhbiBiZSBoYW5kbGVkIGJ5IGZhbGxpbmcgYmFjayB0bw0KdGhlIG9sZCBQQSBiZWhh
+dmlvdXIgd2hlbiBhbiBvbGQgYWxzYS1saWIgdmVyc2lvbiBpcyBkZXRlY3RlZCBhdCBQQQ0KYnVp
+bGQgdGltZS4NCg0KMzogb2xkIGtlcm5lbCwgbmV3IGFsc2EtbGliLCBvbGQgUEE6IE5vIGNoYW5j
+ZSBmb3IgcmVncmVzc2lvbnMuDQoNCjQ6IG9sZCBrZXJuZWwsIG5ldyBhbHNhLWxpYiwgbmV3IFBB
+OiBUaGUgb2xkIGtlcm5lbCB3b24ndCByZXBvcnQgdGhlIFBDTQ0KY2xhc3MgY29ycmVjdGx5LiBI
+b3cgc2hvdWxkIHRoaXMgYmUgaGFuZGxlZD8gU2hvdWxkIFBBIGRvIGtlcm5lbCB2ZXJzaW9uDQpj
+aGVja2luZywgYW5kIGZhbGwgYmFjayB0byB0aGUgb2xkIGJlaGF2aW91ciB3aXRoIG9sZCBrZXJu
+ZWxzPw0KDQo1OiBuZXcga2VybmVsLCBvbGQgYWxzYS1saWIsIG9sZCBQQTogRG8gdGhlIGtlcm5l
+bCBjaGFuZ2VzIGNhdXNlDQpyZWdyZXNzaW9ucyBvbiBoYXJkd2FyZSB0aGF0IHVzZWQgdG8gd29y
+aywgb3IgZG8gdGhlIGNoYW5nZXMgb25seSBhZmZlY3QNCm5ldyBoYXJkd2FyZSB0aGF0IGhhcyBu
+ZXZlciB3b3JrZWQ/DQoNCjY6IG5ldyBrZXJuZWwsIG9sZCBhbHNhLWxpYiwgbmV3IFBBOiBJZiBQ
+QSB1c2VzIHRoZSBmYWxsYmFjayBzdHJhdGVneQ0KZGVzY3JpYmVkIGluIGNhc2UgMiwgdGhlbiB0
+aGlzIGlzIGVxdWl2YWxlbnQgdG8gY2FzZSA1Lg0KDQo3OiBuZXcga2VybmVsLCBuZXcgYWxzYS1s
+aWIsIG9sZCBQQTogRXF1aXZhbGVudCB0byBjYXNlIDUuDQoNCjg6IG5ldyBrZXJuZWwsIG5ldyBh
+bHNhLWxpYiwgbmV3IFBBOiBFdmVyeXRoaW5nIHdvcmtzIHBlcmZlY3RseS4NCg0KLS0gDQpUYW51
+DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1
+ZGlvLWRpc2N1c3MgbWFpbGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1
+bHNlYXVkaW8tZGlzY3Vzcwo=
