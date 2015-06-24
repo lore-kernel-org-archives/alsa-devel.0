@@ -1,21 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: hda - Fix Dock Headphone on Thinkpad
- X250 seen as a Line Out
-Date: Wed, 24 Jun 2015 19:23:06 +0800
-Message-ID: <CAN8cciY3Fam7+9A6URg81FzRwyXPetuidSE2dJLF3=KMUMiLPg@mail.gmail.com>
-References: <1435135593-6176-1-git-send-email-david.henningsson@canonical.com>
- <s5hsi9hwker.wl-tiwai@suse.de> <558A8F1D.1000606@canonical.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Wed, 24 Jun 2015 13:25:16 +0200
+Message-ID: <20150624132516.b36a4a264cfdd5481e6bbef4@ao2.it>
+References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+ <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+ <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
+ <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+ <552D1EE3.6090707@linux.intel.com>
+ <20150624101613.GK19530@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
- [209.85.218.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A3AA260542
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 13:23:07 +0200 (CEST)
-Received: by oigx81 with SMTP id x81so27478636oig.1
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 04:23:06 -0700 (PDT)
-In-Reply-To: <558A8F1D.1000606@canonical.com>
+Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F727260550
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 13:25:24 +0200 (CEST)
+In-Reply-To: <20150624101613.GK19530@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +27,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, stable@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->>>
->>> Thinkpad X250, when attached to a dock, has two headphone outs but
->>> no line out. Make sure we don't try to turn this into one headphone
->>> and one line out (since that disables the headphone amp on the dock).
->>>
->>> Alsa-info at
-http://www.alsa-project.org/db/?f=36f8764e1d782397928feec715d0ef90dfddd4c1
->>>
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>
->>
->> This is one of fixes I had in mind (and asked for testing in bugzilla
->> kernel.org report).
->
->
-> Sorry, I'm missing context. What report?
+On Wed, 24 Jun 2015 15:46:13 +0530
+Vinod Koul <vinod.koul@intel.com> wrote:
 
-https://bugzilla.kernel.org/show_bug.cgi?id=99721
+Hi Vinod, thank you for replying.
 
-T440 support headset and thinkpad pro dock combo jack has headset icon
+> On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
+> > My 2c below.
+> > 
+> > On 04/14/2015 04:02 PM, Antonio Ospite wrote:
+> > >On Wed, 4 Mar 2015 17:02:18 +0100
+> > >Antonio Ospite <ao2@ao2.it> wrote:
+> > 
+[...]
+> > >Vinod, Subhransu, or anyone else, can you share some working alsa state
+> > >files for the baytrailcraudio device in linux mainline?
 
-If headset mic has higher priority than dock headset mic, it is strange
-that headset don't auto mute dock headset
+This question still stands. :)
+
+> > Question to Vinod et all too:
+> > 
+> > I don't find above "ssp2 playback" and "ssp2 Capture" stream names
+> > from sound/soc/intel/sst-mfld-platform-pcm.c so I guess it has been
+> > evolved a bit from those original Android drivers.
+> The upstream code is subset of one in Android but base stuff is still the
+> same
+> 
+> > 
+> > Which makes me thinking how does those strings describe the SSP port
+> > setup? E.g. do they reflect what port is actually used or could it
+> > be possible that those are just driver strings but firmware could
+> > have been tuned for SSP0? If I looked at earlier right, Teclast has
+> > the low pin-count Baytrail without SSP2 but I'm not sure about that.
+> The FW doesnt provide way to changes ports from driver in this, so this
+> doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
+> test
+
+Is it possible to figure it out from the Android firmware?
+http://ao2.it/tmp/sst-baytrail-on-Teclast-X98-Air-3G/android_firmware/
+
+As said earlier I had also tried to convert the Android firmware to the
+structure used in the mainline kernel, but with no success:
+http://git.ao2.it/sst_elf_firmware_convert.git/
+
+Or should I look at the board layout to find out what port the codec is
+connected to? I don't have an oscilloscope or a logic analyzer for more
+accurate investigation (would Intel be interested in sponsoring one,
+BTW?)
+
+I will surely test alternative firmwares if you provide them.
+
+Thanks,
+   Antonio
+
+P.S. in email messages, putting a blank line between the quoted text and
+the reply helps readability; not all MUAs have syntax highlighting.
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
