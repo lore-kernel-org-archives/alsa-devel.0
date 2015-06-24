@@ -1,18 +1,23 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Wed, 24 Jun 2015 21:33:14 +0530
-Message-ID: <20150624160314.GM19530@localhost>
-References: <5589D025.7090700@gmail.com> <20150624101115.GI19530@localhost>
- <558ABDB6.4010702@gmail.com>
+Subject: Re: writing an alsa driver
+Date: Wed, 24 Jun 2015 21:34:28 +0530
+Message-ID: <20150624160428.GN19530@localhost>
+References: <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
+ <20150608084951.GA7512@dellaz>
+ <loom.20150613T153708-781@post.gmane.org>
+ <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
+ <20150623090932.GA6856@dellaz> <20150624102157.GL19530@localhost>
+ <20150624133126.212f5fa537d3edc537644043@ao2.it>
+ <1435146021.2655.62.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 807CE265A2A
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 18:01:36 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 285DC265A59
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 18:02:55 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <558ABDB6.4010702@gmail.com>
+In-Reply-To: <1435146021.2655.62.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tyler Yeomans <tyeo098@gmail.com>
-Cc: alsa-devel@alsa-project.org, jarkko.nikula@intel.com, liam.r.girdwood@intel.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Michele Curti <michele.curti@gmail.com>, Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@ao2.it>, alsa-devel@alsa-project.org, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 24, 2015 at 10:24:54AM -0400, Tyler Yeomans wrote:
-> Vinod,
+On Wed, Jun 24, 2015 at 12:40:21PM +0100, Liam Girdwood wrote:
+> On Wed, 2015-06-24 at 13:31 +0200, Antonio Ospite wrote:
+> > On Wed, 24 Jun 2015 15:51:57 +0530
+> > Vinod Koul <vinod.koul@intel.com> wrote:
+> > 
+> > [...]
+> > > For Playback you can try:
+> > > 
+> > > #DSP routing
+> > > amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+> > > amixer -c0 sset 'media0_out mix 0 media1_in' on
+> > > amixer -c0 sset 'media1_in Gain 0' 80% 
+> > > amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
+> > > amixer -c0 sset 'media1_in Gain 0' off
+> > > amixer -c0 sset 'pcm0_in Gain 0' 80% 
+> > > amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
+> > > amixer -c0 sset 'pcm0_in Gain 0' off
+> > > amixer -c0 sset 'codec_out0 Gain 0' 80%
+> > > amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
+> > > amixer -c0 sset 'codec_out0 Gain 0' off
+> > > 
+> > > #Codec routin, if you have different one please modfiy
+> > > amixer -c0 sset "DAC MIXL INF1" on
+> > > amixer -c0 sset "DAC MIXR INF1" on
+> > > amixer -c0 sset "Stereo DAC MIXL DAC L1" on
+> > > amixer -c0 sset "Stereo DAC MIXR DAC R1" on
+> > > amixer -c0 sset "SPK MIXL DAC L1" on
+> > > amixer -c0 sset "SPK MIXR DAC R1" on
+> > > amixer -c0 sset "SPOL MIX SPKVOL L" on
+> > > amixer -c0 sset "SPOR MIX SPKVOL R" on
+> > > amixer -c0 sset "SPOL MIX DAC L1" on
+> > > amixer -c0 sset "SPOR MIX DAC R1" on
+> > > amixer -c0 sset "Speaker L" on
+> > > amixer -c0 sset "Speaker R" on
+> > > amixer -c0 sset "Headphone" off
+> > > amixer -c0 sset "Ext Spk" on
+> > > 
+> > > I have used this in T100.
+> > > 
+> > 
+> > OK, I guess this answers my request for a state file :)
+> > I had not read this message yet when I wrote the other one.
+> > 
 > 
-> Thank you for looking into this.
-> I have attached the dmesg for this device.
-> Please note I have tried kernels 3.16/19 4.0 and 4.1, all with same result.
-> The attached dmesg file is from booting kernel 4.1/amd64:
-> Linux mykro 4.1.0-040100-generic #201506220235 SMP Mon Jun 22
-> 06:36:19 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
-> On Ubuntu 15.04
-I can see these errors:
-[    6.012196] (NULL device *): ipc: error DSP boot timeout
-[    6.012386] byt-rt5640 byt-rt5640: ASoC: CPU DAI baytrail-pcm-audio not
-registered
-
-Jarrko, can you see why DSP boot fails, perhpas some resources are
-missing/wrong
+> Might be worth creating a UCM config for this machine since there are
+> several different outputs.
+Yes that is a good idea, let this be verified and then we can do this. I do
+have configs for all cases, so need to get the file created now
 
 -- 
 ~Vinod
