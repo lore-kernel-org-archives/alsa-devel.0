@@ -1,85 +1,104 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: writing an alsa driver
-Date: Wed, 24 Jun 2015 21:34:28 +0530
-Message-ID: <20150624160428.GN19530@localhost>
-References: <20150529131753.GA339@asus> <1433156768.2642.21.camel@loki>
- <20150608084951.GA7512@dellaz>
- <loom.20150613T153708-781@post.gmane.org>
- <20150615164623.GA693@asus> <1434387868.2434.50.camel@loki>
- <20150623090932.GA6856@dellaz> <20150624102157.GL19530@localhost>
- <20150624133126.212f5fa537d3edc537644043@ao2.it>
- <1435146021.2655.62.camel@loki>
+Subject: Re: [PATCH 02/13] dmaengine: Introduce
+ dma_request_slave_channel_compat_reason()
+Date: Wed, 24 Jun 2015 21:54:01 +0530
+Message-ID: <20150624162401.GP19530@localhost>
+References: <1432646768-12532-1-git-send-email-peter.ujfalusi@ti.com>
+ <1432646768-12532-3-git-send-email-peter.ujfalusi@ti.com>
+ <20150529093317.GF3140@localhost>
+ <CAMuHMdVJ0h9qXxBWH9L2y4O2KLkEq12KW_6k8rTgi+Lux=C0gw@mail.gmail.com>
+ <20150529101846.GG3140@localhost>
+ <55687892.7050606@ti.com>
+ <20150602125535.GS3140@localhost>
+ <5570758E.6030302@ti.com>
+ <20150612125837.GJ28601@localhost>
+ <5587F1F4.1060905@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 285DC265A59
- for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 18:02:55 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-crypto-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1435146021.2655.62.camel@loki>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Michele Curti <michele.curti@gmail.com>, Luka Karinja <luka.karinja@gmail.com>, Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@ao2.it>, alsa-devel@alsa-project.org, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Bard Liao <bardliao@realtek.com>
+In-Reply-To: <5587F1F4.1060905@ti.com>
+Sender: linux-crypto-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Tony Lindgren <tony@atomide.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux MMC List <linux-mmc@vger.kernel.org>, linux-crypto@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 24, 2015 at 12:40:21PM +0100, Liam Girdwood wrote:
-> On Wed, 2015-06-24 at 13:31 +0200, Antonio Ospite wrote:
-> > On Wed, 24 Jun 2015 15:51:57 +0530
-> > Vinod Koul <vinod.koul@intel.com> wrote:
-> > 
-> > [...]
-> > > For Playback you can try:
-> > > 
-> > > #DSP routing
-> > > amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
-> > > amixer -c0 sset 'media0_out mix 0 media1_in' on
-> > > amixer -c0 sset 'media1_in Gain 0' 80% 
-> > > amixer -c0 sset 'media1_in Gain 0 Ramp Delay' 50
-> > > amixer -c0 sset 'media1_in Gain 0' off
-> > > amixer -c0 sset 'pcm0_in Gain 0' 80% 
-> > > amixer -c0 sset 'pcm0_in Gain 0 Ramp Delay' 50
-> > > amixer -c0 sset 'pcm0_in Gain 0' off
-> > > amixer -c0 sset 'codec_out0 Gain 0' 80%
-> > > amixer -c0 sset 'codec_out0 Gain 0 Ramp Delay' 50
-> > > amixer -c0 sset 'codec_out0 Gain 0' off
-> > > 
-> > > #Codec routin, if you have different one please modfiy
-> > > amixer -c0 sset "DAC MIXL INF1" on
-> > > amixer -c0 sset "DAC MIXR INF1" on
-> > > amixer -c0 sset "Stereo DAC MIXL DAC L1" on
-> > > amixer -c0 sset "Stereo DAC MIXR DAC R1" on
-> > > amixer -c0 sset "SPK MIXL DAC L1" on
-> > > amixer -c0 sset "SPK MIXR DAC R1" on
-> > > amixer -c0 sset "SPOL MIX SPKVOL L" on
-> > > amixer -c0 sset "SPOR MIX SPKVOL R" on
-> > > amixer -c0 sset "SPOL MIX DAC L1" on
-> > > amixer -c0 sset "SPOR MIX DAC R1" on
-> > > amixer -c0 sset "Speaker L" on
-> > > amixer -c0 sset "Speaker R" on
-> > > amixer -c0 sset "Headphone" off
-> > > amixer -c0 sset "Ext Spk" on
-> > > 
-> > > I have used this in T100.
-> > > 
-> > 
-> > OK, I guess this answers my request for a state file :)
-> > I had not read this message yet when I wrote the other one.
-> > 
+On Mon, Jun 22, 2015 at 02:31:00PM +0300, Peter Ujfalusi wrote:
+> On 06/12/2015 03:58 PM, Vinod Koul wrote:
+> > Sorry this slipped thru
 > 
-> Might be worth creating a UCM config for this machine since there are
-> several different outputs.
-Yes that is a good idea, let this be verified and then we can do this. I do
-have configs for all cases, so need to get the file created now
+> I was away for a week anyways ;)
+> 
+> > Thinking about it again, I think we should coverge to two APIs and mark the
+> > legacy depracuated and look to convert folks and phase that out
+> 
+> Currently, w/o this series we have these APIs:
+> /* to be used with DT/ACPI */
+> dma_request_slave_channel(dev, name)		/* NULL on failure */
+> dma_request_slave_channel_reason(dev, name)	/* error code on failure */
+> 
+> /* Legacy mode only - no DT/ACPI lookup */
+> dma_request_channel(mask, fn, fn_param) /* NULL on failure */
+> 
+> /* to be used with DT/ACPI or legacy boot */
+> dma_request_slave_channel_compat(mask, fn, fn_param, dev, name)	/* NULL on
+> failure */
+> 
+> To request _any_ channel to be used for memcpy one has to use
+> dma_request_channel(mask, NULL, NULL);
+> 
+> If I did not missed something.
+I dont think so :)
+
+> As we need different types of parameters for DT/ACPI and legacy (non DT/ACPI
+> lookup) and the good API names are already taken, we might need to settle:
+> 
+> /* to be used with DT/ACPI */
+> dma_request_slave_channel(dev, name) /* error code on failure */
+> - Convert users to check IS_ERR_OR_NULL() instead against NULL
+> - Mark dma_request_slave_channel_reason() deprecated and convert the current users
+> 
+> /* to be used with DT/ACPI or legacy boot */
+> dma_request_slave_channel_compat(mask, fn, fn_param, dev, name) /* error code
+> on failure */
+> - Convert users to check IS_ERR_OR_NULL() instead against NULL
+> - Do not try legacy mode if either OF or ACPI failed because of real error
+Should we keep the filter fn and an API for this, I am still not too sure
+about that part. Anyway users should be on DT/ACPI. if someone wants filter
+then let them use dma_request_channel()
+
+> 
+> /* Legacy mode only - no DT/ACPI lookup */
+> dma_request_channel_legacy(mask, fn, fn_param) /* error code on failure */
+> - convert users of dma_request_channel()
+> - mark dma_request_channel() deprecated
+Why should we create a new API, how about marking dma_request_channel() as
+legacy and generic memcpy API and let other users be migrated?
+> 
+> /* to be used to get a channel for memcpy for example */
+> dma_request_any_channel(mask) /* error code on failure */
+> - Convert current dma_request_channel(mask, NULL, NULL) users
+> I know, any of the other function could be prepared to handle this when
+> parameters are missing, but it is a bit cleaner to have separate API for this.
+Though it has merits but adds another API. We cna have internal
+_dma_request_xxx API where parameters are missing and clean but to users
+single API might be a better idea
+> 
+> It would be nice to find another name for the
+> dma_request_slave_channel_compat() so with the new name we could have chance
+> to rearrange the parameters: (dev, name, mask, fn, fn_param)
+> 
+> We would end up with the following APIs, all returning with error code on failure:
+> dma_request_slave_channel(dev, name);
+> dma_request_channel_legacy(mask, fn, fn_param);
+> dma_request_slave_channel_compat(mask, fn, fn_param, dev, name);
+> dma_request_any_channel(mask);
+This is good idea but still we end up with 4 APIs. Why not just converge to
+two API, one legacy + memcpy + filer fn and one untimate API for slave?
+
+Internally we may have 4 APIs for cleaner handling...
+
+Thoughts... ??
 
 -- 
 ~Vinod
