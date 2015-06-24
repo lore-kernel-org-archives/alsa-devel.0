@@ -1,86 +1,38 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Fix Dock Headphone on Thinkpad X250 seen
- as a Line Out
-Date: Wed, 24 Jun 2015 14:33:52 +0200
-Message-ID: <558AA3B0.6080009@canonical.com>
-References: <1435135593-6176-1-git-send-email-david.henningsson@canonical.com>	<s5hsi9hwker.wl-tiwai@suse.de>	<558A8F1D.1000606@canonical.com> <s5hpp4ljoht.wl-tiwai@suse.de>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] ASoC: fsl: Add dedicated DMA buffer size
+	for each cpu dai
+Date: Wed, 24 Jun 2015 07:34:21 -0500
+Message-ID: <558AA3CD.3070802@tabi.org>
+References: <1435055033-12608-1-git-send-email-shengjiu.wang@freescale.com>
+ <20150624070037.GA2926@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hpp4ljoht.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1D932616EF
+ for <alsa-devel@alsa-project.org>; Wed, 24 Jun 2015 14:33:55 +0200 (CEST)
+In-Reply-To: <20150624070037.GA2926@Asurada-CZ80>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+Nicolin Chen wrote:
+>> >As the ssi is not the only cpu dai, there are esai, spdif, sai.
+>> >and imx_pcm_dma can be used by all of them. Especially ESAI need
+>> >a larger DMA buffer size. So Add dedicated DMA buffer for each cpu
+>> >dai.
+>> >
+>> >Signed-off-by: Shengjiu Wang<shengjiu.wang@freescale.com>
+> Acked-by: Nicolin Chen<nicoleotsuka@gmail.com>
 
-
-On 2015-06-24 14:10, Takashi Iwai wrote:
-> At Wed, 24 Jun 2015 13:06:05 +0200,
-> David Henningsson wrote:
->>
->>
->>
->> On 2015-06-24 11:00, Takashi Iwai wrote:
->>> At Wed, 24 Jun 2015 10:46:33 +0200,
->>> David Henningsson wrote:
->>>>
->>>> Thinkpad X250, when attached to a dock, has two headphone outs but
->>>> no line out. Make sure we don't try to turn this into one headphone
->>>> and one line out (since that disables the headphone amp on the dock).
->>>>
->>>> Alsa-info at http://www.alsa-project.org/db/?f=36f8764e1d782397928feec715d0ef90dfddd4c1
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>
->>> This is one of fixes I had in mind (and asked for testing in bugzilla
->>> kernel.org report).
->>
->> Sorry, I'm missing context. What report?
->>
->>> One drawback by this is that the auto-mute
->>> *between* the headphones won't work like before.  If one has expected
->>> it, then this can be seen as a regression.
->>
->> Fair enough, we can drop stable from the patch since this could be seen
->> as behavioural change rather than bug fix.
->>
->>> Another fix was to change this as a proper line-out.  This will keep
->>> the current auto-mute behavior.
->>>
->>> OTOH, dealing both jacks equally is also not bad, per se.
->>
->> The tricky thing about routing is that everyone wants it different, so
->> pleasing everyone seems to be an impossible equation :-/
->>
->> I would choose the default behaviour (headphone or line out) based on
->> the icon on the jack. I should double-check that with someone who has
->> the hardware. And then, if someone wants another behaviour then
->> hdajackretask can be used. Or we can add a jack mode kcontrol for that
->> jack, if you prefer, although I'd have to check how PulseAudio handles
->> that (not that well, is my gut feeling).
->
-> I have no preference in this regard.  My only slight concern was the
-> behavior change by this patch.  It has both sides, one can see as an
-> improvement while another as a regression.
->
-> Currently I'm inclined to take this patch as is, since this would make
-> things working in a little obstacle.  Once when we get a real
-> regression report due to the lack of exclusive mute control, we may
-> provide another model option as a compromise.
->
-> But, I'm open about this, really.  So, if anyone has a good argument,
-> let me know.
-
-Anyhow, it looks like the current behaviour is not good, because we have 
-a "Dock Headphone Jack" on the same node as "Dock Line Out Playback 
-Switch". This makes me wonder if the HP -> LO fixup should be removed 
-altogether. Are there any machines these days that needs this fixup? In 
-case there were just a few of them in the past, maybe they should have 
-pin fixups instead?
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+Acked-by: Timur Tabi <timur@tabi.org>
