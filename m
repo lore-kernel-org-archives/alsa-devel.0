@@ -1,49 +1,39 @@
-From: David Weinehall <david.weinehall@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
- displayport multi-stream to hda codec.
-Date: Thu, 25 Jun 2015 15:52:42 +0300
-Message-ID: <20150625125241.GR14570@boom>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <CAN8cciYWwDQaMdWXb-Tw9F728jxwqrQLWiGY2B+LszrDvFrw+Q@mail.gmail.com>
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for lockdep
+Date: Thu, 25 Jun 2015 06:21:43 -0700
+Message-ID: <558C0067.2000401@linux.intel.com>
+References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <CAN8cciYWwDQaMdWXb-Tw9F728jxwqrQLWiGY2B+LszrDvFrw+Q@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Lu, Han" <han.lu@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdW4gMjUsIDIwMTUgYXQgMDQ6MjI6MzhQTSArMDgwMCwgUmF5bW9uZCBZYXUgd3Jv
-dGU6Cj4gPiA+Cj4gPiA+IFNoYWxsIHdlIG1vdmUgb3IgY2MgdGhpcyBkaXNjdXNzaW9uIG9uIGF1
-ZGlvIGRyaXZlciBzaWRlIHRvIEFMU0EgTUw/Cj4gPgo+ID4gT29wcyBJIHRob3VnaHQgSSBoYWQg
-Y2MnZWQgdGhlc2UgcGF0Y2hlcyB0byBhbHNhLWRldmVsIGFzIHdlbGwgd2hlbiBJCj4gc2VudCB0
-aGVtLgo+ID4KPiA+ID4gSSB0aGluayB3ZSBhbHNvIG5lZWQgdG8gZGVjaWRlIGhvdyB0byBtYW5h
-Z2UgUENNIGRldmljZXMgZm9yIERQIE1TVC4KPiA+ID4gTm93IHRoZSBIRC1BIGRyaXZlciBjcmVh
-dGUgYSBQQ00gZGV2aWNlIGZvciBlYWNoIHBpbiwgYW5kIHRoZSBzdWJzdHJlYW0KPiA+ID4gbnVt
-YmVyIGlzIDEgZm9yIGVhY2ggUENNLiBOb3cgd2l0aCBEUCBNU1QgZW5hYmxlZCwgZWFjaCBwaW4g
-Y2FuIHN1cHBvcnQKPiA+ID4gbXVsdGlwbGUgc3RyZWFtcyAoZS5nLiAzIG9uIEludGVsIEhTVy9C
-RFcvU0tMKS4KPiAKPiBXaGF0IGhhcmR3YXJlIGZlYXR1cmUgYXJlIGF2YWlsYWJsZSA/Cj4gCj4g
-T25seSB0aHJlZSBtb25pdG9ycyBwbGF5aW5nIGRpZmZlcmVudCBhdWRpbyBzdHJlYW1zIG9yCj4g
-Cj4gV2l0aCAxeDMgdmlkZW8gd2FsbCAsIGNhbiB0aGUgY2VudGVyIG1vbml0b3IgcGxheWJhY2sg
-c3RlcmVvIHdoaWxlIHRoZSBsZWZ0Cj4gbW9uaXRvciBwbGF5IGxlZnQgY2hhbm5lbCBhbmQgcmln
-aHQgbW9uaXRvciBwbGF5IHJpZ2h0IGNoYW5uZWwgPwoKT2hoaCwgY2xldmVyIGlkZWEgOikgIElm
-IGl0IGlzbid0IHN1cHBvcnQgYWxyZWFkeSBpdCdkIG1ha2UgYW4gYXdlc29tZQpmZWF0dXJlIGF0
-IGxlYXN0LgoKCktpbmQgcmVnYXJkcywgRGF2aWQKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+On 6/25/2015 2:35 AM, Nicolas Boichat wrote:
+> From: Antti Palosaari <crope@iki.fi>
+>
+> Lockdep validator complains about recursive locking and deadlock
+> when two different regmap instances are called in a nested order.
+> That happens anytime a regmap read/write call needs to access
+> another regmap.
+>
+> This is because, for performance reason, lockdep groups all locks
+> initialized by the same mutex_init() in the same lock class.
+> Therefore all regmap mutexes are in the same lock class, leading
+> to lockdep "nested locking" warnings if a regmap accesses another
+> regmap. However, depending on the specifics of the driver, this
+> can be perfectly safe (e.g. if there is a clear hierarchy between
+> a "master" regmap that uses another "slave" regmap). In these
+> cases, the warning is false and should be silenced.
+>
+> As a solution, add configuration option to pass custom lock class
+> key for lockdep validator, to be used in the regmap that needs to
+> access another regmap. This removes the need for uglier workarounds
+> in drivers, just to silence this warning (e.g. add custom mutex
+> lock/unlock functions).
+
+wouldn't it be better to use the mutex_lock_nested() and co to explicitly express your hierarchy?
