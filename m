@@ -1,50 +1,144 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 6/6] ASoC: rt5677: Prefix hexadecimal ID
-	register value with 0x in error print
-Date: Thu, 25 Jun 2015 13:59:01 +0300
-Message-ID: <1435229941-9574-6-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1435229941-9574-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: Re: [alsa-devel] [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Thu, 25 Jun 2015 13:02:44 +0200
+Message-ID: <558BDFD4.9060301@web.de>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>	<53AFF992.5030403@web.de>	<53B0C596.6090007@canonical.com>	<53B1078B.4090101@web.de>	<53B219DF.6090807@canonical.com>	<53B26575.1000003@web.de>	<53B27ED7.4070401@canonical.com>	<53B50062.30200@web.de>	<53B51B63.8060809@canonical.com>	<53B51CF3.8090102@web.de>	<53B52146.9050300@canonical.com>	<55603F22.8070103@web.de> <CAN8cciZYZ4setSj7dgPqQUVrBrr98tSvofLrD_0zvyQqkWfd2Q@mail.gmail.com> <5560A93E.7060607@web.de> <558A4216.8010401@web.de> <558A6E80.7010003@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B9422605CC
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 12:59:49 +0200 (CEST)
-In-Reply-To: <1435229941-9574-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="xQXeMThDWE7q28gpoIgwVUJrQ22x1XJDA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <558A6E80.7010003@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hui Wang <hui.wang@canonical.com>, Raymond Yau <superquad.vortex2@gmail.com>, alex.hung@canonical.com, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, yk@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Make it obvious that unexpected value read from ID register is printed in
-hexadecimal.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xQXeMThDWE7q28gpoIgwVUJrQ22x1XJDA
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/codecs/rt5677.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2015-06-24 10:46, Hui Wang wrote:
+> On 06/24/2015 01:37 PM, Jan Kiszka wrote:
+>> On 2015-05-23 18:22, Jan Kiszka wrote:
+>>> On 2015-05-23 18:06, Raymond Yau wrote:
+>>>> 2015-5-23 =E4=B8=8B=E5=8D=884:50 =E6=96=BC "Jan Kiszka" <jan.kiszka@=
+web.de> =E5=AF=AB=E9=81=93=EF=BC=9A
+>>>>>>>>>>>>>>>> Most Thinkpad Edge series laptops use conexant codec, so=
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 31d969ac1192..9048ba7efee1 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5209,7 +5209,7 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 	regmap_read(rt5677->regmap, RT5677_VENDOR_ID2, &val);
- 	if (val != RT5677_DEVICE_ID) {
- 		dev_err(&i2c->dev,
--			"Device with ID register %x is not rt5677\n", val);
-+			"Device with ID register %#x is not rt5677\n", val);
- 		return -ENODEV;
- 	}
- 
--- 
-2.1.4
+>>>>>>>>>>>>>>>> far
+>>>>>>>>>>>>>>>> although
+>>>>>>>>>> <snip>
+>>>>>>>>>>>>> Is there anything I can debug or any information I can coll=
+ect
+>>>>>>>>>>>>> from my
+>>>>>>>>>>>>> box to examine this?
+>>>>>>>>>>>> What is the linux distribution on your machine? And use
+>>>>>>>>>>>> showkey to
+>>>>>>>>>>>> catch
+>>>>>>>>>>>> the keycode of that button.
+>>>>>>>>>>> I'm running OpenSUSE 13.1. The reported keycode of the power
+>>>>>>>>>>> button is
+>>>>>>>>>>> 116.
+>>>>>>>>>> It seems the keycode is correct, it is power keycode rather
+>>>>>>>>>> the mute
+>>>>>>>>>> keycode.
+>>>>>>>>>>
+>>>>>>>>>> Could you please do some debug, let us find which line of code=
+ is
+>>>> the
+>>>>>>>>>> root cause for this problem. for example:
+>>>>>>>>>>
+>>>>>>>>>> after running the line, the problem shows up:
+>>>>>>>>>>
+>>>>>>>>>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068",
+>>>>>>>>>> acpi_check_cb,
+>>>>>>>>>> &found, NULL)) && found) // in the
+>>>>>>>>>> sound/pci/hda/thinkpad_helper.c,
+>>>>>>>>>> is_thinkpad()
+>>>>>>>>> This evaluates to true
+>>>>>>>>>
+>>>>>>>>>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068",
+>>>> acpi_check_cb,
+>>>>>>>>>> &found, NULL)) && found; // same as above
+>>>>>>>>>>
+>>>>>>>>>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) {
+>>>>>>>>>> //in the
+>>>>>>>>>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>>>> ...and this
+>>>>>>>>>
+>>>>>>>>>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >=3D 0) { // sa=
+me as
+>>>>>>>>>> above
+>>>>>>>>>>
+>>>>>>>>> ...and this as well. spec->num_adc_nids is 1.
+>>>>>>>> If we change the code like below, does the power button can work=
+
+>>>>>>>> well?
+>>>>>>>>
+>>>>>>>> in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>           if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) {
+>>>>>>>>               /*
+>>>>>>>>               old_vmaster_hook =3D spec->vmaster_mute.hook;
+>>>>>>>>               spec->vmaster_mute.hook =3D update_tpacpi_mute_led=
+;
+>>>>>>>>               removefunc =3D false;
+>>>>>>>>              */
+>>>>>>> Disabling only this block resolves the issue.
+>>>>>> So Below two lines make the power button change to the reset butto=
+n.
+>>>>>>
+>>>>>> drivers/platform/x86/thinkpad_acpi.c  mute_led_on_off():
+>>>>>>
+>>>>>> acpi_get_handle(hkey_handle, "SSMS", &temp);
+>>>>>> acpi_evalf(hkey_handle, &output, "SSMS", "dd", 1);
+>>>>>>
+>>>>>>
+>>>>>> @alexhung,
+>>>>>> Do you have any idea why this can affect the power button behavior=
+?
+>>>>>>
+>>>>> I think we all lost track of this issue, but it unfortunately still=
+
+>>>>> exists in the latest kernel, requiring custom builds here. How can =
+we
+>>>>> proceed?
+>>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/091561=
+=2Ehtml
+>>>>
+>>>>
+>>>> If you cannot find "SSMS" in  your T520 ACPI dump, this mean mute LE=
+D
+>>>> cannot be turn on/off similar to T510
+>>> There is an entry (see attached disassembly), but this device has at
+>>> least no physical LED to drive.
+> Some hotkey leds are embedded on button.  Through the pictures I found
+> on the internet (thinkpad t520), it looks like there is a led at the
+> center of the mute button.
+
+Again, I'm on a X121e, and that has only a single physical LED for
+signaling the power state. The mute button is behind key combination of
+the keyboard.
+
+Jan
+
+
+
+--xQXeMThDWE7q28gpoIgwVUJrQ22x1XJDA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEARECAAYFAlWL39QACgkQitSsb3rl5xTdtACg2GujAqUtrn2L//EBylZVWhU/
+Y0YAn1f/3h0noj18rlhzRRNxdg07vNWC
+=Bv36
+-----END PGP SIGNATURE-----
+
+--xQXeMThDWE7q28gpoIgwVUJrQ22x1XJDA--
