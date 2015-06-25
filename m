@@ -1,61 +1,61 @@
-From: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>
-Subject: [PATCH] ALSA: usb-audio: Add MIDI support for
-	Steinberg MI2/MI4
-Date: Thu, 25 Jun 2015 17:26:46 +0200
-Message-ID: <1435246006-5333-1-git-send-email-dominic.sacre@gmx.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for
+ lockdep
+Date: Thu, 25 Jun 2015 16:33:25 +0100
+Message-ID: <20150625153325.GR14071@sirena.org.uk>
+References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+ <558C0067.2000401@linux.intel.com>
+ <558C1824.8020204@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 43F7D2606D7
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 17:27:46 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>, Albert Huitsing <albert@huitsing.nl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="KMy4IPbjBvHJdHUq"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <558C1824.8020204@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Arjan van de Ven <arjan@linux.intel.com>, Nicolas Boichat <drinkcat@chromium.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZhY2VzIGFyZSBjb21wYXRpYmxlIHdpdGgg
-dGhlIFVTQiBjbGFzcwphdWRpbyBzcGVjLCBidXQgdGhlIE1JREkgcGFydCBvZiB0aGUgZGV2aWNl
-cyBpcyByZXBvcnRlZCBhcyBhIHZlbmRvcgpzcGVjaWZpYyBpbnRlcmZhY2UuCgpUaGlzIHBhdGNo
-IGFkZHMgZW50cmllcyB0byBxdWlya3MtdGFibGUuaCB0byByZWNvZ25pemUgdGhlIE1JREkKZW5k
-cG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFsaXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVu
-YWZmZWN0ZWQgYnkKdGhpcyBjaGFuZ2UuCgpTaWduZWQtb2ZmLWJ5OiBEb21pbmljIFNhY3LDqSA8
-ZG9taW5pYy5zYWNyZUBnbXguZGU+ClNpZ25lZC1vZmYtYnk6IEFsYmVydCBIdWl0c2luZyA8YWxi
-ZXJ0QGh1aXRzaW5nLm5sPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDQzICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA0
-MyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIGIv
-c291bmQvdXNiL3F1aXJrcy10YWJsZS5oCmluZGV4IDJmNmQzZTkuLjMwNGMwMmEgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAorKysgYi9zb3VuZC91c2IvcXVpcmtzLXRhYmxl
-LmgKQEAgLTMxNTIsNiArMzE1Miw0OSBAQCBBVTA4MjhfREVWSUNFKDB4MjA0MCwgMHg3MjcwLCAi
-SGF1cHBhdWdlIiwgIkhWUi05NTBRIiksCiB9LAogCiB7CisJLyogU3RlaW5iZXJnIE1JMiAqLwor
-CVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwYTRlLCAweDIwNDApLAorCS5kcml2ZXJfaW5mbyA9
-ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgewor
-CQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9IFFVSVJLX0NPTVBPU0lU
-RSwKKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlya1tdKSB7CisJ
-CQl7CisJCQkJLmlmbnVtID0gMywKKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9J
-TlQsCisJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5m
-bykgeworCQkJCQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyAgPSAweDAw
-MDEKKwkJCQl9CisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IC0xCisJCQl9CisJCX0KKwl9Cit9
-LAoreworCS8qIFN0ZWluYmVyZyBNSTQgKi8KKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4MGE0
-ZSwgMHg0MDQwKSwKKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3Ry
-dWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKKwkJLmlmbnVtID0gUVVJUktfQU5ZX0lOVEVSRkFD
-RSwKKwkJLnR5cGUgPSBRVUlSS19DT01QT1NJVEUsCisJCS5kYXRhID0gJiAoY29uc3Qgc3RydWN0
-IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDMsCisJCQkJLnR5
-cGUgPSBRVUlSS19NSURJX0ZJWEVEX0VORFBPSU5ULAorCQkJCS5kYXRhID0gJihjb25zdCBzdHJ1
-Y3Qgc25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8pIHsKKwkJCQkJLm91dF9jYWJsZXMgPSAweDAw
-MDEsCisJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCisJCQkJfQorCQkJfSwKKwkJCXsKKwkJCQku
-aWZudW0gPSAtMQorCQkJfQorCQl9CisJfQorfSwKKworewogCS8qCiAJICogU29tZSBVU0IgTUlE
-SSBkZXZpY2VzIGRvbid0IGhhdmUgYW4gYXVkaW8gY29udHJvbCBpbnRlcmZhY2UsCiAJICogc28g
-d2UgaGF2ZSB0byBncmFiIE1JREkgc3RyZWFtaW5nIGludGVyZmFjZXMgaGVyZS4KLS0gCjIuNC40
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--KMy4IPbjBvHJdHUq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jun 25, 2015 at 05:03:00PM +0200, Lars-Peter Clausen wrote:
+> On 06/25/2015 03:21 PM, Arjan van de Ven wrote:
+
+> >wouldn't it be better to use the mutex_lock_nested() and co to explicitly
+> >express your hierarchy?
+
+> That would require that the hierarchy is known in advance. The hierarchy
+> depends on the hardware topology. Different systems will have different
+> hierarchies where the relationship between locks can change and it will be
+> hard to find a hierarchy that works across all topologies.
+
+It depends on what you use as the key for the nested locking stuff.  If
+you assign a key per regmap (casting the pointer to an integer, using an
+IDR or something).  I don't know if that creates problems for the
+locking code, I'd not expect so but then I'd not have expected the
+problem in the first place.
+
+As far as I can tell we're likely to end up needing a key per regmap or
+something similar.
+
+--KMy4IPbjBvHJdHUq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVjB9EAAoJECTWi3JdVIfQxt8H+QFdAj/+TyH/1KlE9WkHGYEK
+s83rDdR0R4n53CsKHMHixuF+9iDD3plUqy2Vq7PnRkxYh8T/WY7z28Zo4Ch74W7n
+DGRpDue1Ggr8k5TwjuE7g1bblBlTEDXhnhKsCns+cwsA/0JE4MiapF4FAPKzpQvp
+IM4dlyNcEPnSXkexN6yLBcRVYf0RaaULnsxdC5SXNuVx6R7hp+1nBI6TglvDdd+m
+seKrAAk69s3uIb+k34EJL0NCsC7hXC5e0fE35qShRCXOANRd6POo4RN9Kg2KkDVX
+w5n9yfwGAc1D+vRlCIw1Ec+ydyINW8/P7pd8vhBD3AdpgS4uPA6tKg0jJMDrRPM=
+=Ep0B
+-----END PGP SIGNATURE-----
+
+--KMy4IPbjBvHJdHUq--
