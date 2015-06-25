@@ -1,81 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for
- lockdep
-Date: Thu, 25 Jun 2015 17:08:17 +0100
-Message-ID: <20150625160817.GT14071@sirena.org.uk>
-References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
- <558C0067.2000401@linux.intel.com>
- <558C1824.8020204@metafoo.de>
- <20150625153325.GR14071@sirena.org.uk>
- <558C229D.4090409@metafoo.de>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: Fwd: [alsa-devel] [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+	of WM510205 codec via ACPI (resend)
+Date: Thu, 25 Jun 2015 17:11:08 +0100
+Message-ID: <20150625161108.GF6321@opensource.wolfsonmicro.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com> <20150625073618.GH827@lahna.fi.intel.com> <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <20150625155612.GS14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vvTiEWYgUls3zgj3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <558C229D.4090409@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Arjan van de Ven <arjan@linux.intel.com>, Nicolas Boichat <drinkcat@chromium.org>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+In-Reply-To: <20150625155612.GS14071-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jun 25, 2015 at 04:56:12PM +0100, Mark Brown wrote:
+> On Thu, Jun 25, 2015 at 04:44:07PM +0100, Charles Keepax wrote:
+> > On Thu, Jun 25, 2015 at 03:58:53PM +0100, Mark Brown wrote:
+> > > On Thu, Jun 25, 2015 at 02:18:23PM +0200, Christian Hartmann wrote:
+> 
+> > > >                 Name (_HID, "WM510205")  // _HID: Hardware ID
+> > > >                 Name (_CID, "WM510205")  // _CID: Compatible ID
+> > > >                 Name (_DDN, "Wolfson Microelectronics Audio WM5102")
+> 
+> > > Separately to the chip select discussion one thing to highlight here is
+> > > that for some reason the BIOS is listing the device as "WM510205" rather
+> > > than "WM5102" - do those extra numbers mean anything and does this mean
+> > > that WM50120[1-4] and possibly higher numbers are also valid?
+> 
+> > From my brief discussions with the Windows guys here on this
+> > basically those last two digits are being used to inform the
+> > Windows driver of use-case setup. So here it will set things up
+> > for whatever the Window's driver considers to be setup "5".
+> 
+> Yay for scalability and abstraction.
 
---vvTiEWYgUls3zgj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Well it certainly is abstract.
 
-On Thu, Jun 25, 2015 at 05:47:41PM +0200, Lars-Peter Clausen wrote:
-> On 06/25/2015 05:33 PM, Mark Brown wrote:
+> 
+> > I think from the Linux side we can safely ignore those last two
+> > digits. I expect that all systems of the same make and model
+> > would report the same last two digits but that it might change
+> > between models if the Windows driver is expected to something
+> > differently for that model.
+> 
+> Well, we might want to consider using this to set our platform data
+> instead of the machine ID if people have just been copying a smallish
+> set of reference designs, it might might make for a slightly smaller set
+> of ID tables than the machine ID based stuff does.
+> 
+> Due to the way ACPI ID matching works we'll also need to add every
+> suffix individually to the table, we're looking for complete matches not
+> substring matches here.
 
-> >It depends on what you use as the key for the nested locking stuff.  If
-> >you assign a key per regmap (casting the pointer to an integer, using an
-> >IDR or something).  I don't know if that creates problems for the
-> >locking code, I'd not expect so but then I'd not have expected the
-> >problem in the first place.
+>From what I can gather currently yes every system has a different
+suffix so it should be fine to skip checking the machine ID and
+just use the ACPI ID to select the pdata.
 
-> The maximum number of subclasses is 8 per lockclass, so a IDR that
-> increments which each created regmap instance wouldn't really work.
-
-Oh, fail.  Yeah, subclasses just won't work at all here and we need full
-classes.
-
-> And while on the other hand we probably wont have a hierarchy deeper than 8
-> nested regmap instances it is not trivial to figure out which instance is at
-> which level.
-
-Yes, indeed.
-
-> >As far as I can tell we're likely to end up needing a key per regmap or
-> >something similar.
-
-> Since the number of lockdep classes itself is also limited we should avoid
-> creating extra lockdep classes when we can. I think the approach which
-> having the option of specifying a lockdep class in the regmap config will be
-> ok. The only case it can't handle if we nest instances with the same config,
-> but I don't really see valid use scases for that at the moment.
-
-Oh, ffs.  This just keeps getting better.  I hadn't been aware of that
-limitation.  We still have the problem that this needs to be something
-users can understand rather than something that's just "define something
-here in one of your drivers if you're running into problems with
-spurious warnings" here.  That's always been the biggest problem here
-(once we got past the "what is this supposed to do in the first place?"
-issues).
-
---vvTiEWYgUls3zgj3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVjCdwAAoJECTWi3JdVIfQfJ4H/1NYHi8ECacwj+s1/Lxb2hpt
-COpjDcifZ5bIcJwXr4h+CNpIKSVMp0cVkyzmsuI9n0wLIUIOfMnJLOl080PwcpMZ
-szf8BNFdui3O1qO4dq1EsRJIjiOlGncczvrL2p/RR3RlozHHXaKh/TVrgviFU41T
-zavipqd4JjjQC1UXnVfYWwceT3I5GpCf6MtbirOntzbXMJDlj0IcDP/VWfoIAgU4
-h7hMJ/pC64ODUadC7XKAlxVczXCiO2SqwFwzY/yvknwQeSfzu+wLlMCpfkuIkHD0
-khGL5qm9awCg+nk8kelksK+IDIwVwMs/vRc7Ig5nU8zvvvGf4KtV7wWxBoao0nE=
-=5wXs
------END PGP SIGNATURE-----
-
---vvTiEWYgUls3zgj3--
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
