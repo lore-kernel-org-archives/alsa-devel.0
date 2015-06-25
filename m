@@ -1,65 +1,67 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: Fwd: [alsa-devel] [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
-	of WM510205 codec via ACPI (resend)
-Date: Thu, 25 Jun 2015 17:11:08 +0100
-Message-ID: <20150625161108.GF6321@opensource.wolfsonmicro.com>
-References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com> <20150625073618.GH827@lahna.fi.intel.com> <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <20150625155612.GS14071@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Thu, 25 Jun 2015 22:17:17 +0530
+Message-ID: <20150625164717.GU19530@localhost>
+References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+ <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+ <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
+ <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+ <552D1EE3.6090707@linux.intel.com>
+ <20150624101613.GK19530@localhost>
+ <20150625055046.GT19530@localhost>
+ <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85390260676
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 18:45:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20150625155612.GS14071-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
+In-Reply-To: <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Antonio Ospite <ao2@ao2.it>
+Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 25, 2015 at 04:56:12PM +0100, Mark Brown wrote:
-> On Thu, Jun 25, 2015 at 04:44:07PM +0100, Charles Keepax wrote:
-> > On Thu, Jun 25, 2015 at 03:58:53PM +0100, Mark Brown wrote:
-> > > On Thu, Jun 25, 2015 at 02:18:23PM +0200, Christian Hartmann wrote:
+On Thu, Jun 25, 2015 at 12:21:24PM +0200, Antonio Ospite wrote:
+> On Thu, 25 Jun 2015 11:20:46 +0530
+> Vinod Koul <vinod.koul@intel.com> wrote:
 > 
-> > > >                 Name (_HID, "WM510205")  // _HID: Hardware ID
-> > > >                 Name (_CID, "WM510205")  // _CID: Compatible ID
-> > > >                 Name (_DDN, "Wolfson Microelectronics Audio WM5102")
+> > On Wed, Jun 24, 2015 at 03:46:13PM +0530, Vinod Koul wrote:
+> > > On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
+> [...]
+> > > > 
+> > > > Which makes me thinking how does those strings describe the SSP port
+> > > > setup? E.g. do they reflect what port is actually used or could it
+> > > > be possible that those are just driver strings but firmware could
+> > > > have been tuned for SSP0? If I looked at earlier right, Teclast has
+> > > > the low pin-count Baytrail without SSP2 but I'm not sure about that.
+> > > The FW doesnt provide way to changes ports from driver in this, so this
+> > > doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
+> > > test
+> > I ahve pushed latest BYT version we have as well as added binary for second
+> > SSP port. Please give it a try:
+> > 
+> > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt&id=28ff420dd33ec299217bad7d526ff3bfd163b551
+> > 
 > 
-> > > Separately to the chip select discussion one thing to highlight here is
-> > > that for some reason the BIOS is listing the device as "WM510205" rather
-> > > than "WM5102" - do those extra numbers mean anything and does this mean
-> > > that WM50120[1-4] and possibly higher numbers are also valid?
-> 
-> > From my brief discussions with the Windows guys here on this
-> > basically those last two digits are being used to inform the
-> > Windows driver of use-case setup. So here it will set things up
-> > for whatever the Window's driver considers to be setup "5".
-> 
-> Yay for scalability and abstraction.
+> Thanks Vinod, but I see these are in the ELF format, and the mainline
+> driver does not support this format, at least the last time I checked it
+> didn't.
+My bad, updated the patch now with right format
 
-Well it certainly is abstract.
+https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
 
-> 
-> > I think from the Linux side we can safely ignore those last two
-> > digits. I expect that all systems of the same make and model
-> > would report the same last two digits but that it might change
-> > between models if the Windows driver is expected to something
-> > differently for that model.
-> 
-> Well, we might want to consider using this to set our platform data
-> instead of the machine ID if people have just been copying a smallish
-> set of reference designs, it might might make for a slightly smaller set
-> of ID tables than the machine ID based stuff does.
-> 
-> Due to the way ACPI ID matching works we'll also need to add every
-> suffix individually to the table, we're looking for complete matches not
-> substring matches here.
-
->From what I can gather currently yes every system has a different
-suffix so it should be fine to skip checking the machine ID and
-just use the ACPI ID to select the pdata.
-
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+~Vinod
