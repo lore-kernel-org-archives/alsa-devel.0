@@ -1,65 +1,100 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: lm49453: Remove fs_rate from struct
-	lm49453_priv
-Date: Thu, 25 Jun 2015 17:01:14 +0800
-Message-ID: <1435222874.22996.1.camel@ingics.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
- [209.85.192.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E19260499
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 11:01:21 +0200 (CEST)
-Received: by pdbep18 with SMTP id ep18so27547582pdb.1
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 02:01:20 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [RFC PATCH 1/2] regmap: add configurable lock class key for lockdep
+Date: Thu, 25 Jun 2015 17:35:03 +0800
+Message-ID: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Arjan van de Ven <arjan@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-fs_rate is only used in lm49453_hw_params() so don't need to store it in
-private data.
+From: Antti Palosaari <crope@iki.fi>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Lockdep validator complains about recursive locking and deadlock
+when two different regmap instances are called in a nested order.
+That happens anytime a regmap read/write call needs to access
+another regmap.
+
+This is because, for performance reason, lockdep groups all locks
+initialized by the same mutex_init() in the same lock class.
+Therefore all regmap mutexes are in the same lock class, leading
+to lockdep "nested locking" warnings if a regmap accesses another
+regmap. However, depending on the specifics of the driver, this
+can be perfectly safe (e.g. if there is a clear hierarchy between
+a "master" regmap that uses another "slave" regmap). In these
+cases, the warning is false and should be silenced.
+
+As a solution, add configuration option to pass custom lock class
+key for lockdep validator, to be used in the regmap that needs to
+access another regmap. This removes the need for uglier workarounds
+in drivers, just to silence this warning (e.g. add custom mutex
+lock/unlock functions).
+
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+[drinkcat@chromium.org: Reworded the commit message and regmap.h
+documentation]
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 ---
- sound/soc/codecs/lm49453.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 6600aa0..5b4086d 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -188,7 +188,6 @@ static struct reg_default lm49453_reg_defs[] = {
- /* codec private data */
- struct lm49453_priv {
- 	struct regmap *regmap;
--	int fs_rate;
- };
+I'm trying to revive Antti's patch [1], as we are hitting similar issue
+with rt5677 driver. I only updated the commit message and documentation,
+I kept both Signed-off-by and From lines, with a small note highlighting
+my changes, let me know if that's not appropriate.
+
+One issue that was raised by Mark at the time is that a per-regmap_config
+lock class might not be enough (Mark mentioned clocks as an example). The
+current implementation should be good enough as long as the clock regmaps
+do not access each other. If this is a problem, maybe we should consider
+replacing lockdep_lock_class_key by a boolean use_own_lock_class that would
+allocate/use a per regmap instance lock class, or have devm_regmap_init
+take an extra parameter specifying the lock class.
+
+[1] https://www.mail-archive.com/linux-media%40vger.kernel.org/msg83490.html
+
+ drivers/base/regmap/regmap.c | 3 +++
+ include/linux/regmap.h       | 7 +++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 6273ff0..f5d1131 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -560,6 +560,9 @@ struct regmap *regmap_init(struct device *dev,
+ 			mutex_init(&map->mutex);
+ 			map->lock = regmap_lock_mutex;
+ 			map->unlock = regmap_unlock_mutex;
++			if (config->lockdep_lock_class_key)
++				lockdep_set_class(&map->mutex,
++						config->lockdep_lock_class_key);
+ 		}
+ 		map->lock_arg = map;
+ 	}
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 116655d..09aaaf5 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -135,6 +135,12 @@ typedef void (*regmap_unlock)(void *);
+  * @lock_arg:	  this field is passed as the only argument of lock/unlock
+  *		  functions (ignored in case regular lock/unlock functions
+  *		  are not overridden).
++ * @lock_class_key: Custom lock class key for lockdep validator. Use that to
++ *                  silence false lockdep nested locking warning, when this
++ *                  regmap needs to access another regmap during read/write
++ *                  operations (directly in read/write functions, or
++ *                  indirectly, e.g. through bus accesses).
++ *                  Valid only when regmap default mutex locking is used.
+  * @reg_read:	  Optional callback that if filled will be used to perform
+  *           	  all the reads from the registers. Should only be provided for
+  *		  devices whose read operation cannot be represented as a simple
+@@ -198,6 +204,7 @@ struct regmap_config {
+ 	regmap_lock lock;
+ 	regmap_unlock unlock;
+ 	void *lock_arg;
++	struct lock_class_key *lockdep_lock_class_key;
  
- /* capture path controls */
-@@ -1112,13 +1111,10 @@ static int lm49453_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
--	struct lm49453_priv *lm49453 = snd_soc_codec_get_drvdata(codec);
- 	u16 clk_div = 0;
- 
--	lm49453->fs_rate = params_rate(params);
--
- 	/* Setting DAC clock dividers based on substream sample rate. */
--	switch (lm49453->fs_rate) {
-+	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
- 	case 32000:
+ 	int (*reg_read)(void *context, unsigned int reg, unsigned int *val);
+ 	int (*reg_write)(void *context, unsigned int reg, unsigned int val);
 -- 
-2.1.0
+2.4.3.573.g4eafbef
