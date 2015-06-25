@@ -1,65 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for
- lockdep
-Date: Thu, 25 Jun 2015 15:49:48 +0100
-Message-ID: <20150625144948.GO14071@sirena.org.uk>
-References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+From: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>
+Subject: [PATCH] ALSA: usb-audio: Add MIDI support for
+	Steinberg MI2/MI4
+Date: Thu, 25 Jun 2015 17:26:46 +0200
+Message-ID: <1435246006-5333-1-git-send-email-dominic.sacre@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6B7kCplWPsCd3Wyv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Arjan van de Ven <arjan@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43F7D2606D7
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 17:27:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>, Albert Huitsing <albert@huitsing.nl>
 List-Id: alsa-devel@alsa-project.org
 
-
---6B7kCplWPsCd3Wyv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 25, 2015 at 05:35:03PM +0800, Nicolas Boichat wrote:
-
-> I'm trying to revive Antti's patch [1], as we are hitting similar issue
-> with rt5677 driver. I only updated the commit message and documentation,
-> I kept both Signed-off-by and From lines, with a small note highlighting
-> my changes, let me know if that's not appropriate.
-
-This continues to have the same problems as the previous version of the
-patch where I can't really tell how users are supposed to figure out if
-they should use this or not.  There will be cases where there is a clear
-use within the driver itself but as far as I can tell almost any driver
-might be bitten by this if some underlying driver on a given system
-happens to use a regmap so should be allocating a class.
-
-> One issue that was raised by Mark at the time is that a per-regmap_config
-> lock class might not be enough (Mark mentioned clocks as an example). The
-> current implementation should be good enough as long as the clock regmaps
-> do not access each other. If this is a problem, maybe we should consider
-> replacing lockdep_lock_class_key by a boolean use_own_lock_class that would
-> allocate/use a per regmap instance lock class, or have devm_regmap_init
-> take an extra parameter specifying the lock class.
-
-I think this is a problem and making this something that every regmap
-does by default was my original suggestion, there's also Arjan's
-suggestion of just using nested mutexes rather than classes.
-
---6B7kCplWPsCd3Wyv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVjBULAAoJECTWi3JdVIfQ13MH/3dSe3ZQF9GF8jH6+jT+2VuY
-j/1ZtPyBdrdf60emFcSbfTSwR8A+STvziNg83zsEGE7/v1/AKkdPSvFcUT9c2SXP
-3QMirLtDexKWB/3ZNaFeKy+Xj/mh3ZfSg/W7UdsmHTQSOsQiUUo5C/DLv8xerR65
-WMf8H2n9rGDXvEwR3j7cYbLcsIaG/FTG5Qah47f68/6v/1SUd+xZK+L8mAcQsio9
-4wEBFnZle6+2L08eA9LKoKF9ZIiR+3cOeq9kU2ECU6QbcKzW5fD/Mlit15pUeSVr
-+UXJBwDxPCQm/x21I1wbkCl2fapMF8sS8FWRP7V9z8Yj6uHWjtp5iBKqDwsZ9pc=
-=yTqq
------END PGP SIGNATURE-----
-
---6B7kCplWPsCd3Wyv--
+VGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZhY2VzIGFyZSBjb21wYXRpYmxlIHdpdGgg
+dGhlIFVTQiBjbGFzcwphdWRpbyBzcGVjLCBidXQgdGhlIE1JREkgcGFydCBvZiB0aGUgZGV2aWNl
+cyBpcyByZXBvcnRlZCBhcyBhIHZlbmRvcgpzcGVjaWZpYyBpbnRlcmZhY2UuCgpUaGlzIHBhdGNo
+IGFkZHMgZW50cmllcyB0byBxdWlya3MtdGFibGUuaCB0byByZWNvZ25pemUgdGhlIE1JREkKZW5k
+cG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFsaXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVu
+YWZmZWN0ZWQgYnkKdGhpcyBjaGFuZ2UuCgpTaWduZWQtb2ZmLWJ5OiBEb21pbmljIFNhY3LDqSA8
+ZG9taW5pYy5zYWNyZUBnbXguZGU+ClNpZ25lZC1vZmYtYnk6IEFsYmVydCBIdWl0c2luZyA8YWxi
+ZXJ0QGh1aXRzaW5nLm5sPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDQzICsrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA0
+MyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIGIv
+c291bmQvdXNiL3F1aXJrcy10YWJsZS5oCmluZGV4IDJmNmQzZTkuLjMwNGMwMmEgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAorKysgYi9zb3VuZC91c2IvcXVpcmtzLXRhYmxl
+LmgKQEAgLTMxNTIsNiArMzE1Miw0OSBAQCBBVTA4MjhfREVWSUNFKDB4MjA0MCwgMHg3MjcwLCAi
+SGF1cHBhdWdlIiwgIkhWUi05NTBRIiksCiB9LAogCiB7CisJLyogU3RlaW5iZXJnIE1JMiAqLwor
+CVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwYTRlLCAweDIwNDApLAorCS5kcml2ZXJfaW5mbyA9
+ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgewor
+CQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9IFFVSVJLX0NPTVBPU0lU
+RSwKKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlya1tdKSB7CisJ
+CQl7CisJCQkJLmlmbnVtID0gMywKKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9J
+TlQsCisJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5m
+bykgeworCQkJCQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyAgPSAweDAw
+MDEKKwkJCQl9CisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IC0xCisJCQl9CisJCX0KKwl9Cit9
+LAoreworCS8qIFN0ZWluYmVyZyBNSTQgKi8KKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4MGE0
+ZSwgMHg0MDQwKSwKKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3Ry
+dWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKKwkJLmlmbnVtID0gUVVJUktfQU5ZX0lOVEVSRkFD
+RSwKKwkJLnR5cGUgPSBRVUlSS19DT01QT1NJVEUsCisJCS5kYXRhID0gJiAoY29uc3Qgc3RydWN0
+IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDMsCisJCQkJLnR5
+cGUgPSBRVUlSS19NSURJX0ZJWEVEX0VORFBPSU5ULAorCQkJCS5kYXRhID0gJihjb25zdCBzdHJ1
+Y3Qgc25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8pIHsKKwkJCQkJLm91dF9jYWJsZXMgPSAweDAw
+MDEsCisJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCisJCQkJfQorCQkJfSwKKwkJCXsKKwkJCQku
+aWZudW0gPSAtMQorCQkJfQorCQl9CisJfQorfSwKKworewogCS8qCiAJICogU29tZSBVU0IgTUlE
+SSBkZXZpY2VzIGRvbid0IGhhdmUgYW4gYXVkaW8gY29udHJvbCBpbnRlcmZhY2UsCiAJICogc28g
+d2UgaGF2ZSB0byBncmFiIE1JREkgc3RyZWFtaW5nIGludGVyZmFjZXMgaGVyZS4KLS0gCjIuNC40
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
