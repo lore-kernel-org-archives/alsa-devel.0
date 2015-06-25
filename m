@@ -1,130 +1,69 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
- displayport multi-stream to hda codec.
-Date: Thu, 25 Jun 2015 10:44:51 +0100
-Message-ID: <1435225491.9221.16.camel@loki>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
- <s5h7fqv7u7s.wl-tiwai@suse.de> <1434979769.2503.32.camel@loki>
- <1434986474.6176.53.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hioafeoj4.wl-tiwai@suse.de>
- <1435045881.6176.76.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hmvzqyhk6.wl-tiwai@suse.de>
- <1435149708.23893.55.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <1435151171.2655.67.camel@loki>
- <1435178842.7153.34.camel@tkkaskin-mobl3.ger.corp.intel.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Thu, 25 Jun 2015 12:21:24 +0200
+Message-ID: <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
+References: <20150223183913.fb262011d6300425da7f34be@ao2.it>
+ <20150303151621.c6fc3cfa308aed62484b87a0@ao2.it>
+ <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
+ <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+ <552D1EE3.6090707@linux.intel.com>
+ <20150624101613.GK19530@localhost>
+ <20150625055046.GT19530@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1435178842.7153.34.camel@tkkaskin-mobl3.ger.corp.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "Kaskinen, Tanu" <tanu.kaskinen@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Lu,
- Han" <han.lu@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83AAA26007E
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 12:21:38 +0200 (CEST)
+In-Reply-To: <20150625055046.GT19530@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE1LTA2LTI0IGF0IDIwOjQ3ICswMDAwLCBLYXNraW5lbiwgVGFudSB3cm90ZToK
-PiBPbiBXZWQsIDIwMTUtMDYtMjQgYXQgMTQ6MDYgKzAxMDAsIExpYW0gR2lyZHdvb2Qgd3JvdGU6
-Cj4gPiBPbiBXZWQsIDIwMTUtMDYtMjQgYXQgMTI6NDEgKzAwMDAsIEthc2tpbmVuLCBUYW51IHdy
-b3RlOgo+ID4gPiBPbiBUdWUsIDIwMTUtMDYtMjMgYXQgMTA6MDYgKzAyMDAsIFRha2FzaGkgSXdh
-aSB3cm90ZToKPiA+ID4gPiBBdCBUdWUsIDIzIEp1biAyMDE1IDA3OjUxOjIyICswMDAwLAo+ID4g
-PiA+IEthc2tpbmVuLCBUYW51IHdyb3RlOgo+ID4gPiA+ID4gCj4gPiA+ID4gPiAoQWRkZWQgcHVs
-c2VhdWRpby1kaXNjdXNzIHRvIENDLikKPiA+ID4gPiA+IAo+ID4gPiA+ID4gT24gTW9uLCAyMDE1
-LTA2LTIyIGF0IDE3OjQ0ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+ID4gPiA+IEF0
-IE1vbiwgMjIgSnVuIDIwMTUgMTU6MjE6MTYgKzAwMDAsCj4gPiA+ID4gPiA+IEthc2tpbmVuLCBU
-YW51IHdyb3RlOgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IE9uIE1vbiwgMjAxNS0wNi0y
-MiBhdCAxNDoyOSArMDEwMCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPiA+ID4gCj4gPiA+IDxzbmlw
-Pgo+ID4gPiAKPiA+ID4gPiA+ID4gPiA+IFRhbnUsIHdoYXQncyB5b3VyIHRha2Ugb24gdGhlIGVm
-Zm9ydCBmb3IgZHluYW1pY2FsbHkgY3JlYXRlZCBQQ01zCj4gPiA+ID4gPiA+ID4gPiBzdXBwb3J0
-IGZvciBwdWxzZWF1ZGlvID8KPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBJdCdzIGEgc2ln
-bmlmaWNhbnQgYW1vdW50IG9mIHdvcmssIGJ1dCBJIHRoaW5rIFB1bHNlQXVkaW8gc2hvdWxkIGJl
-Cj4gPiA+ID4gPiA+ID4gaW1wcm92ZWQgdG8gc3VwcG9ydCB0aGlzIGluIGFueSBjYXNlLCBpZiBv
-dGhlciBhcHByb2FjaGVzIG1ha2UgbGlmZQo+ID4gPiA+ID4gPiA+IG1pc2VyYWJsZSBmb3IgZHJp
-dmVyIGRldmVsb3BlcnMuCj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gV2hhdCB3b3VsZCBi
-ZSB0aGUgaW50ZXJmYWNlIGZvciBnZXR0aW5nIG5vdGlmaWNhdGlvbnMgYWJvdXQgbmV3IGFuZAo+
-ID4gPiA+ID4gPiA+IHJlbW92ZWQgUENNIGRldmljZXM/IHVkZXY/Cj4gPiA+ID4gPiA+IAo+ID4g
-PiA+ID4gPiBJbiBnZW5lcmFsLCB5ZXMuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IFB1bHNl
-QXVkaW8gKG1vc3RseSkgZG9lc24ndCB1c2UgdGhlIGh3OlggZGV2aWNlcyBkaXJlY3RseS4gSW5z
-dGVhZCwgaXQKPiA+ID4gPiA+ID4gPiB1c2VzIGxvZ2ljYWwgbmFtZXMgbGlrZSAiZnJvbnQiLCAi
-aGRtaSIsICJpZWM5NTgiLCBldGMuIFNwZWFraW5nIG9mIEhETUkKPiA+ID4gPiA+ID4gPiBzcGVj
-aWZpY2FsbHksIFB1bHNlQXVkaW8gdXNlcyBkZXZpY2VzIGZyb20gImhkbWk6WCwwIiB0byAiaGRt
-aTpYLDciLgo+ID4gPiA+ID4gPiA+IFdpdGggdGhpcyBuZXcgZHluYW1pYyBQQ00gc3lzdGVtLCBk
-byB0aGVzZSBsb2dpY2FsIG5hbWVzIHN0aWxsIHdvcms/Cj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4g
-PiBVbmZvcnR1bmF0ZWx5LCB0aGlzIGRvZXNuJ3Qgd29yayBmb3IgSERBIGFzIGlzLCBiZWNhdXNl
-IG9mIHRoZQo+ID4gPiA+ID4gPiB0ZXJyaWJseSBhcmNhbmUgc2VjcmV0LiAgRm9yIGtlZXBpbmcg
-dGhlIGNvbXBhdGliaWxpdHkgd2l0aCB0aGUgb2xkCj4gPiA+ID4gPiA+IGNvbmZpZywgdGhlcmUg
-aXMgYSBzdGF0aWMgbWFwcGluZyBvZiB0aGUgaGRtaTp4LHkgYW5kIGh3Ongsei4KPiA+ID4gPiA+
-ID4gCj4gPiA+ID4gPiA+IE1heWJlIHdlIHNob3VsZCBpbnRyb2R1Y2UgYSBuZXcgZGV2aWNlIGNs
-YXNzIGZvciBkeW5hbWljIEhETUkvRFAKPiA+ID4gPiA+ID4gZGV2aWNlLCBzb21ldGhpbmcgbGlr
-ZSBkaGRtaTp4LHksIHRvIG1ha2UgdGhpbmdzIHN0cmFpZ2h0Zm9yd2FyZC4KPiA+ID4gPiA+ID4g
-KEp1c3QgYSBjb25jZXB0IC0tIEknbSBub3QgZ29vZCBhdCBuYW1pbmcuKQo+ID4gPiA+ID4gPiAK
-PiA+ID4gPiA+ID4gQWx0ZXJuYXRpdmVseSwgd2UgbWF5IGludHJvZHVjZSBhIG5ldyBhcmd1bWVu
-dCB0byBoZG1pIFBDTSB0byBhY2Nlc3MKPiA+ID4gPiA+ID4gbGlrZSAiaGRtaTpDQVJEPXgsU1lT
-REVWPXkiLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBXaGF0IGhhcHBlbnMgaWYgUHVsc2VBdWRpbyB0
-cmllcyB0byBvcGVuICJkaGRtaTp4LHkiIG9yCj4gPiA+ID4gPiAiaGRtaTpDQVJEPXgsU1lTREVW
-PXkiLCB3aGVuIHkgcG9pbnRzIHRvIGEgbm9uLUhETUkgZGV2aWNlPyBJZiBpdCBmYWlscywKPiA+
-ID4gPiA+IHRoZW4gUHVsc2VBdWRpbyBjYW4gcmVwbGFjZSBpdHMgY3VycmVudCAiaGRtaTp4LFsw
-LTddIiBkZXZpY2VzIHdpdGgKPiA+ID4gPiA+ICJoZG1pOkNBUkQ9WCxTWVNERVY9WzAtMTNdIiBh
-bmQgYmxpbmRseSB0cnkgZXZlcnkgaHcgUENNIGRldmljZS4gQnV0IGlmCj4gPiA+ID4gPiBvcGVu
-aW5nIGEgbm9uLUhETUkgZGV2aWNlIHRocm91Z2ggImhkbWk6Q0FSRD14LFNZU0RFVj15IiBzdWNj
-ZWVkcywgdGhlbgo+ID4gPiA+ID4gaG93IGlzIFB1bHNlQXVkaW8gc3VwcG9zZWQgdG8ga25vdyB3
-aGljaCBodyBQQ00gZGV2aWNlcyBhcmUgSERNSQo+ID4gPiA+ID4gZGV2aWNlcz8KPiA+ID4gPiAK
-PiA+ID4gPiBJdCdzIGEgZ29vZCBxdWVzdGlvbi4gIEkgdGhpbmsgdGhpcyBpcyB0aGUgY29yZSBw
-YXJ0IG9mIHRoZSBtaXNzaW5nCj4gPiA+ID4gcGllY2VzLgo+ID4gPiA+IAo+ID4gPiA+IFdoYXQg
-SSBoYXZlIGluIG15IG1pbmQgaXMgdG8gZXh0ZW5kIFNORFJWX1BDTV9DTEFTU18qIGRlZmluaXRp
-b24gZm9yCj4gPiA+ID4gZGVkaWNhdGVkIHRvIEhETUkvRFAsIGUuZy4gU05EUlZfUENNX0NMQVNT
-X0hETUkuICBUaGUgZGlmZmVyZW5jZQo+ID4gPiA+IGJldHdlZW4gRFAgYW5kIEhETUkgY2FuIGJl
-IHNwZWNpZmllZCBpbiBzdWJjbGFzcyBvcHRpb25hbGx5Lgo+ID4gPiAKPiA+ID4gU291bmRzIGdv
-b2QuIEtub3dpbmcgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBIRE1JLCBEaXNwbGF5UG9ydCBhbmQK
-PiA+ID4gVGh1bmRlcmJvbHQgd291bGQgYmUgdmVyeSBuaWNlIHRvby4gSXQgd291bGQgZW5hYmxl
-IGJldHRlciBsYWJlbGxpbmcgaW4KPiA+ID4gVUlzLgo+ID4gPiAKPiA+ID4gSSBoYXZlIG9uZSBt
-aW5vciBjb25jZXJuLCB0aG91Z2g6IHdoYXQgaWYgYSBQQ00gZGV2aWNlIGlzbid0IHN0YXRpY2Fs
-bHkKPiA+ID4gYXNzaWduZWQgdG8gb25lIG91dHB1dCBjb25uZWN0b3I/IElzIGl0IHBvc3NpYmxl
-IHRoYXQgc29tZSBEU1AgaXMgYWJsZQo+ID4gPiB0byBkeW5hbWljYWxseSBjaGFuZ2UgdGhlIFBD
-TSByb3V0aW5nIGJldHdlZW4gZGlmZmVyZW50IG91dHB1dHM/IEluCj4gPiA+IHRob3NlIGNhc2Vz
-IHRoZSBQQ00gY2xhc3Mgd291bGQgYmUgdXNlbGVzcyBpbmZvcm1hdGlvbiAodW5sZXNzIHRoZXJl
-IGFyZQo+ID4gPiBub3RpZmljYXRpb25zIHdoZW4gdGhlIGNsYXNzIGNoYW5nZXMpLiBJIGRvbid0
-IGhhdmUgYW55IGJldHRlciBpZGVhcywKPiA+ID4gdGhvdWdoLgo+ID4gPiAKPiA+IAo+ID4gVGhp
-cyBpcyBwb3NzaWJsZSBhdG0sIHdlIGNhbiByb3V0ZSBmcm9tIG9uZSBQQ00gdG8gbXVsdGlwbGUg
-b3V0cHV0cwo+ID4gZGVwZW5kaW5nIG9uIERTUCBhbmQgY29kZWMgbWl4ZXIgc2V0dGluZ3MuIFRo
-ZSBvdXRwdXRzIGNhbiBldmVuIGJlIG9uCj4gPiBkaWZmZXJlbnQgcGh5c2ljYWwgaW50ZXJmYWNl
-cy4gCj4gCj4gSG1tLCBteSBxdWVzdGlvbiB3YXMgYSBiaXQgc2lsbHkuIEl0IGhhcyBiZWVuIHBv
-c3NpYmxlIGZvcmV2ZXIgdG8gc3dpdGNoCj4gYmV0d2VlbiBlLmcuIGhlYWRwaG9uZXMgYW5kIHNw
-ZWFrZXJzIHVzaW5nIGp1c3QgdGhlIG1peGVyLiBBbmQgaW4gdGhpcwo+IGNhc2UgdGhhdCB3ZSdy
-ZSBkaXNjdXNzaW5nLCB0aGUgcXVlc3Rpb24gd2FzIGlycmVsZXZhbnQgYW55d2F5LCBiZWNhdXNl
-Cj4gc3VyZWx5IHRoZSBkeW5hbWljYWxseSBjcmVhdGVkIFBDTSB3b3VsZCBiZSBkZWRpY2F0ZWQg
-dG8gdGhlIHBsdWdnZWQtaW4KPiBIRE1JIHBvcnQsIG90aGVyd2lzZSB0aGUgZHluYW1pYyBjcmVh
-dGlvbiB3b3VsZG4ndCByZWFsbHkgbWFrZSBzZW5zZS4KPiBTbywgc2V0dGluZyB0aGUgUENNIGNs
-YXNzIHNob3VsZCB3b3JrIGF0IGxlYXN0IGluIHRoaXMgY2FzZS4KPiAKPiBJZiB0aGVyZSBhcmUg
-Y2FzZXMgd2hlcmUgdGhlIERTUCBtYXkgcm91dGUgdGhlIHNhbWUgUENNIHRvIGVpdGhlciBIRE1J
-Cj4gb3Igbm9uLUhETUkgb3V0cHV0IGRlcGVuZGluZyBvbiBtaXhlciBzZXR0aW5ncywgdGhlbiB0
-aGF0J3Mgd2hlbiB0aGUgUENNCj4gY2xhc3Mgd291bGQgYmUgbGVzcyB1c2VmdWwuCj4gCgpZZWFo
-LCB3ZSBtYXkgbmVlZCB0byBwcm92aWRlIG90aGVyIGhpbnRzIGhlcmUuIERTUHMgbWFrZSBpdCBw
-b3NzaWJsZSBub3cKdG8gcm91dGUgb25lIFBDTSB0byBtdWx0aXBsZSBIVyBlbmRwb2ludHMuIAoK
-PiBJbiBhbnkgY2FzZSwgUHVsc2VBdWRpbyBuZWVkcyB0byBmaWd1cmUgb3V0IHdoZXRoZXIgaXQg
-c2hvdWxkIGlnbm9yZSB0aGUKPiBQQ00gY2xhc3MgYW5kIHVzZSAiaGRtaTp4LHkiIG9yIHdoZXRo
-ZXIgaXQgc2hvdWxkIGNoZWNrIHRoZSBQQ00gY2xhc3MKPiBhbmQgdXNlICJoZG1pOkNBUkQ9eCxT
-WVNERVY9eSIuIEhvdyBzaG91bGQgdGhhdCBiZSBkb25lPyBJcyBjaGVja2luZyB0aGUKPiBrZXJu
-ZWwgKGFuZCBhbHNhLWxpYikgdmVyc2lvbiBhIGdvb2QgYXBwcm9hY2gsIG9yIGlzIHNvbWUgb3Ro
-ZXIKPiBtZWNoYW5pc20gbmVlZGVkPyBDaGVja2luZyB0aGUgdmVyc2lvbnMgc2hvdWxkIHdvcmss
-IGlmIGFsbCBIRE1JIGF1ZGlvCj4gZHJpdmVycyBzdGFydCB0byBzZXQgdGhlIFBDTSBjbGFzcyBh
-dCB0aGUgc2FtZSB0aW1lLCBidXQgaWYgc29tZSBkcml2ZXJzCj4gc2V0IGl0IGFuZCBzb21lIGRv
-bid0LCB0aGVuIHZlcnNpb24gY2hlY2tpbmcgaXNuJ3QgYSByZWxpYWJsZSBzb2x1dGlvbi4KCnN0
-cnVjdCBzbmRfcGNtX2luZm8gZG9lcyBoYXZlIHNvbWUgcmVzZXJ2ZWQgc3BhY2UgKDY0IGJ5dGVz
-IGN1cnJlbnRseQpzZXQgYXMgMCkgdGhhdCBjb3VsZCBiZSB1c2VkIHRvIGRpZmZlcmVudGlhdGUg
-YW5kIHByb3ZpZGUgaW5mb3JtYXRpb24gb24KdGhlIFBDTSA/CgpMaWFtCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0
-CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Thu, 25 Jun 2015 11:20:46 +0530
+Vinod Koul <vinod.koul@intel.com> wrote:
+
+> On Wed, Jun 24, 2015 at 03:46:13PM +0530, Vinod Koul wrote:
+> > On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
+[...]
+> > > 
+> > > Which makes me thinking how does those strings describe the SSP port
+> > > setup? E.g. do they reflect what port is actually used or could it
+> > > be possible that those are just driver strings but firmware could
+> > > have been tuned for SSP0? If I looked at earlier right, Teclast has
+> > > the low pin-count Baytrail without SSP2 but I'm not sure about that.
+> > The FW doesnt provide way to changes ports from driver in this, so this
+> > doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
+> > test
+> I ahve pushed latest BYT version we have as well as added binary for second
+> SSP port. Please give it a try:
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt&id=28ff420dd33ec299217bad7d526ff3bfd163b551
+> 
+
+Thanks Vinod, but I see these are in the ELF format, and the mainline
+driver does not support this format, at least the last time I checked it
+didn't.
+
+Ciao,
+   Antonio
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
