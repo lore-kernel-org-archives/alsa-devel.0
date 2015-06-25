@@ -1,110 +1,130 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: [RFC PATCH 2/2] ASoC: rt5677: Add lockdep class to silence lockdep warnings
-Date: Thu, 25 Jun 2015 17:35:04 +0800
-Message-ID: <1435224904-35517-2-git-send-email-drinkcat@chromium.org>
-References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Arjan van de Ven <arjan@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
+ displayport multi-stream to hda codec.
+Date: Thu, 25 Jun 2015 10:44:51 +0100
+Message-ID: <1435225491.9221.16.camel@loki>
+References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
+ <1434513719-3580-4-git-send-email-airlied@gmail.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
+ <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
+ <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
+ <s5h7fqv7u7s.wl-tiwai@suse.de> <1434979769.2503.32.camel@loki>
+ <1434986474.6176.53.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hioafeoj4.wl-tiwai@suse.de>
+ <1435045881.6176.76.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hmvzqyhk6.wl-tiwai@suse.de>
+ <1435149708.23893.55.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <1435151171.2655.67.camel@loki>
+ <1435178842.7153.34.camel@tkkaskin-mobl3.ger.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1435178842.7153.34.camel@tkkaskin-mobl3.ger.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Kaskinen, Tanu" <tanu.kaskinen@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Lu,
+ Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Accessing rt5677->regmap requires read/write operations on
-another regmap (rt5677->regmap_physical), which causes the
-lockdep detector to throw a false warning, as both regmaps
-are using the same lockdep class by default. Introduce a new
-class for rt5677->regmap to silence this warning.
-
-Sample warning:
-[    2.569449] =============================================
-[    2.569451] [ INFO: possible recursive locking detected ]
-[    2.569454] 3.18.0 #311 Tainted: G S
-[    2.569456] ---------------------------------------------
-[    2.569458] swapper/0/1 is trying to acquire lock:
-[    2.569469]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569470]
-[    2.569470] but task is already holding lock:
-[    2.569476]  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569478]
-[    2.569478] other info that might help us debug this:
-[    2.569479]  Possible unsafe locking scenario:
-[    2.569479]
-[    2.569480]        CPU0
-[    2.569481]        ----
-[    2.569484]   lock(&map->mutex);
-[    2.569486]   lock(&map->mutex);
-[    2.569487]
-[    2.569487]  *** DEADLOCK ***
-[    2.569487]
-[    2.569489]  May be due to missing lock nesting notation
-[    2.569489]
-[    2.569491] 3 locks held by swapper/0/1:
-[    2.569499]  #0:  (&dev->mutex){......}, at: [<ffffffc000369e80>]
-__driver_attach+0x38/0x98
-[    2.569505]  #1:  (&dev->mutex){......}, at: [<ffffffc000369ea0>]
-__driver_attach+0x58/0x98
-[    2.569512]  #2:  (&map->mutex){+.+...}, at: [<ffffffc00037dba0>]
-regmap_lock_mutex+0x10/0x18
-[    2.569513]
-[    2.569513] stack backtrace:
-[    2.569517] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G S
-3.18.0 #311
-[    2.569521] Call trace:
-[    2.569527] [<ffffffc000089198>] dump_backtrace+0x0/0x108
-[    2.569530] [<ffffffc0000892b0>] show_stack+0x10/0x1c
-[    2.569535] [<ffffffc0005e09b4>] dump_stack+0x74/0x94
-[    2.569540] [<ffffffc0000d5d1c>] __lock_acquire+0x73c/0x1910
-[    2.569544] [<ffffffc0000d7674>] lock_acquire+0xec/0x128
-[    2.569548] [<ffffffc0005e3870>] mutex_lock_nested+0x58/0x354
-[    2.569551] [<ffffffc00037db9c>] regmap_lock_mutex+0xc/0x18
-[    2.569554] [<ffffffc00037ef50>] regmap_read+0x34/0x68
-[    2.569559] [<ffffffc0004ddc84>] rt5677_read+0x9c/0xb4
-[    2.569562] [<ffffffc00037ee8c>] _regmap_read+0xa8/0x138
-[    2.569565] [<ffffffc00037ef60>] regmap_read+0x44/0x68
-[    2.569569] [<ffffffc0004dd6a4>] rt5677_i2c_probe+0x25c/0x4a4
-[    2.569574] [<ffffffc00042984c>] i2c_device_probe+0xfc/0x130
-[    2.569577] [<ffffffc000369c58>] driver_probe_device+0xd4/0x23c
-[    2.569580] [<ffffffc000369eb0>] __driver_attach+0x68/0x98
-[    2.569584] [<ffffffc000368dc8>] bus_for_each_dev+0x70/0x90
-[    2.569588] [<ffffffc0003697e4>] driver_attach+0x1c/0x28
-[    2.569591] [<ffffffc000369400>] bus_add_driver+0xd8/0x1e0
-[    2.569594] [<ffffffc00036a7f0>] driver_register+0xbc/0x10c
-[    2.569598] [<ffffffc00042a4bc>] i2c_register_driver+0x48/0xac
-[    2.569601] [<ffffffc0008d523c>] rt5677_i2c_driver_init+0x14/0x20
-[    2.569605] [<ffffffc0000828dc>] do_one_initcall+0xf4/0x18c
-[    2.569609] [<ffffffc0008a4ae8>] kernel_init_freeable+0x144/0x1e4
-[    2.569613] [<ffffffc0005de3a4>] kernel_init+0x10/0xd4
-
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
- sound/soc/codecs/rt5677.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 31d969a..3007d13 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4998,6 +4998,7 @@ static const struct regmap_config rt5677_regmap_physical = {
- 	.num_ranges = ARRAY_SIZE(rt5677_ranges),
- };
- 
-+static struct lock_class_key rt5677_regmap_key;
- static const struct regmap_config rt5677_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
-@@ -5015,6 +5016,10 @@ static const struct regmap_config rt5677_regmap = {
- 	.num_reg_defaults = ARRAY_SIZE(rt5677_reg),
- 	.ranges = rt5677_ranges,
- 	.num_ranges = ARRAY_SIZE(rt5677_ranges),
-+
-+	/* Silence incorrect lockdep warnings, as rt5677_regmap_physical is
-+	 * accessed from within rt5677_regmap. */
-+	.lockdep_lock_class_key = &rt5677_regmap_key,
- };
- 
- static const struct i2c_device_id rt5677_i2c_id[] = {
--- 
-2.4.3.573.g4eafbef
+T24gV2VkLCAyMDE1LTA2LTI0IGF0IDIwOjQ3ICswMDAwLCBLYXNraW5lbiwgVGFudSB3cm90ZToK
+PiBPbiBXZWQsIDIwMTUtMDYtMjQgYXQgMTQ6MDYgKzAxMDAsIExpYW0gR2lyZHdvb2Qgd3JvdGU6
+Cj4gPiBPbiBXZWQsIDIwMTUtMDYtMjQgYXQgMTI6NDEgKzAwMDAsIEthc2tpbmVuLCBUYW51IHdy
+b3RlOgo+ID4gPiBPbiBUdWUsIDIwMTUtMDYtMjMgYXQgMTA6MDYgKzAyMDAsIFRha2FzaGkgSXdh
+aSB3cm90ZToKPiA+ID4gPiBBdCBUdWUsIDIzIEp1biAyMDE1IDA3OjUxOjIyICswMDAwLAo+ID4g
+PiA+IEthc2tpbmVuLCBUYW51IHdyb3RlOgo+ID4gPiA+ID4gCj4gPiA+ID4gPiAoQWRkZWQgcHVs
+c2VhdWRpby1kaXNjdXNzIHRvIENDLikKPiA+ID4gPiA+IAo+ID4gPiA+ID4gT24gTW9uLCAyMDE1
+LTA2LTIyIGF0IDE3OjQ0ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+ID4gPiA+IEF0
+IE1vbiwgMjIgSnVuIDIwMTUgMTU6MjE6MTYgKzAwMDAsCj4gPiA+ID4gPiA+IEthc2tpbmVuLCBU
+YW51IHdyb3RlOgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IE9uIE1vbiwgMjAxNS0wNi0y
+MiBhdCAxNDoyOSArMDEwMCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPiA+ID4gCj4gPiA+IDxzbmlw
+Pgo+ID4gPiAKPiA+ID4gPiA+ID4gPiA+IFRhbnUsIHdoYXQncyB5b3VyIHRha2Ugb24gdGhlIGVm
+Zm9ydCBmb3IgZHluYW1pY2FsbHkgY3JlYXRlZCBQQ01zCj4gPiA+ID4gPiA+ID4gPiBzdXBwb3J0
+IGZvciBwdWxzZWF1ZGlvID8KPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBJdCdzIGEgc2ln
+bmlmaWNhbnQgYW1vdW50IG9mIHdvcmssIGJ1dCBJIHRoaW5rIFB1bHNlQXVkaW8gc2hvdWxkIGJl
+Cj4gPiA+ID4gPiA+ID4gaW1wcm92ZWQgdG8gc3VwcG9ydCB0aGlzIGluIGFueSBjYXNlLCBpZiBv
+dGhlciBhcHByb2FjaGVzIG1ha2UgbGlmZQo+ID4gPiA+ID4gPiA+IG1pc2VyYWJsZSBmb3IgZHJp
+dmVyIGRldmVsb3BlcnMuCj4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gV2hhdCB3b3VsZCBi
+ZSB0aGUgaW50ZXJmYWNlIGZvciBnZXR0aW5nIG5vdGlmaWNhdGlvbnMgYWJvdXQgbmV3IGFuZAo+
+ID4gPiA+ID4gPiA+IHJlbW92ZWQgUENNIGRldmljZXM/IHVkZXY/Cj4gPiA+ID4gPiA+IAo+ID4g
+PiA+ID4gPiBJbiBnZW5lcmFsLCB5ZXMuCj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IFB1bHNl
+QXVkaW8gKG1vc3RseSkgZG9lc24ndCB1c2UgdGhlIGh3OlggZGV2aWNlcyBkaXJlY3RseS4gSW5z
+dGVhZCwgaXQKPiA+ID4gPiA+ID4gPiB1c2VzIGxvZ2ljYWwgbmFtZXMgbGlrZSAiZnJvbnQiLCAi
+aGRtaSIsICJpZWM5NTgiLCBldGMuIFNwZWFraW5nIG9mIEhETUkKPiA+ID4gPiA+ID4gPiBzcGVj
+aWZpY2FsbHksIFB1bHNlQXVkaW8gdXNlcyBkZXZpY2VzIGZyb20gImhkbWk6WCwwIiB0byAiaGRt
+aTpYLDciLgo+ID4gPiA+ID4gPiA+IFdpdGggdGhpcyBuZXcgZHluYW1pYyBQQ00gc3lzdGVtLCBk
+byB0aGVzZSBsb2dpY2FsIG5hbWVzIHN0aWxsIHdvcms/Cj4gPiA+ID4gPiA+IAo+ID4gPiA+ID4g
+PiBVbmZvcnR1bmF0ZWx5LCB0aGlzIGRvZXNuJ3Qgd29yayBmb3IgSERBIGFzIGlzLCBiZWNhdXNl
+IG9mIHRoZQo+ID4gPiA+ID4gPiB0ZXJyaWJseSBhcmNhbmUgc2VjcmV0LiAgRm9yIGtlZXBpbmcg
+dGhlIGNvbXBhdGliaWxpdHkgd2l0aCB0aGUgb2xkCj4gPiA+ID4gPiA+IGNvbmZpZywgdGhlcmUg
+aXMgYSBzdGF0aWMgbWFwcGluZyBvZiB0aGUgaGRtaTp4LHkgYW5kIGh3Ongsei4KPiA+ID4gPiA+
+ID4gCj4gPiA+ID4gPiA+IE1heWJlIHdlIHNob3VsZCBpbnRyb2R1Y2UgYSBuZXcgZGV2aWNlIGNs
+YXNzIGZvciBkeW5hbWljIEhETUkvRFAKPiA+ID4gPiA+ID4gZGV2aWNlLCBzb21ldGhpbmcgbGlr
+ZSBkaGRtaTp4LHksIHRvIG1ha2UgdGhpbmdzIHN0cmFpZ2h0Zm9yd2FyZC4KPiA+ID4gPiA+ID4g
+KEp1c3QgYSBjb25jZXB0IC0tIEknbSBub3QgZ29vZCBhdCBuYW1pbmcuKQo+ID4gPiA+ID4gPiAK
+PiA+ID4gPiA+ID4gQWx0ZXJuYXRpdmVseSwgd2UgbWF5IGludHJvZHVjZSBhIG5ldyBhcmd1bWVu
+dCB0byBoZG1pIFBDTSB0byBhY2Nlc3MKPiA+ID4gPiA+ID4gbGlrZSAiaGRtaTpDQVJEPXgsU1lT
+REVWPXkiLgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBXaGF0IGhhcHBlbnMgaWYgUHVsc2VBdWRpbyB0
+cmllcyB0byBvcGVuICJkaGRtaTp4LHkiIG9yCj4gPiA+ID4gPiAiaGRtaTpDQVJEPXgsU1lTREVW
+PXkiLCB3aGVuIHkgcG9pbnRzIHRvIGEgbm9uLUhETUkgZGV2aWNlPyBJZiBpdCBmYWlscywKPiA+
+ID4gPiA+IHRoZW4gUHVsc2VBdWRpbyBjYW4gcmVwbGFjZSBpdHMgY3VycmVudCAiaGRtaTp4LFsw
+LTddIiBkZXZpY2VzIHdpdGgKPiA+ID4gPiA+ICJoZG1pOkNBUkQ9WCxTWVNERVY9WzAtMTNdIiBh
+bmQgYmxpbmRseSB0cnkgZXZlcnkgaHcgUENNIGRldmljZS4gQnV0IGlmCj4gPiA+ID4gPiBvcGVu
+aW5nIGEgbm9uLUhETUkgZGV2aWNlIHRocm91Z2ggImhkbWk6Q0FSRD14LFNZU0RFVj15IiBzdWNj
+ZWVkcywgdGhlbgo+ID4gPiA+ID4gaG93IGlzIFB1bHNlQXVkaW8gc3VwcG9zZWQgdG8ga25vdyB3
+aGljaCBodyBQQ00gZGV2aWNlcyBhcmUgSERNSQo+ID4gPiA+ID4gZGV2aWNlcz8KPiA+ID4gPiAK
+PiA+ID4gPiBJdCdzIGEgZ29vZCBxdWVzdGlvbi4gIEkgdGhpbmsgdGhpcyBpcyB0aGUgY29yZSBw
+YXJ0IG9mIHRoZSBtaXNzaW5nCj4gPiA+ID4gcGllY2VzLgo+ID4gPiA+IAo+ID4gPiA+IFdoYXQg
+SSBoYXZlIGluIG15IG1pbmQgaXMgdG8gZXh0ZW5kIFNORFJWX1BDTV9DTEFTU18qIGRlZmluaXRp
+b24gZm9yCj4gPiA+ID4gZGVkaWNhdGVkIHRvIEhETUkvRFAsIGUuZy4gU05EUlZfUENNX0NMQVNT
+X0hETUkuICBUaGUgZGlmZmVyZW5jZQo+ID4gPiA+IGJldHdlZW4gRFAgYW5kIEhETUkgY2FuIGJl
+IHNwZWNpZmllZCBpbiBzdWJjbGFzcyBvcHRpb25hbGx5Lgo+ID4gPiAKPiA+ID4gU291bmRzIGdv
+b2QuIEtub3dpbmcgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBIRE1JLCBEaXNwbGF5UG9ydCBhbmQK
+PiA+ID4gVGh1bmRlcmJvbHQgd291bGQgYmUgdmVyeSBuaWNlIHRvby4gSXQgd291bGQgZW5hYmxl
+IGJldHRlciBsYWJlbGxpbmcgaW4KPiA+ID4gVUlzLgo+ID4gPiAKPiA+ID4gSSBoYXZlIG9uZSBt
+aW5vciBjb25jZXJuLCB0aG91Z2g6IHdoYXQgaWYgYSBQQ00gZGV2aWNlIGlzbid0IHN0YXRpY2Fs
+bHkKPiA+ID4gYXNzaWduZWQgdG8gb25lIG91dHB1dCBjb25uZWN0b3I/IElzIGl0IHBvc3NpYmxl
+IHRoYXQgc29tZSBEU1AgaXMgYWJsZQo+ID4gPiB0byBkeW5hbWljYWxseSBjaGFuZ2UgdGhlIFBD
+TSByb3V0aW5nIGJldHdlZW4gZGlmZmVyZW50IG91dHB1dHM/IEluCj4gPiA+IHRob3NlIGNhc2Vz
+IHRoZSBQQ00gY2xhc3Mgd291bGQgYmUgdXNlbGVzcyBpbmZvcm1hdGlvbiAodW5sZXNzIHRoZXJl
+IGFyZQo+ID4gPiBub3RpZmljYXRpb25zIHdoZW4gdGhlIGNsYXNzIGNoYW5nZXMpLiBJIGRvbid0
+IGhhdmUgYW55IGJldHRlciBpZGVhcywKPiA+ID4gdGhvdWdoLgo+ID4gPiAKPiA+IAo+ID4gVGhp
+cyBpcyBwb3NzaWJsZSBhdG0sIHdlIGNhbiByb3V0ZSBmcm9tIG9uZSBQQ00gdG8gbXVsdGlwbGUg
+b3V0cHV0cwo+ID4gZGVwZW5kaW5nIG9uIERTUCBhbmQgY29kZWMgbWl4ZXIgc2V0dGluZ3MuIFRo
+ZSBvdXRwdXRzIGNhbiBldmVuIGJlIG9uCj4gPiBkaWZmZXJlbnQgcGh5c2ljYWwgaW50ZXJmYWNl
+cy4gCj4gCj4gSG1tLCBteSBxdWVzdGlvbiB3YXMgYSBiaXQgc2lsbHkuIEl0IGhhcyBiZWVuIHBv
+c3NpYmxlIGZvcmV2ZXIgdG8gc3dpdGNoCj4gYmV0d2VlbiBlLmcuIGhlYWRwaG9uZXMgYW5kIHNw
+ZWFrZXJzIHVzaW5nIGp1c3QgdGhlIG1peGVyLiBBbmQgaW4gdGhpcwo+IGNhc2UgdGhhdCB3ZSdy
+ZSBkaXNjdXNzaW5nLCB0aGUgcXVlc3Rpb24gd2FzIGlycmVsZXZhbnQgYW55d2F5LCBiZWNhdXNl
+Cj4gc3VyZWx5IHRoZSBkeW5hbWljYWxseSBjcmVhdGVkIFBDTSB3b3VsZCBiZSBkZWRpY2F0ZWQg
+dG8gdGhlIHBsdWdnZWQtaW4KPiBIRE1JIHBvcnQsIG90aGVyd2lzZSB0aGUgZHluYW1pYyBjcmVh
+dGlvbiB3b3VsZG4ndCByZWFsbHkgbWFrZSBzZW5zZS4KPiBTbywgc2V0dGluZyB0aGUgUENNIGNs
+YXNzIHNob3VsZCB3b3JrIGF0IGxlYXN0IGluIHRoaXMgY2FzZS4KPiAKPiBJZiB0aGVyZSBhcmUg
+Y2FzZXMgd2hlcmUgdGhlIERTUCBtYXkgcm91dGUgdGhlIHNhbWUgUENNIHRvIGVpdGhlciBIRE1J
+Cj4gb3Igbm9uLUhETUkgb3V0cHV0IGRlcGVuZGluZyBvbiBtaXhlciBzZXR0aW5ncywgdGhlbiB0
+aGF0J3Mgd2hlbiB0aGUgUENNCj4gY2xhc3Mgd291bGQgYmUgbGVzcyB1c2VmdWwuCj4gCgpZZWFo
+LCB3ZSBtYXkgbmVlZCB0byBwcm92aWRlIG90aGVyIGhpbnRzIGhlcmUuIERTUHMgbWFrZSBpdCBw
+b3NzaWJsZSBub3cKdG8gcm91dGUgb25lIFBDTSB0byBtdWx0aXBsZSBIVyBlbmRwb2ludHMuIAoK
+PiBJbiBhbnkgY2FzZSwgUHVsc2VBdWRpbyBuZWVkcyB0byBmaWd1cmUgb3V0IHdoZXRoZXIgaXQg
+c2hvdWxkIGlnbm9yZSB0aGUKPiBQQ00gY2xhc3MgYW5kIHVzZSAiaGRtaTp4LHkiIG9yIHdoZXRo
+ZXIgaXQgc2hvdWxkIGNoZWNrIHRoZSBQQ00gY2xhc3MKPiBhbmQgdXNlICJoZG1pOkNBUkQ9eCxT
+WVNERVY9eSIuIEhvdyBzaG91bGQgdGhhdCBiZSBkb25lPyBJcyBjaGVja2luZyB0aGUKPiBrZXJu
+ZWwgKGFuZCBhbHNhLWxpYikgdmVyc2lvbiBhIGdvb2QgYXBwcm9hY2gsIG9yIGlzIHNvbWUgb3Ro
+ZXIKPiBtZWNoYW5pc20gbmVlZGVkPyBDaGVja2luZyB0aGUgdmVyc2lvbnMgc2hvdWxkIHdvcmss
+IGlmIGFsbCBIRE1JIGF1ZGlvCj4gZHJpdmVycyBzdGFydCB0byBzZXQgdGhlIFBDTSBjbGFzcyBh
+dCB0aGUgc2FtZSB0aW1lLCBidXQgaWYgc29tZSBkcml2ZXJzCj4gc2V0IGl0IGFuZCBzb21lIGRv
+bid0LCB0aGVuIHZlcnNpb24gY2hlY2tpbmcgaXNuJ3QgYSByZWxpYWJsZSBzb2x1dGlvbi4KCnN0
+cnVjdCBzbmRfcGNtX2luZm8gZG9lcyBoYXZlIHNvbWUgcmVzZXJ2ZWQgc3BhY2UgKDY0IGJ5dGVz
+IGN1cnJlbnRseQpzZXQgYXMgMCkgdGhhdCBjb3VsZCBiZSB1c2VkIHRvIGRpZmZlcmVudGlhdGUg
+YW5kIHByb3ZpZGUgaW5mb3JtYXRpb24gb24KdGhlIFBDTSA/CgpMaWFtCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0
+CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
