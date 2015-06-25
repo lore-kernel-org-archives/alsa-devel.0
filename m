@@ -1,87 +1,138 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: cs42xx8: Setup of_match_table
-Date: Thu, 25 Jun 2015 21:44:13 +0800
-Message-ID: <1435239853.22170.4.camel@ingics.com>
-References: <1435239703.22170.1.camel@ingics.com>
+From: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: Fwd: [alsa-devel] [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Thu, 25 Jun 2015 17:01:05 +0300
+Message-ID: <20150625140105.GP827@lahna.fi.intel.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
+ <20150625073618.GH827@lahna.fi.intel.com>
+ <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id F3470260577
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 15:44:20 +0200 (CEST)
-Received: by pdbep18 with SMTP id ep18so32042693pdb.1
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 06:44:19 -0700 (PDT)
-In-Reply-To: <1435239703.22170.1.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Setup of_match_table and since cs42xx8_of_match is exported and used in
-cs42xx8-i2c.c, it cannot be static.
+On Thu, Jun 25, 2015 at 02:18:23PM +0200, Christian Hartmann wrote:
+> Hi Mika, Dan et al.
+> 
+> @Dan : thank you, I will use get_maintainer.pl as of now.
+> 
+> @Mika: you mean I should prepare a new DSDT table and in this case
+> overwrite the SPI  value there with the 0 and load it (the DSDT table
+> ) into a custom kernel build ?? I will do this (cause all what I want
+> is to enable the codec and to hear sound)
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs42xx8-i2c.c | 3 ++-
- sound/soc/codecs/cs42xx8.c     | 2 +-
- sound/soc/codecs/cs42xx8.h     | 1 +
- 3 files changed, 4 insertions(+), 2 deletions(-)
+I thought that you are developing a new system where you can affect the
+firmware/BIOS source.
 
-diff --git a/sound/soc/codecs/cs42xx8-i2c.c b/sound/soc/codecs/cs42xx8-i2c.c
-index 657dce2..5a71c9e 100644
---- a/sound/soc/codecs/cs42xx8-i2c.c
-+++ b/sound/soc/codecs/cs42xx8-i2c.c
-@@ -20,7 +20,7 @@
- static int cs42xx8_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
--	u32 ret = cs42xx8_probe(&i2c->dev,
-+	int ret = cs42xx8_probe(&i2c->dev,
- 			devm_regmap_init_i2c(i2c, &cs42xx8_regmap_config));
- 	if (ret)
- 		return ret;
-@@ -51,6 +51,7 @@ static struct i2c_driver cs42xx8_i2c_driver = {
- 		.name = "cs42xx8",
- 		.owner = THIS_MODULE,
- 		.pm = &cs42xx8_pm,
-+		.of_match_table = cs42xx8_of_match,
- 	},
- 	.probe = cs42xx8_i2c_probe,
- 	.remove = cs42xx8_i2c_remove,
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index ab39514..d562e1b 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -425,7 +425,7 @@ const struct cs42xx8_driver_data cs42888_data = {
- };
- EXPORT_SYMBOL_GPL(cs42888_data);
- 
--static const struct of_device_id cs42xx8_of_match[] = {
-+const struct of_device_id cs42xx8_of_match[] = {
- 	{ .compatible = "cirrus,cs42448", .data = &cs42448_data, },
- 	{ .compatible = "cirrus,cs42888", .data = &cs42888_data, },
- 	{ /* sentinel */ }
-diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
-index b2c10e5..d36c61b 100644
---- a/sound/soc/codecs/cs42xx8.h
-+++ b/sound/soc/codecs/cs42xx8.h
-@@ -22,6 +22,7 @@ extern const struct dev_pm_ops cs42xx8_pm;
- extern const struct cs42xx8_driver_data cs42448_data;
- extern const struct cs42xx8_driver_data cs42888_data;
- extern const struct regmap_config cs42xx8_regmap_config;
-+extern const struct of_device_id cs42xx8_of_match[];
- int cs42xx8_probe(struct device *dev, struct regmap *regmap);
- 
- /* CS42888 register map */
--- 
-2.1.0
+Obviously this is not the case so you have close to zero possibility to
+get the vendor to fix the broken firmware :-/
+
+> currently I have in the extracted DSDT table from this device the SPI1
+> controller for the "AUDI" device as seen in this snippet :
+> 
+>     Scope (_SB)
+>     {
+>         Device (LPEA)
+>         {
+>             Name (_ADR, Zero)  // _ADR: Address
+>             Name (_HID, "80860F28" /* Intel SST Audio DSP */)  //
+> _HID: Hardware ID
+>             Name (_CID, "80860F28" /* Intel SST Audio DSP */)  //
+> _CID: Compatible ID
+>             Name (_DDN, "Intel(R) Low Power Audio Controller -
+> 80860F28")  // _DDN: DOS Device Name
+>             Name (_SUB, "17AA7004")  // _SUB: Subsystem ID
+>             Name (_UID, One)  // _UID: Unique ID
+>             Name (_DEP, Package (0x01)  // _DEP: Dependencies
+>             {
+>                 ^SPI1.AUDI
+>             })
+>             Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
+>             {
+>                 PLPE
+>             })
+> 
+> .... some lines later follows the AUDI device with
+>             Device (AUDI)
+>             {
+>                 Name (_HID, "WM510205")  // _HID: Hardware ID
+>                 Name (_CID, "WM510205")  // _CID: Compatible ID
+>                 Name (_DDN, "Wolfson Microelectronics Audio WM5102")
+> // _DDN: DOS Device Name
+>                 Method (_CRS, 0, NotSerialized)  // _CRS: Current
+> Resource Settings
+>                 {
+>                     Name (SBUF, ResourceTemplate ()
+>                     {
+>                         SpiSerialBus (0x0001, PolarityLow, FourWireMode, 0x08,
+>                             ControllerInitiated, 0x007A1200, ClockPolarityLow,
+>                             ClockPhaseFirst, "\\_SB.SPI1",
+>                             0x00, ResourceConsumer, ,
+>                             )
+
+This is wrong as, like I said the Intel Baytrail SPI host controller
+only supports one native chipselect. 
+
+>                         GpioInt (Edge, ActiveLow, ExclusiveAndWake,
+> PullNone, 0x0000,
+>                             "\\_SB.GPO2", 0x00, ResourceConsumer, ,
+>                             )
+>                             {   // Pin list
+>                                 0x0004
+>                             }
+>                         GpioIo (Exclusive, PullDefault, 0x0000,
+> 0x0000, IoRestrictionOutputOnly,
+>                             "\\_SB.I2C7.PMIC", 0x00, ResourceConsumer, ,
+>                             )
+>                             {   // Pin list
+>                                 0x0003
+>                             }
+>                         GpioIo (Exclusive, PullDefault, 0x0000,
+> 0x0000, IoRestrictionOutputOnly,
+>                             "\\_SB.GPO1", 0x00, ResourceConsumer, ,
+>                             )
+>                             {   // Pin list
+>                                 0x0017
+>                             }
+>                     })
+>                     Return (SBUF) /* \_SB_.SPI1.AUDI._CRS.SBUF */
+>                 }
+> ....
+> 
+> I t makes sense to me, to change the current value(s) in the DSDT and
+> I have read about it to use a custom DSDT table but I am not 100% sure
+> yet (until I have tested it).
+> 
+> If I understand you correct, than all I have to do is to change the
+> 'SPI1' string in this dsdt to SPI0 like
+> ^SPI1.AUDI to ^SPI0.AUDI and this block here
+> SpiSerialBus (0x0001, PolarityLow, FourWireMode, 0x08,
+>                             ControllerInitiated, 0x007A1200, ClockPolarityLow,
+>                             ClockPhaseFirst, "\\_SB.SPI1",
+>                             0x00, ResourceConsumer, ,
+> 
+> becomes
+> SpiSerialBus (0x0000, PolarityLow, FourWireMode, 0x08,
+>                             ControllerInitiated, 0x007A1200, ClockPolarityLow,
+>                             ClockPhaseFirst, "\\_SB.SPI0",
+>                             0x00, ResourceConsumer, ,
+
+Only change the chipselect above. \\SB.SPI1 is the host controller and
+that's probably correct.
+
+It is worth a try using the custom DSDT. If it brings you working audio
+then we need to figure out how to work this around in the kernel.
+
+BTW, does the audio work in Windows?
+
+I somehow suspect that it just ignores the chipselect in the SPI driver
+which might explain why it works (if it works, that is).
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
