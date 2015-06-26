@@ -1,136 +1,77 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [alsa-devel] [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
- for more Thinkpads with Conexant codec
-Date: Fri, 26 Jun 2015 10:22:48 +0800
-Message-ID: <558CB778.5020307@canonical.com>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>	<53AFF992.5030403@web.de>	<53B0C596.6090007@canonical.com>	<53B1078B.4090101@web.de>	<53B219DF.6090807@canonical.com>	<53B26575.1000003@web.de>	<53B27ED7.4070401@canonical.com>	<53B50062.30200@web.de>	<53B51B63.8060809@canonical.com>	<53B51CF3.8090102@web.de>	<53B52146.9050300@canonical.com>	<55603F22.8070103@web.de> <CAN8cciZYZ4setSj7dgPqQUVrBrr98tSvofLrD_0zvyQqkWfd2Q@mail.gmail.com> <5560A93E.7060607@web.de> <558A4216.8010401@web.de> <558A6E80.7010003@canonical.com> <558BDFD4.9060301@web.de>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock
+	class key for lockdep
+Date: Fri, 26 Jun 2015 10:34:58 +0800
+Message-ID: <CANMq1KA_0m0phpg3JjXagRdzZX7Ar8ZCmUVHhZUyP4OirV7krw@mail.gmail.com>
+References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+ <558C2577.2040404@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <558BDFD4.9060301@web.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jan Kiszka <jan.kiszka@web.de>, Raymond Yau <superquad.vortex2@gmail.com>, alex.hung@canonical.com, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, david.henningsson@canonical.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
+ [209.85.218.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id A40472606E9
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 04:34:59 +0200 (CEST)
+Received: by oiax193 with SMTP id x193so66237501oia.2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 19:34:58 -0700 (PDT)
+In-Reply-To: <558C2577.2040404@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/25/2015 07:02 PM, Jan Kiszka wrote:
-> On 2015-06-24 10:46, Hui Wang wrote:
->> On 06/24/2015 01:37 PM, Jan Kiszka wrote:
->>> On 2015-05-23 18:22, Jan Kiszka wrote:
->>>> On 2015-05-23 18:06, Raymond Yau wrote:
->>>>> 2015-5-23 =E4=B8=8B=E5=8D=884:50 =E6=96=BC "Jan Kiszka" <jan.kisz=
-ka@web.de> =E5=AF=AB=E9=81=93=EF=BC=9A
->>>>>>>>>>>>>>>>> Most Thinkpad Edge series laptops use conexant codec,=
- so
->>>>>>>>>>>>>>>>> far
->>>>>>>>>>>>>>>>> although
->>>>>>>>>>> <snip>
->>>>>>>>>>>>>> Is there anything I can debug or any information I can c=
-ollect
->>>>>>>>>>>>>> from my
->>>>>>>>>>>>>> box to examine this?
->>>>>>>>>>>>> What is the linux distribution on your machine? And use
->>>>>>>>>>>>> showkey to
->>>>>>>>>>>>> catch
->>>>>>>>>>>>> the keycode of that button.
->>>>>>>>>>>> I'm running OpenSUSE 13.1. The reported keycode of the pow=
-er
->>>>>>>>>>>> button is
->>>>>>>>>>>> 116.
->>>>>>>>>>> It seems the keycode is correct, it is power keycode rather
->>>>>>>>>>> the mute
->>>>>>>>>>> keycode.
->>>>>>>>>>>
->>>>>>>>>>> Could you please do some debug, let us find which line of c=
-ode is
->>>>> the
->>>>>>>>>>> root cause for this problem. for example:
->>>>>>>>>>>
->>>>>>>>>>> after running the line, the problem shows up:
->>>>>>>>>>>
->>>>>>>>>>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068",
->>>>>>>>>>> acpi_check_cb,
->>>>>>>>>>> &found, NULL)) && found) // in the
->>>>>>>>>>> sound/pci/hda/thinkpad_helper.c,
->>>>>>>>>>> is_thinkpad()
->>>>>>>>>> This evaluates to true
->>>>>>>>>>
->>>>>>>>>>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068",
->>>>> acpi_check_cb,
->>>>>>>>>>> &found, NULL)) && found; // same as above
->>>>>>>>>>>
->>>>>>>>>>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0)=
- {
->>>>>>>>>>> //in the
->>>>>>>>>>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
->>>>>>>>>> ...and this
->>>>>>>>>>
->>>>>>>>>>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >=3D 0) { //=
- same as
->>>>>>>>>>> above
->>>>>>>>>>>
->>>>>>>>>> ...and this as well. spec->num_adc_nids is 1.
->>>>>>>>> If we change the code like below, does the power button can w=
-ork
->>>>>>>>> well?
->>>>>>>>>
->>>>>>>>> in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>            if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) {
->>>>>>>>>                /*
->>>>>>>>>                old_vmaster_hook =3D spec->vmaster_mute.hook;
->>>>>>>>>                spec->vmaster_mute.hook =3D update_tpacpi_mute=
-_led;
->>>>>>>>>                removefunc =3D false;
->>>>>>>>>               */
->>>>>>>> Disabling only this block resolves the issue.
->>>>>>> So Below two lines make the power button change to the reset bu=
-tton.
->>>>>>>
->>>>>>> drivers/platform/x86/thinkpad_acpi.c  mute_led_on_off():
->>>>>>>
->>>>>>> acpi_get_handle(hkey_handle, "SSMS", &temp);
->>>>>>> acpi_evalf(hkey_handle, &output, "SSMS", "dd", 1);
->>>>>>>
->>>>>>>
->>>>>>> @alexhung,
->>>>>>> Do you have any idea why this can affect the power button behav=
-ior?
->>>>>>>
->>>>>> I think we all lost track of this issue, but it unfortunately st=
-ill
->>>>>> exists in the latest kernel, requiring custom builds here. How c=
-an we
->>>>>> proceed?
->>>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/091=
-561.html
->>>>>
->>>>>
->>>>> If you cannot find "SSMS" in  your T520 ACPI dump, this mean mute=
- LED
->>>>> cannot be turn on/off similar to T510
->>>> There is an entry (see attached disassembly), but this device has =
-at
->>>> least no physical LED to drive.
->> Some hotkey leds are embedded on button.  Through the pictures I fou=
-nd
->> on the internet (thinkpad t520), it looks like there is a led at the
->> center of the mute button.
-> Again, I'm on a X121e, and that has only a single physical LED for
-> signaling the power state. The mute button is behind key combination =
-of
-> the keyboard.
+On Thu, Jun 25, 2015 at 11:59 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> [...]
+>>
+>> diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+>> index 116655d..09aaaf5 100644
+>> --- a/include/linux/regmap.h
+>> +++ b/include/linux/regmap.h
+>> @@ -135,6 +135,12 @@ typedef void (*regmap_unlock)(void *);
+>>    * @lock_arg:   this field is passed as the only argument of lock/unlock
+>>    *              functions (ignored in case regular lock/unlock functions
+>>    *              are not overridden).
+>> + * @lock_class_key: Custom lock class key for lockdep validator. Use that
+>> to
+>> + *                  silence false lockdep nested locking warning, when
+>> this
+>> + *                  regmap needs to access another regmap during
+>> read/write
+>> + *                  operations (directly in read/write functions, or
+>> + *                  indirectly, e.g. through bus accesses).
 >
-> Jan
-There is no reason to change a power button to a reset button after=20
-accessing the acpi device "SSMS", the "SSMS" is for the mute led instea=
-d=20
-of the power management.
+>
+> The recommendation when to use this is the wrong way around. The presented
+> criteria is true for all devices since the bus master might be using regmap
+> to implements its IO. Any regmap instance that might be used from within
+> another regmap instance needs a custom lock class. This includes bus masters
+> as well as resource providers like clock chips or regulators.
 
-I think it is better you login to the lenovo website and look for the=20
-latest BIOS image, then upgrade the BIOS on your machine to see if it=20
-can solve the problem or not.
->
+I would have thought that it is easier to figure out that a regmap is
+going to access another one, instead of figuring out all possible uses
+of a regmap...
+
+As it stands, I could only see 2 cases where this kind of warning
+happens (I did not find any other recursive locking warning involving
+regmaps...):
+1. rt5677: The "master" regmap is a "virtual" regmap, that, depending
+on the device mode (DSP or not), either directly access the register
+on a physical regmap on i2c bus, or does it indirectly, by doing a
+number of read/write on that same physical regmap.
+2. drivers/media/dvb-frontends/rtl2832.c: That's Antti's case. If I
+understand correctly, regmap access require transfers on a private i2c
+bus, which, itself, uses a regmap.
+
+I think both cases are _fairly_ clear, but of course that may not
+cover everything (and I'm not sure if anyone would figure it out
+before the warning shows up...), and I'm not sure if there are cases
+that look similar but don't require a lockdep class.
