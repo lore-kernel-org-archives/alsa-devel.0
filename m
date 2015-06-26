@@ -1,19 +1,17 @@
-From: Armin Ranjbar <zoup@zoup.org>
-Subject: Re: Sennheiser HDVD 800 Support
-Date: Fri, 26 Jun 2015 22:22:42 +0430
-Message-ID: <CAOvx4-3UvgrRpwO8EcavQeAnxDa5uDP+p+up_3SZXJJ4sMMSDg@mail.gmail.com>
-References: <CAOvx4-2g3V+Sdju3YGRBeaUFPK+1TMSQ=KXSmCrm1jV4VWE7Cw@mail.gmail.com>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 2/2] ASoC: cs42xx8: Setup of_match_table
+Date: Fri, 26 Jun 2015 13:29:11 -0500
+Message-ID: <alpine.DEB.2.10.1506261328210.7254@heelroid>
+References: <1435239703.22170.1.camel@ingics.com>
+ <1435239853.22170.4.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
- [209.85.212.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B941265340
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 19:53:02 +0200 (CEST)
-Received: by wicnd19 with SMTP id nd19so51334740wic.1
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 10:53:02 -0700 (PDT)
-In-Reply-To: <CAOvx4-2g3V+Sdju3YGRBeaUFPK+1TMSQ=KXSmCrm1jV4VWE7Cw@mail.gmail.com>
+Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A5A265340
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 20:27:20 +0200 (CEST)
+In-Reply-To: <1435239853.22170.4.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-for the record, issue was fixed by upgrading to 4.1.0.
+On Thu, 25 Jun 2015, Axel Lin wrote:
 
----
-Armin ranjbar
+> Setup of_match_table and since cs42xx8_of_match is exported and used in
+> cs42xx8-i2c.c, it cannot be static.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+For Both. Thanks Axel,
 
-
-On Fri, May 22, 2015 at 9:37 PM, Armin Ranjbar <zoup@zoup.org> wrote:
-
-> Dear everyone,
->
-> i have noticed that alas doesn't support HDVD-800 USB DAC, i can not hear
-> anything.
-> note that this device requires it's own driver under windows/mac.
->
-> this is my alsa-info output:
-> http://www.alsa-project.org/db/?f=fe56e65add73248baf5307a04b6b9deb2b236004
->
-> output of pasuspender -- aplay -Dplughw:2  some_file.wav:
-> ALSA lib pcm_hw.c:1667:(_snd_pcm_hw_open) Invalid value for card
-> main:722: audio open error: No such file or directory
->
-> output of aplay -v -fdat --dump-hw-params -d1 -Dhw:S20 /dev/zero:
-> http://pastebin.com/p2Daxza6
->
-> speaker-test -c2 -twav -Dplughw:S20 starts OK, but i can't hear anything/
->
-> product page:
-> http://en-us.sennheiser.com/headphone-audio-amplification-hdvd-800-acoustic
->
->
-> I'm open to help if you need anything to be done.
-> ---
-> Armin ranjbar
->
->
+Acked-by: Brian Austin <brian.austin@cirrus.com> 
