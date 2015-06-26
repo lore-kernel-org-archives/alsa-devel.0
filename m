@@ -1,23 +1,26 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Audio Driver Works In Ubuntu but Crash in Debian
- After 2nd Run
-Date: Fri, 26 Jun 2015 16:20:43 +0200
-Message-ID: <20150626162043.afb6d3249ad665db99665d4f@ao2.it>
-References: <CA+k7WwYp8aN0OWmSNjtYq-4w4s+00Ej7tcsjiqbj7BbiJ+MtQQ@mail.gmail.com>
- <557FD536.3020906@ladisch.de>
- <CA+k7WwZqBc9CyE0DpYnSW7ZVc6otZ8dJQ+9rtUXAsrKyv2j_nA@mail.gmail.com>
- <55812940.5050906@ladisch.de> <1434531934.2471.9.camel@loki>
- <CA+k7WwbSt-sxQePXx=A=2LJgNS2OPTrZQFhHcD2g02HM0P7NYg@mail.gmail.com>
- <5587B16A.90100@ti.com>
- <CA+k7WwZ2nW2T=YL59Ta98FGp751S6nv3d4rKU-qX5WGgdEmo0Q@mail.gmail.com>
+From: "Kaskinen, Tanu" <tanu.kaskinen@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 3/4] snd: add support for
+ displayport multi-stream to hda codec.
+Date: Fri, 26 Jun 2015 16:27:30 +0000
+Message-ID: <1435336050.7153.62.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
+ <1434513719-3580-4-git-send-email-airlied@gmail.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
+ <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
+ <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
+ <s5h7fqv7u7s.wl-tiwai@suse.de> <1434979769.2503.32.camel@loki>
+ <1434986474.6176.53.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hioafeoj4.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp209.alice.it (smtp209.alice.it [82.57.200.105])
- by alsa0.perex.cz (Postfix) with ESMTP id 98339265340
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 16:21:06 +0200 (CEST)
-In-Reply-To: <CA+k7WwZ2nW2T=YL59Ta98FGp751S6nv3d4rKU-qX5WGgdEmo0Q@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D49982614CD
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 18:27:37 +0200 (CEST)
+In-Reply-To: <s5hioafeoj4.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <038E70586CDAFE4E82325469658DADAE@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,39 +30,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Azizul Hakim <azizulfahim2002@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "Lu, Han" <han.lu@intel.com>, "airlied@gmail.com" <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Jun 2015 11:00:42 -0400
-Azizul Hakim <azizulfahim2002@gmail.com> wrote:
+On Mon, 2015-06-22 at 17:44 +0200, Takashi Iwai wrote:
+> At Mon, 22 Jun 2015 15:21:16 +0000,
+> Kaskinen, Tanu wrote:
+> > PulseAudio (mostly) doesn't use the hw:X devices directly. Instead, it
+> > uses logical names like "front", "hdmi", "iec958", etc. Speaking of HDMI
+> > specifically, PulseAudio uses devices from "hdmi:X,0" to "hdmi:X,7".
+> > With this new dynamic PCM system, do these logical names still work?
+> 
+> Unfortunately, this doesn't work for HDA as is, because of the
+> terribly arcane secret.  For keeping the compatibility with the old
+> config, there is a static mapping of the hdmi:x,y and hw:x,z.
 
-> Yes, I tested with kernel 3.8.13 in both ubuntu and beaglebone.
->
-> On Mon, Jun 22, 2015 at 2:55 AM, Peter Ujfalusi <peter.ujfalusi@ti.com>
-> wrote:
-[...]
-> > Are you running exactly the same kernel under ubuntu and debian?
-[...]
+Yes, the mapping is like this:
 
-Excuse me, Azizul, but in the thread you compare ubuntu and debian and
-then here you say "ubuntu and beaglebone", do you mean:
+y = 0, z = 3
+y = 1, z = 7
+y = 2, z = 8
+y = 3, z = 9
+etc.
 
-  - Ubuntu on _PC_ and Debian on _beglebone_?
-
-Maybe it's a silly question, but better be sure, because the
-distribution should not make a huge difference when using the same
-kernel, but the architecture does if it's a memory issue.
-
-And please try to avoid top-posting :)
-
-Ciao,
-   Antonio
+Now I'm wondering if this is HDA specific (your wording suggests that it
+is)? For HDMI ELD information and jack detection support, PulseAudio has
+been assuming this particular mapping. If other drivers have been using
+a different mapping, then ELD and jack detection support has been and
+continues to be broken for other drivers in PA.
 
 -- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+Tanu
