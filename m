@@ -1,15 +1,24 @@
-From: srv_kaichieh.chaung <srv_kaichieh.chuang@mediatek.com>
-Subject: =?utf-8?q?DPCM=3A_BE_to_BE_cpu_DAIs_question?=
-	=?utf-8?b?4oCP?=
-Date: Fri, 26 Jun 2015 10:16:10 +0800
-Message-ID: <1435284970.29759.2.camel@mtksdaap41>
+From: Christian Gruber <christian.gruber@voiceinterconnect.de>
+Subject: Using plughw device and samplerate conversion with an
+ ALSA driver not supporting memory mapped access
+Date: Fri, 26 Jun 2015 15:19:15 +0200
+Message-ID: <558D5153.9060000@voiceinterconnect.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id DF5012614F1
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 13:20:49 +0200 (CEST)
+Received: from dd27002.kasserver.com (dd27002.kasserver.com [85.13.145.216])
+ by alsa0.perex.cz (Postfix) with ESMTP id C56F6264F40
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 14:57:26 +0200 (CEST)
+Received: from Mail-Gateway (ip923447ca.dynamic.kabel-deutschland.de
+ [146.52.71.202])
+ by dd27002.kasserver.com (Postfix) with ESMTPSA id 8DCD31120093
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 14:57:30 +0200 (CEST)
+Received: from kepler.vic.site ([192.168.13.149])
+ by Mail-Gateway with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <christian.gruber@voiceinterconnect.de>)
+ id 1Z8TCB-0002TI-OB
+ for alsa-devel@alsa-project.org; Fri, 26 Jun 2015 14:57:30 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,75 +29,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCiAgICAgICAgT3VyIHBsYXRmb3JtIHVzZSBBU29DIHN0cnVjdHVyZS4gQ3VycmVudGx5LCB3
-ZSB3YW50IHRvIHJlZmFjdG9yCm91ciBkcml2ZXIgdG8gdXNlIERQQ00gc3RydWN0dXJlLgpJIGZv
-bGxvd2VkIHRoZSBkb2N1bWVudGF0aW9uIG9mIERQQ00sIGJ1dCBoYXZlIHNvbWUgdHJvdWJsZQpp
-bXBsZW1lbnRpbmcgaG9zdGxlc3MgIEJFIHRvIEJFIGRhaSBsaW5rcy4KCk15IHF1ZXN0aW9uIGlz
-OgoxLiAgSXMgdGhlcmUgYW55ICBjb2RlIGV4YW1wbGUgZm9yIHRoaXMoaG9zdGxlc3MgQkUgdG8g
-QkUpPwpTaW5jZSBJIGRpZG4ndCBzZWUgYW55IGV4aXN0aW5nIGNvZGUgb24gIGxpbnV4IGtlcm5l
-bC4KMi4gIEZyb20gIGRvY3VtZW50YXRpb24sICBpIGhhdmUgdG8gYXNzZ2luICBhICBzbmRfc29j
-X3BjbV9zdHJlYW0gZm9yIEJFCmRhaXMuCiAgICAgSXQgc2VlbXMgdGhhdCB0aGUgQkU8LT5CRSBk
-YWkgbGlua3MgY2FuIG9ubHkgc3VwcG9ydCBvbmUgc3BlYwooZm9ybWF0L3JhdGVzL2NoKS4KICAg
-IE9yIGFtIGkgZ2V0dGluZyBpdCB3cm9uZywgZG9lcyBpdCBzdXBwb3J0IGR5bmFtaWNhbGx5IGNo
-YW5nZSBvZiB0aGUKc3BlYz8KClRoYW5rcyBpbiBhZHZhbmNlZCEKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCiAgSSBoYXZlICB0cmllZCBzb21lICBpbXBsZW1lbnRhdGlvbnMsIGJ1dCBm
-YWlsZWQuICBNeSBsaW51eCB2ZXJzaW9uIGlzCjMuMTguCgpJbGx1c3RyYXRpb24sClBDTSAtLS0t
-LS0tLS0tLS0tLS0tLT4gQkUxCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IOKGkQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLS0tLS0tPCBC
-RTIKCkNvZGUgc25pcHBldCwKCnN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRl
-IG1hY2hpbmVfcm91dGVzW10gPSB7Cgl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxM
-LCBGRV9TVE5BTUV9LAoJe0JFMV9QTEFZQkFDS19DUFVfREFJX1NUTkFNRSwgTlVMTCwgQkUyX0NB
-UFRVUkVfQ1BVX0RBSV9TVE5BTUV9LAp9OwoKc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX3Bj
-bV9zdHJlYW0gZGFpX3BhcmFtcyA9IHsKCS5mb3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9TMzJf
-TEUsCgkucmF0ZV9taW4gPSA0ODAwMCwKCS5yYXRlX21heCA9IDQ4MDAwLAoJLmNoYW5uZWxzX21p
-biA9IDIsCgkuY2hhbm5lbHNfbWF4ID0gMiwKfTsKCnN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlf
-bGluayBtdF9zb2NfZGFpX2NvbW1vbltdID0gewoJCXsKCQkJLm5hbWUgPSBGRV9QQ00sCgkJCS5z
-dHJlYW1fbmFtZSA9IEZFX1NUTkFNRSwKCQkJLmNwdV9kYWlfbmFtZSA9IEZFX0NQVURBSU5BTUUs
-CS8vIGNhbm5vdCB1c2UgZHVtbXkhISEhCgkJCS5wbGF0Zm9ybV9uYW1lID0gRkVfUENNTkFNRSwK
-CQkJLmNvZGVjX25hbWUgPSAic25kLXNvYy1kdW1teSIsCgkJCS5jb2RlY19kYWlfbmFtZSA9ICJz
-bmQtc29jLWR1bW15LWRhaSIsCgkJCS5pbml0ID0gbXRfc29jX2F1ZGlvX2luaXQzLAoJCQkub3Bz
-ID0gJmtjX3NuZF9zb2Nfb3BzLAoJCQkuZHluYW1pYyA9IDEsCgkJCS5kcGNtX3BsYXliYWNrID0g
-MSwKCQkJLnRyaWdnZXIgPSB7U05EX1NPQ19EUENNX1RSSUdHRVJfUE9TVCwgU05EX1NPQ19EUENN
-X1RSSUdHRVJfUE9TVH0sCgkJIH0sCgkJIC8qIEJFIERBSXMgKi8KCQl7CgkJCS5uYW1lID0gIkJF
-MiIsCgkJCS5jcHVfZGFpX25hbWUgPSBCRTJfUExBWUJBQ0tfQ1BVX0RBSSwgLy8ic25kLXNvYy1k
-dW1teS1kYWkiLAoJCQkucGxhdGZvcm1fbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKCQkJLmNvZGVj
-X25hbWUgPSAic25kLXNvYy1kdW1teSIsCgkJCS5jb2RlY19kYWlfbmFtZSA9ICJzbmQtc29jLWR1
-bW15LWRhaSIsCgkJCS5kYWlfZm10ID0gU05EX1NPQ19EQUlGTVRfSTJTIHwgU05EX1NPQ19EQUlG
-TVRfTkJfTkYgfAoJCQkJU05EX1NPQ19EQUlGTVRfQ0JTX0NGUywKCQkJLm5vX3BjbSA9IDEsCgkJ
-CS5kcGNtX3BsYXliYWNrID0gMSwKCQkJLmRwY21fY2FwdHVyZSA9IDEsCgkJCS5pZ25vcmVfc3Vz
-cGVuZCA9IDEsCgkJCS5pZ25vcmVfcG1kb3duX3RpbWUgPSAxLAoJCQkucGFyYW1zID0gJmRhaV9w
-YXJhbXMsCgkJfSwKCQl7CgkJCS5uYW1lID0gQkUxX1BMQVlCQUNLLAoJCQkuY3B1X2RhaV9uYW1l
-ID0gQkUxX1BMQVlCQUNLX0NQVV9EQUksCgkJCS5wbGF0Zm9ybV9uYW1lID0gInNuZC1zb2MtZHVt
-bXkiLAoJCQkuY29kZWNfbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKCQkJLmNvZGVjX2RhaV9uYW1l
-ID0gInNuZC1zb2MtZHVtbXktZGFpIiwKCQkJLm5vX3BjbSA9IDEsCgkJCS5kcGNtX3BsYXliYWNr
-ID0gMSwKCQkJLmRwY21fY2FwdHVyZSA9IDEsCgkJCS5pZ25vcmVfc3VzcGVuZCA9IDEsCgkJCS5p
-Z25vcmVfcG1kb3duX3RpbWUgPSAxLAoJCQkucGFyYW1zID0gJmRhaV9wYXJhbXMsCgkJfSwKCjEu
-IHdoZW4gb25seSAgcm91dGVzICBQQ00tLT5CRTEsICAKICAgICAgICBJZiBpIGFkZCAucGFyYW1z
-IGluIEJFMSBzb2MgZGFpIGxpbmssICB3aGVuIGkgc3RhcnQgUENNLCBpdCB3aWxsCmNyYXNoLiBh
-bmQgZ2V0ICJVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2Ug
-YXQKdmlydHVhbCBhZGRyZXNzIDAwMDAwMGQwIgogICAgICAgIFNlZW1zIHRvIGNyYXNoIGluIGRw
-Y21fYmVfZGFpX3N0YXJ0dXAoKQogICAgICAgICBJZiBpIHJlbW92ZWQgLnBhcmFtcywgaXQgd2ls
-bCBub3QgY3Jhc2gsIGFuZCBwbGF5IG5vcm1hbGx5LgoKMi4gIHdoZW4gb25seSB3aXRoIEJFMi0t
-PiBCRTEsCiAgICAgICAgQkUyIGlzIG5ldmVyIHRyaWdnZXIsICB3aGVyZSBkaWQgaSAgZ2V0IHdy
-b25nPwoKVGhhbmtzLgoKCgoqKioqKioqKioqKioqIEVtYWlsIENvbmZpZGVudGlhbGl0eSBOb3Rp
-Y2UgKioqKioqKioqKioqKioqKioqKioKVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlz
-IGUtbWFpbCBtZXNzYWdlIChpbmNsdWRpbmcgYW55IAphdHRhY2htZW50cykgbWF5IGJlIGNvbmZp
-ZGVudGlhbCwgcHJvcHJpZXRhcnksIHByaXZpbGVnZWQsIG9yIG90aGVyd2lzZQpleGVtcHQgZnJv
-bSBkaXNjbG9zdXJlIHVuZGVyIGFwcGxpY2FibGUgbGF3cy4gSXQgaXMgaW50ZW5kZWQgdG8gYmUg
-CmNvbnZleWVkIG9ubHkgdG8gdGhlIGRlc2lnbmF0ZWQgcmVjaXBpZW50KHMpLiBBbnkgdXNlLCBk
-aXNzZW1pbmF0aW9uLCAKZGlzdHJpYnV0aW9uLCBwcmludGluZywgcmV0YWluaW5nIG9yIGNvcHlp
-bmcgb2YgdGhpcyBlLW1haWwgKGluY2x1ZGluZyBpdHMgCmF0dGFjaG1lbnRzKSBieSB1bmludGVu
-ZGVkIHJlY2lwaWVudChzKSBpcyBzdHJpY3RseSBwcm9oaWJpdGVkIGFuZCBtYXkgCmJlIHVubGF3
-ZnVsLiBJZiB5b3UgYXJlIG5vdCBhbiBpbnRlbmRlZCByZWNpcGllbnQgb2YgdGhpcyBlLW1haWws
-IG9yIGJlbGlldmUgCnRoYXQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3Is
-IHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciAKaW1tZWRpYXRlbHkgKGJ5IHJlcGx5aW5nIHRvIHRo
-aXMgZS1tYWlsKSwgZGVsZXRlIGFueSBhbmQgYWxsIGNvcGllcyBvZiAKdGhpcyBlLW1haWwgKGlu
-Y2x1ZGluZyBhbnkgYXR0YWNobWVudHMpIGZyb20geW91ciBzeXN0ZW0sIGFuZCBkbyBub3QKZGlz
-Y2xvc2UgdGhlIGNvbnRlbnQgb2YgdGhpcyBlLW1haWwgdG8gYW55IG90aGVyIHBlcnNvbi4gVGhh
-bmsgeW91IQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello,
+
+I have problems using the plughw device with samplerate conversion on an embedded board 
+having an ALSA driver, which does not support memory mapped access. The audio codec only 
+supports 48 kHz sampling rate. The problem occurs, when I want to playback for instance a 
+16 kHz file via plughw device, which is the default device. Interestingly the behaviour of 
+the ALSA system is as follows:
+
+    1. aplay -D default audio_16kHz.wav        does not work
+    2. aplay -D default -M audio_16_kHz.wav    works correctly
+
+This is quite strange, since although the ALSA driver does not support memory mapped 
+access, using the option -M works, but the default read write access method without option 
+-M does not, although the driver supports read write access. In this case the function 
+snd_pcm_hw_params() returns with an error (EINVAL).
+
+I started debugging this and could see, that in the second case, when using option -M, the 
+plughw device establishes the following signal processing chain:
+
+     plughw -> rate -> mmap_emul -> hw
+
+This is what I expected from the plughw device. It first introduces a samplerate converter 
+for conversion from 16 kHz to 48 kHz, since the codec only supports 48 kHz. And second it 
+introduces a memory mapped access emulator to be able to use memory mapped access method 
+on the application side and read write access method on the driver side (hw device).
+
+In the first case without using option -M the plughw device establishes the following 
+processing chain:
+
+     plughw -> rate -> hw
+
+This means, it does not introduce a memory mapped access emulator, which is comprehensible 
+as well, since the application already uses read write access method, the same as the ALSA 
+driver does. But nevertheless an error occurs.
+
+Further debugging showed, that the error occurs in the function hw_refine_call() 
+(pcm_hw.c) during the call to _snd_pcm_hw_params_internal() within the function 
+snd_pcm_plug_hw_params() (pcm_plug.c). For some reason the rate plugin wants to use memory 
+mapped access only on the hw device.
+
+So I ask myself, if this is the expected behaviour of the rate plugin. Does the rate 
+plugin only support memory mapped access? If yes, why is no mmap_emul plugin introduced 
+into the signal processing chain in this case? If not, why does the rate plugin choose 
+memory mapped access method? Is the ALSA driver maybe buggy giving wrong information about 
+its hw capabilities?
+
+Can anybody help me?
+
+Regards,
+Christian
