@@ -1,303 +1,119 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH] ASoC: wm8960: update pll and clock setting function
-Date: Fri, 26 Jun 2015 19:09:22 +0800
-Message-ID: <5630bd343217e8fa895c5d133497f50739417453.1435316484.git.zidan.wang@freescale.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: =?utf-8?q?DPCM=3A_BE_to_BE_cpu_DAIs_question?=
+	=?utf-8?b?4oCP?=
+Date: Fri, 26 Jun 2015 12:11:48 +0100
+Message-ID: <1435317108.4661.11.camel@loki>
+References: <1435284991.19429.0.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: perex@perex.cz, tiwai@suse.de, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BCD02614DA
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 13:11:49 +0200 (CEST)
+In-Reply-To: <1435284991.19429.0.camel@mtksdaap41>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "srv_kaichieh.chaung" <srv_kaichieh.chuang@mediatek.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel@alsa-project.org, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-When using snd_soc_dai_set_pll to set pll in machine driver, we
-should set pll in and pll out freq and ensure 5 < PLLN < 13,
-otherwise set pll will be failed. In order to support more
-formats and sample rates for a certain MCLK, if snd_soc_dai_set_pll
-failed, it will calculate a available pll out freq and set the pll
-again.
-
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
----
- sound/soc/codecs/wm8960.c | 160 ++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 126 insertions(+), 34 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 94c5c46..9b17ca7 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -48,6 +48,9 @@
- #define WM8960_DISOP     0x40
- #define WM8960_DRES_MASK 0x30
- 
-+static bool is_pll_freq_available(unsigned int source, unsigned int target);
-+static int wm8960_set_pll(struct snd_soc_dai *codec_dai,
-+		unsigned int freq_in, unsigned int freq_out);
- /*
-  * wm8960 register cache
-  * We can't read the WM8960 register space when we are
-@@ -127,8 +130,9 @@ struct wm8960_priv {
- 	struct snd_soc_dapm_widget *out3;
- 	bool deemph;
- 	int playback_fs;
--	int bclk;
-+	int freq_in;
- 	int sysclk;
-+	int clk_id;
- 	struct wm8960_data pdata;
- };
- 
-@@ -565,6 +569,9 @@ static struct {
- 	{  8000, 5 },
- };
- 
-+/* -1 for reserved value */
-+static const int sysclk_divs[] = { 1, -1, 2, -1 };
-+
- /* Multiply 256 for internal 256 div */
- static const int dac_divs[] = { 256, 384, 512, 768, 1024, 1408, 1536 };
- 
-@@ -574,61 +581,119 @@ static const int bclk_divs[] = {
- 	120, 160, 220, 240, 320, 320, 320
- };
- 
--static void wm8960_configure_clocking(struct snd_soc_codec *codec,
--		bool tx, int lrclk)
-+static int wm8960_configure_clocking(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
- {
-+	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int sample_rate = params_rate(params);
-+	unsigned int channels = params_channels(params);
-+	unsigned int sysclk, bclk, pll_out, freq_in;
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
- 	u16 iface2 = snd_soc_read(codec, WM8960_IFACE2);
--	u32 sysclk;
--	int i, j;
-+	int i, j, k;
- 
- 	if (!(iface1 & (1<<6))) {
- 		dev_dbg(codec->dev,
- 			"Codec is slave mode, no need to configure clock\n");
--		return;
-+		return 0;
- 	}
- 
- 	if (!wm8960->sysclk) {
- 		dev_dbg(codec->dev, "No SYSCLK configured\n");
--		return;
-+		return -EINVAL;
- 	}
- 
--	if (!wm8960->bclk || !lrclk) {
--		dev_dbg(codec->dev, "No audio clocks configured\n");
--		return;
-+	bclk = snd_soc_params_to_bclk(params);
-+	if (channels == 1)
-+		bclk *= 2;
-+
-+	sysclk = wm8960->sysclk;
-+
-+	if (wm8960->clk_id == WM8960_SYSCLK_PLL) {
-+		if (!wm8960->freq_in) {
-+			dev_dbg(codec->dev, "No PLL input clock configured\n");
-+			return -EINVAL;
-+		}
-+
-+		pll_out = sysclk;
-+		/*
-+		 * If the PLL input and output frequency are not available for
-+		 * wm8960 PLL, try to calculte a available pll out frequency and
-+		 * set pll again.
-+		 */
-+		if (!is_pll_freq_available(wm8960->freq_in, pll_out))
-+			goto get_pll_freq;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(dac_divs); ++i) {
--		if (wm8960->sysclk == lrclk * dac_divs[i]) {
--			for (j = 0; j < ARRAY_SIZE(bclk_divs); ++j) {
--				sysclk = wm8960->bclk * bclk_divs[j] / 10;
--				if (wm8960->sysclk == sysclk)
-+	/* check if the sysclk frequency is available. */
-+	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+		if (sysclk_divs[i] == -1)
-+			continue;
-+		sysclk /= sysclk_divs[i];
-+		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j)
-+			if (sysclk == dac_divs[j] * sample_rate)
-+				break;
-+		for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
-+			if (sysclk == bclk * bclk_divs[k] / 10)
-+				break;
-+		if (j != ARRAY_SIZE(dac_divs) && k != ARRAY_SIZE(bclk_divs))
-+			break;
-+	}
-+	if (i != ARRAY_SIZE(sysclk_divs))
-+		goto configure_clock;
-+
-+get_pll_freq:
-+	freq_in = wm8960->freq_in;
-+	/*
-+	 * If the pll out frequcncy set from machine driver is not available,
-+	 * try to find a pll out frequcncy and set pll.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+		if (sysclk_divs[i] == -1)
-+			continue;
-+		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+			sysclk = sample_rate * dac_divs[j];
-+			pll_out = sysclk * sysclk_divs[i];
-+
-+			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
-+				if (sysclk == bclk * bclk_divs[k] / 10 &&
-+				    is_pll_freq_available(freq_in, pll_out)) {
-+					wm8960_set_pll(dai, freq_in, pll_out);
- 					break;
-+				} else
-+					continue;
- 			}
--			if(j != ARRAY_SIZE(bclk_divs))
-+			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
- 		}
-+		if (j != ARRAY_SIZE(dac_divs))
-+			break;
- 	}
- 
--	if (i == ARRAY_SIZE(dac_divs)) {
--		dev_err(codec->dev, "Unsupported sysclk %d\n", wm8960->sysclk);
--		return;
-+	if (i == ARRAY_SIZE(sysclk_divs)) {
-+		dev_err(codec->dev, "failed to configure clock\n");
-+		return -EINVAL;
- 	}
- 
-+configure_clock:
-+	snd_soc_update_bits(codec, WM8960_CLOCK1, 3 << 1, i << 1);
- 	/*
- 	 * configure frame clock. If ADCLRC configure as GPIO pin, DACLRC
- 	 * pin is used as a frame clock for ADCs and DACs.
- 	 */
- 	if (iface2 & (1<<6))
--		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, i << 3);
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, j << 3);
- 	else if (tx)
--		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, i << 3);
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 3, j << 3);
- 	else if (!tx)
--		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 6, i << 6);
-+		snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 6, j << 6);
- 
- 	/* configure bit clock */
--	snd_soc_update_bits(codec, WM8960_CLOCK2, 0xf, j);
-+	snd_soc_update_bits(codec, WM8960_CLOCK2, 0xf, k);
-+	return 0;
- }
- 
- static int wm8960_hw_params(struct snd_pcm_substream *substream,
-@@ -638,13 +703,8 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	u16 iface = snd_soc_read(codec, WM8960_IFACE1) & 0xfff3;
--	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	int i;
- 
--	wm8960->bclk = snd_soc_params_to_bclk(params);
--	if (params_channels(params) == 1)
--		wm8960->bclk *= 2;
--
- 	/* bit size */
- 	switch (params_width(params)) {
- 	case 16:
-@@ -682,9 +742,7 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
- 	/* set iface */
- 	snd_soc_write(codec, WM8960_IFACE1, iface);
- 
--	wm8960_configure_clocking(codec, tx, params_rate(params));
--
--	return 0;
-+	return wm8960_configure_clocking(substream, params, dai);
- }
- 
- static int wm8960_mute(struct snd_soc_dai *dai, int mute)
-@@ -892,6 +950,28 @@ struct _pll_div {
- 	u32 k:24;
- };
- 
-+static bool is_pll_freq_available(unsigned int source, unsigned int target)
-+{
-+	unsigned int Ndiv;
-+
-+	if (source == 0 || target == 0)
-+		return false;
-+
-+	/* Scale up target to PLL operating frequency */
-+	target *= 4;
-+	Ndiv = target / source;
-+
-+	if (Ndiv < 6) {
-+		source >>= 1;
-+		Ndiv = target / source;
-+	}
-+
-+	if ((Ndiv < 6) || (Ndiv > 12))
-+		return false;
-+
-+	return true;
-+}
-+
- /* The size in bits of the pll divide multiplied by 10
-  * to allow rounding later */
- #define FIXED_PLL_SIZE ((1 << 24) * 10)
-@@ -916,7 +996,7 @@ static int pll_factors(unsigned int source, unsigned int target,
- 		pll_div->pre_div = 0;
- 
- 	if ((Ndiv < 6) || (Ndiv > 12)) {
--		pr_err("WM8960 PLL: Unsupported N=%d\n", Ndiv);
-+		pr_debug("WM8960 PLL: Unsupported N=%d\n", Ndiv);
- 		return -EINVAL;
- 	}
- 
-@@ -943,8 +1023,8 @@ static int pll_factors(unsigned int source, unsigned int target,
- 	return 0;
- }
- 
--static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
--		int source, unsigned int freq_in, unsigned int freq_out)
-+static int wm8960_set_pll(struct snd_soc_dai *codec_dai,
-+		unsigned int freq_in, unsigned int freq_out)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	u16 reg;
-@@ -986,6 +1066,17 @@ static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 	return 0;
- }
- 
-+static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
-+		int source, unsigned int freq_in, unsigned int freq_out)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
-+
-+	wm8960->freq_in = freq_in;
-+
-+	return wm8960_set_pll(codec_dai, freq_in, freq_out);
-+}
-+
- static int wm8960_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
- 		int div_id, int div)
- {
-@@ -1048,6 +1139,7 @@ static int wm8960_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	}
- 
- 	wm8960->sysclk = freq;
-+	wm8960->clk_id = clk_id;
- 
- 	return 0;
- }
--- 
-1.9.1
+T24gRnJpLCAyMDE1LTA2LTI2IGF0IDEwOjE2ICswODAwLCBzcnZfa2FpY2hpZWguY2hhdW5nIHdy
+b3RlOgo+IEhpLAo+ICAgICAgICAgT3VyIHBsYXRmb3JtIHVzZSBBU29DIHN0cnVjdHVyZS4gQ3Vy
+cmVudGx5LCB3ZSB3YW50IHRvIHJlZmFjdG9yCj4gb3VyIGRyaXZlciB0byB1c2UgRFBDTSBzdHJ1
+Y3R1cmUuCj4gSSBmb2xsb3dlZCB0aGUgZG9jdW1lbnRhdGlvbiBvZiBEUENNLCBidXQgaGF2ZSBz
+b21lIHRyb3VibGUKPiBpbXBsZW1lbnRpbmcgaG9zdGxlc3MgIEJFIHRvIEJFIGRhaSBsaW5rcy4K
+PiAKPiBNeSBxdWVzdGlvbiBpczoKPiAxLiAgSXMgdGhlcmUgYW55ICBjb2RlIGV4YW1wbGUgZm9y
+IHRoaXMoaG9zdGxlc3MgQkUgdG8gQkUpPwo+IFNpbmNlIEkgZGlkbid0IHNlZSBhbnkgZXhpc3Rp
+bmcgY29kZSBvbiAgbGludXgga2VybmVsLgoKSSB0aGluayBWaW5vZCBoYXMgc29tZSBleGFtcGxl
+IGNvZGUsIEkgZG9udCBrbm93IGlmIGl0J3MgdXBzdHJlYW0geWV0CmJ1dCBpdCdzIHBhcnQgb2Yg
+dGhlIFNreWxha2UgZHJpdmVyLiBUaGUgaG9zdGxlc3MgQkUgdG8gQkUgbGluayBpcwpyZWFsbHkg
+anVzdCBhIGNvZGVjIDwtPiBjb2RlYyBsaW5rIGRlZmluZWQgaW4gdGhlIERBUE0gZ3JhcGguIElp
+cmMsCnRoZXJlIGFyZSBleGFtcGxlcyBvZiBjb2RlYyA8LT5jb2RlYyBzdHlsZSBsaW5rcyB1cHN0
+cmVhbSBpbiB0aGUgU2Ftc3VuZwpkaXJlY3RvcnkuCgo+IDIuICBGcm9tICBkb2N1bWVudGF0aW9u
+LCAgaSBoYXZlIHRvIGFzc2dpbiAgYSAgc25kX3NvY19wY21fc3RyZWFtIGZvciBCRQo+IGRhaXMu
+Cj4gICAgICBJdCBzZWVtcyB0aGF0IHRoZSBCRTwtPkJFIGRhaSBsaW5rcyBjYW4gb25seSBzdXBw
+b3J0IG9uZSBzcGVjCj4gKGZvcm1hdC9yYXRlcy9jaCkuCj4gICAgIE9yIGFtIGkgZ2V0dGluZyBp
+dCB3cm9uZywgZG9lcyBpdCBzdXBwb3J0IGR5bmFtaWNhbGx5IGNoYW5nZSBvZiB0aGUKPiBzcGVj
+PwoKVGhlIEJFIGxpbmsgY2FuIHJ1biBhdCBhbnkgcmF0ZS9mb3JtYXQgeW91IG5lZWQgZGVwZW5k
+aW5nIG9uIHlvdXIgdXNlCmNhc2UuIEl0IGNhbiBkeW5hbWljYWxseSBjaGFuZ2UgdG9vIGJldHdl
+ZW4gdXNlIGNhc2VzLiBUaGUgZml4dXAKY2FsbGJhY2sgaXMgdXNlZCB0byBjaGFuZ2UgdGhlIEJF
+IGNvbmZpZywgc28gaXQgY2FuIGNoZWNrIGFueQpyZXF1aXJlbWVudHMgZXZlcnkgdGltZSBpdCBp
+cyBjYWxsZWQgYW5kIGNvbmZpZ3VyZSB0aGUgQkUgYWNjb3JkaW5nbHkuCj4gCj4gVGhhbmtzIGlu
+IGFkdmFuY2VkIQo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gICBJIGhhdmUg
+IHRyaWVkIHNvbWUgIGltcGxlbWVudGF0aW9ucywgYnV0IGZhaWxlZC4gIE15IGxpbnV4IHZlcnNp
+b24gaXMKPiAzLjE4Lgo+IAo+IElsbHVzdHJhdGlvbiwKPiBQQ00gLS0tLS0tLS0tLS0tLS0tLS0+
+IEJFMQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKGkQo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS08IEJFMgo+IAo+IENv
+ZGUgc25pcHBldCwKPiAKPiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSBt
+YWNoaW5lX3JvdXRlc1tdID0gewo+IAl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxM
+LCBGRV9TVE5BTUV9LAo+IAl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxMLCBCRTJf
+Q0FQVFVSRV9DUFVfREFJX1NUTkFNRX0sCj4gfTsKPiAKPiBzdGF0aWMgY29uc3Qgc3RydWN0IHNu
+ZF9zb2NfcGNtX3N0cmVhbSBkYWlfcGFyYW1zID0gewo+IAkuZm9ybWF0cyA9IFNORFJWX1BDTV9G
+TVRCSVRfUzMyX0xFLAo+IAkucmF0ZV9taW4gPSA0ODAwMCwKPiAJLnJhdGVfbWF4ID0gNDgwMDAs
+Cj4gCS5jaGFubmVsc19taW4gPSAyLAo+IAkuY2hhbm5lbHNfbWF4ID0gMiwKPiB9Owo+IAo+IHN0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBtdF9zb2NfZGFpX2NvbW1vbltdID0gewo+IAkJ
+ewo+IAkJCS5uYW1lID0gRkVfUENNLAo+IAkJCS5zdHJlYW1fbmFtZSA9IEZFX1NUTkFNRSwKPiAJ
+CQkuY3B1X2RhaV9uYW1lID0gRkVfQ1BVREFJTkFNRSwJLy8gY2Fubm90IHVzZSBkdW1teSEhISEK
+PiAJCQkucGxhdGZvcm1fbmFtZSA9IEZFX1BDTU5BTUUsCj4gCQkJLmNvZGVjX25hbWUgPSAic25k
+LXNvYy1kdW1teSIsCj4gCQkJLmNvZGVjX2RhaV9uYW1lID0gInNuZC1zb2MtZHVtbXktZGFpIiwK
+PiAJCQkuaW5pdCA9IG10X3NvY19hdWRpb19pbml0MywKPiAJCQkub3BzID0gJmtjX3NuZF9zb2Nf
+b3BzLAo+IAkJCS5keW5hbWljID0gMSwKPiAJCQkuZHBjbV9wbGF5YmFjayA9IDEsCj4gCQkJLnRy
+aWdnZXIgPSB7U05EX1NPQ19EUENNX1RSSUdHRVJfUE9TVCwgU05EX1NPQ19EUENNX1RSSUdHRVJf
+UE9TVH0sCj4gCQkgfSwKPiAJCSAvKiBCRSBEQUlzICovCj4gCQl7Cj4gCQkJLm5hbWUgPSAiQkUy
+IiwKPiAJCQkuY3B1X2RhaV9uYW1lID0gQkUyX1BMQVlCQUNLX0NQVV9EQUksIC8vInNuZC1zb2Mt
+ZHVtbXktZGFpIiwKPiAJCQkucGxhdGZvcm1fbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKPiAJCQku
+Y29kZWNfbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKPiAJCQkuY29kZWNfZGFpX25hbWUgPSAic25k
+LXNvYy1kdW1teS1kYWkiLAo+IAkJCS5kYWlfZm10ID0gU05EX1NPQ19EQUlGTVRfSTJTIHwgU05E
+X1NPQ19EQUlGTVRfTkJfTkYgfAo+IAkJCQlTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTLAo+IAkJCS5u
+b19wY20gPSAxLAo+IAkJCS5kcGNtX3BsYXliYWNrID0gMSwKPiAJCQkuZHBjbV9jYXB0dXJlID0g
+MSwKPiAJCQkuaWdub3JlX3N1c3BlbmQgPSAxLAo+IAkJCS5pZ25vcmVfcG1kb3duX3RpbWUgPSAx
+LAo+IAkJCS5wYXJhbXMgPSAmZGFpX3BhcmFtcywKPiAJCX0sCj4gCQl7Cj4gCQkJLm5hbWUgPSBC
+RTFfUExBWUJBQ0ssCj4gCQkJLmNwdV9kYWlfbmFtZSA9IEJFMV9QTEFZQkFDS19DUFVfREFJLAo+
+IAkJCS5wbGF0Zm9ybV9uYW1lID0gInNuZC1zb2MtZHVtbXkiLAo+IAkJCS5jb2RlY19uYW1lID0g
+InNuZC1zb2MtZHVtbXkiLAo+IAkJCS5jb2RlY19kYWlfbmFtZSA9ICJzbmQtc29jLWR1bW15LWRh
+aSIsCj4gCQkJLm5vX3BjbSA9IDEsCj4gCQkJLmRwY21fcGxheWJhY2sgPSAxLAo+IAkJCS5kcGNt
+X2NhcHR1cmUgPSAxLAo+IAkJCS5pZ25vcmVfc3VzcGVuZCA9IDEsCj4gCQkJLmlnbm9yZV9wbWRv
+d25fdGltZSA9IDEsCj4gCQkJLnBhcmFtcyA9ICZkYWlfcGFyYW1zLAo+IAkJfSwKPiAKPiAxLiB3
+aGVuIG9ubHkgIHJvdXRlcyAgUENNLS0+QkUxLCAgCj4gICAgICAgICBJZiBpIGFkZCAucGFyYW1z
+IGluIEJFMSBzb2MgZGFpIGxpbmssICB3aGVuIGkgc3RhcnQgUENNLCBpdCB3aWxsCj4gY3Jhc2gu
+IGFuZCBnZXQgIlVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5j
+ZSBhdAo+IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDBkMCIKPiAgICAgICAgIFNlZW1zIHRvIGNyYXNo
+IGluIGRwY21fYmVfZGFpX3N0YXJ0dXAoKQoKSXQgc2hvdWxkIG5vdCBjcmFzaC4gQ2FuIHlvdSB1
+cGRhdGUgdG8gdGhlIGxhdGVzdCBrZXJuZWwgYW5kIHNlbmQgdGhlCm9vcHMgbWVzc2FnZSBpZiBp
+dCBzdGlsbCBjcmFzaGVzLgoKPiAgICAgICAgICBJZiBpIHJlbW92ZWQgLnBhcmFtcywgaXQgd2ls
+bCBub3QgY3Jhc2gsIGFuZCBwbGF5IG5vcm1hbGx5Lgo+IAo+IDIuICB3aGVuIG9ubHkgd2l0aCBC
+RTItLT4gQkUxLAo+ICAgICAgICAgQkUyIGlzIG5ldmVyIHRyaWdnZXIsICB3aGVyZSBkaWQgaSAg
+Z2V0IHdyb25nPwoKWW91IG5lZWQgdG8gYWRkIHRoZSAiY29kZWMgPC0+IGNvZGVjIiBzdHlsZSBs
+aW5rIGhlcmUuIFRoZSBjb2RlIGFib3ZlCm9ubHkgc3VwcG9ydHMgCgpQQ00gIDwtLS0rLS0tPiBC
+RTEKICAgICAgICAgfAogICAgICAgICArLS0tPiBCRTIKCmJ1dCBCRTEvMiBjYW5ub3QgaW5pdGlh
+dGUgdGhlIGxpbmsgKHRoZXkgY2FuIGJlIHNlZW4gYXMgc2xhdmVzKSB1bmxlc3MKQkUxLzIgYXJl
+IGFsc28gbGlua2VkIHZpYSBjb2RlYzwtPmNvZGVjIHN0eWxlIChhbmQgYXJlIGRyaXZlbiBieSBE
+QVBNIHRvCmluaXRpYXRlIHRoZSBsaW5rKS4KCkxpYW0gCj4gCj4gVGhhbmtzLgo+IAo+IAo+IAo+
+IAo+ICoqKioqKioqKioqKiogRW1haWwgQ29uZmlkZW50aWFsaXR5IE5vdGljZSAqKioqKioqKioq
+KioqKioqKioqKgo+IFRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaW4gdGhpcyBlLW1haWwgbWVz
+c2FnZSAoaW5jbHVkaW5nIGFueSAKPiBhdHRhY2htZW50cykgbWF5IGJlIGNvbmZpZGVudGlhbCwg
+cHJvcHJpZXRhcnksIHByaXZpbGVnZWQsIG9yIG90aGVyd2lzZQo+IGV4ZW1wdCBmcm9tIGRpc2Ns
+b3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXdzLiBJdCBpcyBpbnRlbmRlZCB0byBiZSAKPiBjb252
+ZXllZCBvbmx5IHRvIHRoZSBkZXNpZ25hdGVkIHJlY2lwaWVudChzKS4gQW55IHVzZSwgZGlzc2Vt
+aW5hdGlvbiwgCj4gZGlzdHJpYnV0aW9uLCBwcmludGluZywgcmV0YWluaW5nIG9yIGNvcHlpbmcg
+b2YgdGhpcyBlLW1haWwgKGluY2x1ZGluZyBpdHMgCj4gYXR0YWNobWVudHMpIGJ5IHVuaW50ZW5k
+ZWQgcmVjaXBpZW50KHMpIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYW5kIG1heSAKPiBiZSB1bmxh
+d2Z1bC4gSWYgeW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgZS1tYWls
+LCBvciBiZWxpZXZlIAo+IHRoYXQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJy
+b3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciAKPiBpbW1lZGlhdGVseSAoYnkgcmVwbHlpbmcg
+dG8gdGhpcyBlLW1haWwpLCBkZWxldGUgYW55IGFuZCBhbGwgY29waWVzIG9mIAo+IHRoaXMgZS1t
+YWlsIChpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzKSBmcm9tIHlvdXIgc3lzdGVtLCBhbmQgZG8g
+bm90Cj4gZGlzY2xvc2UgdGhlIGNvbnRlbnQgb2YgdGhpcyBlLW1haWwgdG8gYW55IG90aGVyIHBl
+cnNvbi4gVGhhbmsgeW91IQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
