@@ -1,27 +1,15 @@
-From: Adam Nielsen <a.nielsen@shikadi.net>
-Subject: Re: snd_pcm_avail_delay() returned strange values:
- delay 0 is less than avail 4.
-Date: Sat, 27 Jun 2015 19:04:51 +1000
-Message-ID: <20150627190451.07e6bad8@korath.teln.shikadi.net>
-References: <20150627173617.1ade4161@korath.teln.shikadi.net>
- <s5htwtto93t.wl-tiwai@suse.de>
+From: srv_kaichieh.chaung <srv_kaichieh.chuang@mediatek.com>
+Subject: =?utf-8?q?DPCM=3A_BE_to_BE_cpu_DAIs_question?=
+	=?utf-8?b?4oCP?=
+Date: Fri, 26 Jun 2015 10:16:31 +0800
+Message-ID: <1435284991.19429.0.camel@mtksdaap41>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 62C95261629
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 11:04:58 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Z8m2i-0006en-UA
- for alsa-devel@alsa-project.org; Sat, 27 Jun 2015 11:04:57 +0200
-Received: from 58.7.45.51 ([58.7.45.51])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 11:04:56 +0200
-Received: from a.nielsen by 58.7.45.51 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 11:04:56 +0200
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0B9226068D
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 04:16:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,15 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-> > E: [alsa-source-ALC892 Analog] alsa-util.c: snd_pcm_avail_delay()
-> > returned strange values: delay 0 is less than avail 4.  
-> 
-> Try the latest alsa-lib git.  This should have been already fixed.  
-
-Oh right!  Indeed it has.  My apologies, I should have tried this
-first.  Many thanks for the quick response.
-
-Cheers,
-Adam.
+SGksCiAgICAgICAgT3VyIHBsYXRmb3JtIHVzZSBBU29DIHN0cnVjdHVyZS4gQ3VycmVudGx5LCB3
+ZSB3YW50IHRvIHJlZmFjdG9yCm91ciBkcml2ZXIgdG8gdXNlIERQQ00gc3RydWN0dXJlLgpJIGZv
+bGxvd2VkIHRoZSBkb2N1bWVudGF0aW9uIG9mIERQQ00sIGJ1dCBoYXZlIHNvbWUgdHJvdWJsZQpp
+bXBsZW1lbnRpbmcgaG9zdGxlc3MgIEJFIHRvIEJFIGRhaSBsaW5rcy4KCk15IHF1ZXN0aW9uIGlz
+OgoxLiAgSXMgdGhlcmUgYW55ICBjb2RlIGV4YW1wbGUgZm9yIHRoaXMoaG9zdGxlc3MgQkUgdG8g
+QkUpPwpTaW5jZSBJIGRpZG4ndCBzZWUgYW55IGV4aXN0aW5nIGNvZGUgb24gIGxpbnV4IGtlcm5l
+bC4KMi4gIEZyb20gIGRvY3VtZW50YXRpb24sICBpIGhhdmUgdG8gYXNzZ2luICBhICBzbmRfc29j
+X3BjbV9zdHJlYW0gZm9yIEJFCmRhaXMuCiAgICAgSXQgc2VlbXMgdGhhdCB0aGUgQkU8LT5CRSBk
+YWkgbGlua3MgY2FuIG9ubHkgc3VwcG9ydCBvbmUgc3BlYwooZm9ybWF0L3JhdGVzL2NoKS4KICAg
+IE9yIGFtIGkgZ2V0dGluZyBpdCB3cm9uZywgZG9lcyBpdCBzdXBwb3J0IGR5bmFtaWNhbGx5IGNo
+YW5nZSBvZiB0aGUKc3BlYz8KClRoYW5rcyBpbiBhZHZhbmNlZCEKCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCiAgSSBoYXZlICB0cmllZCBzb21lICBpbXBsZW1lbnRhdGlvbnMsIGJ1dCBm
+YWlsZWQuICBNeSBsaW51eCB2ZXJzaW9uIGlzCjMuMTguCgpJbGx1c3RyYXRpb24sClBDTSAtLS0t
+LS0tLS0tLS0tLS0tLT4gQkUxCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IOKGkQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLS0tLS0tPCBC
+RTIKCkNvZGUgc25pcHBldCwKCnN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRl
+IG1hY2hpbmVfcm91dGVzW10gPSB7Cgl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxM
+LCBGRV9TVE5BTUV9LAoJe0JFMV9QTEFZQkFDS19DUFVfREFJX1NUTkFNRSwgTlVMTCwgQkUyX0NB
+UFRVUkVfQ1BVX0RBSV9TVE5BTUV9LAp9OwoKc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX3Bj
+bV9zdHJlYW0gZGFpX3BhcmFtcyA9IHsKCS5mb3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9TMzJf
+TEUsCgkucmF0ZV9taW4gPSA0ODAwMCwKCS5yYXRlX21heCA9IDQ4MDAwLAoJLmNoYW5uZWxzX21p
+biA9IDIsCgkuY2hhbm5lbHNfbWF4ID0gMiwKfTsKCnN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlf
+bGluayBtdF9zb2NfZGFpX2NvbW1vbltdID0gewoJCXsKCQkJLm5hbWUgPSBGRV9QQ00sCgkJCS5z
+dHJlYW1fbmFtZSA9IEZFX1NUTkFNRSwKCQkJLmNwdV9kYWlfbmFtZSA9IEZFX0NQVURBSU5BTUUs
+CS8vIGNhbm5vdCB1c2UgZHVtbXkhISEhCgkJCS5wbGF0Zm9ybV9uYW1lID0gRkVfUENNTkFNRSwK
+CQkJLmNvZGVjX25hbWUgPSAic25kLXNvYy1kdW1teSIsCgkJCS5jb2RlY19kYWlfbmFtZSA9ICJz
+bmQtc29jLWR1bW15LWRhaSIsCgkJCS5pbml0ID0gbXRfc29jX2F1ZGlvX2luaXQzLAoJCQkub3Bz
+ID0gJmtjX3NuZF9zb2Nfb3BzLAoJCQkuZHluYW1pYyA9IDEsCgkJCS5kcGNtX3BsYXliYWNrID0g
+MSwKCQkJLnRyaWdnZXIgPSB7U05EX1NPQ19EUENNX1RSSUdHRVJfUE9TVCwgU05EX1NPQ19EUENN
+X1RSSUdHRVJfUE9TVH0sCgkJIH0sCgkJIC8qIEJFIERBSXMgKi8KCQl7CgkJCS5uYW1lID0gIkJF
+MiIsCgkJCS5jcHVfZGFpX25hbWUgPSBCRTJfUExBWUJBQ0tfQ1BVX0RBSSwgLy8ic25kLXNvYy1k
+dW1teS1kYWkiLAoJCQkucGxhdGZvcm1fbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKCQkJLmNvZGVj
+X25hbWUgPSAic25kLXNvYy1kdW1teSIsCgkJCS5jb2RlY19kYWlfbmFtZSA9ICJzbmQtc29jLWR1
+bW15LWRhaSIsCgkJCS5kYWlfZm10ID0gU05EX1NPQ19EQUlGTVRfSTJTIHwgU05EX1NPQ19EQUlG
+TVRfTkJfTkYgfAoJCQkJU05EX1NPQ19EQUlGTVRfQ0JTX0NGUywKCQkJLm5vX3BjbSA9IDEsCgkJ
+CS5kcGNtX3BsYXliYWNrID0gMSwKCQkJLmRwY21fY2FwdHVyZSA9IDEsCgkJCS5pZ25vcmVfc3Vz
+cGVuZCA9IDEsCgkJCS5pZ25vcmVfcG1kb3duX3RpbWUgPSAxLAoJCQkucGFyYW1zID0gJmRhaV9w
+YXJhbXMsCgkJfSwKCQl7CgkJCS5uYW1lID0gQkUxX1BMQVlCQUNLLAoJCQkuY3B1X2RhaV9uYW1l
+ID0gQkUxX1BMQVlCQUNLX0NQVV9EQUksCgkJCS5wbGF0Zm9ybV9uYW1lID0gInNuZC1zb2MtZHVt
+bXkiLAoJCQkuY29kZWNfbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKCQkJLmNvZGVjX2RhaV9uYW1l
+ID0gInNuZC1zb2MtZHVtbXktZGFpIiwKCQkJLm5vX3BjbSA9IDEsCgkJCS5kcGNtX3BsYXliYWNr
+ID0gMSwKCQkJLmRwY21fY2FwdHVyZSA9IDEsCgkJCS5pZ25vcmVfc3VzcGVuZCA9IDEsCgkJCS5p
+Z25vcmVfcG1kb3duX3RpbWUgPSAxLAoJCQkucGFyYW1zID0gJmRhaV9wYXJhbXMsCgkJfSwKCjEu
+IHdoZW4gb25seSAgcm91dGVzICBQQ00tLT5CRTEsICAKICAgICAgICBJZiBpIGFkZCAucGFyYW1z
+IGluIEJFMSBzb2MgZGFpIGxpbmssICB3aGVuIGkgc3RhcnQgUENNLCBpdCB3aWxsCmNyYXNoLiBh
+bmQgZ2V0ICJVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2Ug
+YXQKdmlydHVhbCBhZGRyZXNzIDAwMDAwMGQwIgogICAgICAgIFNlZW1zIHRvIGNyYXNoIGluIGRw
+Y21fYmVfZGFpX3N0YXJ0dXAoKQogICAgICAgICBJZiBpIHJlbW92ZWQgLnBhcmFtcywgaXQgd2ls
+bCBub3QgY3Jhc2gsIGFuZCBwbGF5IG5vcm1hbGx5LgoKMi4gIHdoZW4gb25seSB3aXRoIEJFMi0t
+PiBCRTEsCiAgICAgICAgQkUyIGlzIG5ldmVyIHRyaWdnZXIsICB3aGVyZSBkaWQgaSAgZ2V0IHdy
+b25nPwoKVGhhbmtzLgoKCgoKKioqKioqKioqKioqKiBFbWFpbCBDb25maWRlbnRpYWxpdHkgTm90
+aWNlICoqKioqKioqKioqKioqKioqKioqClRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaW4gdGhp
+cyBlLW1haWwgbWVzc2FnZSAoaW5jbHVkaW5nIGFueSAKYXR0YWNobWVudHMpIG1heSBiZSBjb25m
+aWRlbnRpYWwsIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2VkLCBvciBvdGhlcndpc2UKZXhlbXB0IGZy
+b20gZGlzY2xvc3VyZSB1bmRlciBhcHBsaWNhYmxlIGxhd3MuIEl0IGlzIGludGVuZGVkIHRvIGJl
+IApjb252ZXllZCBvbmx5IHRvIHRoZSBkZXNpZ25hdGVkIHJlY2lwaWVudChzKS4gQW55IHVzZSwg
+ZGlzc2VtaW5hdGlvbiwgCmRpc3RyaWJ1dGlvbiwgcHJpbnRpbmcsIHJldGFpbmluZyBvciBjb3B5
+aW5nIG9mIHRoaXMgZS1tYWlsIChpbmNsdWRpbmcgaXRzIAphdHRhY2htZW50cykgYnkgdW5pbnRl
+bmRlZCByZWNpcGllbnQocykgaXMgc3RyaWN0bHkgcHJvaGliaXRlZCBhbmQgbWF5IApiZSB1bmxh
+d2Z1bC4gSWYgeW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgZS1tYWls
+LCBvciBiZWxpZXZlIAp0aGF0IHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZS1tYWlsIGluIGVycm9y
+LCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgCmltbWVkaWF0ZWx5IChieSByZXBseWluZyB0byB0
+aGlzIGUtbWFpbCksIGRlbGV0ZSBhbnkgYW5kIGFsbCBjb3BpZXMgb2YgCnRoaXMgZS1tYWlsIChp
+bmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzKSBmcm9tIHlvdXIgc3lzdGVtLCBhbmQgZG8gbm90CmRp
+c2Nsb3NlIHRoZSBjb250ZW50IG9mIHRoaXMgZS1tYWlsIHRvIGFueSBvdGhlciBwZXJzb24uIFRo
+YW5rIHlvdSEKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
