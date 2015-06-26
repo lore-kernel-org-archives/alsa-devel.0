@@ -1,15 +1,15 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ALSA: hdac_ext: add hdac extended controller
-Date: Fri, 26 Jun 2015 12:42:44 +0300
-Message-ID: <20150626094244.GA29672@mwanda>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: dapm: Fix deadlock on auto-disable mux
+	controls
+Date: Fri, 26 Jun 2015 10:39:43 +0100
+Message-ID: <1435311583-18695-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 56E882614D3
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 11:44:05 +0200 (CEST)
-Content-Disposition: inline
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 43A002614D3
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 11:54:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jeeja KP,
+The commit 02aa78abec6e ("ASoC: DAPM: Add APIs to create individual DAPM
+controls.") added locking to the snd_soc_dapm_new_control function but
+did not update the call to snd_soc_dapm_new_control in the auto-disable
+mux code, this appears to be because the patches were sent at fairly
+similar times.
 
-The patch 0b00a5615dc4: "ALSA: hdac_ext: add hdac extended
-controller" from Jun 11, 2015, leads to the following static checker
-warning:
+This patch change the call in the auto-disable mux code to use the new
+snd_soc_dapm_new_control_unlocked function instead.
 
-	sound/hda/ext/hdac_ext_controller.c:47 snd_hdac_ext_bus_parse_capabilities()
-	warn: unsigned 'offset' is never less than zero.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-	sound/hda/ext/hdac_ext_controller.c:54 snd_hdac_ext_bus_parse_capabilities()
-	warn: unsigned 'cur_cap' is never less than zero.
-
-sound/hda/ext/hdac_ext_controller.c
-    38  int snd_hdac_ext_bus_parse_capabilities(struct hdac_ext_bus *ebus)
-    39  {
-    40          unsigned int cur_cap;
-    41          unsigned int offset;
-    42          struct hdac_bus *bus = &ebus->bus;
-    43          unsigned int counter = 0;
-    44  
-    45          offset = snd_hdac_chip_readl(bus, LLCH);
-    46  
-    47          if (offset < 0)
-                    ^^^^^^^^^^
-    48                  return -EIO;
-    49  
-    50          /* Lets walk the linked capabilities list */
-    51          do {
-    52                  cur_cap = _snd_hdac_chip_read(l, bus, offset);
-    53  
-    54                  if (cur_cap < 0)
-                            ^^^^^^^^^^^
-    55                          return -EIO;
-
-
-
-regards,
-dan carpenter
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index aa327c9..a47a8ce 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -389,8 +389,8 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
+ 
+ 			data->value = template.on_val;
+ 
+-			data->widget = snd_soc_dapm_new_control(widget->dapm,
+-					&template);
++			data->widget = snd_soc_dapm_new_control_unlocked(
++						widget->dapm, &template);
+ 			if (!data->widget) {
+ 				ret = -ENOMEM;
+ 				goto err_name;
+-- 
+1.7.2.5
