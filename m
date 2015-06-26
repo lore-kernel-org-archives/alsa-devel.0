@@ -1,119 +1,77 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: =?utf-8?q?DPCM=3A_BE_to_BE_cpu_DAIs_question?=
-	=?utf-8?b?4oCP?=
-Date: Fri, 26 Jun 2015 12:11:48 +0100
-Message-ID: <1435317108.4661.11.camel@loki>
-References: <1435284991.19429.0.camel@mtksdaap41>
+From: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+ of WM510205 codec via ACPI (resend)
+Date: Fri, 26 Jun 2015 13:46:50 +0200
+Message-ID: <558D3BAA.3080700@linux.intel.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com> <20150625073618.GH827@lahna.fi.intel.com> <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BCD02614DA
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 13:11:49 +0200 (CEST)
-In-Reply-To: <1435284991.19429.0.camel@mtksdaap41>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "srv_kaichieh.chaung" <srv_kaichieh.chuang@mediatek.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, alsa-devel@alsa-project.org, kaichieh.chuang@mediatek.com
+Content-Type: text/plain; charset=windows-1252;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150625154407.GE6321-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE1LTA2LTI2IGF0IDEwOjE2ICswODAwLCBzcnZfa2FpY2hpZWguY2hhdW5nIHdy
-b3RlOgo+IEhpLAo+ICAgICAgICAgT3VyIHBsYXRmb3JtIHVzZSBBU29DIHN0cnVjdHVyZS4gQ3Vy
-cmVudGx5LCB3ZSB3YW50IHRvIHJlZmFjdG9yCj4gb3VyIGRyaXZlciB0byB1c2UgRFBDTSBzdHJ1
-Y3R1cmUuCj4gSSBmb2xsb3dlZCB0aGUgZG9jdW1lbnRhdGlvbiBvZiBEUENNLCBidXQgaGF2ZSBz
-b21lIHRyb3VibGUKPiBpbXBsZW1lbnRpbmcgaG9zdGxlc3MgIEJFIHRvIEJFIGRhaSBsaW5rcy4K
-PiAKPiBNeSBxdWVzdGlvbiBpczoKPiAxLiAgSXMgdGhlcmUgYW55ICBjb2RlIGV4YW1wbGUgZm9y
-IHRoaXMoaG9zdGxlc3MgQkUgdG8gQkUpPwo+IFNpbmNlIEkgZGlkbid0IHNlZSBhbnkgZXhpc3Rp
-bmcgY29kZSBvbiAgbGludXgga2VybmVsLgoKSSB0aGluayBWaW5vZCBoYXMgc29tZSBleGFtcGxl
-IGNvZGUsIEkgZG9udCBrbm93IGlmIGl0J3MgdXBzdHJlYW0geWV0CmJ1dCBpdCdzIHBhcnQgb2Yg
-dGhlIFNreWxha2UgZHJpdmVyLiBUaGUgaG9zdGxlc3MgQkUgdG8gQkUgbGluayBpcwpyZWFsbHkg
-anVzdCBhIGNvZGVjIDwtPiBjb2RlYyBsaW5rIGRlZmluZWQgaW4gdGhlIERBUE0gZ3JhcGguIElp
-cmMsCnRoZXJlIGFyZSBleGFtcGxlcyBvZiBjb2RlYyA8LT5jb2RlYyBzdHlsZSBsaW5rcyB1cHN0
-cmVhbSBpbiB0aGUgU2Ftc3VuZwpkaXJlY3RvcnkuCgo+IDIuICBGcm9tICBkb2N1bWVudGF0aW9u
-LCAgaSBoYXZlIHRvIGFzc2dpbiAgYSAgc25kX3NvY19wY21fc3RyZWFtIGZvciBCRQo+IGRhaXMu
-Cj4gICAgICBJdCBzZWVtcyB0aGF0IHRoZSBCRTwtPkJFIGRhaSBsaW5rcyBjYW4gb25seSBzdXBw
-b3J0IG9uZSBzcGVjCj4gKGZvcm1hdC9yYXRlcy9jaCkuCj4gICAgIE9yIGFtIGkgZ2V0dGluZyBp
-dCB3cm9uZywgZG9lcyBpdCBzdXBwb3J0IGR5bmFtaWNhbGx5IGNoYW5nZSBvZiB0aGUKPiBzcGVj
-PwoKVGhlIEJFIGxpbmsgY2FuIHJ1biBhdCBhbnkgcmF0ZS9mb3JtYXQgeW91IG5lZWQgZGVwZW5k
-aW5nIG9uIHlvdXIgdXNlCmNhc2UuIEl0IGNhbiBkeW5hbWljYWxseSBjaGFuZ2UgdG9vIGJldHdl
-ZW4gdXNlIGNhc2VzLiBUaGUgZml4dXAKY2FsbGJhY2sgaXMgdXNlZCB0byBjaGFuZ2UgdGhlIEJF
-IGNvbmZpZywgc28gaXQgY2FuIGNoZWNrIGFueQpyZXF1aXJlbWVudHMgZXZlcnkgdGltZSBpdCBp
-cyBjYWxsZWQgYW5kIGNvbmZpZ3VyZSB0aGUgQkUgYWNjb3JkaW5nbHkuCj4gCj4gVGhhbmtzIGlu
-IGFkdmFuY2VkIQo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gICBJIGhhdmUg
-IHRyaWVkIHNvbWUgIGltcGxlbWVudGF0aW9ucywgYnV0IGZhaWxlZC4gIE15IGxpbnV4IHZlcnNp
-b24gaXMKPiAzLjE4Lgo+IAo+IElsbHVzdHJhdGlvbiwKPiBQQ00gLS0tLS0tLS0tLS0tLS0tLS0+
-IEJFMQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKGkQo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS08IEJFMgo+IAo+IENv
-ZGUgc25pcHBldCwKPiAKPiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSBt
-YWNoaW5lX3JvdXRlc1tdID0gewo+IAl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxM
-LCBGRV9TVE5BTUV9LAo+IAl7QkUxX1BMQVlCQUNLX0NQVV9EQUlfU1ROQU1FLCBOVUxMLCBCRTJf
-Q0FQVFVSRV9DUFVfREFJX1NUTkFNRX0sCj4gfTsKPiAKPiBzdGF0aWMgY29uc3Qgc3RydWN0IHNu
-ZF9zb2NfcGNtX3N0cmVhbSBkYWlfcGFyYW1zID0gewo+IAkuZm9ybWF0cyA9IFNORFJWX1BDTV9G
-TVRCSVRfUzMyX0xFLAo+IAkucmF0ZV9taW4gPSA0ODAwMCwKPiAJLnJhdGVfbWF4ID0gNDgwMDAs
-Cj4gCS5jaGFubmVsc19taW4gPSAyLAo+IAkuY2hhbm5lbHNfbWF4ID0gMiwKPiB9Owo+IAo+IHN0
-YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBtdF9zb2NfZGFpX2NvbW1vbltdID0gewo+IAkJ
-ewo+IAkJCS5uYW1lID0gRkVfUENNLAo+IAkJCS5zdHJlYW1fbmFtZSA9IEZFX1NUTkFNRSwKPiAJ
-CQkuY3B1X2RhaV9uYW1lID0gRkVfQ1BVREFJTkFNRSwJLy8gY2Fubm90IHVzZSBkdW1teSEhISEK
-PiAJCQkucGxhdGZvcm1fbmFtZSA9IEZFX1BDTU5BTUUsCj4gCQkJLmNvZGVjX25hbWUgPSAic25k
-LXNvYy1kdW1teSIsCj4gCQkJLmNvZGVjX2RhaV9uYW1lID0gInNuZC1zb2MtZHVtbXktZGFpIiwK
-PiAJCQkuaW5pdCA9IG10X3NvY19hdWRpb19pbml0MywKPiAJCQkub3BzID0gJmtjX3NuZF9zb2Nf
-b3BzLAo+IAkJCS5keW5hbWljID0gMSwKPiAJCQkuZHBjbV9wbGF5YmFjayA9IDEsCj4gCQkJLnRy
-aWdnZXIgPSB7U05EX1NPQ19EUENNX1RSSUdHRVJfUE9TVCwgU05EX1NPQ19EUENNX1RSSUdHRVJf
-UE9TVH0sCj4gCQkgfSwKPiAJCSAvKiBCRSBEQUlzICovCj4gCQl7Cj4gCQkJLm5hbWUgPSAiQkUy
-IiwKPiAJCQkuY3B1X2RhaV9uYW1lID0gQkUyX1BMQVlCQUNLX0NQVV9EQUksIC8vInNuZC1zb2Mt
-ZHVtbXktZGFpIiwKPiAJCQkucGxhdGZvcm1fbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKPiAJCQku
-Y29kZWNfbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKPiAJCQkuY29kZWNfZGFpX25hbWUgPSAic25k
-LXNvYy1kdW1teS1kYWkiLAo+IAkJCS5kYWlfZm10ID0gU05EX1NPQ19EQUlGTVRfSTJTIHwgU05E
-X1NPQ19EQUlGTVRfTkJfTkYgfAo+IAkJCQlTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTLAo+IAkJCS5u
-b19wY20gPSAxLAo+IAkJCS5kcGNtX3BsYXliYWNrID0gMSwKPiAJCQkuZHBjbV9jYXB0dXJlID0g
-MSwKPiAJCQkuaWdub3JlX3N1c3BlbmQgPSAxLAo+IAkJCS5pZ25vcmVfcG1kb3duX3RpbWUgPSAx
-LAo+IAkJCS5wYXJhbXMgPSAmZGFpX3BhcmFtcywKPiAJCX0sCj4gCQl7Cj4gCQkJLm5hbWUgPSBC
-RTFfUExBWUJBQ0ssCj4gCQkJLmNwdV9kYWlfbmFtZSA9IEJFMV9QTEFZQkFDS19DUFVfREFJLAo+
-IAkJCS5wbGF0Zm9ybV9uYW1lID0gInNuZC1zb2MtZHVtbXkiLAo+IAkJCS5jb2RlY19uYW1lID0g
-InNuZC1zb2MtZHVtbXkiLAo+IAkJCS5jb2RlY19kYWlfbmFtZSA9ICJzbmQtc29jLWR1bW15LWRh
-aSIsCj4gCQkJLm5vX3BjbSA9IDEsCj4gCQkJLmRwY21fcGxheWJhY2sgPSAxLAo+IAkJCS5kcGNt
-X2NhcHR1cmUgPSAxLAo+IAkJCS5pZ25vcmVfc3VzcGVuZCA9IDEsCj4gCQkJLmlnbm9yZV9wbWRv
-d25fdGltZSA9IDEsCj4gCQkJLnBhcmFtcyA9ICZkYWlfcGFyYW1zLAo+IAkJfSwKPiAKPiAxLiB3
-aGVuIG9ubHkgIHJvdXRlcyAgUENNLS0+QkUxLCAgCj4gICAgICAgICBJZiBpIGFkZCAucGFyYW1z
-IGluIEJFMSBzb2MgZGFpIGxpbmssICB3aGVuIGkgc3RhcnQgUENNLCBpdCB3aWxsCj4gY3Jhc2gu
-IGFuZCBnZXQgIlVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5j
-ZSBhdAo+IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDBkMCIKPiAgICAgICAgIFNlZW1zIHRvIGNyYXNo
-IGluIGRwY21fYmVfZGFpX3N0YXJ0dXAoKQoKSXQgc2hvdWxkIG5vdCBjcmFzaC4gQ2FuIHlvdSB1
-cGRhdGUgdG8gdGhlIGxhdGVzdCBrZXJuZWwgYW5kIHNlbmQgdGhlCm9vcHMgbWVzc2FnZSBpZiBp
-dCBzdGlsbCBjcmFzaGVzLgoKPiAgICAgICAgICBJZiBpIHJlbW92ZWQgLnBhcmFtcywgaXQgd2ls
-bCBub3QgY3Jhc2gsIGFuZCBwbGF5IG5vcm1hbGx5Lgo+IAo+IDIuICB3aGVuIG9ubHkgd2l0aCBC
-RTItLT4gQkUxLAo+ICAgICAgICAgQkUyIGlzIG5ldmVyIHRyaWdnZXIsICB3aGVyZSBkaWQgaSAg
-Z2V0IHdyb25nPwoKWW91IG5lZWQgdG8gYWRkIHRoZSAiY29kZWMgPC0+IGNvZGVjIiBzdHlsZSBs
-aW5rIGhlcmUuIFRoZSBjb2RlIGFib3ZlCm9ubHkgc3VwcG9ydHMgCgpQQ00gIDwtLS0rLS0tPiBC
-RTEKICAgICAgICAgfAogICAgICAgICArLS0tPiBCRTIKCmJ1dCBCRTEvMiBjYW5ub3QgaW5pdGlh
-dGUgdGhlIGxpbmsgKHRoZXkgY2FuIGJlIHNlZW4gYXMgc2xhdmVzKSB1bmxlc3MKQkUxLzIgYXJl
-IGFsc28gbGlua2VkIHZpYSBjb2RlYzwtPmNvZGVjIHN0eWxlIChhbmQgYXJlIGRyaXZlbiBieSBE
-QVBNIHRvCmluaXRpYXRlIHRoZSBsaW5rKS4KCkxpYW0gCj4gCj4gVGhhbmtzLgo+IAo+IAo+IAo+
-IAo+ICoqKioqKioqKioqKiogRW1haWwgQ29uZmlkZW50aWFsaXR5IE5vdGljZSAqKioqKioqKioq
-KioqKioqKioqKgo+IFRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaW4gdGhpcyBlLW1haWwgbWVz
-c2FnZSAoaW5jbHVkaW5nIGFueSAKPiBhdHRhY2htZW50cykgbWF5IGJlIGNvbmZpZGVudGlhbCwg
-cHJvcHJpZXRhcnksIHByaXZpbGVnZWQsIG9yIG90aGVyd2lzZQo+IGV4ZW1wdCBmcm9tIGRpc2Ns
-b3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXdzLiBJdCBpcyBpbnRlbmRlZCB0byBiZSAKPiBjb252
-ZXllZCBvbmx5IHRvIHRoZSBkZXNpZ25hdGVkIHJlY2lwaWVudChzKS4gQW55IHVzZSwgZGlzc2Vt
-aW5hdGlvbiwgCj4gZGlzdHJpYnV0aW9uLCBwcmludGluZywgcmV0YWluaW5nIG9yIGNvcHlpbmcg
-b2YgdGhpcyBlLW1haWwgKGluY2x1ZGluZyBpdHMgCj4gYXR0YWNobWVudHMpIGJ5IHVuaW50ZW5k
-ZWQgcmVjaXBpZW50KHMpIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYW5kIG1heSAKPiBiZSB1bmxh
-d2Z1bC4gSWYgeW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRoaXMgZS1tYWls
-LCBvciBiZWxpZXZlIAo+IHRoYXQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJy
-b3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciAKPiBpbW1lZGlhdGVseSAoYnkgcmVwbHlpbmcg
-dG8gdGhpcyBlLW1haWwpLCBkZWxldGUgYW55IGFuZCBhbGwgY29waWVzIG9mIAo+IHRoaXMgZS1t
-YWlsIChpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzKSBmcm9tIHlvdXIgc3lzdGVtLCBhbmQgZG8g
-bm90Cj4gZGlzY2xvc2UgdGhlIGNvbnRlbnQgb2YgdGhpcyBlLW1haWwgdG8gYW55IG90aGVyIHBl
-cnNvbi4gVGhhbmsgeW91IQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On 6/25/15 5:44 PM, Charles Keepax wrote:
+> On Thu, Jun 25, 2015 at 03:58:53PM +0100, Mark Brown wrote:
+>> On Thu, Jun 25, 2015 at 02:18:23PM +0200, Christian Hartmann wrote:
+>>
+>>>                  Name (_HID, "WM510205")  // _HID: Hardware ID
+>>>                  Name (_CID, "WM510205")  // _CID: Compatible ID
+>>>                  Name (_DDN, "Wolfson Microelectronics Audio WM5102=
+")
+>>
+>> Separately to the chip select discussion one thing to highlight here=
+ is
+>> that for some reason the BIOS is listing the device as "WM510205" ra=
+ther
+>> than "WM5102" - do those extra numbers mean anything and does this m=
+ean
+>> that WM50120[1-4] and possibly higher numbers are also valid?
+>
+>  From my brief discussions with the Windows guys here on this
+> basically those last two digits are being used to inform the
+> Windows driver of use-case setup. So here it will set things up
+> for whatever the Window's driver considers to be setup "5".
+>
+> I think from the Linux side we can safely ignore those last two
+> digits. I expect that all systems of the same make and model
+> would report the same last two digits but that it might change
+> between models if the Windows driver is expected to something
+> differently for that model.
+
+Here's the summary of what a valid _HID  should look like. It took me a=
+=20
+couple of days to gather the rules from different sources, I hope it=20
+helps others figure things out.
+-Pierre
+
+_HID must be one of these forms:
+- "AAA####=94 or EisaID(=93AAA####=94) where A is an uppercase letter a=
+nd # is=20
+a hex digit. The AAA PNP Vendor ID consists of 3 characters, verified o=
+n
+http://www.uefi.org/sites/default/files/resources/PNPID_List.pdf
+
+- "ACPI####=94 where # is a hex digit
+
+- "NNNN####=94 where N is an uppercase letter or decimal digit (0-9) an=
+d #=20
+is a hex digit (ACPI 5.0).
+The NNNN Vendor ID can be
+--> a PCI ID: 4 hex digits (0-9 and A-F), verified on
+https://www.pcisig.com/membership/vid_search/
+--> or an ACPI ID: 4 characters, each character being either an=20
+uppercase letter (A-Z) or a numeral (0-9), verified on
+http://www.uefi.org/sites/default/files/resources/ACPIID_List.pdf
+
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
