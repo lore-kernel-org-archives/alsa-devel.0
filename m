@@ -1,26 +1,19 @@
-From: "Kaskinen, Tanu" <tanu.kaskinen@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 3/4] snd: add support for
- displayport multi-stream to hda codec.
-Date: Fri, 26 Jun 2015 16:27:30 +0000
-Message-ID: <1435336050.7153.62.camel@tkkaskin-mobl3.ger.corp.intel.com>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <s5hpp4s9ceq.wl-tiwai@suse.de> <20150622125429.GW25769@phenom.ffwll.local>
- <s5h7fqv7u7s.wl-tiwai@suse.de> <1434979769.2503.32.camel@loki>
- <1434986474.6176.53.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hioafeoj4.wl-tiwai@suse.de>
+From: Armin Ranjbar <zoup@zoup.org>
+Subject: Re: Sennheiser HDVD 800 Support
+Date: Fri, 26 Jun 2015 22:22:42 +0430
+Message-ID: <CAOvx4-3UvgrRpwO8EcavQeAnxDa5uDP+p+up_3SZXJJ4sMMSDg@mail.gmail.com>
+References: <CAOvx4-2g3V+Sdju3YGRBeaUFPK+1TMSQ=KXSmCrm1jV4VWE7Cw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D49982614CD
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 18:27:37 +0200 (CEST)
-In-Reply-To: <s5hioafeoj4.wl-tiwai@suse.de>
-Content-Language: en-US
-Content-ID: <038E70586CDAFE4E82325469658DADAE@intel.com>
+Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
+ [209.85.212.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B941265340
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 19:53:02 +0200 (CEST)
+Received: by wicnd19 with SMTP id nd19so51334740wic.1
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 10:53:02 -0700 (PDT)
+In-Reply-To: <CAOvx4-2g3V+Sdju3YGRBeaUFPK+1TMSQ=KXSmCrm1jV4VWE7Cw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,36 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "tiwai@suse.de" <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@lists.freedesktop.org" <pulseaudio-discuss@lists.freedesktop.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "Lu, Han" <han.lu@intel.com>, "airlied@gmail.com" <airlied@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-06-22 at 17:44 +0200, Takashi Iwai wrote:
-> At Mon, 22 Jun 2015 15:21:16 +0000,
-> Kaskinen, Tanu wrote:
-> > PulseAudio (mostly) doesn't use the hw:X devices directly. Instead, it
-> > uses logical names like "front", "hdmi", "iec958", etc. Speaking of HDMI
-> > specifically, PulseAudio uses devices from "hdmi:X,0" to "hdmi:X,7".
-> > With this new dynamic PCM system, do these logical names still work?
-> 
-> Unfortunately, this doesn't work for HDA as is, because of the
-> terribly arcane secret.  For keeping the compatibility with the old
-> config, there is a static mapping of the hdmi:x,y and hw:x,z.
+for the record, issue was fixed by upgrading to 4.1.0.
 
-Yes, the mapping is like this:
+---
+Armin ranjbar
 
-y = 0, z = 3
-y = 1, z = 7
-y = 2, z = 8
-y = 3, z = 9
-etc.
 
-Now I'm wondering if this is HDA specific (your wording suggests that it
-is)? For HDMI ELD information and jack detection support, PulseAudio has
-been assuming this particular mapping. If other drivers have been using
-a different mapping, then ELD and jack detection support has been and
-continues to be broken for other drivers in PA.
+On Fri, May 22, 2015 at 9:37 PM, Armin Ranjbar <zoup@zoup.org> wrote:
 
--- 
-Tanu
+> Dear everyone,
+>
+> i have noticed that alas doesn't support HDVD-800 USB DAC, i can not hear
+> anything.
+> note that this device requires it's own driver under windows/mac.
+>
+> this is my alsa-info output:
+> http://www.alsa-project.org/db/?f=fe56e65add73248baf5307a04b6b9deb2b236004
+>
+> output of pasuspender -- aplay -Dplughw:2  some_file.wav:
+> ALSA lib pcm_hw.c:1667:(_snd_pcm_hw_open) Invalid value for card
+> main:722: audio open error: No such file or directory
+>
+> output of aplay -v -fdat --dump-hw-params -d1 -Dhw:S20 /dev/zero:
+> http://pastebin.com/p2Daxza6
+>
+> speaker-test -c2 -twav -Dplughw:S20 starts OK, but i can't hear anything/
+>
+> product page:
+> http://en-us.sennheiser.com/headphone-audio-amplification-hdvd-800-acoustic
+>
+>
+> I'm open to help if you need anything to be done.
+> ---
+> Armin ranjbar
+>
+>
