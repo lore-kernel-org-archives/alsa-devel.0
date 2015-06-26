@@ -1,16 +1,18 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - restore the MIC FIXUP for some
-	Dell machines
-Date: Fri, 26 Jun 2015 12:35:17 +0800
-Message-ID: <1435293317-386-1-git-send-email-hui.wang@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: jack: Fix endless loop at unique index
+	detection
+Date: Fri, 26 Jun 2015 07:04:26 +0200
+Message-ID: <1435295066-6297-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 111252607E8
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 06:35:25 +0200 (CEST)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3306B26071B
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 07:04:29 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 68E48ABA5
+ for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 05:04:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,64 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Those FIXUPs were applied to the machines through pin quirks, but
-recently the PCI_QUIRK makes them can't apply to the machines.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=99851
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8e02cdf..78dfec9d 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4522,6 +4522,8 @@ enum {
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13_GPIO6,
-+	ALC288_FIXUP_DELL_XPS_13,
-+	ALC288_FIXUP_DISABLE_AAMIX,
- 	ALC292_FIXUP_DELL_E7X,
- 	ALC292_FIXUP_DISABLE_AAMIX,
- 	ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
-@@ -5053,9 +5055,23 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC288_FIXUP_DELL1_MIC_NO_PRESENCE
- 	},
-+	[ALC288_FIXUP_DISABLE_AAMIX] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_disable_aamix,
-+		.chained = true,
-+		.chain_id = ALC288_FIXUP_DELL_XPS_13_GPIO6
-+	},
-+	[ALC288_FIXUP_DELL_XPS_13] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_dell_xps13,
-+		.chained = true,
-+		.chain_id = ALC288_FIXUP_DISABLE_AAMIX
-+	},
- 	[ALC292_FIXUP_DISABLE_AAMIX] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_disable_aamix,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE
- 	},
- 	[ALC292_FIXUP_DELL_E7X] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -5096,7 +5112,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x064a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x064b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0665, "Dell XPS 13", ALC292_FIXUP_DELL_E7X),
-+	SND_PCI_QUIRK(0x1028, 0x0665, "Dell XPS 13", ALC288_FIXUP_DELL_XPS_13),
- 	SND_PCI_QUIRK(0x1028, 0x06c7, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x06d9, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x06da, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
--- 
-1.9.1
+V2hpbGUgdGhlIGNvbW1pdCBbZDBhNjAxYzI3OGRlOiBBTFNBOiBqYWNrOiBGaXggdGhlIGlkIHVu
+aXF1ZW5lc3MKY2hlY2tdIGZpeGVzIHRoZSB3cm9uZyBzdHJpbmcgY2hlY2ssIGl0IGxlYWRzIHRv
+IGEgd29yc2UgcmVzdWx0IC0tIHRoZQpsb29wIGluIGdldF9hdmFpbGFibGVfaW5kZXgoKSBnb2Vz
+IGludG8gYW4gZW5kbGVzcyBsb29wLiAgVGhlIGNhdXNlIGlzCnRoYXQgc25kX2N0bF9maW5kX2lk
+KCkgcmV0dXJucyB0aGUgb2JqZWN0IGFzc2lnbmVkIHRvIHRoZSBudW1pZCBpZgppdCdzIHNldC4g
+IFRodXMgaXQgcG9pbnRzIHRvIHRoZSBwcmV2aW91cyBlbnRyeSBhZ2Fpbi4KClRoaXMgcGF0Y2gg
+Y2xlYXJzIHRoZSBudW1pZCBmaWVsZCBmb3IgdGhlIG5leHQgY2FsbCBwcm9wZXJseS4KClJlcG9y
+dGVkLWFuZC10ZXN0ZWQtYnk6IFRvbcOhxaEgUHJ1xb5pbmEgPHBydXppbmF0QGdtYWlsLmNvbT4K
+U2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KIHNvdW5kL2Nv
+cmUvY3RsamFjay5jIHwgNSArKysrLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwg
+MSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2NvcmUvY3RsamFjay5jIGIvc291bmQv
+Y29yZS9jdGxqYWNrLmMKaW5kZXggOTE0OWE0YWVmYTk1Li44NGEzY2Q2ODMwNjggMTAwNjQ0Ci0t
+LSBhL3NvdW5kL2NvcmUvY3RsamFjay5jCisrKyBiL3NvdW5kL2NvcmUvY3RsamFjay5jCkBAIC00
+MSw4ICs0MSwxMSBAQCBzdGF0aWMgaW50IGdldF9hdmFpbGFibGVfaW5kZXgoc3RydWN0IHNuZF9j
+YXJkICpjYXJkLCBjb25zdCBjaGFyICpuYW1lKQogCXNpZC5pZmFjZSA9IFNORFJWX0NUTF9FTEVN
+X0lGQUNFX0NBUkQ7CiAJc3RybGNweShzaWQubmFtZSwgbmFtZSwgc2l6ZW9mKHNpZC5uYW1lKSk7
+CiAKLQl3aGlsZSAoc25kX2N0bF9maW5kX2lkKGNhcmQsICZzaWQpKQorCXdoaWxlIChzbmRfY3Rs
+X2ZpbmRfaWQoY2FyZCwgJnNpZCkpIHsKIAkJc2lkLmluZGV4Kys7CisJCS8qIHJlc2V0IG51bWlk
+OyBvdGhlcndpc2Ugc25kX2N0bF9maW5kX2lkKCkgaGl0cyB0aGlzIGFnYWluICovCisJCXNpZC5u
+dW1pZCA9IDA7CisJfQogCiAJcmV0dXJuIHNpZC5pbmRleDsKIH0KLS0gCjIuNC40CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
