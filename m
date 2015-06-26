@@ -1,78 +1,169 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock
-	class key for lockdep
-Date: Fri, 26 Jun 2015 11:16:24 +0800
-Message-ID: <CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com>
-References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
- <558C0067.2000401@linux.intel.com> <558C1824.8020204@metafoo.de>
- <20150625153325.GR14071@sirena.org.uk>
- <558C229D.4090409@metafoo.de>
- <20150625160817.GT14071@sirena.org.uk>
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: Re: [alsa-devel] [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Fri, 26 Jun 2015 06:06:47 +0200
+Message-ID: <558CCFD7.90606@web.de>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>	<53AFF992.5030403@web.de>	<53B0C596.6090007@canonical.com>	<53B1078B.4090101@web.de>	<53B219DF.6090807@canonical.com>	<53B26575.1000003@web.de>	<53B27ED7.4070401@canonical.com>	<53B50062.30200@web.de>	<53B51B63.8060809@canonical.com>	<53B51CF3.8090102@web.de>	<53B52146.9050300@canonical.com>	<55603F22.8070103@web.de> <CAN8cciZYZ4setSj7dgPqQUVrBrr98tSvofLrD_0zvyQqkWfd2Q@mail.gmail.com> <5560A93E.7060607@web.de> <558A4216.8010401@web.de> <558A6E80.7010003@canonical.com> <558BDFD4.9060301@web.de> <558CB778.5020307@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
- [209.85.218.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 2160D260719
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 05:16:26 +0200 (CEST)
-Received: by oigx81 with SMTP id x81so66701605oig.1
- for <alsa-devel@alsa-project.org>; Thu, 25 Jun 2015 20:16:24 -0700 (PDT)
-In-Reply-To: <20150625160817.GT14071@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="sWBo9xg4T1fRP3NETfwnl6KniF5Qi2go7"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <558CB778.5020307@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hui Wang <hui.wang@canonical.com>, Raymond Yau <superquad.vortex2@gmail.com>, alex.hung@canonical.com, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 26, 2015 at 12:08 AM, Mark Brown <broonie@kernel.org> wrote:
-[...]
->> >As far as I can tell we're likely to end up needing a key per regmap or
->> >something similar.
->
->> Since the number of lockdep classes itself is also limited we should avoid
->> creating extra lockdep classes when we can. I think the approach which
->> having the option of specifying a lockdep class in the regmap config will be
->> ok. The only case it can't handle if we nest instances with the same config,
->> but I don't really see valid use scases for that at the moment.
->
-> Oh, ffs.  This just keeps getting better.  I hadn't been aware of that
-> limitation.  We still have the problem that this needs to be something
-> users can understand rather than something that's just "define something
-> here in one of your drivers if you're running into problems with
-> spurious warnings" here.  That's always been the biggest problem here
-> (once we got past the "what is this supposed to do in the first place?"
-> issues).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--sWBo9xg4T1fRP3NETfwnl6KniF5Qi2go7
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I found that V4L2 uses separate lockdep classes for each of their
-v4l2_ctrl. This was introduced in 6cd247ef22e "[media] v4l2-ctrls:
-eliminate lockdep false alarms for struct v4l2_ctrl_handler.lock"
-(https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6cd247ef22e),
-so we could possibly take that approach.
+On 2015-06-26 04:22, Hui Wang wrote:
+> On 06/25/2015 07:02 PM, Jan Kiszka wrote:
+>> On 2015-06-24 10:46, Hui Wang wrote:
+>>> On 06/24/2015 01:37 PM, Jan Kiszka wrote:
+>>>> On 2015-05-23 18:22, Jan Kiszka wrote:
+>>>>> On 2015-05-23 18:06, Raymond Yau wrote:
+>>>>>> 2015-5-23 =E4=B8=8B=E5=8D=884:50 =E6=96=BC "Jan Kiszka" <jan.kiszk=
+a@web.de> =E5=AF=AB=E9=81=93=EF=BC=9A
+>>>>>>>>>>>>>>>>>> Most Thinkpad Edge series laptops use conexant codec, =
+so
+>>>>>>>>>>>>>>>>>> far
+>>>>>>>>>>>>>>>>>> although
+>>>>>>>>>>>> <snip>
+>>>>>>>>>>>>>>> Is there anything I can debug or any information I can
+>>>>>>>>>>>>>>> collect
+>>>>>>>>>>>>>>> from my
+>>>>>>>>>>>>>>> box to examine this?
+>>>>>>>>>>>>>> What is the linux distribution on your machine? And use
+>>>>>>>>>>>>>> showkey to
+>>>>>>>>>>>>>> catch
+>>>>>>>>>>>>>> the keycode of that button.
+>>>>>>>>>>>>> I'm running OpenSUSE 13.1. The reported keycode of the powe=
+r
+>>>>>>>>>>>>> button is
+>>>>>>>>>>>>> 116.
+>>>>>>>>>>>> It seems the keycode is correct, it is power keycode rather
+>>>>>>>>>>>> the mute
+>>>>>>>>>>>> keycode.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Could you please do some debug, let us find which line of
+>>>>>>>>>>>> code is
+>>>>>> the
+>>>>>>>>>>>> root cause for this problem. for example:
+>>>>>>>>>>>>
+>>>>>>>>>>>> after running the line, the problem shows up:
+>>>>>>>>>>>>
+>>>>>>>>>>>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068",
+>>>>>>>>>>>> acpi_check_cb,
+>>>>>>>>>>>> &found, NULL)) && found) // in the
+>>>>>>>>>>>> sound/pci/hda/thinkpad_helper.c,
+>>>>>>>>>>>> is_thinkpad()
+>>>>>>>>>>> This evaluates to true
+>>>>>>>>>>>
+>>>>>>>>>>>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068",
+>>>>>> acpi_check_cb,
+>>>>>>>>>>>> &found, NULL)) && found; // same as above
+>>>>>>>>>>>>
+>>>>>>>>>>>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) =
+{
+>>>>>>>>>>>> //in the
+>>>>>>>>>>>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>>>>>> ...and this
+>>>>>>>>>>>
+>>>>>>>>>>>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >=3D 0) { //
+>>>>>>>>>>>> same as
+>>>>>>>>>>>> above
+>>>>>>>>>>>>
+>>>>>>>>>>> ...and this as well. spec->num_adc_nids is 1.
+>>>>>>>>>> If we change the code like below, does the power button can wo=
+rk
+>>>>>>>>>> well?
+>>>>>>>>>>
+>>>>>>>>>> in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>            if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) {
+>>>>>>>>>>                /*
+>>>>>>>>>>                old_vmaster_hook =3D spec->vmaster_mute.hook;
+>>>>>>>>>>                spec->vmaster_mute.hook =3D update_tpacpi_mute_=
+led;
+>>>>>>>>>>                removefunc =3D false;
+>>>>>>>>>>               */
+>>>>>>>>> Disabling only this block resolves the issue.
+>>>>>>>> So Below two lines make the power button change to the reset
+>>>>>>>> button.
+>>>>>>>>
+>>>>>>>> drivers/platform/x86/thinkpad_acpi.c  mute_led_on_off():
+>>>>>>>>
+>>>>>>>> acpi_get_handle(hkey_handle, "SSMS", &temp);
+>>>>>>>> acpi_evalf(hkey_handle, &output, "SSMS", "dd", 1);
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> @alexhung,
+>>>>>>>> Do you have any idea why this can affect the power button behavi=
+or?
+>>>>>>>>
+>>>>>>> I think we all lost track of this issue, but it unfortunately sti=
+ll
+>>>>>>> exists in the latest kernel, requiring custom builds here. How
+>>>>>>> can we
+>>>>>>> proceed?
+>>>>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-May/0915=
+61.html
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> If you cannot find "SSMS" in  your T520 ACPI dump, this mean mute =
+LED
+>>>>>> cannot be turn on/off similar to T510
+>>>>> There is an entry (see attached disassembly), but this device has a=
+t
+>>>>> least no physical LED to drive.
+>>> Some hotkey leds are embedded on button.  Through the pictures I foun=
+d
+>>> on the internet (thinkpad t520), it looks like there is a led at the
+>>> center of the mute button.
+>> Again, I'm on a X121e, and that has only a single physical LED for
+>> signaling the power state. The mute button is behind key combination o=
+f
+>> the keyboard.
+>>
+>> Jan
+> There is no reason to change a power button to a reset button after
+> accessing the acpi device "SSMS", the "SSMS" is for the mute led instea=
+d
+> of the power management.
+>=20
+> I think it is better you login to the lenovo website and look for the
+> latest BIOS image, then upgrade the BIOS on your machine to see if it
+> can solve the problem or not.
 
-On my system, I have:
-# cat /proc/lockdep_stats
- lock-classes:                         1241 [max: 8191]
- direct dependencies:                  7364 [max: 32768]
- indirect dependencies:               27686
- all direct dependencies:            158097
- dependency chains:                   10011 [max: 65536]
- dependency chain hlocks:             38887 [max: 327680]
- in-hardirq chains:                      92
- in-softirq chains:                     372
- in-process chains:                    9547
- stack-trace entries:                107703 [max: 524288]
+There is no more update since 2013, and I'm using the latest one. The
+real bug is likely in the BIOS (it also has some other oddities), but
+the trigger was this patch.
 
-So, at least on that platform, there is some room to grow...
+I suggested to have a quirk installed for my model - it cannot benefit
+from this change anyway. Now I'm waiting for feedback on how to address
+this best *in Linux* (because this is what we have under control).
 
-I'm just afraid that implementing this may require creating a bunch of
-macros to wrap all regmap_init_[i2c/spi/...] functions, as the lockdep
-classes need to be statically allocated... Unless we find a different
-solution than what V4L2 does.
+Thanks,
+Jan
+
+
+--sWBo9xg4T1fRP3NETfwnl6KniF5Qi2go7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEARECAAYFAlWMz9cACgkQitSsb3rl5xQ4ngCg0WHP2qD9Y7mWveDhRi/Qx7Rn
+7oIAn0hDy+ONo3pWkbxjGCSInRNdJIce
+=7qxD
+-----END PGP SIGNATURE-----
+
+--sWBo9xg4T1fRP3NETfwnl6KniF5Qi2go7--
