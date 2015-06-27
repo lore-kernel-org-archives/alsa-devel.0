@@ -1,20 +1,27 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Sat, 27 Jun 2015 20:28:56 +0500
-Message-ID: <558EC138.8090906@gmail.com>
-References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
- <557E86DD.8020709@metafoo.de>
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Sat, 27 Jun 2015 12:50:44 -0300
+Message-ID: <20150627155044.GA3054@khazad-dum.debian.net>
+References: <53B52146.9050300@canonical.com> <55603F22.8070103@web.de>
+ <CAN8cciZYZ4setSj7dgPqQUVrBrr98tSvofLrD_0zvyQqkWfd2Q@mail.gmail.com>
+ <5560A93E.7060607@web.de> <558A4216.8010401@web.de>
+ <558A6E80.7010003@canonical.com> <558BDFD4.9060301@web.de>
+ <558CB778.5020307@canonical.com>
+ <20150626224946.GA11254@khazad-dum.debian.net>
+ <558E3BDE.5070708@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id AA48826062F
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 17:28:59 +0200 (CEST)
-Received: by wicnd19 with SMTP id nd19so66609546wic.1
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 08:28:59 -0700 (PDT)
-In-Reply-To: <557E86DD.8020709@metafoo.de>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2F9D926062F
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 17:50:48 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 40C5220AC7
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 11:50:47 -0400 (EDT)
+Content-Disposition: inline
+In-Reply-To: <558E3BDE.5070708@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,49 +31,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Arun Raghavan <arun@accosted.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>, alex.hung@canonical.com, Raymond Yau <superquad.vortex2@gmail.com>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-15.06.2015 13:03, Lars-Peter Clausen wrote:
-> On 06/12/2015 02:29 PM, Arun Raghavan wrote:
->> So I guess the first thing that would be nice to have is a clear
->> meaning of these two flags. With this done, we could potentially get
->> to the API to report the transfer size from the driver.
->
-> Yeah, the meaning of those flags is somewhat fuzzy and may have changed
-> over time as well. Here is my understanding of the flags, might not
-> necessarily be 100% correct.
->
-> SNDRV_PCM_INFO_BLOCK_TRANSFER means that the data is copied from the
-> user accessible buffer in blocks of one period. Typically these kinds of
-> devices have some dedicated audio memory that is not accessible via
-> normal memory access and a DMA is setup to copy data from main memory to
-> the dedicated memory. This DMA transfers the data from the main memory
-> to the dedicated memory in chunks of period size. But otherwise the
-> controller might still be capable of reporting a accurate pointer
-> position down to the sample/frame level.
->
-> So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind handling
-> and devices with that flag set might need additional headroom since the
-> data up to one period after the pointer position has already been copied
-> to the dedicated memory and hence can no longer be overwritten.
->
-> SNDRV_PCM_INFO_BATCH on the other hand has become to mean that the
-> device is only capable of reporting the audio pointer with a coarse
-> granularity. Typically this means a period sized granularity, but there
-> are some other cases as well.
+On Sat, 27 Jun 2015, Jan Kiszka wrote:
+> > Please explain _in detail_ what you mean with "changing a power button to a
+> > reset button by acessing the SSMS ACPI method in a X121e".
+> > 
+> > Are we trigering a bug somewhere that crashes the x121e and causes it to
+> > reboot?
+> 
+> Well, there aren't much details to describe in this case: When this
+> patch is applied and I press the power button, the device performs a
+> hard reset. It doesn't reveal if the kernel crashes catastrophically,
+> causing a triple fault or so, or if the firmware decides to reset the
+> platform. Reverting the patch or preventing its effect via a quirk
+> filter like I posted [1] makes the issue go away.
 
-I have tried to convert this text into something that can be added to 
-the doxygen documentation in alsa-lib, but failed to verify the text. 
-Here is why.
+Ok, so we crashing the firmware, and on a box that is not likely to get
+further updates.  Well, this is a pretty clear case: blacklist.
 
-In kernel sources, sound/pci/hda/hda_controller.c mentions 
-SNDRV_PCM_INFO_BLOCK_TRANSFER. However, sub-period rewinds work fine on 
-this driver, and the avail granularity is something like 64 bytes. So, 
-either the description is wrong (i.e., "large blocks, possibly up to one 
-period size, but 64 bytes still counts as large" is actually meant - but 
-that would be useless), or the flag is wrongly set in the driver.
+Since calling SSMS in the X121e is unsafe, it needs to be blacklisted in
+thinkpad-acpi.  I will need dmidecode output for that (please XXX-out UUIDs
+and serial numbers in the dmidecode output before you send it to me, but do
+keep model numbers intact).
+
+We can also have a blacklist in ALSA to avoid the whole symbol_request() for
+something that will have to fail, of course.  I leave that for the ALSA
+maintainers to decide.
+
+That said, you blacklisted in ALSA by full codec->subsystem_id.  Which
+thinkpads have the 0x17aa21ec subsystem ID on the codec?  Just the x121e?
 
 -- 
-Alexander E. Patrakov
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
