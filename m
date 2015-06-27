@@ -1,18 +1,26 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH lib] Replace unsafe characters with _ in card
-	name
-Date: Sat, 27 Jun 2015 19:32:49 +0500
-Message-ID: <1435415569-17771-1-git-send-email-patrakov@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Sat, 27 Jun 2015 20:17:45 +0530
+Message-ID: <20150627144745.GX19530@localhost>
+References: <54F5CB3D.7020100@linux.intel.com>
+ <20150304170218.7b397993ce670902800109f1@ao2.it>
+ <20150403153414.b8de8df914664d7d7967120c@ao2.it>
+ <20150414150236.3e8288307124a43941ab94f7@ao2.it>
+ <552D1EE3.6090707@linux.intel.com>
+ <20150624101613.GK19530@localhost>
+ <20150625055046.GT19530@localhost>
+ <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
+ <20150625164717.GU19530@localhost>
+ <20150626150528.f9fdee3942f7e975d23dd701@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id E4758260593
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 16:33:31 +0200 (CEST)
-Received: by wicnd19 with SMTP id nd19so65963734wic.1
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 07:33:31 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D788E260593
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 16:46:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150626150528.f9fdee3942f7e975d23dd701@ao2.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,108 +30,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, "Alexander E. Patrakov" <patrakov@gmail.com>
+To: Antonio Ospite <ao2@ao2.it>
+Cc: Michele Curti <michele.curti@gmail.com>, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise, they get misinterpreted as argument separators
-in USB-Audio PCM definitions, and thus prevent SPDIF blacklist entries
-from working.
+On Fri, Jun 26, 2015 at 03:05:28PM +0200, Antonio Ospite wrote:
+> On Thu, 25 Jun 2015 22:17:17 +0530
+> Vinod Koul <vinod.koul@intel.com> wrote:
+> 
+> > On Thu, Jun 25, 2015 at 12:21:24PM +0200, Antonio Ospite wrote:
+> > > On Thu, 25 Jun 2015 11:20:46 +0530
+> > > Vinod Koul <vinod.koul@intel.com> wrote:
+> > > 
+> > > > On Wed, Jun 24, 2015 at 03:46:13PM +0530, Vinod Koul wrote:
+> > > > > On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
+> > > [...]
+> > > > > > 
+> > > > > > Which makes me thinking how does those strings describe the SSP port
+> > > > > > setup? E.g. do they reflect what port is actually used or could it
+> > > > > > be possible that those are just driver strings but firmware could
+> > > > > > have been tuned for SSP0? If I looked at earlier right, Teclast has
+> > > > > > the low pin-count Baytrail without SSP2 but I'm not sure about that.
+> > > > > The FW doesnt provide way to changes ports from driver in this, so this
+> > > > > doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
+> > > > > test
+> > > > I ahve pushed latest BYT version we have as well as added binary for second
+> > > > SSP port. Please give it a try:
+> > > > 
+> > > > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt&id=28ff420dd33ec299217bad7d526ff3bfd163b551
+> > > > 
+> > > 
+> > > Thanks Vinod, but I see these are in the ELF format, and the mainline
+> > > driver does not support this format, at least the last time I checked it
+> > > didn't.
+> > My bad, updated the patch now with right format
+> > 
+> > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
+> >
+> 
+> (Adding Michele to CC)
+> 
+> OK, so Jarkko was right: after a quick test I confirm that with
+> fw_sst_0f28_ssp0.bin I get sound; this is quite an improvement,
+> thanks!
+Okay that is great
 
-While at it, add my Logitec C910 webcam to the SPDIF blacklist.
+> 
+> I am going to update the report on bugzilla:
+> https://bugzilla.kernel.org/show_bug.cgi?id=86581
+> 
+> I used the amixer commands which Vinod provided in the other thread,
+> in particular, the playback path is this one:
+> 
+> > amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+> > amixer -c0 sset 'media0_out mix 0 media1_in' on
+> 
+> The sound is a bit distorted tho, I can alleviate this effect by
+> lowering the values of these controls:
+>   - codec_out0 Gain0
+>   - media1_in Gain0
+>   - pcm0_in Gain0
+> 
+> but the distortions do not go completely away, and they are not present
+> in Android even at the highest volume.
+I dont think the gain is causing the distortion. It can be SSP settings
+DO you see distortion in one channel or both (try with headset)
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
-I did not send this patch earlier because of hesitation whether to send
-it as it is or to implement proper escaping, and then forgot about it.
+Also on Android, do you know kernel source for this, if vendor did release
+we cna check the settings there and configure the same here. Also cna you
+confirm which machine driver was loaded
 
- include/conf.h                |  1 +
- src/conf.c                    | 32 ++++++++++++++++++++++++++++++++
- src/conf/cards/USB-Audio.conf |  3 ++-
- src/confmisc.c                |  2 +-
- 4 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> I will perform more tests (capture, headphones) when 4.2-rc1 is out
+> and report back the results.
+> 
+> JFTR, I made sure to use the DPCM driver by preventing the other one
+> from being loaded:
+You should blacklist that one ...
 
-diff --git a/include/conf.h b/include/conf.h
-index ff270f6..087c05d 100644
---- a/include/conf.h
-+++ b/include/conf.h
-@@ -126,6 +126,7 @@ int snd_config_imake_integer(snd_config_t **config, const char *key, const long
- int snd_config_imake_integer64(snd_config_t **config, const char *key, const long long value);
- int snd_config_imake_real(snd_config_t **config, const char *key, const double value);
- int snd_config_imake_string(snd_config_t **config, const char *key, const char *ascii);
-+int snd_config_imake_safe_string(snd_config_t **config, const char *key, const char *ascii);
- int snd_config_imake_pointer(snd_config_t **config, const char *key, const void *ptr);
- 
- snd_config_type_t snd_config_get_type(const snd_config_t *config);
-diff --git a/src/conf.c b/src/conf.c
-index bb256e7..e72a58a 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -2228,6 +2228,38 @@ int snd_config_imake_string(snd_config_t **config, const char *id, const char *v
- 	return 0;
- }
- 
-+int snd_config_imake_safe_string(snd_config_t **config, const char *id, const char *value)
-+{
-+	int err;
-+	snd_config_t *tmp;
-+	char *c;
-+
-+	err = snd_config_make(&tmp, id, SND_CONFIG_TYPE_STRING);
-+	if (err < 0)
-+		return err;
-+	if (value) {
-+		tmp->u.string = strdup(value);
-+		for (c = tmp->u.string; *c; c++) {
-+			if (*c == ' ' || *c == '-' || *c == '_' ||
-+				(*c >= '0' && *c <= '9') ||
-+				(*c >= 'a' && *c <= 'z') ||
-+				(*c >= 'A' && *c <= 'Z'))
-+					continue;
-+			*c = '_';
-+		}
-+
-+		if (!tmp->u.string) {
-+			snd_config_delete(tmp);
-+			return -ENOMEM;
-+		}
-+	} else {
-+		tmp->u.string = NULL;
-+	}
-+	*config = tmp;
-+	return 0;
-+}
-+
-+
- /**
-  * \brief Creates a pointer configuration node with the given initial value.
-  * \param[out] config The function puts the handle to the new node at
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 031bee0..e365f29 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -57,7 +57,8 @@ USB-Audio.pcm.iec958_device {
- 	"Scarlett 2i4 USB" 999
- 	"Sennheiser USB headset" 999
- 	"SWTOR Gaming Headset by Razer" 999
--	"USB Device 0x46d:0x992" 999
-+	"USB Device 0x46d_0x821" 999
-+	"USB Device 0x46d_0x992" 999
- }
- 
- # Second iec958 device number, if any.
-diff --git a/src/confmisc.c b/src/confmisc.c
-index 1fb4f28..ae0275f 100644
---- a/src/confmisc.c
-+++ b/src/confmisc.c
-@@ -935,7 +935,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
- 	}
- 	err = snd_config_get_id(src, &id);
- 	if (err >= 0)
--		err = snd_config_imake_string(dst, id,
-+		err = snd_config_imake_safe_string(dst, id,
- 					      snd_ctl_card_info_get_name(info));
-       __error:
-       	if (ctl)
 -- 
-2.4.4
+~Vinod
+
+> 
+> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
+> index 42f293f..66ee705 100644
+> --- a/sound/soc/intel/common/sst-acpi.c
+> +++ b/sound/soc/intel/common/sst-acpi.c
+> @@ -266,7 +266,6 @@ static struct sst_acpi_desc sst_acpi_baytrail_desc = {
+>  static struct acpi_device_id sst_acpi_match[] = {
+>         { "INT33C8", (unsigned long)&sst_acpi_haswell_desc },
+>         { "INT3438", (unsigned long)&sst_acpi_broadwell_desc },
+> -       { "80860F28", (unsigned long)&sst_acpi_baytrail_desc },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
+> 
+> Would it be worth providing a SSP0 variant of
+> fw_sst_0f28.bin-48kHz_i2s_master too? Or is the intel/atom/sst/sst_acpi.c
+> going to completely replace intel/common/sst-acpi.c?
+> 
+> Thanks a lot,
+>    Antonio
+> 
+> -- 
+> Antonio Ospite
+> http://ao2.it
+> 
+> A: Because it messes up the order in which people normally read text.
+>    See http://en.wikipedia.org/wiki/Posting_style
+> Q: Why is top-posting such a bad thing?
+
+-- 
