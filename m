@@ -1,26 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Intel SST on a Bay Trail tablet
-Date: Sat, 27 Jun 2015 20:17:45 +0530
-Message-ID: <20150627144745.GX19530@localhost>
-References: <54F5CB3D.7020100@linux.intel.com>
- <20150304170218.7b397993ce670902800109f1@ao2.it>
- <20150403153414.b8de8df914664d7d7967120c@ao2.it>
- <20150414150236.3e8288307124a43941ab94f7@ao2.it>
- <552D1EE3.6090707@linux.intel.com>
- <20150624101613.GK19530@localhost>
- <20150625055046.GT19530@localhost>
- <20150625122125.72a1d72b4d3aa886d68fa3eb@ao2.it>
- <20150625164717.GU19530@localhost>
- <20150626150528.f9fdee3942f7e975d23dd701@ao2.it>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
+Date: Sat, 27 Jun 2015 20:28:56 +0500
+Message-ID: <558EC138.8090906@gmail.com>
+References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
+ <557E86DD.8020709@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D788E260593
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 16:46:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150626150528.f9fdee3942f7e975d23dd701@ao2.it>
+Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
+ [209.85.212.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA48826062F
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 17:28:59 +0200 (CEST)
+Received: by wicnd19 with SMTP id nd19so66609546wic.1
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 08:28:59 -0700 (PDT)
+In-Reply-To: <557E86DD.8020709@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,114 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>
-Cc: Michele Curti <michele.curti@gmail.com>, alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Ramesh Babu K V <Ramesh.Babu@intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, Harsha Priya <priya.harsha@intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Arun Raghavan <arun@accosted.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 26, 2015 at 03:05:28PM +0200, Antonio Ospite wrote:
-> On Thu, 25 Jun 2015 22:17:17 +0530
-> Vinod Koul <vinod.koul@intel.com> wrote:
-> 
-> > On Thu, Jun 25, 2015 at 12:21:24PM +0200, Antonio Ospite wrote:
-> > > On Thu, 25 Jun 2015 11:20:46 +0530
-> > > Vinod Koul <vinod.koul@intel.com> wrote:
-> > > 
-> > > > On Wed, Jun 24, 2015 at 03:46:13PM +0530, Vinod Koul wrote:
-> > > > > On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
-> > > [...]
-> > > > > > 
-> > > > > > Which makes me thinking how does those strings describe the SSP port
-> > > > > > setup? E.g. do they reflect what port is actually used or could it
-> > > > > > be possible that those are just driver strings but firmware could
-> > > > > > have been tuned for SSP0? If I looked at earlier right, Teclast has
-> > > > > > the low pin-count Baytrail without SSP2 but I'm not sure about that.
-> > > > > The FW doesnt provide way to changes ports from driver in this, so this
-> > > > > doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
-> > > > > test
-> > > > I ahve pushed latest BYT version we have as well as added binary for second
-> > > > SSP port. Please give it a try:
-> > > > 
-> > > > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt&id=28ff420dd33ec299217bad7d526ff3bfd163b551
-> > > > 
-> > > 
-> > > Thanks Vinod, but I see these are in the ELF format, and the mainline
-> > > driver does not support this format, at least the last time I checked it
-> > > didn't.
-> > My bad, updated the patch now with right format
-> > 
-> > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
-> >
-> 
-> (Adding Michele to CC)
-> 
-> OK, so Jarkko was right: after a quick test I confirm that with
-> fw_sst_0f28_ssp0.bin I get sound; this is quite an improvement,
-> thanks!
-Okay that is great
+15.06.2015 13:03, Lars-Peter Clausen wrote:
+> On 06/12/2015 02:29 PM, Arun Raghavan wrote:
+>> So I guess the first thing that would be nice to have is a clear
+>> meaning of these two flags. With this done, we could potentially get
+>> to the API to report the transfer size from the driver.
+>
+> Yeah, the meaning of those flags is somewhat fuzzy and may have changed
+> over time as well. Here is my understanding of the flags, might not
+> necessarily be 100% correct.
+>
+> SNDRV_PCM_INFO_BLOCK_TRANSFER means that the data is copied from the
+> user accessible buffer in blocks of one period. Typically these kinds of
+> devices have some dedicated audio memory that is not accessible via
+> normal memory access and a DMA is setup to copy data from main memory to
+> the dedicated memory. This DMA transfers the data from the main memory
+> to the dedicated memory in chunks of period size. But otherwise the
+> controller might still be capable of reporting a accurate pointer
+> position down to the sample/frame level.
+>
+> So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind handling
+> and devices with that flag set might need additional headroom since the
+> data up to one period after the pointer position has already been copied
+> to the dedicated memory and hence can no longer be overwritten.
+>
+> SNDRV_PCM_INFO_BATCH on the other hand has become to mean that the
+> device is only capable of reporting the audio pointer with a coarse
+> granularity. Typically this means a period sized granularity, but there
+> are some other cases as well.
 
-> 
-> I am going to update the report on bugzilla:
-> https://bugzilla.kernel.org/show_bug.cgi?id=86581
-> 
-> I used the amixer commands which Vinod provided in the other thread,
-> in particular, the playback path is this one:
-> 
-> > amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
-> > amixer -c0 sset 'media0_out mix 0 media1_in' on
-> 
-> The sound is a bit distorted tho, I can alleviate this effect by
-> lowering the values of these controls:
->   - codec_out0 Gain0
->   - media1_in Gain0
->   - pcm0_in Gain0
-> 
-> but the distortions do not go completely away, and they are not present
-> in Android even at the highest volume.
-I dont think the gain is causing the distortion. It can be SSP settings
-DO you see distortion in one channel or both (try with headset)
+I have tried to convert this text into something that can be added to 
+the doxygen documentation in alsa-lib, but failed to verify the text. 
+Here is why.
 
-Also on Android, do you know kernel source for this, if vendor did release
-we cna check the settings there and configure the same here. Also cna you
-confirm which machine driver was loaded
-
-> 
-> I will perform more tests (capture, headphones) when 4.2-rc1 is out
-> and report back the results.
-> 
-> JFTR, I made sure to use the DPCM driver by preventing the other one
-> from being loaded:
-You should blacklist that one ...
+In kernel sources, sound/pci/hda/hda_controller.c mentions 
+SNDRV_PCM_INFO_BLOCK_TRANSFER. However, sub-period rewinds work fine on 
+this driver, and the avail granularity is something like 64 bytes. So, 
+either the description is wrong (i.e., "large blocks, possibly up to one 
+period size, but 64 bytes still counts as large" is actually meant - but 
+that would be useless), or the flag is wrongly set in the driver.
 
 -- 
-~Vinod
-
-> 
-> diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-> index 42f293f..66ee705 100644
-> --- a/sound/soc/intel/common/sst-acpi.c
-> +++ b/sound/soc/intel/common/sst-acpi.c
-> @@ -266,7 +266,6 @@ static struct sst_acpi_desc sst_acpi_baytrail_desc = {
->  static struct acpi_device_id sst_acpi_match[] = {
->         { "INT33C8", (unsigned long)&sst_acpi_haswell_desc },
->         { "INT3438", (unsigned long)&sst_acpi_broadwell_desc },
-> -       { "80860F28", (unsigned long)&sst_acpi_baytrail_desc },
->         { }
->  };
->  MODULE_DEVICE_TABLE(acpi, sst_acpi_match);
-> 
-> Would it be worth providing a SSP0 variant of
-> fw_sst_0f28.bin-48kHz_i2s_master too? Or is the intel/atom/sst/sst_acpi.c
-> going to completely replace intel/common/sst-acpi.c?
-> 
-> Thanks a lot,
->    Antonio
-> 
-> -- 
-> Antonio Ospite
-> http://ao2.it
-> 
-> A: Because it messes up the order in which people normally read text.
->    See http://en.wikipedia.org/wiki/Posting_style
-> Q: Why is top-posting such a bad thing?
-
--- 
+Alexander E. Patrakov
