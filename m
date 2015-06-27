@@ -1,106 +1,79 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: Re: [alsa-devel] [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
  for more Thinkpads with Conexant codec
-Date: Sat, 27 Jun 2015 11:03:04 +0800
-Message-ID: <CAN8ccibyupfc_1xa3q7FfH_T7iL_1_S8cRJ1ksHG-BBJ1SJyfw@mail.gmail.com>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
- <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com>
- <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com>
- <53B26575.1000003@web.de> <53B27ED7.4070401@canonical.com>
- <53B50062.30200@web.de> <53B51B63.8060809@canonical.com>
- <53B51CF3.8090102@web.de> <53B52146.9050300@canonical.com>
- <55603F22.8070103@web.de>
+Date: Sat, 27 Jun 2015 07:59:58 +0200
+Message-ID: <558E3BDE.5070708@web.de>
+References: <53B51B63.8060809@canonical.com> <53B51CF3.8090102@web.de> <53B52146.9050300@canonical.com> <55603F22.8070103@web.de> <CAN8cciZYZ4setSj7dgPqQUVrBrr98tSvofLrD_0zvyQqkWfd2Q@mail.gmail.com> <5560A93E.7060607@web.de> <558A4216.8010401@web.de> <558A6E80.7010003@canonical.com> <558BDFD4.9060301@web.de> <558CB778.5020307@canonical.com> <20150626224946.GA11254@khazad-dum.debian.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
- [209.85.218.48])
- by alsa0.perex.cz (Postfix) with ESMTP id C93D3261561
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 05:03:06 +0200 (CEST)
-Received: by oigx81 with SMTP id x81so87351163oig.1
- for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2015 20:03:05 -0700 (PDT)
-In-Reply-To: <55603F22.8070103@web.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jan Kiszka <jan.kiszka@web.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="TRuHMBPgMxiXphf39RSBaEvNH1Ucj05RC"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150626224946.GA11254@khazad-dum.debian.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Hui Wang <hui.wang@canonical.com>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, alex.hung@canonical.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-> >>>>>>>>>>> Most Thinkpad Edge series laptops use conexant codec, so far
-> >>>>>>>>>>> although
-> >>>>> <snip>
-> >>>>>>>> Is there anything I can debug or any information I can collect
-> >>>>>>>> from my
-> >>>>>>>> box to examine this?
-> >>>>>>> What is the linux distribution on your machine? And use showkey to
-> >>>>>>> catch
-> >>>>>>> the keycode of that button.
-> >>>>>> I'm running OpenSUSE 13.1. The reported keycode of the power
-> >>>>>> button is
-> >>>>>> 116.
-> >>>>> It seems the keycode is correct, it is power keycode rather the mute
-> >>>>> keycode.
-> >>>>>
-> >>>>> Could you please do some debug, let us find which line of code is
-the
-> >>>>> root cause for this problem. for example:
-> >>>>>
-> >>>>> after running the line, the problem shows up:
-> >>>>>
-> >>>>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
-> >>>>> &found, NULL)) && found) // in the sound/pci/hda/thinkpad_helper.c,
-> >>>>> is_thinkpad()
-> >>>> This evaluates to true
-> >>>>
-> >>>>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068",
-acpi_check_cb,
-> >>>>> &found, NULL)) && found; // same as above
-> >>>>>
-> >>>>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >= 0) { //in the
-> >>>>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
-> >>>> ...and this
-> >>>>
-> >>>>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) { // same as
-> >>>>> above
-> >>>>>
-> >>>> ...and this as well. spec->num_adc_nids is 1.
-> >>>
-> >>> If we change the code like below, does the power button can work well?
-> >>>
-> >>> in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
-> >>>
-> >>>
-> >>>          if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
-> >>>              /*
-> >>>              old_vmaster_hook = spec->vmaster_mute.hook;
-> >>>              spec->vmaster_mute.hook = update_tpacpi_mute_led;
-> >>>              removefunc = false;
-> >>>             */
-> >> Disabling only this block resolves the issue.
-> >
-> > So Below two lines make the power button change to the reset button.
-> >
-> > drivers/platform/x86/thinkpad_acpi.c  mute_led_on_off():
-> >
-> > acpi_get_handle(hkey_handle, "SSMS", &temp);
-> > acpi_evalf(hkey_handle, &output, "SSMS", "dd", 1);
-> >
-> >
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--TRuHMBPgMxiXphf39RSBaEvNH1Ucj05RC
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/platform/x86/thinkpad_acpi.c?id=9a417ec0c9d1f7af5394333411fc4d98adb8761b
+On 2015-06-27 00:49, Henrique de Moraes Holschuh wrote:
+> On Fri, 26 Jun 2015, Hui Wang wrote:
+>>> Again, I'm on a X121e, and that has only a single physical LED for
+>>> signaling the power state. The mute button is behind key combination =
+of
+>>> the keyboard.
+>>>
+>>> Jan
+>> There is no reason to change a power button to a reset button after
+>> accessing the acpi device "SSMS", the "SSMS" is for the mute led inste=
+ad of
+>> the power management.
+>>
+>> I think it is better you login to the lenovo website and look for the =
+latest
+>> BIOS image, then upgrade the BIOS on your machine to see if it can sol=
+ve the
+>> problem or not.
+>=20
+> Hmm, I think I am missing something here.
+>=20
+> Please explain _in detail_ what you mean with "changing a power button =
+to a
+> reset button by acessing the SSMS ACPI method in a X121e".
+>=20
+> Are we trigering a bug somewhere that crashes the x121e and causes it t=
+o
+> reboot?
 
-It seem that software mute also depend on HAUM and SAUM ACPI interface
+Well, there aren't much details to describe in this case: When this
+patch is applied and I press the power button, the device performs a
+hard reset. It doesn't reveal if the kernel crashes catastrophically,
+causing a triple fault or so, or if the firmware decides to reset the
+platform. Reverting the patch or preventing its effect via a quirk
+filter like I posted [1] makes the issue go away.
 
-Seem regression of the above patch is SSMS is not supported
+Jan
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1450947
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-June/078284.htm=
+l
 
-Which models of thinkpad are tested by the author ?
+
+--TRuHMBPgMxiXphf39RSBaEvNH1Ucj05RC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEARECAAYFAlWOO94ACgkQitSsb3rl5xR4GwCg0JA9W2JB4wa7+qKo3wj9mdDO
+i9UAnAk/GRC/65dts6cRwRRPDQDWzx7k
+=xxrA
+-----END PGP SIGNATURE-----
+
+--TRuHMBPgMxiXphf39RSBaEvNH1Ucj05RC--
