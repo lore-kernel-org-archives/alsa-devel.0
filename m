@@ -1,45 +1,37 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 6/6] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
-Date: Sun, 28 Jun 2015 15:49:23 +0200
-Message-ID: <558FFB63.9080700@maciej.szmigiero.name>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH 3/6] ASoC: fsl_ssi: enable AC'97 asymmetric
+	rates
+Date: Sun, 28 Jun 2015 09:01:50 -0500
+Message-ID: <558FFE4E.703@tabi.org>
+References: <558FFAC4.2060608@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <festevam@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBAD1264FEB
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2015 16:01:52 +0200 (CEST)
+In-Reply-To: <558FFAC4.2060608@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Adjust set DAI format function in fsl_ssi driver so it
-doesn't fail and clears RXDIR in AC'97 mode.
+Maciej S. Szmigiero wrote:
+>   	/* Are the RX and the TX clocks locked? */
+>   	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
+> -		ssi_private->cpu_dai_drv.symmetric_rates = 1;
+> +		if (!fsl_ssi_is_ac97(ssi_private))
+> +			ssi_private->cpu_dai_drv.symmetric_rates = 1;
+> +
 
-Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
----
- sound/soc/fsl/fsl_ssi.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e79dc16..d043c7c 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		return -EINVAL;
-+		if (!fsl_ssi_is_ac97(ssi_private))
-+			return -EINVAL;
- 	}
- 
- 	stcr |= strcr;
- 	srcr |= strcr;
- 
--	if (ssi_private->cpu_dai_drv.symmetric_rates) {
--		/* Need to clear RXDIR when using SYNC mode */
-+	if (ssi_private->cpu_dai_drv.symmetric_rates
-+		|| fsl_ssi_is_ac97(ssi_private)) {
-+		/* Need to clear RXDIR when using SYNC or AC97 mode */
- 		srcr &= ~CCSR_SSI_SRCR_RXDIR;
- 		scr |= CCSR_SSI_SCR_SYN;
- 	}
+Is this necessary?  Why not just add fsl,ssi-asynchronous to the AC97 
+device tree node?
