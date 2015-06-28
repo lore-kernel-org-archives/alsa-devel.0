@@ -1,21 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: PulseAudio and SNDRV_PCM_INFO_BATCH
-Date: Sun, 28 Jun 2015 10:09:24 +0800
-Message-ID: <CAN8ccibUWamJ6LX87rf+Byr=pdwN9HFX0WpoQ7_KUpQbZvwK8Q@mail.gmail.com>
-References: <CACuU-+jBWck1e3tf--=G+X3xNAQm++JCxRzQFkDUJ4f5zwhgoQ@mail.gmail.com>
- <557E86DD.8020709@metafoo.de> <558EC138.8090906@gmail.com>
- <558EDA4F.5030309@ladisch.de> <558EE452.4010501@gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: ak4642: Fix up max_register setting
+Date: Sun, 28 Jun 2015 10:46:51 +0800
+Message-ID: <1435459611.15772.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com
- [209.85.214.170])
- by alsa0.perex.cz (Postfix) with ESMTP id ECC422605E1
- for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2015 04:09:25 +0200 (CEST)
-Received: by obbop1 with SMTP id op1so86767284obb.2
- for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 19:09:25 -0700 (PDT)
-In-Reply-To: <558EE452.4010501@gmail.com>
+Received: from mail-pd0-f171.google.com (mail-pd0-f171.google.com
+ [209.85.192.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DC532605E1
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2015 04:46:58 +0200 (CEST)
+Received: by pdcu2 with SMTP id u2so96543688pdc.3
+ for <alsa-devel@alsa-project.org>; Sat, 27 Jun 2015 19:46:57 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,87 +21,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Arun Raghavan <arun@accosted.net>, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
->>>>
->>>> So SNDRV_PCM_INFO_BLOCK_TRANSFER is mainly important for rewind
-handling
->>>> and devices with that flag set might need additional headroom since the
->>>> data up to one period after the pointer position has already been
-copied
->>>> to the dedicated memory and hence can no longer be overwritten.
->>>
->>>
->>> In kernel sources, sound/pci/hda/hda_controller.c mentions
->>> SNDRV_PCM_INFO_BLOCK_TRANSFER. However, sub-period rewinds work fine
->>> on this driver, and the avail granularity is something like 64 bytes.
+The max_register setting for ak4642, ak4643 and ak4648 are wrong, fix it.
 
-This is hardware specific feature which is essential for timer based
-scheduling.
+According to the datasheet:
+        the maximum valid register for ak4642 is 0x1f
+        the maximum valid register for ak4643 is 0x24
+        the maximum valid register for ak4648 is 0x27
 
-Even snd-usb-audio use a default number of packets for larger period size,
-it is still need to change to use small period size for lowest latency
+The default settings for ak4642 and ak4643 are the same for 0x0 ~ 0x1f
+registers, so it's fine to use the same reg_default table with different
+num_reg_defaults setting.
 
-snd-hda-intel also set has .periods_max=32 which force driver not to use
-small period size when application use maximum buffer size , it still
-cannot adjust latency dynamically
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi,
+I don't have this h/w to test.
+I'd appreciate if someone can review and test this patch.
+Thanks,
+Axel
+ sound/soc/codecs/ak4642.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
->>
->>
->> HDA is a very typical PCI controller; if this flag were correct here,
->> pretty much _every_ driver would need it.
->
->
-> Well, there are more PCI drivers with this flag than without it. So it
-looks like a "typical error".
->
-> aep@aep-haswell /usr/src/linux/sound $ grep -l
-SNDRV_PCM_INFO_BLOCK_TRANSFER `grep -rl SNDRV_PCM_INFO_MMAP_VALID pci` | wc
--l
-> 48
-> aep@aep-haswell /usr/src/linux/sound $ grep -L
-SNDRV_PCM_INFO_BLOCK_TRANSFER `grep -rl SNDRV_PCM_INFO_MMAP_VALID pci` | wc
--l
-> 15
->
->
-> I guess I should write a program that tests sub-period rewinds and post
-it to the list.
-
->
->
->> Some (older) HDA controllers have problems with position reporting
->> (with workarounds in the drivers), but those problems are with the
->> timing, not with the granularity.
->>
->> As far as I can see, snd-hda-intel should just drop this flag.
->
->
-
-http://lxr.free-electrons.com/ident?i=SNDRV_PCM_INFO_BLOCK_TRANSFER
-
-SNDRV_PCM_INFO_BLOCK_TRANSFER is not present in those ISA sound cards which
-use io ports to transfer data
-
-Why do alsa-time-test.c use
-
-if (cap == 0)
-      r = snd_pcm_sw_params_set_avail_min(pcm, swparams, 1);
-    else
-      r = snd_pcm_sw_params_set_avail_min(pcm, swparams, 0);
-    assert(r == 0);
-
-What is oss wakeup point ?
-
-snd_pcm_sw_params_set_avail_min
-
-This is similar to setting an OSS wakeup point. The valid values for 'val'
-are determined by the specific hardware. Most PC sound cards can only
-accept power of 2 frame counts (i.e. 512, 1024, 2048).
-
-Why sw_params use hardhware specific value ?
-
-Can this value set to grsnularity which is smaller than period size since
-the function silently force avail_min not less than period size ?
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 7c0f6552..7f27345 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -64,12 +64,15 @@
+ #define FIL1_0		0x1c
+ #define FIL1_1		0x1d
+ #define FIL1_2		0x1e
+-#define FIL1_3		0x1f
++#define FIL1_3		0x1f	/* The maximum valid register for ak4642 */
+ #define PW_MGMT4	0x20
+ #define MD_CTL5		0x21
+ #define LO_MS		0x22
+ #define HP_MS		0x23
+-#define SPK_MS		0x24
++#define SPK_MS		0x24	/* The maximum valid register for ak4643 */
++#define EQ_FBEQAB	0x25
++#define EQ_FBEQCD	0x26
++#define EQ_FBEQE	0x27	/* The maximum valid register for ak4648 */
+ 
+ /* PW_MGMT1*/
+ #define PMVCM		(1 << 6) /* VCOM Power Management */
+@@ -535,17 +538,25 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
+ static const struct regmap_config ak4642_regmap = {
+ 	.reg_bits		= 8,
+ 	.val_bits		= 8,
+-	.max_register		= ARRAY_SIZE(ak4642_reg) + 1,
++	.max_register		= FIL1_3,
+ 	.reg_defaults		= ak4642_reg,
+-	.num_reg_defaults	= ARRAY_SIZE(ak4642_reg),
++	.num_reg_defaults	= FIL1_3 + 1,
++};
++
++static const struct regmap_config ak4643_regmap = {
++	.reg_bits		= 8,
++	.val_bits		= 8,
++	.max_register		= SPK_MS,
++	.reg_defaults		= ak4642_reg,
++	.num_reg_defaults	= SPK_MS + 1,
+ };
+ 
+ static const struct regmap_config ak4648_regmap = {
+ 	.reg_bits		= 8,
+ 	.val_bits		= 8,
+-	.max_register		= ARRAY_SIZE(ak4648_reg) + 1,
++	.max_register		= EQ_FBEQE,
+ 	.reg_defaults		= ak4648_reg,
+-	.num_reg_defaults	= ARRAY_SIZE(ak4648_reg),
++	.num_reg_defaults	= EQ_FBEQE + 1,
+ };
+ 
+ static const struct ak4642_drvdata ak4642_drvdata = {
+@@ -553,7 +564,7 @@ static const struct ak4642_drvdata ak4642_drvdata = {
+ };
+ 
+ static const struct ak4642_drvdata ak4643_drvdata = {
+-	.regmap_config = &ak4642_regmap,
++	.regmap_config = &ak4643_regmap,
+ };
+ 
+ static const struct ak4642_drvdata ak4648_drvdata = {
+-- 
+2.1.0
