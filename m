@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 12/13] topology: autotools: Add build support
-	for topology core
-Date: Mon, 29 Jun 2015 17:32:57 +0100
-Message-ID: <1435595578-6899-12-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 13/13] topology: doxygen: Add doxygen support
+	for topology core.
+Date: Mon, 29 Jun 2015 17:32:58 +0100
+Message-ID: <1435595578-6899-13-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A396F265598
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AE9C3265487
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:33 +0200 (CEST)
 In-Reply-To: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,127 +27,53 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- configure.ac             | 11 ++++++++++-
- include/Makefile.am      |  4 ++++
- src/Makefile.am          |  7 +++++++
- src/topology/Makefile.am | 19 +++++++++++++++++++
- 4 files changed, 40 insertions(+), 1 deletion(-)
- create mode 100644 src/topology/Makefile.am
+ doc/doxygen.cfg.in | 7 +++++--
+ doc/index.doxygen  | 1 +
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 9621d4e..a482b3e 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -380,6 +380,9 @@ AC_ARG_ENABLE(seq,
- AC_ARG_ENABLE(ucm,
-   AS_HELP_STRING([--disable-ucm], [disable the use-case-manager component]),
-   [build_ucm="$enableval"], [build_ucm="yes"])
-+AC_ARG_ENABLE(topology,
-+  AS_HELP_STRING([--disable-topology], [disable the DSP topology component]),
-+  [build_topology="$enableval"], [build_topology="yes"])
- AC_ARG_ENABLE(alisp,
-   AS_HELP_STRING([--disable-alisp], [disable the alisp component]),
-   [build_alisp="$enableval"], [build_alisp="yes"])
-@@ -422,6 +425,7 @@ AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
- AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
- AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
- AM_CONDITIONAL([BUILD_UCM], [test x$build_ucm = xyes])
-+AM_CONDITIONAL([BUILD_TOPOLOGY], [test x$build_topology = xyes])
- AM_CONDITIONAL([BUILD_ALISP], [test x$build_alisp = xyes])
- AM_CONDITIONAL([BUILD_PYTHON], [test x$build_python = xyes])
+diff --git a/doc/doxygen.cfg.in b/doc/doxygen.cfg.in
+index 043e75b..92bd52b 100644
+--- a/doc/doxygen.cfg.in
++++ b/doc/doxygen.cfg.in
+@@ -29,6 +29,7 @@ INPUT            = @top_srcdir@/doc/index.doxygen \
+ 		   @top_srcdir@/include/control_external.h \
+ 		   @top_srcdir@/include/mixer.h \
+ 		   @top_srcdir@/include/use-case.h \
++		   @top_srcdir@/include/topology.h \
+ 		   @top_srcdir@/src/error.c \
+ 		   @top_srcdir@/src/dlmisc.c \
+ 		   @top_srcdir@/src/async.c \
+@@ -78,7 +79,8 @@ INPUT            = @top_srcdir@/doc/index.doxygen \
+ 		   @top_srcdir@/src/timer \
+ 		   @top_srcdir@/src/hwdep \
+ 		   @top_srcdir@/src/seq \
+-		   @top_srcdir@/src/ucm
++		   @top_srcdir@/src/ucm \
++		   @top_srcdir@/src/topology
+ EXCLUDE		 = @top_srcdir@/src/control/control_local.h \
+ 		   @top_srcdir@/src/pcm/atomic.h \
+ 		   @top_srcdir@/src/pcm/interval.h \
+@@ -94,7 +96,8 @@ EXCLUDE		 = @top_srcdir@/src/control/control_local.h \
+ 		   @top_srcdir@/src/mixer/mixer_local.h \
+ 		   @top_srcdir@/src/rawmidi/rawmidi_local.h \
+ 		   @top_srcdir@/src/seq/seq_local.h \
+-		   @top_srcdir@/src/ucm/ucm_local.h
++		   @top_srcdir@/src/ucm/ucm_local.h \
++		   @top_srcdir@/src/topology/tplg_local.h
+ RECURSIVE	 = YES
+ FILE_PATTERNS    = *.c *.h
+ EXAMPLE_PATH     = @top_srcdir@/test
+diff --git a/doc/index.doxygen b/doc/index.doxygen
+index 7d049fe..b40c75a 100644
+--- a/doc/index.doxygen
++++ b/doc/index.doxygen
+@@ -41,6 +41,7 @@ may be placed in the library code instead of the kernel driver.</P>
+   <LI>Page \ref timer explains the design of the Timer API.
+   <LI>Page \ref seq explains the design of the Sequencer API.
+   <LI>Page \ref ucm explains the use case API.
++  <LI>Page \ref topology explains the DSP topology API.
+ </UL>
  
-@@ -443,6 +447,9 @@ fi
- if test "$build_ucm" = "yes"; then
-   AC_DEFINE([BUILD_UCM], "1", [Build UCM component])
- fi
-+if test "$build_topology" = "yes"; then
-+  AC_DEFINE([BUILD_TOPOLOGY], "1", [Build DSP Topology component])
-+fi
- 
- dnl PCM Plugins
- 
-@@ -643,7 +650,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/pcm/Makefile src/pcm/scopes/Makefile \
- 	  src/rawmidi/Makefile src/timer/Makefile \
-           src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
--          src/alisp/Makefile \
-+          src/alisp/Makefile src/topology/Makefile \
- 	  src/conf/Makefile src/conf/alsa.conf.d/Makefile \
- 	  src/conf/cards/Makefile \
- 	  src/conf/pcm/Makefile \
-@@ -656,6 +663,8 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/PAZ00/Makefile \
- 	  src/conf/ucm/GoogleNyan/Makefile \
- 	  src/conf/ucm/broadwell-rt286/Makefile \
-+	  src/conf/topology/Makefile \
-+	  src/conf/topology/broadwell/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
- 	  alsalisp/Makefile aserver/Makefile \
- 	  test/Makefile test/lsb/Makefile \
-diff --git a/include/Makefile.am b/include/Makefile.am
-index 4baa03a..ff931fd 100644
---- a/include/Makefile.am
-+++ b/include/Makefile.am
-@@ -50,6 +50,10 @@ if BUILD_UCM
- alsainclude_HEADERS += use-case.h
- endif
- 
-+if BUILD_TOPOLOGY
-+alsainclude_HEADERS += topology.h
-+endif
-+
- if BUILD_ALISP
- alsainclude_HEADERS += alisp.h
- endif
-diff --git a/src/Makefile.am b/src/Makefile.am
-index fa255ff..57686a6 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -42,6 +42,10 @@ if BUILD_UCM
- SUBDIRS += ucm
- libasound_la_LIBADD += ucm/libucm.la
- endif
-+if BUILD_TOPOLOGY
-+SUBDIRS += topology
-+libasound_la_LIBADD += topology/libtopology.la
-+endif
- if BUILD_ALISP
- SUBDIRS += alisp
- libasound_la_LIBADD += alisp/libalisp.la
-@@ -81,6 +85,9 @@ seq/libseq.la:
- ucm/libucm.la:
- 	$(MAKE) -C ucm libucm.la
- 
-+topology/libtopology.la:
-+	$(MAKE) -C topology libtopology.la
-+
- instr/libinstr.la:
- 	$(MAKE) -C instr libinstr.la
- 
-diff --git a/src/topology/Makefile.am b/src/topology/Makefile.am
-new file mode 100644
-index 0000000..3fb8bf7
---- /dev/null
-+++ b/src/topology/Makefile.am
-@@ -0,0 +1,19 @@
-+EXTRA_LTLIBRARIES = libtopology.la
-+
-+libtopology_la_SOURCES =\
-+	parser.c \
-+	builder.c \
-+	ctl.c \
-+	dapm.c \
-+	pcm.c \
-+	data.c \
-+	text.c \
-+	channel.c \
-+	ops.c \
-+	elem.c
-+
-+noinst_HEADERS = tplg_local.h
-+
-+all: libtopology.la
-+
-+AM_CPPFLAGS=-I$(top_srcdir)/include
+ <H2>Configuration</H2>
 -- 
 2.1.4
