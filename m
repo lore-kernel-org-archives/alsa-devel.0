@@ -1,35 +1,45 @@
-From: Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for lockdep
-Date: Mon, 29 Jun 2015 07:35:20 -0700
-Message-ID: <559157A8.2050206@linux.intel.com>
-References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org> <558C0067.2000401@linux.intel.com> <558C1824.8020204@metafoo.de> <20150625153325.GR14071@sirena.org.uk> <558C229D.4090409@metafoo.de> <20150625160817.GT14071@sirena.org.uk> <CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com> <CANMq1KBcWw9jsGkrK0dYzOWGZAZYmHdo6gvvpQwt_ftq+avqVg@mail.gmail.com> <5591414D.6080802@metafoo.de> <CANMq1KAmV7f2f8zhL+VVdpL3AeQKe8RB5nigmZDwrn=JbWGh9Q@mail.gmail.com> <20150629142215.GE11162@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 1/3] ucm: docs: fix doxygen exclude patch for
+	UCM local header
+Date: Mon, 29 Jun 2015 16:25:57 +0100
+Message-ID: <1435591559-6277-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150629142215.GE11162@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Nicolas Boichat <drinkcat@chromium.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3668B2612CD
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 17:26:12 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/29/2015 7:22 AM, Mark Brown wrote:
-> On Mon, Jun 29, 2015 at 10:03:09PM +0800, Nicolas Boichat wrote:
->
->> regmap instances are kalloc'ed, so they cannot contain the
->> lock_class_key, which needs to be statically allocated (in .data).
->> Another option would be to preallocate a bunch of lock_class_key in
->> regmap.c, and pick from that, but that's terribly hacky...
->
-> Honestly this is all starting to sound like we're having to jump through
-> too many hoops for lockep (and other APIs are too from the sounds of it)
-> so we should be looking at lockdep here.
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ doc/doxygen.cfg.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-lockdep assumes that there is a known lock hierarchy, at least known
-to the developer.
-
-seems like for regmap there isn't
-
-(I would be interested to know how you avoid ABBA deadlocks btw,
-can you have 2 devices, one with a hierarchy one way, and another
-with the hierarchy the other way?)
+diff --git a/doc/doxygen.cfg.in b/doc/doxygen.cfg.in
+index f4499d6..043e75b 100644
+--- a/doc/doxygen.cfg.in
++++ b/doc/doxygen.cfg.in
+@@ -94,7 +94,7 @@ EXCLUDE		 = @top_srcdir@/src/control/control_local.h \
+ 		   @top_srcdir@/src/mixer/mixer_local.h \
+ 		   @top_srcdir@/src/rawmidi/rawmidi_local.h \
+ 		   @top_srcdir@/src/seq/seq_local.h \
+-		   @top_srcdir@/src/seq/ucm_local.h
++		   @top_srcdir@/src/ucm/ucm_local.h
+ RECURSIVE	 = YES
+ FILE_PATTERNS    = *.c *.h
+ EXAMPLE_PATH     = @top_srcdir@/test
+-- 
+2.1.4
