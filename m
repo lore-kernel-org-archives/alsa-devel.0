@@ -1,75 +1,98 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix the dock headphone output on
-	Fujitsu Lifebook E780
-Date: Mon, 29 Jun 2015 08:42:25 +0200
-Message-ID: <1435560145-20621-1-git-send-email-tiwai@suse.de>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Mon, 29 Jun 2015 09:27:17 +0200
+Message-ID: <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
+	<20150625073618.GH827@lahna.fi.intel.com>
+	<CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
+	<20150625145853.GP14071@sirena.org.uk>
+	<20150625154407.GE6321@opensource.wolfsonmicro.com>
+	<558D3BAA.3080700@linux.intel.com>
+	<20150626115823.GY14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A517D2651C9
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 08:42:26 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 49EB2AAB4
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 06:42:26 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150626115823.GY14071-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fujitsu Lifebook E780 sets the sequence number 0x0f to only only of
-the two headphones, thus the driver tries to assign another as the
-line-out, and this results in the inconsistent mapping between the
-created jack ctl and the actual I/O.  Due to this, PulseAudio doesn't
-handle it properly and gets the silent output.
+Hi,
 
-The fix is to ignore the non-HP sequencer checks.
+@all
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=99681
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+FYI: I can confirm that with the changed DSDT.dsl file and loading
+the new custom DSDT table, I do not need this patch mentioned above.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index cab09c42598b..dfa3852a3476 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4464,6 +4464,7 @@ enum {
- 	ALC269_FIXUP_LIFEBOOK,
- 	ALC269_FIXUP_LIFEBOOK_EXTMIC,
- 	ALC269_FIXUP_LIFEBOOK_HP_PIN,
-+	ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT,
- 	ALC269_FIXUP_AMIC,
- 	ALC269_FIXUP_DMIC,
- 	ALC269VB_FIXUP_AMIC,
-@@ -4634,6 +4635,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ }
- 		},
- 	},
-+	[ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_pincfg_no_hp_to_lineout,
-+	},
- 	[ALC269_FIXUP_AMIC] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -5208,6 +5213,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISABLE_AAMIX),
- 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
-+	SND_PCI_QUIRK(0x10cf, 0x159f, "Lifebook E780", ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT),
- 	SND_PCI_QUIRK(0x10cf, 0x15dc, "Lifebook T731", ALC269_FIXUP_LIFEBOOK_HP_PIN),
- 	SND_PCI_QUIRK(0x10cf, 0x1757, "Lifebook E752", ALC269_FIXUP_LIFEBOOK_HP_PIN),
- 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
--- 
-2.4.4
+So the patch is indeed only needed, as long as there is no
+BIOS (DSDT change by manufacturer) update available.
+
+In this case special case a custom DSDT table is loaded to
+ fix the by ACPI wrongly set of SPIController to  1, which must be 0.
+
+On the other hand I have now an tained kernel too :/ cause of the unset
+"Select only drivers that don't need compile-time external firmware" and
+ the ''Include Custom DSDT' options.
+
+
+The dmesg message seems to be the same as with the patch applied but
+with the current system DSDT table: here
+
+[    0.000000] Linux version 4.1.0.60-rc0
+(b23-/dWd7jAXU0ArCNBCT51S8nv7hrKZn54GTYPjME8WTGQ@public.gmane.org) (gcc version 4.8.3 20140911 (Red Hat
+4.8.3-9) (GCC) ) #199 SMP Fri Jun 26
+13:47:46 CEST 2015
+...
+[    0.000000] ACPI: Early table checksum verification disabled
+...
+[    5.916597] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
+[    5.916733] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
+[    5.926671] spi spi-WM510205:00: 8333333 Hz actual, PIO
+[    5.926681] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
+[    5.926805] spi spi-WM510205:00: checking WM510205 with bmp180
+[    5.926812] spi spi-WM510205:00: checking WM510205 with bmp181
+[    5.926816] spi spi-WM510205:00: modalias WM510205 in id_table not
+found, returns NULL
+[    5.926843] arizona spi-WM510205:00: acpi_match_device() first,
+than via spi_get_device_id().
+[    5.926849] arizona spi-WM510205:00: matched ACPI ID and data
+[    5.926853] arizona spi-WM510205:00: using 1 as type for arizona audio codec
+[    5.926857] arizona spi-WM510205:00: regmap set to wm5102_spi
+[    5.927665] arizona spi-WM510205:00: arizona_spi_probe done, call
+and return of  arizona_dev_init
+[    5.927759] spi-WM510205:00 supply AVDD not found, using dummy regulator
+[    5.927782] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
+[    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
+[    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
+[    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
+
+notice : some of these messages above are coming from local added dev_err();
+
+cheers
+chris
+
+
+2015-06-26 13:58 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+> On Fri, Jun 26, 2015 at 01:46:50PM +0200, Pierre-Louis Bossart wrote:
+>> On 6/25/15 5:44 PM, Charles Keepax wrote:
+>
+>> >I think from the Linux side we can safely ignore those last two
+>> >digits. I expect that all systems of the same make and model
+>> >would report the same last two digits but that it might change
+>> >between models if the Windows driver is expected to something
+>> >differently for that model.
+>
+>> Here's the summary of what a valid _HID  should look like. It took me a
+>> couple of days to gather the rules from different sources, I hope it helps
+>> others figure things out.
+>
+> None of which really affact the matching that the kernel does since
+> whatever form the string is generated in we need to do a full string
+> match (nor do they correspond to what it seems the Wolfson drivers have
+> invented but that's a separate issue).  Yay standards.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
