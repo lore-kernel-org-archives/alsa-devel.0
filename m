@@ -1,9 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for
  lockdep
-Date: Mon, 29 Jun 2015 16:32:56 +0100
-Message-ID: <20150629153256.GF11162@sirena.org.uk>
-References: <558C1824.8020204@metafoo.de>
+Date: Mon, 29 Jun 2015 16:34:11 +0100
+Message-ID: <20150629153411.GG11162@sirena.org.uk>
+References: <558C0067.2000401@linux.intel.com>
+ <558C1824.8020204@metafoo.de>
  <20150625153325.GR14071@sirena.org.uk>
  <558C229D.4090409@metafoo.de>
  <20150625160817.GT14071@sirena.org.uk>
@@ -11,63 +12,49 @@ References: <558C1824.8020204@metafoo.de>
  <CANMq1KBcWw9jsGkrK0dYzOWGZAZYmHdo6gvvpQwt_ftq+avqVg@mail.gmail.com>
  <5591414D.6080802@metafoo.de>
  <CANMq1KAmV7f2f8zhL+VVdpL3AeQKe8RB5nigmZDwrn=JbWGh9Q@mail.gmail.com>
- <20150629142215.GE11162@sirena.org.uk>
- <559157A8.2050206@linux.intel.com>
+ <559153A3.1000006@metafoo.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cpvLTH7QU4gwfq3S"
+	protocol="application/pgp-signature"; boundary="cyV/sMl4KAhiehtf"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <559157A8.2050206@linux.intel.com>
+In-Reply-To: <559153A3.1000006@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arjan van de Ven <arjan@linux.intel.com>
-Cc: Nicolas Boichat <drinkcat@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Nicolas Boichat <drinkcat@chromium.org>, Arjan van de Ven <arjan@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---cpvLTH7QU4gwfq3S
+--cyV/sMl4KAhiehtf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 29, 2015 at 07:35:20AM -0700, Arjan van de Ven wrote:
+On Mon, Jun 29, 2015 at 04:18:11PM +0200, Lars-Peter Clausen wrote:
 
-> lockdep assumes that there is a known lock hierarchy, at least known
-> to the developer.
+Please delete unneeded context from replies.
 
-> seems like for regmap there isn't
+> Leaves us pretty much with only two options. Either add a lock key pointer
+> to regmap_config which needs to be manually initialized. Or wrap all
+> regmap_init() variants to create a static lock key. I'd slightly prefer the
+> later. We can avoid most of the boiler-plate code by using some helper
+> macros to generate the wrappers.
 
-It's not that there's no heirachy of locks, it's that lockdep is unable
-to understand what's going on since it's making simplifying assumptions
-that just aren't true.  If I remember the problem correctly it's
-grouping all locks allocated in the same place into one class which
-doesn't work at all for scenarios where you've got a generic interface
-providing services to many devices which may be stacked on top of each
-other.
+It's better to keep the bodges in the core, yes.
 
-> (I would be interested to know how you avoid ABBA deadlocks btw,
-> can you have 2 devices, one with a hierarchy one way, and another
-> with the hierarchy the other way?)
-
-I'm not sure I fully understand what you mean here, sorry - do you mean
-in terms of classes or individual devices?  The relationships between
-devices are all device and system defined, individual regmaps should be
-treated as separate classes.  From this perspective it's basically
-eqivalent to asking how the mutex code avoids misuse of mutexes.
-
---cpvLTH7QU4gwfq3S
+--cyV/sMl4KAhiehtf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVkWUnAAoJECTWi3JdVIfQBbQH/1iuhp1iJAfXibBg9bDpxeoJ
-vKRp8IKAqfP9X0+icuRvZnad4IoEbZj/xdnsh8uKA1PzWzsr5hHyUf0BsDzKcGKu
-8l2DdKxbr7KnYVlCP7WWZ3hHWdFPJOlZwjVd9EidMzWel3ci7YRrX8cQKKGPGjV7
-E+hReDUeG/VNpAMNyfJ5DJPm6ZJMXTKc+is1DdWsWvraHoo3TEHPiEgYIXrCe4z8
-R1t03Y8Hb9nJMkFe59zS4P4483Ttqyf7S+X/b/gMDM1xKFcEE0IIsMwnhq36uPT2
-bTTw6xEMCuIx0lCATHKnngf/AkAPh7VEIPdbur/ZUBVUbcOFeEBIfciXDKMM3iA=
-=WvMf
+iQEcBAEBCAAGBQJVkWVzAAoJECTWi3JdVIfQDiwH/25DEDkVLXtZDf8gxjuAfFuw
+uLU793s6mCrlbyHWRdkUJ7GkLQTQdn1rPbWUEgoV0qZfm5jkoslHYuxrKIruQUXm
+1jVX7nML5sCnDlOEI3JENBWiWLv8IDSVBjsQGNwbSC41AoY9DcNcxzj1g8qwtyhN
+1i/M0FOYxV4FirWx/g8RIX1QMjZFwdaD6oHQUt7fKRac49OOxALTItN2UAnbGEQH
+cTLMXHWi9Z+M/DNysbvWnrpg09XxFACDTxePC6i3SSq2S3DHU5jENp4YkmfC/a48
+ArR23OZr93OL8zatPPZfoyH4T5M6uGuUk/O6Glf3r9toRLzRi8NTJ71GKMZ2f1g=
+=n1hK
 -----END PGP SIGNATURE-----
 
---cpvLTH7QU4gwfq3S--
+--cyV/sMl4KAhiehtf--
