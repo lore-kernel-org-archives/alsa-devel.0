@@ -1,70 +1,102 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Mon, 29 Jun 2015 11:22:06 +0100
-Message-ID: <20150629102206.GC11162@sirena.org.uk>
-References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
- <20150625073618.GH827@lahna.fi.intel.com>
- <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
- <20150625145853.GP14071@sirena.org.uk>
- <20150625154407.GE6321@opensource.wolfsonmicro.com>
- <558D3BAA.3080700@linux.intel.com>
- <20150626115823.GY14071@sirena.org.uk>
- <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
- <CAKor6TdzzAqG1yNtqkWftdvNo8_bxC=qnU+60rgiM=38qrJ2yQ@mail.gmail.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RFC PATCH 1/2] regmap: add configurable lock class key for lockdep
+Date: Mon, 29 Jun 2015 20:51:04 +0800
+Message-ID: <CANMq1KBcWw9jsGkrK0dYzOWGZAZYmHdo6gvvpQwt_ftq+avqVg@mail.gmail.com>
+References: <1435224904-35517-1-git-send-email-drinkcat@chromium.org>
+	<558C0067.2000401@linux.intel.com>
+	<558C1824.8020204@metafoo.de>
+	<20150625153325.GR14071@sirena.org.uk>
+	<558C229D.4090409@metafoo.de>
+	<20150625160817.GT14071@sirena.org.uk>
+	<CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KDt/GgjP6HVcx58l"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKor6TdzzAqG1yNtqkWftdvNo8_bxC=qnU+60rgiM=38qrJ2yQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Arjan van de Ven <arjan@linux.intel.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jun 26, 2015 at 11:16 AM, Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> On Fri, Jun 26, 2015 at 12:08 AM, Mark Brown <broonie@kernel.org> wrote:
+> [...]
+> >> >As far as I can tell we're likely to end up needing a key per regmap or
+> >> >something similar.
+> >
+> >> Since the number of lockdep classes itself is also limited we should avoid
+> >> creating extra lockdep classes when we can. I think the approach which
+> >> having the option of specifying a lockdep class in the regmap config will be
+> >> ok. The only case it can't handle if we nest instances with the same config,
+> >> but I don't really see valid use scases for that at the moment.
+> >
+> > Oh, ffs.  This just keeps getting better.  I hadn't been aware of that
+> > limitation.  We still have the problem that this needs to be something
+> > users can understand rather than something that's just "define something
+> > here in one of your drivers if you're running into problems with
+> > spurious warnings" here.  That's always been the biggest problem here
+> > (once we got past the "what is this supposed to do in the first place?"
+> > issues).
+>
+> I found that V4L2 uses separate lockdep classes for each of their
+> v4l2_ctrl. This was introduced in 6cd247ef22e "[media] v4l2-ctrls:
+> eliminate lockdep false alarms for struct v4l2_ctrl_handler.lock"
+> (https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6cd247ef22e),
+> so we could possibly take that approach.
+>
+> On my system, I have:
+> # cat /proc/lockdep_stats
+>  lock-classes:                         1241 [max: 8191]
+>  direct dependencies:                  7364 [max: 32768]
+>  indirect dependencies:               27686
+>  all direct dependencies:            158097
+>  dependency chains:                   10011 [max: 65536]
+>  dependency chain hlocks:             38887 [max: 327680]
+>  in-hardirq chains:                      92
+>  in-softirq chains:                     372
+>  in-process chains:                    9547
+>  stack-trace entries:                107703 [max: 524288]
+>
+> So, at least on that platform, there is some room to grow...
+>
+> I'm just afraid that implementing this may require creating a bunch of
+> macros to wrap all regmap_init_[i2c/spi/...] functions, as the lockdep
+> classes need to be statically allocated... Unless we find a different
+> solution than what V4L2 does.
 
---KDt/GgjP6HVcx58l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Following up on this. Lars-Peter's comments also highlights that we
+have no good way to figure out which regmap requires a separate maps,
+no clear hierarchy we can know about in advance, so we should put each
+regmap in its own class.
 
-On Mon, Jun 29, 2015 at 09:46:41AM +0200, Christian Hartmann wrote:
-> Hello,
+The main issue is that the keys need to be allocated statically. We
+have 2 options to do this:
 
-Please don't top post.
+1. mutex_init and v4l2_ctrl_handler_init solve this issue by being a
+preprocessor macro that first allocates a static lock_class_key, then
+calls the real init function.
+This is not so practical in the case of regmap, as we have 14
+different init functions ([devm_]regmap_init[_bus_type]), that would
+each require a wrapper.
 
-> I have sent an email about the Bug in this firmware to lenovo.
-> So I can work on with thhe custom DSDT and will try again to get ACPI
-> working with the WM5102.
+2. Bus registration takes a different approach
+(https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=be871b7e5):
+struct bus_type (statically allocated for each bus) has a lock_key
+member: "struct lock_class_key lock_key;".
+In the context of regmaps, that would mean adding a "lock_key" member
+to regmap_config. I did a quick implementation of this idea, and it
+seems to work, without modification to the rt5677 driver. The only
+issue with this is that regmap_config cannot be const anymore: we'd
+need to remove the const specifier in all drivers that use regmaps.
 
-> As soon as Lenovo has a new BIOS available, I will report that but for
-> the case their will not be a new BIOS update in the near future, what
-> should we do with the patch??
-> As some suggested, its a firmware bug workaround.
+Both alternatives would mean that all regmaps created from 1. the same
+line of code, or 2. the same regmap_config, would share the same
+class. That may not be an issue, however (do we have an example of
+different regmaps created from the same line/config that need to call
+each other?), and the custom mutex workaround is still available....
 
-We'll need to work around this, I wouldn't hold your breath on Lenovo
-fixing their BIOS and even if they do we really ought to support the
-shipped BIOS since not everyone is going to want to upgrade (or know to
-do that).
+Any preference between a bunch of macros, and adding a non-const
+member to regmap_config? Or maybe someone has a better idea?
 
---KDt/GgjP6HVcx58l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVkRxNAAoJECTWi3JdVIfQJXQH/2+gsGq/sSV1JpQmzX52pIxt
-udiYRb49rJh+oekeJzpD6fBnAbC+wk0eZd5ok8yDoaWu8kGeiAWRaz2ZRhKbMWLQ
-1KgKOK9RoDCeNQRYdhYMPQAWl8bv6zciXpyixQ70t+II9OuW8/t1TIsjNlJxE9jG
-n4Ne0mabeW8un+4ovsofsw1AK+yrRfFGqaJ8Ths8dXaZ/BgOOFf4t435y6YKoAco
-4rENSkgesUFDz3uX4f3JOJWFaQbaSxynUGaI7BtXdoHprwtgQjNRa7MCycst563V
-JKk56+TedK49qrv6S8Nh3bDOjE98/52Xyk6iTZo3/8UGXjIe+wOktgBltmAdxBo=
-=33en
------END PGP SIGNATURE-----
-
---KDt/GgjP6HVcx58l--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks!
