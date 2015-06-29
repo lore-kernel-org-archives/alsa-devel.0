@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 08/13] topology: Add DAPM object parser
-Date: Mon, 29 Jun 2015 17:32:53 +0100
-Message-ID: <1435595578-6899-8-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 09/13] topology: Add CTL parser
+Date: Mon, 29 Jun 2015 17:32:54 +0100
+Message-ID: <1435595578-6899-9-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C2222654B5
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EF3F2654CD
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:26 +0200 (CEST)
 In-Reply-To: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,20 +24,20 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Parse DAPM objects including widgets and graph elements.
+Add support to parse mixers, enums and byte controls.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/dapm.c | 560 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 560 insertions(+)
- create mode 100644 src/topology/dapm.c
+ src/topology/ctl.c | 659 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 659 insertions(+)
+ create mode 100644 src/topology/ctl.c
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
 new file mode 100644
-index 0000000..fafe3cb
+index 0000000..b0ed008
 --- /dev/null
-+++ b/src/topology/dapm.c
-@@ -0,0 +1,560 @@
++++ b/src/topology/ctl.c
+@@ -0,0 +1,659 @@
 +/*
 +  Copyright(c) 2014-2015 Intel Corporation
 +  All rights reserved.
@@ -59,123 +59,25 @@ index 0000000..fafe3cb
 +#include "list.h"
 +#include "tplg_local.h"
 +
-+/* mapping of widget text names to types */
-+static const struct map_elem widget_map[] = {
-+	{"input", SND_SOC_TPLG_DAPM_INPUT},
-+	{"output", SND_SOC_TPLG_DAPM_OUTPUT},
-+	{"mux", SND_SOC_TPLG_DAPM_MUX},
-+	{"mixer", SND_SOC_TPLG_DAPM_MIXER},
-+	{"pga", SND_SOC_TPLG_DAPM_PGA},
-+	{"out_drv", SND_SOC_TPLG_DAPM_OUT_DRV},
-+	{"adc", SND_SOC_TPLG_DAPM_ADC},
-+	{"dac", SND_SOC_TPLG_DAPM_DAC},
-+	{"switch", SND_SOC_TPLG_DAPM_SWITCH},
-+	{"pre", SND_SOC_TPLG_DAPM_PRE},
-+	{"post", SND_SOC_TPLG_DAPM_POST},
-+	{"aif_in", SND_SOC_TPLG_DAPM_AIF_IN},
-+	{"aif_out", SND_SOC_TPLG_DAPM_AIF_OUT},
-+	{"dai_in", SND_SOC_TPLG_DAPM_DAI_IN},
-+	{"dai_out", SND_SOC_TPLG_DAPM_DAI_OUT},
-+	{"dai_link", SND_SOC_TPLG_DAPM_DAI_LINK},
-+};
-+
-+/* mapping of widget kcontrol text names to types */
-+static const struct map_elem widget_control_map[] = {
-+	{"volsw", SND_SOC_TPLG_DAPM_CTL_VOLSW},
-+	{"enum_double", SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE},
-+	{"enum_virt", SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT},
-+	{"enum_value", SND_SOC_TPLG_DAPM_CTL_ENUM_VALUE},
-+};
-+
-+static int lookup_widget(const char *w)
++/* copy referenced TLV to the mixer control */
++static int copy_tlv(struct tplg_elem *elem, struct tplg_elem *ref)
 +{
-+	unsigned int i;
++	struct snd_soc_tplg_mixer_control *mixer_ctrl =  elem->mixer_ctrl;
++	struct snd_soc_tplg_ctl_tlv *tlv = ref->tlv;
 +
-+	for (i = 0; i < ARRAY_SIZE(widget_map); i++) {
-+		if (strcmp(widget_map[i].name, w) == 0)
-+			return widget_map[i].id;
-+	}
++	tplg_dbg("TLV '%s' used by '%s\n", ref->id, elem->id);
 +
-+	return -EINVAL;
-+}
++	/* TLV has a fixed size */
++	memcpy(&mixer_ctrl->tlv, tlv, sizeof(*tlv));
 +
-+static int tplg_parse_dapm_mixers(snd_config_t *cfg, struct tplg_elem *elem)
-+{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *value = NULL;
-+
-+	tplg_dbg(" DAPM Mixer Controls: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+		n = snd_config_iterator_entry(i);
-+
-+		/* get value */
-+		if (snd_config_get_string(n, &value) < 0)
-+			continue;
-+
-+		tplg_ref_add(elem, PARSER_TYPE_MIXER, value);
-+		tplg_dbg("\t\t %s\n", value);
-+	}
-+
++	/* set size of TLV data */
++	mixer_ctrl->hdr.tlv_size = tlv->count * sizeof(uint32_t);
 +	return 0;
 +}
 +
-+static int tplg_parse_dapm_enums(snd_config_t *cfg, struct tplg_elem *elem)
-+{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *value = NULL;
-+
-+	tplg_dbg(" DAPM Enum Controls: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+		n = snd_config_iterator_entry(i);
-+
-+		/* get value */
-+		if (snd_config_get_string(n, &value) < 0)
-+			continue;
-+
-+		tplg_ref_add(elem, PARSER_TYPE_ENUM, value);
-+		tplg_dbg("\t\t %s\n", value);
-+	}
-+
-+	return 0;
-+}
-+
-+/* move referenced controls to the widget */
-+static int copy_dapm_control(struct tplg_elem *elem, struct tplg_elem *ref)
-+{
-+	struct snd_soc_tplg_dapm_widget *widget = elem->widget;
-+	struct snd_soc_tplg_mixer_control *mixer_ctrl = ref->mixer_ctrl;
-+	struct snd_soc_tplg_enum_control *enum_ctrl = ref->enum_ctrl;
-+
-+	tplg_dbg("Control '%s' used by '%s'\n", ref->id, elem->id);
-+	tplg_dbg("\tparent size: %d + %d -> %d, priv size -> %d\n",
-+		elem->size, ref->size, elem->size + ref->size,
-+		widget->priv.size);
-+
-+	widget = realloc(widget, elem->size + ref->size);
-+	if (!widget)
-+		return -ENOMEM;
-+
-+	elem->widget = widget;
-+
-+	/* copy new widget at the end */
-+	if (ref->type == PARSER_TYPE_MIXER)
-+		memcpy((void*)widget + elem->size, mixer_ctrl, ref->size);
-+	else if (ref->type == PARSER_TYPE_ENUM)
-+		memcpy((void*)widget + elem->size, enum_ctrl, ref->size);
-+
-+	elem->size += ref->size;
-+	widget->num_kcontrols++;
-+	ref->compound_elem = 1;
-+	return 0;
-+}
-+
-+/* check referenced controls for a widget */
-+static int tplg_build_widget(snd_tplg_t *tplg,
-+	struct tplg_elem *elem)
++/* check referenced TLV for a mixer control */
++static int tplg_build_mixer_control(snd_tplg_t *tplg,
++				struct tplg_elem *elem)
 +{
 +	struct tplg_ref *ref;
 +	struct list_head *base, *pos, *npos;
@@ -190,38 +92,136 @@ index 0000000..fafe3cb
 +		if (ref->id == NULL || ref->elem)
 +			continue;
 +
-+		switch (ref->type) {
-+		case PARSER_TYPE_MIXER:
-+			ref->elem = tplg_elem_lookup(&tplg->mixer_list,
-+						ref->id, PARSER_TYPE_MIXER);
++		if (ref->type == PARSER_TYPE_TLV) {
++			ref->elem = tplg_elem_lookup(&tplg->tlv_list,
++						ref->id, PARSER_TYPE_TLV);
 +			if (ref->elem)
-+				err = copy_dapm_control(elem, ref->elem);
-+			break;
++				 err = copy_tlv(elem, ref->elem);
 +
-+		case PARSER_TYPE_ENUM:
-+			ref->elem = tplg_elem_lookup(&tplg->enum_list,
-+						ref->id, PARSER_TYPE_ENUM);
-+			if (ref->elem)
-+				err = copy_dapm_control(elem, ref->elem);
-+			break;
-+
-+		case PARSER_TYPE_DATA:
++		} else if (ref->type == PARSER_TYPE_DATA) {
 +			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
 +						ref->id, PARSER_TYPE_DATA);
-+			if (ref->elem)
-+				err = tplg_copy_data(elem, ref->elem);
-+			break;
-+		default:
-+			break;
++			 err = tplg_copy_data(elem, ref->elem);
 +		}
 +
 +		if (!ref->elem) {
-+			fprintf(stderr, "error: cannot find control '%s'"
-+				" referenced by widget '%s'\n",
++			fprintf(stderr, "error: cannot find '%s' referenced by"
++				" control '%s'\n", ref->id, elem->id);
++			return -EINVAL;
++		} else if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++static void copy_enum_texts(struct tplg_elem *enum_elem,
++	struct tplg_elem *ref_elem)
++{
++	struct snd_soc_tplg_enum_control *ec = enum_elem->enum_ctrl;
++
++	memcpy(ec->texts, ref_elem->texts,
++		SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++}
++
++/* check referenced text for a enum control */
++static int tplg_build_enum_control(snd_tplg_t *tplg,
++				struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos, *npos;
++	int err = 0;
++
++	base = &elem->ref_list;
++
++	list_for_each_safe(pos, npos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id == NULL || ref->elem)
++			continue;
++
++		if (ref->type == PARSER_TYPE_TEXT) {
++			ref->elem = tplg_elem_lookup(&tplg->text_list,
++						ref->id, PARSER_TYPE_TEXT);
++			if (ref->elem)
++				copy_enum_texts(elem, ref->elem);
++
++		} else if (ref->type == PARSER_TYPE_DATA) {
++			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
++						ref->id, PARSER_TYPE_DATA);
++			err = tplg_copy_data(elem, ref->elem);
++		}
++		if (!ref->elem) {
++			fprintf(stderr, "error: cannot find '%s' referenced by"
++				" control '%s'\n", ref->id, elem->id);
++			return -EINVAL;
++		} else if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++/* check referenced private data for a byte control */
++static int tplg_build_bytes_control(snd_tplg_t *tplg, struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos, *npos;
++
++	base = &elem->ref_list;
++
++	list_for_each_safe(pos, npos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id == NULL || ref->elem)
++			continue;
++
++		/* bytes control only reference one private data section */
++		ref->elem = tplg_elem_lookup(&tplg->pdata_list,
++			ref->id, PARSER_TYPE_DATA);
++		if (!ref->elem) {
++			fprintf(stderr, "error: cannot find data '%s'"
++				" referenced by control '%s'\n",
 +				ref->id, elem->id);
 +			return -EINVAL;
 +		}
 +
++		/* copy texts to enum elem */
++		return tplg_copy_data(elem, ref->elem);
++	}
++
++	return 0;
++}
++
++int tplg_build_controls(snd_tplg_t *tplg)
++{
++	struct list_head *base, *pos, *npos;
++	struct tplg_elem *elem;
++	int err = 0;
++
++	base = &tplg->mixer_list;
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_mixer_control(tplg, elem);
++		if (err < 0)
++			return err;
++	}
++
++	base = &tplg->enum_list;
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_enum_control(tplg, elem);
++		if (err < 0)
++			return err;
++	}
++
++	base = &tplg->bytes_ext_list;
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_bytes_control(tplg, elem);
 +		if (err < 0)
 +			return err;
 +	}
@@ -229,253 +229,262 @@ index 0000000..fafe3cb
 +	return 0;
 +}
 +
-+int tplg_build_widgets(snd_tplg_t *tplg)
-+{
 +
-+	struct list_head *base, *pos, *npos;
-+	struct tplg_elem *elem;
-+	int err;
-+
-+	base = &tplg->widget_list;
-+	list_for_each_safe(pos, npos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (!elem->widget || elem->type != PARSER_TYPE_DAPM_WIDGET) {
-+			fprintf(stderr, "error: invalid widget '%s'\n",
-+				elem->id);
-+			return -EINVAL;
-+		}
-+
-+		err = tplg_build_widget(tplg, elem);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int tplg_build_routes(snd_tplg_t *tplg)
-+{
-+	struct list_head *base, *pos, *npos;
-+	struct tplg_elem *elem;
-+	struct snd_soc_tplg_dapm_graph_elem *route;
-+
-+	base = &tplg->route_list;
-+
-+	list_for_each_safe(pos, npos, base) {
-+		elem = list_entry(pos, struct tplg_elem, list);
-+
-+		if (!elem->route || elem->type != PARSER_TYPE_DAPM_GRAPH) {
-+			fprintf(stderr, "error: invalid route '%s'\n",
-+				elem->id);
-+			return -EINVAL;
-+		}
-+
-+		route = elem->route;
-+		tplg_dbg("\nCheck route: sink '%s', control '%s', source '%s'\n",
-+			route->sink, route->control, route->source);
-+
-+		/* validate sink */
-+		if (strlen(route->sink) <= 0) {
-+			fprintf(stderr, "error: no sink\n");
-+			return -EINVAL;
-+
-+		}
-+		if (!tplg_elem_lookup(&tplg->widget_list, route->sink,
-+			PARSER_TYPE_DAPM_WIDGET)) {
-+			fprintf(stderr, "warning: undefined sink widget/stream '%s'\n",
-+				route->sink);
-+		}
-+
-+		/* validate control name */
-+		if (strlen(route->control)) {
-+			if (!tplg_elem_lookup(&tplg->mixer_list,
-+				route->control, PARSER_TYPE_MIXER) &&
-+			!tplg_elem_lookup(&tplg->enum_list,
-+				route->control, PARSER_TYPE_ENUM)) {
-+				fprintf(stderr, "warning: Undefined mixer/enum control '%s'\n",
-+					route->control);
-+			}
-+		}
-+
-+		/* validate source */
-+		if (strlen(route->source) <= 0) {
-+			fprintf(stderr, "error: no source\n");
-+			return -EINVAL;
-+
-+		}
-+		if (!tplg_elem_lookup(&tplg->widget_list, route->source,
-+			PARSER_TYPE_DAPM_WIDGET)) {
-+			fprintf(stderr, "warning: Undefined source widget/stream '%s'\n",
-+				route->source);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+#define LINE_SIZE	1024
-+
-+/* line is defined as '"source, control, sink"' */
-+static int tplg_parse_line(const char *text,
-+	struct snd_soc_tplg_dapm_graph_elem *line)
-+{
-+	char buf[LINE_SIZE];
-+	unsigned int len, i;
-+	const char *source = NULL, *sink = NULL, *control = NULL;
-+
-+	strncpy(buf, text, LINE_SIZE);
-+
-+	len = strlen(buf);
-+	if (len <= 2) {
-+		fprintf(stderr, "error: invalid route \"%s\"\n", buf);
-+		return -EINVAL;
-+	}
-+
-+	/* find first , */
-+	for (i = 1; i < len; i++) {
-+		if (buf[i] == ',')
-+			goto second;
-+	}
-+	fprintf(stderr, "error: invalid route \"%s\"\n", buf);
-+	return -EINVAL;
-+
-+second:
-+	/* find second , */
-+	sink = buf;
-+	control = &buf[i + 2];
-+	buf[i] = 0;
-+
-+	for (; i < len; i++) {
-+		if (buf[i] == ',')
-+			goto done;
-+	}
-+
-+	fprintf(stderr, "error: invalid route \"%s\"\n", buf);
-+	return -EINVAL;
-+
-+done:
-+	buf[i] = 0;
-+	source = &buf[i + 2];
-+
-+	strcpy(line->source, source);
-+	strcpy(line->control, control);
-+	strcpy(line->sink, sink);
-+	return 0;
-+}
-+
-+
-+static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
++/*
++ * Parse TLV of DBScale type.
++ *
++ * Parse DBScale describing min, step, mute in DB.
++ *
++ * scale {
++ *		min "-9000"
++ *		step "300"
++ *		mute "1"
++ * }
++ */
++static int tplg_parse_tlv_dbscale(snd_config_t *cfg, struct tplg_elem *elem)
 +{
 +	snd_config_iterator_t i, next;
 +	snd_config_t *n;
-+	struct tplg_elem *elem;
-+	struct snd_soc_tplg_dapm_graph_elem *line = NULL;
-+	int err;
++	struct snd_soc_tplg_ctl_tlv *tplg_tlv;
++	const char *id = NULL, *value = NULL;
++	int *data;
++
++	tplg_dbg(" scale: %s\n", elem->id);
++
++	tplg_tlv = calloc(1, sizeof(*tplg_tlv));
++	if (!tplg_tlv)
++		return -ENOMEM;
++	data = (int*)(tplg_tlv->data);
++
++	elem->tlv = tplg_tlv;
++	tplg_tlv->numid = SNDRV_CTL_TLVT_DB_SCALE;
++	tplg_tlv->count = 8;
++	tplg_tlv->size = sizeof(*tplg_tlv);
 +
 +	snd_config_for_each(i, next, cfg) {
-+		const char *val;
 +
 +		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_string(n, &val) < 0)
++
++		/* get ID */
++		if (snd_config_get_id(n, &id) < 0) {
++			fprintf(stderr, "error: cant get ID\n");
++			return -EINVAL;
++		}
++
++		/* get value */
++		if (snd_config_get_string(n, &value) < 0)
 +			continue;
 +
-+		elem = tplg_elem_new();
-+		if (!elem)
-+			return -ENOMEM;
++		tplg_dbg("\t%s = %s\n", id, value);
 +
-+		list_add_tail(&elem->list, &tplg->route_list);
-+		strcpy(elem->id, "line");
-+		elem->type = PARSER_TYPE_DAPM_GRAPH;
-+		elem->size = sizeof(*line);
-+
-+		line = calloc(1, sizeof(*line));
-+		if (!line)
-+			return -ENOMEM;
-+
-+		elem->route = line;
-+
-+		err = tplg_parse_line(val, line);
-+		if (err < 0)
-+			return err;
-+
-+		tplg_dbg("route: sink '%s', control '%s', source '%s'\n",
-+				line->sink, line->control, line->source);
++		/* get TLV data */
++		if (strcmp(id, "min") == 0)
++			data[0] = atoi(value);
++		else if (strcmp(id, "step") == 0)
++			data[1] = atoi(value);
++		else if (strcmp(id, "mute") == 0)
++			data[2] = atoi(value);
++		else
++			fprintf(stderr, "error: unknown key %s\n", id);
 +	}
 +
 +	return 0;
 +}
 +
-+int tplg_parse_dapm_graph(snd_tplg_t *tplg, snd_config_t *cfg,
++/* Parse TLV.
++ *
++ * Each TLV is described in new section
++ * Supported TLV types: scale.
++ *
++ * SectionTLV."tlv name" {
++ *		type {
++ *
++ *		}
++ * }
++ */
++int tplg_parse_tlv(snd_tplg_t *tplg, snd_config_t *cfg,
 +	void *private ATTRIBUTE_UNUSED)
 +{
 +	snd_config_iterator_t i, next;
 +	snd_config_t *n;
-+	int err;
-+	const char *graph_id;
++	const char *id;
++	int err = 0;
++	struct tplg_elem *elem;
 +
-+	if (snd_config_get_type(cfg) != SND_CONFIG_TYPE_COMPOUND) {
-+		fprintf(stderr, "error: compound is expected for dapm graph definition\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_config_get_id(cfg, &graph_id);
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_TLV);
++	if (!elem)
++		return -ENOMEM;
 +
 +	snd_config_for_each(i, next, cfg) {
-+		const char *id;
 +
 +		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0) {
++		if (snd_config_get_id(n, &id) < 0)
 +			continue;
-+		}
 +
-+		if (strcmp(id, "lines") == 0) {
-+			err = tplg_parse_routes(tplg, n);
++		if (strcmp(id, "scale") == 0) {
++			err = tplg_parse_tlv_dbscale(n, elem);
 +			if (err < 0) {
-+				fprintf(stderr, "error: failed to parse dapm graph %s\n",
-+					graph_id);
++				fprintf(stderr, "error: failed to DBScale");
 +				return err;
 +			}
 +			continue;
 +		}
 +	}
 +
-+	return 0;
++	return err;
 +}
 +
-+/* DAPM Widget.
++/* Parse Control Bytes
 + *
-+ * SectionWidget."widget name" {
++ * Each Control is described in new section
++ * Supported control types: Byte
++ *
++ * SectionControlBytes."control name" {
++ *	comment "optional comments"
 + *
 + *	index "1"
-+ *	type "aif_in"
-+ *	no_pm "true"
-+ *	shift "0"
-+ *	invert "1
-+ *	mixer "name"
-+ *	enum "name"
-+ *	data "name"
++ *	base "0"
++ *	num_regs "16"
++ *	mask "0xff"
++ *	max "255"
 + * }
 + */
-+int tplg_parse_dapm_widget(snd_tplg_t *tplg,
++int tplg_parse_control_bytes(snd_tplg_t *tplg,
 +	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
 +{
-+	struct snd_soc_tplg_dapm_widget *widget;
++	struct snd_soc_tplg_bytes_control *be;
 +	struct tplg_elem *elem;
 +	snd_config_iterator_t i, next;
 +	snd_config_t *n;
 +	const char *id, *val = NULL;
-+	int widget_type, err;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_DAPM_WIDGET);
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_BYTES);
 +	if (!elem)
 +		return -ENOMEM;
 +
-+	tplg_dbg(" Widget: %s\n", elem->id);
++	be = elem->bytes_ext;
++	be->size = elem->size;
++	strncpy(be->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	be->hdr.type =  SND_SOC_TPLG_TYPE_BYTES;
 +
-+	widget = elem->widget;
-+	strncpy(widget->name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+	widget->size = elem->size;
++	tplg_dbg(" Control Bytes: %s\n", elem->id);
++
++	snd_config_for_each(i, next, cfg) {
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
++
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			elem->index = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, elem->index);
++			continue;
++		}
++
++		if (strcmp(id, "base") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->base = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->base);
++			continue;
++		}
++
++		if (strcmp(id, "num_regs") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->num_regs = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->num_regs);
++			continue;
++		}
++
++		if (strcmp(id, "max") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->max = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->num_regs);
++			continue;
++		}
++
++		if (strcmp(id, "mask") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->mask = strtol(val, NULL, 16);
++			tplg_dbg("\t%s: %d\n", id, be->mask);
++			continue;
++		}
++
++		if (strcmp(id, "data") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			tplg_ref_add(elem, PARSER_TYPE_DATA, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++	}
++
++	return 0;
++}
++
++/* Parse Control Enums.
++ *
++ * Enumerated control. Supports mutiple channels.
++ *
++ * SectionControlMixer."control name" {
++ *	comment "optional comments"
++ *
++ *	index "1"
++ *	texts "EQU1"
++ *
++ *	channel."name" {
++ *	}
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	tlv "hsw_vol_tlv"
++ * }
++ */
++int tplg_parse_control_enum(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private ATTRIBUTE_UNUSED)
++{
++	struct snd_soc_tplg_enum_control *ec;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int err, j;
++
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_ENUM);
++	if (!elem)
++		return -ENOMEM;
++
++	/* init new mixer */
++	ec = elem->enum_ctrl;
++	strncpy(ec->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	ec->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
++		SNDRV_CTL_ELEM_ACCESS_READWRITE;
++	ec->hdr.type =  SND_SOC_TPLG_TYPE_ENUM;
++	ec->size = elem->size;
++	tplg->channel_idx = 0;
++
++	/* set channel reg to default state */
++	for (j = 0; j < SND_SOC_TPLG_MAX_CHAN; j++)
++		ec->channel[j].reg = -1;
++
++	tplg_dbg(" Control Enum: %s\n", elem->id);
 +
 +	snd_config_for_each(i, next, cfg) {
 +
@@ -498,39 +507,148 @@ index 0000000..fafe3cb
 +			continue;
 +		}
 +
-+		if (strcmp(id, "type") == 0) {
++		if (strcmp(id, "texts") == 0) {
 +			if (snd_config_get_string(n, &val) < 0)
 +				return -EINVAL;
 +
-+			widget_type = lookup_widget(val);
-+			if (widget_type < 0){
-+				fprintf(stderr, "Widget '%s': Unsupported widget type %s\n",
-+					elem->id, val);
++			tplg_ref_add(elem, PARSER_TYPE_TEXT, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++
++		if (strcmp(id, "channel") == 0) {
++			if (ec->num_channels >= SND_SOC_TPLG_MAX_CHAN) {
++				fprintf(stderr, "error: too many channels %s\n",
++					elem->id);
 +				return -EINVAL;
 +			}
 +
-+			widget->id = widget_type;
-+			tplg_dbg("\t%s: %s\n", id, val);
++			err = tplg_parse_compound(tplg, n, tplg_parse_channel,
++				ec->channel);
++			if (err < 0)
++				return err;
++
++			ec->num_channels = tplg->channel_idx;
 +			continue;
 +		}
 +
-+		if (strcmp(id, "no_pm") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			if (strcmp(val, "true") == 0)
-+				widget->reg = -1;
-+
-+			tplg_dbg("\t%s: %s\n", id, val);
++		if (strcmp(id, "ops") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_ops,
++				&ec->hdr);
++			if (err < 0)
++				return err;
 +			continue;
 +		}
 +
-+		if (strcmp(id, "shift") == 0) {
++		if (strcmp(id, "data") == 0) {
 +			if (snd_config_get_string(n, &val) < 0)
 +				return -EINVAL;
 +
-+			widget->shift = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, widget->shift);
++			tplg_ref_add(elem, PARSER_TYPE_DATA, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++	}
++
++	return 0;
++}
++
++/* Parse Controls.
++ *
++ * Mixer control. Supports multiple channels.
++ *
++ * SectionControlMixer."control name" {
++ *	comment "optional comments"
++ *
++ *	index "1"
++ *
++ *	channel."name" {
++ *	}
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	max "32"
++ *	invert "0"
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	tlv "hsw_vol_tlv"
++ * }
++ */
++int tplg_parse_control_mixer(snd_tplg_t *tplg,
++	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
++{
++	struct snd_soc_tplg_mixer_control *mc;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int err, j;
++
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_MIXER);
++	if (!elem)
++		return -ENOMEM;
++
++	/* init new mixer */
++	mc = elem->mixer_ctrl;
++	strncpy(mc->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	mc->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
++		SNDRV_CTL_ELEM_ACCESS_READWRITE;
++	mc->hdr.type =  SND_SOC_TPLG_TYPE_MIXER;
++	mc->size = elem->size;
++	tplg->channel_idx = 0;
++
++	/* set channel reg to default state */
++	for (j = 0; j < SND_SOC_TPLG_MAX_CHAN; j++)
++		mc->channel[j].reg = -1;
++
++	tplg_dbg(" Control Mixer: %s\n", elem->id);
++
++	/* giterate trough each mixer elment */
++	snd_config_for_each(i, next, cfg) {
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
++
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			elem->index = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, elem->index);
++			continue;
++		}
++
++		if (strcmp(id, "channel") == 0) {
++			if (mc->num_channels >= SND_SOC_TPLG_MAX_CHAN) {
++				fprintf(stderr, "error: too many channels %s\n",
++					elem->id);
++				return -EINVAL;
++			}
++
++			err = tplg_parse_compound(tplg, n, tplg_parse_channel,
++				mc->channel);
++			if (err < 0)
++				return err;
++
++			mc->num_channels = tplg->channel_idx;
++			continue;
++		}
++
++		if (strcmp(id, "max") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			mc->max = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, mc->max);
 +			continue;
 +		}
 +
@@ -538,51 +656,32 @@ index 0000000..fafe3cb
 +			if (snd_config_get_string(n, &val) < 0)
 +				return -EINVAL;
 +
-+			widget->invert = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, widget->invert);
++			if (strcmp(val, "true") == 0)
++				mc->invert = 1;
++			else if (strcmp(val, "false") == 0)
++				mc->invert = 0;
++
++			tplg_dbg("\t%s: %d\n", id, mc->invert);
 +			continue;
 +		}
 +
-+		if (strcmp(id, "subseq") == 0) {
++		if (strcmp(id, "ops") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_ops,
++				&mc->hdr);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "tlv") == 0) {
 +			if (snd_config_get_string(n, &val) < 0)
 +				return -EINVAL;
 +
-+			widget->subseq= atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, widget->subseq);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "event_type") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			widget->event_type = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, widget->event_type);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "event_flags") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			widget->event_flags = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, widget->event_flags);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "enum") == 0) {
-+			err = tplg_parse_dapm_enums(n, elem);
++			err = tplg_ref_add(elem, PARSER_TYPE_TLV, val);
 +			if (err < 0)
 +				return err;
 +
-+			continue;
-+		}
-+
-+		if (strcmp(id, "mixer") == 0) {
-+			err = tplg_parse_dapm_mixers(n, elem);
-+			if (err < 0)
-+				return err;
-+
++			tplg_dbg("\t%s: %s\n", id, val);
 +			continue;
 +		}
 +
