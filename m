@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 10/13] topology: Add Channel map parser.
-Date: Mon, 29 Jun 2015 17:32:55 +0100
-Message-ID: <1435595578-6899-10-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 11/13] topology: Add binary file builder.
+Date: Mon, 29 Jun 2015 17:32:56 +0100
+Message-ID: <1435595578-6899-11-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 89419265467
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 59ABC265626
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 18:33:30 +0200 (CEST)
 In-Reply-To: <1435595578-6899-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,20 +24,20 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for parsing channel map to control registers.
+Build the binary output file from all the locally parsed objects and elements.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/channel.c | 128 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 128 insertions(+)
- create mode 100644 src/topology/channel.c
+ src/topology/builder.c | 275 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 275 insertions(+)
+ create mode 100644 src/topology/builder.c
 
-diff --git a/src/topology/channel.c b/src/topology/channel.c
+diff --git a/src/topology/builder.c b/src/topology/builder.c
 new file mode 100644
-index 0000000..e33c70d
+index 0000000..12adc81
 --- /dev/null
-+++ b/src/topology/channel.c
-@@ -0,0 +1,128 @@
++++ b/src/topology/builder.c
+@@ -0,0 +1,275 @@
 +/*
 +  Copyright(c) 2014-2015 Intel Corporation
 +  All rights reserved.
@@ -59,111 +59,258 @@ index 0000000..e33c70d
 +#include "list.h"
 +#include "tplg_local.h"
 +
-+/* mapping of channel text names to types */
-+static const struct map_elem channel_map[] = {
-+	{"mono", SNDRV_CHMAP_MONO},	/* mono stream */
-+	{"fl", SNDRV_CHMAP_FL},		/* front left */
-+	{"fr", SNDRV_CHMAP_FR},		/* front right */
-+	{"rl", SNDRV_CHMAP_RL},		/* rear left */
-+	{"rr", SNDRV_CHMAP_RR},		/* rear right */
-+	{"fc", SNDRV_CHMAP_FC},		/* front center */
-+	{"lfe", SNDRV_CHMAP_LFE},	/* LFE */
-+	{"sl", SNDRV_CHMAP_SL},		/* side left */
-+	{"sr", SNDRV_CHMAP_SR},		/* side right */
-+	{"rc", SNDRV_CHMAP_RC},		/* rear center */
-+	{"flc", SNDRV_CHMAP_FLC},	/* front left center */
-+	{"frc", SNDRV_CHMAP_FRC},	/* front right center */
-+	{"rlc", SNDRV_CHMAP_RLC},	/* rear left center */
-+	{"rrc", SNDRV_CHMAP_RRC},	/* rear right center */
-+	{"flw", SNDRV_CHMAP_FLW},	/* front left wide */
-+	{"frw", SNDRV_CHMAP_FRW},	/* front right wide */
-+	{"flh", SNDRV_CHMAP_FLH},	/* front left high */
-+	{"fch", SNDRV_CHMAP_FCH},	/* front center high */
-+	{"frh", SNDRV_CHMAP_FRH},	/* front right high */
-+	{"tc", SNDRV_CHMAP_TC},		/* top center */
-+	{"tfl", SNDRV_CHMAP_TFL},	/* top front left */
-+	{"tfr", SNDRV_CHMAP_TFR},	/* top front right */
-+	{"tfc", SNDRV_CHMAP_TFC},	/* top front center */
-+	{"trl", SNDRV_CHMAP_TRL},	/* top rear left */
-+	{"trr", SNDRV_CHMAP_TRR},	/* top rear right */
-+	{"trc", SNDRV_CHMAP_TRC},	/* top rear center */
-+	{"tflc", SNDRV_CHMAP_TFLC},	/* top front left center */
-+	{"tfrc", SNDRV_CHMAP_TFRC},	/* top front right center */
-+	{"tsl", SNDRV_CHMAP_TSL},	/* top side left */
-+	{"tsr", SNDRV_CHMAP_TSR},	/* top side right */
-+	{"llfe", SNDRV_CHMAP_LLFE},	/* left LFE */
-+	{"rlfe", SNDRV_CHMAP_RLFE},	/* right LFE */
-+	{"bc", SNDRV_CHMAP_BC},		/* bottom center */
-+	{"blc", SNDRV_CHMAP_BLC},	/* bottom left center */
-+	{"brc", SNDRV_CHMAP_BRC},	/* bottom right center */
-+};
-+
-+
-+static int lookup_channel(const char *c)
++/* verbose output detailing each object size and file position */
++static void verbose(snd_tplg_t *tplg, const char *fmt, ...)
 +{
-+	unsigned int i;
++	int offset;
++	va_list va;
 +
-+	for (i = 0; i < ARRAY_SIZE(channel_map); i++) {
-+		if (strcasecmp(channel_map[i].name, c) == 0) {
-+			return channel_map[i].id;
-+		}
-+	}
++	if (!tplg->verbose)
++		return;
 +
-+	return -EINVAL;
++	offset = lseek(tplg->out_fd, 0, SEEK_CUR);
++
++	va_start(va, fmt);
++	fprintf(stdout, "0x%6.6x/%6.6d -", offset, offset);
++	vfprintf(stdout, fmt, va);
++	va_end(va);
 +}
 +
-+/* Parse a channel.
-+ *
-+ * channel."channel_map.name" {
-+ *		reg "0"	(register)
-+ *		shift "0" (shift)
-+ * }
-+ */
-+int tplg_parse_channel(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private)
++/* write out block header to output file */
++static int write_block_header(snd_tplg_t *tplg, unsigned int type,
++	unsigned int vendor_type, unsigned int version, unsigned int index,
++	size_t payload_size, int count)
 +{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	struct snd_soc_tplg_channel *channel = private;
-+	const char *id, *value;
++	struct snd_soc_tplg_hdr hdr;
++	size_t bytes;
++	int offset = lseek(tplg->out_fd, 0, SEEK_CUR);
 +
-+	if (tplg->channel_idx >= SND_SOC_TPLG_MAX_CHAN)
-+		return -EINVAL;
++	memset(&hdr, 0, sizeof(hdr));
++	hdr.magic = SND_SOC_TPLG_MAGIC;
++	hdr.abi = SND_SOC_TPLG_ABI_VERSION;
++	hdr.type = type;
++	hdr.vendor_type = vendor_type;
++	hdr.version = version;
++	hdr.payload_size = payload_size;
++	hdr.index = index;
++	hdr.size = sizeof(hdr);
++	hdr.count = count;
 +
-+	channel += tplg->channel_idx;
-+	snd_config_get_id(cfg, &id);
-+	tplg_dbg("\tChannel %s at index %d\n", id, tplg->channel_idx);
++	/* make sure file offset is aligned with the calculated HDR offset */
++	if ((unsigned int)offset != tplg->next_hdr_pos) {
++		fprintf(stderr, "error: New header is at offset 0x%x but file"
++			" offset 0x%x is %s by %d bytes\n",
++			tplg->next_hdr_pos, offset,
++			(unsigned int)offset > tplg->next_hdr_pos ? "ahead" : "behind",
++			abs(offset - tplg->next_hdr_pos));
++		exit(-EINVAL);
++	}
 +
-+	channel->id = lookup_channel(id);
-+	if (channel->id < 0) {
-+		fprintf(stderr, "error: invalid channel %s\n", id);
++	verbose(tplg, " header type %d size 0x%lx/%ld vendor %d "
++		"version %d\n", type, (long unsigned int)payload_size,
++		(long int)payload_size, vendor_type, version);
++
++	tplg->next_hdr_pos += hdr.payload_size + sizeof(hdr);
++
++	bytes = write(tplg->out_fd, &hdr, sizeof(hdr));
++	if (bytes != sizeof(hdr)) {
++		fprintf(stderr, "error: can't write section header %lu\n",
++			(long unsigned int)bytes);
++		return bytes;
++	}
++
++	return bytes;
++}
++
++static int write_elem_block(snd_tplg_t *tplg,
++	struct list_head *base, int size, int tplg_type, const char *obj_name)
++{
++	struct list_head *pos, *npos;
++	struct tplg_elem *elem;
++	int ret, wsize = 0, count = 0;
++
++	/* count number of elements */
++	list_for_each_safe(pos, npos, base)
++		count++;
++
++	/* write the header for this block */
++	ret = write_block_header(tplg, tplg_type, 0,
++		SND_SOC_TPLG_ABI_VERSION, 0, size, count);
++	if (ret < 0) {
++		fprintf(stderr, "error: failed to write %s block %d\n",
++			obj_name, ret);
++		return ret;
++	}
++
++	/* write each elem to block */
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++
++		/* compound elems have already been copied to other elems */
++		if (elem->compound_elem)
++			continue;
++
++		if (elem->type != PARSER_TYPE_DAPM_GRAPH)
++			verbose(tplg, " %s '%s': write %d bytes\n",
++				obj_name, elem->id, elem->size);
++		else
++			verbose(tplg, " %s '%s': write %d bytes\n",
++				obj_name, elem->route->source, elem->size);
++
++		count = write(tplg->out_fd, elem->obj, elem->size);
++		if (count < 0) {
++			fprintf(stderr, "error: failed to write %s %d\n",
++				obj_name, ret);
++			return ret;
++		}
++
++		wsize += count;
++	}
++
++	/* make sure we have written the correct size */
++	if (wsize != size) {
++		fprintf(stderr, "error: size mismatch. Expected %d wrote %d\n",
++			size, wsize);
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int calc_block_size(struct list_head *base)
++{
++	struct list_head *pos, *npos;
++	struct tplg_elem *elem;
++	int size = 0;
++
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++
++		/* compound elems have already been copied to other elems */
++		if (elem->compound_elem)
++			continue;
++
++		size += elem->size;
++	}
++
++	return size;
++}
++
++static int write_block(snd_tplg_t *tplg, struct list_head *base,
++	int type)
++{
++	int size;
++
++	/* calculate the block size in bytes for all elems in this list */
++	size = calc_block_size(base);
++	if (size <= 0)
++		return size;
++
++	verbose(tplg, " block size for type %d is %d\n", type, size);
++
++	/* write each elem for this block */
++	switch (type) {
++	case PARSER_TYPE_MIXER:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_MIXER, "mixer");
++	case PARSER_TYPE_BYTES:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_BYTES, "bytes");
++	case PARSER_TYPE_ENUM:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_ENUM, "enum");
++	case PARSER_TYPE_DAPM_GRAPH:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_DAPM_GRAPH, "route");
++	case PARSER_TYPE_DAPM_WIDGET:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_DAPM_WIDGET, "widget");
++	case PARSER_TYPE_PCM:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_PCM, "pcm");
++	case PARSER_TYPE_BE:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_DAI_LINK, "be");
++	case PARSER_TYPE_CC:
++		return write_elem_block(tplg, base, size,
++			SND_SOC_TPLG_TYPE_DAI_LINK, "cc");
++	default:
 +		return -EINVAL;
 +	}
 +
-+	channel->size = sizeof(*channel);
-+	tplg_dbg("\tChan %s = %d\n", id, channel->id);
++	return 0;
++}
 +
-+	snd_config_for_each(i, next, cfg) {
++int tplg_write_data(snd_tplg_t *tplg)
++{
++	int ret;
 +
-+		n = snd_config_iterator_entry(i);
-+
-+		/* get id */
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* get value */
-+		if (snd_config_get_string(n, &value) < 0)
-+			continue;
-+
-+		if (strcmp(id, "reg") == 0)
-+			channel->reg = atoi(value);
-+		else if (strcmp(id, "shift") == 0)
-+			channel->shift = atoi(value);
-+
-+		tplg_dbg("\t\t%s = %s\n", id, value);
++	/* write mixer elems. */
++	ret = write_block(tplg, &tplg->mixer_list,
++		PARSER_TYPE_MIXER);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write control elems %d\n", ret);
++		return ret;
 +	}
 +
-+	tplg->channel_idx++;
++	/* write enum control elems. */
++	ret = write_block(tplg, &tplg->enum_list,
++		PARSER_TYPE_ENUM);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write control elems %d\n", ret);
++		return ret;
++	}
++
++	/* write bytes extended control elems. */
++	ret = write_block(tplg, &tplg->bytes_ext_list,
++		PARSER_TYPE_BYTES);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write control elems %d\n", ret);
++		return ret;
++	}
++
++	/* write widget elems */
++	ret = write_block(tplg, &tplg->widget_list,
++		PARSER_TYPE_DAPM_WIDGET);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write widget elems %d\n", ret);
++		return ret;
++	}
++
++	/* write pcm elems */
++	ret = write_block(tplg, &tplg->pcm_list,
++		PARSER_TYPE_PCM);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write pcm elems %d\n", ret);
++		return ret;
++	}
++
++	/* write be elems */
++	ret = write_block(tplg, &tplg->be_list,
++		PARSER_TYPE_BE);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write be elems %d\n", ret);
++		return ret;
++	}
++
++	/* write cc elems */
++	ret = write_block(tplg, &tplg->cc_list,
++		PARSER_TYPE_CC);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write cc elems %d\n", ret);
++		return ret;
++	}
++
++	/* write route elems */
++	ret = write_block(tplg, &tplg->route_list,
++		PARSER_TYPE_DAPM_GRAPH);
++	if (ret < 0) {
++		fprintf(stderr, "failed to write graph elems %d\n", ret);
++		return ret;
++	}
++
 +	return 0;
 +}
 -- 
