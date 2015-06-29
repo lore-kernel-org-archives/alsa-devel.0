@@ -1,17 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Add a fixup for Dell E7450
-Date: Mon, 29 Jun 2015 10:58:35 +0200
-Message-ID: <1435568315-23677-1-git-send-email-tiwai@suse.de>
+From: Haojian Zhuang <haojian.zhuang@linaro.org>
+Subject: Re: ASoC: 88pm860x: Question about
+ pm860x_set_dai_sysclk implementation
+Date: Mon, 29 Jun 2015 10:02:10 +0800
+Message-ID: <1435543330.1744.1.camel@linaro.org>
+References: <1435503659.6929.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 553A4260639
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 11:13:48 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 23348AC8A
- for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 09:13:48 +0000 (UTC)
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69D9D265185
+ for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2015 04:02:09 +0200 (CEST)
+Received: by pdbep18 with SMTP id ep18so85518601pdb.1
+ for <alsa-devel@alsa-project.org>; Sun, 28 Jun 2015 19:02:06 -0700 (PDT)
+In-Reply-To: <1435503659.6929.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dell E7450 [0128:062e] needs the same quirk as other E7xx models.
+On Sun, 2015-06-28 at 23:00 +0800, Axel Lin wrote:
+> Hi Haojian,
+> In sound/soc/codecs/88pm860x-codec.c (pm860x_set_dai_sysclk):
+> When dir != PM860X_CLK_DIR_OUT, current code set
+> pm860x->dir = PM860X_CLK_DIR_IN; and then return -EINVAL.
+> This looks confusion.
+> Since there is no comment for that, I'm wondering if the
+> return -EINVAL is intentional or not.
+> 
+> Regards,
+> Axel
+> 
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=100571
-Cc: <stable@vger.kernel.org> # v4.1
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Axel,
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index dfa3852a3476..b3b44681d3cf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5126,6 +5126,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05f6, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
-+	SND_PCI_QUIRK(0x1028, 0x062e, "Dell Latitude E7450", ALC292_FIXUP_DELL_E7X),
- 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x064a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x064b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
--- 
-2.4.4
+Since we didn't support slave mode in our solution, I just return
+-EINVAL for PM860X_CLK_DIR_IN. I'm sorry to add the confused code.
+Could you help to format a patch to add the comments?
+
+Regards
+Haojian
