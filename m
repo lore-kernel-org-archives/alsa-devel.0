@@ -1,67 +1,75 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
-	displayport multi-stream to hda codec.
-Date: Mon, 29 Jun 2015 11:00:31 +0300
-Message-ID: <87egkvyme8.fsf@intel.com>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <s5hpp4s9ceq.wl-tiwai@suse.de>
- <CAN8cciZiAyseCC5_t0pXZX-t57eukNT5+K8iTZGhG7=MiEztWw@mail.gmail.com>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: Fwd: [alsa-devel] [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Mon, 29 Jun 2015 10:12:47 +0200
+Message-ID: <CAKor6TdZNTLnhxpruqDxe4nQsDL+e6xgVHOtVdz4LuFisKNsoQ@mail.gmail.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
+	<20150625073618.GH827@lahna.fi.intel.com>
+	<CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
+	<20150625145853.GP14071@sirena.org.uk>
+	<20150625154407.GE6321@opensource.wolfsonmicro.com>
+	<20150625155612.GS14071@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <CAN8cciZiAyseCC5_t0pXZX-t57eukNT5+K8iTZGhG7=MiEztWw@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150625155612.GS14071-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyNyBKdW4gMjAxNSwgUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWls
-LmNvbT4gd3JvdGU6Cj4+ID4gPgo+PiA+ID4gU2hhbGwgd2UgbW92ZSBvciBjYyB0aGlzIGRpc2N1
-c3Npb24gb24gYXVkaW8gZHJpdmVyIHNpZGUgdG8gQUxTQSBNTD8KPj4gPgo+PiA+IE9vcHMgSSB0
-aG91Z2h0IEkgaGFkIGNjJ2VkIHRoZXNlIHBhdGNoZXMgdG8gYWxzYS1kZXZlbCBhcyB3ZWxsIHdo
-ZW4gSQo+IHNlbnQgdGhlbS4KPj4gPgo+PiA+ID4gSSB0aGluayB3ZSBhbHNvIG5lZWQgdG8gZGVj
-aWRlIGhvdyB0byBtYW5hZ2UgUENNIGRldmljZXMgZm9yIERQIE1TVC4KPj4gPiA+IE5vdyB0aGUg
-SEQtQSBkcml2ZXIgY3JlYXRlIGEgUENNIGRldmljZSBmb3IgZWFjaCBwaW4sIGFuZCB0aGUKPiBz
-dWJzdHJlYW0KPj4gPiA+IG51bWJlciBpcyAxIGZvciBlYWNoIFBDTS4gTm93IHdpdGggRFAgTVNU
-IGVuYWJsZWQsIGVhY2ggcGluIGNhbgo+IHN1cHBvcnQKPj4gPiA+IG11bHRpcGxlIHN0cmVhbXMg
-KGUuZy4gMyBvbiBJbnRlbCBIU1cvQkRXL1NLTCkuCj4+ID4gPgo+PiA+ID4gVGhlcmUgbWF5IGJl
-IDIgb3B0aW9uczoKPj4gPiA+IC0jMTogTGV0IGFuIEhETUkgY29kZWMgc3BlY2lmeSBudW1iZXIg
-b2Ygc3Vic3RyZWFtcywgc2FtZSBhcyB0aGUKPiBudW1iZXIKPj4gPiA+IG9mIGRldmljZSBlbnRy
-aWVzIG9uIGEgcGluLiBXZSBjYW4gc3BlY2lmeSAzIGZvciBIU1cvQkRXL1NLTC4gT3RoZXIKPj4g
-PiA+IHZlbmRvcnMgY2FuIGFsc28gc3BlY2lmeSBhIHZhbHVlIGFjY29yZGluZyB0byBhY3R1YWwg
-SFcgY2FwYWJpbGl0aWVzLgo+PiA+ID4KPj4gPiA+IFNvIGZvciBIU1csIHdlIGhhdmUgM3gzIHN1
-YnRyZWFtcyB0b3RhbGx5LiBCdXQgd2Ugb25seSBoYXZlIDMKPiBjb252ZXJ0b3JzCj4+ID4gPiAo
-Zm9yIDMgZGlzcGxheSBwaXBlbGluZXMpLCBzbyB3ZSBjYW4gb3BlbiB1cCB0byAzIHN1YnN0cmVh
-bXMgYXQgdGhlCj4gc2FtZQo+PiA+ID4gdGltZS4gV2hlbiB0aGUgYXVkaW8gZHJpdmVyIGZpbmRz
-IGFsbCAzIGNvbnZlcnRvcnMgYXJlIHVzZWQgd2hlbgo+IG9wZW5pbmcKPj4gPiA+IGEgbmV3IHN1
-YnN0cmVhbSwgaXQgd2lsbCBmYWlsLgo+PiA+Cj4+ID4gT25lIHRoaW5nIEkgbm90aWNlZCBpcyB0
-aGUgbnVtYmVyIG9mIGRldmljZXMgb24gYSBQSU4gaXMgb25seSB1cGRhdGVkCj4gd2hlbgo+PiA+
-IHRoZSBNU1QgZGV2aWNlIGlzIHBsdWdnZWQgaW4gc28gbm9ybWFsbHkgcGlucyA1LDYsNyBoYXZl
-IDAgZGV2aWNlcywgYW5kCj4gd2hlbgo+PiA+IEkgcGx1ZyBpbiBNU1QgZGV2aWNlLCBJIGdldCB0
-aGUgMyBkZXZpY2VzIG9uIHBvcnQgNi4gU28gaXQgc2VlbXMgZHluYW1pYwo+PiA+IGVub3VnaCBh
-dCB0aGlzIHBvaW50LCB0aG91Z2ggSSBndWVzcyBpdCdsbCBhbHdheXMgYmUgMCBvciAzLgo+PiA+
-ID4KPj4gPiA+IC0gIzI6IENyZWF0ZSBQQ00gZGV2aWNlIGR5bmFtaWNhbGx5LiBPbmx5IGNyZWF0
-ZSBhIFBDTSBkZXZpY2VzIGZvciBhCj4gZGV2aWNlCj4+ID4gPiBlbnRyeSB3aGljaCBjb25uZWN0
-cyB0byBtb25pdG9yIHdpdGggYXVkaW8gc3VwcG9ydC4gV2hlbiB0aGUgbW9uaXRvcgo+PiA+ID4g
-aXMgcmVtb3ZlZCwgdGhlIFBDTSBkZXZpY2Ugd2lsbCBiZSBkaXNjb25uZWN0ZWQsIGNsb3NlZCBh
-bmQgcmVtb3ZlZCwKPj4gPiA+IHNpbWlsYXIgdG8gdGhlIFVTQiBjYXNlLgo+Cj4gRG8gdGhlIGRy
-aXZlciByZWFsbHkgbmVlZCBkeW5hbWljIFBDTSBzaW5jZSBkaXNwbGF5IHBvcnRzIGFyZSBkYXNp
-eSBjaGFpbmVkCj4gYW5kIHRoZSBsb2NhdGlvbnMgd2l0aGluIHRoZSBkYXNpeSBjaGFpbiBhcmUg
-Zml4ZWQgPwoKUGxlYXNlIGVsYWJvcmF0ZS4KCkJSLApKYW5pLgoKLS0gCkphbmkgTmlrdWxhLCBJ
-bnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdm
-eEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Hi,
+
+I do not want to guess and I also want to minimize the try&error circle,
+some questions are open yet:
+
+
+2015-06-25 17:56 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+> On Thu, Jun 25, 2015 at 04:44:07PM +0100, Charles Keepax wrote:
+>> On Thu, Jun 25, 2015 at 03:58:53PM +0100, Mark Brown wrote:
+>> > On Thu, Jun 25, 2015 at 02:18:23PM +0200, Christian Hartmann wrote:
+>
+>> > >                 Name (_HID, "WM510205")  // _HID: Hardware ID
+>> > >                 Name (_CID, "WM510205")  // _CID: Compatible ID
+>> > >                 Name (_DDN, "Wolfson Microelectronics Audio WM5102")
+>
+>> > Separately to the chip select discussion one thing to highlight here is
+>> > that for some reason the BIOS is listing the device as "WM510205" rather
+>> > than "WM5102" - do those extra numbers mean anything and does this mean
+>> > that WM50120[1-4] and possibly higher numbers are also valid?
+>
+>> From my brief discussions with the Windows guys here on this
+>> basically those last two digits are being used to inform the
+>> Windows driver of use-case setup. So here it will set things up
+>> for whatever the Window's driver considers to be setup "5".
+>
+> Yay for scalability and abstraction.
+>
+>> I think from the Linux side we can safely ignore those last two
+>> digits. I expect that all systems of the same make and model
+>> would report the same last two digits but that it might change
+>> between models if the Windows driver is expected to something
+>> differently for that model.
+>
+> Well, we might want to consider using this to set our platform data
+> instead of the machine ID if people have just been copying a smallish
+> set of reference designs, it might might make for a slightly smaller set
+> of ID tables than the machine ID based stuff does.
+>
+> Due to the way ACPI ID matching works we'll also need to add every
+> suffix individually to the table, we're looking for complete matches not
+> substring matches here.
+
+
+I saw in the file mfd/arizona/core.h
+the ENUMs of the arizona_type and one of my first tries
+was to simple add a new type (like WM510205 = 5,) but it was not clear
+to me if this will work as expect. I had added in all
+arizona-{core,spi,i2c) files the WM510205 but that was undeclared,
+cause I did not added this ENUM yet...
+
+What do you think??
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
