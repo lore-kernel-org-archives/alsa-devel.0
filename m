@@ -1,137 +1,57 @@
-From: "E.Richiardone" <emmanuel.richiardone@gmail.com>
-Subject: (no subject)
-Date: Tue, 30 Jun 2015 12:50:23 +0200
-Message-ID: <CAK3jutbh3BvWUZjstwOZve3MPSfGd_DPP5cWYZ3+4TgLgGZWEA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [RFC PATCH 1/2] regmap: add configurable lock class
+ key for lockdep
+Date: Tue, 30 Jun 2015 13:02:10 +0200
+Message-ID: <55927732.4060207@metafoo.de>
+References: <558C1824.8020204@metafoo.de> <20150625153325.GR14071@sirena.org.uk> <558C229D.4090409@metafoo.de> <20150625160817.GT14071@sirena.org.uk> <CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com> <CANMq1KBcWw9jsGkrK0dYzOWGZAZYmHdo6gvvpQwt_ftq+avqVg@mail.gmail.com> <5591414D.6080802@metafoo.de> <CANMq1KAmV7f2f8zhL+VVdpL3AeQKe8RB5nigmZDwrn=JbWGh9Q@mail.gmail.com> <559153A3.1000006@metafoo.de> <20150629153411.GG11162@sirena.org.uk> <20150630045655.GA38694@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com
- [209.85.220.170])
- by alsa0.perex.cz (Postfix) with ESMTP id CEE612602AD
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 12:50:23 +0200 (CEST)
-Received: by qkeo142 with SMTP id o142so3061367qke.1
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 03:50:23 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150630045655.GA38694@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On 06/30/2015 06:56 AM, Nicolas Boichat wrote:
+> On Mon, Jun 29, 2015 at 04:34:11PM +0100, Mark Brown wrote:
+>> On Mon, Jun 29, 2015 at 04:18:11PM +0200, Lars-Peter Clausen wrote:
+>>> Leaves us pretty much with only two options. Either add a lock key pointer
+>>> to regmap_config which needs to be manually initialized. Or wrap all
+>>> regmap_init() variants to create a static lock key. I'd slightly prefer the
+>>> later. We can avoid most of the boiler-plate code by using some helper
+>>> macros to generate the wrappers.
+>>
+>> It's better to keep the bodges in the core, yes.
+>
+> Partial attempt below. Of course all other _init functions will need to be
+> converted as well. I'd like to get feedback before I do the rest of the work.
 
-I am building a solution on a Debian platform that should playback an
-audio recorded in G711 ulaw format. I am using Alsa to interfacing
-with the audio device, it's a snd_cs5535audio. Below there is a
-fragment of the code I am using.
-I don't have any problems accessing the device using the "plughw:0,0"
-device, where I can correctly set directly the ulaw 8000Hz format.
+Looks good to me.
 
-Now I was needing an multiband equalizer, and found that Alsa supports
-some ladspa plugins, I choosed mbeq.
-But if I use a device name different from "plughw:0,0", as for example
-the "default" device or "plug", the final function snd_pcm_hw_params()
-returns an error:
- "cannot set hw params (Invalid argument)"
+> The macro part is quite repetitive and I don't think it can be simplified.
 
-I was thinking that maybe my problem is that only the "plughw" device
-accept directly the G711 ulaw format.
-Anyone can confirm my thought?
-There is a way to access a device directly in G711 ulaw format that
-can be equalized with a plugin?
+How about something like
 
+#ifdef CONFIG_LOCKDEP
 
-My initialisation source code:
+#define regmap_lockdep_wrapper(fn, ...)				\
+(								\
+	({							\
+		static struct lock_class_key _key;		\
+		fn(__VA_ARGS__,	&_key,				\
+			KBUILD_BASENAME ":"			\
+			__stringify(__LINE__) ":"		\
+			"(" #config ")->_lock");		\
+	})							\
+)
 
-----------8<----------
-// #define AUDIODEV "plughw:0,0"
-#define AUDIODEV "default"
+#else
+#define regmap_lockdep_wrapper(fn, ...) fn(__VA_ARGS__, NULL, NULL)
+#endif
 
-[...]
-
-  pcm_name = strdup(AUDIODEV);
-
-  if((err = snd_pcm_open(&playback_handle, pcm_name, stream, 0)) < 0){
-    printf(" E> cannot open audio device %s (%s)\n", pcm_name,
-snd_strerror(err));
-    closeall(1);
-  }
-  if((err = snd_pcm_hw_params_any(playback_handle, hw_params)) < 0){
-    printf(" E> cannot initialize hardware parameter structure
-(%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  if((err = snd_pcm_hw_params_set_access(playback_handle, hw_params,
-SND_PCM_ACCESS_RW_INTERLEAVED)) < 0){
-    printf(" E> cannot set access type (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  err = snd_pcm_hw_params_set_format(playback_handle, hw_params,
-SND_PCM_FORMAT_MU_LAW);
-  if(err < 0){
-    printf(" E> cannot set ulaw format (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  val = 8000;
-  if((err = snd_pcm_hw_params_set_rate_near(playback_handle,
-hw_params, &val, 0)) < 0){
-    printf(" E> cannot set rate (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-
-[...]
-
-  if((err = snd_pcm_hw_params(playback_handle, hw_params)) < 0){
-    printf(" E> cannot set hw params (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
----------->8----------
-
-My /etc/asound.conf :
-
-----------8<----------
-defaults.ctl.card 0
-defaults.ctl.device 0
-defaults.pcm.card 0
-defaults.pcm.device 0
-
-ctl.equal {
-   type equal;
-   library "/usr/lib/ladspa/mbeq_1197.so";
-   module "mbeq";
-   controls "/usr/local/webif/.alsaequal.bin";
-}
-
-pcm.plugequal {
-   type equal;
-   slave.pcm "plughw:0,0";
-   library "/usr/lib/ladspa/mbeq_1197.so";
-   module "mbeq";
-   controls "/usr/local/webif/.alsaequal.bin";
-}
-
-pcm.!default {
-   type plug;
-   slave.pcm plugequal;
-   hint {
-      show on
-      description "Default equalized"
-   }
-}
-
-pcm.dsp0 {
-    type plug
-    slave.pcm plugequal;
-}
----------->8----------
-
-Many thanks
-Best Regards
---
-E.Richiardone
+#define regmap_init_i2c(i2c, config) \
+	regmap_lockdep_wrapper(__regmap_init_i2c, i2c, config)
+...
+	
