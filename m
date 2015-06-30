@@ -1,55 +1,64 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
-	of WM510205 codec via ACPI (resend)
-Date: Tue, 30 Jun 2015 11:34:04 +0100
-Message-ID: <20150630103404.GI6321@opensource.wolfsonmicro.com>
-References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com> <20150625073618.GH827@lahna.fi.intel.com> <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <558D3BAA.3080700@linux.intel.com> <20150626115823.GY14071@sirena.org.uk> <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com> <20150629094854.GB11162@sirena.org.uk> <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: update pll and clock setting
+	function
+Date: Tue, 30 Jun 2015 11:42:00 +0100
+Message-ID: <20150630104200.GJ6321@opensource.wolfsonmicro.com>
+References: <5630bd343217e8fa895c5d133497f50739417453.1435316484.git.zidan.wang@freescale.com> <20150629094412.GH6321@opensource.wolfsonmicro.com> <20150630085347.GA22709@shlinux2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
+In-Reply-To: <20150630085347.GA22709@shlinux2>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2015 at 09:14:37AM +0200, Christian Hartmann wrote:
-> Hi,
+On Tue, Jun 30, 2015 at 04:54:09PM +0800, Zidan Wang wrote:
+> On Mon, Jun 29, 2015 at 10:44:12AM +0100, Charles Keepax wrote:
+> > On Fri, Jun 26, 2015 at 07:09:22PM +0800, Zidan Wang wrote:
+> > > When using snd_soc_dai_set_pll to set pll in machine driver, we
+> > > should set pll in and pll out freq and ensure 5 < PLLN < 13,
+> > > otherwise set pll will be failed. In order to support more
+> > > formats and sample rates for a certain MCLK, if snd_soc_dai_set_pll
+> > > failed, it will calculate a available pll out freq and set the pll
+> > > again.
+> > > 
+> > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> > > ---
+> > 
+> > I think this need a little more explaination on how this is
+> > expected to work. From looking at the code what it looks like
+> > what happens is you can set a PLL frequency through set_pll but
+> > then if that frequency doesn't support the sample rate requested
+> > through hw_params it will be changed. This makes me a little
+> > nervous, as something explicitly requested is being overwritten
+> > automatically.
+> > 
+> From RM, we should ensure 5 < PLLN < 13. When i using snd_soc_dai_set_pll
+> to set pll frequency, it's hard for me to get a common pll out frequency.
+> Sometimes, when codec MCLK or sample rate changed, the pll out frequency
+> also should be changed, otherwise set_pll function will be failed.
 > 
-> 
-> 2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
-> > On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
-> >> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
-> >> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
-> >> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-> >
-> > The above is saying that SPI I/O to the device isn't working - the
-> > device ID is not being read back successfully.
-> 
-> Ok that is the next problem that must be solved.
-> I have yesterday made a patchset where I have added
-> the enum type 5, but as you said already,
-> that was not needed.
-> All what I see the same: : Unknown device ID: ffff
-> 
-> So where I have to look now or what can I do to let this device id
-> register correctly?
-> I hope the baytrail machine driver is easy peasy to add, but here I
-> stuck at the moment.
+> I made it to auto select pll frequency when snd_soc_dai_set_pll failed, so that
+> it can support more sample rate, and don't need to set different pll out
+> frequency for different sample rate and different MCLK.
 
-As I said in my other emails the next step is to work out what
-the reset and ldoena gpio's are. You won't be able to read the
-device ID until you have those setup. Unfortunately, finding the
-right GPIOs is likely to be a bit of a chore, I will see if I can
-find anything out from the Windows guys at this end.
+But none the less I still asked for one frequency and got another
+frequency, that seems troubling. For example the chip has the
+ability to output the PLL output on GPIO1, what if that is being
+used to feed another chip that expects a certain rate?
 
-Also can you check that the arizona-ldo1 regulator is built in I
-am surprised that is falling back to the dummy regulator.
+What are your feeling on my previous suggestion of adding a
+particular define that indicates set the PLL to "auto" mode?
 
 Thanks,
 Charles
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+> 
+> > Would it perhaps be better to allow the auto selection of the
+> > PLL frequency only when things haven't been manually set, or
+> > provide some setting that indicates auto mode?
+> > 
+> > Thanks,
+> > Charles
