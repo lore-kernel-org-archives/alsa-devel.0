@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFT] ASoC: ak4642: Fix up max_register
-	setting
-Date: Tue, 30 Jun 2015 16:18:18 +0100
-Message-ID: <20150630151818.GQ11162@sirena.org.uk>
-References: <1435459611.15772.2.camel@ingics.com>
- <20150630104608.GP11162@sirena.org.uk>
- <CAFRkauCPAq9xmpJSpbhTZy2_s=2ipSW5Mwixj3ptJTpB+Vqv1w@mail.gmail.com>
+From: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>
+Subject: [PATCH v2] ALSA: usb-audio: Add MIDI support for
+	Steinberg MI2/MI4
+Date: Tue, 30 Jun 2015 17:41:33 +0200
+Message-ID: <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
+References: <558C4709.3090903@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1424701625812172471=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 19272260476
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 17:18:32 +0200 (CEST)
-In-Reply-To: <CAFRkauCPAq9xmpJSpbhTZy2_s=2ipSW5Mwixj3ptJTpB+Vqv1w@mail.gmail.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC52B260484
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 17:42:19 +0200 (CEST)
+In-Reply-To: <558C4709.3090903@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>, clemens@ladisch.de, Albert Huitsing <albert@huitsing.nl>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1424701625812172471==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oN4OvwWIcd1E23D1"
-Content-Disposition: inline
-
-
---oN4OvwWIcd1E23D1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 30, 2015 at 07:25:57PM +0800, Axel Lin wrote:
-> 2015-06-30 18:46 GMT+08:00 Mark Brown <broonie@kernel.org>:
-
-> >>  static const struct regmap_config ak4642_regmap = {
-> >>       .reg_bits               = 8,
-> >>       .val_bits               = 8,
-> >> -     .max_register           = ARRAY_SIZE(ak4642_reg) + 1,
-> >> +     .max_register           = FIL1_3,
-> >>       .reg_defaults           = ak4642_reg,
-> >> -     .num_reg_defaults       = ARRAY_SIZE(ak4642_reg),
-> >> +     .num_reg_defaults       = FIL1_3 + 1,
-
-> > This change is incorrect, the number of register defaults must match the
-> > size of the array of register defaults being passed in.  Why are you
-> > changing this?
-
-> Because I reuse the same reg_default for ak4642 and ak4643.
-> According to the datasheet:
-> For ak4642, the valid registers are 0x0 ~ 0x1f (FIL1_3)
-> For ak4643, the valid registers are 0x0 ~ 0x24 (SPK_MS)
-> The default registers for 0x0 ~ 0x1f are the same for ak4642 and ak4643.
-
-Ah, I see.  That definitely deserves a comment since it's very unusual -
-possibly also with a BUILD_BUG_ON() for the define being less than
-ARRAY_SIZE().
-
-> Or do you prefer having separate reg_default for ak4642 and ak4643?
-> (Then it can use ARRAY_SIZE() here.)
-
-No, what you're doing is OK but really ought to have comments so it's
-clearer.
-
---oN4OvwWIcd1E23D1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVkrM6AAoJECTWi3JdVIfQ2i8H/2pzGmj8K1ZLrybCNqoATjmQ
-32rmW98EA2VAx15IH/mtxKJPhdO0jaECL4J6tFsk3G/WWk4UvpmBmrwWvNtiQQQi
-oBqEIQld/yB96ej99nOKDui6kRubfVuZEynv6Cgl9V41QBbIfw7czIEvhpsegHGH
-MMxNQHhTBEKvahlajfHz1NWM74/DP6SKzQBvjnbYrU7PhiCcpXPR9lFH0+Xj1YZm
-idlKNm1Dxc/m1xLd5itK9KphTTpvkceVyZZ5TfCEBcPujONi3InXq9AIvoWG/wsb
-GtBSnqkwVBwEx0jRNMGgztZd4rFOf0nRr8f+aYEmgFdI5clfwhegvsw0MUcJI+o=
-=BS7O
------END PGP SIGNATURE-----
-
---oN4OvwWIcd1E23D1--
-
---===============1424701625812172471==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1424701625812172471==--
+VGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZhY2VzIGFyZSBjb21wYXRpYmxlIHdpdGgg
+dGhlIFVTQiBjbGFzcwphdWRpbyBzcGVjLCBidXQgdGhlIE1JREkgcGFydCBvZiB0aGUgZGV2aWNl
+cyBpcyByZXBvcnRlZCBhcyBhIHZlbmRvcgpzcGVjaWZpYyBpbnRlcmZhY2UuCgpUaGlzIHBhdGNo
+IGFkZHMgZW50cmllcyB0byBxdWlya3MtdGFibGUuaCB0byByZWNvZ25pemUgdGhlIE1JREkKZW5k
+cG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFsaXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVu
+YWZmZWN0ZWQgYnkKdGhpcyBjaGFuZ2UuCgpTaWduZWQtb2ZmLWJ5OiBEb21pbmljIFNhY3LDqSA8
+ZG9taW5pYy5zYWNyZUBnbXguZGU+ClNpZ25lZC1vZmYtYnk6IEFsYmVydCBIdWl0c2luZyA8YWxi
+ZXJ0QGh1aXRzaW5nLm5sPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDY4ICsrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5n
+ZWQsIDY4IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxl
+LmggYi9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKaW5kZXggMmY2ZDNlOS4uZTQ3NTY2NSAxMDA2
+NDQKLS0tIGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCisrKyBiL3NvdW5kL3VzYi9xdWlya3Mt
+dGFibGUuaApAQCAtMjUxMiw2ICsyNTEyLDc0IEBAIFlBTUFIQV9ERVZJQ0UoMHg3MDEwLCAiVUI5
+OSIpLAogCX0KIH0sCiAKKy8qIFN0ZWluYmVyZyBkZXZpY2VzICovCit7CisJLyogU3RlaW5iZXJn
+IE1JMiAqLworCVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwYTRlLCAweDIwNDApLAorCS5kcml2
+ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19x
+dWlyaykgeworCQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9IFFVSVJL
+X0NPTVBPU0lURSwKKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWly
+a1tdKSB7CisJCQl7CisJCQkJLmlmbnVtID0gMCwKKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NU
+QU5EQVJEX0lOVEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQkuaWZudW0gPSAxLAorCQkJCS50eXBl
+ID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCisJCQl9LAorCQkJeworCQkJCS5pZm51
+bSA9IDIsCisJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0s
+CisJCQl7CisJCQkJLmlmbnVtID0gMywKKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5E
+UE9JTlQsCisJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRf
+aW5mbykgeworCQkJCQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyAgPSAw
+eDAwMDEKKwkJCQl9CisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IC0xCisJCQl9CisJCX0KKwl9
+Cit9LAoreworCS8qIFN0ZWluYmVyZyBNSTQgKi8KKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4
+MGE0ZSwgMHg0MDQwKSwKKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qg
+c3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKKwkJLmlmbnVtID0gUVVJUktfQU5ZX0lOVEVS
+RkFDRSwKKwkJLnR5cGUgPSBRVUlSS19DT01QT1NJVEUsCisJCS5kYXRhID0gJiAoY29uc3Qgc3Ry
+dWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDAsCisJCQkJ
+LnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJ
+LmlmbnVtID0gMSwKKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQor
+CQkJfSwKKwkJCXsKKwkJCQkuaWZudW0gPSAyLAorCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RB
+TkRBUkRfSU5URVJGQUNFCisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IDMsCisJCQkJLnR5cGUg
+PSBRVUlSS19NSURJX0ZJWEVEX0VORFBPSU5ULAorCQkJCS5kYXRhID0gJihjb25zdCBzdHJ1Y3Qg
+c25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8pIHsKKwkJCQkJLm91dF9jYWJsZXMgPSAweDAwMDEs
+CisJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCisJCQkJfQorCQkJfSwKKwkJCXsKKwkJCQkuaWZu
+dW0gPSAtMQorCQkJfQorCQl9CisJfQorfSwKKwogLyogVGVycmFUZWMgZGV2aWNlcyAqLwogewog
+CVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwY2NkLCAweDAwMTIpLAotLSAKMi40LjUKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
