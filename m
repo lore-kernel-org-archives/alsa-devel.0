@@ -1,57 +1,57 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [RFC PATCH 1/2] regmap: add configurable lock class
- key for lockdep
-Date: Tue, 30 Jun 2015 13:02:10 +0200
-Message-ID: <55927732.4060207@metafoo.de>
-References: <558C1824.8020204@metafoo.de> <20150625153325.GR14071@sirena.org.uk> <558C229D.4090409@metafoo.de> <20150625160817.GT14071@sirena.org.uk> <CANMq1KA2C1ZYUd_s_R5DWn-Hy_XZZQ_aaR47VLpPsNvcvxEQ9w@mail.gmail.com> <CANMq1KBcWw9jsGkrK0dYzOWGZAZYmHdo6gvvpQwt_ftq+avqVg@mail.gmail.com> <5591414D.6080802@metafoo.de> <CANMq1KAmV7f2f8zhL+VVdpL3AeQKe8RB5nigmZDwrn=JbWGh9Q@mail.gmail.com> <559153A3.1000006@metafoo.de> <20150629153411.GG11162@sirena.org.uk> <20150630045655.GA38694@google.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Re: [PATCH RFT] ASoC: ak4642: Fix up max_register
+	setting
+Date: Tue, 30 Jun 2015 19:25:57 +0800
+Message-ID: <CAFRkauCPAq9xmpJSpbhTZy2_s=2ipSW5Mwixj3ptJTpB+Vqv1w@mail.gmail.com>
+References: <1435459611.15772.2.camel@ingics.com>
+ <20150630104608.GP11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20150630045655.GA38694@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF4A7260417
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 13:25:57 +0200 (CEST)
+Received: by lagx9 with SMTP id x9so9221869lag.1
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 04:25:57 -0700 (PDT)
+In-Reply-To: <20150630104608.GP11162@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/30/2015 06:56 AM, Nicolas Boichat wrote:
-> On Mon, Jun 29, 2015 at 04:34:11PM +0100, Mark Brown wrote:
->> On Mon, Jun 29, 2015 at 04:18:11PM +0200, Lars-Peter Clausen wrote:
->>> Leaves us pretty much with only two options. Either add a lock key pointer
->>> to regmap_config which needs to be manually initialized. Or wrap all
->>> regmap_init() variants to create a static lock key. I'd slightly prefer the
->>> later. We can avoid most of the boiler-plate code by using some helper
->>> macros to generate the wrappers.
->>
->> It's better to keep the bodges in the core, yes.
+2015-06-30 18:46 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> On Sun, Jun 28, 2015 at 10:46:51AM +0800, Axel Lin wrote:
 >
-> Partial attempt below. Of course all other _init functions will need to be
-> converted as well. I'd like to get feedback before I do the rest of the work.
+>>  static const struct regmap_config ak4642_regmap = {
+>>       .reg_bits               = 8,
+>>       .val_bits               = 8,
+>> -     .max_register           = ARRAY_SIZE(ak4642_reg) + 1,
+>> +     .max_register           = FIL1_3,
+>>       .reg_defaults           = ak4642_reg,
+>> -     .num_reg_defaults       = ARRAY_SIZE(ak4642_reg),
+>> +     .num_reg_defaults       = FIL1_3 + 1,
+>
+> This change is incorrect, the number of register defaults must match the
+> size of the array of register defaults being passed in.  Why are you
+> changing this?
 
-Looks good to me.
+Because I reuse the same reg_default for ak4642 and ak4643.
+According to the datasheet:
+For ak4642, the valid registers are 0x0 ~ 0x1f (FIL1_3)
+For ak4643, the valid registers are 0x0 ~ 0x24 (SPK_MS)
+The default registers for 0x0 ~ 0x1f are the same for ak4642 and ak4643.
 
-> The macro part is quite repetitive and I don't think it can be simplified.
+That is why this patch set  .num_reg_defaults = FIL1_3 + 1 for ak4642.
 
-How about something like
-
-#ifdef CONFIG_LOCKDEP
-
-#define regmap_lockdep_wrapper(fn, ...)				\
-(								\
-	({							\
-		static struct lock_class_key _key;		\
-		fn(__VA_ARGS__,	&_key,				\
-			KBUILD_BASENAME ":"			\
-			__stringify(__LINE__) ":"		\
-			"(" #config ")->_lock");		\
-	})							\
-)
-
-#else
-#define regmap_lockdep_wrapper(fn, ...) fn(__VA_ARGS__, NULL, NULL)
-#endif
-
-#define regmap_init_i2c(i2c, config) \
-	regmap_lockdep_wrapper(__regmap_init_i2c, i2c, config)
-...
-	
+Or do you prefer having separate reg_default for ak4642 and ak4643?
+(Then it can use ARRAY_SIZE() here.)
