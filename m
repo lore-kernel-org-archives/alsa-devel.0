@@ -1,86 +1,118 @@
-From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Tue, 30 Jun 2015 09:14:37 +0200
-Message-ID: <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
-References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
-	<20150625073618.GH827@lahna.fi.intel.com>
-	<CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
-	<20150625145853.GP14071@sirena.org.uk>
-	<20150625154407.GE6321@opensource.wolfsonmicro.com>
-	<558D3BAA.3080700@linux.intel.com>
-	<20150626115823.GY14071@sirena.org.uk>
-	<CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
-	<20150629094854.GB11162@sirena.org.uk>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [PATCH] ASoC: rt5645: Move irq request to rt5645_probe
+Date: Tue, 30 Jun 2015 15:30:41 +0800
+Message-ID: <1435649441-1941-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150629094854.GB11162-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f176.google.com (mail-pd0-f176.google.com
+ [209.85.192.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75B5C260412
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 09:31:01 +0200 (CEST)
+Received: by pdjd13 with SMTP id d13so1373502pdj.0
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 00:30:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, koro.chen@mediatek.com, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+rt5645_jack_detect_work (the workqueue called by rt5645_irq),
+needs to access rt5645->codec. However, this field is only
+initialized in rt5645_probe. This can obviously lead to kernel
+panics.
 
+Fix that by moving the irq request from rt5645_i2c_probe to
+rt5645_probe. Also, fail if the IRQ cannot be requested, and move
+irq_free from rt5645_i2c_remove to rt5645_remove.
 
-2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
-> On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
->
->> FYI: I can confirm that with the changed DSDT.dsl file and loading
->> the new custom DSDT table, I do not need this patch mentioned above.
->
-> Are you sure?
-[    0.000000] ACPI: Override [DSDT-CS-02   ], this is unsafe: tainting kernel
-[    0.000000] Disabling lock debugging due to kernel taint
-[    0.000000] ACPI: DSDT 0x0000000078CE2000 Logical table override,
-new table: 0x00000000C0EBB470
-[    0.000000] ACPI: DSDT 0x00000000C0EBB470 00A6A2 (v02 LENOVO CS-02
-  00000001 INTL 20150410)
-[    0.000000] ACPI: Local APIC address 0xfee00000
-...
-[    7.308741] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
-[    7.308837] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
-[    7.308978] spi spi-WM510205:00: 8333333 Hz actual, PIO
-[    7.309002] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
-...
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+ sound/soc/codecs/rt5645.c | 38 +++++++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 17 deletions(-)
 
-without the DSDT load, I must have this patch applied,
-otherwise the wm5102 will not be attached.
-I have checked it both and yes I am really sure since yesterday.
-
->
->> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
->> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
->> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
->
-> The above is saying that SPI I/O to the device isn't working - the
-> device ID is not being read back successfully.
-
-Ok that is the next problem that must be solved.
-I have yesterday made a patchset where I have added
-the enum type 5, but as you said already,
-that was not needed.
-All what I see the same: : Unknown device ID: ffff
-
-So where I have to look now or what can I do to let this device id
-register correctly?
-I hope the baytrail machine driver is easy peasy to add, but here I
-stuck at the moment.
-
-cheers
-Christian
-
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9ce311e..7f84f21 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3044,6 +3044,7 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ static int rt5645_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 
+ 	rt5645->codec = codec;
+ 
+@@ -3072,12 +3073,32 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+ 		snd_soc_dapm_sync(&codec->dapm);
+ 	}
+ 
++	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
++
++	if (rt5645->i2c->irq) {
++		ret = request_threaded_irq(rt5645->i2c->irq, NULL, rt5645_irq,
++				IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
++				| IRQF_ONESHOT, "rt5645", rt5645);
++		if (ret) {
++			dev_err(codec->dev, "Failed to request IRQ: %d\n", ret);
++			return ret;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+ static int rt5645_remove(struct snd_soc_codec *codec)
+ {
++	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
++
++	if (rt5645->i2c->irq)
++		free_irq(rt5645->i2c->irq, rt5645);
++
++	cancel_delayed_work_sync(&rt5645->jack_detect_work);
++
+ 	rt5645_reset(codec);
++
+ 	return 0;
+ }
+ 
+@@ -3428,29 +3449,12 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		}
+ 	}
+ 
+-	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+-
+-	if (rt5645->i2c->irq) {
+-		ret = request_threaded_irq(rt5645->i2c->irq, NULL, rt5645_irq,
+-			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+-			| IRQF_ONESHOT, "rt5645", rt5645);
+-		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
+-	}
+-
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
+ 				      rt5645_dai, ARRAY_SIZE(rt5645_dai));
+ }
+ 
+ static int rt5645_i2c_remove(struct i2c_client *i2c)
+ {
+-	struct rt5645_priv *rt5645 = i2c_get_clientdata(i2c);
+-
+-	if (i2c->irq)
+-		free_irq(i2c->irq, rt5645);
+-
+-	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+-
+ 	snd_soc_unregister_codec(&i2c->dev);
+ 
+ 	return 0;
 -- 
---
-......oooO..............
-.....(....).....Oooo...
-......)../.....(....)....
-.....(_/.......)../.....
-...............(_/.......
-... I WAS ..............
-.......... HERE...... ;)
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.4.3.573.g4eafbef
