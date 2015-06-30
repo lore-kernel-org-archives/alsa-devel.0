@@ -1,17 +1,17 @@
-From: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>
-Subject: [PATCH v2] ALSA: usb-audio: Add MIDI support for
-	Steinberg MI2/MI4
-Date: Tue, 30 Jun 2015 17:41:33 +0200
-Message-ID: <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
-References: <558C4709.3090903@ladisch.de>
+From: David Champlin <david@indico.com>
+Subject: Intel Atom SST and low latency audio
+Date: Tue, 30 Jun 2015 09:46:38 -0700
+Message-ID: <CADOWzzJoVKNsR1aPOPfC+eu-dUvMBPKytC=WZc_ZfOVkzhTg8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
- by alsa0.perex.cz (Postfix) with ESMTP id BC52B260484
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 17:42:19 +0200 (CEST)
-In-Reply-To: <558C4709.3090903@ladisch.de>
+Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
+ [209.85.220.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id B41AA2604D6
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 18:46:39 +0200 (CEST)
+Received: by pabvl15 with SMTP id vl15so8125817pab.1
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 09:46:38 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Dominic=20Sacr=C3=A9?= <dominic.sacre@gmx.de>, clemens@ladisch.de, Albert Huitsing <albert@huitsing.nl>
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, jarkko.nikula@intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZhY2VzIGFyZSBjb21wYXRpYmxlIHdpdGgg
-dGhlIFVTQiBjbGFzcwphdWRpbyBzcGVjLCBidXQgdGhlIE1JREkgcGFydCBvZiB0aGUgZGV2aWNl
-cyBpcyByZXBvcnRlZCBhcyBhIHZlbmRvcgpzcGVjaWZpYyBpbnRlcmZhY2UuCgpUaGlzIHBhdGNo
-IGFkZHMgZW50cmllcyB0byBxdWlya3MtdGFibGUuaCB0byByZWNvZ25pemUgdGhlIE1JREkKZW5k
-cG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFsaXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVu
-YWZmZWN0ZWQgYnkKdGhpcyBjaGFuZ2UuCgpTaWduZWQtb2ZmLWJ5OiBEb21pbmljIFNhY3LDqSA8
-ZG9taW5pYy5zYWNyZUBnbXguZGU+ClNpZ25lZC1vZmYtYnk6IEFsYmVydCBIdWl0c2luZyA8YWxi
-ZXJ0QGh1aXRzaW5nLm5sPgotLS0KIHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDY4ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5n
-ZWQsIDY4IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxl
-LmggYi9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKaW5kZXggMmY2ZDNlOS4uZTQ3NTY2NSAxMDA2
-NDQKLS0tIGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCisrKyBiL3NvdW5kL3VzYi9xdWlya3Mt
-dGFibGUuaApAQCAtMjUxMiw2ICsyNTEyLDc0IEBAIFlBTUFIQV9ERVZJQ0UoMHg3MDEwLCAiVUI5
-OSIpLAogCX0KIH0sCiAKKy8qIFN0ZWluYmVyZyBkZXZpY2VzICovCit7CisJLyogU3RlaW5iZXJn
-IE1JMiAqLworCVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwYTRlLCAweDIwNDApLAorCS5kcml2
-ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19x
-dWlyaykgeworCQkuaWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAorCQkudHlwZSA9IFFVSVJL
-X0NPTVBPU0lURSwKKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWly
-a1tdKSB7CisJCQl7CisJCQkJLmlmbnVtID0gMCwKKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NU
-QU5EQVJEX0lOVEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQkuaWZudW0gPSAxLAorCQkJCS50eXBl
-ID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCisJCQl9LAorCQkJeworCQkJCS5pZm51
-bSA9IDIsCisJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0s
-CisJCQl7CisJCQkJLmlmbnVtID0gMywKKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5E
-UE9JTlQsCisJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRf
-aW5mbykgeworCQkJCQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKKwkJCQkJLmluX2NhYmxlcyAgPSAw
-eDAwMDEKKwkJCQl9CisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IC0xCisJCQl9CisJCX0KKwl9
-Cit9LAoreworCS8qIFN0ZWluYmVyZyBNSTQgKi8KKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4
-MGE0ZSwgMHg0MDQwKSwKKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qg
-c3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKKwkJLmlmbnVtID0gUVVJUktfQU5ZX0lOVEVS
-RkFDRSwKKwkJLnR5cGUgPSBRVUlSS19DT01QT1NJVEUsCisJCS5kYXRhID0gJiAoY29uc3Qgc3Ry
-dWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgeworCQkJeworCQkJCS5pZm51bSA9IDAsCisJCQkJ
-LnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJ
-LmlmbnVtID0gMSwKKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQor
-CQkJfSwKKwkJCXsKKwkJCQkuaWZudW0gPSAyLAorCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RB
-TkRBUkRfSU5URVJGQUNFCisJCQl9LAorCQkJeworCQkJCS5pZm51bSA9IDMsCisJCQkJLnR5cGUg
-PSBRVUlSS19NSURJX0ZJWEVEX0VORFBPSU5ULAorCQkJCS5kYXRhID0gJihjb25zdCBzdHJ1Y3Qg
-c25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8pIHsKKwkJCQkJLm91dF9jYWJsZXMgPSAweDAwMDEs
-CisJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCisJCQkJfQorCQkJfSwKKwkJCXsKKwkJCQkuaWZu
-dW0gPSAtMQorCQkJfQorCQl9CisJfQorfSwKKwogLyogVGVycmFUZWMgZGV2aWNlcyAqLwogewog
-CVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwY2NkLCAweDAwMTIpLAotLSAKMi40LjUKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Vinod,
+
+We're creating a machine driver between the Maxim 98090 codec and Intel
+Edison in support of a realtime audio application.
+
+So far, we have both record and playback working successfully.  However,
+the latency on playback is higher than we would like.  We've searched the
+alsa-devel messages but haven't been able to find a solution.  We wondered
+if you might help us identify the best routing through the Atom's DSP for
+low-latency?
+
+We noticed that a "low latency" path is referenced in the Merrifield DPCM
+controls file (controls_v2_dpcm), but it doesn't appear to be implemented
+yet.  What do we need to do to set up the SST to use its low latency
+paths?  Would this be similar to configuring a media path (sending the
+command MMX_SET_MEDIA_PATH, SST command 119)?
+
+Thanks,
+David
