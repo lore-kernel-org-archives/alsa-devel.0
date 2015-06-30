@@ -1,64 +1,79 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: update pll and clock setting
-	function
-Date: Tue, 30 Jun 2015 11:42:00 +0100
-Message-ID: <20150630104200.GJ6321@opensource.wolfsonmicro.com>
-References: <5630bd343217e8fa895c5d133497f50739417453.1435316484.git.zidan.wang@freescale.com> <20150629094412.GH6321@opensource.wolfsonmicro.com> <20150630085347.GA22709@shlinux2>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFT] ASoC: ak4642: Fix up max_register
+	setting
+Date: Tue, 30 Jun 2015 11:46:08 +0100
+Message-ID: <20150630104608.GP11162@sirena.org.uk>
+References: <1435459611.15772.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150630085347.GA22709@shlinux2>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============9091831357120793767=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A730B2602AD
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 12:46:19 +0200 (CEST)
+In-Reply-To: <1435459611.15772.2.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2015 at 04:54:09PM +0800, Zidan Wang wrote:
-> On Mon, Jun 29, 2015 at 10:44:12AM +0100, Charles Keepax wrote:
-> > On Fri, Jun 26, 2015 at 07:09:22PM +0800, Zidan Wang wrote:
-> > > When using snd_soc_dai_set_pll to set pll in machine driver, we
-> > > should set pll in and pll out freq and ensure 5 < PLLN < 13,
-> > > otherwise set pll will be failed. In order to support more
-> > > formats and sample rates for a certain MCLK, if snd_soc_dai_set_pll
-> > > failed, it will calculate a available pll out freq and set the pll
-> > > again.
-> > > 
-> > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > > ---
-> > 
-> > I think this need a little more explaination on how this is
-> > expected to work. From looking at the code what it looks like
-> > what happens is you can set a PLL frequency through set_pll but
-> > then if that frequency doesn't support the sample rate requested
-> > through hw_params it will be changed. This makes me a little
-> > nervous, as something explicitly requested is being overwritten
-> > automatically.
-> > 
-> From RM, we should ensure 5 < PLLN < 13. When i using snd_soc_dai_set_pll
-> to set pll frequency, it's hard for me to get a common pll out frequency.
-> Sometimes, when codec MCLK or sample rate changed, the pll out frequency
-> also should be changed, otherwise set_pll function will be failed.
-> 
-> I made it to auto select pll frequency when snd_soc_dai_set_pll failed, so that
-> it can support more sample rate, and don't need to set different pll out
-> frequency for different sample rate and different MCLK.
 
-But none the less I still asked for one frequency and got another
-frequency, that seems troubling. For example the chip has the
-ability to output the PLL output on GPIO1, what if that is being
-used to feed another chip that expects a certain rate?
+--===============9091831357120793767==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NDuspjMMC1Ui5ypn"
+Content-Disposition: inline
 
-What are your feeling on my previous suggestion of adding a
-particular define that indicates set the PLL to "auto" mode?
 
-Thanks,
-Charles
+--NDuspjMMC1Ui5ypn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> > Would it perhaps be better to allow the auto selection of the
-> > PLL frequency only when things haven't been manually set, or
-> > provide some setting that indicates auto mode?
-> > 
-> > Thanks,
-> > Charles
+On Sun, Jun 28, 2015 at 10:46:51AM +0800, Axel Lin wrote:
+
+>  static const struct regmap_config ak4642_regmap = {
+>  	.reg_bits		= 8,
+>  	.val_bits		= 8,
+> -	.max_register		= ARRAY_SIZE(ak4642_reg) + 1,
+> +	.max_register		= FIL1_3,
+>  	.reg_defaults		= ak4642_reg,
+> -	.num_reg_defaults	= ARRAY_SIZE(ak4642_reg),
+> +	.num_reg_defaults	= FIL1_3 + 1,
+
+This change is incorrect, the number of register defaults must match the
+size of the array of register defaults being passed in.  Why are you
+changing this?
+
+--NDuspjMMC1Ui5ypn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVknNwAAoJECTWi3JdVIfQwz4H+gPmlXBPpHDbIsB0QLRFCsWH
+yOgs/2H00qU0FverPtk/3KUx2X0ZTUpY3u48iFl3uN+JRT7bpPNq4pu9wLC1uZpd
+5pTq1jDmxyyVsc0vyowdZ7xnxZnDtdEZjW8LyBb6KxX0blWArRaCgD4Mu2/mAvfT
+lJ0b3+/7n0dAgKfZtpK46eY5X1Tay2m+NsV7WLtN+ogHGd7IQfE5DiZnII+5i9hq
+DiYcZSYufJ2pyfeMhb/C46ml+dNxzJI7ybtXGgWB2eFR2osNp/mdpEYXSRVmECuM
+edDwveGFn18qO/UQR5wFXeGB8DTGPoOkPcOoMxAkGI0wHP9UwDwy2jNXK6G03qM=
+=SMNi
+-----END PGP SIGNATURE-----
+
+--NDuspjMMC1Ui5ypn--
+
+--===============9091831357120793767==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9091831357120793767==--
