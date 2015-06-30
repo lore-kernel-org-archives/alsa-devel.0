@@ -1,72 +1,55 @@
-From: Kimmo Saarela <kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 5/5] ASoC: tlv320aic32x4: Update devicetree documentation
-Date: Tue, 30 Jun 2015 13:25:13 +0300
-Message-ID: <50c8c9e1c2b60bc209d13ee4ae2272edfcc2f624.1435569929.git.kimmo.saarela@gmail.com>
-References: <cover.1435569929.git.kimmo.saarela@gmail.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1435569929.git.kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-In-Reply-To: <cover.1435569929.git.kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-References: <cover.1435569929.git.kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kimmo Saarela <kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+	of WM510205 codec via ACPI (resend)
+Date: Tue, 30 Jun 2015 11:34:04 +0100
+Message-ID: <20150630103404.GI6321@opensource.wolfsonmicro.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com> <20150625073618.GH827@lahna.fi.intel.com> <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <558D3BAA.3080700@linux.intel.com> <20150626115823.GY14071@sirena.org.uk> <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com> <20150629094854.GB11162@sirena.org.uk> <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Kimmo Saarela <kimmo.saarela-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- .../devicetree/bindings/sound/tlv320aic32x4.txt    | 25 +++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+On Tue, Jun 30, 2015 at 09:14:37AM +0200, Christian Hartmann wrote:
+> Hi,
+> 
+> 
+> 2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+> > On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
+> >> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
+> >> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
+> >> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
+> >
+> > The above is saying that SPI I/O to the device isn't working - the
+> > device ID is not being read back successfully.
+> 
+> Ok that is the next problem that must be solved.
+> I have yesterday made a patchset where I have added
+> the enum type 5, but as you said already,
+> that was not needed.
+> All what I see the same: : Unknown device ID: ffff
+> 
+> So where I have to look now or what can I do to let this device id
+> register correctly?
+> I hope the baytrail machine driver is easy peasy to add, but here I
+> stuck at the moment.
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-index 143a192..0141aab 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-@@ -13,12 +13,33 @@ Required properties:
-     If you supply ldoin, dv and av are optional. Otherwise they are required
-    See regulator/regulator.txt for more information about the detailed binding
-    format.
-+ - input-use: Array of input pins used by the driver, shall contain 6 values.
-+    Pin input order is lin1, rin1, lin2, rin2, lin3, rin3.
-+    Each value can hold value for primary function in low nybble (x & 0xf) or
-+    value for secondary function in high nybble (x & 0xf0).
-+    Possible values are:
-+    0 = input not in use
-+    1 = input connected with 10k Ohm (0dB)
-+    2 = input connected with 20k Ohm (-6dB)
-+    3 = input connected with 40k Ohm (-12dB)
-+    If value for pin is 0, driver connects the pin weakly to common mode
- 
- Optional properties:
-  - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
-  - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
-    See clock/clock-bindings.txt for information about the detailed format.
--
-+ - swapdacs: Swap dac channel
-+ - powercfg: Power configuration mask for codec
-+ - cmode: Array of common mode setup data when channels are used in single
-+    ended mode.
-+    Parameter order is cmode1, cmode2.
-+    Low nybble holds config for left channel and high nybble holds config for
-+    right channel.
-+    Possible values are:
-+    0 = cmode not in use
-+    1 = cmode connected with 10k Ohm (0dB)
-+    2 = cmode connected with 20k Ohm (-6dB)
-+    3 = cmode connected with 40k Ohm (-12dB)
- 
- Example:
- 
-@@ -27,4 +48,6 @@ codec: tlv320aic32x4@18 {
- 	reg = <0x18>;
- 	clocks = <&clks 201>;
- 	clock-names = "mclk";
-+	input-use = <1 1 0 0 0 0>;
-+	cmode = <0x11 0>;
- };
--- 
-1.9.1
+As I said in my other emails the next step is to work out what
+the reset and ldoena gpio's are. You won't be able to read the
+device ID until you have those setup. Unfortunately, finding the
+right GPIOs is likely to be a bit of a chore, I will see if I can
+find anything out from the Windows guys at this end.
 
+Also can you check that the arizona-ldo1 regulator is built in I
+am surprised that is falling back to the dummy regulator.
+
+Thanks,
+Charles
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
