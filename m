@@ -1,17 +1,19 @@
-From: "E.Richiardone" <emmanuel.richiardone@gmail.com>
-Subject: Help on snd_pcm_hw_params() for ulaw on plugin
-Date: Tue, 30 Jun 2015 14:38:22 +0200
-Message-ID: <CAK3jutYZBr1fzrbtZf=V9O2VisQprjCDpENSxeZdo4_EasK68g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFT] ASoC: ak4642: Fix up max_register
+	setting
+Date: Tue, 30 Jun 2015 16:18:18 +0100
+Message-ID: <20150630151818.GQ11162@sirena.org.uk>
+References: <1435459611.15772.2.camel@ingics.com>
+ <20150630104608.GP11162@sirena.org.uk>
+ <CAFRkauCPAq9xmpJSpbhTZy2_s=2ipSW5Mwixj3ptJTpB+Vqv1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1424701625812172471=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E7FB260417
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 14:38:27 +0200 (CEST)
-Received: by qkhu186 with SMTP id u186so4886401qkh.0
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 05:38:23 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19272260476
+ for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 17:18:32 +0200 (CEST)
+In-Reply-To: <CAFRkauCPAq9xmpJSpbhTZy2_s=2ipSW5Mwixj3ptJTpB+Vqv1w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,119 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for void subject of before
 
-Hi all,
-
-I am building a solution on a Debian platform that should playback an
-audio recorded in G711 ulaw format. I am using Alsa to interfacing
-with the audio device, it's a snd_cs5535audio. Below there is a
-fragment of the code I am using.
-I don't have any problems accessing the device using the "plughw:0,0"
-device, where I can correctly set directly the ulaw 8000Hz format.
-
-Now I was needing an multiband equalizer, and found that Alsa supports
-some ladspa plugins, I choosed mbeq.
-But if I use a device name different from "plughw:0,0", as for example
-the "default" device or "plug", the final function snd_pcm_hw_params()
-returns an error:
- "cannot set hw params (Invalid argument)"
-
-I was thinking that maybe my problem is that only the "plughw" device
-accept directly the G711 ulaw format.
-Anyone can confirm my thought?
-There is a way to access a device directly in G711 ulaw format that
-can be equalized with a plugin?
+--===============1424701625812172471==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oN4OvwWIcd1E23D1"
+Content-Disposition: inline
 
 
-My initialisation source code:
+--oN4OvwWIcd1E23D1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-----------8<----------
-// #define AUDIODEV "plughw:0,0"
-#define AUDIODEV "default"
+On Tue, Jun 30, 2015 at 07:25:57PM +0800, Axel Lin wrote:
+> 2015-06-30 18:46 GMT+08:00 Mark Brown <broonie@kernel.org>:
 
-[...]
+> >>  static const struct regmap_config ak4642_regmap = {
+> >>       .reg_bits               = 8,
+> >>       .val_bits               = 8,
+> >> -     .max_register           = ARRAY_SIZE(ak4642_reg) + 1,
+> >> +     .max_register           = FIL1_3,
+> >>       .reg_defaults           = ak4642_reg,
+> >> -     .num_reg_defaults       = ARRAY_SIZE(ak4642_reg),
+> >> +     .num_reg_defaults       = FIL1_3 + 1,
 
-  pcm_name = strdup(AUDIODEV);
+> > This change is incorrect, the number of register defaults must match the
+> > size of the array of register defaults being passed in.  Why are you
+> > changing this?
 
-  if((err = snd_pcm_open(&playback_handle, pcm_name, stream, 0)) < 0){
-    printf(" E> cannot open audio device %s (%s)\n", pcm_name,
-snd_strerror(err));
-    closeall(1);
-  }
-  if((err = snd_pcm_hw_params_any(playback_handle, hw_params)) < 0){
-    printf(" E> cannot initialize hardware parameter structure
-(%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  if((err = snd_pcm_hw_params_set_access(playback_handle, hw_params,
-SND_PCM_ACCESS_RW_INTERLEAVED)) < 0){
-    printf(" E> cannot set access type (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  err = snd_pcm_hw_params_set_format(playback_handle, hw_params,
-SND_PCM_FORMAT_MU_LAW);
-  if(err < 0){
-    printf(" E> cannot set ulaw format (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
-  val = 8000;
-  if((err = snd_pcm_hw_params_set_rate_near(playback_handle,
-hw_params, &val, 0)) < 0){
-    printf(" E> cannot set rate (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
+> Because I reuse the same reg_default for ak4642 and ak4643.
+> According to the datasheet:
+> For ak4642, the valid registers are 0x0 ~ 0x1f (FIL1_3)
+> For ak4643, the valid registers are 0x0 ~ 0x24 (SPK_MS)
+> The default registers for 0x0 ~ 0x1f are the same for ak4642 and ak4643.
 
-[...]
+Ah, I see.  That definitely deserves a comment since it's very unusual -
+possibly also with a BUILD_BUG_ON() for the define being less than
+ARRAY_SIZE().
 
-  if((err = snd_pcm_hw_params(playback_handle, hw_params)) < 0){
-    printf(" E> cannot set hw params (%s)\n", snd_strerror(err));
-    closeall(1);
-  }
----------->8----------
+> Or do you prefer having separate reg_default for ak4642 and ak4643?
+> (Then it can use ARRAY_SIZE() here.)
 
-My /etc/asound.conf :
+No, what you're doing is OK but really ought to have comments so it's
+clearer.
 
-----------8<----------
-defaults.ctl.card 0
-defaults.ctl.device 0
-defaults.pcm.card 0
-defaults.pcm.device 0
+--oN4OvwWIcd1E23D1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-ctl.equal {
-   type equal;
-   library "/usr/lib/ladspa/mbeq_1197.so";
-   module "mbeq";
-   controls "/usr/local/webif/.alsaequal.bin";
-}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-pcm.plugequal {
-   type equal;
-   slave.pcm "plughw:0,0";
-   library "/usr/lib/ladspa/mbeq_1197.so";
-   module "mbeq";
-   controls "/usr/local/webif/.alsaequal.bin";
-}
+iQEcBAEBCAAGBQJVkrM6AAoJECTWi3JdVIfQ2i8H/2pzGmj8K1ZLrybCNqoATjmQ
+32rmW98EA2VAx15IH/mtxKJPhdO0jaECL4J6tFsk3G/WWk4UvpmBmrwWvNtiQQQi
+oBqEIQld/yB96ej99nOKDui6kRubfVuZEynv6Cgl9V41QBbIfw7czIEvhpsegHGH
+MMxNQHhTBEKvahlajfHz1NWM74/DP6SKzQBvjnbYrU7PhiCcpXPR9lFH0+Xj1YZm
+idlKNm1Dxc/m1xLd5itK9KphTTpvkceVyZZ5TfCEBcPujONi3InXq9AIvoWG/wsb
+GtBSnqkwVBwEx0jRNMGgztZd4rFOf0nRr8f+aYEmgFdI5clfwhegvsw0MUcJI+o=
+=BS7O
+-----END PGP SIGNATURE-----
 
-pcm.!default {
-   type plug;
-   slave.pcm plugequal;
-   hint {
-      show on
-      description "Default equalized"
-   }
-}
+--oN4OvwWIcd1E23D1--
 
-pcm.dsp0 {
-    type plug
-    slave.pcm plugequal;
-}
----------->8----------
+--===============1424701625812172471==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Many thanks
-Best Regards
---
-E.Richiardone
+
+--===============1424701625812172471==--
