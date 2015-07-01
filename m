@@ -1,54 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 11/12] ASoC: tegra: register dependency parser for
- firmware nodes
-Date: Wed, 1 Jul 2015 18:38:02 +0100
-Message-ID: <20150701173802.GW11162@sirena.org.uk>
-References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
- <1435743667-11987-12-git-send-email-tomeu.vizoso@collabora.com>
+Subject: Re: [PATCH] ASoC: ts3a227e: do not report jack status
+ when there is i2c read err
+Date: Wed, 1 Jul 2015 19:05:24 +0100
+Message-ID: <20150701180524.GX11162@sirena.org.uk>
+References: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
+ <CAEUnVG6fLa_+rnmFQ1zWZod25pJomO6xqLbshj8_t8AhhtK9Sg@mail.gmail.com>
+ <20150701173409.GA111758@mocha>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TcuvTDpCAASXpu1W"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1435743667-11987-12-git-send-email-tomeu.vizoso@collabora.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-pwm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Takashi Iwai <tiwai@suse.de>, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, Alexandre Courbot <gnurou@gmail.com>
+Content-Type: multipart/mixed; boundary="===============3074957697955801415=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09D66261560
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 20:05:35 +0200 (CEST)
+In-Reply-To: <20150701173409.GA111758@mocha>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Yang Fang <yang.a.fang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com, Dylan Reid <dgreid@chromium.org>, mika.westerberg@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---TcuvTDpCAASXpu1W
+--===============3074957697955801415==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uWCTLymdFNG0vGYZ"
+Content-Disposition: inline
+
+
+--uWCTLymdFNG0vGYZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 01, 2015 at 11:41:06AM +0200, Tomeu Vizoso wrote:
+On Wed, Jul 01, 2015 at 10:34:09AM -0700, Yang Fang wrote:
+> On Wed, Jul 01, 2015 at 10:12:37AM -0700, Dylan Reid wrote:
 
-> +static void tegra_max98090_get_dependencies(struct fwnode_handle *fwnode,
-> +					    struct list_head *deps)
-> +{
-> +	add_dependency(fwnode, "nvidia,i2s-controller", deps);
-> +	add_dependency(fwnode, "nvidia,audio-codec", deps);
-> +}
+> > Thanks, I think the error checking is good to have anyway, but should
+> > the interrupt also be disabled across suspend/resume?  I'd hope this
+> > device's resume callback wouldn't happen until after the parent i2c
+> > bus is ready.
 
-Why is this all being open coded in an individual driver (we already
-know about and manage all these dependencies in the core...)?  If we're
-going to do this I'd expect the interface for specifying DT nodes to the
-core to be changed to support this.
+> I am looping Mika. I was expecting that interrupt would come after i2c
+> bus is ready. but with current pinctrl-cherryview driver the interrupt
+> comes in random order after resume.
 
---TcuvTDpCAASXpu1W
+I wouldn't rely on this, it's not going to be true in general - the
+interrupt could flag at any time after the interrupt controller is
+resumed so unless the I2C controller takes steps to ensure it is resumed
+before interrupts (which has its own complications) you could get an
+interrupt delivered prior to the I2C controller being ready.  Look at
+how arizona handles this for one example of dealing with this problem,
+though it's not ideal.
+
+--uWCTLymdFNG0vGYZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVlCV6AAoJECTWi3JdVIfQ9sQH/07qCQICx8rYy7I6jC+6lWam
-k0oQM1iJtoGIzxrnjZ3kPkumKA1N/p1bXAx3NVcmrD7KcOhALqe50qpheQ+CmVOZ
-LYAhUrbBYuPUBBqd9hsT7ZfLnAM9/jHCI04ch/Z8qo2khMwXmPPcm4tQeijJLLki
-dpvepRs8pRozlpKkQroJJQ1zleI/D64IxnqRbKauI+3MPBxyZeUe9ozjZI8VjxWq
-7N/AUIKachCgud0DNxjtdmsNMh6teCXQeV5YOGqcOsFHXQodpiRozw+2/As5N/Te
-fllk/BbgQInsWyI9MG0D69+KvSgNkBB+k4YODNzV7AKYE3IqKxJdDP+C+HKeubg=
-=TvF/
+iQEcBAEBCAAGBQJVlCvjAAoJECTWi3JdVIfQGYgH/2HUnXPXr3ZEV5qElz0VwG2N
+eCfwNV7jwTIs2xVwpThMcc4MobLwJME8x/q9ouqXhbw5aTKsGHMrS3ABVyyuAyKj
++q/HisntobZGvY4OmxPZSw9DBT8hAcX27s/L1QEGcGhevj7Q1e3LkV1/jHnhMHoS
+E6eBWafgp88xYqoqFcN7906Fj46L4M5Tc0jvO0VrGKQchxHCpROZWT/nBuLLqXvG
+nLirkBxsnV+QAB8txvgGdqmTXpLKYuIrZEHYN0Z1s+P+rT+zaep0JCErtCU8QCt9
+TV2qN4Df5+4n8WHgsfNjHVsTLxZ5zImmj9f28Q+y5oZKZ1R2ySeEsItPj9chxcM=
+=/7BQ
 -----END PGP SIGNATURE-----
 
---TcuvTDpCAASXpu1W--
+--uWCTLymdFNG0vGYZ--
+
+--===============3074957697955801415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3074957697955801415==--
