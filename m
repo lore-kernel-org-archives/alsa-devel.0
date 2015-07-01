@@ -1,18 +1,31 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCH] regmap: Use different lockdep class for each
-	regmap init call
-Date: Wed,  1 Jul 2015 12:43:59 +0800
-Message-ID: <1435725839-33173-1-git-send-email-drinkcat@chromium.org>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two
+	way	call	to the real sound card UDA1345TS
+Date: Wed, 1 Jul 2015 07:34:28 +0000
+Message-ID: <SIXPR04MB2531DB716093D09C156BEA0C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de> <1429877130444.23317@tataelxsi.co.in>,
+ <553A3ADB.7040108@ladisch.de>,
+ <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>
+ <HKXPR04MB277B58064C140058C37487EC3B60@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <556C6EB8.7030401@ladisch.de>,
+ <HKXPR04MB277069B809070671B95BAFCC3B40@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <SIXPR04MB2530654AB664B2CE19B4665C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 02A922605D7
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 06:44:09 +0200 (CEST)
-Received: by pdbep18 with SMTP id ep18so18450631pdb.1
- for <alsa-devel@alsa-project.org>; Tue, 30 Jun 2015 21:44:07 -0700 (PDT)
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0138.outbound.protection.outlook.com [134.170.140.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97C4B26060E
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 09:34:36 +0200 (CEST)
+In-Reply-To: <SIXPR04MB2530654AB664B2CE19B4665C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,650 +35,454 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Antti Palosaari <crope@iki.fi>, Bard Liao <bardliao@realtek.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lockdep validator complains about recursive locking and deadlock
-when two different regmap instances are called in a nested order.
-That happens anytime a regmap read/write call needs to access
-another regmap.
+--_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-This is because, for performance reason, lockdep groups all locks
-initialized by the same mutex_init() in the same lock class.
-Therefore all regmap mutexes are in the same lock class, leading
-to lockdep "nested locking" warnings if a regmap accesses another
-regmap.
+Dear Clemens,
 
-In general, it is impossible to establish in advance the hierarchy
-of regmaps, so we make sure that each regmap init call initializes
-its own static lock_class_key. This is done by wrapping all
-regmap_init calls into macros.
+Many Thanks a lot for all your support w.r.t this thread so far
 
-This also allows us to give meaningful names to the lock_class_key.
-For example, in rt5677 case, we have in /proc/lockdep_chains:
-irq_context: 0
-[ffffffc0018d2198] &dev->mutex
-[ffffffc0018d2198] &dev->mutex
-[ffffffc001bd7f60] rt5677:5104:(&rt5677_regmap)->_lock
-[ffffffc001bd7f58] rt5677:5096:(&rt5677_regmap_physical)->_lock
-[ffffffc001b95448] &(&base->lock)->rlock
+Am facing overrun & underrun issues, when I run the the above GSM applicati=
+on with the attached asound.conf
 
-The above would have resulted in a lockdep recursive warning
-previously. This is not the case anymore as the lockdep validator
-now clearly identifies the 2 regmaps as separate.
+I have some understanding by googling & found why this overrun & underrun i=
+ssues occurs ie., unable to transfer audio frames from hardware buffers to =
+application buffers(for capture) & the viceversa(for playback),=20
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
-Following up on the discussion here:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/094124.html ,
-and Lars-Peter's idea on how to define the macros, this converts all
-regmap_init calls to macros.
+As I googled, I didn't get detailed information with bits & pieces here & t=
+here, could you please help me out in resolving this overrun & underrun iss=
+ue ie., how to set this buffer size or only buffer_size is causing this iss=
+ue or any other parameters like period_size, period_time values should also=
+ be considered inorder to fix this overrun & underrun issue
 
-One thing that is left over is the documentation. As it stands, regmap_init
-is documented just before __regmap_init definition in drivers/base/regmap.c
-(this also applies to all other regmap_init functions...). We do not want to
-document the lock_key/name parameters, so we could either leave it like that,
-or move all the documentation to regmap.h, in front of the respective macros.
+Now I have randomly set the buffer size ie., 4097 for 8Khz sampling rate
 
-Thanks!
+But I have no idea logically how this buffer size 4097 is working for 8Khz =
+& when I copied the same buffer size to 48Khz, the audio gets cut & again o=
+verrun & underrun issue is seen
 
- drivers/base/regmap/regmap-ac97.c |  22 +++--
- drivers/base/regmap/regmap-i2c.c  |  22 +++--
- drivers/base/regmap/regmap-mmio.c |  27 ++++--
- drivers/base/regmap/regmap-spi.c  |  22 +++--
- drivers/base/regmap/regmap-spmi.c |  44 +++++----
- drivers/base/regmap/regmap.c      |  31 ++++---
- include/linux/regmap.h            | 190 ++++++++++++++++++++++++++++----------
- 7 files changed, 248 insertions(+), 110 deletions(-)
+Could you please help me out how to fix this overrun & underrun issue logic=
+ally, rather than I have that an understanding of programming some random v=
+alues like 4097
 
-diff --git a/drivers/base/regmap/regmap-ac97.c b/drivers/base/regmap/regmap-ac97.c
-index 8d304e2..aa631be 100644
---- a/drivers/base/regmap/regmap-ac97.c
-+++ b/drivers/base/regmap/regmap-ac97.c
-@@ -87,12 +87,15 @@ static const struct regmap_bus ac97_regmap_bus = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_ac97(struct snd_ac97 *ac97,
--				const struct regmap_config *config)
-+struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name)
- {
--	return regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config);
-+	return __regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_ac97);
-+EXPORT_SYMBOL_GPL(__regmap_init_ac97);
- 
- /**
-  * devm_regmap_init_ac97(): Initialise AC'97 register map
-@@ -104,11 +107,14 @@ EXPORT_SYMBOL_GPL(regmap_init_ac97);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_ac97(struct snd_ac97 *ac97,
--				     const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name)
- {
--	return devm_regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config);
-+	return __devm_regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_ac97);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_ac97);
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/base/regmap/regmap-i2c.c b/drivers/base/regmap/regmap-i2c.c
-index 4b76e33..3163b22 100644
---- a/drivers/base/regmap/regmap-i2c.c
-+++ b/drivers/base/regmap/regmap-i2c.c
-@@ -242,17 +242,20 @@ static const struct regmap_bus *regmap_get_i2c_bus(struct i2c_client *i2c,
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_i2c(struct i2c_client *i2c,
--			       const struct regmap_config *config)
-+struct regmap *__regmap_init_i2c(struct i2c_client *i2c,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
- {
- 	const struct regmap_bus *bus = regmap_get_i2c_bus(i2c, config);
- 
- 	if (IS_ERR(bus))
- 		return ERR_CAST(bus);
- 
--	return regmap_init(&i2c->dev, bus, &i2c->dev, config);
-+	return __regmap_init(&i2c->dev, bus, &i2c->dev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_i2c);
-+EXPORT_SYMBOL_GPL(__regmap_init_i2c);
- 
- /**
-  * devm_regmap_init_i2c(): Initialise managed register map
-@@ -264,16 +267,19 @@ EXPORT_SYMBOL_GPL(regmap_init_i2c);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_i2c(struct i2c_client *i2c,
--				    const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_i2c(struct i2c_client *i2c,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
- 	const struct regmap_bus *bus = regmap_get_i2c_bus(i2c, config);
- 
- 	if (IS_ERR(bus))
- 		return ERR_CAST(bus);
- 
--	return devm_regmap_init(&i2c->dev, bus, &i2c->dev, config);
-+	return __devm_regmap_init(&i2c->dev, bus, &i2c->dev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_i2c);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_i2c);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap-mmio.c b/drivers/base/regmap/regmap-mmio.c
-index 04a329a..a1b2b27 100644
---- a/drivers/base/regmap/regmap-mmio.c
-+++ b/drivers/base/regmap/regmap-mmio.c
-@@ -307,9 +307,11 @@ err_free:
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--				    void __iomem *regs,
--				    const struct regmap_config *config)
-+struct regmap *__regmap_init_mmio_clk(struct device *dev, const char *clk_id,
-+				      void __iomem *regs,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
- 	struct regmap_mmio_context *ctx;
- 
-@@ -317,9 +319,10 @@ struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
- 	if (IS_ERR(ctx))
- 		return ERR_CAST(ctx);
- 
--	return regmap_init(dev, &regmap_mmio, ctx, config);
-+	return __regmap_init(dev, &regmap_mmio, ctx, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_mmio_clk);
-+EXPORT_SYMBOL_GPL(__regmap_init_mmio_clk);
- 
- /**
-  * devm_regmap_init_mmio_clk(): Initialise managed register map with clock
-@@ -333,9 +336,12 @@ EXPORT_SYMBOL_GPL(regmap_init_mmio_clk);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--					 void __iomem *regs,
--					 const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_mmio_clk(struct device *dev,
-+					   const char *clk_id,
-+					   void __iomem *regs,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name)
- {
- 	struct regmap_mmio_context *ctx;
- 
-@@ -343,8 +349,9 @@ struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
- 	if (IS_ERR(ctx))
- 		return ERR_CAST(ctx);
- 
--	return devm_regmap_init(dev, &regmap_mmio, ctx, config);
-+	return __devm_regmap_init(dev, &regmap_mmio, ctx, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_mmio_clk);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_mmio_clk);
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
-index 53d1148..4c7850d 100644
---- a/drivers/base/regmap/regmap-spi.c
-+++ b/drivers/base/regmap/regmap-spi.c
-@@ -122,12 +122,15 @@ static struct regmap_bus regmap_spi = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spi(struct spi_device *spi,
--			       const struct regmap_config *config)
-+struct regmap *__regmap_init_spi(struct spi_device *spi,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
- {
--	return regmap_init(&spi->dev, &regmap_spi, &spi->dev, config);
-+	return __regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spi);
-+EXPORT_SYMBOL_GPL(__regmap_init_spi);
- 
- /**
-  * devm_regmap_init_spi(): Initialise register map
-@@ -139,11 +142,14 @@ EXPORT_SYMBOL_GPL(regmap_init_spi);
-  * to a struct regmap.  The map will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spi(struct spi_device *spi,
--				    const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spi(struct spi_device *spi,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
--	return devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config);
-+	return __devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spi);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spi);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap-spmi.c b/drivers/base/regmap/regmap-spmi.c
-index d7026dc..7f50f58 100644
---- a/drivers/base/regmap/regmap-spmi.c
-+++ b/drivers/base/regmap/regmap-spmi.c
-@@ -99,12 +99,15 @@ static struct regmap_bus regmap_spmi_base = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spmi_base(struct spmi_device *sdev,
--				     const struct regmap_config *config)
-+struct regmap *__regmap_init_spmi_base(struct spmi_device *sdev,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name)
- {
--	return regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config);
-+	return __regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spmi_base);
-+EXPORT_SYMBOL_GPL(__regmap_init_spmi_base);
- 
- /**
-  * devm_regmap_init_spmi_base(): Create managed regmap for Base register space
-@@ -115,12 +118,15 @@ EXPORT_SYMBOL_GPL(regmap_init_spmi_base);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spmi_base(struct spmi_device *sdev,
--					  const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spmi_base(struct spmi_device *sdev,
-+					    const struct regmap_config *config,
-+					    struct lock_class_key *lock_key,
-+					    const char *lock_name)
- {
--	return devm_regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config);
-+	return __devm_regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spmi_base);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spmi_base);
- 
- static int regmap_spmi_ext_read(void *context,
- 				const void *reg, size_t reg_size,
-@@ -230,12 +236,15 @@ static struct regmap_bus regmap_spmi_ext = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spmi_ext(struct spmi_device *sdev,
--				    const struct regmap_config *config)
-+struct regmap *__regmap_init_spmi_ext(struct spmi_device *sdev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
--	return regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config);
-+	return __regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spmi_ext);
-+EXPORT_SYMBOL_GPL(__regmap_init_spmi_ext);
- 
- /**
-  * devm_regmap_init_spmi_ext(): Create managed regmap for Ext register space
-@@ -246,11 +255,14 @@ EXPORT_SYMBOL_GPL(regmap_init_spmi_ext);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spmi_ext(struct spmi_device *sdev,
--				     const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spmi_ext(struct spmi_device *sdev,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name)
- {
--	return devm_regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config);
-+	return __devm_regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spmi_ext);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spmi_ext);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 7111d04..b9fddcc 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -527,10 +527,12 @@ EXPORT_SYMBOL_GPL(regmap_get_val_endian);
-  * a struct regmap.  This function should generally not be called
-  * directly, it should be called by bus-specific init functions.
-  */
--struct regmap *regmap_init(struct device *dev,
--			   const struct regmap_bus *bus,
--			   void *bus_context,
--			   const struct regmap_config *config)
-+struct regmap *__regmap_init(struct device *dev,
-+			     const struct regmap_bus *bus,
-+			     void *bus_context,
-+			     const struct regmap_config *config,
-+			     struct lock_class_key *lock_key,
-+			     const char *lock_name)
- {
- 	struct regmap *map;
- 	int ret = -EINVAL;
-@@ -556,10 +558,14 @@ struct regmap *regmap_init(struct device *dev,
- 			spin_lock_init(&map->spinlock);
- 			map->lock = regmap_lock_spinlock;
- 			map->unlock = regmap_unlock_spinlock;
-+			lockdep_set_class_and_name(&map->spinlock,
-+						   lock_key, lock_name);
- 		} else {
- 			mutex_init(&map->mutex);
- 			map->lock = regmap_lock_mutex;
- 			map->unlock = regmap_unlock_mutex;
-+			lockdep_set_class_and_name(&map->mutex,
-+						   lock_key, lock_name);
- 		}
- 		map->lock_arg = map;
- 	}
-@@ -899,7 +905,7 @@ err_map:
- err:
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL_GPL(regmap_init);
-+EXPORT_SYMBOL_GPL(__regmap_init);
- 
- static void devm_regmap_release(struct device *dev, void *res)
- {
-@@ -919,10 +925,12 @@ static void devm_regmap_release(struct device *dev, void *res)
-  * directly, it should be called by bus-specific init functions.  The
-  * map will be automatically freed by the device management code.
-  */
--struct regmap *devm_regmap_init(struct device *dev,
--				const struct regmap_bus *bus,
--				void *bus_context,
--				const struct regmap_config *config)
-+struct regmap *__devm_regmap_init(struct device *dev,
-+				  const struct regmap_bus *bus,
-+				  void *bus_context,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name)
- {
- 	struct regmap **ptr, *regmap;
- 
-@@ -930,7 +938,8 @@ struct regmap *devm_regmap_init(struct device *dev,
- 	if (!ptr)
- 		return ERR_PTR(-ENOMEM);
- 
--	regmap = regmap_init(dev, bus, bus_context, config);
-+	regmap = __regmap_init(dev, bus, bus_context, config,
-+			       lock_key, lock_name);
- 	if (!IS_ERR(regmap)) {
- 		*ptr = regmap;
- 		devres_add(dev, ptr);
-@@ -940,7 +949,7 @@ struct regmap *devm_regmap_init(struct device *dev,
- 
- 	return regmap;
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init);
- 
- static void regmap_field_init(struct regmap_field *rm_field,
- 	struct regmap *regmap, struct reg_field reg_field)
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 59c55ea..02b4d01 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -17,6 +17,7 @@
- #include <linux/rbtree.h>
- #include <linux/err.h>
- #include <linux/bug.h>
-+#include <linux/lockdep.h>
- 
- struct module;
- struct device;
-@@ -324,46 +325,145 @@ struct regmap_bus {
- 	enum regmap_endian val_format_endian_default;
- };
- 
--struct regmap *regmap_init(struct device *dev,
--			   const struct regmap_bus *bus,
--			   void *bus_context,
--			   const struct regmap_config *config);
--int regmap_attach_dev(struct device *dev, struct regmap *map,
--				 const struct regmap_config *config);
--struct regmap *regmap_init_i2c(struct i2c_client *i2c,
--			       const struct regmap_config *config);
--struct regmap *regmap_init_spi(struct spi_device *dev,
--			       const struct regmap_config *config);
--struct regmap *regmap_init_spmi_base(struct spmi_device *dev,
--				     const struct regmap_config *config);
--struct regmap *regmap_init_spmi_ext(struct spmi_device *dev,
--				    const struct regmap_config *config);
--struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--				    void __iomem *regs,
--				    const struct regmap_config *config);
--struct regmap *regmap_init_ac97(struct snd_ac97 *ac97,
--				const struct regmap_config *config);
--
--struct regmap *devm_regmap_init(struct device *dev,
--				const struct regmap_bus *bus,
--				void *bus_context,
--				const struct regmap_config *config);
--struct regmap *devm_regmap_init_i2c(struct i2c_client *i2c,
--				    const struct regmap_config *config);
--struct regmap *devm_regmap_init_spi(struct spi_device *dev,
--				    const struct regmap_config *config);
--struct regmap *devm_regmap_init_spmi_base(struct spmi_device *dev,
--					  const struct regmap_config *config);
--struct regmap *devm_regmap_init_spmi_ext(struct spmi_device *dev,
--					 const struct regmap_config *config);
--struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--					 void __iomem *regs,
--					 const struct regmap_config *config);
--struct regmap *devm_regmap_init_ac97(struct snd_ac97 *ac97,
--				     const struct regmap_config *config);
-+/*
-+ * __regmap_init functions.
-+ *
-+ * These functions take a lock key and name parameter, and should not be called
-+ * directly. Instead, use the regmap_init macros that generate a key and name
-+ * for each call.
-+ */
-+struct regmap *__regmap_init(struct device *dev,
-+			     const struct regmap_bus *bus,
-+			     void *bus_context,
-+			     const struct regmap_config *config,
-+			     struct lock_class_key *lock_key,
-+			     const char *lock_name);
-+struct regmap *__regmap_init_i2c(struct i2c_client *i2c,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
-+struct regmap *__regmap_init_spi(struct spi_device *dev,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
-+struct regmap *__regmap_init_spmi_base(struct spmi_device *dev,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name);
-+struct regmap *__regmap_init_spmi_ext(struct spmi_device *dev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__regmap_init_mmio_clk(struct device *dev, const char *clk_id,
-+				      void __iomem *regs,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name);
-+
-+struct regmap *__devm_regmap_init(struct device *dev,
-+				  const struct regmap_bus *bus,
-+				  void *bus_context,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name);
-+struct regmap *__devm_regmap_init_i2c(struct i2c_client *i2c,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__devm_regmap_init_spi(struct spi_device *dev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__devm_regmap_init_spmi_base(struct spmi_device *dev,
-+					    const struct regmap_config *config,
-+					    struct lock_class_key *lock_key,
-+					    const char *lock_name);
-+struct regmap *__devm_regmap_init_spmi_ext(struct spmi_device *dev,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name);
-+struct regmap *__devm_regmap_init_mmio_clk(struct device *dev,
-+					   const char *clk_id,
-+					   void __iomem *regs,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name);
-+struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
-+				       const struct regmap_config *config);
- 
-+/*
-+ * Wrapper for regmap_init macros to include a unique lockdep key and name
-+ * for each call. No-op if CONFIG_LOCKDEP is not set.
-+ *
-+ * @fn: Real function to call (in the form __[*_]regmap_init[_*])
-+ * @name: Config variable name (#config in the calling macro)
-+ **/
-+#ifdef CONFIG_LOCKDEP
-+#define __regmap_lockdep_wrapper(fn, name, ...)				\
-+(									\
-+	({								\
-+		static struct lock_class_key _key;			\
-+		fn(__VA_ARGS__, &_key,					\
-+			KBUILD_BASENAME ":"				\
-+			__stringify(__LINE__) ":"			\
-+			"(" name ")->lock");				\
-+	})								\
-+)
-+#else
-+#define __regmap_lockdep_wrapper(fn, name, ...) fn(__VA_ARGS__, NULL, NULL)
-+#endif
-+
-+#define regmap_init(dev, bus, bus_context, config)			\
-+	__regmap_lockdep_wrapper(__regmap_init, #config,		\
-+				dev, bus, bus_context, config)
-+int regmap_attach_dev(struct device *dev, struct regmap *map,
-+		      const struct regmap_config *config);
-+#define regmap_init_i2c(i2c, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_i2c, #config,		\
-+				i2c, config)
-+#define regmap_init_spi(dev, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_spi, #config,		\
-+				dev, config)
-+#define regmap_init_spmi_base(dev, config)				\
-+	__regmap_lockdep_wrapper(__regmap_init_spmi_base, #config,	\
-+				dev, config)
-+#define regmap_init_spmi_ext(dev, config)				\
-+	__regmap_lockdep_wrapper(__regmap_init_spmi_ext, #config,	\
-+				dev, config)
-+#define regmap_init_mmio_clk(dev, clk_id, regs, config)			\
-+	__regmap_lockdep_wrapper(__regmap_init_mmio_clk, #config,	\
-+				dev, clk_id, regs, config)
-+#define regmap_init_ac97(ac97, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_ac97, #config,		\
-+				ac97, config)
- bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 
-+#define devm_regmap_init(dev, bus, bus_context, config)			\
-+	__regmap_lockdep_wrapper(__devm_regmap_init, #config,		\
-+				dev, bus, bus_context, config)
-+#define devm_regmap_init_i2c(i2c, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_i2c, #config,	\
-+				i2c, config)
-+#define devm_regmap_init_spi(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spi, #config,	\
-+				dev, config)
-+#define devm_regmap_init_spmi_base(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spmi_base, #config,	\
-+				dev, config)
-+#define devm_regmap_init_spmi_ext(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spmi_ext, #config,	\
-+				dev, config)
-+#define devm_regmap_init_mmio_clk(dev, clk_id, regs, config)		\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_mmio_clk, #config,	\
-+				dev, clk_id, regs, config)
-+#define devm_regmap_init_ac97(ac97, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
-+				ac97, config)
-+
- /**
-  * regmap_init_mmio(): Initialise register map
-  *
-@@ -374,12 +474,8 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--static inline struct regmap *regmap_init_mmio(struct device *dev,
--					void __iomem *regs,
--					const struct regmap_config *config)
--{
--	return regmap_init_mmio_clk(dev, NULL, regs, config);
--}
-+#define regmap_init_mmio(dev, regs, config)		\
-+	regmap_init_mmio_clk(dev, NULL, regs, config)
- 
- /**
-  * devm_regmap_init_mmio(): Initialise managed register map
-@@ -392,12 +488,8 @@ static inline struct regmap *regmap_init_mmio(struct device *dev,
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--static inline struct regmap *devm_regmap_init_mmio(struct device *dev,
--					void __iomem *regs,
--					const struct regmap_config *config)
--{
--	return devm_regmap_init_mmio_clk(dev, NULL, regs, config);
--}
-+#define devm_regmap_init_mmio(dev, regs, config)		\
-+	devm_regmap_init_mmio_clk(dev, NULL, regs, config)
- 
- void regmap_exit(struct regmap *map);
- int regmap_reinit_cache(struct regmap *map,
--- 
-2.4.3.573.g4eafbef
+Is it possible to fix this issue in asound.conf itself, rather than using m=
+ultithreading in GSM application
+
+So that fixing these types of issues henceforth will be faster & addressed =
+logically & will be helpful for others as well
+
+
+Kindly do the needful as early as possible
+
+Many Thanks in advance once again
+
+
+
+________________________________________
+From: Srinivasan S
+Sent: Wednesday, July 1, 2015 12:54 PM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way   =
+     call    to the real sound card UDA1345TS
+
+Dear Clemens,
+
+Many Thanks a lot for all your support w.r.t this thread so far
+
+Am facing overrun & underrun issues on TI AM335x, when I run the the above =
+GSM application with the attached asound.conf
+
+I have some understanding by googling & found why this overrun & underrun i=
+ssues occurs ie., unable to transfer audio frames from hardware buffers to =
+application buffers(for capture) & the viceversa(for playback),
+
+As I googled, I didn't get detailed information with bits & pieces here & t=
+here, could you please help me out in resolving this overrun & underrun iss=
+ue ie., how to set this buffer size or only buffer_size is causing this iss=
+ue or any other parameters like period_size, period_time values should also=
+ be considered inorder to fix this overrun & underrun issue
+
+Now I have randomly set the buffer size ie., 4097 for 8Khz sampling rate
+
+But I have no idea logically how this buffer size 4097 is working for 8Khz =
+& when I copied the same buffer size to 48Khz, the audio gets cut & again o=
+verrun & underrun issue is seen
+
+Could you please help me out how to fix this overrun & underrun issue logic=
+ally, rather than I have that an understanding of programming some random v=
+alues like 4097
+
+Is it possible to fix this issue in asound.conf itself, rather than using m=
+ultithreading in GSM application
+
+So that fixing these types of issues henceforth will be faster & addressed =
+logically & will be helpful for others as well
+
+
+Kindly do the needful as early as possible
+
+Many Thanks in advance once again
+
+
+
+
+________________________________________
+From: alsa-devel-bounces@alsa-project.org <alsa-devel-bounces@alsa-project.=
+org> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Sent: Wednesday, June 3, 2015 11:35 AM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way   =
+     call    to the real sound card UDA1345TS
+
+Dear Clemens
+
+As I didn't find Jack mailing lists by googling, could you please
+loop Jack mailing lists to this mail chain
+
+Kindly do the needful as early as possible
+Many Thanks in advance
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Monday, June 1, 2015 8:09 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way ca=
+ll   to the real sound card UDA1345TS
+
+Srinivasan S wrote:
+> 2. Could you please let me know, I have downloaded jack-1.9.10.tar.bz2, h=
+ow this needs to be installed in my rootfs
+
+IIRC Jack uses some non-standard build system.  Try asking on the Jack
+mailing list how to cross-compile it.
+
+Please note that the ALSA Jack plugin is part of the alsa-plugins
+package.
+
+And as I already mentioned, it is unlikely that Jack will use less CPU
+than dshare.
+
+
+Regards,
+Clemens
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_
+Content-Type: text/plain; name="gsm_application.txt.txt"
+Content-Description: gsm_application.txt.txt
+Content-Disposition: attachment; filename="gsm_application.txt.txt";
+	size=9657; creation-date="Wed, 01 Jul 2015 07:28:01 GMT";
+	modification-date="Wed, 01 Jul 2015 07:28:01 GMT"
+Content-Transfer-Encoding: base64
+
+I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8c3RkbGliLmg+DQojaW5jbHVkZSA8YWxzYS9h
+c291bmRsaWIuaD4NCiNkZWZpbmUgQlVGX0JZVEVTIDEyOA0KIA0KaW50IG1haW4gKGludCBhcmdj
+LCBjaGFyICphcmd2W10pIHsNCglpbnQgZXJyLCByYyA7DQoJdW5zaWduZWQgY2hhciBidWZfcmln
+aHRbQlVGX0JZVEVTXTsNCgl1bnNpZ25lZCBjaGFyIGJ1Zl9sZWZ0W0JVRl9CWVRFU107DQoJIC8v
+Y2hhciAqYnVmOw0KCWludCBzaXplOyANCglzbmRfcGNtX3QgKnBsYXliYWNrX2hhbmRsZV9yaWdo
+dDsNCglzbmRfcGNtX3QgKmNhcHR1cmVfaGFuZGxlX3JpZ2h0Ow0KCQ0KCXNuZF9wY21fdCAqcGxh
+eWJhY2tfaGFuZGxlX2xlZnQ7DQoJc25kX3BjbV90ICpjYXB0dXJlX2hhbmRsZV9sZWZ0Ow0KDQoN
+CiNpZiAwCQ0KCWNoYXIqIGRldmljZSA9ICJkZWZhdWx0IjsNCglpZiAoYXJnYyA+IDEpIGRldmlj
+ZSA9IGFyZ3ZbMV07DQojZW5kaWYNCgljaGFyKiBjcmRldmljZSA7DQogICAgICAgIGNoYXIqIHBy
+ZGV2aWNlIDsNCiAgICAgICAgY2hhciogY2xkZXZpY2UgOw0KICAgICAgICBjaGFyKiBwbGRldmlj
+ZSA7DQoNCg0KCXVuc2lnbmVkIGludCByYXRlIDsNCiAgICAgICAgdW5zaWduZWQgaW50IGxhdGFu
+Y3k7DQoNCgl1bnNpZ25lZCBpbnQgbmNoYW5uZWxzID0gMTsNCglzbmRfcGNtX2Zvcm1hdF90IGZv
+cm1hdCA9IFNORF9QQ01fRk9STUFUX1MxNl9MRTsNCgl1bnNpZ25lZCBpbnQgYnVmX2ZyYW1lc19y
+aWdodCA9IEJVRl9CWVRFUyAvIG5jaGFubmVscyAvIDI7DQoJdW5zaWduZWQgaW50IGJ1Zl9mcmFt
+ZXNfbGVmdCA9IEJVRl9CWVRFUyAvIG5jaGFubmVscyAvIDI7DQoNCiAgICAgICAgaWYoYXJnYyAh
+PSAzICkNCiAgICAgICAgew0KICAgICAgICAgICAgcHJpbnRmKCJcblVzYWdlIGlzIDogYXBwbGlj
+YXRpb24gIHNhbXBsaW5nX3JhdGUgbGF0YW5jeSBcblxuXHQgRXg6IC4vZ3NtX2FwcGxpY2F0aW9u
+X3RhcmdldCA4MDAwIFxuXG5cdCBTdXBwb3J0ZWQgc2FtcGxpbmcgcmF0ZXMgYXJlOiBcblx0IDEp
+IDgwMDAgXG5cdCAyKSAxNjAwMCBcblx0IDMpIDMyMDAwIFxuXHQgNCkgNDQxMDAgXG5cdCA1KSA0
+ODAwMCBcblxuIE5PVEU6IEFueSBudW1iZXIgb3RoZXIgdGhhbiBnaXZlbiBzYW1wbGluZyByYXRl
+IHRha2VzIGRlZmF1bHQgYXMgNDgwMDBcblxuIik7DQogICAgICAgICAgICBleGl0KDEpOw0KICAg
+ICAgICB9DQoNCiAgICAgICAgcmF0ZSA9IChpbnQpYXRvaShhcmd2WzFdKTsNCiAgICAgICAgbGF0
+YW5jeSA9IChpbnQpYXRvaShhcmd2WzJdKTsNCg0KDQogICAgICAgIGlmKHJhdGUgPT0gODAwMCkN
+CiAgICAgICAgew0KICAgICAgICAgICBjcmRldmljZSA9ICJWSU5SOCI7DQogICAgICAgICAgIHBy
+ZGV2aWNlID0gIlZPVVRMOCI7DQogICAgICAgICAgIGNsZGV2aWNlID0gIlZJTkw4IjsNCiAgICAg
+ICAgICAgcGxkZXZpY2UgPSAiVk9VVFI4IjsNCg0KICAgICAgICAgICANCiAgICAgICAgfWVsc2Ug
+aWYocmF0ZSA9PSAxNjAwMCkNCiAgICAgICAgew0KICAgICAgICAgICAgY3JkZXZpY2UgPSAiVklO
+UjE2IjsNCiAgICAgICAgICAgIHByZGV2aWNlID0gIlZPVVRSMTYiOw0KICAgICAgICAgICAgY2xk
+ZXZpY2UgPSAiVklOTDE2IjsNCiAgICAgICAgICAgIHBsZGV2aWNlID0gIlZPVVRMMTYiOw0KDQog
+ICAgICAgIH1lbHNlIGlmKHJhdGUgPT0gMzIwMDApDQogICAgICAgIHsNCiAgICAgICAgICAgIGNy
+ZGV2aWNlID0gIlZJTlIzMiI7DQogICAgICAgICAgICBwcmRldmljZSA9ICJWT1VUUjMyIjsNCiAg
+ICAgICAgICAgIGNsZGV2aWNlID0gIlZJTkwzMiI7DQogICAgICAgICAgICBwbGRldmljZSA9ICJW
+T1VUTDMyIjsNCg0KICAgICAgICB9ZWxzZSBpZihyYXRlID09IDQ0MTAwKQ0KICAgICAgICB7DQog
+ICAgICAgICAgICBjcmRldmljZSA9ICJWSU5SNDQiOw0KICAgICAgICAgICAgcHJkZXZpY2UgPSAi
+Vk9VVFI0NCI7DQogICAgICAgICAgICBjbGRldmljZSA9ICJWSU5MNDQiOw0KICAgICAgICAgICAg
+cGxkZXZpY2UgPSAiVk9VVEw0NCI7DQoNCiAgICAgICAgfWVsc2UNCiAgICAgICAgew0KICAgICAg
+ICAgICAgY3JkZXZpY2UgPSAiVklOUjQ4IjsNCiAgICAgICAgICAgIHByZGV2aWNlID0gIlZPVVRM
+NDgiOw0KICAgICAgICAgICAgY2xkZXZpY2UgPSAiVklOTDQ4IjsNCiAgICAgICAgICAgIHBsZGV2
+aWNlID0gIlZPVVRSNDgiOw0KICAgICAgICAgICAgcmF0ZSA9IDQ4MDAwOw0KICAgICAgICB9DQoN
+Cg0KDQovLy8vLyBSSUdIVCBDSEFOTkVMIA0KbmV3U3RhcnQ6DQoJaWYgKChlcnIgPSBzbmRfcGNt
+X29wZW4gKCZwbGF5YmFja19oYW5kbGVfcmlnaHQsIHByZGV2aWNlLCBTTkRfUENNX1NUUkVBTV9Q
+TEFZQkFDSywgMCkpIDwgMCkgew0KCWZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBvcGVuIHBsYXli
+YWNrIHJpZ2h0IGF1ZGlvIGRldmljZSAlcyAoJXMpXG4iLCBwcmRldmljZSwgc25kX3N0cmVycm9y
+IChlcnIpKTsgZXhpdCAoMSk7DQoJfQ0KCWVsc2UNCgl7DQoJICBwcmludGYoIk9wZW5lZCBQbGF5
+YmFjayByaWdodCBhdWRpbyBkZXZpY2UgIHN1Y2Nlc3NmdWxseSAlcyBcbiIsIHByZGV2aWNlKTsN
+Cgl9DQoJDQoJaWYgKChlcnIgPSBzbmRfcGNtX3NldF9wYXJhbXMocGxheWJhY2tfaGFuZGxlX3Jp
+Z2h0LCBmb3JtYXQsIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVELCBuY2hhbm5lbHMsIHJh
+dGUsIDEsIGxhdGFuY3kpKSA8IDApIHsgLyogMC41c2VjICovDQoJZnByaW50ZihzdGRlcnIsICJQ
+bGF5YmFjayByaWdodCBvcGVuIGVycm9yOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOyBleGl0
+KDEpOw0KCX0NCg0KCWlmICgoZXJyID0gc25kX3BjbV9vcGVuICgmY2FwdHVyZV9oYW5kbGVfcmln
+aHQsIGNyZGV2aWNlLCBTTkRfUENNX1NUUkVBTV9DQVBUVVJFLCAwKSkgPCAwKSB7DQoJZnByaW50
+ZiAoc3RkZXJyLCAiY2Fubm90IG9wZW4gY2FwdHVyZSByaWdodCBhdWRpbyBkZXZpY2UgJXMgKCVz
+KVxuIiwgY3JkZXZpY2UsIHNuZF9zdHJlcnJvciAoZXJyKSk7IGV4aXQgKDEpOw0KCX0NCgllbHNl
+DQoJew0KCSAgcHJpbnRmKCJPcGVuZWQgQ2FwdHVyZSByaWdodCBhdWRpbyBkZXZpY2Ugc3VjY2Vz
+c2Z1bGx5ICVzIFxuIiwgY3JkZXZpY2UpOw0KCX0NCg0KCWlmICgoZXJyID0gc25kX3BjbV9zZXRf
+cGFyYW1zKGNhcHR1cmVfaGFuZGxlX3JpZ2h0LCBmb3JtYXQsIFNORF9QQ01fQUNDRVNTX1JXX0lO
+VEVSTEVBVkVELCBuY2hhbm5lbHMsIHJhdGUsIDEsIGxhdGFuY3kpKSA8IDApIHsgLyogMC41c2Vj
+ICovDQoJZnByaW50ZihzdGRlcnIsICJjYXB0dXJlIHJpZ2h0IG9wZW4gZXJyb3I6ICVzXG4iLCBz
+bmRfc3RyZXJyb3IoZXJyKSk7IGV4aXQoMSk7DQoJfQkNCg0KLy8vL0xFRlQgQ0hBTk5FTA0KCWlm
+ICgoZXJyID0gc25kX3BjbV9vcGVuICgmcGxheWJhY2tfaGFuZGxlX2xlZnQsIHBsZGV2aWNlLCBT
+TkRfUENNX1NUUkVBTV9QTEFZQkFDSywgMCkpIDwgMCkgew0KCWZwcmludGYgKHN0ZGVyciwgImNh
+bm5vdCBvcGVuIHBsYXliYWNrIGxlZnQgYXVkaW8gZGV2aWNlICVzICglcylcbiIsIHBsZGV2aWNl
+LCBzbmRfc3RyZXJyb3IgKGVycikpOyBleGl0ICgxKTsNCgl9DQoJZWxzZQ0KCXsNCgkgIHByaW50
+ZigiT3BlbmVkIFBsYXliYWNrIGxlZnQgYXVkaW8gZGV2aWNlIHN1Y2Nlc3NmdWxseSAlcyBcbiIs
+IHBsZGV2aWNlKTsNCgl9DQoJDQoJaWYgKChlcnIgPSBzbmRfcGNtX3NldF9wYXJhbXMocGxheWJh
+Y2tfaGFuZGxlX2xlZnQsIGZvcm1hdCwgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsIG5j
+aGFubmVscywgcmF0ZSwgMSwgbGF0YW5jeSkpIDwgMCkgeyAvKiAwLjVzZWMgKi8NCglmcHJpbnRm
+KHN0ZGVyciwgIlBsYXliYWNrIGxlZnQgb3BlbiBlcnJvcjogJXNcbiIsIHNuZF9zdHJlcnJvcihl
+cnIpKTsgZXhpdCgxKTsNCgl9DQoNCglpZiAoKGVyciA9IHNuZF9wY21fb3BlbiAoJmNhcHR1cmVf
+aGFuZGxlX2xlZnQsIGNsZGV2aWNlLCBTTkRfUENNX1NUUkVBTV9DQVBUVVJFLCAwKSkgPCAwKSB7
+DQoJZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IG9wZW4gY2FwdHVyZSBsZWZ0IGF1ZGlvIGRldmlj
+ZSAlcyAoJXMpXG4iLCBjbGRldmljZSwgc25kX3N0cmVycm9yIChlcnIpKTsgZXhpdCAoMSk7DQoJ
+fQ0KCWVsc2UNCgl7DQoJICBwcmludGYoIk9wZW5lZCBDYXB0dXJlIGxlZnQgYXVkaW8gZGV2aWNl
+IHN1Y2Nlc3NmdWxseSAlcyBcbiIsIGNyZGV2aWNlKTsNCgl9DQoNCglpZiAoKGVyciA9IHNuZF9w
+Y21fc2V0X3BhcmFtcyhjYXB0dXJlX2hhbmRsZV9sZWZ0LCBmb3JtYXQsIFNORF9QQ01fQUNDRVNT
+X1JXX0lOVEVSTEVBVkVELCBuY2hhbm5lbHMsIHJhdGUsIDEsIGxhdGFuY3kpKSA8IDApIHsgLyog
+MC41c2VjICovDQoJZnByaW50ZihzdGRlcnIsICJjYXB0dXJlIGxlZnQgb3BlbiBlcnJvcjogJXNc
+biIsIHNuZF9zdHJlcnJvcihlcnIpKTsgZXhpdCgxKTsNCgl9DQoNCg0KDQoJd2hpbGUoMSkgew0K
+Ly8vLy8gUklHSFQgQ0hBTk5FTCANCiAgICAgICAgICAgICAgICAvKioqKiogUmVhZCB0aGUgRnJh
+bWVzIGZyb20gdGhlIENhcHR1cmUgRGV2aWNlICoqKioqKi8NCiAgICAgICAgICAgICAgICBzbmRf
+cGNtX3ByZXBhcmUoY2FwdHVyZV9oYW5kbGVfcmlnaHQpOw0KICAgICAgICAgICAgICAgIGVyciA9
+IHNuZF9wY21fcmVhZGkoY2FwdHVyZV9oYW5kbGVfcmlnaHQsIGJ1Zl9yaWdodCwgYnVmX2ZyYW1l
+c19yaWdodCk7DQogICAgICAgICAgICAgICAgaWYoZXJyIDwgMCkNCiAgICAgICAgICAgICAgICB7
+DQogICAgICAgICAgICAgICAgICAgIHByaW50ZigiY2FwdHVyZSByaWdodCBmdW5jOiBvdmVycnVu
+ISIpOw0KICAgICAgICAgICAgICAgICAgICByYyA9IHNuZF9wY21fcHJlcGFyZShjYXB0dXJlX2hh
+bmRsZV9yaWdodCk7DQogICAgICAgICAgICAgICAgICAgIGlmKHJjIDwgMCkNCiAgICAgICAgICAg
+ICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICAgICBwcmludGYoIkZhaWwgdG8gcmVjb3Zl
+ciBmcm9tIHByb2JsZW0sIE5lZWQgdG8gcmVvcGVuIHRoZSBkZXZpY2VcbiIpOw0KICAgICAgICAg
+ICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGlmKGVyciA8
+IDApDQogICAgICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICBmcHJpbnRmIChzdGRl
+cnIsICJyZWFkIGZyb20gYXVkaW8gaW50ZXJmYWNlIHJpZ2h0IGZhaWxlZCAoJXMpXG4iLCBzbmRf
+c3RyZXJyb3IgKGVycikpOw0KICAgICAgICAgICAgICAgICAgICByYyA9IHNuZF9wY21fcmVjb3Zl
+cihjYXB0dXJlX2hhbmRsZV9yaWdodCxlcnIsMCk7DQogICAgICAgICAgICAgICAgICAgIGlmKHJj
+IDwgMCkNCiAgICAgICAgICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICAgICBwcmlu
+dGYoIkZhaWwgdG8gcmVjb3ZlciBmcm9tIHByb2JsZW0sIE5lZWQgdG8gcmVvcGVuIHRoZSBkZXZp
+Y2VcbiIpOw0KICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHJlU3RhcnQ7DQogICAgICAgICAg
+ICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICB9ZWxzZSBpZihlcnIgIT0gKGludClidWZfZnJh
+bWVzX3JpZ2h0KQ0KICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgICAgZnByaW50
+ZihzdGRlcnIsICJzaG9ydCByZWFkLCByZWFkICVkIGZyYW1lc1xuIiwgZXJyKTsNCiAgICAgICAg
+ICAgICAgICB9DQogICAgICAgICAgICAgDQogICAgICAgICAgICAgICAgc25kX3BjbV9wcmVwYXJl
+KHBsYXliYWNrX2hhbmRsZV9yaWdodCk7DQogICAgICAgICAgICAgICAvKioqKiAgV3JpdGUgdGhl
+IGNhcHR1cmUgZnJhbWUgdG8gcGxheWJhY2sgKioqKioqLw0KICAgICAgICAgICAgICAgIGVyciA9
+IHNuZF9wY21fd3JpdGVpIChwbGF5YmFja19oYW5kbGVfcmlnaHQsIGJ1Zl9yaWdodCwgYnVmX2Zy
+YW1lc19yaWdodCk7DQogICAgICAgICAgICAgICAgaWYoZXJyID09IC1FUElQRSkNCiAgICAgICAg
+ICAgICAgICB7DQogICAgICAgICAgICAgICAgICBwcmludGYoIlBsYXliYWNrIHJpZ2h0IGZ1bmM6
+IG92ZXJydW4hIik7DQogICAgICAgICAgICAgICAgICByYyA9IHNuZF9wY21fcHJlcGFyZShwbGF5
+YmFja19oYW5kbGVfcmlnaHQpOw0KICAgICAgICAgICAgICAgICAgaWYocmMgPCAwKQ0KICAgICAg
+ICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICAgIHByaW50ZigiRmFpbCB0byByZWNv
+dmVyIGZyb20gcHJvYmxlbSwgTmVlZCB0byByZW9wZW4gdGhlIGRldmljZVxuIik7DQogICAgICAg
+ICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGlmKGVyciA8
+IDApDQogICAgICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICBmcHJpbnRmIChzdGRl
+cnIsICJ3cml0ZSB0byBhdWRpbyBpbnRlcmZhY2UgcmlnaHQgZmFpbGVkICglcylcbiIsIHNuZF9z
+dHJlcnJvciAoZXJyKSk7DQogICAgICAgICAgICAgICAgICAgIHJjID0gc25kX3BjbV9yZWNvdmVy
+KHBsYXliYWNrX2hhbmRsZV9yaWdodCwgZXJyLCAwKTsNCiAgICAgICAgICAgICAgICAgICAgaWYo
+cmMgPCAwKQ0KICAgICAgICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAgICAgICBw
+cmludGYoIkZhaWwgdG8gcmVjb3ZlciBmcm9tIHByb2JsZW0sIE5lZWQgdG8gcmVvcGVuIHRoZSBk
+ZXZpY2VcbiIpOw0KICAgICAgICAgICAgICAgICAgICAgICAgZ290byByZVN0YXJ0Ow0KICAgICAg
+ICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgfWVsc2UgaWYoZXJyICE9IChpbnQpYnVm
+X2ZyYW1lc19yaWdodCkNCiAgICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAgIGZw
+cmludGYoc3RkZXJyLCAic2hvcnQgd3JpdGUsIHdyaXRlICVkIGZyYW1lc1xuIiwgZXJyKTsNCiAg
+ICAgICAgICAgICAgICB9DQoNCg0KLy8vL0xFRlQgQ0hBTk5FTA0KICAgICAgICAgICAgICAgICBz
+bmRfcGNtX3ByZXBhcmUoY2FwdHVyZV9oYW5kbGVfbGVmdCk7DQoNCgkgICAgICAgIC8qKioqKiBS
+ZWFkIHRoZSBGcmFtZXMgZnJvbSB0aGUgQ2FwdHVyZSBEZXZpY2UgKioqKioqLw0KICAgICAgICAg
+ICAgICAgIGVyciA9IHNuZF9wY21fcmVhZGkoY2FwdHVyZV9oYW5kbGVfbGVmdCwgYnVmX2xlZnQs
+IGJ1Zl9mcmFtZXNfbGVmdCk7DQogICAgICAgICAgICAgICAgaWYoZXJyID09IC1FUElQRSkNCiAg
+ICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAgIHByaW50ZigiY2FwdHVyZSByaWdo
+dCBmdW5jOiBvdmVycnVuISIpOw0KICAgICAgICAgICAgICAgICAgICByYyA9IHNuZF9wY21fcHJl
+cGFyZShjYXB0dXJlX2hhbmRsZV9sZWZ0KTsNCiAgICAgICAgICAgICAgICAgICAgaWYocmMgPCAw
+KQ0KICAgICAgICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAgICAgIHByaW50Zigi
+RmFpbCB0byByZWNvdmVyIGZyb20gcHJvYmxlbSwgTmVlZCB0byByZW9wZW4gdGhlIGRldmljZVxu
+Iik7DQogICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICB9DQogICAgICAgICAg
+ICAgICAgaWYoZXJyIDwgMCkNCiAgICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAg
+IGZwcmludGYgKHN0ZGVyciwgInJlYWQgZnJvbSBhdWRpbyBpbnRlcmZhY2UgcmlnaHQgZmFpbGVk
+ICglcylcbiIsIHNuZF9zdHJlcnJvciAoZXJyKSk7DQogICAgICAgICAgICAgICAgICAgIHJjID0g
+c25kX3BjbV9yZWNvdmVyKGNhcHR1cmVfaGFuZGxlX2xlZnQsZXJyLDApOw0KICAgICAgICAgICAg
+ICAgICAgICBpZihyYyA8IDApDQogICAgICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAg
+ICAgICAgICAgcHJpbnRmKCJGYWlsIHRvIHJlY292ZXIgZnJvbSBwcm9ibGVtLCBOZWVkIHRvIHJl
+b3BlbiB0aGUgZGV2aWNlXG4iKTsNCiAgICAgICAgICAgICAgICAgICAgICAgZ290byByZVN0YXJ0
+Ow0KICAgICAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgfWVsc2UgaWYoZXJyICE9
+IChpbnQpYnVmX2ZyYW1lc19sZWZ0KQ0KICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAg
+ICAgICAgZnByaW50ZihzdGRlcnIsICJzaG9ydCByZWFkLCByZWFkICVkIGZyYW1lc1xuIiwgZXJy
+KTsNCiAgICAgICAgICAgICAgICB9DQoJICAgICAgICANCiAgIA0KICAgICAgICAgICAgICAgICBz
+bmRfcGNtX3ByZXBhcmUocGxheWJhY2tfaGFuZGxlX2xlZnQpOw0KDQoJCSAgIC8qKioqICBXcml0
+ZSB0aGUgY2FwdHVyZSBmcmFtZSB0byBwbGF5YmFjayAqKioqKiovDQogICAgICAgICAgICAgICAg
+IGVyciA9IHNuZF9wY21fd3JpdGVpIChwbGF5YmFja19oYW5kbGVfbGVmdCwgYnVmX2xlZnQsIGJ1
+Zl9mcmFtZXNfbGVmdCk7DQogICAgICAgICAgICAgICAgIGlmKGVyciA9PSAtRVBJUEUpDQogICAg
+ICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgIHByaW50ZigiUGxheWJhY2sgcmlnaHQg
+ZnVuYzogb3ZlcnJ1biEiKTsNCiAgICAgICAgICAgICAgICAgIHJjID0gc25kX3BjbV9wcmVwYXJl
+KHBsYXliYWNrX2hhbmRsZV9sZWZ0KTsNCiAgICAgICAgICAgICAgICAgIGlmKHJjIDwgMCkNCiAg
+ICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgICAgICBwcmludGYoIkZhaWwgdG8g
+cmVjb3ZlciBmcm9tIHByb2JsZW0sIE5lZWQgdG8gcmVvcGVuIHRoZSBkZXZpY2VcbiIpOw0KICAg
+ICAgICAgICAgICAgICAgICAgIGdvdG8gcmVTdGFydDsNCiAgICAgICAgICAgICAgICAgIH0NCiAg
+ICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgaWYoZXJyIDwgMCkNCiAgICAgICAgICAg
+ICAgICB7DQogICAgICAgICAgICAgICAgICAgIGZwcmludGYgKHN0ZGVyciwgIndyaXRlIHRvIGF1
+ZGlvIGludGVyZmFjZSByaWdodCBmYWlsZWQgKCVzKVxuIiwgc25kX3N0cmVycm9yIChlcnIpKTsN
+CiAgICAgICAgICAgICAgICAgICAgcmMgPSBzbmRfcGNtX3JlY292ZXIocGxheWJhY2tfaGFuZGxl
+X2xlZnQsIGVyciwgMCk7DQogICAgICAgICAgICAgICAgICAgIGlmKHJjIDwgMCkNCiAgICAgICAg
+ICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICAgICAgcHJpbnRmKCJGYWlsIHRvIHJl
+Y292ZXIgZnJvbSBwcm9ibGVtLCBOZWVkIHRvIHJlb3BlbiB0aGUgZGV2aWNlXG4iKTsNCiAgICAg
+ICAgICAgICAgICAgICAgICAgIGdvdG8gcmVTdGFydDsNCiAgICAgICAgICAgICAgICAgICAgfQ0K
+ICAgICAgICAgICAgICAgIH1lbHNlIGlmKGVyciAhPSAoaW50KWJ1Zl9mcmFtZXNfbGVmdCkNCiAg
+ICAgICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgICAgIGZwcmludGYoc3RkZXJyLCAic2hv
+cnQgd3JpdGUsIHdyaXRlICVkIGZyYW1lc1xuIiwgZXJyKTsNCiAgICAgICAgICAgICAgICB9DQoN
+Cg0KCX0NCiANCnJlU3RhcnQ6CWZwcmludGYgKHN0ZGVyciwgImNsb3NlIGhhbmRsZXNcbiIpOw0K
+CSAgICAgICAgc25kX3BjbV9jbG9zZSAocGxheWJhY2tfaGFuZGxlX3JpZ2h0KTsNCgkgICAgICAg
+IHNuZF9wY21fY2xvc2UgKGNhcHR1cmVfaGFuZGxlX3JpZ2h0KTsNCg0KCSAgICAgICAgc25kX3Bj
+bV9jbG9zZSAocGxheWJhY2tfaGFuZGxlX2xlZnQpOw0KCSAgICAgICAgc25kX3BjbV9jbG9zZSAo
+Y2FwdHVyZV9oYW5kbGVfbGVmdCk7DQogICAgICAgICAgICAgICAgc2xlZXAoMik7ICAgICAgICAg
+ICAgICANCiAgICAgICAgICAgICAgICBnb3RvIG5ld1N0YXJ0Ow0KICAgICAgICAgICAgICAgIA0K
+CSAgICAgICAgcmV0dXJuIDA7DQp9IA0K
+
+--_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_
+Content-Type: application/octet-stream; name="asound.conf"
+Content-Description: asound.conf
+Content-Disposition: attachment; filename="asound.conf"; size=6397;
+	creation-date="Wed, 01 Jul 2015 07:34:10 GMT";
+	modification-date="Wed, 01 Jul 2015 07:34:10 GMT"
+Content-Transfer-Encoding: base64
+
+I1RoaXMgY29uZmlndXJhdGlvbiBmb3IgMy4xNCBrZXJuZWwKcGNtLmNhcmQwIHsKICB0eXBlIGh3
+CiAgY2FyZCAwCn0KCmN0bC5jYXJkMCB7CiAgdHlwZSBodwogIGNhcmQgMAp9CgoKIyMjRHNoYXJl
+IAoKcGNtLlZPVVRMOCB7CiAgICAgICAgdHlwZSBkc2hhcmUKICAgICAgICBpcGNfa2V5IDY2Nzgy
+OTMKICAgICAgICBpcGNfa2V5X2FkZF91aWQgeWVzCiAgICAgICAgc2xhdmUgewogICAgICAgICAg
+ICAgICAgcGNtICJodzowLDAiCgkJICAgICAgICByYXRlIDgwMDAKICAgICAgICAgICAgICAgIGJ1
+ZmZlcl9zaXplIDQwOTcKICAgICAgICAgICAgICAgIHBlcmlvZF9zaXplIDEwMDAKICAgICAgICAg
+ICAgICAgIHBlcmlvZF90aW1lIDEyNTAwMAoKICAgICAgICB9CiAgICAgICAgYmluZGluZ3Mgewog
+ICAgICAgICAgICAgICAgMCAwCiAgICAgICAgfQp9CgpwY20uVk9VVFI4IHsKICAgICAgICB0eXBl
+IGRzaGFyZQogICAgICAgIGlwY19rZXkgNjY3ODI5MwogICAgICAgIGlwY19rZXlfYWRkX3VpZCB5
+ZXMKICAgICAgICBzbGF2ZSB7CiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIKCQkgICAgICAg
+IHJhdGUgODAwMAoJCSAgICAgICAgYnVmZmVyX3NpemUgNDA5NwogICAgICAgICAgICAgICAgcGVy
+aW9kX3NpemUgMTAwMAogICAgICAgICAJICAgIHBlcmlvZF90aW1lIDEyNTAwMAoJCQogICAgICAg
+IH0KICAgICAgICBiaW5kaW5ncyB7CiAgICAgICAgICAgICAgICAwIDEKICAgICAgICB9Cn0KIyMj
+IERzbm9vcCBzcGxpdGVkIGNoYW5uZWxzCnBjbS5WSU5MOCB7CiAgICAgICAgdHlwZSBkc25vb3AK
+ICAgICAgICBpcGNfa2V5IDMyCiAgICAgICAgc2xhdmUgewoKCSAgICAgICAgICAgIHBjbSAiaHc6
+MCwwIgoJICAgICAgICAgICAgcmF0ZSA4MDAwCiAgICAgICAgICAgICAgICBidWZmZXJfc2l6ZSA0
+MDk3ICAgIAogICAgICAgICAgICAgICAgcGVyaW9kX3NpemUgMTAwMAogICAgICAgICAgICAgICAg
+cGVyaW9kX3RpbWUgMTI1MDAwCgogICAgICAgICBjaGFubmVscyAyCiAgICAgfQogICAgIGJpbmRp
+bmdzLjAgIDAKfQoKcGNtLlZJTlI4IHsKICAgICB0eXBlIGRzbm9vcAogICAgIGlwY19rZXkgMzIK
+ICAgICBzbGF2ZSB7CgkgICAgICAgICAgICBwY20gImh3OjAsMCIKCSAgICAgICAgICAgIHJhdGUg
+ODAwMAogICAgICAgICAgICAgICAgYnVmZmVyX3NpemUgNDA5NwogICAgICAgICAgICAgICAgcGVy
+aW9kX3NpemUgMTAwMAogICAgICAgICAgICAgICAgcGVyaW9kX3RpbWUgMTI1MDAwCgogICAgICAg
+ICBjaGFubmVscyAyCiAgICAgfQogICAgIGJpbmRpbmdzLjAgIDEKfQoKCgojIyNEc2hhcmUgMTZr
+IAoKcGNtLlZPVVRMMTYgewogICAgICAgIHR5cGUgZHNoYXJlCiAgICAgICAgaXBjX2tleSA2Njc4
+MjkzCiAgICAgICAgaXBjX2tleV9hZGRfdWlkIHllcwogICAgICAgIHNsYXZlIHsKICAgICAgICAg
+ICAgICAgIHBjbSAiaHc6MCwwIgogICAgICAgICAgICAgICAgcmF0ZSAxNjAwMAogICAgICAgICAg
+ICAgICAgYnVmZmVyX3NpemUgNDA5NwogICAgICAgICAgICAgICAgcGVyaW9kX3NpemUgMTAwMAog
+ICAgICAgICAgICAgICAgcGVyaW9kX3RpbWUgMTI1MDAwCgogICAgICAgIH0KICAgICAgICBiaW5k
+aW5ncyB7CiAgICAgICAgICAgICAgICAwIDAKICAgICAgICB9Cn0KCnBjbS5WT1VUUjE2IHsKICAg
+ICAgICB0eXBlIGRzaGFyZQogICAgICAgIGlwY19rZXkgNjY3ODI5MwogICAgICAgIGlwY19rZXlf
+YWRkX3VpZCB5ZXMKICAgICAgICBzbGF2ZSB7CiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIK
+ICAgICAgICAgICAgICAgIHJhdGUgMTYwMDAKICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDQw
+OTcKICAgICAgICAgICAgICAgIHBlcmlvZF9zaXplIDEwMDAKICAgICAgICAgICAgICAgIHBlcmlv
+ZF90aW1lIDEyNTAwMAoKCiAgICAgICAgfQogICAgICAgIGJpbmRpbmdzIHsKICAgICAgICAgICAg
+ICAgIDAgMQogICAgICAgIH0KfQojIyMgRHNub29wIHNwbGl0ZWQgY2hhbm5lbHMKcGNtLlZJTkwx
+NiB7CiAgICAgdHlwZSBkc25vb3AKICAgICBpcGNfa2V5IDMyCiAgICAgc2xhdmUgewoKICAgICAg
+ICAgICAgICAgIHBjbSAiaHc6MCwwIgogICAgICAgICAgICAgICAgcmF0ZSAxNjAwMAogICAgICAg
+ICAgICAgICAgYnVmZmVyX3NpemUgNDA5NwogICAgICAgICAgICAgICAgcGVyaW9kX3NpemUgMTAw
+MAogICAgICAgICAgICAgICAgcGVyaW9kX3RpbWUgMTI1MDAwCgogICAgICAgICBjaGFubmVscyAy
+CiAgICAgfQogICAgIGJpbmRpbmdzLjAgIDAKfQoKcGNtLlZJTlIxNiB7CiAgICAgdHlwZSBkc25v
+b3AKICAgICBpcGNfa2V5IDMyCiAgICAgc2xhdmUgewoKICAgICAgICAgICAgICAgIHBjbSAiaHc6
+MCwwIgogICAgICAgICAgICAgICAgcmF0ZSAxNjAwMAogICAgICAgICAgICAgICAgYnVmZmVyX3Np
+emUgNDA5NwogICAgICAgICAgICAgICAgcGVyaW9kX3NpemUgMTAwMAogICAgICAgICAgICAgICAg
+cGVyaW9kX3RpbWUgMTI1MDAwCgogICAgICAgICBjaGFubmVscyAyCiAgICAgfQogICAgIGJpbmRp
+bmdzLjAgIDEKfQoKCiMjI0RzaGFyZSAzMmsKCnBjbS5WT1VUTDMyIHsKICAgICAgICB0eXBlIGRz
+aGFyZQogICAgICAgIGlwY19rZXkgNjY3ODI5MwogICAgICAgIGlwY19rZXlfYWRkX3VpZCB5ZXMK
+ICAgICAgICBzbGF2ZSB7CiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIKICAgICAgICAgICAg
+ICAgIHJhdGUgMzIwMDAKICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDQwOTcKICAgICAgICAg
+ICAgICAgIHBlcmlvZF9zaXplIDEwMDAKICAgICAgICAgICAgICAgIHBlcmlvZF90aW1lIDEyNTAw
+MAoKICAgICAgICB9CiAgICAgICAgYmluZGluZ3MgewogICAgICAgICAgICAgICAgMCAwCiAgICAg
+ICAgfQp9CgpwY20uVk9VVFIzMiB7CiAgICAgICAgdHlwZSBkc2hhcmUKICAgICAgICBpcGNfa2V5
+IDY2NzgyOTMKICAgICAgICBpcGNfa2V5X2FkZF91aWQgeWVzCiAgICAgICAgc2xhdmUgewogICAg
+ICAgICAgICAgICAgcGNtICJodzowLDAiCiAgICAgICAgICAgICAgICByYXRlIDMyMDAwCiAgICAg
+ICAgICAgICAgICBidWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAx
+MDAwCiAgICAgICAgICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCgogICAgICAgIH0KICAgICAg
+ICBiaW5kaW5ncyB7CiAgICAgICAgICAgICAgICAwIDEKICAgICAgICB9Cn0KIyMjIERzbm9vcCBz
+cGxpdGVkIGNoYW5uZWxzCnBjbS5WSU5MMzIgewogICAgIHR5cGUgZHNub29wCiAgICAgaXBjX2tl
+eSAzMgogICAgIHNsYXZlIHsKCiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIKICAgICAgICAg
+ICAgICAgIHJhdGUgMzIwMDAKICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDQwOTcKICAgICAg
+ICAgICAgICAgIHBlcmlvZF9zaXplIDEwMDAKICAgICAgICAgICAgICAgIHBlcmlvZF90aW1lIDEy
+NTAwMAoKICAgICAgICAgY2hhbm5lbHMgMgogICAgIH0KICAgICBiaW5kaW5ncy4wICAwCn0KCnBj
+bS5WSU5SMzIgewogICAgIHR5cGUgZHNub29wCiAgICAgaXBjX2tleSAzMgogICAgIHNsYXZlIHsK
+CiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIKICAgICAgICAgICAgICAgIHJhdGUgMzIwMDAK
+ICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDQwOTcKICAgICAgICAgICAgICAgIHBlcmlvZF9z
+aXplIDEwMDAKICAgICAgICAgICAgICAgIHBlcmlvZF90aW1lIDEyNTAwMAoKICAgICAgICAgY2hh
+bm5lbHMgMgogICAgIH0KICAgICBiaW5kaW5ncy4wICAxCn0KCgojIyNEc2hhcmUgNDRrCgpwY20u
+Vk9VVEw0NCB7CiAgICAgICAgdHlwZSBkc2hhcmUKICAgICAgICBpcGNfa2V5IDY2NzgyOTMKICAg
+ICAgICBpcGNfa2V5X2FkZF91aWQgeWVzCiAgICAgICAgc2xhdmUgewogICAgICAgICAgICAgICAg
+cGNtICJodzowLDAiCiAgICAgICAgICAgICAgICByYXRlIDQ0MTAwCiAgICAgICAgICAgICAgICBi
+dWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDAwCiAgICAgICAg
+ICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCiAgICAgICAgfQogICAgICAgIGJpbmRpbmdzIHsK
+ICAgICAgICAgICAgICAgIDAgMAogICAgICAgIH0KfQoKcGNtLlZPVVRSNDQgewogICAgICAgIHR5
+cGUgZHNoYXJlCiAgICAgICAgaXBjX2tleSA2Njc4MjkzCiAgICAgICAgaXBjX2tleV9hZGRfdWlk
+IHllcwogICAgICAgIHNsYXZlIHsKICAgICAgICAgICAgICAgIHBjbSAiaHc6MCwwIgogICAgICAg
+ICAgICAgICAgcmF0ZSA0NDEwMAogICAgICAgICAgICAgICAgYnVmZmVyX3NpemUgNDA5NwogICAg
+ICAgICAgICAgICAgcGVyaW9kX3NpemUgMTAwMAogICAgICAgICAgICAgICAgcGVyaW9kX3RpbWUg
+MTI1MDAwCgoKICAgICAgICB9CiAgICAgICAgYmluZGluZ3MgewogICAgICAgICAgICAgICAgMCAx
+CiAgICAgICAgfQp9CiMjIyBEc25vb3Agc3BsaXRlZCBjaGFubmVscwpwY20uVklOTDQ0IHsKICAg
+ICB0eXBlIGRzbm9vcAogICAgIGlwY19rZXkgMzIKICAgICBzbGF2ZSB7CgogICAgICAgICAgICAg
+ICAgcGNtICJodzowLDAiCiAgICAgICAgICAgICAgICByYXRlIDQ0MTAwCiAgICAgICAgICAgICAg
+ICBidWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDAwCiAgICAg
+ICAgICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCiAgICAgICAgIGNoYW5uZWxzIDIKICAgICB9
+CiAgICAgYmluZGluZ3MuMCAgMAp9CgpwY20uVklOUjQ0IHsKICAgICB0eXBlIGRzbm9vcAogICAg
+IGlwY19rZXkgMzIKICAgICBzbGF2ZSB7CgogICAgICAgICAgICAgICAgcGNtICJodzowLDAiCiAg
+ICAgICAgICAgICAgICByYXRlIDQ0MTAwCiAgICAgICAgICAgICAgICBidWZmZXJfc2l6ZSA0MDk3
+CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDAwCiAgICAgICAgICAgICAgICBwZXJpb2Rf
+dGltZSAxMjUwMDAKCiAgICAgICAgIGNoYW5uZWxzIDIKICAgICB9CiAgICAgYmluZGluZ3MuMCAg
+MQp9CgojIyNEc2hhcmUgNDhrCnBjbS5WT1VUTDQ4IHsKICAgICAgICB0eXBlIGRzaGFyZQogICAg
+ICAgIGlwY19rZXkgNjY3ODI5MwogICAgICAgIGlwY19rZXlfYWRkX3VpZCB5ZXMKICAgICAgICBz
+bGF2ZSB7CiAgICAgICAgICAgICAgICBwY20gImh3OjAsMCIKICAgICAgICAgICAgICAgIHJhdGUg
+NDgwMDAKICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDQwOTcKICAgICAgICAgICAgICAgIHBl
+cmlvZF9zaXplIDEwMDAKICAgICAgICAgICAgICAgIHBlcmlvZF90aW1lIDEyNTAwMAoKICAgICAg
+ICB9CiAgICAgICAgYmluZGluZ3MgewogICAgICAgICAgICAgICAgMCAwCiAgICAgICAgfQp9Cgpw
+Y20uVk9VVFI0OCB7CiAgICAgICAgdHlwZSBkc2hhcmUKICAgICAgICBpcGNfa2V5IDY2NzgyOTMK
+ICAgICAgICBpcGNfa2V5X2FkZF91aWQgeWVzCiAgICAgICAgc2xhdmUgewogICAgICAgICAgICAg
+ICAgcGNtICJodzowLDAiCiAgICAgICAgICAgICAgICByYXRlIDQ4MDAwCiAgICAgICAgICAgICAg
+ICBidWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDAwCiAgICAg
+ICAgICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCgogICAgICAgIH0KICAgICAgICBiaW5kaW5n
+cyB7CiAgICAgICAgICAgICAgICAwIDEKICAgICAgICB9Cn0KCiMjIyBEc25vb3Agc3BsaXRlZCBj
+aGFubmVscwpwY20uVklOTDQ4IHsKICAgICB0eXBlIGRzbm9vcAogICAgIGlwY19rZXkgMzIKICAg
+ICBzbGF2ZSB7CgogICAgICAgICAgICAgICAgcGNtICJodzowLDAiCiAgICAgICAgICAgICAgICBy
+YXRlIDQ4MDAwCiAgICAgICAgICAgICAgICBidWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAg
+ICBwZXJpb2Rfc2l6ZSAxMDAwCiAgICAgICAgICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCiAg
+ICAgICAgIGNoYW5uZWxzIDIKICAgICB9CiAgICAgYmluZGluZ3MuMCAgMAp9CgpwY20uVklOUjQ4
+IHsKICAgICB0eXBlIGRzbm9vcAogICAgIGlwY19rZXkgMzIKICAgICBzbGF2ZSB7CgogICAgICAg
+ICAgICAgICAgcGNtICJodzowLDAiCiAgICAgICAgICAgICAgICByYXRlIDQ4MDAwCiAgICAgICAg
+ICAgICAgICBidWZmZXJfc2l6ZSA0MDk3CiAgICAgICAgICAgICAgICBwZXJpb2Rfc2l6ZSAxMDAw
+CiAgICAgICAgICAgICAgICBwZXJpb2RfdGltZSAxMjUwMDAKCiAgICAgICAgIGNoYW5uZWxzIDIK
+ICAgICB9CiAgICAgYmluZGluZ3MuMCAgMQp9CgoKCnBjbS4hZGVmYXVsdCBWT1VUUjgKcGNtLiFk
+ZWZhdWx0IFZPVVRMOApwY20uIWRlZmF1bHQgVk9VVFIxNgpwY20uIWRlZmF1bHQgVk9VVEwxNgpw
+Y20uIWRlZmF1bHQgVk9VVFIzMgpwY20uIWRlZmF1bHQgVk9VVEwzMgpwY20uIWRlZmF1bHQgVk9V
+VFI0NApwY20uIWRlZmF1bHQgVk9VVEw0NApwY20uIWRlZmF1bHQgVk9VVFI0OApwY20uIWRlZmF1
+bHQgVk9VVEw0OAoKCg==
+
+--_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_003_SIXPR04MB2531DB716093D09C156BEA0C3A80SIXPR04MB253apcprd_--
