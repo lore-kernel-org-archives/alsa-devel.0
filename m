@@ -1,49 +1,102 @@
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: [PATCH v2 10/12] pwm: register dependency parser for firmware nodes
-Date: Wed,  1 Jul 2015 11:41:05 +0200
-Message-ID: <1435743667-11987-11-git-send-email-tomeu.vizoso@collabora.com>
-References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Wed, 01 Jul 2015 17:51:20 +0800
+Message-ID: <5593B818.2060405@canonical.com>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com> <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com> <53B26575.1000003@web.de> <53B27ED7.4070401@canonical.com> <53B50062.30200@web.de> <53B51B63.8060809@canonical.com> <53B51CF3.8090102@web.de> <53B52146.9050300@canonical.com> <55603F22.8070103@web.de> <CAN8ccibyupfc_1xa3q7FfH_T7iL_1_S8cRJ1ksHG-BBJ1SJyfw@mail.gmail.com> <55909630.9060704@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: linux-kernel@vger.kernel.org
-Cc: devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>, linux-gpio@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55909630.9060704@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, Jan Kiszka <jan.kiszka@web.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alex.hung@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-U28gb3RoZXJzIGNhbiBmaW5kIG91dCB3aGF0IGRlcGVuZHMgb24gcHdtIGNvbnRyb2xsZXJzLCBh
-cyBzcGVjaWZpZWQKaW4gYmluZGluZ3MvcHdtL3B3bS50eHQuCgpTaWduZWQtb2ZmLWJ5OiBUb21l
-dSBWaXpvc28gPHRvbWV1LnZpem9zb0Bjb2xsYWJvcmEuY29tPgotLS0KCkNoYW5nZXMgaW4gdjI6
-IE5vbmUKCiBkcml2ZXJzL3B3bS9jb3JlLmMgfCAyOCArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrCiAxIGZpbGUgY2hhbmdlZCwgMjggaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvcHdtL2NvcmUuYyBiL2RyaXZlcnMvcHdtL2NvcmUuYwppbmRleCAzYTc3NjlmLi44MWI0ZmMw
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL3B3bS9jb3JlLmMKKysrIGIvZHJpdmVycy9wd20vY29yZS5j
-CkBAIC05MTcsMTEgKzkxNywzOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9u
-cyBwd21fZGVidWdmc19vcHMgPSB7CiAJLnJlbGVhc2UgPSBzZXFfcmVsZWFzZSwKIH07CiAKK3N0
-YXRpYyB2b2lkIHB3bV9nZXRfZGVwZW5kZW5jaWVzKHN0cnVjdCBmd25vZGVfaGFuZGxlICpmd25v
-ZGUsCisJCQkJIHN0cnVjdCBsaXN0X2hlYWQgKmRlcHMpCit7CisJc3RydWN0IGRldmljZV9ub2Rl
-ICpucDsKKwlzdHJ1Y3Qgb2ZfcGhhbmRsZV9hcmdzIHBzcGVjOworCWludCBjb3VudCwgaSwgcmV0
-OworCisJbnAgPSB0b19vZl9ub2RlKGZ3bm9kZSk7CisJaWYgKCFucCkKKwkJcmV0dXJuOworCisJ
-Y291bnQgPSBvZl9jb3VudF9waGFuZGxlX3dpdGhfYXJncyhucCwgInB3bXMiLAorCQkJCQkgICAi
-I3B3bS1jZWxscyIpOworCWZvciAoaSA9IDA7IGkgPCBjb3VudDsgaSsrKSB7CisJCXJldCA9IG9m
-X3BhcnNlX3BoYW5kbGVfd2l0aF9hcmdzKG5wLCAicHdtcyIsCisJCQkJCQkgIiNwd20tY2VsbHMi
-LCBpLAorCQkJCQkJICZwc3BlYyk7CisJCWlmIChyZXQgfHwgIXBzcGVjLm5wKQorCQkJY29udGlu
-dWU7CisKKwkJZndub2RlX2FkZF9kZXBlbmRlbmN5KCZwc3BlYy5ucC0+Zndub2RlLCBkZXBzKTsK
-KworCQlvZl9ub2RlX3B1dChwc3BlYy5ucCk7CisJfQorfQorCiBzdGF0aWMgaW50IF9faW5pdCBw
-d21fZGVidWdmc19pbml0KHZvaWQpCiB7CiAJZGVidWdmc19jcmVhdGVfZmlsZSgicHdtIiwgU19J
-RlJFRyB8IFNfSVJVR08sIE5VTEwsIE5VTEwsCiAJCQkgICAgJnB3bV9kZWJ1Z2ZzX29wcyk7CiAK
-Kwlmd25vZGVfYWRkX2RlcGVuZGVuY3lfcGFyc2VyKHB3bV9nZXRfZGVwZW5kZW5jaWVzKTsKKwog
-CXJldHVybiAwOwogfQogCi0tIAoyLjQuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9kcmktZGV2ZWwK
+On 06/29/2015 08:49 AM, Hui Wang wrote:
+> On 06/27/2015 11:03 AM, Raymond Yau wrote:
+>>>>>>>>>>>>>> Most Thinkpad Edge series laptops use conexant codec, so far
+>>>>>>>>>>>>>> although
+>>>>>>>> <snip>
+>>>>>>>>>>> Is there anything I can debug or any information I can collect
+>>>>>>>>>>> from my
+>>>>>>>>>>> box to examine this?
+>>>>>>>>>> What is the linux distribution on your machine? And use 
+>>>>>>>>>> showkey to
+>>>>>>>>>> catch
+>>>>>>>>>> the keycode of that button.
+>>>>>>>>> I'm running OpenSUSE 13.1. The reported keycode of the power
+>>>>>>>>> button is
+>>>>>>>>> 116.
+>>>>>>>> It seems the keycode is correct, it is power keycode rather the 
+>>>>>>>> mute
+>>>>>>>> keycode.
+>>>>>>>>
+>>>>>>>> Could you please do some debug, let us find which line of code is
+>> the
+>>>>>>>> root cause for this problem. for example:
+>>>>>>>>
+>>>>>>>> after running the line, the problem shows up:
+>>>>>>>>
+>>>>>>>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
+>>>>>>>> &found, NULL)) && found) // in the 
+>>>>>>>> sound/pci/hda/thinkpad_helper.c,
+>>>>>>>> is_thinkpad()
+>>>>>>> This evaluates to true
+>>>>>>>
+>>>>>>>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068",
+>> acpi_check_cb,
+>>>>>>>> &found, NULL)) && found; // same as above
+>>>>>>>>
+>>>>>>>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >= 0) { 
+>>>>>>>> //in the
+>>>>>>>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>> ...and this
+>>>>>>>
+>>>>>>>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) { // same as
+>>>>>>>> above
+>>>>>>>>
+>>>>>>> ...and this as well. spec->num_adc_nids is 1.
+>>>>>> If we change the code like below, does the power button can work 
+>>>>>> well?
+>>>>>>
+>>>>>> in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+>>>>>>
+>>>>>>
+>>>>>>           if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
+>>>>>>               /*
+>>>>>>               old_vmaster_hook = spec->vmaster_mute.hook;
+>>>>>>               spec->vmaster_mute.hook = update_tpacpi_mute_led;
+>>>>>>               removefunc = false;
+>>>>>>              */
+>>>>> Disabling only this block resolves the issue.
+>>>> So Below two lines make the power button change to the reset button.
+>>>>
+>>>> drivers/platform/x86/thinkpad_acpi.c  mute_led_on_off():
+>>>>
+>>>> acpi_get_handle(hkey_handle, "SSMS", &temp);
+>>>> acpi_evalf(hkey_handle, &output, "SSMS", "dd", 1);
+>>>>
+>>>>
+>> http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/platform/x86/thinkpad_acpi.c?id=9a417ec0c9d1f7af5394333411fc4d98adb8761b 
+>>
+>>
+>> It seem that software mute also depend on HAUM and SAUM ACPI interface
+>>
+>> Seem regression of the above patch is SSMS is not supported
+>>
+>> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1450947
+>>
+>> Which models of thinkpad are tested by the author ?
+> A lot, we tested this patch on all Lenovo machines with mute led we 
+> have. I need to check the models name and provide them at a later time.
+
+What I can remeber now are x230, x240, x250, L560 and x1
+>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
