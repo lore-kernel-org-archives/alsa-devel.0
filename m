@@ -1,27 +1,20 @@
-From: Cyrus Harmon <cyrus@bobobeach.com>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add MIDI support for
- Steinberg MI2/MI4
-Date: Wed, 1 Jul 2015 09:55:09 -0700
-Message-ID: <55941B6D.7090503@bobobeach.com>
-References: <558C4709.3090903@ladisch.de>
- <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
- <s5hmvzflwsu.wl-tiwai@suse.de>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH] ASoC: ts3a227e: do not report jack status
+ when there is i2c read err
+Date: Wed, 1 Jul 2015 10:12:37 -0700
+Message-ID: <CAEUnVG6fLa_+rnmFQ1zWZod25pJomO6xqLbshj8_t8AhhtK9Sg@mail.gmail.com>
+References: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aspen.bobobeach.com (aspen.bobobeach.com [208.79.93.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 93376260654
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 18:55:27 +0200 (CEST)
-Received: from aspen.bobobeach.com (localhost [127.0.0.1])
- by aspen.bobobeach.com (Postfix) with ESMTP id 8853910157
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 09:55:29 -0700 (PDT)
-Received: from [192.168.1.224] (unknown [107.200.10.244])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (Client did not present a certificate)
- by aspen.bobobeach.com (Postfix) with ESMTPSA id 405E610148
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 09:55:29 -0700 (PDT)
-In-Reply-To: <s5hmvzflwsu.wl-tiwai@suse.de>
+Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
+ [209.85.216.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83A05261504
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 19:12:58 +0200 (CEST)
+Received: by vnbf129 with SMTP id f129so7527238vnb.5
+ for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2015 10:12:57 -0700 (PDT)
+In-Reply-To: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,94 +24,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Yang Fang <yang.a.fang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, Mark Brown <broonie@kernel.org>, "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-QXMgbG9uZyBhcyB5b3UncmUgbWVzc2luZyBhcm91bmQgd2l0aCB0aGUgcXVpcmtzIHRhYmxlLCBp
-dCB3b3VsZCBiZSBuaWNlIAp0byBhZGQgc3VwcG9ydCBmb3IgdGhlIFVSNDQuIFRoaXMgd2FzIGRp
-c2N1c3NlZCBvbiB0aGUgbGlzdCBhIHdoaWxlIGJhY2sgCmFuZCBpdCB3YXNuJ3QgY2xlYXIgd2h5
-IHRoZSBxdWlyayB3YXMgbmVlZGVkLCBidXQgaXQgc3RpbGwgc2VlbXMgdG8gYmUgCm5lZWRlZCwg
-YXQgbGVhc3QgbGFzdCBJIGxvb2tlZC4KCnRoYW5rcywKCkN5cnVzCgpkaWZmIC0tZ2l0IGEvc291
-bmQvdXNiL3F1aXJrcy10YWJsZS5oIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCmluZGV4IDJm
-NmQzZTkuLmVkNzg3NWUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAorKysg
-Yi9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKQEAgLTQ2Niw2ICs0NjYsMzYgQEAgWUFNQUhBX0RF
-VklDRSgweDEwNWQsIE5VTEwpLAogICAgICAgICAgICAgICAgIH0KICAgICAgICAgfQogIH0sCit7
-CisgICAgICAgVVNCX0RFVklDRSgweDA0OTksIDB4MTUwZSksCisgICAgICAgLmRyaXZlcl9pbmZv
-ID0gKHVuc2lnbmVkIGxvbmcpICYgKGNvbnN0IHN0cnVjdCAKc25kX3VzYl9hdWRpb19xdWlyaykg
-eworICAgICAgICAgICAgICAgLyogLnZlbmRvcl9uYW1lID0gIllhbWFoYSIsICovCisgICAgICAg
-ICAgICAgICAvKiAucHJvZHVjdF9uYW1lID0gIlN0ZWluYmVyZyBVUjQ0IiwgKi8KKyAgICAgICAg
-ICAgICAgIC5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZBQ0UsCisgICAgICAgICAgICAgICAudHlw
-ZSA9IFFVSVJLX0NPTVBPU0lURSwKKyAgICAgICAgICAgICAgIC5kYXRhID0gKGNvbnN0IHN0cnVj
-dCBzbmRfdXNiX2F1ZGlvX3F1aXJrW10pIHsKKyAgICAgICAgICAgICAgICAgICAgICAgeworICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5pZm51bSA9IDEsCisgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKyAg
-ICAgICAgICAgICAgICAgICAgICAgfSwKKyAgICAgICAgICAgICAgICAgICAgICAgeworICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIC5pZm51bSA9IDIsCisgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKKyAgICAg
-ICAgICAgICAgICAgICAgICAgfSwKKyAgICAgICAgICAgICAgICAgICAgICAgeworICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIC5pZm51bSA9IDMsCisgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgLnR5cGUgPSBRVUlSS19NSURJX1lBTUFIQQorICAgICAgICAgICAgICAgICAgICAg
-ICB9LAorICAgICAgICAgICAgICAgICAgICAgICB7CisgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgLmlmbnVtID0gNCwKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAudHlwZSA9
-IFFVSVJLX0lHTk9SRV9JTlRFUkZBQ0UKKyAgICAgICAgICAgICAgICAgICAgICAgfSwKKyAgICAg
-ICAgICAgICAgICAgICAgICAgeworICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC5pZm51
-bSA9IC0xCisgICAgICAgICAgICAgICAgICAgICAgIH0KKyAgICAgICAgICAgICAgIH0KKyAgICAg
-ICB9Cit9LAogIFlBTUFIQV9ERVZJQ0UoMHgyMDAwLCAiREdQLTciKSwKICBZQU1BSEFfREVWSUNF
-KDB4MjAwMSwgIkRHUC01IiksCiAgWUFNQUhBX0RFVklDRSgweDIwMDIsIE5VTEwpLAoKCk9uIDA3
-LzAxLzIwMTUgMDg6MzAgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBUdWUsIDMwIEp1biAy
-MDE1IDE3OjQxOjMzICswMjAwLAo+IERvbWluaWMgU2FjcsOpIHdyb3RlOgo+PiBUaGUgU3RlaW5i
-ZXJnIE1JMiBhbmQgTUk0IGludGVyZmFjZXMgYXJlIGNvbXBhdGlibGUgd2l0aCB0aGUgVVNCIGNs
-YXNzCj4+IGF1ZGlvIHNwZWMsIGJ1dCB0aGUgTUlESSBwYXJ0IG9mIHRoZSBkZXZpY2VzIGlzIHJl
-cG9ydGVkIGFzIGEgdmVuZG9yCj4+IHNwZWNpZmljIGludGVyZmFjZS4KPj4KPj4gVGhpcyBwYXRj
-aCBhZGRzIGVudHJpZXMgdG8gcXVpcmtzLXRhYmxlLmggdG8gcmVjb2duaXplIHRoZSBNSURJCj4+
-IGVuZHBvaW50cy4gQXVkaW8gZnVuY3Rpb25hbGl0eSB3YXMgYWxyZWFkeSB3b3JraW5nIGFuZCBp
-cyB1bmFmZmVjdGVkIGJ5Cj4+IHRoaXMgY2hhbmdlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBEb21p
-bmljIFNhY3LDqSA8ZG9taW5pYy5zYWNyZUBnbXguZGU+Cj4+IFNpZ25lZC1vZmYtYnk6IEFsYmVy
-dCBIdWl0c2luZyA8YWxiZXJ0QGh1aXRzaW5nLm5sPgo+IEFwcGxpZWQgbm93IHdpdGggQ2xlbWVu
-cycgYWNrLCBhbmQgQ2MgdG8gc3RhYmxlLgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPj4g
-LS0tCj4+ICAgc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIHwgNjggKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDY4IGlu
-c2VydGlvbnMoKykKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaCBi
-L3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAo+PiBpbmRleCAyZjZkM2U5Li5lNDc1NjY1IDEwMDY0
-NAo+PiAtLS0gYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKPj4gKysrIGIvc291bmQvdXNiL3F1
-aXJrcy10YWJsZS5oCj4+IEBAIC0yNTEyLDYgKzI1MTIsNzQgQEAgWUFNQUhBX0RFVklDRSgweDcw
-MTAsICJVQjk5IiksCj4+ICAgCX0KPj4gICB9LAo+PiAgIAo+PiArLyogU3RlaW5iZXJnIGRldmlj
-ZXMgKi8KPj4gK3sKPj4gKwkvKiBTdGVpbmJlcmcgTUkyICovCj4+ICsJVVNCX0RFVklDRV9WRU5E
-T1JfU1BFQygweDBhNGUsIDB4MjA0MCksCj4+ICsJLmRyaXZlcl9pbmZvID0gKHVuc2lnbmVkIGxv
-bmcpICYgKGNvbnN0IHN0cnVjdCBzbmRfdXNiX2F1ZGlvX3F1aXJrKSB7Cj4+ICsJCS5pZm51bSA9
-IFFVSVJLX0FOWV9JTlRFUkZBQ0UsCj4+ICsJCS50eXBlID0gUVVJUktfQ09NUE9TSVRFLAo+PiAr
-CQkuZGF0YSA9ICYgKGNvbnN0IHN0cnVjdCBzbmRfdXNiX2F1ZGlvX3F1aXJrW10pIHsKPj4gKwkJ
-CXsKPj4gKwkJCQkuaWZudW0gPSAwLAo+PiArCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRB
-UkRfSU5URVJGQUNFCj4+ICsJCQl9LAo+PiArCQkJewo+PiArCQkJCS5pZm51bSA9IDEsCj4+ICsJ
-CQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZBQ0UKPj4gKwkJCX0sCj4+ICsJ
-CQl7Cj4+ICsJCQkJLmlmbnVtID0gMiwKPj4gKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5E
-QVJEX0lOVEVSRkFDRQo+PiArCQkJfSwKPj4gKwkJCXsKPj4gKwkJCQkuaWZudW0gPSAzLAo+PiAr
-CQkJCS50eXBlID0gUVVJUktfTUlESV9GSVhFRF9FTkRQT0lOVCwKPj4gKwkJCQkuZGF0YSA9ICYo
-Y29uc3Qgc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9pbmZvKSB7Cj4+ICsJCQkJCS5vdXRf
-Y2FibGVzID0gMHgwMDAxLAo+PiArCQkJCQkuaW5fY2FibGVzICA9IDB4MDAwMQo+PiArCQkJCX0K
-Pj4gKwkJCX0sCj4+ICsJCQl7Cj4+ICsJCQkJLmlmbnVtID0gLTEKPj4gKwkJCX0KPj4gKwkJfQo+
-PiArCX0KPj4gK30sCj4+ICt7Cj4+ICsJLyogU3RlaW5iZXJnIE1JNCAqLwo+PiArCVVTQl9ERVZJ
-Q0VfVkVORE9SX1NQRUMoMHgwYTRlLCAweDQwNDApLAo+PiArCS5kcml2ZXJfaW5mbyA9ICh1bnNp
-Z25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgewo+PiArCQku
-aWZudW0gPSBRVUlSS19BTllfSU5URVJGQUNFLAo+PiArCQkudHlwZSA9IFFVSVJLX0NPTVBPU0lU
-RSwKPj4gKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlya1tdKSB7
-Cj4+ICsJCQl7Cj4+ICsJCQkJLmlmbnVtID0gMCwKPj4gKwkJCQkudHlwZSA9IFFVSVJLX0FVRElP
-X1NUQU5EQVJEX0lOVEVSRkFDRQo+PiArCQkJfSwKPj4gKwkJCXsKPj4gKwkJCQkuaWZudW0gPSAx
-LAo+PiArCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4+ICsJCQl9
-LAo+PiArCQkJewo+PiArCQkJCS5pZm51bSA9IDIsCj4+ICsJCQkJLnR5cGUgPSBRVUlSS19BVURJ
-T19TVEFOREFSRF9JTlRFUkZBQ0UKPj4gKwkJCX0sCj4+ICsJCQl7Cj4+ICsJCQkJLmlmbnVtID0g
-MywKPj4gKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9JTlQsCj4+ICsJCQkJLmRh
-dGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5mbykgewo+PiArCQkJ
-CQkub3V0X2NhYmxlcyA9IDB4MDAwMSwKPj4gKwkJCQkJLmluX2NhYmxlcyAgPSAweDAwMDEKPj4g
-KwkJCQl9Cj4+ICsJCQl9LAo+PiArCQkJewo+PiArCQkJCS5pZm51bSA9IC0xCj4+ICsJCQl9Cj4+
-ICsJCX0KPj4gKwl9Cj4+ICt9LAo+PiArCj4+ICAgLyogVGVycmFUZWMgZGV2aWNlcyAqLwo+PiAg
-IHsKPj4gICAJVVNCX0RFVklDRV9WRU5ET1JfU1BFQygweDBjY2QsIDB4MDAxMiksCj4+IC0tIAo+
-PiAyLjQuNQo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jun 30, 2015 at 9:18 PM,  <yang.a.fang@intel.com> wrote:
+> From: "Fang, Yang A" <yang.a.fang@intel.com>
+>
+> After suspend -> resume the ts3a227e_interrupt sometimes comes before i2c
+> controller resume is called .regmap_read will return incorrect status
+> and report a wrong jack status.We should return if there is read err,the
+> interrupt will come again since it is level triggered and we are not yet
+> clear the interrupt. In addtion,cht_bsw_max98090_ti machine driver
+> registered additional notifier base on jack event which will program
+> the audio codec.there will be codec timeout err if such event occurs
+> prior to i2c controller is resumed.
+
+Thanks, I think the error checking is good to have anyway, but should
+the interrupt also be disabled across suspend/resume?  I'd hope this
+device's resume callback wouldn't happen until after the parent i2c
+bus is ready.
+
+>
+> Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+> ---
+>  sound/soc/codecs/ts3a227e.c |   18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+> index 12232d7..12d0f2a 100644
+> --- a/sound/soc/codecs/ts3a227e.c
+> +++ b/sound/soc/codecs/ts3a227e.c
+> @@ -23,6 +23,7 @@
+>  #include "ts3a227e.h"
+>
+>  struct ts3a227e {
+> +       struct device *dev;
+>         struct regmap *regmap;
+>         struct snd_soc_jack *jack;
+>         bool plugged;
+> @@ -189,16 +190,28 @@ static irqreturn_t ts3a227e_interrupt(int irq, void *data)
+>         struct ts3a227e *ts3a227e = (struct ts3a227e *)data;
+>         struct regmap *regmap = ts3a227e->regmap;
+>         unsigned int int_reg, kp_int_reg, acc_reg, i;
+> +       struct device *dev = ts3a227e->dev;
+> +       int ret;
+>
+>         /* Check for plug/unplug. */
+> -       regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
+> +       ret = regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
+> +       if (ret) {
+> +               dev_err(dev, "failed to clear interrupt ret=%d\n", ret);
+> +               return IRQ_HANDLED;
+> +       }
+> +
+>         if (int_reg & (DETECTION_COMPLETE_EVENT | INS_REM_EVENT)) {
+>                 regmap_read(regmap, TS3A227E_REG_ACCESSORY_STATUS, &acc_reg);
+>                 ts3a227e_new_jack_state(ts3a227e, acc_reg);
+>         }
+>
+>         /* Report any key events. */
+> -       regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
+> +       ret = regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
+> +       if (ret) {
+> +               dev_err(dev, "failed to clear key interrupt ret=%d\n", ret);
+> +               return IRQ_HANDLED;
+> +       }
+> +
+>         for (i = 0; i < TS3A227E_NUM_BUTTONS; i++) {
+>                 if (kp_int_reg & PRESS_MASK(i))
+>                         ts3a227e->buttons_held |= (1 << i);
+> @@ -283,6 +296,7 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
+>                 return -ENOMEM;
+>
+>         i2c_set_clientdata(i2c, ts3a227e);
+> +       ts3a227e->dev = dev;
+>
+>         ts3a227e->regmap = devm_regmap_init_i2c(i2c, &ts3a227e_regmap_config);
+>         if (IS_ERR(ts3a227e->regmap))
+> --
+> 1.7.9.5
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
