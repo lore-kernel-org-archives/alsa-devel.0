@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 13/13] topology: doxygen: Add doxygen
-	support for topology core.
-Date: Wed,  1 Jul 2015 14:44:35 +0100
-Message-ID: <1435758275-4047-13-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH v2] ALSA: usb-audio: Add MIDI support
+	for	Steinberg MI2/MI4
+Date: Wed, 01 Jul 2015 16:06:19 +0200
+Message-ID: <5593F3DB.50408@ladisch.de>
+References: <558C4709.3090903@ladisch.de>
+ <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 986E126071E
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 15:46:02 +0200 (CEST)
-In-Reply-To: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 19667260633
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 16:07:36 +0200 (CEST)
+In-Reply-To: <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Cc: =?UTF-8?B?RG9taW5pYyBTYWNyw6k=?= <dominic.sacre@gmx.de>, Albert Huitsing <albert@huitsing.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- doc/doxygen.cfg.in | 7 +++++--
- doc/index.doxygen  | 1 +
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/doc/doxygen.cfg.in b/doc/doxygen.cfg.in
-index 043e75b..92bd52b 100644
---- a/doc/doxygen.cfg.in
-+++ b/doc/doxygen.cfg.in
-@@ -29,6 +29,7 @@ INPUT            = @top_srcdir@/doc/index.doxygen \
- 		   @top_srcdir@/include/control_external.h \
- 		   @top_srcdir@/include/mixer.h \
- 		   @top_srcdir@/include/use-case.h \
-+		   @top_srcdir@/include/topology.h \
- 		   @top_srcdir@/src/error.c \
- 		   @top_srcdir@/src/dlmisc.c \
- 		   @top_srcdir@/src/async.c \
-@@ -78,7 +79,8 @@ INPUT            = @top_srcdir@/doc/index.doxygen \
- 		   @top_srcdir@/src/timer \
- 		   @top_srcdir@/src/hwdep \
- 		   @top_srcdir@/src/seq \
--		   @top_srcdir@/src/ucm
-+		   @top_srcdir@/src/ucm \
-+		   @top_srcdir@/src/topology
- EXCLUDE		 = @top_srcdir@/src/control/control_local.h \
- 		   @top_srcdir@/src/pcm/atomic.h \
- 		   @top_srcdir@/src/pcm/interval.h \
-@@ -94,7 +96,8 @@ EXCLUDE		 = @top_srcdir@/src/control/control_local.h \
- 		   @top_srcdir@/src/mixer/mixer_local.h \
- 		   @top_srcdir@/src/rawmidi/rawmidi_local.h \
- 		   @top_srcdir@/src/seq/seq_local.h \
--		   @top_srcdir@/src/ucm/ucm_local.h
-+		   @top_srcdir@/src/ucm/ucm_local.h \
-+		   @top_srcdir@/src/topology/tplg_local.h
- RECURSIVE	 = YES
- FILE_PATTERNS    = *.c *.h
- EXAMPLE_PATH     = @top_srcdir@/test
-diff --git a/doc/index.doxygen b/doc/index.doxygen
-index 7d049fe..b40c75a 100644
---- a/doc/index.doxygen
-+++ b/doc/index.doxygen
-@@ -41,6 +41,7 @@ may be placed in the library code instead of the kernel driver.</P>
-   <LI>Page \ref timer explains the design of the Timer API.
-   <LI>Page \ref seq explains the design of the Sequencer API.
-   <LI>Page \ref ucm explains the use case API.
-+  <LI>Page \ref topology explains the DSP topology API.
- </UL>
- 
- <H2>Configuration</H2>
--- 
-2.1.4
+RG9taW5pYyBTYWNyw6kgd3JvdGU6Cj4gVGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZh
+Y2VzIGFyZSBjb21wYXRpYmxlIHdpdGggdGhlIFVTQiBjbGFzcwo+IGF1ZGlvIHNwZWMsIGJ1dCB0
+aGUgTUlESSBwYXJ0IG9mIHRoZSBkZXZpY2VzIGlzIHJlcG9ydGVkIGFzIGEgdmVuZG9yCj4gc3Bl
+Y2lmaWMgaW50ZXJmYWNlLgo+Cj4gVGhpcyBwYXRjaCBhZGRzIGVudHJpZXMgdG8gcXVpcmtzLXRh
+YmxlLmggdG8gcmVjb2duaXplIHRoZSBNSURJCj4gZW5kcG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFs
+aXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVuYWZmZWN0ZWQgYnkKPiB0aGlzIGNoYW5n
+ZS4KPgo+IFNpZ25lZC1vZmYtYnk6IERvbWluaWMgU2FjcsOpIDxkb21pbmljLnNhY3JlQGdteC5k
+ZT4KPiBTaWduZWQtb2ZmLWJ5OiBBbGJlcnQgSHVpdHNpbmcgPGFsYmVydEBodWl0c2luZy5ubD4K
+CkFja2VkLWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KCj4gLS0tCj4g
+IHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDY4ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygr
+KQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaCBiL3NvdW5kL3VzYi9x
+dWlya3MtdGFibGUuaAo+IGluZGV4IDJmNmQzZTkuLmU0NzU2NjUgMTAwNjQ0Cj4gLS0tIGEvc291
+bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4gKysrIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4g
+QEAgLTI1MTIsNiArMjUxMiw3NCBAQCBZQU1BSEFfREVWSUNFKDB4NzAxMCwgIlVCOTkiKSwKPiAg
+CX0KPiAgfSwKPgo+ICsvKiBTdGVpbmJlcmcgZGV2aWNlcyAqLwo+ICt7Cj4gKwkvKiBTdGVpbmJl
+cmcgTUkyICovCj4gKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4MGE0ZSwgMHgyMDQwKSwKPiAr
+CS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9h
+dWRpb19xdWlyaykgewo+ICsJCS5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZBQ0UsCj4gKwkJLnR5
+cGUgPSBRVUlSS19DT01QT1NJVEUsCj4gKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3Vz
+Yl9hdWRpb19xdWlya1tdKSB7Cj4gKwkJCXsKPiArCQkJCS5pZm51bSA9IDAsCj4gKwkJCQkudHlw
+ZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQo+ICsJCQl9LAo+ICsJCQl7Cj4gKwkJ
+CQkuaWZudW0gPSAxLAo+ICsJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZB
+Q0UKPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gMiwKPiArCQkJCS50eXBlID0gUVVJ
+UktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4gKwkJCX0sCj4gKwkJCXsKPiArCQkJCS5pZm51
+bSA9IDMsCj4gKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9JTlQsCj4gKwkJCQku
+ZGF0YSA9ICYoY29uc3Qgc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9pbmZvKSB7Cj4gKwkJ
+CQkJLm91dF9jYWJsZXMgPSAweDAwMDEsCj4gKwkJCQkJLmluX2NhYmxlcyAgPSAweDAwMDEKPiAr
+CQkJCX0KPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gLTEKPiArCQkJfQo+ICsJCX0K
+PiArCX0KPiArfSwKPiArewo+ICsJLyogU3RlaW5iZXJnIE1JNCAqLwo+ICsJVVNCX0RFVklDRV9W
+RU5ET1JfU1BFQygweDBhNGUsIDB4NDA0MCksCj4gKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQg
+bG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKPiArCQkuaWZudW0g
+PSBRVUlSS19BTllfSU5URVJGQUNFLAo+ICsJCS50eXBlID0gUVVJUktfQ09NUE9TSVRFLAo+ICsJ
+CS5kYXRhID0gJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgewo+ICsJCQl7
+Cj4gKwkJCQkuaWZudW0gPSAwLAo+ICsJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9J
+TlRFUkZBQ0UKPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gMSwKPiArCQkJCS50eXBl
+ID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4gKwkJCX0sCj4gKwkJCXsKPiArCQkJ
+CS5pZm51bSA9IDIsCj4gKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFD
+RQo+ICsJCQl9LAo+ICsJCQl7Cj4gKwkJCQkuaWZudW0gPSAzLAo+ICsJCQkJLnR5cGUgPSBRVUlS
+S19NSURJX0ZJWEVEX0VORFBPSU5ULAo+ICsJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRf
+dXNiX21pZGlfZW5kcG9pbnRfaW5mbykgewo+ICsJCQkJCS5vdXRfY2FibGVzID0gMHgwMDAxLAo+
+ICsJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCj4gKwkJCQl9Cj4gKwkJCX0sCj4gKwkJCXsKPiAr
+CQkJCS5pZm51bSA9IC0xCj4gKwkJCX0KPiArCQl9Cj4gKwl9Cj4gK30sCj4gKwo+ICAvKiBUZXJy
+YVRlYyBkZXZpY2VzICovCj4gIHsKPiAgCVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwY2NkLCAw
+eDAwMTIpLApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
