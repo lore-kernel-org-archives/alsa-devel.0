@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 07/13] topology: Add private data parser
-Date: Wed,  1 Jul 2015 14:44:29 +0100
-Message-ID: <1435758275-4047-7-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 09/13] topology: Add CTL parser
+Date: Wed,  1 Jul 2015 14:44:31 +0100
+Message-ID: <1435758275-4047-9-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C111B2606D3
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 15:45:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 81CED260670
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 15:45:55 +0200 (CEST)
 In-Reply-To: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,21 +24,20 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Parse private data and store for attachment to other objects. Data can come
-file or be locally defined as bytes, shorts or words.
+Add support to parse mixers, enums and byte controls.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/data.c | 358 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 358 insertions(+)
- create mode 100644 src/topology/data.c
+ src/topology/ctl.c | 674 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 674 insertions(+)
+ create mode 100644 src/topology/ctl.c
 
-diff --git a/src/topology/data.c b/src/topology/data.c
+diff --git a/src/topology/ctl.c b/src/topology/ctl.c
 new file mode 100644
-index 0000000..7de62b4
+index 0000000..5a797d1
 --- /dev/null
-+++ b/src/topology/data.c
-@@ -0,0 +1,358 @@
++++ b/src/topology/ctl.c
+@@ -0,0 +1,674 @@
 +/*
 +  Copyright(c) 2014-2015 Intel Corporation
 +  All rights reserved.
@@ -60,227 +59,250 @@ index 0000000..7de62b4
 +#include "list.h"
 +#include "tplg_local.h"
 +
-+/* Get Private data from a file. */
-+static int tplg_parse_data_file(snd_config_t *cfg, struct tplg_elem *elem)
++/* copy referenced TLV to the mixer control */
++static int copy_tlv(struct tplg_elem *elem, struct tplg_elem *ref)
 +{
-+	struct snd_soc_tplg_private *priv = NULL;
-+	const char *value = NULL;
-+	char filename[MAX_FILE];
-+	char *env = getenv(ALSA_CONFIG_TPLG_VAR);
-+	FILE *fp;
-+	size_t size, bytes_read;
-+	int ret = 0;
++	struct snd_soc_tplg_mixer_control *mixer_ctrl =  elem->mixer_ctrl;
++	struct snd_soc_tplg_ctl_tlv *tlv = ref->tlv;
 +
-+	tplg_dbg("data DataFile: %s\n", elem->id);
++	tplg_dbg("TLV '%s' used by '%s\n", ref->id, elem->id);
 +
-+	if (snd_config_get_string(cfg, &value) < 0)
-+		return -EINVAL;
++	/* TLV has a fixed size */
++	memcpy(&mixer_ctrl->tlv, tlv, sizeof(*tlv));
 +
-+	/* prepend alsa config directory to path */
-+	snprintf(filename, sizeof(filename), "%s/%s",
-+		env ? env : ALSA_TPLG_DIR, value);
-+	filename[sizeof(filename)-1] = '\0';
-+
-+	fp = fopen(filename, "r");
-+	if (fp == NULL) {
-+		fprintf(stderr, "error: invalid data file path '%s'\n",
-+			filename);
-+		ret = -errno;
-+		goto err;
-+	}
-+
-+	fseek(fp, 0L, SEEK_END);
-+	size = ftell(fp);
-+	fseek(fp, 0L, SEEK_SET);
-+	if (size <= 0) {
-+		fprintf(stderr, "error: invalid data file size %zu\n", size);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+	if (size > TPLG_MAX_PRIV_SIZE) {
-+		fprintf(stderr, "error: data file too big %zu\n", size);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	priv = calloc(1, sizeof(*priv) + size);
-+	if (!priv) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	bytes_read = fread(&priv->data, 1, size, fp);
-+	if (bytes_read != size) {
-+		ret = -errno;
-+		goto err;
-+	}
-+
-+	elem->data = priv;
-+	priv->size = size;
-+	elem->size = sizeof(*priv) + size;
-+	return 0;
-+
-+err:
-+	if (priv)
-+		free(priv);
-+	return ret;
-+}
-+
-+static void dump_priv_data(struct tplg_elem *elem)
-+{
-+	struct snd_soc_tplg_private *priv = elem->data;
-+	unsigned char *p = (unsigned char *)priv->data;
-+	unsigned int i, j = 0;
-+
-+	tplg_dbg(" elem size = %d, priv data size = %d\n",
-+		elem->size, priv->size);
-+
-+	for (i = 0; i < priv->size; i++) {
-+		if (j++ % 8 == 0)
-+			tplg_dbg("\n");
-+
-+		tplg_dbg(" 0x%x", *p++);
-+	}
-+
-+	tplg_dbg("\n\n");
-+}
-+
-+static int get_hex_num(const char *str)
-+{
-+	char *tmp, *s = NULL;
-+	int i = 0;
-+
-+	tmp = strdup(str);
-+	if (tmp == NULL)
-+		return -ENOMEM;
-+
-+	s = strtok(tmp, ",");
-+	while (s != NULL) {
-+		s = strtok(NULL, ",");
-+		i++;
-+	}
-+
-+	free(tmp);
-+	return i;
-+}
-+
-+static int write_hex(char *buf, char *str, int width)
-+{
-+	long val;
-+	void *p = &val;
-+
-+        errno = 0;
-+	val = strtol(str, NULL, 16);
-+
-+	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-+		|| (errno != 0 && val == 0)) {
-+		return -EINVAL;
-+        }
-+
-+	switch (width) {
-+	case 1:
-+		*(unsigned char *)buf = *(unsigned char *)p;
-+		break;
-+	case 2:
-+		*(unsigned short *)buf = *(unsigned short *)p;
-+		break;
-+	case 4:
-+		*(unsigned int *)buf = *(unsigned int *)p;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
++	/* set size of TLV data */
++	mixer_ctrl->hdr.tlv_size = tlv->count * sizeof(uint32_t);
 +	return 0;
 +}
 +
-+static int copy_data_hex(char *data, int off, const char *str, int width)
++/* check referenced TLV for a mixer control */
++static int tplg_build_mixer_control(snd_tplg_t *tplg,
++				struct tplg_elem *elem)
 +{
-+	char *tmp, *s = NULL, *p = data;
-+	int ret;
++	struct tplg_ref *ref;
++	struct list_head *base, *pos, *npos;
++	int err = 0;
 +
-+	tmp = strdup(str);
-+	if (tmp == NULL)
-+		return -ENOMEM;
++	base = &elem->ref_list;
 +
-+	p += off;
-+	s = strtok(tmp, ",");
++	/* for each ref in this control elem */
++	list_for_each_safe(pos, npos, base) {
 +
-+	while (s != NULL) {
-+		ret = write_hex(p, s, width);
-+		if (ret < 0) {
-+			free(tmp);
-+			return ret;
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id == NULL || ref->elem)
++			continue;
++
++		if (ref->type == PARSER_TYPE_TLV) {
++			ref->elem = tplg_elem_lookup(&tplg->tlv_list,
++						ref->id, PARSER_TYPE_TLV);
++			if (ref->elem)
++				 err = copy_tlv(elem, ref->elem);
++
++		} else if (ref->type == PARSER_TYPE_DATA) {
++			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
++						ref->id, PARSER_TYPE_DATA);
++			 err = tplg_copy_data(elem, ref->elem);
 +		}
 +
-+		s = strtok(NULL, ",");
-+		p += width;
++		if (!ref->elem) {
++			fprintf(stderr, "error: cannot find '%s' referenced by"
++				" control '%s'\n", ref->id, elem->id);
++			return -EINVAL;
++		} else if (err < 0)
++			return err;
 +	}
 +
-+	free(tmp);
 +	return 0;
 +}
 +
-+static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
-+	int width)
++static void copy_enum_texts(struct tplg_elem *enum_elem,
++	struct tplg_elem *ref_elem)
 +{
-+	struct snd_soc_tplg_private *priv;
-+	const char *value = NULL;
-+	int size, esize, off, num;
-+	int ret;
++	struct snd_soc_tplg_enum_control *ec = enum_elem->enum_ctrl;
 +
-+	tplg_dbg(" data: %s\n", elem->id);
++	memcpy(ec->texts, ref_elem->texts,
++		SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++}
 +
-+	if (snd_config_get_string(cfg, &value) < 0)
-+		return -EINVAL;
++/* check referenced text for a enum control */
++static int tplg_build_enum_control(snd_tplg_t *tplg,
++				struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos, *npos;
++	int err = 0;
 +
-+	num = get_hex_num(value);
-+	size = num * width;
-+	priv = elem->data;
++	base = &elem->ref_list;
 +
-+	if (esize > TPLG_MAX_PRIV_SIZE) {
-+		fprintf(stderr, "error: data too big %d\n", esize);
-+		return -EINVAL;
++	list_for_each_safe(pos, npos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id == NULL || ref->elem)
++			continue;
++
++		if (ref->type == PARSER_TYPE_TEXT) {
++			ref->elem = tplg_elem_lookup(&tplg->text_list,
++						ref->id, PARSER_TYPE_TEXT);
++			if (ref->elem)
++				copy_enum_texts(elem, ref->elem);
++
++		} else if (ref->type == PARSER_TYPE_DATA) {
++			ref->elem = tplg_elem_lookup(&tplg->pdata_list,
++						ref->id, PARSER_TYPE_DATA);
++			err = tplg_copy_data(elem, ref->elem);
++		}
++		if (!ref->elem) {
++			fprintf(stderr, "error: cannot find '%s' referenced by"
++				" control '%s'\n", ref->id, elem->id);
++			return -EINVAL;
++		} else if (err < 0)
++			return err;
 +	}
 +
-+	if (priv != NULL) {
-+		off = priv->size;
-+		esize = elem->size + size;
-+		priv = realloc(priv, esize);
-+	} else {
-+		off = 0;
-+		esize = sizeof(*priv) + size;
-+		priv = calloc(1, esize);
++	return 0;
++}
++
++/* check referenced private data for a byte control */
++static int tplg_build_bytes_control(snd_tplg_t *tplg, struct tplg_elem *elem)
++{
++	struct tplg_ref *ref;
++	struct list_head *base, *pos, *npos;
++
++	base = &elem->ref_list;
++
++	list_for_each_safe(pos, npos, base) {
++
++		ref = list_entry(pos, struct tplg_ref, list);
++		if (ref->id == NULL || ref->elem)
++			continue;
++
++		/* bytes control only reference one private data section */
++		ref->elem = tplg_elem_lookup(&tplg->pdata_list,
++			ref->id, PARSER_TYPE_DATA);
++		if (!ref->elem) {
++			fprintf(stderr, "error: cannot find data '%s'"
++				" referenced by control '%s'\n",
++				ref->id, elem->id);
++			return -EINVAL;
++		}
++
++		/* copy texts to enum elem */
++		return tplg_copy_data(elem, ref->elem);
 +	}
 +
-+	if (!priv)
-+		return -ENOMEM;
++	return 0;
++}
 +
-+	elem->data = priv;
-+	priv->size += size;
-+	elem->size = esize;
++int tplg_build_controls(snd_tplg_t *tplg)
++{
++	struct list_head *base, *pos, *npos;
++	struct tplg_elem *elem;
++	int err = 0;
 +
-+	ret = copy_data_hex(priv->data, off, value, width);
++	base = &tplg->mixer_list;
++	list_for_each_safe(pos, npos, base) {
 +
-+	dump_priv_data(elem);
-+	return ret;
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_mixer_control(tplg, elem);
++		if (err < 0)
++			return err;
++	}
++
++	base = &tplg->enum_list;
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_enum_control(tplg, elem);
++		if (err < 0)
++			return err;
++	}
++
++	base = &tplg->bytes_ext_list;
++	list_for_each_safe(pos, npos, base) {
++
++		elem = list_entry(pos, struct tplg_elem, list);
++		err = tplg_build_bytes_control(tplg, elem);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
 +}
 +
 +
-+/* Parse Private data.
++/*
++ * Parse TLV of DBScale type.
 + *
-+ * Object private data can either be from file or defined as bytes, shorts,
-+ * words.
++ * Parse DBScale describing min, step, mute in DB.
 + *
-+ * SectionData."data name" {
-+ *
-+ *		DataFile "filename"
-+ *		bytes "0x12,0x34,0x56,0x78"
-+ *		shorts "0x1122,0x3344,0x5566,0x7788"
-+ *		words "0xaabbccdd,0x11223344,0x66aa77bb,0xefef1234"
++ * scale {
++ *		min "-9000"
++ *		step "300"
++ *		mute "1"
 + * }
 + */
-+int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
++static int tplg_parse_tlv_dbscale(snd_config_t *cfg, struct tplg_elem *elem)
++{
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	struct snd_soc_tplg_ctl_tlv *tplg_tlv;
++	const char *id = NULL, *value = NULL;
++	int *data;
++
++	tplg_dbg(" scale: %s\n", elem->id);
++
++	tplg_tlv = calloc(1, sizeof(*tplg_tlv));
++	if (!tplg_tlv)
++		return -ENOMEM;
++	data = (int*)(tplg_tlv->data);
++
++	elem->tlv = tplg_tlv;
++	tplg_tlv->numid = SNDRV_CTL_TLVT_DB_SCALE;
++	tplg_tlv->count = 8;
++	tplg_tlv->size = sizeof(*tplg_tlv);
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++
++		/* get ID */
++		if (snd_config_get_id(n, &id) < 0) {
++			fprintf(stderr, "error: cant get ID\n");
++			return -EINVAL;
++		}
++
++		/* get value */
++		if (snd_config_get_string(n, &value) < 0)
++			continue;
++
++		tplg_dbg("\t%s = %s\n", id, value);
++
++		/* get TLV data */
++		if (strcmp(id, "min") == 0)
++			data[0] = atoi(value);
++		else if (strcmp(id, "step") == 0)
++			data[1] = atoi(value);
++		else if (strcmp(id, "mute") == 0)
++			data[2] = atoi(value);
++		else
++			fprintf(stderr, "error: unknown key %s\n", id);
++	}
++
++	return 0;
++}
++
++/* Parse TLV.
++ *
++ * Each TLV is described in new section
++ * Supported TLV types: scale.
++ *
++ * SectionTLV."tlv name" {
++ *		type {
++ *
++ *		}
++ * }
++ */
++int tplg_parse_tlv(snd_tplg_t *tplg, snd_config_t *cfg,
 +	void *private ATTRIBUTE_UNUSED)
 +{
 +	snd_config_iterator_t i, next;
@@ -289,48 +311,20 @@ index 0000000..7de62b4
 +	int err = 0;
 +	struct tplg_elem *elem;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_DATA);
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_TLV);
 +	if (!elem)
 +		return -ENOMEM;
 +
 +	snd_config_for_each(i, next, cfg) {
 +
 +		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0) {
++		if (snd_config_get_id(n, &id) < 0)
 +			continue;
-+		}
 +
-+		if (strcmp(id, "file") == 0) {
-+			err = tplg_parse_data_file(n, elem);
++		if (strcmp(id, "scale") == 0) {
++			err = tplg_parse_tlv_dbscale(n, elem);
 +			if (err < 0) {
-+				fprintf(stderr, "error: failed to parse data file\n");
-+				return err;
-+			}
-+			continue;
-+		}
-+
-+		if (strcmp(id, "bytes") == 0) {
-+			err = tplg_parse_data_hex(n, elem, 1);
-+			if (err < 0) {
-+				fprintf(stderr, "error: failed to parse data bytes\n");
-+				return err;
-+			}
-+			continue;
-+		}
-+
-+		if (strcmp(id, "shorts") == 0) {
-+			err = tplg_parse_data_hex(n, elem, 2);
-+			if (err < 0) {
-+				fprintf(stderr, "error: failed to parse data shorts\n");
-+				return err;
-+			}
-+			continue;
-+		}
-+
-+		if (strcmp(id, "words") == 0) {
-+			err = tplg_parse_data_hex(n, elem, 4);
-+			if (err < 0) {
-+				fprintf(stderr, "error: failed to parse data words\n");
++				fprintf(stderr, "error: failed to DBScale");
 +				return err;
 +			}
 +			continue;
@@ -340,61 +334,382 @@ index 0000000..7de62b4
 +	return err;
 +}
 +
-+/* copy private data into the bytes extended control */
-+int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
++/* Parse Control Bytes
++ *
++ * Each Control is described in new section
++ * Supported control types: Byte
++ *
++ * SectionControlBytes."control name" {
++ *	comment "optional comments"
++ *
++ *	index "1"
++ *	base "0"
++ *	num_regs "16"
++ *	mask "0xff"
++ *	max "255"
++ * }
++ */
++int tplg_parse_control_bytes(snd_tplg_t *tplg,
++	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
 +{
-+	struct snd_soc_tplg_private *priv;
-+	int priv_data_size;
++	struct snd_soc_tplg_bytes_control *be;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int err;
 +
-+	if (!ref)
-+		return -EINVAL;
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_BYTES);
++	if (!elem)
++		return -ENOMEM;
 +
-+	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
-+	priv_data_size = ref->data->size;
++	be = elem->bytes_ext;
++	be->size = elem->size;
++	strncpy(be->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	be->hdr.type =  SND_SOC_TPLG_TYPE_BYTES;
 +
-+	switch (elem->type) {
-+	case PARSER_TYPE_MIXER:
-+		elem->mixer_ctrl = realloc(elem->mixer_ctrl,
-+			elem->size + priv_data_size);
-+		if (!elem->mixer_ctrl)
-+			return -ENOMEM;
-+		priv = &elem->mixer_ctrl->priv;
-+		break;
++	tplg_dbg(" Control Bytes: %s\n", elem->id);
 +
-+	case PARSER_TYPE_ENUM:
-+		elem->enum_ctrl = realloc(elem->enum_ctrl,
-+			elem->size + priv_data_size);
-+		if (!elem->enum_ctrl)
-+			return -ENOMEM;
-+		priv = &elem->enum_ctrl->priv;
-+		break;
++	snd_config_for_each(i, next, cfg) {
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
 +
-+	case PARSER_TYPE_BYTES:
-+		elem->bytes_ext = realloc(elem->bytes_ext,
-+			elem->size + priv_data_size);
-+		if (!elem->bytes_ext)
-+			return -ENOMEM;
-+		priv = &elem->bytes_ext->priv;
-+		break;
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
 +
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
 +
-+	case PARSER_TYPE_DAPM_WIDGET:
-+		elem->widget = realloc(elem->widget,
-+			elem->size + priv_data_size);
-+		if (!elem->widget)
-+			return -ENOMEM;
-+		priv = &elem->widget->priv;
-+		break;
++			elem->index = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, elem->index);
++			continue;
++		}
 +
-+	default:
-+		fprintf(stderr, "elem '%s': type %d shall not have private data\n",
-+			elem->id, elem->type);
-+		return -EINVAL;
++		if (strcmp(id, "base") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->base = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->base);
++			continue;
++		}
++
++		if (strcmp(id, "num_regs") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->num_regs = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->num_regs);
++			continue;
++		}
++
++		if (strcmp(id, "max") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->max = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, be->num_regs);
++			continue;
++		}
++
++		if (strcmp(id, "mask") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			be->mask = strtol(val, NULL, 16);
++			tplg_dbg("\t%s: %d\n", id, be->mask);
++			continue;
++		}
++
++		if (strcmp(id, "data") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			tplg_ref_add(elem, PARSER_TYPE_DATA, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++
++		if (strcmp(id, "tlv") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			err = tplg_ref_add(elem, PARSER_TYPE_TLV, val);
++			if (err < 0)
++				return err;
++
++			be->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
++				SNDRV_CTL_ELEM_ACCESS_READWRITE;
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
 +	}
 +
-+	elem->size += priv_data_size;
-+	priv->size = priv_data_size;
-+	memcpy(priv->data, ref->data->data, priv_data_size);
++	return 0;
++}
++
++/* Parse Control Enums.
++ *
++ * Enumerated control. Supports mutiple channels.
++ *
++ * SectionControlMixer."control name" {
++ *	comment "optional comments"
++ *
++ *	index "1"
++ *	texts "EQU1"
++ *
++ *	channel."name" {
++ *	}
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	tlv "hsw_vol_tlv"
++ * }
++ */
++int tplg_parse_control_enum(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private ATTRIBUTE_UNUSED)
++{
++	struct snd_soc_tplg_enum_control *ec;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int err, j;
++
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_ENUM);
++	if (!elem)
++		return -ENOMEM;
++
++	/* init new mixer */
++	ec = elem->enum_ctrl;
++	strncpy(ec->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	ec->hdr.name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN - 1] = 0;
++	ec->hdr.type =  SND_SOC_TPLG_TYPE_ENUM;
++	ec->size = elem->size;
++	tplg->channel_idx = 0;
++
++	/* set channel reg to default state */
++	for (j = 0; j < SND_SOC_TPLG_MAX_CHAN; j++)
++		ec->channel[j].reg = -1;
++
++	tplg_dbg(" Control Enum: %s\n", elem->id);
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
++
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			elem->index = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, elem->index);
++			continue;
++		}
++
++		if (strcmp(id, "texts") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			tplg_ref_add(elem, PARSER_TYPE_TEXT, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++
++		if (strcmp(id, "channel") == 0) {
++			if (ec->num_channels >= SND_SOC_TPLG_MAX_CHAN) {
++				fprintf(stderr, "error: too many channels %s\n",
++					elem->id);
++				return -EINVAL;
++			}
++
++			err = tplg_parse_compound(tplg, n, tplg_parse_channel,
++				ec->channel);
++			if (err < 0)
++				return err;
++
++			ec->num_channels = tplg->channel_idx;
++			continue;
++		}
++
++		if (strcmp(id, "ops") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_ops,
++				&ec->hdr);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "data") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			tplg_ref_add(elem, PARSER_TYPE_DATA, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++	}
++
++	return 0;
++}
++
++/* Parse Controls.
++ *
++ * Mixer control. Supports multiple channels.
++ *
++ * SectionControlMixer."control name" {
++ *	comment "optional comments"
++ *
++ *	index "1"
++ *
++ *	channel."name" {
++ *	}
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	max "32"
++ *	invert "0"
++ *
++ *	ops."ctl" {
++ *	}
++ *
++ *	tlv "hsw_vol_tlv"
++ * }
++ */
++int tplg_parse_control_mixer(snd_tplg_t *tplg,
++	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
++{
++	struct snd_soc_tplg_mixer_control *mc;
++	struct tplg_elem *elem;
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	const char *id, *val = NULL;
++	int err, j;
++
++	elem = tplg_elem_new_common(tplg, cfg, PARSER_TYPE_MIXER);
++	if (!elem)
++		return -ENOMEM;
++
++	/* init new mixer */
++	mc = elem->mixer_ctrl;
++	strncpy(mc->hdr.name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
++	mc->hdr.name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN - 1] = 0;
++	mc->hdr.type =  SND_SOC_TPLG_TYPE_MIXER;
++	mc->size = elem->size;
++	tplg->channel_idx = 0;
++
++	/* set channel reg to default state */
++	for (j = 0; j < SND_SOC_TPLG_MAX_CHAN; j++)
++		mc->channel[j].reg = -1;
++
++	tplg_dbg(" Control Mixer: %s\n", elem->id);
++
++	/* giterate trough each mixer elment */
++	snd_config_for_each(i, next, cfg) {
++		n = snd_config_iterator_entry(i);
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* skip comments */
++		if (strcmp(id, "comment") == 0)
++			continue;
++		if (id[0] == '#')
++			continue;
++
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			elem->index = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, elem->index);
++			continue;
++		}
++
++		if (strcmp(id, "channel") == 0) {
++			if (mc->num_channels >= SND_SOC_TPLG_MAX_CHAN) {
++				fprintf(stderr, "error: too many channels %s\n",
++					elem->id);
++				return -EINVAL;
++			}
++
++			err = tplg_parse_compound(tplg, n, tplg_parse_channel,
++				mc->channel);
++			if (err < 0)
++				return err;
++
++			mc->num_channels = tplg->channel_idx;
++			continue;
++		}
++
++		if (strcmp(id, "max") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			mc->max = atoi(val);
++			tplg_dbg("\t%s: %d\n", id, mc->max);
++			continue;
++		}
++
++		if (strcmp(id, "invert") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			if (strcmp(val, "true") == 0)
++				mc->invert = 1;
++			else if (strcmp(val, "false") == 0)
++				mc->invert = 0;
++
++			tplg_dbg("\t%s: %d\n", id, mc->invert);
++			continue;
++		}
++
++		if (strcmp(id, "ops") == 0) {
++			err = tplg_parse_compound(tplg, n, tplg_parse_ops,
++				&mc->hdr);
++			if (err < 0)
++				return err;
++			continue;
++		}
++
++		if (strcmp(id, "tlv") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			err = tplg_ref_add(elem, PARSER_TYPE_TLV, val);
++			if (err < 0)
++				return err;
++
++			mc->hdr.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |
++				SNDRV_CTL_ELEM_ACCESS_READWRITE;
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++
++		if (strcmp(id, "data") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return -EINVAL;
++
++			tplg_ref_add(elem, PARSER_TYPE_DATA, val);
++			tplg_dbg("\t%s: %s\n", id, val);
++			continue;
++		}
++	}
++
 +	return 0;
 +}
 -- 
