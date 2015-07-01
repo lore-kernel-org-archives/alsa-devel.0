@@ -1,20 +1,17 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: [PATCH] ASoC: ts3a227e: do not report jack status
- when there is i2c read err
-Date: Wed, 1 Jul 2015 10:12:37 -0700
-Message-ID: <CAEUnVG6fLa_+rnmFQ1zWZod25pJomO6xqLbshj8_t8AhhtK9Sg@mail.gmail.com>
-References: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/13] topology support for alsa-lib
+Date: Wed, 1 Jul 2015 18:25:34 +0100
+Message-ID: <20150701172534.GV11162@sirena.org.uk>
+References: <1435758316.29665.23.camel@loki> <s5hh9pnlw2s.wl-tiwai@suse.de>
+ <1435767232.29665.30.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2731269980425555563=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f45.google.com (mail-vn0-f45.google.com
- [209.85.216.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 83A05261504
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 19:12:58 +0200 (CEST)
-Received: by vnbf129 with SMTP id f129so7527238vnb.5
- for <alsa-devel@alsa-project.org>; Wed, 01 Jul 2015 10:12:57 -0700 (PDT)
-In-Reply-To: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9962F26154E
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 19:25:44 +0200 (CEST)
+In-Reply-To: <1435767232.29665.30.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yang Fang <yang.a.fang@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
- Srinivas" <srinivas.sripathi@intel.com>, Praveen K Jain <praveen.k.jain@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Denny Iriawan <denny.iriawan@intel.com>, Mark Brown <broonie@kernel.org>, "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>, kevin.strasser@linux.intel.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2015 at 9:18 PM,  <yang.a.fang@intel.com> wrote:
-> From: "Fang, Yang A" <yang.a.fang@intel.com>
->
-> After suspend -> resume the ts3a227e_interrupt sometimes comes before i2c
-> controller resume is called .regmap_read will return incorrect status
-> and report a wrong jack status.We should return if there is read err,the
-> interrupt will come again since it is level triggered and we are not yet
-> clear the interrupt. In addtion,cht_bsw_max98090_ti machine driver
-> registered additional notifier base on jack event which will program
-> the audio codec.there will be codec timeout err if such event occurs
-> prior to i2c controller is resumed.
 
-Thanks, I think the error checking is good to have anyway, but should
-the interrupt also be disabled across suspend/resume?  I'd hope this
-device's resume callback wouldn't happen until after the parent i2c
-bus is ready.
+--===============2731269980425555563==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jfWagoTHmfL/c8Ax"
+Content-Disposition: inline
 
->
-> Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-> ---
->  sound/soc/codecs/ts3a227e.c |   18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-> index 12232d7..12d0f2a 100644
-> --- a/sound/soc/codecs/ts3a227e.c
-> +++ b/sound/soc/codecs/ts3a227e.c
-> @@ -23,6 +23,7 @@
->  #include "ts3a227e.h"
->
->  struct ts3a227e {
-> +       struct device *dev;
->         struct regmap *regmap;
->         struct snd_soc_jack *jack;
->         bool plugged;
-> @@ -189,16 +190,28 @@ static irqreturn_t ts3a227e_interrupt(int irq, void *data)
->         struct ts3a227e *ts3a227e = (struct ts3a227e *)data;
->         struct regmap *regmap = ts3a227e->regmap;
->         unsigned int int_reg, kp_int_reg, acc_reg, i;
-> +       struct device *dev = ts3a227e->dev;
-> +       int ret;
->
->         /* Check for plug/unplug. */
-> -       regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
-> +       ret = regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
-> +       if (ret) {
-> +               dev_err(dev, "failed to clear interrupt ret=%d\n", ret);
-> +               return IRQ_HANDLED;
-> +       }
-> +
->         if (int_reg & (DETECTION_COMPLETE_EVENT | INS_REM_EVENT)) {
->                 regmap_read(regmap, TS3A227E_REG_ACCESSORY_STATUS, &acc_reg);
->                 ts3a227e_new_jack_state(ts3a227e, acc_reg);
->         }
->
->         /* Report any key events. */
-> -       regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
-> +       ret = regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
-> +       if (ret) {
-> +               dev_err(dev, "failed to clear key interrupt ret=%d\n", ret);
-> +               return IRQ_HANDLED;
-> +       }
-> +
->         for (i = 0; i < TS3A227E_NUM_BUTTONS; i++) {
->                 if (kp_int_reg & PRESS_MASK(i))
->                         ts3a227e->buttons_held |= (1 << i);
-> @@ -283,6 +296,7 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
->                 return -ENOMEM;
->
->         i2c_set_clientdata(i2c, ts3a227e);
-> +       ts3a227e->dev = dev;
->
->         ts3a227e->regmap = devm_regmap_init_i2c(i2c, &ts3a227e_regmap_config);
->         if (IS_ERR(ts3a227e->regmap))
-> --
-> 1.7.9.5
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--jfWagoTHmfL/c8Ax
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 01, 2015 at 05:13:52PM +0100, Liam Girdwood wrote:
+> On Wed, 2015-07-01 at 17:46 +0200, Takashi Iwai wrote:
+
+> > You can manage such a cover letter better with --cover-letter option
+> > of git-format-patch or git-send-email.
+
+> I know, I guess I'm set in my ways ;) Will do it next time.
+
+Youi can also just supply the message ID for threading directly in git
+send-email (which is what I tend to do) but you do need to look it up
+after you send the cover letter if you're going to do that.
+
+--jfWagoTHmfL/c8Ax
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVlCKNAAoJECTWi3JdVIfQb4gH/A5JVoCBvTwCAQsJ3T8asoau
+GUQeZTiEq8pCNsKmDYsbLSkAIt5m1SUr+8giXdH2CzhSWy7N+BK0YZeAt/491jId
+FLwjAq1fbqCFR6s5scOdQqJthwtU+E+f94HEcQCeYY5VZmBsezVkmCwfymv3RFs7
+JSOfc5+Ex7A6a26KMVu9bPJkyOu/szIDivVSR0PyAOhmmrikdPqcP4Wc5OhRnUk7
+yH8PDTXjP91ZvTsUUb3GpEO0cqI6aLHqDPVK4ccG2jzlC/IExcntNbx5aE3swTnJ
+A1wd/GkoYiH0i8qvufFBBboA+B+ZCIzTEAM8a8TB7AGFva+x8onMpvdh2iH+qXk=
+=G1T6
+-----END PGP SIGNATURE-----
+
+--jfWagoTHmfL/c8Ax--
+
+--===============2731269980425555563==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2731269980425555563==--
