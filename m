@@ -1,76 +1,70 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [alsa-devel][PATCH] ASoC: wm8960: update pll and clock setting
- function
-Date: Wed, 1 Jul 2015 16:07:25 +0800
-Message-ID: <20150701080723.GA22311@shlinux2>
-References: <5630bd343217e8fa895c5d133497f50739417453.1435316484.git.zidan.wang@freescale.com>
- <20150629094412.GH6321@opensource.wolfsonmicro.com>
- <20150630085347.GA22709@shlinux2>
- <20150630104200.GJ6321@opensource.wolfsonmicro.com>
+From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Subject: [PATCH v2 01/12] device: property: delay device-driver matches
+Date: Wed,  1 Jul 2015 11:40:56 +0200
+Message-ID: <1435743667-11987-2-git-send-email-tomeu.vizoso@collabora.com>
+References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150630104200.GJ6321@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lars@metafoo.de, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>, linux-gpio@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-pwm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 30, 2015 at 11:42:00AM +0100, Charles Keepax wrote:
-> On Tue, Jun 30, 2015 at 04:54:09PM +0800, Zidan Wang wrote:
-> > On Mon, Jun 29, 2015 at 10:44:12AM +0100, Charles Keepax wrote:
-> > > On Fri, Jun 26, 2015 at 07:09:22PM +0800, Zidan Wang wrote:
-> > > > When using snd_soc_dai_set_pll to set pll in machine driver, we
-> > > > should set pll in and pll out freq and ensure 5 < PLLN < 13,
-> > > > otherwise set pll will be failed. In order to support more
-> > > > formats and sample rates for a certain MCLK, if snd_soc_dai_set_pll
-> > > > failed, it will calculate a available pll out freq and set the pll
-> > > > again.
-> > > > 
-> > > > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > > > ---
-> > > 
-> > > I think this need a little more explaination on how this is
-> > > expected to work. From looking at the code what it looks like
-> > > what happens is you can set a PLL frequency through set_pll but
-> > > then if that frequency doesn't support the sample rate requested
-> > > through hw_params it will be changed. This makes me a little
-> > > nervous, as something explicitly requested is being overwritten
-> > > automatically.
-> > > 
-> > From RM, we should ensure 5 < PLLN < 13. When i using snd_soc_dai_set_pll
-> > to set pll frequency, it's hard for me to get a common pll out frequency.
-> > Sometimes, when codec MCLK or sample rate changed, the pll out frequency
-> > also should be changed, otherwise set_pll function will be failed.
-> > 
-> > I made it to auto select pll frequency when snd_soc_dai_set_pll failed, so that
-> > it can support more sample rate, and don't need to set different pll out
-> > frequency for different sample rate and different MCLK.
-> 
-> But none the less I still asked for one frequency and got another
-> frequency, that seems troubling. For example the chip has the
-> ability to output the PLL output on GPIO1, what if that is being
-> used to feed another chip that expects a certain rate?
-> 
-> What are your feeling on my previous suggestion of adding a
-> particular define that indicates set the PLL to "auto" mode?
-Yes, you are right, overwritten the setting is not a good idea. 
-I will change code to support "auto" mode. When it's "auto" mode, if the MCLK can
-provide sysclk, using MCLK directly, otherwise, auto select pll frequency and set PLL.
-
-Do you think it make sense?
-
-Best Regards,
-Zidan Wang
-> 
-> Thanks,
-> Charles
-> 
-> > 
-> > > Would it perhaps be better to allow the auto selection of the
-> > > PLL frequency only when things haven't been manually set, or
-> > > provide some setting that indicates auto mode?
-> > > 
-> > > Thanks,
-> > > Charles
+RGVsYXkgbWF0Y2hlcyBvZiBwbGF0Zm9ybSBkZXZpY2VzIHVudGlsIGxhdGVfaW5pdGNhbGwsIHdo
+ZW4gd2UgYXJlIHN1cmUKdGhhdCBhbGwgYnVpbHQtaW4gZHJpdmVycyBoYXZlIGJlZW4gcmVnaXN0
+ZXJlZCBhbHJlYWR5LiBUaGlzIGlzIG5lZWRlZAp0byBwcmV2ZW50IGRlZmVycmVkIHByb2JlcyBi
+ZWNhdXNlIG9mIHNvbWUgZGVwZW5kZW5jaWVzJyBkcml2ZXJzIG5vdApoYXZpbmcgcmVnaXN0ZXJl
+ZCB5ZXQuCgpUaGlzIHJlZHVjZXMgdGhlIHRvdGFsIGFtb3VudCBvZiB3b3JrIHRoYXQgdGhlIGtl
+cm5lbCBkb2VzIGR1cmluZyBib290CmJlY2F1c2UgaXQgd29uJ3QgdHJ5IHRvIG1hdGNoIGRldmlj
+ZXMgdG8gZHJpdmVycyB3aGVuIGJ1aWx0LWluIGRyaXZlcnMKYXJlIHN0aWxsIHJlZ2lzdGVyaW5n
+IGJ1dCBhbHNvIHJlZHVjZXMgc29tZSBwYXJhbGxlbGlzbSwgc28gdG90YWwgYm9vdAp0aW1lIG1p
+Z2h0IHNsaWdodGx5IGluY3JlYXNlIG9yIGRlY3JlYXNlIGRlcGVuZGluZyBvbiB0aGUgcGxhdGZv
+cm0gYW5kCmtlcm5lbCBjb25maWd1cmF0aW9uLgoKVGhpcyBjaGFuZ2Ugd2lsbCBtYWtlIG1ha2Ug
+cG9zc2libGUgdG8gcHJldmVudCBhbnkgZGVmZXJyZWQgcHJvYmVzIG9uY2UKZGV2aWNlcyBhcmUg
+cHJvYmVkIGluIGRlcGVuZGVuY3kgb3JkZXIuCgpTaWduZWQtb2ZmLWJ5OiBUb21ldSBWaXpvc28g
+PHRvbWV1LnZpem9zb0Bjb2xsYWJvcmEuY29tPgotLS0KCkNoYW5nZXMgaW4gdjI6Ci0gSW5zdGVh
+ZCBvZiBkZWxheWluZyBhbGwgcHJvYmVzIHVudGlsIGxhdGVfaW5pdGNhbGwsIG9ubHkgZGVsYXkg
+bWF0Y2hlcwogIG9mIHBsYXRmb3JtIGRldmljZXMgdGhhdCBoYXZlIGEgZmlybXdhcmUgbm9kZSBh
+dHRhY2hlZC4KCiBkcml2ZXJzL2Jhc2UvcHJvcGVydHkuYyB8IDI5ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvYmFzZS9wcm9wZXJ0eS5jIGIvZHJpdmVycy9iYXNlL3Byb3BlcnR5LmMKaW5k
+ZXggODUyOGViOS4uOGVhZDFiYSAxMDA2NDQKLS0tIGEvZHJpdmVycy9iYXNlL3Byb3BlcnR5LmMK
+KysrIGIvZHJpdmVycy9iYXNlL3Byb3BlcnR5LmMKQEAgLTE2LDggKzE2LDExIEBACiAjaW5jbHVk
+ZSA8bGludXgvb2YuaD4KICNpbmNsdWRlIDxsaW51eC9vZl9hZGRyZXNzLmg+CiAjaW5jbHVkZSA8
+bGludXgvb2ZfZGV2aWNlLmg+CisjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+CiAj
+aW5jbHVkZSA8bGludXgvcHJvcGVydHkuaD4KIAorc3RhdGljIGJvb2wgZndub2RlX21hdGNoX2Vu
+YWJsZSA9IGZhbHNlOworCiAvKioKICAqIGRldmljZV9hZGRfcHJvcGVydHlfc2V0IC0gQWRkIGEg
+Y29sbGVjdGlvbiBvZiBwcm9wZXJ0aWVzIHRvIGEgZGV2aWNlIG9iamVjdC4KICAqIEBkZXY6IERl
+dmljZSB0byBhZGQgcHJvcGVydGllcyB0by4KQEAgLTYwNCw2ICs2MDcsMTUgQEAgRVhQT1JUX1NZ
+TUJPTF9HUEwoZndub2RlX2lzX2NvbXBhdGlibGUpOwogYm9vbCBmd25vZGVfZHJpdmVyX21hdGNo
+X2RldmljZShzdHJ1Y3QgZGV2aWNlICpkZXYsCiAJCQkJY29uc3Qgc3RydWN0IGRldmljZV9kcml2
+ZXIgKmRydikKIHsKKwkvKgorCSAqIERlbGF5IG1hdGNoZXMgb2YgcGxhdGZvcm0gZGV2aWNlcyB1
+bnRpbCBsYXRlX2luaXRjYWxsLCB3aGVuIHdlIGFyZQorCSAqIHN1cmUgdGhhdCBhbGwgYnVpbHQt
+aW4gZHJpdmVycyBoYXZlIGJlZW4gcmVnaXN0ZXJlZCBhbHJlYWR5LiBUaGlzCisJICogaXMgbmVl
+ZGVkIHRvIHByZXZlbnQgZGVmZXJyZWQgcHJvYmVzIGJlY2F1c2Ugb2Ygc29tZSBkcml2ZXJzCisJ
+ICogbm90IGhhdmluZyByZWdpc3RlcmVkIHlldC4KKwkgKi8KKwlpZihkZXYtPmJ1cyA9PSAmcGxh
+dGZvcm1fYnVzX3R5cGUgJiYgIWZ3bm9kZV9tYXRjaF9lbmFibGUpCisJCXJldHVybiBmYWxzZTsK
+KwogCWlmIChpc19vZl9ub2RlKGRldi0+Zndub2RlKSkKIAkJcmV0dXJuIG9mX2RyaXZlcl9tYXRj
+aF9kZXZpY2UoZGV2LCBkcnYpOwogCWVsc2UgaWYgKGlzX2FjcGlfbm9kZShkZXYtPmZ3bm9kZSkp
+CkBAIC02MTIsMyArNjI0LDIwIEBAIGJvb2wgZndub2RlX2RyaXZlcl9tYXRjaF9kZXZpY2Uoc3Ry
+dWN0IGRldmljZSAqZGV2LAogCXJldHVybiBmYWxzZTsKIH0KIEVYUE9SVF9TWU1CT0xfR1BMKGZ3
+bm9kZV9kcml2ZXJfbWF0Y2hfZGV2aWNlKTsKKworc3RhdGljIGludCBfX2RldmljZV9hdHRhY2go
+c3RydWN0IGRldmljZSAqZGV2LCB2b2lkICpkYXRhKQoreworCWRldmljZV9pbml0aWFsX3Byb2Jl
+KGRldik7CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBmd25vZGVfbWF0Y2hfaW5pdGNh
+bGwodm9pZCkKK3sKKwlmd25vZGVfbWF0Y2hfZW5hYmxlID0gdHJ1ZTsKKworCWJ1c19mb3JfZWFj
+aF9kZXYoJnBsYXRmb3JtX2J1c190eXBlLCBOVUxMLCBOVUxMLCBfX2RldmljZV9hdHRhY2gpOwor
+CisJcmV0dXJuIDA7Cit9CitsYXRlX2luaXRjYWxsKGZ3bm9kZV9tYXRjaF9pbml0Y2FsbCk7Ci0t
+IAoyLjQuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+ZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
+dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
