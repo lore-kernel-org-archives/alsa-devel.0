@@ -1,16 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 12/13] topology: autotools: Add build
-	support for topology core
-Date: Wed,  1 Jul 2015 14:44:34 +0100
-Message-ID: <1435758275-4047-12-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 10/13] topology: Add Channel map parser.
+Date: Wed,  1 Jul 2015 14:44:32 +0100
+Message-ID: <1435758275-4047-10-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 482CE260719
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 15:46:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0504A2606F6
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 15:45:56 +0200 (CEST)
 In-Reply-To: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,129 +24,147 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add support for parsing channel map to control registers.
+
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- configure.ac             | 11 ++++++++++-
- include/Makefile.am      |  4 ++++
- src/Makefile.am          |  7 +++++++
- src/topology/Makefile.am | 19 +++++++++++++++++++
- 4 files changed, 40 insertions(+), 1 deletion(-)
- create mode 100644 src/topology/Makefile.am
+ src/topology/channel.c | 128 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 128 insertions(+)
+ create mode 100644 src/topology/channel.c
 
-diff --git a/configure.ac b/configure.ac
-index 9621d4e..a482b3e 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -380,6 +380,9 @@ AC_ARG_ENABLE(seq,
- AC_ARG_ENABLE(ucm,
-   AS_HELP_STRING([--disable-ucm], [disable the use-case-manager component]),
-   [build_ucm="$enableval"], [build_ucm="yes"])
-+AC_ARG_ENABLE(topology,
-+  AS_HELP_STRING([--disable-topology], [disable the DSP topology component]),
-+  [build_topology="$enableval"], [build_topology="yes"])
- AC_ARG_ENABLE(alisp,
-   AS_HELP_STRING([--disable-alisp], [disable the alisp component]),
-   [build_alisp="$enableval"], [build_alisp="yes"])
-@@ -422,6 +425,7 @@ AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
- AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
- AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
- AM_CONDITIONAL([BUILD_UCM], [test x$build_ucm = xyes])
-+AM_CONDITIONAL([BUILD_TOPOLOGY], [test x$build_topology = xyes])
- AM_CONDITIONAL([BUILD_ALISP], [test x$build_alisp = xyes])
- AM_CONDITIONAL([BUILD_PYTHON], [test x$build_python = xyes])
- 
-@@ -443,6 +447,9 @@ fi
- if test "$build_ucm" = "yes"; then
-   AC_DEFINE([BUILD_UCM], "1", [Build UCM component])
- fi
-+if test "$build_topology" = "yes"; then
-+  AC_DEFINE([BUILD_TOPOLOGY], "1", [Build DSP Topology component])
-+fi
- 
- dnl PCM Plugins
- 
-@@ -643,7 +650,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/pcm/Makefile src/pcm/scopes/Makefile \
- 	  src/rawmidi/Makefile src/timer/Makefile \
-           src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
--          src/alisp/Makefile \
-+          src/alisp/Makefile src/topology/Makefile \
- 	  src/conf/Makefile src/conf/alsa.conf.d/Makefile \
- 	  src/conf/cards/Makefile \
- 	  src/conf/pcm/Makefile \
-@@ -656,6 +663,8 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/PAZ00/Makefile \
- 	  src/conf/ucm/GoogleNyan/Makefile \
- 	  src/conf/ucm/broadwell-rt286/Makefile \
-+	  src/conf/topology/Makefile \
-+	  src/conf/topology/broadwell/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
- 	  alsalisp/Makefile aserver/Makefile \
- 	  test/Makefile test/lsb/Makefile \
-diff --git a/include/Makefile.am b/include/Makefile.am
-index 4baa03a..ff931fd 100644
---- a/include/Makefile.am
-+++ b/include/Makefile.am
-@@ -50,6 +50,10 @@ if BUILD_UCM
- alsainclude_HEADERS += use-case.h
- endif
- 
-+if BUILD_TOPOLOGY
-+alsainclude_HEADERS += topology.h
-+endif
-+
- if BUILD_ALISP
- alsainclude_HEADERS += alisp.h
- endif
-diff --git a/src/Makefile.am b/src/Makefile.am
-index fa255ff..57686a6 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -42,6 +42,10 @@ if BUILD_UCM
- SUBDIRS += ucm
- libasound_la_LIBADD += ucm/libucm.la
- endif
-+if BUILD_TOPOLOGY
-+SUBDIRS += topology
-+libasound_la_LIBADD += topology/libtopology.la
-+endif
- if BUILD_ALISP
- SUBDIRS += alisp
- libasound_la_LIBADD += alisp/libalisp.la
-@@ -81,6 +85,9 @@ seq/libseq.la:
- ucm/libucm.la:
- 	$(MAKE) -C ucm libucm.la
- 
-+topology/libtopology.la:
-+	$(MAKE) -C topology libtopology.la
-+
- instr/libinstr.la:
- 	$(MAKE) -C instr libinstr.la
- 
-diff --git a/src/topology/Makefile.am b/src/topology/Makefile.am
+diff --git a/src/topology/channel.c b/src/topology/channel.c
 new file mode 100644
-index 0000000..3fb8bf7
+index 0000000..e33c70d
 --- /dev/null
-+++ b/src/topology/Makefile.am
-@@ -0,0 +1,19 @@
-+EXTRA_LTLIBRARIES = libtopology.la
++++ b/src/topology/channel.c
+@@ -0,0 +1,128 @@
++/*
++  Copyright(c) 2014-2015 Intel Corporation
++  All rights reserved.
 +
-+libtopology_la_SOURCES =\
-+	parser.c \
-+	builder.c \
-+	ctl.c \
-+	dapm.c \
-+	pcm.c \
-+	data.c \
-+	text.c \
-+	channel.c \
-+	ops.c \
-+	elem.c
++  This program is free software; you can redistribute it and/or modify
++  it under the terms of version 2 of the GNU General Public License as
++  published by the Free Software Foundation.
 +
-+noinst_HEADERS = tplg_local.h
++  This program is distributed in the hope that it will be useful, but
++  WITHOUT ANY WARRANTY; without even the implied warranty of
++  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++  General Public License for more details.
 +
-+all: libtopology.la
++  Authors: Mengdong Lin <mengdong.lin@intel.com>
++           Yao Jin <yao.jin@intel.com>
++           Liam Girdwood <liam.r.girdwood@linux.intel.com>
++*/
 +
-+AM_CPPFLAGS=-I$(top_srcdir)/include
++#include "list.h"
++#include "tplg_local.h"
++
++/* mapping of channel text names to types */
++static const struct map_elem channel_map[] = {
++	{"mono", SNDRV_CHMAP_MONO},	/* mono stream */
++	{"fl", SNDRV_CHMAP_FL},		/* front left */
++	{"fr", SNDRV_CHMAP_FR},		/* front right */
++	{"rl", SNDRV_CHMAP_RL},		/* rear left */
++	{"rr", SNDRV_CHMAP_RR},		/* rear right */
++	{"fc", SNDRV_CHMAP_FC},		/* front center */
++	{"lfe", SNDRV_CHMAP_LFE},	/* LFE */
++	{"sl", SNDRV_CHMAP_SL},		/* side left */
++	{"sr", SNDRV_CHMAP_SR},		/* side right */
++	{"rc", SNDRV_CHMAP_RC},		/* rear center */
++	{"flc", SNDRV_CHMAP_FLC},	/* front left center */
++	{"frc", SNDRV_CHMAP_FRC},	/* front right center */
++	{"rlc", SNDRV_CHMAP_RLC},	/* rear left center */
++	{"rrc", SNDRV_CHMAP_RRC},	/* rear right center */
++	{"flw", SNDRV_CHMAP_FLW},	/* front left wide */
++	{"frw", SNDRV_CHMAP_FRW},	/* front right wide */
++	{"flh", SNDRV_CHMAP_FLH},	/* front left high */
++	{"fch", SNDRV_CHMAP_FCH},	/* front center high */
++	{"frh", SNDRV_CHMAP_FRH},	/* front right high */
++	{"tc", SNDRV_CHMAP_TC},		/* top center */
++	{"tfl", SNDRV_CHMAP_TFL},	/* top front left */
++	{"tfr", SNDRV_CHMAP_TFR},	/* top front right */
++	{"tfc", SNDRV_CHMAP_TFC},	/* top front center */
++	{"trl", SNDRV_CHMAP_TRL},	/* top rear left */
++	{"trr", SNDRV_CHMAP_TRR},	/* top rear right */
++	{"trc", SNDRV_CHMAP_TRC},	/* top rear center */
++	{"tflc", SNDRV_CHMAP_TFLC},	/* top front left center */
++	{"tfrc", SNDRV_CHMAP_TFRC},	/* top front right center */
++	{"tsl", SNDRV_CHMAP_TSL},	/* top side left */
++	{"tsr", SNDRV_CHMAP_TSR},	/* top side right */
++	{"llfe", SNDRV_CHMAP_LLFE},	/* left LFE */
++	{"rlfe", SNDRV_CHMAP_RLFE},	/* right LFE */
++	{"bc", SNDRV_CHMAP_BC},		/* bottom center */
++	{"blc", SNDRV_CHMAP_BLC},	/* bottom left center */
++	{"brc", SNDRV_CHMAP_BRC},	/* bottom right center */
++};
++
++
++static int lookup_channel(const char *c)
++{
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(channel_map); i++) {
++		if (strcasecmp(channel_map[i].name, c) == 0) {
++			return channel_map[i].id;
++		}
++	}
++
++	return -EINVAL;
++}
++
++/* Parse a channel.
++ *
++ * channel."channel_map.name" {
++ *		reg "0"	(register)
++ *		shift "0" (shift)
++ * }
++ */
++int tplg_parse_channel(snd_tplg_t *tplg,
++	snd_config_t *cfg, void *private)
++{
++	snd_config_iterator_t i, next;
++	snd_config_t *n;
++	struct snd_soc_tplg_channel *channel = private;
++	const char *id, *value;
++
++	if (tplg->channel_idx >= SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
++
++	channel += tplg->channel_idx;
++	snd_config_get_id(cfg, &id);
++	tplg_dbg("\tChannel %s at index %d\n", id, tplg->channel_idx);
++
++	channel->id = lookup_channel(id);
++	if (channel->id < 0) {
++		fprintf(stderr, "error: invalid channel %s\n", id);
++		return -EINVAL;
++	}
++
++	channel->size = sizeof(*channel);
++	tplg_dbg("\tChan %s = %d\n", id, channel->id);
++
++	snd_config_for_each(i, next, cfg) {
++
++		n = snd_config_iterator_entry(i);
++
++		/* get id */
++		if (snd_config_get_id(n, &id) < 0)
++			continue;
++
++		/* get value */
++		if (snd_config_get_string(n, &value) < 0)
++			continue;
++
++		if (strcmp(id, "reg") == 0)
++			channel->reg = atoi(value);
++		else if (strcmp(id, "shift") == 0)
++			channel->shift = atoi(value);
++
++		tplg_dbg("\t\t%s = %s\n", id, value);
++	}
++
++	tplg->channel_idx++;
++	return 0;
++}
 -- 
 2.1.4
