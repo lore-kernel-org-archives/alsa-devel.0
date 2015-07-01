@@ -1,14 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 0/5] alsa-lib: audio timestamping evolutions
-Date: Wed,  1 Jul 2015 15:40:53 -0500
-Message-ID: <1435783258-23730-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 2/5] pcm: add support for
+	get/set_audio_htstamp_config
+Date: Wed,  1 Jul 2015 15:40:55 -0500
+Message-ID: <1435783258-23730-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1435783258-23730-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B4E265068
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 22:41:18 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42C04265068
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 22:41:26 +0200 (CEST)
+In-Reply-To: <1435783258-23730-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +25,125 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-alsa-lib side of kernel patches already merged for 4.1.
+Enable kernel-side functionality by letting user select what sort of
+timestamp it desires
 
-V4: added simple log to show timestamp report and accuracy
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/pcm.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
 
-Pierre-Louis Bossart (5):
-  pcm: add helper functions to query timestamping capabilities
-  pcm: add support for get/set_audio_htstamp_config
-  pcm: add support for new STATUS_EXT ioctl
-  test: fix audio_time with new get/set audio_tstamp_config
-  test: audio_time: show report validity and accuracy
-
- include/pcm.h     |  47 ++++-
- src/pcm/pcm.c     |  73 +++++++-
- src/pcm/pcm_hw.c  |  16 +-
- test/audio_time.c | 515 +++++++++++++++++++++++++++++++++++-------------------
- 4 files changed, 465 insertions(+), 186 deletions(-)
-
+diff --git a/include/pcm.h b/include/pcm.h
+index 2aa1eff..a1d14a9 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -330,6 +330,26 @@ typedef enum _snd_pcm_tstamp_type {
+ 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
+ } snd_pcm_tstamp_type_t;
+ 
++typedef struct _snd_pcm_audio_tstamp_config {
++	/* 5 of max 16 bits used */
++	unsigned int type_requested:4;
++	unsigned int report_delay:1; /* add total delay to A/D or D/A */
++} snd_pcm_audio_tstamp_config_t;
++
++typedef struct _snd_pcm_audio_tstamp_report {
++	/* 6 of max 16 bits used for bit-fields */
++
++	/* for backwards compatibility */
++	unsigned int valid:1;
++
++	/* actual type if hardware could not support requested timestamp */
++	unsigned int actual_type:4;
++
++	/* accuracy represented in ns units */
++	unsigned int accuracy_report:1; /* 0 if accuracy unknown, 1 if accuracy field is valid */
++	unsigned int accuracy; /* up to 4.29s, will be packed in separate field  */
++} snd_pcm_audio_tstamp_report_t;
++
+ /** Unsigned frames quantity */
+ typedef unsigned long snd_pcm_uframes_t;
+ /** Signed frames quantity */
+@@ -981,6 +1001,30 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
+ void snd_pcm_status_get_tstamp(const snd_pcm_status_t *obj, snd_timestamp_t *ptr);
+ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
+ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_driver_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr);
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report);
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config);
++
++static inline void snd_pcm_pack_audio_tstamp_config(unsigned int *data,
++						snd_pcm_audio_tstamp_config_t *config)
++{
++	*data = config->report_delay;
++	*data <<= 4;
++	*data |= config->type_requested;
++}
++
++static inline void snd_pcm_unpack_audio_tstamp_report(unsigned int data, unsigned int accuracy,
++						snd_pcm_audio_tstamp_report_t *report)
++{
++	data >>= 16;
++	report->valid = data & 1;
++	report->actual_type = (data >> 1) & 0xF;
++	report->accuracy_report = (data >> 5) & 1;
++	report->accuracy = accuracy;
++}
++
+ snd_pcm_sframes_t snd_pcm_status_get_delay(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail(const snd_pcm_status_t *obj);
+ snd_pcm_uframes_t snd_pcm_status_get_avail_max(const snd_pcm_status_t *obj);
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 846d502..bae1d16 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -6367,6 +6367,44 @@ void snd_pcm_status_get_audio_htstamp(const snd_pcm_status_t *obj, snd_htimestam
+ }
+ 
+ /**
++ * \brief Get "now" hi-res driver timestamp from a PCM status container. Defines when the status
++ * was generated by driver, may differ from normal timestamp.
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned timestamp
++ */
++void snd_pcm_status_get_driver_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *ptr)
++{
++	assert(obj && ptr);
++	*ptr = obj->driver_tstamp;
++}
++
++/**
++ * \brief Get audio_tstamp_report from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to returned report (valid fields are accuracy and type)
++ */
++void snd_pcm_status_get_audio_htstamp_report(const snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_report_t *audio_tstamp_report)
++{
++	assert(obj && audio_tstamp_report);
++	snd_pcm_unpack_audio_tstamp_report(obj->audio_tstamp_data,
++					obj->audio_tstamp_accuracy,
++					audio_tstamp_report);
++}
++
++/**
++ * \brief set audio_tstamp_config from a PCM status container
++ * \param obj pointer to #snd_pcm_status_t
++ * \param ptr Pointer to config (valid fields are type and report_analog_delay)
++ */
++void snd_pcm_status_set_audio_htstamp_config(snd_pcm_status_t *obj,
++					     snd_pcm_audio_tstamp_config_t *audio_tstamp_config)
++{
++	assert(obj && audio_tstamp_config);
++	snd_pcm_pack_audio_tstamp_config(&obj->audio_tstamp_data, audio_tstamp_config);
++}
++
++/**
+  * \brief Get delay from a PCM status container (see #snd_pcm_delay)
+  * \return Delay in frames
+  *
 -- 
 1.9.1
