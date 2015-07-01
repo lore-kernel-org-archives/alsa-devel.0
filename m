@@ -1,75 +1,46 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add MIDI support
-	for	Steinberg MI2/MI4
-Date: Wed, 01 Jul 2015 16:06:19 +0200
-Message-ID: <5593F3DB.50408@ladisch.de>
-References: <558C4709.3090903@ladisch.de>
- <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
+From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Subject: Re: [LAD] [alsa-devel] Fw: Using loopback card to Connect GSM two
+	way call	to the real sound card UDA1345TS
+Date: Wed, 01 Jul 2015 16:11:31 +0200
+Message-ID: <5593F513.4030705@ladisch.de>
+References: <1425878251963.1340@tataelxsi.co.in>	<1425878360800.70892@tataelxsi.co.in>,
+ <54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de> <1429877130444.23317@tataelxsi.co.in>,
+ <553A3ADB.7040108@ladisch.de>,
+ <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>	<HKXPR04MB277B58064C140058C37487EC3B60@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <556C6EB8.7030401@ladisch.de>,
+ <HKXPR04MB277069B809070671B95BAFCC3B40@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <SIXPR04MB2530654AB664B2CE19B4665C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <SIXPR04MB2531DB716093D09C156BEA0C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 19667260633
- for <alsa-devel@alsa-project.org>; Wed,  1 Jul 2015 16:07:36 +0200 (CEST)
-In-Reply-To: <1435678893-6757-1-git-send-email-dominic.sacre@gmx.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
-Cc: =?UTF-8?B?RG9taW5pYyBTYWNyw6k=?= <dominic.sacre@gmx.de>, Albert Huitsing <albert@huitsing.nl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <SIXPR04MB2531DB716093D09C156BEA0C3A80-gTWnircbfuxAKSrPHYfF6gfhPeD8jYilXA4E9RH9d+qIuWR1G4zioA@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev/>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+To: Srinivasan S <srinivasan.s-Ig93jE4/MIihbFNETrL9Qw@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org" <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-RG9taW5pYyBTYWNyw6kgd3JvdGU6Cj4gVGhlIFN0ZWluYmVyZyBNSTIgYW5kIE1JNCBpbnRlcmZh
-Y2VzIGFyZSBjb21wYXRpYmxlIHdpdGggdGhlIFVTQiBjbGFzcwo+IGF1ZGlvIHNwZWMsIGJ1dCB0
-aGUgTUlESSBwYXJ0IG9mIHRoZSBkZXZpY2VzIGlzIHJlcG9ydGVkIGFzIGEgdmVuZG9yCj4gc3Bl
-Y2lmaWMgaW50ZXJmYWNlLgo+Cj4gVGhpcyBwYXRjaCBhZGRzIGVudHJpZXMgdG8gcXVpcmtzLXRh
-YmxlLmggdG8gcmVjb2duaXplIHRoZSBNSURJCj4gZW5kcG9pbnRzLiBBdWRpbyBmdW5jdGlvbmFs
-aXR5IHdhcyBhbHJlYWR5IHdvcmtpbmcgYW5kIGlzIHVuYWZmZWN0ZWQgYnkKPiB0aGlzIGNoYW5n
-ZS4KPgo+IFNpZ25lZC1vZmYtYnk6IERvbWluaWMgU2FjcsOpIDxkb21pbmljLnNhY3JlQGdteC5k
-ZT4KPiBTaWduZWQtb2ZmLWJ5OiBBbGJlcnQgSHVpdHNpbmcgPGFsYmVydEBodWl0c2luZy5ubD4K
-CkFja2VkLWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KCj4gLS0tCj4g
-IHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDY4ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygr
-KQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaCBiL3NvdW5kL3VzYi9x
-dWlya3MtdGFibGUuaAo+IGluZGV4IDJmNmQzZTkuLmU0NzU2NjUgMTAwNjQ0Cj4gLS0tIGEvc291
-bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4gKysrIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4g
-QEAgLTI1MTIsNiArMjUxMiw3NCBAQCBZQU1BSEFfREVWSUNFKDB4NzAxMCwgIlVCOTkiKSwKPiAg
-CX0KPiAgfSwKPgo+ICsvKiBTdGVpbmJlcmcgZGV2aWNlcyAqLwo+ICt7Cj4gKwkvKiBTdGVpbmJl
-cmcgTUkyICovCj4gKwlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4MGE0ZSwgMHgyMDQwKSwKPiAr
-CS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9h
-dWRpb19xdWlyaykgewo+ICsJCS5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZBQ0UsCj4gKwkJLnR5
-cGUgPSBRVUlSS19DT01QT1NJVEUsCj4gKwkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3Vz
-Yl9hdWRpb19xdWlya1tdKSB7Cj4gKwkJCXsKPiArCQkJCS5pZm51bSA9IDAsCj4gKwkJCQkudHlw
-ZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQo+ICsJCQl9LAo+ICsJCQl7Cj4gKwkJ
-CQkuaWZudW0gPSAxLAo+ICsJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9JTlRFUkZB
-Q0UKPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gMiwKPiArCQkJCS50eXBlID0gUVVJ
-UktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4gKwkJCX0sCj4gKwkJCXsKPiArCQkJCS5pZm51
-bSA9IDMsCj4gKwkJCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9JTlQsCj4gKwkJCQku
-ZGF0YSA9ICYoY29uc3Qgc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9pbmZvKSB7Cj4gKwkJ
-CQkJLm91dF9jYWJsZXMgPSAweDAwMDEsCj4gKwkJCQkJLmluX2NhYmxlcyAgPSAweDAwMDEKPiAr
-CQkJCX0KPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gLTEKPiArCQkJfQo+ICsJCX0K
-PiArCX0KPiArfSwKPiArewo+ICsJLyogU3RlaW5iZXJnIE1JNCAqLwo+ICsJVVNCX0RFVklDRV9W
-RU5ET1JfU1BFQygweDBhNGUsIDB4NDA0MCksCj4gKwkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQg
-bG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKPiArCQkuaWZudW0g
-PSBRVUlSS19BTllfSU5URVJGQUNFLAo+ICsJCS50eXBlID0gUVVJUktfQ09NUE9TSVRFLAo+ICsJ
-CS5kYXRhID0gJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgewo+ICsJCQl7
-Cj4gKwkJCQkuaWZudW0gPSAwLAo+ICsJCQkJLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9J
-TlRFUkZBQ0UKPiArCQkJfSwKPiArCQkJewo+ICsJCQkJLmlmbnVtID0gMSwKPiArCQkJCS50eXBl
-ID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4gKwkJCX0sCj4gKwkJCXsKPiArCQkJ
-CS5pZm51bSA9IDIsCj4gKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFD
-RQo+ICsJCQl9LAo+ICsJCQl7Cj4gKwkJCQkuaWZudW0gPSAzLAo+ICsJCQkJLnR5cGUgPSBRVUlS
-S19NSURJX0ZJWEVEX0VORFBPSU5ULAo+ICsJCQkJLmRhdGEgPSAmKGNvbnN0IHN0cnVjdCBzbmRf
-dXNiX21pZGlfZW5kcG9pbnRfaW5mbykgewo+ICsJCQkJCS5vdXRfY2FibGVzID0gMHgwMDAxLAo+
-ICsJCQkJCS5pbl9jYWJsZXMgID0gMHgwMDAxCj4gKwkJCQl9Cj4gKwkJCX0sCj4gKwkJCXsKPiAr
-CQkJCS5pZm51bSA9IC0xCj4gKwkJCX0KPiArCQl9Cj4gKwl9Cj4gK30sCj4gKwo+ICAvKiBUZXJy
-YVRlYyBkZXZpY2VzICovCj4gIHsKPiAgCVVTQl9ERVZJQ0VfVkVORE9SX1NQRUMoMHgwY2NkLCAw
-eDAwMTIpLApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Srinivasan S wrote:
+> Am facing overrun & underrun issues, when I run the the above GSM application with the attached asound.conf
+
+The sound card and the GSM streams are not synchronized.
+You need to compensate for the drift between the clocks, typically by resampling.
+(Jack's alsa_in/alsa_out would automatically do this.)
+
+
+Regards,
+Clemens
