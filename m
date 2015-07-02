@@ -1,18 +1,18 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: [ALC668]: Asus N751JK - Incorrect default pin
- assignment for external base speaker and external microphone not working
-Date: Thu, 2 Jul 2015 14:14:01 +0200
-Message-ID: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/3] Revert "ASoC: wm0010: Add missing
+	IRQF_ONESHOT"
+Date: Thu, 02 Jul 2015 21:26:44 +0800
+Message-ID: <1435843604.17967.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f174.google.com (mail-ob0-f174.google.com
- [209.85.214.174])
- by alsa0.perex.cz (Postfix) with ESMTP id ECDC6265AD8
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2015 14:14:25 +0200 (CEST)
-Received: by obdbs4 with SMTP id bs4so48178017obd.3
- for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2015 05:14:21 -0700 (PDT)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5ABF265993
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2015 15:26:53 +0200 (CEST)
+Received: by pdjd13 with SMTP id d13so45387731pdj.0
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jul 2015 06:26:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Michal Marek <mmarek@suse.cz>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Fengguang Wu <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This reverts 58d468328646 ("ASoC: wm0010: Add missing IRQF_ONESHOT").
 
-While being in the process of making my audio work on my new notebook, I
-noticed that the audio hardware is partially working
-out-of-the-Linux-kernel-box v4.0.7 Arch. The following two things seem not
-to work.
+The coccinelle warnings is false positive because the original code does
+set IRQF_ONESHOT by "trigger |= IRQF_ONESHOT;".
 
---------------------------------
-1. External base speaker
---------------------------------
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/wm0010.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The Asus N751JK notebook (ALC668) has a small external 'base' speaker (jack
-2,5mm 4 rings), which I only can get to work with the help of hdajackretask
-with the following setting:
-
-* Override unconnected pin 0x1a and connect it to Internal Speaker (LFE).
-
-In the sound kernel tree I have noticed PCI ID fixes which are more or less
-equal to this situation.
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/sound/pci/hda/patch_realtek.c
-
-This SND_PCI_QUIRK definition looks a lot like it:
-SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A),
-
-The Vendor/PCI ID is different for this laptop and I guess a new line
-should be added something like this:
-SND_PCI_QUIRK(0x1043, 0x17bd, "Asus N751JK", ALC662_FIXUP_BASS_1A),
-
---------------------------------
-2. External microphone
---------------------------------
-
-The Asus N751JK notebook (ALC668) has a 3,5mm 4-ring combo jack for
-headphones and microphone.
-The headphone is detected correct and auto-mute works good (jack detection).
-The microphone is not detected and does not work.
-
-I was unable to get it to work with hdajackretask or any of the Asus model
-settings, such as:
-* options snd_hda_intel model=,asus-mode4
-
-I was able to get the microphone to work with the following setting:
-* options snd_hda_intel model=,dell-headset-multi
-
-This setting creates two new items in PulseAudio making a total of three:
-* Internal microphone (works out of the box)
-* Headset microphone (works indeed with a headset)
-* Microphone (don't know if this works, since I don't have a single
-microphone, but it does not work with the headset)
-
-Unfortunately the auto-input-device-switch to the Headset microphone does
-not seem to work.
-When I plugin a headset, the headphones get detected and the Internal
-speakers are muted.
-The Input device does not automatically switch from Internal microphone to
-Headset microphone.
-I have to do this manually, after which it works.
-I don't know if the microphone has a jack detection.
-If it does not, maybe it is possible to use the headphones jack detection?
-
-I have added the alsa-info without any snd_intel / alsa modifications here:
-http://www.alsa-project.org/db/?f=0b5135bd12f28bb5cb182f83bfa21bc50022faa6
-
-I don't mind to help to test, for example module options, patches and/or
-compile kernels.
-
-Who is able and willing to help to fix this issue?
-
-With kind regards,
-Arthur Borsboom.
-
---
-Arthur Borsboom
-Email: arthurborsboom@gmail.com
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 6560a66..ff924032 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -953,7 +953,7 @@ static int wm0010_spi_probe(struct spi_device *spi)
+ 		trigger = IRQF_TRIGGER_FALLING;
+ 	trigger |= IRQF_ONESHOT;
+ 
+-	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger | IRQF_ONESHOT,
++	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger,
+ 				   "wm0010", wm0010);
+ 	if (ret) {
+ 		dev_err(wm0010->dev, "Failed to request IRQ %d: %d\n",
+-- 
+2.1.0
