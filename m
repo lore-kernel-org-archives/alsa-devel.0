@@ -1,18 +1,17 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: dapm: Don't check dummy dai in
- soc_dapm_dai_stream_event
-Date: Thu, 2 Jul 2015 16:05:21 +0800
-Message-ID: <20150702080519.GA24839@shlinux2>
+	soc_dapm_dai_stream_event
+Date: Thu, 02 Jul 2015 11:23:43 +0200
+Message-ID: <5595031F.2090608@metafoo.de>
 References: <1434512468-25555-1-git-send-email-shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0140.outbound.protection.outlook.com [207.46.100.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BAB02615C0
- for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2015 11:14:08 +0200 (CEST)
-Content-Disposition: inline
+Received: from smtp-out-037.synserver.de (smtp-out-037.synserver.de
+ [212.40.185.37])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38A6B2615C0
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jul 2015 11:23:45 +0200 (CEST)
 In-Reply-To: <1434512468-25555-1-git-send-email-shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,23 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi maintainers
-
-	Could you please review this patch? I haven't receive any feedback
-for about two weeks. Thanks.
-
-Best regards
-wang shengjiu
-
-On Wed, Jun 17, 2015 at 11:41:08AM +0800, Shengjiu Wang wrote:
+On 06/17/2015 05:41 AM, Shengjiu Wang wrote:
 > Dummy dai can be used by multiple sound card. But it only belong to one
 > card's dapm list. If another card use it, there will be dapm_assert_locked
 > warning.
-> 
+>
 > [   20.015782] WARNING: CPU: 1 PID: 661 at sound/soc/soc-dapm.c:124 dapm_assert_locked.isra.36+0x4c/0x58()
 > [   20.025249] Modules linked in:
 > [   20.028349] CPU: 1 PID: 661 Comm: aplay Not tainted 4.1.0-rc6-next-20150605-00004-gaee05d8-dirty #92
@@ -61,30 +52,35 @@ On Wed, Jun 17, 2015 at 11:41:08AM +0800, Shengjiu Wang wrote:
 > [   20.143918] [<80587db0>] (snd_soc_dapm_stream_event) from [<8058957c>] (soc_pcm_prepare+0x138/0x21c)
 > [   20.153058]  r8:ed8d9480 r7:00000000 r6:ed9b0e00 r5:00000001 r4:ee2ee62c r3:00000000
 > ...
-> 
+>
 > Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 > ---
->  sound/soc/soc-dapm.c |    3 +++
->  1 file changed, 3 insertions(+)
-> 
+>   sound/soc/soc-dapm.c |    3 +++
+>   1 file changed, 3 insertions(+)
+>
 > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
 > index aa327c9..b618541 100644
 > --- a/sound/soc/soc-dapm.c
 > +++ b/sound/soc/soc-dapm.c
 > @@ -3856,6 +3856,9 @@ static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
->  {
->  	struct snd_soc_dapm_widget *w;
->  
+>   {
+>   	struct snd_soc_dapm_widget *w;
+>
 > +	if (snd_soc_dai_is_dummy(dai))
 > +		return;
 > +
->  	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
->  		w = dai->playback_widget;
->  	else
-> -- 
-> 1.7.9.5
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+While this will silence the lockdep warning the underlying issue is still 
+there. When the dummy DAI is used in multiple cards for each card a set of 
+widgets is created for the DAI which is then stored in 
+dai->playback/capture_widget. This means the second card will overwrite the 
+widgets created by the first card.
+
+The correct way to fix this is to not create any widgets for the dummy DAI. 
+This also means you can remove the dummy check in 
+dapm_connect_dai_link_widgets().
+
+>   	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+>   		w = dai->playback_widget;
+>   	else
+>
