@@ -1,65 +1,83 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 03 Jul 2015 09:51:02 +0100
-Message-ID: <1435913462.2478.14.camel@loki>
-References: <5589D025.7090700@gmail.com> <20150624101115.GI19530@localhost>
- <558ABDB6.4010702@gmail.com> <20150624160314.GM19530@localhost>
- <558BA1D8.8040508@intel.com> <55931EE8.5000604@gmail.com>
- <20150702184035.GA1418140@phare.normalesup.org>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
+	displayport multi-stream to hda codec.
+Date: Fri, 03 Jul 2015 11:54:49 +0300
+Message-ID: <87si957h9i.fsf@intel.com>
+References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
+ <1434513719-3580-4-git-send-email-airlied@gmail.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
+ <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
+ <s5hpp4s9ceq.wl-tiwai@suse.de>
+ <CAN8cciZiAyseCC5_t0pXZX-t57eukNT5+K8iTZGhG7=MiEztWw@mail.gmail.com>
+ <87egkvyme8.fsf@intel.com>
+ <CAN8ccian-kupvzhRPPin6t2oPtOESoZEE1=i6CN4r_zc3Zhjew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 051C8260484
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 10:51:06 +0200 (CEST)
-In-Reply-To: <20150702184035.GA1418140@phare.normalesup.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Jarkko Nikula <jarkko.nikula@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <CAN8ccian-kupvzhRPPin6t2oPtOESoZEE1=i6CN4r_zc3Zhjew@mail.gmail.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-07-02 at 20:40 +0200, Nicolas George wrote:
-> Hi.
-> 
-> Tyler Yeomans:
-> > I was able to recompile the distribution kernel after a long wait, and with
-> > the changes that were made I was able to get some semblance of an audio
-> > device registered.
-> > 
-> > I've attached the dmesg.
-> > 
-> > $ aplay -l
-> > **** List of PLAYBACK Hardware Devices ****
-> > card 0: bytrt5640 [byt-rt5640], device 0: Audio rt5640-aif1-0 []
-> >   Subdevices: 1/1
-> >   Subdevice #0: subdevice #0
-> > 
-
-Can you try the bytcr_rt5640 machine driver as the byt-rt5640 machine
-driver will be getting deprecated (since it only works with a small
-number of FWs). The bytcr_rt5640 driver works with a wider range of FW.
-
-Thanks
-
-Liam
-
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+T24gRnJpLCAwMyBKdWwgMjAxNSwgUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWls
+LmNvbT4gd3JvdGU6Cj4gMjAxNS02LTI5IOS4i+WNiDM6NTjmlrwgIkphbmkgTmlrdWxhIiA8amFu
+aS5uaWt1bGFAbGludXguaW50ZWwuY29tPuWvq+mBk++8mgo+Pgo+PiBPbiBTYXQsIDI3IEp1biAy
+MDE1LCBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPiB3cm90ZToKPj4g
+Pj4gPiA+Cj4+ID4+ID4gPiBTaGFsbCB3ZSBtb3ZlIG9yIGNjIHRoaXMgZGlzY3Vzc2lvbiBvbiBh
+dWRpbyBkcml2ZXIgc2lkZSB0byBBTFNBCj4gTUw/Cj4+ID4+ID4KPj4gPj4gPiBPb3BzIEkgdGhv
+dWdodCBJIGhhZCBjYydlZCB0aGVzZSBwYXRjaGVzIHRvIGFsc2EtZGV2ZWwgYXMgd2VsbCB3aGVu
+IEkKPj4gPiBzZW50IHRoZW0uCj4+ID4+ID4KPj4gPj4gPiA+IEkgdGhpbmsgd2UgYWxzbyBuZWVk
+IHRvIGRlY2lkZSBob3cgdG8gbWFuYWdlIFBDTSBkZXZpY2VzIGZvciBEUAo+IE1TVC4KPj4gPj4g
+PiA+IE5vdyB0aGUgSEQtQSBkcml2ZXIgY3JlYXRlIGEgUENNIGRldmljZSBmb3IgZWFjaCBwaW4s
+IGFuZCB0aGUKPj4gPiBzdWJzdHJlYW0KPj4gPj4gPiA+IG51bWJlciBpcyAxIGZvciBlYWNoIFBD
+TS4gTm93IHdpdGggRFAgTVNUIGVuYWJsZWQsIGVhY2ggcGluIGNhbgo+PiA+IHN1cHBvcnQKPj4g
+Pj4gPiA+IG11bHRpcGxlIHN0cmVhbXMgKGUuZy4gMyBvbiBJbnRlbCBIU1cvQkRXL1NLTCkuCj4+
+ID4+ID4gPgo+PiA+PiA+ID4gVGhlcmUgbWF5IGJlIDIgb3B0aW9uczoKPj4gPj4gPiA+IC0jMTog
+TGV0IGFuIEhETUkgY29kZWMgc3BlY2lmeSBudW1iZXIgb2Ygc3Vic3RyZWFtcywgc2FtZSBhcyB0
+aGUKPj4gPiBudW1iZXIKPj4gPj4gPiA+IG9mIGRldmljZSBlbnRyaWVzIG9uIGEgcGluLiBXZSBj
+YW4gc3BlY2lmeSAzIGZvciBIU1cvQkRXL1NLTC4gT3RoZXIKPj4gPj4gPiA+IHZlbmRvcnMgY2Fu
+IGFsc28gc3BlY2lmeSBhIHZhbHVlIGFjY29yZGluZyB0byBhY3R1YWwgSFcKPiBjYXBhYmlsaXRp
+ZXMuCj4+ID4+ID4gPgo+PiA+PiA+ID4gU28gZm9yIEhTVywgd2UgaGF2ZSAzeDMgc3VidHJlYW1z
+IHRvdGFsbHkuIEJ1dCB3ZSBvbmx5IGhhdmUgMwo+PiA+IGNvbnZlcnRvcnMKPj4gPj4gPiA+IChm
+b3IgMyBkaXNwbGF5IHBpcGVsaW5lcyksIHNvIHdlIGNhbiBvcGVuIHVwIHRvIDMgc3Vic3RyZWFt
+cyBhdCB0aGUKPj4gPiBzYW1lCj4+ID4+ID4gPiB0aW1lLiBXaGVuIHRoZSBhdWRpbyBkcml2ZXIg
+ZmluZHMgYWxsIDMgY29udmVydG9ycyBhcmUgdXNlZCB3aGVuCj4+ID4gb3BlbmluZwo+PiA+PiA+
+ID4gYSBuZXcgc3Vic3RyZWFtLCBpdCB3aWxsIGZhaWwuCj4+ID4+ID4KPj4gPj4gPiBPbmUgdGhp
+bmcgSSBub3RpY2VkIGlzIHRoZSBudW1iZXIgb2YgZGV2aWNlcyBvbiBhIFBJTiBpcyBvbmx5IHVw
+ZGF0ZWQKPj4gPiB3aGVuCj4+ID4+ID4gdGhlIE1TVCBkZXZpY2UgaXMgcGx1Z2dlZCBpbiBzbyBu
+b3JtYWxseSBwaW5zIDUsNiw3IGhhdmUgMCBkZXZpY2VzLAo+IGFuZAo+PiA+IHdoZW4KPj4gPj4g
+PiBJIHBsdWcgaW4gTVNUIGRldmljZSwgSSBnZXQgdGhlIDMgZGV2aWNlcyBvbiBwb3J0IDYuIFNv
+IGl0IHNlZW1zCj4gZHluYW1pYwo+PiA+PiA+IGVub3VnaCBhdCB0aGlzIHBvaW50LCB0aG91Z2gg
+SSBndWVzcyBpdCdsbCBhbHdheXMgYmUgMCBvciAzLgo+PiA+PiA+ID4KPj4gPj4gPiA+IC0gIzI6
+IENyZWF0ZSBQQ00gZGV2aWNlIGR5bmFtaWNhbGx5LiBPbmx5IGNyZWF0ZSBhIFBDTSBkZXZpY2Vz
+IGZvcgo+IGEKPj4gPiBkZXZpY2UKPj4gPj4gPiA+IGVudHJ5IHdoaWNoIGNvbm5lY3RzIHRvIG1v
+bml0b3Igd2l0aCBhdWRpbyBzdXBwb3J0LiBXaGVuIHRoZQo+IG1vbml0b3IKPj4gPj4gPiA+IGlz
+IHJlbW92ZWQsIHRoZSBQQ00gZGV2aWNlIHdpbGwgYmUgZGlzY29ubmVjdGVkLCBjbG9zZWQgYW5k
+Cj4gcmVtb3ZlZCwKPj4gPj4gPiA+IHNpbWlsYXIgdG8gdGhlIFVTQiBjYXNlLgo+PiA+Cj4+ID4g
+RG8gdGhlIGRyaXZlciByZWFsbHkgbmVlZCBkeW5hbWljIFBDTSBzaW5jZSBkaXNwbGF5IHBvcnRz
+IGFyZSBkYXNpeQo+IGNoYWluZWQKPj4gPiBhbmQgdGhlIGxvY2F0aW9ucyB3aXRoaW4gdGhlIGRh
+c2l5IGNoYWluIGFyZSBmaXhlZCA/Cj4KPiBodHRwOi8vd3d3LmludGVsLmNvbS9zdXBwb3J0L21v
+dGhlcmJvYXJkcy9kZXNrdG9wL3NiL0NTLTAzNDE5OS5odG0KPgo+IERvIHRoZSBmaXJzdCBkaXNw
+bGF5IGFsd2F5cyBzdXBwb3J0IHNvdW5kIHNpbmNlIGhkbWkgY2FuIGNvbm5lY3QgdG8gdHYKPiB1
+c2luZyBkdmkgPwoKSSBkb24ndCBzZWUgdGhlIHJlbGV2YW5jZS4KCj4gQXMgUHVsc2VhdWRpbyBk
+b2VzIG5vdCBzdXBwb3J0IG11bHRpIHN0cmVhbWluZyAoIHBsYXlpbmcgZGlmZmVyZW50IGF1ZGlv
+Cj4gc3RyZWFtcyB0byBoZWFkcGhvbmUgYW5kIHJlYXIgcGFuZWwgc3BlYWtlcnMgLCBob3cgY2Fu
+IHB1bHNlYXVkaW9uIHN1cHBvcnQKPiBkaXNwbGF5cG9ydCBNU1QgPwoKRXZlbiBpZiBpdCBjb3Vs
+ZG4ndCBzdXBwb3J0IG11bHRpcGxlIHN0cmVhbXMgYXQgdGhlIHNhbWUgdGltZSwgdGhlcmUgaGFz
+CnRvIGJlIGEgd2F5IHRvIGNob29zZSBvbmUgb2YgdGhlIGF1ZGlvIGNhcGFibGUgc2lua3MgaW4g
+dGhlIERQIE1TVAp0b3BvbG9neSAod2hpY2ggd2lsbCBjaGFuZ2UgZHluYW1pY2FsbHkpLgoKCkJS
+LApKYW5pLgoKCgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kg
+Q2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCklu
+dGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
