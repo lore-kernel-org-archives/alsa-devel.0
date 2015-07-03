@@ -1,83 +1,65 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] snd: add support for
-	displayport multi-stream to hda codec.
-Date: Fri, 03 Jul 2015 11:54:49 +0300
-Message-ID: <87si957h9i.fsf@intel.com>
-References: <1434513719-3580-1-git-send-email-airlied@gmail.com>
- <1434513719-3580-4-git-send-email-airlied@gmail.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B895171@SHSMSX101.ccr.corp.intel.com>
- <CAPM=9txJyV_q8ihnqXzyKF8NLbYQ85iuggQHpwe18dPCFdbgLA@mail.gmail.com>
- <s5hpp4s9ceq.wl-tiwai@suse.de>
- <CAN8cciZiAyseCC5_t0pXZX-t57eukNT5+K8iTZGhG7=MiEztWw@mail.gmail.com>
- <87egkvyme8.fsf@intel.com>
- <CAN8ccian-kupvzhRPPin6t2oPtOESoZEE1=i6CN4r_zc3Zhjew@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [GIT PULL] Braswell firmware update
+Date: Fri, 3 Jul 2015 14:24:17 +0530
+Message-ID: <20150703085417.GX3246@localhost>
+References: <20150617060005.GC28601@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <CAN8ccian-kupvzhRPPin6t2oPtOESoZEE1=i6CN4r_zc3Zhjew@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "Lu, Han" <han.lu@intel.com>, alsa-devel@alsa-project.org, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78E56260484
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 10:52:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150617060005.GC28601@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-firmware@kernel.org, Kyle McMartin <kyle@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAwMyBKdWwgMjAxNSwgUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWls
-LmNvbT4gd3JvdGU6Cj4gMjAxNS02LTI5IOS4i+WNiDM6NTjmlrwgIkphbmkgTmlrdWxhIiA8amFu
-aS5uaWt1bGFAbGludXguaW50ZWwuY29tPuWvq+mBk++8mgo+Pgo+PiBPbiBTYXQsIDI3IEp1biAy
-MDE1LCBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPiB3cm90ZToKPj4g
-Pj4gPiA+Cj4+ID4+ID4gPiBTaGFsbCB3ZSBtb3ZlIG9yIGNjIHRoaXMgZGlzY3Vzc2lvbiBvbiBh
-dWRpbyBkcml2ZXIgc2lkZSB0byBBTFNBCj4gTUw/Cj4+ID4+ID4KPj4gPj4gPiBPb3BzIEkgdGhv
-dWdodCBJIGhhZCBjYydlZCB0aGVzZSBwYXRjaGVzIHRvIGFsc2EtZGV2ZWwgYXMgd2VsbCB3aGVu
-IEkKPj4gPiBzZW50IHRoZW0uCj4+ID4+ID4KPj4gPj4gPiA+IEkgdGhpbmsgd2UgYWxzbyBuZWVk
-IHRvIGRlY2lkZSBob3cgdG8gbWFuYWdlIFBDTSBkZXZpY2VzIGZvciBEUAo+IE1TVC4KPj4gPj4g
-PiA+IE5vdyB0aGUgSEQtQSBkcml2ZXIgY3JlYXRlIGEgUENNIGRldmljZSBmb3IgZWFjaCBwaW4s
-IGFuZCB0aGUKPj4gPiBzdWJzdHJlYW0KPj4gPj4gPiA+IG51bWJlciBpcyAxIGZvciBlYWNoIFBD
-TS4gTm93IHdpdGggRFAgTVNUIGVuYWJsZWQsIGVhY2ggcGluIGNhbgo+PiA+IHN1cHBvcnQKPj4g
-Pj4gPiA+IG11bHRpcGxlIHN0cmVhbXMgKGUuZy4gMyBvbiBJbnRlbCBIU1cvQkRXL1NLTCkuCj4+
-ID4+ID4gPgo+PiA+PiA+ID4gVGhlcmUgbWF5IGJlIDIgb3B0aW9uczoKPj4gPj4gPiA+IC0jMTog
-TGV0IGFuIEhETUkgY29kZWMgc3BlY2lmeSBudW1iZXIgb2Ygc3Vic3RyZWFtcywgc2FtZSBhcyB0
-aGUKPj4gPiBudW1iZXIKPj4gPj4gPiA+IG9mIGRldmljZSBlbnRyaWVzIG9uIGEgcGluLiBXZSBj
-YW4gc3BlY2lmeSAzIGZvciBIU1cvQkRXL1NLTC4gT3RoZXIKPj4gPj4gPiA+IHZlbmRvcnMgY2Fu
-IGFsc28gc3BlY2lmeSBhIHZhbHVlIGFjY29yZGluZyB0byBhY3R1YWwgSFcKPiBjYXBhYmlsaXRp
-ZXMuCj4+ID4+ID4gPgo+PiA+PiA+ID4gU28gZm9yIEhTVywgd2UgaGF2ZSAzeDMgc3VidHJlYW1z
-IHRvdGFsbHkuIEJ1dCB3ZSBvbmx5IGhhdmUgMwo+PiA+IGNvbnZlcnRvcnMKPj4gPj4gPiA+IChm
-b3IgMyBkaXNwbGF5IHBpcGVsaW5lcyksIHNvIHdlIGNhbiBvcGVuIHVwIHRvIDMgc3Vic3RyZWFt
-cyBhdCB0aGUKPj4gPiBzYW1lCj4+ID4+ID4gPiB0aW1lLiBXaGVuIHRoZSBhdWRpbyBkcml2ZXIg
-ZmluZHMgYWxsIDMgY29udmVydG9ycyBhcmUgdXNlZCB3aGVuCj4+ID4gb3BlbmluZwo+PiA+PiA+
-ID4gYSBuZXcgc3Vic3RyZWFtLCBpdCB3aWxsIGZhaWwuCj4+ID4+ID4KPj4gPj4gPiBPbmUgdGhp
-bmcgSSBub3RpY2VkIGlzIHRoZSBudW1iZXIgb2YgZGV2aWNlcyBvbiBhIFBJTiBpcyBvbmx5IHVw
-ZGF0ZWQKPj4gPiB3aGVuCj4+ID4+ID4gdGhlIE1TVCBkZXZpY2UgaXMgcGx1Z2dlZCBpbiBzbyBu
-b3JtYWxseSBwaW5zIDUsNiw3IGhhdmUgMCBkZXZpY2VzLAo+IGFuZAo+PiA+IHdoZW4KPj4gPj4g
-PiBJIHBsdWcgaW4gTVNUIGRldmljZSwgSSBnZXQgdGhlIDMgZGV2aWNlcyBvbiBwb3J0IDYuIFNv
-IGl0IHNlZW1zCj4gZHluYW1pYwo+PiA+PiA+IGVub3VnaCBhdCB0aGlzIHBvaW50LCB0aG91Z2gg
-SSBndWVzcyBpdCdsbCBhbHdheXMgYmUgMCBvciAzLgo+PiA+PiA+ID4KPj4gPj4gPiA+IC0gIzI6
-IENyZWF0ZSBQQ00gZGV2aWNlIGR5bmFtaWNhbGx5LiBPbmx5IGNyZWF0ZSBhIFBDTSBkZXZpY2Vz
-IGZvcgo+IGEKPj4gPiBkZXZpY2UKPj4gPj4gPiA+IGVudHJ5IHdoaWNoIGNvbm5lY3RzIHRvIG1v
-bml0b3Igd2l0aCBhdWRpbyBzdXBwb3J0LiBXaGVuIHRoZQo+IG1vbml0b3IKPj4gPj4gPiA+IGlz
-IHJlbW92ZWQsIHRoZSBQQ00gZGV2aWNlIHdpbGwgYmUgZGlzY29ubmVjdGVkLCBjbG9zZWQgYW5k
-Cj4gcmVtb3ZlZCwKPj4gPj4gPiA+IHNpbWlsYXIgdG8gdGhlIFVTQiBjYXNlLgo+PiA+Cj4+ID4g
-RG8gdGhlIGRyaXZlciByZWFsbHkgbmVlZCBkeW5hbWljIFBDTSBzaW5jZSBkaXNwbGF5IHBvcnRz
-IGFyZSBkYXNpeQo+IGNoYWluZWQKPj4gPiBhbmQgdGhlIGxvY2F0aW9ucyB3aXRoaW4gdGhlIGRh
-c2l5IGNoYWluIGFyZSBmaXhlZCA/Cj4KPiBodHRwOi8vd3d3LmludGVsLmNvbS9zdXBwb3J0L21v
-dGhlcmJvYXJkcy9kZXNrdG9wL3NiL0NTLTAzNDE5OS5odG0KPgo+IERvIHRoZSBmaXJzdCBkaXNw
-bGF5IGFsd2F5cyBzdXBwb3J0IHNvdW5kIHNpbmNlIGhkbWkgY2FuIGNvbm5lY3QgdG8gdHYKPiB1
-c2luZyBkdmkgPwoKSSBkb24ndCBzZWUgdGhlIHJlbGV2YW5jZS4KCj4gQXMgUHVsc2VhdWRpbyBk
-b2VzIG5vdCBzdXBwb3J0IG11bHRpIHN0cmVhbWluZyAoIHBsYXlpbmcgZGlmZmVyZW50IGF1ZGlv
-Cj4gc3RyZWFtcyB0byBoZWFkcGhvbmUgYW5kIHJlYXIgcGFuZWwgc3BlYWtlcnMgLCBob3cgY2Fu
-IHB1bHNlYXVkaW9uIHN1cHBvcnQKPiBkaXNwbGF5cG9ydCBNU1QgPwoKRXZlbiBpZiBpdCBjb3Vs
-ZG4ndCBzdXBwb3J0IG11bHRpcGxlIHN0cmVhbXMgYXQgdGhlIHNhbWUgdGltZSwgdGhlcmUgaGFz
-CnRvIGJlIGEgd2F5IHRvIGNob29zZSBvbmUgb2YgdGhlIGF1ZGlvIGNhcGFibGUgc2lua3MgaW4g
-dGhlIERQIE1TVAp0b3BvbG9neSAod2hpY2ggd2lsbCBjaGFuZ2UgZHluYW1pY2FsbHkpLgoKCkJS
-LApKYW5pLgoKCgotLSAKSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kg
-Q2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCklu
-dGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Wed, Jun 17, 2015 at 11:30:05AM +0530, Vinod Koul wrote:
+> Hello Linux firmware maintainers,
+> 
+> Please PULL to receive the updated BSW firmware binary which contains power
+> management fixes. We have also updated the version of binary in WHENCE file
+
+gentle ping...
+
+-- 
+~Vinod
+
+> 
+> 
+> The following changes since commit 3161bfa479d5e9ed4f46b57df9bcecbbc4f8eb3c:
+> 
+>   linux-firmware: Update firmware patch for Intel Bluetooth 7260 (B3/B4) (2015-05-13 11:12:48 -0400)
+> 
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git BSW
+> 
+> for you to fetch changes up to e5fa14afd09909124fc7618fc4a0ac00fa4f9347:
+> 
+>   linux-firmware: update audio firmware for Braswell platform (2015-06-17 11:21:47 +0530)
+> 
+> ----------------------------------------------------------------
+> Vinod Koul (1):
+>       linux-firmware: update audio firmware for Braswell platform
+> 
+>  WHENCE                |   1 +
+>  intel/fw_sst_22a8.bin | Bin 647390 -> 701614 bytes
+>  2 files changed, 1 insertion(+)
+> 
+> Thanks
+> -- 
+> ~Vinod
+
+-- 
