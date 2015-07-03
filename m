@@ -1,22 +1,16 @@
-From: Nicolas George <george@nsup.org>
+From: "Koul, Vinod" <vinod.koul@intel.com>
 Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 3 Jul 2015 13:12:51 +0200
-Message-ID: <20150703111251.GA1657242@phare.normalesup.org>
-References: <20150624101115.GI19530@localhost> <558ABDB6.4010702@gmail.com>
- <20150624160314.GM19530@localhost> <558BA1D8.8040508@intel.com>
- <55931EE8.5000604@gmail.com>
- <20150702184035.GA1418140@phare.normalesup.org>
- <1435913462.2478.14.camel@loki>
- <20150703110838.2cef7f669102bd60b5ee1b8c@ao2.it>
- <20150703094606.GA1643220@phare.normalesup.org>
- <20150703123208.31881e788efd500dba8fe1dd@ao2.it>
+Date: Fri, 3 Jul 2015 12:10:42 +0000
+Message-ID: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6495307644913413227=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nef2.ens.fr (nef2.ens.fr [129.199.96.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 866DA260527
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 13:12:53 +0200 (CEST)
-In-Reply-To: <20150703123208.31881e788efd500dba8fe1dd@ao2.it>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3074264F09
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 14:10:52 +0200 (CEST)
+Content-Language: en-US
+Content-ID: <A8E0A75D9CC8F846B237D2A42B8B2C3B@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,155 +20,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ao2@ao2.it>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Tyler Yeomans <tyeo098@gmail.com>, Jarkko Nikula <jarkko.nikula@intel.com>, Liam Girdwood <liam.r.girdwood@intel.com>
+To: Nicolas George <george@nsup.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Antonio Ospite <ao2@ao2.it>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6495307644913413227==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Content-Disposition: inline
-
-
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Le quintidi 15 messidor, an CCXXIII, Antonio Ospite a =E9crit=A0:
-> snd-soc-sst-bytcr-rt5640 will be loaded automatically if you use
-> snd-intel-sst-acpi instead of snd-soc-sst-acpi, you can blacklist
-> the latter using a file in /etc/modprobe.d (look up the details), or
-> just remove snd-soc-sst-acpi.ko from the installation dir as a dirty
-> hack.
-
-Indeed. I always loaded snd-soc-sst-acpi before snd-intel-sst-acpi, so I
-could not observe it gives a different result.
-
-> In my tests I used the code from mainline linux.
-
-Ok. That is what I am doing too.
-
-> Note that different drivers expect different firmwares, you cannot mix
-> them:
->=20
->  snd-soc-sst-acpi   -> fw_sst_0f28.bin-48kHz_i2s_master
->  snd-intel-sst-acpi -> fw_sst_0f28.bin
->  snd-intel-sst-acpi -> fw_sst_0f28_ssp0.bin (renamed to fw_sst_0f28.bin)
-
-Ok. I re-ran the tests like that.
-
-After loading snd-intel-sst-acpi, the kernel says:
-
-[   35.160330] intel_sst_acpi 80860F28:00: LPE base: 0x90a00000 size:0x2000=
-00
-[   35.160339] intel_sst_acpi 80860F28:00: IRAM base: 0x90ac0000
-[   35.160372] intel_sst_acpi 80860F28:00: DRAM base: 0x90b00000
-[   35.160384] intel_sst_acpi 80860F28:00: SHIM base: 0x90b40000
-[   35.160395] intel_sst_acpi 80860F28:00: Mailbox base: 0x90b44000
-[   35.160405] intel_sst_acpi 80860F28:00: DDR base: 0x20000000
-[   35.161373] intel_sst_acpi 80860F28:00: Got drv data max stream 25
-
-After loading snd-soc-sst-bytcr-rt5640 it says:
-
-[   69.130424] bytt100_rt5640 bytt100_rt5640: snd-soc-dummy-dai <-> media-c=
-pu-dai mapping ok
-[   69.130482] compress asoc: snd-soc-dummy-dai <-> compress-cpu-dai mappin=
-g ok
-[   69.130536] bytt100_rt5640 bytt100_rt5640: rt5640-aif1 <-> ssp2-port map=
-ping ok
-[   69.130650] bytt100_rt5640 bytt100_rt5640: Connecting non-supply widget =
-to supply widget is not supported (Int Mic -> LDO2)
-[   69.130657] bytt100_rt5640 bytt100_rt5640: ASoC: no dapm match for Int M=
-ic --> (null) --> LDO2
-[   69.130663] bytt100_rt5640 bytt100_rt5640: ASoC: Failed to add route Int=
- Mic -> direct -> LDO2
-[   69.165392] sst-mfld-platform sst-mfld-platform: Slot control: codec_out=
- tx interleaver slot 0 doesn't have DAPM widget!!!
-[   69.165427] sst-mfld-platform sst-mfld-platform: Slot control: codec_out=
- tx interleaver slot 1 doesn't have DAPM widget!!!
-[   69.165460] sst-mfld-platform sst-mfld-platform: Slot control: codec_out=
- tx interleaver slot 2 doesn't have DAPM widget!!!
-[   69.165494] sst-mfld-platform sst-mfld-platform: Slot control: codec_out=
- tx interleaver slot 3 doesn't have DAPM widget!!!
-[   69.165521] sst-mfld-platform sst-mfld-platform: Slot control: codec_in =
-rx deinterleaver codec_in0_0 doesn't have DAPM widget!!!
-[   69.165551] sst-mfld-platform sst-mfld-platform: Slot control: codec_in =
-rx deinterleaver codec_in0_1 doesn't have DAPM widget!!!
-[   69.165583] sst-mfld-platform sst-mfld-platform: Slot control: codec_in =
-rx deinterleaver codec_in1_0 doesn't have DAPM widget!!!
-[   69.165618] sst-mfld-platform sst-mfld-platform: Slot control: codec_in =
-rx deinterleaver codec_in1_1 doesn't have DAPM widget!!!
-
-The sound card appears, but then if I try to play something:
-
-aplay -D hw:0 -c 2 -r 48000 -f S16_LE /dev/urandom
-aplay: set_params:1297: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 48000
-PERIOD_TIME: 125000
-PERIOD_SIZE: 6000
-PERIOD_BYTES: 24000
-PERIODS: 4
-BUFFER_TIME: 500000
-BUFFER_SIZE: 24000
-BUFFER_BYTES: 96000
-TICK_TIME: 0
-
-[   95.164749]  Baytrail Audio Port: ASoC: no backend DAIs enabled for Bayt=
-rail Audio Port
-
-The messages are exactly the same with both firmwares (fw_sst_0f28.bin and
-fw_sst_0f28_ssp0.bin).
-
-Maybe I forgot to load another module?
-
-Side note: snd-intel-sst-acpi and snd-soc-rt5640 both have usage count 1
-without dependent modules, that requires a reboot between each test.
-
-Thanks for your help, it helped me make progress even if it still is not
-success.
-
-Regards,
-
---=20
-  Nicolas George
-
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVlm4zAAoJEHGVSyPKTcYMLNMP/ROtPo0wbkFlPy79pqE6CKg6
-CS2uf0ozSP96WBSGKQRlLblFfz+WzRNXmf6mxJ5lO8fzkN96IJmrUjmquo5v5ohl
-vOz41anum6P8nqaNn+PLS5Nw1G+GrW4d2h4I2WPnIwxXQ4WM2hbENI/2SJ9029RV
-FHWW3hUJw50jLFNc6Rukh2R0mZLRY8FhumtEcqY0IbzY+SeMvnKt5Qu2qfIZc70p
-bVY8lS2Mfy/6ZYed4+zTN4PI4xIe/re/ytP5JAqrA4TqZWBUSOwubKdNlG8+9M36
-llbb58f8+lxsM7pVVqbySO4oQ7tBAIlGDPHXFZah+aBNiqBxOZ1AuwJ8+8FEbufN
-jLpX4LSuwla+sSGQDqq981lX14bsuJu3U9iwSx6zPll4H4uTOv+zrz2poa9v8GYT
-82cJIRhvdVQWMz/mr0dLgdgIV8G2WMhgbc/ZPdZQuO99tWkgYZQlX51oBXinKsLl
-zGWJwc/vb1umsRv8aY5r6EpTW/jzb3s6Ccz/N/pgNtt4HGqZK6LM4EJQZYh5iTAQ
-s7iFNum1Q+mZfe2FI2G+m+MIv5X1Y7qPFcEA0fZFaPLUI0MZIrvbPjjDB30Re2ht
-LUV/MFNp3XaOI/eLwFZgpcBjn5UNEAkk/g2/NnBtRoHSX+IFhStWwm51j8oASKCD
-GwLHLZQ2r8jzaTyZ/XEP
-=n29Q
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
-
---===============6495307644913413227==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6495307644913413227==--
+DQpPbiAzIEp1bCAyMDE1IDQ6NDMgcG0sIE5pY29sYXMgR2VvcmdlIDxnZW9yZ2VAbnN1cC5vcmc+
+IHdyb3RlOg0KPg0KPiBMZSBxdWludGlkaSAxNSBtZXNzaWRvciwgYW4gQ0NYWElJSSwgQW50b25p
+byBPc3BpdGUgYSDDqWNyaXQgOg0KPiA+IHNuZC1zb2Mtc3N0LWJ5dGNyLXJ0NTY0MCB3aWxsIGJl
+IGxvYWRlZCBhdXRvbWF0aWNhbGx5IGlmIHlvdSB1c2UNCj4gPiBzbmQtaW50ZWwtc3N0LWFjcGkg
+aW5zdGVhZCBvZiBzbmQtc29jLXNzdC1hY3BpLCB5b3UgY2FuIGJsYWNrbGlzdA0KPiA+IHRoZSBs
+YXR0ZXIgdXNpbmcgYSBmaWxlIGluIC9ldGMvbW9kcHJvYmUuZCAobG9vayB1cCB0aGUgZGV0YWls
+cyksIG9yDQo+ID4ganVzdCByZW1vdmUgc25kLXNvYy1zc3QtYWNwaS5rbyBmcm9tIHRoZSBpbnN0
+YWxsYXRpb24gZGlyIGFzIGEgZGlydHkNCj4gPiBoYWNrLg0KPg0KPiBJbmRlZWQuIEkgYWx3YXlz
+IGxvYWRlZCBzbmQtc29jLXNzdC1hY3BpIGJlZm9yZSBzbmQtaW50ZWwtc3N0LWFjcGksIHNvIEkN
+Cj4gY291bGQgbm90IG9ic2VydmUgaXQgZ2l2ZXMgYSBkaWZmZXJlbnQgcmVzdWx0Lg0KPg0KPiA+
+IEluIG15IHRlc3RzIEkgdXNlZCB0aGUgY29kZSBmcm9tIG1haW5saW5lIGxpbnV4Lg0KPg0KPiBP
+ay4gVGhhdCBpcyB3aGF0IEkgYW0gZG9pbmcgdG9vLg0KPg0KPiA+IE5vdGUgdGhhdCBkaWZmZXJl
+bnQgZHJpdmVycyBleHBlY3QgZGlmZmVyZW50IGZpcm13YXJlcywgeW91IGNhbm5vdCBtaXgNCj4g
+PiB0aGVtOg0KPiA+DQo+ID4gIHNuZC1zb2Mtc3N0LWFjcGkgICAtPiBmd19zc3RfMGYyOC5iaW4t
+NDhrSHpfaTJzX21hc3Rlcg0KPiA+ICBzbmQtaW50ZWwtc3N0LWFjcGkgLT4gZndfc3N0XzBmMjgu
+YmluDQo+ID4gIHNuZC1pbnRlbC1zc3QtYWNwaSAtPiBmd19zc3RfMGYyOF9zc3AwLmJpbiAocmVu
+YW1lZCB0byBmd19zc3RfMGYyOC5iaW4pDQo+DQo+IE9rLiBJIHJlLXJhbiB0aGUgdGVzdHMgbGlr
+ZSB0aGF0Lg0KPg0KPiBBZnRlciBsb2FkaW5nIHNuZC1pbnRlbC1zc3QtYWNwaSwgdGhlIGtlcm5l
+bCBzYXlzOg0KPg0KPiBbICAgMzUuMTYwMzMwXSBpbnRlbF9zc3RfYWNwaSA4MDg2MEYyODowMDog
+TFBFIGJhc2U6IDB4OTBhMDAwMDAgc2l6ZToweDIwMDAwMA0KPiBbICAgMzUuMTYwMzM5XSBpbnRl
+bF9zc3RfYWNwaSA4MDg2MEYyODowMDogSVJBTSBiYXNlOiAweDkwYWMwMDAwDQo+IFsgICAzNS4x
+NjAzNzJdIGludGVsX3NzdF9hY3BpIDgwODYwRjI4OjAwOiBEUkFNIGJhc2U6IDB4OTBiMDAwMDAN
+Cj4gWyAgIDM1LjE2MDM4NF0gaW50ZWxfc3N0X2FjcGkgODA4NjBGMjg6MDA6IFNISU0gYmFzZTog
+MHg5MGI0MDAwMA0KPiBbICAgMzUuMTYwMzk1XSBpbnRlbF9zc3RfYWNwaSA4MDg2MEYyODowMDog
+TWFpbGJveCBiYXNlOiAweDkwYjQ0MDAwDQo+IFsgICAzNS4xNjA0MDVdIGludGVsX3NzdF9hY3Bp
+IDgwODYwRjI4OjAwOiBERFIgYmFzZTogMHgyMDAwMDAwMA0KPiBbICAgMzUuMTYxMzczXSBpbnRl
+bF9zc3RfYWNwaSA4MDg2MEYyODowMDogR290IGRydiBkYXRhIG1heCBzdHJlYW0gMjUNCj4NCj4g
+QWZ0ZXIgbG9hZGluZyBzbmQtc29jLXNzdC1ieXRjci1ydDU2NDAgaXQgc2F5czoNCj4NCj4gWyAg
+IDY5LjEzMDQyNF0gYnl0dDEwMF9ydDU2NDAgYnl0dDEwMF9ydDU2NDA6IHNuZC1zb2MtZHVtbXkt
+ZGFpIDwtPiBtZWRpYS1jcHUtZGFpIG1hcHBpbmcgb2sNCj4gWyAgIDY5LjEzMDQ4Ml0gY29tcHJl
+c3MgYXNvYzogc25kLXNvYy1kdW1teS1kYWkgPC0+IGNvbXByZXNzLWNwdS1kYWkgbWFwcGluZyBv
+aw0KPiBbICAgNjkuMTMwNTM2XSBieXR0MTAwX3J0NTY0MCBieXR0MTAwX3J0NTY0MDogcnQ1NjQw
+LWFpZjEgPC0+IHNzcDItcG9ydCBtYXBwaW5nIG9rDQo+IFsgICA2OS4xMzA2NTBdIGJ5dHQxMDBf
+cnQ1NjQwIGJ5dHQxMDBfcnQ1NjQwOiBDb25uZWN0aW5nIG5vbi1zdXBwbHkgd2lkZ2V0IHRvIHN1
+cHBseSB3aWRnZXQgaXMgbm90IHN1cHBvcnRlZCAoSW50IE1pYyAtPiBMRE8yKQ0KPiBbICAgNjku
+MTMwNjU3XSBieXR0MTAwX3J0NTY0MCBieXR0MTAwX3J0NTY0MDogQVNvQzogbm8gZGFwbSBtYXRj
+aCBmb3IgSW50IE1pYyAtLT4gKG51bGwpIC0tPiBMRE8yDQo+IFsgICA2OS4xMzA2NjNdIGJ5dHQx
+MDBfcnQ1NjQwIGJ5dHQxMDBfcnQ1NjQwOiBBU29DOiBGYWlsZWQgdG8gYWRkIHJvdXRlIEludCBN
+aWMgLT4gZGlyZWN0IC0+IExETzINCj4gWyAgIDY5LjE2NTM5Ml0gc3N0LW1mbGQtcGxhdGZvcm0g
+c3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVy
+IHNsb3QgMCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTQyN10gc3N0
+LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0
+IHR4IGludGVybGVhdmVyIHNsb3QgMSBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAg
+IDY5LjE2NTQ2MF0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29u
+dHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVyIHNsb3QgMiBkb2Vzbid0IGhhdmUgREFQTSB3
+aWRnZXQhISENCj4gWyAgIDY5LjE2NTQ5NF0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxh
+dGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVyIHNsb3QgMyBkb2Vz
+bid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTUyMV0gc3N0LW1mbGQtcGxhdGZv
+cm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVpbnRlcmxl
+YXZlciBjb2RlY19pbjBfMCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2
+NTU1MV0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDog
+Y29kZWNfaW4gcnggZGVpbnRlcmxlYXZlciBjb2RlY19pbjBfMSBkb2Vzbid0IGhhdmUgREFQTSB3
+aWRnZXQhISENCj4gWyAgIDY5LjE2NTU4M10gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxh
+dGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVpbnRlcmxlYXZlciBjb2RlY19pbjFf
+MCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTYxOF0gc3N0LW1mbGQt
+cGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVp
+bnRlcmxlYXZlciBjb2RlY19pbjFfMSBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4NCj4g
+VGhlIHNvdW5kIGNhcmQgYXBwZWFycywgYnV0IHRoZW4gaWYgSSB0cnkgdG8gcGxheSBzb21ldGhp
+bmc6DQo+DQo+IGFwbGF5IC1EIGh3OjAgLWMgMiAtciA0ODAwMCAtZiBTMTZfTEUgL2Rldi91cmFu
+ZG9tDQo+IGFwbGF5OiBzZXRfcGFyYW1zOjEyOTc6IFVuYWJsZSB0byBpbnN0YWxsIGh3IHBhcmFt
+czoNCj4gQUNDRVNTOiAgUldfSU5URVJMRUFWRUQNCj4gRk9STUFUOiAgUzE2X0xFDQo+IFNVQkZP
+Uk1BVDogIFNURA0KPiBTQU1QTEVfQklUUzogMTYNCj4gRlJBTUVfQklUUzogMzINCj4gQ0hBTk5F
+TFM6IDINCj4gUkFURTogNDgwMDANCj4gUEVSSU9EX1RJTUU6IDEyNTAwMA0KPiBQRVJJT0RfU0la
+RTogNjAwMA0KPiBQRVJJT0RfQllURVM6IDI0MDAwDQo+IFBFUklPRFM6IDQNCj4gQlVGRkVSX1RJ
+TUU6IDUwMDAwMA0KPiBCVUZGRVJfU0laRTogMjQwMDANCj4gQlVGRkVSX0JZVEVTOiA5NjAwMA0K
+PiBUSUNLX1RJTUU6IDANCj4NCj4gWyAgIDk1LjE2NDc0OV0gIEJheXRyYWlsIEF1ZGlvIFBvcnQ6
+IEFTb0M6IG5vIGJhY2tlbmQgREFJcyBlbmFibGVkIGZvciBCYXl0cmFpbCBBdWRpbyBQb3J0DQoN
+ClRoaXMgaXMgZHBjbSBlbmFibGVkIGRyaXZlcg0KDQpTbyBwbGVhc2Ugcm91dGUgdGhlIEZFIHRv
+IEJFIGFuZCBpdCBzaG91bGQgd29yay4uLg0KDQpWaW5vZA0KPg0KPiBUaGUgbWVzc2FnZXMgYXJl
+IGV4YWN0bHkgdGhlIHNhbWUgd2l0aCBib3RoIGZpcm13YXJlcyAoZndfc3N0XzBmMjguYmluIGFu
+ZA0KPiBmd19zc3RfMGYyOF9zc3AwLmJpbikuDQo+DQo+IE1heWJlIEkgZm9yZ290IHRvIGxvYWQg
+YW5vdGhlciBtb2R1bGU/DQo+DQo+IFNpZGUgbm90ZTogc25kLWludGVsLXNzdC1hY3BpIGFuZCBz
+bmQtc29jLXJ0NTY0MCBib3RoIGhhdmUgdXNhZ2UgY291bnQgMQ0KPiB3aXRob3V0IGRlcGVuZGVu
+dCBtb2R1bGVzLCB0aGF0IHJlcXVpcmVzIGEgcmVib290IGJldHdlZW4gZWFjaCB0ZXN0Lg0KPg0K
+PiBUaGFua3MgZm9yIHlvdXIgaGVscCwgaXQgaGVscGVkIG1lIG1ha2UgcHJvZ3Jlc3MgZXZlbiBp
+ZiBpdCBzdGlsbCBpcyBub3QNCj4gc3VjY2Vzcy4NCj4NCj4gUmVnYXJkcywNCj4NCj4gLS0NCj4g
+ICBOaWNvbGFzIEdlb3JnZQ0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
