@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5640: Prefix hexadecimal ID register
+Subject: Applied "ASoC: rt286: Prefix hexadecimal ID register
 	value with 0x in error print" to the asoc tree
-Date: Fri, 03 Jul 2015 15:10:44 +0100
-Message-ID: <E1ZB1fw-00024i-Ut@finisterre>
-References: <1435229941-9574-2-git-send-email-jarkko.nikula@linux.intel.com>
+Date: Fri, 03 Jul 2015 15:10:46 +0100
+Message-ID: <E1ZB1fy-00025B-65@finisterre>
+References: <1435229941-9574-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30DA6264FFF
+ by alsa0.perex.cz (Postfix) with ESMTP id 982CA265019
  for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 16:10:57 +0200 (CEST)
-In-Reply-To: <1435229941-9574-2-git-send-email-jarkko.nikula@linux.intel.com>
+In-Reply-To: <1435229941-9574-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5640: Prefix hexadecimal ID register value with 0x in error print
+   ASoC: rt286: Prefix hexadecimal ID register value with 0x in error print
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1ef422dc74a1ef4e1970a634899a573196c0a2fb Mon Sep 17 00:00:00 2001
+>From e50f85e71c36e826178664fbf65696af2010d577 Mon Sep 17 00:00:00 2001
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Date: Thu, 25 Jun 2015 13:58:57 +0300
-Subject: [PATCH] ASoC: rt5640: Prefix hexadecimal ID register value with 0x in
+Date: Thu, 25 Jun 2015 13:58:56 +0300
+Subject: [PATCH] ASoC: rt286: Prefix hexadecimal ID register value with 0x in
  error print
 
 Make it obvious that unexpected value read from ID register is printed in
@@ -65,19 +65,19 @@ hexadecimal.
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5640.c | 2 +-
+ sound/soc/codecs/rt286.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index f40752a..67ae249 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2208,7 +2208,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 	regmap_read(rt5640->regmap, RT5640_VENDOR_ID2, &val);
- 	if (val != RT5640_DEVICE_ID) {
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index c6cca06..303dcfa 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1243,7 +1243,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
  		dev_err(&i2c->dev,
--			"Device with ID register %x is not rt5640/39\n", val);
-+			"Device with ID register %#x is not rt5640/39\n", val);
+-			"Device with ID register %x is not rt286\n", val);
++			"Device with ID register %#x is not rt286\n", val);
  		return -ENODEV;
  	}
  
