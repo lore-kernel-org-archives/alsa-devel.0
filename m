@@ -1,15 +1,18 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 3 Jul 2015 13:43:47 +0000
-Message-ID: <8D3F6266AEB6384E807C6FFC6FE195E30B49AEB9@BGSMSX101.gar.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5640: Prefix hexadecimal ID register
+	value with 0x in error print" to the asoc tree
+Date: Fri, 03 Jul 2015 15:10:44 +0100
+Message-ID: <E1ZB1fw-00024i-Ut@finisterre>
+References: <1435229941-9574-2-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A5CAB26501D
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 15:43:53 +0200 (CEST)
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30DA6264FFF
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 16:10:57 +0200 (CEST)
+In-Reply-To: <1435229941-9574-2-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,9 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas George <george@nsup.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Antonio Ospite <ao2@ao2.it>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
+
+   ASoC: rt5640: Prefix hexadecimal ID register value with 0x in error print
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1ef422dc74a1ef4e1970a634899a573196c0a2fb Mon Sep 17 00:00:00 2001
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Date: Thu, 25 Jun 2015 13:58:57 +0300
+Subject: [PATCH] ASoC: rt5640: Prefix hexadecimal ID register value with 0x in
+ error print
+
+Make it obvious that unexpected value read from ID register is printed in
+hexadecimal.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index f40752a..67ae249 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2208,7 +2208,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 	regmap_read(rt5640->regmap, RT5640_VENDOR_ID2, &val);
+ 	if (val != RT5640_DEVICE_ID) {
+ 		dev_err(&i2c->dev,
+-			"Device with ID register %x is not rt5640/39\n", val);
++			"Device with ID register %#x is not rt5640/39\n", val);
+ 		return -ENODEV;
+ 	}
+ 
+-- 
+2.1.4
