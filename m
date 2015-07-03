@@ -1,22 +1,17 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 3 Jul 2015 12:32:08 +0200
-Message-ID: <20150703123208.31881e788efd500dba8fe1dd@ao2.it>
-References: <5589D025.7090700@gmail.com> <20150624101115.GI19530@localhost>
- <558ABDB6.4010702@gmail.com> <20150624160314.GM19530@localhost>
- <558BA1D8.8040508@intel.com> <55931EE8.5000604@gmail.com>
- <20150702184035.GA1418140@phare.normalesup.org>
- <1435913462.2478.14.camel@loki>
- <20150703110838.2cef7f669102bd60b5ee1b8c@ao2.it>
- <20150703094606.GA1643220@phare.normalesup.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 1/6] ASoC: Intel: Add helper to poll
+	register for DSP status
+Date: Fri,  3 Jul 2015 16:04:02 +0530
+Message-ID: <1435919647-14049-2-git-send-email-vinod.koul@intel.com>
+References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp206.alice.it (smtp206.alice.it [82.57.200.102])
- by alsa0.perex.cz (Postfix) with ESMTP id E41FD260476
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 12:32:14 +0200 (CEST)
-In-Reply-To: <20150703094606.GA1643220@phare.normalesup.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AC8B2625D7
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 12:32:26 +0200 (CEST)
+In-Reply-To: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,70 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas George <george@nsup.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@intel.com>, Tyler Yeomans <tyeo098@gmail.com>, Liam Girdwood <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Kp, Jeeja" <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Jul 2015 11:46:06 +0200
-Nicolas George <george@nsup.org> wrote:
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-> > Liam Girdwood <liam.r.girdwood@intel.com> wrote:
-> > > Can you try the bytcr_rt5640 machine driver as the byt-rt5640 machine
-> > > driver will be getting deprecated (since it only works with a small
-> > > number of FWs). The bytcr_rt5640 driver works with a wider range of FW.
-> 
-> If that means just "modprobe snd-soc-sst-bytcr-rt5640" instead of "modprobe
-> snd-soc-sst-byt-rt5640-mach" then it has no effect at all: the module is
-> loaded but does not create any card and does not print anything.
-> 
+This patch adds helper to poll register for DSP status.
 
-snd-soc-sst-bytcr-rt5640 will be loaded automatically if you use
-snd-intel-sst-acpi instead of snd-soc-sst-acpi, you can blacklist
-the latter using a file in /etc/modprobe.d (look up the details), or
-just remove snd-soc-sst-acpi.ko from the installation dir as a dirty
-hack.
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Kp, Jeeja <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/common/sst-dsp.c | 23 +++++++++++++++++++++++
+ sound/soc/intel/common/sst-dsp.h |  2 ++
+ 2 files changed, 25 insertions(+)
 
-> If that requires changing the source or using sources from a different
-> repository, please be a little more specific.
->
-
-In my tests I used the code from mainline linux.
-
-> Antonio Ospite:
-> > When testing the bytcr_rt5640 machine driver give also a try to the
-> > latest firmwares:
-> > 
-> > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/tree/intel?h=byt
-> > 
-> > I had some success with fw_sst_0f28_ssp0.bin
-> 
-> I tried overwriting the fw_sst_0f28.bin-48kHz_i2s_master file with that
-> file, but it just gives me this message:
->
-> [  390.704580] baytrail-pcm-audio baytrail-pcm-audio: wrong ram type 0x7 in block0x0
-> [  390.704591] baytrail-pcm-audio baytrail-pcm-audio: invalid module 0
-> [  390.704596] baytrail-pcm-audio baytrail-pcm-audio: error: parse fw failed -22
-> [  390.704610] baytrail-pcm-audio baytrail-pcm-audio: error: failed to load firmware
-> 
-> It happens when loading snd-soc-sst-baytrail-pcm, i.e. before loading
-> snd-soc-sst-bytcr-rt5640(-mach).
-> 
-> I guess I am not following the instructions correctly.
-
-Note that different drivers expect different firmwares, you cannot mix
-them:
-
- snd-soc-sst-acpi   -> fw_sst_0f28.bin-48kHz_i2s_master
- snd-intel-sst-acpi -> fw_sst_0f28.bin
- snd-intel-sst-acpi -> fw_sst_0f28_ssp0.bin (renamed to fw_sst_0f28.bin)
-
-Ciao,
-   Antonio
-
+diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+index 64e94212d2d2..3356792d6933 100644
+--- a/sound/soc/intel/common/sst-dsp.c
++++ b/sound/soc/intel/common/sst-dsp.c
+@@ -20,6 +20,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
++#include <linux/delay.h>
+ 
+ #include "sst-dsp.h"
+ #include "sst-dsp-priv.h"
+@@ -222,6 +223,28 @@ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64);
+ 
++int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
++			 u32 expected_value, u32 timeout, char *operation)
++{
++	int time, ret;
++	u32 reg;
++
++	/* check if set state successful */
++	for (time = 0; time < timeout; time++) {
++		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) == expected_value)
++			break;
++
++		mdelay(1);
++	}
++	reg = sst_dsp_shim_read_unlocked(ctx, offset);
++	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
++			(time < timeout) ? "successful" : "timedout");
++	ret = time < timeout ? 0 : -ETIME;
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sst_dsp_register_poll);
++
+ void sst_dsp_dump(struct sst_dsp *sst)
+ {
+ 	if (sst->ops->dump)
+diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
+index 96aeb2556ad4..cc3197be4cf7 100644
+--- a/sound/soc/intel/common/sst-dsp.h
++++ b/sound/soc/intel/common/sst-dsp.h
+@@ -278,6 +278,8 @@ void sst_dsp_inbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
+ void sst_dsp_outbox_write(struct sst_dsp *dsp, void *message, size_t bytes);
+ void sst_dsp_outbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
+ void sst_dsp_mailbox_dump(struct sst_dsp *dsp, size_t bytes);
++int sst_dsp_register_poll(struct sst_dsp  *dsp, u32 offset, u32 mask,
++		 u32 expected_value, u32 timeout, char *operation);
+ 
+ /* Debug */
+ void sst_dsp_dump(struct sst_dsp *sst);
 -- 
-Antonio Ospite
-http://ao2.it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+1.9.1
