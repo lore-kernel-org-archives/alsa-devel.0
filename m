@@ -1,37 +1,51 @@
-From: Juergen Borleis <jbe@pengutronix.de>
-Subject: [PATCH] ASoC: fsl-ssi: Fix bitclock calculation for master mode
-Date: Fri,  3 Jul 2015 12:39:36 +0200
-Message-ID: <1435919976-1667-1-git-send-email-jbe@pengutronix.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Timur Tabi <timur@tabi.org>, kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Issue in alsa when dma complete race with pcm
+	release
+Date: Fri, 03 Jul 2015 12:56:53 +0200
+Message-ID: <55966A75.90200@metafoo.de>
+References: <20150703082530.GA21580@shlinux2>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-007.synserver.de (smtp-out-022.synserver.de
+ [212.40.185.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65598260484
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 12:56:55 +0200 (CEST)
+In-Reply-To: <20150703082530.GA21580@shlinux2>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org
+Cc: dmaengine <dmaengine@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-According to the datasheet 'pm', 'psr' and 'div2' should never be all 0.
-Since commit 541b03ad6cfe ("ASoC: fsl_ssi: Fix the incorrect limitation of
-the bit clock rate") this can happen, because for some bitclock rates
-'pm' = 0 seems to be a valid choice but does not work due to hardware
-restrictions. This results into a bad hardware behaviour (slow audio for
-example). Feature tested on a i.MX25.
+On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
+> Hi alsa-devel
+>
+>     There maybe a issue in ALSA when dma complete race with snd_pcm_release.
+> The pcm release and dma complete are in different thread. There is occasion
+> that dmaengine_pcm_dma_complete() is called too late, some memory has been
+> freed, the prtd is null. Then there is kernel dump.
+>
+>     Is there any solution for this issue? Thanks.
 
-Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
----
- sound/soc/fsl/fsl_ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We need to introduce a synchronization primitive that allows a dmaengine 
+client to synchronize to the execution of the complete callbacks.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index c7647e0..c0b940e 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -633,7 +633,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 		sub *= 100000;
- 		do_div(sub, freq);
- 
--		if (sub < savesub) {
-+		if (sub < savesub && !(i == 0 && psr == 0 && div2 == 0)) {
- 			baudrate = tmprate;
- 			savesub = sub;
- 			pm = i;
--- 
-2.1.4
+terminate_all() unfortunately can't do this since terminate_all() might be 
+called from within one of the complete callbacks and so would cause a 
+deadlock if we'd wait for all complete callbacks to finish before 
+terminate_all() returns.
+
+So what is needed is a new function called dmaengine_sync() that will wait 
+until all scheduled complete callbacks have finished. A call to this 
+function needs to be put in snd_dmaengine_pcm_close() before the prtd is closed.
+
+- Lars
