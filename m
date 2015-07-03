@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm0010: Remove redundant spi driver bus
-	initialization" to the asoc tree
-Date: Fri, 03 Jul 2015 15:10:47 +0100
-Message-ID: <E1ZB1fz-00025e-Oc@finisterre>
-References: <1435071132-24409-1-git-send-email-borneo.antonio@gmail.com>
+Subject: Applied "ASoC: rt5645: Prefix hexadecimal ID register
+	value with 0x in error print" to the asoc tree
+Date: Fri, 03 Jul 2015 15:10:43 +0100
+Message-ID: <E1ZB1fv-00024F-NG@finisterre>
+References: <1435229941-9574-3-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D00D265065
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 16:11:02 +0200 (CEST)
-In-Reply-To: <1435071132-24409-1-git-send-email-borneo.antonio@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E30226501D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 16:10:57 +0200 (CEST)
+In-Reply-To: <1435229941-9574-3-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Antonio Borneo <borneo.antonio@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm0010: Remove redundant spi driver bus initialization
+   ASoC: rt5645: Prefix hexadecimal ID register value with 0x in error print
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 7a28db9906a993ec43226fb6927f35b8af6cc83c Mon Sep 17 00:00:00 2001
-From: Antonio Borneo <borneo.antonio@gmail.com>
-Date: Tue, 23 Jun 2015 22:52:12 +0800
-Subject: [PATCH] ASoC: wm0010: Remove redundant spi driver bus initialization
+>From ecfd2d92bc0a1d1435b8221a06dc99f46ebaddce Mon Sep 17 00:00:00 2001
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Date: Thu, 25 Jun 2015 13:58:58 +0300
+Subject: [PATCH] ASoC: rt5645: Prefix hexadecimal ID register value with 0x in
+ error print
 
-In ancient times it was necessary to manually initialize the bus
-field of an spi_driver to spi_bus_type. These days this is done in
-spi_register_driver(), so we can drop the manual assignment.
+Make it obvious that unexpected value read from ID register is printed in
+hexadecimal.
 
-Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm0010.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index f37989e..61bfff4 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -1005,7 +1005,6 @@ static int wm0010_spi_remove(struct spi_device *spi)
- static struct spi_driver wm0010_spi_driver = {
- 	.driver = {
- 		.name	= "wm0010",
--		.bus 	= &spi_bus_type,
- 		.owner	= THIS_MODULE,
- 	},
- 	.probe		= wm0010_spi_probe,
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index d5f0f56..e9f17a9 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3284,7 +3284,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		break;
+ 	default:
+ 		dev_err(&i2c->dev,
+-			"Device with ID register %x is not rt5645 or rt5650\n",
++			"Device with ID register %#x is not rt5645 or rt5650\n",
+ 			val);
+ 		return -ENODEV;
+ 	}
 -- 
 2.1.4
