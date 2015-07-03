@@ -1,16 +1,16 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
+From: Antonio Ospite <ao2@ao2.it>
 Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 3 Jul 2015 12:10:42 +0000
-Message-ID: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
+Date: Fri, 3 Jul 2015 14:36:08 +0200
+Message-ID: <20150703143608.7afb34c985d82982e929484e@ao2.it>
+References: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C3074264F09
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 14:10:52 +0200 (CEST)
-Content-Language: en-US
-Content-ID: <A8E0A75D9CC8F846B237D2A42B8B2C3B@intel.com>
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id D62F1264F09
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 14:36:19 +0200 (CEST)
+In-Reply-To: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,89 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas George <george@nsup.org>
+To: "Koul, Vinod" <vinod.koul@intel.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Antonio Ospite <ao2@ao2.it>, "Girdwood,
+ Jarkko" <jarkko.nikula@intel.com>, Nicolas George <george@nsup.org>, "Girdwood,
  Liam R" <liam.r.girdwood@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-DQpPbiAzIEp1bCAyMDE1IDQ6NDMgcG0sIE5pY29sYXMgR2VvcmdlIDxnZW9yZ2VAbnN1cC5vcmc+
-IHdyb3RlOg0KPg0KPiBMZSBxdWludGlkaSAxNSBtZXNzaWRvciwgYW4gQ0NYWElJSSwgQW50b25p
-byBPc3BpdGUgYSDDqWNyaXQgOg0KPiA+IHNuZC1zb2Mtc3N0LWJ5dGNyLXJ0NTY0MCB3aWxsIGJl
-IGxvYWRlZCBhdXRvbWF0aWNhbGx5IGlmIHlvdSB1c2UNCj4gPiBzbmQtaW50ZWwtc3N0LWFjcGkg
-aW5zdGVhZCBvZiBzbmQtc29jLXNzdC1hY3BpLCB5b3UgY2FuIGJsYWNrbGlzdA0KPiA+IHRoZSBs
-YXR0ZXIgdXNpbmcgYSBmaWxlIGluIC9ldGMvbW9kcHJvYmUuZCAobG9vayB1cCB0aGUgZGV0YWls
-cyksIG9yDQo+ID4ganVzdCByZW1vdmUgc25kLXNvYy1zc3QtYWNwaS5rbyBmcm9tIHRoZSBpbnN0
-YWxsYXRpb24gZGlyIGFzIGEgZGlydHkNCj4gPiBoYWNrLg0KPg0KPiBJbmRlZWQuIEkgYWx3YXlz
-IGxvYWRlZCBzbmQtc29jLXNzdC1hY3BpIGJlZm9yZSBzbmQtaW50ZWwtc3N0LWFjcGksIHNvIEkN
-Cj4gY291bGQgbm90IG9ic2VydmUgaXQgZ2l2ZXMgYSBkaWZmZXJlbnQgcmVzdWx0Lg0KPg0KPiA+
-IEluIG15IHRlc3RzIEkgdXNlZCB0aGUgY29kZSBmcm9tIG1haW5saW5lIGxpbnV4Lg0KPg0KPiBP
-ay4gVGhhdCBpcyB3aGF0IEkgYW0gZG9pbmcgdG9vLg0KPg0KPiA+IE5vdGUgdGhhdCBkaWZmZXJl
-bnQgZHJpdmVycyBleHBlY3QgZGlmZmVyZW50IGZpcm13YXJlcywgeW91IGNhbm5vdCBtaXgNCj4g
-PiB0aGVtOg0KPiA+DQo+ID4gIHNuZC1zb2Mtc3N0LWFjcGkgICAtPiBmd19zc3RfMGYyOC5iaW4t
-NDhrSHpfaTJzX21hc3Rlcg0KPiA+ICBzbmQtaW50ZWwtc3N0LWFjcGkgLT4gZndfc3N0XzBmMjgu
-YmluDQo+ID4gIHNuZC1pbnRlbC1zc3QtYWNwaSAtPiBmd19zc3RfMGYyOF9zc3AwLmJpbiAocmVu
-YW1lZCB0byBmd19zc3RfMGYyOC5iaW4pDQo+DQo+IE9rLiBJIHJlLXJhbiB0aGUgdGVzdHMgbGlr
-ZSB0aGF0Lg0KPg0KPiBBZnRlciBsb2FkaW5nIHNuZC1pbnRlbC1zc3QtYWNwaSwgdGhlIGtlcm5l
-bCBzYXlzOg0KPg0KPiBbICAgMzUuMTYwMzMwXSBpbnRlbF9zc3RfYWNwaSA4MDg2MEYyODowMDog
-TFBFIGJhc2U6IDB4OTBhMDAwMDAgc2l6ZToweDIwMDAwMA0KPiBbICAgMzUuMTYwMzM5XSBpbnRl
-bF9zc3RfYWNwaSA4MDg2MEYyODowMDogSVJBTSBiYXNlOiAweDkwYWMwMDAwDQo+IFsgICAzNS4x
-NjAzNzJdIGludGVsX3NzdF9hY3BpIDgwODYwRjI4OjAwOiBEUkFNIGJhc2U6IDB4OTBiMDAwMDAN
-Cj4gWyAgIDM1LjE2MDM4NF0gaW50ZWxfc3N0X2FjcGkgODA4NjBGMjg6MDA6IFNISU0gYmFzZTog
-MHg5MGI0MDAwMA0KPiBbICAgMzUuMTYwMzk1XSBpbnRlbF9zc3RfYWNwaSA4MDg2MEYyODowMDog
-TWFpbGJveCBiYXNlOiAweDkwYjQ0MDAwDQo+IFsgICAzNS4xNjA0MDVdIGludGVsX3NzdF9hY3Bp
-IDgwODYwRjI4OjAwOiBERFIgYmFzZTogMHgyMDAwMDAwMA0KPiBbICAgMzUuMTYxMzczXSBpbnRl
-bF9zc3RfYWNwaSA4MDg2MEYyODowMDogR290IGRydiBkYXRhIG1heCBzdHJlYW0gMjUNCj4NCj4g
-QWZ0ZXIgbG9hZGluZyBzbmQtc29jLXNzdC1ieXRjci1ydDU2NDAgaXQgc2F5czoNCj4NCj4gWyAg
-IDY5LjEzMDQyNF0gYnl0dDEwMF9ydDU2NDAgYnl0dDEwMF9ydDU2NDA6IHNuZC1zb2MtZHVtbXkt
-ZGFpIDwtPiBtZWRpYS1jcHUtZGFpIG1hcHBpbmcgb2sNCj4gWyAgIDY5LjEzMDQ4Ml0gY29tcHJl
-c3MgYXNvYzogc25kLXNvYy1kdW1teS1kYWkgPC0+IGNvbXByZXNzLWNwdS1kYWkgbWFwcGluZyBv
-aw0KPiBbICAgNjkuMTMwNTM2XSBieXR0MTAwX3J0NTY0MCBieXR0MTAwX3J0NTY0MDogcnQ1NjQw
-LWFpZjEgPC0+IHNzcDItcG9ydCBtYXBwaW5nIG9rDQo+IFsgICA2OS4xMzA2NTBdIGJ5dHQxMDBf
-cnQ1NjQwIGJ5dHQxMDBfcnQ1NjQwOiBDb25uZWN0aW5nIG5vbi1zdXBwbHkgd2lkZ2V0IHRvIHN1
-cHBseSB3aWRnZXQgaXMgbm90IHN1cHBvcnRlZCAoSW50IE1pYyAtPiBMRE8yKQ0KPiBbICAgNjku
-MTMwNjU3XSBieXR0MTAwX3J0NTY0MCBieXR0MTAwX3J0NTY0MDogQVNvQzogbm8gZGFwbSBtYXRj
-aCBmb3IgSW50IE1pYyAtLT4gKG51bGwpIC0tPiBMRE8yDQo+IFsgICA2OS4xMzA2NjNdIGJ5dHQx
-MDBfcnQ1NjQwIGJ5dHQxMDBfcnQ1NjQwOiBBU29DOiBGYWlsZWQgdG8gYWRkIHJvdXRlIEludCBN
-aWMgLT4gZGlyZWN0IC0+IExETzINCj4gWyAgIDY5LjE2NTM5Ml0gc3N0LW1mbGQtcGxhdGZvcm0g
-c3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVy
-IHNsb3QgMCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTQyN10gc3N0
-LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0
-IHR4IGludGVybGVhdmVyIHNsb3QgMSBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAg
-IDY5LjE2NTQ2MF0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29u
-dHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVyIHNsb3QgMiBkb2Vzbid0IGhhdmUgREFQTSB3
-aWRnZXQhISENCj4gWyAgIDY5LjE2NTQ5NF0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxh
-dGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfb3V0IHR4IGludGVybGVhdmVyIHNsb3QgMyBkb2Vz
-bid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTUyMV0gc3N0LW1mbGQtcGxhdGZv
-cm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVpbnRlcmxl
-YXZlciBjb2RlY19pbjBfMCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2
-NTU1MV0gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDog
-Y29kZWNfaW4gcnggZGVpbnRlcmxlYXZlciBjb2RlY19pbjBfMSBkb2Vzbid0IGhhdmUgREFQTSB3
-aWRnZXQhISENCj4gWyAgIDY5LjE2NTU4M10gc3N0LW1mbGQtcGxhdGZvcm0gc3N0LW1mbGQtcGxh
-dGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVpbnRlcmxlYXZlciBjb2RlY19pbjFf
-MCBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4gWyAgIDY5LjE2NTYxOF0gc3N0LW1mbGQt
-cGxhdGZvcm0gc3N0LW1mbGQtcGxhdGZvcm06IFNsb3QgY29udHJvbDogY29kZWNfaW4gcnggZGVp
-bnRlcmxlYXZlciBjb2RlY19pbjFfMSBkb2Vzbid0IGhhdmUgREFQTSB3aWRnZXQhISENCj4NCj4g
-VGhlIHNvdW5kIGNhcmQgYXBwZWFycywgYnV0IHRoZW4gaWYgSSB0cnkgdG8gcGxheSBzb21ldGhp
-bmc6DQo+DQo+IGFwbGF5IC1EIGh3OjAgLWMgMiAtciA0ODAwMCAtZiBTMTZfTEUgL2Rldi91cmFu
-ZG9tDQo+IGFwbGF5OiBzZXRfcGFyYW1zOjEyOTc6IFVuYWJsZSB0byBpbnN0YWxsIGh3IHBhcmFt
-czoNCj4gQUNDRVNTOiAgUldfSU5URVJMRUFWRUQNCj4gRk9STUFUOiAgUzE2X0xFDQo+IFNVQkZP
-Uk1BVDogIFNURA0KPiBTQU1QTEVfQklUUzogMTYNCj4gRlJBTUVfQklUUzogMzINCj4gQ0hBTk5F
-TFM6IDINCj4gUkFURTogNDgwMDANCj4gUEVSSU9EX1RJTUU6IDEyNTAwMA0KPiBQRVJJT0RfU0la
-RTogNjAwMA0KPiBQRVJJT0RfQllURVM6IDI0MDAwDQo+IFBFUklPRFM6IDQNCj4gQlVGRkVSX1RJ
-TUU6IDUwMDAwMA0KPiBCVUZGRVJfU0laRTogMjQwMDANCj4gQlVGRkVSX0JZVEVTOiA5NjAwMA0K
-PiBUSUNLX1RJTUU6IDANCj4NCj4gWyAgIDk1LjE2NDc0OV0gIEJheXRyYWlsIEF1ZGlvIFBvcnQ6
-IEFTb0M6IG5vIGJhY2tlbmQgREFJcyBlbmFibGVkIGZvciBCYXl0cmFpbCBBdWRpbyBQb3J0DQoN
-ClRoaXMgaXMgZHBjbSBlbmFibGVkIGRyaXZlcg0KDQpTbyBwbGVhc2Ugcm91dGUgdGhlIEZFIHRv
-IEJFIGFuZCBpdCBzaG91bGQgd29yay4uLg0KDQpWaW5vZA0KPg0KPiBUaGUgbWVzc2FnZXMgYXJl
-IGV4YWN0bHkgdGhlIHNhbWUgd2l0aCBib3RoIGZpcm13YXJlcyAoZndfc3N0XzBmMjguYmluIGFu
-ZA0KPiBmd19zc3RfMGYyOF9zc3AwLmJpbikuDQo+DQo+IE1heWJlIEkgZm9yZ290IHRvIGxvYWQg
-YW5vdGhlciBtb2R1bGU/DQo+DQo+IFNpZGUgbm90ZTogc25kLWludGVsLXNzdC1hY3BpIGFuZCBz
-bmQtc29jLXJ0NTY0MCBib3RoIGhhdmUgdXNhZ2UgY291bnQgMQ0KPiB3aXRob3V0IGRlcGVuZGVu
-dCBtb2R1bGVzLCB0aGF0IHJlcXVpcmVzIGEgcmVib290IGJldHdlZW4gZWFjaCB0ZXN0Lg0KPg0K
-PiBUaGFua3MgZm9yIHlvdXIgaGVscCwgaXQgaGVscGVkIG1lIG1ha2UgcHJvZ3Jlc3MgZXZlbiBp
-ZiBpdCBzdGlsbCBpcyBub3QNCj4gc3VjY2Vzcy4NCj4NCj4gUmVnYXJkcywNCj4NCj4gLS0NCj4g
-ICBOaWNvbGFzIEdlb3JnZQ0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Fri, 3 Jul 2015 12:10:42 +0000
+"Koul, Vinod" <vinod.koul@intel.com> wrote:
+
+> 
+> On 3 Jul 2015 4:43 pm, Nicolas George <george@nsup.org> wrote:
+> >
+[...]
+> > [   95.164749]  Baytrail Audio Port: ASoC: no backend DAIs enabled for Baytrail Audio Port
+> 
+> This is dpcm enabled driver
+> 
+> So please route the FE to BE and it should work...
+> 
+
+Nicolas, this can be done by using the commands from here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/094080.html
+
+In particular:
+amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
+amixer -c0 sset 'media0_out mix 0 media1_in' on
+
+Ciao,
+   Antonio
+
+P.S. Vinod, please check your email client, it looks like sometimes
+there is no In-Reply-To header in messages from you and the threading
+of messages gets broken.
+
+-- 
+Antonio Ospite
+http://ao2.it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
