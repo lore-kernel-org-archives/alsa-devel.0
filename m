@@ -1,16 +1,17 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 3 Jul 2015 14:36:08 +0200
-Message-ID: <20150703143608.7afb34c985d82982e929484e@ao2.it>
-References: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm0010: Remove .bus field setting
+ from wm0010_spi_driver
+Date: Fri, 3 Jul 2015 13:47:01 +0100
+Message-ID: <20150703124701.GA1472@sirena.org.uk>
+References: <1435809778.4609.0.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3399649984291278835=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id D62F1264F09
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 14:36:19 +0200 (CEST)
-In-Reply-To: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32FEC264F39
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 14:47:19 +0200 (CEST)
+In-Reply-To: <1435809778.4609.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,44 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Jul 2015 12:10:42 +0000
-"Koul, Vinod" <vinod.koul@intel.com> wrote:
 
-> 
-> On 3 Jul 2015 4:43 pm, Nicolas George <george@nsup.org> wrote:
-> >
-[...]
-> > [   95.164749]  Baytrail Audio Port: ASoC: no backend DAIs enabled for Baytrail Audio Port
-> 
-> This is dpcm enabled driver
-> 
-> So please route the FE to BE and it should work...
-> 
+--===============3399649984291278835==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
+Content-Disposition: inline
 
-Nicolas, this can be done by using the commands from here:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/094080.html
 
-In particular:
-amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
-amixer -c0 sset 'media0_out mix 0 media1_in' on
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ciao,
-   Antonio
+On Thu, Jul 02, 2015 at 12:02:58PM +0800, Axel Lin wrote:
+> The .bus field will be set by spi_register_driver() so we don't need to
+> set it in wm0010_spi_driver.
 
-P.S. Vinod, please check your email client, it looks like sometimes
-there is no In-Reply-To header in messages from you and the threading
-of messages gets broken.
+A similar change has already been sent.
 
--- 
-Antonio Ospite
-http://ao2.it
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVloRBAAoJECTWi3JdVIfQI2EH/0S8QU24IjGlpfw3OorH5jxE
+FwTfd9a+OzIVG7OzLLGpvvElk6qQ0Qyb/toO7ez5GgnwYWT66MOeuYYX5c8qMqWt
+D9Lih1TFn4/MiZZoO1G0Wvt1d3y+xBW+ewFj9KPwB3ui81S7HDeWUS0YFRJwM7EN
+X1/EaFnNar2RcvvmYt5oHOq0u+WNRC1m7SMrecpToa5VZ9I/GAFA4UqemcbcTMMo
+uWUvtN2vXHYAXIlcsmJHk3xtH7XACOfn+Z7YlDNdX06RsREGE/T1M4kdk4VwHR/p
+uO9pSlvSPn+ipmDSZS9myHAxW9kvY9G4t3mjX9HwO3GY08B6Nc6anZCmqqoFyC0=
+=keZT
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
+
+--===============3399649984291278835==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3399649984291278835==--
