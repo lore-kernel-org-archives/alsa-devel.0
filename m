@@ -1,23 +1,24 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
  assignment for external base speaker and external microphone not working
-Date: Fri, 3 Jul 2015 23:03:05 +0200
-Message-ID: <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
+Date: Sat, 4 Jul 2015 13:56:17 +0800
+Message-ID: <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
 References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
  <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
  <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
  <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+ <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f176.google.com (mail-ob0-f176.google.com
- [209.85.214.176])
- by alsa0.perex.cz (Postfix) with ESMTP id BAC52265099
- for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2015 23:03:26 +0200 (CEST)
-Received: by obbop1 with SMTP id op1so75333781obb.2
- for <alsa-devel@alsa-project.org>; Fri, 03 Jul 2015 14:03:25 -0700 (PDT)
-In-Reply-To: <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47A2D26510B
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2015 07:56:18 +0200 (CEST)
+Received: by oigx81 with SMTP id x81so89076809oig.1
+ for <alsa-devel@alsa-project.org>; Fri, 03 Jul 2015 22:56:17 -0700 (PDT)
+In-Reply-To: <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,131 +28,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
+To: Arthur Borsboom <arthurborsboom@gmail.com>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The jack test gives
-
-Without external speaker plugged in:
-
-Pin 0x12 (Internal Mic): present = No
-Pin 0x14 (Internal Speaker): present = No
-Pin 0x15 (Black Headphone, Left side): present = No
-Pin 0x16 (Not connected): present = No
-Pin 0x18 (Not connected): present = No
-Pin 0x19 (Not connected): present = No
-Pin 0x1a (Not connected): present = No
-Pin 0x1b (Not connected): present = No
-Pin 0x1d (Not connected): present = No
-Pin 0x1e (Not connected): present = No
-Pin 0x1f (Not connected): present = No
-
-With external speaker plugged in:
-
-Pin 0x12 (Internal Mic): present = No
-Pin 0x14 (Internal Speaker): present = No
-Pin 0x15 (Black Headphone, Left side): present = No
-Pin 0x16 (Not connected): present = No
-Pin 0x18 (Not connected): present = No
-Pin 0x19 (Not connected): present = No
-Pin 0x1a (Not connected): present = Yes
-Pin 0x1b (Not connected): present = No
-Pin 0x1d (Not connected): present = No
-Pin 0x1e (Not connected): present = No
-Pin 0x1f (Not connected): present = No
-
-For the other parts, I lack the experience.
-I have just set up a test environment, so I can recompile and test kernels
-without breaking my main system.
-
-If you have any patches to suggest and test (for the external speaker and
-the auto switch of headset), I am all ears.
-If not, I will try to dig in it myself.
-
-On 3 July 2015 at 04:20, Raymond Yau <superquad.vortex2@gmail.com> wrote:
-
->
-> >
-> > "hdajacksensetest -a" gives
-> >
-> > Pin 0x05 ( Digital Out, HDMI): present = No
-> > Pin 0x06 ( Digital Out, HDMI): present = No
-> > Pin 0x07 (Not connected): present = No
-> >
-> > which is a bit of a surprise to me, since at least the headphones (of
-> the headset I plugin) has working jack detection. I would expect to see at
-> least to have 1 non-HDMI pin connected.
->
-> You need to specify card number
->
-> hdajacksensetest -c1 -a
->
-> If the external subwoofer can be detected with other unconnected pin
-> complex instead of node 0x1a jack sense, you need to call
-> snd_hda_jack_add_kctl in your fixup
->
-> snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
->   const char *name)
->
-> >
-> > ----
-> >
-> > > Can user giveup some combo jack capability (remove the support of
-> headphone and mic jack and only support headset ) by early patching to
-> reenable auto mic selection ?
-> >
-> > To this I don't know the answer.
-> >
-> > An image of the side with the different jacks:
-> >
-> http://www.notebookcheck.net/fileadmin/Notebooks/Asus/N751JK-T4144H/rechts.jpg
-> >
-> > The yellow is the external speaker
-> > The one next to the USB ports is the headset with a logo of a headset
-> and a microphone drawn in it.
->
->
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=73bdd597823e2231dc882577dbbaf8df92fe1775
->
-> [ALC668_FIXUP_DELL_MIC_NO_PRESENCE] = {
-> + .type = HDA_FIXUP_PINS,
-> + .v.pins = (const struct hda_pintbl[]) {
-> + { 0x19, 0x03a1913d }, /* use as headphone mic, without its own jack
-> detect */
-> + { 0x1b, 0x03a1113c }, /* use as headset mic, without its own jack detect
-> */
-> + { }
-> + },
-> + .chained = true,
-> + .chain_id = ALC668_FIXUP_HEADSET_MODE
-> + },
-> + [ALC668_FIXUP_HEADSET_MODE] = {
-> + .type = HDA_FIXUP_FUNC,
-> + .v.func = alc_fixup_headset_mode_alc668,
-> + },
->
-> No need to change if you are using headphone since default is headphone
->
-> Support of Headphone mic can be removed by
-> alc_fixup_headset_mode_no_hp_mic()
->
-> You need to hack the driver to set current_headset_type to cita or omtp
-> instead of unknown
->
-> spec->current_headset_type = ALC_HEADSET_MODE_UNKNOWN;
->
->
-
-
--- 
-Arthur Borsboom
-Lieven de Keystraat 77
-3067 KG, Rotterdam
-The Netherlands
-Mob: +31629089953
-Email: arthurborsboom@gmail.com
-Skype: Arthur Borsboom, The Hague, The Netherlands
-
-[image: View Arthur's LinkedIn profile]
-<http://uk.linkedin.com/in/arthurborsboom>
+MjAxNS03LTQg5LiK5Y2INTowM+aWvCAiQXJ0aHVyIEJvcnNib29tIiA8YXJ0aHVyYm9yc2Jvb21A
+Z21haWwuY29tPuWvq+mBk++8mgo+Cj4gVGhlIGphY2sgdGVzdCBnaXZlcwo+Cj4gV2l0aG91dCBl
+eHRlcm5hbCBzcGVha2VyIHBsdWdnZWQgaW46Cj4KPiBQaW4gMHgxMiAoSW50ZXJuYWwgTWljKTog
+cHJlc2VudCA9IE5vCj4gUGluIDB4MTQgKEludGVybmFsIFNwZWFrZXIpOiBwcmVzZW50ID0gTm8K
+PiBQaW4gMHgxNSAoQmxhY2sgSGVhZHBob25lLCBMZWZ0IHNpZGUpOiBwcmVzZW50ID0gTm8KPiBQ
+aW4gMHgxNiAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDE4IChOb3QgY29u
+bmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MTkgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50
+ID0gTm8KPiBQaW4gMHgxYSAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAweDFi
+IChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MWQgKE5vdCBjb25uZWN0ZWQp
+OiBwcmVzZW50ID0gTm8KPiBQaW4gMHgxZSAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+
+IFBpbiAweDFmIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4KPiBXaXRoIGV4dGVybmFs
+IHNwZWFrZXIgcGx1Z2dlZCBpbjoKPgo+IFBpbiAweDEyIChJbnRlcm5hbCBNaWMpOiBwcmVzZW50
+ID0gTm8KPiBQaW4gMHgxNCAoSW50ZXJuYWwgU3BlYWtlcik6IHByZXNlbnQgPSBObwo+IFBpbiAw
+eDE1IChCbGFjayBIZWFkcGhvbmUsIExlZnQgc2lkZSk6IHByZXNlbnQgPSBObwo+IFBpbiAweDE2
+IChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MTggKE5vdCBjb25uZWN0ZWQp
+OiBwcmVzZW50ID0gTm8KPiBQaW4gMHgxOSAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+
+IFBpbiAweDFhIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IFllcwo+IFBpbiAweDFiIChOb3Qg
+Y29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gUGluIDB4MWQgKE5vdCBjb25uZWN0ZWQpOiBwcmVz
+ZW50ID0gTm8KPiBQaW4gMHgxZSAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+IFBpbiAw
+eDFmIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kv
+aGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4
+IDhlMDJjZGYuLjE3NGM1ZTUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
+ay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC02MTc5LDYgKzYxNzks
+OCBAQCBlbnVtIHsKICAgICBBTEM2NjhfRklYVVBfQVVUT19NVVRFLAogICAgIEFMQzY2OF9GSVhV
+UF9ERUxMX0RJU0FCTEVfQUFNSVgsCiAgICAgQUxDNjY4X0ZJWFVQX0RFTExfWFBTMTMsCisgICAg
+QUxDNjY4X0ZJWFVQX0JBU1NfQ0hNQVAsCisgICAgQUxDNjY4X0ZJWFVQX0FTVVNfTjc1MUpLLAog
+fTsKCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGM2NjJfZml4dXBzW10gPSB7CkBA
+IC02NDE5LDYgKzY0MjEsMjMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjNjYy
+X2ZpeHVwc1tdID0gewogICAgICAgICAudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAogICAgICAgICAu
+di5mdW5jID0gYWxjX2ZpeHVwX2Jhc3NfY2htYXAsCiAgICAgfSwKKyAgICBbQUxDNjY4X0ZJWFVQ
+X0JBU1NfQ0hNQVBdID0geworICAgICAgICAudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorICAgICAg
+ICAudi5mdW5jID0gYWxjX2ZpeHVwX2Jhc3NfY2htYXAsCisgICAgICAgIC5jaGFpbmVkID0gdHJ1
+ZSwKKyAgICAgICAgLmNoYWluX2lkID0gQUxDNjY4X0ZJWFVQX0hFQURTRVRfTU9ERQorICAgIH0s
+CisgICAgW0FMQzY2OF9GSVhVUF9BU1VTX043NTFKS10gPSB7CisgICAgICAgIC50eXBlID0gSERB
+X0ZJWFVQX1BJTlMsCisgICAgICAgIC52LnBpbnMgPSAoY29uc3Qgc3RydWN0IGhkYV9waW50Ymxb
+XSkgeworICAgICAgICAgICAgeyAweDE5LCAweDAzYTE5MTNkIH0sIC8qIHVzZSBhcyBoZWFkcGhv
+bmUgbWljLCB3aXRob3V0IGl0cyBvd24KamFjayBkZXRlY3QgKi8KKyAgICAgICAgICAgIHsgMHgx
+YSwgMHgwNDExMDAxMSB9LCAvKiBiYXNzIHNwZWFrZXIgYXQgRXh0IFJpZ2h0IHdpdGggamFjawpk
+ZXRlY3QgKi8KKyAgICAgICAgICAgIHsgMHgxYiwgMHgwM2ExMTEzYyB9LCAvKiB1c2UgYXMgaGVh
+ZHNldCBtaWMsIHdpdGhvdXQgaXRzIG93bgpqYWNrIGRldGVjdCAqLworICAgICAgICAgICAge30K
+KyAgICAgICAgfSwKKyAgICAgICAgLmNoYWluZWQgPSB0cnVlLAorICAgICAgICAuY2hhaW5faWQg
+PSBBTEM2NjhfRklYVVBfQkFTU19DSE1BUCwKKyAgICB9LAogfTsKCiBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IHNuZF9wY2lfcXVpcmsgYWxjNjYyX2ZpeHVwX3RibFtdID0gewpAQCAtNjQ0MSw2ICs2NDYw
+LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzY2Ml9maXh1cF90Ymxb
+XQo9IHsKICAgICBTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgxNjMyLCAiSFAgUlA1ODAwIiwgQUxD
+NjYyX0ZJWFVQX0hQX1JQNTgwMCksCiAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTFjZCwg
+IkFzdXMgTjU1MCIsIEFMQzY2Ml9GSVhVUF9CQVNTXzFBKSwKICAgICBTTkRfUENJX1FVSVJLKDB4
+MTA0MywgMHgxNDc3LCAiQVNVUyBONTZWWiIsCkFMQzY2Ml9GSVhVUF9CQVNTX01PREU0X0NITUFQ
+KSwKKyAgICBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxN2JkLCAiQXN1cyBONzUxSksiLCBBTEM2
+NjhfRklYVVBfQVNVU19ONzUxSkspLAogICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDE1YTcs
+ICJBU1VTIFVYNTFWWkgiLCBBTEM2NjJfRklYVVBfQkFTU18xNiksCiAgICAgU05EX1BDSV9RVUlS
+SygweDEwNDMsIDB4MWI3MywgIkFTVVMgTjU1U0YiLCBBTEM2NjJfRklYVVBfQkFTU18xNiksCiAg
+ICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWJmMywgIkFTVVMgTjc2VloiLApBTEM2NjJfRklY
+VVBfQkFTU19NT0RFNF9DSE1BUCksCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
