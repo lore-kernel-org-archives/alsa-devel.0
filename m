@@ -1,25 +1,23 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
- assignment for external base speaker and external microphone not working
-Date: Sat, 4 Jul 2015 09:31:24 +0200
-Message-ID: <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
-References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
- <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
- <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
- <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
- <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
- <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+From: Tuukka Pasanen <pasanen.tuukka@gmail.com>
+Subject: Rane SL-4 USB sound card
+Date: Sat, 04 Jul 2015 12:38:54 +0300
+Message-ID: <5597A9AE.2090002@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
- [209.85.214.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 42701265119
- for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2015 09:31:45 +0200 (CEST)
-Received: by obbop1 with SMTP id op1so80111456obb.2
- for <alsa-devel@alsa-project.org>; Sat, 04 Jul 2015 00:31:44 -0700 (PDT)
-In-Reply-To: <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76D1C2605FA
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jul 2015 11:38:57 +0200 (CEST)
+Received: by lagc2 with SMTP id c2so106986801lag.3
+ for <alsa-devel@alsa-project.org>; Sat, 04 Jul 2015 02:38:57 -0700 (PDT)
+Received: from iocaste.ilmi.fi (a91-154-252-31.elisa-laajakaista.fi.
+ [91.154.252.31])
+ by mx.google.com with ESMTPSA id j2sm2979481lag.10.2015.07.04.02.38.55
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sat, 04 Jul 2015 02:38:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,83 +27,194 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBoYXZlIHRlc3RlZCB0aGUgcGF0Y2ggYnkgbWFudWFsbHkgYWRkaW5nIHRoZSBsaW5lcyBvZiBj
-b2RlIGludG8gbWFpbmxpbmUKa2VybmVsIDQuMS4xLgoKVGhlIGJhc2Ugc3BlYWtlcnMgd29ya3Mu
-ClRoZSBoZWFkc2V0IG1pY3JvcGhvbmUgd29ya3MuClRoZSBoZWFkcGhvbmUsIGhlYWRzZXQgbWlj
-cm9waG9uZSBhbmQgbWljcm9waG9uZSBqYWNrIGRldGVjdGlvbiBzZWVtcyB0bwp3b3JrIGluIFB1
-bHNlQXVkaW8gKHNob3dpbmcgYnkgcGx1Z2dlZCBvciB1bnBsdWdnZWQgc3RhdHVzKS4KSG93ZXZl
-ciBpdCBkb2VzIG5vdCBhdXRvbWF0aWNhbGx5IHN3aXRjaCB0aGUgKHVuKXBsdWdnZWQgbWljcm9w
-aG9uZS4KTXkgZ3Vlc3MgaXMgdGhhdCBpdCBkb2VzIG5vdCBrbm93IGlmIGl0IHNob3VsZCB1c2Ug
-dGhlIGhlYWRzZXQgbWljcm9waG9uZQpvciB0aGUgbWljcm9waG9uZSAoaW5zdGVhZCBvZiB0aGUg
-ZGVmYXVsdCBpbnRlcm5hbCBtaWNyb3Bob25lKS4KCkRvIHlvdSB0aGluayB0aGVyZSBpcyBhIHdh
-eSB0byBhdXRvbWF0ZSB0aGUgZm9yd2FyZCBhbmQgYmFja3dhcmQgc3dpdGNoaW5nCmJldHdlZW4g
-dGhlIGludGVybmFsIG1pY3JvcGhvbmUgYW5kIGhlYWRzZXQgbWljcm9waG9uZT8KCk9uIDQgSnVs
-eSAyMDE1IGF0IDA3OjU2LCBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29t
-PiB3cm90ZToKCj4KPiAyMDE1LTctNCDkuIrljYg1OjAz5pa8ICJBcnRodXIgQm9yc2Jvb20iIDxh
-cnRodXJib3JzYm9vbUBnbWFpbC5jb20+5a+r6YGT77yaCj4gPgo+ID4gVGhlIGphY2sgdGVzdCBn
-aXZlcwo+ID4KPiA+IFdpdGhvdXQgZXh0ZXJuYWwgc3BlYWtlciBwbHVnZ2VkIGluOgo+ID4KPiA+
-IFBpbiAweDEyIChJbnRlcm5hbCBNaWMpOiBwcmVzZW50ID0gTm8KPiA+IFBpbiAweDE0IChJbnRl
-cm5hbCBTcGVha2VyKTogcHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxNSAoQmxhY2sgSGVhZHBob25l
-LCBMZWZ0IHNpZGUpOiBwcmVzZW50ID0gTm8KPiA+IFBpbiAweDE2IChOb3QgY29ubmVjdGVkKTog
-cHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxOCAoTm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+
-ID4gUGluIDB4MTkgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiA+IFBpbiAweDFhIChO
-b3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxYiAoTm90IGNvbm5lY3RlZCk6
-IHByZXNlbnQgPSBObwo+ID4gUGluIDB4MWQgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8K
-PiA+IFBpbiAweDFlIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxZiAo
-Tm90IGNvbm5lY3RlZCk6IHByZXNlbnQgPSBObwo+ID4KPiA+IFdpdGggZXh0ZXJuYWwgc3BlYWtl
-ciBwbHVnZ2VkIGluOgo+ID4KPiA+IFBpbiAweDEyIChJbnRlcm5hbCBNaWMpOiBwcmVzZW50ID0g
-Tm8KPiA+IFBpbiAweDE0IChJbnRlcm5hbCBTcGVha2VyKTogcHJlc2VudCA9IE5vCj4gPiBQaW4g
-MHgxNSAoQmxhY2sgSGVhZHBob25lLCBMZWZ0IHNpZGUpOiBwcmVzZW50ID0gTm8KPiA+IFBpbiAw
-eDE2IChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxOCAoTm90IGNvbm5l
-Y3RlZCk6IHByZXNlbnQgPSBObwo+ID4gUGluIDB4MTkgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50
-ID0gTm8KPiA+IFBpbiAweDFhIChOb3QgY29ubmVjdGVkKTogcHJlc2VudCA9IFllcwo+ID4gUGlu
-IDB4MWIgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiA+IFBpbiAweDFkIChOb3QgY29u
-bmVjdGVkKTogcHJlc2VudCA9IE5vCj4gPiBQaW4gMHgxZSAoTm90IGNvbm5lY3RlZCk6IHByZXNl
-bnQgPSBObwo+ID4gUGluIDB4MWYgKE5vdCBjb25uZWN0ZWQpOiBwcmVzZW50ID0gTm8KPiBkaWZm
-IC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX3JlYWx0ZWsuYwo+IGluZGV4IDhlMDJjZGYuLjE3NGM1ZTUgMTAwNjQ0Cj4gLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
-YWx0ZWsuYwo+IEBAIC02MTc5LDYgKzYxNzksOCBAQCBlbnVtIHsKPiAgICAgIEFMQzY2OF9GSVhV
-UF9BVVRPX01VVEUsCj4gICAgICBBTEM2NjhfRklYVVBfREVMTF9ESVNBQkxFX0FBTUlYLAo+ICAg
-ICAgQUxDNjY4X0ZJWFVQX0RFTExfWFBTMTMsCj4gKyAgICBBTEM2NjhfRklYVVBfQkFTU19DSE1B
-UCwKPiArICAgIEFMQzY2OF9GSVhVUF9BU1VTX043NTFKSywKPiAgfTsKPgo+ICBzdGF0aWMgY29u
-c3Qgc3RydWN0IGhkYV9maXh1cCBhbGM2NjJfZml4dXBzW10gPSB7Cj4gQEAgLTY0MTksNiArNjQy
-MSwyMyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGM2NjJfZml4dXBzW10gPSB7
-Cj4gICAgICAgICAgLnR5cGUgPSBIREFfRklYVVBfRlVOQywKPiAgICAgICAgICAudi5mdW5jID0g
-YWxjX2ZpeHVwX2Jhc3NfY2htYXAsCj4gICAgICB9LAo+ICsgICAgW0FMQzY2OF9GSVhVUF9CQVNT
-X0NITUFQXSA9IHsKPiArICAgICAgICAudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAo+ICsgICAgICAg
-IC52LmZ1bmMgPSBhbGNfZml4dXBfYmFzc19jaG1hcCwKPiArICAgICAgICAuY2hhaW5lZCA9IHRy
-dWUsCj4gKyAgICAgICAgLmNoYWluX2lkID0gQUxDNjY4X0ZJWFVQX0hFQURTRVRfTU9ERQo+ICsg
-ICAgfSwKPiArICAgIFtBTEM2NjhfRklYVVBfQVNVU19ONzUxSktdID0gewo+ICsgICAgICAgIC50
-eXBlID0gSERBX0ZJWFVQX1BJTlMsCj4gKyAgICAgICAgLnYucGlucyA9IChjb25zdCBzdHJ1Y3Qg
-aGRhX3BpbnRibFtdKSB7Cj4gKyAgICAgICAgICAgIHsgMHgxOSwgMHgwM2ExOTEzZCB9LCAvKiB1
-c2UgYXMgaGVhZHBob25lIG1pYywgd2l0aG91dCBpdHMKPiBvd24gamFjayBkZXRlY3QgKi8KPiAr
-ICAgICAgICAgICAgeyAweDFhLCAweDA0MTEwMDExIH0sIC8qIGJhc3Mgc3BlYWtlciBhdCBFeHQg
-UmlnaHQgd2l0aCBqYWNrCj4gZGV0ZWN0ICovCj4gKyAgICAgICAgICAgIHsgMHgxYiwgMHgwM2Ex
-MTEzYyB9LCAvKiB1c2UgYXMgaGVhZHNldCBtaWMsIHdpdGhvdXQgaXRzIG93bgo+IGphY2sgZGV0
-ZWN0ICovCj4gKyAgICAgICAgICAgIHt9Cj4gKyAgICAgICAgfSwKPiArICAgICAgICAuY2hhaW5l
-ZCA9IHRydWUsCj4gKyAgICAgICAgLmNoYWluX2lkID0gQUxDNjY4X0ZJWFVQX0JBU1NfQ0hNQVAs
-Cj4gKyAgICB9LAo+ICB9Owo+Cj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBh
-bGM2NjJfZml4dXBfdGJsW10gPSB7Cj4gQEAgLTY0NDEsNiArNjQ2MCw3IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGM2NjJfZml4dXBfdGJsW10KPiA9IHsKPiAgICAgIFNO
-RF9QQ0lfUVVJUksoMHgxMDNjLCAweDE2MzIsICJIUCBSUDU4MDAiLCBBTEM2NjJfRklYVVBfSFBf
-UlA1ODAwKSwKPiAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDExY2QsICJBc3VzIE41NTAi
-LCBBTEM2NjJfRklYVVBfQkFTU18xQSksCj4gICAgICBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgx
-NDc3LCAiQVNVUyBONTZWWiIsCj4gQUxDNjYyX0ZJWFVQX0JBU1NfTU9ERTRfQ0hNQVApLAo+ICsg
-ICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTdiZCwgIkFzdXMgTjc1MUpLIiwKPiBBTEM2Njhf
-RklYVVBfQVNVU19ONzUxSkspLAo+ICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTVhNywg
-IkFTVVMgVVg1MVZaSCIsIEFMQzY2Ml9GSVhVUF9CQVNTXzE2KSwKPiAgICAgIFNORF9QQ0lfUVVJ
-UksoMHgxMDQzLCAweDFiNzMsICJBU1VTIE41NVNGIiwgQUxDNjYyX0ZJWFVQX0JBU1NfMTYpLAo+
-ICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWJmMywgIkFTVVMgTjc2VloiLAo+IEFMQzY2
-Ml9GSVhVUF9CQVNTX01PREU0X0NITUFQKSwKPgo+CgoKLS0gCkFydGh1ciBCb3JzYm9vbQpMaWV2
-ZW4gZGUgS2V5c3RyYWF0IDc3CjMwNjcgS0csIFJvdHRlcmRhbQpUaGUgTmV0aGVybGFuZHMKTW9i
-OiArMzE2MjkwODk5NTMKRW1haWw6IGFydGh1cmJvcnNib29tQGdtYWlsLmNvbQpTa3lwZTogQXJ0
-aHVyIEJvcnNib29tLCBUaGUgSGFndWUsIFRoZSBOZXRoZXJsYW5kcwoKW2ltYWdlOiBWaWV3IEFy
-dGh1cidzIExpbmtlZEluIHByb2ZpbGVdCjxodHRwOi8vdWsubGlua2VkaW4uY29tL2luL2FydGh1
-cmJvcnNib29tPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello,
+I've been hacking to get Rane SL-4 USB audio 
+(http://dj.rane.com/products/sl4-for-serato-scratch-live) which have 4 
+Input and 4 output channel to work with ALSA. After digging the lsusb 
+and snoops I have separated endpoints for input (0x82) and output 
+(0x06). They are just USB Isochronous I/O.
+I have compiled kernel and tried to get USB-quirks to work with this but 
+then I have to admit that even Reloop Play seems be very similar it 
+doesn't do the trick (No error but card doesn't come up eather) nor 
+using Ranel SL-1 approach which just shoots the error
+
+[ 3555.009349] usb 1-5: Audio class v2 interfaces need an interface 
+association
+[ 3555.009373] snd-usb-audio: probe of 1-5:1.0 failed with error -5
+[ 3555.009394] usb 1-5: cannot find UAC_HEADER
+[ 3555.009401] snd-usb-audio: probe of 1-5:1.1 failed with error -5
+[ 3555.009421] usb 1-5: cannot find UAC_HEADER
+[ 3555.009427] snd-usb-audio: probe of 1-5:1.2 failed with error -5
+
+If I need interface association how to do that? Trying to adjust mixer 
+values in mixer_maps.c.
+
+If someone have a time to give some guidance if this doable with Quirks 
+or do I have to write some more specific driver? I attach lsusb below here.
+HID device seems to be adjusting buffer size and 48 Khz and 96 Khz output.
+
+Bus 001 Device 003: ID 1cc5:000f
+Device Descriptor:
+   bLength                18
+   bDescriptorType         1
+   bcdUSB               2.00
+   bDeviceClass            0 (Defined at Interface level)
+   bDeviceSubClass       255
+   bDeviceProtocol       255
+   bMaxPacketSize0        64
+   idVendor           0x1cc5
+   idProduct          0x000f
+   bcdDevice            1.00
+   iManufacturer           1 Rane Corporation
+   iProduct                2 Rane SL 4
+   iSerial                 3 RH.01.00
+   bNumConfigurations      1
+   Configuration Descriptor:
+     bLength                 9
+     bDescriptorType         2
+     wTotalLength          235
+     bNumInterfaces          4
+     bConfigurationValue     1
+     iConfiguration          0
+     bmAttributes         0x80
+       (Bus Powered)
+     MaxPower              500mA
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        0
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      1
+       bInterfaceProtocol     32
+       iInterface              4 SL 4 Audio
+       ** UNRECOGNIZED:  09 24 01 00 02 0a 4b 00 00
+       ** UNRECOGNIZED:  08 24 0a 05 01 01 00 00
+       ** UNRECOGNIZED:  11 24 02 01 01 01 00 05 0a 00 00 00 00 05 00 00 00
+       ** UNRECOGNIZED:  0c 24 03 02 02 06 00 01 05 00 00 00
+       ** UNRECOGNIZED:  11 24 02 03 02 06 00 05 0a 00 00 00 00 0f 00 00 00
+       ** UNRECOGNIZED:  0c 24 03 04 01 01 00 03 05 00 00 00
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        1
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      2
+       bInterfaceProtocol     32
+       iInterface              0
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        1
+       bAlternateSetting       1
+       bNumEndpoints           1
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      2
+       bInterfaceProtocol     32
+       iInterface              0
+       ** UNRECOGNIZED:  10 24 01 01 00 01 01 00 00 00 0a 00 00 00 00 05
+       ** UNRECOGNIZED:  06 24 02 01 04 18
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x06  EP 6 OUT
+         bmAttributes            5
+           Transfer Type            Isochronous
+           Synch Type               Asynchronous
+           Usage Type               Data
+         wMaxPacketSize     0x0208  1x 520 bytes
+         bInterval               1
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        2
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      2
+       bInterfaceProtocol     32
+       iInterface              0
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        2
+       bAlternateSetting       1
+       bNumEndpoints           1
+       bInterfaceClass       255 Vendor Specific Class
+       bInterfaceSubClass      2
+       bInterfaceProtocol     32
+       iInterface              0
+       ** UNRECOGNIZED:  10 24 01 03 00 01 01 00 00 00 0a 00 00 00 00 0f
+       ** UNRECOGNIZED:  06 24 02 01 04 18
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x82  EP 2 IN
+         bmAttributes           37
+           Transfer Type            Isochronous
+           Synch Type               Asynchronous
+           Usage Type               Implicit feedback Data
+         wMaxPacketSize     0x0208  1x 520 bytes
+         bInterval               1
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        3
+       bAlternateSetting       0
+       bNumEndpoints           2
+       bInterfaceClass         3 Human Interface Device
+       bInterfaceSubClass      0 No Subclass
+       bInterfaceProtocol      0 None
+       iInterface              0
+         HID Device Descriptor:
+           bLength                 9
+           bDescriptorType        33
+           bcdHID               1.10
+           bCountryCode            0 Not supported
+           bNumDescriptors         1
+           bDescriptorType        34 Report
+           wDescriptorLength      28
+          Report Descriptors:
+            ** UNAVAILABLE **
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x81  EP 1 IN
+         bmAttributes            3
+           Transfer Type            Interrupt
+           Synch Type               None
+           Usage Type               Data
+         wMaxPacketSize     0x0040  1x 64 bytes
+         bInterval               1
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x01  EP 1 OUT
+         bmAttributes            3
+           Transfer Type            Interrupt
+           Synch Type               None
+           Usage Type               Data
+         wMaxPacketSize     0x0040  1x 64 bytes
+         bInterval               1
+Device Qualifier (for other device speed):
+   bLength                10
+   bDescriptorType         6
+   bcdUSB               2.00
+   bDeviceClass            0 (Defined at Interface level)
+   bDeviceSubClass       255
+   bDeviceProtocol       255
+   bMaxPacketSize0        64
+   bNumConfigurations      1
+Device Status:     0x0000
+   (Bus Powered)
+
+Thanks you for your time and any tips would be nice.
+
+Sincerely,
+Tuukka
