@@ -1,17 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to Configure Appropriate runtime->hw in
-	ALSA	Driver
-Date: Sun, 05 Jul 2015 19:20:04 +0200
-Message-ID: <55996744.7040201@ladisch.de>
-References: <CA+k7WwaxTObWDjn-7SqPkzTNNgf9+ManyT3mk8wDxLZZzn5OYQ@mail.gmail.com>
+Subject: Re: Rane SL-4 USB sound card
+Date: Sun, 05 Jul 2015 19:32:37 +0200
+Message-ID: <55996A35.6030904@ladisch.de>
+References: <5597A9AE.2090002@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 84E1E260449
- for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2015 19:21:26 +0200 (CEST)
-In-Reply-To: <CA+k7WwaxTObWDjn-7SqPkzTNNgf9+ManyT3mk8wDxLZZzn5OYQ@mail.gmail.com>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 91866260449
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2015 19:33:59 +0200 (CEST)
+In-Reply-To: <5597A9AE.2090002@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Azizul Hakim <azizulfahim2002@gmail.com>, alsa-devel@alsa-project.org
+To: Tuukka Pasanen <pasanen.tuukka@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Azizul Hakim wrote:
-> What is the best way to set the *runtime->hw* parameter in ALSA driver.
+Tuukka Pasanen wrote:
+> I've been hacking to get Rane SL-4 USB audio ... to work with ALSA.
+> I have compiled kernel and tried to get USB-quirks to work with this ... it doesn't do the trick
 
-Set it to the capabilities of your hardware.
+> If I need interface association how to do that?
 
-> From sample ALSA driver tutorial I understand we have to declare a
-> *structure snd_pcm_hardware*  where we define all sound parameters
-> like *STEREO/MONO,
-> RATES* etc. Now at run time we can play sound files of different
-> parameters. How ALSA behaves if the audio file parameters doesn't match
-> with the *structure_snd_pcm_hardware* parameters?
+The interface association descriptor should have been provided by the firmware.
 
-Applications are not able to set unsupported parameter values.
+Anyway, try the following quirk:
 
-However, alsa-lib can automatically convert rates/formats.
-
-> If we want our driver to play any sound file
-
-Your driver is supposed to driver your hardware.
-What would you do with an unsupported format?
+{
+	USB_DEVICE(0x1cc5, 0x000f),
+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+		.ifnum = QUIRK_ANY_INTERFACE,
+		.type = QUIRK_COMPOSITE,
+		.data = (const struct snd_usb_audio_quirk[]) {
+			{
+				.ifnum = 1,
+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+			},
+			{
+				.ifnum = 2,
+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+			},
+			{
+				.ifnum = -1,
+			}
+		}
+	}
+},
 
 
 Regards,
