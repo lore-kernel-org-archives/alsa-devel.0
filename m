@@ -1,147 +1,103 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: g_audio kernel oops on pulling calbe
-Date: Mon, 6 Jul 2015 19:20:53 +0200
-Message-ID: <CAOf5uw=HzJFyH=2a8jHTV2kCxsRQ9rKX_KPss4uRyF8Aj-T=AQ@mail.gmail.com>
-References: <CA+TH9V=Kz3M4Kco5Biee2KUKHo6BaennNLOW5VBDBYpyYV7khQ@mail.gmail.com>
- <CAOf5uwk3zDGbgBPGOcB1oZCELY3jfpsa8AU_AHWwyeYv9-1EUg@mail.gmail.com>
- <CA+TH9VkPhhfBTgn8NN88V97PQ9vG3+e7=TFxKtv9enHt9HDo6A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f172.google.com (mail-ie0-f172.google.com
- [209.85.223.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A3045260633
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 19:20:54 +0200 (CEST)
-Received: by iecuq6 with SMTP id uq6so117821254iec.2
- for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 10:20:53 -0700 (PDT)
-In-Reply-To: <CA+TH9VkPhhfBTgn8NN88V97PQ9vG3+e7=TFxKtv9enHt9HDo6A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dapm: Lock during userspace access" to the asoc tree
+Date: Mon, 06 Jul 2015 21:43:14 +0100
+Message-ID: <E1ZCDEQ-0002mA-98@debutante>
+References: <1436194884-1874-1-git-send-email-lars@metafoo.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1436194884-1874-1-git-send-email-lars@metafoo.de>
+Sender: stable-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCk9uIEp1bCA2LCAyMDE1IDQ6MTAgUE0sICJBbmdlbG8gQ29tcGFnbnVjY2kiIDxhbmdlbG8u
-Y29tcGFnbnVjY2lAZ21haWwuY29tPgp3cm90ZToKPgo+IEhpIE1pY2hhZWwsCj4KPiAyMDE1LTA3
-LTA2IDE1OjM4IEdNVCswMjowMCBNaWNoYWVsIFRyaW1hcmNoaSA8bWljaGFlbEBhbWFydWxhc29s
-dXRpb25zLmNvbQo+Ogo+ID4gSGkKPiA+Cj4gPiBPbiBNb24sIEp1bCA2LCAyMDE1IGF0IDM6MjAg
-UE0sIEFuZ2VsbyBDb21wYWdudWNjaQo+ID4gPGFuZ2Vsby5jb21wYWdudWNjaUBnbWFpbC5jb20+
-IHdyb3RlOgo+ID4+IERlYXIgRGV2ZWxvcGVycywKPiA+Pgo+ID4+IEknbSBoYXZpbmcgaGFyZCB0
-aW1lcyB3aXRoIGdfYXVkaW8gbW9kdWxlIG9uIGEgQXRtZWwgU0FNQTVEMy4gSSBhbHdheXMKPiA+
-PiBvYnRhaW4gYSBrZXJuZWwgb29wcyBpbiBhIG1lbWNweSBpbnNpZGUgZl9hdWRpb19jb21wbGV0
-ZSBmdW5jdGlvbi4KPiA+PiBIb25lc2x0eSBJIGNhbm5vdCB1bmRlcnN0YW5kIHdodCdzIGdvaW5n
-IHdyb25nLCBjYXVzZSB0aGF0IG1lbWNweQpzaG91bGQgd29yay4KPiA+Pgo+ID4+IEkgaGF2ZSBh
-IHNpbXBsZSBzc2Mgc291bmQgY2FyZCB3aGloIHdvcmtzIGFzIGV4cGVjdGVkIHdoZW4gdXNlZCB3
-aXRoCj4gPj4gYXBsYXkgb3IgYW55IG90aGVyIGF1ZGlvIHBsYXllciBzb2Z0d2FyZSwgYnV0IHdo
-ZW4gaSBwdWxsIHRoZSB1c2IKPiA+PiBjYWJsZSB0aGlzIGlzIHdoYXQgSSBvYnRhaW46Cj4gPj4K
-PiA+Cj4gPiBQbGVhc2UgY2hlY2sgaWYgcmVxLT5sZW5ndGggaXMgNCBieXRlIHRvbyA7KS4KPgo+
-IFVuZm9ydHVuYXRlbHkgaXQncyBub3QgNCBieXRlcyBsb25nIC4uLiBTb21ldGltZXMgaXMgMiBz
-b21ldGltZXMgaXMKPiBvbmUsIEkgYWRkZWQgYSBkaXJ0eSBwcmludGsgYmVmb3JlIHRoZSBtZW1j
-cHk6CgpDb2RlIGlzIHdyb25nLCBpZiB0aGUgZHN0IGlzIDQgYnl0ZSwgeW91IGNhbid0IGNvcHkg
-bW9yZSB0aGVuIHRoaXMsIHNvIHNvbWUKY2hlY2sgc2hvdWxkIGJlIGRvbmUuCgpNaWNoYWVsCgo+
-Cj4gWyAgIDIzLjMyMDAwMF0gbGVuPTIgYnVmPQo+IFsgICAyMy4zMjAwMDBdIGxlbj0yIGJ1Zj0K
-Pgo+IFsgICAyMy4zMjAwMDBdIGxlbj0yIGJ1Zj0KPiBbICAgMjMuMzMwMDAwXSBsZW49MiBidWY9
-Cj4gWyAgIDIzLjMzMDAwMF0gbGVuPTIgYnVmPQo+IFsgICAyMy4zMzAwMDBdIGxlbj0yIGJ1Zj3v
-v73vv71WCj4gWyAgIDIzLjMzMDAwMF0gbGVuPTIgYnVmPe+/ve+/vVYKPiBbICAgMjMuOTcwMDAw
-XSBsZW49MSBidWY9Cj4gWyAgIDIzLjk5MDAwMF0gbGVuPTIgYnVmPe+/ve+/vUEKPiBbICAgMjQu
-MDAwMDAwXSBsZW49MiBidWY977+977+9QQo+IFsgICAyNC4xOTAwMDBdIFVuYWJsZSB0byBoYW5k
-bGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwKPiBhZGRyZXNzIDBhMDgwNjA0Cj4K
-PiBBbnkgaWRlYSBvbiB3aGF0IGlzIGNhdXNpbmcgdGhpcyB3aXJlZCBiZWhhdmlvdXI/Cj4KPiBT
-aW5jZXJlbHksIEFuZ2Vsbwo+Cj4KPiA+IE1pY2hhZWwKPiA+Cj4gPj4gWyAgIDIzLjg2MDAwMF0g
-VW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgdmlydHVhbAo+ID4+IGFk
-ZHJlc3MgMGEwODA2MDQKPiA+PiBbICAgMjMuODYwMDAwXSBwZ2QgPSBjMDAwNDAwMAo+ID4+IFsg
-ICAyMy44NjAwMDBdIFswYTA4MDYwNF0gKnBnZD0wMDAwMDAwMAo+ID4+IFsgICAyMy44NjAwMDBd
-IEludGVybmFsIGVycm9yOiBPb3BzOiA4MDUgWyMxXSBBUk0KPiA+PiBbICAgMjMuODYwMDAwXSBN
-b2R1bGVzIGxpbmtlZCBpbjogdXNiX2ZfdWFjMSBnX2F1ZGlvIGxpYmNvbXBvc2l0ZQo+ID4+IHNu
-ZF9zb2NfYXRtZWxfc3NjX2RhaSBzbmRfc29jX2F0bWVsX3BjbV9kbWEKPiA+PiBbICAgMjMuODYw
-MDAwXSBDUFU6IDAgUElEOiAwIENvbW06IHN3YXBwZXIgTm90IHRhaW50ZWQgMy4xOS44KyAjODEK
-PiA+PiBbICAgMjMuODYwMDAwXSBIYXJkd2FyZSBuYW1lOiBBdG1lbCBTQU1BNSAoRGV2aWNlIFRy
-ZWUpCj4gPj4gWyAgIDIzLjg2MDAwMF0gdGFzazogYzA1MzI3YjggdGk6IGMwNTI4MDAwIHRhc2su
-dGk6IGMwNTI4MDAwCj4gPj4gWyAgIDIzLjg2MDAwMF0gUEMgaXMgYXQgbWVtY3B5KzB4NTAvMHgz
-MzAKPiA+PiBbICAgMjMuODYwMDAwXSBMUiBpcyBhdCAweDAKPiA+PiBbICAgMjMuODYwMDAwXSBw
-YyA6IFs8YzAxYTA0MzA+XSAgICBsciA6IFs8MDAwMDAwMDA+XSAgICBwc3I6IDIwMDkwMTkzCj4g
-Pj4gWyAgIDIzLjg2MDAwMF0gc3AgOiBjMDUyOWU1YyAgaXAgOiAwMDAwMDAwMCAgZnAgOiBjZmIz
-MzIwMAo+ID4+IFsgICAyMy44NjAwMDBdIHIxMDogMDAwMDAwMDEgIHI5IDogMDAwMGJiODAgIHI4
-IDogMDAwMDAwMDAKPiA+PiBbICAgMjMuODYwMDAwXSByNyA6IDAwMDAwMDAwICByNiA6IDAwMDAw
-MDAwICByNSA6IDAwMDAwMDAwICByNCA6CjAwMDAwMDAwCj4gPj4gWyAgIDIzLjg2MDAwMF0gcjMg
-OiAwMDAwMDAwMCAgcjIgOiAwMDAwMDAyMCAgcjEgOiBjZjlmNTIyMCAgcjAgOgowYTA4MDYwNAo+
-ID4+IFsgICAyMy44NjAwMDBdIEZsYWdzOiBuekN2ICBJUlFzIG9mZiAgRklRcyBvbiAgTW9kZSBT
-VkNfMzIgIElTQSBBUk0KPiA+PiBTZWdtZW50IGtlcm5lbAo+ID4+IFsgICAyMy44NjAwMDBdIENv
-bnRyb2w6IDEwYzUzYzdkICBUYWJsZTogMmZiMjQwNTkgIERBQzogMDAwMDAwMTUKPiA+PiBbICAg
-MjMuODYwMDAwXSBQcm9jZXNzIHN3YXBwZXIgKHBpZDogMCwgc3RhY2sgbGltaXQgPSAweGMwNTI4
-MjMwKQo+ID4+IFsgICAyMy44NjAwMDBdIFN0YWNrOiAoMHhjMDUyOWU1YyB0byAweGMwNTJhMDAw
-KQo+ID4+IFsgICAyMy44NjAwMDBdIDllNDA6Cj4gPj4gICAgICAgICAgICAgIGNmOWY1MTAwCj4g
-Pj4gWyAgIDIzLjg2MDAwMF0gOWU2MDogY2ZhMjU4NjggY2Y5ZTdkYzAgY2ZiMzMwODAgMGEwODA2
-MDQgY2ZiMzMyMDAKPiA+PiBiZjAyODdlMCBjZmEyNTg1OCAwMDAwMDAwMAo+ID4+IFsgICAyMy44
-NjAwMDBdIDllODA6IGNmYTIwYTEwIGNmYjMzMjAwIGNmYTI1ODU4IGNmYTIwYTEwIGNmYTIwYTEw
-Cj4gPj4gMDAwMDAwYzAgMDAwMDAwMDIgYzAyODRmNTAKPiA+PiBbICAgMjMuODYwMDAwXSA5ZWEw
-OiBjMDUyOWVhMCBjMDUyOWVhMCAwMDAwMDAwMiAwMDAwMDA5MCBjZmEyNTg1OAo+ID4+IGMwMjg2
-NDA4IDAwMDAwMDFjIGZmZmZmZmZmCj4gPj4gWyAgIDIzLjg2MDAwMF0gOWVjMDogN2ZmZmZmZmYg
-YzA1NGUwNDAgMDAwMDAwMDAgMDIwMDAwMjkgY2Y4OGNhYzAKPiA+PiBjMDU1NDRmZSBjMDUyOWVk
-OCBjMDUyOWVkOAo+ID4+IFsgICAyMy44NjAwMDBdIDllZTA6IDAwMDAwMDAwIGNmYTIzYzQwIGNm
-ODAyNTQwIDAwMDAwMDAwIDAwMDAwMDAwCj4gPj4gMDAwMDAwMmQgY2Y5MDFkYzAgYzA1NTQ0ZmUK
-PiA+PiBbICAgMjMuODYwMDAwXSA5ZjAwOiAwMDAwMDAwMCBjMDA0MGIyOCBjMDU1NDRmZSBjMDU1
-NGRjMCBjZjkwMWRjMAo+ID4+IGNmODAyNTQwIDAwMDAwMDAwIDAwMDAwMDAwCj4gPj4gWyAgIDIz
-Ljg2MDAwMF0gOWYyMDogY2Y4MDIyMDAgYzA1MWZlMTggY2ZmZmM0ODAgYzAwNDBjMTggY2Y5MDFk
-YzAKPiA+PiBjMDA0MmUzOCAwMDAwMDAyZCAwMDAwMDAyZAo+ID4+IFsgICAyMy44NjAwMDBdIDlm
-NDA6IDAwMDAwMDAwIGMwMDQwMzRjIGMwNTNhY2EwIGMwMDQwNTcwIGMwMDBlZWM0Cj4gPj4gNjAw
-OTAwMTMgZmZmZmZmZmYgYzA1MjlmOWMKPiA+PiBbICAgMjMuODYwMDAwXSA5ZjYwOiBjMDU1NDYw
-MCBjMDAxMWIwMCAwMDAwMDAwMCBjMDUzNjkxOCAwMDAwMDAwMAo+ID4+IGMwMDE3ODgwIGMwNTI4
-MDAwIGMwNTMwMGM0Cj4gPj4gWyAgIDIzLjg2MDAwMF0gOWY4MDogYzA1NTQ0ZmMgYzA1NTQ0ZmMg
-YzA1NTQ2MDAgYzA1MWZlMTggY2ZmZmM0ODAKPiA+PiAwMDAwMDAwMCAwMTAwMDAwMCBjMDUyOWZi
-MAo+ID4+IFsgICAyMy44NjAwMDBdIDlmYTA6IGMwMDBlZWMwIGMwMDBlZWM0IDYwMDkwMDEzIGZm
-ZmZmZmZmIGMwNTI4MDAwCj4gPj4gYzAwMzliOTAgZmZmZmZmZmYgYzA0ZmFjMzAKPiA+PiBbICAg
-MjMuODYwMDAwXSA5ZmMwOiBmZmZmZmZmZiBmZmZmZmZmZiBjMDRmYTY3OCAwMDAwMDAwMCAwMDAw
-MDAwMAo+ID4+IGMwNTFmZTE4IGMwNTU0N2Q0IGMwNTMwMDcwCj4gPj4gWyAgIDIzLjg2MDAwMF0g
-OWZlMDogYzA1MWZlMTQgYzA1MzM4NjAgMjAwMDQwNTkgNDEwZmMwNTEgMDAwMDAwMDAKPiA+PiAy
-MDAwODA3MCAwMDAwMDAwMCAwMDAwMDAwMAo+ID4+IFsgICAyMy44NjAwMDBdIFs8YzAxYTA0MzA+
-XSAobWVtY3B5KSBmcm9tIFs8YmYwMjg3ZTA+XQo+ID4+IChmX2F1ZGlvX2NvbXBsZXRlKzB4MTFj
-LzB4MTcwIFt1c2JfZl91YWMxXSkKPiA+PiBbICAgMjMuODYwMDAwXSBbPGJmMDI4N2UwPl0gKGZf
-YXVkaW9fY29tcGxldGUgW3VzYl9mX3VhYzFdKSBmcm9tCj4gPj4gWzxjMDI4NGY1MD5dIChyZXF1
-ZXN0X2NvbXBsZXRlKzB4NWMvMHg4MCkKPiA+PiBbICAgMjMuODYwMDAwXSBbPGMwMjg0ZjUwPl0g
-KHJlcXVlc3RfY29tcGxldGUpIGZyb20gWzxjMDI4NjQwOD5dCj4gPj4gKHVzYmFfdWRjX2lycSsw
-eDEyYy8weGM1MCkKPiA+PiBbICAgMjMuODYwMDAwXSBbPGMwMjg2NDA4Pl0gKHVzYmFfdWRjX2ly
-cSkgZnJvbSBbPGMwMDQwYjI4Pl0KPiA+PiAoaGFuZGxlX2lycV9ldmVudF9wZXJjcHUrMHg3OC8w
-eDE0MCkKPiA+PiBbICAgMjMuODYwMDAwXSBbPGMwMDQwYjI4Pl0gKGhhbmRsZV9pcnFfZXZlbnRf
-cGVyY3B1KSBmcm9tCj4gPj4gWzxjMDA0MGMxOD5dIChoYW5kbGVfaXJxX2V2ZW50KzB4MjgvMHgz
-OCkKPiA+PiBbICAgMjMuODYwMDAwXSBbPGMwMDQwYzE4Pl0gKGhhbmRsZV9pcnFfZXZlbnQpIGZy
-b20gWzxjMDA0MmUzOD5dCj4gPj4gKGhhbmRsZV9mYXN0ZW9pX2lycSsweDljLzB4MTY0KQo+ID4+
-IFsgICAyMy44NjAwMDBdIFs8YzAwNDJlMzg+XSAoaGFuZGxlX2Zhc3Rlb2lfaXJxKSBmcm9tIFs8
-YzAwNDAzNGM+XQo+ID4+IChnZW5lcmljX2hhbmRsZV9pcnErMHgyYy8weDNjKQo+ID4+IFsgICAy
-My44NjAwMDBdIFs8YzAwNDAzNGM+XSAoZ2VuZXJpY19oYW5kbGVfaXJxKSBmcm9tIFs8YzAwNDA1
-NzA+XQo+ID4+IChfX2hhbmRsZV9kb21haW5faXJxKzB4NTQvMHhhOCkKPiA+PiBbICAgMjMuODYw
-MDAwXSBbPGMwMDQwNTcwPl0gKF9faGFuZGxlX2RvbWFpbl9pcnEpIGZyb20gWzxjMDAxMWIwMD5d
-Cj4gPj4gKF9faXJxX3N2YysweDQwLzB4NTQpCj4gPj4gWyAgIDIzLjg2MDAwMF0gWzxjMDAxMWIw
-MD5dIChfX2lycV9zdmMpIGZyb20gWzxjMDAwZWVjND5dCj4gPj4gKGFyY2hfY3B1X2lkbGUrMHgz
-OC8weDNjKQo+ID4+IFsgICAyMy44NjAwMDBdIFs8YzAwMGVlYzQ+XSAoYXJjaF9jcHVfaWRsZSkg
-ZnJvbSBbPGMwMDM5YjkwPl0KPiA+PiAoY3B1X3N0YXJ0dXBfZW50cnkrMHhhOC8weGY0KQo+ID4+
-IFsgICAyMy44NjAwMDBdIFs8YzAwMzliOTA+XSAoY3B1X3N0YXJ0dXBfZW50cnkpIGZyb20gWzxj
-MDRmYWMzMD5dCj4gPj4gKHN0YXJ0X2tlcm5lbCsweDM3NC8weDM4MCkKPiA+PiBbICAgMjMuODYw
-MDAwXSBDb2RlOiBmNWQxZjA1YyBmNWQxZjA3YyBlOGIxNTFmOCBlMjUyMjAyMCAoZThhMDUxZjgp
-Cj4gPj4gWyAgIDIzLjg2MDAwMF0gLS0tWyBlbmQgdHJhY2UgNmFmZmMwZGFjMjg5YTRhYiBdLS0t
-Cj4gPj4gWyAgIDIzLjg2MDAwMF0gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEZhdGFsIGV4
-Y2VwdGlvbiBpbiBpbnRlcnJ1cHQKPiA+PiBbICAgMjMuODYwMDAwXSAtLS1bIGVuZCBLZXJuZWwg
-cGFuaWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uIGluCmludGVycnVwdAo+ID4+Cj4g
-Pj4gQW55b25lIGhhcyBhIGNsdWUgYWJvdXQgdGhhdD8KPiA+Pgo+ID4+IC0tCj4gPj4gUHJvZmls
-ZTogaHR0cDovL2l0LmxpbmtlZGluLmNvbS9pbi9jb21wYWdudWNjaWFuZ2Vsbwo+ID4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4gQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKPiA+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+PiBodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+
-ID4KPiA+Cj4gPgo+ID4gLS0KPiA+IHwgTWljaGFlbCBOYXp6YXJlbm8gVHJpbWFyY2hpICAgICAg
-ICAgICAgICAgICAgICAgQW1hcnVsYSBTb2x1dGlvbnMgQlYgfAo+ID4gfCBDT08gIC0gIEZvdW5k
-ZXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENydXF1aXVza2FkZSA0NyB8
-Cj4gPiB8ICszMSgwKTg1MTExOTE3MiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFt
-c3RlcmRhbSAxMDE4IEFNIE5MIHwKPiA+IHwgICAgICAgICAgICAgICAgICBbYGFzXSBodHRwOi8v
-d3d3LmFtYXJ1bGFzb2x1dGlvbnMuY29tICAgICAgICAgICAgICAgfAo+Cj4KPgo+IC0tCj4gUHJv
-ZmlsZTogaHR0cDovL2l0LmxpbmtlZGluLmNvbS9pbi9jb21wYWdudWNjaWFuZ2VsbwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: dapm: Lock during userspace access
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e50b1e06b79e9d51efbff9627b4dd407184ef43f Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Mon, 6 Jul 2015 17:01:24 +0200
+Subject: [PATCH] ASoC: dapm: Lock during userspace access
+
+The DAPM lock must be held when accessing the DAPM graph status through
+sysfs or debugfs, otherwise concurrent changes to the graph can result in
+undefined behaviour.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/soc-dapm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a47a8ce7a5ea..1779430013ea 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1952,6 +1952,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 					   size_t count, loff_t *ppos)
+ {
+ 	struct snd_soc_dapm_widget *w = file->private_data;
++	struct snd_soc_card *card = w->dapm->card;
+ 	char *buf;
+ 	int in, out;
+ 	ssize_t ret;
+@@ -1961,6 +1962,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
++	mutex_lock(&card->dapm_mutex);
++
+ 	/* Supply widgets are not handled by is_connected_{input,output}_ep() */
+ 	if (w->is_supply) {
+ 		in = 0;
+@@ -2007,6 +2010,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 					p->sink->name);
+ 	}
+ 
++	mutex_unlock(&card->dapm_mutex);
++
+ 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+ 
+ 	kfree(buf);
+@@ -2281,11 +2286,15 @@ static ssize_t dapm_widget_show(struct device *dev,
+ 	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
+ 	int i, count = 0;
+ 
++	mutex_lock(&rtd->card->dapm_mutex);
++
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		struct snd_soc_codec *codec = rtd->codec_dais[i]->codec;
+ 		count += dapm_widget_show_codec(codec, buf + count);
+ 	}
+ 
++	mutex_unlock(&rtd->card->dapm_mutex);
++
+ 	return count;
+ }
+ 
+-- 
+2.1.4
