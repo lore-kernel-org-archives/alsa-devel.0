@@ -1,87 +1,42 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH] arm64: dts: mt8173: Add afe device node
-Date: Mon, 6 Jul 2015 21:02:38 +0800
-Message-ID: <CAGS+omCOzJs=VWboU_7doUum6BEfmh1hV88HmJiin2c-A_n_Mw@mail.gmail.com>
-References: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Rane SL-4 USB sound card
+Date: Mon, 06 Jul 2015 15:07:36 +0200
+Message-ID: <559A7D98.7000707@ladisch.de>
+References: <5597A9AE.2090002@gmail.com> <55996A35.6030904@ladisch.de>
+ <559A77B5.5060905@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, srv_heupstream <srv_heupstream@mediatek.com>, linux-mediatek@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>, Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5F3092605C7
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:07:45 +0200 (CEST)
+In-Reply-To: <559A77B5.5060905@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tuukka Pasanen <pasanen.tuukka@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 6, 2015 at 2:52 PM, Koro Chen <koro.chen@mediatek.com> wrote:
-> This adds afe (audio front end) device node to the MT8173 dtsi file.
->
-> This patch is based on Matthias's tree:
-> https://github.com/mbgg/linux-mediatek
-> branch: v4.2-next/arm64
->
-> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> index 0696f8f..f8afab4 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> @@ -14,6 +14,7 @@
->  #include <dt-bindings/clock/mt8173-clk.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/power/mt8173-power.h>
->  #include <dt-bindings/reset-controller/mt8173-resets.h>
->  #include "mt8173-pinfunc.h"
->
-> @@ -393,6 +394,37 @@
->                         #size-cells = <0>;
->                         status = "disabled";
->                 };
-> +
-> +               afe: mt8173-afe-pcm@11220000  {
+Tuukka Pasanen wrote:
+> [176317.418587] usb 1-5: parse_audio_format_rates_v2(): unable to retrieve number of sample rates (clock 5)
 
-I believe this should be something generic, like:
+So it doesn't actually conform with the audio class.
 
-  afe: audio-controller@11220000
+> I figured out this kind of QUIRK which seems to be working (go to test tomorrow more).
 
-Thanks!
--Dan
+Hmm, the descriptors claim it uses S24_LE ...
 
-> +                       compatible = "mediatek,mt8173-afe-pcm";
-> +                       reg = <0 0x11220000 0 0x1000>;
-> +                       interrupts = <GIC_SPI 134 IRQ_TYPE_EDGE_FALLING>;
-> +                       power-domains = <&scpsys MT8173_POWER_DOMAIN_AUDIO>;
-> +                       clocks = <&infracfg CLK_INFRA_AUDIO>,
-> +                                <&topckgen CLK_TOP_AUDIO_SEL>,
-> +                                <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
-> +                                <&topckgen CLK_TOP_APLL1_DIV0>,
-> +                                <&topckgen CLK_TOP_APLL2_DIV0>,
-> +                                <&topckgen CLK_TOP_I2S0_M_SEL>,
-> +                                <&topckgen CLK_TOP_I2S1_M_SEL>,
-> +                                <&topckgen CLK_TOP_I2S2_M_SEL>,
-> +                                <&topckgen CLK_TOP_I2S3_M_SEL>,
-> +                                <&topckgen CLK_TOP_I2S3_B_SEL>;
-> +                       clock-names = "infra_sys_audio_clk",
-> +                                     "top_pdn_audio",
-> +                                     "top_pdn_aud_intbus",
-> +                                     "bck0",
-> +                                     "bck1",
-> +                                     "i2s0_m",
-> +                                     "i2s1_m",
-> +                                     "i2s2_m",
-> +                                     "i2s3_m",
-> +                                     "i2s3_b";
-> +                       assigned-clocks = <&topckgen CLK_TOP_AUD_1_SEL>,
-> +                                         <&topckgen CLK_TOP_AUD_2_SEL>;
-> +                       assigned-clock-parents = <&topckgen CLK_TOP_APLL1>,
-> +                                                <&topckgen CLK_TOP_APLL2>;
-> +               };
->         };
->  };
->
-> --
-> 1.8.1.1.dirty
->
+Do all channels work?
+Does it correctly switch between 48/96 kHz?
+Is it possible to use different rates for playback/capture?
+
+
+Regards,
+Clemens
