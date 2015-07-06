@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/6] ASoC: tas571x: Replace direct
-	snd_soc_codec dapm field access
-Date: Mon,  6 Jul 2015 15:38:07 +0200
-Message-ID: <1436189891-15343-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/6] ASoC: dapm_widget_show_codec: Use
+	component instead of CODEC
+Date: Mon,  6 Jul 2015 15:38:10 +0200
+Message-ID: <1436189891-15343-5-git-send-email-lars@metafoo.de>
 References: <1436189891-15343-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-092.synserver.de (smtp-out-092.synserver.de
  [212.40.185.92])
- by alsa0.perex.cz (Postfix) with ESMTP id E5021260616
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:38:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EFFC2606E8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:38:23 +0200 (CEST)
 In-Reply-To: <1436189891-15343-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,27 +26,60 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Yang A Fang <yang.a.fang@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Kevin Cernekee <cernekee@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to
-codec->dapm.bias_level with snd_soc_codec_get_bias_level().
+There is nothing snd_soc_codec specific in this function, just use
+snd_soc_component instead.
+
+With this also the last reference of snd_soc_codec form soc-dapm.c.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/tas571x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 85bcc37..39307ad 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -179,7 +179,7 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a47a8ce..f7d93a8 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2220,14 +2220,16 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_mixer_update_power);
+ 
+-static ssize_t dapm_widget_show_codec(struct snd_soc_codec *codec, char *buf)
++static ssize_t dapm_widget_show_component(struct snd_soc_component *cmpnt,
++	char *buf)
+ {
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
+ 	struct snd_soc_dapm_widget *w;
+ 	int count = 0;
+ 	char *state = "not set";
+ 
+-	list_for_each_entry(w, &codec->component.card->widgets, list) {
+-		if (w->dapm != &codec->dapm)
++	list_for_each_entry(w, &cmpnt->card->widgets, list) {
++		if (w->dapm != dapm)
+ 			continue;
+ 
+ 		/* only display widgets that burnm power */
+@@ -2255,7 +2257,7 @@ static ssize_t dapm_widget_show_codec(struct snd_soc_codec *codec, char *buf)
+ 		}
+ 	}
+ 
+-	switch (codec->dapm.bias_level) {
++	switch (snd_soc_dapm_get_bias_level(dapm)) {
+ 	case SND_SOC_BIAS_ON:
+ 		state = "On";
  		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			if (!IS_ERR(priv->mclk)) {
- 				ret = clk_prepare_enable(priv->mclk);
- 				if (ret) {
+@@ -2282,8 +2284,9 @@ static ssize_t dapm_widget_show(struct device *dev,
+ 	int i, count = 0;
+ 
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+-		struct snd_soc_codec *codec = rtd->codec_dais[i]->codec;
+-		count += dapm_widget_show_codec(codec, buf + count);
++		struct snd_soc_component *cmpnt = rtd->codec_dais[i]->component;
++
++		count += dapm_widget_show_component(cmpnt, buf + count);
+ 	}
+ 
+ 	return count;
 -- 
 2.1.4
