@@ -1,20 +1,28 @@
-From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Subject: Re: g_audio kernel oops on pulling calbe
-Date: Mon, 6 Jul 2015 16:10:08 +0200
-Message-ID: <CA+TH9VkPhhfBTgn8NN88V97PQ9vG3+e7=TFxKtv9enHt9HDo6A@mail.gmail.com>
-References: <CA+TH9V=Kz3M4Kco5Biee2KUKHo6BaennNLOW5VBDBYpyYV7khQ@mail.gmail.com>
- <CAOf5uwk3zDGbgBPGOcB1oZCELY3jfpsa8AU_AHWwyeYv9-1EUg@mail.gmail.com>
+From: Kevin Cernekee <cernekee@chromium.org>
+Subject: Re: [PATCH 2/6] ASoC: tas571x: Replace direct
+ snd_soc_codec dapm field access
+Date: Mon, 6 Jul 2015 07:11:10 -0700
+Message-ID: <CAJzqFtbvqw6L0cG81GdmuP8Q1QgUh_6y4woZkFygKkRxS8fPXA@mail.gmail.com>
+References: <1436189891-15343-1-git-send-email-lars@metafoo.de>
+ <1436189891-15343-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
- [209.85.212.170])
- by alsa0.perex.cz (Postfix) with ESMTP id B53042605C8
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 16:10:48 +0200 (CEST)
-Received: by wiga1 with SMTP id a1so230054460wig.0
- for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 07:10:48 -0700 (PDT)
-In-Reply-To: <CAOf5uwk3zDGbgBPGOcB1oZCELY3jfpsa8AU_AHWwyeYv9-1EUg@mail.gmail.com>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FAB0260616
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 16:11:32 +0200 (CEST)
+Received: by wgjx7 with SMTP id x7so141373851wgj.2
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 07:11:32 -0700 (PDT)
+Received: from mail-wi0-f177.google.com (mail-wi0-f177.google.com.
+ [209.85.212.177])
+ by mx.google.com with ESMTPSA id lq9sm19662229wjb.35.2015.07.06.07.11.30
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 06 Jul 2015 07:11:31 -0700 (PDT)
+Received: by wiwl6 with SMTP id l6so286079668wiw.0
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 07:11:30 -0700 (PDT)
+In-Reply-To: <1436189891-15343-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,115 +32,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Trimarchi <michael@amarulasolutions.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Yang A Fang <yang.a.fang@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWljaGFlbCwKCjIwMTUtMDctMDYgMTU6MzggR01UKzAyOjAwIE1pY2hhZWwgVHJpbWFyY2hp
-IDxtaWNoYWVsQGFtYXJ1bGFzb2x1dGlvbnMuY29tPjoKPiBIaQo+Cj4gT24gTW9uLCBKdWwgNiwg
-MjAxNSBhdCAzOjIwIFBNLCBBbmdlbG8gQ29tcGFnbnVjY2kKPiA8YW5nZWxvLmNvbXBhZ251Y2Np
-QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IERlYXIgRGV2ZWxvcGVycywKPj4KPj4gSSdtIGhhdmluZyBo
-YXJkIHRpbWVzIHdpdGggZ19hdWRpbyBtb2R1bGUgb24gYSBBdG1lbCBTQU1BNUQzLiBJIGFsd2F5
-cwo+PiBvYnRhaW4gYSBrZXJuZWwgb29wcyBpbiBhIG1lbWNweSBpbnNpZGUgZl9hdWRpb19jb21w
-bGV0ZSBmdW5jdGlvbi4KPj4gSG9uZXNsdHkgSSBjYW5ub3QgdW5kZXJzdGFuZCB3aHQncyBnb2lu
-ZyB3cm9uZywgY2F1c2UgdGhhdCBtZW1jcHkgc2hvdWxkIHdvcmsuCj4+Cj4+IEkgaGF2ZSBhIHNp
-bXBsZSBzc2Mgc291bmQgY2FyZCB3aGloIHdvcmtzIGFzIGV4cGVjdGVkIHdoZW4gdXNlZCB3aXRo
-Cj4+IGFwbGF5IG9yIGFueSBvdGhlciBhdWRpbyBwbGF5ZXIgc29mdHdhcmUsIGJ1dCB3aGVuIGkg
-cHVsbCB0aGUgdXNiCj4+IGNhYmxlIHRoaXMgaXMgd2hhdCBJIG9idGFpbjoKPj4KPgo+IFBsZWFz
-ZSBjaGVjayBpZiByZXEtPmxlbmd0aCBpcyA0IGJ5dGUgdG9vIDspLgoKVW5mb3J0dW5hdGVseSBp
-dCdzIG5vdCA0IGJ5dGVzIGxvbmcgLi4uIFNvbWV0aW1lcyBpcyAyIHNvbWV0aW1lcyBpcwpvbmUs
-IEkgYWRkZWQgYSBkaXJ0eSBwcmludGsgYmVmb3JlIHRoZSBtZW1jcHk6CgpbICAgMjMuMzIwMDAw
-XSBsZW49MiBidWY9ClsgICAyMy4zMjAwMDBdIGxlbj0yIGJ1Zj0KClsgICAyMy4zMjAwMDBdIGxl
-bj0yIGJ1Zj0KWyAgIDIzLjMzMDAwMF0gbGVuPTIgYnVmPQpbICAgMjMuMzMwMDAwXSBsZW49MiBi
-dWY9ClsgICAyMy4zMzAwMDBdIGxlbj0yIGJ1Zj3vv73vv71WClsgICAyMy4zMzAwMDBdIGxlbj0y
-IGJ1Zj3vv73vv71WClsgICAyMy45NzAwMDBdIGxlbj0xIGJ1Zj0KWyAgIDIzLjk5MDAwMF0gbGVu
-PTIgYnVmPe+/ve+/vUEKWyAgIDI0LjAwMDAwMF0gbGVuPTIgYnVmPe+/ve+/vUEKWyAgIDI0LjE5
-MDAwMF0gVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgdmlydHVhbAph
-ZGRyZXNzIDBhMDgwNjA0CgpBbnkgaWRlYSBvbiB3aGF0IGlzIGNhdXNpbmcgdGhpcyB3aXJlZCBi
-ZWhhdmlvdXI/CgpTaW5jZXJlbHksIEFuZ2VsbwoKCj4gTWljaGFlbAo+Cj4+IFsgICAyMy44NjAw
-MDBdIFVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwKPj4g
-YWRkcmVzcyAwYTA4MDYwNAo+PiBbICAgMjMuODYwMDAwXSBwZ2QgPSBjMDAwNDAwMAo+PiBbICAg
-MjMuODYwMDAwXSBbMGEwODA2MDRdICpwZ2Q9MDAwMDAwMDAKPj4gWyAgIDIzLjg2MDAwMF0gSW50
-ZXJuYWwgZXJyb3I6IE9vcHM6IDgwNSBbIzFdIEFSTQo+PiBbICAgMjMuODYwMDAwXSBNb2R1bGVz
-IGxpbmtlZCBpbjogdXNiX2ZfdWFjMSBnX2F1ZGlvIGxpYmNvbXBvc2l0ZQo+PiBzbmRfc29jX2F0
-bWVsX3NzY19kYWkgc25kX3NvY19hdG1lbF9wY21fZG1hCj4+IFsgICAyMy44NjAwMDBdIENQVTog
-MCBQSUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCAzLjE5LjgrICM4MQo+PiBbICAgMjMu
-ODYwMDAwXSBIYXJkd2FyZSBuYW1lOiBBdG1lbCBTQU1BNSAoRGV2aWNlIFRyZWUpCj4+IFsgICAy
-My44NjAwMDBdIHRhc2s6IGMwNTMyN2I4IHRpOiBjMDUyODAwMCB0YXNrLnRpOiBjMDUyODAwMAo+
-PiBbICAgMjMuODYwMDAwXSBQQyBpcyBhdCBtZW1jcHkrMHg1MC8weDMzMAo+PiBbICAgMjMuODYw
-MDAwXSBMUiBpcyBhdCAweDAKPj4gWyAgIDIzLjg2MDAwMF0gcGMgOiBbPGMwMWEwNDMwPl0gICAg
-bHIgOiBbPDAwMDAwMDAwPl0gICAgcHNyOiAyMDA5MDE5Mwo+PiBbICAgMjMuODYwMDAwXSBzcCA6
-IGMwNTI5ZTVjICBpcCA6IDAwMDAwMDAwICBmcCA6IGNmYjMzMjAwCj4+IFsgICAyMy44NjAwMDBd
-IHIxMDogMDAwMDAwMDEgIHI5IDogMDAwMGJiODAgIHI4IDogMDAwMDAwMDAKPj4gWyAgIDIzLjg2
-MDAwMF0gcjcgOiAwMDAwMDAwMCAgcjYgOiAwMDAwMDAwMCAgcjUgOiAwMDAwMDAwMCAgcjQgOiAw
-MDAwMDAwMAo+PiBbICAgMjMuODYwMDAwXSByMyA6IDAwMDAwMDAwICByMiA6IDAwMDAwMDIwICBy
-MSA6IGNmOWY1MjIwICByMCA6IDBhMDgwNjA0Cj4+IFsgICAyMy44NjAwMDBdIEZsYWdzOiBuekN2
-ICBJUlFzIG9mZiAgRklRcyBvbiAgTW9kZSBTVkNfMzIgIElTQSBBUk0KPj4gU2VnbWVudCBrZXJu
-ZWwKPj4gWyAgIDIzLjg2MDAwMF0gQ29udHJvbDogMTBjNTNjN2QgIFRhYmxlOiAyZmIyNDA1OSAg
-REFDOiAwMDAwMDAxNQo+PiBbICAgMjMuODYwMDAwXSBQcm9jZXNzIHN3YXBwZXIgKHBpZDogMCwg
-c3RhY2sgbGltaXQgPSAweGMwNTI4MjMwKQo+PiBbICAgMjMuODYwMDAwXSBTdGFjazogKDB4YzA1
-MjllNWMgdG8gMHhjMDUyYTAwMCkKPj4gWyAgIDIzLjg2MDAwMF0gOWU0MDoKPj4gICAgICAgICAg
-ICAgIGNmOWY1MTAwCj4+IFsgICAyMy44NjAwMDBdIDllNjA6IGNmYTI1ODY4IGNmOWU3ZGMwIGNm
-YjMzMDgwIDBhMDgwNjA0IGNmYjMzMjAwCj4+IGJmMDI4N2UwIGNmYTI1ODU4IDAwMDAwMDAwCj4+
-IFsgICAyMy44NjAwMDBdIDllODA6IGNmYTIwYTEwIGNmYjMzMjAwIGNmYTI1ODU4IGNmYTIwYTEw
-IGNmYTIwYTEwCj4+IDAwMDAwMGMwIDAwMDAwMDAyIGMwMjg0ZjUwCj4+IFsgICAyMy44NjAwMDBd
-IDllYTA6IGMwNTI5ZWEwIGMwNTI5ZWEwIDAwMDAwMDAyIDAwMDAwMDkwIGNmYTI1ODU4Cj4+IGMw
-Mjg2NDA4IDAwMDAwMDFjIGZmZmZmZmZmCj4+IFsgICAyMy44NjAwMDBdIDllYzA6IDdmZmZmZmZm
-IGMwNTRlMDQwIDAwMDAwMDAwIDAyMDAwMDI5IGNmODhjYWMwCj4+IGMwNTU0NGZlIGMwNTI5ZWQ4
-IGMwNTI5ZWQ4Cj4+IFsgICAyMy44NjAwMDBdIDllZTA6IDAwMDAwMDAwIGNmYTIzYzQwIGNmODAy
-NTQwIDAwMDAwMDAwIDAwMDAwMDAwCj4+IDAwMDAwMDJkIGNmOTAxZGMwIGMwNTU0NGZlCj4+IFsg
-ICAyMy44NjAwMDBdIDlmMDA6IDAwMDAwMDAwIGMwMDQwYjI4IGMwNTU0NGZlIGMwNTU0ZGMwIGNm
-OTAxZGMwCj4+IGNmODAyNTQwIDAwMDAwMDAwIDAwMDAwMDAwCj4+IFsgICAyMy44NjAwMDBdIDlm
-MjA6IGNmODAyMjAwIGMwNTFmZTE4IGNmZmZjNDgwIGMwMDQwYzE4IGNmOTAxZGMwCj4+IGMwMDQy
-ZTM4IDAwMDAwMDJkIDAwMDAwMDJkCj4+IFsgICAyMy44NjAwMDBdIDlmNDA6IDAwMDAwMDAwIGMw
-MDQwMzRjIGMwNTNhY2EwIGMwMDQwNTcwIGMwMDBlZWM0Cj4+IDYwMDkwMDEzIGZmZmZmZmZmIGMw
-NTI5ZjljCj4+IFsgICAyMy44NjAwMDBdIDlmNjA6IGMwNTU0NjAwIGMwMDExYjAwIDAwMDAwMDAw
-IGMwNTM2OTE4IDAwMDAwMDAwCj4+IGMwMDE3ODgwIGMwNTI4MDAwIGMwNTMwMGM0Cj4+IFsgICAy
-My44NjAwMDBdIDlmODA6IGMwNTU0NGZjIGMwNTU0NGZjIGMwNTU0NjAwIGMwNTFmZTE4IGNmZmZj
-NDgwCj4+IDAwMDAwMDAwIDAxMDAwMDAwIGMwNTI5ZmIwCj4+IFsgICAyMy44NjAwMDBdIDlmYTA6
-IGMwMDBlZWMwIGMwMDBlZWM0IDYwMDkwMDEzIGZmZmZmZmZmIGMwNTI4MDAwCj4+IGMwMDM5Yjkw
-IGZmZmZmZmZmIGMwNGZhYzMwCj4+IFsgICAyMy44NjAwMDBdIDlmYzA6IGZmZmZmZmZmIGZmZmZm
-ZmZmIGMwNGZhNjc4IDAwMDAwMDAwIDAwMDAwMDAwCj4+IGMwNTFmZTE4IGMwNTU0N2Q0IGMwNTMw
-MDcwCj4+IFsgICAyMy44NjAwMDBdIDlmZTA6IGMwNTFmZTE0IGMwNTMzODYwIDIwMDA0MDU5IDQx
-MGZjMDUxIDAwMDAwMDAwCj4+IDIwMDA4MDcwIDAwMDAwMDAwIDAwMDAwMDAwCj4+IFsgICAyMy44
-NjAwMDBdIFs8YzAxYTA0MzA+XSAobWVtY3B5KSBmcm9tIFs8YmYwMjg3ZTA+XQo+PiAoZl9hdWRp
-b19jb21wbGV0ZSsweDExYy8weDE3MCBbdXNiX2ZfdWFjMV0pCj4+IFsgICAyMy44NjAwMDBdIFs8
-YmYwMjg3ZTA+XSAoZl9hdWRpb19jb21wbGV0ZSBbdXNiX2ZfdWFjMV0pIGZyb20KPj4gWzxjMDI4
-NGY1MD5dIChyZXF1ZXN0X2NvbXBsZXRlKzB4NWMvMHg4MCkKPj4gWyAgIDIzLjg2MDAwMF0gWzxj
-MDI4NGY1MD5dIChyZXF1ZXN0X2NvbXBsZXRlKSBmcm9tIFs8YzAyODY0MDg+XQo+PiAodXNiYV91
-ZGNfaXJxKzB4MTJjLzB4YzUwKQo+PiBbICAgMjMuODYwMDAwXSBbPGMwMjg2NDA4Pl0gKHVzYmFf
-dWRjX2lycSkgZnJvbSBbPGMwMDQwYjI4Pl0KPj4gKGhhbmRsZV9pcnFfZXZlbnRfcGVyY3B1KzB4
-NzgvMHgxNDApCj4+IFsgICAyMy44NjAwMDBdIFs8YzAwNDBiMjg+XSAoaGFuZGxlX2lycV9ldmVu
-dF9wZXJjcHUpIGZyb20KPj4gWzxjMDA0MGMxOD5dIChoYW5kbGVfaXJxX2V2ZW50KzB4MjgvMHgz
-OCkKPj4gWyAgIDIzLjg2MDAwMF0gWzxjMDA0MGMxOD5dIChoYW5kbGVfaXJxX2V2ZW50KSBmcm9t
-IFs8YzAwNDJlMzg+XQo+PiAoaGFuZGxlX2Zhc3Rlb2lfaXJxKzB4OWMvMHgxNjQpCj4+IFsgICAy
-My44NjAwMDBdIFs8YzAwNDJlMzg+XSAoaGFuZGxlX2Zhc3Rlb2lfaXJxKSBmcm9tIFs8YzAwNDAz
-NGM+XQo+PiAoZ2VuZXJpY19oYW5kbGVfaXJxKzB4MmMvMHgzYykKPj4gWyAgIDIzLjg2MDAwMF0g
-WzxjMDA0MDM0Yz5dIChnZW5lcmljX2hhbmRsZV9pcnEpIGZyb20gWzxjMDA0MDU3MD5dCj4+IChf
-X2hhbmRsZV9kb21haW5faXJxKzB4NTQvMHhhOCkKPj4gWyAgIDIzLjg2MDAwMF0gWzxjMDA0MDU3
-MD5dIChfX2hhbmRsZV9kb21haW5faXJxKSBmcm9tIFs8YzAwMTFiMDA+XQo+PiAoX19pcnFfc3Zj
-KzB4NDAvMHg1NCkKPj4gWyAgIDIzLjg2MDAwMF0gWzxjMDAxMWIwMD5dIChfX2lycV9zdmMpIGZy
-b20gWzxjMDAwZWVjND5dCj4+IChhcmNoX2NwdV9pZGxlKzB4MzgvMHgzYykKPj4gWyAgIDIzLjg2
-MDAwMF0gWzxjMDAwZWVjND5dIChhcmNoX2NwdV9pZGxlKSBmcm9tIFs8YzAwMzliOTA+XQo+PiAo
-Y3B1X3N0YXJ0dXBfZW50cnkrMHhhOC8weGY0KQo+PiBbICAgMjMuODYwMDAwXSBbPGMwMDM5Yjkw
-Pl0gKGNwdV9zdGFydHVwX2VudHJ5KSBmcm9tIFs8YzA0ZmFjMzA+XQo+PiAoc3RhcnRfa2VybmVs
-KzB4Mzc0LzB4MzgwKQo+PiBbICAgMjMuODYwMDAwXSBDb2RlOiBmNWQxZjA1YyBmNWQxZjA3YyBl
-OGIxNTFmOCBlMjUyMjAyMCAoZThhMDUxZjgpCj4+IFsgICAyMy44NjAwMDBdIC0tLVsgZW5kIHRy
-YWNlIDZhZmZjMGRhYzI4OWE0YWIgXS0tLQo+PiBbICAgMjMuODYwMDAwXSBLZXJuZWwgcGFuaWMg
-LSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uIGluIGludGVycnVwdAo+PiBbICAgMjMuODYw
-MDAwXSAtLS1bIGVuZCBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9u
-IGluIGludGVycnVwdAo+Pgo+PiBBbnlvbmUgaGFzIGEgY2x1ZSBhYm91dCB0aGF0Pwo+Pgo+PiAt
-LQo+PiBQcm9maWxlOiBodHRwOi8vaXQubGlua2VkaW4uY29tL2luL2NvbXBhZ251Y2NpYW5nZWxv
-Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo+Cj4KPgo+IC0tCj4gfCBNaWNoYWVsIE5henphcmVubyBUcmltYXJjaGkgICAgICAgICAgICAg
-ICAgICAgICBBbWFydWxhIFNvbHV0aW9ucyBCViB8Cj4gfCBDT08gIC0gIEZvdW5kZXIgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENydXF1aXVza2FkZSA0NyB8Cj4gfCArMzEo
-MCk4NTExMTkxNzIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBbXN0ZXJkYW0gMTAx
-OCBBTSBOTCB8Cj4gfCAgICAgICAgICAgICAgICAgIFtgYXNdIGh0dHA6Ly93d3cuYW1hcnVsYXNv
-bHV0aW9ucy5jb20gICAgICAgICAgICAgICB8CgoKCi0tIApQcm9maWxlOiBodHRwOi8vaXQubGlu
-a2VkaW4uY29tL2luL2NvbXBhZ251Y2NpYW5nZWxvCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Jul 6, 2015 at 6:38 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> The dapm field of the snd_soc_codec struct is eventually going to be
+> removed, in preparation for this replace all manual access to
+> codec->dapm.bias_level with snd_soc_codec_get_bias_level().
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/codecs/tas571x.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
+> index 85bcc37..39307ad 100644
+> --- a/sound/soc/codecs/tas571x.c
+> +++ b/sound/soc/codecs/tas571x.c
+> @@ -179,7 +179,7 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
+>         case SND_SOC_BIAS_PREPARE:
+>                 break;
+>         case SND_SOC_BIAS_STANDBY:
+> -               if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+> +               if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
+>                         if (!IS_ERR(priv->mclk)) {
+>                                 ret = clk_prepare_enable(priv->mclk);
+>                                 if (ret) {
+> --
+> 2.1.4
+>
+
+Acked-by: Kevin Cernekee <cernekee@chromium.org>
