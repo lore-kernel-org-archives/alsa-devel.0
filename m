@@ -1,21 +1,15 @@
-From: robert.devanna@nospammail.net
-Subject: Re: After kernel upgrade to v ~~> 4.1.0, no audio
- output unless UNPLUG/RE-PLUGIN of audio jack on card;
- OK with earlier kernels
-Date: Sun, 05 Jul 2015 16:04:19 -0700
-Message-ID: <1436137459.1465301.315813009.197BC41D@webmail.messagingengine.com>
-References: <1436128748.1442900.315748449.28688C30@webmail.messagingengine.com>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: [PATCH] ASoC: dpcm: Add checks of playback/capture
+	before dpcm_get_be
+Date: Mon, 6 Jul 2015 10:02:10 +0800
+Message-ID: <1436148130-22739-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id E23042604E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 01:04:20 +0200 (CEST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 2E29520364
- for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2015 19:04:20 -0400 (EDT)
-In-Reply-To: <1436128748.1442900.315748449.28688C30@webmail.messagingengine.com>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 845F42604EB
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 04:03:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,49 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, Koro Chen <koro.chen@mediatek.com>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-As add'l info
+In dpcm_get_be(), it looks for a BE rtd that has the DAI widget
+according to current stream type. Only playback_widgets are searched
+in the case of playback stream and vice versa. However, the DAI widget
+itself can be playback or capture.
 
-with guidance from #irc, I've tried 
+If the DAI widget is capture, but current stream type is playback,
+dpcm_get_be() will always fail to find a rtd, print error messages,
+and continue to the next DAI widget in list. We can just skip this
+DAI widget to further suppress error messages. This happens in a
+special case when 2 codecs are inter-connected, and the 1st codec's
+"capture" widget is used to send data to the 2nd codec during "playback":
 
-adding 
+mtk-rt5650-rt5676 sound: ASoC: can't get playback BE for Sub AIF2 Capture
+rt5650_rt5676 Playback: ASoC: no BE found for Sub AIF2 Capture
 
-	/etc/modprodbe.d/50-sound.conf
-		...
-	+	options snd-hda-intel power_save_controller=0
+Add checks to continue to next DAI widget if current DAI widget's
+direction does not match the stream type.
 
-and adding
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+---
+ sound/soc/soc-pcm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-	/etc/init.d/after.local
-		...
-	+	hda-verb /dev/snd/hwC0D0 0x1c SET_POWER_STATE 0
-
-and launching
-
-	cat /usr/local/scripts/alsa-fix.sh 
-		#!/bin/bash
-		sudo hda-verb /dev/snd/hwC0D0 0x1c SET_POWER_STATE 0
-
-as a KDE startup script,
-
-and exec'ing
-
-	hda-verb /dev/snd/hwC0D0 0x1c SET_POWER_STATE 0
-
-@ desktop shell as uid=<myuser>
-
-None work.
-
-The one thing that DOES work, so far, is @ desktop shell, exec of
-
-	sudo hda-verb /dev/snd/hwC0D0 0x1c SET_POWER_STATE 0
-
-as sudo (root).
-
-On exec, I hear a 'pop' through the speakers, and immediately after I can play audio -- withOUT having to physically UNPLUG/REPLUGIN the jack.
-
-Clearly, I can't figure out how to automate this workaround -- not clear where else to try it.  Begs the question why it only works in this case.
-
-- Rob
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 256b9c9..a6d3313 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1306,7 +1306,12 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 		switch (list->widgets[i]->id) {
+ 		case snd_soc_dapm_dai_in:
++			if (stream != SNDRV_PCM_STREAM_PLAYBACK)
++				continue;
++			break;
+ 		case snd_soc_dapm_dai_out:
++			if (stream != SNDRV_PCM_STREAM_CAPTURE)
++				continue;
+ 			break;
+ 		default:
+ 			continue;
+-- 
+1.8.1.1.dirty
