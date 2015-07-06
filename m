@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Lock during userspace access" to the asoc tree
-Date: Mon, 06 Jul 2015 21:43:14 +0100
-Message-ID: <E1ZCDEQ-0002mA-98@debutante>
-References: <1436194884-1874-1-git-send-email-lars@metafoo.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1436194884-1874-1-git-send-email-lars@metafoo.de>
-Sender: stable-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rt286: Constify dmi_system_id table" to
+	the asoc tree
+Date: Mon, 06 Jul 2015 21:43:12 +0100
+Message-ID: <E1ZCDEO-0002lg-PA@debutante>
+References: <1435462822.15772.4.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24F992607FF
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 22:43:22 +0200 (CEST)
+In-Reply-To: <1435462822.15772.4.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Lock during userspace access
+   ASoC: rt286: Constify dmi_system_id table
 
 has been applied to the asoc tree at
 
@@ -37,67 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From e50b1e06b79e9d51efbff9627b4dd407184ef43f Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 6 Jul 2015 17:01:24 +0200
-Subject: [PATCH] ASoC: dapm: Lock during userspace access
+>From 9042cbebf3808f1be7beb67df1edd3ee9daa50a7 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Sun, 28 Jun 2015 11:40:22 +0800
+Subject: [PATCH] ASoC: rt286: Constify dmi_system_id table
 
-The DAPM lock must be held when accessing the DAPM graph status through
-sysfs or debugfs, otherwise concurrent changes to the graph can result in
-undefined behaviour.
+dmi_check_system() takes "const struct dmi_system_id *", so make the
+dmi_system_id table const.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-dapm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/rt286.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a47a8ce7a5ea..1779430013ea 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1952,6 +1952,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 					   size_t count, loff_t *ppos)
- {
- 	struct snd_soc_dapm_widget *w = file->private_data;
-+	struct snd_soc_card *card = w->dapm->card;
- 	char *buf;
- 	int in, out;
- 	ssize_t ret;
-@@ -1961,6 +1962,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 	if (!buf)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 5c43e263b2c1..382fedbe7c79 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1108,7 +1108,7 @@ static const struct acpi_device_id rt286_acpi_match[] = {
+ };
+ MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
  
-+	mutex_lock(&card->dapm_mutex);
-+
- 	/* Supply widgets are not handled by is_connected_{input,output}_ep() */
- 	if (w->is_supply) {
- 		in = 0;
-@@ -2007,6 +2010,8 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 					p->sink->name);
- 	}
+-static struct dmi_system_id force_combo_jack_table[] = {
++static const struct dmi_system_id force_combo_jack_table[] = {
+ 	{
+ 		.ident = "Intel Wilson Beach",
+ 		.matches = {
+@@ -1118,7 +1118,7 @@ static struct dmi_system_id force_combo_jack_table[] = {
+ 	{ }
+ };
  
-+	mutex_unlock(&card->dapm_mutex);
-+
- 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
- 
- 	kfree(buf);
-@@ -2281,11 +2286,15 @@ static ssize_t dapm_widget_show(struct device *dev,
- 	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
- 	int i, count = 0;
- 
-+	mutex_lock(&rtd->card->dapm_mutex);
-+
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		struct snd_soc_codec *codec = rtd->codec_dais[i]->codec;
- 		count += dapm_widget_show_codec(codec, buf + count);
- 	}
- 
-+	mutex_unlock(&rtd->card->dapm_mutex);
-+
- 	return count;
- }
- 
+-static struct dmi_system_id dmi_dell_dino[] = {
++static const struct dmi_system_id dmi_dell_dino[] = {
+ 	{
+ 		.ident = "Dell Dino",
+ 		.matches = {
 -- 
 2.1.4
