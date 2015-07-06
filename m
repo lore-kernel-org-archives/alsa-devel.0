@@ -1,18 +1,19 @@
-From: Tuukka Pasanen <pasanen.tuukka@gmail.com>
-Subject: Re: Rane SL-4 USB sound card
-Date: Mon, 06 Jul 2015 15:42:29 +0300
-Message-ID: <559A77B5.5060905@gmail.com>
-References: <5597A9AE.2090002@gmail.com> <55996A35.6030904@ladisch.de>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH] arm64: dts: mt8173: Add afe device node
+Date: Mon, 6 Jul 2015 21:00:28 +0800
+Message-ID: <CAGS+omCtfCUQEczX+OCLa7jfOnxE=jFq8os0m2LCi87ELMTK9g@mail.gmail.com>
+References: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 092A62605C8
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 14:42:29 +0200 (CEST)
-Received: by wgjx7 with SMTP id x7so139046967wgj.2
- for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 05:42:28 -0700 (PDT)
-In-Reply-To: <55996A35.6030904@ladisch.de>
+Received: from mail-yk0-f170.google.com (mail-yk0-f170.google.com
+ [209.85.160.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id A02842605C7
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:00:48 +0200 (CEST)
+Received: by ykfs198 with SMTP id s198so42200872ykf.2
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 06:00:47 -0700 (PDT)
+In-Reply-To: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,112 +23,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Koro Chen <koro.chen@mediatek.com>, Stephen Boyd <sboyd@codeaurora.org>
+Cc: "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>, srv_heupstream <srv_heupstream@mediatek.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-Thanks you for you reply. That did the trick almost. It only gives 
-sysdefault with two channels and error:
+On Mon, Jul 6, 2015 at 2:52 PM, Koro Chen <koro.chen@mediatek.com> wrote:
 
-[176317.418587] usb 1-5: parse_audio_format_rates_v2(): unable to 
-retrieve number of sample rates (clock 5)
-[176317.419156] usb 1-5: parse_audio_format_rates_v2(): unable to 
-retrieve number of sample rates (clock 5)
-
-I figured out this kind of QUIRK which seems to be working (go to test 
-tomorrow more). I would go with first quirck as it's looking simpler but 
-I can't add rates to it?
-
-{
-     USB_DEVICE(0x1cc5, 0x000f),
-     .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-         .ifnum = QUIRK_ANY_INTERFACE,
-         .type = QUIRK_COMPOSITE,
-         .data = (const struct snd_usb_audio_quirk[]) {
-             {
-                 .ifnum = 1,
-                 .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                 .data = &(const struct audioformat) {
-                     .formats = SNDRV_PCM_FMTBIT_S24_3LE,
-                     .channels = 4,
-                     .iface = 1,
-                     .altsetting = 1,
-                     .altset_idx = 1,
-                     .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-                     .endpoint = 0x06,
-                     .ep_attr = USB_ENDPOINT_XFER_ISOC,
-                     .rates = SNDRV_PCM_RATE_48000 |
-                          SNDRV_PCM_RATE_96000,
-                     .rate_min = 48000,
-                     .rate_max = 96000,
-                     .nr_rates = 2,
-                     .rate_table = (unsigned int[]) {
-                         48000, 96000
-                     }
-                 }
-             },
-             {
-                 .ifnum = 2,
-                 .type = QUIRK_AUDIO_FIXED_ENDPOINT,
-                 .data = &(const struct audioformat) {
-                     .formats = SNDRV_PCM_FMTBIT_S24_3LE,
-                     .channels = 4,
-                     .iface = 2,
-                     .altsetting = 1,
-                     .altset_idx = 1,
-                     .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-                     .endpoint = 0x82,
-                     .ep_attr = USB_ENDPOINT_XFER_ISOC,
-                     .rates = SNDRV_PCM_RATE_48000 |
-                          SNDRV_PCM_RATE_96000,
-                     .rate_min = 48000,
-                     .rate_max = 96000,
-                     .nr_rates = 2,
-                     .rate_table = (unsigned int[]) {
-                         48000, 96000
-                     }
-                 }
-             },
-             {
-                 .ifnum = -1,
-             }
-         }
-     }
-},
-
-Sincerely,
-Tuukka
-
-05.07.2015, 20:32, Clemens Ladisch kirjoitti:
-> Tuukka Pasanen wrote:
->> I've been hacking to get Rane SL-4 USB audio ... to work with ALSA.
->> I have compiled kernel and tried to get USB-quirks to work with this ... it doesn't do the trick
->> If I need interface association how to do that?
-> The interface association descriptor should have been provided by the firmware.
+> This adds afe (audio front end) device node to the MT8173 dtsi file.
 >
-> Anyway, try the following quirk:
+> This patch is based on Matthias's tree:
+> https://github.com/mbgg/linux-mediatek
+> branch: v4.2-next/arm64
 >
-> {
-> 	USB_DEVICE(0x1cc5, 0x000f),
-> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-> 		.ifnum = QUIRK_ANY_INTERFACE,
-> 		.type = QUIRK_COMPOSITE,
-> 		.data = (const struct snd_usb_audio_quirk[]) {
-> 			{
-> 				.ifnum = 1,
-> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-> 			},
-> 			{
-> 				.ifnum = 2,
-> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-> 			},
-> 			{
-> 				.ifnum = -1,
-> 			}
-> 		}
-> 	}
-> },
+> Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32
+> ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> index 0696f8f..f8afab4 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> @@ -14,6 +14,7 @@
+>  #include <dt-bindings/clock/mt8173-clk.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/power/mt8173-power.h>
+>  #include <dt-bindings/reset-controller/mt8173-resets.h>
+>  #include "mt8173-pinfunc.h"
+>
+> @@ -393,6 +394,37 @@
+>                         #size-cells = <0>;
+>                         status = "disabled";
+>                 };
+> +
+> +               afe: mt8173-afe-pcm@11220000  {
+>
+
+I believe this should be something generic, like:
+
+  afe: audio-controller@11220000
+
+Thanks!
+-Dan
+
+
+> +                       compatible = "mediatek,mt8173-afe-pcm";
+> +                       reg = <0 0x11220000 0 0x1000>;
+> +                       interrupts = <GIC_SPI 134 IRQ_TYPE_EDGE_FALLING>;
+> +                       power-domains = <&scpsys
+> MT8173_POWER_DOMAIN_AUDIO>;
+> +                       clocks = <&infracfg CLK_INFRA_AUDIO>,
+> +                                <&topckgen CLK_TOP_AUDIO_SEL>,
+> +                                <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
+> +                                <&topckgen CLK_TOP_APLL1_DIV0>,
+> +                                <&topckgen CLK_TOP_APLL2_DIV0>,
+> +                                <&topckgen CLK_TOP_I2S0_M_SEL>,
+> +                                <&topckgen CLK_TOP_I2S1_M_SEL>,
+> +                                <&topckgen CLK_TOP_I2S2_M_SEL>,
+> +                                <&topckgen CLK_TOP_I2S3_M_SEL>,
+> +                                <&topckgen CLK_TOP_I2S3_B_SEL>;
+> +                       clock-names = "infra_sys_audio_clk",
+> +                                     "top_pdn_audio",
+> +                                     "top_pdn_aud_intbus",
+> +                                     "bck0",
+> +                                     "bck1",
+> +                                     "i2s0_m",
+> +                                     "i2s1_m",
+> +                                     "i2s2_m",
+> +                                     "i2s3_m",
+> +                                     "i2s3_b";
+> +                       assigned-clocks = <&topckgen CLK_TOP_AUD_1_SEL>,
+> +                                         <&topckgen CLK_TOP_AUD_2_SEL>;
+> +                       assigned-clock-parents = <&topckgen CLK_TOP_APLL1>,
+> +                                                <&topckgen CLK_TOP_APLL2>;
+> +               };
+>         };
+>  };
+>
+> --
+> 1.8.1.1.dirty
 >
 >
-> Regards,
-> Clemens
