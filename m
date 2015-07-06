@@ -1,17 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/6] ASoC: Remove snd_soc_codec dapm field
-Date: Mon,  6 Jul 2015 15:38:11 +0200
-Message-ID: <1436189891-15343-6-git-send-email-lars@metafoo.de>
-References: <1436189891-15343-1-git-send-email-lars@metafoo.de>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: g_audio kernel oops on pulling calbe
+Date: Mon, 6 Jul 2015 15:38:59 +0200
+Message-ID: <CAOf5uwk3zDGbgBPGOcB1oZCELY3jfpsa8AU_AHWwyeYv9-1EUg@mail.gmail.com>
+References: <CA+TH9V=Kz3M4Kco5Biee2KUKHo6BaennNLOW5VBDBYpyYV7khQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-092.synserver.de (smtp-out-092.synserver.de
- [212.40.185.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E5002606FF
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:38:25 +0200 (CEST)
-In-Reply-To: <1436189891-15343-1-git-send-email-lars@metafoo.de>
+Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
+ [209.85.213.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 716B2261515
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 15:39:00 +0200 (CEST)
+Received: by igcqs7 with SMTP id qs7so10028397igc.0
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 06:38:59 -0700 (PDT)
+In-Reply-To: <CA+TH9V=Kz3M4Kco5Biee2KUKHo6BaennNLOW5VBDBYpyYV7khQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,142 +23,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Yang A Fang <yang.a.fang@intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Kevin Cernekee <cernekee@chromium.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are no more direct users of the snd_soc_codec DAPM field left. So we
-can finally remove it and switch over to directly using the component DAPM
-context and remove the dapm_ptr indirection.
+Hi
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc.h  | 10 +++-------
- sound/soc/soc-core.c | 23 ++++++++++++-----------
- 2 files changed, 15 insertions(+), 18 deletions(-)
+On Mon, Jul 6, 2015 at 3:20 PM, Angelo Compagnucci
+<angelo.compagnucci@gmail.com> wrote:
+> Dear Developers,
+>
+> I'm having hard times with g_audio module on a Atmel SAMA5D3. I always
+> obtain a kernel oops in a memcpy inside f_audio_complete function.
+> Honeslty I cannot understand wht's going wrong, cause that memcpy should work.
+>
+> I have a simple ssc sound card whih works as expected when used with
+> aplay or any other audio player software, but when i pull the usb
+> cable this is what I obtain:
+>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 93df8bf..3ccd82a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -792,7 +792,6 @@ struct snd_soc_component {
- 
- 	/* Don't use these, use snd_soc_component_get_dapm() */
- 	struct snd_soc_dapm_context dapm;
--	struct snd_soc_dapm_context *dapm_ptr;
- 
- 	const struct snd_kcontrol_new *controls;
- 	unsigned int num_controls;
-@@ -832,9 +831,6 @@ struct snd_soc_codec {
- 	/* component */
- 	struct snd_soc_component component;
- 
--	/* Don't access this directly, use snd_soc_codec_get_dapm() */
--	struct snd_soc_dapm_context dapm;
--
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_reg;
- #endif
-@@ -1277,7 +1273,7 @@ static inline struct snd_soc_component *snd_soc_dapm_to_component(
- static inline struct snd_soc_codec *snd_soc_dapm_to_codec(
- 	struct snd_soc_dapm_context *dapm)
- {
--	return container_of(dapm, struct snd_soc_codec, dapm);
-+	return snd_soc_component_to_codec(snd_soc_dapm_to_component(dapm));
- }
- 
- /**
-@@ -1302,7 +1298,7 @@ static inline struct snd_soc_platform *snd_soc_dapm_to_platform(
- static inline struct snd_soc_dapm_context *snd_soc_component_get_dapm(
- 	struct snd_soc_component *component)
- {
--	return component->dapm_ptr;
-+	return &component->dapm;
- }
- 
- /**
-@@ -1314,7 +1310,7 @@ static inline struct snd_soc_dapm_context *snd_soc_component_get_dapm(
- static inline struct snd_soc_dapm_context *snd_soc_codec_get_dapm(
- 	struct snd_soc_codec *codec)
- {
--	return &codec->dapm;
-+	return snd_soc_component_get_dapm(&codec->component);
- }
- 
- /**
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3a4a5c0..3747111 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -654,10 +654,12 @@ int snd_soc_suspend(struct device *dev)
- 
- 	/* suspend all CODECs */
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
-+		struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+
- 		/* If there are paths active then the CODEC will be held with
- 		 * bias _ON and should not be suspended. */
- 		if (!codec->suspended) {
--			switch (codec->dapm.bias_level) {
-+			switch (snd_soc_dapm_get_bias_level(dapm)) {
- 			case SND_SOC_BIAS_STANDBY:
- 				/*
- 				 * If the CODEC is capable of idle
-@@ -665,7 +667,7 @@ int snd_soc_suspend(struct device *dev)
- 				 * means it's doing something,
- 				 * otherwise fall through.
- 				 */
--				if (codec->dapm.idle_bias_off) {
-+				if (dapm->idle_bias_off) {
- 					dev_dbg(codec->dev,
- 						"ASoC: idle_bias_off CODEC on over suspend\n");
- 					break;
-@@ -2651,10 +2653,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	component->probe = component->driver->probe;
- 	component->remove = component->driver->remove;
- 
--	if (!component->dapm_ptr)
--		component->dapm_ptr = &component->dapm;
--
--	dapm = component->dapm_ptr;
-+	dapm = &component->dapm;
- 	dapm->dev = dev;
- 	dapm->component = component;
- 	dapm->bias_level = SND_SOC_BIAS_OFF;
-@@ -3036,6 +3035,7 @@ int snd_soc_register_codec(struct device *dev,
- 			   struct snd_soc_dai_driver *dai_drv,
- 			   int num_dai)
- {
-+	struct snd_soc_dapm_context *dapm;
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_dai *dai;
- 	int ret, i;
-@@ -3046,7 +3046,6 @@ int snd_soc_register_codec(struct device *dev,
- 	if (codec == NULL)
- 		return -ENOMEM;
- 
--	codec->component.dapm_ptr = &codec->dapm;
- 	codec->component.codec = codec;
- 
- 	ret = snd_soc_component_initialize(&codec->component,
-@@ -3076,12 +3075,14 @@ int snd_soc_register_codec(struct device *dev,
- 	if (codec_drv->read)
- 		codec->component.read = snd_soc_codec_drv_read;
- 	codec->component.ignore_pmdown_time = codec_drv->ignore_pmdown_time;
--	codec->dapm.idle_bias_off = codec_drv->idle_bias_off;
--	codec->dapm.suspend_bias_off = codec_drv->suspend_bias_off;
-+
-+	dapm = snd_soc_codec_get_dapm(codec);
-+	dapm->idle_bias_off = codec_drv->idle_bias_off;
-+	dapm->suspend_bias_off = codec_drv->suspend_bias_off;
- 	if (codec_drv->seq_notifier)
--		codec->dapm.seq_notifier = codec_drv->seq_notifier;
-+		dapm->seq_notifier = codec_drv->seq_notifier;
- 	if (codec_drv->set_bias_level)
--		codec->dapm.set_bias_level = snd_soc_codec_set_bias_level;
-+		dapm->set_bias_level = snd_soc_codec_set_bias_level;
- 	codec->dev = dev;
- 	codec->driver = codec_drv;
- 	codec->component.val_bytes = codec_drv->reg_word_size;
+Please check if req->length is 4 byte too ;).
+
+Michael
+
+> [   23.860000] Unable to handle kernel paging request at virtual
+> address 0a080604
+> [   23.860000] pgd = c0004000
+> [   23.860000] [0a080604] *pgd=00000000
+> [   23.860000] Internal error: Oops: 805 [#1] ARM
+> [   23.860000] Modules linked in: usb_f_uac1 g_audio libcomposite
+> snd_soc_atmel_ssc_dai snd_soc_atmel_pcm_dma
+> [   23.860000] CPU: 0 PID: 0 Comm: swapper Not tainted 3.19.8+ #81
+> [   23.860000] Hardware name: Atmel SAMA5 (Device Tree)
+> [   23.860000] task: c05327b8 ti: c0528000 task.ti: c0528000
+> [   23.860000] PC is at memcpy+0x50/0x330
+> [   23.860000] LR is at 0x0
+> [   23.860000] pc : [<c01a0430>]    lr : [<00000000>]    psr: 20090193
+> [   23.860000] sp : c0529e5c  ip : 00000000  fp : cfb33200
+> [   23.860000] r10: 00000001  r9 : 0000bb80  r8 : 00000000
+> [   23.860000] r7 : 00000000  r6 : 00000000  r5 : 00000000  r4 : 00000000
+> [   23.860000] r3 : 00000000  r2 : 00000020  r1 : cf9f5220  r0 : 0a080604
+> [   23.860000] Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM
+> Segment kernel
+> [   23.860000] Control: 10c53c7d  Table: 2fb24059  DAC: 00000015
+> [   23.860000] Process swapper (pid: 0, stack limit = 0xc0528230)
+> [   23.860000] Stack: (0xc0529e5c to 0xc052a000)
+> [   23.860000] 9e40:
+>              cf9f5100
+> [   23.860000] 9e60: cfa25868 cf9e7dc0 cfb33080 0a080604 cfb33200
+> bf0287e0 cfa25858 00000000
+> [   23.860000] 9e80: cfa20a10 cfb33200 cfa25858 cfa20a10 cfa20a10
+> 000000c0 00000002 c0284f50
+> [   23.860000] 9ea0: c0529ea0 c0529ea0 00000002 00000090 cfa25858
+> c0286408 0000001c ffffffff
+> [   23.860000] 9ec0: 7fffffff c054e040 00000000 02000029 cf88cac0
+> c05544fe c0529ed8 c0529ed8
+> [   23.860000] 9ee0: 00000000 cfa23c40 cf802540 00000000 00000000
+> 0000002d cf901dc0 c05544fe
+> [   23.860000] 9f00: 00000000 c0040b28 c05544fe c0554dc0 cf901dc0
+> cf802540 00000000 00000000
+> [   23.860000] 9f20: cf802200 c051fe18 cfffc480 c0040c18 cf901dc0
+> c0042e38 0000002d 0000002d
+> [   23.860000] 9f40: 00000000 c004034c c053aca0 c0040570 c000eec4
+> 60090013 ffffffff c0529f9c
+> [   23.860000] 9f60: c0554600 c0011b00 00000000 c0536918 00000000
+> c0017880 c0528000 c05300c4
+> [   23.860000] 9f80: c05544fc c05544fc c0554600 c051fe18 cfffc480
+> 00000000 01000000 c0529fb0
+> [   23.860000] 9fa0: c000eec0 c000eec4 60090013 ffffffff c0528000
+> c0039b90 ffffffff c04fac30
+> [   23.860000] 9fc0: ffffffff ffffffff c04fa678 00000000 00000000
+> c051fe18 c05547d4 c0530070
+> [   23.860000] 9fe0: c051fe14 c0533860 20004059 410fc051 00000000
+> 20008070 00000000 00000000
+> [   23.860000] [<c01a0430>] (memcpy) from [<bf0287e0>]
+> (f_audio_complete+0x11c/0x170 [usb_f_uac1])
+> [   23.860000] [<bf0287e0>] (f_audio_complete [usb_f_uac1]) from
+> [<c0284f50>] (request_complete+0x5c/0x80)
+> [   23.860000] [<c0284f50>] (request_complete) from [<c0286408>]
+> (usba_udc_irq+0x12c/0xc50)
+> [   23.860000] [<c0286408>] (usba_udc_irq) from [<c0040b28>]
+> (handle_irq_event_percpu+0x78/0x140)
+> [   23.860000] [<c0040b28>] (handle_irq_event_percpu) from
+> [<c0040c18>] (handle_irq_event+0x28/0x38)
+> [   23.860000] [<c0040c18>] (handle_irq_event) from [<c0042e38>]
+> (handle_fasteoi_irq+0x9c/0x164)
+> [   23.860000] [<c0042e38>] (handle_fasteoi_irq) from [<c004034c>]
+> (generic_handle_irq+0x2c/0x3c)
+> [   23.860000] [<c004034c>] (generic_handle_irq) from [<c0040570>]
+> (__handle_domain_irq+0x54/0xa8)
+> [   23.860000] [<c0040570>] (__handle_domain_irq) from [<c0011b00>]
+> (__irq_svc+0x40/0x54)
+> [   23.860000] [<c0011b00>] (__irq_svc) from [<c000eec4>]
+> (arch_cpu_idle+0x38/0x3c)
+> [   23.860000] [<c000eec4>] (arch_cpu_idle) from [<c0039b90>]
+> (cpu_startup_entry+0xa8/0xf4)
+> [   23.860000] [<c0039b90>] (cpu_startup_entry) from [<c04fac30>]
+> (start_kernel+0x374/0x380)
+> [   23.860000] Code: f5d1f05c f5d1f07c e8b151f8 e2522020 (e8a051f8)
+> [   23.860000] ---[ end trace 6affc0dac289a4ab ]---
+> [   23.860000] Kernel panic - not syncing: Fatal exception in interrupt
+> [   23.860000] ---[ end Kernel panic - not syncing: Fatal exception in interrupt
+>
+> Anyone has a clue about that?
+>
+> --
+> Profile: http://it.linkedin.com/in/compagnucciangelo
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+
+
 -- 
-2.1.4
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
