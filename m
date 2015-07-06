@@ -1,10 +1,12 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [alsa-devel][PATCH 1/3] ASoC: fsl_esai: Add driver suspend and resume to support MEGA Fast
-Date: Mon, 6 Jul 2015 17:50:34 +0800
-Message-ID: <d626b0b7ad28a96fea0a60e7db29b894fb948166.1436176158.git.zidan.wang@freescale.com>
+Subject: [alsa-devel][PATCH 3/3] ASoC: fsl_sai: Add driver suspend and resume to support MEGA Fast
+Date: Mon, 6 Jul 2015 17:50:36 +0800
+Message-ID: <2413b8455682d5a245110dba0c12f7c40b68bbba.1436176158.git.zidan.wang@freescale.com>
+References: <d626b0b7ad28a96fea0a60e7db29b894fb948166.1436176158.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d626b0b7ad28a96fea0a60e7db29b894fb948166.1436176158.git.zidan.wang@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: timur@tabi.org
 Cc: nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Zidan Wang <zidan.wang@freescale.com>
@@ -17,106 +19,69 @@ the system resume.
 
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/fsl/fsl_esai.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ sound/soc/fsl/fsl_sai.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 5c75971..b749a29 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -684,6 +684,32 @@ static bool fsl_esai_readable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+static bool fsl_esai_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case REG_ESAI_ETDR:
-+	case REG_ESAI_ERDR:
-+	case REG_ESAI_ESR:
-+	case REG_ESAI_TFSR:
-+	case REG_ESAI_RFSR:
-+	case REG_ESAI_TX0:
-+	case REG_ESAI_TX1:
-+	case REG_ESAI_TX2:
-+	case REG_ESAI_TX3:
-+	case REG_ESAI_TX4:
-+	case REG_ESAI_TX5:
-+	case REG_ESAI_RX0:
-+	case REG_ESAI_RX1:
-+	case REG_ESAI_RX2:
-+	case REG_ESAI_RX3:
-+	case REG_ESAI_SAISR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+
-+}
-+
- static bool fsl_esai_writeable_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 5c73bea..62187e4 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -637,6 +637,8 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
+ static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
-@@ -722,7 +748,9 @@ static const struct regmap_config fsl_esai_regmap_config = {
- 
- 	.max_register = REG_ESAI_PCRC,
- 	.readable_reg = fsl_esai_readable_reg,
-+	.volatile_reg = fsl_esai_volatile_reg,
- 	.writeable_reg = fsl_esai_writeable_reg,
++	case FSL_SAI_TCSR:
++	case FSL_SAI_RCSR:
+ 	case FSL_SAI_TFR:
+ 	case FSL_SAI_RFR:
+ 	case FSL_SAI_TDR:
+@@ -681,6 +683,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
+ 	.readable_reg = fsl_sai_readable_reg,
+ 	.volatile_reg = fsl_sai_volatile_reg,
+ 	.writeable_reg = fsl_sai_writeable_reg,
 +	.cache_type = REGCACHE_RBTREE,
  };
  
- static int fsl_esai_probe(struct platform_device *pdev)
-@@ -853,10 +881,51 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
+ static int fsl_sai_probe(struct platform_device *pdev)
+@@ -802,10 +805,40 @@ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ /* sentinel */ }
  };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
  
 +#if CONFIG_PM_SLEEP
-+static int fsl_esai_suspend(struct device *dev)
++static int fsl_sai_suspend(struct device *dev)
 +{
-+	struct fsl_esai *esai = dev_get_drvdata(dev);
++	struct fsl_sai *sai = dev_get_drvdata(dev);
 +
-+	regcache_cache_only(esai->regmap, true);
-+	regcache_mark_dirty(esai->regmap);
++	regcache_cache_only(sai->regmap, true);
++	regcache_mark_dirty(sai->regmap);
 +
 +	return 0;
 +}
 +
-+static int fsl_esai_resume(struct device *dev)
++static int fsl_sai_resume(struct device *dev)
 +{
-+	struct fsl_esai *esai = dev_get_drvdata(dev);
-+	int ret;
++	struct fsl_sai *sai = dev_get_drvdata(dev);
 +
-+	regcache_cache_only(esai->regmap, false);
-+
-+	/* FIFO reset for safety */
-+	regmap_update_bits(esai->regmap, REG_ESAI_TFCR,
-+			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
-+	regmap_update_bits(esai->regmap, REG_ESAI_RFCR,
-+			   ESAI_xFCR_xFR, ESAI_xFCR_xFR);
-+
-+	ret = regcache_sync(esai->regmap);
-+	if (ret)
-+		return ret;
-+
-+	/* FIFO reset done */
-+	regmap_update_bits(esai->regmap, REG_ESAI_TFCR, ESAI_xFCR_xFR, 0);
-+	regmap_update_bits(esai->regmap, REG_ESAI_RFCR, ESAI_xFCR_xFR, 0);
-+
-+	return 0;
++	regcache_cache_only(sai->regmap, false);
++	regmap_write(sai->regmap, FSL_SAI_TCSR, FSL_SAI_CSR_SR);
++	regmap_write(sai->regmap, FSL_SAI_RCSR, FSL_SAI_CSR_SR);
++	msleep(1);
++	regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
++	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
++	return regcache_sync(sai->regmap);
 +}
 +#endif /* CONFIG_PM_SLEEP */
 +
-+static const struct dev_pm_ops fsl_esai_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_esai_suspend, fsl_esai_resume)
++static const struct dev_pm_ops fsl_sai_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(fsl_sai_suspend, fsl_sai_resume)
 +};
 +
- static struct platform_driver fsl_esai_driver = {
- 	.probe = fsl_esai_probe,
+ static struct platform_driver fsl_sai_driver = {
+ 	.probe = fsl_sai_probe,
  	.driver = {
- 		.name = "fsl-esai-dai",
-+		.pm = &fsl_esai_pm_ops,
- 		.of_match_table = fsl_esai_dt_ids,
+ 		.name = "fsl-sai",
++		.pm = &fsl_sai_pm_ops,
+ 		.of_match_table = fsl_sai_ids,
  	},
  };
 -- 
