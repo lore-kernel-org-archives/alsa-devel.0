@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Issue in alsa when dma complete race with pcm
-	release
-Date: Mon, 06 Jul 2015 14:27:01 +0200
-Message-ID: <559A7415.8000006@metafoo.de>
-References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
- <20150706090113.GA4995@shlinux2>
+From: Tuukka Pasanen <pasanen.tuukka@gmail.com>
+Subject: Re: Rane SL-4 USB sound card
+Date: Mon, 06 Jul 2015 15:42:29 +0300
+Message-ID: <559A77B5.5060905@gmail.com>
+References: <5597A9AE.2090002@gmail.com> <55996A35.6030904@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-092.synserver.de (smtp-out-092.synserver.de
- [212.40.185.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 072242605C3
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 14:27:03 +0200 (CEST)
-In-Reply-To: <20150706090113.GA4995@shlinux2>
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 092A62605C8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 14:42:29 +0200 (CEST)
+Received: by wgjx7 with SMTP id x7so139046967wgj.2
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 05:42:28 -0700 (PDT)
+In-Reply-To: <55996A35.6030904@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +22,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
-> On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
->> On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
->>> Hi alsa-devel
->>>
->>>     There maybe a issue in ALSA when dma complete race with snd_pcm_release.
->>> The pcm release and dma complete are in different thread. There is occasion
->>> that dmaengine_pcm_dma_complete() is called too late, some memory has been
->>> freed, the prtd is null. Then there is kernel dump.
->>>
->>>     Is there any solution for this issue? Thanks.
->>
->> We need to introduce a synchronization primitive that allows a
->> dmaengine client to synchronize to the execution of the complete
->> callbacks.
->>
->> terminate_all() unfortunately can't do this since terminate_all()
->> might be called from within one of the complete callbacks and so
->> would cause a deadlock if we'd wait for all complete callbacks to
->> finish before terminate_all() returns.
->>
->> So what is needed is a new function called dmaengine_sync() that
->> will wait until all scheduled complete callbacks have finished. A
->> call to this function needs to be put in snd_dmaengine_pcm_close()
->> before the prtd is closed.
->>
->> - Lars
+Hello,
+Thanks you for you reply. That did the trick almost. It only gives 
+sysdefault with two channels and error:
+
+[176317.418587] usb 1-5: parse_audio_format_rates_v2(): unable to 
+retrieve number of sample rates (clock 5)
+[176317.419156] usb 1-5: parse_audio_format_rates_v2(): unable to 
+retrieve number of sample rates (clock 5)
+
+I figured out this kind of QUIRK which seems to be working (go to test 
+tomorrow more). I would go with first quirck as it's looking simpler but 
+I can't add rates to it?
+
+{
+     USB_DEVICE(0x1cc5, 0x000f),
+     .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+         .ifnum = QUIRK_ANY_INTERFACE,
+         .type = QUIRK_COMPOSITE,
+         .data = (const struct snd_usb_audio_quirk[]) {
+             {
+                 .ifnum = 1,
+                 .type = QUIRK_AUDIO_FIXED_ENDPOINT,
+                 .data = &(const struct audioformat) {
+                     .formats = SNDRV_PCM_FMTBIT_S24_3LE,
+                     .channels = 4,
+                     .iface = 1,
+                     .altsetting = 1,
+                     .altset_idx = 1,
+                     .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+                     .endpoint = 0x06,
+                     .ep_attr = USB_ENDPOINT_XFER_ISOC,
+                     .rates = SNDRV_PCM_RATE_48000 |
+                          SNDRV_PCM_RATE_96000,
+                     .rate_min = 48000,
+                     .rate_max = 96000,
+                     .nr_rates = 2,
+                     .rate_table = (unsigned int[]) {
+                         48000, 96000
+                     }
+                 }
+             },
+             {
+                 .ifnum = 2,
+                 .type = QUIRK_AUDIO_FIXED_ENDPOINT,
+                 .data = &(const struct audioformat) {
+                     .formats = SNDRV_PCM_FMTBIT_S24_3LE,
+                     .channels = 4,
+                     .iface = 2,
+                     .altsetting = 1,
+                     .altset_idx = 1,
+                     .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+                     .endpoint = 0x82,
+                     .ep_attr = USB_ENDPOINT_XFER_ISOC,
+                     .rates = SNDRV_PCM_RATE_48000 |
+                          SNDRV_PCM_RATE_96000,
+                     .rate_min = 48000,
+                     .rate_max = 96000,
+                     .nr_rates = 2,
+                     .rate_table = (unsigned int[]) {
+                         48000, 96000
+                     }
+                 }
+             },
+             {
+                 .ifnum = -1,
+             }
+         }
+     }
+},
+
+Sincerely,
+Tuukka
+
+05.07.2015, 20:32, Clemens Ladisch kirjoitti:
+> Tuukka Pasanen wrote:
+>> I've been hacking to get Rane SL-4 USB audio ... to work with ALSA.
+>> I have compiled kernel and tried to get USB-quirks to work with this ... it doesn't do the trick
+>> If I need interface association how to do that?
+> The interface association descriptor should have been provided by the firmware.
 >
-> How to check " all scheduled complete callbacks have finished"?
-
-That will be up to the dmaengine driver. But it basically comes down to two 
-things:
-
-1) The driver needs to make sure that tasklet_schedule() is no longer called 
-after terminate_all() has finished.
-2) In the sync() callback call tasklet_kill() to make sure that it has 
-finished running
-
+> Anyway, try the following quirk:
 >
-> One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
-> the snd_pcm_release is bound with dmaengine, when there is error in dma
-> and no callback be called. Then the snd_pcm_release will not be released.
-
-The sync() function will only wait if there is a callback scheduled, if 
-there is non scheduled it will return immediately.
+> {
+> 	USB_DEVICE(0x1cc5, 0x000f),
+> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+> 		.ifnum = QUIRK_ANY_INTERFACE,
+> 		.type = QUIRK_COMPOSITE,
+> 		.data = (const struct snd_usb_audio_quirk[]) {
+> 			{
+> 				.ifnum = 1,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = 2,
+> 				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+> 			},
+> 			{
+> 				.ifnum = -1,
+> 			}
+> 		}
+> 	}
+> },
+>
+>
+> Regards,
+> Clemens
