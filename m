@@ -1,15 +1,15 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [PATCH] ASoC: dpcm: Add checks of playback/capture
-	before dpcm_get_be
-Date: Mon, 6 Jul 2015 10:02:10 +0800
-Message-ID: <1436148130-22739-1-git-send-email-koro.chen@mediatek.com>
+From: libin.yang@intel.com
+Subject: [PATCH] ALSA: hda - add codec ID for Broxton display
+	audio codec
+Date: Mon,  6 Jul 2015 10:44:26 +0800
+Message-ID: <1436150666-106766-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 845F42604EB
- for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 04:03:10 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6830F2604ED
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2015 04:53:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, s.hauer@pengutronix.de, linux-kernel@vger.kernel.org, Koro Chen <koro.chen@mediatek.com>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Libin Yang <libin.yang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In dpcm_get_be(), it looks for a BE rtd that has the DAI widget
-according to current stream type. Only playback_widgets are searched
-in the case of playback stream and vice versa. However, the DAI widget
-itself can be playback or capture.
+From: Libin Yang <libin.yang@intel.com>
 
-If the DAI widget is capture, but current stream type is playback,
-dpcm_get_be() will always fail to find a rtd, print error messages,
-and continue to the next DAI widget in list. We can just skip this
-DAI widget to further suppress error messages. This happens in a
-special case when 2 codecs are inter-connected, and the 1st codec's
-"capture" widget is used to send data to the 2nd codec during "playback":
+This patch adds codec ID (0x8086280a) and module alias for Broxton
+display codec.
 
-mtk-rt5650-rt5676 sound: ASoC: can't get playback BE for Sub AIF2 Capture
-rt5650_rt5676 Playback: ASoC: no BE found for Sub AIF2 Capture
-
-Add checks to continue to next DAI widget if current DAI widget's
-direction does not match the stream type.
-
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/soc/soc-pcm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 256b9c9..a6d3313 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1306,7 +1306,12 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 
- 		switch (list->widgets[i]->id) {
- 		case snd_soc_dapm_dai_in:
-+			if (stream != SNDRV_PCM_STREAM_PLAYBACK)
-+				continue;
-+			break;
- 		case snd_soc_dapm_dai_out:
-+			if (stream != SNDRV_PCM_STREAM_CAPTURE)
-+				continue;
- 			break;
- 		default:
- 			continue;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 2f24338..9515891 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3527,6 +3527,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x80862807, .name = "Haswell HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862808, .name = "Broadwell HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862809, .name = "Skylake HDMI",	.patch = patch_generic_hdmi },
++{ .id = 0x8086280a, .name = "Broxton HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862880, .name = "CedarTrail HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862882, .name = "Valleyview2 HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862883, .name = "Braswell HDMI",	.patch = patch_generic_hdmi },
+@@ -3591,6 +3592,7 @@ MODULE_ALIAS("snd-hda-codec-id:80862806");
+ MODULE_ALIAS("snd-hda-codec-id:80862807");
+ MODULE_ALIAS("snd-hda-codec-id:80862808");
+ MODULE_ALIAS("snd-hda-codec-id:80862809");
++MODULE_ALIAS("snd-hda-codec-id:8086280a");
+ MODULE_ALIAS("snd-hda-codec-id:80862880");
+ MODULE_ALIAS("snd-hda-codec-id:80862882");
+ MODULE_ALIAS("snd-hda-codec-id:80862883");
 -- 
-1.8.1.1.dirty
+1.9.1
