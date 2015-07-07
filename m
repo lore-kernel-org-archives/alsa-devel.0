@@ -1,17 +1,21 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: gtm601: Constify soc_codec_dev_gtm601
-Date: Tue, 07 Jul 2015 12:57:19 +0800
-Message-ID: <1436245039.1605.1.camel@ingics.com>
+From: Tuukka Pasanen <pasanen.tuukka@gmail.com>
+Subject: Re: Rane SL-4 USB sound card
+Date: Tue, 07 Jul 2015 08:37:04 +0300
+Message-ID: <559B6580.706@gmail.com>
+References: <5597A9AE.2090002@gmail.com>
+ <55996A35.6030904@ladisch.de>	<559A77B5.5060905@gmail.com>
+ <559A7D98.7000707@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D9542612BD
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 06:57:24 +0200 (CEST)
-Received: by pactm7 with SMTP id tm7so106648691pac.2
- for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 21:57:24 -0700 (PDT)
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61DB3261490
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 07:37:04 +0200 (CEST)
+Received: by wiwl6 with SMTP id l6so303286047wiw.0
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jul 2015 22:37:04 -0700 (PDT)
+In-Reply-To: <559A7D98.7000707@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Marek Belisko <marek@goldelico.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Also clean up the code a bit by fixing indent.
+Hello,
+I've tested Quirck and it worked (at least channels 1-2 input/output) 
+fine when changed S24_LE. Problem is that currently it doesn't have 
+Mixer so pulseaudio or jackd can't see it without .asoundrc. I digged 
+little bit mixer_map.c but didn't get it working.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/gtm601.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Sincerely,
+Tuukka
 
-diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
-index 12d15e5..0b80052 100644
---- a/sound/soc/codecs/gtm601.c
-+++ b/sound/soc/codecs/gtm601.c
-@@ -51,7 +51,7 @@ static struct snd_soc_dai_driver gtm601_dai = {
- 	},
- };
- 
--static struct snd_soc_codec_driver soc_codec_dev_gtm601 = {
-+static const struct snd_soc_codec_driver soc_codec_dev_gtm601 = {
- 	.dapm_widgets = gtm601_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(gtm601_dapm_widgets),
- 	.dapm_routes = gtm601_dapm_routes,
-@@ -80,10 +80,9 @@ MODULE_DEVICE_TABLE(of, gtm601_codec_of_match);
- 
- static struct platform_driver gtm601_codec_driver = {
- 	.driver = {
--			.name = "gtm601",
--			.of_match_table = of_match_ptr(gtm601_codec_of_match),
-+		.name = "gtm601",
-+		.of_match_table = of_match_ptr(gtm601_codec_of_match),
- 	},
--
- 	.probe = gtm601_platform_probe,
- 	.remove = gtm601_platform_remove,
- };
--- 
-2.1.0
+06.07.2015, 16:07, Clemens Ladisch kirjoitti:
+> Tuukka Pasanen wrote:
+>> [176317.418587] usb 1-5: parse_audio_format_rates_v2(): unable to retrieve number of sample rates (clock 5)
+> So it doesn't actually conform with the audio class.
+>
+>> I figured out this kind of QUIRK which seems to be working (go to test tomorrow more).
+> Hmm, the descriptors claim it uses S24_LE ...
+>
+> Do all channels work?
+> Does it correctly switch between 48/96 kHz?
+> Is it possible to use different rates for playback/capture?
+>
+>
+> Regards,
+> Clemens
