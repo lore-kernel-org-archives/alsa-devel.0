@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: Add checks of playback/capture
-	before dpcm_get_be" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:31 +0100
-Message-ID: <E1ZCTNL-0005Q4-7A@finisterre>
-References: <1436148130-22739-1-git-send-email-koro.chen@mediatek.com>
+Subject: Applied "ASoC: Remove snd_soc_codec dapm field" to the
+	asoc tree
+Date: Tue, 07 Jul 2015 14:57:32 +0100
+Message-ID: <E1ZCTNM-0005QX-Hd@finisterre>
+References: <1436189891-15343-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BA67E26548E
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:44 +0200 (CEST)
-In-Reply-To: <1436148130-22739-1-git-send-email-koro.chen@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A07FA265497
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:45 +0200 (CEST)
+In-Reply-To: <1436189891-15343-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: Add checks of playback/capture before dpcm_get_be
+   ASoC: Remove snd_soc_codec dapm field
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,144 @@ to this mail.
 Thanks,
 Mark
 
->From c5b8540dca22526517f4d96857678466613467d1 Mon Sep 17 00:00:00 2001
-From: Koro Chen <koro.chen@mediatek.com>
-Date: Mon, 6 Jul 2015 10:02:10 +0800
-Subject: [PATCH] ASoC: dpcm: Add checks of playback/capture before dpcm_get_be
+>From 4890140f3888b4a4baef90d84e278858afe45248 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Mon, 6 Jul 2015 15:38:11 +0200
+Subject: [PATCH] ASoC: Remove snd_soc_codec dapm field
 
-In dpcm_get_be(), it looks for a BE rtd that has the DAI widget
-according to current stream type. Only playback_widgets are searched
-in the case of playback stream and vice versa. However, the DAI widget
-itself can be playback or capture.
+There are no more direct users of the snd_soc_codec DAPM field left. So we
+can finally remove it and switch over to directly using the component DAPM
+context and remove the dapm_ptr indirection.
 
-If the DAI widget is capture, but current stream type is playback,
-dpcm_get_be() will always fail to find a rtd, print error messages,
-and continue to the next DAI widget in list. We can just skip this
-DAI widget to further suppress error messages. This happens in a
-special case when 2 codecs are inter-connected, and the 1st codec's
-"capture" widget is used to send data to the 2nd codec during "playback":
-
-mtk-rt5650-rt5676 sound: ASoC: can't get playback BE for Sub AIF2 Capture
-rt5650_rt5676 Playback: ASoC: no BE found for Sub AIF2 Capture
-
-Add checks to continue to next DAI widget if current DAI widget's
-direction does not match the stream type.
-
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/sound/soc.h  | 10 +++-------
+ sound/soc/soc-core.c | 23 ++++++++++++-----------
+ 2 files changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 256b9c9..a6d3313 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1306,7 +1306,12 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 93df8bf..3ccd82a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -792,7 +792,6 @@ struct snd_soc_component {
  
- 		switch (list->widgets[i]->id) {
- 		case snd_soc_dapm_dai_in:
-+			if (stream != SNDRV_PCM_STREAM_PLAYBACK)
-+				continue;
-+			break;
- 		case snd_soc_dapm_dai_out:
-+			if (stream != SNDRV_PCM_STREAM_CAPTURE)
-+				continue;
- 			break;
- 		default:
- 			continue;
+ 	/* Don't use these, use snd_soc_component_get_dapm() */
+ 	struct snd_soc_dapm_context dapm;
+-	struct snd_soc_dapm_context *dapm_ptr;
+ 
+ 	const struct snd_kcontrol_new *controls;
+ 	unsigned int num_controls;
+@@ -832,9 +831,6 @@ struct snd_soc_codec {
+ 	/* component */
+ 	struct snd_soc_component component;
+ 
+-	/* Don't access this directly, use snd_soc_codec_get_dapm() */
+-	struct snd_soc_dapm_context dapm;
+-
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_reg;
+ #endif
+@@ -1277,7 +1273,7 @@ static inline struct snd_soc_component *snd_soc_dapm_to_component(
+ static inline struct snd_soc_codec *snd_soc_dapm_to_codec(
+ 	struct snd_soc_dapm_context *dapm)
+ {
+-	return container_of(dapm, struct snd_soc_codec, dapm);
++	return snd_soc_component_to_codec(snd_soc_dapm_to_component(dapm));
+ }
+ 
+ /**
+@@ -1302,7 +1298,7 @@ static inline struct snd_soc_platform *snd_soc_dapm_to_platform(
+ static inline struct snd_soc_dapm_context *snd_soc_component_get_dapm(
+ 	struct snd_soc_component *component)
+ {
+-	return component->dapm_ptr;
++	return &component->dapm;
+ }
+ 
+ /**
+@@ -1314,7 +1310,7 @@ static inline struct snd_soc_dapm_context *snd_soc_component_get_dapm(
+ static inline struct snd_soc_dapm_context *snd_soc_codec_get_dapm(
+ 	struct snd_soc_codec *codec)
+ {
+-	return &codec->dapm;
++	return snd_soc_component_get_dapm(&codec->component);
+ }
+ 
+ /**
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 3a4a5c0..3747111 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -654,10 +654,12 @@ int snd_soc_suspend(struct device *dev)
+ 
+ 	/* suspend all CODECs */
+ 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
++		struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++
+ 		/* If there are paths active then the CODEC will be held with
+ 		 * bias _ON and should not be suspended. */
+ 		if (!codec->suspended) {
+-			switch (codec->dapm.bias_level) {
++			switch (snd_soc_dapm_get_bias_level(dapm)) {
+ 			case SND_SOC_BIAS_STANDBY:
+ 				/*
+ 				 * If the CODEC is capable of idle
+@@ -665,7 +667,7 @@ int snd_soc_suspend(struct device *dev)
+ 				 * means it's doing something,
+ 				 * otherwise fall through.
+ 				 */
+-				if (codec->dapm.idle_bias_off) {
++				if (dapm->idle_bias_off) {
+ 					dev_dbg(codec->dev,
+ 						"ASoC: idle_bias_off CODEC on over suspend\n");
+ 					break;
+@@ -2651,10 +2653,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	component->probe = component->driver->probe;
+ 	component->remove = component->driver->remove;
+ 
+-	if (!component->dapm_ptr)
+-		component->dapm_ptr = &component->dapm;
+-
+-	dapm = component->dapm_ptr;
++	dapm = &component->dapm;
+ 	dapm->dev = dev;
+ 	dapm->component = component;
+ 	dapm->bias_level = SND_SOC_BIAS_OFF;
+@@ -3036,6 +3035,7 @@ int snd_soc_register_codec(struct device *dev,
+ 			   struct snd_soc_dai_driver *dai_drv,
+ 			   int num_dai)
+ {
++	struct snd_soc_dapm_context *dapm;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_dai *dai;
+ 	int ret, i;
+@@ -3046,7 +3046,6 @@ int snd_soc_register_codec(struct device *dev,
+ 	if (codec == NULL)
+ 		return -ENOMEM;
+ 
+-	codec->component.dapm_ptr = &codec->dapm;
+ 	codec->component.codec = codec;
+ 
+ 	ret = snd_soc_component_initialize(&codec->component,
+@@ -3076,12 +3075,14 @@ int snd_soc_register_codec(struct device *dev,
+ 	if (codec_drv->read)
+ 		codec->component.read = snd_soc_codec_drv_read;
+ 	codec->component.ignore_pmdown_time = codec_drv->ignore_pmdown_time;
+-	codec->dapm.idle_bias_off = codec_drv->idle_bias_off;
+-	codec->dapm.suspend_bias_off = codec_drv->suspend_bias_off;
++
++	dapm = snd_soc_codec_get_dapm(codec);
++	dapm->idle_bias_off = codec_drv->idle_bias_off;
++	dapm->suspend_bias_off = codec_drv->suspend_bias_off;
+ 	if (codec_drv->seq_notifier)
+-		codec->dapm.seq_notifier = codec_drv->seq_notifier;
++		dapm->seq_notifier = codec_drv->seq_notifier;
+ 	if (codec_drv->set_bias_level)
+-		codec->dapm.set_bias_level = snd_soc_codec_set_bias_level;
++		dapm->set_bias_level = snd_soc_codec_set_bias_level;
+ 	codec->dev = dev;
+ 	codec->driver = codec_drv;
+ 	codec->component.val_bytes = codec_drv->reg_word_size;
 -- 
 2.1.4
