@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: 88pm860x: Don't change pm860x->dir
-	setting if pm860x_set_dai_sysclk fails" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:48 +0100
-Message-ID: <E1ZCTNc-0005Wc-Ry@finisterre>
-References: <1435547723.6397.1.camel@ingics.com>
+Subject: Applied "ASoC: fsl: Add dedicated DMA buffer size for
+	each cpu dai" to the asoc tree
+Date: Tue, 07 Jul 2015 14:58:00 +0100
+Message-ID: <E1ZCTNo-0005Zt-9F@finisterre>
+References: <1435055033-12608-1-git-send-email-shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0280A265716
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:07 +0200 (CEST)
-In-Reply-To: <1435547723.6397.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0593F2654E0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:14 +0200 (CEST)
+In-Reply-To: <1435055033-12608-1-git-send-email-shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Mark Brown <broonie@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: 88pm860x: Don't change pm860x->dir setting if pm860x_set_dai_sysclk fails
+   ASoC: fsl: Add dedicated DMA buffer size for each cpu dai
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,169 @@ to this mail.
 Thanks,
 Mark
 
->From 93ec3a1ad5b86aef8ca90d2b149ded0f6bb689f5 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Mon, 29 Jun 2015 11:15:23 +0800
-Subject: [PATCH] ASoC: 88pm860x: Don't change pm860x->dir setting if
- pm860x_set_dai_sysclk fails
+>From 0d69e0dddf5fe86675c56bc0f0520ffb0cbf1fcd Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Date: Tue, 23 Jun 2015 18:23:53 +0800
+Subject: [PATCH] ASoC: fsl: Add dedicated DMA buffer size for each cpu dai
 
-88pm860x does not support slave mode, so it returns -EINVAL for
-PM860X_CLK_DIR_IN. Current code changes pm860x->dir setting before
-return error, so it has impact on the logic of pm860x_pcm_set_dai_fmt.
+As the ssi is not the only cpu dai, there are esai, spdif, sai.
+and imx_pcm_dma can be used by all of them. Especially ESAI need
+a larger DMA buffer size. So Add dedicated DMA buffer for each cpu
+dai.
 
-This patch adds comment for the reason to return -EINVAL for
-PM860X_CLK_DIR_IN, and avoid changing pm860x->dir setting if
-pm860x_set_dai_sysclk fails.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Haojian Zhuang <haojian.zhuang@linaro.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Acked-by: Timur Tabi <timur@tabi.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/88pm860x-codec.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/fsl/fsl_esai.c    |  2 +-
+ sound/soc/fsl/fsl_sai.c     |  2 +-
+ sound/soc/fsl/fsl_spdif.c   |  2 +-
+ sound/soc/fsl/fsl_ssi.c     |  2 +-
+ sound/soc/fsl/imx-pcm-dma.c | 25 +++++++++++++++++++++----
+ sound/soc/fsl/imx-pcm.h     |  9 +++++++--
+ sound/soc/fsl/imx-ssi.c     |  2 +-
+ 7 files changed, 33 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 38b3dad..4d91a6a 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1028,10 +1028,8 @@ static int pm860x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 5c75971..8c2ddc1 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -839,7 +839,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- 	if (dir == PM860X_CLK_DIR_OUT)
- 		pm860x->dir = PM860X_CLK_DIR_OUT;
--	else {
--		pm860x->dir = PM860X_CLK_DIR_IN;
-+	else	/* Slave mode is not supported */
- 		return -EINVAL;
--	}
+-	ret = imx_pcm_dma_init(pdev);
++	ret = imx_pcm_dma_init(pdev, IMX_ESAI_DMABUF_SIZE);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
  
- 	return 0;
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 5c73bea..a18fd92 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -791,7 +791,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	if (sai->sai_on_imx)
+-		return imx_pcm_dma_init(pdev);
++		return imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
+ 	else
+ 		return devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
  }
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 8e93221..d1e9be7 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1255,7 +1255,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = imx_pcm_dma_init(pdev);
++	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
+ 
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index c7647e0..e122dab 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1257,7 +1257,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 		if (ret)
+ 			goto error_pcm;
+ 	} else {
+-		ret = imx_pcm_dma_init(pdev);
++		ret = imx_pcm_dma_init(pdev, IMX_SSI_DMABUF_SIZE);
+ 		if (ret)
+ 			goto error_pcm;
+ 	}
+diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
+index 0db94f49..1fc01ed 100644
+--- a/sound/soc/fsl/imx-pcm-dma.c
++++ b/sound/soc/fsl/imx-pcm-dma.c
+@@ -40,7 +40,7 @@ static const struct snd_pcm_hardware imx_pcm_hardware = {
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_PAUSE |
+ 		SNDRV_PCM_INFO_RESUME,
+-	.buffer_bytes_max = IMX_SSI_DMABUF_SIZE,
++	.buffer_bytes_max = IMX_DEFAULT_DMABUF_SIZE,
+ 	.period_bytes_min = 128,
+ 	.period_bytes_max = 65535, /* Limited by SDMA engine */
+ 	.periods_min = 2,
+@@ -52,13 +52,30 @@ static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
+ 	.pcm_hardware = &imx_pcm_hardware,
+ 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+ 	.compat_filter_fn = filter,
+-	.prealloc_buffer_size = IMX_SSI_DMABUF_SIZE,
++	.prealloc_buffer_size = IMX_DEFAULT_DMABUF_SIZE,
+ };
+ 
+-int imx_pcm_dma_init(struct platform_device *pdev)
++int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
+ {
++	struct snd_dmaengine_pcm_config *config;
++	struct snd_pcm_hardware *pcm_hardware;
++
++	config = devm_kzalloc(&pdev->dev,
++			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
++	*config = imx_dmaengine_pcm_config;
++	if (size)
++		config->prealloc_buffer_size = size;
++
++	pcm_hardware = devm_kzalloc(&pdev->dev,
++			sizeof(struct snd_pcm_hardware), GFP_KERNEL);
++	*pcm_hardware = imx_pcm_hardware;
++	if (size)
++		pcm_hardware->buffer_bytes_max = size;
++
++	config->pcm_hardware = pcm_hardware;
++
+ 	return devm_snd_dmaengine_pcm_register(&pdev->dev,
+-		&imx_dmaengine_pcm_config,
++		config,
+ 		SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index c79cb27..133c4470a 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -20,6 +20,11 @@
+  */
+ #define IMX_SSI_DMABUF_SIZE	(64 * 1024)
+ 
++#define IMX_DEFAULT_DMABUF_SIZE	(64 * 1024)
++#define IMX_SAI_DMABUF_SIZE	(64 * 1024)
++#define IMX_SPDIF_DMABUF_SIZE	(64 * 1024)
++#define IMX_ESAI_DMABUF_SIZE	(256 * 1024)
++
+ static inline void
+ imx_pcm_dma_params_init_data(struct imx_dma_data *dma_data,
+ 	int dma, enum sdma_peripheral_type peripheral_type)
+@@ -39,9 +44,9 @@ struct imx_pcm_fiq_params {
+ };
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA)
+-int imx_pcm_dma_init(struct platform_device *pdev);
++int imx_pcm_dma_init(struct platform_device *pdev, size_t size);
+ #else
+-static inline int imx_pcm_dma_init(struct platform_device *pdev)
++static inline int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
+ {
+ 	return -ENODEV;
+ }
+diff --git a/sound/soc/fsl/imx-ssi.c b/sound/soc/fsl/imx-ssi.c
+index 461ce27..48b2d24 100644
+--- a/sound/soc/fsl/imx-ssi.c
++++ b/sound/soc/fsl/imx-ssi.c
+@@ -603,7 +603,7 @@ static int imx_ssi_probe(struct platform_device *pdev)
+ 	ssi->fiq_params.dma_params_tx = &ssi->dma_params_tx;
+ 
+ 	ssi->fiq_init = imx_pcm_fiq_init(pdev, &ssi->fiq_params);
+-	ssi->dma_init = imx_pcm_dma_init(pdev);
++	ssi->dma_init = imx_pcm_dma_init(pdev, IMX_SSI_DMABUF_SIZE);
+ 
+ 	if (ssi->fiq_init && ssi->dma_init) {
+ 		ret = ssi->fiq_init;
 -- 
 2.1.4
