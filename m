@@ -1,84 +1,66 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: Issue in alsa when dma complete race with pcm
- release
-Date: Tue, 7 Jul 2015 18:13:04 +0800
-Message-ID: <20150707101302.GA22212@shlinux2>
-References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
- <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Tue, 7 Jul 2015 12:40:38 +0100
+Message-ID: <20150707114038.GA2887@sirena.org.uk>
+References: <20150625145853.GP14071@sirena.org.uk>
+ <20150625154407.GE6321@opensource.wolfsonmicro.com>
+ <558D3BAA.3080700@linux.intel.com>
+ <20150626115823.GY14071@sirena.org.uk>
+ <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
+ <20150629094854.GB11162@sirena.org.uk>
+ <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+ <20150630103404.GI6321@opensource.wolfsonmicro.com>
+ <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
+ <20150707095613.GG16517@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0143.outbound.protection.outlook.com [65.55.169.143])
- by alsa0.perex.cz (Postfix) with ESMTP id CD19C2618ED
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 13:21:52 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <559A7415.8000006@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
+In-Reply-To: <20150707095613.GG16517-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
-> On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
-> >On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
-> >>On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
-> >>>Hi alsa-devel
-> >>>
-> >>>    There maybe a issue in ALSA when dma complete race with snd_pcm_release.
-> >>>The pcm release and dma complete are in different thread. There is occasion
-> >>>that dmaengine_pcm_dma_complete() is called too late, some memory has been
-> >>>freed, the prtd is null. Then there is kernel dump.
-> >>>
-> >>>    Is there any solution for this issue? Thanks.
-> >>
-> >>We need to introduce a synchronization primitive that allows a
-> >>dmaengine client to synchronize to the execution of the complete
-> >>callbacks.
-> >>
-> >>terminate_all() unfortunately can't do this since terminate_all()
-> >>might be called from within one of the complete callbacks and so
-> >>would cause a deadlock if we'd wait for all complete callbacks to
-> >>finish before terminate_all() returns.
-> >>
-> >>So what is needed is a new function called dmaengine_sync() that
-> >>will wait until all scheduled complete callbacks have finished. A
-> >>call to this function needs to be put in snd_dmaengine_pcm_close()
-> >>before the prtd is closed.
-> >>
-> >>- Lars
-> >
-> >How to check " all scheduled complete callbacks have finished"?
-> 
-> That will be up to the dmaengine driver. But it basically comes down
-> to two things:
-> 
-> 1) The driver needs to make sure that tasklet_schedule() is no
-> longer called after terminate_all() has finished.
-Some driver can't make sure this. The dma interrupt may come later after
-terminate_all.
-> 2) In the sync() callback call tasklet_kill() to make sure that it
-> has finished running
-> 
-> >
-> >One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
-> >the snd_pcm_release is bound with dmaengine, when there is error in dma
-> >and no callback be called. Then the snd_pcm_release will not be released.
-> 
-> The sync() function will only wait if there is a callback scheduled,
-> if there is non scheduled it will return immediately.
 
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Do you have other method to resolve this issue? or simple method?
+On Tue, Jul 07, 2015 at 10:56:13AM +0100, Charles Keepax wrote:
+> On Tue, Jul 07, 2015 at 09:06:25AM +0200, Christian Hartmann wrote:
 
-Best regards
-wang shengjiu
+> > I am thinking actually to get a second device with Win installed, so
+> > that I can get more infos which I really need here.
+> > Anyway  I can also provide more infos here (if its not against valid laws :) )
+> > But indeeed I can need some hints where to put the pdata structure.
+
+> I think in this case we need to hard code the pdata into the
+> driver. Probably in arizona-core.c would be the best place.
+
+This is how other drivers with ACPI support like the Realtek ones do
+this.
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVm7q1AAoJECTWi3JdVIfQECYH/A6ZWBpn50vuJHMGtKXg1dG7
+j5tpWPrW3UbAxOMgCrxE7Fw5tm/yqTePTt1N4YWD7t0YLmj/7tqlIDicq6GYiW3F
+MU2Aeoi/bsNu+79RKBCUCRvKVX/wQ7hyYdCR3ynSnEc42KM7P2UBGOOvW+Ob2V5H
+ZefZGb+7DRhlvK+ZZjH2mMw1Crc70eD6IiFtn6keTv8LyLj3vtGyh43TYSyBMR1J
+VJjqZ1FjWX0/1aCgepeDiXT3WAYopJ5BrIdvdB6yUIcrZODzEpXacesv68vSUaQ/
+VduXHi3JyJsltYMtBeEzaqS+NacHrr9xVZ3BSDUe9IJcj5Yh+KdqDbuujqEDhas=
+=UOmQ
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
