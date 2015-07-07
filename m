@@ -1,22 +1,15 @@
-From: Tyler Yeomans <tyeo098@gmail.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Tue, 07 Jul 2015 10:00:31 -0400
-Message-ID: <559BDB7F.9010105@gmail.com>
-References: <8D3F6266AEB6384E807C6FFC6FE195E30B49AE39@BGSMSX101.gar.corp.intel.com>
- <20150703143608.7afb34c985d82982e929484e@ao2.it>
- <20150703130658.GA1689228@phare.normalesup.org> <559A90CE.2030105@gmail.com>
- <20150707031950.GD11002@localhost>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 1/3] mfd: wm5110: Add registers for custom
+	write sequence triggers
+Date: Tue,  7 Jul 2015 15:28:12 +0100
+Message-ID: <1436279294-13672-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f45.google.com (mail-qg0-f45.google.com
- [209.85.192.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E2ED26587F
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 16:00:33 +0200 (CEST)
-Received: by qget71 with SMTP id t71so84425275qge.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2015 07:00:32 -0700 (PDT)
-In-Reply-To: <20150707031950.GD11002@localhost>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CC2CB26548E
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 16:44:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +19,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>
+To: broonie@kernel.org, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Vinod,
+This register will be needed as part of some additional support for the
+headphone path on wm5110, so this patch adds the register and sets up
+its regmap config.
 
-I am using the ssp0 firmware from:
-https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/tree/intel?h=byt.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mfd/wm5110-tables.c           |    2 +
+ include/linux/mfd/arizona/registers.h |   37 +++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 0 deletions(-)
 
-Thanks-
-
-Tyler
-
-On 07/06/2015 11:19 PM, Vinod Koul wrote:
-> On Mon, Jul 06, 2015 at 10:29:34AM -0400, Tyler Yeomans wrote:
->> Hello all,
->>
->> Apparently I'm in the same boat as Nicolas is.
->> I've attached my dmesg output.
->> Everything seems to be generating but I am not able to get any sound
->> output.
->> Between the 37 second mark and the 617 second mark I had routed the
->> FE to BE via the commands:
->>
->> amixer -c0 sset 'codec_out0 mix 0 pcm0_in' on
->> amixer -c0 sset 'media0_out mix 0 media1_in' on
-> ok that seems fine
->> Although it appears that did not work:
->> [  719.834922] intel_sst_acpi 80860F28:00: Wait timed-out
->> condition:0x0, msg_id:0x1 fw_state 0x3
->> [  719.834932] intel_sst_acpi 80860F28:00: fw returned err -16
-> I don't think so, since you were able to start the card, that part worked :)
->
-> The error is coming from FW here and seems unresponsive.
->
-> Which firmware are you using?
->
-> Second suspicion is for interrupts, if they are not mapped well we might see
-> these.
->
-> Jarkko I remember that some board have to be configured properly for
-> interrupts, can you explaian the subtleties involved here
->
-> --
-> ~Vinod
+diff --git a/drivers/mfd/wm5110-tables.c b/drivers/mfd/wm5110-tables.c
+index 12cad94..62a4aa1 100644
+--- a/drivers/mfd/wm5110-tables.c
++++ b/drivers/mfd/wm5110-tables.c
+@@ -676,6 +676,7 @@ static const struct reg_default wm5110_reg_default[] = {
+ 	{ 0x00000032, 0x0100 },    /* R50    - PWM Drive 3 */
+ 	{ 0x00000040, 0x0000 },    /* R64    - Wake control */
+ 	{ 0x00000041, 0x0000 },    /* R65    - Sequence control */
++	{ 0x00000042, 0x0000 },    /* R66    - Spare Triggers */
+ 	{ 0x00000061, 0x01FF },    /* R97    - Sample Rate Sequence Select 1 */
+ 	{ 0x00000062, 0x01FF },    /* R98    - Sample Rate Sequence Select 2 */
+ 	{ 0x00000063, 0x01FF },    /* R99    - Sample Rate Sequence Select 3 */
+@@ -1716,6 +1717,7 @@ static bool wm5110_readable_register(struct device *dev, unsigned int reg)
+ 	case ARIZONA_PWM_DRIVE_3:
+ 	case ARIZONA_WAKE_CONTROL:
+ 	case ARIZONA_SEQUENCE_CONTROL:
++	case ARIZONA_SPARE_TRIGGERS:
+ 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_1:
+ 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_2:
+ 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_3:
+diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mfd/arizona/registers.h
+index 3499d36..11affb3 100644
+--- a/include/linux/mfd/arizona/registers.h
++++ b/include/linux/mfd/arizona/registers.h
+@@ -39,6 +39,7 @@
+ #define ARIZONA_PWM_DRIVE_3                      0x32
+ #define ARIZONA_WAKE_CONTROL                     0x40
+ #define ARIZONA_SEQUENCE_CONTROL                 0x41
++#define ARIZONA_SPARE_TRIGGERS                   0x42
+ #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_1    0x61
+ #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_2    0x62
+ #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_3    0x63
+@@ -1431,6 +1432,42 @@
+ #define ARIZONA_WSEQ_ENA_JD2_RISE_WIDTH               1  /* WSEQ_ENA_JD2_RISE */
+ 
+ /*
++ * R66 (0x42) - Spare Triggers
++ */
++#define ARIZONA_WS_TRG8                          0x0080  /* WS_TRG8 */
++#define ARIZONA_WS_TRG8_MASK                     0x0080  /* WS_TRG8 */
++#define ARIZONA_WS_TRG8_SHIFT                         7  /* WS_TRG8 */
++#define ARIZONA_WS_TRG8_WIDTH                         1  /* WS_TRG8 */
++#define ARIZONA_WS_TRG7                          0x0040  /* WS_TRG7 */
++#define ARIZONA_WS_TRG7_MASK                     0x0040  /* WS_TRG7 */
++#define ARIZONA_WS_TRG7_SHIFT                         6  /* WS_TRG7 */
++#define ARIZONA_WS_TRG7_WIDTH                         1  /* WS_TRG7 */
++#define ARIZONA_WS_TRG6                          0x0020  /* WS_TRG6 */
++#define ARIZONA_WS_TRG6_MASK                     0x0020  /* WS_TRG6 */
++#define ARIZONA_WS_TRG6_SHIFT                         5  /* WS_TRG6 */
++#define ARIZONA_WS_TRG6_WIDTH                         1  /* WS_TRG6 */
++#define ARIZONA_WS_TRG5                          0x0010  /* WS_TRG5 */
++#define ARIZONA_WS_TRG5_MASK                     0x0010  /* WS_TRG5 */
++#define ARIZONA_WS_TRG5_SHIFT                         4  /* WS_TRG5 */
++#define ARIZONA_WS_TRG5_WIDTH                         1  /* WS_TRG5 */
++#define ARIZONA_WS_TRG4                          0x0008  /* WS_TRG4 */
++#define ARIZONA_WS_TRG4_MASK                     0x0008  /* WS_TRG4 */
++#define ARIZONA_WS_TRG4_SHIFT                         3  /* WS_TRG4 */
++#define ARIZONA_WS_TRG4_WIDTH                         1  /* WS_TRG4 */
++#define ARIZONA_WS_TRG3                          0x0004  /* WS_TRG3 */
++#define ARIZONA_WS_TRG3_MASK                     0x0004  /* WS_TRG3 */
++#define ARIZONA_WS_TRG3_SHIFT                         2  /* WS_TRG3 */
++#define ARIZONA_WS_TRG3_WIDTH                         1  /* WS_TRG3 */
++#define ARIZONA_WS_TRG2                          0x0002  /* WS_TRG2 */
++#define ARIZONA_WS_TRG2_MASK                     0x0002  /* WS_TRG2 */
++#define ARIZONA_WS_TRG2_SHIFT                         1  /* WS_TRG2 */
++#define ARIZONA_WS_TRG2_WIDTH                         1  /* WS_TRG2 */
++#define ARIZONA_WS_TRG1                          0x0001  /* WS_TRG1 */
++#define ARIZONA_WS_TRG1_MASK                     0x0001  /* WS_TRG1 */
++#define ARIZONA_WS_TRG1_SHIFT                         0  /* WS_TRG1 */
++#define ARIZONA_WS_TRG1_WIDTH                         1  /* WS_TRG1 */
++
++/*
+  * R97 (0x61) - Sample Rate Sequence Select 1
+  */
+ #define ARIZONA_WSEQ_SAMPLE_RATE_DETECT_A_SEQ_ADDR_MASK 0x01FF  /* WSEQ_SAMPLE_RATE_DETECT_A_SEQ_ADDR - [8:0] */
+-- 
+1.7.2.5
