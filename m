@@ -1,20 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Issue in alsa when dma complete race with pcm
-	release
-Date: Tue, 07 Jul 2015 15:32:02 +0200
-Message-ID: <559BD4D2.6080502@metafoo.de>
-References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
- <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
- <20150707101302.GA22212@shlinux2>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: ts3a227e: do not report jack
+ status when there is i2c read err
+Date: Tue, 7 Jul 2015 14:47:22 +0100
+Message-ID: <20150707134722.GO2887@sirena.org.uk>
+References: <1435724282-109761-1-git-send-email-yang.a.fang@intel.com>
+ <1435793088-25971-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4274805240776219187=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-100.synserver.de (smtp-out-100.synserver.de
- [212.40.185.100])
- by alsa0.perex.cz (Postfix) with ESMTP id ADA2C26536C
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:32:36 +0200 (CEST)
-In-Reply-To: <20150707101302.GA22212@shlinux2>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F240126536C
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:47:33 +0200 (CEST)
+In-Reply-To: <1435793088-25971-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
+To: yang.a.fang@intel.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, praveen.k.jain@intel.com, lgirdwood@gmail.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org, mika.westerberg@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/07/2015 12:13 PM, Shengjiu Wang wrote:
-> On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
->> On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
->>> On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
->>>> On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
->>>>> Hi alsa-devel
->>>>>
->>>>>     There maybe a issue in ALSA when dma complete race with snd_pcm_release.
->>>>> The pcm release and dma complete are in different thread. There is occasion
->>>>> that dmaengine_pcm_dma_complete() is called too late, some memory has been
->>>>> freed, the prtd is null. Then there is kernel dump.
->>>>>
->>>>>     Is there any solution for this issue? Thanks.
->>>>
->>>> We need to introduce a synchronization primitive that allows a
->>>> dmaengine client to synchronize to the execution of the complete
->>>> callbacks.
->>>>
->>>> terminate_all() unfortunately can't do this since terminate_all()
->>>> might be called from within one of the complete callbacks and so
->>>> would cause a deadlock if we'd wait for all complete callbacks to
->>>> finish before terminate_all() returns.
->>>>
->>>> So what is needed is a new function called dmaengine_sync() that
->>>> will wait until all scheduled complete callbacks have finished. A
->>>> call to this function needs to be put in snd_dmaengine_pcm_close()
->>>> before the prtd is closed.
->>>>
->>>> - Lars
->>>
->>> How to check " all scheduled complete callbacks have finished"?
->>
->> That will be up to the dmaengine driver. But it basically comes down
->> to two things:
->>
->> 1) The driver needs to make sure that tasklet_schedule() is no
->> longer called after terminate_all() has finished.
-> Some driver can't make sure this. The dma interrupt may come later after
-> terminate_all.
 
-Most drivers can't make sure that the interrupt routine is not executed 
-after terminate_all() has been called, since both are fully asynchronous. 
-But what the driver needs to take care of is to synchronize the two e.g. 
-using a spin_lock() and make sure that if terminate_all() has been called 
-tasklet_schedule() is not called, even if the isr is executed. Most drivers 
-get this rigght.
+--===============4274805240776219187==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="i7KxW38SoMauyveo"
+Content-Disposition: inline
 
->> 2) In the sync() callback call tasklet_kill() to make sure that it
->> has finished running
->>
->>>
->>> One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
->>> the snd_pcm_release is bound with dmaengine, when there is error in dma
->>> and no callback be called. Then the snd_pcm_release will not be released.
->>
->> The sync() function will only wait if there is a callback scheduled,
->> if there is non scheduled it will return immediately.
->
->
-> Do you have other method to resolve this issue? or simple method?
 
-No, this is the way to go. You have two asynchronous processes and you want 
-to get deterministic execution ordering between the two you need to add a 
-synchronization primitive.
+--i7KxW38SoMauyveo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Wed, Jul 01, 2015 at 04:24:48PM -0700, yang.a.fang@intel.com wrote:
+
+> after TI resumes. Also We should return if there is read err,the
+> interrupt will come again since it is level triggered and we are not yet
+> clear the interrupt.
+
+> +	ret = regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
+> +	if (ret) {
+> +		dev_err(dev, "failed to clear interrupt ret=%d\n", ret);
+> +		return IRQ_HANDLED;
+> +	}
+
+This should return IRQ_NONE not IRQ_HANDLED - we didn't actually
+successfully handle the interrupt.  This lets the genirq code error
+handling kick in if for some reason things are really broken and we just
+can't interact with the device any more, it will eventually disable the
+interrupt in that case.
+
+--i7KxW38SoMauyveo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVm9hpAAoJECTWi3JdVIfQCL8H/ArIQs1W0CUtfC/9u79HPymg
+JLa0sNRhLq887U0vzEPSQfqSJnl0/A6wHRvyPjyw/CqDIDEw5Gc2yyRk4S8dkSDI
+UKjQemRUQUv2pJKs2PRJc9xmACRUVWyEM7i09pOmYU+TmRpSqBv7jid6F5ICzm2u
+btH5LEsj35uacxRWLvxgbt4j9tWgZVB3jYZT8U+1PRLioOvl76qdhNkS934DibGm
+JuHqyt4WZu3DYgNY2Dp7xyI+r1t73ELyHANbNV33j8tKo8QzhLi668gid1vj0Hdy
+1hXDerOHPn9GyJGr92yeh89DcRbGKZrZIW0KbXIoQfO6qss5epwCNtwNaO1YDg8=
+=+hBo
+-----END PGP SIGNATURE-----
+
+--i7KxW38SoMauyveo--
+
+--===============4274805240776219187==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4274805240776219187==--
