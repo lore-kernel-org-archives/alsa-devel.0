@@ -1,40 +1,67 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Rane SL-4 USB sound card
-Date: Tue, 07 Jul 2015 09:23:36 +0200
-Message-ID: <559B7E78.3080906@ladisch.de>
-References: <5597A9AE.2090002@gmail.com>	<55996A35.6030904@ladisch.de>	<559A77B5.5060905@gmail.com>	<559A7D98.7000707@ladisch.de>
- <559B6580.706@gmail.com>
+From: Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] arm64: dts: mt8173: Add afe device node
+Date: Tue, 07 Jul 2015 09:46:55 +0200
+Message-ID: <25205102.t939MQMDBD@ubix>
+References: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com> <CAGS+omCOzJs=VWboU_7doUum6BEfmh1hV88HmJiin2c-A_n_Mw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EDBD1261490
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 09:23:37 +0200 (CEST)
-In-Reply-To: <559B6580.706@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tuukka Pasanen <pasanen.tuukka@gmail.com>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAGS+omCOzJs=VWboU_7doUum6BEfmh1hV88HmJiin2c-A_n_Mw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, srv_heupstream <srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "open list:OPEN FIRMWARE AND..." <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Nicolas Boichat <drinkcat-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tuukka Pasanen wrote:
-> I've tested Quirck and it worked (at least channels 1-2 input/output) fine when changed S24_LE.
-> Problem is that currently it doesn't have Mixer
+On Monday, July 06, 2015 09:02:38 PM Daniel Kurtz wrote:
+> On Mon, Jul 6, 2015 at 2:52 PM, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org> wrote:
+> > This adds afe (audio front end) device node to the MT8173 dtsi file.
+> > 
+> > This patch is based on Matthias's tree:
+> > https://github.com/mbgg/linux-mediatek
+> > branch: v4.2-next/arm64
+> > 
+> > Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+> > ---
+> > 
+> >  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32
+> >  ++++++++++++++++++++++++++++++++ 1 file changed, 32 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > b/arch/arm64/boot/dts/mediatek/mt8173.dtsi index 0696f8f..f8afab4 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > @@ -14,6 +14,7 @@
+> > 
+> >  #include <dt-bindings/clock/mt8173-clk.h>
+> >  #include <dt-bindings/interrupt-controller/irq.h>
+> >  #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > 
+> > +#include <dt-bindings/power/mt8173-power.h>
+> > 
+> >  #include <dt-bindings/reset-controller/mt8173-resets.h>
+> >  #include "mt8173-pinfunc.h"
+> > 
+> > @@ -393,6 +394,37 @@
+> > 
+> >                         #size-cells = <0>;
+> >                         status = "disabled";
+> >                 
+> >                 };
+> > 
+> > +
+> > +               afe: mt8173-afe-pcm@11220000  {
+> 
+> I believe this should be something generic, like:
+> 
+>   afe: audio-controller@11220000
+> 
 
-According to the descriptors, it does not have mixer controls.
-Does the Windows driver have mixer controls that affect the hardware?
+Yes, please find a name that better describes the component instead of just 
+using the compatible string.
 
-> so pulseaudio or jackd can't see it without .asoundrc.
-
-That should make no difference.
-
-
-Regards,
-Clemens
+Thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
