@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: lm49453: Remove fs_rate from struct
-	lm49453_priv" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:45 +0100
-Message-ID: <E1ZCTNZ-0005Vg-Is@finisterre>
-References: <1435222874.22996.1.camel@ingics.com>
+Subject: Applied "ASoC: gtm601: Constify soc_codec_dev_gtm601"
+	to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:44 +0100
+Message-ID: <E1ZCTNY-0005VD-E4@finisterre>
+References: <1436245039.1605.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6438A2655A5
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:58 +0200 (CEST)
-In-Reply-To: <1435222874.22996.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 93F4B265626
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:59 +0200 (CEST)
+In-Reply-To: <1436245039.1605.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: lm49453: Remove fs_rate from struct lm49453_priv
+   ASoC: gtm601: Constify soc_codec_dev_gtm601
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 6f4397949689d74c3bd0016c80d59a90c6e8afee Mon Sep 17 00:00:00 2001
+>From 02a9547e9b3f10d73fde66f52fc8b2a375a300cd Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 25 Jun 2015 17:01:14 +0800
-Subject: [PATCH] ASoC: lm49453: Remove fs_rate from struct lm49453_priv
+Date: Tue, 7 Jul 2015 12:57:19 +0800
+Subject: [PATCH] ASoC: gtm601: Constify soc_codec_dev_gtm601
 
-fs_rate is only used in lm49453_hw_params() so don't need to store it in
-private data.
+Also clean up the code a bit by fixing indent.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/lm49453.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/codecs/gtm601.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 6600aa0..5b4086d 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -188,7 +188,6 @@ static struct reg_default lm49453_reg_defs[] = {
- /* codec private data */
- struct lm49453_priv {
- 	struct regmap *regmap;
--	int fs_rate;
+diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
+index 12d15e5..0b80052 100644
+--- a/sound/soc/codecs/gtm601.c
++++ b/sound/soc/codecs/gtm601.c
+@@ -51,7 +51,7 @@ static struct snd_soc_dai_driver gtm601_dai = {
+ 	},
  };
  
- /* capture path controls */
-@@ -1112,13 +1111,10 @@ static int lm49453_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_codec *codec = dai->codec;
--	struct lm49453_priv *lm49453 = snd_soc_codec_get_drvdata(codec);
- 	u16 clk_div = 0;
+-static struct snd_soc_codec_driver soc_codec_dev_gtm601 = {
++static const struct snd_soc_codec_driver soc_codec_dev_gtm601 = {
+ 	.dapm_widgets = gtm601_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(gtm601_dapm_widgets),
+ 	.dapm_routes = gtm601_dapm_routes,
+@@ -80,10 +80,9 @@ MODULE_DEVICE_TABLE(of, gtm601_codec_of_match);
  
--	lm49453->fs_rate = params_rate(params);
+ static struct platform_driver gtm601_codec_driver = {
+ 	.driver = {
+-			.name = "gtm601",
+-			.of_match_table = of_match_ptr(gtm601_codec_of_match),
++		.name = "gtm601",
++		.of_match_table = of_match_ptr(gtm601_codec_of_match),
+ 	},
 -
- 	/* Setting DAC clock dividers based on substream sample rate. */
--	switch (lm49453->fs_rate) {
-+	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
- 	case 32000:
+ 	.probe = gtm601_platform_probe,
+ 	.remove = gtm601_platform_remove,
+ };
 -- 
 2.1.4
