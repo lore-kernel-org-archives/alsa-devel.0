@@ -1,15 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 1/3] mfd: wm5110: Add registers for custom
-	write sequence triggers
-Date: Tue,  7 Jul 2015 10:23:11 +0100
-Message-ID: <1436260993-8814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 2/3] mfd: wm5110: Add register patch for rev
+	E and above
+Date: Tue,  7 Jul 2015 10:23:12 +0100
+Message-ID: <1436260993-8814-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1436260993-8814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9987226171B
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 11:39:09 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0AAF72617DE
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 11:39:10 +0200 (CEST)
+In-Reply-To: <1436260993-8814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +25,51 @@ To: broonie@kernel.org, lee.jones@linaro.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This register will be needed as part of some additional support for the
-headphone path on wm5110, so this patch adds the register and sets up
-its regmap config.
+Add a register patch for rev E and above that configures the location of
+some write sequences to assist with the headphone enables.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/wm5110-tables.c           |    2 +
- include/linux/mfd/arizona/registers.h |   37 +++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 0 deletions(-)
+
+Changes since v1:
+ - Added a comment with the write sequence
+
+Thanks,
+Charles
+
+ drivers/mfd/wm5110-tables.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mfd/wm5110-tables.c b/drivers/mfd/wm5110-tables.c
-index 12cad94..62a4aa1 100644
+index 62a4aa1..b70f76b 100644
 --- a/drivers/mfd/wm5110-tables.c
 +++ b/drivers/mfd/wm5110-tables.c
-@@ -676,6 +676,7 @@ static const struct reg_default wm5110_reg_default[] = {
- 	{ 0x00000032, 0x0100 },    /* R50    - PWM Drive 3 */
- 	{ 0x00000040, 0x0000 },    /* R64    - Wake control */
- 	{ 0x00000041, 0x0000 },    /* R65    - Sequence control */
-+	{ 0x00000042, 0x0000 },    /* R66    - Spare Triggers */
- 	{ 0x00000061, 0x01FF },    /* R97    - Sample Rate Sequence Select 1 */
- 	{ 0x00000062, 0x01FF },    /* R98    - Sample Rate Sequence Select 2 */
- 	{ 0x00000063, 0x01FF },    /* R99    - Sample Rate Sequence Select 3 */
-@@ -1716,6 +1717,7 @@ static bool wm5110_readable_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_PWM_DRIVE_3:
- 	case ARIZONA_WAKE_CONTROL:
- 	case ARIZONA_SEQUENCE_CONTROL:
-+	case ARIZONA_SPARE_TRIGGERS:
- 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_1:
- 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_2:
- 	case ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_3:
-diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mfd/arizona/registers.h
-index 3499d36..11affb3 100644
---- a/include/linux/mfd/arizona/registers.h
-+++ b/include/linux/mfd/arizona/registers.h
-@@ -39,6 +39,7 @@
- #define ARIZONA_PWM_DRIVE_3                      0x32
- #define ARIZONA_WAKE_CONTROL                     0x40
- #define ARIZONA_SEQUENCE_CONTROL                 0x41
-+#define ARIZONA_SPARE_TRIGGERS                   0x42
- #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_1    0x61
- #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_2    0x62
- #define ARIZONA_SAMPLE_RATE_SEQUENCE_SELECT_3    0x63
-@@ -1431,6 +1432,42 @@
- #define ARIZONA_WSEQ_ENA_JD2_RISE_WIDTH               1  /* WSEQ_ENA_JD2_RISE */
+@@ -249,6 +249,15 @@ static const struct reg_default wm5110_revd_patch[] = {
+ 	{ 0x80, 0x0 },
+ };
  
- /*
-+ * R66 (0x42) - Spare Triggers
-+ */
-+#define ARIZONA_WS_TRG8                          0x0080  /* WS_TRG8 */
-+#define ARIZONA_WS_TRG8_MASK                     0x0080  /* WS_TRG8 */
-+#define ARIZONA_WS_TRG8_SHIFT                         7  /* WS_TRG8 */
-+#define ARIZONA_WS_TRG8_WIDTH                         1  /* WS_TRG8 */
-+#define ARIZONA_WS_TRG7                          0x0040  /* WS_TRG7 */
-+#define ARIZONA_WS_TRG7_MASK                     0x0040  /* WS_TRG7 */
-+#define ARIZONA_WS_TRG7_SHIFT                         6  /* WS_TRG7 */
-+#define ARIZONA_WS_TRG7_WIDTH                         1  /* WS_TRG7 */
-+#define ARIZONA_WS_TRG6                          0x0020  /* WS_TRG6 */
-+#define ARIZONA_WS_TRG6_MASK                     0x0020  /* WS_TRG6 */
-+#define ARIZONA_WS_TRG6_SHIFT                         5  /* WS_TRG6 */
-+#define ARIZONA_WS_TRG6_WIDTH                         1  /* WS_TRG6 */
-+#define ARIZONA_WS_TRG5                          0x0010  /* WS_TRG5 */
-+#define ARIZONA_WS_TRG5_MASK                     0x0010  /* WS_TRG5 */
-+#define ARIZONA_WS_TRG5_SHIFT                         4  /* WS_TRG5 */
-+#define ARIZONA_WS_TRG5_WIDTH                         1  /* WS_TRG5 */
-+#define ARIZONA_WS_TRG4                          0x0008  /* WS_TRG4 */
-+#define ARIZONA_WS_TRG4_MASK                     0x0008  /* WS_TRG4 */
-+#define ARIZONA_WS_TRG4_SHIFT                         3  /* WS_TRG4 */
-+#define ARIZONA_WS_TRG4_WIDTH                         1  /* WS_TRG4 */
-+#define ARIZONA_WS_TRG3                          0x0004  /* WS_TRG3 */
-+#define ARIZONA_WS_TRG3_MASK                     0x0004  /* WS_TRG3 */
-+#define ARIZONA_WS_TRG3_SHIFT                         2  /* WS_TRG3 */
-+#define ARIZONA_WS_TRG3_WIDTH                         1  /* WS_TRG3 */
-+#define ARIZONA_WS_TRG2                          0x0002  /* WS_TRG2 */
-+#define ARIZONA_WS_TRG2_MASK                     0x0002  /* WS_TRG2 */
-+#define ARIZONA_WS_TRG2_SHIFT                         1  /* WS_TRG2 */
-+#define ARIZONA_WS_TRG2_WIDTH                         1  /* WS_TRG2 */
-+#define ARIZONA_WS_TRG1                          0x0001  /* WS_TRG1 */
-+#define ARIZONA_WS_TRG1_MASK                     0x0001  /* WS_TRG1 */
-+#define ARIZONA_WS_TRG1_SHIFT                         0  /* WS_TRG1 */
-+#define ARIZONA_WS_TRG1_WIDTH                         1  /* WS_TRG1 */
++static const struct reg_default wm5110_reve_patch[] = {
++	{ 0x80, 0x3 },
++	{ 0x80, 0x3 },
++	{ 0x4b, 0x138 }, /* Add extra headphone write sequence locations */
++	{ 0x4c, 0x13d },
++	{ 0x80, 0x0 },
++	{ 0x80, 0x0 },
++};
 +
-+/*
-  * R97 (0x61) - Sample Rate Sequence Select 1
-  */
- #define ARIZONA_WSEQ_SAMPLE_RATE_DETECT_A_SEQ_ADDR_MASK 0x01FF  /* WSEQ_SAMPLE_RATE_DETECT_A_SEQ_ADDR - [8:0] */
+ /* We use a function so we can use ARRAY_SIZE() */
+ int wm5110_patch(struct arizona *arizona)
+ {
+@@ -266,7 +275,9 @@ int wm5110_patch(struct arizona *arizona)
+ 					     wm5110_revd_patch,
+ 					     ARRAY_SIZE(wm5110_revd_patch));
+ 	default:
+-		return 0;
++		return regmap_register_patch(arizona->regmap,
++					     wm5110_reve_patch,
++					     ARRAY_SIZE(wm5110_reve_patch));
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(wm5110_patch);
 -- 
 1.7.2.5
