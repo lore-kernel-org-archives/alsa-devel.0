@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Move irq request to
-	rt5645_probe
-Date: Tue, 7 Jul 2015 13:55:55 +0100
-Message-ID: <20150707125555.GH2887@sirena.org.uk>
-References: <1435649441-1941-1-git-send-email-drinkcat@chromium.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Issue in alsa when dma complete race with pcm
+	release
+Date: Tue, 07 Jul 2015 15:32:02 +0200
+Message-ID: <559BD4D2.6080502@metafoo.de>
+References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
+ <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
+ <20150707101302.GA22212@shlinux2>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6741267258967683995=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30999265486
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 14:56:15 +0200 (CEST)
-In-Reply-To: <1435649441-1941-1-git-send-email-drinkcat@chromium.org>
+Received: from smtp-out-100.synserver.de (smtp-out-100.synserver.de
+ [212.40.185.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADA2C26536C
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:32:36 +0200 (CEST)
+In-Reply-To: <20150707101302.GA22212@shlinux2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, koro.chen@mediatek.com, Bard Liao <bardliao@realtek.com>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/07/2015 12:13 PM, Shengjiu Wang wrote:
+> On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
+>> On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
+>>> On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
+>>>> On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
+>>>>> Hi alsa-devel
+>>>>>
+>>>>>     There maybe a issue in ALSA when dma complete race with snd_pcm_release.
+>>>>> The pcm release and dma complete are in different thread. There is occasion
+>>>>> that dmaengine_pcm_dma_complete() is called too late, some memory has been
+>>>>> freed, the prtd is null. Then there is kernel dump.
+>>>>>
+>>>>>     Is there any solution for this issue? Thanks.
+>>>>
+>>>> We need to introduce a synchronization primitive that allows a
+>>>> dmaengine client to synchronize to the execution of the complete
+>>>> callbacks.
+>>>>
+>>>> terminate_all() unfortunately can't do this since terminate_all()
+>>>> might be called from within one of the complete callbacks and so
+>>>> would cause a deadlock if we'd wait for all complete callbacks to
+>>>> finish before terminate_all() returns.
+>>>>
+>>>> So what is needed is a new function called dmaengine_sync() that
+>>>> will wait until all scheduled complete callbacks have finished. A
+>>>> call to this function needs to be put in snd_dmaengine_pcm_close()
+>>>> before the prtd is closed.
+>>>>
+>>>> - Lars
+>>>
+>>> How to check " all scheduled complete callbacks have finished"?
+>>
+>> That will be up to the dmaengine driver. But it basically comes down
+>> to two things:
+>>
+>> 1) The driver needs to make sure that tasklet_schedule() is no
+>> longer called after terminate_all() has finished.
+> Some driver can't make sure this. The dma interrupt may come later after
+> terminate_all.
 
---===============6741267258967683995==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y0Ed1hDcWxc3B7cn"
-Content-Disposition: inline
+Most drivers can't make sure that the interrupt routine is not executed 
+after terminate_all() has been called, since both are fully asynchronous. 
+But what the driver needs to take care of is to synchronize the two e.g. 
+using a spin_lock() and make sure that if terminate_all() has been called 
+tasklet_schedule() is not called, even if the isr is executed. Most drivers 
+get this rigght.
 
+>> 2) In the sync() callback call tasklet_kill() to make sure that it
+>> has finished running
+>>
+>>>
+>>> One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
+>>> the snd_pcm_release is bound with dmaengine, when there is error in dma
+>>> and no callback be called. Then the snd_pcm_release will not be released.
+>>
+>> The sync() function will only wait if there is a callback scheduled,
+>> if there is non scheduled it will return immediately.
+>
+>
+> Do you have other method to resolve this issue? or simple method?
 
---y0Ed1hDcWxc3B7cn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No, this is the way to go. You have two asynchronous processes and you want 
+to get deterministic execution ordering between the two you need to add a 
+synchronization primitive.
 
-On Tue, Jun 30, 2015 at 03:30:41PM +0800, Nicolas Boichat wrote:
-
-> rt5645_jack_detect_work (the workqueue called by rt5645_irq),
-> needs to access rt5645->codec. However, this field is only
-> initialized in rt5645_probe. This can obviously lead to kernel
-> panics.
-
-> Fix that by moving the irq request from rt5645_i2c_probe to
-> rt5645_probe. Also, fail if the IRQ cannot be requested, and move
-> irq_free from rt5645_i2c_remove to rt5645_remove.
-
-No, this is broken - we want to be requesting resources in the device
-level probe since it integrates better with things like deferred
-probing.  You need to fix the interrupt handler to cope without the
-CODEC.
-
---y0Ed1hDcWxc3B7cn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVm8xaAAoJECTWi3JdVIfQq30H/iwHlNEx3Ruwli193dDEZoFL
-kpjDPraBB9yFrYGsGZ5oWQcwRbkDaMCPgwAv9xhA46XZknblNcUYGcSjy79xgjvQ
-2dd/BtUopurRIDZsaGvpmV2fyX3BeXrUx0pltB+Lzx9vlL7rtdcs0wgnZE8OmV9o
-PG0ISqc2Es2Tzr3XxVVe8g0btu4KMPAGC52Oqix6ZjrgwBoLWs9iGTMDLwtnxPhg
-dbeb7H4BHwZXEp5qeXoMcJSkHiBYd+bXi4EOj1r05k1Wxzgo/JOdk0qPO0UitsBj
-YCKTJw1JQQltSh/TfPMsbLP9nG3hoFBquJLYQJlEeDfzCbQTFTyxwYyYuSZJK2g=
-=2Lso
------END PGP SIGNATURE-----
-
---y0Ed1hDcWxc3B7cn--
-
---===============6741267258967683995==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6741267258967683995==--
+- Lars
