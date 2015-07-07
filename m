@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fsl_asrc: Check for
-	clk_prepare_enable() error" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:59 +0100
-Message-ID: <E1ZCTNn-0005ZQ-8z@finisterre>
-References: <1434834013-23088-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: 88pm860x: Don't change pm860x->dir
+	setting if pm860x_set_dai_sysclk fails" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:48 +0100
+Message-ID: <E1ZCTNc-0005Wc-Ry@finisterre>
+References: <1435547723.6397.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F622265733
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:12 +0200 (CEST)
-In-Reply-To: <1434834013-23088-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0280A265716
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:07 +0200 (CEST)
+In-Reply-To: <1435547723.6397.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: fsl_asrc: Check for clk_prepare_enable() error
+   ASoC: 88pm860x: Don't change pm860x->dir setting if pm860x_set_dai_sysclk fails
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From b1ade0f2afe283d59eb313e5717870fdb831fc4e Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Date: Sat, 20 Jun 2015 18:00:13 -0300
-Subject: [PATCH] ASoC: fsl: fsl_asrc: Check for clk_prepare_enable() error
+>From 93ec3a1ad5b86aef8ca90d2b149ded0f6bb689f5 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Mon, 29 Jun 2015 11:15:23 +0800
+Subject: [PATCH] ASoC: 88pm860x: Don't change pm860x->dir setting if
+ pm860x_set_dai_sysclk fails
 
-clk_prepare_enable() may fail, so we should better check its return value
-and propagate it in the case of error.
+88pm860x does not support slave mode, so it returns -EINVAL for
+PM860X_CLK_DIR_IN. Current code changes pm860x->dir setting before
+return error, so it has impact on the logic of pm860x_pcm_set_dai_fmt.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+This patch adds comment for the reason to return -EINVAL for
+PM860X_CLK_DIR_IN, and avoid changing pm860x->dir setting if
+pm860x_set_dai_sysclk fails.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Haojian Zhuang <haojian.zhuang@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+ sound/soc/codecs/88pm860x-codec.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index c068494..9f087d4 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -931,14 +931,29 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- static int fsl_asrc_runtime_resume(struct device *dev)
- {
- 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
--	int i;
-+	int i, ret;
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index 38b3dad..4d91a6a 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1028,10 +1028,8 @@ static int pm860x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
  
--	clk_prepare_enable(asrc_priv->mem_clk);
--	clk_prepare_enable(asrc_priv->ipg_clk);
--	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
--		clk_prepare_enable(asrc_priv->asrck_clk[i]);
-+	ret = clk_prepare_enable(asrc_priv->mem_clk);
-+	if (ret)
-+		return ret;
-+	ret = clk_prepare_enable(asrc_priv->ipg_clk);
-+	if (ret)
-+		goto disable_mem_clk;
-+	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
-+		ret = clk_prepare_enable(asrc_priv->asrck_clk[i]);
-+		if (ret)
-+			goto disable_asrck_clk;
-+	}
+ 	if (dir == PM860X_CLK_DIR_OUT)
+ 		pm860x->dir = PM860X_CLK_DIR_OUT;
+-	else {
+-		pm860x->dir = PM860X_CLK_DIR_IN;
++	else	/* Slave mode is not supported */
+ 		return -EINVAL;
+-	}
  
  	return 0;
-+
-+disable_asrck_clk:
-+	for (i--; i >= 0; i--)
-+		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
-+	clk_disable_unprepare(asrc_priv->ipg_clk);
-+disable_mem_clk:
-+	clk_disable_unprepare(asrc_priv->mem_clk);
-+	return ret;
  }
- 
- static int fsl_asrc_runtime_suspend(struct device *dev)
 -- 
 2.1.4
