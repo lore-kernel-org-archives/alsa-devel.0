@@ -1,19 +1,18 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: alsa error
-Date: Tue, 7 Jul 2015 08:29:05 +0000
-Message-ID: <SIXPR04MB253D7F0F7321A5BC79B1233C3920@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB253D88AF361F3A2E8368EE6C3920@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559B7C5D.50401@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: fix incorrect widget name" to
+	the asoc tree
+Date: Tue, 07 Jul 2015 10:09:21 +0100
+Message-ID: <E1ZCOsT-0004aL-0K@debutante>
+References: <1436217158-58679-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-HK2-obe.outbound.protection.outlook.com
- (mail-hk2apc01on0129.outbound.protection.outlook.com [104.47.124.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 22AE2261A95
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 10:29:11 +0200 (CEST)
-In-Reply-To: <559B7C5D.50401@ladisch.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C7E8261A28
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 11:09:30 +0200 (CEST)
+In-Reply-To: <1436217158-58679-1-git-send-email-yang.a.fang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Fang Yang A <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens
+The patch
 
-Thanks a lot for your quick responses
+   ASoC: Intel: fix incorrect widget name
 
-Do you mean Codec driver??
+has been applied to the asoc tree at
 
-Could you please provide me the links ie., code flow how this alsa frameworks interacts with codec driver
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Thanks in advance
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Tuesday, July 7, 2015 12:44 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] alsa error
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Srinivasan S wrote:
-> Am facing the below error, could you please let me know what could be the issue leading to this error
->
-> Feb 11 18:48:22 kernel: [  210.508525] ALSA sound/core/pcm_native.c:2080 snd_pcm_hw_constraints_complete failed
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-A bug in your driver.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
+Thanks,
+Mark
 
-Regards,
-Clemens
+>From 8bc76c8bf6e5d96985eb05afe1b94699d580eb68 Mon Sep 17 00:00:00 2001
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Date: Mon, 6 Jul 2015 14:12:38 -0700
+Subject: [PATCH] ASoC: Intel: fix incorrect widget name
+
+We should use "HiFi Playback" and "HiFi Capture".it will fix below err
+
+cht-bsw-max98090: ASoC: no sink widget found for AIF1 Playback
+cht-bsw-max98090: ASoC: Failed to add route ssp2 Tx -> direct ->
+AIF1 Playback
+cht-bsw-max98090: ASoC: no source widget found for AIF1 Capture
+cht-bsw-max98090: ASoC: Failed to add route AIF1 Capture -> direct ->
+ssp2 Rx
+
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index d604ee80eda4..70f832114a5a 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -69,12 +69,12 @@ static const struct snd_soc_dapm_route cht_audio_map[] = {
+ 	{"Headphone", NULL, "HPR"},
+ 	{"Ext Spk", NULL, "SPKL"},
+ 	{"Ext Spk", NULL, "SPKR"},
+-	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"HiFi Playback", NULL, "ssp2 Tx"},
+ 	{"ssp2 Tx", NULL, "codec_out0"},
+ 	{"ssp2 Tx", NULL, "codec_out1"},
+ 	{"codec_in0", NULL, "ssp2 Rx" },
+ 	{"codec_in1", NULL, "ssp2 Rx" },
+-	{"ssp2 Rx", NULL, "AIF1 Capture"},
++	{"ssp2 Rx", NULL, "HiFi Capture"},
+ };
+ 
+ static const struct snd_kcontrol_new cht_mc_controls[] = {
+-- 
+2.1.4
