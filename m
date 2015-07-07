@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fsl_spdif: Check for
+Subject: Applied "ASoC: fsl: fsl_asrc: Check for
 	clk_prepare_enable() error" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:58 +0100
-Message-ID: <E1ZCTNm-0005Yx-0p@finisterre>
-References: <1434835086-27176-1-git-send-email-festevam@gmail.com>
+Date: Tue, 07 Jul 2015 14:57:59 +0100
+Message-ID: <E1ZCTNn-0005ZQ-8z@finisterre>
+References: <1434834013-23088-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F137B2656F0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:10 +0200 (CEST)
-In-Reply-To: <1434835086-27176-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F622265733
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:12 +0200 (CEST)
+In-Reply-To: <1434834013-23088-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error
+   ASoC: fsl: fsl_asrc: Check for clk_prepare_enable() error
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From fa3be9208dcb21ae4185f6122137fe7d5cf29d74 Mon Sep 17 00:00:00 2001
+>From b1ade0f2afe283d59eb313e5717870fdb831fc4e Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Date: Sat, 20 Jun 2015 18:18:06 -0300
-Subject: [PATCH] ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error
+Date: Sat, 20 Jun 2015 18:00:13 -0300
+Subject: [PATCH] ASoC: fsl: fsl_asrc: Check for clk_prepare_enable() error
 
 clk_prepare_enable() may fail, so we should better check its return value
 and propagate it in the case of error.
@@ -65,44 +65,47 @@ Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8e93221..489fa86 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -482,13 +482,18 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
- 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
- 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
- 			SCR_TXFIFO_FSEL_MASK;
--		for (i = 0; i < SPDIF_TXRATE_MAX; i++)
--			clk_prepare_enable(spdif_priv->txclk[i]);
-+		for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
-+			ret = clk_prepare_enable(spdif_priv->txclk[i]);
-+			if (ret)
-+				goto disable_txclk;
-+		}
- 	} else {
- 		scr = SCR_RXFIFO_FSEL_IF8 | SCR_RXFIFO_AUTOSYNC;
- 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
- 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
--		clk_prepare_enable(spdif_priv->rxclk);
-+		ret = clk_prepare_enable(spdif_priv->rxclk);
-+		if (ret)
-+			goto err;
- 	}
- 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index c068494..9f087d4 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -931,14 +931,29 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ static int fsl_asrc_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+-	int i;
++	int i, ret;
  
-@@ -497,6 +502,9 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+-	clk_prepare_enable(asrc_priv->mem_clk);
+-	clk_prepare_enable(asrc_priv->ipg_clk);
+-	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
+-		clk_prepare_enable(asrc_priv->asrck_clk[i]);
++	ret = clk_prepare_enable(asrc_priv->mem_clk);
++	if (ret)
++		return ret;
++	ret = clk_prepare_enable(asrc_priv->ipg_clk);
++	if (ret)
++		goto disable_mem_clk;
++	for (i = 0; i < ASRC_CLK_MAX_NUM; i++) {
++		ret = clk_prepare_enable(asrc_priv->asrck_clk[i]);
++		if (ret)
++			goto disable_asrck_clk;
++	}
  
  	return 0;
- 
-+disable_txclk:
++
++disable_asrck_clk:
 +	for (i--; i >= 0; i--)
-+		clk_disable_unprepare(spdif_priv->txclk[i]);
- err:
- 	clk_disable_unprepare(spdif_priv->coreclk);
++		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
++	clk_disable_unprepare(asrc_priv->ipg_clk);
++disable_mem_clk:
++	clk_disable_unprepare(asrc_priv->mem_clk);
++	return ret;
+ }
  
+ static int fsl_asrc_runtime_suspend(struct device *dev)
 -- 
 2.1.4
