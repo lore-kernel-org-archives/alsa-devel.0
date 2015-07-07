@@ -1,83 +1,80 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
-	of WM510205 codec via ACPI (resend)
-Date: Tue, 7 Jul 2015 13:16:19 +0100
-Message-ID: <20150707121619.GJ16517@opensource.wolfsonmicro.com>
-References: <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <558D3BAA.3080700@linux.intel.com> <20150626115823.GY14071@sirena.org.uk> <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com> <20150629094854.GB11162@sirena.org.uk> <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com> <20150630103404.GI6321@opensource.wolfsonmicro.com> <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5645: Move irq request to
+	rt5645_probe
+Date: Tue, 7 Jul 2015 13:55:55 +0100
+Message-ID: <20150707125555.GH2887@sirena.org.uk>
+References: <1435649441-1941-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6741267258967683995=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30999265486
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 14:56:15 +0200 (CEST)
+In-Reply-To: <1435649441-1941-1-git-send-email-drinkcat@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolas Boichat <drinkcat@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, koro.chen@mediatek.com, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 07, 2015 at 09:06:25AM +0200, Christian Hartmann wrote:
-> 2015-06-30 12:34 GMT+02:00 Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>:
-> > On Tue, Jun 30, 2015 at 09:14:37AM +0200, Christian Hartmann wrote:
-> >> Hi,
-> >>
-> >>
-> >> 2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
-> >> > On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
-> >> >> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
-> >> >> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
-> >> >> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-> >> >
-> >> > The above is saying that SPI I/O to the device isn't working - the
-> >> > device ID is not being read back successfully.
-> >>
-> >> Ok that is the next problem that must be solved.
-> >> I have yesterday made a patchset where I have added
-> >> the enum type 5, but as you said already,
-> >> that was not needed.
-> >> All what I see the same: : Unknown device ID: ffff
-> >>
-> >> So where I have to look now or what can I do to let this device id
-> >> register correctly?
-> >> I hope the baytrail machine driver is easy peasy to add, but here I
-> >> stuck at the moment.
-> >
-> > As I said in my other emails the next step is to work out what
-> > the reset and ldoena gpio's are. You won't be able to read the
-> > device ID until you have those setup. Unfortunately, finding the
-> > right GPIOs is likely to be a bit of a chore, I will see if I can
-> > find anything out from the Windows guys at this end.
-> >
-> > Also can you check that the arizona-ldo1 regulator is built in I
-> > am surprised that is falling back to the dummy regulator.
-> >
-> > Thanks,
-> > Charles
-> 
-> Hi,
-> 
-> I just want to ask, if the windows guys have such infos about the
-> gpios in question (reset,ldoena) and of course the irq details.
-> 
-> I am thinking actually to get a second device with Win installed, so
-> that I can get more infos which I really need here.
-> Anyway  I can also provide more infos here (if its not against valid laws :) )
-> But indeeed I can need some hints where to put the pdata structure.
-> 
-> I have some more questions that I want to ask/discuss later on irc -
-> if its possible
-> 
-> cheers
-> Chris
 
-Oh yeah my nick on IRC is ckeepax, also could you send me through
-a full copy of the dsdt you included a snippet of in your earlier
-emails? The Windows guys here are saying the GPIOs should
-actually be in the ACPI tables and that contray to what I
-understood from my last conversation with them only some of the
-setup for the driver is encoded in the single magic number.
+--===============6741267258967683995==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y0Ed1hDcWxc3B7cn"
+Content-Disposition: inline
 
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--y0Ed1hDcWxc3B7cn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 30, 2015 at 03:30:41PM +0800, Nicolas Boichat wrote:
+
+> rt5645_jack_detect_work (the workqueue called by rt5645_irq),
+> needs to access rt5645->codec. However, this field is only
+> initialized in rt5645_probe. This can obviously lead to kernel
+> panics.
+
+> Fix that by moving the irq request from rt5645_i2c_probe to
+> rt5645_probe. Also, fail if the IRQ cannot be requested, and move
+> irq_free from rt5645_i2c_remove to rt5645_remove.
+
+No, this is broken - we want to be requesting resources in the device
+level probe since it integrates better with things like deferred
+probing.  You need to fix the interrupt handler to cope without the
+CODEC.
+
+--y0Ed1hDcWxc3B7cn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVm8xaAAoJECTWi3JdVIfQq30H/iwHlNEx3Ruwli193dDEZoFL
+kpjDPraBB9yFrYGsGZ5oWQcwRbkDaMCPgwAv9xhA46XZknblNcUYGcSjy79xgjvQ
+2dd/BtUopurRIDZsaGvpmV2fyX3BeXrUx0pltB+Lzx9vlL7rtdcs0wgnZE8OmV9o
+PG0ISqc2Es2Tzr3XxVVe8g0btu4KMPAGC52Oqix6ZjrgwBoLWs9iGTMDLwtnxPhg
+dbeb7H4BHwZXEp5qeXoMcJSkHiBYd+bXi4EOj1r05k1Wxzgo/JOdk0qPO0UitsBj
+YCKTJw1JQQltSh/TfPMsbLP9nG3hoFBquJLYQJlEeDfzCbQTFTyxwYyYuSZJK2g=
+=2Lso
+-----END PGP SIGNATURE-----
+
+--y0Ed1hDcWxc3B7cn--
+
+--===============6741267258967683995==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6741267258967683995==--
