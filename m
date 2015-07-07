@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cht_bsw_max98090_ti: Use card DAPM
-	context to access widgets" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:35 +0100
-Message-ID: <E1ZCTNP-0005RT-3U@finisterre>
-References: <1436189891-15343-4-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: rt5645: Replace direct snd_soc_codec
+	dapm field access" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:38 +0100
+Message-ID: <E1ZCTNS-0005Ss-Pk@finisterre>
+References: <1436189891-15343-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BCBA2654B0
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:46 +0200 (CEST)
-In-Reply-To: <1436189891-15343-4-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AE1B2654C3
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:50 +0200 (CEST)
+In-Reply-To: <1436189891-15343-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cht_bsw_max98090_ti: Use card DAPM context to access widgets
+   ASoC: rt5645: Replace direct snd_soc_codec dapm field access
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,172 @@ to this mail.
 Thanks,
 Mark
 
->From c68c2be5f6ae4a27d548921bf8b32413c5eab8ed Mon Sep 17 00:00:00 2001
+>From e2ada8187bc8b46c30a623e7d6b5a72c209f70cd Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 6 Jul 2015 15:38:09 +0200
-Subject: [PATCH] ASoC: cht_bsw_max98090_ti: Use card DAPM context to access
- widgets
+Date: Mon, 6 Jul 2015 15:38:06 +0200
+Subject: [PATCH] ASoC: rt5645: Replace direct snd_soc_codec dapm field access
 
-The dapm field of the snd_soc_codec struct will eventually be removed
-(replaced with the DAPM context from the component embedded inside the
-CODEC). Replace its usage with the card's DAPM context. The idea is that
-DAPM is hierarchical and with the card at the root it is possible to access
-widgets from other contexts through the card context.
-
-While we are at it also remove some extra newlines.
+The dapm field of the snd_soc_codec struct is eventually going to be
+removed, in preparation for this replace all manual access to
+codec->dapm.bias_level with snd_soc_codec_get_bias_level() and replace all
+other manual access to codec->dapm with snd_soc_codec_get_dapm().
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/codecs/rt5645.c | 73 +++++++++++++++++++++--------------------------
+ 1 file changed, 32 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index d604ee8..afcd6ba 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -104,21 +104,17 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
- static int cht_ti_jack_event(struct notifier_block *nb,
- 		unsigned long event, void *data)
- {
--
- 	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
--	struct snd_soc_dai *codec_dai = jack->card->rtd->codec_dai;
--	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9ce311e..571e4b5 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2642,7 +2642,7 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
  
- 	if (event & SND_JACK_MICROPHONE) {
--
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "SHDN");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
++		if (SND_SOC_BIAS_STANDBY == snd_soc_codec_get_bias_level(codec)) {
+ 			snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+ 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
+ 				RT5645_PWR_BG | RT5645_PWR_VREF2,
+@@ -2760,20 +2760,17 @@ static int rt5650_calibration(struct rt5645_priv *rt5645)
+ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 	bool enable)
+ {
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (enable) {
+-		snd_soc_dapm_mutex_lock(&codec->dapm);
+-		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+-							"ADC L power");
+-		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+-							"ADC R power");
+-		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+-							"LDO2");
+-		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
+-							"Mic Det Power");
+-		snd_soc_dapm_sync_unlocked(&codec->dapm);
+-		snd_soc_dapm_mutex_unlock(&codec->dapm);
++		snd_soc_dapm_mutex_lock(dapm);
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC L power");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC R power");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Mic Det Power");
++		snd_soc_dapm_sync_unlocked(dapm);
++		snd_soc_dapm_mutex_unlock(dapm);
+ 
+ 		snd_soc_update_bits(codec,
+ 					RT5645_INT_IRQ_ST, 0x8, 0x8);
+@@ -2786,23 +2783,20 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
+ 		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
+ 
+-		snd_soc_dapm_mutex_lock(&codec->dapm);
+-		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+-							"ADC L power");
+-		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+-							"ADC R power");
++		snd_soc_dapm_mutex_lock(dapm);
++		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC L power");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC R power");
+ 		if (rt5645->pdata.jd_mode == 0)
+-			snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+-								"LDO2");
+-		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
+-							"Mic Det Power");
+-		snd_soc_dapm_sync_unlocked(&codec->dapm);
+-		snd_soc_dapm_mutex_unlock(&codec->dapm);
++			snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Det Power");
++		snd_soc_dapm_sync_unlocked(dapm);
++		snd_soc_dapm_mutex_unlock(dapm);
+ 	}
+ }
+ 
+ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ {
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val;
+ 
+@@ -2811,10 +2805,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 
+ 		if (codec->component.card->instantiated) {
+ 			/* for jack type detect */
+-			snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
+-			snd_soc_dapm_force_enable_pin(&codec->dapm,
+-				"Mic Det Power");
+-			snd_soc_dapm_sync(&codec->dapm);
++			snd_soc_dapm_force_enable_pin(dapm, "LDO2");
++			snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
++			snd_soc_dapm_sync(dapm);
+ 		} else {
+ 			/* Power up necessary bits for JD if dapm is
+ 			   not ready yet */
+@@ -2847,9 +2840,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			}
+ 		} else {
+ 			if (codec->component.card->instantiated) {
+-				snd_soc_dapm_disable_pin(&codec->dapm,
+-					"Mic Det Power");
+-				snd_soc_dapm_sync(&codec->dapm);
++				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++				snd_soc_dapm_sync(dapm);
+ 			} else
+ 				regmap_update_bits(rt5645->regmap,
+ 					RT5645_PWR_VOL, RT5645_PWR_MIC_DET, 0);
+@@ -2863,11 +2855,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 		else {
+ 			if (codec->component.card->instantiated) {
+ 				if (rt5645->pdata.jd_mode == 0)
+-					snd_soc_dapm_disable_pin(&codec->dapm,
+-						"LDO2");
+-				snd_soc_dapm_disable_pin(&codec->dapm,
+-					"Mic Det Power");
+-				snd_soc_dapm_sync(&codec->dapm);
++					snd_soc_dapm_disable_pin(dapm, "LDO2");
++				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++				snd_soc_dapm_sync(dapm);
+ 			} else {
+ 				if (rt5645->pdata.jd_mode == 0)
+ 					regmap_update_bits(rt5645->regmap,
+@@ -3043,21 +3033,22 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ 
+ static int rt5645_probe(struct snd_soc_codec *codec)
+ {
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	rt5645->codec = codec;
+ 
+ 	switch (rt5645->codec_type) {
+ 	case CODEC_TYPE_RT5645:
+-		snd_soc_dapm_add_routes(&codec->dapm,
++		snd_soc_dapm_add_routes(dapm,
+ 			rt5645_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5645_specific_dapm_routes));
+ 		break;
+ 	case CODEC_TYPE_RT5650:
+-		snd_soc_dapm_new_controls(&codec->dapm,
++		snd_soc_dapm_new_controls(dapm,
+ 			rt5650_specific_dapm_widgets,
+ 			ARRAY_SIZE(rt5650_specific_dapm_widgets));
+-		snd_soc_dapm_add_routes(&codec->dapm,
++		snd_soc_dapm_add_routes(dapm,
+ 			rt5650_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5650_specific_dapm_routes));
+ 		break;
+@@ -3067,9 +3058,9 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+ 
+ 	/* for JD function */
+ 	if (rt5645->pdata.jd_mode) {
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "JD Power");
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
 -		snd_soc_dapm_sync(&codec->dapm);
-+		snd_soc_dapm_force_enable_pin(dapm, "SHDN");
-+		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
-+		snd_soc_dapm_sync(dapm);
- 	} else {
--
--		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
--		snd_soc_dapm_disable_pin(&codec->dapm, "SHDN");
--		snd_soc_dapm_sync(&codec->dapm);
-+		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
-+		snd_soc_dapm_disable_pin(dapm, "SHDN");
++		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
++		snd_soc_dapm_force_enable_pin(dapm, "LDO2");
 +		snd_soc_dapm_sync(dapm);
  	}
  
