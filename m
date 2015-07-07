@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: move board Kconfig deps to parent
-	config" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:41 +0100
-Message-ID: <E1ZCTNV-0005To-0l@finisterre>
-References: <1434665768-29367-1-git-send-email-kwestfie@codeaurora.org>
+Subject: Applied "ASoC: lm49453: Remove fs_rate from struct
+	lm49453_priv" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:45 +0100
+Message-ID: <E1ZCTNZ-0005Vg-Is@finisterre>
+References: <1435222874.22996.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9A042654DD
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:52 +0200 (CEST)
-In-Reply-To: <1434665768-29367-1-git-send-email-kwestfie@codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6438A2655A5
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:58 +0200 (CEST)
+In-Reply-To: <1435222874.22996.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: move board Kconfig deps to parent config
+   ASoC: lm49453: Remove fs_rate from struct lm49453_priv
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 02c4b9c28b973d999073c810a78375e38346d7a3 Mon Sep 17 00:00:00 2001
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Date: Thu, 18 Jun 2015 15:16:07 -0700
-Subject: [PATCH] ASoC: qcom: move board Kconfig deps to parent config
+>From 6f4397949689d74c3bd0016c80d59a90c6e8afee Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 25 Jun 2015 17:01:14 +0800
+Subject: [PATCH] ASoC: lm49453: Remove fs_rate from struct lm49453_priv
 
-Rather than have each board define the same set of
-dependencies; move the common dependencies to the
-SND_SOC_QCOM parent config.
+fs_rate is only used in lm49453_hw_params() so don't need to store it in
+private data.
 
-Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/lm49453.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 807fedf..d6ccda7 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -1,5 +1,6 @@
- config SND_SOC_QCOM
- 	tristate "ASoC support for QCOM platforms"
-+	depends on ARCH_QCOM || COMPILE_TEST
- 	help
-           Say Y or M if you want to add support to use audio devices
-           in Qualcomm Technologies SOC-based platforms.
-@@ -26,7 +27,7 @@ config SND_SOC_LPASS_APQ8016
+diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
+index 6600aa0..5b4086d 100644
+--- a/sound/soc/codecs/lm49453.c
++++ b/sound/soc/codecs/lm49453.c
+@@ -188,7 +188,6 @@ static struct reg_default lm49453_reg_defs[] = {
+ /* codec private data */
+ struct lm49453_priv {
+ 	struct regmap *regmap;
+-	int fs_rate;
+ };
  
- config SND_SOC_STORM
- 	tristate "ASoC I2S support for Storm boards"
--	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
-+	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_IPQ806X
- 	select SND_SOC_MAX98357A
- 	help
-@@ -35,7 +36,7 @@ config SND_SOC_STORM
+ /* capture path controls */
+@@ -1112,13 +1111,10 @@ static int lm49453_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+-	struct lm49453_priv *lm49453 = snd_soc_codec_get_drvdata(codec);
+ 	u16 clk_div = 0;
  
- config SND_SOC_APQ8016_SBC
- 	tristate "SoC Audio support for APQ8016 SBC platforms"
--	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
-+	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_APQ8016
- 	help
-           Support for Qualcomm Technologies LPASS audio block in
+-	lm49453->fs_rate = params_rate(params);
+-
+ 	/* Setting DAC clock dividers based on substream sample rate. */
+-	switch (lm49453->fs_rate) {
++	switch (params_rate(params)) {
+ 	case 8000:
+ 	case 16000:
+ 	case 32000:
 -- 
 2.1.4
