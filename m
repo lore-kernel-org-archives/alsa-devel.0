@@ -1,364 +1,82 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 3/3] ASoC: wm5110: Add special DRE on/off
-	handling for the headphone path
-Date: Tue,  7 Jul 2015 10:23:13 +0100
-Message-ID: <1436260993-8814-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1436260993-8814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+	of WM510205 codec via ACPI (resend)
+Date: Tue, 7 Jul 2015 10:56:13 +0100
+Message-ID: <20150707095613.GG16517@opensource.wolfsonmicro.com>
+References: <CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com> <20150625145853.GP14071@sirena.org.uk> <20150625154407.GE6321@opensource.wolfsonmicro.com> <558D3BAA.3080700@linux.intel.com> <20150626115823.GY14071@sirena.org.uk> <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com> <20150629094854.GB11162@sirena.org.uk> <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com> <20150630103404.GI6321@opensource.wolfsonmicro.com> <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2E7DC261A28
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 11:39:11 +0200 (CEST)
-In-Reply-To: <1436260993-8814-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lee.jones@linaro.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-For the best performance the headphone path enable/disable must be
-handled specially for the situations of DRE on and DRE off.
+On Tue, Jul 07, 2015 at 09:06:25AM +0200, Christian Hartmann wrote:
+> 2015-06-30 12:34 GMT+02:00 Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>:
+> > On Tue, Jun 30, 2015 at 09:14:37AM +0200, Christian Hartmann wrote:
+> >> Hi,
+> >>
+> >>
+> >> 2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+> >> > On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
+> >> >> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
+> >> >> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
+> >> >> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
+> >> >
+> >> > The above is saying that SPI I/O to the device isn't working - the
+> >> > device ID is not being read back successfully.
+> >>
+> >> Ok that is the next problem that must be solved.
+> >> I have yesterday made a patchset where I have added
+> >> the enum type 5, but as you said already,
+> >> that was not needed.
+> >> All what I see the same: : Unknown device ID: ffff
+> >>
+> >> So where I have to look now or what can I do to let this device id
+> >> register correctly?
+> >> I hope the baytrail machine driver is easy peasy to add, but here I
+> >> stuck at the moment.
+> >
+> > As I said in my other emails the next step is to work out what
+> > the reset and ldoena gpio's are. You won't be able to read the
+> > device ID until you have those setup. Unfortunately, finding the
+> > right GPIOs is likely to be a bit of a chore, I will see if I can
+> > find anything out from the Windows guys at this end.
+> >
+> > Also can you check that the arizona-ldo1 regulator is built in I
+> > am surprised that is falling back to the dummy regulator.
+> >
+> > Thanks,
+> > Charles
+> 
+> Hi,
+> 
+> I just want to ask, if the windows guys have such infos about the
+> gpios in question (reset,ldoena) and of course the irq details.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm5110.c |  285 +++++++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 276 insertions(+), 9 deletions(-)
+Still chasing them up on this.
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 05aa5bc..429be44 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -131,6 +131,25 @@ static const struct reg_default wm5110_sysclk_revd_patch[] = {
- 	{ 0x33fb, 0xfe00 },
- };
- 
-+static const struct reg_default wm5110_sysclk_reve_patch[] = {
-+	{ 0x3270, 0xE410 },
-+	{ 0x3271, 0x3078 },
-+	{ 0x3272, 0xE410 },
-+	{ 0x3273, 0x3070 },
-+	{ 0x3274, 0xE410 },
-+	{ 0x3275, 0x3066 },
-+	{ 0x3276, 0xE410 },
-+	{ 0x3277, 0x3056 },
-+	{ 0x327A, 0xE414 },
-+	{ 0x327B, 0x3078 },
-+	{ 0x327C, 0xE414 },
-+	{ 0x327D, 0x3070 },
-+	{ 0x327E, 0xE414 },
-+	{ 0x327F, 0x3066 },
-+	{ 0x3280, 0xE414 },
-+	{ 0x3281, 0x3056 },
-+};
-+
- static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- 			    struct snd_kcontrol *kcontrol, int event)
- {
-@@ -146,7 +165,9 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- 		patch_size = ARRAY_SIZE(wm5110_sysclk_revd_patch);
- 		break;
- 	default:
--		return 0;
-+		patch = wm5110_sysclk_reve_patch;
-+		patch_size = ARRAY_SIZE(wm5110_sysclk_reve_patch);
-+		break;
- 	}
- 
- 	switch (event) {
-@@ -164,6 +185,249 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static const struct reg_default wm5110_no_dre_left_enable[] = {
-+	{ 0x3024, 0xE410 },
-+	{ 0x3025, 0x0056 },
-+	{ 0x301B, 0x0224 },
-+	{ 0x301F, 0x4263 },
-+	{ 0x3021, 0x5291 },
-+	{ 0x3030, 0xE410 },
-+	{ 0x3031, 0x3066 },
-+	{ 0x3032, 0xE410 },
-+	{ 0x3033, 0x3070 },
-+	{ 0x3034, 0xE410 },
-+	{ 0x3035, 0x3078 },
-+	{ 0x3036, 0xE410 },
-+	{ 0x3037, 0x3080 },
-+	{ 0x3038, 0xE410 },
-+	{ 0x3039, 0x3080 },
-+};
-+
-+static const struct reg_default wm5110_dre_left_enable[] = {
-+	{ 0x3024, 0x0231 },
-+	{ 0x3025, 0x0B00 },
-+	{ 0x301B, 0x0227 },
-+	{ 0x301F, 0x4266 },
-+	{ 0x3021, 0x5294 },
-+	{ 0x3030, 0xE231 },
-+	{ 0x3031, 0x0266 },
-+	{ 0x3032, 0x8231 },
-+	{ 0x3033, 0x4B15 },
-+	{ 0x3034, 0x8231 },
-+	{ 0x3035, 0x0B15 },
-+	{ 0x3036, 0xE231 },
-+	{ 0x3037, 0x5294 },
-+	{ 0x3038, 0x0231 },
-+	{ 0x3039, 0x0B00 },
-+};
-+
-+static const struct reg_default wm5110_no_dre_right_enable[] = {
-+	{ 0x3074, 0xE414 },
-+	{ 0x3075, 0x0056 },
-+	{ 0x306B, 0x0224 },
-+	{ 0x306F, 0x4263 },
-+	{ 0x3071, 0x5291 },
-+	{ 0x3080, 0xE414 },
-+	{ 0x3081, 0x3066 },
-+	{ 0x3082, 0xE414 },
-+	{ 0x3083, 0x3070 },
-+	{ 0x3084, 0xE414 },
-+	{ 0x3085, 0x3078 },
-+	{ 0x3086, 0xE414 },
-+	{ 0x3087, 0x3080 },
-+	{ 0x3088, 0xE414 },
-+	{ 0x3089, 0x3080 },
-+};
-+
-+static const struct reg_default wm5110_dre_right_enable[] = {
-+	{ 0x3074, 0x0231 },
-+	{ 0x3075, 0x0B00 },
-+	{ 0x306B, 0x0227 },
-+	{ 0x306F, 0x4266 },
-+	{ 0x3071, 0x5294 },
-+	{ 0x3080, 0xE231 },
-+	{ 0x3081, 0x0266 },
-+	{ 0x3082, 0x8231 },
-+	{ 0x3083, 0x4B17 },
-+	{ 0x3084, 0x8231 },
-+	{ 0x3085, 0x0B17 },
-+	{ 0x3086, 0xE231 },
-+	{ 0x3087, 0x5294 },
-+	{ 0x3088, 0x0231 },
-+	{ 0x3089, 0x0B00 },
-+};
-+
-+static int wm5110_hp_pre_enable(struct snd_soc_dapm_widget *w)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->arizona;
-+	unsigned int val = snd_soc_read(codec, ARIZONA_DRE_ENABLE);
-+	const struct reg_default *wseq;
-+	int nregs;
-+
-+	switch (w->shift) {
-+	case ARIZONA_OUT1L_ENA_SHIFT:
-+		if (val & ARIZONA_DRE1L_ENA_MASK) {
-+			wseq = wm5110_dre_left_enable;
-+			nregs = ARRAY_SIZE(wm5110_dre_left_enable);
-+		} else {
-+			wseq = wm5110_no_dre_left_enable;
-+			nregs = ARRAY_SIZE(wm5110_no_dre_left_enable);
-+			priv->out_up_delay += 10;
-+		}
-+		break;
-+	case ARIZONA_OUT1R_ENA_SHIFT:
-+		if (val & ARIZONA_DRE1R_ENA_MASK) {
-+			wseq = wm5110_dre_right_enable;
-+			nregs = ARRAY_SIZE(wm5110_dre_right_enable);
-+		} else {
-+			wseq = wm5110_no_dre_right_enable;
-+			nregs = ARRAY_SIZE(wm5110_no_dre_right_enable);
-+			priv->out_up_delay += 10;
-+		}
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return regmap_multi_reg_write(arizona->regmap, wseq, nregs);
-+}
-+
-+static int wm5110_hp_pre_disable(struct snd_soc_dapm_widget *w)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int val = snd_soc_read(codec, ARIZONA_DRE_ENABLE);
-+
-+	switch (w->shift) {
-+	case ARIZONA_OUT1L_ENA_SHIFT:
-+		if (!(val & ARIZONA_DRE1L_ENA_MASK)) {
-+			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
-+					    ARIZONA_WS_TRG1, ARIZONA_WS_TRG1);
-+			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
-+					    ARIZONA_WS_TRG1, 0);
-+			priv->out_down_delay += 27;
-+		}
-+		break;
-+	case ARIZONA_OUT1R_ENA_SHIFT:
-+		if (!(val & ARIZONA_DRE1R_ENA_MASK)) {
-+			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
-+					    ARIZONA_WS_TRG2, ARIZONA_WS_TRG2);
-+			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
-+					    ARIZONA_WS_TRG2, 0);
-+			priv->out_down_delay += 27;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wm5110_hp_ev(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (priv->arizona->rev) {
-+	case 0 ... 3:
-+		break;
-+	default:
-+		switch (event) {
-+		case SND_SOC_DAPM_PRE_PMU:
-+			wm5110_hp_pre_enable(w);
-+			break;
-+		case SND_SOC_DAPM_PRE_PMD:
-+			wm5110_hp_pre_disable(w);
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	}
-+
-+	return arizona_hp_ev(w, kcontrol, event);
-+}
-+
-+static int wm5110_clear_pga_volume(struct arizona *arizona, int output)
-+{
-+	struct reg_default clear_pga = {
-+		ARIZONA_OUTPUT_PATH_CONFIG_1L + output * 4, 0x80
-+	};
-+	int ret;
-+
-+	ret = regmap_multi_reg_write_bypassed(arizona->regmap, &clear_pga, 1);
-+	if (ret)
-+		dev_err(arizona->dev, "Failed to clear PGA (0x%x): %d\n",
-+			clear_pga.reg, ret);
-+
-+	return ret;
-+}
-+
-+static int wm5110_put_dre(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	unsigned int ena, dre;
-+	unsigned int mask = (0x1 << mc->shift) | (0x1 << mc->rshift);
-+	unsigned int lnew = (!!ucontrol->value.integer.value[0]) << mc->shift;
-+	unsigned int rnew = (!!ucontrol->value.integer.value[1]) << mc->rshift;
-+	unsigned int lold, rold;
-+	unsigned int lena, rena;
-+	int ret;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	ret = regmap_read(arizona->regmap, ARIZONA_OUTPUT_ENABLES_1, &ena);
-+	if (ret) {
-+		dev_err(arizona->dev, "Failed to read output state: %d\n", ret);
-+		goto err;
-+	}
-+	ret = regmap_read(arizona->regmap, ARIZONA_DRE_ENABLE, &dre);
-+	if (ret) {
-+		dev_err(arizona->dev, "Failed to read DRE state: %d\n", ret);
-+		goto err;
-+	}
-+
-+	lold = dre & (1 << mc->shift);
-+	rold = dre & (1 << mc->rshift);
-+	/* Enables are channel wise swapped from the DRE enables */
-+	lena = ena & (1 << mc->rshift);
-+	rena = ena & (1 << mc->shift);
-+
-+	if ((lena && lnew != lold) || (rena && rnew != rold)) {
-+		dev_err(arizona->dev, "Can't change DRE on active outputs\n");
-+		ret = -EBUSY;
-+		goto err;
-+	}
-+
-+	ret = regmap_update_bits(arizona->regmap, ARIZONA_DRE_ENABLE,
-+				 mask, lnew | rnew);
-+	if (ret) {
-+		dev_err(arizona->dev, "Failed to set DRE: %d\n", ret);
-+		goto err;
-+	}
-+
-+	/* Force reset of PGA volumes, if turning DRE off */
-+	if (!lnew && lold)
-+		wm5110_clear_pga_volume(arizona, mc->shift);
-+
-+	if (!rnew && rold)
-+		wm5110_clear_pga_volume(arizona, mc->rshift);
-+
-+err:
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return ret;
-+}
-+
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
-@@ -405,12 +669,15 @@ SOC_DOUBLE("SPKDAT1 Switch", ARIZONA_PDM_SPK1_CTRL_1, ARIZONA_SPK1L_MUTE_SHIFT,
- SOC_DOUBLE("SPKDAT2 Switch", ARIZONA_PDM_SPK2_CTRL_1, ARIZONA_SPK2L_MUTE_SHIFT,
- 	   ARIZONA_SPK2R_MUTE_SHIFT, 1, 1),
- 
--SOC_DOUBLE("HPOUT1 DRE Switch", ARIZONA_DRE_ENABLE,
--	   ARIZONA_DRE1L_ENA_SHIFT, ARIZONA_DRE1R_ENA_SHIFT, 1, 0),
--SOC_DOUBLE("HPOUT2 DRE Switch", ARIZONA_DRE_ENABLE,
--	   ARIZONA_DRE2L_ENA_SHIFT, ARIZONA_DRE2R_ENA_SHIFT, 1, 0),
--SOC_DOUBLE("HPOUT3 DRE Switch", ARIZONA_DRE_ENABLE,
--	   ARIZONA_DRE3L_ENA_SHIFT, ARIZONA_DRE3R_ENA_SHIFT, 1, 0),
-+SOC_DOUBLE_EXT("HPOUT1 DRE Switch", ARIZONA_DRE_ENABLE,
-+	   ARIZONA_DRE1L_ENA_SHIFT, ARIZONA_DRE1R_ENA_SHIFT, 1, 0,
-+	   snd_soc_get_volsw, wm5110_put_dre),
-+SOC_DOUBLE_EXT("HPOUT2 DRE Switch", ARIZONA_DRE_ENABLE,
-+	   ARIZONA_DRE2L_ENA_SHIFT, ARIZONA_DRE2R_ENA_SHIFT, 1, 0,
-+	   snd_soc_get_volsw, wm5110_put_dre),
-+SOC_DOUBLE_EXT("HPOUT3 DRE Switch", ARIZONA_DRE_ENABLE,
-+	   ARIZONA_DRE3L_ENA_SHIFT, ARIZONA_DRE3R_ENA_SHIFT, 1, 0,
-+	   snd_soc_get_volsw, wm5110_put_dre),
- 
- SOC_ENUM("Output Ramp Up", arizona_out_vi_ramp),
- SOC_ENUM("Output Ramp Down", arizona_out_vd_ramp),
-@@ -900,11 +1167,11 @@ SND_SOC_DAPM_AIF_IN("AIF3RX2", NULL, 0,
- 		    ARIZONA_AIF3_RX_ENABLES, ARIZONA_AIF3RX2_ENA_SHIFT, 0),
- 
- SND_SOC_DAPM_PGA_E("OUT1L", SND_SOC_NOPM,
--		   ARIZONA_OUT1L_ENA_SHIFT, 0, NULL, 0, arizona_hp_ev,
-+		   ARIZONA_OUT1L_ENA_SHIFT, 0, NULL, 0, wm5110_hp_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
- SND_SOC_DAPM_PGA_E("OUT1R", SND_SOC_NOPM,
--		   ARIZONA_OUT1R_ENA_SHIFT, 0, NULL, 0, arizona_hp_ev,
-+		   ARIZONA_OUT1R_ENA_SHIFT, 0, NULL, 0, wm5110_hp_ev,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
- SND_SOC_DAPM_PGA_E("OUT2L", ARIZONA_OUTPUT_ENABLES_1,
--- 
-1.7.2.5
+> 
+> I am thinking actually to get a second device with Win installed, so
+> that I can get more infos which I really need here.
+> Anyway  I can also provide more infos here (if its not against valid laws :) )
+> But indeeed I can need some hints where to put the pdata structure.
+
+I think in this case we need to hard code the pdata into the
+driver. Probably in arizona-core.c would be the best place.
+
+> 
+> I have some more questions that I want to ask/discuss later on irc -
+> if its possible
+
+Yeah I shall jump on and you can give me a shout.
+
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
