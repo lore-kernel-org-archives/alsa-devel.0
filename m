@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Add subsequence in topology"
-	to the asoc tree
-Date: Tue, 07 Jul 2015 14:58:09 +0100
-Message-ID: <E1ZCTNx-0005dd-Jq@finisterre>
-References: <1435595806-7000-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: simple card: set cpu-dai sysclk with
+	mclk-fs" to the asoc tree
+Date: Tue, 07 Jul 2015 14:58:07 +0100
+Message-ID: <E1ZCTNv-0005ch-9P@finisterre>
+References: <1433492346-29506-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73219265749
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:20 +0200 (CEST)
-In-Reply-To: <1435595806-7000-2-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B640265750
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:21 +0200 (CEST)
+In-Reply-To: <1433492346-29506-3-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Add subsequence in topology
+   ASoC: simple card: set cpu-dai sysclk with mclk-fs
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From f5a2ee50635baabcb88a559ae1ced69d5d8ef6eb Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Mon, 29 Jun 2015 17:36:44 +0100
-Subject: [PATCH] ASoC: topology: Add subsequence in topology
+>From e22579713ae1384a3dff545369cebe42b01370fa Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Fri, 5 Jun 2015 10:19:06 +0200
+Subject: [PATCH] ASoC: simple card: set cpu-dai sysclk with mclk-fs
 
-Some widgets may need sorting within, So add this support in topology.
+Allows to request a specific mclk frequency per cpu_dai.
+To support some codecs with mclk provided by the cpu_dai, the
+mclk rate must be set depending on frame rate.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/asoc.h | 1 +
- sound/soc/soc-topology.c  | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/generic/simple-card.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 1221520..7ae13fb 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -347,6 +347,7 @@ struct snd_soc_tplg_dapm_widget {
- 	__le32 reg;		/* negative reg = no direct dapm */
- 	__le32 shift;		/* bits to shift */
- 	__le32 mask;		/* non-shifted mask */
-+	__le32 subseq;		/* sort within widget type */
- 	__u32 invert;		/* invert the power bit */
- 	__u32 ignore_suspend;	/* kept enabled over suspend */
- 	__u16 event_flags;
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index d096068..f38f111 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1351,6 +1351,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	template.reg = w->reg;
- 	template.shift = w->shift;
- 	template.mask = w->mask;
-+	template.subseq = w->subseq;
- 	template.on_val = w->invert ? 0 : 1;
- 	template.off_val = w->invert ? 1 : 0;
- 	template.ignore_suspend = w->ignore_suspend;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index d555493..3ff76d4 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -76,6 +76,7 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		&priv->dai_props[rtd - rtd->card->rtd];
+@@ -91,8 +92,16 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 		mclk = params_rate(params) * mclk_fs;
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+ 					     SND_SOC_CLOCK_IN);
++		if (ret && ret != -ENOTSUPP)
++			goto err;
++
++		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
++					     SND_SOC_CLOCK_OUT);
++		if (ret && ret != -ENOTSUPP)
++			goto err;
+ 	}
+ 
++err:
+ 	return ret;
+ }
+ 
 -- 
 2.1.4
