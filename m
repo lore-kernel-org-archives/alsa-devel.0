@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Switch to use descriptor-based
-	gpiod API" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:56 +0100
-Message-ID: <E1ZCTNk-0005YU-NX@finisterre>
-References: <1434996780-34535-1-git-send-email-benzh@chromium.org>
+Subject: Applied "ASoC: fsl: fsl_spdif: Check for
+	clk_prepare_enable() error" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:58 +0100
+Message-ID: <E1ZCTNm-0005Yx-0p@finisterre>
+References: <1434835086-27176-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8032026572D
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:08 +0200 (CEST)
-In-Reply-To: <1434996780-34535-1-git-send-email-benzh@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id F137B2656F0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:10 +0200 (CEST)
+In-Reply-To: <1434835086-27176-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Switch to use descriptor-based gpiod API
+   ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error
 
 has been applied to the asoc tree at
 
@@ -53,183 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From efd901ee4bc8312e3bbf5561fdab8e3765e26334 Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Mon, 22 Jun 2015 11:12:59 -0700
-Subject: [PATCH] ASoC: rt5677: Switch to use descriptor-based gpiod API
+>From fa3be9208dcb21ae4185f6122137fe7d5cf29d74 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Date: Sat, 20 Jun 2015 18:18:06 -0300
+Subject: [PATCH] ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error
 
-This patch makes the driver use the new descriptor-based gpiod API
-so that gpio assignment info can be provided by Device Tree, ACPI
-or board files.
+clk_prepare_enable() may fail, so we should better check its return value
+and propagate it in the case of error.
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 85 +++++++++++++++++------------------------------
- sound/soc/codecs/rt5677.h |  5 +--
- 2 files changed, 33 insertions(+), 57 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 9048ba7..2322430 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -15,13 +15,11 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/firmware.h>
--#include <linux/gpio.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -4764,10 +4762,10 @@ static int rt5677_remove(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 8e93221..489fa86 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -482,13 +482,18 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
+ 		mask = SCR_TXFIFO_AUTOSYNC_MASK | SCR_TXFIFO_CTRL_MASK |
+ 			SCR_TXSEL_MASK | SCR_USRC_SEL_MASK |
+ 			SCR_TXFIFO_FSEL_MASK;
+-		for (i = 0; i < SPDIF_TXRATE_MAX; i++)
+-			clk_prepare_enable(spdif_priv->txclk[i]);
++		for (i = 0; i < SPDIF_TXRATE_MAX; i++) {
++			ret = clk_prepare_enable(spdif_priv->txclk[i]);
++			if (ret)
++				goto disable_txclk;
++		}
+ 	} else {
+ 		scr = SCR_RXFIFO_FSEL_IF8 | SCR_RXFIFO_AUTOSYNC;
+ 		mask = SCR_RXFIFO_FSEL_MASK | SCR_RXFIFO_AUTOSYNC_MASK|
+ 			SCR_RXFIFO_CTL_MASK | SCR_RXFIFO_OFF_MASK;
+-		clk_prepare_enable(spdif_priv->rxclk);
++		ret = clk_prepare_enable(spdif_priv->rxclk);
++		if (ret)
++			goto err;
+ 	}
+ 	regmap_update_bits(regmap, REG_SPDIF_SCR, mask, scr);
  
- 	regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
--	if (gpio_is_valid(rt5677->pow_ldo2))
--		gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
--	if (gpio_is_valid(rt5677->reset_pin))
--		gpio_set_value_cansleep(rt5677->reset_pin, 0);
-+	if (rt5677->pow_ldo2)
-+		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+	if (rt5677->reset_pin)
-+		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
+@@ -497,6 +502,9 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
  
  	return 0;
- }
-@@ -4781,10 +4779,10 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- 		regcache_cache_only(rt5677->regmap, true);
- 		regcache_mark_dirty(rt5677->regmap);
  
--		if (gpio_is_valid(rt5677->pow_ldo2))
--			gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
--		if (gpio_is_valid(rt5677->reset_pin))
--			gpio_set_value_cansleep(rt5677->reset_pin, 0);
-+		if (rt5677->pow_ldo2)
-+			gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+		if (rt5677->reset_pin)
-+			gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 	}
++disable_txclk:
++	for (i--; i >= 0; i--)
++		clk_disable_unprepare(spdif_priv->txclk[i]);
+ err:
+ 	clk_disable_unprepare(spdif_priv->coreclk);
  
- 	return 0;
-@@ -4795,12 +4793,11 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (!rt5677->dsp_vad_en) {
--		if (gpio_is_valid(rt5677->pow_ldo2))
--			gpio_set_value_cansleep(rt5677->pow_ldo2, 1);
--		if (gpio_is_valid(rt5677->reset_pin))
--			gpio_set_value_cansleep(rt5677->reset_pin, 1);
--		if (gpio_is_valid(rt5677->pow_ldo2) ||
--		    gpio_is_valid(rt5677->reset_pin))
-+		if (rt5677->pow_ldo2)
-+			gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
-+		if (rt5677->reset_pin)
-+			gpiod_set_value_cansleep(rt5677->reset_pin, 1);
-+		if (rt5677->pow_ldo2 || rt5677->reset_pin)
- 			msleep(10);
- 
- 		regcache_cache_only(rt5677->regmap, false);
-@@ -5037,24 +5034,6 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- 	rt5677->pdata.lout3_diff = of_property_read_bool(np,
- 					"realtek,lout3-differential");
- 
--	rt5677->pow_ldo2 = of_get_named_gpio(np,
--					"realtek,pow-ldo2-gpio", 0);
--	rt5677->reset_pin = of_get_named_gpio(np,
--					"realtek,reset-gpio", 0);
--
--	/*
--	 * POW_LDO2 is optional (it may be statically tied on the board).
--	 * -ENOENT means that the property doesn't exist, i.e. there is no
--	 * GPIO, so is not an error. Any other error code means the property
--	 * exists, but could not be parsed.
--	 */
--	if (!gpio_is_valid(rt5677->pow_ldo2) &&
--			(rt5677->pow_ldo2 != -ENOENT))
--		return rt5677->pow_ldo2;
--	if (!gpio_is_valid(rt5677->reset_pin) &&
--			(rt5677->reset_pin != -ENOENT))
--		return rt5677->reset_pin;
--
- 	of_property_read_u8_array(np, "realtek,gpio-config",
- 		rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
- 
-@@ -5158,30 +5137,26 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 		rt5677->reset_pin = -EINVAL;
- 	}
- 
--	if (gpio_is_valid(rt5677->pow_ldo2)) {
--		ret = devm_gpio_request_one(&i2c->dev, rt5677->pow_ldo2,
--					    GPIOF_OUT_INIT_HIGH,
--					    "RT5677 POW_LDO2");
--		if (ret < 0) {
--			dev_err(&i2c->dev, "Failed to request POW_LDO2 %d: %d\n",
--				rt5677->pow_ldo2, ret);
--			return ret;
--		}
-+	/* pow-ldo2 and reset are optional. The codec pins may be statically
-+	 * connected on the board without gpios. If the gpio device property
-+	 * isn't specified, devm_gpiod_get_optional returns NULL.
-+	 */
-+	rt5677->pow_ldo2 = devm_gpiod_get_optional(&i2c->dev,
-+			"realtek,pow-ldo2", GPIOD_OUT_HIGH);
-+	if (IS_ERR(rt5677->pow_ldo2)) {
-+		ret = PTR_ERR(rt5677->pow_ldo2);
-+		dev_err(&i2c->dev, "Failed to request POW_LDO2: %d\n", ret);
-+		rt5677->pow_ldo2 = 0;
- 	}
--
--	if (gpio_is_valid(rt5677->reset_pin)) {
--		ret = devm_gpio_request_one(&i2c->dev, rt5677->reset_pin,
--					    GPIOF_OUT_INIT_HIGH,
--					    "RT5677 RESET");
--		if (ret < 0) {
--			dev_err(&i2c->dev, "Failed to request RESET %d: %d\n",
--				rt5677->reset_pin, ret);
--			return ret;
--		}
-+	rt5677->reset_pin = devm_gpiod_get_optional(&i2c->dev,
-+			"realtek,reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(rt5677->reset_pin)) {
-+		ret = PTR_ERR(rt5677->reset_pin);
-+		dev_err(&i2c->dev, "Failed to request RESET: %d\n", ret);
-+		rt5677->reset_pin = 0;
- 	}
- 
--	if (gpio_is_valid(rt5677->pow_ldo2) ||
--	    gpio_is_valid(rt5677->reset_pin)) {
-+	if (rt5677->pow_ldo2 || rt5677->reset_pin) {
- 		/* Wait a while until I2C bus becomes available. The datasheet
- 		 * does not specify the exact we should wait but startup
- 		 * sequence mentiones at least a few milliseconds.
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 7eca38a..d46855a 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -14,6 +14,7 @@
- 
- #include <sound/rt5677.h>
- #include <linux/gpio/driver.h>
-+#include <linux/gpio/consumer.h>
- 
- /* Info */
- #define RT5677_RESET				0x00
-@@ -1775,8 +1776,8 @@ struct rt5677_priv {
- 	int pll_src;
- 	int pll_in;
- 	int pll_out;
--	int pow_ldo2; /* POW_LDO2 pin */
--	int reset_pin; /* RESET pin */
-+	struct gpio_desc *pow_ldo2; /* POW_LDO2 pin */
-+	struct gpio_desc *reset_pin; /* RESET pin */
- 	enum rt5677_type type;
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip gpio_chip;
 -- 
 2.1.4
