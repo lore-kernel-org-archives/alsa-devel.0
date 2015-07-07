@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: remove Kconfig deps from variant
-	configs" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:39 +0100
-Message-ID: <E1ZCTNT-0005TL-Sx@finisterre>
-References: <1433221532-9489-1-git-send-email-kwestfie@codeaurora.org>
+Subject: Applied "ASoC: qcom: move board Kconfig deps to parent
+	config" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:41 +0100
+Message-ID: <E1ZCTNV-0005To-0l@finisterre>
+References: <1434665768-29367-1-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B28BE26548E
+ by alsa0.perex.cz (Postfix) with ESMTP id B9A042654DD
  for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:52 +0200 (CEST)
-In-Reply-To: <1433221532-9489-1-git-send-email-kwestfie@codeaurora.org>
+In-Reply-To: <1434665768-29367-1-git-send-email-kwestfie@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: remove Kconfig deps from variant configs
+   ASoC: qcom: move board Kconfig deps to parent config
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 7f005256f70a8c1c60b2f8a7449137da0c5e5bd9 Mon Sep 17 00:00:00 2001
+>From 02c4b9c28b973d999073c810a78375e38346d7a3 Mon Sep 17 00:00:00 2001
 From: Kenneth Westfield <kwestfie@codeaurora.org>
-Date: Thu, 18 Jun 2015 15:16:08 -0700
-Subject: [PATCH] ASoC: qcom: remove Kconfig deps from variant configs
+Date: Thu, 18 Jun 2015 15:16:07 -0700
+Subject: [PATCH] ASoC: qcom: move board Kconfig deps to parent config
 
-Remove the SND_SOC_QCOM dependency from the variant
-configs.  The board configs, which select the
-variants, already have this dependency.
+Rather than have each board define the same set of
+dependencies; move the common dependencies to the
+SND_SOC_QCOM parent config.
 
 Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/qcom/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d6ccda7..3cc252e 100644
+index 807fedf..d6ccda7 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -15,13 +15,11 @@ config SND_SOC_LPASS_PLATFORM
+@@ -1,5 +1,6 @@
+ config SND_SOC_QCOM
+ 	tristate "ASoC support for QCOM platforms"
++	depends on ARCH_QCOM || COMPILE_TEST
+ 	help
+           Say Y or M if you want to add support to use audio devices
+           in Qualcomm Technologies SOC-based platforms.
+@@ -26,7 +27,7 @@ config SND_SOC_LPASS_APQ8016
  
- config SND_SOC_LPASS_IPQ806X
- 	tristate
--	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_CPU
- 	select SND_SOC_LPASS_PLATFORM
+ config SND_SOC_STORM
+ 	tristate "ASoC I2S support for Storm boards"
+-	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
++	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_IPQ806X
+ 	select SND_SOC_MAX98357A
+ 	help
+@@ -35,7 +36,7 @@ config SND_SOC_STORM
  
- config SND_SOC_LPASS_APQ8016
- 	tristate
--	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_CPU
- 	select SND_SOC_LPASS_PLATFORM
- 
+ config SND_SOC_APQ8016_SBC
+ 	tristate "SoC Audio support for APQ8016 SBC platforms"
+-	depends on SND_SOC_QCOM && (ARCH_QCOM || COMPILE_TEST)
++	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_APQ8016
+ 	help
+           Support for Qualcomm Technologies LPASS audio block in
 -- 
 2.1.4
