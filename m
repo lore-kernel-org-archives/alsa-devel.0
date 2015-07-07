@@ -1,79 +1,33 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: Re: [PATCH] arm64: dts: mt8173: Add afe device node
-Date: Tue, 7 Jul 2015 17:20:09 +0800
-Message-ID: <1436260809.4347.2.camel@mtksdaap41>
-References: <1436165530-41963-1-git-send-email-koro.chen@mediatek.com>
-	 <CAGS+omCOzJs=VWboU_7doUum6BEfmh1hV88HmJiin2c-A_n_Mw@mail.gmail.com>
-	 <25205102.t939MQMDBD@ubix>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Constify reg_default tables
+Date: Tue, 07 Jul 2015 11:22:02 +0200
+Message-ID: <559B9A3A.5050707@metafoo.de>
+References: <1436089709.19902.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <25205102.t939MQMDBD@ubix>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Daniel Kurtz <djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, "open list:OPEN FIRMWARE AND..." <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Nicolas Boichat <drinkcat-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, srv_heupstream <srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Sascha Hauer <s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-098.synserver.de (smtp-out-098.synserver.de
+ [212.40.185.98])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EC70261A28
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 11:22:07 +0200 (CEST)
+In-Reply-To: <1436089709.19902.2.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-07-07 at 09:46 +0200, Matthias Brugger wrote:
-> On Monday, July 06, 2015 09:02:38 PM Daniel Kurtz wrote:
-> > On Mon, Jul 6, 2015 at 2:52 PM, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org> wrote:
-> > > This adds afe (audio front end) device node to the MT8173 dtsi file.
-> > > 
-> > > This patch is based on Matthias's tree:
-> > > https://github.com/mbgg/linux-mediatek
-> > > branch: v4.2-next/arm64
-> > > 
-> > > Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-> > > ---
-> > > 
-> > >  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32
-> > >  ++++++++++++++++++++++++++++++++ 1 file changed, 32 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > > b/arch/arm64/boot/dts/mediatek/mt8173.dtsi index 0696f8f..f8afab4 100644
-> > > --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > > +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > > @@ -14,6 +14,7 @@
-> > > 
-> > >  #include <dt-bindings/clock/mt8173-clk.h>
-> > >  #include <dt-bindings/interrupt-controller/irq.h>
-> > >  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > 
-> > > +#include <dt-bindings/power/mt8173-power.h>
-> > > 
-> > >  #include <dt-bindings/reset-controller/mt8173-resets.h>
-> > >  #include "mt8173-pinfunc.h"
-> > > 
-> > > @@ -393,6 +394,37 @@
-> > > 
-> > >                         #size-cells = <0>;
-> > >                         status = "disabled";
-> > >                 
-> > >                 };
-> > > 
-> > > +
-> > > +               afe: mt8173-afe-pcm@11220000  {
-> > 
-> > I believe this should be something generic, like:
-> > 
-> >   afe: audio-controller@11220000
-> > 
-> 
-> Yes, please find a name that better describes the component instead of just 
-> using the compatible string.
-> 
-Thanks both, I will change the name to audio-controller.
+On 07/05/2015 11:48 AM, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
-> Thanks.
-> 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks.
