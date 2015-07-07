@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap3pandora: Use card DAPM context to
-	access widgets" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:36 +0100
-Message-ID: <E1ZCTNQ-0005Rw-Ay@finisterre>
-References: <1436189891-15343-3-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: qcom: remove Kconfig deps from variant
+	configs" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:39 +0100
+Message-ID: <E1ZCTNT-0005TL-Sx@finisterre>
+References: <1433221532-9489-1-git-send-email-kwestfie@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 980AE2654B7
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:48 +0200 (CEST)
-In-Reply-To: <1436189891-15343-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B28BE26548E
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:52 +0200 (CEST)
+In-Reply-To: <1433221532-9489-1-git-send-email-kwestfie@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Kenneth Westfield <kwestfie@codeaurora.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap3pandora: Use card DAPM context to access widgets
+   ASoC: qcom: remove Kconfig deps from variant configs
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 987731bb7c80b170228e6e1acf2e7b91efb51100 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 6 Jul 2015 15:38:08 +0200
-Subject: [PATCH] ASoC: omap3pandora: Use card DAPM context to access widgets
+>From 7f005256f70a8c1c60b2f8a7449137da0c5e5bd9 Mon Sep 17 00:00:00 2001
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Date: Thu, 18 Jun 2015 15:16:08 -0700
+Subject: [PATCH] ASoC: qcom: remove Kconfig deps from variant configs
 
-The dapm field of the snd_soc_codec struct will eventually be removed
-(replaced with the DAPM context from the component embedded inside the
-CODEC). Replace its usage with the card's DAPM context. The idea is that
-DAPM is hierarchical and with the card at the root it is possible to access
-widgets from other contexts through the card context.
+Remove the SND_SOC_QCOM dependency from the variant
+configs.  The board configs, which select the
+variants, already have this dependency.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Kenneth Westfield <kwestfie@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap3pandora.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/qcom/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index 076bec6..732e749 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -154,8 +154,7 @@ static const struct snd_soc_dapm_route omap3pandora_map[] = {
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index d6ccda7..3cc252e 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -15,13 +15,11 @@ config SND_SOC_LPASS_PLATFORM
  
- static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
+ config SND_SOC_LPASS_IPQ806X
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
  
- 	/* All TWL4030 output pins are floating */
- 	snd_soc_dapm_nc_pin(dapm, "EARPIECE");
-@@ -174,8 +173,7 @@ static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
+ config SND_SOC_LPASS_APQ8016
+ 	tristate
+-	depends on SND_SOC_QCOM
+ 	select SND_SOC_LPASS_CPU
+ 	select SND_SOC_LPASS_PLATFORM
  
- static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
- 
- 	/* Not comnnected */
- 	snd_soc_dapm_nc_pin(dapm, "HSMIC");
 -- 
 2.1.4
