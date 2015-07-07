@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas571x: Replace direct snd_soc_codec
-	dapm field access" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:37 +0100
-Message-ID: <E1ZCTNR-0005SP-IH@finisterre>
-References: <1436189891-15343-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: cht_bsw_max98090_ti: Use card DAPM
+	context to access widgets" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:35 +0100
+Message-ID: <E1ZCTNP-0005RT-3U@finisterre>
+References: <1436189891-15343-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FEF22654CD
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:50 +0200 (CEST)
-In-Reply-To: <1436189891-15343-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BCBA2654B0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:46 +0200 (CEST)
+In-Reply-To: <1436189891-15343-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Kevin Cernekee <cernekee@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas571x: Replace direct snd_soc_codec dapm field access
+   ASoC: cht_bsw_max98090_ti: Use card DAPM context to access widgets
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 8f218fa93d20a7b4ef8a088e5eed2d84b8ef4ab5 Mon Sep 17 00:00:00 2001
+>From c68c2be5f6ae4a27d548921bf8b32413c5eab8ed Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 6 Jul 2015 15:38:07 +0200
-Subject: [PATCH] ASoC: tas571x: Replace direct snd_soc_codec dapm field access
+Date: Mon, 6 Jul 2015 15:38:09 +0200
+Subject: [PATCH] ASoC: cht_bsw_max98090_ti: Use card DAPM context to access
+ widgets
 
-The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to
-codec->dapm.bias_level with snd_soc_codec_get_bias_level().
+The dapm field of the snd_soc_codec struct will eventually be removed
+(replaced with the DAPM context from the component embedded inside the
+CODEC). Replace its usage with the card's DAPM context. The idea is that
+DAPM is hierarchical and with the card at the root it is possible to access
+widgets from other contexts through the card context.
+
+While we are at it also remove some extra newlines.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Kevin Cernekee <cernekee@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas571x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/tas571x.c b/sound/soc/codecs/tas571x.c
-index 85bcc37..39307ad 100644
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -179,7 +179,7 @@ static int tas571x_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
- 			if (!IS_ERR(priv->mclk)) {
- 				ret = clk_prepare_enable(priv->mclk);
- 				if (ret) {
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index d604ee8..afcd6ba 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -104,21 +104,17 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+ static int cht_ti_jack_event(struct notifier_block *nb,
+ 		unsigned long event, void *data)
+ {
+-
+ 	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
+-	struct snd_soc_dai *codec_dai = jack->card->rtd->codec_dai;
+-	struct snd_soc_codec *codec = codec_dai->codec;
++	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
+ 
+ 	if (event & SND_JACK_MICROPHONE) {
+-
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "SHDN");
+-		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_force_enable_pin(dapm, "SHDN");
++		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
++		snd_soc_dapm_sync(dapm);
+ 	} else {
+-
+-		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "SHDN");
+-		snd_soc_dapm_sync(&codec->dapm);
++		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
++		snd_soc_dapm_disable_pin(dapm, "SHDN");
++		snd_soc_dapm_sync(dapm);
+ 	}
+ 
+ 	return 0;
 -- 
 2.1.4
