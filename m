@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Switch to use unified device
-	property API" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:55 +0100
-Message-ID: <E1ZCTNj-0005Y1-EX@finisterre>
-References: <1434996780-34535-2-git-send-email-benzh@chromium.org>
+Subject: Applied "ASoC: cs42xx8: Move the code checking *regmap
+	argument earlier" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:54 +0100
+Message-ID: <E1ZCTNi-0005XY-7f@finisterre>
+References: <1435239703.22170.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F40A265721
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:07 +0200 (CEST)
-In-Reply-To: <1434996780-34535-2-git-send-email-benzh@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CA7326572A
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:08 +0200 (CEST)
+In-Reply-To: <1435239703.22170.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Switch to use unified device property API
+   ASoC: cs42xx8: Move the code checking *regmap argument earlier
 
 has been applied to the asoc tree at
 
@@ -53,103 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 9bfde72157036f4eaa44f3e8982217ce1b3e14b6 Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Mon, 22 Jun 2015 11:13:00 -0700
-Subject: [PATCH] ASoC: rt5677: Switch to use unified device property API
+>From d375d0abcd625cd09cd90a252ad22a1085452e3c Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 25 Jun 2015 21:41:43 +0800
+Subject: [PATCH] ASoC: cs42xx8: Move the code checking *regmap argument
+ earlier
 
-This patch makes the driver use the unified device property API
-so that platform data can be provided by Device Tree, ACPI
-or board files.
+Slightly improve the readability by moving the code checking *regmap
+argument earlier. Also move the assignment of of_id close to the place
+testing it.
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 57 +++++++++++++++++++++--------------------------
- 1 file changed, 25 insertions(+), 32 deletions(-)
+ sound/soc/codecs/cs42xx8.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 2322430..13b871f 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -20,6 +20,7 @@
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/firmware.h>
-+#include <linux/property.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -5021,27 +5022,29 @@ static const struct i2c_device_id rt5677_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index e1d4686..ab39514 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -435,16 +435,24 @@ EXPORT_SYMBOL_GPL(cs42xx8_of_match);
  
--static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
-+static void rt5677_read_device_properties(struct rt5677_priv *rt5677,
-+		struct device *dev)
+ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
  {
--	rt5677->pdata.in1_diff = of_property_read_bool(np,
--					"realtek,in1-differential");
--	rt5677->pdata.in2_diff = of_property_read_bool(np,
--					"realtek,in2-differential");
--	rt5677->pdata.lout1_diff = of_property_read_bool(np,
--					"realtek,lout1-differential");
--	rt5677->pdata.lout2_diff = of_property_read_bool(np,
--					"realtek,lout2-differential");
--	rt5677->pdata.lout3_diff = of_property_read_bool(np,
--					"realtek,lout3-differential");
--
--	of_property_read_u8_array(np, "realtek,gpio-config",
--		rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
--
--	of_property_read_u32(np, "realtek,jd1-gpio", &rt5677->pdata.jd1_gpio);
--	of_property_read_u32(np, "realtek,jd2-gpio", &rt5677->pdata.jd2_gpio);
--	of_property_read_u32(np, "realtek,jd3-gpio", &rt5677->pdata.jd3_gpio);
--
--	return 0;
-+	rt5677->pdata.in1_diff = device_property_read_bool(dev,
-+			"realtek,in1-differential");
-+	rt5677->pdata.in2_diff = device_property_read_bool(dev,
-+			"realtek,in2-differential");
-+	rt5677->pdata.lout1_diff = device_property_read_bool(dev,
-+			"realtek,lout1-differential");
-+	rt5677->pdata.lout2_diff = device_property_read_bool(dev,
-+			"realtek,lout2-differential");
-+	rt5677->pdata.lout3_diff = device_property_read_bool(dev,
-+			"realtek,lout3-differential");
-+
-+	device_property_read_u8_array(dev, "realtek,gpio-config",
-+			rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
-+
-+	device_property_read_u32(dev, "realtek,jd1-gpio",
-+			&rt5677->pdata.jd1_gpio);
-+	device_property_read_u32(dev, "realtek,jd2-gpio",
-+			&rt5677->pdata.jd2_gpio);
-+	device_property_read_u32(dev, "realtek,jd3-gpio",
-+			&rt5677->pdata.jd3_gpio);
- }
+-	const struct of_device_id *of_id = of_match_device(cs42xx8_of_match, dev);
++	const struct of_device_id *of_id;
+ 	struct cs42xx8_priv *cs42xx8;
+ 	int ret, val, i;
  
- static struct regmap_irq rt5677_irqs[] = {
-@@ -5124,18 +5127,8 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		dev_err(dev, "failed to allocate regmap: %d\n", ret);
++		return ret;
++	}
++
+ 	cs42xx8 = devm_kzalloc(dev, sizeof(*cs42xx8), GFP_KERNEL);
+ 	if (cs42xx8 == NULL)
+ 		return -ENOMEM;
  
- 	if (pdata)
- 		rt5677->pdata = *pdata;
--
--	if (i2c->dev.of_node) {
--		ret = rt5677_parse_dt(rt5677, i2c->dev.of_node);
--		if (ret) {
--			dev_err(&i2c->dev, "Failed to parse device tree: %d\n",
--				ret);
--			return ret;
--		}
--	} else {
--		rt5677->pow_ldo2 = -EINVAL;
--		rt5677->reset_pin = -EINVAL;
++	cs42xx8->regmap = regmap;
+ 	dev_set_drvdata(dev, cs42xx8);
+ 
++	of_id = of_match_device(cs42xx8_of_match, dev);
+ 	if (of_id)
+ 		cs42xx8->drvdata = of_id->data;
+ 
+@@ -482,13 +490,6 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
+ 	/* Make sure hardware reset done */
+ 	msleep(5);
+ 
+-	cs42xx8->regmap = regmap;
+-	if (IS_ERR(cs42xx8->regmap)) {
+-		ret = PTR_ERR(cs42xx8->regmap);
+-		dev_err(dev, "failed to allocate regmap: %d\n", ret);
+-		goto err_enable;
 -	}
-+	else
-+		rt5677_read_device_properties(rt5677, &i2c->dev);
- 
- 	/* pow-ldo2 and reset are optional. The codec pins may be statically
- 	 * connected on the board without gpios. If the gpio device property
+-
+ 	/*
+ 	 * We haven't marked the chip revision as volatile due to
+ 	 * sharing a register with the right input volume; explicitly
 -- 
 2.1.4
