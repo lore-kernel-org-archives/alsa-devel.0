@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: add private data to manifest"
+Subject: Applied "ASoC: topology: Add subsequence in topology"
 	to the asoc tree
-Date: Tue, 07 Jul 2015 14:58:08 +0100
-Message-ID: <E1ZCTNw-0005dA-Gr@finisterre>
-References: <1435595806-7000-4-git-send-email-liam.r.girdwood@linux.intel.com>
+Date: Tue, 07 Jul 2015 14:58:09 +0100
+Message-ID: <E1ZCTNx-0005dd-Jq@finisterre>
+References: <1435595806-7000-2-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A49726574A
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:21 +0200 (CEST)
-In-Reply-To: <1435595806-7000-4-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73219265749
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:20 +0200 (CEST)
+In-Reply-To: <1435595806-7000-2-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: add private data to manifest
+   ASoC: topology: Add subsequence in topology
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From cabb9294a5a9a856a75ec5270a9930e66d28b001 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 29 Jun 2015 17:36:46 +0100
-Subject: [PATCH] ASoC: topology: add private data to manifest
+>From f5a2ee50635baabcb88a559ae1ced69d5d8ef6eb Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 29 Jun 2015 17:36:44 +0100
+Subject: [PATCH] ASoC: topology: Add subsequence in topology
 
-The topology file manifest should include a private data field. This
-allows vendors to specify vendor data in the manifest, like
-timestamps, hashes, additional information for removing platform
-configuration out of drivers and making these configurable per platform
+Some widgets may need sorting within, So add this support in topology.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  include/uapi/sound/asoc.h | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-topology.c  | 1 +
+ 2 files changed, 2 insertions(+)
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 7ae13fb..d550c8d 100644
+index 1221520..7ae13fb 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -238,6 +238,7 @@ struct snd_soc_tplg_manifest {
- 	__le32 graph_elems;	/* number of graph elements */
- 	__le32 dai_elems;	/* number of DAI elements */
- 	__le32 dai_link_elems;	/* number of DAI link elements */
-+	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
- 
- /*
+@@ -347,6 +347,7 @@ struct snd_soc_tplg_dapm_widget {
+ 	__le32 reg;		/* negative reg = no direct dapm */
+ 	__le32 shift;		/* bits to shift */
+ 	__le32 mask;		/* non-shifted mask */
++	__le32 subseq;		/* sort within widget type */
+ 	__u32 invert;		/* invert the power bit */
+ 	__u32 ignore_suspend;	/* kept enabled over suspend */
+ 	__u16 event_flags;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index d096068..f38f111 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1351,6 +1351,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	template.reg = w->reg;
+ 	template.shift = w->shift;
+ 	template.mask = w->mask;
++	template.subseq = w->subseq;
+ 	template.on_val = w->invert ? 0 : 1;
+ 	template.off_val = w->invert ? 1 : 0;
+ 	template.ignore_suspend = w->ignore_suspend;
 -- 
 2.1.4
