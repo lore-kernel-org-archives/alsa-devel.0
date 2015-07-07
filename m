@@ -1,38 +1,81 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: alsa error
-Date: Tue, 7 Jul 2015 06:16:27 +0000
-Message-ID: <SIXPR04MB253D88AF361F3A2E8368EE6C3920@SIXPR04MB253.apcprd04.prod.outlook.com>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Tue, 7 Jul 2015 09:06:25 +0200
+Message-ID: <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
+References: <CAKor6TfKws63jh6f3VzyYpmTffL4-DHWDTdJ6GSgDC08C5W=8w@mail.gmail.com>
+	<20150625073618.GH827@lahna.fi.intel.com>
+	<CAKor6TfxNW6UW6iX_FkRn2yZOHvdRHcsj6pKoKH-UWU51Bqvvg@mail.gmail.com>
+	<20150625145853.GP14071@sirena.org.uk>
+	<20150625154407.GE6321@opensource.wolfsonmicro.com>
+	<558D3BAA.3080700@linux.intel.com>
+	<20150626115823.GY14071@sirena.org.uk>
+	<CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
+	<20150629094854.GB11162@sirena.org.uk>
+	<CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+	<20150630103404.GI6321@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0095.outbound.protection.outlook.com [104.47.125.95])
- by alsa0.perex.cz (Postfix) with ESMTP id D9A4A260698
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 08:16:31 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150630103404.GI6321-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
+2015-06-30 12:34 GMT+02:00 Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>:
+> On Tue, Jun 30, 2015 at 09:14:37AM +0200, Christian Hartmann wrote:
+>> Hi,
+>>
+>>
+>> 2015-06-29 11:48 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+>> > On Mon, Jun 29, 2015 at 09:27:17AM +0200, Christian Hartmann wrote:
+>> >> [    5.927801] spi-WM510205:00 supply DCVDD not found, using dummy regulator
+>> >> [    5.928958] arizona spi-WM510205:00: Unknown device ID: ffff
+>> >> [    5.929098] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
+>> >
+>> > The above is saying that SPI I/O to the device isn't working - the
+>> > device ID is not being read back successfully.
+>>
+>> Ok that is the next problem that must be solved.
+>> I have yesterday made a patchset where I have added
+>> the enum type 5, but as you said already,
+>> that was not needed.
+>> All what I see the same: : Unknown device ID: ffff
+>>
+>> So where I have to look now or what can I do to let this device id
+>> register correctly?
+>> I hope the baytrail machine driver is easy peasy to add, but here I
+>> stuck at the moment.
+>
+> As I said in my other emails the next step is to work out what
+> the reset and ldoena gpio's are. You won't be able to read the
+> device ID until you have those setup. Unfortunately, finding the
+> right GPIOs is likely to be a bit of a chore, I will see if I can
+> find anything out from the Windows guys at this end.
+>
+> Also can you check that the arizona-ldo1 regulator is built in I
+> am surprised that is falling back to the dummy regulator.
+>
+> Thanks,
+> Charles
 
+Hi,
 
-Am facing the below error, could you please let me know what could be the issue leading to this error
+I just want to ask, if the windows guys have such infos about the
+gpios in question (reset,ldoena) and of course the irq details.
 
+I am thinking actually to get a second device with Win installed, so
+that I can get more infos which I really need here.
+Anyway  I can also provide more infos here (if its not against valid laws :) )
+But indeeed I can need some hints where to put the pdata structure.
 
-Feb 11 18:48:22 kernel: [  210.508525] ALSA sound/core/pcm_native.c:2080 snd_pcm_hw_constraints_complete failed
+I have some more questions that I want to ask/discuss later on irc -
+if its possible
 
-
-Thanks in advance
-
-Srinivasan S
+cheers
+Chris
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
