@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Implement stability check for
-	LHPF coefficients" to the asoc tree
-Date: Tue, 07 Jul 2015 14:58:01 +0100
-Message-ID: <E1ZCTNp-0005aM-AS@finisterre>
-References: <1435221312-22977-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: rt5645: move RT5645 muxes to
+	rt5645_specific_dapm_widgets" to the asoc tree
+Date: Tue, 07 Jul 2015 14:58:04 +0100
+Message-ID: <E1ZCTNs-0005bl-UA@finisterre>
+References: <1435558850-2040-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A33126573C
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:13 +0200 (CEST)
-In-Reply-To: <1435221312-22977-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F6392654E6
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:58:15 +0200 (CEST)
+In-Reply-To: <1435558850-2040-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Implement stability check for LHPF coefficients
+   ASoC: rt5645: move RT5645 muxes to rt5645_specific_dapm_widgets
 
 has been applied to the asoc tree at
 
@@ -53,137 +53,93 @@ to this mail.
 Thanks,
 Mark
 
->From 5f8e671a49e1d608fcf52c8944ea7818cd4c99a9 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Thu, 25 Jun 2015 09:35:12 +0100
-Subject: [PATCH] ASoC: arizona: Implement stability check for LHPF
- coefficients
+>From 83c09290adfb025d9a109d9c3c2956c81bcb241b Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 29 Jun 2015 14:20:50 +0800
+Subject: [PATCH] ASoC: rt5645: move RT5645 muxes to
+ rt5645_specific_dapm_widgets
 
-Specifying unstable coefficients for the low/high pass filters can have
-a severe impact on the audio. This patchs adds a stability check on the
-coefficients written to the low/high pass filter block to prevent this.
+This is a similar patch to "move RT5650 muxes to rt5650_specific_
+dapm_widgets" patch. The purpose is to silence the "has no paths"
+warnings.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 17 +++++++++++++++++
- sound/soc/codecs/arizona.h |  9 +++++++++
- sound/soc/codecs/wm5102.c  |  8 ++++----
- sound/soc/codecs/wm5110.c  |  8 ++++----
- sound/soc/codecs/wm8997.c  |  8 ++++----
- 5 files changed, 38 insertions(+), 12 deletions(-)
+ sound/soc/codecs/rt5645.c | 39 ++++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 3996786..a88202d 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2372,6 +2372,23 @@ out:
- }
- EXPORT_SYMBOL_GPL(arizona_eq_coeff_put);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a07966b..1d821da 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1697,15 +1697,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("IF1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
  
-+int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
-+	__be16 *data = (__be16 *)ucontrol->value.bytes.data;
-+	s16 val = be16_to_cpu(*data);
+ 	/* IF1 2 Mux */
+-	SND_SOC_DAPM_MUX("RT5645 IF1 ADC1 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5645_if1_adc1_in_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 ADC2 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5645_if1_adc2_in_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 ADC3 Swap Mux", SND_SOC_NOPM,
+-		0, 0, &rt5645_if1_adc3_in_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 ADC Mux", SND_SOC_NOPM,
+-		0, 0, &rt5645_if1_adc_in_mux),
+-
+ 	SND_SOC_DAPM_MUX("IF2 ADC Mux", SND_SOC_NOPM,
+ 		0, 0, &rt5645_if2_adc_in_mux),
+ 
+@@ -1716,14 +1707,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("IF1 DAC1", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 DAC2", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 DAC3", SND_SOC_NOPM, 0, 0, NULL, 0),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 DAC1 L Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5645_if1_dac0_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 DAC1 R Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5645_if1_dac1_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 DAC2 L Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5645_if1_dac2_tdm_sel_mux),
+-	SND_SOC_DAPM_MUX("RT5645 IF1 DAC2 R Mux", SND_SOC_NOPM, 0, 0,
+-		&rt5645_if1_dac3_tdm_sel_mux),
+ 	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 ADC L", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1 ADC R", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -1856,6 +1839,25 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("SPOR"),
+ };
+ 
++static const struct snd_soc_dapm_widget rt5645_specific_dapm_widgets[] = {
++	SND_SOC_DAPM_MUX("RT5645 IF1 DAC1 L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5645_if1_dac0_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 DAC1 R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5645_if1_dac1_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 DAC2 L Mux", SND_SOC_NOPM, 0, 0,
++		&rt5645_if1_dac2_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 DAC2 R Mux", SND_SOC_NOPM, 0, 0,
++		&rt5645_if1_dac3_tdm_sel_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 ADC Mux", SND_SOC_NOPM,
++		0, 0, &rt5645_if1_adc_in_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 ADC1 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5645_if1_adc1_in_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 ADC2 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5645_if1_adc2_in_mux),
++	SND_SOC_DAPM_MUX("RT5645 IF1 ADC3 Swap Mux", SND_SOC_NOPM,
++		0, 0, &rt5645_if1_adc3_in_mux),
++};
 +
-+	if (abs(val) >= 4096) {
-+		dev_err(arizona->dev, "Rejecting unstable LHPF coefficients\n");
-+		return -EINVAL;
-+	}
-+
-+	return snd_soc_bytes_put(kcontrol, ucontrol);
-+}
-+EXPORT_SYMBOL_GPL(arizona_lhpf_coeff_put);
-+
- MODULE_DESCRIPTION("ASoC Wolfson Arizona class device support");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index ebe50cf..13598b0 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -201,6 +201,13 @@ extern int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
- 	((unsigned long)&(struct soc_bytes) { .base = xbase,  \
- 	 .num_regs = 20, .mask = ~ARIZONA_EQ1_B1_MODE }) }
+ static const struct snd_soc_dapm_widget rt5650_specific_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("A DAC1 L Mux", SND_SOC_NOPM,
+ 		0, 0, &rt5650_a_dac1_l_mux),
+@@ -3049,6 +3051,9 @@ static int rt5645_probe(struct snd_soc_codec *codec)
  
-+#define ARIZONA_LHPF_CONTROL(xname, xbase)                    \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
-+	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get, \
-+	.put = arizona_lhpf_coeff_put, .private_value =       \
-+	((unsigned long)&(struct soc_bytes) { .base = xbase,  \
-+	 .num_regs = 1 }) }
-+
- #define ARIZONA_RATE_ENUM_SIZE 4
- extern const char *arizona_rate_text[ARIZONA_RATE_ENUM_SIZE];
- extern const int arizona_rate_val[ARIZONA_RATE_ENUM_SIZE];
-@@ -238,6 +245,8 @@ extern int arizona_hp_ev(struct snd_soc_dapm_widget *w,
- 
- extern int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol);
-+extern int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol);
- 
- extern int arizona_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 			      int source, unsigned int freq, int dir);
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 556bd98..6ddee99 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -847,10 +847,10 @@ ARIZONA_MIXER_CONTROLS("LHPF2", ARIZONA_HPLP2MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("LHPF3", ARIZONA_HPLP3MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("LHPF4", ARIZONA_HPLP4MIX_INPUT_1_SOURCE),
- 
--SND_SOC_BYTES("LHPF1 Coefficients", ARIZONA_HPLPF1_2, 1),
--SND_SOC_BYTES("LHPF2 Coefficients", ARIZONA_HPLPF2_2, 1),
--SND_SOC_BYTES("LHPF3 Coefficients", ARIZONA_HPLPF3_2, 1),
--SND_SOC_BYTES("LHPF4 Coefficients", ARIZONA_HPLPF4_2, 1),
-+ARIZONA_LHPF_CONTROL("LHPF1 Coefficients", ARIZONA_HPLPF1_2),
-+ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
-+ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
-+ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
- 
- ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index dfa4d4b..05aa5bc 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -310,10 +310,10 @@ ARIZONA_MIXER_CONTROLS("LHPF2", ARIZONA_HPLP2MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("LHPF3", ARIZONA_HPLP3MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("LHPF4", ARIZONA_HPLP4MIX_INPUT_1_SOURCE),
- 
--SND_SOC_BYTES("LHPF1 Coefficients", ARIZONA_HPLPF1_2, 1),
--SND_SOC_BYTES("LHPF2 Coefficients", ARIZONA_HPLPF2_2, 1),
--SND_SOC_BYTES("LHPF3 Coefficients", ARIZONA_HPLPF3_2, 1),
--SND_SOC_BYTES("LHPF4 Coefficients", ARIZONA_HPLPF4_2, 1),
-+ARIZONA_LHPF_CONTROL("LHPF1 Coefficients", ARIZONA_HPLPF1_2),
-+ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
-+ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
-+ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
- 
- SOC_ENUM("LHPF1 Mode", arizona_lhpf1_mode),
- SOC_ENUM("LHPF2 Mode", arizona_lhpf2_mode),
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 53e0a46..b4dba3a 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -238,10 +238,10 @@ SOC_ENUM("LHPF2 Mode", arizona_lhpf2_mode),
- SOC_ENUM("LHPF3 Mode", arizona_lhpf3_mode),
- SOC_ENUM("LHPF4 Mode", arizona_lhpf4_mode),
- 
--SND_SOC_BYTES("LHPF1 Coefficients", ARIZONA_HPLPF1_2, 1),
--SND_SOC_BYTES("LHPF2 Coefficients", ARIZONA_HPLPF2_2, 1),
--SND_SOC_BYTES("LHPF3 Coefficients", ARIZONA_HPLPF3_2, 1),
--SND_SOC_BYTES("LHPF4 Coefficients", ARIZONA_HPLPF4_2, 1),
-+ARIZONA_LHPF_CONTROL("LHPF1 Coefficients", ARIZONA_HPLPF1_2),
-+ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
-+ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
-+ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
- 
- SOC_ENUM("ISRC1 FSL", arizona_isrc_fsl[0]),
- SOC_ENUM("ISRC2 FSL", arizona_isrc_fsl[1]),
+ 	switch (rt5645->codec_type) {
+ 	case CODEC_TYPE_RT5645:
++		snd_soc_dapm_new_controls(&codec->dapm,
++			rt5645_specific_dapm_widgets,
++			ARRAY_SIZE(rt5645_specific_dapm_widgets));
+ 		snd_soc_dapm_add_routes(&codec->dapm,
+ 			rt5645_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5645_specific_dapm_routes));
 -- 
 2.1.4
