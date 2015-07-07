@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Replace direct snd_soc_codec
-	dapm field access" to the asoc tree
-Date: Tue, 07 Jul 2015 14:57:38 +0100
-Message-ID: <E1ZCTNS-0005Ss-Pk@finisterre>
-References: <1436189891-15343-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: omap3pandora: Use card DAPM context to
+	access widgets" to the asoc tree
+Date: Tue, 07 Jul 2015 14:57:36 +0100
+Message-ID: <E1ZCTNQ-0005Rw-Ay@finisterre>
+References: <1436189891-15343-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AE1B2654C3
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:50 +0200 (CEST)
-In-Reply-To: <1436189891-15343-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 980AE2654B7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 15:57:48 +0200 (CEST)
+In-Reply-To: <1436189891-15343-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Replace direct snd_soc_codec dapm field access
+   ASoC: omap3pandora: Use card DAPM context to access widgets
 
 has been applied to the asoc tree at
 
@@ -53,175 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From e2ada8187bc8b46c30a623e7d6b5a72c209f70cd Mon Sep 17 00:00:00 2001
+>From 987731bb7c80b170228e6e1acf2e7b91efb51100 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 6 Jul 2015 15:38:06 +0200
-Subject: [PATCH] ASoC: rt5645: Replace direct snd_soc_codec dapm field access
+Date: Mon, 6 Jul 2015 15:38:08 +0200
+Subject: [PATCH] ASoC: omap3pandora: Use card DAPM context to access widgets
 
-The dapm field of the snd_soc_codec struct is eventually going to be
-removed, in preparation for this replace all manual access to
-codec->dapm.bias_level with snd_soc_codec_get_bias_level() and replace all
-other manual access to codec->dapm with snd_soc_codec_get_dapm().
+The dapm field of the snd_soc_codec struct will eventually be removed
+(replaced with the DAPM context from the component embedded inside the
+CODEC). Replace its usage with the card's DAPM context. The idea is that
+DAPM is hierarchical and with the card at the root it is possible to access
+widgets from other contexts through the card context.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 73 +++++++++++++++++++++--------------------------
- 1 file changed, 32 insertions(+), 41 deletions(-)
+ sound/soc/omap/omap3pandora.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9ce311e..571e4b5 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2642,7 +2642,7 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index 076bec6..732e749 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -154,8 +154,7 @@ static const struct snd_soc_dapm_route omap3pandora_map[] = {
  
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
--		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
-+		if (SND_SOC_BIAS_STANDBY == snd_soc_codec_get_bias_level(codec)) {
- 			snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
- 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
- 				RT5645_PWR_BG | RT5645_PWR_VREF2,
-@@ -2760,20 +2760,17 @@ static int rt5650_calibration(struct rt5645_priv *rt5645)
- static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 	bool enable)
+ static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
  
- 	if (enable) {
--		snd_soc_dapm_mutex_lock(&codec->dapm);
--		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
--							"ADC L power");
--		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
--							"ADC R power");
--		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
--							"LDO2");
--		snd_soc_dapm_force_enable_pin_unlocked(&codec->dapm,
--							"Mic Det Power");
--		snd_soc_dapm_sync_unlocked(&codec->dapm);
--		snd_soc_dapm_mutex_unlock(&codec->dapm);
-+		snd_soc_dapm_mutex_lock(dapm);
-+		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC L power");
-+		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC R power");
-+		snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
-+		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync_unlocked(dapm);
-+		snd_soc_dapm_mutex_unlock(dapm);
+ 	/* All TWL4030 output pins are floating */
+ 	snd_soc_dapm_nc_pin(dapm, "EARPIECE");
+@@ -174,8 +173,7 @@ static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
  
- 		snd_soc_update_bits(codec,
- 					RT5645_INT_IRQ_ST, 0x8, 0x8);
-@@ -2786,23 +2783,20 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
- 		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
- 
--		snd_soc_dapm_mutex_lock(&codec->dapm);
--		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
--							"ADC L power");
--		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
--							"ADC R power");
-+		snd_soc_dapm_mutex_lock(dapm);
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC L power");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC R power");
- 		if (rt5645->pdata.jd_mode == 0)
--			snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
--								"LDO2");
--		snd_soc_dapm_disable_pin_unlocked(&codec->dapm,
--							"Mic Det Power");
--		snd_soc_dapm_sync_unlocked(&codec->dapm);
--		snd_soc_dapm_mutex_unlock(&codec->dapm);
-+			snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync_unlocked(dapm);
-+		snd_soc_dapm_mutex_unlock(dapm);
- 	}
- }
- 
- static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
  {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int val;
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct snd_soc_dapm_context *dapm = &rtd->card->dapm;
  
-@@ -2811,10 +2805,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 
- 		if (codec->component.card->instantiated) {
- 			/* for jack type detect */
--			snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
--			snd_soc_dapm_force_enable_pin(&codec->dapm,
--				"Mic Det Power");
--			snd_soc_dapm_sync(&codec->dapm);
-+			snd_soc_dapm_force_enable_pin(dapm, "LDO2");
-+			snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
-+			snd_soc_dapm_sync(dapm);
- 		} else {
- 			/* Power up necessary bits for JD if dapm is
- 			   not ready yet */
-@@ -2847,9 +2840,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 			}
- 		} else {
- 			if (codec->component.card->instantiated) {
--				snd_soc_dapm_disable_pin(&codec->dapm,
--					"Mic Det Power");
--				snd_soc_dapm_sync(&codec->dapm);
-+				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+				snd_soc_dapm_sync(dapm);
- 			} else
- 				regmap_update_bits(rt5645->regmap,
- 					RT5645_PWR_VOL, RT5645_PWR_MIC_DET, 0);
-@@ -2863,11 +2855,9 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 		else {
- 			if (codec->component.card->instantiated) {
- 				if (rt5645->pdata.jd_mode == 0)
--					snd_soc_dapm_disable_pin(&codec->dapm,
--						"LDO2");
--				snd_soc_dapm_disable_pin(&codec->dapm,
--					"Mic Det Power");
--				snd_soc_dapm_sync(&codec->dapm);
-+					snd_soc_dapm_disable_pin(dapm, "LDO2");
-+				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+				snd_soc_dapm_sync(dapm);
- 			} else {
- 				if (rt5645->pdata.jd_mode == 0)
- 					regmap_update_bits(rt5645->regmap,
-@@ -3043,21 +3033,22 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
- 
- static int rt5645_probe(struct snd_soc_codec *codec)
- {
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
- 
- 	rt5645->codec = codec;
- 
- 	switch (rt5645->codec_type) {
- 	case CODEC_TYPE_RT5645:
--		snd_soc_dapm_add_routes(&codec->dapm,
-+		snd_soc_dapm_add_routes(dapm,
- 			rt5645_specific_dapm_routes,
- 			ARRAY_SIZE(rt5645_specific_dapm_routes));
- 		break;
- 	case CODEC_TYPE_RT5650:
--		snd_soc_dapm_new_controls(&codec->dapm,
-+		snd_soc_dapm_new_controls(dapm,
- 			rt5650_specific_dapm_widgets,
- 			ARRAY_SIZE(rt5650_specific_dapm_widgets));
--		snd_soc_dapm_add_routes(&codec->dapm,
-+		snd_soc_dapm_add_routes(dapm,
- 			rt5650_specific_dapm_routes,
- 			ARRAY_SIZE(rt5650_specific_dapm_routes));
- 		break;
-@@ -3067,9 +3058,9 @@ static int rt5645_probe(struct snd_soc_codec *codec)
- 
- 	/* for JD function */
- 	if (rt5645->pdata.jd_mode) {
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "JD Power");
--		snd_soc_dapm_force_enable_pin(&codec->dapm, "LDO2");
--		snd_soc_dapm_sync(&codec->dapm);
-+		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
-+		snd_soc_dapm_force_enable_pin(dapm, "LDO2");
-+		snd_soc_dapm_sync(dapm);
- 	}
- 
- 	return 0;
+ 	/* Not comnnected */
+ 	snd_soc_dapm_nc_pin(dapm, "HSMIC");
 -- 
 2.1.4
