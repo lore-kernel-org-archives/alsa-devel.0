@@ -1,55 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5645: Fix missing free_irq
-Date: Wed, 8 Jul 2015 12:14:37 +0100
-Message-ID: <20150708111437.GQ11162@sirena.org.uk>
-References: <1436343951-3482-1-git-send-email-koro.chen@mediatek.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [ANNOUNCE] Media Controller workshop in Helsinki
+Date: Wed, 08 Jul 2015 14:17:47 +0200
+Message-ID: <559D14EB.4090108@metafoo.de>
+References: <20150708081622.63e333bd@recife.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fuid1o0BiVNrPGA3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1436343951-3482-1-git-send-email-koro.chen@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Koro Chen <koro.chen@mediatek.com>
-Cc: perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, bardliao@realtek.com, oder_chiou@realtek.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20150708081622.63e333bd@recife.lan>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, LMML <linux-media@vger.kernel.org>, media-workshop@linuxtv.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Cc: ALSA ML
 
---fuid1o0BiVNrPGA3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 08, 2015 at 04:25:50PM +0800, Koro Chen wrote:
-
-> The driver does not free irq if snd_soc_register_codec fails.
-> It does not return error when request irq failed, either.
-> Fix this by using devm_request_threaded_irq(), and returns when error.
-
-Unfortunately this isn't safe...
-
-> -	if (i2c->irq)
-> -		free_irq(i2c->irq, rt5645);
-> -
->  	cancel_delayed_work_sync(&rt5645->jack_detect_work);
-
-This work item is queued up by the interrupt handler so we need to
-unregister the interrupt before we cancel any pending work otherwise
-it's possible that the interrupt may fire after we cancelled the work.
-
---fuid1o0BiVNrPGA3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVnQYcAAoJECTWi3JdVIfQhB0H/icd/tZA906AXEXSTJ+nL3JB
-8E62zwz6jzoRV5rp5rQ74RL4cDKDjEUT8JftlLErd4yztYyGWf0HihWutumhaDGK
-lBZWxWOWvEVK2MWenAagYWTQCroPY/sTQTv0owry3oTjFSs1D9OZWToduhB/TIaD
-jQfJLGwNh2dY0lvi76zXJzWtLVNotDHOU5QCv/UE4jjeKKv+Z9hPrZ9WCQVk6Sde
-VFyFg/7nKJb2tqwhuNEs+f6QKS12fY6ZDTeyoewZwTe42MX8ak2prvxmgESDsSbG
-ecNC/rtkP112YJwP6gQWkhfHQc9vxxsw5EsBGqxcjTmbwZeFM2x0gDEMo4fsvfs=
-=i8DX
------END PGP SIGNATURE-----
-
---fuid1o0BiVNrPGA3--
+On 07/08/2015 01:16 PM, Mauro Carvalho Chehab wrote:
+> Hi,
+> 
+> As discussed on our IRC #v4l channel at Freenode, we'll be running a 3-day
+>  Media Controller workshop in Helsinki between July 29-31.
+> 
+> The main goal of this workshop is to fixup the problems with the Media 
+> Controller API to properly represent device nodes and the control tree, as
+> this is a requirement for the Media Controller to be used by DVB, ALSA and
+> radio devices.
+> 
+> This is an invitation-only event, as we want to be sure that we'll have 
+> there people that are actively working with the Media Controller, DVB 
+> and/or ALSA. So, if you think this is for you, please send us an e-mail.
+> 
+> Also, even if you're not able to participate, feel free to submit
+> relevant topics related to the Media Controller, in order to help us to
+> build the workshop's agenda and take other needs into account when working
+> on the needed API changes.
+> 
+> As usual, we'll be using the media-workshop@linuxtv.org ML for the 
+> specific discussions about that, so the ones interested on participate on
+> such discussions and/or be present there are requested to subscribe it,
+> and to submit themes of interest via the mailing lists.
+> 
+> For those interested on this theme, I'll add a list of the most relevant 
+> past discussions about this theme.
+> 
+> Hope to see you there!
+> 
+> Regards, Mauro
+> 
+> ---
+> 
+> The DVB needs with regards to MC are mapped on those two blog entries: 
+> http://blogs.s-osg.org/media-controller-support-for-dvb-part-1/ 
+> http://blogs.s-osg.org/the-role-of-dtv-network-interfaces-in-media-controller-support-for-dvb/
+>
+>  We had two discussions about MC on our last mini-summit, back on March,
+> 26. The discussions and slides can be found at: 
+> http://linuxtv.org/news.php?entry=2015-05-05.mchehab 
+> http://www.linuxtv.org/downloads/presentations/media_summit_2015_US/dtv_media_controller_discussion_v1.pdf
+>
+>  A summary of the issues can also be seen on the emails below: 
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg85910.html 
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg85979.html 
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg83883.html 
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg83884.html
+> 
+> Patches that minimally expose DVB via MC were merged on Kernel 4.1, 
+> although it is currently marked as BROKEN, in order to tag those API 
+> extensions as likely to change on future versions.
+> 
+> The initial patchset proposal for ALSA support on MC is there at: 
+> http://www.spinics.net/lists/linux-media/msg89574.html
+> 
+> The most recent proposal for such fixup can be seen at: 
+> http://www.spinics.net/lists/linux-media/msg91365.html
