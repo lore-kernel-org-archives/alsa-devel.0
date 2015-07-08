@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Use card field to indicate whether a
-	component is bound" to the asoc tree
-Date: Wed, 08 Jul 2015 20:05:21 +0100
-Message-ID: <E1ZCuen-0005DZ-Mn@debutante>
-References: <1436381264-6924-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: wm5110: Add special DRE on/off handling
+	for the headphone path" to the asoc tree
+Date: Wed, 08 Jul 2015 20:23:36 +0100
+Message-ID: <E1ZCuwS-0005ss-LE@debutante>
+References: <1435838281-15873-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 92164265A86
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:05:29 +0200 (CEST)
-In-Reply-To: <1436381264-6924-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id BDE0A26512B
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:23:45 +0200 (CEST)
+In-Reply-To: <1435838281-15873-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Use card field to indicate whether a component is bound
+   ASoC: wm5110: Add special DRE on/off handling for the headphone path
 
 has been applied to the asoc tree at
 
@@ -53,110 +53,347 @@ to this mail.
 Thanks,
 Mark
 
->From abd31b32dde4683df6fd0439caa314aafd751698 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 8 Jul 2015 20:47:44 +0200
-Subject: [PATCH] ASoC: Use card field to indicate whether a component is bound
+>From d1acd31883d78f905a930493ff145ca4a25ad680 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 7 Jul 2015 15:28:14 +0100
+Subject: [PATCH] ASoC: wm5110: Add special DRE on/off handling for the
+ headphone path
 
-Use the card field of a component to indicate whether it is bound or not.
-This makes a certain sense given that the field contains the card the
-component is bound to and a component can only be bound to one card at a
-time. And it also requires to unset the card field when the component is
-unbound from the card.
+For the best performance the headphone path enable/disable must be
+handled specially for the situations of DRE on and DRE off.
 
-This makes the probded flag redundant and it can be removed.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 16 ++++++++--------
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm5110.c | 285 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 276 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 93df8bf9d54a..59635a12c3be 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -758,7 +758,6 @@ struct snd_soc_component {
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 709fcc6169d8..b5c201b1e454 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -131,6 +131,25 @@ static const struct reg_default wm5110_sysclk_revd_patch[] = {
+ 	{ 0x33fb, 0xfe00 },
+ };
  
- 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
- 	unsigned int registered_as_component:1;
--	unsigned int probed:1;
- 
- 	struct list_head list;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 96bb71aea529..42575b03411e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -978,7 +978,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 
- static void soc_remove_component(struct snd_soc_component *component)
- {
--	if (!component->probed)
-+	if (!component->card)
- 		return;
- 
- 	/* This is a HACK and will be removed soon */
-@@ -991,7 +991,7 @@ static void soc_remove_component(struct snd_soc_component *component)
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 
- 	soc_cleanup_component_debugfs(component);
--	component->probed = 0;
-+	component->card = NULL;
- 	module_put(component->dev->driver->owner);
- }
- 
-@@ -1105,7 +1105,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	if (!strcmp(component->name, "snd-soc-dummy"))
- 		return 0;
- 
--	if (component->probed) {
-+	if (component->card) {
- 		if (component->card != card) {
- 			dev_err(component->dev,
- 				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
-@@ -1115,13 +1115,13 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		return 0;
- 	}
- 
-+	if (!try_module_get(component->dev->driver->owner))
-+		return -ENODEV;
++static const struct reg_default wm5110_sysclk_reve_patch[] = {
++	{ 0x3270, 0xE410 },
++	{ 0x3271, 0x3078 },
++	{ 0x3272, 0xE410 },
++	{ 0x3273, 0x3070 },
++	{ 0x3274, 0xE410 },
++	{ 0x3275, 0x3066 },
++	{ 0x3276, 0xE410 },
++	{ 0x3277, 0x3056 },
++	{ 0x327A, 0xE414 },
++	{ 0x327B, 0x3078 },
++	{ 0x327C, 0xE414 },
++	{ 0x327D, 0x3070 },
++	{ 0x327E, 0xE414 },
++	{ 0x327F, 0x3066 },
++	{ 0x3280, 0xE414 },
++	{ 0x3281, 0x3056 },
++};
 +
- 	component->card = card;
- 	dapm->card = card;
- 	soc_set_name_prefix(card, component);
- 
--	if (!try_module_get(component->dev->driver->owner))
--		return -ENODEV;
--
- 	soc_init_component_debugfs(component);
- 
- 	if (component->dapm_widgets) {
-@@ -1165,7 +1165,6 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		snd_soc_dapm_add_routes(dapm, component->dapm_routes,
- 					component->num_dapm_routes);
- 
--	component->probed = 1;
- 	list_add(&dapm->list, &card->dapm_list);
- 
- 	/* This is a HACK and will be removed soon */
-@@ -1176,6 +1175,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 
- err_probe:
- 	soc_cleanup_component_debugfs(component);
-+	component->card = NULL;
- 	module_put(component->dev->driver->owner);
- 
- 	return ret;
-@@ -1459,7 +1459,7 @@ static void soc_remove_aux_dev(struct snd_soc_card *card, int num)
- 		rtd->dev_registered = 0;
+ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 			    struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -146,7 +165,9 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 		patch_size = ARRAY_SIZE(wm5110_sysclk_revd_patch);
+ 		break;
+ 	default:
+-		return 0;
++		patch = wm5110_sysclk_reve_patch;
++		patch_size = ARRAY_SIZE(wm5110_sysclk_reve_patch);
++		break;
  	}
  
--	if (component && component->probed)
-+	if (component)
- 		soc_remove_component(component);
+ 	switch (event) {
+@@ -164,6 +185,249 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
++static const struct reg_default wm5110_no_dre_left_enable[] = {
++	{ 0x3024, 0xE410 },
++	{ 0x3025, 0x0056 },
++	{ 0x301B, 0x0224 },
++	{ 0x301F, 0x4263 },
++	{ 0x3021, 0x5291 },
++	{ 0x3030, 0xE410 },
++	{ 0x3031, 0x3066 },
++	{ 0x3032, 0xE410 },
++	{ 0x3033, 0x3070 },
++	{ 0x3034, 0xE410 },
++	{ 0x3035, 0x3078 },
++	{ 0x3036, 0xE410 },
++	{ 0x3037, 0x3080 },
++	{ 0x3038, 0xE410 },
++	{ 0x3039, 0x3080 },
++};
++
++static const struct reg_default wm5110_dre_left_enable[] = {
++	{ 0x3024, 0x0231 },
++	{ 0x3025, 0x0B00 },
++	{ 0x301B, 0x0227 },
++	{ 0x301F, 0x4266 },
++	{ 0x3021, 0x5294 },
++	{ 0x3030, 0xE231 },
++	{ 0x3031, 0x0266 },
++	{ 0x3032, 0x8231 },
++	{ 0x3033, 0x4B15 },
++	{ 0x3034, 0x8231 },
++	{ 0x3035, 0x0B15 },
++	{ 0x3036, 0xE231 },
++	{ 0x3037, 0x5294 },
++	{ 0x3038, 0x0231 },
++	{ 0x3039, 0x0B00 },
++};
++
++static const struct reg_default wm5110_no_dre_right_enable[] = {
++	{ 0x3074, 0xE414 },
++	{ 0x3075, 0x0056 },
++	{ 0x306B, 0x0224 },
++	{ 0x306F, 0x4263 },
++	{ 0x3071, 0x5291 },
++	{ 0x3080, 0xE414 },
++	{ 0x3081, 0x3066 },
++	{ 0x3082, 0xE414 },
++	{ 0x3083, 0x3070 },
++	{ 0x3084, 0xE414 },
++	{ 0x3085, 0x3078 },
++	{ 0x3086, 0xE414 },
++	{ 0x3087, 0x3080 },
++	{ 0x3088, 0xE414 },
++	{ 0x3089, 0x3080 },
++};
++
++static const struct reg_default wm5110_dre_right_enable[] = {
++	{ 0x3074, 0x0231 },
++	{ 0x3075, 0x0B00 },
++	{ 0x306B, 0x0227 },
++	{ 0x306F, 0x4266 },
++	{ 0x3071, 0x5294 },
++	{ 0x3080, 0xE231 },
++	{ 0x3081, 0x0266 },
++	{ 0x3082, 0x8231 },
++	{ 0x3083, 0x4B17 },
++	{ 0x3084, 0x8231 },
++	{ 0x3085, 0x0B17 },
++	{ 0x3086, 0xE231 },
++	{ 0x3087, 0x5294 },
++	{ 0x3088, 0x0231 },
++	{ 0x3089, 0x0B00 },
++};
++
++static int wm5110_hp_pre_enable(struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->arizona;
++	unsigned int val = snd_soc_read(codec, ARIZONA_DRE_ENABLE);
++	const struct reg_default *wseq;
++	int nregs;
++
++	switch (w->shift) {
++	case ARIZONA_OUT1L_ENA_SHIFT:
++		if (val & ARIZONA_DRE1L_ENA_MASK) {
++			wseq = wm5110_dre_left_enable;
++			nregs = ARRAY_SIZE(wm5110_dre_left_enable);
++		} else {
++			wseq = wm5110_no_dre_left_enable;
++			nregs = ARRAY_SIZE(wm5110_no_dre_left_enable);
++			priv->out_up_delay += 10;
++		}
++		break;
++	case ARIZONA_OUT1R_ENA_SHIFT:
++		if (val & ARIZONA_DRE1R_ENA_MASK) {
++			wseq = wm5110_dre_right_enable;
++			nregs = ARRAY_SIZE(wm5110_dre_right_enable);
++		} else {
++			wseq = wm5110_no_dre_right_enable;
++			nregs = ARRAY_SIZE(wm5110_no_dre_right_enable);
++			priv->out_up_delay += 10;
++		}
++		break;
++	default:
++		return 0;
++	}
++
++	return regmap_multi_reg_write(arizona->regmap, wseq, nregs);
++}
++
++static int wm5110_hp_pre_disable(struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	unsigned int val = snd_soc_read(codec, ARIZONA_DRE_ENABLE);
++
++	switch (w->shift) {
++	case ARIZONA_OUT1L_ENA_SHIFT:
++		if (!(val & ARIZONA_DRE1L_ENA_MASK)) {
++			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
++					    ARIZONA_WS_TRG1, ARIZONA_WS_TRG1);
++			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
++					    ARIZONA_WS_TRG1, 0);
++			priv->out_down_delay += 27;
++		}
++		break;
++	case ARIZONA_OUT1R_ENA_SHIFT:
++		if (!(val & ARIZONA_DRE1R_ENA_MASK)) {
++			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
++					    ARIZONA_WS_TRG2, ARIZONA_WS_TRG2);
++			snd_soc_update_bits(codec, ARIZONA_SPARE_TRIGGERS,
++					    ARIZONA_WS_TRG2, 0);
++			priv->out_down_delay += 27;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int wm5110_hp_ev(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	switch (priv->arizona->rev) {
++	case 0 ... 3:
++		break;
++	default:
++		switch (event) {
++		case SND_SOC_DAPM_PRE_PMU:
++			wm5110_hp_pre_enable(w);
++			break;
++		case SND_SOC_DAPM_PRE_PMD:
++			wm5110_hp_pre_disable(w);
++			break;
++		default:
++			break;
++		}
++		break;
++	}
++
++	return arizona_hp_ev(w, kcontrol, event);
++}
++
++static int wm5110_clear_pga_volume(struct arizona *arizona, int output)
++{
++	struct reg_default clear_pga = {
++		ARIZONA_OUTPUT_PATH_CONFIG_1L + output * 4, 0x80
++	};
++	int ret;
++
++	ret = regmap_multi_reg_write_bypassed(arizona->regmap, &clear_pga, 1);
++	if (ret)
++		dev_err(arizona->dev, "Failed to clear PGA (0x%x): %d\n",
++			clear_pga.reg, ret);
++
++	return ret;
++}
++
++static int wm5110_put_dre(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	unsigned int ena, dre;
++	unsigned int mask = (0x1 << mc->shift) | (0x1 << mc->rshift);
++	unsigned int lnew = (!!ucontrol->value.integer.value[0]) << mc->shift;
++	unsigned int rnew = (!!ucontrol->value.integer.value[1]) << mc->rshift;
++	unsigned int lold, rold;
++	unsigned int lena, rena;
++	int ret;
++
++	snd_soc_dapm_mutex_lock(dapm);
++
++	ret = regmap_read(arizona->regmap, ARIZONA_OUTPUT_ENABLES_1, &ena);
++	if (ret) {
++		dev_err(arizona->dev, "Failed to read output state: %d\n", ret);
++		goto err;
++	}
++	ret = regmap_read(arizona->regmap, ARIZONA_DRE_ENABLE, &dre);
++	if (ret) {
++		dev_err(arizona->dev, "Failed to read DRE state: %d\n", ret);
++		goto err;
++	}
++
++	lold = dre & (1 << mc->shift);
++	rold = dre & (1 << mc->rshift);
++	/* Enables are channel wise swapped from the DRE enables */
++	lena = ena & (1 << mc->rshift);
++	rena = ena & (1 << mc->shift);
++
++	if ((lena && lnew != lold) || (rena && rnew != rold)) {
++		dev_err(arizona->dev, "Can't change DRE on active outputs\n");
++		ret = -EBUSY;
++		goto err;
++	}
++
++	ret = regmap_update_bits(arizona->regmap, ARIZONA_DRE_ENABLE,
++				 mask, lnew | rnew);
++	if (ret) {
++		dev_err(arizona->dev, "Failed to set DRE: %d\n", ret);
++		goto err;
++	}
++
++	/* Force reset of PGA volumes, if turning DRE off */
++	if (!lnew && lold)
++		wm5110_clear_pga_volume(arizona, mc->shift);
++
++	if (!rnew && rold)
++		wm5110_clear_pga_volume(arizona, mc->rshift);
++
++err:
++	snd_soc_dapm_mutex_unlock(dapm);
++
++	return ret;
++}
++
+ static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
+ static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+ static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
+@@ -409,12 +673,15 @@ SOC_DOUBLE("SPKDAT1 Switch", ARIZONA_PDM_SPK1_CTRL_1, ARIZONA_SPK1L_MUTE_SHIFT,
+ SOC_DOUBLE("SPKDAT2 Switch", ARIZONA_PDM_SPK2_CTRL_1, ARIZONA_SPK2L_MUTE_SHIFT,
+ 	   ARIZONA_SPK2R_MUTE_SHIFT, 1, 1),
+ 
+-SOC_DOUBLE("HPOUT1 DRE Switch", ARIZONA_DRE_ENABLE,
+-	   ARIZONA_DRE1L_ENA_SHIFT, ARIZONA_DRE1R_ENA_SHIFT, 1, 0),
+-SOC_DOUBLE("HPOUT2 DRE Switch", ARIZONA_DRE_ENABLE,
+-	   ARIZONA_DRE2L_ENA_SHIFT, ARIZONA_DRE2R_ENA_SHIFT, 1, 0),
+-SOC_DOUBLE("HPOUT3 DRE Switch", ARIZONA_DRE_ENABLE,
+-	   ARIZONA_DRE3L_ENA_SHIFT, ARIZONA_DRE3R_ENA_SHIFT, 1, 0),
++SOC_DOUBLE_EXT("HPOUT1 DRE Switch", ARIZONA_DRE_ENABLE,
++	   ARIZONA_DRE1L_ENA_SHIFT, ARIZONA_DRE1R_ENA_SHIFT, 1, 0,
++	   snd_soc_get_volsw, wm5110_put_dre),
++SOC_DOUBLE_EXT("HPOUT2 DRE Switch", ARIZONA_DRE_ENABLE,
++	   ARIZONA_DRE2L_ENA_SHIFT, ARIZONA_DRE2R_ENA_SHIFT, 1, 0,
++	   snd_soc_get_volsw, wm5110_put_dre),
++SOC_DOUBLE_EXT("HPOUT3 DRE Switch", ARIZONA_DRE_ENABLE,
++	   ARIZONA_DRE3L_ENA_SHIFT, ARIZONA_DRE3R_ENA_SHIFT, 1, 0,
++	   snd_soc_get_volsw, wm5110_put_dre),
+ 
+ SOC_ENUM("Output Ramp Up", arizona_out_vi_ramp),
+ SOC_ENUM("Output Ramp Down", arizona_out_vd_ramp),
+@@ -904,11 +1171,11 @@ SND_SOC_DAPM_AIF_IN("AIF3RX2", NULL, 0,
+ 		    ARIZONA_AIF3_RX_ENABLES, ARIZONA_AIF3RX2_ENA_SHIFT, 0),
+ 
+ SND_SOC_DAPM_PGA_E("OUT1L", SND_SOC_NOPM,
+-		   ARIZONA_OUT1L_ENA_SHIFT, 0, NULL, 0, arizona_hp_ev,
++		   ARIZONA_OUT1L_ENA_SHIFT, 0, NULL, 0, wm5110_hp_ev,
+ 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ SND_SOC_DAPM_PGA_E("OUT1R", SND_SOC_NOPM,
+-		   ARIZONA_OUT1R_ENA_SHIFT, 0, NULL, 0, arizona_hp_ev,
++		   ARIZONA_OUT1R_ENA_SHIFT, 0, NULL, 0, wm5110_hp_ev,
+ 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
+ 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ SND_SOC_DAPM_PGA_E("OUT2L", ARIZONA_OUTPUT_ENABLES_1,
 -- 
 2.1.4
