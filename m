@@ -1,122 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Fix kcontrol widget name memory
-	management" to the asoc tree
-Date: Wed, 08 Jul 2015 22:17:11 +0100
-Message-ID: <E1ZCwiN-00071w-5w@debutante>
-References: <1436385599-12403-1-git-send-email-lars@metafoo.de>
+From: Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [media-workshop] [ANNOUNCE] Media Controller workshop in Helsinki
+Date: Thu, 9 Jul 2015 00:53:33 +0300
+Message-ID: <20150708215333.GE3709@valkosipuli.retiisi.org.uk>
+References: <20150708081622.63e333bd@recife.lan>
+ <559D14EB.4090108@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D4BA7265A8C
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 23:17:19 +0200 (CEST)
-In-Reply-To: <1436385599-12403-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <559D14EB.4090108@metafoo.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, LMML <linux-media@vger.kernel.org>, media-workshop@linuxtv.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello folks,
 
-   ASoC: dapm: Fix kcontrol widget name memory management
+Please let me know if you're planning to attend.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From e18077b6e5dfe26e9fbbdc1fd1085a1701c24bea Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 8 Jul 2015 21:59:59 +0200
-Subject: [PATCH] ASoC: dapm: Fix kcontrol widget name memory management
-
-The name field of the widget template is only used inside
-snd_soc_dapm_new_control_unlocked() which allocates a copy for the actual
-widget. This means we need to free the name allocated for the template in
-dapm_kcontrol_data_alloc() and not the name of the actual widget in
-dapm_kcontrol_free(). Otherwise we get a double free on the widget name and
-a memory leak on the template name.
-
-Fixes: 773da9b358bf ("ASoC: dapm: Append "Autodisable" to autodisable widget names")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-dapm.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1779430013ea..9f270c0308b7 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -358,9 +358,10 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 			data->widget =
- 				snd_soc_dapm_new_control_unlocked(widget->dapm,
- 				&template);
-+			kfree(name);
- 			if (!data->widget) {
- 				ret = -ENOMEM;
--				goto err_name;
-+				goto err_data;
- 			}
- 		}
- 		break;
-@@ -391,9 +392,10 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 
- 			data->widget = snd_soc_dapm_new_control_unlocked(
- 						widget->dapm, &template);
-+			kfree(name);
- 			if (!data->widget) {
- 				ret = -ENOMEM;
--				goto err_name;
-+				goto err_data;
- 			}
- 
- 			snd_soc_dapm_add_path(widget->dapm, data->widget,
-@@ -408,8 +410,6 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 
- 	return 0;
- 
--err_name:
--	kfree(name);
- err_data:
- 	kfree(data);
- 	return ret;
-@@ -418,8 +418,6 @@ err_data:
- static void dapm_kcontrol_free(struct snd_kcontrol *kctl)
- {
- 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kctl);
--	if (data->widget)
--		kfree(data->widget->name);
- 	kfree(data->wlist);
- 	kfree(data);
- }
 -- 
-2.1.4
+Kind regards,
+
+Sakari Ailus
+e-mail: sakari.ailus@iki.fi	XMPP: sailus@retiisi.org.uk
