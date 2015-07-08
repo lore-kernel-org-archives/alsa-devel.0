@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Prevent components from being bound to
-	multiple cards" to the asoc tree
-Date: Wed, 08 Jul 2015 20:05:22 +0100
-Message-ID: <E1ZCueo-0005E2-NE@debutante>
-References: <1436381264-6924-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: Use card field to indicate whether a
+	component is bound" to the asoc tree
+Date: Wed, 08 Jul 2015 20:05:21 +0100
+Message-ID: <E1ZCuen-0005DZ-Mn@debutante>
+References: <1436381264-6924-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 76821265A72
+ by alsa0.perex.cz (Postfix) with ESMTP id 92164265A86
  for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:05:29 +0200 (CEST)
-In-Reply-To: <1436381264-6924-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <1436381264-6924-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Prevent components from being bound to multiple cards
+   ASoC: Use card field to indicate whether a component is bound
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,110 @@ to this mail.
 Thanks,
 Mark
 
->From 1b7c12316982f74a5b8e7704c24cf5524d0723a3 Mon Sep 17 00:00:00 2001
+>From abd31b32dde4683df6fd0439caa314aafd751698 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 8 Jul 2015 20:47:43 +0200
-Subject: [PATCH] ASoC: Prevent components from being bound to multiple cards
+Date: Wed, 8 Jul 2015 20:47:44 +0200
+Subject: [PATCH] ASoC: Use card field to indicate whether a component is bound
 
-A component can only be bound to a single card at a time. Binding it to
-card while it is already bound to another will result in undefined
-behavior.
+Use the card field of a component to indicate whether it is bound or not.
+This makes a certain sense given that the field contains the card the
+component is bound to and a component can only be bound to one card at a
+time. And it also requires to unset the card field when the component is
+unbound from the card.
 
-As the undefined behavior might only manifest itself later on it is not
-necessarily always straight forward to find the cause. To prevent this add
-a check that refuses to bind a component to multiple cards as well as
-prints a error describing the problem.
+This makes the probded flag redundant and it can be removed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |  1 -
+ sound/soc/soc-core.c | 16 ++++++++--------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 93df8bf9d54a..59635a12c3be 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -758,7 +758,6 @@ struct snd_soc_component {
+ 
+ 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
+ 	unsigned int registered_as_component:1;
+-	unsigned int probed:1;
+ 
+ 	struct list_head list;
+ 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6ce621749f8d..96bb71aea529 100644
+index 96bb71aea529..42575b03411e 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1102,9 +1102,19 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	struct snd_soc_dai *dai;
- 	int ret;
+@@ -978,7 +978,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
  
--	if (!strcmp(component->name, "snd-soc-dummy") || component->probed)
-+	if (!strcmp(component->name, "snd-soc-dummy"))
+ static void soc_remove_component(struct snd_soc_component *component)
+ {
+-	if (!component->probed)
++	if (!component->card)
+ 		return;
+ 
+ 	/* This is a HACK and will be removed soon */
+@@ -991,7 +991,7 @@ static void soc_remove_component(struct snd_soc_component *component)
+ 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+ 
+ 	soc_cleanup_component_debugfs(component);
+-	component->probed = 0;
++	component->card = NULL;
+ 	module_put(component->dev->driver->owner);
+ }
+ 
+@@ -1105,7 +1105,7 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	if (!strcmp(component->name, "snd-soc-dummy"))
  		return 0;
  
-+	if (component->probed) {
-+		if (component->card != card) {
-+			dev_err(component->dev,
-+				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
-+				card->name, component->card->name);
-+			return -ENODEV;
-+		}
-+		return 0;
-+	}
+-	if (component->probed) {
++	if (component->card) {
+ 		if (component->card != card) {
+ 			dev_err(component->dev,
+ 				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
+@@ -1115,13 +1115,13 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		return 0;
+ 	}
+ 
++	if (!try_module_get(component->dev->driver->owner))
++		return -ENODEV;
 +
  	component->card = card;
  	dapm->card = card;
  	soc_set_name_prefix(card, component);
+ 
+-	if (!try_module_get(component->dev->driver->owner))
+-		return -ENODEV;
+-
+ 	soc_init_component_debugfs(component);
+ 
+ 	if (component->dapm_widgets) {
+@@ -1165,7 +1165,6 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		snd_soc_dapm_add_routes(dapm, component->dapm_routes,
+ 					component->num_dapm_routes);
+ 
+-	component->probed = 1;
+ 	list_add(&dapm->list, &card->dapm_list);
+ 
+ 	/* This is a HACK and will be removed soon */
+@@ -1176,6 +1175,7 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 
+ err_probe:
+ 	soc_cleanup_component_debugfs(component);
++	component->card = NULL;
+ 	module_put(component->dev->driver->owner);
+ 
+ 	return ret;
+@@ -1459,7 +1459,7 @@ static void soc_remove_aux_dev(struct snd_soc_card *card, int num)
+ 		rtd->dev_registered = 0;
+ 	}
+ 
+-	if (component && component->probed)
++	if (component)
+ 		soc_remove_component(component);
+ }
+ 
 -- 
 2.1.4
