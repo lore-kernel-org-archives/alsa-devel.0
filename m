@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm0010: Remove spurious missing
-	IRQF_ONESHOT" to the asoc tree
-Date: Wed, 08 Jul 2015 19:50:57 +0100
-Message-ID: <E1ZCuQr-0004tX-38@debutante>
-References: <1435843604.17967.1.camel@ingics.com>
+Subject: Re: [PATCH v7 1/4] ASoC: Intel: add Skylake HDA
+	platform driver
+Date: Wed, 8 Jul 2015 19:56:55 +0100
+Message-ID: <20150708185655.GD11162@sirena.org.uk>
+References: <1436153066-23962-1-git-send-email-vinod.koul@intel.com>
+ <1436153066-23962-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0590056819264393355=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 00C0C2650AF
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:51:06 +0200 (CEST)
-In-Reply-To: <1435843604.17967.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B8C72650B0
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:57:02 +0200 (CEST)
+In-Reply-To: <1436153066-23962-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: wm0010: Remove spurious missing IRQF_ONESHOT
+--===============0590056819264393355==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="f3uHgXesLFB1/u0Z"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--f3uHgXesLFB1/u0Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Jul 06, 2015 at 08:54:23AM +0530, Vinod Koul wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+> +	pm_runtime_get_sync(dai->dev);
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Check the return value please, this can fail.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +static int skl_get_format(struct snd_pcm_substream *substream,
+> +		struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+> +	struct skl_dma_params *dma_params;
+> +	int format_val = 0;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +
+> +	dma_params  = (struct skl_dma_params *)
+> +			snd_soc_dai_get_dma_data(codec_dai, substream);
 
-Thanks,
-Mark
+Should be no need to cast away from void.
 
->From 030e6ee241f0586308622bcdd273a317976b3169 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 2 Jul 2015 21:26:44 +0800
-Subject: [PATCH] ASoC: wm0010: Remove spurious missing IRQF_ONESHOT
+> +	if (substream->runtime->dma_area)
+> +		memset(substream->runtime->dma_area, 0,
+> +				params_buffer_bytes(params));
 
-This reverts 58d468328646 ("ASoC: wm0010: Add missing IRQF_ONESHOT").
+Why do we need to memset here?
 
-The coccinelle warnings is false positive because the original code does
-set IRQF_ONESHOT by "trigger |= IRQF_ONESHOT;".
+> +	dma_params  = (struct skl_dma_params *)
+> +			snd_soc_dai_get_dma_data(dai, substream);
+> +
+> +	pm_runtime_mark_last_busy(dai->dev);
+> +	pm_runtime_put_autosuspend(dai->dev);
+> +	kfree(dma_params);
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm0010.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We check elsewhere for dma_params being NULL, shouldn't we set it to be
+NULL when we free?
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index e1da49f39334..f2c6ad4b8fde 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
-@@ -953,7 +953,7 @@ static int wm0010_spi_probe(struct spi_device *spi)
- 		trigger = IRQF_TRIGGER_FALLING;
- 	trigger |= IRQF_ONESHOT;
- 
--	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger | IRQF_ONESHOT,
-+	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger,
- 				   "wm0010", wm0010);
- 	if (ret) {
- 		dev_err(wm0010->dev, "Failed to request IRQ %d: %d\n",
--- 
-2.1.4
+--f3uHgXesLFB1/u0Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVnXJ3AAoJECTWi3JdVIfQhAUH/jFTKNf37am4zfK8Ob0z6FwJ
+3UESj1CbcstU5jCvHEAPgBMM0mtNYKwmlHFgXPohFLX0BMKedR3UxD8edFdMPV1x
+qdG70oXkMZOr9HgicLYDMtTlb8m7h1IP6lk5s/wqjNBa97JF6U3hfKND5AafNL4f
+xy3qy2o1mH9DXRK66ij3RvOgGv0WHt/BXtOABpUGOrknVVA8zeIYEP4WRYvCAh3N
+LaNElSiO6zxzF9Xi2+kOz6xHo+YC2wyBRe1nRG3EabQnYQcjgyS0adXIJIE8/sg7
+RXBn3Z2q2wQVEhoV21EAWYkFLNVCKY+m5nfRXFoEySZeVqh/6X9WxsCmwonYgwU=
+=8fzY
+-----END PGP SIGNATURE-----
+
+--f3uHgXesLFB1/u0Z--
+
+--===============0590056819264393355==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0590056819264393355==--
