@@ -1,17 +1,33 @@
-From: Alexandre Bique <bique.alexandre@gmail.com>
-Subject: Getting stable PCM device id
-Date: Wed, 8 Jul 2015 17:19:27 +0200
-Message-ID: <CAP737oJhCD_20qobOBZYfy60e0mXEjO9OP8hmxb3J5bod=ZDvw@mail.gmail.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two way
+	call	to the real sound card UDA1345TS
+Date: Wed, 8 Jul 2015 15:25:10 +0000
+Message-ID: <SIXPR04MB2537D3E909AD64CEEE825C4C3910@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de> <1429877130444.23317@tataelxsi.co.in>,
+ <553A3ADB.7040108@ladisch.de>,
+ <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>
+ <HKXPR04MB277B58064C140058C37487EC3B60@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <556C6EB8.7030401@ladisch.de>,
+ <HKXPR04MB277069B809070671B95BAFCC3B40@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <SIXPR04MB2530654AB664B2CE19B4665C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <SIXPR04MB2531DB716093D09C156BEA0C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <5593F513.4030705@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id BB90A2615F7
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 17:19:47 +0200 (CEST)
-Received: by laar3 with SMTP id r3so228164497laa.0
- for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2015 08:19:47 -0700 (PDT)
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0115.outbound.protection.outlook.com [134.170.140.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20973264EF3
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 17:25:15 +0200 (CEST)
+In-Reply-To: <5593F513.4030705@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,22 +37,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dear Clemens,
 
-I wonder how to get a PCM identifier that would be stable if you
-reboot or plug/unplug sound cards in a random order.
+Thanks a lot for your support Clemens
 
-I want to be able to store a sound card configuration and be able to
-restore it without relying on the card index or the device name,
-because if you have two times the same sound card it is not going to
-be unique.
+As you suggested, When I try to use alsa jack plugin, am facing the below error
 
-I'm not an expert in hardware ids, yet I imagine that we could use the
-hardware serial number or equivalent?
+root@lifeline:/# vi etc/asound.conf
+pcm.rawjack {
+type jack
+playback_ports {
+0 system:playback_1
+1 system:playback_2
+}
+capture_ports {
+0 system:capture_1
+1 system:capture_2
+}
+}
 
-Thank you very much,
--- 
-Alexandre Bique
+pcm.jack {
+type plug
+slave { pcm "rawjack" }
+hint {
+description "JACK Audio Connection Kit"
+}
+}
+
+pcm.!default {
+type plug
+slave { pcm "rawjack" }
+}
+
+root@lifeline:/opt/tunstall/audio# aplay -D pcm.jack TangoForTajMusic11.wav
+ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/dlmisc.c:252:(snd1_dlobj_cache_get) Cannot open shared library /usr/lib/alsa-lib/libasound_module_pcm_jack.so
+aplay: main:722: audio open error: No such device or address
+root@lifeline:/opt/tunstall/audio#
+
+
+I feel order to resolve this error, 
+
+1. I feel that there is no libasound_module_pcm_jack.so,  I have downloaded the alsa-plugins-1.0.29 could you please help me out how this can be cross compiled for my TI AM335x platform
+
+2. Could you please let me know to cross compile &  install the package libasound2-dev 
+
+Could you please help me out in resolving this issue
+
+Kindly do the needful as early as possible
+
+Many Thanks a lot for your support once again w.r.t this thread so far
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Wednesday, July 1, 2015 7:41 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+
+Srinivasan S wrote:
+> Am facing overrun & underrun issues, when I run the the above GSM application with the attached asound.conf
+
+The sound card and the GSM streams are not synchronized.
+You need to compensate for the drift between the clocks, typically by resampling.
+(Jack's alsa_in/alsa_out would automatically do this.)
+
+
+Regards,
+Clemens
