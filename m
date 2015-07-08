@@ -1,645 +1,486 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCHv2 3/3] regmap: Use different lockdep class for each regmap init call
-Date: Wed,  8 Jul 2015 14:30:18 +0800
-Message-ID: <1436337018-32464-4-git-send-email-drinkcat@chromium.org>
-References: <1436337018-32464-1-git-send-email-drinkcat@chromium.org>
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <1436337018-32464-1-git-send-email-drinkcat@chromium.org>
-Sender: linux-pm-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Arjan van de Ven <arjan@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Nicolas Boichat <drinkcat@chromium.org>, linux-arm-kernel@lists.infradead.org, Zhang Rui <rui.zhang@intel.com>, Eduardo Valentin <edubezval@gmail.com>, Lee Jones <lee.jones@linaro.org>, Maxime Coquelin <maxime.coquelin@st.com>, Ajit
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
+ assignment for external base speaker and external microphone not working
+Date: Wed, 8 Jul 2015 08:51:30 +0200
+Message-ID: <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
+References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
+ <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
+ <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
+ <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+ <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
+ <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+ <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
+ <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D7C4261B07
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 08:51:50 +0200 (CEST)
+Received: by oiab3 with SMTP id b3so40854488oia.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jul 2015 23:51:49 -0700 (PDT)
+In-Reply-To: <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Lockdep validator complains about recursive locking and deadlock
-when two different regmap instances are called in a nested order.
-That happens anytime a regmap read/write call needs to access
-another regmap.
+Hi Raymond,
 
-This is because, for performance reason, lockdep groups all locks
-initialized by the same mutex_init() in the same lock class.
-Therefore all regmap mutexes are in the same lock class, leading
-to lockdep "nested locking" warnings if a regmap accesses another
-regmap.
+First I think I am going to split this mail into two topics, starting with
+the easiest one, the External Base speaker.
 
-In general, it is impossible to establish in advance the hierarchy
-of regmaps, so we make sure that each regmap init call initializes
-its own static lock_class_key. This is done by wrapping all
-regmap_init calls into macros.
+The code above added two new options: Surround 2.1 and Surround 4.0.
+After plugging in the base speaker:
 
-This also allows us to give meaningful names to the lock_class_key.
-For example, in rt5677 case, we have in /proc/lockdep_chains:
-irq_context: 0
-[ffffffc0018d2198] &dev->mutex
-[ffffffc0018d2198] &dev->mutex
-[ffffffc001bd7f60] rt5677:5104:(&rt5677_regmap)->_lock
-[ffffffc001bd7f58] rt5677:5096:(&rt5677_regmap_physical)->_lock
-[ffffffc001b95448] &(&base->lock)->rlock
+- The Base speaker plays without this code (but the previous code was
+necessary) on the Speakers.
+- The Base speaker does not play on Surround 2.1
+- The Base speaker does play on Surround 4.0
+- The Base speaker does not switch automatically to any Surround when
+plugged in.
 
-The above would have resulted in a lockdep recursive warning
-previously. This is not the case anymore as the lockdep validator
-now clearly identifies the 2 regmaps as separate.
+Recently I have been developing against the mainline Kernel 4.2-rc1, but it
+gives me only kernel panics.
+Than I realized that I should develop against the Alsa tree. What is the
+best tree to develop patches against?
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
- drivers/base/regmap/regmap-ac97.c |  22 +++--
- drivers/base/regmap/regmap-i2c.c  |  22 +++--
- drivers/base/regmap/regmap-mmio.c |  27 ++++--
- drivers/base/regmap/regmap-spi.c  |  22 +++--
- drivers/base/regmap/regmap-spmi.c |  44 +++++----
- drivers/base/regmap/regmap.c      |  31 +++---
- include/linux/regmap.h            | 192 ++++++++++++++++++++++++++++----------
- 7 files changed, 250 insertions(+), 110 deletions(-)
+On 6 July 2015 at 05:19, Raymond Yau <superquad.vortex2@gmail.com> wrote:
 
-diff --git a/drivers/base/regmap/regmap-ac97.c b/drivers/base/regmap/regmap-ac97.c
-index 8d304e2..aa631be 100644
---- a/drivers/base/regmap/regmap-ac97.c
-+++ b/drivers/base/regmap/regmap-ac97.c
-@@ -87,12 +87,15 @@ static const struct regmap_bus ac97_regmap_bus = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_ac97(struct snd_ac97 *ac97,
--				const struct regmap_config *config)
-+struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name)
- {
--	return regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config);
-+	return __regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_ac97);
-+EXPORT_SYMBOL_GPL(__regmap_init_ac97);
- 
- /**
-  * devm_regmap_init_ac97(): Initialise AC'97 register map
-@@ -104,11 +107,14 @@ EXPORT_SYMBOL_GPL(regmap_init_ac97);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_ac97(struct snd_ac97 *ac97,
--				     const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name)
- {
--	return devm_regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config);
-+	return __devm_regmap_init(&ac97->dev, &ac97_regmap_bus, ac97, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_ac97);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_ac97);
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/base/regmap/regmap-i2c.c b/drivers/base/regmap/regmap-i2c.c
-index 4b76e33..3163b22 100644
---- a/drivers/base/regmap/regmap-i2c.c
-+++ b/drivers/base/regmap/regmap-i2c.c
-@@ -242,17 +242,20 @@ static const struct regmap_bus *regmap_get_i2c_bus(struct i2c_client *i2c,
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_i2c(struct i2c_client *i2c,
--			       const struct regmap_config *config)
-+struct regmap *__regmap_init_i2c(struct i2c_client *i2c,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
- {
- 	const struct regmap_bus *bus = regmap_get_i2c_bus(i2c, config);
- 
- 	if (IS_ERR(bus))
- 		return ERR_CAST(bus);
- 
--	return regmap_init(&i2c->dev, bus, &i2c->dev, config);
-+	return __regmap_init(&i2c->dev, bus, &i2c->dev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_i2c);
-+EXPORT_SYMBOL_GPL(__regmap_init_i2c);
- 
- /**
-  * devm_regmap_init_i2c(): Initialise managed register map
-@@ -264,16 +267,19 @@ EXPORT_SYMBOL_GPL(regmap_init_i2c);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_i2c(struct i2c_client *i2c,
--				    const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_i2c(struct i2c_client *i2c,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
- 	const struct regmap_bus *bus = regmap_get_i2c_bus(i2c, config);
- 
- 	if (IS_ERR(bus))
- 		return ERR_CAST(bus);
- 
--	return devm_regmap_init(&i2c->dev, bus, &i2c->dev, config);
-+	return __devm_regmap_init(&i2c->dev, bus, &i2c->dev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_i2c);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_i2c);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap-mmio.c b/drivers/base/regmap/regmap-mmio.c
-index 04a329a..a1b2b27 100644
---- a/drivers/base/regmap/regmap-mmio.c
-+++ b/drivers/base/regmap/regmap-mmio.c
-@@ -307,9 +307,11 @@ err_free:
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--				    void __iomem *regs,
--				    const struct regmap_config *config)
-+struct regmap *__regmap_init_mmio_clk(struct device *dev, const char *clk_id,
-+				      void __iomem *regs,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
- 	struct regmap_mmio_context *ctx;
- 
-@@ -317,9 +319,10 @@ struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
- 	if (IS_ERR(ctx))
- 		return ERR_CAST(ctx);
- 
--	return regmap_init(dev, &regmap_mmio, ctx, config);
-+	return __regmap_init(dev, &regmap_mmio, ctx, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_mmio_clk);
-+EXPORT_SYMBOL_GPL(__regmap_init_mmio_clk);
- 
- /**
-  * devm_regmap_init_mmio_clk(): Initialise managed register map with clock
-@@ -333,9 +336,12 @@ EXPORT_SYMBOL_GPL(regmap_init_mmio_clk);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--					 void __iomem *regs,
--					 const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_mmio_clk(struct device *dev,
-+					   const char *clk_id,
-+					   void __iomem *regs,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name)
- {
- 	struct regmap_mmio_context *ctx;
- 
-@@ -343,8 +349,9 @@ struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
- 	if (IS_ERR(ctx))
- 		return ERR_CAST(ctx);
- 
--	return devm_regmap_init(dev, &regmap_mmio, ctx, config);
-+	return __devm_regmap_init(dev, &regmap_mmio, ctx, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_mmio_clk);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_mmio_clk);
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/base/regmap/regmap-spi.c b/drivers/base/regmap/regmap-spi.c
-index 53d1148..4c7850d 100644
---- a/drivers/base/regmap/regmap-spi.c
-+++ b/drivers/base/regmap/regmap-spi.c
-@@ -122,12 +122,15 @@ static struct regmap_bus regmap_spi = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spi(struct spi_device *spi,
--			       const struct regmap_config *config)
-+struct regmap *__regmap_init_spi(struct spi_device *spi,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
- {
--	return regmap_init(&spi->dev, &regmap_spi, &spi->dev, config);
-+	return __regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spi);
-+EXPORT_SYMBOL_GPL(__regmap_init_spi);
- 
- /**
-  * devm_regmap_init_spi(): Initialise register map
-@@ -139,11 +142,14 @@ EXPORT_SYMBOL_GPL(regmap_init_spi);
-  * to a struct regmap.  The map will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spi(struct spi_device *spi,
--				    const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spi(struct spi_device *spi,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
--	return devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config);
-+	return __devm_regmap_init(&spi->dev, &regmap_spi, &spi->dev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spi);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spi);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap-spmi.c b/drivers/base/regmap/regmap-spmi.c
-index d7026dc..7f50f58 100644
---- a/drivers/base/regmap/regmap-spmi.c
-+++ b/drivers/base/regmap/regmap-spmi.c
-@@ -99,12 +99,15 @@ static struct regmap_bus regmap_spmi_base = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spmi_base(struct spmi_device *sdev,
--				     const struct regmap_config *config)
-+struct regmap *__regmap_init_spmi_base(struct spmi_device *sdev,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name)
- {
--	return regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config);
-+	return __regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spmi_base);
-+EXPORT_SYMBOL_GPL(__regmap_init_spmi_base);
- 
- /**
-  * devm_regmap_init_spmi_base(): Create managed regmap for Base register space
-@@ -115,12 +118,15 @@ EXPORT_SYMBOL_GPL(regmap_init_spmi_base);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spmi_base(struct spmi_device *sdev,
--					  const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spmi_base(struct spmi_device *sdev,
-+					    const struct regmap_config *config,
-+					    struct lock_class_key *lock_key,
-+					    const char *lock_name)
- {
--	return devm_regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config);
-+	return __devm_regmap_init(&sdev->dev, &regmap_spmi_base, sdev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spmi_base);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spmi_base);
- 
- static int regmap_spmi_ext_read(void *context,
- 				const void *reg, size_t reg_size,
-@@ -230,12 +236,15 @@ static struct regmap_bus regmap_spmi_ext = {
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--struct regmap *regmap_init_spmi_ext(struct spmi_device *sdev,
--				    const struct regmap_config *config)
-+struct regmap *__regmap_init_spmi_ext(struct spmi_device *sdev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
- {
--	return regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config);
-+	return __regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config,
-+			     lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(regmap_init_spmi_ext);
-+EXPORT_SYMBOL_GPL(__regmap_init_spmi_ext);
- 
- /**
-  * devm_regmap_init_spmi_ext(): Create managed regmap for Ext register space
-@@ -246,11 +255,14 @@ EXPORT_SYMBOL_GPL(regmap_init_spmi_ext);
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--struct regmap *devm_regmap_init_spmi_ext(struct spmi_device *sdev,
--				     const struct regmap_config *config)
-+struct regmap *__devm_regmap_init_spmi_ext(struct spmi_device *sdev,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name)
- {
--	return devm_regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config);
-+	return __devm_regmap_init(&sdev->dev, &regmap_spmi_ext, sdev, config,
-+				  lock_key, lock_name);
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init_spmi_ext);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_spmi_ext);
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 7111d04..b9fddcc 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -527,10 +527,12 @@ EXPORT_SYMBOL_GPL(regmap_get_val_endian);
-  * a struct regmap.  This function should generally not be called
-  * directly, it should be called by bus-specific init functions.
-  */
--struct regmap *regmap_init(struct device *dev,
--			   const struct regmap_bus *bus,
--			   void *bus_context,
--			   const struct regmap_config *config)
-+struct regmap *__regmap_init(struct device *dev,
-+			     const struct regmap_bus *bus,
-+			     void *bus_context,
-+			     const struct regmap_config *config,
-+			     struct lock_class_key *lock_key,
-+			     const char *lock_name)
- {
- 	struct regmap *map;
- 	int ret = -EINVAL;
-@@ -556,10 +558,14 @@ struct regmap *regmap_init(struct device *dev,
- 			spin_lock_init(&map->spinlock);
- 			map->lock = regmap_lock_spinlock;
- 			map->unlock = regmap_unlock_spinlock;
-+			lockdep_set_class_and_name(&map->spinlock,
-+						   lock_key, lock_name);
- 		} else {
- 			mutex_init(&map->mutex);
- 			map->lock = regmap_lock_mutex;
- 			map->unlock = regmap_unlock_mutex;
-+			lockdep_set_class_and_name(&map->mutex,
-+						   lock_key, lock_name);
- 		}
- 		map->lock_arg = map;
- 	}
-@@ -899,7 +905,7 @@ err_map:
- err:
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL_GPL(regmap_init);
-+EXPORT_SYMBOL_GPL(__regmap_init);
- 
- static void devm_regmap_release(struct device *dev, void *res)
- {
-@@ -919,10 +925,12 @@ static void devm_regmap_release(struct device *dev, void *res)
-  * directly, it should be called by bus-specific init functions.  The
-  * map will be automatically freed by the device management code.
-  */
--struct regmap *devm_regmap_init(struct device *dev,
--				const struct regmap_bus *bus,
--				void *bus_context,
--				const struct regmap_config *config)
-+struct regmap *__devm_regmap_init(struct device *dev,
-+				  const struct regmap_bus *bus,
-+				  void *bus_context,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name)
- {
- 	struct regmap **ptr, *regmap;
- 
-@@ -930,7 +938,8 @@ struct regmap *devm_regmap_init(struct device *dev,
- 	if (!ptr)
- 		return ERR_PTR(-ENOMEM);
- 
--	regmap = regmap_init(dev, bus, bus_context, config);
-+	regmap = __regmap_init(dev, bus, bus_context, config,
-+			       lock_key, lock_name);
- 	if (!IS_ERR(regmap)) {
- 		*ptr = regmap;
- 		devres_add(dev, ptr);
-@@ -940,7 +949,7 @@ struct regmap *devm_regmap_init(struct device *dev,
- 
- 	return regmap;
- }
--EXPORT_SYMBOL_GPL(devm_regmap_init);
-+EXPORT_SYMBOL_GPL(__devm_regmap_init);
- 
- static void regmap_field_init(struct regmap_field *rm_field,
- 	struct regmap *regmap, struct reg_field reg_field)
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 59c55ea..5d70272 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -17,6 +17,7 @@
- #include <linux/rbtree.h>
- #include <linux/err.h>
- #include <linux/bug.h>
-+#include <linux/lockdep.h>
- 
- struct module;
- struct device;
-@@ -324,46 +325,147 @@ struct regmap_bus {
- 	enum regmap_endian val_format_endian_default;
- };
- 
--struct regmap *regmap_init(struct device *dev,
--			   const struct regmap_bus *bus,
--			   void *bus_context,
--			   const struct regmap_config *config);
--int regmap_attach_dev(struct device *dev, struct regmap *map,
--				 const struct regmap_config *config);
--struct regmap *regmap_init_i2c(struct i2c_client *i2c,
--			       const struct regmap_config *config);
--struct regmap *regmap_init_spi(struct spi_device *dev,
--			       const struct regmap_config *config);
--struct regmap *regmap_init_spmi_base(struct spmi_device *dev,
--				     const struct regmap_config *config);
--struct regmap *regmap_init_spmi_ext(struct spmi_device *dev,
--				    const struct regmap_config *config);
--struct regmap *regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--				    void __iomem *regs,
--				    const struct regmap_config *config);
--struct regmap *regmap_init_ac97(struct snd_ac97 *ac97,
--				const struct regmap_config *config);
--
--struct regmap *devm_regmap_init(struct device *dev,
--				const struct regmap_bus *bus,
--				void *bus_context,
--				const struct regmap_config *config);
--struct regmap *devm_regmap_init_i2c(struct i2c_client *i2c,
--				    const struct regmap_config *config);
--struct regmap *devm_regmap_init_spi(struct spi_device *dev,
--				    const struct regmap_config *config);
--struct regmap *devm_regmap_init_spmi_base(struct spmi_device *dev,
--					  const struct regmap_config *config);
--struct regmap *devm_regmap_init_spmi_ext(struct spmi_device *dev,
--					 const struct regmap_config *config);
--struct regmap *devm_regmap_init_mmio_clk(struct device *dev, const char *clk_id,
--					 void __iomem *regs,
--					 const struct regmap_config *config);
--struct regmap *devm_regmap_init_ac97(struct snd_ac97 *ac97,
--				     const struct regmap_config *config);
-+/*
-+ * __regmap_init functions.
-+ *
-+ * These functions take a lock key and name parameter, and should not be called
-+ * directly. Instead, use the regmap_init macros that generate a key and name
-+ * for each call.
-+ */
-+struct regmap *__regmap_init(struct device *dev,
-+			     const struct regmap_bus *bus,
-+			     void *bus_context,
-+			     const struct regmap_config *config,
-+			     struct lock_class_key *lock_key,
-+			     const char *lock_name);
-+struct regmap *__regmap_init_i2c(struct i2c_client *i2c,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
-+struct regmap *__regmap_init_spi(struct spi_device *dev,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
-+struct regmap *__regmap_init_spmi_base(struct spmi_device *dev,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name);
-+struct regmap *__regmap_init_spmi_ext(struct spmi_device *dev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__regmap_init_mmio_clk(struct device *dev, const char *clk_id,
-+				      void __iomem *regs,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name);
-+
-+struct regmap *__devm_regmap_init(struct device *dev,
-+				  const struct regmap_bus *bus,
-+				  void *bus_context,
-+				  const struct regmap_config *config,
-+				  struct lock_class_key *lock_key,
-+				  const char *lock_name);
-+struct regmap *__devm_regmap_init_i2c(struct i2c_client *i2c,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__devm_regmap_init_spi(struct spi_device *dev,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name);
-+struct regmap *__devm_regmap_init_spmi_base(struct spmi_device *dev,
-+					    const struct regmap_config *config,
-+					    struct lock_class_key *lock_key,
-+					    const char *lock_name);
-+struct regmap *__devm_regmap_init_spmi_ext(struct spmi_device *dev,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name);
-+struct regmap *__devm_regmap_init_mmio_clk(struct device *dev,
-+					   const char *clk_id,
-+					   void __iomem *regs,
-+					   const struct regmap_config *config,
-+					   struct lock_class_key *lock_key,
-+					   const char *lock_name);
-+struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
-+				       const struct regmap_config *config,
-+				       struct lock_class_key *lock_key,
-+				       const char *lock_name);
- 
-+/*
-+ * Wrapper for regmap_init macros to include a unique lockdep key and name
-+ * for each call. No-op if CONFIG_LOCKDEP is not set.
-+ *
-+ * @fn: Real function to call (in the form __[*_]regmap_init[_*])
-+ * @name: Config variable name (#config in the calling macro)
-+ **/
-+#ifdef CONFIG_LOCKDEP
-+#define __regmap_lockdep_wrapper(fn, name, ...)				\
-+(									\
-+	({								\
-+		static struct lock_class_key _key;			\
-+		fn(__VA_ARGS__, &_key,					\
-+			KBUILD_BASENAME ":"				\
-+			__stringify(__LINE__) ":"			\
-+			"(" name ")->lock");				\
-+	})								\
-+)
-+#else
-+#define __regmap_lockdep_wrapper(fn, name, ...) fn(__VA_ARGS__, NULL, NULL)
-+#endif
-+
-+#define regmap_init(dev, bus, bus_context, config)			\
-+	__regmap_lockdep_wrapper(__regmap_init, #config,		\
-+				dev, bus, bus_context, config)
-+int regmap_attach_dev(struct device *dev, struct regmap *map,
-+		      const struct regmap_config *config);
-+#define regmap_init_i2c(i2c, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_i2c, #config,		\
-+				i2c, config)
-+#define regmap_init_spi(dev, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_spi, #config,		\
-+				dev, config)
-+#define regmap_init_spmi_base(dev, config)				\
-+	__regmap_lockdep_wrapper(__regmap_init_spmi_base, #config,	\
-+				dev, config)
-+#define regmap_init_spmi_ext(dev, config)				\
-+	__regmap_lockdep_wrapper(__regmap_init_spmi_ext, #config,	\
-+				dev, config)
-+#define regmap_init_mmio_clk(dev, clk_id, regs, config)			\
-+	__regmap_lockdep_wrapper(__regmap_init_mmio_clk, #config,	\
-+				dev, clk_id, regs, config)
-+#define regmap_init_ac97(ac97, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_ac97, #config,		\
-+				ac97, config)
- bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 
-+#define devm_regmap_init(dev, bus, bus_context, config)			\
-+	__regmap_lockdep_wrapper(__devm_regmap_init, #config,		\
-+				dev, bus, bus_context, config)
-+#define devm_regmap_init_i2c(i2c, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_i2c, #config,	\
-+				i2c, config)
-+#define devm_regmap_init_spi(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spi, #config,	\
-+				dev, config)
-+#define devm_regmap_init_spmi_base(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spmi_base, #config,	\
-+				dev, config)
-+#define devm_regmap_init_spmi_ext(dev, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_spmi_ext, #config,	\
-+				dev, config)
-+#define devm_regmap_init_mmio_clk(dev, clk_id, regs, config)		\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_mmio_clk, #config,	\
-+				dev, clk_id, regs, config)
-+#define devm_regmap_init_ac97(ac97, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
-+				ac97, config)
-+
- /**
-  * regmap_init_mmio(): Initialise register map
-  *
-@@ -374,12 +476,8 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
-  * The return value will be an ERR_PTR() on error or a valid pointer to
-  * a struct regmap.
-  */
--static inline struct regmap *regmap_init_mmio(struct device *dev,
--					void __iomem *regs,
--					const struct regmap_config *config)
--{
--	return regmap_init_mmio_clk(dev, NULL, regs, config);
--}
-+#define regmap_init_mmio(dev, regs, config)		\
-+	regmap_init_mmio_clk(dev, NULL, regs, config)
- 
- /**
-  * devm_regmap_init_mmio(): Initialise managed register map
-@@ -392,12 +490,8 @@ static inline struct regmap *regmap_init_mmio(struct device *dev,
-  * to a struct regmap.  The regmap will be automatically freed by the
-  * device management code.
-  */
--static inline struct regmap *devm_regmap_init_mmio(struct device *dev,
--					void __iomem *regs,
--					const struct regmap_config *config)
--{
--	return devm_regmap_init_mmio_clk(dev, NULL, regs, config);
--}
-+#define devm_regmap_init_mmio(dev, regs, config)		\
-+	devm_regmap_init_mmio_clk(dev, NULL, regs, config)
- 
- void regmap_exit(struct regmap *map);
- int regmap_reinit_cache(struct regmap *map,
+> >
+> > I have tested the patch by manually adding the lines of code into
+> mainline kernel 4.1.1.
+> >
+> > The base speakers works.
+>
+> Do you need special name for the external subwoofer jack detect control
+> for pulseaudio automatically switch from stereo profile to 2.1 profile ?
+>
+> int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>    const struct auto_pin_cfg *cfg)
+> {
+> const hda_nid_t *p;
+> int i, err;
+>
+> ...
+>
+> for (i = 0, p = cfg->line_out_pins; i < cfg->line_outs; i++, p++) {
+> +     if (cfg->line_outs == 2 && i == 1)
+> +         err = add_jack_kctl(codec, *p, cfg, "External Subwoofer");
+> +     else
+> err = add_jack_kctl(codec, *p, cfg, NULL);
+> if (err < 0)
+> return err;
+> }
+>
+> > The headset microphone works.
+> > The headphone, headset microphone and microphone jack detection seems to
+> work in PulseAudio (showing by plugged or unplugged status).
+> > However it does not automatically switch the (un)plugged microphone.
+> > My guess is that it does not know if it should use the headset
+> microphone or the microphone (instead of the default internal microphone).
+> >
+> > Do you think there is a way to automate the forward and backward
+> switching between the internal microphone and headset microphone?
+> >
+>
+>
+> http://bazaar.launchpad.net/~unity-settings-daemon-team/unity-settings-daemon/trunk/view/head:/plugins/media-keys/what-did-you-plug-in/pa-backend.c
+>
+>   Headphone Mic Jack - indicates headphone and mic-in mode share the same
+> jack,  i e, not two separate jacks. Hardware cannot distinguish between
+> headphone and a mic.
+>    Headset Mic Phantom Jack - indicates headset jack where hardware can
+> not distinguish between headphones and headsets
+>    Headset Mic Jack - indicates headset jack where hardware can
+> distinguish between headphones and headsets. There is no use popping up a
+> dialog in this case, unless we already need to do this for the mic-in mode.
+>
+> Auto mic need headset mic support jack detection
+>
+> There are two methods, both methods need to give up the capability of
+> using headphone and mic
+>
+> cannot use hint for user to select this feature since user hint is applied
+> after pin fixup
+>
+> 1) create headset mic jack as slave of headphone jack , this use headphone
+> jack sense for the jack state of headset mic
+>
+>         spec->gen.combo_use_only_as_headset = 0;
+>
+> 2) change headphone jack to headset jack, this require add [Element
+> Headset] to pulseaudio conf files
+>
+>         spec->gen.headset_and_no_hp = 0;
+>
+> Method 1 -
+>
+> Cons - hda-emu cannot emulate this master slave jack ctl and gated/gating
+> jack ctl
+>
+> Method 2
+>
+> Cons - some notebook has
+>
+> a) headset and headphone jacks
+>
+> b)r headset and dock headset
+>
+>
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index ac0db16..7e9b7ae 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -4384,6 +4384,9 @@ void snd_hda_gen_mic_autoswitch(struct hda_codec
+> *codec,
+>          /* don't detect pins retasked as outputs */
+>          if (snd_hda_codec_get_pin_target(codec, pin) & AC_PINCTL_OUT_EN)
+>              continue;
+> +        if (pin == spec->headset_mic_pin)
+> +            if (spec->headset_and_no_hp)
+> +                pin = spec->autocfg.hp_pins[0];
+>          if (snd_hda_jack_detect_state(codec, pin) == HDA_JACK_PRESENT) {
+>              mux_select(codec, 0, spec->am_entry[i].idx);
+>              return;
+> diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+> index 56e4139..4c3e043 100644
+> --- a/sound/pci/hda/hda_generic.h
+> +++ b/sound/pci/hda/hda_generic.h
+> @@ -236,6 +236,10 @@ struct hda_gen_spec {
+>      unsigned int indep_hp_enabled:1; /* independent HP enabled */
+>      unsigned int have_aamix_ctl:1;
+>      unsigned int hp_mic_jack_modes:1;
+> +    unsigned int combo_use_only_as_headset:1;  /* headphone mic jack -
+> slave of headphone jack */
+> +    unsigned int headset_and_no_hp:1;  /* headset jack */
+> +
+> +    hda_nid_t headset_mic_pin;
+>
+>      /* additional mute flags (only effective with auto_mute_via_amp=1) */
+>      u64 mute_bits;
+> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+> index 366efbf..771e84f 100644
+> --- a/sound/pci/hda/hda_jack.c
+> +++ b/sound/pci/hda/hda_jack.c
+> @@ -19,6 +19,7 @@
+>  #include "hda_local.h"
+>  #include "hda_auto_parser.h"
+>  #include "hda_jack.h"
+> +#include "hda_generic.h"
+>
+>  /**
+>   * is_jack_detectable - Check whether the given pin is jack-detectable
+> @@ -157,7 +158,10 @@ static void jack_detect_update(struct hda_codec
+> *codec,
+>      if (jack->phantom_jack)
+>          jack->pin_sense = AC_PINSENSE_PRESENCE;
+>      else
+> -        jack->pin_sense = read_pin_sense(codec, jack->nid);
+> +        if (jack->master_nid)
+> +            jack->pin_sense = read_pin_sense(codec, jack->master_nid);
+> +        else
+> +            jack->pin_sense = read_pin_sense(codec, jack->nid);
+>
+>      /* A gating jack indicates the jack is invalid if gating is unplugged
+> */
+>      if (jack->gating_jack && !snd_hda_jack_detect(codec,
+> jack->gating_jack))
+> @@ -205,11 +209,20 @@ EXPORT_SYMBOL_GPL(snd_hda_jack_set_dirty_all);
+>  u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
+>  {
+>      struct hda_jack_tbl *jack = snd_hda_jack_tbl_get(codec, nid);
+> +    struct hda_jack_tbl *slave;
+> +    u32 sense;
+>      if (jack) {
+>          jack_detect_update(codec, jack);
+>          return jack->pin_sense;
+>      }
+> -    return read_pin_sense(codec, nid);
+> +    if (jack->master_nid)
+> +        return read_pin_sense(codec, jack->master_nid);
+> +    sense = read_pin_sense(codec, nid);
+> +    if (jack->slave_nid) {
+> +        slave = snd_hda_jack_tbl_get(codec, jack->slave_nid);
+> +        slave->pin_sense = sense;
+> +    }
+> +    return sense;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_hda_pin_sense);
+>
+> @@ -317,6 +330,28 @@ int snd_hda_jack_set_gating_jack(struct hda_codec
+> *codec, hda_nid_t gated_nid,
+>  EXPORT_SYMBOL_GPL(snd_hda_jack_set_gating_jack);
+>
+>  /**
+> + * snd_hda_jack_set_master_slave
+> + * @codec: the HDA codec
+> + * @master_nid: use this nid for pin sense
+> + * @slave_nid:  update slave jack pin sense
+> + * use master pin sense for slave pin sense
+> + */
+> +int snd_hda_jack_set_master_slave(struct hda_codec *codec, hda_nid_t
+> master_nid,
+> +                 hda_nid_t slave_nid)
+> +{
+> +    struct hda_jack_tbl *master = snd_hda_jack_tbl_get(codec, master_nid);
+> +    struct hda_jack_tbl *slave = snd_hda_jack_tbl_get(codec, slave_nid);
+> +    if (master)
+> +        master->slave_nid = slave_nid;
+> +    if (slave) {
+> +        slave->master_nid = master_nid;
+> +        snd_hda_codec_write_cache(codec, slave_nid, 0,
+> +                     AC_VERB_SET_UNSOLICITED_ENABLE, 0);
+> +    }
+> +    return 0;
+> +}
+> +
+> +/**
+>   * snd_hda_jack_report_sync - sync the states of all jacks and report if
+> changed
+>   * @codec: the HDA codec
+>   */
+> @@ -469,7 +504,8 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>                 const struct auto_pin_cfg *cfg)
+>  {
+>      const hda_nid_t *p;
+> -    int i, err;
+> +    int i, err, loc;
+> +    struct hda_gen_spec *spec = codec->spec;
+>
+>      for (i = 0; i < cfg->num_inputs; i++) {
+>          /* If we have headphone mics; make sure they get the right name
+> @@ -481,22 +517,37 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>              else
+>                  err = add_jack_kctl(codec, cfg->inputs[i].pin,
+>                              cfg, "Headphone Mic");
+> -        } else
+> -            err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg,
+> +        } else {
+> +            if (cfg->inputs[i].is_headset_mic) {
+> +                if (!spec->headset_and_no_hp)
+> +                    err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg,
+> NULL);
+> +                else
+> +                    err = 0;
+> +            }
+> +            else
+> +                err = add_jack_kctl(codec, cfg->inputs[i].pin, cfg,
+>                          NULL);
+> +        }
+>          if (err < 0)
+>              return err;
+>      }
+>
+>      for (i = 0, p = cfg->line_out_pins; i < cfg->line_outs; i++, p++) {
+> -        err = add_jack_kctl(codec, *p, cfg, NULL);
+> +        loc = get_defcfg_location(get_wcaps(codec, *p));
+> +        if (i == 1 && cfg->line_outs == 2 && loc == AC_JACK_LOC_EXTERNAL)
+> +            err = add_jack_kctl(codec, *p, cfg, "External Subwoofer");
+> +        else
+> +            err = add_jack_kctl(codec, *p, cfg, NULL);
+>          if (err < 0)
+>              return err;
+>      }
+>      for (i = 0, p = cfg->hp_pins; i < cfg->hp_outs; i++, p++) {
+>          if (*p == *cfg->line_out_pins) /* might be duplicated */
+>              break;
+> -        err = add_jack_kctl(codec, *p, cfg, NULL);
+> +        if (spec->headset_and_no_hp && i == 0)
+> +            err = add_jack_kctl(codec, *p, cfg, "Headset");
+> +        else
+> +            err = add_jack_kctl(codec, *p, cfg, NULL);
+>          if (err < 0)
+>              return err;
+>      }
+> @@ -507,6 +558,13 @@ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+>          if (err < 0)
+>              return err;
+>      }
+> +
+> +    if (spec->combo_use_only_as_headset)
+> +        for (i = 0; i < cfg->num_inputs; i++) {
+> +            if (cfg->inputs[i].is_headset_mic)
+> +                snd_hda_jack_set_master_slave(codec, cfg->hp_pins[0],
+> cfg->inputs[i].pin);
+> +        }
+> +
+>      for (i = 0, p = cfg->dig_out_pins; i < cfg->dig_outs; i++, p++) {
+>          err = add_jack_kctl(codec, *p, cfg, NULL);
+>          if (err < 0)
+> diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
+> index 387d309..364cfa5 100644
+> --- a/sound/pci/hda/hda_jack.h
+> +++ b/sound/pci/hda/hda_jack.h
+> @@ -39,6 +39,8 @@ struct hda_jack_tbl {
+>      unsigned int block_report:1;    /* in a transitional state - do not
+> report to userspace */
+>      hda_nid_t gating_jack;        /* valid when gating jack plugged */
+>      hda_nid_t gated_jack;        /* gated is dependent on this jack */
+> +    hda_nid_t master_nid;        /* use master_nid for jack sense */
+> +    hda_nid_t slave_nid;        /* update slave_nid jack state */
+>      int type;
+>      struct snd_jack *jack;
+>  };
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 8e02cdf..598a442 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3998,6 +3998,16 @@ static void alc_update_headset_mode(struct
+> hda_codec *codec)
+>          return;
+>      }
+>
+> +    if (spec->gen.combo_use_only_as_headset ||
+> +        spec->gen.headset_and_no_hp) {
+> +        if (snd_hda_jack_detect(codec, hp_pin)) {
+> +            new_headset_mode = ALC_HEADSET_MODE_HEADSET;
+> +            alc_determine_headset_type(codec);
+> +            codec_info(codec, "mic_autoswitch\n");
+> +            snd_hda_gen_mic_autoswitch(codec, NULL);
+> +        }
+> +    }
+> +
+>      switch (new_headset_mode) {
+>      case ALC_HEADSET_MODE_UNPLUGGED:
+>          alc_headset_mode_unplugged(codec);
+> @@ -4056,8 +4066,10 @@ static void alc_probe_headset_mode(struct hda_codec
+> *codec)
+>
+>      /* Find mic pins */
+>      for (i = 0; i < cfg->num_inputs; i++) {
+> -        if (cfg->inputs[i].is_headset_mic && !spec->headset_mic_pin)
+> +        if (cfg->inputs[i].is_headset_mic && !spec->headset_mic_pin) {
+>              spec->headset_mic_pin = cfg->inputs[i].pin;
+> +            spec->gen.headset_mic_pin = spec->headset_mic_pin;
+> +        }
+>          if (cfg->inputs[i].is_headphone_mic && !spec->headphone_mic_pin)
+>              spec->headphone_mic_pin = cfg->inputs[i].pin;
+>      }
+> @@ -4074,7 +4086,11 @@ static void alc_fixup_headset_mode(struct hda_codec
+> *codec,
+>
+>      switch (action) {
+>      case HDA_FIXUP_ACT_PRE_PROBE:
+> -        spec->parse_flags |= HDA_PINCFG_HEADSET_MIC |
+> HDA_PINCFG_HEADPHONE_MIC;
+> +        if (spec->gen.combo_use_only_as_headset ||
+> +            spec->gen.headset_and_no_hp)
+> +            spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
+> +        else
+> +            spec->parse_flags |= HDA_PINCFG_HEADSET_MIC |
+> HDA_PINCFG_HEADPHONE_MIC;
+>          break;
+>      case HDA_FIXUP_ACT_PROBE:
+>          alc_probe_headset_mode(codec);
+> @@ -6149,6 +6165,43 @@ static void alc668_restore_default_value(struct
+> hda_codec *codec)
+>      alc_process_coef_fw(codec, alc668_coefs);
+>  }
+>
+> +static void alc668_fixup_asus_n751jk(struct hda_codec *codec,
+> +                   const struct hda_fixup *fix, int action)
+> +{
+> +    struct alc_spec *spec = codec->spec;
+> +    static const struct hda_pintbl normal_cfgs[] = {
+> +        { 0x19, 0x03a1913d }, /* use as headphone mic, without its own
+> jack detect */
+> +        { 0x1a, 0x04110011 }, /* bass speaker at Ext Right with jack
+> detect */
+> +        { 0x1b, 0x03a1113c }, /* use as headset mic, without its own jack
+> detect */
+> +        { }
+> +    };
+> +    static const struct hda_pintbl headset_cfgs[] = {
+> +        { 0x19, 0x411111f0 }, /* N/A */
+> +        { 0x1a, 0x04110011 }, /* bass speaker at Ext Right with jack
+> detect */
+> +        { 0x1b, 0x03a1103c }, /* use as headset mic, without its own jack
+> detect */
+> +        { }
+> +    };
+> +    switch(action){
+> +    case HDA_FIXUP_ACT_PRE_PROBE:
+> +        spec->gen.combo_use_only_as_headset = 0;
+> +        spec->gen.headset_and_no_hp = 0;
+> +        codec_info(codec, "use as headset %d\n",
+> spec->gen.combo_use_only_as_headset);
+> +        if (spec->gen.combo_use_only_as_headset ||
+> +            spec->gen.headset_and_no_hp) {
+> +            snd_hda_apply_pincfgs(codec, headset_cfgs);
+> +            spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
+> +        }
+> +        else {
+> +            snd_hda_apply_pincfgs(codec, normal_cfgs);
+> +            spec->parse_flags |= HDA_PINCFG_HEADSET_MIC |
+> HDA_PINCFG_HEADPHONE_MIC;
+> +        }
+> +        break;
+> +    case HDA_FIXUP_ACT_BUILD:
+> +        alc_fixup_bass_chmap(codec,  fix, action);
+> +        break;
+> +    }
+> +}
+> +
+>  enum {
+>      ALC662_FIXUP_ASPIRE,
+>      ALC662_FIXUP_LED_GPIO1,
+> @@ -6179,6 +6232,7 @@ enum {
+>      ALC668_FIXUP_AUTO_MUTE,
+>      ALC668_FIXUP_DELL_DISABLE_AAMIX,
+>      ALC668_FIXUP_DELL_XPS13,
+> +    ALC668_FIXUP_ASUS_N751JK,
+>  };
+>
+>  static const struct hda_fixup alc662_fixups[] = {
+> @@ -6419,6 +6473,12 @@ static const struct hda_fixup alc662_fixups[] = {
+>          .type = HDA_FIXUP_FUNC,
+>          .v.func = alc_fixup_bass_chmap,
+>      },
+> +    [ALC668_FIXUP_ASUS_N751JK] = {
+> +        .type = HDA_FIXUP_FUNC,
+> +        .v.func = alc668_fixup_asus_n751jk,
+> +        .chained = true,
+> +        .chain_id = ALC668_FIXUP_HEADSET_MODE,
+> +    },
+>  };
+>
+>  static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+> @@ -6441,6 +6501,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[]
+> = {
+>      SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
+>      SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_BASS_1A),
+>      SND_PCI_QUIRK(0x1043, 0x1477, "ASUS N56VZ",
+> ALC662_FIXUP_BASS_MODE4_CHMAP),
+> +    SND_PCI_QUIRK(0x1043, 0x17bd, "Asus N751JK",
+> ALC668_FIXUP_ASUS_N751JK),
+>      SND_PCI_QUIRK(0x1043, 0x15a7, "ASUS UX51VZH", ALC662_FIXUP_BASS_16),
+>      SND_PCI_QUIRK(0x1043, 0x1b73, "ASUS N55SF", ALC662_FIXUP_BASS_16),
+>      SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ",
+> ALC662_FIXUP_BASS_MODE4_CHMAP),
+>
+>
+>
+
+
 -- 
-2.4.3.573.g4eafbef
+Arthur Borsboom
+Lieven de Keystraat 77
+3067 KG, Rotterdam
+The Netherlands
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
 
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
