@@ -1,19 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
- or	userspace disable rewinds
-Date: Wed, 08 Jul 2015 18:58:48 +0200
-Message-ID: <559D56C8.8030605@linux.intel.com>
+Subject: Re: [RFC PATCH 2/4] ALSA: core: add .notify callback
+ for	pcm ops
+Date: Wed, 08 Jul 2015 19:10:32 +0200
+Message-ID: <559D5988.70206@linux.intel.com>
 References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <s5hmvz6hgrn.wl-tiwai@suse.de>
+ <1436350236-17509-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <s5hlheqhghu.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D0A26264F09
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 18:58:51 +0200 (CEST)
-In-Reply-To: <s5hmvz6hgrn.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5C6D2657FE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 19:10:35 +0200 (CEST)
+In-Reply-To: <s5hlheqhghu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,20 +28,113 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
->> Add new hw_params flag to explicitly tell driver that rewinds
->> will never be used. This can be used by low-level driver to
->> optimize DMA operations and reduce power consumption.
->> Use this flag only when data written in ring buffer will
->> never be invalidated, e.g. any update of appl_ptr is final.
+>> This is only enabled when the NO_REWIND hardware flag is used,
+>> so that the low-level driver/hardware to opportunistically pre-fetch
+>> data.
 >>
->> Caveat: there is currently no way to query capabilities without
->> opening a pcm stream, so applications might need to serially
->> open all exposed devices, check what they support by looking at
->> hw_params->info and close them (this is what PulseAudio does so
->> might not be an issue)
+>> FIXME: should we rely on .ack for this?
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 >
-> The forward should also fail with such hardware, no?
+> Hmm, OK, so the forward is allowed but with workarounds...
+> But then why rewind won't work in a similar way?  DSP might be able to
+> cancel some of inflight data.
 
-The way I understand the forward is just an update of the application 
-pointer without writing/reading new data, so that works. The hardware 
-will just use whatever is in the ring buffer. It's weird but it would work.
+Nope, this is explicitly not supported, so unfortunately if we want to 
+optimize for power and let hardware fetch data when it's most 
+appropriate rewinds need to be disabled.
+
+> In other words, I see no reason to strict notify callback only for
+> no_rewinds.  This is an optional ops in anyway.
+
+It's fine to remove the check. I added this based on internal review 
+comments but I agree with your point.
+
+> Also, I find the name "notify" a bit too ambiguous.  In this case,
+> it's notifying the applptr change.  So, a name related with the
+> function would be more understandable.
+
+The first open I had was to know if we could use .ack for this? if a 
+different callback is needed, we can use 'appl_ptr_update' instead of 
+'notify'
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> ---
+>>   include/sound/pcm.h     |  2 ++
+>>   sound/core/pcm_native.c | 18 +++++++++++++++++-
+>>   2 files changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+>> index 25310b7..d5eff03 100644
+>> --- a/include/sound/pcm.h
+>> +++ b/include/sound/pcm.h
+>> @@ -87,6 +87,8 @@ struct snd_pcm_ops {
+>>   			     unsigned long offset);
+>>   	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
+>>   	int (*ack)(struct snd_pcm_substream *substream);
+>> +	int (*notify)(struct snd_pcm_substream *substream);
+>> +	/* FIXME: what's the difference between ack and notify ? */
+>>   };
+>>
+>>   /*
+>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+>> index a70e52d..dd519b8 100644
+>> --- a/sound/core/pcm_native.c
+>> +++ b/sound/core/pcm_native.c
+>> @@ -2565,6 +2565,10 @@ static snd_pcm_sframes_t snd_pcm_playback_forward(struct snd_pcm_substream *subs
+>>   		appl_ptr -= runtime->boundary;
+>>   	runtime->control->appl_ptr = appl_ptr;
+>>   	ret = frames;
+>> +
+>> +	if (runtime->no_rewinds && substream->ops->notify)
+>> +		substream->ops->notify(substream);
+>> +
+>>    __end:
+>>   	snd_pcm_stream_unlock_irq(substream);
+>>   	return ret;
+>> @@ -2614,6 +2618,10 @@ static snd_pcm_sframes_t snd_pcm_capture_forward(struct snd_pcm_substream *subst
+>>   		appl_ptr -= runtime->boundary;
+>>   	runtime->control->appl_ptr = appl_ptr;
+>>   	ret = frames;
+>> +
+>> +	if (runtime->no_rewinds && substream->ops->notify)
+>> +		substream->ops->notify(substream);
+>> +
+>>    __end:
+>>   	snd_pcm_stream_unlock_irq(substream);
+>>   	return ret;
+>> @@ -2713,8 +2721,16 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+>>   			return err;
+>>   	}
+>>   	snd_pcm_stream_lock_irq(substream);
+>> -	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL))
+>> +	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
+>> +		/* FIXME: this code is used by mmap_commit, should it handle boundary
+>> +		 *   wrap-around as done for read/write in pcm_lib.c
+>> +		 */
+>> +
+>>   		control->appl_ptr = sync_ptr.c.control.appl_ptr;
+>> +		/* if supported, let low-level driver know about appl_ptr change */
+>> +		if (runtime->no_rewinds && substream->ops->notify)
+>> +			substream->ops->notify(substream);
+>> +	}
+>>   	else
+>>   		sync_ptr.c.control.appl_ptr = control->appl_ptr;
+>>   	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
+>> --
+>> 1.9.1
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
