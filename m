@@ -1,149 +1,27 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v3] ASoC: ts3a227e: do not report jack status
-	when there is i2c read err
-Date: Tue,  7 Jul 2015 14:21:47 -0700
-Message-ID: <1436304107-4239-1-git-send-email-yang.a.fang@intel.com>
-References: <1435793088-25971-1-git-send-email-yang.a.fang@intel.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [PATCH] regmap: Use different lockdep class for each regmap init call
+Date: Wed, 8 Jul 2015 11:32:42 +0800
+Message-ID: <CANMq1KAD95JWkP6MbVck2bSZwHpz09CRYfZmUi4N0RBrF6zK-Q@mail.gmail.com>
+References: <1435725839-33173-1-git-send-email-drinkcat@chromium.org>
+	<20150707121348.GD2887@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F9D3260566
- for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2015 23:22:44 +0200 (CEST)
-In-Reply-To: <1435793088-25971-1-git-send-email-yang.a.fang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, "Fang,
- Yang A" <yang.a.fang@intel.com>, praveen.k.jain@intel.com, denny.iriawan@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150707121348.GD2887@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Antti Palosaari <crope@iki.fi>, Ingo Molnar <mingo@redhat.com>, Arjan van de Ven <arjan@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+On Tue, Jul 7, 2015 at 8:13 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Jul 01, 2015 at 12:43:59PM +0800, Nicolas Boichat wrote:
+>
+>> (this also applies to all other regmap_init functions...). We do not want to
+>> document the lock_key/name parameters, so we could either leave it like that,
+>> or move all the documentation to regmap.h, in front of the respective macros.
+>
+> That seems reasonable.
 
-After suspend -> resume the ts3a227e_interrupt sometimes comes before i2c
-controller resume is called .regmap_read will return incorrect status
-and report a wrong jack status.This patch will disable irq on suspend
-and enable irq again on the resume to make sure interrupt is coming
-after TI resumes. Also We should return if there is read err,the
-interrupt will come again since it is level triggered and we are not yet
-clear the interrupt.
+Which one? Leave as-is? Or move the documentation to regmap.h?
 
-In addtion,cht_bsw_max98090_ti machine driver registered additional
-notifier base on jack event which will program the audio codec.there
-will be codec timeout err if such event occurs prior to i2c controller
-is resumed.
-
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/codecs/ts3a227e.c |   47 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 45 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 12232d7..ffc6f30 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -23,11 +23,13 @@
- #include "ts3a227e.h"
- 
- struct ts3a227e {
-+	struct device *dev;
- 	struct regmap *regmap;
- 	struct snd_soc_jack *jack;
- 	bool plugged;
- 	bool mic_present;
- 	unsigned int buttons_held;
-+	int irq;
- };
- 
- /* Button values to be reported on the jack */
-@@ -189,16 +191,28 @@ static irqreturn_t ts3a227e_interrupt(int irq, void *data)
- 	struct ts3a227e *ts3a227e = (struct ts3a227e *)data;
- 	struct regmap *regmap = ts3a227e->regmap;
- 	unsigned int int_reg, kp_int_reg, acc_reg, i;
-+	struct device *dev = ts3a227e->dev;
-+	int ret;
- 
- 	/* Check for plug/unplug. */
--	regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
-+	ret = regmap_read(regmap, TS3A227E_REG_INTERRUPT, &int_reg);
-+	if (ret) {
-+		dev_err(dev, "failed to clear interrupt ret=%d\n", ret);
-+		return IRQ_NONE;
-+	}
-+
- 	if (int_reg & (DETECTION_COMPLETE_EVENT | INS_REM_EVENT)) {
- 		regmap_read(regmap, TS3A227E_REG_ACCESSORY_STATUS, &acc_reg);
- 		ts3a227e_new_jack_state(ts3a227e, acc_reg);
- 	}
- 
- 	/* Report any key events. */
--	regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
-+	ret = regmap_read(regmap, TS3A227E_REG_KP_INTERRUPT, &kp_int_reg);
-+	if (ret) {
-+		dev_err(dev, "failed to clear key interrupt ret=%d\n", ret);
-+		return IRQ_NONE;
-+	}
-+
- 	for (i = 0; i < TS3A227E_NUM_BUTTONS; i++) {
- 		if (kp_int_reg & PRESS_MASK(i))
- 			ts3a227e->buttons_held |= (1 << i);
-@@ -283,6 +297,8 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
- 		return -ENOMEM;
- 
- 	i2c_set_clientdata(i2c, ts3a227e);
-+	ts3a227e->dev = dev;
-+	ts3a227e->irq = i2c->irq;
- 
- 	ts3a227e->regmap = devm_regmap_init_i2c(i2c, &ts3a227e_regmap_config);
- 	if (IS_ERR(ts3a227e->regmap))
-@@ -320,6 +336,32 @@ static int ts3a227e_i2c_probe(struct i2c_client *i2c,
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int ts3a227e_suspend(struct device *dev)
-+{
-+	struct ts3a227e *ts3a227e = dev_get_drvdata(dev);
-+
-+	dev_dbg(ts3a227e->dev, "suspend disable irq\n");
-+	disable_irq(ts3a227e->irq);
-+
-+	return 0;
-+}
-+
-+static int ts3a227e_resume(struct device *dev)
-+{
-+	struct ts3a227e *ts3a227e = dev_get_drvdata(dev);
-+
-+	dev_dbg(ts3a227e->dev, "resume enable irq\n");
-+	enable_irq(ts3a227e->irq);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops ts3a227e_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(ts3a227e_suspend, ts3a227e_resume)
-+};
-+
- static const struct i2c_device_id ts3a227e_i2c_ids[] = {
- 	{ "ts3a227e", 0 },
- 	{ }
-@@ -336,6 +378,7 @@ static struct i2c_driver ts3a227e_driver = {
- 	.driver = {
- 		.name = "ts3a227e",
- 		.owner = THIS_MODULE,
-+		.pm = &ts3a227e_pm,
- 		.of_match_table = of_match_ptr(ts3a227e_of_match),
- 	},
- 	.probe = ts3a227e_i2c_probe,
--- 
-1.7.9.5
+Thanks.
