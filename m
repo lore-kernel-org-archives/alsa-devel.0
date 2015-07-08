@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Use card field to indicate
- whether a component is bound
-Date: Wed, 8 Jul 2015 20:04:52 +0100
-Message-ID: <20150708190452.GF11162@sirena.org.uk>
+Subject: Applied "ASoC: Prevent components from being bound to
+	multiple cards" to the asoc tree
+Date: Wed, 08 Jul 2015 20:05:22 +0100
+Message-ID: <E1ZCueo-0005E2-NE@debutante>
 References: <1436381264-6924-1-git-send-email-lars@metafoo.de>
- <1436381264-6924-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8136929958962644256=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C43C26512B
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:05:00 +0200 (CEST)
-In-Reply-To: <1436381264-6924-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 76821265A72
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:05:29 +0200 (CEST)
+In-Reply-To: <1436381264-6924-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8136929958962644256==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YOUJ+9SC2P4ELYXZ"
-Content-Disposition: inline
+   ASoC: Prevent components from being bound to multiple cards
 
+has been applied to the asoc tree at
 
---YOUJ+9SC2P4ELYXZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Jul 08, 2015 at 08:47:44PM +0200, Lars-Peter Clausen wrote:
-> Use the card field of a component to indicate whether it is bound or not.
-> This makes a certain sense given that the field contains the card the
-> component is bound to and a component can only be bound to one card at a
-> time. And it also requires to unset the card field when the component is
-> unbound from the card.
->=20
-> This makes the probded flag redundant and it can be removed.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Right, this is just a leftover from when we used to open code our own
-deferred probing at this point.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---YOUJ+9SC2P4ELYXZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJVnXRTAAoJECTWi3JdVIfQbfwH/jS6qLv7Lif5NLTaQxHbWI5W
-US9ThWNFFH9q/oaYz0E9Ex8Kmuaf1OPHCJKME+rBBEfs/oSL99fFuM+WsbUaGjy5
-GFG1AD26YVfr6vOV0HcTU5/y9m6Os1+k0sHaE/J+wGcwVRB+CQFb/3az6LDPnLK0
-nOabd/JPPHSjkLIQyw6Uwg4ceqVL6NSFr5Sdln84su9fwqxMVsxxAG3ry8nMQKXr
-UUwzvX5sjAroR+psNs4JMgTlRM9pB8x3L9juUWYtwYxjuArxyzUoE3vUGPJDpYFS
-MM4WOag48DeFvW2pCjYaoky/XpS/zOpVeLyhXXG24kz+oY/YnMljNNpJhXCwM+k=
-=rf16
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---YOUJ+9SC2P4ELYXZ--
+>From 1b7c12316982f74a5b8e7704c24cf5524d0723a3 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Wed, 8 Jul 2015 20:47:43 +0200
+Subject: [PATCH] ASoC: Prevent components from being bound to multiple cards
 
---===============8136929958962644256==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A component can only be bound to a single card at a time. Binding it to
+card while it is already bound to another will result in undefined
+behavior.
 
+As the undefined behavior might only manifest itself later on it is not
+necessarily always straight forward to find the cause. To prevent this add
+a check that refuses to bind a component to multiple cards as well as
+prints a error describing the problem.
 
---===============8136929958962644256==--
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6ce621749f8d..96bb71aea529 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1102,9 +1102,19 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	struct snd_soc_dai *dai;
+ 	int ret;
+ 
+-	if (!strcmp(component->name, "snd-soc-dummy") || component->probed)
++	if (!strcmp(component->name, "snd-soc-dummy"))
+ 		return 0;
+ 
++	if (component->probed) {
++		if (component->card != card) {
++			dev_err(component->dev,
++				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
++				card->name, component->card->name);
++			return -ENODEV;
++		}
++		return 0;
++	}
++
+ 	component->card = card;
+ 	dapm->card = card;
+ 	soc_set_name_prefix(card, component);
+-- 
+2.1.4
