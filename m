@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 1/4] ASoC: Intel: add Skylake HDA
-	platform driver
-Date: Wed, 8 Jul 2015 19:56:55 +0100
-Message-ID: <20150708185655.GD11162@sirena.org.uk>
+Subject: Re: [PATCH v7 2/4] ASoC: Intel - add Skylake HDA audio
+	driver
+Date: Wed, 8 Jul 2015 20:01:14 +0100
+Message-ID: <20150708190114.GE11162@sirena.org.uk>
 References: <1436153066-23962-1-git-send-email-vinod.koul@intel.com>
- <1436153066-23962-2-git-send-email-vinod.koul@intel.com>
+ <1436153066-23962-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0590056819264393355=="
+Content-Type: multipart/mixed; boundary="===============5386902809511907248=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B8C72650B0
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:57:02 +0200 (CEST)
-In-Reply-To: <1436153066-23962-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EFA92650DB
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 21:01:19 +0200 (CEST)
+In-Reply-To: <1436153066-23962-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,75 +27,74 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0590056819264393355==
+--===============5386902809511907248==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f3uHgXesLFB1/u0Z"
+	protocol="application/pgp-signature"; boundary="rq18dCD+oSRtyKma"
 Content-Disposition: inline
 
 
---f3uHgXesLFB1/u0Z
+--rq18dCD+oSRtyKma
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 06, 2015 at 08:54:23AM +0530, Vinod Koul wrote:
+On Mon, Jul 06, 2015 at 08:54:24AM +0530, Vinod Koul wrote:
 
-> +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-> +	pm_runtime_get_sync(dai->dev);
-
-Check the return value please, this can fail.
-
-> +static int skl_get_format(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
+> +static irqreturn_t skl_interrupt(int irq, void *dev_id)
 > +{
-> +	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-> +	struct skl_dma_params *dma_params;
-> +	int format_val = 0;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +	struct hdac_ext_bus *ebus = dev_id;
+> +	struct hdac_bus *bus = ebus_to_hbus(ebus);
+> +	u32 status;
 > +
-> +	dma_params  = (struct skl_dma_params *)
-> +			snd_soc_dai_get_dma_data(codec_dai, substream);
+> +#ifdef CONFIG_PM
+> +	if (!pm_runtime_active(bus->dev))
+> +		return IRQ_NONE;
+> +#endif
 
-Should be no need to cast away from void.
+There's a stub for pm_runtime_active for !PM which does the right thing
+here, no need for ifdefs.
 
-> +	if (substream->runtime->dma_area)
-> +		memset(substream->runtime->dma_area, 0,
-> +				params_buffer_bytes(params));
-
-Why do we need to memset here?
-
-> +	dma_params  = (struct skl_dma_params *)
-> +			snd_soc_dai_get_dma_data(dai, substream);
+> +	/*configure PM */
+> +	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
+> +	pm_runtime_use_autosuspend(bus->dev);
+> +	pm_runtime_put_noidle(bus->dev);
+> +	pm_runtime_allow(bus->dev);
 > +
-> +	pm_runtime_mark_last_busy(dai->dev);
-> +	pm_runtime_put_autosuspend(dai->dev);
-> +	kfree(dma_params);
+> +	pci_set_drvdata(skl->pci, ebus);
 
-We check elsewhere for dma_params being NULL, shouldn't we set it to be
-NULL when we free?
+Shouldn't you be setting the driver data before you register the device
+and enable PM?  Otherwise the PM callbacks might run without it being
+set.
 
---f3uHgXesLFB1/u0Z
+> +out_free:
+> +	skl->init_failed = 1;
+> +	skl_free(ebus);
+> +	pci_set_drvdata(skl->pci, NULL);
+
+No need to set the driver data to NULL, the driver core will do it.
+
+--rq18dCD+oSRtyKma
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVnXJ3AAoJECTWi3JdVIfQhAUH/jFTKNf37am4zfK8Ob0z6FwJ
-3UESj1CbcstU5jCvHEAPgBMM0mtNYKwmlHFgXPohFLX0BMKedR3UxD8edFdMPV1x
-qdG70oXkMZOr9HgicLYDMtTlb8m7h1IP6lk5s/wqjNBa97JF6U3hfKND5AafNL4f
-xy3qy2o1mH9DXRK66ij3RvOgGv0WHt/BXtOABpUGOrknVVA8zeIYEP4WRYvCAh3N
-LaNElSiO6zxzF9Xi2+kOz6xHo+YC2wyBRe1nRG3EabQnYQcjgyS0adXIJIE8/sg7
-RXBn3Z2q2wQVEhoV21EAWYkFLNVCKY+m5nfRXFoEySZeVqh/6X9WxsCmwonYgwU=
-=8fzY
+iQEcBAEBCAAGBQJVnXN6AAoJECTWi3JdVIfQ8dIH/08jU6siijWKQRfdozwyJeKd
+jsnxqSOiV5v9LKSQ8yw5OAm3MOGISYYtgbuD1b6BQ8qWXM24iymHDxK2tF+u9QtM
+NpQyf/ozBssyv0rUa61Pf4q0258w5iFTfFzoWeOA1A9k9l1bLCf0TuNI3T42HRfk
+XwQ5hHF/dh/Phdino0elH7pox1zVHuBfT83bUM6N1FsD7R1jga8++tzQZEAOzPPm
+c1cLyGOd/KilI8c2/oq0FS+k6V26b2bhZXmzNgTWRvAcFGzELgi1V0J4qm1B8M0I
+7lqO9Rn0t4NXz53WGBT9Jl/6OV/jOChqf/PZq1Yiq8yCaxe8RZZwdTvpESVmD9g=
+=AUHc
 -----END PGP SIGNATURE-----
 
---f3uHgXesLFB1/u0Z--
+--rq18dCD+oSRtyKma--
 
---===============0590056819264393355==
+--===============5386902809511907248==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0590056819264393355==--
+--===============5386902809511907248==--
