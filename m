@@ -1,19 +1,18 @@
-From: "Jin, Yao" <yao.jin@linux.intel.com>
-Subject: Re: [PATCH v2 07/13] topology: Add private data parser
-Date: Wed, 08 Jul 2015 21:31:27 +0800
-Message-ID: <559D262F.20403@linux.intel.com>
-References: <1435758275-4047-1-git-send-email-liam.r.girdwood@linux.intel.com>	
- <1435758275-4047-7-git-send-email-liam.r.girdwood@linux.intel.com>	
- <s5ha8vflui3.wl-tiwai@suse.de> <1436284442.7271.30.camel@loki>	
- <s5h7fqchrde.wl-tiwai@suse.de> <1436345852.2474.10.camel@loki>
-Mime-Version: 1.0
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v2 3/4] ASoC: fsl_ssi: Add driver suspend
+	and resume to support MEGA Fast
+Date: Wed, 8 Jul 2015 10:06:29 -0400
+Message-ID: <AF7CC648-4426-47F7-BD31-A7C7C5F858F3@tabi.org>
+References: <ee6572bca11f44288db1d38e1934c0a7e7fb9ed2.1436339869.git.zidan.wang@freescale.com>
+ <32243d772f82eb67e4a561b842be9661d730f0b1.1436339869.git.zidan.wang@freescale.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ADEC2606B0
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 15:31:32 +0200 (CEST)
-In-Reply-To: <1436345852.2474.10.camel@loki>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id C01C4261545
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 16:06:31 +0200 (CEST)
+In-Reply-To: <32243d772f82eb67e4a561b842be9661d730f0b1.1436339869.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: nicoleotsuka@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Jul 8, 2015, at 3:22 AM, Zidan Wang wrote:
 
-
-On 2015/7/8 16:57, Liam Girdwood wrote:
-> On Tue, 2015-07-07 at 18:19 +0200, Takashi Iwai wrote:
->> On Tue, 07 Jul 2015 17:54:02 +0200,
->> Liam Girdwood wrote:
->>>
->>> On Wed, 2015-07-01 at 18:20 +0200, Takashi Iwai wrote:
->>>
->>>>
->>>>> +static int get_hex_num(const char *str)
->>>>> +{
->>>>> +	char *tmp, *s = NULL;
->>>>> +	int i = 0;
->>>>> +
->>>>> +	tmp = strdup(str);
->>>>> +	if (tmp == NULL)
->>>>> +		return -ENOMEM;
->>>>> +
->>>>> +	s = strtok(tmp, ",");
->>>>> +	while (s != NULL) {
->>>>> +		s = strtok(NULL, ",");
->>>>> +		i++;
->>>>> +	}
->>>>> +
->>>>> +	free(tmp);
->>>>> +	return i;
->>>>
->>>> Hmm, this just counts the number of comma + 1, so you don't need to
->>>> duplicate the string?
->>>>
->>>
->>> The string here is duplicated since strtok is destructive (it overwrites
->>> the delimiters with NULL) and the string is being used later on by the
->>> calling function.
->>
->> Yes, but what I meant is something like below:
->>
->> static int get_hex_num(const char *str)
->> {
->> 	int i = 0;
->>
->> 	if (!*str)
->> 		return 0;
->> 	for (;;) {
->> 		i++;
->> 		str = strchr(str, ',');
->> 		if (!str)
->> 			return i;
->> 		str++;
->> 	}
->> }
->>
->> ... so that it works without strdup().
->>
->> But it seems that strtok() skips the starting delimiter or handles
->> multiple delimiters as a single, so the result will become
->> inconsistent.  That is, all the following strings will give "a" and
->> "b" via strtok():
->> 	a,b
->> 	a,,b
->> 	,a,b
->> 	a,b,
->>
->> I guess you don't want to have an empty list element, right?
->>
+> For i.MX6 SoloX, there is a mode of the SoC to shutdown all power
+> source of modules during system suspend and resume procedure. Thus,
+> SSI needs to save all the values of registers before the system
+> suspend and restore them after the system resume.
 > 
-> Lets ask the author :) but IMO an empty list should be skipped here.
+> The register SFCSR is volatile, but some bits in it need to be
+> recovered after suspend/resume.
 > 
-> Yao, what's your rational behind this code ?
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 
-Sorry for replying late, I just see this mail.
-
-The get_hex_num() returns the number of hexadecimal in string.
-
-Say the string is "0x12,0x34,0x56,0x78" or "0x12,0x34,0x56,0x78,",
-the get_hex_num() returns 4.
-
-But if I use strchr, for above string, I get different number (3 or 4).
-That's the reason I choose the strtok().
-
-I do this is because I think user may append the comma at the end of
-string.
-
-> 
-> Liam
-> 
+This seems okay, but I'm on vacation this week, so I won't have a chance to verify it until next week.
