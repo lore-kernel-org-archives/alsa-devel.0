@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: Intel: skylake - match braces
-	for if-else
-Date: Wed, 8 Jul 2015 19:27:23 +0100
-Message-ID: <20150708182723.GX11162@sirena.org.uk>
-References: <1435079413-28094-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 3/3] Revert "ASoC: wm8996: Pass the
+	IRQF_ONESHOT flag"
+Date: Wed, 8 Jul 2015 19:34:22 +0100
+Message-ID: <20150708183422.GY11162@sirena.org.uk>
+References: <1435843604.17967.1.camel@ingics.com>
+ <1435843741.17967.3.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8988278209987209668=="
+Content-Type: multipart/mixed; boundary="===============8308229559242807637=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 12B602650C0
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:27:29 +0200 (CEST)
-In-Reply-To: <1435079413-28094-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 17B9A2650AF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:34:43 +0200 (CEST)
+In-Reply-To: <1435843741.17967.3.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Michal Marek <mmarek@suse.cz>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Fengguang Wu <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8988278209987209668==
+--===============8308229559242807637==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cnUHsqv9fxRVMt2T"
+	protocol="application/pgp-signature"; boundary="sMP3l7aO1Ldl3x+Z"
 Content-Disposition: inline
 
 
---cnUHsqv9fxRVMt2T
+--sMP3l7aO1Ldl3x+Z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 23, 2015 at 10:40:11PM +0530, Vinod Koul wrote:
-> Coding style mandates that if-else should match braces even if one of them
-> is a single line statement. Fix it in two places missed earlier
->=20
-> Mark, you can also fold these two patches with SKL driver series (1st and
-> 2nd patch can fold in 1st and 2nd patch respectively) or apply independet=
-ly,
-> either way okay
+On Thu, Jul 02, 2015 at 09:29:01PM +0800, Axel Lin wrote:
+> This reverts ed043aebe6ec ("ASoC: wm8996: Pass the IRQF_ONESHOT flag").
 
-I really don't know what that series is any more, sorry.  I've got two
-pending serieses both identified as Sky Lake and sent after this one.
+Please use subject lines reflecting the style for the subsystem, even
+for reverts.
 
---cnUHsqv9fxRVMt2T
+--sMP3l7aO1Ldl3x+Z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVnWuLAAoJECTWi3JdVIfQmf8H/17bVuLYLYBMofMcZMo4E9sY
-ZXFDtvCdqubiuSLqs47cEqdWZO6uWNW2dE8Q0zet5dl/Wr4hktjelkP1y0Qi1xzT
-fPwSCPzZXu6Thk6nNnTLR5/X/nje6b6gJ3WsZa8c+AcqDg0jUV/H6AFEDfOdN64s
-yhuqSZYvTR6ZszywcQCaZp6rM5RtneNPiDccaO9YQ9SRVFPjjG7fOmiOin6yWIYQ
-jPAkuivzmETgsYc29Z0Q5YgDoOJmyRvyZrs6csXRLlFk40sXWURTfTT6yTS0YpEt
-B1+Qu8dak2wwDNJ0q3bchKqYkHoHJe+Cxb6jPAQX78Gs0GSEouslNUWqjApvRus=
-=jGB0
+iQEcBAEBCAAGBQJVnW0tAAoJECTWi3JdVIfQmQcH/icGQ6fZwCd1ohhjPemMXtiI
+FPM2fgYtT8s3XFLuemt2SSE1dn567ylVoLH/OLrwodfv6DfnMTEd8nL66X2xrhcW
+deIGT0YaJuw7LFg767D0u2mQSmkr25U70MQbxV1w2Jw05smI+vce9CXd7KmucZA0
+CRPy60cXeozsewhuFAwXYubD63EC+eOdYUdGMOciELRR5aAYx5EMapAEopujCiI2
+7uT30YWZJ/sW/vmjtYNXPbOu+YKKfa2xSVrNHp+m/TV7mg8H3r1C2Tp87Qxx83uv
+E92PCD4snMaunABz8sb2D7nVUy9Jcw81KAlaTo+qudo7t5BDbSZnGk4QxBdHDzU=
+=fQj6
 -----END PGP SIGNATURE-----
 
---cnUHsqv9fxRVMt2T--
+--sMP3l7aO1Ldl3x+Z--
 
---===============8988278209987209668==
+--===============8308229559242807637==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8988278209987209668==--
+--===============8308229559242807637==--
