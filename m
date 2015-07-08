@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 4/6] ASoC: Intel: Add helper to update
- register bits with attr RWC
-Date: Wed, 8 Jul 2015 19:47:23 +0100
-Message-ID: <20150708184723.GC11162@sirena.org.uk>
-References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
- <1435919647-14049-5-git-send-email-vinod.koul@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/2] ASoC: Prevent components from being bound
+	to multiple cards
+Date: Wed,  8 Jul 2015 20:47:43 +0200
+Message-ID: <1436381264-6924-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6300184387664148062=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F85B265A3E
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:47:27 +0200 (CEST)
-In-Reply-To: <1435919647-14049-5-git-send-email-vinod.koul@intel.com>
+Received: from smtp-out-104.synserver.de (smtp-out-104.synserver.de
+ [212.40.185.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB2EB265A01
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:47:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+A component can only be bound to a single card at a time. Binding it to
+card while it is already bound to another will result in undefined
+behavior.
 
---===============6300184387664148062==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NSyv3PxMn0vTUI/G"
-Content-Disposition: inline
+As the undefined behavior might only manifest itself later on it is not
+necessarily always straight forward to find the cause. To prevent this add
+a check that refuses to bind a component to multiple cards as well as
+prints a error describing the problem.
 
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-core.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---NSyv3PxMn0vTUI/G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 03, 2015 at 04:04:05PM +0530, Vinod Koul wrote:
-> From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
->=20
-> For SKL IPC, we have some register bits with attribute RWC. So we need to
-> force update them. Add helper to force update this type of registers bits.
-
-This doesn't apply, the header already exists.=20
-
---NSyv3PxMn0vTUI/G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVnXA6AAoJECTWi3JdVIfQCYUH/A6Jrlff6fdVIDddfS6bt8Pz
-xLywfakJ508XJV+kKxkxJZ+nl4nWHW1F1erlcODf1Wo++LKuhwcZ9gNzzknwQ+l4
-O7a+0bClcGbVrh/tV1dsygmPWwuCFKVRKoG3gZVqGXqkbFSC6oalLfQp/AYC6Mwt
-BIixDpjURo2N28wEn1K0XoUd602R+7GWhhaQ0ZMg18l+FqHj9kEqAXJgl6wBQZ+b
-zBWymjL+8PYIvuY7obDuk2URDCgwn2IVpKx14pWcae8Sf5YeDdy66KyWFQmuU+Hy
-Jh/K20QaZSX/YPajETiKKsnkhp8FbfhxTSyTW4XCQBTR1de6X8NZI7Q3XefFDCs=
-=27Q1
------END PGP SIGNATURE-----
-
---NSyv3PxMn0vTUI/G--
-
---===============6300184387664148062==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6300184387664148062==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8baf87d..d9ae826 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1104,9 +1104,19 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	struct snd_soc_dai *dai;
+ 	int ret;
+ 
+-	if (!strcmp(component->name, "snd-soc-dummy") || component->probed)
++	if (!strcmp(component->name, "snd-soc-dummy"))
+ 		return 0;
+ 
++	if (component->probed) {
++		if (component->card != card) {
++			dev_err(component->dev,
++				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
++				card->name, component->card->name);
++			return -ENODEV;
++		}
++		return 0;
++	}
++
+ 	component->card = card;
+ 	dapm->card = card;
+ 	soc_set_name_prefix(card, component);
+-- 
+2.1.4
