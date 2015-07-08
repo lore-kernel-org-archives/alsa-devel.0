@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: Use card field to indicate whether a
-	component is bound
-Date: Wed,  8 Jul 2015 20:47:44 +0200
-Message-ID: <1436381264-6924-2-git-send-email-lars@metafoo.de>
-References: <1436381264-6924-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm0010: Remove spurious missing
+	IRQF_ONESHOT" to the asoc tree
+Date: Wed, 08 Jul 2015 19:50:57 +0100
+Message-ID: <E1ZCuQr-0004tX-38@debutante>
+References: <1435843604.17967.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-104.synserver.de (smtp-out-104.synserver.de
- [212.40.185.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 25148265A1D
- for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:47:52 +0200 (CEST)
-In-Reply-To: <1436381264-6924-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00C0C2650AF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jul 2015 20:51:06 +0200 (CEST)
+In-Reply-To: <1435843604.17967.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,108 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Axel Lin <axel.lin@ingics.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the card field of a component to indicate whether it is bound or not.
-This makes a certain sense given that the field contains the card the
-component is bound to and a component can only be bound to one card at a
-time. And it also requires to unset the card field when the component is
-unbound from the card.
+The patch
 
-This makes the probded flag redundant and it can be removed.
+   ASoC: wm0010: Remove spurious missing IRQF_ONESHOT
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 030e6ee241f0586308622bcdd273a317976b3169 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 2 Jul 2015 21:26:44 +0800
+Subject: [PATCH] ASoC: wm0010: Remove spurious missing IRQF_ONESHOT
+
+This reverts 58d468328646 ("ASoC: wm0010: Add missing IRQF_ONESHOT").
+
+The coccinelle warnings is false positive because the original code does
+set IRQF_ONESHOT by "trigger |= IRQF_ONESHOT;".
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 16 ++++++++--------
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm0010.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3ccd82a..ab69e26 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -758,7 +758,6 @@ struct snd_soc_component {
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index e1da49f39334..f2c6ad4b8fde 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -953,7 +953,7 @@ static int wm0010_spi_probe(struct spi_device *spi)
+ 		trigger = IRQF_TRIGGER_FALLING;
+ 	trigger |= IRQF_ONESHOT;
  
- 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
- 	unsigned int registered_as_component:1;
--	unsigned int probed:1;
- 
- 	struct list_head list;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d9ae826..2fc461c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -980,7 +980,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 
- static void soc_remove_component(struct snd_soc_component *component)
- {
--	if (!component->probed)
-+	if (!component->card)
- 		return;
- 
- 	/* This is a HACK and will be removed soon */
-@@ -993,7 +993,7 @@ static void soc_remove_component(struct snd_soc_component *component)
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 
- 	soc_cleanup_component_debugfs(component);
--	component->probed = 0;
-+	component->card = NULL;
- 	module_put(component->dev->driver->owner);
- }
- 
-@@ -1107,7 +1107,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	if (!strcmp(component->name, "snd-soc-dummy"))
- 		return 0;
- 
--	if (component->probed) {
-+	if (component->card) {
- 		if (component->card != card) {
- 			dev_err(component->dev,
- 				"Trying to bind component to card \"%s\" but is already bound to card \"%s\"\n",
-@@ -1117,13 +1117,13 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		return 0;
- 	}
- 
-+	if (!try_module_get(component->dev->driver->owner))
-+		return -ENODEV;
-+
- 	component->card = card;
- 	dapm->card = card;
- 	soc_set_name_prefix(card, component);
- 
--	if (!try_module_get(component->dev->driver->owner))
--		return -ENODEV;
--
- 	soc_init_component_debugfs(component);
- 
- 	if (component->dapm_widgets) {
-@@ -1167,7 +1167,6 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		snd_soc_dapm_add_routes(dapm, component->dapm_routes,
- 					component->num_dapm_routes);
- 
--	component->probed = 1;
- 	list_add(&dapm->list, &card->dapm_list);
- 
- 	/* This is a HACK and will be removed soon */
-@@ -1178,6 +1177,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 
- err_probe:
- 	soc_cleanup_component_debugfs(component);
-+	component->card = NULL;
- 	module_put(component->dev->driver->owner);
- 
- 	return ret;
-@@ -1461,7 +1461,7 @@ static void soc_remove_aux_dev(struct snd_soc_card *card, int num)
- 		rtd->dev_registered = 0;
- 	}
- 
--	if (component && component->probed)
-+	if (component)
- 		soc_remove_component(component);
- }
- 
+-	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger | IRQF_ONESHOT,
++	ret = request_threaded_irq(irq, NULL, wm0010_irq, trigger,
+ 				   "wm0010", wm0010);
+ 	if (ret) {
+ 		dev_err(wm0010->dev, "Failed to request IRQ %d: %d\n",
 -- 
 2.1.4
