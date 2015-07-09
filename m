@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 2/4] ASoC: Intel - add Skylake HDA audio
-	driver
-Date: Thu, 9 Jul 2015 09:53:33 +0530
-Message-ID: <20150709042333.GE836@localhost>
-References: <1436153066-23962-1-git-send-email-vinod.koul@intel.com>
- <1436153066-23962-3-git-send-email-vinod.koul@intel.com>
- <20150708190114.GE11162@sirena.org.uk>
+Subject: Re: [PATCH v2 1/6] ASoC: Intel: Add helper to poll
+ register for DSP status
+Date: Thu, 9 Jul 2015 09:57:41 +0530
+Message-ID: <20150709042741.GF836@localhost>
+References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
+ <1435919647-14049-2-git-send-email-vinod.koul@intel.com>
+ <20150708183621.GZ11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2392062207695116765=="
+Content-Type: multipart/mixed; boundary="===============0589510590171588843=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A0F4B265AF8
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:21:48 +0200 (CEST)
-In-Reply-To: <20150708190114.GE11162@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 163CF265AF8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:25:55 +0200 (CEST)
+In-Reply-To: <20150708183621.GZ11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, "Kp, Jeeja" <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2392062207695116765==
+--===============0589510590171588843==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QRj9sO5tAVLaXnSD"
+	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
 Content-Disposition: inline
 
 
---QRj9sO5tAVLaXnSD
+--wULyF7TL5taEdwHz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 08, 2015 at 08:01:14PM +0100, Mark Brown wrote:
-> On Mon, Jul 06, 2015 at 08:54:24AM +0530, Vinod Koul wrote:
+On Wed, Jul 08, 2015 at 07:36:21PM +0100, Mark Brown wrote:
+> On Fri, Jul 03, 2015 at 04:04:02PM +0530, Vinod Koul wrote:
 >=20
-> > +static irqreturn_t skl_interrupt(int irq, void *dev_id)
-> > +{
-> > +	struct hdac_ext_bus *ebus =3D dev_id;
-> > +	struct hdac_bus *bus =3D ebus_to_hbus(ebus);
-> > +	u32 status;
+> > +	for (time =3D 0; time < timeout; time++) {
+> > +		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) =3D=3D expected=
+_value)
+> > +			break;
 > > +
-> > +#ifdef CONFIG_PM
-> > +	if (!pm_runtime_active(bus->dev))
-> > +		return IRQ_NONE;
-> > +#endif
+> > +		mdelay(1);
+> > +	}
 >=20
-> There's a stub for pm_runtime_active for !PM which does the right thing
-> here, no need for ifdefs.
+> mdelay() not msleep()?  If we're waiting for multiple miliseconds that
+> could be lots of busy waiting.
+Usually this should get reflected in 1st iteration as the register update
+would get updated farrily quickly. msleep will add up lots of latency to
+this.
 
-Ah yes, I will fix it here and as well as HDA driver :)
-=20
-> > +	/*configure PM */
-> > +	pm_runtime_set_autosuspend_delay(bus->dev, SKL_SUSPEND_DELAY);
-> > +	pm_runtime_use_autosuspend(bus->dev);
-> > +	pm_runtime_put_noidle(bus->dev);
-> > +	pm_runtime_allow(bus->dev);
-> > +
-> > +	pci_set_drvdata(skl->pci, ebus);
->=20
-> Shouldn't you be setting the driver data before you register the device
-> and enable PM?  Otherwise the PM callbacks might run without it being
-> set.
-Right, will update
-
->=20
-> > +out_free:
-> > +	skl->init_failed =3D 1;
-> > +	skl_free(ebus);
-> > +	pci_set_drvdata(skl->pci, NULL);
->=20
-> No need to set the driver data to NULL, the driver core will do it.
-Ok
-
+Thanks
 --=20
 ~Vinod
 
---QRj9sO5tAVLaXnSD
+--wULyF7TL5taEdwHz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJVnfdFAAoJEHwUBw8lI4NHOfEP/j+gCyZ8MwMEqY63MK9lKPjC
-AaNOb27JnUypKsIQLQtQAE0kTJDAAuomsfKypDBzUgJw5u5hkHx55eszCqrhI5BW
-WrxNJW7SiHwgPyKxVMvQj1gsQR8UvyWdxXSqs3+m+azTghyPvJHD31FoNTdUEtaa
-3g0lpv+i/slPDABbd90Y9obuyk0CSkwRJYseet9Yymu56u6tPmp7eZYtYqDHtbwW
-xcNVuRHDZFPamnsIj6n8bMMlrNb2gmzjeSWfyUQpqzhQZUYX9Yx5si0Ql9++pH2/
-uEOEFMd019QGUSIfwdafezLo0q4AQkNzt1H7gdJ7i00eiRViWkHDk6rWemj9dL/h
-dWZF1jqWOKi274orPUPyHBCpJi4oIp5lBnu0dhNf+Y6uZk6/QUKoURxkBDZnHu0w
-bTbJajPmuaZ0rrkW+CRVUtjexHg4zRYLu5avedj7A3Eojb2dGaRZsfhScFKjYPbw
-uh/Gn2QDNOoHBskPVCXJUCrFO7Babgpvz5uFnrfPTkScSL269n+/Q1tlefVKtXtS
-RFNDCTGp6LuiRkPK/+7HF0iVWmn+0IgHXhlSqvuc/5HmTzfe8cHw+2yU4Y6OQAKv
-CCX7wdr+RBNjoRafq/hpgKgDzW7VJJRGS7Y7zXHMp0eQWVI9XlREDkQGDYjEL/z0
-zF/mYTImAuwNrd9182HW
-=XGDk
+iQIcBAEBAgAGBQJVnfg9AAoJEHwUBw8lI4NHxAAP/287mBwXWYb3TfjubcTurJxP
+ey3KIdgddm1cOlB43CYfQACf6kpscRm8qp+uJ49cSYi/CWIPbsljA+cqOanFcWRb
+wxLGTGm0+iG5NjH3InW4DqjFFUBAcM8/pOZtD3sl72w+KFxfMTkEaJD8aIKNHtYy
++UQN1tL/UUpUWl23FvIgnm3waQQd5CTzstJvsJNcBwH/1fkOohNvlTuWAx3F7zQo
+cXXLnCcd+rrKcUVJYy09sNHl7qOF8mR5303+F6abVyWoDzM69816YUtxNhHdb442
+ABdjHofIGcBnj96szMqGeqcWLxd+RhiWHEwtoIZG58oU2X328h77lVU/ptBgRgOV
+VqRM98BDo1hOIzPkBvAsAWMj8ZhAdw5YRT22bp+PG+ypUVZDiy/WqcibF6OxbilL
+3lK9uhTlK3uRz3955NlRFYB8U5X60JUaGS6lj6/D1Musa+tR4ozM17jfOD61aVsq
+rkyOCE/3KSLi7Ce6MtxC/qV6WouQpBCfEjh8B9HKA18Nys8zqENGA9zMebLfNW+k
+gLfAeabAtufhDLt9E0JperkYenT3pADyOAiTKfRE+Vl0GuikLjpTMZ4LEVRl1A25
+nh3wyMWDskL99x2v2w+fVOGngWki8DsHA/BTIqn18HkivljLw+wm9PwD69drHKC6
+G4zONyq8imzf7OgzdV/6
+=D/Hz
 -----END PGP SIGNATURE-----
 
---QRj9sO5tAVLaXnSD--
+--wULyF7TL5taEdwHz--
 
---===============2392062207695116765==
+--===============0589510590171588843==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2392062207695116765==--
+--===============0589510590171588843==--
