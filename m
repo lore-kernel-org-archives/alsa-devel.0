@@ -1,17 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/2] ASoC: Intel: skylake - match braces
-	for if-else
-Date: Thu, 9 Jul 2015 09:43:22 +0530
-Message-ID: <20150709041322.GC836@localhost>
-References: <1435079413-28094-1-git-send-email-vinod.koul@intel.com>
- <20150708182723.GX11162@sirena.org.uk>
+Subject: Re: [PATCH v7 1/4] ASoC: Intel: add Skylake HDA
+	platform driver
+Date: Thu, 9 Jul 2015 09:50:37 +0530
+Message-ID: <20150709042037.GD836@localhost>
+References: <1436153066-23962-1-git-send-email-vinod.koul@intel.com>
+ <1436153066-23962-2-git-send-email-vinod.koul@intel.com>
+ <20150708185655.GD11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1355516015410402229=="
+Content-Type: multipart/mixed; boundary="===============1412049016441629073=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F46A265CA8
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:11:38 +0200 (CEST)
-In-Reply-To: <20150708182723.GX11162@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 385AF265AF8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:18:52 +0200 (CEST)
+In-Reply-To: <20150708185655.GD11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1355516015410402229==
+--===============1412049016441629073==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+	protocol="application/pgp-signature"; boundary="Yylu36WmvOXNoKYn"
 Content-Disposition: inline
 
 
---Dxnq1zWXvFF0Q93v
+--Yylu36WmvOXNoKYn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 08, 2015 at 07:27:23PM +0100, Mark Brown wrote:
-> On Tue, Jun 23, 2015 at 10:40:11PM +0530, Vinod Koul wrote:
-> > Coding style mandates that if-else should match braces even if one of t=
-hem
-> > is a single line statement. Fix it in two places missed earlier
-> >=20
-> > Mark, you can also fold these two patches with SKL driver series (1st a=
-nd
-> > 2nd patch can fold in 1st and 2nd patch respectively) or apply independ=
-etly,
-> > either way okay
+On Wed, Jul 08, 2015 at 07:56:55PM +0100, Mark Brown wrote:
+> On Mon, Jul 06, 2015 at 08:54:23AM +0530, Vinod Koul wrote:
 >=20
-> I really don't know what that series is any more, sorry.  I've got two
-> pending serieses both identified as Sky Lake and sent after this one.
-Hi Mark,
+> > +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+> > +	pm_runtime_get_sync(dai->dev);
+>=20
+> Check the return value please, this can fail.
+Yes..
 
-For the last series you said you were okay but had noticed some style
-inconsistencies, so I fixed those with this. The updated patchset (rebased)
-has these folded in, so this can be ignored.
+>=20
+> > +static int skl_get_format(struct snd_pcm_substream *substream,
+> > +		struct snd_soc_dai *dai)
+> > +{
+> > +	struct snd_soc_pcm_runtime *rtd =3D snd_pcm_substream_chip(substream);
+> > +	struct skl_dma_params *dma_params;
+> > +	int format_val =3D 0;
+> > +	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+> > +
+> > +	dma_params  =3D (struct skl_dma_params *)
+> > +			snd_soc_dai_get_dma_data(codec_dai, substream);
+>=20
+> Should be no need to cast away from void.
+Right.
+
+>=20
+> > +	if (substream->runtime->dma_area)
+> > +		memset(substream->runtime->dma_area, 0,
+> > +				params_buffer_bytes(params));
+>=20
+> Why do we need to memset here?
+Nope, the buffer is allocated thru snd_pcm_lib_malloc_pages() which IIUC
+would for this case do a kzalloc, so we should rmeove this
+>=20
+> > +	dma_params  =3D (struct skl_dma_params *)
+> > +			snd_soc_dai_get_dma_data(dai, substream);
+> > +
+> > +	pm_runtime_mark_last_busy(dai->dev);
+> > +	pm_runtime_put_autosuspend(dai->dev);
+> > +	kfree(dma_params);
+>=20
+> We check elsewhere for dma_params being NULL, shouldn't we set it to be
+> NULL when we free?
+Thanks for pointing, fixed now
 
 --=20
 ~Vinod
 
---Dxnq1zWXvFF0Q93v
+--Yylu36WmvOXNoKYn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJVnfTiAAoJEHwUBw8lI4NHGGoP/Aumh8+xAGfP5ZauixW9rUZh
-J1Y2A3ReoenRv9nKP0OpHzhce71pT6XRRHQnXyRmBqauCbUnXFRJs7uNkowKYJ5t
-1TfhR2hh3e18OWOSUWu4yLdrzo47jhRQQccj9IYBrJmoUdaZdQkng0Ma2fg0my+x
-3GmVJ2xsNwRDNpVcXt1zEJaTvOcbUdU3YXtTSF+za02uZ7PbBOZ+biX6vFeWUct7
-oH1DVVDW2WLxpm8EbGhXgMwATacvPy0RcdxmYq2E5H1OnPQBrAQxrLzH/c8XtUDU
-ZqIcpbDgBXJ8ws3McZxaK6wc1RlzpvELTSats9h44CFmDrwp/id1GMr7yMquQUq3
-+D2dO/PDH4ZjtzBpmWo6z7z5LFir7S0rO8zPUjTJaGmCd/0Di2wN3Z5s+2H2NlxS
-md28kh/V3NxGBZawE7gkSqufG51IVcxGkQfyOQu7aq5h0D/jBeoxAr/3ID9ZJzoF
-QtLzv69exIatsot/slqz9PF4/r6yljn+jXjk63K5Kd+xsToPukKucisjls10xz4I
-dygfJ85aoQA3ZErnsDHtWH0pFl/cs4jbtieaE11YGO+EmueqWVzphoZAxfix2AOR
-vn1vhIj1qMof85VGYsTTDzKt3GPeg4BGm24sKx9p29XbKDNcKMhAhVcypQhSlzLG
-lRIiInNlwR4bZM8Uz8TK
-=zg4+
+iQIcBAEBAgAGBQJVnfaVAAoJEHwUBw8lI4NHGpsQAMXewhAP26rDHLdllsYwl6id
++xJhvpywdaiOyzYxj65TZnJiRrExakkrMn3rtWdLkunuY8WbTGDHkfXVTbICZf2h
+Lik5R3wuy4EPiB2kf6eJzoZQxbbvxgjSmWNqTsDtwKAQz4BOKckHh4z+Clof8MM0
+GNDOXYdMrKu6TnsoVncWUf2vZ4IZZnzIEELqisVJXi8bQVsfbgjLWCMQuBQxUAUr
+H1XVZYC5QGLGXesb0Xs8yrXSOgPgHo7yuVwGp86zMC2KY7skfyUBv9HLnHWJameH
+mxByHDpVwgZrJrJ0aw0cvaDXgh+MF2FfWIzSbQ6KuhsyIhv4twvvA+NqcCAqvLSa
+TFlTzLcMwEunM+hAeVeeZLw6jTMT5C+PLCNM+ZXgXaso+d3Pvsw5VMR5zZaakLVC
+3qcmQU8d2EX294KV7EKfOtO8xVirIUhJwOgjC3YhNwDkOswjvG2equoxUH7S6fAq
+gRWNwerCZs1WWGh2sBTh7XLtFdVgkb7vicd9idTkHGb8YsrXKwzp1rAf4NSr9QWE
+oLm++TKKih20uhwj2mTRkS6gnulkg4bUXfAQF9hoLR/KQ0cCC2P3v3BT1rZiifO7
+IHyRYrThqIDUPPcS7ZqcUuPMki1lF3E/7Hkf9XiQIMPJ3QfM0o4RZGOOfEEkvHwW
+6u3uIOQQTHtvPgAtu14Y
+=Wki7
 -----END PGP SIGNATURE-----
 
---Dxnq1zWXvFF0Q93v--
+--Yylu36WmvOXNoKYn--
 
---===============1355516015410402229==
+--===============1412049016441629073==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1355516015410402229==--
+--===============1412049016441629073==--
