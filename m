@@ -1,42 +1,167 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: Re: [PATCH 3/3] Revert "ASoC: wm8996: Pass the
-	IRQF_ONESHOT flag"
-Date: Thu, 9 Jul 2015 09:52:23 +0800
-Message-ID: <CAFRkauBW5UySoHCt10S9uN8SLqzp_CE4BqtsdNS-W8yUKDRQ5g@mail.gmail.com>
-References: <1435843604.17967.1.camel@ingics.com>
- <1435843741.17967.3.camel@ingics.com>
- <20150708183422.GY11162@sirena.org.uk>
+From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH] ASoC: mediatek: Use platform_of_node for machine drivers
+Date: Thu, 9 Jul 2015 10:51:27 +0800
+Message-ID: <1436410287-61097-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f53.google.com (mail-la0-f53.google.com
- [209.85.215.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 873FC265B54
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 03:52:24 +0200 (CEST)
-Received: by lagx9 with SMTP id x9so236756114lag.1
- for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2015 18:52:24 -0700 (PDT)
-In-Reply-To: <20150708183422.GY11162@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Michal Marek <mmarek@suse.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Fengguang Wu <fengguang.wu@intel.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
+Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-07-09 2:34 GMT+08:00 Mark Brown <broonie@kernel.org>:
-> On Thu, Jul 02, 2015 at 09:29:01PM +0800, Axel Lin wrote:
->> This reverts ed043aebe6ec ("ASoC: wm8996: Pass the IRQF_ONESHOT flag").
->
-> Please use subject lines reflecting the style for the subsystem, even
-> for reverts.
+This replaces the platform_name in snd_soc_dai_link by device tree node.
 
-I don't get it.
-I thought if a patch is actually a revert, it should look like a revert.
-So I generate the patch by "git revert". Is that wrong?
+Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ .../devicetree/bindings/sound/mt8173-max98090.txt     |  2 ++
+ .../bindings/sound/mt8173-rt5650-rt5676.txt           |  2 ++
+ sound/soc/mediatek/mt8173-max98090.c                  | 17 +++++++++++++----
+ sound/soc/mediatek/mt8173-rt5650-rt5676.c             | 19 +++++++++++++++----
+ 4 files changed, 32 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-max98090.txt b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
+index 829bd26..519e97c 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
+@@ -3,11 +3,13 @@ MT8173 with MAX98090 CODEC
+ Required properties:
+ - compatible : "mediatek,mt8173-max98090"
+ - mediatek,audio-codec: the phandle of the MAX98090 audio codec
++- mediatek,platform: the phandle of MT8173 ASoC platform
+ 
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-max98090";
+ 		mediatek,audio-codec = <&max98090>;
++		mediatek,platform = <&afe>;
+ 	};
+ 
+diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
+index 61e98c9..f205ce9 100644
+--- a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
++++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
+@@ -3,11 +3,13 @@ MT8173 with RT5650 RT5676 CODECS
+ Required properties:
+ - compatible : "mediatek,mt8173-rt5650-rt5676"
+ - mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
++- mediatek,platform: the phandle of MT8173 ASoC platform
+ 
+ Example:
+ 
+ 	sound {
+ 		compatible = "mediatek,mt8173-rt5650-rt5676";
+ 		mediatek,audio-codec = <&rt5650 &rt5676>;
++		mediatek,platform = <&afe>;
+ 	};
+ 
+diff --git a/sound/soc/mediatek/mt8173-max98090.c b/sound/soc/mediatek/mt8173-max98090.c
+index 4d44b58..2d2536a 100644
+--- a/sound/soc/mediatek/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173-max98090.c
+@@ -103,7 +103,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
+ 		.name = "MAX98090 Playback",
+ 		.stream_name = "MAX98090 Playback",
+ 		.cpu_dai_name = "DL1",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.codec_name = "snd-soc-dummy",
+ 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+@@ -114,7 +113,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
+ 		.name = "MAX98090 Capture",
+ 		.stream_name = "MAX98090 Capture",
+ 		.cpu_dai_name = "VUL",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.codec_name = "snd-soc-dummy",
+ 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+@@ -125,7 +123,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
+ 	{
+ 		.name = "Codec",
+ 		.cpu_dai_name = "I2S",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.no_pcm = 1,
+ 		.codec_dai_name = "HiFi",
+ 		.init = mt8173_max98090_init,
+@@ -152,9 +149,21 @@ static struct snd_soc_card mt8173_max98090_card = {
+ static int mt8173_max98090_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_max98090_card;
+-	struct device_node *codec_node;
++	struct device_node *codec_node, *platform_node;
+ 	int ret, i;
+ 
++	platform_node = of_parse_phandle(pdev->dev.of_node,
++					 "mediatek,platform", 0);
++	if (!platform_node) {
++		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
++		return -EINVAL;
++	}
++	for (i = 0; i < card->num_links; i++) {
++		if (mt8173_max98090_dais[i].platform_name)
++			continue;
++		mt8173_max98090_dais[i].platform_of_node = platform_node;
++	}
++
+ 	codec_node = of_parse_phandle(pdev->dev.of_node,
+ 				      "mediatek,audio-codec", 0);
+ 	if (!codec_node) {
+diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+index 0940553..6f52eca 100644
+--- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
+@@ -138,7 +138,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.name = "rt5650_rt5676 Playback",
+ 		.stream_name = "rt5650_rt5676 Playback",
+ 		.cpu_dai_name = "DL1",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.codec_name = "snd-soc-dummy",
+ 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+@@ -149,7 +148,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 		.name = "rt5650_rt5676 Capture",
+ 		.stream_name = "rt5650_rt5676 Capture",
+ 		.cpu_dai_name = "VUL",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.codec_name = "snd-soc-dummy",
+ 		.codec_dai_name = "snd-soc-dummy-dai",
+ 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+@@ -161,7 +159,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
+ 	{
+ 		.name = "Codec",
+ 		.cpu_dai_name = "I2S",
+-		.platform_name = "11220000.mt8173-afe-pcm",
+ 		.no_pcm = 1,
+ 		.codecs = mt8173_rt5650_rt5676_codecs,
+ 		.num_codecs = 2,
+@@ -209,7 +206,21 @@ static struct snd_soc_card mt8173_rt5650_rt5676_card = {
+ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &mt8173_rt5650_rt5676_card;
+-	int ret;
++	struct device_node *platform_node;
++	int i, ret;
++
++	platform_node = of_parse_phandle(pdev->dev.of_node,
++					 "mediatek,platform", 0);
++	if (!platform_node) {
++		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < card->num_links; i++) {
++		if (mt8173_rt5650_rt5676_dais[i].platform_name)
++			continue;
++		mt8173_rt5650_rt5676_dais[i].platform_of_node = platform_node;
++	}
+ 
+ 	mt8173_rt5650_rt5676_codecs[0].of_node =
+ 		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 0);
+-- 
+1.8.1.1.dirty
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
