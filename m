@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Intel: fix kconfig,
-	symbols and sparse
-Date: Thu, 9 Jul 2015 10:17:03 +0530
-Message-ID: <20150709044703.GJ836@localhost>
-References: <1434738331-12518-1-git-send-email-vinod.koul@intel.com>
- <20150708182423.GW11162@sirena.org.uk>
- <20150709044022.GH836@localhost>
+From: Greg <alsa-devel@sweet.com>
+Subject: Tascam US-16x08 0644:8047
+Date: Wed, 8 Jul 2015 22:22:44 -0700
+Message-ID: <20150709052244.GZ2628@sweet.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9111502630567827389=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 88EE9265CA8
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:45:17 +0200 (CEST)
-In-Reply-To: <20150709044022.GH836@localhost>
+Received: from do1.sweet.com (do1.sweet.com [107.170.237.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id 517E3265D21
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 07:22:45 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Greetings,
 
---===============9111502630567827389==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k+G3HLlWI7eRTl+h"
-Content-Disposition: inline
+I am fairly new to USB dev (in linux in particular, but also in general), but I
+would very much like to try to get support for the above device working in
+snd-usb-audio.
 
+- Is this an appropriate place to discuss snd-usb-audio?
+- Are there any recommended reading pointers for the quirk table?
+   - or any highly recommended USB reading material that I might not have found?
 
---k+G3HLlWI7eRTl+h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I patched parse_audio_format_rates_v2(), get_sample_rate_v2(), and
+set_sample_rate_v2(), and through some sort of beginner luck was able to get
+aplay audio out of the first two channels. That was incomplete hackery though
+(eg fixed sample rate), and I would like to learn how to properly add quirk
+support. There have been other reports that this device worked OOTB, but I
+fail to see how!
 
-On Thu, Jul 09, 2015 at 10:10:22AM +0530, Vinod Koul wrote:
-> On Wed, Jul 08, 2015 at 07:24:23PM +0100, Mark Brown wrote:
-> > On Fri, Jun 19, 2015 at 11:55:25PM +0530, Vinod Koul wrote:
-> >=20
-> > > Vinod Koul (6):
-> > >   ASoC: Intel: use CONFIG_SND_SOC for intel boards
-> > >   ASoC: Intel: kconfig - Move DW_DMAC_CORE dependency to machines
-> > >   ASoC: intel - kconfig: remove SND_SOC_INTEL_SST prompt
-> > >   ASOC: intel - hsw: fix sparse unused varible warn
-> > >   ASoC: intel - atom: statify sst_slot_enum_info
-> > >   ASoC: Intel -atom: fix sst_platform_compr_ops declaration
-> >=20
-> > Please try to use commit message styles that are consistent with that
-> > for the subsystem, these aren't even consistent within the series :(
-> Sorry about that, will repost with these fixed
-And you have applied this, Thanks a bunch. I will be extra careful on this
-:)
-Which also means either you have turned off your applied scripts or it borke
+I've also been examining the traffic to the device with wireshark and a
+win7 vm, but the learning curve for USB is a bit steep, so I am digesting. (:
 
---=20
-~Vinod
+If anyone can provide suggestions on lsusb output alone, here's what I have:
+http://pastebin.com/pA9MLQet
 
---k+G3HLlWI7eRTl+h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVnfzHAAoJEHwUBw8lI4NHtBsQANMuKIxEPTtvP0JWaS07XmQo
-rGTxEE6EXSOOka78ae5XuUSAzOi9BJHdeHQRjTO7ZjPKYm/Nsxu0RijWjwtwMpwI
-tHoSwSVsXnG+O4/7gV8apzIBwMLTFPXNV7dkp7Q31aUsy9PPVNwmW4zyKq9OLinG
-WMdo5C/J6C6SDZEecJXIjvGl3KcREP0lQ4FlK6oKrT/VDGEt5tz6Qcc+t4YjZNVU
-2hh00Y6GjbHkSRxsUDDpZEJN/pMXwsllesaVhR06A3W3ThItpgSvPdTiZv7eV5Od
-959zjd7OAV+wBJ5jgW9NJ6PN17AMzMDZlJCI9u78SiHT7R3E3S3nnPxuLPbbtXnb
-jfFKTdEXDdb3LpznYK2NzN1DByj7mh4sSkCeo4yBaQVkSvzpWR17f9FdqUpcMxCR
-2iR9BlICIwFggl/ODmUWq9HAz8wMnAdzo2ZKpWErK/PpXQ6YRyCkKS/aNYNj0KhN
-XzYNoI6hnxp8cQhYvQqQBir/HGnbIm12vKBd7IlzqkLnG/B/IZyDd0kwg5pOY34y
-ytjgUB5Zew1T7om3sHjetYyBGLnUr2WWohok4grVX09tC0+8UO5DyHtaHr42xVDF
-XDViJJvvG8w0Ypd/O4o90CIJUdY/NbRGUXGiyXommPIHbJSFcltWunW+8komDp/L
-04X99IVQbQoYAjA4jpTp
-=LXwi
------END PGP SIGNATURE-----
-
---k+G3HLlWI7eRTl+h--
-
---===============9111502630567827389==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9111502630567827389==--
+cheers,
+Greg
