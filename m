@@ -1,83 +1,94 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2] arm64: dts: mt8173: Add afe device node
-Date: Thu, 9 Jul 2015 11:32:05 +0800
-Message-ID: <1436412725-55129-1-git-send-email-koro.chen@mediatek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 0/2] ASoC: Intel: skylake - match braces
+	for if-else
+Date: Thu, 9 Jul 2015 09:43:22 +0530
+Message-ID: <20150709041322.GC836@localhost>
+References: <1435079413-28094-1-git-send-email-vinod.koul@intel.com>
+ <20150708182723.GX11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, djkurtz-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1355516015410402229=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F46A265CA8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:11:38 +0200 (CEST)
+In-Reply-To: <20150708182723.GX11162@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This adds afe (audio front end) device node to the MT8173 dtsi file.
 
-Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
----
-This patch is based on Matthias's tree:
-https://github.com/mbgg/linux-mediatek
-branch: v4.2-next/arm64
+--===============1355516015410402229==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Disposition: inline
 
-Changes since v1:
-- change node name to afe: audio-controller@11220000
----
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index 0696f8f..ce9255a 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -14,6 +14,7 @@
- #include <dt-bindings/clock/mt8173-clk.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/power/mt8173-power.h>
- #include <dt-bindings/reset-controller/mt8173-resets.h>
- #include "mt8173-pinfunc.h"
- 
-@@ -393,6 +394,37 @@
- 			#size-cells = <0>;
- 			status = "disabled";
- 		};
-+
-+		afe: audio-controller@11220000  {
-+			compatible = "mediatek,mt8173-afe-pcm";
-+			reg = <0 0x11220000 0 0x1000>;
-+			interrupts = <GIC_SPI 134 IRQ_TYPE_EDGE_FALLING>;
-+			power-domains = <&scpsys MT8173_POWER_DOMAIN_AUDIO>;
-+			clocks = <&infracfg CLK_INFRA_AUDIO>,
-+				 <&topckgen CLK_TOP_AUDIO_SEL>,
-+				 <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
-+				 <&topckgen CLK_TOP_APLL1_DIV0>,
-+				 <&topckgen CLK_TOP_APLL2_DIV0>,
-+				 <&topckgen CLK_TOP_I2S0_M_SEL>,
-+				 <&topckgen CLK_TOP_I2S1_M_SEL>,
-+				 <&topckgen CLK_TOP_I2S2_M_SEL>,
-+				 <&topckgen CLK_TOP_I2S3_M_SEL>,
-+				 <&topckgen CLK_TOP_I2S3_B_SEL>;
-+			clock-names = "infra_sys_audio_clk",
-+				      "top_pdn_audio",
-+				      "top_pdn_aud_intbus",
-+				      "bck0",
-+				      "bck1",
-+				      "i2s0_m",
-+				      "i2s1_m",
-+				      "i2s2_m",
-+				      "i2s3_m",
-+				      "i2s3_b";
-+			assigned-clocks = <&topckgen CLK_TOP_AUD_1_SEL>,
-+					  <&topckgen CLK_TOP_AUD_2_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_APLL1>,
-+						 <&topckgen CLK_TOP_APLL2>;
-+		};
- 	};
- };
- 
--- 
-1.8.1.1.dirty
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Wed, Jul 08, 2015 at 07:27:23PM +0100, Mark Brown wrote:
+> On Tue, Jun 23, 2015 at 10:40:11PM +0530, Vinod Koul wrote:
+> > Coding style mandates that if-else should match braces even if one of t=
+hem
+> > is a single line statement. Fix it in two places missed earlier
+> >=20
+> > Mark, you can also fold these two patches with SKL driver series (1st a=
+nd
+> > 2nd patch can fold in 1st and 2nd patch respectively) or apply independ=
+etly,
+> > either way okay
+>=20
+> I really don't know what that series is any more, sorry.  I've got two
+> pending serieses both identified as Sky Lake and sent after this one.
+Hi Mark,
+
+For the last series you said you were okay but had noticed some style
+inconsistencies, so I fixed those with this. The updated patchset (rebased)
+has these folded in, so this can be ignored.
+
+--=20
+~Vinod
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJVnfTiAAoJEHwUBw8lI4NHGGoP/Aumh8+xAGfP5ZauixW9rUZh
+J1Y2A3ReoenRv9nKP0OpHzhce71pT6XRRHQnXyRmBqauCbUnXFRJs7uNkowKYJ5t
+1TfhR2hh3e18OWOSUWu4yLdrzo47jhRQQccj9IYBrJmoUdaZdQkng0Ma2fg0my+x
+3GmVJ2xsNwRDNpVcXt1zEJaTvOcbUdU3YXtTSF+za02uZ7PbBOZ+biX6vFeWUct7
+oH1DVVDW2WLxpm8EbGhXgMwATacvPy0RcdxmYq2E5H1OnPQBrAQxrLzH/c8XtUDU
+ZqIcpbDgBXJ8ws3McZxaK6wc1RlzpvELTSats9h44CFmDrwp/id1GMr7yMquQUq3
++D2dO/PDH4ZjtzBpmWo6z7z5LFir7S0rO8zPUjTJaGmCd/0Di2wN3Z5s+2H2NlxS
+md28kh/V3NxGBZawE7gkSqufG51IVcxGkQfyOQu7aq5h0D/jBeoxAr/3ID9ZJzoF
+QtLzv69exIatsot/slqz9PF4/r6yljn+jXjk63K5Kd+xsToPukKucisjls10xz4I
+dygfJ85aoQA3ZErnsDHtWH0pFl/cs4jbtieaE11YGO+EmueqWVzphoZAxfix2AOR
+vn1vhIj1qMof85VGYsTTDzKt3GPeg4BGm24sKx9p29XbKDNcKMhAhVcypQhSlzLG
+lRIiInNlwR4bZM8Uz8TK
+=zg4+
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
+
+--===============1355516015410402229==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1355516015410402229==--
