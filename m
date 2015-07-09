@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 1/6] ASoC: Intel: Add helper to poll
- register for DSP status
-Date: Thu, 9 Jul 2015 09:57:41 +0530
-Message-ID: <20150709042741.GF836@localhost>
+Subject: Re: [PATCH v2 3/6] ASoC: Intel: Reorganize the common
+	dsp structure
+Date: Thu, 9 Jul 2015 10:02:39 +0530
+Message-ID: <20150709043239.GG836@localhost>
 References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
- <1435919647-14049-2-git-send-email-vinod.koul@intel.com>
- <20150708183621.GZ11162@sirena.org.uk>
+ <1435919647-14049-4-git-send-email-vinod.koul@intel.com>
+ <20150708183833.GA11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0589510590171588843=="
+Content-Type: multipart/mixed; boundary="===============2206571554099851213=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 163CF265AF8
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:25:55 +0200 (CEST)
-In-Reply-To: <20150708183621.GZ11162@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1918F265B90
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 06:31:00 +0200 (CEST)
+In-Reply-To: <20150708183833.GA11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, "Kp, Jeeja" <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Mark Brown <broonie@kernel.org>, liam.r.girdwood@linux.intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0589510590171588843==
+--===============2206571554099851213==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
+	protocol="application/pgp-signature"; boundary="ffoCPvUAPMgSXi6H"
 Content-Disposition: inline
 
 
---wULyF7TL5taEdwHz
+--ffoCPvUAPMgSXi6H
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 08, 2015 at 07:36:21PM +0100, Mark Brown wrote:
-> On Fri, Jul 03, 2015 at 04:04:02PM +0530, Vinod Koul wrote:
+On Wed, Jul 08, 2015 at 07:38:33PM +0100, Mark Brown wrote:
+> On Fri, Jul 03, 2015 at 04:04:04PM +0530, Vinod Koul wrote:
+> > From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+> >=20
+> > We will add SKL platform data. So organizing common and platform
+> > specific data helps.
 >=20
-> > +	for (time =3D 0; time < timeout; time++) {
-> > +		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) =3D=3D expected=
-_value)
-> > +			break;
+> >  struct sst_dsp {
+> > =20
+> > +	/* Shared for all platforms */
 > > +
-> > +		mdelay(1);
-> > +	}
+> >  	/* runtime */
+> >  	struct sst_dsp_device *sst_dev;
+> >  	spinlock_t spinlock;	/* IPC locking */
+> > @@ -268,10 +270,6 @@ struct sst_dsp {
+> >  	int irq;
+> >  	u32 id;
+> > =20
+> > -	/* list of free and used ADSP memory blocks */
+> > -	struct list_head used_block_list;
+> > -	struct list_head free_block_list;
+> > -
 >=20
-> mdelay() not msleep()?  If we're waiting for multiple miliseconds that
-> could be lots of busy waiting.
-Usually this should get reflected in 1st iteration as the register update
-would get updated farrily quickly. msleep will add up lots of latency to
-this.
+> Perhaps a union might start to make sense at some point?
+Initially we did start with a union but Liam didn't like another indirectio=
+n.
+Anyway since not a bunch a members are getting added here, this should be
+okay
 
-Thanks
+Liam you want to add here...
+
 --=20
 ~Vinod
 
---wULyF7TL5taEdwHz
+--ffoCPvUAPMgSXi6H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJVnfg9AAoJEHwUBw8lI4NHxAAP/287mBwXWYb3TfjubcTurJxP
-ey3KIdgddm1cOlB43CYfQACf6kpscRm8qp+uJ49cSYi/CWIPbsljA+cqOanFcWRb
-wxLGTGm0+iG5NjH3InW4DqjFFUBAcM8/pOZtD3sl72w+KFxfMTkEaJD8aIKNHtYy
-+UQN1tL/UUpUWl23FvIgnm3waQQd5CTzstJvsJNcBwH/1fkOohNvlTuWAx3F7zQo
-cXXLnCcd+rrKcUVJYy09sNHl7qOF8mR5303+F6abVyWoDzM69816YUtxNhHdb442
-ABdjHofIGcBnj96szMqGeqcWLxd+RhiWHEwtoIZG58oU2X328h77lVU/ptBgRgOV
-VqRM98BDo1hOIzPkBvAsAWMj8ZhAdw5YRT22bp+PG+ypUVZDiy/WqcibF6OxbilL
-3lK9uhTlK3uRz3955NlRFYB8U5X60JUaGS6lj6/D1Musa+tR4ozM17jfOD61aVsq
-rkyOCE/3KSLi7Ce6MtxC/qV6WouQpBCfEjh8B9HKA18Nys8zqENGA9zMebLfNW+k
-gLfAeabAtufhDLt9E0JperkYenT3pADyOAiTKfRE+Vl0GuikLjpTMZ4LEVRl1A25
-nh3wyMWDskL99x2v2w+fVOGngWki8DsHA/BTIqn18HkivljLw+wm9PwD69drHKC6
-G4zONyq8imzf7OgzdV/6
-=D/Hz
+iQIcBAEBAgAGBQJVnflnAAoJEHwUBw8lI4NHV5IQAMe0teP1ZthBpY/Uj1jXTRJX
+jkSFO9TtdNF9z7NY/w5ebKSYqeSOzG2OT9AQxFf1PuHz8LYpkis0M1Mn3AJGfi9T
+wcUMOZPQiobaYjodqMimvC+dVMfRhwjYqkLQJz5f5XuKdz6KqC0BQL2Ym65cRYq2
+8CWzfW3nb+amHE0hHkSAWOCyIkcf+ZCjOhh/kmlG6ogLZ7c21gYVrOCKIl/+gPWs
+of6xhB3j1KusWB4NHaUX878mpE+X+s8QdxMb8T04RnO8svvZ5T5QbCr3pD6leUZI
+DZ8n2dc/Nzas2K/HDnvWZeb44B5rxb8cfjLRdL7vj1vSyrTqGwvDkF8tCJPTsNg7
+HBlCp3myee/j4DBNFEpwyhEkzf8PyvPF353t2HqqgSBnAMj3BJdC5Cw7RrTA9cEr
+JiNB9MPmNb2wg4S5zfgrVlLk5QhTk0/8Jhj1j65fnclv+XZ81DjONIb5w1K+atMV
+DyWaoua5HL0nbUHg6nFZUZhZa2MDtDUoDk2x55ZXVyww8wawOOUssl2TGbljINRL
+io7xxsGAKGxlCmDBcFOWggqxX1IgJJ8LXM6tZWUXnSP7dxSne4z5qXkLuQxuVR6M
+C8HDAw8ZWj0wZ/GoEuV0V/uu7EoNTXYuosPQaHCadusLesVV0urakIX4ACRL60cZ
+q9ZbM3O9BMqcRIZmK4tJ
+=x8lJ
 -----END PGP SIGNATURE-----
 
---wULyF7TL5taEdwHz--
+--ffoCPvUAPMgSXi6H--
 
---===============0589510590171588843==
+--===============2206571554099851213==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0589510590171588843==--
+--===============2206571554099851213==--
