@@ -1,17 +1,34 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 5/6] ASoC: Intel: Add Skylake IPC library
-Date: Thu, 9 Jul 2015 10:56:13 +0530
-Message-ID: <20150709052613.GK836@localhost>
-References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
- <1435919647-14049-6-git-send-email-vinod.koul@intel.com>
- <20150708184627.GB11162@sirena.org.uk>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Fw: Using loopback card to Connect GSM two way
+	call	to the real sound card UDA1345TS
+Date: Thu, 9 Jul 2015 05:25:43 +0000
+Message-ID: <SIXPR04MB2531164CB90147849B2757EC3900@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <1425878251963.1340@tataelxsi.co.in>
+ <1425878360800.70892@tataelxsi.co.in>,	<54FD552C.7020902@ladisch.de>,
+ <1425922601141.50130@tataelxsi.co.in>	<1425964490006.15084@tataelxsi.co.in>,
+ <54FECC69.9020600@ladisch.de>	<1427510661706.37789@tataelxsi.co.in>,
+ <551D0F35.6010709@ladisch.de> <1427970980529.96067@tataelxsi.co.in>,
+ <551D5B78.60703@ladisch.de> <1429683117651.11394@tataelxsi.co.in>,
+ <5539F971.2030407@ladisch.de> <1429877130444.23317@tataelxsi.co.in>,
+ <553A3ADB.7040108@ladisch.de>,
+ <HKXPR04MB2774E6DD22F054989C74F86C3C90@HKXPR04MB277.apcprd04.prod.outlook.com>
+ <HKXPR04MB277B58064C140058C37487EC3B60@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <556C6EB8.7030401@ladisch.de>,
+ <HKXPR04MB277069B809070671B95BAFCC3B40@HKXPR04MB277.apcprd04.prod.outlook.com>,
+ <SIXPR04MB2530654AB664B2CE19B4665C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <SIXPR04MB2531DB716093D09C156BEA0C3A80@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <5593F513.4030705@ladisch.de>,
+ <SIXPR04MB2537D3E909AD64CEEE825C4C3910@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7285797721077738831=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E4D28265D8D
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 07:24:34 +0200 (CEST)
-In-Reply-To: <20150708184627.GB11162@sirena.org.uk>
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sg2apc01on0125.outbound.protection.outlook.com [104.47.125.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FAC9265D21
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 07:25:55 +0200 (CEST)
+In-Reply-To: <SIXPR04MB2537D3E909AD64CEEE825C4C3910@SIXPR04MB253.apcprd04.prod.outlook.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,134 +38,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-audio-dev@lists.linuxaudio.org" <linux-audio-dev@lists.linuxaudio.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Clemens
 
---===============7285797721077738831==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PWfwoUCx3AFJRUBq"
-Content-Disposition: inline
+Could you please kindly help me out to cross_compile this alsa_plugins, so that I can resolve the below error & & get jack plugins working as you suggested earlier
 
+Many Thanks in advance
+Srinivasan S
+________________________________________
+From: Srinivasan S
+Sent: Wednesday, July 8, 2015 8:55 PM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
 
---PWfwoUCx3AFJRUBq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dear Clemens,
 
-On Wed, Jul 08, 2015 at 07:46:27PM +0100, Mark Brown wrote:
-> On Fri, Jul 03, 2015 at 04:04:06PM +0530, Vinod Koul wrote:
->=20
-> Mostly looks good - a few small things here, nothing too major:
->=20
-> > +static struct ipc_message *skl_ipc_reply_find_msg(struct sst_generic_i=
-pc *ipc,
-> > +		u64 ipc_header)
-> > +{
-> > +	struct ipc_message *msg =3D NULL;
-> > +	struct skl_ipc_header *header =3D (struct skl_ipc_header *)(&ipc_head=
-er);
-> > +
-> > +	if (list_empty(&ipc->rx_list)) {
-> > +		dev_err(ipc->dev, "ipc: rx list is empty but received 0x%x\n",
-> > +			header->primary);
-> > +		goto out;
-> > +	}
-> > +
-> > +	msg =3D list_first_entry(&ipc->rx_list, struct ipc_message, list);
->=20
-> This says it finds the message but it appears to just return the head of
-> the list without reference to the supplied header other than casting it
-> to skl_ipc_header and possibly using it in an error print?
-Yes you are right. Actually currently we dont expect to queue up so we never
-bother looking up. But yes intention to find messages when they are quued, I
-will add that bit
+Thanks a lot for your support Clemens
 
-> > +irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
-> > +{
-> > +	struct sst_dsp *dsp =3D (struct sst_dsp *)context;
-> > +	struct skl_sst *skl =3D sst_dsp_get_thread_context(dsp);
-> > +	struct sst_generic_ipc *ipc =3D &skl->ipc;
-> > +	struct skl_ipc_header header =3D {0};
-> > +	u32 hipcie, hipct, hipcte;
-> > +	int ipc_irq =3D 0;
-> > +
-> > +	/* Here we handle IPC interrupts only */
-> > +	if (!(dsp->intr_status & SKL_ADSPIS_IPC))
-> > +		return IRQ_HANDLED;
->=20
-> Shouldn't we be returning IRQ_NONE if we didn't handle the interrupt?
-Yes this is wrong, will fix
+As you suggested, When I try to use alsa jack plugin, am facing the below error
 
->=20
-> > +		if (IPC_GLB_NOTIFY_RSP_TYPE(header.primary)) {
-> > +			/* Handle Immediate reply from DSP Core */
-> > +			skl_ipc_process_reply(ipc, header);
-> > +		} else {
-> > +			trace_printk("IPC irq: Notification from firmware\n");
-> > +			skl_ipc_process_notification(ipc, header);
-> > +		}
->=20
-> Why trace_printk()?
-Dont see a reason, this should be a printk, will fix
->=20
-> > +int skl_ipc_set_dx(struct sst_generic_ipc *ipc, u8 instance_id,
-> > +		u16 module_id, struct skl_ipc_dxstate_info *dx)
-> > +{
-> > +	struct skl_ipc_header header =3D {0};
-> > +	u64 *ipc_header =3D (u64 *)(&header);
-> > +	int ret;
-> > +
-> > +	header.primary =3D IPC_MSG_TARGET(IPC_MOD_MSG);
-> > +	header.primary |=3D IPC_MSG_DIR(IPC_MSG_REQUEST);
-> > +	header.primary |=3D IPC_GLB_TYPE(IPC_MOD_SET_DX);
-> > +	header.primary |=3D IPC_MOD_INSTANCE_ID(instance_id);
-> > +	header.primary |=3D IPC_MOD_ID(module_id);
-> > +
-> > +	dev_dbg(ipc->dev, "In %s primary =3D%x ext=3D%x\n", __func__,
-> > +			 header.primary, header.extension);
-> > +	ret =3D sst_ipc_tx_message_wait(ipc, *ipc_header,
-> > +			(void *)dx, sizeof(dx), NULL, 0);
->=20
-> If you need to cast a pointer to void something is wrong...  I suspect
-> you just don't need the cast though.
-yes i rechecked. The API expects void pointer for buffer for IPC payload and
-will copy that. We need not cast it though
+root@lifeline:/# vi etc/asound.conf
+pcm.rawjack {
+type jack
+playback_ports {
+0 system:playback_1
+1 system:playback_2
+}
+capture_ports {
+0 system:capture_1
+1 system:capture_2
+}
+}
 
-Thanks for quick review
---=20
-~Vinod
+pcm.jack {
+type plug
+slave { pcm "rawjack" }
+hint {
+description "JACK Audio Connection Kit"
+}
+}
 
---PWfwoUCx3AFJRUBq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+pcm.!default {
+type plug
+slave { pcm "rawjack" }
+}
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVngX1AAoJEHwUBw8lI4NHkHgP/R0EkspmrLD3GSZ7kk5SjT2C
-sAdyeRreNGc8IUrCKVk17gKukTQq/jbCIyZsHRw6WiZlMzEMKucZNjrWLLS/nEgb
-5TQWDwAxsAD8SIgS6djBIgWM28P0xk3pELioPmivxaHSSYtXuDC7u5x4XCX/ragk
-fYu41Oolies3vm5ODp1avdq8FahGZaWQOR5TaFr9ueziCzdkQ7XXS0Muk3Dvgklk
-/eubf3aBShkoZfg+ookDoAbU/3BkafGT5RDdrhswC3qL92wKIyTOKeoGKwvERLxa
-KVh4TWZrEHhE0C03ZusRtwHPgRG6xTa4of8qTo+D4nQvrMoxbiVgoU8a0fkfepmh
-MSc7aor3tsImmeRXj1VkSEjJgg8tcBfzO0tr/sz2+dxOTavwJ/uvrP4NQxwZyOIz
-l8RhLtVWpfhL6u56Ejl3EID30wKsAjurcaTMDTJfMlVeCt4W2lLzNGSQ5BzCqLp3
-5ezYx8L1peFJP4d8WWETUFTTaXDpOEZjrhmGsgTNizX1UAg9+KM86jdD2XEQlh5s
-BEkYRF5kC8s6m3AEo39hz4KBckBmbeqFLH84VD60VQecxgIe5BMh3buE4lWsTJ8N
-2KiYyeksIbJzQhbmSIaVFwRUzDRJH05W9CRrlK4A6LWdo4EhA8R/v8frNUqJrJFe
-EPsb9qJR2GBTIxmT+cMX
-=mFeV
------END PGP SIGNATURE-----
-
---PWfwoUCx3AFJRUBq--
-
---===============7285797721077738831==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+root@lifeline:/opt/tunstall/audio# aplay -D pcm.jack TangoForTajMusic11.wav
+ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/dlmisc.c:252:(snd1_dlobj_cache_get) Cannot open shared library /usr/lib/alsa-lib/libasound_module_pcm_jack.so
+aplay: main:722: audio open error: No such device or address
+root@lifeline:/opt/tunstall/audio#
 
 
---===============7285797721077738831==--
+I feel order to resolve this error,
+
+1. I feel that there is no libasound_module_pcm_jack.so,  I have downloaded the alsa-plugins-1.0.29 could you please help me out how this can be cross compiled for my TI AM335x platform
+
+2. Could you please let me know to cross compile &  install the package libasound2-dev
+
+Could you please help me out in resolving this issue
+
+Kindly do the needful as early as possible
+
+Many Thanks a lot for your support once again w.r.t this thread so far
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Wednesday, July 1, 2015 7:41 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org; linux-audio-dev@lists.linuxaudio.org
+Subject: Re: [alsa-devel] Fw: Using loopback card to Connect GSM two way call   to the real sound card UDA1345TS
+
+Srinivasan S wrote:
+> Am facing overrun & underrun issues, when I run the the above GSM application with the attached asound.conf
+
+The sound card and the GSM streams are not synchronized.
+You need to compensate for the drift between the clocks, typically by resampling.
+(Jack's alsa_in/alsa_out would automatically do this.)
+
+
+Regards,
+Clemens
