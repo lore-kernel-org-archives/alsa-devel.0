@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add support for decoupled mode
-	in skl driver" to the asoc tree
-Date: Thu, 09 Jul 2015 12:20:24 +0100
-Message-ID: <E1ZD9sO-0005ob-Lw@debutante>
-References: <1436435411-28028-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Add Skylake HDA platform driver"
+	to the asoc tree
+Date: Thu, 09 Jul 2015 12:20:27 +0100
+Message-ID: <E1ZD9sR-0005q2-M9@debutante>
+References: <1436435411-28028-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 61062265E24
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 13:20:32 +0200 (CEST)
-In-Reply-To: <1436435411-28028-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AE762266042
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 13:20:38 +0200 (CEST)
+In-Reply-To: <1436435411-28028-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Add support for decoupled mode in skl driver
+   ASoC: Intel: Add Skylake HDA platform driver
 
 has been applied to the asoc tree at
 
@@ -53,295 +53,297 @@ to this mail.
 Thanks,
 Mark
 
->From 0505700104cd98da6d11c01b8063cffdb1b8d7d7 Mon Sep 17 00:00:00 2001
+>From a40e693c7f5ee3a1a7d1f6aef63c5dadbec64e10 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 9 Jul 2015 15:20:11 +0530
-Subject: [PATCH] ASoC: Intel: Add support for decoupled mode in skl driver
+Date: Thu, 9 Jul 2015 15:20:08 +0530
+Subject: [PATCH] ASoC: Intel: Add Skylake HDA platform driver
 
-Decoupled mode is where audio link is broken to frontend HDA and backend
-(hda/i2s/dmic/hdmi) links. This patch adds support for decoupled mode and
-then adds dais, dai ops for be/fe cpu dais and interrupt handler change to
-support decoupled mode
+This patch starts to add the Skylake HDA platform driver by defining
+SoC CPU dais, DMA driver ops and implements ALSA operations
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 346 +++++++++++++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl.c     |  11 ++
- 2 files changed, 349 insertions(+), 8 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 586 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h     |  71 +++++
+ 2 files changed, 657 insertions(+)
+ create mode 100644 sound/soc/intel/skylake/skl-pcm.c
+ create mode 100644 sound/soc/intel/skylake/skl.h
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index c171def2fcc9..7d617bf493bc 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
+new file mode 100644
+index 000000000000..c171def2fcc9
+--- /dev/null
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -96,6 +96,14 @@ static void skl_set_pcm_constrains(struct hdac_ext_bus *ebus,
- 				     20, 178000000);
- }
- 
-+static enum hdac_ext_stream_type skl_get_host_stream_type(struct hdac_ext_bus *ebus)
+@@ -0,0 +1,586 @@
++/*
++ *  skl-pcm.c -ASoC HDA Platform driver file implementing PCM functionality
++ *
++ *  Copyright (C) 2014-2015 Intel Corp
++ *  Author:  Jeeja KP <jeeja.kp@intel.com>
++ *
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
++
++#include <linux/pci.h>
++#include <linux/pm_runtime.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "skl.h"
++
++#define HDA_MONO 1
++#define HDA_STEREO 2
++
++static struct snd_pcm_hardware azx_pcm_hw = {
++	.info =			(SNDRV_PCM_INFO_MMAP |
++				 SNDRV_PCM_INFO_INTERLEAVED |
++				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				 SNDRV_PCM_INFO_MMAP_VALID |
++				 SNDRV_PCM_INFO_PAUSE |
++				 SNDRV_PCM_INFO_SYNC_START |
++				 SNDRV_PCM_INFO_HAS_WALL_CLOCK | /* legacy */
++				 SNDRV_PCM_INFO_HAS_LINK_ATIME |
++				 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
++	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
++	.rates =		SNDRV_PCM_RATE_48000,
++	.rate_min =		48000,
++	.rate_max =		48000,
++	.channels_min =		2,
++	.channels_max =		2,
++	.buffer_bytes_max =	AZX_MAX_BUF_SIZE,
++	.period_bytes_min =	128,
++	.period_bytes_max =	AZX_MAX_BUF_SIZE / 2,
++	.periods_min =		2,
++	.periods_max =		AZX_MAX_FRAG,
++	.fifo_size =		0,
++};
++
++static inline
++struct hdac_ext_stream *get_hdac_ext_stream(struct snd_pcm_substream *substream)
 +{
-+	if (ebus->ppcap)
-+		return HDAC_EXT_STREAM_TYPE_HOST;
-+	else
-+		return HDAC_EXT_STREAM_TYPE_COUPLED;
++	return substream->runtime->private_data;
 +}
 +
- static int skl_pcm_open(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -111,7 +119,7 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	stream = snd_hdac_ext_stream_assign(ebus, substream,
--					HDAC_EXT_STREAM_TYPE_COUPLED);
-+					skl_get_host_stream_type(ebus));
- 	if (stream == NULL)
- 		return -EBUSY;
- 
-@@ -147,12 +155,23 @@ static int skl_get_format(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct skl_dma_params *dma_params;
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	int format_val = 0;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 
--	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
--	if (dma_params)
--		format_val = dma_params->format;
-+	if (ebus->ppcap) {
-+		struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+		format_val = snd_hdac_calc_stream_format(runtime->rate,
-+						runtime->channels,
-+						runtime->format,
-+						32, 0);
-+	} else {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+		dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
-+		if (dma_params)
-+			format_val = dma_params->format;
-+	}
- 
- 	return format_val;
- }
-@@ -193,8 +212,9 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++static struct hdac_ext_bus *get_bus_ctx(struct snd_pcm_substream *substream)
++{
 +	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
-+	int ret, dma_id;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 	ret = skl_substream_alloc_pages(ebus, substream,
-@@ -205,6 +225,9 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	dev_dbg(dai->dev, "format_val, rate=%d, ch=%d, format=%d\n",
- 			runtime->rate, runtime->channels, runtime->format);
- 
-+	dma_id = hdac_stream(stream)->stream_tag - 1;
-+	dev_dbg(dai->dev, "dma_id=%d\n", dma_id);
++	struct hdac_stream *hstream = hdac_stream(stream);
++	struct hdac_bus *bus = hstream->bus;
 +
- 	return 0;
- }
- 
-@@ -212,10 +235,12 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
- 	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	return hbus_to_ebus(bus);
++}
++
++static int skl_substream_alloc_pages(struct hdac_ext_bus *ebus,
++				 struct snd_pcm_substream *substream,
++				 size_t size)
++{
++	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++
++	hdac_stream(stream)->bufsize = 0;
++	hdac_stream(stream)->period_bytes = 0;
++	hdac_stream(stream)->format_val = 0;
++
++	return snd_pcm_lib_malloc_pages(substream, size);
++}
++
++static int skl_substream_free_pages(struct hdac_bus *bus,
++				struct snd_pcm_substream *substream)
++{
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static void skl_set_pcm_constrains(struct hdac_ext_bus *ebus,
++				 struct snd_pcm_runtime *runtime)
++{
++	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++
++	/* avoid wrap-around with wall-clock */
++	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME,
++				     20, 178000000);
++}
++
++static int skl_pcm_open(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
 +	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct skl_dma_params *dma_params = NULL;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
--	snd_hdac_ext_stream_release(stream, HDAC_EXT_STREAM_TYPE_COUPLED);
++	struct hdac_ext_stream *stream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct skl_dma_params *dma_params;
++	int ret;
 +
-+	snd_hdac_ext_stream_release(stream, skl_get_host_stream_type(ebus));
- 
- 	dma_params = snd_soc_dai_get_dma_data(dai, substream);
- 	/*
-@@ -243,6 +268,150 @@ static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
- 	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
- }
- 
-+static int skl_link_hw_params(struct snd_pcm_substream *substream,
++	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++	ret = pm_runtime_get_sync(dai->dev);
++	if (ret)
++		return ret;
++
++	stream = snd_hdac_ext_stream_assign(ebus, substream,
++					HDAC_EXT_STREAM_TYPE_COUPLED);
++	if (stream == NULL)
++		return -EBUSY;
++
++	skl_set_pcm_constrains(ebus, runtime);
++
++	/*
++	 * disable WALLCLOCK timestamps for capture streams
++	 * until we figure out how to handle digital inputs
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_WALL_CLOCK; /* legacy */
++		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_LINK_ATIME;
++	}
++
++	runtime->private_data = stream;
++
++	dma_params = kzalloc(sizeof(*dma_params), GFP_KERNEL);
++	if (!dma_params)
++		return -ENOMEM;
++
++	dma_params->stream_tag = hdac_stream(stream)->stream_tag;
++	snd_soc_dai_set_dma_data(dai, substream, dma_params);
++
++	dev_dbg(dai->dev, "stream tag set in dma params=%d\n",
++				 dma_params->stream_tag);
++	snd_pcm_set_sync(substream);
++
++	return 0;
++}
++
++static int skl_get_format(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct skl_dma_params *dma_params;
++	int format_val = 0;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
++	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
++	if (dma_params)
++		format_val = dma_params->format;
++
++	return format_val;
++}
++
++static int skl_pcm_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	unsigned int format_val;
++	int err;
++
++	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++	if (hdac_stream(stream)->prepared) {
++		dev_dbg(dai->dev, "already stream is prepared - returning\n");
++		return 0;
++	}
++
++	format_val = skl_get_format(substream, dai);
++	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d\n",
++				hdac_stream(stream)->stream_tag, format_val);
++	snd_hdac_stream_reset(hdac_stream(stream));
++
++	err = snd_hdac_stream_set_params(hdac_stream(stream), format_val);
++	if (err < 0)
++		return err;
++
++	err = snd_hdac_stream_setup(hdac_stream(stream));
++	if (err < 0)
++		return err;
++
++	hdac_stream(stream)->prepared = 1;
++
++	return err;
++}
++
++static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
 +				struct snd_pcm_hw_params *params,
 +				struct snd_soc_dai *dai)
 +{
 +	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct skl_dma_params *dma_params;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int dma_id;
-+
-+	pr_debug("%s\n", __func__);
-+	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
-+					HDAC_EXT_STREAM_TYPE_LINK);
-+	if (!link_dev)
-+		return -EBUSY;
-+
-+	snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
-+
-+	/* set the stream tag in the codec dai dma params  */
-+	dma_params = (struct skl_dma_params *)
-+			snd_soc_dai_get_dma_data(codec_dai, substream);
-+	if (dma_params)
-+		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
-+	snd_soc_dai_set_dma_data(codec_dai, substream, (void *)dma_params);
-+	dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+
-+	return 0;
-+}
-+
-+static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
-+	struct hdac_ext_stream *link_dev =
-+			snd_soc_dai_get_dma_data(dai, substream);
-+	unsigned int format_val = 0;
-+	struct skl_dma_params *dma_params;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_pcm_hw_params *params;
-+	struct snd_interval *channels, *rate;
-+	struct hdac_ext_link *link;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int ret;
 +
 +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-+	if (link_dev->link_prepared) {
-+		dev_dbg(dai->dev, "already stream is prepared - returning\n");
-+		return 0;
-+	}
-+	params  = devm_kzalloc(dai->dev, sizeof(*params), GFP_KERNEL);
-+	if (params == NULL)
-+		return -ENOMEM;
++	ret = skl_substream_alloc_pages(ebus, substream,
++					  params_buffer_bytes(params));
++	if (ret < 0)
++		return ret;
 +
-+	channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	channels->min = channels->max = substream->runtime->channels;
-+	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	rate->min = rate->max = substream->runtime->rate;
-+	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
-+					SNDRV_PCM_HW_PARAM_FIRST_MASK],
-+					substream->runtime->format);
-+
-+
-+	dma_params  = (struct skl_dma_params *)
-+			snd_soc_dai_get_dma_data(codec_dai, substream);
-+	if (dma_params)
-+		format_val = dma_params->format;
-+	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d codec_dai_name=%s\n",
-+			hdac_stream(link_dev)->stream_tag, format_val, codec_dai->name);
-+
-+	snd_hdac_ext_link_stream_reset(link_dev);
-+
-+	snd_hdac_ext_link_stream_setup(link_dev, format_val);
-+
-+	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec->component.name);
-+	if (!link)
-+		return -EINVAL;
-+
-+	snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_dev)->stream_tag);
-+	link_dev->link_prepared = 1;
++	dev_dbg(dai->dev, "format_val, rate=%d, ch=%d, format=%d\n",
++			runtime->rate, runtime->channels, runtime->format);
 +
 +	return 0;
 +}
 +
-+static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
-+	int cmd, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+
-+	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		snd_hdac_ext_link_stream_start(link_dev);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_hdac_ext_link_stream_clear(link_dev);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int skl_link_hw_free(struct snd_pcm_substream *substream,
++static void skl_pcm_close(struct snd_pcm_substream *substream,
 +		struct snd_soc_dai *dai)
 +{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+	struct hdac_ext_link *link;
++	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++	struct skl_dma_params *dma_params = NULL;
 +
 +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++	snd_hdac_ext_stream_release(stream, HDAC_EXT_STREAM_TYPE_COUPLED);
 +
-+	link_dev->link_prepared = 0;
++	dma_params = snd_soc_dai_get_dma_data(dai, substream);
++	/*
++	 * now we should set this to NULL as we are freeing by the
++	 * dma_params
++	 */
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
 +
-+	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec->component.name);
-+	if (!link)
-+		return -EINVAL;
-+
-+	snd_hdac_ext_link_clear_stream_id(link, hdac_stream(link_dev)->stream_tag);
-+	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
-+	return 0;
-+}
-+
-+static int skl_hda_be_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	return pm_runtime_get_sync(dai->dev);
-+}
-+
-+static void skl_hda_be_shutdown(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
 +	pm_runtime_mark_last_busy(dai->dev);
 +	pm_runtime_put_autosuspend(dai->dev);
++	kfree(dma_params);
 +}
 +
- static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.startup = skl_pcm_open,
- 	.shutdown = skl_pcm_close,
-@@ -251,6 +420,20 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.hw_free = skl_pcm_hw_free,
- };
- 
-+static struct snd_soc_dai_ops skl_dmic_dai_ops = {
-+	.startup = skl_hda_be_startup,
-+	.shutdown = skl_hda_be_shutdown,
++static int skl_pcm_hw_free(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
++
++	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++
++	snd_hdac_stream_cleanup(hdac_stream(stream));
++	hdac_stream(stream)->prepared = 0;
++
++	return skl_substream_free_pages(ebus_to_hbus(ebus), substream);
++}
++
++static struct snd_soc_dai_ops skl_pcm_dai_ops = {
++	.startup = skl_pcm_open,
++	.shutdown = skl_pcm_close,
++	.prepare = skl_pcm_prepare,
++	.hw_params = skl_pcm_hw_params,
++	.hw_free = skl_pcm_hw_free,
 +};
 +
-+static struct snd_soc_dai_ops skl_link_dai_ops = {
-+	.startup = skl_hda_be_startup,
-+	.prepare = skl_link_pcm_prepare,
-+	.hw_params = skl_link_hw_params,
-+	.hw_free = skl_link_hw_free,
-+	.trigger = skl_link_pcm_trigger,
-+	.shutdown = skl_hda_be_shutdown,
-+};
-+
- static struct snd_soc_dai_driver skl_platform_dai[] = {
- {
- 	.name = "System Pin",
-@@ -271,6 +454,17 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
-+	.name = "Reference Pin",
++static struct snd_soc_dai_driver skl_platform_dai[] = {
++{
++	.name = "System Pin",
 +	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "System Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	},
 +	.capture = {
-+		.stream_name = "Reference Capture",
++		.stream_name = "System Capture",
 +		.channels_min = HDA_MONO,
 +		.channels_max = HDA_STEREO,
 +		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
@@ -349,119 +351,60 @@ index c171def2fcc9..7d617bf493bc 100644
 +	},
 +},
 +{
- 	.name = "Deepbuffer Pin",
- 	.ops = &skl_pcm_dai_ops,
- 	.playback = {
-@@ -292,6 +486,80 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
- },
-+/* BE CPU  Dais */
-+{
-+	.name = "iDisp Pin",
-+	.ops = &skl_link_dai_ops,
++	.name = "Deepbuffer Pin",
++	.ops = &skl_pcm_dai_ops,
 +	.playback = {
-+		.stream_name = "iDisp Tx",
++		.stream_name = "Deepbuffer Playback",
 +		.channels_min = HDA_STEREO,
 +		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "DMIC01 Pin",
-+	.ops = &skl_dmic_dai_ops,
-+	.capture = {
-+		.stream_name = "DMIC01 Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
++		.rates = SNDRV_PCM_RATE_48000,
 +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
 +	},
 +},
 +{
-+	.name = "DMIC23 Pin",
-+	.ops = &skl_dmic_dai_ops,
-+	.capture = {
-+		.stream_name = "DMIC23 Rx",
++	.name = "LowLatency Pin",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "Low Latency Playback",
 +		.channels_min = HDA_STEREO,
 +		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
++		.rates = SNDRV_PCM_RATE_48000,
 +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
 +	},
 +},
++};
++
++static int skl_platform_open(struct snd_pcm_substream *substream)
 +{
-+	.name = "HD-Codec Pin",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "HD-Codec Tx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "HD-Codec Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "HD-Codec-SPK Pin",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "HD-Codec-SPK Tx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "HD-Codec-AMIC Pin",
-+	.ops = &skl_link_dai_ops,
-+	.capture = {
-+		.stream_name = "HD-Codec-AMIC Rx",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
- };
- 
- static int skl_platform_open(struct snd_pcm_substream *substream)
-@@ -309,7 +577,7 @@ static int skl_platform_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
-+static int skl_pcm_trigger(struct snd_pcm_substream *substream,
- 					int cmd)
- {
- 	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
-@@ -383,6 +651,68 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int skl_dsp_trigger(struct snd_pcm_substream *substream,
-+		int cmd)
++	struct snd_pcm_runtime *runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++
++	dev_dbg(rtd->cpu_dai->dev, "In %s:%s\n", __func__,
++					dai_link->cpu_dai_name);
++
++	runtime = substream->runtime;
++	snd_soc_set_runtime_hwparams(substream, &azx_pcm_hw);
++
++	return 0;
++}
++
++static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
++					int cmd)
 +{
 +	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
 +	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 +	struct hdac_ext_stream *stream;
-+	int start;
++	struct snd_pcm_substream *s;
++	bool start;
++	int sbits = 0;
 +	unsigned long cookie;
 +	struct hdac_stream *hstr;
 +
-+	dev_dbg(bus->dev, "In %s cmd=%d streamname=%s\n", __func__, cmd, cpu_dai->name);
-+
 +	stream = get_hdac_ext_stream(substream);
 +	hstr = hdac_stream(stream);
++
++	dev_dbg(bus->dev, "In %s cmd=%d\n", __func__, cmd);
 +
 +	if (!hstr->prepared)
 +		return -EPIPE;
@@ -470,75 +413,333 @@ index c171def2fcc9..7d617bf493bc 100644
 +	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 +	case SNDRV_PCM_TRIGGER_RESUME:
-+		start = 1;
++		start = true;
 +		break;
 +
 +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
 +	case SNDRV_PCM_TRIGGER_STOP:
-+		start = 0;
++		start = false;
 +		break;
 +
 +	default:
 +		return -EINVAL;
 +	}
 +
++	snd_pcm_group_for_each_entry(s, substream) {
++		if (s->pcm->card != substream->pcm->card)
++			continue;
++		stream = get_hdac_ext_stream(s);
++		sbits |= 1 << hdac_stream(stream)->index;
++		snd_pcm_trigger_done(s, substream);
++	}
++
 +	spin_lock_irqsave(&bus->reg_lock, cookie);
 +
-+	if (start)
-+		snd_hdac_stream_start(hdac_stream(stream), true);
-+	else
-+		snd_hdac_stream_stop(hdac_stream(stream));
++	/* first, set SYNC bits of corresponding streams */
++	snd_hdac_stream_sync_trigger(hstr, true, sbits, AZX_REG_SSYNC);
 +
-+	if (start)
-+		snd_hdac_stream_timecounter_init(hstr, 0);
++	snd_pcm_group_for_each_entry(s, substream) {
++		if (s->pcm->card != substream->pcm->card)
++			continue;
++		stream = get_hdac_ext_stream(s);
++		if (start)
++			snd_hdac_stream_start(hdac_stream(stream), true);
++		else
++			snd_hdac_stream_stop(hdac_stream(stream));
++	}
++	spin_unlock_irqrestore(&bus->reg_lock, cookie);
 +
++	snd_hdac_stream_sync(hstr, start, sbits);
++
++	spin_lock_irqsave(&bus->reg_lock, cookie);
++
++	/* reset SYNC bits */
++	snd_hdac_stream_sync_trigger(hstr, false, sbits, AZX_REG_SSYNC);
++	if (start)
++		snd_hdac_stream_timecounter_init(hstr, sbits);
 +	spin_unlock_irqrestore(&bus->reg_lock, cookie);
 +
 +	return 0;
 +}
-+static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
-+					int cmd)
++
++/* calculate runtime delay from LPIB */
++static int skl_get_delay_from_lpib(struct hdac_ext_bus *ebus,
++				struct hdac_ext_stream *sstream,
++				unsigned int pos)
 +{
-+	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_stream *hstream = hdac_stream(sstream);
++	struct snd_pcm_substream *substream = hstream->substream;
++	int stream = substream->stream;
++	unsigned int lpib_pos = snd_hdac_stream_get_pos_lpib(hstream);
++	int delay;
 +
-+	if (ebus->ppcap)
-+		return skl_dsp_trigger(substream, cmd);
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		delay = pos - lpib_pos;
 +	else
-+		return skl_pcm_trigger(substream, cmd);
-+}
++		delay = lpib_pos - pos;
 +
- /* calculate runtime delay from LPIB */
- static int skl_get_delay_from_lpib(struct hdac_ext_bus *ebus,
- 				struct hdac_ext_stream *sstream,
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index dfbc15c2ac7b..348d094e81d6 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -380,6 +380,8 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
- 		return -ENXIO;
- 	}
- 
-+	snd_hdac_ext_bus_parse_capabilities(ebus);
-+
- 	if (skl_acquire_irq(ebus, 0) < 0)
- 		return -EBUSY;
- 
-@@ -453,6 +455,15 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, ebus);
- 
-+	/* check if dsp is there */
-+	if (ebus->ppcap) {
-+		/* TODO register with dsp IPC */
-+		dev_dbg(bus->dev, "Register dsp\n");
++	if (delay < 0) {
++		if (delay >= hstream->delay_negative_threshold)
++			delay = 0;
++		else
++			delay += hstream->bufsize;
 +	}
 +
-+	if (ebus->mlcap)
-+		snd_hdac_ext_bus_get_ml_capabilities(ebus);
++	if (delay >= hstream->period_bytes) {
++		dev_info(bus->dev,
++			 "Unstable LPIB (%d >= %d); disabling LPIB delay counting\n",
++			 delay, hstream->period_bytes);
++		delay = 0;
++	}
 +
- 	/* create device for soc dmic */
- 	err = skl_dmic_device_register(skl);
- 	if (err < 0)
++	return bytes_to_frames(substream->runtime, delay);
++}
++
++static unsigned int skl_get_position(struct hdac_ext_stream *hstream,
++					int codec_delay)
++{
++	struct hdac_stream *hstr = hdac_stream(hstream);
++	struct snd_pcm_substream *substream = hstr->substream;
++	struct hdac_ext_bus *ebus = get_bus_ctx(substream);
++	unsigned int pos;
++	int delay;
++
++	/* use the position buffer as default */
++	pos = snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
++
++	if (pos >= hdac_stream(hstream)->bufsize)
++		pos = 0;
++
++	if (substream->runtime) {
++		delay = skl_get_delay_from_lpib(ebus, hstream, pos)
++						 + codec_delay;
++		substream->runtime->delay += delay;
++	}
++
++	return pos;
++}
++
++static snd_pcm_uframes_t skl_platform_pcm_pointer
++			(struct snd_pcm_substream *substream)
++{
++	struct hdac_ext_stream *hstream = get_hdac_ext_stream(substream);
++
++	return bytes_to_frames(substream->runtime,
++			       skl_get_position(hstream, 0));
++}
++
++static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
++				u64 nsec)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	u64 codec_frames, codec_nsecs;
++
++	if (!codec_dai->driver->ops->delay)
++		return nsec;
++
++	codec_frames = codec_dai->driver->ops->delay(substream, codec_dai);
++	codec_nsecs = div_u64(codec_frames * 1000000000LL,
++			      substream->runtime->rate);
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		return nsec + codec_nsecs;
++
++	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
++}
++
++static int skl_get_time_info(struct snd_pcm_substream *substream,
++			struct timespec *system_ts, struct timespec *audio_ts,
++			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
++			struct snd_pcm_audio_tstamp_report *audio_tstamp_report)
++{
++	struct hdac_ext_stream *sstream = get_hdac_ext_stream(substream);
++	struct hdac_stream *hstr = hdac_stream(sstream);
++	u64 nsec;
++
++	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_HAS_LINK_ATIME) &&
++		(audio_tstamp_config->type_requested == SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK)) {
++
++		snd_pcm_gettime(substream->runtime, system_ts);
++
++		nsec = timecounter_read(&hstr->tc);
++		nsec = div_u64(nsec, 3); /* can be optimized */
++		if (audio_tstamp_config->report_delay)
++			nsec = skl_adjust_codec_delay(substream, nsec);
++
++		*audio_ts = ns_to_timespec(nsec);
++
++		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK;
++		audio_tstamp_report->accuracy_report = 1; /* rest of struct is valid */
++		audio_tstamp_report->accuracy = 42; /* 24MHzWallClk == 42ns resolution */
++
++	} else {
++		audio_tstamp_report->actual_type = SNDRV_PCM_AUDIO_TSTAMP_TYPE_DEFAULT;
++	}
++
++	return 0;
++}
++
++static struct snd_pcm_ops skl_platform_ops = {
++	.open = skl_platform_open,
++	.ioctl = snd_pcm_lib_ioctl,
++	.trigger = skl_platform_pcm_trigger,
++	.pointer = skl_platform_pcm_pointer,
++	.get_time_info =  skl_get_time_info,
++	.mmap = snd_pcm_lib_default_mmap,
++	.page = snd_pcm_sgbuf_ops_page,
++};
++
++static void skl_pcm_free(struct snd_pcm *pcm)
++{
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
++
++#define MAX_PREALLOC_SIZE	(32 * 1024 * 1024)
++
++static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *dai = rtd->cpu_dai;
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
++	struct snd_pcm *pcm = rtd->pcm;
++	unsigned int size;
++	int retval = 0;
++	struct skl *skl = ebus_to_skl(ebus);
++
++	if (dai->driver->playback.channels_min ||
++		dai->driver->capture.channels_min) {
++		/* buffer pre-allocation */
++		size = CONFIG_SND_HDA_PREALLOC_SIZE * 1024;
++		if (size > MAX_PREALLOC_SIZE)
++			size = MAX_PREALLOC_SIZE;
++		retval = snd_pcm_lib_preallocate_pages_for_all(pcm,
++						SNDRV_DMA_TYPE_DEV_SG,
++						snd_dma_pci_data(skl->pci),
++						size, MAX_PREALLOC_SIZE);
++		if (retval) {
++			dev_err(dai->dev, "dma buffer allocationf fail\n");
++			return retval;
++		}
++	}
++
++	return retval;
++}
++
++static struct snd_soc_platform_driver skl_platform_drv  = {
++	.ops		= &skl_platform_ops,
++	.pcm_new	= skl_pcm_new,
++	.pcm_free	= skl_pcm_free,
++};
++
++static const struct snd_soc_component_driver skl_component = {
++	.name           = "pcm",
++};
++
++int skl_platform_register(struct device *dev)
++{
++	int ret;
++
++	ret = snd_soc_register_platform(dev, &skl_platform_drv);
++	if (ret) {
++		dev_err(dev, "soc platform registration failed %d\n", ret);
++		return ret;
++	}
++	ret = snd_soc_register_component(dev, &skl_component,
++				skl_platform_dai,
++				ARRAY_SIZE(skl_platform_dai));
++	if (ret) {
++		dev_err(dev, "soc component registration failed %d\n", ret);
++		snd_soc_unregister_platform(dev);
++	}
++
++	return ret;
++
++}
++
++int skl_platform_unregister(struct device *dev)
++{
++	snd_soc_unregister_component(dev);
++	snd_soc_unregister_platform(dev);
++	return 0;
++}
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+new file mode 100644
+index 000000000000..cc0f3e263495
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl.h
+@@ -0,0 +1,71 @@
++/*
++ *  skl.h - HD Audio skylake defintions.
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author: Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
++
++#ifndef __SOUND_SOC_SKL_H
++#define __SOUND_SOC_SKL_H
++
++#include <sound/hda_register.h>
++#include <sound/hdaudio_ext.h>
++
++#define SKL_SUSPEND_DELAY 2000
++
++/* Vendor Specific Registers */
++#define AZX_REG_VS_EM1			0x1000
++#define AZX_REG_VS_INRC			0x1004
++#define AZX_REG_VS_OUTRC		0x1008
++#define AZX_REG_VS_FIFOTRK		0x100C
++#define AZX_REG_VS_FIFOTRK2		0x1010
++#define AZX_REG_VS_EM2			0x1030
++#define AZX_REG_VS_EM3L			0x1038
++#define AZX_REG_VS_EM3U			0x103C
++#define AZX_REG_VS_EM4L			0x1040
++#define AZX_REG_VS_EM4U			0x1044
++#define AZX_REG_VS_LTRC			0x1048
++#define AZX_REG_VS_D0I3C		0x104A
++#define AZX_REG_VS_PCE			0x104B
++#define AZX_REG_VS_L2MAGC		0x1050
++#define AZX_REG_VS_L2LAHPT		0x1054
++#define AZX_REG_VS_SDXDPIB_XBASE	0x1084
++#define AZX_REG_VS_SDXDPIB_XINTERVAL	0x20
++#define AZX_REG_VS_SDXEFIFOS_XBASE	0x1094
++#define AZX_REG_VS_SDXEFIFOS_XINTERVAL	0x20
++
++struct skl {
++	struct hdac_ext_bus ebus;
++	struct pci_dev *pci;
++
++	unsigned int init_failed:1; /* delayed init failed */
++	struct platform_device *dmic_dev;
++};
++
++#define skl_to_ebus(s)	(&(s)->ebus)
++#define ebus_to_skl(sbus) \
++	container_of(sbus, struct skl, sbus)
++
++/* to pass dai dma data */
++struct skl_dma_params {
++	u32 format;
++	u8 stream_tag;
++};
++
++int skl_platform_unregister(struct device *dev);
++int skl_platform_register(struct device *dev);
++
++#endif /* __SOUND_SOC_SKL_H */
 -- 
 2.1.4
