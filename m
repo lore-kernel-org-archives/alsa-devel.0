@@ -1,19 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Intel: fix kconfig,
-	symbols and sparse
-Date: Thu, 9 Jul 2015 14:05:23 +0530
-Message-ID: <20150709083523.GN836@localhost>
-References: <1434738331-12518-1-git-send-email-vinod.koul@intel.com>
- <20150708182423.GW11162@sirena.org.uk>
- <20150709044022.GH836@localhost> <20150709044703.GJ836@localhost>
- <20150709082858.GI11162@sirena.org.uk>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: [PATCH alsa-plugins] include speexdsp_types.h,
+	not speex_types.h
+Date: Thu,  9 Jul 2015 12:43:29 +0300
+Message-ID: <1436435009-1653-1-git-send-email-tanu.kaskinen@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5442031918329481663=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 86553260504
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 10:33:37 +0200 (CEST)
-In-Reply-To: <20150709082858.GI11162@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18B4426510F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 11:43:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Speexdsp was separated from speex in 1.2rc2. speex_types.h is not
+shipped by speexdsp, so alsa-plugins shouldn't use that file. speexdsp
+has speexdsp_types.h, which has the same contents as speex_types.h.
 
---===============5442031918329481663==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pMCBjikF2xGw87uL"
-Content-Disposition: inline
+speexdsp_types.h is a new file introduced in 1.2rc2, so this change
+bumps the minimum supported speexdsp version. The version check in
+configure.ac will actually break if speexdsp 1.2 ever gets released,
+because pkg-config thinks that "1.2" < "1.2rc2", but I think it's
+useful to fail if the installed speexdsp version is 1.2rc1 (which I
+believe is very common on current distributions). If a non-rc version
+of speexdsp will ever get released, I hope version number 1.2 will be
+skipped for this reason. (A non-rc version seems unlikely, since
+1.2rc1 was released years ago, so it's pretty likely that the project
+is stuck on so called "release candidates" forever...)
 
+Signed-off-by: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+---
+ configure.ac          | 2 +-
+ pph/arch.h            | 2 +-
+ pph/speex_resampler.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---pMCBjikF2xGw87uL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 09, 2015 at 09:28:58AM +0100, Mark Brown wrote:
-> On Thu, Jul 09, 2015 at 10:17:03AM +0530, Vinod Koul wrote:
-> > On Thu, Jul 09, 2015 at 10:10:22AM +0530, Vinod Koul wrote:
->=20
-> > > > Please try to use commit message styles that are consistent with th=
-at
-> > > > for the subsystem, these aren't even consistent within the series :(
->=20
-> > > Sorry about that, will repost with these fixed
->=20
-> > And you have applied this, Thanks a bunch. I will be extra careful on t=
-his
-> > :)
-> > Which also means either you have turned off your applied scripts or it =
-borke
->=20
-> No, it means I had to fix them up by hand.
-Thanks a bunch :)
-
---=20
-~Vinod
-
---pMCBjikF2xGw87uL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVnjJLAAoJEHwUBw8lI4NHif8P/11xJdYmG8ZNbCtimDEOzKg6
-pB+JPWfFEX3neLL2vJYKooN5JTFKttzvrOQqCiZqOAo33emfx3Nx+pMdbledEJIx
-Xxw+Bb5de8mOYjWO8Pwd6VN1e/fRt4X1UfcBZUNmbtz5z5EDSR8y65bRYkCxa0Tk
-3eoQuXi4/+Sbp+HYnTA6UlAve/O+rpMTMbxzraHIx2M+X2KDHDMc4sN8mnJI/n8U
-Lyzhnhvi4MiZB7AJEb5feJpctn0+WGD/XyGtArk8nLtUUi7B754dIanJOeNMXOKC
-8UoM4SzkvX3ttXuSPLoDfCw5nq904zHmLPDeUMVrK0GDhpcEGdeZRHvJe+Mrtfv2
-3VVfcbUAYhjLF1XszcrCmc1YsjdRSP0eN54JptDtYCnrBxzQIjLtGHdPHvZLyM/G
-D9UpTKSk3LrY35p1C/BzvGmAagaF/sWtvwvA06/3Nulemp5l//Mcda7HFPMyBpwO
-tkBGfx5ytStekyZXzZPMJP4Lh6Pcd898nAWcuUPWr8xRWz/0BCR+Sjw/stxA5eVT
-683nNP/4M9E2+j7stlV7ydpsJaKWa3OCbRikBd8Ik0OlNrgAeBFxBYa6i8PXZrOT
-kkDTSABPRzXbinbi1Su5VGtzMRwBETbOus670FE15TxfC1EzJzHx3FaGROOS6iMy
-4TRmP3Kjqaag7+TNfMrI
-=HmH+
------END PGP SIGNATURE-----
-
---pMCBjikF2xGw87uL--
-
---===============5442031918329481663==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5442031918329481663==--
+diff --git a/configure.ac b/configure.ac
+index 902a6d7..c554d22 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -108,7 +108,7 @@ AC_SUBST(AVCODEC_CFLAGS)
+ AC_SUBST(AVCODEC_LIBS)
+ AC_SUBST(AVCODEC_HEADER)
+ 
+-PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
++PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2rc2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
+ AM_CONDITIONAL(HAVE_SPEEXDSP, test "$HAVE_SPEEXDSP" = "yes")
+ 
+ AC_ARG_WITH([speex],
+diff --git a/pph/arch.h b/pph/arch.h
+index e2d731a..a07d0d9 100644
+--- a/pph/arch.h
++++ b/pph/arch.h
+@@ -36,7 +36,7 @@
+ #define ARCH_H
+ 
+ #ifndef OUTSIDE_SPEEX
+-#include "speex/speex_types.h"
++#include "speex/speexdsp_types.h"
+ #endif
+ 
+ #define ABS(x) ((x) < 0 ? (-(x)) : (x))      /**< Absolute integer value. */
+diff --git a/pph/speex_resampler.h b/pph/speex_resampler.h
+index c44fbcd..aa85abb 100644
+--- a/pph/speex_resampler.h
++++ b/pph/speex_resampler.h
+@@ -82,7 +82,7 @@
+       
+ #else /* OUTSIDE_SPEEX */
+ 
+-#include "speex/speex_types.h"
++#include "speex/speexdsp_types.h"
+ 
+ #endif /* OUTSIDE_SPEEX */
+ 
+-- 
+1.9.3
