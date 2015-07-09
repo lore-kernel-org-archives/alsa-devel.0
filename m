@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 1/4] ASoC: Intel: Add helper to poll
-	register for DSP status
-Date: Thu,  9 Jul 2015 21:38:52 +0530
-Message-ID: <1436458135-25537-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 2/4] ASoC: Intel: Add helper to update
+	register bits with attr RWC
+Date: Thu,  9 Jul 2015 21:38:53 +0530
+Message-ID: <1436458135-25537-3-git-send-email-vinod.koul@intel.com>
 References: <1436458135-25537-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 794312661EE
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 18:07:15 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DF832661B0
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 18:07:20 +0200 (CEST)
 In-Reply-To: <1436458135-25537-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,94 +22,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Kp, Jeeja" <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-This patch adds helper to poll register for DSP status.
+For SKL IPC, we have some register bits with attribute RWC. So we need to
+force update them. Add helper to force update this type of registers bits.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Kp, Jeeja <jeeja.kp@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/common/sst-dsp.c | 43 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/intel/common/sst-dsp.h |  2 ++
- 2 files changed, 45 insertions(+)
+ sound/soc/intel/common/sst-dsp.c | 28 ++++++++++++++++++++++++++++
+ sound/soc/intel/common/sst-dsp.h |  4 ++++
+ 2 files changed, 32 insertions(+)
 
 diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index 64e94212d2d2..cc25f4c202af 100644
+index cc25f4c202af..a627236dd1f5 100644
 --- a/sound/soc/intel/common/sst-dsp.c
 +++ b/sound/soc/intel/common/sst-dsp.c
-@@ -20,6 +20,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
-+#include <linux/delay.h>
+@@ -197,6 +197,22 @@ int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64_unlocked);
  
- #include "sst-dsp.h"
- #include "sst-dsp-priv.h"
-@@ -222,6 +223,48 @@ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
++/* This is for registers bits with attribute RWC */
++void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
++				u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
++
++	ret = sst_dsp_shim_read_unlocked(sst, offset);
++
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
++
++	sst_dsp_shim_write_unlocked(sst, offset, new);
++}
++EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits_forced_unlocked);
++
+ int sst_dsp_shim_update_bits(struct sst_dsp *sst, u32 offset,
+ 				u32 mask, u32 value)
+ {
+@@ -223,6 +239,18 @@ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
  }
  EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64);
  
-+int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
-+			 u32 target, u32 timeout, char *operation)
++/* This is for registers bits with attribute RWC */
++void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
++				u32 mask, u32 value)
 +{
-+	int time, ret;
-+	u32 reg;
-+	bool done = false;
++	unsigned long flags;
 +
-+	/*
-+	 * we will poll for couple of ms using mdelay, if not successful
-+	 * then go to longer sleep using usleep_range
-+	 */
-+
-+	/* check if set state successful */
-+	for (time = 0; time < 5; time++) {
-+		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) == target) {
-+			done = true;
-+			break;
-+		}
-+		mdelay(1);
-+	}
-+
-+	if (done ==  false) {
-+		/* sleeping in 10ms steps so adjust timeout value */
-+		timeout /= 10;
-+
-+		for (time = 0; time < timeout; time++) {
-+			if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) == target)
-+				break;
-+
-+			usleep_range(5000, 10000);
-+		}
-+	}
-+
-+	reg = sst_dsp_shim_read_unlocked(ctx, offset);
-+	dev_info(ctx->dev, "FW Poll Status: reg=%#x %s %s\n", reg, operation,
-+			(time < timeout) ? "successful" : "timedout");
-+	ret = time < timeout ? 0 : -ETIME;
-+
-+	return ret;
++	spin_lock_irqsave(&sst->spinlock, flags);
++	sst_dsp_shim_update_bits_forced_unlocked(sst, offset, mask, value);
++	spin_unlock_irqrestore(&sst->spinlock, flags);
 +}
-+EXPORT_SYMBOL_GPL(sst_dsp_register_poll);
++EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits_forced);
 +
- void sst_dsp_dump(struct sst_dsp *sst)
+ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
+ 			 u32 target, u32 timeout, char *operation)
  {
- 	if (sst->ops->dump)
 diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index 96aeb2556ad4..cc3197be4cf7 100644
+index cc3197be4cf7..1f45f18715c0 100644
 --- a/sound/soc/intel/common/sst-dsp.h
 +++ b/sound/soc/intel/common/sst-dsp.h
-@@ -278,6 +278,8 @@ void sst_dsp_inbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_outbox_write(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_outbox_read(struct sst_dsp *dsp, void *message, size_t bytes);
- void sst_dsp_mailbox_dump(struct sst_dsp *dsp, size_t bytes);
-+int sst_dsp_register_poll(struct sst_dsp  *dsp, u32 offset, u32 mask,
-+		 u32 expected_value, u32 timeout, char *operation);
+@@ -230,6 +230,8 @@ void sst_dsp_shim_write64(struct sst_dsp *sst, u32 offset, u64 value);
+ u64 sst_dsp_shim_read64(struct sst_dsp *sst, u32 offset);
+ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
+ 				u64 mask, u64 value);
++void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
++				u32 mask, u32 value);
  
- /* Debug */
- void sst_dsp_dump(struct sst_dsp *sst);
+ /* SHIM Read / Write Unlocked for callers already holding sst lock */
+ void sst_dsp_shim_write_unlocked(struct sst_dsp *sst, u32 offset, u32 value);
+@@ -240,6 +242,8 @@ void sst_dsp_shim_write64_unlocked(struct sst_dsp *sst, u32 offset, u64 value);
+ u64 sst_dsp_shim_read64_unlocked(struct sst_dsp *sst, u32 offset);
+ int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
+ 					u64 mask, u64 value);
++void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
++				u32 mask, u32 value);
+ 
+ /* Internal generic low-level SST IO functions - can be overidden */
+ void sst_shim32_write(void __iomem *addr, u32 offset, u32 value);
 -- 
 1.9.1
