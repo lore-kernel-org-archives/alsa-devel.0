@@ -1,20 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 1/6] ASoC: Intel: Add helper to poll
- register for DSP status
-Date: Thu, 9 Jul 2015 16:23:27 +0530
-Message-ID: <20150709105327.GQ836@localhost>
-References: <1435919647-14049-1-git-send-email-vinod.koul@intel.com>
- <1435919647-14049-2-git-send-email-vinod.koul@intel.com>
- <20150708183621.GZ11162@sirena.org.uk>
- <20150709042741.GF836@localhost>
- <20150709104855.GJ11162@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add rt298 codec driver
+Date: Thu, 9 Jul 2015 12:09:22 +0100
+Message-ID: <20150709110922.GK11162@sirena.org.uk>
+References: <1435287589-8160-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7032921683503391838=="
+Content-Type: multipart/mixed; boundary="===============1538238172384585132=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 47DCA265130
- for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 12:51:44 +0200 (CEST)
-In-Reply-To: <20150709104855.GJ11162@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2625265163
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 13:09:31 +0200 (CEST)
+In-Reply-To: <1435287589-8160-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,80 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, "Kp, Jeeja" <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, ramesh.babu@intel.com, john.lin@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7032921683503391838==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZG5hGh9V5E9QzVHS"
+--===============1538238172384585132==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mwyYwuEU+DI08Yj7"
 Content-Disposition: inline
 
 
---ZG5hGh9V5E9QzVHS
+--mwyYwuEU+DI08Yj7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 09, 2015 at 11:48:55AM +0100, Mark Brown wrote:
-> On Thu, Jul 09, 2015 at 09:57:41AM +0530, Vinod Koul wrote:
-> > On Wed, Jul 08, 2015 at 07:36:21PM +0100, Mark Brown wrote:
->=20
-> > > > +	for (time =3D 0; time < timeout; time++) {
-> > > > +		if ((sst_dsp_shim_read_unlocked(ctx, offset) & mask) =3D=3D expe=
-cted_value)
-> > > > +			break;
-> > > > +
-> > > > +		mdelay(1);
-> > > > +	}
->=20
-> > > mdelay() not msleep()?  If we're waiting for multiple miliseconds that
-> > > could be lots of busy waiting.
->=20
-> > Usually this should get reflected in 1st iteration as the register upda=
-te
-> > would get updated farrily quickly. msleep will add up lots of latency to
-> > this.
->=20
-> A common approach for that is to do a busy wait for say the first
-> milisecond (perhaps polling more often too) and then fall back to
-> something sleepy if things are slow.
-Yes that sounds sensible to me, will add
+On Fri, Jun 26, 2015 at 10:59:49AM +0800, Bard Liao wrote:
+> It is the initial version of ALC298 codec driver.
 
-Thanks
---=20
-~Vinod
+I'll apply this but a few things here which you should look at:
 
---ZG5hGh9V5E9QzVHS
+> +static int rt298_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	rt298->codec = codec;
+> +
+> +	if (rt298->i2c->irq) {
+> +		regmap_update_bits(rt298->regmap,
+> +					RT298_IRQ_CTRL, 0x2, 0x2);
+> +
+> +		INIT_DELAYED_WORK(&rt298->jack_detect_work,
+> +					rt298_jack_detect_work);
+> +		schedule_delayed_work(&rt298->jack_detect_work,
+> +					msecs_to_jiffies(1250));
+
+That seems like an awfully long time to wait to do the first jack
+detection.  What's this for?
+
+> +static int rt298_i2c_probe(struct i2c_client *i2c,
+> +			   const struct i2c_device_id *id)
+> +{
+> +	struct rt298_platform_data *pdata = dev_get_platdata(&i2c->dev);
+> +	struct rt298_priv *rt298;
+> +	struct device *dev = &i2c->dev;
+> +	const struct acpi_device_id *acpiid;
+> +	int i, ret;
+> +
+> +	pr_info("%s\n", __func__);
+
+This isn't adding anything, you should remove it.
+
+--mwyYwuEU+DI08Yj7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVnlKnAAoJEHwUBw8lI4NHWFEP/3LarpDlcq5L5otJMS7Lvq0z
-pyAZso+rkvvbKpsFNQFFH9ZQBcYftCiiM86kQV+0gPcZw8D49isCLandPbz1RSRR
-hsJ72+VMzc2gJuK3Z4F2GYctNg9NmUMIIPVNQim+gIebUTC/zwGa5jIAWqt6n2p+
-G4Ny/MitcpwxmfQVGMT4dM9TLk4o7GAWuYeIKEHK9WNk3Lo8YZ+XifabdZy2KVR8
-jeJWL/V528UpWvVgHfBUL9jkspga7LxT04xmpndYL2m91Dby/2ODLl8hBDIR4dAI
-AHRq9GtmRC1Ec5DhNXoX59s10un0SnKiyssbPKmktca+/4gtTx9FfYC9T1rzJcie
-dg9Xuq2BSOCS8CPpzc2g6GuxY43fZWGm7gX0++gfo5bh+4jjh5Eda0Z7tapHj+U1
-8LQxvssWs1UZvhqElVQ4i1vXVS8mUTOYwIf9CAf6gu3RwqNpPbEzpsQILgDhOeJO
-50BqBcN7XpHW7Fo0WsyxcTsXEUS/fEwouFsCQnJ0oefI9CLHcd3BKR4yYYRFBhU3
-qm2Dikb8XosB+vZiT1m5NDYH3uncqG95sn++kpE31USkoWE0Lg0ARnY5DkC/w33i
-jJZJPp7mSVpcBU1v4FlO2JhBB4WvJaQuwQ4iU/l1jG8uLnLuTLfU+g4c0z08ydp+
-WQofKK4kyyXlUNQ3v8Is
-=K6yv
+iQEcBAEBCAAGBQJVnlZhAAoJECTWi3JdVIfQXCsH/1EYPbO8xa36BdeqMNTat0ns
+QtDRzBkX9VJApjPPyYSLZRm/OEDqiDXcKM9JcFZNFiSGfBNGPqTaAJAeDYi/lewz
+8TawCuxiPkCxz1Vi9W2GzTHVIEj9aRiJ8D81FOXG2sDrLihZVmr/G2krvpmxI8Ep
+4NSpWdZPIBGW52pYAyibkRDV4q6fPo2mMYkEUKl2MiaTT45d6fzvXHRnUmG65Bo6
+ItQ3xKadCJHaq+GjFl5Ji8rGITK7InXEcJceoY/FtIRwI0QGOWiMWA1TS0O5xbUQ
+BfPoqpwhhYfpUBQaiWGT0L8eGhO9nRD2NOfdvW8wqtg6glhV3xz8CR0krdX2pok=
+=PEm1
 -----END PGP SIGNATURE-----
 
---ZG5hGh9V5E9QzVHS--
+--mwyYwuEU+DI08Yj7--
 
---===============7032921683503391838==
+--===============1538238172384585132==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7032921683503391838==--
+--===============1538238172384585132==--
