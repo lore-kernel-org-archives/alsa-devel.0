@@ -1,42 +1,47 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [patch] ASoC: fsl: fsl_spdif: signedness bug in
- fsl_spdif_startup()
-Date: Thu, 9 Jul 2015 07:59:47 -0700
-Message-ID: <20150709145946.GA5692@Asurada>
-References: <20150709082103.GA13462@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFT PATCH 1/2] ASoC: zx: i2s: Fix devm_ioremap_resource return
+ value check
+Date: Thu, 9 Jul 2015 16:33:29 +0100
+Message-ID: <20150709153329.GM11162@sirena.org.uk>
+References: <1436447969-24583-1-git-send-email-k.kozlowski.k@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IAaqE72949kW9Y9K"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20150709082103.GA13462@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Timur Tabi <timur@tabi.org>, Fabio Estevam <fabio.estevam@freescale.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <1436447969-24583-1-git-send-email-k.kozlowski.k@gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jun Nie <jun.nie@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 09, 2015 at 11:21:03AM +0300, Dan Carpenter wrote:
-> We need "i" to be signed or it leads to a forever loop in the error
-> handling.
-> 
-> Fixes: fa3be9208dcb ('ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error')
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
+--IAaqE72949kW9Y9K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+On Thu, Jul 09, 2015 at 10:19:28PM +0900, Krzysztof Kozlowski wrote:
 
-Thank you
+> Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+> Cc: <stable@vger.kernel.org>
 
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index 3ee4539..7a92f30 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -454,7 +454,8 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
->  	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
->  	struct platform_device *pdev = spdif_priv->pdev;
->  	struct regmap *regmap = spdif_priv->regmap;
-> -	u32 scr, mask, i;
-> +	u32 scr, mask;
-> +	int i;
->  	int ret;
->  
->  	/* Reset module and interrupts only for first initialization */
+Why are you adding a Cc to stable?  The zx driver was added in the merge
+window...
+
+--IAaqE72949kW9Y9K
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVnpRIAAoJECTWi3JdVIfQdNMH/1pKphjOzN4AZZI+DTOULFDH
+v64RdneyQWy1UUWMN/BQYZTG3nmztz8F7On66IwsXe9MpPZx+tvcX4hWJ0vZxSWU
+z50Hlvyz1vN/NDNZZ5CzlgoF8doWsep3wRZ1Unn031AkpV1/4T4KdHP26eAbyrIH
+zbmyWK/9Y1eVuhY8sEzhv37sN27wgRakAmNMQBnL0mfGS/c2IQ+vvS3lQRZQ9JXZ
+g7YgATGnTFADD9CgwXqp5vEq75UYW+KNTTTwcgq3kpSn2ZfcwxMfP+yEzw3IJXxp
+uqXLPK7BSEhyRwT1GM/FwpdU0N93+hWJ+NiSjdUDB1LaU4TXIv5qjQJLZMdSk+w=
+=CzAT
+-----END PGP SIGNATURE-----
+
+--IAaqE72949kW9Y9K--
