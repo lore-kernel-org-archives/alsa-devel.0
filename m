@@ -1,167 +1,335 @@
-From: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH] ASoC: mediatek: Use platform_of_node for machine drivers
-Date: Thu, 9 Jul 2015 10:51:27 +0800
-Message-ID: <1436410287-61097-1-git-send-email-koro.chen@mediatek.com>
+From: Jimmy <jimmy@spalge.com>
+Subject: [PATCH] Softvol: Allow per process volume control.
+Date: Thu, 9 Jul 2015 14:18:48 +1200
+Message-ID: <20150709032406.12952.5374@spalge.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
-Cc: srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, s.hauer-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51DE9265B90
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2015 05:22:42 +0200 (CEST)
+Received: by pacgz10 with SMTP id gz10so68960683pac.3
+ for <alsa-devel@alsa-project.org>; Wed, 08 Jul 2015 20:22:40 -0700 (PDT)
+Received: from spalge.com ([101.98.193.37])
+ by smtp.gmail.com with ESMTPSA id ja1sm4032812pbc.51.2015.07.08.20.22.38
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 08 Jul 2015 20:22:39 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=spalge.com)
+ by spalge.com with esmtp (Exim 4.84)
+ (envelope-from <paul.clark@spalge.com>) id 1ZD2RT-0003NM-02
+ for alsa-devel@alsa-project.org; Thu, 09 Jul 2015 15:24:07 +1200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This replaces the platform_name in snd_soc_dai_link by device tree node.
+This change uses ephemeral pcm controls to provide per process volume
+control in conjunction with dmix. It basically generates a new control
+every time a softvol PCM is opened and deletes it afterwards. It also
+needs to generate a unique name for the control and I have included one
+method of doing that. This patch is totally non-breaking and backwards
+compatible, apart from one call to snd_ctl_elem_unlock (see below).
 
-Signed-off-by: Koro Chen <koro.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Changes to asoundrc:
+
+* pcm.softvol.per_process BOOL has been added to enable these changes,
+  defaults to false.
+* when per_process is true then bits of text in pcm.softvol.control.name
+  surrounded by curly braces ('{' and '}') are treated as substitution
+  variables (eg "softvol.{pid}") so that uniquely named controls can be
+  generated.
+
+Changes to pcm_softvol.c
+
+* new int (really a bool) in snd_pcm_softvol_t that is read in
+  _...open() and passed through to the internal open method because that
+  seemed to be the thing to do and then used in softvol_load_control().
+* a big ugly per_proc_format_ctl_name() function has been added that
+  generates the new hopefully unique names. It talks to /proc/ and does
+  a bunch string manipulation. There probably are no off-by-one errors
+  left in there.
+* per process controls are closed along with the pcm.
+* I added a call to snd_ctl_elem_unlock() when a new control is created
+  and *didn't* put a guard on it because I don't understand why anyone
+  would want the control locked anyway ... It seems that the first time
+  that softvol is opened you can't use the control so you have to close
+  and open it again. Presumably there is a reason for this because
+  unlock isn't called anywhere else, but I don't know what it is. Nothing
+  else calls unlock either, maybe nothing else makes new on-demand ctls.
+
+I'm open to suggestions like "get rid of the templating" and "use better
+config variable names" but as far as I can tell the basic idea is useful
+and simple.
 ---
- .../devicetree/bindings/sound/mt8173-max98090.txt     |  2 ++
- .../bindings/sound/mt8173-rt5650-rt5676.txt           |  2 ++
- sound/soc/mediatek/mt8173-max98090.c                  | 17 +++++++++++++----
- sound/soc/mediatek/mt8173-rt5650-rt5676.c             | 19 +++++++++++++++----
- 4 files changed, 32 insertions(+), 8 deletions(-)
+ src/pcm/pcm_softvol.c | 148 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 144 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-max98090.txt b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
-index 829bd26..519e97c 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-max98090.txt
-@@ -3,11 +3,13 @@ MT8173 with MAX98090 CODEC
- Required properties:
- - compatible : "mediatek,mt8173-max98090"
- - mediatek,audio-codec: the phandle of the MAX98090 audio codec
-+- mediatek,platform: the phandle of MT8173 ASoC platform
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index c6cfd8896b26..a03b672a6f42 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -31,6 +31,11 @@
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
  
- Example:
++#include <sys/types.h>
++#include <unistd.h>
++#include <errno.h>
++#include <libgen.h> //basename
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_softvol = "";
+@@ -51,6 +56,7 @@ typedef struct {
+ 	double min_dB;
+ 	double max_dB;
+ 	unsigned int *dB_value;
++	int per_process;
+ } snd_pcm_softvol_t;
  
- 	sound {
- 		compatible = "mediatek,mt8173-max98090";
- 		mediatek,audio-codec = <&max98090>;
-+		mediatek,platform = <&afe>;
- 	};
- 
-diff --git a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-index 61e98c9..f205ce9 100644
---- a/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8173-rt5650-rt5676.txt
-@@ -3,11 +3,13 @@ MT8173 with RT5650 RT5676 CODECS
- Required properties:
- - compatible : "mediatek,mt8173-rt5650-rt5676"
- - mediatek,audio-codec: the phandles of rt5650 and rt5676 codecs
-+- mediatek,platform: the phandle of MT8173 ASoC platform
- 
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8173-rt5650-rt5676";
- 		mediatek,audio-codec = <&rt5650 &rt5676>;
-+		mediatek,platform = <&afe>;
- 	};
- 
-diff --git a/sound/soc/mediatek/mt8173-max98090.c b/sound/soc/mediatek/mt8173-max98090.c
-index 4d44b58..2d2536a 100644
---- a/sound/soc/mediatek/mt8173-max98090.c
-+++ b/sound/soc/mediatek/mt8173-max98090.c
-@@ -103,7 +103,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
- 		.name = "MAX98090 Playback",
- 		.stream_name = "MAX98090 Playback",
- 		.cpu_dai_name = "DL1",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-@@ -114,7 +113,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
- 		.name = "MAX98090 Capture",
- 		.stream_name = "MAX98090 Capture",
- 		.cpu_dai_name = "VUL",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-@@ -125,7 +123,6 @@ static struct snd_soc_dai_link mt8173_max98090_dais[] = {
- 	{
- 		.name = "Codec",
- 		.cpu_dai_name = "I2S",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.no_pcm = 1,
- 		.codec_dai_name = "HiFi",
- 		.init = mt8173_max98090_init,
-@@ -152,9 +149,21 @@ static struct snd_soc_card mt8173_max98090_card = {
- static int mt8173_max98090_dev_probe(struct platform_device *pdev)
+ #define VOL_SCALE_SHIFT		16
+@@ -408,6 +414,17 @@ static void softvol_free(snd_pcm_softvol_t *svol)
+ static int snd_pcm_softvol_close(snd_pcm_t *pcm)
  {
- 	struct snd_soc_card *card = &mt8173_max98090_card;
--	struct device_node *codec_node;
-+	struct device_node *codec_node, *platform_node;
- 	int ret, i;
- 
-+	platform_node = of_parse_phandle(pdev->dev.of_node,
-+					 "mediatek,platform", 0);
-+	if (!platform_node) {
-+		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+	for (i = 0; i < card->num_links; i++) {
-+		if (mt8173_max98090_dais[i].platform_name)
-+			continue;
-+		mt8173_max98090_dais[i].platform_of_node = platform_node;
+ 	snd_pcm_softvol_t *svol = pcm->private_data;
++	snd_ctl_elem_info_t *cinfo;
++
++	if (svol->per_process) {
++		snd_ctl_elem_info_alloca(&cinfo);
++		snd_ctl_elem_info_set_id(cinfo, &svol->elem.id);
++		// Ignore non-existence at this point.
++		if (!snd_ctl_elem_info(svol->ctl, cinfo)) {
++			snd_ctl_elem_remove(svol->ctl, &cinfo->id);
++		}
 +	}
 +
- 	codec_node = of_parse_phandle(pdev->dev.of_node,
- 				      "mediatek,audio-codec", 0);
- 	if (!codec_node) {
-diff --git a/sound/soc/mediatek/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-index 0940553..6f52eca 100644
---- a/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173-rt5650-rt5676.c
-@@ -138,7 +138,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.name = "rt5650_rt5676 Playback",
- 		.stream_name = "rt5650_rt5676 Playback",
- 		.cpu_dai_name = "DL1",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-@@ -149,7 +148,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 		.name = "rt5650_rt5676 Capture",
- 		.stream_name = "rt5650_rt5676 Capture",
- 		.cpu_dai_name = "VUL",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-@@ -161,7 +159,6 @@ static struct snd_soc_dai_link mt8173_rt5650_rt5676_dais[] = {
- 	{
- 		.name = "Codec",
- 		.cpu_dai_name = "I2S",
--		.platform_name = "11220000.mt8173-afe-pcm",
- 		.no_pcm = 1,
- 		.codecs = mt8173_rt5650_rt5676_codecs,
- 		.num_codecs = 2,
-@@ -209,7 +206,21 @@ static struct snd_soc_card mt8173_rt5650_rt5676_card = {
- static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+ 	softvol_free(svol);
+ 	return 0;
+ }
+@@ -689,6 +706,92 @@ static int add_user_ctl(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo, int
+ 	return snd_ctl_elem_write(svol->ctl, &svol->elem);
+ }
+ 
++/* Takes a template string of the form "softvol {cmd} ({pid})" and writes to
++ * outbuf a the same string with the text within curly braces replaced with
++ * relevant information. Returns the number of chars written to outbuf
++ * including a terminating '\0' or a negative number on error.
++ *
++ * Currently supported values for substition are:
++ * pid  The current processes pid
++ * cmd  The basename of the processes argv[0], from /proc/self/cmdline
++ * exe  The basename of the processes binary, from following /proc/self/exe
++ * {    The literal open curly brace '{'
++ * ob   The literal open curly brace '{'
++ * cb   The literal open curly brace '}'
++ */
++static int per_proc_format_ctl_name(char *outbuf, size_t outbuf_len, char *template) {
++	int template_len = strlen(template), n, proc_fd;
++	char *outbuf_p = outbuf, *open_b, *close_b, *template_p = template;
++	char proc_buf[50]; // max pid can be up to 22 bits ...
++	char resolved_path[PATH_MAX];
++
++	// walk through template_p pushing onto outbuf_p
++	while (outbuf_p < outbuf+outbuf_len) {
++		open_b = strchr(template_p, '{');
++		if (open_b == NULL) {
++			// Point the end of the current literal to the end
++			open_b = template + template_len;
++		}
++		memcpy(outbuf_p, template_p, open_b-template_p);
++		outbuf_p += open_b-template_p;
++		template_p = open_b+1;
++
++		if (template_p >= template + template_len - 1) {
++			*outbuf_p = '\0';
++			break;
++		}
++
++		if ((close_b = strchr(open_b, '}')) == NULL) {
++			SNDERR("Invalid control name template: Unmatched '{'");
++			return -EINVAL;
++		}
++		*close_b = '\0';
++		if (strcmp(template_p, "pid") == 0) {
++			n = snprintf(outbuf_p, outbuf+outbuf_len-outbuf_p, "%d", getpid());
++		} else if (strcmp(template_p, "cmd") == 0) {
++			n = snprintf(proc_buf, 49, "/proc/%d/cmdline", getpid());
++			proc_fd = open(proc_buf, O_RDONLY);
++			if (proc_fd < 0) {
++				// Maybe a short lived process?
++				n = errno;
++				SNDERR("Unable to complete control name template: open: %s: %s", strerror(errno), proc_buf);
++				return -n;
++			}
++			n = read(proc_fd, proc_buf, 49);
++			proc_buf[n] = '\0';
++			n = basename(proc_buf)-proc_buf;
++			open_b = strchr(proc_buf+n, ' ');
++			if (open_b != NULL) *open_b = '\0';
++			n = snprintf(outbuf_p, outbuf+outbuf_len-outbuf_p, "%s", proc_buf+n);
++		} else if (strcmp(template_p, "exe") == 0) {
++			n = snprintf(proc_buf, 49, "/proc/%d/exe", getpid());
++			if (realpath(proc_buf, resolved_path) == NULL) {
++				// Maybe a short lived process?
++				n = errno;
++				SNDERR("Unable to complete control name template: open: %s: %s", strerror(errno), proc_buf);
++				return -n;
++			}
++			n = basename(resolved_path)-resolved_path;
++			n = snprintf(outbuf_p, outbuf+outbuf_len-outbuf_p, "%s", basename(resolved_path));
++		} else if (strcmp(template_p, "{") == 0 || strcmp(template_p, "ob") == 0) {
++			n = 1;
++			*outbuf_p = '{';
++		} else if (strcmp(template_p, "cb") == 0) {
++			n = 1;
++			*outbuf_p = '}';
++		} else if (strlen(template_p) == 0) {
++			n = 0;
++		} else {
++			SNDERR("Invalid control name template: Unknown substitution: %s", template_p);
++			return -EINVAL;
++		}
++
++		outbuf_p = outbuf_p + n;
++		template_p = close_b + 1;
++	}
++	return strlen(outbuf)+1;
++}
++
+ /*
+  * load and set up user-control
+  * returns 0 if the user-control is found or created,
+@@ -700,7 +803,7 @@ static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ 				int cchannels, double min_dB, double max_dB,
+ 				int resolution)
  {
- 	struct snd_soc_card *card = &mt8173_rt5650_rt5676_card;
--	int ret;
-+	struct device_node *platform_node;
-+	int i, ret;
-+
-+	platform_node = of_parse_phandle(pdev->dev.of_node,
-+					 "mediatek,platform", 0);
-+	if (!platform_node) {
-+		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < card->num_links; i++) {
-+		if (mt8173_rt5650_rt5676_dais[i].platform_name)
-+			continue;
-+		mt8173_rt5650_rt5676_dais[i].platform_of_node = platform_node;
-+	}
+-	char tmp_name[32];
++	char tmp_name[32], tmp_template[sizeof(ctl_id->name)];
+ 	snd_pcm_info_t *info;
+ 	snd_ctl_elem_info_t *cinfo;
+ 	int err;
+@@ -724,6 +827,15 @@ static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ 		return err;
+ 	}
  
- 	mt8173_rt5650_rt5676_codecs[0].of_node =
- 		of_parse_phandle(pdev->dev.of_node, "mediatek,audio-codec", 0);
++	if (svol->per_process) {
++		err = per_proc_format_ctl_name(tmp_template, sizeof(ctl_id->name), ctl_id->name);
++		if (err < 1) { // Shouldn't be zero length output...
++			SNDERR("Cannot open CTL %s: Control name template error %d", tmp_name, err);
++			return -EINVAL;
++		}
++		memcpy(&ctl_id->name, tmp_template, sizeof(ctl_id->name));
++	}
++
+ 	svol->elem.id = *ctl_id;
+ 	svol->max_val = resolution - 1;
+ 	svol->min_dB = min_dB;
+@@ -747,6 +859,7 @@ static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ 			SNDERR("Cannot add a control");
+ 			return err;
+ 		}
++		snd_ctl_elem_unlock(svol->ctl, &cinfo->id);
+ 	} else {
+ 		if (! (cinfo->access & SNDRV_CTL_ELEM_ACCESS_USER)) {
+ 			/* hardware control exists */
+@@ -836,6 +949,10 @@ static const snd_pcm_ops_t snd_pcm_softvol_ops = {
+  * \param resolution resolution of control
+  * \param slave Slave PCM handle
+  * \param close_slave When set, the slave PCM handle is closed with copy PCM
++ * \param per_process When set, a new ephemeral control is created for each
++ *        softvol PCM. This allows per process volume control when used with
++ *        dmix. Make sure the control name has eg {pid}, {cmd}, {exe} in it so
++ *        the generated names are unique.
+  * \retval zero on success otherwise a negative error code
+  * \warning Using of this function might be dangerous in the sense
+  *          of compatibility reasons. The prototype might be freely
+@@ -846,7 +963,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 			 int ctl_card, snd_ctl_elem_id_t *ctl_id,
+ 			 int cchannels,
+ 			 double min_dB, double max_dB, int resolution,
+-			 snd_pcm_t *slave, int close_slave)
++			 snd_pcm_t *slave, int close_slave, int per_process)
+ {
+ 	snd_pcm_t *pcm;
+ 	snd_pcm_softvol_t *svol;
+@@ -862,6 +979,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 	svol = calloc(1, sizeof(*svol));
+ 	if (! svol)
+ 		return -ENOMEM;
++	svol->per_process = per_process;
+ 	err = softvol_load_control(slave, svol, ctl_card, ctl_id, cchannels,
+ 				   min_dB, max_dB, resolution);
+ 	if (err < 0) {
+@@ -929,6 +1047,17 @@ If the control already exists and it's a system control (i.e. no
+ user-defined control), the plugin simply passes its slave without
+ any changes.
+ 
++If per_process is set you can (and should) user certain substition variables
++in the control name so that uniquely named controls can be generated per-process.
++Substition variables are within curly braces, everything else is used literaly, eg
++{cmd} ({pid}). Currently supported variables are:
++- pid  The current processes pid
++- cmd  The basename of the processes argv[0], from /proc/self/cmdline
++- exe  The basename of the processes binary, from following /proc/self/exe
++- {    The literal open curly brace '{'
++- ob   The literal open curly brace '{'
++- cb   The literal open curly brace '}'
++
+ \code
+ pcm.name {
+         type softvol            # Soft Volume conversion PCM
+@@ -953,6 +1082,8 @@ pcm.name {
+ 	[max_dB REAL]           # maximal dB value (default:   0.0)
+ 	[resolution INT]        # resolution (default: 256)
+ 				# resolution = 2 means a mute switch
++	[per_process BOOL]      # generate one control per process (default: false)
++				# useful with dmix.
+ }
+ \endcode
+ 
+@@ -992,7 +1123,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 	int resolution = PRESET_RESOLUTION;
+ 	double min_dB = PRESET_MIN_DB;
+ 	double max_dB = ZERO_DB;
+-	int card = -1, cchannels = 2;
++	int card = -1, cchannels = 2, per_process = 0;
+ 
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+@@ -1035,6 +1166,15 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 			}
+ 			continue;
+ 		}
++		if (strcmp(id, "per_process") == 0) {
++			err = snd_config_get_bool(n);
++			if (err < 0) {
++				SNDERR("Invalid boolean value in per_process");
++				return err;
++			}
++			per_process = err;
++			continue;
++		}
+ 		SNDERR("Unknown field %s", id);
+ 		return -EINVAL;
+ 	}
+@@ -1092,7 +1232,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+ 			return err;
+ 		}
+ 		err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id, cchannels,
+-					   min_dB, max_dB, resolution, spcm, 1);
++					   min_dB, max_dB, resolution, spcm, 1, per_process);
+ 		if (err < 0)
+ 			snd_pcm_close(spcm);
+ 	}
 -- 
-1.8.1.1.dirty
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.1.4
