@@ -1,22 +1,19 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Cannot open shared
-	library	/usr/lib/alsa-lib/libasound_module_pcm_jack.so
-Date: Fri, 10 Jul 2015 12:15:15 +0000
-Message-ID: <SIXPR04MB25359BD822771FC347C8B18C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB25362E92C1A38365A48DF57C3900@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559F687D.3040305@ladisch.de>
- <SIXPR04MB253428BCF6788F2160EC91DC39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559FB521.9010901@ladisch.de>
+From: nick <xerofoify@gmail.com>
+Subject: Re: Possible Bug Found with Xonar Stx Driver
+Date: Fri, 10 Jul 2015 08:25:39 -0400
+Message-ID: <559FB9C3.2050108@gmail.com>
+References: <559EFC14.2090408@gmail.com> <559FB6F2.2000606@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0122.outbound.protection.outlook.com [104.47.125.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 71C8026043C
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:15:18 +0200 (CEST)
-In-Reply-To: <559FB521.9010901@ladisch.de>
-Content-Language: en-US
+Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF4E0260447
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:25:41 +0200 (CEST)
+Received: by iebmu5 with SMTP id mu5so194701295ieb.1
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 05:25:40 -0700 (PDT)
+In-Reply-To: <559FB6F2.2000606@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,43 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, axboe@kernel.dk, alsa-devel@alsa-project.org, tytso@mit.edu, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-am sorry Clemens will not top post once again
-
-Thanks a lot for your support as am alone working in alsa in my team & newbie to it
-
-Thanks,
-Srinivasan S
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Friday, July 10, 2015 5:35 PM
-To: Srinivasan S; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Cannot open shared library    /usr/lib/alsa-lib/libasound_module_pcm_jack.so
-
-(please don't top-post)
-
-Srinivasan S wrote:
->> Srinivasan S wrote:
->>> ...
->>> checking for pkg-config... /opt/ti-sdk-am335x-evm-07.00.00.00/linux-devkit/sysroots/i686-arago-linux/usr/bin//pkg-config
->>> checking pkg-config is at least version 0.9.0... yes
->>> checking for ALSA... no
->>> configure: error: Package requirements (alsa >= 1.0.11) were not met:
->>
->> Well, did you cross-compile alsa-lib?
->
-> I have never cross_compiled alsa-lib 1.0.27.2-r0 am using the alsa-lib version which is provided in ti sdk 8 BSP's
-
-That pkg-config does not know about "alsa".  Apparently, TI's SDK did
-not install alsa.pc together with the rest of alsa-lib.
-
-Report this bug to TI.
-
-As a workaround, try cross-compiling alsa-lib yourself.
 
 
-Regards,
-Clemens
+On 2015-07-10 08:13 AM, Clemens Ladisch wrote:
+> nick wrote:
+>> After running the latest version of Linus's tree I am noticed way more buffering
+> 
+> What exactly do you mean with the word "buffering"?
+> 
+>> when playing music with my Xonar STX card when building kernels then
+>> under the Ubuntu kernel version of 3.19.16.
+> 
+> Sounds like a change in the disk access patterns.
+> 
+> The audio buffer size is chosen by the playing application (whatever it
+> is).
+> 
+>> I have tried bisecting it between the releases of 3.18 and 4.0
+>> and was unable to narrow it down to a buggy commit.
+> 
+> There was no relevant change in the sound driver.
+> 
+> 
+> Regards,
+> Clemens
+> 
+I was looking just to see if there was just a direct commit that caused this not in the sound 
+driver but overall. Seems this is most likely either disk access issues or locking issues with
+timeout related to refilling the audio buffer. In addition by buffering I mean the music halts
+for a minute then continues when compiling the kernel. Further more I am also noticed my builds
+are much fast upwards of 25% on the latest rc so a performance improvement in locking or better
+disk access improvement may be a likely culprit. Ccing Ted and Jen as they are maintainers of
+the file system I am using and Jen maintains the block layer.
+Cheers,
+Nick
