@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add helper to update register
-	bits with attr RWC" to the asoc tree
-Date: Fri, 10 Jul 2015 01:25:43 +0100
-Message-ID: <E1ZDM8N-0000Na-Al@debutante>
-References: <1436458135-25537-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Add DSP init and boot up
+	functionality for SKL" to the asoc tree
+Date: Fri, 10 Jul 2015 01:25:40 +0100
+Message-ID: <E1ZDM8K-0000Md-Pf@debutante>
+References: <1436458135-25537-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3E4F2664A5
+ by alsa0.perex.cz (Postfix) with ESMTP id A142C2664A4
  for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 02:25:50 +0200 (CEST)
-In-Reply-To: <1436458135-25537-3-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1436458135-25537-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Add helper to update register bits with attr RWC
+   ASoC: Intel: Add DSP init and boot up functionality for SKL
 
 has been applied to the asoc tree at
 
@@ -53,90 +53,475 @@ to this mail.
 Thanks,
 Mark
 
->From d15b1ae17c79f682760483b56074e980720f52eb Mon Sep 17 00:00:00 2001
+>From e973e31a02c32fc830986e62f82e69934134f5ce Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Thu, 9 Jul 2015 21:38:53 +0530
-Subject: [PATCH] ASoC: Intel: Add helper to update register bits with attr RWC
+Date: Thu, 9 Jul 2015 21:38:55 +0530
+Subject: [PATCH] ASoC: Intel: Add DSP init and boot up functionality for SKL
 
-For SKL IPC, we have some register bits with attribute RWC. So we need to
-force update them. Add helper to force update this type of registers bits.
+This patch adds code to enable, disable and boot DSP core.
+Also provide some helpers to reset and power up/down the core.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-dsp.c | 28 ++++++++++++++++++++++++++++
- sound/soc/intel/common/sst-dsp.h |  4 ++++
- 2 files changed, 32 insertions(+)
+ sound/soc/intel/common/sst-dsp-priv.h |   4 +
+ sound/soc/intel/skylake/Makefile      |   2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c | 337 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-dsp.h |  57 ++++++
+ 4 files changed, 399 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-sst-dsp.c
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index cc25f4c202af..a627236dd1f5 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -197,6 +197,22 @@ int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
- }
- EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64_unlocked);
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index cd6c7ecf6288..dd79648dfb3a 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -22,6 +22,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/firmware.h>
  
-+/* This is for registers bits with attribute RWC */
-+void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
-+				u32 mask, u32 value)
++#include "../skylake/skl-sst-dsp.h"
++
+ struct sst_mem_block;
+ struct sst_module;
+ struct sst_fw;
+@@ -306,6 +308,8 @@ struct sst_dsp {
+ 
+ 	/* SKL data */
+ 
++	struct skl_dsp_fw_ops fw_ops;
++	int sst_state;
+ 	u32 intr_status;
+ };
+ 
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index 18fbe647abca..10c1319f7ed5 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -3,6 +3,6 @@ snd-soc-skl-objs := skl.o skl-pcm.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
+ 
+ # Skylake IPC Support
+-snd-soc-skl-ipc-objs := skl-sst-ipc.o
++snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+new file mode 100644
+index 000000000000..313ca7c6ca7f
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -0,0 +1,337 @@
++/*
++ * skl-sst-dsp.c - SKL SST library generic function
++ *
++ * Copyright (C) 2014-15, Intel Corporation.
++ * Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *	Jeeja KP <jeeja.kp@intel.com>
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++#include <sound/pcm.h>
++
++#include "../common/sst-dsp.h"
++#include "../common/sst-ipc.h"
++#include "../common/sst-dsp-priv.h"
++#include "skl-sst-ipc.h"
++
++/* various timeout values */
++#define SKL_DSP_PU_TO		50
++#define SKL_DSP_PD_TO		50
++#define SKL_DSP_RESET_TO	50
++
++void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state)
 +{
-+	unsigned int old, new;
-+	u32 ret;
-+
-+	ret = sst_dsp_shim_read_unlocked(sst, offset);
-+
-+	old = ret;
-+	new = (old & (~mask)) | (value & mask);
-+
-+	sst_dsp_shim_write_unlocked(sst, offset, new);
++	mutex_lock(&ctx->mutex);
++	ctx->sst_state = state;
++	mutex_unlock(&ctx->mutex);
 +}
-+EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits_forced_unlocked);
 +
- int sst_dsp_shim_update_bits(struct sst_dsp *sst, u32 offset,
- 				u32 mask, u32 value)
- {
-@@ -223,6 +239,18 @@ int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
- }
- EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits64);
- 
-+/* This is for registers bits with attribute RWC */
-+void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
-+				u32 mask, u32 value)
++static int skl_dsp_core_set_reset_state(struct sst_dsp  *ctx)
 +{
-+	unsigned long flags;
++	int ret;
 +
-+	spin_lock_irqsave(&sst->spinlock, flags);
-+	sst_dsp_shim_update_bits_forced_unlocked(sst, offset, mask, value);
-+	spin_unlock_irqrestore(&sst->spinlock, flags);
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_ADSPCS, SKL_ADSPCS_CRST_MASK,
++			SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK));
++
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			SKL_ADSPCS_CRST_MASK,
++			SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK),
++			SKL_DSP_RESET_TO,
++			"Set reset");
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK)) !=
++				SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK)) {
++		dev_err(ctx->dev, "Set reset state failed\n");
++		ret = -EIO;
++	}
++
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(sst_dsp_shim_update_bits_forced);
 +
- int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
- 			 u32 target, u32 timeout, char *operation)
- {
-diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index cc3197be4cf7..1f45f18715c0 100644
---- a/sound/soc/intel/common/sst-dsp.h
-+++ b/sound/soc/intel/common/sst-dsp.h
-@@ -230,6 +230,8 @@ void sst_dsp_shim_write64(struct sst_dsp *sst, u32 offset, u64 value);
- u64 sst_dsp_shim_read64(struct sst_dsp *sst, u32 offset);
- int sst_dsp_shim_update_bits64(struct sst_dsp *sst, u32 offset,
- 				u64 mask, u64 value);
-+void sst_dsp_shim_update_bits_forced(struct sst_dsp *sst, u32 offset,
-+				u32 mask, u32 value);
++static int skl_dsp_core_unset_reset_state(struct sst_dsp  *ctx)
++{
++	int ret;
++
++	dev_dbg(ctx->dev, "In %s\n", __func__);
++
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++					SKL_ADSPCS_CRST_MASK, 0);
++
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			SKL_ADSPCS_CRST_MASK,
++			0,
++			SKL_DSP_RESET_TO,
++			"Unset reset");
++
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				 SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK)) != 0) {
++		dev_err(ctx->dev, "Unset reset state failed\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++static bool is_skl_dsp_core_enable(struct sst_dsp  *ctx)
++{
++	int val;
++	bool is_enable;
++
++	val = sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS);
++
++	is_enable = ((val & SKL_ADSPCS_CPA(SKL_DSP_CORES_MASK)) &&
++			(val & SKL_ADSPCS_SPA(SKL_DSP_CORES_MASK)) &&
++			!(val & SKL_ADSPCS_CRST(SKL_DSP_CORES_MASK)) &&
++			!(val & SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK)));
++
++	dev_dbg(ctx->dev, "DSP core is enabled=%d\n", is_enable);
++	return is_enable;
++}
++
++static int skl_dsp_reset_core(struct sst_dsp *ctx)
++{
++	/* stall core */
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
++
++	/* set reset state */
++	return skl_dsp_core_set_reset_state(ctx);
++}
++
++static int skl_dsp_start_core(struct sst_dsp *ctx)
++{
++	int ret;
++
++	/* unset reset state */
++	ret = skl_dsp_core_unset_reset_state(ctx);
++	if (ret < 0) {
++		dev_dbg(ctx->dev, "dsp unset reset fails\n");
++		return ret;
++	}
++
++	/* run core */
++	dev_dbg(ctx->dev, "run core...\n");
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			 sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++				~SKL_ADSPCS_CSTALL(SKL_DSP_CORES_MASK));
++
++	if (!is_skl_dsp_core_enable(ctx)) {
++		skl_dsp_reset_core(ctx);
++		dev_err(ctx->dev, "DSP core enable failed\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++static int skl_dsp_core_power_up(struct sst_dsp  *ctx)
++{
++	int ret;
++
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++			SKL_ADSPCS_SPA_MASK, SKL_ADSPCS_SPA(SKL_DSP_CORES_MASK));
++
++	/* poll with timeout to check if operation successful */
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			SKL_ADSPCS_CPA_MASK,
++			SKL_ADSPCS_CPA(SKL_DSP_CORES_MASK),
++			SKL_DSP_PU_TO,
++			"Power up");
++
++	if ((sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPCS) &
++			SKL_ADSPCS_CPA(SKL_DSP_CORES_MASK)) !=
++			SKL_ADSPCS_CPA(SKL_DSP_CORES_MASK)) {
++		dev_err(ctx->dev, "DSP core power up failed\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++static int skl_dsp_core_power_down(struct sst_dsp  *ctx)
++{
++	/* update bits */
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPCS,
++					SKL_ADSPCS_SPA_MASK, 0);
++
++	/* poll with timeout to check if operation successful */
++	return sst_dsp_register_poll(ctx,
++			SKL_ADSP_REG_ADSPCS,
++			SKL_ADSPCS_SPA_MASK,
++			0,
++			SKL_DSP_PD_TO,
++			"Power down");
++}
++
++static int skl_dsp_enable_core(struct sst_dsp  *ctx)
++{
++	int ret;
++
++	/* power up */
++	ret = skl_dsp_core_power_up(ctx);
++	if (ret < 0) {
++		dev_dbg(ctx->dev, "dsp core power up failed\n");
++		return ret;
++	}
++
++	return skl_dsp_start_core(ctx);
++}
++
++int skl_dsp_disable_core(struct sst_dsp  *ctx)
++{
++	int ret;
++
++	ret = skl_dsp_reset_core(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "dsp core reset failed\n");
++		return ret;
++	}
++
++	/* power down core*/
++	ret = skl_dsp_core_power_down(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "dsp core power down failed\n");
++		return ret;
++	}
++
++	if (is_skl_dsp_core_enable(ctx)) {
++		dev_err(ctx->dev, "DSP core disable failed\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++int skl_dsp_boot(struct sst_dsp *ctx)
++{
++	int ret;
++
++	if (is_skl_dsp_core_enable(ctx)) {
++		dev_dbg(ctx->dev, "dsp core is already enabled, so reset the dap core\n");
++		ret = skl_dsp_reset_core(ctx);
++		if (ret < 0) {
++			dev_err(ctx->dev, "dsp reset failed\n");
++			return ret;
++		}
++
++		ret = skl_dsp_start_core(ctx);
++		if (ret < 0) {
++			dev_err(ctx->dev, "dsp start failed\n");
++			return ret;
++		}
++	} else {
++		dev_dbg(ctx->dev, "disable and enable to make sure DSP is invalid state\n");
++		ret = skl_dsp_disable_core(ctx);
++
++		if (ret < 0) {
++			dev_err(ctx->dev, "dsp disable core failes\n");
++			return ret;
++		}
++		ret = skl_dsp_enable_core(ctx);
++	}
++
++	return ret;
++}
++
++irqreturn_t skl_dsp_sst_interrupt(int irq, void *dev_id)
++{
++	struct sst_dsp *ctx = dev_id;
++	u32 val;
++	irqreturn_t result = IRQ_NONE;
++
++	spin_lock(&ctx->spinlock);
++
++	val = sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_ADSPIS);
++	ctx->intr_status = val;
++
++	if (val & SKL_ADSPIS_IPC) {
++		skl_ipc_int_disable(ctx);
++		result = IRQ_WAKE_THREAD;
++	}
++
++	spin_unlock(&ctx->spinlock);
++
++	return result;
++}
++
++int skl_dsp_wake(struct sst_dsp *ctx)
++{
++	return ctx->fw_ops.set_state_D0(ctx);
++}
++EXPORT_SYMBOL_GPL(skl_dsp_wake);
++
++int skl_dsp_sleep(struct sst_dsp *ctx)
++{
++	return ctx->fw_ops.set_state_D3(ctx);
++}
++EXPORT_SYMBOL_GPL(skl_dsp_sleep);
++
++struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
++		struct sst_dsp_device *sst_dev, int irq)
++{
++	int ret;
++	struct sst_dsp *sst;
++
++	sst = devm_kzalloc(dev, sizeof(*sst), GFP_KERNEL);
++	if (sst == NULL)
++		return NULL;
++
++	spin_lock_init(&sst->spinlock);
++	mutex_init(&sst->mutex);
++	sst->dev = dev;
++	sst->sst_dev = sst_dev;
++	sst->irq = irq;
++	sst->ops = sst_dev->ops;
++	sst->thread_context = sst_dev->thread_context;
++
++	/* Initialise SST Audio DSP */
++	if (sst->ops->init) {
++		ret = sst->ops->init(sst, NULL);
++		if (ret < 0)
++			return NULL;
++	}
++
++	/* Register the ISR */
++	ret = request_threaded_irq(sst->irq, sst->ops->irq_handler,
++		sst_dev->thread, IRQF_SHARED, "AudioDSP", sst);
++	if (ret) {
++		dev_err(sst->dev, "unable to grab threaded IRQ %d, disabling device\n",
++			       sst->irq);
++		return NULL;
++	}
++
++	return sst;
++}
++
++void skl_dsp_free(struct sst_dsp *dsp)
++{
++	skl_ipc_int_disable(dsp);
++
++	free_irq(dsp->irq, dsp);
++	skl_dsp_disable_core(dsp);
++}
++EXPORT_SYMBOL_GPL(skl_dsp_free);
++
++bool is_skl_dsp_running(struct sst_dsp *ctx)
++{
++	return (ctx->sst_state == SKL_DSP_RUNNING);
++}
++EXPORT_SYMBOL_GPL(is_skl_dsp_running);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 2ac120c18bea..cdfca9be4120 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -16,6 +16,8 @@
+ #ifndef __SKL_SST_DSP_H__
+ #define __SKL_SST_DSP_H__
  
- /* SHIM Read / Write Unlocked for callers already holding sst lock */
- void sst_dsp_shim_write_unlocked(struct sst_dsp *sst, u32 offset, u32 value);
-@@ -240,6 +242,8 @@ void sst_dsp_shim_write64_unlocked(struct sst_dsp *sst, u32 offset, u64 value);
- u64 sst_dsp_shim_read64_unlocked(struct sst_dsp *sst, u32 offset);
- int sst_dsp_shim_update_bits64_unlocked(struct sst_dsp *sst, u32 offset,
- 					u64 mask, u64 value);
-+void sst_dsp_shim_update_bits_forced_unlocked(struct sst_dsp *sst, u32 offset,
-+				u32 mask, u32 value);
++struct sst_dsp_device;
++
+ /* Intel HD Audio General DSP Registers */
+ #define SKL_ADSP_GEN_BASE		0x0
+ #define SKL_ADSP_REG_ADSPCS		(SKL_ADSP_GEN_BASE + 0x04)
+@@ -59,4 +61,59 @@
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
  
- /* Internal generic low-level SST IO functions - can be overidden */
- void sst_shim32_write(void __iomem *addr, u32 offset, u32 value);
++/* ADSPCS - Audio DSP Control & Status */
++#define SKL_DSP_CORES		1
++#define SKL_DSP_CORE0_MASK	1
++#define SKL_DSP_CORES_MASK	((1 << SKL_DSP_CORES) - 1)
++
++/* Core Reset - asserted high */
++#define SKL_ADSPCS_CRST_SHIFT	0
++#define SKL_ADSPCS_CRST_MASK	(SKL_DSP_CORES_MASK << SKL_ADSPCS_CRST_SHIFT)
++#define SKL_ADSPCS_CRST(x)	((x << SKL_ADSPCS_CRST_SHIFT) & SKL_ADSPCS_CRST_MASK)
++
++/* Core run/stall - when set to '1' core is stalled */
++#define SKL_ADSPCS_CSTALL_SHIFT	8
++#define SKL_ADSPCS_CSTALL_MASK	(SKL_DSP_CORES_MASK <<	\
++					SKL_ADSPCS_CSTALL_SHIFT)
++#define SKL_ADSPCS_CSTALL(x)	((x << SKL_ADSPCS_CSTALL_SHIFT) &	\
++				SKL_ADSPCS_CSTALL_MASK)
++
++/* Set Power Active - when set to '1' turn cores on */
++#define SKL_ADSPCS_SPA_SHIFT	16
++#define SKL_ADSPCS_SPA_MASK	(SKL_DSP_CORES_MASK << SKL_ADSPCS_SPA_SHIFT)
++#define SKL_ADSPCS_SPA(x)	((x << SKL_ADSPCS_SPA_SHIFT) & SKL_ADSPCS_SPA_MASK)
++
++/* Current Power Active - power status of cores, set by hardware */
++#define SKL_ADSPCS_CPA_SHIFT	24
++#define SKL_ADSPCS_CPA_MASK	(SKL_DSP_CORES_MASK << SKL_ADSPCS_CPA_SHIFT)
++#define SKL_ADSPCS_CPA(x)	((x << SKL_ADSPCS_CPA_SHIFT) & SKL_ADSPCS_CPA_MASK)
++
++#define SST_DSP_POWER_D0	0x0  /* full On */
++#define SST_DSP_POWER_D3	0x3  /* Off */
++
++enum skl_dsp_states {
++	SKL_DSP_RUNNING = 1,
++	SKL_DSP_RESET,
++};
++
++struct skl_dsp_fw_ops {
++	int (*load_fw)(struct sst_dsp  *ctx);
++	/* FW module parser/loader */
++	int (*parse_fw)(struct sst_dsp *ctx);
++	int (*set_state_D0)(struct sst_dsp *ctx);
++	int (*set_state_D3)(struct sst_dsp *ctx);
++};
++
++void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
++struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
++		struct sst_dsp_device *sst_dev, int irq);
++int skl_dsp_disable_core(struct sst_dsp  *ctx);
++bool is_skl_dsp_running(struct sst_dsp *ctx);
++irqreturn_t skl_dsp_sst_interrupt(int irq, void *dev_id);
++int skl_dsp_wake(struct sst_dsp *ctx);
++int skl_dsp_sleep(struct sst_dsp *ctx);
++void skl_dsp_free(struct sst_dsp *dsp);
++
++int skl_dsp_boot(struct sst_dsp *ctx);
++
+ #endif /*__SKL_SST_DSP_H__*/
 -- 
 2.1.4
