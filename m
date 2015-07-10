@@ -1,20 +1,28 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Cannot open
-	shared	library	/usr/lib/alsa-lib/libasound_module_pcm_jack.so
-Date: Fri, 10 Jul 2015 07:27:19 +0000
-Message-ID: <SIXPR04MB253428BCF6788F2160EC91DC39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB25362E92C1A38365A48DF57C3900@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559F687D.3040305@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
+ assignment for external base speaker and external microphone not working
+Date: Fri, 10 Jul 2015 15:49:47 +0800
+Message-ID: <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
+References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
+ <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
+ <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
+ <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+ <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
+ <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+ <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
+ <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
+ <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0104.outbound.protection.outlook.com [104.47.125.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 942F426044B
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 09:27:22 +0200 (CEST)
-In-Reply-To: <559F687D.3040305@ladisch.de>
-Content-Language: en-US
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CDDB260499
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 09:49:50 +0200 (CEST)
+Received: by oiyy130 with SMTP id y130so206124294oiy.0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 00:49:48 -0700 (PDT)
+In-Reply-To: <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,100 +32,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Arthur Borsboom <arthurborsboom@gmail.com>, lukasz.wojnilowicz@gmail.com
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks a lot for your responses, I was eagerly waiting for your replies,
+>
+> First I think I am going to split this mail into two topics, starting
+with the easiest one, the External Base speaker.
+>
+> The code above added two new options: Surround 2.1 and Surround 4.0.
+> After plugging in the base speaker:
+>
+> - The Base speaker plays without this code (but the previous code was
+necessary) on the Speakers.
+> - The Base speaker does not play on Surround 2.1
+> - The Base speaker does play on Surround 4.0
+> - The Base speaker does not switch automatically to any Surround when
+plugged in.
 
-Am sorry, as am poor in alsa 
+How do you test ? Using sound preference or alsa speaker-test
 
-Could you please help me out in resolving this issue
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=8e38395360844806041ea69ab9690f5f174bc40c
 
-root@lifeline:/# vi etc/asound.conf
-pcm.rawjack {
-type jack
-playback_ports {
-0 system:playback_1
-1 system:playback_2
-}
-capture_ports {
-0 system:capture_1
-1 system:capture_2
-}
-}
+Seem pulseaudio bug since driver only define stereo and 2.1 channel map
+and  there is no surround 4.0 channel map
 
-pcm.jack {
-type plug
-slave { pcm "rawjack" }
-hint {
-description "JACK Audio Connection Kit"
-}
-}
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=48f1b308cc66152eb6db66742dd0d08d888cda8d;hp=5c4cd46810cef8850b037fca9e38ffd43b0bff22
 
-pcm.!default {
-type plug
-slave { pcm "rawjack" }
-}
++       ttable.0.FL 1
++       ttable.1.FR 1
++       ttable.2.LFE 1
 
-root@lifeline:/opt/tunstall/audio# aplay -D pcm.jack TangoForTajMusic11.wav
-ALSA lib /home/jenkins/amsdk-nightly-build/build-CORTEX_1/arago-tmp-external-linaro-toolchain/work/cortexa8t2hf-vfp-neon-oe-linux-gnueabi/alsa-lib/1.0.27.2-r0/alsa-lib-1.0.27.2/src/dlmisc.c:252:(snd1_dlobj_cache_get) Cannot open shared library /usr/lib/alsa-lib/libasound_module_pcm_jack.so
-aplay: main:722: audio open error: No such device or address
-root@lifeline:/opt/tunstall/audio#
+surround21 is supposed to be also used on 5.1 speaker since it only check
 
+Do you mean it only work on 5.1 speaker since there are three combination
+of 2.1 chmap ?
 
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound?id=ee81abb623cb5e03c182d16871bb4fb34fdc9b4f
 
-Even I installed libasound2-dev in my linux host machine still the same issue
+1) hda default 2.1
 
-srinivasan@tata-HP-Elite-7100-Microtower-PC:~/alsa-plugins-1.0.29$ ./configure --prefix=/home/srinivasan/alsa-plugins-1.0.29/exes --host=arm-arago-linux-gnueabi
-checking for a BSD-compatible install... /usr/bin/install -c
+{ .channels = 4,
+  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+   SNDRV_CHMAP_LFE , SNDRV_CHMAP_LFE } },
+{ }
 
-checking if libtool supports shared libraries... yes
-checking whether to build shared libraries... yes
-checking whether to build static libraries... no
-checking for ANSI C header files... (cached) yes
-./configure: line 11534: CC_NOUNDEFINED: command not found
-checking for arm-arago-linux-gnueabi-pkg-config... no
-checking for pkg-config... /opt/ti-sdk-am335x-evm-07.00.00.00/linux-devkit/sysroots/i686-arago-linux/usr/bin//pkg-config
-checking pkg-config is at least version 0.9.0... yes
-checking for ALSA... no
-configure: error: Package requirements (alsa >= 1.0.11) were not met:
+2) acer aspire /* LFE only on left */
 
-No package 'alsa' found
+{ .channels = 4,
+  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+   SNDRV_CHMAP_LFE, SNDRV_CHMAP_NA} }, /* LFE only on left */
+{ }
 
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
+3) LFE only on right on asus latop external sonic master subwoofer
+{ .channels = 4,
+  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+   SNDRV_CHMAP_NA, SNDRV_CHMAP_LFE } }, /* LFE only on right */
+{ }
 
-Alternatively, you may set the environment variables ALSA_CFLAGS
-and ALSA_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
+speaker-test  don't check channel map
 
-Am sorry I wrongly understood, where I get libasound_module_pcm_jack.so is it in alsa-lib?? or alsa-plugins??, I just blindly tried cross compiling alsa-plugins-1.0.29 with above errors, without cross compiling alsa-lib 1.0.27.2-r0, does this alsa lib version supports this library???
+Those asus n series laptop with alc663 seem use  node 0x1e to for the
+detection of external subwoofer but node 0x1e pincap does not support
+detect and unsol event
 
-I have never cross_compiled alsa-lib 1.0.27.2-r0 am using the alsa-lib version which is provided in ti sdk 8 BSP's
+This mean those subwoofer need to use __snd_hda_jack_add_kctl() which does
+not check pincap and unsol event
 
-Could you please help me out first how to cross_compile alsa-lib 1.0.27.2-r0 version??? & then alsa-plugins
+This require change of __snd_hda_jack_add_kctl() by adding new parameter
+sense_nid to use another nid for jack sense without enable unsol event
 
+However there is bug in hda_jack implementation , snd_hda_jack_detect() can
+be called in patch_realtek.c before creation of the jacktbl entry (i.e.
+before snd_hda_jack_add_kctls()
 
-Many Thanks in advance..
-________________________________________
-From: alsa-devel-bounces@alsa-project.org <alsa-devel-bounces@alsa-project.org> on behalf of Clemens Ladisch <clemens@ladisch.de>
-Sent: Friday, July 10, 2015 12:08 PM
-To: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Cannot open shared    library /usr/lib/alsa-lib/libasound_module_pcm_jack.so
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1040873/comments/115
 
-Srinivasan S wrote:
-> ...
-> checking for pkg-config... /opt/ti-sdk-am335x-evm-07.00.00.00/linux-devkit/sysroots/i686-arago-linux/usr/bin//pkg-config
-> checking pkg-config is at least version 0.9.0... yes
-> checking for ALSA... no
-> configure: error: Package requirements (alsa >= 1.0.11) were not met:
-
-Well, did you cross-compile alsa-lib?
-
-
-Regards,
-Clemens
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Did you found the message  " lfe filter activated (LR4 type)" in pulseaudio
+verbose log ?
