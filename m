@@ -1,19 +1,16 @@
-From: nick <xerofoify@gmail.com>
-Subject: Re: Possible Bug Found with Xonar Stx Driver
-Date: Fri, 10 Jul 2015 08:25:39 -0400
-Message-ID: <559FB9C3.2050108@gmail.com>
-References: <559EFC14.2090408@gmail.com> <559FB6F2.2000606@ladisch.de>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Running PJSIP for voip calls in alsa
+Date: Fri, 10 Jul 2015 12:33:50 +0000
+Message-ID: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id CF4E0260447
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:25:41 +0200 (CEST)
-Received: by iebmu5 with SMTP id mu5so194701295ieb.1
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 05:25:40 -0700 (PDT)
-In-Reply-To: <559FB6F2.2000606@ladisch.de>
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0117.outbound.protection.outlook.com [134.170.140.117])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1244126043C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:33:54 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, axboe@kernel.dk, alsa-devel@alsa-project.org, tytso@mit.edu, linux-kernel@vger.kernel.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Clemens,
 
 
-On 2015-07-10 08:13 AM, Clemens Ladisch wrote:
-> nick wrote:
->> After running the latest version of Linus's tree I am noticed way more buffering
-> 
-> What exactly do you mean with the word "buffering"?
-> 
->> when playing music with my Xonar STX card when building kernels then
->> under the Ubuntu kernel version of 3.19.16.
-> 
-> Sounds like a change in the disk access patterns.
-> 
-> The audio buffer size is chosen by the playing application (whatever it
-> is).
-> 
->> I have tried bisecting it between the releases of 3.18 and 4.0
->> and was unable to narrow it down to a buggy commit.
-> 
-> There was no relevant change in the sound driver.
-> 
-> 
-> Regards,
-> Clemens
-> 
-I was looking just to see if there was just a direct commit that caused this not in the sound 
-driver but overall. Seems this is most likely either disk access issues or locking issues with
-timeout related to refilling the audio buffer. In addition by buffering I mean the music halts
-for a minute then continues when compiling the kernel. Further more I am also noticed my builds
-are much fast upwards of 25% on the latest rc so a performance improvement in locking or better
-disk access improvement may be a likely culprit. Ccing Ted and Jen as they are maintainers of
-the file system I am using and Jen maintains the block layer.
-Cheers,
-Nick
+Could you please let me know whether the below issue is in PJSIP or alsa or driver or in the ti sdk8 BSP's (rootfs)
+
+1. We are running PJSIP for establishing VOIP calls on ti sdk 8 BSP's (linux kernel 3.14), we are seeing the below error messages in the PJSIP, Could you please let me know what could be issue ?
+
+08:32:42.082 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.083 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.086 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.088 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.088 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.091 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+08:32:42.112 Master/sound Underflow, buf_cnt=0, will generate 1 frame
+
+In failure call pjsip reports Master/sound Underflow continuously, At this point the control stays at pjsip and application will wait for it and all functionality in idle state at application and after this, no other feature will work until restart the application.
+
+The above problem observed with new rootfs (ti sdk 8) but when we tried with old rootfs (ti sdk 7) we are able to make calls with no problem. Few calls are long duration calls(33 and 55 minutes).
+
+With ti sdk 8 kernel, I tried replacing even the alsa libraries from ti sdk 7 rootfs to ti sdk 8 rootfs, but still the issue persists,
+
+/usr/lib/libasound.la
+
+/usr/lib/libasound.so
+
+/usr/lib/alsa-lib/smixer/smixer-ac97.la
+
+/usr/lib/alsa-lib/smixer/smixer-ac97.so
+
+/usr/lib/alsa-lib/smixer/smixer-hda.la
+
+/usr/lib/alsa-lib/smixer/smixer-hda.so
+
+/usr/lib/alsa-lib/smixer/smixer-sbase.la
+
+/usr/lib/alsa-lib/smixer/smixer-sbase.so
+
+Firstly could you please let me know why this issue is seen in ti sdk 8 BSP's (ie., in rootfs), & what could be the problem in ti sdk 8 rootfs ??
+Apart from the above is there any other ALSA related configuration files, needs to copied from the ti sdk 7 rootfs to ti sdk 8 rootfs, inorder to resolve this issue
+
+If possible, could you please validate this PJSIP version 2.3 on ti sdk 8 BSP's on your EVK kit & let me know whether this issue is reproducible
+
+Awaiting for your replies,
+Many Thanks in advance
