@@ -1,23 +1,23 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 10 Jul 2015 09:30:32 +0530
-Message-ID: <20150710040032.GW836@localhost>
+Date: Fri, 10 Jul 2015 09:33:24 +0530
+Message-ID: <20150710040324.GX836@localhost>
 References: <20150703143608.7afb34c985d82982e929484e@ao2.it>
  <20150703130658.GA1689228@phare.normalesup.org>
  <559A90CE.2030105@gmail.com> <20150707031950.GD11002@localhost>
  <559BDB7F.9010105@gmail.com> <20150707170821.GL11002@localhost>
  <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
  <20150708102308.91b7258f243e354b1365a47e@ao2.it>
- <559D88C1.3010504@bazdara.com>
+ <559D3411.6060306@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3475C2664B5
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 05:58:51 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 505262664B5
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 06:01:39 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <559D88C1.3010504@bazdara.com>
+In-Reply-To: <559D3411.6060306@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Luka Karinja <lk@bazdara.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, Antonio Ospite <ao2@ao2.it>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
+To: Tyler Yeomans <tyeo098@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 08, 2015 at 10:32:01PM +0200, Luka Karinja wrote:
-> Hello guys. I have been trying to get sound on my Asus T100TAF with rt5642.
-> I have been following your various threads but i'm not succesfull
-> with getting sound working.
-> Hoppfully you can give me a hand
+On Wed, Jul 08, 2015 at 10:30:41AM -0400, Tyler Yeomans wrote:
+> Vinod,
 > 
-> The changes i made to the kernel:
-> 
-> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-> index bb19b58..b45cf3e 100644
-> --- a/sound/soc/intel/atom/sst/sst_acpi.c
-> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-> @@ -118,7 +118,7 @@ static const struct sst_res_info byt_rvp_res_info = {
->  	.mbox_size = 0x1000,
->  	.acpi_lpe_res_index = 0,
->  	.acpi_ddr_index = 2,
-> -	.acpi_ipc_irq_index = 5,
-> +	.acpi_ipc_irq_index = 0,
-irq index in deafult shoudl work for t100, you should see interrupts
+> I have attached the dmesg that occurs after I play the sound test.
+> (dynamic debug and FE-BE was set via SSH terminal)
 
->  };
->  static struct sst_platform_info byt_rvp_platform_data = {
-> @@ -345,6 +345,8 @@ static int sst_acpi_remove(struct platform_device *pdev)
->  static struct sst_machines sst_acpi_bytcr[] = {
->  	{"10EC5640", "T100", "bytt100_rt5640", NULL, "intel/fw_sst_0f28.bin",
->  						&byt_rvp_platform_data },
-> +	{"10EC5642", "T100", "bytt100_rt5640", NULL, "intel/fw_sst_0f28_ssp0.bin",
-> +						&byt_rvp_platform_data },
-That wont work, I have verfied with T100, it is SSP2 based, so SSP0 will nto
-work here. I am trying to get this tested on latest driver and provide a
-working config. Will update shortly
+Thanks
+
+[63718.847709] sst-mfld-platform sst-mfld-platform: enable=1, usage=0
+[63718.847808] writing to lpe: 00000000: 01 01 01 01 00 00 08 00 ff ff ff ff
+55 00 00 00  ............U...
+[63719.798810] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+msg_id:0x1 fw_state 0x3
+
+This tells me initial command failed. Now there will be messages before this
+(when FW code is downloaded) can you send that as well
 
 -- 
 ~Vinod
