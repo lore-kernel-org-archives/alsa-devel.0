@@ -1,22 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC PATCH 3/4] ALSA: core: add report of max dma
-	burst
-Date: Fri, 10 Jul 2015 10:35:51 +0800
-Message-ID: <CAN8cciYf_oz+ozAesHu5j_V0=iDSuFrLM5E2i6f+CbaXqWX9uQ@mail.gmail.com>
-References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1436350236-17509-4-git-send-email-pierre-louis.bossart@linux.intel.com>
- <s5hio9uhg16.wl-tiwai@suse.de> <559D61EA.7030308@linux.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Intel Baytrail Linux Audio
+Date: Fri, 10 Jul 2015 09:30:32 +0530
+Message-ID: <20150710040032.GW836@localhost>
+References: <20150703143608.7afb34c985d82982e929484e@ao2.it>
+ <20150703130658.GA1689228@phare.normalesup.org>
+ <559A90CE.2030105@gmail.com> <20150707031950.GD11002@localhost>
+ <559BDB7F.9010105@gmail.com> <20150707170821.GL11002@localhost>
+ <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
+ <20150708102308.91b7258f243e354b1365a47e@ao2.it>
+ <559D88C1.3010504@bazdara.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
- [209.85.218.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 448862664B0
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 04:35:53 +0200 (CEST)
-Received: by oibp128 with SMTP id p128so41238939oib.3
- for <alsa-devel@alsa-project.org>; Thu, 09 Jul 2015 19:35:52 -0700 (PDT)
-In-Reply-To: <559D61EA.7030308@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3475C2664B5
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 05:58:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <559D88C1.3010504@bazdara.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +27,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Luka Karinja <lk@bazdara.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas George <george@nsup.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, Antonio Ospite <ao2@ao2.it>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>, Tyler Yeomans <tyeo098@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->
->
->>> FIXME:
->>> 1. this was copy/pasted/edited based on the fifo_size fields, not
->>> sure why we would need this IOCTL1
->>
->>
->> fifo_size would fit, but it means that it also changes the current
->> behavior.  I don't believe that currently there are many programs
->> relying on this value, but who knows.
->
->
-> I saw a mention of fifo_size in the VIA HDA controller, that's why I went
-ahead with a different field. The fifo_size could be useful as a max value
-for the internal hardware delay, when app use the 'delay' field in the
-status structure they get a very dynamic value that isn't necessarily
-straightforward to use.
->
->
->>
->>> 2. we also need the ability to set the actual fifo size, if suppported,
->>> by the hardware, to negociate the prefetch amount between application
->>> and driver. By default the default should be max buffering to allow
->>> for lower power, but for low-latency use cases we may want to reduce
->>> the amount of prefetching.
->>
->>
->> Right.  So a hw_parmas field looks suitable for that purpose.
->
->
-> That 'set' capability is a lot more complicated, I am really having a
-hard time with all the constraints for hw_params and how to represent
-min,max and step values... If anyone is willing to help on that part I
-wouldn't mind, this is really a part of ALSA I never looked into...
+On Wed, Jul 08, 2015 at 10:32:01PM +0200, Luka Karinja wrote:
+> Hello guys. I have been trying to get sound on my Asus T100TAF with rt5642.
+> I have been following your various threads but i'm not succesfull
+> with getting sound working.
+> Hoppfully you can give me a hand
+> 
+> The changes i made to the kernel:
+> 
+> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+> index bb19b58..b45cf3e 100644
+> --- a/sound/soc/intel/atom/sst/sst_acpi.c
+> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
+> @@ -118,7 +118,7 @@ static const struct sst_res_info byt_rvp_res_info = {
+>  	.mbox_size = 0x1000,
+>  	.acpi_lpe_res_index = 0,
+>  	.acpi_ddr_index = 2,
+> -	.acpi_ipc_irq_index = 5,
+> +	.acpi_ipc_irq_index = 0,
+irq index in deafult shoudl work for t100, you should see interrupts
 
-What is the usage of runtime->dma_bytes in
-snd_pcm_hw_constraints_complete() in core/pcm_native.c ?
+>  };
+>  static struct sst_platform_info byt_rvp_platform_data = {
+> @@ -345,6 +345,8 @@ static int sst_acpi_remove(struct platform_device *pdev)
+>  static struct sst_machines sst_acpi_bytcr[] = {
+>  	{"10EC5640", "T100", "bytt100_rt5640", NULL, "intel/fw_sst_0f28.bin",
+>  						&byt_rvp_platform_data },
+> +	{"10EC5642", "T100", "bytt100_rt5640", NULL, "intel/fw_sst_0f28_ssp0.bin",
+> +						&byt_rvp_platform_data },
+That wont work, I have verfied with T100, it is SSP2 based, so SSP0 will nto
+work here. I am trying to get this tested on latest driver and provide a
+working config. Will update shortly
 
-Was the usage similar to 128 bytes alignment ?
-
-/* FIXME: remove */
-if (runtime->dma_bytes) {
-err = snd_pcm_hw_constraint_minmax(runtime,
-SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
-if (err < 0)
-return err;
-}
+-- 
+~Vinod
