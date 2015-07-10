@@ -1,23 +1,24 @@
 From: Vinod Koul <vinod.koul@intel.com>
 Subject: Re: Intel Baytrail Linux Audio
-Date: Fri, 10 Jul 2015 09:33:24 +0530
-Message-ID: <20150710040324.GX836@localhost>
-References: <20150703143608.7afb34c985d82982e929484e@ao2.it>
- <20150703130658.GA1689228@phare.normalesup.org>
- <559A90CE.2030105@gmail.com> <20150707031950.GD11002@localhost>
- <559BDB7F.9010105@gmail.com> <20150707170821.GL11002@localhost>
+Date: Fri, 10 Jul 2015 09:36:23 +0530
+Message-ID: <20150710040623.GY836@localhost>
+References: <559BDB7F.9010105@gmail.com> <20150707170821.GL11002@localhost>
  <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
  <20150708102308.91b7258f243e354b1365a47e@ao2.it>
  <559D3411.6060306@gmail.com>
+ <20150708182132.db38656fb4ccc2e38e41aba0@ao2.it>
+ <559D5091.9020802@gmail.com>
+ <20150708221745.f72dcbec9c96eb86ce0cbfc2@ao2.it>
+ <559EC436.30900@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 505262664B5
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 06:01:39 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 294982664B5
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 06:04:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <559D3411.6060306@gmail.com>
+In-Reply-To: <559EC436.30900@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,22 +34,41 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite 
  Jarkko" <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 08, 2015 at 10:30:41AM -0400, Tyler Yeomans wrote:
-> Vinod,
+On Thu, Jul 09, 2015 at 02:57:58PM -0400, Tyler Yeomans wrote:
+> Antonio/Vinod,
 > 
-> I have attached the dmesg that occurs after I play the sound test.
-> (dynamic debug and FE-BE was set via SSH terminal)
+> I have made the change in the sst-acpi.c file for the atom specific boards.
+> I've attached the dmesg output here with dynamic debug enabled.
+> 
+> To clarify-
+> 
+> snd-intel-sst-core is loaded
+> FE-BE fix has been applied
+> I'm using the ssp0 firmware.
+> 
+> Interrupts are still 0
+> 
+> Still no sound.
+> 
+> Would leaving the device on and providing remote access (i.e though
+> teamviewer) assist in any way?
 
-Thanks
+The fw download seems to fail on your device, which can also be due to
+incorrect interrupt mapping...
 
-[63718.847709] sst-mfld-platform sst-mfld-platform: enable=1, usage=0
-[63718.847808] writing to lpe: 00000000: 01 01 01 01 00 00 08 00 ff ff ff ff
-55 00 00 00  ............U...
-[63719.798810] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+[   20.386850] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
 msg_id:0x1 fw_state 0x3
+[   20.386862] intel_sst_acpi 80860F28:00: fw returned err -16
+[   20.386873] sst-mfld-platform sst-mfld-platform: Enter: enable=1
+port_name=ssp2-port
+[   20.752559] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+msg_id:0x1 fw_state 0x3
+[   20.752570] intel_sst_acpi 80860F28:00: fw returned err -16
+[   21.163378] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+msg_id:0x0 fw_state 0x1
+[   21.163388] intel_sst_acpi 80860F28:00: fw download failed -16
 
-This tells me initial command failed. Now there will be messages before this
-(when FW code is downloaded) can you send that as well
+Can you tell me which device you have, what was preinstalled on it
 
 -- 
 ~Vinod
