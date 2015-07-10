@@ -1,16 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Possible Bug Found with Xonar Stx Driver
-Date: Fri, 10 Jul 2015 14:13:38 +0200
-Message-ID: <559FB6F2.2000606@ladisch.de>
-References: <559EFC14.2090408@gmail.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Cannot open shared
+	library	/usr/lib/alsa-lib/libasound_module_pcm_jack.so
+Date: Fri, 10 Jul 2015 12:15:15 +0000
+Message-ID: <SIXPR04MB25359BD822771FC347C8B18C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <SIXPR04MB25362E92C1A38365A48DF57C3900@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559F687D.3040305@ladisch.de>
+ <SIXPR04MB253428BCF6788F2160EC91DC39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559FB521.9010901@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EA9F4260499
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:13:41 +0200 (CEST)
-In-Reply-To: <559EFC14.2090408@gmail.com>
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sg2apc01on0122.outbound.protection.outlook.com [104.47.125.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71C8026043C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 14:15:18 +0200 (CEST)
+In-Reply-To: <559FB521.9010901@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,27 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: nick <xerofoify@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-nick wrote:
-> After running the latest version of Linus's tree I am noticed way more buffering
+am sorry Clemens will not top post once again
 
-What exactly do you mean with the word "buffering"?
+Thanks a lot for your support as am alone working in alsa in my team & newbie to it
 
-> when playing music with my Xonar STX card when building kernels then
-> under the Ubuntu kernel version of 3.19.16.
+Thanks,
+Srinivasan S
 
-Sounds like a change in the disk access patterns.
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Friday, July 10, 2015 5:35 PM
+To: Srinivasan S; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Cannot open shared library    /usr/lib/alsa-lib/libasound_module_pcm_jack.so
 
-The audio buffer size is chosen by the playing application (whatever it
-is).
+(please don't top-post)
 
-> I have tried bisecting it between the releases of 3.18 and 4.0
-> and was unable to narrow it down to a buggy commit.
+Srinivasan S wrote:
+>> Srinivasan S wrote:
+>>> ...
+>>> checking for pkg-config... /opt/ti-sdk-am335x-evm-07.00.00.00/linux-devkit/sysroots/i686-arago-linux/usr/bin//pkg-config
+>>> checking pkg-config is at least version 0.9.0... yes
+>>> checking for ALSA... no
+>>> configure: error: Package requirements (alsa >= 1.0.11) were not met:
+>>
+>> Well, did you cross-compile alsa-lib?
+>
+> I have never cross_compiled alsa-lib 1.0.27.2-r0 am using the alsa-lib version which is provided in ti sdk 8 BSP's
 
-There was no relevant change in the sound driver.
+That pkg-config does not know about "alsa".  Apparently, TI's SDK did
+not install alsa.pc together with the rest of alsa-lib.
+
+Report this bug to TI.
+
+As a workaround, try cross-compiling alsa-lib yourself.
 
 
 Regards,
