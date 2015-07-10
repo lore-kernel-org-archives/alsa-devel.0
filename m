@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: gen: add rsnd_force_write()" to
+Subject: Applied "regmap: add regmap_fields_force_write()" to
 	the asoc tree
-Date: Fri, 10 Jul 2015 11:39:58 +0100
-Message-ID: <E1ZDVio-0002Eo-TQ@debutante>
+Date: Fri, 10 Jul 2015 11:39:59 +0100
+Message-ID: <E1ZDVip-0002FH-Oh@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DC978260499
+ by alsa0.perex.cz (Postfix) with ESMTP id DF81F2604C3
  for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 12:40:08 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: gen: add rsnd_force_write()
+   regmap: add regmap_fields_force_write()
 
 has been applied to the asoc tree at
 
@@ -52,69 +52,57 @@ to this mail.
 Thanks,
 Mark
 
->From 7b47ab47b3938e2274834dbde7915df98fc74368 Mon Sep 17 00:00:00 2001
+>From e874e6c7edc43436f73cf84157d9221f8b807c36 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 16 Jun 2015 08:53:11 +0000
-Subject: [PATCH] ASoC: rsnd: gen: add rsnd_force_write()
+Date: Tue, 16 Jun 2015 08:52:55 +0000
+Subject: [PATCH] regmap: add regmap_fields_force_write()
 
-rsnd_force_write() is similar to rsnd_write(),
-but rsnd_force_write() write data to register even though
+regmap_fields_force_write() is similar to regmap_fields_write(),
+but regmap_fields_force_write() write data to register even though
 it is same value.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c  | 16 ++++++++++++++++
- sound/soc/sh/rcar/rsnd.h |  4 ++++
- 2 files changed, 20 insertions(+)
+ drivers/base/regmap/regmap.c | 12 ++++++++++++
+ include/linux/regmap.h       |  2 ++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 8c7dc51b1c4f..48f704b1d80e 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -103,6 +103,22 @@ void rsnd_write(struct rsnd_priv *priv,
- 	regmap_fields_write(gen->regs[reg], rsnd_mod_id(mod), data);
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index d93bb9a8ab98..dd63bcbbf8a5 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1624,6 +1624,18 @@ int regmap_fields_write(struct regmap_field *field, unsigned int id,
  }
+ EXPORT_SYMBOL_GPL(regmap_fields_write);
  
-+void rsnd_force_write(struct rsnd_priv *priv,
-+		      struct rsnd_mod *mod,
-+		      enum rsnd_reg reg, u32 data)
++int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
++			unsigned int val)
 +{
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct rsnd_gen *gen = rsnd_priv_to_gen(priv);
++	if (id >= field->id_size)
++		return -EINVAL;
 +
-+	if (!rsnd_is_accessible_reg(priv, gen, reg))
-+		return;
-+
-+	dev_dbg(dev, "w %s[%d] - %4d : %08x\n",
-+		rsnd_mod_name(mod), rsnd_mod_id(mod), reg, data);
-+
-+	regmap_fields_force_write(gen->regs[reg], rsnd_mod_id(mod), data);
++	return regmap_write_bits(field->regmap,
++				  field->reg + (field->id_offset * id),
++				  field->mask, val << field->shift);
 +}
++EXPORT_SYMBOL_GPL(regmap_fields_force_write);
 +
- void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
- 	       enum rsnd_reg reg, u32 mask, u32 data)
- {
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 09fcc54a8ee0..f729646e3d18 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -157,12 +157,16 @@ struct rsnd_dai_stream;
- 	rsnd_read(rsnd_mod_to_priv(m), m, RSND_REG_##r)
- #define rsnd_mod_write(m, r, d) \
- 	rsnd_write(rsnd_mod_to_priv(m), m, RSND_REG_##r, d)
-+#define rsnd_mod_force_write(m, r, d) \
-+	rsnd_force_write(rsnd_mod_to_priv(m), m, RSND_REG_##r, d)
- #define rsnd_mod_bset(m, r, s, d) \
- 	rsnd_bset(rsnd_mod_to_priv(m), m, RSND_REG_##r, s, d)
+ /**
+  * regmap_fields_update_bits():	Perform a read/modify/write cycle
+  *                              on the register field
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index e4b9ad4f05ef..519c96231a91 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -505,6 +505,8 @@ int regmap_field_update_bits(struct regmap_field *field,
  
- u32 rsnd_read(struct rsnd_priv *priv, struct rsnd_mod *mod, enum rsnd_reg reg);
- void rsnd_write(struct rsnd_priv *priv, struct rsnd_mod *mod,
- 		enum rsnd_reg reg, u32 data);
-+void rsnd_force_write(struct rsnd_priv *priv, struct rsnd_mod *mod,
-+		enum rsnd_reg reg, u32 data);
- void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod, enum rsnd_reg reg,
- 		    u32 mask, u32 data);
- u32 rsnd_get_adinr(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
+ int regmap_fields_write(struct regmap_field *field, unsigned int id,
+ 			unsigned int val);
++int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
++			unsigned int val);
+ int regmap_fields_read(struct regmap_field *field, unsigned int id,
+ 		       unsigned int *val);
+ int regmap_fields_update_bits(struct regmap_field *field,  unsigned int id,
 -- 
 2.1.4
