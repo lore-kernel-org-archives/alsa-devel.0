@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/7] ASoC: Intel: Skylake: Process code loader
-	DMA interrupt
-Date: Fri, 10 Jul 2015 22:18:43 +0530
-Message-ID: <1436546926-17263-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/7] ASoC: Intel: Skylake: Add SKL DSP
+	initialization
+Date: Fri, 10 Jul 2015 22:18:44 +0530
+Message-ID: <1436546926-17263-7-git-send-email-vinod.koul@intel.com>
 References: <1436546926-17263-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id AE9F726664F
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 18:47:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4252C266659
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 18:47:14 +0200 (CEST)
 In-Reply-To: <1436546926-17263-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,50 +22,382 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-The code loader DMA interrupt is received by main interrupt handler which
-dispatches it to cldma routines
+This adds the dsp and ipc initialization for the Skylake platform.
+It also requests firmware and uses code loader dma to load it.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 5 +++++
- sound/soc/intel/skylake/skl-sst-ipc.c | 3 +++
- 2 files changed, 8 insertions(+)
+ sound/soc/intel/skylake/Makefile      |   3 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h |  11 ++
+ sound/soc/intel/skylake/skl-sst-ipc.c |   2 +
+ sound/soc/intel/skylake/skl-sst.c     | 280 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 295 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-sst.c
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 313ca7c6ca7f..94875b008b0b 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -267,6 +267,11 @@ irqreturn_t skl_dsp_sst_interrupt(int irq, void *dev_id)
- 		result = IRQ_WAKE_THREAD;
- 	}
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index eff3e1758b89..1fccb378e62c 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -3,6 +3,7 @@ snd-soc-skl-objs := skl.o skl-pcm.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
  
-+	if (val & SKL_ADSPIS_CL_DMA) {
-+		skl_cldma_int_disable(ctx);
-+		result = IRQ_WAKE_THREAD;
-+	}
+ # Skylake IPC Support
+-snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o skl-sst-cldma.o
++snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o skl-sst-cldma.o \
++		skl-sst.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index e8ce1364bf7b..6bfcef449bdc 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -16,10 +16,12 @@
+ #ifndef __SKL_SST_DSP_H__
+ #define __SKL_SST_DSP_H__
+ 
++#include <linux/interrupt.h>
+ #include <sound/memalloc.h>
+ #include "skl-sst-cldma.h"
+ 
+ struct sst_dsp;
++struct skl_sst;
+ struct sst_dsp_device;
+ 
+ /* Intel HD Audio General DSP Registers */
+@@ -62,6 +64,11 @@ struct sst_dsp_device;
+ 
+ #define SKL_ADSP_W1_SZ			0x1000
+ 
++#define SKL_FW_STS_MASK			0xf
 +
- 	spin_unlock(&ctx->spinlock);
++#define SKL_FW_INIT			0x1
++#define SKL_FW_RFW_START		0xf
++
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
  
- 	return result;
+@@ -106,6 +113,7 @@ struct skl_dsp_fw_ops {
+ 	int (*parse_fw)(struct sst_dsp *ctx);
+ 	int (*set_state_D0)(struct sst_dsp *ctx);
+ 	int (*set_state_D3)(struct sst_dsp *ctx);
++	unsigned int (*get_fw_errcode)(struct sst_dsp *ctx);
+ };
+ 
+ struct skl_dsp_loader_ops {
+@@ -130,5 +138,8 @@ int skl_dsp_sleep(struct sst_dsp *ctx);
+ void skl_dsp_free(struct sst_dsp *dsp);
+ 
+ int skl_dsp_boot(struct sst_dsp *ctx);
++int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
++		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp);
++void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
+ 
+ #endif /*__SKL_SST_DSP_H__*/
 diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 94be6cbf2698..bd5ac4165151 100644
+index bd5ac4165151..c0d092861337 100644
 --- a/sound/soc/intel/skylake/skl-sst-ipc.c
 +++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -375,6 +375,9 @@ irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
- 	u32 hipcie, hipct, hipcte;
- 	int ipc_irq = 0;
- 
-+	if (dsp->intr_status & SKL_ADSPIS_CL_DMA)
-+		skl_cldma_process_intr(dsp);
+@@ -496,6 +496,8 @@ void skl_ipc_free(struct sst_generic_ipc *ipc)
+ 	/* Disable IPC BUSY interrupt */
+ 	sst_dsp_shim_update_bits(ipc->dsp, SKL_ADSP_REG_HIPCCTL,
+ 		SKL_ADSP_REG_HIPCCTL_BUSY, 0);
 +
- 	/* Here we handle IPC interrupts only */
- 	if (!(dsp->intr_status & SKL_ADSPIS_IPC))
- 		return IRQ_NONE;
++	sst_ipc_fini(ipc);
+ }
+ 
+ int skl_ipc_create_pipeline(struct sst_generic_ipc *ipc,
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+new file mode 100644
+index 000000000000..c18ea51b7484
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -0,0 +1,280 @@
++/*
++ * skl-sst.c - HDA DSP library functions for SKL platform
++ *
++ * Copyright (C) 2014-15, Intel Corporation.
++ * Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *	Jeeja KP <jeeja.kp@intel.com>
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include "../common/sst-dsp.h"
++#include "../common/sst-dsp-priv.h"
++#include "../common/sst-ipc.h"
++#include "skl-sst-ipc.h"
++
++#define SKL_BASEFW_TIMEOUT	300
++#define SKL_INIT_TIMEOUT	1000
++
++/* Intel HD Audio SRAM Window 0*/
++#define SKL_ADSP_SRAM0_BASE	0x8000
++
++/* Firmware status window */
++#define SKL_ADSP_FW_STATUS	SKL_ADSP_SRAM0_BASE
++#define SKL_ADSP_ERROR_CODE	(SKL_ADSP_FW_STATUS + 0x4)
++
++#define SKL_INSTANCE_ID		0
++#define SKL_BASE_FW_MODULE_ID	0
++
++static bool skl_check_fw_status(struct sst_dsp *ctx, u32 status)
++{
++	u32 cur_sts;
++
++	cur_sts = sst_dsp_shim_read(ctx, SKL_ADSP_FW_STATUS) & SKL_FW_STS_MASK;
++
++	return (cur_sts == status);
++}
++
++static int skl_transfer_firmware(struct sst_dsp *ctx,
++		const void *basefw, u32 base_fw_size)
++{
++	int ret = 0;
++
++	ret = ctx->cl_dev.ops.cl_copy_to_dmabuf(ctx, basefw, base_fw_size);
++	if (ret < 0)
++		return ret;
++
++	ret = sst_dsp_register_poll(ctx,
++			SKL_ADSP_FW_STATUS,
++			SKL_FW_STS_MASK,
++			SKL_FW_RFW_START,
++			SKL_BASEFW_TIMEOUT,
++			"Firmware boot");
++
++	ctx->cl_dev.ops.cl_stop_dma(ctx);
++
++	return ret;
++}
++
++static int skl_load_base_firmware(struct sst_dsp *ctx)
++{
++	int ret = 0, i;
++	const struct firmware *fw = NULL;
++	struct skl_sst *skl = ctx->thread_context;
++	u32 reg;
++
++	ret = request_firmware(&fw, "dsp_fw_release.bin", ctx->dev);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Request firmware failed %d\n", ret);
++		skl_dsp_disable_core(ctx);
++		return -EIO;
++	}
++
++	/* enable Interrupt */
++	skl_ipc_int_enable(ctx);
++	skl_ipc_op_int_enable(ctx);
++
++	/* check ROM Status */
++	for (i = SKL_INIT_TIMEOUT; i > 0; --i) {
++		if (skl_check_fw_status(ctx, SKL_FW_INIT)) {
++			dev_dbg(ctx->dev,
++				"ROM loaded, we can continue with FW loading\n");
++			break;
++		}
++		mdelay(1);
++	}
++	if (!i) {
++		reg = sst_dsp_shim_read(ctx, SKL_ADSP_FW_STATUS);
++		dev_err(ctx->dev,
++			"Timeout waiting for ROM init done, reg:0x%x\n", reg);
++		ret = -EIO;
++		goto skl_load_base_firmware_failed;
++	}
++
++	ret = skl_transfer_firmware(ctx, fw->data, fw->size);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Transfer firmware failed%d\n", ret);
++		goto skl_load_base_firmware_failed;
++	} else {
++		ret = wait_event_timeout(skl->boot_wait, skl->boot_complete,
++					msecs_to_jiffies(SKL_IPC_BOOT_MSECS));
++		if (ret == 0) {
++			dev_err(ctx->dev, "DSP boot failed, FW Ready timed-out\n");
++			ret = -EIO;
++			goto skl_load_base_firmware_failed;
++		}
++
++		dev_dbg(ctx->dev, "Download firmware successful%d\n", ret);
++		skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
++	}
++	release_firmware(fw);
++
++	return 0;
++
++skl_load_base_firmware_failed:
++	skl_dsp_disable_core(ctx);
++	release_firmware(fw);
++	return ret;
++}
++
++static int skl_set_dsp_D0(struct sst_dsp *ctx)
++{
++	int ret;
++
++	ret = skl_load_base_firmware(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "unable to load firmware\n");
++		return ret;
++	}
++
++	skl_dsp_set_state_locked(ctx, SKL_DSP_RUNNING);
++
++	return ret;
++}
++
++static int skl_set_dsp_D3(struct sst_dsp *ctx)
++{
++	int ret;
++	struct skl_ipc_dxstate_info dx;
++	struct skl_sst *skl = ctx->thread_context;
++
++	dev_dbg(ctx->dev, "In %s:\n", __func__);
++	mutex_lock(&ctx->mutex);
++	if (!is_skl_dsp_running(ctx)) {
++		mutex_unlock(&ctx->mutex);
++		return 0;
++	}
++	mutex_unlock(&ctx->mutex);
++
++	dx.core_mask = SKL_DSP_CORE0_MASK;
++	dx.dx_mask = SKL_IPC_D3_MASK;
++	ret = skl_ipc_set_dx(&skl->ipc, SKL_INSTANCE_ID, SKL_BASE_FW_MODULE_ID, &dx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to set DSP to D3 state\n");
++		return ret;
++	}
++
++	ret = skl_dsp_disable_core(ctx);
++	if (ret < 0) {
++		dev_err(ctx->dev, "disable dsp core failed ret: %d\n", ret);
++		ret = -EIO;
++	}
++	skl_dsp_set_state_locked(ctx, SKL_DSP_RESET);
++
++	return ret;
++}
++
++static unsigned int skl_get_errorcode(struct sst_dsp *ctx)
++{
++	 return sst_dsp_shim_read(ctx, SKL_ADSP_ERROR_CODE);
++}
++
++static struct skl_dsp_fw_ops skl_fw_ops = {
++	.set_state_D0 = skl_set_dsp_D0,
++	.set_state_D3 = skl_set_dsp_D3,
++	.load_fw = skl_load_base_firmware,
++	.get_fw_errcode = skl_get_errorcode,
++};
++
++static struct sst_ops skl_ops = {
++	.irq_handler = skl_dsp_sst_interrupt,
++	.write = sst_shim32_write,
++	.read = sst_shim32_read,
++	.ram_read = sst_memcpy_fromio_32,
++	.ram_write = sst_memcpy_toio_32,
++	.free = skl_dsp_free,
++};
++
++static struct sst_dsp_device skl_dev = {
++	.thread = skl_dsp_irq_thread_handler,
++	.ops = &skl_ops,
++};
++
++int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
++		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp)
++{
++	struct skl_sst *skl;
++	struct sst_dsp *sst;
++	int ret;
++
++	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
++	if (skl == NULL)
++		return -ENOMEM;
++
++	skl->dev = dev;
++	skl_dev.thread_context = skl;
++
++	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
++	if (!skl->dsp) {
++		dev_err(skl->dev, "%s: no device\n", __func__);
++		return -ENODEV;
++	}
++
++	sst = skl->dsp;
++
++	sst->addr.lpe = mmio_base;
++	sst->addr.shim = mmio_base;
++	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
++			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
++
++	sst->dsp_ops = dsp_ops;
++	sst->fw_ops = skl_fw_ops;
++
++	ret = skl_ipc_init(dev, skl);
++	if (ret)
++		return ret;
++
++	skl->boot_complete = false;
++	init_waitqueue_head(&skl->boot_wait);
++
++	ret = skl_dsp_boot(sst);
++	if (ret < 0) {
++		dev_err(skl->dev, "Boot dsp core failed ret: %d", ret);
++		goto free_ipc;
++	}
++
++	ret = skl_cldma_prepare(sst);
++	if (ret < 0) {
++		dev_err(dev, "CL dma prepare failed : %d", ret);
++		goto free_ipc;
++	}
++
++
++	ret = sst->fw_ops.load_fw(sst);
++	if (ret < 0) {
++		dev_err(dev, "Load base fw failed : %d", ret);
++		return ret;
++	}
++
++	if (dsp)
++		*dsp = skl;
++
++	return 0;
++
++free_ipc:
++	skl_ipc_free(&skl->ipc);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
++
++void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
++{
++	skl_ipc_free(&ctx->ipc);
++	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
++	ctx->dsp->ops->free(ctx->dsp);
++}
++EXPORT_SYMBOL_GPL(skl_sst_dsp_cleanup);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Skylake IPC driver");
 -- 
 1.9.1
