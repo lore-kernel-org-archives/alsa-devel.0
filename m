@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: add regmap_fields_force_write()" to
-	the asoc tree
-Date: Fri, 10 Jul 2015 11:39:59 +0100
-Message-ID: <E1ZDVip-0002FH-Oh@debutante>
+Subject: Applied "regmap: add force_write option on
+	_regmap_update_bits()" to the asoc tree
+Date: Fri, 10 Jul 2015 11:40:02 +0100
+Message-ID: <E1ZDVis-0002GL-5z@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF81F2604C3
+ by alsa0.perex.cz (Postfix) with ESMTP id E129D2604E5
  for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 12:40:08 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regmap: add regmap_fields_force_write()
+   regmap: add force_write option on _regmap_update_bits()
 
 has been applied to the asoc tree at
 
@@ -52,57 +52,95 @@ to this mail.
 Thanks,
 Mark
 
->From e874e6c7edc43436f73cf84157d9221f8b807c36 Mon Sep 17 00:00:00 2001
+>From 7ff0589c7bff4ca31b255ac2028f633f14047762 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 16 Jun 2015 08:52:55 +0000
-Subject: [PATCH] regmap: add regmap_fields_force_write()
+Date: Tue, 16 Jun 2015 08:52:22 +0000
+Subject: [PATCH] regmap: add force_write option on _regmap_update_bits()
 
-regmap_fields_force_write() is similar to regmap_fields_write(),
-but regmap_fields_force_write() write data to register even though
-it is same value.
+Sometimes we want to write data even though it doesn't change value.
+Then, force_write option on _regmap_update_bits() helps this purpose.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 12 ++++++++++++
- include/linux/regmap.h       |  2 ++
- 2 files changed, 14 insertions(+)
+ drivers/base/regmap/regmap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index d93bb9a8ab98..dd63bcbbf8a5 100644
+index 7111d04f2621..69ec411ce722 100644
 --- a/drivers/base/regmap/regmap.c
 +++ b/drivers/base/regmap/regmap.c
-@@ -1624,6 +1624,18 @@ int regmap_fields_write(struct regmap_field *field, unsigned int id,
+@@ -34,7 +34,7 @@
+ 
+ static int _regmap_update_bits(struct regmap *map, unsigned int reg,
+ 			       unsigned int mask, unsigned int val,
+-			       bool *change);
++			       bool *change, bool force_write);
+ 
+ static int _regmap_bus_reg_read(void *context, unsigned int reg,
+ 				unsigned int *val);
+@@ -1178,7 +1178,7 @@ static int _regmap_select_page(struct regmap *map, unsigned int *reg,
+ 		ret = _regmap_update_bits(map, range->selector_reg,
+ 					  range->selector_mask,
+ 					  win_page << range->selector_shift,
+-					  &page_chg);
++					  &page_chg, false);
+ 
+ 		map->work_buf = orig_work_buf;
+ 
+@@ -2327,7 +2327,7 @@ EXPORT_SYMBOL_GPL(regmap_bulk_read);
+ 
+ static int _regmap_update_bits(struct regmap *map, unsigned int reg,
+ 			       unsigned int mask, unsigned int val,
+-			       bool *change)
++			       bool *change, bool force_write)
+ {
+ 	int ret;
+ 	unsigned int tmp, orig;
+@@ -2339,7 +2339,7 @@ static int _regmap_update_bits(struct regmap *map, unsigned int reg,
+ 	tmp = orig & ~mask;
+ 	tmp |= val & mask;
+ 
+-	if (tmp != orig) {
++	if (force_write || (tmp != orig)) {
+ 		ret = _regmap_write(map, reg, tmp);
+ 		if (change)
+ 			*change = true;
+@@ -2367,7 +2367,7 @@ int regmap_update_bits(struct regmap *map, unsigned int reg,
+ 	int ret;
+ 
+ 	map->lock(map->lock_arg);
+-	ret = _regmap_update_bits(map, reg, mask, val, NULL);
++	ret = _regmap_update_bits(map, reg, mask, val, NULL, false);
+ 	map->unlock(map->lock_arg);
+ 
+ 	return ret;
+@@ -2398,7 +2398,7 @@ int regmap_update_bits_async(struct regmap *map, unsigned int reg,
+ 
+ 	map->async = true;
+ 
+-	ret = _regmap_update_bits(map, reg, mask, val, NULL);
++	ret = _regmap_update_bits(map, reg, mask, val, NULL, false);
+ 
+ 	map->async = false;
+ 
+@@ -2427,7 +2427,7 @@ int regmap_update_bits_check(struct regmap *map, unsigned int reg,
+ 	int ret;
+ 
+ 	map->lock(map->lock_arg);
+-	ret = _regmap_update_bits(map, reg, mask, val, change);
++	ret = _regmap_update_bits(map, reg, mask, val, change, false);
+ 	map->unlock(map->lock_arg);
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(regmap_fields_write);
+@@ -2460,7 +2460,7 @@ int regmap_update_bits_check_async(struct regmap *map, unsigned int reg,
  
-+int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
-+			unsigned int val)
-+{
-+	if (id >= field->id_size)
-+		return -EINVAL;
-+
-+	return regmap_write_bits(field->regmap,
-+				  field->reg + (field->id_offset * id),
-+				  field->mask, val << field->shift);
-+}
-+EXPORT_SYMBOL_GPL(regmap_fields_force_write);
-+
- /**
-  * regmap_fields_update_bits():	Perform a read/modify/write cycle
-  *                              on the register field
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index e4b9ad4f05ef..519c96231a91 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -505,6 +505,8 @@ int regmap_field_update_bits(struct regmap_field *field,
+ 	map->async = true;
  
- int regmap_fields_write(struct regmap_field *field, unsigned int id,
- 			unsigned int val);
-+int regmap_fields_force_write(struct regmap_field *field, unsigned int id,
-+			unsigned int val);
- int regmap_fields_read(struct regmap_field *field, unsigned int id,
- 		       unsigned int *val);
- int regmap_fields_update_bits(struct regmap_field *field,  unsigned int id,
+-	ret = _regmap_update_bits(map, reg, mask, val, change);
++	ret = _regmap_update_bits(map, reg, mask, val, change, false);
+ 
+ 	map->async = false;
+ 
 -- 
 2.1.4
