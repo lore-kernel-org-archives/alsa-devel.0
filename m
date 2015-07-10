@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 3/9] ASoC: sti: Add CPU DAI driver for
-	playback
-Date: Fri, 10 Jul 2015 18:00:46 +0100
-Message-ID: <20150710170046.GU11162@sirena.org.uk>
-References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
- <1434983473-25092-4-git-send-email-arnaud.pouliquen@st.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC PATCH 3/4] ALSA: core: add report of max dma
+ burst
+Date: Fri, 10 Jul 2015 19:13:45 +0200
+Message-ID: <559FFD49.6090104@metafoo.de>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <s5hio9uhg16.wl-tiwai@suse.de> <559D61EA.7030308@linux.intel.com>
+ <CAN8cciYf_oz+ozAesHu5j_V0=iDSuFrLM5E2i6f+CbaXqWX9uQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0552153752533245655=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B458266606
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 19:00:55 +0200 (CEST)
-In-Reply-To: <1434983473-25092-4-git-send-email-arnaud.pouliquen@st.com>
+Received: from smtp-out-145.synserver.de (smtp-out-145.synserver.de
+ [212.40.185.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53376266606
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 19:13:50 +0200 (CEST)
+In-Reply-To: <CAN8cciYf_oz+ozAesHu5j_V0=iDSuFrLM5E2i6f+CbaXqWX9uQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, kernel@stlinux.com
+To: Raymond Yau <superquad.vortex2@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/10/2015 04:35 AM, Raymond Yau wrote:
+[...]
+> What is the usage of runtime->dma_bytes in
+> snd_pcm_hw_constraints_complete() in core/pcm_native.c ?
+>
+> Was the usage similar to 128 bytes alignment ?
+>
+> /* FIXME: remove */
+> if (runtime->dma_bytes) {
+> err = snd_pcm_hw_constraint_minmax(runtime,
+> SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 0, runtime->dma_bytes);
+> if (err < 0)
+> return err;
+> }
 
---===============0552153752533245655==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YW2MF9I5J49Ey/EG"
-Content-Disposition: inline
+The FIXME is probably correct. dma_bytes should always be 0 at that point. 
+This is a freshly allocated runtime struct and dma_bytes only gets set once 
+a buffer is allocated, which is done later on.
 
-
---YW2MF9I5J49Ey/EG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 22, 2015 at 04:31:07PM +0200, Arnaud Pouliquen wrote:
-
-> +	if (clk_id != 0)
-> +		return -EINVAL;
-> +
-> +	player->mclk = freq;
-> +
-> +	return clk_set_rate(player->clk, freq);
-
-You should really only set the mclk after clk_set_rate() succeeds but
-practically it probably doesn't matter.
-
-> +	case SND_SOC_DAIFMT_IB_NF:
-> +		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
-> +		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
-> +		break;
-> +	case SND_SOC_DAIFMT_IB_IF:
-> +		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
-> +		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
-> +	}
-
-Missing break in that last case.
-
-> +	player->clk = of_clk_get(pdev->dev.of_node, 0);
-> +	if (IS_ERR(player->clk))
-> +		ret = (int)PTR_ERR(player->clk);
-
-You shouldn't need the cast here.
-
---YW2MF9I5J49Ey/EG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVn/o9AAoJECTWi3JdVIfQKs8H/RO92w+pOrOm7gmpykwcw1tw
-Np4TulcZ74XwWWGBStric5JXlNyBJTDbZ4Drv4TxsG1YJ1h5Zb52NoeLwDDT9NhF
-hPuj7TctOBiXyVFXMYeO5SfsTxap0menGwiLOKBmhpZLIOfd/U+WwARFsDA5Ubtw
-8e+s1ickP53gD9iOzaA9R5A4j7Jd5hg661QCMenyLem8kRgfrw2yImHUuzECXUnI
-PdgvMcgJEFPwZc1vuGWvJEKcH31EvevnAqFYbyuA6jGMe85tU6eK/zuNtDwBHWia
-cxSykYbryxpQMkcIqi8eKEpYLYhuf3cdg3C3P2vkp3NEcI+icsGFnhXDim65Hqg=
-=2Toy
------END PGP SIGNATURE-----
-
---YW2MF9I5J49Ey/EG--
-
---===============0552153752533245655==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0552153752533245655==--
+- Lars
