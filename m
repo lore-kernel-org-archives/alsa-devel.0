@@ -1,17 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 01/37] ALSA: firewire-lib: rename 'amdtp'
-	to 'amdtp-stream' for functional separation
-Date: Sat, 11 Jul 2015 23:12:12 +0900
-Message-ID: <1436623968-10780-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [asoc:topic/sti-sas 1/1]
+ sound/soc/codecs/sti-sas.c:227:2: error: implicit declaration of function
+ 'devm_reset_control_get'
+Date: Sat, 11 Jul 2015 22:12:26 +0800
+Message-ID: <201507112225.eZQD4Qiq%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 8201026054D
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:02 +0200 (CEST)
-In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0E422605C2
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:46 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,2936 +20,3917 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit is a preparation for splitting to transmission layer and
-packetizatin layer.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/sti-sas
+head:   32a726b2e089ec1851965290a610c4ae9cab3303
+commit: 32a726b2e089ec1851965290a610c4ae9cab3303 [1/1] ASoC: sti-sas: Add sti platform codec
+config: i386-randconfig-x0-07112203 (attached as .config)
+reproduce:
+  git checkout 32a726b2e089ec1851965290a610c4ae9cab3303
+  # save the attached .config to linux build tree
+  make ARCH=i386 
+
+All error/warnings (new ones prefixed by >>):
+
+   sound/soc/codecs/sti-sas.c: In function 'stih416_dac_probe':
+>> sound/soc/codecs/sti-sas.c:227:2: error: implicit declaration of function 'devm_reset_control_get' [-Werror=implicit-function-declaration]
+     dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+     ^
+>> sound/soc/codecs/sti-sas.c:227:11: warning: assignment makes pointer from integer without a cast
+     dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+              ^
+   cc1: some warnings being treated as errors
+
+vim +/devm_reset_control_get +227 sound/soc/codecs/sti-sas.c
+
+   221	{
+   222		struct snd_soc_codec *codec = dai->codec;
+   223		struct sti_sas_data *drvdata = dev_get_drvdata(codec->dev);
+   224		struct sti_dac_audio *dac = &drvdata->dac;
+   225	
+   226		/* Get reset control */
+ > 227		dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
+   228		if (IS_ERR(dac->rst)) {
+   229			dev_err(dai->codec->dev,
+   230				"%s: ERROR: DAC reset control not defined (%d)!\n",
+
 ---
- sound/firewire/Makefile              |    2 +-
- sound/firewire/amdtp-stream.c        | 1107 ++++++++++++++++++++++++++++++++++
- sound/firewire/amdtp-stream.h        |  296 +++++++++
- sound/firewire/amdtp.c               | 1107 ----------------------------------
- sound/firewire/amdtp.h               |  296 ---------
- sound/firewire/bebob/bebob.h         |    2 +-
- sound/firewire/dice/dice.h           |    2 +-
- sound/firewire/fcp.c                 |    2 +-
- sound/firewire/fireworks/fireworks.h |    2 +-
- sound/firewire/oxfw/oxfw.h           |    2 +-
- 10 files changed, 1409 insertions(+), 1409 deletions(-)
- create mode 100644 sound/firewire/amdtp-stream.c
- create mode 100644 sound/firewire/amdtp-stream.h
- delete mode 100644 sound/firewire/amdtp.c
- delete mode 100644 sound/firewire/amdtp.h
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 8b37f08..102e342 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -1,5 +1,5 @@
- snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
--			 fcp.o cmp.o amdtp.o
-+			 fcp.o cmp.o amdtp-stream.o
- snd-oxfw-objs := oxfw.o
- snd-isight-objs := isight.o
- snd-scs1x-objs := scs1x.o
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-new file mode 100644
-index 0000000..9965984
---- /dev/null
-+++ b/sound/firewire/amdtp-stream.c
-@@ -0,0 +1,1107 @@
-+/*
-+ * Audio and Music Data Transmission Protocol (IEC 61883-6) streams
-+ * with Common Isochronous Packet (IEC 61883-1) headers
-+ *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/firewire.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/sched.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/rawmidi.h>
-+#include "amdtp-stream.h"
-+
-+#define TICKS_PER_CYCLE		3072
-+#define CYCLES_PER_SECOND	8000
-+#define TICKS_PER_SECOND	(TICKS_PER_CYCLE * CYCLES_PER_SECOND)
-+
-+/*
-+ * Nominally 3125 bytes/second, but the MIDI port's clock might be
-+ * 1% too slow, and the bus clock 100 ppm too fast.
-+ */
-+#define MIDI_BYTES_PER_SECOND	3093
-+
-+/*
-+ * Several devices look only at the first eight data blocks.
-+ * In any case, this is more than enough for the MIDI data rate.
-+ */
-+#define MAX_MIDI_RX_BLOCKS	8
-+
-+#define TRANSFER_DELAY_TICKS	0x2e00 /* 479.17 microseconds */
-+
-+/* isochronous header parameters */
-+#define ISO_DATA_LENGTH_SHIFT	16
-+#define TAG_CIP			1
-+
-+/* common isochronous packet header parameters */
-+#define CIP_EOH_SHIFT		31
-+#define CIP_EOH			(1u << CIP_EOH_SHIFT)
-+#define CIP_EOH_MASK		0x80000000
-+#define CIP_SID_SHIFT		24
-+#define CIP_SID_MASK		0x3f000000
-+#define CIP_DBS_MASK		0x00ff0000
-+#define CIP_DBS_SHIFT		16
-+#define CIP_DBC_MASK		0x000000ff
-+#define CIP_FMT_SHIFT		24
-+#define CIP_FMT_MASK		0x3f000000
-+#define CIP_FDF_MASK		0x00ff0000
-+#define CIP_FDF_SHIFT		16
-+#define CIP_SYT_MASK		0x0000ffff
-+#define CIP_SYT_NO_INFO		0xffff
-+
-+/*
-+ * Audio and Music transfer protocol specific parameters
-+ * only "Clock-based rate control mode" is supported
-+ */
-+#define CIP_FMT_AM		(0x10 << CIP_FMT_SHIFT)
-+#define AMDTP_FDF_AM824		(0 << (CIP_FDF_SHIFT + 3))
-+#define AMDTP_FDF_NO_DATA	0xff
-+
-+/* TODO: make these configurable */
-+#define INTERRUPT_INTERVAL	16
-+#define QUEUE_LENGTH		48
-+
-+#define IN_PACKET_HEADER_SIZE	4
-+#define OUT_PACKET_HEADER_SIZE	0
-+
-+static void pcm_period_tasklet(unsigned long data);
-+
-+/**
-+ * amdtp_stream_init - initialize an AMDTP stream structure
-+ * @s: the AMDTP stream to initialize
-+ * @unit: the target of the stream
-+ * @dir: the direction of stream
-+ * @flags: the packet transmission method to use
-+ */
-+int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir, enum cip_flags flags)
-+{
-+	s->unit = unit;
-+	s->direction = dir;
-+	s->flags = flags;
-+	s->context = ERR_PTR(-1);
-+	mutex_init(&s->mutex);
-+	tasklet_init(&s->period_tasklet, pcm_period_tasklet, (unsigned long)s);
-+	s->packet_index = 0;
-+
-+	init_waitqueue_head(&s->callback_wait);
-+	s->callbacked = false;
-+	s->sync_slave = NULL;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(amdtp_stream_init);
-+
-+/**
-+ * amdtp_stream_destroy - free stream resources
-+ * @s: the AMDTP stream to destroy
-+ */
-+void amdtp_stream_destroy(struct amdtp_stream *s)
-+{
-+	WARN_ON(amdtp_stream_running(s));
-+	mutex_destroy(&s->mutex);
-+}
-+EXPORT_SYMBOL(amdtp_stream_destroy);
-+
-+const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
-+	[CIP_SFC_32000]  =  8,
-+	[CIP_SFC_44100]  =  8,
-+	[CIP_SFC_48000]  =  8,
-+	[CIP_SFC_88200]  = 16,
-+	[CIP_SFC_96000]  = 16,
-+	[CIP_SFC_176400] = 32,
-+	[CIP_SFC_192000] = 32,
-+};
-+EXPORT_SYMBOL(amdtp_syt_intervals);
-+
-+const unsigned int amdtp_rate_table[CIP_SFC_COUNT] = {
-+	[CIP_SFC_32000]  =  32000,
-+	[CIP_SFC_44100]  =  44100,
-+	[CIP_SFC_48000]  =  48000,
-+	[CIP_SFC_88200]  =  88200,
-+	[CIP_SFC_96000]  =  96000,
-+	[CIP_SFC_176400] = 176400,
-+	[CIP_SFC_192000] = 192000,
-+};
-+EXPORT_SYMBOL(amdtp_rate_table);
-+
-+/**
-+ * amdtp_stream_add_pcm_hw_constraints - add hw constraints for PCM substream
-+ * @s:		the AMDTP stream, which must be initialized.
-+ * @runtime:	the PCM substream runtime
-+ */
-+int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
-+					struct snd_pcm_runtime *runtime)
-+{
-+	int err;
-+
-+	/* AM824 in IEC 61883-6 can deliver 24bit data */
-+	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
-+	if (err < 0)
-+		goto end;
-+
-+	/*
-+	 * Currently firewire-lib processes 16 packets in one software
-+	 * interrupt callback. This equals to 2msec but actually the
-+	 * interval of the interrupts has a jitter.
-+	 * Additionally, even if adding a constraint to fit period size to
-+	 * 2msec, actual calculated frames per period doesn't equal to 2msec,
-+	 * depending on sampling rate.
-+	 * Anyway, the interval to call snd_pcm_period_elapsed() cannot 2msec.
-+	 * Here let us use 5msec for safe period interrupt.
-+	 */
-+	err = snd_pcm_hw_constraint_minmax(runtime,
-+					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+					   5000, UINT_MAX);
-+	if (err < 0)
-+		goto end;
-+
-+	/* Non-Blocking stream has no more constraints */
-+	if (!(s->flags & CIP_BLOCKING))
-+		goto end;
-+
-+	/*
-+	 * One AMDTP packet can include some frames. In blocking mode, the
-+	 * number equals to SYT_INTERVAL. So the number is 8, 16 or 32,
-+	 * depending on its sampling rate. For accurate period interrupt, it's
-+	 * preferrable to align period/buffer sizes to current SYT_INTERVAL.
-+	 *
-+	 * TODO: These constraints can be improved with proper rules.
-+	 * Currently apply LCM of SYT_INTERVALs.
-+	 */
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
-+end:
-+	return err;
-+}
-+EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
-+
-+/**
-+ * amdtp_stream_set_parameters - set stream parameters
-+ * @s: the AMDTP stream to configure
-+ * @rate: the sample rate
-+ * @pcm_channels: the number of PCM samples in each data block, to be encoded
-+ *                as AM824 multi-bit linear audio
-+ * @midi_ports: the number of MIDI ports (i.e., MPX-MIDI Data Channels)
-+ *
-+ * The parameters must be set before the stream is started, and must not be
-+ * changed while the stream is running.
-+ */
-+void amdtp_stream_set_parameters(struct amdtp_stream *s,
-+				 unsigned int rate,
-+				 unsigned int pcm_channels,
-+				 unsigned int midi_ports)
-+{
-+	unsigned int i, sfc, midi_channels;
-+
-+	midi_channels = DIV_ROUND_UP(midi_ports, 8);
-+
-+	if (WARN_ON(amdtp_stream_running(s)) |
-+	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
-+	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
-+		return;
-+
-+	for (sfc = 0; sfc < ARRAY_SIZE(amdtp_rate_table); ++sfc)
-+		if (amdtp_rate_table[sfc] == rate)
-+			goto sfc_found;
-+	WARN_ON(1);
-+	return;
-+
-+sfc_found:
-+	s->pcm_channels = pcm_channels;
-+	s->sfc = sfc;
-+	s->data_block_quadlets = s->pcm_channels + midi_channels;
-+	s->midi_ports = midi_ports;
-+
-+	s->syt_interval = amdtp_syt_intervals[sfc];
-+
-+	/* default buffering in the device */
-+	s->transfer_delay = TRANSFER_DELAY_TICKS - TICKS_PER_CYCLE;
-+	if (s->flags & CIP_BLOCKING)
-+		/* additional buffering needed to adjust for no-data packets */
-+		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
-+
-+	/* init the position map for PCM and MIDI channels */
-+	for (i = 0; i < pcm_channels; i++)
-+		s->pcm_positions[i] = i;
-+	s->midi_position = s->pcm_channels;
-+
-+	/*
-+	 * We do not know the actual MIDI FIFO size of most devices.  Just
-+	 * assume two bytes, i.e., one byte can be received over the bus while
-+	 * the previous one is transmitted over MIDI.
-+	 * (The value here is adjusted for midi_ratelimit_per_packet().)
-+	 */
-+	s->midi_fifo_limit = rate - MIDI_BYTES_PER_SECOND * s->syt_interval + 1;
-+}
-+EXPORT_SYMBOL(amdtp_stream_set_parameters);
-+
-+/**
-+ * amdtp_stream_get_max_payload - get the stream's packet size
-+ * @s: the AMDTP stream
-+ *
-+ * This function must not be called before the stream has been configured
-+ * with amdtp_stream_set_parameters().
-+ */
-+unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
-+{
-+	unsigned int multiplier = 1;
-+
-+	if (s->flags & CIP_JUMBO_PAYLOAD)
-+		multiplier = 5;
-+
-+	return 8 + s->syt_interval * s->data_block_quadlets * 4 * multiplier;
-+}
-+EXPORT_SYMBOL(amdtp_stream_get_max_payload);
-+
-+static void write_pcm_s16(struct amdtp_stream *s,
-+			  struct snd_pcm_substream *pcm,
-+			  __be32 *buffer, unsigned int frames);
-+static void write_pcm_s32(struct amdtp_stream *s,
-+			  struct snd_pcm_substream *pcm,
-+			  __be32 *buffer, unsigned int frames);
-+static void read_pcm_s32(struct amdtp_stream *s,
-+			 struct snd_pcm_substream *pcm,
-+			 __be32 *buffer, unsigned int frames);
-+
-+/**
-+ * amdtp_stream_set_pcm_format - set the PCM format
-+ * @s: the AMDTP stream to configure
-+ * @format: the format of the ALSA PCM device
-+ *
-+ * The sample format must be set after the other parameters (rate/PCM channels/
-+ * MIDI) and before the stream is started, and must not be changed while the
-+ * stream is running.
-+ */
-+void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
-+				 snd_pcm_format_t format)
-+{
-+	if (WARN_ON(amdtp_stream_pcm_running(s)))
-+		return;
-+
-+	switch (format) {
-+	default:
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S16:
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			s->transfer_samples = write_pcm_s16;
-+			break;
-+		}
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S32:
-+		if (s->direction == AMDTP_OUT_STREAM)
-+			s->transfer_samples = write_pcm_s32;
-+		else
-+			s->transfer_samples = read_pcm_s32;
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL(amdtp_stream_set_pcm_format);
-+
-+/**
-+ * amdtp_stream_pcm_prepare - prepare PCM device for running
-+ * @s: the AMDTP stream
-+ *
-+ * This function should be called from the PCM device's .prepare callback.
-+ */
-+void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
-+{
-+	tasklet_kill(&s->period_tasklet);
-+	s->pcm_buffer_pointer = 0;
-+	s->pcm_period_pointer = 0;
-+	s->pointer_flush = true;
-+}
-+EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
-+
-+static unsigned int calculate_data_blocks(struct amdtp_stream *s,
-+					  unsigned int syt)
-+{
-+	unsigned int phase, data_blocks;
-+
-+	/* Blocking mode. */
-+	if (s->flags & CIP_BLOCKING) {
-+		/* This module generate empty packet for 'no data'. */
-+		if (syt == CIP_SYT_NO_INFO)
-+			data_blocks = 0;
-+		else
-+			data_blocks = s->syt_interval;
-+	/* Non-blocking mode. */
-+	} else {
-+		if (!cip_sfc_is_base_44100(s->sfc)) {
-+			/* Sample_rate / 8000 is an integer, and precomputed. */
-+			data_blocks = s->data_block_state;
-+		} else {
-+			phase = s->data_block_state;
-+
-+		/*
-+		 * This calculates the number of data blocks per packet so that
-+		 * 1) the overall rate is correct and exactly synchronized to
-+		 *    the bus clock, and
-+		 * 2) packets with a rounded-up number of blocks occur as early
-+		 *    as possible in the sequence (to prevent underruns of the
-+		 *    device's buffer).
-+		 */
-+			if (s->sfc == CIP_SFC_44100)
-+				/* 6 6 5 6 5 6 5 ... */
-+				data_blocks = 5 + ((phase & 1) ^
-+						   (phase == 0 || phase >= 40));
-+			else
-+				/* 12 11 11 11 11 ... or 23 22 22 22 22 ... */
-+				data_blocks = 11 * (s->sfc >> 1) + (phase == 0);
-+			if (++phase >= (80 >> (s->sfc >> 1)))
-+				phase = 0;
-+			s->data_block_state = phase;
-+		}
-+	}
-+
-+	return data_blocks;
-+}
-+
-+static unsigned int calculate_syt(struct amdtp_stream *s,
-+				  unsigned int cycle)
-+{
-+	unsigned int syt_offset, phase, index, syt;
-+
-+	if (s->last_syt_offset < TICKS_PER_CYCLE) {
-+		if (!cip_sfc_is_base_44100(s->sfc))
-+			syt_offset = s->last_syt_offset + s->syt_offset_state;
-+		else {
-+		/*
-+		 * The time, in ticks, of the n'th SYT_INTERVAL sample is:
-+		 *   n * SYT_INTERVAL * 24576000 / sample_rate
-+		 * Modulo TICKS_PER_CYCLE, the difference between successive
-+		 * elements is about 1386.23.  Rounding the results of this
-+		 * formula to the SYT precision results in a sequence of
-+		 * differences that begins with:
-+		 *   1386 1386 1387 1386 1386 1386 1387 1386 1386 1386 1387 ...
-+		 * This code generates _exactly_ the same sequence.
-+		 */
-+			phase = s->syt_offset_state;
-+			index = phase % 13;
-+			syt_offset = s->last_syt_offset;
-+			syt_offset += 1386 + ((index && !(index & 3)) ||
-+					      phase == 146);
-+			if (++phase >= 147)
-+				phase = 0;
-+			s->syt_offset_state = phase;
-+		}
-+	} else
-+		syt_offset = s->last_syt_offset - TICKS_PER_CYCLE;
-+	s->last_syt_offset = syt_offset;
-+
-+	if (syt_offset < TICKS_PER_CYCLE) {
-+		syt_offset += s->transfer_delay;
-+		syt = (cycle + syt_offset / TICKS_PER_CYCLE) << 12;
-+		syt += syt_offset % TICKS_PER_CYCLE;
-+
-+		return syt & CIP_SYT_MASK;
-+	} else {
-+		return CIP_SYT_NO_INFO;
-+	}
-+}
-+
-+static void write_pcm_s32(struct amdtp_stream *s,
-+			  struct snd_pcm_substream *pcm,
-+			  __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u32 *src;
-+
-+	channels = s->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src >> 8) | 0x40000000);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void write_pcm_s16(struct amdtp_stream *s,
-+			  struct snd_pcm_substream *pcm,
-+			  __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u16 *src;
-+
-+	channels = s->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[s->pcm_positions[c]] =
-+					cpu_to_be32((*src << 8) | 0x42000000);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void read_pcm_s32(struct amdtp_stream *s,
-+			 struct snd_pcm_substream *pcm,
-+			 __be32 *buffer, unsigned int frames)
-+{
-+	struct snd_pcm_runtime *runtime = pcm->runtime;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
-+
-+	channels = s->pcm_channels;
-+	dst  = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void write_pcm_silence(struct amdtp_stream *s,
-+			      __be32 *buffer, unsigned int frames)
-+{
-+	unsigned int i, c;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < s->pcm_channels; ++c)
-+			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+/*
-+ * To avoid sending MIDI bytes at too high a rate, assume that the receiving
-+ * device has a FIFO, and track how much it is filled.  This values increases
-+ * by one whenever we send one byte in a packet, but the FIFO empties at
-+ * a constant rate independent of our packet rate.  One packet has syt_interval
-+ * samples, so the number of bytes that empty out of the FIFO, per packet(!),
-+ * is MIDI_BYTES_PER_SECOND * syt_interval / sample_rate.  To avoid storing
-+ * fractional values, the values in midi_fifo_used[] are measured in bytes
-+ * multiplied by the sample rate.
-+ */
-+static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
-+{
-+	int used;
-+
-+	used = s->midi_fifo_used[port];
-+	if (used == 0) /* common shortcut */
-+		return true;
-+
-+	used -= MIDI_BYTES_PER_SECOND * s->syt_interval;
-+	used = max(used, 0);
-+	s->midi_fifo_used[port] = used;
-+
-+	return used < s->midi_fifo_limit;
-+}
-+
-+static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
-+{
-+	s->midi_fifo_used[port] += amdtp_rate_table[s->sfc];
-+}
-+
-+static void write_midi_messages(struct amdtp_stream *s,
-+				__be32 *buffer, unsigned int frames)
-+{
-+	unsigned int f, port;
-+	u8 *b;
-+
-+	for (f = 0; f < frames; f++) {
-+		b = (u8 *)&buffer[s->midi_position];
-+
-+		port = (s->data_block_counter + f) % 8;
-+		if (f < MAX_MIDI_RX_BLOCKS &&
-+		    midi_ratelimit_per_packet(s, port) &&
-+		    s->midi[port] != NULL &&
-+		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
-+			midi_rate_use_one_byte(s, port);
-+			b[0] = 0x81;
-+		} else {
-+			b[0] = 0x80;
-+			b[1] = 0;
-+		}
-+		b[2] = 0;
-+		b[3] = 0;
-+
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+static void read_midi_messages(struct amdtp_stream *s,
-+			       __be32 *buffer, unsigned int frames)
-+{
-+	unsigned int f, port;
-+	int len;
-+	u8 *b;
-+
-+	for (f = 0; f < frames; f++) {
-+		port = (s->data_block_counter + f) % 8;
-+		b = (u8 *)&buffer[s->midi_position];
-+
-+		len = b[0] - 0x80;
-+		if ((1 <= len) &&  (len <= 3) && (s->midi[port]))
-+			snd_rawmidi_receive(s->midi[port], b + 1, len);
-+
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+static void update_pcm_pointers(struct amdtp_stream *s,
-+				struct snd_pcm_substream *pcm,
-+				unsigned int frames)
-+{
-+	unsigned int ptr;
-+
-+	/*
-+	 * In IEC 61883-6, one data block represents one event. In ALSA, one
-+	 * event equals to one PCM frame. But Dice has a quirk to transfer
-+	 * two PCM frames in one data block.
-+	 */
-+	if (s->double_pcm_frames)
-+		frames *= 2;
-+
-+	ptr = s->pcm_buffer_pointer + frames;
-+	if (ptr >= pcm->runtime->buffer_size)
-+		ptr -= pcm->runtime->buffer_size;
-+	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
-+
-+	s->pcm_period_pointer += frames;
-+	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
-+		s->pcm_period_pointer -= pcm->runtime->period_size;
-+		s->pointer_flush = false;
-+		tasklet_hi_schedule(&s->period_tasklet);
-+	}
-+}
-+
-+static void pcm_period_tasklet(unsigned long data)
-+{
-+	struct amdtp_stream *s = (void *)data;
-+	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
-+
-+	if (pcm)
-+		snd_pcm_period_elapsed(pcm);
-+}
-+
-+static int queue_packet(struct amdtp_stream *s,
-+			unsigned int header_length,
-+			unsigned int payload_length, bool skip)
-+{
-+	struct fw_iso_packet p = {0};
-+	int err = 0;
-+
-+	if (IS_ERR(s->context))
-+		goto end;
-+
-+	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
-+	p.tag = TAG_CIP;
-+	p.header_length = header_length;
-+	p.payload_length = (!skip) ? payload_length : 0;
-+	p.skip = skip;
-+	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
-+				   s->buffer.packets[s->packet_index].offset);
-+	if (err < 0) {
-+		dev_err(&s->unit->device, "queueing error: %d\n", err);
-+		goto end;
-+	}
-+
-+	if (++s->packet_index >= QUEUE_LENGTH)
-+		s->packet_index = 0;
-+end:
-+	return err;
-+}
-+
-+static inline int queue_out_packet(struct amdtp_stream *s,
-+				   unsigned int payload_length, bool skip)
-+{
-+	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
-+			    payload_length, skip);
-+}
-+
-+static inline int queue_in_packet(struct amdtp_stream *s)
-+{
-+	return queue_packet(s, IN_PACKET_HEADER_SIZE,
-+			    amdtp_stream_get_max_payload(s), false);
-+}
-+
-+static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
-+			     unsigned int syt)
-+{
-+	__be32 *buffer;
-+	unsigned int payload_length;
-+	struct snd_pcm_substream *pcm;
-+
-+	buffer = s->buffer.packets[s->packet_index].buffer;
-+	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
-+				(s->data_block_quadlets << CIP_DBS_SHIFT) |
-+				s->data_block_counter);
-+	buffer[1] = cpu_to_be32(CIP_EOH | CIP_FMT_AM | AMDTP_FDF_AM824 |
-+				(s->sfc << CIP_FDF_SHIFT) | syt);
-+	buffer += 2;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm)
-+		s->transfer_samples(s, pcm, buffer, data_blocks);
-+	else
-+		write_pcm_silence(s, buffer, data_blocks);
-+	if (s->midi_ports)
-+		write_midi_messages(s, buffer, data_blocks);
-+
-+	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
-+
-+	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
-+	if (queue_out_packet(s, payload_length, false) < 0)
-+		return -EIO;
-+
-+	if (pcm)
-+		update_pcm_pointers(s, pcm, data_blocks);
-+
-+	/* No need to return the number of handled data blocks. */
-+	return 0;
-+}
-+
-+static int handle_in_packet(struct amdtp_stream *s,
-+			    unsigned int payload_quadlets, __be32 *buffer,
-+			    unsigned int *data_blocks)
-+{
-+	u32 cip_header[2];
-+	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
-+	struct snd_pcm_substream *pcm = NULL;
-+	bool lost;
-+
-+	cip_header[0] = be32_to_cpu(buffer[0]);
-+	cip_header[1] = be32_to_cpu(buffer[1]);
-+
-+	/*
-+	 * This module supports 'Two-quadlet CIP header with SYT field'.
-+	 * For convenience, also check FMT field is AM824 or not.
-+	 */
-+	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
-+	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
-+	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
-+		dev_info_ratelimited(&s->unit->device,
-+				"Invalid CIP header for AMDTP: %08X:%08X\n",
-+				cip_header[0], cip_header[1]);
-+		*data_blocks = 0;
-+		goto end;
-+	}
-+
-+	/* Calculate data blocks */
-+	if (payload_quadlets < 3 ||
-+	    ((cip_header[1] & CIP_FDF_MASK) ==
-+				(AMDTP_FDF_NO_DATA << CIP_FDF_SHIFT))) {
-+		*data_blocks = 0;
-+	} else {
-+		data_block_quadlets =
-+			(cip_header[0] & CIP_DBS_MASK) >> CIP_DBS_SHIFT;
-+		/* avoid division by zero */
-+		if (data_block_quadlets == 0) {
-+			dev_err(&s->unit->device,
-+				"Detect invalid value in dbs field: %08X\n",
-+				cip_header[0]);
-+			return -EPROTO;
-+		}
-+		if (s->flags & CIP_WRONG_DBS)
-+			data_block_quadlets = s->data_block_quadlets;
-+
-+		*data_blocks = (payload_quadlets - 2) / data_block_quadlets;
-+	}
-+
-+	/* Check data block counter continuity */
-+	data_block_counter = cip_header[0] & CIP_DBC_MASK;
-+	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
-+	    s->data_block_counter != UINT_MAX)
-+		data_block_counter = s->data_block_counter;
-+
-+	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) && data_block_counter == 0) ||
-+	    (s->data_block_counter == UINT_MAX)) {
-+		lost = false;
-+	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
-+		lost = data_block_counter != s->data_block_counter;
-+	} else {
-+		if ((*data_blocks > 0) && (s->tx_dbc_interval > 0))
-+			dbc_interval = s->tx_dbc_interval;
-+		else
-+			dbc_interval = *data_blocks;
-+
-+		lost = data_block_counter !=
-+		       ((s->data_block_counter + dbc_interval) & 0xff);
-+	}
-+
-+	if (lost) {
-+		dev_err(&s->unit->device,
-+			"Detect discontinuity of CIP: %02X %02X\n",
-+			s->data_block_counter, data_block_counter);
-+		return -EIO;
-+	}
-+
-+	if (*data_blocks > 0) {
-+		buffer += 2;
-+
-+		pcm = ACCESS_ONCE(s->pcm);
-+		if (pcm)
-+			s->transfer_samples(s, pcm, buffer, *data_blocks);
-+
-+		if (s->midi_ports)
-+			read_midi_messages(s, buffer, *data_blocks);
-+	}
-+
-+	if (s->flags & CIP_DBC_IS_END_EVENT)
-+		s->data_block_counter = data_block_counter;
-+	else
-+		s->data_block_counter =
-+				(data_block_counter + *data_blocks) & 0xff;
-+end:
-+	if (queue_in_packet(s) < 0)
-+		return -EIO;
-+
-+	if (pcm)
-+		update_pcm_pointers(s, pcm, *data_blocks);
-+
-+	return 0;
-+}
-+
-+static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				size_t header_length, void *header,
-+				void *private_data)
-+{
-+	struct amdtp_stream *s = private_data;
-+	unsigned int i, syt, packets = header_length / 4;
-+	unsigned int data_blocks;
-+
-+	if (s->packet_index < 0)
-+		return;
-+
-+	/*
-+	 * Compute the cycle of the last queued packet.
-+	 * (We need only the four lowest bits for the SYT, so we can ignore
-+	 * that bits 0-11 must wrap around at 3072.)
-+	 */
-+	cycle += QUEUE_LENGTH - packets;
-+
-+	for (i = 0; i < packets; ++i) {
-+		syt = calculate_syt(s, ++cycle);
-+		data_blocks = calculate_data_blocks(s, syt);
-+
-+		if (handle_out_packet(s, data_blocks, syt) < 0) {
-+			s->packet_index = -1;
-+			amdtp_stream_pcm_abort(s);
-+			return;
-+		}
-+	}
-+
-+	fw_iso_context_queue_flush(s->context);
-+}
-+
-+static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
-+			       size_t header_length, void *header,
-+			       void *private_data)
-+{
-+	struct amdtp_stream *s = private_data;
-+	unsigned int p, syt, packets;
-+	unsigned int payload_quadlets, max_payload_quadlets;
-+	unsigned int data_blocks;
-+	__be32 *buffer, *headers = header;
-+
-+	if (s->packet_index < 0)
-+		return;
-+
-+	/* The number of packets in buffer */
-+	packets = header_length / IN_PACKET_HEADER_SIZE;
-+
-+	/* For buffer-over-run prevention. */
-+	max_payload_quadlets = amdtp_stream_get_max_payload(s) / 4;
-+
-+	for (p = 0; p < packets; p++) {
-+		buffer = s->buffer.packets[s->packet_index].buffer;
-+
-+		/* The number of quadlets in this packet */
-+		payload_quadlets =
-+			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
-+		if (payload_quadlets > max_payload_quadlets) {
-+			dev_err(&s->unit->device,
-+				"Detect jumbo payload: %02x %02x\n",
-+				payload_quadlets, max_payload_quadlets);
-+			s->packet_index = -1;
-+			break;
-+		}
-+
-+		if (handle_in_packet(s, payload_quadlets, buffer,
-+							&data_blocks) < 0) {
-+			s->packet_index = -1;
-+			break;
-+		}
-+
-+		/* Process sync slave stream */
-+		if (s->sync_slave && s->sync_slave->callbacked) {
-+			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
-+			if (handle_out_packet(s->sync_slave,
-+					      data_blocks, syt) < 0) {
-+				s->packet_index = -1;
-+				break;
-+			}
-+		}
-+	}
-+
-+	/* Queueing error or detecting discontinuity */
-+	if (s->packet_index < 0) {
-+		amdtp_stream_pcm_abort(s);
-+
-+		/* Abort sync slave. */
-+		if (s->sync_slave) {
-+			s->sync_slave->packet_index = -1;
-+			amdtp_stream_pcm_abort(s->sync_slave);
-+		}
-+		return;
-+	}
-+
-+	/* when sync to device, flush the packets for slave stream */
-+	if (s->sync_slave && s->sync_slave->callbacked)
-+		fw_iso_context_queue_flush(s->sync_slave->context);
-+
-+	fw_iso_context_queue_flush(s->context);
-+}
-+
-+/* processing is done by master callback */
-+static void slave_stream_callback(struct fw_iso_context *context, u32 cycle,
-+				  size_t header_length, void *header,
-+				  void *private_data)
-+{
-+	return;
-+}
-+
-+/* this is executed one time */
-+static void amdtp_stream_first_callback(struct fw_iso_context *context,
-+					u32 cycle, size_t header_length,
-+					void *header, void *private_data)
-+{
-+	struct amdtp_stream *s = private_data;
-+
-+	/*
-+	 * For in-stream, first packet has come.
-+	 * For out-stream, prepared to transmit first packet
-+	 */
-+	s->callbacked = true;
-+	wake_up(&s->callback_wait);
-+
-+	if (s->direction == AMDTP_IN_STREAM)
-+		context->callback.sc = in_stream_callback;
-+	else if (s->flags & CIP_SYNC_TO_DEVICE)
-+		context->callback.sc = slave_stream_callback;
-+	else
-+		context->callback.sc = out_stream_callback;
-+
-+	context->callback.sc(context, cycle, header_length, header, s);
-+}
-+
-+/**
-+ * amdtp_stream_start - start transferring packets
-+ * @s: the AMDTP stream to start
-+ * @channel: the isochronous channel on the bus
-+ * @speed: firewire speed code
-+ *
-+ * The stream cannot be started until it has been configured with
-+ * amdtp_stream_set_parameters() and it must be started before any PCM or MIDI
-+ * device can be started.
-+ */
-+int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
-+{
-+	static const struct {
-+		unsigned int data_block;
-+		unsigned int syt_offset;
-+	} initial_state[] = {
-+		[CIP_SFC_32000]  = {  4, 3072 },
-+		[CIP_SFC_48000]  = {  6, 1024 },
-+		[CIP_SFC_96000]  = { 12, 1024 },
-+		[CIP_SFC_192000] = { 24, 1024 },
-+		[CIP_SFC_44100]  = {  0,   67 },
-+		[CIP_SFC_88200]  = {  0,   67 },
-+		[CIP_SFC_176400] = {  0,   67 },
-+	};
-+	unsigned int header_size;
-+	enum dma_data_direction dir;
-+	int type, tag, err;
-+
-+	mutex_lock(&s->mutex);
-+
-+	if (WARN_ON(amdtp_stream_running(s) ||
-+		    (s->data_block_quadlets < 1))) {
-+		err = -EBADFD;
-+		goto err_unlock;
-+	}
-+
-+	if (s->direction == AMDTP_IN_STREAM &&
-+	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
-+		s->data_block_counter = UINT_MAX;
-+	else
-+		s->data_block_counter = 0;
-+	s->data_block_state = initial_state[s->sfc].data_block;
-+	s->syt_offset_state = initial_state[s->sfc].syt_offset;
-+	s->last_syt_offset = TICKS_PER_CYCLE;
-+
-+	/* initialize packet buffer */
-+	if (s->direction == AMDTP_IN_STREAM) {
-+		dir = DMA_FROM_DEVICE;
-+		type = FW_ISO_CONTEXT_RECEIVE;
-+		header_size = IN_PACKET_HEADER_SIZE;
-+	} else {
-+		dir = DMA_TO_DEVICE;
-+		type = FW_ISO_CONTEXT_TRANSMIT;
-+		header_size = OUT_PACKET_HEADER_SIZE;
-+	}
-+	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
-+				      amdtp_stream_get_max_payload(s), dir);
-+	if (err < 0)
-+		goto err_unlock;
-+
-+	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
-+					   type, channel, speed, header_size,
-+					   amdtp_stream_first_callback, s);
-+	if (IS_ERR(s->context)) {
-+		err = PTR_ERR(s->context);
-+		if (err == -EBUSY)
-+			dev_err(&s->unit->device,
-+				"no free stream on this controller\n");
-+		goto err_buffer;
-+	}
-+
-+	amdtp_stream_update(s);
-+
-+	s->packet_index = 0;
-+	do {
-+		if (s->direction == AMDTP_IN_STREAM)
-+			err = queue_in_packet(s);
-+		else
-+			err = queue_out_packet(s, 0, true);
-+		if (err < 0)
-+			goto err_context;
-+	} while (s->packet_index > 0);
-+
-+	/* NOTE: TAG1 matches CIP. This just affects in stream. */
-+	tag = FW_ISO_CONTEXT_MATCH_TAG1;
-+	if (s->flags & CIP_EMPTY_WITH_TAG0)
-+		tag |= FW_ISO_CONTEXT_MATCH_TAG0;
-+
-+	s->callbacked = false;
-+	err = fw_iso_context_start(s->context, -1, 0, tag);
-+	if (err < 0)
-+		goto err_context;
-+
-+	mutex_unlock(&s->mutex);
-+
-+	return 0;
-+
-+err_context:
-+	fw_iso_context_destroy(s->context);
-+	s->context = ERR_PTR(-1);
-+err_buffer:
-+	iso_packets_buffer_destroy(&s->buffer, s->unit);
-+err_unlock:
-+	mutex_unlock(&s->mutex);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL(amdtp_stream_start);
-+
-+/**
-+ * amdtp_stream_pcm_pointer - get the PCM buffer position
-+ * @s: the AMDTP stream that transports the PCM data
-+ *
-+ * Returns the current buffer position, in frames.
-+ */
-+unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
-+{
-+	/* this optimization is allowed to be racy */
-+	if (s->pointer_flush && amdtp_stream_running(s))
-+		fw_iso_context_flush_completions(s->context);
-+	else
-+		s->pointer_flush = true;
-+
-+	return ACCESS_ONCE(s->pcm_buffer_pointer);
-+}
-+EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
-+
-+/**
-+ * amdtp_stream_update - update the stream after a bus reset
-+ * @s: the AMDTP stream
-+ */
-+void amdtp_stream_update(struct amdtp_stream *s)
-+{
-+	/* Precomputing. */
-+	ACCESS_ONCE(s->source_node_id_field) =
-+		(fw_parent_device(s->unit)->card->node_id << CIP_SID_SHIFT) &
-+								CIP_SID_MASK;
-+}
-+EXPORT_SYMBOL(amdtp_stream_update);
-+
-+/**
-+ * amdtp_stream_stop - stop sending packets
-+ * @s: the AMDTP stream to stop
-+ *
-+ * All PCM and MIDI devices of the stream must be stopped before the stream
-+ * itself can be stopped.
-+ */
-+void amdtp_stream_stop(struct amdtp_stream *s)
-+{
-+	mutex_lock(&s->mutex);
-+
-+	if (!amdtp_stream_running(s)) {
-+		mutex_unlock(&s->mutex);
-+		return;
-+	}
-+
-+	tasklet_kill(&s->period_tasklet);
-+	fw_iso_context_stop(s->context);
-+	fw_iso_context_destroy(s->context);
-+	s->context = ERR_PTR(-1);
-+	iso_packets_buffer_destroy(&s->buffer, s->unit);
-+
-+	s->callbacked = false;
-+
-+	mutex_unlock(&s->mutex);
-+}
-+EXPORT_SYMBOL(amdtp_stream_stop);
-+
-+/**
-+ * amdtp_stream_pcm_abort - abort the running PCM device
-+ * @s: the AMDTP stream about to be stopped
-+ *
-+ * If the isochronous stream needs to be stopped asynchronously, call this
-+ * function first to stop the PCM device.
-+ */
-+void amdtp_stream_pcm_abort(struct amdtp_stream *s)
-+{
-+	struct snd_pcm_substream *pcm;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm)
-+		snd_pcm_stop_xrun(pcm);
-+}
-+EXPORT_SYMBOL(amdtp_stream_pcm_abort);
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-new file mode 100644
-index 0000000..f7a6f5f
---- /dev/null
-+++ b/sound/firewire/amdtp-stream.h
-@@ -0,0 +1,296 @@
-+#ifndef SOUND_FIREWIRE_AMDTP_STREAM_H_INCLUDED
-+#define SOUND_FIREWIRE_AMDTP_STREAM_H_INCLUDED
-+
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/mutex.h>
-+#include <sound/asound.h>
-+#include "packets-buffer.h"
-+
-+/**
-+ * enum cip_flags - describes details of the streaming protocol
-+ * @CIP_NONBLOCKING: In non-blocking mode, each packet contains
-+ *	sample_rate/8000 samples, with rounding up or down to adjust
-+ *	for clock skew and left-over fractional samples.  This should
-+ *	be used if supported by the device.
-+ * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
-+ *	SYT_INTERVAL samples, with these two types alternating so that
-+ *	the overall sample rate comes out right.
-+ * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-+ *	generated by in packets. Defaultly this driver generates timestamp.
-+ * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
-+ * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
-+ *	corresponds to the end of event in the packet. Out of IEC 61883.
-+ * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
-+ *	The value of data_block_quadlets is used instead of reported value.
-+ * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
-+ *	skipped for detecting discontinuity.
-+ * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-+ *	packet is not continuous from an initial value.
-+ * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
-+ *	packet is wrong but the others are correct.
-+ * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
-+ *	packet is larger than IEC 61883-6 defines. Current implementation
-+ *	allows 5 times as large as IEC 61883-6 defines.
-+ */
-+enum cip_flags {
-+	CIP_NONBLOCKING		= 0x00,
-+	CIP_BLOCKING		= 0x01,
-+	CIP_SYNC_TO_DEVICE	= 0x02,
-+	CIP_EMPTY_WITH_TAG0	= 0x04,
-+	CIP_DBC_IS_END_EVENT	= 0x08,
-+	CIP_WRONG_DBS		= 0x10,
-+	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
-+	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
-+	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
-+	CIP_JUMBO_PAYLOAD	= 0x100,
-+};
-+
-+/**
-+ * enum cip_sfc - supported Sampling Frequency Codes (SFCs)
-+ * @CIP_SFC_32000:   32,000 data blocks
-+ * @CIP_SFC_44100:   44,100 data blocks
-+ * @CIP_SFC_48000:   48,000 data blocks
-+ * @CIP_SFC_88200:   88,200 data blocks
-+ * @CIP_SFC_96000:   96,000 data blocks
-+ * @CIP_SFC_176400: 176,400 data blocks
-+ * @CIP_SFC_192000: 192,000 data blocks
-+ * @CIP_SFC_COUNT: the number of supported SFCs
-+ *
-+ * These values are used to show nominal Sampling Frequency Code in
-+ * Format Dependent Field (FDF) of AMDTP packet header. In IEC 61883-6:2002,
-+ * this code means the number of events per second. Actually the code
-+ * represents the number of data blocks transferred per second in an AMDTP
-+ * stream.
-+ *
-+ * In IEC 61883-6:2005, some extensions were added to support more types of
-+ * data such as 'One Bit LInear Audio', therefore the meaning of SFC became
-+ * different depending on the types.
-+ *
-+ * Currently our implementation is compatible with IEC 61883-6:2002.
-+ */
-+enum cip_sfc {
-+	CIP_SFC_32000  = 0,
-+	CIP_SFC_44100  = 1,
-+	CIP_SFC_48000  = 2,
-+	CIP_SFC_88200  = 3,
-+	CIP_SFC_96000  = 4,
-+	CIP_SFC_176400 = 5,
-+	CIP_SFC_192000 = 6,
-+	CIP_SFC_COUNT
-+};
-+
-+#define AMDTP_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
-+
-+#define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
-+					 SNDRV_PCM_FMTBIT_S32)
-+
-+
-+/*
-+ * This module supports maximum 64 PCM channels for one PCM stream
-+ * This is for our convenience.
-+ */
-+#define AMDTP_MAX_CHANNELS_FOR_PCM	64
-+
-+/*
-+ * AMDTP packet can include channels for MIDI conformant data.
-+ * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-+ * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-+ *
-+ * This module supports maximum 1 MIDI conformant data channels.
-+ * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
-+ */
-+#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
-+
-+struct fw_unit;
-+struct fw_iso_context;
-+struct snd_pcm_substream;
-+struct snd_pcm_runtime;
-+struct snd_rawmidi_substream;
-+
-+enum amdtp_stream_direction {
-+	AMDTP_OUT_STREAM = 0,
-+	AMDTP_IN_STREAM
-+};
-+
-+struct amdtp_stream {
-+	struct fw_unit *unit;
-+	enum cip_flags flags;
-+	enum amdtp_stream_direction direction;
-+	struct fw_iso_context *context;
-+	struct mutex mutex;
-+
-+	enum cip_sfc sfc;
-+	unsigned int data_block_quadlets;
-+	unsigned int pcm_channels;
-+	unsigned int midi_ports;
-+	void (*transfer_samples)(struct amdtp_stream *s,
-+				 struct snd_pcm_substream *pcm,
-+				 __be32 *buffer, unsigned int frames);
-+	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
-+	u8 midi_position;
-+
-+	unsigned int syt_interval;
-+	unsigned int transfer_delay;
-+	unsigned int source_node_id_field;
-+	struct iso_packets_buffer buffer;
-+
-+	struct snd_pcm_substream *pcm;
-+	struct tasklet_struct period_tasklet;
-+
-+	int packet_index;
-+	unsigned int data_block_counter;
-+
-+	unsigned int data_block_state;
-+
-+	unsigned int last_syt_offset;
-+	unsigned int syt_offset_state;
-+
-+	unsigned int pcm_buffer_pointer;
-+	unsigned int pcm_period_pointer;
-+	bool pointer_flush;
-+	bool double_pcm_frames;
-+
-+	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+	int midi_fifo_limit;
-+	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
-+
-+	/* quirk: fixed interval of dbc between previos/current packets. */
-+	unsigned int tx_dbc_interval;
-+
-+	bool callbacked;
-+	wait_queue_head_t callback_wait;
-+	struct amdtp_stream *sync_slave;
-+};
-+
-+int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		      enum amdtp_stream_direction dir,
-+		      enum cip_flags flags);
-+void amdtp_stream_destroy(struct amdtp_stream *s);
-+
-+void amdtp_stream_set_parameters(struct amdtp_stream *s,
-+				 unsigned int rate,
-+				 unsigned int pcm_channels,
-+				 unsigned int midi_ports);
-+unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s);
-+
-+int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed);
-+void amdtp_stream_update(struct amdtp_stream *s);
-+void amdtp_stream_stop(struct amdtp_stream *s);
-+
-+int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
-+					struct snd_pcm_runtime *runtime);
-+void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
-+				 snd_pcm_format_t format);
-+void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
-+unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
-+void amdtp_stream_pcm_abort(struct amdtp_stream *s);
-+
-+extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
-+extern const unsigned int amdtp_rate_table[CIP_SFC_COUNT];
-+
-+/**
-+ * amdtp_stream_running - check stream is running or not
-+ * @s: the AMDTP stream
-+ *
-+ * If this function returns true, the stream is running.
-+ */
-+static inline bool amdtp_stream_running(struct amdtp_stream *s)
-+{
-+	return !IS_ERR(s->context);
-+}
-+
-+/**
-+ * amdtp_streaming_error - check for streaming error
-+ * @s: the AMDTP stream
-+ *
-+ * If this function returns true, the stream's packet queue has stopped due to
-+ * an asynchronous error.
-+ */
-+static inline bool amdtp_streaming_error(struct amdtp_stream *s)
-+{
-+	return s->packet_index < 0;
-+}
-+
-+/**
-+ * amdtp_stream_pcm_running - check PCM substream is running or not
-+ * @s: the AMDTP stream
-+ *
-+ * If this function returns true, PCM substream in the AMDTP stream is running.
-+ */
-+static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
-+{
-+	return !!s->pcm;
-+}
-+
-+/**
-+ * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
-+ * @s: the AMDTP stream
-+ * @pcm: the PCM device to be started, or %NULL to stop the current device
-+ *
-+ * Call this function on a running isochronous stream to enable the actual
-+ * transmission of PCM data.  This function should be called from the PCM
-+ * device's .trigger callback.
-+ */
-+static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
-+					    struct snd_pcm_substream *pcm)
-+{
-+	ACCESS_ONCE(s->pcm) = pcm;
-+}
-+
-+/**
-+ * amdtp_stream_midi_trigger - start/stop playback/capture with a MIDI device
-+ * @s: the AMDTP stream
-+ * @port: index of MIDI port
-+ * @midi: the MIDI device to be started, or %NULL to stop the current device
-+ *
-+ * Call this function on a running isochronous stream to enable the actual
-+ * transmission of MIDI data.  This function should be called from the MIDI
-+ * device's .trigger callback.
-+ */
-+static inline void amdtp_stream_midi_trigger(struct amdtp_stream *s,
-+					     unsigned int port,
-+					     struct snd_rawmidi_substream *midi)
-+{
-+	if (port < s->midi_ports)
-+		ACCESS_ONCE(s->midi[port]) = midi;
-+}
-+
-+static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
-+{
-+	return sfc & 1;
-+}
-+
-+static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
-+					 struct amdtp_stream *master,
-+					 struct amdtp_stream *slave)
-+{
-+	if (sync_mode == CIP_SYNC_TO_DEVICE) {
-+		master->flags |= CIP_SYNC_TO_DEVICE;
-+		slave->flags |= CIP_SYNC_TO_DEVICE;
-+		master->sync_slave = slave;
-+	} else {
-+		master->flags &= ~CIP_SYNC_TO_DEVICE;
-+		slave->flags &= ~CIP_SYNC_TO_DEVICE;
-+		master->sync_slave = NULL;
-+	}
-+
-+	slave->sync_slave = NULL;
-+}
-+
-+/**
-+ * amdtp_stream_wait_callback - sleep till callbacked or timeout
-+ * @s: the AMDTP stream
-+ * @timeout: msec till timeout
-+ *
-+ * If this function return false, the AMDTP stream should be stopped.
-+ */
-+static inline bool amdtp_stream_wait_callback(struct amdtp_stream *s,
-+					      unsigned int timeout)
-+{
-+	return wait_event_timeout(s->callback_wait,
-+				  s->callbacked == true,
-+				  msecs_to_jiffies(timeout)) > 0;
-+}
-+
-+#endif
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-deleted file mode 100644
-index 7bb988f..0000000
---- a/sound/firewire/amdtp.c
-+++ /dev/null
-@@ -1,1107 +0,0 @@
--/*
-- * Audio and Music Data Transmission Protocol (IEC 61883-6) streams
-- * with Common Isochronous Packet (IEC 61883-1) headers
-- *
-- * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
-- * Licensed under the terms of the GNU General Public License, version 2.
-- */
--
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/firewire.h>
--#include <linux/module.h>
--#include <linux/slab.h>
--#include <linux/sched.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/rawmidi.h>
--#include "amdtp.h"
--
--#define TICKS_PER_CYCLE		3072
--#define CYCLES_PER_SECOND	8000
--#define TICKS_PER_SECOND	(TICKS_PER_CYCLE * CYCLES_PER_SECOND)
--
--/*
-- * Nominally 3125 bytes/second, but the MIDI port's clock might be
-- * 1% too slow, and the bus clock 100 ppm too fast.
-- */
--#define MIDI_BYTES_PER_SECOND	3093
--
--/*
-- * Several devices look only at the first eight data blocks.
-- * In any case, this is more than enough for the MIDI data rate.
-- */
--#define MAX_MIDI_RX_BLOCKS	8
--
--#define TRANSFER_DELAY_TICKS	0x2e00 /* 479.17 microseconds */
--
--/* isochronous header parameters */
--#define ISO_DATA_LENGTH_SHIFT	16
--#define TAG_CIP			1
--
--/* common isochronous packet header parameters */
--#define CIP_EOH_SHIFT		31
--#define CIP_EOH			(1u << CIP_EOH_SHIFT)
--#define CIP_EOH_MASK		0x80000000
--#define CIP_SID_SHIFT		24
--#define CIP_SID_MASK		0x3f000000
--#define CIP_DBS_MASK		0x00ff0000
--#define CIP_DBS_SHIFT		16
--#define CIP_DBC_MASK		0x000000ff
--#define CIP_FMT_SHIFT		24
--#define CIP_FMT_MASK		0x3f000000
--#define CIP_FDF_MASK		0x00ff0000
--#define CIP_FDF_SHIFT		16
--#define CIP_SYT_MASK		0x0000ffff
--#define CIP_SYT_NO_INFO		0xffff
--
--/*
-- * Audio and Music transfer protocol specific parameters
-- * only "Clock-based rate control mode" is supported
-- */
--#define CIP_FMT_AM		(0x10 << CIP_FMT_SHIFT)
--#define AMDTP_FDF_AM824		(0 << (CIP_FDF_SHIFT + 3))
--#define AMDTP_FDF_NO_DATA	0xff
--
--/* TODO: make these configurable */
--#define INTERRUPT_INTERVAL	16
--#define QUEUE_LENGTH		48
--
--#define IN_PACKET_HEADER_SIZE	4
--#define OUT_PACKET_HEADER_SIZE	0
--
--static void pcm_period_tasklet(unsigned long data);
--
--/**
-- * amdtp_stream_init - initialize an AMDTP stream structure
-- * @s: the AMDTP stream to initialize
-- * @unit: the target of the stream
-- * @dir: the direction of stream
-- * @flags: the packet transmission method to use
-- */
--int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, enum cip_flags flags)
--{
--	s->unit = unit;
--	s->direction = dir;
--	s->flags = flags;
--	s->context = ERR_PTR(-1);
--	mutex_init(&s->mutex);
--	tasklet_init(&s->period_tasklet, pcm_period_tasklet, (unsigned long)s);
--	s->packet_index = 0;
--
--	init_waitqueue_head(&s->callback_wait);
--	s->callbacked = false;
--	s->sync_slave = NULL;
--
--	return 0;
--}
--EXPORT_SYMBOL(amdtp_stream_init);
--
--/**
-- * amdtp_stream_destroy - free stream resources
-- * @s: the AMDTP stream to destroy
-- */
--void amdtp_stream_destroy(struct amdtp_stream *s)
--{
--	WARN_ON(amdtp_stream_running(s));
--	mutex_destroy(&s->mutex);
--}
--EXPORT_SYMBOL(amdtp_stream_destroy);
--
--const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
--	[CIP_SFC_32000]  =  8,
--	[CIP_SFC_44100]  =  8,
--	[CIP_SFC_48000]  =  8,
--	[CIP_SFC_88200]  = 16,
--	[CIP_SFC_96000]  = 16,
--	[CIP_SFC_176400] = 32,
--	[CIP_SFC_192000] = 32,
--};
--EXPORT_SYMBOL(amdtp_syt_intervals);
--
--const unsigned int amdtp_rate_table[CIP_SFC_COUNT] = {
--	[CIP_SFC_32000]  =  32000,
--	[CIP_SFC_44100]  =  44100,
--	[CIP_SFC_48000]  =  48000,
--	[CIP_SFC_88200]  =  88200,
--	[CIP_SFC_96000]  =  96000,
--	[CIP_SFC_176400] = 176400,
--	[CIP_SFC_192000] = 192000,
--};
--EXPORT_SYMBOL(amdtp_rate_table);
--
--/**
-- * amdtp_stream_add_pcm_hw_constraints - add hw constraints for PCM substream
-- * @s:		the AMDTP stream, which must be initialized.
-- * @runtime:	the PCM substream runtime
-- */
--int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
--					struct snd_pcm_runtime *runtime)
--{
--	int err;
--
--	/* AM824 in IEC 61883-6 can deliver 24bit data */
--	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
--	if (err < 0)
--		goto end;
--
--	/*
--	 * Currently firewire-lib processes 16 packets in one software
--	 * interrupt callback. This equals to 2msec but actually the
--	 * interval of the interrupts has a jitter.
--	 * Additionally, even if adding a constraint to fit period size to
--	 * 2msec, actual calculated frames per period doesn't equal to 2msec,
--	 * depending on sampling rate.
--	 * Anyway, the interval to call snd_pcm_period_elapsed() cannot 2msec.
--	 * Here let us use 5msec for safe period interrupt.
--	 */
--	err = snd_pcm_hw_constraint_minmax(runtime,
--					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--					   5000, UINT_MAX);
--	if (err < 0)
--		goto end;
--
--	/* Non-Blocking stream has no more constraints */
--	if (!(s->flags & CIP_BLOCKING))
--		goto end;
--
--	/*
--	 * One AMDTP packet can include some frames. In blocking mode, the
--	 * number equals to SYT_INTERVAL. So the number is 8, 16 or 32,
--	 * depending on its sampling rate. For accurate period interrupt, it's
--	 * preferrable to align period/buffer sizes to current SYT_INTERVAL.
--	 *
--	 * TODO: These constraints can be improved with proper rules.
--	 * Currently apply LCM of SYT_INTERVALs.
--	 */
--	err = snd_pcm_hw_constraint_step(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 32);
--	if (err < 0)
--		goto end;
--	err = snd_pcm_hw_constraint_step(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_BUFFER_SIZE, 32);
--end:
--	return err;
--}
--EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
--
--/**
-- * amdtp_stream_set_parameters - set stream parameters
-- * @s: the AMDTP stream to configure
-- * @rate: the sample rate
-- * @pcm_channels: the number of PCM samples in each data block, to be encoded
-- *                as AM824 multi-bit linear audio
-- * @midi_ports: the number of MIDI ports (i.e., MPX-MIDI Data Channels)
-- *
-- * The parameters must be set before the stream is started, and must not be
-- * changed while the stream is running.
-- */
--void amdtp_stream_set_parameters(struct amdtp_stream *s,
--				 unsigned int rate,
--				 unsigned int pcm_channels,
--				 unsigned int midi_ports)
--{
--	unsigned int i, sfc, midi_channels;
--
--	midi_channels = DIV_ROUND_UP(midi_ports, 8);
--
--	if (WARN_ON(amdtp_stream_running(s)) |
--	    WARN_ON(pcm_channels > AMDTP_MAX_CHANNELS_FOR_PCM) |
--	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
--		return;
--
--	for (sfc = 0; sfc < ARRAY_SIZE(amdtp_rate_table); ++sfc)
--		if (amdtp_rate_table[sfc] == rate)
--			goto sfc_found;
--	WARN_ON(1);
--	return;
--
--sfc_found:
--	s->pcm_channels = pcm_channels;
--	s->sfc = sfc;
--	s->data_block_quadlets = s->pcm_channels + midi_channels;
--	s->midi_ports = midi_ports;
--
--	s->syt_interval = amdtp_syt_intervals[sfc];
--
--	/* default buffering in the device */
--	s->transfer_delay = TRANSFER_DELAY_TICKS - TICKS_PER_CYCLE;
--	if (s->flags & CIP_BLOCKING)
--		/* additional buffering needed to adjust for no-data packets */
--		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
--
--	/* init the position map for PCM and MIDI channels */
--	for (i = 0; i < pcm_channels; i++)
--		s->pcm_positions[i] = i;
--	s->midi_position = s->pcm_channels;
--
--	/*
--	 * We do not know the actual MIDI FIFO size of most devices.  Just
--	 * assume two bytes, i.e., one byte can be received over the bus while
--	 * the previous one is transmitted over MIDI.
--	 * (The value here is adjusted for midi_ratelimit_per_packet().)
--	 */
--	s->midi_fifo_limit = rate - MIDI_BYTES_PER_SECOND * s->syt_interval + 1;
--}
--EXPORT_SYMBOL(amdtp_stream_set_parameters);
--
--/**
-- * amdtp_stream_get_max_payload - get the stream's packet size
-- * @s: the AMDTP stream
-- *
-- * This function must not be called before the stream has been configured
-- * with amdtp_stream_set_parameters().
-- */
--unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
--{
--	unsigned int multiplier = 1;
--
--	if (s->flags & CIP_JUMBO_PAYLOAD)
--		multiplier = 5;
--
--	return 8 + s->syt_interval * s->data_block_quadlets * 4 * multiplier;
--}
--EXPORT_SYMBOL(amdtp_stream_get_max_payload);
--
--static void write_pcm_s16(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __be32 *buffer, unsigned int frames);
--static void write_pcm_s32(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __be32 *buffer, unsigned int frames);
--static void read_pcm_s32(struct amdtp_stream *s,
--			 struct snd_pcm_substream *pcm,
--			 __be32 *buffer, unsigned int frames);
--
--/**
-- * amdtp_stream_set_pcm_format - set the PCM format
-- * @s: the AMDTP stream to configure
-- * @format: the format of the ALSA PCM device
-- *
-- * The sample format must be set after the other parameters (rate/PCM channels/
-- * MIDI) and before the stream is started, and must not be changed while the
-- * stream is running.
-- */
--void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
--				 snd_pcm_format_t format)
--{
--	if (WARN_ON(amdtp_stream_pcm_running(s)))
--		return;
--
--	switch (format) {
--	default:
--		WARN_ON(1);
--		/* fall through */
--	case SNDRV_PCM_FORMAT_S16:
--		if (s->direction == AMDTP_OUT_STREAM) {
--			s->transfer_samples = write_pcm_s16;
--			break;
--		}
--		WARN_ON(1);
--		/* fall through */
--	case SNDRV_PCM_FORMAT_S32:
--		if (s->direction == AMDTP_OUT_STREAM)
--			s->transfer_samples = write_pcm_s32;
--		else
--			s->transfer_samples = read_pcm_s32;
--		break;
--	}
--}
--EXPORT_SYMBOL(amdtp_stream_set_pcm_format);
--
--/**
-- * amdtp_stream_pcm_prepare - prepare PCM device for running
-- * @s: the AMDTP stream
-- *
-- * This function should be called from the PCM device's .prepare callback.
-- */
--void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
--{
--	tasklet_kill(&s->period_tasklet);
--	s->pcm_buffer_pointer = 0;
--	s->pcm_period_pointer = 0;
--	s->pointer_flush = true;
--}
--EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
--
--static unsigned int calculate_data_blocks(struct amdtp_stream *s,
--					  unsigned int syt)
--{
--	unsigned int phase, data_blocks;
--
--	/* Blocking mode. */
--	if (s->flags & CIP_BLOCKING) {
--		/* This module generate empty packet for 'no data'. */
--		if (syt == CIP_SYT_NO_INFO)
--			data_blocks = 0;
--		else
--			data_blocks = s->syt_interval;
--	/* Non-blocking mode. */
--	} else {
--		if (!cip_sfc_is_base_44100(s->sfc)) {
--			/* Sample_rate / 8000 is an integer, and precomputed. */
--			data_blocks = s->data_block_state;
--		} else {
--			phase = s->data_block_state;
--
--		/*
--		 * This calculates the number of data blocks per packet so that
--		 * 1) the overall rate is correct and exactly synchronized to
--		 *    the bus clock, and
--		 * 2) packets with a rounded-up number of blocks occur as early
--		 *    as possible in the sequence (to prevent underruns of the
--		 *    device's buffer).
--		 */
--			if (s->sfc == CIP_SFC_44100)
--				/* 6 6 5 6 5 6 5 ... */
--				data_blocks = 5 + ((phase & 1) ^
--						   (phase == 0 || phase >= 40));
--			else
--				/* 12 11 11 11 11 ... or 23 22 22 22 22 ... */
--				data_blocks = 11 * (s->sfc >> 1) + (phase == 0);
--			if (++phase >= (80 >> (s->sfc >> 1)))
--				phase = 0;
--			s->data_block_state = phase;
--		}
--	}
--
--	return data_blocks;
--}
--
--static unsigned int calculate_syt(struct amdtp_stream *s,
--				  unsigned int cycle)
--{
--	unsigned int syt_offset, phase, index, syt;
--
--	if (s->last_syt_offset < TICKS_PER_CYCLE) {
--		if (!cip_sfc_is_base_44100(s->sfc))
--			syt_offset = s->last_syt_offset + s->syt_offset_state;
--		else {
--		/*
--		 * The time, in ticks, of the n'th SYT_INTERVAL sample is:
--		 *   n * SYT_INTERVAL * 24576000 / sample_rate
--		 * Modulo TICKS_PER_CYCLE, the difference between successive
--		 * elements is about 1386.23.  Rounding the results of this
--		 * formula to the SYT precision results in a sequence of
--		 * differences that begins with:
--		 *   1386 1386 1387 1386 1386 1386 1387 1386 1386 1386 1387 ...
--		 * This code generates _exactly_ the same sequence.
--		 */
--			phase = s->syt_offset_state;
--			index = phase % 13;
--			syt_offset = s->last_syt_offset;
--			syt_offset += 1386 + ((index && !(index & 3)) ||
--					      phase == 146);
--			if (++phase >= 147)
--				phase = 0;
--			s->syt_offset_state = phase;
--		}
--	} else
--		syt_offset = s->last_syt_offset - TICKS_PER_CYCLE;
--	s->last_syt_offset = syt_offset;
--
--	if (syt_offset < TICKS_PER_CYCLE) {
--		syt_offset += s->transfer_delay;
--		syt = (cycle + syt_offset / TICKS_PER_CYCLE) << 12;
--		syt += syt_offset % TICKS_PER_CYCLE;
--
--		return syt & CIP_SYT_MASK;
--	} else {
--		return CIP_SYT_NO_INFO;
--	}
--}
--
--static void write_pcm_s32(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	const u32 *src;
--
--	channels = s->pcm_channels;
--	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c]] =
--					cpu_to_be32((*src >> 8) | 0x40000000);
--			src++;
--		}
--		buffer += s->data_block_quadlets;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
--static void write_pcm_s16(struct amdtp_stream *s,
--			  struct snd_pcm_substream *pcm,
--			  __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	const u16 *src;
--
--	channels = s->pcm_channels;
--	src = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			buffer[s->pcm_positions[c]] =
--					cpu_to_be32((*src << 8) | 0x42000000);
--			src++;
--		}
--		buffer += s->data_block_quadlets;
--		if (--remaining_frames == 0)
--			src = (void *)runtime->dma_area;
--	}
--}
--
--static void read_pcm_s32(struct amdtp_stream *s,
--			 struct snd_pcm_substream *pcm,
--			 __be32 *buffer, unsigned int frames)
--{
--	struct snd_pcm_runtime *runtime = pcm->runtime;
--	unsigned int channels, remaining_frames, i, c;
--	u32 *dst;
--
--	channels = s->pcm_channels;
--	dst  = (void *)runtime->dma_area +
--			frames_to_bytes(runtime, s->pcm_buffer_pointer);
--	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < channels; ++c) {
--			*dst = be32_to_cpu(buffer[s->pcm_positions[c]]) << 8;
--			dst++;
--		}
--		buffer += s->data_block_quadlets;
--		if (--remaining_frames == 0)
--			dst = (void *)runtime->dma_area;
--	}
--}
--
--static void write_pcm_silence(struct amdtp_stream *s,
--			      __be32 *buffer, unsigned int frames)
--{
--	unsigned int i, c;
--
--	for (i = 0; i < frames; ++i) {
--		for (c = 0; c < s->pcm_channels; ++c)
--			buffer[s->pcm_positions[c]] = cpu_to_be32(0x40000000);
--		buffer += s->data_block_quadlets;
--	}
--}
--
--/*
-- * To avoid sending MIDI bytes at too high a rate, assume that the receiving
-- * device has a FIFO, and track how much it is filled.  This values increases
-- * by one whenever we send one byte in a packet, but the FIFO empties at
-- * a constant rate independent of our packet rate.  One packet has syt_interval
-- * samples, so the number of bytes that empty out of the FIFO, per packet(!),
-- * is MIDI_BYTES_PER_SECOND * syt_interval / sample_rate.  To avoid storing
-- * fractional values, the values in midi_fifo_used[] are measured in bytes
-- * multiplied by the sample rate.
-- */
--static bool midi_ratelimit_per_packet(struct amdtp_stream *s, unsigned int port)
--{
--	int used;
--
--	used = s->midi_fifo_used[port];
--	if (used == 0) /* common shortcut */
--		return true;
--
--	used -= MIDI_BYTES_PER_SECOND * s->syt_interval;
--	used = max(used, 0);
--	s->midi_fifo_used[port] = used;
--
--	return used < s->midi_fifo_limit;
--}
--
--static void midi_rate_use_one_byte(struct amdtp_stream *s, unsigned int port)
--{
--	s->midi_fifo_used[port] += amdtp_rate_table[s->sfc];
--}
--
--static void write_midi_messages(struct amdtp_stream *s,
--				__be32 *buffer, unsigned int frames)
--{
--	unsigned int f, port;
--	u8 *b;
--
--	for (f = 0; f < frames; f++) {
--		b = (u8 *)&buffer[s->midi_position];
--
--		port = (s->data_block_counter + f) % 8;
--		if (f < MAX_MIDI_RX_BLOCKS &&
--		    midi_ratelimit_per_packet(s, port) &&
--		    s->midi[port] != NULL &&
--		    snd_rawmidi_transmit(s->midi[port], &b[1], 1) == 1) {
--			midi_rate_use_one_byte(s, port);
--			b[0] = 0x81;
--		} else {
--			b[0] = 0x80;
--			b[1] = 0;
--		}
--		b[2] = 0;
--		b[3] = 0;
--
--		buffer += s->data_block_quadlets;
--	}
--}
--
--static void read_midi_messages(struct amdtp_stream *s,
--			       __be32 *buffer, unsigned int frames)
--{
--	unsigned int f, port;
--	int len;
--	u8 *b;
--
--	for (f = 0; f < frames; f++) {
--		port = (s->data_block_counter + f) % 8;
--		b = (u8 *)&buffer[s->midi_position];
--
--		len = b[0] - 0x80;
--		if ((1 <= len) &&  (len <= 3) && (s->midi[port]))
--			snd_rawmidi_receive(s->midi[port], b + 1, len);
--
--		buffer += s->data_block_quadlets;
--	}
--}
--
--static void update_pcm_pointers(struct amdtp_stream *s,
--				struct snd_pcm_substream *pcm,
--				unsigned int frames)
--{
--	unsigned int ptr;
--
--	/*
--	 * In IEC 61883-6, one data block represents one event. In ALSA, one
--	 * event equals to one PCM frame. But Dice has a quirk to transfer
--	 * two PCM frames in one data block.
--	 */
--	if (s->double_pcm_frames)
--		frames *= 2;
--
--	ptr = s->pcm_buffer_pointer + frames;
--	if (ptr >= pcm->runtime->buffer_size)
--		ptr -= pcm->runtime->buffer_size;
--	ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
--
--	s->pcm_period_pointer += frames;
--	if (s->pcm_period_pointer >= pcm->runtime->period_size) {
--		s->pcm_period_pointer -= pcm->runtime->period_size;
--		s->pointer_flush = false;
--		tasklet_hi_schedule(&s->period_tasklet);
--	}
--}
--
--static void pcm_period_tasklet(unsigned long data)
--{
--	struct amdtp_stream *s = (void *)data;
--	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
--
--	if (pcm)
--		snd_pcm_period_elapsed(pcm);
--}
--
--static int queue_packet(struct amdtp_stream *s,
--			unsigned int header_length,
--			unsigned int payload_length, bool skip)
--{
--	struct fw_iso_packet p = {0};
--	int err = 0;
--
--	if (IS_ERR(s->context))
--		goto end;
--
--	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
--	p.tag = TAG_CIP;
--	p.header_length = header_length;
--	p.payload_length = (!skip) ? payload_length : 0;
--	p.skip = skip;
--	err = fw_iso_context_queue(s->context, &p, &s->buffer.iso_buffer,
--				   s->buffer.packets[s->packet_index].offset);
--	if (err < 0) {
--		dev_err(&s->unit->device, "queueing error: %d\n", err);
--		goto end;
--	}
--
--	if (++s->packet_index >= QUEUE_LENGTH)
--		s->packet_index = 0;
--end:
--	return err;
--}
--
--static inline int queue_out_packet(struct amdtp_stream *s,
--				   unsigned int payload_length, bool skip)
--{
--	return queue_packet(s, OUT_PACKET_HEADER_SIZE,
--			    payload_length, skip);
--}
--
--static inline int queue_in_packet(struct amdtp_stream *s)
--{
--	return queue_packet(s, IN_PACKET_HEADER_SIZE,
--			    amdtp_stream_get_max_payload(s), false);
--}
--
--static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
--			     unsigned int syt)
--{
--	__be32 *buffer;
--	unsigned int payload_length;
--	struct snd_pcm_substream *pcm;
--
--	buffer = s->buffer.packets[s->packet_index].buffer;
--	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
--				(s->data_block_quadlets << CIP_DBS_SHIFT) |
--				s->data_block_counter);
--	buffer[1] = cpu_to_be32(CIP_EOH | CIP_FMT_AM | AMDTP_FDF_AM824 |
--				(s->sfc << CIP_FDF_SHIFT) | syt);
--	buffer += 2;
--
--	pcm = ACCESS_ONCE(s->pcm);
--	if (pcm)
--		s->transfer_samples(s, pcm, buffer, data_blocks);
--	else
--		write_pcm_silence(s, buffer, data_blocks);
--	if (s->midi_ports)
--		write_midi_messages(s, buffer, data_blocks);
--
--	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
--
--	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
--	if (queue_out_packet(s, payload_length, false) < 0)
--		return -EIO;
--
--	if (pcm)
--		update_pcm_pointers(s, pcm, data_blocks);
--
--	/* No need to return the number of handled data blocks. */
--	return 0;
--}
--
--static int handle_in_packet(struct amdtp_stream *s,
--			    unsigned int payload_quadlets, __be32 *buffer,
--			    unsigned int *data_blocks)
--{
--	u32 cip_header[2];
--	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
--	struct snd_pcm_substream *pcm = NULL;
--	bool lost;
--
--	cip_header[0] = be32_to_cpu(buffer[0]);
--	cip_header[1] = be32_to_cpu(buffer[1]);
--
--	/*
--	 * This module supports 'Two-quadlet CIP header with SYT field'.
--	 * For convenience, also check FMT field is AM824 or not.
--	 */
--	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
--	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH) ||
--	    ((cip_header[1] & CIP_FMT_MASK) != CIP_FMT_AM)) {
--		dev_info_ratelimited(&s->unit->device,
--				"Invalid CIP header for AMDTP: %08X:%08X\n",
--				cip_header[0], cip_header[1]);
--		*data_blocks = 0;
--		goto end;
--	}
--
--	/* Calculate data blocks */
--	if (payload_quadlets < 3 ||
--	    ((cip_header[1] & CIP_FDF_MASK) ==
--				(AMDTP_FDF_NO_DATA << CIP_FDF_SHIFT))) {
--		*data_blocks = 0;
--	} else {
--		data_block_quadlets =
--			(cip_header[0] & CIP_DBS_MASK) >> CIP_DBS_SHIFT;
--		/* avoid division by zero */
--		if (data_block_quadlets == 0) {
--			dev_err(&s->unit->device,
--				"Detect invalid value in dbs field: %08X\n",
--				cip_header[0]);
--			return -EPROTO;
--		}
--		if (s->flags & CIP_WRONG_DBS)
--			data_block_quadlets = s->data_block_quadlets;
--
--		*data_blocks = (payload_quadlets - 2) / data_block_quadlets;
--	}
--
--	/* Check data block counter continuity */
--	data_block_counter = cip_header[0] & CIP_DBC_MASK;
--	if (*data_blocks == 0 && (s->flags & CIP_EMPTY_HAS_WRONG_DBC) &&
--	    s->data_block_counter != UINT_MAX)
--		data_block_counter = s->data_block_counter;
--
--	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) && data_block_counter == 0) ||
--	    (s->data_block_counter == UINT_MAX)) {
--		lost = false;
--	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
--		lost = data_block_counter != s->data_block_counter;
--	} else {
--		if ((*data_blocks > 0) && (s->tx_dbc_interval > 0))
--			dbc_interval = s->tx_dbc_interval;
--		else
--			dbc_interval = *data_blocks;
--
--		lost = data_block_counter !=
--		       ((s->data_block_counter + dbc_interval) & 0xff);
--	}
--
--	if (lost) {
--		dev_err(&s->unit->device,
--			"Detect discontinuity of CIP: %02X %02X\n",
--			s->data_block_counter, data_block_counter);
--		return -EIO;
--	}
--
--	if (*data_blocks > 0) {
--		buffer += 2;
--
--		pcm = ACCESS_ONCE(s->pcm);
--		if (pcm)
--			s->transfer_samples(s, pcm, buffer, *data_blocks);
--
--		if (s->midi_ports)
--			read_midi_messages(s, buffer, *data_blocks);
--	}
--
--	if (s->flags & CIP_DBC_IS_END_EVENT)
--		s->data_block_counter = data_block_counter;
--	else
--		s->data_block_counter =
--				(data_block_counter + *data_blocks) & 0xff;
--end:
--	if (queue_in_packet(s) < 0)
--		return -EIO;
--
--	if (pcm)
--		update_pcm_pointers(s, pcm, *data_blocks);
--
--	return 0;
--}
--
--static void out_stream_callback(struct fw_iso_context *context, u32 cycle,
--				size_t header_length, void *header,
--				void *private_data)
--{
--	struct amdtp_stream *s = private_data;
--	unsigned int i, syt, packets = header_length / 4;
--	unsigned int data_blocks;
--
--	if (s->packet_index < 0)
--		return;
--
--	/*
--	 * Compute the cycle of the last queued packet.
--	 * (We need only the four lowest bits for the SYT, so we can ignore
--	 * that bits 0-11 must wrap around at 3072.)
--	 */
--	cycle += QUEUE_LENGTH - packets;
--
--	for (i = 0; i < packets; ++i) {
--		syt = calculate_syt(s, ++cycle);
--		data_blocks = calculate_data_blocks(s, syt);
--
--		if (handle_out_packet(s, data_blocks, syt) < 0) {
--			s->packet_index = -1;
--			amdtp_stream_pcm_abort(s);
--			return;
--		}
--	}
--
--	fw_iso_context_queue_flush(s->context);
--}
--
--static void in_stream_callback(struct fw_iso_context *context, u32 cycle,
--			       size_t header_length, void *header,
--			       void *private_data)
--{
--	struct amdtp_stream *s = private_data;
--	unsigned int p, syt, packets;
--	unsigned int payload_quadlets, max_payload_quadlets;
--	unsigned int data_blocks;
--	__be32 *buffer, *headers = header;
--
--	if (s->packet_index < 0)
--		return;
--
--	/* The number of packets in buffer */
--	packets = header_length / IN_PACKET_HEADER_SIZE;
--
--	/* For buffer-over-run prevention. */
--	max_payload_quadlets = amdtp_stream_get_max_payload(s) / 4;
--
--	for (p = 0; p < packets; p++) {
--		buffer = s->buffer.packets[s->packet_index].buffer;
--
--		/* The number of quadlets in this packet */
--		payload_quadlets =
--			(be32_to_cpu(headers[p]) >> ISO_DATA_LENGTH_SHIFT) / 4;
--		if (payload_quadlets > max_payload_quadlets) {
--			dev_err(&s->unit->device,
--				"Detect jumbo payload: %02x %02x\n",
--				payload_quadlets, max_payload_quadlets);
--			s->packet_index = -1;
--			break;
--		}
--
--		if (handle_in_packet(s, payload_quadlets, buffer,
--							&data_blocks) < 0) {
--			s->packet_index = -1;
--			break;
--		}
--
--		/* Process sync slave stream */
--		if (s->sync_slave && s->sync_slave->callbacked) {
--			syt = be32_to_cpu(buffer[1]) & CIP_SYT_MASK;
--			if (handle_out_packet(s->sync_slave,
--					      data_blocks, syt) < 0) {
--				s->packet_index = -1;
--				break;
--			}
--		}
--	}
--
--	/* Queueing error or detecting discontinuity */
--	if (s->packet_index < 0) {
--		amdtp_stream_pcm_abort(s);
--
--		/* Abort sync slave. */
--		if (s->sync_slave) {
--			s->sync_slave->packet_index = -1;
--			amdtp_stream_pcm_abort(s->sync_slave);
--		}
--		return;
--	}
--
--	/* when sync to device, flush the packets for slave stream */
--	if (s->sync_slave && s->sync_slave->callbacked)
--		fw_iso_context_queue_flush(s->sync_slave->context);
--
--	fw_iso_context_queue_flush(s->context);
--}
--
--/* processing is done by master callback */
--static void slave_stream_callback(struct fw_iso_context *context, u32 cycle,
--				  size_t header_length, void *header,
--				  void *private_data)
--{
--	return;
--}
--
--/* this is executed one time */
--static void amdtp_stream_first_callback(struct fw_iso_context *context,
--					u32 cycle, size_t header_length,
--					void *header, void *private_data)
--{
--	struct amdtp_stream *s = private_data;
--
--	/*
--	 * For in-stream, first packet has come.
--	 * For out-stream, prepared to transmit first packet
--	 */
--	s->callbacked = true;
--	wake_up(&s->callback_wait);
--
--	if (s->direction == AMDTP_IN_STREAM)
--		context->callback.sc = in_stream_callback;
--	else if (s->flags & CIP_SYNC_TO_DEVICE)
--		context->callback.sc = slave_stream_callback;
--	else
--		context->callback.sc = out_stream_callback;
--
--	context->callback.sc(context, cycle, header_length, header, s);
--}
--
--/**
-- * amdtp_stream_start - start transferring packets
-- * @s: the AMDTP stream to start
-- * @channel: the isochronous channel on the bus
-- * @speed: firewire speed code
-- *
-- * The stream cannot be started until it has been configured with
-- * amdtp_stream_set_parameters() and it must be started before any PCM or MIDI
-- * device can be started.
-- */
--int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
--{
--	static const struct {
--		unsigned int data_block;
--		unsigned int syt_offset;
--	} initial_state[] = {
--		[CIP_SFC_32000]  = {  4, 3072 },
--		[CIP_SFC_48000]  = {  6, 1024 },
--		[CIP_SFC_96000]  = { 12, 1024 },
--		[CIP_SFC_192000] = { 24, 1024 },
--		[CIP_SFC_44100]  = {  0,   67 },
--		[CIP_SFC_88200]  = {  0,   67 },
--		[CIP_SFC_176400] = {  0,   67 },
--	};
--	unsigned int header_size;
--	enum dma_data_direction dir;
--	int type, tag, err;
--
--	mutex_lock(&s->mutex);
--
--	if (WARN_ON(amdtp_stream_running(s) ||
--		    (s->data_block_quadlets < 1))) {
--		err = -EBADFD;
--		goto err_unlock;
--	}
--
--	if (s->direction == AMDTP_IN_STREAM &&
--	    s->flags & CIP_SKIP_INIT_DBC_CHECK)
--		s->data_block_counter = UINT_MAX;
--	else
--		s->data_block_counter = 0;
--	s->data_block_state = initial_state[s->sfc].data_block;
--	s->syt_offset_state = initial_state[s->sfc].syt_offset;
--	s->last_syt_offset = TICKS_PER_CYCLE;
--
--	/* initialize packet buffer */
--	if (s->direction == AMDTP_IN_STREAM) {
--		dir = DMA_FROM_DEVICE;
--		type = FW_ISO_CONTEXT_RECEIVE;
--		header_size = IN_PACKET_HEADER_SIZE;
--	} else {
--		dir = DMA_TO_DEVICE;
--		type = FW_ISO_CONTEXT_TRANSMIT;
--		header_size = OUT_PACKET_HEADER_SIZE;
--	}
--	err = iso_packets_buffer_init(&s->buffer, s->unit, QUEUE_LENGTH,
--				      amdtp_stream_get_max_payload(s), dir);
--	if (err < 0)
--		goto err_unlock;
--
--	s->context = fw_iso_context_create(fw_parent_device(s->unit)->card,
--					   type, channel, speed, header_size,
--					   amdtp_stream_first_callback, s);
--	if (IS_ERR(s->context)) {
--		err = PTR_ERR(s->context);
--		if (err == -EBUSY)
--			dev_err(&s->unit->device,
--				"no free stream on this controller\n");
--		goto err_buffer;
--	}
--
--	amdtp_stream_update(s);
--
--	s->packet_index = 0;
--	do {
--		if (s->direction == AMDTP_IN_STREAM)
--			err = queue_in_packet(s);
--		else
--			err = queue_out_packet(s, 0, true);
--		if (err < 0)
--			goto err_context;
--	} while (s->packet_index > 0);
--
--	/* NOTE: TAG1 matches CIP. This just affects in stream. */
--	tag = FW_ISO_CONTEXT_MATCH_TAG1;
--	if (s->flags & CIP_EMPTY_WITH_TAG0)
--		tag |= FW_ISO_CONTEXT_MATCH_TAG0;
--
--	s->callbacked = false;
--	err = fw_iso_context_start(s->context, -1, 0, tag);
--	if (err < 0)
--		goto err_context;
--
--	mutex_unlock(&s->mutex);
--
--	return 0;
--
--err_context:
--	fw_iso_context_destroy(s->context);
--	s->context = ERR_PTR(-1);
--err_buffer:
--	iso_packets_buffer_destroy(&s->buffer, s->unit);
--err_unlock:
--	mutex_unlock(&s->mutex);
--
--	return err;
--}
--EXPORT_SYMBOL(amdtp_stream_start);
--
--/**
-- * amdtp_stream_pcm_pointer - get the PCM buffer position
-- * @s: the AMDTP stream that transports the PCM data
-- *
-- * Returns the current buffer position, in frames.
-- */
--unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
--{
--	/* this optimization is allowed to be racy */
--	if (s->pointer_flush && amdtp_stream_running(s))
--		fw_iso_context_flush_completions(s->context);
--	else
--		s->pointer_flush = true;
--
--	return ACCESS_ONCE(s->pcm_buffer_pointer);
--}
--EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
--
--/**
-- * amdtp_stream_update - update the stream after a bus reset
-- * @s: the AMDTP stream
-- */
--void amdtp_stream_update(struct amdtp_stream *s)
--{
--	/* Precomputing. */
--	ACCESS_ONCE(s->source_node_id_field) =
--		(fw_parent_device(s->unit)->card->node_id << CIP_SID_SHIFT) &
--								CIP_SID_MASK;
--}
--EXPORT_SYMBOL(amdtp_stream_update);
--
--/**
-- * amdtp_stream_stop - stop sending packets
-- * @s: the AMDTP stream to stop
-- *
-- * All PCM and MIDI devices of the stream must be stopped before the stream
-- * itself can be stopped.
-- */
--void amdtp_stream_stop(struct amdtp_stream *s)
--{
--	mutex_lock(&s->mutex);
--
--	if (!amdtp_stream_running(s)) {
--		mutex_unlock(&s->mutex);
--		return;
--	}
--
--	tasklet_kill(&s->period_tasklet);
--	fw_iso_context_stop(s->context);
--	fw_iso_context_destroy(s->context);
--	s->context = ERR_PTR(-1);
--	iso_packets_buffer_destroy(&s->buffer, s->unit);
--
--	s->callbacked = false;
--
--	mutex_unlock(&s->mutex);
--}
--EXPORT_SYMBOL(amdtp_stream_stop);
--
--/**
-- * amdtp_stream_pcm_abort - abort the running PCM device
-- * @s: the AMDTP stream about to be stopped
-- *
-- * If the isochronous stream needs to be stopped asynchronously, call this
-- * function first to stop the PCM device.
-- */
--void amdtp_stream_pcm_abort(struct amdtp_stream *s)
--{
--	struct snd_pcm_substream *pcm;
--
--	pcm = ACCESS_ONCE(s->pcm);
--	if (pcm)
--		snd_pcm_stop_xrun(pcm);
--}
--EXPORT_SYMBOL(amdtp_stream_pcm_abort);
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-deleted file mode 100644
-index 26b9093..0000000
---- a/sound/firewire/amdtp.h
-+++ /dev/null
-@@ -1,296 +0,0 @@
--#ifndef SOUND_FIREWIRE_AMDTP_H_INCLUDED
--#define SOUND_FIREWIRE_AMDTP_H_INCLUDED
--
--#include <linux/err.h>
--#include <linux/interrupt.h>
--#include <linux/mutex.h>
--#include <sound/asound.h>
--#include "packets-buffer.h"
--
--/**
-- * enum cip_flags - describes details of the streaming protocol
-- * @CIP_NONBLOCKING: In non-blocking mode, each packet contains
-- *	sample_rate/8000 samples, with rounding up or down to adjust
-- *	for clock skew and left-over fractional samples.  This should
-- *	be used if supported by the device.
-- * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
-- *	SYT_INTERVAL samples, with these two types alternating so that
-- *	the overall sample rate comes out right.
-- * @CIP_SYNC_TO_DEVICE: In sync to device mode, time stamp in out packets is
-- *	generated by in packets. Defaultly this driver generates timestamp.
-- * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
-- * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
-- *	corresponds to the end of event in the packet. Out of IEC 61883.
-- * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
-- *	The value of data_block_quadlets is used instead of reported value.
-- * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
-- *	skipped for detecting discontinuity.
-- * @CIP_SKIP_INIT_DBC_CHECK: Only for in-stream. The value of dbc in first
-- *	packet is not continuous from an initial value.
-- * @CIP_EMPTY_HAS_WRONG_DBC: Only for in-stream. The value of dbc in empty
-- *	packet is wrong but the others are correct.
-- * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
-- *	packet is larger than IEC 61883-6 defines. Current implementation
-- *	allows 5 times as large as IEC 61883-6 defines.
-- */
--enum cip_flags {
--	CIP_NONBLOCKING		= 0x00,
--	CIP_BLOCKING		= 0x01,
--	CIP_SYNC_TO_DEVICE	= 0x02,
--	CIP_EMPTY_WITH_TAG0	= 0x04,
--	CIP_DBC_IS_END_EVENT	= 0x08,
--	CIP_WRONG_DBS		= 0x10,
--	CIP_SKIP_DBC_ZERO_CHECK	= 0x20,
--	CIP_SKIP_INIT_DBC_CHECK	= 0x40,
--	CIP_EMPTY_HAS_WRONG_DBC	= 0x80,
--	CIP_JUMBO_PAYLOAD	= 0x100,
--};
--
--/**
-- * enum cip_sfc - supported Sampling Frequency Codes (SFCs)
-- * @CIP_SFC_32000:   32,000 data blocks
-- * @CIP_SFC_44100:   44,100 data blocks
-- * @CIP_SFC_48000:   48,000 data blocks
-- * @CIP_SFC_88200:   88,200 data blocks
-- * @CIP_SFC_96000:   96,000 data blocks
-- * @CIP_SFC_176400: 176,400 data blocks
-- * @CIP_SFC_192000: 192,000 data blocks
-- * @CIP_SFC_COUNT: the number of supported SFCs
-- *
-- * These values are used to show nominal Sampling Frequency Code in
-- * Format Dependent Field (FDF) of AMDTP packet header. In IEC 61883-6:2002,
-- * this code means the number of events per second. Actually the code
-- * represents the number of data blocks transferred per second in an AMDTP
-- * stream.
-- *
-- * In IEC 61883-6:2005, some extensions were added to support more types of
-- * data such as 'One Bit LInear Audio', therefore the meaning of SFC became
-- * different depending on the types.
-- *
-- * Currently our implementation is compatible with IEC 61883-6:2002.
-- */
--enum cip_sfc {
--	CIP_SFC_32000  = 0,
--	CIP_SFC_44100  = 1,
--	CIP_SFC_48000  = 2,
--	CIP_SFC_88200  = 3,
--	CIP_SFC_96000  = 4,
--	CIP_SFC_176400 = 5,
--	CIP_SFC_192000 = 6,
--	CIP_SFC_COUNT
--};
--
--#define AMDTP_IN_PCM_FORMAT_BITS	SNDRV_PCM_FMTBIT_S32
--
--#define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
--					 SNDRV_PCM_FMTBIT_S32)
--
--
--/*
-- * This module supports maximum 64 PCM channels for one PCM stream
-- * This is for our convenience.
-- */
--#define AMDTP_MAX_CHANNELS_FOR_PCM	64
--
--/*
-- * AMDTP packet can include channels for MIDI conformant data.
-- * Each MIDI conformant data channel includes 8 MPX-MIDI data stream.
-- * Each MPX-MIDI data stream includes one data stream from/to MIDI ports.
-- *
-- * This module supports maximum 1 MIDI conformant data channels.
-- * Then this AMDTP packets can transfer maximum 8 MIDI data streams.
-- */
--#define AMDTP_MAX_CHANNELS_FOR_MIDI	1
--
--struct fw_unit;
--struct fw_iso_context;
--struct snd_pcm_substream;
--struct snd_pcm_runtime;
--struct snd_rawmidi_substream;
--
--enum amdtp_stream_direction {
--	AMDTP_OUT_STREAM = 0,
--	AMDTP_IN_STREAM
--};
--
--struct amdtp_stream {
--	struct fw_unit *unit;
--	enum cip_flags flags;
--	enum amdtp_stream_direction direction;
--	struct fw_iso_context *context;
--	struct mutex mutex;
--
--	enum cip_sfc sfc;
--	unsigned int data_block_quadlets;
--	unsigned int pcm_channels;
--	unsigned int midi_ports;
--	void (*transfer_samples)(struct amdtp_stream *s,
--				 struct snd_pcm_substream *pcm,
--				 __be32 *buffer, unsigned int frames);
--	u8 pcm_positions[AMDTP_MAX_CHANNELS_FOR_PCM];
--	u8 midi_position;
--
--	unsigned int syt_interval;
--	unsigned int transfer_delay;
--	unsigned int source_node_id_field;
--	struct iso_packets_buffer buffer;
--
--	struct snd_pcm_substream *pcm;
--	struct tasklet_struct period_tasklet;
--
--	int packet_index;
--	unsigned int data_block_counter;
--
--	unsigned int data_block_state;
--
--	unsigned int last_syt_offset;
--	unsigned int syt_offset_state;
--
--	unsigned int pcm_buffer_pointer;
--	unsigned int pcm_period_pointer;
--	bool pointer_flush;
--	bool double_pcm_frames;
--
--	struct snd_rawmidi_substream *midi[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
--	int midi_fifo_limit;
--	int midi_fifo_used[AMDTP_MAX_CHANNELS_FOR_MIDI * 8];
--
--	/* quirk: fixed interval of dbc between previos/current packets. */
--	unsigned int tx_dbc_interval;
--
--	bool callbacked;
--	wait_queue_head_t callback_wait;
--	struct amdtp_stream *sync_slave;
--};
--
--int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir,
--		      enum cip_flags flags);
--void amdtp_stream_destroy(struct amdtp_stream *s);
--
--void amdtp_stream_set_parameters(struct amdtp_stream *s,
--				 unsigned int rate,
--				 unsigned int pcm_channels,
--				 unsigned int midi_ports);
--unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s);
--
--int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed);
--void amdtp_stream_update(struct amdtp_stream *s);
--void amdtp_stream_stop(struct amdtp_stream *s);
--
--int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
--					struct snd_pcm_runtime *runtime);
--void amdtp_stream_set_pcm_format(struct amdtp_stream *s,
--				 snd_pcm_format_t format);
--void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
--unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
--void amdtp_stream_pcm_abort(struct amdtp_stream *s);
--
--extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
--extern const unsigned int amdtp_rate_table[CIP_SFC_COUNT];
--
--/**
-- * amdtp_stream_running - check stream is running or not
-- * @s: the AMDTP stream
-- *
-- * If this function returns true, the stream is running.
-- */
--static inline bool amdtp_stream_running(struct amdtp_stream *s)
--{
--	return !IS_ERR(s->context);
--}
--
--/**
-- * amdtp_streaming_error - check for streaming error
-- * @s: the AMDTP stream
-- *
-- * If this function returns true, the stream's packet queue has stopped due to
-- * an asynchronous error.
-- */
--static inline bool amdtp_streaming_error(struct amdtp_stream *s)
--{
--	return s->packet_index < 0;
--}
--
--/**
-- * amdtp_stream_pcm_running - check PCM substream is running or not
-- * @s: the AMDTP stream
-- *
-- * If this function returns true, PCM substream in the AMDTP stream is running.
-- */
--static inline bool amdtp_stream_pcm_running(struct amdtp_stream *s)
--{
--	return !!s->pcm;
--}
--
--/**
-- * amdtp_stream_pcm_trigger - start/stop playback from a PCM device
-- * @s: the AMDTP stream
-- * @pcm: the PCM device to be started, or %NULL to stop the current device
-- *
-- * Call this function on a running isochronous stream to enable the actual
-- * transmission of PCM data.  This function should be called from the PCM
-- * device's .trigger callback.
-- */
--static inline void amdtp_stream_pcm_trigger(struct amdtp_stream *s,
--					    struct snd_pcm_substream *pcm)
--{
--	ACCESS_ONCE(s->pcm) = pcm;
--}
--
--/**
-- * amdtp_stream_midi_trigger - start/stop playback/capture with a MIDI device
-- * @s: the AMDTP stream
-- * @port: index of MIDI port
-- * @midi: the MIDI device to be started, or %NULL to stop the current device
-- *
-- * Call this function on a running isochronous stream to enable the actual
-- * transmission of MIDI data.  This function should be called from the MIDI
-- * device's .trigger callback.
-- */
--static inline void amdtp_stream_midi_trigger(struct amdtp_stream *s,
--					     unsigned int port,
--					     struct snd_rawmidi_substream *midi)
--{
--	if (port < s->midi_ports)
--		ACCESS_ONCE(s->midi[port]) = midi;
--}
--
--static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
--{
--	return sfc & 1;
--}
--
--static inline void amdtp_stream_set_sync(enum cip_flags sync_mode,
--					 struct amdtp_stream *master,
--					 struct amdtp_stream *slave)
--{
--	if (sync_mode == CIP_SYNC_TO_DEVICE) {
--		master->flags |= CIP_SYNC_TO_DEVICE;
--		slave->flags |= CIP_SYNC_TO_DEVICE;
--		master->sync_slave = slave;
--	} else {
--		master->flags &= ~CIP_SYNC_TO_DEVICE;
--		slave->flags &= ~CIP_SYNC_TO_DEVICE;
--		master->sync_slave = NULL;
--	}
--
--	slave->sync_slave = NULL;
--}
--
--/**
-- * amdtp_stream_wait_callback - sleep till callbacked or timeout
-- * @s: the AMDTP stream
-- * @timeout: msec till timeout
-- *
-- * If this function return false, the AMDTP stream should be stopped.
-- */
--static inline bool amdtp_stream_wait_callback(struct amdtp_stream *s,
--					      unsigned int timeout)
--{
--	return wait_event_timeout(s->callback_wait,
--				  s->callbacked == true,
--				  msecs_to_jiffies(timeout)) > 0;
--}
--
--#endif
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index d23caca..72a1c5e 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -31,7 +31,7 @@
- #include "../fcp.h"
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
--#include "../amdtp.h"
-+#include "../amdtp-stream.h"
- #include "../cmp.h"
- 
- /* basic register addresses on DM1000/DM1100/DM1500 */
-diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index ecf5dc8..29578c1 100644
---- a/sound/firewire/dice/dice.h
-+++ b/sound/firewire/dice/dice.h
-@@ -34,7 +34,7 @@
- #include <sound/pcm_params.h>
- #include <sound/rawmidi.h>
- 
--#include "../amdtp.h"
-+#include "../amdtp-stream.h"
- #include "../iso-resources.h"
- #include "../lib.h"
- #include "dice-interface.h"
-diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
-index 0619597..cce1976 100644
---- a/sound/firewire/fcp.c
-+++ b/sound/firewire/fcp.c
-@@ -17,7 +17,7 @@
- #include <linux/delay.h>
- #include "fcp.h"
- #include "lib.h"
--#include "amdtp.h"
-+#include "amdtp-stream.h"
- 
- #define CTS_AVC 0x00
- 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 4f0201a..f6f9ae6 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -29,7 +29,7 @@
- 
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
--#include "../amdtp.h"
-+#include "../amdtp-stream.h"
- #include "../cmp.h"
- #include "../lib.h"
- 
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index cace5ad..2c3d20b 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -28,7 +28,7 @@
- #include "../fcp.h"
- #include "../packets-buffer.h"
- #include "../iso-resources.h"
--#include "../amdtp.h"
-+#include "../amdtp-stream.h"
- #include "../cmp.h"
- 
- struct device_info {
--- 
-2.1.4
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=".config"
+
+#
+# Automatically generated file; DO NOT EDIT.
+# Linux/i386 4.2.0-rc1 Kernel Configuration
+#
+# CONFIG_64BIT is not set
+CONFIG_X86_32=y
+CONFIG_X86=y
+CONFIG_INSTRUCTION_DECODER=y
+CONFIG_OUTPUT_FORMAT="elf32-i386"
+CONFIG_ARCH_DEFCONFIG="arch/x86/configs/i386_defconfig"
+CONFIG_LOCKDEP_SUPPORT=y
+CONFIG_STACKTRACE_SUPPORT=y
+CONFIG_HAVE_LATENCYTOP_SUPPORT=y
+CONFIG_MMU=y
+CONFIG_NEED_SG_DMA_LENGTH=y
+CONFIG_GENERIC_ISA_DMA=y
+CONFIG_GENERIC_BUG=y
+CONFIG_GENERIC_HWEIGHT=y
+CONFIG_ARCH_MAY_HAVE_PC_FDC=y
+CONFIG_RWSEM_XCHGADD_ALGORITHM=y
+CONFIG_GENERIC_CALIBRATE_DELAY=y
+CONFIG_ARCH_HAS_CPU_RELAX=y
+CONFIG_ARCH_HAS_CACHE_LINE_SIZE=y
+CONFIG_HAVE_SETUP_PER_CPU_AREA=y
+CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK=y
+CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK=y
+CONFIG_ARCH_HIBERNATION_POSSIBLE=y
+CONFIG_ARCH_SUSPEND_POSSIBLE=y
+CONFIG_ARCH_WANT_HUGE_PMD_SHARE=y
+CONFIG_ARCH_WANT_GENERAL_HUGETLB=y
+CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING=y
+CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC=y
+CONFIG_X86_32_LAZY_GS=y
+CONFIG_ARCH_HWEIGHT_CFLAGS="-fcall-saved-ecx -fcall-saved-edx"
+CONFIG_ARCH_SUPPORTS_UPROBES=y
+CONFIG_FIX_EARLYCON_MEM=y
+CONFIG_PGTABLE_LEVELS=3
+CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
+CONFIG_CONSTRUCTORS=y
+CONFIG_IRQ_WORK=y
+CONFIG_BUILDTIME_EXTABLE_SORT=y
+
+#
+# General setup
+#
+CONFIG_BROKEN_ON_SMP=y
+CONFIG_INIT_ENV_ARG_LIMIT=32
+CONFIG_CROSS_COMPILE=""
+CONFIG_COMPILE_TEST=y
+CONFIG_LOCALVERSION=""
+CONFIG_LOCALVERSION_AUTO=y
+CONFIG_HAVE_KERNEL_GZIP=y
+CONFIG_HAVE_KERNEL_BZIP2=y
+CONFIG_HAVE_KERNEL_LZMA=y
+CONFIG_HAVE_KERNEL_XZ=y
+CONFIG_HAVE_KERNEL_LZO=y
+CONFIG_HAVE_KERNEL_LZ4=y
+# CONFIG_KERNEL_GZIP is not set
+# CONFIG_KERNEL_BZIP2 is not set
+# CONFIG_KERNEL_LZMA is not set
+# CONFIG_KERNEL_XZ is not set
+CONFIG_KERNEL_LZO=y
+# CONFIG_KERNEL_LZ4 is not set
+CONFIG_DEFAULT_HOSTNAME="(none)"
+CONFIG_SYSVIPC=y
+# CONFIG_POSIX_MQUEUE is not set
+# CONFIG_CROSS_MEMORY_ATTACH is not set
+CONFIG_FHANDLE=y
+# CONFIG_USELIB is not set
+CONFIG_AUDIT=y
+CONFIG_HAVE_ARCH_AUDITSYSCALL=y
+CONFIG_AUDITSYSCALL=y
+CONFIG_AUDIT_WATCH=y
+CONFIG_AUDIT_TREE=y
+
+#
+# IRQ subsystem
+#
+CONFIG_GENERIC_IRQ_PROBE=y
+CONFIG_GENERIC_IRQ_SHOW=y
+CONFIG_GENERIC_IRQ_CHIP=y
+CONFIG_IRQ_DOMAIN=y
+CONFIG_IRQ_DOMAIN_DEBUG=y
+CONFIG_IRQ_FORCED_THREADING=y
+CONFIG_SPARSE_IRQ=y
+CONFIG_CLOCKSOURCE_WATCHDOG=y
+CONFIG_ARCH_CLOCKSOURCE_DATA=y
+CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE=y
+CONFIG_GENERIC_TIME_VSYSCALL=y
+CONFIG_GENERIC_CLOCKEVENTS=y
+CONFIG_GENERIC_CLOCKEVENTS_MIN_ADJUST=y
+CONFIG_GENERIC_CMOS_UPDATE=y
+
+#
+# Timers subsystem
+#
+CONFIG_TICK_ONESHOT=y
+CONFIG_HZ_PERIODIC=y
+# CONFIG_NO_HZ_IDLE is not set
+CONFIG_NO_HZ=y
+CONFIG_HIGH_RES_TIMERS=y
+
+#
+# CPU/Task time and stats accounting
+#
+CONFIG_TICK_CPU_ACCOUNTING=y
+# CONFIG_IRQ_TIME_ACCOUNTING is not set
+# CONFIG_BSD_PROCESS_ACCT is not set
+CONFIG_TASKSTATS=y
+CONFIG_TASK_DELAY_ACCT=y
+# CONFIG_TASK_XACCT is not set
+
+#
+# RCU Subsystem
+#
+CONFIG_PREEMPT_RCU=y
+# CONFIG_RCU_EXPERT is not set
+CONFIG_SRCU=y
+# CONFIG_TASKS_RCU is not set
+CONFIG_RCU_STALL_COMMON=y
+CONFIG_TREE_RCU_TRACE=y
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_NONE is not set
+# CONFIG_RCU_NOCB_CPU_ZERO is not set
+CONFIG_RCU_NOCB_CPU_ALL=y
+# CONFIG_RCU_EXPEDITE_BOOT is not set
+CONFIG_BUILD_BIN2C=y
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
+CONFIG_LOG_BUF_SHIFT=17
+CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=y
+CONFIG_CGROUPS=y
+CONFIG_CGROUP_DEBUG=y
+# CONFIG_CGROUP_FREEZER is not set
+# CONFIG_CGROUP_DEVICE is not set
+# CONFIG_CPUSETS is not set
+# CONFIG_CGROUP_CPUACCT is not set
+CONFIG_PAGE_COUNTER=y
+CONFIG_MEMCG=y
+# CONFIG_MEMCG_KMEM is not set
+CONFIG_CGROUP_PERF=y
+CONFIG_CGROUP_SCHED=y
+CONFIG_FAIR_GROUP_SCHED=y
+# CONFIG_CFS_BANDWIDTH is not set
+CONFIG_RT_GROUP_SCHED=y
+# CONFIG_CHECKPOINT_RESTORE is not set
+# CONFIG_NAMESPACES is not set
+CONFIG_SCHED_AUTOGROUP=y
+# CONFIG_SYSFS_DEPRECATED is not set
+CONFIG_RELAY=y
+CONFIG_BLK_DEV_INITRD=y
+CONFIG_INITRAMFS_SOURCE=""
+CONFIG_RD_GZIP=y
+CONFIG_RD_BZIP2=y
+CONFIG_RD_LZMA=y
+CONFIG_RD_XZ=y
+CONFIG_RD_LZO=y
+CONFIG_RD_LZ4=y
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+CONFIG_ANON_INODES=y
+CONFIG_HAVE_UID16=y
+CONFIG_SYSCTL_EXCEPTION_TRACE=y
+CONFIG_HAVE_PCSPKR_PLATFORM=y
+CONFIG_BPF=y
+CONFIG_EXPERT=y
+CONFIG_UID16=y
+CONFIG_MULTIUSER=y
+# CONFIG_SGETMASK_SYSCALL is not set
+# CONFIG_SYSFS_SYSCALL is not set
+CONFIG_KALLSYMS=y
+CONFIG_KALLSYMS_ALL=y
+CONFIG_PRINTK=y
+CONFIG_BUG=y
+# CONFIG_ELF_CORE is not set
+CONFIG_PCSPKR_PLATFORM=y
+# CONFIG_BASE_FULL is not set
+CONFIG_FUTEX=y
+CONFIG_EPOLL=y
+CONFIG_SIGNALFD=y
+CONFIG_TIMERFD=y
+CONFIG_EVENTFD=y
+CONFIG_BPF_SYSCALL=y
+CONFIG_SHMEM=y
+CONFIG_AIO=y
+CONFIG_ADVISE_SYSCALLS=y
+CONFIG_PCI_QUIRKS=y
+# CONFIG_EMBEDDED is not set
+CONFIG_HAVE_PERF_EVENTS=y
+CONFIG_PERF_USE_VMALLOC=y
+
+#
+# Kernel Performance Events And Counters
+#
+CONFIG_PERF_EVENTS=y
+CONFIG_DEBUG_PERF_USE_VMALLOC=y
+# CONFIG_VM_EVENT_COUNTERS is not set
+# CONFIG_COMPAT_BRK is not set
+CONFIG_SLAB=y
+# CONFIG_SLUB is not set
+# CONFIG_SLOB is not set
+CONFIG_SYSTEM_TRUSTED_KEYRING=y
+# CONFIG_PROFILING is not set
+CONFIG_HAVE_OPROFILE=y
+CONFIG_OPROFILE_NMI_TIMER=y
+# CONFIG_KPROBES is not set
+# CONFIG_JUMP_LABEL is not set
+# CONFIG_UPROBES is not set
+# CONFIG_HAVE_64BIT_ALIGNED_ACCESS is not set
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y
+CONFIG_ARCH_USE_BUILTIN_BSWAP=y
+CONFIG_USER_RETURN_NOTIFIER=y
+CONFIG_HAVE_IOREMAP_PROT=y
+CONFIG_HAVE_KPROBES=y
+CONFIG_HAVE_KRETPROBES=y
+CONFIG_HAVE_OPTPROBES=y
+CONFIG_HAVE_KPROBES_ON_FTRACE=y
+CONFIG_HAVE_ARCH_TRACEHOOK=y
+CONFIG_HAVE_DMA_ATTRS=y
+CONFIG_HAVE_DMA_CONTIGUOUS=y
+CONFIG_GENERIC_SMP_IDLE_THREAD=y
+CONFIG_HAVE_REGS_AND_STACK_ACCESS_API=y
+CONFIG_HAVE_DMA_API_DEBUG=y
+CONFIG_HAVE_HW_BREAKPOINT=y
+CONFIG_HAVE_MIXED_BREAKPOINTS_REGS=y
+CONFIG_HAVE_USER_RETURN_NOTIFIER=y
+CONFIG_HAVE_PERF_EVENTS_NMI=y
+CONFIG_HAVE_PERF_REGS=y
+CONFIG_HAVE_PERF_USER_STACK_DUMP=y
+CONFIG_HAVE_ARCH_JUMP_LABEL=y
+CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG=y
+CONFIG_HAVE_CMPXCHG_LOCAL=y
+CONFIG_HAVE_CMPXCHG_DOUBLE=y
+CONFIG_ARCH_WANT_IPC_PARSE_VERSION=y
+CONFIG_HAVE_ARCH_SECCOMP_FILTER=y
+CONFIG_HAVE_CC_STACKPROTECTOR=y
+# CONFIG_CC_STACKPROTECTOR is not set
+CONFIG_CC_STACKPROTECTOR_NONE=y
+# CONFIG_CC_STACKPROTECTOR_REGULAR is not set
+# CONFIG_CC_STACKPROTECTOR_STRONG is not set
+CONFIG_HAVE_IRQ_TIME_ACCOUNTING=y
+CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
+CONFIG_HAVE_ARCH_HUGE_VMAP=y
+CONFIG_MODULES_USE_ELF_REL=y
+CONFIG_ARCH_HAS_ELF_RANDOMIZE=y
+CONFIG_HAVE_COPY_THREAD_TLS=y
+CONFIG_CLONE_BACKWARDS=y
+CONFIG_OLD_SIGSUSPEND3=y
+CONFIG_OLD_SIGACTION=y
+
+#
+# GCOV-based kernel profiling
+#
+CONFIG_GCOV_KERNEL=y
+CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
+CONFIG_GCOV_PROFILE_ALL=y
+CONFIG_GCOV_FORMAT_AUTODETECT=y
+# CONFIG_GCOV_FORMAT_3_4 is not set
+# CONFIG_GCOV_FORMAT_4_7 is not set
+CONFIG_HAVE_GENERIC_DMA_COHERENT=y
+CONFIG_SLABINFO=y
+CONFIG_RT_MUTEXES=y
+CONFIG_BASE_SMALL=1
+CONFIG_MODULES=y
+CONFIG_MODULE_FORCE_LOAD=y
+# CONFIG_MODULE_UNLOAD is not set
+# CONFIG_MODVERSIONS is not set
+CONFIG_MODULE_SRCVERSION_ALL=y
+# CONFIG_MODULE_SIG is not set
+# CONFIG_MODULE_COMPRESS is not set
+CONFIG_MODULES_TREE_LOOKUP=y
+# CONFIG_BLOCK is not set
+CONFIG_PREEMPT_NOTIFIERS=y
+CONFIG_ASN1=y
+CONFIG_UNINLINE_SPIN_UNLOCK=y
+CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
+CONFIG_ARCH_USE_QUEUED_SPINLOCKS=y
+CONFIG_ARCH_USE_QUEUED_RWLOCKS=y
+# CONFIG_FREEZER is not set
+
+#
+# Processor type and features
+#
+CONFIG_ZONE_DMA=y
+# CONFIG_SMP is not set
+CONFIG_X86_FEATURE_NAMES=y
+# CONFIG_X86_EXTENDED_PLATFORM is not set
+# CONFIG_X86_INTEL_LPSS is not set
+# CONFIG_X86_AMD_PLATFORM_DEVICE is not set
+CONFIG_IOSF_MBI=y
+# CONFIG_IOSF_MBI_DEBUG is not set
+# CONFIG_X86_32_IRIS is not set
+# CONFIG_SCHED_OMIT_FRAME_POINTER is not set
+CONFIG_HYPERVISOR_GUEST=y
+CONFIG_PARAVIRT=y
+CONFIG_PARAVIRT_DEBUG=y
+# CONFIG_XEN is not set
+CONFIG_KVM_GUEST=y
+CONFIG_KVM_DEBUG_FS=y
+# CONFIG_LGUEST_GUEST is not set
+CONFIG_PARAVIRT_TIME_ACCOUNTING=y
+CONFIG_PARAVIRT_CLOCK=y
+CONFIG_NO_BOOTMEM=y
+# CONFIG_M486 is not set
+# CONFIG_M586 is not set
+# CONFIG_M586TSC is not set
+# CONFIG_M586MMX is not set
+# CONFIG_M686 is not set
+# CONFIG_MPENTIUMII is not set
+# CONFIG_MPENTIUMIII is not set
+# CONFIG_MPENTIUMM is not set
+# CONFIG_MPENTIUM4 is not set
+# CONFIG_MK6 is not set
+# CONFIG_MK7 is not set
+# CONFIG_MK8 is not set
+# CONFIG_MCRUSOE is not set
+# CONFIG_MEFFICEON is not set
+# CONFIG_MWINCHIPC6 is not set
+# CONFIG_MWINCHIP3D is not set
+# CONFIG_MELAN is not set
+# CONFIG_MGEODEGX1 is not set
+# CONFIG_MGEODE_LX is not set
+# CONFIG_MCYRIXIII is not set
+CONFIG_MVIAC3_2=y
+# CONFIG_MVIAC7 is not set
+# CONFIG_MCORE2 is not set
+# CONFIG_MATOM is not set
+CONFIG_X86_GENERIC=y
+CONFIG_X86_INTERNODE_CACHE_SHIFT=6
+CONFIG_X86_L1_CACHE_SHIFT=6
+CONFIG_X86_ALIGNMENT_16=y
+CONFIG_X86_INTEL_USERCOPY=y
+CONFIG_X86_USE_PPRO_CHECKSUM=y
+CONFIG_X86_TSC=y
+CONFIG_X86_CMPXCHG64=y
+CONFIG_X86_CMOV=y
+CONFIG_X86_MINIMUM_CPU_FAMILY=5
+CONFIG_X86_DEBUGCTLMSR=y
+CONFIG_PROCESSOR_SELECT=y
+# CONFIG_CPU_SUP_INTEL is not set
+# CONFIG_CPU_SUP_CYRIX_32 is not set
+CONFIG_CPU_SUP_AMD=y
+# CONFIG_CPU_SUP_CENTAUR is not set
+CONFIG_CPU_SUP_TRANSMETA_32=y
+# CONFIG_CPU_SUP_UMC_32 is not set
+CONFIG_HPET_TIMER=y
+# CONFIG_DMI is not set
+CONFIG_NR_CPUS=1
+# CONFIG_PREEMPT_NONE is not set
+# CONFIG_PREEMPT_VOLUNTARY is not set
+CONFIG_PREEMPT=y
+CONFIG_PREEMPT_COUNT=y
+# CONFIG_X86_UP_APIC is not set
+# CONFIG_X86_MCE is not set
+CONFIG_VM86=y
+CONFIG_X86_16BIT=y
+CONFIG_X86_ESPFIX32=y
+CONFIG_TOSHIBA=m
+CONFIG_I8K=y
+CONFIG_X86_REBOOTFIXUPS=y
+CONFIG_MICROCODE=m
+# CONFIG_MICROCODE_INTEL is not set
+CONFIG_MICROCODE_AMD=y
+CONFIG_MICROCODE_OLD_INTERFACE=y
+# CONFIG_X86_MSR is not set
+# CONFIG_X86_CPUID is not set
+CONFIG_NOHIGHMEM=y
+# CONFIG_HIGHMEM4G is not set
+# CONFIG_HIGHMEM64G is not set
+CONFIG_VMSPLIT_3G=y
+# CONFIG_VMSPLIT_2G is not set
+# CONFIG_VMSPLIT_1G is not set
+CONFIG_PAGE_OFFSET=0xC0000000
+CONFIG_X86_PAE=y
+CONFIG_ARCH_PHYS_ADDR_T_64BIT=y
+CONFIG_ARCH_FLATMEM_ENABLE=y
+CONFIG_ARCH_SPARSEMEM_ENABLE=y
+CONFIG_ARCH_SELECT_MEMORY_MODEL=y
+CONFIG_ILLEGAL_POINTER_VALUE=0
+CONFIG_SELECT_MEMORY_MODEL=y
+CONFIG_FLATMEM_MANUAL=y
+# CONFIG_SPARSEMEM_MANUAL is not set
+CONFIG_FLATMEM=y
+CONFIG_FLAT_NODE_MEM_MAP=y
+CONFIG_SPARSEMEM_STATIC=y
+CONFIG_HAVE_MEMBLOCK=y
+CONFIG_HAVE_MEMBLOCK_NODE_MAP=y
+CONFIG_ARCH_DISCARD_MEMBLOCK=y
+# CONFIG_HAVE_BOOTMEM_INFO_NODE is not set
+CONFIG_PAGEFLAGS_EXTENDED=y
+CONFIG_SPLIT_PTLOCK_CPUS=4
+CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK=y
+CONFIG_COMPACTION=y
+CONFIG_MIGRATION=y
+CONFIG_PHYS_ADDR_T_64BIT=y
+CONFIG_ZONE_DMA_FLAG=1
+CONFIG_VIRT_TO_BUS=y
+CONFIG_MMU_NOTIFIER=y
+# CONFIG_KSM is not set
+CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+# CONFIG_TRANSPARENT_HUGEPAGE is not set
+CONFIG_NEED_PER_CPU_KM=y
+# CONFIG_CLEANCACHE is not set
+# CONFIG_CMA is not set
+CONFIG_ZPOOL=m
+CONFIG_ZBUD=m
+CONFIG_ZSMALLOC=y
+# CONFIG_PGTABLE_MAPPING is not set
+# CONFIG_ZSMALLOC_STAT is not set
+CONFIG_GENERIC_EARLY_IOREMAP=y
+CONFIG_ARCH_SUPPORTS_DEFERRED_STRUCT_PAGE_INIT=y
+CONFIG_X86_CHECK_BIOS_CORRUPTION=y
+# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set
+CONFIG_X86_RESERVE_LOW=64
+# CONFIG_MATH_EMULATION is not set
+# CONFIG_MTRR is not set
+# CONFIG_ARCH_RANDOM is not set
+CONFIG_X86_SMAP=y
+# CONFIG_EFI is not set
+# CONFIG_SECCOMP is not set
+# CONFIG_HZ_100 is not set
+CONFIG_HZ_250=y
+# CONFIG_HZ_300 is not set
+# CONFIG_HZ_1000 is not set
+CONFIG_HZ=250
+CONFIG_SCHED_HRTICK=y
+# CONFIG_KEXEC is not set
+CONFIG_PHYSICAL_START=0x1000000
+# CONFIG_RELOCATABLE is not set
+CONFIG_PHYSICAL_ALIGN=0x200000
+# CONFIG_COMPAT_VDSO is not set
+# CONFIG_CMDLINE_BOOL is not set
+
+#
+# Power management and ACPI options
+#
+# CONFIG_SUSPEND is not set
+CONFIG_PM=y
+CONFIG_PM_DEBUG=y
+CONFIG_PM_ADVANCED_DEBUG=y
+# CONFIG_WQ_POWER_EFFICIENT_DEFAULT is not set
+CONFIG_ACPI=y
+CONFIG_ACPI_LEGACY_TABLES_LOOKUP=y
+CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC=y
+CONFIG_ACPI_SYSTEM_POWER_STATES_SUPPORT=y
+# CONFIG_ACPI_PROCFS_POWER is not set
+CONFIG_ACPI_REV_OVERRIDE_POSSIBLE=y
+# CONFIG_ACPI_EC_DEBUGFS is not set
+CONFIG_ACPI_AC=y
+CONFIG_ACPI_BATTERY=y
+CONFIG_ACPI_BUTTON=y
+# CONFIG_ACPI_VIDEO is not set
+CONFIG_ACPI_FAN=y
+# CONFIG_ACPI_DOCK is not set
+CONFIG_ACPI_PROCESSOR=y
+# CONFIG_ACPI_IPMI is not set
+# CONFIG_ACPI_PROCESSOR_AGGREGATOR is not set
+CONFIG_ACPI_THERMAL=y
+# CONFIG_ACPI_CUSTOM_DSDT is not set
+# CONFIG_ACPI_INITRD_TABLE_OVERRIDE is not set
+# CONFIG_ACPI_DEBUG is not set
+# CONFIG_ACPI_PCI_SLOT is not set
+CONFIG_X86_PM_TIMER=y
+# CONFIG_ACPI_CONTAINER is not set
+# CONFIG_ACPI_SBS is not set
+# CONFIG_ACPI_HED is not set
+# CONFIG_ACPI_CUSTOM_METHOD is not set
+# CONFIG_ACPI_REDUCED_HARDWARE_ONLY is not set
+CONFIG_HAVE_ACPI_APEI=y
+CONFIG_HAVE_ACPI_APEI_NMI=y
+# CONFIG_ACPI_APEI is not set
+# CONFIG_PMIC_OPREGION is not set
+# CONFIG_SFI is not set
+
+#
+# CPU Frequency scaling
+#
+# CONFIG_CPU_FREQ is not set
+
+#
+# CPU Idle
+#
+CONFIG_CPU_IDLE=y
+CONFIG_CPU_IDLE_GOV_LADDER=y
+CONFIG_CPU_IDLE_GOV_MENU=y
+# CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED is not set
+
+#
+# Bus options (PCI etc.)
+#
+CONFIG_PCI=y
+# CONFIG_PCI_GOBIOS is not set
+# CONFIG_PCI_GOMMCONFIG is not set
+# CONFIG_PCI_GODIRECT is not set
+CONFIG_PCI_GOANY=y
+CONFIG_PCI_BIOS=y
+CONFIG_PCI_DIRECT=y
+CONFIG_PCI_MMCONFIG=y
+CONFIG_PCI_DOMAINS=y
+# CONFIG_PCI_CNB20LE_QUIRK is not set
+# CONFIG_PCIEPORTBUS is not set
+# CONFIG_PCI_MSI is not set
+# CONFIG_PCI_DEBUG is not set
+# CONFIG_PCI_REALLOC_ENABLE_AUTO is not set
+# CONFIG_PCI_STUB is not set
+# CONFIG_PCI_IOV is not set
+# CONFIG_PCI_PRI is not set
+# CONFIG_PCI_PASID is not set
+CONFIG_PCI_LABEL=y
+
+#
+# PCI host controller drivers
+#
+CONFIG_ISA_DMA_API=y
+# CONFIG_ISA is not set
+CONFIG_SCx200=y
+# CONFIG_SCx200HR_TIMER is not set
+# CONFIG_ALIX is not set
+# CONFIG_NET5501 is not set
+CONFIG_AMD_NB=y
+CONFIG_PCCARD=m
+# CONFIG_PCMCIA is not set
+CONFIG_CARDBUS=y
+
+#
+# PC-card bridges
+#
+# CONFIG_YENTA is not set
+# CONFIG_HOTPLUG_PCI is not set
+# CONFIG_RAPIDIO is not set
+CONFIG_X86_SYSFB=y
+
+#
+# Executable file formats / Emulations
+#
+CONFIG_BINFMT_ELF=y
+CONFIG_BINFMT_SCRIPT=y
+CONFIG_HAVE_AOUT=y
+CONFIG_BINFMT_AOUT=m
+CONFIG_BINFMT_MISC=m
+CONFIG_COREDUMP=y
+CONFIG_HAVE_ATOMIC_IOMAP=y
+CONFIG_PMC_ATOM=y
+CONFIG_NET=y
+CONFIG_NET_INGRESS=y
+
+#
+# Networking options
+#
+CONFIG_PACKET=y
+# CONFIG_PACKET_DIAG is not set
+CONFIG_UNIX=y
+CONFIG_UNIX_DIAG=y
+CONFIG_XFRM=y
+CONFIG_XFRM_ALGO=y
+# CONFIG_XFRM_USER is not set
+CONFIG_XFRM_SUB_POLICY=y
+# CONFIG_XFRM_MIGRATE is not set
+CONFIG_XFRM_STATISTICS=y
+CONFIG_XFRM_IPCOMP=y
+CONFIG_NET_KEY=y
+# CONFIG_NET_KEY_MIGRATE is not set
+CONFIG_INET=y
+CONFIG_IP_MULTICAST=y
+CONFIG_IP_ADVANCED_ROUTER=y
+CONFIG_IP_FIB_TRIE_STATS=y
+# CONFIG_IP_MULTIPLE_TABLES is not set
+CONFIG_IP_ROUTE_MULTIPATH=y
+CONFIG_IP_ROUTE_VERBOSE=y
+CONFIG_IP_PNP=y
+CONFIG_IP_PNP_DHCP=y
+# CONFIG_IP_PNP_BOOTP is not set
+# CONFIG_IP_PNP_RARP is not set
+# CONFIG_NET_IPIP is not set
+CONFIG_NET_IPGRE_DEMUX=y
+CONFIG_NET_IP_TUNNEL=y
+CONFIG_NET_IPGRE=y
+# CONFIG_NET_IPGRE_BROADCAST is not set
+# CONFIG_IP_MROUTE is not set
+# CONFIG_SYN_COOKIES is not set
+CONFIG_NET_IPVTI=m
+CONFIG_NET_UDP_TUNNEL=y
+CONFIG_NET_FOU=y
+CONFIG_NET_FOU_IP_TUNNELS=y
+CONFIG_GENEVE_CORE=m
+# CONFIG_INET_AH is not set
+CONFIG_INET_ESP=m
+# CONFIG_INET_IPCOMP is not set
+# CONFIG_INET_XFRM_TUNNEL is not set
+CONFIG_INET_TUNNEL=m
+CONFIG_INET_XFRM_MODE_TRANSPORT=m
+CONFIG_INET_XFRM_MODE_TUNNEL=m
+# CONFIG_INET_XFRM_MODE_BEET is not set
+# CONFIG_INET_LRO is not set
+CONFIG_INET_DIAG=m
+CONFIG_INET_TCP_DIAG=m
+CONFIG_INET_UDP_DIAG=m
+CONFIG_TCP_CONG_ADVANCED=y
+CONFIG_TCP_CONG_BIC=m
+# CONFIG_TCP_CONG_CUBIC is not set
+# CONFIG_TCP_CONG_WESTWOOD is not set
+CONFIG_TCP_CONG_HTCP=m
+CONFIG_TCP_CONG_HSTCP=m
+# CONFIG_TCP_CONG_HYBLA is not set
+CONFIG_TCP_CONG_VEGAS=y
+# CONFIG_TCP_CONG_SCALABLE is not set
+CONFIG_TCP_CONG_LP=y
+CONFIG_TCP_CONG_VENO=y
+CONFIG_TCP_CONG_YEAH=y
+CONFIG_TCP_CONG_ILLINOIS=m
+# CONFIG_TCP_CONG_DCTCP is not set
+# CONFIG_TCP_CONG_CDG is not set
+CONFIG_DEFAULT_VEGAS=y
+# CONFIG_DEFAULT_VENO is not set
+# CONFIG_DEFAULT_RENO is not set
+CONFIG_DEFAULT_TCP_CONG="vegas"
+# CONFIG_TCP_MD5SIG is not set
+CONFIG_IPV6=y
+# CONFIG_IPV6_ROUTER_PREF is not set
+CONFIG_IPV6_OPTIMISTIC_DAD=y
+CONFIG_INET6_AH=m
+# CONFIG_INET6_ESP is not set
+CONFIG_INET6_IPCOMP=y
+CONFIG_IPV6_MIP6=m
+CONFIG_INET6_XFRM_TUNNEL=y
+CONFIG_INET6_TUNNEL=y
+CONFIG_INET6_XFRM_MODE_TRANSPORT=m
+CONFIG_INET6_XFRM_MODE_TUNNEL=m
+CONFIG_INET6_XFRM_MODE_BEET=y
+# CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION is not set
+# CONFIG_IPV6_VTI is not set
+# CONFIG_IPV6_SIT is not set
+CONFIG_IPV6_TUNNEL=y
+CONFIG_IPV6_GRE=y
+CONFIG_IPV6_MULTIPLE_TABLES=y
+CONFIG_IPV6_SUBTREES=y
+CONFIG_IPV6_MROUTE=y
+CONFIG_IPV6_MROUTE_MULTIPLE_TABLES=y
+CONFIG_IPV6_PIMSM_V2=y
+# CONFIG_NETWORK_SECMARK is not set
+CONFIG_NET_PTP_CLASSIFY=y
+CONFIG_NETWORK_PHY_TIMESTAMPING=y
+CONFIG_NETFILTER=y
+CONFIG_NETFILTER_DEBUG=y
+# CONFIG_NETFILTER_ADVANCED is not set
+
+#
+# Core Netfilter Configuration
+#
+CONFIG_NETFILTER_INGRESS=y
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_NETLINK_LOG=m
+# CONFIG_NF_CONNTRACK is not set
+CONFIG_NF_LOG_COMMON=y
+# CONFIG_NF_TABLES is not set
+# CONFIG_NETFILTER_XTABLES is not set
+# CONFIG_IP_SET is not set
+CONFIG_IP_VS=m
+# CONFIG_IP_VS_IPV6 is not set
+# CONFIG_IP_VS_DEBUG is not set
+CONFIG_IP_VS_TAB_BITS=12
+
+#
+# IPVS transport protocol load balancing support
+#
+CONFIG_IP_VS_PROTO_TCP=y
+# CONFIG_IP_VS_PROTO_UDP is not set
+CONFIG_IP_VS_PROTO_AH_ESP=y
+CONFIG_IP_VS_PROTO_ESP=y
+CONFIG_IP_VS_PROTO_AH=y
+# CONFIG_IP_VS_PROTO_SCTP is not set
+
+#
+# IPVS scheduler
+#
+CONFIG_IP_VS_RR=m
+CONFIG_IP_VS_WRR=m
+CONFIG_IP_VS_LC=m
+CONFIG_IP_VS_WLC=m
+# CONFIG_IP_VS_FO is not set
+# CONFIG_IP_VS_LBLC is not set
+CONFIG_IP_VS_LBLCR=m
+# CONFIG_IP_VS_DH is not set
+# CONFIG_IP_VS_SH is not set
+CONFIG_IP_VS_SED=m
+CONFIG_IP_VS_NQ=m
+
+#
+# IPVS SH scheduler
+#
+CONFIG_IP_VS_SH_TAB_BITS=8
+
+#
+# IPVS application helper
+#
+
+#
+# IP: Netfilter Configuration
+#
+# CONFIG_NF_DEFRAG_IPV4 is not set
+CONFIG_NF_LOG_ARP=m
+CONFIG_NF_LOG_IPV4=y
+# CONFIG_NF_REJECT_IPV4 is not set
+# CONFIG_IP_NF_IPTABLES is not set
+
+#
+# IPv6: Netfilter Configuration
+#
+# CONFIG_NF_DEFRAG_IPV6 is not set
+CONFIG_NF_REJECT_IPV6=y
+# CONFIG_NF_LOG_IPV6 is not set
+# CONFIG_IP6_NF_IPTABLES is not set
+CONFIG_IP_DCCP=m
+CONFIG_INET_DCCP_DIAG=m
+
+#
+# DCCP CCIDs Configuration
+#
+CONFIG_IP_DCCP_CCID2_DEBUG=y
+CONFIG_IP_DCCP_CCID3=y
+# CONFIG_IP_DCCP_CCID3_DEBUG is not set
+CONFIG_IP_DCCP_TFRC_LIB=y
+
+#
+# DCCP Kernel Hacking
+#
+CONFIG_IP_DCCP_DEBUG=y
+# CONFIG_IP_SCTP is not set
+# CONFIG_RDS is not set
+CONFIG_TIPC=y
+# CONFIG_TIPC_MEDIA_UDP is not set
+# CONFIG_ATM is not set
+# CONFIG_L2TP is not set
+CONFIG_STP=y
+CONFIG_GARP=m
+CONFIG_BRIDGE=y
+CONFIG_BRIDGE_IGMP_SNOOPING=y
+CONFIG_BRIDGE_VLAN_FILTERING=y
+CONFIG_HAVE_NET_DSA=y
+CONFIG_NET_DSA=m
+# CONFIG_NET_DSA_HWMON is not set
+CONFIG_NET_DSA_TAG_DSA=y
+CONFIG_NET_DSA_TAG_EDSA=y
+CONFIG_NET_DSA_TAG_TRAILER=y
+CONFIG_VLAN_8021Q=m
+CONFIG_VLAN_8021Q_GVRP=y
+# CONFIG_VLAN_8021Q_MVRP is not set
+CONFIG_DECNET=y
+CONFIG_DECNET_ROUTER=y
+CONFIG_LLC=y
+# CONFIG_LLC2 is not set
+CONFIG_IPX=m
+CONFIG_IPX_INTERN=y
+CONFIG_ATALK=y
+# CONFIG_DEV_APPLETALK is not set
+CONFIG_X25=m
+# CONFIG_LAPB is not set
+CONFIG_PHONET=y
+# CONFIG_6LOWPAN is not set
+CONFIG_IEEE802154=m
+CONFIG_IEEE802154_SOCKET=m
+CONFIG_MAC802154=m
+# CONFIG_NET_SCHED is not set
+# CONFIG_DCB is not set
+CONFIG_DNS_RESOLVER=m
+CONFIG_BATMAN_ADV=m
+# CONFIG_BATMAN_ADV_BLA is not set
+# CONFIG_BATMAN_ADV_DAT is not set
+# CONFIG_BATMAN_ADV_NC is not set
+# CONFIG_BATMAN_ADV_MCAST is not set
+CONFIG_BATMAN_ADV_DEBUG=y
+CONFIG_OPENVSWITCH=m
+CONFIG_OPENVSWITCH_GRE=m
+# CONFIG_OPENVSWITCH_GENEVE is not set
+# CONFIG_VSOCKETS is not set
+# CONFIG_NETLINK_MMAP is not set
+CONFIG_NETLINK_DIAG=y
+CONFIG_MPLS=y
+CONFIG_NET_MPLS_GSO=y
+CONFIG_MPLS_ROUTING=y
+# CONFIG_HSR is not set
+CONFIG_NET_SWITCHDEV=y
+# CONFIG_CGROUP_NET_PRIO is not set
+CONFIG_CGROUP_NET_CLASSID=y
+CONFIG_NET_RX_BUSY_POLL=y
+CONFIG_BQL=y
+
+#
+# Network testing
+#
+CONFIG_NET_PKTGEN=y
+# CONFIG_HAMRADIO is not set
+# CONFIG_CAN is not set
+# CONFIG_IRDA is not set
+# CONFIG_BT is not set
+# CONFIG_AF_RXRPC is not set
+CONFIG_FIB_RULES=y
+# CONFIG_WIRELESS is not set
+CONFIG_WIMAX=m
+CONFIG_WIMAX_DEBUG_LEVEL=8
+CONFIG_RFKILL=y
+# CONFIG_RFKILL_INPUT is not set
+# CONFIG_RFKILL_REGULATOR is not set
+CONFIG_RFKILL_GPIO=m
+CONFIG_NET_9P=y
+CONFIG_NET_9P_VIRTIO=m
+CONFIG_NET_9P_DEBUG=y
+CONFIG_CAIF=m
+CONFIG_CAIF_DEBUG=y
+# CONFIG_CAIF_NETDEV is not set
+CONFIG_CAIF_USB=m
+CONFIG_CEPH_LIB=m
+# CONFIG_CEPH_LIB_PRETTYDEBUG is not set
+# CONFIG_CEPH_LIB_USE_DNS_RESOLVER is not set
+# CONFIG_NFC is not set
+
+#
+# Device Drivers
+#
+
+#
+# Generic Driver Options
+#
+# CONFIG_UEVENT_HELPER is not set
+CONFIG_DEVTMPFS=y
+# CONFIG_DEVTMPFS_MOUNT is not set
+CONFIG_STANDALONE=y
+CONFIG_PREVENT_FIRMWARE_BUILD=y
+CONFIG_FW_LOADER=y
+CONFIG_FIRMWARE_IN_KERNEL=y
+CONFIG_EXTRA_FIRMWARE=""
+CONFIG_FW_LOADER_USER_HELPER=y
+CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+# CONFIG_ALLOW_DEV_COREDUMP is not set
+# CONFIG_DEBUG_DRIVER is not set
+CONFIG_DEBUG_DEVRES=y
+# CONFIG_SYS_HYPERVISOR is not set
+# CONFIG_GENERIC_CPU_DEVICES is not set
+CONFIG_GENERIC_CPU_AUTOPROBE=y
+CONFIG_REGMAP=y
+CONFIG_REGMAP_AC97=m
+CONFIG_REGMAP_I2C=y
+CONFIG_REGMAP_MMIO=y
+CONFIG_REGMAP_IRQ=y
+CONFIG_DMA_SHARED_BUFFER=y
+CONFIG_FENCE_TRACE=y
+
+#
+# Bus devices
+#
+# CONFIG_SIMPLE_PM_BUS is not set
+CONFIG_CONNECTOR=m
+CONFIG_MTD=m
+CONFIG_MTD_TESTS=m
+CONFIG_MTD_REDBOOT_PARTS=m
+CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK=-1
+CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED=y
+# CONFIG_MTD_REDBOOT_PARTS_READONLY is not set
+CONFIG_MTD_CMDLINE_PARTS=m
+CONFIG_MTD_OF_PARTS=m
+CONFIG_MTD_AR7_PARTS=m
+
+#
+# User Modules And Translation Layers
+#
+CONFIG_MTD_OOPS=m
+# CONFIG_MTD_PARTITIONED_MASTER is not set
+
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=m
+CONFIG_MTD_JEDECPROBE=m
+CONFIG_MTD_GEN_PROBE=m
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+# CONFIG_MTD_CFI_NOSWAP is not set
+# CONFIG_MTD_CFI_BE_BYTE_SWAP is not set
+CONFIG_MTD_CFI_LE_BYTE_SWAP=y
+# CONFIG_MTD_CFI_GEOMETRY is not set
+CONFIG_MTD_MAP_BANK_WIDTH_1=y
+CONFIG_MTD_MAP_BANK_WIDTH_2=y
+CONFIG_MTD_MAP_BANK_WIDTH_4=y
+# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
+# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
+# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
+CONFIG_MTD_CFI_I1=y
+CONFIG_MTD_CFI_I2=y
+# CONFIG_MTD_CFI_I4 is not set
+# CONFIG_MTD_CFI_I8 is not set
+# CONFIG_MTD_OTP is not set
+CONFIG_MTD_CFI_INTELEXT=m
+CONFIG_MTD_CFI_AMDSTD=m
+CONFIG_MTD_CFI_STAA=m
+CONFIG_MTD_CFI_UTIL=m
+CONFIG_MTD_RAM=m
+CONFIG_MTD_ROM=m
+CONFIG_MTD_ABSENT=m
+
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_COMPLEX_MAPPINGS=y
+# CONFIG_MTD_PHYSMAP is not set
+# CONFIG_MTD_PHYSMAP_OF is not set
+# CONFIG_MTD_SC520CDP is not set
+# CONFIG_MTD_NETSC520 is not set
+# CONFIG_MTD_TS5500 is not set
+# CONFIG_MTD_SBC_GXX is not set
+CONFIG_MTD_SCx200_DOCFLASH=m
+# CONFIG_MTD_AMD76XROM is not set
+CONFIG_MTD_ICHXROM=m
+# CONFIG_MTD_ESB2ROM is not set
+# CONFIG_MTD_CK804XROM is not set
+# CONFIG_MTD_SCB2_FLASH is not set
+# CONFIG_MTD_NETtel is not set
+CONFIG_MTD_L440GX=m
+# CONFIG_MTD_PCI is not set
+CONFIG_MTD_GPIO_ADDR=m
+# CONFIG_MTD_INTEL_VR_NOR is not set
+CONFIG_MTD_PLATRAM=m
+CONFIG_MTD_LATCH_ADDR=m
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+CONFIG_MTD_SLRAM=m
+CONFIG_MTD_PHRAM=m
+CONFIG_MTD_MTDRAM=m
+CONFIG_MTDRAM_TOTAL_SIZE=4096
+CONFIG_MTDRAM_ERASE_SIZE=128
+
+#
+# Disk-On-Chip Device Drivers
+#
+CONFIG_MTD_DOCG3=m
+CONFIG_BCH_CONST_M=14
+CONFIG_BCH_CONST_T=4
+CONFIG_MTD_NAND_ECC=m
+# CONFIG_MTD_NAND_ECC_SMC is not set
+CONFIG_MTD_NAND=m
+# CONFIG_MTD_NAND_ECC_BCH is not set
+# CONFIG_MTD_SM_COMMON is not set
+CONFIG_MTD_NAND_DENALI=m
+# CONFIG_MTD_NAND_DENALI_PCI is not set
+CONFIG_MTD_NAND_GPIO=m
+# CONFIG_MTD_NAND_OMAP_BCH_BUILD is not set
+CONFIG_MTD_NAND_IDS=m
+# CONFIG_MTD_NAND_RICOH is not set
+CONFIG_MTD_NAND_DISKONCHIP=m
+# CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED is not set
+CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0
+CONFIG_MTD_NAND_DISKONCHIP_BBTWRITE=y
+CONFIG_MTD_NAND_DOCG4=m
+# CONFIG_MTD_NAND_CAFE is not set
+# CONFIG_MTD_NAND_CS553X is not set
+CONFIG_MTD_NAND_NANDSIM=m
+CONFIG_MTD_NAND_PLATFORM=m
+CONFIG_MTD_NAND_SH_FLCTL=m
+CONFIG_MTD_NAND_HISI504=m
+# CONFIG_MTD_ONENAND is not set
+
+#
+# LPDDR & LPDDR2 PCM memory drivers
+#
+# CONFIG_MTD_LPDDR is not set
+CONFIG_MTD_SPI_NOR=m
+CONFIG_MTD_SPI_NOR_USE_4K_SECTORS=y
+CONFIG_MTD_UBI=m
+CONFIG_MTD_UBI_WL_THRESHOLD=4096
+CONFIG_MTD_UBI_BEB_LIMIT=20
+# CONFIG_MTD_UBI_FASTMAP is not set
+# CONFIG_MTD_UBI_GLUEBI is not set
+CONFIG_OF=y
+# CONFIG_OF_UNITTEST is not set
+CONFIG_OF_DYNAMIC=y
+CONFIG_OF_ADDRESS=y
+CONFIG_OF_ADDRESS_PCI=y
+CONFIG_OF_IRQ=y
+CONFIG_OF_NET=y
+CONFIG_OF_MDIO=m
+CONFIG_OF_PCI=y
+CONFIG_OF_PCI_IRQ=y
+CONFIG_OF_MTD=y
+CONFIG_OF_RESOLVE=y
+CONFIG_OF_OVERLAY=y
+CONFIG_ARCH_MIGHT_HAVE_PC_PARPORT=y
+CONFIG_PARPORT=y
+# CONFIG_PARPORT_PC is not set
+# CONFIG_PARPORT_GSC is not set
+CONFIG_PARPORT_AX88796=m
+CONFIG_PARPORT_1284=y
+CONFIG_PARPORT_NOT_PC=y
+CONFIG_PNP=y
+CONFIG_PNP_DEBUG_MESSAGES=y
+
+#
+# Protocols
+#
+CONFIG_PNPACPI=y
+
+#
+# Misc devices
+#
+# CONFIG_SENSORS_LIS3LV02D is not set
+CONFIG_AD525X_DPOT=y
+CONFIG_AD525X_DPOT_I2C=m
+CONFIG_DUMMY_IRQ=m
+# CONFIG_IBM_ASM is not set
+# CONFIG_PHANTOM is not set
+# CONFIG_INTEL_MID_PTI is not set
+# CONFIG_SGI_IOC4 is not set
+# CONFIG_TIFM_CORE is not set
+# CONFIG_ICS932S401 is not set
+CONFIG_ATMEL_SSC=m
+CONFIG_ENCLOSURE_SERVICES=m
+# CONFIG_HP_ILO is not set
+CONFIG_APDS9802ALS=y
+# CONFIG_ISL29003 is not set
+CONFIG_ISL29020=m
+# CONFIG_SENSORS_TSL2550 is not set
+# CONFIG_SENSORS_BH1780 is not set
+CONFIG_SENSORS_BH1770=m
+# CONFIG_SENSORS_APDS990X is not set
+# CONFIG_HMC6352 is not set
+CONFIG_DS1682=y
+CONFIG_VMWARE_BALLOON=m
+# CONFIG_BMP085_I2C is not set
+# CONFIG_PCH_PHUB is not set
+CONFIG_USB_SWITCH_FSA9480=y
+CONFIG_SRAM=y
+# CONFIG_C2PORT is not set
+
+#
+# EEPROM support
+#
+# CONFIG_EEPROM_AT24 is not set
+CONFIG_EEPROM_LEGACY=m
+# CONFIG_EEPROM_MAX6875 is not set
+CONFIG_EEPROM_93CX6=m
+# CONFIG_CB710_CORE is not set
+
+#
+# Texas Instruments shared transport line discipline
+#
+# CONFIG_TI_ST is not set
+# CONFIG_SENSORS_LIS3_I2C is not set
+
+#
+# Altera FPGA firmware download module
+#
+# CONFIG_ALTERA_STAPL is not set
+# CONFIG_VMWARE_VMCI is not set
+
+#
+# Intel MIC Bus Driver
+#
+
+#
+# SCIF Bus Driver
+#
+
+#
+# Intel MIC Host Driver
+#
+
+#
+# Intel MIC Card Driver
+#
+
+#
+# SCIF Driver
+#
+# CONFIG_ECHO is not set
+# CONFIG_CXL_BASE is not set
+# CONFIG_CXL_KERNEL_API is not set
+CONFIG_HAVE_IDE=y
+
+#
+# SCSI device support
+#
+CONFIG_SCSI_MOD=y
+# CONFIG_SCSI_DMA is not set
+# CONFIG_SCSI_NETLINK is not set
+# CONFIG_FUSION is not set
+
+#
+# IEEE 1394 (FireWire) support
+#
+CONFIG_FIREWIRE=m
+# CONFIG_FIREWIRE_OHCI is not set
+# CONFIG_FIREWIRE_NET is not set
+# CONFIG_FIREWIRE_NOSY is not set
+CONFIG_MACINTOSH_DRIVERS=y
+CONFIG_NETDEVICES=y
+CONFIG_MII=m
+CONFIG_NET_CORE=y
+CONFIG_BONDING=y
+CONFIG_DUMMY=y
+CONFIG_EQUALIZER=m
+CONFIG_NET_TEAM=y
+# CONFIG_NET_TEAM_MODE_BROADCAST is not set
+CONFIG_NET_TEAM_MODE_ROUNDROBIN=m
+CONFIG_NET_TEAM_MODE_RANDOM=m
+# CONFIG_NET_TEAM_MODE_ACTIVEBACKUP is not set
+# CONFIG_NET_TEAM_MODE_LOADBALANCE is not set
+CONFIG_MACVLAN=m
+# CONFIG_MACVTAP is not set
+CONFIG_IPVLAN=y
+# CONFIG_VXLAN is not set
+# CONFIG_GENEVE is not set
+CONFIG_NETCONSOLE=m
+CONFIG_NETPOLL=y
+CONFIG_NET_POLL_CONTROLLER=y
+# CONFIG_TUN is not set
+CONFIG_TUN_VNET_CROSS_LE=y
+# CONFIG_VETH is not set
+CONFIG_VIRTIO_NET=m
+CONFIG_NLMON=m
+# CONFIG_ARCNET is not set
+
+#
+# CAIF transport drivers
+#
+# CONFIG_CAIF_TTY is not set
+# CONFIG_CAIF_SPI_SLAVE is not set
+CONFIG_CAIF_HSI=m
+CONFIG_CAIF_VIRTIO=m
+CONFIG_VHOST_NET=y
+CONFIG_VHOST_RING=y
+CONFIG_VHOST=y
+CONFIG_VHOST_CROSS_ENDIAN_LEGACY=y
+
+#
+# Distributed Switch Architecture drivers
+#
+CONFIG_NET_DSA_MV88E6XXX=m
+CONFIG_NET_DSA_MV88E6060=m
+CONFIG_NET_DSA_MV88E6XXX_NEED_PPU=y
+CONFIG_NET_DSA_MV88E6131=m
+# CONFIG_NET_DSA_MV88E6123_61_65 is not set
+CONFIG_NET_DSA_MV88E6171=m
+# CONFIG_NET_DSA_MV88E6352 is not set
+# CONFIG_NET_DSA_BCM_SF2 is not set
+CONFIG_ETHERNET=y
+CONFIG_MDIO=m
+CONFIG_NET_VENDOR_3COM=y
+# CONFIG_VORTEX is not set
+# CONFIG_TYPHOON is not set
+CONFIG_NET_VENDOR_ADAPTEC=y
+# CONFIG_ADAPTEC_STARFIRE is not set
+CONFIG_NET_VENDOR_AGERE=y
+# CONFIG_ET131X is not set
+CONFIG_NET_VENDOR_ALTEON=y
+# CONFIG_ACENIC is not set
+# CONFIG_ALTERA_TSE is not set
+CONFIG_NET_VENDOR_AMD=y
+# CONFIG_AMD8111_ETH is not set
+# CONFIG_PCNET32 is not set
+# CONFIG_AMD_XGBE is not set
+# CONFIG_NET_XGENE is not set
+CONFIG_NET_VENDOR_ARC=y
+# CONFIG_ARC_EMAC is not set
+# CONFIG_EMAC_ROCKCHIP is not set
+CONFIG_NET_VENDOR_ATHEROS=y
+# CONFIG_ATL2 is not set
+# CONFIG_ATL1 is not set
+# CONFIG_ATL1E is not set
+# CONFIG_ATL1C is not set
+# CONFIG_ALX is not set
+CONFIG_NET_CADENCE=y
+# CONFIG_MACB is not set
+CONFIG_NET_VENDOR_BROADCOM=y
+# CONFIG_B44 is not set
+# CONFIG_BCMGENET is not set
+# CONFIG_BNX2 is not set
+# CONFIG_CNIC is not set
+# CONFIG_TIGON3 is not set
+# CONFIG_BNX2X is not set
+# CONFIG_SYSTEMPORT is not set
+CONFIG_NET_VENDOR_BROCADE=y
+# CONFIG_BNA is not set
+# CONFIG_NET_CALXEDA_XGMAC is not set
+CONFIG_NET_VENDOR_CAVIUM=y
+CONFIG_NET_VENDOR_CHELSIO=y
+# CONFIG_CHELSIO_T1 is not set
+# CONFIG_CHELSIO_T3 is not set
+# CONFIG_CHELSIO_T4 is not set
+# CONFIG_CHELSIO_T4VF is not set
+CONFIG_NET_VENDOR_CISCO=y
+# CONFIG_ENIC is not set
+# CONFIG_CX_ECAT is not set
+# CONFIG_DNET is not set
+CONFIG_NET_VENDOR_DEC=y
+# CONFIG_NET_TULIP is not set
+CONFIG_NET_VENDOR_DLINK=y
+# CONFIG_DL2K is not set
+# CONFIG_SUNDANCE is not set
+CONFIG_NET_VENDOR_EMULEX=y
+# CONFIG_BE2NET is not set
+CONFIG_NET_VENDOR_EZCHIP=y
+# CONFIG_EZCHIP_NPS_MANAGEMENT_ENET is not set
+CONFIG_NET_VENDOR_EXAR=y
+# CONFIG_S2IO is not set
+# CONFIG_VXGE is not set
+CONFIG_NET_VENDOR_HP=y
+# CONFIG_HP100 is not set
+CONFIG_NET_VENDOR_INTEL=y
+# CONFIG_E100 is not set
+CONFIG_E1000=m
+CONFIG_E1000E=m
+CONFIG_IGB=m
+CONFIG_IGB_HWMON=y
+# CONFIG_IGBVF is not set
+# CONFIG_IXGB is not set
+CONFIG_IXGBE=m
+CONFIG_IXGBE_HWMON=y
+# CONFIG_I40E is not set
+CONFIG_NET_VENDOR_I825XX=y
+# CONFIG_IP1000 is not set
+# CONFIG_JME is not set
+CONFIG_NET_VENDOR_MARVELL=y
+# CONFIG_MVMDIO is not set
+# CONFIG_PXA168_ETH is not set
+# CONFIG_SKGE is not set
+# CONFIG_SKY2 is not set
+CONFIG_NET_VENDOR_MELLANOX=y
+# CONFIG_MLX4_EN is not set
+# CONFIG_MLX4_CORE is not set
+# CONFIG_MLX5_CORE is not set
+CONFIG_NET_VENDOR_MICREL=y
+# CONFIG_KS8851_MLL is not set
+# CONFIG_KSZ884X_PCI is not set
+CONFIG_NET_VENDOR_MYRI=y
+# CONFIG_MYRI10GE is not set
+# CONFIG_FEALNX is not set
+CONFIG_NET_VENDOR_NATSEMI=y
+# CONFIG_NATSEMI is not set
+# CONFIG_NS83820 is not set
+CONFIG_NET_VENDOR_8390=y
+# CONFIG_NE2K_PCI is not set
+CONFIG_NET_VENDOR_NVIDIA=y
+# CONFIG_FORCEDETH is not set
+CONFIG_NET_VENDOR_OKI=y
+# CONFIG_PCH_GBE is not set
+# CONFIG_ETHOC is not set
+CONFIG_NET_PACKET_ENGINE=y
+# CONFIG_HAMACHI is not set
+# CONFIG_YELLOWFIN is not set
+CONFIG_NET_VENDOR_QLOGIC=y
+# CONFIG_QLA3XXX is not set
+# CONFIG_QLCNIC is not set
+# CONFIG_QLGE is not set
+# CONFIG_NETXEN_NIC is not set
+CONFIG_NET_VENDOR_QUALCOMM=y
+CONFIG_NET_VENDOR_REALTEK=y
+# CONFIG_ATP is not set
+# CONFIG_8139CP is not set
+# CONFIG_8139TOO is not set
+# CONFIG_R8169 is not set
+CONFIG_NET_VENDOR_RENESAS=y
+# CONFIG_SH_ETH is not set
+# CONFIG_RAVB is not set
+CONFIG_NET_VENDOR_RDC=y
+# CONFIG_R6040 is not set
+CONFIG_NET_VENDOR_ROCKER=y
+# CONFIG_ROCKER is not set
+CONFIG_NET_VENDOR_SAMSUNG=y
+# CONFIG_SXGBE_ETH is not set
+CONFIG_NET_VENDOR_SEEQ=y
+CONFIG_NET_VENDOR_SILAN=y
+# CONFIG_SC92031 is not set
+CONFIG_NET_VENDOR_SIS=y
+# CONFIG_SIS900 is not set
+# CONFIG_SIS190 is not set
+# CONFIG_SFC is not set
+CONFIG_NET_VENDOR_SMSC=y
+# CONFIG_EPIC100 is not set
+# CONFIG_SMSC911X is not set
+# CONFIG_SMSC9420 is not set
+CONFIG_NET_VENDOR_STMICRO=y
+# CONFIG_STMMAC_ETH is not set
+CONFIG_NET_VENDOR_SUN=y
+# CONFIG_HAPPYMEAL is not set
+# CONFIG_SUNGEM is not set
+# CONFIG_CASSINI is not set
+# CONFIG_NIU is not set
+CONFIG_NET_VENDOR_TEHUTI=y
+# CONFIG_TEHUTI is not set
+CONFIG_NET_VENDOR_TI=y
+# CONFIG_TI_CPSW_ALE is not set
+# CONFIG_TLAN is not set
+CONFIG_NET_VENDOR_VIA=y
+# CONFIG_VIA_RHINE is not set
+# CONFIG_VIA_VELOCITY is not set
+CONFIG_NET_VENDOR_WIZNET=y
+# CONFIG_WIZNET_W5100 is not set
+# CONFIG_WIZNET_W5300 is not set
+# CONFIG_FDDI is not set
+# CONFIG_HIPPI is not set
+# CONFIG_NET_SB1000 is not set
+CONFIG_PHYLIB=m
+
+#
+# MII PHY device drivers
+#
+CONFIG_AT803X_PHY=m
+CONFIG_AMD_PHY=m
+# CONFIG_MARVELL_PHY is not set
+# CONFIG_DAVICOM_PHY is not set
+# CONFIG_QSEMI_PHY is not set
+CONFIG_LXT_PHY=m
+CONFIG_CICADA_PHY=m
+CONFIG_VITESSE_PHY=m
+CONFIG_SMSC_PHY=m
+# CONFIG_BROADCOM_PHY is not set
+CONFIG_BCM7XXX_PHY=m
+CONFIG_BCM87XX_PHY=m
+CONFIG_ICPLUS_PHY=m
+CONFIG_REALTEK_PHY=m
+# CONFIG_NATIONAL_PHY is not set
+# CONFIG_STE10XP is not set
+CONFIG_LSI_ET1011C_PHY=m
+# CONFIG_MICREL_PHY is not set
+CONFIG_DP83867_PHY=m
+CONFIG_FIXED_PHY=m
+CONFIG_MDIO_BITBANG=m
+CONFIG_MDIO_GPIO=m
+CONFIG_MDIO_BUS_MUX=m
+CONFIG_MDIO_BUS_MUX_GPIO=m
+CONFIG_MDIO_BUS_MUX_MMIOREG=m
+CONFIG_MDIO_BCM_UNIMAC=m
+CONFIG_PLIP=m
+# CONFIG_PPP is not set
+# CONFIG_SLIP is not set
+CONFIG_USB_NET_DRIVERS=m
+# CONFIG_USB_CATC is not set
+CONFIG_USB_KAWETH=m
+CONFIG_USB_PEGASUS=m
+# CONFIG_USB_RTL8150 is not set
+# CONFIG_USB_RTL8152 is not set
+# CONFIG_USB_USBNET is not set
+# CONFIG_USB_HSO is not set
+CONFIG_USB_CDC_PHONET=m
+# CONFIG_USB_IPHETH is not set
+# CONFIG_WLAN is not set
+
+#
+# WiMAX Wireless Broadband devices
+#
+# CONFIG_WIMAX_I2400M_USB is not set
+CONFIG_WAN=y
+# CONFIG_HDLC is not set
+CONFIG_DLCI=m
+CONFIG_DLCI_MAX=8
+CONFIG_SBNI=y
+# CONFIG_SBNI_MULTILINE is not set
+CONFIG_IEEE802154_DRIVERS=m
+CONFIG_IEEE802154_FAKELB=m
+CONFIG_IEEE802154_ATUSB=m
+# CONFIG_VMXNET3 is not set
+CONFIG_ISDN=y
+# CONFIG_ISDN_I4L is not set
+CONFIG_ISDN_CAPI=y
+CONFIG_CAPI_TRACE=y
+CONFIG_ISDN_CAPI_CAPI20=m
+# CONFIG_ISDN_CAPI_MIDDLEWARE is not set
+
+#
+# CAPI hardware drivers
+#
+CONFIG_CAPI_AVM=y
+# CONFIG_ISDN_DRV_AVMB1_B1PCI is not set
+# CONFIG_ISDN_DRV_AVMB1_T1PCI is not set
+# CONFIG_ISDN_DRV_AVMB1_C4 is not set
+# CONFIG_CAPI_EICON is not set
+# CONFIG_ISDN_DRV_GIGASET is not set
+# CONFIG_HYSDN is not set
+CONFIG_MISDN=m
+# CONFIG_MISDN_DSP is not set
+# CONFIG_MISDN_L1OIP is not set
+
+#
+# mISDN hardware drivers
+#
+# CONFIG_MISDN_HFCPCI is not set
+# CONFIG_MISDN_HFCMULTI is not set
+CONFIG_MISDN_HFCUSB=y
+# CONFIG_MISDN_AVMFRITZ is not set
+# CONFIG_MISDN_SPEEDFAX is not set
+# CONFIG_MISDN_INFINEON is not set
+# CONFIG_MISDN_W6692 is not set
+# CONFIG_MISDN_NETJET is not set
+
+#
+# Input device support
+#
+CONFIG_INPUT=y
+CONFIG_INPUT_LEDS=y
+# CONFIG_INPUT_FF_MEMLESS is not set
+# CONFIG_INPUT_POLLDEV is not set
+# CONFIG_INPUT_SPARSEKMAP is not set
+# CONFIG_INPUT_MATRIXKMAP is not set
+
+#
+# Userland interfaces
+#
+CONFIG_INPUT_MOUSEDEV=y
+CONFIG_INPUT_MOUSEDEV_PSAUX=y
+CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
+# CONFIG_INPUT_JOYDEV is not set
+# CONFIG_INPUT_EVDEV is not set
+# CONFIG_INPUT_EVBUG is not set
+
+#
+# Input Device Drivers
+#
+CONFIG_INPUT_KEYBOARD=y
+# CONFIG_KEYBOARD_ADP5520 is not set
+# CONFIG_KEYBOARD_ADP5588 is not set
+# CONFIG_KEYBOARD_ADP5589 is not set
+CONFIG_KEYBOARD_ATKBD=y
+# CONFIG_KEYBOARD_QT1070 is not set
+# CONFIG_KEYBOARD_QT2160 is not set
+# CONFIG_KEYBOARD_CLPS711X is not set
+# CONFIG_KEYBOARD_LKKBD is not set
+# CONFIG_KEYBOARD_GPIO is not set
+# CONFIG_KEYBOARD_GPIO_POLLED is not set
+# CONFIG_KEYBOARD_TCA6416 is not set
+# CONFIG_KEYBOARD_TCA8418 is not set
+# CONFIG_KEYBOARD_MATRIX is not set
+# CONFIG_KEYBOARD_LM8323 is not set
+# CONFIG_KEYBOARD_LM8333 is not set
+# CONFIG_KEYBOARD_MAX7359 is not set
+# CONFIG_KEYBOARD_MCS is not set
+# CONFIG_KEYBOARD_MPR121 is not set
+# CONFIG_KEYBOARD_NEWTON is not set
+# CONFIG_KEYBOARD_OPENCORES is not set
+# CONFIG_KEYBOARD_STOWAWAY is not set
+# CONFIG_KEYBOARD_ST_KEYSCAN is not set
+# CONFIG_KEYBOARD_SUNKBD is not set
+# CONFIG_KEYBOARD_SH_KEYSC is not set
+# CONFIG_KEYBOARD_STMPE is not set
+# CONFIG_KEYBOARD_OMAP4 is not set
+# CONFIG_KEYBOARD_TWL4030 is not set
+# CONFIG_KEYBOARD_XTKBD is not set
+# CONFIG_KEYBOARD_CAP11XX is not set
+CONFIG_INPUT_MOUSE=y
+CONFIG_MOUSE_PS2=y
+CONFIG_MOUSE_PS2_ALPS=y
+CONFIG_MOUSE_PS2_LOGIPS2PP=y
+CONFIG_MOUSE_PS2_SYNAPTICS=y
+CONFIG_MOUSE_PS2_CYPRESS=y
+CONFIG_MOUSE_PS2_TRACKPOINT=y
+# CONFIG_MOUSE_PS2_ELANTECH is not set
+# CONFIG_MOUSE_PS2_SENTELIC is not set
+# CONFIG_MOUSE_PS2_TOUCHKIT is not set
+CONFIG_MOUSE_PS2_FOCALTECH=y
+# CONFIG_MOUSE_PS2_VMMOUSE is not set
+# CONFIG_MOUSE_SERIAL is not set
+# CONFIG_MOUSE_APPLETOUCH is not set
+# CONFIG_MOUSE_BCM5974 is not set
+# CONFIG_MOUSE_CYAPA is not set
+# CONFIG_MOUSE_ELAN_I2C is not set
+# CONFIG_MOUSE_VSXXXAA is not set
+# CONFIG_MOUSE_GPIO is not set
+# CONFIG_MOUSE_SYNAPTICS_I2C is not set
+# CONFIG_MOUSE_SYNAPTICS_USB is not set
+# CONFIG_INPUT_JOYSTICK is not set
+# CONFIG_INPUT_TABLET is not set
+# CONFIG_INPUT_TOUCHSCREEN is not set
+# CONFIG_INPUT_MISC is not set
+
+#
+# Hardware I/O ports
+#
+CONFIG_SERIO=y
+CONFIG_ARCH_MIGHT_HAVE_PC_SERIO=y
+CONFIG_SERIO_I8042=y
+CONFIG_SERIO_SERPORT=y
+CONFIG_SERIO_CT82C710=m
+CONFIG_SERIO_PARKBD=m
+# CONFIG_SERIO_PCIPS2 is not set
+CONFIG_SERIO_LIBPS2=y
+CONFIG_SERIO_RAW=m
+# CONFIG_SERIO_ALTERA_PS2 is not set
+CONFIG_SERIO_PS2MULT=m
+CONFIG_SERIO_ARC_PS2=m
+CONFIG_SERIO_APBPS2=m
+# CONFIG_SERIO_OLPC_APSP is not set
+CONFIG_SERIO_SUN4I_PS2=m
+CONFIG_GAMEPORT=m
+CONFIG_GAMEPORT_NS558=m
+# CONFIG_GAMEPORT_L4 is not set
+# CONFIG_GAMEPORT_EMU10K1 is not set
+# CONFIG_GAMEPORT_FM801 is not set
+
+#
+# Character devices
+#
+CONFIG_TTY=y
+# CONFIG_VT is not set
+CONFIG_UNIX98_PTYS=y
+# CONFIG_DEVPTS_MULTIPLE_INSTANCES is not set
+CONFIG_LEGACY_PTYS=y
+CONFIG_LEGACY_PTY_COUNT=256
+# CONFIG_SERIAL_NONSTANDARD is not set
+# CONFIG_NOZOMI is not set
+# CONFIG_N_GSM is not set
+# CONFIG_TRACE_SINK is not set
+# CONFIG_DEVMEM is not set
+CONFIG_DEVKMEM=y
+
+#
+# Serial drivers
+#
+CONFIG_SERIAL_EARLYCON=y
+CONFIG_SERIAL_8250=y
+CONFIG_SERIAL_8250_DEPRECATED_OPTIONS=y
+CONFIG_SERIAL_8250_PNP=y
+CONFIG_SERIAL_8250_CONSOLE=y
+CONFIG_SERIAL_8250_PCI=y
+CONFIG_SERIAL_8250_NR_UARTS=4
+CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+# CONFIG_SERIAL_8250_EXTENDED is not set
+# CONFIG_SERIAL_8250_DW is not set
+# CONFIG_SERIAL_8250_FINTEK is not set
+# CONFIG_SERIAL_8250_LPC18XX is not set
+
+#
+# Non-8250 serial port support
+#
+# CONFIG_SERIAL_CLPS711X is not set
+# CONFIG_SERIAL_SH_SCI is not set
+CONFIG_SERIAL_CORE=y
+CONFIG_SERIAL_CORE_CONSOLE=y
+# CONFIG_SERIAL_JSM is not set
+# CONFIG_SERIAL_OF_PLATFORM is not set
+# CONFIG_SERIAL_SCCNXP is not set
+# CONFIG_SERIAL_SC16IS7XX is not set
+# CONFIG_SERIAL_TIMBERDALE is not set
+# CONFIG_SERIAL_BCM63XX is not set
+# CONFIG_SERIAL_ALTERA_JTAGUART is not set
+# CONFIG_SERIAL_ALTERA_UART is not set
+# CONFIG_SERIAL_PCH_UART is not set
+# CONFIG_SERIAL_XILINX_PS_UART is not set
+# CONFIG_SERIAL_ARC is not set
+# CONFIG_SERIAL_RP2 is not set
+# CONFIG_SERIAL_FSL_LPUART is not set
+# CONFIG_SERIAL_CONEXANT_DIGICOLOR is not set
+# CONFIG_SERIAL_ST_ASC is not set
+# CONFIG_SERIAL_MEN_Z135 is not set
+# CONFIG_SERIAL_STM32 is not set
+# CONFIG_TTY_PRINTK is not set
+CONFIG_PRINTER=y
+CONFIG_LP_CONSOLE=y
+CONFIG_PPDEV=m
+# CONFIG_VIRTIO_CONSOLE is not set
+CONFIG_IPMI_HANDLER=m
+CONFIG_IPMI_PANIC_EVENT=y
+# CONFIG_IPMI_PANIC_STRING is not set
+CONFIG_IPMI_DEVICE_INTERFACE=m
+CONFIG_IPMI_SI=m
+CONFIG_IPMI_SI_PROBE_DEFAULTS=y
+CONFIG_IPMI_SSIF=m
+CONFIG_IPMI_WATCHDOG=m
+# CONFIG_IPMI_POWEROFF is not set
+CONFIG_HW_RANDOM=m
+# CONFIG_HW_RANDOM_TIMERIOMEM is not set
+CONFIG_HW_RANDOM_INTEL=m
+CONFIG_HW_RANDOM_AMD=m
+CONFIG_HW_RANDOM_GEODE=m
+CONFIG_HW_RANDOM_VIA=m
+# CONFIG_HW_RANDOM_VIRTIO is not set
+# CONFIG_HW_RANDOM_TPM is not set
+CONFIG_NVRAM=y
+# CONFIG_R3964 is not set
+# CONFIG_APPLICOM is not set
+# CONFIG_SONYPI is not set
+# CONFIG_MWAVE is not set
+# CONFIG_SCx200_GPIO is not set
+# CONFIG_PC8736x_GPIO is not set
+CONFIG_NSC_GPIO=m
+# CONFIG_HPET is not set
+# CONFIG_HANGCHECK_TIMER is not set
+CONFIG_TCG_TPM=m
+CONFIG_TCG_TIS=m
+# CONFIG_TCG_TIS_I2C_ATMEL is not set
+CONFIG_TCG_TIS_I2C_INFINEON=m
+CONFIG_TCG_TIS_I2C_NUVOTON=m
+CONFIG_TCG_NSC=m
+CONFIG_TCG_ATMEL=m
+# CONFIG_TCG_INFINEON is not set
+# CONFIG_TCG_CRB is not set
+CONFIG_TCG_TIS_ST33ZP24=m
+# CONFIG_TCG_TIS_ST33ZP24_I2C is not set
+CONFIG_TELCLOCK=m
+CONFIG_DEVPORT=y
+CONFIG_XILLYBUS=m
+# CONFIG_XILLYBUS_OF is not set
+
+#
+# I2C support
+#
+CONFIG_I2C=y
+CONFIG_ACPI_I2C_OPREGION=y
+CONFIG_I2C_BOARDINFO=y
+# CONFIG_I2C_COMPAT is not set
+# CONFIG_I2C_CHARDEV is not set
+# CONFIG_I2C_MUX is not set
+CONFIG_I2C_HELPER_AUTO=y
+CONFIG_I2C_SMBUS=y
+CONFIG_I2C_ALGOBIT=y
+CONFIG_I2C_ALGOPCA=m
+
+#
+# I2C Hardware Bus support
+#
+
+#
+# PC SMBus host controller drivers
+#
+# CONFIG_I2C_ALI1535 is not set
+# CONFIG_I2C_ALI1563 is not set
+# CONFIG_I2C_ALI15X3 is not set
+# CONFIG_I2C_AMD756 is not set
+# CONFIG_I2C_AMD8111 is not set
+CONFIG_I2C_HIX5HD2=m
+# CONFIG_I2C_I801 is not set
+# CONFIG_I2C_ISCH is not set
+# CONFIG_I2C_ISMT is not set
+# CONFIG_I2C_PIIX4 is not set
+# CONFIG_I2C_NFORCE2 is not set
+# CONFIG_I2C_SIS5595 is not set
+# CONFIG_I2C_SIS630 is not set
+# CONFIG_I2C_SIS96X is not set
+# CONFIG_I2C_VIA is not set
+# CONFIG_I2C_VIAPRO is not set
+
+#
+# ACPI drivers
+#
+# CONFIG_I2C_SCMI is not set
+
+#
+# I2C system bus drivers (mostly embedded / system-on-chip)
+#
+# CONFIG_I2C_AXXIA is not set
+CONFIG_I2C_BCM_IPROC=m
+CONFIG_I2C_BRCMSTB=y
+CONFIG_I2C_CBUS_GPIO=y
+# CONFIG_I2C_DESIGNWARE_PCI is not set
+CONFIG_I2C_EFM32=y
+# CONFIG_I2C_EG20T is not set
+CONFIG_I2C_GPIO=m
+CONFIG_I2C_IMG=m
+# CONFIG_I2C_JZ4780 is not set
+CONFIG_I2C_KEMPLD=y
+CONFIG_I2C_MT65XX=y
+CONFIG_I2C_OCORES=m
+CONFIG_I2C_PCA_PLATFORM=m
+# CONFIG_I2C_PXA is not set
+# CONFIG_I2C_PXA_PCI is not set
+CONFIG_I2C_RIIC=m
+CONFIG_I2C_SH_MOBILE=m
+# CONFIG_I2C_SIMTEC is not set
+CONFIG_I2C_XILINX=m
+CONFIG_I2C_XLP9XX=y
+CONFIG_I2C_RCAR=y
+
+#
+# External I2C/SMBus adapter drivers
+#
+# CONFIG_I2C_DIOLAN_U2C is not set
+# CONFIG_I2C_DLN2 is not set
+CONFIG_I2C_PARPORT=m
+CONFIG_I2C_PARPORT_LIGHT=y
+CONFIG_I2C_ROBOTFUZZ_OSIF=y
+# CONFIG_I2C_TAOS_EVM is not set
+# CONFIG_I2C_TINY_USB is not set
+CONFIG_I2C_VIPERBOARD=m
+
+#
+# Other I2C/SMBus bus drivers
+#
+# CONFIG_SCx200_ACB is not set
+CONFIG_I2C_STUB=m
+CONFIG_I2C_SLAVE=y
+CONFIG_I2C_SLAVE_EEPROM=y
+# CONFIG_I2C_DEBUG_CORE is not set
+# CONFIG_I2C_DEBUG_ALGO is not set
+# CONFIG_I2C_DEBUG_BUS is not set
+# CONFIG_SPI is not set
+CONFIG_SPMI=y
+# CONFIG_SPMI_MSM_PMIC_ARB is not set
+CONFIG_HSI=y
+CONFIG_HSI_BOARDINFO=y
+
+#
+# HSI controllers
+#
+
+#
+# HSI clients
+#
+CONFIG_HSI_CHAR=y
+
+#
+# PPS support
+#
+CONFIG_PPS=m
+# CONFIG_PPS_DEBUG is not set
+
+#
+# PPS clients support
+#
+CONFIG_PPS_CLIENT_KTIMER=m
+# CONFIG_PPS_CLIENT_LDISC is not set
+CONFIG_PPS_CLIENT_PARPORT=m
+CONFIG_PPS_CLIENT_GPIO=m
+
+#
+# PPS generators support
+#
+
+#
+# PTP clock support
+#
+CONFIG_PTP_1588_CLOCK=m
+CONFIG_DP83640_PHY=m
+# CONFIG_PTP_1588_CLOCK_PCH is not set
+CONFIG_ARCH_WANT_OPTIONAL_GPIOLIB=y
+CONFIG_GPIOLIB=y
+CONFIG_GPIO_DEVRES=y
+CONFIG_OF_GPIO=y
+CONFIG_GPIO_ACPI=y
+CONFIG_GPIOLIB_IRQCHIP=y
+CONFIG_DEBUG_GPIO=y
+CONFIG_GPIO_SYSFS=y
+CONFIG_GPIO_GENERIC=y
+
+#
+# Memory mapped GPIO drivers
+#
+# CONFIG_GPIO_74XX_MMIO is not set
+CONFIG_GPIO_ALTERA=m
+# CONFIG_GPIO_BCM_KONA is not set
+CONFIG_GPIO_BRCMSTB=y
+CONFIG_GPIO_CLPS711X=y
+CONFIG_GPIO_DWAPB=m
+# CONFIG_GPIO_ETRAXFS is not set
+CONFIG_GPIO_F7188X=y
+CONFIG_GPIO_GENERIC_PLATFORM=m
+# CONFIG_GPIO_GRGPIO is not set
+# CONFIG_GPIO_ICH is not set
+CONFIG_GPIO_IT8761E=y
+CONFIG_GPIO_LPC18XX=y
+# CONFIG_GPIO_LYNXPOINT is not set
+# CONFIG_GPIO_SCH is not set
+CONFIG_GPIO_SCH311X=m
+CONFIG_GPIO_SYSCON=y
+CONFIG_GPIO_TS5500=m
+# CONFIG_GPIO_VX855 is not set
+# CONFIG_GPIO_XILINX is not set
+
+#
+# I2C GPIO expanders
+#
+CONFIG_GPIO_ADP5588=y
+# CONFIG_GPIO_ADP5588_IRQ is not set
+# CONFIG_GPIO_ADNP is not set
+# CONFIG_GPIO_MAX7300 is not set
+CONFIG_GPIO_MAX732X=m
+CONFIG_GPIO_PCA953X=m
+CONFIG_GPIO_PCF857X=y
+# CONFIG_GPIO_SX150X is not set
+
+#
+# MFD GPIO expanders
+#
+CONFIG_GPIO_ADP5520=m
+CONFIG_GPIO_ARIZONA=y
+CONFIG_GPIO_CRYSTAL_COVE=y
+CONFIG_GPIO_DA9052=m
+CONFIG_GPIO_DLN2=y
+# CONFIG_GPIO_KEMPLD is not set
+CONFIG_GPIO_LP3943=m
+CONFIG_GPIO_RC5T583=y
+CONFIG_GPIO_STMPE=y
+# CONFIG_GPIO_TPS6586X is not set
+CONFIG_GPIO_TPS65912=m
+CONFIG_GPIO_TWL4030=y
+# CONFIG_GPIO_WM831X is not set
+CONFIG_GPIO_WM8350=m
+
+#
+# PCI GPIO expanders
+#
+# CONFIG_GPIO_AMD8111 is not set
+# CONFIG_GPIO_BT8XX is not set
+# CONFIG_GPIO_INTEL_MID is not set
+# CONFIG_GPIO_ML_IOH is not set
+# CONFIG_GPIO_PCH is not set
+# CONFIG_GPIO_RDC321X is not set
+# CONFIG_GPIO_SODAVILLE is not set
+
+#
+# USB GPIO expanders
+#
+CONFIG_GPIO_VIPERBOARD=m
+CONFIG_W1=y
+# CONFIG_W1_CON is not set
+
+#
+# 1-wire Bus Masters
+#
+# CONFIG_W1_MASTER_MATROX is not set
+CONFIG_W1_MASTER_DS2490=y
+CONFIG_W1_MASTER_DS2482=m
+CONFIG_W1_MASTER_MXC=m
+# CONFIG_W1_MASTER_DS1WM is not set
+CONFIG_W1_MASTER_GPIO=y
+
+#
+# 1-wire Slaves
+#
+# CONFIG_W1_SLAVE_THERM is not set
+CONFIG_W1_SLAVE_SMEM=y
+CONFIG_W1_SLAVE_DS2408=m
+# CONFIG_W1_SLAVE_DS2408_READBACK is not set
+CONFIG_W1_SLAVE_DS2413=m
+# CONFIG_W1_SLAVE_DS2406 is not set
+CONFIG_W1_SLAVE_DS2423=y
+CONFIG_W1_SLAVE_DS2431=y
+# CONFIG_W1_SLAVE_DS2433 is not set
+CONFIG_W1_SLAVE_DS2760=y
+CONFIG_W1_SLAVE_DS2780=y
+CONFIG_W1_SLAVE_DS2781=m
+CONFIG_W1_SLAVE_DS28E04=m
+CONFIG_W1_SLAVE_BQ27000=m
+CONFIG_POWER_SUPPLY=y
+# CONFIG_POWER_SUPPLY_DEBUG is not set
+CONFIG_PDA_POWER=m
+CONFIG_WM831X_BACKUP=y
+# CONFIG_WM831X_POWER is not set
+# CONFIG_WM8350_POWER is not set
+CONFIG_TEST_POWER=m
+CONFIG_BATTERY_DS2760=m
+CONFIG_BATTERY_DS2780=y
+CONFIG_BATTERY_DS2781=m
+# CONFIG_BATTERY_DS2782 is not set
+# CONFIG_BATTERY_SBS is not set
+# CONFIG_BATTERY_BQ27x00 is not set
+# CONFIG_BATTERY_DA9052 is not set
+# CONFIG_BATTERY_MAX17040 is not set
+# CONFIG_BATTERY_MAX17042 is not set
+# CONFIG_CHARGER_PCF50633 is not set
+CONFIG_CHARGER_ISP1704=y
+CONFIG_CHARGER_MAX8903=m
+CONFIG_CHARGER_TWL4030=y
+# CONFIG_CHARGER_LP8727 is not set
+CONFIG_CHARGER_GPIO=y
+# CONFIG_CHARGER_MANAGER is not set
+# CONFIG_CHARGER_MAX77693 is not set
+# CONFIG_CHARGER_BQ2415X is not set
+CONFIG_CHARGER_BQ24190=y
+# CONFIG_CHARGER_BQ24257 is not set
+CONFIG_CHARGER_BQ24735=m
+# CONFIG_CHARGER_BQ25890 is not set
+# CONFIG_CHARGER_SMB347 is not set
+CONFIG_BATTERY_GAUGE_LTC2941=y
+CONFIG_BATTERY_GOLDFISH=m
+# CONFIG_BATTERY_RT5033 is not set
+CONFIG_CHARGER_RT9455=y
+# CONFIG_POWER_RESET is not set
+CONFIG_POWER_AVS=y
+CONFIG_HWMON=y
+CONFIG_HWMON_VID=y
+CONFIG_HWMON_DEBUG_CHIP=y
+
+#
+# Native drivers
+#
+CONFIG_SENSORS_AD7414=m
+CONFIG_SENSORS_AD7418=m
+CONFIG_SENSORS_ADM1021=y
+CONFIG_SENSORS_ADM1025=y
+# CONFIG_SENSORS_ADM1026 is not set
+CONFIG_SENSORS_ADM1029=m
+CONFIG_SENSORS_ADM1031=m
+# CONFIG_SENSORS_ADM9240 is not set
+CONFIG_SENSORS_ADT7X10=y
+CONFIG_SENSORS_ADT7410=y
+# CONFIG_SENSORS_ADT7411 is not set
+CONFIG_SENSORS_ADT7462=y
+CONFIG_SENSORS_ADT7470=m
+CONFIG_SENSORS_ADT7475=m
+# CONFIG_SENSORS_ASC7621 is not set
+# CONFIG_SENSORS_K8TEMP is not set
+# CONFIG_SENSORS_K10TEMP is not set
+# CONFIG_SENSORS_FAM15H_POWER is not set
+# CONFIG_SENSORS_APPLESMC is not set
+# CONFIG_SENSORS_ASB100 is not set
+CONFIG_SENSORS_ATXP1=m
+# CONFIG_SENSORS_DS620 is not set
+# CONFIG_SENSORS_DS1621 is not set
+CONFIG_SENSORS_DELL_SMM=y
+CONFIG_SENSORS_DA9052_ADC=y
+# CONFIG_SENSORS_I5K_AMB is not set
+CONFIG_SENSORS_F71805F=m
+CONFIG_SENSORS_F71882FG=y
+# CONFIG_SENSORS_F75375S is not set
+CONFIG_SENSORS_MC13783_ADC=m
+# CONFIG_SENSORS_FSCHMD is not set
+# CONFIG_SENSORS_GL518SM is not set
+CONFIG_SENSORS_GL520SM=y
+CONFIG_SENSORS_G760A=m
+CONFIG_SENSORS_G762=y
+CONFIG_SENSORS_GPIO_FAN=m
+CONFIG_SENSORS_HIH6130=y
+CONFIG_SENSORS_IBMAEM=m
+CONFIG_SENSORS_IBMPEX=m
+# CONFIG_SENSORS_I5500 is not set
+CONFIG_SENSORS_CORETEMP=y
+CONFIG_SENSORS_IT87=m
+CONFIG_SENSORS_JC42=y
+CONFIG_SENSORS_POWR1220=y
+# CONFIG_SENSORS_LINEAGE is not set
+CONFIG_SENSORS_LTC2945=m
+CONFIG_SENSORS_LTC4151=m
+CONFIG_SENSORS_LTC4215=y
+# CONFIG_SENSORS_LTC4222 is not set
+# CONFIG_SENSORS_LTC4245 is not set
+# CONFIG_SENSORS_LTC4260 is not set
+# CONFIG_SENSORS_LTC4261 is not set
+CONFIG_SENSORS_MAX16065=m
+CONFIG_SENSORS_MAX1619=y
+# CONFIG_SENSORS_MAX1668 is not set
+CONFIG_SENSORS_MAX197=m
+CONFIG_SENSORS_MAX6639=y
+# CONFIG_SENSORS_MAX6642 is not set
+# CONFIG_SENSORS_MAX6650 is not set
+# CONFIG_SENSORS_MAX6697 is not set
+CONFIG_SENSORS_HTU21=m
+# CONFIG_SENSORS_MCP3021 is not set
+# CONFIG_SENSORS_MENF21BMC_HWMON is not set
+# CONFIG_SENSORS_LM63 is not set
+CONFIG_SENSORS_LM73=y
+# CONFIG_SENSORS_LM75 is not set
+CONFIG_SENSORS_LM77=m
+# CONFIG_SENSORS_LM78 is not set
+# CONFIG_SENSORS_LM80 is not set
+CONFIG_SENSORS_LM83=m
+CONFIG_SENSORS_LM85=m
+CONFIG_SENSORS_LM87=y
+# CONFIG_SENSORS_LM90 is not set
+CONFIG_SENSORS_LM92=m
+CONFIG_SENSORS_LM93=y
+CONFIG_SENSORS_LM95234=y
+CONFIG_SENSORS_LM95241=m
+CONFIG_SENSORS_LM95245=y
+CONFIG_SENSORS_PC87360=y
+CONFIG_SENSORS_PC87427=y
+# CONFIG_SENSORS_NTC_THERMISTOR is not set
+# CONFIG_SENSORS_NCT6683 is not set
+# CONFIG_SENSORS_NCT6775 is not set
+CONFIG_SENSORS_NCT7802=m
+# CONFIG_SENSORS_NCT7904 is not set
+CONFIG_SENSORS_PCF8591=y
+CONFIG_PMBUS=m
+CONFIG_SENSORS_PMBUS=m
+CONFIG_SENSORS_ADM1275=m
+# CONFIG_SENSORS_LM25066 is not set
+CONFIG_SENSORS_LTC2978=m
+# CONFIG_SENSORS_LTC2978_REGULATOR is not set
+CONFIG_SENSORS_MAX16064=m
+CONFIG_SENSORS_MAX34440=m
+CONFIG_SENSORS_MAX8688=m
+CONFIG_SENSORS_TPS40422=m
+# CONFIG_SENSORS_UCD9000 is not set
+CONFIG_SENSORS_UCD9200=m
+CONFIG_SENSORS_ZL6100=m
+CONFIG_SENSORS_PWM_FAN=y
+CONFIG_SENSORS_SHT15=y
+CONFIG_SENSORS_SHT21=y
+# CONFIG_SENSORS_SHTC1 is not set
+# CONFIG_SENSORS_SIS5595 is not set
+# CONFIG_SENSORS_DME1737 is not set
+# CONFIG_SENSORS_EMC1403 is not set
+CONFIG_SENSORS_EMC2103=y
+CONFIG_SENSORS_EMC6W201=y
+CONFIG_SENSORS_SMSC47M1=y
+# CONFIG_SENSORS_SMSC47M192 is not set
+# CONFIG_SENSORS_SMSC47B397 is not set
+# CONFIG_SENSORS_SCH56XX_COMMON is not set
+# CONFIG_SENSORS_SMM665 is not set
+# CONFIG_SENSORS_ADC128D818 is not set
+CONFIG_SENSORS_ADS1015=m
+CONFIG_SENSORS_ADS7828=m
+# CONFIG_SENSORS_AMC6821 is not set
+# CONFIG_SENSORS_INA209 is not set
+# CONFIG_SENSORS_INA2XX is not set
+# CONFIG_SENSORS_TC74 is not set
+CONFIG_SENSORS_THMC50=m
+# CONFIG_SENSORS_TMP102 is not set
+# CONFIG_SENSORS_TMP103 is not set
+# CONFIG_SENSORS_TMP401 is not set
+CONFIG_SENSORS_TMP421=m
+CONFIG_SENSORS_VIA_CPUTEMP=m
+# CONFIG_SENSORS_VIA686A is not set
+CONFIG_SENSORS_VT1211=m
+# CONFIG_SENSORS_VT8231 is not set
+CONFIG_SENSORS_W83781D=m
+# CONFIG_SENSORS_W83791D is not set
+# CONFIG_SENSORS_W83792D is not set
+# CONFIG_SENSORS_W83793 is not set
+CONFIG_SENSORS_W83795=y
+# CONFIG_SENSORS_W83795_FANCTRL is not set
+# CONFIG_SENSORS_W83L785TS is not set
+# CONFIG_SENSORS_W83L786NG is not set
+CONFIG_SENSORS_W83627HF=m
+CONFIG_SENSORS_W83627EHF=m
+CONFIG_SENSORS_WM831X=m
+CONFIG_SENSORS_WM8350=m
+
+#
+# ACPI drivers
+#
+# CONFIG_SENSORS_ACPI_POWER is not set
+# CONFIG_SENSORS_ATK0110 is not set
+CONFIG_THERMAL=y
+CONFIG_THERMAL_HWMON=y
+CONFIG_THERMAL_OF=y
+# CONFIG_THERMAL_WRITABLE_TRIPS is not set
+CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y
+# CONFIG_THERMAL_DEFAULT_GOV_FAIR_SHARE is not set
+# CONFIG_THERMAL_DEFAULT_GOV_USER_SPACE is not set
+# CONFIG_THERMAL_DEFAULT_GOV_POWER_ALLOCATOR is not set
+# CONFIG_THERMAL_GOV_FAIR_SHARE is not set
+CONFIG_THERMAL_GOV_STEP_WISE=y
+# CONFIG_THERMAL_GOV_BANG_BANG is not set
+# CONFIG_THERMAL_GOV_USER_SPACE is not set
+# CONFIG_THERMAL_GOV_POWER_ALLOCATOR is not set
+# CONFIG_THERMAL_EMULATION is not set
+# CONFIG_RCAR_THERMAL is not set
+# CONFIG_INTEL_SOC_DTS_THERMAL is not set
+# CONFIG_INT340X_THERMAL is not set
+
+#
+# Texas Instruments thermal drivers
+#
+# CONFIG_WATCHDOG is not set
+CONFIG_SSB_POSSIBLE=y
+
+#
+# Sonics Silicon Backplane
+#
+CONFIG_SSB=y
+CONFIG_SSB_SPROM=y
+CONFIG_SSB_PCIHOST_POSSIBLE=y
+CONFIG_SSB_PCIHOST=y
+# CONFIG_SSB_B43_PCI_BRIDGE is not set
+CONFIG_SSB_SILENT=y
+CONFIG_SSB_DRIVER_PCICORE_POSSIBLE=y
+# CONFIG_SSB_DRIVER_PCICORE is not set
+CONFIG_SSB_DRIVER_GPIO=y
+CONFIG_BCMA_POSSIBLE=y
+
+#
+# Broadcom specific AMBA
+#
+# CONFIG_BCMA is not set
+
+#
+# Multifunction device drivers
+#
+CONFIG_MFD_CORE=y
+# CONFIG_MFD_CS5535 is not set
+# CONFIG_MFD_AS3711 is not set
+CONFIG_MFD_AS3722=y
+CONFIG_PMIC_ADP5520=y
+# CONFIG_MFD_AAT2870_CORE is not set
+# CONFIG_MFD_ATMEL_HLCDC is not set
+CONFIG_MFD_BCM590XX=m
+CONFIG_MFD_AXP20X=y
+# CONFIG_MFD_CROS_EC is not set
+# CONFIG_PMIC_DA903X is not set
+CONFIG_PMIC_DA9052=y
+CONFIG_MFD_DA9052_I2C=y
+# CONFIG_MFD_DA9055 is not set
+# CONFIG_MFD_DA9063 is not set
+CONFIG_MFD_DA9150=m
+CONFIG_MFD_DLN2=y
+CONFIG_MFD_MC13XXX=m
+CONFIG_MFD_MC13XXX_I2C=m
+CONFIG_MFD_HI6421_PMIC=y
+CONFIG_HTC_PASIC3=m
+# CONFIG_HTC_I2CPLD is not set
+# CONFIG_LPC_ICH is not set
+# CONFIG_LPC_SCH is not set
+CONFIG_INTEL_SOC_PMIC=y
+# CONFIG_MFD_JANZ_CMODIO is not set
+CONFIG_MFD_KEMPLD=y
+CONFIG_MFD_88PM800=m
+CONFIG_MFD_88PM805=y
+# CONFIG_MFD_88PM860X is not set
+# CONFIG_MFD_MAX14577 is not set
+CONFIG_MFD_MAX77686=y
+CONFIG_MFD_MAX77693=y
+CONFIG_MFD_MAX77843=y
+CONFIG_MFD_MAX8907=y
+# CONFIG_MFD_MAX8925 is not set
+# CONFIG_MFD_MAX8997 is not set
+CONFIG_MFD_MAX8998=y
+# CONFIG_MFD_MT6397 is not set
+CONFIG_MFD_MENF21BMC=y
+CONFIG_MFD_VIPERBOARD=m
+# CONFIG_MFD_RETU is not set
+CONFIG_MFD_PCF50633=y
+CONFIG_PCF50633_ADC=y
+CONFIG_PCF50633_GPIO=m
+# CONFIG_UCB1400_CORE is not set
+# CONFIG_MFD_SPMI_PMIC is not set
+# CONFIG_MFD_RDC321X is not set
+# CONFIG_MFD_RTSX_PCI is not set
+CONFIG_MFD_RT5033=m
+# CONFIG_MFD_RTSX_USB is not set
+CONFIG_MFD_RC5T583=y
+CONFIG_MFD_RK808=y
+# CONFIG_MFD_RN5T618 is not set
+# CONFIG_MFD_SEC_CORE is not set
+CONFIG_MFD_SI476X_CORE=y
+CONFIG_MFD_SM501=m
+# CONFIG_MFD_SM501_GPIO is not set
+CONFIG_MFD_SKY81452=y
+CONFIG_MFD_SMSC=y
+CONFIG_ABX500_CORE=y
+# CONFIG_AB3100_CORE is not set
+CONFIG_MFD_STMPE=y
+
+#
+# STMicroelectronics STMPE Interface Drivers
+#
+# CONFIG_STMPE_I2C is not set
+CONFIG_MFD_SYSCON=y
+CONFIG_MFD_TI_AM335X_TSCADC=m
+CONFIG_MFD_LP3943=m
+CONFIG_MFD_LP8788=y
+# CONFIG_MFD_PALMAS is not set
+CONFIG_TPS6105X=y
+# CONFIG_TPS65010 is not set
+CONFIG_TPS6507X=y
+# CONFIG_MFD_TPS65090 is not set
+# CONFIG_MFD_TPS65217 is not set
+CONFIG_MFD_TPS65218=m
+CONFIG_MFD_TPS6586X=y
+# CONFIG_MFD_TPS65910 is not set
+CONFIG_MFD_TPS65912=y
+CONFIG_MFD_TPS65912_I2C=y
+CONFIG_MFD_TPS80031=y
+CONFIG_TWL4030_CORE=y
+CONFIG_MFD_TWL4030_AUDIO=y
+# CONFIG_TWL6040_CORE is not set
+CONFIG_MFD_WL1273_CORE=y
+CONFIG_MFD_LM3533=m
+# CONFIG_MFD_TIMBERDALE is not set
+# CONFIG_MFD_TC3589X is not set
+# CONFIG_MFD_TMIO is not set
+# CONFIG_MFD_VX855 is not set
+CONFIG_MFD_ARIZONA=y
+CONFIG_MFD_ARIZONA_I2C=m
+CONFIG_MFD_WM5102=y
+CONFIG_MFD_WM5110=y
+# CONFIG_MFD_WM8997 is not set
+# CONFIG_MFD_WM8400 is not set
+CONFIG_MFD_WM831X=y
+CONFIG_MFD_WM831X_I2C=y
+CONFIG_MFD_WM8350=y
+CONFIG_MFD_WM8350_I2C=y
+# CONFIG_MFD_WM8994 is not set
+CONFIG_REGULATOR=y
+CONFIG_REGULATOR_DEBUG=y
+CONFIG_REGULATOR_FIXED_VOLTAGE=y
+CONFIG_REGULATOR_VIRTUAL_CONSUMER=y
+CONFIG_REGULATOR_USERSPACE_CONSUMER=m
+CONFIG_REGULATOR_88PM800=m
+CONFIG_REGULATOR_ACT8865=y
+# CONFIG_REGULATOR_AD5398 is not set
+CONFIG_REGULATOR_ANATOP=m
+CONFIG_REGULATOR_ARIZONA=m
+CONFIG_REGULATOR_AS3722=m
+# CONFIG_REGULATOR_AXP20X is not set
+CONFIG_REGULATOR_BCM590XX=m
+# CONFIG_REGULATOR_DA9052 is not set
+CONFIG_REGULATOR_DA9210=m
+CONFIG_REGULATOR_DA9211=y
+# CONFIG_REGULATOR_FAN53555 is not set
+CONFIG_REGULATOR_GPIO=y
+CONFIG_REGULATOR_HI6421=y
+CONFIG_REGULATOR_ISL9305=y
+# CONFIG_REGULATOR_ISL6271A is not set
+CONFIG_REGULATOR_LP3971=m
+CONFIG_REGULATOR_LP3972=m
+CONFIG_REGULATOR_LP872X=m
+CONFIG_REGULATOR_LP8755=m
+CONFIG_REGULATOR_LP8788=m
+CONFIG_REGULATOR_LTC3589=m
+# CONFIG_REGULATOR_MAX1586 is not set
+CONFIG_REGULATOR_MAX8649=m
+CONFIG_REGULATOR_MAX8660=y
+# CONFIG_REGULATOR_MAX8907 is not set
+CONFIG_REGULATOR_MAX8952=m
+# CONFIG_REGULATOR_MAX8973 is not set
+# CONFIG_REGULATOR_MAX8998 is not set
+CONFIG_REGULATOR_MAX77686=y
+# CONFIG_REGULATOR_MAX77693 is not set
+CONFIG_REGULATOR_MAX77802=y
+CONFIG_REGULATOR_MAX77843=y
+# CONFIG_REGULATOR_MC13783 is not set
+# CONFIG_REGULATOR_MC13892 is not set
+CONFIG_REGULATOR_PBIAS=y
+CONFIG_REGULATOR_PCF50633=m
+CONFIG_REGULATOR_PFUZE100=y
+CONFIG_REGULATOR_QCOM_SPMI=y
+CONFIG_REGULATOR_RC5T583=y
+CONFIG_REGULATOR_RK808=m
+CONFIG_REGULATOR_RT5033=m
+# CONFIG_REGULATOR_SKY81452 is not set
+CONFIG_REGULATOR_TPS51632=m
+CONFIG_REGULATOR_TPS6105X=y
+CONFIG_REGULATOR_TPS62360=m
+CONFIG_REGULATOR_TPS65023=y
+CONFIG_REGULATOR_TPS6507X=m
+CONFIG_REGULATOR_TPS65218=m
+CONFIG_REGULATOR_TPS6586X=m
+CONFIG_REGULATOR_TPS65912=y
+# CONFIG_REGULATOR_TPS80031 is not set
+# CONFIG_REGULATOR_TWL4030 is not set
+# CONFIG_REGULATOR_WM831X is not set
+CONFIG_REGULATOR_WM8350=y
+# CONFIG_MEDIA_SUPPORT is not set
+
+#
+# Graphics support
+#
+# CONFIG_AGP is not set
+CONFIG_VGA_ARB=y
+CONFIG_VGA_ARB_MAX_GPUS=16
+# CONFIG_VGA_SWITCHEROO is not set
+
+#
+# Direct Rendering Manager
+#
+CONFIG_DRM=y
+CONFIG_DRM_MIPI_DSI=y
+CONFIG_DRM_KMS_HELPER=y
+CONFIG_DRM_KMS_FB_HELPER=y
+# CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
+CONFIG_DRM_TTM=m
+
+#
+# I2C encoder or helper chips
+#
+CONFIG_DRM_I2C_ADV7511=y
+CONFIG_DRM_I2C_CH7006=m
+CONFIG_DRM_I2C_SIL164=m
+# CONFIG_DRM_I2C_NXP_TDA998X is not set
+# CONFIG_DRM_PTN3460 is not set
+CONFIG_DRM_PS8622=y
+# CONFIG_DRM_TDFX is not set
+# CONFIG_DRM_R128 is not set
+# CONFIG_DRM_RADEON is not set
+# CONFIG_DRM_AMDGPU is not set
+# CONFIG_DRM_NOUVEAU is not set
+# CONFIG_DRM_I915 is not set
+# CONFIG_DRM_MGA is not set
+# CONFIG_DRM_VIA is not set
+# CONFIG_DRM_SAVAGE is not set
+CONFIG_DRM_VGEM=y
+# CONFIG_DRM_VMWGFX is not set
+# CONFIG_DRM_GMA500 is not set
+CONFIG_DRM_UDL=y
+# CONFIG_DRM_AST is not set
+# CONFIG_DRM_MGAG200 is not set
+# CONFIG_DRM_CIRRUS_QEMU is not set
+# CONFIG_DRM_QXL is not set
+# CONFIG_DRM_BOCHS is not set
+CONFIG_DRM_VIRTIO_GPU=m
+CONFIG_DRM_PANEL=y
+
+#
+# Display Panels
+#
+CONFIG_DRM_PANEL_SIMPLE=y
+CONFIG_DRM_PANEL_S6E8AA0=y
+# CONFIG_DRM_PANEL_SHARP_LQ101R1SX01 is not set
+
+#
+# Frame buffer Devices
+#
+CONFIG_FB=y
+CONFIG_FIRMWARE_EDID=y
+CONFIG_FB_CMDLINE=y
+# CONFIG_FB_DDC is not set
+CONFIG_FB_BOOT_VESA_SUPPORT=y
+CONFIG_FB_CFB_FILLRECT=y
+CONFIG_FB_CFB_COPYAREA=y
+CONFIG_FB_CFB_IMAGEBLIT=y
+# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
+CONFIG_FB_SYS_FILLRECT=y
+CONFIG_FB_SYS_COPYAREA=y
+CONFIG_FB_SYS_IMAGEBLIT=y
+CONFIG_FB_FOREIGN_ENDIAN=y
+# CONFIG_FB_BOTH_ENDIAN is not set
+# CONFIG_FB_BIG_ENDIAN is not set
+CONFIG_FB_LITTLE_ENDIAN=y
+CONFIG_FB_SYS_FOPS=y
+CONFIG_FB_DEFERRED_IO=y
+CONFIG_FB_HECUBA=y
+# CONFIG_FB_SVGALIB is not set
+# CONFIG_FB_MACMODES is not set
+# CONFIG_FB_BACKLIGHT is not set
+CONFIG_FB_MODE_HELPERS=y
+# CONFIG_FB_TILEBLITTING is not set
+
+#
+# Frame buffer hardware drivers
+#
+# CONFIG_FB_CIRRUS is not set
+# CONFIG_FB_PM2 is not set
+CONFIG_FB_CLPS711X=y
+# CONFIG_FB_CYBER2000 is not set
+CONFIG_FB_ARC=y
+# CONFIG_FB_ASILIANT is not set
+# CONFIG_FB_IMSTT is not set
+# CONFIG_FB_VGA16 is not set
+CONFIG_FB_UVESA=m
+CONFIG_FB_VESA=y
+CONFIG_FB_N411=y
+CONFIG_FB_HGA=y
+# CONFIG_FB_OPENCORES is not set
+CONFIG_FB_S1D13XXX=m
+# CONFIG_FB_NVIDIA is not set
+# CONFIG_FB_RIVA is not set
+# CONFIG_FB_I740 is not set
+# CONFIG_FB_LE80578 is not set
+# CONFIG_FB_MATROX is not set
+# CONFIG_FB_RADEON is not set
+# CONFIG_FB_ATY128 is not set
+# CONFIG_FB_ATY is not set
+# CONFIG_FB_S3 is not set
+# CONFIG_FB_SAVAGE is not set
+# CONFIG_FB_SIS is not set
+# CONFIG_FB_VIA is not set
+# CONFIG_FB_NEOMAGIC is not set
+# CONFIG_FB_KYRO is not set
+# CONFIG_FB_3DFX is not set
+# CONFIG_FB_VOODOO1 is not set
+# CONFIG_FB_VT8623 is not set
+# CONFIG_FB_TRIDENT is not set
+# CONFIG_FB_ARK is not set
+# CONFIG_FB_PM3 is not set
+# CONFIG_FB_CARMINE is not set
+# CONFIG_FB_GEODE is not set
+CONFIG_FB_TMIO=m
+# CONFIG_FB_TMIO_ACCELL is not set
+# CONFIG_FB_SM501 is not set
+# CONFIG_FB_SMSCUFX is not set
+# CONFIG_FB_UDL is not set
+CONFIG_FB_GOLDFISH=y
+CONFIG_FB_VIRTUAL=m
+CONFIG_FB_METRONOME=m
+# CONFIG_FB_MB862XX is not set
+CONFIG_FB_BROADSHEET=m
+CONFIG_FB_AUO_K190X=y
+CONFIG_FB_AUO_K1900=y
+CONFIG_FB_AUO_K1901=y
+CONFIG_FB_SIMPLE=y
+# CONFIG_FB_SSD1307 is not set
+CONFIG_BACKLIGHT_LCD_SUPPORT=y
+CONFIG_LCD_CLASS_DEVICE=y
+CONFIG_LCD_PLATFORM=y
+CONFIG_BACKLIGHT_CLASS_DEVICE=y
+CONFIG_BACKLIGHT_GENERIC=y
+# CONFIG_BACKLIGHT_LM3533 is not set
+CONFIG_BACKLIGHT_DA9052=m
+# CONFIG_BACKLIGHT_APPLE is not set
+CONFIG_BACKLIGHT_SAHARA=y
+CONFIG_BACKLIGHT_WM831X=y
+CONFIG_BACKLIGHT_ADP5520=m
+CONFIG_BACKLIGHT_ADP8860=m
+CONFIG_BACKLIGHT_ADP8870=y
+CONFIG_BACKLIGHT_PCF50633=m
+# CONFIG_BACKLIGHT_LM3639 is not set
+CONFIG_BACKLIGHT_PANDORA=m
+CONFIG_BACKLIGHT_SKY81452=m
+# CONFIG_BACKLIGHT_GPIO is not set
+CONFIG_BACKLIGHT_LV5207LP=y
+# CONFIG_BACKLIGHT_BD6107 is not set
+# CONFIG_VGASTATE is not set
+CONFIG_VIDEOMODE_HELPERS=y
+CONFIG_HDMI=y
+CONFIG_LOGO=y
+CONFIG_LOGO_LINUX_MONO=y
+CONFIG_LOGO_LINUX_VGA16=y
+CONFIG_LOGO_LINUX_CLUT224=y
+CONFIG_SOUND=y
+CONFIG_SOUND_OSS_CORE=y
+CONFIG_SOUND_OSS_CORE_PRECLAIM=y
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_DMAENGINE_PCM=m
+CONFIG_SND_HWDEP=m
+CONFIG_SND_RAWMIDI=m
+CONFIG_SND_COMPRESS_OFFLOAD=m
+CONFIG_SND_JACK=y
+# CONFIG_SND_SEQUENCER is not set
+CONFIG_SND_OSSEMUL=y
+# CONFIG_SND_MIXER_OSS is not set
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_PCM_OSS_PLUGINS=y
+CONFIG_SND_HRTIMER=m
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_PROC_FS=y
+# CONFIG_SND_VERBOSE_PROCFS is not set
+CONFIG_SND_VERBOSE_PRINTK=y
+CONFIG_SND_DEBUG=y
+CONFIG_SND_DEBUG_VERBOSE=y
+CONFIG_SND_VMASTER=y
+CONFIG_SND_DMA_SGBUF=y
+# CONFIG_SND_RAWMIDI_SEQ is not set
+# CONFIG_SND_OPL3_LIB_SEQ is not set
+# CONFIG_SND_OPL4_LIB_SEQ is not set
+# CONFIG_SND_SBAWE_SEQ is not set
+# CONFIG_SND_EMU10K1_SEQ is not set
+CONFIG_SND_MPU401_UART=m
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_DRIVERS=y
+# CONFIG_SND_PCSP is not set
+CONFIG_SND_DUMMY=m
+CONFIG_SND_ALOOP=m
+CONFIG_SND_MTPAV=m
+CONFIG_SND_MTS64=m
+CONFIG_SND_SERIAL_U16550=m
+CONFIG_SND_MPU401=m
+CONFIG_SND_PORTMAN2X4=m
+CONFIG_SND_AC97_POWER_SAVE=y
+CONFIG_SND_AC97_POWER_SAVE_DEFAULT=0
+CONFIG_SND_PCI=y
+# CONFIG_SND_AD1889 is not set
+# CONFIG_SND_ALS300 is not set
+# CONFIG_SND_ALS4000 is not set
+# CONFIG_SND_ALI5451 is not set
+# CONFIG_SND_ASIHPI is not set
+# CONFIG_SND_ATIIXP is not set
+# CONFIG_SND_ATIIXP_MODEM is not set
+# CONFIG_SND_AU8810 is not set
+# CONFIG_SND_AU8820 is not set
+# CONFIG_SND_AU8830 is not set
+# CONFIG_SND_AW2 is not set
+# CONFIG_SND_AZT3328 is not set
+# CONFIG_SND_BT87X is not set
+# CONFIG_SND_CA0106 is not set
+# CONFIG_SND_CMIPCI is not set
+# CONFIG_SND_OXYGEN is not set
+# CONFIG_SND_CS4281 is not set
+# CONFIG_SND_CS46XX is not set
+# CONFIG_SND_CS5530 is not set
+# CONFIG_SND_CS5535AUDIO is not set
+# CONFIG_SND_CTXFI is not set
+# CONFIG_SND_DARLA20 is not set
+# CONFIG_SND_GINA20 is not set
+# CONFIG_SND_LAYLA20 is not set
+# CONFIG_SND_DARLA24 is not set
+# CONFIG_SND_GINA24 is not set
+# CONFIG_SND_LAYLA24 is not set
+# CONFIG_SND_MONA is not set
+# CONFIG_SND_MIA is not set
+# CONFIG_SND_ECHO3G is not set
+# CONFIG_SND_INDIGO is not set
+# CONFIG_SND_INDIGOIO is not set
+# CONFIG_SND_INDIGODJ is not set
+# CONFIG_SND_INDIGOIOX is not set
+# CONFIG_SND_INDIGODJX is not set
+# CONFIG_SND_EMU10K1 is not set
+# CONFIG_SND_EMU10K1X is not set
+# CONFIG_SND_ENS1370 is not set
+# CONFIG_SND_ENS1371 is not set
+# CONFIG_SND_ES1938 is not set
+# CONFIG_SND_ES1968 is not set
+# CONFIG_SND_FM801 is not set
+# CONFIG_SND_HDSP is not set
+# CONFIG_SND_HDSPM is not set
+# CONFIG_SND_ICE1712 is not set
+# CONFIG_SND_ICE1724 is not set
+# CONFIG_SND_INTEL8X0 is not set
+# CONFIG_SND_INTEL8X0M is not set
+# CONFIG_SND_KORG1212 is not set
+# CONFIG_SND_LOLA is not set
+# CONFIG_SND_LX6464ES is not set
+# CONFIG_SND_MAESTRO3 is not set
+# CONFIG_SND_MIXART is not set
+# CONFIG_SND_NM256 is not set
+# CONFIG_SND_PCXHR is not set
+# CONFIG_SND_RIPTIDE is not set
+# CONFIG_SND_RME32 is not set
+# CONFIG_SND_RME96 is not set
+# CONFIG_SND_RME9652 is not set
+# CONFIG_SND_SE6X is not set
+# CONFIG_SND_SIS7019 is not set
+# CONFIG_SND_SONICVIBES is not set
+# CONFIG_SND_TRIDENT is not set
+# CONFIG_SND_VIA82XX is not set
+# CONFIG_SND_VIA82XX_MODEM is not set
+# CONFIG_SND_VIRTUOSO is not set
+# CONFIG_SND_VX222 is not set
+# CONFIG_SND_YMFPCI is not set
+
+#
+# HD-Audio
+#
+# CONFIG_SND_HDA_INTEL is not set
+CONFIG_SND_HDA_PREALLOC_SIZE=64
+# CONFIG_SND_USB is not set
+CONFIG_SND_FIREWIRE=y
+CONFIG_SND_FIREWIRE_LIB=m
+CONFIG_SND_DICE=m
+CONFIG_SND_OXFW=m
+# CONFIG_SND_ISIGHT is not set
+# CONFIG_SND_SCS1X is not set
+# CONFIG_SND_FIREWORKS is not set
+# CONFIG_SND_BEBOB is not set
+CONFIG_SND_SOC=m
+CONFIG_SND_SOC_AC97_BUS=y
+CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM=y
+# CONFIG_SND_SOC_ADI is not set
+# CONFIG_SND_ATMEL_SOC is not set
+# CONFIG_SND_BCM2835_SOC_I2S is not set
+CONFIG_SND_EP93XX_SOC=m
+
+#
+# SoC Audio for Freescale CPUs
+#
+
+#
+# Common SoC Audio options for Freescale CPUs:
+#
+# CONFIG_SND_SOC_FSL_ASRC is not set
+CONFIG_SND_SOC_FSL_SAI=m
+CONFIG_SND_SOC_FSL_SSI=m
+CONFIG_SND_SOC_FSL_SPDIF=m
+# CONFIG_SND_SOC_FSL_ESAI is not set
+CONFIG_SND_SOC_IMX_AUDMUX=m
+# CONFIG_SND_IMX_SOC is not set
+CONFIG_SND_JZ4740_SOC=m
+# CONFIG_SND_JZ4740_SOC_I2S is not set
+# CONFIG_SND_JZ4740_SOC_QI_LB60 is not set
+# CONFIG_SND_KIRKWOOD_SOC is not set
+# CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH is not set
+CONFIG_SND_SOC_QCOM=m
+CONFIG_SND_SOC_LPASS_CPU=m
+CONFIG_SND_SOC_LPASS_PLATFORM=m
+CONFIG_SND_SOC_LPASS_IPQ806X=m
+CONFIG_SND_SOC_LPASS_APQ8016=m
+CONFIG_SND_SOC_STORM=m
+CONFIG_SND_SOC_APQ8016_SBC=m
+CONFIG_SND_SOC_ROCKCHIP=m
+# CONFIG_SND_SOC_SIRF is not set
+# CONFIG_SND_SOC_XTFPGA_I2S is not set
+CONFIG_SND_SOC_I2C_AND_SPI=m
+
+#
+# CODEC drivers
+#
+CONFIG_SND_SOC_ALL_CODECS=m
+CONFIG_SND_SOC_ARIZONA=m
+CONFIG_SND_SOC_WM_HUBS=m
+CONFIG_SND_SOC_WM_ADSP=m
+CONFIG_SND_SOC_AB8500_CODEC=m
+CONFIG_SND_SOC_AC97_CODEC=m
+CONFIG_SND_SOC_AD193X=m
+CONFIG_SND_SOC_AD193X_I2C=m
+CONFIG_SND_SOC_AD1980=m
+CONFIG_SND_SOC_AD73311=m
+CONFIG_SND_SOC_ADAU1373=m
+CONFIG_SND_SOC_ADAU1701=m
+CONFIG_SND_SOC_ADAU17X1=m
+CONFIG_SND_SOC_ADAU1761=m
+CONFIG_SND_SOC_ADAU1761_I2C=m
+CONFIG_SND_SOC_ADAU1781=m
+CONFIG_SND_SOC_ADAU1781_I2C=m
+CONFIG_SND_SOC_ADAU1977=m
+CONFIG_SND_SOC_ADAU1977_I2C=m
+CONFIG_SND_SOC_ADAV80X=m
+CONFIG_SND_SOC_ADAV803=m
+CONFIG_SND_SOC_ADS117X=m
+CONFIG_SND_SOC_AK4535=m
+CONFIG_SND_SOC_AK4554=m
+CONFIG_SND_SOC_AK4641=m
+CONFIG_SND_SOC_AK4642=m
+CONFIG_SND_SOC_AK4671=m
+CONFIG_SND_SOC_AK5386=m
+CONFIG_SND_SOC_ALC5623=m
+CONFIG_SND_SOC_ALC5632=m
+CONFIG_SND_SOC_CS35L32=m
+CONFIG_SND_SOC_CS42L51=m
+CONFIG_SND_SOC_CS42L51_I2C=m
+CONFIG_SND_SOC_CS42L52=m
+CONFIG_SND_SOC_CS42L56=m
+CONFIG_SND_SOC_CS42L73=m
+CONFIG_SND_SOC_CS4265=m
+CONFIG_SND_SOC_CS4270=m
+CONFIG_SND_SOC_CS4271=m
+CONFIG_SND_SOC_CS4271_I2C=m
+CONFIG_SND_SOC_CS42XX8=m
+CONFIG_SND_SOC_CS42XX8_I2C=m
+CONFIG_SND_SOC_CX20442=m
+CONFIG_SND_SOC_JZ4740_CODEC=m
+CONFIG_SND_SOC_L3=m
+CONFIG_SND_SOC_DA7210=m
+CONFIG_SND_SOC_DA7213=m
+CONFIG_SND_SOC_DA732X=m
+CONFIG_SND_SOC_DA9055=m
+CONFIG_SND_SOC_BT_SCO=m
+CONFIG_SND_SOC_DMIC=m
+CONFIG_SND_SOC_HDMI_CODEC=m
+CONFIG_SND_SOC_ES8328=m
+CONFIG_SND_SOC_ES8328_I2C=m
+CONFIG_SND_SOC_ISABELLE=m
+CONFIG_SND_SOC_LM49453=m
+CONFIG_SND_SOC_MAX98088=m
+CONFIG_SND_SOC_MAX98090=m
+CONFIG_SND_SOC_MAX98095=m
+CONFIG_SND_SOC_MAX98357A=m
+CONFIG_SND_SOC_MAX98925=m
+CONFIG_SND_SOC_MAX9850=m
+CONFIG_SND_SOC_PCM1681=m
+CONFIG_SND_SOC_PCM3008=m
+CONFIG_SND_SOC_PCM512x=m
+CONFIG_SND_SOC_PCM512x_I2C=m
+CONFIG_SND_SOC_RL6231=m
+CONFIG_SND_SOC_RL6347A=m
+CONFIG_SND_SOC_RT286=m
+CONFIG_SND_SOC_RT5631=m
+CONFIG_SND_SOC_RT5640=m
+CONFIG_SND_SOC_RT5645=m
+CONFIG_SND_SOC_RT5651=m
+CONFIG_SND_SOC_RT5670=m
+# CONFIG_SND_SOC_RT5677_SPI is not set
+CONFIG_SND_SOC_SGTL5000=m
+CONFIG_SND_SOC_SI476X=m
+CONFIG_SND_SOC_SIGMADSP=m
+CONFIG_SND_SOC_SIGMADSP_I2C=m
+CONFIG_SND_SOC_SIGMADSP_REGMAP=m
+CONFIG_SND_SOC_SIRF_AUDIO_CODEC=m
+CONFIG_SND_SOC_SPDIF=m
+CONFIG_SND_SOC_SSM2518=m
+CONFIG_SND_SOC_SSM2602=m
+CONFIG_SND_SOC_SSM2602_I2C=m
+CONFIG_SND_SOC_SSM4567=m
+CONFIG_SND_SOC_STA32X=m
+CONFIG_SND_SOC_STA350=m
+CONFIG_SND_SOC_STA529=m
+CONFIG_SND_SOC_STAC9766=m
+CONFIG_SND_SOC_STI_SAS=m
+CONFIG_SND_SOC_TAS2552=m
+CONFIG_SND_SOC_TAS5086=m
+CONFIG_SND_SOC_TAS571X=m
+CONFIG_SND_SOC_TFA9879=m
+CONFIG_SND_SOC_TLV320AIC23=m
+CONFIG_SND_SOC_TLV320AIC23_I2C=m
+CONFIG_SND_SOC_TLV320AIC31XX=m
+CONFIG_SND_SOC_TLV320AIC32X4=m
+CONFIG_SND_SOC_TLV320AIC3X=m
+CONFIG_SND_SOC_TLV320DAC33=m
+CONFIG_SND_SOC_TS3A227E=m
+CONFIG_SND_SOC_TWL4030=m
+CONFIG_SND_SOC_UDA134X=m
+CONFIG_SND_SOC_UDA1380=m
+CONFIG_SND_SOC_WL1273=m
+CONFIG_SND_SOC_WM1250_EV1=m
+CONFIG_SND_SOC_WM2000=m
+CONFIG_SND_SOC_WM2200=m
+CONFIG_SND_SOC_WM5100=m
+CONFIG_SND_SOC_WM5102=m
+CONFIG_SND_SOC_WM5110=m
+CONFIG_SND_SOC_WM8350=m
+CONFIG_SND_SOC_WM8510=m
+CONFIG_SND_SOC_WM8523=m
+CONFIG_SND_SOC_WM8580=m
+CONFIG_SND_SOC_WM8711=m
+CONFIG_SND_SOC_WM8727=m
+CONFIG_SND_SOC_WM8728=m
+CONFIG_SND_SOC_WM8731=m
+CONFIG_SND_SOC_WM8737=m
+CONFIG_SND_SOC_WM8741=m
+CONFIG_SND_SOC_WM8750=m
+CONFIG_SND_SOC_WM8753=m
+CONFIG_SND_SOC_WM8776=m
+CONFIG_SND_SOC_WM8782=m
+CONFIG_SND_SOC_WM8804=m
+CONFIG_SND_SOC_WM8804_I2C=m
+CONFIG_SND_SOC_WM8900=m
+CONFIG_SND_SOC_WM8903=m
+CONFIG_SND_SOC_WM8904=m
+CONFIG_SND_SOC_WM8940=m
+CONFIG_SND_SOC_WM8955=m
+CONFIG_SND_SOC_WM8960=m
+CONFIG_SND_SOC_WM8961=m
+CONFIG_SND_SOC_WM8962=m
+CONFIG_SND_SOC_WM8971=m
+CONFIG_SND_SOC_WM8974=m
+CONFIG_SND_SOC_WM8978=m
+CONFIG_SND_SOC_WM8983=m
+CONFIG_SND_SOC_WM8985=m
+CONFIG_SND_SOC_WM8988=m
+CONFIG_SND_SOC_WM8990=m
+CONFIG_SND_SOC_WM8991=m
+CONFIG_SND_SOC_WM8993=m
+CONFIG_SND_SOC_WM8995=m
+CONFIG_SND_SOC_WM8996=m
+CONFIG_SND_SOC_WM9081=m
+CONFIG_SND_SOC_WM9090=m
+CONFIG_SND_SOC_WM9705=m
+CONFIG_SND_SOC_WM9712=m
+CONFIG_SND_SOC_WM9713=m
+CONFIG_SND_SOC_LM4857=m
+CONFIG_SND_SOC_MAX9768=m
+CONFIG_SND_SOC_MAX9877=m
+CONFIG_SND_SOC_MC13783=m
+CONFIG_SND_SOC_ML26124=m
+CONFIG_SND_SOC_TPA6130A2=m
+# CONFIG_SND_SIMPLE_CARD is not set
+CONFIG_SOUND_PRIME=y
+CONFIG_SOUND_OSS=m
+CONFIG_SOUND_TRACEINIT=y
+CONFIG_SOUND_DMAP=y
+# CONFIG_SOUND_VMIDI is not set
+# CONFIG_SOUND_TRIX is not set
+CONFIG_SOUND_MSS=m
+CONFIG_SOUND_MPU401=m
+CONFIG_SOUND_PAS=m
+# CONFIG_SOUND_PSS is not set
+# CONFIG_SOUND_SB is not set
+CONFIG_SOUND_YM3812=m
+# CONFIG_SOUND_UART6850 is not set
+CONFIG_SOUND_AEDSP16=m
+CONFIG_SC6600=y
+CONFIG_SC6600_JOY=y
+CONFIG_SC6600_CDROM=4
+CONFIG_SC6600_CDROMBASE=0
+CONFIG_AC97_BUS=m
+
+#
+# HID support
+#
+CONFIG_HID=y
+# CONFIG_HID_BATTERY_STRENGTH is not set
+# CONFIG_HIDRAW is not set
+# CONFIG_UHID is not set
+CONFIG_HID_GENERIC=y
+
+#
+# Special HID drivers
+#
+# CONFIG_HID_A4TECH is not set
+# CONFIG_HID_ACRUX is not set
+# CONFIG_HID_APPLE is not set
+# CONFIG_HID_APPLEIR is not set
+# CONFIG_HID_AUREAL is not set
+# CONFIG_HID_BELKIN is not set
+# CONFIG_HID_BETOP_FF is not set
+# CONFIG_HID_CHERRY is not set
+# CONFIG_HID_CHICONY is not set
+# CONFIG_HID_PRODIKEYS is not set
+# CONFIG_HID_CP2112 is not set
+# CONFIG_HID_CYPRESS is not set
+# CONFIG_HID_DRAGONRISE is not set
+# CONFIG_HID_EMS_FF is not set
+# CONFIG_HID_ELECOM is not set
+# CONFIG_HID_ELO is not set
+# CONFIG_HID_EZKEY is not set
+# CONFIG_HID_HOLTEK is not set
+# CONFIG_HID_GT683R is not set
+# CONFIG_HID_KEYTOUCH is not set
+# CONFIG_HID_KYE is not set
+# CONFIG_HID_UCLOGIC is not set
+# CONFIG_HID_WALTOP is not set
+# CONFIG_HID_GYRATION is not set
+# CONFIG_HID_ICADE is not set
+# CONFIG_HID_TWINHAN is not set
+# CONFIG_HID_KENSINGTON is not set
+# CONFIG_HID_LCPOWER is not set
+# CONFIG_HID_LENOVO is not set
+# CONFIG_HID_LOGITECH is not set
+# CONFIG_HID_MAGICMOUSE is not set
+# CONFIG_HID_MICROSOFT is not set
+# CONFIG_HID_MONTEREY is not set
+# CONFIG_HID_MULTITOUCH is not set
+# CONFIG_HID_NTRIG is not set
+# CONFIG_HID_ORTEK is not set
+# CONFIG_HID_PANTHERLORD is not set
+# CONFIG_HID_PENMOUNT is not set
+# CONFIG_HID_PETALYNX is not set
+# CONFIG_HID_PICOLCD is not set
+# CONFIG_HID_PLANTRONICS is not set
+# CONFIG_HID_PRIMAX is not set
+# CONFIG_HID_ROCCAT is not set
+# CONFIG_HID_SAITEK is not set
+# CONFIG_HID_SAMSUNG is not set
+# CONFIG_HID_SONY is not set
+# CONFIG_HID_SPEEDLINK is not set
+# CONFIG_HID_STEELSERIES is not set
+# CONFIG_HID_SUNPLUS is not set
+# CONFIG_HID_RMI is not set
+# CONFIG_HID_GREENASIA is not set
+# CONFIG_HID_SMARTJOYPLUS is not set
+# CONFIG_HID_TIVO is not set
+# CONFIG_HID_TOPSEED is not set
+# CONFIG_HID_THINGM is not set
+# CONFIG_HID_THRUSTMASTER is not set
+# CONFIG_HID_WACOM is not set
+# CONFIG_HID_WIIMOTE is not set
+# CONFIG_HID_XINMO is not set
+# CONFIG_HID_ZEROPLUS is not set
+# CONFIG_HID_ZYDACRON is not set
+# CONFIG_HID_SENSOR_HUB is not set
+
+#
+# USB HID support
+#
+CONFIG_USB_HID=y
+# CONFIG_HID_PID is not set
+# CONFIG_USB_HIDDEV is not set
+
+#
+# I2C HID support
+#
+# CONFIG_I2C_HID is not set
+CONFIG_USB_OHCI_LITTLE_ENDIAN=y
+CONFIG_USB_SUPPORT=y
+CONFIG_USB_COMMON=y
+CONFIG_USB_ARCH_HAS_HCD=y
+CONFIG_USB=y
+CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+
+#
+# Miscellaneous USB options
+#
+CONFIG_USB_DEFAULT_PERSIST=y
+# CONFIG_USB_DYNAMIC_MINORS is not set
+CONFIG_USB_OTG=y
+CONFIG_USB_OTG_WHITELIST=y
+CONFIG_USB_OTG_BLACKLIST_HUB=y
+CONFIG_USB_OTG_FSM=y
+CONFIG_USB_ULPI_BUS=y
+CONFIG_USB_MON=m
+# CONFIG_USB_WUSB is not set
+CONFIG_USB_WUSB_CBAF=y
+CONFIG_USB_WUSB_CBAF_DEBUG=y
+
+#
+# USB Host Controller Drivers
+#
+CONFIG_USB_C67X00_HCD=m
+CONFIG_USB_XHCI_HCD=y
+CONFIG_USB_XHCI_PCI=y
+CONFIG_USB_XHCI_PLATFORM=y
+CONFIG_USB_XHCI_MVEBU=y
+CONFIG_USB_XHCI_RCAR=y
+# CONFIG_USB_EHCI_HCD is not set
+CONFIG_USB_OXU210HP_HCD=y
+# CONFIG_USB_ISP116X_HCD is not set
+# CONFIG_USB_ISP1362_HCD is not set
+CONFIG_USB_FUSBH200_HCD=y
+# CONFIG_USB_FOTG210_HCD is not set
+CONFIG_USB_OHCI_HCD=y
+CONFIG_USB_OHCI_HCD_PCI=y
+# CONFIG_USB_OHCI_HCD_SSB is not set
+CONFIG_USB_OHCI_HCD_PLATFORM=y
+# CONFIG_USB_UHCI_HCD is not set
+CONFIG_USB_U132_HCD=m
+CONFIG_USB_SL811_HCD=m
+CONFIG_USB_SL811_HCD_ISO=y
+# CONFIG_USB_R8A66597_HCD is not set
+# CONFIG_USB_WHCI_HCD is not set
+# CONFIG_USB_HWA_HCD is not set
+CONFIG_USB_HCD_SSB=y
+# CONFIG_USB_HCD_TEST_MODE is not set
+
+#
+# USB Device Class drivers
+#
+# CONFIG_USB_ACM is not set
+CONFIG_USB_PRINTER=y
+# CONFIG_USB_WDM is not set
+CONFIG_USB_TMC=m
+
+#
+# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
+#
+
+#
+# also be needed; see USB_STORAGE Help for more info
+#
+
+#
+# USB Imaging devices
+#
+CONFIG_USB_MDC800=y
+CONFIG_USBIP_CORE=y
+CONFIG_USBIP_VHCI_HCD=y
+CONFIG_USBIP_HOST=m
+CONFIG_USBIP_DEBUG=y
+CONFIG_USB_MUSB_HDRC=m
+CONFIG_USB_MUSB_HOST=y
+
+#
+# Platform Glue Layer
+#
+CONFIG_USB_MUSB_DSPS=m
+CONFIG_USB_MUSB_UX500=m
+CONFIG_USB_MUSB_AM335X_CHILD=m
+# CONFIG_USB_UX500_DMA is not set
+CONFIG_MUSB_PIO_ONLY=y
+# CONFIG_USB_DWC3 is not set
+CONFIG_USB_DWC2=y
+CONFIG_USB_DWC2_HOST=y
+
+#
+# Gadget/Dual-role mode requires USB Gadget support to be enabled
+#
+# CONFIG_USB_DWC2_PCI is not set
+CONFIG_USB_DWC2_DEBUG=y
+CONFIG_USB_DWC2_VERBOSE=y
+CONFIG_USB_DWC2_TRACK_MISSED_SOFS=y
+CONFIG_USB_DWC2_DEBUG_PERIODIC=y
+CONFIG_USB_ISP1760=m
+CONFIG_USB_ISP1760_HCD=y
+CONFIG_USB_ISP1760_HOST_ROLE=y
+
+#
+# USB port drivers
+#
+CONFIG_USB_USS720=m
+# CONFIG_USB_SERIAL is not set
+
+#
+# USB Miscellaneous drivers
+#
+# CONFIG_USB_EMI62 is not set
+CONFIG_USB_EMI26=y
+# CONFIG_USB_ADUTUX is not set
+CONFIG_USB_SEVSEG=m
+CONFIG_USB_RIO500=y
+CONFIG_USB_LEGOTOWER=y
+CONFIG_USB_LCD=m
+CONFIG_USB_LED=m
+CONFIG_USB_CYPRESS_CY7C63=y
+CONFIG_USB_CYTHERM=y
+# CONFIG_USB_IDMOUSE is not set
+CONFIG_USB_FTDI_ELAN=m
+# CONFIG_USB_APPLEDISPLAY is not set
+# CONFIG_USB_SISUSBVGA is not set
+CONFIG_USB_LD=y
+CONFIG_USB_TRANCEVIBRATOR=m
+CONFIG_USB_IOWARRIOR=y
+CONFIG_USB_TEST=y
+CONFIG_USB_EHSET_TEST_FIXTURE=y
+# CONFIG_USB_ISIGHTFW is not set
+CONFIG_USB_YUREX=y
+CONFIG_USB_EZUSB_FX2=m
+CONFIG_USB_HSIC_USB3503=y
+CONFIG_USB_LINK_LAYER_TEST=m
+# CONFIG_USB_CHAOSKEY is not set
+
+#
+# USB Physical Layer drivers
+#
+CONFIG_USB_PHY=y
+# CONFIG_KEYSTONE_USB_PHY is not set
+CONFIG_NOP_USB_XCEIV=y
+CONFIG_AM335X_CONTROL_USB=y
+CONFIG_AM335X_PHY_USB=y
+CONFIG_USB_GPIO_VBUS=m
+CONFIG_USB_ISP1301=y
+CONFIG_USB_RCAR_PHY=m
+# CONFIG_USB_GADGET is not set
+CONFIG_UWB=y
+CONFIG_UWB_HWA=m
+# CONFIG_UWB_WHCI is not set
+CONFIG_UWB_I1480U=m
+CONFIG_MMC=m
+# CONFIG_MMC_DEBUG is not set
+# CONFIG_MMC_CLKGATE is not set
+
+#
+# MMC/SD/SDIO Card Drivers
+#
+# CONFIG_SDIO_UART is not set
+CONFIG_MMC_TEST=m
+
+#
+# MMC/SD/SDIO Host Controller Drivers
+#
+CONFIG_MMC_SDHCI=m
+CONFIG_MMC_SDHCI_IO_ACCESSORS=y
+# CONFIG_MMC_SDHCI_PCI is not set
+# CONFIG_MMC_SDHCI_ACPI is not set
+CONFIG_MMC_SDHCI_PLTFM=m
+# CONFIG_MMC_SDHCI_OF_ARASAN is not set
+# CONFIG_MMC_SDHCI_F_SDH30 is not set
+CONFIG_MMC_SDHCI_IPROC=m
+CONFIG_MMC_OMAP_HS=m
+CONFIG_MMC_WBSD=m
+# CONFIG_MMC_TIFM_SD is not set
+# CONFIG_MMC_CB710 is not set
+# CONFIG_MMC_VIA_SDMMC is not set
+CONFIG_MMC_DW=m
+CONFIG_MMC_DW_IDMAC=y
+CONFIG_MMC_DW_PLTFM=m
+CONFIG_MMC_DW_EXYNOS=m
+CONFIG_MMC_DW_K3=m
+# CONFIG_MMC_DW_PCI is not set
+CONFIG_MMC_VUB300=m
+CONFIG_MMC_USHC=m
+CONFIG_MMC_USDHI6ROL0=m
+# CONFIG_MMC_TOSHIBA_PCI is not set
+CONFIG_MMC_MTK=m
+# CONFIG_MEMSTICK is not set
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+# CONFIG_LEDS_CLASS_FLASH is not set
+
+#
+# LED drivers
+#
+# CONFIG_LEDS_BCM6328 is not set
+CONFIG_LEDS_BCM6358=m
+CONFIG_LEDS_LM3530=m
+# CONFIG_LEDS_LM3533 is not set
+CONFIG_LEDS_LM3642=m
+# CONFIG_LEDS_PCA9532 is not set
+CONFIG_LEDS_GPIO=m
+CONFIG_LEDS_LP3944=y
+CONFIG_LEDS_LP55XX_COMMON=y
+CONFIG_LEDS_LP5521=y
+CONFIG_LEDS_LP5523=y
+CONFIG_LEDS_LP5562=y
+CONFIG_LEDS_LP8501=y
+CONFIG_LEDS_LP8788=m
+CONFIG_LEDS_LP8860=m
+CONFIG_LEDS_PCA955X=y
+CONFIG_LEDS_PCA963X=y
+CONFIG_LEDS_WM831X_STATUS=m
+CONFIG_LEDS_WM8350=m
+# CONFIG_LEDS_DA9052 is not set
+# CONFIG_LEDS_REGULATOR is not set
+CONFIG_LEDS_BD2802=m
+CONFIG_LEDS_LT3593=m
+CONFIG_LEDS_ADP5520=m
+CONFIG_LEDS_MC13783=m
+CONFIG_LEDS_TCA6507=m
+CONFIG_LEDS_TLC591XX=m
+CONFIG_LEDS_LM355x=m
+# CONFIG_LEDS_OT200 is not set
+CONFIG_LEDS_MENF21BMC=m
+
+#
+# LED driver for blink(1) USB RGB LED is under Special HID drivers (HID_THINGM)
+#
+CONFIG_LEDS_BLINKM=y
+# CONFIG_LEDS_SYSCON is not set
+CONFIG_LEDS_PM8941_WLED=y
+
+#
+# LED Triggers
+#
+# CONFIG_LEDS_TRIGGERS is not set
+# CONFIG_ACCESSIBILITY is not set
+# CONFIG_INFINIBAND is not set
+CONFIG_EDAC_ATOMIC_SCRUB=y
+CONFIG_EDAC_SUPPORT=y
+CONFIG_EDAC=y
+# CONFIG_EDAC_LEGACY_SYSFS is not set
+# CONFIG_EDAC_DEBUG is not set
+# CONFIG_EDAC_MM_EDAC is not set
+CONFIG_RTC_LIB=y
+CONFIG_RTC_CLASS=y
+# CONFIG_RTC_HCTOSYS is not set
+# CONFIG_RTC_SYSTOHC is not set
+# CONFIG_RTC_DEBUG is not set
+
+#
+# RTC interfaces
+#
+CONFIG_RTC_INTF_SYSFS=y
+# CONFIG_RTC_INTF_PROC is not set
+# CONFIG_RTC_INTF_DEV is not set
+# CONFIG_RTC_DRV_TEST is not set
+
+#
+# I2C RTC drivers
+#
+CONFIG_RTC_DRV_88PM80X=m
+# CONFIG_RTC_DRV_ABB5ZES3 is not set
+CONFIG_RTC_DRV_ABX80X=m
+CONFIG_RTC_DRV_AS3722=m
+CONFIG_RTC_DRV_DS1307=y
+# CONFIG_RTC_DRV_DS1374 is not set
+CONFIG_RTC_DRV_DS1672=m
+CONFIG_RTC_DRV_DS3232=m
+# CONFIG_RTC_DRV_HYM8563 is not set
+CONFIG_RTC_DRV_LP8788=m
+CONFIG_RTC_DRV_MAX6900=m
+CONFIG_RTC_DRV_MAX8907=y
+# CONFIG_RTC_DRV_MAX8998 is not set
+# CONFIG_RTC_DRV_MAX77686 is not set
+CONFIG_RTC_DRV_RK808=y
+# CONFIG_RTC_DRV_MAX77802 is not set
+# CONFIG_RTC_DRV_RS5C372 is not set
+CONFIG_RTC_DRV_ISL1208=y
+# CONFIG_RTC_DRV_ISL12022 is not set
+CONFIG_RTC_DRV_ISL12057=m
+CONFIG_RTC_DRV_X1205=m
+CONFIG_RTC_DRV_PCF2127=y
+# CONFIG_RTC_DRV_PCF8523 is not set
+CONFIG_RTC_DRV_PCF8563=y
+# CONFIG_RTC_DRV_PCF85063 is not set
+CONFIG_RTC_DRV_PCF8583=m
+CONFIG_RTC_DRV_M41T80=y
+CONFIG_RTC_DRV_M41T80_WDT=y
+CONFIG_RTC_DRV_BQ32K=y
+CONFIG_RTC_DRV_TWL4030=y
+# CONFIG_RTC_DRV_TPS6586X is not set
+CONFIG_RTC_DRV_TPS80031=m
+CONFIG_RTC_DRV_RC5T583=m
+CONFIG_RTC_DRV_S35390A=y
+CONFIG_RTC_DRV_FM3130=m
+# CONFIG_RTC_DRV_RX8581 is not set
+CONFIG_RTC_DRV_RX8025=m
+CONFIG_RTC_DRV_EM3027=m
+CONFIG_RTC_DRV_RV3029C2=m
+
+#
+# SPI RTC drivers
+#
+
+#
+# Platform RTC drivers
+#
+# CONFIG_RTC_DRV_CMOS is not set
+CONFIG_RTC_DRV_DS1286=y
+CONFIG_RTC_DRV_DS1511=y
+CONFIG_RTC_DRV_DS1553=m
+CONFIG_RTC_DRV_DS1685_FAMILY=y
+# CONFIG_RTC_DRV_DS1685 is not set
+# CONFIG_RTC_DRV_DS1689 is not set
+# CONFIG_RTC_DRV_DS17285 is not set
+CONFIG_RTC_DRV_DS17485=y
+# CONFIG_RTC_DRV_DS17885 is not set
+# CONFIG_RTC_DS1685_PROC_REGS is not set
+CONFIG_RTC_DS1685_SYSFS_REGS=y
+CONFIG_RTC_DRV_DS1742=y
+CONFIG_RTC_DRV_DS2404=y
+CONFIG_RTC_DRV_DA9052=y
+# CONFIG_RTC_DRV_STK17TA8 is not set
+CONFIG_RTC_DRV_M48T86=m
+CONFIG_RTC_DRV_M48T35=m
+CONFIG_RTC_DRV_M48T59=m
+CONFIG_RTC_DRV_MSM6242=m
+CONFIG_RTC_DRV_BQ4802=y
+# CONFIG_RTC_DRV_RP5C01 is not set
+# CONFIG_RTC_DRV_V3020 is not set
+CONFIG_RTC_DRV_WM831X=y
+CONFIG_RTC_DRV_WM8350=y
+# CONFIG_RTC_DRV_PCF50633 is not set
+
+#
+# on-CPU RTC drivers
+#
+CONFIG_RTC_DRV_GEMINI=m
+# CONFIG_RTC_DRV_MC13XXX is not set
+CONFIG_RTC_DRV_SNVS=y
+CONFIG_RTC_DRV_MOXART=m
+# CONFIG_RTC_DRV_MT6397 is not set
+# CONFIG_RTC_DRV_XGENE is not set
+
+#
+# HID Sensor RTC drivers
+#
+# CONFIG_RTC_DRV_HID_SENSOR_TIME is not set
+# CONFIG_DMADEVICES is not set
+# CONFIG_AUXDISPLAY is not set
+# CONFIG_UIO is not set
+CONFIG_VIRT_DRIVERS=y
+CONFIG_VIRTIO=y
+
+#
+# Virtio drivers
+#
+# CONFIG_VIRTIO_PCI is not set
+# CONFIG_VIRTIO_BALLOON is not set
+# CONFIG_VIRTIO_INPUT is not set
+CONFIG_VIRTIO_MMIO=m
+CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
+
+#
+# Microsoft Hyper-V guest support
+#
+# CONFIG_STAGING is not set
+# CONFIG_X86_PLATFORM_DEVICES is not set
+# CONFIG_CHROME_PLATFORMS is not set
+
+#
+# Hardware Spinlock drivers
+#
+
+#
+# Clock Source drivers
+#
+CONFIG_CLKSRC_I8253=y
+CONFIG_CLKEVT_I8253=y
+CONFIG_I8253_LOCK=y
+CONFIG_CLKBLD_I8253=y
+# CONFIG_ATMEL_PIT is not set
+# CONFIG_SH_TIMER_CMT is not set
+# CONFIG_SH_TIMER_MTU2 is not set
+CONFIG_SH_TIMER_TMU=y
+CONFIG_EM_TIMER_STI=y
+# CONFIG_MAILBOX is not set
+# CONFIG_IOMMU_SUPPORT is not set
+
+#
+# Remoteproc drivers
+#
+CONFIG_REMOTEPROC=y
+CONFIG_STE_MODEM_RPROC=y
+
+#
+# Rpmsg drivers
+#
+
+#
+# SOC (System On Chip) specific Drivers
+#
+# CONFIG_SUNXI_SRAM is not set
+# CONFIG_SOC_TI is not set
+# CONFIG_PM_DEVFREQ is not set
+# CONFIG_EXTCON is not set
+# CONFIG_MEMORY is not set
+# CONFIG_IIO is not set
+# CONFIG_NTB is not set
+# CONFIG_VME_BUS is not set
+# CONFIG_PWM is not set
+CONFIG_IRQCHIP=y
+CONFIG_IPACK_BUS=m
+# CONFIG_BOARD_TPCI200 is not set
+# CONFIG_SERIAL_IPOCTAL is not set
+# CONFIG_RESET_CONTROLLER is not set
+# CONFIG_FMC is not set
+
+#
+# PHY Subsystem
+#
+CONFIG_GENERIC_PHY=y
+CONFIG_ARMADA375_USBCLUSTER_PHY=y
+# CONFIG_PHY_EXYNOS_MIPI_VIDEO is not set
+# CONFIG_PHY_PXA_28NM_HSIC is not set
+CONFIG_PHY_PXA_28NM_USB2=m
+CONFIG_OMAP_CONTROL_PHY=y
+CONFIG_PHY_EXYNOS_DP_VIDEO=m
+CONFIG_BCM_KONA_USB2_PHY=y
+CONFIG_PHY_SAMSUNG_USB2=y
+# CONFIG_PHY_EXYNOS4210_USB2 is not set
+# CONFIG_PHY_EXYNOS4X12_USB2 is not set
+# CONFIG_PHY_EXYNOS5250_USB2 is not set
+CONFIG_PHY_ST_SPEAR1310_MIPHY=m
+CONFIG_PHY_ST_SPEAR1340_MIPHY=m
+CONFIG_PHY_XGENE=m
+CONFIG_PHY_TUSB1210=m
+# CONFIG_POWERCAP is not set
+CONFIG_MCB=y
+# CONFIG_MCB_PCI is not set
+# CONFIG_THUNDERBOLT is not set
+
+#
+# Android
+#
+# CONFIG_ANDROID is not set
+
+#
+# Firmware Drivers
+#
+CONFIG_EDD=y
+CONFIG_EDD_OFF=y
+# CONFIG_FIRMWARE_MEMMAP is not set
+CONFIG_DELL_RBU=y
+# CONFIG_DCDBAS is not set
+# CONFIG_ISCSI_IBFT_FIND is not set
+# CONFIG_GOOGLE_FIRMWARE is not set
+
+#
+# File systems
+#
+CONFIG_DCACHE_WORD_ACCESS=y
+CONFIG_FS_POSIX_ACL=y
+CONFIG_EXPORTFS=y
+CONFIG_FILE_LOCKING=y
+CONFIG_FSNOTIFY=y
+CONFIG_DNOTIFY=y
+CONFIG_INOTIFY_USER=y
+CONFIG_FANOTIFY=y
+# CONFIG_QUOTA is not set
+# CONFIG_QUOTACTL is not set
+# CONFIG_AUTOFS4_FS is not set
+CONFIG_FUSE_FS=y
+CONFIG_CUSE=m
+CONFIG_OVERLAY_FS=m
+
+#
+# Caches
+#
+CONFIG_FSCACHE=y
+CONFIG_FSCACHE_STATS=y
+# CONFIG_FSCACHE_HISTOGRAM is not set
+# CONFIG_FSCACHE_DEBUG is not set
+# CONFIG_FSCACHE_OBJECT_LIST is not set
+
+#
+# Pseudo filesystems
+#
+CONFIG_PROC_FS=y
+CONFIG_PROC_KCORE=y
+# CONFIG_PROC_SYSCTL is not set
+CONFIG_PROC_PAGE_MONITOR=y
+CONFIG_PROC_CHILDREN=y
+CONFIG_KERNFS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+CONFIG_TMPFS_POSIX_ACL=y
+CONFIG_TMPFS_XATTR=y
+# CONFIG_HUGETLBFS is not set
+# CONFIG_HUGETLB_PAGE is not set
+# CONFIG_CONFIGFS_FS is not set
+CONFIG_MISC_FILESYSTEMS=y
+CONFIG_ECRYPT_FS=y
+CONFIG_ECRYPT_FS_MESSAGING=y
+# CONFIG_JFFS2_FS is not set
+CONFIG_UBIFS_FS=m
+CONFIG_UBIFS_FS_ADVANCED_COMPR=y
+CONFIG_UBIFS_FS_LZO=y
+CONFIG_UBIFS_FS_ZLIB=y
+# CONFIG_LOGFS is not set
+CONFIG_ROMFS_FS=m
+CONFIG_ROMFS_BACKED_BY_MTD=y
+CONFIG_ROMFS_ON_MTD=y
+# CONFIG_PSTORE is not set
+# CONFIG_NETWORK_FILESYSTEMS is not set
+CONFIG_NLS=y
+CONFIG_NLS_DEFAULT="iso8859-1"
+CONFIG_NLS_CODEPAGE_437=m
+CONFIG_NLS_CODEPAGE_737=m
+# CONFIG_NLS_CODEPAGE_775 is not set
+CONFIG_NLS_CODEPAGE_850=y
+CONFIG_NLS_CODEPAGE_852=m
+CONFIG_NLS_CODEPAGE_855=m
+CONFIG_NLS_CODEPAGE_857=m
+# CONFIG_NLS_CODEPAGE_860 is not set
+CONFIG_NLS_CODEPAGE_861=y
+CONFIG_NLS_CODEPAGE_862=y
+CONFIG_NLS_CODEPAGE_863=y
+CONFIG_NLS_CODEPAGE_864=m
+# CONFIG_NLS_CODEPAGE_865 is not set
+CONFIG_NLS_CODEPAGE_866=y
+CONFIG_NLS_CODEPAGE_869=m
+CONFIG_NLS_CODEPAGE_936=m
+CONFIG_NLS_CODEPAGE_950=m
+CONFIG_NLS_CODEPAGE_932=y
+CONFIG_NLS_CODEPAGE_949=y
+CONFIG_NLS_CODEPAGE_874=y
+CONFIG_NLS_ISO8859_8=m
+CONFIG_NLS_CODEPAGE_1250=m
+# CONFIG_NLS_CODEPAGE_1251 is not set
+CONFIG_NLS_ASCII=y
+CONFIG_NLS_ISO8859_1=m
+# CONFIG_NLS_ISO8859_2 is not set
+# CONFIG_NLS_ISO8859_3 is not set
+CONFIG_NLS_ISO8859_4=m
+CONFIG_NLS_ISO8859_5=y
+CONFIG_NLS_ISO8859_6=m
+CONFIG_NLS_ISO8859_7=y
+CONFIG_NLS_ISO8859_9=m
+CONFIG_NLS_ISO8859_13=m
+# CONFIG_NLS_ISO8859_14 is not set
+CONFIG_NLS_ISO8859_15=y
+CONFIG_NLS_KOI8_R=y
+CONFIG_NLS_KOI8_U=y
+CONFIG_NLS_MAC_ROMAN=m
+# CONFIG_NLS_MAC_CELTIC is not set
+CONFIG_NLS_MAC_CENTEURO=y
+# CONFIG_NLS_MAC_CROATIAN is not set
+CONFIG_NLS_MAC_CYRILLIC=y
+CONFIG_NLS_MAC_GAELIC=m
+CONFIG_NLS_MAC_GREEK=m
+# CONFIG_NLS_MAC_ICELAND is not set
+CONFIG_NLS_MAC_INUIT=y
+CONFIG_NLS_MAC_ROMANIAN=y
+CONFIG_NLS_MAC_TURKISH=m
+# CONFIG_NLS_UTF8 is not set
+
+#
+# Kernel hacking
+#
+CONFIG_TRACE_IRQFLAGS_SUPPORT=y
+
+#
+# printk and dmesg options
+#
+CONFIG_PRINTK_TIME=y
+CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
+# CONFIG_BOOT_PRINTK_DELAY is not set
+# CONFIG_DYNAMIC_DEBUG is not set
+
+#
+# Compile-time checks and compiler options
+#
+# CONFIG_ENABLE_WARN_DEPRECATED is not set
+CONFIG_ENABLE_MUST_CHECK=y
+CONFIG_FRAME_WARN=1024
+# CONFIG_STRIP_ASM_SYMS is not set
+CONFIG_READABLE_ASM=y
+CONFIG_UNUSED_SYMBOLS=y
+# CONFIG_PAGE_OWNER is not set
+CONFIG_DEBUG_FS=y
+CONFIG_HEADERS_CHECK=y
+CONFIG_DEBUG_SECTION_MISMATCH=y
+CONFIG_ARCH_WANT_FRAME_POINTERS=y
+CONFIG_FRAME_POINTER=y
+# CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
+CONFIG_MAGIC_SYSRQ=y
+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
+CONFIG_DEBUG_KERNEL=y
+
+#
+# Memory Debugging
+#
+CONFIG_PAGE_EXTENSION=y
+# CONFIG_DEBUG_PAGEALLOC is not set
+# CONFIG_DEBUG_OBJECTS is not set
+# CONFIG_DEBUG_SLAB is not set
+CONFIG_HAVE_DEBUG_KMEMLEAK=y
+# CONFIG_DEBUG_KMEMLEAK is not set
+# CONFIG_DEBUG_STACK_USAGE is not set
+# CONFIG_DEBUG_VM is not set
+CONFIG_DEBUG_VIRTUAL=y
+CONFIG_DEBUG_MEMORY_INIT=y
+CONFIG_HAVE_DEBUG_STACKOVERFLOW=y
+CONFIG_DEBUG_STACKOVERFLOW=y
+CONFIG_HAVE_ARCH_KMEMCHECK=y
+# CONFIG_DEBUG_SHIRQ is not set
+
+#
+# Debug Lockups and Hangs
+#
+CONFIG_LOCKUP_DETECTOR=y
+CONFIG_HARDLOCKUP_DETECTOR=y
+CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
+CONFIG_BOOTPARAM_HARDLOCKUP_PANIC_VALUE=1
+CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
+CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=1
+CONFIG_DETECT_HUNG_TASK=y
+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=120
+CONFIG_BOOTPARAM_HUNG_TASK_PANIC=y
+CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE=1
+# CONFIG_PANIC_ON_OOPS is not set
+CONFIG_PANIC_ON_OOPS_VALUE=0
+CONFIG_PANIC_TIMEOUT=0
+# CONFIG_SCHED_DEBUG is not set
+CONFIG_SCHED_INFO=y
+CONFIG_SCHEDSTATS=y
+CONFIG_SCHED_STACK_END_CHECK=y
+CONFIG_DEBUG_TIMEKEEPING=y
+CONFIG_TIMER_STATS=y
+CONFIG_DEBUG_PREEMPT=y
+
+#
+# Lock Debugging (spinlocks, mutexes, etc...)
+#
+# CONFIG_DEBUG_RT_MUTEXES is not set
+CONFIG_DEBUG_SPINLOCK=y
+CONFIG_DEBUG_MUTEXES=y
+CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
+CONFIG_DEBUG_LOCK_ALLOC=y
+CONFIG_PROVE_LOCKING=y
+CONFIG_LOCKDEP=y
+CONFIG_LOCK_STAT=y
+# CONFIG_DEBUG_LOCKDEP is not set
+CONFIG_DEBUG_ATOMIC_SLEEP=y
+# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
+CONFIG_LOCK_TORTURE_TEST=y
+CONFIG_TRACE_IRQFLAGS=y
+CONFIG_STACKTRACE=y
+# CONFIG_DEBUG_KOBJECT is not set
+CONFIG_DEBUG_BUGVERBOSE=y
+CONFIG_DEBUG_LIST=y
+# CONFIG_DEBUG_PI_LIST is not set
+CONFIG_DEBUG_SG=y
+CONFIG_DEBUG_NOTIFIERS=y
+# CONFIG_DEBUG_CREDENTIALS is not set
+
+#
+# RCU Debugging
+#
+CONFIG_PROVE_RCU=y
+# CONFIG_PROVE_RCU_REPEATEDLY is not set
+CONFIG_SPARSE_RCU_POINTER=y
+CONFIG_TORTURE_TEST=y
+# CONFIG_RCU_TORTURE_TEST is not set
+CONFIG_RCU_CPU_STALL_TIMEOUT=21
+# CONFIG_RCU_CPU_STALL_INFO is not set
+CONFIG_RCU_TRACE=y
+CONFIG_RCU_EQS_DEBUG=y
+# CONFIG_NOTIFIER_ERROR_INJECTION is not set
+# CONFIG_FAULT_INJECTION is not set
+# CONFIG_LATENCYTOP is not set
+CONFIG_ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS=y
+# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set
+CONFIG_USER_STACKTRACE_SUPPORT=y
+CONFIG_HAVE_FUNCTION_TRACER=y
+CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
+CONFIG_HAVE_FUNCTION_GRAPH_FP_TEST=y
+CONFIG_HAVE_DYNAMIC_FTRACE=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
+CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
+CONFIG_HAVE_C_RECORDMCOUNT=y
+CONFIG_TRACE_CLOCK=y
+CONFIG_TRACING_SUPPORT=y
+# CONFIG_FTRACE is not set
+
+#
+# Runtime Testing
+#
+CONFIG_TEST_LIST_SORT=y
+# CONFIG_BACKTRACE_SELF_TEST is not set
+CONFIG_RBTREE_TEST=m
+CONFIG_INTERVAL_TREE_TEST=m
+CONFIG_PERCPU_TEST=m
+CONFIG_ATOMIC64_SELFTEST=y
+CONFIG_TEST_HEXDUMP=m
+# CONFIG_TEST_STRING_HELPERS is not set
+# CONFIG_TEST_KSTRTOX is not set
+CONFIG_TEST_RHASHTABLE=y
+# CONFIG_PROVIDE_OHCI1394_DMA_INIT is not set
+CONFIG_BUILD_DOCSRC=y
+# CONFIG_DMA_API_DEBUG is not set
+CONFIG_TEST_LKM=m
+CONFIG_TEST_USER_COPY=m
+CONFIG_TEST_BPF=m
+CONFIG_TEST_FIRMWARE=y
+CONFIG_TEST_UDELAY=m
+CONFIG_MEMTEST=y
+# CONFIG_SAMPLES is not set
+CONFIG_HAVE_ARCH_KGDB=y
+# CONFIG_KGDB is not set
+# CONFIG_STRICT_DEVMEM is not set
+CONFIG_X86_VERBOSE_BOOTUP=y
+CONFIG_EARLY_PRINTK=y
+# CONFIG_EARLY_PRINTK_DBGP is not set
+CONFIG_X86_PTDUMP=y
+# CONFIG_DEBUG_RODATA is not set
+# CONFIG_DEBUG_SET_MODULE_RONX is not set
+# CONFIG_DEBUG_NX_TEST is not set
+# CONFIG_DOUBLEFAULT is not set
+CONFIG_DEBUG_TLBFLUSH=y
+# CONFIG_IOMMU_STRESS is not set
+CONFIG_HAVE_MMIOTRACE_SUPPORT=y
+CONFIG_IO_DELAY_TYPE_0X80=0
+CONFIG_IO_DELAY_TYPE_0XED=1
+CONFIG_IO_DELAY_TYPE_UDELAY=2
+CONFIG_IO_DELAY_TYPE_NONE=3
+# CONFIG_IO_DELAY_0X80 is not set
+# CONFIG_IO_DELAY_0XED is not set
+CONFIG_IO_DELAY_UDELAY=y
+# CONFIG_IO_DELAY_NONE is not set
+CONFIG_DEFAULT_IO_DELAY_TYPE=2
+CONFIG_DEBUG_BOOT_PARAMS=y
+# CONFIG_CPA_DEBUG is not set
+# CONFIG_OPTIMIZE_INLINING is not set
+CONFIG_X86_DEBUG_STATIC_CPU_HAS=y
+# CONFIG_X86_DEBUG_FPU is not set
+CONFIG_PUNIT_ATOM_DEBUG=y
+
+#
+# Security options
+#
+CONFIG_KEYS=y
+CONFIG_PERSISTENT_KEYRINGS=y
+# CONFIG_BIG_KEYS is not set
+CONFIG_TRUSTED_KEYS=m
+CONFIG_ENCRYPTED_KEYS=y
+# CONFIG_SECURITY_DMESG_RESTRICT is not set
+# CONFIG_SECURITY is not set
+CONFIG_SECURITYFS=y
+CONFIG_DEFAULT_SECURITY_DAC=y
+CONFIG_DEFAULT_SECURITY=""
+CONFIG_CRYPTO=y
+
+#
+# Crypto core or helper
+#
+CONFIG_CRYPTO_ALGAPI=y
+CONFIG_CRYPTO_ALGAPI2=y
+CONFIG_CRYPTO_AEAD=y
+CONFIG_CRYPTO_AEAD2=y
+CONFIG_CRYPTO_BLKCIPHER=y
+CONFIG_CRYPTO_BLKCIPHER2=y
+CONFIG_CRYPTO_HASH=y
+CONFIG_CRYPTO_HASH2=y
+CONFIG_CRYPTO_RNG=y
+CONFIG_CRYPTO_RNG2=y
+CONFIG_CRYPTO_RNG_DEFAULT=y
+CONFIG_CRYPTO_PCOMP2=y
+CONFIG_CRYPTO_AKCIPHER2=y
+CONFIG_CRYPTO_AKCIPHER=m
+CONFIG_CRYPTO_RSA=m
+CONFIG_CRYPTO_MANAGER=y
+CONFIG_CRYPTO_MANAGER2=y
+CONFIG_CRYPTO_USER=y
+CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y
+CONFIG_CRYPTO_GF128MUL=y
+CONFIG_CRYPTO_NULL=y
+CONFIG_CRYPTO_WORKQUEUE=y
+CONFIG_CRYPTO_CRYPTD=y
+CONFIG_CRYPTO_MCRYPTD=m
+CONFIG_CRYPTO_AUTHENC=m
+# CONFIG_CRYPTO_TEST is not set
+CONFIG_CRYPTO_ABLK_HELPER=y
+CONFIG_CRYPTO_GLUE_HELPER_X86=y
+
+#
+# Authenticated Encryption with Associated Data
+#
+CONFIG_CRYPTO_CCM=m
+CONFIG_CRYPTO_GCM=m
+# CONFIG_CRYPTO_CHACHA20POLY1305 is not set
+CONFIG_CRYPTO_SEQIV=y
+# CONFIG_CRYPTO_ECHAINIV is not set
+
+#
+# Block modes
+#
+CONFIG_CRYPTO_CBC=y
+CONFIG_CRYPTO_CTR=y
+# CONFIG_CRYPTO_CTS is not set
+CONFIG_CRYPTO_ECB=y
+CONFIG_CRYPTO_LRW=y
+CONFIG_CRYPTO_PCBC=m
+CONFIG_CRYPTO_XTS=y
+
+#
+# Hash modes
+#
+CONFIG_CRYPTO_CMAC=m
+CONFIG_CRYPTO_HMAC=y
+# CONFIG_CRYPTO_XCBC is not set
+# CONFIG_CRYPTO_VMAC is not set
+
+#
+# Digest
+#
+CONFIG_CRYPTO_CRC32C=y
+CONFIG_CRYPTO_CRC32C_INTEL=y
+CONFIG_CRYPTO_CRC32=m
+CONFIG_CRYPTO_CRC32_PCLMUL=m
+CONFIG_CRYPTO_CRCT10DIF=m
+CONFIG_CRYPTO_GHASH=m
+CONFIG_CRYPTO_POLY1305=y
+CONFIG_CRYPTO_MD4=y
+CONFIG_CRYPTO_MD5=y
+CONFIG_CRYPTO_MICHAEL_MIC=m
+# CONFIG_CRYPTO_RMD128 is not set
+# CONFIG_CRYPTO_RMD160 is not set
+CONFIG_CRYPTO_RMD256=m
+CONFIG_CRYPTO_RMD320=m
+CONFIG_CRYPTO_SHA1=y
+CONFIG_CRYPTO_SHA256=y
+# CONFIG_CRYPTO_SHA512 is not set
+# CONFIG_CRYPTO_TGR192 is not set
+# CONFIG_CRYPTO_WP512 is not set
+
+#
+# Ciphers
+#
+CONFIG_CRYPTO_AES=y
+CONFIG_CRYPTO_AES_586=y
+CONFIG_CRYPTO_AES_NI_INTEL=y
+CONFIG_CRYPTO_ANUBIS=m
+CONFIG_CRYPTO_ARC4=m
+CONFIG_CRYPTO_BLOWFISH=m
+CONFIG_CRYPTO_BLOWFISH_COMMON=m
+# CONFIG_CRYPTO_CAMELLIA is not set
+CONFIG_CRYPTO_CAST_COMMON=y
+CONFIG_CRYPTO_CAST5=y
+CONFIG_CRYPTO_CAST6=y
+CONFIG_CRYPTO_DES=y
+CONFIG_CRYPTO_FCRYPT=y
+# CONFIG_CRYPTO_KHAZAD is not set
+# CONFIG_CRYPTO_SALSA20 is not set
+CONFIG_CRYPTO_SALSA20_586=m
+# CONFIG_CRYPTO_CHACHA20 is not set
+# CONFIG_CRYPTO_SEED is not set
+CONFIG_CRYPTO_SERPENT=y
+CONFIG_CRYPTO_SERPENT_SSE2_586=y
+CONFIG_CRYPTO_TEA=m
+CONFIG_CRYPTO_TWOFISH=y
+CONFIG_CRYPTO_TWOFISH_COMMON=y
+CONFIG_CRYPTO_TWOFISH_586=m
+
+#
+# Compression
+#
+CONFIG_CRYPTO_DEFLATE=y
+# CONFIG_CRYPTO_ZLIB is not set
+CONFIG_CRYPTO_LZO=m
+# CONFIG_CRYPTO_842 is not set
+CONFIG_CRYPTO_LZ4=y
+CONFIG_CRYPTO_LZ4HC=m
+
+#
+# Random Number Generation
+#
+CONFIG_CRYPTO_ANSI_CPRNG=y
+CONFIG_CRYPTO_DRBG_MENU=y
+CONFIG_CRYPTO_DRBG_HMAC=y
+# CONFIG_CRYPTO_DRBG_HASH is not set
+# CONFIG_CRYPTO_DRBG_CTR is not set
+CONFIG_CRYPTO_DRBG=y
+CONFIG_CRYPTO_JITTERENTROPY=y
+CONFIG_CRYPTO_USER_API=y
+CONFIG_CRYPTO_USER_API_HASH=y
+CONFIG_CRYPTO_USER_API_SKCIPHER=y
+CONFIG_CRYPTO_USER_API_RNG=m
+CONFIG_CRYPTO_USER_API_AEAD=y
+CONFIG_CRYPTO_HASH_INFO=y
+CONFIG_CRYPTO_HW=y
+CONFIG_CRYPTO_DEV_PADLOCK=y
+# CONFIG_CRYPTO_DEV_PADLOCK_AES is not set
+CONFIG_CRYPTO_DEV_PADLOCK_SHA=m
+# CONFIG_CRYPTO_DEV_GEODE is not set
+# CONFIG_CRYPTO_DEV_HIFN_795X is not set
+# CONFIG_CRYPTO_DEV_CCP is not set
+# CONFIG_CRYPTO_DEV_QAT_DH895xCC is not set
+# CONFIG_CRYPTO_DEV_QCE is not set
+CONFIG_CRYPTO_DEV_IMGTEC_HASH=m
+CONFIG_ASYMMETRIC_KEY_TYPE=y
+CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
+CONFIG_PUBLIC_KEY_ALGO_RSA=y
+CONFIG_X509_CERTIFICATE_PARSER=y
+# CONFIG_PKCS7_MESSAGE_PARSER is not set
+CONFIG_HAVE_KVM=y
+CONFIG_HAVE_KVM_IRQCHIP=y
+CONFIG_HAVE_KVM_IRQFD=y
+CONFIG_HAVE_KVM_IRQ_ROUTING=y
+CONFIG_HAVE_KVM_EVENTFD=y
+CONFIG_KVM_APIC_ARCHITECTURE=y
+CONFIG_KVM_MMIO=y
+CONFIG_KVM_ASYNC_PF=y
+CONFIG_HAVE_KVM_MSI=y
+CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT=y
+CONFIG_KVM_VFIO=y
+CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
+CONFIG_VIRTUALIZATION=y
+CONFIG_KVM=y
+# CONFIG_KVM_AMD is not set
+# CONFIG_LGUEST is not set
+# CONFIG_BINARY_PRINTF is not set
+
+#
+# Library routines
+#
+CONFIG_BITREVERSE=y
+# CONFIG_HAVE_ARCH_BITREVERSE is not set
+CONFIG_RATIONAL=y
+CONFIG_GENERIC_STRNCPY_FROM_USER=y
+CONFIG_GENERIC_STRNLEN_USER=y
+CONFIG_GENERIC_NET_UTILS=y
+CONFIG_GENERIC_FIND_FIRST_BIT=y
+CONFIG_GENERIC_PCI_IOMAP=y
+CONFIG_GENERIC_IOMAP=y
+CONFIG_GENERIC_IO=y
+CONFIG_PERCPU_RWSEM=y
+CONFIG_ARCH_HAS_FAST_MULTIPLIER=y
+CONFIG_CRC_CCITT=m
+CONFIG_CRC16=y
+CONFIG_CRC_T10DIF=m
+CONFIG_CRC_ITU_T=m
+CONFIG_CRC32=y
+CONFIG_CRC32_SELFTEST=y
+CONFIG_CRC32_SLICEBY8=y
+# CONFIG_CRC32_SLICEBY4 is not set
+# CONFIG_CRC32_SARWATE is not set
+# CONFIG_CRC32_BIT is not set
+# CONFIG_CRC7 is not set
+CONFIG_LIBCRC32C=y
+CONFIG_CRC8=m
+CONFIG_AUDIT_GENERIC=y
+# CONFIG_AUDIT_ARCH_COMPAT_GENERIC is not set
+# CONFIG_RANDOM32_SELFTEST is not set
+CONFIG_ZLIB_INFLATE=y
+CONFIG_ZLIB_DEFLATE=y
+CONFIG_LZO_COMPRESS=y
+CONFIG_LZO_DECOMPRESS=y
+CONFIG_LZ4_COMPRESS=y
+CONFIG_LZ4HC_COMPRESS=m
+CONFIG_LZ4_DECOMPRESS=y
+CONFIG_XZ_DEC=y
+CONFIG_XZ_DEC_X86=y
+CONFIG_XZ_DEC_POWERPC=y
+# CONFIG_XZ_DEC_IA64 is not set
+# CONFIG_XZ_DEC_ARM is not set
+# CONFIG_XZ_DEC_ARMTHUMB is not set
+# CONFIG_XZ_DEC_SPARC is not set
+CONFIG_XZ_DEC_BCJ=y
+CONFIG_XZ_DEC_TEST=y
+CONFIG_DECOMPRESS_GZIP=y
+CONFIG_DECOMPRESS_BZIP2=y
+CONFIG_DECOMPRESS_LZMA=y
+CONFIG_DECOMPRESS_XZ=y
+CONFIG_DECOMPRESS_LZO=y
+CONFIG_DECOMPRESS_LZ4=y
+CONFIG_GENERIC_ALLOCATOR=y
+CONFIG_REED_SOLOMON=m
+CONFIG_REED_SOLOMON_DEC16=y
+CONFIG_BCH=m
+CONFIG_BCH_CONST_PARAMS=y
+CONFIG_INTERVAL_TREE=y
+CONFIG_ASSOCIATIVE_ARRAY=y
+CONFIG_HAS_IOMEM=y
+CONFIG_HAS_IOPORT_MAP=y
+CONFIG_HAS_DMA=y
+CONFIG_DQL=y
+CONFIG_NLATTR=y
+CONFIG_ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE=y
+CONFIG_AVERAGE=y
+CONFIG_CLZ_TAB=y
+CONFIG_CORDIC=m
+# CONFIG_DDR is not set
+CONFIG_MPILIB=y
+CONFIG_OID_REGISTRY=y
+CONFIG_ARCH_HAS_SG_CHAIN=y
+CONFIG_ARCH_HAS_PMEM_API=y
+
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--vtzGhvizbBRQ85DL--
