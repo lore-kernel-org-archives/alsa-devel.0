@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 19/37] ALSA: firewire-tascam: add proc
-	node to show firmware information
-Date: Sat, 11 Jul 2015 23:12:30 +0900
-Message-ID: <1436623968-10780-20-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 11/37] ALSA: firewire-digi00x: add proc
+	node to show clock status
+Date: Sat, 11 Jul 2015 23:12:22 +0900
+Message-ID: <1436623968-10780-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 56EE926058B
+ by alsa0.perex.cz (Postfix) with ESMTP id B6D1E260593
  for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:05 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,161 +22,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series has certain registers for firmware information.
+This commit adds proc node to show current clock status for debugging.
 
-This commit adds proc node to show the information.
+As long as testing Digi 002 rack, registers can show local clock rate,
+local clock source. When external clock input such as S/PDIF is
+connected, the registers show detection and external clock rate.
 
+Additionally, the registers show the mode of optical digital input
+interface. On the other hand, a tester with Digi 003 rack reports
+this makes no sence. Further investigation is required.
+
+Besides, in Digi 002 rack, the S/PDIF format must be IEC 60958-4,
+so-called professional.
+
+Cc: Damien Zammit <damien@zamaudio.com>
+Cc: Robin Gareus <robin@gareus.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile      |  2 +-
- sound/firewire/tascam/tascam-proc.c | 88 +++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.c      |  2 +
- sound/firewire/tascam/tascam.h      | 10 +++++
- 4 files changed, 101 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/tascam-proc.c
+ sound/firewire/digi00x/Makefile       |  3 +-
+ sound/firewire/digi00x/digi00x-proc.c | 99 +++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c      |  2 +
+ sound/firewire/digi00x/digi00x.h      |  2 +
+ 4 files changed, 105 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-proc.c
 
-diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 29bdbce..63f08c6 100644
---- a/sound/firewire/tascam/Makefile
-+++ b/sound/firewire/tascam/Makefile
-@@ -1,2 +1,2 @@
--snd-firewire-tascam-objs := tascam.o
-+snd-firewire-tascam-objs := tascam-proc.o tascam.o
- obj-m += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-proc.c b/sound/firewire/tascam/tascam-proc.c
+diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
+index b7c783d..6c9bc37 100644
+--- a/sound/firewire/digi00x/Makefile
++++ b/sound/firewire/digi00x/Makefile
+@@ -1,2 +1,3 @@
+-snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x.o
++snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
++			     digi00x.o
+ obj-m += snd-firewire-digi00x.o
+diff --git a/sound/firewire/digi00x/digi00x-proc.c b/sound/firewire/digi00x/digi00x-proc.c
 new file mode 100644
-index 0000000..bfd4a4c
+index 0000000..280d621
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam-proc.c
-@@ -0,0 +1,88 @@
++++ b/sound/firewire/digi00x/digi00x-proc.c
+@@ -0,0 +1,99 @@
 +/*
-+ * tascam-proc.h - a part of driver for TASCAM FireWire series
++ * digi00x-proc.c - a part of driver for Digidesign Digi 002/003 family
 + *
-+ * Copyright (c) 2015 Takashi Sakamoto
++ * Copyright (c) 2014-2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./tascam.h"
++#include "./digi00x.h"
 +
-+static void proc_read_firmware(struct snd_info_entry *entry,
-+			       struct snd_info_buffer *buffer)
++static int get_optical_iface_mode(struct snd_dg00x *dg00x,
++				  enum snd_dg00x_optical_mode *mode)
 +{
-+	struct snd_tscm *tscm = entry->private_data;
 +	__be32 data;
-+	unsigned int reg, fpga, arm, hw;
 +	int err;
 +
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_REGISTER,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	reg = be32_to_cpu(data);
++	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
++				 DG00X_ADDR_BASE + DG00X_OFFSET_OPT_IFACE_MODE,
++				 &data, sizeof(data), 0);
++	if (err >= 0)
++		*mode = be32_to_cpu(data) & 0x01;
 +
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_FPGA,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	fpga = be32_to_cpu(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_ARM,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	arm = be32_to_cpu(data);
-+
-+	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
-+			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_HW,
-+			&data, sizeof(data), 0);
-+	if (err < 0)
-+		return;
-+	hw = be32_to_cpu(data);
-+
-+	snd_iprintf(buffer, "Register: %d (0x%08x)\n", reg & 0xffff, reg);
-+	snd_iprintf(buffer, "FPGA:     %d (0x%08x)\n", fpga & 0xffff, fpga);
-+	snd_iprintf(buffer, "ARM:      %d (0x%08x)\n", arm & 0xffff, arm);
-+	snd_iprintf(buffer, "Hardware: %d (0x%08x)\n", hw >> 16, hw);
++	return err;
 +}
 +
-+static void add_node(struct snd_tscm *tscm, struct snd_info_entry *root,
-+		     const char *name,
-+		     void (*op)(struct snd_info_entry *e,
-+				struct snd_info_buffer *b))
++static void proc_read_clock(struct snd_info_entry *entry,
++			    struct snd_info_buffer *buf)
 +{
-+	struct snd_info_entry *entry;
++	static const char *const source_name[] = {
++		[SND_DG00X_CLOCK_INTERNAL] = "internal",
++		[SND_DG00X_CLOCK_SPDIF] = "s/pdif",
++		[SND_DG00X_CLOCK_ADAT] = "adat",
++		[SND_DG00X_CLOCK_WORD] = "word clock",
++	};
++	static const char *const optical_name[] = {
++		[SND_DG00X_OPT_IFACE_MODE_ADAT] = "adat",
++		[SND_DG00X_OPT_IFACE_MODE_SPDIF] = "s/pdif",
++	};
++	struct snd_dg00x *dg00x = entry->private_data;
++	enum snd_dg00x_optical_mode mode;
++	unsigned int rate;
++	enum snd_dg00x_clock clock;
++	bool detect;
 +
-+	entry = snd_info_create_card_entry(tscm->card, name, root);
-+	if (entry == NULL)
++	if (get_optical_iface_mode(dg00x, &mode) < 0)
++		return;
++	if (snd_dg00x_stream_get_local_rate(dg00x, &rate) < 0)
++		return;
++	if (snd_dg00x_stream_get_clock(dg00x, &clock) < 0)
 +		return;
 +
-+	snd_info_set_text_ops(entry, tscm, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
++	snd_iprintf(buf, "Optical mode: %s\n", optical_name[mode]);
++	snd_iprintf(buf, "Sampling Rate: %d\n", rate);
++	snd_iprintf(buf, "Clock Source: %s\n", source_name[clock]);
++
++	if (clock == SND_DG00X_CLOCK_INTERNAL)
++		return;
++
++	if (snd_dg00x_stream_check_external_clock(dg00x, &detect) < 0)
++		return;
++	snd_iprintf(buf, "External source: %s\n", detect ? "detected" : "not");
++	if (!detect)
++		return;
++
++	if (snd_dg00x_stream_get_external_rate(dg00x, &rate) >= 0)
++		snd_iprintf(buf, "External sampling rate: %d\n", rate);
 +}
 +
-+void snd_tscm_proc_init(struct snd_tscm *tscm)
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x)
 +{
-+	struct snd_info_entry *root;
++	struct snd_info_entry *root, *entry;
 +
 +	/*
 +	 * All nodes are automatically removed at snd_card_disconnect(),
 +	 * by following to link list.
 +	 */
-+	root = snd_info_create_card_entry(tscm->card, "firewire",
-+					  tscm->card->proc_root);
++	root = snd_info_create_card_entry(dg00x->card, "firewire",
++					  dg00x->card->proc_root);
 +	if (root == NULL)
 +		return;
++
 +	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
 +	if (snd_info_register(root) < 0) {
 +		snd_info_free_entry(root);
 +		return;
 +	}
 +
-+	add_node(tscm, root, "firmware", proc_read_firmware);
++	entry = snd_info_create_card_entry(dg00x->card, "clock", root);
++	if (entry == NULL) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	snd_info_set_text_ops(entry, dg00x, proc_read_clock);
++	if (snd_info_register(entry) < 0) {
++		snd_info_free_entry(entry);
++		snd_info_free_entry(root);
++	}
 +}
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 73205077..e4685c6 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -123,6 +123,8 @@ static int snd_tscm_probe(struct fw_unit *unit,
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index 2c517ec..130f569 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -83,6 +83,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	snd_tscm_proc_init(tscm);
++	snd_dg00x_proc_init(dg00x);
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index dfe08be..2a79f1b 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -18,6 +18,7 @@
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+index dd9b39a..da6950e 100644
+--- a/sound/firewire/digi00x/digi00x.h
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -19,6 +19,7 @@
+ 
  #include <sound/core.h>
  #include <sound/initval.h>
- #include <sound/firewire.h>
 +#include <sound/info.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+@@ -119,4 +120,5 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
  
- #include "../lib.h"
- 
-@@ -40,3 +41,12 @@ struct snd_tscm {
- 
- 	struct snd_tscm_spec *spec;
- };
-+
-+#define TSCM_ADDR_BASE			0xffff00000000ull
-+
-+#define TSCM_OFFSET_FIRMWARE_REGISTER	0x0000
-+#define TSCM_OFFSET_FIRMWARE_FPGA	0x0004
-+#define TSCM_OFFSET_FIRMWARE_ARM	0x0008
-+#define TSCM_OFFSET_FIRMWARE_HW		0x000c
-+
-+void snd_tscm_proc_init(struct snd_tscm *tscm);
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
+ #endif
 -- 
 2.1.4
