@@ -1,23 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Fwd: Front speakers doesn't work in multichannel
- output, regression in ALC888
-Date: Sat, 11 Jul 2015 09:18:30 +0800
-Message-ID: <CAN8ccibvTO=yuE1MaE4m224oA6f3Dygx_T0Vrj3GySh=WduxcQ@mail.gmail.com>
-References: <2927807.UsnFnTlWVL@luklap.workgroup>
- <CAN8cciY=bSpebNXqzYc+Q+MDd9Gr3+KGnpS0GBQpES+-XTY0Dw@mail.gmail.com>
- <CAN8cciYa0VG64hPyLsH26-Z-chxOWEwFeX-Hq01+oOZs4jMvkw@mail.gmail.com>
- <31911886.6mcodbBrA7@luklap.workgroup>
+From: Jun Nie <jun.nie@linaro.org>
+Subject: Re: [RFT PATCH 2/2] ASoC: zx: spdif: Fix
+ devm_ioremap_resource return value check
+Date: Sat, 11 Jul 2015 10:01:44 +0800
+Message-ID: <CABymUCNbRG+9rscLseyS=_oH_yaNLcdes0E0j2CQjQGi9pi5Ow@mail.gmail.com>
+References: <1436447969-24583-1-git-send-email-k.kozlowski.k@gmail.com>
+ <1436447969-24583-2-git-send-email-k.kozlowski.k@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
- [209.85.214.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 09F202604CA
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 03:18:32 +0200 (CEST)
-Received: by obbgp5 with SMTP id gp5so88949861obb.0
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 18:18:30 -0700 (PDT)
-In-Reply-To: <31911886.6mcodbBrA7@luklap.workgroup>
+Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
+ [209.85.217.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AD742604CA
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 04:01:44 +0200 (CEST)
+Received: by lbbyj8 with SMTP id yj8so16179766lbb.0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 19:01:44 -0700 (PDT)
+In-Reply-To: <1436447969-24583-2-git-send-email-k.kozlowski.k@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?xYF1a2FzeiBXb2puacWCb3dpY3o=?= <lukasz.wojnilowicz@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+Cj4gPgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9MzBiM2YwMDg3Mzc0Yjkx
-NGEyMGRiZTIwYTYxOGZiODkyYTVkNmZkNQo+ID4KPiA+ID4gPiBBcmUgdGhlcmUgYW55ICBvZmZp
-Y2FsIHNwZWNpZmljYWlvbiA/Cj4gPiA+ID4KPiA+ID4gPiBTbyBmYXIgbW9zdCByZXZpZXcgb25s
-eSBtZW50aW9uIHN0ZXJlbyBzcGVha2VycyBhbmQgc3Vid29vZmVyLCB0aGUKPiA+Cj4gPiBzZXJ2
-aWNlCj4gPgo+ID4gPiA+IGd1aWRlIG9ubHkgc2hvdyBob3cgdG8gcmVwbGFjZSB0d28gaW50ZXJu
-YWwgc3BlYWtlcnMKPiA+ID4KPiA+ID4gU2VydmljZSBtYW51YWwgbWVudGlvbnMKPiA+ID4KPiA+
-ID4gICJEb2xiecKuLWNlcnRpZmllZCBzdXJyb3VuZCBzb3VuZCBzeXN0ZW0gd2l0aCB0d28gYnVp
-bHQtaW4gc3RlcmVvCj4gPgo+ID4gc3BlYWtlcnMgYW5kCj4gPgo+ID4gPiBvbmUgc3Vid29vZmVy
-IHN1cHBvcnRpbmcgbG93LWZyZXF1ZW5jeSBlZmZlY3RzIgo+ID4gPgo+ID4gPiBzbyBhbGwgYWRk
-aXRpb25hbCBjaGFubmVscyB3aGF0IEknbSBoZWFyaW5nIGluIFdpbmRvd3MgaXMgZW11bGF0ZWQu
-IEkKaG9wZQo+ID4gPiB0aGF0IGl0IGlzIGNsZWFyIG5vdyB0aGF0IG15IGxhcHRvcCBoYXMgdHdv
-IGludGVybmFsIHNwZWFrZXJzIGFuZCBvbmUKPiA+ID4gc3Vid29vZmVyLgo+ID4KPiA+Cmh0dHBz
-Oi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC9j
-b21taXQvc291bmQvcGMKPiA+IGkvaGRhP2lkPThlMzgzOTUzNjA4NDQ4MDYwNDFlYTY5YWI5Njkw
-ZjVmMTc0YmM0MGMKPiA+Cj4gPiBZb3UgbmVlZCB0byBkZWZpbmUgeW91ciAyLjEgY2htYXAgaWYg
-dGhlIHN1Yndvb2ZlciBvbmx5IHVzZSBsZWZ0IGNoYW5uZWwKPiA+Cj4gPiBDb21waWxpbmcgYW5k
-IHJ1bm5pbmcgUHVsc2VBdWRpbyBmcm9tIGdpdAo+ID4KPiA+IGh0dHA6Ly9jb2xpbi5ndXRoci5p
-ZS8yMDEwLzA5L2NvbXBpbGluZy1hbmQtcnVubmluZy1wdWxzZWF1ZGlvLWZyb20tZ2l0Lwo+Cj4g
-SW4gRmVkb3JhIDIyIHdvcmthcm91bmQgd2l0aCBzZXR0aW5nICJMaW5lIG91dCAoZnJvbnQpIiBm
-b3IgMHgxNSBwaW4KZG9lc24ndAo+IHdvcmsuCj4KPiBTb3VuZCBvbiBteSBzeXN0ZW0gaXMgdG90
-YWxseSBmdWNrZWQgdXAuCgpodHRwOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvcHVsc2VhdWRpby9w
-dWxzZWF1ZGlvL3RyZWUvc3JjL21vZHVsZXMvYWxzYS9taXhlci9wYXRocy9hbmFsb2ctb3V0cHV0
-LWxpbmVvdXQuY29uZgoKQXJlIHlvdSBzdXJlIHRoYXQgaXQgaXMgYWxzYSBkcml2ZXIgYnVnIHNp
-bmNlIHB1bHNlYXVkaW8gc2VlbSBub3QgdXNpbmcKbGluZSBvdXQgamFjayB0byBtdXRlIGludGVy
-bmFsIHNwZWFrZXJzID8KCgpieSBhZGRpbmcgbmV3IGhpbnQgYWx0X2NvbmZpZyAsIHlvdSBjYW4g
-dXNlIGFsdF9jb25maWcgdG8gc2VsZWN0IGRpZmZlcmVudApzZXQgb2YgcGluIGNvbmZpZwoKCmRp
-ZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9hdXRvX3BhcnNlci5jCmIvc291bmQvcGNpL2hk
-YS9oZGFfYXV0b19wYXJzZXIuYwppbmRleCAwM2I3Mzk5Li42ODNhMGFiIDEwMDY0NAotLS0gYS9z
-b3VuZC9wY2kvaGRhL2hkYV9hdXRvX3BhcnNlci5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2F1
-dG9fcGFyc2VyLmMKQEAgLTk1Miw2ICs5NTIsNyBAQCB2b2lkIHNuZF9oZGFfcGlja19maXh1cChz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKICAgICBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayAq
-cTsKICAgICBpbnQgaWQgPSBIREFfRklYVVBfSURfTk9UX1NFVDsKICAgICBjb25zdCBjaGFyICpu
-YW1lID0gTlVMTDsKKyAgICBpbnQgaTsKCiAgICAgaWYgKGNvZGVjLT5maXh1cF9pZCAhPSBIREFf
-RklYVVBfSURfTk9UX1NFVCkKICAgICAgICAgcmV0dXJuOwpAQCAtOTY2LDYgKzk2Nyw5IEBAIHZv
-aWQgc25kX2hkYV9waWNrX2ZpeHVwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogICAgICAgICBy
-ZXR1cm47CiAgICAgfQoKKyAgICBpZiAoIXNuZF9oZGFfZ2V0X2ludF9oaW50KGNvZGVjLCAiYWx0
-X2NvbmZpZyIsICZpKSkKKyAgICAgICAgY29kZWMtPmFsdF9jb25maWcgPSBpOworCiAgICAgaWYg
-KGNvZGVjLT5tb2RlbG5hbWUgJiYgbW9kZWxzKSB7CiAgICAgICAgIHdoaWxlIChtb2RlbHMtPm5h
-bWUpIHsKICAgICAgICAgICAgIGlmICghc3RyY21wKGNvZGVjLT5tb2RlbG5hbWUsIG1vZGVscy0+
-bmFtZSkpIHsKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggOGUwMmNkZi4uZjQwNjgzNSAxMDA2NDQK
-LS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9w
-YXRjaF9yZWFsdGVrLmMKQEAgLTE5MTQsNiArMTkxNCwzMSBAQCBzdGF0aWMgdm9pZCBhbGM4ODlf
-Zml4dXBfbWJhMjFfdnJlZihzdHJ1Y3QgaGRhX2NvZGVjCipjb2RlYywKICAgICAgICAgYWxjODg5
-X2ZpeHVwX21hY19waW5zKGNvZGVjLCBuaWRzLCBBUlJBWV9TSVpFKG5pZHMpKTsKIH0KCitzdGF0
-aWMgdm9pZCBhbGM4ODhfZml4dXBfYWNlcl9hc3BpcmVfNDkzMGcoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMsCisgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgKmZpeCwg
-aW50IGFjdGlvbikKK3sKKyAgICBzdHJ1Y3QgaGRhX3BpbnRibCBzdWJ3b29mZXJfY29uZmlnW10g
-PSB7CisgICAgICAgIHsgMHgxNiwgMHg5MDE3MDExMSB9LCAvKiBpbnRlcm5hbCBzdWJ3b29mZXIg
-Ki8KKyAgICAgICAge30KKyAgICB9OworICAgIHN0cnVjdCBoZGFfcGludGJsIGFsdF9jb25maWdb
-XSA9IHsKKyAgICAgICAgeyAweDE1LCAweDAyMDE0MDEwfSwKKyAgICAgICAgeyAweDFhLCAweDAy
-MDE0MDExfSwKKyAgICAgICAgeyAweDE4LCAweDAyMDE0MDEyfSwKKyAgICAgICAge30KKyAgICB9
-OworICAgIHNuZF9oZGFfYXBwbHlfcGluY2Zncyhjb2RlYywgc3Vid29vZmVyX2NvbmZpZyk7Cisg
-ICAgc3dpdGNoKGNvZGVjLT5hbHRfY29uZmlnKXsKKyAgICBjYXNlIDE6CisgICAgICAgIGNvZGVj
-X2luZm8oY29kZWMsICI1LjEgRXh0ZXJuYWwgU3BlYWtlclxuIik7CisgICAgICAgIHNuZF9oZGFf
-YXBwbHlfcGluY2Zncyhjb2RlYywgYWx0X2NvbmZpZyk7CisgICAgICAgIGJyZWFrOworICAgIGRl
-ZmF1bHQ6CisgICAgICAgIGNvZGVjX2luZm8oY29kZWMsICJ1c2UgW0hpbnRdXG5hbHRfY29uZmln
-PTEgZm9yIDUuMSBFeHRlcm5hbApTcGVha2VyXG4iKTsKKyAgICAgICAgYnJlYWs7CisgICAgfQor
-fQorCiAvKiBEb24ndCB0YWtlIEhQIG91dHB1dCBhcyBwcmltYXJ5CiAgKiBTdHJhbmdlbHksIHRo
-ZSBzcGVha2VyIG91dHB1dCBkb2Vzbid0IHdvcmsgb24gVmFpbyBaIGFuZCBzb21lIFZhaW8KICAq
-IGFsbC1pbi1vbmUgZGVza3RvcCBQQ3MgKGZvciBleGFtcGxlIFZHQy1MTjUxSkdCKSB0aHJvdWdo
-IERBQyAweDA1CkBAIC0yMDQ4LDEyICsyMDczLDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFf
-Zml4dXAgYWxjODgyX2ZpeHVwc1tdID0gewogICAgICAgICAudi5mdW5jID0gYWxjODg5X2ZpeHVw
-X2NvZWYsCiAgICAgfSwKICAgICBbQUxDODgyX0ZJWFVQX0FDRVJfQVNQSVJFXzQ5MzBHXSA9IHsK
-LSAgICAgICAgLnR5cGUgPSBIREFfRklYVVBfUElOUywKLSAgICAgICAgLnYucGlucyA9IChjb25z
-dCBzdHJ1Y3QgaGRhX3BpbnRibFtdKSB7Ci0gICAgICAgICAgICB7IDB4MTYsIDB4OTkxMzAxMTEg
-fSwgLyogQ0xGRSBzcGVha2VyICovCi0gICAgICAgICAgICB7IDB4MTcsIDB4OTkxMzAxMTIgfSwg
-Lyogc3Vycm91bmQgc3BlYWtlciAqLwotICAgICAgICAgICAgeyB9Ci0gICAgICAgIH0sCisgICAg
-ICAgIC50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCisgICAgICAgIC52LmZ1bmMgPSBhbGM4ODhfZml4
-dXBfYWNlcl9hc3BpcmVfNDkzMGcsCiAgICAgICAgIC5jaGFpbmVkID0gdHJ1ZSwKICAgICAgICAg
-LmNoYWluX2lkID0gQUxDODgyX0ZJWFVQX0dQSU8xLAogICAgIH0sCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+2015-07-09 21:19 GMT+08:00 Krzysztof Kozlowski <k.kozlowski.k@gmail.com>:
+> Value returned by devm_ioremap_resource() was checked for non-NULL but
+> devm_ioremap_resource() returns IOMEM_ERR_PTR, not NULL. In case of
+> error this could lead to dereference of ERR_PTR.
+>
+> Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Fixes: 6fc3d24d4277 ("ASoC: zx: Add zx296702 SPDIF support")
+>
+> ---
+>
+> Patch only compile tested.
+> ---
+>  sound/soc/zte/zx296702-spdif.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx296702-spdif.c
+> index 11a0e46a1156..26265ce4caca 100644
+> --- a/sound/soc/zte/zx296702-spdif.c
+> +++ b/sound/soc/zte/zx296702-spdif.c
+> @@ -322,9 +322,9 @@ static int zx_spdif_probe(struct platform_device *pdev)
+>         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         zx_spdif->mapbase = res->start;
+>         zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
+> -       if (!zx_spdif->reg_base) {
+> +       if (IS_ERR(zx_spdif->reg_base)) {
+>                 dev_err(&pdev->dev, "ioremap failed!\n");
+> -               return -EIO;
+> +               return PTR_ERR(zx_spdif->reg_base);
+>         }
+>
+>         zx_spdif_dev_init(zx_spdif->reg_base);
+> --
+> 2.1.4
+>
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
