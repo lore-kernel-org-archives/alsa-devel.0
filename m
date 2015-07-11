@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 37/37] ALSA: firewire-motu: add hwdep
-	interface
-Date: Sat, 11 Jul 2015 23:12:48 +0900
-Message-ID: <1436623968-10780-38-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 35/37] ALSA: firewire-motu: add PCM
+	functionality
+Date: Sat, 11 Jul 2015 23:12:46 +0900
+Message-ID: <1436623968-10780-36-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 105542605C7
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F4062605D6
  for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:07 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,442 +25,434 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other firewire sound devices
-has.
+This commit adds PCM functionality to transmit/receive PCM samples.
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+When one of PCM substreams are running or external clock source is
+selected, current sampling rate is used. Else, the sampling rate is
+changed as an userspace application requests.
+
+The number of data chunks for PCM samples should not be changed
+during snd_pcm_open() to snd_pcm_hw_params(), for correct result
+of matching PCM substream format.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h       |   3 +-
- include/uapi/sound/firewire.h     |   3 +-
- sound/firewire/motu/Makefile      |   2 +-
- sound/firewire/motu/motu-hwdep.c  | 210 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-midi.c   |   8 ++
- sound/firewire/motu/motu-pcm.c    |  22 +++-
- sound/firewire/motu/motu-stream.c |  38 +++++++
- sound/firewire/motu/motu.c        |   5 +
- sound/firewire/motu/motu.h        |  11 ++
- sound/firewire/tascam/tascam.c    |   1 +
- 10 files changed, 295 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/motu/motu-hwdep.c
+ sound/firewire/motu/Makefile   |   2 +-
+ sound/firewire/motu/motu-pcm.c | 385 +++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu.c     |   4 +
+ sound/firewire/motu/motu.h     |   2 +
+ 4 files changed, 392 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/motu/motu-pcm.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index a82108e..31bc352 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -102,9 +102,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
- 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
-+	SNDRV_HWDEP_IFACE_FW_MOTU,	/* MOTU FireWire series */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_MOTU
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index c5cb86d..1fe4c87 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -65,7 +65,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
- #define SNDRV_FIREWIRE_TYPE_DIGI00X	5
- #define SNDRV_FIREWIRE_TYPE_TASCAM	6
--/* RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_MOTU	7
-+/* RME, ... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
 diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-index e8055b9..b137da6 100644
+index de6ca3b..c1c9888 100644
 --- a/sound/firewire/motu/Makefile
 +++ b/sound/firewire/motu/Makefile
 @@ -1,3 +1,3 @@
  snd-firewire-motu-objs := amdtp-motu.o motu-stream.o motu-transaction.o \
--			  motu-proc.o motu-pcm.o motu-midi.o motu.o
-+			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o motu.o
+-			  motu-proc.o motu.o
++			  motu-proc.o motu-pcm.o motu.o
  obj-m += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
+diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
 new file mode 100644
-index 0000000..eb94e47
+index 0000000..b6c201f
 --- /dev/null
-+++ b/sound/firewire/motu/motu-hwdep.c
-@@ -0,0 +1,210 @@
++++ b/sound/firewire/motu/motu-pcm.c
+@@ -0,0 +1,385 @@
 +/*
-+ * motu-hwdep.c - a part of driver for MOTU FireWire series
++ * motu-pcm.c - a part of driver for MOTU FireWire series
 + *
-+ * Copyright (c) 2015 Takashi Sakamoto
++ * Copyright (c) 2015 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+/*
-+ * This codes have five functionalities.
-+ *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
-+ *
-+ */
-+
 +#include "motu.h"
 +
-+static long hwdep_read_locked(struct snd_motu *motu, char __user *buf,
-+			      long count,
-+		  loff_t *offset)
++static int motu_rate_constraint(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
 +{
-+	union snd_firewire_event event;
-+
-+	memset(&event, 0, sizeof(event));
-+
-+	event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+	event.lock_status.status = (motu->dev_lock_count > 0);
-+	motu->dev_lock_changed = false;
-+
-+	count = min_t(long, count, sizeof(event.lock_status));
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-+		       loff_t *offset)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	while (!motu->dev_lock_changed) {
-+		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&motu->lock);
-+		schedule();
-+		finish_wait(&motu->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&motu->lock);
-+	}
-+
-+	if (motu->dev_lock_changed)
-+		count = hwdep_read_locked(motu, buf, count, offset);
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	return count;
-+}
-+
-+static long hwdep_write(struct snd_hwdep *hwdep, const char __user *data,
-+			long count, loff_t *offset)
-+{
-+	/* TODO: Do something. */
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &motu->hwdep_wait, wait);
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return events | POLLOUT;
-+}
-+
-+static int hwdep_get_info(struct snd_motu *motu, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(motu->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_FIREWORKS;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count == 0) {
-+		motu->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_unlock(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count == -1) {
-+		motu->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_count == -1)
-+		motu->dev_lock_count = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(motu, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(motu);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(motu);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.write		= hwdep_write,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
-+};
-+
-+int snd_motu_create_hwdep_device(struct snd_motu *motu)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(motu->card, "MOTU", 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, "MOTU");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = motu;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
-+}
-diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
-index ab40fb2..c58d249 100644
---- a/sound/firewire/motu/motu-midi.c
-+++ b/sound/firewire/motu/motu-midi.c
-@@ -12,6 +12,10 @@ static int midi_open(struct snd_rawmidi_substream *substream)
- 	struct snd_motu *motu = substream->rmidi->private_data;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	motu->substreams_counter++;
-@@ -19,6 +23,9 @@ static int midi_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	if (err < 0)
-+		snd_motu_stream_lock_release(motu);
-+
- 	return err;
- }
- 
-@@ -33,6 +40,7 @@ static int midi_close(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	snd_motu_stream_lock_release(motu);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-index b6c201f..b6e8ef9 100644
---- a/sound/firewire/motu/motu-pcm.c
-+++ b/sound/firewire/motu/motu-pcm.c
-@@ -163,19 +163,23 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	err = snd_motu_stream_update_current_channels(motu);
- 	if (err < 0)
--		goto end;
-+		return err;
- 
- 	err = init_hw_info(motu, substream);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	err = snd_motu_stream_get_clock(motu, &src);
- 	if (err < 0)
--		goto end;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is not internal or any PCM streams are running,
-@@ -186,20 +190,28 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&motu->rx_stream)) {
- 		err = snd_motu_stream_get_rate(motu, &rate);
- 		if (err < 0)
--			goto end;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--end:
-+
- 	mutex_unlock(&motu->mutex);
- 
- 	return err;
-+err_locked:
-+	mutex_unlock(&motu->mutex);
-+	snd_motu_stream_lock_release(motu);
-+	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
++	struct snd_pcm_substream *substream = rule->private;
 +	struct snd_motu *motu = substream->private_data;
 +
-+	snd_motu_stream_lock_release(motu);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval rates = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, rate, mode, *pcm_channels;
 +
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
-index d6fc84f..104fdc4 100644
---- a/sound/firewire/motu/motu-stream.c
-+++ b/sound/firewire/motu/motu-stream.c
-@@ -630,3 +630,41 @@ void snd_motu_stream_update_duplex(struct snd_motu *motu)
- 	fw_iso_resources_update(&motu->tx_resources);
- 	fw_iso_resources_update(&motu->rx_resources);
- }
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = motu->tx_pcm_channels;
++	else
++		pcm_channels = motu->rx_pcm_channels;
 +
-+static void motu_lock_changed(struct snd_motu *motu)
-+{
-+	motu->dev_lock_changed = true;
-+	wake_up(&motu->hwdep_wait);
-+}
++	for (i = 0; i < ARRAY_SIZE(snd_motu_rates); ++i) {
++		rate = snd_motu_rates[i];
++		mode = i / 2;
 +
-+int snd_motu_stream_lock_try(struct snd_motu *motu)
-+{
-+	int err;
++		if (!snd_interval_test(c, pcm_channels[mode]))
++			continue;
 +
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto out;
++		rates.min = min(rates.min, rate);
++		rates.max = max(rates.max, rate);
 +	}
 +
-+	if (motu->dev_lock_count++ == 0)
-+		motu_lock_changed(motu);
-+	err = 0;
-+out:
-+	spin_unlock_irq(&motu->lock);
++	return snd_interval_refine(r, &rates);
++}
++
++static int motu_channels_constraint(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_substream *substream = rule->private;
++	struct snd_motu *motu = substream->private_data;
++
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval channels = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, rate, mode, *pcm_channels;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = motu->tx_pcm_channels;
++	else
++		pcm_channels = motu->rx_pcm_channels;
++
++	for (i = 0; i < ARRAY_SIZE(snd_motu_rates); ++i) {
++		rate = snd_motu_rates[i];
++		mode = i / 2;
++
++		if (!snd_interval_test(r, rate))
++			continue;
++
++		channels.min = min(channels.min, pcm_channels[mode]);
++		channels.max = max(channels.max, pcm_channels[mode]);
++	}
++
++	return snd_interval_refine(c, &channels);
++}
++
++static void limit_channels_and_rates(struct snd_motu *motu,
++				     struct snd_pcm_runtime *runtime,
++				     unsigned int *pcm_channels)
++{
++	struct snd_pcm_hardware *hw = &runtime->hw;
++	unsigned int i, rate, mode;
++
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
++
++	for (i = 0; i < ARRAY_SIZE(snd_motu_rates); ++i) {
++		rate = snd_motu_rates[i];
++		mode = i / 2;
++		if (pcm_channels[mode] == 0)
++			continue;
++
++		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++		hw->channels_min = min(hw->channels_min, pcm_channels[mode]);
++		hw->channels_max = max(hw->channels_max, pcm_channels[mode]);
++	}
++
++	snd_pcm_limit_hw_rates(runtime);
++}
++
++static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
++{
++	hw->periods_min = 2;			/* SNDRV_PCM_INFO_BATCH */
++	hw->periods_max = UINT_MAX;
++
++	hw->period_bytes_min = 4 * hw->channels_max;    /* byte for a frame */
++
++	/* Just to prevent from allocating much pages. */
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
++}
++
++static int init_hw_info(struct snd_motu *motu,
++			struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_pcm_hardware *hw = &runtime->hw;
++	struct amdtp_stream *stream;
++	unsigned int *pcm_channels;
++	int err;
++
++	hw->info = SNDRV_PCM_INFO_MMAP |
++		   SNDRV_PCM_INFO_MMAP_VALID |
++		   SNDRV_PCM_INFO_BATCH |
++		   SNDRV_PCM_INFO_INTERLEAVED |
++		   SNDRV_PCM_INFO_JOINT_DUPLEX |
++		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		hw->formats = SNDRV_PCM_FMTBIT_S32;
++		stream = &motu->tx_stream;
++		pcm_channels = motu->tx_pcm_channels;
++	} else {
++		hw->formats = SNDRV_PCM_FMTBIT_S32 |
++			      SNDRV_PCM_FMTBIT_S16;
++		stream = &motu->rx_stream;
++		pcm_channels = motu->rx_pcm_channels;
++	}
++
++	limit_channels_and_rates(motu, runtime, pcm_channels);
++	limit_period_and_buffer(hw);
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  motu_rate_constraint, substream,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  motu_channels_constraint, substream,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
++	if (err < 0)
++		return err;
++
++	return amdtp_stream_add_pcm_hw_constraints(stream, runtime);
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++	enum snd_motu_clock src;
++	unsigned int rate;
++	int err;
++
++	mutex_lock(&motu->mutex);
++
++	err = snd_motu_stream_update_current_channels(motu);
++	if (err < 0)
++		goto end;
++
++	err = init_hw_info(motu, substream);
++	if (err < 0)
++		goto end;
++
++	err = snd_motu_stream_get_clock(motu, &src);
++	if (err < 0)
++		goto end;
++
++	/*
++	 * When source of clock is not internal or any PCM streams are running,
++	 * available sampling rate is limited at current sampling rate.
++	 */
++	if (src != SND_MOTU_CLOCK_INTERNAL || src != SND_MOTU_CLOCK_INTERNAL ||
++	    amdtp_stream_pcm_running(&motu->tx_stream) ||
++	    amdtp_stream_pcm_running(&motu->rx_stream)) {
++		err = snd_motu_stream_get_rate(motu, &rate);
++		if (err < 0)
++			goto end;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
++end:
++	mutex_unlock(&motu->mutex);
++
 +	return err;
 +}
 +
-+void snd_motu_stream_lock_release(struct snd_motu *motu)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	spin_lock_irq(&motu->lock);
++	return 0;
++}
 +
-+	if (WARN_ON(motu->dev_lock_count <= 0))
-+		goto out;
++static int capture_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_motu *motu = substream->private_data;
 +
-+	if (--motu->dev_lock_count == 0)
-+		motu_lock_changed(motu);
-+out:
-+	spin_unlock_irq(&motu->lock);
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&motu->mutex);
++		motu->substreams_counter++;
++		mutex_unlock(&motu->mutex);
++	}
++
++	amdtp_motu_set_pcm_format(&motu->tx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int playback_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&motu->mutex);
++		motu->substreams_counter++;
++		mutex_unlock(&motu->mutex);
++	}
++
++	amdtp_motu_set_pcm_format(&motu->rx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	mutex_lock(&motu->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		motu->substreams_counter--;
++
++	snd_motu_stream_stop_duplex(motu);
++
++	mutex_unlock(&motu->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	mutex_lock(&motu->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		motu->substreams_counter--;
++
++	snd_motu_stream_stop_duplex(motu);
++
++	mutex_unlock(&motu->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++	int err;
++
++	mutex_lock(&motu->mutex);
++	err = snd_motu_stream_start_duplex(motu, substream->runtime->rate);
++	mutex_unlock(&motu->mutex);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&motu->tx_stream);
++
++	return 0;
++}
++static int playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++	int err;
++
++	mutex_lock(&motu->mutex);
++	err = snd_motu_stream_start_duplex(motu, substream->runtime->rate);
++	mutex_unlock(&motu->mutex);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&motu->rx_stream);
++
++	return err;
++}
++
++static int capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&motu->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&motu->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static int playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&motu->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&motu->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t capture_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	return amdtp_stream_pcm_pointer(&motu->tx_stream);
++}
++static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_motu *motu = substream->private_data;
++
++	return amdtp_stream_pcm_pointer(&motu->rx_stream);
++}
++
++int snd_motu_create_pcm_devices(struct snd_motu *motu)
++{
++	static struct snd_pcm_ops capture_ops = {
++		.open      = pcm_open,
++		.close     = pcm_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = capture_hw_params,
++		.hw_free   = capture_hw_free,
++		.prepare   = capture_prepare,
++		.trigger   = capture_trigger,
++		.pointer   = capture_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	static struct snd_pcm_ops playback_ops = {
++		.open      = pcm_open,
++		.close     = pcm_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = playback_hw_params,
++		.hw_free   = playback_hw_free,
++		.prepare   = playback_prepare,
++		.trigger   = playback_trigger,
++		.pointer   = playback_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(motu->card, "MOTU", 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++	pcm->private_data = motu;
++	strcpy(pcm->name, motu->card->shortname);
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
++
++	return 0;
 +}
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 6c539ed..b3f3728 100644
+index 5717854..5deb592 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -66,6 +66,7 @@ static int motu_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+@@ -78,6 +78,10 @@ static int motu_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
  
- 	mutex_init(&motu->mutex);
- 	spin_lock_init(&motu->lock);
-+	init_waitqueue_head(&motu->hwdep_wait);
+ 	snd_motu_proc_init(motu);
  
- 	name_card(motu);
- 
-@@ -87,6 +88,10 @@ static int motu_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 	if (err < 0)
- 		goto error;
- 
-+	err = snd_motu_create_hwdep_device(motu);
++	err = snd_motu_create_pcm_devices(motu);
 +	if (err < 0)
 +		goto error;
 +
@@ -468,64 +460,15 @@ index 6c539ed..b3f3728 100644
  	if (err < 0)
  		goto error;
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 7ca8542..76347b2 100644
+index 8486dd8..50c19a5 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -16,6 +16,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/compat.h>
+@@ -108,4 +108,6 @@ void snd_motu_transaction_unregister(struct snd_motu *motu);
  
- #include <sound/control.h>
- #include <sound/core.h>
-@@ -24,6 +25,8 @@
- #include <sound/pcm_params.h>
- #include <sound/rawmidi.h>
- #include <sound/info.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
+ void snd_motu_proc_init(struct snd_motu *motu);
  
- #include "../amdtp-stream.h"
- #include "../iso-resources.h"
-@@ -65,6 +68,11 @@ struct snd_motu {
- 
- 	/* For messaging. */
- 	struct fw_address_handler async_handler;
++int snd_motu_create_pcm_devices(struct snd_motu *motu);
 +
-+	/* For uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- #define MOTU_REG_BASE		0xfffff0000000ull
-@@ -96,6 +104,8 @@ void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
- int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
- void snd_motu_stream_stop_duplex(struct snd_motu *motu);
- void snd_motu_stream_update_duplex(struct snd_motu *motu);
-+int snd_motu_stream_lock_try(struct snd_motu *motu);
-+void snd_motu_stream_lock_release(struct snd_motu *motu);
- 
- int snd_motu_stream_get_rate(struct snd_motu *motu, unsigned int *rate);
- int snd_motu_stream_set_rate(struct snd_motu *motu, unsigned int rate);
-@@ -113,4 +123,5 @@ int snd_motu_create_pcm_devices(struct snd_motu *motu);
- 
- int snd_motu_create_midi_devices(struct snd_motu *motu);
- 
-+int snd_motu_create_hwdep_device(struct snd_motu *motu);
  #endif
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 80e8780..5bb27ea 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -122,6 +122,7 @@ static int snd_tscm_probe(struct fw_unit *unit,
- 
- 	mutex_init(&tscm->mutex);
- 	spin_lock_init(&tscm->lock);
-+	init_waitqueue_head(&tscm->hwdep_wait);
- 
- 	err = check_name(tscm);
- 	if (err < 0)
 -- 
 2.1.4
