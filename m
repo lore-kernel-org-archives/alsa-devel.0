@@ -1,17 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: How to activate DAI link to dummy codec?
-Date: Sat, 11 Jul 2015 11:58:49 +0200
-Message-ID: <55A0E8D9.2010801@metafoo.de>
-References: <CAOMFOmUeF_LbfYyGGaCZG690Wow7FdiZtVTFHo7FyXdRMsYpnQ@mail.gmail.com>
+From: Tobias Stoeckmann <tobias@stoeckmann.org>
+Subject: [PATCH] terminate readlink result string
+Date: Sat, 11 Jul 2015 13:23:57 +0200
+Message-ID: <20150711112356.GA30962@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-145.synserver.de (smtp-out-145.synserver.de
- [212.40.185.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D389260541
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 11:58:53 +0200 (CEST)
-In-Reply-To: <CAOMFOmUeF_LbfYyGGaCZG690Wow7FdiZtVTFHo7FyXdRMsYpnQ@mail.gmail.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 056C6260541
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 15:23:48 +0200 (CEST)
+Received: from localhost ([79.227.8.11]) by mrelayeu.kundenserver.de
+ (mreue005) with ESMTPSA (Nemesis) id 0MLCD7-1ZDdly0zT7-000INt for
+ <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 15:23:47 +0200
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/10/2015 11:50 PM, Anatol Pomozov wrote:
-> Hi
->
-> I have following hardware configuration
->
-> [SoC] <=> [RT5677] <=> [MAX98357A]
->
-> MAX98357A is a simple speaker amplifier with I2S data interface and no
-> I2C control. The chip automatically configures itself (rate/block
-> frequency) when I2S is started streaming to the chip. This chip does
-> not need a driver (there is nothing to configure) and we can use
-> "dummy-codec" for it.
+readlink does not guarantee that its result string is nul-terminated.
+Instead, increase the buffer by one byte to make sure that we can
+add '\0' at the end.
+---
+ alsactl/init_sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The dummy CODEC is only meant to be used in situations where there is no 
-actual hardware.
-
-If there is actual hardware even if it does not have a control bus the 
-hardware will still have constraints like supported samplerates, etc. which 
-should be modeled. And the data flow graph also should be modeled using DAPM.
-
->
-> There is a DAI link between RT5677 and MAX and it should be configured
-> from RT5677 side. RT5677 is master here and it need to set I2S bus
-> parameters. Configuration happens in rt5677 hw_params() function and
-> it is triggered by dai link activation.
->
-> My question is how to tell DAPM that I need to activate this link?
->
-> If MAX98357A was a real codec then it would have an OUTPUT widget that
-> I can activate, this would trigger dai link in between to be activated
-> as well. But dummy codec does not have any widgets, so how I suppose
-> to activate link to dummy codec?
-
-You just gave the answer yourself, make it a real CODEC :)
-
-- Lars
+diff --git a/alsactl/init_sysfs.c b/alsactl/init_sysfs.c
+index 0cbada2..5c789b6 100644
+--- a/alsactl/init_sysfs.c
++++ b/alsactl/init_sysfs.c
+@@ -108,11 +108,11 @@ static char *sysfs_attr_get_value(const char *devpath, const char *attr_name)
+ 
+ 	if (S_ISLNK(statbuf.st_mode)) {
+ 		/* links return the last element of the target path */
+-		char link_target[PATH_SIZE];
++		char link_target[PATH_SIZE + 1];
+ 		int len;
+ 		const char *pos;
+ 
+-		len = readlink(path_full, link_target, sizeof(link_target));
++		len = readlink(path_full, link_target, sizeof(link_target) - 1);
+ 		if (len > 0) {
+ 			link_target[len] = '\0';
+ 			pos = strrchr(link_target, '/');
+-- 
+2.4.5
