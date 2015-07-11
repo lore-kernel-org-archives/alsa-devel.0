@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 17/37] ALSA: firewire-tascam: add skeleton
-	for TASCAM FireWire series
-Date: Sat, 11 Jul 2015 23:12:28 +0900
-Message-ID: <1436623968-10780-18-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 22/37] ALSA: firewire-tascam: add PCM
+	functionality
+Date: Sat, 11 Jul 2015 23:12:33 +0900
+Message-ID: <1436623968-10780-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id E963C2605AA
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EDD12605AE
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:06 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,88 +25,38 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for TASCAM FireWire series. In this commit,
-this driver just creates/removes card instance according to bus event.
-More functionalities will be added in following commits.
+This commit adds PCM functionality to transmit/receive PCM samples.
 
-TASCAM FireWire series consists of:
- * PDI 1394P23 for IEEE 1394 PHY layer
- * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
- * XILINX XC9536XL
- * XILINX Spartan-II XC2S100
- * ATMEL AT91M42800A
-
-I observed that these models don't work properly with 1394 OHCI controller
-based on VT6315. It may be due to the PHY/LINK layer issues. Using 1394
-OHCI controller produced by the other vendors such as Texas Instruments
-may enable to work. Or adding another node on the bus.
-
-Ilya Zimnovich had investigated TASCAM FireWire series in 2011, and
-discover some features of his FW-1804. You can see a part of his research
-in FFADO project.
-http://subversion.ffado.org/wiki/Tascam
-
-Some of my work are based on Ilya's investigation, while this series
-doesn't support the FW_1804, because of a lack of config ROM
-information and its protocol detail, especially for PCM channels.
+When one of PCM substreams are running or external clock source is
+selected, current sampling rate is used. Else, the sampling rate is
+changed as an userspace application requests.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig         |  11 +++
- sound/firewire/Makefile        |   1 +
- sound/firewire/tascam/Makefile |   2 +
- sound/firewire/tascam/tascam.c | 155 +++++++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.h |  29 ++++++++
- 5 files changed, 198 insertions(+)
- create mode 100644 sound/firewire/tascam/Makefile
- create mode 100644 sound/firewire/tascam/tascam.c
- create mode 100644 sound/firewire/tascam/tascam.h
+ sound/firewire/tascam/Makefile     |   2 +-
+ sound/firewire/tascam/tascam-pcm.c | 295 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c     |   4 +
+ sound/firewire/tascam/tascam.h     |   2 +
+ 4 files changed, 302 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-pcm.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 80f3b57..ce51fdd 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -135,4 +135,15 @@ config SND_FIREWIRE_DIGI00X
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-digi00x.
- 
-+config SND_FIREWIRE_TASCAM
-+	tristate "TASCAM FireWire series support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	 Say Y here to include support for TASCAM.
-+	  * FW-1884
-+	  * FW-1804
-+
-+	 To compile this driver as a module, choose M here: the module
-+	 will be called snd-firewire-tascam.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5325d15..6ae50f5 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
-+obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-new file mode 100644
-index 0000000..29bdbce
---- /dev/null
+index 3be9434..84391ac 100644
+--- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -0,0 +1,2 @@
-+snd-firewire-tascam-objs := tascam.o
-+obj-m += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+@@ -1,3 +1,3 @@
+ snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
+-			    tascam.o
++			    tascam-pcm.o tascam.o
+ obj-m += snd-firewire-tascam.o
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
 new file mode 100644
-index 0000000..9f2d2a3
+index 0000000..b1bdb9f
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam.c
-@@ -0,0 +1,155 @@
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -0,0 +1,295 @@
 +/*
-+ * tascam.c - a part of driver for TASCAM FireWire series
++ * tascam-pcm.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
@@ -115,185 +65,315 @@ index 0000000..9f2d2a3
 +
 +#include "tascam.h"
 +
-+MODULE_DESCRIPTION("TASCAM FireWire series Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static int check_name(struct snd_tscm *tscm)
++static void set_buffer_params(struct snd_pcm_hardware *hw)
 +{
-+	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
-+	char vendor[8];
-+	char model[8];
-+	__u32 data;
++	hw->period_bytes_min = 4 * hw->channels_min;
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * 2;
 +
-+	/* Retrieve model name. */
-+	data = be32_to_cpu(fw_dev->config_rom[28]);
-+	memcpy(model, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[29]);
-+	memcpy(model + 4, &data, 4);
-+	model[7] = '\0';
++	hw->periods_min = 2;
++	hw->periods_max = UINT_MAX;
++}
 +
-+	/* Retrieve vendor name. */
-+	data = be32_to_cpu(fw_dev->config_rom[23]);
-+	memcpy(vendor, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[24]);
-+	memcpy(vendor + 4, &data, 4);
-+	vendor[7] = '\0';
++static int pcm_init_hw_params(struct snd_tscm *tscm,
++			      struct snd_pcm_substream *substream)
++{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 |
++			 SNDRV_PCM_RATE_96000,
++		.rate_min = 44100,
++		.rate_max = 96000,
++		.channels_min = 10,
++		.channels_max = 18,
++	};
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int pcm_channels;
++	int err;
 +
-+	strcpy(tscm->card->driver, "FW-TASCAM");
-+	strcpy(tscm->card->shortname, model);
-+	strcpy(tscm->card->mixername, model);
-+	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
-+		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
-+		 cpu_to_be32(fw_dev->config_rom[3]),
-+		 cpu_to_be32(fw_dev->config_rom[4]),
-+		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
++	runtime->hw = hardware;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		pcm_channels = tscm->spec->pcm_capture_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
++	} else {
++		runtime->hw.formats =
++				SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32;
++		pcm_channels = tscm->spec->pcm_playback_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
++	}
++
++	set_buffer_params(&runtime->hw);
++
++	/* Deliver 24bit data */
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		goto end;
++
++	/* 16 packets are handled in one callback. This is for safe. */
++	err = snd_pcm_hw_constraint_minmax(runtime,
++					   SNDRV_PCM_HW_PARAM_PERIOD_TIME,
++					   5000, UINT_MAX);
++end:
++	return err;
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	enum snd_tscm_clock clock;
++	unsigned int rate;
++	int err;
++
++	err = pcm_init_hw_params(tscm, substream);
++	if (err < 0)
++		return err;
++
++	err = snd_tscm_stream_get_clock(tscm, &clock);
++	if ((clock != SND_TSCM_CLOCK_INTERNAL) |
++	    amdtp_stream_pcm_running(&tscm->rx_stream) |
++	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
++		err = snd_tscm_stream_get_rate(tscm, &rate);
++		if (err < 0)
++			return err;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
++	snd_pcm_set_sync(substream);
++
++	return err;
++}
++
++static int pcm_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
++	}
++	amdtp_tscm_set_pcm_format(&tscm->tx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
++	}
++	amdtp_tscm_set_pcm_format(&tscm->rx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	mutex_lock(&tscm->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
++
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	mutex_lock(&tscm->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
++
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&tscm->mutex);
++
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->tx_stream);
++
++	mutex_unlock(&tscm->mutex);
++
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&tscm->mutex);
++
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->rx_stream);
++
++	mutex_unlock(&tscm->mutex);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+static void tscm_card_free(struct snd_card *card)
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
 +{
-+	struct snd_tscm *tscm = card->private_data;
++	struct snd_tscm *tscm = sbstrm->private_data;
 +
-+	fw_unit_put(tscm->unit);
++	return amdtp_stream_pcm_pointer(&tscm->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_tscm *tscm = sbstrm->private_data;
 +
-+	mutex_destroy(&tscm->mutex);
++	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
 +}
 +
-+static int snd_tscm_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm)
 +{
-+	struct snd_card *card;
-+	struct snd_tscm *tscm;
++	struct snd_pcm *pcm;
 +	int err;
 +
-+	/* create card */
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_tscm), &card);
++	err = snd_pcm_new(tscm->card, tscm->card->driver, 0, 1, 1, &pcm);
 +	if (err < 0)
 +		return err;
-+	card->private_free = tscm_card_free;
 +
-+	/* initialize myself */
-+	tscm = card->private_data;
-+	tscm->card = card;
-+	tscm->unit = fw_unit_get(unit);
++	pcm->private_data = tscm;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", tscm->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
 +
-+	mutex_init(&tscm->mutex);
-+
-+	err = check_name(tscm);
++	return 0;
++}
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index c56b0a4..ca3af62 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -131,6 +131,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_tscm_create_pcm_devices(tscm);
 +	if (err < 0)
 +		goto error;
 +
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&unit->device, tscm);
-+
-+	return err;
-+error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void snd_tscm_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+static void snd_tscm_remove(struct fw_unit *unit)
-+{
-+	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
-+
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(tscm->card);
-+}
-+
-+static const struct ieee1394_device_id snd_tscm_id_table[] = {
-+	/* FW-1082 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800003,
-+	},
-+	/* FW-1884 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800000,
-+	},
-+	/* FW-1804 mey be supported if IDs are clear. */
-+	/* FE-08 requires reverse-engineering because it just has faders. */
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_tscm_id_table);
-+
-+static struct fw_driver tscm_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-firewire-tascam",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = snd_tscm_probe,
-+	.update   = snd_tscm_update,
-+	.remove   = snd_tscm_remove,
-+	.id_table = snd_tscm_id_table,
-+};
-+
-+static int __init snd_tscm_init(void)
-+{
-+	return driver_register(&tscm_driver.driver);
-+}
-+
-+static void __exit snd_tscm_exit(void)
-+{
-+	driver_unregister(&tscm_driver.driver);
-+}
-+
-+module_init(snd_tscm_init);
-+module_exit(snd_tscm_exit);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-new file mode 100644
-index 0000000..8aa5852
---- /dev/null
+index 729c9c8..feaf7e1 100644
+--- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -0,0 +1,29 @@
-+/*
-+ * tascam.h - a part of driver for TASCAM FireWire series
-+ *
-+ * Copyright (c) 2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -95,3 +95,5 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
+ 
+ void snd_tscm_proc_init(struct snd_tscm *tscm);
 +
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/compat.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/firewire.h>
-+
-+#include "../lib.h"
-+
-+struct snd_tscm {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+
-+	struct mutex mutex;
-+};
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
 -- 
 2.1.4
