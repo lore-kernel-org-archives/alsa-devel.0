@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 20/37] ALSA: firewire-tascam: add specific
-	protocol layer
-Date: Sat, 11 Jul 2015 23:12:31 +0900
-Message-ID: <1436623968-10780-21-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 27/37] ALSA: firewire-lib: add support for
+	source packet header field in CIP header
+Date: Sat, 11 Jul 2015 23:12:38 +0900
+Message-ID: <1436623968-10780-28-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id E68F62605A2
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 798262605B1
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:06 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,317 +25,74 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series uses non-blocking transmission for AMDTP packet
-streaming, while the format of data blocks is unique.
+In IEC 61883-1, CIP headers have a SPH field. When a packet has 1 in the
+SPH field, the packet has a source packet headers. A source packet header
+consists of 32 bit field (= 1 quadlet) and it transfers timestamp, which
+is the same value as the lower 25 bits of the IEEE 1394 CYCLE_TIMER
+register and the rest is zero.
 
-The CIP headers includes specific value in FMT field and no SYT
-information.
-
-In transmitted packets, the first data channel represents event counter,
-and the last data channel has status and control information. The rest
-has 24bit PCM samples with right padding.
-
-In received packets, all of data channels include 16, 24, 32bit PCM
-samples. There's no the other kind of information.
-
-This commit adds support for this protocol. For convinience, the size of
-PCM samples in outgoing packet is 16, 24bit. The status and control
-information will be supported in a future commit.
+This commit just supports source packet header field because IEC 61883-1
+includes ambiguity the position of this header and the number. Each
+protocol layer can have actual implementation according its requirements.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile       |   2 +-
- sound/firewire/tascam/amdtp-tascam.c | 232 +++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.h       |  16 +++
- 3 files changed, 249 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/amdtp-tascam.c
+ sound/firewire/amdtp-stream.c | 8 ++++++--
+ sound/firewire/amdtp-stream.h | 1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 63f08c6..5d11cad 100644
---- a/sound/firewire/tascam/Makefile
-+++ b/sound/firewire/tascam/Makefile
-@@ -1,2 +1,2 @@
--snd-firewire-tascam-objs := tascam-proc.o tascam.o
-+snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
- obj-m += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
-new file mode 100644
-index 0000000..22c2eaf
---- /dev/null
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -0,0 +1,232 @@
-+/*
-+ * amdtp-tascam.c - a part of driver for TASCAM FireWire series
-+ *
-+ * Copyright (c) 2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include <sound/pcm.h>
-+#include "tascam.h"
-+
-+#define AMDTP_FMT_TSCM_TX	0x1e
-+#define AMDTP_FMT_TSCM_RX	0x3e
-+
-+struct amdtp_tscm {
-+	unsigned int pcm_channels;
-+
-+	void (*transfer_samples)(struct amdtp_stream *s,
-+				 struct snd_pcm_runtime *pcm,
-+				 __be32 *buffer, unsigned int frames);
-+};
-+
-+int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int data_channels;
-+
-+	if (amdtp_stream_running(s))
-+		return -EBUSY;
-+
-+	data_channels = p->pcm_channels;
-+	if (s->direction == AMDTP_IN_STREAM)
-+		data_channels += 2;
-+
-+	return amdtp_stream_set_parameters(s, rate, data_channels);
-+}
-+
-+static void write_pcm_s32(struct amdtp_stream *s,
-+			  struct snd_pcm_runtime *runtime,
-+			  __be32 *buffer, unsigned int frames)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u32 *src;
-+
-+	channels = p->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[c] = cpu_to_be32(*src);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void write_pcm_s16(struct amdtp_stream *s,
-+			  struct snd_pcm_runtime *runtime,
-+			  __be32 *buffer, unsigned int frames)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u16 *src;
-+
-+	channels = p->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[c] = cpu_to_be32(*src << 16);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void read_pcm_s32(struct amdtp_stream *s,
-+			 struct snd_pcm_runtime *runtime,
-+			 __be32 *buffer, unsigned int frames)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
-+
-+	channels = p->pcm_channels;
-+	dst  = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	/* The first data channel is for event counter. */
-+	buffer += 1;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c]);
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void write_pcm_silence(struct amdtp_stream *s, __be32 *buffer,
-+			      unsigned int data_blocks)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, i, c;
-+
-+	channels = p->pcm_channels;
-+
-+	for (i = 0; i < data_blocks; ++i) {
-+		for (c = 0; c < channels; ++c)
-+			buffer[c] = 0x00000000;
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+
-+	if (WARN_ON(amdtp_stream_pcm_running(s)))
-+		return;
-+
-+	switch (format) {
-+	default:
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S16:
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			p->transfer_samples = write_pcm_s16;
-+			break;
-+		}
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S32:
-+		if (s->direction == AMDTP_OUT_STREAM)
-+			p->transfer_samples = write_pcm_s32;
-+		else
-+			p->transfer_samples = read_pcm_s32;
-+		break;
-+	}
-+}
-+
-+static void read_control_messages(struct amdtp_stream *s,
-+				  __be32 *buffer, unsigned int data_blocks)
-+{
-+	unsigned int first, index = 0;
-+	unsigned int i;
-+
-+	first = (buffer[0] >> 15) % 64;
-+
-+	/* TODO */
-+	for (i = 0; i < data_blocks; i++) {
-+		index = be32_to_cpu(buffer[0]) % 64;
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
-+					   __be32 *buffer,
-+					   unsigned int data_blocks,
-+					   unsigned int *syt)
-+{
-+	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
-+	struct snd_pcm_substream *pcm;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (data_blocks > 0 && pcm)
-+		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
-+
-+	read_control_messages(s, buffer, data_blocks);
-+
-+	return data_blocks;
-+}
-+
-+static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
-+					   __be32 *buffer,
-+					   unsigned int data_blocks,
-+					   unsigned int *syt)
-+{
-+	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
-+	struct snd_pcm_substream *pcm;
-+
-+	/* This field is not used. */
-+	*syt = 0x0000;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm)
-+		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
-+	else
-+		write_pcm_silence(s, buffer, data_blocks);
-+
-+	return data_blocks;
-+}
-+
-+int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		    enum amdtp_stream_direction dir, unsigned int pcm_channels)
-+{
-+	struct amdtp_tscm *p;
-+	int err;
-+
-+	err = amdtp_stream_init(s, unit, dir,
-+				CIP_NONBLOCKING | CIP_SKIP_DBC_ZERO_CHECK,
-+				sizeof(struct amdtp_tscm));
-+	if (err < 0)
-+		return 0;
-+
-+	if (dir == AMDTP_IN_STREAM) {
-+		s->fmt = AMDTP_FMT_TSCM_TX;
-+		s->process_data_blocks = process_tx_data_blocks;
-+	} else {
-+		s->fmt = AMDTP_FMT_TSCM_RX;
-+		s->process_data_blocks = process_rx_data_blocks;
-+	}
-+	s->fdf = 0x00;
-+
-+	p = s->protocol;
-+	p->pcm_channels = pcm_channels;
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 2a79f1b..47f679a 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -19,8 +19,13 @@
- #include <sound/initval.h>
- #include <sound/firewire.h>
- #include <sound/info.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index c7fbdd3..58f6ae0 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -34,6 +34,8 @@
+ #define CIP_SID_MASK		0x3f000000
+ #define CIP_DBS_MASK		0x00ff0000
+ #define CIP_DBS_SHIFT		16
++#define CIP_SPH_MASK		0x00000400
++#define CIP_SPH_SHIFT		10
+ #define CIP_DBC_MASK		0x000000ff
+ #define CIP_FMT_SHIFT		24
+ #define CIP_FMT_MASK		0x3f000000
+@@ -414,6 +416,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int data_blocks,
  
- #include "../lib.h"
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../amdtp-stream.h"
+ 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+ 				(s->data_block_quadlets << CIP_DBS_SHIFT) |
++				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
+ 				s->data_block_counter);
+ 	buffer[1] = cpu_to_be32(CIP_EOH |
+ 				((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
+@@ -440,7 +443,7 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 			    unsigned int *data_blocks)
+ {
+ 	u32 cip_header[2];
+-	unsigned int fmt, fdf, syt;
++	unsigned int sph, fmt, fdf, syt;
+ 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
+ 	struct snd_pcm_substream *pcm;
+ 	unsigned int pcm_frames;
+@@ -461,8 +464,9 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	}
  
- struct snd_tscm_spec {
- 	const char *const name;
-@@ -40,6 +45,12 @@ struct snd_tscm {
- 	struct mutex mutex;
- 
- 	struct snd_tscm_spec *spec;
-+
-+	struct fw_iso_resources tx_resources;
-+	struct fw_iso_resources rx_resources;
-+	struct amdtp_stream tx_stream;
-+	struct amdtp_stream rx_stream;
-+	unsigned int substreams_counter;
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
-@@ -49,4 +60,9 @@ struct snd_tscm {
- #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
- #define TSCM_OFFSET_FIRMWARE_HW		0x000c
- 
-+int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
-+int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
-+void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
-+
- void snd_tscm_proc_init(struct snd_tscm *tscm);
+ 	/* Check valid protocol or not. */
++	sph = (cip_header[0] & CIP_SPH_MASK) >> CIP_SPH_SHIFT;
+ 	fmt = (cip_header[1] & CIP_FMT_MASK) >> CIP_FMT_SHIFT;
+-	if (fmt != s->fmt) {
++	if (sph != s->sph || fmt != s->fmt) {
+ 		dev_err(&s->unit->device,
+ 			"Detect unexpected protocol: %08x %08x\n",
+ 			cip_header[0], cip_header[1]);
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index d2354f0..aa5d04d 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -107,6 +107,7 @@ struct amdtp_stream {
+ 	unsigned int source_node_id_field;
+ 	unsigned int data_block_quadlets;
+ 	unsigned int data_block_counter;
++	unsigned int sph;
+ 	unsigned int fmt;
+ 	unsigned int fdf;
+ 	/* quirk: fixed interval of dbc between previos/current packets. */
 -- 
 2.1.4
