@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 04/37] ALSA: firewire-lib: serialize
-	request transaction and response transaction
-Date: Sat, 11 Jul 2015 23:12:15 +0900
-Message-ID: <1436623968-10780-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 06/37] ALSA: firewire-lib: add throttle
+	for MIDI data rate
+Date: Sat, 11 Jul 2015 23:12:17 +0900
+Message-ID: <1436623968-10780-7-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 80689260545
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:02 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4632A260564
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:04 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,70 +25,87 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The helper functions for asynchronous MIDI port use 'tasklet' to run IEEE
-1394 asynchronous transactions, while running transactions need to wait
-for response. In this reason, one transaction should be transferred at
-one tasklet scheduling, because tasklet runs one kernel thread available
-for the other tasks
+Typically, the target devices has internal buffer to adjust output of
+received MIDI messages for MIDI serial bus. The capacity of the buffer
+is limited, while IEEE 1394 transactions can transfer more MIDI messages
+than MIDI serial bus can. For this reason, the MIDI transmission rate
+should be constrained.
 
-For these reasons, this commit serialize request/response transactions,
-by adding one boolean member.
+This commit adds throttle to limit MIDI data rate as 31,250 bits per
+seconds. The data rate is enough slower than jiffies granuarity, thus
+this commit utilize jiffies count to calculate data rate.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 8 ++++++++
- sound/firewire/lib.h | 1 +
- 2 files changed, 9 insertions(+)
+ sound/firewire/lib.c | 16 +++++++++++++++-
+ sound/firewire/lib.h |  1 +
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index f5b5526..a66e011 100644
+index e309b9b..f9c1873 100644
 --- a/sound/firewire/lib.c
 +++ b/sound/firewire/lib.c
-@@ -76,6 +76,8 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+@@ -76,6 +76,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
  
  	if (rcode == RCODE_COMPLETE && substream != NULL)
  		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
-+
-+	port->idling = true;
- }
++	else if (!rcode_is_permanent_error(rcode))
++		/* To start next transaction immediately for recovery. */
++		port->next_tick = 0;
  
- static void midi_port_tasklet(unsigned long data)
-@@ -86,6 +88,10 @@ static void midi_port_tasklet(unsigned long data)
- 	int generation;
- 	int type;
+ 	port->idling = true;
  
-+	/* Under transacting. */
-+	if (!port->idling)
-+		return;
-+
- 	/* Nothing to do. */
+@@ -99,6 +102,10 @@ static void midi_port_tasklet(unsigned long data)
  	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
  		return;
-@@ -110,6 +116,7 @@ static void midi_port_tasklet(unsigned long data)
+ 
++	/* Do it in next chance. */
++	if (time_is_after_jiffies(port->next_tick))
++		tasklet_schedule(&port->tasklet);
++
+ 	/*
+ 	 * Fill the buffer. The callee must use snd_rawmidi_transmit_peek().
+ 	 * Later, snd_rawmidi_transmit_ack() may be called.
+@@ -107,8 +114,10 @@ static void midi_port_tasklet(unsigned long data)
+ 	port->consume_bytes = port->packetize(substream, port->buf);
+ 	if (port->consume_bytes <= 0) {
+ 		/* Do it in next chance, immediately. */
+-		if (port->consume_bytes == 0)
++		if (port->consume_bytes == 0) {
++			port->next_tick = 0;
+ 			tasklet_schedule(&port->tasklet);
++		}
+ 		return;
+ 	}
+ 
+@@ -118,6 +127,10 @@ static void midi_port_tasklet(unsigned long data)
+ 	else
  		type = TCODE_WRITE_BLOCK_REQUEST;
  
++	/* Set interval to next transaction. */
++	port->next_tick =
++		jiffies_64 + msecs_to_jiffies(port->consume_bytes * 8 / 31250);
++
  	/* Start this transaction. */
-+	port->idling = false;
+ 	port->idling = false;
  	generation = port->parent->generation;
- 	smp_rmb(); /* node_id vs. generation */
- 	fw_send_request(port->parent->card, &port->transaction, type,
-@@ -142,6 +149,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	port->parent = fw_parent_device(unit);
+@@ -153,6 +166,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
  	port->addr = addr;
  	port->packetize = packetize;
-+	port->idling = true;
+ 	port->idling = true;
++	port->next_tick = 0;
  
  	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
  
 diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index c662bf9..9d76f5c 100644
+index 9d76f5c..e4b00e2 100644
 --- a/sound/firewire/lib.h
 +++ b/sound/firewire/lib.h
-@@ -25,6 +25,7 @@ static inline bool rcode_is_permanent_error(int rcode)
- struct snd_fw_async_midi_port {
+@@ -26,6 +26,7 @@ struct snd_fw_async_midi_port {
  	struct fw_device *parent;
  	struct tasklet_struct tasklet;
-+	bool idling;
+ 	bool idling;
++	unsigned long next_tick;
  
  	__u64 addr;
  	struct fw_transaction transaction;
