@@ -1,21 +1,20 @@
 From: Jun Nie <jun.nie@linaro.org>
-Subject: Re: [RFT PATCH 2/2] ASoC: zx: spdif: Fix
+Subject: Re: [RFT PATCH 1/2] ASoC: zx: i2s: Fix
  devm_ioremap_resource return value check
-Date: Sat, 11 Jul 2015 10:01:44 +0800
-Message-ID: <CABymUCNbRG+9rscLseyS=_oH_yaNLcdes0E0j2CQjQGi9pi5Ow@mail.gmail.com>
+Date: Sat, 11 Jul 2015 10:02:28 +0800
+Message-ID: <CABymUCOj=yHAbdK5=uMtNiHjgSPKx7z-=Vc1JRy_nkE9rB1jAw@mail.gmail.com>
 References: <1436447969-24583-1-git-send-email-k.kozlowski.k@gmail.com>
- <1436447969-24583-2-git-send-email-k.kozlowski.k@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AD742604CA
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 04:01:44 +0200 (CEST)
-Received: by lbbyj8 with SMTP id yj8so16179766lbb.0
- for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 19:01:44 -0700 (PDT)
-In-Reply-To: <1436447969-24583-2-git-send-email-k.kozlowski.k@gmail.com>
+Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
+ [209.85.217.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AD07266682
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 04:02:29 +0200 (CEST)
+Received: by lbnk3 with SMTP id k3so101063552lbn.1
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jul 2015 19:02:28 -0700 (PDT)
+In-Reply-To: <1436447969-24583-1-git-send-email-k.kozlowski.k@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,31 +35,31 @@ List-Id: alsa-devel@alsa-project.org
 >
 > Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
 > Cc: <stable@vger.kernel.org>
-> Fixes: 6fc3d24d4277 ("ASoC: zx: Add zx296702 SPDIF support")
+> Fixes: e5d4cd87800c ("ASoC: zx: Add ZTE zx296702 I2S DAI driver")
 >
 > ---
 >
 > Patch only compile tested.
 > ---
->  sound/soc/zte/zx296702-spdif.c | 4 ++--
+>  sound/soc/zte/zx296702-i2s.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx296702-spdif.c
-> index 11a0e46a1156..26265ce4caca 100644
-> --- a/sound/soc/zte/zx296702-spdif.c
-> +++ b/sound/soc/zte/zx296702-spdif.c
-> @@ -322,9 +322,9 @@ static int zx_spdif_probe(struct platform_device *pdev)
+> diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx296702-i2s.c
+> index 98d96e1b17e0..1930c42e1f55 100644
+> --- a/sound/soc/zte/zx296702-i2s.c
+> +++ b/sound/soc/zte/zx296702-i2s.c
+> @@ -393,9 +393,9 @@ static int zx_i2s_probe(struct platform_device *pdev)
 >         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->         zx_spdif->mapbase = res->start;
->         zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
-> -       if (!zx_spdif->reg_base) {
-> +       if (IS_ERR(zx_spdif->reg_base)) {
+>         zx_i2s->mapbase = res->start;
+>         zx_i2s->reg_base = devm_ioremap_resource(&pdev->dev, res);
+> -       if (!zx_i2s->reg_base) {
+> +       if (IS_ERR(zx_i2s->reg_base)) {
 >                 dev_err(&pdev->dev, "ioremap failed!\n");
 > -               return -EIO;
-> +               return PTR_ERR(zx_spdif->reg_base);
+> +               return PTR_ERR(zx_i2s->reg_base);
 >         }
 >
->         zx_spdif_dev_init(zx_spdif->reg_base);
+>         writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
 > --
 > 2.1.4
 >
