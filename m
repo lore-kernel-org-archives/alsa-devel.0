@@ -1,18 +1,17 @@
-From: Tobias Stoeckmann <tobias@stoeckmann.org>
-Subject: [PATCH] terminate readlink result string
-Date: Sat, 11 Jul 2015 13:23:57 +0200
-Message-ID: <20150711112356.GA30962@localhost>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 03/37] ALSA: firewire-lib: add helper
+	functions for asynchronous MIDI port
+Date: Sat, 11 Jul 2015 23:12:14 +0900
+Message-ID: <1436623968-10780-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 056C6260541
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 15:23:48 +0200 (CEST)
-Received: from localhost ([79.227.8.11]) by mrelayeu.kundenserver.de
- (mreue005) with ESMTPSA (Nemesis) id 0MLCD7-1ZDdly0zT7-000INt for
- <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 15:23:47 +0200
-Content-Disposition: inline
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85443260558
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:02 +0200 (CEST)
+In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +21,210 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-readlink does not guarantee that its result string is nul-terminated.
-Instead, increase the buffer by one byte to make sure that we can
-add '\0' at the end.
----
- alsactl/init_sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Some devices receive MIDI messages via IEEE 1394 asynchronous
+transactions with fixed length of payload data. It's nice for
+firewire-lib module to have common helper functions.
 
-diff --git a/alsactl/init_sysfs.c b/alsactl/init_sysfs.c
-index 0cbada2..5c789b6 100644
---- a/alsactl/init_sysfs.c
-+++ b/alsactl/init_sysfs.c
-@@ -108,11 +108,11 @@ static char *sysfs_attr_get_value(const char *devpath, const char *attr_name)
+This commit implements this idea. Each driver adds
+'struct snd_fw_async_midi_port' in its data structure. In probing,
+it should call snd_fw_async_midi_port_init() to initialize the
+structure with some parameters such as target address, the length
+of data for a transaction and a pointer for callback function
+to fill the data buffer. When 'struct snd_rawmidi_ops.trigger()'
+callback, it should call 'snd_fw_async_midi_port_run()' to start
+transactions. Each driver should ensure that the lifetime of MIDI
+substream continues till calling 'snd_fw_async_midi_port_finish()'.
+
+These helper functions support retries to transferring MIDI messages
+when transmission errors occur. Therefore, these helper functions expect
+each driver to use 'snd_rawmidi_transmit_peek()'. When transmissions
+are successful, these helper functions call 'snd_rawmidi_transmit_ack()'
+to consume MIDI bytes in the buffer.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/lib.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/lib.h | 46 +++++++++++++++++++++++++
+ 2 files changed, 141 insertions(+)
+
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index 7409edb..f5b5526 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -9,6 +9,7 @@
+ #include <linux/device.h>
+ #include <linux/firewire.h>
+ #include <linux/module.h>
++#include <linux/slab.h>
+ #include "lib.h"
  
- 	if (S_ISLNK(statbuf.st_mode)) {
- 		/* links return the last element of the target path */
--		char link_target[PATH_SIZE];
-+		char link_target[PATH_SIZE + 1];
- 		int len;
- 		const char *pos;
+ #define ERROR_RETRY_DELAY_MS	20
+@@ -66,6 +67,100 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
+ }
+ EXPORT_SYMBOL(snd_fw_transaction);
  
--		len = readlink(path_full, link_target, sizeof(link_target));
-+		len = readlink(path_full, link_target, sizeof(link_target) - 1);
- 		if (len > 0) {
- 			link_target[len] = '\0';
- 			pos = strrchr(link_target, '/');
++static void async_midi_port_callback(struct fw_card *card, int rcode,
++				     void *data, size_t length,
++				     void *callback_data)
++{
++	struct snd_fw_async_midi_port *port = callback_data;
++	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
++
++	if (rcode == RCODE_COMPLETE && substream != NULL)
++		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
++}
++
++static void midi_port_tasklet(unsigned long data)
++{
++	struct snd_fw_async_midi_port *port =
++					(struct snd_fw_async_midi_port *)data;
++	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
++	int generation;
++	int type;
++
++	/* Nothing to do. */
++	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
++		return;
++
++	/*
++	 * Fill the buffer. The callee must use snd_rawmidi_transmit_peek().
++	 * Later, snd_rawmidi_transmit_ack() may be called.
++	 */
++	memset(port->buf, 0, port->len);
++	port->consume_bytes = port->packetize(substream, port->buf);
++	if (port->consume_bytes <= 0) {
++		/* Do it in next chance, immediately. */
++		if (port->consume_bytes == 0)
++			tasklet_schedule(&port->tasklet);
++		return;
++	}
++
++	/* Calculate type of transaction. */
++	if (port->len == 4)
++		type = TCODE_WRITE_QUADLET_REQUEST;
++	else
++		type = TCODE_WRITE_BLOCK_REQUEST;
++
++	/* Start this transaction. */
++	generation = port->parent->generation;
++	smp_rmb(); /* node_id vs. generation */
++	fw_send_request(port->parent->card, &port->transaction, type,
++			port->parent->node_id, generation,
++			port->parent->max_speed, port->addr,
++			port->buf, port->len, async_midi_port_callback,
++			port);
++}
++
++/**
++ * snd_fw_async_midi_port_init - initialize asynchronous MIDI port structure
++ * @port: the asynchronous MIDI port to initialize
++ * @unit: the target of the asynchronous transaction
++ * @addr: the address to which transactions are transferred
++ * @len: the length of transaction
++ * @packetize: the callback function to fill given buffer, and returns the
++ *	       number of consumed bytes for MIDI message.
++ *
++ */
++int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
++		struct fw_unit *unit, __u64 addr, unsigned int len,
++		int (*packetize)(struct snd_rawmidi_substream *substream,
++				 __u8 *buf))
++{
++	port->len = DIV_ROUND_UP(len, 4) * 4;
++	port->buf = kzalloc(port->len, GFP_KERNEL);
++	if (port->buf == NULL)
++		return -ENOMEM;
++
++	port->parent = fw_parent_device(unit);
++	port->addr = addr;
++	port->packetize = packetize;
++
++	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
++
++	return 0;
++}
++EXPORT_SYMBOL(snd_fw_async_midi_port_init);
++
++/**
++ * snd_fw_async_midi_port_destroy - free asynchronous MIDI port structure
++ * @port: the asynchronous MIDI port structure
++ */
++void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port)
++{
++	snd_fw_async_midi_port_finish(port);
++	tasklet_kill(&port->tasklet);
++	kfree(port->buf);
++}
++EXPORT_SYMBOL(snd_fw_async_midi_port_destroy);
++
+ MODULE_DESCRIPTION("FireWire audio helper functions");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index 02cfabc..c662bf9 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -3,6 +3,8 @@
+ 
+ #include <linux/firewire-constants.h>
+ #include <linux/types.h>
++#include <linux/sched.h>
++#include <sound/rawmidi.h>
+ 
+ struct fw_unit;
+ 
+@@ -20,4 +22,48 @@ static inline bool rcode_is_permanent_error(int rcode)
+ 	return rcode == RCODE_TYPE_ERROR || rcode == RCODE_ADDRESS_ERROR;
+ }
+ 
++struct snd_fw_async_midi_port {
++	struct fw_device *parent;
++	struct tasklet_struct tasklet;
++
++	__u64 addr;
++	struct fw_transaction transaction;
++
++	__u8 *buf;
++	unsigned int len;
++
++	struct snd_rawmidi_substream *substream;
++	int (*packetize)(struct snd_rawmidi_substream *substream, __u8 *buf);
++	unsigned int consume_bytes;
++};
++
++int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
++		struct fw_unit *unit, __u64 addr, unsigned int len,
++		int (*packetize)(struct snd_rawmidi_substream *substream,
++				 __u8 *buf));
++void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port);
++
++/**
++ * snd_fw_async_midi_port_run - run transactions for the async MIDI port
++ * @port: the asynchronous MIDI port
++ * @substream: the MIDI substream
++ */
++static inline void
++snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
++			   struct snd_rawmidi_substream *substream)
++{
++	port->substream = substream;
++	tasklet_schedule(&port->tasklet);
++}
++
++/**
++ * snd_fw_async_midi_port_finish - finish the asynchronous MIDI port
++ * @port: the asynchronous MIDI port
++ */
++static inline void
++snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
++{
++	port->substream = NULL;
++}
++
+ #endif
 -- 
-2.4.5
+2.1.4
