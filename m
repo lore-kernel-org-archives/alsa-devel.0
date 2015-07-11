@@ -1,150 +1,203 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Strange hardware: XFX nForce 780i SLI MCP
-Date: Sat, 11 Jul 2015 10:25:39 +0800
-Message-ID: <CAN8ccibpEkOPMH57tBQkTXBvf5Fcf3Jx0cCt3_v_rkt4RkkvTw@mail.gmail.com>
-References: <559CA29B.90805@gmail.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v2 02/12] device: property: find
+	dependencies of a firmware node
+Date: Sat, 11 Jul 2015 04:52:29 +0200
+Message-ID: <4693466.kRRNMahPuB@vostro.rjw.lan>
+References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
+ <2589152.el9mWEWqDg@vostro.rjw.lan>
+ <CAAObsKC-71GsBWZdNjm5Cxek07=9dwzTp8mYezVXkt_k3mzKVw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1031219300=="
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <559CA29B.90805@gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, raptorthedk@gmail.com
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from v094114.home.net.pl (v094114.home.net.pl [79.96.170.134])
+ by alsa0.perex.cz (Postfix) with SMTP id 7046A2604F3
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 04:25:58 +0200 (CEST)
+In-Reply-To: <CAAObsKC-71GsBWZdNjm5Cxek07=9dwzTp8mYezVXkt_k3mzKVw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-fbdev@vger.kernel.org, linux-acpi@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Linux PWM List <linux-pwm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============1031219300==
-Content-Type: multipart/alternative; boundary=089e01538c5c618b4a051a90345e
+On Friday, July 10, 2015 03:14:38 PM Tomeu Vizoso wrote:
+> On 2 July 2015 at 02:02, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > On Wednesday, July 01, 2015 11:40:57 AM Tomeu Vizoso wrote:
+> >> Adds API that allows callers to find out what other firmware nodes a
+> >> node depends on.
+> >>
+> >> Implementors of bindings documentation can register callbacks that
+> >> return the dependencies of a node.
+> >>
+> >> Dependency information can be used to change the order in which devices
+> >> are probed, or to print a warning when a device node is going to be
+> >> probed without all its dependencies fulfilled.
+> >>
+> >> Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> >
+> > I'd like to see a description of the new API in English in the changelog.
+> 
+> Agreed.
+> 
+> >> ---
+> >>
+> >> Changes in v2:
+> >> - Allow bindings implementations register a function instead of using
+> >>   class callbacks, as not only subsystems implement firmware bindings.
+> >>
+> >>  drivers/base/property.c  | 91 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >>  include/linux/fwnode.h   |  5 +++
+> >>  include/linux/property.h | 12 +++++++
+> >>  3 files changed, 108 insertions(+)
+> >>
+> >> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> >> index 8ead1ba..9d38ede 100644
+> >> --- a/drivers/base/property.c
+> >> +++ b/drivers/base/property.c
+> >> @@ -19,7 +19,13 @@
+> >>  #include <linux/platform_device.h>
+> >>  #include <linux/property.h>
+> >>
+> >
+> > Please add a comment describing this structure.  In particular, what it is
+> > supposed to be used for and how it is supposed to be used.
+> 
+> Ok.
+> 
+> >> +struct dependency_parser {
+> >> +     struct list_head parser;
+> >
+> > I'd rather call this "list_node" or something like that.
+> 
+> Ok.
+> 
+> >> +     void (*func)(struct fwnode_handle *fwnode, struct list_head *deps);
+> >> +};
+> >> +
+> >>  static bool fwnode_match_enable = false;
+> >> +static LIST_HEAD(dependency_parsers);
+> >>
+> >>  /**
+> >>   * device_add_property_set - Add a collection of properties to a device object.
+> >> @@ -553,6 +559,27 @@ bool device_dma_is_coherent(struct device *dev)
+> >>  EXPORT_SYMBOL_GPL(device_dma_is_coherent);
+> >>
+> >>  /**
+> >> + * fwnode_add_dependency - add firmware node to the passed dependency list
+> >> + * @fwnode: Firmware node to add to dependency list
+> >> + * @list: Dependency list to add the fwnode to
+> >> + */
+> >> +void fwnode_add_dependency(struct fwnode_handle *fwnode,
+> >> +                        struct list_head *list)
+> >> +{
+> >> +     struct fwnode_dependency *dep;
+> >> +
+> >> +     dep = kzalloc(sizeof(*dep), GFP_KERNEL);
+> >> +     if (!dep)
+> >> +             return;
+> >> +
+> >> +     INIT_LIST_HEAD(&dep->dependency);
+> >> +     dep->fwnode = fwnode;
+> >> +
+> >> +     list_add_tail(&dep->dependency, list);
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(fwnode_add_dependency);
+> >> +
+> >> +/**
+> >>   * fwnode_get_parent - return the parent node of a device node
+> >>   * @fwnode: Device node to find the parent node of
+> >>   */
+> >> @@ -600,6 +627,70 @@ bool fwnode_is_compatible(struct fwnode_handle *fwnode, const char *compatible)
+> >>  EXPORT_SYMBOL_GPL(fwnode_is_compatible);
+> >>
+> >>  /**
+> >> + * fwnode_add_dependency_parser - register dependency parser
+> >> + * @func: Function that will be called to find out dependencies of a node
+> >> + *
+> >> + * Registers a callback that will be called when collecting the dependencies
+> >> + * of a firmware node. The callback should inspect the properties of the node
+> >> + * and call fwnode_add_dependency() for each dependency it recognizes, from
+> >> + * the bindings documentation.
+> >> + */
+> >> +void fwnode_add_dependency_parser(
+> >> +     void (*func)(struct fwnode_handle *fwnode, struct list_head *deps))
+> >> +{
+> >> +     struct dependency_parser *parser;
+> >> +
+> >> +     parser = kzalloc(sizeof(*parser), GFP_KERNEL);
+> >> +     if (!parser)
+> >> +             return;
+> >> +
+> >> +     INIT_LIST_HEAD(&parser->parser);
+> >> +     parser->func = func;
+> >> +
+> >> +     list_add_tail(&parser->parser, &dependency_parsers);
+> >
+> > We're modifying a global list here.  Any locking needed?  RCU?  Whatever?
+> 
+> Oops.
+> 
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(fwnode_add_dependency_parser);
+> >> +
+> >> +/**
+> >> + * fwnode_remove_dependency_parser - unregister dependency parser
+> >> + * @func: Function that was to be called to find out dependencies of a node
+> >> + */
+> >> +void fwnode_remove_dependency_parser(
+> >> +     void (*func)(struct fwnode_handle *fwnode, struct list_head *deps))
+> >> +{
+> >> +     struct dependency_parser *parser, *tmp;
+> >> +
+> >> +     list_for_each_entry_safe(parser, tmp, &dependency_parsers, parser) {
+> >> +             if (parser->func == func) {
+> >> +                     list_del(&parser->parser);
+> >> +                     kfree(parser);
+> >> +                     return;
+> >> +             }
+> >> +     }
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(fwnode_remove_dependency_parser);
+> >> +
+> >> +/**
+> >> + * fwnode_get_dependencies - find out what dependencies a firmware node has
+> >> + * @fwnode: firmware node to find its dependencies
+> >> + * @deps: list of struct fwnode_dependency in which dependencies will be placed
+> >> + */
+> >> +void fwnode_get_dependencies(struct fwnode_handle *fwnode,
+> >> +                          struct list_head *deps)
+> >> +{
+> >> +     struct dependency_parser *parser;
+> >> +     struct fwnode_handle *child;
+> >> +
+> >> +     list_for_each_entry(parser, &dependency_parsers, parser)
+> >> +             parser->func(fwnode, deps);
+> >> +
+> >> +     /* Some device nodes will have dependencies in non-device sub-nodes */
+> >> +     fwnode_for_each_child_node(fwnode, child)
+> >> +             if (!fwnode_property_present(child, "compatible"))
+> >
+> > This is a blatant OF-ism.  We need to think about a generic way to express that.
+> 
+> My impression from reading the existing usage of fwnode in gpiolib and
+> the examples in the link below was that we were going to share the
+> bindings between DT and ACPI. Doesn't that extend to the meaning of
+> the compatible property?
+> 
+> http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
 
---089e01538c5c618b4a051a90345e
-Content-Type: text/plain; charset=UTF-8
+Not entirely.
 
-> Yesterday I got an interesting email related to dcaenc support.
->
-> The person has an "XFX nForce 780i SLI" MCP board:
-> http://www.nvidia.com/object/product_nforce_780i_sli_us.html ,
-> http://www.evga.com/support/manuals/files/132-CK-NF78.pdf
->
-> As you see on page 18 of the manual, this board has no HDMI output, but
-> there is an optical SPDIF. Strangely enough, this SPDIF is his
-> "hdmi:CARD=NVidia,DEV=0" device.
->
-> Given the recent discussions related to dynamically creating PCM devices
-> for HDMI, I think you will be interested in this alsa-info output.
->
-> Is there anything here that would need special treatment by ALSA or
-> PulseAudio? Or, is this just a misnumbered/misnamed codec?
->
+An ACPI device object without the "compatible" property may still represent a valid
+device (and usually does), so it is not enough to check whether or not the "compatible"
+property is present for that in general.
 
-swap dig_out_pins of autocfg when type are different
-
-diff --git a/sound/pci/hda/hda_auto_parser.c
-b/sound/pci/hda/hda_auto_parser.c
-index 03b7399..3ff16e8 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -405,6 +405,19 @@ int snd_hda_parse_pin_defcfg(struct hda_codec *codec,
-     sort(cfg->inputs, cfg->num_inputs, sizeof(cfg->inputs[0]),
-          compare_input_type, NULL);
-
-+    if (cfg->dig_outs == 2) {
-+        if (cfg->dig_out_type[0] != cfg->dig_out_type[1]) {
-+            if (cfg->dig_out_type[0] == HDA_PCM_TYPE_HDMI) {
-+                hda_nid_t temp = cfg->dig_out_pins[0];
-+                int temp_type =    cfg->dig_out_type[0];
-+                cfg->dig_out_pins[0] = cfg->dig_out_pins[1];
-+                cfg->dig_out_type[0] = cfg->dig_out_type[1];
-+                cfg->dig_out_pins[1] = temp;
-+                cfg->dig_out_type[1] = temp_type;
-+            }
-+        }
-+    }
-+
-     /*
-      * debug prints of the parsed results
-      */
-
-
->
->
-
---089e01538c5c618b4a051a90345e
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><br><div class=3D"gmail_extra"><br><div class=3D"gmail_quo=
-te"><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
-der-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-Yesterday I got an interesting email related to dcaenc support.<br>
-<br>
-The person has an &quot;XFX nForce 780i SLI&quot; MCP board: <a href=3D"htt=
-p://www.nvidia.com/object/product_nforce_780i_sli_us.html" rel=3D"noreferre=
-r" target=3D"_blank">http://www.nvidia.com/object/product_nforce_780i_sli_u=
-s.html</a> , <a href=3D"http://www.evga.com/support/manuals/files/132-CK-NF=
-78.pdf" rel=3D"noreferrer" target=3D"_blank">http://www.evga.com/support/ma=
-nuals/files/132-CK-NF78.pdf</a><br>
-<br>
-As you see on page 18 of the manual, this board has no HDMI output, but the=
-re is an optical SPDIF. Strangely enough, this SPDIF is his &quot;hdmi:CARD=
-=3DNVidia,DEV=3D0&quot; device.<br>
-<br>
-Given the recent discussions related to dynamically creating PCM devices fo=
-r HDMI, I think you will be interested in this alsa-info output.<br>
-<br>
-Is there anything here that would need special treatment by ALSA or PulseAu=
-dio? Or, is this just a misnumbered/misnamed codec?<span class=3D""><font c=
-olor=3D"#888888"><br></font></span></blockquote><div><br></div><div>swap di=
-g_out_pins of autocfg when type are different <br></div><div><br>diff --git=
- a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c<br>ind=
-ex 03b7399..3ff16e8 100644<br>--- a/sound/pci/hda/hda_auto_parser.c<br>+++ =
-b/sound/pci/hda/hda_auto_parser.c<br>@@ -405,6 +405,19 @@ int snd_hda_parse=
-_pin_defcfg(struct hda_codec *codec,<br>=C2=A0=C2=A0=C2=A0=C2=A0 sort(cfg-&=
-gt;inputs, cfg-&gt;num_inputs, sizeof(cfg-&gt;inputs[0]),<br>=C2=A0=C2=A0=
-=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 compare_input_type, NULL);<br>=C2=A0<=
-br>+=C2=A0=C2=A0=C2=A0 if (cfg-&gt;dig_outs =3D=3D 2) {<br>+=C2=A0=C2=A0=C2=
-=A0 =C2=A0=C2=A0=C2=A0 if (cfg-&gt;dig_out_type[0] !=3D cfg-&gt;dig_out_typ=
-e[1]) {<br>+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (cf=
-g-&gt;dig_out_type[0] =3D=3D HDA_PCM_TYPE_HDMI) {<br>+=C2=A0=C2=A0=C2=A0 =
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 hda_nid_t temp =3D=
- cfg-&gt;dig_out_pins[0];<br>+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=
-=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 int temp_type =3D=C2=A0=C2=A0=C2=A0 cfg-&gt=
-;dig_out_type[0];<br>+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
-=A0 =C2=A0=C2=A0=C2=A0 cfg-&gt;dig_out_pins[0] =3D cfg-&gt;dig_out_pins[1];=
-<br>+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=
-=C2=A0 cfg-&gt;dig_out_type[0] =3D cfg-&gt;dig_out_type[1];<br>+=C2=A0=C2=
-=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 cfg-&gt;=
-dig_out_pins[1] =3D temp;<br>+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=
-=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 cfg-&gt;dig_out_type[1] =3D temp_type;<br>+=
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 }<br>+=C2=A0=C2=A0=
-=C2=A0 =C2=A0=C2=A0=C2=A0 }<br>+=C2=A0=C2=A0=C2=A0 }<br>+<br>=C2=A0=C2=A0=
-=C2=A0=C2=A0 /*<br>=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0* debug prints of the par=
-sed results<br>=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0*/<br>=C2=A0</div><blockquote=
- class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px so=
-lid rgb(204,204,204);padding-left:1ex"><span class=3D""><font color=3D"#888=
-888">
-</font></span><br></blockquote></div></div></div>
-
---089e01538c5c618b4a051a90345e--
-
---===============1031219300==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRp
-by1kaXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxz
-ZWF1ZGlvLWRpc2N1c3MK
-
---===============1031219300==--
+Thanks,
+Rafael
