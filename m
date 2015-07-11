@@ -1,21 +1,22 @@
 From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
- or userspace disable rewinds
-Date: Sat, 11 Jul 2015 22:06:43 +0500
-Message-ID: <55A14D23.3070600@gmail.com>
+Subject: Re: [RFC PATCH 3/4] ALSA: core: add report of max dma
+ burst
+Date: Sat, 11 Jul 2015 22:46:04 +0500
+Message-ID: <55A1565C.70004@gmail.com>
 References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <s5hio9uhg16.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 260AA26057C
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 19:06:46 +0200 (CEST)
-Received: by widjy10 with SMTP id jy10so37467240wid.1
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 10:06:45 -0700 (PDT)
-In-Reply-To: <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1726B260593
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 19:46:07 +0200 (CEST)
+Received: by wifm2 with SMTP id m2so69978461wif.1
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 10:46:06 -0700 (PDT)
+In-Reply-To: <s5hio9uhg16.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,156 +26,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-08.07.2015 15:10, Pierre-Louis Bossart wrote:
-> Add new hw_params flag to explicitly tell driver that rewinds
-> will never be used. This can be used by low-level driver to
-> optimize DMA operations and reduce power consumption.
-> Use this flag only when data written in ring buffer will
-> never be invalidated, e.g. any update of appl_ptr is final.
+08.07.2015 19:37, Takashi Iwai wrote:
+> On Wed, 08 Jul 2015 12:10:35 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>> Report how many bytes the DMA can burst before updating the hw_ptr.
+>> This can help fix two issues with stale data discussed many times over
+>> on the alsa-devel mailing list (refilling/reading ring buffer too late or
+>> rewinding too close to the hw_ptr)
+>>
+>> FIXME:
+>> 1. this was copy/pasted/edited based on the fifo_size fields, not
+>> sure why we would need this IOCTL1
 >
-> Caveat: there is currently no way to query capabilities without
-> opening a pcm stream, so applications might need to serially
-> open all exposed devices, check what they support by looking at
-> hw_params->info and close them (this is what PulseAudio does so
-> might not be an issue)
+> fifo_size would fit, but it means that it also changes the current
+> behavior.  I don't believe that currently there are many programs
+> relying on this value, but who knows.
 
-Thanks for the patch. I was also about to add this flag, for the use in 
-userspace. It's good to know that it is also useful in the kernel space.
+Debian Code Search knows, if that matters. Result: it is used by 
+bindings, wrappers and reimplementations only (lush, oss4, alsa-lib 
+itself, pyglet, libtritonus-java).
 
-I usually don't comment on kernel patches, but this one provokes some 
-questions and thoughts.
+https://codesearch.debian.net/results/snd_pcm_hw_params_get_fifo_size/page_0
 
-1. What amount of power-saving are we talking about, for Intel chips? 
-(ideally, this should be in the commit message)
-
-2. Shouldn't SND_PCM_APPEND (the mode used by dmix and friends) be also 
-made incompatible with this flag, because, when mixing, it essentially 
-overwrites incompletely-mixed data, i.e. rewinds without saying the word 
-"rewind"? Shouldn't all other kinds of freewheeling be made incompatible 
-with this flag, because the card, essentially, is never told about the 
-application pointer? Or is this a userspace-only concern?
-
-3. I have not seen any justification for the drastic measure of making a 
-DMA-based device completely unrewindable. Maybe a more polite "please 
-make this a batch/blocktransfer card" request, thus disallowing only 
-sub-period rewinds, would still be useful for powersaving, without 
-killing dmix.
-
-4. If this "no rewinds" mode is not made the default, then exactly 
-nobody will use it. Everyone except sound servers opens the default 
-device with the default flags. I understand the potential to break 
-existing userspace, especially PulseAudio, but we really need to think 
-more here.
-
-So, here is an alternative (or maybe additional - your flag does make 
-sense, after all) hackish idea that should be compatible with the 
-existing userspace.
-
-Please make it possible to "allow", "put in auto mode" or "disallow" the 
-device to DMA up to one period in advance. Please use the following 
-logic when in "auto mode":
-
-If the card is batch or blocktransfer "by itself", let it be. We can't 
-do anything here, the DMA operations are already "optimized" whether we 
-want it or not.
-
-If the card does not support disabling the period wakeup, then FIXME - I 
-don't know what to do. For compatibility, I think we can't optimize DMA 
-operations here.
-
-If the card supports disabling the period wakeup, and it is disabled, 
-then don't allow it to optimize DMA operations.
-
-If the card supports disabling the period wakeup, but it is not 
-disabled, then allow it to optimize DMA operations.
-
-As you have probably guessed, the idea here is to detect typical setup 
-made by PulseAudio. I suspect that this also affects CRAS.
-
-Also maybe this idea by David Henningsson is good:
-
-"""
-E g, if the application sets a low period size
-but also sets the "disable period interrupts" flag, that could be an
-indicator that it wants lots of interrupts just to update the pointer,
-but nothing else. Maybe that's even the behaviour today (haven't checked).
-"""
-
-(taken from 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/080885.html 
-)
+https://codesearch.debian.net/results/snd_pcm_hw_params_get_fifo_size/page_1
 
 >
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   include/sound/pcm.h         | 1 +
->   include/uapi/sound/asound.h | 1 +
->   sound/core/pcm_native.c     | 8 ++++++++
->   3 files changed, 10 insertions(+)
+>> 2. we also need the ability to set the actual fifo size, if suppported,
+>> by the hardware, to negociate the prefetch amount between application
+>> and driver. By default the default should be max buffering to allow
+>> for lower power, but for low-latency use cases we may want to reduce
+>> the amount of prefetching.
 >
-> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> index 691e7ee..25310b7 100644
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -370,6 +370,7 @@ struct snd_pcm_runtime {
->   	unsigned int rate_num;
->   	unsigned int rate_den;
->   	unsigned int no_period_wakeup: 1;
-> +	unsigned int no_rewinds:1;
+> Right.  So a hw_parmas field looks suitable for that purpose.
 >
->   	/* -- SW params -- */
->   	int tstamp_mode;		/* mmap timestamp is updated */
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index a45be6b..b62b162 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -356,6 +356,7 @@ typedef int snd_pcm_hw_param_t;
->   #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
->   #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
->   #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
-> +#define SNDRV_PCM_HW_PARAMS_NO_REWINDS	        (1<<3)	/* disable rewinds */
 >
->   struct snd_interval {
->   	unsigned int min, max;
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index d126c03..a70e52d 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -543,6 +543,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
->   	runtime->no_period_wakeup =
->   			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
->   			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
-> +	runtime->no_rewinds =
-> +			params->flags & SNDRV_PCM_HW_PARAMS_NO_REWINDS;
+> Takashi
 >
->   	bits = snd_pcm_format_physical_width(runtime->format);
->   	runtime->sample_bits = bits;
-> @@ -2428,6 +2430,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
->   	if (frames == 0)
->   		return 0;
 >
-> +	if (runtime->no_rewinds)
-> +		return 0;
-> +
->   	snd_pcm_stream_lock_irq(substream);
->   	switch (runtime->status->state) {
->   	case SNDRV_PCM_STATE_PREPARED:
-> @@ -2476,6 +2481,9 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
->   	if (frames == 0)
->   		return 0;
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   include/sound/pcm.h         |  2 ++
+>>   include/uapi/sound/asound.h |  5 +++--
+>>   sound/core/pcm_lib.c        | 19 +++++++++++++++++++
+>>   sound/core/pcm_native.c     |  7 +++++++
+>>   4 files changed, 31 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+>> index d5eff03..57c0571 100644
+>> --- a/include/sound/pcm.h
+>> +++ b/include/sound/pcm.h
+>> @@ -56,6 +56,7 @@ struct snd_pcm_hardware {
+>>   	unsigned int periods_min;	/* min # of periods */
+>>   	unsigned int periods_max;	/* max # of periods */
+>>   	size_t fifo_size;		/* fifo size in bytes */
+>> +	unsigned int max_dma_burst;     /* max DMA in-flight bytes, linked to hw_ptr precision/fuzziness */
+>>   };
+>>
+>>   struct snd_pcm_substream;
+>> @@ -106,6 +107,7 @@ struct snd_pcm_ops {
+>>   #define SNDRV_PCM_IOCTL1_CHANNEL_INFO	2
+>>   #define SNDRV_PCM_IOCTL1_GSTATE		3
+>>   #define SNDRV_PCM_IOCTL1_FIFO_SIZE	4
+>> +#define SNDRV_PCM_IOCTL1_MAX_DMA_BURST	5
+>>
+>>   #define SNDRV_PCM_TRIGGER_STOP		0
+>>   #define SNDRV_PCM_TRIGGER_START		1
+>> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+>> index b62b162..3dc049a 100644
+>> --- a/include/uapi/sound/asound.h
+>> +++ b/include/uapi/sound/asound.h
+>> @@ -386,8 +386,9 @@ struct snd_pcm_hw_params {
+>>   	unsigned int msbits;		/* R: used most significant bits */
+>>   	unsigned int rate_num;		/* R: rate numerator */
+>>   	unsigned int rate_den;		/* R: rate denominator */
+>> -	snd_pcm_uframes_t fifo_size;	/* R: chip FIFO size in frames */
+>> -	unsigned char reserved[64];	/* reserved for future */
+>> +	snd_pcm_uframes_t fifo_size;	/* R: chip FIFO size in frames, indicates buffering after hw_ptr */
+>> +	unsigned int max_dma_burst;     /* R: max in-flight bytes, indicates buffering before hw_ptr */
+>> +	unsigned char reserved[60];	/* reserved for future */
+>>   };
+>>
+>>   enum {
+>> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+>> index 7d45645..dc89aa0 100644
+>> --- a/sound/core/pcm_lib.c
+>> +++ b/sound/core/pcm_lib.c
+>> @@ -1826,6 +1826,22 @@ static int snd_pcm_lib_ioctl_fifo_size(struct snd_pcm_substream *substream,
+>>   	return 0;
+>>   }
+>>
+>> +static int snd_pcm_lib_ioctl_max_dma_burst(struct snd_pcm_substream *substream,
+>> +					      void *arg)
+>> +{
+>> +	struct snd_pcm_hw_params *params = arg;
+>> +
+>> +	/* FIXME: add sanity checks:
+>> +	 * max burst < ring buffer
+>> +	 * max burst >= min_period_size
+>> +	 * not sure if we can check against period sizes?
+>> +	 * any others ?
+>> +	 */
+>> +	params->max_dma_burst = substream->runtime->hw.max_dma_burst;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   /**
+>>    * snd_pcm_lib_ioctl - a generic PCM ioctl callback
+>>    * @substream: the pcm substream instance
+>> @@ -1849,6 +1865,9 @@ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
+>>   		return snd_pcm_lib_ioctl_channel_info(substream, arg);
+>>   	case SNDRV_PCM_IOCTL1_FIFO_SIZE:
+>>   		return snd_pcm_lib_ioctl_fifo_size(substream, arg);
+>> +	case SNDRV_PCM_IOCTL1_MAX_DMA_BURST:
+>> +		return snd_pcm_lib_ioctl_max_dma_burst(substream, arg);
+>> +
+>>   	}
+>>   	return -ENXIO;
+>>   }
+>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+>> index dd519b8..3d379b8 100644
+>> --- a/sound/core/pcm_native.c
+>> +++ b/sound/core/pcm_native.c
+>> @@ -280,6 +280,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+>>
+>>   	params->info = 0;
+>>   	params->fifo_size = 0;
+>> +	params->max_dma_burst = 0;
+>>   	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
+>>   		params->msbits = 0;
+>>   	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
+>> @@ -437,6 +438,12 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+>>   				return changed;
+>>   		}
+>>   	}
+>> +	if (!params->max_dma_burst) {
+>> +		changed = substream->ops->ioctl(substream,
+>> +						SNDRV_PCM_IOCTL1_MAX_DMA_BURST, params);
+>> +		if (changed < 0)
+>> +			return changed;
+>> +	}
+>>   	params->rmask = 0;
+>>   	return 0;
+>>   }
+>> --
+>> 1.9.1
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
-> +	if (runtime->no_rewinds)
-> +		return 0;
-> +
->   	snd_pcm_stream_lock_irq(substream);
->   	switch (runtime->status->state) {
->   	case SNDRV_PCM_STATE_PREPARED:
->
-
-
--- 
-Alexander E. Patrakov
