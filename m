@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 12/37] ALSA: firewire-digi00x: add PCM
-	functionality
-Date: Sat, 11 Jul 2015 23:12:23 +0900
-Message-ID: <1436623968-10780-13-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 29/37] ALSA: firewire-motu: add skeleton
+	for Mark of the unicorn (MOTU) FireWire series
+Date: Sat, 11 Jul 2015 23:12:40 +0900
+Message-ID: <1436623968-10780-30-git-send-email-o-takashi@sakamocchi.jp>
 References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id AD7EB260591
- for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DDF32605B6
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jul 2015 16:13:06 +0200 (CEST)
 In-Reply-To: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,411 +22,234 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds PCM functionality to transmit/receive PCM samples.
+This commit adds an new driver for MOTU FireWire series. In this commit,
+this driver just creates/removes card instance according to bus event.
+More functionalities will be added in following commits.
 
-When one of PCM substream is running or external clock source is
-selected, current sampling rate is used. Else, the sampling rate is
-changed as an userspace application requests.
-
-Cc: Damien Zammit <damien@zamaudio.com>
-Cc: Robin Gareus <robin@gareus.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/Makefile      |   2 +-
- sound/firewire/digi00x/digi00x-pcm.c | 344 +++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.c     |   4 +
- sound/firewire/digi00x/digi00x.h     |   3 +
- 4 files changed, 352 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
+ sound/firewire/Kconfig       |  11 ++++
+ sound/firewire/Makefile      |   1 +
+ sound/firewire/motu/Makefile |   2 +
+ sound/firewire/motu/motu.c   | 127 +++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu.h   |  34 ++++++++++++
+ 5 files changed, 175 insertions(+)
+ create mode 100644 sound/firewire/motu/Makefile
+ create mode 100644 sound/firewire/motu/motu.c
+ create mode 100644 sound/firewire/motu/motu.h
 
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 6c9bc37..629ae16 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,3 +1,3 @@
- snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
--			     digi00x.o
-+			     digi00x-pcm.o digi00x.o
- obj-m += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 12993fa..7ee8e3e 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -147,4 +147,15 @@ config SND_FIREWIRE_TASCAM
+ 	 To compile this driver as a module, choose M here: the module
+ 	 will be called snd-firewire-tascam.
+ 
++config SND_FIREWIRE_MOTU
++	tristate "Mark of the unicorn FireWire series support"
++	select SND_FIREWIRE_LIB
++	select SND_HWDEP
++	help
++	 Say Y here to enable support for FireWire devices which MOTU produced:
++	  * 828 Mk II
++
++	 To compile this driver as a module, choose M here: the module
++	 will be called snd-firewire-motu.
++
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 6ae50f5..8923abf 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -13,3 +13,4 @@ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+ obj-$(CONFIG_SND_BEBOB) += bebob/
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
+ obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
++obj-$(CONFIG_SND_FIREWIRE_MOTU) += motu/
+diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
 new file mode 100644
-index 0000000..274ac66
+index 0000000..f4cfd14
 --- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -0,0 +1,344 @@
++++ b/sound/firewire/motu/Makefile
+@@ -0,0 +1,2 @@
++snd-firewire-motu-objs := motu.o
++obj-m += snd-firewire-motu.o
+diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
+new file mode 100644
+index 0000000..929899dd
+--- /dev/null
++++ b/sound/firewire/motu/motu.c
+@@ -0,0 +1,127 @@
 +/*
-+ * digi00x-pcm.c - a part of driver for Digidesign Digi 002/003 family
++ * motu.c - a part of driver for MOTU FireWire series
 + *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
++ * Copyright (c) 2015 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "motu.h"
++
++MODULE_DESCRIPTION("MOTU FireWire driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++static void name_card(struct snd_motu *motu)
++{
++	struct fw_device *fw_dev = fw_parent_device(motu->unit);
++	struct fw_csr_iterator it;
++	int key, val;
++	u32 version = 0;
++
++	fw_csr_iterator_init(&it, motu->unit->directory);
++	while (fw_csr_iterator_next(&it, &key, &val)) {
++		switch (key) {
++		case CSR_VERSION:
++			version = be32_to_cpu(val);
++			break;
++		}
++	}
++
++	strcpy(motu->card->driver, "MOTU");
++	snprintf(motu->card->longname, sizeof(motu->card->longname),
++		 "MOTU (version:%d), GUID %08x%08x at %s, S%d",
++		 be32_to_cpu(version),
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
++}
++
++static void motu_card_free(struct snd_card *card)
++{
++	struct snd_motu *motu = card->private_data;
++
++	fw_unit_put(motu->unit);
++
++	mutex_destroy(&motu->mutex);
++}
++
++static int motu_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
++{
++	struct snd_card *card;
++	struct snd_motu *motu;
++	int err;
++
++	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
++			   sizeof(*motu), &card);
++	if (err < 0)
++		return err;
++
++	motu = card->private_data;
++	motu->card = card;
++	motu->unit = fw_unit_get(unit);
++	card->private_free = motu_card_free;
++
++	mutex_init(&motu->mutex);
++
++	name_card(motu);
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto error;
++
++	dev_set_drvdata(&unit->device, motu);
++
++	return 0;
++error:
++	snd_card_free(card);
++	return err;
++}
++
++static void motu_remove(struct fw_unit *unit)
++{
++	struct snd_motu *motu = dev_get_drvdata(&unit->device);
++
++	/* No need to wait for releasing card object in this context. */
++	snd_card_free_when_closed(motu->card);
++}
++
++static void motu_bus_reset(struct fw_unit *unit)
++{
++	return;
++}
++
++static const struct ieee1394_device_id motu_id_table[] = {
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID |
++				  IEEE1394_MATCH_SPECIFIER_ID,
++		.vendor_id	= 0x0001f2,
++		.specifier_id	= 0x0001f2,
++	},
++	{ }
++};
++MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
++
++static struct fw_driver motu_driver = {
++	.driver   = {
++		.owner	= THIS_MODULE,
++		.name	= KBUILD_MODNAME,
++		.bus	= &fw_bus_type,
++	},
++	.probe    = motu_probe,
++	.update   = motu_bus_reset,
++	.remove   = motu_remove,
++	.id_table = motu_id_table,
++};
++
++static int __init alsa_motu_init(void)
++{
++	return driver_register(&motu_driver.driver);
++}
++
++static void __exit alsa_motu_exit(void)
++{
++	driver_unregister(&motu_driver.driver);
++}
++
++module_init(alsa_motu_init);
++module_exit(alsa_motu_exit);
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+new file mode 100644
+index 0000000..df16750
+--- /dev/null
++++ b/sound/firewire/motu/motu.h
+@@ -0,0 +1,34 @@
++/*
++ * motu.h - a part of driver for MOTU FireWire series
++ *
++ * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "digi00x.h"
++#ifndef SOUND_FIREWIRE_MOTU_H_INCLUDED
++#define SOUND_FIREWIRE_MOTU_H_INCLUDED
 +
-+static int hw_rule_rate(struct snd_pcm_hw_params *params,
-+			struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
-+	unsigned int i;
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
 +
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(c,
-+				       snd_dg00x_stream_pcm_channels[i]))
-+			continue;
++#include <sound/control.h>
++#include <sound/core.h>
 +
-+		t.min = min(t.min, snd_dg00x_stream_rates[i]);
-+		t.max = max(t.max, snd_dg00x_stream_rates[i]);
-+	}
++#include "../amdtp-stream.h"
++#include "../iso-resources.h"
++#include "../lib.h"
 +
-+	return snd_interval_refine(r, &t);
-+}
++struct snd_motu {
++	struct snd_card *card;
++	struct fw_unit *unit;
 +
-+static int hw_rule_channels(struct snd_pcm_hw_params *params,
-+			    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval t = {
-+		.min = UINT_MAX, .max = 0, .integer = 1,
-+	};
-+	unsigned int i;
-+
-+	for (i = 0; i < SND_DG00X_RATE_COUNT; i++) {
-+		if (!snd_interval_test(r, snd_dg00x_stream_rates[i]))
-+			continue;
-+
-+		t.min = min(t.min, snd_dg00x_stream_pcm_channels[i]);
-+		t.max = max(t.max, snd_dg00x_stream_pcm_channels[i]);
-+	}
-+
-+	return snd_interval_refine(c, &t);
-+}
-+
-+static int pcm_init_hw_params(struct snd_dg00x *dg00x,
-+			      struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID,
-+		.rates = SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 |
-+			 SNDRV_PCM_RATE_96000,
-+		.rate_min = 44100,
-+		.rate_max = 96000,
-+		.channels_min = 10,
-+		.channels_max = 18,
-+		.period_bytes_min = 4 * 18,
-+		.period_bytes_max = 4 * 18 * 2048,
-+		.buffer_bytes_max = 4 * 18 * 2048 * 2,
-+		.periods_min = 2,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct amdtp_stream *s;
-+	int err;
-+
-+	substream->runtime->hw = hardware;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
-+		s = &dg00x->tx_stream;
-+	} else {
-+		substream->runtime->hw.formats = SNDRV_PCM_FMTBIT_S16 |
-+						 SNDRV_PCM_FMTBIT_S32;
-+		s = &dg00x->rx_stream;
-+	}
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  hw_rule_channels, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		goto end;
-+
-+	err = snd_pcm_hw_rule_add(substream->runtime, 0,
-+				  SNDRV_PCM_HW_PARAM_RATE,
-+				  hw_rule_rate, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_add_pcm_hw_constraints(s, substream->runtime);
-+end:
-+	return err;
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	enum snd_dg00x_clock clock;
-+	bool detect;
-+	unsigned int rate;
-+	int err;
-+
-+	err = pcm_init_hw_params(dg00x, substream);
-+	if (err < 0)
-+		return err;
-+
-+	/* Check current clock source. */
-+	err = snd_dg00x_stream_get_clock(dg00x, &clock);
-+	if (err < 0)
-+		return err;
-+	if (clock != SND_DG00X_CLOCK_INTERNAL) {
-+		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
-+		if (err < 0)
-+			return err;
-+		if (!detect) {
-+			err = -EBUSY;
-+			return err;
-+		}
-+	}
-+
-+	if ((clock != SND_DG00X_CLOCK_INTERNAL) ||
-+	    amdtp_stream_pcm_running(&dg00x->rx_stream) ||
-+	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
-+		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
-+		if (err < 0)
-+			return err;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
-+	}
-+
-+	snd_pcm_set_sync(substream);
-+
-+	return err;
-+}
-+
-+static int pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->substreams_counter++;
-+		mutex_unlock(&dg00x->mutex);
-+	}
-+	amdtp_dot_set_pcm_format(&dg00x->tx_stream, params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&dg00x->mutex);
-+		dg00x->substreams_counter++;
-+		mutex_unlock(&dg00x->mutex);
-+	}
-+	amdtp_dot_set_pcm_format(&dg00x->rx_stream, params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+
-+static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->substreams_counter--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		dg00x->substreams_counter--;
-+
-+	snd_dg00x_stream_stop_duplex(dg00x);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&dg00x->tx_stream);
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&dg00x->mutex);
-+
-+	err = snd_dg00x_stream_start_duplex(dg00x, runtime->rate);
-+	if (err >= 0) {
-+		amdtp_stream_pcm_prepare(&dg00x->rx_stream);
-+		amdtp_dot_reset(&dg00x->rx_stream);
-+	}
-+
-+	mutex_unlock(&dg00x->mutex);
-+
-+	return err;
-+}
-+
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&dg00x->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
-+}
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_dg00x *dg00x = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_capture_hw_params,
-+	.hw_free	= pcm_capture_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_playback_hw_params,
-+	.hw_free	= pcm_playback_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
++	struct mutex mutex;
 +};
 +
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(dg00x->card, dg00x->card->driver, 0, 1, 1, &pcm);
-+	if (err < 0)
-+		return err;
-+
-+	pcm->private_data = dg00x;
-+	snprintf(pcm->name, sizeof(pcm->name),
-+		 "%s PCM", dg00x->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 130f569..0db2024 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -85,6 +85,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 
- 	snd_dg00x_proc_init(dg00x);
- 
-+	err = snd_dg00x_create_pcm_devices(dg00x);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index da6950e..07dce7d 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -121,4 +121,7 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- 
- void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
-+
-+int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
-+
- #endif
++#endif
 -- 
 2.1.4
