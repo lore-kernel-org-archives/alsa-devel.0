@@ -1,19 +1,19 @@
 From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH 2/3] ASoC: max98357a: Use DAI input as a dapm
-	widget
-Date: Sun, 12 Jul 2015 08:14:20 -0700
-Message-ID: <1436714061-18618-2-git-send-email-anatol.pomozov@gmail.com>
+Subject: [PATCH 3/3] ASoC: max98357a: Do not print error
+	message on asoc/gpio errors
+Date: Sun, 12 Jul 2015 08:14:21 -0700
+Message-ID: <1436714061-18618-3-git-send-email-anatol.pomozov@gmail.com>
 References: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
- [209.85.192.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B6042605E4
- for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 17:14:41 +0200 (CEST)
-Received: by pdbep18 with SMTP id ep18so210618164pdb.1
- for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 08:14:40 -0700 (PDT)
+Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E0BC2605C7
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 17:14:47 +0200 (CEST)
+Received: by pdjr16 with SMTP id r16so48469483pdj.3
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 08:14:45 -0700 (PDT)
 In-Reply-To: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,32 +28,47 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, lars@metafoo.de, kwestfie@codeaurora.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Spec does not say anything about DAC called SDMode.
-It makes more sense to use DAI input that created automatically by DAPM
-and route it to Speaker output.
+gpiolib/asoc system already prints enough info if there are any problems.
 
 Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 ---
- sound/soc/codecs/max98357a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/max98357a.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index fa1b793..b9e1131 100644
+index b9e1131..e88119a 100644
 --- a/sound/soc/codecs/max98357a.c
 +++ b/sound/soc/codecs/max98357a.c
-@@ -51,12 +51,11 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+@@ -63,11 +63,9 @@ static int max98357a_codec_probe(struct snd_soc_codec *codec)
+ 	struct gpio_desc *sdmode;
+ 
+ 	sdmode = devm_gpiod_get_optional(codec->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode)) {
+-		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
+-				__func__, PTR_ERR(sdmode));
++	if (IS_ERR(sdmode))
+ 		return PTR_ERR(sdmode);
+-	}
++
+ 	snd_soc_codec_set_drvdata(codec, sdmode);
+ 
+ 	return 0;
+@@ -106,15 +104,8 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
+-	int ret;
+-
+-	ret = snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
++	return snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
+ 			&max98357a_dai_driver, 1);
+-	if (ret)
+-		dev_err(&pdev->dev, "%s() error registering codec driver: %d\n",
+-				__func__, ret);
+-
+-	return ret;
  }
  
- static const struct snd_soc_dapm_widget max98357a_dapm_widgets[] = {
--	SND_SOC_DAPM_DAC("SDMode", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_OUTPUT("Speaker"),
- };
- 
- static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
--	{"Speaker", NULL, "SDMode"},
-+	{"Speaker", NULL, "HiFi Playback"},
- };
- 
- static int max98357a_codec_probe(struct snd_soc_codec *codec)
+ static int max98357a_platform_remove(struct platform_device *pdev)
 -- 
 2.4.5
