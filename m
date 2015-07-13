@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH - CS4349 2/2] Add devicetree bindings for
- Cirrus Logic CS4349
-Date: Mon, 13 Jul 2015 21:19:18 +0100
-Message-ID: <20150713201918.GM11162@sirena.org.uk>
-References: <55a41ad3.c4a76b0a.fee3d.35e9@mx.google.com>
+From: Kenneth Westfield <kwestfie@codeaurora.org>
+Subject: Re: [PATCH 1/3] ASoC: max98357a: Make 'sdmode-gpios'
+ dts property optional
+Date: Mon, 13 Jul 2015 15:04:15 -0700
+Message-ID: <20150713220400.GA31568@kwestfie-linux.qualcomm.com>
+References: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5198502376246568387=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E84B2625EE
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 22:19:24 +0200 (CEST)
-In-Reply-To: <55a41ad3.c4a76b0a.fee3d.35e9@mx.google.com>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 211B9262632
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 00:04:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: timothyc.howe@gmail.com
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kwestfie@codeaurora.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jul 12, 2015 at 08:14:19AM -0700, Anatol Pomozov wrote:
+> The option is not needed if chip is always on or managed by some other part
+> of system like platform card driver.
+> 
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> ---
 
---===============5198502376246568387==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jllLlWhd4PMI/6w9"
-Content-Disposition: inline
+For all three patches:
 
+Confirmed audio functionality on Storm board (ipq806x).
 
---jllLlWhd4PMI/6w9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Kenneth Westfield <kwestfie@codeaurora.org>
 
-On Mon, Jul 13, 2015 at 03:08:44PM -0500, timothyc.howe@gmail.com wrote:
-> From: Tim Howe <tim.howe@cirrus.com>
->=20
-> Signed-off-by: Tim Howe <tim.howe@cirrus.com>
-
-Ah, the binding is here.  Normally the binding comes before the code or
-in the same patch.  This looks good.
-
---jllLlWhd4PMI/6w9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVpB1FAAoJECTWi3JdVIfQiuYH/2ur0V27jC/z7Fa/lejmTM5d
-Cn73CsBfAgOx2ZwON7G4Dq+5g0FJXC2+EGsmsy0fF91YdKH9ttvf3KZL4B9ZuuXu
-Z0lT7UoE4PaznRPEsf6nZcYkm0zfSQZU9wGSRAuaqw3+/Ir3zABx83LvsReDCkIz
-O7ODXUOa+F5dmbeQaX0UCJh6xHEScYuwfgfrdqSlO7tSNO+T9z1giDIs6CrUUqZv
-WYZsbIVBgvPGVhkj/6qiCqhDrGTw0Fefk1CTT+5iTrP8Mkcx2FtbFkmHs+5UuY2t
-e74F2c8HF7zJAbmHhjPV/Ylgn2gUjBgarkIuYS4lQjFrABkQOKhZGS98WZy/s4I=
-=uBke
------END PGP SIGNATURE-----
-
---jllLlWhd4PMI/6w9--
-
---===============5198502376246568387==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5198502376246568387==--
+-- 
+Kenneth Westfield
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
