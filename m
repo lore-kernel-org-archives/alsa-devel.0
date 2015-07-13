@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti-sas: Staticise local symbols" to
-	the asoc tree
-Date: Mon, 13 Jul 2015 12:16:54 +0100
-Message-ID: <E1ZEbjC-0006cW-TP@debutante>
-References: <1436765205.21490.2.camel@ingics.com>
+Subject: Applied "ASoC: uda134x: Use regmap_update_bits() were
+	appropriate" to the asoc tree
+Date: Mon, 13 Jul 2015 12:16:56 +0100
+Message-ID: <E1ZEbjE-0006dV-Sq@debutante>
+References: <1436783208-1529-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B20B5261582
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:17:01 +0200 (CEST)
-In-Reply-To: <1436765205.21490.2.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8721261703
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:17:03 +0200 (CEST)
+In-Reply-To: <1436783208-1529-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti-sas: Staticise local symbols
+   ASoC: uda134x: Use regmap_update_bits() were appropriate
 
 has been applied to the asoc tree at
 
@@ -53,106 +53,129 @@ to this mail.
 Thanks,
 Mark
 
->From 589bef3296317b5507a9a6e2e14fb30dd40ee764 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Mon, 13 Jul 2015 13:26:45 +0800
-Subject: [PATCH] ASoC: sti-sas: Staticise local symbols
+>From ef3355d22046f4b2c00b0fdf964d6c92fd3f050d Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Mon, 13 Jul 2015 12:26:48 +0200
+Subject: [PATCH] ASoC: uda134x: Use regmap_update_bits() were appropriate
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Instead of doing the read-modify-update cycle by hand when updating a
+register use regmap_update_bits().
+
+This also means we can now remove uda134x_read_reg_cache() and
+uda134x_write() since they are unused.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sti-sas.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ sound/soc/codecs/uda134x.c | 57 ++++++++++++----------------------------------
+ 1 file changed, 14 insertions(+), 43 deletions(-)
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index 4168b88ba3b1..6c0bbe8b495e 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -238,7 +238,7 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
- 	return 0;
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index d25a9f3968d0..e19026380534 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -61,31 +61,6 @@ static const struct reg_default uda134x_reg_defaults[] = {
+ };
+ 
+ /*
+- * The codec has no support for reading its registers except for peak level...
+- */
+-static inline unsigned int uda134x_read_reg_cache(struct snd_soc_codec *codec,
+-	unsigned int reg)
+-{
+-	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val;
+-	int ret;
+-
+-	ret = regmap_read(uda134x->regmap, reg, &val);
+-	if (ret)
+-		return -1;
+-
+-	return val;
+-}
+-
+-static void uda134x_write(struct snd_soc_codec *codec, unsigned int reg,
+-	unsigned int val)
+-{
+-	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
+-
+-	regmap_write(uda134x->regmap, reg, val);
+-}
+-
+-/*
+  * Write to the uda134x registers
+  *
+  */
+@@ -137,27 +112,28 @@ static int uda134x_regmap_write(void *context, unsigned int reg,
+ 
+ static inline void uda134x_reset(struct snd_soc_codec *codec)
+ {
+-	u8 reset_reg = uda134x_read_reg_cache(codec, UDA134X_STATUS0);
+-	uda134x_write(codec, UDA134X_STATUS0, reset_reg | (1<<6));
++	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
++	unsigned int mask = 1<<6;
++
++	regmap_update_bits(uda134x->regmap, UDA134X_STATUS0, mask, mask);
+ 	msleep(1);
+-	uda134x_write(codec, UDA134X_STATUS0, reset_reg & ~(1<<6));
++	regmap_update_bits(uda134x->regmap, UDA134X_STATUS0, mask, 0);
  }
  
--const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
- 			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
- 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
-@@ -248,7 +248,7 @@ const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DAC Output"),
- };
+ static int uda134x_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+-	u8 mute_reg = uda134x_read_reg_cache(codec, UDA134X_DATA010);
++	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(dai->codec);
++	unsigned int mask = 1<<2;
++	unsigned int val;
  
--const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
- 			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
- 	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
-@@ -256,13 +256,13 @@ const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DAC Output"),
- };
+ 	pr_debug("%s mute: %d\n", __func__, mute);
  
--const struct snd_soc_dapm_route stih416_sas_route[] = {
-+static const struct snd_soc_dapm_route stih416_sas_route[] = {
- 	{"DAC Output", NULL, "DAC bandgap"},
- 	{"DAC Output", NULL, "DAC standby ana"},
- 	{"DAC standby ana", NULL, "DAC standby"},
- };
+ 	if (mute)
+-		mute_reg |= (1<<2);
++		val = mask;
+ 	else
+-		mute_reg &= ~(1<<2);
+-
+-	uda134x_write(codec, UDA134X_DATA010, mute_reg);
++		val = 0;
  
--const struct snd_soc_dapm_route stih407_sas_route[] = {
-+static const struct snd_soc_dapm_route stih407_sas_route[] = {
- 	{"DAC Output", NULL, "DAC standby ana"},
- 	{"DAC standby ana", NULL, "DAC standby"},
- };
-@@ -407,21 +407,21 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
- 	return 0;
+-	return 0;
++	return regmap_update_bits(uda134x->regmap, UDA134X_DATA010, mask, val);
  }
  
--const struct snd_soc_dai_ops stih416_dac_ops = {
-+static const struct snd_soc_dai_ops stih416_dac_ops = {
- 	.set_fmt = sti_sas_dac_set_fmt,
- 	.mute_stream = stih416_sas_dac_mute,
- 	.prepare = sti_sas_prepare,
- 	.set_sysclk = sti_sas_set_sysclk,
- };
+ static int uda134x_startup(struct snd_pcm_substream *substream,
+@@ -209,7 +185,7 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
+-	u8 hw_params;
++	unsigned int hw_params = 0;
  
--const struct snd_soc_dai_ops stih407_dac_ops = {
-+static const struct snd_soc_dai_ops stih407_dac_ops = {
- 	.set_fmt = sti_sas_dac_set_fmt,
- 	.mute_stream = stih407_sas_dac_mute,
- 	.prepare = sti_sas_prepare,
- 	.set_sysclk = sti_sas_set_sysclk,
- };
+ 	if (substream == uda134x->slave_substream) {
+ 		pr_debug("%s ignoring hw_params for slave substream\n",
+@@ -217,10 +193,6 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
+ 		return 0;
+ 	}
  
--const struct regmap_config stih407_sas_regmap = {
-+static const struct regmap_config stih407_sas_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
+-	hw_params = uda134x_read_reg_cache(codec, UDA134X_STATUS0);
+-	hw_params &= STATUS0_SYSCLK_MASK;
+-	hw_params &= STATUS0_DAIFMT_MASK;
+-
+ 	pr_debug("%s sysclk: %d, rate:%d\n", __func__,
+ 		 uda134x->sysclk, params_rate(params));
  
-@@ -434,7 +434,7 @@ const struct regmap_config stih407_sas_regmap = {
- 	.reg_write = sti_sas_write_reg,
- };
+@@ -271,9 +243,8 @@ static int uda134x_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
--const struct regmap_config stih416_sas_regmap = {
-+static const struct regmap_config stih416_sas_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
+-	uda134x_write(codec, UDA134X_STATUS0, hw_params);
+-
+-	return 0;
++	return regmap_update_bits(uda134x->regmap, UDA134X_STATUS0,
++		STATUS0_SYSCLK_MASK | STATUS0_DAIFMT_MASK, hw_params);
+ }
  
-@@ -447,7 +447,7 @@ const struct regmap_config stih416_sas_regmap = {
- 	.reg_write = sti_sas_write_reg,
- };
- 
--const struct sti_sas_dev_data stih416_data = {
-+static const struct sti_sas_dev_data stih416_data = {
- 	.chipid = CHIPID_STIH416,
- 	.regmap = &stih416_sas_regmap,
- 	.dac_ops = &stih416_dac_ops,
-@@ -457,7 +457,7 @@ const struct sti_sas_dev_data stih416_data = {
- 	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
- };
- 
--const struct sti_sas_dev_data stih407_data = {
-+static const struct sti_sas_dev_data stih407_data = {
- 	.chipid = CHIPID_STIH407,
- 	.regmap = &stih407_sas_regmap,
- 	.dac_ops = &stih407_dac_ops,
+ static int uda134x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 -- 
 2.1.4
