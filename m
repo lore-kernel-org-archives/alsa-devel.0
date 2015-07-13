@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zx: spdif: Fix devm_ioremap_resource
-	return value check" to the asoc tree
-Date: Mon, 13 Jul 2015 12:16:51 +0100
-Message-ID: <E1ZEbj9-0006ad-8s@debutante>
+Subject: Applied "ASoC: sti-sas: Staticise local symbols" to
+	the asoc tree
+Date: Mon, 13 Jul 2015 12:16:54 +0100
+Message-ID: <E1ZEbjC-0006cW-TP@debutante>
+References: <1436765205.21490.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 38E4D2605CD
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:16:59 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id B20B5261582
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:17:01 +0200 (CEST)
+In-Reply-To: <1436765205.21490.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: zx: spdif: Fix devm_ioremap_resource return value check
+   ASoC: sti-sas: Staticise local symbols
 
 has been applied to the asoc tree at
 
@@ -52,37 +53,106 @@ to this mail.
 Thanks,
 Mark
 
->From 2dfbe9afcda3243dd309826cbbb8ae9e9f602006 Mon Sep 17 00:00:00 2001
-From: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
-Date: Thu, 9 Jul 2015 22:19:29 +0900
-Subject: [PATCH] ASoC: zx: spdif: Fix devm_ioremap_resource return value check
+>From 589bef3296317b5507a9a6e2e14fb30dd40ee764 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Mon, 13 Jul 2015 13:26:45 +0800
+Subject: [PATCH] ASoC: sti-sas: Staticise local symbols
 
-Value returned by devm_ioremap_resource() was checked for non-NULL but
-devm_ioremap_resource() returns IOMEM_ERR_PTR, not NULL. In case of
-error this could lead to dereference of ERR_PTR.
-
-Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
-Reviewed-by: Jun Nie <jun.nie@linaro.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/zte/zx296702-spdif.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/sti-sas.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/zte/zx296702-spdif.c b/sound/soc/zte/zx296702-spdif.c
-index 11a0e46a1156..26265ce4caca 100644
---- a/sound/soc/zte/zx296702-spdif.c
-+++ b/sound/soc/zte/zx296702-spdif.c
-@@ -322,9 +322,9 @@ static int zx_spdif_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	zx_spdif->mapbase = res->start;
- 	zx_spdif->reg_base = devm_ioremap_resource(&pdev->dev, res);
--	if (!zx_spdif->reg_base) {
-+	if (IS_ERR(zx_spdif->reg_base)) {
- 		dev_err(&pdev->dev, "ioremap failed!\n");
--		return -EIO;
-+		return PTR_ERR(zx_spdif->reg_base);
- 	}
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 4168b88ba3b1..6c0bbe8b495e 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -238,7 +238,7 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
  
- 	zx_spdif_dev_init(zx_spdif->reg_base);
+-const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
+ 			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
+@@ -248,7 +248,7 @@ const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("DAC Output"),
+ };
+ 
+-const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
+ 			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
+ 	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
+@@ -256,13 +256,13 @@ const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("DAC Output"),
+ };
+ 
+-const struct snd_soc_dapm_route stih416_sas_route[] = {
++static const struct snd_soc_dapm_route stih416_sas_route[] = {
+ 	{"DAC Output", NULL, "DAC bandgap"},
+ 	{"DAC Output", NULL, "DAC standby ana"},
+ 	{"DAC standby ana", NULL, "DAC standby"},
+ };
+ 
+-const struct snd_soc_dapm_route stih407_sas_route[] = {
++static const struct snd_soc_dapm_route stih407_sas_route[] = {
+ 	{"DAC Output", NULL, "DAC standby ana"},
+ 	{"DAC standby ana", NULL, "DAC standby"},
+ };
+@@ -407,21 +407,21 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-const struct snd_soc_dai_ops stih416_dac_ops = {
++static const struct snd_soc_dai_ops stih416_dac_ops = {
+ 	.set_fmt = sti_sas_dac_set_fmt,
+ 	.mute_stream = stih416_sas_dac_mute,
+ 	.prepare = sti_sas_prepare,
+ 	.set_sysclk = sti_sas_set_sysclk,
+ };
+ 
+-const struct snd_soc_dai_ops stih407_dac_ops = {
++static const struct snd_soc_dai_ops stih407_dac_ops = {
+ 	.set_fmt = sti_sas_dac_set_fmt,
+ 	.mute_stream = stih407_sas_dac_mute,
+ 	.prepare = sti_sas_prepare,
+ 	.set_sysclk = sti_sas_set_sysclk,
+ };
+ 
+-const struct regmap_config stih407_sas_regmap = {
++static const struct regmap_config stih407_sas_regmap = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 
+@@ -434,7 +434,7 @@ const struct regmap_config stih407_sas_regmap = {
+ 	.reg_write = sti_sas_write_reg,
+ };
+ 
+-const struct regmap_config stih416_sas_regmap = {
++static const struct regmap_config stih416_sas_regmap = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 
+@@ -447,7 +447,7 @@ const struct regmap_config stih416_sas_regmap = {
+ 	.reg_write = sti_sas_write_reg,
+ };
+ 
+-const struct sti_sas_dev_data stih416_data = {
++static const struct sti_sas_dev_data stih416_data = {
+ 	.chipid = CHIPID_STIH416,
+ 	.regmap = &stih416_sas_regmap,
+ 	.dac_ops = &stih416_dac_ops,
+@@ -457,7 +457,7 @@ const struct sti_sas_dev_data stih416_data = {
+ 	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
+ };
+ 
+-const struct sti_sas_dev_data stih407_data = {
++static const struct sti_sas_dev_data stih407_data = {
+ 	.chipid = CHIPID_STIH407,
+ 	.regmap = &stih407_sas_regmap,
+ 	.dac_ops = &stih407_dac_ops,
 -- 
 2.1.4
