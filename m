@@ -1,20 +1,19 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Running PJSIP for voip calls in alsa
-Date: Mon, 13 Jul 2015 05:16:24 +0000
-Message-ID: <SIXPR04MB253C9B8F73F687235D8315CC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559FCB17.2070200@ladisch.de>,
- <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 2/2] ASoC: sti-sas: Staticise local symbols
+Date: Mon, 13 Jul 2015 13:26:45 +0800
+Message-ID: <1436765205.21490.2.camel@ingics.com>
+References: <1436765134.21490.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-HK2-obe.outbound.protection.outlook.com
- (mail-hk2apc01on0118.outbound.protection.outlook.com [104.47.124.118])
- by alsa0.perex.cz (Postfix) with ESMTP id 42A4E261480
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 07:16:27 +0200 (CEST)
-In-Reply-To: <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
-Content-Language: en-US
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1FD0261492
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 07:26:56 +0200 (CEST)
+Received: by pdbqm3 with SMTP id qm3so73874296pdb.0
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 22:26:52 -0700 (PDT)
+In-Reply-To: <1436765134.21490.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +23,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/sti-sas.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-As I suspected, am seeing the Clock drifts in ti sdk 8 (linux kernel 3.14) but I dont see this in ti sdk 7 (linux kernel 3.12), Could you please help me out, is there any possibilities of this getting resolved in Kernel or alsa???? 
-
-Audio Device Test
-Here are the audio statistics:
-Rec : interval (min/max/avg/dev)=
-         0/41/20/13 (ms)
-      max burst=3
-Play: interval (min/max/avg/dev)=
-         19/22/20/0 (ms)
-      burst=2
-There could be 1 problem(s) with the sound device:
- 1: Clock drifts detected. Capture is 16 samples/sec faster than the playback device
-
-1:OK
-
-
-Kindly do the needful as early as possible
-
-Awaiting for your replies
-
-Many Thanks in advance again for all your support w.r.t all of my threads
-
-________________________________________
-From: Srinivasan S
-Sent: Sunday, July 12, 2015 12:24 PM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org
-Subject: Re: Running PJSIP for voip calls in alsa
-
-Dear Clemens,
-
-Many Thanks a lot for your suggestions till so far
-
-I suspect it might be the clock drift issue again, could you please let me know whether my suspection is correct or wrong??
-
-Because this issue might be, in one of my earlier reported threads for establishing the  GSM (ie., sound card & GSM streams were not synchronized)
-
-Could you please let me is there any chances of getting resolved in sound card driver (my understanding of sound card driver is codec driver, pls let me know whether my understanding is correct or not ) or alsa??
-
-Could you please provide any inputs on this
-
-Kindly do the needful as early as possible
-
-Many Thanks in advance,
-
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Friday, July 10, 2015 7:09 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org
-Subject: Re: Running PJSIP for voip calls in alsa
-
-Srinivasan S wrote:
-> we are seeing the below error messages in the PJSIP, Could you please let me know what could be issue ?
-
-I don't know PJSIP.
-
-> The above problem observed with new rootfs (ti sdk 8) but when we tried with old rootfs (ti sdk 7) we are able to make calls with no problem.
-
-Apparently, the driver changed its behaviour in the new kernel.
-
-> If possible, could you please validate this PJSIP version 2.3 on ti sdk 8 BSP's on your EVK kit
-
-I don't have any such TI SDK.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 4168b88..6c0bbe8 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -238,7 +238,7 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
+-const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
+ 			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
+@@ -248,7 +248,7 @@ const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("DAC Output"),
+ };
+ 
+-const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
+ 			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
+ 	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
+@@ -256,13 +256,13 @@ const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("DAC Output"),
+ };
+ 
+-const struct snd_soc_dapm_route stih416_sas_route[] = {
++static const struct snd_soc_dapm_route stih416_sas_route[] = {
+ 	{"DAC Output", NULL, "DAC bandgap"},
+ 	{"DAC Output", NULL, "DAC standby ana"},
+ 	{"DAC standby ana", NULL, "DAC standby"},
+ };
+ 
+-const struct snd_soc_dapm_route stih407_sas_route[] = {
++static const struct snd_soc_dapm_route stih407_sas_route[] = {
+ 	{"DAC Output", NULL, "DAC standby ana"},
+ 	{"DAC standby ana", NULL, "DAC standby"},
+ };
+@@ -407,21 +407,21 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-const struct snd_soc_dai_ops stih416_dac_ops = {
++static const struct snd_soc_dai_ops stih416_dac_ops = {
+ 	.set_fmt = sti_sas_dac_set_fmt,
+ 	.mute_stream = stih416_sas_dac_mute,
+ 	.prepare = sti_sas_prepare,
+ 	.set_sysclk = sti_sas_set_sysclk,
+ };
+ 
+-const struct snd_soc_dai_ops stih407_dac_ops = {
++static const struct snd_soc_dai_ops stih407_dac_ops = {
+ 	.set_fmt = sti_sas_dac_set_fmt,
+ 	.mute_stream = stih407_sas_dac_mute,
+ 	.prepare = sti_sas_prepare,
+ 	.set_sysclk = sti_sas_set_sysclk,
+ };
+ 
+-const struct regmap_config stih407_sas_regmap = {
++static const struct regmap_config stih407_sas_regmap = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 
+@@ -434,7 +434,7 @@ const struct regmap_config stih407_sas_regmap = {
+ 	.reg_write = sti_sas_write_reg,
+ };
+ 
+-const struct regmap_config stih416_sas_regmap = {
++static const struct regmap_config stih416_sas_regmap = {
+ 	.reg_bits = 32,
+ 	.val_bits = 32,
+ 
+@@ -447,7 +447,7 @@ const struct regmap_config stih416_sas_regmap = {
+ 	.reg_write = sti_sas_write_reg,
+ };
+ 
+-const struct sti_sas_dev_data stih416_data = {
++static const struct sti_sas_dev_data stih416_data = {
+ 	.chipid = CHIPID_STIH416,
+ 	.regmap = &stih416_sas_regmap,
+ 	.dac_ops = &stih416_dac_ops,
+@@ -457,7 +457,7 @@ const struct sti_sas_dev_data stih416_data = {
+ 	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
+ };
+ 
+-const struct sti_sas_dev_data stih407_data = {
++static const struct sti_sas_dev_data stih407_data = {
+ 	.chipid = CHIPID_STIH407,
+ 	.regmap = &stih407_sas_regmap,
+ 	.dac_ops = &stih407_dac_ops,
+-- 
+2.1.0
