@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] regmap: Add better support for devices
- without readback support
-Date: Mon, 13 Jul 2015 11:50:45 +0100
-Message-ID: <20150713105045.GB11162@sirena.org.uk>
-References: <1436783208-1529-1-git-send-email-lars@metafoo.de>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: [FFADO-devel] [RFC][PATCH 37/37] ALSA:
+ firewire-motu: add hwdep interface
+Date: Mon, 13 Jul 2015 20:28:50 +0930
+Message-ID: <20150713105850.GB32641@marvin.atrad.com.au>
+References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1436623968-10780-38-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6804392011558381249=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A4303260459
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 12:51:00 +0200 (CEST)
-In-Reply-To: <1436783208-1529-1-git-send-email-lars@metafoo.de>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46E1D260459
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 12:58:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1436623968-10780-38-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Jul 11, 2015 at 11:12:48PM +0900, Takashi Sakamoto wrote:
+> This commit adds hwdep interface so as the other firewire sound devices
+> has.
+> :
 
---===============6804392011558381249==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6xKfvfmn9W5rdvbv"
-Content-Disposition: inline
+> +static int hwdep_get_info(struct snd_motu *motu, void __user *arg)
+> +{
+> +	struct fw_device *dev = fw_parent_device(motu->unit);
+> +	struct snd_firewire_get_info info;
+> +
+> +	memset(&info, 0, sizeof(info));
+> +	info.type = SNDRV_FIREWIRE_TYPE_FIREWORKS;
 
+A SNDRV_FIREWIRE_TYPE_MOTU type identifier was defined, so should it not be
+used here?
 
---6xKfvfmn9W5rdvbv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +int snd_motu_create_hwdep_device(struct snd_motu *motu)
+> +{
+> +	struct snd_hwdep *hwdep;
+> +	int err;
+> +
+> +	err = snd_hwdep_new(motu->card, "MOTU", 0, &hwdep);
+> +	if (err < 0)
+> +		goto end;
+> +	strcpy(hwdep->name, "MOTU");
+> +	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
 
-On Mon, Jul 13, 2015 at 12:26:44PM +0200, Lars-Peter Clausen wrote:
-> Currently regmap requires that a reg_read callback is supplied, otherwise a
-> warning is emitted each time regmap_read() is called. This means a device
-> or bus without readback support needs to supply dummy reg_read callback.
-> Apart from that regmap_read() will still work fine if a cache is used.
+Similarly, SNDRV_HWDEP_IFACE_FW_MOTU is defined and it would seem to me that
+it should be used here instead of SNDRV_HWDEP_IFACE_FW_FIREWORKS.  Am I
+missing something?
 
-This really shouldn't be in the same series as the uda138x stuff,
-there's no real interdependency.
-
---6xKfvfmn9W5rdvbv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVo5gEAAoJECTWi3JdVIfQuxcH/34Sh2Q80ppOnv78iYLQcKPY
-vIvgJuoiYyHc6tTRq1p3NCuJn0Nw/rxgQO7YT3VB9IviCJZgTFxRXefS/xNjsmA8
-Z0R4oAa7Ae8Rn1i5ADEqBQPWQvzOE9zoLpGA5id4TfnN1tq/ykPanvyLHGkyKY+Z
-00Jx8dx0Rvvozuv2yGMK03z94JxH4piBYSFBbSYG3pEfBLpMJ6ta76vZXWCniE6A
-xw0UUo8qSFC2Vir0tcV7FoSeib8bkG2uBatiIubsSa9rmLeLG1YVFTaMgfoeQZdS
-HZA31WzJJ+72y6T6bSIYCA2i7UHIKmcQHcegQ0mrE+L2yQ0SWwqsKJ1PC4oQMe4=
-=CNBg
------END PGP SIGNATURE-----
-
---6xKfvfmn9W5rdvbv--
-
---===============6804392011558381249==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6804392011558381249==--
+Regards
+  jonathan
