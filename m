@@ -1,19 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: sti-sas: Staticise local symbols
-Date: Mon, 13 Jul 2015 13:26:45 +0800
-Message-ID: <1436765205.21490.2.camel@ingics.com>
-References: <1436765134.21490.1.camel@ingics.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Running PJSIP for voip calls in alsa
+Date: Mon, 13 Jul 2015 09:06:04 +0200
+Message-ID: <55A3635C.7090009@ladisch.de>
+References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559FCB17.2070200@ladisch.de>
+ <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
- [209.85.192.182])
- by alsa0.perex.cz (Postfix) with ESMTP id A1FD0261492
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 07:26:56 +0200 (CEST)
-Received: by pdbqm3 with SMTP id qm3so73874296pdb.0
- for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2015 22:26:52 -0700 (PDT)
-In-Reply-To: <1436765134.21490.1.camel@ingics.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6953626149D
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 09:06:07 +0200 (CEST)
+In-Reply-To: <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,104 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/sti-sas.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Srinivasan S wrote:
+> I suspect it might be the clock drift issue again, could you please let me know whether my suspection is correct or wrong??
+>
+> Because this issue might be, in one of my earlier reported threads for establishing the  GSM (ie., sound card & GSM streams were not synchronized)
+>
+> Could you please let me is there any chances of getting resolved in sound card driver or alsa??
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index 4168b88..6c0bbe8 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -238,7 +238,7 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
- 	return 0;
- }
- 
--const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("DAC bandgap", STIH416_AUDIO_DAC_CTRL,
- 			 STIH416_DAC_NOT_PNDBG_MASK, 0, NULL, 0),
- 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH416_AUDIO_DAC_CTRL,
-@@ -248,7 +248,7 @@ const struct snd_soc_dapm_widget stih416_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DAC Output"),
- };
- 
--const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUT_DRV("DAC standby ana", STIH407_AUDIO_DAC_CTRL,
- 			     STIH407_DAC_STANDBY_ANA, 1, NULL, 0),
- 	SND_SOC_DAPM_DAC("DAC standby",  "dac_p", STIH407_AUDIO_DAC_CTRL,
-@@ -256,13 +256,13 @@ const struct snd_soc_dapm_widget stih407_sas_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DAC Output"),
- };
- 
--const struct snd_soc_dapm_route stih416_sas_route[] = {
-+static const struct snd_soc_dapm_route stih416_sas_route[] = {
- 	{"DAC Output", NULL, "DAC bandgap"},
- 	{"DAC Output", NULL, "DAC standby ana"},
- 	{"DAC standby ana", NULL, "DAC standby"},
- };
- 
--const struct snd_soc_dapm_route stih407_sas_route[] = {
-+static const struct snd_soc_dapm_route stih407_sas_route[] = {
- 	{"DAC Output", NULL, "DAC standby ana"},
- 	{"DAC standby ana", NULL, "DAC standby"},
- };
-@@ -407,21 +407,21 @@ static int sti_sas_prepare(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--const struct snd_soc_dai_ops stih416_dac_ops = {
-+static const struct snd_soc_dai_ops stih416_dac_ops = {
- 	.set_fmt = sti_sas_dac_set_fmt,
- 	.mute_stream = stih416_sas_dac_mute,
- 	.prepare = sti_sas_prepare,
- 	.set_sysclk = sti_sas_set_sysclk,
- };
- 
--const struct snd_soc_dai_ops stih407_dac_ops = {
-+static const struct snd_soc_dai_ops stih407_dac_ops = {
- 	.set_fmt = sti_sas_dac_set_fmt,
- 	.mute_stream = stih407_sas_dac_mute,
- 	.prepare = sti_sas_prepare,
- 	.set_sysclk = sti_sas_set_sysclk,
- };
- 
--const struct regmap_config stih407_sas_regmap = {
-+static const struct regmap_config stih407_sas_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
- 
-@@ -434,7 +434,7 @@ const struct regmap_config stih407_sas_regmap = {
- 	.reg_write = sti_sas_write_reg,
- };
- 
--const struct regmap_config stih416_sas_regmap = {
-+static const struct regmap_config stih416_sas_regmap = {
- 	.reg_bits = 32,
- 	.val_bits = 32,
- 
-@@ -447,7 +447,7 @@ const struct regmap_config stih416_sas_regmap = {
- 	.reg_write = sti_sas_write_reg,
- };
- 
--const struct sti_sas_dev_data stih416_data = {
-+static const struct sti_sas_dev_data stih416_data = {
- 	.chipid = CHIPID_STIH416,
- 	.regmap = &stih416_sas_regmap,
- 	.dac_ops = &stih416_dac_ops,
-@@ -457,7 +457,7 @@ const struct sti_sas_dev_data stih416_data = {
- 	.num_dapm_routes = ARRAY_SIZE(stih416_sas_route),
- };
- 
--const struct sti_sas_dev_data stih407_data = {
-+static const struct sti_sas_dev_data stih407_data = {
- 	.chipid = CHIPID_STIH407,
- 	.regmap = &stih407_sas_regmap,
- 	.dac_ops = &stih407_dac_ops,
--- 
-2.1.0
+If the new kernel behaves differently, then apparently the driver changes.
+But you'd have to ask the author of the driver.
+
+In any case, the sound card cannot know how fast data arrives over GSM.
+
+
+Regards,
+Clemens
