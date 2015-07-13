@@ -1,24 +1,18 @@
-From: Tyler Yeomans <tyeo098@gmail.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Mon, 13 Jul 2015 13:06:47 -0400
-Message-ID: <55A3F027.9010006@gmail.com>
-References: <559BDB7F.9010105@gmail.com> <20150707170821.GL11002@localhost>
- <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
- <20150708102308.91b7258f243e354b1365a47e@ao2.it> <559D3411.6060306@gmail.com>
- <20150708182132.db38656fb4ccc2e38e41aba0@ao2.it> <559D5091.9020802@gmail.com>
- <20150708221745.f72dcbec9c96eb86ce0cbfc2@ao2.it> <559EC436.30900@gmail.com>
- <20150710040623.GY836@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98357a: Do not print error message
+	on asoc/gpio errors" to the asoc tree
+Date: Mon, 13 Jul 2015 19:14:20 +0100
+Message-ID: <E1ZEiFA-000333-NO@debutante>
+References: <1436714061-18618-3-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f182.google.com (mail-qk0-f182.google.com
- [209.85.220.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 74586261A03
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 19:06:10 +0200 (CEST)
-Received: by qkbp125 with SMTP id p125so258501807qkb.2
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 10:06:09 -0700 (PDT)
-In-Reply-To: <20150710040623.GY836@localhost>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42808261AE7
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 20:14:28 +0200 (CEST)
+In-Reply-To: <1436714061-18618-3-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,57 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Vinod,
+The patch
 
-Have you received my last message?
-The device was originally installed with 8.1, but I have since erased it 
-in favor of Ubuntu.
+   ASoC: max98357a: Do not print error message on asoc/gpio errors
 
-Is there anything I can be trying in the meantime?
+has been applied to the asoc tree at
 
-Thanks-
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Tyler
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-On 07/10/2015 12:06 AM, Vinod Koul wrote:
-> On Thu, Jul 09, 2015 at 02:57:58PM -0400, Tyler Yeomans wrote:
->> Antonio/Vinod,
->>
->> I have made the change in the sst-acpi.c file for the atom specific boards.
->> I've attached the dmesg output here with dynamic debug enabled.
->>
->> To clarify-
->>
->> snd-intel-sst-core is loaded
->> FE-BE fix has been applied
->> I'm using the ssp0 firmware.
->>
->> Interrupts are still 0
->>
->> Still no sound.
->>
->> Would leaving the device on and providing remote access (i.e though
->> teamviewer) assist in any way?
-> The fw download seems to fail on your device, which can also be due to
-> incorrect interrupt mapping...
->
-> [   20.386850] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> msg_id:0x1 fw_state 0x3
-> [   20.386862] intel_sst_acpi 80860F28:00: fw returned err -16
-> [   20.386873] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-> port_name=ssp2-port
-> [   20.752559] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> msg_id:0x1 fw_state 0x3
-> [   20.752570] intel_sst_acpi 80860F28:00: fw returned err -16
-> [   21.163378] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> msg_id:0x0 fw_state 0x1
-> [   21.163388] intel_sst_acpi 80860F28:00: fw download failed -16
->
-> Can you tell me which device you have, what was preinstalled on it
->
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 4ab0c591c1482c90d14c1d11bf4b469c54a31ecc Mon Sep 17 00:00:00 2001
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Date: Sun, 12 Jul 2015 08:14:21 -0700
+Subject: [PATCH] ASoC: max98357a: Do not print error message on asoc/gpio
+ errors
+
+gpiolib/asoc system already prints enough info if there are any problems.
+
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98357a.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
+index b9e1131bab74..e88119a71b84 100644
+--- a/sound/soc/codecs/max98357a.c
++++ b/sound/soc/codecs/max98357a.c
+@@ -63,11 +63,9 @@ static int max98357a_codec_probe(struct snd_soc_codec *codec)
+ 	struct gpio_desc *sdmode;
+ 
+ 	sdmode = devm_gpiod_get_optional(codec->dev, "sdmode", GPIOD_OUT_LOW);
+-	if (IS_ERR(sdmode)) {
+-		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
+-				__func__, PTR_ERR(sdmode));
++	if (IS_ERR(sdmode))
+ 		return PTR_ERR(sdmode);
+-	}
++
+ 	snd_soc_codec_set_drvdata(codec, sdmode);
+ 
+ 	return 0;
+@@ -106,15 +104,8 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
+ 
+ static int max98357a_platform_probe(struct platform_device *pdev)
+ {
+-	int ret;
+-
+-	ret = snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
++	return snd_soc_register_codec(&pdev->dev, &max98357a_codec_driver,
+ 			&max98357a_dai_driver, 1);
+-	if (ret)
+-		dev_err(&pdev->dev, "%s() error registering codec driver: %d\n",
+-				__func__, ret);
+-
+-	return ret;
+ }
+ 
+ static int max98357a_platform_remove(struct platform_device *pdev)
+-- 
+2.1.4
