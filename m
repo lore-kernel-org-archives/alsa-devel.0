@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98357a: Make 'sdmode-gpios' dts
-	property optional" to the asoc tree
-Date: Mon, 13 Jul 2015 19:14:22 +0100
-Message-ID: <E1ZEiFC-000340-NO@debutante>
-References: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Re: [PATCH - CS4349 1/2] Add support for Cirrus Logic
+	CS4349
+Date: Mon, 13 Jul 2015 21:18:22 +0100
+Message-ID: <20150713201822.GL11162@sirena.org.uk>
+References: <55a41abd.6267320a.46fe.1037@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5285337088926270341=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C06D261B02
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 20:14:29 +0200 (CEST)
-In-Reply-To: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E9BF2625ED
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 22:18:30 +0200 (CEST)
+In-Reply-To: <55a41abd.6267320a.46fe.1037@mx.google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +21,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: timothyc.howe@gmail.com
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: max98357a: Make 'sdmode-gpios' dts property optional
+--===============5285337088926270341==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+yydNiOxrtWvz4sx"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--+yydNiOxrtWvz4sx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Jul 13, 2015 at 03:08:25PM -0500, timothyc.howe@gmail.com wrote:
+> From: Tim Howe <tim.howe@cirrus.com>
+>=20
+> Signed-off-by: Tim Howe <tim.howe@cirrus.com>
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This looks mostly good.  One nit on the submission format - please use
+subject lines matching the style for the subsystem, "ASoC: cs4349: ..."
+with just [PATCH 1/2] as the prefix in sending.  Also some fairly minor
+issues below:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +	if (pdata) {
+> +		cs4349->pdata =3D *pdata;
+> +	} else {
+> +		pdata =3D devm_kzalloc(&client->dev,
+> +				     sizeof(struct cs4349_platform_data),
+> +				     GFP_KERNEL);
+> +		if (!pdata) {
+> +			dev_err(&client->dev,
+> +				"could not allocate pdata\n");
+> +			return -ENOMEM;
+> +		}
+> +		cs4349->pdata =3D *pdata;
+> +	}
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Why allocate the platform data if none is supplied only to copy the zero
+initialized data into the driver data then never reference it again?
+The entire else case can be dropped.
 
-Thanks,
-Mark
+> +	dev_info(&client->dev,
+> +		 "Cirrus Logic CS4349\n");
 
->From 5119222f2e3de2e51a3b3270036d53c55ce68236 Mon Sep 17 00:00:00 2001
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Date: Sun, 12 Jul 2015 08:14:19 -0700
-Subject: [PATCH] ASoC: max98357a: Make 'sdmode-gpios' dts property optional
+Remove this, it's not adding anything.
 
-The option is not needed if chip is always on or managed by some other part
-of system like platform card driver.
+> +static int cs4349_runtime_suspend(struct device *dev)
+> +{
+> +	struct cs4349_private *cs4349 =3D dev_get_drvdata(dev);
+> +	struct snd_soc_pcm_runtime *rtd =3D dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	/* Hold down reset */
+> +	if (cs4349->reset_gpio)
+> +		gpiod_set_value_cansleep(cs4349->reset_gpio, 0);
+> +
+> +	ret =3D snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
+> +	if (ret < 0)
+> +		return ret;
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/max98357a.txt | 6 +++++-
- sound/soc/codecs/max98357a.c                          | 5 ++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+Shouldn't the device be put into reset after powering it down rather
+than before?  I'd expect there might be problems with the I2C I/O if the
+device is held in reset...
 
-diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
-index a7a149a236e5..28645a2ff885 100644
---- a/Documentation/devicetree/bindings/sound/max98357a.txt
-+++ b/Documentation/devicetree/bindings/sound/max98357a.txt
-@@ -4,7 +4,11 @@ This node models the Maxim MAX98357A DAC.
- 
- Required properties:
- - compatible   : "maxim,max98357a"
--- sdmode-gpios : GPIO specifier for the GPIO -> DAC SDMODE pin
-+
-+Optional properties:
-+- sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
-+        If this option is not specified then driver does not manage
-+        the pin state (e.g. chip is always on).
- 
- Example:
- 
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index 3a2fda08a893..fa1b79302bb3 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -31,6 +31,9 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- {
- 	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
- 
-+	if (!sdmode)
-+		return 0;
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -60,7 +63,7 @@ static int max98357a_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct gpio_desc *sdmode;
- 
--	sdmode = devm_gpiod_get(codec->dev, "sdmode", GPIOD_OUT_LOW);
-+	sdmode = devm_gpiod_get_optional(codec->dev, "sdmode", GPIOD_OUT_LOW);
- 	if (IS_ERR(sdmode)) {
- 		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
- 				__func__, PTR_ERR(sdmode));
--- 
-2.1.4
+> +static int cs4349_runtime_resume(struct device *dev)
+> +{
+
+> +	regcache_cache_only(cs4349->regmap, false);
+
+I'd expect the device to be marked cache only on suspend?
+
+> +static const struct of_device_id cs4349_of_match[] =3D {
+> +	{ .compatible =3D "cirrus,cs4349", },
+> +	{},
+> +};
+
+This is adding a compatible string but the binding is undocumented, all
+new bindings must be documented.
+
+--+yydNiOxrtWvz4sx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVpB0NAAoJECTWi3JdVIfQXwcH/RHBOOm7U/8N2uEcyfTCsBg7
++v9cQHbtgVaXNV5S5Qzku0ZWAKqBKhalGYZ62VCBm5RUkuK9hhPyFP33NVHETM/m
+y9Tf572HTcx3qNj21p1KuDFYHraBDGQkP6+hPAjUzem27y5dGePGvMvhNp3Ydx+1
+PIXetl8V0gi0rpdQsfMrglZt6qKQamqdbE2I+gt7XFpMOgLcmoWf9xQSuUjHj4iL
+T8n5GzuR4dYDsP7yrfw7YGFslTG2kYM89X2G7kuctmg64bD7QT+uCAZE3R/0EQvb
+3gY4pRnvXDEC820pcfy+BxGyx9NwXGFmP8f8fursCQBz648Y2j95Gq8CvsAMv3A=
+=q+Lp
+-----END PGP SIGNATURE-----
+
+--+yydNiOxrtWvz4sx--
+
+--===============5285337088926270341==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5285337088926270341==--
