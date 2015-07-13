@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti-sas: Remove spurious dependency on
-	SND_SOC_STI" to the asoc tree
-Date: Mon, 13 Jul 2015 12:16:53 +0100
-Message-ID: <E1ZEbjB-0006c3-TS@debutante>
+Subject: Applied "ASoC: zx: i2s: Fix devm_ioremap_resource
+	return value check" to the asoc tree
+Date: Mon, 13 Jul 2015 12:16:52 +0100
+Message-ID: <E1ZEbjA-0006b6-2p@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E9972604D6
+ by alsa0.perex.cz (Postfix) with ESMTP id F19542605A9
  for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:16:58 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti-sas: Remove spurious dependency on SND_SOC_STI
+   ASoC: zx: i2s: Fix devm_ioremap_resource return value check
 
 has been applied to the asoc tree at
 
@@ -52,27 +52,37 @@ to this mail.
 Thanks,
 Mark
 
->From a2f3a8ca5219651292447f0e1124b3412bc3abff Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 13 Jul 2015 11:53:08 +0100
-Subject: [PATCH] ASoC: sti-sas: Remove spurious dependency on SND_SOC_STI
+>From a18da49ff3ec849c4584ae3abe2b83ff50705ace Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+Date: Thu, 9 Jul 2015 22:19:28 +0900
+Subject: [PATCH] ASoC: zx: i2s: Fix devm_ioremap_resource return value check
 
+Value returned by devm_ioremap_resource() was checked for non-NULL but
+devm_ioremap_resource() returns IOMEM_ERR_PTR, not NULL. In case of
+error this could lead to dereference of ERR_PTR.
+
+Signed-off-by: Krzysztof Kozlowski <k.kozlowski.k@gmail.com>
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/zte/zx296702-i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 46802eff292e..e20834818bcb 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -613,7 +613,6 @@ config SND_SOC_STAC9766
+diff --git a/sound/soc/zte/zx296702-i2s.c b/sound/soc/zte/zx296702-i2s.c
+index 98d96e1b17e0..1930c42e1f55 100644
+--- a/sound/soc/zte/zx296702-i2s.c
++++ b/sound/soc/zte/zx296702-i2s.c
+@@ -393,9 +393,9 @@ static int zx_i2s_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	zx_i2s->mapbase = res->start;
+ 	zx_i2s->reg_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (!zx_i2s->reg_base) {
++	if (IS_ERR(zx_i2s->reg_base)) {
+ 		dev_err(&pdev->dev, "ioremap failed!\n");
+-		return -EIO;
++		return PTR_ERR(zx_i2s->reg_base);
+ 	}
  
- config SND_SOC_STI_SAS
- 	tristate "codec Audio support for STI SAS codec"
--	depends on SND_SOC_STI
- 
- config SND_SOC_TAS2552
- 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
+ 	writel_relaxed(0, zx_i2s->reg_base + ZX_I2S_FIFO_CTRL);
 -- 
 2.1.4
