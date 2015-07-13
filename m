@@ -1,30 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
- assignment for external base speaker and external microphone not working
-Date: Mon, 13 Jul 2015 19:24:24 +0800
-Message-ID: <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
-References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
- <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
- <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
- <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
- <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
- <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
- <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
- <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
- <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
- <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
- <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: [FFADO-devel] [RFC][PATCH 32/37] ALSA:
+ firewire-motu: add stream functionality
+Date: Mon, 13 Jul 2015 20:53:21 +0930
+Message-ID: <20150713112321.GD32641@marvin.atrad.com.au>
+References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1436623968-10780-33-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
- [209.85.214.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B1852606BB
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:24:26 +0200 (CEST)
-Received: by obqd1 with SMTP id d1so12493954obq.1
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 04:24:25 -0700 (PDT)
-In-Reply-To: <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 041F42605A9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:23:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1436623968-10780-33-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,61 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arthur Borsboom <arthurborsboom@gmail.com>
-Cc: lukasz.wojnilowicz@gmail.com, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
->
-> Honestly some of the Alsa code talk is a bit over my head, so maybe I
-should just stick to providing PCI/Vendor ID's and test results. :)
->
-> RY> How do you test ? Using sound preference or alsa speaker-test
->
-> I apply some of your code by retyping this into the mainline kernel
-4.2-rc1 code, compile and install the kernel, and then test the audio.
-> The subwoofer I test by playing music with my music player, Audacious.
-> When testing different configurations and output profiles I use
-pavucontrol.
-> For testing the microphone, I open pavucontrol, switch the input source
-between Internal Microphone and Microphone and look at the volumebar to see
-if the microphone works fine.
->
-> Do you have suggestions how to apply and test the provided patches?
->
+On Sat, Jul 11, 2015 at 11:12:43PM +0900, Takashi Sakamoto wrote:
+> +enum snd_motu_clock {
+> +	SND_MOTU_CLOCK_INTERNAL = 0,
+> +	SND_MOTU_CLOCK_OPT,		/* S/PDIF or ADAT */
+> +	SND_MOTU_CLOCK_SPDIF_COAX,
+> +	SND_MOTU_CLOCK_SPH,		/* SMPTE */
+> +	SND_MOTU_CLOCK_ADAT_DSUB,
+> +	SND_MOTU_CLOCK_AESEBU_XLR,
+> +	SND_MOTU_CLOCK_WORD_BNC,
+>  };
 
-you have to provide alsa-info of patched driver
+I'm not convinced that perpending the physical interface connection is all
+that necessary because generally speaking the clock source uniquely implies
+the physical connection.  Word clock is always on BNC, AES/EBU is always on
+XRL, an SPDIF clock is assumed to be on coax and an "ADAT clock" is always
+on the D-sub (it is common knowledge that this is different from an optical
+clock).  I will concede that for qualifying the ADAT clock is justifiable to
+avoid confusion (in FFADO I used ADAT_9PIN).  I also think that it is
+unnecessary to abbreviate "optical" to "opt": there's no reason not to use 4
+additional letters and "OPTICAL" is much clearer than "OPT" (the latter is
+ambiguous and could be taken to be short for "optional" for example). 
+Finally, the SMTPE clock should be called just this: the fact that it
+happens to be transported via the SPH is largely irrelevant.  Using SMTPE in
+the identifer makes the source entirely clear as to what's being done,
+whereas SPH is rather vague.
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/chmap.c;hb=HEAD
+Therefore I would suggest the following set of clock identifiers would be
+perfectly adequate:
 
-./chmap -Dhw:0 query
+  SND_MOTU_CLOCK_INTERNAL
+  SND_MOTU_CLOCK_OPTICAL
+  SND_MOTU_CLOCK_SPDIF
+  SND_MOTU_CLOCK_SMPTE
+  SND_MOTU_CLOCK_ADAT_DSUB
+  SND_MOTU_CLOCK_AESEBU
+  SND_MOTU_CLOCK_WORDCLOCK
 
-Do chmap show the stereo and 2.1 channel map ?
-
-the "External Subwoofer Jack" detect kctl should return true when you plug
-the Sonic Master Subwoofer and false when you unplug
-
-after you add analog-output-subwoofer.conf and replace the output path
-analog-output-lineout and analog-output-speaker in 2.1 profiles in
-profile-sets/default.conf
-
-You have to provide pulseaudio verbsose log if pulseaudio did not
-automatically switch to 2.1 profile
-
-The dirty workaround for the headset mic when your codec cannot distinguish
-headphone and headset but you use only headset
-
-Change the headset.conf to use jsck headphone instead of headset mic jack
-
-http://cgit.freedesktop.org/pulseaudio/pulseaudio/plain/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
-
--[Jack Headset Mic]
--required-any = any
-
--[Jack Headset Mic Phantom]
--state.plugged = unknown
--state.unplugged = unknown
--required-any = any
-
-[Jack Headphone]
--state.plugged = unknown
-+required-any = any
+Regards
+  jonathan
