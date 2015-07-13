@@ -1,102 +1,62 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [PATCH v2] arm64: dts: mt8173: Add afe device node
-Date: Mon, 13 Jul 2015 15:19:29 +0800
-Message-ID: <1436771969.15768.6.camel@mtksdaap41>
-References: <1436412725-55129-1-git-send-email-koro.chen@mediatek.com>
-	 <CAGS+omBqO6Zcw9KuN6p9YDvRD=UfmOnokUPeRo-iv6ruTBChwg@mail.gmail.com>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Running PJSIP for voip calls in alsa
+Date: Mon, 13 Jul 2015 07:22:42 +0000
+Message-ID: <SIXPR04MB2534E33FAFB9024B6D68B2BC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559FCB17.2070200@ladisch.de>
+ <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <55A3635C.7090009@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGS+omBqO6Zcw9KuN6p9YDvRD=UfmOnokUPeRo-iv6ruTBChwg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Kurtz <djkurtz@chromium.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, srv_heupstream <srv_heupstream@mediatek.com>, linux-mediatek@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1bn0101.outbound.protection.outlook.com [134.170.140.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id E446F2614A6
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 09:22:46 +0200 (CEST)
+In-Reply-To: <55A3635C.7090009@ladisch.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2015-07-09 at 18:45 +0800, Daniel Kurtz wrote:
-> On Thu, Jul 9, 2015 at 11:32 AM, Koro Chen <koro.chen@mediatek.com> wrote:
-> > This adds afe (audio front end) device node to the MT8173 dtsi file.
-> >
-> > Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-> 
-> Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
-> 
-> I believe this patch depends on the fix in:
-> https://patchwork.kernel.org/patch/6752521/  
-> 
-> If so, I think it would have been better to upload them together and
-> mention the dependency in the cover letter.
-> However, now that they are both on the list, we just need to ensure
-> they are merged together.
+Thanks a lot Clemens for your quick responses
 
-The above patch was already merged, so now it is OK to merge this one
-(If there is no problem for this patch, of course)
-> 
-> -Dan
-> 
-> 
-> > ---
-> > This patch is based on Matthias's tree:
-> > https://github.com/mbgg/linux-mediatek
-> > branch: v4.2-next/arm64
-> >
-> > Changes since v1:
-> > - change node name to afe: audio-controller@11220000
-> > ---
-> >  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 32 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > index 0696f8f..ce9255a 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> > @@ -14,6 +14,7 @@
-> >  #include <dt-bindings/clock/mt8173-clk.h>
-> >  #include <dt-bindings/interrupt-controller/irq.h>
-> >  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +#include <dt-bindings/power/mt8173-power.h>
-> >  #include <dt-bindings/reset-controller/mt8173-resets.h>
-> >  #include "mt8173-pinfunc.h"
-> >
-> > @@ -393,6 +394,37 @@
-> >                         #size-cells = <0>;
-> >                         status = "disabled";
-> >                 };
-> > +
-> > +               afe: audio-controller@11220000  {
-> > +                       compatible = "mediatek,mt8173-afe-pcm";
-> > +                       reg = <0 0x11220000 0 0x1000>;
-> > +                       interrupts = <GIC_SPI 134 IRQ_TYPE_EDGE_FALLING>;
-> > +                       power-domains = <&scpsys MT8173_POWER_DOMAIN_AUDIO>;
-> > +                       clocks = <&infracfg CLK_INFRA_AUDIO>,
-> > +                                <&topckgen CLK_TOP_AUDIO_SEL>,
-> > +                                <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
-> > +                                <&topckgen CLK_TOP_APLL1_DIV0>,
-> > +                                <&topckgen CLK_TOP_APLL2_DIV0>,
-> > +                                <&topckgen CLK_TOP_I2S0_M_SEL>,
-> > +                                <&topckgen CLK_TOP_I2S1_M_SEL>,
-> > +                                <&topckgen CLK_TOP_I2S2_M_SEL>,
-> > +                                <&topckgen CLK_TOP_I2S3_M_SEL>,
-> > +                                <&topckgen CLK_TOP_I2S3_B_SEL>;
-> > +                       clock-names = "infra_sys_audio_clk",
-> > +                                     "top_pdn_audio",
-> > +                                     "top_pdn_aud_intbus",
-> > +                                     "bck0",
-> > +                                     "bck1",
-> > +                                     "i2s0_m",
-> > +                                     "i2s1_m",
-> > +                                     "i2s2_m",
-> > +                                     "i2s3_m",
-> > +                                     "i2s3_b";
-> > +                       assigned-clocks = <&topckgen CLK_TOP_AUD_1_SEL>,
-> > +                                         <&topckgen CLK_TOP_AUD_2_SEL>;
-> > +                       assigned-clock-parents = <&topckgen CLK_TOP_APLL1>,
-> > +                                                <&topckgen CLK_TOP_APLL2>;
-> > +               };
-> >         };
-> >  };
-> >
-> > --
-> > 1.8.1.1.dirty
-> >
+Could you please provide any suggestions or inputs from where this problem could arrive ie., in either platform driver or machine driver or codec driver??
+
+
+Kindly do the needful as early as possible
+
+Many Thanks in advance Clemens,
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Monday, July 13, 2015 12:36 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org
+Subject: Re: Running PJSIP for voip calls in alsa
+
+Srinivasan S wrote:
+> I suspect it might be the clock drift issue again, could you please let me know whether my suspection is correct or wrong??
+>
+> Because this issue might be, in one of my earlier reported threads for establishing the  GSM (ie., sound card & GSM streams were not synchronized)
+>
+> Could you please let me is there any chances of getting resolved in sound card driver or alsa??
+
+If the new kernel behaves differently, then apparently the driver changes.
+But you'd have to ask the author of the driver.
+
+In any case, the sound card cannot know how fast data arrives over GSM.
+
+
+Regards,
+Clemens
