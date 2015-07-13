@@ -1,49 +1,79 @@
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: Re: [alsa-devel] [PATCH v2 11/12] ASoC: tegra: register dependency
- parser for firmware nodes
-Date: Mon, 13 Jul 2015 14:10:45 +0200
-Message-ID: <CAAObsKDsEuDS46rW9CMuviDEDV-OVXe5q-kiWmw0D_n2D3Tf5A@mail.gmail.com>
-References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
- <1435743667-11987-12-git-send-email-tomeu.vizoso@collabora.com>
- <20150701173802.GW11162@sirena.org.uk>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: add rt298 codec driver
+Date: Mon, 13 Jul 2015 13:21:53 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D701089DE1@RTITMBSV03.realtek.com.tw>
+References: <1435287589-8160-1-git-send-email-bardliao@realtek.com>
+ <20150709110922.GK11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150701173802.GW11162@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACEA62605E8
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 15:22:00 +0200 (CEST)
+In-Reply-To: <20150709110922.GK11162@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-fbdev@vger.kernel.org, linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Liam Girdwood <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-gpio@vger.kernel.org, Linux PWM List <linux-pwm@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Alexandre Courbot <gnurou@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "ramesh.babu@intel.com" <ramesh.babu@intel.com>, John Lin <john.lin@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMSBKdWx5IDIwMTUgYXQgMTk6MzgsIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4g
-d3JvdGU6Cj4gT24gV2VkLCBKdWwgMDEsIDIwMTUgYXQgMTE6NDE6MDZBTSArMDIwMCwgVG9tZXUg
-Vml6b3NvIHdyb3RlOgo+Cj4+ICtzdGF0aWMgdm9pZCB0ZWdyYV9tYXg5ODA5MF9nZXRfZGVwZW5k
-ZW5jaWVzKHN0cnVjdCBmd25vZGVfaGFuZGxlICpmd25vZGUsCj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBsaXN0X2hlYWQgKmRlcHMpCj4+ICt7Cj4+
-ICsgICAgIGFkZF9kZXBlbmRlbmN5KGZ3bm9kZSwgIm52aWRpYSxpMnMtY29udHJvbGxlciIsIGRl
-cHMpOwo+PiArICAgICBhZGRfZGVwZW5kZW5jeShmd25vZGUsICJudmlkaWEsYXVkaW8tY29kZWMi
-LCBkZXBzKTsKPj4gK30KPgo+IFdoeSBpcyB0aGlzIGFsbCBiZWluZyBvcGVuIGNvZGVkIGluIGFu
-IGluZGl2aWR1YWwgZHJpdmVyICh3ZSBhbHJlYWR5Cj4ga25vdyBhYm91dCBhbmQgbWFuYWdlIGFs
-bCB0aGVzZSBkZXBlbmRlbmNpZXMgaW4gdGhlIGNvcmUuLi4pPyAgSWYgd2UncmUKPiBnb2luZyB0
-byBkbyB0aGlzIEknZCBleHBlY3QgdGhlIGludGVyZmFjZSBmb3Igc3BlY2lmeWluZyBEVCBub2Rl
-cyB0byB0aGUKPiBjb3JlIHRvIGJlIGNoYW5nZWQgdG8gc3VwcG9ydCB0aGlzLgoKQXJlIHlvdSB0
-aGlua2luZyBvZiBjaGFuZ2luZyBkcml2ZXJzIHRvIGFjcXVpcmUgdGhlaXIgcmVzb3VyY2VzCnRo
-cm91Z2ggQXJuZCdzIGRldm1fcHJvYmUgKG9ubHkgdGhhdCB0aGUgcmVzb3VyY2UgdGFibGUgd291
-bGQgaGF2ZSB0bwpiZSBpbiBzdHJ1Y3QgZGV2aWNlX2RyaXZlcik/CgpodHRwczovL2xrbWwua2Vy
-bmVsLm9yZy9nLzQ3NDIyNTguVEJpdEMzaFZ1T0B3dWVyZmVsCgpTb3VuZHMgbGlrZSBsb3RzIG9m
-IGZ1biwgYnV0IHRoYXQgbWVhbnMgdGhhdCBhbnkgZ2l2ZW4gbWFjaGluZSB3aWxsCmdldCBvcmRl
-cmVkIHByb2JlIG9ubHkgYWZ0ZXIgYWxsIHRoZSBkcml2ZXJzIGl0IHVzZXMgaGF2ZSBiZWVuIG1v
-dmVkCnRvIHRoZSBuZXcgZGVjbGFyYXRpdmUgQVBJLgoKVEJILCB0aGF0IHNlZW1zIHJlYWxseSBm
-YXIgYXdheS4KClJlZ2FyZHMsCgpUb21ldQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2RyaS1kZXZlbAo=
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, July 09, 2015 7:09 PM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
+> Flove; Oder Chiou; John Lin; ramesh.babu@intel.com
+> Subject: Re: [PATCH] ASoC: add rt298 codec driver
+> 
+> On Fri, Jun 26, 2015 at 10:59:49AM +0800, Bard Liao wrote:
+> > It is the initial version of ALC298 codec driver.
+> 
+> I'll apply this but a few things here which you should look at:
+> 
+> > +static int rt298_probe(struct snd_soc_codec *codec) {
+> > +	struct rt298_priv *rt298 = snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	rt298->codec = codec;
+> > +
+> > +	if (rt298->i2c->irq) {
+> > +		regmap_update_bits(rt298->regmap,
+> > +					RT298_IRQ_CTRL, 0x2, 0x2);
+> > +
+> > +		INIT_DELAYED_WORK(&rt298->jack_detect_work,
+> > +					rt298_jack_detect_work);
+> > +		schedule_delayed_work(&rt298->jack_detect_work,
+> > +					msecs_to_jiffies(1250));
+> 
+> That seems like an awfully long time to wait to do the first jack detection.
+> What's this for?
+
+Originally, that is for waiting dapm initialization. Now we check
+rt298->codec at the beginning of rt298_jack_detect. I don't know
+if it is still necessary.
+
+> 
+> > +static int rt298_i2c_probe(struct i2c_client *i2c,
+> > +			   const struct i2c_device_id *id) {
+> > +	struct rt298_platform_data *pdata = dev_get_platdata(&i2c->dev);
+> > +	struct rt298_priv *rt298;
+> > +	struct device *dev = &i2c->dev;
+> > +	const struct acpi_device_id *acpiid;
+> > +	int i, ret;
+> > +
+> > +	pr_info("%s\n", __func__);
+> 
+> This isn't adding anything, you should remove it.
+
+Do you mean remove "pr_info("%s\n", __func__);" ?
+
+> 
+> ------Please consider the environment before printing this e-mail.
