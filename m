@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98357a: Use DAI input as a dapm
-	widget" to the asoc tree
-Date: Mon, 13 Jul 2015 19:14:21 +0100
-Message-ID: <E1ZEiFB-00033W-Ms@debutante>
-References: <1436714061-18618-2-git-send-email-anatol.pomozov@gmail.com>
+Subject: Applied "ASoC: max98357a: Make 'sdmode-gpios' dts
+	property optional" to the asoc tree
+Date: Mon, 13 Jul 2015 19:14:22 +0100
+Message-ID: <E1ZEiFC-000340-NO@debutante>
+References: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FBC4261AF7
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 20:14:28 +0200 (CEST)
-In-Reply-To: <1436714061-18618-2-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C06D261B02
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 20:14:29 +0200 (CEST)
+In-Reply-To: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98357a: Use DAI input as a dapm widget
+   ASoC: max98357a: Make 'sdmode-gpios' dts property optional
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 508e61953f7b2c5c828412e5b46fa99b8a3fbaa1 Mon Sep 17 00:00:00 2001
+>From 5119222f2e3de2e51a3b3270036d53c55ce68236 Mon Sep 17 00:00:00 2001
 From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Date: Sun, 12 Jul 2015 08:14:20 -0700
-Subject: [PATCH] ASoC: max98357a: Use DAI input as a dapm widget
+Date: Sun, 12 Jul 2015 08:14:19 -0700
+Subject: [PATCH] ASoC: max98357a: Make 'sdmode-gpios' dts property optional
 
-Spec does not say anything about DAC called SDMode.
-It makes more sense to use DAI input that created automatically by DAPM
-and route it to Speaker output.
+The option is not needed if chip is always on or managed by some other part
+of system like platform card driver.
 
 Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98357a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/max98357a.txt | 6 +++++-
+ sound/soc/codecs/max98357a.c                          | 5 ++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/max98357a.txt b/Documentation/devicetree/bindings/sound/max98357a.txt
+index a7a149a236e5..28645a2ff885 100644
+--- a/Documentation/devicetree/bindings/sound/max98357a.txt
++++ b/Documentation/devicetree/bindings/sound/max98357a.txt
+@@ -4,7 +4,11 @@ This node models the Maxim MAX98357A DAC.
+ 
+ Required properties:
+ - compatible   : "maxim,max98357a"
+-- sdmode-gpios : GPIO specifier for the GPIO -> DAC SDMODE pin
++
++Optional properties:
++- sdmode-gpios : GPIO specifier for the chip's SD_MODE pin.
++        If this option is not specified then driver does not manage
++        the pin state (e.g. chip is always on).
+ 
+ Example:
+ 
 diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index fa1b79302bb3..b9e1131bab74 100644
+index 3a2fda08a893..fa1b79302bb3 100644
 --- a/sound/soc/codecs/max98357a.c
 +++ b/sound/soc/codecs/max98357a.c
-@@ -51,12 +51,11 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
- }
+@@ -31,6 +31,9 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
+ {
+ 	struct gpio_desc *sdmode = snd_soc_dai_get_drvdata(dai);
  
- static const struct snd_soc_dapm_widget max98357a_dapm_widgets[] = {
--	SND_SOC_DAPM_DAC("SDMode", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_OUTPUT("Speaker"),
- };
++	if (!sdmode)
++		return 0;
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+@@ -60,7 +63,7 @@ static int max98357a_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct gpio_desc *sdmode;
  
- static const struct snd_soc_dapm_route max98357a_dapm_routes[] = {
--	{"Speaker", NULL, "SDMode"},
-+	{"Speaker", NULL, "HiFi Playback"},
- };
- 
- static int max98357a_codec_probe(struct snd_soc_codec *codec)
+-	sdmode = devm_gpiod_get(codec->dev, "sdmode", GPIOD_OUT_LOW);
++	sdmode = devm_gpiod_get_optional(codec->dev, "sdmode", GPIOD_OUT_LOW);
+ 	if (IS_ERR(sdmode)) {
+ 		dev_err(codec->dev, "%s() unable to get sdmode GPIO: %ld\n",
+ 				__func__, PTR_ERR(sdmode));
 -- 
 2.1.4
