@@ -1,18 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uda134x: Move state struct allocation
-	to bus probe" to the asoc tree
-Date: Mon, 13 Jul 2015 12:16:59 +0100
-Message-ID: <E1ZEbjH-0006ev-TA@debutante>
-References: <1436783208-1529-2-git-send-email-lars@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
+ assignment for external base speaker and external microphone not working
+Date: Mon, 13 Jul 2015 19:24:24 +0800
+Message-ID: <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
+References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
+ <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
+ <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
+ <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+ <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
+ <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+ <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
+ <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
+ <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
+ <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
+ <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 113632604D6
- for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:17:06 +0200 (CEST)
-In-Reply-To: <1436783208-1529-2-git-send-email-lars@metafoo.de>
+Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
+ [209.85.214.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B1852606BB
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 13:24:26 +0200 (CEST)
+Received: by obqd1 with SMTP id d1so12493954obq.1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 04:24:25 -0700 (PDT)
+In-Reply-To: <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,130 +34,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Arthur Borsboom <arthurborsboom@gmail.com>
+Cc: lukasz.wojnilowicz@gmail.com, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+>
+> Honestly some of the Alsa code talk is a bit over my head, so maybe I
+should just stick to providing PCI/Vendor ID's and test results. :)
+>
+> RY> How do you test ? Using sound preference or alsa speaker-test
+>
+> I apply some of your code by retyping this into the mainline kernel
+4.2-rc1 code, compile and install the kernel, and then test the audio.
+> The subwoofer I test by playing music with my music player, Audacious.
+> When testing different configurations and output profiles I use
+pavucontrol.
+> For testing the microphone, I open pavucontrol, switch the input source
+between Internal Microphone and Microphone and look at the volumebar to see
+if the microphone works fine.
+>
+> Do you have suggestions how to apply and test the provided patches?
+>
 
-   ASoC: uda134x: Move state struct allocation to bus probe
+you have to provide alsa-info of patched driver
 
-has been applied to the asoc tree at
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/chmap.c;hb=HEAD
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+./chmap -Dhw:0 query
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Do chmap show the stereo and 2.1 channel map ?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+the "External Subwoofer Jack" detect kctl should return true when you plug
+the Sonic Master Subwoofer and false when you unplug
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+after you add analog-output-subwoofer.conf and replace the output path
+analog-output-lineout and analog-output-speaker in 2.1 profiles in
+profile-sets/default.conf
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+You have to provide pulseaudio verbsose log if pulseaudio did not
+automatically switch to 2.1 profile
 
-Thanks,
-Mark
+The dirty workaround for the headset mic when your codec cannot distinguish
+headphone and headset but you use only headset
 
->From f15c444e58ed5b5dfc6056249ef8a74d00118be3 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 13 Jul 2015 12:26:45 +0200
-Subject: [PATCH] ASoC: uda134x: Move state struct allocation to bus probe
+Change the headset.conf to use jsck headphone instead of headset mic jack
 
-Resource allocations should be done in the bus probe rather than the CODEC
-probe. Move the allocation of the drivers state struct there.
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/plain/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/uda134x.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+-[Jack Headset Mic]
+-required-any = any
 
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index 913edf283239..a89f98a773d6 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -478,8 +478,8 @@ static struct snd_soc_dai_driver uda134x_dai = {
- static int uda134x_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
--	struct uda134x_priv *uda134x;
- 	struct uda134x_platform_data *pd = codec->component.card->dev->platform_data;
-+	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
- 	const struct snd_soc_dapm_widget *widgets;
- 	unsigned num_widgets;
- 
-@@ -506,10 +506,6 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 		return -EINVAL;
- 	}
- 
--	uda134x = kzalloc(sizeof(struct uda134x_priv), GFP_KERNEL);
--	if (uda134x == NULL)
--		return -ENOMEM;
--	snd_soc_codec_set_drvdata(codec, uda134x);
- 
- 	codec->control_data = pd;
- 
-@@ -530,7 +526,6 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	if (ret) {
- 		printk(KERN_ERR "%s failed to register dapm controls: %d",
- 			__func__, ret);
--		kfree(uda134x);
- 		return ret;
- 	}
- 
-@@ -551,31 +546,19 @@ static int uda134x_soc_probe(struct snd_soc_codec *codec)
- 	default:
- 		printk(KERN_ERR "%s unknown codec type: %d",
- 			__func__, pd->model);
--		kfree(uda134x);
- 		return -EINVAL;
- 	}
- 
- 	if (ret < 0) {
- 		printk(KERN_ERR "UDA134X: failed to register controls\n");
--		kfree(uda134x);
- 		return ret;
- 	}
- 
- 	return 0;
- }
- 
--/* power down chip */
--static int uda134x_soc_remove(struct snd_soc_codec *codec)
--{
--	struct uda134x_priv *uda134x = snd_soc_codec_get_drvdata(codec);
--
--	kfree(uda134x);
--	return 0;
--}
--
- static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
- 	.probe =        uda134x_soc_probe,
--	.remove =       uda134x_soc_remove,
- 	.reg_cache_size = sizeof(uda134x_reg),
- 	.reg_word_size = sizeof(u8),
- 	.reg_cache_default = uda134x_reg,
-@@ -592,6 +575,14 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
- 
- static int uda134x_codec_probe(struct platform_device *pdev)
- {
-+	struct uda134x_priv *uda134x;
-+
-+	uda134x = devm_kzalloc(&pdev->dev, sizeof(*uda134x), GFP_KERNEL);
-+	if (!uda134x)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, uda134x);
-+
- 	return snd_soc_register_codec(&pdev->dev,
- 			&soc_codec_dev_uda134x, &uda134x_dai, 1);
- }
--- 
-2.1.4
+-[Jack Headset Mic Phantom]
+-state.plugged = unknown
+-state.unplugged = unknown
+-required-any = any
+
+[Jack Headphone]
+-state.plugged = unknown
++required-any = any
