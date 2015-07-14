@@ -1,85 +1,71 @@
-From: Keith Packard <keithp@keithp.com>
-Subject: [PATCH] ALSA: hda/realtek: Enable HP amp and mute LED on HP Folio 9480m
-Date: Tue, 14 Jul 2015 10:44:31 -0700
-Message-ID: <1436895871-2459-1-git-send-email-keithp@keithp.com>
-References: <1436892035-19589-1-git-send-email-keithp@keithp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1436892035-19589-1-git-send-email-keithp@keithp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, David Henningsson <david.henningsson@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Keith Packard <keithp@keithp.com>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: Intel: Get correct usage_count value to load firmware
+Date: Tue, 14 Jul 2015 11:13:46 -0700
+Message-ID: <1436897626-118574-1-git-send-email-yang.a.fang@intel.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, srinivas.sripathi@intel.com, shilpa.sreeramalu@intel.com, dinesh.mirche@intel.com, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This laptop needs GPIO4 pulled high to enable the headphone amplifier,
-and has a mute LED on GPIO3. I modelled the patch on the existing
-GPIO4 code which pulls the line low for the same purpose; this time,
-the HP amp line is pulled high.
+From: Shilpa Sreeramalu <shilpa.sreeramalu@intel.com>
 
-Signed-off-by: Keith Packard <keithp@keithp.com>
+The usage_count variable was read before it was set to the correct
+value, due to which the firmware load was failing. Because of this
+IPC messages sent to the firmware were timing out causing a delay
+of about 1 second while playing audio from the internal speakers.
+
+With this patch the usage_count is read after the function call
+pm_runtime_get_sync which will increment the usage_count variable
+and the firmware load is successful and all the IPC messages are
+processed correctly.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Shilpa Sreeramalu <shilpa.sreeramalu@intel.com>
 ---
- sound/pci/hda/patch_realtek.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/intel/atom/sst/sst_drv_interface.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6d01045..de031f7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3436,6 +3436,29 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
- 	}
- }
+diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+index 620da1d..440b953 100644
+--- a/sound/soc/intel/atom/sst/sst_drv_interface.c
++++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+@@ -42,6 +42,11 @@
+ #define MIN_FRAGMENT_SIZE (50 * 1024)
+ #define MAX_FRAGMENT_SIZE (1024 * 1024)
+ #define SST_GET_BYTES_PER_SAMPLE(pcm_wd_sz)  (((pcm_wd_sz + 15) >> 4) << 1)
++#ifdef PM_CONFIG
++#define GET_USAGE_COUNT(dev) (atomic_read(&dev->power.usage_count))
++#else
++#define GET_USAGE_COUNT(dev) 1
++#endif
  
-+static void alc280_fixup_hp_gpio4_hp_amp(struct hda_codec *codec,
-+					 const struct hda_fixup *fix,
-+					 int action)
-+{
-+	/* Pull GPIO4 high to enable headphone amp */
-+	struct alc_spec *spec = codec->spec;
-+	static const struct hda_verb gpio_init[] = {
-+		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x18 },
-+		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x18 },
-+		{ 0x01, AC_VERB_SET_GPIO_DATA, 0x10 },
-+		{}
-+	};
-+
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
-+		spec->gpio_led = 0x10;
-+		spec->mute_led_polarity = 0;
-+		spec->gpio_mute_led_mask = 0x08;
-+		snd_hda_add_verbs(codec, gpio_init);
-+		codec->power_filter = led_power_filter;
-+	}
-+}
-+
- static void gpio2_mic_hotkey_event(struct hda_codec *codec,
- 				   struct hda_jack_callback *event)
+ int free_stream_context(struct intel_sst_drv *ctx, unsigned int str_id)
  {
-@@ -4512,6 +4535,7 @@ enum {
- 	ALC286_FIXUP_HP_GPIO_LED,
- 	ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY,
- 	ALC280_FIXUP_HP_DOCK_PINS,
-+	ALC280_FIXUP_HP_GPIO4_HP_AMP,
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13_GPIO6,
-@@ -5012,6 +5036,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC280_FIXUP_HP_GPIO4
- 	},
-+	[ALC280_FIXUP_HP_GPIO4_HP_AMP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc280_fixup_hp_gpio4_hp_amp,
-+	},
- 	[ALC288_FIXUP_DELL_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_headset_mode_dell_alc288,
-@@ -5103,6 +5131,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x22b7, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22bf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22cf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
-+	SND_PCI_QUIRK(0x103c, 0x22db, "HP", ALC280_FIXUP_HP_GPIO4_HP_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x22dc, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
- 	SND_PCI_QUIRK(0x103c, 0x22fb, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
- 	/* ALC290 */
+@@ -141,15 +146,9 @@ static int sst_power_control(struct device *dev, bool state)
+ 	int ret = 0;
+ 	int usage_count = 0;
+ 
+-#ifdef CONFIG_PM
+-	usage_count = atomic_read(&dev->power.usage_count);
+-#else
+-	usage_count = 1;
+-#endif
+-
+ 	if (state == true) {
+ 		ret = pm_runtime_get_sync(dev);
+-
++		usage_count = GET_USAGE_COUNT(dev);
+ 		dev_dbg(ctx->dev, "Enable: pm usage count: %d\n", usage_count);
+ 		if (ret < 0) {
+ 			dev_err(ctx->dev, "Runtime get failed with err: %d\n", ret);
+@@ -164,6 +163,7 @@ static int sst_power_control(struct device *dev, bool state)
+ 			}
+ 		}
+ 	} else {
++		usage_count = GET_USAGE_COUNT(dev);
+ 		dev_dbg(ctx->dev, "Disable: pm usage count: %d\n", usage_count);
+ 		return sst_pm_runtime_put(ctx);
+ 	}
 -- 
-2.1.4
+1.7.9.5
