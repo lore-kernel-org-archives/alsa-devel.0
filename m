@@ -1,20 +1,18 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
-	rt5645_enable_push_button_irq
-Date: Tue, 14 Jul 2015 10:09:44 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
-References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
- <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
- <20150714095247.GN11162@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98925: Remove control_data
+	initialization" to the asoc tree
+Date: Tue, 14 Jul 2015 11:11:37 +0100
+Message-ID: <E1ZExBZ-0004Qh-0D@debutante>
+References: <1436809252-10112-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 70BFA260459
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 12:09:53 +0200 (CEST)
-In-Reply-To: <20150714095247.GN11162@sirena.org.uk>
-Content-Language: zh-TW
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63DF326060F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 12:11:48 +0200 (CEST)
+In-Reply-To: <1436809252-10112-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Nicolas Boichat <drinkcat@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Tuesday, July 14, 2015 5:53 PM
-> To: Nicolas Boichat
-> Cc: Bard Liao; Oder Chiou; Liam Girdwood; Jaroslav Kysela; Takashi Iwai;
-> alsa-devel@alsa-project.org; koro.chen@mediatek.com
-> Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
-> rt5645_enable_push_button_irq
-> 
-> On Tue, Jul 14, 2015 at 02:51:25PM +0800, Nicolas Boichat wrote:
-> 
-> > +		if (codec->component.card->instantiated) {
-> > +			snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-> > +			snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-> > +			snd_soc_dapm_sync(dapm);
-> > +		} else {
-> > +			regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
-> > +				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
-> > +				RT5645_PWR_ADC_L_BIT |
-> RT5645_PWR_ADC_R_BIT);
-> > +		}
-> 
-> I don't understand why this isn't updating the DAPM state if the device is
-> not yet instantiated - this means that when the card instantiates the pins
-> will be turned off which presumably isn't what you want given the manual
-> register map futzing in the else case.  What's going on here?
+The patch
 
-Thanks for the review. I think what we need is something like
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-+		snd_soc_dapm_sync(dapm);
-+		if (!codec->component.card->instantiated) {
-+			regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
-+				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
-+				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT);
-+		}
+   ASoC: max98925: Remove control_data initialization
 
-> 
-> ------Please consider the environment before printing this e-mail.
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From f6d1a814844efc4b326538bd35a8daecd37921ed Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Mon, 13 Jul 2015 19:40:52 +0200
+Subject: [PATCH] ASoC: max98925: Remove control_data initialization
+
+The control_data field of the snd_soc_codec struct is no longer used by
+ASoC drivers using standard regmap IO.
+
+There is no need to initialize the field to point to the drivers regmap
+struct, so drop that.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98925.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
+index aad664225dc3..eddf8bc07314 100644
+--- a/sound/soc/codecs/max98925.c
++++ b/sound/soc/codecs/max98925.c
+@@ -523,7 +523,6 @@ static int max98925_probe(struct snd_soc_codec *codec)
+ 	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	max98925->codec = codec;
+-	codec->control_data = max98925->regmap;
+ 	regmap_write(max98925->regmap, MAX98925_GLOBAL_ENABLE, 0x00);
+ 	/* It's not the default but we need to set DAI_DLY */
+ 	regmap_write(max98925->regmap,
+-- 
+2.1.4
