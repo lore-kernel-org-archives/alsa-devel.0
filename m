@@ -1,16 +1,20 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: ASoC Multiple outputs
-Date: Tue, 14 Jul 2015 11:25:55 +0100
-Message-ID: <1436869555.2479.59.camel@loki>
-References: <9FCBB1D1936B2F4DB2DD02BA3957FB50C2E9A0@LEMAIL01.le.imgtec.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
+ rt5645_enable_push_button_irq
+Date: Tue, 14 Jul 2015 11:28:33 +0100
+Message-ID: <20150714102833.GP11162@sirena.org.uk>
+References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
+ <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
+ <20150714095247.GN11162@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3673455993893719499=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B4AB326060F
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 12:25:58 +0200 (CEST)
-In-Reply-To: <9FCBB1D1936B2F4DB2DD02BA3957FB50C2E9A0@LEMAIL01.le.imgtec.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C46062606A3
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 12:28:48 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,86 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Redfearn <Matt.Redfearn@imgtec.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas Boichat <drinkcat@chromium.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reflowed formatting. Best to always CC maintainers too.
 
-On Mon, 2015-07-13 at 07:39 +0000, Matt Redfearn wrote:
-> Hi list,
-> I am writing an ALSA driver for an SoC / board which has a single I2S
-> source. The source may be connected internally to either a codec
-> outputting to analogue headphones, or to an HDMI transmitter.
-> At the moment I have set up two snd_soc_dai_link within the same card
-> connecting the source to each sink. 
-> 
-> static struct snd_soc_dai_link ci20_dai_link[] = {
-> 	{
-> 		.name = "ci20",
-> 		.stream_name = "headphones",
-> 		.cpu_dai_name = "jz4780-i2s",
-> 		.platform_name = "jz4780-i2s",
-> 		.codec_dai_name = "jz4780-hifi",
-> 		.codec_name = "jz4780-codec",
-> 		.init = ci20_init,
-> 		.ops = &ci20_audio_dai_ops,
-> 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM,
-> 	},
-> 	{
-> 		.name = "ci20 HDMI",
-> 		.stream_name = "hdmi",
-> 		.cpu_dai_name = "jz4780-i2s",
-> 		.platform_name = "jz4780-i2s",
-> 		.codec_dai_name = "dw-hdmi-hifi",
-> 		.codec_name = "dw-hdmi-audio",
-> 		.init = ci20_hdmi_init,
-> 		.ops = &ci20_audio_dai_ops,
-> 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS,
-> 	}
-> };
-> 
-> This works and creates 2 devices, and I am able to get mplayer to play
-> sound out to either the headphones or HDMI using the argument "-ao
-> alsa:device=hw=0.0" or "-ao alsa:device=hw=0.1"
-> 
-> aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: ci20 [ci20], device 0: headphones jz4780-hifi-0 []
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> card 0: ci20 [ci20], device 1: hdmi jz4780-hdmi-hifi-1 []
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> However, alsamixer does not show anything about the second device
-> (HDMI), only the analogue output associated with device 0.
+--===============3673455993893719499==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AzvmocDWoflW00fe"
+Content-Disposition: inline
 
 
-> Please could someone advise what is the "correct" way to set up
-> multiple links in such a system such that the headphones / HDMI
-> outputs appear in the mixer and are available to pulseaudio.
+--AzvmocDWoflW00fe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This looks correct. You have a PCM for each device.  The mixers should
-all be available for both PCMs unless there are mixer naming
-problems/collisions ?
+On Tue, Jul 14, 2015 at 10:09:44AM +0000, Bard Liao wrote:
 
->  Should I create multiple cards? Should I create subdevices for the
-> different outputs? If so, what structures should be set up within the
-> driver to achieve this?
-> Suggestions of any documentation / websites that may help would be
-> great!
+> Thanks for the review. I think what we need is something like
+> +		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
+> +		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
+> +		snd_soc_dapm_sync(dapm);
+> +		if (!codec->component.card->instantiated) {
+> +			regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
+> +				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
+> +				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT);
+> +		}
 
-Best to use a single card if the audio HW is shared between HDMI and
-analog otherwise you could create separate cards if no audio HW is
-shared between either PCM.
+Yes, that's more what I'd expect.  You could probably just do the regmap
+update unconditionally since it shouldn't make any difference but it's a
+bit neater this way.
 
-Liam
+--AzvmocDWoflW00fe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> 
-> Thanks!
-> Matt
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVpORQAAoJECTWi3JdVIfQRDAH/3wSTqAtWHIY+5rQstHDZKuj
+xVqL1kP5X8mv3FD/UxdXRYDGH2l24Q4z5Sy/bYaGvAH+twGcan06x1WgAUvbSfRz
+y2BEpNUSV2IwWyvFlmkNNRgFotz6YyK2t+04jRQJnXSKXfKXSkVSRFPpOhRCP6+n
+RZz7MdL0htuPwvcrDhiSzlMsfqupqcY/UI28wqPkvIx9/YqU29xmgJth+PSDGYX/
+hQFVNU+DmFNVMcd6YK4mrVeHk6TnTRbu+hdX4k+A09lmJBbKL+53vA9k67tXgei/
+X2rIDSyK4TzHCxqDlnkD+TlPv7vVhm0wS30h+4ACFse1aW96je+hbiB7ya+OS6M=
+=xjqJ
+-----END PGP SIGNATURE-----
+
+--AzvmocDWoflW00fe--
+
+--===============3673455993893719499==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3673455993893719499==--
