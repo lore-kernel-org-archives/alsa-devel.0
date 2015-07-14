@@ -1,14 +1,24 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH] ASoC: topology: Fix to add dapm mixer info
-Date: Tue, 14 Jul 2015 13:10:47 +0530
-Message-ID: <1436859647-24213-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Intel Baytrail Linux Audio
+Date: Tue, 14 Jul 2015 14:17:55 +0530
+Message-ID: <20150714084755.GA5086@localhost>
+References: <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
+ <20150708102308.91b7258f243e354b1365a47e@ao2.it>
+ <559D3411.6060306@gmail.com>
+ <20150708182132.db38656fb4ccc2e38e41aba0@ao2.it>
+ <559D5091.9020802@gmail.com>
+ <20150708221745.f72dcbec9c96eb86ce0cbfc2@ao2.it>
+ <559EC436.30900@gmail.com> <20150710040623.GY836@localhost>
+ <55A3F027.9010006@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 02036260444
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 10:13:14 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A6BF260444
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 10:46:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <55A3F027.9010006@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,34 +28,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Tyler Yeomans <tyeo098@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Nikula,
+ Jarkko" <jarkko.nikula@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Mon, Jul 13, 2015 at 01:06:47PM -0400, Tyler Yeomans wrote:
+> Vinod,
+> 
+> Have you received my last message?
+> The device was originally installed with 8.1, but I have since
+> erased it in favor of Ubuntu.
+> 
+> Is there anything I can be trying in the meantime?
+> 
+> Thanks-
+> 
+> Tyler
+> 
+> On 07/10/2015 12:06 AM, Vinod Koul wrote:
+> >On Thu, Jul 09, 2015 at 02:57:58PM -0400, Tyler Yeomans wrote:
+> >>Antonio/Vinod,
+> >>
+> >>I have made the change in the sst-acpi.c file for the atom specific boards.
+> >>I've attached the dmesg output here with dynamic debug enabled.
+> >>
+> >>To clarify-
+> >>
+> >>snd-intel-sst-core is loaded
+> >>FE-BE fix has been applied
+> >>I'm using the ssp0 firmware.
+> >>
+> >>Interrupts are still 0
+> >>
+> >>Still no sound.
+Thanks,
 
-Mixer control for widgets can't be created if the info is NULL. So assign
-the correct info for this.
+I think the interrupt routing is not right, so am trying ti get answers for
+this, stay tuned :)
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/soc-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f38f111..70bcfe9 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -144,7 +144,7 @@ static const struct snd_soc_tplg_kcontrol_ops io_ops[] = {
- 	{SND_SOC_TPLG_CTL_STROBE, snd_soc_get_strobe,
- 		snd_soc_put_strobe, NULL},
- 	{SND_SOC_TPLG_DAPM_CTL_VOLSW, snd_soc_dapm_get_volsw,
--		snd_soc_dapm_put_volsw, NULL},
-+		snd_soc_dapm_put_volsw, snd_soc_info_volsw},
- 	{SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE, snd_soc_dapm_get_enum_double,
- 		snd_soc_dapm_put_enum_double, snd_soc_info_enum_double},
- 	{SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT, snd_soc_dapm_get_enum_double,
 -- 
-2.4.3
+~Vinod
+
+> >>
+> >>Would leaving the device on and providing remote access (i.e though
+> >>teamviewer) assist in any way?
+> >The fw download seems to fail on your device, which can also be due to
+> >incorrect interrupt mapping...
+> >
+> >[   20.386850] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+> >msg_id:0x1 fw_state 0x3
+> >[   20.386862] intel_sst_acpi 80860F28:00: fw returned err -16
+> >[   20.386873] sst-mfld-platform sst-mfld-platform: Enter: enable=1
+> >port_name=ssp2-port
+> >[   20.752559] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+> >msg_id:0x1 fw_state 0x3
+> >[   20.752570] intel_sst_acpi 80860F28:00: fw returned err -16
+> >[   21.163378] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
+> >msg_id:0x0 fw_state 0x1
+> >[   21.163388] intel_sst_acpi 80860F28:00: fw download failed -16
+> >
+> >Can you tell me which device you have, what was preinstalled on it
+> >
+> 
+
+-- 
