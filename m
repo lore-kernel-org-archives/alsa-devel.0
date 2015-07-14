@@ -1,24 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Tue, 14 Jul 2015 14:17:55 +0530
-Message-ID: <20150714084755.GA5086@localhost>
-References: <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
- <20150708102308.91b7258f243e354b1365a47e@ao2.it>
- <559D3411.6060306@gmail.com>
- <20150708182132.db38656fb4ccc2e38e41aba0@ao2.it>
- <559D5091.9020802@gmail.com>
- <20150708221745.f72dcbec9c96eb86ce0cbfc2@ao2.it>
- <559EC436.30900@gmail.com> <20150710040623.GY836@localhost>
- <55A3F027.9010006@gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
+	rt5645_enable_push_button_irq
+Date: Tue, 14 Jul 2015 09:48:08 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70108A8EC@RTITMBSV03.realtek.com.tw>
+References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
+ <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A6BF260444
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 10:46:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <55A3F027.9010006@gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC505260525
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 11:48:16 +0200 (CEST)
+In-Reply-To: <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,69 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tyler Yeomans <tyeo098@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>
+To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 13, 2015 at 01:06:47PM -0400, Tyler Yeomans wrote:
-> Vinod,
+> -----Original Message-----
+> From: Nicolas Boichat [mailto:drinkcat@chromium.org]
+> Sent: Tuesday, July 14, 2015 2:51 PM
+> To: Mark Brown
+> Cc: Bard Liao; Oder Chiou; Liam Girdwood; Jaroslav Kysela; Takashi Iwai;
+> alsa-devel@alsa-project.org; koro.chen@mediatek.com
+> Subject: [PATCH v2 1/3] ASoC: rt5645: Simplify
+> rt5645_enable_push_button_irq
 > 
-> Have you received my last message?
-> The device was originally installed with 8.1, but I have since
-> erased it in favor of Ubuntu.
+> LDO2/Mic Det Power pins are already enabled/disabled in
+> rt5645_jack_detect (the jack out code path previously did not disable
+> those: modify it to make it so).
 > 
-> Is there anything I can be trying in the meantime?
+> Also, provide an alternative if dapm is not ready yet.
 > 
-> Thanks-
-> 
-> Tyler
-> 
-> On 07/10/2015 12:06 AM, Vinod Koul wrote:
-> >On Thu, Jul 09, 2015 at 02:57:58PM -0400, Tyler Yeomans wrote:
-> >>Antonio/Vinod,
-> >>
-> >>I have made the change in the sst-acpi.c file for the atom specific boards.
-> >>I've attached the dmesg output here with dynamic debug enabled.
-> >>
-> >>To clarify-
-> >>
-> >>snd-intel-sst-core is loaded
-> >>FE-BE fix has been applied
-> >>I'm using the ssp0 firmware.
-> >>
-> >>Interrupts are still 0
-> >>
-> >>Still no sound.
-Thanks,
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 
-I think the interrupt routing is not right, so am trying ti get answers for
-this, stay tuned :)
-
--- 
-~Vinod
-
-> >>
-> >>Would leaving the device on and providing remote access (i.e though
-> >>teamviewer) assist in any way?
-> >The fw download seems to fail on your device, which can also be due to
-> >incorrect interrupt mapping...
-> >
-> >[   20.386850] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> >msg_id:0x1 fw_state 0x3
-> >[   20.386862] intel_sst_acpi 80860F28:00: fw returned err -16
-> >[   20.386873] sst-mfld-platform sst-mfld-platform: Enter: enable=1
-> >port_name=ssp2-port
-> >[   20.752559] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> >msg_id:0x1 fw_state 0x3
-> >[   20.752570] intel_sst_acpi 80860F28:00: fw returned err -16
-> >[   21.163378] intel_sst_acpi 80860F28:00: Wait timed-out condition:0x0,
-> >msg_id:0x0 fw_state 0x1
-> >[   21.163388] intel_sst_acpi 80860F28:00: fw download failed -16
-> >
-> >Can you tell me which device you have, what was preinstalled on it
-> >
-> 
-
--- 
+Acked-by: Bard Liao <bardliao@realtek.com>
