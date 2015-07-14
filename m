@@ -1,50 +1,76 @@
-From: Jenny TC <jenny.tc@intel.com>
-Subject: [PATCH] cht_bsw_rt5645: Fix Kernel crash with strcpy
-Date: Tue, 14 Jul 2015 22:06:51 +0530
-Message-ID: <1436891811-24759-1-git-send-email-jenny.tc@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 47F7826530C
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 18:36:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, yang.a.fang@intel.com
-Cc: vinod.koul@intel.com, Jenny TC <jenny.tc@intel.com>
+From: Keith Packard <keithp@keithp.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable headphone amp on HP Folio 9480m
+Date: Tue, 14 Jul 2015 09:40:35 -0700
+Message-ID: <1436892035-19589-1-git-send-email-keithp@keithp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, David Henningsson <david.henningsson@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Keith Packard <keithp@keithp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Kernel crash is observed when strcpy is used with  const char*.
-The crash is reported only if driver is loaded as a module or the probe
-is called in the late stage of  Kernel boot (EPROBE_DEFER). This is because
-Kernel enables read only protection near the end. Issue is addressed
-by replacing the strcpy with pointer assignment
+This laptop needs GPIO4 pulled high to enable the headphone
+amplifier. I modelled the patch on the existing GPIO4 code which pulls
+the line low for the same purpose.
 
-Signed-off-by: Jenny TC <jenny.tc@intel.com>
+Signed-off-by: Keith Packard <keithp@keithp.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index bdcaf46..3665d6c 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -367,7 +367,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	card->dev = &pdev->dev;
- 	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
- 	/* set correct codec name */
--	strcpy((char *)card->dai_link[2].codec_name, codec_name);
-+	card->dai_link[2].codec_name = codec_name;
- 	snd_soc_card_set_drvdata(card, drv);
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret_val) {
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6d01045..9060f1f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3436,6 +3436,23 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc280_fixup_hp_gpio4_hp_amp(struct hda_codec *codec,
++					 const struct hda_fixup *fix,
++					 int action)
++{
++	/* Pull GPIO4 high to enable headphone amp */
++	static const struct hda_verb gpio_init[] = {
++		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x10 },
++		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x10 },
++		{ 0x01, AC_VERB_SET_GPIO_DATA, 0x10 },
++		{}
++	};
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		snd_hda_add_verbs(codec, gpio_init);
++	}
++}
++
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+ {
+@@ -4512,6 +4529,7 @@ enum {
+ 	ALC286_FIXUP_HP_GPIO_LED,
+ 	ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY,
+ 	ALC280_FIXUP_HP_DOCK_PINS,
++	ALC280_FIXUP_HP_GPIO4_HP_AMP,
+ 	ALC288_FIXUP_DELL_HEADSET_MODE,
+ 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC288_FIXUP_DELL_XPS_13_GPIO6,
+@@ -5012,6 +5030,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC280_FIXUP_HP_GPIO4
+ 	},
++	[ALC280_FIXUP_HP_GPIO4_HP_AMP] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc280_fixup_hp_gpio4_hp_amp,
++	},
+ 	[ALC288_FIXUP_DELL_HEADSET_MODE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_headset_mode_dell_alc288,
+@@ -5103,6 +5125,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x22b7, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x22bf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x22cf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
++	SND_PCI_QUIRK(0x103c, 0x22db, "HP", ALC280_FIXUP_HP_GPIO4_HP_AMP),
+ 	SND_PCI_QUIRK(0x103c, 0x22dc, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x22fb, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	/* ALC290 */
 -- 
-1.7.9.5
+2.1.4
