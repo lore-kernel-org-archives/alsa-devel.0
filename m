@@ -1,16 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: max98925: Remove control_data
-	initialization
-Date: Mon, 13 Jul 2015 19:40:52 +0200
-Message-ID: <1436809252-10112-1-git-send-email-lars@metafoo.de>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [PATCH v2 0/3] ASoC: rt5645: Remove codec dependency
+	in workqueue handler
+Date: Tue, 14 Jul 2015 14:51:24 +0800
+Message-ID: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-249.synserver.de (smtp-out-249.synserver.de
- [212.40.185.249])
- by alsa0.perex.cz (Postfix) with ESMTP id A3489265005
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 07:33:25 +0200 (CEST)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 149052606DD
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 08:51:57 +0200 (CEST)
+Received: by pdrg1 with SMTP id g1so643271pdr.2
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 23:51:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Anish Kumar <yesanishhere@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, koro.chen@mediatek.com, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The control_data field of the snd_soc_codec struct is no longer used by
-ASoC drivers using standard regmap IO.
+Same issue as https://patchwork.kernel.org/patch/6694351/, but reworked fix.
 
-There is no need to initialize the field to point to the drivers regmap
-struct, so drop that.
+The first 2 patches are preparatory work for the 3rd one, which fixes occasional
+kernel panics on boot.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/max98925.c | 1 -
- 1 file changed, 1 deletion(-)
+Nicolas Boichat (3):
+  ASoC: rt5645: Simplify rt5645_enable_push_button_irq
+  ASoC: rt5645: Remove irq_jack_detection function
+  ASoC: rt5645: Remove codec dependency in workqueue handler
 
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-index aad6642..eddf8bc 100644
---- a/sound/soc/codecs/max98925.c
-+++ b/sound/soc/codecs/max98925.c
-@@ -523,7 +523,6 @@ static int max98925_probe(struct snd_soc_codec *codec)
- 	struct max98925_priv *max98925 = snd_soc_codec_get_drvdata(codec);
- 
- 	max98925->codec = codec;
--	codec->control_data = max98925->regmap;
- 	regmap_write(max98925->regmap, MAX98925_GLOBAL_ENABLE, 0x00);
- 	/* It's not the default but we need to set DAI_DLY */
- 	regmap_write(max98925->regmap,
+ sound/soc/codecs/rt5645.c | 185 +++++++++++++++++++++++-----------------------
+ sound/soc/codecs/rt5645.h |   1 +
+ 2 files changed, 95 insertions(+), 91 deletions(-)
+
 -- 
-2.1.4
+2.4.3.573.g4eafbef
