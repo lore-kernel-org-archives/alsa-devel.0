@@ -1,45 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: Drop owner assignment from i2c_driver
-Date: Tue, 14 Jul 2015 17:57:58 +0100
-Message-ID: <20150714165758.GF11162@sirena.org.uk>
-References: <1436506231-8980-1-git-send-email-k.kozlowski@samsung.com>
- <1436506231-8980-2-git-send-email-k.kozlowski@samsung.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+	Dublin
+Date: Tue, 14 Jul 2015 22:05:34 +0500
+Message-ID: <55A5415E.90407@gmail.com>
+References: <20150714150352.GW11162@sirena.org.uk>
+ <55A5330E.7000604@gmail.com> <20150714161711.GB11162@sirena.org.uk>
+ <55A53A7B.20806@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UI7gKp310iCrxvPC"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1436506231-8980-2-git-send-email-k.kozlowski@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Support Opensource <support.opensource@diasemi.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Peter Rosin <peda@axentia.se>, Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF5692652B0
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 19:05:36 +0200 (CEST)
+Received: by wgjx7 with SMTP id x7so13804840wgj.2
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 10:05:36 -0700 (PDT)
+In-Reply-To: <55A53A7B.20806@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+14.07.2015 21:36, Alexander E. Patrakov wrote:
+> 14.07.2015 21:17, Mark Brown wrote:
+>> On Tue, Jul 14, 2015 at 09:04:30PM +0500, Alexander E. Patrakov wrote:
+>>
+>>> I would like to see some direct measurements related to recent
+>>> power-saving
+>>> proposals, including the "disable rewinds" flag. Myself, I can redo
+>>> battery-life measurements on Intel-based laptops that my colleagues
+>>> have,
+>>> and maybe compare dmix, PulseAudio and CRAS in terms of power
+>>> consumption.
+>>
+>> The numbers I seem to remember seeing at the time were these IIRC:
+>>
+>>
+>> http://linux-tipps.blogspot.co.uk/2011/04/power-performance-of-pulseaudio-alsa.html
+>>
+>>
+>> saying there was a 0.4W win (I think Arun had some similar numbers).
+>
+> Thanks for the link. I have no reason to doubt these measurements. Note,
+> however, that they are of the "pulseaudio vs pulseaudio" type, and give
+> no insight into the structure of the win.
 
---UI7gKp310iCrxvPC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oops, sorry for misreading the blog post. It's actually "alsa vs 
+pulseaudio vs high-latency pulseaudio", and does prove that, on the 
+reporter's hardware, the win is not related to userspace inefficiency.
 
-On Fri, Jul 10, 2015 at 02:30:30PM +0900, Krzysztof Kozlowski wrote:
-> i2c_driver does not need to set an owner because i2c_register_driver()
-> will set it.
-
-This doesn't apply against current code, please check and resend.
-
---UI7gKp310iCrxvPC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVpT+WAAoJECTWi3JdVIfQW5YH+QFSbzDjPD4wqWS9XJ9x8ckt
-BEo5AsegihRvEBuMQwXS5/GGnp+RdrmWAmbuMYDQNWQP8g8h0wTgvs8J70Gr3xys
-oNeAaqIknRUjadgfvSizQw0EwWlF1JV76yHqCFV6J0LO/0G0Ttx/FSV1g+yS2JSa
-f4m86a7vHkyD6NOY7QxsnNn4pGGk5Ftk47X3sFV9LdjeH3WTt429ZIA3nK9Mi5/L
-hbyc49RuwVzRhLSVn/vjqSUfE6QWyohQMdxeVQ4DY1wcdRua/2/YvDNHELUFCPBH
-FEvi5P+JL3OTjO12//8pswMoOF4S9IOyAw4t2YfRJ2XSQRnbGStSqYEmBmfy8DA=
-=Ctux
------END PGP SIGNATURE-----
-
---UI7gKp310iCrxvPC--
+-- 
+Alexander E. Patrakov
