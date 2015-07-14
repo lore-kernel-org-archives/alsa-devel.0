@@ -1,83 +1,97 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
- rt5645_enable_push_button_irq
-Date: Tue, 14 Jul 2015 11:28:33 +0100
-Message-ID: <20150714102833.GP11162@sirena.org.uk>
-References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
- <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
- <20150714095247.GN11162@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 11/12] ASoC: tegra: register dependency
+ parser for firmware nodes
+Date: Tue, 14 Jul 2015 12:07:13 +0100
+Message-ID: <20150714110713.GT11162@sirena.org.uk>
+References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
+ <1435743667-11987-12-git-send-email-tomeu.vizoso@collabora.com>
+ <20150701173802.GW11162@sirena.org.uk>
+ <CAAObsKDsEuDS46rW9CMuviDEDV-OVXe5q-kiWmw0D_n2D3Tf5A@mail.gmail.com>
+ <20150713154254.GH11162@sirena.org.uk>
+ <CAAObsKAVY7-QpcRyT4juc2RyB+vqibvzKO7wFCT2VsL9R8bzPw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3673455993893719499=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C46062606A3
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 12:28:48 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolas Boichat <drinkcat@chromium.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="W8iFDApEu++Vn+WX"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAAObsKAVY7-QpcRyT4juc2RyB+vqibvzKO7wFCT2VsL9R8bzPw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux PWM List <linux-pwm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3673455993893719499==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="AzvmocDWoflW00fe"
-Content-Disposition: inline
-
-
---AzvmocDWoflW00fe
+--W8iFDApEu++Vn+WX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 14, 2015 at 10:09:44AM +0000, Bard Liao wrote:
+On Tue, Jul 14, 2015 at 09:34:22AM +0200, Tomeu Vizoso wrote:
+> On 13 July 2015 at 17:42, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
 
-> Thanks for the review. I think what we need is something like
-> +		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-> +		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-> +		snd_soc_dapm_sync(dapm);
-> +		if (!codec->component.card->instantiated) {
-> +			regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
-> +				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
-> +				RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT);
-> +		}
+> > No, I'm looking at how we already have all the "did all my dependencies
+> > appear" logic in the core based on data provided by the drivers.
 
-Yes, that's more what I'd expect.  You could probably just do the regmap
-update unconditionally since it shouldn't make any difference but it's a
-bit neater this way.
+> Sorry, but I still don't get what you mean.
 
---AzvmocDWoflW00fe
+I'm not sure how I can be clearer here...  you're replacing something
+that is currently pure data with open coding in each device.  That seems
+like a step back in terms of ease of use.
+
+> Information about dependencies is currently available only after
+> probe() starts executing, and used to decide whether we want to defer
+> the probe.
+
+> The goal of this series is to eliminate most or all of the deferred
+> probes by checking that all dependencies are available before probe()
+> is called.
+
+Right, but the way it does this is by moving code out of the core into
+the drivers - currently drivers just tell the core what resources to
+look up and the core then makes sure that they're all present.
+
+> I thought you were pointing out that the property names would be
+> duplicated, once in the probe() implementation and also in the
+> implementation of the get_dependencies callback.
+
+Yes, that is another part of issue with this approach - drivers now have
+to specify things twice, once for this new interface and once for
+actually looking things up.  That doesn't seem awesome and adding the
+code into the individual drivers and then having to pull it out again
+when the redundancy is removed is going to be an enormous amount of
+churn.
+
+> A way to consolidate the code and remove that duplication would be
+> having a declarative API for expressing dependencies, which could be
+> used for both fetching dependencies and for preventing deferred
+> probes. That's why I mentioned devm_probe.
+
+Part of what I'm saying here is that in ASoC we already have (at least
+as far as the individual drivers are concerned) a declarative way of
+specifying dependencies.  This new code should be able to make use of
+that, if it can't and especially if none of the code can be shared
+between drivers then that seems like the interface needs another spin.
+
+I've not seen this devm_probe() code but the name sounds worryingly like
+it might be fixing the wrong problem :/
+
+--W8iFDApEu++Vn+WX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVpORQAAoJECTWi3JdVIfQRDAH/3wSTqAtWHIY+5rQstHDZKuj
-xVqL1kP5X8mv3FD/UxdXRYDGH2l24Q4z5Sy/bYaGvAH+twGcan06x1WgAUvbSfRz
-y2BEpNUSV2IwWyvFlmkNNRgFotz6YyK2t+04jRQJnXSKXfKXSkVSRFPpOhRCP6+n
-RZz7MdL0htuPwvcrDhiSzlMsfqupqcY/UI28wqPkvIx9/YqU29xmgJth+PSDGYX/
-hQFVNU+DmFNVMcd6YK4mrVeHk6TnTRbu+hdX4k+A09lmJBbKL+53vA9k67tXgei/
-X2rIDSyK4TzHCxqDlnkD+TlPv7vVhm0wS30h+4ACFse1aW96je+hbiB7ya+OS6M=
-=xjqJ
+iQEcBAEBCAAGBQJVpO1gAAoJECTWi3JdVIfQnSAH+wT+w5R81fdOFtEt0wy01yaj
+GshHYfsA3FUBcLolXKBfwdFn3xRd0MjjOaTZ3pcrPGoKZDNNUF+X41SNSxoeyFoc
+biuYRxw7xpCeT1u7g7aAu/IHyFSXLH/UmW21mckH6JtmLh1wLNKDTNQTI2OFwFLY
+tJKsMXHhAzJ1+nLWxXHpuVN7U+dtNstl+BjGMfXbJqaz8OmvEPkzusI+w5bVlUhL
++q0+AKvuqOYo2gDVlWL1ou2NTJfoubdWrmgquEG351VimQopSAR6feYiORUkwhVp
+176VGZHUTgwpzQo4L2Y1nQkX8D47pHng85WnMEHUnMAYq87XhASkmmuaLaKQfg0=
+=tRqQ
 -----END PGP SIGNATURE-----
 
---AzvmocDWoflW00fe--
-
---===============3673455993893719499==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3673455993893719499==--
+--W8iFDApEu++Vn+WX--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
