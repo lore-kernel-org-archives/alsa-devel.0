@@ -1,18 +1,22 @@
-From: Kenneth Westfield <kwestfie@codeaurora.org>
-Subject: Re: [PATCH 1/3] ASoC: max98357a: Make 'sdmode-gpios'
- dts property optional
-Date: Mon, 13 Jul 2015 15:04:15 -0700
-Message-ID: <20150713220400.GA31568@kwestfie-linux.qualcomm.com>
-References: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
+ or userspace disable rewinds
+Date: Tue, 14 Jul 2015 11:32:54 +0800
+Message-ID: <CAN8cciZy2b+spcMp7UkK5Jfh9ks=1z+Pzrj4YCYyMEGDPHeY3g@mail.gmail.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <55A14D23.3070600@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 211B9262632
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 00:04:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1436714061-18618-1-git-send-email-anatol.pomozov@gmail.com>
+Received: from mail-ob0-f177.google.com (mail-ob0-f177.google.com
+ [209.85.214.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBEFB264F45
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 05:32:55 +0200 (CEST)
+Received: by obre1 with SMTP id e1so13668590obr.1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jul 2015 20:32:55 -0700 (PDT)
+In-Reply-To: <55A14D23.3070600@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kwestfie@codeaurora.org, broonie@kernel.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 12, 2015 at 08:14:19AM -0700, Anatol Pomozov wrote:
-> The option is not needed if chip is always on or managed by some other part
-> of system like platform card driver.
-> 
-> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-> ---
-
-For all three patches:
-
-Confirmed audio functionality on Storm board (ipq806x).
-
-Tested-by: Kenneth Westfield <kwestfie@codeaurora.org>
-
--- 
-Kenneth Westfield
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-a Linux Foundation Collaborative Project
+IEFkZCBuZXcgaHdfcGFyYW1zIGZsYWcgdG8gZXhwbGljaXRseSB0ZWxsIGRyaXZlciB0aGF0IHJl
+d2luZHMKPj4gd2lsbCBuZXZlciBiZSB1c2VkLiBUaGlzIGNhbiBiZSB1c2VkIGJ5IGxvdy1sZXZl
+bCBkcml2ZXIgdG8KPj4gb3B0aW1pemUgRE1BIG9wZXJhdGlvbnMgYW5kIHJlZHVjZSBwb3dlciBj
+b25zdW1wdGlvbi4KPj4gVXNlIHRoaXMgZmxhZyBvbmx5IHdoZW4gZGF0YSB3cml0dGVuIGluIHJp
+bmcgYnVmZmVyIHdpbGwKPj4gbmV2ZXIgYmUgaW52YWxpZGF0ZWQsIGUuZy4gYW55IHVwZGF0ZSBv
+ZiBhcHBsX3B0ciBpcyBmaW5hbC4KPj4KPj4gQ2F2ZWF0OiB0aGVyZSBpcyBjdXJyZW50bHkgbm8g
+d2F5IHRvIHF1ZXJ5IGNhcGFiaWxpdGllcyB3aXRob3V0Cj4+IG9wZW5pbmcgYSBwY20gc3RyZWFt
+LCBzbyBhcHBsaWNhdGlvbnMgbWlnaHQgbmVlZCB0byBzZXJpYWxseQo+PiBvcGVuIGFsbCBleHBv
+c2VkIGRldmljZXMsIGNoZWNrIHdoYXQgdGhleSBzdXBwb3J0IGJ5IGxvb2tpbmcgYXQKPj4gaHdf
+cGFyYW1zLT5pbmZvIGFuZCBjbG9zZSB0aGVtICh0aGlzIGlzIHdoYXQgUHVsc2VBdWRpbyBkb2Vz
+IHNvCj4+IG1pZ2h0IG5vdCBiZSBhbiBpc3N1ZSkKPj4KPgo+IEhvdyBhYm91dCBzcGRpZi0+c3Rh
+dHVzIEFFUzBfTk9OQVVESU8gaXMgc2V0IHdoZW4gQUMzIHBhc3N0aHJvdWdoIFNQRElGID8KCgo+
+Cj4gMS4gV2hhdCBhbW91bnQgb2YgcG93ZXItc2F2aW5nIGFyZSB3ZSB0YWxraW5nIGFib3V0LCBm
+b3IgSW50ZWwgY2hpcHM/Cj4gKGlkZWFsbHksIHRoaXMgc2hvdWxkIGJlIGluIHRoZSBjb21taXQg
+bWVzc2FnZSkKPgoKUmVmZXIgdG8gSERBMDQzLUEKCkVuZXJneSBlZmZpY2llbnQgYXVkaW8gYnVm
+ZmVyaW5nIGFuZCBkeW5hbWljIEZJRk8gbGltaXQgY2hhbmdlCgozLjMuMTEgT2Zmc2V0IDEyaDog
+R0NBUDIg4oCTR2xvYmFsIENhcGFiaWxpdGllcyAyCgpGSUZPIFNpemUgQ2hhbmdlIChGSUZPU0Mp
+IFRoaXMgYml0IGlzUk8KCmlmIEdDQVAyLkVFQUMgPSAwLgoKSW4gc3RhdGljIGNhc2UgKEdDQVAy
+LkVFQUMgPSAxIGFuZCBHQ0FQMi5ERkZMQ0MgPSAwKSwgdGhpcyBiaXQgd2lsbCBvbmx5CmhhdmUg
+ZWZmZWN0IGJlZm9yZSB0aGUgZmlyc3QgdGltZSBSVU4gYml0IGlzIHNldC4gU29mdHdhcmUgbXVz
+dCBub3QgYXR0ZW1wdAp0byB3cml0ZSB0aGlzIGJpdCwgdW5sZXNzIEVFQ0FQLkVFQUMgYml0IGlz
+IHNldC4gSFcgd2lsbCB0cmVhdCB0aGlzIGJpdCBhcwpyZWFkIC1vbmx5IGlmIHRoZSBjYXBhYmls
+aXR5IGlzIG5vdCBzdXBwb3J0ZWQKLgpJbiBkeW5hbWljIGNhc2UgKEdDQVAyLkVFQUMgPSAxIGFu
+ZCBHQ0FQMi5ERkZMQ0MgPSAxKSwgb24gdG9wIG9mIHN1cHBvcnRpbmcKdGhlIHN0YXRpYyBiZWhh
+dmlvciBkZXNjcmliZSBhYm92ZSwgdGhpcyBiaXQgY2FuIGFsc28gYmUgdXNlZCB0bwpjb21tdW5p
+Y2F0ZSB0aGUgZHluYW1pYyBjaGFuZ2UgcmVxdWVzdCBpbiBGSUZPIHNpemUgYmV0d2VlbiBTVyBh
+bmQgSFcgd2hlbgp0aGUgc3RyZWFtIGlzIGFjdGl2ZQoKCjMuMy40MSBPZmZzZXQgOTA6IHtJT0J9
+U0RuRklGT1Mg4oCTIElucHV0L091dHB1dC9CaWRpcmVjdGlvbmFsIFN0cmVhbQpEZXNjcmlwdG9y
+IG4gRklGTyBTaXplCgpXaGVuIEhXIHN1cHBvcnRzIEVFIEF1ZGlvIGNhcGFiaWxpdHksdGhlIEZJ
+Rk9TIHRoaXMgdmFsdWUgd2lsbCByZXByZXNlbnQKdGhlIG1pbmltdW0gc2l6ZSBvZiBjeWNsaWMg
+YnVmZmVyIGZvciBlZmZpY2llbnQgSFcgb3BlcmF0aW9uCgoKRG8gYXBwbGljYXRpb24gbmVlZCB0
+byBrbm93IGRyaXZlciBpcyB1c2luZyBzdGF0aWMgb3IgZHluYW1pYyBjYXNlID8KCmlzIHRoZSBt
+aW5pbXVtIHNpemUgb2YgY3ljbGljIGJ1ZmZlciBmb3IgZWZmaWNpZW50IEhXIG9wZXJhdGlvbiBs
+YXJnZXIgdGhhbgpjdXJyZW50IGh3IHBhcmFtcyAocGVyaW9kX2J5dGVzX21pbiAqIHBlcmlvZHNf
+bWluKSA/CgoKCj4gMi4gU2hvdWxkbid0IFNORF9QQ01fQVBQRU5EICh0aGUgbW9kZSB1c2VkIGJ5
+IGRtaXggYW5kIGZyaWVuZHMpIGJlIGFsc28KPiBtYWRlIGluY29tcGF0aWJsZSB3aXRoIHRoaXMg
+ZmxhZywgYmVjYXVzZSwgd2hlbiBtaXhpbmcsIGl0IGVzc2VudGlhbGx5Cj4gb3ZlcndyaXRlcyBp
+bmNvbXBsZXRlbHktbWl4ZWQgZGF0YSwgaS5lLiByZXdpbmRzIHdpdGhvdXQgc2F5aW5nIHRoZSB3
+b3JkCj4gInJld2luZCI/IFNob3VsZG4ndCBhbGwgb3RoZXIga2luZHMgb2YgZnJlZXdoZWVsaW5n
+IGJlIG1hZGUgaW5jb21wYXRpYmxlCj4gd2l0aCB0aGlzIGZsYWcsIGJlY2F1c2UgdGhlIGNhcmQs
+IGVzc2VudGlhbGx5LCBpcyBuZXZlciB0b2xkIGFib3V0IHRoZQo+IGFwcGxpY2F0aW9uIHBvaW50
+ZXI/IE9yIGlzIHRoaXMgYSB1c2Vyc3BhY2Utb25seSBjb25jZXJuPwo+CgppZiBTTkRfUENNX0FQ
+UEVORCB1c2UgZm1vZGUgPSBPX0FQUEVORCB3aGVuIHNuZF9kZXZpY2Vfb3BlbigpLCB0aGlzIHNl
+ZW0Kc3VwcG9ydCBzZXF1ZW50aWFsIHdyaXRlIG9ubHkgYW5kIG5vIHJhbmRvbSB3cml0ZQoKRG8g
+aXQgbWVhbiBwdWxzZWF1ZGlvIGNhbm5vdCByZXdpbmQgZG1peCBhcyBkbWl4IGFsd2F5IGFwcGVu
+ZCBkYXRhIHRvIGh3CmRldmljZSA/CgoKPgo+IDMuIEkgaGF2ZSBub3Qgc2VlbiBhbnkganVzdGlm
+aWNhdGlvbiBmb3IgdGhlIGRyYXN0aWMgbWVhc3VyZSBvZiBtYWtpbmcgYQo+IERNQS1iYXNlZCBk
+ZXZpY2UgY29tcGxldGVseSB1bnJld2luZGFibGUuIE1heWJlIGEgbW9yZSBwb2xpdGUgInBsZWFz
+ZSBtYWtlCj4gdGhpcyBhIGJhdGNoL2Jsb2NrdHJhbnNmZXIgY2FyZCIgcmVxdWVzdCwgdGh1cyBk
+aXNhbGxvd2luZyBvbmx5IHN1Yi1wZXJpb2QKPiByZXdpbmRzLCB3b3VsZCBzdGlsbCBiZSB1c2Vm
+dWwgZm9yIHBvd2Vyc2F2aW5nLCB3aXRob3V0IGtpbGxpbmcgZG1peC4KPgoKQ2FuIHRob3NlIG5v
+bi1pbnRlcmxlYXZlZCBhY2Nlc3MgcGNtIGRldmljZSB3aXRoIHR3byBwZXJpb2RzIHN1cHBvcnQg
+cmV3aW5kCj8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
