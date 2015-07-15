@@ -1,65 +1,62 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Wed, 15 Jul 2015 10:17:09 +0100
-Message-ID: <20150715091709.GK11162@sirena.org.uk>
-References: <20150626115823.GY14071@sirena.org.uk>
- <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
- <20150629094854.GB11162@sirena.org.uk>
- <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
- <20150630103404.GI6321@opensource.wolfsonmicro.com>
- <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
- <20150713095359.GM16517@opensource.wolfsonmicro.com>
- <CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
- <CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
- <20150715081224.GN16517@opensource.wolfsonmicro.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v3 3/9] ASoC: sti: Add CPU DAI driver for
+	playback
+Date: Wed, 15 Jul 2015 11:28:22 +0200
+Message-ID: <55A627B6.70207@st.com>
+References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
+ <1434983473-25092-4-git-send-email-arnaud.pouliquen@st.com>
+ <20150710170046.GU11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vHmniAU8lLDT2+7p"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20150715081224.GN16517-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 622D326172C
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 11:28:27 +0200 (CEST)
+In-Reply-To: <20150710170046.GU11162@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 
---vHmniAU8lLDT2+7p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 15, 2015 at 09:12:24AM +0100, Charles Keepax wrote:
-
-Folks, please remember to delete irrelevant context from your replies so
-it's possible to find any new content you might have added.
-
-> I suspect we still have some issues with the GPIO lookups, I
-> suspect we want to actually pull them from ACPI rather than
-> putting them into the pdata, as I don't know if the number will
-> translate directly over.
-
-Yes, you shouldn't be fishing numbers directly out of ACPI but instead
-resolving them into Linux GPIO numbers.
-
---vHmniAU8lLDT2+7p
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVpiUUAAoJECTWi3JdVIfQLQoH/0IFl4jsC3Pxh3qBK/SHLrN7
-YiJM8txrqsJYJJ84mD404CecAmWFDeRgL+1dfH3XhgQDNo0G1roHPe7YCEWpMzaz
-nfSunttvpgbe2uGZcNzqfygc0tYV79/QzMdqlMI2YGuUSWjNus+3IunEEETq4Px5
-IV3HIwSronkLWw3mcNSrZaWSGKabfq3YcBNPGN1YDaGvVZqKX3v+jNXRPh561BbY
-/WSr90hWfJoMrZ+nAvuj+9S/w0LTpGnZkP+azuH735b3UD5UWdT5Y8Gh9v/+gpHF
-wx1hULMtE6qeKNEsUzzzkPysoJTvcvDzbrWbbnb8xEQ4eU+LzO/FgGVdBg/7jRY=
-=QmVH
------END PGP SIGNATURE-----
-
---vHmniAU8lLDT2+7p--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On 07/10/2015 07:00 PM, Mark Brown wrote:
+> On Mon, Jun 22, 2015 at 04:31:07PM +0200, Arnaud Pouliquen wrote:
+>
+>> +	if (clk_id != 0)
+>> +		return -EINVAL;
+>> +
+>> +	player->mclk = freq;
+>> +
+>> +	return clk_set_rate(player->clk, freq);
+>
+> You should really only set the mclk after clk_set_rate() succeeds but
+> practically it probably doesn't matter.
+>
+>> +	case SND_SOC_DAIFMT_IB_NF:
+>> +		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(player);
+>> +		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
+>> +		break;
+>> +	case SND_SOC_DAIFMT_IB_IF:
+>> +		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(player);
+>> +		SET_UNIPERIF_I2S_FMT_SCLK_EDGE_FALLING(player);
+>> +	}
+>
+> Missing break in that last case.
+>
+>> +	player->clk = of_clk_get(pdev->dev.of_node, 0);
+>> +	if (IS_ERR(player->clk))
+>> +		ret = (int)PTR_ERR(player->clk);
+>
+> You shouldn't need the cast here.
+>
+Ok, i will sent  correction for this, do you need a V4 for this patch or 
+an additional fix on top of V3?
