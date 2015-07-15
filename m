@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: cs4349: Add support for Cirrus
-	Logic CS4349
-Date: Wed, 15 Jul 2015 12:49:22 +0100
-Message-ID: <20150715114922.GO11162@sirena.org.uk>
-References: <55a5b61e.e2876b0a.89061.59cf@mx.google.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
+	rt5645_enable_push_button_irq
+Date: Wed, 15 Jul 2015 19:50:50 +0800
+Message-ID: <CANMq1KB_qkH41AiBeMDX6oJVyeOMEi1Tgwoxt9jar0Upqb=L4A@mail.gmail.com>
+References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
+ <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
+ <20150714095247.GN11162@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3144966637005481769=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F344265A82
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 13:49:29 +0200 (CEST)
-In-Reply-To: <55a5b61e.e2876b0a.89061.59cf@mx.google.com>
+Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
+ [209.85.214.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AE00265A82
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 13:50:51 +0200 (CEST)
+Received: by obre1 with SMTP id e1so24727755obr.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 04:50:50 -0700 (PDT)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +27,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: timothyc.howe@gmail.com
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 14, 2015 at 6:09 PM, Bard Liao <bardliao@realtek.com> wrote:
+>> -----Original Message-----
+>> From: Mark Brown [mailto:broonie@kernel.org]
+>> Sent: Tuesday, July 14, 2015 5:53 PM
+>> To: Nicolas Boichat
+>> Cc: Bard Liao; Oder Chiou; Liam Girdwood; Jaroslav Kysela; Takashi Iwai;
+>> alsa-devel@alsa-project.org; koro.chen@mediatek.com
+>> Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
+>> rt5645_enable_push_button_irq
+>>
+>> On Tue, Jul 14, 2015 at 02:51:25PM +0800, Nicolas Boichat wrote:
+>>
+>> > +           if (codec->component.card->instantiated) {
+>> > +                   snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
+>> > +                   snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
+>> > +                   snd_soc_dapm_sync(dapm);
+>> > +           } else {
+>> > +                   regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
+>> > +                           RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
+>> > +                           RT5645_PWR_ADC_L_BIT |
+>> RT5645_PWR_ADC_R_BIT);
+>> > +           }
+>>
+>> I don't understand why this isn't updating the DAPM state if the device is
+>> not yet instantiated - this means that when the card instantiates the pins
+>> will be turned off which presumably isn't what you want given the manual
+>> register map futzing in the else case.  What's going on here?
+>
+> Thanks for the review. I think what we need is something like
+> +               snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
+> +               snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
+> +               snd_soc_dapm_sync(dapm);
+> +               if (!codec->component.card->instantiated) {
+> +                       regmap_update_bits(rt5645->regmap, RT5645_PWR_DIG1,
+> +                               RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT,
+> +                               RT5645_PWR_ADC_L_BIT | RT5645_PWR_ADC_R_BIT);
+> +               }
 
---===============3144966637005481769==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bQjxe2ksi2vU832J"
-Content-Disposition: inline
+Just to make sure I understand... With the code above, the dapm state
+is consistent. However, DAPM will only set the regmap bits when the
+card is instantiated. So why do we still need to update the regmap? To
+make sure we do not miss an early jack/button event? Or would we still
+get jack irq if the pins are enabled a little later? (I guess we can
+live with missing a button event at that stage, but we need the jack
+state to be correct)
 
+Also, I'm going to update rt5645_irq_detection to do nothing if the
+codec is not initialized yet (just like rt286.c does). That should be
+ok as we call rt5645_irq from rt5645_set_jack_detect, after the codec
+is ready, which will update the initial jack status, and setup the
+DAPM pins. Does that sound ok?
 
---bQjxe2ksi2vU832J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jul 14, 2015 at 08:23:39PM -0500, timothyc.howe@gmail.com wrote:
-
-> +static int cs4349_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
-> +				   int source, unsigned int freq, int dir)
-> +{
-> +	struct cs4349_private *cs4349 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	cs4349->mclk = freq;
-> +
-> +	return 0;
-> +}
-
-On a more detailed look I'm not seeing anywhere where mclk is
-referenced, it appears to be write only.  Better to remove this function
-and the private data for it if it's not needed.
-
-> +#ifdef CONFIG_PM
-> +static int cs4349_runtime_suspend(struct device *dev)
-> +{
-> +	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
-> +	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	regcache_cache_only(cs4349->regmap, true);
-> +	regcache_sync(cs4349->regmap);
-
-This doesn't make sense to me - we're syncing the register map right
-after we put the device into cache only mode.  I think it's just a
-cut'n'paste thing?
-
---bQjxe2ksi2vU832J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVpkjCAAoJECTWi3JdVIfQJ2kIAIC0E9EqF8Ng+RFRCzoLY90C
-ai00MIyso3T0BaI9aco0xYeyIGmOOvRS9YU33KAPHFSgKwvxNoFFu9tkDLLapnU9
-RRIFtCdREJPa+sRj+XeqpGbcUouzoYbo0ag2b4CmZvXx3z5f7zCawmLELWVIINKG
-9SY97Nh8Md/3m2f/SuKZ+7ZUIJnRd9uC3ujshNFHvsVpTbjEWkFoo1lodgg4cCvf
-0SIymG2vlZAwXP5qV3JZorqm/yDWrM8lr4A7qq3vWuT72l7P3Em4lzYfKbeIKNMH
-PpaAcy0/4csTM8+Nwd9JNBVotRXNQVsNIGR75w32+Sg1G2aWA5WE+nRlI5SwcIA=
-=99iK
------END PGP SIGNATURE-----
-
---bQjxe2ksi2vU832J--
-
---===============3144966637005481769==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3144966637005481769==--
+Thanks!
