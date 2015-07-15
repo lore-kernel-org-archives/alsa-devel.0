@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH 5/7] media: au8522 change to create MC pad for ALSA Audio Out
-Date: Tue, 14 Jul 2015 18:34:04 -0600
-Message-ID: <f1523ea9906d0f1065809bf50efea113317c62ac.1436917513.git.shuahkh@osg.samsung.com>
+Subject: [PATCH 1/7] Revert "[media] media: media controller entity framework enhancements for ALSA"
+Date: Tue, 14 Jul 2015 18:34:00 -0600
+Message-ID: <49da931303fc040178a22dc46c161eeaf0d7a350.1436917513.git.shuahkh@osg.samsung.com>
 References: <cover.1436917513.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
@@ -12,66 +12,69 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add new pad for ALSA Audio Out to au8522_media_pads. Move the
-au8522_media_pads enum to au8522.h from au8522_priv.h. This will
-allow au0828-core to use these defines instead of hard-coding the
-pad values when it creates media graph linking decode pads to other
-entities.
+This reverts commit ed64cf1e182fb30fe67652386c0880fcf3302f97.
+This patch is no longer necessary as the entity register
+callback is implemented at media_device level.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/dvb-frontends/au8522.h         | 8 ++++++++
- drivers/media/dvb-frontends/au8522_decoder.c | 1 +
- drivers/media/dvb-frontends/au8522_priv.h    | 8 --------
- 3 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/media/media-device.c | 7 -------
+ include/media/media-entity.h | 4 ----
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/au8522.h b/drivers/media/dvb-frontends/au8522.h
-index dde6158..d7a997f 100644
---- a/drivers/media/dvb-frontends/au8522.h
-+++ b/drivers/media/dvb-frontends/au8522.h
-@@ -90,4 +90,12 @@ enum au8522_audio_input {
- 	AU8522_AUDIO_SIF,
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 76590ba..c55ab50 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -428,8 +428,6 @@ EXPORT_SYMBOL_GPL(media_device_unregister);
+ int __must_check media_device_register_entity(struct media_device *mdev,
+ 					      struct media_entity *entity)
+ {
+-	struct media_entity *eptr;
+-
+ 	/* Warn if we apparently re-register an entity */
+ 	WARN_ON(entity->parent != NULL);
+ 	entity->parent = mdev;
+@@ -442,11 +440,6 @@ int __must_check media_device_register_entity(struct media_device *mdev,
+ 	list_add_tail(&entity->list, &mdev->entities);
+ 	spin_unlock(&mdev->lock);
+ 
+-	media_device_for_each_entity(eptr, mdev) {
+-		if (eptr != entity)
+-			media_entity_call(eptr, register_notify);
+-	}
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(media_device_register_entity);
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 0bc4c2f..0c003d8 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -46,7 +46,6 @@ struct media_pad {
+ 
+ /**
+  * struct media_entity_operations - Media entity operations
+- * @register_notify	Notify entity of newly registered entity
+  * @link_setup:		Notify the entity of link changes. The operation can
+  *			return an error, in which case link setup will be
+  *			cancelled. Optional.
+@@ -55,7 +54,6 @@ struct media_pad {
+  *			validates all links by calling this operation. Optional.
+  */
+ struct media_entity_operations {
+-	int (*register_notify)(struct media_entity *entity);
+ 	int (*link_setup)(struct media_entity *entity,
+ 			  const struct media_pad *local,
+ 			  const struct media_pad *remote, u32 flags);
+@@ -103,8 +101,6 @@ struct media_entity {
+ 		/* Sub-device specifications */
+ 		/* Nothing needed yet */
+ 	} info;
+-
+-	void *private;			/* private data for the entity */
  };
  
-+enum au8522_media_pads {
-+	AU8522_PAD_INPUT,
-+	AU8522_PAD_VID_OUT,
-+	AU8522_PAD_VBI_OUT,
-+	AU8522_PAD_AUDIO_OUT,
-+
-+	AU8522_NUM_PADS
-+};
- #endif /* __AU8522_H__ */
-diff --git a/drivers/media/dvb-frontends/au8522_decoder.c b/drivers/media/dvb-frontends/au8522_decoder.c
-index 24990db..01d8fe7 100644
---- a/drivers/media/dvb-frontends/au8522_decoder.c
-+++ b/drivers/media/dvb-frontends/au8522_decoder.c
-@@ -775,6 +775,7 @@ static int au8522_probe(struct i2c_client *client,
- 	state->pads[AU8522_PAD_INPUT].flags = MEDIA_PAD_FL_SINK;
- 	state->pads[AU8522_PAD_VID_OUT].flags = MEDIA_PAD_FL_SOURCE;
- 	state->pads[AU8522_PAD_VBI_OUT].flags = MEDIA_PAD_FL_SOURCE;
-+	state->pads[AU8522_PAD_AUDIO_OUT].flags = MEDIA_PAD_FL_SINK;
- 	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV_DECODER;
- 
- 	ret = media_entity_init(&sd->entity, ARRAY_SIZE(state->pads),
-diff --git a/drivers/media/dvb-frontends/au8522_priv.h b/drivers/media/dvb-frontends/au8522_priv.h
-index d6209d9..4c2a6ed 100644
---- a/drivers/media/dvb-frontends/au8522_priv.h
-+++ b/drivers/media/dvb-frontends/au8522_priv.h
-@@ -39,14 +39,6 @@
- #define AU8522_DIGITAL_MODE 1
- #define AU8522_SUSPEND_MODE 2
- 
--enum au8522_media_pads {
--	AU8522_PAD_INPUT,
--	AU8522_PAD_VID_OUT,
--	AU8522_PAD_VBI_OUT,
--
--	AU8522_NUM_PADS
--};
--
- struct au8522_state {
- 	struct i2c_client *c;
- 	struct i2c_adapter *i2c;
+ static inline u32 media_entity_type(struct media_entity *entity)
 -- 
 2.1.4
