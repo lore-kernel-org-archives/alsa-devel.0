@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fsl_spdif: signedness bug in
-	fsl_spdif_startup()" to the asoc tree
-Date: Wed, 15 Jul 2015 12:55:43 +0100
-Message-ID: <E1ZFLHr-0006e7-3X@debutante>
-References: <20150709082103.GA13462@mwanda>
+Subject: Applied "ASoC: rt5645: Remove irq_jack_detection
+	function" to the asoc tree
+Date: Wed, 15 Jul 2015 12:55:45 +0100
+Message-ID: <E1ZFLHt-0006f3-2w@debutante>
+References: <1436856687-31550-3-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C8305265A98
+ by alsa0.perex.cz (Postfix) with ESMTP id E7447265AF5
  for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 13:55:51 +0200 (CEST)
-In-Reply-To: <20150709082103.GA13462@mwanda>
+In-Reply-To: <1436856687-31550-3-git-send-email-drinkcat@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: fsl_spdif: signedness bug in fsl_spdif_startup()
+   ASoC: rt5645: Remove irq_jack_detection function
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,105 @@ to this mail.
 Thanks,
 Mark
 
->From 89e0e250f92b0b0233337043ddf76f261916036c Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Thu, 9 Jul 2015 11:21:03 +0300
-Subject: [PATCH] ASoC: fsl: fsl_spdif: signedness bug in fsl_spdif_startup()
+>From f312bc59d21bed7593199a1921468868150954fa Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <drinkcat@chromium.org>
+Date: Tue, 14 Jul 2015 14:51:26 +0800
+Subject: [PATCH] ASoC: rt5645: Remove irq_jack_detection function
 
-We need "i" to be signed or it leads to a forever loop in the error
-handling.
+irq_jack_detection is only called from rt5645_jack_detect_work:
+remove the function to simplify the code.
 
-Fixes: fa3be9208dcb ('ASoC: fsl: fsl_spdif: Check for clk_prepare_enable() error')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 53 ++++++++++++++++++++---------------------------
+ 1 file changed, 22 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 8e932219cb3a..851b83373d4c 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -454,7 +454,8 @@ static int fsl_spdif_startup(struct snd_pcm_substream *substream,
- 	struct fsl_spdif_priv *spdif_priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	struct regmap *regmap = spdif_priv->regmap;
--	u32 scr, mask, i;
-+	u32 scr, mask;
-+	int i;
- 	int ret;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9dfa431b337d..8693a25830d3 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2874,7 +2874,18 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 	return rt5645->jack_type;
+ }
  
- 	/* Reset module and interrupts only for first initialization */
+-static int rt5645_irq_detection(struct rt5645_priv *rt5645);
++static int rt5645_button_detect(struct snd_soc_codec *codec)
++{
++	int btn_type, val;
++
++	val = snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
++	pr_debug("val=0x%x\n", val);
++	btn_type = val & 0xfff0;
++	snd_soc_write(codec, RT5650_4BTN_IL_CMD1, val);
++
++	return btn_type;
++}
++
+ static irqreturn_t rt5645_irq(int irq, void *data);
+ 
+ int rt5645_set_jack_detect(struct snd_soc_codec *codec,
+@@ -2905,34 +2916,6 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ {
+ 	struct rt5645_priv *rt5645 =
+ 		container_of(work, struct rt5645_priv, jack_detect_work.work);
+-
+-	rt5645_irq_detection(rt5645);
+-}
+-
+-static irqreturn_t rt5645_irq(int irq, void *data)
+-{
+-	struct rt5645_priv *rt5645 = data;
+-
+-	queue_delayed_work(system_power_efficient_wq,
+-			   &rt5645->jack_detect_work, msecs_to_jiffies(250));
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static int rt5645_button_detect(struct snd_soc_codec *codec)
+-{
+-	int btn_type, val;
+-
+-	val = snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
+-	pr_debug("val=0x%x\n", val);
+-	btn_type = val & 0xfff0;
+-	snd_soc_write(codec, RT5650_4BTN_IL_CMD1, val);
+-
+-	return btn_type;
+-}
+-
+-static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+-{
+ 	int val, btn_type, gpio_state = 0, report = 0;
+ 
+ 	switch (rt5645->pdata.jd_mode) {
+@@ -2947,7 +2930,7 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ 				    report, SND_JACK_HEADPHONE);
+ 		snd_soc_jack_report(rt5645->mic_jack,
+ 				    report, SND_JACK_MICROPHONE);
+-		return report;
++		return;
+ 	case 1: /* 2 port */
+ 		val = snd_soc_read(rt5645->codec, RT5645_A_JD_CTRL1) & 0x0070;
+ 		break;
+@@ -3029,8 +3012,16 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ 		snd_soc_jack_report(rt5645->btn_jack,
+ 			report, SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 				SND_JACK_BTN_2 | SND_JACK_BTN_3);
++}
+ 
+-	return report;
++static irqreturn_t rt5645_irq(int irq, void *data)
++{
++	struct rt5645_priv *rt5645 = data;
++
++	queue_delayed_work(system_power_efficient_wq,
++			   &rt5645->jack_detect_work, msecs_to_jiffies(250));
++
++	return IRQ_HANDLED;
+ }
+ 
+ static int rt5645_probe(struct snd_soc_codec *codec)
 -- 
 2.1.4
