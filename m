@@ -1,236 +1,94 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH 6/7] media: au0828 change to use Managed Media Controller API
-Date: Tue, 14 Jul 2015 18:34:05 -0600
-Message-ID: <3643452be528b2e53cea592db22b4e0ada32456b.1436917513.git.shuahkh@osg.samsung.com>
-References: <cover.1436917513.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
-References: <cover.1436917513.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, crope@iki.fi, sakari.ailus@linux.intel.com, arnd@arndb.de, stefanr@s5r6.in-berlin.de, ruchandani.tina@gmail.com, chehabrafael@gmail.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, daniel@zonque.org, vladcatoi@gmail.com, misterpib@gmail.com, damien@zamaudio.com, pmatilai@laiskiainen.org, takamichiho@gmail.com, normalperson@yhbt.net, bugzilla.frnkcg@spamgourmet.com, joe@oampo.co.uk, calcprogrammer1@gmail.com, jussi@sonarnerd.net
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+From: timothyc.howe@gmail.com
+Subject: [PATCH v2] ASoC: cs4349: Add support for Cirrus Logic
+	CS4349
+Date: Tue, 14 Jul 2015 19:44:11 -0500
+Message-ID: <55a5ace1.6267320a.46fe.ffff95ab@mx.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
+ [209.85.213.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EAD9265711
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 02:44:19 +0200 (CEST)
+Received: by iggf3 with SMTP id f3so24885322igg.1
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 17:44:18 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change au0828 to use Managed Media Controller API to coordinate
-creating/deleting media device on parent usb device it shares
-with the snd-usb-audio driver. With this change, au0828 uses
-media_device_get_devres() to allocate a new media device devres
-or return an existing one, if it finds one.
+From: Tim Howe <tim.howe@cirrus.com>
 
-In addition, au0828 registers entity_notify hook to create media
-graph for the device. It creates necessary links from video, vbi,
-and ALSA entities to decoder and links tuner and decoder entities.
-
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+Signed-off-by: Tim Howe <tim.howe@cirrus.com>
 ---
- drivers/media/usb/au0828/au0828-core.c | 132 ++++++++++++++++++++-------------
- drivers/media/usb/au0828/au0828.h      |   5 ++
- 2 files changed, 85 insertions(+), 52 deletions(-)
+ sound/soc/codecs/cs4349.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 0378a2c..492e910 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -20,6 +20,7 @@
-  */
- 
- #include "au0828.h"
-+#include "au8522.h"
- 
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -131,10 +132,12 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- {
- 
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (dev->media_dev) {
--		media_device_unregister(dev->media_dev);
--		kfree(dev->media_dev);
--		dev->media_dev = NULL;
-+	if (dev->media_dev &&
-+		media_devnode_is_registered(&dev->media_dev->devnode)) {
-+			media_device_unregister_entity_notify(dev->media_dev,
-+							&dev->entity_notify);
-+			media_device_unregister(dev->media_dev);
-+			dev->media_dev = NULL;
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index c9a96b6..ee6b676 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -305,19 +305,8 @@ static int cs4349_i2c_probe(struct i2c_client *client,
+ 		return ret;
  	}
- #endif
- }
-@@ -196,53 +199,23 @@ static void au0828_usb_disconnect(struct usb_interface *interface)
- 	au0828_usb_release(dev);
- }
  
--static void au0828_media_device_register(struct au0828_dev *dev,
--					  struct usb_device *udev)
--{
--#ifdef CONFIG_MEDIA_CONTROLLER
--	struct media_device *mdev;
--	int ret;
--
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
--	if (!mdev)
--		return;
--
--	mdev->dev = &udev->dev;
--
--	if (!dev->board.name)
--		strlcpy(mdev->model, "unknown au0828", sizeof(mdev->model));
--	else
--		strlcpy(mdev->model, dev->board.name, sizeof(mdev->model));
--	if (udev->serial)
--		strlcpy(mdev->serial, udev->serial, sizeof(mdev->serial));
--	strcpy(mdev->bus_info, udev->devpath);
--	mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
--	mdev->driver_version = LINUX_VERSION_CODE;
--
--	ret = media_device_register(mdev);
--	if (ret) {
--		pr_err(
--			"Couldn't create a media device. Error: %d\n",
--			ret);
--		kfree(mdev);
--		return;
+-	if (pdata) {
++	if (pdata)
+ 		cs4349->pdata = *pdata;
+-	} else {
+-		pdata = devm_kzalloc(&client->dev,
+-				     sizeof(struct cs4349_platform_data),
+-				     GFP_KERNEL);
+-		if (!pdata) {
+-			dev_err(&client->dev,
+-				"could not allocate pdata\n");
+-			return -ENOMEM;
+-		}
+-		cs4349->pdata = *pdata;
 -	}
+ 
+ 	/* Reset the Device */
+ 	cs4349->reset_gpio = devm_gpiod_get_optional(&client->dev,
+@@ -330,9 +319,6 @@ static int cs4349_i2c_probe(struct i2c_client *client,
+ 
+ 	i2c_set_clientdata(client, cs4349);
+ 
+-	dev_info(&client->dev,
+-		 "Cirrus Logic CS4349\n");
 -
--	dev->media_dev = mdev;
--#endif
--}
--
--
--static void au0828_create_media_graph(struct au0828_dev *dev)
-+void au0828_create_media_graph(struct media_entity *new, void *notify_data)
- {
- #ifdef CONFIG_MEDIA_CONTROLLER
-+	struct au0828_dev *dev = (struct au0828_dev *) notify_data;
- 	struct media_device *mdev = dev->media_dev;
- 	struct media_entity *entity;
- 	struct media_entity *tuner = NULL, *decoder = NULL;
-+	struct media_entity *alsa_capture = NULL;
-+	int ret = 0;
- 
- 	if (!mdev)
- 		return;
- 
-+	if (dev->tuner_linked && dev->vdev_linked && dev->vbi_linked &&
-+		dev->alsa_capture_linked)
-+		return;
-+
- 	media_device_for_each_entity(entity, mdev) {
- 		switch (entity->type) {
- 		case MEDIA_ENT_T_V4L2_SUBDEV_TUNER:
-@@ -251,6 +224,9 @@ static void au0828_create_media_graph(struct au0828_dev *dev)
- 		case MEDIA_ENT_T_V4L2_SUBDEV_DECODER:
- 			decoder = entity;
- 			break;
-+		case MEDIA_ENT_T_DEVNODE_ALSA_CAPTURE:
-+			alsa_capture = entity;
-+			break;
- 		}
- 	}
- 
-@@ -259,15 +235,69 @@ static void au0828_create_media_graph(struct au0828_dev *dev)
- 	if (!decoder)
- 		return;
- 
--	if (tuner)
--		media_entity_create_link(tuner, 0, decoder, 0,
-+	if (tuner && !dev->tuner_linked) {
-+		ret = media_entity_create_link(tuner, 0, decoder, 0,
- 					 MEDIA_LNK_FL_ENABLED);
--	if (dev->vdev.entity.links)
--		media_entity_create_link(decoder, 1, &dev->vdev.entity, 0,
--				 MEDIA_LNK_FL_ENABLED);
--	if (dev->vbi_dev.entity.links)
--		media_entity_create_link(decoder, 2, &dev->vbi_dev.entity, 0,
--				 MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->tuner_linked = 1;
-+	}
-+	if (dev->vdev.entity.links && !dev->vdev_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_VID_OUT,
-+				&dev->vdev.entity, 0, MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->vdev_linked = 1;
-+	}
-+	if (dev->vbi_dev.entity.links && !dev->vbi_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_VBI_OUT,
-+				&dev->vbi_dev.entity, 0, MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->vbi_linked = 1;
-+	}
-+	if (alsa_capture && !dev->alsa_capture_linked) {
-+		ret = media_entity_create_link(decoder, AU8522_PAD_AUDIO_OUT,
-+						alsa_capture, 0,
-+						MEDIA_LNK_FL_ENABLED);
-+		if (ret == 0)
-+			dev->alsa_capture_linked = 1;
-+	}
-+#endif
-+}
-+
-+static void au0828_media_device_register(struct au0828_dev *dev,
-+					  struct usb_device *udev)
-+{
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	struct media_device *mdev;
-+	int ret;
-+
-+	mdev = media_device_get_devres(&udev->dev);
-+	if (!mdev)
-+		return;
-+
-+	if (!media_devnode_is_registered(&mdev->devnode)) {
-+		/* register media device */
-+		mdev->dev = &udev->dev;
-+		if (udev->product)
-+			strlcpy(mdev->model, udev->product,
-+				sizeof(mdev->model));
-+		if (udev->serial)
-+			strlcpy(mdev->serial, udev->serial,
-+				sizeof(mdev->serial));
-+		strcpy(mdev->bus_info, udev->devpath);
-+		mdev->hw_revision = le16_to_cpu(udev->descriptor.bcdDevice);
-+		ret = media_device_register(mdev);
-+		if (ret) {
-+			dev_err(&udev->dev,
-+				"Couldn't create a media device. Error: %d\n",
-+				ret);
-+			return;
-+		}
-+		/* register entity_notify callback */
-+		dev->entity_notify.notify_data = (void *) dev;
-+		dev->entity_notify.notify = au0828_create_media_graph;
-+		media_device_register_entity_notify(mdev, &dev->entity_notify);
-+	}
-+	dev->media_dev = mdev;
- #endif
+ 	return snd_soc_register_codec(&client->dev, &soc_codec_dev_cs4349,
+ 		&cs4349_dai, 1);
  }
+@@ -357,14 +343,17 @@ static int cs4349_runtime_suspend(struct device *dev)
+ 	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
+ 	int ret;
  
-@@ -383,8 +413,6 @@ static int au0828_usb_probe(struct usb_interface *interface,
- 
- 	mutex_unlock(&dev->lock);
- 
--	au0828_create_media_graph(dev);
+-	/* Hold down reset */
+-	if (cs4349->reset_gpio)
+-		gpiod_set_value_cansleep(cs4349->reset_gpio, 0);
 -
- 	return retval;
- }
+ 	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
+ 	if (ret < 0)
+ 		return ret;
  
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index d3644b3..a59ba08 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -281,6 +281,11 @@ struct au0828_dev {
- 	struct media_device *media_dev;
- 	struct media_pad video_pad, vbi_pad;
- 	struct media_entity *decoder;
-+	struct media_entity_notify entity_notify;
-+	bool tuner_linked;
-+	bool vdev_linked;
-+	bool vbi_linked;
-+	bool alsa_capture_linked;
- #endif
- };
++	regcache_cache_only(cs4349->regmap, true);
++	regcache_sync(cs4349->regmap);
++
++	/* Hold down reset */
++	if (cs4349->reset_gpio)
++		gpiod_set_value_cansleep(cs4349->reset_gpio, 0);
++
+ 	return 0;
+ }
  
 -- 
-2.1.4
+2.4.5
