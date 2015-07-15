@@ -1,55 +1,50 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v3 4/9] ASoC: sti: Add CPU DAI driver for
-	capture
-Date: Wed, 15 Jul 2015 11:31:49 +0200
-Message-ID: <55A62885.5080203@st.com>
-References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
- <1434983473-25092-5-git-send-email-arnaud.pouliquen@st.com>
- <20150710172606.GV11162@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/2] ASoC: Drop owner assignment from platform_driver
+Date: Wed, 15 Jul 2015 10:45:33 +0100
+Message-ID: <20150715094533.GL11162@sirena.org.uk>
+References: <1436934105-12700-1-git-send-email-k.kozlowski@samsung.com>
+ <1436934105-12700-2-git-send-email-k.kozlowski@samsung.com>
+ <55A60A54.7040004@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 85D1126172C
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 11:31:53 +0200 (CEST)
-In-Reply-To: <20150710172606.GV11162@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, kernel@stlinux.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="b0f+yOIoWb+ErSSH"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <55A60A54.7040004@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Support Opensource <support.opensource@diasemi.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Peter Rosin <peda@axentia.se>, Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
+--b0f+yOIoWb+ErSSH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 07/10/2015 07:26 PM, Mark Brown wrote:
-> On Mon, Jun 22, 2015 at 04:31:08PM +0200, Arnaud Pouliquen wrote:
->
->> +static int uni_reader_stop(struct uniperif *reader)
->> +{
->> +	/* The reader should not be in stopped state */
->> +	if (reader->state == UNIPERIF_STATE_STOPPED) {
->> +		dev_err(reader->dev, "%s: invalid reader state", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->> +	/* Turn the reader off */
->> +	SET_UNIPERIF_CTRL_OPERATION_OFF(reader);
->> +
->> +	/* Disable interrupts */
->> +	SET_UNIPERIF_ITM_BCLR(reader, GET_UNIPERIF_ITM(reader));
->> +	disable_irq_nosync(reader->irq);
->
-> Do you really need to disable interrupts with disable_irq()?  It's more
-> normal to just leave the interrupts registered and stop the hardware
-> generating them.
-Yes i can keep it on, as SET_UNIPERIF_ITM_BCLR  disable generation.
-i will update this
+On Wed, Jul 15, 2015 at 04:23:00PM +0900, Krzysztof Kozlowski wrote:
+
+> > platform_driver does not need to set an owner because
+> > platform_driver_register() will set it.
+
+> D'oh! I forgot to include ack from Koro Chen given here:
+> https://lkml.org/lkml/2015/7/12/218
+
+That and the fact that it's already applied.
+
+--b0f+yOIoWb+ErSSH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVpiu8AAoJECTWi3JdVIfQfoUH/3XH5eenWa68rvAa64fV1tJ9
+1TxAkso+cHESDqSiLquDHuN0awKawPb/Uo+/VJrw1CSgEDNNWIMG1qBugkZwCyCu
+2Zmbn3iQJqsUpppjBNlPPzNVYhF2TF7qIxOf1q5uTizFobgdelgaSMEomjzJut67
+pkUBIlz4drrodnyAheTILbsPbpS5zN5nrCCqxtKQn1BX67MDssq328zAn0DYz0m+
+RC5WuOzHWpaEiyjmZOjCBuPNRzNUuQo0zZoUmN7bfeA0RTGQXd05jmLidtfFJpuW
+sYcWTTX3kow0XprjhrMtp+l88SutFXtiMh4ETf6fmknZMWN7lAR+Flfmfu5syNI=
+=ezZK
+-----END PGP SIGNATURE-----
+
+--b0f+yOIoWb+ErSSH--
