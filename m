@@ -1,74 +1,57 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v3] ASoC: Intel: Get correct usage_count value to load firmware
-Date: Wed, 15 Jul 2015 07:58:09 -0700
-Message-ID: <1436972289-29835-1-git-send-email-yang.a.fang@intel.com>
-References: <1436898231-118904-1-git-send-email-yang.a.fang@intel.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1436898231-118904-1-git-send-email-yang.a.fang@intel.com>
-Sender: stable-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, srinivas.sripathi@intel.com, shilpa.sreeramalu@intel.com, dinesh.mirche@intel.com, yang.a.fang@intel.com, stable@vger.kernel.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] Softvol: Allow per process volume control.
+Date: Thu, 16 Jul 2015 00:46:25 +0900
+Message-ID: <55A68051.2050905@sakamocchi.jp>
+References: <20150709032406.12952.5374@spalge.com>
+ <s5hlhehn0ng.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C16A265D42
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 17:46:31 +0200 (CEST)
+In-Reply-To: <s5hlhehn0ng.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jimmy <jimmy@spalge.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Shilpa Sreeramalu <shilpa.sreeramalu@intel.com>
+Hi,
 
-The usage_count variable was read before it was set to the correct
-value, due to which the firmware load was failing. Because of this
-IPC messages sent to the firmware were timing out causing a delay
-of about 1 second while playing audio from the internal speakers.
+On Jul 15 2015 20:03, Takashi Iwai wrote:
+> Also, removal of the ctl element is voluntarily done, that is, if a
+> program aborts in the middle, it leaves the ctl element.  If we want
+> the implementation with the user-space ctl element, it'd be better to
+> have a support in kernel side to manage the life cycle of ctl element
+> more safely.
 
-With this patch the usage_count is read after the function call
-pm_runtime_get_sync which will increment the usage_count variable
-and the firmware load is successful and all the IPC messages are
-processed correctly.
+I'm interested in this idea about the life cycle of ctl elements added
+by userspace applications. (Of cource, interested in per-process volume
+control for dmix PCM plugins, itself. Sorry to start another discussion
+in this thread...)
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Shilpa Sreeramalu <shilpa.sreeramalu@intel.com>
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/intel/atom/sst/sst_drv_interface.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+My headache is 'struct snd_kcontrol.owner'. In kernel land, this member
+is used to distinguish whether the control element is locked or not,
+against its name.
 
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index 620da1d..0e0e4d9 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -42,6 +42,11 @@
- #define MIN_FRAGMENT_SIZE (50 * 1024)
- #define MAX_FRAGMENT_SIZE (1024 * 1024)
- #define SST_GET_BYTES_PER_SAMPLE(pcm_wd_sz)  (((pcm_wd_sz + 15) >> 4) << 1)
-+#ifdef CONFIG_PM
-+#define GET_USAGE_COUNT(dev) (atomic_read(&dev->power.usage_count))
-+#else
-+#define GET_USAGE_COUNT(dev) 1
-+#endif
- 
- int free_stream_context(struct intel_sst_drv *ctx, unsigned int str_id)
- {
-@@ -141,15 +146,9 @@ static int sst_power_control(struct device *dev, bool state)
- 	int ret = 0;
- 	int usage_count = 0;
- 
--#ifdef CONFIG_PM
--	usage_count = atomic_read(&dev->power.usage_count);
--#else
--	usage_count = 1;
--#endif
--
- 	if (state == true) {
- 		ret = pm_runtime_get_sync(dev);
--
-+		usage_count = GET_USAGE_COUNT(dev);
- 		dev_dbg(ctx->dev, "Enable: pm usage count: %d\n", usage_count);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "Runtime get failed with err: %d\n", ret);
-@@ -164,6 +163,7 @@ static int sst_power_control(struct device *dev, bool state)
- 			}
- 		}
- 	} else {
-+		usage_count = GET_USAGE_COUNT(dev);
- 		dev_dbg(ctx->dev, "Disable: pm usage count: %d\n", usage_count);
- 		return sst_pm_runtime_put(ctx);
- 	}
--- 
-1.7.9.5
+This implementation cannot allows control elements to keep PID which has
+added the control element. If a control element has lost the PID, snd
+module cannot release it when a process with the PID closes ALSA ctl
+character device.
+
+Well, if adding members for owner's PID and lock state, and keep enough
+backward-compatibility to userspace, we can achieve the idea, I think.
+
+
+Regards
+
+Takashi Sakamoto
