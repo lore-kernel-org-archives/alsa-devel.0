@@ -1,18 +1,18 @@
-From: timothyc.howe@gmail.com
-Subject: [PATCH v2] ASoC: cs4349: Add support for Cirrus Logic
-	CS4349
-Date: Tue, 14 Jul 2015 19:44:11 -0500
-Message-ID: <55a5ace1.6267320a.46fe.ffff95ab@mx.google.com>
+From: "Howe, Tim" <Tim.Howe@cirrus.com>
+Subject: Re: [PATCH v2] ASoC: cs4349: Add support for Cirrus
+	Logic CS4349
+Date: Wed, 15 Jul 2015 00:51:41 +0000
+Message-ID: <C7829A9AA458CC489F3E44C3D5243399C497BB85@ex1.ad.cirrus.com>
+References: <55a5ace1.6267320a.46fe.ffff95ab@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f171.google.com (mail-ig0-f171.google.com
- [209.85.213.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EAD9265711
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 02:44:19 +0200 (CEST)
-Received: by iggf3 with SMTP id f3so24885322igg.1
- for <alsa-devel@alsa-project.org>; Tue, 14 Jul 2015 17:44:18 -0700 (PDT)
+Received: from m0077474.ppops.net (mx0b-001ae601.pphosted.com [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D7D5265711
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 02:51:45 +0200 (CEST)
+In-Reply-To: <55a5ace1.6267320a.46fe.ffff95ab@mx.google.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,9 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
+
+Sorry sent the wrong patch.  Resending soon.
+
+Tim
+
+-----Original Message-----
+From: timothyc.howe@gmail.com [mailto:timothyc.howe@gmail.com] 
+Sent: Tuesday, July 14, 2015 7:44 PM
+To: alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com; broonie@kernel.org; Austin, Brian; Howe, Tim
+Subject: [PATCH v2] ASoC: cs4349: Add support for Cirrus Logic CS4349
 
 From: Tim Howe <tim.howe@cirrus.com>
 
@@ -33,8 +44,7 @@ Signed-off-by: Tim Howe <tim.howe@cirrus.com>
  sound/soc/codecs/cs4349.c | 27 ++++++++-------------------
  1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index c9a96b6..ee6b676 100644
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c index c9a96b6..ee6b676 100644
 --- a/sound/soc/codecs/cs4349.c
 +++ b/sound/soc/codecs/cs4349.c
 @@ -305,19 +305,8 @@ static int cs4349_i2c_probe(struct i2c_client *client,
@@ -90,5 +100,5 @@ index c9a96b6..ee6b676 100644
  	return 0;
  }
  
--- 
+--
 2.4.5
