@@ -1,7 +1,7 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH 1/7] Revert "[media] media: media controller entity framework enhancements for ALSA"
-Date: Tue, 14 Jul 2015 18:34:00 -0600
-Message-ID: <49da931303fc040178a22dc46c161eeaf0d7a350.1436917513.git.shuahkh@osg.samsung.com>
+Subject: [PATCH 3/7] media: Add ALSA Media Controller devnodes
+Date: Tue, 14 Jul 2015 18:34:02 -0600
+Message-ID: <78cb5dd3bb7d5e531c66384c48ee35aa89903b75.1436917513.git.shuahkh@osg.samsung.com>
 References: <cover.1436917513.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
@@ -12,69 +12,35 @@ To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboa
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit ed64cf1e182fb30fe67652386c0880fcf3302f97.
-This patch is no longer necessary as the entity register
-callback is implemented at media_device level.
+Add ALSA Media Controller capture, playback, and mixer
+devnode defines.
 
 Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
 ---
- drivers/media/media-device.c | 7 -------
- include/media/media-entity.h | 4 ----
- 2 files changed, 11 deletions(-)
+ include/uapi/linux/media.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 76590ba..c55ab50 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -428,8 +428,6 @@ EXPORT_SYMBOL_GPL(media_device_unregister);
- int __must_check media_device_register_entity(struct media_device *mdev,
- 					      struct media_entity *entity)
- {
--	struct media_entity *eptr;
--
- 	/* Warn if we apparently re-register an entity */
- 	WARN_ON(entity->parent != NULL);
- 	entity->parent = mdev;
-@@ -442,11 +440,6 @@ int __must_check media_device_register_entity(struct media_device *mdev,
- 	list_add_tail(&entity->list, &mdev->entities);
- 	spin_unlock(&mdev->lock);
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 4e816be..4a30ea3 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -49,12 +49,17 @@ struct media_device_info {
+ #define MEDIA_ENT_T_DEVNODE		(1 << MEDIA_ENT_TYPE_SHIFT)
+ #define MEDIA_ENT_T_DEVNODE_V4L		(MEDIA_ENT_T_DEVNODE + 1)
+ #define MEDIA_ENT_T_DEVNODE_FB		(MEDIA_ENT_T_DEVNODE + 2)
++/* Legacy ALSA symbol. Keep it to avoid userspace compilation breakages */
+ #define MEDIA_ENT_T_DEVNODE_ALSA	(MEDIA_ENT_T_DEVNODE + 3)
+ #define MEDIA_ENT_T_DEVNODE_DVB_FE	(MEDIA_ENT_T_DEVNODE + 4)
+ #define MEDIA_ENT_T_DEVNODE_DVB_DEMUX	(MEDIA_ENT_T_DEVNODE + 5)
+ #define MEDIA_ENT_T_DEVNODE_DVB_DVR	(MEDIA_ENT_T_DEVNODE + 6)
+ #define MEDIA_ENT_T_DEVNODE_DVB_CA	(MEDIA_ENT_T_DEVNODE + 7)
+ #define MEDIA_ENT_T_DEVNODE_DVB_NET	(MEDIA_ENT_T_DEVNODE + 8)
++/* ALSA devnodes */
++#define MEDIA_ENT_T_DEVNODE_ALSA_CAPTURE	(MEDIA_ENT_T_DEVNODE + 9)
++#define MEDIA_ENT_T_DEVNODE_ALSA_PLAYBACK	(MEDIA_ENT_T_DEVNODE + 10)
++#define MEDIA_ENT_T_DEVNODE_ALSA_MIXER		(MEDIA_ENT_T_DEVNODE + 11)
  
--	media_device_for_each_entity(eptr, mdev) {
--		if (eptr != entity)
--			media_entity_call(eptr, register_notify);
--	}
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(media_device_register_entity);
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 0bc4c2f..0c003d8 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -46,7 +46,6 @@ struct media_pad {
- 
- /**
-  * struct media_entity_operations - Media entity operations
-- * @register_notify	Notify entity of newly registered entity
-  * @link_setup:		Notify the entity of link changes. The operation can
-  *			return an error, in which case link setup will be
-  *			cancelled. Optional.
-@@ -55,7 +54,6 @@ struct media_pad {
-  *			validates all links by calling this operation. Optional.
-  */
- struct media_entity_operations {
--	int (*register_notify)(struct media_entity *entity);
- 	int (*link_setup)(struct media_entity *entity,
- 			  const struct media_pad *local,
- 			  const struct media_pad *remote, u32 flags);
-@@ -103,8 +101,6 @@ struct media_entity {
- 		/* Sub-device specifications */
- 		/* Nothing needed yet */
- 	} info;
--
--	void *private;			/* private data for the entity */
- };
- 
- static inline u32 media_entity_type(struct media_entity *entity)
+ /* Legacy symbol. Use it to avoid userspace compilation breakages */
+ #define MEDIA_ENT_T_DEVNODE_DVB		MEDIA_ENT_T_DEVNODE_DVB_FE
 -- 
 2.1.4
