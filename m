@@ -1,22 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
- rt5645_enable_push_button_irq
-Date: Wed, 15 Jul 2015 09:50:12 +0100
-Message-ID: <20150715085012.GJ11162@sirena.org.uk>
-References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
- <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
- <20150714095247.GN11162@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
- <20150714102833.GP11162@sirena.org.uk>
- <20150715010530.GA10273@google.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Issue in alsa when dma complete race with pcm
+	release
+Date: Wed, 15 Jul 2015 10:59:22 +0200
+Message-ID: <55A620EA.9050502@metafoo.de>
+References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
+ <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
+ <20150707101302.GA22212@shlinux2> <559BD4D2.6080502@metafoo.de>
+ <20150715013722.GA3005@shlinux2> <55A6082B.5020207@metafoo.de>
+ <20150715070028.GB3005@shlinux2>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7750822010541978312=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AB182605B7
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 10:50:27 +0200 (CEST)
-In-Reply-To: <20150715010530.GA10273@google.com>
+Received: from smtp-out-020.synserver.de (smtp-out-020.synserver.de
+ [212.40.185.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 825CD26172C
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 10:59:26 +0200 (CEST)
+In-Reply-To: <20150715070028.GB3005@shlinux2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,77 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/15/2015 09:00 AM, Shengjiu Wang wrote:
+> On Wed, Jul 15, 2015 at 09:13:47AM +0200, Lars-Peter Clausen wrote:
+>> On 07/15/2015 03:37 AM, Shengjiu Wang wrote:
+>>> On Tue, Jul 07, 2015 at 03:32:02PM +0200, Lars-Peter Clausen wrote:
+>>>> On 07/07/2015 12:13 PM, Shengjiu Wang wrote:
+>>>>> On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
+>>>>>> On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
+>>>>>>> On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
+>>>>>>>> On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
+>>>>>>>>> Hi alsa-devel
+>>>>>>>>>
+>>>>>>>>>     There maybe a issue in ALSA when dma complete race with snd_pcm_release.
+>>>>>>>>> The pcm release and dma complete are in different thread. There is occasion
+>>>>>>>>> that dmaengine_pcm_dma_complete() is called too late, some memory has been
+>>>>>>>>> freed, the prtd is null. Then there is kernel dump.
+>>>>>>>>>
+>>>>>>>>>     Is there any solution for this issue? Thanks.
+>>>>>>>>
+>>>>>>>> We need to introduce a synchronization primitive that allows a
+>>>>>>>> dmaengine client to synchronize to the execution of the complete
+>>>>>>>> callbacks.
+>>>>>>>>
+>>>>>>>> terminate_all() unfortunately can't do this since terminate_all()
+>>>>>>>> might be called from within one of the complete callbacks and so
+>>>>>>>> would cause a deadlock if we'd wait for all complete callbacks to
+>>>>>>>> finish before terminate_all() returns.
+>>>>>>>>
+>>>>>>>> So what is needed is a new function called dmaengine_sync() that
+>>>>>>>> will wait until all scheduled complete callbacks have finished. A
+>>>>>>>> call to this function needs to be put in snd_dmaengine_pcm_close()
+>>>>>>>> before the prtd is closed.
+>>>>>>>>
+>>>>>>>> - Lars
+>>>>>>>
+>>>>>>> How to check " all scheduled complete callbacks have finished"?
+>>>>>>
+>>>>>> That will be up to the dmaengine driver. But it basically comes down
+>>>>>> to two things:
+>>>>>>
+>>>>>> 1) The driver needs to make sure that tasklet_schedule() is no
+>>>>>> longer called after terminate_all() has finished.
+>>>>> Some driver can't make sure this. The dma interrupt may come later after
+>>>>> terminate_all.
+>>>>
+>>>> Most drivers can't make sure that the interrupt routine is not
+>>>> executed after terminate_all() has been called, since both are fully
+>>>> asynchronous. But what the driver needs to take care of is to
+>>>> synchronize the two e.g. using a spin_lock() and make sure that if
+>>>> terminate_all() has been called tasklet_schedule() is not called,
+>>>> even if the isr is executed. Most drivers get this rigght.
+>>>>
+>>>>>> 2) In the sync() callback call tasklet_kill() to make sure that it
+>>>>>> has finished running
+>>>>>>
+>>>>>>>
+>>>>>>> One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
+>>>>>>> the snd_pcm_release is bound with dmaengine, when there is error in dma
+>>>>>>> and no callback be called. Then the snd_pcm_release will not be released.
+>>>>>>
+>>>>>> The sync() function will only wait if there is a callback scheduled,
+>>>>>> if there is non scheduled it will return immediately.
+>>>>>
+>>>>>
+>>>>> Do you have other method to resolve this issue? or simple method?
+>>>>
+>>>> No, this is the way to go. You have two asynchronous processes and
+>>>> you want to get deterministic execution ordering between the two you
+>>>> need to add a synchronization primitive.
+>>>>
+>>>> - Lars
+>>>>
+>>> Thanks your advice. It is workable. But need to add new api in dmaengine.h
+>>>
+>>> I think about another method, can we add spin_lock in
+>>> dmaengine_pcm_dma_complete() and snd_dmaengine_pcm_close()? and add a flag
+>>> for pcm_close, if pcm closed, then just do nothing in dma complete.
+>>> How do you think for this?
+>>
+>> Since you are freeing the memory that would store the flag that wont work.
+>>
+>> - Lars
+>>
+> It seems the snd_pcm_substream is not released, can we add flag in this struct?\
 
---===============7750822010541978312==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9yFTe2a/dxBPvyUm"
-Content-Disposition: inline
-
-
---9yFTe2a/dxBPvyUm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 15, 2015 at 09:05:30AM +0800, Nicolas Boichat wrote:
-> On Tue, Jul 14, 2015 at 6:28 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> if (dapm)
-> 	snd_soc_dapm_force_enable_pin(dapm, ...)
-> else
-> 	regmap_update_bits(...)
-
-> If guess something like this might be preferable:
-> if (rt5645->codec) {
-> 	dapm = snd_soc_codec_get_dapm(rt5645->codec);
-> }
-
-> and then:
-
-> if (dapm)
-> 	snd_soc_dapm_force_enable_pin(dapm, ...)
-
-> regmap_update_bits(...)
-
-> Does that make sense?
-
-No, that still has the problem that you don't handle the !dapm case
-properly since as soon as DAPM kicks in it'll power everything off.
-
-> Is there a better way to communicate my intent in this series? Maybe
-> patch 1/3 should convert everyhing to this pattern:
-> snd_soc_dapm_force_enable_pin(dapm, ...)
-> regmap_update_bits(...)
-
-Your intent is clear, the problem is that the code doesn't actually do
-what it's supposed to do - see previous e-mail.
-
---9yFTe2a/dxBPvyUm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVph7DAAoJECTWi3JdVIfQ7NkH/1voG1uTCLJ6eQTmSAFUukZi
-PQmm+a6AfUfUKNr1Q3rn5Nz+H1JjIxalckplVQxmK6Jk3cDY//lc5UJd13MNIqea
-qoPO1HMKRMmZKpdo8/PERnv9gCy0n7nqiYxXkIUvdynL7CUtTOkXgQHuAZ7r5tTF
-bhyVbnFR5ATKjec24keq0PSCOavfyVvThsdCkrDueeevLn7mPO+LMTKOOQP/9fEm
-ilh9h9vrXiIqHnItOgvUTJ8oAdW9YEXvNr3A/glC9yd4VT00PHItDR2d1V3wzLuN
-/rn+nWsVe3ceh+6R3cxpOLhfkcf0B8xCZSXPSE9FrWoQ4HKaHOjsZy3vcXvZqKY=
-=wQ0z
------END PGP SIGNATURE-----
-
---9yFTe2a/dxBPvyUm--
-
---===============7750822010541978312==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7750822010541978312==--
+No, there is no guarantee that the substream hasn't been freed either.
