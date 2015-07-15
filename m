@@ -1,262 +1,109 @@
-From: Keith Packard <keithp@keithp.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable HP amp and mute LED on HP Folio 9480m
-Date: Tue, 14 Jul 2015 19:37:44 -0700
-Message-ID: <86si8qw3gn.fsf@hiro.keithp.com>
-References: <1436892035-19589-1-git-send-email-keithp@keithp.com> <1436895871-2459-1-git-send-email-keithp@keithp.com> <s5hio9m4jxf.wl-tiwai@suse.de>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: Re: Issue in alsa when dma complete race with pcm
+ release
+Date: Wed, 15 Jul 2015 09:37:24 +0800
+Message-ID: <20150715013722.GA3005@shlinux2>
+References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
+ <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
+ <20150707101302.GA22212@shlinux2> <559BD4D2.6080502@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==-=-=";
-	micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hio9m4jxf.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, David Henningsson <david.henningsson@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bbn0102.outbound.protection.outlook.com [157.56.111.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69A0C265721
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 04:46:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <559BD4D2.6080502@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---==-=-=
-Content-Type: multipart/mixed; boundary="=-=-="
+On Tue, Jul 07, 2015 at 03:32:02PM +0200, Lars-Peter Clausen wrote:
+> On 07/07/2015 12:13 PM, Shengjiu Wang wrote:
+> >On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
+> >>On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
+> >>>On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
+> >>>>On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
+> >>>>>Hi alsa-devel
+> >>>>>
+> >>>>>    There maybe a issue in ALSA when dma complete race with snd_pcm_release.
+> >>>>>The pcm release and dma complete are in different thread. There is occasion
+> >>>>>that dmaengine_pcm_dma_complete() is called too late, some memory has been
+> >>>>>freed, the prtd is null. Then there is kernel dump.
+> >>>>>
+> >>>>>    Is there any solution for this issue? Thanks.
+> >>>>
+> >>>>We need to introduce a synchronization primitive that allows a
+> >>>>dmaengine client to synchronize to the execution of the complete
+> >>>>callbacks.
+> >>>>
+> >>>>terminate_all() unfortunately can't do this since terminate_all()
+> >>>>might be called from within one of the complete callbacks and so
+> >>>>would cause a deadlock if we'd wait for all complete callbacks to
+> >>>>finish before terminate_all() returns.
+> >>>>
+> >>>>So what is needed is a new function called dmaengine_sync() that
+> >>>>will wait until all scheduled complete callbacks have finished. A
+> >>>>call to this function needs to be put in snd_dmaengine_pcm_close()
+> >>>>before the prtd is closed.
+> >>>>
+> >>>>- Lars
+> >>>
+> >>>How to check " all scheduled complete callbacks have finished"?
+> >>
+> >>That will be up to the dmaengine driver. But it basically comes down
+> >>to two things:
+> >>
+> >>1) The driver needs to make sure that tasklet_schedule() is no
+> >>longer called after terminate_all() has finished.
+> >Some driver can't make sure this. The dma interrupt may come later after
+> >terminate_all.
+> 
+> Most drivers can't make sure that the interrupt routine is not
+> executed after terminate_all() has been called, since both are fully
+> asynchronous. But what the driver needs to take care of is to
+> synchronize the two e.g. using a spin_lock() and make sure that if
+> terminate_all() has been called tasklet_schedule() is not called,
+> even if the isr is executed. Most drivers get this rigght.
+> 
+> >>2) In the sync() callback call tasklet_kill() to make sure that it
+> >>has finished running
+> >>
+> >>>
+> >>>One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
+> >>>the snd_pcm_release is bound with dmaengine, when there is error in dma
+> >>>and no callback be called. Then the snd_pcm_release will not be released.
+> >>
+> >>The sync() function will only wait if there is a callback scheduled,
+> >>if there is non scheduled it will return immediately.
+> >
+> >
+> >Do you have other method to resolve this issue? or simple method?
+> 
+> No, this is the way to go. You have two asynchronous processes and
+> you want to get deterministic execution ordering between the two you
+> need to add a synchronization primitive.
+> 
+> - Lars
+> 
+Thanks your advice. It is workable. But need to add new api in dmaengine.h
 
---=-=-=
-Content-Type: text/plain
-
-Takashi Iwai <tiwai@suse.de> writes:
-
-> Thanks for the patch.  But this looks suboptimal, unfortunately, since
-> it keeps the amp always on, and more badly, it would block the power
-> save of the widget root node.
-
-Thanks very much for your feedback; I wasn't sure precisely how this
-code worked and tried to make a change that was as close as I could
-manage to existing examples.
-
-> Can just using gpio_mute_led_mask=0x18 and gpio_led=0 (also drop
-> AC_VERB_SET_GPIO_DATA in gpio_init[]) work instead?  If GPIO4 is the
-> the amp, we can associate it with the master mute control together
-> with the mute LED.  The only concern would be the possible click
-> noise, but it doesn't happen on most machines.
-
-It's not quite that simple; the GPIO4 value is inverted from the mute
-LED value (the amp is powered up when GPIO4 is set).
-
-What I've done is to make the amp powered only when a headphone is
-plugged in, and then removed the code which was disabling power saving,
-which lets everything (including the amp) get turned back off when the
-device goes idle.
-
-Here's a second version of the patch.
-
-
---=-=-=
-Content-Type: text/x-diff
-Content-Disposition: inline;
- filename=0001-ALSA-hda-realtek-Enable-HP-amp-and-mute-LED-on-HP-Fo.patch
-Content-Transfer-Encoding: quoted-printable
-
-From=2060e2c02d651b0ca6e4b72aa1cab21660400fe2eb Mon Sep 17 00:00:00 2001
-From: Keith Packard <keithp@keithp.com>
-Date: Tue, 14 Jul 2015 09:30:33 -0700
-Subject: [PATCH] ALSA: hda/realtek: Enable HP amp and mute LED on HP Folio
- 9480m [v2]
-
-This laptop needs GPIO4 pulled high to enable the headphone amplifier,
-and has a mute LED on GPIO3. I modelled the patch on the existing
-GPIO4 code which pulls the line low for the same purpose; this time,
-the HP amp line is pulled high.
-
-v2: Disable the headphone amplifier when no headphone is connected.
-    Don't disable power savings to preserve the LED state.
-
-Signed-off-by: Keith Packard <keithp@keithp.com>
-=2D--
- sound/pci/hda/patch_realtek.c | 112 ++++++++++++++++++++++++++++++++++++++=
-++++
- 1 file changed, 112 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6d01045..621c195 100644
-=2D-- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -99,6 +99,7 @@ struct alc_spec {
- 	unsigned int gpio_led; /* used for alc269_fixup_hp_gpio_led() */
- 	unsigned int gpio_mute_led_mask;
- 	unsigned int gpio_mic_led_mask;
-+	unsigned int gpio_hp_amp_mask;
-=20
- 	hda_nid_t headset_mic_pin;
- 	hda_nid_t headphone_mic_pin;
-@@ -4435,6 +4436,111 @@ static void alc290_fixup_mono_speakers(struct hda_c=
-odec *codec,
- 	}
- }
-=20
-+/* Set headphone amp power via a GPIO depending on whether the
-+ * headphones are plugged in or not
-+ */
-+static void alc280_set_hp_amp_power(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec =3D codec->spec;
-+	unsigned int oldval =3D spec->gpio_led;
-+
-+	/* Headphone amp enable when headphone present */
-+	if (spec->gen.hp_jack_present)
-+		spec->gpio_led |=3D spec->gpio_hp_amp_mask;
-+	else
-+		spec->gpio_led &=3D ~spec->gpio_hp_amp_mask;
-+
-+	codec_dbg(codec,
-+		  "set_hp_amp_power present %d oldval %02x current %02x\n",
-+		  spec->gen.hp_jack_present,
-+		  oldval, spec->gpio_led);
-+
-+	if (spec->gpio_led !=3D oldval)
-+		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
-+				    spec->gpio_led);
-+}
-+
-+/* Detect headphone connection, then go update the headphone amp
-+ * GPIO */
-+static void alc280_update_headset_mode(struct hda_codec *codec)
-+{
-+	alc_update_headset_mode(codec);
-+	alc280_set_hp_amp_power(codec);
-+}
-+
-+/* Hook to update headphone amp GPIO on config changes */
-+static void
-+alc280_update_headset_mode_hook(struct hda_codec *codec,
-+				struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	alc280_update_headset_mode(codec);
-+}
-+
-+/* Hook to update amp GPIO for automute */
-+static void alc280_update_headset_jack_cb(struct hda_codec *codec,
-+					  struct hda_jack_callback *jack)
-+{
-+	alc_update_headset_jack_cb(codec, jack);
-+	alc280_set_hp_amp_power(codec);
-+}
-+
-+/* Manage GPIOs for HP EliteBook Folio 9480m.
-+ *
-+ * GPIO4 is the headphone amplifier power control
-+ * GPIO3 is the audio output mute indicator LED
-+ */
-+
-+static void alc280_fixup_hp_9480m(struct hda_codec *codec,
-+				  const struct hda_fixup *fix,
-+				  int action)
-+{
-+	struct alc_spec *spec =3D codec->spec;
-+	static const struct hda_verb gpio_init[] =3D {
-+		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x18 },
-+		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x18 },
-+		{}
-+	};
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+
-+		/* Set the hooks to turn the headphone amp on/off
-+		 * as needed
-+		 */
-+		spec->gen.vmaster_mute.hook =3D alc_fixup_gpio_mute_hook;
-+		spec->gen.cap_sync_hook =3D alc280_update_headset_mode_hook;
-+		spec->gen.automute_hook =3D alc280_update_headset_mode;
-+		spec->gen.hp_automute_hook =3D alc280_update_headset_jack_cb;
-+
-+		/* The GPIOs are currently off */
-+		spec->gpio_led =3D 0;
-+
-+		/* GPIO4 controls the headphone amp,
-+		 * high is on, low is off
-+		 */
-+		spec->gpio_hp_amp_mask =3D 0x10;
-+
-+		/* GPIO3 is connected to the output mute LED,
-+		 * high is on, low is off
-+		 */
-+		spec->mute_led_polarity =3D 0;
-+		spec->gpio_mute_led_mask =3D 0x08;
-+
-+		/* Initialize GPIO configuration */
-+		snd_hda_add_verbs(codec, gpio_init);
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+
-+		/* Force configuration of headphone amp
-+		 * GPIO
-+		 */
-+		spec->current_headset_mode =3D 0;
-+		alc280_update_headset_mode(codec);
-+		break;
-+	}
-+}
-+
- /* for hda_fixup_thinkpad_acpi() */
- #include "thinkpad_helper.c"
-=20
-@@ -4512,6 +4618,7 @@ enum {
- 	ALC286_FIXUP_HP_GPIO_LED,
- 	ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY,
- 	ALC280_FIXUP_HP_DOCK_PINS,
-+	ALC280_FIXUP_HP_9480M,
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13_GPIO6,
-@@ -5012,6 +5119,10 @@ static const struct hda_fixup alc269_fixups[] =3D {
- 		.chained =3D true,
- 		.chain_id =3D ALC280_FIXUP_HP_GPIO4
- 	},
-+	[ALC280_FIXUP_HP_9480M] =3D {
-+		.type =3D HDA_FIXUP_FUNC,
-+		.v.func =3D alc280_fixup_hp_9480m,
-+	},
- 	[ALC288_FIXUP_DELL_HEADSET_MODE] =3D {
- 		.type =3D HDA_FIXUP_FUNC,
- 		.v.func =3D alc_fixup_headset_mode_dell_alc288,
-@@ -5103,6 +5214,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
-=3D {
- 	SND_PCI_QUIRK(0x103c, 0x22b7, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22bf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x22cf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
-+	SND_PCI_QUIRK(0x103c, 0x22db, "HP", ALC280_FIXUP_HP_9480M),
- 	SND_PCI_QUIRK(0x103c, 0x22dc, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
- 	SND_PCI_QUIRK(0x103c, 0x22fb, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
- 	/* ALC290 */
-=2D-=20
-2.1.4
+I think about another method, can we add spin_lock in 
+dmaengine_pcm_dma_complete() and snd_dmaengine_pcm_close()? and add a flag
+for pcm_close, if pcm closed, then just do nothing in dma complete.
+How do you think for this?
 
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-=2D-=20
-=2Dkeith
-
---=-=-=--
-
---==-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIVAwUBVaXHedsiGmkAAAARAQjGhw//RtenXBYy5tDdu65Ro9LprKUQIp2fIaFS
-Qt+cpSF7pYGwZWooz6xVPUiqESOAwysrB6kFyf4DJTkvWPEpU6Ouzcnr1AtmGqfW
-AnvvVeGTce0AkIqpOm0VsJ/OaHKFDhdtvMefOJEjJ6qn0eUWbi6vLafuxsaWw4Ju
-nO1SBQ6b1bhhfjvkNSQmtg0K25aKiPjhYgPZlkZKTV1xhMpggAGd1IlhcpFQBI5L
-6g8URWGkbXtzOx4kkq8OR4K3CnnyM6rUjGJu6WIynKIqbabJ2r2ZhXmazfxdozjw
-E6BhUBb3WJb6PzR8CMW4+DjVoxIksdWJxROB6ZKzEFCnkxGxrLG5K9iedy3FNTKc
-nKTFEqaBY7dkpaWfTkoggMKI1dtsVxFXLhLxA/hw7Yw0VtiAaJ2Oxm3Gf/Y0ju1q
-+2wxxmOcZiM/Az3CuLTdW1Br4EmXdjTXKbvAqYPQSspF5/iDyrIdEx0y2p2FFmZA
-ziqVsQO2BuIo3gRJr7MLYD1wXkPC6k0605PZdWOeu8BbnveV4c+9I0Z+Iz+xtIjx
-AUneixkS+N+A4sFOWkrBCH4bsnS8nwXITak9emjSdJ04fnxK4Y9RlLSQgXci9vYR
-suRwGV5VV0iY2/bgCjVKJQJeKVaWOl+gWcrzQuhmXvOEgK/9eeHCSlAAkWl/CeJQ
-S4JCM+/88RY=
-=jZ89
------END PGP SIGNATURE-----
---==-=-=--
+best regards
+wang shengjiu
