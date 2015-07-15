@@ -1,18 +1,22 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: hda - Fix Skylake codec timeouts
-Date: Wed, 15 Jul 2015 10:07:35 +0200
-Message-ID: <55A614C7.5030201@canonical.com>
-References: <1436945975-3279-1-git-send-email-david.henningsson@canonical.com>
- <s5hegk94zq0.wl-tiwai@suse.de>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: Re: Issue in alsa when dma complete race with pcm
+ release
+Date: Wed, 15 Jul 2015 15:00:29 +0800
+Message-ID: <20150715070028.GB3005@shlinux2>
+References: <20150703082530.GA21580@shlinux2> <55966A75.90200@metafoo.de>
+ <20150706090113.GA4995@shlinux2> <559A7415.8000006@metafoo.de>
+ <20150707101302.GA22212@shlinux2> <559BD4D2.6080502@metafoo.de>
+ <20150715013722.GA3005@shlinux2> <55A6082B.5020207@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B6DDD26044B
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 10:07:34 +0200 (CEST)
-In-Reply-To: <s5hegk94zq0.wl-tiwai@suse.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0114.outbound.protection.outlook.com [157.56.111.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D28626044B
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 10:09:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <55A6082B.5020207@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: hui.wang@canonical.com, mengdong.lin@intel.com, alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 2015-07-15 10:00, Takashi Iwai wrote:
-> On Wed, 15 Jul 2015 09:39:35 +0200,
-> David Henningsson wrote:
->>
->> When the controller is powered up but the HDMI codec is powered down
->> on Skylake, the power well is turned off. When the codec is then
->> powered up again, we need to poke the codec a little extra to make
->> sure it wakes up. Otherwise we'll get sad "no response from codec"
->> messages and broken audio.
->>
->> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->> Tested-by: Woodrow Shen <woodrow.shen@canonical.com>
->> ---
->>
->>   * It would good to have an ack from Intel on this patch, since they
->>     have better hardware knowledge than I.
->>
->>   * Also I haven't really kept track of all recent reorganisation of the
->>     hda driver so I'm not totally sure how many kernels back (if any)
->>     that this applies to
->>
->>   sound/pci/hda/hda_intel.c | 10 +++++++++-
->>   1 file changed, 9 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index ca151b4..872e9a7 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -567,9 +567,17 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
->>   /* Enable/disable i915 display power for the link */
->>   static int azx_intel_link_power(struct azx *chip, bool enable)
->>   {
->> +	int err;
->>   	struct hdac_bus *bus = azx_bus(chip);
->>
->> -	return snd_hdac_display_power(bus, enable);
->> +	err = snd_hdac_display_power(bus, enable);
->> +	if (err < 0)
->> +		return err;
->> +	if (enable && (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)) {
->> +		snd_hdac_set_codec_wakeup(bus, true);
->> +		snd_hdac_set_codec_wakeup(bus, false);
->> +	}
+On Wed, Jul 15, 2015 at 09:13:47AM +0200, Lars-Peter Clausen wrote:
+> On 07/15/2015 03:37 AM, Shengjiu Wang wrote:
+> >On Tue, Jul 07, 2015 at 03:32:02PM +0200, Lars-Peter Clausen wrote:
+> >>On 07/07/2015 12:13 PM, Shengjiu Wang wrote:
+> >>>On Mon, Jul 06, 2015 at 02:27:01PM +0200, Lars-Peter Clausen wrote:
+> >>>>On 07/06/2015 11:01 AM, Shengjiu Wang wrote:
+> >>>>>On Fri, Jul 03, 2015 at 12:56:53PM +0200, Lars-Peter Clausen wrote:
+> >>>>>>On 07/03/2015 10:25 AM, Shengjiu Wang wrote:
+> >>>>>>>Hi alsa-devel
+> >>>>>>>
+> >>>>>>>    There maybe a issue in ALSA when dma complete race with snd_pcm_release.
+> >>>>>>>The pcm release and dma complete are in different thread. There is occasion
+> >>>>>>>that dmaengine_pcm_dma_complete() is called too late, some memory has been
+> >>>>>>>freed, the prtd is null. Then there is kernel dump.
+> >>>>>>>
+> >>>>>>>    Is there any solution for this issue? Thanks.
+> >>>>>>
+> >>>>>>We need to introduce a synchronization primitive that allows a
+> >>>>>>dmaengine client to synchronize to the execution of the complete
+> >>>>>>callbacks.
+> >>>>>>
+> >>>>>>terminate_all() unfortunately can't do this since terminate_all()
+> >>>>>>might be called from within one of the complete callbacks and so
+> >>>>>>would cause a deadlock if we'd wait for all complete callbacks to
+> >>>>>>finish before terminate_all() returns.
+> >>>>>>
+> >>>>>>So what is needed is a new function called dmaengine_sync() that
+> >>>>>>will wait until all scheduled complete callbacks have finished. A
+> >>>>>>call to this function needs to be put in snd_dmaengine_pcm_close()
+> >>>>>>before the prtd is closed.
+> >>>>>>
+> >>>>>>- Lars
+> >>>>>
+> >>>>>How to check " all scheduled complete callbacks have finished"?
+> >>>>
+> >>>>That will be up to the dmaengine driver. But it basically comes down
+> >>>>to two things:
+> >>>>
+> >>>>1) The driver needs to make sure that tasklet_schedule() is no
+> >>>>longer called after terminate_all() has finished.
+> >>>Some driver can't make sure this. The dma interrupt may come later after
+> >>>terminate_all.
+> >>
+> >>Most drivers can't make sure that the interrupt routine is not
+> >>executed after terminate_all() has been called, since both are fully
+> >>asynchronous. But what the driver needs to take care of is to
+> >>synchronize the two e.g. using a spin_lock() and make sure that if
+> >>terminate_all() has been called tasklet_schedule() is not called,
+> >>even if the isr is executed. Most drivers get this rigght.
+> >>
+> >>>>2) In the sync() callback call tasklet_kill() to make sure that it
+> >>>>has finished running
+> >>>>
+> >>>>>
+> >>>>>One concern is if add wait in snd_dmaengine_pcm_close(), which wil cause
+> >>>>>the snd_pcm_release is bound with dmaengine, when there is error in dma
+> >>>>>and no callback be called. Then the snd_pcm_release will not be released.
+> >>>>
+> >>>>The sync() function will only wait if there is a callback scheduled,
+> >>>>if there is non scheduled it will return immediately.
+> >>>
+> >>>
+> >>>Do you have other method to resolve this issue? or simple method?
+> >>
+> >>No, this is the way to go. You have two asynchronous processes and
+> >>you want to get deterministic execution ordering between the two you
+> >>need to add a synchronization primitive.
+> >>
+> >>- Lars
+> >>
+> >Thanks your advice. It is workable. But need to add new api in dmaengine.h
+> >
+> >I think about another method, can we add spin_lock in
+> >dmaengine_pcm_dma_complete() and snd_dmaengine_pcm_close()? and add a flag
+> >for pcm_close, if pcm closed, then just do nothing in dma complete.
+> >How do you think for this?
+> 
+> Since you are freeing the memory that would store the flag that wont work.
+> 
+> - Lars
 >
-> Wouldn't it be better to put in snd_hadc_display_power() itself?
+It seems the snd_pcm_substream is not released, can we add flag in this struct?\
 
-I don't mind either way. Mengdong, do you have an opinion?
-
->
-> --- a/sound/hda/hdac_i915.c
-> +++ b/sound/hda/hdac_i915.c
-> @@ -56,8 +56,11 @@ int snd_hdac_display_power(struct hdac_bus *bus, bool enable)
->   		enable ? "enable" : "disable");
->
->   	if (enable) {
-> -		if (!bus->i915_power_refcount++)
-> +		if (!bus->i915_power_refcount++) {
->   			acomp->ops->get_power(acomp->dev);
-> +			snd_hdac_set_codec_wakeup(bus, true);
-> +			snd_hdac_set_codec_wakeup(bus, false);
-> +		}
->   	} else {
->   		WARN_ON(!bus->i915_power_refcount);
->   		if (!--bus->i915_power_refcount)
->
-> Takashi
->
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+best regards
+wang shengjiu
