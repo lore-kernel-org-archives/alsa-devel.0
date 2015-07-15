@@ -1,18 +1,20 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v3 9/9] ASoC: sti: Add IEC control
-Date: Wed, 15 Jul 2015 11:59:46 +0200
-Message-ID: <55A62F12.5000100@st.com>
-References: <1434983473-25092-1-git-send-email-arnaud.pouliquen@st.com>
- <1434983473-25092-10-git-send-email-arnaud.pouliquen@st.com>
- <20150710180647.GW11162@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 0/4] better support for bursty DMA
+	usages
+Date: Wed, 15 Jul 2015 18:14:17 +0800
+Message-ID: <CAN8cciaoV=GqnLmukZvHGz+YjSu85nGcHzrhACAkOeH0692VhA@mail.gmail.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id B301E265824
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 11:59:57 +0200 (CEST)
-In-Reply-To: <20150710180647.GW11162@sirena.org.uk>
+Received: from mail-oi0-f54.google.com (mail-oi0-f54.google.com
+ [209.85.218.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BC0F265838
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 12:14:18 +0200 (CEST)
+Received: by oiab3 with SMTP id b3so25064420oia.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 03:14:17 -0700 (PDT)
+In-Reply-To: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, kernel@stlinux.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 07/10/2015 08:06 PM, Mark Brown wrote:
-> On Mon, Jun 22, 2015 at 04:31:13PM +0200, Arnaud Pouliquen wrote:
->> Add control to configure IEC60958 settings.
 >
-> I had one question on the rest of the series but basically everything
-> else looks reasonable - I've applied some of the earlier patches, where
-> there were comments can you please send incremental fixes for them?
-Incremental fix means V4 or additional patches?
-> With this one there's no technical problem exactly but it seems like
-> something we should have a standard userspace interface for so I'd like
-> to check what's going on there and propose something standard if there
-> isn't anything.  It should at most affect the control naming.
+> Set of patches to fix issues with hw_ptr fuzziness [1] and increased
+buffering
+>  w/ DSPs
 >
-i not quite sure i follow you, this IEC control is not already standard?
-Userland applications like Gstreamer seem already use it...
-The only limitation i saw is that i did not succeed in associated 
-control to PCM device, only to CPU DAI. As i will have one additional 
-IEC control for HDMI, i will need to manage control index, aligned to 
-CPU DAI index, but not to PCM device index.
+> 1. disable rewinds to allow for new HDaudio SPIB DMA functionality (fetch
+up to
+> the application pointer, rewinds not supported)
+> 2. report max in-flight bytes to avoid problems with stale data (late
+wake-ups,
+> rewinds)
+>
+> [1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093646.html
+>
+> TODO:
+> 1. fixes and alsa-lib updates (compile-tested only for now)
+
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/alsa-sink.c?id=cb55b00ccd25d965b1222e74375aee05427a449b
+
+Do you need a new api snd_pcm_hw_params_can_rewind() for the application to
+know pcm device does not support rewind ?
