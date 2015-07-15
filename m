@@ -1,49 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: Get correct usage_count value to load
- firmware
-Date: Wed, 15 Jul 2015 12:52:06 +0100
-Message-ID: <20150715115206.GP11162@sirena.org.uk>
-References: <1436897626-118574-1-git-send-email-yang.a.fang@intel.com>
- <1436898231-118904-1-git-send-email-yang.a.fang@intel.com>
+Subject: Applied "ASoC: sirf-audio-codec: Staticise local
+	symbols" to the asoc tree
+Date: Wed, 15 Jul 2015 12:55:40 +0100
+Message-ID: <E1ZFLHo-0006ci-2D@debutante>
+References: <1436939449.24267.0.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vFlNxW/ZYoYKhFp4"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1436898231-118904-1-git-send-email-yang.a.fang@intel.com>
-Sender: stable-owner@vger.kernel.org
-To: yang.a.fang@intel.com
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, vinod.koul@intel.com, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, srinivas.sripathi@intel.com, shilpa.sreeramalu@intel.com, dinesh.mirche@intel.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 117BB2658A6
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 13:55:49 +0200 (CEST)
+In-Reply-To: <1436939449.24267.0.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---vFlNxW/ZYoYKhFp4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sirf-audio-codec: Staticise local symbols
 
-On Tue, Jul 14, 2015 at 11:23:51AM -0700, yang.a.fang@intel.com wrote:
+has been applied to the asoc tree at
 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Shilpa Sreeramalu <shilpa.sreeramalu@intel.com>
-> ---
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I can't apply this, you've not signed off the patch.  Please see
-Documentation/SubmittingPatches.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---vFlNxW/ZYoYKhFp4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEcBAEBCAAGBQJVpkllAAoJECTWi3JdVIfQ+QcH/11UOtA8aM5oYLk9IwghklRW
-OHSBBEJh0YztUgjKSHPKgLGwypgDV9nyN4yxTGrJ4jRdpVSFM0+O6eBCNwT0ryV4
-vvBmgWD9kvjy9/rXuiff7NpqoqgLoSY+f6llItzAOnHNvVdW7HqmZNanVhvV1vF8
-HXHBrNbMkwD1TMc1PVjdgJxhobvjK6/duMHah4rVcugWQ6SPi+jRX76VmBnaBjMB
-lAct1vh5I1LOlTiKmppOjE3sQVRozaOJhFOOeDQXwz7I4QL5w6kL+jmXLNjH3Nf9
-rzHWRPC4AbHBtkho5qWjWNa2DhsVmB52yWss3xHA7byAaJaKkrwLdZFXQLd2cu4=
-=lqg7
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---vFlNxW/ZYoYKhFp4--
+Thanks,
+Mark
+
+>From 8e2175d42e435b7957bfaa921fc27cb40e923372 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 15 Jul 2015 13:50:49 +0800
+Subject: [PATCH] ASoC: sirf-audio-codec: Staticise local symbols
+
+Also make sirf_audio_codec_dai_ops const.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/sirf-audio-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
+index 29cb44256044..6bfd25c289d1 100644
+--- a/sound/soc/codecs/sirf-audio-codec.c
++++ b/sound/soc/codecs/sirf-audio-codec.c
+@@ -370,11 +370,11 @@ static int sirf_audio_codec_trigger(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-struct snd_soc_dai_ops sirf_audio_codec_dai_ops = {
++static const struct snd_soc_dai_ops sirf_audio_codec_dai_ops = {
+ 	.trigger = sirf_audio_codec_trigger,
+ };
+ 
+-struct snd_soc_dai_driver sirf_audio_codec_dai = {
++static struct snd_soc_dai_driver sirf_audio_codec_dai = {
+ 	.name = "sirf-audio-codec",
+ 	.playback = {
+ 		.stream_name = "Playback",
+-- 
+2.1.4
