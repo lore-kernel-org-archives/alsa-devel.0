@@ -1,90 +1,182 @@
 From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH 0/7] Update ALSA, and au0828 drivers to use Managed Media Controller API
-Date: Tue, 14 Jul 2015 18:33:58 -0600
-Message-ID: <cover.1436917513.git.shuahkh@osg.samsung.com>
+Subject: [PATCH 2/7] media: Media Controller register/unregister entity_notify API
+Date: Tue, 14 Jul 2015 18:34:01 -0600
+Message-ID: <21da4006a0f95ec7aad81539e58df5ef04a173cb.1436917513.git.shuahkh@osg.samsung.com>
+References: <cover.1436917513.git.shuahkh@osg.samsung.com>
 Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
+In-Reply-To: <cover.1436917513.git.shuahkh@osg.samsung.com>
+References: <cover.1436917513.git.shuahkh@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
 To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, perex@perex.cz, crope@iki.fi, sakari.ailus@linux.intel.com, arnd@arndb.de, stefanr@s5r6.in-berlin.de, ruchandani.tina@gmail.com, chehabrafael@gmail.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, daniel@zonque.org, vladcatoi@gmail.com, misterpib@gmail.com, damien@zamaudio.com, pmatilai@laiskiainen.org, takamichiho@gmail.com, normalperson@yhbt.net, bugzilla.frnkcg@spamgourmet.com, joe@oampo.co.uk, calcprogrammer1@gmail.com, jussi@sonarnerd.net
 Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-s patch series updates ALSA driver, and au0828 core driver to
-use Managed Media controller API to share tuner. Please note that
-Managed Media Controller API and DVB and V4L2 drivers updates to
-use Media Controller API have been added in a prior patch series.
+Add new interfaces to register and unregister entity_notify
+hook to media device to allow drivers to take appropriate
+actions when as new entities get added to the shared media
+device.When a new entity is registered, all registered
+entity_notify hooks are invoked to allow drivers or modules
+that registered hook to take appropriate action. For example,
+ALSA driver registers an entity_notify hook to parse the list
+of registered entities to determine if decoder has been linked
+to ALSA entity. au0828 bridge driver registers an entity_notify
+hook to create media graph for the device.
 
-Media Controller API is enhanced with two new interfaces to
-register and unregister entity_notify hooks to allow drivers
-to take appropriate actions when as new entities get added to
-the shared media device.
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+---
+ drivers/media/media-device.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
+ include/media/media-device.h | 23 ++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
 
-Tested exclusion between digital, analog, and audio to ensure
-when tuner has an active link to DVB FE, analog, and audio will
-detect and honor the tuner busy conditions and vice versa.
-
-This patch series has been updated to address comments from
-3 previous versions of this series. Link to v3 below for
-reference.
-
-https://www.mail-archive.com/linux-media%40vger.kernel.org/msg89491.html
-https://www.mail-archive.com/linux-media@vger.kernel.org/msg89492.html
-https://www.mail-archive.com/linux-media%40vger.kernel.org/msg89493.html
-
-Open Issues:
-
-ALSA has makes media_entity_pipeline_start() call in irq
-path. I am seeing warnings that the graph_mutex is unsafe
-irq lock. Media Controller API updates to start/stop pipeline
-to be irq safe might be necessary. Maybe there are other MC
-interfaces that need to be irq safe, but I haven't seen any
-problems with my testing.
-
-So as per options, graph_mutex could be changed to a spinlock.
-It looks like drivers hold this lock and it isn't abstracted to
-MC API. Unfortunate, this would require changes to drivers that
-directly hold the lock for graph walks if this mutex is changed
-to spinlock. This issue needs to be resolved.
-
-Note: This series includes a revert to a patch that added media
-controller entity framework enhancements that implemented entity
-ops for entity_notify functionality. Entity ops for entity_notify
-doesn't handle and cover entity create ordering variations that
-could occur during boot. entity_notify list has been moved to media
-device level which makes the entity_notify calls to work correctly.
-
-Shuah Khan (7):
-  Revert "[media] media: media controller entity framework enhancements
-    for ALSA"
-  media: Media Controller register/unregister entity_notify API
-  media: Add ALSA Media Controller devnodes
-  media: change dvb-frontend to honor MC tuner enable error
-  media: au8522 change to create MC pad for ALSA Audio Out
-  media: au0828 change to use Managed Media Controller API
-  sound/usb: Update ALSA driver to use Managed Media Controller API
-
- drivers/media/dvb-core/dvb_frontend.c        |   5 +-
- drivers/media/dvb-frontends/au8522.h         |   8 +
- drivers/media/dvb-frontends/au8522_decoder.c |   1 +
- drivers/media/dvb-frontends/au8522_priv.h    |   8 -
- drivers/media/media-device.c                 |  46 ++++-
- drivers/media/usb/au0828/au0828-core.c       | 132 ++++++++------
- drivers/media/usb/au0828/au0828.h            |   5 +
- include/media/media-device.h                 |  23 +++
- include/media/media-entity.h                 |   4 -
- include/uapi/linux/media.h                   |   5 +
- sound/usb/Makefile                           |  15 +-
- sound/usb/card.c                             |   5 +
- sound/usb/card.h                             |   1 +
- sound/usb/media.c                            | 260 +++++++++++++++++++++++++++
- sound/usb/media.h                            |  52 ++++++
- sound/usb/pcm.c                              |  15 +-
- sound/usb/quirks-table.h                     |   1 +
- sound/usb/quirks.c                           |   9 +-
- sound/usb/stream.c                           |   2 +
- sound/usb/usbaudio.h                         |   1 +
- 20 files changed, 523 insertions(+), 75 deletions(-)
- create mode 100644 sound/usb/media.c
- create mode 100644 sound/usb/media.h
-
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index c55ab50..22565a8 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -381,6 +381,7 @@ int __must_check __media_device_register(struct media_device *mdev,
+ 
+ 	mdev->entity_id = 1;
+ 	INIT_LIST_HEAD(&mdev->entities);
++	INIT_LIST_HEAD(&mdev->entity_notify);
+ 	spin_lock_init(&mdev->lock);
+ 	mutex_init(&mdev->graph_mutex);
+ 
+@@ -411,9 +412,12 @@ void media_device_unregister(struct media_device *mdev)
+ {
+ 	struct media_entity *entity;
+ 	struct media_entity *next;
++	struct media_entity_notify *notify, *nextp;
+ 
+ 	list_for_each_entry_safe(entity, next, &mdev->entities, list)
+ 		media_device_unregister_entity(entity);
++	list_for_each_entry_safe(notify, nextp, &mdev->entity_notify, list)
++		media_device_unregister_entity_notify(mdev, notify);
+ 
+ 	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
+ 	media_devnode_unregister(&mdev->devnode);
+@@ -421,6 +425,39 @@ void media_device_unregister(struct media_device *mdev)
+ EXPORT_SYMBOL_GPL(media_device_unregister);
+ 
+ /**
++ * media_device_register_entity_notify - Register a media entity notify
++ * callback with a media device. When a new entity is registered, all
++ * the registered media_entity_notify callbacks are invoked.
++ * @mdev:	The media device
++ * @nptr:	The media_entity_notify
++ */
++int __must_check media_device_register_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	spin_lock(&mdev->lock);
++	list_add_tail(&nptr->list, &mdev->entity_notify);
++	spin_unlock(&mdev->lock);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(media_device_register_entity_notify);
++
++/**
++ * media_device_unregister_entity_notify - Unregister a media entity notify
++ * callback with a media device. When a new entity is registered, all
++ * the registered media_entity_notify callbacks are invoked.
++ * @mdev:	The media device
++ * @nptr:	The media_entity_notify
++ */
++void media_device_unregister_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	spin_lock(&mdev->lock);
++	list_del(&nptr->list);
++	spin_unlock(&mdev->lock);
++}
++EXPORT_SYMBOL_GPL(media_device_unregister_entity_notify);
++
++/**
+  * media_device_register_entity - Register an entity with a media device
+  * @mdev:	The media device
+  * @entity:	The entity
+@@ -428,6 +465,8 @@ EXPORT_SYMBOL_GPL(media_device_unregister);
+ int __must_check media_device_register_entity(struct media_device *mdev,
+ 					      struct media_entity *entity)
+ {
++	struct media_entity_notify *notify, *next;
++
+ 	/* Warn if we apparently re-register an entity */
+ 	WARN_ON(entity->parent != NULL);
+ 	entity->parent = mdev;
+@@ -440,6 +479,11 @@ int __must_check media_device_register_entity(struct media_device *mdev,
+ 	list_add_tail(&entity->list, &mdev->entities);
+ 	spin_unlock(&mdev->lock);
+ 
++	/* invoke entity_notify callbacks */
++	list_for_each_entry_safe(notify, next, &mdev->entity_notify, list) {
++		(notify)->notify(entity, notify->notify_data);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(media_device_register_entity);
+@@ -462,6 +506,7 @@ void media_device_unregister_entity(struct media_entity *entity)
+ 	list_del(&entity->list);
+ 	spin_unlock(&mdev->lock);
+ 	entity->parent = NULL;
++	/* invoke entity_notify callbacks to handle entity removal?? */
+ }
+ EXPORT_SYMBOL_GPL(media_device_unregister_entity);
+ 
+diff --git a/include/media/media-device.h b/include/media/media-device.h
+index a44f18f..a3854f6 100644
+--- a/include/media/media-device.h
++++ b/include/media/media-device.h
+@@ -32,6 +32,12 @@
+ 
+ struct device;
+ 
++struct media_entity_notify {
++	struct list_head list;
++	void *notify_data;
++	void (*notify)(struct media_entity *entity, void *notify_data);
++};
++
+ /**
+  * struct media_device - Media device
+  * @dev:	Parent device
+@@ -70,6 +76,8 @@ struct media_device {
+ 
+ 	u32 entity_id;
+ 	struct list_head entities;
++	/* notify callback list invoked when a new entity is registered */
++	struct list_head entity_notify;
+ 
+ 	/* Protects the entities list */
+ 	spinlock_t lock;
+@@ -94,6 +102,10 @@ int __must_check __media_device_register(struct media_device *mdev,
+ #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
+ void media_device_unregister(struct media_device *mdev);
+ 
++int __must_check media_device_register_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr);
++void media_device_unregister_entity_notify(struct media_device *mdev,
++					struct media_entity_notify *nptr);
+ int __must_check media_device_register_entity(struct media_device *mdev,
+ 					      struct media_entity *entity);
+ void media_device_unregister_entity(struct media_entity *entity);
+@@ -112,6 +124,17 @@ static inline int media_device_register(struct media_device *mdev)
+ static inline void media_device_unregister(struct media_device *mdev)
+ {
+ }
++static inline int media_device_register_entity_notify(
++					struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++	return 0;
++}
++static inline void media_device_unregister_entity_notify(
++					struct media_device *mdev,
++					struct media_entity_notify *nptr)
++{
++}
+ static inline int media_device_register_entity(struct media_device *mdev,
+ 						struct media_entity *entity)
+ {
 -- 
 2.1.4
