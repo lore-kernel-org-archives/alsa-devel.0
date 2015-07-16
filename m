@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9877: Make driver global regmap
-	struct local" to the asoc tree
-Date: Thu, 16 Jul 2015 22:01:36 +0100
-Message-ID: <E1ZFqHg-0001lR-Q6@finisterre>
-References: <1437074572-3831-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: rsnd: move SRC specific macro into
+	src.c" to the asoc tree
+Date: Thu, 16 Jul 2015 22:11:31 +0100
+Message-ID: <E1ZFqRH-0002mW-FG@finisterre>
+References: <87vbdlvqxj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CFF42266708
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:43 +0200 (CEST)
-In-Reply-To: <1437074572-3831-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CC1F0266837
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:11:37 +0200 (CEST)
+In-Reply-To: <87vbdlvqxj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Keita Kobayashi <keita.kobayashi.ym@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9877: Make driver global regmap struct local
+   ASoC: rsnd: move SRC specific macro into src.c
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From df2e268226e2e3d79980a5dddfd683126f79ddb4 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Thu, 16 Jul 2015 21:22:49 +0200
-Subject: [PATCH] ASoC: max9877: Make driver global regmap struct local
+>From da599fd34b1f2f14f2c387e6b3a909f9ff519c8a Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 15 Jul 2015 07:11:21 +0000
+Subject: [PATCH] ASoC: rsnd: move SRC specific macro into src.c
 
-Use a stack local variable to handle function local state rather than a
-global static variable. The later has a potential for race conditions if
-the probe function runs for two devices concurrently.
+rsnd_src_nr() is used only from src.c
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9877.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 2 --
+ sound/soc/sh/rcar/src.c  | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max9877.c b/sound/soc/codecs/max9877.c
-index e1df06f..b469e1c8 100644
---- a/sound/soc/codecs/max9877.c
-+++ b/sound/soc/codecs/max9877.c
-@@ -20,8 +20,6 @@
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 8f793f0..c8d2029 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -554,8 +554,6 @@ int rsnd_src_ssiu_stop(struct rsnd_mod *ssi_mod,
+ int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod);
+ int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod);
  
- #include "max9877.h"
- 
--static struct regmap *regmap;
+-#define rsnd_src_nr(priv) ((priv)->src_nr)
 -
- static const struct reg_default max9877_regs[] = {
- 	{ 0, 0x40 },
- 	{ 1, 0x00 },
-@@ -145,6 +143,7 @@ static const struct regmap_config max9877_regmap = {
- static int max9877_i2c_probe(struct i2c_client *client,
- 			     const struct i2c_device_id *id)
- {
-+	struct regmap *regmap;
- 	int i;
+ /*
+  *	R-Car SSI
+  */
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 38d0aba..0b06ac8 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -30,6 +30,7 @@ struct rsnd_src {
  
- 	regmap = devm_regmap_init_i2c(client, &max9877_regmap);
+ #define RSND_SRC_NAME_SIZE 16
+ 
++#define rsnd_src_nr(priv) ((priv)->src_nr)
+ #define rsnd_enable_sync_convert(src) ((src)->sen.val)
+ #define rsnd_src_of_node(priv) \
+ 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,src")
 -- 
 2.1.4
