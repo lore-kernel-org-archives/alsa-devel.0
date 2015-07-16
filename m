@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add code loader DMA
-	registers" to the asoc tree
-Date: Thu, 16 Jul 2015 22:01:19 +0100
-Message-ID: <E1ZFqHP-0001gl-Ja@finisterre>
-References: <1436546926-17263-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add dsp loader ops" to
+	the asoc tree
+Date: Thu, 16 Jul 2015 22:01:20 +0100
+Message-ID: <E1ZFqHQ-0001hE-Sj@finisterre>
+References: <1436546926-17263-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 133692666AC
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:26 +0200 (CEST)
-In-Reply-To: <1436546926-17263-3-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 86A6A2605D7
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:27 +0200 (CEST)
+In-Reply-To: <1436546926-17263-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add code loader DMA registers
+   ASoC: Intel: Skylake: Add dsp loader ops
 
 has been applied to the asoc tree at
 
@@ -53,219 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From e30903877fde33192b80100b7f63f2af97b2bd86 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 10 Jul 2015 22:18:40 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add code loader DMA registers
+>From b662680252fa6e3bc53ad087078dd1fe7496449c Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Fri, 10 Jul 2015 22:18:39 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add dsp loader ops
 
-Skylake has a DMA controller for loading DSP code and modules to memory.
-Add the register defines for this DMA
+The ops is initialized during the dsp registration and used for the
+allocating dma buffers.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.h | 191 ++++++++++++++++++++++++++++++++
- 1 file changed, 191 insertions(+)
- create mode 100644 sound/soc/intel/skylake/skl-sst-cldma.h
+ sound/soc/intel/skylake/skl-sst-dsp.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.h b/sound/soc/intel/skylake/skl-sst-cldma.h
-new file mode 100644
-index 0000000..34c366f
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.h
-@@ -0,0 +1,191 @@
-+/*
-+ * Intel Code Loader DMA support
-+ *
-+ * Copyright (C) 2015, Intel Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index cdfca9b..c2d2878 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -16,6 +16,8 @@
+ #ifndef __SKL_SST_DSP_H__
+ #define __SKL_SST_DSP_H__
+ 
++#include <sound/memalloc.h>
 +
-+#ifndef SKL_SST_CLDMA_H_
-+#define SKL_SST_CLDMA_H_
+ struct sst_dsp_device;
+ 
+ /* Intel HD Audio General DSP Registers */
+@@ -104,6 +106,13 @@ struct skl_dsp_fw_ops {
+ 	int (*set_state_D3)(struct sst_dsp *ctx);
+ };
+ 
++struct skl_dsp_loader_ops {
++	int (*alloc_dma_buf)(struct device *dev,
++		struct snd_dma_buffer *dmab, size_t size);
++	int (*free_dma_buf)(struct device *dev,
++		struct snd_dma_buffer *dmab);
++};
 +
-+#define FW_CL_STREAM_NUMBER		0x1
-+
-+#define DMA_ADDRESS_128_BITS_ALIGNMENT	7
-+#define BDL_ALIGN(x)			(x >> DMA_ADDRESS_128_BITS_ALIGNMENT)
-+
-+#define SKL_ADSPIC_CL_DMA			0x2
-+#define SKL_ADSPIS_CL_DMA			0x2
-+#define SKL_CL_DMA_SD_INT_DESC_ERR		0x10 /* Descriptor error interrupt */
-+#define SKL_CL_DMA_SD_INT_FIFO_ERR		0x08 /* FIFO error interrupt */
-+#define SKL_CL_DMA_SD_INT_COMPLETE		0x04 /* Buffer completion interrupt */
-+
-+/* Intel HD Audio Code Loader DMA Registers */
-+
-+#define HDA_ADSP_LOADER_BASE		0x80
-+
-+/* Stream Registers */
-+#define SKL_ADSP_REG_CL_SD_CTL			(HDA_ADSP_LOADER_BASE + 0x00)
-+#define SKL_ADSP_REG_CL_SD_STS			(HDA_ADSP_LOADER_BASE + 0x03)
-+#define SKL_ADSP_REG_CL_SD_LPIB			(HDA_ADSP_LOADER_BASE + 0x04)
-+#define SKL_ADSP_REG_CL_SD_CBL			(HDA_ADSP_LOADER_BASE + 0x08)
-+#define SKL_ADSP_REG_CL_SD_LVI			(HDA_ADSP_LOADER_BASE + 0x0c)
-+#define SKL_ADSP_REG_CL_SD_FIFOW		(HDA_ADSP_LOADER_BASE + 0x0e)
-+#define SKL_ADSP_REG_CL_SD_FIFOSIZE		(HDA_ADSP_LOADER_BASE + 0x10)
-+#define SKL_ADSP_REG_CL_SD_FORMAT		(HDA_ADSP_LOADER_BASE + 0x12)
-+#define SKL_ADSP_REG_CL_SD_FIFOL		(HDA_ADSP_LOADER_BASE + 0x14)
-+#define SKL_ADSP_REG_CL_SD_BDLPL		(HDA_ADSP_LOADER_BASE + 0x18)
-+#define SKL_ADSP_REG_CL_SD_BDLPU		(HDA_ADSP_LOADER_BASE + 0x1c)
-+
-+/* CL: Software Position Based FIFO Capability Registers */
-+#define SKL_ADSP_REG_CL_SPBFIFO			(HDA_ADSP_LOADER_BASE + 0x20)
-+#define SKL_ADSP_REG_CL_SPBFIFO_SPBFCH		(SKL_ADSP_REG_CL_SPBFIFO + 0x0)
-+#define SKL_ADSP_REG_CL_SPBFIFO_SPBFCCTL	(SKL_ADSP_REG_CL_SPBFIFO + 0x4)
-+#define SKL_ADSP_REG_CL_SPBFIFO_SPIB		(SKL_ADSP_REG_CL_SPBFIFO + 0x8)
-+#define SKL_ADSP_REG_CL_SPBFIFO_MAXFIFOS	(SKL_ADSP_REG_CL_SPBFIFO + 0xc)
-+
-+/* CL: Stream Descriptor x Control */
-+
-+/* Stream Reset */
-+#define CL_SD_CTL_SRST_SHIFT		0
-+#define CL_SD_CTL_SRST_MASK		(1 << CL_SD_CTL_SRST_SHIFT)
-+#define CL_SD_CTL_SRST(x)		\
-+			((x << CL_SD_CTL_SRST_SHIFT) & CL_SD_CTL_SRST_MASK)
-+
-+/* Stream Run */
-+#define CL_SD_CTL_RUN_SHIFT		1
-+#define CL_SD_CTL_RUN_MASK		(1 << CL_SD_CTL_RUN_SHIFT)
-+#define CL_SD_CTL_RUN(x)		\
-+			((x << CL_SD_CTL_RUN_SHIFT) & CL_SD_CTL_RUN_MASK)
-+
-+/* Interrupt On Completion Enable */
-+#define CL_SD_CTL_IOCE_SHIFT		2
-+#define CL_SD_CTL_IOCE_MASK		(1 << CL_SD_CTL_IOCE_SHIFT)
-+#define CL_SD_CTL_IOCE(x)		\
-+			((x << CL_SD_CTL_IOCE_SHIFT) & CL_SD_CTL_IOCE_MASK)
-+
-+/* FIFO Error Interrupt Enable */
-+#define CL_SD_CTL_FEIE_SHIFT		3
-+#define CL_SD_CTL_FEIE_MASK		(1 << CL_SD_CTL_FEIE_SHIFT)
-+#define CL_SD_CTL_FEIE(x)		\
-+			((x << CL_SD_CTL_FEIE_SHIFT) & CL_SD_CTL_FEIE_MASK)
-+
-+/* Descriptor Error Interrupt Enable */
-+#define CL_SD_CTL_DEIE_SHIFT		4
-+#define CL_SD_CTL_DEIE_MASK		(1 << CL_SD_CTL_DEIE_SHIFT)
-+#define CL_SD_CTL_DEIE(x)		\
-+			((x << CL_SD_CTL_DEIE_SHIFT) & CL_SD_CTL_DEIE_MASK)
-+
-+/* FIFO Limit Change */
-+#define CL_SD_CTL_FIFOLC_SHIFT		5
-+#define CL_SD_CTL_FIFOLC_MASK		(1 << CL_SD_CTL_FIFOLC_SHIFT)
-+#define CL_SD_CTL_FIFOLC(x)		\
-+			((x << CL_SD_CTL_FIFOLC_SHIFT) & CL_SD_CTL_FIFOLC_MASK)
-+
-+/* Stripe Control */
-+#define CL_SD_CTL_STRIPE_SHIFT		16
-+#define CL_SD_CTL_STRIPE_MASK		(0x3 << CL_SD_CTL_STRIPE_SHIFT)
-+#define CL_SD_CTL_STRIPE(x)		\
-+			((x << CL_SD_CTL_STRIPE_SHIFT) & CL_SD_CTL_STRIPE_MASK)
-+
-+/* Traffic Priority */
-+#define CL_SD_CTL_TP_SHIFT		18
-+#define CL_SD_CTL_TP_MASK		(1 << CL_SD_CTL_TP_SHIFT)
-+#define CL_SD_CTL_TP(x)			\
-+			((x << CL_SD_CTL_TP_SHIFT) & CL_SD_CTL_TP_MASK)
-+
-+/* Bidirectional Direction Control */
-+#define CL_SD_CTL_DIR_SHIFT		19
-+#define CL_SD_CTL_DIR_MASK		(1 << CL_SD_CTL_DIR_SHIFT)
-+#define CL_SD_CTL_DIR(x)		\
-+			((x << CL_SD_CTL_DIR_SHIFT) & CL_SD_CTL_DIR_MASK)
-+
-+/* Stream Number */
-+#define CL_SD_CTL_STRM_SHIFT		20
-+#define CL_SD_CTL_STRM_MASK		(0xf << CL_SD_CTL_STRM_SHIFT)
-+#define CL_SD_CTL_STRM(x)		\
-+			((x << CL_SD_CTL_STRM_SHIFT) & CL_SD_CTL_STRM_MASK)
-+
-+/* CL: Stream Descriptor x Status */
-+
-+/* Buffer Completion Interrupt Status */
-+#define CL_SD_STS_BCIS(x)		CL_SD_CTL_IOCE(x)
-+
-+/* FIFO Error */
-+#define CL_SD_STS_FIFOE(x)		CL_SD_CTL_FEIE(x)
-+
-+/* Descriptor Error */
-+#define CL_SD_STS_DESE(x)		CL_SD_CTL_DEIE(x)
-+
-+/* FIFO Ready */
-+#define CL_SD_STS_FIFORDY(x)	CL_SD_CTL_FIFOLC(x)
-+
-+
-+/* CL: Stream Descriptor x Last Valid Index */
-+#define CL_SD_LVI_SHIFT			0
-+#define CL_SD_LVI_MASK			(0xff << CL_SD_LVI_SHIFT)
-+#define CL_SD_LVI(x)			((x << CL_SD_LVI_SHIFT) & CL_SD_LVI_MASK)
-+
-+/* CL: Stream Descriptor x FIFO Eviction Watermark */
-+#define CL_SD_FIFOW_SHIFT		0
-+#define CL_SD_FIFOW_MASK		(0x7 << CL_SD_FIFOW_SHIFT)
-+#define CL_SD_FIFOW(x)			\
-+			((x << CL_SD_FIFOW_SHIFT) & CL_SD_FIFOW_MASK)
-+
-+/* CL: Stream Descriptor x Buffer Descriptor List Pointer Lower Base Address */
-+
-+/* Protect Bits */
-+#define CL_SD_BDLPLBA_PROT_SHIFT	0
-+#define CL_SD_BDLPLBA_PROT_MASK		(1 << CL_SD_BDLPLBA_PROT_SHIFT)
-+#define CL_SD_BDLPLBA_PROT(x)		\
-+		((x << CL_SD_BDLPLBA_PROT_SHIFT) & CL_SD_BDLPLBA_PROT_MASK)
-+
-+/* Buffer Descriptor List Lower Base Address */
-+#define CL_SD_BDLPLBA_SHIFT		7
-+#define CL_SD_BDLPLBA_MASK		(0x1ffffff << CL_SD_BDLPLBA_SHIFT)
-+#define CL_SD_BDLPLBA(x)		\
-+	((BDL_ALIGN(lower_32_bits(x)) << CL_SD_BDLPLBA_SHIFT) & CL_SD_BDLPLBA_MASK)
-+
-+/* Buffer Descriptor List Upper Base Address */
-+#define CL_SD_BDLPUBA_SHIFT		0
-+#define CL_SD_BDLPUBA_MASK		(0xffffffff << CL_SD_BDLPUBA_SHIFT)
-+#define CL_SD_BDLPUBA(x)		\
-+		((upper_32_bits(x) << CL_SD_BDLPUBA_SHIFT) & CL_SD_BDLPUBA_MASK)
-+
-+/*
-+ * Code Loader - Software Position Based FIFO
-+ * Capability Registers x Software Position Based FIFO Header
-+ */
-+
-+/* Next Capability Pointer */
-+#define CL_SPBFIFO_SPBFCH_PTR_SHIFT	0
-+#define CL_SPBFIFO_SPBFCH_PTR_MASK	(0xff << CL_SPBFIFO_SPBFCH_PTR_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_PTR(x)	\
-+		((x << CL_SPBFIFO_SPBFCH_PTR_SHIFT) & CL_SPBFIFO_SPBFCH_PTR_MASK)
-+
-+/* Capability Identifier */
-+#define CL_SPBFIFO_SPBFCH_ID_SHIFT	16
-+#define CL_SPBFIFO_SPBFCH_ID_MASK	(0xfff << CL_SPBFIFO_SPBFCH_ID_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_ID(x)		\
-+		((x << CL_SPBFIFO_SPBFCH_ID_SHIFT) & CL_SPBFIFO_SPBFCH_ID_MASK)
-+
-+/* Capability Version */
-+#define CL_SPBFIFO_SPBFCH_VER_SHIFT	28
-+#define CL_SPBFIFO_SPBFCH_VER_MASK	(0xf << CL_SPBFIFO_SPBFCH_VER_SHIFT)
-+#define CL_SPBFIFO_SPBFCH_VER(x)	\
-+	((x << CL_SPBFIFO_SPBFCH_VER_SHIFT) & CL_SPBFIFO_SPBFCH_VER_MASK)
-+
-+/* Software Position in Buffer Enable */
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT	0
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE_MASK	(1 << CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT)
-+#define CL_SPBFIFO_SPBFCCTL_SPIBE(x)	\
-+	((x << CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT) & CL_SPBFIFO_SPBFCCTL_SPIBE_MASK)
-+
-+#endif /* SKL_SST_CLDMA_H_ */
+ void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
+ struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
+ 		struct sst_dsp_device *sst_dev, int irq);
 -- 
 2.1.4
