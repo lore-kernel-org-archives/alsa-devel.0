@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add ability to build sti drivers" to
+Subject: Applied "ASoC: sti: Add CPU DAI driver for capture" to
 	the asoc tree
-Date: Thu, 16 Jul 2015 22:01:23 +0100
-Message-ID: <E1ZFqHT-0001iA-T3@finisterre>
-References: <1434983473-25092-7-git-send-email-arnaud.pouliquen@st.com>
+Date: Thu, 16 Jul 2015 22:01:26 +0100
+Message-ID: <E1ZFqHW-0001j6-P0@finisterre>
+References: <1437039367-30842-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 696962666EF
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:31 +0200 (CEST)
-In-Reply-To: <1434983473-25092-7-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CDC826669A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:35 +0200 (CEST)
+In-Reply-To: <1437039367-30842-3-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add ability to build sti drivers
+   ASoC: sti: Add CPU DAI driver for capture
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,401 @@ to this mail.
 Thanks,
 Mark
 
->From 1e6babb417f76bd6d1a4d1d633e5c46435acbfe7 Mon Sep 17 00:00:00 2001
+>From c3a0003aaf0dc2ffd006a3bb5abc1f5b639552a7 Mon Sep 17 00:00:00 2001
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Thu, 16 Jul 2015 11:36:05 +0200
-Subject: [PATCH] ASoC: Add ability to build sti drivers
+Date: Thu, 16 Jul 2015 11:36:03 +0200
+Subject: [PATCH] ASoC: sti: Add CPU DAI driver for capture
 
-Define the platform and codec drivers, and how to build them.
+Add code to manage Uniperipheral reader IP instances.
+These DAIs are dedicated to capture and support I2S and IEC modes.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/Kconfig      |  1 +
- sound/soc/Makefile     |  1 +
- sound/soc/sti/Kconfig  | 11 +++++++++++
- sound/soc/sti/Makefile |  4 ++++
- 4 files changed, 17 insertions(+)
- create mode 100644 sound/soc/sti/Kconfig
- create mode 100644 sound/soc/sti/Makefile
+ sound/soc/sti/uniperif.h        |   3 +
+ sound/soc/sti/uniperif_reader.c | 362 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 365 insertions(+)
+ create mode 100644 sound/soc/sti/uniperif_reader.c
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 2ae9619..467ee1a 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -54,6 +54,7 @@ source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
-+source "sound/soc/sti/Kconfig"
- source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/ux500/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index e189903..19fd711 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -36,6 +36,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
-+obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index a8d9e94..f396958 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1212,4 +1212,7 @@ int uni_player_init(struct platform_device *pdev,
+ 		    struct uniperif *uni_player);
+ int uni_player_resume(struct uniperif *player);
+ 
++/* uniperiph reader */
++int uni_reader_init(struct platform_device *pdev,
++		    struct uniperif *uni_reader);
+ #endif
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
 new file mode 100644
-index 0000000..64a6900
+index 0000000..7d83827
 --- /dev/null
-+++ b/sound/soc/sti/Kconfig
-@@ -0,0 +1,11 @@
-+#
-+# STM SoC audio configuration
-+#
-+menuconfig SND_SOC_STI
-+	tristate "SoC Audio support for STI System-On-Chip"
-+	depends on SND_SOC
-+	depends on ARCH_STI || COMPILE_TEST
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+		Say Y if you want to enable ASoC-support for
-+		any of the STI platforms (e.g. STIH416).
-diff --git a/sound/soc/sti/Makefile b/sound/soc/sti/Makefile
-new file mode 100644
-index 0000000..4b188d2
---- /dev/null
-+++ b/sound/soc/sti/Makefile
-@@ -0,0 +1,4 @@
-+# STI platform support
-+snd-soc-sti-objs := sti_uniperif.o uniperif_player.o uniperif_reader.o
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -0,0 +1,362 @@
++/*
++ * Copyright (C) STMicroelectronics SA 2015
++ * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
++ *          for STMicroelectronics.
++ * License terms:  GNU General Public License (GPL), version 2
++ */
 +
-+obj-$(CONFIG_SND_SOC_STI) += snd-soc-sti.o
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++
++#include <sound/soc.h>
++
++#include "uniperif.h"
++
++/*
++ * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
++ * integrate unireader capability in term of rate and supported channels
++ */
++const struct snd_pcm_hardware uni_reader_pcm_hw = {
++	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID,
++	.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE,
++
++	.rates = SNDRV_PCM_RATE_CONTINUOUS,
++	.rate_min = 8000,
++	.rate_max = 96000,
++
++	.channels_min = 2,
++	.channels_max = 8,
++
++	.periods_min = 2,
++	.periods_max = 48,
++
++	.period_bytes_min = 128,
++	.period_bytes_max = 64 * PAGE_SIZE,
++	.buffer_bytes_max = 256 * PAGE_SIZE
++};
++
++/*
++ * uni_reader_irq_handler
++ * In case of error audio stream is stopped; stop action is protected via PCM
++ * stream lock  to avoid race condition with trigger callback.
++ */
++static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
++{
++	irqreturn_t ret = IRQ_NONE;
++	struct uniperif *reader = dev_id;
++	unsigned int status;
++
++	if (reader->state == UNIPERIF_STATE_STOPPED) {
++		/* Unexpected IRQ: do nothing */
++		dev_warn(reader->dev, "unexpected IRQ ");
++		return IRQ_HANDLED;
++	}
++
++	/* Get interrupt status & clear them immediately */
++	status = GET_UNIPERIF_ITS(reader);
++	SET_UNIPERIF_ITS_BCLR(reader, status);
++
++	/* Check for fifo overflow error */
++	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
++		dev_err(reader->dev, "FIFO error detected");
++
++		snd_pcm_stream_lock(reader->substream);
++		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
++		snd_pcm_stream_unlock(reader->substream);
++
++		return IRQ_HANDLED;
++	}
++
++	return ret;
++}
++
++static int uni_reader_prepare(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *reader = priv->dai_data.uni;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int transfer_size, trigger_limit;
++	int slot_width;
++	int count = 10;
++
++	/* The reader should be stopped */
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state %d", __func__,
++			reader->state);
++		return -EINVAL;
++	}
++
++	/* Calculate transfer size (in fifo cells and bytes) for frame count */
++	transfer_size = runtime->channels * UNIPERIF_FIFO_FRAMES;
++
++	/* Calculate number of empty cells available before asserting DREQ */
++	if (reader->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
++		trigger_limit = UNIPERIF_FIFO_SIZE - transfer_size;
++	else
++		/*
++		 * Since SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0
++		 * FDMA_TRIGGER_LIMIT also controls when the state switches
++		 * from OFF or STANDBY to AUDIO DATA.
++		 */
++		trigger_limit = transfer_size;
++
++	/* Trigger limit must be an even number */
++	if ((!trigger_limit % 2) ||
++	    (trigger_limit != 1 && transfer_size % 2) ||
++	    (trigger_limit > UNIPERIF_CONFIG_DMA_TRIG_LIMIT_MASK(reader))) {
++		dev_err(reader->dev, "invalid trigger limit %d", trigger_limit);
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_CONFIG_DMA_TRIG_LIMIT(reader, trigger_limit);
++
++	switch (reader->daifmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++	case SND_SOC_DAIFMT_NB_IF:
++		SET_UNIPERIF_I2S_FMT_LR_POL_HIG(reader);
++		break;
++	default:
++		SET_UNIPERIF_I2S_FMT_LR_POL_LOW(reader);
++	}
++
++	/* Force slot width to 32 in I2S mode */
++	if ((reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK)
++		== SND_SOC_DAIFMT_I2S) {
++		slot_width = 32;
++	} else {
++		switch (runtime->format) {
++		case SNDRV_PCM_FORMAT_S16_LE:
++			slot_width = 16;
++			break;
++		default:
++			slot_width = 32;
++			break;
++		}
++	}
++
++	/* Number of bits per subframe (i.e one channel sample) on input. */
++	switch (slot_width) {
++	case 32:
++		SET_UNIPERIF_I2S_FMT_NBIT_32(reader);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_32(reader);
++		break;
++	case 16:
++		SET_UNIPERIF_I2S_FMT_NBIT_16(reader);
++		SET_UNIPERIF_I2S_FMT_DATA_SIZE_16(reader);
++		break;
++	default:
++		dev_err(reader->dev, "subframe format not supported");
++		return -EINVAL;
++	}
++
++	/* Configure data memory format */
++	switch (runtime->format) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		/* One data word contains two samples */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_16(reader);
++		break;
++
++	case SNDRV_PCM_FORMAT_S32_LE:
++		/*
++		 * Actually "16 bits/0 bits" means "32/28/24/20/18/16 bits
++		 * on the MSB then zeros (if less than 32 bytes)"...
++		 */
++		SET_UNIPERIF_CONFIG_MEM_FMT_16_0(reader);
++		break;
++
++	default:
++		dev_err(reader->dev, "format not supported");
++		return -EINVAL;
++	}
++
++	switch (reader->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_I2S_MODE(reader);
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		SET_UNIPERIF_I2S_FMT_ALIGN_LEFT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		SET_UNIPERIF_I2S_FMT_ALIGN_RIGHT(reader);
++		SET_UNIPERIF_I2S_FMT_PADDING_SONY_MODE(reader);
++		break;
++	default:
++		dev_err(reader->dev, "format not supported");
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_I2S_FMT_ORDER_MSB(reader);
++
++	/* Data clocking (changing) on the rising edge */
++	SET_UNIPERIF_I2S_FMT_SCLK_EDGE_RISING(reader);
++
++	/* Number of channels must be even */
++
++	if ((runtime->channels % 2) || (runtime->channels < 2) ||
++	    (runtime->channels > 10)) {
++		dev_err(reader->dev, "%s: invalid nb of channels", __func__);
++		return -EINVAL;
++	}
++
++	SET_UNIPERIF_I2S_FMT_NUM_CH(reader, runtime->channels / 2);
++
++	/* Clear any pending interrupts */
++	SET_UNIPERIF_ITS_BCLR(reader, GET_UNIPERIF_ITS(reader));
++
++	SET_UNIPERIF_I2S_FMT_NO_OF_SAMPLES_TO_READ(reader, 0);
++
++	/* Set the interrupt mask */
++	SET_UNIPERIF_ITM_BSET_DMA_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_MEM_BLK_READ(reader);
++
++	/* Enable underflow recovery interrupts */
++	if (reader->info->underflow_enabled) {
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_DONE(reader);
++		SET_UNIPERIF_ITM_BSET_UNDERFLOW_REC_FAILED(reader);
++	}
++
++	/* Reset uniperipheral reader */
++	SET_UNIPERIF_SOFT_RST_SOFT_RST(reader);
++
++	while (GET_UNIPERIF_SOFT_RST_SOFT_RST(reader)) {
++		udelay(5);
++		count--;
++	}
++	if (!count) {
++		dev_err(reader->dev, "Failed to reset uniperif");
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int uni_reader_start(struct uniperif *reader)
++{
++	/* The reader should be stopped */
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state", __func__);
++		return -EINVAL;
++	}
++
++	/* Enable reader interrupts (and clear possible stalled ones) */
++	SET_UNIPERIF_ITS_BCLR_FIFO_ERROR(reader);
++	SET_UNIPERIF_ITM_BSET_FIFO_ERROR(reader);
++
++	/* Launch the reader */
++	SET_UNIPERIF_CTRL_OPERATION_PCM_DATA(reader);
++
++	/* Update state to started */
++	reader->state = UNIPERIF_STATE_STARTED;
++	return 0;
++}
++
++static int uni_reader_stop(struct uniperif *reader)
++{
++	/* The reader should not be in stopped state */
++	if (reader->state == UNIPERIF_STATE_STOPPED) {
++		dev_err(reader->dev, "%s: invalid reader state", __func__);
++		return -EINVAL;
++	}
++
++	/* Turn the reader off */
++	SET_UNIPERIF_CTRL_OPERATION_OFF(reader);
++
++	/* Disable interrupts */
++	SET_UNIPERIF_ITM_BCLR(reader, GET_UNIPERIF_ITM(reader));
++
++	/* Update state to stopped and return */
++	reader->state = UNIPERIF_STATE_STOPPED;
++
++	return 0;
++}
++
++static int  uni_reader_trigger(struct snd_pcm_substream *substream,
++			       int cmd, struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *reader = priv->dai_data.uni;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		return  uni_reader_start(reader);
++	case SNDRV_PCM_TRIGGER_STOP:
++		return  uni_reader_stop(reader);
++	default:
++		return -EINVAL;
++	}
++}
++
++static void uni_reader_shutdown(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *reader = priv->dai_data.uni;
++
++	if (reader->state != UNIPERIF_STATE_STOPPED) {
++		/* Stop the reader */
++		uni_reader_stop(reader);
++	}
++}
++
++static int uni_reader_parse_dt(struct platform_device *pdev,
++			       struct uniperif *reader)
++{
++	struct uniperif_info *info;
++	struct device_node *node = pdev->dev.of_node;
++
++	/* Allocate memory for the info structure */
++	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
++	if (!info)
++		return -ENOMEM;
++
++	of_property_read_u32(node, "version", &reader->ver);
++
++	/* Save the info structure */
++	reader->info = info;
++
++	return 0;
++}
++
++const struct snd_soc_dai_ops uni_reader_dai_ops = {
++		.shutdown = uni_reader_shutdown,
++		.prepare = uni_reader_prepare,
++		.trigger = uni_reader_trigger,
++		.hw_params = sti_uniperiph_dai_hw_params,
++		.set_fmt = sti_uniperiph_dai_set_fmt,
++};
++
++int uni_reader_init(struct platform_device *pdev,
++		    struct uniperif *reader)
++{
++	int ret = 0;
++
++	reader->dev = &pdev->dev;
++	reader->state = UNIPERIF_STATE_STOPPED;
++	reader->hw = &uni_reader_pcm_hw;
++	reader->dai_ops = &uni_reader_dai_ops;
++
++	dev_err(reader->dev, "%s: enter\n", __func__);
++	ret = uni_reader_parse_dt(pdev, reader);
++	if (ret < 0) {
++		dev_err(reader->dev, "Failed to parse DeviceTree");
++		return ret;
++	}
++
++	ret = devm_request_irq(&pdev->dev, reader->irq,
++			       uni_reader_irq_handler, IRQF_SHARED,
++			       dev_name(&pdev->dev), reader);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to request IRQ");
++		return -EBUSY;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(uni_reader_init);
 -- 
 2.1.4
