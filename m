@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup ADINR function name" to
-	the asoc tree
-Date: Thu, 16 Jul 2015 22:29:59 +0100
-Message-ID: <E1ZFqj9-0004jj-0r@finisterre>
-References: <87k2u1vqsx.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add
+	rsnd_src_initialize_lock/unlock()" to the asoc tree
+Date: Thu, 16 Jul 2015 22:30:00 +0100
+Message-ID: <E1ZFqjA-0004kC-LV@finisterre>
+References: <87lhehvqtf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C08412666DE
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:04 +0200 (CEST)
-In-Reply-To: <87k2u1vqsx.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A4376266702
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:05 +0200 (CEST)
+In-Reply-To: <87lhehvqtf.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup ADINR function name
+   ASoC: rsnd: add rsnd_src_initialize_lock/unlock()
 
 has been applied to the asoc tree at
 
@@ -53,92 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 3023b384d0c9da49028131b91fe64b24b5b84e6d Mon Sep 17 00:00:00 2001
+>From d1ade514e84ea55cba999edb04cb88daa4da94b8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:14:05 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup ADINR function name
+Date: Wed, 15 Jul 2015 07:13:47 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_src_initialize_lock/unlock()
 
-Renesas sound IP (= SSIU/SRC/CTU/MIX/DVC) have ADINR
-(= Audio Information Register), but some of them (= SSIU/SRC/DVC)
-are for audio data bits, some of them (= CTU/MIX) are for audio data
-channels.
-Current rsnd driver is supporting SSIU/SRC/DVC, and these ADINR were
-for bits. This patch rename rsnd_get_adinr() to rsnd_get_adinr_bit(),
-and we will have rsnd_get_adinr_chan() for CTU/MIX.
+Renesas SCU (Sampling Rate Convert Unit) includes SRC/CTU/MIX/DVC,
+and these have similar register. xxxIR (Initialization Register) is one
+of them. These xxxIR need be set to 1 during initialization.
+Current rsnd driver has src.c / dvc.c, and we will have mix.c.
+It is readable if these have same named function.
+This patch adds rsnd_src_initialize_lock/unlock() and make sure it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 4 ++--
- sound/soc/sh/rcar/dvc.c  | 2 +-
- sound/soc/sh/rcar/rsnd.h | 2 +-
- sound/soc/sh/rcar/src.c  | 4 ++--
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/sh/rcar/src.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index cb82067..0ca6d02 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -203,9 +203,9 @@ int rsnd_io_is_working(struct rsnd_dai_stream *io)
- }
- 
- /*
-- *	settting function
-+ *	ADINR function
-  */
--u32 rsnd_get_adinr(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
-+u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 343d446..d06e4ee 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -161,7 +161,7 @@ static int rsnd_dvc_init(struct rsnd_mod *mod,
- 
- 	rsnd_path_parse(priv, io);
- 
--	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr(mod, io));
-+	rsnd_mod_write(mod, DVC_ADINR, rsnd_get_adinr_bit(mod, io));
- 
- 	/* ch0/ch1 Volume */
- 	rsnd_dvc_volume_update(io, mod);
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 6a87757..224a4a9 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -169,7 +169,7 @@ void rsnd_force_write(struct rsnd_priv *priv, struct rsnd_mod *mod,
- 		enum rsnd_reg reg, u32 data);
- void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod, enum rsnd_reg reg,
- 		    u32 mask, u32 data);
--u32 rsnd_get_adinr(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
-+u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
- void rsnd_path_parse(struct rsnd_priv *priv,
- 		     struct rsnd_dai_stream *io);
- 
 diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index b3d965e..c45da61 100644
+index 74ab644..b3d965e 100644
 --- a/sound/soc/sh/rcar/src.c
 +++ b/sound/soc/sh/rcar/src.c
-@@ -189,7 +189,7 @@ int rsnd_src_ssiu_start(struct rsnd_mod *ssi_mod,
- 		u32 mask = ~0;
+@@ -124,6 +124,14 @@ static void rsnd_src_soft_reset(struct rsnd_mod *mod)
+ 	rsnd_mod_write(mod, SRC_SWRSR, 1);
+ }
  
- 		rsnd_mod_write(ssi_mod, SSI_BUSIF_ADINR,
--			       rsnd_get_adinr(ssi_mod, io));
-+			       rsnd_get_adinr_bit(ssi_mod, io));
- 		rsnd_mod_write(ssi_mod, SSI_BUSIF_MODE,  1);
- 		rsnd_mod_write(ssi_mod, SSI_CTRL, 0x1);
++
++#define rsnd_src_initialize_lock(mod)	__rsnd_src_initialize_lock(mod, 1)
++#define rsnd_src_initialize_unlock(mod)	__rsnd_src_initialize_lock(mod, 0)
++static void __rsnd_src_initialize_lock(struct rsnd_mod *mod, u32 enable)
++{
++	rsnd_mod_write(mod, SRC_SRCIR, enable);
++}
++
+ static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
+ 					 struct rsnd_mod *mod)
+ {
+@@ -362,17 +370,13 @@ static int rsnd_src_init(struct rsnd_mod *mod,
  
-@@ -309,7 +309,7 @@ static int rsnd_src_set_convert_rate(struct rsnd_mod *mod,
- 		fsrate = 0x0400000 / convert_rate * runtime->rate;
+ 	rsnd_src_soft_reset(mod);
  
- 	/* Set channel number and output bit length */
--	rsnd_mod_write(mod, SRC_ADINR, rsnd_get_adinr(mod, io));
-+	rsnd_mod_write(mod, SRC_ADINR, rsnd_get_adinr_bit(mod, io));
++	rsnd_src_initialize_lock(mod);
++
+ 	src->err = 0;
  
- 	/* Enable the initial value of IFS */
- 	if (fsrate) {
+ 	/* reset sync convert_rate */
+ 	src->sync.val = 0;
+ 
+-	/*
+-	 * Initialize the operation of the SRC internal circuits
+-	 * see rsnd_src_start()
+-	 */
+-	rsnd_mod_write(mod, SRC_SRCIR, 1);
+-
+ 	return 0;
+ }
+ 
+@@ -399,11 +403,7 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
+ 
+ static int rsnd_src_start(struct rsnd_mod *mod)
+ {
+-	/*
+-	 * Cancel the initialization and operate the SRC function
+-	 * see rsnd_src_init()
+-	 */
+-	rsnd_mod_write(mod, SRC_SRCIR, 0);
++	rsnd_src_initialize_unlock(mod);
+ 
+ 	return 0;
+ }
 -- 
 2.1.4
