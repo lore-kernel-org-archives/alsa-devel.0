@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add code loader DMA
-	APIs" to the asoc tree
-Date: Thu, 16 Jul 2015 22:01:16 +0100
-Message-ID: <E1ZFqHM-0001fp-Qx@finisterre>
-References: <1436546926-17263-5-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: add code loader DMA
+	operations" to the asoc tree
+Date: Thu, 16 Jul 2015 22:01:18 +0100
+Message-ID: <E1ZFqHO-0001gI-19@finisterre>
+References: <1436546926-17263-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E610266692
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:23 +0200 (CEST)
-In-Reply-To: <1436546926-17263-5-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CFFFD2605D2
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:24 +0200 (CEST)
+In-Reply-To: <1436546926-17263-4-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add code loader DMA APIs
+   ASoC: Intel: Skylake: add code loader DMA operations
 
 has been applied to the asoc tree at
 
@@ -53,218 +53,292 @@ to this mail.
 Thanks,
 Mark
 
->From 3e40a78461739d86fe1084c515ec227507ba993d Mon Sep 17 00:00:00 2001
+>From 914426c8657c1e934b015ffa32e7bfd0cb34f47f Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 10 Jul 2015 22:18:42 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add code loader DMA APIs
+Date: Fri, 10 Jul 2015 22:18:41 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: add code loader DMA operations
 
-This patch adds the last piece of code loader DMA APIs by adding the code
-loader DMA APIs for the driver to use
+This patch starts adding code loader DMA handling internal operations for
+setting up bdle, controller, spb, cleanup routines and buffer filling
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-dsp-priv.h   |   3 +
- sound/soc/intel/skylake/Makefile        |   2 +-
- sound/soc/intel/skylake/skl-sst-cldma.c | 133 ++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst-dsp.h   |   6 ++
- 4 files changed, 143 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 194 ++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst-cldma.h |  60 ++++++++++
+ 2 files changed, 254 insertions(+)
+ create mode 100644 sound/soc/intel/skylake/skl-sst-cldma.c
 
-diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index dd79648..cbd568e 100644
---- a/sound/soc/intel/common/sst-dsp-priv.h
-+++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -308,8 +308,11 @@ struct sst_dsp {
- 
- 	/* SKL data */
- 
-+	/* To allocate CL dma buffers */
-+	struct skl_dsp_loader_ops dsp_ops;
- 	struct skl_dsp_fw_ops fw_ops;
- 	int sst_state;
-+	struct skl_cl_dev cl_dev;
- 	u32 intr_status;
- };
- 
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 10c1319..eff3e17 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -3,6 +3,6 @@ snd-soc-skl-objs := skl.o skl-pcm.o
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
- 
- # Skylake IPC Support
--snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o
-+snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o skl-sst-cldma.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
 diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index 44019ee..44748ba 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
+new file mode 100644
+index 0000000..44019ee
+--- /dev/null
 +++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -192,3 +192,136 @@ static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
- 	if (trigger)
- 		ctx->cl_dev.ops.cl_trigger(ctx, true);
- }
+@@ -0,0 +1,194 @@
++/*
++ * skl-sst-cldma.c - Code Loader DMA handler
++ *
++ * Copyright (C) 2015, Intel Corporation.
++ * Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/device.h>
++#include <linux/mm.h>
++#include <linux/kthread.h>
++#include "../common/sst-dsp.h"
++#include "../common/sst-dsp-priv.h"
++
++static void skl_cldma_int_enable(struct sst_dsp *ctx)
++{
++	sst_dsp_shim_update_bits_unlocked(ctx, SKL_ADSP_REG_ADSPIC,
++				SKL_ADSPIC_CL_DMA, SKL_ADSPIC_CL_DMA);
++}
++
++void skl_cldma_int_disable(struct sst_dsp *ctx)
++{
++	sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_ADSPIC, SKL_ADSPIC_CL_DMA, 0);
++}
++
++/* Code loader helper APIs */
++static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
++		struct snd_dma_buffer *dmab_data,
++		u32 **bdlp, int size, int with_ioc)
++{
++	u32 *bdl = *bdlp;
++
++	ctx->cl_dev.frags = 0;
++	while (size > 0) {
++		phys_addr_t addr = virt_to_phys(dmab_data->area +
++				(ctx->cl_dev.frags * ctx->cl_dev.bufsize));
++
++		bdl[0] = cpu_to_le32(lower_32_bits(addr));
++		bdl[1] = cpu_to_le32(upper_32_bits(addr));
++
++		bdl[2] = cpu_to_le32(ctx->cl_dev.bufsize);
++
++		size -= ctx->cl_dev.bufsize;
++		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
++
++		bdl += 4;
++		ctx->cl_dev.frags++;
++	}
++}
 +
 +/*
-+ * The CL dma doesn't have any way to update the transfer status until a BDL
-+ * buffer is fully transferred
-+ *
-+ * So Copying is divided in two parts.
-+ * 1. Interrupt on buffer done where the size to be transferred is more than
-+ *    ring buffer size.
-+ * 2. Polling on fw register to identify if data left to transferred doesn't
-+ *    fill the ring buffer. Caller takes care of polling the required status
-+ *    register to identify the transfer status.
++ * Setup controller
++ * Configure the registers to update the dma buffer address and
++ * enable interrupts.
++ * Note: Using the channel 1 for transfer
 + */
-+static int
-+skl_cldma_copy_to_buf(struct sst_dsp *ctx, const void *bin, u32 total_size)
++static void skl_cldma_setup_controller(struct sst_dsp  *ctx,
++		struct snd_dma_buffer *dmab_bdl, unsigned int max_size,
++		u32 count)
++{
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL,
++			CL_SD_BDLPLBA(dmab_bdl->addr));
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU,
++			CL_SD_BDLPUBA(dmab_bdl->addr));
++
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, max_size);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, count - 1);
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(1));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(1));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(1));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(FW_CL_STREAM_NUMBER));
++}
++
++static void skl_cldma_setup_spb(struct sst_dsp  *ctx,
++		unsigned int size, bool enable)
++{
++	if (enable)
++		sst_dsp_shim_update_bits_unlocked(ctx,
++				SKL_ADSP_REG_CL_SPBFIFO_SPBFCCTL,
++				CL_SPBFIFO_SPBFCCTL_SPIBE_MASK,
++				CL_SPBFIFO_SPBFCCTL_SPIBE(1));
++
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_CL_SPBFIFO_SPIB, size);
++}
++
++static void skl_cldma_cleanup_spb(struct sst_dsp  *ctx)
++{
++	sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_CL_SPBFIFO_SPBFCCTL,
++			CL_SPBFIFO_SPBFCCTL_SPIBE_MASK,
++			CL_SPBFIFO_SPBFCCTL_SPIBE(0));
++
++	sst_dsp_shim_write_unlocked(ctx, SKL_ADSP_REG_CL_SPBFIFO_SPIB, 0);
++}
++
++static void skl_cldma_trigger(struct sst_dsp  *ctx, bool enable)
++{
++	if (enable)
++		sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(1));
++	else
++		sst_dsp_shim_update_bits_unlocked(ctx,
++			SKL_ADSP_REG_CL_SD_CTL,
++			CL_SD_CTL_RUN_MASK, CL_SD_CTL_RUN(0));
++}
++
++static void skl_cldma_cleanup(struct sst_dsp  *ctx)
++{
++	skl_cldma_cleanup_spb(ctx);
++
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_IOCE_MASK, CL_SD_CTL_IOCE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_FEIE_MASK, CL_SD_CTL_FEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_DEIE_MASK, CL_SD_CTL_DEIE(0));
++	sst_dsp_shim_update_bits(ctx, SKL_ADSP_REG_CL_SD_CTL,
++				CL_SD_CTL_STRM_MASK, CL_SD_CTL_STRM(0));
++
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPL, CL_SD_BDLPLBA(0));
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_BDLPU, 0);
++
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_CBL, 0);
++	sst_dsp_shim_write(ctx, SKL_ADSP_REG_CL_SD_LVI, 0);
++}
++
++static int skl_cldma_wait_interruptible(struct sst_dsp *ctx)
 +{
 +	int ret = 0;
-+	bool start = true;
-+	unsigned int excess_bytes;
-+	u32 size;
-+	unsigned int bytes_left = total_size;
-+	const void *curr_pos = bin;
 +
-+	if (total_size <= 0)
-+		return -EINVAL;
-+
-+	dev_dbg(ctx->dev, "%s: Total binary size: %u\n", __func__, bytes_left);
-+
-+	while (bytes_left) {
-+		if (bytes_left > ctx->cl_dev.bufsize) {
-+
-+			/*
-+			 * dma transfers only till the write pointer as
-+			 * updated in spib
-+			 */
-+			if (ctx->cl_dev.curr_spib_pos == 0)
-+				ctx->cl_dev.curr_spib_pos = ctx->cl_dev.bufsize;
-+
-+			size = ctx->cl_dev.bufsize;
-+			skl_cldma_fill_buffer(ctx, size, curr_pos, true, start);
-+
-+			start = false;
-+			ret = skl_cldma_wait_interruptible(ctx);
-+			if (ret < 0) {
-+				skl_cldma_stop(ctx);
-+				return ret;
-+			}
-+
-+		} else {
-+			skl_cldma_int_disable(ctx);
-+
-+			if ((ctx->cl_dev.curr_spib_pos + bytes_left)
-+							<= ctx->cl_dev.bufsize) {
-+				ctx->cl_dev.curr_spib_pos += bytes_left;
-+			} else {
-+				excess_bytes = bytes_left -
-+					(ctx->cl_dev.bufsize -
-+					ctx->cl_dev.curr_spib_pos);
-+				ctx->cl_dev.curr_spib_pos = excess_bytes;
-+			}
-+
-+			size = bytes_left;
-+			skl_cldma_fill_buffer(ctx, size,
-+					curr_pos, false, start);
-+		}
-+		bytes_left -= size;
-+		curr_pos = curr_pos + size;
++	if (!wait_event_timeout(ctx->cl_dev.wait_queue,
++				ctx->cl_dev.wait_condition,
++				msecs_to_jiffies(SKL_WAIT_TIMEOUT))) {
++		dev_err(ctx->dev, "%s: Wait timeout\n", __func__);
++		ret = -EIO;
++		goto cleanup;
 +	}
 +
++	dev_dbg(ctx->dev, "%s: Event wake\n", __func__);
++	if (ctx->cl_dev.wake_status != SKL_CL_DMA_BUF_COMPLETE) {
++		dev_err(ctx->dev, "%s: DMA Error\n", __func__);
++		ret = -EIO;
++	}
++
++cleanup:
++	ctx->cl_dev.wake_status = SKL_CL_DMA_STATUS_NONE;
 +	return ret;
 +}
 +
-+void skl_cldma_process_intr(struct sst_dsp *ctx)
++static void skl_cldma_stop(struct sst_dsp *ctx)
 +{
-+	u8 cl_dma_intr_status;
++	ctx->cl_dev.ops.cl_trigger(ctx, false);
++}
 +
-+	cl_dma_intr_status =
-+		sst_dsp_shim_read_unlocked(ctx, SKL_ADSP_REG_CL_SD_STS);
++static void skl_cldma_fill_buffer(struct sst_dsp *ctx, unsigned int size,
++		const void *curr_pos, bool intr_enable, bool trigger)
++{
++	dev_dbg(ctx->dev, "Size: %x, intr_enable: %d\n", size, intr_enable);
++	dev_dbg(ctx->dev, "buf_pos_index:%d, trigger:%d\n",
++			ctx->cl_dev.dma_buffer_offset, trigger);
++	dev_dbg(ctx->dev, "spib position: %d\n", ctx->cl_dev.curr_spib_pos);
 +
-+	if (!(cl_dma_intr_status & SKL_CL_DMA_SD_INT_COMPLETE))
-+		ctx->cl_dev.wake_status = SKL_CL_DMA_ERR;
++	memcpy(ctx->cl_dev.dmab_data.area + ctx->cl_dev.dma_buffer_offset,
++			curr_pos, size);
++
++	if (ctx->cl_dev.curr_spib_pos == ctx->cl_dev.bufsize)
++		ctx->cl_dev.dma_buffer_offset = 0;
 +	else
-+		ctx->cl_dev.wake_status = SKL_CL_DMA_BUF_COMPLETE;
++		ctx->cl_dev.dma_buffer_offset = ctx->cl_dev.curr_spib_pos;
 +
-+	ctx->cl_dev.wait_condition = true;
-+	wake_up(&ctx->cl_dev.wait_queue);
++	ctx->cl_dev.wait_condition = false;
++
++	if (intr_enable)
++		skl_cldma_int_enable(ctx);
++
++	ctx->cl_dev.ops.cl_setup_spb(ctx, ctx->cl_dev.curr_spib_pos, trigger);
++	if (trigger)
++		ctx->cl_dev.ops.cl_trigger(ctx, true);
 +}
-+
-+int skl_cldma_prepare(struct sst_dsp *ctx)
-+{
-+	int ret;
-+	u32 *bdl;
-+
-+	ctx->cl_dev.bufsize = SKL_MAX_BUFFER_SIZE;
-+
-+	/* Allocate cl ops */
-+	ctx->cl_dev.ops.cl_setup_bdle = skl_cldma_setup_bdle;
-+	ctx->cl_dev.ops.cl_setup_controller = skl_cldma_setup_controller;
-+	ctx->cl_dev.ops.cl_setup_spb = skl_cldma_setup_spb;
-+	ctx->cl_dev.ops.cl_cleanup_spb = skl_cldma_cleanup_spb;
-+	ctx->cl_dev.ops.cl_trigger = skl_cldma_trigger;
-+	ctx->cl_dev.ops.cl_cleanup_controller = skl_cldma_cleanup;
-+	ctx->cl_dev.ops.cl_copy_to_dmabuf = skl_cldma_copy_to_buf;
-+	ctx->cl_dev.ops.cl_stop_dma = skl_cldma_stop;
-+
-+	/* Allocate buffer*/
-+	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
-+			&ctx->cl_dev.dmab_data, ctx->cl_dev.bufsize);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x", ret);
-+		return ret;
-+	}
-+	/* Setup Code loader BDL */
-+	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
-+			&ctx->cl_dev.dmab_bdl, PAGE_SIZE);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Alloc buffer for blde failed: %x", ret);
-+		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
-+		return ret;
-+	}
-+	bdl = (u32 *)ctx->cl_dev.dmab_bdl.area;
-+
-+	/* Allocate BDLs */
-+	ctx->cl_dev.ops.cl_setup_bdle(ctx, &ctx->cl_dev.dmab_data,
-+			&bdl, ctx->cl_dev.bufsize, 1);
-+	ctx->cl_dev.ops.cl_setup_controller(ctx, &ctx->cl_dev.dmab_bdl,
-+			ctx->cl_dev.bufsize, ctx->cl_dev.frags);
-+
-+	ctx->cl_dev.curr_spib_pos = 0;
-+	ctx->cl_dev.dma_buffer_offset = 0;
-+	init_waitqueue_head(&ctx->cl_dev.wait_queue);
-+
-+	return ret;
-+}
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index c2d2878..e8ce136 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -17,7 +17,9 @@
- #define __SKL_SST_DSP_H__
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.h b/sound/soc/intel/skylake/skl-sst-cldma.h
+index 34c366f..99e4c86 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.h
++++ b/sound/soc/intel/skylake/skl-sst-cldma.h
+@@ -188,4 +188,64 @@
+ #define CL_SPBFIFO_SPBFCCTL_SPIBE(x)	\
+ 	((x << CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT) & CL_SPBFIFO_SPBFCCTL_SPIBE_MASK)
  
- #include <sound/memalloc.h>
-+#include "skl-sst-cldma.h"
- 
++/* SST IPC SKL defines */
++#define SKL_WAIT_TIMEOUT		500	/* 500 msec */
++#define SKL_MAX_BUFFER_SIZE		(32 * PAGE_SIZE)
++
++enum skl_cl_dma_wake_states {
++	SKL_CL_DMA_STATUS_NONE = 0,
++	SKL_CL_DMA_BUF_COMPLETE,
++	SKL_CL_DMA_ERR,	/* TODO: Expand the error states */
++};
++
 +struct sst_dsp;
- struct sst_dsp_device;
- 
- /* Intel HD Audio General DSP Registers */
-@@ -113,6 +115,10 @@ struct skl_dsp_loader_ops {
- 		struct snd_dma_buffer *dmab);
- };
- 
-+void skl_cldma_process_intr(struct sst_dsp *ctx);
-+void skl_cldma_int_disable(struct sst_dsp *ctx);
-+int skl_cldma_prepare(struct sst_dsp *ctx);
 +
- void skl_dsp_set_state_locked(struct sst_dsp *ctx, int state);
- struct sst_dsp *skl_dsp_ctx_init(struct device *dev,
- 		struct sst_dsp_device *sst_dev, int irq);
++struct skl_cl_dev_ops {
++	void (*cl_setup_bdle)(struct sst_dsp *ctx,
++			struct snd_dma_buffer *dmab_data,
++			u32 **bdlp, int size, int with_ioc);
++	void (*cl_setup_controller)(struct sst_dsp *ctx,
++			struct snd_dma_buffer *dmab_bdl,
++			unsigned int max_size, u32 page_count);
++	void (*cl_setup_spb)(struct sst_dsp  *ctx,
++			unsigned int size, bool enable);
++	void (*cl_cleanup_spb)(struct sst_dsp  *ctx);
++	void (*cl_trigger)(struct sst_dsp  *ctx, bool enable);
++	void (*cl_cleanup_controller)(struct sst_dsp  *ctx);
++	int (*cl_copy_to_dmabuf)(struct sst_dsp *ctx,
++			const void *bin, u32 size);
++	void (*cl_stop_dma)(struct sst_dsp *ctx);
++};
++
++/**
++ * skl_cl_dev - holds information for code loader dma transfer
++ *
++ * @dmab_data: buffer pointer
++ * @dmab_bdl: buffer descriptor list
++ * @bufsize: ring buffer size
++ * @frags: Last valid buffer descriptor index in the BDL
++ * @curr_spib_pos: Current position in ring buffer
++ * @dma_buffer_offset: dma buffer offset
++ * @ops: operations supported on CL dma
++ * @wait_queue: wait queue to wake for wake event
++ * @wake_status: DMA wake status
++ * @wait_condition: condition to wait on wait queue
++ * @cl_dma_lock: for synchronized access to cldma
++ */
++struct skl_cl_dev {
++	struct snd_dma_buffer dmab_data;
++	struct snd_dma_buffer dmab_bdl;
++
++	unsigned int bufsize;
++	unsigned int frags;
++
++	unsigned int curr_spib_pos;
++	unsigned int dma_buffer_offset;
++	struct skl_cl_dev_ops ops;
++
++	wait_queue_head_t wait_queue;
++	int wake_status;
++	bool wait_condition;
++};
++
+ #endif /* SKL_SST_CLDMA_H_ */
 -- 
 2.1.4
