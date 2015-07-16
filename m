@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9877: Convert to component" to the
-	asoc tree
-Date: Thu, 16 Jul 2015 22:01:35 +0100
-Message-ID: <E1ZFqHf-0001ky-3m@finisterre>
-References: <1437074572-3831-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: max9877: Make driver global regmap
+	struct local" to the asoc tree
+Date: Thu, 16 Jul 2015 22:01:36 +0100
+Message-ID: <E1ZFqHg-0001lR-Q6@finisterre>
+References: <1437074572-3831-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EFB2266705
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:42 +0200 (CEST)
-In-Reply-To: <1437074572-3831-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CFF42266708
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:43 +0200 (CEST)
+In-Reply-To: <1437074572-3831-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9877: Convert to component
+   ASoC: max9877: Make driver global regmap struct local
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 623436af42ef2b37fee8f6058a85f4664bd32c74 Mon Sep 17 00:00:00 2001
+>From df2e268226e2e3d79980a5dddfd683126f79ddb4 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Thu, 16 Jul 2015 21:22:50 +0200
-Subject: [PATCH] ASoC: max9877: Convert to component
+Date: Thu, 16 Jul 2015 21:22:49 +0200
+Subject: [PATCH] ASoC: max9877: Make driver global regmap struct local
 
-The driver does not use any CODEC specific constructs anymore. Convert it
-to snd_soc_component.
+Use a stack local variable to handle function local state rather than a
+global static variable. The later has a potential for race conditions if
+the probe function runs for two devices concurrently.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9877.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ sound/soc/codecs/max9877.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/max9877.c b/sound/soc/codecs/max9877.c
-index b469e1c8..fb448dd 100644
+index e1df06f..b469e1c8 100644
 --- a/sound/soc/codecs/max9877.c
 +++ b/sound/soc/codecs/max9877.c
-@@ -121,7 +121,7 @@ static const struct snd_soc_dapm_route max9877_dapm_routes[] = {
- 	{ "HPR", NULL, "SHDN" },
- };
+@@ -20,8 +20,6 @@
  
--static const struct snd_soc_codec_driver max9877_codec = {
-+static const struct snd_soc_component_driver max9877_component_driver = {
- 	.controls = max9877_controls,
- 	.num_controls = ARRAY_SIZE(max9877_controls),
+ #include "max9877.h"
  
-@@ -154,14 +154,8 @@ static int max9877_i2c_probe(struct i2c_client *client,
- 	for (i = 0; i < ARRAY_SIZE(max9877_regs); i++)
- 		regmap_write(regmap, max9877_regs[i].reg, max9877_regs[i].def);
- 
--	return snd_soc_register_codec(&client->dev, &max9877_codec, NULL, 0);
--}
+-static struct regmap *regmap;
 -
--static int max9877_i2c_remove(struct i2c_client *client)
--{
--	snd_soc_unregister_codec(&client->dev);
--
--	return 0;
-+	return devm_snd_soc_register_component(&client->dev,
-+			&max9877_component_driver, NULL, 0);
- }
+ static const struct reg_default max9877_regs[] = {
+ 	{ 0, 0x40 },
+ 	{ 1, 0x00 },
+@@ -145,6 +143,7 @@ static const struct regmap_config max9877_regmap = {
+ static int max9877_i2c_probe(struct i2c_client *client,
+ 			     const struct i2c_device_id *id)
+ {
++	struct regmap *regmap;
+ 	int i;
  
- static const struct i2c_device_id max9877_i2c_id[] = {
-@@ -175,7 +169,6 @@ static struct i2c_driver max9877_i2c_driver = {
- 		.name = "max9877",
- 	},
- 	.probe = max9877_i2c_probe,
--	.remove = max9877_i2c_remove,
- 	.id_table = max9877_i2c_id,
- };
- 
+ 	regmap = devm_regmap_init_i2c(client, &max9877_regmap);
 -- 
 2.1.4
