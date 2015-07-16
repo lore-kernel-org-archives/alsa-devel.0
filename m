@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rename INT_ENABLE to
-	SSI_INT_ENABLE" to the asoc tree
-Date: Thu, 16 Jul 2015 22:11:39 +0100
-Message-ID: <E1ZFqRP-0002or-19@finisterre>
-References: <87380px5kl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove unnecessary 'out of
+	memory' message from DVC" to the asoc tree
+Date: Thu, 16 Jul 2015 22:11:41 +0100
+Message-ID: <E1ZFqRR-0002pn-VD@finisterre>
+References: <87615lx5lr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 01CB0266844
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:11:44 +0200 (CEST)
-In-Reply-To: <87380px5kl.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AD9B266830
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:11:48 +0200 (CEST)
+In-Reply-To: <87615lx5lr.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rename INT_ENABLE to SSI_INT_ENABLE
+   ASoC: rsnd: remove unnecessary 'out of memory' message from DVC
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From efa991dc9143815179fd55a88e846cc39792608c Mon Sep 17 00:00:00 2001
+>From 6abcae32ea68899bfd4b770433860a71f8c3500b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:09:47 +0000
-Subject: [PATCH] ASoC: rsnd: rename INT_ENABLE to SSI_INT_ENABLE
+Date: Wed, 15 Jul 2015 07:09:07 +0000
+Subject: [PATCH] ASoC: rsnd: remove unnecessary 'out of memory' message from
+ DVC
 
-based on datasheet
+Current checkpatch.pl indicates 'out of memory' message is unnecessary.
+Let's remove it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c  | 2 +-
- sound/soc/sh/rcar/rsnd.h | 2 +-
- sound/soc/sh/rcar/src.c  | 9 ++++-----
- 3 files changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/dvc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 9dc1968..5d3592df 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -218,7 +218,7 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
- 		RSND_GEN_M_REG(SSI_BUSIF_ADINR,	0x4,	0x80),
- 		RSND_GEN_M_REG(SSI_BUSIF_DALIGN,0x8,	0x80),
- 		RSND_GEN_M_REG(SSI_CTRL,	0x10,	0x80),
--		RSND_GEN_M_REG(INT_ENABLE,	0x18,	0x80),
-+		RSND_GEN_M_REG(SSI_INT_ENABLE,	0x18,	0x80),
- 	};
- 	struct rsnd_regmap_field_conf conf_scu[] = {
- 		RSND_GEN_M_REG(SRC_BUSIF_MODE,	0x0,	0x20),
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index f49b0cb..9ecd151 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -119,7 +119,7 @@ enum rsnd_reg {
- #define RSND_REG_SSI_CTRL		RSND_REG_SHARE02
- #define RSND_REG_SSI_BUSIF_MODE		RSND_REG_SHARE03
- #define RSND_REG_SSI_BUSIF_ADINR	RSND_REG_SHARE04
--#define RSND_REG_INT_ENABLE		RSND_REG_SHARE05
-+#define RSND_REG_SSI_INT_ENABLE		RSND_REG_SHARE05
- #define RSND_REG_SRC_BSDSR		RSND_REG_SHARE06
- #define RSND_REG_SRC_BSISR		RSND_REG_SHARE07
- #define RSND_REG_DIV_EN			RSND_REG_SHARE08
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 3f6f4df..9e11f73 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -215,10 +215,9 @@ int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod)
- 		return 0;
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 36fc020..dbf0da6 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -354,10 +354,8 @@ int rsnd_dvc_probe(struct platform_device *pdev,
+ 	}
  
- 	/* enable SSI interrupt if Gen2 */
--	if (rsnd_ssi_is_dma_mode(ssi_mod))
--		rsnd_mod_write(ssi_mod, INT_ENABLE, 0x0e000000);
--	else
--		rsnd_mod_write(ssi_mod, INT_ENABLE, 0x0f000000);
-+	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE,
-+		       rsnd_ssi_is_dma_mode(ssi_mod) ?
-+		       0x0e000000 : 0x0f000000);
+ 	dvc	= devm_kzalloc(dev, sizeof(*dvc) * nr, GFP_KERNEL);
+-	if (!dvc) {
+-		dev_err(dev, "CMD allocate failed\n");
++	if (!dvc)
+ 		return -ENOMEM;
+-	}
  
- 	return 0;
- }
-@@ -231,7 +230,7 @@ int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod)
- 		return 0;
- 
- 	/* disable SSI interrupt if Gen2 */
--	rsnd_mod_write(ssi_mod, INT_ENABLE, 0x00000000);
-+	rsnd_mod_write(ssi_mod, SSI_INT_ENABLE, 0x00000000);
- 
- 	return 0;
- }
+ 	priv->dvc_nr	= nr;
+ 	priv->dvc	= dvc;
 -- 
 2.1.4
