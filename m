@@ -1,14 +1,17 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 1/1] ASoC: sti-sas: fix x86 compilation issue.
-Date: Thu, 16 Jul 2015 10:43:20 +0200
-Message-ID: <1437036200-22760-1-git-send-email-arnaud.pouliquen@st.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: HDMI hotplug on Skylake when power well is off
+Date: Thu, 16 Jul 2015 11:34:02 +0200
+Message-ID: <55A77A8A.2080101@canonical.com>
+References: <55A62252.1050506@canonical.com> <s5hmvyxn0uh.wl-tiwai@suse.de>
+ <20150716083908.GI5086@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030109000109040208040501"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id AA3902661B0
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 10:45:13 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D60BD2661B0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 11:33:58 +0200 (CEST)
+In-Reply-To: <20150716083908.GI5086@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,56 +21,234 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
+To: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: libin.yang@intel.com, "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes for compilation warnings and errors reported by Kbuild test robot
-for x86_64 and i386.
+This is a multi-part message in MIME format.
+--------------030109000109040208040501
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/codecs/sti-sas.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
-index 32db2c2..39f3c8b 100644
---- a/sound/soc/codecs/sti-sas.c
-+++ b/sound/soc/codecs/sti-sas.c
-@@ -227,8 +227,8 @@ static int stih416_dac_probe(struct snd_soc_dai *dai)
- 	dac->rst = devm_reset_control_get(codec->dev, "dac_rst");
- 	if (IS_ERR(dac->rst)) {
- 		dev_err(dai->codec->dev,
--			"%s: ERROR: DAC reset control not defined (%d)!\n",
--			__func__, (int)dac->rst);
-+			"%s: ERROR: DAC reset control not defined !\n",
-+			__func__);
- 		dac->rst = NULL;
- 		return -EFAULT;
- 	}
-@@ -547,6 +547,7 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
- {
- 	struct device_node *pnode = pdev->dev.of_node;
- 	struct sti_sas_data *drvdata;
-+	const struct of_device_id *of_id;
- 
- 	/* Allocate device structure */
- 	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct sti_sas_data),
-@@ -555,12 +556,13 @@ static int sti_sas_driver_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	/* Populate data structure depending on compatibility */
--	if (!of_match_node(sti_sas_dev_match, pnode)->data) {
-+	of_id = of_match_node(sti_sas_dev_match, pnode);
-+	if (!of_id->data) {
- 		dev_err(&pdev->dev, "data associated to device is missing");
- 		return -EINVAL;
- 	}
- 
--	drvdata->dev_data = of_match_node(sti_sas_dev_match, pnode)->data;
-+	drvdata->dev_data = (struct sti_sas_dev_data *)of_id->data;
- 
- 	/* Initialise device structure */
- 	drvdata->dev = &pdev->dev;
+
+On 2015-07-16 10:39, Vinod Koul wrote:
+> On Wed, Jul 15, 2015 at 12:59:02PM +0200, Takashi Iwai wrote:
+>> On Wed, 15 Jul 2015 11:05:22 +0200,
+>> David Henningsson wrote:
+>>>
+>>> Hi,
+>>>
+>>> I'm trying to debug an issue here where the HDMI hotplug events are not
+>>> delivered to the audio side when the power well is off. This is on a
+>>> Skylake machine (running in HDA mode).
+>>>
+>>> I'm not sure whether the problem is upstream or due to my own patches
+>>> while testing, so I was wondering how this is supposed to be working, so
+>>> I can troubleshoot further?
+>>>
+>>> Should there be an IRQ on the HDA controller even if the power well is
+>>> off, and if not, how should the audio driver be notified that an HDMI
+>>> hotplug event has happened?
+>>
+>> I thought this has been always a problem when the runtime PM is
+>> enabled, no matter whether the power well state is.
+> Shouldn't the hotplug action turn on the power well? Then notification for
+> audio side should get propagated as power well is On
+
+While the video side can turn the power well on, maybe there are other 
+things that needs to be turned on from the audio driver?
+
+>> IMO, a cleaner solution would be rather the notifier implementation in
+>> software, e.g. extend the i915 component to pass the audio side ops
+>> for notification.
+> Yes that should be added but I would prefer we have hw do that as well
+
+So I took a quick stab at this and tried to write down a draft, but I 
+got stuck trying to figure out how to wake up the audio codecs from the 
+hdac_i915.c file. I'm not sure how to do this with the recent reorg as I 
+don't want to break the ASoC version of the driver by including the 
+wrong header files.
+
+See attached patch (which is a very rough draft, not even compile 
+tested), maybe you or Takashi could offer some insight w r t whether I'm 
+on the right track, and how to proceed?
+
 -- 
-1.9.1
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
+
+--------------030109000109040208040501
+Content-Type: text/x-diff;
+ name="i915_audio_component_cb_ops.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="i915_audio_component_cb_ops.patch"
+
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 8ae6f7f..0eaac41 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -45,6 +45,7 @@
+ #include <drm/intel-gtt.h>
+ #include <drm/drm_legacy.h> /* for struct drm_dma_handle */
+ #include <drm/drm_gem.h>
++#include <drm/i915_component.h>
+ #include <linux/backlight.h>
+ #include <linux/hashtable.h>
+ #include <linux/intel-iommu.h>
+@@ -1752,6 +1753,7 @@ struct drm_i915_private {
+ 	struct drm_property *force_audio_property;
+ 
+ 	/* hda/i915 audio component */
++	struct i915_audio_component *audio_component;
+ 	bool audio_component_registered;
+ 
+ 	uint32_t hw_context_size;
+diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+index ef34257..3799d88 100644
+--- a/drivers/gpu/drm/i915/intel_audio.c
++++ b/drivers/gpu/drm/i915/intel_audio.c
+@@ -424,6 +424,9 @@ void intel_audio_codec_enable(struct intel_encoder *intel_encoder)
+ 
+ 	if (dev_priv->display.audio_codec_enable)
+ 		dev_priv->display.audio_codec_enable(connector, intel_encoder, mode);
++
++	if (acomp && acomp->cb_ops && acomp->cb_ops->hotplug_notify)
++		acomp->cb_ops->hotplug_notify(acomp->hdac_bus, true);
+ }
+ 
+ /**
+@@ -437,9 +440,13 @@ void intel_audio_codec_disable(struct intel_encoder *encoder)
+ {
+ 	struct drm_device *dev = encoder->base.dev;
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
++	struct i915_audio_component *acomp = dev_priv->audio_component;
+ 
+ 	if (dev_priv->display.audio_codec_disable)
+ 		dev_priv->display.audio_codec_disable(encoder);
++
++	if (acomp && acomp->cb_ops && acomp->cb_ops->hotplug_notify)
++		acomp->cb_ops->hotplug_notify(acomp->hdac_bus, false);
+ }
+ 
+ /**
+@@ -529,12 +536,14 @@ static int i915_audio_component_bind(struct device *i915_dev,
+ 				     struct device *hda_dev, void *data)
+ {
+ 	struct i915_audio_component *acomp = data;
++	struct drm_i915_private *dev_priv = dev_to_i915(i915_dev);
+ 
+ 	if (WARN_ON(acomp->ops || acomp->dev))
+ 		return -EEXIST;
+ 
+ 	acomp->ops = &i915_audio_component_ops;
+ 	acomp->dev = i915_dev;
++	dev_priv->audio_component = acomp;
+ 
+ 	return 0;
+ }
+@@ -543,9 +552,11 @@ static void i915_audio_component_unbind(struct device *i915_dev,
+ 					struct device *hda_dev, void *data)
+ {
+ 	struct i915_audio_component *acomp = data;
++	struct drm_i915_private *dev_priv = dev_to_i915(i915_dev);
+ 
+ 	acomp->ops = NULL;
+ 	acomp->dev = NULL;
++	dev_priv->audio_component = NULL;
+ }
+ 
+ static const struct component_ops i915_audio_component_bind_ops = {
+diff --git a/include/drm/i915_component.h b/include/drm/i915_component.h
+index c9a8b64..3feab48 100644
+--- a/include/drm/i915_component.h
++++ b/include/drm/i915_component.h
+@@ -24,8 +24,11 @@
+ #ifndef _I915_COMPONENT_H_
+ #define _I915_COMPONENT_H_
+ 
++struct hdac_bus;
++
+ struct i915_audio_component {
+ 	struct device *dev;
++	struct hdac_bus *hdac_bus;
+ 
+ 	const struct i915_audio_component_ops {
+ 		struct module *owner;
+@@ -34,6 +37,11 @@ struct i915_audio_component {
+ 		void (*codec_wake_override)(struct device *, bool enable);
+ 		int (*get_cdclk_freq)(struct device *);
+ 	} *ops;
++
++	const struct i915_audio_component_cb_ops {
++		struct module *owner;
++		void (*hotplug_notify)(struct hdac_bus *, bool enable);
++	} *cb_ops;
+ };
+ 
+ #endif /* _I915_COMPONENT_H_ */
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 442500e..0ec49a6 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -115,6 +115,8 @@ static void hdac_component_master_unbind(struct device *dev)
+ {
+ 	struct i915_audio_component *acomp = hdac_acomp;
+ 
++	acomp->cb_ops = NULL;
++	acomp->hdac_bus = NULL;
+ 	module_put(acomp->ops->owner);
+ 	component_unbind_all(dev, acomp);
+ 	WARN_ON(acomp->ops || acomp->dev);
+@@ -125,6 +127,31 @@ static const struct component_master_ops hdac_component_master_ops = {
+ 	.unbind = hdac_component_master_unbind,
+ };
+ 
++static const struct i915_ hdac_component_master_ops = {
++	.bind = hdac_component_master_bind,
++	.unbind = hdac_component_master_unbind,
++};
++
++static const struct i915_audio_component_cb_ops i915_audio_component_cb_ops = {
++	.owner		= THIS_MODULE,
++	.hotplug_notify	= i915_audio_component_hotplug_notify,
++};
++
++
++static void i915_audio_component_hotplug_notify(struct hdac_bus *bus, bool enable)
++{
++	struct hda_codec *codec;
++
++	codec_dbg("Received HDMI hotplug callback (enable = %d)", (int) enable);
++
++	// TODO: Not sure about this part - with the new reorg, maybe I can't access
++	// codec->jackpoll_work from this file?
++	list_for_each_codec(codec, bus)
++		schedule_delayed_work(&codec->jackpoll_work,
++			codec->jackpoll_interval);
++
++}
++
+ static int hdac_component_master_match(struct device *dev, void *data)
+ {
+ 	/* i915 is the only supported component */
+@@ -160,6 +187,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+ 		ret = -ENODEV;
+ 		goto out_master_del;
+ 	}
++	acomp->cb_ops = &i915_audio_component_cb_ops;
++	acomp->hdac_bus = bus;
++
+ 	dev_dbg(dev, "bound to i915 component master\n");
+ 
+ 	return 0;
+
+--------------030109000109040208040501
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030109000109040208040501--
