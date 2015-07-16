@@ -1,52 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/12] device: property: delay device-driver matches
-Date: Thu, 16 Jul 2015 21:23:12 +0100
-Message-ID: <20150716202312.GD11162@sirena.org.uk>
-References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
- <1435743667-11987-2-git-send-email-tomeu.vizoso@collabora.com>
+Subject: Re: [PATCH 1/2] V4 regmap: Use reg_sequence for
+ multi_reg_write / register_patch
+Date: Thu, 16 Jul 2015 21:48:08 +0100
+Message-ID: <20150716204808.GB1602@sirena.org.uk>
+References: <1436885152-19850-1-git-send-email-nariman@opensource.wolfsonmicro.com>
+ <20150716125254.GE4039@sirena.org.uk>
+ <20150716154525.GB21939@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ec3vSN46Jxtc8xEl"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1435743667-11987-2-git-send-email-tomeu.vizoso@collabora.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Cc: linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-pwm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: multipart/mixed; boundary="===============5666094292535647320=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 212872605D2
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 22:48:24 +0200 (CEST)
+In-Reply-To: <20150716154525.GB21939@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
+Cc: oder_chiou@realtek.com, brian.austin@cirrus.com, laurent.pinchart+renesas@ideasonboard.com, sameo@linux.intel.com, support.opensource@diasemi.com, airlied@linux.ie, gregkh@linuxfoundation.org, dmitry.torokhov@gmail.com, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, tony@atomide.com, lars@metafoo.de, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com, bardliao@realtek.com, linux-omap@vger.kernel.org, lee.jones@linaro.org, linux-kernel@vger.kernel.org, dmurphy@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---ec3vSN46Jxtc8xEl
+--===============5666094292535647320==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
+Content-Disposition: inline
+
+
+--2B/JsCI69OhZNC5r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 01, 2015 at 11:40:56AM +0200, Tomeu Vizoso wrote:
+On Thu, Jul 16, 2015 at 04:45:25PM +0100, Nariman Poushin wrote:
 
-> Delay matches of platform devices until late_initcall, when we are sure
-> that all built-in drivers have been registered already. This is needed
-> to prevent deferred probes because of some dependencies' drivers not
-> having registered yet.
+> I will resend with a cover letter explaining the change from the previous
+> patch set if that is the right thing to do.
 
-I have to say I'm still not 100% clear that special casing platform
-devices makes sense here - I can see that platform devices are usually
-the first devices to instantiate but there are other kinds of devices
-and it's not obvious what the benefit of specifically picking out
-platform devices as opposed to just deferring all devices is.
+No, that's fine.  If you want to fix something like that just reply to
+the cover letter with the extra information.
 
---ec3vSN46Jxtc8xEl
+--2B/JsCI69OhZNC5r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVqBKvAAoJECTWi3JdVIfQlTsH/RXV9XfaZAGK0pNr9p/kND/R
-uXvreuA2aWGY2yegWXN1tE6pZoLjM18lOibs3dQes0xY7JmZ3QgWwDq46ZdT8wCD
-mXlcO6E5d5QFKWa2bRcaXn02uROZmSH7X/XDk4hPVw1mh/sSxvYrj6Y0Ro0n/7Q6
-RRbg1kCfVPmuBJl10kMhwC9XalK5q2g4U2xC76edvSu2kRe2TXB/J89iq9LKg+Li
-LqQr20pwmwu6oIhI5YQPNa+bXNDEq5gdbq/j3hK5RRF9iXUbsuSdRDAQxTM8+5ri
-/qHqGpBhW3umrDgLMBfp36F+aWy+gk1rwUFBwOB5VyG426LWzgdc7AIGPwT7i+I=
-=OTlG
+iQEcBAEBCAAGBQJVqBiFAAoJECTWi3JdVIfQU0cH/2zBhOlDz6e+jY+7Y58/61Mz
+Mh23ZVckNJIFWn7xGyznVv0Slw4/iGUhL4FL8B/lOiv8pR3mUT3BNqhCpRk5DzDB
+VMQY3fvpHqg6uO1vHrQUeiKQxlZP8Psm455a2lHQ5Xzr/vsabpF/y45g29OsJ1AU
+yvjTPV2kcyw7YIuBN7mYE9hVa7LQAMyXCP+vGUJKhjehxDDEtihtVWvJz8Bxwpzy
+JneaBE3fkhbGPhvgy+oRKDUgp3J1y/kgKiJ21hizvS0W1UssbC/e7I3QAKMvrxPq
+ircmztggAw3hAO2HOMajK9aUDH+g36Hs66N3Z0rg74dfJtYLq07b5OoYIar/+0w=
+=OG+G
 -----END PGP SIGNATURE-----
 
---ec3vSN46Jxtc8xEl--
+--2B/JsCI69OhZNC5r--
+
+--===============5666094292535647320==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5666094292535647320==--
