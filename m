@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: move SRC specific macro into
-	src.c" to the asoc tree
-Date: Thu, 16 Jul 2015 22:11:31 +0100
-Message-ID: <E1ZFqRH-0002mW-FG@finisterre>
-References: <87vbdlvqxj.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: move DVC specific macro into
+	dvc.c" to the asoc tree
+Date: Thu, 16 Jul 2015 22:11:33 +0100
+Message-ID: <E1ZFqRJ-0002mz-9Z@finisterre>
+References: <87wpy1vqy3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC1F0266837
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:11:37 +0200 (CEST)
-In-Reply-To: <87vbdlvqxj.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6395D266839
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:11:38 +0200 (CEST)
+In-Reply-To: <87wpy1vqy3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: move SRC specific macro into src.c
+   ASoC: rsnd: move DVC specific macro into dvc.c
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From da599fd34b1f2f14f2c387e6b3a909f9ff519c8a Mon Sep 17 00:00:00 2001
+>From 4f35fabaa30b116d549d95fe7dae907510c71862 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:11:21 +0000
-Subject: [PATCH] ASoC: rsnd: move SRC specific macro into src.c
+Date: Wed, 15 Jul 2015 07:11:02 +0000
+Subject: [PATCH] ASoC: rsnd: move DVC specific macro into dvc.c
 
-rsnd_src_nr() is used only from src.c
+rsnd_dvc_nr() is used only from dvc.c
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h | 2 --
- sound/soc/sh/rcar/src.c  | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sh/rcar/dvc.c  | 1 +
+ sound/soc/sh/rcar/rsnd.h | 3 ---
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index dbf0da6..8a61aa3 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -24,6 +24,7 @@ struct rsnd_dvc {
+ 	struct rsnd_kctrl_cfg_s rdown;	/* Ramp Rate Down */
+ };
+ 
++#define rsnd_dvc_nr(priv) ((priv)->dvc_nr)
+ #define rsnd_dvc_of_node(priv) \
+ 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,dvc")
+ 
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 8f793f0..c8d2029 100644
+index 46eb4da..8f793f0 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -554,8 +554,6 @@ int rsnd_src_ssiu_stop(struct rsnd_mod *ssi_mod,
- int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod);
- int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod);
+@@ -579,7 +579,4 @@ void rsnd_dvc_remove(struct platform_device *pdev,
+ 		     struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id);
  
--#define rsnd_src_nr(priv) ((priv)->src_nr)
+-#define rsnd_dvc_nr(priv) ((priv)->dvc_nr)
 -
- /*
-  *	R-Car SSI
-  */
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 38d0aba..0b06ac8 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -30,6 +30,7 @@ struct rsnd_src {
- 
- #define RSND_SRC_NAME_SIZE 16
- 
-+#define rsnd_src_nr(priv) ((priv)->src_nr)
- #define rsnd_enable_sync_convert(src) ((src)->sen.val)
- #define rsnd_src_of_node(priv) \
- 	of_get_child_by_name(rsnd_priv_to_dev(priv)->of_node, "rcar_sound,src")
+-
+ #endif
 -- 
 2.1.4
