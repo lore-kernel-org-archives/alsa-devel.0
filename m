@@ -1,32 +1,44 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: drm/edid: sound/core: pcm_drm_eld.c compilation error in 4.2
-Date: Thu, 16 Jul 2015 18:16:58 +0200
-Message-ID: <20150716181658.553e6da7@armhf>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 1/2] ASoC: rockchip: Add machine driver for max98090
+ codec
+Date: Thu, 16 Jul 2015 18:22:45 +0200
+Message-ID: <1437063765.21215.18.camel@tiscali.nl>
+References: <1436930143-31361-1-git-send-email-zhengxing@rock-chips.com>
+	 <1436930143-31361-2-git-send-email-zhengxing@rock-chips.com>
+	 <1437033944.27428.11.camel@tiscali.nl>
+	 <20150716110032.GU11162@sirena.org.uk>
+	 <1437047261.28351.6.camel@tiscali.nl> <20150716125529.GG4039@sirena.org.uk>
+	 <1437056116.28351.19.camel@tiscali.nl>
+	 <20150716150500.GO4039@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150716150500.GO4039@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Xing Zheng <zhengxing@rock-chips.com>, dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGZpbGUgc291bmQvY29yZS9wY21fZHJtX2VsZC5jIHdoaWNoIHdhcyBhZGRlZCBieSB0aGUg
-Y29tbWl0CgoJODM4ZDE2MzFiNzY2NTI5MjEzNjg0ZjA3ZGQ3MWNkZjJlOTJmMDYyMwoJQUxTQTog
-cGNtOiBhZGQgRFJNIEVMRCBoZWxwZXIKCmxhY2tzIHRoZSBmdW5jdGlvbiBkcm1fZWxkX3NhZCgp
-IHdoaWNoIHdhcyBkZWZpbmVkIGJ5IFJ1c3NlbGwncyBwYXRjaAoKCWh0dHA6Ly9hcnRpY2xlLmdt
-YW5lLm9yZy9nbWFuZS5saW51eC5wb3J0cy5hcm0ua2VybmVsLzQxMTU3NAoJZHJtL2VkaWQ6IGFk
-ZCBmdW5jdGlvbiB0byBoZWxwIGZpbmQgU0FEcwoKVGhpcyBwYXRjaCBoYXMgbm90IGJlZW4gYXBw
-bGllZC4KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0
-YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
-ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+On do, 2015-07-16 at 16:05 +0100, Mark Brown wrote:
+> Why would this not be the case - what is the difference you beleive
+> this driver has to other platform drivers?
+
+It's my believe that for MODULE_ALIAS("platform:[...]") to be useful
+there needs to be corresponding struct platform_device. For this patch
+that would be a platform device named "rockchip-snd-max98090". (This is
+something that I try to check rather carefully, because these devices
+can be generated on the fly.)
+
+I'm happy to drop this believe if someone shows me another way that
+MODULE_ALIAS("platform:[...]") can actually be used.
+
+So, in short, the difference between this driver and other platform
+drivers is that, as far as I'm aware, this platform driver lacks a
+corresponding platform device. Probably because OF support suffices to
+get this module autoloaded.
+
+Thanks,
+
+
+Paul Bolle
