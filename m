@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add rsnd_io_to_mod()" to the asoc
-	tree
-Date: Thu, 16 Jul 2015 22:29:50 +0100
-Message-ID: <E1ZFqj0-0004gS-Q3@finisterre>
-References: <87a8uxvqp7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: check the Gen1 at the beginning
+	of DVC probe" to the asoc tree
+Date: Thu, 16 Jul 2015 22:29:52 +0100
+Message-ID: <E1ZFqj2-0004hO-Sm@finisterre>
+References: <87d1ztvqq6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05D512605DC
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:29:56 +0200 (CEST)
-In-Reply-To: <87a8uxvqp7.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 538142666A8
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:29:57 +0200 (CEST)
+In-Reply-To: <87d1ztvqq6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add rsnd_io_to_mod()
+   ASoC: rsnd: check the Gen1 at the beginning of DVC probe
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 5cbbadd3d507eeb7711266e3932f4c427cbcbd61 Mon Sep 17 00:00:00 2001
+>From 9469b8b6092d347ef8a5fa9d2d7dde4c857a0994 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:16:19 +0000
-Subject: [PATCH] ASoC: rsnd: add rsnd_io_to_mod()
+Date: Wed, 15 Jul 2015 07:15:47 +0000
+Subject: [PATCH] ASoC: rsnd: check the Gen1 at the beginning of DVC probe
 
-Sometimes we would like to get each module directly, especially data path
-searching. this patch adds rsnd_io_to_mod() macro, and existing
-rsnd_io_to_mod_xxx() use it.
+DVC doesn't support Gen1, check it beginning of probe
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/dvc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 705e66f..5f5b8b1 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -348,9 +348,10 @@ struct rsnd_dai_stream {
- 	int byte_per_period;
- 	int next_period_byte;
- };
--#define rsnd_io_to_mod_ssi(io)	((io)->mod[RSND_MOD_SSI])
--#define rsnd_io_to_mod_src(io)	((io)->mod[RSND_MOD_SRC])
--#define rsnd_io_to_mod_dvc(io)	((io)->mod[RSND_MOD_DVC])
-+#define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
-+#define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
-+#define rsnd_io_to_mod_src(io)	rsnd_io_to_mod((io), RSND_MOD_SRC)
-+#define rsnd_io_to_mod_dvc(io)	rsnd_io_to_mod((io), RSND_MOD_DVC)
- #define rsnd_io_to_rdai(io)	((io)->rdai)
- #define rsnd_io_to_priv(io)	(rsnd_rdai_to_priv(rsnd_io_to_rdai(io)))
- #define rsnd_io_is_play(io)	(&rsnd_io_to_rdai(io)->playback == io)
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index d06e4ee..5779638 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -332,18 +332,18 @@ int rsnd_dvc_probe(struct platform_device *pdev,
+ 	char name[RSND_DVC_NAME_SIZE];
+ 	int i, nr, ret;
+ 
+-	rsnd_of_parse_dvc(pdev, of_data, priv);
+-
+-	nr = info->dvc_info_nr;
+-	if (!nr)
+-		return 0;
+-
+ 	/* This driver doesn't support Gen1 at this point */
+ 	if (rsnd_is_gen1(priv)) {
+ 		dev_warn(dev, "CMD is not supported on Gen1\n");
+ 		return -EINVAL;
+ 	}
+ 
++	rsnd_of_parse_dvc(pdev, of_data, priv);
++
++	nr = info->dvc_info_nr;
++	if (!nr)
++		return 0;
++
+ 	dvc	= devm_kzalloc(dev, sizeof(*dvc) * nr, GFP_KERNEL);
+ 	if (!dvc)
+ 		return -ENOMEM;
 -- 
 2.1.4
