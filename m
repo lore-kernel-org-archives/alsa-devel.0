@@ -1,44 +1,32 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: Add machine driver for max98090
- codec
-Date: Thu, 16 Jul 2015 18:08:35 +0200
-Message-ID: <1437062915.21215.7.camel@tiscali.nl>
-References: <1436930143-31361-1-git-send-email-zhengxing@rock-chips.com>
-		   <1436930143-31361-2-git-send-email-zhengxing@rock-chips.com>
-		  <1437033944.27428.11.camel@tiscali.nl> <55A79394.5090905@rock-chips.com>
-		 <1437047374.28351.8.camel@tiscali.nl> <55A79C8B.7020402@rock-chips.com>
-	 <1437056383.28351.23.camel@tiscali.nl> <55A7CCDE.9010701@linux.intel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: drm/edid: sound/core: pcm_drm_eld.c compilation error in 4.2
+Date: Thu, 16 Jul 2015 18:16:58 +0200
+Message-ID: <20150716181658.553e6da7@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <55A7CCDE.9010701@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiang Liu <jiang.liu@linux.intel.com>
-Cc: zhengxing <zhengxing@rock-chips.com>, dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gerry,
-
-On do, 2015-07-16 at 23:25 +0800, Jiang Liu wrote:
-> May be that is hidden in some device tree files.
-> MODULE_ALIAS() is used by a driver to announce that it supports
-> such types of devices. And bus enumerator will create those
-> devices by probing hardware or parsing some configuration files.
-
-Then someone could simply point me to the device tree file where that
-"platform:" alias comes from. (Note that I, of course, do check the tree
-for the substrings involved before tossing questions like these onto
-lkml.)
-
-Besides, as far as I can tell, for device tree support the magic
-actually hides in
-    MODULE_DEVICE_TABLE(of, rockchip_max98090_of_match);
-
-Which, I think, implies that any MODULE_ALIAS("platform:[...]") is
-pointless for systems booting with device tree support.
-
-Thanks,
-
-
-Paul Bolle
+VGhlIGZpbGUgc291bmQvY29yZS9wY21fZHJtX2VsZC5jIHdoaWNoIHdhcyBhZGRlZCBieSB0aGUg
+Y29tbWl0CgoJODM4ZDE2MzFiNzY2NTI5MjEzNjg0ZjA3ZGQ3MWNkZjJlOTJmMDYyMwoJQUxTQTog
+cGNtOiBhZGQgRFJNIEVMRCBoZWxwZXIKCmxhY2tzIHRoZSBmdW5jdGlvbiBkcm1fZWxkX3NhZCgp
+IHdoaWNoIHdhcyBkZWZpbmVkIGJ5IFJ1c3NlbGwncyBwYXRjaAoKCWh0dHA6Ly9hcnRpY2xlLmdt
+YW5lLm9yZy9nbWFuZS5saW51eC5wb3J0cy5hcm0ua2VybmVsLzQxMTU3NAoJZHJtL2VkaWQ6IGFk
+ZCBmdW5jdGlvbiB0byBoZWxwIGZpbmQgU0FEcwoKVGhpcyBwYXRjaCBoYXMgbm90IGJlZW4gYXBw
+bGllZC4KCi0tIApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0
+YXYhICoqCkplZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
