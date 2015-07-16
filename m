@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: enable module multi connection"
-	to the asoc tree
-Date: Thu, 16 Jul 2015 22:30:06 +0100
-Message-ID: <E1ZFqjG-0004m4-TI@finisterre>
-References: <87r3o9vqvf.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rename rsnd_path_parse/break()
+	into add/remove" to the asoc tree
+Date: Thu, 16 Jul 2015 22:30:05 +0100
+Message-ID: <E1ZFqjF-0004lb-28@finisterre>
+References: <87pp3tvquy.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F5E2605D2
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:12 +0200 (CEST)
-In-Reply-To: <87r3o9vqvf.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 89D0A26672E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:10 +0200 (CEST)
+In-Reply-To: <87pp3tvquy.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: enable module multi connection
+   ASoC: rsnd: rename rsnd_path_parse/break() into add/remove
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From d6f8d5b4422a5a391c02df97af9ef7da5a929d71 Mon Sep 17 00:00:00 2001
+>From c8cf15f64f8ddb3169987c2f26df3341b8556296 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:12:36 +0000
-Subject: [PATCH] ASoC: rsnd: enable module multi connection
+Date: Wed, 15 Jul 2015 07:12:52 +0000
+Subject: [PATCH] ASoC: rsnd: rename rsnd_path_parse/break() into add/remove
 
-'8a4e379b54f8("ASoC: rsnd: remove io from rsnd_mod")' removed mod/io
-relationship. rsnd_dai_connect() mod/io check is no longer needed
+parse/break is a little ambiguous/confusable name for rsnd module path.
+Especially for CTU/MIX support. It was renamed to add/remove
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/sh/rcar/core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index d44bfb7..ff4f15a 100644
+index ff4f15a..93fed50 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -277,16 +277,6 @@ static int rsnd_dai_connect(struct rsnd_mod *mod,
- 	if (!mod)
- 		return -EIO;
+@@ -507,7 +507,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.set_fmt	= rsnd_soc_dai_set_fmt,
+ };
  
--	if (io->mod[mod->type]) {
--		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--		struct device *dev = rsnd_priv_to_dev(priv);
--
--		dev_err(dev, "%s[%d] is not empty\n",
--			rsnd_mod_name(mod),
--			rsnd_mod_id(mod));
--		return -EIO;
--	}
--
- 	io->mod[mod->type] = mod;
+-#define rsnd_path_parse(priv, io, type)				\
++#define rsnd_path_add(priv, io, type)				\
+ ({								\
+ 	struct rsnd_mod *mod;					\
+ 	int ret = 0;						\
+@@ -523,7 +523,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	ret;							\
+ })
  
- 	return 0;
+-#define rsnd_path_break(priv, io, type)				\
++#define rsnd_path_remove(priv, io, type)			\
+ {								\
+ 	struct rsnd_mod *mod;					\
+ 	int id = -1;						\
+@@ -555,17 +555,17 @@ static int rsnd_path_init(struct rsnd_priv *priv,
+ 	 */
+ 
+ 	/* SRC */
+-	ret = rsnd_path_parse(priv, io, src);
++	ret = rsnd_path_add(priv, io, src);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* SSI */
+-	ret = rsnd_path_parse(priv, io, ssi);
++	ret = rsnd_path_add(priv, io, ssi);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* DVC */
+-	ret = rsnd_path_parse(priv, io, dvc);
++	ret = rsnd_path_add(priv, io, dvc);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1023,8 +1023,8 @@ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
+ 		/*
+ 		 * remove SRC/DVC from DAI,
+ 		 */
+-		rsnd_path_break(priv, io, src);
+-		rsnd_path_break(priv, io, dvc);
++		rsnd_path_remove(priv, io, src);
++		rsnd_path_remove(priv, io, dvc);
+ 
+ 		/*
+ 		 * fallback
 -- 
 2.1.4
