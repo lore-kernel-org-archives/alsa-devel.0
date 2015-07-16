@@ -1,88 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: cs4349: Add support for Cirrus
-	Logic CS4349
-Date: Thu, 16 Jul 2015 13:23:33 +0100
-Message-ID: <20150716122333.GD4039@sirena.org.uk>
-References: <55a68b00.4e946b0a.7bbc.ffff9616@mx.google.com>
+Subject: Re: [PATCH 1/2] V4 regmap: Use reg_sequence for multi_reg_write /
+ register_patch
+Date: Thu, 16 Jul 2015 13:52:54 +0100
+Message-ID: <20150716125254.GE4039@sirena.org.uk>
+References: <1436885152-19850-1-git-send-email-nariman@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8954829748485071222=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B8650260563
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:23:44 +0200 (CEST)
-In-Reply-To: <55a68b00.4e946b0a.7bbc.ffff9616@mx.google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: timothyc.howe@gmail.com
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Tim Howe <tim.howe@cirrus.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="WK3l2KTTmXPVedZ6"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1436885152-19850-1-git-send-email-nariman@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
+Cc: gregkh@linuxfoundation.org, airlied@linux.ie, dmitry.torokhov@gmail.com, sameo@linux.intel.com, lee.jones@linaro.org, tony@atomide.com, lgirdwood@gmail.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, support.opensource@diasemi.com, bardliao@realtek.com, oder_chiou@realtek.com, laurent.pinchart+renesas@ideasonboard.com, lars@metafoo.de, dmurphy@ti.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, patches@opensource.wolfsonmicro.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8954829748485071222==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n/aVsWSeQ4JHkrmm"
-Content-Disposition: inline
-
-
---n/aVsWSeQ4JHkrmm
+--WK3l2KTTmXPVedZ6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 15, 2015 at 11:31:49AM -0500, timothyc.howe@gmail.com wrote:
+On Tue, Jul 14, 2015 at 03:45:51PM +0100, Nariman Poushin wrote:
 
-> +static int cs4349_runtime_suspend(struct device *dev)
-> +{
-> +	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
-> +	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	regcache_sync(cs4349->regmap);
-> +	regcache_cache_only(cs4349->regmap, true);
-> +
-> +	/* Hold down reset */
+Please submit patches in the format covered in SubmittingPatches,
+version information goes inside the [].
 
-So, you've inverted the sync and the cache only here which means we're
-not going to try to do a sync while cached but we're still doing this
-immediately before we put the device in reset.  Why are we syncing at
-all?  Why would the device be out of sync with the cache and what is the
-expected result of syncing at this point?  We're going to do a sync when
-we put the device back into write mode...
+> Add support for writing sequences of registers / patches with specified
+> delays (in microseconds). Logically separates the functionality using
+> sequences of register writes from the functions that take register
+> defaults, as adding a delay field on the reg_defaults can increase
+> memory usage substantially.
 
---n/aVsWSeQ4JHkrmm
+This change doesn't do what the above changelog says.  It introduces a
+new struct reg_sequence and updates the multi write and patch APIs to
+use that but it doesn't implement any delay functionality.  Please
+resend with a clearer changelog that describes why the struct is being
+split out from the reg_defaults struct and makes it clear that this is
+just a rename.  It's probably best to also defer the addition of the
+delay field until the second patch where this function is actually
+implemented.
+
+> +/**
+> + * Register / Value pairs for sequences of writes, incorporating an optional
+
+Register/value.
+
+> + * delay in microseconds.
+> + *
+> + * @reg: Register address.
+> + * @def: Register default value.
+> + * @delay_us: Delay in microseconds
+> + */
+> +
+> +struct reg_sequence {
+
+No blank line between the kerneldoc and the struct (as is the style for
+other kernel code).
+
+--WK3l2KTTmXPVedZ6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVp6JEAAoJECTWi3JdVIfQHWwH/RS73kMV21lrDRV/RDf9VJNt
-jJ22u5kbr3VRDB18um6dY+bkAni/QKRgrGKL9RaoZikCRtKrpYSBqu7CqFfeeEs5
-ITRpZy31fZVjuKggQa6jTM6nt1PxxABB/3hEfONKEUybnL12UKRo84k5hAvq16Cg
-XCs00We6AFKByJ87OWze+SrD3tOF4kl7phZl/sriL5oOmCzZXO52CLVC3vRUjVLn
-c6SIzh3xULvBYin6xsYIAXwKXk/IIdUb3EYYQU4EiVn5mQCvvxfp/dSs81IYVvuv
-CJ3wNgnIqbYBVLXTMj92Gz9D8Rcqkg2uD/h8LJs/ykd3tIz28BLQVW95xvZrZyU=
-=j8UW
+iQEcBAEBCAAGBQJVp6klAAoJECTWi3JdVIfQdeIH/0xR3Zsana0o8euXAzPqm3ok
+r9IlQGzEyF7pZWEuAaLuEL89f9F/OWOXBU/BpmW+bSatlq726j5a4TiMqrODwoVn
+YwFLn8RqnmtBjM6fBpYKRf+xwNeKvcWPPDp5WkFueV4XQhkLD7HVLM9NEfRSjPyM
+GTQboL9PRQYD8PXA/ACHYVtSQu7kSUlLTEP2LAIkmlQ65Bp4lEHDHezwIA4aMwVM
+404hpcSnYhuHGg2K3UjoFJeRPJVxsJRQavm8BdKHA7rjGY2irwo2wUt3keQRAKpI
+0iGWhWR/Va/3sLty64k6gJuxe2Wm2lpNVlVf/dSKfEU2NTL3faayq6YGEEBtPHI=
+=UO9S
 -----END PGP SIGNATURE-----
 
---n/aVsWSeQ4JHkrmm--
-
---===============8954829748485071222==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8954829748485071222==--
+--WK3l2KTTmXPVedZ6--
