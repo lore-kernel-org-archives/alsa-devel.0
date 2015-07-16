@@ -1,14 +1,15 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/rt5645 7/7]
- sound/soc/codecs/rt5645.c:2766:22: warning: unused variable 'rt5645'
-Date: Thu, 16 Jul 2015 20:29:26 +0800
-Message-ID: <201507162025.Ohk7Urc2%fengguang.wu@intel.com>
+Subject: [asoc:fix/rt5645 1/1]
+ sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value,
+ in function returning non-void
+Date: Thu, 16 Jul 2015 20:32:07 +0800
+Message-ID: <201507162001.z6afFgHb%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="FL5UXtIhxfXey3p5"
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A6EE4260563
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:30:18 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id D612B260579
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:33:36 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,65 +25,59 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.
 List-Id: alsa-devel@alsa-project.org
 
 
---FL5UXtIhxfXey3p5
+--LQksG6bCIzRHxTLp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/rt5645
-head:   a4e3c5fa955ce0934774f3f3684377dbf2c20eca
-commit: a4e3c5fa955ce0934774f3f3684377dbf2c20eca [7/7] ASoC: rt5645: Simplify rt5645_enable_push_button_irq
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git fix/rt5645
+head:   3c2234569cfff83718792f810a9bb855b78c2473
+commit: 3c2234569cfff83718792f810a9bb855b78c2473 [1/1] ASoC: rt5645: Check if codec is initialized in workqueue handler
 config: i386-randconfig-x009-201528 (attached as .config)
 reproduce:
-  git checkout a4e3c5fa955ce0934774f3f3684377dbf2c20eca
+  git checkout 3c2234569cfff83718792f810a9bb855b78c2473
   # save the attached .config to linux build tree
   make ARCH=i386 
 
 All warnings (new ones prefixed by >>):
 
-   sound/soc/codecs/rt5645.c: In function 'rt5645_enable_push_button_irq':
->> sound/soc/codecs/rt5645.c:2766:22: warning: unused variable 'rt5645' [-Wunused-variable]
-     struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-                         ^
+   sound/soc/codecs/rt5645.c: In function 'rt5645_irq_detection':
+>> sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value, in function returning non-void [-Wreturn-type]
+      return;
+      ^
 
-vim +/rt5645 +2766 sound/soc/codecs/rt5645.c
+vim +/return +2947 sound/soc/codecs/rt5645.c
 
-d12d6c4e John Lin           2015-05-12  2750  	regmap_write(rt5645->regmap, RT5645_DEPOP_M2, 0x1140);
-d12d6c4e John Lin           2015-05-12  2751  	regmap_write(rt5645->regmap, RT5645_DEPOP_M1, 0x0000);
-d12d6c4e John Lin           2015-05-12  2752  	regmap_write(rt5645->regmap, RT5645_GEN_CTRL2, 0x4020);
-d12d6c4e John Lin           2015-05-12  2753  	regmap_write(rt5645->regmap, RT5645_PWR_ANLG2, 0x0006);
-d12d6c4e John Lin           2015-05-12  2754  	regmap_write(rt5645->regmap, RT5645_PWR_DIG2, 0x0000);
-d12d6c4e John Lin           2015-05-12  2755  	msleep(350);
-d12d6c4e John Lin           2015-05-12  2756  
-d12d6c4e John Lin           2015-05-12  2757  	regcache_cache_bypass(rt5645->regmap, false);
-d12d6c4e John Lin           2015-05-12  2758  
-d12d6c4e John Lin           2015-05-12  2759  	return ret;
-d12d6c4e John Lin           2015-05-12  2760  }
-d12d6c4e John Lin           2015-05-12  2761  
-6e747d53 Bard Liao          2015-04-28  2762  static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
-6e747d53 Bard Liao          2015-04-28  2763  	bool enable)
-f3fa1bbd Oder Chiou         2014-09-19  2764  {
-e2ada818 Lars-Peter Clausen 2015-07-06  2765  	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-f3fa1bbd Oder Chiou         2014-09-19 @2766  	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-f3fa1bbd Oder Chiou         2014-09-19  2767  
-6e747d53 Bard Liao          2015-04-28  2768  	if (enable) {
-a4e3c5fa Nicolas Boichat    2015-07-16  2769  		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-a4e3c5fa Nicolas Boichat    2015-07-16  2770  		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-a4e3c5fa Nicolas Boichat    2015-07-16  2771  		snd_soc_dapm_sync(dapm);
-22f5d9f8 Nicolas Boichat    2015-06-10  2772  
-6e747d53 Bard Liao          2015-04-28  2773  		snd_soc_update_bits(codec,
-6e747d53 Bard Liao          2015-04-28  2774  					RT5645_INT_IRQ_ST, 0x8, 0x8);
-
-:::::: The code at line 2766 was first introduced by commit
-:::::: f3fa1bbd836a7d6efb2abd506ed8e24096f39062 ASoC: rt5645: Add headset detect function
-
-:::::: TO: Oder Chiou <oder_chiou@realtek.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
+  2931	{
+  2932		int btn_type, val;
+  2933	
+  2934		val = snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
+  2935		pr_debug("val=0x%x\n", val);
+  2936		btn_type = val & 0xfff0;
+  2937		snd_soc_write(codec, RT5650_4BTN_IL_CMD1, val);
+  2938	
+  2939		return btn_type;
+  2940	}
+  2941	
+  2942	static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+  2943	{
+  2944		int val, btn_type, gpio_state = 0, report = 0;
+  2945	
+  2946		if (!rt5645->codec)
+> 2947			return;
+  2948	
+  2949		switch (rt5645->pdata.jd_mode) {
+  2950		case 0: /* Not using rt5645 JD */
+  2951			if (rt5645->gpiod_hp_det) {
+  2952				gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
+  2953				dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
+  2954					gpio_state);
+  2955				report = rt5645_jack_detect(rt5645->codec, gpio_state);
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---FL5UXtIhxfXey3p5
+--LQksG6bCIzRHxTLp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=".config"
 
@@ -4542,11 +4537,11 @@ CONFIG_FONT_8x16=y
 CONFIG_ARCH_HAS_SG_CHAIN=y
 CONFIG_ARCH_HAS_PMEM_API=y
 
---FL5UXtIhxfXey3p5
+--LQksG6bCIzRHxTLp
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---FL5UXtIhxfXey3p5--
+--LQksG6bCIzRHxTLp--
