@@ -1,45 +1,58 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: drm/edid: sound/core: pcm_drm_eld.c compilation error in 4.2
-Date: Thu, 16 Jul 2015 17:46:43 +0100
-Message-ID: <20150716164643.GM7557@n2100.arm.linux.org.uk>
-References: <20150716181658.553e6da7@armhf>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: max9877: Make driver global regmap
+	struct local
+Date: Thu, 16 Jul 2015 21:22:49 +0200
+Message-ID: <1437074572-3831-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20150716181658.553e6da7@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-036.synserver.de (smtp-out-036.synserver.de
+ [212.40.185.36])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9A9D2605B0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 21:22:57 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdWwgMTYsIDIwMTUgYXQgMDY6MTY6NThQTSArMDIwMCwgSmVhbi1GcmFuY29pcyBN
-b2luZSB3cm90ZToKPiBUaGUgZmlsZSBzb3VuZC9jb3JlL3BjbV9kcm1fZWxkLmMgd2hpY2ggd2Fz
-IGFkZGVkIGJ5IHRoZSBjb21taXQKPiAKPiAJODM4ZDE2MzFiNzY2NTI5MjEzNjg0ZjA3ZGQ3MWNk
-ZjJlOTJmMDYyMwo+IAlBTFNBOiBwY206IGFkZCBEUk0gRUxEIGhlbHBlcgo+IAo+IGxhY2tzIHRo
-ZSBmdW5jdGlvbiBkcm1fZWxkX3NhZCgpIHdoaWNoIHdhcyBkZWZpbmVkIGJ5IFJ1c3NlbGwncyBw
-YXRjaAo+IAo+IAlodHRwOi8vYXJ0aWNsZS5nbWFuZS5vcmcvZ21hbmUubGludXgucG9ydHMuYXJt
-Lmtlcm5lbC80MTE1NzQKPiAJZHJtL2VkaWQ6IGFkZCBmdW5jdGlvbiB0byBoZWxwIGZpbmQgU0FE
-cwo+IAo+IFRoaXMgcGF0Y2ggaGFzIG5vdCBiZWVuIGFwcGxpZWQuCgpHcnIsIHRoYXQncyB0aGUg
-ZGFuZ2VyIG9mIHRyeWluZyB0byBzcGxpdCBjaGFuZ2VzIHdoaWNoIGNyb3NzIGJldHdlZW4Kc3Vi
-c3lzdGVtcy4gIEkgaGF0ZSB0b2RheXMgZnJhZ21lbnRlZCBuYXR1cmUgb2Yga2VybmVsIGRldmVs
-b3BtZW50LAppdCdzIHJlYWxseSBhIG5pZ2h0bWFyZS4KCkknbSBub3Qgc3VyZSBob3cgdGhpcyBj
-YW4gYmUgcmVzb2x2ZWQgbm93LCBJIGFza2VkIERhdmUgQWlybGllIHRvIHB1bGwKdGhlIG5leHQg
-c2V0IG9mIHBhdGNoZXMgd2hpY2ggaW5jbHVkZSB0aGUgb25lIGFkZGluZyB0aGUgU0FEIGhlbHBl
-cjsKaGUncyBwcm9iYWJseSBhbHJlYWR5IHB1bGxlZCB0aGF0IGZvciAtbmV4dCwgc28gdG8gcHVs
-bCBvdXQganVzdCB0aGF0CnBhdGNoIGFuZCB0cnkgdG8gZ2V0IGl0IG1lcmdlZCBpbnRvIC1yYyBp
-cyBnb2luZyB0byBiZSBmYXIgZnJvbSBuaWNlLAphbmQgd2lsbCBwcm9iYWJseSBpbnRyb2R1Y2Ug
-Y29uZmxpY3RzLgoKLS0gCkZUVEMgYnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRs
-eSBhdCAxMC41TWJwcyBkb3duIDQwMGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZl
-bCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Use a stack local variable to handle function local state rather than a
+global static variable. The later has a potential for race conditions if
+the probe function runs for two devices concurrently.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/max9877.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/max9877.c b/sound/soc/codecs/max9877.c
+index e1df06f..b469e1c 100644
+--- a/sound/soc/codecs/max9877.c
++++ b/sound/soc/codecs/max9877.c
+@@ -20,8 +20,6 @@
+ 
+ #include "max9877.h"
+ 
+-static struct regmap *regmap;
+-
+ static const struct reg_default max9877_regs[] = {
+ 	{ 0, 0x40 },
+ 	{ 1, 0x00 },
+@@ -145,6 +143,7 @@ static const struct regmap_config max9877_regmap = {
+ static int max9877_i2c_probe(struct i2c_client *client,
+ 			     const struct i2c_device_id *id)
+ {
++	struct regmap *regmap;
+ 	int i;
+ 
+ 	regmap = devm_regmap_init_i2c(client, &max9877_regmap);
+-- 
+2.1.4
