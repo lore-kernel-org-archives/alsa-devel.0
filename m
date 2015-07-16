@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Check if codec is initialized
-	in workqueue handler" to the asoc tree
-Date: Thu, 16 Jul 2015 13:12:27 +0100
-Message-ID: <E1ZFi1b-0001kI-Dl@finisterre>
+Subject: Applied "ASoC: rt5645: Update dapm pins when the card
+	is not instantiated yet" to the asoc tree
+Date: Thu, 16 Jul 2015 13:12:31 +0100
+Message-ID: <E1ZFi1f-0001lE-AM@finisterre>
+References: <1437025354-22678-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B041260563
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:12:41 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B3B32661CF
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:12:43 +0200 (CEST)
+In-Reply-To: <1437025354-22678-1-git-send-email-drinkcat@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Check if codec is initialized in workqueue handler
+   ASoC: rt5645: Update dapm pins when the card is not instantiated yet
 
 has been applied to the asoc tree at
 
@@ -52,39 +53,88 @@ to this mail.
 Thanks,
 Mark
 
->From 3c2234569cfff83718792f810a9bb855b78c2473 Mon Sep 17 00:00:00 2001
+>From b14c917409f47dbfdff93e69effd6740f6a809f7 Mon Sep 17 00:00:00 2001
 From: Nicolas Boichat <drinkcat@chromium.org>
-Date: Thu, 16 Jul 2015 11:30:58 +0800
-Subject: [PATCH] ASoC: rt5645: Check if codec is initialized in workqueue
- handler
+Date: Thu, 16 Jul 2015 13:42:33 +0800
+Subject: [PATCH] ASoC: rt5645: Update dapm pins when the card is not
+ instantiated yet
 
-rt5645_jack_detect_work needs rt5645->codec to be initialized to
-setup dapm pins. Also, reporting jack events is useless, as the
-jacks cannot be set before the codec is ready.
+This makes sure the dapm state is consistent when the card is
+instantiated.
 
-Since we manually call the interrupt handler in
-rt5645_set_jack_detect, the initial jack state will be reported
-correctly, and dapm pins will be setup at that time.
+However, if the card is not instantiated yet, we still update the
+registers manually in the "jack in" case, so that we can immediately
+report if a mic is present or not.
+
+Disabling "Mic Det Power" after detection, and on jack out, can
+wait until the card gets instantiated.
 
 Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt5645.c | 36 +++++++++++-------------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9ce311e..d1d49e8 100644
+index 8693a25..33d1aff 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -2943,6 +2943,9 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
- {
- 	int val, btn_type, gpio_state = 0, report = 0;
+@@ -2805,12 +2805,11 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 	if (jack_insert) {
+ 		regmap_write(rt5645->regmap, RT5645_CHARGE_PUMP, 0x0006);
  
-+	if (!rt5645->codec)
-+		return;
-+
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
- 		if (rt5645->gpiod_hp_det) {
+-		if (codec->component.card->instantiated) {
+-			/* for jack type detect */
+-			snd_soc_dapm_force_enable_pin(dapm, "LDO2");
+-			snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
+-			snd_soc_dapm_sync(dapm);
+-		} else {
++		/* for jack type detect */
++		snd_soc_dapm_force_enable_pin(dapm, "LDO2");
++		snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
++		snd_soc_dapm_sync(dapm);
++		if (!dapm->card->instantiated) {
+ 			/* Power up necessary bits for JD if dapm is
+ 			   not ready yet */
+ 			regmap_update_bits(rt5645->regmap, RT5645_PWR_ANLG1,
+@@ -2841,12 +2840,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 				rt5645_enable_push_button_irq(codec, true);
+ 			}
+ 		} else {
+-			if (codec->component.card->instantiated) {
+-				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+-				snd_soc_dapm_sync(dapm);
+-			} else
+-				regmap_update_bits(rt5645->regmap,
+-					RT5645_PWR_VOL, RT5645_PWR_MIC_DET, 0);
++			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++			snd_soc_dapm_sync(dapm);
+ 			rt5645->jack_type = SND_JACK_HEADPHONE;
+ 		}
+ 
+@@ -2855,19 +2850,10 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 		if (rt5645->en_button_func)
+ 			rt5645_enable_push_button_irq(codec, false);
+ 		else {
+-			if (codec->component.card->instantiated) {
+-				if (rt5645->pdata.jd_mode == 0)
+-					snd_soc_dapm_disable_pin(dapm, "LDO2");
+-				snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+-				snd_soc_dapm_sync(dapm);
+-			} else {
+-				if (rt5645->pdata.jd_mode == 0)
+-					regmap_update_bits(rt5645->regmap,
+-						RT5645_PWR_MIXER,
+-						RT5645_PWR_LDO2, 0);
+-				regmap_update_bits(rt5645->regmap,
+-					RT5645_PWR_VOL, RT5645_PWR_MIC_DET, 0);
+-			}
++			if (rt5645->pdata.jd_mode == 0)
++				snd_soc_dapm_disable_pin(dapm, "LDO2");
++			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
++			snd_soc_dapm_sync(dapm);
+ 		}
+ 	}
+ 
 -- 
 2.1.4
