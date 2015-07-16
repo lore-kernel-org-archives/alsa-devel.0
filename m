@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Simplify
-	rt5645_enable_push_button_irq" to the asoc tree
-Date: Thu, 16 Jul 2015 13:12:29 +0100
-Message-ID: <E1ZFi1d-0001kl-Ew@finisterre>
-References: <1437025354-22678-2-git-send-email-drinkcat@chromium.org>
+Subject: Applied "ASoC: rt5645: Check if codec is initialized
+	in workqueue handler" to the asoc tree
+Date: Thu, 16 Jul 2015 13:12:27 +0100
+Message-ID: <E1ZFi1b-0001kI-Dl@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 428FD260569
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B041260563
  for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:12:41 +0200 (CEST)
-In-Reply-To: <1437025354-22678-2-git-send-email-drinkcat@chromium.org>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Simplify rt5645_enable_push_button_irq
+   ASoC: rt5645: Check if codec is initialized in workqueue handler
 
 has been applied to the asoc tree at
 
@@ -53,80 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From a4e3c5fa955ce0934774f3f3684377dbf2c20eca Mon Sep 17 00:00:00 2001
+>From 3c2234569cfff83718792f810a9bb855b78c2473 Mon Sep 17 00:00:00 2001
 From: Nicolas Boichat <drinkcat@chromium.org>
-Date: Thu, 16 Jul 2015 13:42:34 +0800
-Subject: [PATCH] ASoC: rt5645: Simplify rt5645_enable_push_button_irq
+Date: Thu, 16 Jul 2015 11:30:58 +0800
+Subject: [PATCH] ASoC: rt5645: Check if codec is initialized in workqueue
+ handler
 
-LDO2/Mic Det Power pins are already enabled/disabled in rt5645_jack_detect
-(the jack out code path previously did not disable those if button function
-is enabled: modify it to make it so).
+rt5645_jack_detect_work needs rt5645->codec to be initialized to
+setup dapm pins. Also, reporting jack events is useless, as the
+jacks cannot be set before the codec is ready.
+
+Since we manually call the interrupt handler in
+rt5645_set_jack_detect, the initial jack state will be reported
+correctly, and dapm pins will be setup at that time.
 
 Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+ sound/soc/codecs/rt5645.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 33d1aff..11a2bfc 100644
+index 9ce311e..d1d49e8 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -2766,13 +2766,9 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+@@ -2943,6 +2943,9 @@ static int rt5645_irq_detection(struct rt5645_priv *rt5645)
+ {
+ 	int val, btn_type, gpio_state = 0, report = 0;
  
- 	if (enable) {
--		snd_soc_dapm_mutex_lock(dapm);
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC L power");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC R power");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Mic Det Power");
--		snd_soc_dapm_sync_unlocked(dapm);
--		snd_soc_dapm_mutex_unlock(dapm);
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-+		snd_soc_dapm_sync(dapm);
- 
- 		snd_soc_update_bits(codec,
- 					RT5645_INT_IRQ_ST, 0x8, 0x8);
-@@ -2785,14 +2781,9 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
- 		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
- 
--		snd_soc_dapm_mutex_lock(dapm);
--		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC L power");
--		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC R power");
--		if (rt5645->pdata.jd_mode == 0)
--			snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
--		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Det Power");
--		snd_soc_dapm_sync_unlocked(dapm);
--		snd_soc_dapm_mutex_unlock(dapm);
-+		snd_soc_dapm_disable_pin(dapm, "ADC L power");
-+		snd_soc_dapm_disable_pin(dapm, "ADC R power");
-+		snd_soc_dapm_sync(dapm);
- 	}
- }
- 
-@@ -2847,14 +2838,14 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 
- 	} else { /* jack out */
- 		rt5645->jack_type = 0;
++	if (!rt5645->codec)
++		return;
 +
- 		if (rt5645->en_button_func)
- 			rt5645_enable_push_button_irq(codec, false);
--		else {
--			if (rt5645->pdata.jd_mode == 0)
--				snd_soc_dapm_disable_pin(dapm, "LDO2");
--			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
--			snd_soc_dapm_sync(dapm);
--		}
-+
-+		if (rt5645->pdata.jd_mode == 0)
-+			snd_soc_dapm_disable_pin(dapm, "LDO2");
-+		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
- 	}
- 
- 	return rt5645->jack_type;
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+ 		if (rt5645->gpiod_hp_det) {
 -- 
 2.1.4
