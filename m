@@ -1,65 +1,89 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: Add machine driver for max98090 codec
-Date: Thu, 16 Jul 2015 16:05:00 +0100
-Message-ID: <20150716150500.GO4039@sirena.org.uk>
-References: <1436930143-31361-1-git-send-email-zhengxing@rock-chips.com>
- <1436930143-31361-2-git-send-email-zhengxing@rock-chips.com>
- <1437033944.27428.11.camel@tiscali.nl>
- <20150716110032.GU11162@sirena.org.uk>
- <1437047261.28351.6.camel@tiscali.nl>
- <20150716125529.GG4039@sirena.org.uk>
- <1437056116.28351.19.camel@tiscali.nl>
+Subject: Re: [asoc:fix/rt5645 1/1]
+ sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value,
+ in function returning non-void
+Date: Thu, 16 Jul 2015 16:07:02 +0100
+Message-ID: <20150716150702.GP4039@sirena.org.uk>
+References: <201507162001.z6afFgHb%fengguang.wu@intel.com>
+ <CANMq1KD5YjN1Dv5cEJ0YQMxMyEnSNZb=8AK4t7p_Uw3418V_Dw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LwbuP8dfxhLLLUfV"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1437056116.28351.19.camel@tiscali.nl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Xing Zheng <zhengxing@rock-chips.com>, dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============8333267258428106174=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76730260575
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 17:07:15 +0200 (CEST)
+In-Reply-To: <CANMq1KD5YjN1Dv5cEJ0YQMxMyEnSNZb=8AK4t7p_Uw3418V_Dw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolas Boichat <drinkcat@chromium.org>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---LwbuP8dfxhLLLUfV
+--===============8333267258428106174==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="K8zN2sh9fO5jmbe4"
+Content-Disposition: inline
+
+
+--K8zN2sh9fO5jmbe4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 16, 2015 at 04:15:16PM +0200, Paul Bolle wrote:
+On Thu, Jul 16, 2015 at 09:03:29PM +0800, Nicolas Boichat wrote:
+> On Thu, Jul 16, 2015 at 8:32 PM, kbuild test robot
 
-> Let's put it this was. If one does
->     sudo find /sys -perm -o=3Dr -name uevent -exec grep -H MODALIAS=3Dpla=
-tform: {} \;
->=20
-> or
->     sudo find /sys -perm -o=3Dr -name modalias -exec grep -H platform: {}=
- \;
+> >    sound/soc/codecs/rt5645.c: In function 'rt5645_irq_detection':
+> >>> sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value, in function returning non-void [-Wreturn-type]
+> >       return;
+> >       ^
 
-> (both lists should be similar)
+> Are you sending this patch to stable@?
 
-> on the systems this patch is targeting, will
->    platform:rockchip-snd-max98090
+My git tree is public...  I'd not Cced it to stable but it looks like
+it's supposed to be a bug fix so I applied it as a bug fix.
 
-> then show up?
+> This happens because I rebased the patch on f312bc59 "ASoC: rt5645:
+> Remove irq_jack_detection function" (which was your for-next at the
+> time), so it probably shouldn't be applied in its own branch...
 
-Why would this not be the case - what is the difference you beleive this
-driver has to other platform drivers?
+> The return value is ignored anyway, so the code should work as
+> intended, but a "return 0;", or -EINVAL, would be more proper...
 
---LwbuP8dfxhLLLUfV
+Please send a fixed version unless the issue doesn't exist in Linus'
+tree.
+
+--K8zN2sh9fO5jmbe4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVp8gbAAoJECTWi3JdVIfQNTkIAIEQVBz7bjmsue5OsI3iap1/
-nnyFhqOCSVovmfAPsdb3hChFOkZDiuCkyPWr9NI/4nldNBiQ0QtPzyg4DM7WDDuu
-89zrpc1hGakN1eLCE7sCJ3V+ppODYLPZJgYVFfqlrtF1VgGYltDaGmp3E+tqo6Je
-+U/zZZ7xvLkwhcvVafVBevdhJyRSB8a5tWrpyVvyZF2oRU5x+X0/NCfvZnvfY1yK
-/c9ldUeFLemqyRa7L+T73rjIHp+A1G7XMjHxm8nInVFKh8YwflhC55PZYCZm//jL
-D4PQ5JALymDFJY9zZvx0qvmaCaU76IB5HA4RjFZsEclPq2zIzVpn24kwql8yaGY=
-=SjUi
+iQEcBAEBCAAGBQJVp8iVAAoJECTWi3JdVIfQh+YH/0PEwvZZhcq8Mgz3Nujz9Lzn
+RM9kHAWwoZOAV9GkjJu7FmiS9BY99NHXnIXofjzp5MBkqNEDL69wIuG2Z9reTQQd
+nxrf9ROMQegG3AO1P85o4O+kmXHdsxWmCR8j1ZucsOBll/Z/Gbo2KIBOCFbCYaxI
+dZPs35kgdobiHsFvNh5JpMqOsUHeIsudyEh1AThH6HeSaE6gbF6ShclH0nL0PVeg
+Q2X8OSpSmeD8Qur1d9Hj4a89NW6n2xIu742nIb7rYt1NM6+hjULogYNWBzCTERwf
+Wk96jlbIPxw3PNHA3s0W7HPctZBpbI2yoOpzUo+R+bba8AOWPYfgV/EAc0wrwPA=
+=0S9L
 -----END PGP SIGNATURE-----
 
---LwbuP8dfxhLLLUfV--
+--K8zN2sh9fO5jmbe4--
+
+--===============8333267258428106174==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8333267258428106174==--
