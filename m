@@ -1,26 +1,18 @@
 From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
-	rt5645_enable_push_button_irq
-Date: Thu, 16 Jul 2015 11:05:56 +0800
-Message-ID: <CANMq1KAtbqmf-3gB+QKtbWMOK45tw6=3VTYyN1rkn12DaoDDdQ@mail.gmail.com>
-References: <1436856687-31550-1-git-send-email-drinkcat@chromium.org>
- <1436856687-31550-2-git-send-email-drinkcat@chromium.org>
- <20150714095247.GN11162@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70108A904@RTITMBSV03.realtek.com.tw>
- <CANMq1KB_qkH41AiBeMDX6oJVyeOMEi1Tgwoxt9jar0Upqb=L4A@mail.gmail.com>
- <20150715115644.GQ11162@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70108ADD8@RTITMBSV03.realtek.com.tw>
+Subject: [PATCH v3] ASoC: rt5645: Check if codec is initialized
+	in workqueue handler
+Date: Thu, 16 Jul 2015 11:30:58 +0800
+Message-ID: <1437017458-19476-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A83A260524
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 05:05:58 +0200 (CEST)
-Received: by oige126 with SMTP id e126so41992646oig.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 20:05:57 -0700 (PDT)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70108ADD8@RTITMBSV03.realtek.com.tw>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3FF5265E05
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 05:31:17 +0200 (CEST)
+Received: by pdbqm3 with SMTP id qm3so36215380pdb.0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 20:31:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,73 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, "koro.chen@mediatek.com" <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Koro Chen <koro.chen@mediatek.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 15, 2015 at 9:03 PM, Bard Liao <bardliao@realtek.com> wrote:
->> -----Original Message-----
->> From: Mark Brown [mailto:broonie@kernel.org]
->> Sent: Wednesday, July 15, 2015 7:57 PM
->> To: Nicolas Boichat
->> Cc: Bard Liao; Oder Chiou; Liam Girdwood; Jaroslav Kysela; Takashi Iwai;
->> alsa-devel@alsa-project.org; koro.chen@mediatek.com
->> Subject: Re: [PATCH v2 1/3] ASoC: rt5645: Simplify
->> rt5645_enable_push_button_irq
->>
->> On Wed, Jul 15, 2015 at 07:50:50PM +0800, Nicolas Boichat wrote:
->>
->> > > Thanks for the review. I think what we need is something like
->> > > +               snd_soc_dapm_force_enable_pin(dapm, "ADC L
->> power");
->> > > +               snd_soc_dapm_force_enable_pin(dapm, "ADC R
->> power");
->> > > +               snd_soc_dapm_sync(dapm);
->> > > +               if (!codec->component.card->instantiated) {
->> > > +                       regmap_update_bits(rt5645->regmap,
->> RT5645_PWR_DIG1,
->> > > +                               RT5645_PWR_ADC_L_BIT |
->> RT5645_PWR_ADC_R_BIT,
->> > > +                               RT5645_PWR_ADC_L_BIT |
->> RT5645_PWR_ADC_R_BIT);
->> > > +               }
->>
->> > Just to make sure I understand... With the code above, the dapm state
->> > is consistent. However, DAPM will only set the regmap bits when the
->> > card is instantiated. So why do we still need to update the regmap? To
->> > make sure we do not miss an early jack/button event? Or would we still
->> > get jack irq if the pins are enabled a little later? (I guess we can
->> > live with missing a button event at that stage, but we need the jack
->> > state to be correct)
->>
->> I'm assuming it's something to do with early detection, I don't really know
->> though.
->>
->
-> I think the problem is dapm won't update the bits if card is not
-> instantiated. And those bits are necessary for the jack or button
-> detect functions. Without these bits, we may not get irq properly.
-> That's why we need to update those bits manually.
+rt5645_jack_detect_work needs rt5645->codec to be initialized to
+setup dapm pins. Also, reporting jack events is useless, as the
+jacks cannot be set before the codec is ready.
 
-Understood: when !card->instantiated, snc_soc_dapm_sync is a noop.
-However, state of the pins set by snd_soc_dapm_force_enable_pin are
-still recorded.
-Then, when the card is instantiated
-(snd-core.c:snd_soc_instantiate_card), snd_soc_dapm_sync is called,
-and the regmap bits get updated.
+Since we manually call the interrupt handler in
+rt5645_set_jack_detect, the initial jack state will be reported
+correctly, and dapm pins will be setup at that time.
 
-For the push button case, we can afford to wait until the card is
-instantiated (we might lose very early button detection, probably not
-a big deal...), so we do not need to change anything in
-rt5645_enable_push_button_irq.
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+ sound/soc/codecs/rt5645.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-However, for the mic detection case, in the jack-in case, we need to
-set these bits immediately, as the driver wants to report immediately
-(e.g. after ~550ms) whether we detected a headset or just a headphone
-(in rt5645_jack_detect).
-
-But the jack-out case, and disabling "Mic Det Power" after jack type
-detection, can probably wait until the card is instantiated.
-
-Good thing is, this problem is now independent from the kernel panic
-issue, so I'll send separate patches.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 093a41d..ff75d04 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2918,6 +2918,9 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 		container_of(work, struct rt5645_priv, jack_detect_work.work);
+ 	int val, btn_type, gpio_state = 0, report = 0;
+ 
++	if (!rt5645->codec)
++		return;
++
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+ 		if (rt5645->gpiod_hp_det) {
+-- 
+2.4.3.573.g4eafbef
