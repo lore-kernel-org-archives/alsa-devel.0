@@ -1,16 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 6/6] ASoC: sti: Add IEC control
-Date: Thu, 16 Jul 2015 11:36:07 +0200
-Message-ID: <1437039367-30842-7-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH 4/6] ASoC: Add ability to build sti drivers
+Date: Thu, 16 Jul 2015 11:36:05 +0200
+Message-ID: <1437039367-30842-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1437039367-30842-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 37EDE2661E4
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 11:36:23 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 80EBC26641A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 11:36:22 +0200 (CEST)
 In-Reply-To: <1437039367-30842-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,137 +24,68 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Add control to configure IEC60958 settings.
+Define the platform and codec drivers, and how to build them.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/sti/uniperif_player.c | 77 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 73 insertions(+), 4 deletions(-)
+ sound/soc/Kconfig      |  1 +
+ sound/soc/Makefile     |  1 +
+ sound/soc/sti/Kconfig  | 11 +++++++++++
+ sound/soc/sti/Makefile |  4 ++++
+ 4 files changed, 17 insertions(+)
+ create mode 100644 sound/soc/sti/Kconfig
+ create mode 100644 sound/soc/sti/Makefile
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index d990d2c..506045c 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -250,6 +250,7 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 	 * sampling frequency. If no sample rate is already specified, then
- 	 * set one.
- 	 */
-+	mutex_lock(&player->ctrl_lock);
- 	if (runtime && (player->stream_settings.iec958.status[3]
- 					== IEC958_AES3_CON_FS_NOTID)) {
- 		switch (runtime->rate) {
-@@ -327,6 +328,7 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
- 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
- 	}
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	/* Update the channel status */
- 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-@@ -538,6 +540,63 @@ static int uni_player_prepare_pcm(struct uniperif *player,
- }
- 
- /*
-+ * ALSA uniperipheral iec958 controls
-+ */
-+static int  uni_player_ctl_iec958_info(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 2ae9619..467ee1a 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -54,6 +54,7 @@ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/sirf/Kconfig"
+ source "sound/soc/spear/Kconfig"
++source "sound/soc/sti/Kconfig"
+ source "sound/soc/tegra/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+ source "sound/soc/ux500/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index e189903..19fd711 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -36,6 +36,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= sirf/
+ obj-$(CONFIG_SND_SOC)	+= spear/
++obj-$(CONFIG_SND_SOC)	+= sti/
+ obj-$(CONFIG_SND_SOC)	+= tegra/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+ obj-$(CONFIG_SND_SOC)	+= ux500/
+diff --git a/sound/soc/sti/Kconfig b/sound/soc/sti/Kconfig
+new file mode 100644
+index 0000000..64a6900
+--- /dev/null
++++ b/sound/soc/sti/Kconfig
+@@ -0,0 +1,11 @@
++#
++# STM SoC audio configuration
++#
++menuconfig SND_SOC_STI
++	tristate "SoC Audio support for STI System-On-Chip"
++	depends on SND_SOC
++	depends on ARCH_STI || COMPILE_TEST
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++		Say Y if you want to enable ASoC-support for
++		any of the STI platforms (e.g. STIH416).
+diff --git a/sound/soc/sti/Makefile b/sound/soc/sti/Makefile
+new file mode 100644
+index 0000000..4b188d2
+--- /dev/null
++++ b/sound/soc/sti/Makefile
+@@ -0,0 +1,4 @@
++# STI platform support
++snd-soc-sti-objs := sti_uniperif.o uniperif_player.o uniperif_reader.o
 +
-+	return 0;
-+}
-+
-+static int uni_player_ctl_iec958_get(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	struct snd_aes_iec958 *iec958 = &player->stream_settings.iec958;
-+
-+	mutex_lock(&player->ctrl_lock);
-+	ucontrol->value.iec958.status[0] = iec958->status[0];
-+	ucontrol->value.iec958.status[1] = iec958->status[1];
-+	ucontrol->value.iec958.status[2] = iec958->status[2];
-+	ucontrol->value.iec958.status[3] = iec958->status[3];
-+	mutex_unlock(&player->ctrl_lock);
-+	return 0;
-+}
-+
-+static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	struct snd_aes_iec958 *iec958 =  &player->stream_settings.iec958;
-+
-+	mutex_lock(&player->ctrl_lock);
-+	iec958->status[0] = ucontrol->value.iec958.status[0];
-+	iec958->status[1] = ucontrol->value.iec958.status[1];
-+	iec958->status[2] = ucontrol->value.iec958.status[2];
-+	iec958->status[3] = ucontrol->value.iec958.status[3];
-+	mutex_unlock(&player->ctrl_lock);
-+
-+	uni_player_set_channel_status(player, NULL);
-+
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new uni_player_iec958_ctl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+	.info = uni_player_ctl_iec958_info,
-+	.get = uni_player_ctl_iec958_get,
-+	.put = uni_player_ctl_iec958_put,
-+};
-+
-+/*
-  * uniperif rate adjustement control
-  */
- static int snd_sti_clk_adjustment_info(struct snd_kcontrol *kcontrol,
-@@ -559,7 +618,9 @@ static int snd_sti_clk_adjustment_get(struct snd_kcontrol *kcontrol,
- 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
- 	struct uniperif *player = priv->dai_data.uni;
- 
-+	mutex_lock(&player->ctrl_lock);
- 	ucontrol->value.integer.value[0] = player->clk_adj;
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	return 0;
- }
-@@ -594,7 +655,12 @@ static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
- 	.put = snd_sti_clk_adjustment_put,
- };
- 
--static struct snd_kcontrol_new *snd_sti_ctl[] = {
-+static struct snd_kcontrol_new *snd_sti_pcm_ctl[] = {
-+	&uni_player_clk_adj_ctl,
-+};
-+
-+static struct snd_kcontrol_new *snd_sti_iec_ctl[] = {
-+	&uni_player_iec958_ctl,
- 	&uni_player_clk_adj_ctl,
- };
- 
-@@ -1031,10 +1097,13 @@ int uni_player_init(struct platform_device *pdev,
- 		player->stream_settings.iec958.status[4] =
- 					IEC958_AES4_CON_MAX_WORDLEN_24 |
- 					IEC958_AES4_CON_WORDLEN_24_20;
--	}
- 
--	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
--	player->snd_ctrls = snd_sti_ctl[0];
-+		player->num_ctrls = ARRAY_SIZE(snd_sti_iec_ctl);
-+		player->snd_ctrls = snd_sti_iec_ctl[0];
-+	} else {
-+		player->num_ctrls = ARRAY_SIZE(snd_sti_pcm_ctl);
-+		player->snd_ctrls = snd_sti_pcm_ctl[0];
-+	}
- 
- 	return 0;
- }
++obj-$(CONFIG_SND_SOC_STI) += snd-soc-sti.o
 -- 
 1.9.1
