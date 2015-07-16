@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rename rsnd_path_parse/break()
-	into add/remove" to the asoc tree
-Date: Thu, 16 Jul 2015 22:30:05 +0100
-Message-ID: <E1ZFqjF-0004lb-28@finisterre>
-References: <87pp3tvquy.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: dvc: make sure DVC soft reset" to
+	the asoc tree
+Date: Thu, 16 Jul 2015 22:30:09 +0100
+Message-ID: <E1ZFqjJ-0004n0-P9@finisterre>
+References: <87twt5vqwh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89D0A26672E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:10 +0200 (CEST)
-In-Reply-To: <87pp3tvquy.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DE8126673B
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:15 +0200 (CEST)
+In-Reply-To: <87twt5vqwh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rename rsnd_path_parse/break() into add/remove
+   ASoC: rsnd: dvc: make sure DVC soft reset
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From c8cf15f64f8ddb3169987c2f26df3341b8556296 Mon Sep 17 00:00:00 2001
+>From 636e4bad5cca947839c09d3e13ad6feeb7fa45da Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:12:52 +0000
-Subject: [PATCH] ASoC: rsnd: rename rsnd_path_parse/break() into add/remove
+Date: Wed, 15 Jul 2015 07:12:00 +0000
+Subject: [PATCH] ASoC: rsnd: dvc: make sure DVC soft reset
 
-parse/break is a little ambiguous/confusable name for rsnd module path.
-Especially for CTU/MIX support. It was renamed to add/remove
+Renesas SCU (Sampling Rate Convert Unit) includes SRC/CTU/MIX/DVC,
+and these have similar register. xxxRSR (Software reset Register) is one
+of them. These xxxRSR need be set to 1 to 0 when software reset.
+Current rsnd driver has src.c / dvc.c, and we will have mix.c.
+It is readable if these have same named function.
+This patch adds rsnd_dvc_soft_reset() and make sure it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/dvc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index ff4f15a..93fed50 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -507,7 +507,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
- 	.set_fmt	= rsnd_soc_dai_set_fmt,
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 8a61aa3..24d0763 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -64,6 +64,12 @@ static const char * const dvc_ramp_rate[] = {
+ 	"0.125 dB/8192 steps",	 /* 10111 */
  };
  
--#define rsnd_path_parse(priv, io, type)				\
-+#define rsnd_path_add(priv, io, type)				\
- ({								\
- 	struct rsnd_mod *mod;					\
- 	int ret = 0;						\
-@@ -523,7 +523,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
- 	ret;							\
- })
++static void rsnd_dvc_soft_reset(struct rsnd_mod *mod)
++{
++	rsnd_mod_write(mod, DVC_SWRSR, 0);
++	rsnd_mod_write(mod, DVC_SWRSR, 1);
++}
++
+ static void rsnd_dvc_volume_update(struct rsnd_dai_stream *io,
+ 				   struct rsnd_mod *mod)
+ {
+@@ -160,15 +166,14 @@ static int rsnd_dvc_init(struct rsnd_mod *dvc_mod,
  
--#define rsnd_path_break(priv, io, type)				\
-+#define rsnd_path_remove(priv, io, type)			\
- {								\
- 	struct rsnd_mod *mod;					\
- 	int id = -1;						\
-@@ -555,17 +555,17 @@ static int rsnd_path_init(struct rsnd_priv *priv,
+ 	rsnd_mod_hw_start(dvc_mod);
+ 
++	rsnd_dvc_soft_reset(dvc_mod);
++
+ 	/*
+ 	 * fixme
+ 	 * it doesn't support CTU/MIX
  	 */
+ 	rsnd_mod_write(dvc_mod, CMD_ROUTE_SLCT, route[src_id]);
  
- 	/* SRC */
--	ret = rsnd_path_parse(priv, io, src);
-+	ret = rsnd_path_add(priv, io, src);
- 	if (ret < 0)
- 		return ret;
+-	rsnd_mod_write(dvc_mod, DVC_SWRSR, 0);
+-	rsnd_mod_write(dvc_mod, DVC_SWRSR, 1);
+-
+ 	rsnd_mod_write(dvc_mod, DVC_DVUIR, 1);
  
- 	/* SSI */
--	ret = rsnd_path_parse(priv, io, ssi);
-+	ret = rsnd_path_add(priv, io, ssi);
- 	if (ret < 0)
- 		return ret;
- 
- 	/* DVC */
--	ret = rsnd_path_parse(priv, io, dvc);
-+	ret = rsnd_path_add(priv, io, dvc);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1023,8 +1023,8 @@ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
- 		/*
- 		 * remove SRC/DVC from DAI,
- 		 */
--		rsnd_path_break(priv, io, src);
--		rsnd_path_break(priv, io, dvc);
-+		rsnd_path_remove(priv, io, src);
-+		rsnd_path_remove(priv, io, dvc);
- 
- 		/*
- 		 * fallback
+ 	rsnd_mod_write(dvc_mod, DVC_ADINR, rsnd_get_adinr(dvc_mod, io));
 -- 
 2.1.4
