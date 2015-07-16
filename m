@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: dma: add DMA name on .ops" to the
+Subject: Applied "ASoC: rsnd: add rsnd_get_adinr_chan()" to the
 	asoc tree
-Date: Thu, 16 Jul 2015 22:29:51 +0100
-Message-ID: <E1ZFqj1-0004gv-RC@finisterre>
-References: <87bnfdvqpn.wl%kuninori.morimoto.gx@renesas.com>
+Date: Thu, 16 Jul 2015 22:29:57 +0100
+Message-ID: <E1ZFqj7-0004jG-LX@finisterre>
+References: <87io9lvqsg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56BF82605EE
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:29:56 +0200 (CEST)
-In-Reply-To: <87bnfdvqpn.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 01C712666C0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:30:03 +0200 (CEST)
+In-Reply-To: <87io9lvqsg.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: dma: add DMA name on .ops
+   ASoC: rsnd: add rsnd_get_adinr_chan()
 
 has been applied to the asoc tree at
 
@@ -53,79 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From ddea1b2e83c379840aa54fadc587e418cf986ccb Mon Sep 17 00:00:00 2001
+>From bfe1360d79210f9c1d330a07c26a8d5cb202159d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:16:03 +0000
-Subject: [PATCH] ASoC: rsnd: dma: add DMA name on .ops
+Date: Wed, 15 Jul 2015 07:14:29 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_get_adinr_chan()
 
-Current rsnd driver is using Audio DMAC (via DMAEngine) and
-Audio DMAC peri peri (via original method), and usage of these DMAC
-are different. Indicates its naming is useful for debugging.
+Current rsnd driver has rsnd_get_adinr_bit() to get bit settings for
+ADINR (= Audio Information Register) of SSIU/SRC/DVC.
+This patch adds rsnd_get_adinr_chan() to get channel settings for
+ADINR (= Audio Information Register) of CTU/MIX.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 22 ++++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h |  1 +
+ 2 files changed, 23 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 9431061..a175863 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -28,6 +28,7 @@ struct rsnd_dma_ctrl {
- };
- 
- struct rsnd_dma_ops {
-+	char *name;
- 	void (*start)(struct rsnd_dai_stream *io, struct rsnd_dma *dma);
- 	void (*stop)(struct rsnd_dai_stream *io, struct rsnd_dma *dma);
- 	int (*init)(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id,
-@@ -190,7 +191,8 @@ static int rsnd_dmaen_init(struct rsnd_dai_stream *io,
- 	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 
--	dev_dbg(dev, "dma : %pad -> %pad\n",
-+	dev_dbg(dev, "%s %pad -> %pad\n",
-+		dma->ops->name,
- 		&cfg.src_addr, &cfg.dst_addr);
- 
- 	ret = dmaengine_slave_config(dmaen->chan, &cfg);
-@@ -223,6 +225,7 @@ static void rsnd_dmaen_quit(struct rsnd_dai_stream *io, struct rsnd_dma *dma)
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 0ca6d02..a3637b9 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -227,6 +227,28 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	return adinr;
  }
  
- static struct rsnd_dma_ops rsnd_dmaen_ops = {
-+	.name	= "audmac",
- 	.start	= rsnd_dmaen_start,
- 	.stop	= rsnd_dmaen_stop,
- 	.init	= rsnd_dmaen_init,
-@@ -368,6 +371,7 @@ static int rsnd_dmapp_init(struct rsnd_dai_stream *io,
- }
- 
- static struct rsnd_dma_ops rsnd_dmapp_ops = {
-+	.name	= "audmac-pp",
- 	.start	= rsnd_dmapp_start,
- 	.stop	= rsnd_dmapp_stop,
- 	.init	= rsnd_dmapp_init,
-@@ -580,6 +584,7 @@ int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id)
- 	struct rsnd_mod *mod_to;
- 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
- 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
++u32 rsnd_get_adinr_chan(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
++{
++	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
 +	struct device *dev = rsnd_priv_to_dev(priv);
- 	int is_play = rsnd_io_is_play(io);
- 
- 	/*
-@@ -606,6 +611,11 @@ int rsnd_dma_init(struct rsnd_dai_stream *io, struct rsnd_dma *dma, int id)
- 	if (rsnd_is_gen1(priv))
- 		dma->ops = &rsnd_dmaen_ops;
- 
-+	dev_dbg(dev, "%s %s[%d] -> %s[%d]\n",
-+		dma->ops->name,
-+		rsnd_mod_name(mod_from), rsnd_mod_id(mod_from),
-+		rsnd_mod_name(mod_to),   rsnd_mod_id(mod_to));
++	u32 chan = runtime->channels;
 +
- 	return dma->ops->init(io, dma, id, mod_from, mod_to);
- }
++	switch (chan) {
++	case 1:
++	case 2:
++	case 4:
++	case 6:
++	case 8:
++		break;
++	default:
++		dev_warn(dev, "not supported channel\n");
++		chan = 0;
++		break;
++	}
++
++	return chan;
++}
+ /*
+  *	rsnd_dai functions
+  */
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 224a4a9..1296b35 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -170,6 +170,7 @@ void rsnd_force_write(struct rsnd_priv *priv, struct rsnd_mod *mod,
+ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod, enum rsnd_reg reg,
+ 		    u32 mask, u32 data);
+ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
++u32 rsnd_get_adinr_chan(struct rsnd_mod *mod, struct rsnd_dai_stream *io);
+ void rsnd_path_parse(struct rsnd_priv *priv,
+ 		     struct rsnd_dai_stream *io);
  
 -- 
 2.1.4
