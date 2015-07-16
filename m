@@ -1,55 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rockchip: Add machine driver for max98090 codec
-Date: Thu, 16 Jul 2015 13:55:29 +0100
-Message-ID: <20150716125529.GG4039@sirena.org.uk>
-References: <1436930143-31361-1-git-send-email-zhengxing@rock-chips.com>
- <1436930143-31361-2-git-send-email-zhengxing@rock-chips.com>
- <1437033944.27428.11.camel@tiscali.nl>
- <20150716110032.GU11162@sirena.org.uk>
- <1437047261.28351.6.camel@tiscali.nl>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [asoc:fix/rt5645 1/1]
+ sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value,
+ in function returning non-void
+Date: Thu, 16 Jul 2015 21:03:29 +0800
+Message-ID: <CANMq1KD5YjN1Dv5cEJ0YQMxMyEnSNZb=8AK4t7p_Uw3418V_Dw@mail.gmail.com>
+References: <201507162001.z6afFgHb%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Zrag5V6pnZGjLKiw"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1437047261.28351.6.camel@tiscali.nl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Xing Zheng <zhengxing@rock-chips.com>, dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CF54266587
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 15:03:31 +0200 (CEST)
+Received: by oibn4 with SMTP id n4so49683954oib.3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 06:03:29 -0700 (PDT)
+In-Reply-To: <201507162001.z6afFgHb%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---Zrag5V6pnZGjLKiw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Jul 16, 2015 at 8:32 PM, kbuild test robot
+<fengguang.wu@intel.com> wrote:
+> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git fix/rt5645
+> head:   3c2234569cfff83718792f810a9bb855b78c2473
+> commit: 3c2234569cfff83718792f810a9bb855b78c2473 [1/1] ASoC: rt5645: Check if codec is initialized in workqueue handler
+> config: i386-randconfig-x009-201528 (attached as .config)
+> reproduce:
+>   git checkout 3c2234569cfff83718792f810a9bb855b78c2473
+>   # save the attached .config to linux build tree
+>   make ARCH=i386
+>
+> All warnings (new ones prefixed by >>):
+>
+>    sound/soc/codecs/rt5645.c: In function 'rt5645_irq_detection':
+>>> sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value, in function returning non-void [-Wreturn-type]
+>       return;
+>       ^
 
-On Thu, Jul 16, 2015 at 01:47:41PM +0200, Paul Bolle wrote:
-> On do, 2015-07-16 at 12:00 +0100, Mark Brown wrote:
+Are you sending this patch to stable@?
 
-> > You've got platform_device and platform_driver confused I think.
+This happens because I rebased the patch on f312bc59 "ASoC: rt5645:
+Remove irq_jack_detection function" (which was your for-next at the
+time), so it probably shouldn't be applied in its own branch...
 
-> I did? You mean that creating a platform_DRIVER triggers that
-> MODALIAS=platform:{...] uevent?
+The return value is ignored anyway, so the code should work as
+intended, but a "return 0;", or -EINVAL, would be more proper...
 
-No, in that case you've not understood what the MODULE_ALIAS is
-for.  It's there so that userspace knows which module to load if it gets
-a device with no driver, it goes in the driver not in the code
-registering the device.
-
---Zrag5V6pnZGjLKiw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVp6nAAAoJECTWi3JdVIfQhdgH/1bYUkQU+sCM2DZsgjxlsowY
-mc5TLoJkqDpeyNUSHcF8ltRsGW13+W4VotmUx3XcUPfhr4xZiGjH3F8UhpwqnFpY
-Ve76xG3q5u427T3osp6KItDbNAe6Agu3o7fZ8qQLyzjLvD0vbwXdWF8gao7eCpkr
-ryr/N9Tt/cZ+LzBB8l/OV6GxMNyd8+1Cz+0pos2CZIxyxKB8+y58zof0cD+ycFro
-V5BR46wsne9IUE+l0o0JpgeUGsWcpQYo9yYkMT1M7V9YDYZp2PQlgTZzRnVerFLR
-GlhJ9zM/tFrXDrSPa+Hu0YD2HAqAxWTSvNtsVIn7jpdqC9KNdBEg64rA1I5cnv0=
-=p02f
------END PGP SIGNATURE-----
-
---Zrag5V6pnZGjLKiw--
+Thanks,
