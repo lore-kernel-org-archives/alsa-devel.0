@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: Add clock adjustement control" to
+Subject: Applied "ASoC: sti: Add uniperipheral dai driver" to
 	the asoc tree
-Date: Thu, 16 Jul 2015 22:01:22 +0100
-Message-ID: <E1ZFqHS-0001hh-Bm@finisterre>
-References: <1437039367-30842-6-git-send-email-arnaud.pouliquen@st.com>
+Date: Thu, 16 Jul 2015 22:01:25 +0100
+Message-ID: <E1ZFqHV-0001id-GM@finisterre>
+References: <1437039367-30842-4-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ECAE2666E9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:31 +0200 (CEST)
-In-Reply-To: <1437039367-30842-6-git-send-email-arnaud.pouliquen@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B7E2D2605D2
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:33 +0200 (CEST)
+In-Reply-To: <1437039367-30842-4-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: Add clock adjustement control
+   ASoC: sti: Add uniperipheral dai driver
 
 has been applied to the asoc tree at
 
@@ -53,243 +53,298 @@ to this mail.
 Thanks,
 Mark
 
->From fa050796b35c80ac948c4d24c95262daa905e2ef Mon Sep 17 00:00:00 2001
+>From f3bd847eb0a7744b1a86f6b585149434cc6f57ff Mon Sep 17 00:00:00 2001
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Thu, 16 Jul 2015 11:36:06 +0200
-Subject: [PATCH] ASoC: sti: Add clock adjustement control
+Date: Thu, 16 Jul 2015 11:36:04 +0200
+Subject: [PATCH] ASoC: sti: Add uniperipheral dai driver
 
-Add capability to adjust player clock, for clocks drift management.
+ASoc uniperipheral dai driver that manages uniperipheral DAIs and registers
+associated generic dma engine platform.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif.h        |   2 +
- sound/soc/sti/uniperif_player.c | 149 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 150 insertions(+), 1 deletion(-)
+ sound/soc/sti/sti_uniperif.c | 253 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/sti/uniperif.h     |   9 ++
+ 2 files changed, 262 insertions(+)
+ create mode 100644 sound/soc/sti/sti_uniperif.c
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index f1e583d..ee462f7 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1175,6 +1175,7 @@ struct uniperif {
- 	/* Clocks */
- 	struct clk *clk;
- 	int mclk;
-+	int clk_adj;
- 
- 	/* Runtime data */
- 	enum uniperif_state state;
-@@ -1183,6 +1184,7 @@ struct uniperif {
- 
- 	/* Specific to IEC958 player */
- 	struct uniperif_iec958_settings stream_settings;
-+	struct mutex ctrl_lock; /* For resource updated by stream and controls*/
- 
- 	/*alsa ctrl*/
- 	struct snd_kcontrol_new *snd_ctrls;
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index d12d050..d990d2c 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -36,6 +36,9 @@
- 	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
- 		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
- 
-+#define UNIPERIF_PLAYER_CLK_ADJ_MIN  -999999
-+#define UNIPERIF_PLAYER_CLK_ADJ_MAX  1000000
-+
- /*
-  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-  * integrate  DAI_CPU capability in term of rate and supported channels
-@@ -172,6 +175,70 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
-+int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
-+{
-+	int rate_adjusted, rate_achieved, delta, ret;
-+	int adjustment = player->clk_adj;
-+
-+	/*
-+	 *             a
-+	 * F = f + --------- * f = f + d
-+	 *          1000000
-+	 *
-+	 *         a
-+	 * d = --------- * f
-+	 *      1000000
-+	 *
-+	 * where:
-+	 *   f - nominal rate
-+	 *   a - adjustment in ppm (parts per milion)
-+	 *   F - rate to be set in synthesizer
-+	 *   d - delta (difference) between f and F
-+	 */
-+	if (adjustment < 0) {
-+		/* div64_64 operates on unsigned values... */
-+		delta = -1;
-+		adjustment = -adjustment;
-+	} else {
-+		delta = 1;
-+	}
-+	/* 500000 ppm is 0.5, which is used to round up values */
-+	delta *= (int)div64_u64((uint64_t)rate *
-+				(uint64_t)adjustment + 500000, 1000000);
-+	rate_adjusted = rate + delta;
-+
-+	/* Adjusted rate should never be == 0 */
-+	if (!rate_adjusted)
-+		return -EINVAL;
-+
-+	ret = clk_set_rate(player->clk, rate_adjusted);
-+	if (ret < 0)
-+		return ret;
-+
-+	rate_achieved = clk_get_rate(player->clk);
-+	if (!rate_achieved)
-+		/* If value is 0 means that clock or parent not valid */
-+		return -EINVAL;
-+
-+	/*
-+	 * Using ALSA's adjustment control, we can modify the rate to be up
-+	 * to twice as much as requested, but no more
-+	 */
-+	delta = rate_achieved - rate;
-+	if (delta < 0) {
-+		/* div64_64 operates on unsigned values... */
-+		delta = -delta;
-+		adjustment = -1;
-+	} else {
-+		adjustment = 1;
-+	}
-+	/* Frequency/2 is added to round up result */
-+	adjustment *= (int)div64_u64((uint64_t)delta * 1000000 + rate / 2,
-+				     rate);
-+	player->clk_adj = adjustment;
-+	return 0;
-+}
-+
- static void uni_player_set_channel_status(struct uniperif *player,
- 					  struct snd_pcm_runtime *runtime)
- {
-@@ -470,6 +537,78 @@ static int uni_player_prepare_pcm(struct uniperif *player,
- 	return 0;
- }
- 
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+new file mode 100644
+index 0000000..749e6b2
+--- /dev/null
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -0,0 +1,253 @@
 +/*
-+ * uniperif rate adjustement control
++ * Copyright (C) STMicroelectronics SA 2015
++ * Authors: Arnaud Pouliquen <arnaud.pouliquen@st.com>
++ *          for STMicroelectronics.
++ * License terms:  GNU General Public License (GPL), version 2
 + */
-+static int snd_sti_clk_adjustment_info(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_info *uinfo)
++
++#include <linux/module.h>
++
++#include "uniperif.h"
++
++/*
++ * sti_uniperiph_dai_create_ctrl
++ * This function is used to create Ctrl associated to DAI but also pcm device.
++ * Request is done by front end to associate ctrl with pcm device id
++ */
++int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
 +{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = UNIPERIF_PLAYER_CLK_ADJ_MIN;
-+	uinfo->value.integer.max = UNIPERIF_PLAYER_CLK_ADJ_MAX;
-+	uinfo->value.integer.step = 1;
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct uniperif *uni = priv->dai_data.uni;
++	struct snd_kcontrol_new *ctrl;
++	int i;
++
++	if (!uni->num_ctrls)
++		return 0;
++
++	for (i = 0; i < uni->num_ctrls; i++) {
++		/*
++		 * Several Control can have same name. Controls are indexed on
++		 * Uniperipheral instance ID
++		 */
++		ctrl = &uni->snd_ctrls[i];
++		ctrl->index = uni->info->id;
++		ctrl->device = uni->info->id;
++	}
++
++	return snd_soc_add_dai_controls(dai, uni->snd_ctrls, uni->num_ctrls);
++}
++
++/*
++ * DAI
++ */
++int sti_uniperiph_dai_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct snd_dmaengine_dai_dma_data *dma_data;
++	int transfer_size;
++
++	transfer_size = params_channels(params) * UNIPERIF_FIFO_FRAMES;
++
++	dma_data = snd_soc_dai_get_dma_data(dai, substream);
++	dma_data->maxburst = transfer_size;
 +
 +	return 0;
 +}
 +
-+static int snd_sti_clk_adjustment_get(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
++int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 +{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
 +	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
 +
-+	ucontrol->value.integer.value[0] = player->clk_adj;
++	priv->dai_data.uni->daifmt = fmt;
 +
 +	return 0;
 +}
 +
-+static int snd_sti_clk_adjustment_put(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
++static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
 +	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	int ret = 0;
++	struct uniperif *uni = priv->dai_data.uni;
++	int ret;
 +
-+	if ((ucontrol->value.integer.value[0] < UNIPERIF_PLAYER_CLK_ADJ_MIN) ||
-+	    (ucontrol->value.integer.value[0] > UNIPERIF_PLAYER_CLK_ADJ_MAX))
-+		return -EINVAL;
++	/* The uniperipheral should be in stopped state */
++	if (uni->state != UNIPERIF_STATE_STOPPED) {
++		dev_err(uni->dev, "%s: invalid uni state( %d)",
++			__func__, (int)uni->state);
++		return -EBUSY;
++	}
 +
-+	mutex_lock(&player->ctrl_lock);
-+	player->clk_adj = ucontrol->value.integer.value[0];
-+
-+	if (player->mclk)
-+		ret = uni_player_clk_set_rate(player, player->mclk);
-+	mutex_unlock(&player->ctrl_lock);
++	/* Pinctrl: switch pinstate to sleep */
++	ret = pinctrl_pm_select_sleep_state(uni->dev);
++	if (ret)
++		dev_err(uni->dev, "%s: failed to select pinctrl state",
++			__func__);
 +
 +	return ret;
 +}
 +
-+static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = "PCM Playback Oversampling Freq. Adjustment",
-+	.info = snd_sti_clk_adjustment_info,
-+	.get = snd_sti_clk_adjustment_get,
-+	.put = snd_sti_clk_adjustment_put,
-+};
-+
-+static struct snd_kcontrol_new *snd_sti_ctl[] = {
-+	&uni_player_clk_adj_ctl,
-+};
-+
-+static int uni_player_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
++static int sti_uniperiph_dai_resume(struct snd_soc_dai *dai)
 +{
 +	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
++	struct uniperif *uni = priv->dai_data.uni;
++	int ret;
 +
-+	player->clk_adj = 0;
++	if (of_device_is_compatible(dai->dev->of_node, "st,sti-uni-player")) {
++		ret = uni_player_resume(uni);
++		if (ret)
++			return ret;
++	}
++
++	/* pinctrl: switch pinstate to default */
++	ret = pinctrl_pm_select_default_state(uni->dev);
++	if (ret)
++		dev_err(uni->dev, "%s: failed to select pinctrl state",
++			__func__);
++
++	return ret;
++}
++
++static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
++{
++	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct sti_uniperiph_dai *dai_data = &priv->dai_data;
++
++	/* DMA settings*/
++	if (of_device_is_compatible(dai->dev->of_node, "st,sti-uni-player"))
++		snd_soc_dai_init_dma_data(dai, &dai_data->dma_data, NULL);
++	else
++		snd_soc_dai_init_dma_data(dai, NULL, &dai_data->dma_data);
++
++	dai_data->dma_data.addr = dai_data->uni->fifo_phys_address;
++	dai_data->dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++
++	return sti_uniperiph_dai_create_ctrl(dai);
++}
++
++static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
++	.probe = sti_uniperiph_dai_probe,
++	.suspend = sti_uniperiph_dai_suspend,
++	.resume = sti_uniperiph_dai_resume
++};
++
++static const struct snd_soc_component_driver sti_uniperiph_dai_component = {
++	.name = "sti_cpu_dai",
++};
++
++static int sti_uniperiph_cpu_dai_of(struct device_node *node,
++				    struct sti_uniperiph_data *priv)
++{
++	const char *str;
++	int ret;
++	struct device *dev = &priv->pdev->dev;
++	struct sti_uniperiph_dai *dai_data = &priv->dai_data;
++	struct snd_soc_dai_driver *dai = priv->dai;
++	struct snd_soc_pcm_stream *stream;
++	struct uniperif *uni;
++
++	uni = devm_kzalloc(dev, sizeof(*uni), GFP_KERNEL);
++	if (!uni)
++		return -ENOMEM;
++
++	*dai = sti_uniperiph_dai_template;
++	ret = of_property_read_string(node, "dai-name", &str);
++	if (ret < 0) {
++		dev_err(dev, "%s: dai name missing.\n", __func__);
++		return -EINVAL;
++	}
++	dai->name = str;
++
++	/* Get resources */
++	uni->mem_region = platform_get_resource(priv->pdev, IORESOURCE_MEM, 0);
++
++	if (!uni->mem_region) {
++		dev_err(dev, "Failed to get memory resource");
++		return -ENODEV;
++	}
++
++	uni->base = devm_ioremap_resource(dev, uni->mem_region);
++
++	if (IS_ERR(uni->base))
++		return PTR_ERR(uni->base);
++
++	uni->fifo_phys_address = uni->mem_region->start +
++				     UNIPERIF_FIFO_DATA_OFFSET(uni);
++
++	uni->irq = platform_get_irq(priv->pdev, 0);
++	if (!uni->irq < 0) {
++		dev_err(dev, "Failed to get IRQ resource");
++		return -ENXIO;
++	}
++
++	dai_data->uni = uni;
++
++	if (of_device_is_compatible(node, "st,sti-uni-player")) {
++		uni_player_init(priv->pdev, uni);
++		stream = &dai->playback;
++	} else {
++		uni_reader_init(priv->pdev, uni);
++		stream = &dai->capture;
++	}
++	dai->ops = uni->dai_ops;
++
++	stream->stream_name = dai->name;
++	stream->channels_min = uni->hw->channels_min;
++	stream->channels_max = uni->hw->channels_max;
++	stream->rates = uni->hw->rates;
++	stream->formats = uni->hw->formats;
 +
 +	return 0;
 +}
 +
- static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 				 unsigned int freq, int dir)
- {
-@@ -483,9 +622,11 @@ static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	if (clk_id != 0)
- 		return -EINVAL;
- 
--	ret = clk_set_rate(player->clk, freq);
-+	mutex_lock(&player->ctrl_lock);
-+	ret = uni_player_clk_set_rate(player, freq);
- 	if (!ret)
- 		player->mclk = freq;
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	return ret;
- }
-@@ -816,6 +957,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- }
- 
- const struct snd_soc_dai_ops uni_player_dai_ops = {
-+		.startup = uni_player_startup,
- 		.shutdown = uni_player_shutdown,
- 		.prepare = uni_player_prepare,
- 		.trigger = uni_player_trigger,
-@@ -863,6 +1005,8 @@ int uni_player_init(struct platform_device *pdev,
- 	if (ret < 0)
- 		return ret;
- 
-+	mutex_init(&player->ctrl_lock);
++static const struct snd_dmaengine_pcm_config dmaengine_pcm_config = {
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++};
 +
- 	/* Ensure that disabled by default */
- 	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
- 	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-@@ -889,6 +1033,9 @@ int uni_player_init(struct platform_device *pdev,
- 					IEC958_AES4_CON_WORDLEN_24_20;
- 	}
- 
-+	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
-+	player->snd_ctrls = snd_sti_ctl[0];
++static int sti_uniperiph_probe(struct platform_device *pdev)
++{
++	struct sti_uniperiph_data *priv;
++	struct device_node *node = pdev->dev.of_node;
++	int ret;
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(uni_player_init);
++	/* Allocate the private data and the CPU_DAI array */
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	priv->dai = devm_kzalloc(&pdev->dev, sizeof(*priv->dai), GFP_KERNEL);
++	if (!priv->dai)
++		return -ENOMEM;
++
++	priv->pdev = pdev;
++
++	ret = sti_uniperiph_cpu_dai_of(node, priv);
++
++	dev_set_drvdata(&pdev->dev, priv);
++
++	ret = snd_soc_register_component(&pdev->dev,
++					 &sti_uniperiph_dai_component,
++					 priv->dai, 1);
++	if (ret < 0)
++		return ret;
++
++	return devm_snd_dmaengine_pcm_register(&pdev->dev,
++					       &dmaengine_pcm_config, 0);
++}
++
++static const struct of_device_id snd_soc_sti_match[] = {
++	{ .compatible = "st,sti-uni-player", },
++	{ .compatible = "st,sti-uni-reader", },
++	{},
++};
++
++static struct platform_driver sti_uniperiph_driver = {
++	.driver = {
++		.name = "sti-uniperiph-dai",
++		.of_match_table = snd_soc_sti_match,
++	},
++	.probe = sti_uniperiph_probe,
++};
++module_platform_driver(sti_uniperiph_driver);
++
++MODULE_DESCRIPTION("uniperipheral DAI driver");
++MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index f396958..f1e583d 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1215,4 +1215,13 @@ int uni_player_resume(struct uniperif *player);
+ /* uniperiph reader */
+ int uni_reader_init(struct platform_device *pdev,
+ 		    struct uniperif *uni_reader);
++
++/* common */
++int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai,
++			      unsigned int fmt);
++
++int sti_uniperiph_dai_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai);
++
+ #endif
 -- 
 2.1.4
