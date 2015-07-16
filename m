@@ -1,17 +1,18 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 5/6] ASoC: sti: Add clock adjustement control
-Date: Thu, 16 Jul 2015 11:36:06 +0200
-Message-ID: <1437039367-30842-6-git-send-email-arnaud.pouliquen@st.com>
-References: <1437039367-30842-1-git-send-email-arnaud.pouliquen@st.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: HDMI hotplug on Skylake when power well is off
+Date: Thu, 16 Jul 2015 15:32:26 +0530
+Message-ID: <20150716100226.GK5086@localhost>
+References: <55A62252.1050506@canonical.com> <s5hmvyxn0uh.wl-tiwai@suse.de>
+ <20150716083908.GI5086@localhost> <55A77A8A.2080101@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B0E5B26641C
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 11:36:23 +0200 (CEST)
-In-Reply-To: <1437039367-30842-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED9F12661B0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 12:00:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <55A77A8A.2080101@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,241 +22,231 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, libin.yang@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add capability to adjust player clock, for clocks drift management.
+On Thu, Jul 16, 2015 at 11:34:02AM +0200, David Henningsson wrote:
+> 
+> 
+> On 2015-07-16 10:39, Vinod Koul wrote:
+> >On Wed, Jul 15, 2015 at 12:59:02PM +0200, Takashi Iwai wrote:
+> >>On Wed, 15 Jul 2015 11:05:22 +0200,
+> >>David Henningsson wrote:
+> >>>
+> >>>Hi,
+> >>>
+> >>>I'm trying to debug an issue here where the HDMI hotplug events are not
+> >>>delivered to the audio side when the power well is off. This is on a
+> >>>Skylake machine (running in HDA mode).
+> >>>
+> >>>I'm not sure whether the problem is upstream or due to my own patches
+> >>>while testing, so I was wondering how this is supposed to be working, so
+> >>>I can troubleshoot further?
+> >>>
+> >>>Should there be an IRQ on the HDA controller even if the power well is
+> >>>off, and if not, how should the audio driver be notified that an HDMI
+> >>>hotplug event has happened?
+> >>
+> >>I thought this has been always a problem when the runtime PM is
+> >>enabled, no matter whether the power well state is.
+> >Shouldn't the hotplug action turn on the power well? Then notification for
+> >audio side should get propagated as power well is On
+> 
+> While the video side can turn the power well on, maybe there are
+> other things that needs to be turned on from the audio driver?
+Hmmm that is intresting question, Takashi, Mengdong do you ahve ay idea on
+this one?
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/uniperif.h        |   2 +
- sound/soc/sti/uniperif_player.c | 149 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 150 insertions(+), 1 deletion(-)
+> 
+> >>IMO, a cleaner solution would be rather the notifier implementation in
+> >>software, e.g. extend the i915 component to pass the audio side ops
+> >>for notification.
+> >Yes that should be added but I would prefer we have hw do that as well
+> 
+> So I took a quick stab at this and tried to write down a draft, but
+> I got stuck trying to figure out how to wake up the audio codecs
+> from the hdac_i915.c file. I'm not sure how to do this with the
+> recent reorg as I don't want to break the ASoC version of the driver
+> by including the wrong header files.
+> 
+> See attached patch (which is a very rough draft, not even compile
+> tested), maybe you or Takashi could offer some insight w r t whether
+> I'm on the right track, and how to proceed?
+> 
+> -- 
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index f1e583d..ee462f7 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1175,6 +1175,7 @@ struct uniperif {
- 	/* Clocks */
- 	struct clk *clk;
- 	int mclk;
-+	int clk_adj;
- 
- 	/* Runtime data */
- 	enum uniperif_state state;
-@@ -1183,6 +1184,7 @@ struct uniperif {
- 
- 	/* Specific to IEC958 player */
- 	struct uniperif_iec958_settings stream_settings;
-+	struct mutex ctrl_lock; /* For resource updated by stream and controls*/
- 
- 	/*alsa ctrl*/
- 	struct snd_kcontrol_new *snd_ctrls;
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index d12d050..d990d2c 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -36,6 +36,9 @@
- 	(UNIPERIF_PLAYER_TYPE_IS_HDMI(p) || \
- 		UNIPERIF_PLAYER_TYPE_IS_SPDIF(p))
- 
-+#define UNIPERIF_PLAYER_CLK_ADJ_MIN  -999999
-+#define UNIPERIF_PLAYER_CLK_ADJ_MAX  1000000
-+
- /*
-  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-  * integrate  DAI_CPU capability in term of rate and supported channels
-@@ -172,6 +175,70 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
-+int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
-+{
-+	int rate_adjusted, rate_achieved, delta, ret;
-+	int adjustment = player->clk_adj;
-+
-+	/*
-+	 *             a
-+	 * F = f + --------- * f = f + d
-+	 *          1000000
-+	 *
-+	 *         a
-+	 * d = --------- * f
-+	 *      1000000
-+	 *
-+	 * where:
-+	 *   f - nominal rate
-+	 *   a - adjustment in ppm (parts per milion)
-+	 *   F - rate to be set in synthesizer
-+	 *   d - delta (difference) between f and F
-+	 */
-+	if (adjustment < 0) {
-+		/* div64_64 operates on unsigned values... */
-+		delta = -1;
-+		adjustment = -adjustment;
-+	} else {
-+		delta = 1;
-+	}
-+	/* 500000 ppm is 0.5, which is used to round up values */
-+	delta *= (int)div64_u64((uint64_t)rate *
-+				(uint64_t)adjustment + 500000, 1000000);
-+	rate_adjusted = rate + delta;
-+
-+	/* Adjusted rate should never be == 0 */
-+	if (!rate_adjusted)
-+		return -EINVAL;
-+
-+	ret = clk_set_rate(player->clk, rate_adjusted);
-+	if (ret < 0)
-+		return ret;
-+
-+	rate_achieved = clk_get_rate(player->clk);
-+	if (!rate_achieved)
-+		/* If value is 0 means that clock or parent not valid */
-+		return -EINVAL;
-+
-+	/*
-+	 * Using ALSA's adjustment control, we can modify the rate to be up
-+	 * to twice as much as requested, but no more
-+	 */
-+	delta = rate_achieved - rate;
-+	if (delta < 0) {
-+		/* div64_64 operates on unsigned values... */
-+		delta = -delta;
-+		adjustment = -1;
-+	} else {
-+		adjustment = 1;
-+	}
-+	/* Frequency/2 is added to round up result */
-+	adjustment *= (int)div64_u64((uint64_t)delta * 1000000 + rate / 2,
-+				     rate);
-+	player->clk_adj = adjustment;
-+	return 0;
-+}
-+
- static void uni_player_set_channel_status(struct uniperif *player,
- 					  struct snd_pcm_runtime *runtime)
- {
-@@ -470,6 +537,78 @@ static int uni_player_prepare_pcm(struct uniperif *player,
- 	return 0;
- }
- 
-+/*
-+ * uniperif rate adjustement control
-+ */
-+static int snd_sti_clk_adjustment_info(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = UNIPERIF_PLAYER_CLK_ADJ_MIN;
-+	uinfo->value.integer.max = UNIPERIF_PLAYER_CLK_ADJ_MAX;
-+	uinfo->value.integer.step = 1;
-+
-+	return 0;
-+}
-+
-+static int snd_sti_clk_adjustment_get(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+
-+	ucontrol->value.integer.value[0] = player->clk_adj;
-+
-+	return 0;
-+}
-+
-+static int snd_sti_clk_adjustment_put(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+	int ret = 0;
-+
-+	if ((ucontrol->value.integer.value[0] < UNIPERIF_PLAYER_CLK_ADJ_MIN) ||
-+	    (ucontrol->value.integer.value[0] > UNIPERIF_PLAYER_CLK_ADJ_MAX))
-+		return -EINVAL;
-+
-+	mutex_lock(&player->ctrl_lock);
-+	player->clk_adj = ucontrol->value.integer.value[0];
-+
-+	if (player->mclk)
-+		ret = uni_player_clk_set_rate(player, player->mclk);
-+	mutex_unlock(&player->ctrl_lock);
-+
-+	return ret;
-+}
-+
-+static struct snd_kcontrol_new uni_player_clk_adj_ctl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = "PCM Playback Oversampling Freq. Adjustment",
-+	.info = snd_sti_clk_adjustment_info,
-+	.get = snd_sti_clk_adjustment_get,
-+	.put = snd_sti_clk_adjustment_put,
-+};
-+
-+static struct snd_kcontrol_new *snd_sti_ctl[] = {
-+	&uni_player_clk_adj_ctl,
-+};
-+
-+static int uni_player_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct uniperif *player = priv->dai_data.uni;
-+
-+	player->clk_adj = 0;
-+
-+	return 0;
-+}
-+
- static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 				 unsigned int freq, int dir)
- {
-@@ -483,9 +622,11 @@ static int uni_player_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	if (clk_id != 0)
- 		return -EINVAL;
- 
--	ret = clk_set_rate(player->clk, freq);
-+	mutex_lock(&player->ctrl_lock);
-+	ret = uni_player_clk_set_rate(player, freq);
- 	if (!ret)
- 		player->mclk = freq;
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	return ret;
- }
-@@ -816,6 +957,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
- }
- 
- const struct snd_soc_dai_ops uni_player_dai_ops = {
-+		.startup = uni_player_startup,
- 		.shutdown = uni_player_shutdown,
- 		.prepare = uni_player_prepare,
- 		.trigger = uni_player_trigger,
-@@ -863,6 +1005,8 @@ int uni_player_init(struct platform_device *pdev,
- 	if (ret < 0)
- 		return ret;
- 
-+	mutex_init(&player->ctrl_lock);
-+
- 	/* Ensure that disabled by default */
- 	SET_UNIPERIF_CONFIG_BACK_STALL_REQ_DISABLE(player);
- 	SET_UNIPERIF_CTRL_ROUNDING_OFF(player);
-@@ -889,6 +1033,9 @@ int uni_player_init(struct platform_device *pdev,
- 					IEC958_AES4_CON_WORDLEN_24_20;
- 	}
- 
-+	player->num_ctrls = ARRAY_SIZE(snd_sti_ctl);
-+	player->snd_ctrls = snd_sti_ctl[0];
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(uni_player_init);
+> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+> index 8ae6f7f..0eaac41 100644
+> --- a/drivers/gpu/drm/i915/i915_drv.h
+> +++ b/drivers/gpu/drm/i915/i915_drv.h
+> @@ -45,6 +45,7 @@
+>  #include <drm/intel-gtt.h>
+>  #include <drm/drm_legacy.h> /* for struct drm_dma_handle */
+>  #include <drm/drm_gem.h>
+> +#include <drm/i915_component.h>
+>  #include <linux/backlight.h>
+>  #include <linux/hashtable.h>
+>  #include <linux/intel-iommu.h>
+> @@ -1752,6 +1753,7 @@ struct drm_i915_private {
+>  	struct drm_property *force_audio_property;
+>  
+>  	/* hda/i915 audio component */
+> +	struct i915_audio_component *audio_component;
+>  	bool audio_component_registered;
+>  
+>  	uint32_t hw_context_size;
+> diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+> index ef34257..3799d88 100644
+> --- a/drivers/gpu/drm/i915/intel_audio.c
+> +++ b/drivers/gpu/drm/i915/intel_audio.c
+> @@ -424,6 +424,9 @@ void intel_audio_codec_enable(struct intel_encoder *intel_encoder)
+>  
+>  	if (dev_priv->display.audio_codec_enable)
+>  		dev_priv->display.audio_codec_enable(connector, intel_encoder, mode);
+> +
+> +	if (acomp && acomp->cb_ops && acomp->cb_ops->hotplug_notify)
+> +		acomp->cb_ops->hotplug_notify(acomp->hdac_bus, true);
+>  }
+>  
+>  /**
+> @@ -437,9 +440,13 @@ void intel_audio_codec_disable(struct intel_encoder *encoder)
+>  {
+>  	struct drm_device *dev = encoder->base.dev;
+>  	struct drm_i915_private *dev_priv = dev->dev_private;
+> +	struct i915_audio_component *acomp = dev_priv->audio_component;
+>  
+>  	if (dev_priv->display.audio_codec_disable)
+>  		dev_priv->display.audio_codec_disable(encoder);
+> +
+> +	if (acomp && acomp->cb_ops && acomp->cb_ops->hotplug_notify)
+> +		acomp->cb_ops->hotplug_notify(acomp->hdac_bus, false);
+>  }
+>  
+>  /**
+> @@ -529,12 +536,14 @@ static int i915_audio_component_bind(struct device *i915_dev,
+>  				     struct device *hda_dev, void *data)
+>  {
+>  	struct i915_audio_component *acomp = data;
+> +	struct drm_i915_private *dev_priv = dev_to_i915(i915_dev);
+>  
+>  	if (WARN_ON(acomp->ops || acomp->dev))
+>  		return -EEXIST;
+>  
+>  	acomp->ops = &i915_audio_component_ops;
+>  	acomp->dev = i915_dev;
+> +	dev_priv->audio_component = acomp;
+>  
+>  	return 0;
+>  }
+> @@ -543,9 +552,11 @@ static void i915_audio_component_unbind(struct device *i915_dev,
+>  					struct device *hda_dev, void *data)
+>  {
+>  	struct i915_audio_component *acomp = data;
+> +	struct drm_i915_private *dev_priv = dev_to_i915(i915_dev);
+>  
+>  	acomp->ops = NULL;
+>  	acomp->dev = NULL;
+> +	dev_priv->audio_component = NULL;
+>  }
+>  
+>  static const struct component_ops i915_audio_component_bind_ops = {
+> diff --git a/include/drm/i915_component.h b/include/drm/i915_component.h
+> index c9a8b64..3feab48 100644
+> --- a/include/drm/i915_component.h
+> +++ b/include/drm/i915_component.h
+> @@ -24,8 +24,11 @@
+>  #ifndef _I915_COMPONENT_H_
+>  #define _I915_COMPONENT_H_
+>  
+> +struct hdac_bus;
+> +
+>  struct i915_audio_component {
+>  	struct device *dev;
+> +	struct hdac_bus *hdac_bus;
+>  
+>  	const struct i915_audio_component_ops {
+>  		struct module *owner;
+> @@ -34,6 +37,11 @@ struct i915_audio_component {
+>  		void (*codec_wake_override)(struct device *, bool enable);
+>  		int (*get_cdclk_freq)(struct device *);
+>  	} *ops;
+> +
+> +	const struct i915_audio_component_cb_ops {
+> +		struct module *owner;
+> +		void (*hotplug_notify)(struct hdac_bus *, bool enable);
+> +	} *cb_ops;
+>  };
+>  
+>  #endif /* _I915_COMPONENT_H_ */
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index 442500e..0ec49a6 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -115,6 +115,8 @@ static void hdac_component_master_unbind(struct device *dev)
+>  {
+>  	struct i915_audio_component *acomp = hdac_acomp;
+>  
+> +	acomp->cb_ops = NULL;
+> +	acomp->hdac_bus = NULL;
+>  	module_put(acomp->ops->owner);
+>  	component_unbind_all(dev, acomp);
+>  	WARN_ON(acomp->ops || acomp->dev);
+> @@ -125,6 +127,31 @@ static const struct component_master_ops hdac_component_master_ops = {
+>  	.unbind = hdac_component_master_unbind,
+>  };
+>  
+> +static const struct i915_ hdac_component_master_ops = {
+> +	.bind = hdac_component_master_bind,
+> +	.unbind = hdac_component_master_unbind,
+> +};
+> +
+> +static const struct i915_audio_component_cb_ops i915_audio_component_cb_ops = {
+> +	.owner		= THIS_MODULE,
+> +	.hotplug_notify	= i915_audio_component_hotplug_notify,
+> +};
+do we need these two, why not add .hotplug_notify in the
+i915_audio_component. During bind the hdac_i915 sets this up and the display
+can invoke this callback (assuming here the binding takes care of passing
+this value from audio to display component)
+
+> +
+> +
+> +static void i915_audio_component_hotplug_notify(struct hdac_bus *bus, bool enable)
+> +{
+> +	struct hda_codec *codec;
+> +
+> +	codec_dbg("Received HDMI hotplug callback (enable = %d)", (int) enable);
+> +
+> +	// TODO: Not sure about this part - with the new reorg, maybe I can't access
+> +	// codec->jackpoll_work from this file?
+Here i feel that we should add notify in hdac_device. Driver can set that up
+and bus can invoke
+
 -- 
-1.9.1
+~Vinod
+> +	list_for_each_codec(codec, bus)
+> +		schedule_delayed_work(&codec->jackpoll_work,
+> +			codec->jackpoll_interval);
+> +
+> +}
+> +
+>  static int hdac_component_master_match(struct device *dev, void *data)
+>  {
+>  	/* i915 is the only supported component */
+> @@ -160,6 +187,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+>  		ret = -ENODEV;
+>  		goto out_master_del;
+>  	}
+> +	acomp->cb_ops = &i915_audio_component_cb_ops;
+> +	acomp->hdac_bus = bus;
+> +
+>  	dev_dbg(dev, "bound to i915 component master\n");
+>  
+>  	return 0;
+
+
+-- 
