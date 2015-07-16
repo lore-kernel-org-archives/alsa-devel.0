@@ -1,101 +1,39 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCH 2/2] ASoC: rt5645: Simplify
-	rt5645_enable_push_button_irq
-Date: Thu, 16 Jul 2015 13:42:34 +0800
-Message-ID: <1437025354-22678-2-git-send-email-drinkcat@chromium.org>
-References: <1437025354-22678-1-git-send-email-drinkcat@chromium.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: fsi: Remove obsolete sh_fsi2 platform_device_id entry
+Date: Thu, 16 Jul 2015 09:55:26 +0200
+Message-ID: <CAMuHMdXPyvy8Koa37NCXtzmQX9td5k12ft=5T-0ET35jp1JtEQ@mail.gmail.com>
+References: <1436875174-13960-1-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA84266085
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 07:42:43 +0200 (CEST)
-Received: by pdjr16 with SMTP id r16so38165047pdj.3
- for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2015 22:42:42 -0700 (PDT)
-In-Reply-To: <1437025354-22678-1-git-send-email-drinkcat@chromium.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <1436875174-13960-1-git-send-email-geert+renesas@glider.be>
+Sender: linux-sh-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-LDO2/Mic Det Power pins are already enabled/disabled in rt5645_jack_detect
-(the jack out code path previously did not disable those if button function
-is enabled: modify it to make it so).
+Hi Mark,
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
- sound/soc/codecs/rt5645.c | 33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+On Tue, Jul 14, 2015 at 1:59 PM, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> Since the removal of the r8a7740 legacy board code in commit
+> 1fa59bda21c7fa36 ("ARM: shmobile: Remove legacy board code for
+> Armadillo-800 EVA"), all former users of the "sh_fsi2" platform device
+> name are only supported in generic DT-only ARM multi-platform builds.
+> The driver doesn't need to match platform devices by name anymore, hence
+> remove the corresponding platform_device_id entry.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a56bca6..ff2d4a4 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2766,13 +2766,9 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (enable) {
--		snd_soc_dapm_mutex_lock(dapm);
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC L power");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "ADC R power");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
--		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Mic Det Power");
--		snd_soc_dapm_sync_unlocked(dapm);
--		snd_soc_dapm_mutex_unlock(dapm);
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
-+		snd_soc_dapm_force_enable_pin(dapm, "ADC R power");
-+		snd_soc_dapm_sync(dapm);
- 
- 		snd_soc_update_bits(codec,
- 					RT5645_INT_IRQ_ST, 0x8, 0x8);
-@@ -2785,14 +2781,9 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 		snd_soc_update_bits(codec, RT5650_4BTN_IL_CMD2, 0x8000, 0x0);
- 		snd_soc_update_bits(codec, RT5645_INT_IRQ_ST, 0x8, 0x0);
- 
--		snd_soc_dapm_mutex_lock(dapm);
--		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC L power");
--		snd_soc_dapm_disable_pin_unlocked(dapm, "ADC R power");
--		if (rt5645->pdata.jd_mode == 0)
--			snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
--		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Det Power");
--		snd_soc_dapm_sync_unlocked(dapm);
--		snd_soc_dapm_mutex_unlock(dapm);
-+		snd_soc_dapm_disable_pin(dapm, "ADC L power");
-+		snd_soc_dapm_disable_pin(dapm, "ADC R power");
-+		snd_soc_dapm_sync(dapm);
- 	}
- }
- 
-@@ -2847,14 +2838,14 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 
- 	} else { /* jack out */
- 		rt5645->jack_type = 0;
-+
- 		if (rt5645->en_button_func)
- 			rt5645_enable_push_button_irq(codec, false);
--		else {
--			if (rt5645->pdata.jd_mode == 0)
--				snd_soc_dapm_disable_pin(dapm, "LDO2");
--			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
--			snd_soc_dapm_sync(dapm);
--		}
-+
-+		if (rt5645->pdata.jd_mode == 0)
-+			snd_soc_dapm_disable_pin(dapm, "LDO2");
-+		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
-+		snd_soc_dapm_sync(dapm);
- 	}
- 
- 	return rt5645->jack_type;
--- 
-2.4.3.573.g4eafbef
+Looks like you applied this to spi/for-next instead of sound-asoc/for-next?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
