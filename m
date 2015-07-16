@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9768: Use managed gpio request" to
-	the asoc tree
-Date: Thu, 16 Jul 2015 22:01:33 +0100
-Message-ID: <E1ZFqHd-0001kV-H1@finisterre>
-References: <1437074572-3831-3-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: max9877: Convert to component" to the
+	asoc tree
+Date: Thu, 16 Jul 2015 22:01:35 +0100
+Message-ID: <E1ZFqHf-0001ky-3m@finisterre>
+References: <1437074572-3831-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 13F35266704
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:41 +0200 (CEST)
-In-Reply-To: <1437074572-3831-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EFB2266705
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 23:01:42 +0200 (CEST)
+In-Reply-To: <1437074572-3831-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9768: Use managed gpio request
+   ASoC: max9877: Convert to component
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From d79cca1a994f6f4f1cf3d92909f2a73df6b84874 Mon Sep 17 00:00:00 2001
+>From 623436af42ef2b37fee8f6058a85f4664bd32c74 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Thu, 16 Jul 2015 21:22:51 +0200
-Subject: [PATCH] ASoC: max9768: Use managed gpio request
+Date: Thu, 16 Jul 2015 21:22:50 +0200
+Subject: [PATCH] ASoC: max9877: Convert to component
 
-Makes the code a bit shorter and simpler.
+The driver does not use any CODEC specific constructs anymore. Convert it
+to snd_soc_component.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9768.c | 34 ++++++++--------------------------
- 1 file changed, 8 insertions(+), 26 deletions(-)
+ sound/soc/codecs/max9877.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/max9768.c b/sound/soc/codecs/max9768.c
-index 1526aef..d70a820 100644
---- a/sound/soc/codecs/max9768.c
-+++ b/sound/soc/codecs/max9768.c
-@@ -183,11 +183,13 @@ static int max9768_i2c_probe(struct i2c_client *client,
+diff --git a/sound/soc/codecs/max9877.c b/sound/soc/codecs/max9877.c
+index b469e1c8..fb448dd 100644
+--- a/sound/soc/codecs/max9877.c
++++ b/sound/soc/codecs/max9877.c
+@@ -121,7 +121,7 @@ static const struct snd_soc_dapm_route max9877_dapm_routes[] = {
+ 	{ "HPR", NULL, "SHDN" },
+ };
  
- 	if (pdata) {
- 		/* Mute on powerup to avoid clicks */
--		err = gpio_request_one(pdata->mute_gpio, GPIOF_INIT_HIGH, "MAX9768 Mute");
-+		err = devm_gpio_request_one(&client->dev, pdata->mute_gpio,
-+				GPIOF_INIT_HIGH, "MAX9768 Mute");
- 		max9768->mute_gpio = err ?: pdata->mute_gpio;
+-static const struct snd_soc_codec_driver max9877_codec = {
++static const struct snd_soc_component_driver max9877_component_driver = {
+ 	.controls = max9877_controls,
+ 	.num_controls = ARRAY_SIZE(max9877_controls),
  
- 		/* Activate chip by releasing shutdown, enables I2C */
--		err = gpio_request_one(pdata->shdn_gpio, GPIOF_INIT_HIGH, "MAX9768 Shutdown");
-+		err = devm_gpio_request_one(&client->dev, pdata->shdn_gpio,
-+				GPIOF_INIT_HIGH, "MAX9768 Shutdown");
- 		max9768->shdn_gpio = err ?: pdata->shdn_gpio;
+@@ -154,14 +154,8 @@ static int max9877_i2c_probe(struct i2c_client *client,
+ 	for (i = 0; i < ARRAY_SIZE(max9877_regs); i++)
+ 		regmap_write(regmap, max9877_regs[i].reg, max9877_regs[i].def);
  
- 		max9768->flags = pdata->flags;
-@@ -199,37 +201,17 @@ static int max9768_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, max9768);
- 
- 	max9768->regmap = devm_regmap_init_i2c(client, &max9768_i2c_regmap_config);
--	if (IS_ERR(max9768->regmap)) {
--		err = PTR_ERR(max9768->regmap);
--		goto err_gpio_free;
--	}
+-	return snd_soc_register_codec(&client->dev, &max9877_codec, NULL, 0);
+-}
 -
--	err = snd_soc_register_codec(&client->dev, &max9768_codec_driver, NULL, 0);
--	if (err)
--		goto err_gpio_free;
+-static int max9877_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
 -
 -	return 0;
-+	if (IS_ERR(max9768->regmap))
-+		return PTR_ERR(max9768->regmap);
- 
-- err_gpio_free:
--	if (gpio_is_valid(max9768->shdn_gpio))
--		gpio_free(max9768->shdn_gpio);
--	if (gpio_is_valid(max9768->mute_gpio))
--		gpio_free(max9768->mute_gpio);
--
--	return err;
-+	return snd_soc_register_codec(&client->dev, &max9768_codec_driver,
-+		NULL, 0);
++	return devm_snd_soc_register_component(&client->dev,
++			&max9877_component_driver, NULL, 0);
  }
  
- static int max9768_i2c_remove(struct i2c_client *client)
- {
--	struct max9768 *max9768 = i2c_get_clientdata(client);
--
- 	snd_soc_unregister_codec(&client->dev);
- 
--	if (gpio_is_valid(max9768->shdn_gpio))
--		gpio_free(max9768->shdn_gpio);
--	if (gpio_is_valid(max9768->mute_gpio))
--		gpio_free(max9768->mute_gpio);
--
- 	return 0;
- }
+ static const struct i2c_device_id max9877_i2c_id[] = {
+@@ -175,7 +169,6 @@ static struct i2c_driver max9877_i2c_driver = {
+ 		.name = "max9877",
+ 	},
+ 	.probe = max9877_i2c_probe,
+-	.remove = max9877_i2c_remove,
+ 	.id_table = max9877_i2c_id,
+ };
  
 -- 
 2.1.4
