@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Check the return value from
-	pm_runtime_get/put*()
-Date: Fri, 17 Jul 2015 17:08:03 +0200
-Message-ID: <1437145683-24477-1-git-send-email-tiwai@suse.de>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/2] ASoC: cs4349: Fix max_register setting for
+	cs4349_regmap
+Date: Fri, 17 Jul 2015 23:38:34 +0800
+Message-ID: <1437147514.1229.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 726242604D5
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 17:08:06 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 34FFDAC1D
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 15:08:05 +0000 (UTC)
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42BC62604D5
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 17:38:41 +0200 (CEST)
+Received: by pdrg1 with SMTP id g1so63425635pdr.2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 08:38:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,149 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Tim Howe <tim.howe@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch changes the return type of snd_hdac_power_up/down() and
-variants to pass the error code from the underlying
-pm_runtime_get/put() calls.  Currently they are ignored, but in most
-places, these should be handled properly.
+The max_register should be the maximum valid register index rather than
+number of registers. Also remove unused defines.
 
-As an example, the regmap handler is updated to check the return value
-and accesses the register only when the wakeup succeeds.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- include/sound/hdaudio.h | 16 ++++++++--------
- sound/hda/hdac_device.c | 26 ++++++++++++++++++--------
- sound/hda/hdac_regmap.c | 10 ++++++----
- 3 files changed, 32 insertions(+), 20 deletions(-)
+ sound/soc/codecs/cs4349.c | 2 +-
+ sound/soc/codecs/cs4349.h | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 4caf1fde8a4f..288c7fa509d8 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -164,15 +164,15 @@ static inline int snd_hdac_read_parm(struct hdac_device *codec, hda_nid_t nid,
- }
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index a8df8a74..9273b06 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -268,7 +268,7 @@ static struct regmap_config cs4349_regmap = {
+ 	.reg_bits		= 8,
+ 	.val_bits		= 8,
  
- #ifdef CONFIG_PM
--void snd_hdac_power_up(struct hdac_device *codec);
--void snd_hdac_power_down(struct hdac_device *codec);
--void snd_hdac_power_up_pm(struct hdac_device *codec);
--void snd_hdac_power_down_pm(struct hdac_device *codec);
-+int snd_hdac_power_up(struct hdac_device *codec);
-+int snd_hdac_power_down(struct hdac_device *codec);
-+int snd_hdac_power_up_pm(struct hdac_device *codec);
-+int snd_hdac_power_down_pm(struct hdac_device *codec);
- #else
--static inline void snd_hdac_power_up(struct hdac_device *codec) {}
--static inline void snd_hdac_power_down(struct hdac_device *codec) {}
--static inline void snd_hdac_power_up_pm(struct hdac_device *codec) {}
--static inline void snd_hdac_power_down_pm(struct hdac_device *codec) {}
-+static inline int snd_hdac_power_up(struct hdac_device *codec) { return 0; }
-+static inline int snd_hdac_power_down(struct hdac_device *codec) { return 0; }
-+static inline int snd_hdac_power_up_pm(struct hdac_device *codec) { return 0; }
-+static inline int snd_hdac_power_down_pm(struct hdac_device *codec) { return 0; }
- #endif
+-	.max_register		= CS4349_NUMREGS,
++	.max_register		= CS4349_MISC,
+ 	.reg_defaults		= cs4349_reg_defaults,
+ 	.num_reg_defaults	= ARRAY_SIZE(cs4349_reg_defaults),
+ 	.readable_reg		= cs4349_readable_register,
+diff --git a/sound/soc/codecs/cs4349.h b/sound/soc/codecs/cs4349.h
+index 3884a89..7effa0a 100644
+--- a/sound/soc/codecs/cs4349.h
++++ b/sound/soc/codecs/cs4349.h
+@@ -36,9 +36,6 @@ struct cs4349_platform_data {
+ #define CS4349_RMPFLT		0x07	/* Ramp and Filter Control */
+ #define CS4349_MISC		0x08	/* Power Down,Freeze Control,Pop Stop*/
  
- /*
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index cdee7103f649..df7039ebe1fa 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -501,23 +501,27 @@ EXPORT_SYMBOL_GPL(snd_hdac_get_connections);
-  * This function calls the runtime PM helper to power up the given codec.
-  * Unlike snd_hdac_power_up_pm(), you should call this only for the code
-  * path that isn't included in PM path.  Otherwise it gets stuck.
-+ *
-+ * Returns zero if successful, or a negative error code.
-  */
--void snd_hdac_power_up(struct hdac_device *codec)
-+int snd_hdac_power_up(struct hdac_device *codec)
- {
--	pm_runtime_get_sync(&codec->dev);
-+	return pm_runtime_get_sync(&codec->dev);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_power_up);
+-#define CS4349_FIRSTREG		0x01
+-#define CS4349_LASTREG		0x08
+-#define CS4349_NUMREGS		(CS4349_LASTREG - CS4349_FIRSTREG + 1)
+ #define CS4349_I2C_INCR		0x80
  
- /**
-  * snd_hdac_power_down - power down the codec
-  * @codec: the codec object
-+ *
-+ * Returns zero if successful, or a negative error code.
-  */
--void snd_hdac_power_down(struct hdac_device *codec)
-+int snd_hdac_power_down(struct hdac_device *codec)
- {
- 	struct device *dev = &codec->dev;
  
- 	pm_runtime_mark_last_busy(dev);
--	pm_runtime_put_autosuspend(dev);
-+	return pm_runtime_put_autosuspend(dev);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_power_down);
- 
-@@ -529,11 +533,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_power_down);
-  * which may be called by PM suspend/resume again.  OTOH, if a power-up
-  * call must wake up the sleeper (e.g. in a kctl callback), use
-  * snd_hdac_power_up() instead.
-+ *
-+ * Returns zero if successful, or a negative error code.
-  */
--void snd_hdac_power_up_pm(struct hdac_device *codec)
-+int snd_hdac_power_up_pm(struct hdac_device *codec)
- {
- 	if (!atomic_inc_not_zero(&codec->in_pm))
--		snd_hdac_power_up(codec);
-+		return snd_hdac_power_up(codec);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_power_up_pm);
- 
-@@ -543,11 +550,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_power_up_pm);
-  *
-  * Like snd_hdac_power_up_pm(), this function is used in a recursive
-  * code path like init code which may be called by PM suspend/resume again.
-+ *
-+ * Returns zero if successful, or a negative error code.
-  */
--void snd_hdac_power_down_pm(struct hdac_device *codec)
-+int snd_hdac_power_down_pm(struct hdac_device *codec)
- {
- 	if (atomic_dec_if_positive(&codec->in_pm) < 0)
--		snd_hdac_power_down(codec);
-+		return snd_hdac_power_down(codec);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_power_down_pm);
- #endif
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index 1eabcdf69457..b0ed870ffb88 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -410,8 +410,9 @@ int snd_hdac_regmap_write_raw(struct hdac_device *codec, unsigned int reg,
- 
- 	err = reg_raw_write(codec, reg, val);
- 	if (err == -EAGAIN) {
--		snd_hdac_power_up_pm(codec);
--		err = reg_raw_write(codec, reg, val);
-+		err = snd_hdac_power_up_pm(codec);
-+		if (!err)
-+			err = reg_raw_write(codec, reg, val);
- 		snd_hdac_power_down_pm(codec);
- 	}
- 	return err;
-@@ -442,8 +443,9 @@ int snd_hdac_regmap_read_raw(struct hdac_device *codec, unsigned int reg,
- 
- 	err = reg_raw_read(codec, reg, val);
- 	if (err == -EAGAIN) {
--		snd_hdac_power_up_pm(codec);
--		err = reg_raw_read(codec, reg, val);
-+		err = snd_hdac_power_up_pm(codec);
-+		if (!err)
-+			err = reg_raw_read(codec, reg, val);
- 		snd_hdac_power_down_pm(codec);
- 	}
- 	return err;
 -- 
-2.4.5
+2.1.0
