@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4] ASoC: rt5645: Check if codec is
- initialized in workqueue handler
-Date: Fri, 17 Jul 2015 12:12:08 +0100
-Message-ID: <20150717111208.GK11162@sirena.org.uk>
-References: <1437100617-37845-1-git-send-email-drinkcat@chromium.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: HDMI hotplug on Skylake when power well is off
+Date: Fri, 17 Jul 2015 16:44:29 +0530
+Message-ID: <20150717111429.GP5086@localhost>
+References: <55A62252.1050506@canonical.com> <s5hmvyxn0uh.wl-tiwai@suse.de>
+ <20150716083908.GI5086@localhost> <55A77A8A.2080101@canonical.com>
+ <s5hegk8l8lg.wl-tiwai@suse.de> <20150716113514.GL5086@localhost>
+ <s5hy4igjns8.wl-tiwai@suse.de> <55A7B383.6020206@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3874806397773999051=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E3ACF2606E0
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 13:12:20 +0200 (CEST)
-In-Reply-To: <1437100617-37845-1-git-send-email-drinkcat@chromium.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F8EA2606E2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 13:12:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <55A7B383.6020206@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, libin.yang@intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 16, 2015 at 03:37:07PM +0200, David Henningsson wrote:
+> +static void i915_audio_component_hotplug_notify(struct hdac_bus *bus,
+> +	const struct i915_audio_hotplug_info *info)
+> +{
+> +	struct hda_codec *codec;
+this should be hdac_device as core doesnt know hda_codec
 
---===============3874806397773999051==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IrYWVTOpV5r4MFme"
-Content-Disposition: inline
+> +
+> +	codec_dbg("Received HDMI hotplug callback (connector = %s, plugged in = %d)",
+> +		  info->connector_name, (int) info->plugged_in);
+> +
+> +	for (i = 0; i <= MAX_CODEC_ADDRESS; i++)
+> +		if (bus->caddr_tbl[i] && bus->caddr_tbl[i]->hotplug_notify)
+> +			bus->caddr_tbl[i]->hotplug_notify(bus->caddr_tbl[i], info);
+> +}
 
+Rest looks good :)
 
---IrYWVTOpV5r4MFme
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jul 17, 2015 at 10:36:57AM +0800, Nicolas Boichat wrote:
-
-> This replaces 3c2234569cfff83718792f810a9bb855b78c2473, and applies on top of
-> Linux 4.2-rc1, so that this patch can be applied in its own branch, without
-> triggering a compile warning.
-
-Please provide human readable descriptions of commits so your mails are
-directly readable.
-
---IrYWVTOpV5r4MFme
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVqOMHAAoJECTWi3JdVIfQxT4H/2Ispnh4X2dHmO581O7BcSRY
-/pWcKAdB6jK/zubmM8erQFKot+K0NuSEMvP8F9qNKBAKGyw10TTWp2enqJvUAyZ0
-7KJkxxmprcUmYQ1GggxDTrvksFoFjxbGTa67jZixqMOXYNyFm8syi6jWM3cNIulT
-ohJdVd/cK+PBf69YPFzDw3czYoonG3n6TwIIbXdORFqVG1eBvixKScCMiZSEByIf
-5LJPXdN3c8xF3yILnAtA100ujD3ig1JSLw+ynvc/lY3BOCR6qo5WvZZc9AVV8/X2
-Xkp2+CJwpSK51CAHaVGcQcOvm3loBwaN3b9EGx+jGXaHEYwwsAHt+fjW9xVNXTM=
-=EvKa
------END PGP SIGNATURE-----
-
---IrYWVTOpV5r4MFme--
-
---===============3874806397773999051==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3874806397773999051==--
+-- 
+~Vinod
