@@ -1,68 +1,126 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/12] device: property: delay device-driver matches
-Date: Fri, 17 Jul 2015 01:06:22 +0100
-Message-ID: <20150717000622.GH1602@sirena.org.uk>
-References: <1435743667-11987-1-git-send-email-tomeu.vizoso@collabora.com>
- <1435743667-11987-2-git-send-email-tomeu.vizoso@collabora.com>
- <20150716202312.GD11162@sirena.org.uk>
- <CAJZ5v0gMx=DA0f8i9wdMvkYTyOhr0WKh-T6L7rjcxeaAjNMW3g@mail.gmail.com>
+Subject: Applied "ASoC: sti: sti_uniperiph_dai_create_ctrl()
+	can be static" to the asoc tree
+Date: Fri, 17 Jul 2015 01:10:03 +0100
+Message-ID: <E1ZFtE3-00040d-Nq@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="CNfT9TXqV7nd4cfk"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gMx=DA0f8i9wdMvkYTyOhr0WKh-T6L7rjcxeaAjNMW3g@mail.gmail.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Tomeu Vizoso <tomeu.vizoso@collabora.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, linux-gpio@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pwm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E374260614
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 02:10:14 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fengguang Wu <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---CNfT9TXqV7nd4cfk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: sti: sti_uniperiph_dai_create_ctrl() can be static
 
-On Fri, Jul 17, 2015 at 01:41:16AM +0200, Rafael J. Wysocki wrote:
-> On Thu, Jul 16, 2015 at 10:23 PM, Mark Brown <broonie@kernel.org> wrote:
-> > On Wed, Jul 01, 2015 at 11:40:56AM +0200, Tomeu Vizoso wrote:
+has been applied to the asoc tree at
 
-> > I have to say I'm still not 100% clear that special casing platform
-> > devices makes sense here - I can see that platform devices are usually
-> > the first devices to instantiate but there are other kinds of devices
-> > and it's not obvious what the benefit of specifically picking out
-> > platform devices as opposed to just deferring all devices is.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Some existing devices cannot be deferred without redesigning things quite a bit.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-OK, that should go in the changelog then - right now it's just a bit
-obtuse why we're doing this (and as you say it's a bit awkward).  Now
-you mention this I'm thinking that some of the affected devices might be
-platform devices on some systems, IOMMUs spring to mind for example...
-they're one of the main bits of the system I'm aware of that still rely
-on probe ordering and they do tend to be platform devices.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> What I was talking about, though, was to use an opt-in mechanism for
-> that which could be set for all platform devices, for example, by
-> default, but it might be set for other bus types too if that's useful.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Sure, I got that and do agree with you that a mechanism like you suggest
-would be good.  I just wasn't clear why we were targetting platform
-devices in the first place.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---CNfT9TXqV7nd4cfk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From f2da4542268503d22869617b7dbcb40d364c78bb Mon Sep 17 00:00:00 2001
+From: kbuild test robot <fengguang.wu@intel.com>
+Date: Fri, 17 Jul 2015 07:44:09 +0800
+Subject: [PATCH] ASoC: sti: sti_uniperiph_dai_create_ctrl() can be static
 
-iQEcBAEBCAAGBQJVqEb6AAoJECTWi3JdVIfQ6igH/1lfzgngw+QMPD3PzShllj57
-i/HPqcOa7NFybef7ZM2t00i3/PCAPOhg2EsaPaV34euzZ57FZX0DvS89+1K1q3sw
-h+u95jS4c8GMJnO9gAnQZ1u5S6OM40j/livOl/HaVb0qUSIFwEeRHbJfW3uJ/wZf
-3phgAXmVjPQRqJS054a/CGEyU2lwZW+4enxtBs49TbY1EHE8TbQIG9EM5kqAu23I
-t4Y5+RDaft1SNXacAjjc0cwYIFY9xh5UnYDLDhNc1mabklu9selE0PKhgS8PUkl5
-X+D87P00jPDUd99qbILBZhRqIw+72BKECQ/ddJCQXIW2u0pjJc1W81iYl/LF2bw=
-=w0V2
------END PGP SIGNATURE-----
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sti/sti_uniperif.c    | 2 +-
+ sound/soc/sti/uniperif_player.c | 4 ++--
+ sound/soc/sti/uniperif_reader.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
---CNfT9TXqV7nd4cfk--
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index 749e6b294184..83a301f2aa66 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -14,7 +14,7 @@
+  * This function is used to create Ctrl associated to DAI but also pcm device.
+  * Request is done by front end to associate ctrl with pcm device id
+  */
+-int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
++static int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
+ {
+ 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct uniperif *uni = priv->dai_data.uni;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index d990d2c81a5d..f609089a6e00 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -43,7 +43,7 @@
+  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
+  * integrate  DAI_CPU capability in term of rate and supported channels
+  */
+-const struct snd_pcm_hardware uni_player_pcm_hw = {
++static const struct snd_pcm_hardware uni_player_pcm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID,
+@@ -175,7 +175,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+ 	return ret;
+ }
+ 
+-int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
++static int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
+ {
+ 	int rate_adjusted, rate_achieved, delta, ret;
+ 	int adjustment = player->clk_adj;
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index 7d83827ba660..c502626f339b 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -17,7 +17,7 @@
+  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
+  * integrate unireader capability in term of rate and supported channels
+  */
+-const struct snd_pcm_hardware uni_reader_pcm_hw = {
++static const struct snd_pcm_hardware uni_reader_pcm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID,
+@@ -324,7 +324,7 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-const struct snd_soc_dai_ops uni_reader_dai_ops = {
++static const struct snd_soc_dai_ops uni_reader_dai_ops = {
+ 		.shutdown = uni_reader_shutdown,
+ 		.prepare = uni_reader_prepare,
+ 		.trigger = uni_reader_trigger,
+-- 
+2.1.4
