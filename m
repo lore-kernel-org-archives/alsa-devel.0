@@ -1,19 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: cs4349: Constify cs4349_regmap
-Date: Fri, 17 Jul 2015 23:43:02 +0800
-Message-ID: <1437147782.1229.4.camel@ingics.com>
-References: <1437147514.1229.1.camel@ingics.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: [PATCH] speaker-test: Add option to specify signal
+ scale
+Date: Fri, 17 Jul 2015 18:02:23 +0200
+Message-ID: <55A9270F.10307@jusst.de>
+References: <1435647469-30754-1-git-send-email-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
- [209.85.192.172])
- by alsa0.perex.cz (Postfix) with ESMTP id D79652604D5
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 17:43:07 +0200 (CEST)
-Received: by pdrg1 with SMTP id g1so63479059pdr.2
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 08:43:07 -0700 (PDT)
-In-Reply-To: <1437147514.1229.1.camel@ingics.com>
+Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
+ [74.201.84.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5ACF260574
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 18:02:29 +0200 (CEST)
+In-Reply-To: <1435647469-30754-1-git-send-email-julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Tim Howe <tim.howe@cirrus.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs4349.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 9273b06..f4fccc6 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -264,7 +264,7 @@ static struct snd_soc_codec_driver soc_codec_dev_cs4349 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs4349_routes),
- };
- 
--static struct regmap_config cs4349_regmap = {
-+static const struct regmap_config cs4349_regmap = {
- 	.reg_bits		= 8,
- 	.val_bits		= 8,
- 
--- 
-2.1.0
+Am 30.06.2015 um 08:57 schrieb Julian Scheel:
+> Allow generated signals (sine and noise) to have a specified signal scale
+> instead of using hardcoded limits of 80%. This can be handy for debugging, ie
+> when analysing clipping issues with audio drivers.
+>
+> Signed-off-by: Julian Scheel <julian@jusst.de>
+> ---
+
+any objections on this patch?
+
+-Julian
