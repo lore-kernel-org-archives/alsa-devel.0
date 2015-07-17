@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add CTU (Channel Transfer Unit)
-	prototype support" to the asoc tree
-Date: Fri, 17 Jul 2015 19:26:27 +0100
-Message-ID: <E1ZGAL5-00061i-7J@debutante>
-References: <87615lvqnm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add MIX (Mixer) support" to the
+	asoc tree
+Date: Fri, 17 Jul 2015 19:26:26 +0100
+Message-ID: <E1ZGAL4-00061F-6c@debutante>
+References: <874ml5vqn2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04EAA2612DF
+ by alsa0.perex.cz (Postfix) with ESMTP id 1375D2668F3
  for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 20:26:34 +0200 (CEST)
-In-Reply-To: <87615lvqnm.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874ml5vqn2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add CTU (Channel Transfer Unit) prototype support
+   ASoC: rsnd: add MIX (Mixer) support
 
 has been applied to the asoc tree at
 
@@ -53,180 +53,346 @@ to this mail.
 Thanks,
 Mark
 
->From 9269e3c3cfac277a49b485e27ac6850f9a11a259 Mon Sep 17 00:00:00 2001
+>From 70fb10529f61c31c26397a02091177bedd23217d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Jul 2015 07:17:17 +0000
-Subject: [PATCH] ASoC: rsnd: add CTU (Channel Transfer Unit) prototype support
+Date: Wed, 15 Jul 2015 07:17:36 +0000
+Subject: [PATCH] ASoC: rsnd: add MIX (Mixer) support
 
-This patch adds CTU (Channel Transfer Unit) support for rsnd driver.
-But, it does nothing to data at this point, but is required for MIX
-support.
+This patch adds MIX (Mixer) initial support for rsnd driver.
+It is assuming that this MIX is used via DPCM.
 
-CTU design is a little different from other IPs (CTU0 is including
-CTU00 - CTU03, and CTU1 is including CTU10 - CTU13, these have different
-register mapping) We need to care about it on this driver.
+This is sample code for playback.
+
+	CPU0  : [MEM] -> [SRC1] -> [CTU02] -+
+					    |
+					    +-> [MIX0] -> [DVC0] -> [SSI0]
+	                                    |
+	CPU1  : [MEM] -> [SRC2] -> [CTU03] -+
+
+	sound {
+		compatible = "renesas,rsrc-card";
+
+		...
+
+		cpu@0 {
+			sound-dai = <&rcar_sound 0>;
+		};
+
+		cpu@1 {
+			sound-dai = <&rcar_sound 1>;
+		};
+
+		codec {
+			...
+		};
+	};
+
+	rcar_sound {
+
+		...
+
+		rcar_sound,dai {
+			dai0 {
+				playback = <&src1 &ctu02 &mix0 &dvc0 &ssi0>;
+			};
+			dai1 {
+				playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
+			};
+		};
+	};
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Keita Kobayashi <keita.kobayashi.ym@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/renesas,rsnd.txt     |  14 ++
+ .../devicetree/bindings/sound/renesas,rsnd.txt     |   8 +
  include/sound/rcar_snd.h                           |   7 +
  sound/soc/sh/rcar/Makefile                         |   2 +-
- sound/soc/sh/rcar/core.c                           |  12 +-
- sound/soc/sh/rcar/ctu.c                            | 171 +++++++++++++++++++++
- sound/soc/sh/rcar/dma.c                            |  13 +-
- sound/soc/sh/rcar/gen.c                            |   2 +
- sound/soc/sh/rcar/rsnd.h                           |  21 +++
- 8 files changed, 236 insertions(+), 6 deletions(-)
- create mode 100644 sound/soc/sh/rcar/ctu.c
+ sound/soc/sh/rcar/core.c                           |  85 +++++++--
+ sound/soc/sh/rcar/dma.c                            |   5 +
+ sound/soc/sh/rcar/gen.c                            |  10 ++
+ sound/soc/sh/rcar/mix.c                            | 200 +++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h                           |  29 +++
+ 8 files changed, 333 insertions(+), 13 deletions(-)
+ create mode 100644 sound/soc/sh/rcar/mix.c
 
 diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index b6b3a786855f..278607de05de 100644
+index 278607de05de..1173395b5e5c 100644
 --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
 +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -18,6 +18,9 @@ Required properties:
- - rcar_sound,src		: Should contain SRC feature.
- 				  The number of SRC subnode should be same as HW.
+@@ -21,6 +21,9 @@ Required properties:
+ - rcar_sound,ctu		: Should contain CTU feature.
+ 				  The number of CTU subnode should be same as HW.
  				  see below for detail.
-+- rcar_sound,ctu		: Should contain CTU feature.
-+				  The number of CTU subnode should be same as HW.
++- rcar_sound,mix		: Should contain MIX feature.
++				  The number of MIX subnode should be same as HW.
 +				  see below for detail.
  - rcar_sound,dvc		: Should contain DVC feature.
  				  The number of DVC subnode should be same as HW.
  				  see below for detail.
-@@ -90,6 +93,17 @@ rcar_sound: sound@ec500000 {
+@@ -93,6 +96,11 @@ rcar_sound: sound@ec500000 {
  		};
  	};
  
-+	rcar_sound,ctu {
-+		ctu00: ctu@0 { };
-+		ctu01: ctu@1 { };
-+		ctu02: ctu@2 { };
-+		ctu03: ctu@3 { };
-+		ctu10: ctu@4 { };
-+		ctu11: ctu@5 { };
-+		ctu12: ctu@6 { };
-+		ctu13: ctu@7 { };
++	rcar_sound,mix {
++		mix0: mix@0 { };
++		mix1: mix@1 { };
 +	};
 +
- 	rcar_sound,src {
- 		src0: src@0 {
- 			interrupts = <0 352 IRQ_TYPE_LEVEL_HIGH>;
+ 	rcar_sound,ctu {
+ 		ctu00: ctu@0 { };
+ 		ctu01: ctu@1 { };
 diff --git a/include/sound/rcar_snd.h b/include/sound/rcar_snd.h
-index 4cecd0c175f6..8f9303093ab9 100644
+index 8f9303093ab9..bb7b2ebfee7b 100644
 --- a/include/sound/rcar_snd.h
 +++ b/include/sound/rcar_snd.h
-@@ -61,6 +61,10 @@ struct rsnd_src_platform_info {
- /*
-  * flags
-  */
-+struct rsnd_ctu_platform_info {
+@@ -65,6 +65,10 @@ struct rsnd_ctu_platform_info {
+ 	u32 flags;
+ };
+ 
++struct rsnd_mix_platform_info {
 +	u32 flags;
 +};
 +
  struct rsnd_dvc_platform_info {
  	u32 flags;
  };
-@@ -68,6 +72,7 @@ struct rsnd_dvc_platform_info {
- struct rsnd_dai_path_info {
+@@ -73,6 +77,7 @@ struct rsnd_dai_path_info {
  	struct rsnd_ssi_platform_info *ssi;
  	struct rsnd_src_platform_info *src;
-+	struct rsnd_ctu_platform_info *ctu;
+ 	struct rsnd_ctu_platform_info *ctu;
++	struct rsnd_mix_platform_info *mix;
  	struct rsnd_dvc_platform_info *dvc;
  };
  
-@@ -93,6 +98,8 @@ struct rcar_snd_info {
- 	int ssi_info_nr;
- 	struct rsnd_src_platform_info *src_info;
+@@ -100,6 +105,8 @@ struct rcar_snd_info {
  	int src_info_nr;
-+	struct rsnd_ctu_platform_info *ctu_info;
-+	int ctu_info_nr;
+ 	struct rsnd_ctu_platform_info *ctu_info;
+ 	int ctu_info_nr;
++	struct rsnd_mix_platform_info *mix_info;
++	int mix_info_nr;
  	struct rsnd_dvc_platform_info *dvc_info;
  	int dvc_info_nr;
  	struct rsnd_dai_platform_info *dai_info;
 diff --git a/sound/soc/sh/rcar/Makefile b/sound/soc/sh/rcar/Makefile
-index 3a274fd3593c..7c4730a81c4a 100644
+index 7c4730a81c4a..8b258501aa35 100644
 --- a/sound/soc/sh/rcar/Makefile
 +++ b/sound/soc/sh/rcar/Makefile
 @@ -1,4 +1,4 @@
--snd-soc-rcar-objs	:= core.o gen.o dma.o adg.o ssi.o src.o dvc.o
-+snd-soc-rcar-objs	:= core.o gen.o dma.o adg.o ssi.o src.o ctu.o dvc.o
+-snd-soc-rcar-objs	:= core.o gen.o dma.o adg.o ssi.o src.o ctu.o dvc.o
++snd-soc-rcar-objs	:= core.o gen.o dma.o adg.o ssi.o src.o ctu.o mix.o dvc.o
  obj-$(CONFIG_SND_SOC_RCAR)	+= snd-soc-rcar.o
  
  snd-soc-rsrc-card-objs	:= rsrc-card.o
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index e20d8ea0aafe..63ae7bbfd1dc 100644
+index 63ae7bbfd1dc..927a7b02123b 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -651,6 +651,11 @@ static int rsnd_path_init(struct rsnd_priv *priv,
+@@ -605,23 +605,74 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ void rsnd_path_parse(struct rsnd_priv *priv,
+ 		     struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
+ 	struct rsnd_mod *dvc = rsnd_io_to_mod_dvc(io);
+-	int src_id = rsnd_mod_id(src);
+-	u32 path[] = {
+-		[0] = 0x30000,
+-		[1] = 0x30001,
+-		[2] = 0x40000,
+-		[3] = 0x10000,
+-		[4] = 0x20000,
+-		[5] = 0x40100
+-	};
++	struct rsnd_mod *mix = rsnd_io_to_mod_mix(io);
++	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
++	struct rsnd_mod *cmd;
++	struct device *dev = rsnd_priv_to_dev(priv);
++	u32 data;
+ 
+ 	/* Gen1 is not supported */
+ 	if (rsnd_is_gen1(priv))
+ 		return;
+ 
+-	rsnd_mod_write(dvc, CMD_ROUTE_SLCT, path[src_id]);
++	if (!mix && !dvc)
++		return;
++
++	if (mix) {
++		struct rsnd_dai *rdai;
++		int i;
++		u32 path[] = {
++			[0] = 0,
++			[1] = 1 << 0,
++			[2] = 0,
++			[3] = 0,
++			[4] = 0,
++			[5] = 1 << 8
++		};
++
++		/*
++		 * it is assuming that integrater is well understanding about
++		 * data path. Here doesn't check impossible connection,
++		 * like src2 + src5
++		 */
++		data = 0;
++		for_each_rsnd_dai(rdai, priv, i) {
++			io = &rdai->playback;
++			if (mix == rsnd_io_to_mod_mix(io))
++				data |= path[rsnd_mod_id(src)];
++
++			io = &rdai->capture;
++			if (mix == rsnd_io_to_mod_mix(io))
++				data |= path[rsnd_mod_id(src)];
++		}
++
++		/*
++		 * We can't use ctu = rsnd_io_ctu() here.
++		 * Since, ID of dvc/mix are 0 or 1 (= same as CMD number)
++		 * but ctu IDs are 0 - 7 (= CTU00 - CTU13)
++		 */
++		cmd = mix;
++	} else {
++		u32 path[] = {
++			[0] = 0x30000,
++			[1] = 0x30001,
++			[2] = 0x40000,
++			[3] = 0x10000,
++			[4] = 0x20000,
++			[5] = 0x40100
++		};
++
++		data = path[rsnd_mod_id(src)];
++
++		cmd = dvc;
++	}
++
++	dev_dbg(dev, "ctu/mix path = 0x%08x", data);
++
++	rsnd_mod_write(cmd, CMD_ROUTE_SLCT, data);
++
++	rsnd_mod_write(cmd, CMD_CTRL, 0x10);
+ }
+ 
+ static int rsnd_path_init(struct rsnd_priv *priv,
+@@ -656,6 +707,11 @@ static int rsnd_path_init(struct rsnd_priv *priv,
  	if (ret < 0)
  		return ret;
  
-+	/* CTU */
-+	ret = rsnd_path_add(priv, io, ctu);
++	/* MIX */
++	ret = rsnd_path_add(priv, io, mix);
 +	if (ret < 0)
 +		return ret;
 +
  	/* DVC */
  	ret = rsnd_path_add(priv, io, dvc);
  	if (ret < 0)
-@@ -666,13 +671,14 @@ static void rsnd_of_parse_dai(struct platform_device *pdev,
- 	struct device_node *dai_node,	*dai_np;
+@@ -672,13 +728,14 @@ static void rsnd_of_parse_dai(struct platform_device *pdev,
  	struct device_node *ssi_node,	*ssi_np;
  	struct device_node *src_node,	*src_np;
-+	struct device_node *ctu_node,	*ctu_np;
+ 	struct device_node *ctu_node,	*ctu_np;
++	struct device_node *mix_node,	*mix_np;
  	struct device_node *dvc_node,	*dvc_np;
  	struct device_node *playback, *capture;
  	struct rsnd_dai_platform_info *dai_info;
  	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
  	struct device *dev = &pdev->dev;
  	int nr, i;
--	int dai_i, ssi_i, src_i, dvc_i;
-+	int dai_i, ssi_i, src_i, ctu_i, dvc_i;
+-	int dai_i, ssi_i, src_i, ctu_i, dvc_i;
++	int dai_i, ssi_i, src_i, ctu_i, mix_i, dvc_i;
  
  	if (!of_data)
  		return;
-@@ -698,6 +704,7 @@ static void rsnd_of_parse_dai(struct platform_device *pdev,
- 
+@@ -705,6 +762,7 @@ static void rsnd_of_parse_dai(struct platform_device *pdev,
  	ssi_node = of_get_child_by_name(dev->of_node, "rcar_sound,ssi");
  	src_node = of_get_child_by_name(dev->of_node, "rcar_sound,src");
-+	ctu_node = of_get_child_by_name(dev->of_node, "rcar_sound,ctu");
+ 	ctu_node = of_get_child_by_name(dev->of_node, "rcar_sound,ctu");
++	mix_node = of_get_child_by_name(dev->of_node, "rcar_sound,mix");
  	dvc_node = of_get_child_by_name(dev->of_node, "rcar_sound,dvc");
  
  #define mod_parse(name)							\
-@@ -734,6 +741,7 @@ if (name##_node) {							\
- 
+@@ -742,6 +800,7 @@ if (name##_node) {							\
  			mod_parse(ssi);
  			mod_parse(src);
-+			mod_parse(ctu);
+ 			mod_parse(ctu);
++			mod_parse(mix);
  			mod_parse(dvc);
  
  			of_node_put(playback);
-@@ -1146,6 +1154,7 @@ static int rsnd_probe(struct platform_device *pdev)
- 		rsnd_dma_probe,
+@@ -1155,6 +1214,7 @@ static int rsnd_probe(struct platform_device *pdev)
  		rsnd_ssi_probe,
  		rsnd_src_probe,
-+		rsnd_ctu_probe,
+ 		rsnd_ctu_probe,
++		rsnd_mix_probe,
  		rsnd_dvc_probe,
  		rsnd_adg_probe,
  		rsnd_dai_probe,
-@@ -1241,6 +1250,7 @@ static int rsnd_remove(struct platform_device *pdev)
- 			      struct rsnd_priv *priv) = {
+@@ -1251,6 +1311,7 @@ static int rsnd_remove(struct platform_device *pdev)
  		rsnd_ssi_remove,
  		rsnd_src_remove,
-+		rsnd_ctu_remove,
+ 		rsnd_ctu_remove,
++		rsnd_mix_remove,
  		rsnd_dvc_remove,
  	};
  	int ret = 0, i;
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 229b68d2cf70..305b12929853 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -427,6 +427,7 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
+ 	int is_ssi = !!(rsnd_io_to_mod_ssi(io) == mod);
+ 	int use_src = !!rsnd_io_to_mod_src(io);
+ 	int use_cmd = !!rsnd_io_to_mod_dvc(io) ||
++		      !!rsnd_io_to_mod_mix(io) ||
+ 		      !!rsnd_io_to_mod_ctu(io);
+ 	int id = rsnd_mod_id(mod);
+ 	struct dma_addr {
+@@ -506,6 +507,7 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
+ 	struct rsnd_mod *ssi = rsnd_io_to_mod_ssi(io);
+ 	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
+ 	struct rsnd_mod *ctu = rsnd_io_to_mod_ctu(io);
++	struct rsnd_mod *mix = rsnd_io_to_mod_mix(io);
+ 	struct rsnd_mod *dvc = rsnd_io_to_mod_dvc(io);
+ 	struct rsnd_mod *mod[MOD_MAX];
+ 	struct rsnd_mod *mod_start, *mod_end;
+@@ -548,6 +550,9 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
+ 		} else if (ctu) {
+ 			mod[i] = ctu;
+ 			ctu = NULL;
++		} else if (mix) {
++			mod[i] = mix;
++			mix = NULL;
+ 		} else if (dvc) {
+ 			mod[i] = dvc;
+ 			dvc = NULL;
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 41b75cd4e09b..f04d17bc6e3d 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -242,6 +242,16 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
+ 		RSND_GEN_M_REG(SRC_BSISR,	0x238,	0x40),
+ 		RSND_GEN_M_REG(CTU_CTUIR,	0x504,	0x100),
+ 		RSND_GEN_M_REG(CTU_ADINR,	0x508,	0x100),
++		RSND_GEN_M_REG(MIX_SWRSR,	0xd00,	0x40),
++		RSND_GEN_M_REG(MIX_MIXIR,	0xd04,	0x40),
++		RSND_GEN_M_REG(MIX_ADINR,	0xd08,	0x40),
++		RSND_GEN_M_REG(MIX_MIXMR,	0xd10,	0x40),
++		RSND_GEN_M_REG(MIX_MVPDR,	0xd14,	0x40),
++		RSND_GEN_M_REG(MIX_MDBAR,	0xd18,	0x40),
++		RSND_GEN_M_REG(MIX_MDBBR,	0xd1c,	0x40),
++		RSND_GEN_M_REG(MIX_MDBCR,	0xd20,	0x40),
++		RSND_GEN_M_REG(MIX_MDBDR,	0xd24,	0x40),
++		RSND_GEN_M_REG(MIX_MDBER,	0xd28,	0x40),
+ 		RSND_GEN_M_REG(DVC_SWRSR,	0xe00,	0x100),
+ 		RSND_GEN_M_REG(DVC_DVUIR,	0xe04,	0x100),
+ 		RSND_GEN_M_REG(DVC_ADINR,	0xe08,	0x100),
+diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
 new file mode 100644
-index 000000000000..05edd2009b81
+index 000000000000..0d5c102db6f5
 --- /dev/null
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -0,0 +1,171 @@
++++ b/sound/soc/sh/rcar/mix.c
+@@ -0,0 +1,200 @@
 +/*
-+ * ctu.c
++ * mix.c
 + *
 + * Copyright (c) 2015 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 + *
@@ -236,44 +402,77 @@ index 000000000000..05edd2009b81
 + */
 +#include "rsnd.h"
 +
-+#define CTU_NAME_SIZE	16
-+#define CTU_NAME "ctu"
++#define MIX_NAME_SIZE	16
++#define MIX_NAME "mix"
 +
-+struct rsnd_ctu {
-+	struct rsnd_ctu_platform_info *info; /* rcar_snd.h */
++struct rsnd_mix {
++	struct rsnd_mix_platform_info *info; /* rcar_snd.h */
 +	struct rsnd_mod mod;
 +};
 +
-+#define rsnd_ctu_nr(priv) ((priv)->ctu_nr)
-+#define for_each_rsnd_ctu(pos, priv, i)					\
++#define rsnd_mix_nr(priv) ((priv)->mix_nr)
++#define for_each_rsnd_mix(pos, priv, i)					\
 +	for ((i) = 0;							\
-+	     ((i) < rsnd_ctu_nr(priv)) &&				\
-+		     ((pos) = (struct rsnd_ctu *)(priv)->ctu + i);	\
++	     ((i) < rsnd_mix_nr(priv)) &&				\
++		     ((pos) = (struct rsnd_mix *)(priv)->mix + i);	\
 +	     i++)
 +
-+#define rsnd_ctu_initialize_lock(mod)	__rsnd_ctu_initialize_lock(mod, 1)
-+#define rsnd_ctu_initialize_unlock(mod)	__rsnd_ctu_initialize_lock(mod, 0)
-+static void __rsnd_ctu_initialize_lock(struct rsnd_mod *mod, u32 enable)
++
++static void rsnd_mix_soft_reset(struct rsnd_mod *mod)
 +{
-+	rsnd_mod_write(mod, CTU_CTUIR, enable);
++	rsnd_mod_write(mod, MIX_SWRSR, 0);
++	rsnd_mod_write(mod, MIX_SWRSR, 1);
 +}
 +
-+static int rsnd_ctu_init(struct rsnd_mod *mod,
++#define rsnd_mix_initialize_lock(mod)	__rsnd_mix_initialize_lock(mod, 1)
++#define rsnd_mix_initialize_unlock(mod)	__rsnd_mix_initialize_lock(mod, 0)
++static void __rsnd_mix_initialize_lock(struct rsnd_mod *mod, u32 enable)
++{
++	rsnd_mod_write(mod, MIX_MIXIR, enable);
++}
++
++static void rsnd_mix_volume_update(struct rsnd_dai_stream *io,
++				  struct rsnd_mod *mod)
++{
++
++	/* Disable MIX dB setting */
++	rsnd_mod_write(mod, MIX_MDBER, 0);
++
++	rsnd_mod_write(mod, MIX_MDBAR, 0);
++	rsnd_mod_write(mod, MIX_MDBBR, 0);
++	rsnd_mod_write(mod, MIX_MDBCR, 0);
++	rsnd_mod_write(mod, MIX_MDBDR, 0);
++
++	/* Enable MIX dB setting */
++	rsnd_mod_write(mod, MIX_MDBER, 1);
++}
++
++static int rsnd_mix_init(struct rsnd_mod *mod,
 +			 struct rsnd_dai_stream *io,
 +			 struct rsnd_priv *priv)
 +{
 +	rsnd_mod_hw_start(mod);
 +
-+	rsnd_ctu_initialize_lock(mod);
++	rsnd_mix_soft_reset(mod);
 +
-+	rsnd_mod_write(mod, CTU_ADINR, rsnd_get_adinr_chan(mod, io));
++	rsnd_mix_initialize_lock(mod);
 +
-+	rsnd_ctu_initialize_unlock(mod);
++	rsnd_mod_write(mod, MIX_ADINR, rsnd_get_adinr_chan(mod, io));
++
++	rsnd_path_parse(priv, io);
++
++	/* volume step */
++	rsnd_mod_write(mod, MIX_MIXMR, 0);
++	rsnd_mod_write(mod, MIX_MVPDR, 0);
++
++	rsnd_mix_volume_update(io, mod);
++
++	rsnd_mix_initialize_unlock(mod);
 +
 +	return 0;
 +}
 +
-+static int rsnd_ctu_quit(struct rsnd_mod *mod,
++static int rsnd_mix_quit(struct rsnd_mod *mod,
 +			 struct rsnd_dai_stream *io,
 +			 struct rsnd_priv *priv)
 +{
@@ -282,26 +481,26 @@ index 000000000000..05edd2009b81
 +	return 0;
 +}
 +
-+static struct rsnd_mod_ops rsnd_ctu_ops = {
-+	.name		= CTU_NAME,
-+	.init		= rsnd_ctu_init,
-+	.quit		= rsnd_ctu_quit,
++static struct rsnd_mod_ops rsnd_mix_ops = {
++	.name		= MIX_NAME,
++	.init		= rsnd_mix_init,
++	.quit		= rsnd_mix_quit,
 +};
 +
-+struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id)
++struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id)
 +{
-+	if (WARN_ON(id < 0 || id >= rsnd_ctu_nr(priv)))
++	if (WARN_ON(id < 0 || id >= rsnd_mix_nr(priv)))
 +		id = 0;
 +
-+	return &((struct rsnd_ctu *)(priv->ctu) + id)->mod;
++	return &((struct rsnd_mix *)(priv->mix) + id)->mod;
 +}
 +
-+void rsnd_of_parse_ctu(struct platform_device *pdev,
-+		       const struct rsnd_of_data *of_data,
-+		       struct rsnd_priv *priv)
++static void rsnd_of_parse_mix(struct platform_device *pdev,
++			      const struct rsnd_of_data *of_data,
++			      struct rsnd_priv *priv)
 +{
 +	struct device_node *node;
-+	struct rsnd_ctu_platform_info *ctu_info;
++	struct rsnd_mix_platform_info *mix_info;
 +	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
 +	struct device *dev = &pdev->dev;
 +	int nr;
@@ -309,76 +508,72 @@ index 000000000000..05edd2009b81
 +	if (!of_data)
 +		return;
 +
-+	node = of_get_child_by_name(dev->of_node, "rcar_sound,ctu");
++	node = of_get_child_by_name(dev->of_node, "rcar_sound,mix");
 +	if (!node)
 +		return;
 +
 +	nr = of_get_child_count(node);
 +	if (!nr)
-+		goto rsnd_of_parse_ctu_end;
++		goto rsnd_of_parse_mix_end;
 +
-+	ctu_info = devm_kzalloc(dev,
-+				sizeof(struct rsnd_ctu_platform_info) * nr,
++	mix_info = devm_kzalloc(dev,
++				sizeof(struct rsnd_mix_platform_info) * nr,
 +				GFP_KERNEL);
-+	if (!ctu_info) {
-+		dev_err(dev, "ctu info allocation error\n");
-+		goto rsnd_of_parse_ctu_end;
++	if (!mix_info) {
++		dev_err(dev, "mix info allocation error\n");
++		goto rsnd_of_parse_mix_end;
 +	}
 +
-+	info->ctu_info		= ctu_info;
-+	info->ctu_info_nr	= nr;
++	info->mix_info		= mix_info;
++	info->mix_info_nr	= nr;
 +
-+rsnd_of_parse_ctu_end:
++rsnd_of_parse_mix_end:
 +	of_node_put(node);
 +
 +}
 +
-+int rsnd_ctu_probe(struct platform_device *pdev,
++int rsnd_mix_probe(struct platform_device *pdev,
 +		   const struct rsnd_of_data *of_data,
 +		   struct rsnd_priv *priv)
 +{
 +	struct rcar_snd_info *info = rsnd_priv_to_info(priv);
 +	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct rsnd_ctu *ctu;
++	struct rsnd_mix *mix;
 +	struct clk *clk;
-+	char name[CTU_NAME_SIZE];
++	char name[MIX_NAME_SIZE];
 +	int i, nr, ret;
 +
 +	/* This driver doesn't support Gen1 at this point */
 +	if (rsnd_is_gen1(priv)) {
-+		dev_warn(dev, "CTU is not supported on Gen1\n");
++		dev_warn(dev, "MIX is not supported on Gen1\n");
 +		return -EINVAL;
 +	}
 +
-+	rsnd_of_parse_ctu(pdev, of_data, priv);
++	rsnd_of_parse_mix(pdev, of_data, priv);
 +
-+	nr = info->ctu_info_nr;
++	nr = info->mix_info_nr;
 +	if (!nr)
 +		return 0;
 +
-+	ctu = devm_kzalloc(dev, sizeof(*ctu) * nr, GFP_KERNEL);
-+	if (!ctu)
++	mix	= devm_kzalloc(dev, sizeof(*mix) * nr, GFP_KERNEL);
++	if (!mix)
 +		return -ENOMEM;
 +
-+	priv->ctu_nr	= nr;
-+	priv->ctu	= ctu;
++	priv->mix_nr	= nr;
++	priv->mix	= mix;
 +
-+	for_each_rsnd_ctu(ctu, priv, i) {
-+		/*
-+		 * CTU00, CTU01, CTU02, CTU03 => CTU0
-+		 * CTU10, CTU11, CTU12, CTU13 => CTU1
-+		 */
-+		snprintf(name, CTU_NAME_SIZE, "%s.%d",
-+			 CTU_NAME, i / 4);
++	for_each_rsnd_mix(mix, priv, i) {
++		snprintf(name, MIX_NAME_SIZE, "%s.%d",
++			 MIX_NAME, i);
 +
 +		clk = devm_clk_get(dev, name);
 +		if (IS_ERR(clk))
 +			return PTR_ERR(clk);
 +
-+		ctu->info = &info->ctu_info[i];
++		mix->info = &info->mix_info[i];
 +
-+		ret = rsnd_mod_init(priv, &ctu->mod, &rsnd_ctu_ops,
-+				    clk, RSND_MOD_CTU, i);
++		ret = rsnd_mod_init(priv, &mix->mod, &rsnd_mix_ops,
++				    clk, RSND_MOD_MIX, i);
 +		if (ret)
 +			return ret;
 +	}
@@ -386,136 +581,79 @@ index 000000000000..05edd2009b81
 +	return 0;
 +}
 +
-+void rsnd_ctu_remove(struct platform_device *pdev,
++void rsnd_mix_remove(struct platform_device *pdev,
 +		     struct rsnd_priv *priv)
 +{
-+	struct rsnd_ctu *ctu;
++	struct rsnd_mix *mix;
 +	int i;
 +
-+	for_each_rsnd_ctu(ctu, priv, i) {
-+		rsnd_mod_quit(&ctu->mod);
++	for_each_rsnd_mix(mix, priv, i) {
++		rsnd_mod_quit(&mix->mod);
 +	}
 +}
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 23282f48f71f..229b68d2cf70 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -426,7 +426,8 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
- 	phys_addr_t src_reg = rsnd_gen_get_phy_addr(priv, RSND_GEN2_SCU);
- 	int is_ssi = !!(rsnd_io_to_mod_ssi(io) == mod);
- 	int use_src = !!rsnd_io_to_mod_src(io);
--	int use_dvc = !!rsnd_io_to_mod_dvc(io);
-+	int use_cmd = !!rsnd_io_to_mod_dvc(io) ||
-+		      !!rsnd_io_to_mod_ctu(io);
- 	int id = rsnd_mod_id(mod);
- 	struct dma_addr {
- 		dma_addr_t out_addr;
-@@ -464,7 +465,7 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
- 	};
- 
- 	/* it shouldn't happen */
--	if (use_dvc && !use_src)
-+	if (use_cmd && !use_src)
- 		dev_err(dev, "DVC is selected without SRC\n");
- 
- 	/* use SSIU or SSI ? */
-@@ -472,8 +473,8 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
- 		is_ssi++;
- 
- 	return (is_from) ?
--		dma_addrs[is_ssi][is_play][use_src + use_dvc].out_addr :
--		dma_addrs[is_ssi][is_play][use_src + use_dvc].in_addr;
-+		dma_addrs[is_ssi][is_play][use_src + use_cmd].out_addr :
-+		dma_addrs[is_ssi][is_play][use_src + use_cmd].in_addr;
- }
- 
- static dma_addr_t rsnd_dma_addr(struct rsnd_dai_stream *io,
-@@ -504,6 +505,7 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
- 	struct rsnd_mod *this = rsnd_dma_to_mod(dma);
- 	struct rsnd_mod *ssi = rsnd_io_to_mod_ssi(io);
- 	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
-+	struct rsnd_mod *ctu = rsnd_io_to_mod_ctu(io);
- 	struct rsnd_mod *dvc = rsnd_io_to_mod_dvc(io);
- 	struct rsnd_mod *mod[MOD_MAX];
- 	struct rsnd_mod *mod_start, *mod_end;
-@@ -543,6 +545,9 @@ static void rsnd_dma_of_path(struct rsnd_dma *dma,
- 		if (src) {
- 			mod[i] = src;
- 			src = NULL;
-+		} else if (ctu) {
-+			mod[i] = ctu;
-+			ctu = NULL;
- 		} else if (dvc) {
- 			mod[i] = dvc;
- 			dvc = NULL;
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index a2d5df4d5d17..41b75cd4e09b 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -240,6 +240,8 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
- 		RSND_GEN_M_REG(SRC_SRCCR,	0x224,	0x40),
- 		RSND_GEN_M_REG(SRC_BSDSR,	0x22c,	0x40),
- 		RSND_GEN_M_REG(SRC_BSISR,	0x238,	0x40),
-+		RSND_GEN_M_REG(CTU_CTUIR,	0x504,	0x100),
-+		RSND_GEN_M_REG(CTU_ADINR,	0x508,	0x100),
- 		RSND_GEN_M_REG(DVC_SWRSR,	0xe00,	0x100),
- 		RSND_GEN_M_REG(DVC_DVUIR,	0xe04,	0x100),
- 		RSND_GEN_M_REG(DVC_ADINR,	0xe08,	0x100),
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7fee2079ba5a..f2128a7cf259 100644
+index f2128a7cf259..7a0e52b4640a 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -47,6 +47,8 @@ enum rsnd_reg {
- 	RSND_REG_SCU_SYS_STATUS0,
- 	RSND_REG_SCU_SYS_INT_EN0,
+@@ -49,6 +49,16 @@ enum rsnd_reg {
  	RSND_REG_CMD_ROUTE_SLCT,
-+	RSND_REG_CTU_CTUIR,
-+	RSND_REG_CTU_ADINR,
+ 	RSND_REG_CTU_CTUIR,
+ 	RSND_REG_CTU_ADINR,
++	RSND_REG_MIX_SWRSR,
++	RSND_REG_MIX_MIXIR,
++	RSND_REG_MIX_ADINR,
++	RSND_REG_MIX_MIXMR,
++	RSND_REG_MIX_MVPDR,
++	RSND_REG_MIX_MDBAR,
++	RSND_REG_MIX_MDBBR,
++	RSND_REG_MIX_MDBCR,
++	RSND_REG_MIX_MDBDR,
++	RSND_REG_MIX_MDBER,
  	RSND_REG_DVC_SWRSR,
  	RSND_REG_DVC_DVUIR,
  	RSND_REG_DVC_ADINR,
-@@ -220,6 +222,7 @@ struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
+@@ -222,6 +232,7 @@ struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
   */
  enum rsnd_mod_type {
  	RSND_MOD_DVC = 0,
-+	RSND_MOD_CTU,
++	RSND_MOD_MIX,
+ 	RSND_MOD_CTU,
  	RSND_MOD_SRC,
  	RSND_MOD_SSI,
- 	RSND_MOD_MAX,
-@@ -351,6 +354,7 @@ struct rsnd_dai_stream {
- #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+@@ -355,6 +366,7 @@ struct rsnd_dai_stream {
  #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
  #define rsnd_io_to_mod_src(io)	rsnd_io_to_mod((io), RSND_MOD_SRC)
-+#define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
+ #define rsnd_io_to_mod_ctu(io)	rsnd_io_to_mod((io), RSND_MOD_CTU)
++#define rsnd_io_to_mod_mix(io)	rsnd_io_to_mod((io), RSND_MOD_MIX)
  #define rsnd_io_to_mod_dvc(io)	rsnd_io_to_mod((io), RSND_MOD_DVC)
  #define rsnd_io_to_rdai(io)	((io)->rdai)
  #define rsnd_io_to_priv(io)	(rsnd_rdai_to_priv(rsnd_io_to_rdai(io)))
-@@ -463,6 +467,12 @@ struct rsnd_priv {
- 	int src_nr;
+@@ -473,6 +485,12 @@ struct rsnd_priv {
+ 	int ctu_nr;
  
  	/*
-+	 * below value will be filled on rsnd_ctu_probe()
++	 * below value will be filled on rsnd_mix_probe()
 +	 */
-+	void *ctu;
-+	int ctu_nr;
++	void *mix;
++	int mix_nr;
 +
 +	/*
  	 * below value will be filled on rsnd_dvc_probe()
  	 */
  	void *dvc;
-@@ -568,6 +578,17 @@ int rsnd_src_ssi_irq_enable(struct rsnd_mod *ssi_mod);
- int rsnd_src_ssi_irq_disable(struct rsnd_mod *ssi_mod);
+@@ -589,6 +607,17 @@ void rsnd_ctu_remove(struct platform_device *pdev,
+ struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
  
  /*
-+ *	R-Car CTU
++ *	R-Car MIX
 + */
-+int rsnd_ctu_probe(struct platform_device *pdev,
++int rsnd_mix_probe(struct platform_device *pdev,
 +		   const struct rsnd_of_data *of_data,
 +		   struct rsnd_priv *priv);
 +
-+void rsnd_ctu_remove(struct platform_device *pdev,
++void rsnd_mix_remove(struct platform_device *pdev,
 +		     struct rsnd_priv *priv);
-+struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
++struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id);
 +
 +/*
   *	R-Car DVC
