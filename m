@@ -1,185 +1,60 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [PATCH v2 2/2] ASoC: rt5645: Add regulator support
-Date: Fri, 17 Jul 2015 11:33:12 +0800
-Message-ID: <1437103992-61518-2-git-send-email-koro.chen@mediatek.com>
-References: <1437103992-61518-1-git-send-email-koro.chen@mediatek.com>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Fri, 17 Jul 2015 08:56:26 +0200
+Message-ID: <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
+References: <20150626115823.GY14071@sirena.org.uk>
+	<CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
+	<20150629094854.GB11162@sirena.org.uk>
+	<CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+	<20150630103404.GI6321@opensource.wolfsonmicro.com>
+	<CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
+	<20150713095359.GM16517@opensource.wolfsonmicro.com>
+	<CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
+	<CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
+	<20150715081224.GN16517@opensource.wolfsonmicro.com>
+	<20150715091709.GK11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1437103992-61518-1-git-send-email-koro.chen@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
-Cc: srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, bardliao@realtek.com, oder_chiou@realtek.com, Koro Chen <koro.chen@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150715091709.GK11162-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds basic regulator support for rt5645.
+2015-07-15 11:17 GMT+02:00 Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>:
+> On Wed, Jul 15, 2015 at 09:12:24AM +0100, Charles Keepax wrote:
+>
+> Folks, please remember to delete irrelevant context from your replies so
+> it's possible to find any new content you might have added.
+>
+>> I suspect we still have some issues with the GPIO lookups, I
+>> suspect we want to actually pull them from ACPI rather than
+>> putting them into the pdata, as I don't know if the number will
+>> translate directly over.
+>
+> Yes, you shouldn't be fishing numbers directly out of ACPI but instead
+> resolving them into Linux GPIO numbers.
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
----
-Change since v1:
- - none
----
- sound/soc/codecs/rt5645.c | 61 ++++++++++++++++++++++++++++++++++++++++++++---
- sound/soc/codecs/rt5645.h | 26 --------------------
- 2 files changed, 58 insertions(+), 29 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 56e8c31..7a68d47 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -21,6 +21,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
-+#include <linux/regulator/consumer.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -223,6 +224,38 @@ static const struct reg_default rt5645_reg[] = {
- 	{ 0xff, 0x6308 },
- };
- 
-+static const char *const rt5645_supply_names[] = {
-+	"avdd",
-+	"cpvdd",
-+};
-+
-+struct rt5645_priv {
-+	struct snd_soc_codec *codec;
-+	struct rt5645_platform_data pdata;
-+	struct regmap *regmap;
-+	struct i2c_client *i2c;
-+	struct gpio_desc *gpiod_hp_det;
-+	struct snd_soc_jack *hp_jack;
-+	struct snd_soc_jack *mic_jack;
-+	struct snd_soc_jack *btn_jack;
-+	struct delayed_work jack_detect_work;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(rt5645_supply_names)];
-+
-+	int codec_type;
-+	int sysclk;
-+	int sysclk_src;
-+	int lrck[RT5645_AIFS];
-+	int bclk[RT5645_AIFS];
-+	int master[RT5645_AIFS];
-+
-+	int pll_src;
-+	int pll_in;
-+	int pll_out;
-+
-+	int jack_type;
-+	bool en_button_func;
-+};
-+
- static int rt5645_reset(struct snd_soc_codec *codec)
- {
- 	return snd_soc_write(codec, RT5645_RESET, 0);
-@@ -3218,7 +3251,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- {
- 	struct rt5645_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5645_priv *rt5645;
--	int ret;
-+	int ret, i;
- 	unsigned int val;
- 
- 	rt5645 = devm_kzalloc(&i2c->dev, sizeof(struct rt5645_priv),
-@@ -3252,6 +3285,24 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	for (i = 0; i < ARRAY_SIZE(rt5645->supplies); i++)
-+		rt5645->supplies[i].supply = rt5645_supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(&i2c->dev,
-+				      ARRAY_SIZE(rt5645->supplies),
-+				      rt5645->supplies);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(rt5645->supplies),
-+				    rt5645->supplies);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+
- 	regmap_read(rt5645->regmap, RT5645_VENDOR_ID2, &val);
- 
- 	switch (val) {
-@@ -3265,7 +3316,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		dev_err(&i2c->dev,
- 			"Device with ID register %#x is not rt5645 or rt5650\n",
- 			val);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_enable;
- 	}
- 
- 	if (rt5645->codec_type == CODEC_TYPE_RT5650) {
-@@ -3403,7 +3455,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 			| IRQF_ONESHOT, "rt5645", rt5645);
- 		if (ret) {
- 			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
--			return ret;
-+			goto err_enable;
- 		}
- 	}
- 
-@@ -3417,6 +3469,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- err_irq:
- 	if (rt5645->i2c->irq)
- 		free_irq(rt5645->i2c->irq, rt5645);
-+err_enable:
-+	regulator_bulk_disable(ARRAY_SIZE(rt5645->supplies), rt5645->supplies);
- 	return ret;
- }
- 
-@@ -3430,6 +3484,7 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
- 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
- 
- 	snd_soc_unregister_codec(&i2c->dev);
-+	regulator_bulk_disable(ARRAY_SIZE(rt5645->supplies), rt5645->supplies);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 0353a6a..199b22f 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2177,32 +2177,6 @@ enum {
- int rt5645_sel_asrc_clk_src(struct snd_soc_codec *codec,
- 		unsigned int filter_mask, unsigned int clk_src);
- 
--struct rt5645_priv {
--	struct snd_soc_codec *codec;
--	struct rt5645_platform_data pdata;
--	struct regmap *regmap;
--	struct i2c_client *i2c;
--	struct gpio_desc *gpiod_hp_det;
--	struct snd_soc_jack *hp_jack;
--	struct snd_soc_jack *mic_jack;
--	struct snd_soc_jack *btn_jack;
--	struct delayed_work jack_detect_work;
--
--	int codec_type;
--	int sysclk;
--	int sysclk_src;
--	int lrck[RT5645_AIFS];
--	int bclk[RT5645_AIFS];
--	int master[RT5645_AIFS];
--
--	int pll_src;
--	int pll_in;
--	int pll_out;
--
--	int jack_type;
--	bool en_button_func;
--};
--
- int rt5645_set_jack_detect(struct snd_soc_codec *codec,
- 	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack,
- 	struct snd_soc_jack *btn_jack);
--- 
-1.8.1.1.dirty
+as mentioned before it should be using the gpiolib.h to get the right
+gpios from ACPI space, right??
+I am looking how this would be done in this case, hope to understand
+and get it today working with gpiolib
+
+By the way I have restest (with a lot more local debugs) and I know
+now that the function arizona_dev_init()
+wrongly calls the arizona_of_get_core_pdata() which could not work here...
+
+so these two open issues I have to resolve yet before I can have fun
+with the new alsa sound device
+
+
+cheers
+chris
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
