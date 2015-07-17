@@ -1,59 +1,33 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Fri, 17 Jul 2015 09:11:07 +0200
-Message-ID: <CAKor6TcTrTzcf3u=UVoP9rkFS0cQYNWUBT1HEsWnTJfwoTKuEg@mail.gmail.com>
-References: <20150626115823.GY14071@sirena.org.uk>
- <CAKor6Tf20eC1WQSO=AV2b+XoB5Qv-2Oin_nrrTJUiDV4czxLjA@mail.gmail.com>
- <20150629094854.GB11162@sirena.org.uk>
- <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
- <20150630103404.GI6321@opensource.wolfsonmicro.com>
- <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
- <20150713095359.GM16517@opensource.wolfsonmicro.com>
- <CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
- <CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
- <20150715081224.GN16517@opensource.wolfsonmicro.com>
- <20150715091709.GK11162@sirena.org.uk>
- <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BDAB26068A
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 09:11:08 +0200 (CEST)
-Received: by qkdt66 with SMTP id t66so6486566qkd.1
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 00:11:08 -0700 (PDT)
-In-Reply-To: <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, mika.westerberg@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] ASoC: rt5645: remove unused variable
+Date: Fri, 17 Jul 2015 12:53:38 +0530
+Message-ID: <1437117818-25972-1-git-send-email-sudipm.mukherjee@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJIGhhZCBhbHJlYWR5IGFza2VkIGFib3V0IHRoZSBweGEyeHggYW5kIHRoZSBQSU8gbW9k
-ZSAoYWthIG5vIERNQQpjaGFubmVscyBhdmFpbGFibGUpLgpJZiBJIHJlbWVtYmVyIGNvcnJlY3Rs
-eSwgaXQgZG9lcyBub3QgbmVlZCBETUEgYXQgYWxsLgoKT3RoZXJ3aXNlIEkgc2VlIGxhdGVyIGlu
-IGRtZXNnIHRoZSBEZXNpZ25XYXJlIERNQSBDb250cm9sbGVyICgyeCkgw6AgOCBjaGFubmVscy4K
-CklzIHRoZSBweGEyeHggbm90IHVzaW5nIHRoZSBETUEgbW9kZSBjYXVzZSB0aGUgRGVzaWdud2Fy
-ZSBjb250cm9sbGVycwphcmUgaW5pdGlhbGl6ZWQgbGF0ZXI/PwpPciBoYXMgdGhpcyBub3RoaW5n
-IHRvIGRvIHdpdGggaXQgYXQgYWxsID8gU3RpbGwgaW50ZXJlc3RlZC4uLgoKc25pcCBvZiBkbWVz
-ZzoKWyAgICA2LjE2NDQwOV0gcHhhMnh4LXNwaSA4MDg2MEYwRTowMDogbm8gRE1BIGNoYW5uZWxz
-IGF2YWlsYWJsZSwgdXNpbmcgUElPClsgICAgNi4xNjQ0ODVdIHB4YTJ4eC1zcGkgODA4NjBGMEU6
-MDA6IHJlZ2lzdGVyZWQgbWFzdGVyIHNwaTMyNzY2IChkeW5hbWljKQpbICAgIDYuMTY1MDIwXSBz
-cGkgc3BpLVdNNTEwMjA1OjAwOiA4MzMzMzMzIEh6IGFjdHVhbCwgUElPClsgICAgNi4xNjUwMjhd
-IHNwaSBzcGktV001MTAyMDU6MDA6IHNldHVwIG1vZGUgMCwgOCBiaXRzL3csIDgwMDAwMDAgSHog
-bWF4IC0tPiAwCi4uLgpbICAgIDYuMzkyNTUyXSBkd19kbWFjIElOVEw5QzYwOjAwOiBEZXNpZ25X
-YXJlIERNQSBDb250cm9sbGVyLCA4IGNoYW5uZWxzClsgICAgNi4zOTYzMTBdIGR3X2RtYWMgSU5U
-TDlDNjA6MDE6IERlc2lnbldhcmUgRE1BIENvbnRyb2xsZXIsIDggY2hhbm5lbHMKCgpzbyBmYXIK
-Y2hyaXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+We were getting a build warning about unused variable. This variable was
+a leftover from:
+a4e3c5fa955c ("ASoC: rt5645: Simplify rt5645_enable_push_button_irq")
+
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ sound/soc/codecs/rt5645.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index d24c979..ff091d6 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2763,7 +2763,6 @@ static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
+ 	bool enable)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+-	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (enable) {
+ 		snd_soc_dapm_force_enable_pin(dapm, "ADC L power");
+-- 
+1.8.1.2
