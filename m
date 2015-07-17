@@ -1,15 +1,14 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:fix/rt5645 1/1]
- sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value,
- in function returning non-void
-Date: Thu, 16 Jul 2015 20:32:07 +0800
-Message-ID: <201507162001.z6afFgHb%fengguang.wu@intel.com>
+Subject: [asoc:for-next 6/18] sound/soc/codecs/rt5645.c:2931:3:
+ warning: 'return' with a value, in function returning void
+Date: Fri, 17 Jul 2015 21:10:38 +0800
+Message-ID: <201507172137.sHig5Jfh%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Type: multipart/mixed; boundary="J/dobhs11T7y2rNN"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D612B260579
- for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2015 14:33:36 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C8F42612DF
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 15:11:39 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,70 +19,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
---LQksG6bCIzRHxTLp
+--J/dobhs11T7y2rNN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git fix/rt5645
-head:   3c2234569cfff83718792f810a9bb855b78c2473
-commit: 3c2234569cfff83718792f810a9bb855b78c2473 [1/1] ASoC: rt5645: Check if codec is initialized in workqueue handler
+tree:   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+head:   db91b047f7131c7e8fe00ca9e38d14c0c103363f
+commit: 947d4dc4cd5be5da8e5e82f314d5cfb85a3eb3cc [6/18] Merge remote-tracking branch 'asoc/topic/rt5645' into asoc-next
 config: i386-randconfig-x009-201528 (attached as .config)
 reproduce:
-  git checkout 3c2234569cfff83718792f810a9bb855b78c2473
+  git checkout 947d4dc4cd5be5da8e5e82f314d5cfb85a3eb3cc
   # save the attached .config to linux build tree
   make ARCH=i386 
 
 All warnings (new ones prefixed by >>):
 
-   sound/soc/codecs/rt5645.c: In function 'rt5645_irq_detection':
->> sound/soc/codecs/rt5645.c:2947:3: warning: 'return' with no value, in function returning non-void [-Wreturn-type]
-      return;
+   sound/soc/codecs/rt5645.c: In function 'rt5645_jack_detect_work':
+>> sound/soc/codecs/rt5645.c:2931:3: warning: 'return' with a value, in function returning void
+      return -EINVAL;
       ^
 
-vim +/return +2947 sound/soc/codecs/rt5645.c
+vim +/return +2931 sound/soc/codecs/rt5645.c
 
-  2931	{
-  2932		int btn_type, val;
-  2933	
-  2934		val = snd_soc_read(codec, RT5650_4BTN_IL_CMD1);
-  2935		pr_debug("val=0x%x\n", val);
-  2936		btn_type = val & 0xfff0;
-  2937		snd_soc_write(codec, RT5650_4BTN_IL_CMD1, val);
-  2938	
-  2939		return btn_type;
-  2940	}
-  2941	
-  2942	static int rt5645_irq_detection(struct rt5645_priv *rt5645)
-  2943	{
-  2944		int val, btn_type, gpio_state = 0, report = 0;
-  2945	
-  2946		if (!rt5645->codec)
-> 2947			return;
-  2948	
-  2949		switch (rt5645->pdata.jd_mode) {
-  2950		case 0: /* Not using rt5645 JD */
-  2951			if (rt5645->gpiod_hp_det) {
-  2952				gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
-  2953				dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
-  2954					gpio_state);
-  2955				report = rt5645_jack_detect(rt5645->codec, gpio_state);
+6e747d53 Bard Liao       2015-04-28  2915  		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
+6e747d53 Bard Liao       2015-04-28  2916  				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
+6e747d53 Bard Liao       2015-04-28  2917  	}
+345b0f50 John Lin        2015-05-18  2918  	rt5645_irq(0, rt5645);
+f3fa1bbd Oder Chiou      2014-09-19  2919  
+f3fa1bbd Oder Chiou      2014-09-19  2920  	return 0;
+f3fa1bbd Oder Chiou      2014-09-19  2921  }
+f3fa1bbd Oder Chiou      2014-09-19  2922  EXPORT_SYMBOL_GPL(rt5645_set_jack_detect);
+f3fa1bbd Oder Chiou      2014-09-19  2923  
+cd6e82b8 Oder Chiou      2014-10-07  2924  static void rt5645_jack_detect_work(struct work_struct *work)
+cd6e82b8 Oder Chiou      2014-10-07  2925  {
+cd6e82b8 Oder Chiou      2014-10-07  2926  	struct rt5645_priv *rt5645 =
+cd6e82b8 Oder Chiou      2014-10-07  2927  		container_of(work, struct rt5645_priv, jack_detect_work.work);
+6e747d53 Bard Liao       2015-04-28  2928  	int val, btn_type, gpio_state = 0, report = 0;
+6e747d53 Bard Liao       2015-04-28  2929  
+f2a5ded3 Nicolas Boichat 2015-07-17  2930  	if (!rt5645->codec)
+f2a5ded3 Nicolas Boichat 2015-07-17 @2931  		return -EINVAL;
+f2a5ded3 Nicolas Boichat 2015-07-17  2932  
+6e747d53 Bard Liao       2015-04-28  2933  	switch (rt5645->pdata.jd_mode) {
+6e747d53 Bard Liao       2015-04-28  2934  	case 0: /* Not using rt5645 JD */
+0b0cefc8 Oder Chiou      2015-06-10  2935  		if (rt5645->gpiod_hp_det) {
+0b0cefc8 Oder Chiou      2015-06-10  2936  			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
+0b0cefc8 Oder Chiou      2015-06-10  2937  			dev_dbg(rt5645->codec->dev, "gpio_state = %d\n",
+0b0cefc8 Oder Chiou      2015-06-10  2938  				gpio_state);
+0b0cefc8 Oder Chiou      2015-06-10  2939  			report = rt5645_jack_detect(rt5645->codec, gpio_state);
+
+:::::: The code at line 2931 was first introduced by commit
+:::::: f2a5ded38592e5936a099ea6535ad5d3addcbc9d ASoC: rt5645: Check if codec is initialized in workqueue handler
+
+:::::: TO: Nicolas Boichat <drinkcat@chromium.org>
+:::::: CC: Mark Brown <broonie@kernel.org>
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---LQksG6bCIzRHxTLp
+--J/dobhs11T7y2rNN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=".config"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/i386 4.2.0-rc1 Kernel Configuration
+# Linux/i386 4.2.0-rc2 Kernel Configuration
 #
 # CONFIG_64BIT is not set
 CONFIG_X86_32=y
@@ -4537,11 +4542,11 @@ CONFIG_FONT_8x16=y
 CONFIG_ARCH_HAS_SG_CHAIN=y
 CONFIG_ARCH_HAS_PMEM_API=y
 
---LQksG6bCIzRHxTLp
+--J/dobhs11T7y2rNN
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---LQksG6bCIzRHxTLp--
+--J/dobhs11T7y2rNN--
