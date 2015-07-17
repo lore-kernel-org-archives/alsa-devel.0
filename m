@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: sti_uniperiph_dai_create_ctrl()
-	can be static" to the asoc tree
-Date: Fri, 17 Jul 2015 01:10:03 +0100
-Message-ID: <E1ZFtE3-00040d-Nq@debutante>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v2] ALSA: hda - Fix Skylake codec timeout
+Date: Fri, 17 Jul 2015 08:57:41 +0800
+Message-ID: <55A85305.5080802@canonical.com>
+References: <1437035964-5658-1-git-send-email-david.henningsson@canonical.com>
+ <96A12704CE18D347B625EE2D4A099D19687270@SHSMSX103.ccr.corp.intel.com>
+ <55A7CE55.5010700@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E374260614
- for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 02:10:14 +0200 (CEST)
-In-Reply-To: 
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1008260629
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2015 02:57:52 +0200 (CEST)
+In-Reply-To: <55A7CE55.5010700@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,106 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fengguang Wu <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>, "Yang, Libin" <libin.yang@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Lu, Han" <han.lu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 07/16/2015 11:31 PM, David Henningsson wrote:
+>
+>
+> On 2015-07-16 17:14, Yang, Libin wrote:
+>>> -----Original Message-----
+>>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>>> Sent: Thursday, July 16, 2015 4:39 PM
+>>> To: tiwai@suse.de; hui.wang@canonical.com; alsa-devel@alsa-
+>>> project.org; Yang, Libin; Lin, Mengdong
+>>> Cc: David Henningsson
+>>> Subject: [PATCH v2] ALSA: hda - Fix Skylake codec timeout
+>>>
+>>> When the controller is powered up but the HDMI codec is powered
+>>> down
+>>> on Skylake, the power well is turned off. When the codec is then
+>>> powered up again, we need to poke the codec a little extra to make
+>>> sure it wakes up. Otherwise we'll get sad "no response from codec"
+>>> messages and broken audio.
+>>
+>> Thanks for finding this issue.
+>>
+>> Could you please give us you test case? We didn't meet such issue
+>> before. I would like do a full test on it.
+>
+> The test case is:
+>
+>  - Install Ubuntu 15.04.
+>  - Upgrade to kernel 4.1.
+>  - Boot the new kernel.
+>
+> Note: I believe Hui tested with 4.1 and got this error. In my case I 
+> have been running a hybrid kernel: Ubuntu 15.04, kernel 3.19.0-23.24 
+> (which has a backported i915 driver), and then the alsa-daily DKMS on 
+> top of that.
+>
+> I can email you off-list with details about the machine I tested it 
+> on, if you like.
+>
 
-   ASoC: sti: sti_uniperiph_dai_create_ctrl() can be static
+Here is a dmesg log, it is generated on a skl laptop with 
+drm-intel-nightly kernel (v4.2), searching the keyword "timeout" in the 
+text, you will find lots of timeout errors.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f2da4542268503d22869617b7dbcb40d364c78bb Mon Sep 17 00:00:00 2001
-From: kbuild test robot <fengguang.wu@intel.com>
-Date: Fri, 17 Jul 2015 07:44:09 +0800
-Subject: [PATCH] ASoC: sti: sti_uniperiph_dai_create_ctrl() can be static
-
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sti/sti_uniperif.c    | 2 +-
- sound/soc/sti/uniperif_player.c | 4 ++--
- sound/soc/sti/uniperif_reader.c | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 749e6b294184..83a301f2aa66 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -14,7 +14,7 @@
-  * This function is used to create Ctrl associated to DAI but also pcm device.
-  * Request is done by front end to associate ctrl with pcm device id
-  */
--int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
-+static int sti_uniperiph_dai_create_ctrl(struct snd_soc_dai *dai)
- {
- 	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
- 	struct uniperif *uni = priv->dai_data.uni;
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index d990d2c81a5d..f609089a6e00 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -43,7 +43,7 @@
-  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-  * integrate  DAI_CPU capability in term of rate and supported channels
-  */
--const struct snd_pcm_hardware uni_player_pcm_hw = {
-+static const struct snd_pcm_hardware uni_player_pcm_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID,
-@@ -175,7 +175,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 	return ret;
- }
- 
--int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
-+static int uni_player_clk_set_rate(struct uniperif *player, unsigned long rate)
- {
- 	int rate_adjusted, rate_achieved, delta, ret;
- 	int adjustment = player->clk_adj;
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index 7d83827ba660..c502626f339b 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -17,7 +17,7 @@
-  * Note: snd_pcm_hardware is linked to DMA controller but is declared here to
-  * integrate unireader capability in term of rate and supported channels
-  */
--const struct snd_pcm_hardware uni_reader_pcm_hw = {
-+static const struct snd_pcm_hardware uni_reader_pcm_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID,
-@@ -324,7 +324,7 @@ static int uni_reader_parse_dt(struct platform_device *pdev,
- 	return 0;
- }
- 
--const struct snd_soc_dai_ops uni_reader_dai_ops = {
-+static const struct snd_soc_dai_ops uni_reader_dai_ops = {
- 		.shutdown = uni_reader_shutdown,
- 		.prepare = uni_reader_prepare,
- 		.trigger = uni_reader_trigger,
--- 
-2.1.4
+http://paste.ubuntu.com/11890651/
