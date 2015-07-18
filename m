@@ -1,97 +1,113 @@
 From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [PATCH v2 2/2] ASoC: rockchip: Add machine driver for rt5645/rt5650 codec
-Date: Sat, 18 Jul 2015 13:08:44 +0800
-Message-ID: <1437196124-32655-3-git-send-email-zhengxing@rock-chips.com>
+Subject: [PATCH v2 1/2] ASoC: rockchip: Add machine driver for
+	max98090 codec
+Date: Sat, 18 Jul 2015 13:08:43 +0800
+Message-ID: <1437196124-32655-2-git-send-email-zhengxing@rock-chips.com>
 References: <1437196124-32655-1-git-send-email-zhengxing@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE1DB260438
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jul 2015 07:15:03 +0200 (CEST)
 In-Reply-To: <1437196124-32655-1-git-send-email-zhengxing@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org
-Cc: linux-rockchip@lists.infradead.org, zhengxing <zhengxing@rock-chips.com>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, zhengxing <zhengxing@rock-chips.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: zhengxing <zhengxing@rock-chips.com>
 
-The driver is used for rockchip board using a rt5645/rt5650.
+The driver is used for rockchip board using a max98090.
 
 Reviewed-by: Dylan Reid <dgreid@chromium.org>
 Signed-off-by: zhengxing <zhengxing@rock-chips.com>
-
 ---
 
-Changes in v2:
-Signed-off-by: zhengxing <zhengxing@rock-chips.com>
+Changes in v2: None
 
- .../devicetree/bindings/sound/rockchip-rt5645.txt  |   17 ++
- sound/soc/rockchip/Kconfig                         |    9 +
- sound/soc/rockchip/Makefile                        |    2 +
- sound/soc/rockchip/rockchip_rt5645.c               |  236 ++++++++++++++++++++
- 4 files changed, 264 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip-rt5645.txt
- create mode 100644 sound/soc/rockchip/rockchip_rt5645.c
+ .../bindings/sound/rockchip-max98090.txt           |   19 ++
+ sound/soc/rockchip/Kconfig                         |   10 +
+ sound/soc/rockchip/Makefile                        |    4 +
+ sound/soc/rockchip/rockchip_max98090.c             |  247 ++++++++++++++++++++
+ 4 files changed, 280 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-max98090.txt
+ create mode 100644 sound/soc/rockchip/rockchip_max98090.c
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-rt5645.txt b/Documentation/devicetree/bindings/sound/rockchip-rt5645.txt
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-max98090.txt b/Documentation/devicetree/bindings/sound/rockchip-max98090.txt
 new file mode 100644
-index 0000000..411a62b
+index 0000000..a805aa9
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip-rt5645.txt
-@@ -0,0 +1,17 @@
-+ROCKCHIP with RT5645/RT5650 CODECS
++++ b/Documentation/devicetree/bindings/sound/rockchip-max98090.txt
+@@ -0,0 +1,19 @@
++ROCKCHIP with MAX98090 CODEC
 +
 +Required properties:
-+- compatible: "rockchip,rockchip-audio-rt5645"
++- compatible: "rockchip,rockchip-audio-max98090"
 +- rockchip,model: The user-visible name of this sound complex
 +- rockchip,i2s-controller: The phandle of the Rockchip I2S controller that's
 +  connected to the CODEC
-+- rockchip,audio-codec: The phandle of the RT5645/RT5650 audio codec
++- rockchip,audio-codec: The phandle of the MAX98090 audio codec
++- rockchip,headset-codec: The phandle of Ext chip for jack detection
 +
 +Example:
 +
 +sound {
-+	compatible = "rockchip,rockchip-audio-rt5645";
++	compatible = "rockchip,rockchip-audio-max98090";
 +	rockchip,model = "ROCKCHIP-I2S";
 +	rockchip,i2s-controller = <&i2s>;
-+	rockchip,audio-codec = <&rt5645>;
++	rockchip,audio-codec = <&max98090>;
++	rockchip,headset-codec = <&headsetcodec>;
 +};
 diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index d123566..58bae8e 100644
+index e181826..d123566 100644
 --- a/sound/soc/rockchip/Kconfig
 +++ b/sound/soc/rockchip/Kconfig
-@@ -24,3 +24,12 @@ config SND_SOC_ROCKCHIP_MAX98090
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Rockchip
- 	  boards using the MAX98090 codec, such as Veyron.
+@@ -14,3 +14,13 @@ config SND_SOC_ROCKCHIP_I2S
+ 	  Say Y or M if you want to add support for I2S driver for
+ 	  Rockchip I2S device. The device supports upto maximum of
+ 	  8 channels each for play and record.
 +
-+config SND_SOC_ROCKCHIP_RT5645
-+	tristate "ASoC support for Rockchip boards using a RT5645/RT5650 codec"
++config SND_SOC_ROCKCHIP_MAX98090
++	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
 +	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB
 +	select SND_SOC_ROCKCHIP_I2S
-+	select SND_SOC_RT5645
++	select SND_SOC_MAX98090
++	select SND_SOC_TS3A227E
 +	help
 +	  Say Y or M here if you want to add support for SoC audio on Rockchip
-+	  boards using the RT5645/RT5650 codec, such as Veyron.
++	  boards using the MAX98090 codec, such as Veyron.
 diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
-index df3445b..1bc1dc3 100644
+index b921909..df3445b 100644
 --- a/sound/soc/rockchip/Makefile
 +++ b/sound/soc/rockchip/Makefile
-@@ -4,5 +4,7 @@ snd-soc-i2s-objs := rockchip_i2s.o
+@@ -2,3 +2,7 @@
+ snd-soc-i2s-objs := rockchip_i2s.o
+ 
  obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-i2s.o
- 
- snd-soc-rockchip-max98090-objs := rockchip_max98090.o
-+snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
- 
- obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
-+obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
++
++snd-soc-rockchip-max98090-objs := rockchip_max98090.o
++
++obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
 new file mode 100644
-index 0000000..ded3e47
+index 0000000..f6644b3
 --- /dev/null
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -0,0 +1,236 @@
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -0,0 +1,247 @@
 +/*
-+ * Rockchip machine ASoC driver for boards using a RT5645/RT5650 CODEC.
++ * Rockchip machine ASoC driver for boards using a MAX90809 CODEC.
 + *
-+ * Copyright (c) 2015, ROCKCHIP CORPORATION.  All rights reserved.
++ * Copyright (c) 2014, ROCKCHIP CORPORATION.  All rights reserved.
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms and conditions of the GNU General Public License,
@@ -112,49 +128,50 @@ index 0000000..ded3e47
 +#include <linux/slab.h>
 +#include <linux/gpio.h>
 +#include <linux/of_gpio.h>
-+#include <linux/delay.h>
 +#include <sound/core.h>
 +#include <sound/jack.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include "rockchip_i2s.h"
 +
-+#define DRV_NAME "rockchip-snd-rt5645"
++#include "rockchip_i2s.h"
++#include "../codecs/ts3a227e.h"
++
++#define DRV_NAME "rockchip-snd-max98090"
 +
 +static struct snd_soc_jack headset_jack;
-+
-+/* Jack detect via rt5645 driver. */
-+extern int rt5645_set_jack_detect(struct snd_soc_codec *codec,
-+	struct snd_soc_jack *hp_jack, struct snd_soc_jack *mic_jack,
-+	struct snd_soc_jack *btn_jack);
++static struct snd_soc_jack_pin headset_jack_pins[] = {
++	{
++		.pin = "Headset Jack",
++		.mask = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			SND_JACK_BTN_2 | SND_JACK_BTN_3,
++	},
++};
 +
 +static const struct snd_soc_dapm_widget rk_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphones", NULL),
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
 +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
 +	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
 +};
 +
 +static const struct snd_soc_dapm_route rk_audio_map[] = {
-+	/* Input Lines */
-+	{"DMIC L2", NULL, "Int Mic"},
-+	{"DMIC R2", NULL, "Int Mic"},
-+	{"RECMIXL", NULL, "Headset Mic"},
-+	{"RECMIXR", NULL, "Headset Mic"},
-+
-+	/* Output Lines */
-+	{"Headphones", NULL, "HPOR"},
-+	{"Headphones", NULL, "HPOL"},
-+	{"Speakers", NULL, "SPOL"},
-+	{"Speakers", NULL, "SPOR"},
++	{"IN34", NULL, "Headset Mic"},
++	{"IN34", NULL, "MICBIAS"},
++	{"MICBIAS", NULL, "Headset Mic"},
++	{"DMICL", NULL, "Int Mic"},
++	{"Headphone", NULL, "HPL"},
++	{"Headphone", NULL, "HPR"},
++	{"Speaker", NULL, "SPKL"},
++	{"Speaker", NULL, "SPKR"},
 +};
 +
 +static const struct snd_kcontrol_new rk_mc_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphones"),
-+	SOC_DAPM_PIN_SWITCH("Speakers"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
 +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
 +	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("Speaker"),
 +};
 +
 +static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
@@ -199,45 +216,47 @@ index 0000000..ded3e47
 +
 +static int rk_init(struct snd_soc_pcm_runtime *runtime)
 +{
-+	struct snd_soc_card *card = runtime->card;
-+	int ret;
-+
 +	/* Enable Headset and 4 Buttons Jack detection */
-+	ret = snd_soc_card_jack_new(card, "Headset Jack",
-+				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
-+				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+				    &headset_jack, NULL, 0);
-+	if (!ret) {
-+		dev_err(card->dev, "New Headset Jack failed! (%d)\n", ret);
-+		return ret;
-+	}
++	return snd_soc_card_jack_new(runtime->card, "Headset Jack",
++			       SND_JACK_HEADSET |
++			       SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			       SND_JACK_BTN_2 | SND_JACK_BTN_3,
++			       &headset_jack,
++			       headset_jack_pins,
++			       ARRAY_SIZE(headset_jack_pins));
++}
 +
-+	return rt5645_set_jack_detect(runtime->codec,
-+				     &headset_jack,
-+				     &headset_jack,
-+				     &headset_jack);
++static int rk_98090_headset_init(struct snd_soc_component *component)
++{
++	return ts3a227e_enable_jack_detect(component, &headset_jack);
 +}
 +
 +static struct snd_soc_ops rk_aif1_ops = {
 +	.hw_params = rk_aif1_hw_params,
 +};
 +
++static struct snd_soc_aux_dev rk_98090_headset_dev = {
++	.name = "Headset Chip",
++	.init = rk_98090_headset_init,
++};
++
 +static struct snd_soc_dai_link rk_dailink = {
-+	.name = "rt5645",
-+	.stream_name = "rt5645 PCM",
-+	.codec_dai_name = "rt5645-aif1",
++	.name = "max98090",
++	.stream_name = "Audio",
++	.codec_dai_name = "HiFi",
 +	.init = rk_init,
 +	.ops = &rk_aif1_ops,
-+	/* set rt5645 as slave */
++	/* set max98090 as slave */
 +	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 +		SND_SOC_DAIFMT_CBS_CFS,
 +};
 +
 +static struct snd_soc_card snd_soc_card_rk = {
-+	.name = "I2S-RT5650",
++	.name = "ROCKCHIP-I2S",
 +	.dai_link = &rk_dailink,
 +	.num_links = 1,
++	.aux_dev = &rk_98090_headset_dev,
++	.num_aux_devs = 1,
 +	.dapm_widgets = rk_dapm_widgets,
 +	.num_dapm_widgets = ARRAY_SIZE(rk_dapm_widgets),
 +	.dapm_routes = rk_audio_map,
@@ -274,6 +293,14 @@ index 0000000..ded3e47
 +
 +	rk_dailink.platform_of_node = rk_dailink.cpu_of_node;
 +
++	rk_98090_headset_dev.codec_of_node = of_parse_phandle(np,
++			"rockchip,headset-codec", 0);
++	if (!rk_98090_headset_dev.codec_of_node) {
++		dev_err(&pdev->dev,
++			"Property 'rockchip,headset-codec' missing/invalid\n");
++		return -EINVAL;
++	}
++
 +	ret = snd_soc_of_parse_card_name(card, "rockchip,model");
 +	if (ret) {
 +		dev_err(&pdev->dev,
@@ -300,12 +327,12 @@ index 0000000..ded3e47
 +	return 0;
 +}
 +
-+static const struct of_device_id rockchip_rt5645_of_match[] = {
-+	{ .compatible = "rockchip,rockchip-audio-rt5645", },
++static const struct of_device_id rockchip_max98090_of_match[] = {
++	{ .compatible = "rockchip,rockchip-audio-max98090", },
 +	{},
 +};
 +
-+MODULE_DEVICE_TABLE(of, rockchip_rt5645_of_match);
++MODULE_DEVICE_TABLE(of, rockchip_max98090_of_match);
 +
 +static struct platform_driver snd_rk_mc_driver = {
 +	.probe = snd_rk_mc_probe,
@@ -314,14 +341,14 @@ index 0000000..ded3e47
 +		.name = DRV_NAME,
 +		.owner = THIS_MODULE,
 +		.pm = &snd_soc_pm_ops,
-+		.of_match_table = rockchip_rt5645_of_match,
++		.of_match_table = rockchip_max98090_of_match,
 +	},
 +};
 +
 +module_platform_driver(snd_rk_mc_driver);
 +
-+MODULE_AUTHOR("Xing Zheng <zhengxing@rock-chips.com>");
-+MODULE_DESCRIPTION("Rockchip rt5645 machine ASoC driver");
++MODULE_AUTHOR("jianqun <jay.xu@rock-chips.com>");
++MODULE_DESCRIPTION("Rockchip max98090 machine ASoC driver");
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("platform:" DRV_NAME);
 -- 
