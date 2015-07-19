@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs4349: Fix setting digital interface
-	format
-Date: Sun, 19 Jul 2015 22:42:49 +0800
-Message-ID: <1437316969.9569.1.camel@ingics.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Add headset mic support for Acer
+	Aspire V5-573G
+Date: Sun, 19 Jul 2015 17:39:46 +0200
+Message-ID: <1437320386-4986-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 3643A260583
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 16:42:56 +0200 (CEST)
-Received: by padck2 with SMTP id ck2so87890837pad.0
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 07:42:54 -0700 (PDT)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A757260595
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 17:39:50 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D47DEAAD6
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 15:39:47 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Tim Howe <tim.howe@cirrus.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TW9kZSBDb250cm9sIC0gUmVnaXN0ZXIgMDJoCgpEaWdpdGFsIEludGVyZmFjZSBGb3JtYXQgKERJ
-RlsyOjBdKSBCaXRzIDYtNAoKRElGMiAgICBESUYxICAgIERJRjAgICAgRGVzY3JpcHRpb24KMCAg
-ICAgICAwICAgICAgIDAgICAgICAgTGVmdC1KdXN0aWZpZWQsIHVwIHRvIDI0LWJpdCBkYXRhCjAg
-ICAgICAgMCAgICAgICAxICAgICAgIEnCslMsIHVwIHRvIDI0LWJpdCBkYXRhCjAgICAgICAgMSAg
-ICAgICAwICAgICAgIFJpZ2h0LUp1c3RpZmllZCwgMTYtYml0IGRhdGEKMCAgICAgICAxICAgICAg
-IDEgICAgICAgUmlnaHQtSnVzdGlmaWVkLCAyNC1iaXQgZGF0YQoxICAgICAgIDAgICAgICAgMCAg
-ICAgICBURE0gc2xvdCAwCjEgICAgICAgMCAgICAgICAxICAgICAgIFRETSBzbG90IDEKMSAgICAg
-ICAxICAgICAgIDAgICAgICAgVERNIHNsb3QgMgoxICAgICAgIDEgICAgICAgMSAgICAgICBURE0g
-c2xvdCAzCgpUaGUgRElGX01BU0sgaXMgMHg3MCwgc28gY3VycmVudCBjb2RlIGRvZXMgbm90IGNv
-cnJlY3RseSBzZXQgdGhlIERJRngKc2V0dGluZy4gRml4IGl0LgoKU2lnbmVkLW9mZi1ieTogQXhl
-bCBMaW4gPGF4ZWwubGluQGluZ2ljcy5jb20+Ci0tLQpJIGFzc3VtZSB0aGUgcGF0aCAiQVNvQzog
-Y3M0MzQ5OiBEb24ndCB1c2UgcnRkLT5jb2RlYyIgd2lsbCBiZSBhcHBsaWVkCmZpcnN0LCBzbyB0
-aGlzIHBhdGNoIGlzIG9uIHRvcCBvZiB0aGF0IHBhdGNoLgoKIHNvdW5kL3NvYy9jb2RlY3MvY3M0
-MzQ5LmMgfCAxMSArKysrKy0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwg
-NiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2NzNDM0OS5jIGIv
-c291bmQvc29jL2NvZGVjcy9jczQzNDkuYwppbmRleCA3ZjVjM2M3MC4uOTg5Mjg5ZCAxMDA2NDQK
-LS0tIGEvc291bmQvc29jL2NvZGVjcy9jczQzNDkuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL2Nz
-NDM0OS5jCkBAIC05OCwxNyArOTgsMTYgQEAgc3RhdGljIGludCBjczQzNDlfcGNtX2h3X3BhcmFt
-cyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIHsKIAlzdHJ1Y3Qgc25kX3Nv
-Y19jb2RlYyAqY29kZWMgPSBkYWktPmNvZGVjOwogCXN0cnVjdCBjczQzNDlfcHJpdmF0ZSAqY3M0
-MzQ5ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7Ci0JaW50IG1vZGUsIGZtdCwg
-cmV0OworCWludCBmbXQsIHJldDsKIAotCW1vZGUgPSBzbmRfc29jX3JlYWQoY29kZWMsIENTNDM0
-OV9NT0RFKTsKIAljczQzNDktPnJhdGUgPSBwYXJhbXNfcmF0ZShwYXJhbXMpOwogCiAJc3dpdGNo
-IChjczQzNDktPm1vZGUpIHsKIAljYXNlIFNORF9TT0NfREFJRk1UX0kyUzoKLQkJbW9kZSB8PSBN
-T0RFX0ZPUk1BVChESUZfSTJTKTsKKwkJZm10ID0gRElGX0kyUzsKIAkJYnJlYWs7CiAJY2FzZSBT
-TkRfU09DX0RBSUZNVF9MRUZUX0o6Ci0JCW1vZGUgfD0gTU9ERV9GT1JNQVQoRElGX0xFRlRfSlNU
-KTsKKwkJZm10ID0gRElGX0xFRlRfSlNUOwogCQlicmVhazsKIAljYXNlIFNORF9TT0NfREFJRk1U
-X1JJR0hUX0o6CiAJCXN3aXRjaCAocGFyYW1zX3dpZHRoKHBhcmFtcykpIHsKQEAgLTEyMSwxMyAr
-MTIwLDEzIEBAIHN0YXRpYyBpbnQgY3M0MzQ5X3BjbV9od19wYXJhbXMoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJCWRlZmF1bHQ6CiAJCQlyZXR1cm4gLUVJTlZBTDsKIAkJ
-fQotCQltb2RlIHw9IE1PREVfRk9STUFUKGZtdCk7CiAJCWJyZWFrOwogCWRlZmF1bHQ6CiAJCXJl
-dHVybiAtRUlOVkFMOwogCX0KIAotCXJldCA9IHNuZF9zb2Nfd3JpdGUoY29kZWMsIENTNDM0OV9N
-T0RFLCBtb2RlKTsKKwlyZXQgPSBzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBDUzQzNDlfTU9E
-RSwgRElGX01BU0ssCisJCQkJICBNT0RFX0ZPUk1BVChmbXQpKTsKIAlpZiAocmV0IDwgMCkKIAkJ
-cmV0dXJuIHJldDsKIAotLSAKMi4xLjAKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+From: Mateusz Sylwestrzak <matisec7@gmail.com>
+
+Acer Aspire V5 with the ALC282 codec is given the wrong value for the
+0x19 PIN by the laptop's BIOS. Overriding it with the correct value
+adds support for the headset microphone which would not otherwise be
+visible in the system.
+
+The fix is based on commit 7819717b1134 with a similar quirk for Acer
+Aspire with the ALC269 codec.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=96201
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mateusz Sylwestrzak <matisec7@gmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d35cf506a7db..caba66b2311c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5061,7 +5061,7 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ 0x14, 0x90170110 },
+ 			{ 0x17, 0x40000008 },
+ 			{ 0x18, 0x411111f0 },
+-			{ 0x19, 0x411111f0 },
++			{ 0x19, 0x01a1913c },
+ 			{ 0x1a, 0x411111f0 },
+ 			{ 0x1b, 0x411111f0 },
+ 			{ 0x1d, 0x40f89b2d },
+-- 
+2.4.5
