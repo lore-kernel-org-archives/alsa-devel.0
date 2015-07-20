@@ -1,19 +1,18 @@
-From: anish kumar <yesanishhere@gmail.com>
-Subject: Re: ASoC: Add max98925 codec driver
-Date: Mon, 20 Jul 2015 08:59:39 -0700
-Message-ID: <CABCoZhAXtBiX9qoZ2boaz78ZNhnuH97Jm4h+-0NEpde5gKpy9w@mail.gmail.com>
-References: <20150317182843.GA30354@mwanda>
-	<20150720110756.GI5422@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/4] ASoC: fsl_esai: Add driver suspend
+ and resume to support MEGA Fast
+Date: Mon, 20 Jul 2015 18:48:35 +0100
+Message-ID: <20150720174835.GJ11162@sirena.org.uk>
+References: <ee6572bca11f44288db1d38e1934c0a7e7fb9ed2.1436339869.git.zidan.wang@freescale.com>
+ <60254232400b21246e63e31f88645397d4f6834b.1436339869.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7231040774698024542=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f44.google.com (mail-wg0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id B782F261292
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 17:59:39 +0200 (CEST)
-Received: by wgmn9 with SMTP id n9so134337103wgm.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 08:59:39 -0700 (PDT)
-In-Reply-To: <20150720110756.GI5422@mwanda>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 525822614A1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:48:49 +0200 (CEST)
+In-Reply-To: <60254232400b21246e63e31f88645397d4f6834b.1436339869.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: nicoleotsuka@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 20, 2015 at 4:07 AM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> On Tue, Mar 17, 2015 at 09:28:43PM +0300, Dan Carpenter wrote:
->> Hello Anish Kumar,
->>
->> The patch 1ff2765182d1: "ASoC: Add max98925 codec driver" from Mar 9,
->> 2015, leads to the following static checker warning:
->>
->>       sound/soc/codecs/max98925.c:274 max98925_rate_value()
->>       error: buffer overflow 'rate_table' 9 <= 9
->>
->> sound/soc/codecs/max98925.c
->>    259  static inline int max98925_rate_value(struct snd_soc_codec *codec,
->>    260                  int rate, int clock, int *value, int *n, int *m)
->>    261  {
->>    262          int ret = -EINVAL;
->>    263          int i;
->>    264
->>    265          for (i = 0; i < ARRAY_SIZE(rate_table); i++) {
->>    266                  if (rate_table[i].rate >= rate) {
->>    267                          *value = rate_table[i].sr;
->>    268                          *n = rate_table[i].divisors[clock][0];
->>    269                          *m = rate_table[i].divisors[clock][1];
->>    270                          ret = 0;
->>    271                          break;
->>    272                  }
->>    273          }
->>    274          dev_dbg(codec->dev, "%s: sample rate is %d, returning %d\n",
->>    275                                  __func__, rate_table[i].rate, *value);
->>                                                   ^^^^^^^^^^^^^^^^^^
->> If we don't break then we're off by one.
->
-> I'm going to just delete this because these warnings are annoying and
-> debug printks are pointless and if you cared then you would have fixed
-> it by now.
 
-Please go ahead.
->
-> regards,
-> dan carpenter
->
+--===============7231040774698024542==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DSsOQ17jdCCyz0AY"
+Content-Disposition: inline
+
+
+--DSsOQ17jdCCyz0AY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jul 08, 2015 at 03:22:28PM +0800, Zidan Wang wrote:
+
+> @@ -722,7 +748,9 @@ static const struct regmap_config fsl_esai_regmap_con=
+fig =3D {
+> =20
+>  	.max_register =3D REG_ESAI_PCRC,
+>  	.readable_reg =3D fsl_esai_readable_reg,
+> +	.volatile_reg =3D fsl_esai_volatile_reg,
+>  	.writeable_reg =3D fsl_esai_writeable_reg,
+> +	.cache_type =3D REGCACHE_RBTREE,
+
+Do you really want to use a rbtree here without cache defaults or
+marking all registers as volatile?  As soon as we try to allocate a
+cache node we'll be doing allocations inside a spinlock which isn't
+terribly clever.  I'd expect a flat cache, ideally with defaults
+provided (though that isn't essential, everything will default to 0) or
+an rbtree with defaults provided.
+
+--DSsOQ17jdCCyz0AY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVrTRyAAoJECTWi3JdVIfQT7kH/3k6fWzIDmxGwILh1RzYJ9/p
+mILrHGK7sjXOQ8L/km9exh+q98fbbfnWQI0jcb1JqsfXKGj53QWaK58I8UnUF/xM
+HU5lLpfKJYdV40w4jSxkOZS1QzC8vhocz+bCf9jHYAAurO3QFe9j3YTHsuVGd4v8
+zn4ddg/ncu7BUCvODNjuj5BcF1Ys//NlYb9NcIn4ahBGIIJH1n1aiDWb4Xszhnly
+TjH+W934gOLE1Ur638YxEMy46Y57rm57ItHtzkGJhm+sItFD1YNmwup6ZgP5OImS
+8Pdi+o2x/ZGbD8iZ0l5V6zpXIcpHG7g/tARzUPWvzCxn5+KnrNNf+EvjAWLxsHM=
+=gK/+
+-----END PGP SIGNATURE-----
+
+--DSsOQ17jdCCyz0AY--
+
+--===============7231040774698024542==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7231040774698024542==--
