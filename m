@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Remove return value in jack
-	detect work" to the asoc tree
-Date: Mon, 20 Jul 2015 18:52:26 +0100
-Message-ID: <E1ZHFEo-0002wH-4k@debutante>
-References: <1437355925-20498-1-git-send-email-drinkcat@chromium.org>
+Subject: Applied "ASoC: cs4349: Constify cs4349_regmap" to the
+	asoc tree
+Date: Mon, 20 Jul 2015 18:52:27 +0100
+Message-ID: <E1ZHFEp-0002wl-5Y@debutante>
+References: <1437147782.1229.4.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D1A36261585
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:32 +0200 (CEST)
-In-Reply-To: <1437355925-20498-1-git-send-email-drinkcat@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 540BE261583
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:35 +0200 (CEST)
+In-Reply-To: <1437147782.1229.4.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Tim Howe <tim.howe@cirrus.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Remove return value in jack detect work
+   ASoC: cs4349: Constify cs4349_regmap
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From f136dce45116027fec65c342fbcb5aaa900729c6 Mon Sep 17 00:00:00 2001
-From: Nicolas Boichat <drinkcat@chromium.org>
-Date: Mon, 20 Jul 2015 09:32:05 +0800
-Subject: [PATCH] ASoC: rt5645: Remove return value in jack detect work
+>From b08b338253e917be45ee19924b58dd0b1265473f Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Fri, 17 Jul 2015 23:43:02 +0800
+Subject: [PATCH] ASoC: cs4349: Constify cs4349_regmap
 
-"ASoC: rt5645: Check if codec is initialized in workqueue handler"
-adds a check if codec is NULL in rt5645_irq_detection, which
-returns an int. However, "ASoC: rt5645: Remove irq_jack_detection
-function" removes that function, and moves the code in
-jack_detect_work, which returns void.
-
-Remove the return value to fix compilation warning.
-
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Tim Howe <tim.howe@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 +-
+ sound/soc/codecs/cs4349.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 19392b13bd5b..2ee42781cc52 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2928,7 +2928,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 	int val, btn_type, gpio_state = 0, report = 0;
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index 9273b06e918b..f4fccc621ceb 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -264,7 +264,7 @@ static struct snd_soc_codec_driver soc_codec_dev_cs4349 = {
+ 	.num_dapm_routes	= ARRAY_SIZE(cs4349_routes),
+ };
  
- 	if (!rt5645->codec)
--		return -EINVAL;
-+		return;
+-static struct regmap_config cs4349_regmap = {
++static const struct regmap_config cs4349_regmap = {
+ 	.reg_bits		= 8,
+ 	.val_bits		= 8,
  
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
 -- 
 2.1.4
