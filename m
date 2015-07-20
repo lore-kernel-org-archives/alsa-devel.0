@@ -1,18 +1,24 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCH] ASoC: rt5645: Remove return value in jack
-	detect work
-Date: Mon, 20 Jul 2015 09:32:05 +0800
-Message-ID: <1437355925-20498-1-git-send-email-drinkcat@chromium.org>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Running PJSIP for voip calls in alsa
+Date: Mon, 20 Jul 2015 06:48:37 +0000
+Message-ID: <SIXPR04MB253C33418EA367F37CFDC53C3850@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559FCB17.2070200@ladisch.de>
+ <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <55A3635C.7090009@ladisch.de>
+ <SIXPR04MB2534E33FAFB9024B6D68B2BC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <55A36F98.8060408@ladisch.de>,
+ <SIXPR04MB253C2AE64F54AC46DA26414C3990@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
- [209.85.192.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 524CD260633
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 03:32:33 +0200 (CEST)
-Received: by pdbbh15 with SMTP id bh15so48569197pdb.1
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 18:32:31 -0700 (PDT)
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0145.outbound.protection.outlook.com [134.170.140.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD775260699
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 08:48:41 +0200 (CEST)
+In-Reply-To: <SIXPR04MB253C2AE64F54AC46DA26414C3990@SIXPR04MB253.apcprd04.prod.outlook.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +28,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-"ASoC: rt5645: Check if codec is initialized in workqueue handler"
-adds a check if codec is NULL in rt5645_irq_detection, which
-returns an int. However, "ASoC: rt5645: Remove irq_jack_detection
-function" removes that function, and moves the code in
-jack_detect_work, which returns void.
+Dear Clemens,
 
-Remove the return value to fix compilation warning.
+Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
+Kindly do the needful,
 
-Mark,
+Many Thanks in advance
+________________________________________
+From: Srinivasan S
+Sent: Thursday, July 16, 2015 10:09 AM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
 
-Thanks for replacing "ASoC: rt5645: Check if codec is initialized
-in workqueue handler" in fix/rt5645, that makes this a bit easier.
+Dear Clemens,
 
-This patch applies on top of broonie/sound.git/for-next, and should
-be applied in topic/rt5645, after merging fix/rt5645 into topic/rt5645.
+Thanks a lot for your replies,
 
- sound/soc/codecs/rt5645.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 3a6756d..9d54b34 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2928,7 +2928,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 	int val, btn_type, gpio_state = 0, report = 0;
- 
- 	if (!rt5645->codec)
--		return -EINVAL;
-+		return;
- 
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
--- 
-2.4.3.573.g4eafbef
+Kindly do the needful,
+
+Many Thanks in advance
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de>
+Sent: Monday, July 13, 2015 1:28 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
+
+Srinivasan S wrote:
+> Could you please provide any suggestions or inputs from where this problem could arrive ie., in either platform driver or machine driver or codec driver??
+
+I do not know that driver.
+
+
+Regards,
+Clemens
