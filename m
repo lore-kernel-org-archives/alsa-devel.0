@@ -1,15 +1,18 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ASoC: ux500: adjust devm usage
-Date: Sun, 19 Jul 2015 21:12:16 +0200
-Message-ID: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: [PATCH] ASoC: rt5645: Remove return value in jack
+	detect work
+Date: Mon, 20 Jul 2015 09:32:05 +0800
+Message-ID: <1437355925-20498-1-git-send-email-drinkcat@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 30813260597
- for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 21:21:30 +0200 (CEST)
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 524CD260633
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 03:32:33 +0200 (CEST)
+Received: by pdbbh15 with SMTP id bh15so48569197pdb.1
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2015 18:32:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,103 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The explicit call to devm_regulator_put in the probe and remove functions
-does not seem to be necessary.  In particular, the functions
-prcmu_qos_remove_requirement and ux500_msp_i2s_cleanup_msp in the remove
-function seem to do nothing that can interfere with devm_regulator_put,
-making it safe to allow devm_regulator_put to occur after the end of the
-remove function.
+"ASoC: rt5645: Check if codec is initialized in workqueue handler"
+adds a check if codec is NULL in rt5645_irq_detection, which
+returns an int. However, "ASoC: rt5645: Remove irq_jack_detection
+function" removes that function, and moves the code in
+jack_detect_work, which returns void.
 
-Convert the calls to clk_get to devm_clk_get, and remove the corresponding
-calls to clk_put in the probe and remove functions.
+Remove the return value to fix compilation warning.
 
-Replace various gotos by direct returns, and drop unneeded labels.
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 ---
- sound/soc/ux500/ux500_msp_dai.c |   29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 978f2d7..f5df08d 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -773,20 +773,22 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
- 	}
- 	prcmu_qos_add_requirement(PRCMU_QOS_APE_OPP, (char *)pdev->name, 50);
+Mark,
+
+Thanks for replacing "ASoC: rt5645: Check if codec is initialized
+in workqueue handler" in fix/rt5645, that makes this a bit easier.
+
+This patch applies on top of broonie/sound.git/for-next, and should
+be applied in topic/rt5645, after merging fix/rt5645 into topic/rt5645.
+
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3a6756d..9d54b34 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2928,7 +2928,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 	int val, btn_type, gpio_state = 0, report = 0;
  
--	drvdata->pclk = clk_get(&pdev->dev, "apb_pclk");
-+	drvdata->pclk = devm_clk_get(&pdev->dev, "apb_pclk");
- 	if (IS_ERR(drvdata->pclk)) {
- 		ret = (int)PTR_ERR(drvdata->pclk);
--		dev_err(&pdev->dev, "%s: ERROR: clk_get of pclk failed (%d)!\n",
-+		dev_err(&pdev->dev,
-+			"%s: ERROR: devm_clk_get of pclk failed (%d)!\n",
- 			__func__, ret);
--		goto err_pclk;
-+		return ret;
- 	}
+ 	if (!rt5645->codec)
+-		return -EINVAL;
++		return;
  
--	drvdata->clk = clk_get(&pdev->dev, NULL);
-+	drvdata->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(drvdata->clk)) {
- 		ret = (int)PTR_ERR(drvdata->clk);
--		dev_err(&pdev->dev, "%s: ERROR: clk_get failed (%d)!\n",
-+		dev_err(&pdev->dev,
-+			"%s: ERROR: devm_clk_get failed (%d)!\n",
- 			__func__, ret);
--		goto err_clk;
-+		return ret;
- 	}
- 
- 	ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp,
-@@ -795,7 +797,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"%s: ERROR: Failed to init MSP-struct (%d)!",
- 			__func__, ret);
--		goto err_init_msp;
-+		return ret;
- 	}
- 	dev_set_drvdata(&pdev->dev, drvdata);
- 
-@@ -804,7 +806,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
- 			__func__, drvdata->msp->id);
--		goto err_init_msp;
-+		return ret;
- 	}
- 
- 	ret = ux500_pcm_register_platform(pdev);
-@@ -819,13 +821,6 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
- 
- err_reg_plat:
- 	snd_soc_unregister_component(&pdev->dev);
--err_init_msp:
--	clk_put(drvdata->clk);
--err_clk:
--	clk_put(drvdata->pclk);
--err_pclk:
--	devm_regulator_put(drvdata->reg_vape);
--
- 	return ret;
- }
- 
-@@ -837,12 +832,8 @@ static int ux500_msp_drv_remove(struct platform_device *pdev)
- 
- 	snd_soc_unregister_component(&pdev->dev);
- 
--	devm_regulator_put(drvdata->reg_vape);
- 	prcmu_qos_remove_requirement(PRCMU_QOS_APE_OPP, "ux500_msp_i2s");
- 
--	clk_put(drvdata->clk);
--	clk_put(drvdata->pclk);
--
- 	ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
- 
- 	return 0;
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+-- 
+2.4.3.573.g4eafbef
