@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Drop platform data support" to
-	the asoc tree
-Date: Mon, 20 Jul 2015 18:52:06 +0100
-Message-ID: <E1ZHFEU-0002pt-4p@debutante>
-References: <1437268538.11309.3.camel@ingics.com>
+Subject: Applied "ASoC: cs4349: Set .writeable_reg for
+	cs4349_regmap" to the asoc tree
+Date: Mon, 20 Jul 2015 18:52:07 +0100
+Message-ID: <E1ZHFEV-0002qM-4f@debutante>
+References: <1437268463.11309.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DBB82614A1
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:13 +0200 (CEST)
-In-Reply-To: <1437268538.11309.3.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AA722614C5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:14 +0200 (CEST)
+In-Reply-To: <1437268463.11309.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs4349: Drop platform data support
+   ASoC: cs4349: Set .writeable_reg for cs4349_regmap
 
 has been applied to the asoc tree at
 
@@ -53,72 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From 44251551dfca2117e42349136b871b33c8419a59 Mon Sep 17 00:00:00 2001
+>From 0443de7e7e559eab7df2566d0e46940f753db51d Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 19 Jul 2015 09:15:38 +0800
-Subject: [PATCH] ASoC: cs4349: Drop platform data support
+Date: Sun, 19 Jul 2015 09:14:23 +0800
+Subject: [PATCH] ASoC: cs4349: Set .writeable_reg for cs4349_regmap
 
-The struct cs4349_platform_data should be defined in a public header in
-include/sound/ rather than in sound/soc/codecs folder.
-In additional, the platform data support is not properly handled in this
-driver so remove it now.
+The first valid register index is 1 rather than 0, and the CS4349_CHIPID
+is readonly. So set .writeable_reg to avoid writing to these registers.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4349.c | 7 +------
- sound/soc/codecs/cs4349.h | 7 -------
- 2 files changed, 1 insertion(+), 13 deletions(-)
+ sound/soc/codecs/cs4349.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index a6604a34db34..2569010ee396 100644
+index 4885695e35a7..a6604a34db34 100644
 --- a/sound/soc/codecs/cs4349.c
 +++ b/sound/soc/codecs/cs4349.c
-@@ -45,7 +45,6 @@ static const struct reg_default cs4349_reg_defaults[] = {
- /* Private data for the CS4349 */
- struct  cs4349_private {
- 	struct regmap			*regmap;
--	struct cs4349_platform_data	pdata;
- 	struct gpio_desc		*reset_gpio;
- 	unsigned int			mode;
- 	int				rate;
-@@ -281,8 +280,7 @@ static int cs4349_i2c_probe(struct i2c_client *client,
- 				      const struct i2c_device_id *id)
+@@ -54,14 +54,17 @@ struct  cs4349_private {
+ static bool cs4349_readable_register(struct device *dev, unsigned int reg)
  {
- 	struct cs4349_private *cs4349;
--	struct cs4349_platform_data *pdata = dev_get_platdata(&client->dev);
--	int ret = 0;
-+	int ret;
+ 	switch (reg) {
+-	case CS4349_CHIPID:
+-	case CS4349_MODE:
+-	case CS4349_VMI:
+-	case CS4349_MUTE:
+-	case CS4349_VOLA:
+-	case CS4349_VOLB:
+-	case CS4349_RMPFLT:
+-	case CS4349_MISC:
++	case CS4349_CHIPID ... CS4349_MISC:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool cs4349_writeable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS4349_MODE ...  CS4349_MISC:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -270,6 +273,7 @@ static const struct regmap_config cs4349_regmap = {
+ 	.reg_defaults		= cs4349_reg_defaults,
+ 	.num_reg_defaults	= ARRAY_SIZE(cs4349_reg_defaults),
+ 	.readable_reg		= cs4349_readable_register,
++	.writeable_reg		= cs4349_writeable_register,
+ 	.cache_type		= REGCACHE_RBTREE,
+ };
  
- 	cs4349 = devm_kzalloc(&client->dev, sizeof(*cs4349), GFP_KERNEL);
- 	if (!cs4349)
-@@ -295,9 +293,6 @@ static int cs4349_i2c_probe(struct i2c_client *client,
- 		return ret;
- 	}
- 
--	if (pdata)
--		cs4349->pdata = *pdata;
--
- 	/* Reset the Device */
- 	cs4349->reset_gpio = devm_gpiod_get_optional(&client->dev,
- 		"reset", GPIOD_OUT_LOW);
-diff --git a/sound/soc/codecs/cs4349.h b/sound/soc/codecs/cs4349.h
-index 7effa0acec28..d58c06a25358 100644
---- a/sound/soc/codecs/cs4349.h
-+++ b/sound/soc/codecs/cs4349.h
-@@ -19,13 +19,6 @@
- #ifndef __CS4349_H__
- #define __CS4349_H__
- 
--struct cs4349_platform_data {
--
--	/* GPIO for Reset */
--	unsigned int gpio_nreset;
--
--};
--
- /* CS4349 registers addresses */
- #define CS4349_CHIPID		0x01	/* Device and Rev ID, Read Only */
- #define CS4349_MODE		0x02	/* Mode Control */
 -- 
 2.1.4
