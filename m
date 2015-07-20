@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Fix setting digital interface
-	format" to the asoc tree
-Date: Mon, 20 Jul 2015 18:52:09 +0100
-Message-ID: <E1ZHFEX-0002rI-9g@debutante>
-References: <1437316969.9569.1.camel@ingics.com>
+Subject: Applied "ASoC: ux500: adjust devm usage" to the asoc
+	tree
+Date: Mon, 20 Jul 2015 18:52:08 +0100
+Message-ID: <E1ZHFEW-0002qp-4g@debutante>
+References: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1767644408213446796=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BEEF72614CD
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:15 +0200 (CEST)
-In-Reply-To: <1437316969.9569.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FD582614D0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:16 +0200 (CEST)
+In-Reply-To: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1767644408213446796==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: cs4349: Fix setting digital interface format
+   ASoC: ux500: adjust devm usage
 
 has been applied to the asoc tree at
 
@@ -55,87 +53,107 @@ to this mail.
 Thanks,
 Mark
 
->From da304ac37efc1900892b5067c65f0ab8acfe3955 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 19 Jul 2015 22:42:49 +0800
-Subject: [PATCH] ASoC: cs4349: Fix setting digital interface format
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 4313489c25622b05adac55dbb9590fb5674c3f45 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Sun, 19 Jul 2015 21:12:16 +0200
+Subject: [PATCH] ASoC: ux500: adjust devm usage
 
-Mode Control - Register 02h
+The explicit call to devm_regulator_put in the probe and remove functions
+does not seem to be necessary.  In particular, the functions
+prcmu_qos_remove_requirement and ux500_msp_i2s_cleanup_msp in the remove
+function seem to do nothing that can interfere with devm_regulator_put,
+making it safe to allow devm_regulator_put to occur after the end of the
+remove function.
 
-Digital Interface Format (DIF[2:0]) Bits 6-4
+Convert the calls to clk_get to devm_clk_get, and remove the corresponding
+calls to clk_put in the probe and remove functions.
 
-DIF2    DIF1    DIF0    Description
-0       0       0       Left-Justified, up to 24-bit data
-0       0       1       I²S, up to 24-bit data
-0       1       0       Right-Justified, 16-bit data
-0       1       1       Right-Justified, 24-bit data
-1       0       0       TDM slot 0
-1       0       1       TDM slot 1
-1       1       0       TDM slot 2
-1       1       1       TDM slot 3
+Replace various gotos by direct returns, and drop unneeded labels.
 
-The DIF_MASK is 0x70, so current code does not correctly set the DIFx
-setting. Fix it.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4349.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/ux500/ux500_msp_dai.c | 29 ++++++++++-------------------
+ 1 file changed, 10 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index ab071675357e..4885695e35a7 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -96,17 +96,16 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct cs4349_private *cs4349 = snd_soc_codec_get_drvdata(codec);
--	int mode, fmt, ret;
-+	int fmt, ret;
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index 978f2d7316b0..f5df08ded770 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -773,20 +773,22 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+ 	}
+ 	prcmu_qos_add_requirement(PRCMU_QOS_APE_OPP, (char *)pdev->name, 50);
  
--	mode = snd_soc_read(codec, CS4349_MODE);
- 	cs4349->rate = params_rate(params);
- 
- 	switch (cs4349->mode) {
- 	case SND_SOC_DAIFMT_I2S:
--		mode |= MODE_FORMAT(DIF_I2S);
-+		fmt = DIF_I2S;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
--		mode |= MODE_FORMAT(DIF_LEFT_JST);
-+		fmt = DIF_LEFT_JST;
- 		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		switch (params_width(params)) {
-@@ -119,13 +118,13 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
- 		default:
- 			return -EINVAL;
- 		}
--		mode |= MODE_FORMAT(fmt);
- 		break;
- 	default:
- 		return -EINVAL;
+-	drvdata->pclk = clk_get(&pdev->dev, "apb_pclk");
++	drvdata->pclk = devm_clk_get(&pdev->dev, "apb_pclk");
+ 	if (IS_ERR(drvdata->pclk)) {
+ 		ret = (int)PTR_ERR(drvdata->pclk);
+-		dev_err(&pdev->dev, "%s: ERROR: clk_get of pclk failed (%d)!\n",
++		dev_err(&pdev->dev,
++			"%s: ERROR: devm_clk_get of pclk failed (%d)!\n",
+ 			__func__, ret);
+-		goto err_pclk;
++		return ret;
  	}
  
--	ret = snd_soc_write(codec, CS4349_MODE, mode);
-+	ret = snd_soc_update_bits(codec, CS4349_MODE, DIF_MASK,
-+				  MODE_FORMAT(fmt));
- 	if (ret < 0)
- 		return ret;
+-	drvdata->clk = clk_get(&pdev->dev, NULL);
++	drvdata->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(drvdata->clk)) {
+ 		ret = (int)PTR_ERR(drvdata->clk);
+-		dev_err(&pdev->dev, "%s: ERROR: clk_get failed (%d)!\n",
++		dev_err(&pdev->dev,
++			"%s: ERROR: devm_clk_get failed (%d)!\n",
+ 			__func__, ret);
+-		goto err_clk;
++		return ret;
+ 	}
  
+ 	ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp,
+@@ -795,7 +797,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev,
+ 			"%s: ERROR: Failed to init MSP-struct (%d)!",
+ 			__func__, ret);
+-		goto err_init_msp;
++		return ret;
+ 	}
+ 	dev_set_drvdata(&pdev->dev, drvdata);
+ 
+@@ -804,7 +806,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
+ 			__func__, drvdata->msp->id);
+-		goto err_init_msp;
++		return ret;
+ 	}
+ 
+ 	ret = ux500_pcm_register_platform(pdev);
+@@ -819,13 +821,6 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+ 
+ err_reg_plat:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_init_msp:
+-	clk_put(drvdata->clk);
+-err_clk:
+-	clk_put(drvdata->pclk);
+-err_pclk:
+-	devm_regulator_put(drvdata->reg_vape);
+-
+ 	return ret;
+ }
+ 
+@@ -837,12 +832,8 @@ static int ux500_msp_drv_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	devm_regulator_put(drvdata->reg_vape);
+ 	prcmu_qos_remove_requirement(PRCMU_QOS_APE_OPP, "ux500_msp_i2s");
+ 
+-	clk_put(drvdata->clk);
+-	clk_put(drvdata->pclk);
+-
+ 	ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
+ 
+ 	return 0;
 -- 
 2.1.4
-
-
---===============1767644408213446796==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1767644408213446796==--
