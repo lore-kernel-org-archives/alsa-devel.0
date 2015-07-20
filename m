@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti-uniperf: Fix implicit inclusion of
-	pinctrl" to the asoc tree
-Date: Mon, 20 Jul 2015 18:52:04 +0100
-Message-ID: <E1ZHFES-0002ow-AM@debutante>
+Subject: Applied "ASoC: cs4349: Fix suspend/resume" to the asoc
+	tree
+Date: Mon, 20 Jul 2015 18:52:11 +0100
+Message-ID: <E1ZHFEZ-0002sE-9m@debutante>
+References: <1437300918-4612-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42D342614C4
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:14 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D2D72614FB
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:18 +0200 (CEST)
+In-Reply-To: <1437300918-4612-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti-uniperf: Fix implicit inclusion of pinctrl
+   ASoC: cs4349: Fix suspend/resume
 
 has been applied to the asoc tree at
 
@@ -52,28 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From c7ab66836d2d31fe549b71c0b835c563d4419061 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 20 Jul 2015 18:36:15 +0100
-Subject: [PATCH] ASoC: sti-uniperf: Fix implicit inclusion of pinctrl
+>From cb2510dac7e1c5ac77652bb31e8c39ce2eef8bbe Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Sun, 19 Jul 2015 12:15:17 +0200
+Subject: [PATCH] ASoC: cs4349: Fix suspend/resume
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+dev_get_drvdata() will not return the snd_soc_runtime to which this CODEC
+is attached, so the current code will result in undefined behavior.
+To fix this just use regmap_update_bits(cs4349->regmap, ...) directly
+instead of snd_soc_update_bits(rtd->codec, ...).
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/sti_uniperif.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs4349.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 83a301f2aa66..10e8c3a0b85f 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -6,6 +6,7 @@
-  */
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index f4fccc621ceb..13ccbf75207e 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -328,10 +328,9 @@ static int cs4349_i2c_remove(struct i2c_client *client)
+ static int cs4349_runtime_suspend(struct device *dev)
+ {
+ 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
+-	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
+ 	int ret;
  
- #include <linux/module.h>
-+#include <linux/pinctrl.h>
+-	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
++	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 1);
+ 	if (ret < 0)
+ 		return ret;
  
- #include "uniperif.h"
+@@ -347,10 +346,9 @@ static int cs4349_runtime_suspend(struct device *dev)
+ static int cs4349_runtime_resume(struct device *dev)
+ {
+ 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
+-	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 0);
++	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 0);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.1.4
