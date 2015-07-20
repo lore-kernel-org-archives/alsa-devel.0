@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Set .writeable_reg for
-	cs4349_regmap" to the asoc tree
-Date: Mon, 20 Jul 2015 18:52:07 +0100
-Message-ID: <E1ZHFEV-0002qM-4f@debutante>
-References: <1437268463.11309.1.camel@ingics.com>
+Subject: Applied "ASoC: cs4349: Fix setting digital interface
+	format" to the asoc tree
+Date: Mon, 20 Jul 2015 18:52:09 +0100
+Message-ID: <E1ZHFEX-0002rI-9g@debutante>
+References: <1437316969.9569.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1767644408213446796=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AA722614C5
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:14 +0200 (CEST)
-In-Reply-To: <1437268463.11309.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BEEF72614CD
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:15 +0200 (CEST)
+In-Reply-To: <1437316969.9569.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,9 +25,12 @@ To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============1767644408213446796==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: cs4349: Set .writeable_reg for cs4349_regmap
+   ASoC: cs4349: Fix setting digital interface format
 
 has been applied to the asoc tree at
 
@@ -53,57 +55,87 @@ to this mail.
 Thanks,
 Mark
 
->From 0443de7e7e559eab7df2566d0e46940f753db51d Mon Sep 17 00:00:00 2001
+>From da304ac37efc1900892b5067c65f0ab8acfe3955 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 19 Jul 2015 09:14:23 +0800
-Subject: [PATCH] ASoC: cs4349: Set .writeable_reg for cs4349_regmap
+Date: Sun, 19 Jul 2015 22:42:49 +0800
+Subject: [PATCH] ASoC: cs4349: Fix setting digital interface format
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The first valid register index is 1 rather than 0, and the CS4349_CHIPID
-is readonly. So set .writeable_reg to avoid writing to these registers.
+Mode Control - Register 02h
+
+Digital Interface Format (DIF[2:0]) Bits 6-4
+
+DIF2    DIF1    DIF0    Description
+0       0       0       Left-Justified, up to 24-bit data
+0       0       1       I²S, up to 24-bit data
+0       1       0       Right-Justified, 16-bit data
+0       1       1       Right-Justified, 24-bit data
+1       0       0       TDM slot 0
+1       0       1       TDM slot 1
+1       1       0       TDM slot 2
+1       1       1       TDM slot 3
+
+The DIF_MASK is 0x70, so current code does not correctly set the DIFx
+setting. Fix it.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4349.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/codecs/cs4349.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 4885695e35a7..a6604a34db34 100644
+index ab071675357e..4885695e35a7 100644
 --- a/sound/soc/codecs/cs4349.c
 +++ b/sound/soc/codecs/cs4349.c
-@@ -54,14 +54,17 @@ struct  cs4349_private {
- static bool cs4349_readable_register(struct device *dev, unsigned int reg)
+@@ -96,17 +96,16 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
  {
- 	switch (reg) {
--	case CS4349_CHIPID:
--	case CS4349_MODE:
--	case CS4349_VMI:
--	case CS4349_MUTE:
--	case CS4349_VOLA:
--	case CS4349_VOLB:
--	case CS4349_RMPFLT:
--	case CS4349_MISC:
-+	case CS4349_CHIPID ... CS4349_MISC:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool cs4349_writeable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CS4349_MODE ...  CS4349_MISC:
- 		return true;
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct cs4349_private *cs4349 = snd_soc_codec_get_drvdata(codec);
+-	int mode, fmt, ret;
++	int fmt, ret;
+ 
+-	mode = snd_soc_read(codec, CS4349_MODE);
+ 	cs4349->rate = params_rate(params);
+ 
+ 	switch (cs4349->mode) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		mode |= MODE_FORMAT(DIF_I2S);
++		fmt = DIF_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		mode |= MODE_FORMAT(DIF_LEFT_JST);
++		fmt = DIF_LEFT_JST;
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		switch (params_width(params)) {
+@@ -119,13 +118,13 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		default:
+ 			return -EINVAL;
+ 		}
+-		mode |= MODE_FORMAT(fmt);
+ 		break;
  	default:
- 		return false;
-@@ -270,6 +273,7 @@ static const struct regmap_config cs4349_regmap = {
- 	.reg_defaults		= cs4349_reg_defaults,
- 	.num_reg_defaults	= ARRAY_SIZE(cs4349_reg_defaults),
- 	.readable_reg		= cs4349_readable_register,
-+	.writeable_reg		= cs4349_writeable_register,
- 	.cache_type		= REGCACHE_RBTREE,
- };
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = snd_soc_write(codec, CS4349_MODE, mode);
++	ret = snd_soc_update_bits(codec, CS4349_MODE, DIF_MASK,
++				  MODE_FORMAT(fmt));
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.1.4
+
+
+--===============1767644408213446796==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1767644408213446796==--
