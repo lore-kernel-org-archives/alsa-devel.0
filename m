@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Fix suspend/resume" to the asoc
-	tree
-Date: Mon, 20 Jul 2015 18:52:11 +0100
-Message-ID: <E1ZHFEZ-0002sE-9m@debutante>
-References: <1437300918-4612-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: cs4349: Don't use rtd->codec" to the
+	asoc tree
+Date: Mon, 20 Jul 2015 18:52:10 +0100
+Message-ID: <E1ZHFEY-0002rl-9a@debutante>
+References: <1437300918-4612-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D2D72614FB
+ by alsa0.perex.cz (Postfix) with ESMTP id 53F3C261501
  for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:18 +0200 (CEST)
-In-Reply-To: <1437300918-4612-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <1437300918-4612-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs4349: Fix suspend/resume
+   ASoC: cs4349: Don't use rtd->codec
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From cb2510dac7e1c5ac77652bb31e8c39ce2eef8bbe Mon Sep 17 00:00:00 2001
+>From dedae86d4da6c88ec2105e0bd038acc57c203bca Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 19 Jul 2015 12:15:17 +0200
-Subject: [PATCH] ASoC: cs4349: Fix suspend/resume
+Date: Sun, 19 Jul 2015 12:15:18 +0200
+Subject: [PATCH] ASoC: cs4349: Don't use rtd->codec
 
-dev_get_drvdata() will not return the snd_soc_runtime to which this CODEC
-is attached, so the current code will result in undefined behavior.
-To fix this just use regmap_update_bits(cs4349->regmap, ...) directly
-instead of snd_soc_update_bits(rtd->codec, ...).
+rtd->codec does not necessarily point to the CODEC instance for which the
+callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
+dai->codec instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4349.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs4349.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index f4fccc621ceb..13ccbf75207e 100644
+index 13ccbf75207e..ab071675357e 100644
 --- a/sound/soc/codecs/cs4349.c
 +++ b/sound/soc/codecs/cs4349.c
-@@ -328,10 +328,9 @@ static int cs4349_i2c_remove(struct i2c_client *client)
- static int cs4349_runtime_suspend(struct device *dev)
+@@ -94,8 +94,7 @@ static int cs4349_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
  {
- 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
--	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 1);
-+	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 1);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -347,10 +346,9 @@ static int cs4349_runtime_suspend(struct device *dev)
- static int cs4349_runtime_resume(struct device *dev)
- {
- 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
--	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = snd_soc_update_bits(rtd->codec, CS4349_MISC, PWR_DWN, 0);
-+	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 0);
- 	if (ret < 0)
- 		return ret;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_codec *codec = dai->codec;
+ 	struct cs4349_private *cs4349 = snd_soc_codec_get_drvdata(codec);
+ 	int mode, fmt, ret;
  
 -- 
 2.1.4
