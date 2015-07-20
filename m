@@ -1,63 +1,123 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: Add max98925 codec driver
-Date: Mon, 20 Jul 2015 14:07:56 +0300
-Message-ID: <20150720110756.GI5422@mwanda>
-References: <20150317182843.GA30354@mwanda>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH] ASoC: ux500: adjust devm usage
+Date: Mon, 20 Jul 2015 13:25:20 +0200
+Message-ID: <CAPDyKFpih4xXG+JGkGcG=1wZf0jSEZ_a=fFP2FmB3iD2okO0DA@mail.gmail.com>
+References: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 039B22606E0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 13:08:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150317182843.GA30354@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yesanishhere@gmail.com
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <1437333136-20908-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 17, 2015 at 09:28:43PM +0300, Dan Carpenter wrote:
-> Hello Anish Kumar,
-> 
-> The patch 1ff2765182d1: "ASoC: Add max98925 codec driver" from Mar 9,
-> 2015, leads to the following static checker warning:
-> 
-> 	sound/soc/codecs/max98925.c:274 max98925_rate_value()
-> 	error: buffer overflow 'rate_table' 9 <= 9
-> 
-> sound/soc/codecs/max98925.c
->    259  static inline int max98925_rate_value(struct snd_soc_codec *codec,
->    260                  int rate, int clock, int *value, int *n, int *m)
->    261  {
->    262          int ret = -EINVAL;
->    263          int i;
->    264  
->    265          for (i = 0; i < ARRAY_SIZE(rate_table); i++) {
->    266                  if (rate_table[i].rate >= rate) {
->    267                          *value = rate_table[i].sr;
->    268                          *n = rate_table[i].divisors[clock][0];
->    269                          *m = rate_table[i].divisors[clock][1];
->    270                          ret = 0;
->    271                          break;
->    272                  }
->    273          }
->    274          dev_dbg(codec->dev, "%s: sample rate is %d, returning %d\n",
->    275                                  __func__, rate_table[i].rate, *value);
->                                                   ^^^^^^^^^^^^^^^^^^
-> If we don't break then we're off by one.
+On 19 July 2015 at 21:12, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+> The explicit call to devm_regulator_put in the probe and remove functions
+> does not seem to be necessary.  In particular, the functions
+> prcmu_qos_remove_requirement and ux500_msp_i2s_cleanup_msp in the remove
+> function seem to do nothing that can interfere with devm_regulator_put,
+> making it safe to allow devm_regulator_put to occur after the end of the
+> remove function.
+>
+> Convert the calls to clk_get to devm_clk_get, and remove the corresponding
+> calls to clk_put in the probe and remove functions.
+>
+> Replace various gotos by direct returns, and drop unneeded labels.
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-I'm going to just delete this because these warnings are annoying and
-debug printks are pointless and if you cared then you would have fixed
-it by now.
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-regards,
-dan carpenter
+Kind regards
+Uffe
+
+>
+> ---
+>  sound/soc/ux500/ux500_msp_dai.c |   29 ++++++++++-------------------
+>  1 file changed, 10 insertions(+), 19 deletions(-)
+>
+> diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+> index 978f2d7..f5df08d 100644
+> --- a/sound/soc/ux500/ux500_msp_dai.c
+> +++ b/sound/soc/ux500/ux500_msp_dai.c
+> @@ -773,20 +773,22 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+>         }
+>         prcmu_qos_add_requirement(PRCMU_QOS_APE_OPP, (char *)pdev->name, 50);
+>
+> -       drvdata->pclk = clk_get(&pdev->dev, "apb_pclk");
+> +       drvdata->pclk = devm_clk_get(&pdev->dev, "apb_pclk");
+>         if (IS_ERR(drvdata->pclk)) {
+>                 ret = (int)PTR_ERR(drvdata->pclk);
+> -               dev_err(&pdev->dev, "%s: ERROR: clk_get of pclk failed (%d)!\n",
+> +               dev_err(&pdev->dev,
+> +                       "%s: ERROR: devm_clk_get of pclk failed (%d)!\n",
+>                         __func__, ret);
+> -               goto err_pclk;
+> +               return ret;
+>         }
+>
+> -       drvdata->clk = clk_get(&pdev->dev, NULL);
+> +       drvdata->clk = devm_clk_get(&pdev->dev, NULL);
+>         if (IS_ERR(drvdata->clk)) {
+>                 ret = (int)PTR_ERR(drvdata->clk);
+> -               dev_err(&pdev->dev, "%s: ERROR: clk_get failed (%d)!\n",
+> +               dev_err(&pdev->dev,
+> +                       "%s: ERROR: devm_clk_get failed (%d)!\n",
+>                         __func__, ret);
+> -               goto err_clk;
+> +               return ret;
+>         }
+>
+>         ret = ux500_msp_i2s_init_msp(pdev, &drvdata->msp,
+> @@ -795,7 +797,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+>                 dev_err(&pdev->dev,
+>                         "%s: ERROR: Failed to init MSP-struct (%d)!",
+>                         __func__, ret);
+> -               goto err_init_msp;
+> +               return ret;
+>         }
+>         dev_set_drvdata(&pdev->dev, drvdata);
+>
+> @@ -804,7 +806,7 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "Error: %s: Failed to register MSP%d!\n",
+>                         __func__, drvdata->msp->id);
+> -               goto err_init_msp;
+> +               return ret;
+>         }
+>
+>         ret = ux500_pcm_register_platform(pdev);
+> @@ -819,13 +821,6 @@ static int ux500_msp_drv_probe(struct platform_device *pdev)
+>
+>  err_reg_plat:
+>         snd_soc_unregister_component(&pdev->dev);
+> -err_init_msp:
+> -       clk_put(drvdata->clk);
+> -err_clk:
+> -       clk_put(drvdata->pclk);
+> -err_pclk:
+> -       devm_regulator_put(drvdata->reg_vape);
+> -
+>         return ret;
+>  }
+>
+> @@ -837,12 +832,8 @@ static int ux500_msp_drv_remove(struct platform_device *pdev)
+>
+>         snd_soc_unregister_component(&pdev->dev);
+>
+> -       devm_regulator_put(drvdata->reg_vape);
+>         prcmu_qos_remove_requirement(PRCMU_QOS_APE_OPP, "ux500_msp_i2s");
+>
+> -       clk_put(drvdata->clk);
+> -       clk_put(drvdata->pclk);
+> -
+>         ux500_msp_i2s_cleanup_msp(pdev, drvdata->msp);
+>
+>         return 0;
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
