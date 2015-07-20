@@ -1,100 +1,139 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Fix max_register setting for
-	cs4349_regmap" to the asoc tree
-Date: Mon, 20 Jul 2015 18:52:28 +0100
-Message-ID: <E1ZHFEq-0002xE-5y@debutante>
-References: <1437147514.1229.1.camel@ingics.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v13 3/3] ASoC: tda998x: add a codec to the HDMI
+ transmitter
+Date: Mon, 20 Jul 2015 19:06:06 +0100
+Message-ID: <20150720180606.GL11162@sirena.org.uk>
+References: <cover.1437397270.git.moinejf@free.fr>
+ <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C9C9626167A
- for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2015 19:52:35 +0200 (CEST)
-In-Reply-To: <1437147514.1229.1.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Tim Howe <tim.howe@cirrus.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="D1fPXr6nrXZW0cyN"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: cs4349: Fix max_register setting for cs4349_regmap
+--D1fPXr6nrXZW0cyN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Fri, May 08, 2015 at 10:41:12AM +0200, Jean-Francois Moine wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> +
+> +	if (!priv->is_hdmi_sink
+> +	 || !encoder->crtc)
+> +		return NULL;
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+That's weird indentation.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +	list_for_each_entry(connector, &drm->mode_config.connector_list, head) {
+> +		if (connector->encoder == encoder)
+> +			return connector->eld;
+> +	}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+What guarantees that connector->eld stays valid after it's returned?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +struct tda998x_ops_s {
+> +	u8 *(*get_eld)(struct device *dev);
 
-Thanks,
-Mark
+Why _ops_s - what does the _s mean?  If it's sound perhaps it makes
+sense to spell it out so people aren't guessing.
 
->From dd9283e23f674281c02cd8cbf894cb3132a4e3a6 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 17 Jul 2015 23:38:34 +0800
-Subject: [PATCH] ASoC: cs4349: Fix max_register setting for cs4349_regmap
+> +int tda9998x_codec_register(struct device *dev,
+> +			struct tda998x_audio_s *tda998x_audio_i,
+> +			struct tda998x_ops_s *tda998x_ops);
+> +void tda9998x_codec_unregister(struct device *dev);
 
-The max_register should be the maximum valid register index rather than
-number of registers. Also remove unused defines.
+I'd expect these to be internal to the DRM driver.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Tim Howe <tim.howe@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs4349.c | 2 +-
- sound/soc/codecs/cs4349.h | 3 ---
- 2 files changed, 1 insertion(+), 4 deletions(-)
+> +config SND_SOC_TDA998X
+> +	def_tristate y
+> +	select SND_PCM_ELD
+> +	depends on DRM_I2C_NXP_TDA998X
+> +
 
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index a8df8a749607..9273b06e918b 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -268,7 +268,7 @@ static struct regmap_config cs4349_regmap = {
- 	.reg_bits		= 8,
- 	.val_bits		= 8,
- 
--	.max_register		= CS4349_NUMREGS,
-+	.max_register		= CS4349_MISC,
- 	.reg_defaults		= cs4349_reg_defaults,
- 	.num_reg_defaults	= ARRAY_SIZE(cs4349_reg_defaults),
- 	.readable_reg		= cs4349_readable_register,
-diff --git a/sound/soc/codecs/cs4349.h b/sound/soc/codecs/cs4349.h
-index 3884a8907d23..7effa0acec28 100644
---- a/sound/soc/codecs/cs4349.h
-+++ b/sound/soc/codecs/cs4349.h
-@@ -36,9 +36,6 @@ struct cs4349_platform_data {
- #define CS4349_RMPFLT		0x07	/* Ramp and Filter Control */
- #define CS4349_MISC		0x08	/* Power Down,Freeze Control,Pop Stop*/
- 
--#define CS4349_FIRSTREG		0x01
--#define CS4349_LASTREG		0x08
--#define CS4349_NUMREGS		(CS4349_LASTREG - CS4349_FIRSTREG + 1)
- #define CS4349_I2C_INCR		0x80
- 
- 
--- 
-2.1.4
+def_tristate y?  Why?
+
+> +/* functions in tda998x_drv */
+> +static struct tda998x_ops_s *tda998x_ops;
+
+I'd expect this to be stored in the driver data rather than a static
+global, what if a system has two HDMI outputs?
+
+> +static int tda998x_codec_startup(struct snd_pcm_substream *substream,
+> +                       struct snd_soc_dai *dai)
+> +{
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+> +       u8 *eld;
+> +
+> +       eld = tda998x_ops->get_eld(dai->dev);
+> +       if (!eld)
+> +               return -ENODEV;
+> +       return snd_pcm_hw_constraint_eld(runtime, eld);
+> +}
+
+Do we really need a device specific mechanism for fishing the ELD out of
+the graphics code?  I'd have expected this to be more generic.
+
+> +/* ask the HDMI transmitter to activate the audio input port */
+> +static int tda998x_codec_hw_params(struct snd_pcm_substream *substream,
+> +				   struct snd_pcm_hw_params *params,
+> +				   struct snd_soc_dai *dai)
+> +{
+> +	return tda998x_ops->set_audio_input(dai->dev, dai->id,
+> +					params_rate(params));
+> +}
+
+The set_audio_input() function doesn't appear to have anything that
+checks if the device is busy before enabling things, what happens if the
+user tries to switch between I2S and S/PDIF?  It looks like only one DAI
+can be active at once.
+
+> +	for (i = 0, p_dai = dais; i < ndais ; i++, p_dai++) {
+> +		memcpy(p_dai, &tda998x_dai_i2s, sizeof(*p_dai));
+> +		p_dai->id = i;
+> +		if (tda998x_audio->port_types[i] == AFMT_SPDIF) {
+> +			p_dai->name = "spdif-hifi";
+> +			p_dai->playback.stream_name = "HDMI SPDIF Playback";
+> +			p_dai->playback.channels_max = 2;
+> +			p_dai->playback.rate_min = 22050;
+> +		}
+> +	}
+
+It would be a bit clearer if the template were just a template and this
+copying initialised both I2S and S/PDIF specific settings.
+
+> +	return snd_soc_register_codec(dev,
+> +				&tda998x_codec_drv,
+> +				dais, ndais);
+> +}
+> +EXPORT_SYMBOL(tda9998x_codec_register);
+
+ASoC is all EXPORT_SYMBOL_GPL, you shouldn't reexport functionality with
+plain EXPORT_SYMBOL.
+
+--D1fPXr6nrXZW0cyN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVrTiNAAoJECTWi3JdVIfQ7osH/0ynfbV4ZmV4dn9/7chvbdqW
+mO1sdPD9iZVh+bVyNF/RA5XlJVNNxuYwk+7PwOl4wSNDA3cxgsPQwFel+HdwQ3Yv
+FRkw/vyKb/2Ew4fdEw4a0QamZ2OzoJEasJrxaEvDT3Pq2cn9dtcLEeS0N8P2P5OB
+9cgciMzfpTTE0NHu1lybDWAAjEYK0mpLowU4utiLsvR2RtDid+Qo0oBRHkuKMdSg
+m5bo3xbNq/wRGwtUzhxlaCMojzc0V+3ud+tkyvDXz0b/6E6PwJN3W2PHrrgtxeKa
+Z63Jk3SXlN5moRDHRGNczDxBtsxEVSFqUYCNNEHrw04uK/X6tIhrfSuwdcY3llc=
+=wKcR
+-----END PGP SIGNATURE-----
+
+--D1fPXr6nrXZW0cyN--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
