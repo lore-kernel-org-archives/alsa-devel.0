@@ -1,15 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 0/7] ASoC: Cleanup AC'97 reset handling
-Date: Tue, 21 Jul 2015 21:52:59 +0200
-Message-ID: <1437508386-13828-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/7] ALSA: ac97: Add helper function to reset
+	the AC97 device
+Date: Tue, 21 Jul 2015 21:53:00 +0200
+Message-ID: <1437508386-13828-2-git-send-email-lars@metafoo.de>
+References: <1437508386-13828-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-102.synserver.de (smtp-out-102.synserver.de
  [212.40.185.102])
- by alsa0.perex.cz (Postfix) with ESMTP id CF2BA26510F
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 21:53:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 91F62265112
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 21:53:19 +0200 (CEST)
+In-Reply-To: <1437508386-13828-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +26,102 @@ To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwoo
 Cc: Manuel Lauss <manuel.lauss@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-AC'97 devices require that they are properly reset before they can be used.
-Currently ASoC drivers do this by hand each on its own. This lead to many
-similar but slightly different implementations. E.g. Some supporting warm
-reset, some don't. And even though AC'97 do have a device ID which uniquely
-identifies a device most drivers only use the content of register 0 for
-device verification.
+There is currently a lot of code duplication in ASoC drivers regarding the
+reset handling of devices. This patch introduces a new generic reset
+function in the generic AC'97 framework that can be used to replace most
+the custom reset functions.
 
-This patch series introduces a new generic helper function in the ALSA
-AC'97 core that can be used to reset a device and verify its ID if
-required. And then converts drivers to use this new helper function instead
-of custom code.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/ac97_codec.h |  2 ++
+ sound/ac97_bus.c           | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
-snd_soc_new_ac97_codec() is extended to be able to perform a reset between
-the allocation and registration of the AC'97 device, this will allow more
-drivers to use it.
-
-- Lars
-
-Lars-Peter Clausen (7):
-  ALSA: ac97: Add helper function to reset the AC97 device
-  ASoC: ac97: Add support for resetting device before registration
-  ASoC: ad1980: Use core AC'97 reset helper
-  ASoC: stac9766: Use core reset helper
-  ASoC: wm9705: Use core AC'97 reset helper
-  ASoC: wm9712: Use core AC'97 reset helper
-  ASoC: wm9713: Use core AC'97 reset helper
-
- include/sound/ac97_codec.h  |  2 ++
- include/sound/soc.h         |  3 ++-
- sound/ac97_bus.c            | 62 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ad1980.c   | 36 +++++++++-----------------
- sound/soc/codecs/stac9766.c | 57 +++++------------------------------------
- sound/soc/codecs/wm9705.c   | 40 ++++++-----------------------
- sound/soc/codecs/wm9712.c   | 45 ++++++--------------------------
- sound/soc/codecs/wm9713.c   | 48 ++++++-----------------------------
- sound/soc/codecs/wm9713.h   |  2 --
- sound/soc/soc-ac97.c        | 30 ++++++++++++++++++----
- 10 files changed, 134 insertions(+), 191 deletions(-)
-
+diff --git a/include/sound/ac97_codec.h b/include/sound/ac97_codec.h
+index 0e9d75b..74bc8547 100644
+--- a/include/sound/ac97_codec.h
++++ b/include/sound/ac97_codec.h
+@@ -584,6 +584,8 @@ static inline int snd_ac97_update_power(struct snd_ac97 *ac97, int reg,
+ void snd_ac97_suspend(struct snd_ac97 *ac97);
+ void snd_ac97_resume(struct snd_ac97 *ac97);
+ #endif
++int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
++	unsigned int id_mask);
+ 
+ /* quirk types */
+ enum {
+diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
+index 2b50cbe..55791a0 100644
+--- a/sound/ac97_bus.c
++++ b/sound/ac97_bus.c
+@@ -18,6 +18,68 @@
+ #include <sound/ac97_codec.h>
+ 
+ /*
++ * snd_ac97_check_id() - Reads and checks the vendor ID of the device
++ * @ac97: The AC97 device to check
++ * @id: The ID to compare to
++ * @id_mask: Mask that is applied to the device ID before comparing to @id
++ *
++ * If @id is 0 this function returns true if the read device vendor ID is
++ * a valid ID. If @id is non 0 this functions returns true if @id
++ * matches the read vendor ID. Otherwise the function returns false.
++ */
++static bool snd_ac97_check_id(struct snd_ac97 *ac97, unsigned int id,
++	unsigned int id_mask)
++{
++	ac97->id = ac97->bus->ops->read(ac97, AC97_VENDOR_ID1) << 16;
++	ac97->id |= ac97->bus->ops->read(ac97, AC97_VENDOR_ID2);
++
++	if (ac97->id == 0x0 || ac97->id == 0xffffffff)
++		return false;
++
++	if (id != 0 && id != (ac97->id & id_mask))
++		return false;
++
++	return true;
++}
++
++/**
++ * snd_ac97_reset() - Reset AC'97 device
++ * @ac97: The AC'97 device to reset
++ * @try_warm: Try a warm reset first
++ * @id: Expected device vendor ID
++ * @id_mask: Mask that is applied to the device ID before comparing to @id
++ *
++ * This function resets the AC'97 device. If @try_warm is true the function
++ * first performs a warm reset. If the warm reset is successful the function
++ * returns 1. Otherwise or if @try_warm is false the function issues cold reset
++ * followed by a warm reset. If this is successful the function returns 0,
++ * otherwise a negative error code. If @id is 0 any valid device ID will be
++ * accepted, otherwise only the ID that matches @id and @id_mask is accepted.
++ */
++int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
++	unsigned int id_mask)
++{
++	struct snd_ac97_bus_ops *ops = ac97->bus->ops;
++
++	if (try_warm && ops->warm_reset) {
++		ops->warm_reset(ac97);
++		if (snd_ac97_check_id(ac97, id, id_mask))
++			return 1;
++	}
++
++	if (ops->reset)
++		ops->reset(ac97);
++	if (ops->warm_reset)
++		ops->warm_reset(ac97);
++
++	if (snd_ac97_check_id(ac97, id, id_mask))
++		return 0;
++
++	return -ENODEV;
++}
++EXPORT_SYMBOL_GPL(snd_ac97_reset);
++
++/*
+  * Let drivers decide whether they want to support given codec from their
+  * probe method. Drivers have direct access to the struct snd_ac97
+  * structure and may  decide based on the id field amongst other things.
 -- 
 2.1.4
