@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98925: reading beyond the end of the
-	array" to the asoc tree
-Date: Tue, 21 Jul 2015 11:49:13 +0100
-Message-ID: <E1ZHV6n-0002rL-SY@debutante>
-References: <20150721085527.GA22070@mwanda>
+Subject: Applied "ASoC: rsnd: tidyup parameter assignment
+	position" to the asoc tree
+Date: Tue, 21 Jul 2015 11:49:14 +0100
+Message-ID: <E1ZHV6o-0002ro-Re@debutante>
+References: <87vbdecrc7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 57A752614EE
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 12:49:20 +0200 (CEST)
-In-Reply-To: <20150721085527.GA22070@mwanda>
+ by alsa0.perex.cz (Postfix) with ESMTP id E130C2616C9
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 12:49:21 +0200 (CEST)
+In-Reply-To: <87vbdecrc7.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98925: reading beyond the end of the array
+   ASoC: rsnd: tidyup parameter assignment position
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 6eb1c2a63d0415bd66c9c866b7d405662f50d5e4 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 21 Jul 2015 11:55:27 +0300
-Subject: [PATCH] ASoC: max98925: reading beyond the end of the array
+>From 48725e9cc841da395bfd74e7691bba91613d3517 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 21 Jul 2015 00:03:35 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup parameter assignment position
 
-Debug prints are seldom useful and this one has an annoying thing where
-it reads one space beyond the end of the array on error.
+84e95355602c("ASoC: rsnd: show debug message for SSI/SRC/DVC connection")
+added debug message on rsnd_dai_connect(), but the relationship of
+parameter check was absurdity. This patch tidyup it.
+It is reported via Smatch/Dan
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98925.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/sh/rcar/core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-index eddf8bc07314..0883d87776b1 100644
---- a/sound/soc/codecs/max98925.c
-+++ b/sound/soc/codecs/max98925.c
-@@ -271,8 +271,6 @@ static inline int max98925_rate_value(struct snd_soc_codec *codec,
- 			break;
- 		}
- 	}
--	dev_dbg(codec->dev, "%s: sample rate is %d, returning %d\n",
--				__func__, rate_table[i].rate, *value);
- 	return ret;
- }
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 927a7b02123b..f3feed5ce9b6 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -332,12 +332,15 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ static int rsnd_dai_connect(struct rsnd_mod *mod,
+ 			    struct rsnd_dai_stream *io)
+ {
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct device *dev = rsnd_priv_to_dev(priv);
++	struct rsnd_priv *priv;
++	struct device *dev;
  
+ 	if (!mod)
+ 		return -EIO;
+ 
++	priv = rsnd_mod_to_priv(mod);
++	dev = rsnd_priv_to_dev(priv);
++
+ 	io->mod[mod->type] = mod;
+ 
+ 	dev_dbg(dev, "%s[%d] is connected to io (%s)\n",
 -- 
 2.1.4
