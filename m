@@ -1,55 +1,75 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: [PATCH] ASoC: kirkwood: prevent double streaming
-Date: Tue, 21 Jul 2015 18:32:58 +0200
-Message-ID: <20150721165717.F04792605AA@alsa0.perex.cz>
+From: "R, Durgadoss" <durgadoss.r@intel.com>
+Subject: Re: [PATCH 0/4] i915 to call hda driver on HDMI
+ plug/unplug
+Date: Tue, 21 Jul 2015 17:37:17 +0000
+Message-ID: <4D68720C2E767A4AA6A8796D42C8EB59091CA987@BGSMSX101.gar.corp.intel.com>
+References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 040AA260599
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 18:57:11 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "tiwai@suse.de" <tiwai@suse.de>, "Vetter, Daniel" <daniel.vetter@intel.com>, "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The kirkwood audio subsystem presents 2 PCM's for one source.
-Streaming on a second PCM while the first one is active
-cuts this last one.
-Then, ending the last stream gives a kernel trap in free_irq().
-
-Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
----
- sound/soc/kirkwood/kirkwood-dma.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index 4cf2245..dbfdfe9 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -148,10 +148,14 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 	dram = mv_mbus_dram_info();
- 	addr = substream->dma_buffer.addr;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (priv->substream_play)
-+			return -EBUSY;
- 		priv->substream_play = substream;
- 		kirkwood_dma_conf_mbus_windows(priv->io,
- 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
- 	} else {
-+		if (priv->substream_rec)
-+			return -EBUSY;
- 		priv->substream_rec = substream;
- 		kirkwood_dma_conf_mbus_windows(priv->io,
- 			KIRKWOOD_RECORD_WIN, addr, dram);
--- 
-2.1.4
+SGkgRGF2aWQsDQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IEludGVsLWdm
+eCBbbWFpbHRvOmludGVsLWdmeC1ib3VuY2VzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZ10gT24gQmVo
+YWxmIE9mIERhdmlkIEhlbm5pbmdzc29uDQo+U2VudDogVHVlc2RheSwgSnVseSAyMSwgMjAxNSAx
+OjI3IFBNDQo+VG86IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgaW50ZWwtZ2Z4QGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZzsgdGl3YWlAc3VzZS5kZTsgVmV0dGVyLCBEYW5pZWw7DQo+amFuaS5u
+aWt1bGFAbGludXguaW50ZWwuY29tDQo+Q2M6IEtvdWwsIFZpbm9kOyBEYXZpZCBIZW5uaW5nc3Nv
+bg0KPlN1YmplY3Q6IFtJbnRlbC1nZnhdIFtQQVRDSCAwLzRdIGk5MTUgdG8gY2FsbCBoZGEgZHJp
+dmVyIG9uIEhETUkgcGx1Zy91bnBsdWcNCj4NCj5UaGlzIHBhdGNoIHNldCBhaW1zIHRvIHJlc29s
+dmUgdGhyZWUgcHJvYmxlbXM6DQo+DQo+ICogVGhlIGZpcnN0IC0gYW5kIG1vc3Qgc2VyaW91cyBv
+bmUgLSBpcyB0aGF0IHRoZSBhdWRpbyBkcml2ZXIgaXMgbm90IHdva2VuIHVwDQo+ICAgcHJvcGVy
+bHkgd2hlbiBpbiBwb3dlciBzYXZlIG1vZGVzLCBlc3BlY2lhbGx5IG5vdCB3aGVuIHRoZSBIREEg
+Y29udHJvbGxlciBpcw0KPiAgIGluIEQzLiBCeSBoYXZpbmcgdGhlIGk5MTUgZHJpdmVyIGNhbGwg
+ZGlyZWN0bHkgaW50byB0aGUgaGRhIGRyaXZlciwgdGhlIEhEQQ0KPiAgIGRyaXZlciBpcyBhbHdh
+eXMgbm90aWZpZWQgdGhhdCBhbiBIRE1JIGhvdHBsdWcgZXZlbnQgaGFzIGhhcHBlbmVkLg0KPg0K
+PiAqIFNlY29uZCwgdGhlcmUgaXMgY3VycmVudGx5IG5vIHdheSBmb3IgdXNlcnNwYWNlIHRvIG1h
+dGNoIGFuIEhETUkgYXVkaW8gb3V0cHV0DQo+ICAgd2l0aCBhbiBIRE1JIHZpZGVvIG91dHB1dC4g
+V2UgZml4IHRoaXMgYnkgc2VuZGluZyBjb25uZWN0b3JfdHlwZSBhbmQNCj4gICBjb25uZWN0b3Jf
+dHlwZV9pZCBpbiB0aGUgSERNSSBob3RwbHVnIGNhbGxiYWNrLg0KPg0KPiAqIFRoaXJkLCB3cml0
+aW5nIEVMRCBpbmZvIHRvIHRoZSBoYXJkd2FyZSBqdXN0IHNvIHRoZSBIREEgZHJpdmVyIGNhbiBy
+ZWFkIGl0DQo+ICAgZnJvbSB0aGUgaGFyZHdhcmUgc2VlbXMgYSBiaXQgaW5lZmZpY2llbnQuIFdl
+IGNvdWxkIGp1c3QgcGFzcyB0aGF0IGluZm9ybWF0aW9uDQo+ICAgaW4gdGhlIGNhbGxiYWNrLCB0
+b28uDQo+DQo+VGhlIHBhdGNoIGluIGl0cyBjdXJyZW50IGZvcm0gZml4ZXMgdGhlIGZpcnN0IG9m
+IHRoZXNlIHByb2JsZW1zIGFuZCBwcm92aWRlcyBtb3N0DQo+b2YgdGhlIGluZnJhc3RydWN0dXJl
+IGZvciB0aGUgc2Vjb25kIGFuZCB0aGlyZCBwcm9ibGVtLg0KPg0KPlRoZSBwYXRjaCBzZXQgaXMg
+YmFzZWQgb24gNC4ycmMyICsgbXkgcmVjZW50IGNvZGVjIHdha2V1cCBwYXRjaC4gU28gZmFyLCBp
+dCBoYXMNCj5iZWVuIHRlc3RlZCAoYW5kIHdvcmtpbmcpIG9uIG9uZSBTa3lsYWtlIG1hY2hpbmUu
+DQoNCkkgYmVsaWV2ZSB5b3UgdGVzdGVkIHRoZXNlIHBhdGNoZXMgd2l0aCBoZGEgZHJpdmVyIGFm
+dGVyIGZldyBjeWNsZXMgb2YgRDMuDQpCeSBhbnkgY2hhbmNlLCBkaWQgeW91IGFsc28gdHJ5IHRo
+aXMgb25jZSBhZnRlciBpOTE1IGRyaXZlcidzIEQzIGN5Y2xlIGFsc28gPw0KSW4gdGhpcyBjYXNl
+LCBjYW4gdGhlIGNoZWNrX3ByZXNlbmNlX2FuZF9yZXBvcnQoKSBmdW5jdGlvbiBnZXQgdGhlDQpw
+aW4gcHJlc2VuY2UgYW5kIEVMRCB2YWxpZCBiaXRzIHJlYWQgb3V0IHByb3Blcmx5Li4/DQoNClRo
+YW5rcywNCkR1cmdhDQoNCj4NCj5EYXZpZCBIZW5uaW5nc3NvbiAoNCk6DQo+ICBkcm0vaTkxNTog
+QWRkIGF1ZGlvIGhvdHBsdWcgaW5mbyBzdHJ1Y3QNCj4gIGRybS9pOTE1OiBDYWxsIGF1ZGlvIGhv
+dHBsdWcgbm90aWZ5IGZ1bmN0aW9uDQo+ICBBTFNBOiBoZGEgLSBEaXNwYXRjaCBpbmNvbWluZyBI
+RE1JIGhvdHBsdWcgaTkxNSBjYWxsYmFjaw0KPiAgQUxTQTogaGRhIC0gV2FrZSB0aGUgY29kZWMg
+dXAgb24gaG90cGx1ZyBub3RpZnkgZXZlbnRzDQo+DQo+IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5
+MTVfZHJ2LmggICAgfCAgICAxICsNCj4gZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8u
+YyB8ICAgNDYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+IGluY2x1ZGUv
+ZHJtL2k5MTVfY29tcG9uZW50LmggICAgICAgfCAgIDE5ICsrKysrKysrKysrKysrKw0KPiBpbmNs
+dWRlL3NvdW5kL2hkYXVkaW8uaCAgICAgICAgICAgIHwgICAgNCArKysrDQo+IHNvdW5kL2hkYS9o
+ZGFjX2k5MTUuYyAgICAgICAgICAgICAgfCAgIDI0ICsrKysrKysrKysrKysrKysrKysNCj4gc291
+bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgICAgICAgICB8ICAgMjIgKysrKysrKysrKysrKysrKy0N
+Cj4gNiBmaWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPg0K
+Pi0tDQo+MS43LjkuNQ0KPg0KPl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fDQo+SW50ZWwtZ2Z4IG1haWxpbmcgbGlzdA0KPkludGVsLWdmeEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcNCj5odHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vaW50ZWwtZ2Z4DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdm
+eAo=
