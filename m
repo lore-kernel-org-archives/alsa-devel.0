@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Skylake: Add DSP module init
-	and binding routines
-Date: Tue, 21 Jul 2015 23:53:59 +0530
-Message-ID: <1437503040-7392-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 6/6] ASoC: Intel: Skylake: Add pipe management
+	helpers
+Date: Tue, 21 Jul 2015 23:54:00 +0530
+Message-ID: <1437503040-7392-7-git-send-email-vinod.koul@intel.com>
 References: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BCB126512D
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A18082650DB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:26 +0200 (CEST)
 In-Reply-To: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,203 +27,155 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-The modules init and binding helper function creates module init and bind
-IPC message based on module parameter and calls IPC interface to send the
-IPC to DSP FW.
+To manage the DSP pipelines we need routines to create, delete and
+message creation helpers. These helpers also check status and creates
+IPC messages with the required parameter and send using IPC lib
+interface.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 165 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |   4 +
- 2 files changed, 169 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 114 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |   5 ++
+ 2 files changed, 119 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index faa0e71d4ae5..72af582183ae 100644
+index 72af582183ae..002297249c11 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -547,3 +547,168 @@ static int skl_free_queue(struct skl_module_pin *mpin,
- 
- 	return m_pin.pin_index;
+@@ -712,3 +712,117 @@ int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
+ 	else
+ 		return skl_unbind_modules(ctx, src_module, dst_module);
  }
 +
-+int skl_init_module(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig, char *param)
++static int skl_set_pipe_state(struct skl_sst *ctx, struct skl_pipe *pipe,
++	enum skl_pipe_state state)
 +{
-+	u16 module_config_size = 0;
-+	void *param_data = NULL;
++	dev_dbg(ctx->dev, "%s: pipe_satate = %d\n", __func__, state);
++
++	return skl_ipc_set_pipeline_state(&ctx->ipc, pipe->ppl_id, state);
++}
++
++/*
++ * Creates pipeline, by sending IPC messages to FW
++ */
++int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
++{
 +	int ret;
-+	struct skl_ipc_init_instance_msg msg;
 +
-+	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
-+		 mconfig->id.module_id, mconfig->id.instance_id);
++	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
 +
-+	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
-+		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
-+				 mconfig->pipe->state, mconfig->pipe->ppl_id);
-+		return -EIO;
-+	}
-+
-+	ret = skl_set_module_format(ctx, mconfig,
-+			&module_config_size, &param_data);
++	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
++				pipe->pipe_priority, pipe->ppl_id);
 +	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to set module format ret=%d\n", ret);
++		dev_err(ctx->dev, "Failed to create pipeline\n");
 +		return ret;
 +	}
 +
-+	msg.module_id = mconfig->id.module_id;
-+	msg.instance_id = mconfig->id.instance_id;
-+	msg.ppl_instance_id = mconfig->pipe->ppl_id;
-+	msg.param_data_size = module_config_size;
-+	msg.core_id = mconfig->core_id;
++	pipe->state = SKL_PIPE_CREATED;
 +
-+	ret = skl_ipc_init_instance(&ctx->ipc, &msg, param_data);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to init instance ret=%d\n", ret);
-+		kfree(param_data);
-+		return ret;
-+	}
-+	mconfig->m_state = SKL_MODULE_INIT_DONE;
-+
-+	return ret;
++	return 0;
 +}
 +
-+static int skl_unbind_modules(struct skl_sst *ctx,
-+			struct skl_module_cfg *src_mcfg,
-+			struct skl_module_cfg *dst_mcfg)
++/*
++ * Sets pipe state to RUNNING
++ */
++int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
 +{
 +	int ret;
-+	struct skl_ipc_bind_unbind_msg msg;
-+	struct skl_module_inst_id src_id = src_mcfg->id;
-+	struct skl_module_inst_id dst_id = dst_mcfg->id;
-+	int in_max = dst_mcfg->max_in_queue;
-+	int out_max = src_mcfg->max_out_queue;
-+	struct skl_module_pin m_pin;
 +
-+	if (src_mcfg->m_state != SKL_MODULE_BIND_DONE)
++	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
++
++	/* If pipe was not created in FW, do not try to pause or delete */
++	if (pipe->state < SKL_PIPE_CREATED)
 +		return 0;
 +
-+	/*
-+	 * if intra module unbind, check if both modules are BIND,
-+	 * then send unbind
-+	 */
-+	if ((src_mcfg->pipe->ppl_id != dst_mcfg->pipe->ppl_id) &&
-+				dst_mcfg->m_state != SKL_MODULE_BIND_DONE)
-+		return 0;
-+	else if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
-+				 dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
-+		return 0;
-+
-+	/* get src pin index */
-+	m_pin = skl_get_queue(src_mcfg->m_out_pin, src_id, out_max);
-+	if (m_pin.pin_index < 0)
-+		return -EINVAL;
-+
-+	msg.src_queue = m_pin.pin_index;
-+
-+	/* get dst pin index */
-+	m_pin  = skl_get_queue(dst_mcfg->m_in_pin, dst_id, in_max);
-+	if (m_pin.pin_index < 0) {
-+		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
-+		return -EINVAL;
++	/* Pipe has to be paused before it is started */
++	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to pause pipe\n");
++		return ret;
 +	}
 +
-+	msg.dst_queue = m_pin.pin_index;
++	pipe->state = SKL_PIPE_PAUSED;
 +
-+	msg.module_id = src_mcfg->id.module_id;
-+	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.dst_module_id = dst_mcfg->id.module_id;
-+	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.bind = false;
++	ret = skl_set_pipe_state(ctx, pipe, PPL_RUNNING);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to start pipe\n");
++		return ret;
++	}
 +
-+	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-+	if (!ret)
-+		src_mcfg->m_state = SKL_MODULE_UNINIT;
++	pipe->state = SKL_PIPE_STARTED;
 +
-+	skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
-+	skl_free_queue(dst_mcfg->m_in_pin, dst_id, in_max);
-+
-+	return ret;
++	return 0;
 +}
 +
-+static int skl_bind_modules(struct skl_sst *ctx,
-+			struct skl_module_cfg *src_mcfg,
-+			struct skl_module_cfg *dst_mcfg)
++/*
++ * Sets pipe state to PAUSED in FW, stops DMA engines and releases resources
++ */
++int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
 +{
-+	int pin_index, ret;
-+	struct skl_ipc_bind_unbind_msg msg;
-+	struct skl_module_inst_id src_id = src_mcfg->id;
-+	struct skl_module_inst_id dst_id = dst_mcfg->id;
-+	int in_max = dst_mcfg->max_in_queue;
-+	int out_max = src_mcfg->max_out_queue;
++	int ret;
 +
-+	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
-+		dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
-+		return 0;
++	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
 +
-+	pin_index = skl_alloc_queue(src_mcfg->m_out_pin, src_id, out_max);
-+	if (pin_index < 0)
-+		return -EINVAL;
++	/* If pipe is not started, do not try to stop the pipe in FW. */
++	if (pipe->state > SKL_PIPE_STARTED) {
++		ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Failed to stop pipeline\n");
++			return ret;
++		}
 +
-+	msg.src_queue = pin_index;
-+	pin_index = skl_alloc_queue(dst_mcfg->m_in_pin, dst_id, in_max);
-+	if (pin_index < 0) {
-+		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
-+		return -EINVAL;
-+	}
-+
-+	msg.dst_queue = pin_index;
-+	dev_dbg(ctx->dev, "src queue = %d dst queue =%d\n",
-+			 msg.src_queue, msg.dst_queue);
-+
-+	msg.module_id = src_mcfg->id.module_id;
-+	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.dst_module_id = dst_mcfg->id.module_id;
-+	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.bind = true;
-+
-+	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-+
-+	if (!ret) {
-+		src_mcfg->m_state = SKL_MODULE_BIND_DONE;
++		pipe->state = SKL_PIPE_PAUSED;
 +	} else {
-+		/* error case , if IPC fails, clear the queue index */
-+		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
-+		skl_free_queue(dst_mcfg->m_in_pin, dst_id, in_max);
++		/* If pipe was not created in FW, do not try to delete it */
++		if (pipe->state < SKL_PIPE_CREATED)
++			return 0;
++
++		ret = skl_ipc_delete_pipeline(&ctx->ipc, pipe->ppl_id);
++		if (ret < 0)
++			dev_err(ctx->dev, "Failed to delete pipeline\n");
 +	}
 +
 +	return ret;
 +}
 +
-+int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
-+	*src_module, struct skl_module_cfg *dst_module, bool bind)
++int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
 +{
-+	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
-+		__func__, src_module->id.module_id, src_module->id.instance_id);
-+	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
-+		 dst_module->id.module_id, dst_module->id.instance_id);
++	int ret;
 +
-+	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
-+		src_module->m_state, dst_module->m_state);
++	dev_dbg(ctx->dev, "In %s pipe=%d\n", __func__, pipe->ppl_id);
 +
-+	if (bind)
-+		return skl_bind_modules(ctx, src_module, dst_module);
-+	else
-+		return skl_unbind_modules(ctx, src_module, dst_module);
++	/* If pipe was not created in FW, do not try to pause or delete */
++	if (pipe->state < SKL_PIPE_PAUSED)
++		return 0;
++
++	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++	if (ret < 0) {
++		dev_dbg(ctx->dev, "Failed to stop pipe\n");
++		return ret;
++	}
++
++	pipe->state = SKL_PIPE_CREATED;
++
++	return 0;
 +}
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index e4b2a339b2f4..c944ec024e62 100644
+index c944ec024e62..f5584d189ef0 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -263,5 +263,9 @@ struct skl_module_cfg {
+@@ -263,6 +263,11 @@ struct skl_module_cfg {
  	struct skl_specific_cfg formats_config;
  };
  
-+int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
-+	char *param);
-+int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
-+	*src_module, struct skl_module_cfg *dst_module, bool bind);
- enum skl_bitdepth skl_get_bit_depth(int params);
- #endif
++int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_pause_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+ int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
+ 	char *param);
+ int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
 -- 
 1.9.1
