@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Don't add prefix to widget
- stream name
-Date: Tue, 21 Jul 2015 16:58:04 +0100
-Message-ID: <20150721155804.GV11162@sirena.org.uk>
-References: <1437472295-5524-1-git-send-email-lars@metafoo.de>
- <1437486892.30798.14.camel@mtksdaap41>
- <55AE5D0A.7030800@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/2] ASoC: dapm: Avoid duplicating immutable
+	strings
+Date: Tue, 21 Jul 2015 18:11:08 +0200
+Message-ID: <1437495068-4104-2-git-send-email-lars@metafoo.de>
+References: <1437495068-4104-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0385984042364205570=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B513260560
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 17:58:14 +0200 (CEST)
-In-Reply-To: <55AE5D0A.7030800@metafoo.de>
+Received: from smtp-out-101.synserver.de (smtp-out-101.synserver.de
+ [212.40.185.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48EAE260575
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 18:11:12 +0200 (CEST)
+In-Reply-To: <1437495068-4104-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Koro Chen <koro.chen@mediatek.com>, alsa-devel@alsa-project.org, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+When creating a new widget from a template the name string of the template
+is duplicated for the newly created widget. This is necessary because in
+some cases the string might be stored on the stack or other volatile
+memory locations.
 
---===============0385984042364205570==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+dV+xilh7QQozWTa"
-Content-Disposition: inline
+But most of the time the string is static const data, which means it is
+possible to use it directly without having to worry that it might get freed
+or changed.
 
+Use kstrdup_const() to handle duplicating the string. This function is
+capable of detecting whether a string is immutable and if it is returns the
+input without duplicating it. This will slightly reduce the runtime memory
+footprint of DAPM and also speed up initialization.
 
---+dV+xilh7QQozWTa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, Jul 21, 2015 at 04:54:02PM +0200, Lars-Peter Clausen wrote:
-> On 07/21/2015 03:54 PM, Koro Chen wrote:
-
-> >I think your solution looks reasonable.
-> >However, just curious, why didn't we use strstr(dai_w->name, w->sname)
-> >in the first place?
-
-> It's probably just an oversight when the code was developed initially.
-
-I'm pretty sure there's no specific reason behind it.
-
---+dV+xilh7QQozWTa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVrmwLAAoJECTWi3JdVIfQH7cH/2NxzDsHqmDUHyjufsxN1WcB
-0TBgPuqIZjV4aUOL+MJH9b/SOW/RY9NVj7cUDWQ9X2YqIc2HSfrPmAYo+Z5dmBQ1
-3xEx1uyBbeJplGu6h7d29Qz2aDFYWmKWOd5Haoke8dXNkdN5gTk5PxfOVQvh0D0P
-hKDe7Xsip+DxmTfifzsTgx1/S8lV3NKlsl0Zm7pBEX1x8AYIsvM8+Rk7bfhjb4i1
-35V9MhpB0NVdKZTSz861BqGLsl7eTmkU1DxqzAezS0RjPgd11x+7DX0l/53KPHrl
-RNuqvDuBMQYSX+6QOqUVnn1qFuVAzj3RBISOzldZRRpOrel+3ILCCavYn4pc+P4=
-=HDPk
------END PGP SIGNATURE-----
-
---+dV+xilh7QQozWTa--
-
---===============0385984042364205570==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0385984042364205570==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7a57b01..7f834a0 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2332,7 +2332,7 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
+ 		dapm_free_path(p);
+ 
+ 	kfree(w->kcontrols);
+-	kfree(w->name);
++	kfree_const(w->name);
+ 	kfree(w);
+ }
+ 
+@@ -3353,7 +3353,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 	if (prefix)
+ 		w->name = kasprintf(GFP_KERNEL, "%s %s", prefix, widget->name);
+ 	else
+-		w->name = kasprintf(GFP_KERNEL, "%s", widget->name);
++		w->name = kstrdup_const(widget->name, GFP_KERNEL);
+ 	if (w->name == NULL) {
+ 		kfree(w);
+ 		return NULL;
+-- 
+2.1.4
