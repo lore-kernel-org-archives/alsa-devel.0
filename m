@@ -1,17 +1,18 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: Re: [PATCH] ASoC: dapm: Don't add prefix to widget
- stream name
-Date: Tue, 21 Jul 2015 21:54:52 +0800
-Message-ID: <1437486892.30798.14.camel@mtksdaap41>
-References: <1437472295-5524-1-git-send-email-lars@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC][PATCH 26/37] ALSA: firewire-tascam: add
+	MMAP	support to show status and control message
+Date: Tue, 21 Jul 2015 16:06:52 +0200
+Message-ID: <55AE51FC.3020204@ladisch.de>
+References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1436623968-10780-27-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 99269264EFA
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 15:54:57 +0200 (CEST)
-In-Reply-To: <1437472295-5524-1-git-send-email-lars@metafoo.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EB6D2264EFA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 16:06:53 +0200 (CEST)
+In-Reply-To: <1436623968-10780-27-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Yoshifuji Hideaki <yoshfuji@linux-ipv6.org>, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-07-21 at 11:51 +0200, Lars-Peter Clausen wrote:
-> Commit fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to
-> prefix") fixed the case where a DAPM route between a DAI widget and a
-> DAC/ADC/AIF widget with a matching stream name was not created when the
-> DAPM context was using a prefix.
-> 
-> Unfortunately the patch introduced a few issues on its own like leaking the
-> dynamically allocated stream name memory and also not checking whether the
-> allocation succeeded in the first place.
-> 
-> It is also incomplete in that it still does not handle the case where
-> stream name of the widget is a substring of the stream name of the DAI,
-> which is explicitly allowed and works fine if no DAPM prefix is used.
-> 
-I think your solution looks reasonable. 
-However, just curious, why didn't we use strstr(dai_w->name, w->sname)
-in the first place? This allows stream name can be without prefix, and
-also stream name can be a substring of DAI stream name.
+Takashi Sakamoto wrote:
+> Typically, such messages should be converted to MIDI control change
+> messages for userspace applications.
 
-> Revert the commit and take a slightly different approach to solving the
-> issue. Instead of comparing the widget's stream name to the name of the DAI
-> widget compare it to the stream name of the DAI widget. The stream name of
-> the DAI widget is identical to the name of the DAI widget except that it
-> wont have the DAPM prefix added. So this approach behaves identical
-> regardless to whether the DAPM context uses a prefix or not.
-> 
-> We don't have to worry about potentially matching with a widget with the
-> same stream name, but from a different DAPM context with a different
-> prefix, since the code already makes sure that both the DAI widget and the
-> matched widget are from the same DAPM context.
-> 
-> Fixes: fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to prefix")
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/soc-dapm.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 1628f0c..1992568 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -3344,16 +3344,10 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
->  	}
->  
->  	prefix = soc_dapm_prefix(dapm);
-> -	if (prefix) {
-> +	if (prefix)
->  		w->name = kasprintf(GFP_KERNEL, "%s %s", prefix, widget->name);
-> -		if (widget->sname)
-> -			w->sname = kasprintf(GFP_KERNEL, "%s %s", prefix,
-> -					     widget->sname);
-> -	} else {
-> +	else
->  		w->name = kasprintf(GFP_KERNEL, "%s", widget->name);
-> -		if (widget->sname)
-> -			w->sname = kasprintf(GFP_KERNEL, "%s", widget->sname);
-> -	}
->  	if (w->name == NULL) {
->  		kfree(w);
->  		return NULL;
-> @@ -3802,7 +3796,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
->  				break;
->  			}
->  
-> -			if (!w->sname || !strstr(w->sname, dai_w->name))
-> +			if (!w->sname || !strstr(w->sname, dai_w->sname))
->  				continue;
->  
->  			if (dai_w->id == snd_soc_dapm_dai_in) {
+It would be possible to have ALSA mixer controls for these, but this
+would make sense only if these controls are suitable to be displayed in
+a generic mixer application.  I guess this isn't the case for most of
+them.
+
+> Thus, this driver should have a converter with appropriate MIDI map.
+> Currently I have no good idea for the map and it is not implemented
+> yet.
+
+I guess the Windows driver does not makes this information available in
+any way?
+
+If all the data is device-specific, the actual mapping chosen does not
+really matter, because the mixer/control application needs to have
+special code for parsing the data from this particular Linux driver
+anyway.
+
+
+Regards,
+Clemens
