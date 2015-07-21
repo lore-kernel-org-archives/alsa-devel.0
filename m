@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 4/6] ASoC: Intel: Skylake: Add helpers for SRC
-	and converter modules
-Date: Tue, 21 Jul 2015 23:53:58 +0530
-Message-ID: <1437503040-7392-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 2/6] ASoC: Intel: Skylake: Add dsp and ipc init
+	helpers
+Date: Tue, 21 Jul 2015 23:53:56 +0530
+Message-ID: <1437503040-7392-3-git-send-email-vinod.koul@intel.com>
 References: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 43AAB265056
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 084622650D4
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:17 +0200 (CEST)
 In-Reply-To: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,124 +22,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hardik T Shah <hardik.t.shah@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-SRC and converter modules module configuration helpers and format
-calculation for these modules and added here
+This helper function will be used by the Skylake driver for dsp and
+ipc initialization if processing pipe capability is supported.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 45 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h | 16 ++++++++++++
- 2 files changed, 61 insertions(+)
+ sound/soc/intel/skylake/Makefile       |   2 +-
+ sound/soc/intel/skylake/skl-messages.c | 133 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h          |   6 ++
+ 3 files changed, 140 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-messages.c
 
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index b35faef05779..27db22178204 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -1,4 +1,4 @@
+-snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o
++snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
+ 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 766729451fe3..faa0e71d4ae5 100644
---- a/sound/soc/intel/skylake/skl-messages.c
+new file mode 100644
+index 000000000000..7c07b76bf0bf
+--- /dev/null
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -369,6 +369,37 @@ static void skl_setup_out_format(struct skl_sst *ctx,
- 		out_fmt->number_of_channels, format->s_freq, format->bit_depth);
- }
- 
-+static void skl_set_src_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_src_module_cfg *src_mconfig)
+@@ -0,0 +1,133 @@
++/*
++ *  skl-message.c - HDA DSP interface for FW registration, Pipe and Module
++ *  configurations
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *	   Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/slab.h>
++#include <linux/pci.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
++#include "skl.h"
++#include "../common/sst-dsp.h"
++#include "../common/sst-dsp-priv.h"
++
++static int skl_alloc_dma_buf(struct device *dev,
++		struct snd_dma_buffer *dmab, size_t size)
 +{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
 +
-+	skl_set_base_module_format(ctx, mconfig,
-+		(struct skl_base_cfg *)src_mconfig);
++	if (!bus)
++		return -ENODEV;
 +
-+	src_mconfig->src_cfg = fmt->s_freq;
++	return  bus->io_ops->dma_alloc_pages(bus, SNDRV_DMA_TYPE_DEV, size, dmab);
 +}
 +
-+static void skl_set_updown_mixer_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_up_down_mixer_cfg *mixer_mconfig)
++static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
 +{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
-+	int i = 0;
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
 +
-+	skl_set_base_module_format(ctx,	mconfig,
-+		(struct skl_base_cfg *)mixer_mconfig);
-+	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
++	if (!bus)
++		return -ENODEV;
 +
-+	/* Select F/W default coefficient */
-+	mixer_mconfig->coeff_sel = 0x0;
++	bus->io_ops->dma_free_pages(bus, dmab);
 +
-+	/* User coeff, don't care since we are selecting F/W defaults */
-+	for (i = 0; i < UP_DOWN_MIXER_MAX_COEFF; i++)
-+		mixer_mconfig->coeff[i] = 0xDEADBEEF;
++	return 0;
 +}
 +
- /*
-  * copier_module_config is sent as input buffer with INIT_INSTANCE IPC msg
-  */
-@@ -396,6 +427,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- 		param_size += mconfig->formats_config.caps_size;
- 		return param_size;
++int skl_init_dsp(struct skl *skl)
++{
++	void __iomem *mmio_base;
++	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	int irq = bus->irq;
++	struct skl_dsp_loader_ops loader_ops;
++	int ret;
++
++	loader_ops.alloc_dma_buf = skl_alloc_dma_buf;
++	loader_ops.free_dma_buf = skl_free_dma_buf;
++
++	/* enable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++
++	/* read the BAR of the ADSP MMIO */
++	mmio_base = pci_ioremap_bar(skl->pci, 4);
++	if (mmio_base == NULL) {
++		dev_err(bus->dev, "ioremap error\n");
++		return -ENXIO;
++	}
++
++	ret = skl_sst_dsp_init(bus->dev, mmio_base, irq,
++			loader_ops, &skl->skl_sst);
++
++	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
++
++	return ret;
++}
++
++void skl_free_dsp(struct skl *skl)
++{
++	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl_sst *ctx =  skl->skl_sst;
++
++	/* disable  ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
++
++	skl_sst_dsp_cleanup(bus->dev, ctx);
++	if (ctx->dsp->addr.lpe)
++		iounmap(ctx->dsp->addr.lpe);
++}
++
++int skl_suspend_dsp(struct skl *skl)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++	int ret;
++
++	/* if ppcap is not supported return 0 */
++	if (!skl->ebus.ppcap)
++		return 0;
++
++	ret = skl_dsp_sleep(ctx->dsp);
++	if (ret < 0)
++		return ret;
++
++	/* disable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, false);
++
++	return 0;
++}
++
++int skl_resume_dsp(struct skl *skl)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	/* if ppcap is not supported return 0 */
++	if (!skl->ebus.ppcap)
++		return 0;
++
++	/* enable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++
++	return skl_dsp_wake(ctx->dsp);
++}
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 31dafa8a0594..f7fdbb02947f 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -56,6 +56,7 @@ struct skl {
+ 	struct platform_device *dmic_dev;
  
-+	case SKL_MODULE_TYPE_SRCINT:
-+		return sizeof(struct skl_src_module_cfg);
-+
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		return sizeof(struct skl_up_down_mixer_cfg);
-+
- 	default:
- 		/*
- 		 * return only base cfg when no specific module type is
-@@ -427,6 +464,14 @@ static int skl_set_module_format(struct skl_sst *ctx,
- 		skl_set_copier_format(ctx, module_config, *param_data);
- 		break;
- 
-+	case SKL_MODULE_TYPE_SRCINT:
-+		skl_set_src_format(ctx, module_config, *param_data);
-+		break;
-+
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		skl_set_updown_mixer_format(ctx, module_config, *param_data);
-+		break;
-+
- 	default:
- 		skl_set_base_module_format(ctx, module_config, *param_data);
- 	}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 6ba137a43e68..e4b2a339b2f4 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -123,6 +123,21 @@ struct skl_cpr_cfg {
- 	struct skl_cpr_gtw_cfg gtw_cfg;
- } __packed;
- 
-+
-+struct skl_src_module_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_s_freq src_cfg;
-+} __packed;
-+
-+struct skl_up_down_mixer_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_ch_cfg out_ch_cfg;
-+	/* This should be set to 1 if user coefficients are required */
-+	u32 coeff_sel;
-+	/* Pass the user coeff in this array */
-+	s32 coeff[UP_DOWN_MIXER_MAX_COEFF];
-+} __packed;
-+
- enum skl_dma_type {
- 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
- 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
-@@ -247,5 +262,6 @@ struct skl_module_cfg {
- 	struct skl_pipe *pipe;
- 	struct skl_specific_cfg formats_config;
+ 	void __iomem *nhlt; /* nhlt ptr */
++	struct skl_sst *skl_sst; /* sst skl ctx */
  };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
+@@ -75,4 +76,9 @@ void __iomem *skl_nhlt_init(struct device *dev);
+ void skl_nhlt_free(void __iomem *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
 +
- enum skl_bitdepth skl_get_bit_depth(int params);
- #endif
++int skl_init_dsp(struct skl *skl);
++void skl_free_dsp(struct skl *skl);
++int skl_suspend_dsp(struct skl *skl);
++int skl_resume_dsp(struct skl *skl);
+ #endif /* __SOUND_SOC_SKL_H */
 -- 
 1.9.1
