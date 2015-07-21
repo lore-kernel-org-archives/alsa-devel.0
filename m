@@ -1,91 +1,44 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: dapm: Don't add prefix to widget stream
-	name
-Date: Tue, 21 Jul 2015 11:51:35 +0200
-Message-ID: <1437472295-5524-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [patch] ASoC: max98925: reading beyond the end of the array
+Date: Tue, 21 Jul 2015 11:43:50 +0100
+Message-ID: <20150721104350.GP11162@sirena.org.uk>
+References: <20150721085527.GA22070@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-100.synserver.de (smtp-out-100.synserver.de
- [212.40.185.100])
- by alsa0.perex.cz (Postfix) with ESMTP id DFAFA26047B
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 11:51:39 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Koro Chen <koro.chen@mediatek.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zBuBUmsEsxAzMXHf"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150721085527.GA22070@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Anish Kumar <yesanishhere@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Axel Lin <axel.lin@ingics.com>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to
-prefix") fixed the case where a DAPM route between a DAI widget and a
-DAC/ADC/AIF widget with a matching stream name was not created when the
-DAPM context was using a prefix.
 
-Unfortunately the patch introduced a few issues on its own like leaking the
-dynamically allocated stream name memory and also not checking whether the
-allocation succeeded in the first place.
+--zBuBUmsEsxAzMXHf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It is also incomplete in that it still does not handle the case where
-stream name of the widget is a substring of the stream name of the DAI,
-which is explicitly allowed and works fine if no DAPM prefix is used.
+On Tue, Jul 21, 2015 at 11:55:27AM +0300, Dan Carpenter wrote:
+> Debug prints are seldom useful and this one has an annoying thing where
+> it reads one space beyond the end of the array on error.
 
-Revert the commit and take a slightly different approach to solving the
-issue. Instead of comparing the widget's stream name to the name of the DAI
-widget compare it to the stream name of the DAI widget. The stream name of
-the DAI widget is identical to the name of the DAI widget except that it
-wont have the DAPM prefix added. So this approach behaves identical
-regardless to whether the DAPM context uses a prefix or not.
+It's a pretty big stretch to say that debug prints are rarely useful...
 
-We don't have to worry about potentially matching with a widget with the
-same stream name, but from a different DAPM context with a different
-prefix, since the code already makes sure that both the DAI widget and the
-matched widget are from the same DAPM context.
+--zBuBUmsEsxAzMXHf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Fixes: fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to prefix")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1628f0c..1992568 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3344,16 +3344,10 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 	}
- 
- 	prefix = soc_dapm_prefix(dapm);
--	if (prefix) {
-+	if (prefix)
- 		w->name = kasprintf(GFP_KERNEL, "%s %s", prefix, widget->name);
--		if (widget->sname)
--			w->sname = kasprintf(GFP_KERNEL, "%s %s", prefix,
--					     widget->sname);
--	} else {
-+	else
- 		w->name = kasprintf(GFP_KERNEL, "%s", widget->name);
--		if (widget->sname)
--			w->sname = kasprintf(GFP_KERNEL, "%s", widget->sname);
--	}
- 	if (w->name == NULL) {
- 		kfree(w);
- 		return NULL;
-@@ -3802,7 +3796,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 				break;
- 			}
- 
--			if (!w->sname || !strstr(w->sname, dai_w->name))
-+			if (!w->sname || !strstr(w->sname, dai_w->sname))
- 				continue;
- 
- 			if (dai_w->id == snd_soc_dapm_dai_in) {
--- 
-2.1.4
+iQEcBAEBCAAGBQJVriJlAAoJECTWi3JdVIfQfCwH/3GhgM2wmuUQOa15IF/s8cMV
+FPYGMylmynoVvCeSNw5++SFh3xFT/MIA7JerswroE0OOn76pVfmakvu1vLTA+JFc
+oCjLXflMIWIow0FLZpvJydA5iZLEe7gzLtw9XaHJnks6J/oo9b3lFjpcK4Ne4gQD
+v4/JxL+W7dhC4mPHzKtfpRYHrXoDOu258dli87kWrj5/0pIxoUJZ1cW3nQ1w6BxB
+6NCCSGHyenOizhrjSm1dxMElIz9AqMXW931B75nuNzPyAwB9R5kh0+CeWczE7S2R
+d0b8+6nEXT9qBH2mdqm55oPqwrNaXD//9r6I4cNPlHG1VLMoxFNobvGR5SvUbxs=
+=kplz
+-----END PGP SIGNATURE-----
+
+--zBuBUmsEsxAzMXHf--
