@@ -1,52 +1,79 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC][PATCH 26/37] ALSA: firewire-tascam: add
-	MMAP	support to show status and control message
-Date: Tue, 21 Jul 2015 16:06:52 +0200
-Message-ID: <55AE51FC.3020204@ladisch.de>
-References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>
- <1436623968-10780-27-git-send-email-o-takashi@sakamocchi.jp>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 2/4] drm/i915: Call audio hotplug notify
+	function
+Date: Tue, 21 Jul 2015 16:26:17 +0200
+Message-ID: <55AE5689.1080901@canonical.com>
+References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
+ <1437465447-8974-3-git-send-email-david.henningsson@canonical.com>
+ <20150721091457.GE16722@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EB6D2264EFA
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 16:06:53 +0200 (CEST)
-In-Reply-To: <1436623968-10780-27-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Yoshifuji Hideaki <yoshfuji@linux-ipv6.org>, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20150721091457.GE16722@phenom.ffwll.local>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, vinod.koul@intel.com, daniel.vetter@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> Typically, such messages should be converted to MIDI control change
-> messages for userspace applications.
-
-It would be possible to have ALSA mixer controls for these, but this
-would make sense only if these controls are suitable to be displayed in
-a generic mixer application.  I guess this isn't the case for most of
-them.
-
-> Thus, this driver should have a converter with appropriate MIDI map.
-> Currently I have no good idea for the map and it is not implemented
-> yet.
-
-I guess the Windows driver does not makes this information available in
-any way?
-
-If all the data is device-specific, the actual mapping chosen does not
-really matter, because the mixer/control application needs to have
-special code for parsing the data from this particular Linux driver
-anyway.
-
-
-Regards,
-Clemens
+CgpPbiAyMDE1LTA3LTIxIDExOjE0LCBEYW5pZWwgVmV0dGVyIHdyb3RlOgo+IE9uIFR1ZSwgSnVs
+IDIxLCAyMDE1IGF0IDA5OjU3OjI1QU0gKzAyMDAsIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+
+PiBPbiBIRE1JIGhvdHBsdWcgZXZlbnRzLCBub3RpZnkgdGhlIGF1ZGlvIGRyaXZlci4gVGhpcyB3
+aWxsIGVuYWJsZQo+PiB0aGUgYXVkaW8gZHJpdmVyIHRvIGdldCB0aGUgaW5mb3JtYXRpb24gYXQg
+YWxsIHRpbWVzIChldmVuIHdoZW4KPj4gYXVkaW8gaXMgaW4gZGlmZmVyZW50IHBvd2Vyc2F2ZSBz
+dGF0ZXMpLCBhbmQgYWxzbyB3aXRob3V0IHJlYWRpbmcKPj4gaXQgZnJvbSB0aGUgaGFyZHdhcmUu
+Cj4+Cj4+IFNpZ25lZC1vZmYtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3Nv
+bkBjYW5vbmljYWwuY29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Ry
+di5oICAgIHwgICAgMSArCj4+ICAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8
+ICAgNDYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+ICAgMiBmaWxlcyBj
+aGFuZ2VkLCA0NyBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pOTE1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+PiBp
+bmRleCA1NDJmYWM2Li42OTY2MjRjIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pOTE1X2Rydi5oCj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPj4g
+QEAgLTE4MDgsNiArMTgwOCw3IEBAIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlIHsKPj4gICAJc3Ry
+dWN0IGRybV9wcm9wZXJ0eSAqZm9yY2VfYXVkaW9fcHJvcGVydHk7Cj4+Cj4+ICAgCS8qIGhkYS9p
+OTE1IGF1ZGlvIGNvbXBvbmVudCAqLwo+PiArCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAq
+YXVkaW9fY29tcG9uZW50Owo+PiAgIAlib29sIGF1ZGlvX2NvbXBvbmVudF9yZWdpc3RlcmVkOwo+
+Pgo+PiAgIAl1aW50MzJfdCBod19jb250ZXh0X3NpemU7Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
+YXVkaW8uYwo+PiBpbmRleCAzZGE5Yjg0Li5lYjI5ZTFmIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJz
+L2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
+L2ludGVsX2F1ZGlvLmMKPj4gQEAgLTM4NCw2ICszODQsNDQgQEAgc3RhdGljIHZvaWQgaWxrX2F1
+ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+PiAgIAlJ
+OTE1X1dSSVRFKGF1ZF9jb25maWcsIHRtcCk7Cj4+ICAgfQo+Pgo+PiArc3RhdGljIHZvaWQgYXVk
+aW9faG90cGx1Z19ub3RpZnkoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2LAo+PiAr
+CQkJCSBzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+PiArCQkJCSBzdHJ1Y3QgaW50
+ZWxfZW5jb2RlciAqZW5jb2RlciwKPj4gKwkJCQkgYm9vbCBwbHVnZ2VkX2luKQo+Cj4gcGx1Z2dl
+ZF9pbiBpcyByZWR1bmRhbnQsIGp1c3QgY2hlY2sgZm9yIE5VTEwuIEFsc28ganVzdCBkZXJpdmUg
+ZGV2X3ByaXYKPiBmcm9tIGludGVsX2VuY29kZXIgaW1vLiBBbmQgZmluYWxseSB3ZSB0ZW5kIHRv
+IHB1dCB0aGUgb2JqZWN0IHRoYXQgYQo+IGZ1bmN0aW9uIG9wZXJhdGVzIG9uIGZpcnN0LiBTaW5j
+ZSB0aGlzIHNlbmRzIGEgbm90aWZ5IG91dCBmb3IgdGhlIGdpdmVuCj4gZW5jb2RlciAod2VsbCBk
+aWcgcG9ydCByZWFsbHkpIEknZCBwdXQgdGhhdCBmaXJzdC4KClN1cmUsIHdpbGwgZml4IHRoZXNl
+IGFuZCBzZW5kIG91dCBhIHYyIChhZnRlciBUYWthc2hpIGhhcyByZXZpZXdlZCwgdG9vKS4KCj4g
+SSBhbHNvIHRoaW5rIHRoYXQgaXQgd291bGQgbWFrZSBzZW5zZSB0byBzd2l0Y2ggYWxsIHRoZSBh
+dWRpbwo+IGVuYWJsZS9kaXNhYmxlIGZ1bmN0aW9ucyBmcm9tIGludGVsX2VuY29kZXIgdG8gaW50
+ZWxfZGlnX3BvcnQuIEEgbG90IG5lZWQKPiB0byBkbyB1cGNhc3RzIGFueXdheSwgYW5kIGF1ZGlv
+IHJlYWxseSBvbmx5IHdvcmtzIG9uIGRpZyBwb3J0cyAod2hpY2ggaXMKPiBmb3IgaGRtaS9kcCBv
+bmx5KS4KClRoYXQncyB1cCB0byB5b3UgLSBzZWVtcyBhIGJpdCBvdXQgb2Ygc2NvcGUgZm9yIHRo
+aXMgcGF0Y2ggc2V0IHRob3VnaCwgSSAKYXNzdW1lLgoKQnR3LCB0aGVyZSBhcmUgdHdvIG9wZW4g
+cXVlc3Rpb25zIHRob3VnaCB0aGF0IHlvdSAob3Igc29tZW9uZSBlbHNlKSAKbWlnaHQgYmUgYWJs
+ZSB0byBzaGFyZSBzb21lIGluc2lnaHQgb246CgogIDEpIFRoZSBtYXBwaW5nIGJldHdlZW4gcG9y
+dHMgYW5kIG5pZCBpcyBmaXhlZCBpbiBwYXRjaCA0LzQsIGl0IHdvdWxkIApiZSBnb29kIHdpdGgg
+YW4gQWNrIGZyb20gYW4gSW50ZWwgZW5naW5lZXIgb24gdGhpcyBtYXBwaW5nLgoKICAyKSBXaGV0
+aGVyIHRvIHVzZSBjb25uZWN0b3JfdHlwZSAvIGNvbm5lY3Rvcl90eXBlX2lkIGNvbWJvIG9yIApj
+b25uZWN0b3JfbmFtZSBhcyBpZGVudGlmaWNhdGlvbiAtIGl0IHNlZW1zIGxpa2UgWCBoYXMgYSBk
+aWZmZXJlbnQgCm5hbWluZyBjb21wYXJlZCB0byB0aGUga2VybmVsICgiSERNSTIiIGluIFggdnMg
+IkhETUktQS0yIiBpbiBrZXJuZWwpLCAKbm90IHN1cmUgd2hhdCBXYXlsYW5kL01pci9vdGhlcnMg
+ZG8gaGVyZS4uLgoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgpodHRwczov
+L2xhdW5jaHBhZC5uZXQvfmRpd2ljCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVk
+ZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+aW50ZWwtZ2Z4Cg==
