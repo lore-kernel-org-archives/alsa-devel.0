@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Don't add prefix to widget stream name" to the asoc tree
-Date: Tue, 21 Jul 2015 11:49:15 +0100
-Message-ID: <E1ZHV6p-0002sH-RJ@debutante>
-References: <1437472295-5524-1-git-send-email-lars@metafoo.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1437472295-5524-1-git-send-email-lars@metafoo.de>
-Sender: stable-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: max98925: reading beyond the end of the
+	array" to the asoc tree
+Date: Tue, 21 Jul 2015 11:49:13 +0100
+Message-ID: <E1ZHV6n-0002rL-SY@debutante>
+References: <20150721085527.GA22070@mwanda>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57A752614EE
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 12:49:20 +0200 (CEST)
+In-Reply-To: <20150721085527.GA22070@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Don't add prefix to widget stream name
+   ASoC: max98925: reading beyond the end of the array
 
 has been applied to the asoc tree at
 
@@ -37,75 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From a798c24a69b64f09e2d323ac8155a36373e5d5fd Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Tue, 21 Jul 2015 11:51:35 +0200
-Subject: [PATCH] ASoC: dapm: Don't add prefix to widget stream name
+>From 6eb1c2a63d0415bd66c9c866b7d405662f50d5e4 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Tue, 21 Jul 2015 11:55:27 +0300
+Subject: [PATCH] ASoC: max98925: reading beyond the end of the array
 
-Commit fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to
-prefix") fixed the case where a DAPM route between a DAI widget and a
-DAC/ADC/AIF widget with a matching stream name was not created when the
-DAPM context was using a prefix.
+Debug prints are seldom useful and this one has an annoying thing where
+it reads one space beyond the end of the array on error.
 
-Unfortunately the patch introduced a few issues on its own like leaking the
-dynamically allocated stream name memory and also not checking whether the
-allocation succeeded in the first place.
-
-It is also incomplete in that it still does not handle the case where
-stream name of the widget is a substring of the stream name of the DAI,
-which is explicitly allowed and works fine if no DAPM prefix is used.
-
-Revert the commit and take a slightly different approach to solving the
-issue. Instead of comparing the widget's stream name to the name of the DAI
-widget compare it to the stream name of the DAI widget. The stream name of
-the DAI widget is identical to the name of the DAI widget except that it
-wont have the DAPM prefix added. So this approach behaves identical
-regardless to whether the DAPM context uses a prefix or not.
-
-We don't have to worry about potentially matching with a widget with the
-same stream name, but from a different DAPM context with a different
-prefix, since the code already makes sure that both the DAI widget and the
-matched widget are from the same DAPM context.
-
-Fixes: fdb6eb0a1287 ("ASoC: dapm: Modify widget stream name according to prefix")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-dapm.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/codecs/max98925.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9f270c0308b7..e0de8072c514 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3341,16 +3341,10 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
+index eddf8bc07314..0883d87776b1 100644
+--- a/sound/soc/codecs/max98925.c
++++ b/sound/soc/codecs/max98925.c
+@@ -271,8 +271,6 @@ static inline int max98925_rate_value(struct snd_soc_codec *codec,
+ 			break;
+ 		}
  	}
+-	dev_dbg(codec->dev, "%s: sample rate is %d, returning %d\n",
+-				__func__, rate_table[i].rate, *value);
+ 	return ret;
+ }
  
- 	prefix = soc_dapm_prefix(dapm);
--	if (prefix) {
-+	if (prefix)
- 		w->name = kasprintf(GFP_KERNEL, "%s %s", prefix, widget->name);
--		if (widget->sname)
--			w->sname = kasprintf(GFP_KERNEL, "%s %s", prefix,
--					     widget->sname);
--	} else {
-+	else
- 		w->name = kasprintf(GFP_KERNEL, "%s", widget->name);
--		if (widget->sname)
--			w->sname = kasprintf(GFP_KERNEL, "%s", widget->sname);
--	}
- 	if (w->name == NULL) {
- 		kfree(w);
- 		return NULL;
-@@ -3799,7 +3793,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 				break;
- 			}
- 
--			if (!w->sname || !strstr(w->sname, dai_w->name))
-+			if (!w->sname || !strstr(w->sname, dai_w->sname))
- 				continue;
- 
- 			if (dai_w->id == snd_soc_dapm_dai_in) {
 -- 
 2.1.4
