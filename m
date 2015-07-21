@@ -1,70 +1,54 @@
-From: Aaron Plattner <aplattner@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda - Add new GPU codec ID 0x10de007d to snd-hda
-Date: Tue, 21 Jul 2015 00:47:48 -0700
-Message-ID: <55ADF924.5050401@nvidia.com>
-References: <1437437654-21375-1-git-send-email-aplattner@nvidia.com>
- <s5hr3o2x8lq.wl-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 0/4] i915 to call hda driver on HDMI plug/unplug
+Date: Tue, 21 Jul 2015 09:57:23 +0200
+Message-ID: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr3o2x8lq.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, tiwai@suse.de, daniel.vetter@intel.com, jani.nikula@linux.intel.com
+Cc: vinod.koul@intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/21/2015 12:39 AM, Takashi Iwai wrote:
-> On Tue, 21 Jul 2015 02:14:14 +0200,
-> Aaron Plattner wrote:
->>
->> Vendor ID 0x10de007d is used by a yet-to-be-named GPU chip.
->>
->> Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
-> 
-> Applied, thanks.  But...
-> 
->> ---
->> This chip also has the 2-ch audio swapping bug, so patch_nvhdmi is appropriate
->> here.
-> 
-> Please include such important information into the changelog itself at
-> the next time.  I copied it manually.
-
-Oh, okay, sorry.  I figured that since the whole point of patch_nvhdmi
-is the 2ch workaround, it should be obvious from context but it
-certainly can't hurt to have it in the commit itself too.  Thanks for
-taking care of it!
-
-Sincerely,
-Aaron
-
-> Takashi
-> 
->>
->>  sound/pci/hda/patch_hdmi.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
->> index 95158914cc6c..a97db5fc8a15 100644
->> --- a/sound/pci/hda/patch_hdmi.c
->> +++ b/sound/pci/hda/patch_hdmi.c
->> @@ -3512,6 +3512,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
->>  { .id = 0x10de0070, .name = "GPU 70 HDMI/DP",	.patch = patch_nvhdmi },
->>  { .id = 0x10de0071, .name = "GPU 71 HDMI/DP",	.patch = patch_nvhdmi },
->>  { .id = 0x10de0072, .name = "GPU 72 HDMI/DP",	.patch = patch_nvhdmi },
->> +{ .id = 0x10de007d, .name = "GPU 7d HDMI/DP",	.patch = patch_nvhdmi },
->>  { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
->>  { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
->>  { .id = 0x11069f81, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
->> @@ -3576,6 +3577,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0067");
->>  MODULE_ALIAS("snd-hda-codec-id:10de0070");
->>  MODULE_ALIAS("snd-hda-codec-id:10de0071");
->>  MODULE_ALIAS("snd-hda-codec-id:10de0072");
->> +MODULE_ALIAS("snd-hda-codec-id:10de007d");
->>  MODULE_ALIAS("snd-hda-codec-id:10de8001");
->>  MODULE_ALIAS("snd-hda-codec-id:11069f80");
->>  MODULE_ALIAS("snd-hda-codec-id:11069f81");
->> -- 
->> 2.4.6
->>
+VGhpcyBwYXRjaCBzZXQgYWltcyB0byByZXNvbHZlIHRocmVlIHByb2JsZW1zOgoKICogVGhlIGZp
+cnN0IC0gYW5kIG1vc3Qgc2VyaW91cyBvbmUgLSBpcyB0aGF0IHRoZSBhdWRpbyBkcml2ZXIgaXMg
+bm90IHdva2VuIHVwCiAgIHByb3Blcmx5IHdoZW4gaW4gcG93ZXIgc2F2ZSBtb2RlcywgZXNwZWNp
+YWxseSBub3Qgd2hlbiB0aGUgSERBIGNvbnRyb2xsZXIgaXMKICAgaW4gRDMuIEJ5IGhhdmluZyB0
+aGUgaTkxNSBkcml2ZXIgY2FsbCBkaXJlY3RseSBpbnRvIHRoZSBoZGEgZHJpdmVyLCB0aGUgSERB
+CiAgIGRyaXZlciBpcyBhbHdheXMgbm90aWZpZWQgdGhhdCBhbiBIRE1JIGhvdHBsdWcgZXZlbnQg
+aGFzIGhhcHBlbmVkLgoKICogU2Vjb25kLCB0aGVyZSBpcyBjdXJyZW50bHkgbm8gd2F5IGZvciB1
+c2Vyc3BhY2UgdG8gbWF0Y2ggYW4gSERNSSBhdWRpbyBvdXRwdXQKICAgd2l0aCBhbiBIRE1JIHZp
+ZGVvIG91dHB1dC4gV2UgZml4IHRoaXMgYnkgc2VuZGluZyBjb25uZWN0b3JfdHlwZSBhbmQKICAg
+Y29ubmVjdG9yX3R5cGVfaWQgaW4gdGhlIEhETUkgaG90cGx1ZyBjYWxsYmFjay4KCiAqIFRoaXJk
+LCB3cml0aW5nIEVMRCBpbmZvIHRvIHRoZSBoYXJkd2FyZSBqdXN0IHNvIHRoZSBIREEgZHJpdmVy
+IGNhbiByZWFkIGl0CiAgIGZyb20gdGhlIGhhcmR3YXJlIHNlZW1zIGEgYml0IGluZWZmaWNpZW50
+LiBXZSBjb3VsZCBqdXN0IHBhc3MgdGhhdCBpbmZvcm1hdGlvbgogICBpbiB0aGUgY2FsbGJhY2ss
+IHRvby4KClRoZSBwYXRjaCBpbiBpdHMgY3VycmVudCBmb3JtIGZpeGVzIHRoZSBmaXJzdCBvZiB0
+aGVzZSBwcm9ibGVtcyBhbmQgcHJvdmlkZXMgbW9zdApvZiB0aGUgaW5mcmFzdHJ1Y3R1cmUgZm9y
+IHRoZSBzZWNvbmQgYW5kIHRoaXJkIHByb2JsZW0uIAoKVGhlIHBhdGNoIHNldCBpcyBiYXNlZCBv
+biA0LjJyYzIgKyBteSByZWNlbnQgY29kZWMgd2FrZXVwIHBhdGNoLiBTbyBmYXIsIGl0IGhhcwpi
+ZWVuIHRlc3RlZCAoYW5kIHdvcmtpbmcpIG9uIG9uZSBTa3lsYWtlIG1hY2hpbmUuCgpEYXZpZCBI
+ZW5uaW5nc3NvbiAoNCk6CiAgZHJtL2k5MTU6IEFkZCBhdWRpbyBob3RwbHVnIGluZm8gc3RydWN0
+CiAgZHJtL2k5MTU6IENhbGwgYXVkaW8gaG90cGx1ZyBub3RpZnkgZnVuY3Rpb24KICBBTFNBOiBo
+ZGEgLSBEaXNwYXRjaCBpbmNvbWluZyBIRE1JIGhvdHBsdWcgaTkxNSBjYWxsYmFjawogIEFMU0E6
+IGhkYSAtIFdha2UgdGhlIGNvZGVjIHVwIG9uIGhvdHBsdWcgbm90aWZ5IGV2ZW50cwoKIGRyaXZl
+cnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggICAgfCAgICAxICsKIGRyaXZlcnMvZ3B1L2RybS9p
+OTE1L2ludGVsX2F1ZGlvLmMgfCAgIDQ2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKwogaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCAgICAgICB8ICAgMTkgKysrKysrKysr
+KysrKysrCiBpbmNsdWRlL3NvdW5kL2hkYXVkaW8uaCAgICAgICAgICAgIHwgICAgNCArKysrCiBz
+b3VuZC9oZGEvaGRhY19pOTE1LmMgICAgICAgICAgICAgIHwgICAyNCArKysrKysrKysrKysrKysr
+KysrCiBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyAgICAgICAgIHwgICAyMiArKysrKysrKysr
+KysrKysrLQogNiBmaWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQoKLS0gCjEuNy45LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
+Z2Z4Cg==
