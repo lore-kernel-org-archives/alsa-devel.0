@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/6] ASoC: Intel: Skylake: Add functions for
-	DSP module configuration
-Date: Tue, 21 Jul 2015 23:53:57 +0530
-Message-ID: <1437503040-7392-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 5/6] ASoC: Intel: Skylake: Add DSP module init
+	and binding routines
+Date: Tue, 21 Jul 2015 23:53:59 +0530
+Message-ID: <1437503040-7392-6-git-send-email-vinod.koul@intel.com>
 References: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C70132650DB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:19 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BCB126512D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:24 +0200 (CEST)
 In-Reply-To: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,766 +27,203 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This adds helper functions to configure DSP FW modules and to be used when
-the modules is initialized, or when modules have to be bind/unbind.
+The modules init and binding helper function creates module init and bind
+IPC message based on module parameter and calls IPC interface to send the
+IPC to DSP FW.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c       | 379 ++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl-topology.h       | 251 ++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  88 +++++++
- 3 files changed, 714 insertions(+), 4 deletions(-)
- create mode 100644 sound/soc/intel/skylake/skl-topology.h
- create mode 100644 sound/soc/intel/skylake/skl-tplg-interface.h
+ sound/soc/intel/skylake/skl-messages.c | 165 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |   4 +
+ 2 files changed, 169 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 7c07b76bf0bf..766729451fe3 100644
+index faa0e71d4ae5..72af582183ae 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -19,13 +19,12 @@
+@@ -547,3 +547,168 @@ static int skl_free_queue(struct skl_module_pin *mpin,
  
- #include <linux/slab.h>
- #include <linux/pci.h>
--#include <sound/core.h>
- #include <sound/pcm.h>
--#include "skl-sst-dsp.h"
--#include "skl-sst-ipc.h"
--#include "skl.h"
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
-+#include "skl-sst-ipc.h"
-+#include "skl-topology.h"
-+#include "skl-tplg-interface.h"
- 
- static int skl_alloc_dma_buf(struct device *dev,
- 		struct snd_dma_buffer *dmab, size_t size)
-@@ -131,3 +130,375 @@ int skl_resume_dsp(struct skl *skl)
- 
- 	return skl_dsp_wake(ctx->dsp);
+ 	return m_pin.pin_index;
  }
 +
-+enum skl_bitdepth skl_get_bit_depth(int params)
++int skl_init_module(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig, char *param)
 +{
-+	switch (params) {
-+	case 8:
-+		return SKL_DEPTH_8BIT;
++	u16 module_config_size = 0;
++	void *param_data = NULL;
++	int ret;
++	struct skl_ipc_init_instance_msg msg;
 +
-+	case 16:
-+		return SKL_DEPTH_16BIT;
++	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
++		 mconfig->id.module_id, mconfig->id.instance_id);
 +
-+	case 24:
-+		return SKL_DEPTH_24BIT;
-+
-+	case 32:
-+		return SKL_DEPTH_32BIT;
-+
-+	default:
-+		return SKL_DEPTH_INVALID;
-+
-+	}
-+}
-+
-+static u32 skl_create_channel_map(enum skl_ch_cfg ch_cfg)
-+{
-+	u32 config;
-+
-+	switch (ch_cfg) {
-+	case SKL_CH_CFG_MONO:
-+		config =  (0xFFFFFFF0 | SKL_CHANNEL_LEFT);
-+		break;
-+
-+	case SKL_CH_CFG_STEREO:
-+		config = (0xFFFFFF00 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_RIGHT << 4));
-+		break;
-+
-+	case SKL_CH_CFG_2_1:
-+		config = (0xFFFFF000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_RIGHT << 4)
-+			| (SKL_CHANNEL_LFE << 8));
-+		break;
-+
-+	case SKL_CH_CFG_3_0:
-+		config =  (0xFFFFF000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_CENTER << 4)
-+			| (SKL_CHANNEL_RIGHT << 8));
-+		break;
-+
-+	case SKL_CH_CFG_3_1:
-+		config = (0xFFFF0000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_CENTER << 4)
-+			| (SKL_CHANNEL_RIGHT << 8)
-+			| (SKL_CHANNEL_LFE << 12));
-+		break;
-+
-+	case SKL_CH_CFG_QUATRO:
-+		config = (0xFFFF0000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_RIGHT << 4)
-+			| (SKL_CHANNEL_LEFT_SURROUND << 8)
-+			| (SKL_CHANNEL_RIGHT_SURROUND << 12));
-+		break;
-+
-+	case SKL_CH_CFG_4_0:
-+		config = (0xFFFF0000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_CENTER << 4)
-+			| (SKL_CHANNEL_RIGHT << 8)
-+			| (SKL_CHANNEL_CENTER_SURROUND << 12));
-+		break;
-+
-+	case SKL_CH_CFG_5_0:
-+		config = (0xFFF00000 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_CENTER << 4)
-+			| (SKL_CHANNEL_RIGHT << 8)
-+			| (SKL_CHANNEL_LEFT_SURROUND << 12)
-+			| (SKL_CHANNEL_RIGHT_SURROUND << 16));
-+		break;
-+
-+	case SKL_CH_CFG_5_1:
-+		config = (0xFF000000 | SKL_CHANNEL_CENTER
-+			| (SKL_CHANNEL_LEFT << 4)
-+			| (SKL_CHANNEL_RIGHT << 8)
-+			| (SKL_CHANNEL_LEFT_SURROUND << 12)
-+			| (SKL_CHANNEL_RIGHT_SURROUND << 16)
-+			| (SKL_CHANNEL_LFE << 20));
-+		break;
-+
-+	case SKL_CH_CFG_DUAL_MONO:
-+		config = (0xFFFFFF00 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_LEFT << 4));
-+		break;
-+
-+	case SKL_CH_CFG_I2S_DUAL_STEREO_0:
-+		config = (0xFFFFFF00 | SKL_CHANNEL_LEFT
-+			| (SKL_CHANNEL_RIGHT << 4));
-+		break;
-+
-+	case SKL_CH_CFG_I2S_DUAL_STEREO_1:
-+		config = (0xFFFF00FF | (SKL_CHANNEL_LEFT << 8)
-+			| (SKL_CHANNEL_RIGHT << 12));
-+		break;
-+
-+	default:
-+		config =  0xFFFFFFFF;
++	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
++		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
++				 mconfig->pipe->state, mconfig->pipe->ppl_id);
++		return -EIO;
 +	}
 +
-+	return config;
-+}
-+
-+/*
-+ * Fills in base_cfg structure
-+ * base_cfg is sent as input buffer with INIT_INSTANCE IPC msg
-+ */
-+static void skl_set_base_module_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_base_cfg *base_cfg)
-+{
-+	struct skl_module_fmt *format = &mconfig->in_fmt;
-+
-+	base_cfg->audio_fmt.number_of_channels = (u8)format->channels;
-+
-+	base_cfg->audio_fmt.s_freq = format->s_freq;
-+	base_cfg->audio_fmt.bit_depth = format->bit_depth;
-+	base_cfg->audio_fmt.valid_bit_depth = format->valid_bit_depth;
-+	base_cfg->audio_fmt.ch_cfg = format->ch_cfg;
-+
-+	dev_dbg(ctx->dev, "bit_depth=%x valid_bd=%x ch_config=%x\n",
-+			format->bit_depth, format->valid_bit_depth,
-+			format->ch_cfg);
-+
-+	base_cfg->audio_fmt.channel_map = skl_create_channel_map(
-+					base_cfg->audio_fmt.ch_cfg);
-+
-+	base_cfg->audio_fmt.interleaving = SKL_INTERLEAVING_PER_CHANNEL;
-+
-+	base_cfg->cps = mconfig->mcps;
-+	base_cfg->ibs = mconfig->ibs;
-+	base_cfg->obs = mconfig->obs;
-+}
-+
-+/*
-+ * Copies copier capabilities into copier module and updates copier module
-+ * config size.
-+ */
-+static void skl_copy_copier_caps(struct skl_module_cfg *mconfig,
-+				struct skl_cpr_cfg *cpr_mconfig)
-+{
-+	if (mconfig->formats_config.caps_size == 0)
-+		return;
-+
-+	memcpy(cpr_mconfig->gtw_cfg.config_data,
-+			mconfig->formats_config.caps,
-+			mconfig->formats_config.caps_size);
-+
-+	cpr_mconfig->gtw_cfg.config_length =
-+			(mconfig->formats_config.caps_size) / 4;
-+}
-+
-+static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_cpr_cfg *cpr_mconfig)
-+{
-+	union skl_connector_node_id node_id = {0};
-+	struct skl_pipe_params *params = mconfig->pipe->p_params;
-+
-+	switch (mconfig->dev_type) {
-+	case SKL_DEVICE_BT:
-+		node_id.node.dma_type =
-+			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
-+			SKL_DMA_I2S_LINK_OUTPUT_CLASS :
-+			SKL_DMA_I2S_LINK_INPUT_CLASS;
-+		node_id.node.vindex = params->host_dma_id +
-+					(mconfig->vbus_id << 3);
-+		break;
-+
-+	case SKL_DEVICE_I2S:
-+		node_id.node.dma_type =
-+			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
-+			SKL_DMA_I2S_LINK_OUTPUT_CLASS :
-+			SKL_DMA_I2S_LINK_INPUT_CLASS;
-+		node_id.node.vindex = params->host_dma_id +
-+					 (mconfig->time_slot << 1) +
-+					 (mconfig->vbus_id << 3);
-+		break;
-+
-+	case SKL_DEVICE_DMIC:
-+		node_id.node.dma_type = SKL_DMA_DMIC_LINK_INPUT_CLASS;
-+		node_id.node.vindex = mconfig->vbus_id +
-+					 (mconfig->time_slot);
-+		break;
-+
-+	case SKL_DEVICE_HDALINK:
-+		node_id.node.dma_type =
-+			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
-+			SKL_DMA_HDA_LINK_OUTPUT_CLASS :
-+			SKL_DMA_HDA_LINK_INPUT_CLASS;
-+		node_id.node.vindex = params->link_dma_id;
-+		break;
-+
-+	default:
-+		node_id.node.dma_type =
-+			(SKL_CONN_SOURCE == mconfig->hw_conn_type) ?
-+			SKL_DMA_HDA_HOST_OUTPUT_CLASS :
-+			SKL_DMA_HDA_HOST_INPUT_CLASS;
-+		node_id.node.vindex = params->host_dma_id;
-+		break;
++	ret = skl_set_module_format(ctx, mconfig,
++			&module_config_size, &param_data);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to set module format ret=%d\n", ret);
++		return ret;
 +	}
 +
-+	cpr_mconfig->gtw_cfg.node_id = node_id.val;
++	msg.module_id = mconfig->id.module_id;
++	msg.instance_id = mconfig->id.instance_id;
++	msg.ppl_instance_id = mconfig->pipe->ppl_id;
++	msg.param_data_size = module_config_size;
++	msg.core_id = mconfig->core_id;
 +
-+	if (SKL_CONN_SOURCE == mconfig->hw_conn_type)
-+		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
-+	else
-+		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
-+
-+	cpr_mconfig->cpr_feature_mask = 0;
-+	cpr_mconfig->gtw_cfg.config_length  = 0;
-+
-+	skl_copy_copier_caps(mconfig, cpr_mconfig);
-+}
-+
-+static void skl_setup_out_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_audio_data_format *out_fmt)
-+{
-+	struct skl_module_fmt *format = &mconfig->out_fmt;
-+
-+	out_fmt->number_of_channels = (u8)format->channels;
-+	out_fmt->s_freq = format->s_freq;
-+	out_fmt->bit_depth = format->bit_depth;
-+	out_fmt->valid_bit_depth = format->valid_bit_depth;
-+	out_fmt->ch_cfg = format->ch_cfg;
-+
-+	out_fmt->channel_map = skl_create_channel_map(out_fmt->ch_cfg);
-+	out_fmt->interleaving = SKL_INTERLEAVING_PER_CHANNEL;
-+
-+	dev_dbg(ctx->dev, "copier out format chan=%d fre=%d bitdepth=%d\n",
-+		out_fmt->number_of_channels, format->s_freq, format->bit_depth);
-+}
-+
-+/*
-+ * copier_module_config is sent as input buffer with INIT_INSTANCE IPC msg
-+ */
-+static void skl_set_copier_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_cpr_cfg *cpr_mconfig)
-+{
-+	struct skl_audio_data_format *out_fmt = &cpr_mconfig->out_fmt;
-+	struct skl_base_cfg *base_cfg = (struct skl_base_cfg *)cpr_mconfig;
-+
-+	skl_set_base_module_format(ctx, mconfig, base_cfg);
-+
-+	skl_setup_out_format(ctx, mconfig, out_fmt);
-+	skl_setup_cpr_gateway_cfg(ctx, mconfig, cpr_mconfig);
-+}
-+
-+static u16 skl_get_module_param_size(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig)
-+{
-+	u16 param_size;
-+
-+	switch (mconfig->m_type) {
-+	case SKL_MODULE_TYPE_COPIER:
-+		param_size = sizeof(struct skl_cpr_cfg);
-+		param_size += mconfig->formats_config.caps_size;
-+		return param_size;
-+
-+	default:
-+		/*
-+		 * return only base cfg when no specific module type is
-+		 * specified
-+		 */
-+		return sizeof(struct skl_base_cfg);
++	ret = skl_ipc_init_instance(&ctx->ipc, &msg, param_data);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to init instance ret=%d\n", ret);
++		kfree(param_data);
++		return ret;
 +	}
++	mconfig->m_state = SKL_MODULE_INIT_DONE;
 +
-+	return 0;
++	return ret;
 +}
 +
-+static int skl_set_module_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *module_config,
-+			u16 *module_config_size,
-+			void **param_data)
++static int skl_unbind_modules(struct skl_sst *ctx,
++			struct skl_module_cfg *src_mcfg,
++			struct skl_module_cfg *dst_mcfg)
 +{
-+	u16 param_size;
-+
-+	param_size  = skl_get_module_param_size(ctx, module_config);
-+
-+	*param_data = kzalloc(param_size, GFP_KERNEL);
-+	if (NULL == *param_data)
-+		return -ENOMEM;
-+
-+	*module_config_size = param_size;
-+
-+	switch (module_config->m_type) {
-+	case SKL_MODULE_TYPE_COPIER:
-+		skl_set_copier_format(ctx, module_config, *param_data);
-+		break;
-+
-+	default:
-+		skl_set_base_module_format(ctx, module_config, *param_data);
-+	}
-+
-+	dev_dbg(ctx->dev, "Module type=%d config size: %d bytes\n",
-+			module_config->id.module_id, param_size);
-+	print_hex_dump_bytes("Module params :\n", DUMP_PREFIX_OFFSET,
-+			param_data, param_size);
-+	return 0;
-+}
-+
-+static struct skl_module_pin skl_get_queue(struct skl_module_pin *mpin,
-+				struct skl_module_inst_id id, int max)
-+{
-+	int i;
++	int ret;
++	struct skl_ipc_bind_unbind_msg msg;
++	struct skl_module_inst_id src_id = src_mcfg->id;
++	struct skl_module_inst_id dst_id = dst_mcfg->id;
++	int in_max = dst_mcfg->max_in_queue;
++	int out_max = src_mcfg->max_out_queue;
 +	struct skl_module_pin m_pin;
 +
-+	m_pin.pin_index = -EINVAL;
++	if (src_mcfg->m_state != SKL_MODULE_BIND_DONE)
++		return 0;
 +
 +	/*
-+	 * if pin in dynamic, find first free pin
-+	 * otherwise find match module and instance id pin
++	 * if intra module unbind, check if both modules are BIND,
++	 * then send unbind
 +	 */
-+	for (i = 0; i < max; i++)  {
-+		if (mpin[i].is_dynamic) {
-+			if (!mpin[i].in_use)
-+				return mpin[i];
-+		} else {
-+			if (mpin[i].id.module_id == id.module_id &&
-+				mpin[i].id.instance_id == id.instance_id)
-+				return mpin[i];
-+		}
-+	}
++	if ((src_mcfg->pipe->ppl_id != dst_mcfg->pipe->ppl_id) &&
++				dst_mcfg->m_state != SKL_MODULE_BIND_DONE)
++		return 0;
++	else if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
++				 dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
++		return 0;
 +
-+	return m_pin;
-+}
-+
-+/*
-+ * Allocates queue for each module.
-+ * if dynamic, the pin_index is allocated 0 to max_pin.
-+ * In static, the pin_index is fixed based on module_id and instance id
-+ */
-+static int skl_alloc_queue(struct skl_module_pin *mpin,
-+			struct skl_module_inst_id id, int max)
-+{
-+	struct skl_module_pin m_pin = skl_get_queue(mpin, id, max);
-+
++	/* get src pin index */
++	m_pin = skl_get_queue(src_mcfg->m_out_pin, src_id, out_max);
 +	if (m_pin.pin_index < 0)
 +		return -EINVAL;
 +
-+	if (m_pin.is_dynamic) {
-+			m_pin.in_use = true;
-+			m_pin.id.module_id = id.module_id;
-+			m_pin.id.instance_id = id.instance_id;
++	msg.src_queue = m_pin.pin_index;
++
++	/* get dst pin index */
++	m_pin  = skl_get_queue(dst_mcfg->m_in_pin, dst_id, in_max);
++	if (m_pin.pin_index < 0) {
++		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
++		return -EINVAL;
 +	}
 +
-+	return m_pin.pin_index;
++	msg.dst_queue = m_pin.pin_index;
++
++	msg.module_id = src_mcfg->id.module_id;
++	msg.instance_id = src_mcfg->id.instance_id;
++	msg.dst_module_id = dst_mcfg->id.module_id;
++	msg.dst_instance_id = dst_mcfg->id.instance_id;
++	msg.bind = false;
++
++	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
++	if (!ret)
++		src_mcfg->m_state = SKL_MODULE_UNINIT;
++
++	skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
++	skl_free_queue(dst_mcfg->m_in_pin, dst_id, in_max);
++
++	return ret;
 +}
 +
-+static int skl_free_queue(struct skl_module_pin *mpin,
-+			struct skl_module_inst_id id, int max)
++static int skl_bind_modules(struct skl_sst *ctx,
++			struct skl_module_cfg *src_mcfg,
++			struct skl_module_cfg *dst_mcfg)
 +{
-+	struct skl_module_pin m_pin = skl_get_queue(mpin, id, max);
++	int pin_index, ret;
++	struct skl_ipc_bind_unbind_msg msg;
++	struct skl_module_inst_id src_id = src_mcfg->id;
++	struct skl_module_inst_id dst_id = dst_mcfg->id;
++	int in_max = dst_mcfg->max_in_queue;
++	int out_max = src_mcfg->max_out_queue;
 +
-+	if (m_pin.pin_index < 0)
++	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
++		dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
++		return 0;
++
++	pin_index = skl_alloc_queue(src_mcfg->m_out_pin, src_id, out_max);
++	if (pin_index < 0)
 +		return -EINVAL;
 +
-+	if (m_pin.is_dynamic) {
-+		m_pin.in_use = false;
-+		m_pin.id.module_id = 0;
-+		m_pin.id.instance_id = 0;
++	msg.src_queue = pin_index;
++	pin_index = skl_alloc_queue(dst_mcfg->m_in_pin, dst_id, in_max);
++	if (pin_index < 0) {
++		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
++		return -EINVAL;
 +	}
 +
-+	return m_pin.pin_index;
++	msg.dst_queue = pin_index;
++	dev_dbg(ctx->dev, "src queue = %d dst queue =%d\n",
++			 msg.src_queue, msg.dst_queue);
++
++	msg.module_id = src_mcfg->id.module_id;
++	msg.instance_id = src_mcfg->id.instance_id;
++	msg.dst_module_id = dst_mcfg->id.module_id;
++	msg.dst_instance_id = dst_mcfg->id.instance_id;
++	msg.bind = true;
++
++	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
++
++	if (!ret) {
++		src_mcfg->m_state = SKL_MODULE_BIND_DONE;
++	} else {
++		/* error case , if IPC fails, clear the queue index */
++		skl_free_queue(src_mcfg->m_out_pin, src_id, out_max);
++		skl_free_queue(dst_mcfg->m_in_pin, dst_id, in_max);
++	}
++
++	return ret;
++}
++
++int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
++	*src_module, struct skl_module_cfg *dst_module, bool bind)
++{
++	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
++		__func__, src_module->id.module_id, src_module->id.instance_id);
++	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
++		 dst_module->id.module_id, dst_module->id.instance_id);
++
++	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
++		src_module->m_state, dst_module->m_state);
++
++	if (bind)
++		return skl_bind_modules(ctx, src_module, dst_module);
++	else
++		return skl_unbind_modules(ctx, src_module, dst_module);
 +}
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-new file mode 100644
-index 000000000000..6ba137a43e68
---- /dev/null
+index e4b2a339b2f4..c944ec024e62 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -0,0 +1,251 @@
-+/*
-+ *  skl_topology.h - Intel HDA Platform topology header file
-+ *
-+ *  Copyright (C) 2014-15 Intel Corp
-+ *  Author: Jeeja KP <jeeja.kp@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ */
-+
-+#ifndef __SKL_TOPOLOGY_H__
-+#define __SKL_TOPOLOGY_H__
-+
-+#include <linux/types.h>
-+
-+#include <sound/hdaudio_ext.h>
-+#include <sound/soc.h>
-+#include "skl.h"
-+#include "skl-tplg-interface.h"
-+
-+#define BITS_PER_BYTE 8
-+#define MAX_TS_GROUPS 8
-+#define MAX_DMIC_TS_GROUPS 4
-+#define MAX_FIXED_DMIC_PARAMS_SIZE 727
-+
-+/* Maximum number of coefficients up down mixer module */
-+#define UP_DOWN_MIXER_MAX_COEFF		6
-+
-+enum skl_channel_index {
-+	SKL_CHANNEL_LEFT = 0,
-+	SKL_CHANNEL_RIGHT = 1,
-+	SKL_CHANNEL_CENTER = 2,
-+	SKL_CHANNEL_LEFT_SURROUND = 3,
-+	SKL_CHANNEL_CENTER_SURROUND = 3,
-+	SKL_CHANNEL_RIGHT_SURROUND = 4,
-+	SKL_CHANNEL_LFE = 7,
-+	SKL_CHANNEL_INVALID = 0xF,
-+};
-+
-+enum skl_bitdepth {
-+	SKL_DEPTH_8BIT = 8,
-+	SKL_DEPTH_16BIT = 16,
-+	SKL_DEPTH_24BIT = 24,
-+	SKL_DEPTH_32BIT = 32,
-+	SKL_DEPTH_INVALID
-+};
-+
-+enum skl_interleaving {
-+	/* [s1_ch1...s1_chN,...,sM_ch1...sM_chN] */
-+	SKL_INTERLEAVING_PER_CHANNEL = 0,
-+	/* [s1_ch1...sM_ch1,...,s1_chN...sM_chN] */
-+	SKL_INTERLEAVING_PER_SAMPLE = 1,
-+};
-+
-+enum skl_s_freq {
-+	SKL_FS_8000 = 8000,
-+	SKL_FS_11025 = 11025,
-+	SKL_FS_12000 = 12000,
-+	SKL_FS_16000 = 16000,
-+	SKL_FS_22050 = 22050,
-+	SKL_FS_24000 = 24000,
-+	SKL_FS_32000 = 32000,
-+	SKL_FS_44100 = 44100,
-+	SKL_FS_48000 = 48000,
-+	SKL_FS_64000 = 64000,
-+	SKL_FS_88200 = 88200,
-+	SKL_FS_96000 = 96000,
-+	SKL_FS_128000 = 128000,
-+	SKL_FS_176400 = 176400,
-+	SKL_FS_192000 = 192000,
-+	SKL_FS_INVALID
-+};
-+
-+enum skl_widget_type {
-+	SKL_WIDGET_VMIXER = 1,
-+	SKL_WIDGET_MIXER = 2,
-+	SKL_WIDGET_PGA = 3,
-+	SKL_WIDGET_MUX = 4
-+};
-+
-+struct skl_audio_data_format {
-+	enum skl_s_freq s_freq;
-+	enum skl_bitdepth bit_depth;
-+	u32 channel_map;
-+	enum skl_ch_cfg ch_cfg;
-+	enum skl_interleaving interleaving;
-+	u8 number_of_channels;
-+	u8 valid_bit_depth;
-+	u8 sample_type;
-+	u8 reserved[1];
-+} __packed;
-+
-+struct skl_base_cfg {
-+	u32 cps;
-+	u32 ibs;
-+	u32 obs;
-+	u32 is_pages;
-+	struct skl_audio_data_format audio_fmt;
-+};
-+
-+struct skl_cpr_gtw_cfg {
-+	u32 node_id;
-+	u32 dma_buffer_size;
-+	u32 config_length;
-+	/* not mandatory; required only for DMIC/I2S */
-+	u32 config_data[1];
-+} __packed;
-+
-+struct skl_cpr_cfg {
-+	struct skl_base_cfg base_cfg;
-+	struct skl_audio_data_format out_fmt;
-+	u32 cpr_feature_mask;
-+	struct skl_cpr_gtw_cfg gtw_cfg;
-+} __packed;
-+
-+enum skl_dma_type {
-+	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
-+	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
-+	SKL_DMA_HDA_HOST_INOUT_CLASS = 2,
-+	SKL_DMA_HDA_LINK_OUTPUT_CLASS = 8,
-+	SKL_DMA_HDA_LINK_INPUT_CLASS = 9,
-+	SKL_DMA_HDA_LINK_INOUT_CLASS = 0xA,
-+	SKL_DMA_DMIC_LINK_INPUT_CLASS = 0xB,
-+	SKL_DMA_I2S_LINK_OUTPUT_CLASS = 0xC,
-+	SKL_DMA_I2S_LINK_INPUT_CLASS = 0xD,
-+};
-+
-+union skl_ssp_dma_node {
-+	u8 val;
-+	struct {
-+		u8 dual_mono:1;
-+		u8 time_slot:3;
-+		u8 i2s_instance:4;
-+	} dma_node;
-+};
-+
-+union skl_connector_node_id {
-+	u32 val;
-+	struct {
-+		u32 vindex:8;
-+		u32 dma_type:4;
-+		u32 rsvd:20;
-+	} node;
-+};
-+
-+struct skl_module_fmt {
-+	u32 channels;
-+	u32 s_freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+};
-+
-+struct skl_module_inst_id {
-+	u32 module_id;
-+	u32 instance_id;
-+};
-+
-+struct skl_module_pin {
-+	struct skl_module_inst_id id;
-+	u8 pin_index;
-+	bool is_dynamic;
-+	bool in_use;
-+};
-+
-+struct skl_specific_cfg {
-+	u32 caps_size;
-+	u32 *caps;
-+};
-+
-+enum skl_pipe_state {
-+	SKL_PIPE_INVALID = 0,
-+	SKL_PIPE_CREATED = 1,
-+	SKL_PIPE_PAUSED = 2,
-+	SKL_PIPE_STARTED = 3
-+};
-+
-+struct skl_pipe_module {
-+	struct snd_soc_dapm_widget *w;
-+	struct list_head node;
-+};
-+
-+struct skl_pipe_params {
-+	u8 host_dma_id;
-+	u8 link_dma_id;
-+	u32 ch;
-+	u32 s_freq;
-+	u32 s_fmt;
-+	u8 linktype;
-+	int stream;
-+};
-+
-+struct skl_pipe {
-+	u8 ppl_id;
-+	u8 pipe_priority;
-+	u16 conn_type;
-+	u32 memory_pages;
-+	struct skl_pipe_params *p_params;
-+	enum skl_pipe_state state;
-+	struct list_head w_list;
-+};
-+
-+enum skl_module_state {
-+	SKL_MODULE_UNINIT = 0,
-+	SKL_MODULE_INIT_DONE = 1,
-+	SKL_MODULE_LOADED = 2,
-+	SKL_MODULE_UNLOADED = 3,
-+	SKL_MODULE_BIND_DONE = 4
-+};
-+
-+struct skl_module_cfg {
-+	struct skl_module_inst_id id;
-+	struct skl_module_fmt in_fmt;
-+	struct skl_module_fmt out_fmt;
-+	u8 max_in_queue;
-+	u8 max_out_queue;
-+	u8 in_queue_mask;
-+	u8 out_queue_mask;
-+	u8 in_queue;
-+	u8 out_queue;
-+	u32 mcps;
-+	u32 ibs;
-+	u32 obs;
-+	u8 is_loadable;
-+	u8 core_id;
-+	u8 dev_type;
-+	u8 dma_id;
-+	u8 time_slot;
-+	u32 params_fixup;
-+	u32 converter;
-+	u32 vbus_id;
-+	struct skl_module_pin *m_in_pin;
-+	struct skl_module_pin *m_out_pin;
-+	enum skl_module_type m_type;
-+	enum skl_hw_conn_type  hw_conn_type;
-+	enum skl_module_state m_state;
-+	struct skl_pipe *pipe;
-+	struct skl_specific_cfg formats_config;
-+};
-+enum skl_bitdepth skl_get_bit_depth(int params);
-+#endif
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-new file mode 100644
-index 000000000000..a50689825bca
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -0,0 +1,88 @@
-+/*
-+ * skl-tplg-interface.h - Intel DSP FW private data interface
-+ *
-+ * Copyright (C) 2015 Intel Corp
-+ * Author: Jeeja KP <jeeja.kp@intel.com>
-+ *	    Nilofer, Samreen <samreen.nilofer@intel.com>
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#ifndef __HDA_TPLG_INTERFACE_H__
-+#define __HDA_TPLG_INTERFACE_H__
-+
-+/**
-+ * enum skl_ch_cfg - channel configuration
-+ *
-+ * @SKL_CH_CFG_MONO:	One channel only
-+ * @SKL_CH_CFG_STEREO:	L & R
-+ * @SKL_CH_CFG_2_1:	L, R & LFE
-+ * @SKL_CH_CFG_3_0:	L, C & R
-+ * @SKL_CH_CFG_3_1:	L, C, R & LFE
-+ * @SKL_CH_CFG_QUATRO:	L, R, Ls & Rs
-+ * @SKL_CH_CFG_4_0:	L, C, R & Cs
-+ * @SKL_CH_CFG_5_0:	L, C, R, Ls & Rs
-+ * @SKL_CH_CFG_5_1:	L, C, R, Ls, Rs & LFE
-+ * @SKL_CH_CFG_DUAL_MONO: One channel replicated in two
-+ * @SKL_CH_CFG_I2S_DUAL_STEREO_0: Stereo(L,R) in 4 slots, 1st stream:[ L, R, -, - ]
-+ * @SKL_CH_CFG_I2S_DUAL_STEREO_1: Stereo(L,R) in 4 slots, 2nd stream:[ -, -, L, R ]
-+ * @SKL_CH_CFG_INVALID:	Invalid
-+ */
-+enum skl_ch_cfg {
-+	SKL_CH_CFG_MONO = 0,
-+	SKL_CH_CFG_STEREO = 1,
-+	SKL_CH_CFG_2_1 = 2,
-+	SKL_CH_CFG_3_0 = 3,
-+	SKL_CH_CFG_3_1 = 4,
-+	SKL_CH_CFG_QUATRO = 5,
-+	SKL_CH_CFG_4_0 = 6,
-+	SKL_CH_CFG_5_0 = 7,
-+	SKL_CH_CFG_5_1 = 8,
-+	SKL_CH_CFG_DUAL_MONO = 9,
-+	SKL_CH_CFG_I2S_DUAL_STEREO_0 = 10,
-+	SKL_CH_CFG_I2S_DUAL_STEREO_1 = 11,
-+	SKL_CH_CFG_INVALID
-+};
-+
-+enum skl_module_type {
-+	SKL_MODULE_TYPE_MIXER = 0,
-+	SKL_MODULE_TYPE_COPIER,
-+	SKL_MODULE_TYPE_UPDWMIX,
-+	SKL_MODULE_TYPE_SRCINT
-+};
-+
-+enum skl_core_affinity {
-+	SKL_AFFINITY_CORE_0 = 0,
-+	SKL_AFFINITY_CORE_1,
-+	SKL_AFFINITY_CORE_MAX
-+};
-+
-+enum skl_pipe_conn_type {
-+	SKL_PIPE_CONN_TYPE_NONE = 0,
-+	SKL_PIPE_CONN_TYPE_FE,
-+	SKL_PIPE_CONN_TYPE_BE
-+};
-+
-+enum skl_hw_conn_type {
-+	SKL_CONN_NONE = 0,
-+	SKL_CONN_SOURCE = 1,
-+	SKL_CONN_SINK = 2
-+};
-+
-+enum skl_dev_type {
-+	SKL_DEVICE_BT = 0x0,
-+	SKL_DEVICE_DMIC = 0x1,
-+	SKL_DEVICE_I2S = 0x2,
-+	SKL_DEVICE_SLIMBUS = 0x3,
-+	SKL_DEVICE_HDALINK = 0x4,
-+	SKL_DEVICE_NONE
-+};
-+#endif
+@@ -263,5 +263,9 @@ struct skl_module_cfg {
+ 	struct skl_specific_cfg formats_config;
+ };
+ 
++int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
++	char *param);
++int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
++	*src_module, struct skl_module_cfg *dst_module, bool bind);
+ enum skl_bitdepth skl_get_bit_depth(int params);
+ #endif
 -- 
 1.9.1
