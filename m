@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: error handling bug in
-	sti_uniperiph_cpu_dai_of()" to the asoc tree
-Date: Tue, 21 Jul 2015 11:49:12 +0100
-Message-ID: <E1ZHV6m-0002qn-SB@debutante>
-References: <20150721085736.GB22070@mwanda>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] ASoC: max98925: reading beyond the end of
+	the array
+Date: Tue, 21 Jul 2015 13:57:43 +0300
+Message-ID: <20150721105743.GO5422@mwanda>
+References: <20150721085527.GA22070@mwanda>
+ <20150721104350.GP11162@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85B2226154B
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 12:49:20 +0200 (CEST)
-In-Reply-To: <20150721085736.GB22070@mwanda>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA96D26071F
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 12:57:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150721104350.GP11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Anish Kumar <yesanishhere@gmail.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, Jul 21, 2015 at 11:43:50AM +0100, Mark Brown wrote:
+> On Tue, Jul 21, 2015 at 11:55:27AM +0300, Dan Carpenter wrote:
+> > Debug prints are seldom useful and this one has an annoying thing where
+> > it reads one space beyond the end of the array on error.
+> 
+> It's a pretty big stretch to say that debug prints are rarely useful...
 
-   ASoC: sti: error handling bug in sti_uniperiph_cpu_dai_of()
+I asked Anish if it was worth fixing and he said to delete it.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a4642e99694a912b32952317e8f4c253ed6be4a9 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 21 Jul 2015 11:57:36 +0300
-Subject: [PATCH] ASoC: sti: error handling bug in sti_uniperiph_cpu_dai_of()
-
-There is a stray '!' which means the condition is never true.
-
-Fixes: f3bd847eb0a7 ('ASoC: sti: Add uniperipheral dai driver')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sti/sti_uniperif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 51f745c56c7f..dffabf3ba9fb 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -175,7 +175,7 @@ static int sti_uniperiph_cpu_dai_of(struct device_node *node,
- 				     UNIPERIF_FIFO_DATA_OFFSET(uni);
- 
- 	uni->irq = platform_get_irq(priv->pdev, 0);
--	if (!uni->irq < 0) {
-+	if (uni->irq < 0) {
- 		dev_err(dev, "Failed to get IRQ resource");
- 		return -ENXIO;
- 	}
--- 
-2.1.4
+regards,
+dan carpenter
