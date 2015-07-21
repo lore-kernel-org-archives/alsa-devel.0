@@ -1,17 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 6/6] ASoC: Intel: Skylake: Add pipe management
-	helpers
-Date: Tue, 21 Jul 2015 23:54:00 +0530
-Message-ID: <1437503040-7392-7-git-send-email-vinod.koul@intel.com>
-References: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/7] ASoC: Cleanup AC'97 reset handling
+Date: Tue, 21 Jul 2015 21:52:59 +0200
+Message-ID: <1437508386-13828-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A18082650DB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 20:22:26 +0200 (CEST)
-In-Reply-To: <1437503040-7392-1-git-send-email-vinod.koul@intel.com>
+Received: from smtp-out-102.synserver.de (smtp-out-102.synserver.de
+ [212.40.185.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF2BA26510F
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 21:53:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,161 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+AC'97 devices require that they are properly reset before they can be used.
+Currently ASoC drivers do this by hand each on its own. This lead to many
+similar but slightly different implementations. E.g. Some supporting warm
+reset, some don't. And even though AC'97 do have a device ID which uniquely
+identifies a device most drivers only use the content of register 0 for
+device verification.
 
-To manage the DSP pipelines we need routines to create, delete and
-message creation helpers. These helpers also check status and creates
-IPC messages with the required parameter and send using IPC lib
-interface.
+This patch series introduces a new generic helper function in the ALSA
+AC'97 core that can be used to reset a device and verify its ID if
+required. And then converts drivers to use this new helper function instead
+of custom code.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-messages.c | 114 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |   5 ++
- 2 files changed, 119 insertions(+)
+snd_soc_new_ac97_codec() is extended to be able to perform a reset between
+the allocation and registration of the AC'97 device, this will allow more
+drivers to use it.
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 72af582183ae..002297249c11 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -712,3 +712,117 @@ int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
- 	else
- 		return skl_unbind_modules(ctx, src_module, dst_module);
- }
-+
-+static int skl_set_pipe_state(struct skl_sst *ctx, struct skl_pipe *pipe,
-+	enum skl_pipe_state state)
-+{
-+	dev_dbg(ctx->dev, "%s: pipe_satate = %d\n", __func__, state);
-+
-+	return skl_ipc_set_pipeline_state(&ctx->ipc, pipe->ppl_id, state);
-+}
-+
-+/*
-+ * Creates pipeline, by sending IPC messages to FW
-+ */
-+int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
-+{
-+	int ret;
-+
-+	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
-+
-+	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
-+				pipe->pipe_priority, pipe->ppl_id);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to create pipeline\n");
-+		return ret;
-+	}
-+
-+	pipe->state = SKL_PIPE_CREATED;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Sets pipe state to RUNNING
-+ */
-+int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
-+{
-+	int ret;
-+
-+	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
-+
-+	/* If pipe was not created in FW, do not try to pause or delete */
-+	if (pipe->state < SKL_PIPE_CREATED)
-+		return 0;
-+
-+	/* Pipe has to be paused before it is started */
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to pause pipe\n");
-+		return ret;
-+	}
-+
-+	pipe->state = SKL_PIPE_PAUSED;
-+
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_RUNNING);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to start pipe\n");
-+		return ret;
-+	}
-+
-+	pipe->state = SKL_PIPE_STARTED;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Sets pipe state to PAUSED in FW, stops DMA engines and releases resources
-+ */
-+int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
-+{
-+	int ret;
-+
-+	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
-+
-+	/* If pipe is not started, do not try to stop the pipe in FW. */
-+	if (pipe->state > SKL_PIPE_STARTED) {
-+		ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+		if (ret < 0) {
-+			dev_err(ctx->dev, "Failed to stop pipeline\n");
-+			return ret;
-+		}
-+
-+		pipe->state = SKL_PIPE_PAUSED;
-+	} else {
-+		/* If pipe was not created in FW, do not try to delete it */
-+		if (pipe->state < SKL_PIPE_CREATED)
-+			return 0;
-+
-+		ret = skl_ipc_delete_pipeline(&ctx->ipc, pipe->ppl_id);
-+		if (ret < 0)
-+			dev_err(ctx->dev, "Failed to delete pipeline\n");
-+	}
-+
-+	return ret;
-+}
-+
-+int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
-+{
-+	int ret;
-+
-+	dev_dbg(ctx->dev, "In %s pipe=%d\n", __func__, pipe->ppl_id);
-+
-+	/* If pipe was not created in FW, do not try to pause or delete */
-+	if (pipe->state < SKL_PIPE_PAUSED)
-+		return 0;
-+
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+	if (ret < 0) {
-+		dev_dbg(ctx->dev, "Failed to stop pipe\n");
-+		return ret;
-+	}
-+
-+	pipe->state = SKL_PIPE_CREATED;
-+
-+	return 0;
-+}
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index c944ec024e62..f5584d189ef0 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -263,6 +263,11 @@ struct skl_module_cfg {
- 	struct skl_specific_cfg formats_config;
- };
- 
-+int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
-+int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-+int skl_pause_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-+int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-+int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
- int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
- 	char *param);
- int skl_bind_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
+- Lars
+
+Lars-Peter Clausen (7):
+  ALSA: ac97: Add helper function to reset the AC97 device
+  ASoC: ac97: Add support for resetting device before registration
+  ASoC: ad1980: Use core AC'97 reset helper
+  ASoC: stac9766: Use core reset helper
+  ASoC: wm9705: Use core AC'97 reset helper
+  ASoC: wm9712: Use core AC'97 reset helper
+  ASoC: wm9713: Use core AC'97 reset helper
+
+ include/sound/ac97_codec.h  |  2 ++
+ include/sound/soc.h         |  3 ++-
+ sound/ac97_bus.c            | 62 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ad1980.c   | 36 +++++++++-----------------
+ sound/soc/codecs/stac9766.c | 57 +++++------------------------------------
+ sound/soc/codecs/wm9705.c   | 40 ++++++-----------------------
+ sound/soc/codecs/wm9712.c   | 45 ++++++--------------------------
+ sound/soc/codecs/wm9713.c   | 48 ++++++-----------------------------
+ sound/soc/codecs/wm9713.h   |  2 --
+ sound/soc/soc-ac97.c        | 30 ++++++++++++++++++----
+ 10 files changed, 134 insertions(+), 191 deletions(-)
+
 -- 
-1.9.1
+2.1.4
