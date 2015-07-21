@@ -1,93 +1,178 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/4] drm/i915: Call audio hotplug notify function
-Date: Tue, 21 Jul 2015 09:57:25 +0200
-Message-ID: <1437465447-8974-3-git-send-email-david.henningsson@canonical.com>
-References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
+From: Martin Geier <martin.geier@streamunlimited.com>
+Subject: snd_pcm_set_params faild on set_buffer_time_near and
+	set_period_time_near
+Date: Tue, 21 Jul 2015 10:52:01 +0200
+Message-ID: <55AE0831.2010206@streamunlimited.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, tiwai@suse.de, daniel.vetter@intel.com, jani.nikula@linux.intel.com
-Cc: vinod.koul@intel.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="------------030209030708030608050507"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bsmtp.bon.at (bsmtp8.bon.at [213.33.87.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 481442617B5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 10:52:02 +0200 (CEST)
+Received: from [192.168.1.198] (81.89.61.168.vnet.sk [81.89.61.168])
+ by bsmtp.bon.at (Postfix) with ESMTPSA id 3mbDFF6xpHz5tlR
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 10:52:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gSERNSSBob3RwbHVnIGV2ZW50cywgbm90aWZ5IHRoZSBhdWRpbyBkcml2ZXIuIFRoaXMgd2ls
-bCBlbmFibGUKdGhlIGF1ZGlvIGRyaXZlciB0byBnZXQgdGhlIGluZm9ybWF0aW9uIGF0IGFsbCB0
-aW1lcyAoZXZlbiB3aGVuCmF1ZGlvIGlzIGluIGRpZmZlcmVudCBwb3dlcnNhdmUgc3RhdGVzKSwg
-YW5kIGFsc28gd2l0aG91dCByZWFkaW5nCml0IGZyb20gdGhlIGhhcmR3YXJlLgoKU2lnbmVkLW9m
-Zi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+
-Ci0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCAgICB8ICAgIDEgKwogZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8ICAgNDYgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDQ3IGluc2VydGlvbnMoKykKCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJt
-L2k5MTUvaTkxNV9kcnYuaAppbmRleCA1NDJmYWM2Li42OTY2MjRjIDEwMDY0NAotLS0gYS9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5
-MTVfZHJ2LmgKQEAgLTE4MDgsNiArMTgwOCw3IEBAIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlIHsK
-IAlzdHJ1Y3QgZHJtX3Byb3BlcnR5ICpmb3JjZV9hdWRpb19wcm9wZXJ0eTsKIAogCS8qIGhkYS9p
-OTE1IGF1ZGlvIGNvbXBvbmVudCAqLworCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYXVk
-aW9fY29tcG9uZW50OwogCWJvb2wgYXVkaW9fY29tcG9uZW50X3JlZ2lzdGVyZWQ7CiAKIAl1aW50
-MzJfdCBod19jb250ZXh0X3NpemU7CmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwppbmRleCAz
-ZGE5Yjg0Li5lYjI5ZTFmIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9h
-dWRpby5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKQEAgLTM4NCw2
-ICszODQsNDQgQEAgc3RhdGljIHZvaWQgaWxrX2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJt
-X2Nvbm5lY3RvciAqY29ubmVjdG9yLAogCUk5MTVfV1JJVEUoYXVkX2NvbmZpZywgdG1wKTsKIH0K
-IAorc3RhdGljIHZvaWQgYXVkaW9faG90cGx1Z19ub3RpZnkoc3RydWN0IGRybV9pOTE1X3ByaXZh
-dGUgKmRldl9wcml2LAorCQkJCSBzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAorCQkJ
-CSBzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqZW5jb2RlciwKKwkJCQkgYm9vbCBwbHVnZ2VkX2luKQor
-eworCXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9f
-Y29tcG9uZW50OworCXN0cnVjdCBpOTE1X2F1ZGlvX2hvdHBsdWdfaW5mbyBhdWRpb19pbmZvOwor
-CXN0cnVjdCBpbnRlbF9kaWdpdGFsX3BvcnQgKmludGVsX2RpZ19wb3J0ID0KKwkJZW5jX3RvX2Rp
-Z19wb3J0KCZlbmNvZGVyLT5iYXNlKTsKKwllbnVtIHBvcnQgcG9ydCA9IGludGVsX2RpZ19wb3J0
-LT5wb3J0OworCisJaWYgKCFhY29tcCB8fCAhYWNvbXAtPmNiX29wcyB8fCAhYWNvbXAtPmNiX29w
-cy0+aG90cGx1Z19ub3RpZnkpCisJCXJldHVybjsKKworCWlmIChjb25uZWN0b3IpIHsKKwkJYXVk
-aW9faW5mby5jb25uZWN0b3JfdHlwZSA9IGNvbm5lY3Rvci0+Y29ubmVjdG9yX3R5cGU7CisJCWF1
-ZGlvX2luZm8uY29ubmVjdG9yX3R5cGVfaWQgPSBjb25uZWN0b3ItPmNvbm5lY3Rvcl90eXBlX2lk
-OworCX0gZWxzZSB7CisJCWF1ZGlvX2luZm8uY29ubmVjdG9yX3R5cGUgPSAtMTsKKwkJYXVkaW9f
-aW5mby5jb25uZWN0b3JfdHlwZV9pZCA9IC0xOworCX0KKworCWF1ZGlvX2luZm8ucG9ydCA9IChp
-bnQpIHBvcnQ7CisJLyogRFAgTXN0IGlzIHVuc3VwcG9ydGVkIGZvciBub3cgKi8KKwlhdWRpb19p
-bmZvLnBvcnRfbXVsdGlfc3RyZWFtX2RldmljZSA9IDA7CisKKwlhdWRpb19pbmZvLnBsdWdnZWRf
-aW4gPSBwbHVnZ2VkX2luOworCWlmIChwbHVnZ2VkX2luICYmIGNvbm5lY3RvcikgeworCQlhdWRp
-b19pbmZvLmVsZCA9IGNvbm5lY3Rvci0+ZWxkOworCQlhdWRpb19pbmZvLmVsZF9zaXplID0gZHJt
-X2VsZF9zaXplKGF1ZGlvX2luZm8uZWxkKTsKKwl9IGVsc2UgeworCQlhdWRpb19pbmZvLmVsZCA9
-IE5VTEw7CisJCWF1ZGlvX2luZm8uZWxkX3NpemUgPSAwOworCX0KKworCWFjb21wLT5jYl9vcHMt
-PmhvdHBsdWdfbm90aWZ5KGFjb21wLT5oZGFjX2J1cywgJmF1ZGlvX2luZm8pOworfQorCiAvKioK
-ICAqIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZSAtIEVuYWJsZSB0aGUgYXVkaW8gY29kZWMgZm9y
-IEhEIGF1ZGlvCiAgKiBAaW50ZWxfZW5jb2RlcjogZW5jb2RlciBvbiB3aGljaCB0byBlbmFibGUg
-YXVkaW8KQEAgLTQxOSw2ICs0NTcsOCBAQCB2b2lkIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZShz
-dHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikKIAogCWlmIChkZXZfcHJpdi0+ZGlz
-cGxheS5hdWRpb19jb2RlY19lbmFibGUpCiAJCWRldl9wcml2LT5kaXNwbGF5LmF1ZGlvX2NvZGVj
-X2VuYWJsZShjb25uZWN0b3IsIGludGVsX2VuY29kZXIsIG1vZGUpOworCisJYXVkaW9faG90cGx1
-Z19ub3RpZnkoZGV2X3ByaXYsIGNvbm5lY3RvciwgaW50ZWxfZW5jb2RlciwgdHJ1ZSk7CiB9CiAK
-IC8qKgpAQCAtNDM1LDYgKzQ3NSw4IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZShz
-dHJ1Y3QgaW50ZWxfZW5jb2RlciAqZW5jb2RlcikKIAogCWlmIChkZXZfcHJpdi0+ZGlzcGxheS5h
-dWRpb19jb2RlY19kaXNhYmxlKQogCQlkZXZfcHJpdi0+ZGlzcGxheS5hdWRpb19jb2RlY19kaXNh
-YmxlKGVuY29kZXIpOworCisJYXVkaW9faG90cGx1Z19ub3RpZnkoZGV2X3ByaXYsIE5VTEwsIGVu
-Y29kZXIsIGZhbHNlKTsKIH0KIAogLyoqCkBAIC01MjUsMTIgKzU2NywxNCBAQCBzdGF0aWMgaW50
-IGk5MTVfYXVkaW9fY29tcG9uZW50X2JpbmQoc3RydWN0IGRldmljZSAqaTkxNV9kZXYsCiAJCQkJ
-ICAgICBzdHJ1Y3QgZGV2aWNlICpoZGFfZGV2LCB2b2lkICpkYXRhKQogewogCXN0cnVjdCBpOTE1
-X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkYXRhOworCXN0cnVjdCBkcm1faTkxNV9wcml2YXRl
-ICpkZXZfcHJpdiA9IGRldl90b19pOTE1KGk5MTVfZGV2KTsKIAogCWlmIChXQVJOX09OKGFjb21w
-LT5vcHMgfHwgYWNvbXAtPmRldikpCiAJCXJldHVybiAtRUVYSVNUOwogCiAJYWNvbXAtPm9wcyA9
-ICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9vcHM7CiAJYWNvbXAtPmRldiA9IGk5MTVfZGV2OworCWRl
-dl9wcml2LT5hdWRpb19jb21wb25lbnQgPSBhY29tcDsKIAogCXJldHVybiAwOwogfQpAQCAtNTM5
-LDkgKzU4MywxMSBAQCBzdGF0aWMgdm9pZCBpOTE1X2F1ZGlvX2NvbXBvbmVudF91bmJpbmQoc3Ry
-dWN0IGRldmljZSAqaTkxNV9kZXYsCiAJCQkJCXN0cnVjdCBkZXZpY2UgKmhkYV9kZXYsIHZvaWQg
-KmRhdGEpCiB7CiAJc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50ICphY29tcCA9IGRhdGE7CisJ
-c3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZGV2X3RvX2k5MTUoaTkxNV9kZXYp
-OwogCiAJYWNvbXAtPm9wcyA9IE5VTEw7CiAJYWNvbXAtPmRldiA9IE5VTEw7CisJZGV2X3ByaXYt
-PmF1ZGlvX2NvbXBvbmVudCA9IE5VTEw7CiB9CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgY29tcG9u
-ZW50X29wcyBpOTE1X2F1ZGlvX2NvbXBvbmVudF9iaW5kX29wcyA9IHsKLS0gCjEuNy45LjUKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBt
-YWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+This is a multi-part message in MIME format.
+--------------030209030708030608050507
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hallo,
+
+I tried to configure alsa device with snd_pcm_set_params function, 
+requested
+parameters was:
+channel 2, rate: 22050, soft_resample: 1, latency: 50000
+
+Function snd_pcm_hw_params_set_buffer_time_near and 
+snd_pcm_hw_param_set_near
+is called with:
+min: 50000, max: 50000, mindir: 0, maxdir: -1
+
+and input params was:
+
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: (362 743039)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [32 65536]
+PERIODS: [2 19]
+BUFFER_TIME: (725 1486078)
+BUFFER_SIZE: [16 32768]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: ALL
+
+unfortunately, this function fails, on function snd_pcm_hw_param_set_first:
+
+ALSA ERROR hw_params: set_near (BUFFER_TIME)
+            value = 50000 : Invalid argument
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: (4580 5533)
+PERIOD_SIZE: NONE
+PERIOD_BYTES: [404 488]
+PERIODS: 10
+BUFFER_TIME: (50022 50023)
+BUFFER_SIZE: 1103
+BUFFER_BYTES: 4412
+TICK_TIME: ALL
+
+This shouldn't be problem because in snd_pcm_set_params is
+snd_pcm_hw_params_set_period_time_near called.
+This function should be called with same params as 
+snd_pcm_hw_params_set_buffer_time_near
+but the input params are:
+
+snd_pcm_hw_param_set_near: min: 12500, max: 12500, mindir: 0, maxdir: -1
+hw_params: snd_pcm_hw_param_set_near (PERIOD_TIME)
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: (4580 5533)
+PERIOD_SIZE: NONE
+PERIOD_BYTES: [404 488]
+PERIODS: 10
+BUFFER_TIME: (50022 50023)
+BUFFER_SIZE: 1103
+BUFFER_BYTES: 4412
+TICK_TIME: ALL
+
+because in snd_pcm_hw_param_set_near is
+
+if (last)
+     err = snd_pcm_hw_param_set_last(pcm, params, var, val, dir);
+else
+     err = snd_pcm_hw_param_set_first(pcm, params, var, val, dir);
+if (err < 0)
+     dump_hw_params(params, "set_near", var, *val, err);
+return err;
+
+and in error part is only debug output and not restore original parameters.
+
+Environment:
+alsa-lib 1.0.27.1
+TI AM335x soc
+
+Simple fix is attached, but I am not sure if it is correct.
+
+BR
+Martin Geier
+-- 
+*StreamUnlimited*
+High Tech Campus Vienna, Gutheil-Schoder-Gasse 10, A-1102 Vienna, Austria
+Levocska 9, 851 01 Bratislava, Slovakia
+Email: martin.geier@streamunlimited.com
+www.streamunlimited.com
+
+--------------030209030708030608050507
+Content-Type: text/x-patch;
+ name="0001-patch-restore-params-if-snd_pcm_hw_param_set_near-met.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-patch-restore-params-if-snd_pcm_hw_param_set_near-met.p";
+ filename*1="atch"
+
+>From 6a31c2f854b255b407ce2d52d233db00588d2e40 Mon Sep 17 00:00:00 2001
+From: Martin Geier <martin.geier@streamunlimited.com>
+Date: Mon, 20 Jul 2015 08:59:54 +0200
+Subject: [PATCH] restore params if snd_pcm_hw_param_set_near method failed
+
+Signed-off-by: Martin Geier <martin.geier@streamunlimited.com>
+---
+ pcm_params.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/pcm/pcm_params.c b/src/pcm/pcm_params.c
+index 0b66e8c..57d98d8 100644
+--- a/src/pcm/pcm_params.c
++++ b/src/pcm/pcm_params.c
+@@ -872,8 +872,10 @@ int snd_pcm_hw_param_set_near(snd_pcm_t *pcm, snd_pcm_hw_params_t *params,
+ 		err = snd_pcm_hw_param_set_last(pcm, params, var, val, dir);
+ 	else
+ 		err = snd_pcm_hw_param_set_first(pcm, params, var, val, dir);
+-	if (err < 0)
++	if (err < 0) {
+ 		dump_hw_params(params, "set_near", var, *val, err);
++		*params = save;
++	}
+ 	return err;
+ }
+ 
+-- 
+1.9.1
+
+
+--------------030209030708030608050507
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030209030708030608050507--
