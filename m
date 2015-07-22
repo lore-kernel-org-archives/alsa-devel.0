@@ -1,58 +1,60 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/4] drm/i915: Add audio hotplug info struct
-Date: Wed, 22 Jul 2015 19:43:23 +0530
-Message-ID: <20150722141323.GX23525@localhost>
-References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
- <1437465447-8974-2-git-send-email-david.henningsson@canonical.com>
- <s5hbnf4iou6.wl-tiwai@suse.de> <55AF593B.8030609@canonical.com>
- <s5hy4i8h8pw.wl-tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 0/4] better support for bursty DMA
+	usages
+Date: Wed, 22 Jul 2015 22:44:50 +0800
+Message-ID: <CAN8ccibqTEjm5LQw5JKnSyL-1z6FJvb60C8EMnu6cV1p=FAzKw@mail.gmail.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <CAN8cciaoV=GqnLmukZvHGz+YjSu85nGcHzrhACAkOeH0692VhA@mail.gmail.com>
+ <55A6380E.4060605@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hy4i8h8pw.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
+ [209.85.218.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2406E260563
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 16:44:52 +0200 (CEST)
+Received: by oigd21 with SMTP id d21so102752179oig.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 07:44:51 -0700 (PDT)
+In-Reply-To: <55A6380E.4060605@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMjIsIDIwMTUgYXQgMTA6NTU6NTVBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMjIgSnVsIDIwMTUgMTA6NTA6MDMgKzAyMDAsCj4gRGF2aWQgSGVubmlu
-Z3Nzb24gd3JvdGU6Cj4gPiAKPiA+ID4+ICAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsK
-PiA+ID4+ICAgCXN0cnVjdCBkZXZpY2UgKmRldjsKPiA+ID4+ICsJc3RydWN0IGhkYWNfYnVzICpo
-ZGFjX2J1czsKPiA+ID4KPiA+ID4gSWYgd2Ugd2FudCB0byBiZSBtb3JlIGdlbmVyaWMsIHVzaW5n
-IGEgc3RydWN0IGRldmljZSB3b3VsZCBiZSBiZXR0ZXIsCj4gPiA+IGUuZy4KPiA+ID4gCXN0cnVj
-dCBkZXZpY2UgKmF1ZGlvX2RldjsKPiA+IAo+ID4gRG9lcyB0aGlzIHdvcms/IElmIHdlIHdhbnQg
-dG8gaGF2ZSB0aGUgaGRhY19idXMuZGV2IHB0ciBpbnN0ZWFkIG9mIGEgCj4gPiBoZGFjX2J1cyBw
-dHIsIHRoZXJlIGRvZXMgbm90IHNlZW0gdG8gYmUgYW4gb2J2aW91cyB3YXkgdG8gZ28gZnJvbSB0
-aGUgCj4gPiBhdWRpb19kZXYgYmFjayB0byB0aGUgaGRhY19idXMgc3RydWN0IChhcyBzbmRfaGRh
-Y19idXNfaW5pdCB0YWtlcyBhbiAKPiA+IGFyYml0cmFyeSBkZXYgcG9pbnRlcikuCj4gCj4gSHJt
-LCByaWdodCwgY3VycmVudGx5IGl0J3Mgbm90IHN0cmFpZ2h0Zm9yd2FyZC4gIFNjcmF0Y2ggdGhl
-IGlkZWEsCj4gdGhlbi4KClRoYXQgZGVwZW5kcyBvbiB0aGUgZGV2aWNlIHdlIHJlZ2lzdGVyIHRo
-aXMgd2l0aC4gQWN0dWFsbHkgdGhpcyBtYWtlcyBtb3JlCnNlbnNlIHRvIG1lIDopCgpJZiB3ZSBy
-ZWdpc3RlciB3aXRoIHN0cnVjdCBkZXZpY2UgKmF1ZGlvX2Rldiwgd2hpY2ggaW4gdGhpcyBjYXNl
-IHdvdWxkIGJlCnRoZSBjb2RlYyBkZXZpY2Ugd2UgY3JlYXRlIHdoaWxlIHByb2JpbmcgdGhlIGJ1
-cy4gVGhpcyB3YXkgeW91IGFyZSBsaW5raW5nIGk5MTUKb3BzIHRvIHRoZSBjb2RlYyBkZXZpY2Uu
-IE9mY291cnNlIGhkYWNfZGV2aWNlIGhhcyBidXMgcG9pbnRlciBidXQgeW91IGNhbgppbnZva2Ug
-ZGV2aWNlIGNhbGxiYWNrIHdpdGhvdXQgZXZlbiBzZWFyY2hpbmcgZm9yIHRoZSBkZXZpY2UgOikK
-Ci0tIAp+Vmlub2QKPiAKPiAKPiA+ID4+ICsJCXZvaWQgKCpob3RwbHVnX25vdGlmeSkoc3RydWN0
-IGhkYWNfYnVzICosIGNvbnN0IHN0cnVjdCBpOTE1X2F1ZGlvX2hvdHBsdWdfaW5mbyAqKTsKPiA+
-ID4+ICsJfSAqY2Jfb3BzOwo+ID4gPgo+ID4gPiBjYl9vcHMgZG9lc24ndCBzb3VuZCBpbnR1aXRp
-dmUuICBBbnkgYmV0dGVyIG5hbWU/Cj4gPiAKPiA+IEkgd2FzIHRoaW5raW5nIG9mIGl0IGFzICJj
-YWxsYmFjayBvcHMiLCBpIGUsIGNhbGxzIHRoYXQgZ28gaW4gdGhlIAo+ID4gcmV2ZXJzZSBkaXJl
-Y3Rpb24gY29tcGFyZWQgdG8gdGhlIGFscmVhZHkgZXhpc3RpbmcgIm9wcyIuCj4gPiAKPiA+IEJ1
-dCBpZiB3ZSBjYWxsIHRoZSBkZXZpY2UgImF1ZGlvX2RldiIgYXMgeW91IHN1Z2dlc3RlZCBhYm92
-ZSwgdGhlbiBtYXliZSAKPiA+ICJhdWRpb19vcHMiIHdvdWxkIGJlIG5pY2UgYW5kIHN5bW1ldHJp
-Yz8KPiAKPiBZZXMsIGl0IHNvdW5kcyBiZXR0ZXIuCj4gCj4gCj4gVGFrYXNoaQoKLS0gCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWls
-aW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+>>>
+>>> TODO:
+>>> 1. fixes and alsa-lib updates (compile-tested only for now)
+>>
+>>
+>>
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/src/modules/alsa/alsa-sink.c?id=cb55b00ccd25d965b1222e74375aee05427a449b
+>>
+>> Do you need a new api snd_pcm_hw_params_can_rewind() for the application
+to
+>> know pcm device does not support rewind ?
+>
+> Yes, we do need that.
+>
+> Please see my LAC 2015 paper: http://lac.linuxaudio.org/2015/papers/10.pdf
+
+What kind of driver or plugin will have this flag  ?
+
+snd-aloop,
+
+ioplug : pulse and  jack
+
+Are those usb-audio configure as usb-passthrough inside vm still rewindable
+?
+
+How about multi plug when one of the slaves  has this flag ?
+
+file plugin depend on whether slave device support rewind or not
