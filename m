@@ -1,81 +1,84 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 1/4] drm/i915: Add audio hotplug info struct
-Date: Thu, 23 Jul 2015 08:17:10 +0200
-Message-ID: <55B086E6.8010500@canonical.com>
-References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>	<1437465447-8974-2-git-send-email-david.henningsson@canonical.com>	<s5hbnf4iou6.wl-tiwai@suse.de>	<55AF593B.8030609@canonical.com>	<s5hy4i8h8pw.wl-tiwai@suse.de>	<20150722141323.GX23525@localhost>	<55AFD857.4090901@canonical.com>
- <s5hd1zkx7bi.wl-tiwai@suse.de>
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+Subject: Re: [PATCH RFT] ASoC: sgtl5000: Fix up define for
+	SGTL5000_SMALL_POP
+Date: Wed, 22 Jul 2015 10:58:57 +0200
+Message-ID: <1979834.BYYY6Fhuui@ws-stein>
+References: <1437535665.17780.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hd1zkx7bi.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webbox1416.server-home.net (webbox1416.server-home.net
+ [77.236.96.61]) by alsa0.perex.cz (Postfix) with ESMTP id F3453260666
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 10:59:02 +0200 (CEST)
+In-Reply-To: <1437535665.17780.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Zeng Zhaoming <zengzm.kernel@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Filip Brozovic <fbrozovic@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTA3LTIyIDIyOjMxLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gV2VkLCAyMiBK
-dWwgMjAxNSAxOTo1MjoyMyArMDIwMCwKPiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4KPj4K
-Pj4KPj4gT24gMjAxNS0wNy0yMiAxNjoxMywgVmlub2QgS291bCB3cm90ZToKPj4+IE9uIFdlZCwg
-SnVsIDIyLCAyMDE1IGF0IDEwOjU1OjU1QU0gKzAyMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+
-PiBPbiBXZWQsIDIyIEp1bCAyMDE1IDEwOjUwOjAzICswMjAwLAo+Pj4+IERhdmlkIEhlbm5pbmdz
-c29uIHdyb3RlOgo+Pj4+Pgo+Pj4+Pj4+ICAgICBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQg
-ewo+Pj4+Pj4+ICAgICAJc3RydWN0IGRldmljZSAqZGV2Owo+Pj4+Pj4+ICsJc3RydWN0IGhkYWNf
-YnVzICpoZGFjX2J1czsKPj4+Pj4+Cj4+Pj4+PiBJZiB3ZSB3YW50IHRvIGJlIG1vcmUgZ2VuZXJp
-YywgdXNpbmcgYSBzdHJ1Y3QgZGV2aWNlIHdvdWxkIGJlIGJldHRlciwKPj4+Pj4+IGUuZy4KPj4+
-Pj4+IAlzdHJ1Y3QgZGV2aWNlICphdWRpb19kZXY7Cj4+Pj4+Cj4+Pj4+IERvZXMgdGhpcyB3b3Jr
-PyBJZiB3ZSB3YW50IHRvIGhhdmUgdGhlIGhkYWNfYnVzLmRldiBwdHIgaW5zdGVhZCBvZiBhCj4+
-Pj4+IGhkYWNfYnVzIHB0ciwgdGhlcmUgZG9lcyBub3Qgc2VlbSB0byBiZSBhbiBvYnZpb3VzIHdh
-eSB0byBnbyBmcm9tIHRoZQo+Pj4+PiBhdWRpb19kZXYgYmFjayB0byB0aGUgaGRhY19idXMgc3Ry
-dWN0IChhcyBzbmRfaGRhY19idXNfaW5pdCB0YWtlcyBhbgo+Pj4+PiBhcmJpdHJhcnkgZGV2IHBv
-aW50ZXIpLgo+Pj4+Cj4+Pj4gSHJtLCByaWdodCwgY3VycmVudGx5IGl0J3Mgbm90IHN0cmFpZ2h0
-Zm9yd2FyZC4gIFNjcmF0Y2ggdGhlIGlkZWEsCj4+Pj4gdGhlbi4KPj4+Cj4+PiBUaGF0IGRlcGVu
-ZHMgb24gdGhlIGRldmljZSB3ZSByZWdpc3RlciB0aGlzIHdpdGguIEFjdHVhbGx5IHRoaXMgbWFr
-ZXMgbW9yZQo+Pj4gc2Vuc2UgdG8gbWUgOikKPj4+Cj4+PiBJZiB3ZSByZWdpc3RlciB3aXRoIHN0
-cnVjdCBkZXZpY2UgKmF1ZGlvX2Rldiwgd2hpY2ggaW4gdGhpcyBjYXNlIHdvdWxkIGJlCj4+PiB0
-aGUgY29kZWMgZGV2aWNlIHdlIGNyZWF0ZSB3aGlsZSBwcm9iaW5nIHRoZSBidXMuIFRoaXMgd2F5
-IHlvdSBhcmUgbGlua2luZyBpOTE1Cj4+PiBvcHMgdG8gdGhlIGNvZGVjIGRldmljZS4gT2Zjb3Vy
-c2UgaGRhY19kZXZpY2UgaGFzIGJ1cyBwb2ludGVyIGJ1dCB5b3UgY2FuCj4+PiBpbnZva2UgZGV2
-aWNlIGNhbGxiYWNrIHdpdGhvdXQgZXZlbiBzZWFyY2hpbmcgZm9yIHRoZSBkZXZpY2UgOikKPj4K
-Pj4gSXQgd291bGQgcmVxdWlyZSBzb21lIGV4dHJhIHNldHVwLCBzbyBJIHNraXBwZWQgaXQgKGF0
-IGxlYXN0IGZvciBub3cpLgo+Pgo+PiBJIGUsIGluIG9yZGVyIHRvIGRldGVjdCBjb2RlY3MsIHdl
-IG5lZWQgdG8gY2FsbCBoZGFjX2k5MTUgZnVuY3Rpb25zIHRvCj4+IHR1cm4gdGhlIHBvd2VyIHdl
-bGwgb24uIEFuZCBpbiBvcmRlciB0byBjb25uZWN0IHRoZSBjb2RlYyB0byB0aGUKPj4gaTkxNV9h
-dWRpb19jb21wb25lbnQsIHdlIG5lZWQgdG8gaGF2ZSBkZXRlY3RlZCBhIGNvZGVjLgo+Pgo+PiBX
-aGljaCwgbm93IHRoYXQgSSB0aGluayBvZiBpdCwgYWN0dWFsbHkgZ2l2ZXMgYW4gaW50ZXJlc3Rp
-bmcgcG90ZW50aWFsCj4+IHJhY2UgY29uZGl0aW9uLCBpbiBjYXNlIHRoZSBmb2xsb3dpbmcgaGFw
-cGVuczoKPj4KPj4gMSkgTW9uaXRvciBpcyBwbHVnZ2VkIGluIGF0IGJvb3QgdGltZQo+PiAyKSBp
-OTE1IGluaXRpYWxpemVzCj4+IDMpIGhkYSBzdGFydHMgaW5pdGlhbGl6aW5nIGFuZCBzZXRzIHVw
-IHRoZSBhdWRpbyBjb21wb25lbnQKPj4gNCkgaTkxNSBmaW5pc2hlcyBpbml0aWFsaXphdGlvbiBh
-bmQgYXMgcGFydCBvZiB0aGF0LCBjYWxscyB0aGUgaG90cGx1Zwo+PiBub3RpZnkgdG8gbGV0IGhk
-YSBrbm93IHRoYXQgdGhlIG1vbml0b3IgaXMgcGx1Z2dlZCBpbi4gSG93ZXZlciwgYXQgdGhpcwo+
-PiBwb2ludCwgaGRhIGhhcyBub3QgZmluaXNoZWQgaW5pdGlhbGl6YXRpb24geWV0LCBzbyB0aGVy
-ZSBhcmUgbm8gY29kZWNzCj4+IHRoYXQgbGlzdGVuIGZvciB0aGlzIGluZm9ybWF0aW9uLgo+Pgo+
-PiBBbnlob3csIHRoaXMgaXMgbm90IGEgcHJvYmxlbSByZWFsbHkgeWV0LCBidXQgaXQgbWlnaHQg
-YmUgaWYgd2UgZXZlcgo+PiBkZWNpZGUgdG8gbm90IHdyaXRlIHRoZSBFTEQgdG8gdGhlIGhhcmR3
-YXJlLgo+Cj4gRm9yIGF2b2lkIHN1Y2ggYSBwcm9ibGVtLCBtYXliZSB3ZSBuZWVkIHR3byBvcHMs
-IG9uZSBmb3Igbm90aWZpY2F0aW9uCj4gYW5kIG9uZSBmb3IgZ2V0dGluZyB0aGUgYXNzaWduZWQg
-ZGF0YS4gIEF0IHRoZSBpbml0aWFsaXphdGlvbiB0aW1lLAo+IHRoZSBhdWRpbyBkcml2ZXIgcXVl
-cmllcyB0aGUgYXNzaWduZWQgc3RhdHVzIGFuZCBkYXRhLiAgV2hlbiBhIGhvdHBsdWcKPiBoYXBw
-ZW5zLCBpdCdzIGp1c3Qgbm90aWZpZWQuICBUaGF0IGlzLCBpdCBzaW1wbHkgcmVwbGFjZXMgdGhl
-IGN1cnJlbnQKPiB1bnNvbCBldmVudCBhbmQgdGhlIEVMRCBkYXRhIHJlYWQgdmlhIHR3byBvcHMu
-CgpJJ20gYWJvdXQgdG8gZ28gb24gdmFjYXRpb24gc28gaXQgd291bGQgYmUgZ29vZCB0byBnZXQg
-c29tZSBjbG9zdXJlIApoZXJlLiBJZiB5b3UgYm90aCBwcmVmZXIgdGhpcyBzZXR1cCwgaG93IGFi
-b3V0IEkgcmVtb3ZlICJzdHJ1Y3QgCmk5MTVfYXVkaW9faG90cGx1Z19pbmZvIiBmb3Igbm93PyBX
-ZSB3aWxsIHRoZW4gaGF2ZToKCgljb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfYXVk
-aW9fb3BzIHsKCQl2b2lkICgqaG90cGx1Z19ub3RpZnkpKHN0cnVjdCBoZGFjX2J1cyAqKTsKCX0K
-Ci4uLndoaWNoIHdpbGwgbWFrZSB0aGUgaGRhIGRyaXZlciByZWFkIGZyb20gdGhlIGhhcmR3YXJl
-LiBBc2tpbmcgdGhlIAppOTE1IGRyaXZlciBmb3IgRUxELCBjb25uZWN0b3IgYW5kIGhvdHBsdWcg
-c3RhdHVzIGNhbiB0aGVuIGJlIGRvbmUgaW4gYSAKbGF0ZXIgcGF0Y2guCgotLSAKRGF2aWQgSGVu
-bmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
-aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Wednesday 22 July 2015 11:27:45, Axel Lin wrote:
+> Currently, below code actually does not update any bit because
+> SGTL5000_SMALL_POP is 0.
+> 
+> snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL, SGTL5000_SMALL_POP, 1);
+> 
+> The SGTL5000_SMALL_POP should be BIT(0) rather than 0, fix it.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+
+I can not test this right now, but it seems appropriate.
+Acked-By: Alexander Stein <alexander.stein@systec-electronic.com>
+
+> Hi,
+> I don't have h/w and datasheet, but the code looks obvious does not make
+> sense. Can someone help to confirm and test if this patch?
+
+The datasheet can be found online: http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=SGTL5000&fpsp=1&tab=Documentation_Tab
+
+Best regards,
+Alexander
+-- 
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
+
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
+
+Office: +49 (0) 3765 38600-0
+Fax:    +49 (0) 3765 38600-4100
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
+-- 
+Dipl.-Inf. Alexander Stein
+SYS TEC electronic GmbH
+alexander.stein@systec-electronic.com
+
+Legal and Commercial Address:
+Am Windrad 2
+08468 Heinsdorfergrund
+Germany
+
+Office: +49 (0) 3765 38600-0
+Fax:    +49 (0) 3765 38600-4100
+ 
+Managing Directors:
+	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
+	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
+Commercial Registry:
+	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
