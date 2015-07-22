@@ -1,68 +1,77 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/4] drm/i915: Add audio hotplug info struct
-Date: Thu, 23 Jul 2015 09:13:21 +0530
-Message-ID: <20150723034321.GA23525@localhost>
-References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
- <1437465447-8974-2-git-send-email-david.henningsson@canonical.com>
- <s5hbnf4iou6.wl-tiwai@suse.de> <55AF593B.8030609@canonical.com>
- <s5hy4i8h8pw.wl-tiwai@suse.de> <20150722141323.GX23525@localhost>
- <55AFD857.4090901@canonical.com> <s5hd1zkx7bi.wl-tiwai@suse.de>
+From: Zeng Zhaoming <zengzm.kernel@gmail.com>
+Subject: Re: [PATCH RFT] ASoC: sgtl5000: Fix up define for
+	SGTL5000_SMALL_POP
+Date: Wed, 22 Jul 2015 18:15:48 +0800
+Message-ID: <CAN9UC2FPzvVXz8w5haDB2RKh9Eo7hXvYv=zh_PWb3vfSi4gGCA@mail.gmail.com>
+References: <1437535665.17780.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hd1zkx7bi.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f193.google.com (mail-pd0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0C632606A7
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 12:15:49 +0200 (CEST)
+Received: by pdav4 with SMTP id v4so15683052pda.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 03:15:48 -0700 (PDT)
+In-Reply-To: <1437535665.17780.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Filip Brozovic <fbrozovic@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMjIsIDIwMTUgYXQgMTA6MzE6NDVQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+ID4gPiBUaGF0IGRlcGVuZHMgb24gdGhlIGRldmljZSB3ZSByZWdpc3RlciB0aGlzIHdp
-dGguIEFjdHVhbGx5IHRoaXMgbWFrZXMgbW9yZQo+ID4gPiBzZW5zZSB0byBtZSA6KQo+ID4gPgo+
-ID4gPiBJZiB3ZSByZWdpc3RlciB3aXRoIHN0cnVjdCBkZXZpY2UgKmF1ZGlvX2Rldiwgd2hpY2gg
-aW4gdGhpcyBjYXNlIHdvdWxkIGJlCj4gPiA+IHRoZSBjb2RlYyBkZXZpY2Ugd2UgY3JlYXRlIHdo
-aWxlIHByb2JpbmcgdGhlIGJ1cy4gVGhpcyB3YXkgeW91IGFyZSBsaW5raW5nIGk5MTUKPiA+ID4g
-b3BzIHRvIHRoZSBjb2RlYyBkZXZpY2UuIE9mY291cnNlIGhkYWNfZGV2aWNlIGhhcyBidXMgcG9p
-bnRlciBidXQgeW91IGNhbgo+ID4gPiBpbnZva2UgZGV2aWNlIGNhbGxiYWNrIHdpdGhvdXQgZXZl
-biBzZWFyY2hpbmcgZm9yIHRoZSBkZXZpY2UgOikKPiA+IAo+ID4gSXQgd291bGQgcmVxdWlyZSBz
-b21lIGV4dHJhIHNldHVwLCBzbyBJIHNraXBwZWQgaXQgKGF0IGxlYXN0IGZvciBub3cpLgo+ID4g
-Cj4gPiBJIGUsIGluIG9yZGVyIHRvIGRldGVjdCBjb2RlY3MsIHdlIG5lZWQgdG8gY2FsbCBoZGFj
-X2k5MTUgZnVuY3Rpb25zIHRvIAo+ID4gdHVybiB0aGUgcG93ZXIgd2VsbCBvbi4gQW5kIGluIG9y
-ZGVyIHRvIGNvbm5lY3QgdGhlIGNvZGVjIHRvIHRoZSAKPiA+IGk5MTVfYXVkaW9fY29tcG9uZW50
-LCB3ZSBuZWVkIHRvIGhhdmUgZGV0ZWN0ZWQgYSBjb2RlYy4KWWVzIHRoYXQgaXMgdHJ1ZSBidXQg
-d2hlbiBkcml2ZXIgcmVnaXN0ZXJzIHRoZSBjYWxsYmFjayB5b3UgY2FuIGFzc2lnbiB0aGUKY2Fs
-bGJhY2sgdG8gaTkxNSBjb21wb25lbnQsIHNvIGFmdGVyd2FyZHMgdGhlIGNhbGwgZnJvbSBpOTE1
-IGxhbmRzIHVwIGluCmNvZGVjLiBJZiBub3QgcmVnaXN0ZXJlZCB3ZSBoYXZlIGRlZmF1bHQgYnVz
-IGhhbmRsZXIgOikKCj4gPiBXaGljaCwgbm93IHRoYXQgSSB0aGluayBvZiBpdCwgYWN0dWFsbHkg
-Z2l2ZXMgYW4gaW50ZXJlc3RpbmcgcG90ZW50aWFsIAo+ID4gcmFjZSBjb25kaXRpb24sIGluIGNh
-c2UgdGhlIGZvbGxvd2luZyBoYXBwZW5zOgo+ID4gCj4gPiAxKSBNb25pdG9yIGlzIHBsdWdnZWQg
-aW4gYXQgYm9vdCB0aW1lCj4gPiAyKSBpOTE1IGluaXRpYWxpemVzCj4gPiAzKSBoZGEgc3RhcnRz
-IGluaXRpYWxpemluZyBhbmQgc2V0cyB1cCB0aGUgYXVkaW8gY29tcG9uZW50Cj4gPiA0KSBpOTE1
-IGZpbmlzaGVzIGluaXRpYWxpemF0aW9uIGFuZCBhcyBwYXJ0IG9mIHRoYXQsIGNhbGxzIHRoZSBo
-b3RwbHVnIAo+ID4gbm90aWZ5IHRvIGxldCBoZGEga25vdyB0aGF0IHRoZSBtb25pdG9yIGlzIHBs
-dWdnZWQgaW4uIEhvd2V2ZXIsIGF0IHRoaXMgCj4gPiBwb2ludCwgaGRhIGhhcyBub3QgZmluaXNo
-ZWQgaW5pdGlhbGl6YXRpb24geWV0LCBzbyB0aGVyZSBhcmUgbm8gY29kZWNzIAo+ID4gdGhhdCBs
-aXN0ZW4gZm9yIHRoaXMgaW5mb3JtYXRpb24uCj4gPiAKPiA+IEFueWhvdywgdGhpcyBpcyBub3Qg
-YSBwcm9ibGVtIHJlYWxseSB5ZXQsIGJ1dCBpdCBtaWdodCBiZSBpZiB3ZSBldmVyIAo+ID4gZGVj
-aWRlIHRvIG5vdCB3cml0ZSB0aGUgRUxEIHRvIHRoZSBoYXJkd2FyZS4KPiAKPiBGb3IgYXZvaWQg
-c3VjaCBhIHByb2JsZW0sIG1heWJlIHdlIG5lZWQgdHdvIG9wcywgb25lIGZvciBub3RpZmljYXRp
-b24KPiBhbmQgb25lIGZvciBnZXR0aW5nIHRoZSBhc3NpZ25lZCBkYXRhLiAgQXQgdGhlIGluaXRp
-YWxpemF0aW9uIHRpbWUsCj4gdGhlIGF1ZGlvIGRyaXZlciBxdWVyaWVzIHRoZSBhc3NpZ25lZCBz
-dGF0dXMgYW5kIGRhdGEuICBXaGVuIGEgaG90cGx1Zwo+IGhhcHBlbnMsIGl0J3MganVzdCBub3Rp
-ZmllZC4gIFRoYXQgaXMsIGl0IHNpbXBseSByZXBsYWNlcyB0aGUgY3VycmVudAo+IHVuc29sIGV2
-ZW50IGFuZCB0aGUgRUxEIGRhdGEgcmVhZCB2aWEgdHdvIG9wcy4KWWVhaCwgSSBkbyBmYXZvdXIg
-YWRkaW5nIG5ldyBvcHMgc28gdGhhdCB3ZSBjYW4gcXVlcnkgdGhlIGN1cnJlbnQgdmFsdWVzIGFu
-ZApzZXR1cCB3aGVuZXZlciBkcml2ZXIgcHJvYmVzCgotLSAKflZpbm9kCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0
-CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Wed, Jul 22, 2015 at 11:27 AM, Axel Lin <axel.lin@ingics.com> wrote:
+> Currently, below code actually does not update any bit because
+> SGTL5000_SMALL_POP is 0.
+>
+> snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL, SGTL5000_SMALL_POP, 1);
+>
+> The SGTL5000_SMALL_POP should be BIT(0) rather than 0, fix it.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+> Hi,
+> I don't have h/w and datasheet, but the code looks obvious does not make
+> sense. Can someone help to confirm and test if this patch?
+> Thanks,
+> Axel
+>  sound/soc/codecs/sgtl5000.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+> index bd7a344..1c317de 100644
+> --- a/sound/soc/codecs/sgtl5000.h
+> +++ b/sound/soc/codecs/sgtl5000.h
+> @@ -275,7 +275,7 @@
+>  #define SGTL5000_BIAS_CTRL_MASK                        0x000e
+>  #define SGTL5000_BIAS_CTRL_SHIFT               1
+>  #define SGTL5000_BIAS_CTRL_WIDTH               3
+> -#define SGTL5000_SMALL_POP                     0
+> +#define SGTL5000_SMALL_POP                     1
+>
+>  /*
+>   * SGTL5000_CHIP_MIC_CTRL
+> --
+> 2.1.0
+>
+>
+>
+
+Thanks for your report, seems your are right. I have no board to test it.
+
+The code introduced by c251ea7bd7a04f1f2575467e0de76e803cf59149.
+Fabio, can you verify it on mx28evk?
+
+Thanks
+
+-- 
+Best Regards
+    Zeng Zhaoming
