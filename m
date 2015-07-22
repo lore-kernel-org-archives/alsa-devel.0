@@ -1,70 +1,42 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 26/37] ALSA: firewire-tascam: add MMAP
- support to show status and control message
-Date: Thu, 23 Jul 2015 00:19:03 +0900
-Message-ID: <55AFB467.2020704@sakamocchi.jp>
-References: <1436623968-10780-1-git-send-email-o-takashi@sakamocchi.jp>	<1436623968-10780-27-git-send-email-o-takashi@sakamocchi.jp>
- <55AE51FC.3020204@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH v2 0/4] i915 to call hda driver on HDMI
+	plug/unplug
+Date: Wed, 22 Jul 2015 17:28:07 +0200
+Message-ID: <1437578891-8197-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 742AF2606C5
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 17:19:07 +0200 (CEST)
-In-Reply-To: <55AE51FC.3020204@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Yoshifuji Hideaki <yoshfuji@linux-ipv6.org>, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: vinod.koul@intel.com, jani.nikula@linux.intel.com, daniel.vetter@intel.com, tiwai@suse.de, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Jul 21 2015 23:06, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Typically, such messages should be converted to MIDI control change
->> messages for userspace applications.
-> 
-> It would be possible to have ALSA mixer controls for these, but this
-> would make sense only if these controls are suitable to be displayed in
-> a generic mixer application.  I guess this isn't the case for most of
-> them.
-
-Indeed. The main purpose of these physical controls is to control DAW
-softwares or the other devices. On the other hand, the major usage of
-ALSA control elements is to control the device itself.
-
->> Thus, this driver should have a converter with appropriate MIDI map.
->> Currently I have no good idea for the map and it is not implemented
->> yet.
-> 
-> I guess the Windows driver does not makes this information available in
-> any way?
-
-Windows driver gives GUI to select the way to parse the control
-information with three options. All of the options are based on MIDI
-messaging. Therefore, the driver perform to convert to MIDI messages, I
-think.
-
-Furthermore, two of the options are somewhat compliant to Mackie
-something. In Open Source Software, Ardour Gtk+ can handle the Mackie
-something. In this reason, I think it's users' advantage to apply MIDI
-converter for the control messages.
-
-> If all the data is device-specific, the actual mapping chosen does not
-> really matter, because the mixer/control application needs to have
-> special code for parsing the data from this particular Linux driver
-> anyway.
-
-Exactly, with ignoring the updating interval.
-
-
-Regards
-
-Takashi Sakamoto
+Q2hhbmdlcyBzaW5jZSBwcmV2aW91cyB2ZXJzaW9uOgoKICogUmVuYW1lcyBhbmQgcmVmYWN0b3Jp
+bmdzIGFjY29yZGluZyB0byBEYW5pZWwncyBhbmQgVGFrYXNoaSdzIHN1Z2dlc3Rpb25zLgoKICog
+RGVidWcgbWVzc2FnZSBzbGlnaHRseSBpbXByb3ZlZC4KCiAqIEJyYXN3ZWxsIG5vdyBoYXMgYWxs
+IHRocmVlIHBpbnMgdG9vLCBCYXl0cmFpbCBzdGlsbCBoYXMgb25seSBvbmUgcGluLgogICBJdCB3
+b3VsZCBzdGlsbCBiZSBnb29kIHdpdGggc29tZSBjb25maXJtYXRpb24gZnJvbSBJbnRlbCB0aGF0
+IHRoaXMgaXMgCiAgIGNvcnJlY3QuCgpEYXZpZCBIZW5uaW5nc3NvbiAoNCk6CiAgZHJtL2k5MTU6
+IEFkZCBhdWRpbyBob3RwbHVnIGluZm8gc3RydWN0CiAgZHJtL2k5MTU6IENhbGwgYXVkaW8gaG90
+cGx1ZyBub3RpZnkgZnVuY3Rpb24KICBBTFNBOiBoZGEgLSBEaXNwYXRjaCBpbmNvbWluZyBIRE1J
+IGhvdHBsdWcgaTkxNSBjYWxsYmFjawogIEFMU0E6IGhkYSAtIFdha2UgdGhlIGNvZGVjIHVwIG9u
+IGhvdHBsdWcgbm90aWZ5IGV2ZW50cwoKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2Lmgg
+ICAgfCAgICAxICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgfCAgIDQxICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogaW5jbHVkZS9kcm0vaTkxNV9jb21w
+b25lbnQuaCAgICAgICB8ICAgMTggKysrKysrKysrKysrKysrKwogaW5jbHVkZS9zb3VuZC9oZGF1
+ZGlvLmggICAgICAgICAgICB8ICAgIDQgKysrKwogc291bmQvaGRhL2hkYWNfaTkxNS5jICAgICAg
+ICAgICAgICB8ICAgMjYgKysrKysrKysrKysrKysrKysrKysrKysKIHNvdW5kL3BjaS9oZGEvcGF0
+Y2hfaGRtaS5jICAgICAgICAgfCAgIDEzICsrKysrKysrKysrLQogNiBmaWxlcyBjaGFuZ2VkLCAx
+MDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKLS0gCjEuNy45LjUKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxp
+c3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
