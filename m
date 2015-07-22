@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt" to the asoc tree
-Date: Wed, 22 Jul 2015 10:57:30 +0100
-Message-ID: <E1ZHqmI-00078S-Lm@debutante>
-References: <1437515186-1961-1-git-send-email-benzh@chromium.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1437515186-1961-1-git-send-email-benzh@chromium.org>
-Sender: stable-owner@vger.kernel.org
-To: Ben Zhang <benzh@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: sgtl5000: Fix up define for
+	SGTL5000_SMALL_POP" to the asoc tree
+Date: Wed, 22 Jul 2015 10:57:31 +0100
+Message-ID: <E1ZHqmJ-00078w-Ky@debutante>
+References: <1437535665.17780.1.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C57C32606A7
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:57:38 +0200 (CEST)
+In-Reply-To: <1437535665.17780.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt
+   ASoC: sgtl5000: Fix up define for SGTL5000_SMALL_POP
 
 has been applied to the asoc tree at
 
@@ -37,43 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From a6c2a32ac83567f15e9af3dcbc73148ce68b2ced Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Tue, 21 Jul 2015 14:46:26 -0700
-Subject: [PATCH] ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt
+>From b101acfabc9377469af3abfb7cb63112da367284 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 22 Jul 2015 11:27:45 +0800
+Subject: [PATCH] ASoC: sgtl5000: Fix up define for SGTL5000_SMALL_POP
 
-The regmap_write in ssm4567_set_dai_fmt accidentally clears the
-TDM_BCLKS field which was set earlier by ssm4567_set_tdm_slot.
+Currently, below code actually does not update any bit because
+SGTL5000_SMALL_POP is 0.
 
-This patch fixes it by using regmap_update_bits with proper mask.
+snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL, SGTL5000_SMALL_POP, 1);
 
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+The SGTL5000_SMALL_POP should be BIT(0) rather than 0, fix it.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-By: Alexander Stein <alexander.stein@systec-electronic.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/ssm4567.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/sgtl5000.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 938d2cb6d78b..84a4f5ad8064 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -315,7 +315,13 @@ static int ssm4567_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	if (invert_fclk)
- 		ctrl1 |= SSM4567_SAI_CTRL_1_FSYNC;
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index bd7a344bf8c5..1c317de26176 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -275,7 +275,7 @@
+ #define SGTL5000_BIAS_CTRL_MASK			0x000e
+ #define SGTL5000_BIAS_CTRL_SHIFT		1
+ #define SGTL5000_BIAS_CTRL_WIDTH		3
+-#define SGTL5000_SMALL_POP			0
++#define SGTL5000_SMALL_POP			1
  
--	return regmap_write(ssm4567->regmap, SSM4567_REG_SAI_CTRL_1, ctrl1);
-+	return regmap_update_bits(ssm4567->regmap, SSM4567_REG_SAI_CTRL_1,
-+			SSM4567_SAI_CTRL_1_BCLK |
-+			SSM4567_SAI_CTRL_1_FSYNC |
-+			SSM4567_SAI_CTRL_1_LJ |
-+			SSM4567_SAI_CTRL_1_TDM |
-+			SSM4567_SAI_CTRL_1_PDM,
-+			ctrl1);
- }
- 
- static int ssm4567_set_power(struct ssm4567 *ssm4567, bool enable)
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
 -- 
 2.1.4
