@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Avoid duplicating immutable
-	strings" to the asoc tree
-Date: Wed, 22 Jul 2015 10:57:32 +0100
-Message-ID: <E1ZHqmK-00079P-LB@debutante>
-References: <1437495068-4104-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: kirkwood: prevent double streaming" to
+	the asoc tree
+Date: Wed, 22 Jul 2015 10:57:34 +0100
+Message-ID: <E1ZHqmM-0007AN-KW@debutante>
+References: <20150721165717.F04792605AA@alsa0.perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EA21E265290
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:57:39 +0200 (CEST)
-In-Reply-To: <1437495068-4104-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 150382652E6
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:57:42 +0200 (CEST)
+In-Reply-To: <20150721165717.F04792605AA@alsa0.perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Avoid duplicating immutable strings
+   ASoC: kirkwood: prevent double streaming
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 480689617510381391b3d906549477b948d9c4bc Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Tue, 21 Jul 2015 18:11:08 +0200
-Subject: [PATCH] ASoC: dapm: Avoid duplicating immutable strings
+>From c4a42915d84ad4b5b5e13aeed5da67f458e22399 Mon Sep 17 00:00:00 2001
+From: Jean-Francois Moine <moinejf@free.fr>
+Date: Tue, 21 Jul 2015 18:32:58 +0200
+Subject: [PATCH] ASoC: kirkwood: prevent double streaming
 
-When creating a new widget from a template the name string of the template
-is duplicated for the newly created widget. This is necessary because in
-some cases the string might be stored on the stack or other volatile
-memory locations.
+The kirkwood audio subsystem presents 2 PCM's for one source.
+Streaming on a second PCM while the first one is active
+cuts this last one.
+Then, ending the last stream gives a kernel trap in free_irq().
 
-But most of the time the string is static const data, which means it is
-possible to use it directly without having to worry that it might get freed
-or changed.
-
-Use kstrdup_const() to handle duplicating the string. This function is
-capable of detecting whether a string is immutable and if it is returns the
-input without duplicating it. This will slightly reduce the runtime memory
-footprint of DAPM and also speed up initialization.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/kirkwood/kirkwood-dma.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 24ea692bd49e..cb4bc1cd5049 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2329,7 +2329,7 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
- 		dapm_free_path(p);
- 
- 	kfree(w->kcontrols);
--	kfree(w->name);
-+	kfree_const(w->name);
- 	kfree(w);
- }
- 
-@@ -3350,7 +3350,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 	if (prefix)
- 		w->name = kasprintf(GFP_KERNEL, "%s %s", prefix, widget->name);
- 	else
--		w->name = kasprintf(GFP_KERNEL, "%s", widget->name);
-+		w->name = kstrdup_const(widget->name, GFP_KERNEL);
- 	if (w->name == NULL) {
- 		kfree(w);
- 		return NULL;
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index 4cf2245950d7..dbfdfe99c69d 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -148,10 +148,14 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	dram = mv_mbus_dram_info();
+ 	addr = substream->dma_buffer.addr;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (priv->substream_play)
++			return -EBUSY;
+ 		priv->substream_play = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
+ 	} else {
++		if (priv->substream_rec)
++			return -EBUSY;
+ 		priv->substream_rec = substream;
+ 		kirkwood_dma_conf_mbus_windows(priv->io,
+ 			KIRKWOOD_RECORD_WIN, addr, dram);
 -- 
 2.1.4
