@@ -1,176 +1,54 @@
-From: Koro Chen <koro.chen@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: Add suspend/resume callbacks
-Date: Wed, 22 Jul 2015 17:39:35 +0800
-Message-ID: <1437557975-48183-1-git-send-email-koro.chen@mediatek.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Re: [PATCH RFT] ASoC: sgtl5000: Fix up define for
+	SGTL5000_SMALL_POP
+Date: Wed, 22 Jul 2015 17:45:54 +0800
+Message-ID: <CAFRkauBy06Ua6UZ1oonH9asb8pHXc045V4o-tVEGZEAMbm8MLw@mail.gmail.com>
+References: <1437535665.17780.1.camel@ingics.com> <1979834.BYYY6Fhuui@ws-stein>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
-Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Koro Chen <koro.chen@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
+ [209.85.217.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9A7C2606CA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:45:54 +0200 (CEST)
+Received: by lblf12 with SMTP id f12so132891772lbl.2
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 02:45:54 -0700 (PDT)
+In-Reply-To: <1979834.BYYY6Fhuui@ws-stein>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexander Stein <alexander.stein@systec-electronic.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Zeng Zhaoming <zengzm.kernel@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Filip Brozovic <fbrozovic@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds suspend/resume callbacks, which are common for each DAI.
-To be able to continue the last playback/capture after resume
-when suspend was done during a playback/capture, in the callbacks
-we do backup/restore of registers which were set before prepare stage.
-Registers to be backup/restore are defined in a backup list array.
+2015-07-22 16:58 GMT+08:00 Alexander Stein
+<alexander.stein@systec-electronic.com>:
+> On Wednesday 22 July 2015 11:27:45, Axel Lin wrote:
+>> Currently, below code actually does not update any bit because
+>> SGTL5000_SMALL_POP is 0.
+>>
+>> snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL, SGTL5000_SMALL_POP, 1);
+>>
+>> The SGTL5000_SMALL_POP should be BIT(0) rather than 0, fix it.
+>>
+>> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+>
+> I can not test this right now, but it seems appropriate.
+> Acked-By: Alexander Stein <alexander.stein@systec-electronic.com>
+>
+>> Hi,
+>> I don't have h/w and datasheet, but the code looks obvious does not make
+>> sense. Can someone help to confirm and test if this patch?
+>
+> The datasheet can be found online: http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=SGTL5000&fpsp=1&tab=Documentation_Tab
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
----
- sound/soc/mediatek/mtk-afe-common.h |  8 ----
- sound/soc/mediatek/mtk-afe-pcm.c    | 77 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/mediatek/mtk-afe-common.h b/sound/soc/mediatek/mtk-afe-common.h
-index a88b175..cc4393c 100644
---- a/sound/soc/mediatek/mtk-afe-common.h
-+++ b/sound/soc/mediatek/mtk-afe-common.h
-@@ -98,12 +98,4 @@ struct mtk_afe_memif {
- 	const struct mtk_afe_irq_data *irqdata;
- };
- 
--struct mtk_afe {
--	/* address for ioremap audio hardware register */
--	void __iomem *base_addr;
--	struct device *dev;
--	struct regmap *regmap;
--	struct mtk_afe_memif memif[MTK_AFE_MEMIF_NUM];
--	struct clk *clocks[MTK_CLK_NUM];
--};
- #endif
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index de38d2e..55471ee 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -45,18 +45,21 @@
- /* Memory interface */
- #define AFE_DL1_BASE		0x0040
- #define AFE_DL1_CUR		0x0044
-+#define AFE_DL1_END		0x0048
- #define AFE_DL2_BASE		0x0050
- #define AFE_DL2_CUR		0x0054
- #define AFE_AWB_BASE		0x0070
- #define AFE_AWB_CUR		0x007c
- #define AFE_VUL_BASE		0x0080
- #define AFE_VUL_CUR		0x008c
-+#define AFE_VUL_END		0x0088
- #define AFE_DAI_BASE		0x0090
- #define AFE_DAI_CUR		0x009c
- #define AFE_MOD_PCM_BASE	0x0330
- #define AFE_MOD_PCM_CUR		0x033c
- #define AFE_HDMI_OUT_BASE	0x0374
- #define AFE_HDMI_OUT_CUR	0x0378
-+#define AFE_HDMI_OUT_END	0x037c
- 
- #define AFE_ADDA2_TOP_CON0	0x0600
- 
-@@ -127,6 +130,34 @@ enum afe_tdm_ch_start {
- 	AFE_TDM_CH_ZERO,
- };
- 
-+static const unsigned int mtk_afe_backup_list[] = {
-+	AUDIO_TOP_CON0,
-+	AFE_CONN1,
-+	AFE_CONN2,
-+	AFE_CONN7,
-+	AFE_CONN8,
-+	AFE_DAC_CON1,
-+	AFE_DL1_BASE,
-+	AFE_DL1_END,
-+	AFE_VUL_BASE,
-+	AFE_VUL_END,
-+	AFE_HDMI_OUT_BASE,
-+	AFE_HDMI_OUT_END,
-+	AFE_HDMI_CONN0,
-+	AFE_DAC_CON0,
-+};
-+
-+struct mtk_afe {
-+	/* address for ioremap audio hardware register */
-+	void __iomem *base_addr;
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct mtk_afe_memif memif[MTK_AFE_MEMIF_NUM];
-+	struct clk *clocks[MTK_CLK_NUM];
-+	unsigned int backup_regs[ARRAY_SIZE(mtk_afe_backup_list)];
-+	bool suspended;
-+};
-+
- static const struct snd_pcm_hardware mtk_afe_hardware = {
- 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 		 SNDRV_PCM_INFO_MMAP_VALID),
-@@ -722,11 +753,53 @@ static const struct snd_soc_dai_ops mtk_afe_hdmi_ops = {
- 
- };
- 
-+static int mtk_afe_runtime_suspend(struct device *dev);
-+static int mtk_afe_runtime_resume(struct device *dev);
-+
-+static int mtk_afe_dai_suspend(struct snd_soc_dai *dai)
-+{
-+	struct mtk_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	int i;
-+
-+	dev_dbg(afe->dev, "%s\n", __func__);
-+	if (pm_runtime_status_suspended(afe->dev) || afe->suspended)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(mtk_afe_backup_list); i++)
-+		regmap_read(afe->regmap, mtk_afe_backup_list[i],
-+			    &afe->backup_regs[i]);
-+
-+	afe->suspended = true;
-+	mtk_afe_runtime_suspend(afe->dev);
-+	return 0;
-+}
-+
-+static int mtk_afe_dai_resume(struct snd_soc_dai *dai)
-+{
-+	struct mtk_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	int i = 0;
-+
-+	dev_dbg(afe->dev, "%s\n", __func__);
-+	if (pm_runtime_status_suspended(afe->dev) || !afe->suspended)
-+		return 0;
-+
-+	mtk_afe_runtime_resume(afe->dev);
-+
-+	for (i = 0; i < ARRAY_SIZE(mtk_afe_backup_list); i++)
-+		regmap_write(afe->regmap, mtk_afe_backup_list[i],
-+			     afe->backup_regs[i]);
-+
-+	afe->suspended = false;
-+	return 0;
-+}
-+
- static struct snd_soc_dai_driver mtk_afe_pcm_dais[] = {
- 	/* FE DAIs: memory intefaces to CPU */
- 	{
- 		.name = "DL1", /* downlink 1 */
- 		.id = MTK_AFE_MEMIF_DL1,
-+		.suspend = mtk_afe_dai_suspend,
-+		.resume = mtk_afe_dai_resume,
- 		.playback = {
- 			.stream_name = "DL1",
- 			.channels_min = 1,
-@@ -738,6 +811,8 @@ static struct snd_soc_dai_driver mtk_afe_pcm_dais[] = {
- 	}, {
- 		.name = "VUL", /* voice uplink */
- 		.id = MTK_AFE_MEMIF_VUL,
-+		.suspend = mtk_afe_dai_suspend,
-+		.resume = mtk_afe_dai_resume,
- 		.capture = {
- 			.stream_name = "VUL",
- 			.channels_min = 1,
-@@ -774,6 +849,8 @@ static struct snd_soc_dai_driver mtk_afe_hdmi_dais[] = {
- 	{
- 		.name = "HDMI",
- 		.id = MTK_AFE_MEMIF_HDMI,
-+		.suspend = mtk_afe_dai_suspend,
-+		.resume = mtk_afe_dai_resume,
- 		.playback = {
- 			.stream_name = "HDMI",
- 			.channels_min = 2,
--- 
-1.8.1.1.dirty
+I just checked the datasheet and confirm the SMALL_POP is BIT(0).
+Thanks,
+Axel
