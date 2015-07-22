@@ -1,20 +1,21 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: pulseaudio external mic jack detection - ASoC
- based card
-Date: Wed, 22 Jul 2015 13:35:22 +0300
-Message-ID: <1437561322.29189.1.camel@iki.fi>
-References: <CANv6ZMYHA7V9Dt0xfxS6jdy5WTbho28p=7p9ZLZNw_tsSQbmfQ@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH RFT] ASoC: sgtl5000: Fix up define for
+	SGTL5000_SMALL_POP
+Date: Wed, 22 Jul 2015 07:55:51 -0300
+Message-ID: <CAOMZO5Acm2eDaOg_Bh1O8S3r6Z=osC0Yxu_0vdk67QVbw8zqkQ@mail.gmail.com>
+References: <1437535665.17780.1.camel@ingics.com> <1979834.BYYY6Fhuui@ws-stein>
+ <CAFRkauBy06Ua6UZ1oonH9asb8pHXc045V4o-tVEGZEAMbm8MLw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CE654265268
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 12:35:25 +0200 (CEST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 0B520203BF
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 06:35:25 -0400 (EDT)
-In-Reply-To: <CANv6ZMYHA7V9Dt0xfxS6jdy5WTbho28p=7p9ZLZNw_tsSQbmfQ@mail.gmail.com>
+Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
+ [209.85.217.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id B91572606D8
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 12:55:54 +0200 (CEST)
+Received: by lbbyj8 with SMTP id yj8so134150880lbb.0
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 03:55:52 -0700 (PDT)
+In-Reply-To: <CAFRkauBy06Ua6UZ1oonH9asb8pHXc045V4o-tVEGZEAMbm8MLw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: maruthi srinivas <maruthi.srinivas.b@gmail.com>, alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Filip Brozovic <fbrozovic@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Zeng Zhaoming <zengzm.kernel@gmail.com>, Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2015-07-08 at 16:33 +0530, maruthi srinivas wrote:
-> Hi,
-> 
-> I have a issue with mic jack status in Ubuntu "sound settings"  UI. 
->  When
-> external mic is removed, UI still shows Mic.
-> When compared to HD Azalia driver, UI shouldn't show any external Mic 
-> jack
-> information, if it is removed.
-> 
-> Codec driver I use reports jack status properly and uses
-> snd_soc_jack_report().
-> /proc/interrupts, /dev/input/eventX  reflects jack activity. But the 
-> same
-> is not reflected in UI.
-> 
-> I want to know how pulseaudio detect jack status for drivers which 
-> follow
-> ALSA SoC architecture.
-> Does it read from any event from /dev/input/eventX ?
+On Wed, Jul 22, 2015 at 6:45 AM, Axel Lin <axel.lin@ingics.com> wrote:
 
-No, pulseaudio doesn't use the /dev/input devices, it reads the jack
-state from the alsa mixer interface.
+> I just checked the datasheet and confirm the SMALL_POP is BIT(0).
 
--- 
-Tanu
+Yes, this is correct:
+
+Reviewed-by: Fabio Estevam <fabio.estevam@freescale.com>
