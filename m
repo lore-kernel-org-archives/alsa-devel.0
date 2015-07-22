@@ -1,49 +1,92 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs4349: Fix up setting PWR_DWN bit
-Date: Wed, 22 Jul 2015 10:22:33 +0800
-Message-ID: <1437531753.3325.0.camel@ingics.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
- [209.85.192.172])
- by alsa0.perex.cz (Postfix) with ESMTP id BB4142605FF
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 04:22:40 +0200 (CEST)
-Received: by pdjr16 with SMTP id r16so132550976pdj.3
- for <alsa-devel@alsa-project.org>; Tue, 21 Jul 2015 19:22:39 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Tim Howe <tim.howe@cirrus.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - remove one pin from ALC292_STANDARD_PINS
+Date: Wed, 22 Jul 2015 10:33:34 +0800
+Message-ID: <1437532414-24091-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-The PWR_DWN is Bit 7, so current code does not set the PWR_DWN bit. Fix it.
+One more Dell laptop with alc293 codec needs
+ALC293_FIXUP_DELL1_MIC_NO_PRESENCE, but the pin 0x1e does not match
+the corresponding one in the ALC292_STANDARD_PINS. To use this macro
+for this machine, we need to remove pin 0x1e from it.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+BugLink: https://bugs.launchpad.net/bugs/1476888
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/codecs/cs4349.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 852be85..0d010c2 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -326,7 +326,7 @@ static int cs4349_runtime_suspend(struct device *dev)
- 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
- 	int ret;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index caba66b..ee6f13a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5430,8 +5430,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{0x15, 0x0221401f}, \
+ 	{0x1a, 0x411111f0}, \
+ 	{0x1b, 0x411111f0}, \
+-	{0x1d, 0x40700001}, \
+-	{0x1e, 0x411111f0}
++	{0x1d, 0x40700001}
  
--	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 1);
-+	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, PWR_DWN);
- 	if (ret < 0)
- 		return ret;
- 
+ #define ALC298_STANDARD_PINS \
+ 	{0x18, 0x411111f0}, \
+@@ -5690,35 +5689,48 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x13, 0x411111f0},
+ 		{0x16, 0x01014020},
+ 		{0x18, 0x411111f0},
+-		{0x19, 0x01a19030}),
++		{0x19, 0x01a19030},
++		{0x1e, 0x411111f0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0292, 0x1028, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE,
+ 		ALC292_STANDARD_PINS,
+ 		{0x12, 0x90a60140},
+ 		{0x13, 0x411111f0},
+ 		{0x16, 0x01014020},
+ 		{0x18, 0x02a19031},
+-		{0x19, 0x01a1903e}),
++		{0x19, 0x01a1903e},
++		{0x1e, 0x411111f0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0292, 0x1028, "Dell", ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
+ 		ALC292_STANDARD_PINS,
+ 		{0x12, 0x90a60140},
+ 		{0x13, 0x411111f0},
+ 		{0x16, 0x411111f0},
+ 		{0x18, 0x411111f0},
+-		{0x19, 0x411111f0}),
++		{0x19, 0x411111f0},
++		{0x1e, 0x411111f0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC292_STANDARD_PINS,
+ 		{0x12, 0x40000000},
+ 		{0x13, 0x90a60140},
+ 		{0x16, 0x21014020},
+ 		{0x18, 0x411111f0},
+-		{0x19, 0x21a19030}),
++		{0x19, 0x21a19030},
++		{0x1e, 0x411111f0}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC292_STANDARD_PINS,
+ 		{0x12, 0x40000000},
+ 		{0x13, 0x90a60140},
+ 		{0x16, 0x411111f0},
+ 		{0x18, 0x411111f0},
+-		{0x19, 0x411111f0}),
++		{0x19, 0x411111f0},
++		{0x1e, 0x411111f0}),
++	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC292_STANDARD_PINS,
++		{0x12, 0x40000000},
++		{0x13, 0x90a60140},
++		{0x16, 0x21014020},
++		{0x18, 0x411111f0},
++		{0x19, 0x21a19030},
++		{0x1e, 0x411111ff}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC298_STANDARD_PINS,
+ 		{0x12, 0x90a60130},
 -- 
-2.1.0
+1.9.1
