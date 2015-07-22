@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4349: Fix up setting PWR_DWN bit" to
-	the asoc tree
-Date: Wed, 22 Jul 2015 10:57:28 +0100
-Message-ID: <E1ZHqmG-00077W-Ms@debutante>
-References: <1437531753.3325.0.camel@ingics.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: pulseaudio external mic jack detection - ASoC
+ based card
+Date: Wed, 22 Jul 2015 13:35:22 +0300
+Message-ID: <1437561322.29189.1.camel@iki.fi>
+References: <CANv6ZMYHA7V9Dt0xfxS6jdy5WTbho28p=7p9ZLZNw_tsSQbmfQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E629426528F
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:57:39 +0200 (CEST)
-In-Reply-To: <1437531753.3325.0.camel@ingics.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CE654265268
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 12:35:25 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0B520203BF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 06:35:25 -0400 (EDT)
+In-Reply-To: <CANv6ZMYHA7V9Dt0xfxS6jdy5WTbho28p=7p9ZLZNw_tsSQbmfQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: maruthi srinivas <maruthi.srinivas.b@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 2015-07-08 at 16:33 +0530, maruthi srinivas wrote:
+> Hi,
+> 
+> I have a issue with mic jack status in Ubuntu "sound settings"  UI. 
+>  When
+> external mic is removed, UI still shows Mic.
+> When compared to HD Azalia driver, UI shouldn't show any external Mic 
+> jack
+> information, if it is removed.
+> 
+> Codec driver I use reports jack status properly and uses
+> snd_soc_jack_report().
+> /proc/interrupts, /dev/input/eventX  reflects jack activity. But the 
+> same
+> is not reflected in UI.
+> 
+> I want to know how pulseaudio detect jack status for drivers which 
+> follow
+> ALSA SoC architecture.
+> Does it read from any event from /dev/input/eventX ?
 
-   ASoC: cs4349: Fix up setting PWR_DWN bit
+No, pulseaudio doesn't use the /dev/input devices, it reads the jack
+state from the alsa mixer interface.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ec12693e5d03c7e6399ba1e9150908527b809f33 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 22 Jul 2015 10:22:33 +0800
-Subject: [PATCH] ASoC: cs4349: Fix up setting PWR_DWN bit
-
-The PWR_DWN is Bit 7, so current code does not set the PWR_DWN bit. Fix it.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs4349.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 852be858bb9f..0d010c2b6021 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -326,7 +326,7 @@ static int cs4349_runtime_suspend(struct device *dev)
- 	struct cs4349_private *cs4349 = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, 1);
-+	ret = regmap_update_bits(cs4349->regmap, CS4349_MISC, PWR_DWN, PWR_DWN);
- 	if (ret < 0)
- 		return ret;
- 
 -- 
-2.1.4
+Tanu
