@@ -1,54 +1,79 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: Re: [PATCH RFT] ASoC: sgtl5000: Fix up define for
-	SGTL5000_SMALL_POP
-Date: Wed, 22 Jul 2015 17:45:54 +0800
-Message-ID: <CAFRkauBy06Ua6UZ1oonH9asb8pHXc045V4o-tVEGZEAMbm8MLw@mail.gmail.com>
-References: <1437535665.17780.1.camel@ingics.com> <1979834.BYYY6Fhuui@ws-stein>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
- [209.85.217.181])
- by alsa0.perex.cz (Postfix) with ESMTP id C9A7C2606CA
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 11:45:54 +0200 (CEST)
-Received: by lblf12 with SMTP id f12so132891772lbl.2
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 02:45:54 -0700 (PDT)
-In-Reply-To: <1979834.BYYY6Fhuui@ws-stein>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Zeng Zhaoming <zengzm.kernel@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Filip Brozovic <fbrozovic@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt" to the asoc tree
+Date: Wed, 22 Jul 2015 10:57:30 +0100
+Message-ID: <E1ZHqmI-00078S-Lm@debutante>
+References: <1437515186-1961-1-git-send-email-benzh@chromium.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1437515186-1961-1-git-send-email-benzh@chromium.org>
+Sender: stable-owner@vger.kernel.org
+To: Ben Zhang <benzh@chromium.org>, Lars-Peter Clausen <lars@metafoo.de>, Anatol Pomozov <anatol.pomozov@gmail.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2015-07-22 16:58 GMT+08:00 Alexander Stein
-<alexander.stein@systec-electronic.com>:
-> On Wednesday 22 July 2015 11:27:45, Axel Lin wrote:
->> Currently, below code actually does not update any bit because
->> SGTL5000_SMALL_POP is 0.
->>
->> snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL, SGTL5000_SMALL_POP, 1);
->>
->> The SGTL5000_SMALL_POP should be BIT(0) rather than 0, fix it.
->>
->> Signed-off-by: Axel Lin <axel.lin@ingics.com>
->
-> I can not test this right now, but it seems appropriate.
-> Acked-By: Alexander Stein <alexander.stein@systec-electronic.com>
->
->> Hi,
->> I don't have h/w and datasheet, but the code looks obvious does not make
->> sense. Can someone help to confirm and test if this patch?
->
-> The datasheet can be found online: http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=SGTL5000&fpsp=1&tab=Documentation_Tab
+The patch
 
-I just checked the datasheet and confirm the SMALL_POP is BIT(0).
+   ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
 Thanks,
-Axel
+Mark
+
+>From a6c2a32ac83567f15e9af3dcbc73148ce68b2ced Mon Sep 17 00:00:00 2001
+From: Ben Zhang <benzh@chromium.org>
+Date: Tue, 21 Jul 2015 14:46:26 -0700
+Subject: [PATCH] ASoC: ssm4567: Keep TDM_BCLKS in ssm4567_set_dai_fmt
+
+The regmap_write in ssm4567_set_dai_fmt accidentally clears the
+TDM_BCLKS field which was set earlier by ssm4567_set_tdm_slot.
+
+This patch fixes it by using regmap_update_bits with proper mask.
+
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/ssm4567.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 938d2cb6d78b..84a4f5ad8064 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -315,7 +315,13 @@ static int ssm4567_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	if (invert_fclk)
+ 		ctrl1 |= SSM4567_SAI_CTRL_1_FSYNC;
+ 
+-	return regmap_write(ssm4567->regmap, SSM4567_REG_SAI_CTRL_1, ctrl1);
++	return regmap_update_bits(ssm4567->regmap, SSM4567_REG_SAI_CTRL_1,
++			SSM4567_SAI_CTRL_1_BCLK |
++			SSM4567_SAI_CTRL_1_FSYNC |
++			SSM4567_SAI_CTRL_1_LJ |
++			SSM4567_SAI_CTRL_1_TDM |
++			SSM4567_SAI_CTRL_1_PDM,
++			ctrl1);
+ }
+ 
+ static int ssm4567_set_power(struct ssm4567 *ssm4567, bool enable)
+-- 
+2.1.4
