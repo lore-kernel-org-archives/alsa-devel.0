@@ -1,18 +1,17 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: rt5677: Remove NULL test for desc before
- gpiod_set_value_cansleep call
-Date: Thu, 23 Jul 2015 23:32:04 +0800
-Message-ID: <1437665524.20606.8.camel@ingics.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] ASoC: tas5086: Improve the logic for
+ de-emphasis sampling rate selection
+Date: Thu, 23 Jul 2015 17:35:13 +0200
+Message-ID: <55B109B1.4000003@zonque.org>
+References: <1437664416.20606.3.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 70EDC261A8C
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:32:10 +0200 (CEST)
-Received: by pdjr16 with SMTP id r16so161605027pdj.3
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:32:09 -0700 (PDT)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 675E1260711
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:35:15 +0200 (CEST)
+In-Reply-To: <1437664416.20606.3.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's safe to call gpiod_set_value_cansleep() with NULL desc.
+On 07/23/2015 05:13 PM, Axel Lin wrote:
+> Slightly improve the logic for de-emphasis sampling rate selection by break
+> out the loop if the rate is matched.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rt5677.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+Acked-by: Daniel Mack <daniel@zonque.org>
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 016db7d..8d70911 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4763,10 +4763,8 @@ static int rt5677_remove(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
--	if (rt5677->pow_ldo2)
--		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
--	if (rt5677->reset_pin)
--		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
-+	gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+	gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 
- 	return 0;
- }
-@@ -4780,10 +4778,8 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- 		regcache_cache_only(rt5677->regmap, true);
- 		regcache_mark_dirty(rt5677->regmap);
- 
--		if (rt5677->pow_ldo2)
--			gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
--		if (rt5677->reset_pin)
--			gpiod_set_value_cansleep(rt5677->reset_pin, 0);
-+		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 	}
- 
- 	return 0;
-@@ -4794,10 +4790,8 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (!rt5677->dsp_vad_en) {
--		if (rt5677->pow_ldo2)
--			gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
--		if (rt5677->reset_pin)
--			gpiod_set_value_cansleep(rt5677->reset_pin, 1);
-+		gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
-+		gpiod_set_value_cansleep(rt5677->reset_pin, 1);
- 		if (rt5677->pow_ldo2 || rt5677->reset_pin)
- 			msleep(10);
- 
--- 
-2.1.0
+
+Thanks,
+Daniel
+
+
+> ---
+>  sound/soc/codecs/tas5086.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+> index 0a49fc8..d49d25d 100644
+> --- a/sound/soc/codecs/tas5086.c
+> +++ b/sound/soc/codecs/tas5086.c
+> @@ -266,10 +266,14 @@ static int tas5086_set_deemph(struct snd_soc_codec *codec)
+>  	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+>  	int i, val = 0;
+>  
+> -	if (priv->deemph)
+> -		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++)
+> -			if (tas5086_deemph[i] == priv->rate)
+> +	if (priv->deemph) {
+> +		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++) {
+> +			if (tas5086_deemph[i] == priv->rate) {
+>  				val = i;
+> +				break;
+> +			}
+> +		}
+> +	}
+>  
+>  	return regmap_update_bits(priv->regmap, TAS5086_SYS_CONTROL_1,
+>  				  TAS5086_DEEMPH_MASK, val);
+> 
