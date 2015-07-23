@@ -1,55 +1,53 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 4/4] ALSA: hda - Wake the codec up on hotplug
-	notify events
-Date: Thu, 23 Jul 2015 17:26:19 +0200
-Message-ID: <1437665179-9786-5-git-send-email-david.henningsson@canonical.com>
-References: <1437665179-9786-1-git-send-email-david.henningsson@canonical.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH] ASoC: tas2552: Fix off-by-one for
+	max_register setting
+Date: Thu, 23 Jul 2015 10:26:12 -0500
+Message-ID: <55B10794.50406@ti.com>
+References: <1437663364.20606.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1437665179-9786-1-git-send-email-david.henningsson@canonical.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: vinod.koul@intel.com, jani.nikula@linux.intel.com, daniel.vetter@intel.com, tiwai@suse.de, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED133260711
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:26:13 +0200 (CEST)
+In-Reply-To: <1437663364.20606.1.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbmV2ZXIgdGhlcmUgaXMgYW4gZXZlbnQgZnJvbSB0aGUgaTkxNSBkcml2ZXIsIHdha2UgdGhl
-IGNvZGVjCmFuZCByZWNoZWNrIHBsdWcvdW5wbHVnICsgRUxEIHN0YXR1cy4KClRoaXMgZml4ZXMg
-dGhlIGlzc3VlIHdpdGggbG9zdCB1bnNvbCBldmVudHMgaW4gcG93ZXIgc2F2ZSBtb2RlLAp0aGUg
-Y29kZWMgYW5kIGNvbnRyb2xsZXIgY2FuIG5vdyBzbGVlcCBpbiBEMyBhbmQgc3RpbGwga25vdyB3
-aGVuCnRoZSBIRE1JIG1vbml0b3IgaGFzIGJlZW4gY29ubmVjdGVkLgoKU2lnbmVkLW9mZi1ieTog
-RGF2aWQgSGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+Ci0tLQog
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgfCAgIDEzICsrKysrKysrKysrKy0KIDEgZmlsZSBj
-aGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwppbmRl
-eCAyZjI0MzM4Li42Y2MxNTI0IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWku
-YworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwpAQCAtMjMxNiw2ICsyMzE2LDE1IEBA
-IHN0YXRpYyB2b2lkIGhhc3dlbGxfc2V0X3Bvd2VyX3N0YXRlKHN0cnVjdCBoZGFfY29kZWMgKmNv
-ZGVjLCBoZGFfbmlkX3QgZmcsCiAJc25kX2hkYV9jb2RlY19zZXRfcG93ZXJfdG9fYWxsKGNvZGVj
-LCBmZywgcG93ZXJfc3RhdGUpOwogfQogCitzdGF0aWMgdm9pZCBpbnRlbF9ob3RwbHVnX25vdGlm
-eShzdHJ1Y3QgaGRhY19kZXZpY2UgKmRldiwgaW50IHBvcnQsCisJCQkJIGludCBwb3J0X21zdF9p
-bmRleCkKK3sKKwlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IGNvbnRhaW5lcl9vZihkZXYsIHN0
-cnVjdCBoZGFfY29kZWMsIGNvcmUpOworCWludCBwaW5fbmlkID0gaXNfdmFsbGV5dmlldyhjb2Rl
-YykgPyAweDAzIDogcG9ydCArIDB4MDQ7CisKKwljaGVja19wcmVzZW5jZV9hbmRfcmVwb3J0KGNv
-ZGVjLCBwaW5fbmlkKTsKK30KKwogc3RhdGljIGludCBwYXRjaF9nZW5lcmljX2hkbWkoc3RydWN0
-IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAJc3RydWN0IGhkbWlfc3BlYyAqc3BlYzsKQEAgLTIzNDIs
-OCArMjM1MSwxMCBAQCBzdGF0aWMgaW50IHBhdGNoX2dlbmVyaWNfaGRtaShzdHJ1Y3QgaGRhX2Nv
-ZGVjICpjb2RlYykKIAlpZiAoaXNfdmFsbGV5dmlld19wbHVzKGNvZGVjKSB8fCBpc19za3lsYWtl
-KGNvZGVjKSkKIAkJY29kZWMtPmNvcmUubGlua19wb3dlcl9jb250cm9sID0gMTsKIAotCWlmIChp
-c19oYXN3ZWxsX3BsdXMoY29kZWMpIHx8IGlzX3ZhbGxleXZpZXdfcGx1cyhjb2RlYykpCisJaWYg
-KGlzX2hhc3dlbGxfcGx1cyhjb2RlYykgfHwgaXNfdmFsbGV5dmlld19wbHVzKGNvZGVjKSkgewog
-CQljb2RlYy0+ZGVwb3BfZGVsYXkgPSAwOworCQljb2RlYy0+Y29yZS5pOTE1X2hvdHBsdWdfbm90
-aWZ5ID0gaW50ZWxfaG90cGx1Z19ub3RpZnk7CisJfQogCiAJaWYgKGhkbWlfcGFyc2VfY29kZWMo
-Y29kZWMpIDwgMCkgewogCQljb2RlYy0+c3BlYyA9IE5VTEw7Ci0tIAoxLjcuOS41CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGlu
-ZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On 07/23/2015 09:56 AM, Axel Lin wrote:
+> The latest valid register is TAS2552_VBAT_DATA.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/codecs/tas2552.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+> index 5746f8f..e34752b 100644
+> --- a/sound/soc/codecs/tas2552.h
+> +++ b/sound/soc/codecs/tas2552.h
+> @@ -42,7 +42,7 @@
+>  #define TAS2552_BOOST_APT_CTRL		0x14
+>  #define TAS2552_VER_NUM			0x16
+>  #define TAS2552_VBAT_DATA		0x19
+> -#define TAS2552_MAX_REG			0x20
+> +#define TAS2552_MAX_REG			TAS2552_VBAT_DATA
+>  
+>  /* CFG1 Register Masks */
+>  #define TAS2552_DEV_RESET		(1 << 0)
+Acked-by: Dan Murphy<dmurphy@ti.com>
+
+-- 
+------------------
+Dan Murphy
