@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xtensa: Remove unnecessary
-	snd_pcm_lib_preallocate_free_for_all()" to the asoc tree
-Date: Thu, 23 Jul 2015 17:41:50 +0100
-Message-ID: <E1ZIJZ8-0002Nh-5S@debutante>
-References: <20150723163914.GA4050@vaishali-Ideapad-Z570>
+Subject: Applied "ASoC: rl6231: add pll preset table" to the
+	asoc tree
+Date: Thu, 23 Jul 2015 17:41:51 +0100
+Message-ID: <E1ZIJZ9-0002OA-4i@debutante>
+References: <1437541755-20717-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C3C3326128B
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:41:56 +0200 (CEST)
-In-Reply-To: <20150723163914.GA4050@vaishali-Ideapad-Z570>
+ by alsa0.perex.cz (Postfix) with ESMTP id B9974265798
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:41:57 +0200 (CEST)
+In-Reply-To: <1437541755-20717-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xtensa: Remove unnecessary snd_pcm_lib_preallocate_free_for_all()
+   ASoC: rl6231: add pll preset table
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,80 @@ to this mail.
 Thanks,
 Mark
 
->From 36e914cc4bb5d1842e7c8a2e2b9b4f2935771c14 Mon Sep 17 00:00:00 2001
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Date: Thu, 23 Jul 2015 22:09:15 +0530
-Subject: [PATCH] ASoC: xtensa: Remove unnecessary
- snd_pcm_lib_preallocate_free_for_all()
+>From 213213d9d68e5fcb81a513a7d07ed6ee01294dea Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 22 Jul 2015 13:09:15 +0800
+Subject: [PATCH] ASoC: rl6231: add pll preset table
 
-The ALSA core takes care that all preallocated memory is freed
-when the PCM itself is freed. There is no need to do this
-manually in the driver.
+Currently, rl6231_pll_calc provide a working PLL parameters for
+given freq_in and freq_out. However, in some cases it is not the
+perfect parameter. For example if freq_in = 19200000 and freq_out
+ = 24576000, the calculated parameter will gengrate 24.5647 MHz
+which is not exactly the same as what we need. But the PLL can
+output 24.576 MHz as exactly what we expect if we set the best
+PLL parameter.
+To improve it, we put the best match parameters in a preset table.
+We can search the preset table first, if there is no preset parameter
+for the given freq_in and freq_out, we can still calculate a working
+PLL parameter.
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/codecs/rl6231.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index 1cfb19e12949..039f65e36fa8 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -474,11 +474,6 @@ static int xtfpga_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 						     card->dev, size, size);
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index 56650d6c2f53..96f3e906dfef 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -43,6 +43,19 @@ int rl6231_calc_dmic_clk(int rate)
  }
+ EXPORT_SYMBOL_GPL(rl6231_calc_dmic_clk);
  
--static void xtfpga_pcm_free(struct snd_pcm *pcm)
--{
--	snd_pcm_lib_preallocate_free_for_all(pcm);
--}
--
- static const struct snd_pcm_ops xtfpga_pcm_ops = {
- 	.open		= xtfpga_pcm_open,
- 	.close		= xtfpga_pcm_close,
-@@ -490,7 +485,6 @@ static const struct snd_pcm_ops xtfpga_pcm_ops = {
++struct pll_calc_map {
++	unsigned int pll_in;
++	unsigned int pll_out;
++	int k;
++	int n;
++	int m;
++	bool m_bp;
++};
++
++static const struct pll_calc_map pll_preset_table[] = {
++	{19200000,  24576000,  3, 30, 3, false},
++};
++
+ /**
+  * rl6231_pll_calc - Calcualte PLL M/N/K code.
+  * @freq_in: external clock provided to codec.
+@@ -57,7 +70,7 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 	const unsigned int freq_out, struct rl6231_pll_code *pll_code)
+ {
+ 	int max_n = RL6231_PLL_N_MAX, max_m = RL6231_PLL_M_MAX;
+-	int k, red, n_t, pll_out, in_t, out_t;
++	int i, k, red, n_t, pll_out, in_t, out_t;
+ 	int n = 0, m = 0, m_t = 0;
+ 	int red_t = abs(freq_out - freq_in);
+ 	bool bypass = false;
+@@ -65,6 +78,18 @@ int rl6231_pll_calc(const unsigned int freq_in,
+ 	if (RL6231_PLL_INP_MAX < freq_in || RL6231_PLL_INP_MIN > freq_in)
+ 		return -EINVAL;
  
- static const struct snd_soc_platform_driver xtfpga_soc_platform = {
- 	.pcm_new	= xtfpga_pcm_new,
--	.pcm_free	= xtfpga_pcm_free,
- 	.ops		= &xtfpga_pcm_ops,
- };
- 
++	for (i = 0; i < ARRAY_SIZE(pll_preset_table); i++) {
++		if (freq_in == pll_preset_table[i].pll_in &&
++			freq_out == pll_preset_table[i].pll_out) {
++			k = pll_preset_table[i].k;
++			m = pll_preset_table[i].m;
++			n = pll_preset_table[i].n;
++			bypass = pll_preset_table[i].m_bp;
++			pr_debug("Use preset PLL parameter table\n");
++			goto code_find;
++		}
++	}
++
+ 	k = 100000000 / freq_out - 2;
+ 	if (k > RL6231_PLL_K_MAX)
+ 		k = RL6231_PLL_K_MAX;
 -- 
 2.1.4
