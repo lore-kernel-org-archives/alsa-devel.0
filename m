@@ -1,7 +1,8 @@
 From: Clemens Lang <clemens.lang@bmw-carit.de>
-Subject: [PATCH 2/2] Adapt to changes in the linked list API
-Date: Thu, 23 Jul 2015 18:02:41 +0200
-Message-ID: <1437667361-23152-3-git-send-email-clemens.lang@bmw-carit.de>
+Subject: [PATCH 1/2] Replace list.h with MIT-licensed
+	implementation
+Date: Thu, 23 Jul 2015 18:02:40 +0200
+Message-ID: <1437667361-23152-2-git-send-email-clemens.lang@bmw-carit.de>
 References: <20150119143100.GH4920@ulm-bmuc496424.bmw-carit.de>
  <1437667361-23152-1-git-send-email-clemens.lang@bmw-carit.de>
 Mime-Version: 1.0
@@ -9,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bmw-carit.de (mail.bmw-carit.de [62.245.222.98])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B39A26128B
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B5512610B1
  for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:03:00 +0200 (CEST)
 In-Reply-To: <1437667361-23152-1-git-send-email-clemens.lang@bmw-carit.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,1524 +26,1386 @@ To: Jaroslav Kysela <perex@perex.cz>
 Cc: Clemens Lang <clemens.lang@bmw-carit.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The previous linked list implementation in include/list.h was taken from
+Linux 2.4.0 and is thus likely licensed under GPL-2. If one does not
+consider the implementation trivial and the license actually applies,
+that might make libasound a derivative work, invoking the GPL's viral
+effect. This would make libasound unusable for any program that is not
+licensed under a GPL-compatible license.
+
+Avoid any ambiguity in this regard by replacing the list with an
+MIT-licensed implementation with similar API originally written by Rusty
+Russell and adapted for alsa-libs. The original implementation is
+available from
+  http://ccodearchive.net/info/list.html
+
+Since the implementation uses typeof() when available, adjust configure
+to check for it.
+
+See
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085261.html
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085262.html
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085325.html
+  http://mailman.alsa-project.org/pipermail/alsa-devel/2015-January/086754.html
+for the discussion around this change.
+
 Signed-off-by: Clemens Lang <clemens.lang@bmw-carit.de>
 ---
- aserver/aserver.c            |  4 +-
- modules/mixer/simple/sbase.c | 36 +++++------------
- src/alisp/alisp.c            | 61 ++++++++--------------------
- src/async.c                  |  5 +--
- src/control/control.c        |  2 +-
- src/control/setup.c          | 10 ++---
- src/dlmisc.c                 | 16 +++-----
- src/mixer/bag.c              |  5 +--
- src/mixer/mixer.c            | 64 ++++++++++-------------------
- src/mixer/mixer_local.h      |  4 +-
- src/mixer/simple.c           |  4 +-
- src/pcm/pcm_hooks.c          | 22 +++++-----
- src/pcm/pcm_ladspa.c         | 64 +++++++++++++----------------
- src/pcm/pcm_meter.c          | 31 +++++----------
- src/pcm/pcm_share.c          | 20 ++++------
- src/shmarea.c                |  4 +-
- src/ucm/main.c               | 95 +++++++++++++-------------------------------
- src/ucm/utils.c              | 42 +++++++-------------
- 18 files changed, 164 insertions(+), 325 deletions(-)
+ configure.ac                |   1 +
+ include/ccan_build_assert.h | 154 +++++++++++
+ include/ccan_check_type.h   | 178 ++++++++++++
+ include/ccan_container_of.h | 259 ++++++++++++++++++
+ include/list.h              | 649 +++++++++++++++++++++++++++++++++++++-------
+ 5 files changed, 1138 insertions(+), 103 deletions(-)
+ create mode 100644 include/ccan_build_assert.h
+ create mode 100644 include/ccan_check_type.h
+ create mode 100644 include/ccan_container_of.h
 
-diff --git a/aserver/aserver.c b/aserver/aserver.c
-index 1579da7..696abb8 100644
---- a/aserver/aserver.c
-+++ b/aserver/aserver.c
-@@ -829,7 +829,6 @@ static int inet_pending_handler(waiter_t *waiter, unsigned short events)
- 	inet_pending_t *pdata;
- 	client_t *client;
- 	uint32_t cookie;
--	struct list_head *item;
- 	int remove = 0;
- 	if (events & POLLHUP)
- 		remove = 1;
-@@ -851,8 +850,7 @@ static int inet_pending_handler(waiter_t *waiter, unsigned short events)
- 		return 0;
- 	}
+diff --git a/configure.ac b/configure.ac
+index 9621d4e..be62b83 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -61,6 +61,7 @@ AC_CONFIG_HEADERS(include/config.h)
+ dnl Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+ AC_C_INLINE
++AC_C_TYPEOF
+ AC_HEADER_TIME
  
--	list_for_each(item, &inet_pendings) {
--		pdata = list_entry(item, inet_pending_t, list);
-+	list_for_each(&inet_pendings, pdata, list) {
- 		if (pdata->cookie == cookie)
- 			goto found;
- 	}
-diff --git a/modules/mixer/simple/sbase.c b/modules/mixer/simple/sbase.c
-index bb2f59d..838d2df 100644
---- a/modules/mixer/simple/sbase.c
-+++ b/modules/mixer/simple/sbase.c
-@@ -75,15 +75,13 @@ static void update_ranges(struct selem_base *s)
- 	static unsigned int mask[2] = { SM_CAP_PVOLUME, SM_CAP_CVOLUME };
- 	static unsigned int gmask[2] = { SM_CAP_GVOLUME, SM_CAP_GVOLUME };
- 	unsigned int dir, ok_flag;
--	struct list_head *pos;
- 	struct helem_base *helem;
- 	
- 	for (dir = 0; dir < 2; dir++) {
- 		s->dir[dir].min = 0;
- 		s->dir[dir].max = 0;
- 		ok_flag = 0;
--		list_for_each(pos, &s->helems) {
--			helem = list_entry(pos, struct helem_base, list);
-+		list_for_each(&s->helems, helem, list) {
- 			printf("min = %li, max = %li\n", helem->min, helem->max);
- 			if (helem->caps & mask[dir]) {
- 				s->dir[dir].min = helem->min;
-@@ -94,8 +92,7 @@ static void update_ranges(struct selem_base *s)
- 		}
- 		if (ok_flag)
- 			continue;
--		list_for_each(pos, &s->helems) {
--			helem = list_entry(pos, struct helem_base, list);
-+		list_for_each(&s->helems, helem, list) {
- 			if (helem->caps & gmask[dir]) {
- 				s->dir[dir].min = helem->min;
- 				s->dir[dir].max = helem->max;
-@@ -116,10 +113,8 @@ static int is_ops(snd_mixer_elem_t *elem, int dir, int cmd, int val)
- 	switch (cmd) {
- 
- 	case SM_OPS_IS_ACTIVE: {
--		struct list_head *pos;
- 		struct helem_base *helem;
--		list_for_each(pos, &s->helems) {
--			helem = list_entry(pos, struct helem_base, list);
-+		list_for_each(&s->helems, helem, list) {
- 			if (helem->inactive)
- 				return 0;
- 		}
-@@ -301,13 +296,11 @@ static int simple_event_remove(snd_hctl_elem_t *helem,
- static void selem_free(snd_mixer_elem_t *elem)
- {
- 	struct selem_base *simple = snd_mixer_elem_get_private(elem);
--	struct helem_base *hsimple;
--	struct list_head *pos, *npos;
-+	struct helem_base *hsimple, *nhsimple;
- 
- 	if (simple->selem.id)
- 		snd_mixer_selem_id_free(simple->selem.id);
--	list_for_each_safe(pos, npos, &simple->helems) {
--		hsimple = list_entry(pos, struct helem_base, list);
-+	list_for_each_safe(&simple->helems, hsimple, nhsimple, list) {
- 		free(hsimple);
- 	}
- 	free(simple);
-@@ -327,13 +320,11 @@ static int simple_event_add1(snd_mixer_class_t *class,
- 	unsigned long values;
- 	long min, max;
- 	int err, new = 0;
--	struct list_head *pos;
- 	struct bclass_sid *bsid;
- 	struct melem_sids *sid;
- 	unsigned int ui;
- 	
--	list_for_each(pos, &priv->sids) {
--		bsid = list_entry(pos, struct bclass_sid, list);
-+	list_for_each(&priv->sids, bsid, list) {
- 		for (ui = 0; ui < bsid->count; ui++) {
- 			if (bsid->sids[ui].sid == sel->sid) {
- 				sid = &bsid->sids[ui];
-@@ -458,15 +449,13 @@ static int simple_event_add(snd_mixer_class_t *class, snd_hctl_elem_t *helem)
- 	struct bclass_private *priv = snd_mixer_sbasic_get_private(class);
- 	struct bclass_selector *sel;
- 	struct helem_selector *hsel;
--	struct list_head *pos;
- 	snd_ctl_elem_iface_t iface = snd_hctl_elem_get_interface(helem);
- 	const char *name = snd_hctl_elem_get_name(helem);
- 	unsigned int index = snd_hctl_elem_get_index(helem);
- 	unsigned int ui;
- 	int err;
- 
--	list_for_each(pos, &priv->selectors) {
--		sel = list_entry(pos, struct bclass_selector, list);
-+	list_for_each(&priv->selectors, sel, list) {
- 		for (ui = 0; ui < sel->count; ui++) {
- 			hsel = &sel->selectors[ui];
- 			if (hsel->iface == iface && !strcmp(hsel->name, name) && hsel->index == index) {
-@@ -515,16 +504,13 @@ int alsa_mixer_sbasic_event(snd_mixer_class_t *class, unsigned int mask,
- static void sbasic_cpriv_free(snd_mixer_class_t *class)
- {
- 	struct bclass_private *priv = snd_mixer_sbasic_get_private(class);
--	struct bclass_selector *sel;
--	struct bclass_sid *sid;
--	struct list_head *pos, *pos1;
-+	struct bclass_selector *sel, *nsel;
-+	struct bclass_sid *sid, *nsid;
- 
--	list_for_each_safe(pos, pos1, &priv->selectors) {
--		sel = list_entry(pos, struct bclass_selector, list);
-+	list_for_each_safe(&priv->selectors, sel, nsel, list) {
- 		free(sel);
- 	}
--	list_for_each_safe(pos, pos1, &priv->sids) {
--		sid = list_entry(pos, struct bclass_sid, list);
-+	list_for_each_safe(&priv->sids, sid, nsid, list) {
- 		free(sid);
- 	}
- 	free(priv);
-diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
-index 3c61bb1..ed71282 100644
---- a/src/alisp/alisp.c
-+++ b/src/alisp/alisp.c
-@@ -257,14 +257,12 @@ static struct alisp_object * incref_tree_explicit(struct alisp_instance *instanc
- 
- static void free_objects(struct alisp_instance *instance)
- {
--	struct list_head *pos, *pos1;
--	struct alisp_object * p;
--	struct alisp_object_pair * pair;
-+	struct alisp_object * p, * pnext;
-+	struct alisp_object_pair * pair, * pairnext;
- 	int i, j;
- 
- 	for (i = 0; i < ALISP_OBJ_PAIR_HASH_SIZE; i++) {
--		list_for_each_safe(pos, pos1, &instance->setobjs_list[i]) {
--			pair = list_entry(pos, struct alisp_object_pair, list);
-+		list_for_each_safe(&instance->setobjs_list[i], pair, pairnext, list) {
- 			lisp_debug(instance, "freeing pair: '%s' -> %p", pair->name, pair->value);
- 			delete_tree(instance, pair->value);
- 			free((void *)pair->name);
-@@ -273,8 +271,7 @@ static void free_objects(struct alisp_instance *instance)
- 	}
- 	for (i = 0; i < ALISP_OBJ_PAIR_HASH_SIZE; i++)
- 		for (j = 0; j <= ALISP_OBJ_LAST_SEARCH; j++) {
--			list_for_each_safe(pos, pos1, &instance->used_objs_list[i][j]) {
--				p = list_entry(pos, struct alisp_object, list);
-+			list_for_each_safe(&instance->used_objs_list[i][j], p, pnext, list) {
- 				lisp_warn(instance, "object %p is still referenced %i times!", p, alisp_get_refs(p));
- #if 0
- 				snd_output_printf(instance->wout, ">>>> ");
-@@ -286,8 +283,7 @@ static void free_objects(struct alisp_instance *instance)
- 				delete_object(instance, p);
- 			}
- 		}
--	list_for_each_safe(pos, pos1, &instance->free_objs_list) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each_safe(&instance->free_objs_list, p, pnext, list) {
- 		list_del(&p->list);
- 		free(p);
- 		lisp_debug(instance, "freed (all) cons %p", p);
-@@ -296,11 +292,9 @@ static void free_objects(struct alisp_instance *instance)
- 
- static struct alisp_object * search_object_identifier(struct alisp_instance *instance, const char *s)
- {
--	struct list_head * pos;
- 	struct alisp_object * p;
- 
--	list_for_each(pos, &instance->used_objs_list[get_string_hash(s)][ALISP_OBJ_IDENTIFIER]) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->used_objs_list[get_string_hash(s)][ALISP_OBJ_IDENTIFIER], p, list) {
- 		if (alisp_get_refs(p) > ALISP_MAX_REFS_LIMIT)
- 			continue;
- 		if (!strcmp(p->value.s, s))
-@@ -312,11 +306,9 @@ static struct alisp_object * search_object_identifier(struct alisp_instance *ins
- 
- static struct alisp_object * search_object_string(struct alisp_instance *instance, const char *s)
- {
--	struct list_head * pos;
- 	struct alisp_object * p;
- 
--	list_for_each(pos, &instance->used_objs_list[get_string_hash(s)][ALISP_OBJ_STRING]) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->used_objs_list[get_string_hash(s)][ALISP_OBJ_STRING], p, list) {
- 		if (!strcmp(p->value.s, s)) {
- 			if (alisp_get_refs(p) > ALISP_MAX_REFS_LIMIT)
- 				continue;
-@@ -329,11 +321,9 @@ static struct alisp_object * search_object_string(struct alisp_instance *instanc
- 
- static struct alisp_object * search_object_integer(struct alisp_instance *instance, long in)
- {
--	struct list_head * pos;
- 	struct alisp_object * p;
- 
--	list_for_each(pos, &instance->used_objs_list[in & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_INTEGER]) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->used_objs_list[in & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_INTEGER], p, list) {
- 		if (p->value.i == in) {
- 			if (alisp_get_refs(p) > ALISP_MAX_REFS_LIMIT)
- 				continue;
-@@ -346,11 +336,9 @@ static struct alisp_object * search_object_integer(struct alisp_instance *instan
- 
- static struct alisp_object * search_object_float(struct alisp_instance *instance, double in)
- {
--	struct list_head * pos;
- 	struct alisp_object * p;
- 
--	list_for_each(pos, &instance->used_objs_list[(long)in & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_FLOAT]) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->used_objs_list[(long)in & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_FLOAT], p, list) {
- 		if (p->value.i == in) {
- 			if (alisp_get_refs(p) > ALISP_MAX_REFS_LIMIT)
- 				continue;
-@@ -363,11 +351,9 @@ static struct alisp_object * search_object_float(struct alisp_instance *instance
- 
- static struct alisp_object * search_object_pointer(struct alisp_instance *instance, const void *ptr)
- {
--	struct list_head * pos;
- 	struct alisp_object * p;
- 
--	list_for_each(pos, &instance->used_objs_list[(long)ptr & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_POINTER]) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->used_objs_list[(long)ptr & ALISP_OBJ_PAIR_HASH_MASK][ALISP_OBJ_POINTER], p, list) {
- 		if (p->value.ptr == ptr) {
- 			if (alisp_get_refs(p) > ALISP_MAX_REFS_LIMIT)
- 				continue;
-@@ -866,7 +852,6 @@ static int check_set_object(struct alisp_instance * instance, struct alisp_objec
- 
- static struct alisp_object_pair * set_object(struct alisp_instance *instance, struct alisp_object * name, struct alisp_object * value)
- {
--	struct list_head *pos;
- 	struct alisp_object_pair *p;
- 	const char *id;
- 
-@@ -875,8 +860,7 @@ static struct alisp_object_pair * set_object(struct alisp_instance *instance, st
- 
- 	id = name->value.s;
- 
--	list_for_each(pos, &instance->setobjs_list[get_string_hash(id)]) {
--		p = list_entry(pos, struct alisp_object_pair, list);
-+	list_for_each(&instance->setobjs_list[get_string_hash(id)], p, list) {
- 		if (!strcmp(p->name, id)) {
- 			delete_tree(instance, p->value);
- 			p->value = value;
-@@ -902,7 +886,6 @@ static struct alisp_object_pair * set_object(struct alisp_instance *instance, st
- 
- static struct alisp_object * unset_object(struct alisp_instance *instance, struct alisp_object * name)
- {
--	struct list_head *pos;
- 	struct alisp_object *res;
- 	struct alisp_object_pair *p;
- 	const char *id;
-@@ -914,8 +897,7 @@ static struct alisp_object * unset_object(struct alisp_instance *instance, struc
- 	}
- 	id = name->value.s;
- 
--	list_for_each(pos, &instance->setobjs_list[get_string_hash(id)]) {
--		p = list_entry(pos, struct alisp_object_pair, list);
-+	list_for_each(&instance->setobjs_list[get_string_hash(id)], p, list) {
- 		if (!strcmp(p->name, id)) {
- 			list_del(&p->list);
- 			res = p->value;
-@@ -931,10 +913,8 @@ static struct alisp_object * unset_object(struct alisp_instance *instance, struc
- static struct alisp_object * get_object1(struct alisp_instance *instance, const char *id)
- {
- 	struct alisp_object_pair *p;
--	struct list_head *pos;
- 
--	list_for_each(pos, &instance->setobjs_list[get_string_hash(id)]) {
--		p = list_entry(pos, struct alisp_object_pair, list);
-+	list_for_each(&instance->setobjs_list[get_string_hash(id)], p, list) {
- 		if (!strcmp(p->name, id))
- 			return p->value;
- 	}
-@@ -956,7 +936,6 @@ static struct alisp_object * replace_object(struct alisp_instance *instance, str
- {
- 	struct alisp_object_pair *p;
- 	struct alisp_object *r;
--	struct list_head *pos;
- 	const char *id;
- 
- 	if (!alisp_compare_type(name, ALISP_OBJ_IDENTIFIER) &&
-@@ -965,8 +944,7 @@ static struct alisp_object * replace_object(struct alisp_instance *instance, str
- 		return &alsa_lisp_nil;
- 	}
- 	id = name->value.s;
--	list_for_each(pos, &instance->setobjs_list[get_string_hash(id)]) {
--		p = list_entry(pos, struct alisp_object_pair, list);
-+	list_for_each(&instance->setobjs_list[get_string_hash(id)], p, list) {
- 		if (!strcmp(p->name, id)) {
- 			r = p->value;
- 			p->value = onew;
-@@ -981,7 +959,6 @@ static void dump_objects(struct alisp_instance *instance, const char *fname)
- {
- 	struct alisp_object_pair *p;
- 	snd_output_t *out;
--	struct list_head *pos;
- 	int i, err;
- 
- 	if (!strcmp(fname, "-"))
-@@ -994,8 +971,7 @@ static void dump_objects(struct alisp_instance *instance, const char *fname)
- 	}
- 
- 	for (i = 0; i < ALISP_OBJ_PAIR_HASH_SIZE; i++) {
--		list_for_each(pos, &instance->setobjs_list[i]) {
--			p = list_entry(pos, struct alisp_object_pair, list);
-+		list_for_each(&instance->setobjs_list[i], p, list) {
- 			if (alisp_compare_type(p->value, ALISP_OBJ_CONS) &&
- 			    alisp_compare_type(p->value->value.c.car, ALISP_OBJ_IDENTIFIER) &&
- 			    !strcmp(p->value->value.c.car->value.s, "lambda")) {
-@@ -1029,15 +1005,13 @@ static const char *obj_type_str(struct alisp_object * p)
- 
- static void print_obj_lists(struct alisp_instance *instance, snd_output_t *out)
- {
--	struct list_head *pos;
- 	struct alisp_object * p;
- 	int i, j;
- 
- 	snd_output_printf(out, "** used objects\n");
- 	for (i = 0; i < ALISP_OBJ_PAIR_HASH_SIZE; i++)
- 		for (j = 0; j <= ALISP_OBJ_LAST_SEARCH; j++)
--			list_for_each(pos, &instance->used_objs_list[i][j]) {
--				p = list_entry(pos, struct alisp_object, list);
-+			list_for_each(&instance->used_objs_list[i][j], p, list) {
- 				snd_output_printf(out, "**   %p (%s) (", p, obj_type_str(p));
- 				if (!alisp_compare_type(p, ALISP_OBJ_CONS))
- 					princ_object(out, p);
-@@ -1046,8 +1020,7 @@ static void print_obj_lists(struct alisp_instance *instance, snd_output_t *out)
- 				snd_output_printf(out, ") refs=%i\n", alisp_get_refs(p));
- 			}
- 	snd_output_printf(out, "** free objects\n");
--	list_for_each(pos, &instance->free_objs_list) {
--		p = list_entry(pos, struct alisp_object, list);
-+	list_for_each(&instance->free_objs_list, p, list) {
- 		snd_output_printf(out, "**   %p\n", p);
- 	}
- }
-diff --git a/src/async.c b/src/async.c
-index 98aec78..fbe2ad1 100644
---- a/src/async.c
-+++ b/src/async.c
-@@ -52,11 +52,10 @@ static LIST_HEAD(snd_async_handlers);
- static void snd_async_handler(int signo ATTRIBUTE_UNUSED, siginfo_t *siginfo, void *context ATTRIBUTE_UNUSED)
- {
- 	int fd;
--	struct list_head *i;
-+	snd_async_handler_t *h;
- 	//assert(siginfo->si_code == SI_SIGIO);
- 	fd = siginfo->si_fd;
--	list_for_each(i, &snd_async_handlers) {
--		snd_async_handler_t *h = list_entry(i, snd_async_handler_t, glist);
-+	list_for_each(&snd_async_handlers, h, glist) {
- 		if (h->fd == fd && h->callback)
- 			h->callback(h);
- 	}
-diff --git a/src/control/control.c b/src/control/control.c
-index 4a28cf6..766fc49 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -90,7 +90,7 @@ int snd_ctl_close(snd_ctl_t *ctl)
- {
- 	int err;
- 	while (!list_empty(&ctl->async_handlers)) {
--		snd_async_handler_t *h = list_entry(&ctl->async_handlers.next, snd_async_handler_t, hlist);
-+		snd_async_handler_t *h = list_entry(ctl->async_handlers.next, snd_async_handler_t, hlist);
- 		snd_async_del_handler(h);
- 	}
- 	err = ctl->ops->close(ctl);
-diff --git a/src/control/setup.c b/src/control/setup.c
-index f23bf2c..14b933a 100644
---- a/src/control/setup.c
-+++ b/src/control/setup.c
-@@ -82,12 +82,11 @@ static int free_elems(snd_sctl_t *h)
-  */
- int snd_sctl_install(snd_sctl_t *h)
- {
--	struct list_head *pos;
-+	snd_sctl_elem_t *elem;
- 	int err;
- 	unsigned int k;
- 	assert(h);
--	list_for_each(pos, &h->elems) {
--		snd_sctl_elem_t *elem = list_entry(pos, snd_sctl_elem_t, list);
-+	list_for_each(&h->elems, elem, list) {
- 		unsigned int count;
- 		snd_ctl_elem_type_t type;
- 		if (elem->lock) {
-@@ -180,11 +179,10 @@ int snd_sctl_install(snd_sctl_t *h)
-  */
- int snd_sctl_remove(snd_sctl_t *h)
- {
--	struct list_head *pos;
-+	snd_sctl_elem_t *elem;
- 	int err;
- 	assert(h);
--	list_for_each(pos, &h->elems) {
--		snd_sctl_elem_t *elem = list_entry(pos, snd_sctl_elem_t, list);
-+	list_for_each(&h->elems, elem, list) {
- 		if (elem->lock) {
- 			err = snd_ctl_elem_unlock(h->ctl, elem->id);
- 			if (err < 0) {
-diff --git a/src/dlmisc.c b/src/dlmisc.c
-index b36c48f..bb6b99f 100644
---- a/src/dlmisc.c
-+++ b/src/dlmisc.c
-@@ -226,13 +226,11 @@ static LIST_HEAD(pcm_dlobj_list);
- void *snd_dlobj_cache_get(const char *lib, const char *name,
- 			  const char *version, int verbose)
- {
--	struct list_head *p;
- 	struct dlobj_cache *c;
- 	void *func, *dlobj;
- 
- 	snd_dlobj_lock();
--	list_for_each(p, &pcm_dlobj_list) {
--		c = list_entry(p, struct dlobj_cache, list);
-+	list_for_each(&pcm_dlobj_list, c, list) {
- 		if (c->lib && lib && strcmp(c->lib, lib) != 0)
- 			continue;
- 		if (!c->lib && lib)
-@@ -287,7 +285,6 @@ void *snd_dlobj_cache_get(const char *lib, const char *name,
- 
- int snd_dlobj_cache_put(void *func)
- {
--	struct list_head *p;
- 	struct dlobj_cache *c;
- 	unsigned int refcnt;
- 
-@@ -295,8 +292,7 @@ int snd_dlobj_cache_put(void *func)
- 		return -ENOENT;
- 
- 	snd_dlobj_lock();
--	list_for_each(p, &pcm_dlobj_list) {
--		c = list_entry(p, struct dlobj_cache, list);
-+	list_for_each(&pcm_dlobj_list, c, list) {
- 		if (c->func == func) {
- 			refcnt = c->refcnt;
- 			if (c->refcnt > 0)
-@@ -311,15 +307,13 @@ int snd_dlobj_cache_put(void *func)
- 
- void snd_dlobj_cache_cleanup(void)
- {
--	struct list_head *p, *npos;
--	struct dlobj_cache *c;
-+	struct dlobj_cache *c, *nc;
- 
- 	snd_dlobj_lock();
--	list_for_each_safe(p, npos, &pcm_dlobj_list) {
--		c = list_entry(p, struct dlobj_cache, list);
-+	list_for_each_safe(&pcm_dlobj_list, c, nc, list) {
- 		if (c->refcnt)
- 			continue;
--		list_del(p);
-+		list_del(&c->list);
- 		snd_dlclose(c->dlobj);
- 		free((void *)c->name); /* shut up gcc warning */
- 		free((void *)c->lib); /* shut up gcc warning */
-diff --git a/src/mixer/bag.c b/src/mixer/bag.c
-index d88a900..576bd31 100644
---- a/src/mixer/bag.c
-+++ b/src/mixer/bag.c
-@@ -54,9 +54,8 @@ int bag_add(bag_t *bag, void *ptr)
- 
- int bag_del(bag_t *bag, void *ptr)
- {
--	struct list_head *pos;
--	list_for_each(pos, bag) {
--		bag1_t *b = list_entry(pos, bag1_t, list);
-+	bag1_t *b;
-+	list_for_each(bag, b, list) {
- 		if (b->ptr == ptr) {
- 			list_del(&b->list);
- 			free(b);
-diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
-index 3a79c8e..025be1a 100644
---- a/src/mixer/mixer.c
-+++ b/src/mixer/mixer.c
-@@ -170,16 +170,14 @@ static int hctl_event_handler(snd_hctl_t *hctl, unsigned int mask,
- 	snd_mixer_t *mixer = snd_hctl_get_callback_private(hctl);
- 	int res = 0;
- 	if (mask & SND_CTL_EVENT_MASK_ADD) {
--		struct list_head *pos;
-+		snd_mixer_class_t *c;
- 		bag_t *bag;
- 		int err = bag_new(&bag);
- 		if (err < 0)
- 			return err;
- 		snd_hctl_elem_set_callback(elem, hctl_elem_event_handler);
- 		snd_hctl_elem_set_callback_private(elem, bag);
--		list_for_each(pos, &mixer->classes) {
--			snd_mixer_class_t *c;
--			c = list_entry(pos, snd_mixer_class_t, list);
-+		list_for_each(&mixer->classes, c, list) {
- 			err = c->event(c, mask, elem, NULL);
- 			if (err < 0)
- 				res = err;
-@@ -249,13 +247,11 @@ int snd_mixer_attach_hctl(snd_mixer_t *mixer, snd_hctl_t *hctl)
-  */
- int snd_mixer_detach(snd_mixer_t *mixer, const char *name)
- {
--	struct list_head *pos;
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
-+	snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		if (strcmp(name, snd_hctl_name(s->hctl)) == 0) {
- 			snd_hctl_close(s->hctl);
--			list_del(pos);
-+			list_del(&s->list);
- 			free(s);
- 			return 0;
- 		}
-@@ -273,12 +269,10 @@ int snd_mixer_detach(snd_mixer_t *mixer, const char *name)
-  */
- int snd_mixer_detach_hctl(snd_mixer_t *mixer, snd_hctl_t *hctl)
- {
--	struct list_head *pos;
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
-+	snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		if (hctl == s->hctl) {
--			list_del(pos);
-+			list_del(&s->list);
- 			free(s);
- 			return 0;
- 		}
-@@ -295,10 +289,8 @@ int snd_mixer_detach_hctl(snd_mixer_t *mixer, snd_hctl_t *hctl)
-  */
- int snd_mixer_get_hctl(snd_mixer_t *mixer, const char *name, snd_hctl_t **hctl)
- {
--	struct list_head *pos;
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
-+	snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		if (strcmp(name, snd_hctl_name(s->hctl)) == 0) {
- 			*hctl = s->hctl;
- 			return 0;
-@@ -515,16 +507,14 @@ int snd_mixer_elem_value(snd_mixer_elem_t *elem)
-  */
- int snd_mixer_class_register(snd_mixer_class_t *class, snd_mixer_t *mixer)
- {
--	struct list_head *pos;
-+	snd_mixer_slave_t *slave;
- 	class->mixer = mixer;
- 	list_add_tail(&class->list, &mixer->classes);
- 	if (!class->event)
- 		return 0;
--	list_for_each(pos, &mixer->slaves) {
-+	list_for_each(&mixer->slaves, slave, list) {
- 		int err;
--		snd_mixer_slave_t *slave;
- 		snd_hctl_elem_t *elem;
--		slave = list_entry(pos, snd_mixer_slave_t, list);
- 		elem = snd_hctl_first_elem(slave->hctl);
- 		while (elem) {
- 			err = class->event(class, SND_CTL_EVENT_MASK_ADD, elem, NULL);
-@@ -567,11 +557,9 @@ int snd_mixer_class_unregister(snd_mixer_class_t *class)
-  */
- int snd_mixer_load(snd_mixer_t *mixer)
- {
--	struct list_head *pos;
--	list_for_each(pos, &mixer->slaves) {
-+	snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		int err;
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
- 		err = snd_hctl_load(s->hctl);
- 		if (err < 0)
- 			return err;
-@@ -585,10 +573,8 @@ int snd_mixer_load(snd_mixer_t *mixer)
-  */
- void snd_mixer_free(snd_mixer_t *mixer)
- {
--	struct list_head *pos;
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
-+	snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		snd_hctl_free(s->hctl);
- 	}
- }
-@@ -685,13 +671,11 @@ int snd_mixer_set_compare(snd_mixer_t *mixer, snd_mixer_compare_t compare)
-  */
- int snd_mixer_poll_descriptors_count(snd_mixer_t *mixer)
- {
--	struct list_head *pos;
-+	snd_mixer_slave_t *s;
- 	unsigned int c = 0;
- 	assert(mixer);
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		int n;
--		s = list_entry(pos, snd_mixer_slave_t, list);
- 		n = snd_hctl_poll_descriptors_count(s->hctl);
- 		if (n < 0)
- 			return n;
-@@ -709,13 +693,11 @@ int snd_mixer_poll_descriptors_count(snd_mixer_t *mixer)
-  */
- int snd_mixer_poll_descriptors(snd_mixer_t *mixer, struct pollfd *pfds, unsigned int space)
- {
--	struct list_head *pos;
-+	snd_mixer_slave_t *s;
- 	unsigned int count = 0;
- 	assert(mixer);
--	list_for_each(pos, &mixer->slaves) {
--		snd_mixer_slave_t *s;
-+	list_for_each(&mixer->slaves, s, list) {
- 		int n;
--		s = list_entry(pos, snd_mixer_slave_t, list);
- 		n = snd_hctl_poll_descriptors(s->hctl, pfds, space);
- 		if (n < 0)
- 			return n;
-@@ -839,13 +821,11 @@ snd_mixer_elem_t *snd_mixer_elem_prev(snd_mixer_elem_t *elem)
-  */
- int snd_mixer_handle_events(snd_mixer_t *mixer)
- {
--	struct list_head *pos;
-+	snd_mixer_slave_t *s;
- 	assert(mixer);
- 	mixer->events = 0;
--	list_for_each(pos, &mixer->slaves) {
-+	list_for_each(&mixer->slaves, s, list) {
- 		int err;
--		snd_mixer_slave_t *s;
--		s = list_entry(pos, snd_mixer_slave_t, list);
- 		err = snd_hctl_handle_events(s->hctl);
- 		if (err < 0)
- 			return err;
-diff --git a/src/mixer/mixer_local.h b/src/mixer/mixer_local.h
-index 27b4a3b..6d307d4 100644
---- a/src/mixer/mixer_local.h
-+++ b/src/mixer/mixer_local.h
-@@ -39,8 +39,8 @@ void bag_del_all(bag_t *bag);
- typedef struct list_head *bag_iterator_t;
- 
- #define bag_iterator_entry(i) (list_entry((i), bag1_t, list)->ptr)
--#define bag_for_each(pos, bag) list_for_each(pos, bag)
--#define bag_for_each_safe(pos, next, bag) list_for_each_safe(pos, next, bag)
-+#define bag_for_each(pos, bag) list_for_each_raw(bag, pos)
-+#define bag_for_each_safe(pos, next, bag) list_for_each_raw_safe(bag, pos, next)
- 
- struct _snd_mixer_class {
- 	struct list_head list;
-diff --git a/src/mixer/simple.c b/src/mixer/simple.c
-index fd9ba93..af9118d 100644
---- a/src/mixer/simple.c
-+++ b/src/mixer/simple.c
-@@ -133,12 +133,10 @@ int snd_mixer_selem_compare(const snd_mixer_elem_t *c1, const snd_mixer_elem_t *
- snd_mixer_elem_t *snd_mixer_find_selem(snd_mixer_t *mixer,
- 				       const snd_mixer_selem_id_t *id)
- {
--	struct list_head *list;
- 	snd_mixer_elem_t *e;
- 	sm_selem_t *s;
- 
--	list_for_each(list, &mixer->elems) {
--		e = list_entry(list, snd_mixer_elem_t, list);
-+	list_for_each(&mixer->elems, e, list) {
- 		if (e->type != SND_MIXER_ELEM_SIMPLE)
- 			continue;
- 		s = e->private_data;
-diff --git a/src/pcm/pcm_hooks.c b/src/pcm/pcm_hooks.c
-index ce1cf36..aa44cfd 100644
---- a/src/pcm/pcm_hooks.c
-+++ b/src/pcm/pcm_hooks.c
-@@ -79,12 +79,11 @@ static void hook_remove_dlobj(struct snd_pcm_hook_dllist *dl)
- static int snd_pcm_hooks_close(snd_pcm_t *pcm)
- {
- 	snd_pcm_hooks_t *h = pcm->private_data;
--	struct list_head *pos, *next;
-+	snd_pcm_hook_t *hook, *nhook;
- 	unsigned int k;
- 	int res = 0, err;
- 
--	list_for_each_safe(pos, next, &h->hooks[SND_PCM_HOOK_TYPE_CLOSE]) {
--		snd_pcm_hook_t *hook = list_entry(pos, snd_pcm_hook_t, list);
-+	list_for_each_safe(&h->hooks[SND_PCM_HOOK_TYPE_CLOSE], hook, nhook, list) {
- 		err = hook->func(hook);
- 		if (err < 0)
- 			res = err;
-@@ -93,14 +92,13 @@ static int snd_pcm_hooks_close(snd_pcm_t *pcm)
- 		struct list_head *hooks = &h->hooks[k];
- 		while (!list_empty(hooks)) {
- 			snd_pcm_hook_t *hook;
--			pos = hooks->next;
--			hook = list_entry(pos, snd_pcm_hook_t, list);
-+			hook = list_entry(hooks->next, snd_pcm_hook_t, list);
- 			snd_pcm_hook_remove(hook);
- 		}
- 	}
- 	while (!list_empty(&h->dllist)) {
--		pos = h->dllist.next;
--		hook_remove_dlobj(list_entry(pos, struct snd_pcm_hook_dllist, list));
-+		hook_remove_dlobj(list_entry(h->dllist.next, struct snd_pcm_hook_dllist,
-+		                             list));
- 	}
- 	err = snd_pcm_generic_close(pcm);
- 	if (err < 0)
-@@ -111,12 +109,11 @@ static int snd_pcm_hooks_close(snd_pcm_t *pcm)
- static int snd_pcm_hooks_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- {
- 	snd_pcm_hooks_t *h = pcm->private_data;
--	struct list_head *pos, *next;
-+	snd_pcm_hook_t *hook, *nhook;
- 	int err = snd_pcm_generic_hw_params(pcm, params);
- 	if (err < 0)
- 		return err;
--	list_for_each_safe(pos, next, &h->hooks[SND_PCM_HOOK_TYPE_HW_PARAMS]) {
--		snd_pcm_hook_t *hook = list_entry(pos, snd_pcm_hook_t, list);
-+	list_for_each_safe(&h->hooks[SND_PCM_HOOK_TYPE_HW_PARAMS], hook, nhook, list) {
- 		err = hook->func(hook);
- 		if (err < 0)
- 			return err;
-@@ -127,12 +124,11 @@ static int snd_pcm_hooks_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- static int snd_pcm_hooks_hw_free(snd_pcm_t *pcm)
- {
- 	snd_pcm_hooks_t *h = pcm->private_data;
--	struct list_head *pos, *next;
-+	snd_pcm_hook_t *hook, *nhook;
- 	int err = snd_pcm_generic_hw_free(pcm);
- 	if (err < 0)
- 		return err;
--	list_for_each_safe(pos, next, &h->hooks[SND_PCM_HOOK_TYPE_HW_FREE]) {
--		snd_pcm_hook_t *hook = list_entry(pos, snd_pcm_hook_t, list);
-+	list_for_each_safe(&h->hooks[SND_PCM_HOOK_TYPE_HW_FREE], hook, nhook, list) {
- 		err = hook->func(hook);
- 		if (err < 0)
- 			return err;
-diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
-index 631ee0f..02b904d 100644
---- a/src/pcm/pcm_ladspa.c
-+++ b/src/pcm/pcm_ladspa.c
-@@ -318,14 +318,14 @@ static void snd_pcm_ladspa_free_eps(snd_pcm_ladspa_eps_t *eps)
- 
- static void snd_pcm_ladspa_free_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *ladspa, int cleanup)
- {
--	struct list_head *list, *pos, *pos1, *next1;
-+	struct list_head *list;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	unsigned int idx;
- 	
- 	list = pcm->stream == SND_PCM_STREAM_PLAYBACK ? &ladspa->pplugins : &ladspa->cplugins;
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--		list_for_each_safe(pos1, next1, &plugin->instances) {
--			snd_pcm_ladspa_instance_t *instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
-+	list_for_each(list, plugin, list) {
-+		snd_pcm_ladspa_instance_t *instance, *ninstance;
-+		list_for_each_safe(&plugin->instances, instance, ninstance, list) {
- 			if (plugin->desc->deactivate)
- 				plugin->desc->deactivate(instance->handle);
- 			if (cleanup) {
-@@ -614,6 +614,7 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
- 	unsigned int depth, idx, count;
-         unsigned int in_channels;
- 	unsigned int in_ports, out_ports;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	snd_pcm_ladspa_instance_t *instance = NULL;
- 	int err;
- 	
-@@ -621,8 +622,7 @@ static int snd_pcm_ladspa_allocate_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *l
- 	in_channels = ladspa->channels > 0 ? ladspa->channels :
- 	              (pcm->stream == SND_PCM_STREAM_PLAYBACK ? pcm->channels : ladspa->plug.gen.slave->channels);
- 	depth = 0;
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
-+	list_for_each(list, plugin, list) {
-                 in_ports = snd_pcm_ladspa_count_ports(plugin, LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
-                 out_ports = snd_pcm_ladspa_count_ports(plugin, LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
- 		count = 1;
-@@ -685,7 +685,8 @@ static LADSPA_Data *snd_pcm_ladspa_allocate_zero(snd_pcm_ladspa_t *ladspa, unsig
- 
- static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *ladspa)
- {
--	struct list_head *list, *pos, *pos1;
-+	struct list_head *list;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	snd_pcm_ladspa_instance_t *instance;
- 	unsigned int channels = 16, nchannels;
- 	unsigned int ichannels, ochannels;
-@@ -706,10 +707,8 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
- 	if (pchannels == NULL)
- 	        return -ENOMEM;
- 	list = pcm->stream == SND_PCM_STREAM_PLAYBACK ? &ladspa->pplugins : &ladspa->cplugins;
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--		list_for_each(pos1, &plugin->instances) {
--			instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
-+	list_for_each(list, plugin, list) {
-+		list_for_each(&plugin->instances, instance, list) {
- 			nchannels = channels;
- 			for (idx = 0; idx < instance->input.channels.size; idx++) {
- 			        chn = instance->input.channels.array[idx];
-@@ -780,10 +779,8 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
- 	/* next loop deallocates the last output LADSPA areas and connects */
- 	/* them to ALSA areas (NULL) or dummy area ladpsa->free[1] ; */
- 	/* this algorithm might be optimized to not allocate the last LADSPA outputs */
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--		list_for_each(pos1, &plugin->instances) {
--			instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
-+	list_for_each(list, plugin, list) {
-+		list_for_each(&plugin->instances, instance, list) {
-                         for (idx = 0; idx < instance->output.channels.size; idx++) {
-         			chn = instance->output.channels.array[idx];
-                                 if (instance->output.data[idx] == pchannels[chn]) {
-@@ -805,10 +802,8 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
- #if 0
-         printf("zero[0] = %p\n", ladspa->zero[0]);
-         printf("zero[1] = %p\n", ladspa->zero[1]);
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--		list_for_each(pos1, &plugin->instances) {
--			instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
-+	list_for_each(list, plugin, list) {
-+		list_for_each(&plugin->instances, instance, list) {
-                         for (idx = 0; idx < instance->input.channels.size; idx++)
-                                 printf("%i:alloc-input%i:  data = %p, m_data = %p\n", instance->depth, idx, instance->input.data[idx], instance->input.m_data[idx]);
-                         for (idx = 0; idx < instance->output.channels.size; idx++)
-@@ -857,8 +852,8 @@ snd_pcm_ladspa_write_areas(snd_pcm_t *pcm,
- 			   snd_pcm_uframes_t *slave_sizep)
- {
- 	snd_pcm_ladspa_t *ladspa = pcm->private_data;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	snd_pcm_ladspa_instance_t *instance;
--	struct list_head *pos, *pos1;
- 	LADSPA_Data *data;
- 	unsigned int idx, chn, size1, size2;
- 	
-@@ -874,11 +869,9 @@ snd_pcm_ladspa_write_areas(snd_pcm_t *pcm,
-                 size1 = size;
-                 if (size1 > ladspa->allocated)
-                         size1 = ladspa->allocated;
--        	list_for_each(pos, &ladspa->pplugins) {
--        		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--        		list_for_each(pos1, &plugin->instances) {
--        			instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
--        			for (idx = 0; idx < instance->input.channels.size; idx++) {
-+                list_for_each(&ladspa->pplugins, plugin, list) {
-+                        list_for_each(&plugin->instances, instance, list) {
-+                                for (idx = 0; idx < instance->input.channels.size; idx++) {
-                                         chn = instance->input.channels.array[idx];
-                                         data = instance->input.data[idx];
-                                         if (data == NULL) {
-@@ -918,8 +911,8 @@ snd_pcm_ladspa_read_areas(snd_pcm_t *pcm,
- 			  snd_pcm_uframes_t *slave_sizep)
- {
- 	snd_pcm_ladspa_t *ladspa = pcm->private_data;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	snd_pcm_ladspa_instance_t *instance;
--	struct list_head *pos, *pos1;
- 	LADSPA_Data *data;
- 	unsigned int idx, chn, size1, size2;;
- 
-@@ -935,11 +928,9 @@ snd_pcm_ladspa_read_areas(snd_pcm_t *pcm,
-                 size1 = size;
-                 if (size1 > ladspa->allocated)
-                         size1 = ladspa->allocated;
--        	list_for_each(pos, &ladspa->cplugins) {
--        		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
--        		list_for_each(pos1, &plugin->instances) {
--        			instance = list_entry(pos1, snd_pcm_ladspa_instance_t, list);
--        			for (idx = 0; idx < instance->input.channels.size; idx++) {
-+                list_for_each(&ladspa->cplugins, plugin, list) {
-+                        list_for_each(&plugin->instances, instance, list) {
-+                                for (idx = 0; idx < instance->input.channels.size; idx++) {
-                                         chn = instance->input.channels.array[idx];
-                                         data = instance->input.data[idx];
-                                         if (data == NULL) {
-@@ -1020,18 +1011,17 @@ static void snd_pcm_ladspa_dump_array(snd_output_t *out,
- 
- static void snd_pcm_ladspa_plugins_dump(struct list_head *list, snd_output_t *out)
- {
--	struct list_head *pos, *pos2;
-+	snd_pcm_ladspa_plugin_t *plugin;
- 	
--	list_for_each(pos, list) {
--		snd_pcm_ladspa_plugin_t *plugin = list_entry(pos, snd_pcm_ladspa_plugin_t, list);
-+	list_for_each(list, plugin, list) {
-+		snd_pcm_ladspa_instance_t *in;
- 		snd_output_printf(out, "    Policy: %s\n", plugin->policy == SND_PCM_LADSPA_POLICY_NONE ? "none" : "duplicate");
- 		snd_output_printf(out, "    Filename: %s\n", plugin->filename);
- 		snd_output_printf(out, "    Plugin Name: %s\n", plugin->desc->Name);
- 		snd_output_printf(out, "    Plugin Label: %s\n", plugin->desc->Label);
- 		snd_output_printf(out, "    Plugin Unique ID: %lu\n", plugin->desc->UniqueID);
-                 snd_output_printf(out, "    Instances:\n");
--		list_for_each(pos2, &plugin->instances) {
--		        snd_pcm_ladspa_instance_t *in = (snd_pcm_ladspa_instance_t *) pos2;
-+		list_for_each(&plugin->instances, in, list) {
- 		        snd_output_printf(out, "      Depth: %i\n", in->depth);
- 		        snd_output_printf(out, "         InChannels: ");
-                         snd_pcm_ladspa_dump_array(out, &in->input.channels, NULL);
-diff --git a/src/pcm/pcm_meter.c b/src/pcm/pcm_meter.c
-index 034f582..39bc67d 100644
---- a/src/pcm/pcm_meter.c
-+++ b/src/pcm/pcm_meter.c
-@@ -186,11 +186,9 @@ static void *snd_pcm_meter_thread(void *data)
- 	snd_pcm_t *pcm = data;
- 	snd_pcm_meter_t *meter = pcm->private_data;
- 	snd_pcm_t *spcm = meter->gen.slave;
--	struct list_head *pos;
- 	snd_pcm_scope_t *scope;
- 	int reset;
--	list_for_each(pos, &meter->scopes) {
--		scope = list_entry(pos, snd_pcm_scope_t, list);
-+	list_for_each(&meter->scopes, scope, list) {
- 		snd_pcm_scope_enable(scope);
- 	}
- 	while (!meter->closed) {
-@@ -204,8 +202,7 @@ static void *snd_pcm_meter_thread(void *data)
- 		    (status.state != SND_PCM_STATE_DRAINING ||
- 		     spcm->stream != SND_PCM_STREAM_PLAYBACK)) {
- 			if (meter->running) {
--				list_for_each(pos, &meter->scopes) {
--					scope = list_entry(pos, snd_pcm_scope_t, list);
-+				list_for_each(&meter->scopes, scope, list) {
- 					scope->ops->stop(scope);
- 				}
- 				meter->running = 0;
-@@ -236,30 +233,26 @@ static void *snd_pcm_meter_thread(void *data)
- 			}
- 		}
- 		if (reset) {
--			list_for_each(pos, &meter->scopes) {
--				scope = list_entry(pos, snd_pcm_scope_t, list);
-+			list_for_each(&meter->scopes, scope, list) {
- 				if (scope->enabled)
- 					scope->ops->reset(scope);
- 			}
- 			continue;
- 		}
- 		if (!meter->running) {
--			list_for_each(pos, &meter->scopes) {
--				scope = list_entry(pos, snd_pcm_scope_t, list);
-+			list_for_each(&meter->scopes, scope, list) {
- 				if (scope->enabled)
- 					scope->ops->start(scope);
- 			}
- 			meter->running = 1;
- 		}
--		list_for_each(pos, &meter->scopes) {
--			scope = list_entry(pos, snd_pcm_scope_t, list);
-+		list_for_each(&meter->scopes, scope, list) {
- 			if (scope->enabled)
- 				scope->ops->update(scope);
- 		}
- 	        nanosleep(&meter->delay, NULL);
- 	}
--	list_for_each(pos, &meter->scopes) {
--		scope = list_entry(pos, snd_pcm_scope_t, list);
-+	list_for_each(&meter->scopes, scope, list) {
- 		if (scope->enabled)
- 			snd_pcm_scope_disable(scope);
- 	}
-@@ -269,16 +262,14 @@ static void *snd_pcm_meter_thread(void *data)
- static int snd_pcm_meter_close(snd_pcm_t *pcm)
- {
- 	snd_pcm_meter_t *meter = pcm->private_data;
--	struct list_head *pos, *npos;
-+	snd_pcm_scope_t *scope, *nscope;
- 	int err = 0;
- 	pthread_mutex_destroy(&meter->update_mutex);
- 	pthread_mutex_destroy(&meter->running_mutex);
- 	pthread_cond_destroy(&meter->running_cond);
- 	if (meter->gen.close_slave)
- 		err = snd_pcm_close(meter->gen.slave);
--	list_for_each_safe(pos, npos, &meter->scopes) {
--		snd_pcm_scope_t *scope;
--		scope = list_entry(pos, snd_pcm_scope_t, list);
-+	list_for_each_safe(&meter->scopes, scope, nscope, list) {
- 		snd_pcm_scope_remove(scope);
- 	}
- 	if (meter->dl_handle)
-@@ -860,12 +851,10 @@ int snd_pcm_meter_add_scope(snd_pcm_t *pcm, snd_pcm_scope_t *scope)
- snd_pcm_scope_t *snd_pcm_meter_search_scope(snd_pcm_t *pcm, const char *name)
- {
- 	snd_pcm_meter_t *meter;
--	struct list_head *pos;
-+	snd_pcm_scope_t *scope;
- 	assert(pcm->type == SND_PCM_TYPE_METER);
- 	meter = pcm->private_data;
--	list_for_each(pos, &meter->scopes) {
--		snd_pcm_scope_t *scope;
--		scope = list_entry(pos, snd_pcm_scope_t, list);
-+	list_for_each(&meter->scopes, scope, list) {
- 		if (scope->name && strcmp(scope->name, name) == 0)
- 			return scope;
- 	}
-diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
-index 4b68f1f..27c3280 100644
---- a/src/pcm/pcm_share.c
-+++ b/src/pcm/pcm_share.c
-@@ -137,7 +137,7 @@ static snd_pcm_uframes_t snd_pcm_share_slave_avail(snd_pcm_share_slave_t *slave)
- /* Return number of frames to mmap_commit the slave */
- static snd_pcm_uframes_t _snd_pcm_share_slave_forward(snd_pcm_share_slave_t *slave)
- {
--	struct list_head *i;
-+	snd_pcm_share_t *share;
- 	snd_pcm_uframes_t buffer_size;
- 	snd_pcm_sframes_t frames, safety_frames;
- 	snd_pcm_sframes_t min_frames, max_frames;
-@@ -147,8 +147,7 @@ static snd_pcm_uframes_t _snd_pcm_share_slave_forward(snd_pcm_share_slave_t *sla
- 	buffer_size = slave->pcm->buffer_size;
- 	min_frames = slave_avail;
- 	max_frames = 0;
--	list_for_each(i, &slave->clients) {
--		snd_pcm_share_t *share = list_entry(i, snd_pcm_share_t, list);
-+	list_for_each(&slave->clients, share, list) {
- 		snd_pcm_t *pcm = share->pcm;
- 		switch (share->state) {
- 		case SND_PCM_STATE_RUNNING:
-@@ -338,11 +337,10 @@ static snd_pcm_uframes_t _snd_pcm_share_missing(snd_pcm_t *pcm)
- static snd_pcm_uframes_t _snd_pcm_share_slave_missing(snd_pcm_share_slave_t *slave)
- {
- 	snd_pcm_uframes_t missing = INT_MAX;
--	struct list_head *i;
-+	snd_pcm_share_t *share;
- 	/* snd_pcm_sframes_t avail = */ snd_pcm_avail_update(slave->pcm);
- 	slave->hw_ptr = *slave->pcm->hw.ptr;
--	list_for_each(i, &slave->clients) {
--		snd_pcm_share_t *share = list_entry(i, snd_pcm_share_t, list);
-+	list_for_each(&slave->clients, share, list) {
- 		snd_pcm_t *pcm = share->pcm;
- 		snd_pcm_uframes_t m = _snd_pcm_share_missing(pcm);
- 		if (m < missing)
-@@ -1376,9 +1374,9 @@ int snd_pcm_share_open(snd_pcm_t **pcmp, const char *name, const char *sname,
- 		       snd_pcm_stream_t stream, int mode)
- {
- 	snd_pcm_t *pcm;
--	snd_pcm_share_t *share;
-+	snd_pcm_share_t *share, *sh;
- 	int err;
--	struct list_head *i;
-+	snd_pcm_share_slave_t *s;
- 	char slave_map[32] = { 0 };
- 	unsigned int k;
- 	snd_pcm_share_slave_t *slave = NULL;
-@@ -1453,8 +1451,7 @@ int snd_pcm_share_open(snd_pcm_t **pcmp, const char *name, const char *sname,
- 	}
- 
- 	Pthread_mutex_lock(&snd_pcm_share_slaves_mutex);
--	list_for_each(i, &snd_pcm_share_slaves) {
--		snd_pcm_share_slave_t *s = list_entry(i, snd_pcm_share_slave_t, list);
-+	list_for_each(&snd_pcm_share_slaves, s, list) {
- 		if (s->pcm->name && strcmp(s->pcm->name, sname) == 0) {
- 			slave = s;
- 			break;
-@@ -1502,8 +1499,7 @@ int snd_pcm_share_open(snd_pcm_t **pcmp, const char *name, const char *sname,
- 	} else {
- 		Pthread_mutex_lock(&slave->mutex);
- 		Pthread_mutex_unlock(&snd_pcm_share_slaves_mutex);
--		list_for_each(i, &slave->clients) {
--			snd_pcm_share_t *sh = list_entry(i, snd_pcm_share_t, list);
-+		list_for_each(&slave->clients, sh, list) {
- 			for (k = 0; k < sh->channels; ++k) {
- 				if (slave_map[sh->slave_channels[k]]) {
- 					SNDERR("Slave channel %d is already in use", sh->slave_channels[k]);
-diff --git a/src/shmarea.c b/src/shmarea.c
-index 071f9f3..80e0b37 100644
---- a/src/shmarea.c
-+++ b/src/shmarea.c
-@@ -98,11 +98,9 @@ void snd_shm_area_destructor(void) __attribute__ ((destructor));
- 
- void snd_shm_area_destructor(void)
- {
--	struct list_head *pos;
- 	struct snd_shm_area *area;
- 
--	list_for_each(pos, &shm_areas) {
--		area = list_entry(pos, struct snd_shm_area, list);
-+	list_for_each(&shm_areas, area, list) {
- 		shmdt(area->ptr);
- 	}
- }
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 7e44603..48d6a26 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -65,7 +65,7 @@ static int list_count(struct list_head *list)
-         struct list_head *pos;
-         int count = 0;
-         
--        list_for_each(pos, list) {
-+        list_for_each_raw(list, pos) {
-                 count += 1;
-         }
-         return count;
-@@ -282,14 +282,12 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
- 			    struct list_head *value_list2,
- 			    struct list_head *value_list3)
- {
--	struct list_head *pos;
- 	struct sequence_element *s;
- 	char *cdev = NULL;
- 	snd_ctl_t *ctl = NULL;
- 	int err = 0;
- 
--	list_for_each(pos, seq) {
--		s = list_entry(pos, struct sequence_element, list);
-+	list_for_each(seq, s, list) {
- 		switch (s->type) {
- 		case SEQUENCE_ELEMENT_TYPE_CDEV:
- 			cdev = strdup(s->data.cdev);
-@@ -406,11 +404,9 @@ static void *find0(struct list_head *list,
- 		   unsigned long soffset,
- 		   const char *match)
- {
--	struct list_head *pos;
- 	char *ptr, *str;
- 
--	list_for_each(pos, list) {
--		ptr = list_entry_offset(pos, char, offset);
-+	list_for_each_off(list, ptr, offset) {
- 		str = *((char **)(ptr + soffset));
- 		if (strcmp(str, match) == 0)
- 			return ptr;
-@@ -437,7 +433,6 @@ static int get_list0(struct list_head *list,
- {
-         char **res;
-         int cnt;
--	struct list_head *pos;
- 	char *ptr, *str1;
- 
- 	cnt = alloc_str_list(list, 1, &res);
-@@ -446,8 +441,7 @@ static int get_list0(struct list_head *list,
- 	        return cnt;
- 	}
- 	*result = (const char **)res;
--	list_for_each(pos, list) {
--		ptr = list_entry_offset(pos, char, offset);
-+	list_for_each_off(list, ptr, offset) {
- 		str1 = *((char **)(ptr + s1offset));
- 		if (str1 != NULL) {
- 		        *res = strdup(str1);
-@@ -486,7 +480,6 @@ static int get_list20(struct list_head *list,
- {
-         char **res;
-         int cnt;
--	struct list_head *pos;
- 	char *ptr, *str1, *str2;
- 
- 	cnt = alloc_str_list(list, 2, &res);
-@@ -495,8 +488,7 @@ static int get_list20(struct list_head *list,
- 	        return cnt;
- 	}
-         *result = (const char **)res;
--	list_for_each(pos, list) {
--		ptr = list_entry_offset(pos, char, offset);
-+	list_for_each_off(list, ptr, offset) {
- 		str1 = *((char **)(ptr + s1offset));
- 		if (str1 != NULL) {
- 		        *res = strdup(str1);
-@@ -547,7 +539,6 @@ static int is_devlist_supported(snd_use_case_mgr_t *uc_mgr,
- {
- 	struct dev_list_node *device;
- 	struct use_case_device *adev;
--	struct list_head *pos, *pos1;
- 	int found_ret;
- 
- 	switch (dev_list->type) {
-@@ -562,12 +553,8 @@ static int is_devlist_supported(snd_use_case_mgr_t *uc_mgr,
- 		break;
- 	}
- 
--	list_for_each(pos, &dev_list->list) {
--		device = list_entry(pos, struct dev_list_node, list);
+ dnl Checks for library functions.
+diff --git a/include/ccan_build_assert.h b/include/ccan_build_assert.h
+new file mode 100644
+index 0000000..56160a9
+--- /dev/null
++++ b/include/ccan_build_assert.h
+@@ -0,0 +1,154 @@
++/*
++ * Routines for build-time assertions
++ * Author: Rusty Russell <rusty@rustcorp.com.au>
++ * From http://ccodearchive.net/info/build_assert.html
++ * License: CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/legalcode)
++ */
++/*
++Statement of Purpose
++
++The laws of most jurisdictions throughout the world automatically confer
++exclusive Copyright and Related Rights (defined below) upon the creator and
++subsequent owner(s) (each and all, an "owner") of an original work of authorship
++and/or a database (each, a "Work").
++
++Certain owners wish to permanently relinquish those rights to a Work for the
++purpose of contributing to a commons of creative, cultural and scientific works
++("Commons") that the public can reliably and without fear of later claims of
++infringement build upon, modify, incorporate in other works, reuse and
++redistribute as freely as possible in any form whatsoever and for any purposes,
++including without limitation commercial purposes. These owners may contribute to
++the Commons to promote the ideal of a free culture and the further production of
++creative, cultural and scientific works, or to gain reputation or greater
++distribution for their Work in part through the use and efforts of others.
++
++For these and/or other purposes and motivations, and without any expectation of
++additional consideration or compensation, the person associating CC0 with a Work
++(the "Affirmer"), to the extent that he or she is an owner of Copyright and
++Related Rights in the Work, voluntarily elects to apply CC0 to the Work and
++publicly distribute the Work under its terms, with knowledge of his or her
++Copyright and Related Rights in the Work and the meaning and intended legal
++effect of CC0 on those rights.
++
++1. Copyright and Related Rights. A Work made available under CC0 may be
++   protected by copyright and related or neighboring rights ("Copyright and
++   Related Rights"). Copyright and Related Rights include, but are not limited
++   to, the following:
++
++     i. the right to reproduce, adapt, distribute, perform, display,
++        communicate, and translate a Work;
++    ii. moral rights retained by the original author(s) and/or performer(s);
++   iii. publicity and privacy rights pertaining to a person's image or likeness
++        depicted in a Work;
++    iv. rights protecting against unfair competition in regards to a Work,
++        subject to the limitations in paragraph 4(a), below;
++     v. rights protecting the extraction, dissemination, use and reuse of data
++        in a Work;
++    vi. database rights (such as those arising under Directive 96/9/EC of the
++        European Parliament and of the Council of 11 March 1996 on the legal
++        protection of databases, and under any national implementation thereof,
++        including any amended or successor version of such directive); and
++   vii. other similar, equivalent or corresponding rights throughout the world
++        based on applicable law or treaty, and any national implementations
++        thereof.
++
++2. Waiver. To the greatest extent permitted by, but not in contravention of,
++   applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and
++   unconditionally waives, abandons, and surrenders all of Affirmer's Copyright
++   and Related Rights and associated claims and causes of action, whether now
++   known or unknown (including existing as well as future claims and causes of
++   action), in the Work (i) in all territories worldwide, (ii) for the maximum
++   duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "Waiver"). Affirmer
++   makes the Waiver for the benefit of each member of the public at large and to
++   the detriment of Affirmer's heirs and successors, fully intending that such
++   Waiver shall not be subject to revocation, rescission, cancellation,
++   termination, or any other legal or equitable action to disrupt the quiet
++   enjoyment of the Work by the public as contemplated by Affirmer's express
++   Statement of Purpose.
++
++3. Public License Fallback. Should any part of the Waiver for any reason be
++   judged legally invalid or ineffective under applicable law, then the Waiver
++   shall be preserved to the maximum extent permitted taking into account
++   Affirmer's express Statement of Purpose. In addition, to the extent the
++   Waiver is so judged Affirmer hereby grants to each affected person
++   a royalty-free, non transferable, non sublicensable, non exclusive,
++   irrevocable and unconditional license to exercise Affirmer's Copyright and
++   Related Rights in the Work (i) in all territories worldwide, (ii) for the
++   maximum duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "License"). The License
++   shall be deemed effective as of the date CC0 was applied by Affirmer to the
++   Work. Should any part of the License for any reason be judged legally invalid
++   or ineffective under applicable law, such partial invalidity or
++   ineffectiveness shall not invalidate the remainder of the License, and in
++   such case Affirmer hereby affirms that he or she will not (i) exercise any of
++   his or her remaining Copyright and Related Rights in the Work or (ii) assert
++   any associated claims and causes of action with respect to the Work, in
++   either case contrary to Affirmer's express Statement of Purpose.
++
++4. Limitations and Disclaimers.
++
++   a. No trademark or patent rights held by Affirmer are waived, abandoned,
++      surrendered, licensed or otherwise affected by this document.
++
++   b. Affirmer offers the Work as-is and makes no representations or warranties
++      of any kind concerning the Work, express, implied, statutory or otherwise,
++      including without limitation warranties of title, merchantability, fitness
++      for a particular purpose, non infringement, or the absence of latent or
++      other defects, accuracy, or the present or absence of errors, whether or
++      not discoverable, all to the greatest extent permissible under applicable
++      law.
++
++   c. Affirmer disclaims responsibility for clearing rights of other persons
++      that may apply to the Work or any use thereof, including without
++      limitation any person's Copyright and Related Rights in the Work. Further,
++      Affirmer disclaims responsibility for obtaining any necessary consents,
++      permissions or other rights required for any use of the Work.
++
++   d. Affirmer understands and acknowledges that Creative Commons is not a party
++      to this document and has no duty or obligation with respect to this CC0 or
++      use of the Work.
++*/
++#ifndef CCAN_BUILD_ASSERT_H
++#define CCAN_BUILD_ASSERT_H
++
++/**
++ * BUILD_ASSERT - assert a build-time dependency.
++ * @cond: the compile-time condition which must be true.
++ *
++ * Your compile will fail if the condition isn't true, or can't be evaluated
++ * by the compiler.  This can only be used within a function.
++ *
++ * Example:
++ *	#include <stddef.h>
++ *	...
++ *	static char *foo_to_char(struct foo *foo)
++ *	{
++ *		// This code needs string to be at start of foo.
++ *		BUILD_ASSERT(offsetof(struct foo, string) == 0);
++ *		return (char *)foo;
++ *	}
++ */
++#define BUILD_ASSERT(cond) \
++	do { (void) sizeof(char [1 - 2*!(cond)]); } while(0)
++
++/**
++ * BUILD_ASSERT_OR_ZERO - assert a build-time dependency, as an expression.
++ * @cond: the compile-time condition which must be true.
++ *
++ * Your compile will fail if the condition isn't true, or can't be evaluated
++ * by the compiler.  This can be used in an expression: its value is "0".
++ *
++ * Example:
++ *	#define foo_to_char(foo)					\
++ *		 ((char *)(foo)						\
++ *		  + BUILD_ASSERT_OR_ZERO(offsetof(struct foo, string) == 0))
++ */
++#define BUILD_ASSERT_OR_ZERO(cond) \
++	(sizeof(char [1 - 2*!(cond)]) - 1)
++
++#endif /* CCAN_BUILD_ASSERT_H */
+diff --git a/include/ccan_check_type.h b/include/ccan_check_type.h
+new file mode 100644
+index 0000000..f957630
+--- /dev/null
++++ b/include/ccan_check_type.h
+@@ -0,0 +1,178 @@
++/*
++ * Routines for compile time type checking
++ * Author: Rusty Russell <rusty@rustcorp.com.au>
++ * From http://ccodearchive.net/info/check_type.html
++ * License: CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/legalcode)
++ */
++/*
++Statement of Purpose
++
++The laws of most jurisdictions throughout the world automatically confer
++exclusive Copyright and Related Rights (defined below) upon the creator and
++subsequent owner(s) (each and all, an "owner") of an original work of authorship
++and/or a database (each, a "Work").
++
++Certain owners wish to permanently relinquish those rights to a Work for the
++purpose of contributing to a commons of creative, cultural and scientific works
++("Commons") that the public can reliably and without fear of later claims of
++infringement build upon, modify, incorporate in other works, reuse and
++redistribute as freely as possible in any form whatsoever and for any purposes,
++including without limitation commercial purposes. These owners may contribute to
++the Commons to promote the ideal of a free culture and the further production of
++creative, cultural and scientific works, or to gain reputation or greater
++distribution for their Work in part through the use and efforts of others.
++
++For these and/or other purposes and motivations, and without any expectation of
++additional consideration or compensation, the person associating CC0 with a Work
++(the "Affirmer"), to the extent that he or she is an owner of Copyright and
++Related Rights in the Work, voluntarily elects to apply CC0 to the Work and
++publicly distribute the Work under its terms, with knowledge of his or her
++Copyright and Related Rights in the Work and the meaning and intended legal
++effect of CC0 on those rights.
++
++1. Copyright and Related Rights. A Work made available under CC0 may be
++   protected by copyright and related or neighboring rights ("Copyright and
++   Related Rights"). Copyright and Related Rights include, but are not limited
++   to, the following:
++
++     i. the right to reproduce, adapt, distribute, perform, display,
++        communicate, and translate a Work;
++    ii. moral rights retained by the original author(s) and/or performer(s);
++   iii. publicity and privacy rights pertaining to a person's image or likeness
++        depicted in a Work;
++    iv. rights protecting against unfair competition in regards to a Work,
++        subject to the limitations in paragraph 4(a), below;
++     v. rights protecting the extraction, dissemination, use and reuse of data
++        in a Work;
++    vi. database rights (such as those arising under Directive 96/9/EC of the
++        European Parliament and of the Council of 11 March 1996 on the legal
++        protection of databases, and under any national implementation thereof,
++        including any amended or successor version of such directive); and
++   vii. other similar, equivalent or corresponding rights throughout the world
++        based on applicable law or treaty, and any national implementations
++        thereof.
++
++2. Waiver. To the greatest extent permitted by, but not in contravention of,
++   applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and
++   unconditionally waives, abandons, and surrenders all of Affirmer's Copyright
++   and Related Rights and associated claims and causes of action, whether now
++   known or unknown (including existing as well as future claims and causes of
++   action), in the Work (i) in all territories worldwide, (ii) for the maximum
++   duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "Waiver"). Affirmer
++   makes the Waiver for the benefit of each member of the public at large and to
++   the detriment of Affirmer's heirs and successors, fully intending that such
++   Waiver shall not be subject to revocation, rescission, cancellation,
++   termination, or any other legal or equitable action to disrupt the quiet
++   enjoyment of the Work by the public as contemplated by Affirmer's express
++   Statement of Purpose.
++
++3. Public License Fallback. Should any part of the Waiver for any reason be
++   judged legally invalid or ineffective under applicable law, then the Waiver
++   shall be preserved to the maximum extent permitted taking into account
++   Affirmer's express Statement of Purpose. In addition, to the extent the
++   Waiver is so judged Affirmer hereby grants to each affected person
++   a royalty-free, non transferable, non sublicensable, non exclusive,
++   irrevocable and unconditional license to exercise Affirmer's Copyright and
++   Related Rights in the Work (i) in all territories worldwide, (ii) for the
++   maximum duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "License"). The License
++   shall be deemed effective as of the date CC0 was applied by Affirmer to the
++   Work. Should any part of the License for any reason be judged legally invalid
++   or ineffective under applicable law, such partial invalidity or
++   ineffectiveness shall not invalidate the remainder of the License, and in
++   such case Affirmer hereby affirms that he or she will not (i) exercise any of
++   his or her remaining Copyright and Related Rights in the Work or (ii) assert
++   any associated claims and causes of action with respect to the Work, in
++   either case contrary to Affirmer's express Statement of Purpose.
++
++4. Limitations and Disclaimers.
++
++   a. No trademark or patent rights held by Affirmer are waived, abandoned,
++      surrendered, licensed or otherwise affected by this document.
++
++   b. Affirmer offers the Work as-is and makes no representations or warranties
++      of any kind concerning the Work, express, implied, statutory or otherwise,
++      including without limitation warranties of title, merchantability, fitness
++      for a particular purpose, non infringement, or the absence of latent or
++      other defects, accuracy, or the present or absence of errors, whether or
++      not discoverable, all to the greatest extent permissible under applicable
++      law.
++
++   c. Affirmer disclaims responsibility for clearing rights of other persons
++      that may apply to the Work or any use thereof, including without
++      limitation any person's Copyright and Related Rights in the Work. Further,
++      Affirmer disclaims responsibility for obtaining any necessary consents,
++      permissions or other rights required for any use of the Work.
++
++   d. Affirmer understands and acknowledges that Creative Commons is not a party
++      to this document and has no duty or obligation with respect to this CC0 or
++      use of the Work.
++*/
++#ifndef CCAN_CHECK_TYPE_H
++#define CCAN_CHECK_TYPE_H
++#include "config.h"
++
++/**
++ * check_type - issue a warning or build failure if type is not correct.
++ * @expr: the expression whose type we should check (not evaluated).
++ * @type: the exact type we expect the expression to be.
++ *
++ * This macro is usually used within other macros to try to ensure that a macro
++ * argument is of the expected type.  No type promotion of the expression is
++ * done: an unsigned int is not the same as an int!
++ *
++ * check_type() always evaluates to 0.
++ *
++ * If your compiler does not support typeof, then the best we can do is fail
++ * to compile if the sizes of the types are unequal (a less complete check).
++ *
++ * Example:
++ *	// They should always pass a 64-bit value to _set_some_value!
++ *	#define set_some_value(expr)			\
++ *		_set_some_value((check_type((expr), uint64_t), (expr)))
++ */
++
++/**
++ * check_types_match - issue a warning or build failure if types are not same.
++ * @expr1: the first expression (not evaluated).
++ * @expr2: the second expression (not evaluated).
++ *
++ * This macro is usually used within other macros to try to ensure that
++ * arguments are of identical types.  No type promotion of the expressions is
++ * done: an unsigned int is not the same as an int!
++ *
++ * check_types_match() always evaluates to 0.
++ *
++ * If your compiler does not support typeof, then the best we can do is fail
++ * to compile if the sizes of the types are unequal (a less complete check).
++ *
++ * Example:
++ *	// Do subtraction to get to enclosing type, but make sure that
++ *	// pointer is of correct type for that member.
++ *	#define container_of(mbr_ptr, encl_type, mbr)			\
++ *		(check_types_match((mbr_ptr), &((encl_type *)0)->mbr),	\
++ *		 ((encl_type *)						\
++ *		  ((char *)(mbr_ptr) - offsetof(enclosing_type, mbr))))
++ */
++#if HAVE_TYPEOF
++#define check_type(expr, type)			\
++	((typeof(expr) *)0 != (type *)0)
++
++#define check_types_match(expr1, expr2)		\
++	((typeof(expr1) *)0 != (typeof(expr2) *)0)
++#else
++#include <ccan_build_assert.h>
++/* Without typeof, we can only test the sizes. */
++#define check_type(expr, type)					\
++	BUILD_ASSERT_OR_ZERO(sizeof(expr) == sizeof(type))
++
++#define check_types_match(expr1, expr2)				\
++	BUILD_ASSERT_OR_ZERO(sizeof(expr1) == sizeof(expr2))
++#endif /* HAVE_TYPEOF */
++
++#endif /* CCAN_CHECK_TYPE_H */
+diff --git a/include/ccan_container_of.h b/include/ccan_container_of.h
+new file mode 100644
+index 0000000..1d92fd9
+--- /dev/null
++++ b/include/ccan_container_of.h
+@@ -0,0 +1,259 @@
++/*
++ * Routine for upcasting
++ * Author: Rusty Russell <rusty@rustcorp.com.au>
++ * From http://ccodearchive.net/info/container_of.html
++ * License: CC0 1.0 Universal (http://creativecommons.org/publicdomain/zero/1.0/legalcode)
++ */
++/*
++Statement of Purpose
++
++The laws of most jurisdictions throughout the world automatically confer
++exclusive Copyright and Related Rights (defined below) upon the creator and
++subsequent owner(s) (each and all, an "owner") of an original work of authorship
++and/or a database (each, a "Work").
++
++Certain owners wish to permanently relinquish those rights to a Work for the
++purpose of contributing to a commons of creative, cultural and scientific works
++("Commons") that the public can reliably and without fear of later claims of
++infringement build upon, modify, incorporate in other works, reuse and
++redistribute as freely as possible in any form whatsoever and for any purposes,
++including without limitation commercial purposes. These owners may contribute to
++the Commons to promote the ideal of a free culture and the further production of
++creative, cultural and scientific works, or to gain reputation or greater
++distribution for their Work in part through the use and efforts of others.
++
++For these and/or other purposes and motivations, and without any expectation of
++additional consideration or compensation, the person associating CC0 with a Work
++(the "Affirmer"), to the extent that he or she is an owner of Copyright and
++Related Rights in the Work, voluntarily elects to apply CC0 to the Work and
++publicly distribute the Work under its terms, with knowledge of his or her
++Copyright and Related Rights in the Work and the meaning and intended legal
++effect of CC0 on those rights.
++
++1. Copyright and Related Rights. A Work made available under CC0 may be
++   protected by copyright and related or neighboring rights ("Copyright and
++   Related Rights"). Copyright and Related Rights include, but are not limited
++   to, the following:
++
++     i. the right to reproduce, adapt, distribute, perform, display,
++        communicate, and translate a Work;
++    ii. moral rights retained by the original author(s) and/or performer(s);
++   iii. publicity and privacy rights pertaining to a person's image or likeness
++        depicted in a Work;
++    iv. rights protecting against unfair competition in regards to a Work,
++        subject to the limitations in paragraph 4(a), below;
++     v. rights protecting the extraction, dissemination, use and reuse of data
++        in a Work;
++    vi. database rights (such as those arising under Directive 96/9/EC of the
++        European Parliament and of the Council of 11 March 1996 on the legal
++        protection of databases, and under any national implementation thereof,
++        including any amended or successor version of such directive); and
++   vii. other similar, equivalent or corresponding rights throughout the world
++        based on applicable law or treaty, and any national implementations
++        thereof.
++
++2. Waiver. To the greatest extent permitted by, but not in contravention of,
++   applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and
++   unconditionally waives, abandons, and surrenders all of Affirmer's Copyright
++   and Related Rights and associated claims and causes of action, whether now
++   known or unknown (including existing as well as future claims and causes of
++   action), in the Work (i) in all territories worldwide, (ii) for the maximum
++   duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "Waiver"). Affirmer
++   makes the Waiver for the benefit of each member of the public at large and to
++   the detriment of Affirmer's heirs and successors, fully intending that such
++   Waiver shall not be subject to revocation, rescission, cancellation,
++   termination, or any other legal or equitable action to disrupt the quiet
++   enjoyment of the Work by the public as contemplated by Affirmer's express
++   Statement of Purpose.
++
++3. Public License Fallback. Should any part of the Waiver for any reason be
++   judged legally invalid or ineffective under applicable law, then the Waiver
++   shall be preserved to the maximum extent permitted taking into account
++   Affirmer's express Statement of Purpose. In addition, to the extent the
++   Waiver is so judged Affirmer hereby grants to each affected person
++   a royalty-free, non transferable, non sublicensable, non exclusive,
++   irrevocable and unconditional license to exercise Affirmer's Copyright and
++   Related Rights in the Work (i) in all territories worldwide, (ii) for the
++   maximum duration provided by applicable law or treaty (including future time
++   extensions), (iii) in any current or future medium and for any number of
++   copies, and (iv) for any purpose whatsoever, including without limitation
++   commercial, advertising or promotional purposes (the "License"). The License
++   shall be deemed effective as of the date CC0 was applied by Affirmer to the
++   Work. Should any part of the License for any reason be judged legally invalid
++   or ineffective under applicable law, such partial invalidity or
++   ineffectiveness shall not invalidate the remainder of the License, and in
++   such case Affirmer hereby affirms that he or she will not (i) exercise any of
++   his or her remaining Copyright and Related Rights in the Work or (ii) assert
++   any associated claims and causes of action with respect to the Work, in
++   either case contrary to Affirmer's express Statement of Purpose.
++
++4. Limitations and Disclaimers.
++
++   a. No trademark or patent rights held by Affirmer are waived, abandoned,
++      surrendered, licensed or otherwise affected by this document.
++
++   b. Affirmer offers the Work as-is and makes no representations or warranties
++      of any kind concerning the Work, express, implied, statutory or otherwise,
++      including without limitation warranties of title, merchantability, fitness
++      for a particular purpose, non infringement, or the absence of latent or
++      other defects, accuracy, or the present or absence of errors, whether or
++      not discoverable, all to the greatest extent permissible under applicable
++      law.
++
++   c. Affirmer disclaims responsibility for clearing rights of other persons
++      that may apply to the Work or any use thereof, including without
++      limitation any person's Copyright and Related Rights in the Work. Further,
++      Affirmer disclaims responsibility for obtaining any necessary consents,
++      permissions or other rights required for any use of the Work.
++
++   d. Affirmer understands and acknowledges that Creative Commons is not a party
++      to this document and has no duty or obligation with respect to this CC0 or
++      use of the Work.
++*/
++#ifndef CCAN_CONTAINER_OF_H
++#define CCAN_CONTAINER_OF_H
++#include <stddef.h>
++
++#include "config.h"
++#include <ccan_check_type.h>
++
++/**
++ * container_of - get pointer to enclosing structure
++ * @member_ptr: pointer to the structure member
++ * @containing_type: the type this member is within
++ * @member: the name of this member within the structure.
++ *
++ * Given a pointer to a member of a structure, this macro does pointer
++ * subtraction to return the pointer to the enclosing type.
++ *
++ * Example:
++ *	struct foo {
++ *		int fielda, fieldb;
++ *		// ...
++ *	};
++ *	struct info {
++ *		int some_other_field;
++ *		struct foo my_foo;
++ *	};
++ *
++ *	static struct info *foo_to_info(struct foo *foo)
++ *	{
++ *		return container_of(foo, struct info, my_foo);
++ *	}
++ */
++#define container_of(member_ptr, containing_type, member)		\
++	 ((containing_type *)						\
++	  ((char *)(member_ptr)						\
++	   - container_off(containing_type, member))			\
++	  + check_types_match(*(member_ptr), ((containing_type *)0)->member))
++
++
++/**
++ * container_of_or_null - get pointer to enclosing structure, or NULL
++ * @member_ptr: pointer to the structure member
++ * @containing_type: the type this member is within
++ * @member: the name of this member within the structure.
++ *
++ * Given a pointer to a member of a structure, this macro does pointer
++ * subtraction to return the pointer to the enclosing type, unless it
++ * is given NULL, in which case it also returns NULL.
++ *
++ * Example:
++ *	struct foo {
++ *		int fielda, fieldb;
++ *		// ...
++ *	};
++ *	struct info {
++ *		int some_other_field;
++ *		struct foo my_foo;
++ *	};
++ *
++ *	static struct info *foo_to_info_allowing_null(struct foo *foo)
++ *	{
++ *		return container_of_or_null(foo, struct info, my_foo);
++ *	}
++ */
++static inline char *container_of_or_null_(void *member_ptr, size_t offset)
++{
++	return member_ptr ? (char *)member_ptr - offset : NULL;
++}
++#define container_of_or_null(member_ptr, containing_type, member)	\
++	((containing_type *)						\
++	 container_of_or_null_(member_ptr,				\
++			       container_off(containing_type, member))	\
++	 + check_types_match(*(member_ptr), ((containing_type *)0)->member))
++
++/**
++ * container_off - get offset to enclosing structure
++ * @containing_type: the type this member is within
++ * @member: the name of this member within the structure.
++ *
++ * Given a pointer to a member of a structure, this macro does
++ * typechecking and figures out the offset to the enclosing type.
++ *
++ * Example:
++ *	struct foo {
++ *		int fielda, fieldb;
++ *		// ...
++ *	};
++ *	struct info {
++ *		int some_other_field;
++ *		struct foo my_foo;
++ *	};
++ *
++ *	static struct info *foo_to_info(struct foo *foo)
++ *	{
++ *		size_t off = container_off(struct info, my_foo);
++ *		return (void *)((char *)foo - off);
++ *	}
++ */
++#define container_off(containing_type, member)	\
++	offsetof(containing_type, member)
++
++/**
++ * container_of_var - get pointer to enclosing structure using a variable
++ * @member_ptr: pointer to the structure member
++ * @container_var: a pointer of same type as this member's container
++ * @member: the name of this member within the structure.
++ *
++ * Given a pointer to a member of a structure, this macro does pointer
++ * subtraction to return the pointer to the enclosing type.
++ *
++ * Example:
++ *	static struct info *foo_to_i(struct foo *foo)
++ *	{
++ *		struct info *i = container_of_var(foo, i, my_foo);
++ *		return i;
++ *	}
++ */
++#if HAVE_TYPEOF
++#define container_of_var(member_ptr, container_var, member) \
++	container_of(member_ptr, typeof(*container_var), member)
++#else
++#define container_of_var(member_ptr, container_var, member)	\
++	((void *)((char *)(member_ptr)	-			\
++		  container_off_var(container_var, member)))
++#endif
++
++/**
++ * container_off_var - get offset of a field in enclosing structure
++ * @container_var: a pointer to a container structure
++ * @member: the name of a member within the structure.
++ *
++ * Given (any) pointer to a structure and a its member name, this
++ * macro does pointer subtraction to return offset of member in a
++ * structure memory layout.
++ *
++ */
++#if HAVE_TYPEOF
++#define container_off_var(var, member)		\
++	container_off(typeof(*var), member)
++#else
++#define container_off_var(var, member)			\
++	((const char *)&(var)->member - (const char *)(var))
++#endif
++
++#endif /* CCAN_CONTAINER_OF_H */
+diff --git a/include/list.h b/include/list.h
+index 4d9895f..a322361 100644
+--- a/include/list.h
++++ b/include/list.h
+@@ -1,174 +1,617 @@
+-#ifndef _LIST_H
+-#define _LIST_H
 -
--		list_for_each(pos1, &uc_mgr->active_devices) {
--			adev = list_entry(pos1, struct use_case_device,
--					    active_list);
-+	list_for_each(&dev_list->list, device, list) {
-+		list_for_each(&uc_mgr->active_devices, adev, active_list) {
- 			if (!strcmp(device->name, adev->name))
- 				return found_ret;
- 		}
-@@ -598,11 +585,8 @@ static inline struct use_case_device *
- 		    const char *device_name, int check_supported)
- {
- 	struct use_case_device *device;
--	struct list_head *pos;
--
--	list_for_each(pos, &verb->device_list) {
--		device = list_entry(pos, struct use_case_device, list);
- 
-+	list_for_each(&verb->device_list, device, list) {
- 		if (strcmp(device_name, device->name))
- 			continue;
- 
-@@ -626,11 +610,8 @@ static struct use_case_modifier *
- 		      const char *modifier_name, int check_supported)
- {
- 	struct use_case_modifier *modifier;
--	struct list_head *pos;
--
--	list_for_each(pos, &verb->modifier_list) {
--		modifier = list_entry(pos, struct use_case_modifier, list);
- 
-+	list_for_each(&verb->modifier_list, modifier, list) {
- 		if (strcmp(modifier->name, modifier_name))
- 			continue;
- 
-@@ -647,10 +628,8 @@ long device_status(snd_use_case_mgr_t *uc_mgr,
-                    const char *device_name)
- {
-         struct use_case_device *dev;
--        struct list_head *pos;
- 
--        list_for_each(pos, &uc_mgr->active_devices) {
--                dev = list_entry(pos, struct use_case_device, active_list);
-+        list_for_each(&uc_mgr->active_devices, dev, active_list) {
-                 if (strcmp(dev->name, device_name) == 0)
-                         return 1;
-         }
-@@ -661,10 +640,8 @@ long modifier_status(snd_use_case_mgr_t *uc_mgr,
-                      const char *modifier_name)
- {
-         struct use_case_modifier *mod;
--        struct list_head *pos;
- 
--        list_for_each(pos, &uc_mgr->active_modifiers) {
--                mod = list_entry(pos, struct use_case_modifier, active_list);
-+        list_for_each(&uc_mgr->active_modifiers, mod, active_list) {
-                 if (strcmp(mod->name, modifier_name) == 0)
-                         return 1;
-         }
-@@ -854,23 +831,18 @@ int snd_use_case_mgr_close(snd_use_case_mgr_t *uc_mgr)
+ /*
+- * This code was taken from the Linux 2.4.0 kernel. [jaroslav]
++ * Double linked list routines
++ * Author: Rusty Russell <rusty@rustcorp.com.au>
++ * From http://ccodearchive.net/info/list.html
++ * License: MIT
++ *
++ * Modified for use in alsa-libs by Clemens Lang <clemens.lang@bmw-carit.de>
   */
- static int dismantle_use_case(snd_use_case_mgr_t *uc_mgr)
- {
--	struct list_head *pos, *npos;
--	struct use_case_modifier *modifier;
--	struct use_case_device *device;
-+	struct use_case_modifier *modifier, *nmodifier;
-+	struct use_case_device *device, *ndevice;
- 	int err;
+-
+ /*
+- * Simple doubly linked list implementation.
+- *
+- * Some of the internal functions ("__xxx") are useful when
+- * manipulating whole lists rather than single entries, as
+- * sometimes we already know the next/prev entries and we can
+- * generate better code by using them directly rather than
+- * using the generic single-entry routines.
++Permission is hereby granted, free of charge, to any person obtaining a copy of
++this software and associated documentation files (the "Software"), to deal in
++the Software without restriction, including without limitation the rights to
++use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
++the Software, and to permit persons to whom the Software is furnished to do so,
++subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
++FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
++COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
++IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
++CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
++#ifndef CCAN_LIST_H
++#define CCAN_LIST_H
++#include <stdbool.h>
++#include <assert.h>
++#include <ccan_container_of.h>
++#include <ccan_check_type.h>
  
--	list_for_each_safe(pos, npos, &uc_mgr->active_modifiers) {
--		modifier = list_entry(pos, struct use_case_modifier,
--				      active_list);
-+	list_for_each_safe(&uc_mgr->active_modifiers, modifier, nmodifier, active_list) {
- 		err = set_modifier(uc_mgr, modifier, 0);
- 		if (err < 0)
- 			uc_error("Unable to disable modifier %s", modifier->name);
- 	}
- 	INIT_LIST_HEAD(&uc_mgr->active_modifiers);
+-#ifndef LIST_HEAD_IS_DEFINED
+-struct list_head {
++/**
++ * struct list_head - an entry in a doubly-linked list
++ * @next: next entry (self if empty)
++ * @prev: previous entry (self if empty)
++ *
++ * This is used as an entry in and head of a linked list.
++ * Example:
++ *	struct child {
++ *		const char *name;
++ *		// Linked list of all us children.
++ *		struct list_head list;
++ *	};
++ */
++struct list_head
++{
+ 	struct list_head *next, *prev;
+ };
+-#endif
  
--	list_for_each_safe(pos, npos, &uc_mgr->active_devices) {
--		device = list_entry(pos, struct use_case_device,
--				    active_list);
-+	list_for_each_safe(&uc_mgr->active_devices, device, ndevice, active_list) {
- 		err = set_device(uc_mgr, device, 0);
- 		if (err < 0)
- 			uc_error("Unable to disable device %s", device->name);
-@@ -1057,15 +1029,12 @@ static int add_values(struct list_head *list,
- {
-         struct ucm_value *v;
-         struct myvalue *val;
--        struct list_head *pos, *pos1;
-         int match;
-         
--        list_for_each(pos, source) {
--                v = list_entry(pos, struct ucm_value, list);
-+        list_for_each(source, v, list) {
-                 if (check_identifier(identifier, v->name)) {
-                         match = 0;
--                        list_for_each(pos1, list) {
--                                val = list_entry(pos1, struct myvalue, list);
-+                        list_for_each(list, val, list) {
-                                 if (strcmp(val->value, v->data) == 0) {
-                                         match = 1;
-                                         break;
-@@ -1094,8 +1063,8 @@ static int get_value_list(snd_use_case_mgr_t *uc_mgr,
-                           const char **list[],
-                           char *verbname)
- {
--        struct list_head mylist, *pos, *npos;
--        struct myvalue *val;
-+        struct list_head mylist;
-+        struct myvalue *val, *nval;
-         struct use_case_verb *verb;
-         struct use_case_device *dev;
-         struct use_case_modifier *mod;
-@@ -1116,14 +1085,12 @@ static int get_value_list(snd_use_case_mgr_t *uc_mgr,
-         err = add_values(&mylist, identifier, &verb->value_list);
-         if (err < 0)
-                 goto __fail;
--        list_for_each(pos, &verb->device_list) {
--                dev = list_entry(pos, struct use_case_device, list);
-+        list_for_each(&verb->device_list, dev, list) {
-                 err = add_values(&mylist, identifier, &dev->value_list);
-                 if (err < 0)
-                         goto __fail;
-         }
--        list_for_each(pos, &verb->modifier_list) {
--                mod = list_entry(pos, struct use_case_modifier, list);
-+        list_for_each(&verb->modifier_list, mod, list) {
-                 err = add_values(&mylist, identifier, &mod->value_list);
-                 if (err < 0)
-                         goto __fail;
-@@ -1131,8 +1098,7 @@ static int get_value_list(snd_use_case_mgr_t *uc_mgr,
-         err = alloc_str_list(&mylist, 1, &res);
-         if (err >= 0) {
- 	        *list = (const char **)res;
--                list_for_each(pos, &mylist) {
--                        val = list_entry(pos, struct myvalue, list);
-+                list_for_each(&mylist, val, list) {
-                         *res = strdup(val->value);
-                         if (*res == NULL) {
-                                 snd_use_case_free_list((const char **)res, err);
-@@ -1143,8 +1109,7 @@ static int get_value_list(snd_use_case_mgr_t *uc_mgr,
-                 }
-         }
-       __fail:
--        list_for_each_safe(pos, npos, &mylist) {
--                val = list_entry(pos, struct myvalue, list);
-+        list_for_each_safe(&mylist, val, nval, list) {
-                 list_del(&val->list);
-                 free(val);
-         }
-@@ -1241,13 +1206,11 @@ static int get_value1(char **value, struct list_head *value_list,
-                       const char *identifier)
- {
-         struct ucm_value *val;
--        struct list_head *pos;
-         
- 	if (!value_list)
- 		return -ENOENT;
++/**
++ * LIST_HEAD_INIT - initializer for an empty list_head
++ * @name: the name of the list.
++ *
++ * Explicit initializer for an empty list.
++ *
++ * See also:
++ *	LIST_HEAD, list_head_init()
++ *
++ * Example:
++ *	static struct list_head my_list = LIST_HEAD_INIT(my_list);
++ */
+ #define LIST_HEAD_INIT(name) { &(name), &(name) }
  
--        list_for_each(pos, value_list) {
--              val = list_entry(pos, struct ucm_value, list);
-+        list_for_each(value_list, val, list) {
-               if (check_identifier(identifier, val->name)) {
-                       *value = strdup(val->data);
-                       if (*value == NULL)
-@@ -1496,8 +1459,7 @@ static int handle_transition_verb(snd_use_case_mgr_t *uc_mgr,
-         struct transition_sequence *trans;
-         int err;
++/**
++ * LIST_HEAD - define and initialize an empty list_head
++ * @name: the name of the list.
++ *
++ * The LIST_HEAD macro defines a list_head and initializes it to an empty
++ * list.  It can be prepended by "static" to define a static list_head.
++ *
++ * See also:
++ *	INIT_LIST_HEAD, list_head_init()
++ *
++ * Example:
++ *	static LIST_HEAD(my_global_list);
++ */
+ #define LIST_HEAD(name) \
+ 	struct list_head name = LIST_HEAD_INIT(name)
  
--        list_for_each(pos, &uc_mgr->active_verb->transition_list) {
--                trans = list_entry(pos, struct transition_sequence, list);
-+        list_for_each(&uc_mgr->active_verb->transition_list, trans, list) {
-                 if (strcmp(trans->name, new_verb->name) == 0) {
-                         err = execute_sequence(uc_mgr, &trans->transition_list,
- 					       &uc_mgr->active_verb->value_list,
-@@ -1585,7 +1547,6 @@ static int switch_device(snd_use_case_mgr_t *uc_mgr,
+-#define INIT_LIST_HEAD(ptr) do { \
+-	(ptr)->next = (ptr); (ptr)->prev = (ptr); \
+-} while (0)
++/**
++ * list_head_init - initialize a list_head
++ * @h: the list_head to set to the empty list
++ *
++ * Example:
++ *	...
++ *	struct parent *parent = malloc(sizeof(*parent));
++ *
++ *	list_head_init(&parent->children);
++ *	parent->num_children = 0;
++ */
++static inline void list_head_init(struct list_head *h)
++{
++	h->next = h->prev = h;
++}
++#define INIT_LIST_HEAD(x) list_head_init(x)
+ 
+-/*
+- * Insert a new entry between two known consecutive entries. 
++/**
++ * list_add - add an entry at the start of a linked list.
++ * @h: the list_head to add the node to
++ * @n: the list_head to add to the list.
+  *
+- * This is only for internal list manipulation where we know
+- * the prev/next entries already!
++ * The list node does not need to be initialized; it will be overwritten.
++ * Example:
++ *	struct child *child = malloc(sizeof(*child));
++ *
++ *	child->name = "marvin";
++ *	list_add(&parent->children, &child->list);
++ *	parent->num_children++;
+  */
+-static __inline__ void __list_add(struct list_head * _new,
+-				  struct list_head * prev,
+-				  struct list_head * next)
++static inline void list_add(struct list_head *h,
++			     struct list_head *n)
  {
-         struct use_case_device *xold, *xnew;
-         struct transition_sequence *trans;
--        struct list_head *pos;
-         int err, seq_found = 0;
-         
-         if (uc_mgr->active_verb == NULL)
-@@ -1607,8 +1568,7 @@ static int switch_device(snd_use_case_mgr_t *uc_mgr,
-         if (xnew == NULL)
-                 return -ENOENT;
-         err = 0;
--        list_for_each(pos, &xold->transition_list) {
--                trans = list_entry(pos, struct transition_sequence, list);
-+        list_for_each(&xold->transition_list, trans, list) {
-                 if (strcmp(trans->name, new_device) == 0) {
-                         err = execute_sequence(uc_mgr, &trans->transition_list,
- 					       &xold->value_list,
-@@ -1659,8 +1619,7 @@ static int switch_modifier(snd_use_case_mgr_t *uc_mgr,
-         if (xnew == NULL)
-                 return -ENOENT;
-         err = 0;
--        list_for_each(pos, &xold->transition_list) {
--                trans = list_entry(pos, struct transition_sequence, list);
-+        list_for_each(&xold->transition_list, trans, list) {
-                 if (strcmp(trans->name, new_modifier) == 0) {
-                         err = execute_sequence(uc_mgr, &trans->transition_list,
- 					       &xold->value_list,
-diff --git a/src/ucm/utils.c b/src/ucm/utils.c
-index 45307b0..a6a3466 100644
---- a/src/ucm/utils.c
-+++ b/src/ucm/utils.c
-@@ -87,11 +87,9 @@ int uc_mgr_config_load(const char *file, snd_config_t **cfg)
+-	next->prev = _new;
+-	_new->next = next;
+-	_new->prev = prev;
+-	prev->next = _new;
++	n->next = h->next;
++	n->prev = h;
++	h->next->prev = n;
++	h->next = n;
+ }
  
- void uc_mgr_free_value(struct list_head *base)
+ /**
+- * list_add - add a new entry
+- * @new: new entry to be added
+- * @head: list head to add it after
++ * list_add_tail - add an entry at the end of a linked list.
++ * @n: the list_head to add to the list.
++ * @h: the list_head to add the node to
+  *
+- * Insert a new entry after the specified head.
+- * This is good for implementing stacks.
++ * The list node does not need to be initialized; it will be overwritten.
++ * Example:
++ *	list_add_tail(&child->list, &parent->children);
++ *	parent->num_children++;
+  */
+-static __inline__ void list_add(struct list_head *_new, struct list_head *head)
++static inline void list_add_tail(struct list_head *n,
++				  struct list_head *h)
  {
--	struct list_head *pos, *npos;
--	struct ucm_value *val;
-+	struct ucm_value *val, *nval;
- 	
--	list_for_each_safe(pos, npos, base) {
--		val = list_entry(pos, struct ucm_value, list);
-+	list_for_each_safe(base, val, nval, list) {
- 		free(val->name);
- 		free(val->data);
- 		list_del(&val->list);
-@@ -101,11 +99,9 @@ void uc_mgr_free_value(struct list_head *base)
+-	__list_add(_new, head, head->next);
++	n->next = h;
++	n->prev = h->prev;
++	h->prev->next = n;
++	h->prev = n;
+ }
  
- void uc_mgr_free_dev_list(struct dev_list *dev_list)
+ /**
+- * list_add_tail - add a new entry
+- * @new: new entry to be added
+- * @head: list head to add it before
++ * list_empty - is a list empty?
++ * @h: the list_head
++ *
++ * If the list is empty, returns true.
+  *
+- * Insert a new entry before the specified head.
+- * This is useful for implementing queues.
++ * Example:
++ *	assert(list_empty(&parent->children) == (parent->num_children == 0));
+  */
+-static __inline__ void list_add_tail(struct list_head *_new, struct list_head *head)
++static inline bool list_empty(const struct list_head *h)
  {
--	struct list_head *pos, *npos;
--	struct dev_list_node *dlist;
-+	struct dev_list_node *dlist, *ndlist;
- 	
--	list_for_each_safe(pos, npos, &dev_list->list) {
--		dlist = list_entry(pos, struct dev_list_node, list);
-+	list_for_each_safe(&dev_list->list, dlist, ndlist, list) {
- 		free(dlist->name);
- 		list_del(&dlist->list);
- 		free(dlist);
-@@ -129,11 +125,9 @@ void uc_mgr_free_sequence_element(struct sequence_element *seq)
+-	__list_add(_new, head->prev, head);
++	return h->next == h;
+ }
  
- void uc_mgr_free_sequence(struct list_head *base)
+-/*
+- * Delete a list entry by making the prev/next entries
+- * point to each other.
++/**
++ * list_del - delete an entry from an (unknown) linked list.
++ * @n: the list_head to delete from the list.
+  *
+- * This is only for internal list manipulation where we know
+- * the prev/next entries already!
++ * Note that this leaves @n in an undefined state; it can be added to
++ * another list, but not deleted again.
++ *
++ * See also:
++ *	list_del_from(), list_del_init()
++ *
++ * Example:
++ *	list_del(&child->list);
++ *	parent->num_children--;
+  */
+-static __inline__ void __list_del(struct list_head * prev,
+-				  struct list_head * next)
++static inline void list_del(struct list_head *n)
  {
--	struct list_head *pos, *npos;
--	struct sequence_element *seq;
-+	struct sequence_element *seq, *nseq;
- 	
--	list_for_each_safe(pos, npos, base) {
--		seq = list_entry(pos, struct sequence_element, list);
-+	list_for_each_safe(base, seq, nseq, list) {
- 		list_del(&seq->list);
- 		uc_mgr_free_sequence_element(seq);
- 	}
-@@ -148,11 +142,9 @@ void uc_mgr_free_transition_element(struct transition_sequence *tseq)
+-	next->prev = prev;
+-	prev->next = next;
++	n->next->prev = n->prev;
++	n->prev->next = n->next;
+ }
  
- void uc_mgr_free_transition(struct list_head *base)
+ /**
+- * list_del - deletes entry from list.
+- * @entry: the element to delete from the list.
+- * Note: list_empty on entry does not return true after this, the entry is in an undefined state.
++ * list_del_init - delete a node, and reset it so it can be deleted again.
++ * @n: the list_head to be deleted.
++ *
++ * list_del(@n) or list_del_init() again after this will be safe,
++ * which can be useful in some cases.
++ *
++ * See also:
++ *	list_del_from(), list_del()
++ *
++ * Example:
++ *	list_del_init(&child->list);
++ *	parent->num_children--;
+  */
+-static __inline__ void list_del(struct list_head *entry)
++static inline void list_del_init(struct list_head *n)
  {
--	struct list_head *pos, *npos;
--	struct transition_sequence *tseq;
-+	struct transition_sequence *tseq, *ntseq;
- 	
--	list_for_each_safe(pos, npos, base) {
--		tseq = list_entry(pos, struct transition_sequence, list);
-+	list_for_each_safe(base, tseq, ntseq, list) {
- 		list_del(&tseq->list);
- 		uc_mgr_free_transition_element(tseq);
- 	}
-@@ -160,11 +152,9 @@ void uc_mgr_free_transition(struct list_head *base)
+-	__list_del(entry->prev, entry->next);
++	list_del(n);
++	list_head_init(n);
+ }
  
- void uc_mgr_free_modifier(struct list_head *base)
+ /**
+- * list_del_init - deletes entry from list and reinitialize it.
+- * @entry: the element to delete from the list.n 
++ * list_del_from - delete an entry from a known linked list.
++ * @h: the list_head the node is in.
++ * @n: the list_head to delete from the list.
++ *
++ * This explicitly indicates which list a node is expected to be in,
++ * which is better documentation and can catch more bugs.
++ *
++ * See also: list_del()
++ *
++ * Example:
++ *	list_del_from(&parent->children, &child->list);
++ *	parent->num_children--;
+  */
+-static __inline__ void list_del_init(struct list_head *entry)
++static inline void list_del_from(struct list_head *h, struct list_head *n)
  {
--	struct list_head *pos, *npos;
--	struct use_case_modifier *mod;
-+	struct use_case_modifier *mod, *nmod;
- 	
--	list_for_each_safe(pos, npos, base) {
--		mod = list_entry(pos, struct use_case_modifier, list);
-+	list_for_each_safe(base, mod, nmod, list) {
- 		free(mod->name);
- 		free(mod->comment);
- 		uc_mgr_free_sequence(&mod->enable_list);
-@@ -179,11 +169,9 @@ void uc_mgr_free_modifier(struct list_head *base)
+-	__list_del(entry->prev, entry->next);
+-	INIT_LIST_HEAD(entry); 
++	/* Quick test that catches a surprising number of bugs. */
++	assert(!list_empty(h));
++	list_del(n);
+ }
  
- void uc_mgr_free_device(struct list_head *base)
+ /**
+- * list_empty - tests whether a list is empty
+- * @head: the list to test.
++ * list_entry - convert a list_head back into the structure containing it.
++ * @n: the list_head
++ * @type: the type of the entry
++ * @member: the list_head member of the type
++ *
++ * Example:
++ *	// First list entry is children.next; convert back to child.
++ *	child = list_entry(parent->children.next, struct child, list);
++ *
++ * See Also:
++ *	list_top(), list_for_each()
++ */
++#define list_entry(n, type, member) container_of(n, type, member)
++
++/**
++ * list_top - get the first entry in a list
++ * @h: the list_head
++ * @type: the type of the entry
++ * @member: the list_head member of the type
++ *
++ * If the list is empty, returns NULL.
++ *
++ * Example:
++ *	struct child *first;
++ *	first = list_top(&parent->children, struct child, list);
++ *	if (!first)
++ *		printf("Empty list!\n");
+  */
+-static __inline__ int list_empty(struct list_head *head)
++#define list_top(h, type, member)					\
++	((type *)list_top_((h), list_off_(type, member)))
++
++static inline const void *list_top_(const struct list_head *h, size_t off)
  {
--	struct list_head *pos, *npos;
--	struct use_case_device *dev;
-+	struct use_case_device *dev, *ndev;
- 	
--	list_for_each_safe(pos, npos, base) {
--		dev = list_entry(pos, struct use_case_device, list);
-+	list_for_each_safe(base, dev, ndev, list) {
- 		free(dev->name);
- 		free(dev->comment);
- 		uc_mgr_free_sequence(&dev->enable_list);
-@@ -198,11 +186,9 @@ void uc_mgr_free_device(struct list_head *base)
+-	return head->next == head;
++	if (list_empty(h))
++		return NULL;
++	return (const char *)h->next - off;
+ }
  
- void uc_mgr_free_verb(snd_use_case_mgr_t *uc_mgr)
+ /**
+- * list_splice - join two lists
+- * @list: the new list to add.
+- * @head: the place to add it in the first list.
++ * list_pop - remove the first entry in a list
++ * @h: the list_head
++ * @type: the type of the entry
++ * @member: the list_head member of the type
++ *
++ * If the list is empty, returns NULL.
++ *
++ * Example:
++ *	struct child *one;
++ *	one = list_pop(&parent->children, struct child, list);
++ *	if (!one)
++ *		printf("Empty list!\n");
+  */
+-static __inline__ void list_splice(struct list_head *list, struct list_head *head)
++#define list_pop(h, type, member)					\
++	((type *)list_pop_((h), list_off_(type, member)))
++
++static inline const void *list_pop_(const struct list_head *h, size_t off)
  {
--	struct list_head *pos, *npos;
--	struct use_case_verb *verb;
-+	struct use_case_verb *verb, *nverb;
+-	struct list_head *first = list->next;
++	struct list_head *n;
  
--	list_for_each_safe(pos, npos, &uc_mgr->verb_list) {
--		verb = list_entry(pos, struct use_case_verb, list);
-+	list_for_each_safe(&uc_mgr->verb_list, verb, nverb, list) {
- 		free(verb->name);
- 		free(verb->comment);
- 		uc_mgr_free_sequence(&verb->enable_list);
+-	if (first != list) {
+-		struct list_head *last = list->prev;
+-		struct list_head *at = head->next;
++	if (list_empty(h))
++		return NULL;
++	n = h->next;
++	list_del(n);
++	return (const char *)n - off;
++}
+ 
+-		first->prev = head;
+-		head->next = first;
++/**
++ * list_tail - get the last entry in a list
++ * @h: the list_head
++ * @type: the type of the entry
++ * @member: the list_head member of the type
++ *
++ * If the list is empty, returns NULL.
++ *
++ * Example:
++ *	struct child *last;
++ *	last = list_tail(&parent->children, struct child, list);
++ *	if (!last)
++ *		printf("Empty list!\n");
++ */
++#define list_tail(h, type, member) \
++	((type *)list_tail_((h), list_off_(type, member)))
+ 
+-		last->next = at;
+-		at->prev = last;
+-	}
++static inline const void *list_tail_(const struct list_head *h, size_t off)
++{
++	if (list_empty(h))
++		return NULL;
++	return (const char *)h->prev - off;
+ }
+ 
+ /**
+- * list_for_each	-	iterate over a list
+- * @pos:	the &struct list_head to use as a loop counter.
+- * @head:	the head for your list.
++ * list_for_each - iterate through a list.
++ * @h: the list_head (warning: evaluated multiple times!)
++ * @i: the structure containing the list_head
++ * @member: the list_head member of the structure
++ *
++ * This is a convenient wrapper to iterate @i over the entire list.  It's
++ * a for loop, so you can break and continue as normal.
++ *
++ * Example:
++ *	list_for_each(&parent->children, child, list)
++ *		printf("Name: %s\n", child->name);
++ */
++#define list_for_each(h, i, member)					\
++	list_for_each_off(h, i, list_off_var_(i, member))
++
++/**
++ * list_for_each_raw - iterate through a list and return the list node struct
++ * rather than the list element.
++ * @h: the list_head (warning: evaluated multiple times!)
++ * @i: the structure containing the list_head
++ *
++ * This is a convenient wrapper to iterate @i over the entire list.  It's
++ * a for loop, so you can break and continue as normal.
++ *
++ * Example:
++ *	struct list_head *node;
++ *	list_for_each_raw(&parent->children, node) {
++ *		struct child *child = list_entry(node, struct child, list);
++ *		printf("Name: %s\n", child->name);
++ *	}
++ */
++#define list_for_each_raw(h, i)						\
++	for (i = (h)->next; i != (h); i = (h)->next)
++
++/**
++ * list_for_each_rev - iterate through a list backwards.
++ * @h: the list_head
++ * @i: the structure containing the list_head
++ * @member: the list_head member of the structure
++ *
++ * This is a convenient wrapper to iterate @i over the entire list.  It's
++ * a for loop, so you can break and continue as normal.
++ *
++ * Example:
++ *	list_for_each_rev(&parent->children, child, list)
++ *		printf("Name: %s\n", child->name);
+  */
+-#define list_for_each(pos, head) \
+-	for (pos = (head)->next ; pos != (head); pos = pos->next)
++#define list_for_each_rev(h, i, member)					\
++	for (i = container_of_var((h)->prev, i, member);		\
++	     &i->member != (h);					\
++	     i = container_of_var(i->member.prev, i, member))
+ 
+ /**
+- * list_for_each_safe	-	iterate over a list safely (actual pointer can be invalidated)
+- * @pos:	the &struct list_head to use as a loop counter.
+- * @next:	the &struct list_head to use to save next.
+- * @head:	the head for your list.
++ * list_for_each_safe - iterate through a list, maybe during deletion
++ * @h: the list_head
++ * @i: the structure containing the list_head
++ * @nxt: the structure containing the list_head
++ * @member: the list_head member of the structure
++ *
++ * This is a convenient wrapper to iterate @i over the entire list.  It's
++ * a for loop, so you can break and continue as normal.  The extra variable
++ * @nxt is used to hold the next element, so you can delete @i from the list.
++ *
++ * Example:
++ *	struct child *next;
++ *	list_for_each_safe(&parent->children, child, next, list) {
++ *		list_del(&child->list);
++ *		parent->num_children--;
++ *	}
+  */
+-#define list_for_each_safe(pos, npos, head) \
+-	for (pos = (head)->next, npos = pos->next ; pos != (head); pos = npos, npos = pos->next)
++#define list_for_each_safe(h, i, nxt, member)				\
++	list_for_each_safe_off(h, i, nxt, list_off_var_(i, member))
+ 
+ /**
+- * list_entry - get the struct for this entry
+- * @ptr:	the &struct list_head pointer.
+- * @type:	the type of the struct this is embedded in.
+- * @member:	the name of the list_struct within the struct.
++ * list_for_each_raw_safe - iterate through a list, maybe during deletion, and
++ * return the list node struct rather than the list element.
++ * @h: the list_head
++ * @i: the structure containing the list_head
++ * @nxt: the structure containing the list_head
++ *
++ * This is a convenient wrapper to iterate @i over the entire list.  It's
++ * a for loop, so you can break and continue as normal.  The extra variable
++ * @nxt is used to hold the next element, so you can delete @i from the list.
++ *
++ * Example:
++ *	struct list_head *node;
++ *	struct list_head *next;
++ *	list_for_each_raw_safe(&parent->children, node, next) {
++ *		struct child *child = list_entry(node, struct child, list);
++ *		printf("deleting Name: %s\n", child->name);
++ *		list_del(node);
++ *	}
+  */
+-#define list_entry(ptr, type, member) \
+-	((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
++#define list_for_each_raw_safe(h, i, nxt)				\
++	for (i = (h)->next, nxt = i->next;				\
++	     i != (h); i = nxt, nxt = i->next)
+ 
+ /**
+- * list_entry - get the struct for this entry
+- * @ptr:	the &struct list_head pointer.
+- * @type:	the type of the struct this is embedded in.
+- * @offset:	offset of entry inside a struct
++ * list_next - get the next entry in a list
++ * @h: the list_head
++ * @i: a pointer to an entry in the list.
++ * @member: the list_head member of the structure
++ *
++ * If @i was the last entry in the list, returns NULL.
++ *
++ * Example:
++ *	struct child *second;
++ *	second = list_next(&parent->children, first, list);
++ *	if (!second)
++ *		printf("No second child!\n");
++ */
++#define list_next(h, i, member)						\
++	((list_typeof(i))list_entry_or_null(h,				\
++					    (i)->member.next,		\
++					    list_off_var_((i), member)))
++
++/**
++ * list_prev - get the previous entry in a list
++ * @h: the list_head
++ * @i: a pointer to an entry in the list.
++ * @member: the list_head member of the structure
++ *
++ * If @i was the first entry in the list, returns NULL.
++ *
++ * Example:
++ *	first = list_prev(&parent->children, second, list);
++ *	if (!first)
++ *		printf("Can't go back to first child?!\n");
+  */
+-#define list_entry_offset(ptr, type, offset) \
+-	((type *)((char *)(ptr)-(offset)))
++#define list_prev(h, i, member)						\
++	((list_typeof(i))list_entry_or_null(h,				\
++					    (i)->member.prev,		\
++					    list_off_var_((i), member)))
++
++/**
++ * list_append_list - empty one list onto the end of another.
++ * @to: the list to append into
++ * @from: the list to empty.
++ *
++ * This takes the entire contents of @from and moves it to the end of
++ * @to.  After this @from will be empty.
++ *
++ * Example:
++ *	struct list_head adopter;
++ *
++ *	list_append_list(&adopter, &parent->children);
++ *	assert(list_empty(&parent->children));
++ *	parent->num_children = 0;
++ */
++static inline void list_append_list_(struct list_head *to,
++				     struct list_head *from)
++{
++	struct list_head *from_tail = from->prev;
++	struct list_head *to_tail = to->prev;
++
++	/* Sew in head and entire list. */
++	to->prev = from_tail;
++	from_tail->next = to;
++	to_tail->next = from;
++	from->prev = to_tail;
++
++	/* Now remove head. */
++	list_del(from);
++	list_head_init(from);
++}
++
++/**
++ * list_prepend_list - empty one list into the start of another.
++ * @to: the list to prepend into
++ * @from: the list to empty.
++ *
++ * This takes the entire contents of @from and moves it to the start
++ * of @to.  After this @from will be empty.
++ *
++ * Example:
++ *	list_prepend_list(&adopter, &parent->children);
++ *	assert(list_empty(&parent->children));
++ *	parent->num_children = 0;
++ */
++static inline void list_prepend_list_(struct list_head *to,
++				      struct list_head *from)
++{
++	struct list_head *from_tail = from->prev;
++	struct list_head *to_head = to->next;
++
++	/* Sew in head and entire list. */
++	to->next = from;
++	from->prev = to;
++	to_head->prev = from_tail;
++	from_tail->next = to_head;
+ 
+-#endif /* _LIST_H */
++	/* Now remove head. */
++	list_del(from);
++	list_head_init(from);
++}
++
++/**
++ * list_for_each_off - iterate through a list of memory regions.
++ * @h: the list_head
++ * @i: the pointer to a memory region wich contains list node data.
++ * @off: offset(relative to @i) at which list node data resides.
++ *
++ * This is a low-level wrapper to iterate @i over the entire list, used to
++ * implement all oher, more high-level, for-each constructs. It's a for loop,
++ * so you can break and continue as normal.
++ *
++ * WARNING! Being the low-level macro that it is, this wrapper doesn't know
++ * nor care about the type of @i. The only assumtion made is that @i points
++ * to a chunk of memory that at some @offset, relative to @i, contains a
++ * properly filled `struct node_list' which in turn contains pointers to
++ * memory chunks and it's turtles all the way down. Whith all that in mind
++ * remember that given the wrong pointer/offset couple this macro will
++ * happilly churn all you memory untill SEGFAULT stops it, in other words
++ * caveat emptor.
++ *
++ * It is worth mentioning that one of legitimate use-cases for that wrapper
++ * is operation on opaque types with known offset for `struct list_head'
++ * member(preferably 0), because it allows you not to disclose the type of
++ * @i.
++ *
++ * Example:
++ *	list_for_each_off(&parent->children, child,
++ *				offsetof(struct child, list))
++ *		printf("Name: %s\n", child->name);
++ */
++#define list_for_each_off(h, i, off)                                    \
++    for (i = list_node_to_off_((h)->next, (off));                         \
++       list_node_from_off_((void *)i, (off)) != (h);                      \
++       i = list_node_to_off_(list_node_from_off_((void *)i, (off))->next, \
++                             (off)))
++
++/**
++ * list_for_each_safe_off - iterate through a list of memory regions, maybe
++ * during deletion
++ * @h: the list_head
++ * @i: the pointer to a memory region wich contains list node data.
++ * @nxt: the structure containing the list_head
++ * @off: offset(relative to @i) at which list node data resides.
++ *
++ * For details see `list_for_each_off' and `list_for_each_safe'
++ * descriptions.
++ *
++ * Example:
++ *	list_for_each_safe_off(&parent->children, child,
++ *		next, offsetof(struct child, list))
++ *		printf("Name: %s\n", child->name);
++ */
++#define list_for_each_safe_off(h, i, nxt, off)                          \
++	for (i = list_node_to_off_((h)->next, (off)),			\
++         nxt = list_node_to_off_(list_node_from_off_(i, (off))->next,   \
++                                 (off));                                \
++       list_node_from_off_(i, (off)) != (h);                            \
++       i = nxt,                                                         \
++         nxt = list_node_to_off_(list_node_from_off_(i, (off))->next,   \
++                                 (off)))
++
++
++/* Other -off variants. */
++#define list_entry_off(n, type, off)		\
++	((type *)list_node_from_off_((n), (off)))
++
++#define list_head_off(h, type, off)		\
++	((type *)list_head_off((h), (off)))
++
++#define list_tail_off(h, type, off)		\
++	((type *)list_tail_((h), (off)))
++
++#define list_add_off(h, n, off)                 \
++	list_add((h), list_node_from_off_((n), (off)))
++
++#define list_del_off(n, off)                    \
++	list_del(list_node_from_off_((n), (off)))
++
++#define list_del_from_off(h, n, off)			\
++	list_del_from(h, list_node_from_off_((n), (off)))
++
++/* Offset helper functions so we only single-evaluate. */
++static inline void *list_node_to_off_(struct list_head *node, size_t off)
++{
++	return (void *)((char *)node - off);
++}
++static inline struct list_head *list_node_from_off_(void *ptr, size_t off)
++{
++	return (struct list_head *)((char *)ptr + off);
++}
++
++/* Get the offset of the member, but make sure it's a list_head. */
++#define list_off_(type, member)					\
++	(container_off(type, member) +				\
++	 check_type(((type *)0)->member, struct list_head))
++
++#define list_off_var_(var, member)			\
++	(container_off_var(var, member) +		\
++	 check_type(var->member, struct list_head))
++
++#if HAVE_TYPEOF
++#define list_typeof(var) typeof(var)
++#else
++#define list_typeof(var) void *
++#endif
++
++/* Returns member, or NULL if at end of list. */
++static inline void *list_entry_or_null(const struct list_head *h,
++				       const struct list_head *n,
++				       size_t off)
++{
++	if (n == h)
++		return NULL;
++	return (char *)n - off;
++}
++#endif /* CCAN_LIST_H */
 -- 
 2.1.0
