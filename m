@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: tas5086: Improve the logic for
- de-emphasis sampling rate selection
-Date: Thu, 23 Jul 2015 23:13:36 +0800
-Message-ID: <1437664416.20606.3.camel@ingics.com>
+Subject: [PATCH 1/2] ASoC: pcm1681: Fix setting de-emphasis
+ sampling rate selection
+Date: Thu, 23 Jul 2015 23:22:26 +0800
+Message-ID: <1437664946.20606.5.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
- [209.85.220.44])
- by alsa0.perex.cz (Postfix) with ESMTP id D7B582606F9
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:13:42 +0200 (CEST)
-Received: by pabkd10 with SMTP id kd10so87056798pab.2
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:13:41 -0700 (PDT)
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3061D2606F9
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:22:33 +0200 (CEST)
+Received: by pachj5 with SMTP id hj5so159107316pac.3
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:22:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <zonque@gmail.com>
+Cc: Marek Belisko <marek.belisko@streamunlimited.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Slightly improve the logic for de-emphasis sampling rate selection by break
-out the loop if the rate is matched.
+The de-emphasis sampling rate selection is controlled by BIT[3:4] of
+PCM1681_DEEMPH_CONTROL register. Do proper left shift to set it.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/tas5086.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/codecs/pcm1681.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index 0a49fc8..d49d25d 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -266,10 +266,14 @@ static int tas5086_set_deemph(struct snd_soc_codec *codec)
- 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
- 	int i, val = 0;
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index b2c990f..1011142 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -102,7 +102,7 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
  
--	if (priv->deemph)
--		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++)
--			if (tas5086_deemph[i] == priv->rate)
-+	if (priv->deemph) {
-+		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++) {
-+			if (tas5086_deemph[i] == priv->rate) {
- 				val = i;
-+				break;
-+			}
-+		}
-+	}
- 
- 	return regmap_update_bits(priv->regmap, TAS5086_SYS_CONTROL_1,
- 				  TAS5086_DEEMPH_MASK, val);
+ 	if (val != -1) {
+ 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+-					PCM1681_DEEMPH_RATE_MASK, val);
++				   PCM1681_DEEMPH_RATE_MASK, val << 3);
+ 		enable = 1;
+ 	} else
+ 		enable = 0;
 -- 
 2.1.0
