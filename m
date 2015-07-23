@@ -1,24 +1,20 @@
-From: Tyler Yeomans <tyeo098@gmail.com>
-Subject: Re: Intel Baytrail Linux Audio
-Date: Thu, 23 Jul 2015 11:24:55 -0400
-Message-ID: <55B10747.5000101@gmail.com>
-References: <559C3F4A.5030307@gmail.com> <20150708033604.GM11002@localhost>
- <20150708102308.91b7258f243e354b1365a47e@ao2.it> <559D3411.6060306@gmail.com>
- <20150708182132.db38656fb4ccc2e38e41aba0@ao2.it> <559D5091.9020802@gmail.com>
- <20150708221745.f72dcbec9c96eb86ce0cbfc2@ao2.it> <559EC436.30900@gmail.com>
- <20150710040623.GY836@localhost> <55A3F027.9010006@gmail.com>
- <20150714084755.GA5086@localhost>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 2/2] ASoC: pcm1681: Improve the logic for
+ de-emphasis sampling rate selection
+Date: Thu, 23 Jul 2015 23:23:35 +0800
+Message-ID: <1437665015.20606.6.camel@ingics.com>
+References: <1437664946.20606.5.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f50.google.com (mail-qg0-f50.google.com
- [209.85.192.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 27EED261A8C
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:23:13 +0200 (CEST)
-Received: by qgeu79 with SMTP id u79so63428589qge.1
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:23:12 -0700 (PDT)
-In-Reply-To: <20150714084755.GA5086@localhost>
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47E922657DD
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:23:47 +0200 (CEST)
+Received: by pdbbh15 with SMTP id bh15so113042081pdb.1
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:23:45 -0700 (PDT)
+In-Reply-To: <1437664946.20606.5.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,52 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Antonio Ospite <ao2@ao2.it>, Nicolas George <george@nsup.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Nikula,
- Jarkko" <jarkko.nikula@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Marek Belisko <marek.belisko@streamunlimited.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Vinod,
+Slightly improve the logic for de-emphasis sampling rate selection by break
+out the loop if the rate is matched.
 
-Sorry to bother again, is there any update or anything else I can try here?
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/pcm1681.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Thanks,
-
-Tyler
-
-On 07/14/2015 04:47 AM, Vinod Koul wrote:
-> On Mon, Jul 13, 2015 at 01:06:47PM -0400, Tyler Yeomans wrote:
->> Vinod,
->>
->> Have you received my last message?
->> The device was originally installed with 8.1, but I have since
->> erased it in favor of Ubuntu.
->>
->> Is there anything I can be trying in the meantime?
->>
->> Thanks-
->>
->> Tyler
->>
->> On 07/10/2015 12:06 AM, Vinod Koul wrote:
->>> On Thu, Jul 09, 2015 at 02:57:58PM -0400, Tyler Yeomans wrote:
->>>> Antonio/Vinod,
->>>>
->>>> I have made the change in the sst-acpi.c file for the atom specific boards.
->>>> I've attached the dmesg output here with dynamic debug enabled.
->>>>
->>>> To clarify-
->>>>
->>>> snd-intel-sst-core is loaded
->>>> FE-BE fix has been applied
->>>> I'm using the ssp0 firmware.
->>>>
->>>> Interrupts are still 0
->>>>
->>>> Still no sound.
-> Thanks,
->
-> I think the interrupt routing is not right, so am trying ti get answers for
-> this, stay tuned :)
->
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index 1011142..5832523 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -95,17 +95,22 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
+ 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i = 0, val = -1, enable = 0;
+ 
+-	if (priv->deemph)
+-		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
+-			if (pcm1681_deemph[i] == priv->rate)
++	if (priv->deemph) {
++		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
++			if (pcm1681_deemph[i] == priv->rate) {
+ 				val = i;
++				break;
++			}
++		}
++	}
+ 
+ 	if (val != -1) {
+ 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+ 				   PCM1681_DEEMPH_RATE_MASK, val << 3);
+ 		enable = 1;
+-	} else
++	} else {
+ 		enable = 0;
++	}
+ 
+ 	/* enable/disable deemphasis functionality */
+ 	return regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+-- 
+2.1.0
