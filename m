@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: ac97: Add helper function to reset the
-	AC97 device" to the asoc tree
-Date: Thu, 23 Jul 2015 17:34:11 +0100
-Message-ID: <E1ZIJRj-0001RI-Kl@debutante>
-References: <1437508386-13828-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: stac9766: Use core reset helper" to the
+	asoc tree
+Date: Thu, 23 Jul 2015 17:34:08 +0100
+Message-ID: <E1ZIJRg-0001Ps-MK@debutante>
+References: <1437508386-13828-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 084E5265864
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:34:18 +0200 (CEST)
-In-Reply-To: <1437508386-13828-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E5A9261A8C
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:34:16 +0200 (CEST)
+In-Reply-To: <1437508386-13828-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: ac97: Add helper function to reset the AC97 device
+   ASoC: stac9766: Use core reset helper
 
 has been applied to the asoc tree at
 
@@ -53,109 +53,114 @@ to this mail.
 Thanks,
 Mark
 
->From 5f1d980ee9b6353f18765bfa6774a5a08d6cb944 Mon Sep 17 00:00:00 2001
+>From 017e800af9f91861dcd6e4fd8a29418de86fd884 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Tue, 21 Jul 2015 21:53:00 +0200
-Subject: [PATCH] ALSA: ac97: Add helper function to reset the AC97 device
+Date: Tue, 21 Jul 2015 21:53:03 +0200
+Subject: [PATCH] ASoC: stac9766: Use core reset helper
 
-There is currently a lot of code duplication in ASoC drivers regarding the
-reset handling of devices. This patch introduces a new generic reset
-function in the generic AC'97 framework that can be used to replace most
-the custom reset functions.
+Use the new snd_ac97_reset() helper and the reset functionality provided by
+snd_soc_new_ac97_codec() to perform the device reset rather than
+open-coding it.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/ac97_codec.h |  2 ++
- sound/ac97_bus.c           | 62 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 64 insertions(+)
+ sound/soc/codecs/stac9766.c | 57 ++++++---------------------------------------
+ 1 file changed, 7 insertions(+), 50 deletions(-)
 
-diff --git a/include/sound/ac97_codec.h b/include/sound/ac97_codec.h
-index 0e9d75b49bed..74bc85473b58 100644
---- a/include/sound/ac97_codec.h
-+++ b/include/sound/ac97_codec.h
-@@ -584,6 +584,8 @@ static inline int snd_ac97_update_power(struct snd_ac97 *ac97, int reg,
- void snd_ac97_suspend(struct snd_ac97 *ac97);
- void snd_ac97_resume(struct snd_ac97 *ac97);
- #endif
-+int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
-+	unsigned int id_mask);
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index c6028300c0ac..0945c51df003 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -28,6 +28,9 @@
  
- /* quirk types */
- enum {
-diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
-index 2b50cbe6aca9..55791a0b3943 100644
---- a/sound/ac97_bus.c
-+++ b/sound/ac97_bus.c
-@@ -18,6 +18,68 @@
- #include <sound/ac97_codec.h>
+ #include "stac9766.h"
  
++#define STAC9766_VENDOR_ID 0x83847666
++#define STAC9766_VENDOR_ID_MASK 0xffffffff
++
  /*
-+ * snd_ac97_check_id() - Reads and checks the vendor ID of the device
-+ * @ac97: The AC97 device to check
-+ * @id: The ID to compare to
-+ * @id_mask: Mask that is applied to the device ID before comparing to @id
-+ *
-+ * If @id is 0 this function returns true if the read device vendor ID is
-+ * a valid ID. If @id is non 0 this functions returns true if @id
-+ * matches the read vendor ID. Otherwise the function returns false.
-+ */
-+static bool snd_ac97_check_id(struct snd_ac97 *ac97, unsigned int id,
-+	unsigned int id_mask)
-+{
-+	ac97->id = ac97->bus->ops->read(ac97, AC97_VENDOR_ID1) << 16;
-+	ac97->id |= ac97->bus->ops->read(ac97, AC97_VENDOR_ID2);
-+
-+	if (ac97->id == 0x0 || ac97->id == 0xffffffff)
-+		return false;
-+
-+	if (id != 0 && id != (ac97->id & id_mask))
-+		return false;
-+
-+	return true;
-+}
-+
-+/**
-+ * snd_ac97_reset() - Reset AC'97 device
-+ * @ac97: The AC'97 device to reset
-+ * @try_warm: Try a warm reset first
-+ * @id: Expected device vendor ID
-+ * @id_mask: Mask that is applied to the device ID before comparing to @id
-+ *
-+ * This function resets the AC'97 device. If @try_warm is true the function
-+ * first performs a warm reset. If the warm reset is successful the function
-+ * returns 1. Otherwise or if @try_warm is false the function issues cold reset
-+ * followed by a warm reset. If this is successful the function returns 0,
-+ * otherwise a negative error code. If @id is 0 any valid device ID will be
-+ * accepted, otherwise only the ID that matches @id and @id_mask is accepted.
-+ */
-+int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
-+	unsigned int id_mask)
-+{
-+	struct snd_ac97_bus_ops *ops = ac97->bus->ops;
-+
-+	if (try_warm && ops->warm_reset) {
-+		ops->warm_reset(ac97);
-+		if (snd_ac97_check_id(ac97, id, id_mask))
-+			return 1;
-+	}
-+
-+	if (ops->reset)
-+		ops->reset(ac97);
-+	if (ops->warm_reset)
-+		ops->warm_reset(ac97);
-+
-+	if (snd_ac97_check_id(ac97, id, id_mask))
-+		return 0;
-+
-+	return -ENODEV;
-+}
-+EXPORT_SYMBOL_GPL(snd_ac97_reset);
-+
-+/*
-  * Let drivers decide whether they want to support given codec from their
-  * probe method. Drivers have direct access to the struct snd_ac97
-  * structure and may  decide based on the id field amongst other things.
+  * STAC9766 register cache
+  */
+@@ -239,45 +242,12 @@ static int stac9766_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
+-static int stac9766_reset(struct snd_soc_codec *codec, int try_warm)
+-{
+-	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-
+-	if (try_warm && soc_ac97_ops->warm_reset) {
+-		soc_ac97_ops->warm_reset(ac97);
+-		if (stac9766_ac97_read(codec, 0) == stac9766_reg[0])
+-			return 1;
+-	}
+-
+-	soc_ac97_ops->reset(ac97);
+-	if (soc_ac97_ops->warm_reset)
+-		soc_ac97_ops->warm_reset(ac97);
+-	if (stac9766_ac97_read(codec, 0) != stac9766_reg[0])
+-		return -EIO;
+-	return 0;
+-}
+-
+ static int stac9766_codec_resume(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97 = snd_soc_codec_get_drvdata(codec);
+-	u16 id, reset;
+ 
+-	reset = 0;
+-	/* give the codec an AC97 warm reset to start the link */
+-reset:
+-	if (reset > 5) {
+-		dev_err(codec->dev, "Failed to resume\n");
+-		return -EIO;
+-	}
+-	ac97->bus->ops->warm_reset(ac97);
+-	id = soc_ac97_ops->read(ac97, AC97_VENDOR_ID2);
+-	if (id != 0x4c13) {
+-		stac9766_reset(codec, 0);
+-		reset++;
+-		goto reset;
+-	}
+-
+-	return 0;
++	return snd_ac97_reset(ac97, true, STAC9766_VENDOR_ID,
++		STAC9766_VENDOR_ID_MASK);
+ }
+ 
+ static const struct snd_soc_dai_ops stac9766_dai_ops_analog = {
+@@ -330,28 +300,15 @@ static struct snd_soc_dai_driver stac9766_dai[] = {
+ static int stac9766_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct snd_ac97 *ac97;
+-	int ret = 0;
+ 
+-	ac97 = snd_soc_new_ac97_codec(codec, 0, 0);
++	ac97 = snd_soc_new_ac97_codec(codec, STAC9766_VENDOR_ID,
++			STAC9766_VENDOR_ID_MASK);
+ 	if (IS_ERR(ac97))
+ 		return PTR_ERR(ac97);
+ 
+ 	snd_soc_codec_set_drvdata(codec, ac97);
+ 
+-	/* do a cold reset for the controller and then try
+-	 * a warm reset followed by an optional cold reset for codec */
+-	stac9766_reset(codec, 0);
+-	ret = stac9766_reset(codec, 1);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to reset: AC97 link error\n");
+-		goto codec_err;
+-	}
+-
+ 	return 0;
+-
+-codec_err:
+-	snd_soc_free_ac97_codec(ac97);
+-	return ret;
+ }
+ 
+ static int stac9766_codec_remove(struct snd_soc_codec *codec)
 -- 
 2.1.4
