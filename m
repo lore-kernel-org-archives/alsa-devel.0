@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas2552: Fix off-by-one for
-	max_register setting" to the asoc tree
-Date: Thu, 23 Jul 2015 16:47:28 +0100
-Message-ID: <E1ZIIiW-0008Bu-EE@debutante>
-References: <1437663364.20606.1.camel@ingics.com>
+Subject: Applied "ASoC: tas5086: Improve the logic for
+	de-emphasis sampling rate selection" to the asoc tree
+Date: Thu, 23 Jul 2015 16:47:27 +0100
+Message-ID: <E1ZIIiV-0008BR-F2@debutante>
+References: <1437664416.20606.3.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A9FC2610B1
+ by alsa0.perex.cz (Postfix) with ESMTP id C653F26128B
  for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:47:37 +0200 (CEST)
-In-Reply-To: <1437663364.20606.1.camel@ingics.com>
+In-Reply-To: <1437664416.20606.3.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Dan Murphy <dmurphy@ti.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Daniel Mack <daniel@zonque.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas2552: Fix off-by-one for max_register setting
+   ASoC: tas5086: Improve the logic for de-emphasis sampling rate selection
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 95f1044f5674b53f67e0933abff228c594792f4c Mon Sep 17 00:00:00 2001
+>From 9425e9d8c77dd9f40c5f199127a63be2e2b7c1f4 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 23 Jul 2015 22:56:04 +0800
-Subject: [PATCH] ASoC: tas2552: Fix off-by-one for max_register setting
+Date: Thu, 23 Jul 2015 23:13:36 +0800
+Subject: [PATCH] ASoC: tas5086: Improve the logic for de-emphasis sampling
+ rate selection
 
-The latest valid register is TAS2552_VBAT_DATA.
+Slightly improve the logic for de-emphasis sampling rate selection by break
+out the loop if the rate is matched.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Dan Murphy<dmurphy@ti.com>
+Acked-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2552.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tas5086.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-index 5746f8fd0afd..e34752b8a299 100644
---- a/sound/soc/codecs/tas2552.h
-+++ b/sound/soc/codecs/tas2552.h
-@@ -42,7 +42,7 @@
- #define TAS2552_BOOST_APT_CTRL		0x14
- #define TAS2552_VER_NUM			0x16
- #define TAS2552_VBAT_DATA		0x19
--#define TAS2552_MAX_REG			0x20
-+#define TAS2552_MAX_REG			TAS2552_VBAT_DATA
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 32942bed34b1..16a6c6443aa8 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -266,10 +266,14 @@ static int tas5086_set_deemph(struct snd_soc_codec *codec)
+ 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i, val = 0;
  
- /* CFG1 Register Masks */
- #define TAS2552_DEV_RESET		(1 << 0)
+-	if (priv->deemph)
+-		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++)
+-			if (tas5086_deemph[i] == priv->rate)
++	if (priv->deemph) {
++		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++) {
++			if (tas5086_deemph[i] == priv->rate) {
+ 				val = i;
++				break;
++			}
++		}
++	}
+ 
+ 	return regmap_update_bits(priv->regmap, TAS5086_SYS_CONTROL_1,
+ 				  TAS5086_DEEMPH_MASK, val);
 -- 
 2.1.4
