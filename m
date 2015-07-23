@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rl6231: add pll preset table" to the
-	asoc tree
-Date: Thu, 23 Jul 2015 17:41:51 +0100
-Message-ID: <E1ZIJZ9-0002OA-4i@debutante>
-References: <1437541755-20717-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Intel: Skylake: Add dsp and ipc init
+	helpers" to the asoc tree
+Date: Thu, 23 Jul 2015 17:41:52 +0100
+Message-ID: <E1ZIJZA-0002Od-Bs@debutante>
+References: <1437503040-7392-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B9974265798
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:41:57 +0200 (CEST)
-In-Reply-To: <1437541755-20717-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E1B82657D8
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:42:00 +0200 (CEST)
+In-Reply-To: <1437503040-7392-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rl6231: add pll preset table
+   ASoC: Intel: Skylake: Add dsp and ipc init helpers
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,194 @@ to this mail.
 Thanks,
 Mark
 
->From 213213d9d68e5fcb81a513a7d07ed6ee01294dea Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 22 Jul 2015 13:09:15 +0800
-Subject: [PATCH] ASoC: rl6231: add pll preset table
+>From d255b09555e8ea0e517a4d3368ec60097ac9cf96 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 21 Jul 2015 23:53:56 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add dsp and ipc init helpers
 
-Currently, rl6231_pll_calc provide a working PLL parameters for
-given freq_in and freq_out. However, in some cases it is not the
-perfect parameter. For example if freq_in = 19200000 and freq_out
- = 24576000, the calculated parameter will gengrate 24.5647 MHz
-which is not exactly the same as what we need. But the PLL can
-output 24.576 MHz as exactly what we expect if we set the best
-PLL parameter.
-To improve it, we put the best match parameters in a preset table.
-We can search the preset table first, if there is no preset parameter
-for the given freq_in and freq_out, we can still calculate a working
-PLL parameter.
+This helper function will be used by the Skylake driver for dsp and
+ipc initialization if processing pipe capability is supported.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rl6231.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/Makefile       |   2 +-
+ sound/soc/intel/skylake/skl-messages.c | 133 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h          |   6 ++
+ 3 files changed, 140 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-messages.c
 
-diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
-index 56650d6c2f53..96f3e906dfef 100644
---- a/sound/soc/codecs/rl6231.c
-+++ b/sound/soc/codecs/rl6231.c
-@@ -43,6 +43,19 @@ int rl6231_calc_dmic_clk(int rate)
- }
- EXPORT_SYMBOL_GPL(rl6231_calc_dmic_clk);
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index b35faef05779..27db22178204 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -1,4 +1,4 @@
+-snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o
++snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o
  
-+struct pll_calc_map {
-+	unsigned int pll_in;
-+	unsigned int pll_out;
-+	int k;
-+	int n;
-+	int m;
-+	bool m_bp;
-+};
-+
-+static const struct pll_calc_map pll_preset_table[] = {
-+	{19200000,  24576000,  3, 30, 3, false},
-+};
-+
- /**
-  * rl6231_pll_calc - Calcualte PLL M/N/K code.
-  * @freq_in: external clock provided to codec.
-@@ -57,7 +70,7 @@ int rl6231_pll_calc(const unsigned int freq_in,
- 	const unsigned int freq_out, struct rl6231_pll_code *pll_code)
- {
- 	int max_n = RL6231_PLL_N_MAX, max_m = RL6231_PLL_M_MAX;
--	int k, red, n_t, pll_out, in_t, out_t;
-+	int i, k, red, n_t, pll_out, in_t, out_t;
- 	int n = 0, m = 0, m_t = 0;
- 	int red_t = abs(freq_out - freq_in);
- 	bool bypass = false;
-@@ -65,6 +78,18 @@ int rl6231_pll_calc(const unsigned int freq_in,
- 	if (RL6231_PLL_INP_MAX < freq_in || RL6231_PLL_INP_MIN > freq_in)
- 		return -EINVAL;
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
  
-+	for (i = 0; i < ARRAY_SIZE(pll_preset_table); i++) {
-+		if (freq_in == pll_preset_table[i].pll_in &&
-+			freq_out == pll_preset_table[i].pll_out) {
-+			k = pll_preset_table[i].k;
-+			m = pll_preset_table[i].m;
-+			n = pll_preset_table[i].n;
-+			bypass = pll_preset_table[i].m_bp;
-+			pr_debug("Use preset PLL parameter table\n");
-+			goto code_find;
-+		}
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+new file mode 100644
+index 000000000000..7c07b76bf0bf
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -0,0 +1,133 @@
++/*
++ *  skl-message.c - HDA DSP interface for FW registration, Pipe and Module
++ *  configurations
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
++ *	   Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/slab.h>
++#include <linux/pci.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
++#include "skl.h"
++#include "../common/sst-dsp.h"
++#include "../common/sst-dsp-priv.h"
++
++static int skl_alloc_dma_buf(struct device *dev,
++		struct snd_dma_buffer *dmab, size_t size)
++{
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++
++	if (!bus)
++		return -ENODEV;
++
++	return  bus->io_ops->dma_alloc_pages(bus, SNDRV_DMA_TYPE_DEV, size, dmab);
++}
++
++static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
++{
++	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++
++	if (!bus)
++		return -ENODEV;
++
++	bus->io_ops->dma_free_pages(bus, dmab);
++
++	return 0;
++}
++
++int skl_init_dsp(struct skl *skl)
++{
++	void __iomem *mmio_base;
++	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	int irq = bus->irq;
++	struct skl_dsp_loader_ops loader_ops;
++	int ret;
++
++	loader_ops.alloc_dma_buf = skl_alloc_dma_buf;
++	loader_ops.free_dma_buf = skl_free_dma_buf;
++
++	/* enable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++
++	/* read the BAR of the ADSP MMIO */
++	mmio_base = pci_ioremap_bar(skl->pci, 4);
++	if (mmio_base == NULL) {
++		dev_err(bus->dev, "ioremap error\n");
++		return -ENXIO;
 +	}
 +
- 	k = 100000000 / freq_out - 2;
- 	if (k > RL6231_PLL_K_MAX)
- 		k = RL6231_PLL_K_MAX;
++	ret = skl_sst_dsp_init(bus->dev, mmio_base, irq,
++			loader_ops, &skl->skl_sst);
++
++	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
++
++	return ret;
++}
++
++void skl_free_dsp(struct skl *skl)
++{
++	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct skl_sst *ctx =  skl->skl_sst;
++
++	/* disable  ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
++
++	skl_sst_dsp_cleanup(bus->dev, ctx);
++	if (ctx->dsp->addr.lpe)
++		iounmap(ctx->dsp->addr.lpe);
++}
++
++int skl_suspend_dsp(struct skl *skl)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++	int ret;
++
++	/* if ppcap is not supported return 0 */
++	if (!skl->ebus.ppcap)
++		return 0;
++
++	ret = skl_dsp_sleep(ctx->dsp);
++	if (ret < 0)
++		return ret;
++
++	/* disable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, false);
++
++	return 0;
++}
++
++int skl_resume_dsp(struct skl *skl)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	/* if ppcap is not supported return 0 */
++	if (!skl->ebus.ppcap)
++		return 0;
++
++	/* enable ppcap interrupt */
++	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
++	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
++
++	return skl_dsp_wake(ctx->dsp);
++}
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 31dafa8a0594..f7fdbb02947f 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -56,6 +56,7 @@ struct skl {
+ 	struct platform_device *dmic_dev;
+ 
+ 	void __iomem *nhlt; /* nhlt ptr */
++	struct skl_sst *skl_sst; /* sst skl ctx */
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
+@@ -75,4 +76,9 @@ void __iomem *skl_nhlt_init(struct device *dev);
+ void skl_nhlt_free(void __iomem *addr);
+ struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
+ 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
++
++int skl_init_dsp(struct skl *skl);
++void skl_free_dsp(struct skl *skl);
++int skl_suspend_dsp(struct skl *skl);
++int skl_resume_dsp(struct skl *skl);
+ #endif /* __SOUND_SOC_SKL_H */
 -- 
 2.1.4
