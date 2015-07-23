@@ -1,46 +1,52 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v2 10/19] media: platform xilinx: Update graph_mutex to graph_lock spinlock
-Date: Wed, 22 Jul 2015 16:42:11 -0600
-Message-ID: <845e6c9ee33c7d81a4e2ab428f4b03f8328a4d86.1437599281.git.shuahkh@osg.samsung.com>
-References: <cover.1437599281.git.shuahkh@osg.samsung.com>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <cover.1437599281.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1437599281.git.shuahkh@osg.samsung.com>
-References: <cover.1437599281.git.shuahkh@osg.samsung.com>
-Sender: linux-media-owner@vger.kernel.org
-To: mchehab@osg.samsung.com, hans.verkuil@cisco.com, laurent.pinchart@ideasonboard.com, tiwai@suse.de, sakari.ailus@linux.intel.com, perex@perex.cz, crope@iki.fi, arnd@arndb.de, stefanr@s5r6.in-berlin.de, ruchandani.tina@gmail.com, chehabrafael@gmail.com, dan.carpenter@oracle.com, prabhakar.csengg@gmail.com, chris.j.arges@canonical.com, agoode@google.com, pierre-louis.bossart@linux.intel.com, gtmkramer@xs4all.nl, clemens@ladisch.de, daniel@zonque.org, vladcatoi@gmail.com, misterpib@gmail.com, damien@zamaudio.com, pmatilai@laiskiainen.org, takamichiho@gmail.com, normalperson@yhbt.net, bugzilla.frnkcg@spamgourmet.com, joe@oampo.co.uk, calcprogrammer1@gmail.com, jussi@sonarnerd.net, kyungmin.park@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org, hyun.kwon@xilinx.com, michal.simek@xilinx.com, soren.brinkmann@xilinx.com, pawel@osciak.com, m.szyprowski@samsung.com, gregkh@
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: cs42l73: Fix mask for setting
+	CS42L73_SP_3ST bit
+Date: Thu, 23 Jul 2015 08:26:57 +0800
+Message-ID: <1437611217.6620.2.camel@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DC3126559B
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 02:27:05 +0200 (CEST)
+Received: by padck2 with SMTP id ck2so146255296pad.0
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 17:27:03 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Update graph_mutex to graph_lock spinlock to be in sync with
-the Media Conttroller change for the same.
+CS42L73_SP_3ST is BIT(7), so the mask field is wrong. Fix it.
 
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- drivers/media/platform/xilinx/xilinx-dma.c | 4 ++--
+ sound/soc/codecs/cs42l73.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/xilinx/xilinx-dma.c b/drivers/media/platform/xilinx/xilinx-dma.c
-index 98e50e4..784f7a4 100644
---- a/drivers/media/platform/xilinx/xilinx-dma.c
-+++ b/drivers/media/platform/xilinx/xilinx-dma.c
-@@ -185,7 +185,7 @@ static int xvip_pipeline_validate(struct xvip_pipeline *pipe,
- 	unsigned int num_inputs = 0;
- 	unsigned int num_outputs = 0;
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 7cb1d70..be6477f 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1236,8 +1236,8 @@ static int cs42l73_set_tristate(struct snd_soc_dai *dai, int tristate)
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	int id = dai->id;
  
--	mutex_lock(&mdev->graph_mutex);
-+	spin_lock(&mdev->graph_lock);
+-	return snd_soc_update_bits(codec, CS42L73_SPC(id),
+-					0x7F, tristate << 7);
++	return snd_soc_update_bits(codec, CS42L73_SPC(id), CS42L73_SP_3ST,
++				   tristate << 7);
+ }
  
- 	/* Walk the graph to locate the video nodes. */
- 	media_entity_graph_walk_start(&graph, entity);
-@@ -206,7 +206,7 @@ static int xvip_pipeline_validate(struct xvip_pipeline *pipe,
- 		}
- 	}
- 
--	mutex_unlock(&mdev->graph_mutex);
-+	spin_unlock(&mdev->graph_lock);
- 
- 	/* We need exactly one output and zero or one input. */
- 	if (num_outputs != 1 || num_inputs > 1)
+ static const struct snd_pcm_hw_constraint_list constraints_12_24 = {
 -- 
-2.1.4
+2.1.0
