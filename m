@@ -1,17 +1,18 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tas2552: Fix off-by-one for
-	max_register setting
-Date: Thu, 23 Jul 2015 10:26:12 -0500
-Message-ID: <55B10794.50406@ti.com>
-References: <1437663364.20606.1.camel@ingics.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: rt5677: Remove NULL test for desc before
+ gpiod_set_value_cansleep call
+Date: Thu, 23 Jul 2015 23:32:04 +0800
+Message-ID: <1437665524.20606.8.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id ED133260711
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:26:13 +0200 (CEST)
-In-Reply-To: <1437663364.20606.1.camel@ingics.com>
+Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
+ [209.85.192.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70EDC261A8C
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:32:10 +0200 (CEST)
+Received: by pdjr16 with SMTP id r16so161605027pdj.3
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:32:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/23/2015 09:56 AM, Axel Lin wrote:
-> The latest valid register is TAS2552_VBAT_DATA.
->
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  sound/soc/codecs/tas2552.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
-> index 5746f8f..e34752b 100644
-> --- a/sound/soc/codecs/tas2552.h
-> +++ b/sound/soc/codecs/tas2552.h
-> @@ -42,7 +42,7 @@
->  #define TAS2552_BOOST_APT_CTRL		0x14
->  #define TAS2552_VER_NUM			0x16
->  #define TAS2552_VBAT_DATA		0x19
-> -#define TAS2552_MAX_REG			0x20
-> +#define TAS2552_MAX_REG			TAS2552_VBAT_DATA
->  
->  /* CFG1 Register Masks */
->  #define TAS2552_DEV_RESET		(1 << 0)
-Acked-by: Dan Murphy<dmurphy@ti.com>
+It's safe to call gpiod_set_value_cansleep() with NULL desc.
 
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/rt5677.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 016db7d..8d70911 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -4763,10 +4763,8 @@ static int rt5677_remove(struct snd_soc_codec *codec)
+ 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
+-	if (rt5677->pow_ldo2)
+-		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
+-	if (rt5677->reset_pin)
+-		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
++	gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
++	gpiod_set_value_cansleep(rt5677->reset_pin, 0);
+ 
+ 	return 0;
+ }
+@@ -4780,10 +4778,8 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
+ 		regcache_cache_only(rt5677->regmap, true);
+ 		regcache_mark_dirty(rt5677->regmap);
+ 
+-		if (rt5677->pow_ldo2)
+-			gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
+-		if (rt5677->reset_pin)
+-			gpiod_set_value_cansleep(rt5677->reset_pin, 0);
++		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
++		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
+ 	}
+ 
+ 	return 0;
+@@ -4794,10 +4790,8 @@ static int rt5677_resume(struct snd_soc_codec *codec)
+ 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (!rt5677->dsp_vad_en) {
+-		if (rt5677->pow_ldo2)
+-			gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
+-		if (rt5677->reset_pin)
+-			gpiod_set_value_cansleep(rt5677->reset_pin, 1);
++		gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
++		gpiod_set_value_cansleep(rt5677->reset_pin, 1);
+ 		if (rt5677->pow_ldo2 || rt5677->reset_pin)
+ 			msleep(10);
+ 
 -- 
-------------------
-Dan Murphy
+2.1.0
