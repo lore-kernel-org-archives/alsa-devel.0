@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add dsp and ipc init
-	helpers" to the asoc tree
-Date: Thu, 23 Jul 2015 17:41:52 +0100
-Message-ID: <E1ZIJZA-0002Od-Bs@debutante>
-References: <1437503040-7392-3-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add NHLT support to get
+	BE config" to the asoc tree
+Date: Thu, 23 Jul 2015 17:41:53 +0100
+Message-ID: <E1ZIJZB-0002P6-Du@debutante>
+References: <1437503040-7392-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E1B82657D8
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DE18265831
  for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:42:00 +0200 (CEST)
-In-Reply-To: <1437503040-7392-3-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1437503040-7392-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add dsp and ipc init helpers
+   ASoC: Intel: Skylake: Add NHLT support to get BE config
 
 has been applied to the asoc tree at
 
@@ -53,194 +53,339 @@ to this mail.
 Thanks,
 Mark
 
->From d255b09555e8ea0e517a4d3368ec60097ac9cf96 Mon Sep 17 00:00:00 2001
+>From 473eb87adcf69204cd7e8fb5b0e4956edd6feae3 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 21 Jul 2015 23:53:56 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add dsp and ipc init helpers
+Date: Tue, 21 Jul 2015 23:53:55 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add NHLT support to get BE config
 
-This helper function will be used by the Skylake driver for dsp and
-ipc initialization if processing pipe capability is supported.
+The Non-HD Audio Endpoint Description table contains the link
+configuration information for the DSP. This is specific to Non HDA
+links only, like I2s and PDM
+
+Skylake driver will use NHLT table to retrieve the configuration based
+on the link type, format, channel and rate. This configuration is
+passed to DSP FW
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/Makefile       |   2 +-
- sound/soc/intel/skylake/skl-messages.c | 133 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h          |   6 ++
- 3 files changed, 140 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/skylake/skl-messages.c
+ sound/soc/intel/skylake/Makefile   |   2 +-
+ sound/soc/intel/skylake/skl-nhlt.c | 141 +++++++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.h | 116 ++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl.h      |   7 ++
+ 4 files changed, 265 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-nhlt.c
+ create mode 100644 sound/soc/intel/skylake/skl-nhlt.h
 
 diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index b35faef05779..27db22178204 100644
+index 1fccb378e62c..b35faef05779 100644
 --- a/sound/soc/intel/skylake/Makefile
 +++ b/sound/soc/intel/skylake/Makefile
 @@ -1,4 +1,4 @@
--snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o
-+snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o
+-snd-soc-skl-objs := skl.o skl-pcm.o
++snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o
  
  obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
  
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
 new file mode 100644
-index 000000000000..7c07b76bf0bf
+index 000000000000..5c0895eaa10a
 --- /dev/null
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -0,0 +1,133 @@
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -0,0 +1,141 @@
 +/*
-+ *  skl-message.c - HDA DSP interface for FW registration, Pipe and Module
-+ *  configurations
++ *  skl-nhlt.c - Intel SKL Platform NHLT parsing
 + *
 + *  Copyright (C) 2015 Intel Corp
-+ *  Author:Rafal Redzimski <rafal.f.redzimski@intel.com>
-+ *	   Jeeja KP <jeeja.kp@intel.com>
++ *  Author: Sanjiv Kumar <sanjiv.kumar@intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
 + *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
 + */
-+
-+#include <linux/slab.h>
-+#include <linux/pci.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include "skl-sst-dsp.h"
-+#include "skl-sst-ipc.h"
++#include <linux/acpi.h>
 +#include "skl.h"
-+#include "../common/sst-dsp.h"
-+#include "../common/sst-dsp-priv.h"
 +
-+static int skl_alloc_dma_buf(struct device *dev,
-+		struct snd_dma_buffer *dmab, size_t size)
++/* Unique identification for getting NHLT blobs */
++static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
++				0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53};
++
++#define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
++
++void __iomem *skl_nhlt_init(struct device *dev)
 +{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	acpi_handle handle;
++	union acpi_object *obj;
++	struct nhlt_resource_desc  *nhlt_ptr = NULL;
 +
-+	if (!bus)
-+		return -ENODEV;
-+
-+	return  bus->io_ops->dma_alloc_pages(bus, SNDRV_DMA_TYPE_DEV, size, dmab);
-+}
-+
-+static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
-+{
-+	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+
-+	if (!bus)
-+		return -ENODEV;
-+
-+	bus->io_ops->dma_free_pages(bus, dmab);
-+
-+	return 0;
-+}
-+
-+int skl_init_dsp(struct skl *skl)
-+{
-+	void __iomem *mmio_base;
-+	struct hdac_ext_bus *ebus = &skl->ebus;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	int irq = bus->irq;
-+	struct skl_dsp_loader_ops loader_ops;
-+	int ret;
-+
-+	loader_ops.alloc_dma_buf = skl_alloc_dma_buf;
-+	loader_ops.free_dma_buf = skl_free_dma_buf;
-+
-+	/* enable ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
-+	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
-+
-+	/* read the BAR of the ADSP MMIO */
-+	mmio_base = pci_ioremap_bar(skl->pci, 4);
-+	if (mmio_base == NULL) {
-+		dev_err(bus->dev, "ioremap error\n");
-+		return -ENXIO;
++	if (ACPI_FAILURE(acpi_get_handle(NULL, DSDT_NHLT_PATH, &handle))) {
++		dev_err(dev, "Requested NHLT device not found\n");
++		return NULL;
 +	}
 +
-+	ret = skl_sst_dsp_init(bus->dev, mmio_base, irq,
-+			loader_ops, &skl->skl_sst);
++	obj = acpi_evaluate_dsm(handle, OSC_UUID, 1, 1, NULL);
++	if (obj && obj->type == ACPI_TYPE_BUFFER) {
++		nhlt_ptr = (struct nhlt_resource_desc  *)obj->buffer.pointer;
 +
-+	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
++		return ioremap_cache(nhlt_ptr->min_addr, nhlt_ptr->length);
++	}
 +
-+	return ret;
++	dev_err(dev, "device specific method to extract NHLT blob failed\n");
++	return NULL;
 +}
 +
-+void skl_free_dsp(struct skl *skl)
++void skl_nhlt_free(void __iomem *addr)
 +{
-+	struct hdac_ext_bus *ebus = &skl->ebus;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl_sst *ctx =  skl->skl_sst;
-+
-+	/* disable  ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
-+
-+	skl_sst_dsp_cleanup(bus->dev, ctx);
-+	if (ctx->dsp->addr.lpe)
-+		iounmap(ctx->dsp->addr.lpe);
++	iounmap(addr);
++	addr = NULL;
 +}
 +
-+int skl_suspend_dsp(struct skl *skl)
++static struct nhlt_specific_cfg *skl_get_specific_cfg(
++		struct device *dev, struct nhlt_fmt *fmt,
++		u8 no_ch, u8 rate, u16 bps)
 +{
-+	struct skl_sst *ctx = skl->skl_sst;
-+	int ret;
++	struct nhlt_specific_cfg *sp_config;
++	struct wav_fmt *wfmt;
++	struct nhlt_fmt_cfg *fmt_config = fmt->fmt_config;
++	int i;
 +
-+	/* if ppcap is not supported return 0 */
-+	if (!skl->ebus.ppcap)
-+		return 0;
++	dev_dbg(dev, "Format count =%d\n", fmt->fmt_count);
 +
-+	ret = skl_dsp_sleep(ctx->dsp);
-+	if (ret < 0)
-+		return ret;
++	for (i = 0; i < fmt->fmt_count; i++) {
++		wfmt = &fmt_config->fmt_ext.fmt;
++		dev_dbg(dev, "ch=%d fmt=%d s_rate=%d\n", wfmt->channels,
++			 wfmt->bits_per_sample, wfmt->samples_per_sec);
++		if (wfmt->channels == no_ch && wfmt->samples_per_sec == rate &&
++					wfmt->bits_per_sample == bps) {
++			sp_config = &fmt_config->config;
 +
-+	/* disable ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
-+	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, false);
++			return sp_config;
++		}
 +
-+	return 0;
++		fmt_config = (struct nhlt_fmt_cfg *)(fmt_config->config.caps +
++						fmt_config->config.size);
++	}
++
++	return NULL;
 +}
 +
-+int skl_resume_dsp(struct skl *skl)
++static void dump_config(struct device *dev, u32 instance_id, u8 linktype,
++		u8 s_fmt, u8 num_channels, u32 s_rate, u8 dirn, u16 bps)
 +{
-+	struct skl_sst *ctx = skl->skl_sst;
-+
-+	/* if ppcap is not supported return 0 */
-+	if (!skl->ebus.ppcap)
-+		return 0;
-+
-+	/* enable ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_enable(&skl->ebus, true);
-+	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, true);
-+
-+	return skl_dsp_wake(ctx->dsp);
++	dev_dbg(dev, "Input configuration\n");
++	dev_dbg(dev, "ch=%d fmt=%d s_rate=%d\n", num_channels, s_fmt, s_rate);
++	dev_dbg(dev, "vbus_id=%d link_type=%d\n", instance_id, linktype);
++	dev_dbg(dev, "bits_per_sample=%d\n", bps);
 +}
++
++static bool skl_check_ep_match(struct device *dev, struct nhlt_endpoint *epnt,
++				u32 instance_id, u8 link_type, u8 dirn)
++{
++	dev_dbg(dev, "vbus_id=%d link_type=%d dir=%d\n",
++		epnt->virtual_bus_id, epnt->linktype, epnt->direction);
++
++	if ((epnt->virtual_bus_id == instance_id) &&
++			(epnt->linktype == link_type) &&
++			(epnt->direction == dirn))
++		return true;
++	else
++		return false;
++}
++
++struct nhlt_specific_cfg
++*skl_get_ep_blob(struct skl *skl, u32 instance, u8 link_type,
++			u8 s_fmt, u8 num_ch, u32 s_rate, u8 dirn)
++{
++	struct nhlt_fmt *fmt;
++	struct nhlt_endpoint *epnt;
++	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
++	struct device *dev = bus->dev;
++	struct nhlt_specific_cfg *sp_config;
++	struct nhlt_acpi_table *nhlt = (struct nhlt_acpi_table *)skl->nhlt;
++	u16 bps = num_ch * s_fmt;
++	u8 j;
++
++	dump_config(dev, instance, link_type, s_fmt, num_ch, s_rate, dirn, bps);
++
++	epnt = (struct nhlt_endpoint *)nhlt->desc;
++
++	dev_dbg(dev, "endpoint count =%d\n", nhlt->endpoint_count);
++
++	for (j = 0; j < nhlt->endpoint_count; j++) {
++		if (skl_check_ep_match(dev, epnt, instance, link_type, dirn)) {
++			fmt = (struct nhlt_fmt *)(epnt->config.caps +
++						 epnt->config.size);
++			sp_config = skl_get_specific_cfg(dev, fmt, num_ch, s_rate, bps);
++			if (sp_config)
++				return sp_config;
++		}
++
++		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
++	}
++
++	return NULL;
++}
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
+new file mode 100644
+index 000000000000..b0e2e4da42a1
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl-nhlt.h
+@@ -0,0 +1,116 @@
++/*
++ *  skl-nhlt.h - Intel HDA Platform NHLT header
++ *
++ *  Copyright (C) 2015 Intel Corp
++ *  Author: Sanjiv Kumar <sanjiv.kumar@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
++#ifndef __SKL_NHLT_H__
++#define __SKL_NHLT_H__
++
++struct acpi_desc_header {
++	u32  signature;
++	u32  length;
++	u8   revision;
++	u8   checksum;
++	u8   oem_id[6];
++	u64  oem_table_id;
++	u32  oem_revision;
++	u32  creator_id;
++	u32  creator_revision;
++} __packed;
++
++struct wav_fmt {
++	u16 fmt_tag;
++	u16 channels;
++	u32 samples_per_sec;
++	u32 avg_bytes_per_sec;
++	u16 block_align;
++	u16 bits_per_sample;
++	u16 cb_size;
++} __packed;
++
++struct wav_fmt_ext {
++	struct wav_fmt fmt;
++	union samples {
++		u16 valid_bits_per_sample;
++		u16 samples_per_block;
++		u16 reserved;
++	} sample;
++	u32 channel_mask;
++	u8 sub_fmt[16];
++} __packed;
++
++enum nhlt_link_type {
++	NHLT_LINK_HDA = 0,
++	NHLT_LINK_DSP = 1,
++	NHLT_LINK_DMIC = 2,
++	NHLT_LINK_SSP = 3,
++	NHLT_LINK_INVALID
++};
++
++enum nhlt_device_type {
++	NHLT_DEVICE_BT = 0,
++	NHLT_DEVICE_DMIC = 1,
++	NHLT_DEVICE_I2S = 4,
++	NHLT_DEVICE_INVALID
++};
++
++struct nhlt_specific_cfg {
++	u32 size;
++	u8 caps[0];
++} __packed;
++
++struct nhlt_fmt_cfg {
++	struct wav_fmt_ext fmt_ext;
++	struct nhlt_specific_cfg config;
++} __packed;
++
++struct nhlt_fmt {
++	u8 fmt_count;
++	struct nhlt_fmt_cfg fmt_config[0];
++} __packed;
++
++struct nhlt_endpoint {
++	u32  length;
++	u8   linktype;
++	u8   instance_id;
++	u16  vendor_id;
++	u16  device_id;
++	u16  revision_id;
++	u32  subsystem_id;
++	u8   device_type;
++	u8   direction;
++	u8   virtual_bus_id;
++	struct nhlt_specific_cfg config;
++} __packed;
++
++struct nhlt_acpi_table {
++	struct acpi_desc_header header;
++	u8 endpoint_count;
++	struct nhlt_endpoint desc[0];
++} __packed;
++
++struct nhlt_resource_desc  {
++	u32 extra;
++	u16 flags;
++	u64 addr_spc_gra;
++	u64 min_addr;
++	u64 max_addr;
++	u64 addr_trans_offset;
++	u64 length;
++} __packed;
++
++#endif
 diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 31dafa8a0594..f7fdbb02947f 100644
+index cc0f3e263495..31dafa8a0594 100644
 --- a/sound/soc/intel/skylake/skl.h
 +++ b/sound/soc/intel/skylake/skl.h
-@@ -56,6 +56,7 @@ struct skl {
- 	struct platform_device *dmic_dev;
+@@ -23,6 +23,7 @@
  
- 	void __iomem *nhlt; /* nhlt ptr */
-+	struct skl_sst *skl_sst; /* sst skl ctx */
+ #include <sound/hda_register.h>
+ #include <sound/hdaudio_ext.h>
++#include "skl-nhlt.h"
+ 
+ #define SKL_SUSPEND_DELAY 2000
+ 
+@@ -53,6 +54,8 @@ struct skl {
+ 
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 	struct platform_device *dmic_dev;
++
++	void __iomem *nhlt; /* nhlt ptr */
  };
  
  #define skl_to_ebus(s)	(&(s)->ebus)
-@@ -75,4 +76,9 @@ void __iomem *skl_nhlt_init(struct device *dev);
- void skl_nhlt_free(void __iomem *addr);
- struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
- 			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
-+
-+int skl_init_dsp(struct skl *skl);
-+void skl_free_dsp(struct skl *skl);
-+int skl_suspend_dsp(struct skl *skl);
-+int skl_resume_dsp(struct skl *skl);
+@@ -68,4 +71,8 @@ struct skl_dma_params {
+ int skl_platform_unregister(struct device *dev);
+ int skl_platform_register(struct device *dev);
+ 
++void __iomem *skl_nhlt_init(struct device *dev);
++void skl_nhlt_free(void __iomem *addr);
++struct nhlt_specific_cfg *skl_get_ep_blob(struct skl *skl, u32 instance,
++			u8 link_type, u8 s_fmt, u8 no_ch, u32 s_rate, u8 dirn);
  #endif /* __SOUND_SOC_SKL_H */
 -- 
 2.1.4
