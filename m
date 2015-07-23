@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas5086: Improve the logic for
-	de-emphasis sampling rate selection" to the asoc tree
-Date: Thu, 23 Jul 2015 16:47:27 +0100
-Message-ID: <E1ZIIiV-0008BR-F2@debutante>
-References: <1437664416.20606.3.camel@ingics.com>
+From: Clemens Lang <clemens.lang@bmw-carit.de>
+Subject: Replace include/list.h with non-GPL implementation
+Date: Thu, 23 Jul 2015 18:02:39 +0200
+Message-ID: <1437667361-23152-1-git-send-email-clemens.lang@bmw-carit.de>
+References: <20150119143100.GH4920@ulm-bmuc496424.bmw-carit.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C653F26128B
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:47:37 +0200 (CEST)
-In-Reply-To: <1437664416.20606.3.camel@ingics.com>
+Received: from mail.bmw-carit.de (mail.bmw-carit.de [62.245.222.98])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43886260711
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:03:00 +0200 (CEST)
+In-Reply-To: <20150119143100.GH4920@ulm-bmuc496424.bmw-carit.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Daniel Mack <daniel@zonque.org>, Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: tas5086: Improve the logic for de-emphasis sampling rate selection
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9425e9d8c77dd9f40c5f199127a63be2e2b7c1f4 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 23 Jul 2015 23:13:36 +0800
-Subject: [PATCH] ASoC: tas5086: Improve the logic for de-emphasis sampling
- rate selection
-
-Slightly improve the logic for de-emphasis sampling rate selection by break
-out the loop if the rate is matched.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tas5086.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
-index 32942bed34b1..16a6c6443aa8 100644
---- a/sound/soc/codecs/tas5086.c
-+++ b/sound/soc/codecs/tas5086.c
-@@ -266,10 +266,14 @@ static int tas5086_set_deemph(struct snd_soc_codec *codec)
- 	struct tas5086_private *priv = snd_soc_codec_get_drvdata(codec);
- 	int i, val = 0;
- 
--	if (priv->deemph)
--		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++)
--			if (tas5086_deemph[i] == priv->rate)
-+	if (priv->deemph) {
-+		for (i = 0; i < ARRAY_SIZE(tas5086_deemph); i++) {
-+			if (tas5086_deemph[i] == priv->rate) {
- 				val = i;
-+				break;
-+			}
-+		}
-+	}
- 
- 	return regmap_update_bits(priv->regmap, TAS5086_SYS_CONTROL_1,
- 				  TAS5086_DEEMPH_MASK, val);
--- 
-2.1.4
+SGksCgp0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiBpbmNsdWRlL2xpc3QuaCBpcyB0YWtl
+biBmcm9tIExpbnV4IDIuNC4wCmFuZCBwb3NzaWJseSBsaWNlbnNlZCB1bmRlciBHUEwtMi4wLiBJ
+ZiB0aGUgaW1wbGVtZW50YXRpb24gaXNuJ3QKdHJpdmlhbCwgdGhpcyBtaWdodCBtYWtlIGxpYmFz
+b3VuZCBhIGRlcml2YXRpdmUgd29yayBhbmQgZXh0ZW5kIHRoZQp2aXJhbCBlZmZlY3QgdG8gY2xp
+ZW50cyBvZiB0aGUgbGlicmFyeS4gU2VlCiAgaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE0LURlY2VtYmVyLzA4NTI2MS5odG1sCiAgaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE0LURlY2Vt
+YmVyLzA4NTI2Mi5odG1sCiAgaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
+aWwvYWxzYS1kZXZlbC8yMDE0LURlY2VtYmVyLzA4NTMyNS5odG1sCiAgaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LUphbnVhcnkvMDg2NzU0
+Lmh0bWwKZm9yIHByZXZpb3VzIGRpc2N1c3Npb24uCgpUaGlzIHBhdGNoIHNlcmllcyBhdm9pZHMg
+dGhpcyBhbWJpZ3VpdHkgYnkgcmVwbGFjaW5nIHRoZSBsaXN0CmltcGxlbWVudGF0aW9uIHdpdGgg
+YSB2ZXJzaW9uIEkgbW9kaWZpZWQgZnJvbSBSdXN0eSBSdXNzZWxsJ3MKTUlULWxpY2Vuc2VkIGxp
+c3QgYXQgaHR0cDovL2Njb2RlYXJjaGl2ZS5uZXQvaW5mby9saXN0Lmh0bWwKClRoZSB0d28gcGF0
+Y2hlcyByZXBsYWNlIHRoZSBsaXN0IGltcGxlbWVudGF0aW9uIGFuZCBhZGFwdCB0aGUgYWxzYS1s
+aWIKY29kZSBhY2NvcmRpbmdseS4gVGhleSBhcmUgaW50ZW5kZWQgdG8gYmUgc3F1YXNoZWQgdG9n
+ZXRoZXIgd2hlbgptZXJnaW5nLgoKW1BBVENIIDEvMl0gUmVwbGFjZSBsaXN0Lmggd2l0aCBNSVQt
+bGljZW5zZWQgaW1wbGVtZW50YXRpb24KW1BBVENIIDIvMl0gQWRhcHQgdG8gY2hhbmdlcyBpbiB0
+aGUgbGlua2VkIGxpc3QgQVBJCgotLSAKQ2xlbWVucyBMYW5nIOKAoiBEZXZlbG9wbWVudCBTcGVj
+aWFsaXN0CkJNVyBDYXIgSVQgR21iSCDigKIgTGlzZS1NZWl0bmVyLVN0ci4gMTQg4oCiIDg5MDgx
+IFVsbSDigKIgaHR0cDovL2Jtdy1jYXJpdC5jb20KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpCTVcgQ2FyIElU
+IEdtYkgKR2VzY2jDpGZ0c2bDvGhyZXI6IE1pY2hhZWwgV8O8cnRlbmJlcmdlciB1bmQgUmVpbmhh
+cmQgU3RvbGxlClNpdHogdW5kIFJlZ2lzdGVyZ2VyaWNodDogTcO8bmNoZW4gSFJCIDEzNDgxMAot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
