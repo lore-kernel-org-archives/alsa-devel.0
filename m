@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: cs42l73: Fix mask for setting
-	CS42L73_SP_3ST bit
-Date: Thu, 23 Jul 2015 08:26:57 +0800
-Message-ID: <1437611217.6620.2.camel@ingics.com>
+Subject: [PATCH 1/2] ASoC: cs35l32: Fix define for
+	CS35L32_SDOUT_3ST
+Date: Thu, 23 Jul 2015 08:28:50 +0800
+Message-ID: <1437611330.6620.4.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DC3126559B
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 02:27:05 +0200 (CEST)
-Received: by padck2 with SMTP id ck2so146255296pad.0
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 17:27:03 -0700 (PDT)
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id D826E26559B
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 02:28:55 +0200 (CEST)
+Received: by pachj5 with SMTP id hj5so146780040pac.3
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 17:28:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,27 +26,25 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-CS42L73_SP_3ST is BIT(7), so the mask field is wrong. Fix it.
+According to the datasheet, the CS35L32_SDOUT_3ST is BIT(3).
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/cs42l73.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l32.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 7cb1d70..be6477f 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1236,8 +1236,8 @@ static int cs42l73_set_tristate(struct snd_soc_dai *dai, int tristate)
- 	struct snd_soc_codec *codec = dai->codec;
- 	int id = dai->id;
+diff --git a/sound/soc/codecs/cs35l32.h b/sound/soc/codecs/cs35l32.h
+index 31ab804..1d6c250 100644
+--- a/sound/soc/codecs/cs35l32.h
++++ b/sound/soc/codecs/cs35l32.h
+@@ -80,7 +80,7 @@ struct cs35l32_platform_data {
+ #define CS35L32_GAIN_MGR_MASK		0x08
+ #define CS35L32_ADSP_SHARE_MASK		0x08
+ #define CS35L32_ADSP_DATACFG_MASK	0x30
+-#define CS35L32_SDOUT_3ST		0x80
++#define CS35L32_SDOUT_3ST		0x08
+ #define CS35L32_BATT_REC_MASK		0x0E
+ #define CS35L32_BATT_THRESH_MASK	0x30
  
--	return snd_soc_update_bits(codec, CS42L73_SPC(id),
--					0x7F, tristate << 7);
-+	return snd_soc_update_bits(codec, CS42L73_SPC(id), CS42L73_SP_3ST,
-+				   tristate << 7);
- }
- 
- static const struct snd_pcm_hw_constraint_list constraints_12_24 = {
 -- 
 2.1.0
