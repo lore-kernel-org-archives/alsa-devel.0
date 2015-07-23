@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Remove NULL test for desc
-	before gpiod_set_value_cansleep call" to the asoc tree
-Date: Thu, 23 Jul 2015 16:47:29 +0100
-Message-ID: <E1ZIIiX-0008CN-DI@debutante>
-References: <1437665524.20606.8.camel@ingics.com>
+Subject: Applied "ASoC: tas2552: Fix off-by-one for
+	max_register setting" to the asoc tree
+Date: Thu, 23 Jul 2015 16:47:28 +0100
+Message-ID: <E1ZIIiW-0008Bu-EE@debutante>
+References: <1437663364.20606.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F686260711
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:47:35 +0200 (CEST)
-In-Reply-To: <1437665524.20606.8.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A9FC2610B1
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:47:37 +0200 (CEST)
+In-Reply-To: <1437663364.20606.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Dan Murphy <dmurphy@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Remove NULL test for desc before gpiod_set_value_cansleep call
+   ASoC: tas2552: Fix off-by-one for max_register setting
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From f285f1610341af4181791938777e0affb5531278 Mon Sep 17 00:00:00 2001
+>From 95f1044f5674b53f67e0933abff228c594792f4c Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 23 Jul 2015 23:32:04 +0800
-Subject: [PATCH] ASoC: rt5677: Remove NULL test for desc before
- gpiod_set_value_cansleep call
+Date: Thu, 23 Jul 2015 22:56:04 +0800
+Subject: [PATCH] ASoC: tas2552: Fix off-by-one for max_register setting
 
-It's safe to call gpiod_set_value_cansleep() with NULL desc.
+The latest valid register is TAS2552_VBAT_DATA.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Dan Murphy<dmurphy@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ sound/soc/codecs/tas2552.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 13b871f11023..62230e05eac1 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4763,10 +4763,8 @@ static int rt5677_remove(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/tas2552.h b/sound/soc/codecs/tas2552.h
+index 5746f8fd0afd..e34752b8a299 100644
+--- a/sound/soc/codecs/tas2552.h
++++ b/sound/soc/codecs/tas2552.h
+@@ -42,7 +42,7 @@
+ #define TAS2552_BOOST_APT_CTRL		0x14
+ #define TAS2552_VER_NUM			0x16
+ #define TAS2552_VBAT_DATA		0x19
+-#define TAS2552_MAX_REG			0x20
++#define TAS2552_MAX_REG			TAS2552_VBAT_DATA
  
- 	regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
--	if (rt5677->pow_ldo2)
--		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
--	if (rt5677->reset_pin)
--		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
-+	gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+	gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 
- 	return 0;
- }
-@@ -4780,10 +4778,8 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- 		regcache_cache_only(rt5677->regmap, true);
- 		regcache_mark_dirty(rt5677->regmap);
- 
--		if (rt5677->pow_ldo2)
--			gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
--		if (rt5677->reset_pin)
--			gpiod_set_value_cansleep(rt5677->reset_pin, 0);
-+		gpiod_set_value_cansleep(rt5677->pow_ldo2, 0);
-+		gpiod_set_value_cansleep(rt5677->reset_pin, 0);
- 	}
- 
- 	return 0;
-@@ -4794,10 +4790,8 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (!rt5677->dsp_vad_en) {
--		if (rt5677->pow_ldo2)
--			gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
--		if (rt5677->reset_pin)
--			gpiod_set_value_cansleep(rt5677->reset_pin, 1);
-+		gpiod_set_value_cansleep(rt5677->pow_ldo2, 1);
-+		gpiod_set_value_cansleep(rt5677->reset_pin, 1);
- 		if (rt5677->pow_ldo2 || rt5677->reset_pin)
- 			msleep(10);
- 
+ /* CFG1 Register Masks */
+ #define TAS2552_DEV_RESET		(1 << 0)
 -- 
 2.1.4
