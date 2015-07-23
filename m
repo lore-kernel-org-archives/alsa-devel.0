@@ -1,83 +1,68 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: cs35l32: Remove unneeded NULL test
- for cs35l32->reset_gpio
-Date: Thu, 23 Jul 2015 08:29:57 +0800
-Message-ID: <1437611397.6620.5.camel@ingics.com>
-References: <1437611330.6620.4.camel@ingics.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] drm/i915: Add audio hotplug info struct
+Date: Thu, 23 Jul 2015 09:13:21 +0530
+Message-ID: <20150723034321.GA23525@localhost>
+References: <1437465447-8974-1-git-send-email-david.henningsson@canonical.com>
+ <1437465447-8974-2-git-send-email-david.henningsson@canonical.com>
+ <s5hbnf4iou6.wl-tiwai@suse.de> <55AF593B.8030609@canonical.com>
+ <s5hy4i8h8pw.wl-tiwai@suse.de> <20150722141323.GX23525@localhost>
+ <55AFD857.4090901@canonical.com> <s5hd1zkx7bi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E37026559B
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 02:30:02 +0200 (CEST)
-Received: by pachj5 with SMTP id hj5so146794138pac.3
- for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2015 17:30:01 -0700 (PDT)
-In-Reply-To: <1437611330.6620.4.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hd1zkx7bi.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-It's safe to call gpiod_set_value_cansleep() with NULL desc.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs35l32.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 7e7d243..203c720 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -441,8 +441,7 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
- 	if (IS_ERR(cs35l32->reset_gpio))
- 		return PTR_ERR(cs35l32->reset_gpio);
- 
--	if (cs35l32->reset_gpio)
--		gpiod_set_value_cansleep(cs35l32->reset_gpio, 1);
-+	gpiod_set_value_cansleep(cs35l32->reset_gpio, 1);
- 
- 	/* initialize codec */
- 	ret = regmap_read(cs35l32->regmap, CS35L32_DEVID_AB, &reg);
-@@ -536,8 +535,7 @@ static int cs35l32_i2c_remove(struct i2c_client *i2c_client)
- 	snd_soc_unregister_codec(&i2c_client->dev);
- 
- 	/* Hold down reset */
--	if (cs35l32->reset_gpio)
--		gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
- 
- 	return 0;
- }
-@@ -551,8 +549,7 @@ static int cs35l32_runtime_suspend(struct device *dev)
- 	regcache_mark_dirty(cs35l32->regmap);
- 
- 	/* Hold down reset */
--	if (cs35l32->reset_gpio)
--		gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
- 
- 	/* remove power */
- 	regulator_bulk_disable(ARRAY_SIZE(cs35l32->supplies),
-@@ -575,8 +572,7 @@ static int cs35l32_runtime_resume(struct device *dev)
- 		return ret;
- 	}
- 
--	if (cs35l32->reset_gpio)
--		gpiod_set_value_cansleep(cs35l32->reset_gpio, 1);
-+	gpiod_set_value_cansleep(cs35l32->reset_gpio, 1);
- 
- 	regcache_cache_only(cs35l32->regmap, false);
- 	regcache_sync(cs35l32->regmap);
--- 
-2.1.0
+T24gV2VkLCBKdWwgMjIsIDIwMTUgYXQgMTA6MzE6NDVQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+ID4gPiBUaGF0IGRlcGVuZHMgb24gdGhlIGRldmljZSB3ZSByZWdpc3RlciB0aGlzIHdp
+dGguIEFjdHVhbGx5IHRoaXMgbWFrZXMgbW9yZQo+ID4gPiBzZW5zZSB0byBtZSA6KQo+ID4gPgo+
+ID4gPiBJZiB3ZSByZWdpc3RlciB3aXRoIHN0cnVjdCBkZXZpY2UgKmF1ZGlvX2Rldiwgd2hpY2gg
+aW4gdGhpcyBjYXNlIHdvdWxkIGJlCj4gPiA+IHRoZSBjb2RlYyBkZXZpY2Ugd2UgY3JlYXRlIHdo
+aWxlIHByb2JpbmcgdGhlIGJ1cy4gVGhpcyB3YXkgeW91IGFyZSBsaW5raW5nIGk5MTUKPiA+ID4g
+b3BzIHRvIHRoZSBjb2RlYyBkZXZpY2UuIE9mY291cnNlIGhkYWNfZGV2aWNlIGhhcyBidXMgcG9p
+bnRlciBidXQgeW91IGNhbgo+ID4gPiBpbnZva2UgZGV2aWNlIGNhbGxiYWNrIHdpdGhvdXQgZXZl
+biBzZWFyY2hpbmcgZm9yIHRoZSBkZXZpY2UgOikKPiA+IAo+ID4gSXQgd291bGQgcmVxdWlyZSBz
+b21lIGV4dHJhIHNldHVwLCBzbyBJIHNraXBwZWQgaXQgKGF0IGxlYXN0IGZvciBub3cpLgo+ID4g
+Cj4gPiBJIGUsIGluIG9yZGVyIHRvIGRldGVjdCBjb2RlY3MsIHdlIG5lZWQgdG8gY2FsbCBoZGFj
+X2k5MTUgZnVuY3Rpb25zIHRvIAo+ID4gdHVybiB0aGUgcG93ZXIgd2VsbCBvbi4gQW5kIGluIG9y
+ZGVyIHRvIGNvbm5lY3QgdGhlIGNvZGVjIHRvIHRoZSAKPiA+IGk5MTVfYXVkaW9fY29tcG9uZW50
+LCB3ZSBuZWVkIHRvIGhhdmUgZGV0ZWN0ZWQgYSBjb2RlYy4KWWVzIHRoYXQgaXMgdHJ1ZSBidXQg
+d2hlbiBkcml2ZXIgcmVnaXN0ZXJzIHRoZSBjYWxsYmFjayB5b3UgY2FuIGFzc2lnbiB0aGUKY2Fs
+bGJhY2sgdG8gaTkxNSBjb21wb25lbnQsIHNvIGFmdGVyd2FyZHMgdGhlIGNhbGwgZnJvbSBpOTE1
+IGxhbmRzIHVwIGluCmNvZGVjLiBJZiBub3QgcmVnaXN0ZXJlZCB3ZSBoYXZlIGRlZmF1bHQgYnVz
+IGhhbmRsZXIgOikKCj4gPiBXaGljaCwgbm93IHRoYXQgSSB0aGluayBvZiBpdCwgYWN0dWFsbHkg
+Z2l2ZXMgYW4gaW50ZXJlc3RpbmcgcG90ZW50aWFsIAo+ID4gcmFjZSBjb25kaXRpb24sIGluIGNh
+c2UgdGhlIGZvbGxvd2luZyBoYXBwZW5zOgo+ID4gCj4gPiAxKSBNb25pdG9yIGlzIHBsdWdnZWQg
+aW4gYXQgYm9vdCB0aW1lCj4gPiAyKSBpOTE1IGluaXRpYWxpemVzCj4gPiAzKSBoZGEgc3RhcnRz
+IGluaXRpYWxpemluZyBhbmQgc2V0cyB1cCB0aGUgYXVkaW8gY29tcG9uZW50Cj4gPiA0KSBpOTE1
+IGZpbmlzaGVzIGluaXRpYWxpemF0aW9uIGFuZCBhcyBwYXJ0IG9mIHRoYXQsIGNhbGxzIHRoZSBo
+b3RwbHVnIAo+ID4gbm90aWZ5IHRvIGxldCBoZGEga25vdyB0aGF0IHRoZSBtb25pdG9yIGlzIHBs
+dWdnZWQgaW4uIEhvd2V2ZXIsIGF0IHRoaXMgCj4gPiBwb2ludCwgaGRhIGhhcyBub3QgZmluaXNo
+ZWQgaW5pdGlhbGl6YXRpb24geWV0LCBzbyB0aGVyZSBhcmUgbm8gY29kZWNzIAo+ID4gdGhhdCBs
+aXN0ZW4gZm9yIHRoaXMgaW5mb3JtYXRpb24uCj4gPiAKPiA+IEFueWhvdywgdGhpcyBpcyBub3Qg
+YSBwcm9ibGVtIHJlYWxseSB5ZXQsIGJ1dCBpdCBtaWdodCBiZSBpZiB3ZSBldmVyIAo+ID4gZGVj
+aWRlIHRvIG5vdCB3cml0ZSB0aGUgRUxEIHRvIHRoZSBoYXJkd2FyZS4KPiAKPiBGb3IgYXZvaWQg
+c3VjaCBhIHByb2JsZW0sIG1heWJlIHdlIG5lZWQgdHdvIG9wcywgb25lIGZvciBub3RpZmljYXRp
+b24KPiBhbmQgb25lIGZvciBnZXR0aW5nIHRoZSBhc3NpZ25lZCBkYXRhLiAgQXQgdGhlIGluaXRp
+YWxpemF0aW9uIHRpbWUsCj4gdGhlIGF1ZGlvIGRyaXZlciBxdWVyaWVzIHRoZSBhc3NpZ25lZCBz
+dGF0dXMgYW5kIGRhdGEuICBXaGVuIGEgaG90cGx1Zwo+IGhhcHBlbnMsIGl0J3MganVzdCBub3Rp
+ZmllZC4gIFRoYXQgaXMsIGl0IHNpbXBseSByZXBsYWNlcyB0aGUgY3VycmVudAo+IHVuc29sIGV2
+ZW50IGFuZCB0aGUgRUxEIGRhdGEgcmVhZCB2aWEgdHdvIG9wcy4KWWVhaCwgSSBkbyBmYXZvdXIg
+YWRkaW5nIG5ldyBvcHMgc28gdGhhdCB3ZSBjYW4gcXVlcnkgdGhlIGN1cnJlbnQgdmFsdWVzIGFu
+ZApzZXR1cCB3aGVuZXZlciBkcml2ZXIgcHJvYmVzCgotLSAKflZpbm9kCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0
+CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
