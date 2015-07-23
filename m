@@ -1,71 +1,68 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: pcm1681: Improve the logic for
- de-emphasis sampling rate selection
-Date: Thu, 23 Jul 2015 23:23:35 +0800
-Message-ID: <1437665015.20606.6.camel@ingics.com>
-References: <1437664946.20606.5.camel@ingics.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 3/4] ALSA: hda - Dispatch incoming HDMI hotplug
+	i915 callback
+Date: Thu, 23 Jul 2015 17:26:18 +0200
+Message-ID: <1437665179-9786-4-git-send-email-david.henningsson@canonical.com>
+References: <1437665179-9786-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
- [209.85.192.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 47E922657DD
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 17:23:47 +0200 (CEST)
-Received: by pdbbh15 with SMTP id bh15so113042081pdb.1
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 08:23:45 -0700 (PDT)
-In-Reply-To: <1437664946.20606.5.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Marek Belisko <marek.belisko@streamunlimited.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1437665179-9786-1-git-send-email-david.henningsson@canonical.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: vinod.koul@intel.com, jani.nikula@linux.intel.com, daniel.vetter@intel.com, tiwai@suse.de, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Slightly improve the logic for de-emphasis sampling rate selection by break
-out the loop if the rate is matched.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/pcm1681.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index 1011142..5832523 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -95,17 +95,22 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
- 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
- 	int i = 0, val = -1, enable = 0;
- 
--	if (priv->deemph)
--		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
--			if (pcm1681_deemph[i] == priv->rate)
-+	if (priv->deemph) {
-+		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
-+			if (pcm1681_deemph[i] == priv->rate) {
- 				val = i;
-+				break;
-+			}
-+		}
-+	}
- 
- 	if (val != -1) {
- 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
- 				   PCM1681_DEEMPH_RATE_MASK, val << 3);
- 		enable = 1;
--	} else
-+	} else {
- 		enable = 0;
-+	}
- 
- 	/* enable/disable deemphasis functionality */
- 	return regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
--- 
-2.1.0
+VGhpcyBsZXRzIGludGVyZXN0ZWQgY29kZWMocykgYmUgbm90aWZpZWQgb2YgSERNSSBob3RwbHVn
+CmV2ZW50cyBzZW50IGZyb20gdGhlIGk5MTUgZHJpdmVyLgoKU2lnbmVkLW9mZi1ieTogRGF2aWQg
+SGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+Ci0tLQogaW5jbHVk
+ZS9zb3VuZC9oZGF1ZGlvLmggfCAgICA0ICsrKysKIHNvdW5kL2hkYS9oZGFjX2k5MTUuYyAgIHwg
+ICAyMyArKysrKysrKysrKysrKysrKysrKysrKwogMiBmaWxlcyBjaGFuZ2VkLCAyNyBpbnNlcnRp
+b25zKCspCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9oZGF1ZGlvLmggYi9pbmNsdWRlL3Nv
+dW5kL2hkYXVkaW8uaAppbmRleCA0Y2FmMWZkLi44MTQyZDAzIDEwMDY0NAotLS0gYS9pbmNsdWRl
+L3NvdW5kL2hkYXVkaW8uaAorKysgYi9pbmNsdWRlL3NvdW5kL2hkYXVkaW8uaApAQCAtNzksNiAr
+NzksMTAgQEAgc3RydWN0IGhkYWNfZGV2aWNlIHsKIAlpbnQgKCpleGVjX3ZlcmIpKHN0cnVjdCBo
+ZGFjX2RldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgY21kLAogCQkJIHVuc2lnbmVkIGludCBmbGFn
+cywgdW5zaWduZWQgaW50ICpyZXMpOwogCisJLyogVXNlZCBmb3IgaG90cGx1ZyBub3RpZmljYXRp
+b24gZnJvbSBpOTE1IGRyaXZlciAqLworCXZvaWQgKCppOTE1X2hvdHBsdWdfbm90aWZ5KShzdHJ1
+Y3QgaGRhY19kZXZpY2UgKiwgaW50IHBvcnQsCisJCQkJICAgIGludCBwb3J0X21zdF9pbmRleCk7
+CisKIAkvKiB3aWRnZXRzICovCiAJdW5zaWduZWQgaW50IG51bV9ub2RlczsKIAloZGFfbmlkX3Qg
+c3RhcnRfbmlkLCBlbmRfbmlkOwpkaWZmIC0tZ2l0IGEvc291bmQvaGRhL2hkYWNfaTkxNS5jIGIv
+c291bmQvaGRhL2hkYWNfaTkxNS5jCmluZGV4IDU2NzZiODQuLjE3Mjk1YzIgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL2hkYS9oZGFjX2k5MTUuYworKysgYi9zb3VuZC9oZGEvaGRhY19pOTE1LmMKQEAgLTEx
+OCw2ICsxMTgsOCBAQCBzdGF0aWMgdm9pZCBoZGFjX2NvbXBvbmVudF9tYXN0ZXJfdW5iaW5kKHN0
+cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgKmFjb21w
+ID0gaGRhY19hY29tcDsKIAorCWFjb21wLT5hdWRpb19vcHMgPSBOVUxMOworCWFjb21wLT5hdWRp
+b19wdHIgPSBOVUxMOwogCW1vZHVsZV9wdXQoYWNvbXAtPm9wcy0+b3duZXIpOwogCWNvbXBvbmVu
+dF91bmJpbmRfYWxsKGRldiwgYWNvbXApOwogCVdBUk5fT04oYWNvbXAtPm9wcyB8fCBhY29tcC0+
+ZGV2KTsKQEAgLTEyOCw2ICsxMzAsMjQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBjb21wb25lbnRf
+bWFzdGVyX29wcyBoZGFjX2NvbXBvbmVudF9tYXN0ZXJfb3BzID0gewogCS51bmJpbmQgPSBoZGFj
+X2NvbXBvbmVudF9tYXN0ZXJfdW5iaW5kLAogfTsKIAorc3RhdGljIHZvaWQgaTkxNV9hdWRpb19j
+b21wb25lbnRfaG90cGx1Z19ub3RpZnkodm9pZCAqYXVkaW9fcHRyLAorCQkJCQkJaW50IHBvcnQs
+IGludCBwb3J0X21zdF9pbmRleCkKK3sKKwlzdHJ1Y3QgaGRhY19kZXZpY2UgKmQ7CisJc3RydWN0
+IGhkYWNfYnVzICpidXMgPSBhdWRpb19wdHI7CisKKwlkZXZfZGJnKGJ1cy0+ZGV2LCAiaTkxNSBo
+b3RwbHVnIGV2ZW50IChwb3J0ID0gJWQ6JWQpIiwKKwkJcG9ydCwgcG9ydF9tc3RfaW5kZXgpOwor
+CisJbGlzdF9mb3JfZWFjaF9lbnRyeShkLCAmYnVzLT5jb2RlY19saXN0LCBsaXN0KQorCQlpZiAo
+ZC0+aTkxNV9ob3RwbHVnX25vdGlmeSkKKwkJCWQtPmk5MTVfaG90cGx1Z19ub3RpZnkoZCwgcG9y
+dCwgcG9ydF9tc3RfaW5kZXgpOworfQorCitzdGF0aWMgY29uc3Qgc3RydWN0IGk5MTVfYXVkaW9f
+Y29tcG9uZW50X2F1ZGlvX29wcyBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgPSB7CisJ
+LmhvdHBsdWdfbm90aWZ5ID0gaTkxNV9hdWRpb19jb21wb25lbnRfaG90cGx1Z19ub3RpZnksCit9
+OworCiBzdGF0aWMgaW50IGhkYWNfY29tcG9uZW50X21hc3Rlcl9tYXRjaChzdHJ1Y3QgZGV2aWNl
+ICpkZXYsIHZvaWQgKmRhdGEpCiB7CiAJLyogaTkxNSBpcyB0aGUgb25seSBzdXBwb3J0ZWQgY29t
+cG9uZW50ICovCkBAIC0xNjMsNiArMTgzLDkgQEAgaW50IHNuZF9oZGFjX2k5MTVfaW5pdChzdHJ1
+Y3QgaGRhY19idXMgKmJ1cykKIAkJcmV0ID0gLUVOT0RFVjsKIAkJZ290byBvdXRfbWFzdGVyX2Rl
+bDsKIAl9CisJYWNvbXAtPmF1ZGlvX29wcyA9ICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19v
+cHM7CisJYWNvbXAtPmF1ZGlvX3B0ciA9IGJ1czsKKwogCWRldl9kYmcoZGV2LCAiYm91bmQgdG8g
+aTkxNSBjb21wb25lbnQgbWFzdGVyXG4iKTsKIAogCXJldHVybiAwOwotLSAKMS43LjkuNQoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
+aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5m
+cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
