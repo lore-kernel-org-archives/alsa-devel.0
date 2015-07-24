@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4265: CS4265_INT_STATUS is readable
-	register" to the asoc tree
-Date: Fri, 24 Jul 2015 18:31:58 +0100
-Message-ID: <E1ZIgpC-0001lp-Bx@debutante>
-References: <1437280372.23834.1.camel@ingics.com>
+Subject: Applied "ASoC: cs4265: Fix setting dai format for
+	Left/Right Justified" to the asoc tree
+Date: Fri, 24 Jul 2015 18:31:59 +0100
+Message-ID: <E1ZIgpD-0001mL-Bp@debutante>
+References: <1437278956.20103.1.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6481515673285324939=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FB912605D9
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 19:32:04 +0200 (CEST)
-In-Reply-To: <1437280372.23834.1.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D8F922605E4
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 19:32:05 +0200 (CEST)
+In-Reply-To: <1437278956.20103.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,9 +25,12 @@ To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============6481515673285324939==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: cs4265: CS4265_INT_STATUS is readable register
+   ASoC: cs4265: Fix setting dai format for Left/Right Justified
 
 has been applied to the asoc tree at
 
@@ -53,49 +55,81 @@ to this mail.
 Thanks,
 Mark
 
->From 80deaf09cb3fb3939c1d2b84610ae411cd7c6001 Mon Sep 17 00:00:00 2001
+>From bffc4496886683fac86d31e5d0cf9a22f8044e3d Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 19 Jul 2015 12:32:52 +0800
-Subject: [PATCH] ASoC: cs4265: CS4265_INT_STATUS is readable register
+Date: Sun, 19 Jul 2015 12:09:16 +0800
+Subject: [PATCH] ASoC: cs4265: Fix setting dai format for Left/Right Justified
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-CS4265_INT_STATUS was missed in cs4265_readable_register, fix it.
-The register 0x01 ~ 0x12 are readable, use
-CS4265_CHIP_ID ... CS4265_SPDIF_CTL2 syntax for better readability.
+The settings in current code does not match the datasheet, fix it.
+
+DAC Control - Address 03h
+
+DAC Digital Interface Format (Bits 5:4)
+        DAC_DIF1 DAC_DIF0 Description
+        0        0        Left Justified, up to 24-bit data (default)
+        0        1        I²S, up to 24-bit data
+        1        0        Right-Justified, 16-bit Data
+        1        1        Right-Justified, 24-bit Data
+
+Transmitter Control 2 - Address 12h
+
+Transmitter Digital Interface Format (Bits 7:6)
+        Tx_DIF1 Tx_DIF0 Description Format Figure
+        0       0       Left Justified, up to 24-bit data (default)
+        0       1       I²S, up to 24-bit data
+        1       0       Right-Justified, 16-bit Data
+        1       1       Right-Justified, 24-bit Data
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4265.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+ sound/soc/codecs/cs4265.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index d7ec4756e45b..688c5007d157 100644
+index d7ec4756e45b..8e36198474d9 100644
 --- a/sound/soc/codecs/cs4265.c
 +++ b/sound/soc/codecs/cs4265.c
-@@ -60,23 +60,7 @@ static const struct reg_default cs4265_reg_defaults[] = {
- static bool cs4265_readable_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case CS4265_PWRCTL:
--	case CS4265_DAC_CTL:
--	case CS4265_ADC_CTL:
--	case CS4265_MCLK_FREQ:
--	case CS4265_SIG_SEL:
--	case CS4265_CHB_PGA_CTL:
--	case CS4265_CHA_PGA_CTL:
--	case CS4265_ADC_CTL2:
--	case CS4265_DAC_CHA_VOL:
--	case CS4265_DAC_CHB_VOL:
--	case CS4265_DAC_CTL2:
--	case CS4265_SPDIF_CTL1:
--	case CS4265_SPDIF_CTL2:
--	case CS4265_INT_MASK:
--	case CS4265_STATUS_MODE_MSB:
--	case CS4265_STATUS_MODE_LSB:
--	case CS4265_CHIP_ID:
-+	case CS4265_CHIP_ID ... CS4265_SPDIF_CTL2:
- 		return true;
+@@ -457,14 +457,14 @@ static int cs4265_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		if (params_width(params) == 16) {
+ 			snd_soc_update_bits(codec, CS4265_DAC_CTL,
+-				CS4265_DAC_CTL_DIF, (1 << 5));
++				CS4265_DAC_CTL_DIF, (2 << 4));
+ 			snd_soc_update_bits(codec, CS4265_SPDIF_CTL2,
+-				CS4265_SPDIF_CTL2_DIF, (1 << 7));
++				CS4265_SPDIF_CTL2_DIF, (2 << 6));
+ 		} else {
+ 			snd_soc_update_bits(codec, CS4265_DAC_CTL,
+-				CS4265_DAC_CTL_DIF, (3 << 5));
++				CS4265_DAC_CTL_DIF, (3 << 4));
+ 			snd_soc_update_bits(codec, CS4265_SPDIF_CTL2,
+-				CS4265_SPDIF_CTL2_DIF, (1 << 7));
++				CS4265_SPDIF_CTL2_DIF, (3 << 6));
+ 		}
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+@@ -473,7 +473,7 @@ static int cs4265_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_update_bits(codec, CS4265_ADC_CTL,
+ 			CS4265_ADC_DIF, 0);
+ 		snd_soc_update_bits(codec, CS4265_SPDIF_CTL2,
+-			CS4265_SPDIF_CTL2_DIF, (1 << 6));
++			CS4265_SPDIF_CTL2_DIF, 0);
+ 
+ 		break;
  	default:
- 		return false;
 -- 
 2.1.4
+
+
+--===============6481515673285324939==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6481515673285324939==--
