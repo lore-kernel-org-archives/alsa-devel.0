@@ -1,18 +1,16 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: sta529: Remove redundant
- I2C_FUNC_SMBUS_BYTE_DATA functionality check
-Date: Fri, 24 Jul 2015 11:17:28 +0800
-Message-ID: <1437707848.12634.2.camel@ingics.com>
+From: woodrow.shen@canonical.com
+Subject: [ [PATCH] ALSA: hda- Add headset mic pin quirk for a
+	Dell device]
+Date: Fri, 24 Jul 2015 12:32:26 +0800
+Message-ID: <1437712346-5693-1-git-send-email-woodrow.shen@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 96732260522
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 05:17:35 +0200 (CEST)
-Received: by pdjr16 with SMTP id r16so6335490pdj.3
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 20:17:34 -0700 (PDT)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 634BD260522
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 06:32:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rajeev Kumar <rajeevkumar.linux@gmail.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: woodrowshen <woodrow.shen@canonical.com>, david.henningsson@canonical.com, 1475553@bugs.launchpad.net
 List-Id: alsa-devel@alsa-project.org
 
-This checking is done by regmap_get_i2c_bus() which is called in
-devm_regmap_init_i2c().
+From: woodrowshen <woodrow.shen@canonical.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/sta529.c | 3 ---
- 1 file changed, 3 deletions(-)
+BugLink: https://bugs.launchpad.net/bugs/1475553
+rigned-off-by: woodrowshen <woodrow.shen@canonical.com>
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index 3430f44..2cdaca9 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -339,9 +339,6 @@ static int sta529_i2c_probe(struct i2c_client *i2c,
- 	struct sta529 *sta529;
- 	int ret;
- 
--	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
--		return -EINVAL;
--
- 	sta529 = devm_kzalloc(&i2c->dev, sizeof(struct sta529), GFP_KERNEL);
- 	if (!sta529)
- 		return -ENOMEM;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 742fc62..d94c0e3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5473,6 +5473,28 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1e, 0x411111f0},
+ 		{0x21, 0x0221103f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x40000000},
++		{0x14, 0x90170150},
++		{0x17, 0x411111f0},
++		{0x18, 0x411111f0},
++		{0x19, 0x411111f0},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x02011020},
++		{0x1d, 0x4054c029},
++		{0x1e, 0x411111f0},
++		{0x21, 0x0221105f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x40000000},
++		{0x14, 0x90170110},
++		{0x17, 0x411111f0},
++		{0x18, 0x411111f0},
++		{0x19, 0x411111f0},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x01014020},
++		{0x1d, 0x4054c029},
++		{0x1e, 0x411111f0},
++		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60160},
+ 		{0x14, 0x90170120},
+ 		{0x17, 0x90170140},
 -- 
-2.1.0
+2.1.4
