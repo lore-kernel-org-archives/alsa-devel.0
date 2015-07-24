@@ -1,282 +1,71 @@
-From: Martin Geier <martin.geier@streamunlimited.com>
-Subject: Re: snd_pcm_set_params faild on set_buffer_time_near
- and	set_period_time_near
-Date: Fri, 24 Jul 2015 13:16:44 +0200
-Message-ID: <55B21E9C.9010506@streamunlimited.com>
-References: <55AE0831.2010206@streamunlimited.com>	<s5htwsvwawr.wl-tiwai@suse.de>	<55B1EEAE.3080307@streamunlimited.com>
- <s5h8ua6vude.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050005090206030507090208"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bsmtp.bon.at (bsmtp8.bon.at [213.33.87.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DF9B2605A1
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:16:45 +0200 (CEST)
-In-Reply-To: <s5h8ua6vude.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: pcm1681: Fix setting de-emphasis sampling rate selection" to the asoc tree
+Date: Fri, 24 Jul 2015 12:31:16 +0100
+Message-ID: <E1ZIbC8-000343-D9@debutante>
+References: <1437664946.20606.5.camel@ingics.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1437664946.20606.5.camel@ingics.com>
+Sender: stable-owner@vger.kernel.org
+To: Axel Lin <axel.lin@ingics.com>, Marek Belisko <marek.belisko@streamunlimited.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050005090206030507090208
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+The patch
 
-Patch with fixed name and description.
+   ASoC: pcm1681: Fix setting de-emphasis sampling rate selection
 
-Martin
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On 24.07.2015 10:21, Takashi Iwai wrote:
-> On Fri, 24 Jul 2015 09:52:14 +0200,
-> Martin Geier wrote:
->> Thanks for help,
->>
->> in attachment is patch with suggest change.
->> Is the patch acceptable?
-> I prefer a bit clearer name like params_saved or such, but yes, it's
-> what I had in my mind, too.  Could you tidy it up and resubmit with
-> the more description -- why it's needed and what does it?  Last but
-> not least, it'd be helpful if you give also signed-off-by tag.
->
->
-> thanks,
->
-> Takashi
->
->> Martin
->>
->> On 23.07.2015 10:11, Takashi Iwai wrote:
->>> On Tue, 21 Jul 2015 10:52:01 +0200,
->>> Martin Geier wrote:
->>>> Hallo,
->>>>
->>>> I tried to configure alsa device with snd_pcm_set_params function,
->>>> requested
->>>> parameters was:
->>>> channel 2, rate: 22050, soft_resample: 1, latency: 50000
->>>>
->>>> Function snd_pcm_hw_params_set_buffer_time_near and
->>>> snd_pcm_hw_param_set_near
->>>> is called with:
->>>> min: 50000, max: 50000, mindir: 0, maxdir: -1
->>>>
->>>> and input params was:
->>>>
->>>> ACCESS:  RW_INTERLEAVED
->>>> FORMAT:  S16_LE
->>>> SUBFORMAT:  STD
->>>> SAMPLE_BITS: 16
->>>> FRAME_BITS: 32
->>>> CHANNELS: 2
->>>> RATE: 22050
->>>> PERIOD_TIME: (362 743039)
->>>> PERIOD_SIZE: [8 16384]
->>>> PERIOD_BYTES: [32 65536]
->>>> PERIODS: [2 19]
->>>> BUFFER_TIME: (725 1486078)
->>>> BUFFER_SIZE: [16 32768]
->>>> BUFFER_BYTES: [64 131072]
->>>> TICK_TIME: ALL
->>>>
->>>> unfortunately, this function fails, on function snd_pcm_hw_param_set_first:
->>>>
->>>> ALSA ERROR hw_params: set_near (BUFFER_TIME)
->>>>               value = 50000 : Invalid argument
->>>> ACCESS:  RW_INTERLEAVED
->>>> FORMAT:  S16_LE
->>>> SUBFORMAT:  STD
->>>> SAMPLE_BITS: 16
->>>> FRAME_BITS: 32
->>>> CHANNELS: 2
->>>> RATE: 22050
->>>> PERIOD_TIME: (4580 5533)
->>>> PERIOD_SIZE: NONE
->>>> PERIOD_BYTES: [404 488]
->>>> PERIODS: 10
->>>> BUFFER_TIME: (50022 50023)
->>>> BUFFER_SIZE: 1103
->>>> BUFFER_BYTES: 4412
->>>> TICK_TIME: ALL
->>>>
->>>> This shouldn't be problem because in snd_pcm_set_params is
->>>> snd_pcm_hw_params_set_period_time_near called.
->>>> This function should be called with same params as
->>>> snd_pcm_hw_params_set_buffer_time_near
->>>> but the input params are:
->>>>
->>>> snd_pcm_hw_param_set_near: min: 12500, max: 12500, mindir: 0, maxdir: -1
->>>> hw_params: snd_pcm_hw_param_set_near (PERIOD_TIME)
->>>> ACCESS:  RW_INTERLEAVED
->>>> FORMAT:  S16_LE
->>>> SUBFORMAT:  STD
->>>> SAMPLE_BITS: 16
->>>> FRAME_BITS: 32
->>>> CHANNELS: 2
->>>> RATE: 22050
->>>> PERIOD_TIME: (4580 5533)
->>>> PERIOD_SIZE: NONE
->>>> PERIOD_BYTES: [404 488]
->>>> PERIODS: 10
->>>> BUFFER_TIME: (50022 50023)
->>>> BUFFER_SIZE: 1103
->>>> BUFFER_BYTES: 4412
->>>> TICK_TIME: ALL
->>>>
->>>> because in snd_pcm_hw_param_set_near is
->>>>
->>>> if (last)
->>>>        err = snd_pcm_hw_param_set_last(pcm, params, var, val, dir);
->>>> else
->>>>        err = snd_pcm_hw_param_set_first(pcm, params, var, val, dir);
->>>> if (err < 0)
->>>>        dump_hw_params(params, "set_near", var, *val, err);
->>>> return err;
->>>>
->>>> and in error part is only debug output and not restore original parameters.
->>>>
->>>> Environment:
->>>> alsa-lib 1.0.27.1
->>>> TI AM335x soc
->>>>
->>>> Simple fix is attached, but I am not sure if it is correct.
->>> Thanks for analysis and patch.  It's however rather a bug in
->>> snd_pcm_set_params().  There is no guarantee to keep the old value in
->>> snd_pcm_set_*(), thus the caller needs to take care of it instead.
->>>
->>>
->>> Takashi
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> -- 
->> *StreamUnlimited*
->> High Tech Campus Vienna, Gutheil-Schoder-Gasse 10, A-1102 Vienna, Austria
->> Levocska 9, 851 01 Bratislava, Slovakia
->> Email: martin.geier@streamunlimited.com
->> www.streamunlimited.com
->>
->> Meet us at:
->> IFA - Berlin, 4-9 September 2015
->> HK Electronics - Hong Kong, 13-16 October 2015
->> CEDIA - Dallas, 14-17 October 2015
->> [1.2  <text/html; windows-1252 (7bit)>]
->>
->> >From 2d4e94d974678bbd4826b33c59c275d1f34edc20 Mon Sep 17 00:00:00 2001
->> From: Martin Geier <martin.geier@streamunlimited.com>
->> Date: Fri, 24 Jul 2015 09:30:57 +0200
->> Subject: [PATCH] restore hw params on set rate failed
->>
->> ---
->>   pcm.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
->> index ca4d416..b6de73e 100644
->> --- a/src/pcm/pcm.c
->> +++ b/src/pcm/pcm.c
->> @@ -7883,7 +7883,7 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
->>                          int soft_resample,
->>                          unsigned int latency)
->>   {
->> -        snd_pcm_hw_params_t *params;
->> +        snd_pcm_hw_params_t *params, pparams;
->>           snd_pcm_sw_params_t *swparams;
->>           const char *s = snd_pcm_stream_name(snd_pcm_stream(pcm));
->>           snd_pcm_uframes_t buffer_size, period_size;
->> @@ -7936,9 +7936,11 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
->>   		return -EINVAL;
->>   	}
->>   	/* set the buffer time */
->> +	pparams = *params;
->>   	err = INTERNAL(snd_pcm_hw_params_set_buffer_time_near)(pcm, params, &latency, NULL);
->>   	if (err < 0) {
->>   	        /* error path -> set period size as first */
->> +			*params = pparams;
->>           	/* set the period time */
->>           	period_time = latency / 4;
->>           	err = INTERNAL(snd_pcm_hw_params_set_period_time_near)(pcm, params, &period_time, NULL);
->> -- 
->> 1.9.1
->>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
--- 
-*StreamUnlimited*
-High Tech Campus Vienna, Gutheil-Schoder-Gasse 10, A-1102 Vienna, Austria
-Levocska 9, 851 01 Bratislava, Slovakia
-Email: martin.geier@streamunlimited.com
-www.streamunlimited.com
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Meet us at:
-IFA - Berlin, 4-9 September 2015
-HK Electronics - Hong Kong, 13-16 October 2015
-CEDIA - Dallas, 14-17 October 2015
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---------------050005090206030507090208
-Content-Type: text/x-patch;
- name="0001-PATCH-restore-hw-params-on-set-latency-failed.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-PATCH-restore-hw-params-on-set-latency-failed.patch"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
->From 2d4e94d974678bbd4826b33c59c275d1f34edc20 Mon Sep 17 00:00:00 2001
-From: Martin Geier <martin.geier@streamunlimited.com>
-Date: Fri, 24 Jul 2015 09:30:57 +0200
-Subject: [PATCH] restore hw params on set latency failed
+Thanks,
+Mark
 
-When method snd_pcm_set_params sets sample rate to 22050 and latency to 50000 
-to davinci soc driver method snd_pcm_hw_params_set_buffer_time_near fails
-and variable params is already changed in the method so the next method 
-snd_pcm_hw_params_set_period_time_near fails also.
+>From fa8173a3ef0570affde7da352de202190b3786c2 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 23 Jul 2015 23:22:26 +0800
+Subject: [PATCH] ASoC: pcm1681: Fix setting de-emphasis sampling rate
+ selection
 
-Signed-off-by: Martin Geier <martin.geier@streamunlimited.com>
+The de-emphasis sampling rate selection is controlled by BIT[3:4] of
+PCM1681_DEEMPH_CONTROL register. Do proper left shift to set it.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Marek Belisko <marek.belisko@streamunlimited.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- src/pcm/pcm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/pcm1681.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index ca4d416..b6de73e 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -7883,7 +7883,7 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
-                        int soft_resample,
-                        unsigned int latency)
- {
--        snd_pcm_hw_params_t *params;
-+        snd_pcm_hw_params_t *params, params_saved;
-         snd_pcm_sw_params_t *swparams;
-         const char *s = snd_pcm_stream_name(snd_pcm_stream(pcm));
-         snd_pcm_uframes_t buffer_size, period_size;
-@@ -7936,9 +7936,11 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
- 		return -EINVAL;
- 	}
- 	/* set the buffer time */
-+	params_saved = *params;
- 	err = INTERNAL(snd_pcm_hw_params_set_buffer_time_near)(pcm, params, &latency, NULL);
- 	if (err < 0) {
- 	        /* error path -> set period size as first */
-+			*params = params_saved;
-         	/* set the period time */
-         	period_time = latency / 4;
-         	err = INTERNAL(snd_pcm_hw_params_set_period_time_near)(pcm, params, &period_time, NULL);
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index 477e13d30971..e7ba557979cb 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -102,7 +102,7 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
+ 
+ 	if (val != -1) {
+ 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+-					PCM1681_DEEMPH_RATE_MASK, val);
++				   PCM1681_DEEMPH_RATE_MASK, val << 3);
+ 		enable = 1;
+ 	} else
+ 		enable = 0;
 -- 
-1.9.1
-
-
---------------050005090206030507090208
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------050005090206030507090208--
+2.1.4
