@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sta529: Remove redundant
-	I2C_FUNC_SMBUS_BYTE_DATA functionality check" to the asoc tree
-Date: Fri, 24 Jul 2015 12:31:14 +0100
-Message-ID: <E1ZIbC6-000337-El@debutante>
-References: <1437707848.12634.2.camel@ingics.com>
+Subject: Applied "ASoC: pcm1681: Improve the logic for
+	de-emphasis sampling rate selection" to the asoc tree
+Date: Fri, 24 Jul 2015 12:31:15 +0100
+Message-ID: <E1ZIbC7-00033a-E5@debutante>
+References: <1437665015.20606.6.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A3B726059B
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:31:22 +0200 (CEST)
-In-Reply-To: <1437707848.12634.2.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1004A2605A1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:31:23 +0200 (CEST)
+In-Reply-To: <1437665015.20606.6.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sta529: Remove redundant I2C_FUNC_SMBUS_BYTE_DATA functionality check
+   ASoC: pcm1681: Improve the logic for de-emphasis sampling rate selection
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 97a747117d95b54fe3ce21d43e04499a1671fff6 Mon Sep 17 00:00:00 2001
+>From 48f403be3eb9b603cfaf946ca7a0c76272750469 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 24 Jul 2015 11:17:28 +0800
-Subject: [PATCH] ASoC: sta529: Remove redundant I2C_FUNC_SMBUS_BYTE_DATA
- functionality check
+Date: Thu, 23 Jul 2015 23:23:35 +0800
+Subject: [PATCH] ASoC: pcm1681: Improve the logic for de-emphasis sampling
+ rate selection
 
-This checking is done by regmap_get_i2c_bus() which is called in
-devm_regmap_init_i2c().
+Slightly improve the logic for de-emphasis sampling rate selection by break
+out the loop if the rate is matched.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta529.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/codecs/pcm1681.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index 4f70378b2cfb..2519c7f1cad3 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -339,9 +339,6 @@ static int sta529_i2c_probe(struct i2c_client *i2c,
- 	struct sta529 *sta529;
- 	int ret;
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index e7ba557979cb..490970e5ab8c 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -95,17 +95,22 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
+ 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	int i = 0, val = -1, enable = 0;
  
--	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
--		return -EINVAL;
--
- 	sta529 = devm_kzalloc(&i2c->dev, sizeof(struct sta529), GFP_KERNEL);
- 	if (!sta529)
- 		return -ENOMEM;
+-	if (priv->deemph)
+-		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
+-			if (pcm1681_deemph[i] == priv->rate)
++	if (priv->deemph) {
++		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
++			if (pcm1681_deemph[i] == priv->rate) {
+ 				val = i;
++				break;
++			}
++		}
++	}
+ 
+ 	if (val != -1) {
+ 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+ 				   PCM1681_DEEMPH_RATE_MASK, val << 3);
+ 		enable = 1;
+-	} else
++	} else {
+ 		enable = 0;
++	}
+ 
+ 	/* enable/disable deemphasis functionality */
+ 	return regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
 -- 
 2.1.4
