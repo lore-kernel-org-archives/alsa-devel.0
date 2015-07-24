@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 0/3] regmap: Use different lockdep class
- for each regmap init call
-Date: Fri, 24 Jul 2015 11:32:47 +0100
-Message-ID: <20150724103247.GG11162@sirena.org.uk>
-References: <1436337018-32464-1-git-send-email-drinkcat@chromium.org>
- <CANMq1KD8rOHjtWA1Eiw9GATdTeq1Ch4bga4ZAty26auvWyX7Og@mail.gmail.com>
+From: Martin Geier <martin.geier@streamunlimited.com>
+Subject: Re: snd_pcm_set_params faild on set_buffer_time_near
+ and	set_period_time_near
+Date: Fri, 24 Jul 2015 13:16:44 +0200
+Message-ID: <55B21E9C.9010506@streamunlimited.com>
+References: <55AE0831.2010206@streamunlimited.com>	<s5htwsvwawr.wl-tiwai@suse.de>	<55B1EEAE.3080307@streamunlimited.com>
+ <s5h8ua6vude.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9040278964220330294=="
+Content-Type: multipart/mixed; boundary="------------050005090206030507090208"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 648F926059B
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 12:33:22 +0200 (CEST)
-In-Reply-To: <CANMq1KD8rOHjtWA1Eiw9GATdTeq1Ch4bga4ZAty26auvWyX7Og@mail.gmail.com>
+Received: from bsmtp.bon.at (bsmtp8.bon.at [213.33.87.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DF9B2605A1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:16:45 +0200 (CEST)
+In-Reply-To: <s5h8ua6vude.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +21,262 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Boichat <drinkcat@chromium.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liviu Dudau <liviu.dudau@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Lee Jones <lee.jones@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, linux-pm@vger.kernel.org, Antti Palosaari <crope@iki.fi>, Zhang Rui <rui.zhang@intel.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Eduardo Valentin <edubezval@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Arjan van de Ven <arjan@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, linux-arm-kernel@lists.infradead.org, Maxime Coquelin <maxime.coquelin@st.com>, Oder Chiou <oder_chiou@realtek.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>, Ajit Pal Singh <ajitpal.singh@st.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------050005090206030507090208
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
---===============9040278964220330294==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cWQnRBNUz/XQASfL"
-Content-Disposition: inline
+Patch with fixed name and description.
+
+Martin
 
 
---cWQnRBNUz/XQASfL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 24.07.2015 10:21, Takashi Iwai wrote:
+> On Fri, 24 Jul 2015 09:52:14 +0200,
+> Martin Geier wrote:
+>> Thanks for help,
+>>
+>> in attachment is patch with suggest change.
+>> Is the patch acceptable?
+> I prefer a bit clearer name like params_saved or such, but yes, it's
+> what I had in my mind, too.  Could you tidy it up and resubmit with
+> the more description -- why it's needed and what does it?  Last but
+> not least, it'd be helpful if you give also signed-off-by tag.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> Martin
+>>
+>> On 23.07.2015 10:11, Takashi Iwai wrote:
+>>> On Tue, 21 Jul 2015 10:52:01 +0200,
+>>> Martin Geier wrote:
+>>>> Hallo,
+>>>>
+>>>> I tried to configure alsa device with snd_pcm_set_params function,
+>>>> requested
+>>>> parameters was:
+>>>> channel 2, rate: 22050, soft_resample: 1, latency: 50000
+>>>>
+>>>> Function snd_pcm_hw_params_set_buffer_time_near and
+>>>> snd_pcm_hw_param_set_near
+>>>> is called with:
+>>>> min: 50000, max: 50000, mindir: 0, maxdir: -1
+>>>>
+>>>> and input params was:
+>>>>
+>>>> ACCESS:  RW_INTERLEAVED
+>>>> FORMAT:  S16_LE
+>>>> SUBFORMAT:  STD
+>>>> SAMPLE_BITS: 16
+>>>> FRAME_BITS: 32
+>>>> CHANNELS: 2
+>>>> RATE: 22050
+>>>> PERIOD_TIME: (362 743039)
+>>>> PERIOD_SIZE: [8 16384]
+>>>> PERIOD_BYTES: [32 65536]
+>>>> PERIODS: [2 19]
+>>>> BUFFER_TIME: (725 1486078)
+>>>> BUFFER_SIZE: [16 32768]
+>>>> BUFFER_BYTES: [64 131072]
+>>>> TICK_TIME: ALL
+>>>>
+>>>> unfortunately, this function fails, on function snd_pcm_hw_param_set_first:
+>>>>
+>>>> ALSA ERROR hw_params: set_near (BUFFER_TIME)
+>>>>               value = 50000 : Invalid argument
+>>>> ACCESS:  RW_INTERLEAVED
+>>>> FORMAT:  S16_LE
+>>>> SUBFORMAT:  STD
+>>>> SAMPLE_BITS: 16
+>>>> FRAME_BITS: 32
+>>>> CHANNELS: 2
+>>>> RATE: 22050
+>>>> PERIOD_TIME: (4580 5533)
+>>>> PERIOD_SIZE: NONE
+>>>> PERIOD_BYTES: [404 488]
+>>>> PERIODS: 10
+>>>> BUFFER_TIME: (50022 50023)
+>>>> BUFFER_SIZE: 1103
+>>>> BUFFER_BYTES: 4412
+>>>> TICK_TIME: ALL
+>>>>
+>>>> This shouldn't be problem because in snd_pcm_set_params is
+>>>> snd_pcm_hw_params_set_period_time_near called.
+>>>> This function should be called with same params as
+>>>> snd_pcm_hw_params_set_buffer_time_near
+>>>> but the input params are:
+>>>>
+>>>> snd_pcm_hw_param_set_near: min: 12500, max: 12500, mindir: 0, maxdir: -1
+>>>> hw_params: snd_pcm_hw_param_set_near (PERIOD_TIME)
+>>>> ACCESS:  RW_INTERLEAVED
+>>>> FORMAT:  S16_LE
+>>>> SUBFORMAT:  STD
+>>>> SAMPLE_BITS: 16
+>>>> FRAME_BITS: 32
+>>>> CHANNELS: 2
+>>>> RATE: 22050
+>>>> PERIOD_TIME: (4580 5533)
+>>>> PERIOD_SIZE: NONE
+>>>> PERIOD_BYTES: [404 488]
+>>>> PERIODS: 10
+>>>> BUFFER_TIME: (50022 50023)
+>>>> BUFFER_SIZE: 1103
+>>>> BUFFER_BYTES: 4412
+>>>> TICK_TIME: ALL
+>>>>
+>>>> because in snd_pcm_hw_param_set_near is
+>>>>
+>>>> if (last)
+>>>>        err = snd_pcm_hw_param_set_last(pcm, params, var, val, dir);
+>>>> else
+>>>>        err = snd_pcm_hw_param_set_first(pcm, params, var, val, dir);
+>>>> if (err < 0)
+>>>>        dump_hw_params(params, "set_near", var, *val, err);
+>>>> return err;
+>>>>
+>>>> and in error part is only debug output and not restore original parameters.
+>>>>
+>>>> Environment:
+>>>> alsa-lib 1.0.27.1
+>>>> TI AM335x soc
+>>>>
+>>>> Simple fix is attached, but I am not sure if it is correct.
+>>> Thanks for analysis and patch.  It's however rather a bug in
+>>> snd_pcm_set_params().  There is no guarantee to keep the old value in
+>>> snd_pcm_set_*(), thus the caller needs to take care of it instead.
+>>>
+>>>
+>>> Takashi
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> -- 
+>> *StreamUnlimited*
+>> High Tech Campus Vienna, Gutheil-Schoder-Gasse 10, A-1102 Vienna, Austria
+>> Levocska 9, 851 01 Bratislava, Slovakia
+>> Email: martin.geier@streamunlimited.com
+>> www.streamunlimited.com
+>>
+>> Meet us at:
+>> IFA - Berlin, 4-9 September 2015
+>> HK Electronics - Hong Kong, 13-16 October 2015
+>> CEDIA - Dallas, 14-17 October 2015
+>> [1.2  <text/html; windows-1252 (7bit)>]
+>>
+>> >From 2d4e94d974678bbd4826b33c59c275d1f34edc20 Mon Sep 17 00:00:00 2001
+>> From: Martin Geier <martin.geier@streamunlimited.com>
+>> Date: Fri, 24 Jul 2015 09:30:57 +0200
+>> Subject: [PATCH] restore hw params on set rate failed
+>>
+>> ---
+>>   pcm.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+>> index ca4d416..b6de73e 100644
+>> --- a/src/pcm/pcm.c
+>> +++ b/src/pcm/pcm.c
+>> @@ -7883,7 +7883,7 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
+>>                          int soft_resample,
+>>                          unsigned int latency)
+>>   {
+>> -        snd_pcm_hw_params_t *params;
+>> +        snd_pcm_hw_params_t *params, pparams;
+>>           snd_pcm_sw_params_t *swparams;
+>>           const char *s = snd_pcm_stream_name(snd_pcm_stream(pcm));
+>>           snd_pcm_uframes_t buffer_size, period_size;
+>> @@ -7936,9 +7936,11 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
+>>   		return -EINVAL;
+>>   	}
+>>   	/* set the buffer time */
+>> +	pparams = *params;
+>>   	err = INTERNAL(snd_pcm_hw_params_set_buffer_time_near)(pcm, params, &latency, NULL);
+>>   	if (err < 0) {
+>>   	        /* error path -> set period size as first */
+>> +			*params = pparams;
+>>           	/* set the period time */
+>>           	period_time = latency / 4;
+>>           	err = INTERNAL(snd_pcm_hw_params_set_period_time_near)(pcm, params, &period_time, NULL);
+>> -- 
+>> 1.9.1
+>>
 
-On Thu, Jul 23, 2015 at 04:45:53PM +0800, Nicolas Boichat wrote:
+-- 
+*StreamUnlimited*
+High Tech Campus Vienna, Gutheil-Schoder-Gasse 10, A-1102 Vienna, Austria
+Levocska 9, 851 01 Bratislava, Slovakia
+Email: martin.geier@streamunlimited.com
+www.streamunlimited.com
 
-> What's the status of this series (and the additional documentation
-> fix: https://lkml.org/lkml/2015/7/8/385)?
+Meet us at:
+IFA - Berlin, 4-9 September 2015
+HK Electronics - Hong Kong, 13-16 October 2015
+CEDIA - Dallas, 14-17 October 2015
 
-> Do we need acks from the mfd/vexpress and thermal maintainers?
-> (mfd/vexpress maintainers are Liviu Dudau, Sudeep Holla, and Lorenzo
-> Pieralisi, I'm less clear about thermal, maybe Eduardo Valentin?)
+--------------050005090206030507090208
+Content-Type: text/x-patch;
+ name="0001-PATCH-restore-hw-params-on-set-latency-failed.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-PATCH-restore-hw-params-on-set-latency-failed.patch"
 
-Well, I was leaving it on the off chance someone would get round to
-looking at it yes.  I might get bored at some point since it's just
-mechanical changes outside of regmap.
+>From 2d4e94d974678bbd4826b33c59c275d1f34edc20 Mon Sep 17 00:00:00 2001
+From: Martin Geier <martin.geier@streamunlimited.com>
+Date: Fri, 24 Jul 2015 09:30:57 +0200
+Subject: [PATCH] restore hw params on set latency failed
 
---cWQnRBNUz/XQASfL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+When method snd_pcm_set_params sets sample rate to 22050 and latency to 50000 
+to davinci soc driver method snd_pcm_hw_params_set_buffer_time_near fails
+and variable params is already changed in the method so the next method 
+snd_pcm_hw_params_set_period_time_near fails also.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Signed-off-by: Martin Geier <martin.geier@streamunlimited.com>
+---
+ src/pcm/pcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-iQEcBAEBCAAGBQJVshROAAoJECTWi3JdVIfQi+cH/3xKIYXsPgIvpmxhYmVqCRz/
-4Bcd8mID1EUzlAB5LLgUOJBeQKUrhZ/4QEdIkyJa1ZK3wlb1LSM9PRNtBdtnZl1/
-LTuKm2QdHz/kgybNCbTG6m9zM23UknN7icfm05PAqANzuN7nSm5Xqvkrc5GSpX9j
-EzkEm6RkEvjsN047GMAtf1elpfv8SbfVnTM9Vcjlo6uPUUfVJIYGg6Rn7PYLxIul
-MLBaYJ+MJdJJ05F+Vo3TDkQ5cUOxohQ8pUWn7PwAaPjg1ktaT45TmRRj6QswmC1m
-J01ASYbHET1f7JQNyAb6kDKtpONerm6HKgfXDxPHE5j4gSJVNk1qiwmxd9hjND4=
-=Gz38
------END PGP SIGNATURE-----
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index ca4d416..b6de73e 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -7883,7 +7883,7 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
+                        int soft_resample,
+                        unsigned int latency)
+ {
+-        snd_pcm_hw_params_t *params;
++        snd_pcm_hw_params_t *params, params_saved;
+         snd_pcm_sw_params_t *swparams;
+         const char *s = snd_pcm_stream_name(snd_pcm_stream(pcm));
+         snd_pcm_uframes_t buffer_size, period_size;
+@@ -7936,9 +7936,11 @@ int snd_pcm_set_params(snd_pcm_t *pcm,
+ 		return -EINVAL;
+ 	}
+ 	/* set the buffer time */
++	params_saved = *params;
+ 	err = INTERNAL(snd_pcm_hw_params_set_buffer_time_near)(pcm, params, &latency, NULL);
+ 	if (err < 0) {
+ 	        /* error path -> set period size as first */
++			*params = params_saved;
+         	/* set the period time */
+         	period_time = latency / 4;
+         	err = INTERNAL(snd_pcm_hw_params_set_period_time_near)(pcm, params, &period_time, NULL);
+-- 
+1.9.1
 
---cWQnRBNUz/XQASfL--
 
---===============9040278964220330294==
+--------------050005090206030507090208
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9040278964220330294==--
+--------------050005090206030507090208--
