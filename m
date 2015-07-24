@@ -1,20 +1,22 @@
-From: Anatol Pomazau <anatol@google.com>
-Subject: Re: [PATCH] ASoC: ssm4567: Added ACPI entry for
-	SSM4567 codec
-Date: Thu, 23 Jul 2015 15:13:17 -0700
-Message-ID: <CALj_zD4pvyHhho5c40dsktbOD_+D7+D1Nnk7Lyqe55ARbdw=OQ@mail.gmail.com>
-References: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Re: [PATCH 2/2] ASoC: pcm1681: Improve the logic for
+ de-emphasis sampling rate selection
+Date: Fri, 24 Jul 2015 09:17:21 +0800
+Message-ID: <CAFRkauBcWnrhamUN=MCfMf0gTssb4aCbZ54-ysako-YAWjyJOg@mail.gmail.com>
+References: <1437664946.20606.5.camel@ingics.com>
+ <1437665015.20606.6.camel@ingics.com>
+ <55B1451D.2020202@streamunlimited.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vn0-f46.google.com (mail-vn0-f46.google.com
- [209.85.216.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 71EA126051F
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 00:13:18 +0200 (CEST)
-Received: by vnav141 with SMTP id v141so2429996vna.0
- for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 15:13:17 -0700 (PDT)
-In-Reply-To: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
+Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
+ [209.85.217.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E4522659E2
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 03:17:21 +0200 (CEST)
+Received: by lblf12 with SMTP id f12so5592148lbl.2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2015 18:17:21 -0700 (PDT)
+In-Reply-To: <55B1451D.2020202@streamunlimited.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,59 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <harshapriya.n@intel.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Ben Zhang <benzh@chromium.org>, broonie@kernel.org, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, M Naveen <naveen.m@intel.com>
+To: Marek Belisko <marek.belisko@streamunlimited.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+2015-07-24 3:48 GMT+08:00 Marek Belisko <marek.belisko@streamunlimited.com>:
+> Hi Axel,
+>
+> On 23.07.2015 17:23, Axel Lin wrote:
+>>
+>> Slightly improve the logic for de-emphasis sampling rate selection by
+>> break
+>> out the loop if the rate is matched.
+>>
+>> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+>> ---
+>>   sound/soc/codecs/pcm1681.c | 13 +++++++++----
+>>   1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+>> index 1011142..5832523 100644
+>> --- a/sound/soc/codecs/pcm1681.c
+>> +++ b/sound/soc/codecs/pcm1681.c
+>> @@ -95,17 +95,22 @@ static int pcm1681_set_deemph(struct snd_soc_codec
+>> *codec)
+>>         struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
+>>         int i = 0, val = -1, enable = 0;
+>>
+>> -       if (priv->deemph)
+>> -               for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
+>> -                       if (pcm1681_deemph[i] == priv->rate)
+>> +       if (priv->deemph) {
+>> +               for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
+>> +                       if (pcm1681_deemph[i] == priv->rate) {
+>>                                 val = i;
+>> +                               break;
+>> +                       }
+>> +               }
+>> +       }
+>
+> ^^^^^^^
+> I think we don't need those brackets only for if statement (where you add
+> break)
 
-On Thu, Jul 23, 2015 at 12:11 PM, Harsha Priya <harshapriya.n@intel.com> wrote:
-> Added INT343B ACPI ID for the SSM4567 codec
->
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-> Signed-off-by: M Naveen <naveen.m@intel.com>
-> Signed-off-by: M R Sathya Prakash <sathya.prakash.m.r@intel.com>
+Because I think having the brackets here makes the code looks better.
 
-Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+>>
+>>
+>>         if (val != -1) {
+>>                 regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
+>>                                    PCM1681_DEEMPH_RATE_MASK, val << 3);
+>>                 enable = 1;
+>> -       } else
+>> +       } else {
+>>                 enable = 0;
+>> +       }
+>
+> ^^^ same here
 
-> ---
->  sound/soc/codecs/ssm4567.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-> index 938d2cb..af536ae 100644
-> --- a/sound/soc/codecs/ssm4567.c
-> +++ b/sound/soc/codecs/ssm4567.c
-> @@ -10,6 +10,7 @@
->   * Licensed under the GPL-2.
->   */
->
-> +#include <linux/acpi.h>
->  #include <linux/module.h>
->  #include <linux/init.h>
->  #include <linux/i2c.h>
-> @@ -450,10 +451,21 @@ static const struct i2c_device_id ssm4567_i2c_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, ssm4567_i2c_ids);
->
-> +#ifdef CONFIG_ACPI
-> +
-> +static const struct acpi_device_id ssm4567_acpi_match[] = {
-> +       { "INT343B", 0 },
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(acpi, ssm4567_acpi_match);
-> +
-> +#endif
-> +
->  static struct i2c_driver ssm4567_driver = {
->         .driver = {
->                 .name = "ssm4567",
->                 .owner = THIS_MODULE,
-> +               .acpi_match_table = ACPI_PTR(ssm4567_acpi_match),
->         },
->         .probe = ssm4567_i2c_probe,
->         .remove = ssm4567_i2c_remove,
-> --
-> 1.9.1
->
+This is also a common pattern in kernel coding style that if we have
+brackets around the if statement, also add the brackets for the else
+part.
+
+Regards,
+Axel
