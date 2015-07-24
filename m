@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm4567: Added ACPI entry for SSM4567
-	codec" to the asoc tree
-Date: Fri, 24 Jul 2015 12:31:13 +0100
-Message-ID: <E1ZIbC5-00032d-G2@debutante>
-References: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ALSA: hda - Use generic parser for Cirrus codec
+	driver
+Date: Fri, 24 Jul 2015 19:12:28 +0300
+Message-ID: <20150724161227.GA12423@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C79D2605A2
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:31:26 +0200 (CEST)
-In-Reply-To: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41D7F2605C3
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 18:12:42 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <harshapriya.n@intel.com>, M Naveen <naveen.m@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello Takashi Iwai,
 
-   ASoC: ssm4567: Added ACPI entry for SSM4567 codec
+The patch 1077a024812d: "ALSA: hda - Use generic parser for Cirrus
+codec driver" from Dec 19, 2012, leads to the following static
+checker warning:
 
-has been applied to the asoc tree at
+	sound/pci/hda/patch_cirrus.c:1004 cs4210_spdif_automute()
+	warn: we tested 'spdif_present' before and it was 'true'
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+sound/pci/hda/patch_cirrus.c
+   984  static void cs4210_spdif_automute(struct hda_codec *codec,
+   985                                    struct hda_jack_callback *tbl)
+   986  {
+   987          struct cs_spec *spec = codec->spec;
+   988          bool spdif_present = false;
+   989          hda_nid_t spdif_pin = spec->gen.autocfg.dig_out_pins[0];
+   990  
+   991          /* detect on spdif is specific to CS4210 */
+   992          if (!spec->spdif_detect ||
+   993              spec->vendor_nid != CS4210_VENDOR_NID)
+   994                  return;
+   995  
+   996          spdif_present = snd_hda_jack_detect(codec, spdif_pin);
+   997          if (spdif_present == spec->spdif_present)
+   998                  return;
+   999  
+  1000          spec->spdif_present = spdif_present;
+  1001          /* SPDIF TX on/off */
+  1002          if (spdif_present)
+                    ^^^^^^^^^^^^^
+  1003                  snd_hda_set_pin_ctl(codec, spdif_pin,
+  1004                                      spdif_present ? PIN_OUT : 0);
+                                            ^^^^^^^^^^^^^
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I'm not positive but I think this is buggy.  We should remove the if
+statement.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  1005  
+  1006          cs_automute(codec);
+  1007  }
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From eeffd4b442eb2aa25257d8c6631b17cba685ccac Mon Sep 17 00:00:00 2001
-From: Harsha Priya <harshapriya.n@intel.com>
-Date: Thu, 23 Jul 2015 19:11:54 +0000
-Subject: [PATCH] ASoC: ssm4567: Added ACPI entry for SSM4567 codec
-
-Added INT343B ACPI ID for the SSM4567 codec
-
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: M Naveen <naveen.m@intel.com>
-Signed-off-by: M R Sathya Prakash <sathya.prakash.m.r@intel.com>
-Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/ssm4567.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 938d2cb6d78b..af536ae75df9 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -10,6 +10,7 @@
-  * Licensed under the GPL-2.
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/i2c.h>
-@@ -450,10 +451,21 @@ static const struct i2c_device_id ssm4567_i2c_ids[] = {
- };
- MODULE_DEVICE_TABLE(i2c, ssm4567_i2c_ids);
- 
-+#ifdef CONFIG_ACPI
-+
-+static const struct acpi_device_id ssm4567_acpi_match[] = {
-+	{ "INT343B", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, ssm4567_acpi_match);
-+
-+#endif
-+
- static struct i2c_driver ssm4567_driver = {
- 	.driver = {
- 		.name = "ssm4567",
- 		.owner = THIS_MODULE,
-+		.acpi_match_table = ACPI_PTR(ssm4567_acpi_match),
- 	},
- 	.probe = ssm4567_i2c_probe,
- 	.remove = ssm4567_i2c_remove,
--- 
-2.1.4
+regards,
+dan carpenter
