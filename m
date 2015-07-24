@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm1681: Improve the logic for
-	de-emphasis sampling rate selection" to the asoc tree
-Date: Fri, 24 Jul 2015 12:31:15 +0100
-Message-ID: <E1ZIbC7-00033a-E5@debutante>
-References: <1437665015.20606.6.camel@ingics.com>
+Subject: Applied "ASoC: ssm4567: Added ACPI entry for SSM4567
+	codec" to the asoc tree
+Date: Fri, 24 Jul 2015 12:31:13 +0100
+Message-ID: <E1ZIbC5-00032d-G2@debutante>
+References: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1004A2605A1
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:31:23 +0200 (CEST)
-In-Reply-To: <1437665015.20606.6.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C79D2605A2
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 13:31:26 +0200 (CEST)
+In-Reply-To: <1437678714-5911-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Harsha Priya <harshapriya.n@intel.com>, M Naveen <naveen.m@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm1681: Improve the logic for de-emphasis sampling rate selection
+   ASoC: ssm4567: Added ACPI entry for SSM4567 codec
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From 48f403be3eb9b603cfaf946ca7a0c76272750469 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Thu, 23 Jul 2015 23:23:35 +0800
-Subject: [PATCH] ASoC: pcm1681: Improve the logic for de-emphasis sampling
- rate selection
+>From eeffd4b442eb2aa25257d8c6631b17cba685ccac Mon Sep 17 00:00:00 2001
+From: Harsha Priya <harshapriya.n@intel.com>
+Date: Thu, 23 Jul 2015 19:11:54 +0000
+Subject: [PATCH] ASoC: ssm4567: Added ACPI entry for SSM4567 codec
 
-Slightly improve the logic for de-emphasis sampling rate selection by break
-out the loop if the rate is matched.
+Added INT343B ACPI ID for the SSM4567 codec
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: M Naveen <naveen.m@intel.com>
+Signed-off-by: M R Sathya Prakash <sathya.prakash.m.r@intel.com>
+Acked-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm1681.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ssm4567.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
-index e7ba557979cb..490970e5ab8c 100644
---- a/sound/soc/codecs/pcm1681.c
-+++ b/sound/soc/codecs/pcm1681.c
-@@ -95,17 +95,22 @@ static int pcm1681_set_deemph(struct snd_soc_codec *codec)
- 	struct pcm1681_private *priv = snd_soc_codec_get_drvdata(codec);
- 	int i = 0, val = -1, enable = 0;
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 938d2cb6d78b..af536ae75df9 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -10,6 +10,7 @@
+  * Licensed under the GPL-2.
+  */
  
--	if (priv->deemph)
--		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++)
--			if (pcm1681_deemph[i] == priv->rate)
-+	if (priv->deemph) {
-+		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
-+			if (pcm1681_deemph[i] == priv->rate) {
- 				val = i;
-+				break;
-+			}
-+		}
-+	}
++#include <linux/acpi.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+@@ -450,10 +451,21 @@ static const struct i2c_device_id ssm4567_i2c_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, ssm4567_i2c_ids);
  
- 	if (val != -1) {
- 		regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
- 				   PCM1681_DEEMPH_RATE_MASK, val << 3);
- 		enable = 1;
--	} else
-+	} else {
- 		enable = 0;
-+	}
- 
- 	/* enable/disable deemphasis functionality */
- 	return regmap_update_bits(priv->regmap, PCM1681_DEEMPH_CONTROL,
++#ifdef CONFIG_ACPI
++
++static const struct acpi_device_id ssm4567_acpi_match[] = {
++	{ "INT343B", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, ssm4567_acpi_match);
++
++#endif
++
+ static struct i2c_driver ssm4567_driver = {
+ 	.driver = {
+ 		.name = "ssm4567",
+ 		.owner = THIS_MODULE,
++		.acpi_match_table = ACPI_PTR(ssm4567_acpi_match),
+ 	},
+ 	.probe = ssm4567_i2c_probe,
+ 	.remove = ssm4567_i2c_remove,
 -- 
 2.1.4
