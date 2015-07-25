@@ -1,18 +1,16 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v2] ASoC: rt5677: Return error if
- devm_gpiod_get_optional return ERR_PTR
-Date: Sat, 25 Jul 2015 10:23:40 +0800
-Message-ID: <1437791020.12775.1.camel@ingics.com>
+From: woodrow.shen@canonical.com
+Subject: [PATCH v3] ALSA: hda - Fix the headset mic that will
+	not work on Dell desktop machine
+Date: Sat, 25 Jul 2015 10:36:16 +0800
+Message-ID: <1437791776-8213-1-git-send-email-woodrow.shen@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CF1B260651
- for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2015 04:23:46 +0200 (CEST)
-Received: by pachj5 with SMTP id hj5so22491015pac.3
- for <alsa-devel@alsa-project.org>; Fri, 24 Jul 2015 19:23:45 -0700 (PDT)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A07126064C
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2015 04:36:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If devm_gpiod_get_optional() return ERR_PTR, it means something wrong
-so request gpio fails. We had better return error in such case.
+From: Woodrow Shen <woodrow.shen@canonical.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+When the headset was plugged in the Dell desktop, the mic of headset can't be detected and workable.
+According to the alsa-info, we found the differece between alsa and init_pin_configs
+on the machine, so we need to add the pin configs to make headset work.
+
+Codec: Realtek ALC3234
+Vendor Id: 0x10ec0255
+Subsystem Id: 0x102806bb
+
+BugLink: https://bugs.launchpad.net/bugs/1477900
+Signed-off-by: Woodrow Shen <woodrow.shen@canonical.com>
 ---
- sound/soc/codecs/rt5677.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 8d70911..83e25a3 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5133,14 +5133,14 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 	if (IS_ERR(rt5677->pow_ldo2)) {
- 		ret = PTR_ERR(rt5677->pow_ldo2);
- 		dev_err(&i2c->dev, "Failed to request POW_LDO2: %d\n", ret);
--		rt5677->pow_ldo2 = 0;
-+		return ret;
- 	}
- 	rt5677->reset_pin = devm_gpiod_get_optional(&i2c->dev,
- 			"realtek,reset", GPIOD_OUT_HIGH);
- 	if (IS_ERR(rt5677->reset_pin)) {
- 		ret = PTR_ERR(rt5677->reset_pin);
- 		dev_err(&i2c->dev, "Failed to request RESET: %d\n", ret);
--		rt5677->reset_pin = 0;
-+		return ret;
- 	}
- 
- 	if (rt5677->pow_ldo2 || rt5677->reset_pin) {
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 742fc62..d94c0e3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5473,6 +5473,28 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1e, 0x411111f0},
+ 		{0x21, 0x0221103f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x40000000},
++		{0x14, 0x90170150},
++		{0x17, 0x411111f0},
++		{0x18, 0x411111f0},
++		{0x19, 0x411111f0},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x02011020},
++		{0x1d, 0x4054c029},
++		{0x1e, 0x411111f0},
++		{0x21, 0x0221105f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x12, 0x40000000},
++		{0x14, 0x90170110},
++		{0x17, 0x411111f0},
++		{0x18, 0x411111f0},
++		{0x19, 0x411111f0},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x01014020},
++		{0x1d, 0x4054c029},
++		{0x1e, 0x411111f0},
++		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60160},
+ 		{0x14, 0x90170120},
+ 		{0x17, 0x90170140},
 -- 
-2.1.0
+2.1.4
