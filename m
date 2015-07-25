@@ -1,17 +1,31 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: control: add .flush operation to release
-	blocked operation
-Date: Sat, 25 Jul 2015 20:54:00 +0900
-Message-ID: <1437825240-11222-2-git-send-email-o-takashi@sakamocchi.jp>
-References: <1437825240-11222-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
+ assignment for external base speaker and external microphone not working
+Date: Sat, 25 Jul 2015 16:57:06 +0200
+Message-ID: <CALUcmUmCuj-BHWyW3rZk+iEk8Y6irq-oGT0vVU0Xcrno4hDCtA@mail.gmail.com>
+References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
+ <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
+ <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
+ <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
+ <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
+ <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
+ <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
+ <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
+ <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
+ <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
+ <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
+ <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EE292606CD
- for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2015 13:54:16 +0200 (CEST)
-In-Reply-To: <1437825240-11222-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
+ [209.85.218.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5B402606E6
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2015 16:57:26 +0200 (CEST)
+Received: by oibn4 with SMTP id n4so32740274oib.3
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jul 2015 07:57:25 -0700 (PDT)
+In-Reply-To: <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,119 +35,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: =?UTF-8?B?xYF1a2FzeiBX?= <lukasz.wojnilowicz@gmail.com>, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA control character devices doesn't release blocking state for
-read(2) operations when a file descriptor corresponding to the character
-device is closed by close(2). This is due to a blocking loop of
-snd_ctl_read() has no breaking point for this event.
+Alsa-info patched kernel:
+http://www.alsa-project.org/db/?f=cd23a3f0bb72e38d73224620e3e8ab57a73aa441
 
-Additionally, the read(2) operation reports EBADFD when executed in a
-state of unsubscription. On the other hand, this operation continue
-to be blocked after unsubscribe operation. In this case, the read(2)
-operation should return with EBADFD.
+Chmap results:
 
-Furthermore, poll(2) operation for the character device can report
-some events after close(2).
+Type = FIXED, Channels = 2
+  FL FR
+Type = FIXED, Channels = 4
+  FL FR NA LFE
 
-This commit solves these issues, by adding flush file operation.
-The file descriptor becomes unsubscribed state after close(2) operation.
-Then, read(2) and poll(2) operations return with expected results.
+When unplugging the subwoofer, then chmap gives this and stays like this.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 38 +++++++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
+Cannot open PCM stream hw:1 for PLAYBACK
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 196a6fe..0337c16 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -113,6 +113,21 @@ static void snd_ctl_empty_read_queue(struct snd_ctl_file * ctl)
- 	spin_unlock_irqrestore(&ctl->read_lock, flags);
- }
- 
-+static int snd_ctl_flush(struct file *filp, fl_owner_t id)
-+{
-+	struct snd_ctl_file *cfile = filp->private_data;
-+
-+	spin_lock(&cfile->read_lock);
-+
-+	/* Release blocking operations. */
-+	cfile->subscribed = 0;
-+	wake_up(&cfile->change_sleep);
-+
-+	spin_unlock(&cfile->read_lock);
-+
-+	return 0;
-+}
-+
- static int snd_ctl_release(struct inode *inode, struct file *file)
- {
- 	unsigned long flags;
-@@ -1380,13 +1395,16 @@ static int snd_ctl_subscribe_events(struct snd_ctl_file *file, int __user *ptr)
- 			return -EFAULT;
- 		return 0;
- 	}
-+
-+	/* TODO: mutual exclusives. */
- 	if (subscribe) {
- 		file->subscribed = 1;
--		return 0;
- 	} else if (file->subscribed) {
- 		snd_ctl_empty_read_queue(file);
- 		file->subscribed = 0;
- 	}
-+	wake_up(&cfile->change_sleep);
-+
- 	return 0;
- }
- 
-@@ -1553,6 +1571,8 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
- 			remove_wait_queue(&ctl->change_sleep, &wait);
- 			if (ctl->card->shutdown)
- 				return -ENODEV;
-+			if (ctl->subscribed == 0)
-+				return -EBADFD;
- 			if (signal_pending(current))
- 				return -ERESTARTSYS;
- 			spin_lock_irq(&ctl->read_lock);
-@@ -1581,17 +1601,20 @@ static ssize_t snd_ctl_read(struct file *file, char __user *buffer,
- 
- static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
- {
--	unsigned int mask;
--	struct snd_ctl_file *ctl;
-+	struct snd_ctl_file *ctl = file->private_data;
-+	unsigned int mask = 0;
- 
--	ctl = file->private_data;
- 	if (!ctl->subscribed)
- 		return 0;
-+
- 	poll_wait(file, &ctl->change_sleep, wait);
- 
--	mask = 0;
--	if (!list_empty(&ctl->events))
--		mask |= POLLIN | POLLRDNORM;
-+	spin_lock(&ctl->read_lock);
-+
-+	if (!list_empty(&ctl->events) && ctl->subscribed == 1)
-+		mask = POLLIN | POLLRDNORM;
-+
-+	spin_unlock(&ctl->read_lock);
- 
- 	return mask;
- }
-@@ -1733,6 +1756,7 @@ static const struct file_operations snd_ctl_f_ops =
- 	.owner =	THIS_MODULE,
- 	.read =		snd_ctl_read,
- 	.open =		snd_ctl_open,
-+	.flush =	snd_ctl_flush,
- 	.release =	snd_ctl_release,
- 	.llseek =	no_llseek,
- 	.poll =		snd_ctl_poll,
+[Pavucontrol] -> [Configuration] -> [Built-in Audio] gives
+
+Analog Stereo Duplex
+Analog Stereo Output
+Analog Surround 2.1 Output + Analog Stereo Input
+Analog Surround 2.1 Output
+Analog Surround 4.0 Output + Analog Stereo Input
+Analog Surround 4.0 Output
+Analog Stereo Input
+Off
+
+Pulseaudio verbose log while plugging in the subwoofer:
+http://pastebin.com/Ya5u1qz6
+
+On 13 July 2015 at 13:24, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+
+>
+> >
+> > Honestly some of the Alsa code talk is a bit over my head, so maybe I
+> should just stick to providing PCI/Vendor ID's and test results. :)
+> >
+> > RY> How do you test ? Using sound preference or alsa speaker-test
+> >
+> > I apply some of your code by retyping this into the mainline kernel
+> 4.2-rc1 code, compile and install the kernel, and then test the audio.
+> > The subwoofer I test by playing music with my music player, Audacious.
+> > When testing different configurations and output profiles I use
+> pavucontrol.
+> > For testing the microphone, I open pavucontrol, switch the input source
+> between Internal Microphone and Microphone and look at the volumebar to see
+> if the microphone works fine.
+> >
+> > Do you have suggestions how to apply and test the provided patches?
+> >
+>
+> you have to provide alsa-info of patched driver
+>
+> http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/chmap.c;hb=HEAD
+>
+> ./chmap -Dhw:0 query
+>
+> Do chmap show the stereo and 2.1 channel map ?
+>
+> the "External Subwoofer Jack" detect kctl should return true when you plug
+> the Sonic Master Subwoofer and false when you unplug
+>
+> after you add analog-output-subwoofer.conf and replace the output path
+> analog-output-lineout and analog-output-speaker in 2.1 profiles in
+> profile-sets/default.conf
+>
+> You have to provide pulseaudio verbsose log if pulseaudio did not
+> automatically switch to 2.1 profile
+>
+> The dirty workaround for the headset mic when your codec cannot
+> distinguish headphone and headset but you use only headset
+>
+> Change the headset.conf to use jsck headphone instead of headset mic jack
+>
+>
+> http://cgit.freedesktop.org/pulseaudio/pulseaudio/plain/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
+>
+> -[Jack Headset Mic]
+> -required-any = any
+>
+> -[Jack Headset Mic Phantom]
+> -state.plugged = unknown
+> -state.unplugged = unknown
+> -required-any = any
+>
+> [Jack Headphone]
+> -state.plugged = unknown
+> +required-any = any
+>
+>
+>
+>
+>
+
+
 -- 
-2.1.4
+Arthur Borsboom
+Lieven de Keystraat 77
+3067 KG, Rotterdam
+The Netherlands
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
+
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
+
+On 13 July 2015 at 13:24, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+
+>
+> >
+> > Honestly some of the Alsa code talk is a bit over my head, so maybe I
+> should just stick to providing PCI/Vendor ID's and test results. :)
+> >
+> > RY> How do you test ? Using sound preference or alsa speaker-test
+> >
+> > I apply some of your code by retyping this into the mainline kernel
+> 4.2-rc1 code, compile and install the kernel, and then test the audio.
+> > The subwoofer I test by playing music with my music player, Audacious.
+> > When testing different configurations and output profiles I use
+> pavucontrol.
+> > For testing the microphone, I open pavucontrol, switch the input source
+> between Internal Microphone and Microphone and look at the volumebar to see
+> if the microphone works fine.
+> >
+> > Do you have suggestions how to apply and test the provided patches?
+> >
+>
+> you have to provide alsa-info of patched driver
+>
+> http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/chmap.c;hb=HEAD
+>
+> ./chmap -Dhw:0 query
+>
+> Do chmap show the stereo and 2.1 channel map ?
+>
+> the "External Subwoofer Jack" detect kctl should return true when you plug
+> the Sonic Master Subwoofer and false when you unplug
+>
+> after you add analog-output-subwoofer.conf and replace the output path
+> analog-output-lineout and analog-output-speaker in 2.1 profiles in
+> profile-sets/default.conf
+>
+> You have to provide pulseaudio verbsose log if pulseaudio did not
+> automatically switch to 2.1 profile
+>
+> The dirty workaround for the headset mic when your codec cannot
+> distinguish headphone and headset but you use only headset
+>
+> Change the headset.conf to use jsck headphone instead of headset mic jack
+>
+>
+> http://cgit.freedesktop.org/pulseaudio/pulseaudio/plain/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
+>
+> -[Jack Headset Mic]
+> -required-any = any
+>
+> -[Jack Headset Mic Phantom]
+> -state.plugged = unknown
+> -state.unplugged = unknown
+> -required-any = any
+>
+> [Jack Headphone]
+> -state.plugged = unknown
+> +required-any = any
+>
+>
+>
+>
+>
+
+
+-- 
+Arthur Borsboom
+Lieven de Keystraat 77
+3067 KG, Rotterdam
+The Netherlands
+Mob: +31629089953
+Email: arthurborsboom@gmail.com
+Skype: Arthur Borsboom, The Hague, The Netherlands
+
+[image: View Arthur's LinkedIn profile]
+<http://uk.linkedin.com/in/arthurborsboom>
