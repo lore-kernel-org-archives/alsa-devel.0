@@ -1,253 +1,71 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
- assignment for external base speaker and external microphone not working
-Date: Mon, 27 Jul 2015 10:11:16 +0800
-Message-ID: <CAN8ccibYUjoDUe+UhNesjEpD1t2rRg8TUbmtr-3kZuMGDXMoMA@mail.gmail.com>
-References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
- <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
- <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
- <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
- <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
- <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
- <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
- <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
- <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
- <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
- <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
- <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
- <CALUcmU=fh2O+8COLPv1GXneomk2=XS_ES+LDK8yoqaEWXDrszQ@mail.gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
+ hotplug	notify events
+Date: Mon, 27 Jul 2015 02:24:17 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196C5A91@SHSMSX103.ccr.corp.intel.com>
+References: <1437665179-9786-1-git-send-email-david.henningsson@canonical.com>
+ <1437665179-9786-5-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id B21672605D7
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2015 04:11:17 +0200 (CEST)
-Received: by obre1 with SMTP id e1so49736737obr.1
- for <alsa-devel@alsa-project.org>; Sun, 26 Jul 2015 19:11:16 -0700 (PDT)
-In-Reply-To: <CALUcmU=fh2O+8COLPv1GXneomk2=XS_ES+LDK8yoqaEWXDrszQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arthur Borsboom <arthurborsboom@gmail.com>
-Cc: =?UTF-8?B?xYF1a2FzeiBX?= <lukasz.wojnilowicz@gmail.com>, tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, patrakov@gmail.com, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1437665179-9786-5-git-send-email-david.henningsson@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: David Henningsson <david.henningsson@canonical.com>, "Koul, Vinod" <vinod.koul@intel.com>, "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>, "Vetter, Daniel" <daniel.vetter@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2015-07-26 19:55 GMT+08:00 Arthur Borsboom <arthurborsboom@gmail.com>:
-
-> Hi Raymond,
->
-> I have to apologize.
->
-> When you said Pulseaudio might have a bug, I rechecked my steps and I
-> believe I had only applied half of your patches.
-> I have applied all the patches this time, against the 4.2.0-rc3 kernel and
-> posted the requested info again.
->
-> alsa-info:
-> http://www.alsa-project.org/db/?f=ab56d544c53402fc7fdb96956299753de2708a6f
->
-
-
-	control.23 {
-		iface CARD
-		name 'External Subwoofer Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-
-As "External Subwoofer Jack" can report the presence of the external
-Sonice Master Subwoofer
-
-You need David to answer whether pulseaudio can auto mute since there
-is NO "Headphone Jack" kctl for model=dell-headset-multi
-
-
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/canonical?id=HEAD
-
-There is no "Headphone Jack" kctl for those alc3661-dell which use
-dell-headset-multi,
-
-	control.19 {
-		iface CARD
-		name 'Headphone Mic Jack'
-		value false
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.20 {
-		iface CARD
-		name 'Headset Mic Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.21 {
-		iface CARD
-		name 'Internal Mic Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.22 {
-		iface CARD
-		name 'Speaker Front Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-
-
-
-> chmap-result (stable, does not change after plugging or unplugging jacks):
->
-> Type = FIXED, Channels = 2
->   FL FR
-> Type = FIXED, Channels = 4
->   FL FR NA LFE
->
-> [Pavucontrol] -> [Configuration] -> [Built-in Audio] gives
->
-> Analog Stereo Duplex
-> Analog Stereo Output
-> Analog Surround 2.1 Output + Analog Stereo Input
-> Analog Surround 2.1 Output
-> Analog Surround 4.0 Output + Analog Stereo Input
-> Analog Surround 4.0 Output
-> Analog Stereo Input
-> Off
->
-> Pulseaudio verbose log: http://pastebin.com/MwC3KQS5
->
-
-Pulseaudio expect "Headphone Jack" but it is not available in
-dell-headset-multi
-
-
-(   0.088|   0.000) D: [pulseaudio] alsa-mixer.c: Looking at profile
-output:analog-surround-21
-(   0.088|   0.000) D: [pulseaudio] alsa-mixer.c: Checking for playback on
-Analog Surround 2.1 (analog-surround-21)
-(   0.088|   0.000) D: [pulseaudio] alsa-util.c: Trying surround21:1 with
-SND_PCM_NO_AUTO_FORMAT ...
-(   0.088|   0.000) D: [pulseaudio] alsa-util.c: Managed to open
-surround21:1
-(   0.088|   0.000) D: [pulseaudio] alsa-util.c: Maximum hw buffer size is
-11888 ms
-(   0.106|   0.017) D: [pulseaudio] alsa-util.c: Set buffer size first (to
-4408 samples), period size second (to 1102 samples).
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Profile
-output:analog-surround-21 supported.
-(   0.106|   0.000) I: [pulseaudio] (alsa-lib)control.c: Invalid CTL
-surround21:1
-(   0.106|   0.000) I: [pulseaudio] alsa-util.c: Unable to attach to mixer
-surround21:1: No such file or directory
-(   0.106|   0.000) I: [pulseaudio] alsa-util.c: Successfully attached to
-mixer 'hw:1'
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Removing path
-'analog-output' as it is a subset of 'analog-output-speaker'.
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Available mixer paths
-(after tidying):
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Path Set 0xc8a0b0,
-direction=1
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Path
-analog-output-speaker (Speakers), direction=1, priority=100, probed=yes,
-supported=yes, has_mute=yes, has_volume=yes, has_dB=yes, min_volume=0,
-max_volume=87, min_dB=-181.5, max_dB=0
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Element Master,
-direction=1, switch=1, volume=1, volume_limit=-1, enumeration=0,
-required=0, required_any=0, required_absent=0, mask=0x7ffffffffffff,
-n_channels=1, override_map=yes
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Element Headphone,
-direction=1, switch=2, volume=2, volume_limit=-1, enumeration=0,
-required=0, required_any=0, required_absent=0, mask=0x6, n_channels=2,
-override_map=no
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Element Speaker,
-direction=1, switch=1, volume=1, volume_limit=-1, enumeration=0,
-required=0, required_any=4, required_absent=0, mask=0x3600000000f66,
-n_channels=2, override_map=yes
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Element Bass Speaker,
-direction=1, switch=1, volume=1, volume_limit=-1, enumeration=0,
-required=0, required_any=4, required_absent=0, mask=0x80, n_channels=2,
-override_map=yes
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Element PCM, direction=1,
-switch=0, volume=1, volume_limit=-1, enumeration=0, required=0,
-required_any=0, required_absent=0, mask=0x3600000000f66, n_channels=2,
-override_map=yes
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Headphone,
-alsa_name='Headphone Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Dock Headphone,
-alsa_name='Dock Headphone Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Front Headphone,
-alsa_name='Front Headphone Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Line Out,
-alsa_name='Line Out Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Line Out Front,
-alsa_name='Line Out Front Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Speaker Phantom,
-alsa_name='Speaker Phantom Jack', detection unavailable
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Jack Speaker Front
-Phantom, alsa_name='Speaker Front Phantom Jack', detection possible
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Skipping profile
-output:analog-surround-21+input:analog-mono - will not be able to open
-input:analog-mono
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Looking at profile
-output:analog-surround-21+input:analog-stereo
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Checking for recording on
-Analog Stereo (analog-stereo)
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Trying front:1 with
-SND_PCM_NO_AUTO_FORMAT ...
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Managed to open front:1
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Maximum hw buffer size is
-23777 ms
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Set buffer size first (to
-4408 samples), period size second (to 1102 samples).
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Profile
-output:analog-surround-21+input:analog-stereo supported.
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Skipping profile
-output:analog-surround-21+input:iec958-stereo - will not be able to open
-input:iec958-stereo
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Looking at profile
-output:analog-surround-40
-(   0.106|   0.000) D: [pulseaudio] alsa-mixer.c: Checking for playback on
-Analog Surround 4.0 (analog-surround-40)
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Trying surround40:1 with
-SND_PCM_NO_AUTO_FORMAT ...
-(   0.106|   0.000) D: [pulseaudio] alsa-util.c: Managed to open
-surround40:1
-(   0.107|   0.000) D: [pulseaudio] alsa-util.c: Maximum hw buffer size is
-11888 ms
-(   0.107|   0.000) D: [pulseaudio] alsa-util.c: Set buffer size first (to
-4408 samples), period size second (to 1102 samples).
-(   0.107|   0.000) D: [pulseaudio] alsa-mixer.c: Profile
-output:analog-surround-40 supported.
-
-it is pulseaudio bug to support surround40 since your laptop does not have
-"RL and RR" chmap
-
-
->
->
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEludGVsLWdmeCBbbWFpbHRv
+OmludGVsLWdmeC1ib3VuY2VzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZ10gT24NCj4gQmVoYWxmIE9m
+IERhdmlkIEhlbm5pbmdzc29uDQo+IFNlbnQ6IFRodXJzZGF5LCBKdWx5IDIzLCAyMDE1IDExOjI2
+IFBNDQo+IFRvOiBLb3VsLCBWaW5vZDsgamFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tOyBWZXR0
+ZXIsIERhbmllbDsNCj4gdGl3YWlAc3VzZS5kZTsgaW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZzsgYWxzYS1kZXZlbEBhbHNhLQ0KPiBwcm9qZWN0Lm9yZw0KPiBDYzogRGF2aWQgSGVubmlu
+Z3Nzb24NCj4gU3ViamVjdDogW0ludGVsLWdmeF0gW1BBVENIIDQvNF0gQUxTQTogaGRhIC0gV2Fr
+ZSB0aGUgY29kZWMgdXAgb24NCj4gaG90cGx1ZyBub3RpZnkgZXZlbnRzDQo+IA0KPiBXaGVuZXZl
+ciB0aGVyZSBpcyBhbiBldmVudCBmcm9tIHRoZSBpOTE1IGRyaXZlciwgd2FrZSB0aGUgY29kZWMN
+Cj4gYW5kIHJlY2hlY2sgcGx1Zy91bnBsdWcgKyBFTEQgc3RhdHVzLg0KPiANCj4gVGhpcyBmaXhl
+cyB0aGUgaXNzdWUgd2l0aCBsb3N0IHVuc29sIGV2ZW50cyBpbiBwb3dlciBzYXZlIG1vZGUsDQo+
+IHRoZSBjb2RlYyBhbmQgY29udHJvbGxlciBjYW4gbm93IHNsZWVwIGluIEQzIGFuZCBzdGlsbCBr
+bm93IHdoZW4NCj4gdGhlIEhETUkgbW9uaXRvciBoYXMgYmVlbiBjb25uZWN0ZWQuDQo+IA0KPiBT
+aWduZWQtb2ZmLWJ5OiBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25p
+Y2FsLmNvbT4NCj4gLS0tDQo+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8ICAgMTMgKysr
+KysrKysrKysrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDEgZGVsZXRp
+b24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYw0KPiBi
+L3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jDQo+IGluZGV4IDJmMjQzMzguLjZjYzE1MjQgMTAw
+NjQ0DQo+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jDQo+ICsrKyBiL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfaGRtaS5jDQo+IEBAIC0yMzE2LDYgKzIzMTYsMTUgQEAgc3RhdGljIHZvaWQg
+aGFzd2VsbF9zZXRfcG93ZXJfc3RhdGUoc3RydWN0DQo+IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9u
+aWRfdCBmZywNCj4gIAlzbmRfaGRhX2NvZGVjX3NldF9wb3dlcl90b19hbGwoY29kZWMsIGZnLCBw
+b3dlcl9zdGF0ZSk7DQo+ICB9DQo+IA0KPiArc3RhdGljIHZvaWQgaW50ZWxfaG90cGx1Z19ub3Rp
+Znkoc3RydWN0IGhkYWNfZGV2aWNlICpkZXYsIGludCBwb3J0LA0KPiArCQkJCSBpbnQgcG9ydF9t
+c3RfaW5kZXgpDQo+ICt7DQo+ICsJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBjb250YWluZXJf
+b2YoZGV2LCBzdHJ1Y3QNCj4gaGRhX2NvZGVjLCBjb3JlKTsNCj4gKwlpbnQgcGluX25pZCA9IGlz
+X3ZhbGxleXZpZXcoY29kZWMpID8gMHgwMyA6IHBvcnQgKyAweDA0Ow0KDQpWYWxsZXl2aWV3IHNo
+b3VsZCBiZSB0aGUgc2FtZSBhcyBvdGhlcnMuDQoNClJlZ2FyZHMsDQpMaWJpbg0KDQo+ICsNCj4g
+KwljaGVja19wcmVzZW5jZV9hbmRfcmVwb3J0KGNvZGVjLCBwaW5fbmlkKTsNCj4gK30NCj4gKw0K
+PiAgc3RhdGljIGludCBwYXRjaF9nZW5lcmljX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMp
+DQo+ICB7DQo+ICAJc3RydWN0IGhkbWlfc3BlYyAqc3BlYzsNCj4gQEAgLTIzNDIsOCArMjM1MSwx
+MCBAQCBzdGF0aWMgaW50IHBhdGNoX2dlbmVyaWNfaGRtaShzdHJ1Y3QNCj4gaGRhX2NvZGVjICpj
+b2RlYykNCj4gIAlpZiAoaXNfdmFsbGV5dmlld19wbHVzKGNvZGVjKSB8fCBpc19za3lsYWtlKGNv
+ZGVjKSkNCj4gIAkJY29kZWMtPmNvcmUubGlua19wb3dlcl9jb250cm9sID0gMTsNCj4gDQo+IC0J
+aWYgKGlzX2hhc3dlbGxfcGx1cyhjb2RlYykgfHwgaXNfdmFsbGV5dmlld19wbHVzKGNvZGVjKSkN
+Cj4gKwlpZiAoaXNfaGFzd2VsbF9wbHVzKGNvZGVjKSB8fCBpc192YWxsZXl2aWV3X3BsdXMoY29k
+ZWMpKSB7DQo+ICAJCWNvZGVjLT5kZXBvcF9kZWxheSA9IDA7DQo+ICsJCWNvZGVjLT5jb3JlLmk5
+MTVfaG90cGx1Z19ub3RpZnkgPQ0KPiBpbnRlbF9ob3RwbHVnX25vdGlmeTsNCj4gKwl9DQo+IA0K
+PiAgCWlmIChoZG1pX3BhcnNlX2NvZGVjKGNvZGVjKSA8IDApIHsNCj4gIAkJY29kZWMtPnNwZWMg
+PSBOVUxMOw0KPiAtLQ0KPiAxLjcuOS41DQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXw0KPiBJbnRlbC1nZnggbWFpbGluZyBsaXN0DQo+IEludGVs
+LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeA0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9pbnRlbC1nZngK
