@@ -1,17 +1,22 @@
-From: "U. Artie Eoff" <ullysses.a.eoff@intel.com>
-Subject: [PATCH 2/2] ALSA: hda - Fix race condition between HDA
-	driver and runtime PM
-Date: Mon, 27 Jul 2015 14:34:54 -0700
-Message-ID: <1438032894-8472-2-git-send-email-ullysses.a.eoff@intel.com>
-References: <1438032894-8472-1-git-send-email-ullysses.a.eoff@intel.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH v3] ASoC: Add support for NAU8825 codec to
+	ASoC
+Date: Mon, 27 Jul 2015 16:10:37 -0700
+Message-ID: <CAOMFOmWFcgvCK+Fhwmfjk5X-uWy3Er3mN9Gj5s3aPT5WjVqOeA@mail.gmail.com>
+References: <55A369B2.5040500@nuvoton.com>
+ <CAOMFOmX+fnLCUuPUHcADrGVsbgpK-WQsX8GNTdwODWv+md668Q@mail.gmail.com>
+ <55B5CEC3.6070405@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 756302650C5
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2015 23:39:02 +0200 (CEST)
-In-Reply-To: <1438032894-8472-1-git-send-email-ullysses.a.eoff@intel.com>
+Received: from mail-vn0-f49.google.com (mail-vn0-f49.google.com
+ [209.85.216.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF5D82604EB
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 01:10:38 +0200 (CEST)
+Received: by vnav141 with SMTP id v141so36753171vna.0
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2015 16:10:37 -0700 (PDT)
+In-Reply-To: <55B5CEC3.6070405@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +26,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, zhuo-hao.lee@intel.com, "U. Artie Eoff" <ullysses.a.eoff@intel.com>
+To: Chih-Chiang Chang <ccchang12@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, AP MS30 Linux Kernel community <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Don't execute runtime suspend if HDA is not finished initializing.
-Otherwise, the following errors can occur in hda:
-
-snd_hda_intel 0000:00:1b.0: CORB reset timeout#2, CORBRP = 65535
-snd_hda_intel 0000:00:1b.0: no codecs initialized
-
-Debugged and root-cause found by zhuo-hao.lee@intel.com
-
-Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
----
- sound/pci/hda/hda_intel.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index b729b25a6ad6..062f2400dbc7 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1017,17 +1017,20 @@ static int azx_runtime_idle(struct device *dev)
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
- 	struct hda_intel *hda;
-+	struct hdac_bus *bus;
- 
- 	if (!card)
- 		return 0;
- 
- 	chip = card->private_data;
- 	hda = container_of(chip, struct hda_intel, chip);
--	if (chip->disabled || hda->init_failed || !chip->running)
-+	bus = azx_bus(chip);
-+	if (chip->disabled || hda->init_failed ||
-+		(bus->chip_init && !chip->running))
- 		return 0;
- 
- 	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
--	    azx_bus(chip)->codec_powered)
-+	    bus->codec_powered || !bus->chip_init)
- 		return -EBUSY;
- 
- 	return 0;
--- 
-1.9.3
+SGkKCk9uIFN1biwgSnVsIDI2LCAyMDE1IGF0IDExOjI1IFBNLCBDaGloLUNoaWFuZyBDaGFuZwo8
+Y2NjaGFuZzEyQG51dm90b24uY29tPiB3cm90ZToKPiBIaSBBbmF0b2wsCj4KPiBUaGFua3MgZm9y
+IHlvdXIgc3VnZ2VzdGlvbi4gV2UgYXJlIHdvcmtpbmcgb24gZGlmZmVyZW50IGFyY2hpdGVjdHVy
+ZXMgdG8KPiBzdXBwb3J0IE5BVTg4MjUgQUxTQSBkcml2ZXIsIGFuZCBJIGFsc28gdGhpbmsgaXQg
+aXMgYmV0dGVyIHdlIGNhbiBoYXZlIGEKPiBjb29wZXJhdGlvbiBmb3IgZHJpdmVyIGRldmVsb3Bt
+ZW50IGFuZCB1cHN0cmVhbS4gV2UgaGF2ZSBjaGVja2VkIHlvdXIKPiBjb2RlLCBhbmQgd2UgdGhp
+bmsgeW91ciBpbXBsZW1lbnQgdmVyc2lvbiBzaG91bGQgbW9yZSBmb2xsb3cgdGhlIEFMU0EKPiB1
+cHN0cmVhbSBjb2Rpbmcgc3RhbmRhcmRzLgoKPgo+IFdlIGhhdmUgYW5vdGhlciB2ZXJzaW9uIG9m
+IEFMU0EgZHJpdmVyLCB3aGljaCBhbHNvIHN1cHBvcnRzIG1vc3QKPiBmZWF0dXJlcyBhcyB5b3Ug
+bGlzdGVkLiBBbmQgSSB0aGluayB5b3UgYWxyZWFkeSBnb3QgaXQgZnJvbSBvdXIgSFcKPiBlbmdp
+bmVlcnMuIFRoZSBtYWpvciBkaWZmZXJlbmNlIGJldHdlZW4gb3VyIGFyY2hpdGVjdHVyZXMgc2hv
+dWxkIGJlIHRoZQo+IGZsb3cgYW5kIHNlcXVlbmNlIGluIHNsZWVwIG1vZGUsIGFuZCBzb21lIG90
+aGVyIGFyY2hpdGVjdHVyZSBkZXBlbmRlbmNlCj4gY29kZXMuCgpUaGUgZHJpdmVyIGRvZXMgbm90
+IGhhdmUgc3VzcGVuZC9yZXN1bWUgc3VwcG9ydCB5ZXQuIEl0IHdvdWxkIGJlIGdyZWF0CnRvIGFk
+ZCBpdCBpbiB0aGUgZnV0dXJlLgoKPiBGb3IgdGhlIHVwc3RyZWFtLCB3ZSB0aGluayBpdCBpcyBi
+ZXR0ZXIgdG8gaGF2ZSBvbmx5IG9uZSB2ZXJzaW9uIHNvdXJjZQo+IGFuZCBjb3VsZCBzdXBwb3J0
+IGRpZmZlcmVudCBhcmNoaXRlY3R1cmVzLiBEbyB5b3UgYWdyZWUgdG8gdXNlIHlvdXIKPiB2ZXJz
+aW9uIHRvIGdvIG9uIHRoZSB1cHN0cmVhbSBpbiBmdXR1cmU/CgpZZXMsIGl0IHdvdWxkIGJlIGdy
+ZWF0LiBJIHdpbGwgcG9zdCBteSBjb2RlIHVwc3RyZWFtIHNob3J0bHkuCgpQbGVhc2UgbGV0IG1l
+IGtub3cgaWYgeW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIGZvciB0aGUgZHJpdmVyIGNvZGUuCgo+
+IElmIHllcywgd2UgY2FuIHBvcnQgeW91ciBkcml2ZXIKPiB0byBvdXIgdGVzdCBwbGF0Zm9ybSwg
+YW5kIHRoZW4gZ2l2ZSB0aGUgZmVlZGJhY2sgdG8geW91LgoKPgo+IE9uIDIwMTUvNy8yMyDkuIrl
+jYggMDE6NTcsIEFuYXRvbCBQb21vem92IHdyb3RlOgo+PiBIaSBDaGloLUNoaWFuZwo+Pgo+PiBP
+biBNb24sIEp1bCAxMywgMjAxNSBhdCAxMjozMyBBTSwgQ2hpaC1DaGlhbmcgQ2hhbmcKPj4gPGNj
+Y2hhbmcxMkBudXZvdG9uLmNvbT4gd3JvdGU6Cj4+PiBUaGUgTkFVODhMMjUgaXMgYW4gdWx0cmEt
+bG93IHBvd2VyIGhpZ2ggcGVyZm9ybWFuY2UgYXVkaW8gY29kZWMgZGVzaWduZWQKPj4+IGZvciBz
+bWFydHBob25lLCB0YWJsZXQgUEMsIGFuZCBvdGhlciBwb3J0YWJsZSBkZXZpY2VzIGJ5IE51dm90
+b24sIG5vdwo+Pj4gYWRkIGxpbnV4IGRyaXZlciBzdXBwb3J0IGZvciBpdC4KPj4KPj4gQXQgQ2hy
+b21lT1Mgd2Ugd29yayB3aXRoIE51dm90b24gaHcgZW5naW5lZXJzIG9uIGRyaXZlciBmb3IgdGhp
+cyBuaWNlCj4+IGNoaXAgYXMgd2VsbC4KPj4KPj4gSGVyZSBpcyBjdXJyZW50IGRyaXZlciBjb2Rl
+Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9hbmF0b2wvbGludXgvYmxvYi9uYXU4ODI1L3NvdW5kL3Nv
+Yy9jb2RlY3MvbmF1ODgyNS5jCj4+Cj4+IFRoZSBmdW5jdGlvbmFsaXR5IGlzIG1vc3RseSByZWFk
+eS4gT3VyIGRyaXZlciBoYW5kbGVzIHBsYXliYWNrLAo+PiBjYXB0dXJlLCBtaWMgamFjayBkZXRl
+Y3Rpb24sIGFuIGJ1dHRvbiBwcmVzc2VzICg0IGJ1dHRvbnMgYWNjb3JkaW5nCj4+IEFuZHJvaWQg
+c3BlY2lmaWNhdGlvbikuIFdlIG5lZWQgdG8gcmVzb2x2ZSBhIGZldyByZW1haW5pbmcgaXNzdWVz
+LAo+PiBzdWNoIGFzCj4+ICAtIGNoaXAgbmVlZHMgYmV0dGVyIHdheSB0byByZWNvZ25pemUgaGln
+aC1pbXBlZGFuY2UgaW5wdXQgKGUuZy4gQm9zZQo+PiBRdWlldCBDb21mb3J0IDE1IGhlYWRzZXQp
+Cj4+ICAtIGltcGxlbWVudCBoZWFkc2V0IGNyb3NzIHRhbGsgYXV0b21hdGljIGNvbmZpZ3VyYXRp
+b24KPj4gIC0gZ2VuZXJhbCBjb2RlIGNsZWFudXAKPj4KPj4gQnV0IG90aGVyd2lzZSBkcml2ZXIg
+aXMgZnVuY3Rpb25hbCBhbmQgdXNlZCBmb3IgdGVzdGluZyBpbiBvdXIgbmV4dAo+PiBnZW5lcmF0
+aW9uIGRldmljZS4KPj4KPj4KPj4gV2hhdCBkbyB5b3UgdGhpbmsgYWJvdXQgam9pbmluZyBlZmZv
+cnRzIG9uIHRoaXMgc29mdHdhcmUgZGV2ZWxvcG1lbnQKPj4gdG8gbWFrZSBncmVhdCBkcml2ZXIg
+Zm9yIHRoaXMgY2hpcD8KPj4KPj4+IFNpZ25lZC1vZmYtYnk6IENoaWgtQ2hpYW5nIENoYW5nIDxj
+Y2NoYW5nMTJAbnV2b3Rvbi5jb20+Cj4+PiAtLS0KPj4+IHYzLT52MjoKPj4+ICAgIC0gZml4IHRo
+ZSB3cm9uZyBkZWZpbml0aW9uIG9mIHJlZ19kZWZhdWx0Cj4+PiAgICAtIGZpeCB0aGUgZmxvdyBv
+ZiBzZXRfc3lzX2NsaygpIGFuZCBuYXU4ODI1X3NldF9iaWFzX2xldmVsKCkKPj4+ICAgIC0gcmVt
+b3ZlIHVubmVjZXNzYXJ5IGNvZGUgaW4gbmF1ODgyNV92b2xhdGlsZV9yZWdpc3RlcigpIGFuZAo+
+Pj4gbmF1ODgyNV9pMmNfcHJvYmUoKQo+Pj4gICAgLSBhZGQgdHJpZ2dlciBmdW5jdGlvbiBmb3Ig
+QURDL0RBQyBjb250cm9sCj4+PiAgICAtIGFkZCBzb21lIHJlZ2lzdGVyIGRlZmluaXRpb25zCj4+
+PiAgICAtIGZpeCBzb21lIGNvZGluZyBzdHlsZSBpc3N1ZXMKPj4+IHYyLT52MToKPj4+ICAgIC0g
+Zml4ZXMgYWNjb3JkaW5nIHRvIExhcnMtUGV0ZXIgQ2xhdXNlbidzIHJldmlldyBjb21tZW50cwo+
+Pj4gICAgLSByZW1vdmVzIHVudXNlZCBwbGF0Zm9ybSBkYXRhIGZpbGUKPj4+ICAgIC0gY29ycmVj
+dHMgdGhlIG5hbWluZyBvZiBEQVBNIGlucHV0IHdpZGdldAo+Pj4gICAgLSBmaXhlcyBzb21lIHdy
+b25nIGNvZGluZyBvZiBTT0Mgd2lkZ2V0cyBhbmQgb3RoZXIgY29kZXMKPj4+ICAgIC0gYWRkcyBk
+ZWZpbml0aW9uIGFuZCByZW1hcmsgZm9yIGNvbmZpZyBGTEwgY2xvY2sKPj4+ICAgIC0gbW92ZXMg
+dGhlIGNvZGUgb2YgcmVzZXQgaGFyZHdhcmUgcmVnaXN0ZXJzIGZyb20gY29kZWNfcHJvYmUoKSB0
+bwo+Pj4gaTJjX3Byb2JlKCkKPj4+ICAgIC0gcmVtb3ZlcyB1bnVzZWQgY29kZXMKPj4+Cj4+PiAg
+c291bmQvc29jL2NvZGVjcy9LY29uZmlnICAgfCAgIDUgKwo+Pj4gIHNvdW5kL3NvYy9jb2RlY3Mv
+TWFrZWZpbGUgIHwgICAyICsKPj4+ICBzb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuYyB8IDcyNAo+
+Pj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+PiAgc291
+bmQvc29jL2NvZGVjcy9uYXU4ODI1LmggfCAzOTkgKysrKysrKysrKysrKysrKysrKysrKysrKwo+
+Pj4gIDQgZmlsZXMgY2hhbmdlZCwgMTEzMCBpbnNlcnRpb25zKCspCj4+PiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0
+IHNvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
