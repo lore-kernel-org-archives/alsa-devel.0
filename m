@@ -1,88 +1,81 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Subject: Re: [PATCH 3/4] ARM: dts: rockchip: Add SPDIF transceiver for RK3188
-Date: Tue, 28 Jul 2015 16:20:50 +0200
-Message-ID: <3088613.6ISvoE3M9J@diego>
-References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk> <1438085011-16577-4-git-send-email-sjoerd.simons@collabora.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Mon, 27 Jul 2015 18:05:15 -0500
+Message-ID: <55B6B92B.5010305@linux.intel.com>
+References: <20150714150352.GW11162@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D70108CC68@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1438085011-16577-4-git-send-email-sjoerd.simons@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAD1826585C
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 16:21:57 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70108CC68@RTITMBSV03.realtek.com.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 7/21/15 6:29 AM, Bard Liao wrote:
+>> -----Original Message-----
+>> From: Mark Brown [mailto:broonie@kernel.org]
+>> Sent: Tuesday, July 14, 2015 11:04 PM
+>> To: Takashi Iwai; Liam Girdwood; Jaroslav Kysela
+>> Cc: alsa-devel@alsa-project.org
+>> Subject: [REANNOUNCE] Audio Mini Summit 2015, 8th October, Dublin
+>>
+>> Like previous years, we're going to hold a meeting to discuss lowlevel
+>> audio on Linux.  This will be held the day after ELC Europe on 8th
+>> October at CCD (The Convention Centre) in Dublin.
+>>
+>> If you're interested please sign up in the attendee list:
+>>
+>> https://docs.google.com/spreadsheets/d/1bi-8GHsqlzt41FR20WiMuWILe_
+>> cZowFireVMBd-QM8Q/edit?usp=sharing
+>>
+>> and please follow up to this mail with any topics you'd like to see raised so
+>> we can start collecting them (probably another Google doc will be
+>> forthcoming for them).
+>>
+>> Previously suggested topics include:
+>>
+>>   - Reducing kernel size for IoT applications
+>>   - ACPI simple-card
 
-Am Dienstag, 28. Juli 2015, 14:03:30 schrieb Sjoerd Simons:
-> Add the SPDIF transceiver controller and pin for RK3188
-> 
-> Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-> ---
->  arch/arm/boot/dts/rk3188.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
-> index 0f23aed..43e9bdf 100644
-> --- a/arch/arm/boot/dts/rk3188.dtsi
-> +++ b/arch/arm/boot/dts/rk3188.dtsi
-> @@ -121,6 +121,22 @@
->  		status = "disabled";
->  	};
-> 
-> +	spdif: spdif@0x1011e000 {
+I think we should also share findings on DeviceTree vs. ACPI support for 
+machine drivers and subnodes.
 
-node names without 0x -> "spdif@1011e000"
+>>   - Testing tools
+>>
+>
+> Could we also discuss the driver support for MIPI SoundWire ?
 
+Yes we should. This might require additional time or a dedicated session 
+though.
 
-> +		compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
-> +		reg = <0x1011e000 0x2000>;
-> +		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&spdif_tx>;
-> +		dmas = <&dmac1_s 8>;
-> +		dma-names = "tx";
-> +		clock-names = "spdif_hclk", "spdif_clk";
-> +		clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
-> +		status = "disabled";
-> +		#sound-dai-cells = <0>;
+> Is there any existing code in kernel using MIPI SoundWire?
 
-if you're submitting a v2, could you try ordering stuff like this?
+Not yet, this is work-in-progress. Note that a list of device properties 
+has already been defined and is available to MIPI contributors, it'll be 
+released more widely at some point.
 
-+		compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
-+		reg = <0x1011e000 0x2000>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		#sound-dai-cells = <0>;
-+		clock-names = "spdif_hclk", "spdif_clk";
-+		clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
-+		dmas = <&dmac1_s 8>;
-+		dma-names = "tx";
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&spdif_tx>;
-+		status = "disabled";
-
-The ordering I try to keep is "compatible", "reg", [everything else sorted 
-alphabetically], "status"
-
-> +	};
-> +
->  	cru: clock-controller@20000000 {
->  		compatible = "rockchip,rk3188-cru";
->  		reg = <0x20000000 0x1000>;
-> @@ -462,6 +478,12 @@
->  						<RK_GPIO1 21 RK_FUNC_1 &pcfg_pull_none>;
->  			};
->  		};
-> +
-> +		spdif {
-> +			spdif_tx: spdif-tx {
-> +				rockchip,pins = <RK_GPIO1 14 RK_FUNC_1 &pcfg_pull_none>;
-> +			};
-> +		};
->  	};
->  };
+>
+>> Thanks,
+>> Mark
+>>
+>> ------Please consider the environment before printing this e-mail.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
