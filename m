@@ -1,24 +1,17 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Running PJSIP for voip calls in alsa
-Date: Tue, 28 Jul 2015 05:08:28 +0000
-Message-ID: <SIXPR04MB253482862078B53CC765D74C38E0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559FCB17.2070200@ladisch.de>
- <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <55A3635C.7090009@ladisch.de>
- <SIXPR04MB2534E33FAFB9024B6D68B2BC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <55A36F98.8060408@ladisch.de>,
- <SIXPR04MB253C2AE64F54AC46DA26414C3990@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <SIXPR04MB253C33418EA367F37CFDC53C3850@SIXPR04MB253.apcprd04.prod.outlook.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v2] ALSA: hda - Fix race condition between
+ HDA driver and runtime PM
+Date: Tue, 28 Jul 2015 05:20:08 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196C8427@SHSMSX103.ccr.corp.intel.com>
+References: <1438057171-18045-1-git-send-email-ullysses.a.eoff@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0090.outbound.protection.outlook.com [104.47.125.90])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CDB32651C0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 07:08:40 +0200 (CEST)
-In-Reply-To: <SIXPR04MB253C33418EA367F37CFDC53C3850@SIXPR04MB253.apcprd04.prod.outlook.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49EE32651C0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 07:20:14 +0200 (CEST)
+In-Reply-To: <1438057171-18045-1-git-send-email-ullysses.a.eoff@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,71 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Lee, Zhuo-hao" <zhuo-hao.lee@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
 
-Could you please helpme out in this
+Hi Ullysses,
 
-I am trying to understand few terminologies w.r.t the following for developing alsa application
+> -----Original Message-----
+> From: Eoff, Ullysses A
+> Sent: Tuesday, July 28, 2015 12:20 PM
+> To: tiwai@suse.de; alsa-devel@alsa-project.org
+> Cc: Lee, Zhuo-hao; Yang, Libin; Eoff, Ullysses A
+> Subject: [PATCH v2] ALSA: hda - Fix race condition between HDA driver
+> and runtime PM
+> 
+> Don't execute runtime suspend if HDA is not finished initializing.
+> Otherwise, the following errors can occur in hda:
+> 
+> snd_hda_intel 0000:00:1b.0: CORB reset timeout#2, CORBRP = 65535
+> snd_hda_intel 0000:00:1b.0: no codecs initialized
+> 
+> Debugged and root-cause found by zhuo-hao.lee@intel.com
+> 
+> v2: remove unnecessary extra check for chip init (libin)
+> 
+> Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+> ---
+>  sound/pci/hda/hda_intel.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index b729b25a6ad6..15d4e28fc64e 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1017,17 +1017,19 @@ static int azx_runtime_idle(struct device
+> *dev)
+>  	struct snd_card *card = dev_get_drvdata(dev);
+>  	struct azx *chip;
+>  	struct hda_intel *hda;
+> +	struct hdac_bus *bus;
+> 
+>  	if (!card)
+>  		return 0;
+> 
+>  	chip = card->private_data;
+>  	hda = container_of(chip, struct hda_intel, chip);
+> +	bus = azx_bus(chip);
+>  	if (chip->disabled || hda->init_failed || !chip->running)
 
-Period_size
-Periods
-period_time
-Buffer_time
-Buffer_size
+I mean we don't need '!chip->running' either. Otherwise,
+initialization may be interrupted.
 
-
-
-________________________________________
-From: alsa-devel-bounces@alsa-project.org <alsa-devel-bounces@alsa-project.org> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Sent: Monday, July 20, 2015 12:18 PM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Dear Clemens,
-
-Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
-
-Kindly do the needful,
-
-Many Thanks in advance
-________________________________________
-From: Srinivasan S
-Sent: Thursday, July 16, 2015 10:09 AM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Dear Clemens,
-
-Thanks a lot for your replies,
-
-Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
-
-Kindly do the needful,
-
-Many Thanks in advance
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Monday, July 13, 2015 1:28 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Srinivasan S wrote:
-> Could you please provide any suggestions or inputs from where this problem could arrive ie., in either platform driver or machine driver or codec driver??
-
-I do not know that driver.
-
-
-Regards,
-Clemens
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  		return 0;
+> 
+>  	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+> -	    azx_bus(chip)->codec_powered)
+> +	    bus->codec_powered || !bus->chip_init)
+>  		return -EBUSY;
+> 
+>  	return 0;
+> --
+> 1.9.3
