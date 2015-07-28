@@ -1,16 +1,21 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: pcm prepare
-Date: Tue, 28 Jul 2015 08:56:43 +0200
-Message-ID: <55B727AB.8090902@ladisch.de>
-References: <CAAVaN8woRd9Xvp3kE-=8gW-diB4KSWjEw+hU=bfi7cQdBvdQkQ@mail.gmail.com>
+Subject: Re: Cannot open
+	shared	library	/usr/lib/alsa-lib/libasound_module_pcm_jack.so
+Date: Tue, 28 Jul 2015 08:59:37 +0200
+Message-ID: <55B72859.5060303@ladisch.de>
+References: <SIXPR04MB25362E92C1A38365A48DF57C3900@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559F687D.3040305@ladisch.de>
+ <SIXPR04MB253428BCF6788F2160EC91DC39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <559FB521.9010901@ladisch.de>
+ <SIXPR04MB253CEF806D289FF068A4E8FC38D0@SIXPR04MB253.apcprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 0316B260459
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 08:56:44 +0200 (CEST)
-In-Reply-To: <CAAVaN8woRd9Xvp3kE-=8gW-diB4KSWjEw+hU=bfi7cQdBvdQkQ@mail.gmail.com>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4DAD726049D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 08:59:38 +0200 (CEST)
+In-Reply-To: <SIXPR04MB253CEF806D289FF068A4E8FC38D0@SIXPR04MB253.apcprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,29 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Ng <andreas2025@gmail.com>, alsa-devel@alsa-project.org
+To: Srinivasan S <srinivasan.s@tataelxsi.co.in>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Andy Ng wrote:
-> I am quite surprised that by sending hardware params with alsa-lib the
-> prepare function is called automatically in the driver.
->
-> In my case, I would like to open and configure pcmNp and pcmNc and
-> then call prepare for pcmNp and pcmPc channels.
->
-> It is quite imperative to execute specific configuration steps after
-> both channels are opened and configured.
+(please don't top-post)
 
-What configuration steps?  Is there some dependency or shared resource
-between the two streams?  In that case, you have to set the
-SNDRV_PCM_INFO_JOINT_DUPLEX flag, and do whatever is necessary in the
-first hw_params call, and just check for correctness in the later
-hw_params call of the other stream.
+Srinivasan S wrote:
+> Can you please provide the build command to cross_compile alsa_plugins
 
-> I was wondering if there is any ioctl interface that can be hooked in
-> alsa-lib to pass extra configuration info before start the streams.
-
-No.
+I can't help you; I've never cross-compiled ALSA myself.
 
 
 Regards,
