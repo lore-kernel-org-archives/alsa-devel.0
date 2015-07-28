@@ -1,20 +1,15 @@
-From: Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>
-Subject: Re: Bug on Dell Vostro 5480 (Intel Wildcat) kernel
-	driver
-Date: Tue, 28 Jul 2015 00:42:25 -0300
-Message-ID: <CAE7bemp+6xfZeuVhdfadpfWAZ28Gf5bnC69MK=XTYfVeTnYO9w@mail.gmail.com>
-References: <CAE7bemp1SL2q2h3vkxgAzF=+75kpDvX2aZUck_c70Ujxw3cyvQ@mail.gmail.com>
+From: "U. Artie Eoff" <ullysses.a.eoff@intel.com>
+Subject: [PATCH v2] ALSA: hda - Fix race condition between HDA
+	driver and runtime PM
+Date: Mon, 27 Jul 2015 21:19:31 -0700
+Message-ID: <1438057171-18045-1-git-send-email-ullysses.a.eoff@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f179.google.com (mail-ig0-f179.google.com
- [209.85.213.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A9C56265109
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 05:42:26 +0200 (CEST)
-Received: by igbij6 with SMTP id ij6so99340927igb.1
- for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2015 20:42:26 -0700 (PDT)
-In-Reply-To: <CAE7bemp1SL2q2h3vkxgAzF=+75kpDvX2aZUck_c70Ujxw3cyvQ@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B90CA2651A8
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 06:20:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: libin.yang@intel.com, zhuo-hao.lee@intel.com, "U. Artie Eoff" <ullysses.a.eoff@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-http://hastebin.com/raw/kixaqaloqe
+Don't execute runtime suspend if HDA is not finished initializing.
+Otherwise, the following errors can occur in hda:
 
-2015-07-28 0:35 GMT-03:00 Paulo Roberto de Oliveira Castro <
-p.oliveira.castro@gmail.com>:
+snd_hda_intel 0000:00:1b.0: CORB reset timeout#2, CORBRP = 65535
+snd_hda_intel 0000:00:1b.0: no codecs initialized
 
-> Hi everyone,
->
-> After installing Fedora 22 on my Dell Vostro 5480, the speakers don't
-> work, and the sound only comes out of the subwoofer. Here is the output
-> of alsa-info.sh. After talking to "debianuser" on IRC, we found this
-> workaround:
->
-> sudo hda-verb /dev/snd/hwC1D0 0x14 SET_PIN_WIDGET_CONTROL 0x40 # enable,
-> set it to OUT
-> sudo hda-verb /dev/snd/hwC1D0 0x14 SET_CONNECT_SEL 0 # switch to 0x0c
-> sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0xa000 # unmute left
-> sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0x9000 # unmute right
->
-> We suspect that it's a kernel driver bug. This makes the speakers work
-> alongside the headphones (both at the same time) but I need help making
-> it working when headphones are not plugged in.
->
-> Thanks,
->
-> Paulo
->
+Debugged and root-cause found by zhuo-hao.lee@intel.com
+
+v2: remove unnecessary extra check for chip init (libin)
+
+Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+---
+ sound/pci/hda/hda_intel.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index b729b25a6ad6..15d4e28fc64e 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1017,17 +1017,19 @@ static int azx_runtime_idle(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+ 	struct hda_intel *hda;
++	struct hdac_bus *bus;
+ 
+ 	if (!card)
+ 		return 0;
+ 
+ 	chip = card->private_data;
+ 	hda = container_of(chip, struct hda_intel, chip);
++	bus = azx_bus(chip);
+ 	if (chip->disabled || hda->init_failed || !chip->running)
+ 		return 0;
+ 
+ 	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+-	    azx_bus(chip)->codec_powered)
++	    bus->codec_powered || !bus->chip_init)
+ 		return -EBUSY;
+ 
+ 	return 0;
+-- 
+1.9.3
