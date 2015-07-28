@@ -1,19 +1,21 @@
-From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Subject: [PATCH v2 22/22] ASoC: core: Probe components on demand
-Date: Tue, 28 Jul 2015 15:19:53 +0200
-Message-ID: <1438089593-7696-23-git-send-email-tomeu.vizoso@collabora.com>
-References: <1438089593-7696-1-git-send-email-tomeu.vizoso@collabora.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v13 3/3] ASoC: tda998x: add a codec to the
+ HDMI transmitter
+Date: Tue, 28 Jul 2015 15:23:29 +0200
+Message-ID: <20150728152329.02668865@armhf>
+References: <cover.1437397270.git.moinejf@free.fr>
+ <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf@free.fr>
+ <20150720180606.GL11162@sirena.org.uk>
+ <20150728121945.560f82a5@armhf>
+ <20150728102410.GD11162@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id A762026526D
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 15:21:21 +0200 (CEST)
-Received: by wicmv11 with SMTP id mv11so179342186wic.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 06:21:21 -0700 (PDT)
-In-Reply-To: <1438089593-7696-1-git-send-email-tomeu.vizoso@collabora.com>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9222B26526D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 15:23:37 +0200 (CEST)
+In-Reply-To: <20150728102410.GD11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, Tomeu Vizoso <tomeu.vizoso@collabora.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-When looking up a component through its firmware node, probe it if it
-hasn't already.
-
-The goal is to reduce deferred probes to a minimum, as it makes it very
-cumbersome to find out why a device failed to probe, and can introduce
-very big delays in when a critical device is probed.
-
-Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
----
-
-Changes in v2: None
-
- sound/soc/soc-core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c81aec9c872a..4c55da97f9ed 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -865,10 +865,12 @@ static const struct snd_soc_dai_ops null_dai_ops = {
- };
- 
- static struct snd_soc_component *soc_find_component(
--	const struct device_node *of_node, const char *name)
-+	struct device_node *of_node, const char *name)
- {
- 	struct snd_soc_component *component;
- 
-+	fwnode_ensure_device(&of_node->fwnode);
-+
- 	lockdep_assert_held(&client_mutex);
- 
- 	list_for_each_entry(component, &component_list, list) {
-@@ -890,6 +892,8 @@ static struct snd_soc_dai *snd_soc_find_dai(
- 	struct snd_soc_dai *dai;
- 	struct device_node *component_of_node;
- 
-+	fwnode_ensure_device(&dlc->of_node->fwnode);
-+
- 	lockdep_assert_held(&client_mutex);
- 
- 	/* Find CPU DAI from registered DAIs*/
--- 
-2.4.3
+T24gVHVlLCAyOCBKdWwgMjAxNSAxMToyNDoxMCArMDEwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBUdWUsIEp1bCAyOCwgMjAxNSBhdCAxMjoxOTo0NVBNICsw
+MjAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gTWFyayBCcm93biA8YnJvb25pZUBr
+ZXJuZWwub3JnPiB3cm90ZToKPiAKPiA+ID4gPiAraW50IHRkYTk5OTh4X2NvZGVjX3JlZ2lzdGVy
+KHN0cnVjdCBkZXZpY2UgKmRldiwKPiA+ID4gPiArCQkJc3RydWN0IHRkYTk5OHhfYXVkaW9fcyAq
+dGRhOTk4eF9hdWRpb19pLAo+ID4gPiA+ICsJCQlzdHJ1Y3QgdGRhOTk4eF9vcHNfcyAqdGRhOTk4
+eF9vcHMpOwo+ID4gPiA+ICt2b2lkIHRkYTk5OTh4X2NvZGVjX3VucmVnaXN0ZXIoc3RydWN0IGRl
+dmljZSAqZGV2KTsKPiAKPiA+ID4gSSdkIGV4cGVjdCB0aGVzZSB0byBiZSBpbnRlcm5hbCB0byB0
+aGUgRFJNIGRyaXZlci4KPiAKPiA+IEkgZG9uJ3Qgc2VlIHdoZXJlLiBXaGF0IGlzIHlvdXIgaWRl
+YT8KPiAKPiBXaGF0IEkgc2FpZCBhYm92ZSAtIHB1dCB0aGVtIGluIHRoZSBEUk0gZHJpdmVyLiAg
+VGhleSdyZSBqdXN0Cj4gcmVnaXN0ZXJpbmcgYSBkZXZpY2UgSUlSQy4KClRoZXJlIGlzIG5vIENP
+REVDIGRldmljZS4gVGhlIEhETUkgZGV2aWNlIHN1cHBvcnRzIGJvdGggYXVkaW8gYW5kIHZpZGVv
+LgoKPiA+ID4gPiArY29uZmlnIFNORF9TT0NfVERBOTk4WAo+ID4gPiA+ICsJZGVmX3RyaXN0YXRl
+IHkKPiA+ID4gPiArCXNlbGVjdCBTTkRfUENNX0VMRAo+ID4gPiA+ICsJZGVwZW5kcyBvbiBEUk1f
+STJDX05YUF9UREE5OThYCj4gCj4gPiA+IGRlZl90cmlzdGF0ZSB5PyAgV2h5Pwo+IAo+ID4gVGhl
+IFREQTk5OHggQ09ERUMgaXMgYWx3YXlzIGdlbmVyYXRlZCB3aGVuIHRoZSBEUk0gVERBOTk4eCBp
+cyBnZW5lcmF0ZWQKPiA+IGFuZCB3aGVuIGF1ZGlvIGlzIHdhbnRlZC4KPiA+IEl0cyB0eXBlLCBi
+dWlsdC1pbiBvciBtb2R1bGUsIGRlcGVuZHMgb24gdGhlIFREQTk5OHggZHJpdmVyIHR5cGUuCj4g
+Cj4gSnVzdCBtYWtlIHRoaXMgbGlrZSBhbnkgb3RoZXIgZHJpdmVyIHdpdGggbm8gZGVmYXVsdCBz
+cGVjaWZpZWQuCgpJZiBJIHVuZGVyc3RhbmQgY29ycmVjdGx5LCB5b3Ugd2FudCB0aGF0IHRoZSB1
+c2VyIG1pZ2h0IGNob29zZSB0byB1c2UKdGhlIEhETUkgZm9yIHZpZGVvIG9ubHkgYW5kIHRvIGhh
+dmUgYXVkaW8gYnkgc29tZSBvdGhlciBtZWFuLgpObyBwcm9ibGVtLgoKPiA+ID4gPiArLyogZnVu
+Y3Rpb25zIGluIHRkYTk5OHhfZHJ2ICovCj4gPiA+ID4gK3N0YXRpYyBzdHJ1Y3QgdGRhOTk4eF9v
+cHNfcyAqdGRhOTk4eF9vcHM7Cj4gCj4gPiA+IEknZCBleHBlY3QgdGhpcyB0byBiZSBzdG9yZWQg
+aW4gdGhlIGRyaXZlciBkYXRhIHJhdGhlciB0aGFuIGEgc3RhdGljCj4gPiA+IGdsb2JhbCwgd2hh
+dCBpZiBhIHN5c3RlbSBoYXMgdHdvIEhETUkgb3V0cHV0cz8KPiAKPiA+IEVhY2ggVERBOTk4eCBo
+YXMgb25seSBvbmUgSERNSSBvdXRwdXQgYW5kIHRoZXJlIGlzIG9ubHkgb25lIGRyaXZlci4KPiAK
+PiBTb21lb25lIG1pZ2h0IHB1dCB0d28gY2hpcHMgb24gdGhlIGJvYXJkLgoKVGhlIHBvaW50ZXIg
+d2FzIGZyb20gdGhlIHRkYTk5OHggY29kZWMgdG8gdGhlIHRkYTk5OHggZHJpdmVyLgpUaGVyZSBt
+aWdodCBiZSBhbnkgbnVtYmVyIG9mIGNoaXBzIG9uIHRoZSBib2FyZC4KCj4gPiA+ID4gK3N0YXRp
+YyBpbnQgdGRhOTk4eF9jb2RlY19zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
+c3RyZWFtLAo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBzbmRfc29jX2Rh
+aSAqZGFpKQo+ID4gPiA+ICt7Cj4gPiA+ID4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9ydW50aW1l
+ICpydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwo+ID4gPiA+ICsgICAgICAgdTggKmVsZDsK
+PiA+ID4gPiArCj4gPiA+ID4gKyAgICAgICBlbGQgPSB0ZGE5OTh4X29wcy0+Z2V0X2VsZChkYWkt
+PmRldik7Cj4gPiA+ID4gKyAgICAgICBpZiAoIWVsZCkKPiA+ID4gPiArICAgICAgICAgICAgICAg
+cmV0dXJuIC1FTk9ERVY7Cj4gPiA+ID4gKyAgICAgICByZXR1cm4gc25kX3BjbV9od19jb25zdHJh
+aW50X2VsZChydW50aW1lLCBlbGQpOwo+ID4gPiA+ICt9Cj4gCj4gPiA+IERvIHdlIHJlYWxseSBu
+ZWVkIGEgZGV2aWNlIHNwZWNpZmljIG1lY2hhbmlzbSBmb3IgZmlzaGluZyB0aGUgRUxEIG91dCBv
+Zgo+ID4gPiB0aGUgZ3JhcGhpY3MgY29kZT8gIEknZCBoYXZlIGV4cGVjdGVkIHRoaXMgdG8gYmUg
+bW9yZSBnZW5lcmljLgo+IAo+ID4gSSB3aWxsIHB1dCB0aGUgRUxEIGluIHRoZSBwcml2YXRlIGRh
+dGEgb2YgdGhlIERSTSBkcml2ZXIuCj4gCj4gVGhhdCdzIG5vdCB0aGUgaXNzdWUgaGVyZSAtIHRo
+ZSBpc3N1ZSBpcyB0aGF0IHRoZSBuZWVkIHRvIGdldCB0aGUgRUxECj4gb3V0IG9mIHRoZSB2aWRl
+byBzdWJzeXN0ZW0gaXMgbm90IHNwZWNpZmljIHRvIHRoaXMgZHJpdmVyLCBpdCdzIHByZXR0eQo+
+IGNvbW1vbiBhbmQgc29tZXRoaW5nIHRoYXQgaXQgc2VlbXMgd2Ugc2hvdWxkIGZhY3RvciBvdXQu
+CgpZZXMsIGJ1dCBob3c/CgpUaGUgRURJRCBhcnJpdmVzIGluIHRoZSBEUk0gY29ubmVjdG9yIHdo
+ZW4gdmlkZW8gc3RhcnRzLiBUaGUgYnVpbHQgRUxECm1heSBiZSBzdG9yZWQgZWl0aGVyIGluIHRo
+ZSBjb25uZWN0b3IgaXRzZWxmIChkZWZhdWx0KSwgaW4gdGhlIGVuY29kZXIKKFREQTk5OHggZGV2
+aWNlKSBvciBpbiBzb21lIERSTS9lbmNvZGVyL2Nvbm5lY3RvciBwcml2YXRlIGRhdGEuCgpPbiB0
+aGUgYXVkaW8gc2lkZSwgdGhlIENPREVDIGlzIHN1cHBvcnRlZCBieSBhIGRyaXZlciB3aGljaCBp
+cyBlaXRoZXIgYQpDT0RFQyBkcml2ZXIgKGFzIGluIHRoZSBkdW1teSBIRE1JIGNvZGVjKSBvciB0
+aGUgRFJNIGVuY29kZXIgKFREQTk5OHgKZGV2aWNlKS4KCllvdSBtYXkgbm90ZSB0aGF0LCBpbiBE
+Uk0sIHRoZXJlIGlzIG5vIHJlbGF0aW9uIGJldHdlZW4gdGhlIGVuY29kZXIgYW5kCnRoZSBjb25u
+ZWN0b3IgZXhjZXB0IGF0IHZpZGVvIHN0YXJ0dXAgdGltZSwgYW5kIG5vIHJlbGF0aW9uIGJldHdl
+ZW4gdGhlCkRSTSBjb25uZWN0b3IgYW5kIHRoZSBhdWRpbyBDT0RFQyAobm8gQ09ERUMgaW5mb3Jt
+YXRpb24gaXMgcmV0dXJuZWQgb24KQ09ERUMgY3JlYXRpb24gYW5kIHRoZSBDT0RFQyBoYXMgbm8g
+cHJpdmF0ZSBkYXRhKS4KCkkgdHJpZWQgbWFueSBzb2x1dGlvbnMgdG8gc29sdmUgdGhpcyBwcm9i
+bGVtLCBhbmQgdGhlIG9uZSBvZiBtYXkgbGF0ZXN0CnBhdGNoc2V0ICh2MTQpIHNlZW1zIHRoZSBz
+aW1wbGVzZXQ6IHNldCB0aGUgYXVkaW8vdmlkZW8gY29tbW9uIHBhcnQgYXQKdGhlIGJlZ2lubmlu
+ZyBvZiB0aGUgVERBOTk4eCAoSERNSSkgcHJpdmF0ZSBkYXRhLgoKLS0gCktlbiBhciBjJ2hlbnRh
+w7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioKSmVmCQl8CQlodHRwOi8vbW9p
+bmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
