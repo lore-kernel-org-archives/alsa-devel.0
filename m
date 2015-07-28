@@ -1,17 +1,17 @@
-From: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hda - skip runtime PM if
-	async	probe is not finished
-Date: Tue, 28 Jul 2015 06:02:14 +0000
-Message-ID: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B820A5@ORSMSX111.amr.corp.intel.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - skip runtime PM if async
+ probe is not finished
+Date: Tue, 28 Jul 2015 06:05:08 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196C84F5@SHSMSX103.ccr.corp.intel.com>
 References: <1438032894-8472-1-git-send-email-ullysses.a.eoff@intel.com>
  <s5hr3nsg7sj.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id EE2F526525B
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 08:02:16 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3234226525B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 08:05:13 +0200 (CEST)
 In-Reply-To: <s5hr3nsg7sj.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,24 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lee,
+To: Takashi Iwai <tiwai@suse.de>, "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lee,
  Zhuo-hao" <zhuo-hao.lee@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
 > -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> Sent: Monday, July 27, 2015 10:39 PM
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, July 28, 2015 1:39 PM
 > To: Eoff, Ullysses A
-> Cc: Yang, Libin; alsa-devel@alsa-project.org; Lee, Zhuo-hao
-> Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: hda - skip runtime PM if async probe is not finished
+> Cc: alsa-devel@alsa-project.org; Lee, Zhuo-hao; Yang, Libin
+> Subject: Re: [PATCH 1/2] ALSA: hda - skip runtime PM if async probe is
+> not finished
 > 
 > On Mon, 27 Jul 2015 23:34:53 +0200,
 > U. Artie Eoff wrote:
 > >
 > > Crash can occur if runtime PM is triggered before the async probe
-> > finishes via the azx_firmware_cb when CONFIG_SND_HDA_PATCH_LOADER
+> > finishes via the azx_firmware_cb when
+> CONFIG_SND_HDA_PATCH_LOADER
 > > is defined.
 > >
 > > Don't execute PM ops if the async probe has not completed yet.
@@ -56,7 +57,8 @@ List-Id: alsa-devel@alsa-project.org
 > > index 735bdcb04ce8..b729b25a6ad6 100644
 > > --- a/sound/pci/hda/hda_intel.c
 > > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -1023,7 +1023,7 @@ static int azx_runtime_idle(struct device *dev)
+> > @@ -1023,7 +1023,7 @@ static int azx_runtime_idle(struct device
+> *dev)
 > >
 > >  	chip = card->private_data;
 > >  	hda = container_of(chip, struct hda_intel, chip);
@@ -69,21 +71,17 @@ List-Id: alsa-devel@alsa-project.org
 > The disabled and init_failed flags are checked in runtime_suspend()
 > and runtime_resume() to skip the whole procedures, too.
 > 
-> And I guess the check of chip->running should suffice even without the
+> And I guess the check of chip->running should suffice even without
+> the
 > second patch.  It assures that the bus is powered on.
->
 
-Ok, I will test your suggested change to see if it addresses
-both elusive race conditions and report back.  It sounds like
-it'll be the right fix.  Thanks for the feedback.
+As, in runtime_resume will call azx_init_chip(), which may sleep,
+is there any race when calling azx_runtime_resume(), 
+azx_runtime_idle is called and enter azx_runtime_suspend()?
+Or the ACPI subsystem will handle such situation?
 
-U. Artie
- 
+> 
 > 
 > thanks,
 > 
 > Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
