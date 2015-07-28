@@ -1,7 +1,7 @@
 From: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Subject: [PATCH 3/4] ARM: dts: rockchip: Add SPDIF transceiver for RK3188
-Date: Tue, 28 Jul 2015 14:03:30 +0200
-Message-ID: <1438085011-16577-4-git-send-email-sjoerd.simons@collabora.co.uk>
+Subject: [PATCH 4/4] ARM: dts: rockchip: Add SPDIF optical out on Radxa Rock
+Date: Tue, 28 Jul 2015 14:03:31 +0200
+Message-ID: <1438085011-16577-5-git-send-email-sjoerd.simons@collabora.co.uk>
 References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk>
@@ -10,52 +10,49 @@ To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutl
 Cc: linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the SPDIF transceiver controller and pin for RK3188
+This enables the SPDIF optical audio output on the Radxa Rock
 
 Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
 ---
- arch/arm/boot/dts/rk3188.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm/boot/dts/rk3188-radxarock.dts | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
-index 0f23aed..43e9bdf 100644
---- a/arch/arm/boot/dts/rk3188.dtsi
-+++ b/arch/arm/boot/dts/rk3188.dtsi
-@@ -121,6 +121,22 @@
- 		status = "disabled";
+diff --git a/arch/arm/boot/dts/rk3188-radxarock.dts b/arch/arm/boot/dts/rk3188-radxarock.dts
+index 4bb014d..dea020c 100644
+--- a/arch/arm/boot/dts/rk3188-radxarock.dts
++++ b/arch/arm/boot/dts/rk3188-radxarock.dts
+@@ -90,6 +90,21 @@
+ 		};
  	};
  
-+	spdif: spdif@0x1011e000 {
-+		compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
-+		reg = <0x1011e000 0x2000>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&spdif_tx>;
-+		dmas = <&dmac1_s 8>;
-+		dma-names = "tx";
-+		clock-names = "spdif_hclk", "spdif_clk";
-+		clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
-+		status = "disabled";
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "SPDIF";
++
++		simple-audio-card,dai-link@1 {  /* S/PDIF - S/PDIF */
++			cpu { sound-dai = <&spdif>; };
++			codec { sound-dai = <&spdif_out>; };
++		};
++	};
++
++	spdif_out: spdif-out {
++		compatible = "linux,spdif-dit";
 +		#sound-dai-cells = <0>;
 +	};
 +
- 	cru: clock-controller@20000000 {
- 		compatible = "rockchip,rk3188-cru";
- 		reg = <0x20000000 0x1000>;
-@@ -462,6 +478,12 @@
- 						<RK_GPIO1 21 RK_FUNC_1 &pcfg_pull_none>;
- 			};
- 		};
-+
-+		spdif {
-+			spdif_tx: spdif-tx {
-+				rockchip,pins = <RK_GPIO1 14 RK_FUNC_1 &pcfg_pull_none>;
-+			};
-+		};
+ 	ir_recv: gpio-ir-receiver {
+ 		compatible = "gpio-ir-receiver";
+ 		gpios = <&gpio0 10 1>;
+@@ -343,6 +358,10 @@
  	};
  };
  
++&spdif {
++	status = "okay";
++};
++
+ &uart0 {
+ 	status = "okay";
+ };
 -- 
 2.4.6
