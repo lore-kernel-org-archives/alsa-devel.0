@@ -1,27 +1,21 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Running PJSIP for voip calls in alsa
-Date: Tue, 28 Jul 2015 10:35:21 +0000
-Message-ID: <SIXPR04MB2532BF1E020D2CBA42BC437C38D0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
- <559FCB17.2070200@ladisch.de>
- <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
- <55A3635C.7090009@ladisch.de>
- <SIXPR04MB2534E33FAFB9024B6D68B2BC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>
- <55A36F98.8060408@ladisch.de>
- <SIXPR04MB253C2AE64F54AC46DA26414C3990@SIXPR04MB253.apcprd04.prod.outlook.com>
- <SIXPR04MB253C33418EA367F37CFDC53C3850@SIXPR04MB253.apcprd04.prod.outlook.com>
- <SIXPR04MB253482862078B53CC765D74C38E0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <CANv6ZMYDHVH_9P-TxoTue-p2Q2ssPVpXEDsX=HGTN9R+U+G6xw@mail.gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: [PATCH 6/6] ASoC: xtfpga-i2s: Add missing __rcu
+	annotation
+Date: Tue, 28 Jul 2015 13:48:47 +0300
+Message-ID: <CAMo8BfL7Zd7cgSVawtzLf4ejFm9X7jbQwZhktFTkAJFjGw5bmQ@mail.gmail.com>
+References: <1437987388-9706-1-git-send-email-lars@metafoo.de>
+ <1437987388-9706-7-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sg2apc01on0129.outbound.protection.outlook.com [104.47.125.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 502AD2604A1
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 12:35:26 +0200 (CEST)
-In-Reply-To: <CANv6ZMYDHVH_9P-TxoTue-p2Q2ssPVpXEDsX=HGTN9R+U+G6xw@mail.gmail.com>
-Content-Language: en-US
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4260C26070F
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 12:48:48 +0200 (CEST)
+Received: by oibn4 with SMTP id n4so66568023oib.3
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 03:48:47 -0700 (PDT)
+In-Reply-To: <1437987388-9706-7-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,123 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: maruthi srinivas <maruthi.srinivas.b@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Patrick Lai <plai@codeaurora.org>, patches@opensource.wolfsonmicro.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Maruthi,
+On Mon, Jul 27, 2015 at 11:56 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> tx_substeam is accessed using the RCU API and hence should have the __rcu
+> annotation. Fixes the following sparse warnings:
+>
+>         sound/soc/xtensa/xtfpga-i2s.c:165:24: error: incompatible types in
+>                 comparison expression (different address spaces)
+>         sound/soc/xtensa/xtfpga-i2s.c:165:24: error: 'struct snd_pcm_substream
+>                 [noderef] <asn:4>*' versus
+>         sound/soc/xtensa/xtfpga-i2s.c:165:24: error: 'struct snd_pcm_substream *'
+>         sound/soc/xtensa/xtfpga-i2s.c:255:24: error: incompatible types in
+>                 comparison expression (different address spaces)
+>         sound/soc/xtensa/xtfpga-i2s.c:255:24: error: 'struct snd_pcm_substream
+>                 [noderef] <asn:4>*' versus
+>         sound/soc/xtensa/xtfpga-i2s.c:255:24: error: 'struct snd_pcm_substream *'
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/xtensa/xtfpga-i2s.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
+Thank you for the fix, Lars-Peter.
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Thanks a lot for the info
-
-
-1. Is it same for Record also???
-
-
-2. Could you please help me out in calculating for 8khz 16 bit stereo & 8khz 16 bit mono. (for playback & record)
-
-
-3. Is that ALSA would interrupt for the data, every one second ie., 2*8000 = 16000 bytes per second
-
-or is that the driver interrupt handler, at what rate the data is transfered to the ALSA???
-
-
-Sorry for my poor understanding
-
-Could you please help me out in this
-
-Kindly do the needful as early as possible
-
-Many Thanks in advance
-
-Srinivasan S
-
-________________________________
-From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
-Sent: Tuesday, July 28, 2015 12:22 PM
-To: Srinivasan S
-Cc: Clemens Ladisch; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Considering playback,
-
-period_size  :  your sound card will generate interrupt after period_size bytes have been consumed and ALSA core is informed of this, in driver's interrupt handler.
-Periods :    Number of buffer slices , each having period_size bytes.
-Buffer_size :  periods * period_size
-
-Your application should query the driver for the parameters and set accordingly. Below is one good example for writing a alsa application :
-
-http://equalarea.com/paul/alsa-audio.html
-
-Regards,
-Maruthi
-
-On Tue, Jul 28, 2015 at 10:38 AM, Srinivasan S <srinivasan.s@tataelxsi.co.in<mailto:srinivasan.s@tataelxsi.co.in>> wrote:
-Dear Clemens,
-
-Could you please helpme out in this
-
-I am trying to understand few terminologies w.r.t the following for developing alsa application
-
-Period_size
-Periods
-period_time
-Buffer_time
-Buffer_size
-
-
-
-________________________________________
-From: alsa-devel-bounces@alsa-project.org<mailto:alsa-devel-bounces@alsa-project.org> <alsa-devel-bounces@alsa-project.org<mailto:alsa-devel-bounces@alsa-project.org>> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in<mailto:srinivasan.s@tataelxsi.co.in>>
-Sent: Monday, July 20, 2015 12:18 PM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Dear Clemens,
-
-Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
-
-Kindly do the needful,
-
-Many Thanks in advance
-________________________________________
-From: Srinivasan S
-Sent: Thursday, July 16, 2015 10:09 AM
-To: Clemens Ladisch
-Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Dear Clemens,
-
-Thanks a lot for your replies,
-
-Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
-
-Kindly do the needful,
-
-Many Thanks in advance
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de<mailto:clemens@ladisch.de>>
-Sent: Monday, July 13, 2015 1:28 PM
-To: Srinivasan S
-Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
-
-Srinivasan S wrote:
-> Could you please provide any suggestions or inputs from where this problem could arrive ie., in either platform driver or machine driver or codec driver??
-
-I do not know that driver.
-
-
-Regards,
-Clemens
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org<mailto:Alsa-devel@alsa-project.org>
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org<mailto:Alsa-devel@alsa-project.org>
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+Thanks.
+-- Max
