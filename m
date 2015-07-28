@@ -1,182 +1,119 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Subject: Re: [PATCH 2/4] ASoc: rockchip: Add rockchip SPDIF transceiver driver
-Date: Tue, 28 Jul 2015 16:28:47 +0200
-Message-ID: <8512006.Rsa7Aqr0B5@diego>
-References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk> <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: dapm: fix module unload/reload
+ failed issue by reset kcontrol's widget list
+Date: Tue, 28 Jul 2015 14:34:19 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A90557B055@SHSMSX101.ccr.corp.intel.com>
+References: <1438074219-26408-1-git-send-email-yang.jie@intel.com>
+ <s5hpp3cveeq.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADAC92654E5
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 16:34:25 +0200 (CEST)
+In-Reply-To: <s5hpp3cveeq.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-could you streamline the prefixes a bit perhaps? I.e. so far I've seen
-
-rk_spdif_dev
-spdif_runtime_suspend
-rockchip_snd_txctrl
-rockchip_spdif_hw_params
-
-I guess rockchip_spdif_* or rk_spdif_* for everything might make this a bit 
-nicer
-
-
-Am Dienstag, 28. Juli 2015, 14:03:29 schrieb Sjoerd Simons:
-> Add a driver for the SDPIF transceiver available on RK3066, RK3188 and
-> RK3288. Heavily based on the rockchip i2s driver.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Tuesday, July 28, 2015 5:07 PM
+> To: Jie, Yang
+> Cc: broonie@kernel.org; alsa-devel@alsa-project.org; Girdwood, Liam R
+> Subject: Re: [PATCH] ASoC: dapm: fix module unload/reload failed issue by
+> reset kcontrol's widget list
 > 
-> Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-> ---
->  sound/soc/rockchip/Kconfig          |   9 +
->  sound/soc/rockchip/Makefile         |   3 +
->  sound/soc/rockchip/rockchip_spdif.c | 375
-> ++++++++++++++++++++++++++++++++++++ sound/soc/rockchip/rockchip_spdif.h | 
-> 63 ++++++
->  4 files changed, 450 insertions(+)
->  create mode 100644 sound/soc/rockchip/rockchip_spdif.c
->  create mode 100644 sound/soc/rockchip/rockchip_spdif.h
+> On Tue, 28 Jul 2015 11:03:39 +0200,
+> Jie Yang wrote:
+> >
+> > We need reset the related kcontrol's widget list during the freeing of
+> > a widget, otherwise, the widget list may be outdated and reference to
+> > it may introduce errors(they usually occurs during driver modules
+> > unloading/reloading).
+> >
+> > Here adding a func dapm_update_kcontrols_of_freeing_widget and call it
+> > at dapm_update_kcontrols_of_freeing_widget, to fix those issues.
+> >
+> > Signed-off-by: Jie Yang <yang.jie@intel.com>
+> > ---
+> >  sound/soc/soc-dapm.c | 31 +++++++++++++++++++++++++++++++
+> >  1 file changed, 31 insertions(+)
+> >
+> > diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c index
+> > aa327c9..1ad8144 100644
+> > --- a/sound/soc/soc-dapm.c
+> > +++ b/sound/soc/soc-dapm.c
+> > @@ -2305,6 +2305,35 @@ static void dapm_free_path(struct
+> snd_soc_dapm_path *path)
+> >  	kfree(path);
+> >  }
+> >
+> > +/* update all dapm kcontrols that related to a widget which being
+> > +freed*/ static void dapm_update_kcontrols_of_freeing_widget(struct
+> > +snd_soc_dapm_widget * w) {
+> > +	struct dapm_kcontrol_data *data = NULL;
+> > +	int i, j, n;
+> > +
+> > +	if (w && w->kcontrols) {
+> > +		for (i = 0; i < w->num_kcontrols; i++) {
+> > +			if (w->kcontrols[i] == NULL)
+> > +				continue;
+> > +			data = snd_kcontrol_chip(w->kcontrols[i]);
+> > +			if (data == NULL)
+> > +				continue;
+> > +			for (j = 0, n = 0; j < data->wlist->num_widgets; j++) {
+> > +				if (data->wlist->widgets[j] == w) {
+> > +					data->wlist->widgets[j] = NULL;
+> > +					n++;
+> > +				}
+> > +			}
+> > +
+> > +			if (n) {
+> > +				data->wlist->num_widgets -= n;
 > 
-> diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-> index 58bae8e..20bc676 100644
-> --- a/sound/soc/rockchip/Kconfig
-> +++ b/sound/soc/rockchip/Kconfig
-> @@ -15,6 +15,14 @@ config SND_SOC_ROCKCHIP_I2S
->  	  Rockchip I2S device. The device supports upto maximum of
->  	  8 channels each for play and record.
+> This looks buggy.  You didn't rearrange widgets[] but just put a hole, yet
+> decreasing the number.
+ 
+You are right, but since krealloc() cannot shrink the allocated size, maybe we should
+free those related kcontrols here?
+
 > 
-> +config SND_SOC_ROCKCHIP_SPDIF
-> +	tristate "Rockchip SPDIF Device Driver"
-> +	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
-> +	select SND_SOC_GENERIC_DMAENGINE_PCM
-> +	help
-> +	  Say Y or M if you want to add support for SPDIF driver for
-> +	  Rockchip SPDIF transceiver device.
-> +
->  config SND_SOC_ROCKCHIP_MAX98090
->  	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
->  	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB
-> @@ -33,3 +41,4 @@ config SND_SOC_ROCKCHIP_RT5645
->  	help
->  	  Say Y or M here if you want to add support for SoC audio on Rockchip
->  	  boards using the RT5645/RT5650 codec, such as Veyron.
-> +
+> BTW, how does the reference occur while unloading?  Or better to say:
+> isn't it the module refcount adjusted while accessing the resources?
 
-unrelated newline
+ 
+soc_cleanup_card_resources
+	snd_soc_dapm_free
+		dapm_free_widgets
+	snd_card_free
+		//removing kcontrols, calling private dapm_kcontrol_free()
+			kfree(data->widget->name);//the widget here may be
+					//already freed! So the reference here
+					//may cause error.
 
-> diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
-> index 1bc1dc3..b02ab69 100644
-> --- a/sound/soc/rockchip/Makefile
-> +++ b/sound/soc/rockchip/Makefile
-> @@ -1,10 +1,13 @@
->  # ROCKCHIP Platform Support
->  snd-soc-i2s-objs := rockchip_i2s.o
-> +snd-soc-spdif-objs := rockchip_spdif.o
+
+So, actually, here resetting data->widget to NULL may be what we really need,
+and updating data->wlist (num_widgets and widgets[j]) is only the icing I wanted
+on the cake, maybe I should remove it?
+
+Thanks,
+~Keyon
+
 > 
->  obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-i2s.o
-> +obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-spdif.o
 > 
->  snd-soc-rockchip-max98090-objs := rockchip_max98090.o
->  snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
+> thanks,
 > 
->  obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
->  obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
-> +
-> diff --git a/sound/soc/rockchip/rockchip_spdif.c
-> b/sound/soc/rockchip/rockchip_spdif.c new file mode 100644
-> index 0000000..e60ccf6
-> --- /dev/null
-> +++ b/sound/soc/rockchip/rockchip_spdif.c
-> @@ -0,0 +1,375 @@
-> +/* sound/soc/rockchip/rockchip_spdif.c
-> + *
-> + * ALSA SoC Audio Layer - Rockchip I2S Controller driver
-								^spdif
-
-> + *
-> + * Copyright (c) 2014 Rockchip Electronics Co. Ltd.
-> + * Author: Jianqun <jay.xu@rock-chips.com>
-> + * Copyright (c) 2015 Collabora Ltd.
-> + * Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/delay.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/clk.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/regmap.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/dmaengine_pcm.h>
-> +
-> +#include "rockchip_spdif.h"
-> +
-> +#define DRV_NAME "rockchip-spdif"
-> +
-> +struct rk_spdif_dev {
-> +	struct device *dev;
-> +
-> +	struct clk *mclk;
-> +	struct clk *hclk;
-> +
-> +	struct snd_dmaengine_dai_dma_data playback_dma_data;
-> +
-> +	struct regmap *regmap;
-> +};
-> +
-> +static int spdif_runtime_suspend(struct device *dev)
-> +{
-> +	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(spdif->mclk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int spdif_runtime_resume(struct device *dev)
-> +{
-> +	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(spdif->mclk);
-> +	if (ret) {
-> +		dev_err(spdif->dev, "clock enable failed %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static inline struct rk_spdif_dev *to_info(struct snd_soc_dai *dai)
-> +{
-> +	return snd_soc_dai_get_drvdata(dai);
-> +}
-> +
-> +static void rockchip_snd_txctrl(struct rk_spdif_dev *spdif, int on)
-> +{
-> +	if (on) {
-> +		regmap_update_bits(spdif->regmap, SPDIF_DMACR,
-> +				   SPDIF_DMACR_TDE_ENABLE,
-> +				   SPDIF_DMACR_TDE_ENABLE);
-> +
-> +		regmap_update_bits(spdif->regmap, SPDIF_XFER,
-> +				   SPDIF_XFER_TXS_START,
-> +				   SPDIF_XFER_TXS_START);
-
-personally I'm always unsure of regmap return values. While the underlying 
-method is mmio in this case, regmap_* in theory still has the possibility to 
-return errors, so I'm not sure if it's ok to silently ignore them.
-
-Here it would simply mean return the error and also return it in 
-rockchip_spdif_trigger below.
-
-
-Heiko
+> Takashi
