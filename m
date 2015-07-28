@@ -1,21 +1,18 @@
-From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
-Subject: Re: Cannot open shared
-	library	/usr/lib/alsa-lib/libasound_module_pcm_jack.so
-Date: Tue, 28 Jul 2015 05:23:44 +0000
-Message-ID: <SIXPR04MB253CEF806D289FF068A4E8FC38D0@SIXPR04MB253.apcprd04.prod.outlook.com>
-References: <SIXPR04MB25362E92C1A38365A48DF57C3900@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559F687D.3040305@ladisch.de>
- <SIXPR04MB253428BCF6788F2160EC91DC39F0@SIXPR04MB253.apcprd04.prod.outlook.com>,
- <559FB521.9010901@ladisch.de>
+From: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
+Subject: Re: [PATCH v2] ALSA: hda - Fix race condition between
+ HDA driver and runtime PM
+Date: Tue, 28 Jul 2015 05:26:59 +0000
+Message-ID: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B82023@ORSMSX111.amr.corp.intel.com>
+References: <1438057171-18045-1-git-send-email-ullysses.a.eoff@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196C8427@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from APC01-HK2-obe.outbound.protection.outlook.com
- (mail-hk2apc01on0092.outbound.protection.outlook.com [104.47.124.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 219212651C0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 07:23:48 +0200 (CEST)
-In-Reply-To: <559FB521.9010901@ladisch.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D3922651C0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 07:27:00 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D196C8427@SHSMSX103.ccr.corp.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,51 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Yang, Libin" <libin.yang@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Lee, Zhuo-hao" <zhuo-hao.lee@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Clemens,
 
-I have cross_compiled on my own the alsa-lib-1.0.26 & I am seeing "alsa.pc" in the pkgconfig
-does this alsa-lib-version supports libasound_module_pcm_jack.so, but am unable to find in this alsa-lib verison, will I get the libasound_module_pcm_jack.so in any of the latest alsa-lib verison apart from this version
+> -----Original Message-----
+> From: Yang, Libin
+> Sent: Monday, July 27, 2015 10:20 PM
+> To: Eoff, Ullysses A; tiwai@suse.de; alsa-devel@alsa-project.org
+> Cc: Lee, Zhuo-hao
+> Subject: RE: [PATCH v2] ALSA: hda - Fix race condition between HDA driver and runtime PM
+> 
+> 
+> Hi Ullysses,
+> 
+> > -----Original Message-----
+> > From: Eoff, Ullysses A
+> > Sent: Tuesday, July 28, 2015 12:20 PM
+> > To: tiwai@suse.de; alsa-devel@alsa-project.org
+> > Cc: Lee, Zhuo-hao; Yang, Libin; Eoff, Ullysses A
+> > Subject: [PATCH v2] ALSA: hda - Fix race condition between HDA driver
+> > and runtime PM
+> >
+> > Don't execute runtime suspend if HDA is not finished initializing.
+> > Otherwise, the following errors can occur in hda:
+> >
+> > snd_hda_intel 0000:00:1b.0: CORB reset timeout#2, CORBRP = 65535
+> > snd_hda_intel 0000:00:1b.0: no codecs initialized
+> >
+> > Debugged and root-cause found by zhuo-hao.lee@intel.com
+> >
+> > v2: remove unnecessary extra check for chip init (libin)
+> >
+> > Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+> > ---
+> >  sound/pci/hda/hda_intel.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index b729b25a6ad6..15d4e28fc64e 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -1017,17 +1017,19 @@ static int azx_runtime_idle(struct device
+> > *dev)
+> >  	struct snd_card *card = dev_get_drvdata(dev);
+> >  	struct azx *chip;
+> >  	struct hda_intel *hda;
+> > +	struct hdac_bus *bus;
+> >
+> >  	if (!card)
+> >  		return 0;
+> >
+> >  	chip = card->private_data;
+> >  	hda = container_of(chip, struct hda_intel, chip);
+> > +	bus = azx_bus(chip);
+> >  	if (chip->disabled || hda->init_failed || !chip->running)
+> 
+> I mean we don't need '!chip->running' either. Otherwise,
+> initialization may be interrupted.
 
-srinivasan@tata-HP-Elite-7100-Microtower-PC:~/alsa_libraries/alsa-lib-1.0.26/binaries/lib/pkgconfig$ ls
-alsa.pc
-srinivasan@tata-HP-Elite-7100-Microtower-PC:~/alsa_libraries/alsa-lib-1.0.26/binaries/lib/pkgconfig$
+!chip->running condition comes from patch 1/2 and is needed to
+avoid race with async probe.  Are you saying we don't need
+patch 1/2?
 
-Could you please kindly help me out, Is it possible to get libasound_module_pcm_jack.so, if I cross_compile alsa-plugins inorder to get the libasound_module_pcm_jack.so
-
-Can you please provide the build command to cross_compile alsa_plugins & get the libasound_module_pcm_jack.so,
-
-Kindly do the needful as early as possible
-
-________________________________________
-From: Clemens Ladisch <clemens@ladisch.de>
-Sent: Friday, July 10, 2015 5:35 PM
-To: Srinivasan S; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Cannot open shared library    /usr/lib/alsa-lib/libasound_module_pcm_jack.so
-
-(please don't top-post)
-
-Srinivasan S wrote:
->> Srinivasan S wrote:
->>> ...
->>> checking for pkg-config... /opt/ti-sdk-am335x-evm-07.00.00.00/linux-devkit/sysroots/i686-arago-linux/usr/bin//pkg-config
->>> checking pkg-config is at least version 0.9.0... yes
->>> checking for ALSA... no
->>> configure: error: Package requirements (alsa >= 1.0.11) were not met:
->>
->> Well, did you cross-compile alsa-lib?
->
-> I have never cross_compiled alsa-lib 1.0.27.2-r0 am using the alsa-lib version which is provided in ti sdk 8 BSP's
-
-That pkg-config does not know about "alsa".  Apparently, TI's SDK did
-not install alsa.pc together with the rest of alsa-lib.
-
-Report this bug to TI.
-
-As a workaround, try cross-compiling alsa-lib yourself.
-
-
-Regards,
-Clemens
+> 
+> >  		return 0;
+> >
+> >  	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+> > -	    azx_bus(chip)->codec_powered)
+> > +	    bus->codec_powered || !bus->chip_init)
+> >  		return -EBUSY;
+> >
+> >  	return 0;
+> > --
+> > 1.9.3
