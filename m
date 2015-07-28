@@ -1,68 +1,182 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
- Dublin
-Date: Mon, 27 Jul 2015 18:26:20 -0500
-Message-ID: <55B6BE1C.50202@linux.intel.com>
-References: <20150714150352.GW11162@sirena.org.uk> <55A5330E.7000604@gmail.com>
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Subject: Re: [PATCH 2/4] ASoc: rockchip: Add rockchip SPDIF transceiver driver
+Date: Tue, 28 Jul 2015 16:28:47 +0200
+Message-ID: <8512006.Rsa7Aqr0B5@diego>
+References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk> <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 03B932658E5
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 16:21:57 +0200 (CEST)
-In-Reply-To: <55A5330E.7000604@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/14/15 11:04 AM, Alexander E. Patrakov wrote:
-> 14.07.2015 20:03, Mark Brown wrote:
->> Like previous years, we're going to hold a meeting to discuss
->> lowlevel audio on Linux.  This will be held the day after ELC Europe on
->> 8th October at CCD (The Convention Centre) in Dublin.
->>
->> If you're interested please sign up in the attendee list:
->>
->> https://docs.google.com/spreadsheets/d/1bi-8GHsqlzt41FR20WiMuWILe_cZowFireVMBd-QM8Q/edit?usp=sharing
->>
->>
->> and please follow up to this mail with any topics you'd like to see
->> raised so we can start collecting them (probably another Google doc will
->> be forthcoming for them).
->
-> I would like to see some direct measurements related to recent
-> power-saving proposals, including the "disable rewinds" flag. Myself, I
-> can redo battery-life measurements on Intel-based laptops that my
-> colleagues have, and maybe compare dmix, PulseAudio and CRAS in terms of
-> power consumption.
->
-> Ideally, I would like to reevaluate the design decisions (namely, the
-> need to keep the system responsive to new streams while keeping the
-> average wakeup rate as low as possible, IMHO even to the point of
-> "absurdly low") that led to the need to support rewinds (and the
-> associated complexity) in the first place. Reminder: on my Sony VAIO
-> VPC-Z23A4R laptop and hw:0 device, in an unrealistic test with the
-> screen turned off, wi-fi turned off, and the SSDs put to sleep, going
-> from 200 to 1 wakeup per second saved only 935 seconds of battery life
-> out of 25742.
+Hi,
 
-I had more success that you in my experiments a long time ago, but this 
-really depends on what the rest of the system does.
-You have a point though that we should talk about design decisions for 
-userspace code. The current PulseAudio implementation lags behind the 
-capabilities of newer devices with two or more outputs (low-latency, 
-increased buffering and hardware/firmware mixing). This should really be 
-a topic following the presentation of the HDAudio/Asoc restructuring 
-that Vinod mentioned (i.e. how to change userspace code to support 
-driver capabilities).
--Pierre
+could you streamline the prefixes a bit perhaps? I.e. so far I've seen
+
+rk_spdif_dev
+spdif_runtime_suspend
+rockchip_snd_txctrl
+rockchip_spdif_hw_params
+
+I guess rockchip_spdif_* or rk_spdif_* for everything might make this a bit 
+nicer
+
+
+Am Dienstag, 28. Juli 2015, 14:03:29 schrieb Sjoerd Simons:
+> Add a driver for the SDPIF transceiver available on RK3066, RK3188 and
+> RK3288. Heavily based on the rockchip i2s driver.
+> 
+> Signed-off-by: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+> ---
+>  sound/soc/rockchip/Kconfig          |   9 +
+>  sound/soc/rockchip/Makefile         |   3 +
+>  sound/soc/rockchip/rockchip_spdif.c | 375
+> ++++++++++++++++++++++++++++++++++++ sound/soc/rockchip/rockchip_spdif.h | 
+> 63 ++++++
+>  4 files changed, 450 insertions(+)
+>  create mode 100644 sound/soc/rockchip/rockchip_spdif.c
+>  create mode 100644 sound/soc/rockchip/rockchip_spdif.h
+> 
+> diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+> index 58bae8e..20bc676 100644
+> --- a/sound/soc/rockchip/Kconfig
+> +++ b/sound/soc/rockchip/Kconfig
+> @@ -15,6 +15,14 @@ config SND_SOC_ROCKCHIP_I2S
+>  	  Rockchip I2S device. The device supports upto maximum of
+>  	  8 channels each for play and record.
+> 
+> +config SND_SOC_ROCKCHIP_SPDIF
+> +	tristate "Rockchip SPDIF Device Driver"
+> +	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+> +	select SND_SOC_GENERIC_DMAENGINE_PCM
+> +	help
+> +	  Say Y or M if you want to add support for SPDIF driver for
+> +	  Rockchip SPDIF transceiver device.
+> +
+>  config SND_SOC_ROCKCHIP_MAX98090
+>  	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
+>  	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB
+> @@ -33,3 +41,4 @@ config SND_SOC_ROCKCHIP_RT5645
+>  	help
+>  	  Say Y or M here if you want to add support for SoC audio on Rockchip
+>  	  boards using the RT5645/RT5650 codec, such as Veyron.
+> +
+
+unrelated newline
+
+> diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+> index 1bc1dc3..b02ab69 100644
+> --- a/sound/soc/rockchip/Makefile
+> +++ b/sound/soc/rockchip/Makefile
+> @@ -1,10 +1,13 @@
+>  # ROCKCHIP Platform Support
+>  snd-soc-i2s-objs := rockchip_i2s.o
+> +snd-soc-spdif-objs := rockchip_spdif.o
+> 
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-i2s.o
+> +obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-spdif.o
+> 
+>  snd-soc-rockchip-max98090-objs := rockchip_max98090.o
+>  snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
+> 
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
+> +
+> diff --git a/sound/soc/rockchip/rockchip_spdif.c
+> b/sound/soc/rockchip/rockchip_spdif.c new file mode 100644
+> index 0000000..e60ccf6
+> --- /dev/null
+> +++ b/sound/soc/rockchip/rockchip_spdif.c
+> @@ -0,0 +1,375 @@
+> +/* sound/soc/rockchip/rockchip_spdif.c
+> + *
+> + * ALSA SoC Audio Layer - Rockchip I2S Controller driver
+								^spdif
+
+> + *
+> + * Copyright (c) 2014 Rockchip Electronics Co. Ltd.
+> + * Author: Jianqun <jay.xu@rock-chips.com>
+> + * Copyright (c) 2015 Collabora Ltd.
+> + * Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/delay.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/clk.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/dmaengine_pcm.h>
+> +
+> +#include "rockchip_spdif.h"
+> +
+> +#define DRV_NAME "rockchip-spdif"
+> +
+> +struct rk_spdif_dev {
+> +	struct device *dev;
+> +
+> +	struct clk *mclk;
+> +	struct clk *hclk;
+> +
+> +	struct snd_dmaengine_dai_dma_data playback_dma_data;
+> +
+> +	struct regmap *regmap;
+> +};
+> +
+> +static int spdif_runtime_suspend(struct device *dev)
+> +{
+> +	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(spdif->mclk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int spdif_runtime_resume(struct device *dev)
+> +{
+> +	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(spdif->mclk);
+> +	if (ret) {
+> +		dev_err(spdif->dev, "clock enable failed %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static inline struct rk_spdif_dev *to_info(struct snd_soc_dai *dai)
+> +{
+> +	return snd_soc_dai_get_drvdata(dai);
+> +}
+> +
+> +static void rockchip_snd_txctrl(struct rk_spdif_dev *spdif, int on)
+> +{
+> +	if (on) {
+> +		regmap_update_bits(spdif->regmap, SPDIF_DMACR,
+> +				   SPDIF_DMACR_TDE_ENABLE,
+> +				   SPDIF_DMACR_TDE_ENABLE);
+> +
+> +		regmap_update_bits(spdif->regmap, SPDIF_XFER,
+> +				   SPDIF_XFER_TXS_START,
+> +				   SPDIF_XFER_TXS_START);
+
+personally I'm always unsure of regmap return values. While the underlying 
+method is mmio in this case, regmap_* in theory still has the possibility to 
+return errors, so I'm not sure if it's ok to silently ignore them.
+
+Here it would simply mean return the error and also return it in 
+rockchip_spdif_trigger below.
+
+
+Heiko
