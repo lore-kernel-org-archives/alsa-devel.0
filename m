@@ -1,157 +1,94 @@
 From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: Re: [PATCH v13 3/3] ASoC: tda998x: add a codec to the HDMI
- transmitter
-Date: Tue, 28 Jul 2015 12:19:45 +0200
-Message-ID: <20150728121945.560f82a5@armhf>
-References: <cover.1437397270.git.moinejf@free.fr>
- <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf@free.fr>
- <20150720180606.GL11162@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: [PATCH v14 0/3] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Tue, 28 Jul 2015 11:45:50 +0200
+Message-ID: <cover.1438076750.git.moinejf@free.fr>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20150720180606.GL11162-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 20 Jul 2015 19:06:06 +0100
-Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+This patch series asks for Russell King's patch
 
-> On Fri, May 08, 2015 at 10:41:12AM +0200, Jean-Francois Moine wrote:
->=20
-> > +
-> > +	if (!priv->is_hdmi_sink
-> > +	 || !encoder->crtc)
-> > +		return NULL;
->=20
-> That's weird indentation.
+	http://article.gmane.org/gmane.linux.ports.arm.kernel/411574
+	"drm/edid: add function to help find SADs"
 
-But the conditions are aligned... This sequence will be removed.
+to be applied.
 
-> > +	list_for_each_entry(connector, &drm->mode_config.connector_list, =
-head) {
-> > +		if (connector->encoder =3D=3D encoder)
-> > +			return connector->eld;
-> > +	}
->=20
-> What guarantees that connector->eld stays valid after it's returned?
+v14: (Mark Brown)
+	- protect the CODEC from edid change
+	- change some structure names
+	- remove the static pointer to the HDMI driver functions
+	- get the ELD from a pointer in the device private area
+	- prevent audio from streaming many sources at the same time
+	- build the CODEC DAI's from two different samples
+	- use EXPORT_SYMBOL_GPL for exported functions
+	- simplify exchanges between audio and video by using
+		common data in the device private area
+v13:
+	- rebase on 4.2.0-rc3
+	- remove Russell's patches
+v12:
+	- use Russell King's DRM ELD helper (Mark Brown)
+v11:
+	- reduce the patch series to adding the tda998x codec only
+v10:
+	- add the generic dt-card
+	- define the audio ports from a DT graph of ports (Russell King)
+	- reuse HDMI constants (Andrew Jackson - Jyri Sarha)
+	- alloc rate_constraints in codec (Jyri Sarha)
+	- fix bad number of channels (Jyri Sarha)
+	- correct codec generation from config (Russell King - Jyri Sarha)
+	- no module init/exit (Russell King)
+v9:
+	- back to a TDA998x specific CODEC
+	- more comments
+	- change magic values to constants
+v8:
+	- change some comments about the patches
+v7:
+	- remove the change of the K predivider (Jyri Sarha)
+	- add S24_3LE and S32_LE as possible audio formats (Jyri Sarha)
+	- don't move the struct priv2 definition and use the
+	  slave encoder private data as the device private data
+	  (Russell King)
+	- remove the useless request_module (Russell King/Mark Brown)
+	- don't lock the HDMI module (Russell King)
+	- use platform_device_unregister to remove the codec
+	  (Russell King)
+v6:
+	- extend the HDMI CODEC instead of using a specific CODEC
+v5:
+	- use the TDA998x private data instead of a specific area
+	  for the CODEC interface
+	- the CODEC is TDA998x specific (Mark Brown)
+v4:
+	- remove all the TDA998x specific stuff from the CODEC
+	- move the EDID scan from the CODEC to the TDA998x
+	- move the CODEC to sound/soc (Mark Brown)
+	- update the audio_sample_rate from the EDID (Andrew Jackson)
+v3: fix bad rate (Andrew Jackson)
+v2: check double stream start (Mark Brown)
 
-You are right, the ELD content may change. I will use a pointer to a
-stable content.
+Jean-Francois Moine (3):
+  drm/i2c: tda998x: Add support of a DT graph of ports
+  drm/i2c: tda998x: Change drvdata for audio extension
+  ASoC: tda998x: add a codec to the HDMI transmitter
 
-> > +struct tda998x_ops_s {
-> > +	u8 *(*get_eld)(struct device *dev);
->=20
-> Why _ops_s - what does the _s mean?  If it's sound perhaps it makes
-> sense to spell it out so people aren't guessing.
+ .../devicetree/bindings/drm/i2c/tda998x.txt        |  51 +++++++
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 163 +++++++++++++++++++--
+ include/sound/tda998x.h                            |  18 +++
+ sound/soc/codecs/Kconfig                           |   6 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/tda998x.c                         | 141 ++++++++++++++++++
+ 6 files changed, 370 insertions(+), 11 deletions(-)
+ create mode 100644 include/sound/tda998x.h
+ create mode 100644 sound/soc/codecs/tda998x.c
 
-I will remove it.
+-- 
+2.4.6
 
-> > +int tda9998x_codec_register(struct device *dev,
-> > +			struct tda998x_audio_s *tda998x_audio_i,
-> > +			struct tda998x_ops_s *tda998x_ops);
-> > +void tda9998x_codec_unregister(struct device *dev);
->=20
-> I'd expect these to be internal to the DRM driver.
-
-I don't see where. What is your idea?
-
-> > +config SND_SOC_TDA998X
-> > +	def_tristate y
-> > +	select SND_PCM_ELD
-> > +	depends on DRM_I2C_NXP_TDA998X
-> > +
->=20
-> def_tristate y?  Why?
-
-The TDA998x CODEC is always generated when the DRM TDA998x is generated
-and when audio is wanted.
-Its type, built-in or module, depends on the TDA998x driver type.
-
-> > +/* functions in tda998x_drv */
-> > +static struct tda998x_ops_s *tda998x_ops;
->=20
-> I'd expect this to be stored in the driver data rather than a static
-> global, what if a system has two HDMI outputs?
-
-Each TDA998x has only one HDMI output and there is only one driver.
-
-I will put the pointer to the HDMI driver in the device private area.
-
-> > +static int tda998x_codec_startup(struct snd_pcm_substream *substre=
-am,
-> > +                       struct snd_soc_dai *dai)
-> > +{
-> > +       struct snd_pcm_runtime *runtime =3D substream->runtime;
-> > +       u8 *eld;
-> > +
-> > +       eld =3D tda998x_ops->get_eld(dai->dev);
-> > +       if (!eld)
-> > +               return -ENODEV;
-> > +       return snd_pcm_hw_constraint_eld(runtime, eld);
-> > +}
->=20
-> Do we really need a device specific mechanism for fishing the ELD out=
- of
-> the graphics code?  I'd have expected this to be more generic.
-
-I will put the ELD in the private data of the DRM driver.
-
-> > +/* ask the HDMI transmitter to activate the audio input port */
-> > +static int tda998x_codec_hw_params(struct snd_pcm_substream *subst=
-ream,
-> > +				   struct snd_pcm_hw_params *params,
-> > +				   struct snd_soc_dai *dai)
-> > +{
-> > +	return tda998x_ops->set_audio_input(dai->dev, dai->id,
-> > +					params_rate(params));
-> > +}
->=20
-> The set_audio_input() function doesn't appear to have anything that
-> checks if the device is busy before enabling things, what happens if =
-the
-> user tries to switch between I2S and S/PDIF?  It looks like only one =
-DAI
-> can be active at once.
-
-Right. I will check this double streaming.
-
-> > +	for (i =3D 0, p_dai =3D dais; i < ndais ; i++, p_dai++) {
-> > +		memcpy(p_dai, &tda998x_dai_i2s, sizeof(*p_dai));
-> > +		p_dai->id =3D i;
-> > +		if (tda998x_audio->port_types[i] =3D=3D AFMT_SPDIF) {
-> > +			p_dai->name =3D "spdif-hifi";
-> > +			p_dai->playback.stream_name =3D "HDMI SPDIF Playback";
-> > +			p_dai->playback.channels_max =3D 2;
-> > +			p_dai->playback.rate_min =3D 22050;
-> > +		}
-> > +	}
->=20
-> It would be a bit clearer if the template were just a template and th=
-is
-> copying initialised both I2S and S/PDIF specific settings.
-
-OK, I will change this.
-
-> > +	return snd_soc_register_codec(dev,
-> > +				&tda998x_codec_drv,
-> > +				dais, ndais);
-> > +}
-> > +EXPORT_SYMBOL(tda9998x_codec_register);
->=20
-> ASoC is all EXPORT_SYMBOL_GPL, you shouldn't reexport functionality w=
-ith
-> plain EXPORT_SYMBOL.
-
-Sorry, bug of mine.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
