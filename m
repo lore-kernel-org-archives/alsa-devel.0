@@ -1,20 +1,22 @@
-From: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hda - skip runtime PM
-	if	async	probe is not finished
-Date: Tue, 28 Jul 2015 21:58:24 +0000
-Message-ID: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B84A9E@ORSMSX111.amr.corp.intel.com>
-References: <1438032894-8472-1-git-send-email-ullysses.a.eoff@intel.com>
- <s5hr3nsg7sj.wl-tiwai@suse.de>
- <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B84A5A@ORSMSX111.amr.corp.intel.com>
+From: Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>
+Subject: Re: Bug on Dell Vostro 5480 (Intel Wildcat) kernel
+	driver
+Date: Tue, 28 Jul 2015 19:32:08 -0300
+Message-ID: <CAE7bemr=rgB-Fv-+k=RNfmsgXnuN++qZ6JzeyMskoEJF6RN4PA@mail.gmail.com>
+References: <CAE7bemp1SL2q2h3vkxgAzF=+75kpDvX2aZUck_c70Ujxw3cyvQ@mail.gmail.com>
+ <s5hegjsg56k.wl-tiwai@suse.de>
+ <CAE7bempD9ubaTfmpV=3-+r++1ThqhfccotM_rKvf5jgL_kr5Rg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C0F02656F0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 23:58:26 +0200 (CEST)
-In-Reply-To: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B84A5A@ORSMSX111.amr.corp.intel.com>
-Content-Language: en-US
+Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
+ [209.85.213.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD77126128B
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 00:32:09 +0200 (CEST)
+Received: by igbpg9 with SMTP id pg9so1166660igb.0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 15:32:08 -0700 (PDT)
+In-Reply-To: <CAE7bempD9ubaTfmpV=3-+r++1ThqhfccotM_rKvf5jgL_kr5Rg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,95 +26,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lee,
- Zhuo-hao" <zhuo-hao.lee@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Eoff, Ullysses A
-> Sent: Tuesday, July 28, 2015 2:38 PM
-> To: Takashi Iwai
-> Cc: Yang, Libin; alsa-devel@alsa-project.org; Lee, Zhuo-hao
-> Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: hda - skip runtime PM if async probe is not finished
-> 
-> 
-> > -----Original Message-----
-> > From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
-> > Sent: Monday, July 27, 2015 10:39 PM
-> > To: Eoff, Ullysses A
-> > Cc: Yang, Libin; alsa-devel@alsa-project.org; Lee, Zhuo-hao
-> > Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: hda - skip runtime PM if async probe is not finished
-> >
-> > On Mon, 27 Jul 2015 23:34:53 +0200,
-> > U. Artie Eoff wrote:
-> > >
-> > > Crash can occur if runtime PM is triggered before the async probe
-> > > finishes via the azx_firmware_cb when CONFIG_SND_HDA_PATCH_LOADER
-> > > is defined.
-> > >
-> > > Don't execute PM ops if the async probe has not completed yet.
-> > >
-> > > The probe is finished when chip->running is true.
-> > >
-> > > Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
-> > > ---
-> > >  sound/pci/hda/hda_intel.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > > index 735bdcb04ce8..b729b25a6ad6 100644
-> > > --- a/sound/pci/hda/hda_intel.c
-> > > +++ b/sound/pci/hda/hda_intel.c
-> > > @@ -1023,7 +1023,7 @@ static int azx_runtime_idle(struct device *dev)
-> > >
-> > >  	chip = card->private_data;
-> > >  	hda = container_of(chip, struct hda_intel, chip);
-> > > -	if (chip->disabled || hda->init_failed)
-> > > +	if (chip->disabled || hda->init_failed || !chip->running)
-> > >  		return 0;
-> >
-> > For !chip->running, it's better to return -EBUSY.
-> >
-> > The disabled and init_failed flags are checked in runtime_suspend()
-> > and runtime_resume() to skip the whole procedures, too.
-> >
-> > And I guess the check of chip->running should suffice even without the
-> > second patch.  It assures that the bus is powered on.
-> >
-> 
-> Hmm... wait a second.  I think we still need to check bus->chip_init
-> as in the second patch.  I just noticed that the async probe
-> finishes (i.e. chip->running = 1) before chip init executes (i.e. before
-> bus->chip_init is set).  This allows a small window for the issue
-> I described in my second patch to occur.
-> 
-> I already sent another patch to replace these two... but I didn't
-> add the check for bus->chip_init in that patch.  I'll create a v2
-> for that but will wait for your feedback first.
-> 
+I'm not an expert on applying patches to the kernel (never did that
+before), therefore, I don't know if I did everything right.
 
-Oh nevermind... silly me!  I put prints in the wrong place when
-testing this theory (at top of the probe cb).  Once I corrected that, I now
-see that chip_init=1 happens during the probe cb before running=1
-gets set.  I'm still quite new to this driver so bear with me ;-) 
-Appologies for the noise.
+What I did was: downloaded 4.2-rc4 from kernel.org[1], added the line by
+hand (couldn't apply the patch using patch), copied the config file from
+/boot/ (the config fedora 22 uses for its kernel) to .config on the root of
+the kernel directory, runned "make oldconfig" (typing ENTER for every
+question, is that right?), "make", "make modules_install", "make install".
+Rebooted, and chose the new kernel I just installed.
 
-THEREFORE, my latest patch should be good to go (pending
-your feedback of course :-).
+The sound worked like a charm, the speakers worked as expected, and the
+volume was as loud as on Windows.
 
-Cheers,
-U. Artie
+Is the patch going to be applied on master? Any chance that fix reaches my
+Fedora 22 (with backport to older kernel versions)?
 
+Thanks for the help,
+
+Paulo
+
+[1]
+https://www.kernel.org/pub/linux/kernel/v4.x/testing/linux-4.2-rc4.tar.xz
+
+2015-07-28 10:49 GMT-03:00 Paulo Roberto de Oliveira Castro <
+p.oliveira.castro@gmail.com>:
+
+>
+>
+> ---------- Forwarded message ---------
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Tue, Jul 28, 2015, 03:35
+> Subject: Re: [alsa-devel] Bug on Dell Vostro 5480 (Intel Wildcat) kernel
+> driver
+> To: Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>
+> Cc: <alsa-devel@alsa-project.org>
+>
+>
+> On Tue, 28 Jul 2015 05:35:34 +0200,
+> Paulo Roberto de Oliveira Castro wrote:
 > >
-> > thanks,
+> > Hi everyone,
 > >
-> > Takashi
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > After installing Fedora 22 on my Dell Vostro 5480, the speakers don't
+> work,
+> > and the sound only comes out of the subwoofer. Here is the output of
+> > alsa-info.sh. After talking to "debianuser" on IRC, we found this
+> > workaround:
+> >
+> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_PIN_WIDGET_CONTROL 0x40 # enable,
+> > set it to OUT
+> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_CONNECT_SEL 0 # switch to 0x0c
+> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0xa000 # unmute left
+> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0x9000 # unmute
+> right
+> >
+> > We suspect that it's a kernel driver bug. This makes the speakers work
+> > alongside the headphones (both at the same time) but I need help making
+> it
+> > working when headphones are not plugged in.
+>
+> Does the patch below work?  Try with 4.2-rc kernel at best.
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 4ae877c3b6a1..18ae17ebb356 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5185,6 +5185,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
+> = {
+>         SND_PCI_QUIRK(0x1028, 0x064a, "Dell",
+> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x064b, "Dell",
+> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x0665, "Dell XPS 13",
+> ALC288_FIXUP_DELL_XPS_13),
+> +       SND_PCI_QUIRK(0x1028, 0x069a, "Dell Vostro 5480",
+> ALC290_FIXUP_SUBWOOFER_HSJACK),
+>         SND_PCI_QUIRK(0x1028, 0x06c7, "Dell",
+> ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x06d9, "Dell",
+> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>         SND_PCI_QUIRK(0x1028, 0x06da, "Dell",
+> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>
