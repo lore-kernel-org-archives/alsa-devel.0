@@ -1,22 +1,15 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
- or userspace disable rewinds
-Date: Tue, 28 Jul 2015 20:43:13 +0500
-Message-ID: <55B7A311.5070905@gmail.com>
-References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <55A14D23.3070600@gmail.com> <55B78F74.1020601@linux.intel.com>
+From: "U. Artie Eoff" <ullysses.a.eoff@intel.com>
+Subject: [PATCH] ALSA: hda - Fix race between PM ops and HDA
+	init/probe
+Date: Tue, 28 Jul 2015 13:29:56 -0700
+Message-ID: <1438115396-1476-1-git-send-email-ullysses.a.eoff@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id A09012616C9
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 17:43:16 +0200 (CEST)
-Received: by wibud3 with SMTP id ud3so165511120wib.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 08:43:16 -0700 (PDT)
-In-Reply-To: <55B78F74.1020601@linux.intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BAB026128B
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 22:30:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,69 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, zhuo-hao.lee@intel.com, dgreid@chromium.org, "U. Artie Eoff" <ullysses.a.eoff@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-28.07.2015 19:19, Pierre-Louis Bossart wrote:
-> On 7/11/15 12:06 PM, Alexander E. Patrakov wrote:
+PM ops could be triggered before HDA is done initializing
+and cause PM to set HDA controller to D3Hot.  This can result
+in "CORB reset timeout#2, CORBRP = 65535" and "no codecs
+initialized".  Additionally, PM ops can be triggered before
+azx_probe_continue finishes (async probe).  This can result
+in a NULL deref kernel crash.
 
->> 3. I have not seen any justification for the drastic measure of making a
->> DMA-based device completely unrewindable. Maybe a more polite "please
->> make this a batch/blocktransfer card" request, thus disallowing only
->> sub-period rewinds, would still be useful for powersaving, without
->> killing dmix.
->>
->> 4. If this "no rewinds" mode is not made the default, then exactly
->> nobody will use it. Everyone except sound servers opens the default
->> device with the default flags. I understand the potential to break
->> existing userspace, especially PulseAudio, but we really need to think
->> more here.
->
-> Not sure I understand the issue. when a new functionality is added it
-> takes time to be adopted. If we can push it in sound servers first then
-> it creates a wide pool of users from day1.
+To fix this, avoid PM ops if !chip->running.
 
-The issue is that the proposed functionality, in the currently proposed 
-"I promise to never rewind" form, is nearly useless by its very nature 
-for any sound server that cares about power consumption significantly 
-more than dmix does. It is indeed usable by JACK (by its design, it 
-doesn't rewind, and uses low latency) and CRAS (which currently doesn't 
-rewind, but I am not sure whether this is a bug or a deliberate decision 
-based on non-public measurements of extra power savings that "rewinds + 
-high latency" would allow).
+Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+---
+ sound/pci/hda/hda_intel.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-As I have already explained, dmix, when mixing, writes to the hardware 
-buffer multiple times, which is equivalent to rewinding. PulseAudio uses 
-rewinds for a very specific purpose - to avoid CPU wakeups in the common 
-"nothing unexpected happened" case, i.e. to allow very high average 
-latency while keeping the latency of reaction to unexpected events low. 
-So, by convincing PulseAudio to never rewind and to tell the driver 
-about this fact, you can save some power in the card, but (if the 
-proponents of rewinds are right - see my earlier request for non-public 
-information) will waste way more power due to the need for much more 
-frequent CPU wakeups ("cannot rewind but have to react to unexpected 
-events within 20 ms" = "must wake up every 20 ms").
-
-The only cases where this flag can be useful for sound servers are:
-
-1. Sound servers that already, by design, always waste CPU power by 
-running at low latency;
-
-2. Sound cards like USB audio where the kernel already contains a 
-low-latency thread that copies data to the card in the serialized way.
-
-For PulseAudio on Intel hardware and HDA-compatible card, it would (if 
-the situation on my Sony laptop is an exception and not the rule), as I 
-have already mentioned, only trade some power consumption improvement in 
-the card for bigger losses in the CPU.
-
-And with (2), I am not sure whether this is a win at all: you are likely 
-trading a kernel thread that wakes up, say, every 6 ms (with userspace 
-waking up very rarely), to a userspace wakeup that happens every 6 or 
-maybe 20 ms (as the sound server chooses), but incurs more context 
-switches. It does shift the policy decision about the wakeup rate to 
-userspace, though.
-
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 735bdcb04ce8..c38c68f57938 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -867,7 +867,7 @@ static int azx_suspend(struct device *dev)
+ 
+ 	chip = card->private_data;
+ 	hda = container_of(chip, struct hda_intel, chip);
+-	if (chip->disabled || hda->init_failed)
++	if (chip->disabled || hda->init_failed || !chip->running)
+ 		return 0;
+ 
+ 	bus = azx_bus(chip);
+@@ -902,7 +902,7 @@ static int azx_resume(struct device *dev)
+ 
+ 	chip = card->private_data;
+ 	hda = container_of(chip, struct hda_intel, chip);
+-	if (chip->disabled || hda->init_failed)
++	if (chip->disabled || hda->init_failed || !chip->running)
+ 		return 0;
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+@@ -1027,7 +1027,7 @@ static int azx_runtime_idle(struct device *dev)
+ 		return 0;
+ 
+ 	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+-	    azx_bus(chip)->codec_powered)
++	    azx_bus(chip)->codec_powered || !chip->running)
+ 		return -EBUSY;
+ 
+ 	return 0;
 -- 
-Alexander E. Patrakov
+2.1.0
