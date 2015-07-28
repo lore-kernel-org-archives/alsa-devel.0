@@ -1,105 +1,153 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v13 3/3] ASoC: tda998x: add a codec to the HDMI
- transmitter
-Date: Tue, 28 Jul 2015 11:24:10 +0100
-Message-ID: <20150728102410.GD11162@sirena.org.uk>
-References: <cover.1437397270.git.moinejf@free.fr>
- <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf@free.fr>
- <20150720180606.GL11162@sirena.org.uk>
- <20150728121945.560f82a5@armhf>
+From: Srinivasan S <srinivasan.s@tataelxsi.co.in>
+Subject: Re: Running PJSIP for voip calls in alsa
+Date: Tue, 28 Jul 2015 10:35:21 +0000
+Message-ID: <SIXPR04MB2532BF1E020D2CBA42BC437C38D0@SIXPR04MB253.apcprd04.prod.outlook.com>
+References: <SIXPR04MB253E749CD16977CEC4D4120C39F0@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <559FCB17.2070200@ladisch.de>
+ <SIXPR04MB253B5222E188DE9C4A86778C39D0@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <55A3635C.7090009@ladisch.de>
+ <SIXPR04MB2534E33FAFB9024B6D68B2BC39C0@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <55A36F98.8060408@ladisch.de>
+ <SIXPR04MB253C2AE64F54AC46DA26414C3990@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <SIXPR04MB253C33418EA367F37CFDC53C3850@SIXPR04MB253.apcprd04.prod.outlook.com>
+ <SIXPR04MB253482862078B53CC765D74C38E0@SIXPR04MB253.apcprd04.prod.outlook.com>,
+ <CANv6ZMYDHVH_9P-TxoTue-p2Q2ssPVpXEDsX=HGTN9R+U+G6xw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wi3pZ2QcHnFkMeXm"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20150728121945.560f82a5@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sg2apc01on0129.outbound.protection.outlook.com [104.47.125.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 502AD2604A1
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 12:35:26 +0200 (CEST)
+In-Reply-To: <CANv6ZMYDHVH_9P-TxoTue-p2Q2ssPVpXEDsX=HGTN9R+U+G6xw@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+Dear Maruthi,
 
---wi3pZ2QcHnFkMeXm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jul 28, 2015 at 12:19:45PM +0200, Jean-Francois Moine wrote:
-> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+Thanks a lot for the info
 
-> > > +int tda9998x_codec_register(struct device *dev,
-> > > +			struct tda998x_audio_s *tda998x_audio_i,
-> > > +			struct tda998x_ops_s *tda998x_ops);
-> > > +void tda9998x_codec_unregister(struct device *dev);
 
-> > I'd expect these to be internal to the DRM driver.
+1. Is it same for Record also???
 
-> I don't see where. What is your idea?
 
-What I said above - put them in the DRM driver.  They're just
-registering a device IIRC.
+2. Could you please help me out in calculating for 8khz 16 bit stereo & 8khz 16 bit mono. (for playback & record)
 
-> > > +config SND_SOC_TDA998X
-> > > +	def_tristate y
-> > > +	select SND_PCM_ELD
-> > > +	depends on DRM_I2C_NXP_TDA998X
 
-> > def_tristate y?  Why?
+3. Is that ALSA would interrupt for the data, every one second ie., 2*8000 = 16000 bytes per second
 
-> The TDA998x CODEC is always generated when the DRM TDA998x is generated
-> and when audio is wanted.
-> Its type, built-in or module, depends on the TDA998x driver type.
+or is that the driver interrupt handler, at what rate the data is transfered to the ALSA???
 
-Just make this like any other driver with no default specified.
 
-> > > +/* functions in tda998x_drv */
-> > > +static struct tda998x_ops_s *tda998x_ops;
+Sorry for my poor understanding
 
-> > I'd expect this to be stored in the driver data rather than a static
-> > global, what if a system has two HDMI outputs?
+Could you please help me out in this
 
-> Each TDA998x has only one HDMI output and there is only one driver.
+Kindly do the needful as early as possible
 
-Someone might put two chips on the board.
+Many Thanks in advance
 
-> > > +static int tda998x_codec_startup(struct snd_pcm_substream *substream,
-> > > +                       struct snd_soc_dai *dai)
-> > > +{
-> > > +       struct snd_pcm_runtime *runtime = substream->runtime;
-> > > +       u8 *eld;
-> > > +
-> > > +       eld = tda998x_ops->get_eld(dai->dev);
-> > > +       if (!eld)
-> > > +               return -ENODEV;
-> > > +       return snd_pcm_hw_constraint_eld(runtime, eld);
-> > > +}
+Srinivasan S
 
-> > Do we really need a device specific mechanism for fishing the ELD out of
-> > the graphics code?  I'd have expected this to be more generic.
+________________________________
+From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Sent: Tuesday, July 28, 2015 12:22 PM
+To: Srinivasan S
+Cc: Clemens Ladisch; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
 
-> I will put the ELD in the private data of the DRM driver.
+Considering playback,
 
-That's not the issue here - the issue is that the need to get the ELD
-out of the video subsystem is not specific to this driver, it's pretty
-common and something that it seems we should factor out.
+period_size  :  your sound card will generate interrupt after period_size bytes have been consumed and ALSA core is informed of this, in driver's interrupt handler.
+Periods :    Number of buffer slices , each having period_size bytes.
+Buffer_size :  periods * period_size
 
---wi3pZ2QcHnFkMeXm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Your application should query the driver for the parameters and set accordingly. Below is one good example for writing a alsa application :
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+http://equalarea.com/paul/alsa-audio.html
 
-iQEcBAEBCAAGBQJVt1hKAAoJECTWi3JdVIfQCIUH/0KPko0OHwHJPhqmzHEF8l74
-u4+5accPOStXR08xnSyxGRihoeDdTUsZmJdeCsSS7X3ORZyd2qur1AjbNQS9LgzZ
-LFMaWPugwQEomxaHWZ3/dosNl6P4h7VoEjL1bubut4TApN0fmGdjqTsN1Gp8E9wy
-o/zBGxencQtzUCrud4EzgZYaRT26tcK/y61c54bO/0rdusdVhIuQuz5LjjXD737e
-JBEwrD092Ztk+21tg1UbsCgYjnX/Gu9fxDDifuHSKI5MsbYQYjIG4S7q1qqROmk7
-YEhDY29cAutIrikxezkaQYnni5ZDOzSJso/j5aGjlLOMmnQZ1dECFjhc6RFiC0w=
-=Vm1R
------END PGP SIGNATURE-----
+Regards,
+Maruthi
 
---wi3pZ2QcHnFkMeXm--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Tue, Jul 28, 2015 at 10:38 AM, Srinivasan S <srinivasan.s@tataelxsi.co.in<mailto:srinivasan.s@tataelxsi.co.in>> wrote:
+Dear Clemens,
+
+Could you please helpme out in this
+
+I am trying to understand few terminologies w.r.t the following for developing alsa application
+
+Period_size
+Periods
+period_time
+Buffer_time
+Buffer_size
+
+
+
+________________________________________
+From: alsa-devel-bounces@alsa-project.org<mailto:alsa-devel-bounces@alsa-project.org> <alsa-devel-bounces@alsa-project.org<mailto:alsa-devel-bounces@alsa-project.org>> on behalf of Srinivasan S <srinivasan.s@tataelxsi.co.in<mailto:srinivasan.s@tataelxsi.co.in>>
+Sent: Monday, July 20, 2015 12:18 PM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
+
+Dear Clemens,
+
+Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
+
+Kindly do the needful,
+
+Many Thanks in advance
+________________________________________
+From: Srinivasan S
+Sent: Thursday, July 16, 2015 10:09 AM
+To: Clemens Ladisch
+Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
+
+Dear Clemens,
+
+Thanks a lot for your replies,
+
+Could you pls let me know, do you know any alsa linux utilities/tools similar to aplay arecord to determine this clock drift issue in driver
+
+Kindly do the needful,
+
+Many Thanks in advance
+
+________________________________________
+From: Clemens Ladisch <clemens@ladisch.de<mailto:clemens@ladisch.de>>
+Sent: Monday, July 13, 2015 1:28 PM
+To: Srinivasan S
+Cc: alsa-devel@alsa-project.org<mailto:alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Running PJSIP for voip calls in alsa
+
+Srinivasan S wrote:
+> Could you please provide any suggestions or inputs from where this problem could arrive ie., in either platform driver or machine driver or codec driver??
+
+I do not know that driver.
+
+
+Regards,
+Clemens
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org<mailto:Alsa-devel@alsa-project.org>
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org<mailto:Alsa-devel@alsa-project.org>
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
