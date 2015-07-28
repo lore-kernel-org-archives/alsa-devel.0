@@ -1,137 +1,203 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH v13 3/3] ASoC: tda998x: add a codec to the HDMI
- transmitter
-Date: Tue, 28 Jul 2015 15:18:42 +0100
-Message-ID: <20150728141842.GL7557@n2100.arm.linux.org.uk>
-References: <cover.1437397270.git.moinejf@free.fr>
- <e036c88aa945e72b40ec965c9358dacf564e79f2.1437397272.git.moinejf@free.fr>
- <20150720180606.GL11162@sirena.org.uk>
- <20150728121945.560f82a5@armhf>
- <20150728102410.GD11162@sirena.org.uk>
- <20150728152329.02668865@armhf>
- <20150728135358.GK7557@n2100.arm.linux.org.uk>
- <s5hio94tmb2.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
+ or userspace disable rewinds
+Date: Tue, 28 Jul 2015 09:19:32 -0500
+Message-ID: <55B78F74.1020601@linux.intel.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <55A14D23.3070600@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <s5hio94tmb2.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A24BF2654E5
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 16:19:42 +0200 (CEST)
+In-Reply-To: <55A14D23.3070600@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 28, 2015 at 03:59:45PM +0200, Takashi Iwai wrote:
-> FWIW, we're currently discussing about extending the i915/hda
-> component binding so that the audio driver gets a notification and
-> queries the ELD via callbacks instead of the flaky hardware access.
-> 
-> It'd be best if we have a common infrastructure for that, of course.
-> But currently it's a start, just a bit step forward there.
+On 7/11/15 12:06 PM, Alexander E. Patrakov wrote:
+> 08.07.2015 15:10, Pierre-Louis Bossart wrote:
+>> Add new hw_params flag to explicitly tell driver that rewinds
+>> will never be used. This can be used by low-level driver to
+>> optimize DMA operations and reduce power consumption.
+>> Use this flag only when data written in ring buffer will
+>> never be invalidated, e.g. any update of appl_ptr is final.
+>>
+>> Caveat: there is currently no way to query capabilities without
+>> opening a pcm stream, so applications might need to serially
+>> open all exposed devices, check what they support by looking at
+>> hw_params->info and close them (this is what PulseAudio does so
+>> might not be an issue)
+>
+> Thanks for the patch. I was also about to add this flag, for the use in
+> userspace. It's good to know that it is also useful in the kernel space.
+>
+> I usually don't comment on kernel patches, but this one provokes some
+> questions and thoughts.
+>
+> 1. What amount of power-saving are we talking about, for Intel chips?
+> (ideally, this should be in the commit message)
 
-Okay, so it sounds like i915/hda also needs this.
+The power savings will depend on non-audio parameters, so it's 
+impossible to state a value. And it's probably not public information 
+anyway.
 
-I think in addition to what I said above, we need whatever provides the
-notification system to generate state notifications for new "listeners"
-that would otherwise be unaware of the current state.
+>
+> 2. Shouldn't SND_PCM_APPEND (the mode used by dmix and friends) be also
+> made incompatible with this flag, because, when mixing, it essentially
+> overwrites incompletely-mixed data, i.e. rewinds without saying the word
+> "rewind"? Shouldn't all other kinds of freewheeling be made incompatible
+> with this flag, because the card, essentially, is never told about the
+> application pointer? Or is this a userspace-only concern?
 
-I'm thinking at the moment that something along these lines to go into
-drivers/video/hdmi.c / include/linux/hdmi.h:
+Good point, I wasn't aware of this flag. willl look into it.
 
-struct hdmi_state {
-	struct mutex mutex;
-	struct raw_notifier_head head;
-	bool connected;
-	bool edid_valid;
-	u8 edid[MAX_EDID_SIZE];
-};
+> 3. I have not seen any justification for the drastic measure of making a
+> DMA-based device completely unrewindable. Maybe a more polite "please
+> make this a batch/blocktransfer card" request, thus disallowing only
+> sub-period rewinds, would still be useful for powersaving, without
+> killing dmix.
+>
+> 4. If this "no rewinds" mode is not made the default, then exactly
+> nobody will use it. Everyone except sound servers opens the default
+> device with the default flags. I understand the potential to break
+> existing userspace, especially PulseAudio, but we really need to think
+> more here.
 
-enum {
-	HDMI_CONNECTED,
-	HDMI_DISCONNECTED,
-	HDMI_NEW_EDID,
-};
+Not sure I understand the issue. when a new functionality is added it 
+takes time to be adopted. If we can push it in sound servers first then 
+it creates a wide pool of users from day1.
 
-int hdmi_register_notifier(struct notifier_block *nb)
-{
-	struct hdmi_state *state = ...;
-	int ret;
+>
+> So, here is an alternative (or maybe additional - your flag does make
+> sense, after all) hackish idea that should be compatible with the
+> existing userspace.
+>
+> Please make it possible to "allow", "put in auto mode" or "disallow" the
+> device to DMA up to one period in advance. Please use the following
+> logic when in "auto mode":
 
-	mutex_lock(&state->mutex);
-	if (state->connected) {
-		nb->notifier_call(nb, HDMI_CONNECTED, NULL);
-		if (state->edid_valid)
-			nb->notifier_call(nb, HDMI_NEW_EDID, state->edid);
-	} else {
-		nb->notifier_call(nb, HDMI_DISCONNECTED, NULL);
-	}
-	ret = raw_notifier_chain_register(&state->head, nb);
-	mutex_unlock(&state->mutex);
+This is a separate discussion. the patches I wrote are only to make sure 
+the hardware can safely fetch the data that is provided by userspace. I 
+think the open is more how we configure the DMA burst, something I 
+haven't looked at yet.
 
-	return ret;
-}
-
-int hdmi_unregister_notifier(struct notifier_block *nb)
-{
-	struct hdmi_state *state = ...;
-	int ret;
-
-	mutex_lock(&state->mutex);
-	ret = raw_notifier_chain_unregister(&state->head, nb);
-	mutex_unlock(&state->mutex);
-
-	return ret;
-}
-
-void hdmi_event_connect(struct device *dev)
-{
-	struct hdmi_state *state = lookup_state_from_dev(dev);
-
-	mutex_lock(&state->mutex);
-	state->connected = true;
-	raw_notifier_call_chain(&state->head, HDMI_CONNECTED, NULL);
-	mutex_unlock(&state->mutex);
-}
-
-void hdmi_event_disconnect(struct device *dev)
-{
-	struct hdmi_state *state = lookup_state_from_dev(dev);
-
-	mutex_lock(&state->mutex);
-	state->connected = false;
-	state->valid_edid = false;
-	raw_notifier_call_chain(&state->head, HDMI_DISCONNECTED, NULL);
-	mutex_unlock(&state->mutex);
-}
-
-int hdmi_event_new_edid(struct device *dev, const void *edid, size_t size)
-{
-	struct hdmi_state *state = lookup_state_from_dev(dev);
-
-	if (size > sizeof(state->edid))
-		return -EINVAL;
-
-	mutex_lock(&state->mutex);
-	state->valid_edid = true;
-	memcpy(state->edid, edid, size);
-	raw_notifier_call_chain(&state->head, HDMI_NEW_EDID, state->edid);
-	mutex_unlock(&state->mutex);
-
-	return 0;
-}
-
-The problems here are: how to go from a struct device to the state (iow,
-the implementation of lookup_state_from_dev()) and how to convey on the
-client side which 'state' to attach to.  I'd rather not involve DT at
-this level: DT is not the world's only firmware system, we have to cater
-for x86 too here, so we need something that is firmware agnostic.
-
-This is something I've just banged out in this email...
-
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+> If the card is batch or blocktransfer "by itself", let it be. We can't
+> do anything here, the DMA operations are already "optimized" whether we
+> want it or not.
+>
+> If the card does not support disabling the period wakeup, then FIXME - I
+> don't know what to do. For compatibility, I think we can't optimize DMA
+> operations here.
+>
+> If the card supports disabling the period wakeup, and it is disabled,
+> then don't allow it to optimize DMA operations.
+>
+> If the card supports disabling the period wakeup, but it is not
+> disabled, then allow it to optimize DMA operations.
+>
+> As you have probably guessed, the idea here is to detect typical setup
+> made by PulseAudio. I suspect that this also affects CRAS.
+>
+> Also maybe this idea by David Henningsson is good:
+>
+> """
+> E g, if the application sets a low period size
+> but also sets the "disable period interrupts" flag, that could be an
+> indicator that it wants lots of interrupts just to update the pointer,
+> but nothing else. Maybe that's even the behaviour today (haven't checked).
+> """
+>
+> (taken from
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/080885.html
+> )
+>
+>>
+>> Signed-off-by: Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   include/sound/pcm.h         | 1 +
+>>   include/uapi/sound/asound.h | 1 +
+>>   sound/core/pcm_native.c     | 8 ++++++++
+>>   3 files changed, 10 insertions(+)
+>>
+>> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+>> index 691e7ee..25310b7 100644
+>> --- a/include/sound/pcm.h
+>> +++ b/include/sound/pcm.h
+>> @@ -370,6 +370,7 @@ struct snd_pcm_runtime {
+>>       unsigned int rate_num;
+>>       unsigned int rate_den;
+>>       unsigned int no_period_wakeup: 1;
+>> +    unsigned int no_rewinds:1;
+>>
+>>       /* -- SW params -- */
+>>       int tstamp_mode;        /* mmap timestamp is updated */
+>> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+>> index a45be6b..b62b162 100644
+>> --- a/include/uapi/sound/asound.h
+>> +++ b/include/uapi/sound/asound.h
+>> @@ -356,6 +356,7 @@ typedef int snd_pcm_hw_param_t;
+>>   #define SNDRV_PCM_HW_PARAMS_NORESAMPLE    (1<<0)    /* avoid rate
+>> resampling */
+>>   #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER    (1<<1)    /* export
+>> buffer */
+>>   #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP    (1<<2)    /* disable
+>> period wakeups */
+>> +#define SNDRV_PCM_HW_PARAMS_NO_REWINDS            (1<<3)    /*
+>> disable rewinds */
+>>
+>>   struct snd_interval {
+>>       unsigned int min, max;
+>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+>> index d126c03..a70e52d 100644
+>> --- a/sound/core/pcm_native.c
+>> +++ b/sound/core/pcm_native.c
+>> @@ -543,6 +543,8 @@ static int snd_pcm_hw_params(struct
+>> snd_pcm_substream *substream,
+>>       runtime->no_period_wakeup =
+>>               (params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
+>>               (params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
+>> +    runtime->no_rewinds =
+>> +            params->flags & SNDRV_PCM_HW_PARAMS_NO_REWINDS;
+>>
+>>       bits = snd_pcm_format_physical_width(runtime->format);
+>>       runtime->sample_bits = bits;
+>> @@ -2428,6 +2430,9 @@ static snd_pcm_sframes_t
+>> snd_pcm_playback_rewind(struct snd_pcm_substream *subst
+>>       if (frames == 0)
+>>           return 0;
+>>
+>> +    if (runtime->no_rewinds)
+>> +        return 0;
+>> +
+>>       snd_pcm_stream_lock_irq(substream);
+>>       switch (runtime->status->state) {
+>>       case SNDRV_PCM_STATE_PREPARED:
+>> @@ -2476,6 +2481,9 @@ static snd_pcm_sframes_t
+>> snd_pcm_capture_rewind(struct snd_pcm_substream *substr
+>>       if (frames == 0)
+>>           return 0;
+>>
+>> +    if (runtime->no_rewinds)
+>> +        return 0;
+>> +
+>>       snd_pcm_stream_lock_irq(substream);
+>>       switch (runtime->status->state) {
+>>       case SNDRV_PCM_STATE_PREPARED:
+>>
+>
+>
