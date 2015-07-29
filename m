@@ -1,118 +1,79 @@
-From: Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>
-Subject: Re: Bug on Dell Vostro 5480 (Intel Wildcat) kernel
-	driver
-Date: Tue, 28 Jul 2015 19:32:08 -0300
-Message-ID: <CAE7bemr=rgB-Fv-+k=RNfmsgXnuN++qZ6JzeyMskoEJF6RN4PA@mail.gmail.com>
-References: <CAE7bemp1SL2q2h3vkxgAzF=+75kpDvX2aZUck_c70Ujxw3cyvQ@mail.gmail.com>
- <s5hegjsg56k.wl-tiwai@suse.de>
- <CAE7bempD9ubaTfmpV=3-+r++1ThqhfccotM_rKvf5jgL_kr5Rg@mail.gmail.com>
+From: "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>
+Subject: Re: [PATCH v2 0/22] On-demand device probing
+Date: Wed, 29 Jul 2015 02:36:33 +0200
+Message-ID: <2554489.GlTphZsHuX@vostro.rjw.lan>
+References: <1438089593-7696-1-git-send-email-tomeu.vizoso@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
- [209.85.213.176])
- by alsa0.perex.cz (Postfix) with ESMTP id BD77126128B
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 00:32:09 +0200 (CEST)
-Received: by igbpg9 with SMTP id pg9so1166660igb.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2015 15:32:08 -0700 (PDT)
-In-Reply-To: <CAE7bempD9ubaTfmpV=3-+r++1ThqhfccotM_rKvf5jgL_kr5Rg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1438089593-7696-1-git-send-email-tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tomeu Vizoso <tomeu.vizoso-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Javier Martinez Canillas <javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, linux-pwm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Terje =?ISO-8859-1?Q?Bergstr=F6m?= <tbergstrom-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Len Brown <lenb-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jean-Christophe Plagniol-Villard <plagnioj-sclMFOaUSTBWk0Htik3J/w@public.gmane.org>, Sebastian
 List-Id: alsa-devel@alsa-project.org
 
-I'm not an expert on applying patches to the kernel (never did that
-before), therefore, I don't know if I did everything right.
+On Tuesday, July 28, 2015 03:19:31 PM Tomeu Vizoso wrote:
+> Hello,
+>=20
+> I have a problem with the panel on my Tegra Chromebook taking longer
+> than expected to be ready during boot (St=C3=A9phane Marchesin report=
+ed what
+> is basically the same issue in [0]), and have looked into ordered
+> probing as a better way of solving this than moving nodes around in t=
+he
+> DT or playing with initcall levels and linking order.
+>=20
+> While reading the thread [1] that Alexander Holler started with his
+> series to make probing order deterministic, it occurred to me that it
+> should be possible to achieve the same by probing devices as they are
+> referenced by other devices.
+>=20
+> This basically reuses the information that is already implicit in the
+> probe() implementations, saving us from refactoring existing drivers =
+or
+> adding information to DTBs.
+>=20
+> During review of v1 of this series Linus Walleij suggested that it
+> should be the device driver core to make sure that dependencies are
+> ready before probing a device. I gave this idea a try [2] but Mark Br=
+own
+> pointed out to the logic duplication between the resource acquisition
+> and dependency discovery code paths (though I think it's fairly minor=
+).
+>=20
+> To address that code duplication I experimented with Arnd's devm_prob=
+e
+> [3] concept of having drivers declare their dependencies instead of
+> acquiring them during probe, and while it worked [4], I don't think w=
+e
+> end up winning anything when compared to just probing devices on-dema=
+nd
+> from resource getters.
+>=20
+> One remaining objection is to the "sprinkling" of calls to
+> fwnode_ensure_device() in the resource getters of each subsystem, but=
+ I
+> think it's the right thing to do given that the storage of resources =
+is
+> currently subsystem-specific.
+>=20
+> We could avoid the above by moving resource storage into the core, bu=
+t I
+> don't think there's a compelling case for that.
+>=20
+> I have tested this on boards with Tegra, iMX.6, Exynos and OMAP SoCs,
+> and these patches were enough to eliminate all the deferred probes
+> (except one in PandaBoard because omap_dma_system doesn't have a
+> firmware node as of yet).
+>=20
+> With this series I get the kernel to output to the panel in 0.5s,
+> instead of 2.8s.
 
-What I did was: downloaded 4.2-rc4 from kernel.org[1], added the line by
-hand (couldn't apply the patch using patch), copied the config file from
-/boot/ (the config fedora 22 uses for its kernel) to .config on the root of
-the kernel directory, runned "make oldconfig" (typing ENTER for every
-question, is that right?), "make", "make modules_install", "make install".
-Rebooted, and chose the new kernel I just installed.
+Can you trim your CC list somewhat, please?
 
-The sound worked like a charm, the speakers worked as expected, and the
-volume was as loud as on Windows.
+I'm definitely going to look at this, but not before then next week.
+Sorry about that.
 
-Is the patch going to be applied on master? Any chance that fix reaches my
-Fedora 22 (with backport to older kernel versions)?
-
-Thanks for the help,
-
-Paulo
-
-[1]
-https://www.kernel.org/pub/linux/kernel/v4.x/testing/linux-4.2-rc4.tar.xz
-
-2015-07-28 10:49 GMT-03:00 Paulo Roberto de Oliveira Castro <
-p.oliveira.castro@gmail.com>:
-
->
->
-> ---------- Forwarded message ---------
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Tue, Jul 28, 2015, 03:35
-> Subject: Re: [alsa-devel] Bug on Dell Vostro 5480 (Intel Wildcat) kernel
-> driver
-> To: Paulo Roberto de Oliveira Castro <p.oliveira.castro@gmail.com>
-> Cc: <alsa-devel@alsa-project.org>
->
->
-> On Tue, 28 Jul 2015 05:35:34 +0200,
-> Paulo Roberto de Oliveira Castro wrote:
-> >
-> > Hi everyone,
-> >
-> > After installing Fedora 22 on my Dell Vostro 5480, the speakers don't
-> work,
-> > and the sound only comes out of the subwoofer. Here is the output of
-> > alsa-info.sh. After talking to "debianuser" on IRC, we found this
-> > workaround:
-> >
-> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_PIN_WIDGET_CONTROL 0x40 # enable,
-> > set it to OUT
-> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_CONNECT_SEL 0 # switch to 0x0c
-> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0xa000 # unmute left
-> > sudo hda-verb /dev/snd/hwC1D0 0x14 SET_AMP_GAIN_MUTE 0x9000 # unmute
-> right
-> >
-> > We suspect that it's a kernel driver bug. This makes the speakers work
-> > alongside the headphones (both at the same time) but I need help making
-> it
-> > working when headphones are not plugged in.
->
-> Does the patch below work?  Try with 4.2-rc kernel at best.
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 4ae877c3b6a1..18ae17ebb356 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -5185,6 +5185,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
-> = {
->         SND_PCI_QUIRK(0x1028, 0x064a, "Dell",
-> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x064b, "Dell",
-> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x0665, "Dell XPS 13",
-> ALC288_FIXUP_DELL_XPS_13),
-> +       SND_PCI_QUIRK(0x1028, 0x069a, "Dell Vostro 5480",
-> ALC290_FIXUP_SUBWOOFER_HSJACK),
->         SND_PCI_QUIRK(0x1028, 0x06c7, "Dell",
-> ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x06d9, "Dell",
-> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1028, 0x06da, "Dell",
-> ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
->
+Thanks,
+Rafael
