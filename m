@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: haswell: fix initialize 'NULL
+Subject: Applied "ASoC: Intel: sst_byt: fix initialize 'NULL
 	device *' issue" to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:14 +0100
-Message-ID: <E1ZKS6c-0004b0-GW@finisterre>
-References: <1438070466-30008-1-git-send-email-yang.jie@intel.com>
+Date: Wed, 29 Jul 2015 15:13:12 +0100
+Message-ID: <E1ZKS6a-0004aV-RH@finisterre>
+References: <1438070466-30008-2-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7632B265150
+ by alsa0.perex.cz (Postfix) with ESMTP id C2BF42657B0
  for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:27 +0200 (CEST)
-In-Reply-To: <1438070466-30008-1-git-send-email-yang.jie@intel.com>
+In-Reply-To: <1438070466-30008-2-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: haswell: fix initialize 'NULL device *' issue
+   ASoC: Intel: sst_byt: fix initialize 'NULL device *' issue
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 4b563ea317c2262987f0675abf15066614f536a1 Mon Sep 17 00:00:00 2001
+>From 45f503df1ba445359b94e1758c5e4f2c3460c8e4 Mon Sep 17 00:00:00 2001
 From: Jie Yang <yang.jie@intel.com>
-Date: Tue, 28 Jul 2015 16:01:05 +0800
-Subject: [PATCH] ASoC: Intel: haswell: fix initialize 'NULL device *' issue
+Date: Tue, 28 Jul 2015 16:01:06 +0800
+Subject: [PATCH] ASoC: Intel: sst_byt: fix initialize 'NULL device *' issue
 
-Add initialization for sst_hsw.dev at init stage, which fix the
+Add initialization for sst_byt.dev at init stage, which fix the
 'NULL device *' warning issues.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 2 ++
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index f95f271..f6efa9d 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -2119,6 +2119,8 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 	if (hsw == NULL)
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+index 4c01bb4..5bbaa66 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-ipc.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+@@ -701,6 +701,8 @@ int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 	if (byt == NULL)
  		return -ENOMEM;
  
-+	hsw->dev = dev;
++	byt->dev = dev;
 +
- 	ipc = &hsw->ipc;
+ 	ipc = &byt->ipc;
  	ipc->dev = dev;
- 	ipc->ops.tx_msg = hsw_tx_msg;
+ 	ipc->ops.tx_msg = byt_tx_msg;
 -- 
 2.1.4
