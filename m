@@ -1,20 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
- or userspace disable rewinds
-Date: Wed, 29 Jul 2015 12:46:25 -0500
-Message-ID: <55B91171.2060809@linux.intel.com>
-References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <55A14D23.3070600@gmail.com> <55B78F74.1020601@linux.intel.com>
- <55B7A311.5070905@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/6] ASoC: Intel: Skylake: Add functions
+ for DSP module configuration
+Date: Wed, 29 Jul 2015 18:56:31 +0100
+Message-ID: <20150729175631.GK11162@sirena.org.uk>
+References: <1437503040-7392-4-git-send-email-vinod.koul@intel.com>
+ <20150729123323.GC20130@sirena.org.uk>
+ <20150729165029.GG29916@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9077429809427083730=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 770762605C3
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 19:46:28 +0200 (CEST)
-In-Reply-To: <55B7A311.5070905@gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F6012605E4
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 19:56:39 +0200 (CEST)
+In-Reply-To: <20150729165029.GG29916@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,83 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/28/15 10:43 AM, Alexander E. Patrakov wrote:
-> 28.07.2015 19:19, Pierre-Louis Bossart wrote:
->> On 7/11/15 12:06 PM, Alexander E. Patrakov wrote:
->
->>> 3. I have not seen any justification for the drastic measure of making a
->>> DMA-based device completely unrewindable. Maybe a more polite "please
->>> make this a batch/blocktransfer card" request, thus disallowing only
->>> sub-period rewinds, would still be useful for powersaving, without
->>> killing dmix.
->>>
->>> 4. If this "no rewinds" mode is not made the default, then exactly
->>> nobody will use it. Everyone except sound servers opens the default
->>> device with the default flags. I understand the potential to break
->>> existing userspace, especially PulseAudio, but we really need to think
->>> more here.
->>
->> Not sure I understand the issue. when a new functionality is added it
->> takes time to be adopted. If we can push it in sound servers first then
->> it creates a wide pool of users from day1.
->
-> The issue is that the proposed functionality, in the currently proposed
-> "I promise to never rewind" form, is nearly useless by its very nature
-> for any sound server that cares about power consumption significantly
-> more than dmix does. It is indeed usable by JACK (by its design, it
-> doesn't rewind, and uses low latency) and CRAS (which currently doesn't
-> rewind, but I am not sure whether this is a bug or a deliberate decision
-> based on non-public measurements of extra power savings that "rewinds +
-> high latency" would allow).
->
-> As I have already explained, dmix, when mixing, writes to the hardware
-> buffer multiple times, which is equivalent to rewinding. PulseAudio uses
-> rewinds for a very specific purpose - to avoid CPU wakeups in the common
-> "nothing unexpected happened" case, i.e. to allow very high average
-> latency while keeping the latency of reaction to unexpected events low.
-> So, by convincing PulseAudio to never rewind and to tell the driver
-> about this fact, you can save some power in the card, but (if the
-> proponents of rewinds are right - see my earlier request for non-public
-> information) will waste way more power due to the need for much more
-> frequent CPU wakeups ("cannot rewind but have to react to unexpected
-> events within 20 ms" = "must wake up every 20 ms").
->
-> The only cases where this flag can be useful for sound servers are:
->
-> 1. Sound servers that already, by design, always waste CPU power by
-> running at low latency;
 
-Your classification is not exhaustive enough. You need to take into 
-account sound servers that have two outputs per endpoint, one for 
-low-latency and one for low-power/deep-buffer with a DSP/hardware mixer.
-Power is also no longer directly linked to wakeup rates only but also to 
-DDR access patterns.
-When a larger on-chip buffer is available, disabling rewinds does let 
-the hardware know it can safely fetch data in bigger chunks rather than 
-use small data bursts.
-This sort of capabilities is becoming prevalent these days, and not just 
-on Intel platforms - see e.g. Nexus5/9 devices -, and maybe PulseAudio 
-and friends need to evolve to make use of these resources rather than 
-stay the course with single output and rewind mechanisms that prevent 
-power optimizations on newer platforms.
+--===============9077429809427083730==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Sk6zGo8BBXAtkcRm"
+Content-Disposition: inline
 
->
-> 2. Sound cards like USB audio where the kernel already contains a
-> low-latency thread that copies data to the card in the serialized way.
->
-> For PulseAudio on Intel hardware and HDA-compatible card, it would (if
-> the situation on my Sony laptop is an exception and not the rule), as I
-> have already mentioned, only trade some power consumption improvement in
-> the card for bigger losses in the CPU.
->
-> And with (2), I am not sure whether this is a win at all: you are likely
-> trading a kernel thread that wakes up, say, every 6 ms (with userspace
-> waking up very rarely), to a userspace wakeup that happens every 6 or
-> maybe 20 ms (as the sound server chooses), but incurs more context
-> switches. It does shift the policy decision about the wakeup rate to
-> userspace, though.
->
+
+--Sk6zGo8BBXAtkcRm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 29, 2015 at 10:20:29PM +0530, Vinod Koul wrote:
+> On Wed, Jul 29, 2015 at 01:33:23PM +0100, Mark Brown wrote:
+
+> > > +static int skl_alloc_queue(struct skl_module_pin *mpin,
+> > > +			struct skl_module_inst_id id, int max)
+> > > +{
+> > > +	struct skl_module_pin m_pin = skl_get_queue(mpin, id, max);
+> > > +
+> > > +	if (m_pin.pin_index < 0)
+> > > +		return -EINVAL;
+> > > +
+> > > +	if (m_pin.is_dynamic) {
+> > > +			m_pin.in_use = true;
+> > > +			m_pin.id.module_id = id.module_id;
+> > > +			m_pin.id.instance_id = id.instance_id;
+> > > +	}
+
+> > Double indentation here.  It's really unclear to me why a static pin
+> > doesn't need to get merked as in use?
+
+> Oops, will fix
+
+> In static pin case, the pins come from topology binary where these are fixed
+> for a configuration, so don't need to be allocated thus marked and hence
+> freed.
+
+But isn't this also protecting against attempts to use the resource
+multiple times within the configuration (or shouldn't we be doing that)?
+
+Please bear in mind that this stuff has basically zero documentation or
+explanation so I'm kind of guessing as to what this is supposed to do.
+
+--Sk6zGo8BBXAtkcRm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVuRPOAAoJECTWi3JdVIfQstEH/3Gntnrc5Sp/5PnXpKBCIuC7
+cGsIFRBM9U4BB2wpjLwhRSmnKfHHFzo2F1gW1kKLL8aRc18eM3uqf6Ttv5YUNL2/
+BkkIJy7kMJX07IbzydUWVpdhv+eLtIqQpQsTSyzsGzPHyugafjG4OMqup3Zhe7yR
+WMn9L8MmhEQyes6fLRB8aRQ2dW7Fi79KAf5//f4zmih8XvPGvO9O27CEI2UemCO3
+gSpthdB+Gt38WiMDV91SJcUJ8qYUAXMzA3YmuI4hHO/spW8t/2V/1XhFbl+IBP7+
+LGsaBaTol00Wh2uyQEK2w4tyBYpCj+Jc1JgGDXx7A4Hk8Qtz5urSgCWXKseB6fw=
+=qPbc
+-----END PGP SIGNATURE-----
+
+--Sk6zGo8BBXAtkcRm--
+
+--===============9077429809427083730==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9077429809427083730==--
