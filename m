@@ -1,105 +1,61 @@
-From: Yao-Wen Mao <yaowen@google.com>
-Subject: Re: [PATCH] sound/usb: add dB range mapping for some
-	devices.
-Date: Wed, 29 Jul 2015 15:59:12 +0800
-Message-ID: <CAHjFKHxFD847JgTq-uhGRWXG=npkh-PzuCOgyGPEiEFZycYmFg@mail.gmail.com>
-References: <1438154034-112595-1-git-send-email-yaowen@google.com>
- <s5hk2tje7vy.wl-tiwai@suse.de>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 2/4] ASoc: rockchip: Add rockchip SPDIF transceiver
+ driver
+Date: Wed, 29 Jul 2015 10:51:48 +0200
+Message-ID: <1438159908.5106.32.camel@tiscali.nl>
+References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk>
+	 <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f54.google.com (mail-la0-f54.google.com
- [209.85.215.54])
- by alsa0.perex.cz (Postfix) with ESMTP id BD2C026056B
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 09:59:13 +0200 (CEST)
-Received: by lafd3 with SMTP id d3so1370801laf.1
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 00:59:13 -0700 (PDT)
-In-Reply-To: <s5hk2tje7vy.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, dgreid@chromium.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 29, 2015 at 3:32 PM, Takashi Iwai <tiwai@suse.de> wrote:
+A nit and a question.
 
-> On Wed, 29 Jul 2015 09:13:54 +0200,
-> Yao-Wen Mao wrote:
-> >
-> > Add the correct dB ranges of Bose Companion 5 and Drangonfly DAC 1.2.
-> >
-> > Signed-off-by: Yao-Wen Mao <yaowen@google.com>
-> > ---
-> >  sound/usb/mixer_maps.c | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >
-> > diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-> > index e5000da..f0c9e49 100644
-> > --- a/sound/usb/mixer_maps.c
-> > +++ b/sound/usb/mixer_maps.c
-> > @@ -339,6 +339,19 @@ static struct usbmix_name_map gamecom780_map[] = {
-> >  static const struct usbmix_name_map scms_usb3318_map[] = {
-> >       { 10, NULL },
-> >       { 0 }
->
-> You seem to have dropped some lines here.
-> At the next time, please at least do a build-test before submitting
-> the patch.
->
-> I applied it now with manual correction.  Thanks.
+On di, 2015-07-28 at 14:03 +0200, Sjoerd Simons wrote:
+> --- /dev/null
+> +++ b/sound/soc/rockchip/rockchip_spdif.c
+
+> +#define DRV_NAME "rockchip-spdif"
+
+> +static const struct of_device_id rockchip_spdif_match[] = {
+> +	{ .compatible = "rockchip,rk3066-spdif", },
+> +	{},
+> +};
+
+I didn't spot
+    MODULE_DEVICE_TABLE(of, rockchip_spdif_match);
+
+at first. It turned out that that line can be found at the bottom of
+this file. Please put it here.
+
+> +static struct platform_driver rockchip_spdif_driver = {
+> +	.probe = rockchip_spdif_probe,
+> +	.remove = rockchip_spdif_remove,
+> +	.driver = {
+> +		.name = DRV_NAME,
+> +		.of_match_table = of_match_ptr(rockchip_spdif_match),
+> +		.pm = &rockchip_spdif_pm_ops,
+> +	},
+> +};
+> +module_platform_driver(rockchip_spdif_driver);
+
+> +MODULE_ALIAS("platform:" DRV_NAME);
+
+(I seem to remember that Mark Brown is OK with this, at least for the
+time being, but for future reference I'll ask the question anyway.) Is
+there a corresponding struct platform_device with a "rockchip-spdif"
+.name? Because if there's no such platform_device I think this line
+doesn't really do anything for this driver.
+
+> +MODULE_DEVICE_TABLE(of, rockchip_spdif_match);
+
+Thanks,
 
 
-Sorry for that.
-Thanks for applying this patch!
-
-Yao-Wen
-
-
-> Takashi
->
-> > +
-> > +/* Bose companion 5, the dB conversion factor is 16 instead of 256 */
-> > +static struct usbmix_dB_map bose_companion5_dB = {-5006, -6};
-> > +static struct usbmix_name_map bose_companion5_map[] = {
-> > +     { 3, NULL, .dB = &bose_companion5_dB },
-> > +     { 0 }   /* terminator */
-> > +};
-> > +
-> > +/* Dragonfly DAC 1.2, the dB conversion factor is 1 instead of 256 */
-> > +static struct usbmix_dB_map dragonfly_1_2_dB = {0, 5000};
-> > +static struct usbmix_name_map dragonfly_1_2_map[] = {
-> > +     { 7, NULL, .dB = &dragonfly_1_2_dB },
-> > +     { 0 }   /* terminator */
-> >  };
-> >
-> >  /*
-> > @@ -451,6 +464,16 @@ static struct usbmix_ctl_map usbmix_ctl_maps[] = {
-> >               .id = USB_ID(0x25c4, 0x0003),
-> >               .map = scms_usb3318_map,
-> >       },
-> > +     {
-> > +             /* Bose Companion 5 */
-> > +             .id = USB_ID(0x05a7, 0x1020),
-> > +             .map = bose_companion5_map,
-> > +     },
-> > +     {
-> > +             /* Dragonfly DAC 1.2 */
-> > +             .id = USB_ID(0x21b4, 0x0081),
-> > +             .map = dragonfly_1_2_map,
-> > +     },
-> >       { 0 } /* terminator */
-> >  };
-> >
-> > --
-> > 2.5.0.rc2.392.g76e840b
-> >
-> >
->
+Paul Bolle
