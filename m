@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas2552: Remove unneeded NULL test for
-	tas2552->enable_gpio" to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:25 +0100
-Message-ID: <E1ZKS6n-0004eQ-Tz@finisterre>
-References: <1437809536.5851.1.camel@ingics.com>
+From: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Fix race between PM ops and
+	HDA init/probe
+Date: Wed, 29 Jul 2015 14:45:52 +0000
+Message-ID: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B8551B@ORSMSX111.amr.corp.intel.com>
+References: <1438115396-1476-1-git-send-email-ullysses.a.eoff@intel.com>
+ <s5hoaive98e.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DAAA326592C
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:40 +0200 (CEST)
-In-Reply-To: <1437809536.5851.1.camel@ingics.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B95D265150
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:45:55 +0200 (CEST)
+In-Reply-To: <s5hoaive98e.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,105 +23,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Dan Murphy <dmurphy@ti.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dgreid@chromium.org" <dgreid@chromium.org>, "Lee,
+ Zhuo-hao" <zhuo-hao.lee@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Wednesday, July 29, 2015 12:03 AM
+> To: Eoff, Ullysses A
+> Cc: alsa-devel@alsa-project.org; Lee, Zhuo-hao; Yang, Libin; dgreid@chromium.org
+> Subject: Re: [PATCH] ALSA: hda - Fix race between PM ops and HDA init/probe
+> 
+> On Tue, 28 Jul 2015 22:29:56 +0200,
+> U. Artie Eoff wrote:
+> >
+> > PM ops could be triggered before HDA is done initializing
+> > and cause PM to set HDA controller to D3Hot.  This can result
+> > in "CORB reset timeout#2, CORBRP = 65535" and "no codecs
+> > initialized".  Additionally, PM ops can be triggered before
+> > azx_probe_continue finishes (async probe).  This can result
+> > in a NULL deref kernel crash.
+> >
+> > To fix this, avoid PM ops if !chip->running.
+> >
+> > Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+> > ---
+> >  sound/pci/hda/hda_intel.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 735bdcb04ce8..c38c68f57938 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -867,7 +867,7 @@ static int azx_suspend(struct device *dev)
+> >
+> >  	chip = card->private_data;
+> >  	hda = container_of(chip, struct hda_intel, chip);
+> > -	if (chip->disabled || hda->init_failed)
+> > +	if (chip->disabled || hda->init_failed || !chip->running)
+> 
+> This is superfluous, as azx_runtime_idle() returns -EBUSY.
+> 
 
-   ASoC: tas2552: Remove unneeded NULL test for tas2552->enable_gpio
+This is the sleep suspend, not runtime.  Runtime idle result does not
+influence sleep pm ops.
 
-has been applied to the asoc tree at
+> >  		return 0;
+> >
+> >  	bus = azx_bus(chip);
+> > @@ -902,7 +902,7 @@ static int azx_resume(struct device *dev)
+> >
+> >  	chip = card->private_data;
+> >  	hda = container_of(chip, struct hda_intel, chip);
+> > -	if (chip->disabled || hda->init_failed)
+> > +	if (chip->disabled || hda->init_failed || !chip->running)
+> 
+> Ditto.
+> 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Similar here... not runtime.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 82cf77a1bd61d981184a355742a9b5c78f286f97 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 25 Jul 2015 15:32:16 +0800
-Subject: [PATCH] ASoC: tas2552: Remove unneeded NULL test for
- tas2552->enable_gpio
-
-It's safe to call gpiod_set_value() with NULL desc.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tas2552.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 4f25a7d0..d6ec004 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -493,8 +493,7 @@ static int tas2552_runtime_suspend(struct device *dev)
- 	regcache_cache_only(tas2552->regmap, true);
- 	regcache_mark_dirty(tas2552->regmap);
- 
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 0);
-+	gpiod_set_value(tas2552->enable_gpio, 0);
- 
- 	return 0;
- }
-@@ -503,8 +502,7 @@ static int tas2552_runtime_resume(struct device *dev)
- {
- 	struct tas2552_data *tas2552 = dev_get_drvdata(dev);
- 
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 1);
-+	gpiod_set_value(tas2552->enable_gpio, 1);
- 
- 	tas2552_sw_shutdown(tas2552, 0);
- 
-@@ -585,8 +583,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 1);
-+	gpiod_set_value(tas2552->enable_gpio, 1);
- 
- 	ret = pm_runtime_get_sync(codec->dev);
- 	if (ret < 0) {
-@@ -610,8 +607,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
- 	return 0;
- 
- probe_fail:
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 0);
-+	gpiod_set_value(tas2552->enable_gpio, 0);
- 
- 	regulator_bulk_disable(ARRAY_SIZE(tas2552->supplies),
- 					tas2552->supplies);
-@@ -624,8 +620,7 @@ static int tas2552_codec_remove(struct snd_soc_codec *codec)
- 
- 	pm_runtime_put(codec->dev);
- 
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 0);
-+	gpiod_set_value(tas2552->enable_gpio, 0);
- 
- 	return 0;
- };
--- 
-2.1.4
+> 
+> Takashi
+> 
+> >  		return 0;
+> >
+> >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
+> > @@ -1027,7 +1027,7 @@ static int azx_runtime_idle(struct device *dev)
+> >  		return 0;
+> >
+> >  	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+> > -	    azx_bus(chip)->codec_powered)
+> > +	    azx_bus(chip)->codec_powered || !chip->running)
+> >  		return -EBUSY;
+> >
+> >  	return 0;
+> > --
+> > 2.1.0
+> >
