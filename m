@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98095: Get rid of max98095_access
+Subject: Applied "ASoC: max98088: Get rid of max98088_access
 	table" to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:17 +0100
-Message-ID: <E1ZKS6f-0004c4-Ns@finisterre>
-References: <1437988302.1147.5.camel@ingics.com>
+Date: Wed, 29 Jul 2015 15:13:19 +0100
+Message-ID: <E1ZKS6h-0004cX-Aw@finisterre>
+References: <1437987897.1147.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E77852658FA
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:29 +0200 (CEST)
-In-Reply-To: <1437988302.1147.5.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E4DF26590E
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:32 +0200 (CEST)
+In-Reply-To: <1437987897.1147.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98095: Get rid of max98095_access table
+   ASoC: max98088: Get rid of max98088_access table
 
 has been applied to the asoc tree at
 
@@ -53,24 +53,26 @@ to this mail.
 Thanks,
 Mark
 
->From 5549ce82e29c6c1a45ad36a871096ae7c53e53b9 Mon Sep 17 00:00:00 2001
+>From f102aa1414d9aa28491414cf4103bad1ddb3ea1f Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 28 Jul 2015 13:30:14 +0800
-Subject: [PATCH] ASoC: max98095: Get rid of max98095_access table
+Date: Tue, 28 Jul 2015 13:29:00 +0800
+Subject: [PATCH] ASoC: max98088: Get rid of max98088_access table
 
-The max98095_access table is used for look up readable/writable
+The max98088_access table is used for look up readable/writable/volatile
 attributes of registers. The readable/writable/volatile registers are
-mostly in continuous ranges, so we can replace the max98095_access table
+mostly in continuous ranges, so we can replace the max98088_access table
 entirely by using case range.
 
 Below is a summary of the readable/writeable/volatile registers:
 
 readable registers:
-        0x01 ~ 0x97, 0xFF
+        0x00 ~ 0xC9, 0xFF
 writeable registers:
-        0x0F ~ 0x97
+        0x03 ~ 0xC9
 volatile registers:
-        0x00 ~ 0x0E, 0x98 ~ 0xFF
+        0x00 ~ 0x03, 0xFF
+
+Note, 0x00 should be read-only according to the datasheet.
 
 This patch reworks the implement for .readable and .volatile and also add
 implementation for .writable callback.
@@ -78,343 +80,337 @@ implementation for .writable callback.
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98095.c | 309 ++++----------------------------------------
- 1 file changed, 23 insertions(+), 286 deletions(-)
+ sound/soc/codecs/max98088.c | 305 ++++----------------------------------------
+ 1 file changed, 25 insertions(+), 280 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 66afd2b..078533e 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -202,300 +202,36 @@ static const struct reg_default max98095_reg_def[] = {
- 	{ 0xff, 0x00 }, /* FF */
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index d0f4534..419c65f 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -258,292 +258,36 @@ static const struct reg_default max98088_reg[] = {
+ 	{ 0xc9, 0x00 }, /* C9 DAI2 biquad */
  };
  
 -static struct {
--	int readable;
--	int writable;
--} max98095_access[M98095_REG_CNT] = {
--	{ 0x00, 0x00 }, /* 00 */
--	{ 0xFF, 0x00 }, /* 01 */
--	{ 0xFF, 0x00 }, /* 02 */
--	{ 0xFF, 0x00 }, /* 03 */
--	{ 0xFF, 0x00 }, /* 04 */
--	{ 0xFF, 0x00 }, /* 05 */
--	{ 0xFF, 0x00 }, /* 06 */
--	{ 0xFF, 0x00 }, /* 07 */
--	{ 0xFF, 0x00 }, /* 08 */
--	{ 0xFF, 0x00 }, /* 09 */
--	{ 0xFF, 0x00 }, /* 0A */
--	{ 0xFF, 0x00 }, /* 0B */
--	{ 0xFF, 0x00 }, /* 0C */
--	{ 0xFF, 0x00 }, /* 0D */
--	{ 0xFF, 0x00 }, /* 0E */
--	{ 0xFF, 0x9F }, /* 0F */
--	{ 0xFF, 0xFF }, /* 10 */
--	{ 0xFF, 0xFF }, /* 11 */
--	{ 0xFF, 0xFF }, /* 12 */
--	{ 0xFF, 0xFF }, /* 13 */
--	{ 0xFF, 0xFF }, /* 14 */
--	{ 0xFF, 0xFF }, /* 15 */
--	{ 0xFF, 0xFF }, /* 16 */
--	{ 0xFF, 0xFF }, /* 17 */
--	{ 0xFF, 0xFF }, /* 18 */
--	{ 0xFF, 0xFF }, /* 19 */
--	{ 0xFF, 0xFF }, /* 1A */
--	{ 0xFF, 0xFF }, /* 1B */
--	{ 0xFF, 0xFF }, /* 1C */
--	{ 0xFF, 0xFF }, /* 1D */
--	{ 0xFF, 0x77 }, /* 1E */
--	{ 0xFF, 0x77 }, /* 1F */
--	{ 0xFF, 0x77 }, /* 20 */
--	{ 0xFF, 0x77 }, /* 21 */
--	{ 0xFF, 0x77 }, /* 22 */
--	{ 0xFF, 0x77 }, /* 23 */
--	{ 0xFF, 0xFF }, /* 24 */
--	{ 0xFF, 0x7F }, /* 25 */
--	{ 0xFF, 0x31 }, /* 26 */
--	{ 0xFF, 0xFF }, /* 27 */
--	{ 0xFF, 0xFF }, /* 28 */
--	{ 0xFF, 0xFF }, /* 29 */
--	{ 0xFF, 0xF7 }, /* 2A */
--	{ 0xFF, 0x2F }, /* 2B */
--	{ 0xFF, 0xEF }, /* 2C */
--	{ 0xFF, 0xFF }, /* 2D */
--	{ 0xFF, 0xFF }, /* 2E */
--	{ 0xFF, 0xFF }, /* 2F */
--	{ 0xFF, 0xFF }, /* 30 */
--	{ 0xFF, 0xFF }, /* 31 */
--	{ 0xFF, 0xFF }, /* 32 */
--	{ 0xFF, 0xFF }, /* 33 */
--	{ 0xFF, 0xF7 }, /* 34 */
--	{ 0xFF, 0x2F }, /* 35 */
--	{ 0xFF, 0xCF }, /* 36 */
--	{ 0xFF, 0xFF }, /* 37 */
--	{ 0xFF, 0xFF }, /* 38 */
--	{ 0xFF, 0xFF }, /* 39 */
--	{ 0xFF, 0xFF }, /* 3A */
--	{ 0xFF, 0xFF }, /* 3B */
--	{ 0xFF, 0xFF }, /* 3C */
--	{ 0xFF, 0xFF }, /* 3D */
--	{ 0xFF, 0xF7 }, /* 3E */
--	{ 0xFF, 0x2F }, /* 3F */
--	{ 0xFF, 0xCF }, /* 40 */
--	{ 0xFF, 0xFF }, /* 41 */
--	{ 0xFF, 0x77 }, /* 42 */
--	{ 0xFF, 0xFF }, /* 43 */
--	{ 0xFF, 0xFF }, /* 44 */
--	{ 0xFF, 0xFF }, /* 45 */
--	{ 0xFF, 0xFF }, /* 46 */
--	{ 0xFF, 0xFF }, /* 47 */
--	{ 0xFF, 0xFF }, /* 48 */
--	{ 0xFF, 0x0F }, /* 49 */
--	{ 0xFF, 0xFF }, /* 4A */
--	{ 0xFF, 0xFF }, /* 4B */
--	{ 0xFF, 0x3F }, /* 4C */
--	{ 0xFF, 0x3F }, /* 4D */
--	{ 0xFF, 0x3F }, /* 4E */
--	{ 0xFF, 0xFF }, /* 4F */
--	{ 0xFF, 0x7F }, /* 50 */
--	{ 0xFF, 0x7F }, /* 51 */
--	{ 0xFF, 0x0F }, /* 52 */
--	{ 0xFF, 0x3F }, /* 53 */
--	{ 0xFF, 0x3F }, /* 54 */
--	{ 0xFF, 0x3F }, /* 55 */
--	{ 0xFF, 0xFF }, /* 56 */
--	{ 0xFF, 0xFF }, /* 57 */
--	{ 0xFF, 0xBF }, /* 58 */
--	{ 0xFF, 0x1F }, /* 59 */
--	{ 0xFF, 0xBF }, /* 5A */
--	{ 0xFF, 0x1F }, /* 5B */
--	{ 0xFF, 0xBF }, /* 5C */
--	{ 0xFF, 0x3F }, /* 5D */
--	{ 0xFF, 0x3F }, /* 5E */
--	{ 0xFF, 0x7F }, /* 5F */
--	{ 0xFF, 0x7F }, /* 60 */
--	{ 0xFF, 0x47 }, /* 61 */
--	{ 0xFF, 0x9F }, /* 62 */
--	{ 0xFF, 0x9F }, /* 63 */
--	{ 0xFF, 0x9F }, /* 64 */
--	{ 0xFF, 0x9F }, /* 65 */
--	{ 0xFF, 0x9F }, /* 66 */
--	{ 0xFF, 0xBF }, /* 67 */
--	{ 0xFF, 0xBF }, /* 68 */
--	{ 0xFF, 0xFF }, /* 69 */
--	{ 0xFF, 0xFF }, /* 6A */
--	{ 0xFF, 0x7F }, /* 6B */
--	{ 0xFF, 0xF7 }, /* 6C */
--	{ 0xFF, 0xFF }, /* 6D */
--	{ 0xFF, 0xFF }, /* 6E */
--	{ 0xFF, 0x1F }, /* 6F */
--	{ 0xFF, 0xF7 }, /* 70 */
--	{ 0xFF, 0xFF }, /* 71 */
--	{ 0xFF, 0xFF }, /* 72 */
--	{ 0xFF, 0x1F }, /* 73 */
--	{ 0xFF, 0xF7 }, /* 74 */
--	{ 0xFF, 0xFF }, /* 75 */
--	{ 0xFF, 0xFF }, /* 76 */
--	{ 0xFF, 0x1F }, /* 77 */
--	{ 0xFF, 0xF7 }, /* 78 */
--	{ 0xFF, 0xFF }, /* 79 */
--	{ 0xFF, 0xFF }, /* 7A */
--	{ 0xFF, 0x1F }, /* 7B */
--	{ 0xFF, 0xF7 }, /* 7C */
--	{ 0xFF, 0xFF }, /* 7D */
--	{ 0xFF, 0xFF }, /* 7E */
--	{ 0xFF, 0x1F }, /* 7F */
--	{ 0xFF, 0xF7 }, /* 80 */
--	{ 0xFF, 0xFF }, /* 81 */
--	{ 0xFF, 0xFF }, /* 82 */
--	{ 0xFF, 0x1F }, /* 83 */
--	{ 0xFF, 0x7F }, /* 84 */
--	{ 0xFF, 0x0F }, /* 85 */
--	{ 0xFF, 0xD8 }, /* 86 */
--	{ 0xFF, 0xFF }, /* 87 */
--	{ 0xFF, 0xEF }, /* 88 */
--	{ 0xFF, 0xFE }, /* 89 */
--	{ 0xFF, 0xFE }, /* 8A */
--	{ 0xFF, 0xFF }, /* 8B */
--	{ 0xFF, 0xFF }, /* 8C */
--	{ 0xFF, 0x3F }, /* 8D */
--	{ 0xFF, 0xFF }, /* 8E */
--	{ 0xFF, 0x3F }, /* 8F */
--	{ 0xFF, 0x8F }, /* 90 */
--	{ 0xFF, 0xFF }, /* 91 */
--	{ 0xFF, 0x3F }, /* 92 */
--	{ 0xFF, 0xFF }, /* 93 */
--	{ 0xFF, 0xFF }, /* 94 */
--	{ 0xFF, 0x0F }, /* 95 */
--	{ 0xFF, 0x3F }, /* 96 */
--	{ 0xFF, 0x8C }, /* 97 */
--	{ 0x00, 0x00 }, /* 98 */
--	{ 0x00, 0x00 }, /* 99 */
--	{ 0x00, 0x00 }, /* 9A */
--	{ 0x00, 0x00 }, /* 9B */
--	{ 0x00, 0x00 }, /* 9C */
--	{ 0x00, 0x00 }, /* 9D */
--	{ 0x00, 0x00 }, /* 9E */
--	{ 0x00, 0x00 }, /* 9F */
--	{ 0x00, 0x00 }, /* A0 */
--	{ 0x00, 0x00 }, /* A1 */
--	{ 0x00, 0x00 }, /* A2 */
--	{ 0x00, 0x00 }, /* A3 */
--	{ 0x00, 0x00 }, /* A4 */
--	{ 0x00, 0x00 }, /* A5 */
--	{ 0x00, 0x00 }, /* A6 */
--	{ 0x00, 0x00 }, /* A7 */
--	{ 0x00, 0x00 }, /* A8 */
--	{ 0x00, 0x00 }, /* A9 */
--	{ 0x00, 0x00 }, /* AA */
--	{ 0x00, 0x00 }, /* AB */
--	{ 0x00, 0x00 }, /* AC */
--	{ 0x00, 0x00 }, /* AD */
--	{ 0x00, 0x00 }, /* AE */
--	{ 0x00, 0x00 }, /* AF */
--	{ 0x00, 0x00 }, /* B0 */
--	{ 0x00, 0x00 }, /* B1 */
--	{ 0x00, 0x00 }, /* B2 */
--	{ 0x00, 0x00 }, /* B3 */
--	{ 0x00, 0x00 }, /* B4 */
--	{ 0x00, 0x00 }, /* B5 */
--	{ 0x00, 0x00 }, /* B6 */
--	{ 0x00, 0x00 }, /* B7 */
--	{ 0x00, 0x00 }, /* B8 */
--	{ 0x00, 0x00 }, /* B9 */
--	{ 0x00, 0x00 }, /* BA */
--	{ 0x00, 0x00 }, /* BB */
--	{ 0x00, 0x00 }, /* BC */
--	{ 0x00, 0x00 }, /* BD */
--	{ 0x00, 0x00 }, /* BE */
--	{ 0x00, 0x00 }, /* BF */
--	{ 0x00, 0x00 }, /* C0 */
--	{ 0x00, 0x00 }, /* C1 */
--	{ 0x00, 0x00 }, /* C2 */
--	{ 0x00, 0x00 }, /* C3 */
--	{ 0x00, 0x00 }, /* C4 */
--	{ 0x00, 0x00 }, /* C5 */
--	{ 0x00, 0x00 }, /* C6 */
--	{ 0x00, 0x00 }, /* C7 */
--	{ 0x00, 0x00 }, /* C8 */
--	{ 0x00, 0x00 }, /* C9 */
--	{ 0x00, 0x00 }, /* CA */
--	{ 0x00, 0x00 }, /* CB */
--	{ 0x00, 0x00 }, /* CC */
--	{ 0x00, 0x00 }, /* CD */
--	{ 0x00, 0x00 }, /* CE */
--	{ 0x00, 0x00 }, /* CF */
--	{ 0x00, 0x00 }, /* D0 */
--	{ 0x00, 0x00 }, /* D1 */
--	{ 0x00, 0x00 }, /* D2 */
--	{ 0x00, 0x00 }, /* D3 */
--	{ 0x00, 0x00 }, /* D4 */
--	{ 0x00, 0x00 }, /* D5 */
--	{ 0x00, 0x00 }, /* D6 */
--	{ 0x00, 0x00 }, /* D7 */
--	{ 0x00, 0x00 }, /* D8 */
--	{ 0x00, 0x00 }, /* D9 */
--	{ 0x00, 0x00 }, /* DA */
--	{ 0x00, 0x00 }, /* DB */
--	{ 0x00, 0x00 }, /* DC */
--	{ 0x00, 0x00 }, /* DD */
--	{ 0x00, 0x00 }, /* DE */
--	{ 0x00, 0x00 }, /* DF */
--	{ 0x00, 0x00 }, /* E0 */
--	{ 0x00, 0x00 }, /* E1 */
--	{ 0x00, 0x00 }, /* E2 */
--	{ 0x00, 0x00 }, /* E3 */
--	{ 0x00, 0x00 }, /* E4 */
--	{ 0x00, 0x00 }, /* E5 */
--	{ 0x00, 0x00 }, /* E6 */
--	{ 0x00, 0x00 }, /* E7 */
--	{ 0x00, 0x00 }, /* E8 */
--	{ 0x00, 0x00 }, /* E9 */
--	{ 0x00, 0x00 }, /* EA */
--	{ 0x00, 0x00 }, /* EB */
--	{ 0x00, 0x00 }, /* EC */
--	{ 0x00, 0x00 }, /* ED */
--	{ 0x00, 0x00 }, /* EE */
--	{ 0x00, 0x00 }, /* EF */
--	{ 0x00, 0x00 }, /* F0 */
--	{ 0x00, 0x00 }, /* F1 */
--	{ 0x00, 0x00 }, /* F2 */
--	{ 0x00, 0x00 }, /* F3 */
--	{ 0x00, 0x00 }, /* F4 */
--	{ 0x00, 0x00 }, /* F5 */
--	{ 0x00, 0x00 }, /* F6 */
--	{ 0x00, 0x00 }, /* F7 */
--	{ 0x00, 0x00 }, /* F8 */
--	{ 0x00, 0x00 }, /* F9 */
--	{ 0x00, 0x00 }, /* FA */
--	{ 0x00, 0x00 }, /* FB */
--	{ 0x00, 0x00 }, /* FC */
--	{ 0x00, 0x00 }, /* FD */
--	{ 0x00, 0x00 }, /* FE */
--	{ 0xFF, 0x00 }, /* FF */
+-       int readable;
+-       int writable;
+-       int vol;
+-} max98088_access[M98088_REG_CNT] = {
+-       { 0xFF, 0xFF, 1 }, /* 00 IRQ status */
+-       { 0xFF, 0x00, 1 }, /* 01 MIC status */
+-       { 0xFF, 0x00, 1 }, /* 02 jack status */
+-       { 0x1F, 0x1F, 1 }, /* 03 battery voltage */
+-       { 0xFF, 0xFF, 0 }, /* 04 */
+-       { 0xFF, 0xFF, 0 }, /* 05 */
+-       { 0xFF, 0xFF, 0 }, /* 06 */
+-       { 0xFF, 0xFF, 0 }, /* 07 */
+-       { 0xFF, 0xFF, 0 }, /* 08 */
+-       { 0xFF, 0xFF, 0 }, /* 09 */
+-       { 0xFF, 0xFF, 0 }, /* 0A */
+-       { 0xFF, 0xFF, 0 }, /* 0B */
+-       { 0xFF, 0xFF, 0 }, /* 0C */
+-       { 0xFF, 0xFF, 0 }, /* 0D */
+-       { 0xFF, 0xFF, 0 }, /* 0E */
+-       { 0xFF, 0xFF, 0 }, /* 0F interrupt enable */
+-
+-       { 0xFF, 0xFF, 0 }, /* 10 master clock */
+-       { 0xFF, 0xFF, 0 }, /* 11 DAI1 clock mode */
+-       { 0xFF, 0xFF, 0 }, /* 12 DAI1 clock control */
+-       { 0xFF, 0xFF, 0 }, /* 13 DAI1 clock control */
+-       { 0xFF, 0xFF, 0 }, /* 14 DAI1 format */
+-       { 0xFF, 0xFF, 0 }, /* 15 DAI1 clock */
+-       { 0xFF, 0xFF, 0 }, /* 16 DAI1 config */
+-       { 0xFF, 0xFF, 0 }, /* 17 DAI1 TDM */
+-       { 0xFF, 0xFF, 0 }, /* 18 DAI1 filters */
+-       { 0xFF, 0xFF, 0 }, /* 19 DAI2 clock mode */
+-       { 0xFF, 0xFF, 0 }, /* 1A DAI2 clock control */
+-       { 0xFF, 0xFF, 0 }, /* 1B DAI2 clock control */
+-       { 0xFF, 0xFF, 0 }, /* 1C DAI2 format */
+-       { 0xFF, 0xFF, 0 }, /* 1D DAI2 clock */
+-       { 0xFF, 0xFF, 0 }, /* 1E DAI2 config */
+-       { 0xFF, 0xFF, 0 }, /* 1F DAI2 TDM */
+-
+-       { 0xFF, 0xFF, 0 }, /* 20 DAI2 filters */
+-       { 0xFF, 0xFF, 0 }, /* 21 data config */
+-       { 0xFF, 0xFF, 0 }, /* 22 DAC mixer */
+-       { 0xFF, 0xFF, 0 }, /* 23 left ADC mixer */
+-       { 0xFF, 0xFF, 0 }, /* 24 right ADC mixer */
+-       { 0xFF, 0xFF, 0 }, /* 25 left HP mixer */
+-       { 0xFF, 0xFF, 0 }, /* 26 right HP mixer */
+-       { 0xFF, 0xFF, 0 }, /* 27 HP control */
+-       { 0xFF, 0xFF, 0 }, /* 28 left REC mixer */
+-       { 0xFF, 0xFF, 0 }, /* 29 right REC mixer */
+-       { 0xFF, 0xFF, 0 }, /* 2A REC control */
+-       { 0xFF, 0xFF, 0 }, /* 2B left SPK mixer */
+-       { 0xFF, 0xFF, 0 }, /* 2C right SPK mixer */
+-       { 0xFF, 0xFF, 0 }, /* 2D SPK control */
+-       { 0xFF, 0xFF, 0 }, /* 2E sidetone */
+-       { 0xFF, 0xFF, 0 }, /* 2F DAI1 playback level */
+-
+-       { 0xFF, 0xFF, 0 }, /* 30 DAI1 playback level */
+-       { 0xFF, 0xFF, 0 }, /* 31 DAI2 playback level */
+-       { 0xFF, 0xFF, 0 }, /* 32 DAI2 playbakc level */
+-       { 0xFF, 0xFF, 0 }, /* 33 left ADC level */
+-       { 0xFF, 0xFF, 0 }, /* 34 right ADC level */
+-       { 0xFF, 0xFF, 0 }, /* 35 MIC1 level */
+-       { 0xFF, 0xFF, 0 }, /* 36 MIC2 level */
+-       { 0xFF, 0xFF, 0 }, /* 37 INA level */
+-       { 0xFF, 0xFF, 0 }, /* 38 INB level */
+-       { 0xFF, 0xFF, 0 }, /* 39 left HP volume */
+-       { 0xFF, 0xFF, 0 }, /* 3A right HP volume */
+-       { 0xFF, 0xFF, 0 }, /* 3B left REC volume */
+-       { 0xFF, 0xFF, 0 }, /* 3C right REC volume */
+-       { 0xFF, 0xFF, 0 }, /* 3D left SPK volume */
+-       { 0xFF, 0xFF, 0 }, /* 3E right SPK volume */
+-       { 0xFF, 0xFF, 0 }, /* 3F MIC config */
+-
+-       { 0xFF, 0xFF, 0 }, /* 40 MIC threshold */
+-       { 0xFF, 0xFF, 0 }, /* 41 excursion limiter filter */
+-       { 0xFF, 0xFF, 0 }, /* 42 excursion limiter threshold */
+-       { 0xFF, 0xFF, 0 }, /* 43 ALC */
+-       { 0xFF, 0xFF, 0 }, /* 44 power limiter threshold */
+-       { 0xFF, 0xFF, 0 }, /* 45 power limiter config */
+-       { 0xFF, 0xFF, 0 }, /* 46 distortion limiter config */
+-       { 0xFF, 0xFF, 0 }, /* 47 audio input */
+-       { 0xFF, 0xFF, 0 }, /* 48 microphone */
+-       { 0xFF, 0xFF, 0 }, /* 49 level control */
+-       { 0xFF, 0xFF, 0 }, /* 4A bypass switches */
+-       { 0xFF, 0xFF, 0 }, /* 4B jack detect */
+-       { 0xFF, 0xFF, 0 }, /* 4C input enable */
+-       { 0xFF, 0xFF, 0 }, /* 4D output enable */
+-       { 0xFF, 0xFF, 0 }, /* 4E bias control */
+-       { 0xFF, 0xFF, 0 }, /* 4F DAC power */
+-
+-       { 0xFF, 0xFF, 0 }, /* 50 DAC power */
+-       { 0xFF, 0xFF, 0 }, /* 51 system */
+-       { 0xFF, 0xFF, 0 }, /* 52 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 53 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 54 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 55 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 56 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 57 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 58 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 59 DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 5A DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 5B DAI1 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 5C DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 5D DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 5E DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 5F DAI1 EQ2 */
+-
+-       { 0xFF, 0xFF, 0 }, /* 60 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 61 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 62 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 63 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 64 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 65 DAI1 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 66 DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 67 DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 68 DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 69 DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6A DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6B DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6C DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6D DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6E DAI1 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 6F DAI1 EQ3 */
+-
+-       { 0xFF, 0xFF, 0 }, /* 70 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 71 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 72 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 73 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 74 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 75 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 76 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 77 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 78 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 79 DAI1 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* 7A DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 7B DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 7C DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 7D DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 7E DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 7F DAI1 EQ5 */
+-
+-       { 0xFF, 0xFF, 0 }, /* 80 DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 81 DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 82 DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 83 DAI1 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* 84 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 85 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 86 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 87 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 88 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 89 DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 8A DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 8B DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 8C DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 8D DAI2 EQ1 */
+-       { 0xFF, 0xFF, 0 }, /* 8E DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 8F DAI2 EQ2 */
+-
+-       { 0xFF, 0xFF, 0 }, /* 90 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 91 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 92 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 93 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 94 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 95 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 96 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 97 DAI2 EQ2 */
+-       { 0xFF, 0xFF, 0 }, /* 98 DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 99 DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9A DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9B DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9C DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9D DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9E DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* 9F DAI2 EQ3 */
+-
+-       { 0xFF, 0xFF, 0 }, /* A0 DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* A1 DAI2 EQ3 */
+-       { 0xFF, 0xFF, 0 }, /* A2 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A3 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A4 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A5 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A6 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A7 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A8 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* A9 DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* AA DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* AB DAI2 EQ4 */
+-       { 0xFF, 0xFF, 0 }, /* AC DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* AD DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* AE DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* AF DAI2 EQ5 */
+-
+-       { 0xFF, 0xFF, 0 }, /* B0 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B1 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B2 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B3 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B4 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B5 DAI2 EQ5 */
+-       { 0xFF, 0xFF, 0 }, /* B6 DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* B7 DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* B8 DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* B9 DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BA DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BB DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BC DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BD DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BE DAI1 biquad */
+-       { 0xFF, 0xFF, 0 }, /* BF DAI1 biquad */
+-
+-       { 0xFF, 0xFF, 0 }, /* C0 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C1 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C2 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C3 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C4 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C5 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C6 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C7 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C8 DAI2 biquad */
+-       { 0xFF, 0xFF, 0 }, /* C9 DAI2 biquad */
+-       { 0x00, 0x00, 0 }, /* CA */
+-       { 0x00, 0x00, 0 }, /* CB */
+-       { 0x00, 0x00, 0 }, /* CC */
+-       { 0x00, 0x00, 0 }, /* CD */
+-       { 0x00, 0x00, 0 }, /* CE */
+-       { 0x00, 0x00, 0 }, /* CF */
+-
+-       { 0x00, 0x00, 0 }, /* D0 */
+-       { 0x00, 0x00, 0 }, /* D1 */
+-       { 0x00, 0x00, 0 }, /* D2 */
+-       { 0x00, 0x00, 0 }, /* D3 */
+-       { 0x00, 0x00, 0 }, /* D4 */
+-       { 0x00, 0x00, 0 }, /* D5 */
+-       { 0x00, 0x00, 0 }, /* D6 */
+-       { 0x00, 0x00, 0 }, /* D7 */
+-       { 0x00, 0x00, 0 }, /* D8 */
+-       { 0x00, 0x00, 0 }, /* D9 */
+-       { 0x00, 0x00, 0 }, /* DA */
+-       { 0x00, 0x00, 0 }, /* DB */
+-       { 0x00, 0x00, 0 }, /* DC */
+-       { 0x00, 0x00, 0 }, /* DD */
+-       { 0x00, 0x00, 0 }, /* DE */
+-       { 0x00, 0x00, 0 }, /* DF */
+-
+-       { 0x00, 0x00, 0 }, /* E0 */
+-       { 0x00, 0x00, 0 }, /* E1 */
+-       { 0x00, 0x00, 0 }, /* E2 */
+-       { 0x00, 0x00, 0 }, /* E3 */
+-       { 0x00, 0x00, 0 }, /* E4 */
+-       { 0x00, 0x00, 0 }, /* E5 */
+-       { 0x00, 0x00, 0 }, /* E6 */
+-       { 0x00, 0x00, 0 }, /* E7 */
+-       { 0x00, 0x00, 0 }, /* E8 */
+-       { 0x00, 0x00, 0 }, /* E9 */
+-       { 0x00, 0x00, 0 }, /* EA */
+-       { 0x00, 0x00, 0 }, /* EB */
+-       { 0x00, 0x00, 0 }, /* EC */
+-       { 0x00, 0x00, 0 }, /* ED */
+-       { 0x00, 0x00, 0 }, /* EE */
+-       { 0x00, 0x00, 0 }, /* EF */
+-
+-       { 0x00, 0x00, 0 }, /* F0 */
+-       { 0x00, 0x00, 0 }, /* F1 */
+-       { 0x00, 0x00, 0 }, /* F2 */
+-       { 0x00, 0x00, 0 }, /* F3 */
+-       { 0x00, 0x00, 0 }, /* F4 */
+-       { 0x00, 0x00, 0 }, /* F5 */
+-       { 0x00, 0x00, 0 }, /* F6 */
+-       { 0x00, 0x00, 0 }, /* F7 */
+-       { 0x00, 0x00, 0 }, /* F8 */
+-       { 0x00, 0x00, 0 }, /* F9 */
+-       { 0x00, 0x00, 0 }, /* FA */
+-       { 0x00, 0x00, 0 }, /* FB */
+-       { 0x00, 0x00, 0 }, /* FC */
+-       { 0x00, 0x00, 0 }, /* FD */
+-       { 0x00, 0x00, 0 }, /* FE */
+-       { 0xFF, 0x00, 1 }, /* FF */
 -};
 -
- static bool max98095_readable(struct device *dev, unsigned int reg)
+ static bool max98088_readable_register(struct device *dev, unsigned int reg)
  {
--	if (reg >= M98095_REG_CNT)
--		return 0;
--	return max98095_access[reg].readable != 0;
+-       return max98088_access[reg].readable;
 +	switch (reg) {
-+	case M98095_001_HOST_INT_STS ... M98095_097_PWR_SYS:
-+	case M98095_0FF_REV_ID:
++	case M98088_REG_00_IRQ_STATUS ... 0xC9:
++	case M98088_REG_FF_REV_ID:
 +		return true;
 +	default:
 +		return false;
 +	}
- }
- 
--static bool max98095_volatile(struct device *dev, unsigned int reg)
-+static bool max98095_writeable(struct device *dev, unsigned int reg)
- {
--	if (reg > M98095_REG_MAX_CACHED)
--		return 1;
--
- 	switch (reg) {
--	case M98095_000_HOST_DATA:
--	case M98095_001_HOST_INT_STS:
--	case M98095_002_HOST_RSP_STS:
--	case M98095_003_HOST_CMD_STS:
--	case M98095_004_CODEC_STS:
--	case M98095_005_DAI1_ALC_STS:
--	case M98095_006_DAI2_ALC_STS:
--	case M98095_007_JACK_AUTO_STS:
--	case M98095_008_JACK_MANUAL_STS:
--	case M98095_009_JACK_VBAT_STS:
--	case M98095_00A_ACC_ADC_STS:
--	case M98095_00B_MIC_NG_AGC_STS:
--	case M98095_00C_SPK_L_VOLT_STS:
--	case M98095_00D_SPK_R_VOLT_STS:
--	case M98095_00E_TEMP_SENSOR_STS:
--		return 1;
-+	case M98095_00F_HOST_CFG ... M98095_097_PWR_SYS:
-+		return true;
-+	default:
-+		return false;
- 	}
 +}
- 
--	return 0;
-+static bool max98095_volatile(struct device *dev, unsigned int reg)
++
++static bool max98088_writeable_register(struct device *dev, unsigned int reg)
 +{
 +	switch (reg) {
-+	case M98095_000_HOST_DATA ... M98095_00E_TEMP_SENSOR_STS:
-+	case M98095_REG_MAX_CACHED + 1 ... M98095_0FF_REV_ID:
++	case M98088_REG_03_BATTERY_VOLTAGE ... 0xC9:
 +		return true;
 +	default:
 +		return false;
 +	}
  }
  
- static const struct regmap_config max98095_regmap = {
-@@ -508,6 +244,7 @@ static const struct regmap_config max98095_regmap = {
- 	.cache_type = REGCACHE_RBTREE,
+ static bool max98088_volatile_register(struct device *dev, unsigned int reg)
+ {
+-       return max98088_access[reg].vol;
++	switch (reg) {
++	case M98088_REG_00_IRQ_STATUS ... M98088_REG_03_BATTERY_VOLTAGE:
++	case M98088_REG_FF_REV_ID:
++		return true;
++	default:
++		return false;
++	}
+ }
  
- 	.readable_reg = max98095_readable,
-+	.writeable_reg = max98095_writeable,
- 	.volatile_reg = max98095_volatile,
- };
+ static const struct regmap_config max98088_regmap = {
+@@ -551,6 +295,7 @@ static const struct regmap_config max98088_regmap = {
+ 	.val_bits = 8,
+ 
+ 	.readable_reg = max98088_readable_register,
++	.writeable_reg = max98088_writeable_register,
+ 	.volatile_reg = max98088_volatile_register,
+ 	.max_register = 0xff,
  
 -- 
 2.1.4
