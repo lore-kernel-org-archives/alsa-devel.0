@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v3 04/13] topology: Add PCM parser.
-Date: Wed, 29 Jul 2015 17:45:16 +0100
-Message-ID: <1438188325-11553-5-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v3 06/13] topology: Add private data parser
+Date: Wed, 29 Jul 2015 17:45:18 +0100
+Message-ID: <1438188325-11553-7-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1438188325-11553-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A12C260635
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 18:45:51 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7727260661
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 18:45:52 +0200 (CEST)
 In-Reply-To: <1438188325-11553-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,22 +24,21 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Parse PCM configurations and capabilities. These can then be used to define
-the capabilities and config for FE DAI links, PCM devices and
-codec <-> codec style links.
+Parse private data and store for attachment to other objects. Data can come
+file or be locally defined as bytes, shorts or words.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/pcm.c | 639 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 639 insertions(+)
- create mode 100644 src/topology/pcm.c
+ src/topology/data.c | 396 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 396 insertions(+)
+ create mode 100644 src/topology/data.c
 
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+diff --git a/src/topology/data.c b/src/topology/data.c
 new file mode 100644
-index 0000000..8f23a6f
+index 0000000..ae66472
 --- /dev/null
-+++ b/src/topology/pcm.c
-@@ -0,0 +1,639 @@
++++ b/src/topology/data.c
+@@ -0,0 +1,396 @@
 +/*
 +  Copyright(c) 2014-2015 Intel Corporation
 +  All rights reserved.
@@ -61,469 +60,300 @@ index 0000000..8f23a6f
 +#include "list.h"
 +#include "tplg_local.h"
 +
-+struct tplg_elem *lookup_pcm_dai_stream(struct list_head *base, const char* id)
++/* Get Private data from a file. */
++static int tplg_parse_data_file(snd_config_t *cfg, struct tplg_elem *elem)
 +{
-+	struct list_head *pos;
-+	struct tplg_elem *elem;
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (elem->type != OBJECT_TYPE_PCM)
-+			return NULL;
-+
-+		pcm_dai = elem->pcm;
-+
-+		if (pcm_dai && (!strcmp(pcm_dai->capconf[0].caps.name, id)
-+			|| !strcmp(pcm_dai->capconf[1].caps.name, id)))
-+			return elem;
-+	}
-+
-+	return NULL;
-+}
-+
-+/* copy referenced caps to the pcm */
-+static void copy_pcm_caps(const char *id, struct snd_soc_tplg_stream_caps *caps,
-+	struct tplg_elem *ref_elem)
-+{
-+	struct snd_soc_tplg_stream_caps *ref_caps = ref_elem->stream_caps;
-+
-+	tplg_dbg("Copy pcm caps (%ld bytes) from '%s' to '%s' \n",
-+		sizeof(*caps), ref_elem->id, id);
-+
-+	*caps =  *ref_caps;
-+}
-+
-+/* copy referenced config to the pcm */
-+static void copy_pcm_config(const char *id,
-+	struct snd_soc_tplg_stream_config *cfg, struct tplg_elem *ref_elem)
-+{
-+	struct snd_soc_tplg_stream_config *ref_cfg = ref_elem->stream_cfg;
-+
-+	tplg_dbg("Copy pcm config (%ld bytes) from '%s' to '%s' \n",
-+		sizeof(*cfg), ref_elem->id, id);
-+
-+	*cfg = *ref_cfg;
-+}
-+
-+/* check referenced config and caps for a pcm */
-+static int tplg_build_pcm_cfg_caps(snd_tplg_t *tplg, struct tplg_elem *elem)
-+{
-+	struct tplg_elem *ref_elem = NULL;
-+	struct snd_soc_tplg_pcm_cfg_caps *capconf;
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+	unsigned int i, j;
-+
-+	switch (elem->type) {
-+	case OBJECT_TYPE_PCM:
-+		pcm_dai = elem->pcm;
-+		break;
-+	case OBJECT_TYPE_BE:
-+		pcm_dai = elem->be;
-+		break;
-+	case OBJECT_TYPE_CC:
-+		pcm_dai = elem->cc;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < 2; i++) {
-+		capconf = &pcm_dai->capconf[i];
-+
-+		ref_elem = tplg_elem_lookup(&tplg->pcm_caps_list,
-+			capconf->caps.name, OBJECT_TYPE_STREAM_CAPS);
-+
-+		if (ref_elem != NULL)
-+			copy_pcm_caps(elem->id, &capconf->caps, ref_elem);
-+
-+		for (j = 0; j < capconf->num_configs; j++) {
-+			ref_elem = tplg_elem_lookup(&tplg->pcm_config_list,
-+				capconf->configs[j].name,
-+				OBJECT_TYPE_STREAM_CONFIG);
-+
-+			if (ref_elem != NULL)
-+				copy_pcm_config(elem->id,
-+					&capconf->configs[j],
-+					ref_elem);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int tplg_build_pcm_dai(snd_tplg_t *tplg, unsigned int type)
-+{
-+	struct list_head *base, *pos;
-+	struct tplg_elem *elem;
-+	int err = 0;
-+
-+	switch (type) {
-+	case OBJECT_TYPE_PCM:
-+		base = &tplg->pcm_list;
-+		break;
-+	case OBJECT_TYPE_BE:
-+		base = &tplg->be_list;
-+		break;
-+	case OBJECT_TYPE_CC:
-+		base = &tplg->cc_list;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		if (elem->type != type) {
-+			SNDERR("error: invalid elem '%s'\n", elem->id);
-+			return -EINVAL;
-+		}
-+
-+		err = tplg_build_pcm_cfg_caps(tplg, elem);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/* PCM stream configuration */
-+static int tplg_parse_stream_cfg(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+	snd_config_t *cfg, void *private)
-+{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	struct snd_soc_tplg_stream_config *sc = private;
-+	struct snd_soc_tplg_stream *stream;
-+	const char *id, *val;
-+	snd_pcm_format_t format;
-+	int ret;
-+
-+	snd_config_get_id(cfg, &id);
-+
-+	if (strcmp(id, "playback") == 0)
-+		stream = &sc->playback;
-+	else if (strcmp(id, "capture") == 0)
-+		stream = &sc->capture;
-+	else
-+		return -EINVAL;
-+
-+	tplg_dbg("\t%s:\n", id);
-+
-+	stream->size = sizeof(*stream);
-+
-+	snd_config_for_each(i, next, cfg) {
-+
-+		n = snd_config_iterator_entry(i);
-+
-+		if (snd_config_get_id(n, &id) < 0)
-+			return -EINVAL;
-+
-+		if (snd_config_get_string(n, &val) < 0)
-+			return -EINVAL;
-+
-+		if (strcmp(id, "format") == 0) {
-+			format = snd_pcm_format_value(val);
-+			if (format == SND_PCM_FORMAT_UNKNOWN) {
-+				SNDERR("error: unsupported stream format %s\n",
-+					val);
-+				return -EINVAL;
-+			}
-+
-+			stream->format = format;
-+			tplg_dbg("\t\t%s: %s\n", id, val);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "rate") == 0) {
-+			stream->rate = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, stream->rate);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "channels") == 0) {
-+			stream->channels = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, stream->channels);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "tdm_slot") == 0) {
-+			stream->tdm_slot = strtol(val, NULL, 16);
-+			tplg_dbg("\t\t%s: 0x%x\n", id, stream->tdm_slot);
-+			continue;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Parse pcm configuration */
-+int tplg_parse_pcm_config(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_stream_config *sc;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id;
-+	int err;
-+
-+	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_STREAM_CONFIG);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	sc = elem->stream_cfg;
-+	sc->size = elem->size;
-+
-+	tplg_dbg(" PCM Config: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+		if (strcmp(id, "config") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_stream_cfg, sc);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int split_format(struct snd_soc_tplg_stream_caps *caps, char *str)
-+{
-+	char *s = NULL;
-+	snd_pcm_format_t format;
-+	int i = 0, ret;
-+
-+	s = strtok(str, ",");
-+	while ((s != NULL) && (i < SND_SOC_TPLG_MAX_FORMATS)) {
-+		format = snd_pcm_format_value(s);
-+		if (format == SND_PCM_FORMAT_UNKNOWN) {
-+			SNDERR("error: unsupported stream format %s\n", s);
-+			return -EINVAL;
-+		}
-+
-+		caps->formats[i] = format;
-+		s = strtok(NULL, ", ");
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Parse pcm Capabilities */
-+int tplg_parse_pcm_caps(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_stream_caps *sc;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val;
-+	char *s;
-+	int err;
-+
-+	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_STREAM_CAPS);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	sc = elem->stream_caps;
-+	sc->size = elem->size;
-+	elem_copy_text(sc->name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	tplg_dbg(" PCM Capabilities: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+		if (snd_config_get_string(n, &val) < 0)
-+			return -EINVAL;
-+
-+		if (strcmp(id, "formats") == 0) {
-+			s = strdup(val);
-+			if (s == NULL)
-+				return -ENOMEM;
-+
-+			err = split_format(sc, s);
-+			free(s);
-+
-+			if (err < 0)
-+				return err;
-+
-+			tplg_dbg("\t\t%s: %s\n", id, val);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "rate_min") == 0) {
-+			sc->rate_min = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, sc->rate_min);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "rate_max") == 0) {
-+			sc->rate_max = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, sc->rate_max);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "channels_min") == 0) {
-+			sc->channels_min = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, sc->channels_min);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "channels_max") == 0) {
-+			sc->channels_max = atoi(val);
-+			tplg_dbg("\t\t%s: %d\n", id, sc->channels_max);
-+			continue;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int tplg_parse_pcm_cfg(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
-+	snd_config_t *cfg, void *private)
-+{
-+	struct snd_soc_tplg_pcm_cfg_caps *capconf = private;
-+	struct snd_soc_tplg_stream_config *configs = capconf->configs;
-+	unsigned int *num_configs = &capconf->num_configs;
-+	const char *value;
-+
-+	if (*num_configs == SND_SOC_TPLG_STREAM_CONFIG_MAX)
-+		return -EINVAL;
++	struct snd_soc_tplg_private *priv = NULL;
++	const char *value = NULL;
++	char filename[MAX_FILE];
++	char *env = getenv(ALSA_CONFIG_TPLG_VAR);
++	FILE *fp;
++	size_t size, bytes_read;
++	int ret = 0;
++
++	tplg_dbg("data DataFile: %s\n", elem->id);
 +
 +	if (snd_config_get_string(cfg, &value) < 0)
-+		return EINVAL;
-+
-+	elem_copy_text(configs[*num_configs].name, value,
-+		SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	*num_configs += 1;
-+
-+	tplg_dbg("\t\t\t%s\n", value);
-+
-+	return 0;
-+}
-+
-+/* Parse the cap and config of a pcm */
-+int tplg_parse_pcm_cap_cfg(snd_tplg_t *tplg, snd_config_t *cfg,
-+	void *private)
-+{
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	struct tplg_elem *elem = private;
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+	const char *id, *value;
-+	int err, stream;
-+
-+	if (elem->type == OBJECT_TYPE_PCM)
-+		pcm_dai = elem->pcm;
-+	else if (elem->type == OBJECT_TYPE_BE)
-+		pcm_dai = elem->be;
-+	else if (elem->type == OBJECT_TYPE_CC)
-+		pcm_dai = elem->cc;
-+	else
 +		return -EINVAL;
 +
-+	snd_config_get_id(cfg, &id);
++	/* prepend alsa config directory to path */
++	snprintf(filename, sizeof(filename), "%s/%s",
++		env ? env : ALSA_TPLG_DIR, value);
 +
-+	tplg_dbg("\t%s:\n", id);
++	fp = fopen(filename, "r");
++	if (fp == NULL) {
++		SNDERR("error: invalid data file path '%s'\n",
++			filename);
++		ret = -errno;
++		goto err;
++	}
 +
-+	if (strcmp(id, "playback") == 0) {
-+		stream = SND_SOC_TPLG_STREAM_PLAYBACK;
-+		pcm_dai->playback = 1;
-+	} else if (strcmp(id, "capture") == 0) {
-+		stream = SND_SOC_TPLG_STREAM_CAPTURE;
-+		pcm_dai->capture = 1;
-+	} else
++	fseek(fp, 0L, SEEK_END);
++	size = ftell(fp);
++	fseek(fp, 0L, SEEK_SET);
++	if (size <= 0) {
++		SNDERR("error: invalid data file size %zu\n", size);
++		ret = -EINVAL;
++		goto err;
++	}
++	if (size > TPLG_MAX_PRIV_SIZE) {
++		SNDERR("error: data file too big %zu\n", size);
++		ret = -EINVAL;
++		goto err;
++	}
++
++	priv = calloc(1, sizeof(*priv) + size);
++	if (!priv) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	bytes_read = fread(&priv->data, 1, size, fp);
++	if (bytes_read != size) {
++		ret = -errno;
++		goto err;
++	}
++
++	elem->data = priv;
++	priv->size = size;
++	elem->size = sizeof(*priv) + size;
++	return 0;
++
++err:
++	if (priv)
++		free(priv);
++	return ret;
++}
++
++static void dump_priv_data(struct tplg_elem *elem)
++{
++	struct snd_soc_tplg_private *priv = elem->data;
++	unsigned char *p = (unsigned char *)priv->data;
++	unsigned int i, j = 0;
++
++	tplg_dbg(" elem size = %d, priv data size = %d\n",
++		elem->size, priv->size);
++
++	for (i = 0; i < priv->size; i++) {
++		if (j++ % 8 == 0)
++			tplg_dbg("\n");
++
++		tplg_dbg(" 0x%x", *p++);
++	}
++
++	tplg_dbg("\n\n");
++}
++
++/* get number of hex value elements in CSV list */
++static int get_hex_num(const char *str)
++{
++	int commas = 0, values = 0, len = strlen(str);
++	const char *end = str + len;
++
++	/* we expect "0x0, 0x0, 0x0" */
++	while (str < end) {
++
++		/* skip white space */
++		if (isspace(*str)) {
++			str++;
++			continue;
++		}
++
++		/* find delimeters */
++		if (*str == ',') {
++			commas++;
++			str++;
++			continue;
++		}
++
++		/* find 0x[0-9] values */
++		if (*str == '0' && str + 2 <= end) {
++			if (str[1] == 'x' && str[2] >= '0' && str[2] <= 'f') {
++				values++;
++				str += 3;
++			} else {
++				str++;
++			}
++		}
++
++		str++;
++	}
++
++	/* there should always be one less comma than value */
++	if (values -1 != commas)
 +		return -EINVAL;
 +
-+	snd_config_for_each(i, next, cfg) {
++	return values;
++}
 +
-+		n = snd_config_iterator_entry(i);
++static int write_hex(char *buf, char *str, int width)
++{
++	long val;
++	void *p = &val;
 +
-+		/* get id */
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
++        errno = 0;
++	val = strtol(str, NULL, 16);
 +
-+		if (strcmp(id, "capabilities") == 0) {
-+			if (snd_config_get_string(n, &value) < 0)
-+				continue;
++	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
++		|| (errno != 0 && val == 0)) {
++		return -EINVAL;
++        }
 +
-+			elem_copy_text(pcm_dai->capconf[stream].caps.name, value,
-+				SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+			tplg_dbg("\t\t%s\n\t\t\t%s\n", id, value);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "configs") == 0) {
-+			tplg_dbg("\t\tconfigs:\n");
-+			err = tplg_parse_compound(tplg, n, tplg_parse_pcm_cfg,
-+				&pcm_dai->capconf[stream]);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
++	switch (width) {
++	case 1:
++		*(unsigned char *)buf = *(unsigned char *)p;
++		break;
++	case 2:
++		*(unsigned short *)buf = *(unsigned short *)p;
++		break;
++	case 4:
++		*(unsigned int *)buf = *(unsigned int *)p;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
-+/* Parse pcm */
-+int tplg_parse_pcm(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
++static int copy_data_hex(char *data, int off, const char *str, int width)
 +{
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+	struct tplg_elem *elem;
++	char *tmp, *s = NULL, *p = data;
++	int ret;
++
++	tmp = strdup(str);
++	if (tmp == NULL)
++		return -ENOMEM;
++
++	p += off;
++	s = strtok(tmp, ",");
++
++	while (s != NULL) {
++		ret = write_hex(p, s, width);
++		if (ret < 0) {
++			free(tmp);
++			return ret;
++		}
++
++		s = strtok(NULL, ",");
++		p += width;
++	}
++
++	free(tmp);
++	return 0;
++}
++
++static int tplg_parse_data_hex(snd_config_t *cfg, struct tplg_elem *elem,
++	int width)
++{
++	struct snd_soc_tplg_private *priv;
++	const char *value = NULL;
++	int size, esize, off, num;
++	int ret;
++
++	tplg_dbg(" data: %s\n", elem->id);
++
++	if (snd_config_get_string(cfg, &value) < 0)
++		return -EINVAL;
++
++	num = get_hex_num(value);
++	if (num <= 0) {
++		SNDERR("error: malformed hex variable list %s\n", value);
++		return -EINVAL;
++	}
++
++	size = num * width;
++	priv = elem->data;
++
++	if (esize > TPLG_MAX_PRIV_SIZE) {
++		SNDERR("error: data too big %d\n", esize);
++		return -EINVAL;
++	}
++
++	if (priv != NULL) {
++		off = priv->size;
++		esize = elem->size + size;
++		priv = realloc(priv, esize);
++	} else {
++		off = 0;
++		esize = sizeof(*priv) + size;
++		priv = calloc(1, esize);
++	}
++
++	if (!priv)
++		return -ENOMEM;
++
++	elem->data = priv;
++	priv->size += size;
++	elem->size = esize;
++
++	ret = copy_data_hex(priv->data, off, value, width);
++
++	dump_priv_data(elem);
++	return ret;
++}
++
++
++/* Parse Private data.
++ *
++ * Object private data can either be from file or defined as bytes, shorts,
++ * words.
++ */
++int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
++	void *private ATTRIBUTE_UNUSED)
++{
 +	snd_config_iterator_t i, next;
 +	snd_config_t *n;
 +	const char *id, *val = NULL;
-+	int err;
++	int err = 0;
++	struct tplg_elem *elem;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_PCM);
++	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_DATA);
 +	if (!elem)
 +		return -ENOMEM;
-+
-+	pcm_dai = elem->pcm;
-+	pcm_dai->size = elem->size;
-+	elem_copy_text(pcm_dai->name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	tplg_dbg(" PCM: %s\n", elem->id);
 +
 +	snd_config_for_each(i, next, cfg) {
 +
 +		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
++		if (snd_config_get_id(n, &id) < 0) {
 +			continue;
++		}
 +
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
++		if (strcmp(id, "file") == 0) {
++			err = tplg_parse_data_file(n, elem);
++			if (err < 0) {
++				SNDERR("error: failed to parse data file\n");
++				return err;
++			}
 +			continue;
-+		if (id[0] == '#')
++		}
++
++		if (strcmp(id, "bytes") == 0) {
++			err = tplg_parse_data_hex(n, elem, 1);
++			if (err < 0) {
++				SNDERR("error: failed to parse data bytes\n");
++				return err;
++			}
 +			continue;
++		}
++
++		if (strcmp(id, "shorts") == 0) {
++			err = tplg_parse_data_hex(n, elem, 2);
++			if (err < 0) {
++				SNDERR("error: failed to parse data shorts\n");
++				return err;
++			}
++			continue;
++		}
++
++		if (strcmp(id, "words") == 0) {
++			err = tplg_parse_data_hex(n, elem, 4);
++			if (err < 0) {
++				SNDERR("error: failed to parse data words\n");
++				return err;
++			}
++			continue;
++		}
 +
 +		if (strcmp(id, "index") == 0) {
 +			if (snd_config_get_string(n, &val) < 0)
@@ -534,149 +364,75 @@ index 0000000..8f23a6f
 +			continue;
 +		}
 +
-+		if (strcmp(id, "id") == 0) {
++		if (strcmp(id, "type") == 0) {
 +			if (snd_config_get_string(n, &val) < 0)
 +				return -EINVAL;
 +
-+			pcm_dai->id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, pcm_dai->id);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "pcm") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_pcm_cap_cfg, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Parse be */
-+int tplg_parse_be(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
-+{
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val = NULL;
-+	int err;
-+
-+	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_BE);
-+	if (!elem)
-+		return -ENOMEM;
-+
-+	pcm_dai = elem->be;
-+	pcm_dai->size = elem->size;
-+	elem_copy_text(pcm_dai->name, elem->id, SNDRV_CTL_ELEM_ID_NAME_MAXLEN);
-+
-+	tplg_dbg(" BE: %s\n", elem->id);
-+
-+	snd_config_for_each(i, next, cfg) {
-+
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
-+
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
-+
-+		if (strcmp(id, "index") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			elem->index = atoi(val);
++			elem->vendor_type = atoi(val);
 +			tplg_dbg("\t%s: %d\n", id, elem->index);
 +			continue;
 +		}
-+
-+		if (strcmp(id, "id") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			pcm_dai->id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, pcm_dai->id);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "be") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_pcm_cap_cfg, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
 +	}
 +
-+	return 0;
++	return err;
 +}
 +
-+/* Parse cc */
-+int tplg_parse_cc(snd_tplg_t *tplg,
-+	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
++/* copy private data into the bytes extended control */
++int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
 +{
-+	struct snd_soc_tplg_pcm_dai *pcm_dai;
-+	struct tplg_elem *elem;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *id, *val = NULL;
-+	int err;
++	struct snd_soc_tplg_private *priv;
++	int priv_data_size;
 +
-+	elem = tplg_elem_new_common(tplg, cfg, OBJECT_TYPE_CC);
-+	if (!elem)
-+		return -ENOMEM;
++	if (!ref)
++		return -EINVAL;
 +
-+	pcm_dai = elem->cc;
-+	pcm_dai->size = elem->size;
++	tplg_dbg("Data '%s' used by '%s'\n", ref->id, elem->id);
++	priv_data_size = ref->data->size;
 +
-+	tplg_dbg(" CC: %s\n", elem->id);
++	switch (elem->type) {
++	case OBJECT_TYPE_MIXER:
++		elem->mixer_ctrl = realloc(elem->mixer_ctrl,
++			elem->size + priv_data_size);
++		if (!elem->mixer_ctrl)
++			return -ENOMEM;
++		priv = &elem->mixer_ctrl->priv;
++		break;
 +
-+	snd_config_for_each(i, next, cfg) {
++	case OBJECT_TYPE_ENUM:
++		elem->enum_ctrl = realloc(elem->enum_ctrl,
++			elem->size + priv_data_size);
++		if (!elem->enum_ctrl)
++			return -ENOMEM;
++		priv = &elem->enum_ctrl->priv;
++		break;
 +
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_id(n, &id) < 0)
-+			continue;
++	case OBJECT_TYPE_BYTES:
++		elem->bytes_ext = realloc(elem->bytes_ext,
++			elem->size + priv_data_size);
++		if (!elem->bytes_ext)
++			return -ENOMEM;
++		priv = &elem->bytes_ext->priv;
++		break;
 +
-+		/* skip comments */
-+		if (strcmp(id, "comment") == 0)
-+			continue;
-+		if (id[0] == '#')
-+			continue;
 +
-+		if (strcmp(id, "index") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
++	case OBJECT_TYPE_DAPM_WIDGET:
++		elem->widget = realloc(elem->widget,
++			elem->size + priv_data_size);
++		if (!elem->widget)
++			return -ENOMEM;
++		priv = &elem->widget->priv;
++		break;
 +
-+			elem->index = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, elem->index);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "id") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return -EINVAL;
-+
-+			pcm_dai->id = atoi(val);
-+			tplg_dbg("\t%s: %d\n", id, pcm_dai->id);
-+			continue;
-+		}
-+
-+		if (strcmp(id, "cc") == 0) {
-+			err = tplg_parse_compound(tplg, n,
-+				tplg_parse_pcm_cap_cfg, elem);
-+			if (err < 0)
-+				return err;
-+			continue;
-+		}
++	default:
++		SNDERR("elem '%s': type %d private data not supported \n",
++			elem->id, elem->type);
++		return -EINVAL;
 +	}
 +
++	elem->size += priv_data_size;
++	priv->size = priv_data_size;
++	ref->compound_elem = 1;
++	memcpy(priv->data, ref->data->data, priv_data_size);
 +	return 0;
 +}
 -- 
