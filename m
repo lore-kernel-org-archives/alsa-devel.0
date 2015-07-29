@@ -1,19 +1,14 @@
-From: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Fix race between PM ops and
-	HDA init/probe
-Date: Wed, 29 Jul 2015 14:45:52 +0000
-Message-ID: <8B5BDC21C48FAF4CA5D7E3FE1A63A90870B8551B@ORSMSX111.amr.corp.intel.com>
-References: <1438115396-1476-1-git-send-email-ullysses.a.eoff@intel.com>
- <s5hoaive98e.wl-tiwai@suse.de>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v3 00/13] alsa-lib topology support
+Date: Wed, 29 Jul 2015 17:45:12 +0100
+Message-ID: <1438188325-11553-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B95D265150
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:45:55 +0200 (CEST)
-In-Reply-To: <s5hoaive98e.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id A64AD2605CD
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 18:45:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,82 +18,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dgreid@chromium.org" <dgreid@chromium.org>, "Lee,
- Zhuo-hao" <zhuo-hao.lee@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, July 29, 2015 12:03 AM
-> To: Eoff, Ullysses A
-> Cc: alsa-devel@alsa-project.org; Lee, Zhuo-hao; Yang, Libin; dgreid@chromium.org
-> Subject: Re: [PATCH] ALSA: hda - Fix race between PM ops and HDA init/probe
-> 
-> On Tue, 28 Jul 2015 22:29:56 +0200,
-> U. Artie Eoff wrote:
-> >
-> > PM ops could be triggered before HDA is done initializing
-> > and cause PM to set HDA controller to D3Hot.  This can result
-> > in "CORB reset timeout#2, CORBRP = 65535" and "no codecs
-> > initialized".  Additionally, PM ops can be triggered before
-> > azx_probe_continue finishes (async probe).  This can result
-> > in a NULL deref kernel crash.
-> >
-> > To fix this, avoid PM ops if !chip->running.
-> >
-> > Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
-> > ---
-> >  sound/pci/hda/hda_intel.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > index 735bdcb04ce8..c38c68f57938 100644
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -867,7 +867,7 @@ static int azx_suspend(struct device *dev)
-> >
-> >  	chip = card->private_data;
-> >  	hda = container_of(chip, struct hda_intel, chip);
-> > -	if (chip->disabled || hda->init_failed)
-> > +	if (chip->disabled || hda->init_failed || !chip->running)
-> 
-> This is superfluous, as azx_runtime_idle() returns -EBUSY.
-> 
+This series adds support for parsing topology data text files and converting
+to the binary topology format accepted by the kernel. 
 
-This is the sleep suspend, not runtime.  Runtime idle result does not
-influence sleep pm ops.
+Changes since V2 :-
 
-> >  		return 0;
-> >
-> >  	bus = azx_bus(chip);
-> > @@ -902,7 +902,7 @@ static int azx_resume(struct device *dev)
-> >
-> >  	chip = card->private_data;
-> >  	hda = container_of(chip, struct hda_intel, chip);
-> > -	if (chip->disabled || hda->init_failed)
-> > +	if (chip->disabled || hda->init_failed || !chip->running)
-> 
-> Ditto.
-> 
+  o Added documentation in doxygen format describing API and text file format.
+  o use SNDERR macro for error reporting.
+  o Added text copy helper.
+  o Make all parsed keywords lowercase
+  o Assignment for some structure copies instead of memcpy().
+  o Fixed the private data parser to handle byte, short and word data.
 
-Similar here... not runtime.
+Changes since V1 :-
+ 
+  o Terminate all strncpy() strings with NULL.
+  o Use snd_pcm_format_value() instead of local lookup.
+  o Set a maximum size for private data files.
+  o Set capture/playback stream direction for new PCMs
+  o Only set TLV access flags for TLV CTLs.
 
-> 
-> Takashi
-> 
-> >  		return 0;
-> >
-> >  	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
-> > @@ -1027,7 +1027,7 @@ static int azx_runtime_idle(struct device *dev)
-> >  		return 0;
-> >
-> >  	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
-> > -	    azx_bus(chip)->codec_powered)
-> > +	    azx_bus(chip)->codec_powered || !chip->running)
-> >  		return -EBUSY;
-> >
-> >  	return 0;
-> > --
-> > 2.1.0
-> >
+
+Liam Girdwood (13):
+  topology: uapi: Add UAPI headers for topology ABI
+  topology: Add topology core parser.
+  topology: Add text section parser.
+  topology: Add PCM parser.
+  topology: Add operations parser
+  topology: Add private data parser
+  topology: Add DAPM object parser
+  topology: Add CTL parser
+  topology: Add Channel map parser.
+  topology: Add binary file builder.
+  topology: autotools: Add build support for topology core
+  topology: doxygen: Add doxygen support for topology core.
+  conf: topology: Add topology file for broadwell audio DSP
+
+ configure.ac                               |  11 +-
+ doc/doxygen.cfg.in                         |   7 +-
+ doc/index.doxygen                          |   1 +
+ include/Makefile.am                        |   4 +
+ include/sound/Makefile.am                  |   3 +-
+ include/sound/asoc.h                       | 388 ++++++++++++++++++
+ include/sound/tlv.h                        |  23 ++
+ include/topology.h                         | 497 ++++++++++++++++++++++
+ src/Makefile.am                            |   7 +
+ src/conf/Makefile.am                       |   2 +-
+ src/conf/topology/Makefile.am              |   1 +
+ src/conf/topology/broadwell/Makefile.am    |   4 +
+ src/conf/topology/broadwell/broadwell.conf | 375 +++++++++++++++++
+ src/topology/Makefile.am                   |  19 +
+ src/topology/builder.c                     | 327 +++++++++++++++
+ src/topology/channel.c                     | 122 ++++++
+ src/topology/ctl.c                         | 613 +++++++++++++++++++++++++++
+ src/topology/dapm.c                        | 562 +++++++++++++++++++++++++
+ src/topology/data.c                        | 396 ++++++++++++++++++
+ src/topology/elem.c                        | 187 +++++++++
+ src/topology/ops.c                         |  84 ++++
+ src/topology/parser.c                      | 359 ++++++++++++++++
+ src/topology/pcm.c                         | 639 +++++++++++++++++++++++++++++
+ src/topology/text.c                        |  88 ++++
+ src/topology/tplg_local.h                  | 234 +++++++++++
+ 25 files changed, 4948 insertions(+), 5 deletions(-)
+ create mode 100644 include/sound/asoc.h
+ create mode 100644 include/sound/tlv.h
+ create mode 100644 include/topology.h
+ create mode 100644 src/conf/topology/Makefile.am
+ create mode 100644 src/conf/topology/broadwell/Makefile.am
+ create mode 100644 src/conf/topology/broadwell/broadwell.conf
+ create mode 100644 src/topology/Makefile.am
+ create mode 100644 src/topology/builder.c
+ create mode 100644 src/topology/channel.c
+ create mode 100644 src/topology/ctl.c
+ create mode 100644 src/topology/dapm.c
+ create mode 100644 src/topology/data.c
+ create mode 100644 src/topology/elem.c
+ create mode 100644 src/topology/ops.c
+ create mode 100644 src/topology/parser.c
+ create mode 100644 src/topology/pcm.c
+ create mode 100644 src/topology/text.c
+ create mode 100644 src/topology/tplg_local.h
+
+-- 
+2.1.4
