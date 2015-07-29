@@ -1,15 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v3 10/13] topology: Add binary file builder.
-Date: Wed, 29 Jul 2015 17:45:22 +0100
-Message-ID: <1438188325-11553-11-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v3 11/13] topology: autotools: Add build
+	support for topology core
+Date: Wed, 29 Jul 2015 17:45:23 +0100
+Message-ID: <1438188325-11553-12-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1438188325-11553-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DAB9B26599E
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 18:45:58 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3520D2659EA
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 18:45:59 +0200 (CEST)
 In-Reply-To: <1438188325-11553-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,346 +25,129 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Build the binary output file from all the locally parsed objects and elements.
-
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/builder.c | 327 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 327 insertions(+)
- create mode 100644 src/topology/builder.c
+ configure.ac             | 11 ++++++++++-
+ include/Makefile.am      |  4 ++++
+ src/Makefile.am          |  7 +++++++
+ src/topology/Makefile.am | 19 +++++++++++++++++++
+ 4 files changed, 40 insertions(+), 1 deletion(-)
+ create mode 100644 src/topology/Makefile.am
 
-diff --git a/src/topology/builder.c b/src/topology/builder.c
+diff --git a/configure.ac b/configure.ac
+index 9621d4e..a482b3e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -380,6 +380,9 @@ AC_ARG_ENABLE(seq,
+ AC_ARG_ENABLE(ucm,
+   AS_HELP_STRING([--disable-ucm], [disable the use-case-manager component]),
+   [build_ucm="$enableval"], [build_ucm="yes"])
++AC_ARG_ENABLE(topology,
++  AS_HELP_STRING([--disable-topology], [disable the DSP topology component]),
++  [build_topology="$enableval"], [build_topology="yes"])
+ AC_ARG_ENABLE(alisp,
+   AS_HELP_STRING([--disable-alisp], [disable the alisp component]),
+   [build_alisp="$enableval"], [build_alisp="yes"])
+@@ -422,6 +425,7 @@ AM_CONDITIONAL([BUILD_RAWMIDI], [test x$build_rawmidi = xyes])
+ AM_CONDITIONAL([BUILD_HWDEP], [test x$build_hwdep = xyes])
+ AM_CONDITIONAL([BUILD_SEQ], [test x$build_seq = xyes])
+ AM_CONDITIONAL([BUILD_UCM], [test x$build_ucm = xyes])
++AM_CONDITIONAL([BUILD_TOPOLOGY], [test x$build_topology = xyes])
+ AM_CONDITIONAL([BUILD_ALISP], [test x$build_alisp = xyes])
+ AM_CONDITIONAL([BUILD_PYTHON], [test x$build_python = xyes])
+ 
+@@ -443,6 +447,9 @@ fi
+ if test "$build_ucm" = "yes"; then
+   AC_DEFINE([BUILD_UCM], "1", [Build UCM component])
+ fi
++if test "$build_topology" = "yes"; then
++  AC_DEFINE([BUILD_TOPOLOGY], "1", [Build DSP Topology component])
++fi
+ 
+ dnl PCM Plugins
+ 
+@@ -643,7 +650,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/pcm/Makefile src/pcm/scopes/Makefile \
+ 	  src/rawmidi/Makefile src/timer/Makefile \
+           src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
+-          src/alisp/Makefile \
++          src/alisp/Makefile src/topology/Makefile \
+ 	  src/conf/Makefile src/conf/alsa.conf.d/Makefile \
+ 	  src/conf/cards/Makefile \
+ 	  src/conf/pcm/Makefile \
+@@ -656,6 +663,8 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/PAZ00/Makefile \
+ 	  src/conf/ucm/GoogleNyan/Makefile \
+ 	  src/conf/ucm/broadwell-rt286/Makefile \
++	  src/conf/topology/Makefile \
++	  src/conf/topology/broadwell/Makefile \
+ 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
+ 	  alsalisp/Makefile aserver/Makefile \
+ 	  test/Makefile test/lsb/Makefile \
+diff --git a/include/Makefile.am b/include/Makefile.am
+index 4baa03a..ff931fd 100644
+--- a/include/Makefile.am
++++ b/include/Makefile.am
+@@ -50,6 +50,10 @@ if BUILD_UCM
+ alsainclude_HEADERS += use-case.h
+ endif
+ 
++if BUILD_TOPOLOGY
++alsainclude_HEADERS += topology.h
++endif
++
+ if BUILD_ALISP
+ alsainclude_HEADERS += alisp.h
+ endif
+diff --git a/src/Makefile.am b/src/Makefile.am
+index fa255ff..57686a6 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -42,6 +42,10 @@ if BUILD_UCM
+ SUBDIRS += ucm
+ libasound_la_LIBADD += ucm/libucm.la
+ endif
++if BUILD_TOPOLOGY
++SUBDIRS += topology
++libasound_la_LIBADD += topology/libtopology.la
++endif
+ if BUILD_ALISP
+ SUBDIRS += alisp
+ libasound_la_LIBADD += alisp/libalisp.la
+@@ -81,6 +85,9 @@ seq/libseq.la:
+ ucm/libucm.la:
+ 	$(MAKE) -C ucm libucm.la
+ 
++topology/libtopology.la:
++	$(MAKE) -C topology libtopology.la
++
+ instr/libinstr.la:
+ 	$(MAKE) -C instr libinstr.la
+ 
+diff --git a/src/topology/Makefile.am b/src/topology/Makefile.am
 new file mode 100644
-index 0000000..0066b22
+index 0000000..3fb8bf7
 --- /dev/null
-+++ b/src/topology/builder.c
-@@ -0,0 +1,327 @@
-+/*
-+  Copyright(c) 2014-2015 Intel Corporation
-+  All rights reserved.
++++ b/src/topology/Makefile.am
+@@ -0,0 +1,19 @@
++EXTRA_LTLIBRARIES = libtopology.la
 +
-+  This program is free software; you can redistribute it and/or modify
-+  it under the terms of version 2 of the GNU General Public License as
-+  published by the Free Software Foundation.
++libtopology_la_SOURCES =\
++	parser.c \
++	builder.c \
++	ctl.c \
++	dapm.c \
++	pcm.c \
++	data.c \
++	text.c \
++	channel.c \
++	ops.c \
++	elem.c
 +
-+  This program is distributed in the hope that it will be useful, but
-+  WITHOUT ANY WARRANTY; without even the implied warranty of
-+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+  General Public License for more details.
++noinst_HEADERS = tplg_local.h
 +
-+  Authors: Mengdong Lin <mengdong.lin@intel.com>
-+           Yao Jin <yao.jin@intel.com>
-+           Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+*/
++all: libtopology.la
 +
-+#include "list.h"
-+#include "tplg_local.h"
-+
-+/* verbose output detailing each object size and file position */
-+static void verbose(snd_tplg_t *tplg, const char *fmt, ...)
-+{
-+	int offset;
-+	va_list va;
-+
-+	if (!tplg->verbose)
-+		return;
-+
-+	offset = lseek(tplg->out_fd, 0, SEEK_CUR);
-+
-+	va_start(va, fmt);
-+	fprintf(stdout, "0x%6.6x/%6.6d -", offset, offset);
-+	vfprintf(stdout, fmt, va);
-+	va_end(va);
-+}
-+
-+/* write out block header to output file */
-+static int write_block_header(snd_tplg_t *tplg, unsigned int type,
-+	unsigned int vendor_type, unsigned int version, unsigned int index,
-+	size_t payload_size, int count)
-+{
-+	struct snd_soc_tplg_hdr hdr;
-+	size_t bytes;
-+	int offset = lseek(tplg->out_fd, 0, SEEK_CUR);
-+
-+	memset(&hdr, 0, sizeof(hdr));
-+	hdr.magic = SND_SOC_TPLG_MAGIC;
-+	hdr.abi = SND_SOC_TPLG_ABI_VERSION;
-+	hdr.type = type;
-+	hdr.vendor_type = vendor_type;
-+	hdr.version = version;
-+	hdr.payload_size = payload_size;
-+	hdr.index = index;
-+	hdr.size = sizeof(hdr);
-+	hdr.count = count;
-+
-+	/* make sure file offset is aligned with the calculated HDR offset */
-+	if ((unsigned int)offset != tplg->next_hdr_pos) {
-+		SNDERR("error: New header is at offset 0x%x but file"
-+			" offset 0x%x is %s by %d bytes\n",
-+			tplg->next_hdr_pos, offset,
-+			(unsigned int)offset > tplg->next_hdr_pos ? "ahead" : "behind",
-+			abs(offset - tplg->next_hdr_pos));
-+		exit(-EINVAL);
-+	}
-+
-+	verbose(tplg, " header type %d size 0x%lx/%ld vendor %d "
-+		"version %d\n", type, (long unsigned int)payload_size,
-+		(long int)payload_size, vendor_type, version);
-+
-+	tplg->next_hdr_pos += hdr.payload_size + sizeof(hdr);
-+
-+	bytes = write(tplg->out_fd, &hdr, sizeof(hdr));
-+	if (bytes != sizeof(hdr)) {
-+		SNDERR("error: can't write section header %lu\n",
-+			(long unsigned int)bytes);
-+		return bytes;
-+	}
-+
-+	return bytes;
-+}
-+
-+static int write_data_block(snd_tplg_t *tplg, int size, int tplg_type,
-+	const char *obj_name, void *data)
-+{
-+	int ret;
-+
-+	/* write the header for this block */
-+	ret = write_block_header(tplg, tplg_type, 0,
-+		SND_SOC_TPLG_ABI_VERSION, 0, size, 1);
-+	if (ret < 0) {
-+		SNDERR("error: failed to write %s block %d\n", obj_name, ret);
-+		return ret;
-+	}
-+
-+	verbose(tplg, " %s : write %d bytes\n", obj_name, size);
-+
-+	ret = write(tplg->out_fd, data, size);
-+	if (ret < 0) {
-+		SNDERR("error: failed to write %s %d\n", obj_name, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int write_elem_block(snd_tplg_t *tplg,
-+	struct list_head *base, int size, int tplg_type, const char *obj_name)
-+{
-+	struct list_head *pos;
-+	struct tplg_elem *elem;
-+	int ret, wsize = 0, count = 0, vendor_type;
-+
-+	/* count number of elements */
-+	list_for_each(pos, base)
-+		count++;
-+
-+	/* write the header for this block */
-+	list_for_each(pos, base) {
-+		elem = list_entry(pos, struct tplg_elem, list);
-+		vendor_type = elem->vendor_type;
-+		break;
-+	}
-+
-+	ret = write_block_header(tplg, tplg_type, vendor_type,
-+		SND_SOC_TPLG_ABI_VERSION, 0, size, count);
-+	if (ret < 0) {
-+		SNDERR("error: failed to write %s block %d\n",
-+			obj_name, ret);
-+		return ret;
-+	}
-+
-+	/* write each elem to block */
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+
-+		/* compound elems have already been copied to other elems */
-+		if (elem->compound_elem)
-+			continue;
-+
-+		if (elem->type != OBJECT_TYPE_DAPM_GRAPH)
-+			verbose(tplg, " %s '%s': write %d bytes\n",
-+				obj_name, elem->id, elem->size);
-+		else
-+			verbose(tplg, " %s '%s': write %d bytes\n",
-+				obj_name, elem->route->source, elem->size);
-+
-+		count = write(tplg->out_fd, elem->obj, elem->size);
-+		if (count < 0) {
-+			SNDERR("error: failed to write %s %d\n",
-+				obj_name, ret);
-+			return ret;
-+		}
-+
-+		wsize += count;
-+	}
-+
-+	/* make sure we have written the correct size */
-+	if (wsize != size) {
-+		SNDERR("error: size mismatch. Expected %d wrote %d\n",
-+			size, wsize);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int calc_block_size(struct list_head *base)
-+{
-+	struct list_head *pos;
-+	struct tplg_elem *elem;
-+	int size = 0;
-+
-+	list_for_each(pos, base) {
-+
-+		elem = list_entry(pos, struct tplg_elem, list);
-+
-+		/* compound elems have already been copied to other elems */
-+		if (elem->compound_elem)
-+			continue;
-+
-+		size += elem->size;
-+	}
-+
-+	return size;
-+}
-+
-+static int write_block(snd_tplg_t *tplg, struct list_head *base,
-+	int type)
-+{
-+	int size;
-+
-+	/* calculate the block size in bytes for all elems in this list */
-+	size = calc_block_size(base);
-+	if (size <= 0)
-+		return size;
-+
-+	verbose(tplg, " block size for type %d is %d\n", type, size);
-+
-+	/* write each elem for this block */
-+	switch (type) {
-+	case OBJECT_TYPE_MIXER:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_MIXER, "mixer");
-+	case OBJECT_TYPE_BYTES:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_BYTES, "bytes");
-+	case OBJECT_TYPE_ENUM:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_ENUM, "enum");
-+	case OBJECT_TYPE_DAPM_GRAPH:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAPM_GRAPH, "route");
-+	case OBJECT_TYPE_DAPM_WIDGET:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAPM_WIDGET, "widget");
-+	case OBJECT_TYPE_PCM:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_PCM, "pcm");
-+	case OBJECT_TYPE_BE:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAI_LINK, "be");
-+	case OBJECT_TYPE_CC:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_DAI_LINK, "cc");
-+	case OBJECT_TYPE_MANIFEST:
-+		return write_data_block(tplg, size, SND_SOC_TPLG_TYPE_MANIFEST,
-+			"manifest", &tplg->manifest);
-+	case OBJECT_TYPE_DATA:
-+		return write_elem_block(tplg, base, size,
-+			SND_SOC_TPLG_TYPE_PDATA, "data");
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+int tplg_write_data(snd_tplg_t *tplg)
-+{
-+	int ret;
-+
-+	/* write manifest */
-+	ret = write_data_block(tplg, sizeof(tplg->manifest),
-+		OBJECT_TYPE_MANIFEST, "manifest", &tplg->manifest);
-+	if (ret < 0) {
-+		SNDERR("failed to write manifest %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write mixer elems. */
-+	ret = write_block(tplg, &tplg->mixer_list,
-+		OBJECT_TYPE_MIXER);
-+	if (ret < 0) {
-+		SNDERR("failed to write control elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write enum control elems. */
-+	ret = write_block(tplg, &tplg->enum_list,
-+		OBJECT_TYPE_ENUM);
-+	if (ret < 0) {
-+		SNDERR("failed to write control elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write bytes extended control elems. */
-+	ret = write_block(tplg, &tplg->bytes_ext_list,
-+		OBJECT_TYPE_BYTES);
-+	if (ret < 0) {
-+		SNDERR("failed to write control elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write widget elems */
-+	ret = write_block(tplg, &tplg->widget_list,
-+		OBJECT_TYPE_DAPM_WIDGET);
-+	if (ret < 0) {
-+		SNDERR("failed to write widget elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write pcm elems */
-+	ret = write_block(tplg, &tplg->pcm_list,
-+		OBJECT_TYPE_PCM);
-+	if (ret < 0) {
-+		SNDERR("failed to write pcm elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write be elems */
-+	ret = write_block(tplg, &tplg->be_list,
-+		OBJECT_TYPE_BE);
-+	if (ret < 0) {
-+		SNDERR("failed to write be elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write cc elems */
-+	ret = write_block(tplg, &tplg->cc_list,
-+		OBJECT_TYPE_CC);
-+	if (ret < 0) {
-+		SNDERR("failed to write cc elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write route elems */
-+	ret = write_block(tplg, &tplg->route_list,
-+		OBJECT_TYPE_DAPM_GRAPH);
-+	if (ret < 0) {
-+		SNDERR("failed to write graph elems %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* write private data */
-+	ret = write_block(tplg, &tplg->pdata_list,
-+		OBJECT_TYPE_DATA);
-+	if (ret < 0) {
-+		SNDERR("failed to write private data %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
++AM_CPPFLAGS=-I$(top_srcdir)/include
 -- 
 2.1.4
