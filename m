@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: lpass-ipq806x: Staticise local symbols"
-	to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:09 +0100
-Message-ID: <E1ZKS6X-0004ZZ-H2@finisterre>
-References: <1437987388-9706-3-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: uniperf: Add missing __iomem
+	annotation" to the asoc tree
+Date: Wed, 29 Jul 2015 15:13:06 +0100
+Message-ID: <E1ZKS6U-0004YN-CU@finisterre>
+References: <1437987388-9706-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A687026590E
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:21 +0200 (CEST)
-In-Reply-To: <1437987388-9706-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id F05512658FA
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:20 +0200 (CEST)
+In-Reply-To: <1437987388-9706-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: lpass-ipq806x: Staticise local symbols
+   ASoC: uniperf: Add missing __iomem annotation
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From eccad574ef2d74e7519a092d9822932a27c6f165 Mon Sep 17 00:00:00 2001
+>From b917abb4064b38b0613e953b09213e788ad94ad0 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 27 Jul 2015 10:56:24 +0200
-Subject: [PATCH] ASoC: lpass-ipq806x: Staticise local symbols
+Date: Mon, 27 Jul 2015 10:56:26 +0200
+Subject: [PATCH] ASoC: uniperf: Add missing __iomem annotation
 
-ipq806x_data is not used outside this file, so it can be static.
-Fixes the following sparse warning:
+base referes to a iomem region, so it should have the __iomem annotation.
+Fixes the following warnings from sparse:
 
-	sound/soc/qcom/lpass-ipq806x.c:76:22: warning: symbol 'ipq806x_data'
-		was not declared. Should it be static?
+	sound/soc/sti/sti_uniperif.c:169:19: warning: incorrect type in
+		assignment (different address spaces)
+	sound/soc/sti/sti_uniperif.c:169:19:    expected void *base
+	sound/soc/sti/sti_uniperif.c:169:19:    got void [noderef] <asn:2>*
+	sound/soc/sti/uniperif_player.c:104:18: warning: incorrect type in
+		argument 1 (different address spaces)
+	sound/soc/sti/uniperif_player.c:104:18:    expected void const volatile
+		[noderef] <asn:2>*addr
+	sound/soc/sti/uniperif_player.c:104:18:    got void *
+	[...]
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-ipq806x.c | 2 +-
+ sound/soc/sti/uniperif.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 7356d3a..7a41679 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -73,7 +73,7 @@ static int ipq806x_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
- 	return 0;
- }
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index ee462f7..f0fd5a9 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1168,7 +1168,7 @@ struct uniperif {
  
--struct lpass_variant ipq806x_data = {
-+static struct lpass_variant ipq806x_data = {
- 	.i2sctrl_reg_base	= 0x0010,
- 	.i2sctrl_reg_stride	= 0x04,
- 	.i2s_ports		= 5,
+ 	/* Resources */
+ 	struct resource *mem_region;
+-	void *base;
++	void __iomem *base;
+ 	unsigned long fifo_phys_address;
+ 	int irq;
+ 
 -- 
 2.1.4
