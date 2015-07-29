@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniperf: Add missing __iomem
-	annotation" to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:06 +0100
-Message-ID: <E1ZKS6U-0004YN-CU@finisterre>
-References: <1437987388-9706-5-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: Intel: haswell: fix initialize 'NULL
+	device *' issue" to the asoc tree
+Date: Wed, 29 Jul 2015 15:13:14 +0100
+Message-ID: <E1ZKS6c-0004b0-GW@finisterre>
+References: <1438070466-30008-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F05512658FA
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:20 +0200 (CEST)
-In-Reply-To: <1437987388-9706-5-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7632B265150
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:27 +0200 (CEST)
+In-Reply-To: <1438070466-30008-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
+To: Jie Yang <yang.jie@intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniperf: Add missing __iomem annotation
+   ASoC: Intel: haswell: fix initialize 'NULL device *' issue
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From b917abb4064b38b0613e953b09213e788ad94ad0 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 27 Jul 2015 10:56:26 +0200
-Subject: [PATCH] ASoC: uniperf: Add missing __iomem annotation
+>From 4b563ea317c2262987f0675abf15066614f536a1 Mon Sep 17 00:00:00 2001
+From: Jie Yang <yang.jie@intel.com>
+Date: Tue, 28 Jul 2015 16:01:05 +0800
+Subject: [PATCH] ASoC: Intel: haswell: fix initialize 'NULL device *' issue
 
-base referes to a iomem region, so it should have the __iomem annotation.
-Fixes the following warnings from sparse:
+Add initialization for sst_hsw.dev at init stage, which fix the
+'NULL device *' warning issues.
 
-	sound/soc/sti/sti_uniperif.c:169:19: warning: incorrect type in
-		assignment (different address spaces)
-	sound/soc/sti/sti_uniperif.c:169:19:    expected void *base
-	sound/soc/sti/sti_uniperif.c:169:19:    got void [noderef] <asn:2>*
-	sound/soc/sti/uniperif_player.c:104:18: warning: incorrect type in
-		argument 1 (different address spaces)
-	sound/soc/sti/uniperif_player.c:104:18:    expected void const volatile
-		[noderef] <asn:2>*addr
-	sound/soc/sti/uniperif_player.c:104:18:    got void *
-	[...]
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index ee462f7..f0fd5a9 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1168,7 +1168,7 @@ struct uniperif {
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index f95f271..f6efa9d 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -2119,6 +2119,8 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 	if (hsw == NULL)
+ 		return -ENOMEM;
  
- 	/* Resources */
- 	struct resource *mem_region;
--	void *base;
-+	void __iomem *base;
- 	unsigned long fifo_phys_address;
- 	int irq;
- 
++	hsw->dev = dev;
++
+ 	ipc = &hsw->ipc;
+ 	ipc->dev = dev;
+ 	ipc->ops.tx_msg = hsw_tx_msg;
 -- 
 2.1.4
