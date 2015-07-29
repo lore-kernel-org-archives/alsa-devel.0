@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniperf: Staticise local symbols" to
-	the asoc tree
-Date: Wed, 29 Jul 2015 15:13:04 +0100
-Message-ID: <E1ZKS6S-0004Xm-If@finisterre>
-References: <1437987388-9706-6-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: lpass-ipq806x: Staticise local symbols"
+	to the asoc tree
+Date: Wed, 29 Jul 2015 15:13:09 +0100
+Message-ID: <E1ZKS6X-0004ZZ-H2@finisterre>
+References: <1437987388-9706-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E9D432658D2
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:20 +0200 (CEST)
-In-Reply-To: <1437987388-9706-6-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A687026590E
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:21 +0200 (CEST)
+In-Reply-To: <1437987388-9706-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniperf: Staticise local symbols
+   ASoC: lpass-ipq806x: Staticise local symbols
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 85cf604edc18722140f73e225394722801e55de0 Mon Sep 17 00:00:00 2001
+>From eccad574ef2d74e7519a092d9822932a27c6f165 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Mon, 27 Jul 2015 10:56:27 +0200
-Subject: [PATCH] ASoC: uniperf: Staticise local symbols
+Date: Mon, 27 Jul 2015 10:56:24 +0200
+Subject: [PATCH] ASoC: lpass-ipq806x: Staticise local symbols
 
-uni_player_dai_ops is not used outside of this file so it should be static.
+ipq806x_data is not used outside this file, so it can be static.
 Fixes the following sparse warning:
 
-	sound/soc/sti/uniperif_player.c:959:30: warning: symbol
-		'uni_player_dai_ops' was not declared. Should it be static?
+	sound/soc/qcom/lpass-ipq806x.c:76:22: warning: symbol 'ipq806x_data'
+		was not declared. Should it be static?
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif_player.c | 2 +-
+ sound/soc/qcom/lpass-ipq806x.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index f609089..d8df906 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -956,7 +956,7 @@ static int uni_player_parse_dt(struct platform_device *pdev,
+diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+index 7356d3a..7a41679 100644
+--- a/sound/soc/qcom/lpass-ipq806x.c
++++ b/sound/soc/qcom/lpass-ipq806x.c
+@@ -73,7 +73,7 @@ static int ipq806x_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
  	return 0;
  }
  
--const struct snd_soc_dai_ops uni_player_dai_ops = {
-+static const struct snd_soc_dai_ops uni_player_dai_ops = {
- 		.startup = uni_player_startup,
- 		.shutdown = uni_player_shutdown,
- 		.prepare = uni_player_prepare,
+-struct lpass_variant ipq806x_data = {
++static struct lpass_variant ipq806x_data = {
+ 	.i2sctrl_reg_base	= 0x0010,
+ 	.i2sctrl_reg_stride	= 0x04,
+ 	.i2s_ports		= 5,
 -- 
 2.1.4
