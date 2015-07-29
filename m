@@ -1,90 +1,146 @@
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: [PATCH 20/27] ASoC: Export OF module alias information in missing codec drivers
-Date: Thu, 30 Jul 2015 18:18:45 +0200
-Message-ID: <1438273132-20926-21-git-send-email-javier@osg.samsung.com>
-References: <1438273132-20926-1-git-send-email-javier@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1438273132-20926-1-git-send-email-javier@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Javier Martinez Canillas <javier@osg.samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+From: Johannes Oertel <johannes.oertel@uni-due.de>
+Subject: AudioFire4 quirk
+Date: Wed, 29 Jul 2015 19:29:23 +0200
+Message-ID: <55B90D73.4000602@uni-due.de>
+Reply-To: johannes.oertel@uni-due.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout.uni-duisburg-essen.de (mailout.uni-duisburg-essen.de
+ [132.252.185.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F07332605C2
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 19:29:32 +0200 (CEST)
+Received: from [192.168.0.10] (ip-109-90-217-202.hsi11.unitymediagroup.de
+ [109.90.217.202]) (authenticated bits=0)
+ by mailout.uni-duisburg-essen.de (8.13.1/8.13.1) with ESMTP id t6THTO8l029993
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NOT)
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 19:29:32 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The I2C core always reports the MODALIAS uevent as "i2c:<client name"
-regardless if the driver was matched using the I2C id_table or the
-of_match_table. So technically there's no need for a driver to export
-the OF table since currently it's not used.
+Hi,
 
-In fact, the I2C device ID table is mandatory for I2C drivers since
-a i2c_device_id is passed to the driver's probe function even if the
-I2C core used the OF table to match the driver.
+when I try to use the snd-fireworks driver with my AudioFire4 (see the 
+output of /proc/asound/cardX/firewire/firmware below) on my machine 
+(kernel 4.1), it doesn't work. I am experiencing exactly the same 
+problems as Harry with his AudioFire2 [1]; dmesg was reporting 
+discontinuities.
 
-And since the I2C core uses different tables, OF-only drivers needs to
-have duplicated data that has to be kept in sync and also the dev node
-compatible manufacturer prefix is stripped when reporting the MODALIAS.
+A few days ago, I saw Takashi Sakamoto's most recent patch for making 
+the AudioFire2 work in this case [2]. I adapted his patch (see below) to 
+apply to my situation with the AudioFire4 and now it is working 
+flawlessly! However, according to the README in Takashi's GitHub 
+repository [3], he is testing the driver with an AudioFire4 as well, so 
+I asked him why I need this patch and he does not. He told me he is 
+using firmware version 5.5 while I'm on 5.7.3. He said he is going to 
+test his device with different firmware versions soon and write a patch, 
+if needed.
 
-To avoid the above, the I2C core behavior may be changed in the future
-to not require an I2C device table for OF-only drivers and report the
-OF module alias. So, it's better to also export the OF table to prevent
-breaking module autoloading if that happens.
+Finally, he asked me to post this whole issue to this list as well and 
+that's what I have just done. :)
 
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+Best regards,
+Johannes
 
+
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
+[2] 
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=9c6893e0be38b6ca9a56a854226e51dee0a16a5a
+[3] https://github.com/takaswie/snd-firewire-improve
+
+/proc/asound/cardX/firewire/firmware:
+guid_hi: 0x148604
+guid_lo: 0x5BA8D7BF
+type: 0xAF4
+version: 0x0
+vendor_name: Echo Digital Audio
+model_name: AudioFire4
+dsp_version: 0x0
+arm_version: 0x5070300
+fpga_version: 0x3000200
+flags: 0xE1
+max_sample_rate: 0x17700
+min_sample_rate: 0x7D00
+supported_clock: 0x9
+phys out: 0x6
+phys in: 0x6
+phys in grps: 0x2
+phys in grp[0]: type 0x0, count 0x4
+phys in grp[1]: type 0x1, count 0x2
+phys out grps: 0x2
+phys out grps[0]: type 0x0, count 0x4
+phys out grps[1]: type 0x1, count 0x2
+amdtp rx pcm channels 1x: 0x6
+amdtp tx pcm channels 1x: 0x6
+amdtp rx pcm channels 2x: 0x6
+amdtp tx pcm channels 2x: 0x6
+amdtp rx pcm channels 4x: 0x6
+amdtp tx pcm channels 4x: 0x6
+midi out ports: 0x1
+midi in ports: 0x1
+mixer playback channels: 0x6
+mixer capture channels: 0x6
+
+The patch:
 ---
+  sound/firewire/fireworks/fireworks.c        | 2 ++
+  sound/firewire/fireworks/fireworks.h        | 1 +
+  sound/firewire/fireworks/fireworks_stream.c | 4 ++--
+  3 files changed, 5 insertions(+), 2 deletions(-)
 
- sound/soc/codecs/da9055.c | 1 +
- sound/soc/codecs/wm8510.c | 1 +
- sound/soc/codecs/wm8523.c | 1 +
- sound/soc/codecs/wm8580.c | 1 +
- 4 files changed, 4 insertions(+)
+diff --git a/sound/firewire/fireworks/fireworks.c 
+b/sound/firewire/fireworks/fireworks.c
+index c670db4..544bdbf 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -250,6 +250,8 @@ efw_probe(struct fw_unit *unit,
+  		goto error;
+  	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_2)
+  		efw->is_af2 = true;
++	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_4)
++		efw->is_af4 = true;
+  	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_9)
+  		efw->is_af9 = true;
 
-diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-index 04c76f37e1fd..19635d830b47 100644
---- a/sound/soc/codecs/da9055.c
-+++ b/sound/soc/codecs/da9055.c
-@@ -1533,6 +1533,7 @@ static const struct of_device_id da9055_of_match[] = {
- 	{ .compatible = "dlg,da9055-codec", },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, da9055_of_match);
- 
- /* I2C codec control layer */
- static struct i2c_driver da9055_i2c_driver = {
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 3cff5a699e57..b098a83a44d8 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -598,6 +598,7 @@ static const struct of_device_id wm8510_of_match[] = {
- 	{ .compatible = "wlf,wm8510" },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, wm8510_of_match);
- 
- static const struct regmap_config wm8510_regmap = {
- 	.reg_bits = 7,
-diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index 5f8fde56e68b..aa287a3965e7 100644
---- a/sound/soc/codecs/wm8523.c
-+++ b/sound/soc/codecs/wm8523.c
-@@ -430,6 +430,7 @@ static const struct of_device_id wm8523_of_match[] = {
- 	{ .compatible = "wlf,wm8523" },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, wm8523_of_match);
- 
- static const struct regmap_config wm8523_regmap = {
- 	.reg_bits = 8,
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index abf60355f7f7..66602bf02f6e 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -916,6 +916,7 @@ static const struct of_device_id wm8580_of_match[] = {
- 	{ .compatible = "wlf,wm8580" },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, wm8580_of_match);
- 
- static const struct regmap_config wm8580_regmap = {
- 	.reg_bits = 7,
+diff --git a/sound/firewire/fireworks/fireworks.h 
+b/sound/firewire/fireworks/fireworks.h
+index 9493122..9a7dcbb 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -74,6 +74,7 @@ struct snd_efw {
+
+  	/* for quirks */
+  	bool is_af2;
++	bool is_af4;
+  	bool is_af9;
+  	u32 firmware_version;
+
+diff --git a/sound/firewire/fireworks/fireworks_stream.c 
+b/sound/firewire/fireworks/fireworks_stream.c
+index a0762dd..182b96f 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -172,8 +172,8 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+  	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
+  	/* Fireworks reset dbc at bus reset. */
+  	efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
+-	/* AudioFire2 starts packets with non-zero dbc. */
+-	if (efw->is_af2)
++	/* AudioFire2 and AudioFire4 start packets with non-zero dbc. */
++	if (efw->is_af2 || efw->is_af4)
+  		efw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
+  	/* AudioFire9 always reports wrong dbs. */
+  	if (efw->is_af9)
 -- 
-2.4.3
+2.4.6
