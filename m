@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98088: Get rid of max98088_access
-	table" to the asoc tree
-Date: Wed, 29 Jul 2015 15:13:19 +0100
-Message-ID: <E1ZKS6h-0004cX-Aw@finisterre>
-References: <1437987897.1147.2.camel@ingics.com>
+Subject: Applied "ASoC: dapm: Add widget path iterators" to the
+	asoc tree
+Date: Wed, 29 Jul 2015 15:13:20 +0100
+Message-ID: <E1ZKS6i-0004d0-UN@finisterre>
+References: <1437930302-2789-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E4DF26590E
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:32 +0200 (CEST)
-In-Reply-To: <1437987897.1147.2.camel@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F408265913
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 16:13:33 +0200 (CEST)
+In-Reply-To: <1437930302-2789-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98088: Get rid of max98088_access table
+   ASoC: dapm: Add widget path iterators
 
 has been applied to the asoc tree at
 
@@ -53,364 +53,203 @@ to this mail.
 Thanks,
 Mark
 
->From f102aa1414d9aa28491414cf4103bad1ddb3ea1f Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 28 Jul 2015 13:29:00 +0800
-Subject: [PATCH] ASoC: max98088: Get rid of max98088_access table
+>From e63bfd45aba4269811662de0954785622a2ac928 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Sun, 26 Jul 2015 19:05:00 +0200
+Subject: [PATCH] ASoC: dapm: Add widget path iterators
 
-The max98088_access table is used for look up readable/writable/volatile
-attributes of registers. The readable/writable/volatile registers are
-mostly in continuous ranges, so we can replace the max98088_access table
-entirely by using case range.
+Add helper iterator macros for iterating over the source and sink paths of
+widget. This will make it easier to change the implementation later on.
 
-Below is a summary of the readable/writeable/volatile registers:
-
-readable registers:
-        0x00 ~ 0xC9, 0xFF
-writeable registers:
-        0x03 ~ 0xC9
-volatile registers:
-        0x00 ~ 0x03, 0xFF
-
-Note, 0x00 should be read-only according to the datasheet.
-
-This patch reworks the implement for .readable and .volatile and also add
-implementation for .writable callback.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98088.c | 305 ++++----------------------------------------
- 1 file changed, 25 insertions(+), 280 deletions(-)
+ include/sound/soc-dapm.h                 | 18 ++++++++++++++++++
+ sound/soc/intel/atom/sst-atom-controls.c |  4 ++--
+ sound/soc/soc-dapm.c                     | 30 +++++++++++++++---------------
+ 3 files changed, 35 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index d0f4534..419c65f 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -258,292 +258,36 @@ static const struct reg_default max98088_reg[] = {
- 	{ 0xc9, 0x00 }, /* C9 DAI2 biquad */
- };
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index cadc7fc..4973083 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -673,4 +673,22 @@ static inline enum snd_soc_bias_level snd_soc_dapm_get_bias_level(
+ 	return dapm->bias_level;
+ }
  
--static struct {
--       int readable;
--       int writable;
--       int vol;
--} max98088_access[M98088_REG_CNT] = {
--       { 0xFF, 0xFF, 1 }, /* 00 IRQ status */
--       { 0xFF, 0x00, 1 }, /* 01 MIC status */
--       { 0xFF, 0x00, 1 }, /* 02 jack status */
--       { 0x1F, 0x1F, 1 }, /* 03 battery voltage */
--       { 0xFF, 0xFF, 0 }, /* 04 */
--       { 0xFF, 0xFF, 0 }, /* 05 */
--       { 0xFF, 0xFF, 0 }, /* 06 */
--       { 0xFF, 0xFF, 0 }, /* 07 */
--       { 0xFF, 0xFF, 0 }, /* 08 */
--       { 0xFF, 0xFF, 0 }, /* 09 */
--       { 0xFF, 0xFF, 0 }, /* 0A */
--       { 0xFF, 0xFF, 0 }, /* 0B */
--       { 0xFF, 0xFF, 0 }, /* 0C */
--       { 0xFF, 0xFF, 0 }, /* 0D */
--       { 0xFF, 0xFF, 0 }, /* 0E */
--       { 0xFF, 0xFF, 0 }, /* 0F interrupt enable */
--
--       { 0xFF, 0xFF, 0 }, /* 10 master clock */
--       { 0xFF, 0xFF, 0 }, /* 11 DAI1 clock mode */
--       { 0xFF, 0xFF, 0 }, /* 12 DAI1 clock control */
--       { 0xFF, 0xFF, 0 }, /* 13 DAI1 clock control */
--       { 0xFF, 0xFF, 0 }, /* 14 DAI1 format */
--       { 0xFF, 0xFF, 0 }, /* 15 DAI1 clock */
--       { 0xFF, 0xFF, 0 }, /* 16 DAI1 config */
--       { 0xFF, 0xFF, 0 }, /* 17 DAI1 TDM */
--       { 0xFF, 0xFF, 0 }, /* 18 DAI1 filters */
--       { 0xFF, 0xFF, 0 }, /* 19 DAI2 clock mode */
--       { 0xFF, 0xFF, 0 }, /* 1A DAI2 clock control */
--       { 0xFF, 0xFF, 0 }, /* 1B DAI2 clock control */
--       { 0xFF, 0xFF, 0 }, /* 1C DAI2 format */
--       { 0xFF, 0xFF, 0 }, /* 1D DAI2 clock */
--       { 0xFF, 0xFF, 0 }, /* 1E DAI2 config */
--       { 0xFF, 0xFF, 0 }, /* 1F DAI2 TDM */
--
--       { 0xFF, 0xFF, 0 }, /* 20 DAI2 filters */
--       { 0xFF, 0xFF, 0 }, /* 21 data config */
--       { 0xFF, 0xFF, 0 }, /* 22 DAC mixer */
--       { 0xFF, 0xFF, 0 }, /* 23 left ADC mixer */
--       { 0xFF, 0xFF, 0 }, /* 24 right ADC mixer */
--       { 0xFF, 0xFF, 0 }, /* 25 left HP mixer */
--       { 0xFF, 0xFF, 0 }, /* 26 right HP mixer */
--       { 0xFF, 0xFF, 0 }, /* 27 HP control */
--       { 0xFF, 0xFF, 0 }, /* 28 left REC mixer */
--       { 0xFF, 0xFF, 0 }, /* 29 right REC mixer */
--       { 0xFF, 0xFF, 0 }, /* 2A REC control */
--       { 0xFF, 0xFF, 0 }, /* 2B left SPK mixer */
--       { 0xFF, 0xFF, 0 }, /* 2C right SPK mixer */
--       { 0xFF, 0xFF, 0 }, /* 2D SPK control */
--       { 0xFF, 0xFF, 0 }, /* 2E sidetone */
--       { 0xFF, 0xFF, 0 }, /* 2F DAI1 playback level */
--
--       { 0xFF, 0xFF, 0 }, /* 30 DAI1 playback level */
--       { 0xFF, 0xFF, 0 }, /* 31 DAI2 playback level */
--       { 0xFF, 0xFF, 0 }, /* 32 DAI2 playbakc level */
--       { 0xFF, 0xFF, 0 }, /* 33 left ADC level */
--       { 0xFF, 0xFF, 0 }, /* 34 right ADC level */
--       { 0xFF, 0xFF, 0 }, /* 35 MIC1 level */
--       { 0xFF, 0xFF, 0 }, /* 36 MIC2 level */
--       { 0xFF, 0xFF, 0 }, /* 37 INA level */
--       { 0xFF, 0xFF, 0 }, /* 38 INB level */
--       { 0xFF, 0xFF, 0 }, /* 39 left HP volume */
--       { 0xFF, 0xFF, 0 }, /* 3A right HP volume */
--       { 0xFF, 0xFF, 0 }, /* 3B left REC volume */
--       { 0xFF, 0xFF, 0 }, /* 3C right REC volume */
--       { 0xFF, 0xFF, 0 }, /* 3D left SPK volume */
--       { 0xFF, 0xFF, 0 }, /* 3E right SPK volume */
--       { 0xFF, 0xFF, 0 }, /* 3F MIC config */
--
--       { 0xFF, 0xFF, 0 }, /* 40 MIC threshold */
--       { 0xFF, 0xFF, 0 }, /* 41 excursion limiter filter */
--       { 0xFF, 0xFF, 0 }, /* 42 excursion limiter threshold */
--       { 0xFF, 0xFF, 0 }, /* 43 ALC */
--       { 0xFF, 0xFF, 0 }, /* 44 power limiter threshold */
--       { 0xFF, 0xFF, 0 }, /* 45 power limiter config */
--       { 0xFF, 0xFF, 0 }, /* 46 distortion limiter config */
--       { 0xFF, 0xFF, 0 }, /* 47 audio input */
--       { 0xFF, 0xFF, 0 }, /* 48 microphone */
--       { 0xFF, 0xFF, 0 }, /* 49 level control */
--       { 0xFF, 0xFF, 0 }, /* 4A bypass switches */
--       { 0xFF, 0xFF, 0 }, /* 4B jack detect */
--       { 0xFF, 0xFF, 0 }, /* 4C input enable */
--       { 0xFF, 0xFF, 0 }, /* 4D output enable */
--       { 0xFF, 0xFF, 0 }, /* 4E bias control */
--       { 0xFF, 0xFF, 0 }, /* 4F DAC power */
--
--       { 0xFF, 0xFF, 0 }, /* 50 DAC power */
--       { 0xFF, 0xFF, 0 }, /* 51 system */
--       { 0xFF, 0xFF, 0 }, /* 52 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 53 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 54 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 55 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 56 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 57 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 58 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 59 DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 5A DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 5B DAI1 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 5C DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 5D DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 5E DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 5F DAI1 EQ2 */
--
--       { 0xFF, 0xFF, 0 }, /* 60 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 61 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 62 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 63 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 64 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 65 DAI1 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 66 DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 67 DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 68 DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 69 DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6A DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6B DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6C DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6D DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6E DAI1 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 6F DAI1 EQ3 */
--
--       { 0xFF, 0xFF, 0 }, /* 70 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 71 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 72 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 73 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 74 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 75 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 76 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 77 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 78 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 79 DAI1 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* 7A DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 7B DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 7C DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 7D DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 7E DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 7F DAI1 EQ5 */
--
--       { 0xFF, 0xFF, 0 }, /* 80 DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 81 DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 82 DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 83 DAI1 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* 84 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 85 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 86 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 87 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 88 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 89 DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 8A DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 8B DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 8C DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 8D DAI2 EQ1 */
--       { 0xFF, 0xFF, 0 }, /* 8E DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 8F DAI2 EQ2 */
--
--       { 0xFF, 0xFF, 0 }, /* 90 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 91 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 92 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 93 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 94 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 95 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 96 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 97 DAI2 EQ2 */
--       { 0xFF, 0xFF, 0 }, /* 98 DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 99 DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9A DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9B DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9C DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9D DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9E DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* 9F DAI2 EQ3 */
--
--       { 0xFF, 0xFF, 0 }, /* A0 DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* A1 DAI2 EQ3 */
--       { 0xFF, 0xFF, 0 }, /* A2 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A3 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A4 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A5 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A6 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A7 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A8 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* A9 DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* AA DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* AB DAI2 EQ4 */
--       { 0xFF, 0xFF, 0 }, /* AC DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* AD DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* AE DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* AF DAI2 EQ5 */
--
--       { 0xFF, 0xFF, 0 }, /* B0 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B1 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B2 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B3 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B4 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B5 DAI2 EQ5 */
--       { 0xFF, 0xFF, 0 }, /* B6 DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* B7 DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* B8 DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* B9 DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BA DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BB DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BC DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BD DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BE DAI1 biquad */
--       { 0xFF, 0xFF, 0 }, /* BF DAI1 biquad */
--
--       { 0xFF, 0xFF, 0 }, /* C0 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C1 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C2 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C3 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C4 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C5 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C6 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C7 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C8 DAI2 biquad */
--       { 0xFF, 0xFF, 0 }, /* C9 DAI2 biquad */
--       { 0x00, 0x00, 0 }, /* CA */
--       { 0x00, 0x00, 0 }, /* CB */
--       { 0x00, 0x00, 0 }, /* CC */
--       { 0x00, 0x00, 0 }, /* CD */
--       { 0x00, 0x00, 0 }, /* CE */
--       { 0x00, 0x00, 0 }, /* CF */
--
--       { 0x00, 0x00, 0 }, /* D0 */
--       { 0x00, 0x00, 0 }, /* D1 */
--       { 0x00, 0x00, 0 }, /* D2 */
--       { 0x00, 0x00, 0 }, /* D3 */
--       { 0x00, 0x00, 0 }, /* D4 */
--       { 0x00, 0x00, 0 }, /* D5 */
--       { 0x00, 0x00, 0 }, /* D6 */
--       { 0x00, 0x00, 0 }, /* D7 */
--       { 0x00, 0x00, 0 }, /* D8 */
--       { 0x00, 0x00, 0 }, /* D9 */
--       { 0x00, 0x00, 0 }, /* DA */
--       { 0x00, 0x00, 0 }, /* DB */
--       { 0x00, 0x00, 0 }, /* DC */
--       { 0x00, 0x00, 0 }, /* DD */
--       { 0x00, 0x00, 0 }, /* DE */
--       { 0x00, 0x00, 0 }, /* DF */
--
--       { 0x00, 0x00, 0 }, /* E0 */
--       { 0x00, 0x00, 0 }, /* E1 */
--       { 0x00, 0x00, 0 }, /* E2 */
--       { 0x00, 0x00, 0 }, /* E3 */
--       { 0x00, 0x00, 0 }, /* E4 */
--       { 0x00, 0x00, 0 }, /* E5 */
--       { 0x00, 0x00, 0 }, /* E6 */
--       { 0x00, 0x00, 0 }, /* E7 */
--       { 0x00, 0x00, 0 }, /* E8 */
--       { 0x00, 0x00, 0 }, /* E9 */
--       { 0x00, 0x00, 0 }, /* EA */
--       { 0x00, 0x00, 0 }, /* EB */
--       { 0x00, 0x00, 0 }, /* EC */
--       { 0x00, 0x00, 0 }, /* ED */
--       { 0x00, 0x00, 0 }, /* EE */
--       { 0x00, 0x00, 0 }, /* EF */
--
--       { 0x00, 0x00, 0 }, /* F0 */
--       { 0x00, 0x00, 0 }, /* F1 */
--       { 0x00, 0x00, 0 }, /* F2 */
--       { 0x00, 0x00, 0 }, /* F3 */
--       { 0x00, 0x00, 0 }, /* F4 */
--       { 0x00, 0x00, 0 }, /* F5 */
--       { 0x00, 0x00, 0 }, /* F6 */
--       { 0x00, 0x00, 0 }, /* F7 */
--       { 0x00, 0x00, 0 }, /* F8 */
--       { 0x00, 0x00, 0 }, /* F9 */
--       { 0x00, 0x00, 0 }, /* FA */
--       { 0x00, 0x00, 0 }, /* FB */
--       { 0x00, 0x00, 0 }, /* FC */
--       { 0x00, 0x00, 0 }, /* FD */
--       { 0x00, 0x00, 0 }, /* FE */
--       { 0xFF, 0x00, 1 }, /* FF */
--};
--
- static bool max98088_readable_register(struct device *dev, unsigned int reg)
- {
--       return max98088_access[reg].readable;
-+	switch (reg) {
-+	case M98088_REG_00_IRQ_STATUS ... 0xC9:
-+	case M98088_REG_FF_REV_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
++/**
++ * snd_soc_dapm_widget_for_each_sink_path - Iterates over all paths leaving a
++ *  widget
++ * @w: The widget
++ * @p: The path iterator variable
++ */
++#define snd_soc_dapm_widget_for_each_sink_path(w, p) \
++	list_for_each_entry(p, &w->sinks, list_source)
 +
-+static bool max98088_writeable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case M98088_REG_03_BATTERY_VOLTAGE ... 0xC9:
-+		return true;
-+	default:
-+		return false;
-+	}
- }
++/**
++ * snd_soc_dapm_widget_for_each_source_path - Iterates over all paths leading to
++ *  a widget
++ * @w: The widget
++ * @p: The path iterator variable
++ */
++#define snd_soc_dapm_widget_for_each_source_path(w, p) \
++	list_for_each_entry(p, &w->sources, list_sink)
++
+ #endif
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index 31e9b9e..1399e34 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -1298,7 +1298,7 @@ int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute)
+ 		dev_dbg(dai->dev, "Stream name=%s\n",
+ 				dai->playback_widget->name);
+ 		w = dai->playback_widget;
+-		list_for_each_entry(p, &w->sinks, list_source) {
++		snd_soc_dapm_widget_for_each_sink_path(w, p) {
+ 			if (p->connected && !p->connected(w, p->sink))
+ 				continue;
  
- static bool max98088_volatile_register(struct device *dev, unsigned int reg)
- {
--       return max98088_access[reg].vol;
-+	switch (reg) {
-+	case M98088_REG_00_IRQ_STATUS ... M98088_REG_03_BATTERY_VOLTAGE:
-+	case M98088_REG_FF_REV_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
- }
+@@ -1317,7 +1317,7 @@ int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute)
+ 		dev_dbg(dai->dev, "Stream name=%s\n",
+ 				dai->capture_widget->name);
+ 		w = dai->capture_widget;
+-		list_for_each_entry(p, &w->sources, list_sink) {
++		snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 			if (p->connected && !p->connected(w, p->sink))
+ 				continue;
  
- static const struct regmap_config max98088_regmap = {
-@@ -551,6 +295,7 @@ static const struct regmap_config max98088_regmap = {
- 	.val_bits = 8,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4586f95..ac506cf 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -193,7 +193,7 @@ static void dapm_widget_invalidate_input_paths(struct snd_soc_dapm_widget *w)
+ 	list_add_tail(&w->work_list, &list);
  
- 	.readable_reg = max98088_readable_register,
-+	.writeable_reg = max98088_writeable_register,
- 	.volatile_reg = max98088_volatile_register,
- 	.max_register = 0xff,
+ 	list_for_each_entry(w, &list, work_list) {
+-		list_for_each_entry(p, &w->sinks, list_source) {
++		snd_soc_dapm_widget_for_each_sink_path(w, p) {
+ 			if (p->is_supply || p->weak || !p->connect)
+ 				continue;
+ 			sink = p->sink;
+@@ -232,7 +232,7 @@ static void dapm_widget_invalidate_output_paths(struct snd_soc_dapm_widget *w)
+ 	list_add_tail(&w->work_list, &list);
  
+ 	list_for_each_entry(w, &list, work_list) {
+-		list_for_each_entry(p, &w->sources, list_sink) {
++		snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 			if (p->is_supply || p->weak || !p->connect)
+ 				continue;
+ 			source = p->source;
+@@ -894,7 +894,7 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
+ 	/* add kcontrol */
+ 	for (i = 0; i < w->num_kcontrols; i++) {
+ 		/* match name */
+-		list_for_each_entry(path, &w->sources, list_sink) {
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 			/* mixer/mux paths name must match control name */
+ 			if (path->name != (char *)w->kcontrol_news[i].name)
+ 				continue;
+@@ -958,12 +958,12 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
+ 		return ret;
+ 
+ 	if (w->id == snd_soc_dapm_mux) {
+-		list_for_each_entry(path, &w->sources, list_sink) {
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
+ 			if (path->name)
+ 				dapm_kcontrol_add_path(w->kcontrols[0], path);
+ 		}
+ 	} else {
+-		list_for_each_entry(path, &w->sinks, list_source) {
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
+ 			if (path->name)
+ 				dapm_kcontrol_add_path(w->kcontrols[0], path);
+ 		}
+@@ -1079,7 +1079,7 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+ 		return widget->outputs;
+ 	}
+ 
+-	list_for_each_entry(path, &widget->sinks, list_source) {
++	snd_soc_dapm_widget_for_each_sink_path(widget, path) {
+ 		DAPM_UPDATE_STAT(widget, neighbour_checks);
+ 
+ 		if (path->weak || path->is_supply)
+@@ -1126,7 +1126,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
+ 		return widget->inputs;
+ 	}
+ 
+-	list_for_each_entry(path, &widget->sources, list_sink) {
++	snd_soc_dapm_widget_for_each_source_path(widget, path) {
+ 		DAPM_UPDATE_STAT(widget, neighbour_checks);
+ 
+ 		if (path->weak || path->is_supply)
+@@ -1292,7 +1292,7 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+ 	/* Check if one of our outputs is connected */
+-	list_for_each_entry(path, &w->sinks, list_source) {
++	snd_soc_dapm_widget_for_each_sink_path(w, path) {
+ 		DAPM_UPDATE_STAT(w, neighbour_checks);
+ 
+ 		if (path->weak)
+@@ -1716,12 +1716,12 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
+ 	/* If we changed our power state perhaps our neigbours changed
+ 	 * also.
+ 	 */
+-	list_for_each_entry(path, &w->sources, list_sink)
++	snd_soc_dapm_widget_for_each_source_path(w, path)
+ 		dapm_widget_set_peer_power(path->source, power, path->connect);
+ 
+ 	/* Supplies can't affect their outputs, only their inputs */
+ 	if (!w->is_supply) {
+-		list_for_each_entry(path, &w->sinks, list_source)
++		snd_soc_dapm_widget_for_each_sink_path(w, path)
+ 			dapm_widget_set_peer_power(path->sink, power,
+ 						   path->connect);
+ 	}
+@@ -1958,7 +1958,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 				w->sname,
+ 				w->active ? "active" : "inactive");
+ 
+-	list_for_each_entry(p, &w->sources, list_sink) {
++	snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 		if (p->connected && !p->connected(w, p->source))
+ 			continue;
+ 
+@@ -1968,7 +1968,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 					p->name ? p->name : "static",
+ 					p->source->name);
+ 	}
+-	list_for_each_entry(p, &w->sinks, list_source) {
++	snd_soc_dapm_widget_for_each_sink_path(w, p) {
+ 		if (p->connected && !p->connected(w, p->sink))
+ 			continue;
+ 
+@@ -2426,7 +2426,7 @@ static void dapm_update_widget_flags(struct snd_soc_dapm_widget *w)
+ 		if (w->dapm->card->fully_routed)
+ 			break;
+ 		w->is_source = 1;
+-		list_for_each_entry(p, &w->sources, list_sink) {
++		snd_soc_dapm_widget_for_each_source_path(w, p) {
+ 			if (p->source->id == snd_soc_dapm_micbias ||
+ 				p->source->id == snd_soc_dapm_mic ||
+ 				p->source->id == snd_soc_dapm_line ||
+@@ -2441,7 +2441,7 @@ static void dapm_update_widget_flags(struct snd_soc_dapm_widget *w)
+ 		if (w->dapm->card->fully_routed)
+ 			break;
+ 		w->is_sink = 1;
+-		list_for_each_entry(p, &w->sinks, list_source) {
++		snd_soc_dapm_widget_for_each_sink_path(w, p) {
+ 			if (p->sink->id == snd_soc_dapm_spk ||
+ 				p->sink->id == snd_soc_dapm_hp ||
+ 				p->sink->id == snd_soc_dapm_line ||
+@@ -2841,7 +2841,7 @@ static int snd_soc_dapm_weak_route(struct snd_soc_dapm_context *dapm,
+ 		dev_warn(dapm->dev, "ASoC: Ignoring control for weak route %s->%s\n",
+ 			 route->source, route->sink);
+ 
+-	list_for_each_entry(path, &source->sinks, list_source) {
++	snd_soc_dapm_widget_for_each_sink_path(source, path) {
+ 		if (path->sink == sink) {
+ 			path->weak = 1;
+ 			count++;
 -- 
 2.1.4
