@@ -1,73 +1,90 @@
-From: Javier Martinez Canillas <javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Subject: [PATCH 27/27] i2c: (RFC, don't apply) report OF style modalias when probing using DT
-Date: Thu, 30 Jul 2015 18:18:52 +0200
-Message-ID: <1438273132-20926-28-git-send-email-javier@osg.samsung.com>
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Subject: [PATCH 20/27] ASoC: Export OF module alias information in missing codec drivers
+Date: Thu, 30 Jul 2015 18:18:45 +0200
+Message-ID: <1438273132-20926-21-git-send-email-javier@osg.samsung.com>
 References: <1438273132-20926-1-git-send-email-javier@osg.samsung.com>
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1438273132-20926-1-git-send-email-javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Javier Martinez Canillas <javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chanwoo Choi <cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Tomi Valkeinen <tomi.valkeinen-l0cyMroinI0@public.gmane.org>, lm-sensors-GZX6beZjE8VD60Wz+7aTrA@public.gmane.org, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mauro Carvalho Chehab <mchehab-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgird>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1438273132-20926-1-git-send-email-javier@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Javier Martinez Canillas <javier@osg.samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-An I2C driver that supports both OF and legacy platforms, will have
-both a OF and I2C ID table. This means that when built as a module,
-the aliases will be filled from both tables but currently always an
-alias of the form i2c:<deviceId> is reported, e.g:
+The I2C core always reports the MODALIAS uevent as "i2c:<client name"
+regardless if the driver was matched using the I2C id_table or the
+of_match_table. So technically there's no need for a driver to export
+the OF table since currently it's not used.
 
-$ cat /sys/class/i2c-adapter/i2c-8/8-004b/modalias
-i2c:maxtouch
+In fact, the I2C device ID table is mandatory for I2C drivers since
+a i2c_device_id is passed to the driver's probe function even if the
+I2C core used the OF table to match the driver.
 
-So if a device is probed by matching its compatible string, udev can
-get a MODALIAS uevent env var that doesn't match with one of the valid
-aliases so the module won't be auto-loaded.
+And since the I2C core uses different tables, OF-only drivers needs to
+have duplicated data that has to be kept in sync and also the dev node
+compatible manufacturer prefix is stripped when reporting the MODALIAS.
 
-This patch changes the I2C core to report a OF related MODALIAS uevent
-(of:N*T*C) env var instead so the module can be auto-loaded and also
-report the correct alias using sysfs:
+To avoid the above, the I2C core behavior may be changed in the future
+to not require an I2C device table for OF-only drivers and report the
+OF module alias. So, it's better to also export the OF table to prevent
+breaking module autoloading if that happens.
 
-$ cat /sys/class/i2c-adapter/i2c-8/8-004b/modalias
-of:NtrackpadT<NULL>Catmel,maxtouch
-
-Signed-off-by: Javier Martinez Canillas <javier-JPH+aEBZ4P+UEJcrhfAQsw@public.gmane.org>
-
-
+Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
 ---
 
- drivers/i2c/i2c-core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/da9055.c | 1 +
+ sound/soc/codecs/wm8510.c | 1 +
+ sound/soc/codecs/wm8523.c | 1 +
+ sound/soc/codecs/wm8580.c | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
-index 92dddfeb3f39..c0668c2ed9da 100644
---- a/drivers/i2c/i2c-core.c
-+++ b/drivers/i2c/i2c-core.c
-@@ -489,6 +489,10 @@ static int i2c_device_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	struct i2c_client	*client = to_i2c_client(dev);
- 	int rc;
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index 04c76f37e1fd..19635d830b47 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1533,6 +1533,7 @@ static const struct of_device_id da9055_of_match[] = {
+ 	{ .compatible = "dlg,da9055-codec", },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, da9055_of_match);
  
-+	rc = of_device_uevent_modalias(dev, env);
-+	if (rc != -ENODEV)
-+		return rc;
-+
- 	rc = acpi_device_uevent_modalias(dev, env);
- 	if (rc != -ENODEV)
- 		return rc;
-@@ -726,6 +730,10 @@ show_modalias(struct device *dev, struct device_attribute *attr, char *buf)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	int len;
+ /* I2C codec control layer */
+ static struct i2c_driver da9055_i2c_driver = {
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 3cff5a699e57..b098a83a44d8 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -598,6 +598,7 @@ static const struct of_device_id wm8510_of_match[] = {
+ 	{ .compatible = "wlf,wm8510" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, wm8510_of_match);
  
-+	len = of_device_get_modalias(dev, buf, PAGE_SIZE - 1);
-+	if (len != -ENODEV)
-+		return len;
-+
- 	len = acpi_device_modalias(dev, buf, PAGE_SIZE -1);
- 	if (len != -ENODEV)
- 		return len;
+ static const struct regmap_config wm8510_regmap = {
+ 	.reg_bits = 7,
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index 5f8fde56e68b..aa287a3965e7 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -430,6 +430,7 @@ static const struct of_device_id wm8523_of_match[] = {
+ 	{ .compatible = "wlf,wm8523" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, wm8523_of_match);
+ 
+ static const struct regmap_config wm8523_regmap = {
+ 	.reg_bits = 8,
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index abf60355f7f7..66602bf02f6e 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -916,6 +916,7 @@ static const struct of_device_id wm8580_of_match[] = {
+ 	{ .compatible = "wlf,wm8580" },
+ 	{ },
+ };
++MODULE_DEVICE_TABLE(of, wm8580_of_match);
+ 
+ static const struct regmap_config wm8580_regmap = {
+ 	.reg_bits = 7,
 -- 
 2.4.3
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
