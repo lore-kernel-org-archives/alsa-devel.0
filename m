@@ -1,117 +1,77 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - Incorrect default pin
- assignment for external base speaker and external microphone not working
-Date: Thu, 30 Jul 2015 11:05:40 +0800
-Message-ID: <CAN8cciYzDD1+MoDO+=P5Wt3xTU+m8MSQ+hVZOxXab-LooZ9ajw@mail.gmail.com>
-References: <CALUcmU=aB1oXFA7E3A2uPiu_3+--9OqkQPvo3hq0JCtNcPY5UA@mail.gmail.com>
- <CAN8cciZZ+akLsv=oz3SN0YD-mHhUJ+WZujQmTsEbw_PMgiVYYw@mail.gmail.com>
- <CALUcmUkeDRgu0+kzCVp_RP1ZBkFRQbifU456HNY7vf9H_SHhuQ@mail.gmail.com>
- <CAN8cciYgkzGxdUwi0DbifZRsGDvwPwuVMvaKVJ-k-kWAdzwQMw@mail.gmail.com>
- <CALUcmUmR3XCaQFjEbPtsPYS6QcRdkWFdtry+x3uWP7qLE07ePg@mail.gmail.com>
- <CAN8cciZ6GAWoad8OMzJOFzUwAQkjJAUS86NV3EbJNpvC3WhPow@mail.gmail.com>
- <CALUcmUk6niiT2aU2e4FcPDk_rxOf54F-g10ePCjgTQg38zuP6g@mail.gmail.com>
- <CAN8cciajhQsvasRPJuBGp9Hsj5vaiaczczDPAz5dR03UAad2Sg@mail.gmail.com>
- <CALUcmU=vP4B=agrO6XDhsPiPOTCnqudtNsT0W49YheHn9ypzDg@mail.gmail.com>
- <CAN8cciZG+ZmSzVh4v2giQh4vnJ1a7dbYvY6zcfeuQy0ephWUww@mail.gmail.com>
- <CALUcmUmdhehmMZZykw0SLsKRbswOq=mti6hfgGZrTryDtKc7MA@mail.gmail.com>
- <CAN8cciaGZkrHOsD7KDX7sfXTRdJEVwwGLi-G+XcwHUxeGsAVDw@mail.gmail.com>
- <CALUcmU=fh2O+8COLPv1GXneomk2=XS_ES+LDK8yoqaEWXDrszQ@mail.gmail.com>
- <CAN8ccibYUjoDUe+UhNesjEpD1t2rRg8TUbmtr-3kZuMGDXMoMA@mail.gmail.com>
- <CALUcmUn31z0g5R9s8rDbJCzHtvL9nqFeFWaHSG=DBBXTo3YkRg@mail.gmail.com>
- <CAN8cciawckV75ZoRRCYyaF_h1WNvDqLqtYw8puKu2FoXS-=8RA@mail.gmail.com>
- <CALUcmUnhWJQL6TyQMsMEF9W03MitBVtRhAm-ROKO+jbgxKX6vA@mail.gmail.com>
- <CAN8cciaZAv2sNOpsLvEAih1h34QGyVh9s4LByPzMWa+Y3iwPSg@mail.gmail.com>
- <CALUcmUnsMhwpRfWqak-bfoKvAXCLjY-59MZONLx7YC-B+9MqaQ@mail.gmail.com>
- <CAN8cciaXsrrd6oZbywz6Db2AZmuxkDTtwn2_t6s3Bor+R7bVng@mail.gmail.com>
- <CALUcmUk_D30V29YM3gHCXbC3zqiHwBKmGziJA8DkEDojQM8mLA@mail.gmail.com>
+From: Rob Herring <robherring2@gmail.com>
+Subject: Re: [PATCH v2 0/22] On-demand device probing
+Date: Wed, 29 Jul 2015 22:06:02 -0500
+Message-ID: <CAL_Jsq+2q=c6JbER8EMOGFtR=a6gvHermb8DRo9dKyj6fvdnXg@mail.gmail.com>
+References: <1438089593-7696-1-git-send-email-tomeu.vizoso@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com
- [209.85.214.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 731EB260687
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 05:05:41 +0200 (CEST)
-Received: by obdeg2 with SMTP id eg2so21814266obd.0
- for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 20:05:40 -0700 (PDT)
-In-Reply-To: <CALUcmUk_D30V29YM3gHCXbC3zqiHwBKmGziJA8DkEDojQM8mLA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arthur Borsboom <arthurborsboom@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1438089593-7696-1-git-send-email-tomeu.vizoso@collabora.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Linux PWM List <linux-pwm@vger.kernel.org>, David Airlie <airlied@linux.ie>, Stephen Boyd <sboyd@codeaurora.org>, Linus Walleij <linus.walleij@linaro.org>, Linux-ALSA <alsa-devel@alsa-project.org>, dri-devel <dri-devel@lists.freedesktop.org>, Sebastian Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org, Alexandre Courbot <gnurou@gmail.com>, =?UTF-8?Q?Terje_Bergstr=C3=B6m?= <tbergstrom@nvidia.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Vinod Koul <vinod.koul@intel.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, Kishon Vijay Abraham I <kishon@ti.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
->
-> "... after you replaced speakers.conf and lineout.conf by subwoofer.conf
-..."
->
-> I must have missed something again. I was under the impression that
-changing the configuration files was a workaround when the patch would be
-insufficient. Later today or tomorrow, I will reread this part and apply
-changes to the configuration files and report back.
-
-  Ports:
-                analog-output-speaker: Speakers (priority: 10000)
-                analog-output-headphones: Headphones (priority: 9000, not
-available)
-        Active Port: analog-output-speaker
-
-
-When you select model=dell-headset-multi, the driver create "Headphone Mic
-Jack" kctl with type 1 which is SND_JACK_HEADPHONE
-
-type 2 is SND_JACK_MICROPHONE
-
-type 3 is SND_JACK_HEADSET but hda jack does not use this type
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/sound/jack.h
-
-JACK created Headphone Mic, type 1
-CTRL: add: Headphone Mic Jack:0
-JACK report Headphone Mic, status 0
-JACK created Headset Mic Phantom, type 2
-CTRL: add: Headset Mic Phantom Jack:0
-JACK report Headset Mic Phantom, status 2
-CTL Notify: Headset Mic Phantom Jack:0, mask=1
-JACK created Internal Mic Phantom, type 2
-CTRL: add: Internal Mic Phantom Jack:0
-JACK report Internal Mic Phantom, status 2
-CTL Notify: Internal Mic Phantom Jack:0, mask=1
-JACK created Speaker Front Phantom, type 4
-CTRL: add: Speaker Front Phantom Jack:0
-JACK report Speaker Front Phantom, status 4
-CTL Notify: Speaker Front Phantom Jack:0, mask=1
-JACK created External Subwoofer, type 4
-CTRL: add: External Subwoofer Jack:0
-
-The problem of hda jack kctls are those retaskable I/O jack controls
-
-1) multi io jacks in those 3 stack desktop
-2) headphone/mic jack in asus netbook
-3) dell-headset-multi combo jack
-
-the role of the jack in 1) change from input to output when "Channel mode"
-change from "2ch" to "4ch" or "6ch"
-
-the role of the jack in 2) and 3) change from Output to Input when "Capture
-Source" change from Internal Mic/Headset Mic to Headphone Mic
-
-In your case, Headphone Mic Jack kctl return the presence of HP jack except
-when the combo jack is set to support conventional mic (i.e. when the
-driver change pin ctl of hp pin node 0x15 to zero and set pin ctl of mic
-pin to IN),
-
-The driver already unmute the internal speaker when you change capture
-source to Headphone Mic
-
-The only point is whether pulseaudio still regard this Headphone Mic Jack
-as the availability of the headphone port when the capture source is
-Headphone Mic
-
-http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/?id=ca4942e89cf462e5f8c36ca9b8b689879083af6b
+T24gVHVlLCBKdWwgMjgsIDIwMTUgYXQgODoxOSBBTSwgVG9tZXUgVml6b3NvCjx0b21ldS52aXpv
+c29AY29sbGFib3JhLmNvbT4gd3JvdGU6Cj4gSGVsbG8sCj4KPiBJIGhhdmUgYSBwcm9ibGVtIHdp
+dGggdGhlIHBhbmVsIG9uIG15IFRlZ3JhIENocm9tZWJvb2sgdGFraW5nIGxvbmdlcgo+IHRoYW4g
+ZXhwZWN0ZWQgdG8gYmUgcmVhZHkgZHVyaW5nIGJvb3QgKFN0w6lwaGFuZSBNYXJjaGVzaW4gcmVw
+b3J0ZWQgd2hhdAo+IGlzIGJhc2ljYWxseSB0aGUgc2FtZSBpc3N1ZSBpbiBbMF0pLCBhbmQgaGF2
+ZSBsb29rZWQgaW50byBvcmRlcmVkCj4gcHJvYmluZyBhcyBhIGJldHRlciB3YXkgb2Ygc29sdmlu
+ZyB0aGlzIHRoYW4gbW92aW5nIG5vZGVzIGFyb3VuZCBpbiB0aGUKPiBEVCBvciBwbGF5aW5nIHdp
+dGggaW5pdGNhbGwgbGV2ZWxzIGFuZCBsaW5raW5nIG9yZGVyLgo+Cj4gV2hpbGUgcmVhZGluZyB0
+aGUgdGhyZWFkIFsxXSB0aGF0IEFsZXhhbmRlciBIb2xsZXIgc3RhcnRlZCB3aXRoIGhpcwo+IHNl
+cmllcyB0byBtYWtlIHByb2Jpbmcgb3JkZXIgZGV0ZXJtaW5pc3RpYywgaXQgb2NjdXJyZWQgdG8g
+bWUgdGhhdCBpdAo+IHNob3VsZCBiZSBwb3NzaWJsZSB0byBhY2hpZXZlIHRoZSBzYW1lIGJ5IHBy
+b2JpbmcgZGV2aWNlcyBhcyB0aGV5IGFyZQo+IHJlZmVyZW5jZWQgYnkgb3RoZXIgZGV2aWNlcy4K
+Pgo+IFRoaXMgYmFzaWNhbGx5IHJldXNlcyB0aGUgaW5mb3JtYXRpb24gdGhhdCBpcyBhbHJlYWR5
+IGltcGxpY2l0IGluIHRoZQo+IHByb2JlKCkgaW1wbGVtZW50YXRpb25zLCBzYXZpbmcgdXMgZnJv
+bSByZWZhY3RvcmluZyBleGlzdGluZyBkcml2ZXJzIG9yCj4gYWRkaW5nIGluZm9ybWF0aW9uIHRv
+IERUQnMuCj4KPiBEdXJpbmcgcmV2aWV3IG9mIHYxIG9mIHRoaXMgc2VyaWVzIExpbnVzIFdhbGxl
+aWogc3VnZ2VzdGVkIHRoYXQgaXQKPiBzaG91bGQgYmUgdGhlIGRldmljZSBkcml2ZXIgY29yZSB0
+byBtYWtlIHN1cmUgdGhhdCBkZXBlbmRlbmNpZXMgYXJlCj4gcmVhZHkgYmVmb3JlIHByb2Jpbmcg
+YSBkZXZpY2UuIEkgZ2F2ZSB0aGlzIGlkZWEgYSB0cnkgWzJdIGJ1dCBNYXJrIEJyb3duCj4gcG9p
+bnRlZCBvdXQgdG8gdGhlIGxvZ2ljIGR1cGxpY2F0aW9uIGJldHdlZW4gdGhlIHJlc291cmNlIGFj
+cXVpc2l0aW9uCj4gYW5kIGRlcGVuZGVuY3kgZGlzY292ZXJ5IGNvZGUgcGF0aHMgKHRob3VnaCBJ
+IHRoaW5rIGl0J3MgZmFpcmx5IG1pbm9yKS4KPgo+IFRvIGFkZHJlc3MgdGhhdCBjb2RlIGR1cGxp
+Y2F0aW9uIEkgZXhwZXJpbWVudGVkIHdpdGggQXJuZCdzIGRldm1fcHJvYmUKPiBbM10gY29uY2Vw
+dCBvZiBoYXZpbmcgZHJpdmVycyBkZWNsYXJlIHRoZWlyIGRlcGVuZGVuY2llcyBpbnN0ZWFkIG9m
+Cj4gYWNxdWlyaW5nIHRoZW0gZHVyaW5nIHByb2JlLCBhbmQgd2hpbGUgaXQgd29ya2VkIFs0XSwg
+SSBkb24ndCB0aGluayB3ZQo+IGVuZCB1cCB3aW5uaW5nIGFueXRoaW5nIHdoZW4gY29tcGFyZWQg
+dG8ganVzdCBwcm9iaW5nIGRldmljZXMgb24tZGVtYW5kCj4gZnJvbSByZXNvdXJjZSBnZXR0ZXJz
+Lgo+Cj4gT25lIHJlbWFpbmluZyBvYmplY3Rpb24gaXMgdG8gdGhlICJzcHJpbmtsaW5nIiBvZiBj
+YWxscyB0bwo+IGZ3bm9kZV9lbnN1cmVfZGV2aWNlKCkgaW4gdGhlIHJlc291cmNlIGdldHRlcnMg
+b2YgZWFjaCBzdWJzeXN0ZW0sIGJ1dCBJCj4gdGhpbmsgaXQncyB0aGUgcmlnaHQgdGhpbmcgdG8g
+ZG8gZ2l2ZW4gdGhhdCB0aGUgc3RvcmFnZSBvZiByZXNvdXJjZXMgaXMKPiBjdXJyZW50bHkgc3Vi
+c3lzdGVtLXNwZWNpZmljLgoKU2VlbXMgbGlrZSBhIG1pbm9yIGNoYW5nZSB0byBtZS4KCj4gV2Ug
+Y291bGQgYXZvaWQgdGhlIGFib3ZlIGJ5IG1vdmluZyByZXNvdXJjZSBzdG9yYWdlIGludG8gdGhl
+IGNvcmUsIGJ1dCBJCj4gZG9uJ3QgdGhpbmsgdGhlcmUncyBhIGNvbXBlbGxpbmcgY2FzZSBmb3Ig
+dGhhdC4KPgo+IEkgaGF2ZSB0ZXN0ZWQgdGhpcyBvbiBib2FyZHMgd2l0aCBUZWdyYSwgaU1YLjYs
+IEV4eW5vcyBhbmQgT01BUCBTb0NzLAo+IGFuZCB0aGVzZSBwYXRjaGVzIHdlcmUgZW5vdWdoIHRv
+IGVsaW1pbmF0ZSBhbGwgdGhlIGRlZmVycmVkIHByb2Jlcwo+IChleGNlcHQgb25lIGluIFBhbmRh
+Qm9hcmQgYmVjYXVzZSBvbWFwX2RtYV9zeXN0ZW0gZG9lc24ndCBoYXZlIGEKPiBmaXJtd2FyZSBu
+b2RlIGFzIG9mIHlldCkuCj4KPiBXaXRoIHRoaXMgc2VyaWVzIEkgZ2V0IHRoZSBrZXJuZWwgdG8g
+b3V0cHV0IHRvIHRoZSBwYW5lbCBpbiAwLjVzLAo+IGluc3RlYWQgb2YgMi44cy4KCkdlbmVyYWxs
+eSwgSSB0aGluayB0aGlzIGxvb2tzIHByZXR0eSBnb29kLiBJdCBpcyBzaW1wbGUgYW5kIHRoZSBl
+cnJvcgpwYXRoIGlzIHNpbXBseSBmYWxsaW5nIGJhY2sgdG8gZGVmZXJyZWQgcHJvYmUuCgpPbmUg
+b3ZlcmFsbCBjb21tZW50IGlzIEknbSBub3Qgc28gc3VyZSBpZiBmd25vZGVfZW5zdXJlX2Rldmlj
+ZQpzaG91bGRuJ3QganVzdCBiZSBvZl9lbnN1cmVfZGV2aWNlLiBBdCBsZWFzdCBjdXJyZW50bHks
+IGl0IGxvb2tzIGxpa2UKYWxsIHRoZSBjYWxsaW5nIGxvY2F0aW9ucyBhcmUgRFQgc3BlY2lmaWMg
+ZnVuY3Rpb25zIGFueXdheS4gVGhlcmUncwp2ZXJ5IGxpdHRsZSBsb2dpYyB3aXRoaW4gdGhlIGZ1
+bmN0aW9uIHRvIHJlYWxseSBiZW5lZml0IHNoYXJpbmcgd2l0aApBQ1BJLiBJdCBpcyBiYXNpY2Fs
+bHkganVzdCBhIGNhbGwgdG8gb2ZfcGxhdGZvcm1fZGV2aWNlX2ZpbmQgYW5kIHRoZW4KYnVzX3By
+b2JlX2RldmljZS4gSSBleHBlY3QgdGhlIGdldCBmdW5jdGlvbnMgd2lsbCBhbHdheXMgY2FsbCBp
+bnRvCkRUL0FDUEkgc3BlY2lmaWMgZnVuY3Rpb25zIHdoaWNoIGNhbiB0aGVuIGNhbGwgdGhlIGZp
+cm13YXJlIHNwZWNpZmljCmRldmljZSBmaW5kIGZ1bmN0aW9uLgoKUm9iCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxp
+bmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
