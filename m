@@ -1,278 +1,137 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Add pin quirk for the headset
- mic jack detection on Dell laptop
-Date: Thu, 30 Jul 2015 18:11:00 +0800
-Message-ID: <55B9F834.6080607@canonical.com>
-References: <1437993271-12992-1-git-send-email-woodrow.shen@canonical.com> <s5hvbd5x47z.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
+ or userspace disable rewinds
+Date: Thu, 30 Jul 2015 08:46:55 -0500
+Message-ID: <55BA2ACF.5080307@linux.intel.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <55A14D23.3070600@gmail.com> <55B78F74.1020601@linux.intel.com>
+ <55B7A311.5070905@gmail.com> <55B91171.2060809@linux.intel.com>
+ <55B9C00A.4080507@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hvbd5x47z.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, woodrow.shen@canonical.com
-Cc: alsa-devel@alsa-project.org, 1478497@bugs.launchpad.net, stable@vger.kernel.org, david.henningsson@canonical.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F306F260815
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 15:47:16 +0200 (CEST)
+In-Reply-To: <55B9C00A.4080507@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/27/2015 06:52 PM, Takashi Iwai wrote:
-> On Mon, 27 Jul 2015 12:34:31 +0200,
-> woodrow.shen@canonical.com wrote:
->> From: Woodrow Shen <woodrow.shen@canonical.com>
->>
->> The new Dell laptop with codec 256 can't detect headset mic when headset was
->> inserted on the machine. From alsa-info, we check init_pin_configs and need to
->> define the new register value for pin 0x1d & 0x1e because the original macro
->> ALC256_STANDARD_PINS can't match pin definition. Also, the macro ALC256_STANDARD_PINS
->> is simplified by removing them. This makes headset mic works on laptop.
->>
->> Codec: Realtek ALC256
->> Vendor Id: 0x10ec0256
->> Subsystem Id: 0x102806f2
->>
->> BugLink: https://bugs.launchpad.net/bugs/1478497
->> Signed-off-by: Woodrow Shen <woodrow.shen@canonical.com>
-> I applied this as is now.  But the code there is already messy, and I
-> wonder whether we should treat all 0x4xxxxxxx equally.  So far, all
-> pincfgs are regarded as a kind of fingerprint.  But, judging from the
-> actual values, the difference of 0x4xxxxxxx might be just a leftover
-> of wastes by BIOS programmers.
->
-> I don't mind any other way, but a sane cleanup would be appreciated.
->
->
-> thanks,
->
-> Takashi
+ On 07/30/2015 01:11 AM, Alexander E. Patrakov wrote:
+> 29.07.2015 22:46, Pierre-Louis Bossart wrote:
+>> On 7/28/15 10:43 AM, Alexander E. Patrakov wrote:
+>>> 28.07.2015 19:19, Pierre-Louis Bossart wrote:
+>>>> On 7/11/15 12:06 PM, Alexander E. Patrakov wrote:
+>>> 
+>>>>> 3. I have not seen any justification for the drastic measure
+>>>>> of making a DMA-based device completely unrewindable. Maybe a
+>>>>> more polite "please make this a batch/blocktransfer card"
+>>>>> request, thus disallowing only sub-period rewinds, would
+>>>>> still be useful for powersaving, without killing dmix.
+>>>>> 
+>>>>> 4. If this "no rewinds" mode is not made the default, then
+>>>>> exactly nobody will use it. Everyone except sound servers
+>>>>> opens the default device with the default flags. I understand
+>>>>> the potential to break existing userspace, especially
+>>>>> PulseAudio, but we really need to think more here.
+>>>> 
+>>>> Not sure I understand the issue. when a new functionality is
+>>>> added it takes time to be adopted. If we can push it in sound
+>>>> servers first then it creates a wide pool of users from day1.
+>>> 
+>>> The issue is that the proposed functionality, in the currently
+>>> proposed "I promise to never rewind" form, is nearly useless by
+>>> its very nature for any sound server that cares about power
+>>> consumption significantly more than dmix does. It is indeed
+>>> usable by JACK (by its design, it doesn't rewind, and uses low
+>>> latency) and CRAS (which currently doesn't rewind, but I am not
+>>> sure whether this is a bug or a deliberate decision based on
+>>> non-public measurements of extra power savings that "rewinds + 
+>>> high latency" would allow).
+>>> 
+>>> As I have already explained, dmix, when mixing, writes to the
+>>> hardware buffer multiple times, which is equivalent to rewinding.
+>>> PulseAudio uses rewinds for a very specific purpose - to avoid
+>>> CPU wakeups in the common "nothing unexpected happened" case,
+>>> i.e. to allow very high average latency while keeping the latency
+>>> of reaction to unexpected events low. So, by convincing
+>>> PulseAudio to never rewind and to tell the driver about this
+>>> fact, you can save some power in the card, but (if the proponents
+>>> of rewinds are right - see my earlier request for non-public 
+>>> information) will waste way more power due to the need for much
+>>> more frequent CPU wakeups ("cannot rewind but have to react to
+>>> unexpected events within 20 ms" = "must wake up every 20 ms").
+>>> 
+>>> The only cases where this flag can be useful for sound servers
+>>> are:
+>>> 
+>>> 1. Sound servers that already, by design, always waste CPU power
+>>> by running at low latency;
+>> 
+>> Your classification is not exhaustive enough. You need to take
+>> into account sound servers that have two outputs per endpoint, one
+>> for low-latency and one for low-power/deep-buffer with a
+>> DSP/hardware mixer. Power is also no longer directly linked to
+>> wakeup rates only but also to DDR access patterns. When a larger
+>> on-chip buffer is available, disabling rewinds does let the
+>> hardware know it can safely fetch data in bigger chunks rather
+>> than use small data bursts. This sort of capabilities is becoming
+>> prevalent these days, and not just on Intel platforms - see e.g.
+>> Nexus5/9 devices -, and maybe PulseAudio and friends need to evolve
+>> to make use of these resources rather than stay the course with
+>> single output and rewind mechanisms that prevent power
+>> optimizations on newer platforms.
+> 
+> OK, I see some new points there, but still no full picture. My point
+> still is: deep (>= 30-40 ms) buffer without rewinds or without any
+> other means to seamlessly cancel and replace what's there (up to at
+> certain unrewindable latency, i.e. the same 30-40 ms, that a human
+> won't object to) is absolutely useless to any current or future sound
+> server.
+> 
+> So, in your example, "I promise to never rewind" flag can definitely
+> be set for a low-latency endpoint, but not for the other one. That
+> other endpoint would benefit from a way to say "I promise to never
+> rewind closer than X samples to the hardware pointer" API, which youen
+> have flagged as a separate discussion. I would also not object to
+> that endpoint becoming a batch/blocktransfer PCM. 
 
-Something like below?
+You are using low-latency with two different meanings : one is a fixed low-latency for music applications, where rewinds are indeed useless. But there is also a case for variable latencies when you are sharing the same output between apps having different needs, and that could also be used with very limited buffering.
 
-remove all 0x4xxxxxxx from pin quirk table
-rewrite the pin_config_match()
-  - first, compare all pins in a quirk table with the corresponding pin 
-on the machine, if all pins get a matching,
-  - second, compare all pins on the machine with the corresponding pin 
-in the quirk table
-          if the pin is non-0x4xxxxxxx, it needs match a corresponding 
-pin in the quirk table, otherwise, it return false
-          if the pin is 0x4xxxxxxx, the corresponding pin in the quirk 
-table is 0x4xxxxxxxx as well, it matches; if the corresponding pin in 
-the quirk table is non-0x4xxxxxxx, it return false
-          if the pin is 0x4xxxxxxx, and can't find the corresponding pin 
-in the quirk table, it matches.
+Also for the deep-buffer solution, as long as you dedicate this output to a single media consumption app (playback, video) then you have no need for rewinds.
 
+In other words, whenever an output is used in a exclusive manner without being shared between apps having different latency needs then you can optimize. For everything else keep using rewinds with the max_burst information to know by how much you can rewind (and accepting that some power optimizations linked to data transfers will not happen)
 
-
-
-diff --git a/sound/pci/hda/hda_auto_parser.c 
-b/sound/pci/hda/hda_auto_parser.c
-index 03b7399..2639fc3 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -887,11 +887,38 @@ EXPORT_SYMBOL_GPL(snd_hda_apply_fixup);
-  static bool pin_config_match(struct hda_codec *codec,
-                              const struct hda_pintbl *pins)
-  {
--       for (; pins->nid; pins++) {
--               u32 def_conf = snd_hda_codec_get_pincfg(codec, pins->nid);
--               if (pins->val != def_conf)
-+       const struct hda_pintbl *t_pins = pins;
-+       int i;
-+
-+       for (; t_pins->nid; t_pins++) {
-+               u32 def_conf = snd_hda_codec_get_pincfg(codec, t_pins->nid);
-+               if (t_pins->val != def_conf)
-+                       return false;
-+       }
-+
-+       for (i = 0; i < codec->init_pins.used; i++) {
-+               struct hda_pincfg *pin = 
-snd_array_elem(&codec->init_pins, i);
-+               hda_nid_t nid = pin->nid;
-+               u32 cfg = pin->cfg;
-+               int found;
-+
-+               t_pins = pins;
-+               found = 0;
-+               for (; t_pins->nid; t_pins++) {
-+                       if (t_pins->nid == nid) {
-+                               found = 1;
-+                               if (t_pins->val == cfg)
-+                                       break;
-+                               else if ((cfg & 0xf0000000) == 
-0x40000000 && (t_pins->val & 0xf0000000) == 0x40000000)
-+                                       break;
-+                               else
-+                                       return false;
-+                       }
-+               }
-+               if (!found && (cfg & 0xf0000000) != 0x40000000)
-                         return false;
-         }
-+
-         return true;
-  }
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 18ae17e..0fda442 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5386,399 +5386,207 @@ static const struct hda_model_fixup 
-alc269_fixup_models[] = {
-         {}
-  };
-
--#define ALC255_STANDARD_PINS \
--       {0x18, 0x411111f0}, \
--       {0x19, 0x411111f0}, \
--       {0x1a, 0x411111f0}, \
--       {0x1b, 0x411111f0}, \
--       {0x1e, 0x411111f0}
--
-  #define ALC256_STANDARD_PINS \
-         {0x12, 0x90a60140}, \
-         {0x14, 0x90170110}, \
--       {0x19, 0x411111f0}, \
--       {0x1a, 0x411111f0}, \
--       {0x1b, 0x411111f0}, \
-         {0x21, 0x02211020}
-
-  #define ALC282_STANDARD_PINS \
--       {0x14, 0x90170110}, \
--       {0x18, 0x411111f0}, \
--       {0x1a, 0x411111f0}, \
--       {0x1b, 0x411111f0}, \
--       {0x1e, 0x411111f0}
--
--#define ALC288_STANDARD_PINS \
--       {0x17, 0x411111f0}, \
--       {0x18, 0x411111f0}, \
--       {0x19, 0x411111f0}, \
--       {0x1a, 0x411111f0}, \
--       {0x1e, 0x411111f0}
-+       {0x14, 0x90170110}
-
-  #define ALC290_STANDARD_PINS \
--       {0x12, 0x99a30130}, \
--       {0x13, 0x40000000}, \
--       {0x16, 0x411111f0}, \
--       {0x17, 0x411111f0}, \
--       {0x19, 0x411111f0}, \
--       {0x1b, 0x411111f0}, \
--       {0x1e, 0x411111f0}
-+       {0x12, 0x99a30130}
-
-  #define ALC292_STANDARD_PINS \
-         {0x14, 0x90170110}, \
--       {0x15, 0x0221401f}, \
--       {0x1a, 0x411111f0}, \
--       {0x1b, 0x411111f0}, \
--       {0x1d, 0x40700001}
--
--#define ALC298_STANDARD_PINS \
--       {0x18, 0x411111f0}, \
--       {0x19, 0x411111f0}, \
--       {0x1a, 0x411111f0}, \
--       {0x1e, 0x411111f0}, \
--       {0x1f, 0x411111f0}
-+       {0x15, 0x0221401f}
-
-  static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
-         SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", 
-ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
--               ALC255_STANDARD_PINS,
--               {0x12, 0x40300000},
-                 {0x14, 0x90170110},
--               {0x17, 0x411111f0},
--               {0x1d, 0x40538029},
-                 {0x21, 0x02211020}),
-         SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", 
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--               ALC255_STANDARD_PINS,
-                 {0x12, 0x90a60140},
-                 {0x14, 0x90170110},
--               {0x17, 0x40000000},
--               {0x1d, 0x40700001},
-                 {0x21, 0x02211020}),
-         SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", 
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--               ALC255_STANDARD_PINS,
-                 {0x12, 0x90a60160},
-                 {0x14, 0x90170120},
--               {0x17, 0x40000000},
--               {0x1d, 0x40700001},
-                 {0x21, 0x02211030}),
-         SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", 
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--               {0x12, 0x40000000},
-                 {0x14, 0x90170130},
--               {0x17, 0x411111f0},
--               {0x18, 0x411111f0},
--               {0x19, 0x411111f0},
--               {0x1a, 0x411111f0},
-                 {0x1b, 0x01014020},
--               {0x1d, 0x4054c029},
--               {0x1e, 0x411111f0},
-                 {0x21, 0x0221103f}),
-         SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", 
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--               {0x12, 0x40000000},
-                 {0x14, 0x90170150},
--               {0x17, 0x411111f0},
--               {0x18, 0x411111f0},
--               {0x19, 0x411111f0},
--               {0x1a, 0x411111f0},
-                 {0x1b, 0x02011020},
--               {0x1d, 0x4054c029},
--               {0x1e, 0x411111f0},
-                 {0x21, 0x0221105f}),
-..........
+Also the notion of block transfer is too limiting, the hardware granularity may be smaller than a period and the hardware may 
+still be able to provide precise data on the hw_ptr and delays, so the traditional batch/block transfer definition is a tad obsolete.
 
 
+> Well, there s a hackish way to say "I promisle to never rewind" on
+> both endpoints even with a deep buffer on a low-power endpoint. The
+> way is: instead of rewinding, open the low-latency endpoint and play
+> a correction signal (i.e. the difference between the actual and the
+> wanted contents of the deep buffer) through it, with low latency, and
+> let the hardware mix. But I don't like this, for purely subjective
+> reasons and for the need for that endpoint to have twice as much
+> output amplitude than one would normally need. What do you propose
+> instead?
+> 
+> Still, I think that a more general API that says "I promise to never
+> rewind closer than X samples to the hardware pointer" would be morep
+> useful than the black-and-white "I promise to never rewind" call
+> assuming that it can be expressed to the hardware.
 
->> ---
->>   sound/pci/hda/patch_realtek.c | 15 +++++++++++----
->>   1 file changed, 11 insertions(+), 4 deletions(-)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index d94c0e3..4ae877c 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -5398,8 +5398,6 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
->>   	{0x19, 0x411111f0}, \
->>   	{0x1a, 0x411111f0}, \
->>   	{0x1b, 0x411111f0}, \
->> -	{0x1d, 0x40700001}, \
->> -	{0x1e, 0x411111f0}, \
->>   	{0x21, 0x02211020}
->>   
->>   #define ALC282_STANDARD_PINS \
->> @@ -5556,10 +5554,19 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
->>   		{0x21, 0x02211030}),
->>   	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
->>   		ALC256_STANDARD_PINS,
->> -		{0x13, 0x40000000}),
->> +		{0x13, 0x40000000},
->> +		{0x1d, 0x40700001},
->> +		{0x1e, 0x411111f0}),
->>   	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
->>   		ALC256_STANDARD_PINS,
->> -		{0x13, 0x411111f0}),
->> +		{0x13, 0x411111f0},
->> +		{0x1d, 0x40700001},
->> +		{0x1e, 0x411111f0}),
->> +	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
->> +		ALC256_STANDARD_PINS,
->> +		{0x13, 0x411111f0},
->> +		{0x1d, 0x4077992d},
->> +		{0x1e, 0x411111ff}),
->>   	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
->>   		{0x12, 0x90a60130},
->>   		{0x13, 0x40000000},
->> -- 
->> 2.1.4
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+the patches provide information on the max burst so you can know by how much to rewind. Setting the max burst based on a negotiation between driver and app is an interesting concept that we looked at but there aren't too many devices that support this capability so this might not be worth the effort.
+ 
