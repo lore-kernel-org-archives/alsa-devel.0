@@ -1,17 +1,16 @@
 From: Tim Howe <tim.howe@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs4349: Set .writeable_reg for
-	cs4349_regmap
-Date: Thu, 30 Jul 2015 16:19:22 -0500
-Message-ID: <alpine.DEB.2.10.1507301615170.8028@ChromiumBuilder>
-References: <1437268463.11309.1.camel@ingics.com>
+Subject: Re: [PATCH 1/2] ASoC: cs4349: Fix suspend/resume
+Date: Thu, 30 Jul 2015 16:23:26 -0500
+Message-ID: <alpine.DEB.2.10.1507301621520.8028@ChromiumBuilder>
+References: <1437300918-4612-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 47C9D26071A
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 23:19:55 +0200 (CEST)
-In-Reply-To: <1437268463.11309.1.camel@ingics.com>
+Received: from m0077474.ppops.net (mx0b-001ae601.pphosted.com [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0F1926070C
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 23:23:56 +0200 (CEST)
+In-Reply-To: <1437300918-4612-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Tim Howe <tim.howe@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On Sat, 18 Jul 2015, Axel Lin wrote:
+On Sun, 19 Jul 2015, Lars-Peter Clausen wrote:
 
-> The first valid register index is 1 rather than 0, and the CS4349_CHIPID
-> is readonly. So set .writeable_reg to avoid writing to these registers.
+> dev_get_drvdata() will not return the snd_soc_runtime to which this CODEC
+> is attached, so the current code will result in undefined behavior.
+> To fix this just use regmap_update_bits(cs4349->regmap, ...) directly
+> instead of snd_soc_update_bits(rtd->codec, ...).
 > 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 > ---
->  sound/soc/codecs/cs4349.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
+>  sound/soc/codecs/cs4349.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
 For both patches
 Thank you!
