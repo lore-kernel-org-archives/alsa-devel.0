@@ -1,19 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/6] ASoC: Intel: Skylake: Add functions
- for DSP module configuration
-Date: Thu, 30 Jul 2015 08:45:07 +0530
-Message-ID: <20150730031507.GI29916@localhost>
-References: <1437503040-7392-4-git-send-email-vinod.koul@intel.com>
- <20150729123323.GC20130@sirena.org.uk>
- <20150729165029.GG29916@localhost>
- <20150729175631.GK11162@sirena.org.uk>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: [RFC PATCH 1/4] ALSA: core: let low-level driver
+ or userspace disable rewinds
+Date: Thu, 30 Jul 2015 11:11:22 +0500
+Message-ID: <55B9C00A.4080507@gmail.com>
+References: <1436350236-17509-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1436350236-17509-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <55A14D23.3070600@gmail.com> <55B78F74.1020601@linux.intel.com>
+ <55B7A311.5070905@gmail.com> <55B91171.2060809@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7620965728786863489=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C056260688
- for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 05:13:19 +0200 (CEST)
-In-Reply-To: <20150729175631.GK11162@sirena.org.uk>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B086265A6F
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jul 2015 08:11:25 +0200 (CEST)
+Received: by wibxm9 with SMTP id xm9so229311337wib.0
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jul 2015 23:11:25 -0700 (PDT)
+In-Reply-To: <55B91171.2060809@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,104 +27,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, Jeeja KP <jeeja.kp@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+29.07.2015 22:46, Pierre-Louis Bossart wrote:
+> On 7/28/15 10:43 AM, Alexander E. Patrakov wrote:
+>> 28.07.2015 19:19, Pierre-Louis Bossart wrote:
+>>> On 7/11/15 12:06 PM, Alexander E. Patrakov wrote:
+>>
+>>>> 3. I have not seen any justification for the drastic measure of
+>>>> making a
+>>>> DMA-based device completely unrewindable. Maybe a more polite "please
+>>>> make this a batch/blocktransfer card" request, thus disallowing only
+>>>> sub-period rewinds, would still be useful for powersaving, without
+>>>> killing dmix.
+>>>>
+>>>> 4. If this "no rewinds" mode is not made the default, then exactly
+>>>> nobody will use it. Everyone except sound servers opens the default
+>>>> device with the default flags. I understand the potential to break
+>>>> existing userspace, especially PulseAudio, but we really need to think
+>>>> more here.
+>>>
+>>> Not sure I understand the issue. when a new functionality is added it
+>>> takes time to be adopted. If we can push it in sound servers first then
+>>> it creates a wide pool of users from day1.
+>>
+>> The issue is that the proposed functionality, in the currently proposed
+>> "I promise to never rewind" form, is nearly useless by its very nature
+>> for any sound server that cares about power consumption significantly
+>> more than dmix does. It is indeed usable by JACK (by its design, it
+>> doesn't rewind, and uses low latency) and CRAS (which currently doesn't
+>> rewind, but I am not sure whether this is a bug or a deliberate decision
+>> based on non-public measurements of extra power savings that "rewinds +
+>> high latency" would allow).
+>>
+>> As I have already explained, dmix, when mixing, writes to the hardware
+>> buffer multiple times, which is equivalent to rewinding. PulseAudio uses
+>> rewinds for a very specific purpose - to avoid CPU wakeups in the common
+>> "nothing unexpected happened" case, i.e. to allow very high average
+>> latency while keeping the latency of reaction to unexpected events low.
+>> So, by convincing PulseAudio to never rewind and to tell the driver
+>> about this fact, you can save some power in the card, but (if the
+>> proponents of rewinds are right - see my earlier request for non-public
+>> information) will waste way more power due to the need for much more
+>> frequent CPU wakeups ("cannot rewind but have to react to unexpected
+>> events within 20 ms" = "must wake up every 20 ms").
+>>
+>> The only cases where this flag can be useful for sound servers are:
+>>
+>> 1. Sound servers that already, by design, always waste CPU power by
+>> running at low latency;
+>
+> Your classification is not exhaustive enough. You need to take into
+> account sound servers that have two outputs per endpoint, one for
+> low-latency and one for low-power/deep-buffer with a DSP/hardware mixer.
+> Power is also no longer directly linked to wakeup rates only but also to
+> DDR access patterns.
+> When a larger on-chip buffer is available, disabling rewinds does let
+> the hardware know it can safely fetch data in bigger chunks rather than
+> use small data bursts.
+> This sort of capabilities is becoming prevalent these days, and not just
+> on Intel platforms - see e.g. Nexus5/9 devices -, and maybe PulseAudio
+> and friends need to evolve to make use of these resources rather than
+> stay the course with single output and rewind mechanisms that prevent
+> power optimizations on newer platforms.
 
---===============7620965728786863489==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
-Content-Disposition: inline
+OK, I see some new points there, but still no full picture. My point 
+still is: deep (>= 30-40 ms) buffer without rewinds or without any other 
+means to seamlessly cancel and replace what's there (up to a certain 
+unrewindable latency, i.e. the same 30-40 ms, that a human won't object 
+to) is absolutely useless to any current or future sound server.
 
+So, in your example, "I promise to never rewind" flag can definitely be 
+set for a low-latency endpoint, but not for the other one. That other 
+endpoint would benefit from a way to say "I promise to never rewind 
+closer than X samples to the hardware pointer" API, which you have 
+flagged as a separate discussion. I would also not object to that 
+endpoint becoming a batch/blocktransfer PCM.
 
---2/5bycvrmDh4d1IB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, there is a hackish way to say "I promise to never rewind" on both 
+endpoints even with a deep buffer on a low-power endpoint. The way is: 
+instead of rewinding, open the low-latency endpoint and play a 
+correction signal (i.e. the difference between the actual and the wanted 
+contents of the deep buffer) through it, with low latency, and let the 
+hardware mix. But I don't like this, for purely subjective reasons and 
+for the need for that endpoint to have twice as much output amplitude 
+than one would normally need. What do you propose instead?
 
-On Wed, Jul 29, 2015 at 06:56:31PM +0100, Mark Brown wrote:
-> On Wed, Jul 29, 2015 at 10:20:29PM +0530, Vinod Koul wrote:
-> > On Wed, Jul 29, 2015 at 01:33:23PM +0100, Mark Brown wrote:
->=20
-> > > > +static int skl_alloc_queue(struct skl_module_pin *mpin,
-> > > > +			struct skl_module_inst_id id, int max)
-> > > > +{
-> > > > +	struct skl_module_pin m_pin =3D skl_get_queue(mpin, id, max);
-> > > > +
-> > > > +	if (m_pin.pin_index < 0)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (m_pin.is_dynamic) {
-> > > > +			m_pin.in_use =3D true;
-> > > > +			m_pin.id.module_id =3D id.module_id;
-> > > > +			m_pin.id.instance_id =3D id.instance_id;
-> > > > +	}
->=20
-> > > Double indentation here.  It's really unclear to me why a static pin
-> > > doesn't need to get merked as in use?
->=20
-> > Oops, will fix
->=20
-> > In static pin case, the pins come from topology binary where these are =
-fixed
-> > for a configuration, so don't need to be allocated thus marked and hence
-> > freed.
->=20
-> But isn't this also protecting against attempts to use the resource
-> multiple times within the configuration (or shouldn't we be doing that)?
-In case of static since a module pin is allocated while designing
-topology we shouldn't have clash as per design of topology
+Still, I think that a more general API that says "I promise to never 
+rewind closer than X samples to the hardware pointer" would be more 
+useful than the black-and-white "I promise to never rewind" call - 
+assuming that it can be expressed to the hardware.
 
-For example I have a Gain module connected to Mixer. Gain module pin 0 will
-be allocated to connect to Mixer Pin0. I wont assign Pin0 to any other
-module if I am doing static mapping.
-
-Whereas in dynamic we will check for first free pin and allocate.
-
-If all the pins has same meaning then dynamic would make sense, but non
-linear modules need reference signals so they have special pins so we need
-both approaches here
-
-> Please bear in mind that this stuff has basically zero documentation or
-> explanation so I'm kind of guessing as to what this is supposed to do.
-I did try to add explanation where I felt was missing, but yes this is good
-feedback, I will add more bits in next rev. Also please do point out where
-you feel we missed.
-
-Thanks
---=20
-~Vinod
-
---2/5bycvrmDh4d1IB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVuZa7AAoJEHwUBw8lI4NHuMcP/0ZFFpKtAsBw6KOp/hSXshSZ
-lUYFJjW9lV7QV2K0/RowZnhCyRkAHoZQlSrw6V3WCIgMMHSMXLjzvjQ0TlHfsCoR
-SghIJ5obGninHeozi/SKwUJ6GRX1XDxYVR8vWDconsZjWMKJmZYtoSEimNzhttUx
-vOZybu0F8k31oLzBMCoi3Ukz+wuiaWArYM/7vyje63vVB/vM+O+oswByfxlQOu0u
-M55KMsjfrTjraC2OX26waf+Hzbc0HQkZGuYSHbdWdbwaV7hTYJulsZEFHVbu0oc3
-jqP+AXZxUpVJCJBZw8UHchTRoDVmTkXp/0PNfGLZMdfhz/DjiELNwM03XAMYxr6f
-sHW+grfY297YY8SqZ/FnMbab46+WCRLWscUgwOLRzCJkHsfS9V8Q9cKn2osdRPZG
-ZMa4cV4elZDOfNJ+s2bcqLPg7DQ7TpBCQgJx3hZdSIahHnlQofQyuBli1RcBF8/e
-elzO7d4TGW0/MBM+ULiOoBecRc/f1w0QTtVNG0AeaNFDXqfYqSnjf1VKm/TKeAzz
-hiUyWd0R3147echlRS4w7veb2/SPpUS9oiJgNJO4zgOrSlZd57yNxY3jIVTY2edP
-YWoxSUp5HBLcw7LXRptoWD7ElVMcsIAObSizsmw+LJvK4FJ2Zy+Ke+VSxNYRcO2S
-9kiEyYDtgS8iyimqD81e
-=sDDL
------END PGP SIGNATURE-----
-
---2/5bycvrmDh4d1IB--
-
---===============7620965728786863489==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7620965728786863489==--
+-- 
+Alexander E. Patrakov
