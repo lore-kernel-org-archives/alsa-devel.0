@@ -1,105 +1,56 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH 6/6] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
-Date: Fri, 31 Jul 2015 07:58:43 +0200
-Message-ID: <20150731055843.GX30895@pengutronix.de>
-References: <55BA364E.1000803@maciej.szmigiero.name>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Abouut adv7511 driver
+Date: Fri, 31 Jul 2015 09:43:00 +0200
+Message-ID: <55BB2704.4070509@metafoo.de>
+References: <87zj2cvqi7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U8v/hV883cEE9JJG"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <55BA364E.1000803@maciej.szmigiero.name>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <87zj2cvqi7.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@vger.kernel.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+Cc: alsa-ml
 
---U8v/hV883cEE9JJG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 07/31/2015 07:38 AM, Kuninori Morimoto wrote:
+> 
+> Hi Lars
+> Cc Mark
+> 
+> I noticed Analog Devices has adv7511 support on
+> http://wiki.analog.com/resources/tools-software/linux-drivers/drm/adv7511
+> 
+> And I tried this driver on my board, and it works.
+> 
+> if my understanding was correct, latest linux kernel doesn't have
+> adv7511 "sound" support yet.
+> Thus, I would like to have it on linux kernel.
+> According to this driver/file, it is under GPL-2, so it is no problem
+> from license point of view.
+> 
+> According to git log Signd-off-by, Lars/Mark are listed on this adv7511 sound driver.
+> but I wonder why it is not on upstream ? Are there some reason ??
+> If you don't mind, I would like to send it to ML.
+> This is OK ?
 
-On Thu, Jul 30, 2015 at 04:35:58PM +0200, Maciej S. Szmigiero wrote:
-> Adjust set DAI format function in fsl_ssi driver so it
-> doesn't fail and clears RXDIR in AC'97 mode.
->=20
-> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
-> ---
->  sound/soc/fsl/fsl_ssi.c |    8 +++++---
->  1 files changed, 5 insertions(+), 3 deletions(-)
->=20
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 8e5ff5e..37aabe3 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
->  		scr &=3D ~CCSR_SSI_SCR_SYS_CLK_EN;
->  		break;
->  	default:
-> -		return -EINVAL;
-> +		if (!fsl_ssi_is_ac97(ssi_private))
-> +			return -EINVAL;
+The reason why the driver is not upstream at the moment is that the way it
+implements things is definitely not the right way. But there is still a lot
+of discussion on what actually is the right way to implement audio support
+for HDMI devices. Once that has been sorted out the driver will hopefully go
+upstream.
 
-I think it would be better to add another case for the other mode which
-is supported (AC97) instead of using the default case.
+- Lars
 
->  	}
-> =20
->  	stcr |=3D strcr;
->  	srcr |=3D strcr;
-> =20
-> -	if (ssi_private->cpu_dai_drv.symmetric_rates) {
-> -		/* Need to clear RXDIR when using SYNC mode */
-> +	if (ssi_private->cpu_dai_drv.symmetric_rates
-> +		|| fsl_ssi_is_ac97(ssi_private)) {
-
-Please fix this indention. Most of the driver is written with 2 tab
-indention after a line break and the new policy seems to be to indent on
-the opening bracket.
-
-Regards,
-
-Markus
-
-> +		/* Need to clear RXDIR when using SYNC or AC97 mode */
->  		srcr &=3D ~CCSR_SSI_SRCR_RXDIR;
->  		scr |=3D CCSR_SSI_SCR_SYN;
->  	}
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->=20
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---U8v/hV883cEE9JJG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVuw6TAAoJEEpcgKtcEGQQWCUP/1X5ivApFgjHYKLYs70UCkRq
-o8NtSUErKFEYCEPhPDmcGX3jN3N/EM+c+C4g8IrJTl1wTbLy9zDO1ubf/s8IJJh+
-rHerNqgCAANJZUo4qHFO+hbH2400VaxhIt1nxTvAXEese9P3lTVIYg9jPbstXdDH
-6jTBSR4at5xI+KfzAyc6FBW915HuKF/lShNUDfO3tddp1X347cS0PbEVdMYdWsSp
-t35raOl2ItnqzNCbZs9brJUtgMWsebQMv3/+4vh5qK7LdCMPzrASUWKSTspt2chB
-H4U03A37X/IbkXka6NQ/DUQg4hA3bOGzR2Npl/T6ifzUgsRMuQLbekV8wYX9a9FX
-tw1RRnS3rFDADkzN32dw5qUdDlyIq7D7rW7huYxRM4jnXc4etJzPJOefZP4jTXVC
-te0UBpHZZ3QJRP5L/Dt34HAs9ij7Kb+MkgazAcYV3ANj8AqPTumGp5Hy7UnkRmS4
-qB2+tqxILCJn0NwqdnuPPHXR3VxI+0yeuT5YvWI229F1vqBw0OyKp7YTVunwAlYR
-W4XyWbWwKarC+dq1RhaVkMDp8tcgWmVWL7LgZQVizT+jVhqP2BNTpBTUgSItaoPU
-o4F60PYmg7jecpcSx7m488RxArjcjxNIrwYLoDjlr3yvcJKFy0nmxi8Z2j3oUIXJ
-jZe2T6k1GIOWaqWWSgVJ
-=o9vG
------END PGP SIGNATURE-----
-
---U8v/hV883cEE9JJG--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
