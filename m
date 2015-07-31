@@ -1,86 +1,67 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 5/6] ASoC: fsl_ssi: instantiate AC'97 CODEC
-Date: Fri, 31 Jul 2015 16:39:20 +0200
-Message-ID: <55BB8898.7000909@maciej.szmigiero.name>
-References: <55BA362B.1010706@maciej.szmigiero.name>
- <20150731054617.GV30895@pengutronix.de>
+Subject: Re: [PATCH 6/6] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
+Date: Fri, 31 Jul 2015 17:13:06 +0200
+Message-ID: <55BB9082.4030206@maciej.szmigiero.name>
+References: <55BA364E.1000803@maciej.szmigiero.name> <20150731055843.GX30895@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id C0770265DD8
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 16:39:26 +0200 (CEST)
-In-Reply-To: <20150731054617.GV30895@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20150731055843.GX30895@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Pargmann <mpa@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 31.07.2015 07:46, Markus Pargmann wrote:
-> On Thu, Jul 30, 2015 at 04:35:23PM +0200, Maciej S. Szmigiero wrote:
->> Instantiate AC'97 CODEC in fsl_ssi driver AC'97 mode.
+On 31.07.2015 07:58, Markus Pargmann wrote:
+> On Thu, Jul 30, 2015 at 04:35:58PM +0200, Maciej S. Szmigiero wrote:
+>> Adjust set DAI format function in fsl_ssi driver so it
+>> doesn't fail and clears RXDIR in AC'97 mode.
 >>
 >> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 >> ---
->>  sound/soc/fsl/fsl_ssi.c |   21 +++++++++++++++++++++
->>  1 files changed, 21 insertions(+), 0 deletions(-)
+>>  sound/soc/fsl/fsl_ssi.c |    8 +++++---
+>>  1 files changed, 5 insertions(+), 3 deletions(-)
 >>
 >> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
->> index 154bcf6..8e5ff5e 100644
+>> index 8e5ff5e..37aabe3 100644
 >> --- a/sound/soc/fsl/fsl_ssi.c
 >> +++ b/sound/soc/fsl/fsl_ssi.c
->> @@ -1460,6 +1460,27 @@ done:
->>  		_fsl_ssi_set_dai_fmt(&pdev->dev, ssi_private,
->>  				     ssi_private->dai_fmt);
+>> @@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+>>  		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+>>  		break;
+>>  	default:
+>> -		return -EINVAL;
+>> +		if (!fsl_ssi_is_ac97(ssi_private))
+>> +			return -EINVAL;
+> 
+> I think it would be better to add another case for the other mode which
+> is supported (AC97) instead of using the default case.
+
+This is a switch of DAI clock masters and AC'97 is none of them:
+while "case 0:" can be added this would be very similar to the current code.
+
+Alternatively, the whole switch statement could be wrapped inside
+"if (!fsl_ssi_is_ac97(ssi_private))" if that would be better
+with regards to code style.
+
+>>  	}
 >>  
->> +	if (fsl_ssi_is_ac97(ssi_private)) {
->> +		u32 ssi_idx;
->> +
->> +		ret = of_property_read_u32(np, "cell-index", &ssi_idx);
+>>  	stcr |= strcr;
+>>  	srcr |= strcr;
+>>  
+>> -	if (ssi_private->cpu_dai_drv.symmetric_rates) {
+>> -		/* Need to clear RXDIR when using SYNC mode */
+>> +	if (ssi_private->cpu_dai_drv.symmetric_rates
+>> +		|| fsl_ssi_is_ac97(ssi_private)) {
 > 
-> This property is not set anywhere in the imx* DTs.
+> Please fix this indention. Most of the driver is written with 2 tab
+> indention after a line break and the new policy seems to be to indent on
+> the opening bracket.
 
-That's right, but it is documented as required property in sound/fsl,ssi.txt:
-> Required properties:
-> (..)
-> - cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
+Will reindent this.
 
 > 
->> +		if (ret) {
->> +			dev_err(&pdev->dev, "cannot get SSI index property\n");
->> +			goto error_sound_card;
->> +		}
->> +
->> +		ssi_private->pdev =
->> +			platform_device_register_data(NULL,
->> +					"ac97-codec", ssi_idx, NULL, 0);
-> 
-> If you really want to create a device at this point you should use
-> PLATFORM_DEVID_AUTO. I would prefer something where this is created in
-> DT. On the other side it is a discoverable bus..
-
-In the original implementation the codec was instantiated in DT but
-the feedback was that this is wrong since devices on discoverable
-buses shouldn't be in DT.
-
-The platform device index is based on SSI index since the sound
-card driver (fsl-asoc-card) has to know CODEC device name to identify
-it in DAI links - as the only identification options seem to be either
-DT node of CODEC or its device name.
-
-That's why the (platform) device name has to be deterministic
-if there is no mechanism to pass it from controller driver
-to sound card driver.
-
 > Regards,
 > 
 > Markus
