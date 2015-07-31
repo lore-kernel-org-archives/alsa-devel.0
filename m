@@ -1,17 +1,25 @@
-From: "Bayyavarapu, Maruthi" <Maruthi.Bayyavarapu@amd.com>
-Subject: query on upstream ASoC driver split across SOUND and
-	DRM subsystems
-Date: Fri, 31 Jul 2015 18:07:51 +0000
-Message-ID: <8A8837939561D241AC8141C31522BA68291E33F9@SCYBEXDAG01.amd.com>
+From: Dang Sananikone <dang.sananikone@gmail.com>
+Subject: Laptop internal speaker volume is apparently
+	controlled by the headphone control (Intel HDA Panther Point)
+Date: Fri, 31 Jul 2015 21:14:18 +0000 (UTC)
+Message-ID: <loom.20150731T230048-584@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bbn0107.outbound.protection.outlook.com [157.56.111.107])
- by alsa0.perex.cz (Postfix) with ESMTP id 024C9261692
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 20:08:01 +0200 (CEST)
-Content-Language: en-US
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 640AC2616F3
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 23:14:26 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1ZLHdJ-0004H0-Ex
+ for alsa-devel@alsa-project.org; Fri, 31 Jul 2015 23:14:25 +0200
+Received: from 177.91.199.146.dyn.plus.net ([146.199.91.177])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 23:14:25 +0200
+Received: from dang.sananikone by 177.91.199.146.dyn.plus.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 23:14:25 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Vemuri,
- Murali-krishna" <Murali-krishna.Vemuri@amd.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I want to send AMD ASoC driver for review.  
-This driver has a dependency with AMD's 'DRM' subsystem components, which are not upstreamed yet.
-Please suggest, whether this ASoC driver can be upstreamed via 'DRM' tree or any alternate approach is preferred.
+I've just noticed that the internal speaker volume on my laptop is now
+controlled by the headphone control in alsamixer. I think this may be a
+recent change although I can't be sure. I'm using Arch Linux with kernel
+4.1.3-1.
 
-The link to ASoC driver is : http://cgit.freedesktop.org/~agd5f/linux/commit/?h=acp-wip&id=2b67a441509886132456096256e99795c4d1c661
+I've uploaded the alsa info here:
+http://www.alsa-project.org/db/?f=f04e506dad863823b18f8f9e9d0261fdacd72695
 
-ASoC commits  and dependencies are currently in 'acp-wip' branch of :
-git://people.freedesktop.org/~agd5f/linux 
 
-Thanks,
-Maruthi
+Let me know if I can help.
+
+Kind Regards,
+Dang.
