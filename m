@@ -1,20 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Laptop internal speaker volume is apparently
- controlled by the headphone control (Intel HDA Panther Point)
-Date: Sat, 1 Aug 2015 08:39:21 +0800
-Message-ID: <CAN8cciYJShqFCOWZETUecvL-9wguL4dFSDMevhtL2d=E2b2PbQ@mail.gmail.com>
-References: <loom.20150731T230048-584@post.gmane.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: AudioFire4 quirk
+Date: Sat, 01 Aug 2015 10:07:54 +0900
+Message-ID: <55BC1BEA.1060402@sakamocchi.jp>
+References: <55B90D73.4000602@uni-due.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f175.google.com (mail-ob0-f175.google.com
- [209.85.214.175])
- by alsa0.perex.cz (Postfix) with ESMTP id C531F2619D0
- for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 02:39:21 +0200 (CEST)
-Received: by obnw1 with SMTP id w1so65129820obn.3
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 17:39:21 -0700 (PDT)
-In-Reply-To: <loom.20150731T230048-584@post.gmane.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id D30192619D0
+ for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 03:07:57 +0200 (CEST)
+In-Reply-To: <55B90D73.4000602@uni-due.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +20,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dang Sananikone <dang.sananikone@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: johannes.oertel@uni-due.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I
->
-> Hi,
->
-> I've just noticed that the internal speaker volume on my laptop is now
-> controlled by the headphone control in alsamixer. I think this may be a
-> recent change although I can't be sure. I'm using Arch Linux with kernel
-> 4.1.3-1.
->
-> I've uploaded the alsa info here:
-> http://www.alsa-project.org/db/?f=f04e506dad863823b18f8f9e9d0261fdacd72695
+Hi Johannes,
 
-Simple mixer control 'Loopback Mixing',0
-  Capabilities: enum
-  Items: 'Disabled' 'Enabled'
-  Item0: 'Enabled'
+On Jul 30 2015 02:29, Johannes Oertel wrote:
+> when I try to use the snd-fireworks driver with my AudioFire4 (see the
+> output of /proc/asound/cardX/firewire/firmware below) on my machine
+> (kernel 4.1), it doesn't work. I am experiencing exactly the same
+> problems as Harry with his AudioFire2 [1]; dmesg was reporting
+> discontinuities.
+> 
+> A few days ago, I saw Takashi Sakamoto's most recent patch for making
+> the AudioFire2 work in this case [2]. I adapted his patch (see below) to
+> apply to my situation with the AudioFire4 and now it is working
+> flawlessly! However, according to the README in Takashi's GitHub
+> repository [3], he is testing the driver with an AudioFire4 as well, so
+> I asked him why I need this patch and he does not. He told me he is
+> using firmware version 5.5 while I'm on 5.7.3. He said he is going to
+> test his device with different firmware versions soon and write a patch,
+> if needed.
+> 
+> Finally, he asked me to post this whole issue to this list as well and
+> that's what I have just done. :)
 
-When loopback mixing is enabled, both heaephone and speaker are connected
-to audio mixer node 0x1b through node 0x1c,  audio mixer node 0x1b is only
-connected to audio output node 0x13 which is controlled by headphone
-playback volume
+I remember that I did investigate AudioFire4 with several versions of
+firmware when I committed ALSA Fireworks driver. But I might have
+overlooked something. In this weekend, I'll investigate my AudioFire4 again.
 
-Node 0x1b [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
-  Control: name="Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x17 0x17] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Power states:
-  Power: setting=D0, actual=D0
-  Connection: 5
-     0x13 0x14 0x0a 0x0c 0x0f
+Thanks for posting this issue and sharing this information with us.
 
-You have to disable loopback mixing
+
+Regards
+
+Takashi Sakamoto
+
+> Best regards,
+> Johannes
+> 
+> 
+> [1]
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
+> 
+> [2]
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=9c6893e0be38b6ca9a56a854226e51dee0a16a5a
+> 
+> [3] https://github.com/takaswie/snd-firewire-improve
+> 
+> /proc/asound/cardX/firewire/firmware:
+> guid_hi: 0x148604
+> guid_lo: 0x5BA8D7BF
+> type: 0xAF4
+> version: 0x0
+> vendor_name: Echo Digital Audio
+> model_name: AudioFire4
+> dsp_version: 0x0
+> arm_version: 0x5070300
+> fpga_version: 0x3000200
+> flags: 0xE1
+> max_sample_rate: 0x17700
+> min_sample_rate: 0x7D00
+> supported_clock: 0x9
+> phys out: 0x6
+> phys in: 0x6
+> phys in grps: 0x2
+> phys in grp[0]: type 0x0, count 0x4
+> phys in grp[1]: type 0x1, count 0x2
+> phys out grps: 0x2
+> phys out grps[0]: type 0x0, count 0x4
+> phys out grps[1]: type 0x1, count 0x2
+> amdtp rx pcm channels 1x: 0x6
+> amdtp tx pcm channels 1x: 0x6
+> amdtp rx pcm channels 2x: 0x6
+> amdtp tx pcm channels 2x: 0x6
+> amdtp rx pcm channels 4x: 0x6
+> amdtp tx pcm channels 4x: 0x6
+> midi out ports: 0x1
+> midi in ports: 0x1
+> mixer playback channels: 0x6
+> mixer capture channels: 0x6
+> 
+> The patch:
+> ---
+>  sound/firewire/fireworks/fireworks.c        | 2 ++
+>  sound/firewire/fireworks/fireworks.h        | 1 +
+>  sound/firewire/fireworks/fireworks_stream.c | 4 ++--
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/firewire/fireworks/fireworks.c
+> b/sound/firewire/fireworks/fireworks.c
+> index c670db4..544bdbf 100644
+> --- a/sound/firewire/fireworks/fireworks.c
+> +++ b/sound/firewire/fireworks/fireworks.c
+> @@ -250,6 +250,8 @@ efw_probe(struct fw_unit *unit,
+>          goto error;
+>      if (entry->model_id == MODEL_ECHO_AUDIOFIRE_2)
+>          efw->is_af2 = true;
+> +    if (entry->model_id == MODEL_ECHO_AUDIOFIRE_4)
+> +        efw->is_af4 = true;
+>      if (entry->model_id == MODEL_ECHO_AUDIOFIRE_9)
+>          efw->is_af9 = true;
+> 
+> diff --git a/sound/firewire/fireworks/fireworks.h
+> b/sound/firewire/fireworks/fireworks.h
+> index 9493122..9a7dcbb 100644
+> --- a/sound/firewire/fireworks/fireworks.h
+> +++ b/sound/firewire/fireworks/fireworks.h
+> @@ -74,6 +74,7 @@ struct snd_efw {
+> 
+>      /* for quirks */
+>      bool is_af2;
+> +    bool is_af4;
+>      bool is_af9;
+>      u32 firmware_version;
+> 
+> diff --git a/sound/firewire/fireworks/fireworks_stream.c
+> b/sound/firewire/fireworks/fireworks_stream.c
+> index a0762dd..182b96f 100644
+> --- a/sound/firewire/fireworks/fireworks_stream.c
+> +++ b/sound/firewire/fireworks/fireworks_stream.c
+> @@ -172,8 +172,8 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+>      efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
+>      /* Fireworks reset dbc at bus reset. */
+>      efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
+> -    /* AudioFire2 starts packets with non-zero dbc. */
+> -    if (efw->is_af2)
+> +    /* AudioFire2 and AudioFire4 start packets with non-zero dbc. */
+> +    if (efw->is_af2 || efw->is_af4)
+>          efw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
+>      /* AudioFire9 always reports wrong dbs. */
+>      if (efw->is_af9)
