@@ -1,20 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: wm8753: Drop wm8753_writeable
-	function
-Date: Sat, 01 Aug 2015 10:04:52 +0800
-Message-ID: <1438394692.6442.2.camel@ingics.com>
-References: <1438394622.6442.1.camel@ingics.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Sat, 01 Aug 2015 09:37:16 +0200
+Message-ID: <55BC772C.50801@metafoo.de>
+References: <20150714150352.GW11162@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f49.google.com (mail-pa0-f49.google.com
- [209.85.220.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 158CF2615FC
- for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 04:04:58 +0200 (CEST)
-Received: by pachj5 with SMTP id hj5so49344073pac.3
- for <alsa-devel@alsa-project.org>; Fri, 31 Jul 2015 19:04:57 -0700 (PDT)
-In-Reply-To: <1438394622.6442.1.camel@ingics.com>
+Received: from smtp-out-124.synserver.de (smtp-out-124.synserver.de
+ [212.40.185.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8E54260676
+ for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 09:37:19 +0200 (CEST)
+In-Reply-To: <20150714150352.GW11162@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When .max_register is set and .writeable_reg is not implement, registers
-between 0 and .max_register are writeable. This is the same as current
-implementation of wm8753_writeable(), so just drop implementation for
-.writeable_reg callback.
+On 07/14/2015 05:03 PM, Mark Brown wrote:
+> [...]
+> 
+> and please follow up to this mail with any topics you'd like to see
+> raised so we can start collecting them (probably another Google doc will
+> be forthcoming for them).
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/wm8753.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index b5e50ff..ab1b6b8 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -138,11 +138,6 @@ static bool wm8753_volatile(struct device *dev, unsigned int reg)
- 	return reg == WM8753_RESET;
- }
- 
--static bool wm8753_writeable(struct device *dev, unsigned int reg)
--{
--	return reg <= WM8753_ADCTL2;
--}
--
- /* codec private data */
- struct wm8753_priv {
- 	struct regmap *regmap;
-@@ -1510,7 +1505,6 @@ static const struct regmap_config wm8753_regmap = {
- 	.val_bits = 9,
- 
- 	.max_register = WM8753_ADCTL2,
--	.writeable_reg = wm8753_writeable,
- 	.volatile_reg = wm8753_volatile,
- 
- 	.cache_type = REGCACHE_RBTREE,
--- 
-2.1.0
+Full media controller integration for both ALSA and ASoC. How this can be
+used to export topology information to userspace and how to for example
+attach a specific volume control to a specific media controller entity. And
+maybe also how to de-duplicate similar functionality between DAPM and media
+controller.
