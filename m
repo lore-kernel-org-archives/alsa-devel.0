@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 4/6] ASoC: Intel: Skylake: Add helpers for
-	SRC and converter modules
-Date: Sat,  1 Aug 2015 19:40:42 +0530
-Message-ID: <1438438244-17974-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 2/6] ASoC: Intel: Skylake: Use acpi header
+	for NHLT header
+Date: Sat,  1 Aug 2015 19:40:40 +0530
+Message-ID: <1438438244-17974-3-git-send-email-vinod.koul@intel.com>
 References: <1438438244-17974-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BEB1F261569
- for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 16:09:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 754CC261685
+ for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 16:09:02 +0200 (CEST)
 In-Reply-To: <1438438244-17974-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,153 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hardik T Shah <hardik.t.shah@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-SRC and converter modules are required to do frequency and channel
-conversion in DSP. Both take base module configuration and additional SRC
-and converter parameters. The helpers here are added to calculate the values
-for these modules
+Instead of defining own acpi header, use the available acpi
+header defined in acpi framework.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 64 +++++++++++++++++++++++++++++++---
- sound/soc/intel/skylake/skl-topology.h | 16 +++++++++
- 2 files changed, 76 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-nhlt.c |  1 -
+ sound/soc/intel/skylake/skl-nhlt.h | 14 ++------------
+ 2 files changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 0ba13f1e8116..03a80ef8ce01 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -381,6 +381,47 @@ static void skl_setup_out_format(struct skl_sst *ctx,
- }
- 
- /*
-+ * DSP needs SRC module for frequency conversion, SRC takes base module
-+ * configuration and the target frequency as extra parameter passed as src
-+ * config
-+ */
-+static void skl_set_src_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_src_module_cfg *src_mconfig)
-+{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
-+
-+	skl_set_base_module_format(ctx, mconfig,
-+		(struct skl_base_cfg *)src_mconfig);
-+
-+	src_mconfig->src_cfg = fmt->s_freq;
-+}
-+
-+/*
-+ * DSP needs updown module to do channel conversion. updown module take base
-+ * module configuration and channel configuration
-+ * It also take coefficients and now we have defaults applied here
-+ */
-+static void skl_set_updown_mixer_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_up_down_mixer_cfg *mixer_mconfig)
-+{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
-+	int i = 0;
-+
-+	skl_set_base_module_format(ctx,	mconfig,
-+		(struct skl_base_cfg *)mixer_mconfig);
-+	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
-+
-+	/* Select F/W default coefficient */
-+	mixer_mconfig->coeff_sel = 0x0;
-+
-+	/* User coeff, don't care since we are selecting F/W defaults */
-+	for (i = 0; i < UP_DOWN_MIXER_MAX_COEFF; i++)
-+		mixer_mconfig->coeff[i] = 0xDEADBEEF;
-+}
-+
-+/*
-  * 'copier' is DSP internal module which copies data from Host DMA (HDA host
-  * dma) or link (hda link, SSP, PDM)
-  * Here we calculate the copier module parameters, like PCM format, output
-@@ -411,6 +452,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- 		param_size += mconfig->formats_config.caps_size;
- 		return param_size;
- 
-+	case SKL_MODULE_TYPE_SRCINT:
-+		return sizeof(struct skl_src_module_cfg);
-+
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		return sizeof(struct skl_up_down_mixer_cfg);
-+
- 	default:
- 		/*
- 		 * return only base cfg when no specific module type is
-@@ -423,11 +470,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- }
- 
- /*
-- * DSP firmware supports various modules like copier etc. These modules
-- * required various parameters to be calculated and sent for the module
-- * initialization to DSP. By default a generic module needs only base module
-- * format configuration
-+ * DSP firmware supports various modules like copier, SRC, updown etc.
-+ * These modules required various parameters to be calculated and sent for
-+ * the module initialization to DSP. By default a generic module needs only
-+ * base module format configuration
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index a14009b47b29..13036b19d7e5 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -17,7 +17,6 @@
+  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  *
   */
-+
- static int skl_set_module_format(struct skl_sst *ctx,
- 			struct skl_module_cfg *module_config,
- 			u16 *module_config_size,
-@@ -448,6 +496,14 @@ static int skl_set_module_format(struct skl_sst *ctx,
- 		skl_set_copier_format(ctx, module_config, *param_data);
- 		break;
+-#include <linux/acpi.h>
+ #include "skl.h"
  
-+	case SKL_MODULE_TYPE_SRCINT:
-+		skl_set_src_format(ctx, module_config, *param_data);
-+		break;
-+
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		skl_set_updown_mixer_format(ctx, module_config, *param_data);
-+		break;
-+
- 	default:
- 		skl_set_base_module_format(ctx, module_config, *param_data);
- 		break;
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 6ba137a43e68..e4b2a339b2f4 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -123,6 +123,21 @@ struct skl_cpr_cfg {
- 	struct skl_cpr_gtw_cfg gtw_cfg;
+ /* Unique identification for getting NHLT blobs */
+diff --git a/sound/soc/intel/skylake/skl-nhlt.h b/sound/soc/intel/skylake/skl-nhlt.h
+index b0e2e4da42a1..3769f9fefe2b 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.h
++++ b/sound/soc/intel/skylake/skl-nhlt.h
+@@ -20,17 +20,7 @@
+ #ifndef __SKL_NHLT_H__
+ #define __SKL_NHLT_H__
+ 
+-struct acpi_desc_header {
+-	u32  signature;
+-	u32  length;
+-	u8   revision;
+-	u8   checksum;
+-	u8   oem_id[6];
+-	u64  oem_table_id;
+-	u32  oem_revision;
+-	u32  creator_id;
+-	u32  creator_revision;
+-} __packed;
++#include <linux/acpi.h>
+ 
+ struct wav_fmt {
+ 	u16 fmt_tag;
+@@ -98,7 +88,7 @@ struct nhlt_endpoint {
  } __packed;
  
-+
-+struct skl_src_module_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_s_freq src_cfg;
-+} __packed;
-+
-+struct skl_up_down_mixer_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_ch_cfg out_ch_cfg;
-+	/* This should be set to 1 if user coefficients are required */
-+	u32 coeff_sel;
-+	/* Pass the user coeff in this array */
-+	s32 coeff[UP_DOWN_MIXER_MAX_COEFF];
-+} __packed;
-+
- enum skl_dma_type {
- 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
- 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
-@@ -247,5 +262,6 @@ struct skl_module_cfg {
- 	struct skl_pipe *pipe;
- 	struct skl_specific_cfg formats_config;
- };
-+
- enum skl_bitdepth skl_get_bit_depth(int params);
- #endif
+ struct nhlt_acpi_table {
+-	struct acpi_desc_header header;
++	struct acpi_table_header header;
+ 	u8 endpoint_count;
+ 	struct nhlt_endpoint desc[0];
+ } __packed;
 -- 
 1.9.1
