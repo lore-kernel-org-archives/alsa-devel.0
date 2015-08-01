@@ -1,17 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 1/6] ASoC: Intel: Skylake: Fix the NHLT rate
-	size
-Date: Sat,  1 Aug 2015 19:40:39 +0530
-Message-ID: <1438438244-17974-2-git-send-email-vinod.koul@intel.com>
-References: <1438438244-17974-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 0/6] ASoC: Intel: Skylake: Add DSP
+	management routines
+Date: Sat,  1 Aug 2015 19:40:38 +0530
+Message-ID: <1438438244-17974-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DBFAD261584
- for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 16:08:59 +0200 (CEST)
-In-Reply-To: <1438438244-17974-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B8F7261569
+ for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2015 16:08:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+This is second rev of series to add DSP management routines for SKL driver
 
-Sampling rate type needs to be u32 instead of u8, nhlt wav format
-description expected u32 for rate, passing u8 will fetch NULL
-config in skl_get_ep_blob().
+The first two patches are fixes to use ACPI header and size fix on NHLT
+query
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/skylake/skl-nhlt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Then we add DSP module configuration calculation helpers followed by SRC and
+updown calculation. These are used by next patch which adds module creation,
+and binding routines. Lastly modules are used by pipes so we add pipelines
+creation, destroy and scheduling helpers
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 5c0895eaa10a..a14009b47b29 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -56,7 +56,7 @@ void skl_nhlt_free(void __iomem *addr)
- 
- static struct nhlt_specific_cfg *skl_get_specific_cfg(
- 		struct device *dev, struct nhlt_fmt *fmt,
--		u8 no_ch, u8 rate, u16 bps)
-+		u8 no_ch, u32 rate, u16 bps)
- {
- 	struct nhlt_specific_cfg *sp_config;
- 	struct wav_fmt *wfmt;
+Hardik T Shah (1):
+  ASoC: Intel: Skylake: Add helpers for SRC and converter modules
+
+Jeeja KP (5):
+  ASoC: Intel: Skylake: Fix the NHLT rate size
+  ASoC: Intel: Skylake: Use acpi header for NHLT header
+  ASoC: Intel: Skylake: Add helpers for DSP module configuration
+  ASoC: Intel: Skylake: Add DSP module init and binding routines
+  ASoC: Intel: Skylake: Add pipe management helpers
+
+ sound/soc/intel/skylake/skl-messages.c       | 751 +++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-nhlt.c           |   3 +-
+ sound/soc/intel/skylake/skl-nhlt.h           |  14 +-
+ sound/soc/intel/skylake/skl-topology.h       | 286 ++++++++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |  88 ++++
+ 5 files changed, 1128 insertions(+), 14 deletions(-)
+ create mode 100644 sound/soc/intel/skylake/skl-topology.h
+ create mode 100644 sound/soc/intel/skylake/skl-tplg-interface.h
+
 -- 
 1.9.1
