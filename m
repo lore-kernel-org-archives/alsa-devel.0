@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 41/42] ASoC: wm9713: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 42/42] ASoC: wm_hubs: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:20:09 +0200
-Message-ID: <1438528810-23498-42-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:20:10 +0200
+Message-ID: <1438528810-23498-43-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F3E42650BC
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:21:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E0E512612AD
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:21:04 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,27 +48,27 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm9713.c | 7 +++----
+ sound/soc/codecs/wm_hubs.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 955e651..4083a51 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -119,11 +119,10 @@ SOC_ENUM_SINGLE_VIRT(2, wm9713_micb_select), /* mic selection 19 */
- static const DECLARE_TLV_DB_SCALE(out_tlv, -4650, 150, 0);
- static const DECLARE_TLV_DB_SCALE(main_tlv, -3450, 150, 0);
- static const DECLARE_TLV_DB_SCALE(misc_tlv, -1500, 300, 0);
--static unsigned int mic_tlv[] = {
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index fd86bd1..624b3b9 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -38,11 +38,10 @@ static const DECLARE_TLV_DB_SCALE(earpiece_tlv, -600, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(outmix_tlv, -2100, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(spkmixout_tlv, -1800, 600, 1);
+ static const DECLARE_TLV_DB_SCALE(outpga_tlv, -5700, 100, 0);
+-static const unsigned int spkboost_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const  DECLARE_TLV_DB_RANGE(mic_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(1200, 600, 0),
--	3, 3, TLV_DB_SCALE_ITEM(3000, 0, 0),
++static const DECLARE_TLV_DB_RANGE(spkboost_tlv,
+ 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
+-	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
 -};
-+	3, 3, TLV_DB_SCALE_ITEM(3000, 0, 0)
++	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0)
 +);
+ static const DECLARE_TLV_DB_SCALE(line_tlv, -600, 600, 0);
  
- static const struct snd_kcontrol_new wm9713_snd_ac97_controls[] = {
- SOC_DOUBLE_TLV("Speaker Playback Volume", AC97_MASTER, 8, 0, 31, 1, out_tlv),
+ static const char *speaker_ref_text[] = {
 -- 
 2.1.4
