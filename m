@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 34/42] ASoC: wm8961: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 28/42] ASoC: twl4030: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:20:02 +0200
-Message-ID: <1438528810-23498-35-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:19:56 +0200
+Message-ID: <1438528810-23498-29-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B90C265005
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DE9E264F4B
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:49 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,29 +48,28 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8961.c | 7 +++----
+ sound/soc/codecs/twl4030.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index 20a0103..e30446a 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -331,13 +331,12 @@ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
- static const DECLARE_TLV_DB_SCALE(hp_sec_tlv, -700, 100, 0);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, -7200, 75, 1);
- static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
--static unsigned int boost_tlv[] = {
--	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(boost_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0,  0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(13, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(20, 0, 0),
--	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0),
--};
-+	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0)
-+);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, -2325, 75, 0);
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 90f5f04..2713e18 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -524,12 +524,11 @@ static const struct snd_kcontrol_new twl4030_dapm_abypassv_control =
+ 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_VDL_APGA_CTL, 2, 1, 0);
  
- static const struct snd_kcontrol_new wm8961_snd_controls[] = {
+ /* Digital bypass gain, mute instead of -30dB */
+-static const unsigned int twl4030_dapm_dbypass_tlv[] = {
+-	TLV_DB_RANGE_HEAD(3),
++static const DECLARE_TLV_DB_RANGE(twl4030_dapm_dbypass_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(-3000, 600, 1),
+ 	2, 3, TLV_DB_SCALE_ITEM(-2400, 0, 0),
+-	4, 7, TLV_DB_SCALE_ITEM(-1800, 600, 0),
+-};
++	4, 7, TLV_DB_SCALE_ITEM(-1800, 600, 0)
++);
+ 
+ /* Digital bypass left (TX1L -> RX2L) */
+ static const struct snd_kcontrol_new twl4030_dapm_dbypassl_control =
 -- 
 2.1.4
