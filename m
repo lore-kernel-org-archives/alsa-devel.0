@@ -1,33 +1,65 @@
-From: Joe Perches <joe@perches.com>
-Subject: [TRIVIAL PATCH] ASoC: atmel_ssc_dai: Correct misuse of 0x%<decimal>
-Date: Sun, 02 Aug 2015 13:22:29 -0700
-Message-ID: <1438546949.29569.2.camel@perches.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH 6/6 v2] ASoC: fsl_ssi: adjust set DAI format in
+	AC'97 mode
+Date: Mon, 03 Aug 2015 00:44:11 +0200
+Message-ID: <55BE9D3B.3090303@maciej.szmigiero.name>
+References: <55BA364E.1000803@maciej.szmigiero.name>
+ <20150731055843.GX30895@pengutronix.de>
+ <55BB9082.4030206@maciej.szmigiero.name>
+ <20150802185103.GD19600@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F0A42614E2
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 00:44:21 +0200 (CEST)
+In-Reply-To: <20150802185103.GD19600@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Correct misuse of 0x%d in logging message.
+Adjust set DAI format function in fsl_ssi driver
+so it doesn't fail and clears RXDIR in AC'97 mode.
 
-Signed-off-by: Joe Perches <joe@perches.com>
+Changes from v1: fix indentation to be consistent with rest
+of the driver.
+
+Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 841d059..ba8def5 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -290,7 +290,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
-        int dir, dir_mask;
-        int ret;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 8e5ff5e..1ba63bd 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+ 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		if (!fsl_ssi_is_ac97(ssi_private))
++			return -EINVAL;
+ 	}
  
--       pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
-+       pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
-                ssc_readl(ssc_p->ssc->regs, SR));
+ 	stcr |= strcr;
+ 	srcr |= strcr;
  
-        /* Enable PMC peripheral clock for this SSC */
+-	if (ssi_private->cpu_dai_drv.symmetric_rates) {
+-		/* Need to clear RXDIR when using SYNC mode */
++	if (ssi_private->cpu_dai_drv.symmetric_rates
++			|| fsl_ssi_is_ac97(ssi_private)) {
++		/* Need to clear RXDIR when using SYNC or AC97 mode */
+ 		srcr &= ~CCSR_SSI_SRCR_RXDIR;
+ 		scr |= CCSR_SSI_SCR_SYN;
+ 	}
