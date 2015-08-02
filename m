@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/42] ASoC: da7213: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 12/42] ASoC: jz4740: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:19:38 +0200
-Message-ID: <1438528810-23498-11-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:19:40 +0200
+Message-ID: <1438528810-23498-13-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id EF2462606D1
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D9D82606CA
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:29 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,46 +48,27 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/da7213.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/codecs/jz4740.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 47fc3be..a9c86ef 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -28,27 +28,24 @@
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 9363fdb..1f5ab99 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -78,11 +78,10 @@ struct jz4740_codec {
+ 	struct regmap *regmap;
+ };
  
- 
- /* Gain and Volume */
--static const unsigned int aux_vol_tlv[] = {
+-static const unsigned int jz4740_mic_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(aux_vol_tlv,
- 	/* -54dB */
- 	0x0, 0x11, TLV_DB_SCALE_ITEM(-5400, 0, 0),
- 	/* -52.5dB to 15dB */
- 	0x12, 0x3f, TLV_DB_SCALE_ITEM(-5250, 150, 0)
++static const DECLARE_TLV_DB_RANGE(jz4740_mic_tlv,
+ 	0, 2, TLV_DB_SCALE_ITEM(0, 600, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(2000, 0, 0),
 -};
++	3, 3, TLV_DB_SCALE_ITEM(2000, 0, 0)
 +);
  
--static const unsigned int digital_gain_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(digital_gain_tlv,
- 	0x0, 0x07, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	/* -78dB to 12dB */
- 	0x08, 0x7f, TLV_DB_SCALE_ITEM(-7800, 75, 0)
--};
-+);
- 
--static const unsigned int alc_analog_gain_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(alc_analog_gain_tlv,
- 	0x0, 0x0, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	/* 0dB to 36dB */
- 	0x01, 0x07, TLV_DB_SCALE_ITEM(0, 600, 0)
--};
-+);
- 
- static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, -600, 600, 0);
- static const DECLARE_TLV_DB_SCALE(mixin_gain_tlv, -450, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(jz4740_out_tlv, 0, 200, 0);
+ static const DECLARE_TLV_DB_SCALE(jz4740_in_tlv, -3450, 150, 0);
 -- 
 2.1.4
