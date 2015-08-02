@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 22/42] ASoC: rt5651: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 24/42] ASoC: rt5677: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:19:50 +0200
-Message-ID: <1438528810-23498-23-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:19:52 +0200
+Message-ID: <1438528810-23498-25-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A314264F0F
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B8235264F1D
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:43 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,15 +48,15 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt5651.c | 7 +++----
+ sound/soc/codecs/rt5677.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 96295cc..b5716c9 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -292,16 +292,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 8d70911..3062acd 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -788,16 +788,15 @@ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+ static const DECLARE_TLV_DB_SCALE(st_vol_tlv, -4650, 150, 0);
  
  /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
 -static unsigned int bst_tlv[] = {
@@ -73,7 +73,7 @@ index 96295cc..b5716c9 100644
 +	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0)
 +);
  
- /* Interface data select */
- static const char * const rt5651_data_select[] = {
+ static int rt5677_dsp_vad_get(struct snd_kcontrol *kcontrol,
+ 		struct snd_ctl_elem_value *ucontrol)
 -- 
 2.1.4
