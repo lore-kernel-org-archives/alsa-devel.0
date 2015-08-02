@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 29/42] ASoC: uda1380: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 32/42] ASoC: wm8737: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:19:57 +0200
-Message-ID: <1438528810-23498-30-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:20:00 +0200
+Message-ID: <1438528810-23498-33-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id EAF3D264F45
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 798742608F0
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:54 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,45 +48,29 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/uda1380.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8737.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 5cafb16..35f0469 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -269,12 +269,11 @@ static DECLARE_TLV_DB_SCALE(amix_tlv, -4950, 150, 1);
-  * from -66 dB in 0.5 dB steps (2 dB steps, really) and
-  * from -52 dB in 0.25 dB steps
-  */
--static const unsigned int mvol_tlv[] = {
--	TLV_DB_RANGE_HEAD(3),
-+static const DECLARE_TLV_DB_RANGE(mvol_tlv,
- 	0, 15, TLV_DB_SCALE_ITEM(-8200, 100, 1),
- 	16, 43, TLV_DB_SCALE_ITEM(-6600, 50, 0),
--	44, 252, TLV_DB_SCALE_ITEM(-5200, 25, 0),
--};
-+	44, 252, TLV_DB_SCALE_ITEM(-5200, 25, 0)
-+);
+diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+index b54a7b7..e4a03d9 100644
+--- a/sound/soc/codecs/wm8737.c
++++ b/sound/soc/codecs/wm8737.c
+@@ -79,13 +79,12 @@ static int wm8737_reset(struct snd_soc_codec *codec)
+ 	return snd_soc_write(codec, WM8737_RESET, 0);
+ }
  
- /*
-  * from -72 dB in 1.5 dB steps (6 dB steps really),
-@@ -282,13 +281,12 @@ static const unsigned int mvol_tlv[] = {
-  * from -60 dB in 0.5 dB steps (2 dB steps really) and
-  * from -46 dB in 0.25 dB steps
-  */
--static const unsigned int vc_tlv[] = {
+-static const unsigned int micboost_tlv[] = {
 -	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(vc_tlv,
- 	0, 7, TLV_DB_SCALE_ITEM(-7800, 150, 1),
- 	8, 15, TLV_DB_SCALE_ITEM(-6600, 75, 0),
- 	16, 43, TLV_DB_SCALE_ITEM(-6000, 50, 0),
--	44, 228, TLV_DB_SCALE_ITEM(-4600, 25, 0),
++static const DECLARE_TLV_DB_RANGE(micboost_tlv,
+ 	0, 0, TLV_DB_SCALE_ITEM(1300, 0, 0),
+ 	1, 1, TLV_DB_SCALE_ITEM(1800, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(2800, 0, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0),
 -};
-+	44, 228, TLV_DB_SCALE_ITEM(-4600, 25, 0)
++	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0)
 +);
- 
- /* from 0 to 6 dB in 2 dB steps if SPF mode != flat */
- static DECLARE_TLV_DB_SCALE(tr_tlv, 0, 200, 0);
+ static const DECLARE_TLV_DB_SCALE(pga_tlv, -9750, 50, 1);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, -600, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(ng_tlv, -7800, 600, 0);
 -- 
 2.1.4
