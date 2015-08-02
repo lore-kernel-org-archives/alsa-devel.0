@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 32/42] ASoC: wm8737: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 38/42] ASoC: wm8993: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:20:00 +0200
-Message-ID: <1438528810-23498-33-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:20:06 +0200
+Message-ID: <1438528810-23498-39-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 798742608F0
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F3CF265074
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:21:00 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,29 +48,27 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8737.c | 7 +++----
+ sound/soc/codecs/wm8993.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index b54a7b7..e4a03d9 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -79,13 +79,12 @@ static int wm8737_reset(struct snd_soc_codec *codec)
- 	return snd_soc_write(codec, WM8737_RESET, 0);
- }
- 
--static const unsigned int micboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(micboost_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(1300, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(1800, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2800, 0, 0),
--	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0),
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index ac9efd6..8668c4c 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -628,11 +628,10 @@ static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_comp_threash, -4500, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_comp_amp, -2250, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_min_tlv, -1800, 600, 0);
+-static const unsigned int drc_max_tlv[] = {
+-	TLV_DB_RANGE_HEAD(2),
++static const DECLARE_TLV_DB_RANGE(drc_max_tlv,
+ 	0, 2, TLV_DB_SCALE_ITEM(1200, 600, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0),
 -};
-+	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0)
++	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0)
 +);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, -9750, 50, 1);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, -600, 600, 0);
- static const DECLARE_TLV_DB_SCALE(ng_tlv, -7800, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_qr_tlv, 1200, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_startup_tlv, -1800, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
 -- 
 2.1.4
