@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 20/42] ASoC: rt5640: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 21/42] ASoC: rt5645: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:19:48 +0200
-Message-ID: <1438528810-23498-21-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:19:49 +0200
+Message-ID: <1438528810-23498-22-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id E3C432608D4
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A184A26074D
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:40 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,14 +48,14 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/rt5640.c | 7 +++----
+ sound/soc/codecs/rt5645.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 119eca7..3203db7 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -347,16 +347,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9d54b34..cea67fe 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -457,16 +457,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
  static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
  
  /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
@@ -73,7 +73,7 @@ index 119eca7..3203db7 100644
 +	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0)
 +);
  
- /* Interface data select */
- static const char * const rt5640_data_select[] = {
+ static const struct snd_kcontrol_new rt5645_snd_controls[] = {
+ 	/* Speaker Output Volume */
 -- 
 2.1.4
