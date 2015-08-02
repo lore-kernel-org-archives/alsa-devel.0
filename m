@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/42] ASoC: ab8500: Replace TLV_DB_RANGE_HEAD
+Subject: [PATCH 06/42] ASoC: cs42l52: Replace TLV_DB_RANGE_HEAD
 	with DECLARE_TLV_DB_RANGE
-Date: Sun,  2 Aug 2015 17:19:30 +0200
-Message-ID: <1438528810-23498-3-git-send-email-lars@metafoo.de>
+Date: Sun,  2 Aug 2015 17:19:34 +0200
+Message-ID: <1438528810-23498-7-git-send-email-lars@metafoo.de>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-138.synserver.de (smtp-out-138.synserver.de
  [212.40.185.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 38AF52606BF
- for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8492B260713
+ for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2015 17:20:22 +0200 (CEST)
 In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -48,27 +48,27 @@ constant x;
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ab8500-codec.c | 7 +++----
+ sound/soc/codecs/cs42l52.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index c7d243d..affb192 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -1335,11 +1335,10 @@ static DECLARE_TLV_DB_SCALE(dax_dig_gain_tlv, -6300, 100, 1);
- static DECLARE_TLV_DB_SCALE(hs_ear_dig_gain_tlv, -100, 100, 1);
- /* -1dB = Mute */
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 387698f..a074cee 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -196,11 +196,10 @@ static DECLARE_TLV_DB_SCALE(mix_tlv, -50, 50, 0);
  
--static const unsigned int hs_gain_tlv[] = {
+ static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
+ 
+-static const unsigned int limiter_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(hs_gain_tlv,
- 	0, 3, TLV_DB_SCALE_ITEM(-3200, 400, 0),
--	4, 15, TLV_DB_SCALE_ITEM(-1800, 200, 0),
++static const DECLARE_TLV_DB_RANGE(limiter_tlv,
+ 	0, 2, TLV_DB_SCALE_ITEM(-3000, 600, 0),
+-	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0),
 -};
-+	4, 15, TLV_DB_SCALE_ITEM(-1800, 200, 0)
++	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0)
 +);
  
- static DECLARE_TLV_DB_SCALE(mic_gain_tlv, 0, 100, 0);
- 
+ static const char * const cs42l52_adca_text[] = {
+ 	"Input1A", "Input2A", "Input3A", "Input4A", "PGA Input Left"};
 -- 
 2.1.4
