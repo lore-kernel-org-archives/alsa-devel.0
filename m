@@ -1,22 +1,15 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 6/6 v2] ASoC: fsl_ssi: adjust set DAI
- format in AC'97 mode
-Date: Tue, 04 Aug 2015 00:42:48 +0200
-Message-ID: <55BFEE68.7030007@maciej.szmigiero.name>
-References: <55BA364E.1000803@maciej.szmigiero.name>
- <20150731055843.GX30895@pengutronix.de>
- <55BB9082.4030206@maciej.szmigiero.name>
- <20150802185103.GD19600@pengutronix.de>
- <55BE9D3B.3090303@maciej.szmigiero.name>
- <20150803162147.GB20873@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 0/2] ALSA: fireworks/firewire-lib: add
+	support for recent firmware quirk
+Date: Tue,  4 Aug 2015 08:40:49 +0900
+Message-ID: <1438645251-13252-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F10B2605E8
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 00:42:59 +0200 (CEST)
-In-Reply-To: <20150803162147.GB20873@sirena.org.uk>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E0C326064F
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 01:40:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,38 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <festevam@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: johannes.oertel@uni-due.de, alsa-devel@alsa-project.org, harryhaaren@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03.08.2015 18:21, Mark Brown wrote:
-> On Mon, Aug 03, 2015 at 12:44:11AM +0200, Maciej S. Szmigiero wrote:
->> Adjust set DAI format function in fsl_ssi driver
->> so it doesn't fail and clears RXDIR in AC'97 mode.
->>
->> Changes from v1: fix indentation to be consistent with rest
->> of the driver.
-> 
-> Inter version changelogs go after the --- as covered in
-> SubmittingPatches.
-> 
->>
->> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
-> 
-> Please don't bury new patches in reply to old submissions, especially
-> not individual patches - it makes it hard to work out what's going on
-> and make sure that the most current version of everything is being
-> applied.  In order to avoid confusion I'm not going to look at these,
-> please resubmit as a new thread.
-> 
-> Please also try to thread your patch series together (git send-email can
-> do this for you) - it also helps people keep track of things.
+Some users have reported current ALSA Fireworks driver stops packet
+streaming due to detecting discontinuity.
 
-Thanks for information.
+[alsa-devel] ALSA snd-fireworks Echo AudioFire 2
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
 
-In cases like this where only one patch of six patch series is updated
-should other ones be resubmitted as well to keep the full patch series
-together?
+[alsa-devel] AudioFire4 quirk
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/095697.html
 
-Best regards,
-Maciej Szmigiero
+As long as I investigate, this issue depends on firmware version installed
+in these devices. While, it's not clear that which version of firmwares for
+which model has this quirk. At least, firmware version 5.7.0, 5.7.3 and
+5.8.0 for AudioFire2/AudioFire4/AudioFirePre8 have this quirk.
+
+This patchset applies a solution for this issue, with my assumption that
+'the same firmware binary has the same quirk'. These models, AudioFire8
+(since Jul 2009) and Gibson Robot Interface Pack (RIP) series uses the
+same firmware binary in driver package.
+
+Takashi Sakamoto (2):
+  Revert "ALSA: fireworks: add support for AudioFire2 quirk"
+  ALSA: fireworks/firewire-lib: add support for recent firmware quirk
+
+ sound/firewire/amdtp.c                      |  5 +++--
+ sound/firewire/amdtp.h                      |  2 ++
+ sound/firewire/fireworks/fireworks.c        | 10 ++++++++--
+ sound/firewire/fireworks/fireworks.h        |  2 +-
+ sound/firewire/fireworks/fireworks_stream.c | 12 +++++++++---
+ 5 files changed, 23 insertions(+), 8 deletions(-)
+
+-- 
+2.1.4
