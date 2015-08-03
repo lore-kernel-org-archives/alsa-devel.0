@@ -1,65 +1,32 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6 v2] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
-Date: Mon, 3 Aug 2015 17:21:47 +0100
-Message-ID: <20150803162147.GB20873@sirena.org.uk>
-References: <55BA364E.1000803@maciej.szmigiero.name>
- <20150731055843.GX30895@pengutronix.de>
- <55BB9082.4030206@maciej.szmigiero.name>
- <20150802185103.GD19600@pengutronix.de>
- <55BE9D3B.3090303@maciej.szmigiero.name>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [TRIVIAL PATCH] ASoC: atmel_ssc_dai: Correct misuse of
+ 0x%<decimal>
+Date: Mon, 03 Aug 2015 10:05:46 -0700
+Message-ID: <1438621546.30149.42.camel@perches.com>
+References: <1438546949.29569.2.camel@perches.com>
+	 <20150803161527.GZ20873@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nuX4E7Vid9I2gnPU"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <55BE9D3B.3090303@maciej.szmigiero.name>
+In-Reply-To: <20150803161527.GZ20873@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2015-08-03 at 17:15 +0100, Mark Brown wrote:
+> On Sun, Aug 02, 2015 at 01:22:29PM -0700, Joe Perches wrote:
+> > Correct misuse of 0x%d in logging message.
+> 
+> This doesn't apply, please chekc and resend.
 
---nuX4E7Vid9I2gnPU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Odd, the diff applies against the latest next-20150803 here.
 
-On Mon, Aug 03, 2015 at 12:44:11AM +0200, Maciej S. Szmigiero wrote:
-> Adjust set DAI format function in fsl_ssi driver
-> so it doesn't fail and clears RXDIR in AC'97 mode.
->=20
-> Changes from v1: fix indentation to be consistent with rest
-> of the driver.
+OK, I see what the problem is now.
 
-Inter version changelogs go after the --- as covered in
-SubmittingPatches.
+I updated evolution to 3.16 and that's not a good version.
+It substitutes spaces for tabs when sending text.
 
->=20
-> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
-
-Please don't bury new patches in reply to old submissions, especially
-not individual patches - it makes it hard to work out what's going on
-and make sure that the most current version of everything is being
-applied.  In order to avoid confusion I'm not going to look at these,
-please resubmit as a new thread.
-
-Please also try to thread your patch series together (git send-email can
-do this for you) - it also helps people keep track of things.
-
---nuX4E7Vid9I2gnPU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVv5UaAAoJECTWi3JdVIfQ1tAH/3GpZyz84n9TBXOTdPeduQ3O
-ka18YZj95knMS6DPi8S99VkHKX7izp3y6Zd9jEngoanwK44atN23dx4s9z41zGRs
-q9wofC4FJ+ADT7Gm2WWzn2ohb/dusCYm43r5jCM+RjltQJib2AgQm2VF/picdGtk
-TIK0eL+TAbq/1PfdhaP5EBWIZLX5tYa56e7W9JnZfvmgx/HgYaDtwi7+SG900tTF
-mQFrNuxReZ0rSQqiYs9i4CnP3QMDzaRPScd17kerciLfLroOMlcH3Co30O1rAnzv
-i4HnW7qEUlNfMJLe9Ovpsy31af7DR5+GMByyEhMHvUR59q5OhTQrXYZ2pQPzHfI=
-=IlXQ
------END PGP SIGNATURE-----
-
---nuX4E7Vid9I2gnPU--
+I'll sort it out and resend later today or you can fix it
+in the meantime.
