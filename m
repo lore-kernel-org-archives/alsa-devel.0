@@ -1,19 +1,22 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - mic selection not working
-Date: Mon, 3 Aug 2015 21:42:06 +0200
-Message-ID: <CALUcmU=mPPwZbCnDa+vVFM_+f_+jv6JfYNN2K7qdnN1PQFmPmg@mail.gmail.com>
-References: <CAN8cciYavRQVFoacVxJdiH01ezRfKMvJqxO18HFmLqwGkaJyAg@mail.gmail.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 6/6 v2] ASoC: fsl_ssi: adjust set DAI
+ format in AC'97 mode
+Date: Tue, 04 Aug 2015 00:42:48 +0200
+Message-ID: <55BFEE68.7030007@maciej.szmigiero.name>
+References: <55BA364E.1000803@maciej.szmigiero.name>
+ <20150731055843.GX30895@pengutronix.de>
+ <55BB9082.4030206@maciej.szmigiero.name>
+ <20150802185103.GD19600@pengutronix.de>
+ <55BE9D3B.3090303@maciej.szmigiero.name>
+ <20150803162147.GB20873@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
- [209.85.218.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 47EB12605D6
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 21:42:27 +0200 (CEST)
-Received: by oibv126 with SMTP id v126so18349485oib.3
- for <alsa-devel@alsa-project.org>; Mon, 03 Aug 2015 12:42:26 -0700 (PDT)
-In-Reply-To: <CAN8cciYavRQVFoacVxJdiH01ezRfKMvJqxO18HFmLqwGkaJyAg@mail.gmail.com>
+Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F10B2605E8
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 00:42:59 +0200 (CEST)
+In-Reply-To: <20150803162147.GB20873@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,218 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <festevam@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Result of "pactl list sources" plugged and unplugged in this order, with
-your previous patches applied.
+On 03.08.2015 18:21, Mark Brown wrote:
+> On Mon, Aug 03, 2015 at 12:44:11AM +0200, Maciej S. Szmigiero wrote:
+>> Adjust set DAI format function in fsl_ssi driver
+>> so it doesn't fail and clears RXDIR in AC'97 mode.
+>>
+>> Changes from v1: fix indentation to be consistent with rest
+>> of the driver.
+> 
+> Inter version changelogs go after the --- as covered in
+> SubmittingPatches.
+> 
+>>
+>> Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
+> 
+> Please don't bury new patches in reply to old submissions, especially
+> not individual patches - it makes it hard to work out what's going on
+> and make sure that the most current version of everything is being
+> applied.  In order to avoid confusion I'm not going to look at these,
+> please resubmit as a new thread.
+> 
+> Please also try to thread your patch series together (git send-email can
+> do this for you) - it also helps people keep track of things.
 
-Nothing: http://pastebin.com/RWuiW0RG
-Headphones: http://pastebin.com/GvEkQ8HB
-Microphone: http://pastebin.com/NRiREULS
-Headset: http://pastebin.com/QuGLFD8A
-Subwoofer: http://pastebin.com/nxZNGgyY
+Thanks for information.
 
+In cases like this where only one patch of six patch series is updated
+should other ones be resubmitted as well to keep the full patch series
+together?
 
-On 1 August 2015 at 03:41, Raymond Yau <superquad.vortex2@gmail.com> wrote:
-
-> >>
-> >>   Ports:
-> >>
-> >>                 analog-output-speaker: Speakers (priority: 10000)
-> >>                 analog-output-headphones: Headphones (priority: 9000,
-> not available)
-> >>         Active Port: analog-output-speaker
-> >>
-> >>
-> >> When you select model=dell-headset-multi, the driver create "Headphone
-> Mic Jack" kctl with type 1 which is SND_JACK_HEADPHONE
-> >>
-> >> type 2 is SND_JACK_MICROPHONE
-> >>
-> >> type 3 is SND_JACK_HEADSET but hda jack does not use this type
-> >>
-> >>
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/sound/jack.h
-> >>
-> >> JACK created Headphone Mic, type 1
-> >> CTRL: add: Headphone Mic Jack:0
-> >> JACK report Headphone Mic, status 0
-> >> JACK created Headset Mic Phantom, type 2
-> >> CTRL: add: Headset Mic Phantom Jack:0
-> >> JACK report Headset Mic Phantom, status 2
-> >> CTL Notify: Headset Mic Phantom Jack:0, mask=1
-> >> JACK created Internal Mic Phantom, type 2
-> >> CTRL: add: Internal Mic Phantom Jack:0
-> >> JACK report Internal Mic Phantom, status 2
-> >> CTL Notify: Internal Mic Phantom Jack:0, mask=1
-> >> JACK created Speaker Front Phantom, type 4
-> >> CTRL: add: Speaker Front Phantom Jack:0
-> >> JACK report Speaker Front Phantom, status 4
-> >> CTL Notify: Speaker Front Phantom Jack:0, mask=1
-> >> JACK created External Subwoofer, type 4
-> >> CTRL: add: External Subwoofer Jack:0
-> >>
-> >> The problem of hda jack kctls are those retaskable I/O jack controls
-> >>
-> >> 1) multi io jacks in those 3 stack desktop
-> >> 2) headphone/mic jack in asus netbook
-> >> 3) dell-headset-multi combo jack
-> >>
-> >> the role of the jack in 1) change from input to output when "Channel
-> mode" change from "2ch" to "4ch" or "6ch"
-> >>
-> >> the role of the jack in 2) and 3) change from Output to Input when
-> "Capture Source" change from Internal Mic/Headset Mic to Headphone Mic
-> >>
-> >> In your case, Headphone Mic Jack kctl return the presence of HP jack
-> except when the combo jack is set to support conventional mic (i.e. when
-> the driver change pin ctl of hp pin node 0x15 to zero and set pin ctl of
-> mic pin to IN),
-> >>
-> >> The driver already unmute the internal speaker when you change capture
-> source to Headphone Mic
-> >>
-> >> The only point is whether pulseaudio still regard this Headphone Mic
-> Jack as the availability of the headphone port when the capture source is
-> Headphone Mic
-> >>
-> >>
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/commit/?id=ca4942e89cf462e5f8c36ca9b8b689879083af6b
-> >>
-> >>
-> >
->
-> >
-> > I really appreciate your efforts in this matter. Unfortunately I
-> understand parts of our talks and I am unsure what I can do.
-> > I am not a kernel / driver developer.
-> >
-> > Are there any steps I can do knowing my limited skills on driver
-> development?
-> > If so, would you mind to describe them step by step, so this beginner
-> understands? :D
->
-> Don't forget cc David since he implement dell-headset-multi
->
->
-> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=73bdd597823e2231dc882577dbbaf8df92fe1775
->
-> static void alc_update_headset_mode(struct hda_codec *codec)
-> +{
-> + struct alc_spec *spec = codec->spec;
-> +
-> + hda_nid_t mux_pin = spec->gen.imux_pins[spec->gen.cur_mux[0]];
-> + hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
-> +
-> + int new_headset_mode;
-> if (!snd_hda_jack_detect(codec, hp_pin))
-> + new_headset_mode = ALC_HEADSET_MODE_UNPLUGGED;
-> + else if (mux_pin == spec->headset_mic_pin)
-> + new_headset_mode = ALC_HEADSET_MODE_HEADSET;
-> + else if (mux_pin == spec->headphone_mic_pin)
-> + new_headset_mode = ALC_HEADSET_MODE_MIC;
-> + else
-> + new_headset_mode = ALC_HEADSET_MODE_HEADPHONE;
-> +
-> + if (new_headset_mode == spec->current_headset_mode)
-> + return;
-> +
-> + switch (new_headset_mode) {
-> + case ALC_HEADSET_MODE_UNPLUGGED:
-> + alc_headset_mode_unplugged(codec);
-> + spec->gen.hp_jack_present = false;
-> + break;
-> + case ALC_HEADSET_MODE_HEADSET:
-> + if (spec->current_headset_type == ALC_HEADSET_TYPE_UNKNOWN)
-> + alc_determine_headset_type(codec);
-> + if (spec->current_headset_type == ALC_HEADSET_TYPE_CTIA)
-> + alc_headset_mode_ctia(codec);
-> + else if (spec->current_headset_type == ALC_HEADSET_TYPE_OMTP)
-> + alc_headset_mode_omtp(codec);
-> + spec->gen.hp_jack_present = true;
-> + break;
-> + case ALC_HEADSET_MODE_MIC:
-> + alc_headset_mode_mic_in(codec, hp_pin, spec->headphone_mic_pin);
-> + spec->gen.hp_jack_present = false;
-> + break;
-> + case ALC_HEADSET_MODE_HEADPHONE:
-> + alc_headset_mode_default(codec);
-> + spec->gen.hp_jack_present = true;
-> + break;
-> + }
-> + if (new_headset_mode != ALC_HEADSET_MODE_MIC) {
-> + snd_hda_set_pin_ctl_cache(codec, hp_pin,
-> +   AC_PINCTL_OUT_EN | AC_PINCTL_HP_EN);
-> + if (spec->headphone_mic_pin)
-> + snd_hda_set_pin_ctl_cache(codec, spec->headphone_mic_pin,
-> +   PIN_VREFHIZ);
-> + }
-> + spec->current_headset_mode = new_headset_mode;
-> +
-> + snd_hda_gen_update_outputs(codec);
-> +}
->
-> You have to post the output of
->
-> pactl list sources
->
-> when the is no jack plugged, headphone plugged, headset plugged and mic
-> jack plugged
->
-> The logic is defined in alc_update_headset_mode()
->
-> Although auto mic selection is disabled when the combo jack can support
-> conventional mic and headset mic
->
-> The capture source of these kind of laptop is not as same as the capture
-> source of ac97 codec of pci sound cards, it is not really manually selected
-> in sound preference
->
-> When there is no jack plugged in, the  capture source should be internal
-> mic.
->
-> As the codec cannot differentitate headset, headphone and mic when there
-> is jack plugged in and driver use mux_pin to determine the type of the jack
->
-> In pulseaudio term,
->
-> [Jack Headphone Mic] can determine the availability of internal mic is YES
-> when unplugged but unknown when plugged
->
->
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-input-internal-mic.conf
->
-> [Jack Headphone Mic]
->
-> The availability of headphone mic is unknown when plugged and NO when
-> unplugged
->
->
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-input-headphone-mic.conf
->
-> [Jack Headphone Mic]
->
-> The availability of headset mic is unknown when plugged and NO when
-> unplugged
->
->
-> http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
->
-> It is not exactly UNKNOWN but determined by the capture source when plugged
->
-
-
-
--- 
-Arthur Borsboom
-Lieven de Keystraat 77
-3067 KG, Rotterdam
-The Netherlands
-Mob: +31629089953
-Email: arthurborsboom@gmail.com
-Skype: Arthur Borsboom, The Hague, The Netherlands
-
-[image: View Arthur's LinkedIn profile]
-<http://uk.linkedin.com/in/arthurborsboom>
+Best regards,
+Maciej Szmigiero
