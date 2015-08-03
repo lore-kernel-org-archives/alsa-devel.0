@@ -1,176 +1,46 @@
-From: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: Use devm_clk_get
-Date: Mon, 3 Aug 2015 17:27:34 +0530
-Message-ID: <20150803115734.GA32440@localhost>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 00/42] ASoC: Replace users of
+	TLV_DB_RANGE_HEAD
+Date: Mon, 3 Aug 2015 07:03:26 -0500
+Message-ID: <alpine.DEB.2.10.1508030702330.27423@heelroid>
+References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m0077474.ppops.net (mx0b-001ae601.pphosted.com [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFD36260612
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 14:02:51 +0200 (CEST)
+In-Reply-To: <1438528810-23498-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, Anish Kumar <yesanishhere@gmail.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces the use of managed resource function
-devm_clk_get instead of clk_get and removes corresponding calls
-to clk_put in the probe and remove functions.
+On Sun, 2 Aug 2015, Lars-Peter Clausen wrote:
 
-To be compatible with the change various gotos are replaced with
-direct returns, and unneeded labels are dropped.
+> Usage of TLV_DB_RANGE_HEAD() is deprecated in favor of
+> DECLARE_TLV_DB_RANGE(). The reason for this is that the former requires to
+> specify the number of items inside the range container while the later is
+> able to calculate this automatically and hence leaves less room for error.
+> 
+> While non of the current users of TLV_DB_RANGE_HEAD() gets it wrong it
+> still makes sense to clean this up since existing drivers are often used as
+> templates for new drivers. As an added bonus the code is also slightly
+> shorter.
+> 
+> There are also a few drivers which use TLV_DB_RANGE_HEAD() with only a
+> single sub-item. Those are updated to not use a range container at all
+> since it is not necessary.
+For the Cirrus CODECS
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/tegra/tegra30_ahub.c | 49 ++++++++++++++----------------------------
- 1 file changed, 16 insertions(+), 33 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index bc94e5d..989b1e8 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -549,54 +549,51 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "Can't get reset %s\n",
- 				configlink_mods[i].rst_name);
- 			ret = PTR_ERR(rst);
--			goto err;
-+			return ret;
- 		}
- 
- 		ret = reset_control_deassert(rst);
- 		reset_control_put(rst);
- 		if (ret)
--			goto err;
-+			return ret;
- 	}
- 
- 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
- 			    GFP_KERNEL);
- 	if (!ahub) {
- 		dev_err(&pdev->dev, "Can't allocate tegra30_ahub\n");
--		ret = -ENOMEM;
--		goto err;
-+		return -ENOMEM;
- 	}
- 	dev_set_drvdata(&pdev->dev, ahub);
- 
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
--	ahub->clk_d_audio = clk_get(&pdev->dev, "d_audio");
-+	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
- 	if (IS_ERR(ahub->clk_d_audio)) {
- 		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
- 		ret = PTR_ERR(ahub->clk_d_audio);
--		goto err;
-+		return ret;
- 	}
- 
--	ahub->clk_apbif = clk_get(&pdev->dev, "apbif");
-+	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
- 	if (IS_ERR(ahub->clk_apbif)) {
- 		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
- 		ret = PTR_ERR(ahub->clk_apbif);
--		goto err_clk_put_d_audio;
-+		return ret;
- 	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res0) {
- 		dev_err(&pdev->dev, "No apbif memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put_apbif;
-+		return -ENODEV;
- 	}
- 
- 	region = devm_request_mem_region(&pdev->dev, res0->start,
- 					 resource_size(res0), DRV_NAME);
- 	if (!region) {
- 		dev_err(&pdev->dev, "request region apbif failed\n");
--		ret = -EBUSY;
--		goto err_clk_put_apbif;
-+		return -EBUSY;
- 	}
- 	ahub->apbif_addr = res0->start;
- 
-@@ -604,8 +601,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 				  resource_size(res0));
- 	if (!regs_apbif) {
- 		dev_err(&pdev->dev, "ioremap apbif failed\n");
--		ret = -ENOMEM;
--		goto err_clk_put_apbif;
-+		return -ENOMEM;
- 	}
- 
- 	ahub->regmap_apbif = devm_regmap_init_mmio(&pdev->dev, regs_apbif,
-@@ -613,31 +609,28 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	if (IS_ERR(ahub->regmap_apbif)) {
- 		dev_err(&pdev->dev, "apbif regmap init failed\n");
- 		ret = PTR_ERR(ahub->regmap_apbif);
--		goto err_clk_put_apbif;
-+		return ret;
- 	}
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 
- 	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	if (!res1) {
- 		dev_err(&pdev->dev, "No ahub memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put_apbif;
-+		return -ENODEV;
- 	}
- 
- 	region = devm_request_mem_region(&pdev->dev, res1->start,
- 					 resource_size(res1), DRV_NAME);
- 	if (!region) {
- 		dev_err(&pdev->dev, "request region ahub failed\n");
--		ret = -EBUSY;
--		goto err_clk_put_apbif;
-+		return -EBUSY;
- 	}
- 
- 	regs_ahub = devm_ioremap(&pdev->dev, res1->start,
- 				 resource_size(res1));
- 	if (!regs_ahub) {
- 		dev_err(&pdev->dev, "ioremap ahub failed\n");
--		ret = -ENOMEM;
--		goto err_clk_put_apbif;
-+		return -ENOMEM;
- 	}
- 
- 	ahub->regmap_ahub = devm_regmap_init_mmio(&pdev->dev, regs_ahub,
-@@ -645,7 +638,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	if (IS_ERR(ahub->regmap_ahub)) {
- 		dev_err(&pdev->dev, "ahub regmap init failed\n");
- 		ret = PTR_ERR(ahub->regmap_ahub);
--		goto err_clk_put_apbif;
-+		return ret;
- 	}
- 	regcache_cache_only(ahub->regmap_ahub, true);
- 
-@@ -662,12 +655,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
--err_clk_put_apbif:
--	clk_put(ahub->clk_apbif);
--err_clk_put_d_audio:
--	clk_put(ahub->clk_d_audio);
--	ahub = NULL;
--err:
-+
- 	return ret;
- }
- 
-@@ -680,11 +668,6 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra30_ahub_runtime_suspend(&pdev->dev);
- 
--	clk_put(ahub->clk_apbif);
--	clk_put(ahub->clk_d_audio);
--
--	ahub = NULL;
--
- 	return 0;
- }
- 
--- 
-1.9.1
+Thanks,
+Acked-by: Brian Austin <brian.austin@cirrus.com>
