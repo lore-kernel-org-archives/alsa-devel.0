@@ -1,19 +1,19 @@
 From: "Opensource [Adam Thomson]" <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 09/42] ASoC: da7210: Replace
+Subject: Re: [PATCH 10/42] ASoC: da7213: Replace
  TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
-Date: Mon, 3 Aug 2015 14:45:34 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337AB569078@SW-EX-MBX01.diasemi.com>
+Date: Mon, 3 Aug 2015 14:46:39 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337AB569085@SW-EX-MBX01.diasemi.com>
 References: <1438528810-23498-1-git-send-email-lars@metafoo.de>
- <1438528810-23498-10-git-send-email-lars@metafoo.de>
+ <1438528810-23498-11-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta14.messagelabs.com (mail1.bemta14.messagelabs.com
- [193.109.254.107])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FDC626517A
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 16:45:39 +0200 (CEST)
-In-Reply-To: <1438528810-23498-10-git-send-email-lars@metafoo.de>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id 934E0265255
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 16:46:42 +0200 (CEST)
+In-Reply-To: <1438528810-23498-11-git-send-email-lars@metafoo.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
