@@ -1,70 +1,176 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Question about Component and Card
-Date: Mon, 03 Aug 2015 13:51:48 +0200
-Message-ID: <55BF55D4.5010007@metafoo.de>
-References: <87zj29uei7.wl%kuninori.morimoto.gx@renesas.com>	<55BF09CB.6060307@metafoo.de>
- <87wpxcvl5n.wl%kuninori.morimoto.gx@renesas.com>
+From: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] ASoC: tegra: Use devm_clk_get
+Date: Mon, 3 Aug 2015 17:27:34 +0530
+Message-ID: <20150803115734.GA32440@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-139.synserver.de (smtp-out-139.synserver.de
- [212.40.185.139])
- by alsa0.perex.cz (Postfix) with ESMTP id AF0C7260612
- for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 13:51:49 +0200 (CEST)
-In-Reply-To: <87wpxcvl5n.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/03/2015 10:23 AM, Kuninori Morimoto wrote:
-> 
-> Hi Lars
-> 
->>> I noticed my sound card (which is not upstreamed) can't probe in next branch.
->>> I think it is because this patch
->>> 1b7c12316982f74a5b8e7704c24cf5524d0723a3
->>> (ASoC: Prevent components from being bound to multiple cards)
->>>
->>> In my case, my sound device (= CPU) has some DAIs,
->>> and these are connected to some codecs.
->>> It is shown as below. And I would like to use these as 2 sound cards.
->>>  ex)	aplay -D hw:0 xxx
->>> 	aplay -D hw:1 xxx
->>> But, 2nd sound card can't probe because of above patch now.
->>> (component->card indicates 1st card)
->>> It can be probeed if I used DPCM card (= 1 CPU + 2 Codec), but...
->>> But, is my understanding wrong ?
->>
->> ASoC always had the restriction that you can only bind a component to a
->> single card. Otherwise the internal data structures will get corrupted,
->> which may result in undefined behavior at a later point. The patch made this
->> restriction explicit to make sure that issue is caught when it happens and
->> you don't have dig through crashes from random memory corruption.
-> 
-> Hmm...
-> Current my CPU driver is probing all channels in 1 driver.
-> Then, I can use multi sound card if CPU driver probes limited channels.
-> (ex driver0 probes ch0, ch1
->     driver1 probes ch2, ch3, or something like this)
-> 
-> This means I need to re-consider / change my CPU driver for it.
-> Do you think this is good idea ? or do I have other solution ?
+This patch introduces the use of managed resource function
+devm_clk_get instead of clk_get and removes corresponding calls
+to clk_put in the probe and remove functions.
 
-Yeah, it's difficult. I guess this is a case where the control path (e.g.
-memory mapped register region, irq, etc.) is shared, but the data paths are
-independent. In theory this means you can use each DAI in a different sound
-card. But in practice they still share the same DAPM context, even though
-there are no connections in the DAPM graph between them. I don't know how to
-solve this issue. The easiest way out would be to register a different
-component for each DAI. But that might not be possible depending on how the
-system is structured.
+To be compatible with the change various gotos are replaced with
+direct returns, and unneeded labels are dropped.
+
+Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ sound/soc/tegra/tegra30_ahub.c | 49 ++++++++++++++----------------------------
+ 1 file changed, 16 insertions(+), 33 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index bc94e5d..989b1e8 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -549,54 +549,51 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Can't get reset %s\n",
+ 				configlink_mods[i].rst_name);
+ 			ret = PTR_ERR(rst);
+-			goto err;
++			return ret;
+ 		}
+ 
+ 		ret = reset_control_deassert(rst);
+ 		reset_control_put(rst);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 	}
+ 
+ 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+ 			    GFP_KERNEL);
+ 	if (!ahub) {
+ 		dev_err(&pdev->dev, "Can't allocate tegra30_ahub\n");
+-		ret = -ENOMEM;
+-		goto err;
++		return -ENOMEM;
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ahub);
+ 
+ 	ahub->soc_data = soc_data;
+ 	ahub->dev = &pdev->dev;
+ 
+-	ahub->clk_d_audio = clk_get(&pdev->dev, "d_audio");
++	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
+ 	if (IS_ERR(ahub->clk_d_audio)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
+ 		ret = PTR_ERR(ahub->clk_d_audio);
+-		goto err;
++		return ret;
+ 	}
+ 
+-	ahub->clk_apbif = clk_get(&pdev->dev, "apbif");
++	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
+ 	if (IS_ERR(ahub->clk_apbif)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
+ 		ret = PTR_ERR(ahub->clk_apbif);
+-		goto err_clk_put_d_audio;
++		return ret;
+ 	}
+ 
+ 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res0) {
+ 		dev_err(&pdev->dev, "No apbif memory resource\n");
+-		ret = -ENODEV;
+-		goto err_clk_put_apbif;
++		return -ENODEV;
+ 	}
+ 
+ 	region = devm_request_mem_region(&pdev->dev, res0->start,
+ 					 resource_size(res0), DRV_NAME);
+ 	if (!region) {
+ 		dev_err(&pdev->dev, "request region apbif failed\n");
+-		ret = -EBUSY;
+-		goto err_clk_put_apbif;
++		return -EBUSY;
+ 	}
+ 	ahub->apbif_addr = res0->start;
+ 
+@@ -604,8 +601,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 				  resource_size(res0));
+ 	if (!regs_apbif) {
+ 		dev_err(&pdev->dev, "ioremap apbif failed\n");
+-		ret = -ENOMEM;
+-		goto err_clk_put_apbif;
++		return -ENOMEM;
+ 	}
+ 
+ 	ahub->regmap_apbif = devm_regmap_init_mmio(&pdev->dev, regs_apbif,
+@@ -613,31 +609,28 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ahub->regmap_apbif)) {
+ 		dev_err(&pdev->dev, "apbif regmap init failed\n");
+ 		ret = PTR_ERR(ahub->regmap_apbif);
+-		goto err_clk_put_apbif;
++		return ret;
+ 	}
+ 	regcache_cache_only(ahub->regmap_apbif, true);
+ 
+ 	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	if (!res1) {
+ 		dev_err(&pdev->dev, "No ahub memory resource\n");
+-		ret = -ENODEV;
+-		goto err_clk_put_apbif;
++		return -ENODEV;
+ 	}
+ 
+ 	region = devm_request_mem_region(&pdev->dev, res1->start,
+ 					 resource_size(res1), DRV_NAME);
+ 	if (!region) {
+ 		dev_err(&pdev->dev, "request region ahub failed\n");
+-		ret = -EBUSY;
+-		goto err_clk_put_apbif;
++		return -EBUSY;
+ 	}
+ 
+ 	regs_ahub = devm_ioremap(&pdev->dev, res1->start,
+ 				 resource_size(res1));
+ 	if (!regs_ahub) {
+ 		dev_err(&pdev->dev, "ioremap ahub failed\n");
+-		ret = -ENOMEM;
+-		goto err_clk_put_apbif;
++		return -ENOMEM;
+ 	}
+ 
+ 	ahub->regmap_ahub = devm_regmap_init_mmio(&pdev->dev, regs_ahub,
+@@ -645,7 +638,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ahub->regmap_ahub)) {
+ 		dev_err(&pdev->dev, "ahub regmap init failed\n");
+ 		ret = PTR_ERR(ahub->regmap_ahub);
+-		goto err_clk_put_apbif;
++		return ret;
+ 	}
+ 	regcache_cache_only(ahub->regmap_ahub, true);
+ 
+@@ -662,12 +655,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+-err_clk_put_apbif:
+-	clk_put(ahub->clk_apbif);
+-err_clk_put_d_audio:
+-	clk_put(ahub->clk_d_audio);
+-	ahub = NULL;
+-err:
++
+ 	return ret;
+ }
+ 
+@@ -680,11 +668,6 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		tegra30_ahub_runtime_suspend(&pdev->dev);
+ 
+-	clk_put(ahub->clk_apbif);
+-	clk_put(ahub->clk_d_audio);
+-
+-	ahub = NULL;
+-
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
