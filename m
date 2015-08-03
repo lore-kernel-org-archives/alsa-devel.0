@@ -1,95 +1,46 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH v14 1/3] drm/i2c: tda998x: Add support of a DT graph of
- ports
-Date: Mon, 3 Aug 2015 19:06:35 +0100
-Message-ID: <20150803180635.GJ7557@n2100.arm.linux.org.uk>
-References: <cover.1438076750.git.moinejf@free.fr>
- <fb313682b8d14e16565fc317b7f5a249748c069f.1438076750.git.moinejf@free.fr>
- <55BF8111.4080905@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Mon, 03 Aug 2015 14:11:48 -0500
+Message-ID: <55BFBCF4.2080508@linux.intel.com>
+References: <20150714150352.GW11162@sirena.org.uk> <55BC772C.50801@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <55BF8111.4080905-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B2FE2605CD
+ for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2015 21:11:53 +0200 (CEST)
+In-Reply-To: <55BC772C.50801@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 03, 2015 at 05:56:17PM +0300, Jyri Sarha wrote:
-> On 05/08/15 11:18, Jean-Francois Moine wrote:
-> >Two kinds of ports may be declared in a DT graph of ports: video and audio.
-> >This patch accepts the port value from a video port as an alternative
-> >to the video-ports property.
-> >It also accepts audio ports in the case the transmitter is not used as
-> >a slave encoder.
-> >The new file include/sound/tda998x.h prepares to the definition of
-> >a tda998x CODEC.
-> >
-> >Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-> >---
-> >  .../devicetree/bindings/drm/i2c/tda998x.txt        | 51 ++++++++++++
-> >  drivers/gpu/drm/i2c/tda998x_drv.c                  | 90 +++++++++++++++++++---
-> >  include/sound/tda998x.h                            |  8 ++
-> >  3 files changed, 140 insertions(+), 9 deletions(-)
-> >  create mode 100644 include/sound/tda998x.h
-> >
-> >diff --git a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> >index e9e4bce..35f6a80 100644
-> >--- a/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> >+++ b/Documentation/devicetree/bindings/drm/i2c/tda998x.txt
-> >@@ -16,6 +16,35 @@ Optional properties:
-> >
-> >    - video-ports: 24 bits value which defines how the video controller
-> >  	output is wired to the TDA998x input - default: <0x230145>
-> >+	This property is not used when ports are defined.
-> >+
-> >+Optional nodes:
-> >+
-> >+  - port: up to three ports.
-> >+	The ports are defined according to [1].
-> >+
-> >+    Video port.
-> >+	There may be only one video port.
-> >+	This one must contain the following property:
-> >+
-> >+	- port-type: must be "rgb"
-> >+
-> >+	and may contain the optional property:
-> >+
-> >+	- reg: 24 bits value which defines how the video controller
-> >+		output is wired to the TDA998x input (video pins)
-> >+		When absent, the default value is <0x230145>.
-> 
-> Using reg property for something else than for address of some kind seems
-> confusing to me. Should we just add an explicit property rgb mapping?
 
-It's what ePAPR requires.
+> Full media controller integration for both ALSA and ASoC. How this can be
+> used to export topology information to userspace and how to for example
+> attach a specific volume control to a specific media controller entity. And
+> maybe also how to de-duplicate similar functionality between DAPM and media
+> controller.
 
-The problem is when you have multiple nodes called the same thing, you
-need to add the @number suffix to the name, and if you do that, ePAPR
-says you must also have a reg property, where the reg property matches
-the number given after the @.
+This is something I looked at, without much progress though beyond a set 
+of initial patches to make use of the media controller API. There were 
+two issues:
+- one was to agree on a syntax/format for the (binary) topology 
+information exposed by the kernel.
+- the main issue was really how to link a user-visible volume slider to 
+a specific or group of volume controls. A number of people have tried 
+this before in other contexts and it's really hard to do based on 
+topology information only.
 
-See https://www.power.org/wp-content/uploads/2012/06/Power_ePAPR_APPROVED_v1.1.pdf
-page 15, 2.2.1 "Node names".
-
-> Here I do not even understand what what the values 3 ad 4 stand for.
-
-It's the audio input pin number (which is a sort-of bus address.)
-
-> Anyway having some clearly defined property that explicitly defines the
-> audio pins would make more sense to me. Even if that is not possible due
-> lack of proper documentation it would be better not add to the confusion by
-> unusual usage of reg property.
-
-As ePAPR requires the reg= property with the @unit-address part, this is
-the most sane approach.
-
--- 
-FTTC broadband for 0.8mile line: currently at 10.5Mbps down 400kbps up
-according to speedtest.net.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+But yes a good topic to re-discuss
+-Pierre
