@@ -1,17 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 0/2] ALSA: fireworks/firewire-lib: add
- support for recent firmware quirk
-Date: Wed, 05 Aug 2015 03:33:52 +0900
-Message-ID: <55C10590.4040202@sakamocchi.jp>
-References: <1438645251-13252-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Tue, 04 Aug 2015 20:50:36 +0200
+Message-ID: <55C1097C.3050709@metafoo.de>
+References: <20150714150352.GW11162@sirena.org.uk> <55BC772C.50801@metafoo.de>
+ <20150804160316.GU20873@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7083930057663614737=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ED0D260532
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 20:34:01 +0200 (CEST)
-In-Reply-To: <1438645251-13252-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp-out-222.synserver.de (smtp-out-223.synserver.de
+ [212.40.185.223])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE8C6260656
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 20:50:45 +0200 (CEST)
+In-Reply-To: <20150804160316.GU20873@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: johannes.oertel@uni-due.de, alsa-devel@alsa-project.org, harryhaaren@gmail.com, ffado-devel@lists.sf.net
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============7083930057663614737==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="7T3SMBQTPVpS25APhvoW83HJxWR2LURBl"
 
-On Aug 04 2015 08:40, Takashi Sakamoto wrote:
-> Some users have reported current ALSA Fireworks driver stops packet
-> streaming due to detecting discontinuity.
-> 
-> [alsa-devel] ALSA snd-fireworks Echo AudioFire 2
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
-> 
-> [alsa-devel] AudioFire4 quirk
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/095697.html
-> 
-> As long as I investigate, this issue depends on firmware version installed
-> in these devices. While, it's not clear that which version of firmwares for
-> which model has this quirk. At least, firmware version 5.7.0, 5.7.3 and
-> 5.8.0 for AudioFire2/AudioFire4/AudioFirePre8 have this quirk.
-> 
-> This patchset applies a solution for this issue, with my assumption that
-> 'the same firmware binary has the same quirk'. These models, AudioFire8
-> (since Jul 2009) and Gibson Robot Interface Pack (RIP) series uses the
-> same firmware binary in driver package.
-> 
-> Takashi Sakamoto (2):
->   Revert "ALSA: fireworks: add support for AudioFire2 quirk"
->   ALSA: fireworks/firewire-lib: add support for recent firmware quirk
-> 
->  sound/firewire/amdtp.c                      |  5 +++--
->  sound/firewire/amdtp.h                      |  2 ++
->  sound/firewire/fireworks/fireworks.c        | 10 ++++++++--
->  sound/firewire/fireworks/fireworks.h        |  2 +-
->  sound/firewire/fireworks/fireworks_stream.c | 12 +++++++++---
->  5 files changed, 23 insertions(+), 8 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7T3SMBQTPVpS25APhvoW83HJxWR2LURBl
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-I pushed 'fireworks3-quirk' branch to my repository. It's nice to test
-with your models if you have a enough time.
-https://github.com/takaswie/snd-firewire-improve/tree/fireworks3-quirk
+On 08/04/2015 06:03 PM, Mark Brown wrote:
+> On Sat, Aug 01, 2015 at 09:37:16AM +0200, Lars-Peter Clausen wrote:
+>> On 07/14/2015 05:03 PM, Mark Brown wrote:
+>=20
+>>> and please follow up to this mail with any topics you'd like to see
+>>> raised so we can start collecting them (probably another Google doc w=
+ill
+>>> be forthcoming for them).
+>=20
+>> Full media controller integration for both ALSA and ASoC. How this can=
+ be
+>> used to export topology information to userspace and how to for exampl=
+e
+>> attach a specific volume control to a specific media controller entity=
+=2E And
+>> maybe also how to de-duplicate similar functionality between DAPM and =
+media
+>> controller.
+>=20
+> We keep talking about this but it never goes anywhere.  I think everyon=
+e
+> agrees that in principal it's a good idea but nobody's actually taken
+> the next step and started working on it.  Do we think we're likely to
+> come to any new conclusions here?
 
-In this repository, another developing line is running (amdtp-variants).
-I have a plan to post a part of them in this kernel developing cycle.
+I hope to have some basic support ready by then.
 
 
-Regards
 
-Takashi Sakamoto
+--7T3SMBQTPVpS25APhvoW83HJxWR2LURBl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJVwQmDAAoJEOj3aLScRbOZfBYQAIPPFIm6M+7LvzP2ScBrH03Y
+r6pJEyC0srxd3cRxEUaTfSDl/2TpGwDa9YL9mzkcsmtdDoDmpY5+GUZdxMmKfQcO
+793OEguP4MzhWIW+869WMSSA8Gv0IycpKV5ngVv8J6YuBVqRP7U19cuinfjGpfrI
+ltqoZQBC8yhDcsJ/fCG4kIGROcNXqZm0CY661XHDduQtf4rzZAYqe7xS5MuEklRW
+uNbWGR8aAscjyQFXiAgcJWYXNs2ByQG1ShFEAzRVeJYVy3QNCnP4n/mfK+738PaA
+J9O/DASPFq0nGyPC44l+x66d8eqnZk+1BwD2NeoGj2bX2uykqUW3Vp78oKZcSUfu
+WXdwRIUwNYxeH6s8K/cYv4nW0nuUSO4oAI1VQ+XvIcMHIsDzZz6Kd0RWVIERjHkX
+APv5FIYd6vAWWiYf4VcuDDmKtvRWnAL2h/gRevl+tGZHqcZlA68F9lDWtVAGN7VI
+asZ5xXYYH7930ClZMD0I32FK/EZF8ZrE5S4gx9l//3sv/sLe2BTCSelDGCd1nziD
+Thvhbk6/+TXib1iQWC8djC84CtDVzaVRz34DMQ1E7Oa8uacazbuu/CuAf8U3w03V
+Pwmyv5BgC4bX21HBdRHZrLTfoQhQI61f2uMEhf+NK/HXA43CIYq2fc3U3XZickYY
+Yyr1fUOIrO3AUzWHwPcc
+=laTD
+-----END PGP SIGNATURE-----
+
+--7T3SMBQTPVpS25APhvoW83HJxWR2LURBl--
+
+--===============7083930057663614737==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7083930057663614737==--
