@@ -1,52 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 6/6 v2] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
-Date: Tue, 4 Aug 2015 10:07:09 +0100
-Message-ID: <20150804090709.GD20873@sirena.org.uk>
-References: <55BA364E.1000803@maciej.szmigiero.name>
- <20150731055843.GX30895@pengutronix.de>
- <55BB9082.4030206@maciej.szmigiero.name>
- <20150802185103.GD19600@pengutronix.de>
- <55BE9D3B.3090303@maciej.szmigiero.name>
- <20150803162147.GB20873@sirena.org.uk>
- <55BFEE68.7030007@maciej.szmigiero.name>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 3/3] ALSA: HDA: wait for RIRB,
+	CORB DMA to finish
+Date: Tue, 4 Aug 2015 14:40:48 +0530
+Message-ID: <20150804091048.GD11789@localhost>
+References: <1438660720-30033-1-git-send-email-vinod.koul@intel.com>
+ <1438660720-30033-4-git-send-email-vinod.koul@intel.com>
+ <s5hlhdrd4bb.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4JxvUTD846AMAZAS"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2985126587B
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 11:09:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <55BFEE68.7030007@maciej.szmigiero.name>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <s5hlhdrd4bb.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 04, 2015 at 07:13:12AM +0200, Takashi Iwai wrote:
+> > @@ -86,10 +86,24 @@ EXPORT_SYMBOL_GPL(snd_hdac_bus_init_cmd_io);
+> >   */
+> >  void snd_hdac_bus_stop_cmd_io(struct hdac_bus *bus)
+> >  {
+> > +	unsigned long timeout;
+> > +
+> >  	spin_lock_irq(&bus->reg_lock);
+> >  	/* disable ringbuffer DMAs */
+> >  	snd_hdac_chip_writeb(bus, RIRBCTL, 0);
+> >  	snd_hdac_chip_writeb(bus, CORBCTL, 0);
+> > +
+> > +	/* poll DMAs to check if they stopped or not */
+> > +
+> > +	timeout = jiffies + msecs_to_jiffies(100);
+> > +	while ((snd_hdac_chip_readb(bus, RIRBCTL) & AZX_RBCTL_DMA_EN) &&
+> > +	       time_before(jiffies, timeout))
+> > +		usleep_range(500, 1000);
+> 
+> You must not use *sleep() inside atomic context.
+Right, not sure why it didnt crib when we tested, will send updated one soon
 
---4JxvUTD846AMAZAS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the super quick review :)
 
-On Tue, Aug 04, 2015 at 12:42:48AM +0200, Maciej S. Szmigiero wrote:
-
-> In cases like this where only one patch of six patch series is updated
-> should other ones be resubmitted as well to keep the full patch series
-> together?
-
-Yes, any unapplied patches should be resubmitted.
-
---4JxvUTD846AMAZAS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVwIC8AAoJECTWi3JdVIfQSa0H/3CcmFH5br95nmZ/HhSuJfx2
-95RZRZ8FkTFUxlCTGOSdPgaRzO1zHq2tHXG8WLoxbUreLQFV1pHiZgp5KST4zDOn
-xG1rqBpMMbwGYomA/sNl76bUCh1ReYRh5j8Tf6RWixUBIUpzteWqJ5f14aIVJ2rv
-DdoF2zX0dk2Xp6KimSVCp4FsQrJoc5bhTWncQaP8OqQKnfO4nArHQHyTppDvGf0n
-eQRBlKcMc6AvWNRG5EvcKTeXexCZRUBLXOYApATyeX2TPRrIEDgb1RyHvaSzT2RV
-+ZdwCPkiy63vag2TPTEk3CFbnnQusgd6bKFsNhNIOl7Ks1/d7THBNvNT2f+mq7Q=
-=z9iT
------END PGP SIGNATURE-----
-
---4JxvUTD846AMAZAS--
+-- 
+~Vinod
