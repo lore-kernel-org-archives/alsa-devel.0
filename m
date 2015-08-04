@@ -1,16 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: ASoC: dapm: Simplify list creation in
- dapm_dai_get_connected_widgets()
-Date: Tue, 4 Aug 2015 20:38:50 +0300
-Message-ID: <20150804173850.GA28511@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: topology: fix typo in
+	soc_tplg_kcontrol_bind_io()" to the asoc tree
+Date: Tue, 04 Aug 2015 18:47:57 +0100
+Message-ID: <E1ZMgJh-0007qT-FQ@finisterre>
+References: <1438699655-13985-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id BE08D260532
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 19:39:04 +0200 (CEST)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B811260532
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 19:48:05 +0200 (CEST)
+In-Reply-To: <1438699655-13985-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,62 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lars@metafoo.de
+To: Mengdong Lin <mengdong.lin@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lars-Peter Clausen,
+The patch
 
-The patch 1ce43acff0c0: "ASoC: dapm: Simplify list creation in
-dapm_dai_get_connected_widgets()" from Jul 26, 2015, leads to the
-following static checker warning:
+   ASoC: topology: fix typo in soc_tplg_kcontrol_bind_io()
 
-	sound/soc/soc-dapm.c:1199 snd_soc_dapm_dai_get_connected_widgets()
-	warn: inconsistent returns 'mutex:&card->dapm_mutex'.
-	  Locked on:   line 1194
-	  Unlocked on: line 1199
+has been applied to the asoc tree at
 
-sound/soc/soc-dapm.c
-  1164  int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
-  1165          struct snd_soc_dapm_widget_list **list)
-  1166  {
-  1167          struct snd_soc_card *card = dai->component->card;
-  1168          struct snd_soc_dapm_widget *w;
-  1169          LIST_HEAD(widgets);
-  1170          int paths;
-  1171          int ret;
-  1172  
-  1173          mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-  1174  
-  1175          /*
-  1176           * For is_connected_{output,input}_ep fully discover the graph we need
-  1177           * to reset the cached number of inputs and outputs.
-  1178           */
-  1179          list_for_each_entry(w, &card->widgets, list) {
-  1180                  w->inputs = -1;
-  1181                  w->outputs = -1;
-  1182          }
-  1183  
-  1184          if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-  1185                  paths = is_connected_output_ep(dai->playback_widget, &widgets);
-  1186          else
-  1187                  paths = is_connected_input_ep(dai->capture_widget, &widgets);
-  1188  
-  1189          /* Drop starting point */
-  1190          list_del(widgets.next);
-  1191  
-  1192          ret = dapm_widget_list_create(list, &widgets);
-  1193          if (ret)
-  1194                  return ret;
-                        ^^^^^^^^^^^
-Holding card->dapm_mutex.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-  1195  
-  1196          trace_snd_soc_dapm_connected(paths, stream);
-  1197          mutex_unlock(&card->dapm_mutex);
-  1198  
-  1199          return paths;
-  1200  }
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-regards,
-dan carpenter
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5406898354ebfb11f49b955fb5e49a62786a542f Mon Sep 17 00:00:00 2001
+From: Mengdong Lin <mengdong.lin@intel.com>
+Date: Tue, 4 Aug 2015 15:47:35 +0100
+Subject: [PATCH] ASoC: topology: fix typo in soc_tplg_kcontrol_bind_io()
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index d096068..6a547c6 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -534,7 +534,7 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ 			k->put = bops[i].put;
+ 		if (k->get == NULL && bops[i].id == hdr->ops.get)
+ 			k->get = bops[i].get;
+-		if (k->info == NULL && ops[i].id == hdr->ops.info)
++		if (k->info == NULL && bops[i].id == hdr->ops.info)
+ 			k->info = bops[i].info;
+ 	}
+ 
+-- 
+2.1.4
