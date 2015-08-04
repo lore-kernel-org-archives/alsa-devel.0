@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: fix typo in
-	soc_tplg_kcontrol_bind_io()" to the asoc tree
-Date: Tue, 04 Aug 2015 18:47:57 +0100
-Message-ID: <E1ZMgJh-0007qT-FQ@finisterre>
-References: <1438699655-13985-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: atmel_ssc_dai: Correct misuse of
+	0x%<decimal>" to the asoc tree
+Date: Tue, 04 Aug 2015 18:47:58 +0100
+Message-ID: <E1ZMgJi-0007qw-N0@finisterre>
+References: <1438624169.16753.5.camel@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B811260532
- for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 19:48:05 +0200 (CEST)
-In-Reply-To: <1438699655-13985-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83C75260656
+ for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2015 19:48:07 +0200 (CEST)
+In-Reply-To: <1438624169.16753.5.camel@perches.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Joe Perches <joe@perches.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: fix typo in soc_tplg_kcontrol_bind_io()
+   ASoC: atmel_ssc_dai: Correct misuse of 0x%<decimal>
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 5406898354ebfb11f49b955fb5e49a62786a542f Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@intel.com>
-Date: Tue, 4 Aug 2015 15:47:35 +0100
-Subject: [PATCH] ASoC: topology: fix typo in soc_tplg_kcontrol_bind_io()
+>From 56113f6e6f8d57d3c184544c6421422558a9988e Mon Sep 17 00:00:00 2001
+From: Joe Perches <joe@perches.com>
+Date: Mon, 3 Aug 2015 10:49:29 -0700
+Subject: [PATCH] ASoC: atmel_ssc_dai: Correct misuse of 0x%<decimal>
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Correct misuse of 0x%d in logging message.
+
+Signed-off-by: Joe Perches <joe@perches.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 2 +-
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index d096068..6a547c6 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -534,7 +534,7 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 			k->put = bops[i].put;
- 		if (k->get == NULL && bops[i].id == hdr->ops.get)
- 			k->get = bops[i].get;
--		if (k->info == NULL && ops[i].id == hdr->ops.info)
-+		if (k->info == NULL && bops[i].id == hdr->ops.info)
- 			k->info = bops[i].info;
- 	}
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 841d059..ba8def5 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -290,7 +290,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 	int dir, dir_mask;
+ 	int ret;
  
+-	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
++	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
+ 		ssc_readl(ssc_p->ssc->regs, SR));
+ 
+ 	/* Enable PMC peripheral clock for this SSC */
 -- 
 2.1.4
