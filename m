@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Replace TLV_DB_RANGE_HEAD
-	with DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:18 +0100
-Message-ID: <E1ZMxqo-0005to-Uf@finisterre>
-References: <1438528810-23498-26-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with
+	DECLARE_TLV_DB_RANGE" to the asoc tree
+Date: Wed, 05 Aug 2015 13:31:22 +0100
+Message-ID: <E1ZMxqs-0005uk-GS@finisterre>
+References: <1438528810-23498-24-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 44A84265E27
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:30 +0200 (CEST)
-In-Reply-To: <1438528810-23498-26-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A0C63265E3F
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:33 +0200 (CEST)
+In-Reply-To: <1438528810-23498-24-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 53eb1ca3caab417f1f686627bbf6bfa7d54cb5a8 Mon Sep 17 00:00:00 2001
+>From dea6d32e9efea0a75b5fb367fd53fa0562154852 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:53 +0200
-Subject: [PATCH] ASoC: sgtl5000: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:51 +0200
+Subject: [PATCH] ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,27 +82,32 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 7 +++----
+ sound/soc/codecs/rt5670.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index e673f6c..c59a687 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -406,11 +406,10 @@ static int dac_put_volsw(struct snd_kcontrol *kcontrol,
- static const DECLARE_TLV_DB_SCALE(capture_6db_attenuate, -600, 600, 0);
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index a9123d4..7ce8d06 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -592,16 +592,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
  
- /* tlv for mic gain, 0db 20db 30db 40db */
--static const unsigned int mic_gain_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(mic_gain_tlv,
+ /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
+-static unsigned int bst_tlv[] = {
+-	TLV_DB_RANGE_HEAD(7),
++static const DECLARE_TLV_DB_RANGE(bst_tlv,
  	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
--	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0),
+ 	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
+ 	3, 5, TLV_DB_SCALE_ITEM(3000, 500, 0),
+ 	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
+ 	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
+-	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
 -};
-+	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0)
++	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0)
 +);
  
- /* tlv for hp volume, -51.5db to 12.0db, step .5db */
- static const DECLARE_TLV_DB_SCALE(headphone_volume, -5150, 50, 0);
+ /* Interface data select */
+ static const char * const rt5670_data_select[] = {
 -- 
 2.1.4
