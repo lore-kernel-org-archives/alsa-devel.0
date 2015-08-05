@@ -1,66 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/4] Add SPDIF support for rockchip
-Date: Wed, 5 Aug 2015 12:59:51 +0100
-Message-ID: <20150805115951.GK20873@sirena.org.uk>
-References: <1438687099-14282-1-git-send-email-sjoerd.simons@collabora.co.uk>
- <20150804153649.GP20873@sirena.org.uk>
- <1438756921.27576.4.camel@collabora.co.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: Update ABI with
+ improvements for TLV, operations and private data.
+Date: Wed, 05 Aug 2015 12:43:02 +0100
+Message-ID: <1438774982.16660.32.camel@loki>
+References: <1438769467-18729-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20150805112907.GI20873@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GNsO7fNsq+j2k5eo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1438756921.27576.4.camel@collabora.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1A40265D97
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 13:43:09 +0200 (CEST)
+In-Reply-To: <20150805112907.GI20873@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2015-08-05 at 12:29 +0100, Mark Brown wrote:
+> On Wed, Aug 05, 2015 at 11:11:07AM +0100, Liam Girdwood wrote:
+> > From: Mengdong Lin <mengdong.lin@intel.com>
+> > 
+> > This is the kernel patch - a corresponding alsa-lib patch has also been sent.
+> 
+> This patch introduces multiple changes and should really have been sent
+> separately.  Please also try to keep your commit messages and especially
+> subject lines under 80 colummns so that they are legible.
+> 
 
---GNsO7fNsq+j2k5eo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The concern with multiple patches is that it's more likely to break
+runtime bisection/alignment with userspace (but I guess we have that
+anyway now), hence the squashing into a single patch for userspace and
+kernel.
 
-On Wed, Aug 05, 2015 at 08:42:01AM +0200, Sjoerd Simons wrote:
-> On Tue, 2015-08-04 at 16:36 +0100, Mark Brown wrote:
+I'll rework into six patches (three kernel and three userspace).
 
-> > I only appear to have patch 2 (with the misspelt subject), not the
-> > binding documentation.
 
-> Applogies, Send that patch specifically to you now.
+> > Removed the following fields from topology TLV struct:
+> > - size/count: type can decide the size.
+> 
+> >  struct snd_soc_tplg_ctl_tlv {
+> > -	__le32 size;	/* in bytes aligned to 4 */
+> > -	__le32 numid;	/* control element numeric identification */
+> > -	__le32 count;	/* number of elem in data array */
+> > -	__le32 data[SND_SOC_TPLG_TLV_SIZE];
+> > +	__le32 size;	/* in bytes of this structure */
+> > +	__le32 type;	/* SNDRV_CTL_TLVT_*, type of TLV */
+> > +	union {
+> > +		struct snd_soc_tplg_tlv_dbscale scale;
+> > +	};
+> 
+> The combination of removing size fromm the struct and not having data
+> means that we can't in the future add a new type which has a larger size
+> than the current one without confusing older systems (Rather than just
+> having them drop the TLV information).  I'm not sure how likely that
+> really is but it's a consideration.
 
-And I deleted it unread because it was just some random off list patch
-with no context.  :(
+Oh, data should have still been in there. Size just had it's comment
+fixed to match the other size usage in the other structures.
 
-> Seems get_maintainers.pl didn't include you in the list (nor the other
-> asoc maintainers in the list), I guess it might be good to add
-> Documentation/devicetree/bindings/sounds/ to the ASoC file list in
-> MAINTAINTERS ?
-
-Please follow the process covered in SubmittingPatches for making kernel
-changes, but note that there's generic sound drivers as well as ASoC
-ones.
-
-In general it is a very bad idea to rely on get_maintainers, it is prone
-to both false positives and missing relevant people.  It can be useful
-to look at but you need to think about what it's telling you.  In this
-case it should be fairly easy to tell that you ought to send the binding
-documentation along with the driver.
-
---GNsO7fNsq+j2k5eo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVwfq2AAoJECTWi3JdVIfQ8koH+wU5IMgymFjXkLokOTSnxd4i
-SYCn6eMvkR+c9Co7q+fNh6OrAxOHRsBF3gW4Q+2096OHfVme9+lPgAy0Hu2vRVdo
-BAZ/+c8V2bCeH35S96pDqNuqdxhKA1IfnqEtlUZJP5l7x+wA6x24S9nYLz2lOw8/
-IdfO6diH13EaW5uBsonNDgC1+wES7kWIjzpuNyG/CNdbG6sYYvP+V4PG/Td7mr/H
-hihKQeP/iPTovfesv8a1MxIXI1SF7xekHdIv5o+HkniXcyyld7PzPYl9wYcfiHmJ
-5VjZWq9R7NyNfrQtkBjFzemsgrvpB/82NWQSmMUWMHA4XLbjMfNke1vLa1rYN0M=
-=hBn1
------END PGP SIGNATURE-----
-
---GNsO7fNsq+j2k5eo--
+Liam
