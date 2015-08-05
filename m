@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: rt5651: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:22 +0100
-Message-ID: <E1ZMxqs-0005uk-GS@finisterre>
-References: <1438528810-23498-24-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:24 +0100
+Message-ID: <E1ZMxqu-0005vD-9O@finisterre>
+References: <1438528810-23498-23-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A0C63265E3F
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:33 +0200 (CEST)
-In-Reply-To: <1438528810-23498-24-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C6F3265E62
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:35 +0200 (CEST)
+In-Reply-To: <1438528810-23498-23-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: rt5651: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From dea6d32e9efea0a75b5fb367fd53fa0562154852 Mon Sep 17 00:00:00 2001
+>From 8e3648e10fd832e4e07bc3c0cf0e37f95de60082 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:51 +0200
-Subject: [PATCH] ASoC: rt5670: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:50 +0200
+Subject: [PATCH] ASoC: rt5651: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,14 +82,14 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 7 +++----
+ sound/soc/codecs/rt5651.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index a9123d4..7ce8d06 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -592,16 +592,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index a3506e1..a7f456c 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -292,16 +292,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
  static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
  
  /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
@@ -108,6 +108,6 @@ index a9123d4..7ce8d06 100644
 +);
  
  /* Interface data select */
- static const char * const rt5670_data_select[] = {
+ static const char * const rt5651_data_select[] = {
 -- 
 2.1.4
