@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l52: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: alc5632: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:53 +0100
-Message-ID: <E1ZMxrN-00062h-JX@finisterre>
-References: <1438528810-23498-7-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:55 +0100
+Message-ID: <E1ZMxrP-00063A-CC@finisterre>
+References: <1438528810-23498-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05D65266033
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:05 +0200 (CEST)
-In-Reply-To: <1438528810-23498-7-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id AA3B3266046
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:06 +0200 (CEST)
+In-Reply-To: <1438528810-23498-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l52: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: alc5632: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 0a017768e8964ab4a6a68ad47a042d28b35695fb Mon Sep 17 00:00:00 2001
+>From ec7e4dc85cd7a2498d6ab71e9f77f49b41729fb4 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:34 +0200
-Subject: [PATCH] ASoC: cs42l52: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:33 +0200
+Subject: [PATCH] ASoC: alc5632: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -80,30 +80,29 @@ constant x;
 // </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l52.c | 7 +++----
+ sound/soc/codecs/alc5632.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 4de52c9..b4b4dc6 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -196,11 +196,10 @@ static DECLARE_TLV_DB_SCALE(mix_tlv, -50, 50, 0);
- 
- static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
- 
--static const unsigned int limiter_tlv[] = {
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index 607a63b..1cabb40 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -146,11 +146,10 @@ static const DECLARE_TLV_DB_SCALE(vol_tlv, -3450, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(hp_tlv, -4650, 150, 0);
+ /* -16.5db min scale, 1.5db steps, no mute */
+ static const DECLARE_TLV_DB_SCALE(adc_rec_tlv, -1650, 150, 0);
+-static const unsigned int boost_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(limiter_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(-3000, 600, 0),
--	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0),
++static const DECLARE_TLV_DB_RANGE(boost_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
+-	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0),
 -};
-+	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0)
++	1, 3, TLV_DB_SCALE_ITEM(2000, 1000, 0)
 +);
- 
- static const char * const cs42l52_adca_text[] = {
- 	"Input1A", "Input2A", "Input3A", "Input4A", "PGA Input Left"};
+ /* 0db min scale, 6 db steps, no mute */
+ static const DECLARE_TLV_DB_SCALE(dig_tlv, 0, 600, 0);
+ /* 0db min scalem 0.75db steps, no mute */
 -- 
 2.1.4
