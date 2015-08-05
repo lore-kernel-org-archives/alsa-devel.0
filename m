@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8990: Don't use range container for
-	TLV with one entry" to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:56 +0100
-Message-ID: <E1ZMxqS-0005oU-Ha@finisterre>
-References: <1438528810-23498-37-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with
+	DECLARE_TLV_DB_RANGE" to the asoc tree
+Date: Wed, 05 Aug 2015 13:31:04 +0100
+Message-ID: <E1ZMxqa-0005qV-L1@finisterre>
+References: <1438528810-23498-33-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A5192265DF8
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:07 +0200 (CEST)
-In-Reply-To: <1438528810-23498-37-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 31CB1265DFE
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:16 +0200 (CEST)
+In-Reply-To: <1438528810-23498-33-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8990: Don't use range container for TLV with one entry
+   ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From dfd0edda1fb3cd7a7cdde56467d718b1e49e32d5 Mon Sep 17 00:00:00 2001
+>From 7d711f63e36737968dcda5ce28fed3fb3e12fbdc Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:04 +0200
-Subject: [PATCH] ASoC: wm8990: Don't use range container for TLV with one
- entry
+Date: Sun, 2 Aug 2015 17:20:00 +0200
+Subject: [PATCH] ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with
+ DECLARE_TLV_DB_RANGE
 
-For TLVs with only a single entry it is not necessary to use a range
-container. Use DECLARE_TLV_DB_SCALE() directly instead of a combination of
-TLV_DB_RANGE_HEAD() and TLV_DB_SCALE_ITEM().
+DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
+that it automatically calculates the number of items in the TLV and is
+hence less prone to manual error.
+
+Generate using the following coccinelle script
+
+// <smpl>
+@@
+declarer name DECLARE_TLV_DB_RANGE;
+identifier tlv;
+constant x;
+@@
+-unsigned int tlv[] = {
+-	TLV_DB_RANGE_HEAD(x),
++DECLARE_TLV_DB_RANGE(tlv,
+	...
+-};
++);
+// </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8990.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/codecs/wm8737.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 1993fd2..2befdde 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -418,10 +418,7 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+index 6ad606f..54e6158 100644
+--- a/sound/soc/codecs/wm8737.c
++++ b/sound/soc/codecs/wm8737.c
+@@ -79,13 +79,12 @@ static int wm8737_reset(struct snd_soc_codec *codec)
+ 	return snd_soc_write(codec, WM8737_RESET, 0);
  }
  
- /* INMIX dB values */
--static const unsigned int in_mix_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 7, TLV_DB_SCALE_ITEM(-1200, 600, 0),
+-static const unsigned int micboost_tlv[] = {
+-	TLV_DB_RANGE_HEAD(4),
++static const DECLARE_TLV_DB_RANGE(micboost_tlv,
+ 	0, 0, TLV_DB_SCALE_ITEM(1300, 0, 0),
+ 	1, 1, TLV_DB_SCALE_ITEM(1800, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(2800, 0, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0),
 -};
-+static const DECLARE_TLV_DB_SCALE(in_mix_tlv, -1200, 600, 0);
- 
- /* Left In PGA Connections */
- static const struct snd_kcontrol_new wm8990_dapm_lin12_pga_controls[] = {
++	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0)
++);
+ static const DECLARE_TLV_DB_SCALE(pga_tlv, -9750, 50, 1);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, -600, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(ng_tlv, -7800, 600, 0);
 -- 
 2.1.4
