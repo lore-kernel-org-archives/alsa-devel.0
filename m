@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7210: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: cs42l73: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:48 +0100
-Message-ID: <E1ZMxrI-00061I-Ao@finisterre>
-References: <1438528810-23498-10-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:50 +0100
+Message-ID: <E1ZMxrK-00061l-2g@finisterre>
+References: <1438528810-23498-9-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2E0B266009
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:00 +0200 (CEST)
-In-Reply-To: <1438528810-23498-10-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A57926601B
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:03 +0200 (CEST)
+In-Reply-To: <1438528810-23498-9-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7210: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: cs42l73: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6c1e1bfe22d6dc45384acebe0722d35e89011cc2 Mon Sep 17 00:00:00 2001
+>From 0c8129152cb849183a204fe0ce95673e4c88d2f6 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:37 +0200
-Subject: [PATCH] ASoC: da7210: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:36 +0200
+Subject: [PATCH] ASoC: cs42l73: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -80,58 +80,45 @@ constant x;
 // </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7210.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ sound/soc/codecs/cs42l73.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 21810e5..18ecdf3 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -267,33 +267,29 @@ enum clk_src {
-  *
-  * Reserved area are considered as "mute".
-  */
--static const unsigned int hp_out_tlv[] = {
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index b7853b9..15ba377 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -253,11 +253,10 @@ static bool cs42l73_readable_register(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static const unsigned int hpaloa_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(hp_out_tlv,
- 	0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	/* -54 dB to +15 dB */
--	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0),
++static const DECLARE_TLV_DB_RANGE(hpaloa_tlv,
+ 	0, 13, TLV_DB_SCALE_ITEM(-7600, 200, 0),
+-	14, 75, TLV_DB_SCALE_ITEM(-4900, 100, 0),
 -};
-+	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
++	14, 75, TLV_DB_SCALE_ITEM(-4900, 100, 0)
 +);
  
--static const unsigned int lineout_vol_tlv[] = {
+ static DECLARE_TLV_DB_SCALE(adc_boost_tlv, 0, 2500, 0);
+ 
+@@ -267,11 +266,10 @@ static DECLARE_TLV_DB_SCALE(ipd_tlv, -9600, 100, 0);
+ 
+ static DECLARE_TLV_DB_SCALE(micpga_tlv, -600, 50, 0);
+ 
+-static const unsigned int limiter_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(lineout_vol_tlv,
- 	0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	/* -54dB to 15dB */
- 	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
++static const DECLARE_TLV_DB_RANGE(limiter_tlv,
+ 	0, 2, TLV_DB_SCALE_ITEM(-3000, 600, 0),
+-	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0),
 -};
++	3, 7, TLV_DB_SCALE_ITEM(-1200, 300, 0)
 +);
  
--static const unsigned int mono_vol_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(mono_vol_tlv,
- 	0x0, 0x2, TLV_DB_SCALE_ITEM(-1800, 0, 1),
- 	/* -18dB to 6dB */
- 	0x3, 0x7, TLV_DB_SCALE_ITEM(-1800, 600, 0)
--};
-+);
+ static const DECLARE_TLV_DB_SCALE(attn_tlv, -6300, 100, 1);
  
--static const unsigned int aux1_vol_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(aux1_vol_tlv,
- 	0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
- 	/* -48dB to 21dB */
- 	0x11, 0x3f, TLV_DB_SCALE_ITEM(-4800, 150, 0)
--};
-+);
- 
- static const DECLARE_TLV_DB_SCALE(eq_gain_tlv, -1050, 150, 0);
- static const DECLARE_TLV_DB_SCALE(adc_eq_master_gain_tlv, -1800, 600, 1);
 -- 
 2.1.4
