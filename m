@@ -1,17 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2] ALSA: fireworks/firewire-lib: add support
-	for recent firmware quirk
-Date: Wed,  5 Aug 2015 09:21:05 +0900
-Message-ID: <1438734065-5204-3-git-send-email-o-takashi@sakamocchi.jp>
-References: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - mic selection not working
+Date: Wed, 5 Aug 2015 09:40:36 +0800
+Message-ID: <CAN8ccibaxJR3rrXrFr1_pYV8V7KkoaHo1y9yyjFHTp+_sG9sFg@mail.gmail.com>
+References: <CAN8cciYavRQVFoacVxJdiH01ezRfKMvJqxO18HFmLqwGkaJyAg@mail.gmail.com>
+ <CALUcmU=mPPwZbCnDa+vVFM_+f_+jv6JfYNN2K7qdnN1PQFmPmg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001a113cd63651b9c0051c867dfa
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 803192659FE
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 02:21:15 +0200 (CEST)
-In-Reply-To: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 645F4265A36
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 03:40:38 +0200 (CEST)
+Received: by oio137 with SMTP id 137so11482760oio.0
+ for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2015 18:40:37 -0700 (PDT)
+In-Reply-To: <CALUcmU=mPPwZbCnDa+vVFM_+f_+jv6JfYNN2K7qdnN1PQFmPmg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,141 +23,313 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: johannes.oertel@uni-due.de, alsa-devel@alsa-project.org, harryhaaren@gmail.com, ffado-devel@lists.sf.net
+To: Arthur Borsboom <arthurborsboom@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fireworks uses TSB43CB43(IceLynx-Micro) as its IEC 61883-1/6 interface.
-This chip includes ARM7 core, and loads and runs program. The firmware
-is stored in on-board memory and loaded every powering-on from it.
+--001a113cd63651b9c0051c867dfa
+Content-Type: text/plain; charset=UTF-8
 
-Echo Audio ships several versions of firmwares for each model. These
-firmwares have each quirk and the quirk changes a sequence of packets.
+> --------------------------------
+> 2. External microphone
+> --------------------------------
 
-As long as I investigated, AudioFire2/AudioFire4/AudioFirePre8 have a
-quirk to transfer a first packet with 0x02 in its dbc field. This causes
-ALSA Fireworks driver to detect discontinuity. In this case, firmware
-version 5.7.0, 5.7.3 and 5.8.0 are used.
+> The Asus N751JK notebook (ALC668) has a 3,5mm 4-ring combo jack for
+> headphones and microphone.
+> The headphone is detected correct and auto-mute works good (jack
+detection).
+> The microphone is not detected and does not work.
 
-Payload  CIP      CIP
-quadlets header1  header2
-02       00050002 90ffffff <-
-42       0005000a 90013000
-42       00050012 90014400
-42       0005001a 90015800
-02       0005001a 90ffffff
-42       00050022 90019000
-42       0005002a 9001a400
-42       00050032 9001b800
-02       00050032 90ffffff
-42       0005003a 9001d000
-42       00050042 9001e400
-42       0005004a 9001f800
-02       0005004a 90ffffff
-(AudioFire2 with firmware version 5.7.)
+> I was unable to get it to work with hdajackretask or any of the Asus model
+settings, such as:
+> * options snd_hda_intel model=,asus-mode4
 
-$ dmesg
-snd-fireworks fw1.0: Detect discontinuity of CIP: 00 02
+> I was able to get the microphone to work with the following setting:
+> * options snd_hda_intel model=,dell-headset-multi
 
-These models, AudioFire8 (since Jul 2009 ) and Gibson Robot Interface
-Pack series uses the same ARM binary as their firmware. Thus, this
-quirk may be observed among them.
+> This setting creates two new items in PulseAudio making a total of three:
+> * Internal microphone (works out of the box)
+> * Headset microphone (works indeed with a headset)
+> * Microphone (don't know if this works, since I don't have a single
+> microphone, but it does not work with the headset)
 
-This commit adds a new member for AMDTP structure. This member represents
-the value of dbc field in a first AMDTP packet. Drivers can set it with
-a preferred value according to model's quirk.
+> Unfortunately the auto-input-device-switch to the Headset microphone does
+> not seem to work.
+> When I plugin a headset, the headphones get detected and the Internal
+speakers are muted.
+> The Input device does not automatically switch from Internal microphone to
+Headset microphone.
+> I have to do this manually, after which it works.
+> I don't know if the microphone has a jack detection.
+> If it does not, maybe it is possible to use the headphones jack detection?
 
-Tested-by: Johannes Oertei <johannes.oertel@uni-due.de>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c                      | 5 +++--
- sound/firewire/amdtp.h                      | 2 ++
- sound/firewire/fireworks/fireworks.c        | 8 ++++++++
- sound/firewire/fireworks/fireworks.h        | 1 +
- sound/firewire/fireworks/fireworks_stream.c | 9 +++++++++
- 5 files changed, 23 insertions(+), 2 deletions(-)
+> I have added the alsa-info without any snd_intel / alsa modifications
+here:
+http://www.alsa-project.org/db/?f=0b5135bd12f28bb5cb182f83bfa21bc50022faa6
 
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 7bb988f..2a153d2 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -740,8 +740,9 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	    s->data_block_counter != UINT_MAX)
- 		data_block_counter = s->data_block_counter;
- 
--	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) && data_block_counter == 0) ||
--	    (s->data_block_counter == UINT_MAX)) {
-+	if (((s->flags & CIP_SKIP_DBC_ZERO_CHECK) &&
-+	     data_block_counter == s->tx_first_dbc) ||
-+	    s->data_block_counter == UINT_MAX) {
- 		lost = false;
- 	} else if (!(s->flags & CIP_DBC_IS_END_EVENT)) {
- 		lost = data_block_counter != s->data_block_counter;
-diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp.h
-index 26b9093..b2cf9e7 100644
---- a/sound/firewire/amdtp.h
-+++ b/sound/firewire/amdtp.h
-@@ -157,6 +157,8 @@ struct amdtp_stream {
- 
- 	/* quirk: fixed interval of dbc between previos/current packets. */
- 	unsigned int tx_dbc_interval;
-+	/* quirk: indicate the value of dbc field in a first packet. */
-+	unsigned int tx_first_dbc;
- 
- 	bool callbacked;
- 	wait_queue_head_t callback_wait;
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index 2682e7e..c94a432 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -248,8 +248,16 @@ efw_probe(struct fw_unit *unit,
- 	err = get_hardware_info(efw);
- 	if (err < 0)
- 		goto error;
-+	/* AudioFire8 (since 2009) and AudioFirePre8 */
- 	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_9)
- 		efw->is_af9 = true;
-+	/* These models uses the same firmware. */
-+	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_2 ||
-+	    entry->model_id == MODEL_ECHO_AUDIOFIRE_4 ||
-+	    entry->model_id == MODEL_ECHO_AUDIOFIRE_9 ||
-+	    entry->model_id == MODEL_GIBSON_RIP ||
-+	    entry->model_id == MODEL_GIBSON_GOLDTOP)
-+		efw->is_fireworks3 = true;
- 
- 	snd_efw_proc_init(efw);
- 
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 4f0201a..084d414 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -71,6 +71,7 @@ struct snd_efw {
- 
- 	/* for quirks */
- 	bool is_af9;
-+	bool is_fireworks3;
- 	u32 firmware_version;
- 
- 	unsigned int midi_in_ports;
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index c55db1b..7e353f1 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -172,6 +172,15 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
- 	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
- 	/* Fireworks reset dbc at bus reset. */
- 	efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
-+	/*
-+	 * But Recent firmwares starts packets with non-zero dbc.
-+	 * Driver version 5.7.6 installs firmware version 5.7.3.
-+	 */
-+	if (efw->is_fireworks3 &&
-+	    (efw->firmware_version == 0x5070000 ||
-+	     efw->firmware_version == 0x5070300 ||
-+	     efw->firmware_version == 0x5080000))
-+		efw->tx_stream.tx_first_dbc = 0x02;
- 	/* AudioFire9 always reports wrong dbs. */
- 	if (efw->is_af9)
- 		efw->tx_stream.flags |= CIP_WRONG_DBS;
--- 
-2.1.4
+> Result of "pactl list sources" plugged and unplugged in this order, with
+your previous patches applied.
+>
+>
+> Nothing: http://pastebin.com/RWuiW0RG
+> Headphones: http://pastebin.com/GvEkQ8HB
+> Microphone: http://pastebin.com/NRiREULS
+> Headset: http://pastebin.com/QuGLFD8A
+> Subwoofer: http://pastebin.com/nxZNGgyY
+>
+> For dell-headset-multi, [JACK Headphone Mic] may need fix in pulseaudio
+conf files
+
+However it seem that Sound Preference in Mate Ubutnu 15.10 Alpha only show
+active port of the source and You have to use pavucontrol to change the
+Capture Source/Active port manually after you plug the jack
+
+
+diff --git a/src/modules/alsa/mixer/paths/analog-input-headphone-mic.conf
+b/src/modules/alsa/mixer/paths/analog-input-headphone-mic.conf
+index eb5740a..9930916 100644
+--- a/src/modules/alsa/mixer/paths/analog-input-headphone-mic.conf
++++ b/src/modules/alsa/mixer/paths/analog-input-headphone-mic.conf
+@@ -25,6 +25,7 @@ description-key = analog-input-microphone
+ [Jack Headphone Mic]
+ required-any = any
+ state.plugged = unknown
++state.unplugged = no
+
+ [Element Capture]
+ switch = mute
+diff --git a/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
+b/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
+index a67e1db..f7731de 100644
+--- a/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
++++ b/src/modules/alsa/mixer/paths/analog-input-headset-mic.conf
+@@ -34,6 +34,7 @@ state.plugged = unknown
+
+ [Jack Headphone Mic]
+ state.plugged = unknown
++state.unplugged = no
+
+ [Element Capture]
+ switch = mute
+diff --git a/src/modules/alsa/mixer/paths/analog-input-internal-mic.conf
+b/src/modules/alsa/mixer/paths/analog-input-internal-mic.conf
+index 898410a..ae8c97f 100644
+--- a/src/modules/alsa/mixer/paths/analog-input-internal-mic.conf
++++ b/src/modules/alsa/mixer/paths/analog-input-internal-mic.conf
+@@ -38,6 +38,10 @@ state.unplugged = unknown
+ state.plugged = no
+ state.unplugged = unknown
+
++[Jack Headphone Mic]
++state.plugged = unknown
++state.unplugged = yes
++
+ [Jack Internal Mic Phantom]
+ state.plugged = unknown
+ state.unplugged = unknown
+
+
+Following is a variant of the dell-headset-multi which support headset only
+
+asus_headset model require
+
+1) pin fixup only the headset mic pin and no headphone mic pin
+2) create "Headset Mic Jack" kctl by spec->hs_mic_use_hp_sense and new
+version of __snd_hda_jack_add_kct() with hp_pin as sense_nid
+"Headset Mic Jack" is also slave of "Headphone Jack"
+
+3) modify check_auto_mic_availability() to allow auto mic selection for
+headset mic which use hs_mic_use_hp_sense
+4) update mux_pin for alc668 codec when spec->auto_mic and
+alc668_combo_type is equal to ALC_HEADSET_MODE_HEADSET by
+snd_hda_gen_mic_autoswitch()
+
+This new model only support headset and it does not support headphone nor
+mic, only headphone has event input device and no headset mic event input
+
+For Dell Alienware 14, 17 and 18 which have three jacks: headset, headphone
+and mic, auto_mic is not enabled since two of  the three capture sources
+are detectable
+
+--001a113cd63651b9c0051c867dfa
+Content-Type: text/x-patch; charset=US-ASCII; name="asus.patch"
+Content-Disposition: attachment; filename="asus.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_icy3ttid0
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2dlbmVyaWMuYyBiL3NvdW5kL3BjaS9oZGEv
+aGRhX2dlbmVyaWMuYwppbmRleCBiMDc3YmI2Li5hOTZjNTZiIDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL2hkYV9nZW5lcmljLmMKKysrIGIvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5jCkBA
+IC0yMDk3LDE0ICsyMDk3LDIxIEBAIHN0YXRpYyBpbnQgY3JlYXRlX2V4dHJhX291dChzdHJ1Y3Qg
+aGRhX2NvZGVjICpjb2RlYywgaW50IHBhdGhfaWR4LAogewogCXN0cnVjdCBuaWRfcGF0aCAqcGF0
+aDsKIAlpbnQgZXJyOworCXN0cnVjdCBoZGFfZ2VuX3NwZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsK
+IAogCXBhdGggPSBzbmRfaGRhX2dldF9wYXRoX2Zyb21faWR4KGNvZGVjLCBwYXRoX2lkeCk7CiAJ
+aWYgKCFwYXRoKQogCQlyZXR1cm4gMDsKLQllcnIgPSBhZGRfc3RlcmVvX3ZvbChjb2RlYywgcGZ4
+LCBjaWR4LCBwYXRoKTsKKwlpZiAoKHN0cmNtcChwZngsICJIZWFkcGhvbmUiKSA9PSAwKSAmJiBz
+cGVjLT5oc19taWNfdXNlX2hwX3NlbnNlKQorCQllcnIgPSBhZGRfc3RlcmVvX3ZvbChjb2RlYywg
+IkhlYWRzZXQiLCBjaWR4LCBwYXRoKTsKKwllbHNlCisJCWVyciA9IGFkZF9zdGVyZW9fdm9sKGNv
+ZGVjLCBwZngsIGNpZHgsIHBhdGgpOwogCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwotCWVy
+ciA9IGFkZF9zdGVyZW9fc3coY29kZWMsIHBmeCwgY2lkeCwgcGF0aCk7CisJaWYgKChzdHJjbXAo
+cGZ4LCAiSGVhZHBob25lIikgPT0gMCkgJiYgc3BlYy0+aHNfbWljX3VzZV9ocF9zZW5zZSkKKwkJ
+ZXJyID0gYWRkX3N0ZXJlb19zdyhjb2RlYywgIkhlYWRzZXQiLCBjaWR4LCBwYXRoKTsKKwllbHNl
+CisJCWVyciA9IGFkZF9zdGVyZW9fc3coY29kZWMsIHBmeCwgY2lkeCwgcGF0aCk7CiAJaWYgKGVy
+ciA8IDApCiAJCXJldHVybiBlcnI7CiAJcmV0dXJuIDA7CkBAIC00NjY1LDcgKzQ2NzIsOSBAQCBz
+dGF0aWMgaW50IGNoZWNrX2F1dG9fbWljX2F2YWlsYWJpbGl0eShzdHJ1Y3QgaGRhX2NvZGVjICpj
+b2RlYykKIAkJCWlmICghc3BlYy0+bGluZV9pbl9hdXRvX3N3aXRjaCAmJgogCQkJICAgIGNmZy0+
+aW5wdXRzW2ldLnR5cGUgIT0gQVVUT19QSU5fTUlDKQogCQkJCXJldHVybiAwOyAvKiBvbmx5IG1p
+YyBpcyBhbGxvd2VkICovCi0JCQlpZiAoIWlzX2phY2tfZGV0ZWN0YWJsZShjb2RlYywgbmlkKSkK
+KwkJCWlmICghaXNfamFja19kZXRlY3RhYmxlKGNvZGVjLCBuaWQpICYmCisJCQkJIShzcGVjLT5o
+c19taWNfdXNlX2hwX3NlbnNlICYmCisJCQkJY2ZnLT5pbnB1dHNbaV0uaXNfaGVhZHNldF9taWMp
+KQogCQkJCXJldHVybiAwOyAvKiBubyB1bnNvbCBzdXBwb3J0ICovCiAJCQlicmVhazsKIAkJfQpk
+aWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfZ2VuZXJpYy5oIGIvc291bmQvcGNpL2hkYS9o
+ZGFfZ2VuZXJpYy5oCmluZGV4IDU2ZTQxMzkuLjk2ZjgyMTQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Bj
+aS9oZGEvaGRhX2dlbmVyaWMuaAorKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9nZW5lcmljLmgKQEAg
+LTIzNiw2ICsyMzYsNyBAQCBzdHJ1Y3QgaGRhX2dlbl9zcGVjIHsKIAl1bnNpZ25lZCBpbnQgaW5k
+ZXBfaHBfZW5hYmxlZDoxOyAvKiBpbmRlcGVuZGVudCBIUCBlbmFibGVkICovCiAJdW5zaWduZWQg
+aW50IGhhdmVfYWFtaXhfY3RsOjE7CiAJdW5zaWduZWQgaW50IGhwX21pY19qYWNrX21vZGVzOjE7
+CisJdW5zaWduZWQgaW50IGhzX21pY191c2VfaHBfc2Vuc2U6MTsKIAogCS8qIGFkZGl0aW9uYWwg
+bXV0ZSBmbGFncyAob25seSBlZmZlY3RpdmUgd2l0aCBhdXRvX211dGVfdmlhX2FtcD0xKSAqLwog
+CXU2NCBtdXRlX2JpdHM7CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmMgYi9z
+b3VuZC9wY2kvaGRhL2hkYV9qYWNrLmMKaW5kZXggMzY2ZWZiZi4uMmYzMDhhNSAxMDA2NDQKLS0t
+IGEvc291bmQvcGNpL2hkYS9oZGFfamFjay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2phY2su
+YwpAQCAtMTksNiArMTksNyBAQAogI2luY2x1ZGUgImhkYV9sb2NhbC5oIgogI2luY2x1ZGUgImhk
+YV9hdXRvX3BhcnNlci5oIgogI2luY2x1ZGUgImhkYV9qYWNrLmgiCisjaW5jbHVkZSAiaGRhX2dl
+bmVyaWMuaCIKIAogLyoqCiAgKiBpc19qYWNrX2RldGVjdGFibGUgLSBDaGVjayB3aGV0aGVyIHRo
+ZSBnaXZlbiBwaW4gaXMgamFjay1kZXRlY3RhYmxlCkBAIC0xNTcsNyArMTU4LDE1IEBAIHN0YXRp
+YyB2b2lkIGphY2tfZGV0ZWN0X3VwZGF0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAlpZiAo
+amFjay0+cGhhbnRvbV9qYWNrKQogCQlqYWNrLT5waW5fc2Vuc2UgPSBBQ19QSU5TRU5TRV9QUkVT
+RU5DRTsKIAllbHNlCi0JCWphY2stPnBpbl9zZW5zZSA9IHJlYWRfcGluX3NlbnNlKGNvZGVjLCBq
+YWNrLT5uaWQpOworCQlqYWNrLT5waW5fc2Vuc2UgPSByZWFkX3Bpbl9zZW5zZShjb2RlYywKKwkJ
+CQlqYWNrLT5zZW5zZV9uaWQgPyBqYWNrLT5zZW5zZV9uaWQgOiBqYWNrLT5uaWQpOworCisJaWYg
+KGphY2stPnNsYXZlX25pZCkgeworCQlzdHJ1Y3QgaGRhX2phY2tfdGJsICpzbGF2ZSA9CisJCQlz
+bmRfaGRhX2phY2tfdGJsX2dldChjb2RlYywgamFjay0+c2xhdmVfbmlkKTsKKwkJaWYgKHNsYXZl
+KQorCQkJc2xhdmUtPnBpbl9zZW5zZSA9IGphY2stPnBpbl9zZW5zZTsKKwl9CiAKIAkvKiBBIGdh
+dGluZyBqYWNrIGluZGljYXRlcyB0aGUgamFjayBpcyBpbnZhbGlkIGlmIGdhdGluZyBpcyB1bnBs
+dWdnZWQgKi8KIAlpZiAoamFjay0+Z2F0aW5nX2phY2sgJiYgIXNuZF9oZGFfamFja19kZXRlY3Qo
+Y29kZWMsIGphY2stPmdhdGluZ19qYWNrKSkKQEAgLTIwOSw2ICsyMTgsOCBAQCB1MzIgc25kX2hk
+YV9waW5fc2Vuc2Uoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBuaWQpCiAJCWph
+Y2tfZGV0ZWN0X3VwZGF0ZShjb2RlYywgamFjayk7CiAJCXJldHVybiBqYWNrLT5waW5fc2Vuc2U7
+CiAJfQorCWlmIChqYWNrLT5zZW5zZV9uaWQpCisJCXJldHVybiByZWFkX3Bpbl9zZW5zZShjb2Rl
+YywgamFjay0+c2Vuc2VfbmlkKTsKIAlyZXR1cm4gcmVhZF9waW5fc2Vuc2UoY29kZWMsIG5pZCk7
+CiB9CiBFWFBPUlRfU1lNQk9MX0dQTChzbmRfaGRhX3Bpbl9zZW5zZSk7CkBAIC0zODQsNyArMzk1
+LDcgQEAgc3RhdGljIHZvaWQgaGRhX2ZyZWVfamFja19wcml2KHN0cnVjdCBzbmRfamFjayAqamFj
+aykKICAqIHdpbGwgaGF2ZSB0aGUgZ2l2ZW4gbmFtZSBhbmQgaW5kZXguCiAgKi8KIHN0YXRpYyBp
+bnQgX19zbmRfaGRhX2phY2tfYWRkX2tjdGwoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9u
+aWRfdCBuaWQsCi0JCQkgIGNvbnN0IGNoYXIgKm5hbWUsIGJvb2wgcGhhbnRvbV9qYWNrKQorCQkg
+IGNvbnN0IGNoYXIgKm5hbWUsIGJvb2wgcGhhbnRvbV9qYWNrLCBoZGFfbmlkX3Qgc2Vuc2Vfbmlk
+KQogewogCXN0cnVjdCBoZGFfamFja190YmwgKmphY2s7CiAJaW50IGVyciwgc3RhdGUsIHR5cGU7
+CkBAIC00MDUsNiArNDE2LDcgQEAgc3RhdGljIGludCBfX3NuZF9oZGFfamFja19hZGRfa2N0bChz
+dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaGRhX25pZF90IG5pZCwKIAlqYWNrLT50eXBlID0gdHlw
+ZTsKIAlqYWNrLT5qYWNrLT5wcml2YXRlX2RhdGEgPSBqYWNrOwogCWphY2stPmphY2stPnByaXZh
+dGVfZnJlZSA9IGhkYV9mcmVlX2phY2tfcHJpdjsKKwlqYWNrLT5zZW5zZV9uaWQgPSBzZW5zZV9u
+aWQ7CiAJc3RhdGUgPSBzbmRfaGRhX2phY2tfZGV0ZWN0KGNvZGVjLCBuaWQpOwogCXNuZF9qYWNr
+X3JlcG9ydChqYWNrLT5qYWNrLCBzdGF0ZSA/IGphY2stPnR5cGUgOiAwKTsKIApAQCAtNDIyLDcg
+KzQzNCw3IEBAIHN0YXRpYyBpbnQgX19zbmRfaGRhX2phY2tfYWRkX2tjdGwoc3RydWN0IGhkYV9j
+b2RlYyAqY29kZWMsIGhkYV9uaWRfdCBuaWQsCiBpbnQgc25kX2hkYV9qYWNrX2FkZF9rY3RsKHN0
+cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgbmlkLAogCQkJICBjb25zdCBjaGFyICpu
+YW1lKQogewotCXJldHVybiBfX3NuZF9oZGFfamFja19hZGRfa2N0bChjb2RlYywgbmlkLCBuYW1l
+LCBmYWxzZSk7CisJcmV0dXJuIF9fc25kX2hkYV9qYWNrX2FkZF9rY3RsKGNvZGVjLCBuaWQsIG5h
+bWUsIGZhbHNlLCBuaWQpOwogfQogRVhQT1JUX1NZTUJPTF9HUEwoc25kX2hkYV9qYWNrX2FkZF9r
+Y3RsKTsKIApAQCAtNDUxLDcgKzQ2Myw3IEBAIHN0YXRpYyBpbnQgYWRkX2phY2tfa2N0bChzdHJ1
+Y3QgaGRhX2NvZGVjICpjb2RlYywgaGRhX25pZF90IG5pZCwKIAlpZiAocGhhbnRvbV9qYWNrKQog
+CQkvKiBFeGFtcGxlIGZpbmFsIG5hbWU6ICJJbnRlcm5hbCBNaWMgUGhhbnRvbSBKYWNrIiAqLwog
+CQlzdHJuY2F0KG5hbWUsICIgUGhhbnRvbSIsIHNpemVvZihuYW1lKSAtIHN0cmxlbihuYW1lKSAt
+IDEpOwotCWVyciA9IF9fc25kX2hkYV9qYWNrX2FkZF9rY3RsKGNvZGVjLCBuaWQsIG5hbWUsIHBo
+YW50b21famFjayk7CisJZXJyID0gX19zbmRfaGRhX2phY2tfYWRkX2tjdGwoY29kZWMsIG5pZCwg
+bmFtZSwgcGhhbnRvbV9qYWNrLCBuaWQpOwogCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwog
+CkBAIC00NjksNiArNDgxLDkgQEAgaW50IHNuZF9oZGFfamFja19hZGRfa2N0bHMoc3RydWN0IGhk
+YV9jb2RlYyAqY29kZWMsCiAJCQkgICBjb25zdCBzdHJ1Y3QgYXV0b19waW5fY2ZnICpjZmcpCiB7
+CiAJY29uc3QgaGRhX25pZF90ICpwOworCXN0cnVjdCBoZGFfamFja190YmwgKmphY2s7CisJaGRh
+X25pZF90IGhlYWRzZXRfbWljX25pZCA9IDA7CisJc3RydWN0IGhkYV9nZW5fc3BlYyAqc3BlYyA9
+IGNvZGVjLT5zcGVjOwogCWludCBpLCBlcnI7CiAKIAlmb3IgKGkgPSAwOyBpIDwgY2ZnLT5udW1f
+aW5wdXRzOyBpKyspIHsKQEAgLTQ4Miw2ICs0OTcsMTMgQEAgaW50IHNuZF9oZGFfamFja19hZGRf
+a2N0bHMoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJCQkJZXJyID0gYWRkX2phY2tfa2N0bChj
+b2RlYywgY2ZnLT5pbnB1dHNbaV0ucGluLAogCQkJCQkJICAgIGNmZywgIkhlYWRwaG9uZSBNaWMi
+KTsKIAkJfSBlbHNlCisJICAgIGlmIChjZmctPmlucHV0c1tpXS5pc19oZWFkc2V0X21pYyAmJgor
+CQkJc3BlYy0+aHNfbWljX3VzZV9ocF9zZW5zZSAmJgorCQkJIWlzX2phY2tfZGV0ZWN0YWJsZShj
+b2RlYywgY2ZnLT5pbnB1dHNbaV0ucGluKSkgeworCQkJaGVhZHNldF9taWNfbmlkID0gY2ZnLT5p
+bnB1dHNbaV0ucGluOworCQkJZXJyID0gX19zbmRfaGRhX2phY2tfYWRkX2tjdGwoY29kZWMsIGNm
+Zy0+aW5wdXRzW2ldLnBpbiwKKwkJCQkiSGVhZHNldCBNaWMiLCBmYWxzZSwgYXV0b19jZmdfaHBf
+cGlucyhjZmcpWzBdKTsKKwkJfSBlbHNlCiAJCQllcnIgPSBhZGRfamFja19rY3RsKGNvZGVjLCBj
+ZmctPmlucHV0c1tpXS5waW4sIGNmZywKIAkJCQkJICAgIE5VTEwpOwogCQlpZiAoZXJyIDwgMCkK
+QEAgLTQ4OSw3ICs1MTEsMTAgQEAgaW50IHNuZF9oZGFfamFja19hZGRfa2N0bHMoc3RydWN0IGhk
+YV9jb2RlYyAqY29kZWMsCiAJfQogCiAJZm9yIChpID0gMCwgcCA9IGNmZy0+bGluZV9vdXRfcGlu
+czsgaSA8IGNmZy0+bGluZV9vdXRzOyBpKyssIHArKykgewotCQllcnIgPSBhZGRfamFja19rY3Rs
+KGNvZGVjLCAqcCwgY2ZnLCBOVUxMKTsKKwkJaWYgKChjZmctPmxpbmVfb3V0cyA9PSAyKSAmJiAo
+aSA9PSAxKSkKKwkJCWVyciA9IGFkZF9qYWNrX2tjdGwoY29kZWMsICpwLCBjZmcsICJFeHRlcm5h
+bCBTdWJ3b29mZXIiKTsKKwkJZWxzZQorCQkJZXJyID0gYWRkX2phY2tfa2N0bChjb2RlYywgKnAs
+IGNmZywgTlVMTCk7CiAJCWlmIChlcnIgPCAwKQogCQkJcmV0dXJuIGVycjsKIAl9CkBAIC00OTks
+NiArNTI0LDExIEBAIGludCBzbmRfaGRhX2phY2tfYWRkX2tjdGxzKHN0cnVjdCBoZGFfY29kZWMg
+KmNvZGVjLAogCQllcnIgPSBhZGRfamFja19rY3RsKGNvZGVjLCAqcCwgY2ZnLCBOVUxMKTsKIAkJ
+aWYgKGVyciA8IDApCiAJCQlyZXR1cm4gZXJyOworCSAgICBpZiAoKGkgPT0gMCkgJiYgc3BlYy0+
+aHNfbWljX3VzZV9ocF9zZW5zZSkgeworCQkJamFjayA9IHNuZF9oZGFfamFja190YmxfZ2V0KGNv
+ZGVjLCAqcCk7CisJCSAgICBpZiAoamFjaykKKwkJCQlqYWNrLT5zbGF2ZV9uaWQgPSBoZWFkc2V0
+X21pY19uaWQ7CisJCX0KIAl9CiAJZm9yIChpID0gMCwgcCA9IGNmZy0+c3BlYWtlcl9waW5zOyBp
+IDwgY2ZnLT5zcGVha2VyX291dHM7IGkrKywgcCsrKSB7CiAJCWlmICgqcCA9PSAqY2ZnLT5saW5l
+X291dF9waW5zKSAvKiBtaWdodCBiZSBkdXBsaWNhdGVkICovCmRpZmYgLS1naXQgYS9zb3VuZC9w
+Y2kvaGRhL2hkYV9qYWNrLmggYi9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmgKaW5kZXggMzg3ZDMw
+OS4uZWYzZDE2MiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfamFjay5oCisrKyBiL3Nv
+dW5kL3BjaS9oZGEvaGRhX2phY2suaApAQCAtNDEsNiArNDEsOCBAQCBzdHJ1Y3QgaGRhX2phY2tf
+dGJsIHsKIAloZGFfbmlkX3QgZ2F0ZWRfamFjazsJCS8qIGdhdGVkIGlzIGRlcGVuZGVudCBvbiB0
+aGlzIGphY2sgKi8KIAlpbnQgdHlwZTsKIAlzdHJ1Y3Qgc25kX2phY2sgKmphY2s7CisJaGRhX25p
+ZF90IHNlbnNlX25pZDsKKwloZGFfbmlkX3Qgc2xhdmVfbmlkOwogfTsKIAogc3RydWN0IGhkYV9q
+YWNrX3RibCAqCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IGM0NTZjMDQuLmE0MDJlZDUgMTAwNjQ0
+Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jCkBAIC0xMDQsNiArMTA0LDcgQEAgc3RydWN0IGFsY19zcGVjIHsKIAlo
+ZGFfbmlkX3QgaGVhZHBob25lX21pY19waW47CiAJaW50IGN1cnJlbnRfaGVhZHNldF9tb2RlOwog
+CWludCBjdXJyZW50X2hlYWRzZXRfdHlwZTsKKwlpbnQgYWxjNjY4X2NvbWJvX3R5cGU7CiAKIAkv
+KiBob29rcyAqLwogCXZvaWQgKCppbml0X2hvb2spKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKTsK
+QEAgLTM5ODQsNiArMzk4NSwxNSBAQCBzdGF0aWMgdm9pZCBhbGNfdXBkYXRlX2hlYWRzZXRfbW9k
+ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAogCWludCBuZXdfaGVhZHNldF9tb2RlOwogCisJ
+aWYgKGNvZGVjLT5jb3JlLnZlbmRvcl9pZCA9PSAweDEwZWMwNjY4ICYmCisJCXNwZWMtPmFsYzY2
+OF9jb21ib190eXBlKSB7CisJCWlmIChzcGVjLT5hbGM2NjhfY29tYm9fdHlwZSA9PSBBTENfSEVB
+RFNFVF9NT0RFX0hFQURTRVQgJiYKKwkJICAgIHNwZWMtPmdlbi5hdXRvX21pYykgeworCQkJc25k
+X2hkYV9nZW5fbWljX2F1dG9zd2l0Y2goY29kZWMsIE5VTEwpOworCQkgICAgbXV4X3BpbiA9IHNw
+ZWMtPmdlbi5pbXV4X3BpbnNbc3BlYy0+Z2VuLmN1cl9tdXhbMF1dOworCQl9CisJfQorCiAJaWYg
+KCFzbmRfaGRhX2phY2tfZGV0ZWN0KGNvZGVjLCBocF9waW4pKQogCQluZXdfaGVhZHNldF9tb2Rl
+ID0gQUxDX0hFQURTRVRfTU9ERV9VTlBMVUdHRUQ7CiAJZWxzZSBpZiAobXV4X3BpbiA9PSBzcGVj
+LT5oZWFkc2V0X21pY19waW4pCkBAIC02MjMyLDYgKzYyNDIsMzcgQEAgc3RhdGljIHZvaWQgYWxj
+X2ZpeHVwX2Jhc3NfY2htYXAoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJfQogfQogCitzdGF0
+aWMgdm9pZCBhbGM2NjhfZml4dXBfYXN1c19oZWFkc2V0KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVj
+LAorCQkJCSAgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGludCBhY3Rpb24pCit7CisJ
+Y29uc3Qgc3RydWN0IGhkYV9waW50YmwgcGluY2Znc1tdID0geworCSAgICB7IDB4MWEsIDB4MDQx
+MTAwMTEgfSwgLyogZXh0ZXJuYWwgc3Vid29vZmVyICovCisJCXsgMHgxYiwgMHgwM2ExMTEzYyB9
+LCAvKiBoZWFkc2V0IG1pYyAqLworCQl7IH0KKwl9OworCisJc3RydWN0IGFsY19zcGVjICpzcGVj
+ID0gY29kZWMtPnNwZWM7CisKKwlzd2l0Y2ggKGFjdGlvbikgeworCWNhc2UgSERBX0ZJWFVQX0FD
+VF9QUkVfUFJPQkU6CisJCXNuZF9oZGFfYXBwbHlfcGluY2Zncyhjb2RlYywgcGluY2Zncyk7CisJ
+ICAgIHNwZWMtPmdlbi5oc19taWNfdXNlX2hwX3NlbnNlID0gMTsKKwkJc3BlYy0+YWxjNjY4X2Nv
+bWJvX3R5cGUgPSBBTENfSEVBRFNFVF9NT0RFX0hFQURTRVQ7CisJCXNwZWMtPnBhcnNlX2ZsYWdz
+IHw9IEhEQV9QSU5DRkdfSEVBRFNFVF9NSUM7CisJCWJyZWFrOworCWNhc2UgSERBX0ZJWFVQX0FD
+VF9QUk9CRToKKwkJYWxjX3Byb2JlX2hlYWRzZXRfbW9kZShjb2RlYyk7CisJCWJyZWFrOworCWNh
+c2UgSERBX0ZJWFVQX0FDVF9JTklUOgorCQlzcGVjLT5jdXJyZW50X2hlYWRzZXRfbW9kZSA9IDA7
+CisJCWFsY191cGRhdGVfaGVhZHNldF9tb2RlKGNvZGVjKTsKKwkJYnJlYWs7CisJY2FzZSBIREFf
+RklYVVBfQUNUX0JVSUxEOgorCQlhbGNfZml4dXBfYmFzc19jaG1hcChjb2RlYywgZml4LCBhY3Rp
+b24pOworCQlicmVhazsKKwl9Cit9CisKIC8qIGF2b2lkIEQzIGZvciBrZWVwaW5nIEdQSU8gdXAg
+Ki8KIHN0YXRpYyB1bnNpZ25lZCBpbnQgZ3Bpb19sZWRfcG93ZXJfZmlsdGVyKHN0cnVjdCBoZGFf
+Y29kZWMgKmNvZGVjLAogCQkJCQkgIGhkYV9uaWRfdCBuaWQsCkBAIC02MzEzLDYgKzYzNTQsNyBA
+QCBlbnVtIHsKIAlBTEM2NjJfRklYVVBfSU5WX0RNSUMsCiAJQUxDNjYyX0ZJWFVQX0RFTExfTUlD
+X05PX1BSRVNFTkNFLAogCUFMQzY2OF9GSVhVUF9ERUxMX01JQ19OT19QUkVTRU5DRSwKKwlBTEM2
+NjhfRklYVVBfQVNVU19IRUFEU0VULAogCUFMQzY2Ml9GSVhVUF9IRUFEU0VUX01PREUsCiAJQUxD
+NjY4X0ZJWFVQX0hFQURTRVRfTU9ERSwKIAlBTEM2NjJfRklYVVBfQkFTU19NT0RFNF9DSE1BUCwK
+QEAgLTY1MzAsNiArNjU3MiwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGM2
+NjJfZml4dXBzW10gPSB7CiAJCS5jaGFpbmVkID0gdHJ1ZSwKIAkJLmNoYWluX2lkID0gQUxDNjY4
+X0ZJWFVQX0hFQURTRVRfTU9ERQogCX0sCisJW0FMQzY2OF9GSVhVUF9BU1VTX0hFQURTRVRdID0g
+eworCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5jID0gYWxjNjY4X2ZpeHVwX2Fz
+dXNfaGVhZHNldCwKKwl9LAogCVtBTEM2NjhfRklYVVBfSEVBRFNFVF9NT0RFXSA9IHsKIAkJLnR5
+cGUgPSBIREFfRklYVVBfRlVOQywKIAkJLnYuZnVuYyA9IGFsY19maXh1cF9oZWFkc2V0X21vZGVf
+YWxjNjY4LApAQCAtNjY2Nyw2ICs2NzEzLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfbW9k
+ZWxfZml4dXAgYWxjNjYyX2ZpeHVwX21vZGVsc1tdID0gewogCXsuaWQgPSBBTEM2NjJfRklYVVBf
+QVNVU19NT0RFOCwgLm5hbWUgPSAiYXN1cy1tb2RlOCJ9LAogCXsuaWQgPSBBTEM2NjJfRklYVVBf
+SU5WX0RNSUMsIC5uYW1lID0gImludi1kbWljIn0sCiAJey5pZCA9IEFMQzY2OF9GSVhVUF9ERUxM
+X01JQ19OT19QUkVTRU5DRSwgLm5hbWUgPSAiZGVsbC1oZWFkc2V0LW11bHRpIn0sCisJey5pZCA9
+IEFMQzY2OF9GSVhVUF9BU1VTX0hFQURTRVQsIC5uYW1lID0gImFzdXMtaGVhZHNldCJ9LAogCXt9
+CiB9OwogCg==
+--001a113cd63651b9c0051c867dfa
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--001a113cd63651b9c0051c867dfa--
