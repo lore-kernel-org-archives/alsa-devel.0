@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: 88pm860x: Replace TLV_DB_RANGE_HEAD
-	with DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:32:02 +0100
-Message-ID: <E1ZMxrW-000652-Ch@finisterre>
-References: <1438528810-23498-2-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: tegra: Use devm_clk_get" to the asoc
+	tree
+Date: Wed, 05 Aug 2015 14:02:47 +0100
+Message-ID: <E1ZMyLH-0007Sy-AN@finisterre>
+References: <20150803115734.GA32440@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 326202660B4
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:15 +0200 (CEST)
-In-Reply-To: <1438528810-23498-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B4CAB2668B3
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 15:03:00 +0200 (CEST)
+In-Reply-To: <20150803115734.GA32440@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: 88pm860x: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: tegra: Use devm_clk_get
 
 has been applied to the asoc tree at
 
@@ -53,96 +53,172 @@ to this mail.
 Thanks,
 Mark
 
->From f17cbcfef3cf6d91a374817f84c66951c84f11e2 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:29 +0200
-Subject: [PATCH] ASoC: 88pm860x: Replace TLV_DB_RANGE_HEAD with
- DECLARE_TLV_DB_RANGE
+>From 8833c01af6aa8e42fcbc74d76646ead05d0183a7 Mon Sep 17 00:00:00 2001
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+Date: Mon, 3 Aug 2015 17:27:34 +0530
+Subject: [PATCH] ASoC: tegra: Use devm_clk_get
 
-DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
-that it automatically calculates the number of items in the TLV and is
-hence less prone to manual error.
+This patch introduces the use of managed resource function
+devm_clk_get instead of clk_get and removes corresponding calls
+to clk_put in the probe and remove functions.
 
-Generate using the following coccinelle script
+To be compatible with the change various gotos are replaced with
+direct returns, and unneeded labels are dropped.
 
-// <smpl>
-@@
-declarer name DECLARE_TLV_DB_RANGE;
-identifier tlv;
-constant x;
-@@
--unsigned int tlv[] = {
--	TLV_DB_RANGE_HEAD(x),
-+DECLARE_TLV_DB_RANGE(tlv,
-	...
--};
-+);
-// </smpl>
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/88pm860x-codec.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ sound/soc/tegra/tegra30_ahub.c | 49 ++++++++++++++----------------------------
+ 1 file changed, 16 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 38b3dad..51dd50e 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -156,33 +156,29 @@ static const DECLARE_TLV_DB_SCALE(dpga_tlv, -9450, 150, 1);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, -900, 300, 0);
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index bc94e5d..989b1e8 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -549,54 +549,51 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "Can't get reset %s\n",
+ 				configlink_mods[i].rst_name);
+ 			ret = PTR_ERR(rst);
+-			goto err;
++			return ret;
+ 		}
  
- /* {-23, -17, -13.5, -11, -9, -6, -3, 0}dB */
--static const unsigned int mic_tlv[] = {
--	TLV_DB_RANGE_HEAD(5),
-+static const DECLARE_TLV_DB_RANGE(mic_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(-2300, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(-1700, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(-1350, 0, 0),
- 	3, 3, TLV_DB_SCALE_ITEM(-1100, 0, 0),
--	4, 7, TLV_DB_SCALE_ITEM(-900, 300, 0),
--};
-+	4, 7, TLV_DB_SCALE_ITEM(-900, 300, 0)
-+);
+ 		ret = reset_control_deassert(rst);
+ 		reset_control_put(rst);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 	}
  
- /* {0, 0, 0, -6, 0, 6, 12, 18}dB */
--static const unsigned int aux_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(aux_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(0, 0, 0),
--	3, 7, TLV_DB_SCALE_ITEM(-600, 600, 0),
--};
-+	3, 7, TLV_DB_SCALE_ITEM(-600, 600, 0)
-+);
+ 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+ 			    GFP_KERNEL);
+ 	if (!ahub) {
+ 		dev_err(&pdev->dev, "Can't allocate tegra30_ahub\n");
+-		ret = -ENOMEM;
+-		goto err;
++		return -ENOMEM;
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ahub);
  
- /* {-16, -13, -10, -7, -5.2, -3,3, -2.2, 0}dB, mute instead of -16dB */
--static const unsigned int out_tlv[] = {
--	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(out_tlv,
- 	0, 3, TLV_DB_SCALE_ITEM(-1600, 300, 1),
- 	4, 4, TLV_DB_SCALE_ITEM(-520, 0, 0),
- 	5, 5, TLV_DB_SCALE_ITEM(-330, 0, 0),
--	6, 7, TLV_DB_SCALE_ITEM(-220, 220, 0),
--};
-+	6, 7, TLV_DB_SCALE_ITEM(-220, 220, 0)
-+);
+ 	ahub->soc_data = soc_data;
+ 	ahub->dev = &pdev->dev;
  
--static const unsigned int st_tlv[] = {
--	TLV_DB_RANGE_HEAD(8),
-+static const DECLARE_TLV_DB_RANGE(st_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(-12041, 602, 0),
- 	2, 3, TLV_DB_SCALE_ITEM(-11087, 250, 0),
- 	4, 5, TLV_DB_SCALE_ITEM(-10643, 158, 0),
-@@ -190,8 +186,8 @@ static const unsigned int st_tlv[] = {
- 	8, 9, TLV_DB_SCALE_ITEM(-10133, 92, 0),
- 	10, 13, TLV_DB_SCALE_ITEM(-9958, 70, 0),
- 	14, 17, TLV_DB_SCALE_ITEM(-9689, 53, 0),
--	18, 271, TLV_DB_SCALE_ITEM(-9484, 37, 0),
--};
-+	18, 271, TLV_DB_SCALE_ITEM(-9484, 37, 0)
-+);
+-	ahub->clk_d_audio = clk_get(&pdev->dev, "d_audio");
++	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
+ 	if (IS_ERR(ahub->clk_d_audio)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
+ 		ret = PTR_ERR(ahub->clk_d_audio);
+-		goto err;
++		return ret;
+ 	}
  
- /* Sidetone Gain = M * 2^(-5-N) */
- struct st_gain {
+-	ahub->clk_apbif = clk_get(&pdev->dev, "apbif");
++	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
+ 	if (IS_ERR(ahub->clk_apbif)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
+ 		ret = PTR_ERR(ahub->clk_apbif);
+-		goto err_clk_put_d_audio;
++		return ret;
+ 	}
+ 
+ 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res0) {
+ 		dev_err(&pdev->dev, "No apbif memory resource\n");
+-		ret = -ENODEV;
+-		goto err_clk_put_apbif;
++		return -ENODEV;
+ 	}
+ 
+ 	region = devm_request_mem_region(&pdev->dev, res0->start,
+ 					 resource_size(res0), DRV_NAME);
+ 	if (!region) {
+ 		dev_err(&pdev->dev, "request region apbif failed\n");
+-		ret = -EBUSY;
+-		goto err_clk_put_apbif;
++		return -EBUSY;
+ 	}
+ 	ahub->apbif_addr = res0->start;
+ 
+@@ -604,8 +601,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 				  resource_size(res0));
+ 	if (!regs_apbif) {
+ 		dev_err(&pdev->dev, "ioremap apbif failed\n");
+-		ret = -ENOMEM;
+-		goto err_clk_put_apbif;
++		return -ENOMEM;
+ 	}
+ 
+ 	ahub->regmap_apbif = devm_regmap_init_mmio(&pdev->dev, regs_apbif,
+@@ -613,31 +609,28 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ahub->regmap_apbif)) {
+ 		dev_err(&pdev->dev, "apbif regmap init failed\n");
+ 		ret = PTR_ERR(ahub->regmap_apbif);
+-		goto err_clk_put_apbif;
++		return ret;
+ 	}
+ 	regcache_cache_only(ahub->regmap_apbif, true);
+ 
+ 	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	if (!res1) {
+ 		dev_err(&pdev->dev, "No ahub memory resource\n");
+-		ret = -ENODEV;
+-		goto err_clk_put_apbif;
++		return -ENODEV;
+ 	}
+ 
+ 	region = devm_request_mem_region(&pdev->dev, res1->start,
+ 					 resource_size(res1), DRV_NAME);
+ 	if (!region) {
+ 		dev_err(&pdev->dev, "request region ahub failed\n");
+-		ret = -EBUSY;
+-		goto err_clk_put_apbif;
++		return -EBUSY;
+ 	}
+ 
+ 	regs_ahub = devm_ioremap(&pdev->dev, res1->start,
+ 				 resource_size(res1));
+ 	if (!regs_ahub) {
+ 		dev_err(&pdev->dev, "ioremap ahub failed\n");
+-		ret = -ENOMEM;
+-		goto err_clk_put_apbif;
++		return -ENOMEM;
+ 	}
+ 
+ 	ahub->regmap_ahub = devm_regmap_init_mmio(&pdev->dev, regs_ahub,
+@@ -645,7 +638,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ahub->regmap_ahub)) {
+ 		dev_err(&pdev->dev, "ahub regmap init failed\n");
+ 		ret = PTR_ERR(ahub->regmap_ahub);
+-		goto err_clk_put_apbif;
++		return ret;
+ 	}
+ 	regcache_cache_only(ahub->regmap_ahub, true);
+ 
+@@ -662,12 +655,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+-err_clk_put_apbif:
+-	clk_put(ahub->clk_apbif);
+-err_clk_put_d_audio:
+-	clk_put(ahub->clk_d_audio);
+-	ahub = NULL;
+-err:
++
+ 	return ret;
+ }
+ 
+@@ -680,11 +668,6 @@ static int tegra30_ahub_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		tegra30_ahub_runtime_suspend(&pdev->dev);
+ 
+-	clk_put(ahub->clk_apbif);
+-	clk_put(ahub->clk_d_audio);
+-
+-	ahub = NULL;
+-
+ 	return 0;
+ }
+ 
 -- 
 2.1.4
