@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9713: Replace TLV_DB_RANGE_HEAD with
-	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:47 +0100
-Message-ID: <E1ZMxqJ-0005m7-Da@finisterre>
-References: <1438528810-23498-42-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: wm8741: Simplify wm8741_set_dai_sysclk
+	implementation" to the asoc tree
+Date: Wed, 05 Aug 2015 13:30:43 +0100
+Message-ID: <E1ZMxqF-0005lD-4u@finisterre>
+References: <1438223043.17273.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F65F265D9A
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:30:59 +0200 (CEST)
-In-Reply-To: <1438528810-23498-42-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 37ACF265DA7
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:00 +0200 (CEST)
+In-Reply-To: <1438223043.17273.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9713: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: wm8741: Simplify wm8741_set_dai_sysclk implementation
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,86 @@ to this mail.
 Thanks,
 Mark
 
->From 5092e76b8ab406af56b6a24629a7daf30ea94f78 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:09 +0200
-Subject: [PATCH] ASoC: wm9713: Replace TLV_DB_RANGE_HEAD with
- DECLARE_TLV_DB_RANGE
+>From 6f55a041378f8688ab4afd2702416cd5318fa73d Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Thu, 30 Jul 2015 10:24:03 +0800
+Subject: [PATCH] ASoC: wm8741: Simplify wm8741_set_dai_sysclk implementation
 
-DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
-that it automatically calculates the number of items in the TLV and is
-hence less prone to manual error.
-
-Generate using the following coccinelle script
-
-// <smpl>
-@@
-declarer name DECLARE_TLV_DB_RANGE;
-identifier tlv;
-constant x;
-@@
--unsigned int tlv[] = {
--	TLV_DB_RANGE_HEAD(x),
-+DECLARE_TLV_DB_RANGE(tlv,
-	...
--};
-+);
-// </smpl>
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9713.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8741.c | 41 ++++++++++++++---------------------------
+ 1 file changed, 14 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 89cd2d6..e842b08 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -116,11 +116,10 @@ SOC_ENUM_SINGLE_VIRT(2, wm9713_micb_select), /* mic selection 19 */
- static const DECLARE_TLV_DB_SCALE(out_tlv, -4650, 150, 0);
- static const DECLARE_TLV_DB_SCALE(main_tlv, -3450, 150, 0);
- static const DECLARE_TLV_DB_SCALE(misc_tlv, -1500, 300, 0);
--static unsigned int mic_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const  DECLARE_TLV_DB_RANGE(mic_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(1200, 600, 0),
--	3, 3, TLV_DB_SCALE_ITEM(3000, 0, 0),
--};
-+	3, 3, TLV_DB_SCALE_ITEM(3000, 0, 0)
-+);
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index b346237..506792b 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -278,51 +278,38 @@ static int wm8741_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	switch (freq) {
+ 	case 0:
+ 		wm8741->sysclk_constraints = NULL;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 11289600:
+ 		wm8741->sysclk_constraints = &constraints_11289;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 12288000:
+ 		wm8741->sysclk_constraints = &constraints_12288;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 16384000:
+ 		wm8741->sysclk_constraints = &constraints_16384;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 16934400:
+ 		wm8741->sysclk_constraints = &constraints_16934;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 18432000:
+ 		wm8741->sysclk_constraints = &constraints_18432;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 22579200:
+ 	case 33868800:
+ 		wm8741->sysclk_constraints = &constraints_22579;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 24576000:
+ 		wm8741->sysclk_constraints = &constraints_24576;
+-		wm8741->sysclk = freq;
+-		return 0;
+-
++		break;
+ 	case 36864000:
+ 		wm8741->sysclk_constraints = &constraints_36864;
+-		wm8741->sysclk = freq;
+-		return 0;
++		break;
++	default:
++		return -EINVAL;
+ 	}
+-	return -EINVAL;
++
++	wm8741->sysclk = freq;
++	return 0;
+ }
  
- static const struct snd_kcontrol_new wm9713_snd_ac97_controls[] = {
- SOC_DOUBLE_TLV("Speaker Playback Volume", AC97_MASTER, 8, 0, 31, 1, out_tlv),
+ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
 -- 
 2.1.4
