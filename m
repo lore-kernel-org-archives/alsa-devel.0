@@ -1,20 +1,18 @@
-From: Valentin Corfu <corfuvalentin@gmail.com>
-Subject: Re: Segmentation Fault in snd_pcm_rate_hw_free()
-Date: Wed, 05 Aug 2015 09:58:16 +0300
-Message-ID: <55C1B408.7010501@gmail.com>
-References: <55C0C75E.8090501@gmail.com>	<s5hwpxbnm0e.wl-tiwai@suse.de>	<55C0D402.8030806@gmail.com>
- <s5hmvy7nkyp.wl-tiwai@suse.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Verb for 0x17 pin config
+Date: Wed, 5 Aug 2015 07:07:06 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A1F78C@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A1F778@RTITMBSV09.realtek.com.tw>
+ <s5hh9oeb4qy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
- [209.85.212.175])
- by alsa0.perex.cz (Postfix) with ESMTP id EBEED265D6A
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 08:59:49 +0200 (CEST)
-Received: by wibcd8 with SMTP id cd8so10053507wib.1
- for <alsa-devel@alsa-project.org>; Tue, 04 Aug 2015 23:59:49 -0700 (PDT)
-In-Reply-To: <s5hmvy7nkyp.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DB43265B97
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 09:07:10 +0200 (CEST)
+In-Reply-To: <s5hh9oeb4qy.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,107 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+ 
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Wednesday, August 05, 2015 2:59 PM
+> To: Kailang
+> Cc: (alsa-devel@alsa-project.org)
+> Subject: Re: Verb for 0x17 pin config
+> 
+> On Wed, 05 Aug 2015 08:42:03 +0200,
+> Kailang wrote:
+> > 
+> > Hi Takashi,
+> >  
+> > commit 
+> > 
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id
+> > =977e627684df0f60bdf2a768ec4772f42fe843fc
+> > ALSA: hda/realtek - Support Dell headset mode for ALC298
+> > 
+> > Dell had use verb to do speaker preset. So, The same SSID 
+> maybe 0x17 verb was different.
+> > 
+> > 0x17 0x90170110
+> > 0x17 0x90170140
+> > 0x17 0x90170150
+> > 
+> > Upper verb will show on this case.
+> > 
+> > Could I change it to quirk for SSID?
+> 
+> It would be one option.  OTOH, right now we have a patch to 
+> add 0x90170110, so the only missing is 0x90170150.  Just 
+> adding it would be an easier option, I suppose.
+> 
+So, you mean I add as below patch.
+
++	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC298_STANDARD_PINS,
++		{0x12, 0x90a60130},
++		{0x13, 0x40000000},
++		{0x14, 0x411111f0},
++		{0x17, 0x90170110},
++		{0x1d, 0x4068a36d},
++		{0x21, 0x03211020}),
+
++	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
++		ALC298_STANDARD_PINS,
++		{0x12, 0x90a60130},
++		{0x13, 0x40000000},
++		{0x14, 0x411111f0},
++		{0x17, 0x90170150},
++		{0x1d, 0x4068a36d},
++		{0x21, 0x03211020}),
+
+Right?
 
 
-On 04.08.2015 18:15, Takashi Iwai wrote:
-> On Tue, 04 Aug 2015 17:02:26 +0200,
-> Valentin Corfu wrote:
->>
->>
->> On 04.08.2015 17:53, Takashi Iwai wrote:
->>> On Tue, 04 Aug 2015 16:08:30 +0200,
->>> Valentin Corfu wrote:
->>>> Hello ALSA developers,
->>>>
->>>> I observed one segmentation fault in snd_pcm_rate_hw_free() function,
->>>> with the following BT:
->>>>
->>>> (gdb) up
->>>> #1  0xb7554cc1 in raise (sig=6) at
->>>> ../nptl/sysdeps/unix/sysv/linux/raise.c:64
->>>> 64        return INLINE_SYSCALL (tgkill, 3, pid, selftid, sig);
->>>> (gdb)
->>>> #2  0xb75580ee in abort () at abort.c:92
->>>> 92            raise (SIGABRT);
->>>> (gdb)
->>>> #3  0xb758a7dd in __libc_message (do_abort=2,
->>>>        fmt=0xb766053c "*** glibc detected *** %s: %s: 0x%s ***\n")
->>>>        at ../sysdeps/unix/sysv/linux/libc_fatal.c:189
->>>> 189           abort ();
->>>> (gdb)
->>>> #4  0xb7594a71 in malloc_printerr (action=<value optimized out>,
->>>>        str=<value optimized out>, ptr=0x969ae98) at malloc.c:6283
->>>> 6283          __libc_message (action & 2,
->>>> (gdb)
->>>> #5  0xb759636b in _int_free (av=<value optimized out>, p=0x969ae90)
->>>>        at malloc.c:4795
->>>> 4795          malloc_printerr (check_action, errstr, chunk2mem(p));
->>>> (gdb)
->>>> #6  0xb75994bd in __libc_free (mem=0x969ae98) at malloc.c:3738
->>>> 3738      _int_free(ar_ptr, p);
->>>> (gdb)
->>>> #7  0xb76f3a81 in snd_pcm_rate_hw_free (pcm=0x9685d78) at pcm_rate.c:341
->>>> 341                     free(rate->pareas[0].addr);
->>> Could you check the content of rate->pareas[0] via gdb?
->> (gdb) frame 7
->> #7  0xb76f3a81 in snd_pcm_rate_hw_free (pcm=0x9685d78) at pcm_rate.c:341
->> 341                     free(rate->pareas[0].addr);
->> (gdb) print rate->pareas[0]
->> $1 = {addr = 0x969ae98, first = 0, step = 16}
->> (gdb) print rate->pareas[0].addr
->> $2 = (void *) 0x969ae98
-> And accessing to pareas[0].addr is OK?  This is a temporary sample
-> buffer allocated in alsa-lib rate plugin.
->
-
-Are you referring if the pointer is valid one?
-How could I check this?
-
-
->>>> (gdb)
->>>> #8  0xb76d045b in snd_pcm_hw_free (pcm=0x9685d78) at pcm.c:858
->>>> 858             err = pcm->ops->hw_free(pcm->op_arg);
->>>> (gdb)
->>>> #9  0xb76f826e in snd_pcm_plug_hw_free (pcm=0x96856b0) at pcm_plug.c:1046
->>>> 1046            int err = snd_pcm_hw_free(slave);
->>>> (gdb)
->>>> #10 0xb76d045b in snd_pcm_hw_free (pcm=0x96856b0) at pcm.c:858
->>>> 858             err = pcm->ops->hw_free(pcm->op_arg);
->>>> (gdb)
->>>> #11 0x080492ad in main ()
->>>>
->>>>
->>>> Could you please give me some hints how to solve this issue?
->>>>
->>>> I can provide you more info or the test application, if needed.
->>>> I can see the issue every time, and I also checked with latest version
->>>> of alsa-lib but I got the same results.
->>> I don't know of such an error, so far.
->>> It smells like some memory corruption to me.
->>>
->>> If a test case is a simple code, tracking the bug would be easy...
->> I have paste it here:
->> http://pastebin.com/WJDTz6cE
-> It works fine on my system.  How is your PCM setup?  Does the same
-> problem occur for "plughw" PCM, too?  Also, no external PCM rate
-> plugin is involved?
-
-In my setup it is involved the alsa jack plugin, so I'm using the pcm 
-jack when the segmentation fault is visible.
-I can not reproduce the issue when I'm using "default" / "plughw" PCM.
-
-For more info I have pasted the dump() & log at run: 
-http://pastebin.com/jyy7pP9e
-It is involved here PCM rate conversion at 48000, but not external one.
-
-
->
+> 
 > Takashi
-
-
-Thank you,
-Valentin
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
