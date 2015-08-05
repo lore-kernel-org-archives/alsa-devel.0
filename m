@@ -1,17 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 2/2] topology: Add ops support to byte
-	control objects.
-Date: Wed,  5 Aug 2015 14:41:51 +0100
-Message-ID: <1438782111-20025-3-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1438782111-20025-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ALSA: aoa-soundbus: Switch to dev_pm_ops
+Date: Wed,  5 Aug 2015 16:19:31 +0200
+Message-ID: <1438784371-19905-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 73AA4265FA3
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 15:42:14 +0200 (CEST)
-In-Reply-To: <1438782111-20025-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from smtp-out-232.synserver.de (smtp-out-232.synserver.de
+ [212.40.185.232])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57325265B69
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 16:19:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +19,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Update the aoa-soundbus framework to use dev_pm_ops rather than the
+deprecated legacy suspend and resume callbacks.
 
-Rename the control ops structure to make it more generic so we can use it
-with other objects like bytes controls. Add this structure to the byte
-control structure.
+Since there isn't anything special to do at the bus level the bus driver
+does not have to implement any callbacks. The device driver core will
+automatically pick up and execute the device's PM ops.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+As there is only a single aoa-soundbus driver implementing suspend and
+resume, update both the core and driver at the same time to avoid
+unnecessary code churn.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/asoc.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/aoa/fabrics/layout.c    | 21 ++++++++++++---------
+ sound/aoa/soundbus/core.c     | 28 ----------------------------
+ sound/aoa/soundbus/soundbus.h |  2 --
+ 3 files changed, 12 insertions(+), 39 deletions(-)
 
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index 73eb80e..c642855 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -161,9 +161,11 @@ struct snd_soc_tplg_channel {
- } __attribute__((packed));
+diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
+index 9dc5806..8f71f7e 100644
+--- a/sound/aoa/fabrics/layout.c
++++ b/sound/aoa/fabrics/layout.c
+@@ -1120,10 +1120,10 @@ static int aoa_fabric_layout_remove(struct soundbus_dev *sdev)
+ 	return 0;
+ }
  
- /*
-- * Kcontrol Operations IDs
-+ * Genericl Operations IDs, for binding Kcontrol or Bytes ext ops
-+ * Kcontrol ops need get/put/info.
-+ * Bytes ext ops need get/put.
-  */
--struct snd_soc_tplg_kcontrol_ops_id {
-+struct snd_soc_tplg_io_ops {
- 	__le32 get;
- 	__le32 put;
- 	__le32 info;
-@@ -177,7 +179,7 @@ struct snd_soc_tplg_ctl_hdr {
- 	__le32 type;
- 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	__le32 access;
--	struct snd_soc_tplg_kcontrol_ops_id ops;
-+	struct snd_soc_tplg_io_ops ops;
- 	struct snd_soc_tplg_ctl_tlv tlv;
- } __attribute__((packed));
+-#ifdef CONFIG_PM
+-static int aoa_fabric_layout_suspend(struct soundbus_dev *sdev, pm_message_t state)
++#ifdef CONFIG_PM_SLEEP
++static int aoa_fabric_layout_suspend(struct device *dev)
+ {
+-	struct layout_dev *ldev = dev_get_drvdata(&sdev->ofdev.dev);
++	struct layout_dev *ldev = dev_get_drvdata(dev);
  
-@@ -309,6 +311,7 @@ struct snd_soc_tplg_bytes_control {
- 	__le32 mask;
- 	__le32 base;
- 	__le32 num_regs;
-+	struct snd_soc_tplg_io_ops ext_ops;
- 	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
+ 	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_off)
+ 		ldev->gpio.methods->all_amps_off(&ldev->gpio);
+@@ -1131,15 +1131,19 @@ static int aoa_fabric_layout_suspend(struct soundbus_dev *sdev, pm_message_t sta
+ 	return 0;
+ }
  
+-static int aoa_fabric_layout_resume(struct soundbus_dev *sdev)
++static int aoa_fabric_layout_resume(struct device *dev)
+ {
+-	struct layout_dev *ldev = dev_get_drvdata(&sdev->ofdev.dev);
++	struct layout_dev *ldev = dev_get_drvdata(dev);
+ 
+ 	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_restore)
+ 		ldev->gpio.methods->all_amps_restore(&ldev->gpio);
+ 
+ 	return 0;
+ }
++
++static SIMPLE_DEV_PM_OPS(aoa_fabric_layout_pm_ops,
++	aoa_fabric_layout_suspend, aoa_fabric_layout_resume);
++
+ #endif
+ 
+ static struct soundbus_driver aoa_soundbus_driver = {
+@@ -1147,12 +1151,11 @@ static struct soundbus_driver aoa_soundbus_driver = {
+ 	.owner = THIS_MODULE,
+ 	.probe = aoa_fabric_layout_probe,
+ 	.remove = aoa_fabric_layout_remove,
+-#ifdef CONFIG_PM
+-	.suspend = aoa_fabric_layout_suspend,
+-	.resume = aoa_fabric_layout_resume,
+-#endif
+ 	.driver = {
+ 		.owner = THIS_MODULE,
++#ifdef CONFIG_PM_SLEEP
++		.pm = &aoa_fabric_layout_pm_ops,
++#endif
+ 	}
+ };
+ 
+diff --git a/sound/aoa/soundbus/core.c b/sound/aoa/soundbus/core.c
+index 3edf736..70bcaa7 100644
+--- a/sound/aoa/soundbus/core.c
++++ b/sound/aoa/soundbus/core.c
+@@ -126,30 +126,6 @@ static void soundbus_device_shutdown(struct device *dev)
+ 		drv->shutdown(soundbus_dev);
+ }
+ 
+-#ifdef CONFIG_PM
+-
+-static int soundbus_device_suspend(struct device *dev, pm_message_t state)
+-{
+-	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
+-	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
+-
+-	if (dev->driver && drv->suspend)
+-		return drv->suspend(soundbus_dev, state);
+-	return 0;
+-}
+-
+-static int soundbus_device_resume(struct device * dev)
+-{
+-	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
+-	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
+-
+-	if (dev->driver && drv->resume)
+-		return drv->resume(soundbus_dev);
+-	return 0;
+-}
+-
+-#endif /* CONFIG_PM */
+-
+ /* soundbus_dev_attrs is declared in sysfs.c */
+ ATTRIBUTE_GROUPS(soundbus_dev);
+ static struct bus_type soundbus_bus_type = {
+@@ -158,10 +134,6 @@ static struct bus_type soundbus_bus_type = {
+ 	.uevent		= soundbus_uevent,
+ 	.remove		= soundbus_device_remove,
+ 	.shutdown	= soundbus_device_shutdown,
+-#ifdef CONFIG_PM
+-	.suspend	= soundbus_device_suspend,
+-	.resume		= soundbus_device_resume,
+-#endif
+ 	.dev_groups	= soundbus_dev_groups,
+ };
+ 
+diff --git a/sound/aoa/soundbus/soundbus.h b/sound/aoa/soundbus/soundbus.h
+index 21e756c..ae40224 100644
+--- a/sound/aoa/soundbus/soundbus.h
++++ b/sound/aoa/soundbus/soundbus.h
+@@ -188,8 +188,6 @@ struct soundbus_driver {
+ 	int	(*probe)(struct soundbus_dev* dev);
+ 	int	(*remove)(struct soundbus_dev* dev);
+ 
+-	int	(*suspend)(struct soundbus_dev* dev, pm_message_t state);
+-	int	(*resume)(struct soundbus_dev* dev);
+ 	int	(*shutdown)(struct soundbus_dev* dev);
+ 
+ 	struct device_driver driver;
 -- 
 2.1.4
