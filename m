@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/2] ALSA: fireworks/firewire-lib: add support
-	for recent firmware quirk
-Date: Wed,  5 Aug 2015 09:21:03 +0900
-Message-ID: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2] Revert "ALSA: fireworks: add support for
+	AudioFire2 quirk"
+Date: Wed,  5 Aug 2015 09:21:04 +0900
+Message-ID: <1438734065-5204-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E61226582D
+ by alsa0.perex.cz (Postfix) with ESMTP id 81F39265A2B
  for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 02:21:15 +0200 (CEST)
+In-Reply-To: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +25,53 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: johannes.oertel@uni-due.de, alsa-devel@alsa-project.org, harryhaaren@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Some users have reported current ALSA Fireworks driver stops packet
-streaming due to detecting discontinuity.
+This reverts commit 9c6893e0be38b6ca9a56a854226e51dee0a16a5a.
 
-[alsa-devel] ALSA snd-fireworks Echo AudioFire 2
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080379.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireworks/fireworks.c        | 2 --
+ sound/firewire/fireworks/fireworks.h        | 1 -
+ sound/firewire/fireworks/fireworks_stream.c | 3 ---
+ 3 files changed, 6 deletions(-)
 
-[alsa-devel] AudioFire4 quirk
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/095697.html
-
-Linux 3.16 or later have this issue.
-
-As long as I investigate, this issue depends on firmware version installed
-in these devices. While, it's not clear that which version of firmwares for
-which model has this quirk. At least, firmware version 5.7.0, 5.7.3 and
-5.8.0 for AudioFire2/AudioFire4/AudioFirePre8 have this quirk.
-
-This patchset applies a solution for this issue, with my assumption that
-'the same firmware binary has the same quirk'. These models, AudioFire8
-(since Jul 2009) and Gibson Robot Interface Pack (RIP) series uses the
-same firmware binary in driver package.
-
-If possible, the second patch should be applied to all of stable kernels.
-
-This patchset updates my previous RFC:
-[alsa-devel] [RFC][PATCH 0/2] ALSA: fireworks/firewire-lib: add support for recent firmware quirk
-http://mailman.alsa-project.org/pipermail/alsa-devel/2015-August/095849.html
-
-Takashi Sakamoto (2):
-  Revert "ALSA: fireworks: add support for AudioFire2 quirk"
-  ALSA: fireworks/firewire-lib: add support for recent firmware quirk
-
- sound/firewire/amdtp.c                      |  5 +++--
- sound/firewire/amdtp.h                      |  2 ++
- sound/firewire/fireworks/fireworks.c        | 10 ++++++++--
- sound/firewire/fireworks/fireworks.h        |  2 +-
- sound/firewire/fireworks/fireworks_stream.c | 12 +++++++++---
- 5 files changed, 23 insertions(+), 8 deletions(-)
-
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index c670db4..2682e7e 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -248,8 +248,6 @@ efw_probe(struct fw_unit *unit,
+ 	err = get_hardware_info(efw);
+ 	if (err < 0)
+ 		goto error;
+-	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_2)
+-		efw->is_af2 = true;
+ 	if (entry->model_id == MODEL_ECHO_AUDIOFIRE_9)
+ 		efw->is_af9 = true;
+ 
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index c33252b..4f0201a 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -70,7 +70,6 @@ struct snd_efw {
+ 	bool resp_addr_changable;
+ 
+ 	/* for quirks */
+-	bool is_af2;
+ 	bool is_af9;
+ 	u32 firmware_version;
+ 
+diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
+index a0762dd..c55db1b 100644
+--- a/sound/firewire/fireworks/fireworks_stream.c
++++ b/sound/firewire/fireworks/fireworks_stream.c
+@@ -172,9 +172,6 @@ int snd_efw_stream_init_duplex(struct snd_efw *efw)
+ 	efw->tx_stream.flags |= CIP_DBC_IS_END_EVENT;
+ 	/* Fireworks reset dbc at bus reset. */
+ 	efw->tx_stream.flags |= CIP_SKIP_DBC_ZERO_CHECK;
+-	/* AudioFire2 starts packets with non-zero dbc. */
+-	if (efw->is_af2)
+-		efw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
+ 	/* AudioFire9 always reports wrong dbs. */
+ 	if (efw->is_af9)
+ 		efw->tx_stream.flags |= CIP_WRONG_DBS;
 -- 
 2.1.4
