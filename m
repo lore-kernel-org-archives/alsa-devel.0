@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98090: Replace TLV_DB_RANGE_HEAD
-	with DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:36 +0100
-Message-ID: <E1ZMxr6-0005yU-PM@finisterre>
-References: <1438528810-23498-16-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: da9055: Replace TLV_DB_RANGE_HEAD with
+	DECLARE_TLV_DB_RANGE" to the asoc tree
+Date: Wed, 05 Aug 2015 13:31:44 +0100
+Message-ID: <E1ZMxrE-00060M-Ko@finisterre>
+References: <1438528810-23498-12-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5847E265FD1
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:48 +0200 (CEST)
-In-Reply-To: <1438528810-23498-16-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F94E265DEA
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:55 +0200 (CEST)
+In-Reply-To: <1438528810-23498-12-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98090: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: da9055: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8896bc3e089b39d077c7afbf785166aac28e5151 Mon Sep 17 00:00:00 2001
+>From e27c8404a4745b3efeec1457e6b72f448ab4a785 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:43 +0200
-Subject: [PATCH] ASoC: max98090: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:39 +0200
+Subject: [PATCH] ASoC: da9055: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,92 +82,45 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 42 ++++++++++++++++++------------------------
- 1 file changed, 18 insertions(+), 24 deletions(-)
+ sound/soc/codecs/da9055.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 78268f05..cf8789f 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -360,22 +360,20 @@ static int max98090_reset(struct max98090_priv *max98090)
- 	return ret;
- }
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index 66bb446..8e6fc57 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -289,26 +289,23 @@ enum clk_src {
  
--static const unsigned int max98090_micboost_tlv[] = {
+ /* Gain and Volume */
+ 
+-static const unsigned int aux_vol_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(max98090_micboost_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(0, 2000, 0),
--	2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0),
++static const DECLARE_TLV_DB_RANGE(aux_vol_tlv,
+ 	0x0, 0x10, TLV_DB_SCALE_ITEM(-5400, 0, 0),
+ 	/* -54dB to 15dB */
+ 	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
 -};
-+	2, 2, TLV_DB_SCALE_ITEM(3000, 0, 0)
 +);
  
- static const DECLARE_TLV_DB_SCALE(max98090_mic_tlv, 0, 100, 0);
- 
- static const DECLARE_TLV_DB_SCALE(max98090_line_single_ended_tlv,
- 	-600, 600, 0);
- 
--static const unsigned int max98090_line_tlv[] = {
+-static const unsigned int digital_gain_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(max98090_line_tlv,
- 	0, 3, TLV_DB_SCALE_ITEM(-600, 300, 0),
--	4, 5, TLV_DB_SCALE_ITEM(1400, 600, 0),
++static const DECLARE_TLV_DB_RANGE(digital_gain_tlv,
+ 	0x0, 0x07, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
+ 	/* -78dB to 12dB */
+ 	0x08, 0x7f, TLV_DB_SCALE_ITEM(-7800, 75, 0)
 -};
-+	4, 5, TLV_DB_SCALE_ITEM(1400, 600, 0)
 +);
  
- static const DECLARE_TLV_DB_SCALE(max98090_avg_tlv, 0, 600, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_av_tlv, -1200, 100, 0);
-@@ -391,38 +389,34 @@ static const DECLARE_TLV_DB_SCALE(max98090_alccomp_tlv, -3100, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_drcexp_tlv, -6600, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_sdg_tlv, 50, 200, 0);
- 
--static const unsigned int max98090_mixout_tlv[] = {
+-static const unsigned int alc_analog_gain_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(max98090_mixout_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(-1200, 250, 0),
--	2, 3, TLV_DB_SCALE_ITEM(-600, 600, 0),
++static const DECLARE_TLV_DB_RANGE(alc_analog_gain_tlv,
+ 	0x0, 0x0, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
+ 	/* 0dB to 36dB */
+ 	0x01, 0x07, TLV_DB_SCALE_ITEM(0, 600, 0)
 -};
-+	2, 3, TLV_DB_SCALE_ITEM(-600, 600, 0)
 +);
  
--static const unsigned int max98090_hp_tlv[] = {
--	TLV_DB_RANGE_HEAD(5),
-+static const DECLARE_TLV_DB_RANGE(max98090_hp_tlv,
- 	0, 6, TLV_DB_SCALE_ITEM(-6700, 400, 0),
- 	7, 14, TLV_DB_SCALE_ITEM(-4000, 300, 0),
- 	15, 21, TLV_DB_SCALE_ITEM(-1700, 200, 0),
- 	22, 27, TLV_DB_SCALE_ITEM(-400, 100, 0),
--	28, 31, TLV_DB_SCALE_ITEM(150, 50, 0),
--};
-+	28, 31, TLV_DB_SCALE_ITEM(150, 50, 0)
-+);
- 
--static const unsigned int max98090_spk_tlv[] = {
--	TLV_DB_RANGE_HEAD(5),
-+static const DECLARE_TLV_DB_RANGE(max98090_spk_tlv,
- 	0, 4, TLV_DB_SCALE_ITEM(-4800, 400, 0),
- 	5, 10, TLV_DB_SCALE_ITEM(-2900, 300, 0),
- 	11, 14, TLV_DB_SCALE_ITEM(-1200, 200, 0),
- 	15, 29, TLV_DB_SCALE_ITEM(-500, 100, 0),
--	30, 39, TLV_DB_SCALE_ITEM(950, 50, 0),
--};
-+	30, 39, TLV_DB_SCALE_ITEM(950, 50, 0)
-+);
- 
--static const unsigned int max98090_rcv_lout_tlv[] = {
--	TLV_DB_RANGE_HEAD(5),
-+static const DECLARE_TLV_DB_RANGE(max98090_rcv_lout_tlv,
- 	0, 6, TLV_DB_SCALE_ITEM(-6200, 400, 0),
- 	7, 14, TLV_DB_SCALE_ITEM(-3500, 300, 0),
- 	15, 21, TLV_DB_SCALE_ITEM(-1200, 200, 0),
- 	22, 27, TLV_DB_SCALE_ITEM(100, 100, 0),
--	28, 31, TLV_DB_SCALE_ITEM(650, 50, 0),
--};
-+	28, 31, TLV_DB_SCALE_ITEM(650, 50, 0)
-+);
- 
- static int max98090_get_enab_tlv(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
+ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, -600, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(mixin_gain_tlv, -450, 150, 0);
 -- 
 2.1.4
