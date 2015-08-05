@@ -1,20 +1,21 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 6/6 v2][RESEND] ASoC: fsl_ssi: adjust set DAI
- format in AC'97 mode
-Date: Wed, 05 Aug 2015 17:29:02 +0200
-Message-ID: <55C22BBE.1010303@maciej.szmigiero.name>
-References: <55BA364E.1000803@maciej.szmigiero.name>
- <20150731055843.GX30895@pengutronix.de>
- <55BB9082.4030206@maciej.szmigiero.name>
- <20150802185103.GD19600@pengutronix.de>
+From: Arthur Borsboom <arthurborsboom@gmail.com>
+Subject: Re: [ALC668]: Asus N751JK - mic selection not working
+Date: Wed, 5 Aug 2015 23:30:30 +0200
+Message-ID: <CALUcmUm2VL+A0kbXbygJb=9cx7WBbNjJAaLju==z+ibB63om_Q@mail.gmail.com>
+References: <CAN8cciYavRQVFoacVxJdiH01ezRfKMvJqxO18HFmLqwGkaJyAg@mail.gmail.com>
+ <CALUcmU=mPPwZbCnDa+vVFM_+f_+jv6JfYNN2K7qdnN1PQFmPmg@mail.gmail.com>
+ <CAN8ccibaxJR3rrXrFr1_pYV8V7KkoaHo1y9yyjFHTp+_sG9sFg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vi37-28-154-113.vibiznes.pl [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 99B8E265E32
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 17:29:08 +0200 (CEST)
-In-Reply-To: <20150802185103.GD19600@pengutronix.de>
+Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
+ [209.85.214.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id B032726041D
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 23:30:50 +0200 (CEST)
+Received: by obnw1 with SMTP id w1so41667884obn.3
+ for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2015 14:30:49 -0700 (PDT)
+In-Reply-To: <CAN8ccibaxJR3rrXrFr1_pYV8V7KkoaHo1y9yyjFHTp+_sG9sFg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adjust set DAI format function in fsl_ssi driver
-so it doesn't fail and clears RXDIR in AC'97 mode.
+I have applied the patch against the mainline kernel 4.2.0-rc5.
+I have created the file /etc/modprobe.d/alsa-base.conf and added this line
+and rebooted.
 
-Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
----
-Changes from v1: fix indentation to be consistent with rest
-of the driver.
+options snd_hda_intel model=,asus-headset
 
- sound/soc/fsl/fsl_ssi.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+Works
+---------
+Subwoofer
+Plugging and unplugging 3,5mm jack: PA switches from speakers to headphones
+and from internal microphone to headset microphone.
+Playing music on speakers
+Playing music on headset
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 8e5ff5e..1ba63bd 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		return -EINVAL;
-+		if (!fsl_ssi_is_ac97(ssi_private))
-+			return -EINVAL;
- 	}
- 
- 	stcr |= strcr;
- 	srcr |= strcr;
- 
--	if (ssi_private->cpu_dai_drv.symmetric_rates) {
--		/* Need to clear RXDIR when using SYNC mode */
-+	if (ssi_private->cpu_dai_drv.symmetric_rates
-+			|| fsl_ssi_is_ac97(ssi_private)) {
-+		/* Need to clear RXDIR when using SYNC or AC97 mode */
- 		srcr &= ~CCSR_SSI_SRCR_RXDIR;
- 		scr |= CCSR_SSI_SCR_SYN;
- 	}
+Does not work
+-------------------
+Microphone: My voice by the headset is not getting to PA.
+When playing music the VU meters of the Headphones (= good) and the
+Microphone (= not good) in PA show both the music playing.
