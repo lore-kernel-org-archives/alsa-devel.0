@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da9055: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: da7213: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:44 +0100
-Message-ID: <E1ZMxrE-00060M-Ko@finisterre>
-References: <1438528810-23498-12-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:46 +0100
+Message-ID: <E1ZMxrG-00060p-I0@finisterre>
+References: <1438528810-23498-11-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F94E265DEA
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:55 +0200 (CEST)
-In-Reply-To: <1438528810-23498-12-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D30D265FFA
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:32:00 +0200 (CEST)
+In-Reply-To: <1438528810-23498-11-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da9055: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: da7213: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From e27c8404a4745b3efeec1457e6b72f448ab4a785 Mon Sep 17 00:00:00 2001
+>From 32e933be3f221723ace230fe1293eb3b3b3466ff Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:39 +0200
-Subject: [PATCH] ASoC: da9055: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:38 +0200
+Subject: [PATCH] ASoC: da7213: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -80,25 +80,27 @@ constant x;
 // </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da9055.c | 15 ++++++---------
+ sound/soc/codecs/da7213.c | 15 ++++++---------
  1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
-index 66bb446..8e6fc57 100644
---- a/sound/soc/codecs/da9055.c
-+++ b/sound/soc/codecs/da9055.c
-@@ -289,26 +289,23 @@ enum clk_src {
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 238e48a..c2358a9 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -28,27 +28,24 @@
+ 
  
  /* Gain and Volume */
- 
 -static const unsigned int aux_vol_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
 +static const DECLARE_TLV_DB_RANGE(aux_vol_tlv,
- 	0x0, 0x10, TLV_DB_SCALE_ITEM(-5400, 0, 0),
- 	/* -54dB to 15dB */
- 	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
+ 	/* -54dB */
+ 	0x0, 0x11, TLV_DB_SCALE_ITEM(-5400, 0, 0),
+ 	/* -52.5dB to 15dB */
+ 	0x12, 0x3f, TLV_DB_SCALE_ITEM(-5250, 150, 0)
 -};
 +);
  
