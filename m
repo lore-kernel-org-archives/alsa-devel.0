@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8753: Drop wm8753_writeable function"
+Subject: Applied "ASoC: wm8731: Drop wm8731_writeable function"
 	to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:39 +0100
-Message-ID: <E1ZMxqB-0005kH-FJ@finisterre>
-References: <1438394692.6442.2.camel@ingics.com>
+Date: Wed, 05 Aug 2015 13:30:41 +0100
+Message-ID: <E1ZMxqD-0005kk-7J@finisterre>
+References: <1438394622.6442.1.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E3872614E3
+ by alsa0.perex.cz (Postfix) with ESMTP id 231222614D6
  for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:30:54 +0200 (CEST)
-In-Reply-To: <1438394692.6442.2.camel@ingics.com>
+In-Reply-To: <1438394622.6442.1.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8753: Drop wm8753_writeable function
+   ASoC: wm8731: Drop wm8731_writeable function
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From b970499878563437a43eab2dd2faa9217142fb98 Mon Sep 17 00:00:00 2001
+>From f611cdd8eb33ac6ca1196319b27b7f7f24ef98a9 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 1 Aug 2015 10:04:52 +0800
-Subject: [PATCH] ASoC: wm8753: Drop wm8753_writeable function
+Date: Sat, 1 Aug 2015 10:03:42 +0800
+Subject: [PATCH] ASoC: wm8731: Drop wm8731_writeable function
 
 When .max_register is set and .writeable_reg is not implement, registers
 between 0 and .max_register are writeable. This is the same as current
-implementation of wm8753_writeable(), so just drop implementation for
+implementation of wm8731_writeable(), so just drop implementation for
 .writeable_reg callback.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8753.c | 6 ------
+ sound/soc/codecs/wm8731.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index feb2997a..4c6eaeb 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -138,11 +138,6 @@ static bool wm8753_volatile(struct device *dev, unsigned int reg)
- 	return reg == WM8753_RESET;
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 628d50c..6c73d37 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -79,11 +79,6 @@ static bool wm8731_volatile(struct device *dev, unsigned int reg)
+ 	return reg == WM8731_RESET;
  }
  
--static bool wm8753_writeable(struct device *dev, unsigned int reg)
+-static bool wm8731_writeable(struct device *dev, unsigned int reg)
 -{
--	return reg <= WM8753_ADCTL2;
+-	return reg <= WM8731_RESET;
 -}
 -
- /* codec private data */
- struct wm8753_priv {
- 	struct regmap *regmap;
-@@ -1510,7 +1505,6 @@ static const struct regmap_config wm8753_regmap = {
- 	.val_bits = 9,
+ #define wm8731_reset(m)	regmap_write(m, WM8731_RESET, 0)
  
- 	.max_register = WM8753_ADCTL2,
--	.writeable_reg = wm8753_writeable,
- 	.volatile_reg = wm8753_volatile,
+ static const char *wm8731_input_select[] = {"Line In", "Mic"};
+@@ -655,7 +650,6 @@ static const struct regmap_config wm8731_regmap = {
+ 
+ 	.max_register = WM8731_RESET,
+ 	.volatile_reg = wm8731_volatile,
+-	.writeable_reg = wm8731_writeable,
  
  	.cache_type = REGCACHE_RBTREE,
+ 	.reg_defaults = wm8731_reg_defaults,
 -- 
 2.1.4
