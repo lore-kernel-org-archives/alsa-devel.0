@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl4030: Replace TLV_DB_RANGE_HEAD with
-	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:12 +0100
-Message-ID: <E1ZMxqi-0005sP-2M@finisterre>
-References: <1438528810-23498-29-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: tpa6130a2: Replace TLV_DB_RANGE_HEAD
+	with DECLARE_TLV_DB_RANGE" to the asoc tree
+Date: Wed, 05 Aug 2015 13:31:13 +0100
+Message-ID: <E1ZMxqj-0005ss-US@finisterre>
+References: <1438528810-23498-28-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C97A3265E20
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:27 +0200 (CEST)
-In-Reply-To: <1438528810-23498-29-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id BF55E265E1E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:26 +0200 (CEST)
+In-Reply-To: <1438528810-23498-28-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl4030: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: tpa6130a2: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2524911e300771954698f384bd7f44543b2af2de Mon Sep 17 00:00:00 2001
+>From 4e0e5f8084cf9766ea70234f90271e03fd8aa56d Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:56 +0200
-Subject: [PATCH] ASoC: twl4030: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:55 +0200
+Subject: [PATCH] ASoC: tpa6130a2: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -83,28 +83,49 @@ Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl4030.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tpa6130a2.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 90f5f04..2713e18 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -524,12 +524,11 @@ static const struct snd_kcontrol_new twl4030_dapm_abypassv_control =
- 	SOC_DAPM_SINGLE("Switch", TWL4030_REG_VDL_APGA_CTL, 2, 1, 0);
- 
- /* Digital bypass gain, mute instead of -30dB */
--static const unsigned int twl4030_dapm_dbypass_tlv[] = {
--	TLV_DB_RANGE_HEAD(3),
-+static const DECLARE_TLV_DB_RANGE(twl4030_dapm_dbypass_tlv,
- 	0, 1, TLV_DB_SCALE_ITEM(-3000, 600, 1),
- 	2, 3, TLV_DB_SCALE_ITEM(-2400, 0, 0),
--	4, 7, TLV_DB_SCALE_ITEM(-1800, 600, 0),
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 6fac9e0..1e1d4ab 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -259,8 +259,7 @@ static int tpa6130a2_put_volsw(struct snd_kcontrol *kcontrol,
+  * TPA6130 volume. From -59.5 to 4 dB with increasing step size when going
+  * down in gain.
+  */
+-static const unsigned int tpa6130_tlv[] = {
+-	TLV_DB_RANGE_HEAD(10),
++static const DECLARE_TLV_DB_RANGE(tpa6130_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(-5950, 600, 0),
+ 	2, 3, TLV_DB_SCALE_ITEM(-5000, 250, 0),
+ 	4, 5, TLV_DB_SCALE_ITEM(-4550, 160, 0),
+@@ -270,8 +269,8 @@ static const unsigned int tpa6130_tlv[] = {
+ 	12, 13, TLV_DB_SCALE_ITEM(-3040, 180, 0),
+ 	14, 20, TLV_DB_SCALE_ITEM(-2710, 110, 0),
+ 	21, 37, TLV_DB_SCALE_ITEM(-1960, 74, 0),
+-	38, 63, TLV_DB_SCALE_ITEM(-720, 45, 0),
 -};
-+	4, 7, TLV_DB_SCALE_ITEM(-1800, 600, 0)
++	38, 63, TLV_DB_SCALE_ITEM(-720, 45, 0)
 +);
  
- /* Digital bypass left (TX1L -> RX2L) */
- static const struct snd_kcontrol_new twl4030_dapm_dbypassl_control =
+ static const struct snd_kcontrol_new tpa6130a2_controls[] = {
+ 	SOC_SINGLE_EXT_TLV("TPA6130A2 Headphone Playback Volume",
+@@ -280,12 +279,11 @@ static const struct snd_kcontrol_new tpa6130a2_controls[] = {
+ 		       tpa6130_tlv),
+ };
+ 
+-static const unsigned int tpa6140_tlv[] = {
+-	TLV_DB_RANGE_HEAD(3),
++static const DECLARE_TLV_DB_RANGE(tpa6140_tlv,
+ 	0, 8, TLV_DB_SCALE_ITEM(-5900, 400, 0),
+ 	9, 16, TLV_DB_SCALE_ITEM(-2500, 200, 0),
+-	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0),
+-};
++	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0)
++);
+ 
+ static const struct snd_kcontrol_new tpa6140a2_controls[] = {
+ 	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
 -- 
 2.1.4
