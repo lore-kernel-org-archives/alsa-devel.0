@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8991: Don't use range container for
-	TLVs with one entry" to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:54 +0100
-Message-ID: <E1ZMxqQ-0005o1-VN@finisterre>
-References: <1438528810-23498-38-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with
+	DECLARE_TLV_DB_RANGE" to the asoc tree
+Date: Wed, 05 Aug 2015 13:31:01 +0100
+Message-ID: <E1ZMxqX-0005pT-0t@finisterre>
+References: <1438528810-23498-35-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D80F265DFC
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:11 +0200 (CEST)
-In-Reply-To: <1438528810-23498-38-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73A3C265E02
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:17 +0200 (CEST)
+In-Reply-To: <1438528810-23498-35-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8991: Don't use range container for TLVs with one entry
+   ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,91 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 00769dbe3982c76dd68dac1d3f54328fa935bd21 Mon Sep 17 00:00:00 2001
+>From 5d272d89339a4f8c1905d5bdf5851346582b78f2 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:05 +0200
-Subject: [PATCH] ASoC: wm8991: Don't use range container for TLVs with one
- entry
+Date: Sun, 2 Aug 2015 17:20:02 +0200
+Subject: [PATCH] ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with
+ DECLARE_TLV_DB_RANGE
 
-For TLVs with only a single entry it is not necessary to use a range
-container. Use DECLARE_TLV_DB_LINEAR() directly instead of a combination of
-TLV_DB_RANGE_HEAD() and TLV_DB_LINEAR_ITEM().
+DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
+that it automatically calculates the number of items in the TLV and is
+hence less prone to manual error.
+
+Generate using the following coccinelle script
+
+// <smpl>
+@@
+declarer name DECLARE_TLV_DB_RANGE;
+identifier tlv;
+constant x;
+@@
+-unsigned int tlv[] = {
+-	TLV_DB_RANGE_HEAD(x),
++DECLARE_TLV_DB_RANGE(tlv,
+	...
+-};
++);
+// </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8991.c | 52 ++++++++---------------------------------------
- 1 file changed, 9 insertions(+), 43 deletions(-)
+ sound/soc/codecs/wm8961.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
-index 44a6777..de9110e 100644
---- a/sound/soc/codecs/wm8991.c
-+++ b/sound/soc/codecs/wm8991.c
-@@ -111,45 +111,14 @@ static bool wm8991_volatile(struct device *dev, unsigned int reg)
- 	}
- }
+diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
+index a057662..44ee143 100644
+--- a/sound/soc/codecs/wm8961.c
++++ b/sound/soc/codecs/wm8961.c
+@@ -331,13 +331,12 @@ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
+ static const DECLARE_TLV_DB_SCALE(hp_sec_tlv, -700, 100, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, -7200, 75, 1);
+ static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
+-static unsigned int boost_tlv[] = {
+-	TLV_DB_RANGE_HEAD(4),
++static const DECLARE_TLV_DB_RANGE(boost_tlv,
+ 	0, 0, TLV_DB_SCALE_ITEM(0,  0, 0),
+ 	1, 1, TLV_DB_SCALE_ITEM(13, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(20, 0, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0),
+-};
++	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0)
++);
+ static const DECLARE_TLV_DB_SCALE(pga_tlv, -2325, 75, 0);
  
--static const unsigned int rec_mix_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 7, TLV_DB_LINEAR_ITEM(-1500, 600),
--};
--
--static const unsigned int in_pga_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 0x1F, TLV_DB_LINEAR_ITEM(-1650, 3000),
--};
--
--static const unsigned int out_mix_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 7, TLV_DB_LINEAR_ITEM(0, -2100),
--};
--
--static const unsigned int out_pga_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 127, TLV_DB_LINEAR_ITEM(-7300, 600),
--};
--
--static const unsigned int out_omix_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 7, TLV_DB_LINEAR_ITEM(-600, 0),
--};
--
--static const unsigned int out_dac_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 255, TLV_DB_LINEAR_ITEM(-7163, 0),
--};
--
--static const unsigned int in_adc_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 255, TLV_DB_LINEAR_ITEM(-7163, 1763),
--};
--
--static const unsigned int out_sidetone_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 31, TLV_DB_LINEAR_ITEM(-3600, 0),
--};
-+static const DECLARE_TLV_DB_LINEAR(rec_mix_tlv, -1500, 600);
-+static const DECLARE_TLV_DB_LINEAR(in_pga_tlv, -1650, 3000);
-+static const DECLARE_TLV_DB_LINEAR(out_mix_tlv, 0, -2100);
-+static const DECLARE_TLV_DB_LINEAR(out_pga_tlv, -7300, 600);
-+static const DECLARE_TLV_DB_LINEAR(out_omix_tlv, -600, 0);
-+static const DECLARE_TLV_DB_LINEAR(out_dac_tlv, -7163, 0);
-+static const DECLARE_TLV_DB_LINEAR(in_adc_tlv, -7163, 1763);
-+static const DECLARE_TLV_DB_LINEAR(out_sidetone_tlv, -3600, 0);
- 
- static int wm899x_outpga_put_volsw_vu(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
-@@ -429,10 +398,7 @@ static int outmixer_event(struct snd_soc_dapm_widget *w,
- }
- 
- /* INMIX dB values */
--static const unsigned int in_mix_tlv[] = {
--	TLV_DB_RANGE_HEAD(1),
--	0, 7, TLV_DB_LINEAR_ITEM(-1200, 600),
--};
-+static const DECLARE_TLV_DB_LINEAR(in_mix_tlv, -1200, 600);
- 
- /* Left In PGA Connections */
- static const struct snd_kcontrol_new wm8991_dapm_lin12_pga_controls[] = {
+ static const struct snd_kcontrol_new wm8961_snd_controls[] = {
 -- 
 2.1.4
