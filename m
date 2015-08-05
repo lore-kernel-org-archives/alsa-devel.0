@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: wm8962: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:04 +0100
-Message-ID: <E1ZMxqa-0005qV-L1@finisterre>
-References: <1438528810-23498-33-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:30:58 +0100
+Message-ID: <E1ZMxqU-0005oy-Cl@finisterre>
+References: <1438528810-23498-36-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 31CB1265DFE
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:16 +0200 (CEST)
-In-Reply-To: <1438528810-23498-33-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EA8265DF9
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:09 +0200 (CEST)
+In-Reply-To: <1438528810-23498-36-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: wm8962: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7d711f63e36737968dcda5ce28fed3fb3e12fbdc Mon Sep 17 00:00:00 2001
+>From fcbb71e9ccac59940b619bdd5a51c96495dd4731 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:00 +0200
-Subject: [PATCH] ASoC: wm8737: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:20:03 +0200
+Subject: [PATCH] ASoC: wm8962: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,29 +82,45 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8737.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8962.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index 6ad606f..54e6158 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -79,13 +79,12 @@ static int wm8737_reset(struct snd_soc_codec *codec)
- 	return snd_soc_write(codec, WM8737_RESET, 0);
- }
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index c5748fd..b618da9 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1456,14 +1456,13 @@ static int wm8962_reset(struct wm8962_priv *wm8962)
  
--static const unsigned int micboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(micboost_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(1300, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(1800, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2800, 0, 0),
--	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0),
+ static const DECLARE_TLV_DB_SCALE(inpga_tlv, -2325, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(mixin_tlv, -1500, 300, 0);
+-static const unsigned int mixinpga_tlv[] = {
+-	TLV_DB_RANGE_HEAD(5),
++static const DECLARE_TLV_DB_RANGE(mixinpga_tlv,
+ 	0, 1, TLV_DB_SCALE_ITEM(0, 600, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(1300, 1300, 0),
+ 	3, 4, TLV_DB_SCALE_ITEM(1800, 200, 0),
+ 	5, 5, TLV_DB_SCALE_ITEM(2400, 0, 0),
+-	6, 7, TLV_DB_SCALE_ITEM(2700, 300, 0),
 -};
-+	3, 3, TLV_DB_SCALE_ITEM(3300, 0, 0)
++	6, 7, TLV_DB_SCALE_ITEM(2700, 300, 0)
 +);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, -9750, 50, 1);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, -600, 600, 0);
- static const DECLARE_TLV_DB_SCALE(ng_tlv, -7800, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(beep_tlv, -9600, 600, 1);
+ static const DECLARE_TLV_DB_SCALE(digital_tlv, -7200, 75, 1);
+ static const DECLARE_TLV_DB_SCALE(st_tlv, -3600, 300, 0);
+@@ -1471,11 +1470,10 @@ static const DECLARE_TLV_DB_SCALE(inmix_tlv, -600, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
+ static const DECLARE_TLV_DB_SCALE(hp_tlv, -700, 100, 0);
+-static const unsigned int classd_tlv[] = {
+-	TLV_DB_RANGE_HEAD(2),
++static const DECLARE_TLV_DB_RANGE(classd_tlv,
+ 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
+-	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
+-};
++	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0)
++);
+ static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+ 
+ static int wm8962_dsp2_write_config(struct snd_soc_codec *codec)
 -- 
 2.1.4
