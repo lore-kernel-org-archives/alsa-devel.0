@@ -1,58 +1,33 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: topology: Use kcalloc instead of kzalloc
- for array allocation
-Date: Wed, 05 Aug 2015 17:57:12 +0800
-Message-ID: <1438768632.27904.1.camel@ingics.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id CC42B265CC5
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 11:57:18 +0200 (CEST)
-Received: by pacgq8 with SMTP id gq8so31925154pac.3
- for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2015 02:57:17 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - one Dell machine needs the headphone white noise fixup
+Date: Wed,  5 Aug 2015 18:03:34 +0800
+Message-ID: <1438769014-6464-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Also remove unnecessary memset.
+The fixup ALC292_FIXUP_DISABLE_AAMIX can fix the white noise of
+the headphone on this Dell machine.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/soc-topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 4dadb5e..a5eb48e 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1250,7 +1250,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 	struct snd_kcontrol_new *kc;
- 	int i, err;
- 
--	kc = kzalloc(sizeof(*kc) * count, GFP_KERNEL);
-+	kc = kcalloc(count, sizeof(*kc), GFP_KERNEL);
- 	if (!kc)
- 		return NULL;
- 
-@@ -1273,7 +1273,6 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 			"ASoC: adding bytes kcontrol %s with access 0x%x\n",
- 			be->hdr.name, be->hdr.access);
- 
--		memset(kc, 0, sizeof(*kc));
- 		kc[i].name = be->hdr.name;
- 		kc[i].private_value = (long)sbe;
- 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b20f104..dd7274d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5189,6 +5189,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x06c7, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x06d9, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x06da, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x06de, "Dell", ALC292_FIXUP_DISABLE_AAMIX),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
 -- 
-2.1.0
+1.9.1
