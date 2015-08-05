@@ -1,20 +1,20 @@
-From: Valentin Corfu <corfuvalentin@gmail.com>
-Subject: Re: Segmentation Fault in snd_pcm_rate_hw_free()
-Date: Wed, 05 Aug 2015 11:15:01 +0300
-Message-ID: <55C1C605.8090902@gmail.com>
-References: <55C0C75E.8090501@gmail.com>	<s5hwpxbnm0e.wl-tiwai@suse.de>	<55C0D402.8030806@gmail.com>	<s5hmvy7nkyp.wl-tiwai@suse.de>	<55C1B408.7010501@gmail.com>
- <s5hegjib42k.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [REANNOUNCE] Audio Mini Summit 2015, 8th October,
+ Dublin
+Date: Wed, 5 Aug 2015 10:39:05 +0100
+Message-ID: <20150805093905.GF20873@sirena.org.uk>
+References: <20150714150352.GW11162@sirena.org.uk> <55BC772C.50801@metafoo.de>
+ <20150803032128.GO29916@localhost>
+ <20150804161335.GW20873@sirena.org.uk>
+ <20150805025603.GE11789@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3268761104748288982=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 796AA265CC0
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 10:16:34 +0200 (CEST)
-Received: by wibcd8 with SMTP id cd8so12636895wib.1
- for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2015 01:16:34 -0700 (PDT)
-In-Reply-To: <s5hegjib42k.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78F63261515
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 11:39:21 +0200 (CEST)
+In-Reply-To: <20150805025603.GE11789@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,142 +24,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 05.08.2015 10:13, Takashi Iwai wrote:
-> On Wed, 05 Aug 2015 08:58:16 +0200,
-> Valentin Corfu wrote:
->> Hello Takashi,
->>
->>
->> On 04.08.2015 18:15, Takashi Iwai wrote:
->>> On Tue, 04 Aug 2015 17:02:26 +0200,
->>> Valentin Corfu wrote:
->>>>
->>>> On 04.08.2015 17:53, Takashi Iwai wrote:
->>>>> On Tue, 04 Aug 2015 16:08:30 +0200,
->>>>> Valentin Corfu wrote:
->>>>>> Hello ALSA developers,
->>>>>>
->>>>>> I observed one segmentation fault in snd_pcm_rate_hw_free() function,
->>>>>> with the following BT:
->>>>>>
->>>>>> (gdb) up
->>>>>> #1  0xb7554cc1 in raise (sig=6) at
->>>>>> ../nptl/sysdeps/unix/sysv/linux/raise.c:64
->>>>>> 64        return INLINE_SYSCALL (tgkill, 3, pid, selftid, sig);
->>>>>> (gdb)
->>>>>> #2  0xb75580ee in abort () at abort.c:92
->>>>>> 92            raise (SIGABRT);
->>>>>> (gdb)
->>>>>> #3  0xb758a7dd in __libc_message (do_abort=2,
->>>>>>         fmt=0xb766053c "*** glibc detected *** %s: %s: 0x%s ***\n")
->>>>>>         at ../sysdeps/unix/sysv/linux/libc_fatal.c:189
->>>>>> 189           abort ();
->>>>>> (gdb)
->>>>>> #4  0xb7594a71 in malloc_printerr (action=<value optimized out>,
->>>>>>         str=<value optimized out>, ptr=0x969ae98) at malloc.c:6283
->>>>>> 6283          __libc_message (action & 2,
->>>>>> (gdb)
->>>>>> #5  0xb759636b in _int_free (av=<value optimized out>, p=0x969ae90)
->>>>>>         at malloc.c:4795
->>>>>> 4795          malloc_printerr (check_action, errstr, chunk2mem(p));
->>>>>> (gdb)
->>>>>> #6  0xb75994bd in __libc_free (mem=0x969ae98) at malloc.c:3738
->>>>>> 3738      _int_free(ar_ptr, p);
->>>>>> (gdb)
->>>>>> #7  0xb76f3a81 in snd_pcm_rate_hw_free (pcm=0x9685d78) at pcm_rate.c:341
->>>>>> 341                     free(rate->pareas[0].addr);
->>>>> Could you check the content of rate->pareas[0] via gdb?
->>>> (gdb) frame 7
->>>> #7  0xb76f3a81 in snd_pcm_rate_hw_free (pcm=0x9685d78) at pcm_rate.c:341
->>>> 341                     free(rate->pareas[0].addr);
->>>> (gdb) print rate->pareas[0]
->>>> $1 = {addr = 0x969ae98, first = 0, step = 16}
->>>> (gdb) print rate->pareas[0].addr
->>>> $2 = (void *) 0x969ae98
->>> And accessing to pareas[0].addr is OK?  This is a temporary sample
->>> buffer allocated in alsa-lib rate plugin.
->>>
->> Are you referring if the pointer is valid one?
->> How could I check this?
-> Look into it via gdb.
->
+--===============3268761104748288982==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y3pDWE12QfphwjBl"
+Content-Disposition: inline
 
 
-(gdb) list
-336
-337     static int snd_pcm_rate_hw_free(snd_pcm_t *pcm)
-338     {
-339             snd_pcm_rate_t *rate = pcm->private_data;
-340             if (rate->pareas) {
-341                     free(rate->pareas[0].addr);
-342                     free(rate->pareas);
-343                     rate->pareas = NULL;
-344                     rate->sareas = NULL;
-345             }
-(gdb) x rate->pareas[0].addr
-0x969ae98:      0x019f0110
-(gdb) x 0x019f0110
-0x19f0110:      Cannot access memory at address 0x19f0110
-(gdb) print *(rate->pareas[0].addr)
-Attempt to dereference a generic pointer.
-(gdb) p /s *(char *)(rate->pareas[0].addr)
-$6 = 16 '\020'
-(gdb) p /s *(char **)(rate->pareas[0].addr)
-$7 = 0x19f0110 <Address 0x19f0110 out of bounds>
+--y3pDWE12QfphwjBl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 05, 2015 at 08:26:03AM +0530, Vinod Koul wrote:
+> On Tue, Aug 04, 2015 at 05:13:35PM +0100, Mark Brown wrote:
+
+> > That'd require us to move all the DAPM information for drivers out of
+> > the kernel and into userspace which seems a bit worrying - it's going to
+> > be harder for things that need events and I worry about the effect on
+> > quality of implementation if people stop sending things to get reviewed.
+
+> Not for this option, for example in SKL.
+
+> kernel doesnt have toplogy information coded in, it is parsed and build from
+> topology binary which is built by alsa-lib. So if we add more alsa-lib APIs
+> to parse the installed binary we have good view of system without going to
+> kernel, we know complete graph and controls...
+
+That's a specific case where the topology definition is coming in with
+the actual implementation.  For CODECs where things are in silicon
+things are a bit different.
+
+--y3pDWE12QfphwjBl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVwdm1AAoJECTWi3JdVIfQ+LoH/3ai2GLA6rd4VvTdTqJWZX4k
+k+6K5A8GDZGsAFkd877mhRLAV93MZO0OOeLQYESV3WPreN4gWtGjgWpVeje3w+BO
+oD6WDCIXh5fGSUxWjiQc/tzgyI1kOh6nun5kojWy21oJ8KNg919TDUKEvj73LmxO
+u71NG9mqRFnf/UNORzvjbG9tF6hI+vtr/34NbZxQE24kMfhneqdWKbt5BU60MBTO
+IHapugowWwsC54SWQOdhcZ51uqlVbuiIWXBZnma0+p4SlQcML+soUppcpKZnVanB
+OqB7D+RaTJXMLqKcRdAPWLQG1qLyzsI9dEEZMyauLcLnv1nuKc34610TodtyVds=
+=CArk
+-----END PGP SIGNATURE-----
+
+--y3pDWE12QfphwjBl--
+
+--===============3268761104748288982==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
->>>>>> (gdb)
->>>>>> #8  0xb76d045b in snd_pcm_hw_free (pcm=0x9685d78) at pcm.c:858
->>>>>> 858             err = pcm->ops->hw_free(pcm->op_arg);
->>>>>> (gdb)
->>>>>> #9  0xb76f826e in snd_pcm_plug_hw_free (pcm=0x96856b0) at pcm_plug.c:1046
->>>>>> 1046            int err = snd_pcm_hw_free(slave);
->>>>>> (gdb)
->>>>>> #10 0xb76d045b in snd_pcm_hw_free (pcm=0x96856b0) at pcm.c:858
->>>>>> 858             err = pcm->ops->hw_free(pcm->op_arg);
->>>>>> (gdb)
->>>>>> #11 0x080492ad in main ()
->>>>>>
->>>>>>
->>>>>> Could you please give me some hints how to solve this issue?
->>>>>>
->>>>>> I can provide you more info or the test application, if needed.
->>>>>> I can see the issue every time, and I also checked with latest version
->>>>>> of alsa-lib but I got the same results.
->>>>> I don't know of such an error, so far.
->>>>> It smells like some memory corruption to me.
->>>>>
->>>>> If a test case is a simple code, tracking the bug would be easy...
->>>> I have paste it here:
->>>> http://pastebin.com/WJDTz6cE
->>> It works fine on my system.  How is your PCM setup?  Does the same
->>> problem occur for "plughw" PCM, too?  Also, no external PCM rate
->>> plugin is involved?
->> In my setup it is involved the alsa jack plugin, so I'm using the pcm
->> jack when the segmentation fault is visible.
->> I can not reproduce the issue when I'm using "default" / "plughw" PCM.
-> That's the biggest missing piece.  So, a possible bug in jack plugin
-> that has been rarely tested / debugged.
->
->
-> Takashi
->
->> For more info I have pasted the dump() & log at run:
->> http://pastebin.com/jyy7pP9e
->> It is involved here PCM rate conversion at 48000, but not external one.
->>
->>
->>> Takashi
->>
->> Thank you,
->> Valentin
->>
-
-Best Regards,
-Valentin
+--===============3268761104748288982==--
