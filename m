@@ -1,21 +1,18 @@
-From: Arthur Borsboom <arthurborsboom@gmail.com>
-Subject: Re: [ALC668]: Asus N751JK - mic selection not working
-Date: Wed, 5 Aug 2015 23:30:30 +0200
-Message-ID: <CALUcmUm2VL+A0kbXbygJb=9cx7WBbNjJAaLju==z+ibB63om_Q@mail.gmail.com>
-References: <CAN8cciYavRQVFoacVxJdiH01ezRfKMvJqxO18HFmLqwGkaJyAg@mail.gmail.com>
- <CALUcmU=mPPwZbCnDa+vVFM_+f_+jv6JfYNN2K7qdnN1PQFmPmg@mail.gmail.com>
- <CAN8ccibaxJR3rrXrFr1_pYV8V7KkoaHo1y9yyjFHTp+_sG9sFg@mail.gmail.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: rl6231: Simplify DMIC divider
+	calculation expression
+Date: Wed,  5 Aug 2015 14:58:33 -0700
+Message-ID: <1438811913-39249-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f180.google.com (mail-ob0-f180.google.com
- [209.85.214.180])
- by alsa0.perex.cz (Postfix) with ESMTP id B032726041D
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 23:30:50 +0200 (CEST)
-Received: by obnw1 with SMTP id w1so41667884obn.3
- for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2015 14:30:49 -0700 (PDT)
-In-Reply-To: <CAN8ccibaxJR3rrXrFr1_pYV8V7KkoaHo1y9yyjFHTp+_sG9sFg@mail.gmail.com>
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55C0D26041D
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 23:58:49 +0200 (CEST)
+Received: by pacrr5 with SMTP id rr5so10570250pac.3
+ for <alsa-devel@alsa-project.org>; Wed, 05 Aug 2015 14:58:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, kailang@realtek.com, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
+Cc: oder_chiou@realtek.com, albertchen@realtek.com, broonie@kernel.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have applied the patch against the mainline kernel 4.2.0-rc5.
-I have created the file /etc/modprobe.d/alsa-base.conf and added this line
-and rebooted.
+Existing implementation checks all divider values and tracks
+'red' proximity value for the frequency.
 
-options snd_hda_intel model=,asus-headset
+But as divider array is monotonically increasing the first
+divider that gives DMIC rate in 3MHz range is the best one
+we should use. No need for 'red' zone tracking.
 
-Works
----------
-Subwoofer
-Plugging and unplugging 3,5mm jack: PA switches from speakers to headphones
-and from internal microphone to headset microphone.
-Playing music on speakers
-Playing music on headset
+Additionally make sure that DMIC frequency is higher 1MHz.
 
-Does not work
--------------------
-Microphone: My voice by the headset is not getting to PA.
-When playing music the VU meters of the Headphones (= good) and the
-Microphone (= not good) in PA show both the music playing.
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+---
+ sound/soc/codecs/rl6231.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index 57e51c1..aca479f 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -62,31 +62,31 @@ int rl6231_get_pre_div(struct regmap *map, unsigned int reg, int sft)
+ EXPORT_SYMBOL_GPL(rl6231_get_pre_div);
+ 
+ /**
+- * rl6231_calc_dmic_clk - Calculate the parameter of dmic.
++ * rl6231_calc_dmic_clk - Calculate the frequency divider parameter of dmic.
+  *
+  * @rate: base clock rate.
+  *
+- * Choose dmic clock between 1MHz and 3MHz.
+- * It is better for clock to approximate 3MHz.
++ * Choose divider parameter that gives the highest possible DMIC frequency in
++ * 1MHz - 3MHz range.
+  */
+ int rl6231_calc_dmic_clk(int rate)
+ {
+-	int div[] = {2, 3, 4, 6, 8, 12}, idx = -EINVAL;
+-	int i, red, bound, temp;
++	int div[] = {2, 3, 4, 6, 8, 12};
++	int i;
++
++	if (rate < 1000000 * div[0]) {
++		pr_warn("Base clock rate %d is too low\n", rate);
++		return -EINVAL;
++	}
+ 
+-	red = 3000000 * 12;
+ 	for (i = 0; i < ARRAY_SIZE(div); i++) {
+-		bound = div[i] * 3000000;
+-		if (rate > bound)
+-			continue;
+-		temp = bound - rate;
+-		if (temp < red) {
+-			red = temp;
+-			idx = i;
+-		}
++		/* find divider that gives DMIC frequency below 3MHz */
++		if (3000000 * div[i] >= rate)
++			return i;
+ 	}
+ 
+-	return idx;
++	pr_warn("Base clock rate %d is too high\n", rate);
++	return -EINVAL;
+ }
+ EXPORT_SYMBOL_GPL(rl6231_calc_dmic_clk);
+ 
+-- 
+2.5.0.rc2.392.g76e840b
