@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9090: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:49 +0100
-Message-ID: <E1ZMxqL-0005mc-Bk@finisterre>
-References: <1438528810-23498-41-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:30:53 +0100
+Message-ID: <E1ZMxqP-0005nY-0A@finisterre>
+References: <1438528810-23498-39-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BA96265DAB
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:01 +0200 (CEST)
-In-Reply-To: <1438528810-23498-41-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F6FD265DEA
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:04 +0200 (CEST)
+In-Reply-To: <1438528810-23498-39-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9090: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 0894e2b3cddaf00a52302d0eb83edb717c6fb913 Mon Sep 17 00:00:00 2001
+>From f1022087d372b02c8ffe5e1e084a3de763bea16b Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:08 +0200
-Subject: [PATCH] ASoC: wm9090: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:20:06 +0200
+Subject: [PATCH] ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,45 +82,27 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9090.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/codecs/wm8993.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index 13d23fc..334c4c1 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -162,23 +162,20 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec)
- 		dev_err(codec->dev, "Timed out waiting for DC Servo\n");
- }
- 
--static const unsigned int in_tlv[] = {
--	TLV_DB_RANGE_HEAD(3),
-+static const DECLARE_TLV_DB_RANGE(in_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(-600, 0, 0),
- 	1, 3, TLV_DB_SCALE_ITEM(-350, 350, 0),
--	4, 6, TLV_DB_SCALE_ITEM(600, 600, 0),
--};
--static const unsigned int mix_tlv[] = {
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 8a8db86..bc9e042 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -628,11 +628,10 @@ static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_comp_threash, -4500, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_comp_amp, -2250, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_min_tlv, -1800, 600, 0);
+-static const unsigned int drc_max_tlv[] = {
 -	TLV_DB_RANGE_HEAD(2),
-+	4, 6, TLV_DB_SCALE_ITEM(600, 600, 0)
-+);
-+static const DECLARE_TLV_DB_RANGE(mix_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(-1200, 300, 0),
--	3, 3, TLV_DB_SCALE_ITEM(0, 0, 0),
++static const DECLARE_TLV_DB_RANGE(drc_max_tlv,
+ 	0, 2, TLV_DB_SCALE_ITEM(1200, 600, 0),
+-	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0),
 -};
-+	3, 3, TLV_DB_SCALE_ITEM(0, 0, 0)
++	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0)
 +);
- static const DECLARE_TLV_DB_SCALE(out_tlv, -5700, 100, 0);
--static const unsigned int spkboost_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
-+static const DECLARE_TLV_DB_RANGE(spkboost_tlv,
- 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
--	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
--};
-+	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0)
-+);
- 
- static const struct snd_kcontrol_new wm9090_controls[] = {
- SOC_SINGLE_TLV("IN1A Volume", WM9090_IN1_LINE_INPUT_A_VOLUME, 0, 6, 0,
+ static const DECLARE_TLV_DB_SCALE(drc_qr_tlv, 1200, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_startup_tlv, -1800, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
 -- 
 2.1.4
