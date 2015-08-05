@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 1/3] ASoC: topology: Update TLV support so
-	we can support more TLV types
-Date: Wed,  5 Aug 2015 14:41:13 +0100
-Message-ID: <1438782075-19977-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 2/3] ASoC: topology: Add ops support to byte
+	controls UAPI
+Date: Wed,  5 Aug 2015 14:41:14 +0100
+Message-ID: <1438782075-19977-3-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1438782075-19977-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E38DE265E36
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 15:41:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 97A64265E38
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 15:41:29 +0200 (CEST)
 In-Reply-To: <1438782075-19977-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,164 +27,49 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-Currently the TLV topology structure is targeted at only supporting the
-DB scale data. This patch extends support for the other TLV types so they
-can be easily added at a later stage.
-
-TLV structure is moved to common topology control header since it's a
-common field for controls and can be processed in a general way.
-
-Users must set a proper access flag for a control since it's used to
-decide if the TLV field is valid and if a TLV callback is needed.
-
-Removed the following fields from topology TLV struct:
-- size/count: type can decide the size.
-- numid: not needed to initialize TLV for kcontrol.
-- data: replaced by the type specific struct.
-
-Added TLV structure to generic control header and removed TLV structure
-from mixer control.
+Add UAPI support for setting byte control ops. Rename the ops structure
+to be more generic so it can be sued by other objects too.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- include/uapi/sound/asoc.h | 19 +++++++++++-----
- sound/soc/soc-topology.c  | 58 +++++++++++++++++++++++++++++++++--------------
- 2 files changed, 54 insertions(+), 23 deletions(-)
+ include/uapi/sound/asoc.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 2819fc1..aa3a79b 100644
+index aa3a79b..d5281ac 100644
 --- a/include/uapi/sound/asoc.h
 +++ b/include/uapi/sound/asoc.h
-@@ -137,11 +137,19 @@ struct snd_soc_tplg_private {
- /*
-  * Kcontrol TLV data.
-  */
-+struct snd_soc_tplg_tlv_dbscale {
-+	__le32 min;
-+	__le32 step;
-+	__le32 mute;
-+} __attribute__((packed));
-+
- struct snd_soc_tplg_ctl_tlv {
--	__le32 size;	/* in bytes aligned to 4 */
--	__le32 numid;	/* control element numeric identification */
--	__le32 count;	/* number of elem in data array */
--	__le32 data[SND_SOC_TPLG_TLV_SIZE];
-+	__le32 size;	/* in bytes of this structure */
-+	__le32 type;	/* SNDRV_CTL_TLVT_*, type of TLV */
-+	union {
-+		__le32 data[SND_SOC_TPLG_TLV_SIZE];
-+		struct snd_soc_tplg_tlv_dbscale scale;
-+	};
+@@ -163,9 +163,11 @@ struct snd_soc_tplg_channel {
  } __attribute__((packed));
  
  /*
-@@ -172,7 +180,7 @@ struct snd_soc_tplg_ctl_hdr {
+- * Kcontrol Operations IDs
++ * Genericl Operations IDs, for binding Kcontrol or Bytes ext ops
++ * Kcontrol ops need get/put/info.
++ * Bytes ext ops need get/put.
+  */
+-struct snd_soc_tplg_kcontrol_ops_id {
++struct snd_soc_tplg_io_ops {
+ 	__le32 get;
+ 	__le32 put;
+ 	__le32 info;
+@@ -179,7 +181,7 @@ struct snd_soc_tplg_ctl_hdr {
+ 	__le32 type;
  	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
  	__le32 access;
- 	struct snd_soc_tplg_kcontrol_ops_id ops;
--	__le32 tlv_size;	/* non zero means control has TLV data */
-+	struct snd_soc_tplg_ctl_tlv tlv;
+-	struct snd_soc_tplg_kcontrol_ops_id ops;
++	struct snd_soc_tplg_io_ops ops;
+ 	struct snd_soc_tplg_ctl_tlv tlv;
  } __attribute__((packed));
  
- /*
-@@ -260,7 +268,6 @@ struct snd_soc_tplg_mixer_control {
- 	__le32 invert;
- 	__le32 num_channels;
- 	struct snd_soc_tplg_channel channel[SND_SOC_TPLG_MAX_CHAN];
--	struct snd_soc_tplg_ctl_tlv tlv;
+@@ -311,6 +313,7 @@ struct snd_soc_tplg_bytes_control {
+ 	__le32 mask;
+ 	__le32 base;
+ 	__le32 num_regs;
++	struct snd_soc_tplg_io_ops ext_ops;
  	struct snd_soc_tplg_private priv;
  } __attribute__((packed));
  
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index df3ddf0..2799abe 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -33,6 +33,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- #include <sound/soc-topology.h>
-+#include <sound/tlv.h>
- 
- /*
-  * We make several passes over the data (since it wont necessarily be ordered)
-@@ -579,28 +580,51 @@ static int soc_tplg_init_kcontrol(struct soc_tplg *tplg,
- 	return 0;
- }
- 
-+
-+static int soc_tplg_create_tlv_db_scale(struct soc_tplg *tplg,
-+	struct snd_kcontrol_new *kc, struct snd_soc_tplg_tlv_dbscale *scale)
-+{
-+	unsigned int item_len = 2 * sizeof(unsigned int);
-+	unsigned int *p;
-+
-+	p = kzalloc(item_len + 2 * sizeof(unsigned int), GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	p[0] = SNDRV_CTL_TLVT_DB_SCALE;
-+	p[1] = item_len;
-+	p[2] = scale->min;
-+	p[3] = (scale->step & TLV_DB_SCALE_MASK)
-+			| (scale->mute ? TLV_DB_SCALE_MUTE : 0);
-+
-+	kc->tlv.p = (void *)p;
-+	return 0;
-+}
-+
- static int soc_tplg_create_tlv(struct soc_tplg *tplg,
--	struct snd_kcontrol_new *kc, struct snd_soc_tplg_ctl_tlv *tplg_tlv)
-+	struct snd_kcontrol_new *kc, struct snd_soc_tplg_ctl_hdr *tc)
- {
--	struct snd_ctl_tlv *tlv;
--	int size;
-+	struct snd_soc_tplg_ctl_tlv *tplg_tlv;
- 
--	if (tplg_tlv->count == 0)
-+	if (!(tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE))
- 		return 0;
- 
--	size = ((tplg_tlv->count + (sizeof(unsigned int) - 1)) &
--		~(sizeof(unsigned int) - 1));
--	tlv = kzalloc(sizeof(*tlv) + size, GFP_KERNEL);
--	if (tlv == NULL)
--		return -ENOMEM;
--
--	dev_dbg(tplg->dev, " created TLV type %d size %d bytes\n",
--		tplg_tlv->numid, size);
-+	if (tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
-+		kc->tlv.c = snd_soc_bytes_tlv_callback;
-+	} else {
-+		tplg_tlv = &tc->tlv;
-+		switch (tplg_tlv->type) {
-+		case SNDRV_CTL_TLVT_DB_SCALE:
-+			return soc_tplg_create_tlv_db_scale(tplg, kc,
-+					&tplg_tlv->scale);
- 
--	tlv->numid = tplg_tlv->numid;
--	tlv->length = size;
--	memcpy(&tlv->tlv[0], tplg_tlv->data, size);
--	kc->tlv.p = (void *)tlv;
-+		/* TODO: add support for other TLV types */
-+		default:
-+			dev_dbg(tplg->dev, "Unsupported TLV type %d\n",
-+					tplg_tlv->type);
-+			return -EINVAL;
-+		}
-+	}
- 
- 	return 0;
- }
-@@ -772,7 +796,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
- 		}
- 
- 		/* create any TLV data */
--		soc_tplg_create_tlv(tplg, &kc, &mc->tlv);
-+		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
- 
- 		/* register control here */
- 		err = soc_tplg_add_kcontrol(tplg, &kc,
 -- 
 2.1.4
