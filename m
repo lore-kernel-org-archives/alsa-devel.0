@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: wm9081: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:30:53 +0100
-Message-ID: <E1ZMxqP-0005nY-0A@finisterre>
-References: <1438528810-23498-39-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:30:51 +0100
+Message-ID: <E1ZMxqN-0005n5-4X@finisterre>
+References: <1438528810-23498-40-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F6FD265DEA
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:04 +0200 (CEST)
-In-Reply-To: <1438528810-23498-39-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 58CC7265DAD
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:02 +0200 (CEST)
+In-Reply-To: <1438528810-23498-40-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: wm9081: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From f1022087d372b02c8ffe5e1e084a3de763bea16b Mon Sep 17 00:00:00 2001
+>From 5d9a5e609bd026294c0d5c02372303cb969c9d98 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:06 +0200
-Subject: [PATCH] ASoC: wm8993: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:20:07 +0200
+Subject: [PATCH] ASoC: wm9081: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,27 +82,29 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8993.c | 7 +++----
+ sound/soc/codecs/wm9081.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 8a8db86..bc9e042 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -628,11 +628,10 @@ static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
- static const DECLARE_TLV_DB_SCALE(drc_comp_threash, -4500, 75, 0);
- static const DECLARE_TLV_DB_SCALE(drc_comp_amp, -2250, 75, 0);
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 8a8b1c0..5740cab 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -243,13 +243,12 @@ static int wm9081_reset(struct regmap *map)
+ static const DECLARE_TLV_DB_SCALE(drc_in_tlv, -4500, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_out_tlv, -2250, 75, 0);
  static const DECLARE_TLV_DB_SCALE(drc_min_tlv, -1800, 600, 0);
--static const unsigned int drc_max_tlv[] = {
--	TLV_DB_RANGE_HEAD(2),
+-static unsigned int drc_max_tlv[] = {
+-	TLV_DB_RANGE_HEAD(4),
 +static const DECLARE_TLV_DB_RANGE(drc_max_tlv,
- 	0, 2, TLV_DB_SCALE_ITEM(1200, 600, 0),
+ 	0, 0, TLV_DB_SCALE_ITEM(1200, 0, 0),
+ 	1, 1, TLV_DB_SCALE_ITEM(1800, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
 -	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0),
 -};
 +	3, 3, TLV_DB_SCALE_ITEM(3600, 0, 0)
 +);
  static const DECLARE_TLV_DB_SCALE(drc_qr_tlv, 1200, 600, 0);
- static const DECLARE_TLV_DB_SCALE(drc_startup_tlv, -1800, 300, 0);
- static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+ static const DECLARE_TLV_DB_SCALE(drc_startup_tlv, -300, 50, 0);
+ 
 -- 
 2.1.4
