@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: max9850: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:25 +0100
-Message-ID: <E1ZMxqv-0005vg-Si@finisterre>
-References: <1438528810-23498-22-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:32 +0100
+Message-ID: <E1ZMxr2-0005xY-Og@finisterre>
+References: <1438528810-23498-18-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BBB7265EB3
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:37 +0200 (CEST)
-In-Reply-To: <1438528810-23498-22-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D8D9B265FCB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:43 +0200 (CEST)
+In-Reply-To: <1438528810-23498-18-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: max9850: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6d698a83fa768be38780d54fc6c244c99cf7684d Mon Sep 17 00:00:00 2001
+>From e0340985999fbee1a51bd4653d90ca19a8a7acdc Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:19:49 +0200
-Subject: [PATCH] ASoC: rt5645: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:19:45 +0200
+Subject: [PATCH] ASoC: max9850: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,32 +82,29 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 7 +++----
+ sound/soc/codecs/max9850.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9ce311e..df27ec1 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -424,16 +424,15 @@ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index 481d58f1..3774e42 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -67,13 +67,12 @@ static const struct regmap_config max9850_regmap = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
  
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
--static unsigned int bst_tlv[] = {
--	TLV_DB_RANGE_HEAD(7),
-+static const DECLARE_TLV_DB_RANGE(bst_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(2000, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(2400, 0, 0),
- 	3, 5, TLV_DB_SCALE_ITEM(3000, 500, 0),
- 	6, 6, TLV_DB_SCALE_ITEM(4400, 0, 0),
- 	7, 7, TLV_DB_SCALE_ITEM(5000, 0, 0),
--	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
+-static const unsigned int max9850_tlv[] = {
+-	TLV_DB_RANGE_HEAD(4),
++static const DECLARE_TLV_DB_RANGE(max9850_tlv,
+ 	0x18, 0x1f, TLV_DB_SCALE_ITEM(-7450, 400, 0),
+ 	0x20, 0x33, TLV_DB_SCALE_ITEM(-4150, 200, 0),
+ 	0x34, 0x37, TLV_DB_SCALE_ITEM(-150, 100, 0),
+-	0x38, 0x3f, TLV_DB_SCALE_ITEM(250, 50, 0),
 -};
-+	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0)
++	0x38, 0x3f, TLV_DB_SCALE_ITEM(250, 50, 0)
 +);
  
- static const struct snd_kcontrol_new rt5645_snd_controls[] = {
- 	/* Speaker Output Volume */
+ static const struct snd_kcontrol_new max9850_controls[] = {
+ SOC_SINGLE_TLV("Headphone Volume", MAX9850_VOLUME, 0, 0x3f, 1, max9850_tlv),
 -- 
 2.1.4
