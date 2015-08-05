@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with
+Subject: Applied "ASoC: wm8753: Replace TLV_DB_RANGE_HEAD with
 	DECLARE_TLV_DB_RANGE" to the asoc tree
-Date: Wed, 05 Aug 2015 13:31:01 +0100
-Message-ID: <E1ZMxqX-0005pT-0t@finisterre>
-References: <1438528810-23498-35-git-send-email-lars@metafoo.de>
+Date: Wed, 05 Aug 2015 13:31:02 +0100
+Message-ID: <E1ZMxqY-0005pw-Lk@finisterre>
+References: <1438528810-23498-34-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73A3C265E02
- for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:17 +0200 (CEST)
-In-Reply-To: <1438528810-23498-35-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2151A265DFD
+ for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2015 14:31:14 +0200 (CEST)
+In-Reply-To: <1438528810-23498-34-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
+   ASoC: wm8753: Replace TLV_DB_RANGE_HEAD with DECLARE_TLV_DB_RANGE
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5d272d89339a4f8c1905d5bdf5851346582b78f2 Mon Sep 17 00:00:00 2001
+>From 11c3727c4e625c248ff3b546290aade1399affec Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Sun, 2 Aug 2015 17:20:02 +0200
-Subject: [PATCH] ASoC: wm8961: Replace TLV_DB_RANGE_HEAD with
+Date: Sun, 2 Aug 2015 17:20:01 +0200
+Subject: [PATCH] ASoC: wm8753: Replace TLV_DB_RANGE_HEAD with
  DECLARE_TLV_DB_RANGE
 
 DECLARE_TLV_DB_RANGE() has the advantage over using TLV_DB_RANGE_HEAD()
@@ -82,29 +82,28 @@ constant x;
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8961.c | 7 +++----
+ sound/soc/codecs/wm8753.c | 7 +++----
  1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index a057662..44ee143 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -331,13 +331,12 @@ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
- static const DECLARE_TLV_DB_SCALE(hp_sec_tlv, -700, 100, 0);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, -7200, 75, 1);
- static const DECLARE_TLV_DB_SCALE(sidetone_tlv, -3600, 300, 0);
--static unsigned int boost_tlv[] = {
--	TLV_DB_RANGE_HEAD(4),
-+static const DECLARE_TLV_DB_RANGE(boost_tlv,
- 	0, 0, TLV_DB_SCALE_ITEM(0,  0, 0),
- 	1, 1, TLV_DB_SCALE_ITEM(13, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(20, 0, 0),
--	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0),
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index feb2997a..f588341 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -276,12 +276,11 @@ static const DECLARE_TLV_DB_SCALE(rec_mix_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_preamp_tlv, 1200, 600, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, -9750, 50, 1);
+ static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
+-static const unsigned int out_tlv[] = {
+-	TLV_DB_RANGE_HEAD(2),
++static const DECLARE_TLV_DB_RANGE(out_tlv,
+ 	/* 0000000 - 0101111 = "Analogue mute" */
+ 	0, 48, TLV_DB_SCALE_ITEM(-25500, 0, 0),
+-	48, 127, TLV_DB_SCALE_ITEM(-7300, 100, 0),
 -};
-+	3, 3, TLV_DB_SCALE_ITEM(29, 0, 0)
++	48, 127, TLV_DB_SCALE_ITEM(-7300, 100, 0)
 +);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, -2325, 75, 0);
- 
- static const struct snd_kcontrol_new wm8961_snd_controls[] = {
+ static const DECLARE_TLV_DB_SCALE(mix_tlv, -1500, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(voice_mix_tlv, -1200, 300, 0);
+ static const DECLARE_TLV_DB_SCALE(pga_tlv, -1725, 75, 0);
 -- 
 2.1.4
