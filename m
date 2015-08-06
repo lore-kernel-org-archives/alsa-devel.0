@@ -1,99 +1,113 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
-Date: Thu, 06 Aug 2015 21:36:02 +0200
-Message-ID: <55C3B722.1010507@metafoo.de>
-References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
- <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-017.synserver.de (smtp-out-018.synserver.de
- [212.40.185.18])
- by alsa0.perex.cz (Postfix) with ESMTP id ACA77260560
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 21:36:04 +0200 (CEST)
-In-Reply-To: <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>, broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Chunming Zhou <david1.zhou@amd.com>, Alex Deucher <alexander.deucher@amd.com>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com
+Subject: [PATCH] ALSA: ac97: Switch to dev_pm_ops
+Date: Thu,  6 Aug 2015 21:42:09 +0200
+Message-ID: <1438890129-32621-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-> @@ -134,6 +136,7 @@ config DRM_AMDGPU
->  	select HWMON
->  	select BACKLIGHT_CLASS_DEVICE
->  	select INTERVAL_TREE
-> +	select DRM_AMD_GNB_BUS
+Convert the ac97_bus from legacy suspend/resume callbacks to dev_pm_ops.
 
-Here you select the symbol.
+Since there isn't anything special to do at the bus level the bus driver
+does not have to implement any callbacks. The device driver core will
+automatically pick up and execute the device's PM ops.
 
-[...]
+As there is only a single AC'97 driver implementing suspend and resume,
+update both the core and driver at the same time to avoid unnecessary code
+churn.
 
-> +config DRM_AMD_GNB_BUS
-> +	tristate "AMD GNB bus - used for GNB IPs such as ACP and ISP"
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+This patch touches code in both ALSA and the input subsystem. Ideally this
+patch will be merged via the ALSA tree. Given that the wm97xx touchscreen
+driver is not seeing too many changes these days the risk of conflicts
+should be low.
+---
+ drivers/input/touchscreen/wm97xx-core.c | 13 +++++++------
+ sound/ac97_bus.c                        | 26 --------------------------
+ 2 files changed, 7 insertions(+), 32 deletions(-)
 
-Here you make it user selectable. Use either or having both doesn't work too
-well.
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+index b1ae779..1d11fd8 100644
+--- a/drivers/input/touchscreen/wm97xx-core.c
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -732,8 +732,8 @@ static int wm97xx_remove(struct device *dev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int wm97xx_suspend(struct device *dev, pm_message_t state)
++#ifdef CONFIG_PM_SLEEP
++static int wm97xx_suspend(struct device *dev)
+ {
+ 	struct wm97xx *wm = dev_get_drvdata(dev);
+ 	u16 reg;
+@@ -799,9 +799,11 @@ static int wm97xx_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static SIMPLE_DEV_PM_OPS(wm97xx_pm_ops, wm97xx_suspend, wm97xx_resume);
++#define WM97XX_PM_OPS (&wm97xx_pm_ops)
++
+ #else
+-#define wm97xx_suspend		NULL
+-#define wm97xx_resume		NULL
++#define WM97XX_PM_OPS NULL
+ #endif
+ 
+ /*
+@@ -836,8 +838,7 @@ static struct device_driver wm97xx_driver = {
+ 	.owner =	THIS_MODULE,
+ 	.probe =	wm97xx_probe,
+ 	.remove =	wm97xx_remove,
+-	.suspend =	wm97xx_suspend,
+-	.resume =	wm97xx_resume,
++	.pm =		WM97XX_PM_OPS,
+ };
+ 
+ static int __init wm97xx_init(void)
+diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
+index 2b50cbe..57a6dfc 100644
+--- a/sound/ac97_bus.c
++++ b/sound/ac97_bus.c
+@@ -27,35 +27,9 @@ static int ac97_bus_match(struct device *dev, struct device_driver *drv)
+ 	return 1;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int ac97_bus_suspend(struct device *dev, pm_message_t state)
+-{
+-	int ret = 0;
+-
+-	if (dev->driver && dev->driver->suspend)
+-		ret = dev->driver->suspend(dev, state);
+-
+-	return ret;
+-}
+-
+-static int ac97_bus_resume(struct device *dev)
+-{
+-	int ret = 0;
+-
+-	if (dev->driver && dev->driver->resume)
+-		ret = dev->driver->resume(dev);
+-
+-	return ret;
+-}
+-#endif /* CONFIG_PM */
+-
+ struct bus_type ac97_bus_type = {
+ 	.name		= "ac97",
+ 	.match		= ac97_bus_match,
+-#ifdef CONFIG_PM
+-	.suspend	= ac97_bus_suspend,
+-	.resume		= ac97_bus_resume,
+-#endif /* CONFIG_PM */
+ };
+ 
+ static int __init ac97_bus_init(void)
+-- 
+2.1.4
 
-> +
-> +endmenu
-> diff --git a/drivers/gpu/drm/amd/bus/Makefile b/drivers/gpu/drm/amd/bus/Makefile
-> new file mode 100644
-> index 0000000..c41ffc9
-> --- /dev/null
-> +++ b/drivers/gpu/drm/amd/bus/Makefile
-> @@ -0,0 +1,4 @@
-> +#
-> +ccflags-y := -Iinclude/drm -Idrivers/gpu/drm/amd/include/bus/
-> +
-> +obj-$(CONFIG_DRM_AMD_GNB_BUS) := amd_gnb_bus.o
-> diff --git a/drivers/gpu/drm/amd/bus/amd_gnb_bus.c b/drivers/gpu/drm/amd/bus/amd_gnb_bus.c
-> new file mode 100644
-> index 0000000..071b16c
-> --- /dev/null
-> +++ b/drivers/gpu/drm/amd/bus/amd_gnb_bus.c
-> @@ -0,0 +1,266 @@
-[..]
-> +#ifdef CONFIG_PM_SLEEP
-> +static int amd_gnb_bus_legacy_suspend(struct device *dev, pm_message_t mesg)
-> +{
-> +	struct amd_gnb_bus_dev *amd_gnb_bus_dev = to_amd_gnb_bus_device(dev);
-> +	struct amd_gnb_bus_driver *driver;
-> +
-> +	if (!amd_gnb_bus_dev || !dev->driver)
-> +		return 0;
-> +	driver = to_amd_gnb_bus_driver(dev->driver);
-> +	if (!driver->suspend)
-> +		return 0;
-> +	return driver->suspend(amd_gnb_bus_dev, mesg);
-> +}
-> +
-> +static int amd_gnb_bus_legacy_resume(struct device *dev)
-> +{
-> +	struct amd_gnb_bus_dev *amd_gnb_bus_dev = to_amd_gnb_bus_device(dev);
-> +	struct amd_gnb_bus_driver *driver;
-> +
-> +	if (!amd_gnb_bus_dev || !dev->driver)
-> +		return 0;
-> +	driver = to_amd_gnb_bus_driver(dev->driver);
-> +	if (!driver->resume)
-> +		return 0;
-> +	return driver->resume(amd_gnb_bus_dev);
-> +}
-[...]
-
-
-Preferably don't add support for legacy suspend/resume to new subsystems.
-Support for this is supposed to be removed from the kernel. Just use
-dev_pm_ops and then you can drop all of the above since the PM core does the
-right thing on its own for dev_pm_ops. No need to have support at the bus
-level if there is nothing special to do at the bus level.
-
-[...]
