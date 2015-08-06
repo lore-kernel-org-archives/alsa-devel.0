@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rl6231: Simplify DMIC divider
-	calculation expression" to the asoc tree
-Date: Thu, 06 Aug 2015 12:28:24 +0100
-Message-ID: <E1ZNJLU-0001j9-Ud@finisterre>
-References: <1438811913-39249-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Applied "ASoC: topology: Use kcalloc instead of
+	kzalloc for array allocation" to the asoc tree
+Date: Thu, 06 Aug 2015 12:28:23 +0100
+Message-ID: <E1ZNJLT-0001ig-N3@finisterre>
+References: <1438785262.9624.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 39CD92604B5
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 13:28:34 +0200 (CEST)
-In-Reply-To: <1438811913-39249-1-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A22BE2604C7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 13:28:38 +0200 (CEST)
+In-Reply-To: <1438785262.9624.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rl6231: Simplify DMIC divider calculation expression
+   ASoC: topology: Use kcalloc instead of kzalloc for array allocation
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From ac1125daf02b81cabb19f35963906335e3d4a155 Mon Sep 17 00:00:00 2001
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Date: Wed, 5 Aug 2015 14:58:33 -0700
-Subject: [PATCH] ASoC: rl6231: Simplify DMIC divider calculation expression
+>From 289c79458c1ef55caf40dae1b3f0dcc5e12ec13e Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 5 Aug 2015 22:34:22 +0800
+Subject: [PATCH] ASoC: topology: Use kcalloc instead of kzalloc for array
+ allocation
 
-Existing implementation checks all divider values and tracks
-'red' proximity value for the frequency.
+Also remove unnecessary memset.
 
-But as divider array is monotonically increasing the first
-divider that gives DMIC rate in 3MHz range is the best one
-we should use. No need for 'red' zone tracking.
-
-Additionally make sure that DMIC frequency is higher 1MHz.
-
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
-Acked-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rl6231.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ sound/soc/soc-topology.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
-index 57e51c1..aca479f 100644
---- a/sound/soc/codecs/rl6231.c
-+++ b/sound/soc/codecs/rl6231.c
-@@ -62,31 +62,31 @@ int rl6231_get_pre_div(struct regmap *map, unsigned int reg, int sft)
- EXPORT_SYMBOL_GPL(rl6231_get_pre_div);
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index f38f111..c9575a7 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1070,7 +1070,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 	struct snd_soc_tplg_mixer_control *mc;
+ 	int i, err;
  
- /**
-- * rl6231_calc_dmic_clk - Calculate the parameter of dmic.
-+ * rl6231_calc_dmic_clk - Calculate the frequency divider parameter of dmic.
-  *
-  * @rate: base clock rate.
-  *
-- * Choose dmic clock between 1MHz and 3MHz.
-- * It is better for clock to approximate 3MHz.
-+ * Choose divider parameter that gives the highest possible DMIC frequency in
-+ * 1MHz - 3MHz range.
-  */
- int rl6231_calc_dmic_clk(int rate)
- {
--	int div[] = {2, 3, 4, 6, 8, 12}, idx = -EINVAL;
--	int i, red, bound, temp;
-+	int div[] = {2, 3, 4, 6, 8, 12};
-+	int i;
-+
-+	if (rate < 1000000 * div[0]) {
-+		pr_warn("Base clock rate %d is too low\n", rate);
-+		return -EINVAL;
-+	}
+-	kc = kzalloc(sizeof(*kc) * num_kcontrols, GFP_KERNEL);
++	kc = kcalloc(num_kcontrols, sizeof(*kc), GFP_KERNEL);
+ 	if (kc == NULL)
+ 		return NULL;
  
--	red = 3000000 * 12;
- 	for (i = 0; i < ARRAY_SIZE(div); i++) {
--		bound = div[i] * 3000000;
--		if (rate > bound)
--			continue;
--		temp = bound - rate;
--		if (temp < red) {
--			red = temp;
--			idx = i;
--		}
-+		/* find divider that gives DMIC frequency below 3MHz */
-+		if (3000000 * div[i] >= rate)
-+			return i;
- 	}
+@@ -1251,7 +1251,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 	struct snd_kcontrol_new *kc;
+ 	int i, err;
  
--	return idx;
-+	pr_warn("Base clock rate %d is too high\n", rate);
-+	return -EINVAL;
- }
- EXPORT_SYMBOL_GPL(rl6231_calc_dmic_clk);
+-	kc = kzalloc(sizeof(*kc) * count, GFP_KERNEL);
++	kc = kcalloc(count, sizeof(*kc), GFP_KERNEL);
+ 	if (!kc)
+ 		return NULL;
  
+@@ -1274,7 +1274,6 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 			"ASoC: adding bytes kcontrol %s with access 0x%x\n",
+ 			be->hdr.name, be->hdr.access);
+ 
+-		memset(kc, 0, sizeof(*kc));
+ 		kc[i].name = be->hdr.name;
+ 		kc[i].private_value = (long)sbe;
+ 		kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
 -- 
 2.1.4
