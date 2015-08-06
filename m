@@ -1,65 +1,66 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH 11/12] ASoC: AMD: add suspend/resume for ACP PCM driver
-Date: Thu,  6 Aug 2015 10:25:11 -0400
-Message-ID: <1438871112-25946-11-git-send-email-alexander.deucher@amd.com>
-References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Subject: Re: query on upstream ASoC driver split across SOUND
+ and DRM subsystems
+Date: Thu, 6 Aug 2015 14:25:03 +0000
+Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D06E8DFC07@satlexdag05.amd.com>
+References: <8A8837939561D241AC8141C31522BA68291E33F9@SCYBEXDAG01.amd.com>
+ <20150803161905.GA20873@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, lgirdwood@gmail.com, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2on0108.outbound.protection.outlook.com [207.46.100.108])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5585D2604C7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 16:25:17 +0200 (CEST)
+In-Reply-To: <20150803161905.GA20873@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, "Bayyavarapu, Maruthi" <Maruthi.Bayyavarapu@amd.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Vemuri,
+ Murali-krishna" <Murali-krishna.Vemuri@amd.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFydXRoaSBTcmluaXZhcyBCYXl5YXZhcmFwdSA8TWFydXRoaS5CYXl5YXZhcmFwdUBh
-bWQuY29tPgoKQWRkZWQgc3VzcGVuZC9yZXN1bWUgZnVuY3Rpb25hbGl0eSBmb3IgQU1EIEFDUCBB
-U29DIFBDTSBkcml2ZXIuCkVuYWJsZWQgdGhlbSBpbiB0aGUgQVNvQyBtYWNoaW5lIGRyaXZlcgoK
-U2lnbmVkLW9mZi1ieTogTWFydXRoaSBCYXl5YXZhcmFwdSA8bWFydXRoaS5iYXl5YXZhcmFwdUBh
-bWQuY29tPgpSZXZpZXdlZC1ieTogQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQu
-Y29tPgpSZXZpZXdlZC1ieTogTXVyYWxpIEtyaXNobmEgVmVtdXJpIDxtdXJhbGkta3Jpc2huYS52
-ZW11cmlAYW1kLmNvbT4KLS0tCiBzb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMgfCAzMSArKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrCiBzb3VuZC9zb2MvYW1kL2FjcC1ydDI4Ni5jICAg
-fCAgMSAtCiAyIGZpbGVzIGNoYW5nZWQsIDMxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1k
-L2FjcC1wY20tZG1hLmMKaW5kZXggMGY1ODk1Ny4uZGIwOWI3NyAxMDA2NDQKLS0tIGEvc291bmQv
-c29jL2FtZC9hY3AtcGNtLWRtYS5jCisrKyBiL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwpA
-QCAtNjI1LDExICs2MjUsNDIgQEAgc3RhdGljIGludCBhY3BfYW1kc29jX3JlbW92ZShzdHJ1Y3Qg
-YW1kX2duYl9idXNfZGV2ICphZGV2KQogCXJldHVybiAwOwogfQogCitzdGF0aWMgaW50IGFjcF9w
-Y21fc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCit7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRp
-YyBpbnQgYWNwX3BjbV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQoreworCXN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtOworCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRp
-bWU7CisJc3RydWN0IGF1ZGlvX3N1YnN0cmVhbV9kYXRhICpydGQ7CisKKwlzdHJ1Y3QgYXVkaW9f
-ZHJ2X2RhdGEgKmlycV9kYXRhID0KKwkgICAgKHN0cnVjdCBhdWRpb19kcnZfZGF0YSAqKWRldl9n
-ZXRfZHJ2ZGF0YShkZXYpOworCisJc3Vic3RyZWFtID0gaXJxX2RhdGEtPnBsYXlfc3RyZWFtOwor
-CXJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJcnRkID0gcnVudGltZS0+cHJpdmF0ZV9k
-YXRhOworCisJaXJxX2RhdGEtPmFjcF9kZXYtPmNvbmZpZ19pMnMoaXJxX2RhdGEtPmFjcF9kZXYs
-IHJ0ZC0+aTJzX2NvbmZpZyk7CisJaXJxX2RhdGEtPmFjcF9kZXYtPmNvbmZpZ19kbWEoaXJxX2Rh
-dGEtPmFjcF9kZXYsIHJ0ZC0+ZG1hX2NvbmZpZyk7CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGlj
-IGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIGFjcF9wbV9vcHMgPSB7CisJU0VUX1NZU1RFTV9TTEVF
-UF9QTV9PUFMoYWNwX3BjbV9zdXNwZW5kLCBhY3BfcGNtX3Jlc3VtZSkKK307CisKIHN0YXRpYyBz
-dHJ1Y3QgYW1kX2duYl9idXNfZHJpdmVyIGFjcF9kbWFfZHJpdmVyID0gewogCS5uYW1lID0gImFj
-cC1wY20tZHJpdmVyIiwKIAkuaXAgPSBBTURfR05CX0lQX0FDUF9QQ00sCiAJLnByb2JlID0gYWNw
-X2FtZHNvY19wcm9iZSwKIAkucmVtb3ZlID0gYWNwX2FtZHNvY19yZW1vdmUsCisJLmRyaXZlciA9
-IHsKKwkJLnBtID0gJmFjcF9wbV9vcHMsCisJfSwKIH07CiAKIHN0YXRpYyBpbnQgX19pbml0IGFt
-ZHNvY19idXNfYWNwX2RtYV9kcml2ZXJfaW5pdCh2b2lkKQpkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L2FtZC9hY3AtcnQyODYuYyBiL3NvdW5kL3NvYy9hbWQvYWNwLXJ0Mjg2LmMKaW5kZXggN2Q0YmRm
-OS4uOGJlOTIzNiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2FtZC9hY3AtcnQyODYuYworKysgYi9z
-b3VuZC9zb2MvYW1kL2FjcC1ydDI4Ni5jCkBAIC0xMjksNyArMTI5LDYgQEAgc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2RhaV9saW5rIGNhcnJpem9fZGFpX3J0Mjg2ID0gewogCS5jb2RlY19uYW1lID0g
-InJ0Mjg2LjMtMDAxYyIsCiAJLmRhaV9mbXQgPSBTTkRfU09DX0RBSUZNVF9JMlMgfCBTTkRfU09D
-X0RBSUZNVF9OQl9ORgogCQkJfCBTTkRfU09DX0RBSUZNVF9DQk1fQ0ZNLAotCS5pZ25vcmVfc3Vz
-cGVuZCA9IDEsCiAJLm9wcyA9ICZjYXJyaXpvX3J0Mjg2X29wcywKIAkuaW5pdCA9IGNhcnJpem9f
-aW5pdCwKIH07Ci0tIAoxLjguMy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2RyaS1kZXZlbAo=
+
+
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Monday, August 03, 2015 12:19 PM
+> To: Bayyavarapu, Maruthi
+> Cc: tiwai@suse.de; perex@perex.cz; lgirdwood@gmail.com; alsa-
+> devel@alsa-project.org; Deucher, Alexander; Vemuri, Murali-krishna
+> Subject: Re: query on upstream ASoC driver split across SOUND and DRM
+> subsystems
+> 
+> On Fri, Jul 31, 2015 at 06:07:51PM +0000, Bayyavarapu, Maruthi wrote:
+> 
+> Please fix your mailer to word wrap within paragraphs, it makes your
+> mails much easier to read and reply to.
+> 
+> > I want to send AMD ASoC driver for review.
+> 
+> Please just send the driver for review using the standard process
+> covered in SubmittingPatches.
+> 
+> > This driver has a dependency with AMD's 'DRM' subsystem components,
+> > which are not upstreamed yet.  Please suggest, whether this ASoC
+> > driver can be upstreamed via 'DRM' tree or any alternate approach is
+> > preferred.
+> 
+> When sending the code for the two subsystems please make it clear (eg,
+> in the covering letter) that there are dependencies, it may make sense
+> to send one patch series to both ASoC and DRM.  Exactly how this is
+> handled will depend on the nature of the dependencies and the code,
+> we'll work it out as part of the review.
+
+Thanks,  I'm going to work with Maruthi to send out the complete patch set.
+
+Alex
