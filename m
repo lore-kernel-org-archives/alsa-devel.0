@@ -1,79 +1,110 @@
-From: libin.yang@intel.com
-Subject: [PATCH 4/4] drm/i915: set proper N/CTS in modeset
-Date: Thu,  6 Aug 2015 14:52:57 +0800
-Message-ID: <1438843977-4269-4-git-send-email-libin.yang@intel.com>
-References: <1438843977-4269-1-git-send-email-libin.yang@intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Verb for 0x17 pin config
+Date: Thu, 6 Aug 2015 07:49:23 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A1F86F@RTITMBSV09.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A1F778@RTITMBSV09.realtek.com.tw>
+ <s5hh9oeb4qy.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A1F78C@RTITMBSV09.realtek.com.tw>
+ <s5hd1z2b3wh.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A1F7A4@RTITMBSV09.realtek.com.tw>
+ <s5h7fpaui7t.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1438843977-4269-1-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19716260438
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 09:49:28 +0200 (CEST)
+In-Reply-To: <s5h7fpaui7t.wl-tiwai@suse.de>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>, Woodrow Shen <woodrow.shen@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpXaGVuIG1vZGVzZXQgb2Nj
-dXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKc3BlaWNhbCB2YWx1ZSwg
-dGhlIE4vQ1RTIG5lZWQgdG8gYmUgc2V0IG1hbnVhbGx5IGlmIGF1ZGlvCmlzIHBsYXlpbmcuCgpT
-aWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4KLS0tCiBkcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oICAgIHwgIDYgKysrKysrCiBkcml2ZXJzL2dwdS9k
-cm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgNDIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmggYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-OTE1X3JlZy5oCmluZGV4IDBiMWNkNzIuLjk0ZjdmOGIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1
-L2RybS9pOTE1L2k5MTVfcmVnLmgKKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcu
-aApAQCAtNzAyNiw2ICs3MDI2LDEyIEBAIGVudW0gc2tsX2Rpc3BfcG93ZXJfd2VsbHMgewogCQkJ
-CQlfSFNXX0FVRF9ESUdfQ05WVF8yKQogI2RlZmluZSBESVBfUE9SVF9TRUxfTUFTSwkJMHgzCiAK
-KyNkZWZpbmUgX0hTV19BVURfU1RSX0RFU0NfMQkJMHg2NTA4NAorI2RlZmluZSBfSFNXX0FVRF9T
-VFJfREVTQ18yCQkweDY1MTg0CisjZGVmaW5lIEFVRF9TVFJfREVTQyhwaXBlKQlfUElQRShwaXBl
-LCBcCisJCQkJCSBfSFNXX0FVRF9TVFJfREVTQ18xLAlcCisJCQkJCSBfSFNXX0FVRF9TVFJfREVT
-Q18yKQorCiAjZGVmaW5lIF9IU1dfQVVEX0VESURfREFUQV9BCQkweDY1MDUwCiAjZGVmaW5lIF9I
-U1dfQVVEX0VESURfREFUQV9CCQkweDY1MTUwCiAjZGVmaW5lIEhTV19BVURfRURJRF9EQVRBKHBp
-cGUpIF9QSVBFKHBpcGUsIFwKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
-X2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCmluZGV4IGYxMTQ4
-Y2QuLmRmNTE0YjcgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlv
-LmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwpAQCAtMjMzLDYgKzIz
-Myw5IEBAIHN0YXRpYyB2b2lkIGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25u
-ZWN0b3IgKmNvbm5lY3RvciwKIAljb25zdCB1aW50OF90ICplbGQgPSBjb25uZWN0b3ItPmVsZDsK
-IAl1aW50MzJfdCB0bXA7CiAJaW50IGxlbiwgaTsKKwlpbnQgY3Z0X2lkeDsKKwlpbnQgbl9sb3cs
-IG5fdXAsIG47CisJaW50IGJhc2VfcmF0ZSwgbXVsLCBkaXYsIHJhdGU7CiAKIAlEUk1fREVCVUdf
-S01TKCJFbmFibGUgYXVkaW8gY29kZWMgb24gcGlwZSAlYywgJXUgYnl0ZXMgRUxEXG4iLAogCQkg
-ICAgICBwaXBlX25hbWUocGlwZSksIGRybV9lbGRfc2l6ZShlbGQpKTsKQEAgLTI2NSw2ICsyNjgs
-MjEgQEAgc3RhdGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJtX2Nvbm5l
-Y3RvciAqY29ubmVjdG9yLAogCXRtcCB8PSBBVURJT19FTERfVkFMSUQocGlwZSk7CiAJSTkxNV9X
-UklURShIU1dfQVVEX1BJTl9FTERfQ1BfVkxELCB0bXApOwogCisJaWYgKChtb2RlLT5jbG9jayA9
-PSAyOTcwMDApIHx8CisJCShtb2RlLT5jbG9jayA9PSBESVZfUk9VTkRfVVAoMjk3MDAwICogMTAw
-MCwgMTAwMSkpKSB7CisJCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX1BJUEVfQ09OTl9TRUxfQ1RS
-TCk7CisJCWN2dF9pZHggPSAodG1wID4+IHBpcGUqOCkgJiAweGZmOworCQl0bXAgPSBJOTE1X1JF
-QUQoQVVEX1NUUl9ERVNDKGN2dF9pZHgpKTsKKwkJYmFzZV9yYXRlID0gdG1wICYgKDEgPDwgMTQp
-OworCQlpZiAoYmFzZV9yYXRlID09IDApCisJCQlyYXRlID0gNDgwMDA7CisJCWVsc2UKKwkJCXJh
-dGUgPSA0NDEwMDsKKwkJbXVsID0gKHRtcCAmICgweDcgPDwgMTEpKSArIDE7CisJCWRpdiA9ICh0
-bXAgJiAoMHg3IDw8IDgpKSArIDE7CisJCXJhdGUgPSByYXRlICogbXVsIC8gZGl2OworCX0KKwog
-CS8qIEVuYWJsZSB0aW1lc3RhbXBzICovCiAJdG1wID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZHKHBp
-cGUpKTsKIAl0bXAgJj0gfkFVRF9DT05GSUdfTl9WQUxVRV9JTkRFWDsKQEAgLTI3NCw2ICsyOTIs
-MzAgQEAgc3RhdGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJtX2Nvbm5l
-Y3RvciAqY29ubmVjdG9yLAogCQl0bXAgfD0gQVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwogCWVs
-c2UKIAkJdG1wIHw9IGF1ZGlvX2NvbmZpZ19oZG1pX3BpeGVsX2Nsb2NrKG1vZGUpOworCisJaWYg
-KChtb2RlLT5jbG9jayAhPSAyOTcwMDApICYmCisJCShtb2RlLT5jbG9jayAhPSBESVZfUk9VTkRf
-VVAoMjk3MDAwICogMTAwMCwgMTAwMSkpKSB7CisJCXRtcCAmPSB+QVVEX0NPTkZJR19OX1BST0df
-RU5BQkxFOworCX0gZWxzZSB7CisJCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKGF1ZF9uY3Rz
-KTsgaSsrKSB7CisJCQlpZiAoKHJhdGUgPT0gYXVkX25jdHNbaV0uc2FtcGxlX3JhdGUpICYmCisJ
-CQkJKG1vZGUtPmNsb2NrID09IGF1ZF9uY3RzW2ldLmNsb2NrKSkgeworCQkJCW4gPSBhdWRfbmN0
-c1tpXS5uOworCQkJCWJyZWFrOworCQkJfQorCQl9CisJCWlmIChuICE9IDApIHsKKwkJCXRtcCB8
-PSBBVURfQ09ORklHX05fUFJPR19FTkFCTEU7CisJCQluX2xvdyA9IG4gJiAweGZmZjsKKwkJCW5f
-dXAgPSAobiA+PiAxMikgJiAweGZmOworCQkJdG1wIHw9IEFVRF9DT05GSUdfTl9QUk9HX0VOQUJM
-RTsKKwkJCXRtcCAmPSB+QVVEX0NPTkZJR19VUFBFUl9OX01BU0s7CisJCQl0bXAgfD0gKG5fdXAg
-PDwgQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKTsKKwkJCXRtcCAmPSB+QVVEX0NPTkZJR19MT1dF
-Ul9OX01BU0s7CisJCQl0bXAgfD0gKG5fbG93IDw8IEFVRF9DT05GSUdfTE9XRVJfTl9TSElGVCk7
-CisJCX0KKwl9CisKIAlJOTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBpcGUpLCB0bXApOwogfQogCi0t
-IAoxLjkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-SW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
-dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+ 
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Wednesday, August 05, 2015 6:45 PM
+> To: Kailang
+> Cc: Woodrow Shen; (alsa-devel@alsa-project.org)
+> Subject: Re: Verb for 0x17 pin config
+> 
+> On Wed, 05 Aug 2015 10:13:33 +0200,
+> Kailang wrote:
+> > 
+> > 
+> > Hi Takashi,
+> > 
+> > Update patch as attach.
+> 
+> Thanks.  The addition for 0x90170110 was already done by 
+> Woodrow's patch, so only 0x90170150 is missing.
+> 
+> Below is the patch I'm going to apply on top.
+
+Many Thanks.
+
+> 
+> 
+> Takashi
+> 
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - yet another fix for Dell headset 
+> mic with ALC3266
+> 
+> It turned out that there are three variants of pin config 
+> values of NID 0x17 on Dell laptops with ALC3266 (alias of 
+> ALC298): 0x90170110, 0x90170140 and 0x90170150.  The first 
+> two have been already covered by commits 703867e2f252 and 
+> 977e627684df, so this commit adds the missing last entry.
+> 
+> While we're at it, rearrange the three entries in the order 
+> of pincfg values.
+> 
+> Reported-by: Kailang Yang <kailang@realtek.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/patch_realtek.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c 
+> b/sound/pci/hda/patch_realtek.c index 
+> 9107929dc545..88ddbb0668b7 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5574,10 +5574,13 @@ static const struct snd_hda_pin_quirk 
+> alc269_pin_fixup_tbl[] = {
+>  		{0x13, 0x90a60140}),
+>  	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", 
+> ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+>  		ALC298_STANDARD_PINS,
+> +		{0x17, 0x90170110}),
+> +	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", 
+> ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+> +		ALC298_STANDARD_PINS,
+>  		{0x17, 0x90170140}),
+>  	SND_HDA_PIN_QUIRK(0x10ec0298, 0x1028, "Dell", 
+> ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
+>  		ALC298_STANDARD_PINS,
+> -		{0x17, 0x90170110}),
+> +		{0x17, 0x90170150}),
+>  	{}
+>  };
+>  
+> --
+> 2.5.0
+> 
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
