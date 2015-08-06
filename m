@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/12] ASoC: AMD: add ACP PCM driver
-	runtime PM
-Date: Thu, 6 Aug 2015 20:26:46 +0100
-Message-ID: <20150806192646.GJ20873@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
+Date: Thu, 06 Aug 2015 21:36:02 +0200
+Message-ID: <55C3B722.1010507@metafoo.de>
 References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
- <1438871112-25946-12-git-send-email-alexander.deucher@amd.com>
+ <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2375241247996513585=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD8BA260560
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 21:26:51 +0200 (CEST)
-In-Reply-To: <1438871112-25946-12-git-send-email-alexander.deucher@amd.com>
+Received: from smtp-out-017.synserver.de (smtp-out-018.synserver.de
+ [212.40.185.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACA77260560
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 21:36:04 +0200 (CEST)
+In-Reply-To: <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, airlied@gmail.com
+To: Alex Deucher <alexdeucher@gmail.com>, broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Chunming Zhou <david1.zhou@amd.com>, Alex Deucher <alexander.deucher@amd.com>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+> @@ -134,6 +136,7 @@ config DRM_AMDGPU
+>  	select HWMON
+>  	select BACKLIGHT_CLASS_DEVICE
+>  	select INTERVAL_TREE
+> +	select DRM_AMD_GNB_BUS
 
---===============2375241247996513585==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mbtKdsM2WfxuaK8C"
-Content-Disposition: inline
+Here you select the symbol.
+
+[...]
+
+> +config DRM_AMD_GNB_BUS
+> +	tristate "AMD GNB bus - used for GNB IPs such as ACP and ISP"
+
+Here you make it user selectable. Use either or having both doesn't work too
+well.
+
+> +
+> +endmenu
+> diff --git a/drivers/gpu/drm/amd/bus/Makefile b/drivers/gpu/drm/amd/bus/Makefile
+> new file mode 100644
+> index 0000000..c41ffc9
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/bus/Makefile
+> @@ -0,0 +1,4 @@
+> +#
+> +ccflags-y := -Iinclude/drm -Idrivers/gpu/drm/amd/include/bus/
+> +
+> +obj-$(CONFIG_DRM_AMD_GNB_BUS) := amd_gnb_bus.o
+> diff --git a/drivers/gpu/drm/amd/bus/amd_gnb_bus.c b/drivers/gpu/drm/amd/bus/amd_gnb_bus.c
+> new file mode 100644
+> index 0000000..071b16c
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/bus/amd_gnb_bus.c
+> @@ -0,0 +1,266 @@
+[..]
+> +#ifdef CONFIG_PM_SLEEP
+> +static int amd_gnb_bus_legacy_suspend(struct device *dev, pm_message_t mesg)
+> +{
+> +	struct amd_gnb_bus_dev *amd_gnb_bus_dev = to_amd_gnb_bus_device(dev);
+> +	struct amd_gnb_bus_driver *driver;
+> +
+> +	if (!amd_gnb_bus_dev || !dev->driver)
+> +		return 0;
+> +	driver = to_amd_gnb_bus_driver(dev->driver);
+> +	if (!driver->suspend)
+> +		return 0;
+> +	return driver->suspend(amd_gnb_bus_dev, mesg);
+> +}
+> +
+> +static int amd_gnb_bus_legacy_resume(struct device *dev)
+> +{
+> +	struct amd_gnb_bus_dev *amd_gnb_bus_dev = to_amd_gnb_bus_device(dev);
+> +	struct amd_gnb_bus_driver *driver;
+> +
+> +	if (!amd_gnb_bus_dev || !dev->driver)
+> +		return 0;
+> +	driver = to_amd_gnb_bus_driver(dev->driver);
+> +	if (!driver->resume)
+> +		return 0;
+> +	return driver->resume(amd_gnb_bus_dev);
+> +}
+[...]
 
 
---mbtKdsM2WfxuaK8C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Preferably don't add support for legacy suspend/resume to new subsystems.
+Support for this is supposed to be removed from the kernel. Just use
+dev_pm_ops and then you can drop all of the above since the PM core does the
+right thing on its own for dev_pm_ops. No need to have support at the bus
+level if there is nothing special to do at the bus level.
 
-On Thu, Aug 06, 2015 at 10:25:12AM -0400, Alex Deucher wrote:
-> From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
->=20
-> Added runtime PM functionality to AMD I2S driver. This uses
-> functionality from ACP IP methods.
-
-Just add this (and the previous patch) in the driver.  The patches are
-so tiny it's not adding much to split them out like this and it's
-actually harder to review this one when it's split from the system
-suspend code.
-
---mbtKdsM2WfxuaK8C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVw7T1AAoJECTWi3JdVIfQPnkH/2QGJ3WOjQIH2jHoLfxd1bW2
-PwXQ4+weB+jUKZHvgRN/RuU8eUNlBCCLWIeNjhqeHnqQOgJFImyODubAQYUca9if
-uf8iSm7eEjzyxs9Y7owcbQzlJhL78BdgrO5pOPiZkA7kyMxn4kjauz29sqX6CFHE
-li1+XYil88sN4YFonQYBVTz0aUdT1IqY2dUBzadjUVPhzXrovL43N+1e408JOjZx
-d3jUf7y9ZTy0vSb8l2lVrxs3AKHnhGRn7pcXF+kXET9vzmfBwajQAgqB4c6xyjiF
-SA5LgbVrNAmvjyYB6q23R4L1TEqIMYWWbjhxchVSQ+qdYkfyIygIMsEJYqSpgpk=
-=WE4q
------END PGP SIGNATURE-----
-
---mbtKdsM2WfxuaK8C--
-
---===============2375241247996513585==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2375241247996513585==--
+[...]
