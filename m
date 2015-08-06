@@ -1,20 +1,18 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: Re: query on upstream ASoC driver split across SOUND
- and DRM subsystems
-Date: Thu, 6 Aug 2015 14:25:03 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D06E8DFC07@satlexdag05.amd.com>
-References: <8A8837939561D241AC8141C31522BA68291E33F9@SCYBEXDAG01.amd.com>
- <20150803161905.GA20873@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8741: Simplify
+	wm8741_set_dai_sysclk	implementation
+Date: Thu, 6 Aug 2015 17:23:01 +0100
+Message-ID: <20150806162301.GB25225@opensource.wolfsonmicro.com>
+References: <1438223043.17273.0.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0108.outbound.protection.outlook.com [207.46.100.108])
- by alsa0.perex.cz (Postfix) with ESMTP id 5585D2604C7
- for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 16:25:17 +0200 (CEST)
-In-Reply-To: <20150803161905.GA20873@sirena.org.uk>
-Content-Language: en-US
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C975C2604D1
+ for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2015 18:23:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1438223043.17273.0.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,43 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, "Bayyavarapu, Maruthi" <Maruthi.Bayyavarapu@amd.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Vemuri,
- Murali-krishna" <Murali-krishna.Vemuri@amd.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 30, 2015 at 10:24:03AM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
 
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Monday, August 03, 2015 12:19 PM
-> To: Bayyavarapu, Maruthi
-> Cc: tiwai@suse.de; perex@perex.cz; lgirdwood@gmail.com; alsa-
-> devel@alsa-project.org; Deucher, Alexander; Vemuri, Murali-krishna
-> Subject: Re: query on upstream ASoC driver split across SOUND and DRM
-> subsystems
-> 
-> On Fri, Jul 31, 2015 at 06:07:51PM +0000, Bayyavarapu, Maruthi wrote:
-> 
-> Please fix your mailer to word wrap within paragraphs, it makes your
-> mails much easier to read and reply to.
-> 
-> > I want to send AMD ASoC driver for review.
-> 
-> Please just send the driver for review using the standard process
-> covered in SubmittingPatches.
-> 
-> > This driver has a dependency with AMD's 'DRM' subsystem components,
-> > which are not upstreamed yet.  Please suggest, whether this ASoC
-> > driver can be upstreamed via 'DRM' tree or any alternate approach is
-> > preferred.
-> 
-> When sending the code for the two subsystems please make it clear (eg,
-> in the covering letter) that there are dependencies, it may make sense
-> to send one patch series to both ASoC and DRM.  Exactly how this is
-> handled will depend on the nature of the dependencies and the code,
-> we'll work it out as part of the review.
-
-Thanks,  I'm going to work with Maruthi to send out the complete patch set.
-
-Alex
+Thanks,
+Charles
