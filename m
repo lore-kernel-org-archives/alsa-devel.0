@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 02/13] ASoC: Intel: Skylake: Add helpers for
-	SRC and converter modules
-Date: Fri,  7 Aug 2015 23:52:18 +0530
-Message-ID: <1438971749-874-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 04/13] ASoC: Intel: Skylake: Add pipe
+	management helpers
+Date: Fri,  7 Aug 2015 23:52:20 +0530
+Message-ID: <1438971749-874-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 5559D2612DE
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D47E6261B2A
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:17 +0200 (CEST)
 In-Reply-To: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,154 +22,180 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hardik T Shah <hardik.t.shah@intel.com>
+From: Jeeja KP <jeeja.kp@intel.com>
 
-SRC and converter modules are required to do frequency and channel
-conversion in DSP. Both take base module configuration and additional SRC
-and converter parameters. The helpers here are added to calculate the
-values for these modules
+To manage DSP we need to create processing pipeline and on cleanup destroy
+them. So we add create and destroy routines for pipelines.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+The pipelines need to to be executed so we add pipeline run and stop
+routines All these send required IPCs to DSP using IPC routines added
+earlier.
+
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 64 +++++++++++++++++++++++++++++++---
- sound/soc/intel/skylake/skl-topology.h | 16 +++++++++
- 2 files changed, 76 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 126 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  10 +++
+ 2 files changed, 136 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 0ba13f1..03a80ef 100644
+index c435a51..826d4fd 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -381,6 +381,47 @@ static void skl_setup_out_format(struct skl_sst *ctx,
- }
+@@ -756,3 +756,129 @@ int skl_bind_modules(struct skl_sst *ctx,
  
- /*
-+ * DSP needs SRC module for frequency conversion, SRC takes base module
-+ * configuration and the target frequency as extra parameter passed as src
-+ * config
-+ */
-+static void skl_set_src_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_src_module_cfg *src_mconfig)
+ 	return ret;
+ }
++
++static int skl_set_pipe_state(struct skl_sst *ctx, struct skl_pipe *pipe,
++	enum skl_ipc_pipeline_state state)
 +{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
++	dev_dbg(ctx->dev, "%s: pipe_satate = %d\n", __func__, state);
 +
-+	skl_set_base_module_format(ctx, mconfig,
-+		(struct skl_base_cfg *)src_mconfig);
-+
-+	src_mconfig->src_cfg = fmt->s_freq;
++	return skl_ipc_set_pipeline_state(&ctx->ipc, pipe->ppl_id, state);
 +}
 +
 +/*
-+ * DSP needs updown module to do channel conversion. updown module take base
-+ * module configuration and channel configuration
-+ * It also take coefficients and now we have defaults applied here
++ * A pipeline is a collection of modules. Before a module in instantiated a
++ * pipeline needs to be created for it.
++ * This function creates pipeline, by sending create pipeline IPC messages
++ * to FW
 + */
-+static void skl_set_updown_mixer_format(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig,
-+			struct skl_up_down_mixer_cfg *mixer_mconfig)
++int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
 +{
-+	struct skl_module_fmt *fmt = &mconfig->out_fmt;
-+	int i = 0;
++	int ret;
 +
-+	skl_set_base_module_format(ctx,	mconfig,
-+		(struct skl_base_cfg *)mixer_mconfig);
-+	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
++	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
 +
-+	/* Select F/W default coefficient */
-+	mixer_mconfig->coeff_sel = 0x0;
++	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
++				pipe->pipe_priority, pipe->ppl_id);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to create pipeline\n");
++		return ret;
++	}
 +
-+	/* User coeff, don't care since we are selecting F/W defaults */
-+	for (i = 0; i < UP_DOWN_MIXER_MAX_COEFF; i++)
-+		mixer_mconfig->coeff[i] = 0xDEADBEEF;
++	pipe->state = SKL_PIPE_CREATED;
++
++	return 0;
 +}
 +
 +/*
-  * 'copier' is DSP internal module which copies data from Host DMA (HDA host
-  * dma) or link (hda link, SSP, PDM)
-  * Here we calculate the copier module parameters, like PCM format, output
-@@ -411,6 +452,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- 		param_size += mconfig->formats_config.caps_size;
- 		return param_size;
- 
-+	case SKL_MODULE_TYPE_SRCINT:
-+		return sizeof(struct skl_src_module_cfg);
++ * A pipeline needs to be deleted on cleanup. If a pipeline is running, then
++ * pause the pipeline first and then delete it
++ * The pipe delete is done by sending delete pipeline IPC. DSP will stop the
++ * DMA engines and releases resources
++ */
++int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++{
++	int ret;
 +
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		return sizeof(struct skl_up_down_mixer_cfg);
++	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
 +
- 	default:
- 		/*
- 		 * return only base cfg when no specific module type is
-@@ -423,11 +470,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- }
- 
- /*
-- * DSP firmware supports various modules like copier etc. These modules
-- * required various parameters to be calculated and sent for the module
-- * initialization to DSP. By default a generic module needs only base module
-- * format configuration
-+ * DSP firmware supports various modules like copier, SRC, updown etc.
-+ * These modules required various parameters to be calculated and sent for
-+ * the module initialization to DSP. By default a generic module needs only
-+ * base module format configuration
-  */
++	/* If pipe is not started, do not try to stop the pipe in FW. */
++	if (pipe->state > SKL_PIPE_STARTED) {
++		ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Failed to stop pipeline\n");
++			return ret;
++		}
 +
- static int skl_set_module_format(struct skl_sst *ctx,
- 			struct skl_module_cfg *module_config,
- 			u16 *module_config_size,
-@@ -448,6 +496,14 @@ static int skl_set_module_format(struct skl_sst *ctx,
- 		skl_set_copier_format(ctx, module_config, *param_data);
- 		break;
- 
-+	case SKL_MODULE_TYPE_SRCINT:
-+		skl_set_src_format(ctx, module_config, *param_data);
-+		break;
++		pipe->state = SKL_PIPE_PAUSED;
++	} else {
++		/* If pipe was not created in FW, do not try to delete it */
++		if (pipe->state < SKL_PIPE_CREATED)
++			return 0;
 +
-+	case SKL_MODULE_TYPE_UPDWMIX:
-+		skl_set_updown_mixer_format(ctx, module_config, *param_data);
-+		break;
++		ret = skl_ipc_delete_pipeline(&ctx->ipc, pipe->ppl_id);
++		if (ret < 0)
++			dev_err(ctx->dev, "Failed to delete pipeline\n");
++	}
 +
- 	default:
- 		skl_set_base_module_format(ctx, module_config, *param_data);
- 		break;
++	return ret;
++}
++
++/*
++ * A pipeline is also a scheduling entity in DSP which can be run, stopped
++ * For processing data the pipe need to be run by sending IPC set pipe state
++ * to DSP
++ */
++int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++{
++	int ret;
++
++	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
++
++	/* If pipe was not created in FW, do not try to pause or delete */
++	if (pipe->state < SKL_PIPE_CREATED)
++		return 0;
++
++	/* Pipe has to be paused before it is started */
++	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to pause pipe\n");
++		return ret;
++	}
++
++	pipe->state = SKL_PIPE_PAUSED;
++
++	ret = skl_set_pipe_state(ctx, pipe, PPL_RUNNING);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to start pipe\n");
++		return ret;
++	}
++
++	pipe->state = SKL_PIPE_STARTED;
++
++	return 0;
++}
++
++/*
++ * Stop the pipeline by sending set pipe state IPC
++ * DSP doesnt implement stop so we always send pause message
++ */
++int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++{
++	int ret;
++
++	dev_dbg(ctx->dev, "In %s pipe=%d\n", __func__, pipe->ppl_id);
++
++	/* If pipe was not created in FW, do not try to pause or delete */
++	if (pipe->state < SKL_PIPE_PAUSED)
++		return 0;
++
++	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
++	if (ret < 0) {
++		dev_dbg(ctx->dev, "Failed to stop pipe\n");
++		return ret;
++	}
++
++	pipe->state = SKL_PIPE_CREATED;
++
++	return 0;
++}
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 6ba137a..e4b2a33 100644
+index b7e8aa8..8c7767b 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -123,6 +123,21 @@ struct skl_cpr_cfg {
- 	struct skl_cpr_gtw_cfg gtw_cfg;
- } __packed;
- 
-+
-+struct skl_src_module_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_s_freq src_cfg;
-+} __packed;
-+
-+struct skl_up_down_mixer_cfg {
-+	struct skl_base_cfg base_cfg;
-+	enum skl_ch_cfg out_ch_cfg;
-+	/* This should be set to 1 if user coefficients are required */
-+	u32 coeff_sel;
-+	/* Pass the user coeff in this array */
-+	s32 coeff[UP_DOWN_MIXER_MAX_COEFF];
-+} __packed;
-+
- enum skl_dma_type {
- 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
- 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
-@@ -247,5 +262,6 @@ struct skl_module_cfg {
- 	struct skl_pipe *pipe;
+@@ -263,6 +263,16 @@ struct skl_module_cfg {
  	struct skl_specific_cfg formats_config;
  };
+ 
++int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
 +
- enum skl_bitdepth skl_get_bit_depth(int params);
- #endif
++int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++
++int skl_pause_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++
++int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++
++int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++
+ int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
+ 	char *param);
+ 
 -- 
 2.4.3
