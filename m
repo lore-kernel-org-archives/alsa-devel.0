@@ -1,22 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add imx7d platform
-	support
-Date: Fri, 7 Aug 2015 12:34:37 -0700
-Message-ID: <20150807193436.GA6840@Asurada>
-References: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
- <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 1/9] ASoC: Intel: Skylake: Add pipe and modules
+	handlers
+Date: Sat,  8 Aug 2015 01:06:16 +0530
+Message-ID: <1438976184-6160-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A34D2606CA
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:34:49 +0200 (CEST)
-Received: by pacrr5 with SMTP id rr5so58829186pac.3
- for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2015 12:34:48 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D1DE26149E
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:37:00 +0200 (CEST)
+In-Reply-To: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +21,314 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 07, 2015 at 02:23:52PM +0800, Zidan Wang wrote:
-> i.MX7d SoC contains SAI module, so add imx7d platform support.
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 5c737f1..390197e 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -704,6 +704,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
->  	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
->  		sai->sai_on_imx = true;
->  
-> +	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx7d-sai"))
-> +		sai->sai_on_imx = true;
+From: Jeeja KP <jeeja.kp@intel.com>
 
-What's the difference between imx6sx-sai and imx7d-sai?
+SKL driver needs to instantiate pipelines and modules in the DSP. Here we
+start adding building block for handling these. We add resource checks
+(memory/mcps) for pipelines, find the modules in a pipeline, init modules
+in a pipe and lastly bind/unbind modules in a pipe
+These will be used by pipe event handlers in subsequent patches
 
-I think you may put its compatible model in the DT instead of adding
-a copy in the driver unless the SAI on the imx7d really has something
-different.
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ sound/soc/intel/skylake/Makefile       |   3 +-
+ sound/soc/intel/skylake/skl-topology.c | 219 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  10 ++
+ sound/soc/intel/skylake/skl.h          |  11 ++
+ 4 files changed, 242 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-topology.c
 
-For example:
-	compatible = "fsl,imx6q-ssi", "fsl,imx51-ssi";
-	/* The driver only has imx51-ssi */
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index 27db221..914b6da 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -1,4 +1,5 @@
+-snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o
++snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o \
++skl-topology.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+new file mode 100644
+index 0000000..abd1c16
+--- /dev/null
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -0,0 +1,219 @@
++/*
++ *  skl-topology.c - Implements Platform component ALSA controls/widget
++ *  handlers.
++ *
++ *  Copyright (C) 2014-2015 Intel Corp
++ *  Author: Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
++
++#include <linux/slab.h>
++#include <linux/types.h>
++#include <linux/firmware.h>
++#include <sound/soc.h>
++#include <sound/soc-topology.h>
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
++#include "skl-topology.h"
++#include "skl.h"
++#include "skl-tplg-interface.h"
++
++/*
++ * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
++ * ignore. This helpers checks if the SKL driver handles this widget type
++ */
++static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w)
++{
++	switch (w->id) {
++	case snd_soc_dapm_dai_link:
++	case snd_soc_dapm_dai_in:
++	case snd_soc_dapm_aif_in:
++	case snd_soc_dapm_aif_out:
++	case snd_soc_dapm_dai_out:
++	case snd_soc_dapm_switch:
++		return false;
++	default:
++		return true;
++	}
++}
++
++static int skl_tplg_bind_unbind_pipes(struct skl_module_cfg *src_module,
++	struct skl_module_cfg *sink_module, struct skl_sst *ctx,  bool bind)
++{
++	int ret;
++
++	if (!bind) {
++		ret = skl_stop_pipe(ctx, src_module->pipe);
++		if (ret < 0)
++			return ret;
++
++		ret = skl_unbind_modules(ctx, src_module, sink_module);
++	} else {
++		ret = skl_bind_modules(ctx, src_module, sink_module);
++	}
++
++	return ret;
++}
++
++/*
++ * Each pipelines needs memory to be allocated. Check if we have free memory
++ * from available pool. Then only add this to pool
++ * This is freed when pipe is deleted
++ * Note: DSP does actual memory management we only keep track for complete
++ * pool
++ */
++static bool skl_tplg_is_pipe_mem_available(struct skl *skl,
++				struct skl_module_cfg *mconfig)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	dev_dbg(ctx->dev, "%s: module_id =%d instance=%d\n", __func__,
++		 mconfig->id.module_id, mconfig->id.instance_id);
++
++	if (skl->resource.mem + mconfig->pipe->memory_pages > skl->resource.max_mem) {
++		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
++				skl->resource.max_mem, skl->resource.mem);
++		return false;
++	}
++
++	skl->resource.mem += mconfig->pipe->memory_pages;
++	return true;
++}
++
++/*
++ * Each pipelines needs mcps to be allocated. Check if we have mcps for this
++ * pipe. This adds the mcps to driver counter
++ * This is removed on pipeline delete
++ */
++static bool skl_tplg_is_pipe_mcps_available(struct skl *skl,
++				struct skl_module_cfg *mconfig)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
++			mconfig->id.module_id, mconfig->id.instance_id);
++
++	if (skl->resource.mcps + mconfig->mcps > skl->resource.max_mcps) {
++		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
++				skl->resource.max_mcps, skl->resource.mcps);
++		return false;
++	}
++
++	skl->resource.mcps += mconfig->mcps;
++	return true;
++}
++
++/*
++ * A pipe can have multiple modules each of the will be a DAPM widget as
++ * well. While managing a pipeline we need to get the list of all the
++ * widgets in a pipelines, so this helper - skl_tplg_get_pipe_widget() helps
++ * to get the SKL type widgets in that pipeline
++ */
++static int skl_tplg_get_pipe_widget(struct device *dev,
++	struct snd_soc_dapm_widget *w, struct skl_pipe *pipe)
++{
++	struct skl_module_cfg *src_module = NULL;
++	struct snd_soc_dapm_path *p = NULL;
++	struct skl_pipe_module *p_module = NULL;
++
++	dev_dbg(dev, "In%s widget=%s\n", __func__, w->name);
++
++	p_module = devm_kzalloc(dev, sizeof(*p_module), GFP_KERNEL);
++	if (!p_module)
++		return -ENOMEM;
++
++	p_module->w = w;
++	list_add_tail(&p_module->node, &pipe->w_list);
++
++	list_for_each_entry(p, &w->sinks, list_source) {
++		if ((p->sink->priv == NULL)
++			&& (!is_skl_dsp_widget_type(w)))
++			continue;
++
++		if ((p->sink->priv != NULL) && (p->connect)
++			&& (is_skl_dsp_widget_type(p->sink))) {
++			src_module = p->sink->priv;
++			if (pipe->ppl_id == src_module->pipe->ppl_id) {
++				dev_dbg(dev, "found widget=%s\n", p->sink->name);
++				skl_tplg_get_pipe_widget(dev, p->sink, pipe);
++			}
++		}
++	}
++	return 0;
++}
++
++/*
++ * Inside a pipe instance, we can have various modules. These modules need
++ * to instantiated in DSP by invoking INIT_MODULE IPC, which is achieved by
++ * skl_init_module() routine, so invoke that for all modules in a pipeline
++ */
++static int skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
++{
++	struct skl_pipe_module *w_module;
++	struct snd_soc_dapm_widget *w;
++	struct skl_module_cfg *mconfig;
++	struct skl_sst *ctx = skl->skl_sst;
++	int ret = 0;
++
++	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
++	list_for_each_entry(w_module, &pipe->w_list, node) {
++		w = w_module->w;
++		dev_dbg(ctx->dev, "Pipe Module =%s\n", w->name);
++		mconfig = w->priv;
++
++		/* check resource available */
++		if (!skl_tplg_is_pipe_mcps_available(skl, mconfig))
++			return -ENOMEM;
++
++		ret = skl_init_module(ctx, mconfig, NULL);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++/*
++ * Once all the modules in a pipe are instantiated, they need to be
++ * connected.
++ * On removal, before deleting a pipeline the modules need to disconnected.
++ *
++ * This is achieved by binding/unbinding these modules
++ */
++static int skl_tplg_bind_unbind_pipe_modules(struct skl_sst *ctx,
++				struct skl_pipe *pipe, bool bind)
++{
++	struct skl_pipe_module *w_module;
++	struct skl_module_cfg *src_module = NULL;
++	struct skl_module_cfg *dst_module;
++	int ret = 0;
++
++	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
++	list_for_each_entry(w_module, &pipe->w_list, node) {
++		dst_module  = w_module->w->priv;
++
++		if (src_module == NULL) {
++			src_module = dst_module;
++			continue;
++		}
++
++		if (bind)
++			ret = skl_bind_modules(ctx, src_module, dst_module);
++		else
++			ret = skl_unbind_modules(ctx, src_module, dst_module);
++		if (ret < 0)
++			return ret;
++
++		src_module = dst_module;
++	}
++	return 0;
++}
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 8c7767b..73d7916 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -263,6 +263,16 @@ struct skl_module_cfg {
+ 	struct skl_specific_cfg formats_config;
+ };
+ 
++struct skl_pipeline {
++	struct skl_pipe *pipe;
++	struct list_head node;
++};
++
++struct skl_dapm_path_list {
++	struct snd_soc_dapm_path *dapm_path;
++	struct list_head node;
++};
++
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f7fdbb0..e980d78 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -48,6 +48,13 @@
+ #define AZX_REG_VS_SDXEFIFOS_XBASE	0x1094
+ #define AZX_REG_VS_SDXEFIFOS_XINTERVAL	0x20
+ 
++struct skl_dsp_resource {
++	u32 max_mcps;
++	u32 max_mem;
++	u32 mcps;
++	u32 mem;
++};
++
+ struct skl {
+ 	struct hdac_ext_bus ebus;
+ 	struct pci_dev *pci;
+@@ -57,6 +64,10 @@ struct skl {
+ 
+ 	void __iomem *nhlt; /* nhlt ptr */
+ 	struct skl_sst *skl_sst; /* sst skl ctx */
++
++	struct skl_dsp_resource resource;
++	struct list_head ppl_list;
++	struct list_head dapm_path_list;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
+-- 
+2.4.3
