@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add pipe management
-	helpers" to the asoc tree
-Date: Fri, 07 Aug 2015 14:26:25 +0100
-Message-ID: <E1ZNhfF-0003KI-6m@finisterre>
-References: <1438438244-17974-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add DSP module init and
+	binding routines" to the asoc tree
+Date: Fri, 07 Aug 2015 14:26:26 +0100
+Message-ID: <E1ZNhfG-0003Kl-FC@finisterre>
+References: <1438438244-17974-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BCAE1260418
+ by alsa0.perex.cz (Postfix) with ESMTP id C3D0626046A
  for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 15:26:37 +0200 (CEST)
-In-Reply-To: <1438438244-17974-7-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1438438244-17974-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add pipe management helpers
+   ASoC: Intel: Skylake: Add DSP module init and binding routines
 
 has been applied to the asoc tree at
 
@@ -53,178 +53,234 @@ to this mail.
 Thanks,
 Mark
 
->From c9b1e834bc8decaf979344e8121e4ad1ded8dc8a Mon Sep 17 00:00:00 2001
+>From beb73b266a75602084361c5ef0baa5bc14637f4b Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Sat, 1 Aug 2015 19:40:44 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add pipe management helpers
+Date: Sat, 1 Aug 2015 19:40:43 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add DSP module init and binding
+ routines
 
-To manage DSP we need to create processing pipeline and on cleanup destroy
-them. So we add create and destroy routines for pipelines The pipelines need
-to to be executed so we add pipeline run and stop routines
-All these send required IPCs to DSP using IPC routines added earlier
+A module needs to be instantiated and then connected with other modules. On
+cleanup we need to disconnect the module.
+This is achieved by helpers module init, bind and unbind which are added
+here
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 126 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |  10 +++
- 2 files changed, 136 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 183 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |   9 ++
+ 2 files changed, 192 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index c435a51..826d4fd 100644
+index 03a80ef..c435a51 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -756,3 +756,129 @@ int skl_bind_modules(struct skl_sst *ctx,
- 
- 	return ret;
+@@ -573,3 +573,186 @@ static void skl_free_queue(struct skl_module_pin *mpin, int q_index)
+ 		mpin[q_index].id.instance_id = 0;
+ 	}
  }
 +
-+static int skl_set_pipe_state(struct skl_sst *ctx, struct skl_pipe *pipe,
-+	enum skl_ipc_pipeline_state state)
-+{
-+	dev_dbg(ctx->dev, "%s: pipe_satate = %d\n", __func__, state);
-+
-+	return skl_ipc_set_pipeline_state(&ctx->ipc, pipe->ppl_id, state);
-+}
-+
 +/*
-+ * A pipeline is a collection of modules. Before a module in instantiated a
-+ * pipeline needs to be created for it.
-+ * This function creates pipeline, by sending create pipeline IPC messages
-+ * to FW
++ * A module needs to be instanataited in DSP. A mdoule is present in a
++ * collection of module referred as a PIPE.
++ * We first calculate the module format, based on module type and then
++ * invoke the DSP by sending IPC INIT_INSTANCE using ipc helper
 + */
-+int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe)
++int skl_init_module(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig, char *param)
 +{
++	u16 module_config_size = 0;
++	void *param_data = NULL;
 +	int ret;
++	struct skl_ipc_init_instance_msg msg;
 +
-+	dev_dbg(ctx->dev, "%s: pipe_id = %d\n", __func__, pipe->ppl_id);
++	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
++		 mconfig->id.module_id, mconfig->id.instance_id);
 +
-+	ret = skl_ipc_create_pipeline(&ctx->ipc, pipe->memory_pages,
-+				pipe->pipe_priority, pipe->ppl_id);
++	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
++		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
++				 mconfig->pipe->state, mconfig->pipe->ppl_id);
++		return -EIO;
++	}
++
++	ret = skl_set_module_format(ctx, mconfig,
++			&module_config_size, &param_data);
 +	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to create pipeline\n");
++		dev_err(ctx->dev, "Failed to set module format ret=%d\n", ret);
 +		return ret;
 +	}
 +
-+	pipe->state = SKL_PIPE_CREATED;
++	msg.module_id = mconfig->id.module_id;
++	msg.instance_id = mconfig->id.instance_id;
++	msg.ppl_instance_id = mconfig->pipe->ppl_id;
++	msg.param_data_size = module_config_size;
++	msg.core_id = mconfig->core_id;
 +
-+	return 0;
++	ret = skl_ipc_init_instance(&ctx->ipc, &msg, param_data);
++	if (ret < 0) {
++		dev_err(ctx->dev, "Failed to init instance ret=%d\n", ret);
++		kfree(param_data);
++		return ret;
++	}
++	mconfig->m_state = SKL_MODULE_INIT_DONE;
++
++	return ret;
++}
++
++static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
++	*src_module, struct skl_module_cfg *dst_module)
++{
++	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
++		__func__, src_module->id.module_id, src_module->id.instance_id);
++	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
++		 dst_module->id.module_id, dst_module->id.instance_id);
++
++	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
++		src_module->m_state, dst_module->m_state);
 +}
 +
 +/*
-+ * A pipeline needs to be deleted on cleanup. If a pipeline is running, then
-+ * pause the pipeline first and then delete it
-+ * The pipe delete is done by sending delete pipeline IPC. DSP will stop the
-+ * DMA engines and releases resources
++ * On module freeup, we need to unbind the module with modules
++ * it is already bind.
++ * Find the pin allocated and unbind then using bind_unbind IPC
 + */
-+int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++int skl_unbind_modules(struct skl_sst *ctx,
++			struct skl_module_cfg *src_mcfg,
++			struct skl_module_cfg *dst_mcfg)
 +{
 +	int ret;
++	struct skl_ipc_bind_unbind_msg msg;
++	struct skl_module_inst_id src_id = src_mcfg->id;
++	struct skl_module_inst_id dst_id = dst_mcfg->id;
++	int in_max = dst_mcfg->max_in_queue;
++	int out_max = src_mcfg->max_out_queue;
++	int src_index, dst_index;
 +
-+	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
++	skl_dump_bind_info(ctx, src_mcfg, dst_mcfg);
 +
-+	/* If pipe is not started, do not try to stop the pipe in FW. */
-+	if (pipe->state > SKL_PIPE_STARTED) {
-+		ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+		if (ret < 0) {
-+			dev_err(ctx->dev, "Failed to stop pipeline\n");
-+			return ret;
-+		}
++	if (src_mcfg->m_state != SKL_MODULE_BIND_DONE)
++		return 0;
 +
-+		pipe->state = SKL_PIPE_PAUSED;
-+	} else {
-+		/* If pipe was not created in FW, do not try to delete it */
-+		if (pipe->state < SKL_PIPE_CREATED)
-+			return 0;
++	/*
++	 * if intra module unbind, check if both modules are BIND,
++	 * then send unbind
++	 */
++	if ((src_mcfg->pipe->ppl_id != dst_mcfg->pipe->ppl_id) &&
++				dst_mcfg->m_state != SKL_MODULE_BIND_DONE)
++		return 0;
++	else if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
++				 dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
++		return 0;
 +
-+		ret = skl_ipc_delete_pipeline(&ctx->ipc, pipe->ppl_id);
-+		if (ret < 0)
-+			dev_err(ctx->dev, "Failed to delete pipeline\n");
++	/* get src queue index */
++	src_index = skl_get_queue_index(src_mcfg->m_out_pin, dst_id, out_max);
++	if (src_index < 0)
++		return -EINVAL;
++
++	msg.src_queue = src_mcfg->m_out_pin[src_index].pin_index;
++
++	/* get dst queue index */
++	dst_index  = skl_get_queue_index(dst_mcfg->m_in_pin, src_id, in_max);
++	if (dst_index < 0)
++		return -EINVAL;
++
++	msg.dst_queue = dst_mcfg->m_in_pin[dst_index].pin_index;
++
++	msg.module_id = src_mcfg->id.module_id;
++	msg.instance_id = src_mcfg->id.instance_id;
++	msg.dst_module_id = dst_mcfg->id.module_id;
++	msg.dst_instance_id = dst_mcfg->id.instance_id;
++	msg.bind = false;
++
++	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
++	if (!ret) {
++		src_mcfg->m_state = SKL_MODULE_UNINIT;
++		/* free queue only if unbind is success */
++		skl_free_queue(src_mcfg->m_out_pin, src_index);
++		skl_free_queue(dst_mcfg->m_in_pin, dst_index);
 +	}
 +
 +	return ret;
 +}
 +
 +/*
-+ * A pipeline is also a scheduling entity in DSP which can be run, stopped
-+ * For processing data the pipe need to be run by sending IPC set pipe state
-+ * to DSP
++ * Once a module is instantiated it need to be 'bind' with other modules in
++ * the pipeline. For binding we need to find the module pins which are bind
++ * together
++ * This function finds the pins and then sends bund_unbind IPC message to
++ * DSP using IPC helper
 + */
-+int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
++int skl_bind_modules(struct skl_sst *ctx,
++			struct skl_module_cfg *src_mcfg,
++			struct skl_module_cfg *dst_mcfg)
 +{
 +	int ret;
++	struct skl_ipc_bind_unbind_msg msg;
++	struct skl_module_inst_id src_id = src_mcfg->id;
++	struct skl_module_inst_id dst_id = dst_mcfg->id;
++	int in_max = dst_mcfg->max_in_queue;
++	int out_max = src_mcfg->max_out_queue;
++	int src_index, dst_index;
 +
-+	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
++	skl_dump_bind_info(ctx, src_mcfg, dst_mcfg);
 +
-+	/* If pipe was not created in FW, do not try to pause or delete */
-+	if (pipe->state < SKL_PIPE_CREATED)
++	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
++		dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
 +		return 0;
 +
-+	/* Pipe has to be paused before it is started */
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to pause pipe\n");
-+		return ret;
++	src_index = skl_alloc_queue(src_mcfg->m_out_pin, dst_id, out_max);
++	if (src_index < 0)
++		return -EINVAL;
++
++	msg.src_queue = src_mcfg->m_out_pin[src_index].pin_index;
++	dst_index = skl_alloc_queue(dst_mcfg->m_in_pin, src_id, in_max);
++	if (dst_index < 0) {
++		skl_free_queue(src_mcfg->m_out_pin, src_index);
++		return -EINVAL;
 +	}
 +
-+	pipe->state = SKL_PIPE_PAUSED;
++	msg.dst_queue = dst_mcfg->m_in_pin[dst_index].pin_index;
 +
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_RUNNING);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to start pipe\n");
-+		return ret;
++	dev_dbg(ctx->dev, "src queue = %d dst queue =%d\n",
++			 msg.src_queue, msg.dst_queue);
++
++	msg.module_id = src_mcfg->id.module_id;
++	msg.instance_id = src_mcfg->id.instance_id;
++	msg.dst_module_id = dst_mcfg->id.module_id;
++	msg.dst_instance_id = dst_mcfg->id.instance_id;
++	msg.bind = true;
++
++	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
++
++	if (!ret) {
++		src_mcfg->m_state = SKL_MODULE_BIND_DONE;
++	} else {
++		/* error case , if IPC fails, clear the queue index */
++		skl_free_queue(src_mcfg->m_out_pin, src_index);
++		skl_free_queue(dst_mcfg->m_in_pin, dst_index);
 +	}
 +
-+	pipe->state = SKL_PIPE_STARTED;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Stop the pipeline by sending set pipe state IPC
-+ * DSP doesnt implement stop so we always send pause message
-+ */
-+int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
-+{
-+	int ret;
-+
-+	dev_dbg(ctx->dev, "In %s pipe=%d\n", __func__, pipe->ppl_id);
-+
-+	/* If pipe was not created in FW, do not try to pause or delete */
-+	if (pipe->state < SKL_PIPE_PAUSED)
-+		return 0;
-+
-+	ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
-+	if (ret < 0) {
-+		dev_dbg(ctx->dev, "Failed to stop pipe\n");
-+		return ret;
-+	}
-+
-+	pipe->state = SKL_PIPE_CREATED;
-+
-+	return 0;
++	return ret;
 +}
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index b7e8aa8..8c7767b 100644
+index e4b2a33..b7e8aa8 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -263,6 +263,16 @@ struct skl_module_cfg {
+@@ -263,5 +263,14 @@ struct skl_module_cfg {
  	struct skl_specific_cfg formats_config;
  };
  
-+int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
++	char *param);
 +
-+int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_bind_modules(struct skl_sst *ctx, struct skl_module_cfg
++	*src_module, struct skl_module_cfg *dst_module);
 +
-+int skl_pause_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
++int skl_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
++	*src_module, struct skl_module_cfg *dst_module);
 +
-+int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-+
-+int skl_stop_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
-+
- int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
- 	char *param);
- 
+ enum skl_bitdepth skl_get_bit_depth(int params);
+ #endif
 -- 
 2.5.0
