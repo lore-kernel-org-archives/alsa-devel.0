@@ -1,145 +1,90 @@
-From: Felix Kuehling <felix.kuehling@amd.com>
-Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
-Date: Fri, 7 Aug 2015 16:03:08 -0400
-Message-ID: <55C50EFC.4050407@amd.com>
-References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
- <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
- <20150807102508.GL20873@sirena.org.uk>
- <CADnq5_NihZCFEaL150Kt0LWCUBp6eQzne-O0JcCFE0-vHj7ZBQ@mail.gmail.com>
- <55C4D9C3.1070504@amd.com> <20150807182401.GK10301@sirena.org.uk>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH 2/2] ASoC: max98090: Enforce correct device
+ sequencing when configuring a new
+Date: Fri, 7 Aug 2015 20:50:03 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718D699C1@ORSMSX113.amr.corp.intel.com>
+References: <1438902946-49633-1-git-send-email-yang.a.fang@intel.com>
+ <1438902946-49633-2-git-send-email-yang.a.fang@intel.com>
+ <20150807104311.GM20873@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0110095364=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150807182401.GK10301@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8E7B260713
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 22:50:06 +0200 (CEST)
+In-Reply-To: <20150807104311.GM20873@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, "Anish.Kumar@maximintegrated.com" <Anish.Kumar@maximintegrated.com>, "Jain,
+ Praveen K" <praveen.k.jain@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan,
+ Denny" <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, "Eoff,
+ Ullysses A" <ullysses.a.eoff@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0110095364==
-Content-Type: multipart/alternative;
-	boundary="------------020601090802060501080100"
-
---------------020601090802060501080100
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-
-On 15-08-07 02:24 PM, Mark Brown wrote:
-> Like I say this just sounds like exactly the sort of thing we handle
-> with an MFD, it's a very common pattern. 
-
-OK, the MFD documentation in Documentation/devicetree/bindings/mfd/
-seemed to imply a dependency on a devicetree. It took me a moment to
-realize that's just the most common scenario.
-
-In our case we don't have a devicetree, we're talking about a PC
-platform. The GPU (GNB) is a PCIe device. Does the following sound like
-proper use of the MFD framework for our case?
-
- 1. GPU driver gets initialized, detects a GPU with audio co-processor (ACP)
- 2. GPU driver registers mfd_cell for the ACP device using
-    mfd_add_hotplug_devices
-      * It's not really hot-plug, but the mem_base, irq_base, irq_domain
-        parameters don't make sense for us
- 3. Platform_data in the MFD cell contains audio driver-specific data,
-    function pointers, etc. for the audio driver to use
- 4. Audio driver binds to platform device created by
-    mfd_add_hotplug_devices based on driver name
-
-Or do we have to convert our GPU device to be an MFD cell itself, a peer
-of the ACP cell?
-
-Thanks,
-  Felix
-
--- 
-F e l i x   K u e h l i n g
-SMTS Software Development Engineer | Vertical Workstation/Compute
-1 Commerce Valley Dr. East, Markham, ON L3T 7X6 Canada
-(O) +1(289)695-1597
-   _     _   _   _____   _____
-  / \   | \ / | |  _  \  \ _  |
- / A \  | \M/ | | |D) )  /|_| |
-/_/ \_\ |_| |_| |_____/ |__/ \|   facebook.com/AMD | amd.com
 
 
---------------020601090802060501080100
-Content-Type: text/html; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-  <head>
-    <meta content=3D"text/html; charset=3Dwindows-1252"
-      http-equiv=3D"Content-Type">
-  </head>
-  <body bgcolor=3D"#FFFFFF" text=3D"#000000">
-    On 15-08-07 02:24 PM, Mark Brown wrote:<br>
-    <blockquote cite=3D"mid:20150807182401.GK10301@sirena.org.uk"
-      type=3D"cite">
-      Like I say this just sounds like exactly the sort of thing we
-      handle
-      with an MFD, it's a very common pattern.
-    </blockquote>
-    <br>
-    OK, the MFD documentation in Documentation/devicetree/bindings/mfd/
-    seemed to imply a dependency on a devicetree. It took me a moment to
-    realize that's just the most common scenario.<br>
-    <br>
-    In our case we don't have a devicetree, we're talking about a PC
-    platform. The GPU (GNB) is a PCIe device. Does the following sound
-    like proper use of the MFD framework for our case?<br>
-    <ol>
-      <li>GPU driver gets initialized, detects a GPU with audio
-        co-processor (ACP)<br>
-      </li>
-      <li>GPU driver registers mfd_cell for the ACP device using
-        mfd_add_hotplug_devices</li>
-      <ul>
-        <li>It's not really hot-plug, but the mem_base, irq_base,
-          irq_domain parameters don't make sense for us<br>
-        </li>
-      </ul>
-      <li>Platform_data in the MFD cell contains audio driver-specific
-        data, function pointers, etc. for the audio driver to use</li>
-      <li>Audio driver binds to platform device created by
-        mfd_add_hotplug_devices based on driver name<br>
-      </li>
-    </ol>
-    Or do we have to convert our GPU device to be an MFD cell itself, a
-    peer of the ACP cell?<br>
-    <br>
-    Thanks,<br>
-    =A0 Felix<br>
-    <pre class=3D"moz-signature" cols=3D"72">--=20
-F e l i x   K u e h l i n g
-SMTS Software Development Engineer | Vertical Workstation/Compute
-1 Commerce Valley Dr. East, Markham, ON L3T 7X6 Canada
-(O) +1(289)695-1597
-   _     _   _   _____   _____
-  / \   | \ / | |  _  \  \ _  |
- / A \  | \M/ | | |D) )  /|_| |
-/_/ \_\ |_| |_| |_____/ |__/ \|   facebook.com/AMD | amd.com</pre>
-  </body>
-</html>
-
---------------020601090802060501080100--
-
---===============0110095364==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
-cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
-
---===============0110095364==--
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, August 07, 2015 3:43 AM
+> To: Fang, Yang A
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> dgreid@chromium.org; Nujella, Sathyanarayana;
+> kevin.strasser@linux.intel.com; Sripathi, Srinivas; Iriawan, Denny; Jain,
+> Praveen K; Anish.Kumar@maximintegrated.com; Eoff, Ullysses A
+> Subject: Re: [PATCH 2/2] ASoC: max98090: Enforce correct device sequencing
+> when configuring a new
+> 
+> On Thu, Aug 06, 2015 at 04:15:45PM -0700, yang.a.fang@intel.com wrote:
+> 
+> > +static int max98090_shdn_event(struct snd_soc_dapm_widget *w,
+> > +				 struct snd_kcontrol *kcontrol, int event) {
+> > +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> > +	struct max98090_priv *max98090 =
+> snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	if (event & SND_SOC_DAPM_POST_PMU)
+> > +		max98090->shdn_pending = TRUE;
+> 
+> TRUE?  Please use normal C99 booleans like we normally do in the kernel.
+I will fix this
+> 
+> > +static void max98090_seq_notifier(struct snd_soc_dapm_context *dapm,
+> > +	enum snd_soc_dapm_type event, int subseq, bool power_up) {
+> > +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+> > +	struct max98090_priv *max98090 =
+> snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	if (max98090->shdn_pending && power_up) {
+> > +		snd_soc_update_bits(codec,
+> M98090_REG_DEVICE_SHUTDOWN,
+> > +				M98090_SHDNN_MASK, 0);
+> > +		msleep(40);
+> > +		snd_soc_update_bits(codec,
+> M98090_REG_DEVICE_SHUTDOWN,
+> > +				M98090_SHDNN_MASK,
+> M98090_SHDNN_MASK);
+> > +		max98090->shdn_pending = FALSE;
+> > +	}
+> > +}
+> 
+> Why did you change the API for this?  As far as I can tell power_up is
+> redundant here, we already know we're powering things up because we got
+> a _PMU event, the main effect here appears to be to just run this at the next
+> sequence point after we've powered up a widget with a shutdown event.
+> The general concept with the seq_notifier is that we record things we need
+> to do in the per-widget events and then implement them in the seq_notifier
+> and I'm not seeing anything else going on here.
+Thanks Mark.   Right , _PMU already indicates it is power_up event.. I will drop
+This API change.
