@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] topology: treat all DAPM controls types the
-	same when copying
-Date: Fri,  7 Aug 2015 16:39:15 +0100
-Message-ID: <1438961956-6239-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 0/3] topology: Add external API for building
+	topology data.
+Date: Fri,  7 Aug 2015 17:03:51 +0100
+Message-ID: <1438963434-6407-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C074C260560
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 17:39:36 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27AC8260560
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 18:03:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Currently we can build topology binary data files from topology text files.
+However it is sometimes necessary for DSP FW vendors to build topology binary
+data within a toolset and create topology binary data directly from within
+vendor tools.
 
-Copy all DAPM controls types using the same method.
+This series adds an API to the alsa-lib topology core so that vendor tools
+can create topology data directly.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- src/topology/dapm.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+Mengdong Lin (3):
+  topology: Add C templates structure for building topology from C
+    programs
+  topology: A API calls to directly build topology data from templates
+  topology: add support for adding bytes controls to widgets
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 7e26ea0..a0a8b86 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -107,8 +107,6 @@ static int tplg_parse_dapm_enums(snd_config_t *cfg, struct tplg_elem *elem)
- static int copy_dapm_control(struct tplg_elem *elem, struct tplg_elem *ref)
- {
- 	struct snd_soc_tplg_dapm_widget *widget = elem->widget;
--	struct snd_soc_tplg_mixer_control *mixer_ctrl = ref->mixer_ctrl;
--	struct snd_soc_tplg_enum_control *enum_ctrl = ref->enum_ctrl;
- 
- 	tplg_dbg("Control '%s' used by '%s'\n", ref->id, elem->id);
- 	tplg_dbg("\tparent size: %d + %d -> %d, priv size -> %d\n",
-@@ -121,13 +119,10 @@ static int copy_dapm_control(struct tplg_elem *elem, struct tplg_elem *ref)
- 
- 	elem->widget = widget;
- 
--	/* copy new widget at the end */
--	if (ref->type == OBJECT_TYPE_MIXER)
--		memcpy((void*)widget + elem->size, mixer_ctrl, ref->size);
--	else if (ref->type == OBJECT_TYPE_ENUM)
--		memcpy((void*)widget + elem->size, enum_ctrl, ref->size);
--
-+	/* append the control to the end of the widget */
-+	memcpy((void*)widget + elem->size, ref->obj, ref->size);
- 	elem->size += ref->size;
-+
- 	widget->num_kcontrols++;
- 	ref->compound_elem = 1;
- 	return 0;
+ include/sound/asoc.h      |   2 +
+ include/topology.h        | 202 ++++++++++++++++++++++++++++
+ src/topology/builder.c    |  38 +++---
+ src/topology/ctl.c        | 329 +++++++++++++++++++++++++++++++++++++++++++---
+ src/topology/dapm.c       | 226 ++++++++++++++++++++++++++-----
+ src/topology/data.c       |  10 +-
+ src/topology/elem.c       |  43 ++++--
+ src/topology/parser.c     |  63 ++++++++-
+ src/topology/pcm.c        |  34 ++---
+ src/topology/text.c       |   2 +-
+ src/topology/tplg_local.h |  33 ++---
+ 11 files changed, 849 insertions(+), 133 deletions(-)
+
 -- 
 2.1.4
