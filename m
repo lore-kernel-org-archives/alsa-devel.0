@@ -1,54 +1,94 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 30/31] sound/atom: use kmemdup rather than duplicating
- its implementation
-Date: Fri, 7 Aug 2015 13:29:35 +0100
-Message-ID: <20150807122935.GU20873@sirena.org.uk>
-References: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
- <1438934377-4922-31-git-send-email-a.hajda@samsung.com>
+Subject: Applied "ASoC: topology: use kmemdup rather than
+	duplicating its implementation" to the asoc tree
+Date: Fri, 07 Aug 2015 13:30:08 +0100
+Message-ID: <E1ZNgmm-00024L-7G@finisterre>
+References: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cKYDpu/i0M0TNss1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1438934377-4922-31-git-send-email-a.hajda@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8859C26041D
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 14:30:18 +0200 (CEST)
+In-Reply-To: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrzej Hajda <a.hajda@samsung.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---cKYDpu/i0M0TNss1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: topology: use kmemdup rather than duplicating its implementation
 
-On Fri, Aug 07, 2015 at 09:59:36AM +0200, Andrzej Hajda wrote:
-> The patch was generated using fixed coccinelle semantic patch
-> scripts/coccinelle/api/memdup.cocci [1].
->=20
-> [1]: http://permalink.gmane.org/gmane.linux.kernel/2014320
->=20
+has been applied to the asoc tree at
 
-Applied, but please make an effort to use subject lines reflecting the
-style for the subsysetem and if you're sending a patch series make sure
-that at least the cover letter goes to everyone or (if there are no
-interdependencies as is the case here) just send them individually.
-That way people can tell what's going on in terms of dependencies.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---cKYDpu/i0M0TNss1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEcBAEBCAAGBQJVxKSuAAoJECTWi3JdVIfQBSsH/0AkB0rSFHxr0M5UWOZMJcwg
-QVdCPkz0gM8YdPB8tpSYUEBm9whyvltqYyYYKjYvFL/g9duJA0kHewIvdEohsRHY
-UBl7j6ECyYAD182eJk4NHEc+50z4akKauwJe1v1rKA4K31NxvepMZWsNR1cJ1+bU
-Z/kOzqxnyR8oLD2zyqZ6JRW2Y54ORdULwe+JMLXtjDkYGq13zmH9Yu1CkTUhGuT8
-FRecwktAI61IanKu/YkDzjEWwRF4xpF3pPYGD5j1HQX44prnKRDBNGhVyZ5qSiGh
-qx0gwddNA+GuMvuCelhz40Xulwkf7pYBKiUPsaFf2TWIXQJ+dSClrettcARx6Nw=
-=7/OE
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---cKYDpu/i0M0TNss1--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 376c0afe2f0047d091956a95e382e1edd104ea72 Mon Sep 17 00:00:00 2001
+From: Andrzej Hajda <a.hajda@samsung.com>
+Date: Fri, 7 Aug 2015 09:59:37 +0200
+Subject: [PATCH] ASoC: topology: use kmemdup rather than duplicating its
+ implementation
+
+The patch was generated using fixed coccinelle semantic patch
+scripts/coccinelle/api/memdup.cocci [1].
+
+[1]: http://permalink.gmane.org/gmane.linux.kernel/2014320
+
+Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index f038c6e..8620dbf 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -832,12 +832,12 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
+ 	if (ec->items > sizeof(*ec->values))
+ 		return -EINVAL;
+ 
+-	se->dobj.control.dvalues =
+-		kmalloc(ec->items * sizeof(u32), GFP_KERNEL);
++	se->dobj.control.dvalues = kmemdup(ec->values,
++					   ec->items * sizeof(u32),
++					   GFP_KERNEL);
+ 	if (!se->dobj.control.dvalues)
+ 		return -ENOMEM;
+ 
+-	memcpy(se->dobj.control.dvalues, ec->values, ec->items * sizeof(u32));
+ 	return 0;
+ }
+ 
+-- 
+2.5.0
