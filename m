@@ -1,14 +1,14 @@
 From: Andrzej Hajda <a.hajda@samsung.com>
-Subject: [PATCH 31/31] sound/soc: use kmemdup rather than duplicating its
+Subject: [PATCH 30/31] sound/atom: use kmemdup rather than duplicating its
  implementation
-Date: Fri, 07 Aug 2015 09:59:37 +0200
-Message-ID: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
+Date: Fri, 07 Aug 2015 09:59:36 +0200
+Message-ID: <1438934377-4922-31-git-send-email-a.hajda@samsung.com>
 References: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-reply-to: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch was generated using fixed coccinelle semantic patch
@@ -18,28 +18,24 @@ scripts/coccinelle/api/memdup.cocci [1].
 
 Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 4dadb5e..a5da91b 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -831,12 +831,12 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
- 	if (ec->items > sizeof(*ec->values))
- 		return -EINVAL;
- 
--	se->dobj.control.dvalues =
--		kmalloc(ec->items * sizeof(u32), GFP_KERNEL);
-+	se->dobj.control.dvalues = kmemdup(ec->values,
-+					   ec->items * sizeof(u32),
-+					   GFP_KERNEL);
- 	if (!se->dobj.control.dvalues)
- 		return -ENOMEM;
- 
--	memcpy(se->dobj.control.dvalues, ec->values, ec->items * sizeof(u32));
- 	return 0;
- }
- 
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 5a27861..3dc7358 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -352,10 +352,9 @@ void sst_process_reply_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 	 * copy from mailbox
+ 	 **/
+ 	if (msg_high.part.large) {
+-		data = kzalloc(msg_low, GFP_KERNEL);
++		data = kmemdup((void *)msg->mailbox_data, msg_low, GFP_KERNEL);
+ 		if (!data)
+ 			return;
+-		memcpy(data, (void *) msg->mailbox_data, msg_low);
+ 		/* Copy command id so that we can use to put sst to reset */
+ 		dsp_hdr = (struct ipc_dsp_hdr *)data;
+ 		cmd_id = dsp_hdr->cmd_id;
 -- 
 1.9.1
