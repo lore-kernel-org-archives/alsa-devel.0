@@ -1,58 +1,48 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
-Date: Fri, 7 Aug 2015 10:17:36 -0400
-Message-ID: <CADnq5_NihZCFEaL150Kt0LWCUBp6eQzne-O0JcCFE0-vHj7ZBQ@mail.gmail.com>
-References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
- <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
- <20150807102508.GL20873@sirena.org.uk>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] topology: print error prefix on error message.
+Date: Fri,  7 Aug 2015 16:39:16 +0100
+Message-ID: <1438961956-6239-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1438961956-6239-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150807102508.GL20873@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>, Felix Kuehling <Felix.Kuehling@amd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE7C82604EF
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 17:39:36 +0200 (CEST)
+In-Reply-To: <1438961956-6239-1-git-send-email-liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgNywgMjAxNSBhdCA2OjI1IEFNLCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+IE9uIFRodSwgQXVnIDA2LCAyMDE1IGF0IDEwOjI1OjAyQU0gLTA0MDAs
-IEFsZXggRGV1Y2hlciB3cm90ZToKPj4gRnJvbTogQ2h1bm1pbmcgWmhvdSA8ZGF2aWQxLnpob3VA
-YW1kLmNvbT4KPj4KPj4gVGhpcyBpcyB1c2VkIGJ5IHRoZSBpbmNvbWluZyBBQ1AgZHJpdmVyLiAg
-VGhlIERNQQo+PiBlbmdpbmUgZm9yIHRoZSBpMnMgYXVkaW8gY29kZWMgaXMgcGFydCBvZiB0aGUg
-R1BVLgo+Pgo+PiBUaGlzIGV4cG9zZXMgYW4gYW1kIGduYiBidXMgZm9yIHRoZSBpMnMgY29kZWMg
-dG8KPj4gaGFuZyBvZmYgb2YuCj4KPiBDb3VsZCB5b3UgYmUgbW9yZSBzcGVjaWZpYyBhYm91dCB3
-aGF0IGFuICJhbWQgZ25kIGJ1cyIgaXMgcGxlYXNlPwoKSXQncyBidXMgdG8gaGFuZyBodyBibG9j
-a3Mgb2YgdGhlIEdQVSBvbiB0aGF0IGFyZSBjb250cm9sbGVkIGJ5IG90aGVyCnN1YnN5c3RlbXMu
-Cgo+Cj4+ICtlbnVtIGFtZF9nbmJfYnVzX2lwIHsKPj4gKyAgICAgQU1EX0dOQl9JUF9BQ1BfRE1B
-LAo+PiArICAgICBBTURfR05CX0lQX0FDUF9JMlMsCj4+ICsgICAgIEFNRF9HTkJfSVBfQUNQX1BD
-TSwKPj4gKyAgICAgQU1EX0dOQl9JUF9JU1AsCj4+ICsgICAgIEFNRF9HTkJfSVBfTlVNCj4+ICt9
-Owo+PiArCj4+ICtzdHJ1Y3QgYW1kX2duYl9idXNfZGV2IHsKPj4gKyAgICAgc3RydWN0IGRldmlj
-ZSBkZXY7IC8qIGdlbmVyaWMgZGV2aWNlIGludGVyZmFjZSAqLwo+PiArICAgICBlbnVtIGFtZF9n
-bmJfYnVzX2lwIGlwOwo+PiArICAgICAvKiBwcml2YXRlIGRhdGEgY2FuIGJlIGFjcF9oYW5kbGUv
-aXNwX2hhbmRsZSBldGMuKi8KPj4gKyAgICAgdm9pZCAqcHJpdmF0ZV9kYXRhOwo+PiArfTsKPgo+
-IExvb2tpbmcgYXQgdGhlIGNvZGUgSSdtIG5vdCBzZWVpbmcgdG9vIG11Y2ggYnVzIHNwZWNpZmlj
-IGV4Y2VwdCBmb3IgdGhlCj4gYWJvdmUgd2hpY2ggbG9va3MgbGlrZSB0aGUgc29ydCBvZiBkZXZp
-Y2Ugd2UgdXN1YWxseSByZXByZXNlbnQgYXMgYSBNRkQKPiAod2l0aCB0aGUgTUZEIHByb3ZpZGlu
-ZyByZXNvdXJjZSBkaXN0cmlidXRpb24gYW5kIGFyYml0cmF0aW9uIGJldHdlZW4KPiB2YXJpb3Vz
-IGNvbXBvbmVudCBkZXZpY2VzIHdoaWNoIGZpdCBpbnRvIHRoZSBzdWJzeXN0ZW0pLiAgV2h5IGNv
-ZGUgYSBuZXcKPiBidXMgZm9yIHRoaXMgZGV2aWNlPwoKQWRkaW5nIEZlbGl4IHdobyBkaWQgd29y
-a2VkIG9uIHRoZSBkZXNpZ24gZm9yIHRoaXMuICBUaGUgaWRlYSBpcyB0aGF0CnRoZXJlIGFyZSBo
-dyBibG9ja3Mgb24gdGhlIEdQVSB0aGF0IGFyZSBjb250cm9sbGVkIGJ5IGRyaXZlcnMgdGhhdCBh
-cmUKcGFydCBvZiBvdGhlciBzdWJzeXN0ZW1zLiAgVGhvc2UgZHJpdmVycyBuZWVkIGFjY2VzcyB0
-byByZXNvdXJjZXMKKGUuZy4sIHRoZSBNTUlPIGFwZXJ0dXJlKSBjb250cm9sbGVkIGJ5IHRoZSBH
-UFUgZHJpdmVyLiAgSSBndWVzcyB0aGlzCmlzIGEgTUZEIG9mIHNvcnRzLiAgSWYgdGhpcyBpcyBu
-b3QgdGhlIHByZWZlcnJlZCB3YXkgdG8gaGFuZGxlIHRoaXMKdHlwZSBvZiBkZXZpY2UsIHdoYXQg
-aXM/ICBDYW4geW91IHBvaW50IG1lIHRvIGFub3RoZXIgZHJpdmVyIHRoYXQKaGFuZGxlcyB0aGlz
-IGRpZmZlcmVudGx5PwoKQWxleApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Ry
-aS1kZXZlbAo=
+Let the user know it's an error.
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ src/topology/data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/topology/data.c b/src/topology/data.c
+index c768bc5..0901851 100644
+--- a/src/topology/data.c
++++ b/src/topology/data.c
+@@ -384,7 +384,7 @@ int tplg_copy_data(struct tplg_elem *elem, struct tplg_elem *ref)
+ 		break;
+ 
+ 	default:
+-		SNDERR("elem '%s': type %d private data not supported \n",
++		SNDERR("error: elem '%s': type %d private data not supported \n",
+ 			elem->id, elem->type);
+ 		return -EINVAL;
+ 	}
+-- 
+2.1.4
