@@ -1,62 +1,45 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH 3/3] ASoC: fsl_sai: Add imx6ul platform support
-Date: Fri, 7 Aug 2015 14:23:53 +0800
-Message-ID: <065a754c8d3eae30ef492bd81fcfdc96df5475b8.1438928571.git.zidan.wang@freescale.com>
-References: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0110.outbound.protection.outlook.com [157.56.111.110])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DBE62615F7
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 08:22:33 +0200 (CEST)
-In-Reply-To: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: nicoleotsuka@gmail.com
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+From: Andrzej Hajda <a.hajda@samsung.com>
+Subject: [PATCH 31/31] sound/soc: use kmemdup rather than duplicating its
+ implementation
+Date: Fri, 07 Aug 2015 09:59:37 +0200
+Message-ID: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
+References: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1438934377-4922-1-git-send-email-a.hajda@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Andrzej Hajda <a.hajda@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-i.MX6ul SoC contains SAI module, so add imx6ul platform support.
+The patch was generated using fixed coccinelle semantic patch
+scripts/coccinelle/api/memdup.cocci [1].
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+[1]: http://permalink.gmane.org/gmane.linux.kernel/2014320
+
+Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
 ---
- sound/soc/fsl/fsl_sai.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 390197e..229a517 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -701,10 +701,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 4dadb5e..a5da91b 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -831,12 +831,12 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
+ 	if (ec->items > sizeof(*ec->values))
+ 		return -EINVAL;
  
- 	sai->pdev = pdev;
+-	se->dobj.control.dvalues =
+-		kmalloc(ec->items * sizeof(u32), GFP_KERNEL);
++	se->dobj.control.dvalues = kmemdup(ec->values,
++					   ec->items * sizeof(u32),
++					   GFP_KERNEL);
+ 	if (!se->dobj.control.dvalues)
+ 		return -ENOMEM;
  
--	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
--		sai->sai_on_imx = true;
--
--	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx7d-sai"))
-+	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai") ||
-+	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx6ul-sai") ||
-+	    of_device_is_compatible(pdev->dev.of_node, "fsl,imx7d-sai"))
- 		sai->sai_on_imx = true;
+-	memcpy(se->dobj.control.dvalues, ec->values, ec->items * sizeof(u32));
+ 	return 0;
+ }
  
- 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
-@@ -805,6 +804,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- static const struct of_device_id fsl_sai_ids[] = {
- 	{ .compatible = "fsl,vf610-sai", },
- 	{ .compatible = "fsl,imx6sx-sai", },
-+	{ .compatible = "fsl,imx6ul-sai", },
- 	{ .compatible = "fsl,imx7d-sai", },
- 	{ /* sentinel */ }
- };
 -- 
 1.9.1
