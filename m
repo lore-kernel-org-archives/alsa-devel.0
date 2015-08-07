@@ -1,17 +1,17 @@
 From: Mina Almasry <almasrymina@google.com>
 Subject: External plugin question
-Date: Thu, 6 Aug 2015 16:57:12 -0700
-Message-ID: <CAHS8izPAD8F+UTvXhAtggdYyZW68k_KVhe-Jsmra4WSPaG_eVw@mail.gmail.com>
+Date: Thu, 6 Aug 2015 17:02:47 -0700
+Message-ID: <CAHS8izNcdWdki1yPOAipvnn9eC1_NkiiyPwO8h9iv7r7toCv9g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A1C9260647
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 01:57:13 +0200 (CEST)
-Received: by iodd187 with SMTP id d187so97084861iod.2
- for <alsa-devel@alsa-project.org>; Thu, 06 Aug 2015 16:57:12 -0700 (PDT)
+Received: from mail-io0-f182.google.com (mail-io0-f182.google.com
+ [209.85.223.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BABF260647
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 02:02:48 +0200 (CEST)
+Received: by iodd187 with SMTP id d187so97182963iod.2
+ for <alsa-devel@alsa-project.org>; Thu, 06 Aug 2015 17:02:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,21 +39,10 @@ does not allow me to define the writei function for my plugin, but lets me
 define the transfer function which has a very different signature than
 writei:
 
-transfer(snd_pcm_ioplug_t
-<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___i_o_plug.html#ga1038655a4ca74f3aef060282d6df739b>
-*io,
-const snd_pcm_channel_area_t
-<http://www.alsa-project.org/alsa-doc/alsa-lib/structsnd__pcm__channel__area__t.html>
- *areas, snd_pcm_uframes_t
-<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gab01fcfe9b97382a8d3f2027c664b8b8a>
- offset, snd_pcm_uframes_t
-<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gab01fcfe9b97382a8d3f2027c664b8b8a>
- size)
+transfer(snd_pcm_ioplug_t *io, const snd_pcm_channel_area_t *areas,
+snd_pcm_uframes_t offset, snd_pcm_uframes_t size)
 
 how do I extract buffer and size from these arguments? Any tips on how I
 write my plugin.
-
-(I'm aware of the multi plugin but I don't wont to use that. I want to
-write my own and introduce custom logic later.)
 
 Mina
