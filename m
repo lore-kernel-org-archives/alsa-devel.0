@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: use kmemdup rather than
+Subject: Applied "ASoC: intel: use kmemdup rather than
 	duplicating its implementation" to the asoc tree
-Date: Fri, 07 Aug 2015 13:30:08 +0100
-Message-ID: <E1ZNgmm-00024L-7G@finisterre>
-References: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
+Date: Fri, 07 Aug 2015 13:30:09 +0100
+Message-ID: <E1ZNgmn-00024p-F0@finisterre>
+References: <1438934377-4922-31-git-send-email-a.hajda@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8859C26041D
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 14:30:18 +0200 (CEST)
-In-Reply-To: <1438934377-4922-32-git-send-email-a.hajda@samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C04326046A
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 14:30:19 +0200 (CEST)
+In-Reply-To: <1438934377-4922-31-git-send-email-a.hajda@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: use kmemdup rather than duplicating its implementation
+   ASoC: intel: use kmemdup rather than duplicating its implementation
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 376c0afe2f0047d091956a95e382e1edd104ea72 Mon Sep 17 00:00:00 2001
+>From b42e093e59c320e91b9c2de73bf3f0429fc45307 Mon Sep 17 00:00:00 2001
 From: Andrzej Hajda <a.hajda@samsung.com>
-Date: Fri, 7 Aug 2015 09:59:37 +0200
-Subject: [PATCH] ASoC: topology: use kmemdup rather than duplicating its
+Date: Fri, 7 Aug 2015 09:59:36 +0200
+Subject: [PATCH] ASoC: intel: use kmemdup rather than duplicating its
  implementation
 
 The patch was generated using fixed coccinelle semantic patch
@@ -67,28 +67,24 @@ scripts/coccinelle/api/memdup.cocci [1].
 Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_ipc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f038c6e..8620dbf 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -832,12 +832,12 @@ static int soc_tplg_denum_create_values(struct soc_enum *se,
- 	if (ec->items > sizeof(*ec->values))
- 		return -EINVAL;
- 
--	se->dobj.control.dvalues =
--		kmalloc(ec->items * sizeof(u32), GFP_KERNEL);
-+	se->dobj.control.dvalues = kmemdup(ec->values,
-+					   ec->items * sizeof(u32),
-+					   GFP_KERNEL);
- 	if (!se->dobj.control.dvalues)
- 		return -ENOMEM;
- 
--	memcpy(se->dobj.control.dvalues, ec->values, ec->items * sizeof(u32));
- 	return 0;
- }
- 
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 5a27861..3dc7358 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -352,10 +352,9 @@ void sst_process_reply_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 	 * copy from mailbox
+ 	 **/
+ 	if (msg_high.part.large) {
+-		data = kzalloc(msg_low, GFP_KERNEL);
++		data = kmemdup((void *)msg->mailbox_data, msg_low, GFP_KERNEL);
+ 		if (!data)
+ 			return;
+-		memcpy(data, (void *) msg->mailbox_data, msg_low);
+ 		/* Copy command id so that we can use to put sst to reset */
+ 		dsp_hdr = (struct ipc_dsp_hdr *)data;
+ 		cmd_id = dsp_hdr->cmd_id;
 -- 
 2.5.0
