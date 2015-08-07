@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 2/9] ASoC: Intel: Skylake: Add module
-	configuration helpers
-Date: Sat,  8 Aug 2015 01:06:17 +0530
-Message-ID: <1438976184-6160-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
+	hw_params handling
+Date: Sat,  8 Aug 2015 01:06:19 +0530
+Message-ID: <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
 References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 219222606CA
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:37:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1004426149E
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:37:09 +0200 (CEST)
 In-Reply-To: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,171 +22,333 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-A module's parameter needs to be updated if there is a src or updown mixer
-or a converter in the pipeline. The helper function here updates the module
-parameter based on FE/BE hw_params if fixup/conversion is required.
+For FE and BE, the PCM parameters come from FE and BE hw_params values
+passed. For a FE we convert the FE params to DSP expected module format
+and pass to DSP. For a BE we need to find the gateway settings (i2s/PDM)
+to be applied. These are queried from NHLT table and applied.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+Further for BE based on direction the settings are applied as either source
+or destination parameters.
+
+These helpers here allow the format to be calculated and queried as per
+firmware format.
+
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 124 +++++++++++++++++++++++++++++++++
- 1 file changed, 124 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 274 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  11 ++
+ 2 files changed, 285 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index abd1c16..ede2825 100644
+index deb5c0d..7f3c54a 100644
 --- a/sound/soc/intel/skylake/skl-topology.c
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -27,6 +27,10 @@
- #include "skl.h"
- #include "skl-tplg-interface.h"
+@@ -752,3 +752,277 @@ static int skl_tplg_pga_event(struct snd_soc_dapm_widget *w,
  
-+#define SKL_CH_FIXUP_MASK		(1 << 0)
-+#define SKL_RATE_FIXUP_MASK		(1 << 1)
-+#define SKL_FMT_FIXUP_MASK		(1 << 2)
-+
- /*
-  * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
-  * ignore. This helpers checks if the SKL driver handles this widget type
-@@ -112,6 +116,124 @@ static bool skl_tplg_is_pipe_mcps_available(struct skl *skl,
- 	return true;
+ 	return 0;
  }
- 
-+static void skl_dump_mconfig(struct skl_sst *ctx,
-+					struct skl_module_cfg *mcfg)
-+{
-+	dev_dbg(ctx->dev, "Dumping config\n");
-+	dev_dbg(ctx->dev, "Input Format:\n");
-+	dev_dbg(ctx->dev, "channels = %d\n", mcfg->in_fmt.channels);
-+	dev_dbg(ctx->dev, "s_freq = %d\n", mcfg->in_fmt.s_freq);
-+	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->in_fmt.ch_cfg);
-+	dev_dbg(ctx->dev, "valid bit depth = %d\n", mcfg->in_fmt.valid_bit_depth);
-+	dev_dbg(ctx->dev, "Output Format:\n");
-+	dev_dbg(ctx->dev, "channels = %d\n", mcfg->out_fmt.channels);
-+	dev_dbg(ctx->dev, "s_freq = %d\n", mcfg->out_fmt.s_freq);
-+	dev_dbg(ctx->dev, "valid bit depth = %d\n", mcfg->out_fmt.valid_bit_depth);
-+	dev_dbg(ctx->dev, "ch_cfg = %d\n", mcfg->out_fmt.ch_cfg);
-+}
 +
-+static void skl_tplg_update_params(struct skl_module_fmt *fmt,
-+			struct skl_pipe_params *params, int fixup)
++/*
++ * The FE params are passed by hw_params of the DAI.
++ * On hw_params, the params are stored in Gateway module of the FE and we
++ * need to calculate the format in DSP module configuration, that conversion
++ * is done here
++ */
++static void skl_tplg_update_pipe_params(struct device *dev,
++		struct skl_module_cfg *mconfig,
++		struct skl_pipe_params *params)
 +{
-+	if (fixup & SKL_RATE_FIXUP_MASK)
-+		fmt->s_freq = params->s_freq;
-+	if (fixup & SKL_CH_FIXUP_MASK)
-+		fmt->channels = params->ch;
-+	if (fixup & SKL_FMT_FIXUP_MASK)
-+		fmt->valid_bit_depth = params->s_fmt;
++	struct skl_pipe *pipe = mconfig->pipe;
++	struct skl_module_fmt *format = NULL;
++
++	memcpy(pipe->p_params, params, sizeof(*params));
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		format = &mconfig->in_fmt;
++	else
++		format = &mconfig->out_fmt;
++
++	/* set the hw_params */
++	format->s_freq = params->s_freq;
++	format->channels = params->ch;
++	format->valid_bit_depth = skl_get_bit_depth(params->s_fmt);
++
++	/*
++	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit container so
++	 * update bit depth accordingly
++	 */
++	if (format->valid_bit_depth == SKL_DEPTH_16BIT)
++		format->bit_depth = format->valid_bit_depth;
++	else if (format->valid_bit_depth == SKL_DEPTH_24BIT)
++		format->bit_depth = SKL_DEPTH_32BIT;
++
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		mconfig->ibs = (format->s_freq / 1000) *
++				(format->channels) *
++				(format->bit_depth >> 3);
++	} else {
++		mconfig->obs = (format->s_freq / 1000) *
++				(format->channels) *
++				(format->bit_depth >> 3);
++	}
 +}
 +
 +/*
-+ * A pipeline may have modules which impact the pcm parameters, like SRC,
-+ * channel converter, format converter.
-+ * We need to calculate the output params by applying the 'fixup'
-+ * Topology will tell driver which type of fixup is to be applied by
-+ * supplying the fixup mask, so based on that we calculate the output
-+ *
-+ * Now In FE the pcm hw_params is source/target format. Same is applicable
-+ * for BE with its hw_params invoked.
-+ * here based on FE, BE pipeline and direction we calculate the input and
-+ * outfix and then apply that for a module
++ * Query the module config for the FE DAI
++ * This is used to find the hw_params set for that DAI and apply to FE
++ * pipeline
 + */
-+static void skl_tplg_update_params_fixup(struct skl_module_cfg *m_cfg,
-+		struct skl_pipe_params *params, bool is_fe) { int in_fixup,
-+	out_fixup; struct skl_module_fmt *in_fmt, *out_fmt;
++static struct skl_module_cfg *
++skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
++{
++	struct snd_soc_dapm_widget *w;
++	struct snd_soc_dapm_path *p = NULL;
 +
-+	in_fmt = &m_cfg->in_fmt;
-+	out_fmt = &m_cfg->out_fmt;
++	dev_dbg(dai->dev, "%s: enter, dai-name=%s\n", __func__, dai->name);
 +
-+	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (is_fe) {
-+			in_fixup = m_cfg->params_fixup;
-+			out_fixup = (~m_cfg->converter) & m_cfg->params_fixup;
-+		} else {
-+			out_fixup = m_cfg->params_fixup;
-+			in_fixup = (~m_cfg->converter) & m_cfg->params_fixup;
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		w = dai->playback_widget;
++		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
++		list_for_each_entry(p, &w->sinks, list_source) {
++			if (p->connect && p->sink->power &&
++					is_skl_dsp_widget_type(p->sink))
++				continue;
++
++			if (p->sink->priv) {
++				dev_dbg(dai->dev, "set params for %s\n", p->sink->name);
++				return p->sink->priv;
++			}
 +		}
 +	} else {
-+		if (is_fe) {
-+			out_fixup = m_cfg->params_fixup;
-+			in_fixup = (~m_cfg->converter) & m_cfg->params_fixup;
++		w = dai->capture_widget;
++		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
++		list_for_each_entry(p, &w->sources, list_sink) {
++			if (p->connect && p->source->power &&
++					is_skl_dsp_widget_type(p->source))
++				continue;
++
++			if (p->source->priv) {
++				dev_dbg(dai->dev, "set params for %s\n", p->source->name);
++				return p->source->priv;
++			}
++		}
++	}
++	return NULL;
++}
++
++int skl_tplg_fe_update_params(struct snd_soc_dai *dai,
++			struct skl_pipe_params *params)
++{
++	struct skl_module_cfg *m_cfg;
++
++	m_cfg = skl_tplg_fe_get_cpr_module(dai, params->stream);
++
++	if (m_cfg)
++		skl_tplg_update_pipe_params(dai->dev, m_cfg, params);
++
++	return 0;
++}
++
++static u8 skl_tplg_be_link_type(int dev_type)
++{
++	int ret;
++
++	switch (dev_type) {
++	case SKL_DEVICE_BT:
++		ret = NHLT_LINK_SSP;
++		break;
++
++	case SKL_DEVICE_DMIC:
++		ret = NHLT_LINK_DMIC;
++		break;
++
++	case SKL_DEVICE_I2S:
++		ret = NHLT_LINK_SSP;
++		break;
++
++	case SKL_DEVICE_HDALINK:
++		ret = NHLT_LINK_HDA;
++		break;
++
++	default:
++		ret = NHLT_LINK_INVALID;
++		break;
++	}
++
++	return ret;
++}
++
++/*
++ * Fill the BE gateway parameters
++ * The BE gateway expects a blob of parameters which are kept in the ACPI
++ * NHLT blob, so query the blob for interface type (i2s/pdm) and instance.
++ * The port cna have multiple settings so pick based on the PCM
++ * parameters
++ */
++static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
++		struct skl_module_cfg *mconfig, struct skl_pipe_params *params)
++{
++	struct skl_pipe *pipe = mconfig->pipe;
++	struct nhlt_specific_cfg *cfg;
++	struct skl *skl = get_skl_ctx(dai->dev);
++	int link_type = skl_tplg_be_link_type(mconfig->dev_type);
++
++	memcpy(pipe->p_params, params, sizeof(*params));
++
++	/* update the blob based on virtual bus_id*/
++	cfg = (struct nhlt_specific_cfg *) skl_get_ep_blob(skl,
++			mconfig->vbus_id, link_type, params->s_fmt,
++			params->ch, params->s_freq, params->stream);
++
++	if (cfg) {
++		mconfig->formats_config.caps_size = cfg->size;
++		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
++	} else {
++		dev_dbg(dai->dev, "Blob is NULL");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
++					struct snd_soc_dapm_widget *w,
++					struct skl_pipe_params *params)
++{
++	if (!w->power) {
++		dev_dbg(dai->dev, "set params for widget=%s\n", w->name);
++		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
++	}
++
++	return -EINVAL;
++}
++
++static int skl_tplg_be_set_src_pipe_params(struct snd_soc_dai *dai,
++						struct snd_soc_dapm_widget *w,
++						struct skl_pipe_params *params)
++{
++	struct snd_soc_dapm_path *p;
++	int ret = 0;
++
++	dev_dbg(dai->dev, "In %swidget name=%s\n", __func__, w->name);
++
++	list_for_each_entry(p, &w->sources, list_sink) {
++		if (p->connect && is_skl_dsp_widget_type(p->source) &&
++						 p->source->priv) {
++			ret = skl_tplg_be_set_params(dai, p->source, params);
++
++			if (ret < 0)
++				return ret;
 +		} else {
-+			in_fixup = m_cfg->params_fixup;
-+			out_fixup = (~m_cfg->converter) & m_cfg->params_fixup;
++			ret = skl_tplg_be_set_src_pipe_params(dai, p->source,
++									 params);
 +		}
 +	}
 +
-+	skl_tplg_update_params(in_fmt, params, in_fixup);
-+	skl_tplg_update_params(out_fmt, params, out_fixup);
++	return ret;
++}
++
++static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
++	struct snd_soc_dapm_widget *w, struct skl_pipe_params *params)
++{
++	struct snd_soc_dapm_path *p = NULL;
++	int ret = 0;
++
++	dev_dbg(dai->dev, "widget name=%s\n", w->name);
++
++	list_for_each_entry(p, &w->sinks, list_source) {
++		if (p->connect && is_skl_dsp_widget_type(p->sink) &&
++						p->sink->priv) {
++			ret = skl_tplg_be_set_params(dai, p->sink, params);
++
++			if (ret < 0)
++				return ret;
++		} else {
++			ret = skl_tplg_be_set_sink_pipe_params(dai, p->sink,
++									 params);
++		}
++	}
++
++	return ret;
 +}
 +
 +/*
-+ * A module needs input and output buffers, which are dependent upon pcm
-+ * params, so once we have calculate params, we need buffer calculation as
-+ * well.
++ * BE hw_params can be a source parameters (capture) or sink parameters
++ * (playback). Based on sink and source we need to either find the source
++ * list or the sink list and set the pipeline parameters
 + */
-+static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
-+				struct skl_module_cfg *mcfg)
++int skl_tplg_be_update_params(struct snd_soc_dai *dai,
++				struct skl_pipe_params *params)
 +{
-+	int multiplier = 1;
++	struct snd_soc_dapm_widget *w;
 +
-+	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
-+		multiplier = 5;
++	dev_dbg(dai->dev, "In %s dai-name=%s\n", __func__, dai->name);
 +
-+	mcfg->ibs = (mcfg->in_fmt.s_freq / 1000) *
-+				(mcfg->in_fmt.channels) *
-+				(mcfg->in_fmt.bit_depth >> 3) *
-+				multiplier;
++	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		w = dai->playback_widget;
 +
-+	mcfg->obs = (mcfg->out_fmt.s_freq / 1000) *
-+				(mcfg->out_fmt.channels) *
-+				(mcfg->out_fmt.bit_depth >> 3) *
-+				multiplier;
++		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
++		return skl_tplg_be_set_src_pipe_params(dai, w, params);
++	}
++
++	if (params->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		w = dai->capture_widget;
++
++		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
++		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
++	}
++
++	return 0;
 +}
 +
-+static void skl_tplg_update_module_params(struct snd_soc_dapm_widget *w,
-+							struct skl_sst *ctx)
++/* Run/Stop the FE pipeline */
++int skl_tplg_set_fe_pipeline_state(struct snd_soc_dai *dai, bool start,
++								int stream)
 +{
-+	struct skl_module_cfg *m_cfg = w->priv;
-+	struct skl_pipe_params *params = m_cfg->pipe->p_params;
-+	int p_conn_type = m_cfg->pipe->conn_type;
-+	bool is_fe;
++	struct skl *skl = get_skl_ctx(dai->dev);
++	struct skl_sst *ctx = skl->skl_sst;
++	struct skl_module_cfg *mconfig = NULL;
 +
-+	if (!m_cfg->params_fixup)
-+		return;
++	dev_dbg(dai->dev, "%s: enter, dai-name=%s dir=%d\n", __func__, dai->name, stream);
 +
-+	dev_dbg(ctx->dev, "Mconfig for widget=%s BEFORE updation\n", w->name);
-+	skl_dump_mconfig(ctx, m_cfg);
++	mconfig = skl_tplg_fe_get_cpr_module(dai, stream);
++	if (mconfig != NULL) {
++		if (start)
++			return skl_run_pipe(ctx, mconfig->pipe);
++		else
++			return skl_stop_pipe(ctx, mconfig->pipe);
++	}
 +
-+	if (p_conn_type == SKL_PIPE_CONN_TYPE_FE)
-+		is_fe = true;
-+	else
-+		is_fe = false;
-+
-+	skl_tplg_update_params_fixup(m_cfg, params, is_fe);
-+	skl_tplg_update_buffer_size(ctx, m_cfg);
-+
-+	dev_dbg(ctx->dev, "Mconfig for widget=%s AFTER updation\n", w->name);
-+	skl_dump_mconfig(ctx, m_cfg);
++	return 0;
 +}
-+
- /*
-  * A pipe can have multiple modules each of the will be a DAPM widget as
-  * well. While managing a pipeline we need to get the list of all the
-@@ -174,6 +296,8 @@ static int skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		if (!skl_tplg_is_pipe_mcps_available(skl, mconfig))
- 			return -ENOMEM;
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 73d7916..94c721e 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -273,6 +273,17 @@ struct skl_dapm_path_list {
+ 	struct list_head node;
+ };
  
-+		/* apply fix/conversion to module params based on FE/BE params*/
-+		skl_tplg_update_module_params(w, ctx);
- 		ret = skl_init_module(ctx, mconfig, NULL);
- 		if (ret < 0)
- 			return ret;
++int skl_tplg_fe_update_params(struct snd_soc_dai *dai,
++	struct skl_pipe_params *params);
++int skl_tplg_be_update_params(struct snd_soc_dai *dai,
++	struct skl_pipe_params *params);
++void skl_tplg_set_be_dmic_config(struct snd_soc_dai *dai,
++	struct skl_pipe_params *params, int stream);
++int skl_tplg_init(struct snd_soc_platform *platform,
++				struct hdac_ext_bus *ebus);
++int skl_tplg_set_fe_pipeline_state(struct snd_soc_dai *dai,
++			bool start, int stream);
++
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
 -- 
 2.4.3
