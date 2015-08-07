@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 03/13] ASoC: Intel: Skylake: Add DSP module
-	init and binding routines
-Date: Fri,  7 Aug 2015 23:52:19 +0530
-Message-ID: <1438971749-874-4-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 02/13] ASoC: Intel: Skylake: Add helpers for
+	SRC and converter modules
+Date: Fri,  7 Aug 2015 23:52:18 +0530
+Message-ID: <1438971749-874-3-git-send-email-subhransu.s.prusty@intel.com>
 References: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 06D4F2606D1
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:14 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5559D2612DE
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:12 +0200 (CEST)
 In-Reply-To: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,231 +22,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: Hardik T Shah <hardik.t.shah@intel.com>
 
-A module needs to be instantiated and then connected with other modules. On
-cleanup we need to disconnect the module.
-This is achieved by helpers module init, bind and unbind which are added
-here
+SRC and converter modules are required to do frequency and channel
+conversion in DSP. Both take base module configuration and additional SRC
+and converter parameters. The helpers here are added to calculate the
+values for these modules
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 183 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h |   9 ++
- 2 files changed, 192 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 64 +++++++++++++++++++++++++++++++---
+ sound/soc/intel/skylake/skl-topology.h | 16 +++++++++
+ 2 files changed, 76 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 03a80ef..c435a51 100644
+index 0ba13f1..03a80ef 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -573,3 +573,186 @@ static void skl_free_queue(struct skl_module_pin *mpin, int q_index)
- 		mpin[q_index].id.instance_id = 0;
- 	}
+@@ -381,6 +381,47 @@ static void skl_setup_out_format(struct skl_sst *ctx,
  }
-+
-+/*
-+ * A module needs to be instanataited in DSP. A mdoule is present in a
-+ * collection of module referred as a PIPE.
-+ * We first calculate the module format, based on module type and then
-+ * invoke the DSP by sending IPC INIT_INSTANCE using ipc helper
+ 
+ /*
++ * DSP needs SRC module for frequency conversion, SRC takes base module
++ * configuration and the target frequency as extra parameter passed as src
++ * config
 + */
-+int skl_init_module(struct skl_sst *ctx,
-+			struct skl_module_cfg *mconfig, char *param)
++static void skl_set_src_format(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig,
++			struct skl_src_module_cfg *src_mconfig)
 +{
-+	u16 module_config_size = 0;
-+	void *param_data = NULL;
-+	int ret;
-+	struct skl_ipc_init_instance_msg msg;
++	struct skl_module_fmt *fmt = &mconfig->out_fmt;
 +
-+	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
-+		 mconfig->id.module_id, mconfig->id.instance_id);
++	skl_set_base_module_format(ctx, mconfig,
++		(struct skl_base_cfg *)src_mconfig);
 +
-+	if (mconfig->pipe->state != SKL_PIPE_CREATED) {
-+		dev_err(ctx->dev, "Pipe not created state= %d pipe_id= %d\n",
-+				 mconfig->pipe->state, mconfig->pipe->ppl_id);
-+		return -EIO;
-+	}
-+
-+	ret = skl_set_module_format(ctx, mconfig,
-+			&module_config_size, &param_data);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to set module format ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	msg.module_id = mconfig->id.module_id;
-+	msg.instance_id = mconfig->id.instance_id;
-+	msg.ppl_instance_id = mconfig->pipe->ppl_id;
-+	msg.param_data_size = module_config_size;
-+	msg.core_id = mconfig->core_id;
-+
-+	ret = skl_ipc_init_instance(&ctx->ipc, &msg, param_data);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to init instance ret=%d\n", ret);
-+		kfree(param_data);
-+		return ret;
-+	}
-+	mconfig->m_state = SKL_MODULE_INIT_DONE;
-+
-+	return ret;
-+}
-+
-+static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
-+	*src_module, struct skl_module_cfg *dst_module)
-+{
-+	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
-+		__func__, src_module->id.module_id, src_module->id.instance_id);
-+	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
-+		 dst_module->id.module_id, dst_module->id.instance_id);
-+
-+	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
-+		src_module->m_state, dst_module->m_state);
++	src_mconfig->src_cfg = fmt->s_freq;
 +}
 +
 +/*
-+ * On module freeup, we need to unbind the module with modules
-+ * it is already bind.
-+ * Find the pin allocated and unbind then using bind_unbind IPC
++ * DSP needs updown module to do channel conversion. updown module take base
++ * module configuration and channel configuration
++ * It also take coefficients and now we have defaults applied here
 + */
-+int skl_unbind_modules(struct skl_sst *ctx,
-+			struct skl_module_cfg *src_mcfg,
-+			struct skl_module_cfg *dst_mcfg)
++static void skl_set_updown_mixer_format(struct skl_sst *ctx,
++			struct skl_module_cfg *mconfig,
++			struct skl_up_down_mixer_cfg *mixer_mconfig)
 +{
-+	int ret;
-+	struct skl_ipc_bind_unbind_msg msg;
-+	struct skl_module_inst_id src_id = src_mcfg->id;
-+	struct skl_module_inst_id dst_id = dst_mcfg->id;
-+	int in_max = dst_mcfg->max_in_queue;
-+	int out_max = src_mcfg->max_out_queue;
-+	int src_index, dst_index;
++	struct skl_module_fmt *fmt = &mconfig->out_fmt;
++	int i = 0;
 +
-+	skl_dump_bind_info(ctx, src_mcfg, dst_mcfg);
++	skl_set_base_module_format(ctx,	mconfig,
++		(struct skl_base_cfg *)mixer_mconfig);
++	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
 +
-+	if (src_mcfg->m_state != SKL_MODULE_BIND_DONE)
-+		return 0;
++	/* Select F/W default coefficient */
++	mixer_mconfig->coeff_sel = 0x0;
 +
-+	/*
-+	 * if intra module unbind, check if both modules are BIND,
-+	 * then send unbind
-+	 */
-+	if ((src_mcfg->pipe->ppl_id != dst_mcfg->pipe->ppl_id) &&
-+				dst_mcfg->m_state != SKL_MODULE_BIND_DONE)
-+		return 0;
-+	else if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
-+				 dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
-+		return 0;
-+
-+	/* get src queue index */
-+	src_index = skl_get_queue_index(src_mcfg->m_out_pin, dst_id, out_max);
-+	if (src_index < 0)
-+		return -EINVAL;
-+
-+	msg.src_queue = src_mcfg->m_out_pin[src_index].pin_index;
-+
-+	/* get dst queue index */
-+	dst_index  = skl_get_queue_index(dst_mcfg->m_in_pin, src_id, in_max);
-+	if (dst_index < 0)
-+		return -EINVAL;
-+
-+	msg.dst_queue = dst_mcfg->m_in_pin[dst_index].pin_index;
-+
-+	msg.module_id = src_mcfg->id.module_id;
-+	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.dst_module_id = dst_mcfg->id.module_id;
-+	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.bind = false;
-+
-+	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-+	if (!ret) {
-+		src_mcfg->m_state = SKL_MODULE_UNINIT;
-+		/* free queue only if unbind is success */
-+		skl_free_queue(src_mcfg->m_out_pin, src_index);
-+		skl_free_queue(dst_mcfg->m_in_pin, dst_index);
-+	}
-+
-+	return ret;
++	/* User coeff, don't care since we are selecting F/W defaults */
++	for (i = 0; i < UP_DOWN_MIXER_MAX_COEFF; i++)
++		mixer_mconfig->coeff[i] = 0xDEADBEEF;
 +}
 +
 +/*
-+ * Once a module is instantiated it need to be 'bind' with other modules in
-+ * the pipeline. For binding we need to find the module pins which are bind
-+ * together
-+ * This function finds the pins and then sends bund_unbind IPC message to
-+ * DSP using IPC helper
-+ */
-+int skl_bind_modules(struct skl_sst *ctx,
-+			struct skl_module_cfg *src_mcfg,
-+			struct skl_module_cfg *dst_mcfg)
-+{
-+	int ret;
-+	struct skl_ipc_bind_unbind_msg msg;
-+	struct skl_module_inst_id src_id = src_mcfg->id;
-+	struct skl_module_inst_id dst_id = dst_mcfg->id;
-+	int in_max = dst_mcfg->max_in_queue;
-+	int out_max = src_mcfg->max_out_queue;
-+	int src_index, dst_index;
+  * 'copier' is DSP internal module which copies data from Host DMA (HDA host
+  * dma) or link (hda link, SSP, PDM)
+  * Here we calculate the copier module parameters, like PCM format, output
+@@ -411,6 +452,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 		param_size += mconfig->formats_config.caps_size;
+ 		return param_size;
+ 
++	case SKL_MODULE_TYPE_SRCINT:
++		return sizeof(struct skl_src_module_cfg);
 +
-+	skl_dump_bind_info(ctx, src_mcfg, dst_mcfg);
++	case SKL_MODULE_TYPE_UPDWMIX:
++		return sizeof(struct skl_up_down_mixer_cfg);
 +
-+	if (src_mcfg->m_state < SKL_MODULE_INIT_DONE &&
-+		dst_mcfg->m_state < SKL_MODULE_INIT_DONE)
-+		return 0;
+ 	default:
+ 		/*
+ 		 * return only base cfg when no specific module type is
+@@ -423,11 +470,12 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ }
+ 
+ /*
+- * DSP firmware supports various modules like copier etc. These modules
+- * required various parameters to be calculated and sent for the module
+- * initialization to DSP. By default a generic module needs only base module
+- * format configuration
++ * DSP firmware supports various modules like copier, SRC, updown etc.
++ * These modules required various parameters to be calculated and sent for
++ * the module initialization to DSP. By default a generic module needs only
++ * base module format configuration
+  */
 +
-+	src_index = skl_alloc_queue(src_mcfg->m_out_pin, dst_id, out_max);
-+	if (src_index < 0)
-+		return -EINVAL;
+ static int skl_set_module_format(struct skl_sst *ctx,
+ 			struct skl_module_cfg *module_config,
+ 			u16 *module_config_size,
+@@ -448,6 +496,14 @@ static int skl_set_module_format(struct skl_sst *ctx,
+ 		skl_set_copier_format(ctx, module_config, *param_data);
+ 		break;
+ 
++	case SKL_MODULE_TYPE_SRCINT:
++		skl_set_src_format(ctx, module_config, *param_data);
++		break;
 +
-+	msg.src_queue = src_mcfg->m_out_pin[src_index].pin_index;
-+	dst_index = skl_alloc_queue(dst_mcfg->m_in_pin, src_id, in_max);
-+	if (dst_index < 0) {
-+		skl_free_queue(src_mcfg->m_out_pin, src_index);
-+		return -EINVAL;
-+	}
++	case SKL_MODULE_TYPE_UPDWMIX:
++		skl_set_updown_mixer_format(ctx, module_config, *param_data);
++		break;
 +
-+	msg.dst_queue = dst_mcfg->m_in_pin[dst_index].pin_index;
-+
-+	dev_dbg(ctx->dev, "src queue = %d dst queue =%d\n",
-+			 msg.src_queue, msg.dst_queue);
-+
-+	msg.module_id = src_mcfg->id.module_id;
-+	msg.instance_id = src_mcfg->id.instance_id;
-+	msg.dst_module_id = dst_mcfg->id.module_id;
-+	msg.dst_instance_id = dst_mcfg->id.instance_id;
-+	msg.bind = true;
-+
-+	ret = skl_ipc_bind_unbind(&ctx->ipc, &msg);
-+
-+	if (!ret) {
-+		src_mcfg->m_state = SKL_MODULE_BIND_DONE;
-+	} else {
-+		/* error case , if IPC fails, clear the queue index */
-+		skl_free_queue(src_mcfg->m_out_pin, src_index);
-+		skl_free_queue(dst_mcfg->m_in_pin, dst_index);
-+	}
-+
-+	return ret;
-+}
+ 	default:
+ 		skl_set_base_module_format(ctx, module_config, *param_data);
+ 		break;
 diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index e4b2a33..b7e8aa8 100644
+index 6ba137a..e4b2a33 100644
 --- a/sound/soc/intel/skylake/skl-topology.h
 +++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -263,5 +263,14 @@ struct skl_module_cfg {
+@@ -123,6 +123,21 @@ struct skl_cpr_cfg {
+ 	struct skl_cpr_gtw_cfg gtw_cfg;
+ } __packed;
+ 
++
++struct skl_src_module_cfg {
++	struct skl_base_cfg base_cfg;
++	enum skl_s_freq src_cfg;
++} __packed;
++
++struct skl_up_down_mixer_cfg {
++	struct skl_base_cfg base_cfg;
++	enum skl_ch_cfg out_ch_cfg;
++	/* This should be set to 1 if user coefficients are required */
++	u32 coeff_sel;
++	/* Pass the user coeff in this array */
++	s32 coeff[UP_DOWN_MIXER_MAX_COEFF];
++} __packed;
++
+ enum skl_dma_type {
+ 	SKL_DMA_HDA_HOST_OUTPUT_CLASS = 0,
+ 	SKL_DMA_HDA_HOST_INPUT_CLASS = 1,
+@@ -247,5 +262,6 @@ struct skl_module_cfg {
+ 	struct skl_pipe *pipe;
  	struct skl_specific_cfg formats_config;
  };
- 
-+int skl_init_module(struct skl_sst *ctx, struct skl_module_cfg *module_config,
-+	char *param);
-+
-+int skl_bind_modules(struct skl_sst *ctx, struct skl_module_cfg
-+	*src_module, struct skl_module_cfg *dst_module);
-+
-+int skl_unbind_modules(struct skl_sst *ctx, struct skl_module_cfg
-+	*src_module, struct skl_module_cfg *dst_module);
 +
  enum skl_bitdepth skl_get_bit_depth(int params);
  #endif
