@@ -1,57 +1,69 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 1/4] ASoC: dt-bindings: add rockchip tranceiver
- bindings
-Date: Fri, 7 Aug 2015 14:05:40 +0100
-Message-ID: <20150807130540.GX20873@sirena.org.uk>
-References: <1438947854-3743-1-git-send-email-sjoerd.simons@collabora.co.uk>
- <1438947854-3743-2-git-send-email-sjoerd.simons@collabora.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] ASoc: rockchip: Add rockchip SPDIF transceiver driver
+Date: Fri, 7 Aug 2015 14:13:59 +0100
+Message-ID: <20150807131359.GA8892@sirena.org.uk>
+References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk>
+ <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
+ <1438159908.5106.32.camel@tiscali.nl>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0X5fYEMtRnv/h11Z"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1438947854-3743-2-git-send-email-sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+In-Reply-To: <1438159908.5106.32.camel@tiscali.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---0X5fYEMtRnv/h11Z
+--zhXaljGHf11kAtnf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 07, 2015 at 01:44:11PM +0200, Sjoerd Simons wrote:
+On Wed, Jul 29, 2015 at 10:51:48AM +0200, Paul Bolle wrote:
 
-> +- compatible: should be one of the following:
-> +   - "rockchip,rk3066-spdif": for rk3066
-> +   - "rockchip,rk3188-spdif", "rockchip,rk3066-spdif": for rk3188
-> +   - "rockchip,rk3288-spdif", "rockchip,rk3066-spdif": for rk3288
+> > +		.name =3D DRV_NAME,
+> > +		.of_match_table =3D of_match_ptr(rockchip_spdif_match),
+> > +		.pm =3D &rockchip_spdif_pm_ops,
+> > +	},
+> > +};
+> > +module_platform_driver(rockchip_spdif_driver);
 
-The binding claims that we support these three compatibles but the
-driver only supports rockchip,rk3066-spdif.  It's better to list all the
-compatibles in the binding even if they all boil down to the same thing
-since it's less error prone when we do start adding device specific
-code - people are less likely to forget to handle some variant properly.
+> > +MODULE_ALIAS("platform:" DRV_NAME);
 
---0X5fYEMtRnv/h11Z
+> (I seem to remember that Mark Brown is OK with this, at least for the
+> time being, but for future reference I'll ask the question anyway.) Is
+> there a corresponding struct platform_device with a "rockchip-spdif"
+> .name? Because if there's no such platform_device I think this line
+> doesn't really do anything for this driver.
+
+Paul, you've been told this before but please stop providing these
+review comments.  It has been explained to you repeatedly that we do not
+require any form of machine definition to be merged to merge a driver,
+please pay attention to those explanations and stop sending the same
+bogus feedback to patch submitters.  This just creates confusion for the
+submitters and wastes everyone's time. =20
+
+If you have questions the way to raise them is to respond to the
+original discussions, not to send new replies to other submitters
+repeating the same feedback you were previously advised was incorrect.
+
+--zhXaljGHf11kAtnf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVxK0kAAoJECTWi3JdVIfQbGwH/ROkvDXXCTWZyu+uNNKmWVPB
-2+aRpnINWRd/i/fwTCTmkmHRSc4caLE875lqvmIPKq63F2HGTtTAEkea975iZfB2
-C5tINY7nkTaviS2jiQKLVUu4lS4hO9vKCOsdbQx+jJCNfMxUCxdd1Vv6Ysvkrqb+
-jxNATguB1XHPhFPU+e18mZACxyRBx3vUV04vWr4dP6vag1UfeR/7sBxvl1gqHzLg
-M+5gFV56NPrHwuH6CfwqrujW5OQo/hndyBYeoisdeh0dg/bbAODNSMTk86TrsaYf
-mIuI5wAg9Bokji25SrrNr4JitMWND0M4ZPQZE5t+3DrcrsKX9dmKSnUF5K53Z7Q=
-=l4PE
+iQEbBAEBCAAGBQJVxK8WAAoJECTWi3JdVIfQK58H+Pv1xUNvskBTGbB7siRHRiPu
+Zrt4mMYvLay4gqlHKtdoPnoJ91niglKFYy3v7cY8mFzkA8nUIpeIK3yELMfudJL/
+mu+WcVbXPPG6TIpmB1qeAonxx9BW5qk7Y0Hn2+mk2/K4GYAXcNadunBZ6AhAig4N
+S5AsFqShW68CYId4O4traK6RCcmr3T6DUz0eaHcc5Dn+gN4nRBZ/lwb9PbtzRRz0
+sumMSmAYy6o86sc8CVMt99mNswvLiL14hNLXUO9x6kcfirWVwUtq41LGi58qes8m
+rSY8UlwBmPrAs63npNGAi2tDynBAJ38Ej7cszYut7/f/nLzpJW07w06RqQws9g==
+=mEKU
 -----END PGP SIGNATURE-----
 
---0X5fYEMtRnv/h11Z--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--zhXaljGHf11kAtnf--
