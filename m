@@ -1,16 +1,18 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: [PATCH v3 1/4] ASoC: fsl_sai: Add driver suspend and
+Subject: [PATCH v3 2/4] ASoC: fsl_spdif: Add driver suspend and
 	resume to support MEGA Fast
-Date: Fri, 7 Aug 2015 14:21:05 +0800
-Message-ID: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
+Date: Fri, 7 Aug 2015 14:21:06 +0800
+Message-ID: <b8c48d059848c030a47b44407964eb473ea2c240.1438928296.git.zidan.wang@freescale.com>
+References: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0106.outbound.protection.outlook.com [65.55.169.106])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B582604C5
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 08:19:48 +0200 (CEST)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0143.outbound.protection.outlook.com [157.56.110.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEA5E2606FD
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 08:20:00 +0200 (CEST)
+In-Reply-To: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,76 +27,151 @@ Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescal
 List-Id: alsa-devel@alsa-project.org
 
 For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
-modules during system suspend and resume procedure. Thus, SAI needs to save
+modules during system suspend and resume procedure. Thus, SPDIF needs to save
 all the values of registers before the system suspend and restore them after
 the system resume.
 
+The SRPC register should be volatile, LOCK bit is set by the hardware.
+
 Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 ---
- sound/soc/fsl/fsl_sai.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ sound/soc/fsl/fsl_spdif.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index a18fd92..5c737f1 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -637,6 +637,8 @@ static bool fsl_sai_readable_reg(struct device *dev, unsigned int reg)
- static bool fsl_sai_volatile_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 7a92f30..98c64a9 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -108,6 +108,8 @@ struct fsl_spdif_priv {
+ 	struct clk *sysclk;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	/* regcache for SRPC */
++	u32 regcache_srpc;
+ };
+ 
+ /* DPLL locked and lock loss interrupt handler */
+@@ -300,6 +302,8 @@ static int spdif_softreset(struct fsl_spdif_priv *spdif_priv)
+ 	struct regmap *regmap = spdif_priv->regmap;
+ 	u32 val, cycle = 1000;
+ 
++	regcache_cache_bypass(regmap, true);
++
+ 	regmap_write(regmap, REG_SPDIF_SCR, SCR_SOFT_RESET);
+ 
+ 	/*
+@@ -310,6 +314,10 @@ static int spdif_softreset(struct fsl_spdif_priv *spdif_priv)
+ 		regmap_read(regmap, REG_SPDIF_SCR, &val);
+ 	} while ((val & SCR_SOFT_RESET) && cycle--);
+ 
++	regcache_cache_bypass(regmap, false);
++	regcache_mark_dirty(regmap);
++	regcache_sync(regmap);
++
+ 	if (cycle)
+ 		return 0;
+ 	else
+@@ -997,6 +1005,14 @@ static const struct snd_soc_component_driver fsl_spdif_component = {
+ };
+ 
+ /* FSL SPDIF REGMAP */
++static const struct reg_default fsl_spdif_reg_defaults[] = {
++	{0x0,  0x00000400},
++	{0x4,  0x00000000},
++	{0xc,  0x00000000},
++	{0x34, 0x00000000},
++	{0x38, 0x00000000},
++	{0x50, 0x00020f00},
++};
+ 
+ static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
+ {
+@@ -1022,6 +1038,26 @@ static bool fsl_spdif_readable_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
++static bool fsl_spdif_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case REG_SPDIF_SRPC:
++	case REG_SPDIF_SIS:
++	case REG_SPDIF_SRL:
++	case REG_SPDIF_SRR:
++	case REG_SPDIF_SRCSH:
++	case REG_SPDIF_SRCSL:
++	case REG_SPDIF_SRU:
++	case REG_SPDIF_SRQ:
++	case REG_SPDIF_STL:
++	case REG_SPDIF_STR:
++	case REG_SPDIF_SRFM:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static bool fsl_spdif_writeable_reg(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
-+	case FSL_SAI_TCSR:
-+	case FSL_SAI_RCSR:
- 	case FSL_SAI_TFR:
- 	case FSL_SAI_RFR:
- 	case FSL_SAI_TDR:
-@@ -681,6 +683,7 @@ static const struct regmap_config fsl_sai_regmap_config = {
- 	.readable_reg = fsl_sai_readable_reg,
- 	.volatile_reg = fsl_sai_volatile_reg,
- 	.writeable_reg = fsl_sai_writeable_reg,
-+	.cache_type = REGCACHE_FLAT,
+@@ -1047,8 +1083,12 @@ static const struct regmap_config fsl_spdif_regmap_config = {
+ 	.val_bits = 32,
+ 
+ 	.max_register = REG_SPDIF_STC,
++	.reg_defaults = fsl_spdif_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(fsl_spdif_reg_defaults),
+ 	.readable_reg = fsl_spdif_readable_reg,
++	.volatile_reg = fsl_spdif_volatile_reg,
+ 	.writeable_reg = fsl_spdif_writeable_reg,
++	.cache_type = REGCACHE_RBTREE,
  };
  
- static int fsl_sai_probe(struct platform_device *pdev)
-@@ -802,10 +805,40 @@ static const struct of_device_id fsl_sai_ids[] = {
- 	{ /* sentinel */ }
- };
+ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+@@ -1271,6 +1311,38 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 	return ret;
+ }
  
-+#if CONFIG_PM_SLEEP
-+static int fsl_sai_suspend(struct device *dev)
++#ifdef CONFIG_PM_SLEEP
++static int fsl_spdif_suspend(struct device *dev)
 +{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
++	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
 +
-+	regcache_cache_only(sai->regmap, true);
-+	regcache_mark_dirty(sai->regmap);
++	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
++			&spdif_priv->regcache_srpc);
++
++	regcache_cache_only(spdif_priv->regmap, true);
++	regcache_mark_dirty(spdif_priv->regmap);
 +
 +	return 0;
 +}
 +
-+static int fsl_sai_resume(struct device *dev)
++static int fsl_spdif_resume(struct device *dev)
 +{
-+	struct fsl_sai *sai = dev_get_drvdata(dev);
++	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
 +
-+	regcache_cache_only(sai->regmap, false);
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, FSL_SAI_CSR_SR);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, FSL_SAI_CSR_SR);
-+	msleep(1);
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
-+	return regcache_sync(sai->regmap);
++	regcache_cache_only(spdif_priv->regmap, false);
++
++	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SRPC,
++			SRPC_CLKSRC_SEL_MASK | SRPC_GAINSEL_MASK,
++			spdif_priv->regcache_srpc);
++
++	return regcache_sync(spdif_priv->regmap);
 +}
 +#endif /* CONFIG_PM_SLEEP */
 +
-+static const struct dev_pm_ops fsl_sai_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(fsl_sai_suspend, fsl_sai_resume)
++static const struct dev_pm_ops fsl_spdif_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(fsl_spdif_suspend, fsl_spdif_resume)
 +};
 +
- static struct platform_driver fsl_sai_driver = {
- 	.probe = fsl_sai_probe,
+ static const struct of_device_id fsl_spdif_dt_ids[] = {
+ 	{ .compatible = "fsl,imx35-spdif", },
+ 	{ .compatible = "fsl,vf610-spdif", },
+@@ -1282,6 +1354,7 @@ static struct platform_driver fsl_spdif_driver = {
  	.driver = {
- 		.name = "fsl-sai",
-+		.pm = &fsl_sai_pm_ops,
- 		.of_match_table = fsl_sai_ids,
+ 		.name = "fsl-spdif-dai",
+ 		.of_match_table = fsl_spdif_dt_ids,
++		.pm = &fsl_spdif_pm,
  	},
+ 	.probe = fsl_spdif_probe,
  };
 -- 
 1.9.1
