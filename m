@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 11/13] ASoC: Intel: Skylake: Add DSP support
-	and enable it
-Date: Fri,  7 Aug 2015 23:52:27 +0530
-Message-ID: <1438971749-874-12-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 13/13] ASoC: Intel: Skylake: Remove CPU dai
+	that is not used
+Date: Fri,  7 Aug 2015 23:52:29 +0530
+Message-ID: <1438971749-874-14-git-send-email-subhransu.s.prusty@intel.com>
 References: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id C4AA72650D8
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:38 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C0852650DA
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:23:43 +0200 (CEST)
 In-Reply-To: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,101 +27,66 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-If processing pipe capability is supported, add DSP support.
-Adds initialization/free/suspend/resume DSP functionality.
+For each endpoint instance, need to create CPU dai,
+Removed unused CPU dai DMIC23/HDA-SPK/HDA-AMIC dais.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 33 ---------------------------------
+ 1 file changed, 33 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 348d094..2f1890e 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -166,11 +166,16 @@ static int skl_runtime_suspend(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
-+	int ret;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 045c7d4..22ab7ac 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -579,17 +579,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
+ {
+-	.name = "DMIC23 Pin",
+-	.ops = &skl_dmic_dai_ops,
+-	.capture = {
+-		.stream_name = "DMIC23 Rx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+-	},
+-},
+-{
+ 	.name = "HD-Codec Pin",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
+@@ -607,28 +596,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ },
+-{
+-	.name = "HD-Codec-SPK Pin",
+-	.ops = &skl_link_dai_ops,
+-	.playback = {
+-		.stream_name = "HD-Codec-SPK Tx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-	},
+-},
+-{
+-	.name = "HD-Codec-AMIC Pin",
+-	.ops = &skl_link_dai_ops,
+-	.capture = {
+-		.stream_name = "HD-Codec-AMIC Rx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-	},
+-},
+ };
  
- 	dev_dbg(bus->dev, "in %s\n", __func__);
- 
- 	/* enable controller wake up event */
- 	snd_hdac_chip_updatew(bus, WAKEEN, 0, STATESTS_INT_MASK);
-+	ret = skl_suspend_dsp(skl);
-+	if (ret < 0)
-+		return ret;
- 
- 	snd_hdac_bus_stop_chip(bus);
- 	snd_hdac_bus_enter_link_reset(bus);
-@@ -183,7 +188,7 @@ static int skl_runtime_resume(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_ext_bus *ebus = pci_get_drvdata(pci);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
--	struct skl *hda = ebus_to_skl(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
- 	int status;
- 
- 	dev_dbg(bus->dev, "in %s\n", __func__);
-@@ -191,12 +196,12 @@ static int skl_runtime_resume(struct device *dev)
- 	/* Read STATESTS before controller reset */
- 	status = snd_hdac_chip_readw(bus, STATESTS);
- 
--	skl_init_pci(hda);
-+	skl_init_pci(skl);
- 	snd_hdac_bus_init_chip(bus, true);
- 	/* disable controller Wake Up event */
- 	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
- 
--	return 0;
-+	return skl_resume_dsp(skl);
- }
- #endif /* CONFIG_PM */
- 
-@@ -457,17 +462,19 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	/* check if dsp is there */
- 	if (ebus->ppcap) {
--		/* TODO register with dsp IPC */
--		dev_dbg(bus->dev, "Register dsp\n");
-+		err = skl_init_dsp(skl);
-+		if (err < 0) {
-+			dev_dbg(bus->dev, "error failed to register dsp\n");
-+			goto out_free;
-+		}
- 	}
--
- 	if (ebus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(ebus);
- 
- 	/* create device for soc dmic */
- 	err = skl_dmic_device_register(skl);
- 	if (err < 0)
--		goto out_free;
-+		goto out_dsp_free;
- 
- 	/* register platform dai and controls */
- 	err = skl_platform_register(bus->dev);
-@@ -491,6 +498,8 @@ out_unregister:
- 	skl_platform_unregister(bus->dev);
- out_dmic_free:
- 	skl_dmic_device_unregister(skl);
-+out_dsp_free:
-+	skl_free_dsp(skl);
- out_free:
- 	skl->init_failed = 1;
- 	skl_free(ebus);
-@@ -507,6 +516,7 @@ static void skl_remove(struct pci_dev *pci)
- 		pm_runtime_get_noresume(&pci->dev);
- 	pci_dev_put(pci);
- 	skl_platform_unregister(&pci->dev);
-+	skl_free_dsp(skl);
- 	skl_dmic_device_unregister(skl);
- 	skl_free(ebus);
- 	dev_set_drvdata(&pci->dev, NULL);
+ static int skl_platform_open(struct snd_pcm_substream *substream)
 -- 
 2.4.3
