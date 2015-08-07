@@ -1,69 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoc: rockchip: Add rockchip SPDIF transceiver driver
-Date: Fri, 7 Aug 2015 14:13:59 +0100
-Message-ID: <20150807131359.GA8892@sirena.org.uk>
-References: <1438085011-16577-1-git-send-email-sjoerd.simons@collabora.co.uk>
- <1438085011-16577-3-git-send-email-sjoerd.simons@collabora.co.uk>
- <1438159908.5106.32.camel@tiscali.nl>
+Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add imx7d platform
+	support
+Date: Fri, 7 Aug 2015 14:18:12 +0100
+Message-ID: <20150807131812.GC10301@sirena.org.uk>
+References: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
+ <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1438159908.5106.32.camel@tiscali.nl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============2006044007849909909=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B942260418
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 15:18:28 +0200 (CEST)
+In-Reply-To: <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---zhXaljGHf11kAtnf
+--===============2006044007849909909==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="aT9PWwzfKXlsBJM1"
+Content-Disposition: inline
+
+
+--aT9PWwzfKXlsBJM1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 29, 2015 at 10:51:48AM +0200, Paul Bolle wrote:
+On Fri, Aug 07, 2015 at 02:23:52PM +0800, Zidan Wang wrote:
+> i.MX7d SoC contains SAI module, so add imx7d platform support.
+>=20
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_sai.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-> > +		.name =3D DRV_NAME,
-> > +		.of_match_table =3D of_match_ptr(rockchip_spdif_match),
-> > +		.pm =3D &rockchip_spdif_pm_ops,
-> > +	},
-> > +};
-> > +module_platform_driver(rockchip_spdif_driver);
+This needs a binding document update too.
 
-> > +MODULE_ALIAS("platform:" DRV_NAME);
-
-> (I seem to remember that Mark Brown is OK with this, at least for the
-> time being, but for future reference I'll ask the question anyway.) Is
-> there a corresponding struct platform_device with a "rockchip-spdif"
-> .name? Because if there's no such platform_device I think this line
-> doesn't really do anything for this driver.
-
-Paul, you've been told this before but please stop providing these
-review comments.  It has been explained to you repeatedly that we do not
-require any form of machine definition to be merged to merge a driver,
-please pay attention to those explanations and stop sending the same
-bogus feedback to patch submitters.  This just creates confusion for the
-submitters and wastes everyone's time. =20
-
-If you have questions the way to raise them is to respond to the
-original discussions, not to send new replies to other submitters
-repeating the same feedback you were previously advised was incorrect.
-
---zhXaljGHf11kAtnf
+--aT9PWwzfKXlsBJM1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEbBAEBCAAGBQJVxK8WAAoJECTWi3JdVIfQK58H+Pv1xUNvskBTGbB7siRHRiPu
-Zrt4mMYvLay4gqlHKtdoPnoJ91niglKFYy3v7cY8mFzkA8nUIpeIK3yELMfudJL/
-mu+WcVbXPPG6TIpmB1qeAonxx9BW5qk7Y0Hn2+mk2/K4GYAXcNadunBZ6AhAig4N
-S5AsFqShW68CYId4O4traK6RCcmr3T6DUz0eaHcc5Dn+gN4nRBZ/lwb9PbtzRRz0
-sumMSmAYy6o86sc8CVMt99mNswvLiL14hNLXUO9x6kcfirWVwUtq41LGi58qes8m
-rSY8UlwBmPrAs63npNGAi2tDynBAJ38Ej7cszYut7/f/nLzpJW07w06RqQws9g==
-=mEKU
+iQEcBAEBCAAGBQJVxLAUAAoJECTWi3JdVIfQoToH/02AWhSh4YT7EP0xPte5DX0X
+Kq8SlucLMVxNcgUS+w8/WqGKf7Xznlo3MCAU+YyGq8d88L4ImoQ/Ohq54Y6LCDH0
+XT46upHsLVIpv6v4PZmKKcaBlf85Hqvjegn0UyHBvEDrvMTMntAUJgEBXBlaX1VQ
+s5LjMDwRti2iN/8PRfv9S17Z65UX2cPw0YgUq+2nf49CLp8u4NL1ynTzIfDE2I/c
+qJhRaPlzT8tyZl+pOpppXQ4NY1sANosAU+CcsHa3KZ79CsFoBCF9gDqSQWAgZ8iK
+eXcyjR0l9HjokVrgotjX2ySLQj0DfdmemRb7aUM4/gbXasR/CWzJ1pfsMaDtuhU=
+=RmzK
 -----END PGP SIGNATURE-----
 
---zhXaljGHf11kAtnf--
+--aT9PWwzfKXlsBJM1--
+
+--===============2006044007849909909==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2006044007849909909==--
