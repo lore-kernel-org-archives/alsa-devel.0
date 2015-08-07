@@ -1,92 +1,145 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 9/9] ASoC: Intel: Skylake: Remove CPU dai that
-	is not used
-Date: Sat,  8 Aug 2015 01:06:24 +0530
-Message-ID: <1438976184-6160-10-git-send-email-subhransu.s.prusty@intel.com>
-References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Felix Kuehling <felix.kuehling@amd.com>
+Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
+Date: Fri, 7 Aug 2015 16:03:08 -0400
+Message-ID: <55C50EFC.4050407@amd.com>
+References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
+ <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
+ <20150807102508.GL20873@sirena.org.uk>
+ <CADnq5_NihZCFEaL150Kt0LWCUBp6eQzne-O0JcCFE0-vHj7ZBQ@mail.gmail.com>
+ <55C4D9C3.1070504@amd.com> <20150807182401.GK10301@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C758426150C
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:37:23 +0200 (CEST)
-In-Reply-To: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/mixed; boundary="===============0110095364=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150807182401.GK10301@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+--===============0110095364==
+Content-Type: multipart/alternative;
+	boundary="------------020601090802060501080100"
 
-For each endpoint instance, need to create CPU dai,
-Removed unused CPU dai DMIC23/HDA-SPK/HDA-AMIC dais.
+--------------020601090802060501080100
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 33 ---------------------------------
- 1 file changed, 33 deletions(-)
+On 15-08-07 02:24 PM, Mark Brown wrote:
+> Like I say this just sounds like exactly the sort of thing we handle
+> with an MFD, it's a very common pattern. 
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 045c7d4..22ab7ac 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -579,17 +579,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
--	.name = "DMIC23 Pin",
--	.ops = &skl_dmic_dai_ops,
--	.capture = {
--		.stream_name = "DMIC23 Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
--	},
--},
--{
- 	.name = "HD-Codec Pin",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
-@@ -607,28 +596,6 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
--{
--	.name = "HD-Codec-SPK Pin",
--	.ops = &skl_link_dai_ops,
--	.playback = {
--		.stream_name = "HD-Codec-SPK Tx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
--{
--	.name = "HD-Codec-AMIC Pin",
--	.ops = &skl_link_dai_ops,
--	.capture = {
--		.stream_name = "HD-Codec-AMIC Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
- };
- 
- static int skl_platform_open(struct snd_pcm_substream *substream)
+OK, the MFD documentation in Documentation/devicetree/bindings/mfd/
+seemed to imply a dependency on a devicetree. It took me a moment to
+realize that's just the most common scenario.
+
+In our case we don't have a devicetree, we're talking about a PC
+platform. The GPU (GNB) is a PCIe device. Does the following sound like
+proper use of the MFD framework for our case?
+
+ 1. GPU driver gets initialized, detects a GPU with audio co-processor (ACP)
+ 2. GPU driver registers mfd_cell for the ACP device using
+    mfd_add_hotplug_devices
+      * It's not really hot-plug, but the mem_base, irq_base, irq_domain
+        parameters don't make sense for us
+ 3. Platform_data in the MFD cell contains audio driver-specific data,
+    function pointers, etc. for the audio driver to use
+ 4. Audio driver binds to platform device created by
+    mfd_add_hotplug_devices based on driver name
+
+Or do we have to convert our GPU device to be an MFD cell itself, a peer
+of the ACP cell?
+
+Thanks,
+  Felix
+
 -- 
-2.4.3
+F e l i x   K u e h l i n g
+SMTS Software Development Engineer | Vertical Workstation/Compute
+1 Commerce Valley Dr. East, Markham, ON L3T 7X6 Canada
+(O) +1(289)695-1597
+   _     _   _   _____   _____
+  / \   | \ / | |  _  \  \ _  |
+ / A \  | \M/ | | |D) )  /|_| |
+/_/ \_\ |_| |_| |_____/ |__/ \|   facebook.com/AMD | amd.com
+
+
+--------------020601090802060501080100
+Content-Type: text/html; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+  <head>
+    <meta content=3D"text/html; charset=3Dwindows-1252"
+      http-equiv=3D"Content-Type">
+  </head>
+  <body bgcolor=3D"#FFFFFF" text=3D"#000000">
+    On 15-08-07 02:24 PM, Mark Brown wrote:<br>
+    <blockquote cite=3D"mid:20150807182401.GK10301@sirena.org.uk"
+      type=3D"cite">
+      Like I say this just sounds like exactly the sort of thing we
+      handle
+      with an MFD, it's a very common pattern.
+    </blockquote>
+    <br>
+    OK, the MFD documentation in Documentation/devicetree/bindings/mfd/
+    seemed to imply a dependency on a devicetree. It took me a moment to
+    realize that's just the most common scenario.<br>
+    <br>
+    In our case we don't have a devicetree, we're talking about a PC
+    platform. The GPU (GNB) is a PCIe device. Does the following sound
+    like proper use of the MFD framework for our case?<br>
+    <ol>
+      <li>GPU driver gets initialized, detects a GPU with audio
+        co-processor (ACP)<br>
+      </li>
+      <li>GPU driver registers mfd_cell for the ACP device using
+        mfd_add_hotplug_devices</li>
+      <ul>
+        <li>It's not really hot-plug, but the mem_base, irq_base,
+          irq_domain parameters don't make sense for us<br>
+        </li>
+      </ul>
+      <li>Platform_data in the MFD cell contains audio driver-specific
+        data, function pointers, etc. for the audio driver to use</li>
+      <li>Audio driver binds to platform device created by
+        mfd_add_hotplug_devices based on driver name<br>
+      </li>
+    </ol>
+    Or do we have to convert our GPU device to be an MFD cell itself, a
+    peer of the ACP cell?<br>
+    <br>
+    Thanks,<br>
+    =A0 Felix<br>
+    <pre class=3D"moz-signature" cols=3D"72">--=20
+F e l i x   K u e h l i n g
+SMTS Software Development Engineer | Vertical Workstation/Compute
+1 Commerce Valley Dr. East, Markham, ON L3T 7X6 Canada
+(O) +1(289)695-1597
+   _     _   _   _____   _____
+  / \   | \ / | |  _  \  \ _  |
+ / A \  | \M/ | | |D) )  /|_| |
+/_/ \_\ |_| |_| |_____/ |__/ \|   facebook.com/AMD | amd.com</pre>
+  </body>
+</html>
+
+--------------020601090802060501080100--
+
+--===============0110095364==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
+cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+--===============0110095364==--
