@@ -1,17 +1,20 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH v2] ASoC: max98090: Enforce correct device
-	sequencing when configuring a new
-Date: Fri,  7 Aug 2015 14:08:15 -0700
-Message-ID: <1438981695-25531-1-git-send-email-yang.a.fang@intel.com>
-References: <1438902946-49633-2-git-send-email-yang.a.fang@intel.com>
+From: Anish Kumar <Anish.Kumar@maximintegrated.com>
+Subject: Re: [PATCH v2] ASoC: max98090: Enforce correct device
+ sequencing when configuring a new
+Date: Fri, 7 Aug 2015 14:41:49 -0700
+Message-ID: <B03A893ADFE80748942D13AFAF28451924E6F1461B@ITSVLEX06.it.maxim-ic.internal>
+References: <1438902946-49633-2-git-send-email-yang.a.fang@intel.com>,
+ <1438981695-25531-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DDD6260713
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 23:09:21 +0200 (CEST)
-In-Reply-To: <1438902946-49633-2-git-send-email-yang.a.fang@intel.com>
+Received: from antispam02.maximintegrated.com (antispam02.maximintegrated.com
+ [205.153.101.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8BC1260713
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 23:44:49 +0200 (CEST)
+In-Reply-To: <1438981695-25531-1-git-send-email-yang.a.fang@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,9 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, Anish.Kumar@maximintegrated.com, praveen.k.jain@intel.com, denny.iriawan@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, ullysses.a.eoff@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
+To: "yang.a.fang@intel.com" <yang.a.fang@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "srinivas.sripathi@intel.com" <srinivas.sripathi@intel.com>, "praveen.k.jain@intel.com" <praveen.k.jain@intel.com>, "denny.iriawan@intel.com" <denny.iriawan@intel.com>, "sathyanarayana.nujella@intel.com" <sathyanarayana.nujella@intel.com>, "ullysses.a.eoff@intel.com" <ullysses.a.eoff@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
+
+Acked-by: anish kumar <anish.kumar@maximintegrated.com>
+________________________________________
+From: yang.a.fang@intel.com [yang.a.fang@intel.com]
+Sent: Friday, August 07, 2015 2:08 PM
+To: broonie@kernel.org; lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org; dgreid@chromium.org; sathyanarayana.nujella@intel.com; kevin.strasser@linux.intel.com; srinivas.sripathi@intel.com; denny.iriawan@intel.com; praveen.k.jain@intel.com; Anish Kumar; ullysses.a.eoff@intel.com; Fang, Yang A
+Subject: [PATCH v2] ASoC: max98090: Enforce correct device sequencing when configuring a new
 
 From: "Fang, Yang A" <yang.a.fang@intel.com>
 
@@ -52,94 +63,94 @@ index 2d69fca..584aab8 100644
 --- a/sound/soc/codecs/max98090.c
 +++ b/sound/soc/codecs/max98090.c
 @@ -777,6 +777,19 @@ static int max98090_micinput_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+        return 0;
  }
- 
+
 +static int max98090_shdn_event(struct snd_soc_dapm_widget *w,
-+				 struct snd_kcontrol *kcontrol, int event)
++                                struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
++       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
 +
-+	if (event & SND_SOC_DAPM_POST_PMU)
-+		max98090->shdn_pending = true;
++       if (event & SND_SOC_DAPM_POST_PMU)
++               max98090->shdn_pending = true;
 +
-+	return 0;
++       return 0;
 +
 +}
 +
  static const char *mic1_mux_text[] = { "IN12", "IN56" };
- 
+
  static SOC_ENUM_SINGLE_DECL(mic1_mux_enum,
 @@ -1085,9 +1098,11 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("SDOEN", M98090_REG_IO_CONFIGURATION,
- 		M98090_SDOEN_SHIFT, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("DMICL_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
--		 M98090_DIGMICL_SHIFT, 0, NULL, 0),
-+		 M98090_DIGMICL_SHIFT, 0, max98090_shdn_event,
-+			SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_SUPPLY("DMICR_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
--		 M98090_DIGMICR_SHIFT, 0, NULL, 0),
-+		 M98090_DIGMICR_SHIFT, 0, max98090_shdn_event,
-+			 SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_SUPPLY("AHPF", M98090_REG_FILTER_CONFIG,
- 		M98090_AHPF_SHIFT, 0, NULL, 0),
- 
+        SND_SOC_DAPM_SUPPLY("SDOEN", M98090_REG_IO_CONFIGURATION,
+                M98090_SDOEN_SHIFT, 0, NULL, 0),
+        SND_SOC_DAPM_SUPPLY("DMICL_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
+-                M98090_DIGMICL_SHIFT, 0, NULL, 0),
++                M98090_DIGMICL_SHIFT, 0, max98090_shdn_event,
++                       SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("DMICR_ENA", M98090_REG_DIGITAL_MIC_ENABLE,
+-                M98090_DIGMICR_SHIFT, 0, NULL, 0),
++                M98090_DIGMICR_SHIFT, 0, max98090_shdn_event,
++                        SND_SOC_DAPM_POST_PMU),
+        SND_SOC_DAPM_SUPPLY("AHPF", M98090_REG_FILTER_CONFIG,
+                M98090_AHPF_SHIFT, 0, NULL, 0),
+
 @@ -1132,10 +1147,12 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 		&max98090_right_adc_mixer_controls[0],
- 		ARRAY_SIZE(max98090_right_adc_mixer_controls)),
- 
--	SND_SOC_DAPM_ADC("ADCL", NULL, M98090_REG_INPUT_ENABLE,
--		M98090_ADLEN_SHIFT, 0),
--	SND_SOC_DAPM_ADC("ADCR", NULL, M98090_REG_INPUT_ENABLE,
--		M98090_ADREN_SHIFT, 0),
-+	SND_SOC_DAPM_ADC_E("ADCL", NULL, M98090_REG_INPUT_ENABLE,
-+		M98090_ADLEN_SHIFT, 0, max98090_shdn_event,
-+		SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_ADC_E("ADCR", NULL, M98090_REG_INPUT_ENABLE,
-+		M98090_ADREN_SHIFT, 0, max98090_shdn_event,
-+		SND_SOC_DAPM_POST_PMU),
- 
- 	SND_SOC_DAPM_AIF_OUT("AIFOUTL", "HiFi Capture", 0,
- 		SND_SOC_NOPM, 0, 0),
+                &max98090_right_adc_mixer_controls[0],
+                ARRAY_SIZE(max98090_right_adc_mixer_controls)),
+
+-       SND_SOC_DAPM_ADC("ADCL", NULL, M98090_REG_INPUT_ENABLE,
+-               M98090_ADLEN_SHIFT, 0),
+-       SND_SOC_DAPM_ADC("ADCR", NULL, M98090_REG_INPUT_ENABLE,
+-               M98090_ADREN_SHIFT, 0),
++       SND_SOC_DAPM_ADC_E("ADCL", NULL, M98090_REG_INPUT_ENABLE,
++               M98090_ADLEN_SHIFT, 0, max98090_shdn_event,
++               SND_SOC_DAPM_POST_PMU),
++       SND_SOC_DAPM_ADC_E("ADCR", NULL, M98090_REG_INPUT_ENABLE,
++               M98090_ADREN_SHIFT, 0, max98090_shdn_event,
++               SND_SOC_DAPM_POST_PMU),
+
+        SND_SOC_DAPM_AIF_OUT("AIFOUTL", "HiFi Capture", 0,
+                SND_SOC_NOPM, 0, 0),
 @@ -2466,9 +2483,26 @@ static int max98090_remove(struct snd_soc_codec *codec)
- 	return 0;
+        return 0;
  }
- 
+
 +static void max98090_seq_notifier(struct snd_soc_dapm_context *dapm,
-+	enum snd_soc_dapm_type event, int subseq)
++       enum snd_soc_dapm_type event, int subseq)
 +{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
-+	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
++       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
++       struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
 +
-+	if (max98090->shdn_pending) {
-+		snd_soc_update_bits(codec, M98090_REG_DEVICE_SHUTDOWN,
-+				M98090_SHDNN_MASK, 0);
-+		msleep(40);
-+		snd_soc_update_bits(codec, M98090_REG_DEVICE_SHUTDOWN,
-+				M98090_SHDNN_MASK, M98090_SHDNN_MASK);
-+		max98090->shdn_pending = false;
-+	}
++       if (max98090->shdn_pending) {
++               snd_soc_update_bits(codec, M98090_REG_DEVICE_SHUTDOWN,
++                               M98090_SHDNN_MASK, 0);
++               msleep(40);
++               snd_soc_update_bits(codec, M98090_REG_DEVICE_SHUTDOWN,
++                               M98090_SHDNN_MASK, M98090_SHDNN_MASK);
++               max98090->shdn_pending = false;
++       }
 +}
 +
  static struct snd_soc_codec_driver soc_codec_dev_max98090 = {
- 	.probe   = max98090_probe,
- 	.remove  = max98090_remove,
-+	.seq_notifier = max98090_seq_notifier,
- 	.set_bias_level = max98090_set_bias_level,
+        .probe   = max98090_probe,
+        .remove  = max98090_remove,
++       .seq_notifier = max98090_seq_notifier,
+        .set_bias_level = max98090_set_bias_level,
  };
- 
+
 diff --git a/sound/soc/codecs/max98090.h b/sound/soc/codecs/max98090.h
 index 21ff743..bc610d9 100644
 --- a/sound/soc/codecs/max98090.h
 +++ b/sound/soc/codecs/max98090.h
 @@ -1543,6 +1543,7 @@ struct max98090_priv {
- 	unsigned int pa2en;
- 	unsigned int sidetone;
- 	bool master;
-+	bool shdn_pending;
+        unsigned int pa2en;
+        unsigned int sidetone;
+        bool master;
++       bool shdn_pending;
  };
- 
+
  int max98090_mic_detect(struct snd_soc_codec *codec,
--- 
+--
 1.7.9.5
