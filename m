@@ -1,87 +1,86 @@
-From: Felix Kuehling <felix.kuehling@amd.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 01/12] drm/amdgpu: add amd_gnb_bus support
-Date: Fri, 7 Aug 2015 12:16:03 -0400
-Message-ID: <55C4D9C3.1070504@amd.com>
-References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>	<1438871112-25946-2-git-send-email-alexander.deucher@amd.com>	<20150807102508.GL20873@sirena.org.uk>
+Date: Fri, 7 Aug 2015 18:20:28 +0100
+Message-ID: <20150807172028.GJ10301@sirena.org.uk>
+References: <1438871112-25946-1-git-send-email-alexander.deucher@amd.com>
+ <1438871112-25946-2-git-send-email-alexander.deucher@amd.com>
+ <20150807102508.GL20873@sirena.org.uk>
  <CADnq5_NihZCFEaL150Kt0LWCUBp6eQzne-O0JcCFE0-vHj7ZBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============1197025224726245077=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97E262606D1
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 19:20:37 +0200 (CEST)
 In-Reply-To: <CADnq5_NihZCFEaL150Kt0LWCUBp6eQzne-O0JcCFE0-vHj7ZBQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, maruthi.bayyavarapu@amd.com, lgirdwood@gmail.com, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Chunming Zhou <david1.zhou@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, maruthi.bayyavarapu@amd.com, Takashi Iwai <tiwai@suse.de>, Felix Kuehling <Felix.Kuehling@amd.com>, lgirdwood@gmail.com, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpUbyBlbGFib3JhdGUgbW9yZSBvbiBBbGV4J3MgZXhwbGFuYXRpb24gLi4uCgpBTUQgU09D
-cyBoYXZlIGF1ZGlvIChhbmQgaW4gdGhlIGZ1dHVyZSBwb3RlbnRpYWxseSBhbHNvIGNhbWVyYSBp
-bWFnZQpzaWduYWwgcHJvY2Vzc29ycykgSVBzIGJ1aWx0IGludG8gdGhlIEdOQiAoZ3JhcGhpY3Mg
-bm9ydGggYnJpZGdlKS4gVGhlc2UKSVBzIGFyZSBwcm9ncmFtbWVkIHRocm91Z2ggTU1JTyByZWdp
-c3RlcnMgaW4gdGhlIGdyYXBoaWNzIE1NSU8gYXBlcnR1cmUuClRoZXkgc2VuZCBldmVudHMgdG8g
-dGhlIGhvc3QgdGhyb3VnaCB0aGUgZ3JhcGhpY3MgSVJRLiBBbmQgdGhleSB1c2UKbWVtb3J5IHRo
-YXQgaXMgYWNjZXNzZWQgdGhyb3VnaCB0aGUgZ3JhcGhpY3MgbWVtb3J5IGNvbnRyb2xsZXIuClRo
-ZXJlZm9yZSB0aGUgR1BVIGRyaXZlciBtdXN0IGJlIGludm9sdmVkIGluIHByb2dyYW1taW5nIHRo
-ZXNlIElQcy4KCkhvd2V2ZXIsIHRoZXNlIGZ1bmN0aW9ucyBhcmUgbm90IGV4cG9zZWQgdG8gdXNl
-ciBtb2RlIGJ5IHRoZSBncmFwaGljcwpkcml2ZXIgc3Vic3lzdGVtIGluIExpbnV4LiBBdWRpbyBp
-cyBoYW5kbGVkIGJ5IEFMU0EgYW5kIGNhbWVyYSBJU1BzIGFyZQpoYW5kbGVkIGJ5IFY0TDIuIFdl
-IHdhbnQgdG8gcmVwcmVzZW50IHRoZXNlIElQcyBhcyBzZXBhcmF0ZSBkZXZpY2VzIGluCnRoZSBk
-ZXZpY2UgaGllcmFyY2h5LCBzbyB0aGF0IEFMU0EgYW5kIFY0TDIgZHJpdmVycyBjYW4gZGlzY292
-ZXIgYW5kCmJpbmQgdG8gdGhlbSB1c2luZyB0aGUgc3RhbmRhcmQgbWVjaGFuaXNtcy4KClRoZXJl
-Zm9yZSB3ZSBjcmVhdGVkIHRoaXMgInZpcnR1YWwiIEdOQiBidXMgdGhhdCBhbGxvd3MgdXMgdG8g
-Y3JlYXRlCmRldmljZXMgaW4gYSBzZW5zaWJsZSBwbGFjZSBpbiB0aGUgZGV2aWNlIGhpZXJhcmNo
-eSwgYXMgY2hpbGQgZGV2aWNlcyBvZgp0aGUgR05CLiBUaGUgZW51bSBhbWRfZ25iX2J1c19pcCBz
-ZXJ2ZXMgYXMgZGV2aWNlIElEIG9uIHRoaXMgYnVzLiBUaGUKc3RydWN0IGFtZF9nbmJfYnVzX2Rl
-diByZXByZXNlbnRzIHRoZSBkZXZpY2UuIFByaXZhdGVfZGF0YSBpcyBzcGVjaWZpYwp0byB0aGUg
-dHlwZSBvZiBkZXZpY2UuIEl0IGNvbnRhaW5zIGhpZ2gtbGV2ZWwgaW50ZXJmYWNlcyBmb3IgQUxT
-QQpkcml2ZXJzIHRvIHRhbGsgdG8gdGhlIGF1ZGlvIElQIGFuZCBWNEwyIGRyaXZlciB0byB0YWxr
-IHRvIHRoZSBJU1AgSVAuCkFueSBkaXJlY3QgSFcgYWNjZXNzLCBtZW1vcnkgbWFuYWdlbWVudCBh
-bmQgSVJRIGhhbmRsaW5nIGlzIGRvbmUgaW5zaWRlCnRoZSBHUFUgZHJpdmVyLgoKUmVnYXJkcywK
-ICBGZWxpeAoKT24gMTUtMDgtMDcgMTA6MTcgQU0sIEFsZXggRGV1Y2hlciB3cm90ZToKPiBPbiBG
-cmksIEF1ZyA3LCAyMDE1IGF0IDY6MjUgQU0sIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9y
-Zz4gd3JvdGU6Cj4+IE9uIFRodSwgQXVnIDA2LCAyMDE1IGF0IDEwOjI1OjAyQU0gLTA0MDAsIEFs
-ZXggRGV1Y2hlciB3cm90ZToKPj4+IEZyb206IENodW5taW5nIFpob3UgPGRhdmlkMS56aG91QGFt
-ZC5jb20+Cj4+Pgo+Pj4gVGhpcyBpcyB1c2VkIGJ5IHRoZSBpbmNvbWluZyBBQ1AgZHJpdmVyLiAg
-VGhlIERNQQo+Pj4gZW5naW5lIGZvciB0aGUgaTJzIGF1ZGlvIGNvZGVjIGlzIHBhcnQgb2YgdGhl
-IEdQVS4KPj4+Cj4+PiBUaGlzIGV4cG9zZXMgYW4gYW1kIGduYiBidXMgZm9yIHRoZSBpMnMgY29k
-ZWMgdG8KPj4+IGhhbmcgb2ZmIG9mLgo+PiBDb3VsZCB5b3UgYmUgbW9yZSBzcGVjaWZpYyBhYm91
-dCB3aGF0IGFuICJhbWQgZ25kIGJ1cyIgaXMgcGxlYXNlPwo+IEl0J3MgYnVzIHRvIGhhbmcgaHcg
-YmxvY2tzIG9mIHRoZSBHUFUgb24gdGhhdCBhcmUgY29udHJvbGxlZCBieSBvdGhlcgo+IHN1YnN5
-c3RlbXMuCj4KPj4+ICtlbnVtIGFtZF9nbmJfYnVzX2lwIHsKPj4+ICsgICAgIEFNRF9HTkJfSVBf
-QUNQX0RNQSwKPj4+ICsgICAgIEFNRF9HTkJfSVBfQUNQX0kyUywKPj4+ICsgICAgIEFNRF9HTkJf
-SVBfQUNQX1BDTSwKPj4+ICsgICAgIEFNRF9HTkJfSVBfSVNQLAo+Pj4gKyAgICAgQU1EX0dOQl9J
-UF9OVU0KPj4+ICt9Owo+Pj4gKwo+Pj4gK3N0cnVjdCBhbWRfZ25iX2J1c19kZXYgewo+Pj4gKyAg
-ICAgc3RydWN0IGRldmljZSBkZXY7IC8qIGdlbmVyaWMgZGV2aWNlIGludGVyZmFjZSAqLwo+Pj4g
-KyAgICAgZW51bSBhbWRfZ25iX2J1c19pcCBpcDsKPj4+ICsgICAgIC8qIHByaXZhdGUgZGF0YSBj
-YW4gYmUgYWNwX2hhbmRsZS9pc3BfaGFuZGxlIGV0Yy4qLwo+Pj4gKyAgICAgdm9pZCAqcHJpdmF0
-ZV9kYXRhOwo+Pj4gK307Cj4+IExvb2tpbmcgYXQgdGhlIGNvZGUgSSdtIG5vdCBzZWVpbmcgdG9v
-IG11Y2ggYnVzIHNwZWNpZmljIGV4Y2VwdCBmb3IgdGhlCj4+IGFib3ZlIHdoaWNoIGxvb2tzIGxp
-a2UgdGhlIHNvcnQgb2YgZGV2aWNlIHdlIHVzdWFsbHkgcmVwcmVzZW50IGFzIGEgTUZECj4+ICh3
-aXRoIHRoZSBNRkQgcHJvdmlkaW5nIHJlc291cmNlIGRpc3RyaWJ1dGlvbiBhbmQgYXJiaXRyYXRp
-b24gYmV0d2Vlbgo+PiB2YXJpb3VzIGNvbXBvbmVudCBkZXZpY2VzIHdoaWNoIGZpdCBpbnRvIHRo
-ZSBzdWJzeXN0ZW0pLiAgV2h5IGNvZGUgYSBuZXcKPj4gYnVzIGZvciB0aGlzIGRldmljZT8KPiBB
-ZGRpbmcgRmVsaXggd2hvIGRpZCB3b3JrZWQgb24gdGhlIGRlc2lnbiBmb3IgdGhpcy4gIFRoZSBp
-ZGVhIGlzIHRoYXQKPiB0aGVyZSBhcmUgaHcgYmxvY2tzIG9uIHRoZSBHUFUgdGhhdCBhcmUgY29u
-dHJvbGxlZCBieSBkcml2ZXJzIHRoYXQgYXJlCj4gcGFydCBvZiBvdGhlciBzdWJzeXN0ZW1zLiAg
-VGhvc2UgZHJpdmVycyBuZWVkIGFjY2VzcyB0byByZXNvdXJjZXMKPiAoZS5nLiwgdGhlIE1NSU8g
-YXBlcnR1cmUpIGNvbnRyb2xsZWQgYnkgdGhlIEdQVSBkcml2ZXIuICBJIGd1ZXNzIHRoaXMKPiBp
-cyBhIE1GRCBvZiBzb3J0cy4gIElmIHRoaXMgaXMgbm90IHRoZSBwcmVmZXJyZWQgd2F5IHRvIGhh
-bmRsZSB0aGlzCj4gdHlwZSBvZiBkZXZpY2UsIHdoYXQgaXM/ICBDYW4geW91IHBvaW50IG1lIHRv
-IGFub3RoZXIgZHJpdmVyIHRoYXQKPiBoYW5kbGVzIHRoaXMgZGlmZmVyZW50bHk/Cj4KPiBBbGV4
-CgotLSAKRiBlIGwgaSB4ICAgSyB1IGUgaCBsIGkgbiBnClNNVFMgU29mdHdhcmUgRGV2ZWxvcG1l
-bnQgRW5naW5lZXIgfCBWZXJ0aWNhbCBXb3Jrc3RhdGlvbi9Db21wdXRlCjEgQ29tbWVyY2UgVmFs
-bGV5IERyLiBFYXN0LCBNYXJraGFtLCBPTiBMM1QgN1g2IENhbmFkYQooTykgKzEoMjg5KTY5NS0x
-NTk3CiAgIF8gICAgIF8gICBfICAgX19fX18gICBfX19fXwogIC8gXCAgIHwgXCAvIHwgfCAgXyAg
-XCAgXCBfICB8CiAvIEEgXCAgfCBcTS8gfCB8IHxEKSApICAvfF98IHwKL18vIFxfXCB8X3wgfF98
-IHxfX19fXy8gfF9fLyBcfCAgIGZhY2Vib29rLmNvbS9BTUQgfCBhbWQuY29tCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
-aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============1197025224726245077==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zOcTNEe3AzgCmdo9"
+Content-Disposition: inline
+
+
+--zOcTNEe3AzgCmdo9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 07, 2015 at 10:17:36AM -0400, Alex Deucher wrote:
+> On Fri, Aug 7, 2015 at 6:25 AM, Mark Brown <broonie@kernel.org> wrote:
+
+> > Looking at the code I'm not seeing too much bus specific except for the
+> > above which looks like the sort of device we usually represent as a MFD
+> > (with the MFD providing resource distribution and arbitration between
+> > various component devices which fit into the subsystem).  Why code a new
+> > bus for this device?
+
+> Adding Felix who did worked on the design for this.  The idea is that
+> there are hw blocks on the GPU that are controlled by drivers that are
+> part of other subsystems.  Those drivers need access to resources
+> (e.g., the MMIO aperture) controlled by the GPU driver.  I guess this
+> is a MFD of sorts.  If this is not the preferred way to handle this
+> type of device, what is?  Can you point me to another driver that
+> handles this differently?
+
+Yeah, this sounds like a MFD - see drivers/mfd and take a look at how
+the drivers there deal with this.
+
+--zOcTNEe3AzgCmdo9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVxOjbAAoJECTWi3JdVIfQIHEH/A/ySskcHtHBsUE4j4YlVdeY
+v7QrzGzkNuGDRVtlO/kFIUd7rAhdeQWl67HFZgZymaqwEfefDqEkrD8yznmkXAp2
+uFpSk1VJJoE0HjcjgoLJ4/GfBHhh/2iKb236qG+OAssHVYH10h3Xtx3JJgxk04xq
+gzsJq6Suhe8LJaVJnYVRCCeA9GA6WoHHVBSDJktKwwNHR+hJXxjlNLZaxGAmt1nf
+71hKiK9y+S8TdmVyg0kQC2BKzA8fPpUH4Chm8++jMdzHRahET2wJ2TSyjqH/JN5G
+LSPOXkksj42xMKygT9EwBEcgvhggZN3WoMd8E8m3+YYi5Y84RrVSubvfuvm2mTo=
+=pZsk
+-----END PGP SIGNATURE-----
+
+--zOcTNEe3AzgCmdo9--
+
+--===============1197025224726245077==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1197025224726245077==--
