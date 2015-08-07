@@ -1,17 +1,22 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH 00/13] Add DSP topology management for SKL
-Date: Sat, 8 Aug 2015 00:29:05 +0530
-Message-ID: <20043.0519333624$1438974004@news.gmane.org>
-References: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add imx7d platform
+	support
+Date: Fri, 7 Aug 2015 12:34:37 -0700
+Message-ID: <20150807193436.GA6840@Asurada>
+References: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
+ <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D37682606CA
- for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 20:59:38 +0200 (CEST)
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A34D2606CA
+ for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2015 21:34:49 +0200 (CEST)
+Received: by pacrr5 with SMTP id rr5so58829186pac.3
+ for <alsa-devel@alsa-project.org>; Fri, 07 Aug 2015 12:34:48 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1438971749-874-1-git-send-email-subhransu.s.prusty@intel.com>
+In-Reply-To: <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, patches.audio@intel.com
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I resent some older patches as well with this series. Please ignore. Will
-resend the series.
+On Fri, Aug 07, 2015 at 02:23:52PM +0800, Zidan Wang wrote:
+> i.MX7d SoC contains SAI module, so add imx7d platform support.
+> 
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_sai.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 5c737f1..390197e 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -704,6 +704,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
+>  	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
+>  		sai->sai_on_imx = true;
+>  
+> +	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx7d-sai"))
+> +		sai->sai_on_imx = true;
 
-Sorry for the spam.
+What's the difference between imx6sx-sai and imx7d-sai?
 
-On Fri, Aug 07, 2015 at 11:52:16PM +0530, Subhransu S. Prusty wrote:
-> The SKL driver does not code DSP topology in driver. With this series
-> the soc topology framework is used to parse the topology information
-> to create widgets, controls and route map for the FW topology.
-> 
-> It adds routines for SKL DSP module configuration, add building blocks
-> to instanatiate modules and pipes. It uses SKL IPC library added earlier
-> to send IPC for initialize the module, bind/unbind modules, create
-> pipeline and manage them.
-> 
-> Last patch in this series removes the unused dais.
-> 
-> Hardik T Shah (1):
->   ASoC: Intel: Skylake: Add helpers for SRC and converter modules
-> 
-> Jeeja KP (12):
->   ASoC: Intel: Skylake: Add helpers for DSP module configuration
->   ASoC: Intel: Skylake: Add DSP module init and binding routines
->   ASoC: Intel: Skylake: Add pipe management helpers
->   ASoC: Intel: Skylake: Add pipe and modules handlers
->   ASoC: Intel: Skylake: Add module configuration helpers
->   ASoC: Intel: Skylake: add DSP platform widget event handlers
->   ASoC: Intel: Skylake: Add FE and BE hw_params handling
->   ASoC: Intel: Skylake: Add topology core init and handlers
->   ASoC: Intel: Skylake: Initialize and load DSP controls
->   ASoC: Intel: Skylake: Add DSP support and enable it
->   ASoC: Intel: Skylake: Initialize NHLT table
->   ASoC: Intel: Skylake: Remove CPU dai that is not used
-> 
->  sound/soc/intel/skylake/Makefile             |    3 +-
->  sound/soc/intel/skylake/skl-messages.c       |  751 +++++++++++++++
->  sound/soc/intel/skylake/skl-pcm.c            |  173 ++--
->  sound/soc/intel/skylake/skl-topology.c       | 1264 ++++++++++++++++++++++++++
->  sound/soc/intel/skylake/skl-topology.h       |  307 +++++++
->  sound/soc/intel/skylake/skl-tplg-interface.h |  166 ++++
->  sound/soc/intel/skylake/skl.c                |   29 +-
->  sound/soc/intel/skylake/skl.h                |   11 +
->  8 files changed, 2636 insertions(+), 68 deletions(-)
->  create mode 100644 sound/soc/intel/skylake/skl-topology.c
->  create mode 100644 sound/soc/intel/skylake/skl-topology.h
->  create mode 100644 sound/soc/intel/skylake/skl-tplg-interface.h
-> 
-> -- 
-> 2.4.3
-> 
+I think you may put its compatible model in the DT instead of adding
+a copy in the driver unless the SAI on the imx7d really has something
+different.
 
--- 
+For example:
+	compatible = "fsl,imx6q-ssi", "fsl,imx51-ssi";
+	/* The driver only has imx51-ssi */
