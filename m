@@ -1,43 +1,71 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel][RESEND PATCH] mfd: wm8994: Fix NULL pointer exception on
- missing pdata
-Date: Fri, 07 Aug 2015 10:35:59 +0900
-Message-ID: <1438911359-26949-1-git-send-email-ideal.song@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lee.jones@linaro.org
-Cc: sameo@linux.intel.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, Inha Song <ideal.song@samsung.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH 3/4] ALSA: hda - display audio call ncts
+	callback
+Date: Fri, 7 Aug 2015 01:42:14 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196CFB33@SHSMSX103.ccr.corp.intel.com>
+References: <1438843977-4269-1-git-send-email-libin.yang@intel.com>
+ <1438843977-4269-3-git-send-email-libin.yang@intel.com>
+ <s5hmvy4loou.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hmvy4loou.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-If we use the dev_get_platdata, pdata can be NULL in DT environments.
-Actually, NULL pointer exception is occurs with error messages like this:
-
-[    1.226583] Unable to handle kernel NULL pointer dereference at virtual address 00000044
-[    1.467910] [<c02f1e38>] (wm8994_irq_init) from [<c02f1bd4>] (wm8994_i2c_probe+0x684/0x858)
-[    1.476241] [<c02f1bd4>] (wm8994_i2c_probe) from [<c0371c78>] (i2c_device_probe+0x11c/0x17c)
-
-In wm8994-core, we already checked whether platform data is NULL and set the
-wm8994->pdata to platform data if platform data is not NULL.
-So, we can use wm8994->pdata instead of platform data.
-
-Signed-off-by: Inha Song <ideal.song@samsung.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- drivers/mfd/wm8994-irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
-index 55c380a..55c59d9 100644
---- a/drivers/mfd/wm8994-irq.c
-+++ b/drivers/mfd/wm8994-irq.c
-@@ -193,7 +193,7 @@ int wm8994_irq_init(struct wm8994 *wm8994)
- {
- 	int ret;
- 	unsigned long irqflags;
--	struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
-+	struct wm8994_pdata *pdata = &wm8994->pdata;
- 
- 	if (!wm8994->irq) {
- 		dev_warn(wm8994->dev,
--- 
-2.0.0.390.gcb682f8
+SGkgVGFrYXNoaSwKCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBUYWthc2hp
+IEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+IFNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMDYs
+IDIwMTUgNjowMyBQTQo+IFRvOiBZYW5nLCBMaWJpbgo+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmc7IGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IExpbiwKPiBNZW5nZG9u
+Zwo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMy80XSBBTFNBOiBoZGEgLSBkaXNwbGF5IGF1ZGlvIGNh
+bGwgbmN0cyBjYWxsYmFjawo+IAo+IE9uIFRodSwgMDYgQXVnIDIwMTUgMDg6NTI6NTYgKzAyMDAs
+Cj4gbGliaW4ueWFuZ0BpbnRlbC5jb20gd3JvdGU6Cj4gPgo+ID4gRnJvbTogTGliaW4gWWFuZyA8
+bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gPgo+ID4gT24gc29tZSBJbnRlbCBwbGF0Zm9ybXMsIGRp
+c3BsYXkgYXVkaW8gbmVlZCBzZXQgTi9DVFMKPiA+IG1hbnVhbGx5IGF0IHNvbWUgVE1EUyBmcmVx
+dWVuY2llcy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGlu
+dGVsLmNvbT4KPiA+IC0tLQo+ID4gIHNvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIHwgNyArKysr
+KysrCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQo+ID4KPiA+IGRpZmYgLS1n
+aXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+IGIvc291bmQvcGNpL2hkYS9wYXRjaF9o
+ZG1pLmMKPiA+IGluZGV4IGE5N2RiNWYuLjRiZDExZmYgMTAwNjQ0Cj4gPiAtLS0gYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX2hkbWkuYwo+ID4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMK
+PiA+IEBAIC0xNzg2LDYgKzE3ODYsOCBAQCBzdGF0aWMgaW50Cj4gZ2VuZXJpY19oZG1pX3BsYXli
+YWNrX3BjbV9wcmVwYXJlKHN0cnVjdCBoZGFfcGNtX3N0cmVhbSAqaGluZm8sCj4gPiAgCWludCBw
+aW5faWR4ID0gaGluZm9fdG9fcGluX2luZGV4KGNvZGVjLCBoaW5mbyk7Cj4gPiAgCXN0cnVjdCBo
+ZG1pX3NwZWNfcGVyX3BpbiAqcGVyX3BpbiA9IGdldF9waW4oc3BlYywgcGluX2lkeCk7Cj4gPiAg
+CWhkYV9uaWRfdCBwaW5fbmlkID0gcGVyX3Bpbi0+cGluX25pZDsKPiA+ICsJc3RydWN0IHNuZF9w
+Y21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKPiA+ICsJc3RydWN0IGk5
+MTVfYXVkaW9fY29tcG9uZW50ICphY29tcCA9IGNvZGVjLT5idXMtCj4gPmNvcmUuYXVkaW9fY29t
+cG9uZW50Owo+ID4gIAlib29sIG5vbl9wY207Cj4gPiAgCWludCBwaW5jdGw7Cj4gPgo+ID4gQEAg
+LTE4MDIsNiArMTgwNCwxMSBAQCBzdGF0aWMgaW50Cj4gZ2VuZXJpY19oZG1pX3BsYXliYWNrX3Bj
+bV9wcmVwYXJlKHN0cnVjdCBoZGFfcGNtX3N0cmVhbSAqaGluZm8sCj4gPiAgCQlpbnRlbF9ub3Rf
+c2hhcmVfYXNzaWduZWRfY3Z0KGNvZGVjLCBwaW5fbmlkLCBwZXJfcGluLQo+ID5tdXhfaWR4KTsK
+PiA+ICAJfQo+ID4KPiA+ICsJaWYgKGlzX2hhc3dlbGxfcGx1cyhjb2RlYykpIHsKPiA+ICsJCWlm
+IChhY29tcCAmJiBhY29tcC0+b3BzICYmIGFjb21wLT5vcHMtPnNldF9uY3RzKQo+ID4gKwkJCWFj
+b21wLT5vcHMtPnNldF9uY3RzKGFjb21wLT5kZXYsIHBlcl9waW4tCj4gPnBpbl9uaWQgLSA0LAo+
+IAo+IFBsZWFzZSBkZXNjcmliZSBtb3JlIGhvdyAicGluX25pZCAtIDQiIGlzIHN1cHBvc2VkIHRv
+IHdvcmsuICBBbHNvLi4uCgpPSywgSSBzZWUuCgo+IAo+ID4gKwkJCQkwLCBydW50aW1lLT5yYXRl
+KTsKPiAKPiAuLi4gdGhpcyBpbXBsaWVzIHRoYXQgbm8gTVNUIHN1cHBvcnQgaW5jbHVkZWQ/CgpX
+ZSB3aWxsIHN1cHBvcnQgTVNUIGxhdGVyLiBDdXJyZW50bHkgSSBqdXN0IGFkZCB0aGUKaW50ZXJm
+YWNlIHRvIHN1cHBvcnQgTVNULCBidXQgbm90IGltcGxlbWVudGluZyBpdC4KCkFmdGVyIHdlIGVu
+YWJsZWQgTVNULCBJIHdpbGwgc3VibWl0IGFub3RoZXIgcGF0Y2gKdG8gc3VwcG9ydCBNU1QuIEN1
+cnJlbnRseSwgaXQgc2VlbXMgdGhlIGRpc3BsYXkgYXVkaW8KZHJpdmVyIG5lZWQgZG8gc29tZSBj
+aGFuZ2UgdG8gc3VwcG9ydCBNU1QuCgo+IAo+IE92ZXJhbGwsIGl0J2QgYmUgYXBwcmVjaWF0ZWQg
+aWYgeW91IHB1dCBtb3JlIGluZm9ybWF0aW9uIHRleHQgaW4KPiBjaGFuZ2Vsb2cgb3IgY29tbWVu
+dC4gIGl0IHNlcmllcyBsb29rcyBsaWtlIGEgYmxhY2sgbWFnaWMgdG8gbWUgdW5sZXNzCj4gY2xl
+YXJseSBleHBsYWluZWQuCgpPSywgSSB3aWxsIGFkZCB0aGUgY29tbWVudHMgYWJvdXQgdGhlIGRl
+dGFpbHMuCgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwt
+Z2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
