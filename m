@@ -1,15 +1,12 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v5 4/6] drm: bridge/dw_hdmi-i2s-audio: add audio driver
-Date: Sat, 8 Aug 2015 16:35:41 +0100
-Message-ID: <20150808153540.GL7557@n2100.arm.linux.org.uk>
-References: <1434730417-10629-1-git-send-email-ykk@rock-chips.com>
- <1434731295-11060-1-git-send-email-ykk@rock-chips.com>
+Subject: [PATCH 00/12] dw-hdmi development
+Date: Sat, 8 Aug 2015 17:02:51 +0100
+Message-ID: <20150808160251.GM7557@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <1434731295-11060-1-git-send-email-ykk@rock-chips.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
@@ -19,31 +16,31 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Yakir Yang <ykk@rock-chips.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, Paul Bolle <pebolle@tiscali.nl>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBKdW4gMjAsIDIwMTUgYXQgMTI6Mjg6MTVBTSArMDgwMCwgWWFraXIgWWFuZyB3cm90
-ZToKPiBBZGQgQUxTQSBiYXNlZCBIRE1JIEkyUyBhdWRpbyBkcml2ZXIgZm9yIGR3X2hkbWkuIFNv
-dW5kIGNhcmQKPiBkcml2ZXIgY291bGQgY29ubmVjdCB0byB0aGlzIGNvZGVjIHRocm91Z2ggdGhl
-IGNvZGVjIGRhaSBuYW1lCj4gImR3LWhkbWktaTJzLWF1ZGlvIi4KCkknbSBhcHBseWluZyB0aGlz
-IHBhdGNoIHRvIG15IHRyZWUgd2l0aCBzb21lIGNoYW5nZXMuICBJIGhhdmVuJ3Qgc2Vlbgphbnlv
-bmUgYWNrIGl0LCBub3IgcmV2aWV3IGl0IGFueSBmdXJ0aGVyLiAgSSdtIGhvcGluZyBzb21lb25l
-IGNhbiBhY2sKdGhpcyBwYXRjaCB3aXRoIHRoZSBmb2xsb3dpbmcgY2hhbmdlcyBiZWxvdyAtIEkn
-bGwgYmUgcG9zdGluZyBpdCBhcwpwYXJ0IG9mIG15IGR3LWhkbWkgZGV2ZWwgdXBkYXRlcyBsYXRl
-ciB0b2RheS4KCj4gKwlyZXQgPSByZXF1ZXN0X2lycShkdy0+ZGF0YS5pcnEsIHNuZF9kd19oZG1p
-X2lycSwgSVJRRl9TSEFSRUQsCj4gKwkJCSAgImR3LWR3LWF1ZGlvIiwgZHcpOwoKCQkJICBEUklW
-RVJfTkFNRSwgZHcpOwoKPiArTU9EVUxFX0FVVEhPUigiWWFraXIgWWFuZyA8eWtrQHJvY2stY2hp
-cHMuY29tPiIpOwo+ICtNT0RVTEVfREVTQ1JJUFRJT04oIkRXIGR3IEF1ZGlvIEFTb0MgSW50ZXJm
-YWNlIik7CgpGaXhpbmcgdGhpcyB0byBiZSAiU3lub3BzaXMgRGVzaWduV2FyZSBIRE1JIEkyUyBB
-U29DIGludGVyZmFjZSIuCgo+ICtNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7Cj4gK01PRFVMRV9B
-TElBUyhQTEFURk9STV9NT0RVTEVfUFJFRklYIERSSVZFUl9OQU1FKTsKClJlcGxhY2luZyBQTEFU
-Rk9STV9NT0RVTEVfUFJFRklYIHdpdGggdGhlICJwbGF0Zm9ybToiIHN0cmluZy4KCj4gKwlpZiAo
-aGRtaV9yZWFkYihoZG1pLCBIRE1JX0NPTkZJRzFfSUQpICYgSERNSV9DT05GSUcxX0FIQikgewo+
-ICAJCXBkZXZpbmZvLm5hbWUgPSAiZHctaGRtaS1haGItYXVkaW8iOwoKRml4aW5nIHRoaXMgdG8g
-YmUgImR3LWhkbWktaTJzLWF1ZGlvIi4KCi0tIApGVFRDIGJyb2FkYmFuZCBmb3IgMC44bWlsZSBs
-aW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93biA0MDBrYnBzIHVwCmFjY29yZGluZyB0byBz
-cGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
-bAo=
+VGhpcyBzdWItc2VyaWVzIGlzIGEgbWl4dHVyZSBvZiBkZXZlbG9wbWVudDoKCiogUmVtb3Zpbmcg
+dGhlIGluY29ycmVjdCBwaXhlbCByZXBldGl0aW9uIGNvbmZpZ3VyYXRpb24gY29kZQoqIFByZXZl
+bnRpbmcgcGl4ZWwtZG91YmxlZCBtb2RlcyBmcm9tIGJlaW5nIHVzZWQKKiBBZGRpbmcgaW50ZXJs
+YWNlZCB2aWRlbyBzdXBwb3J0CiogSW1wbGVtZW50aW5nIHRoZSBzaW5rX2lzX2hkbWkvc2lua19o
+YXNfYXVkaW8gZmxhZ3MgSSBzdWdnZXN0ZWQgYSBmZXcKICBtb250aHMgYWdvCiogT25seSBlbmFi
+bGluZyBhdWRpbyBzdXBwb3J0IGlmIHRoZSBzaW5rIGluZGljYXRlcyBpdCBoYXMgYXVkaW8KKiBB
+dm9pZGluZyBkb3VibGUtZW5hYmxpbmcgdGhlIEhETUkgaW50ZXJmYWNlCiogRml4aW5nIHRoZSBt
+aXMtbGVhZGluZyBuYW1lIG9mICJkd19oZG1pX3BoeV9lbmFibGVfcG93ZXIiCiogQWRkaW5nIGNv
+bm5lY3RvciBtb2RlIGZvcmNpbmcgKGltcG9ydGFudCBpZiB5b3VyIG1vbml0b3IgYm91bmNlcwog
+IFJYU0VOU0UgYW5kIEhQRCBzaWduYWxzIHdoaWxlIGluIGxvdy1wb3dlciBtb2RlLikKKiBJbXBy
+b3ZpbmcgdGhlIEhETUkgZW5hYmxlL2Rpc2FibGluZyBvbiBzaW5rIHN0YXR1cwoKRm9yIHJldmll
+dyAoYW5kIHRlc3RpbmcgaWYgcGVvcGxlIGZlZWwgbGlrZSBpdCkuICBBY2tzL3Rlc3RlZC1ieXMg
+ZXRjCndlbGNvbWUuICBJdCBhcHBsaWVzIG9uIHRvcCBvZiBteSBkcm0tZHdoZG1pLWRldmVsIGJy
+YW5jaCwgd2hpY2ggaXMKd2FpdGluZyBmb3IgRGF2aWQgQWlybGllIHRvIHB1bGwgKHNlZSBwdWxs
+IHJlcXVlc3Qgb24gZHJpLWRldmVsLCAxNXRoCkp1bHkuKQoKIGRyaXZlcnMvZ3B1L2RybS9icmlk
+Z2UvZHdfaGRtaS5jIHwgMjc1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LQogZHJpdmVycy9ncHUvaXB1LXYzL2lwdS1kYy5jICAgICAgfCAgMTggKystCiBkcml2ZXJzL2dw
+dS9pcHUtdjMvaXB1LWRpLmMgICAgICB8IDEyOSArKysrKysrKystLS0tLS0tLS0KIDMgZmlsZXMg
+Y2hhbmdlZCwgMjkxIGluc2VydGlvbnMoKyksIDEzMSBkZWxldGlvbnMoLSkKCi0tIApGVFRDIGJy
+b2FkYmFuZCBmb3IgMC44bWlsZSBsaW5lOiBjdXJyZW50bHkgYXQgMTAuNU1icHMgZG93biA0MDBr
+YnBzIHVwCmFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0LgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZl
+bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
