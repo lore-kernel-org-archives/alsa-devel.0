@@ -1,131 +1,69 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 3/9] drm: bridge/dw_hdmi-ahb-audio: basic support for
- multi-channel PCM audio
-Date: Sat, 08 Aug 2015 17:10:16 +0100
-Message-ID: <E1ZO6hM-0003N8-NX@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH 4/9] drm: bridge/dw_hdmi-ahb-audio: allow larger buffer sizes
+Date: Sat, 08 Aug 2015 17:10:21 +0100
+Message-ID: <E1ZO6hR-0003NE-Rq@rmk-PC.arm.linux.org.uk>
 References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 In-Reply-To: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add basic support for multi-channel PCM audio, with fixed speaker
-mappings.  This has been tested with an AV receiver, and appears to
-work for low sample rates up to 8 channels.
-
-It should be noted that multi-channel mode using the IEC958 alsa-lib
-conversion plugin requires correct AES channel status for the AV
-receiver to recognise the stream, especially the sample rate bits.
-"Not identified" does not work there.
-
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c | 59 +++++++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
-index 125b81306254..3a8f32e04b63 100644
---- a/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
-+++ b/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
-@@ -62,9 +62,14 @@ enum {
- 	HDMI_AHB_DMA_CONF0_INCR4 = 0,
- 	HDMI_AHB_DMA_CONF0_BURST_MODE = BIT(0),
- 	HDMI_AHB_DMA_MASK_DONE = BIT(7),
-+
- 	HDMI_REVISION_ID = 0x0001,
- 	HDMI_IH_AHBDMAAUD_STAT0 = 0x0109,
- 	HDMI_IH_MUTE_AHBDMAAUD_STAT0 = 0x0189,
-+	HDMI_FC_AUDICONF2 = 0x1027,
-+	HDMI_FC_AUDSCONF = 0x1063,
-+	HDMI_FC_AUDSCONF_LAYOUT1 = 1 << 0,
-+	HDMI_FC_AUDSCONF_LAYOUT0 = 0 << 0,
- 	HDMI_AHB_DMA_CONF0 = 0x3600,
- 	HDMI_AHB_DMA_START = 0x3601,
- 	HDMI_AHB_DMA_STOP = 0x3602,
-@@ -77,6 +82,44 @@ enum {
- 	HDMI_AHB_DMA_BUFFPOL = 0x361a,
- };
- 
-+struct dw_hdmi_channel_conf {
-+	u8 conf1;
-+	u8 ca;
-+};
-+
-+/*
-+ * The default mapping of ALSA channels to HDMI channels and speaker
-+ * allocation bits.  Note that we can't do channel remapping here -
-+ * channels must be in the same order.
-+ *
-+ * Mappings for alsa-lib pcm/surround*.conf files:
-+ *
-+ *		Front	Sur4.0	Sur4.1	Sur5.0	Sur5.1	Sur7.1
-+ * Channels	2	4	6	6	6	8
-+ *
-+ * Our mapping from ALSA channel to CEA686D speaker name and HDMI channel:
-+ *
-+ *				Number of ALSA channels
-+ * ALSA Channel	2	3	4	5	6	7	8
-+ * 0		FL:0	=	=	=	=	=	=
-+ * 1		FR:1	=	=	=	=	=	=
-+ * 2			FC:3	RL:4	LFE:2	=	=	=
-+ * 3				RR:5	RL:4	FC:3	=	=
-+ * 4					RR:5	RL:4	=	=
-+ * 5						RR:5	=	=
-+ * 6							RC:6	=
-+ * 7							RLC/FRC	RLC/FRC
-+ */
-+static struct dw_hdmi_channel_conf default_hdmi_channel_config[7] = {
-+	{ 0x03, 0x00 },	/* FL,FR */
-+	{ 0x0b, 0x02 },	/* FL,FR,FC */
-+	{ 0x33, 0x08 },	/* FL,FR,RL,RR */
-+	{ 0x37, 0x09 },	/* FL,FR,LFE,RL,RR */
-+	{ 0x3f, 0x0b },	/* FL,FR,LFE,FC,RL,RR */
-+	{ 0x7f, 0x0f },	/* FL,FR,LFE,FC,RL,RR,RC */
-+	{ 0xff, 0x13 },	/* FL,FR,LFE,FC,RL,RR,[FR]RC,[FR]LC */
-+};
-+
- struct snd_dw_hdmi {
- 	struct snd_card *card;
- 	struct snd_pcm *pcm;
-@@ -352,7 +395,7 @@ static int dw_hdmi_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_dw_hdmi *dw = substream->private_data;
--	u8 threshold, conf0, conf1;
-+	u8 threshold, conf0, conf1, layout, ca;
- 
- 	/* Setup as per 3.0.5 FSL 4.1.0 BSP */
- 	switch (dw->revision) {
-@@ -380,11 +423,23 @@ static int dw_hdmi_prepare(struct snd_pcm_substream *substream)
- 	runtime->hw.fifo_size = threshold * 32;
- 
- 	conf0 |= HDMI_AHB_DMA_CONF0_EN_HLOCK;
--	conf1 = (1 << runtime->channels) - 1;
-+	conf1 = default_hdmi_channel_config[runtime->channels - 2].conf1;
-+	ca = default_hdmi_channel_config[runtime->channels - 2].ca;
-+
-+	/*
-+	 * For >2 channel PCM audio, we need to select layout 1
-+	 * and set an appropriate channel map.
-+	 */
-+	if (runtime->channels > 2)
-+		layout = HDMI_FC_AUDSCONF_LAYOUT1;
-+	else
-+		layout = HDMI_FC_AUDSCONF_LAYOUT0;
- 
- 	writeb_relaxed(threshold, dw->data.base + HDMI_AHB_DMA_THRSLD);
- 	writeb_relaxed(conf0, dw->data.base + HDMI_AHB_DMA_CONF0);
- 	writeb_relaxed(conf1, dw->data.base + HDMI_AHB_DMA_CONF1);
-+	writeb_relaxed(layout, dw->data.base + HDMI_FC_AUDSCONF);
-+	writeb_relaxed(ca, dw->data.base + HDMI_FC_AUDICONF2);
- 
- 	switch (runtime->format) {
- 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
--- 
-2.1.0
+V2l0aCBtdWx0aWNoYW5uZWwgYXVkaW8sIHdlIG5lZWQgdG8gYWxsb3cgbGFyZ2VyIGJ1ZmZlciBz
+aXplcyB0byBhdm9pZApYUlVOcyBkdXJpbmcgcGxheWJhY2suICBQdXNoIHRoZSBidWZmZXIgc2l6
+ZSB1cCB0byAxMDI0SywgYnV0IGFzIHdlCm1haW50YWluIHR3byBidWZmZXJzLCBlbnN1cmUgdGhh
+dCB0aGUgdm1hbGxvYyBidWZmZXIgZG9lcyBub3QgZXhjZWVkCnRoZSB1c2Vyc3BhY2UgYnVmZmVy
+IHNpemUuCgpTaWduZWQtb2ZmLWJ5OiBSdXNzZWxsIEtpbmcgPHJtaytrZXJuZWxAYXJtLmxpbnV4
+Lm9yZy51az4KLS0tCiBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMg
+fCAxOSArKysrKysrKysrKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygr
+KSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3
+X2hkbWktYWhiLWF1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1
+ZGlvLmMKaW5kZXggM2E4ZjMyZTA0YjYzLi40YjUzN2Y5Y2U4ZjAgMTAwNjQ0Ci0tLSBhL2RyaXZl
+cnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS1haGItYXVkaW8uYworKysgYi9kcml2ZXJzL2dwdS9k
+cm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMKQEAgLTMxMiw3ICszMTIsNyBAQCBzdGF0aWMg
+c3RydWN0IHNuZF9wY21faGFyZHdhcmUgZHdfaGRtaV9odyA9IHsKIAkJIFNORFJWX1BDTV9SQVRF
+XzE5MjAwMCwKIAkuY2hhbm5lbHNfbWluID0gMiwKIAkuY2hhbm5lbHNfbWF4ID0gOCwKLQkuYnVm
+ZmVyX2J5dGVzX21heCA9IDY0ICogMTAyNCwKKwkuYnVmZmVyX2J5dGVzX21heCA9IDEwMjQgKiAx
+MDI0LAogCS5wZXJpb2RfYnl0ZXNfbWluID0gMjU2LAogCS5wZXJpb2RfYnl0ZXNfbWF4ID0gODE5
+MiwJLyogRVJSMDA0MzIzOiBtdXN0IGxpbWl0IHRvIDhrICovCiAJLnBlcmlvZHNfbWluID0gMiwK
+QEAgLTMzNyw3ICszMzcsMTUgQEAgc3RhdGljIGludCBkd19oZG1pX29wZW4oc3RydWN0IHNuZF9w
+Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJaWYgKHJldCA8IDApCiAJCXJldHVybiByZXQ7CiAK
+LQlyZXQgPSBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfaW50ZWdlcihydW50aW1lLCBTTkRSVl9QQ01f
+SFdfUEFSQU1fUEVSSU9EUyk7CisJcmV0ID0gc25kX3BjbV9od19jb25zdHJhaW50X2ludGVnZXIo
+cnVudGltZSwKKwkJCQkJICAgIFNORFJWX1BDTV9IV19QQVJBTV9QRVJJT0RTKTsKKwlpZiAocmV0
+IDwgMCkKKwkJcmV0dXJuIHJldDsKKworCS8qIExpbWl0IHRoZSBidWZmZXIgc2l6ZSB0byB0aGUg
+c2l6ZSBvZiB0aGUgcHJlYWxsb2NhdGVkIGJ1ZmZlciAqLworCXJldCA9IHNuZF9wY21faHdfY29u
+c3RyYWludF9taW5tYXgocnVudGltZSwKKwkJCQkJICAgU05EUlZfUENNX0hXX1BBUkFNX0JVRkZF
+Ul9TSVpFLAorCQkJCQkgICAwLCBzdWJzdHJlYW0tPmRtYV9idWZmZXIuYnl0ZXMpOwogCWlmIChy
+ZXQgPCAwKQogCQlyZXR1cm4gcmV0OwogCkBAIC0zODcsNiArMzk1LDcgQEAgc3RhdGljIGludCBk
+d19oZG1pX2h3X2ZyZWUoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiBzdGF0
+aWMgaW50IGR3X2hkbWlfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3Ry
+ZWFtLAogCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1zKQogeworCS8qIEFsbG9jYXRl
+IHRoZSBQQ00gcnVudGltZSBidWZmZXIsIHdoaWNoIGlzIGV4cG9zZWQgdG8gdXNlcnNwYWNlLiAq
+LwogCXJldHVybiBzbmRfcGNtX2xpYl9hbGxvY192bWFsbG9jX2J1ZmZlcihzdWJzdHJlYW0sCiAJ
+CQkJCQlwYXJhbXNfYnVmZmVyX2J5dGVzKHBhcmFtcykpOwogfQpAQCAtNTUyLDggKzU2MSwxMiBA
+QCBzdGF0aWMgaW50IHNuZF9kd19oZG1pX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
+ZXYpCiAJc3RybGNweShwY20tPm5hbWUsIERSSVZFUl9OQU1FLCBzaXplb2YocGNtLT5uYW1lKSk7
+CiAJc25kX3BjbV9zZXRfb3BzKHBjbSwgU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSywgJnNuZF9k
+d19oZG1pX29wcyk7CiAKKwkvKgorCSAqIFRvIHN1cHBvcnQgOC1jaGFubmVsIDk2a0h6IGF1ZGlv
+IHJlbGlhYmx5LCB3ZSBuZWVkIDUxMmsKKwkgKiB0byBzYXRpc2Z5IGFsc2Egd2l0aCBvdXIgcmVz
+dHJpY3RlZCBwZXJpb2QgKEVSUjAwNDMyMykuCisJICovCiAJc25kX3BjbV9saWJfcHJlYWxsb2Nh
+dGVfcGFnZXNfZm9yX2FsbChwY20sIFNORFJWX0RNQV9UWVBFX0RFViwKLQkJCWRldiwgNjQgKiAx
+MDI0LCA2NCAqIDEwMjQpOworCQkJZGV2LCAxMjggKiAxMDI0LCAxMDI0ICogMTAyNCk7CiAKIAly
+ZXQgPSBzbmRfY2FyZF9yZWdpc3RlcihjYXJkKTsKIAlpZiAocmV0IDwgMCkKLS0gCjIuMS4wCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwg
+bWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3Rz
+LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
