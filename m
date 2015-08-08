@@ -1,122 +1,151 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 7/9] drm: bridge/dw_hdmi: remove ratio support from ACR code
-Date: Sat, 08 Aug 2015 17:10:37 +0100
-Message-ID: <E1ZO6hh-0003Nc-A7@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH 8/9] drm: bridge/dw_hdmi: replace CTS calculation for the ACR
+Date: Sat, 08 Aug 2015 17:10:42 +0100
+Message-ID: <E1ZO6hm-0003Ni-E0@rmk-PC.arm.linux.org.uk>
 References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Content-Disposition: inline
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
 List-Id: alsa-devel@alsa-project.org
 
-V2UgbmV2ZXIgc2V0IHRoZSByYXRpbyBmb3IgQ1RTL04gY2FsY3VsYXRpb24gZm9yIHRoZSBhdWRp
-byBjbG9jawpyZWdlbmVyYXRvciAoQUNSKSB0byBhbnl0aGluZyBidXQgMTAwLCBzbyB0aGlzIGFk
-ZHMgcG9pbnRsZXNzCmNvbXBsZXhpdHkuICBTaG91bGQgd2Ugc3VwcG9ydCBwaXhlbCByZXBldGl0
-aW9uLCB3ZSBzaG91bGQgdXBkYXRlIHRoZQpDVFMvTiBjYWxjdWxhdGlvbiBjb2RlIHRvIHVzZSB0
-aG9zZSBwYXJhbWV0ZXJzIG9yIHRoZSBhY3R1YWwgVE1EUyBjbG9jawpyYXRlIGluc3RlYWQgb2Yg
-YSByYXRpby4KClNpZ25lZC1vZmYtYnk6IFJ1c3NlbGwgS2luZyA8cm1rK2tlcm5lbEBhcm0ubGlu
-dXgub3JnLnVrPgotLS0KIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS5jIHwgNDQgKysr
-KysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE4
-IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9icmlkZ2UvZHdfaGRtaS5jIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmMK
-aW5kZXggNTU3NmNkN2Q3YWJiLi42MDQ4N2JmZjQ4ZTMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1
-L2RybS9icmlkZ2UvZHdfaGRtaS5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRt
-aS5jCkBAIC0xNDAsNyArMTQwLDYgQEAgc3RydWN0IGR3X2hkbWkgewogCXVuc2lnbmVkIGludCBh
-dWRpb19jdHM7CiAJdW5zaWduZWQgaW50IGF1ZGlvX247CiAJYm9vbCBhdWRpb19lbmFibGU7Ci0J
-aW50IHJhdGlvOwogCiAJdm9pZCAoKndyaXRlKShzdHJ1Y3QgZHdfaGRtaSAqaGRtaSwgdTggdmFs
-LCBpbnQgb2Zmc2V0KTsKIAl1OCAoKnJlYWQpKHN0cnVjdCBkd19oZG1pICpoZG1pLCBpbnQgb2Zm
-c2V0KTsKQEAgLTIxNyw4ICsyMTYsNyBAQCBzdGF0aWMgdm9pZCBoZG1pX3NldF9jdHNfbihzdHJ1
-Y3QgZHdfaGRtaSAqaGRtaSwgdW5zaWduZWQgaW50IGN0cywKIAloZG1pX3dyaXRlYihoZG1pLCBu
-ICYgMHhmZiwgSERNSV9BVURfTjEpOwogfQogCi1zdGF0aWMgdW5zaWduZWQgaW50IGhkbWlfY29t
-cHV0ZV9uKHVuc2lnbmVkIGludCBmcmVxLCB1bnNpZ25lZCBsb25nIHBpeGVsX2NsaywKLQkJCQkg
-ICB1bnNpZ25lZCBpbnQgcmF0aW8pCitzdGF0aWMgdW5zaWduZWQgaW50IGhkbWlfY29tcHV0ZV9u
-KHVuc2lnbmVkIGludCBmcmVxLCB1bnNpZ25lZCBsb25nIHBpeGVsX2NsaykKIHsKIAl1bnNpZ25l
-ZCBpbnQgbiA9ICgxMjggKiBmcmVxKSAvIDEwMDA7CiAJdW5zaWduZWQgaW50IG11bHQgPSAxOwpA
-QCAtMjMxLDkgKzIyOSw5IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgaGRtaV9jb21wdXRlX24odW5z
-aWduZWQgaW50IGZyZXEsIHVuc2lnbmVkIGxvbmcgcGl4ZWxfY2xrLAogCXN3aXRjaCAoZnJlcSkg
-ewogCWNhc2UgMzIwMDA6CiAJCWlmIChwaXhlbF9jbGsgPT0gMjUxNzUwMDApCi0JCQluID0gKHJh
-dGlvID09IDE1MCkgPyA5MTUyIDogNDU3NjsKKwkJCW4gPSA0NTc2OwogCQllbHNlIGlmIChwaXhl
-bF9jbGsgPT0gMjcwMjcwMDApCi0JCQluID0gKHJhdGlvID09IDE1MCkgPyA4MTkyIDogNDA5NjsK
-KwkJCW4gPSA0MDk2OwogCQllbHNlIGlmIChwaXhlbF9jbGsgPT0gNzQxNzYwMDAgfHwgcGl4ZWxf
-Y2xrID09IDE0ODM1MjAwMCkKIAkJCW4gPSAxMTY0ODsKIAkJZWxzZQpAQCAtMjQ3LDcgKzI0NSw3
-IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgaGRtaV9jb21wdXRlX24odW5zaWduZWQgaW50IGZyZXEs
-IHVuc2lnbmVkIGxvbmcgcGl4ZWxfY2xrLAogCQllbHNlIGlmIChwaXhlbF9jbGsgPT0gNzQxNzYw
-MDApCiAJCQluID0gMTc4MzY7CiAJCWVsc2UgaWYgKHBpeGVsX2NsayA9PSAxNDgzNTIwMDApCi0J
-CQluID0gKHJhdGlvID09IDE1MCkgPyAxNzgzNiA6IDg5MTg7CisJCQluID0gODkxODsKIAkJZWxz
-ZQogCQkJbiA9IDYyNzI7CiAJCW4gKj0gbXVsdDsKQEAgLTI1NSwxMyArMjUzLDEzIEBAIHN0YXRp
-YyB1bnNpZ25lZCBpbnQgaGRtaV9jb21wdXRlX24odW5zaWduZWQgaW50IGZyZXEsIHVuc2lnbmVk
-IGxvbmcgcGl4ZWxfY2xrLAogCiAJY2FzZSA0ODAwMDoKIAkJaWYgKHBpeGVsX2NsayA9PSAyNTE3
-NTAwMCkKLQkJCW4gPSAocmF0aW8gPT0gMTUwKSA/IDkxNTIgOiA2ODY0OworCQkJbiA9IDY4NjQ7
-CiAJCWVsc2UgaWYgKHBpeGVsX2NsayA9PSAyNzAyNzAwMCkKLQkJCW4gPSAocmF0aW8gPT0gMTUw
-KSA/IDgxOTIgOiA2MTQ0OworCQkJbiA9IDYxNDQ7CiAJCWVsc2UgaWYgKHBpeGVsX2NsayA9PSA3
-NDE3NjAwMCkKIAkJCW4gPSAxMTY0ODsKIAkJZWxzZSBpZiAocGl4ZWxfY2xrID09IDE0ODM1MjAw
-MCkKLQkJCW4gPSAocmF0aW8gPT0gMTUwKSA/IDExNjQ4IDogNTgyNDsKKwkJCW4gPSA1ODI0Owog
-CQllbHNlCiAJCQluID0gNjE0NDsKIAkJbiAqPSBtdWx0OwpAQCAtMjc0LDEzICsyNzIsMTEgQEAg
-c3RhdGljIHVuc2lnbmVkIGludCBoZG1pX2NvbXB1dGVfbih1bnNpZ25lZCBpbnQgZnJlcSwgdW5z
-aWduZWQgbG9uZyBwaXhlbF9jbGssCiAJcmV0dXJuIG47CiB9CiAKLXN0YXRpYyB1bnNpZ25lZCBp
-bnQgaGRtaV9jb21wdXRlX2N0cyh1bnNpZ25lZCBpbnQgZnJlcSwgdW5zaWduZWQgbG9uZyBwaXhl
-bF9jbGssCi0JCQkJICAgICB1bnNpZ25lZCBpbnQgcmF0aW8pCitzdGF0aWMgdW5zaWduZWQgaW50
-IGhkbWlfY29tcHV0ZV9jdHModW5zaWduZWQgaW50IGZyZXEsIHVuc2lnbmVkIGxvbmcgcGl4ZWxf
-Y2xrKQogewogCXVuc2lnbmVkIGludCBjdHMgPSAwOwogCi0JcHJfZGVidWcoIiVzOiBmcmVxOiAl
-ZCBwaXhlbF9jbGs6ICVsZCByYXRpbzogJWRcbiIsIF9fZnVuY19fLCBmcmVxLAotCQkgcGl4ZWxf
-Y2xrLCByYXRpbyk7CisJcHJfZGVidWcoIiVzOiBmcmVxOiAlZCBwaXhlbF9jbGs6ICVsZFxuIiwg
-X19mdW5jX18sIGZyZXEsIHBpeGVsX2Nsayk7CiAKIAlzd2l0Y2ggKGZyZXEpIHsKIAljYXNlIDMy
-MDAwOgpAQCAtMzQxLDI2ICszMzcsMjQgQEAgc3RhdGljIHVuc2lnbmVkIGludCBoZG1pX2NvbXB1
-dGVfY3RzKHVuc2lnbmVkIGludCBmcmVxLCB1bnNpZ25lZCBsb25nIHBpeGVsX2NsaywKIAlkZWZh
-dWx0OgogCQlicmVhazsKIAl9Ci0JaWYgKHJhdGlvID09IDEwMCkKLQkJcmV0dXJuIGN0czsKLQly
-ZXR1cm4gKGN0cyAqIHJhdGlvKSAvIDEwMDsKKwlyZXR1cm4gY3RzOwogfQogCiBzdGF0aWMgdm9p
-ZCBoZG1pX3NldF9jbGtfcmVnZW5lcmF0b3Ioc3RydWN0IGR3X2hkbWkgKmhkbWksCi0JdW5zaWdu
-ZWQgbG9uZyBwaXhlbF9jbGssIHVuc2lnbmVkIGludCBzYW1wbGVfcmF0ZSwgdW5zaWduZWQgaW50
-IHJhdGlvKQorCXVuc2lnbmVkIGxvbmcgcGl4ZWxfY2xrLCB1bnNpZ25lZCBpbnQgc2FtcGxlX3Jh
-dGUpCiB7CiAJdW5zaWduZWQgaW50IG4sIGN0czsKIAotCW4gPSBoZG1pX2NvbXB1dGVfbihzYW1w
-bGVfcmF0ZSwgcGl4ZWxfY2xrLCByYXRpbyk7Ci0JY3RzID0gaGRtaV9jb21wdXRlX2N0cyhzYW1w
-bGVfcmF0ZSwgcGl4ZWxfY2xrLCByYXRpbyk7CisJbiA9IGhkbWlfY29tcHV0ZV9uKHNhbXBsZV9y
-YXRlLCBwaXhlbF9jbGspOworCWN0cyA9IGhkbWlfY29tcHV0ZV9jdHMoc2FtcGxlX3JhdGUsIHBp
-eGVsX2Nsayk7CiAJaWYgKCFjdHMpIHsKIAkJZGV2X2VycihoZG1pLT5kZXYsCiAJCQkiJXM6IHBp
-eGVsIGNsb2NrL3NhbXBsZSByYXRlIG5vdCBzdXBwb3J0ZWQ6ICVsdU1IeiAvICV1a0h6XG4iLAog
-CQkJX19mdW5jX18sIHBpeGVsX2Nsaywgc2FtcGxlX3JhdGUpOwogCX0KIAotCWRldl9kYmcoaGRt
-aS0+ZGV2LCAiJXM6IHNhbXBsZXJhdGU9JXVrSHogcmF0aW89JWQgcGl4ZWxjbGs9JWx1TUh6IE49
-JWQgY3RzPSVkXG4iLAotCQlfX2Z1bmNfXywgc2FtcGxlX3JhdGUsIHJhdGlvLCBwaXhlbF9jbGss
-IG4sIGN0cyk7CisJZGV2X2RiZyhoZG1pLT5kZXYsICIlczogc2FtcGxlcmF0ZT0ldWtIeiBwaXhl
-bGNsaz0lbHVNSHogTj0lZCBjdHM9JWRcbiIsCisJCV9fZnVuY19fLCBzYW1wbGVfcmF0ZSwgcGl4
-ZWxfY2xrLCBuLCBjdHMpOwogCiAJc3Bpbl9sb2NrX2lycSgmaGRtaS0+YXVkaW9fbG9jayk7CiAJ
-aGRtaS0+YXVkaW9fbiA9IG47CkBAIC0zNzIsOCArMzY2LDcgQEAgc3RhdGljIHZvaWQgaGRtaV9z
-ZXRfY2xrX3JlZ2VuZXJhdG9yKHN0cnVjdCBkd19oZG1pICpoZG1pLAogc3RhdGljIHZvaWQgaGRt
-aV9pbml0X2Nsa19yZWdlbmVyYXRvcihzdHJ1Y3QgZHdfaGRtaSAqaGRtaSkKIHsKIAltdXRleF9s
-b2NrKCZoZG1pLT5hdWRpb19tdXRleCk7Ci0JaGRtaV9zZXRfY2xrX3JlZ2VuZXJhdG9yKGhkbWks
-IDc0MjUwMDAwLCBoZG1pLT5zYW1wbGVfcmF0ZSwKLQkJCQkgaGRtaS0+cmF0aW8pOworCWhkbWlf
-c2V0X2Nsa19yZWdlbmVyYXRvcihoZG1pLCA3NDI1MDAwMCwgaGRtaS0+c2FtcGxlX3JhdGUpOwog
-CW11dGV4X3VubG9jaygmaGRtaS0+YXVkaW9fbXV0ZXgpOwogfQogCkBAIC0zODEsNyArMzc0LDcg
-QEAgc3RhdGljIHZvaWQgaGRtaV9jbGtfcmVnZW5lcmF0b3JfdXBkYXRlX3BpeGVsX2Nsb2NrKHN0
-cnVjdCBkd19oZG1pICpoZG1pKQogewogCW11dGV4X2xvY2soJmhkbWktPmF1ZGlvX211dGV4KTsK
-IAloZG1pX3NldF9jbGtfcmVnZW5lcmF0b3IoaGRtaSwgaGRtaS0+aGRtaV9kYXRhLnZpZGVvX21v
-ZGUubXBpeGVsY2xvY2ssCi0JCQkJIGhkbWktPnNhbXBsZV9yYXRlLCBoZG1pLT5yYXRpbyk7CisJ
-CQkJIGhkbWktPnNhbXBsZV9yYXRlKTsKIAltdXRleF91bmxvY2soJmhkbWktPmF1ZGlvX211dGV4
-KTsKIH0KIApAQCAtMzkwLDcgKzM4Myw3IEBAIHZvaWQgZHdfaGRtaV9zZXRfc2FtcGxlX3JhdGUo
-c3RydWN0IGR3X2hkbWkgKmhkbWksIHVuc2lnbmVkIGludCByYXRlKQogCW11dGV4X2xvY2soJmhk
-bWktPmF1ZGlvX211dGV4KTsKIAloZG1pLT5zYW1wbGVfcmF0ZSA9IHJhdGU7CiAJaGRtaV9zZXRf
-Y2xrX3JlZ2VuZXJhdG9yKGhkbWksIGhkbWktPmhkbWlfZGF0YS52aWRlb19tb2RlLm1waXhlbGNs
-b2NrLAotCQkJCSBoZG1pLT5zYW1wbGVfcmF0ZSwgaGRtaS0+cmF0aW8pOworCQkJCSBoZG1pLT5z
-YW1wbGVfcmF0ZSk7CiAJbXV0ZXhfdW5sb2NrKCZoZG1pLT5hdWRpb19tdXRleCk7CiB9CiBFWFBP
-UlRfU1lNQk9MX0dQTChkd19oZG1pX3NldF9zYW1wbGVfcmF0ZSk7CkBAIC0xNzQ2LDcgKzE3Mzks
-NiBAQCBpbnQgZHdfaGRtaV9iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZSAq
-bWFzdGVyLAogCWhkbWktPmRldiA9IGRldjsKIAloZG1pLT5kZXZfdHlwZSA9IHBsYXRfZGF0YS0+
-ZGV2X3R5cGU7CiAJaGRtaS0+c2FtcGxlX3JhdGUgPSA0ODAwMDsKLQloZG1pLT5yYXRpbyA9IDEw
-MDsKIAloZG1pLT5lbmNvZGVyID0gZW5jb2RlcjsKIAloZG1pLT5kaXNhYmxlZCA9IHRydWU7CiAJ
-aGRtaS0+cnhzZW5zZSA9IHRydWU7Ci0tIAoyLjEuMAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9kcmktZGV2ZWwK
+Given the TDMS clock, audio sample rate, and the N parameter, we can
+calculate the CTS value for the audio clock regenerator (ACR) using the
+following calculation given in the HDMI specification:
+
+	CTS = ftdms * N / (128 * fs)
+
+The specification says that the CTS value is an average value, which is
+true if the source hardware measures it.  Where source hardware needs it
+to be programmed, it is particularly difficult to alternate it between
+two values correctly to ensure that we achieve a correct "average"
+fractional value at the sink.
+
+Also, there's the problem that our "ftdms" is not a fully accurate
+value; it is rounded to a kHz value.  This introduces an unnecessary
+(and harmless) fractional value into the above equation for combinations
+like 148.5MHz/1.001 for 44100Hz - we still calculate the correct CTS
+value.
+
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ drivers/gpu/drm/bridge/dw_hdmi.c | 92 +++++++---------------------------------
+ 1 file changed, 16 insertions(+), 76 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi.c b/drivers/gpu/drm/bridge/dw_hdmi.c
+index 60487bff48e3..a4f9aecf1862 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi.c
+@@ -272,89 +272,29 @@ static unsigned int hdmi_compute_n(unsigned int freq, unsigned long pixel_clk)
+ 	return n;
+ }
+ 
+-static unsigned int hdmi_compute_cts(unsigned int freq, unsigned long pixel_clk)
+-{
+-	unsigned int cts = 0;
+-
+-	pr_debug("%s: freq: %d pixel_clk: %ld\n", __func__, freq, pixel_clk);
+-
+-	switch (freq) {
+-	case 32000:
+-		if (pixel_clk == 297000000) {
+-			cts = 222750;
+-			break;
+-		}
+-	case 48000:
+-	case 96000:
+-	case 192000:
+-		switch (pixel_clk) {
+-		case 25200000:
+-		case 27000000:
+-		case 54000000:
+-		case 74250000:
+-		case 148500000:
+-			cts = pixel_clk / 1000;
+-			break;
+-		case 297000000:
+-			cts = 247500;
+-			break;
+-		/*
+-		 * All other TMDS clocks are not supported by
+-		 * DWC_hdmi_tx. The TMDS clocks divided or
+-		 * multiplied by 1,001 coefficients are not
+-		 * supported.
+-		 */
+-		default:
+-			break;
+-		}
+-		break;
+-	case 44100:
+-	case 88200:
+-	case 176400:
+-		switch (pixel_clk) {
+-		case 25200000:
+-			cts = 28000;
+-			break;
+-		case 27000000:
+-			cts = 30000;
+-			break;
+-		case 54000000:
+-			cts = 60000;
+-			break;
+-		case 74250000:
+-			cts = 82500;
+-			break;
+-		case 148500000:
+-			cts = 165000;
+-			break;
+-		case 297000000:
+-			cts = 247500;
+-			break;
+-		default:
+-			break;
+-		}
+-		break;
+-	default:
+-		break;
+-	}
+-	return cts;
+-}
+-
+ static void hdmi_set_clk_regenerator(struct dw_hdmi *hdmi,
+ 	unsigned long pixel_clk, unsigned int sample_rate)
+ {
++	unsigned long ftdms = pixel_clk;
+ 	unsigned int n, cts;
++	u64 tmp;
+ 
+ 	n = hdmi_compute_n(sample_rate, pixel_clk);
+-	cts = hdmi_compute_cts(sample_rate, pixel_clk);
+-	if (!cts) {
+-		dev_err(hdmi->dev,
+-			"%s: pixel clock/sample rate not supported: %luMHz / %ukHz\n",
+-			__func__, pixel_clk, sample_rate);
+-	}
+ 
+-	dev_dbg(hdmi->dev, "%s: samplerate=%ukHz pixelclk=%luMHz N=%d cts=%d\n",
+-		__func__, sample_rate, pixel_clk, n, cts);
++	/*
++	 * Compute the CTS value from the N value.  Note that CTS and N
++	 * can be up to 20 bits in total, so we need 64-bit math.  Also
++	 * note that our TDMS clock is not fully accurate; it is accurate
++	 * to kHz.  This can introduce an unnecessary remainder in the
++	 * calculation below, so we don't try to warn about that.
++	 */
++	tmp = (u64)ftdms * n;
++	do_div(tmp, 128 * sample_rate);
++	cts = tmp;
++
++	dev_dbg(hdmi->dev, "%s: fs=%uHz ftdms=%lu.%03luMHz N=%d cts=%d\n",
++		__func__, sample_rate, ftdms / 1000000, (ftdms / 1000) % 1000,
++		n, cts);
+ 
+ 	spin_lock_irq(&hdmi->audio_lock);
+ 	hdmi->audio_n = n;
+-- 
+2.1.0
