@@ -1,82 +1,131 @@
 From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 2/9] drm: bridge/dw_hdmi-ahb-audio: parse ELD from HDMI driver
-Date: Sat, 08 Aug 2015 17:10:11 +0100
-Message-ID: <E1ZO6hH-0003N1-IM@rmk-PC.arm.linux.org.uk>
+Subject: [PATCH 3/9] drm: bridge/dw_hdmi-ahb-audio: basic support for
+ multi-channel PCM audio
+Date: Sat, 08 Aug 2015 17:10:16 +0100
+Message-ID: <E1ZO6hM-0003N8-NX@rmk-PC.arm.linux.org.uk>
 References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20150808160936.GN7557@n2100.arm.linux.org.uk>
 Content-Disposition: inline
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
 List-Id: alsa-devel@alsa-project.org
 
-UGFyc2UgdGhlIEVMRCAoRURJRCBsaWtlIGRhdGEpIHN0b3JlZCBmcm9tIHRoZSBIRE1JIGRyaXZl
-ciB0byByZXN0cmljdAp0aGUgc2FtcGxlIHJhdGVzIGFuZCBjaGFubmVscyB3aGljaCBhcmUgYXZh
-aWxhYmxlIHRvIEFMU0EuICBUaGlzIGNhdXNlcwp0aGUgQUxTQSBkZXZpY2UgdG8gcmVmbGVjdCB0
-aGUgY2FwYWJpbGl0aWVzIG9mIHRoZSBvdmVyYWxsIGF1ZGlvIHBhdGgsCm5vdCBqdXN0IHdoYXQg
-aXMgc3VwcG9ydGVkIGF0IHRoZSBIRE1JIHNvdXJjZSBpbnRlcmZhY2UgbGV2ZWwuCgpTaWduZWQt
-b2ZmLWJ5OiBSdXNzZWxsIEtpbmcgPHJtaytrZXJuZWxAYXJtLmxpbnV4Lm9yZy51az4KLS0tCiBk
-cml2ZXJzL2dwdS9kcm0vYnJpZGdlL0tjb25maWcgICAgICAgICAgICAgfCAxICsKIGRyaXZlcnMv
-Z3B1L2RybS9icmlkZ2UvZHdfaGRtaS1haGItYXVkaW8uYyB8IDYgKysrKysrCiBkcml2ZXJzL2dw
-dS9kcm0vYnJpZGdlL2R3X2hkbWktYXVkaW8uaCAgICAgfCAxICsKIGRyaXZlcnMvZ3B1L2RybS9i
-cmlkZ2UvZHdfaGRtaS5jICAgICAgICAgICB8IDMgKysrCiA0IGZpbGVzIGNoYW5nZWQsIDExIGlu
-c2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL0tjb25maWcg
-Yi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL0tjb25maWcKaW5kZXggNTZlZDM1ZmUwNzM0Li4yMDQ4
-NjFiZmI4NjcgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvS2NvbmZpZworKysg
-Yi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL0tjb25maWcKQEAgLTcsNiArNyw3IEBAIGNvbmZpZyBE
-Uk1fRFdfSERNSV9BSEJfQVVESU8KIAl0cmlzdGF0ZSAiU3lub3BzaXMgRGVzaWdud2FyZSBBSEIg
-QXVkaW8gaW50ZXJmYWNlIgogCWRlcGVuZHMgb24gRFJNX0RXX0hETUkgJiYgU05ECiAJc2VsZWN0
-IFNORF9QQ00KKwlzZWxlY3QgU05EX1BDTV9FTEQKIAlzZWxlY3QgU05EX1BDTV9JRUM5NTgKIAlo
-ZWxwCiAJICBTdXBwb3J0IHRoZSBBSEIgQXVkaW8gaW50ZXJmYWNlIHdoaWNoIGlzIHBhcnQgb2Yg
-dGhlIFN5bm9wc2lzCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkt
-YWhiLWF1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMK
-aW5kZXggMjJiYmJjNWMyMzkzLi4xMjViODEzMDYyNTQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1
-L2RybS9icmlkZ2UvZHdfaGRtaS1haGItYXVkaW8uYworKysgYi9kcml2ZXJzL2dwdS9kcm0vYnJp
-ZGdlL2R3X2hkbWktYWhiLWF1ZGlvLmMKQEAgLTEyLDExICsxMiwxMyBAQAogI2luY2x1ZGUgPGxp
-bnV4L21vZHVsZS5oPgogI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogI2luY2x1
-ZGUgPGRybS9icmlkZ2UvZHdfaGRtaS5oPgorI2luY2x1ZGUgPGRybS9kcm1fZWRpZC5oPgogCiAj
-aW5jbHVkZSA8c291bmQvYXNvdW5kZWYuaD4KICNpbmNsdWRlIDxzb3VuZC9jb3JlLmg+CiAjaW5j
-bHVkZSA8c291bmQvaW5pdHZhbC5oPgogI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgorI2luY2x1ZGUg
-PHNvdW5kL3BjbV9kcm1fZWxkLmg+CiAjaW5jbHVkZSA8c291bmQvcGNtX2llYzk1OC5oPgogCiAj
-aW5jbHVkZSAiZHdfaGRtaS1hdWRpby5oIgpAQCAtMjg0LDYgKzI4NiwxMCBAQCBzdGF0aWMgaW50
-IGR3X2hkbWlfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAogCXJ1
-bnRpbWUtPmh3ID0gZHdfaGRtaV9odzsKIAorCXJldCA9IHNuZF9wY21faHdfY29uc3RyYWludF9l
-bGQocnVudGltZSwgZHctPmRhdGEuZWxkKTsKKwlpZiAocmV0IDwgMCkKKwkJcmV0dXJuIHJldDsK
-KwogCXJldCA9IHNuZF9wY21fbGltaXRfaHdfcmF0ZXMocnVudGltZSk7CiAJaWYgKHJldCA8IDAp
-CiAJCXJldHVybiByZXQ7CmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hk
-bWktYXVkaW8uaCBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvZHdfaGRtaS1hdWRpby5oCmluZGV4
-IDFlODQwMTE4ZDkwYS4uOTFmNjMxYmVlY2M3IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0v
-YnJpZGdlL2R3X2hkbWktYXVkaW8uaAorKysgYi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hk
-bWktYXVkaW8uaApAQCAtOCw2ICs4LDcgQEAgc3RydWN0IGR3X2hkbWlfYXVkaW9fZGF0YSB7CiAJ
-dm9pZCBfX2lvbWVtICpiYXNlOwogCWludCBpcnE7CiAJc3RydWN0IGR3X2hkbWkgKmhkbWk7CisJ
-dTggKmVsZDsKIH07CiAKICNlbmRpZgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2JyaWRn
-ZS9kd19oZG1pLmMgYi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2R3X2hkbWkuYwppbmRleCBiNjU0
-NjQ3ODlmYmQuLmE4YjI0MzI3ODc3NCAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL2JyaWRn
-ZS9kd19oZG1pLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9kd19oZG1pLmMKQEAgLTE1
-MzMsNiArMTUzMyw4IEBAIHN0YXRpYyBpbnQgZHdfaGRtaV9jb25uZWN0b3JfZ2V0X21vZGVzKHN0
-cnVjdCBkcm1fY29ubmVjdG9yICpjb25uZWN0b3IpCiAJCWhkbWktPnNpbmtfaGFzX2F1ZGlvID0g
-ZHJtX2RldGVjdF9tb25pdG9yX2F1ZGlvKGVkaWQpOwogCQlkcm1fbW9kZV9jb25uZWN0b3JfdXBk
-YXRlX2VkaWRfcHJvcGVydHkoY29ubmVjdG9yLCBlZGlkKTsKIAkJcmV0ID0gZHJtX2FkZF9lZGlk
-X21vZGVzKGNvbm5lY3RvciwgZWRpZCk7CisJCS8qIFN0b3JlIHRoZSBFTEQgKi8KKwkJZHJtX2Vk
-aWRfdG9fZWxkKGNvbm5lY3RvciwgZWRpZCk7CiAJCWtmcmVlKGVkaWQpOwogCX0gZWxzZSB7CiAJ
-CWRldl9kYmcoaGRtaS0+ZGV2LCAiZmFpbGVkIHRvIGdldCBlZGlkXG4iKTsKQEAgLTE4NzMsNiAr
-MTg3NSw3IEBAIGludCBkd19oZG1pX2JpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZGV2
-aWNlICptYXN0ZXIsCiAJCWF1ZGlvLmJhc2UgPSBoZG1pLT5yZWdzOwogCQlhdWRpby5pcnEgPSBp
-cnE7CiAJCWF1ZGlvLmhkbWkgPSBoZG1pOworCQlhdWRpby5lbGQgPSBoZG1pLT5jb25uZWN0b3Iu
-ZWxkOwogCiAJCXBkZXZpbmZvLm5hbWUgPSAiZHctaGRtaS1haGItYXVkaW8iOwogCQlwZGV2aW5m
-by5kYXRhID0gJmF1ZGlvOwotLSAKMi4xLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVsCg==
+Add basic support for multi-channel PCM audio, with fixed speaker
+mappings.  This has been tested with an AV receiver, and appears to
+work for low sample rates up to 8 channels.
+
+It should be noted that multi-channel mode using the IEC958 alsa-lib
+conversion plugin requires correct AES channel status for the AV
+receiver to recognise the stream, especially the sample rate bits.
+"Not identified" does not work there.
+
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c | 59 +++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
+index 125b81306254..3a8f32e04b63 100644
+--- a/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
++++ b/drivers/gpu/drm/bridge/dw_hdmi-ahb-audio.c
+@@ -62,9 +62,14 @@ enum {
+ 	HDMI_AHB_DMA_CONF0_INCR4 = 0,
+ 	HDMI_AHB_DMA_CONF0_BURST_MODE = BIT(0),
+ 	HDMI_AHB_DMA_MASK_DONE = BIT(7),
++
+ 	HDMI_REVISION_ID = 0x0001,
+ 	HDMI_IH_AHBDMAAUD_STAT0 = 0x0109,
+ 	HDMI_IH_MUTE_AHBDMAAUD_STAT0 = 0x0189,
++	HDMI_FC_AUDICONF2 = 0x1027,
++	HDMI_FC_AUDSCONF = 0x1063,
++	HDMI_FC_AUDSCONF_LAYOUT1 = 1 << 0,
++	HDMI_FC_AUDSCONF_LAYOUT0 = 0 << 0,
+ 	HDMI_AHB_DMA_CONF0 = 0x3600,
+ 	HDMI_AHB_DMA_START = 0x3601,
+ 	HDMI_AHB_DMA_STOP = 0x3602,
+@@ -77,6 +82,44 @@ enum {
+ 	HDMI_AHB_DMA_BUFFPOL = 0x361a,
+ };
+ 
++struct dw_hdmi_channel_conf {
++	u8 conf1;
++	u8 ca;
++};
++
++/*
++ * The default mapping of ALSA channels to HDMI channels and speaker
++ * allocation bits.  Note that we can't do channel remapping here -
++ * channels must be in the same order.
++ *
++ * Mappings for alsa-lib pcm/surround*.conf files:
++ *
++ *		Front	Sur4.0	Sur4.1	Sur5.0	Sur5.1	Sur7.1
++ * Channels	2	4	6	6	6	8
++ *
++ * Our mapping from ALSA channel to CEA686D speaker name and HDMI channel:
++ *
++ *				Number of ALSA channels
++ * ALSA Channel	2	3	4	5	6	7	8
++ * 0		FL:0	=	=	=	=	=	=
++ * 1		FR:1	=	=	=	=	=	=
++ * 2			FC:3	RL:4	LFE:2	=	=	=
++ * 3				RR:5	RL:4	FC:3	=	=
++ * 4					RR:5	RL:4	=	=
++ * 5						RR:5	=	=
++ * 6							RC:6	=
++ * 7							RLC/FRC	RLC/FRC
++ */
++static struct dw_hdmi_channel_conf default_hdmi_channel_config[7] = {
++	{ 0x03, 0x00 },	/* FL,FR */
++	{ 0x0b, 0x02 },	/* FL,FR,FC */
++	{ 0x33, 0x08 },	/* FL,FR,RL,RR */
++	{ 0x37, 0x09 },	/* FL,FR,LFE,RL,RR */
++	{ 0x3f, 0x0b },	/* FL,FR,LFE,FC,RL,RR */
++	{ 0x7f, 0x0f },	/* FL,FR,LFE,FC,RL,RR,RC */
++	{ 0xff, 0x13 },	/* FL,FR,LFE,FC,RL,RR,[FR]RC,[FR]LC */
++};
++
+ struct snd_dw_hdmi {
+ 	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+@@ -352,7 +395,7 @@ static int dw_hdmi_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_dw_hdmi *dw = substream->private_data;
+-	u8 threshold, conf0, conf1;
++	u8 threshold, conf0, conf1, layout, ca;
+ 
+ 	/* Setup as per 3.0.5 FSL 4.1.0 BSP */
+ 	switch (dw->revision) {
+@@ -380,11 +423,23 @@ static int dw_hdmi_prepare(struct snd_pcm_substream *substream)
+ 	runtime->hw.fifo_size = threshold * 32;
+ 
+ 	conf0 |= HDMI_AHB_DMA_CONF0_EN_HLOCK;
+-	conf1 = (1 << runtime->channels) - 1;
++	conf1 = default_hdmi_channel_config[runtime->channels - 2].conf1;
++	ca = default_hdmi_channel_config[runtime->channels - 2].ca;
++
++	/*
++	 * For >2 channel PCM audio, we need to select layout 1
++	 * and set an appropriate channel map.
++	 */
++	if (runtime->channels > 2)
++		layout = HDMI_FC_AUDSCONF_LAYOUT1;
++	else
++		layout = HDMI_FC_AUDSCONF_LAYOUT0;
+ 
+ 	writeb_relaxed(threshold, dw->data.base + HDMI_AHB_DMA_THRSLD);
+ 	writeb_relaxed(conf0, dw->data.base + HDMI_AHB_DMA_CONF0);
+ 	writeb_relaxed(conf1, dw->data.base + HDMI_AHB_DMA_CONF1);
++	writeb_relaxed(layout, dw->data.base + HDMI_FC_AUDSCONF);
++	writeb_relaxed(ca, dw->data.base + HDMI_FC_AUDICONF2);
+ 
+ 	switch (runtime->format) {
+ 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
+-- 
+2.1.0
