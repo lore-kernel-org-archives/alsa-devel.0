@@ -1,15 +1,15 @@
 From: mengdong.lin@intel.com
-Subject: [RFC PATCH 06/10] ASoC: bind new DAI links after
-	probing components.
-Date: Mon, 10 Aug 2015 14:13:26 +0800
-Message-ID: <1439187206-1199-1-git-send-email-mengdong.lin@intel.com>
+Subject: [RFC PATCH 07/10] ASoC: support adding a DAI
+	dynamically
+Date: Mon, 10 Aug 2015 14:13:34 +0800
+Message-ID: <1439187214-1243-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A49242651BE
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 08:00:08 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 41BC8265176
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 08:00:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,64 +25,141 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-Probing components can bring new DAI or DAI links based on the topology
-info. This patch finds the unbound DAI links and bind them.
+API snd_soc_add_dai() is defined to register a DAI dynamically, create its
+DAI widget, and notify the machine driver. This API can be used by the
+topology core to add DAIs dynamically.
+
+And a callback add_dai() is defined for the soc card. The machine driver
+can implement this callback. Adding a new DAI dynmaically will trigger
+this callback, and the machine driver can create relavant DAI link in the
+callback context.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 7e04ec0..2a474c8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1081,6 +1081,7 @@ struct snd_soc_card {
+ 	int (*set_bias_level_post)(struct snd_soc_card *,
+ 				   struct snd_soc_dapm_context *dapm,
+ 				   enum snd_soc_bias_level level);
++	int (*add_dai)(struct snd_soc_card *, struct snd_soc_dai_driver*);
+ 
+ 	long pmdown_time;
+ 
+@@ -1634,6 +1635,9 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
+ void snd_soc_add_dai_link(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link);
+ 
++int snd_soc_add_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv);
++
+ #include <sound/soc-dai.h>
+ 
+ #ifdef CONFIG_DEBUG_FS
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f552fa0..2818709 100644
+index 2818709..b330676 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1169,6 +1169,19 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 	}
+@@ -2792,6 +2792,98 @@ err:
+ 	return ret;
  }
  
-+static bool soc_is_dai_link_bound(struct snd_soc_card *card,
-+		struct snd_soc_dai_link *dai_link)
++static struct snd_soc_dai *soc_register_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv,
++	bool legacy_dai_naming)
 +{
-+	struct snd_soc_pcm_runtime *rtd;
++	struct device *dev = component->dev;
++	struct snd_soc_dai *dai;
++	int ret;
 +
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (rtd->dai_link == dai_link)
-+			return true;
++	dev_dbg(dev, "ASoC: dynamically register DAI %s\n", dev_name(dev));
++
++	dai = kzalloc(sizeof(struct snd_soc_dai), GFP_KERNEL);
++	if (dai == NULL) {
++		ret = -ENOMEM;
++		goto err;
 +	}
 +
-+	return false;
++	/*
++	 * Back in the old days when we still had component-less DAIs,
++	 * instead of having a static name, component-less DAIs would
++	 * inherit the name of the parent device so it is possible to
++	 * register multiple instances of the DAI. We still need to keep
++	 * the same naming style even though those DAIs are not
++	 * component-less anymore.
++	 */
++	if (legacy_dai_naming) {
++		dai->name = fmt_single_name(dev, &dai->id);
++	} else {
++		dai->name = fmt_multiple_name(dev, dai_drv);
++		if (dai_drv->id)
++			dai->id = dai_drv->id;
++		else
++			dai->id = component->num_dai;
++	}
++	if (dai->name == NULL) {
++		kfree(dai);
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	dai->component = component;
++	dai->dev = dev;
++	dai->driver = dai_drv;
++	if (!dai->driver->ops)
++		dai->driver->ops = &null_dai_ops;
++
++	list_add(&dai->list, &component->dai_list);
++	component->num_dai++;
++
++	dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
++	return dai;
++
++err:
++	kfree(dai);
++	return NULL;
 +}
 +
- static int snd_soc_init_multicodec(struct snd_soc_card *card,
- 				   struct snd_soc_dai_link *dai_link)
- {
-@@ -1763,6 +1776,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_dai_link *dai_link;
- 	int ret, i, order;
- 
- 	mutex_lock(&client_mutex);
-@@ -1853,6 +1867,21 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	/* no longer need dummy runtimes */
- 	soc_remove_dummy_pcm_runtimes(card);
- 
-+	/* Find new DAI links added during probing components and bind them.
-+	 * Components with topology may bring new DAIs and DAI links.
-+	 */
-+	list_for_each_entry(dai_link, &card->dai_link_list, list) {
-+		if (dai_link->dummy || soc_is_dai_link_bound(card, dai_link))
-+			continue;
++/**
++ * snd_soc_add_dai - Add a DAI dynamically with the ASoC core
++ *
++ * @component: The component the DAIs are registered for
++ * @dai_drv: DAI driver to use for the DAI
++ */
++int snd_soc_add_dai(struct snd_soc_component *component,
++	struct snd_soc_dai_driver *dai_drv)
++{
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	struct snd_soc_card *card = component->card;
++	struct snd_soc_dai *dai;
++	int ret;
 +
-+		ret = soc_init_dai_link(card, dai_link);
-+		if (ret)
-+			goto probe_dai_err;
-+		ret = soc_bind_dai_link(card, dai_link);
-+		if (ret)
-+			goto probe_dai_err;
++	lockdep_assert_held(&client_mutex);
++	dai = soc_register_dai(component, dai_drv, false);
++	if (!dai)
++		return -ENOMEM;
++
++	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
++	if (ret != 0) {
++		dev_err(component->dev,
++			"Failed to create DAI widgets %d\n", ret);
 +	}
 +
- 	/* probe all DAI links on this card */
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 			order++) {
++	/* Notify the machine driver a new DAI is added, so the machine driver
++	 * can add new DAI links in the callback context.
++	 */
++	if (card && card->add_dai)
++		card->add_dai(card, dai_drv);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_add_dai);
++
+ static void snd_soc_component_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 	enum snd_soc_dapm_type type, int subseq)
+ {
 -- 
 1.9.1
