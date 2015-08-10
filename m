@@ -1,21 +1,16 @@
 From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH 2/3] ASoC: fsl_sai: Add imx7d platform
+Subject: [PATCH v2] ASoC: fsl-sai: add 32 bit word length
 	support
-Date: Mon, 10 Aug 2015 09:14:38 +0800
-Message-ID: <20150810011436.GA15493@shlinux2>
-References: <35057b1d49085839cdd1c6514a6ed7b690c713e9.1438928571.git.zidan.wang@freescale.com>
- <f269bace628dd8ebac7c1833b743d4d5e5d528db.1438928571.git.zidan.wang@freescale.com>
- <20150807193436.GA6840@Asurada>
+Date: Mon, 10 Aug 2015 10:43:49 +0800
+Message-ID: <deb461b426c4f24742e77dd58e0cb6713f1630ed.1439174417.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0135.outbound.protection.outlook.com [157.56.111.135])
- by alsa0.perex.cz (Postfix) with ESMTP id B5D6826512D
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 04:25:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150807193436.GA6840@Asurada>
+ (mail-bn1on0145.outbound.protection.outlook.com [157.56.110.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 080E426512D
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 04:42:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: nicoleotsuka@gmail.com
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 07, 2015 at 12:34:37PM -0700, Nicolin Chen wrote:
-> On Fri, Aug 07, 2015 at 02:23:52PM +0800, Zidan Wang wrote:
-> > i.MX7d SoC contains SAI module, so add imx7d platform support.
-> > 
-> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > ---
-> >  sound/soc/fsl/fsl_sai.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> > index 5c737f1..390197e 100644
-> > --- a/sound/soc/fsl/fsl_sai.c
-> > +++ b/sound/soc/fsl/fsl_sai.c
-> > @@ -704,6 +704,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
-> >  	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
-> >  		sai->sai_on_imx = true;
-> >  
-> > +	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx7d-sai"))
-> > +		sai->sai_on_imx = true;
-> 
-> What's the difference between imx6sx-sai and imx7d-sai?
-> 
-> I think you may put its compatible model in the DT instead of adding
-> a copy in the driver unless the SAI on the imx7d really has something
-> different.
-> 
-> For example:
-> 	compatible = "fsl,imx6q-ssi", "fsl,imx51-ssi";
-> 	/* The driver only has imx51-ssi */
+Add 32 bit word length support. There are no code changes required
+in the SAI driver since it has already wirten the word width to the
+corresponding register.
 
-The imx7d-sai is the same as imx6sx-sai, so i should use compatible model "fsl,imx6sx-sai" for imx7d-sai.
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Best Regards,
-Zidan Wang
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 0662809..40280ce 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2012-2013 Freescale Semiconductor, Inc.
++ * Copyright 2012-2015 Freescale Semiconductor, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -13,7 +13,8 @@
+ 
+ #define FSL_SAI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+ 			 SNDRV_PCM_FMTBIT_S20_3LE |\
+-			 SNDRV_PCM_FMTBIT_S24_LE)
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ /* SAI Register Map Register */
+ #define FSL_SAI_TCSR	0x00 /* SAI Transmit Control */
+-- 
+1.9.1
