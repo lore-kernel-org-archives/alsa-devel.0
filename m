@@ -1,269 +1,62 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 2/3] topology: Add C templates structure for
-	building topology from C programs
-Date: Mon, 10 Aug 2015 19:13:48 +0100
-Message-ID: <1439230429-6173-3-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1439230429-6173-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
+Date: Mon, 10 Aug 2015 19:16:41 +0100
+Message-ID: <20150810181641.GD10748@sirena.org.uk>
+References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
+ <s5hk2t35ui4.wl-tiwai@suse.de>
+ <20150810103921.GR7557@n2100.arm.linux.org.uk>
+ <s5hegjb5o44.wl-tiwai@suse.de>
+ <20150810164941.GW7557@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A15F52659A4
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 20:13:56 +0200 (CEST)
-In-Reply-To: <1439230429-6173-1-git-send-email-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20150810164941.GW7557@n2100.arm.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
 
-Define structures that can be used by applications to directly build topology
-data instead of using text files. The application will build up the topology
-data by populating the template structures for each object type and then
-registering the template with the topology core.
+--pQhZXvAqiZgbeUkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- include/topology.h        | 176 ++++++++++++++++++++++++++++++++++++++++++++++
- src/topology/tplg_local.h |  18 -----
- 2 files changed, 176 insertions(+), 18 deletions(-)
+On Mon, Aug 10, 2015 at 05:49:41PM +0100, Russell King - ARM Linux wrote:
 
-diff --git a/include/topology.h b/include/topology.h
-index 0cb2d79..aee43de 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -456,9 +456,30 @@ extern "C" {
-  *
-  */
- 
-+/** Maximum number of channels supported in one control */
-+#define SND_TPLG_MAX_CHAN		8
-+
- /** Topology context */
- typedef struct snd_tplg snd_tplg_t;
- 
-+/** Topology object types */
-+enum snd_tplg_type {
-+	SND_TPLG_TYPE_TLV = 0,		/*!< TLV Data */
-+	SND_TPLG_TYPE_MIXER,		/*!< Mixer control*/
-+	SND_TPLG_TYPE_ENUM,		/*!< Enumerated control */
-+	SND_TPLG_TYPE_TEXT,		/*!< Text data */
-+	SND_TPLG_TYPE_DATA,		/*!< Private data */
-+	SND_TPLG_TYPE_BYTES,		/*!< Byte control */
-+	SND_TPLG_TYPE_STREAM_CONFIG,	/*!< PCM Stream configuration */
-+	SND_TPLG_TYPE_STREAM_CAPS,	/*!< PCM Stream capabilities */
-+	SND_TPLG_TYPE_PCM,		/*!< PCM stream device */
-+	SND_TPLG_TYPE_DAPM_WIDGET,	/*!< DAPM widget */
-+	SND_TPLG_TYPE_DAPM_GRAPH,	/*!< DAPM graph elements */
-+	SND_TPLG_TYPE_BE,		/*!< BE DAI link */
-+	SND_TPLG_TYPE_CC,		/*!< Hostless codec <-> codec link */
-+	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
-+};
-+
- /**
-  * \brief Create a new topology parser instance.
-  * \return New topology parser instance
-@@ -488,6 +509,161 @@ int snd_tplg_build_file(snd_tplg_t *tplg, const char *infile,
-  */
- void snd_tplg_verbose(snd_tplg_t *tplg, int verbose);
- 
-+/** \struct snd_tplg_tlv_template
-+ * \brief Template type for all TLV objects.
-+ */
-+struct snd_tplg_tlv_template {
-+	int type;	 /*!< TLV type SNDRV_CTL_TLVT_ */
-+};
-+
-+/** \struct snd_tplg_tlv_dbscale_template
-+ * \brief Template type for TLV Scale objects.
-+ */
-+struct snd_tplg_tlv_dbscale_template {
-+	struct snd_tplg_tlv_template hdr;	/*!< TLV type header */
-+	int min;			/*!< dB minimum value in 0.1dB */
-+	int step;			/*!< dB step size in 0.1dB */
-+	int mute;			/*!< is min dB value mute ? */
-+};
-+
-+/** \struct snd_tplg_channel_template
-+ * \brief Template type for single channel mapping.
-+ */
-+struct snd_tplg_channel_elem {
-+	int size;	/*!< size in bytes of this structure */
-+	int reg;	/*!< channel control register */
-+	int shift;	/*!< channel shift for control bits */
-+	int id;		/*!< ID maps to Left, Right, LFE etc */
-+};
-+
-+/** \struct snd_tplg_channel_map_template
-+ * \brief Template type for channel mapping.
-+ */
-+struct snd_tplg_channel_map_template {
-+	int num_channels;	/*!< number of channel mappings */
-+	struct snd_tplg_channel_elem channel[SND_TPLG_MAX_CHAN];	/*!< mapping */
-+};
-+
-+/** \struct snd_tplg_pdata_template
-+ * \brief Template type for private data objects.
-+ */
-+struct snd_tplg_pdata_template {
-+	unsigned int length;	/*!< data length */
-+	const void *data;	/*!< data */
-+};
-+
-+/** \struct snd_tplg_io_ops_template
-+ * \brief Template type for object operations mapping.
-+ */
-+struct snd_tplg_io_ops_template {
-+	int get;	/*!< get callback ID */
-+	int put;	/*!< put callback ID */
-+	int info;	/*!< info callback ID */
-+};
-+
-+/** \struct snd_tplg_ctl_template
-+ * \brief Template type for control objects.
-+ */
-+struct snd_tplg_ctl_template {
-+	int type;		/*!< Control type */
-+	const char *name;	/*!< Control name */
-+	int access;		/*!< Control access */
-+	struct snd_tplg_io_ops_template ops;	/*!< operations */
-+	struct snd_tplg_tlv_template *tlv; /*!< non NULL means we have TLV data */
-+};
-+
-+/** \struct snd_tplg_mixer_template
-+ * \brief Template type for mixer control objects.
-+ */
-+struct snd_tplg_mixer_template {
-+	struct snd_tplg_ctl_template hdr;	/*!< control type header */
-+	struct snd_tplg_channel_map_template *map;	/*!< channel map */
-+	int min;	/*!< min value for mixer */
-+	int max;	/*!< max value for mixer */
-+	int platform_max;	/*!< max value for platform control */
-+	int invert;	/*!< whether controls bits are inverted */
-+	struct snd_soc_tplg_private *priv;	/*!< control private data */
-+};
-+
-+/** \struct snd_tplg_enum_template
-+ * \brief Template type for enumerated control objects.
-+ */
-+struct snd_tplg_enum_template {
-+	struct snd_tplg_ctl_template hdr;	/*!< control type header */
-+	struct snd_tplg_channel_map_template *map;	/*!< channel map */
-+	int items;	/*!< number of enumerated items in control */
-+	int mask;	/*!< register mask size */
-+	const char **texts;	/*!< control text items */
-+	const int **values;	/*!< control value items */
-+	struct snd_soc_tplg_private *priv;	/*!< control private data */
-+};
-+
-+/** \struct snd_tplg_bytes_template
-+ * \brief Template type for TLV Scale objects.
-+ */
-+struct snd_tplg_bytes_template {
-+	struct snd_tplg_ctl_template hdr;	/*!< control type header */
-+	int max;		/*!< max byte control value */
-+	int mask;		/*!< byte control mask */
-+	int base;		/*!< base register */
-+	int num_regs;		/*!< number of registers */
-+	struct snd_tplg_io_ops_template ext_ops;	/*!< ops mapping */
-+	struct snd_soc_tplg_private *priv;	/*!< control private data */
-+};
-+
-+/** \struct snd_tplg_graph_elem
-+ * \brief Template type for single DAPM graph element.
-+ */
-+struct snd_tplg_graph_elem {
-+	const char *src;	/*!< source widget name */
-+	const char *ctl;	/*!< control name or NULL if no control */
-+	const char *sink;	/*!< sink widget name */
-+};
-+
-+/** \struct snd_tplg_graph_template
-+ * \brief Template type for array of DAPM graph elements.
-+ */
-+struct snd_tplg_graph_template {
-+	int count;		/*!< Number of graph elements */
-+	struct snd_tplg_graph_elem elem[0];	/*!< graph elements */
-+};
-+
-+/** \struct snd_tplg_widget_template
-+ * \brief Template type for DAPM widget objects.
-+ */
-+struct snd_tplg_widget_template {
-+	int id;			/*!< SND_SOC_DAPM_CTL */
-+	const char *name;	/*!< widget name */
-+	const char *sname;	/*!< stream name (certain widgets only) */
-+	int reg;		/*!< negative reg = no direct dapm */
-+	int shift;		/*!< bits to shift */
-+	int mask;		/*!< non-shifted mask */
-+	int subseq;		/*!< sort within widget type */
-+	unsigned int invert;		/*!< invert the power bit */
-+	unsigned int ignore_suspend;	/*!< kept enabled over suspend */
-+	unsigned short event_flags;	/*!< PM event sequence flags */
-+	unsigned short event_type;	/*!< PM event sequence type */
-+	struct snd_soc_tplg_private *priv;	/*!< widget private data */
-+	int num_ctls;			/*!< Number of controls used by widget */
-+	struct snd_tplg_ctl_template *ctl[0];	/*!< array of widget controls */
-+};
-+
-+/** \struct snd_tplg_obj_template
-+ * \brief Generic Template Object
-+ */
-+typedef struct snd_tplg_obj_template {
-+	enum snd_tplg_type type;	/*!< template object type */
-+	int index;		/*!< group index for object */
-+	int version;		/*!< optional vendor specific version details */
-+	int vendor_type;	/*!< optional vendor specific type info */
-+	union {
-+		struct snd_tplg_widget_template *widget;	/*!< DAPM widget */
-+		struct snd_tplg_mixer_template *mixer;		/*!< Mixer control */
-+		struct snd_tplg_bytes_template *bytes_ctl;	/*!< Bytes control */
-+		struct snd_tplg_enum_template *enum_ctl;	/*!< Enum control */
-+		struct snd_tplg_graph_template *graph;		/*!< Graph elements */
-+	};
-+} snd_tplg_obj_template_t;
- /* \} */
- 
- #ifdef __cplusplus
-diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
-index febc177..953d822 100644
---- a/src/topology/tplg_local.h
-+++ b/src/topology/tplg_local.h
-@@ -40,24 +40,6 @@
- struct tplg_ref;
- struct tplg_elem;
- 
--/** Topology object types */
--enum snd_tplg_type {
--	SND_TPLG_TYPE_TLV = 0,		/*!< TLV Data */
--	SND_TPLG_TYPE_MIXER,		/*!< Mixer control*/
--	SND_TPLG_TYPE_ENUM,		/*!< Enumerated control */
--	SND_TPLG_TYPE_TEXT,		/*!< Text data */
--	SND_TPLG_TYPE_DATA,		/*!< Private data */
--	SND_TPLG_TYPE_BYTES,		/*!< Byte control */
--	SND_TPLG_TYPE_STREAM_CONFIG,	/*!< PCM Stream configuration */
--	SND_TPLG_TYPE_STREAM_CAPS,	/*!< PCM Stream capabilities */
--	SND_TPLG_TYPE_PCM,		/*!< PCM stream device */
--	SND_TPLG_TYPE_DAPM_WIDGET,	/*!< DAPM widget */
--	SND_TPLG_TYPE_DAPM_GRAPH,	/*!< DAPM graph elements */
--	SND_TPLG_TYPE_BE,		/*!< BE DAI link */
--	SND_TPLG_TYPE_CC,		/*!< Hostless codec <-> codec link */
--	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
--};
--
- struct snd_tplg {
- 
- 	/* opaque vendor data */
--- 
-2.1.4
+> I'm not sure what the right solution is here: modifying every audio
+> player out there to make HDMI work sanely is crazy.  Having alsalib
+> automatically generate the correct AES channel status bytes for
+> linear audio formats seems to be sensible, but difficult given its
+> present structure with the defaults - the iec958 plugin has no idea
+> if the defaults are being used or not.
+
+> The advantage of having the horrid conversion in the kernel is that
+> we can choose to generate proper AES channel status data without
+> regard to userspace for standard linear PCM, and when the iec958 plugin
+> is being used with proper channel status (eg, in compressed audio
+> pass-through mode by VLC) then that works too.
+
+The other advantage of doing it in kernel is that it also fixes tinyalsa
+applications (which mainly means Android systems) by default for PCM
+data.
+
+--pQhZXvAqiZgbeUkD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVyOqIAAoJECTWi3JdVIfQ5xAH/jgHoxctKQ2yixGAjdkXug5s
+ShURRpNTK3ikzFITz6wOjB+VP/4CThHJdDEPCnwkQmR/QaCnuz2OpWEqEbfwCDJZ
+oTpmhz8kIhW2bFM0HLtVP+I8HOYGUK6D8u5cvb1i6CEqzKSfFYqsR6Mrqf8fYznE
+WbPmtnaX1GGgM+MEgzkUCFMpV/Eth/IHyxKddlubXWlGbxZ2djt3eEiwHXs2IUTC
+BUNt6dahxPpmWKWeVdWZpcUiX3nPYPGyGGA4F6Uh6BRqTJMSRbxn5hbf9M6x+E+y
+7w5+H0zcjJPqF3FTxOIpogWp0asJ5PykNiNqYWH8HZ0vZRqMX8avE20xqbqIpas=
+=XP20
+-----END PGP SIGNATURE-----
+
+--pQhZXvAqiZgbeUkD--
