@@ -1,101 +1,92 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
-Date: Mon, 10 Aug 2015 08:30:45 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196E0A32@SHSMSX103.ccr.corp.intel.com>
-References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
- <1439191931-25705-4-git-send-email-libin.yang@intel.com>
- <s5h1tfb7eo6.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: wm8960: update pll and
+	clock	setting function
+Date: Mon, 10 Aug 2015 09:32:46 +0100
+Message-ID: <20150810083246.GH25225@opensource.wolfsonmicro.com>
+References: <ac311441efbc167953de3ab8706217c3c669f88d.1436776563.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h1tfb7eo6.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8340E2652E7
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 10:32:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <ac311441efbc167953de3ab8706217c3c669f88d.1436776563.git.zidan.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
-dG86dGl3YWlAc3VzZS5kZV0KPiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA0OjA0IFBN
-Cj4gVG86IFlhbmcsIExpYmluCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgaW50
-ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsKPiBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4g
-U3ViamVjdDogUmU6IFtQQVRDSCB2NCA0LzRdIGRybS9pOTE1OiBzZXQgcHJvcGVyIE4vQ1RTIGlu
-IG1vZGVzZXQKPiAKPiBPbiBNb24sIDEwIEF1ZyAyMDE1IDA5OjMyOjExICswMjAwLAo+IGxpYmlu
-LnlhbmdAaW50ZWwuY29tIHdyb3RlOgo+ID4KPiA+IEZyb206IExpYmluIFlhbmcgPGxpYmluLnlh
-bmdAaW50ZWwuY29tPgo+ID4KPiA+IFdoZW4gbW9kZXNldCBvY2N1cnMgYW5kIHRoZSBUTURTIGZy
-ZXF1ZW5jeSBpcyBzZXQgdG8gc29tZQo+ID4gc3BlaWNhbCB2YWx1ZSwgdGhlIE4vQ1RTIG5lZWQg
-dG8gYmUgc2V0IG1hbnVhbGx5IGlmIGF1ZGlvCj4gPiBpcyBwbGF5aW5nLgo+ID4KPiA+IFNpZ25l
-ZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAaW50ZWwuY29tPgo+ID4gLS0tCj4gPiAg
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaCAgICB8ICA2ICsrKysrKwo+ID4gIGRyaXZl
-cnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgfCA0Mgo+ICsrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA0OCBpbnNlcnRpb25zKCsp
-Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiBi
-L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiA+IGluZGV4IGRhMmQxMjguLjg1ZjNi
-ZWIgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiAr
-KysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiBAQCAtNzAzMCw2ICs3MDMw
-LDEyIEBAIGVudW0gc2tsX2Rpc3BfcG93ZXJfd2VsbHMgewo+ID4gIAkJCQkJX0hTV19BVURfRElH
-X0NOVlRfMikKPiA+ICAjZGVmaW5lIERJUF9QT1JUX1NFTF9NQVNLCQkweDMKPiA+Cj4gPiArI2Rl
-ZmluZSBfSFNXX0FVRF9TVFJfREVTQ18xCQkweDY1MDg0Cj4gPiArI2RlZmluZSBfSFNXX0FVRF9T
-VFJfREVTQ18yCQkweDY1MTg0Cj4gPiArI2RlZmluZSBBVURfU1RSX0RFU0MocGlwZSkJX1BJUEUo
-cGlwZSwgXAo+ID4gKwkJCQkJIF9IU1dfQVVEX1NUUl9ERVNDXzEsCj4gCVwKPiA+ICsJCQkJCSBf
-SFNXX0FVRF9TVFJfREVTQ18yKQo+ID4gKwo+ID4gICNkZWZpbmUgX0hTV19BVURfRURJRF9EQVRB
-X0EJCTB4NjUwNTAKPiA+ICAjZGVmaW5lIF9IU1dfQVVEX0VESURfREFUQV9CCQkweDY1MTUwCj4g
-PiAgI2RlZmluZSBIU1dfQVVEX0VESURfREFUQShwaXBlKSBfUElQRShwaXBlLCBcCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IGIvZHJpdmVycy9n
-cHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gaW5kZXggZWRkZjM3Zi4uMDgyZjk2ZCAxMDA2
-NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ICsrKyBi
-L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+IEBAIC0yMzUsNiArMjM1LDkg
-QEAgc3RhdGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QKPiBkcm1fY29ubmVj
-dG9yICpjb25uZWN0b3IsCj4gPiAgCWNvbnN0IHVpbnQ4X3QgKmVsZCA9IGNvbm5lY3Rvci0+ZWxk
-Owo+ID4gIAl1aW50MzJfdCB0bXA7Cj4gPiAgCWludCBsZW4sIGk7Cj4gPiArCWludCBjdnRfaWR4
-Owo+ID4gKwlpbnQgbl9sb3csIG5fdXAsIG47Cj4gPiArCWludCBiYXNlX3JhdGUsIG11bCwgZGl2
-LCByYXRlOwo+ID4KPiA+ICAJRFJNX0RFQlVHX0tNUygiRW5hYmxlIGF1ZGlvIGNvZGVjIG9uIHBp
-cGUgJWMsICV1IGJ5dGVzCj4gRUxEXG4iLAo+ID4gIAkJICAgICAgcGlwZV9uYW1lKHBpcGUpLCBk
-cm1fZWxkX3NpemUoZWxkKSk7Cj4gPiBAQCAtMjY3LDYgKzI3MCwyMSBAQCBzdGF0aWMgdm9pZCBo
-c3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwK
-PiA+ICAJdG1wIHw9IEFVRElPX0VMRF9WQUxJRChwaXBlKTsKPiA+ICAJSTkxNV9XUklURShIU1df
-QVVEX1BJTl9FTERfQ1BfVkxELCB0bXApOwo+ID4KPiA+ICsJaWYgKChtb2RlLT5jbG9jayA9PSAy
-OTcwMDApIHx8Cj4gPiArCQkobW9kZS0+Y2xvY2sgPT0gRElWX1JPVU5EX1VQKDI5NzAwMCAqIDEw
-MDAsIDEwMDEpKSkKPiB7Cj4gCj4gVE1EU18yOTdNIGFuZCBUTURTXzI5Nk0gY2FuIGJlIHVzZWQg
-aGVyZT8KCk9oLCBzb3JyeSwgSSBmb3Jnb3QgdG8gdXNlIGl0IGhlcmUuCgo+IAo+IAo+ID4gKwkJ
-dG1wID0gSTkxNV9SRUFEKEhTV19BVURfUElQRV9DT05OX1NFTF9DVFJMKTsKPiA+ICsJCWN2dF9p
-ZHggPSAodG1wID4+IHBpcGUqOCkgJiAweGZmOwo+ID4gKwkJdG1wID0gSTkxNV9SRUFEKEFVRF9T
-VFJfREVTQyhjdnRfaWR4KSk7Cj4gPiArCQliYXNlX3JhdGUgPSB0bXAgJiAoMSA8PCAxNCk7Cj4g
-PiArCQlpZiAoYmFzZV9yYXRlID09IDApCj4gPiArCQkJcmF0ZSA9IDQ4MDAwOwo+ID4gKwkJZWxz
-ZQo+ID4gKwkJCXJhdGUgPSA0NDEwMDsKPiA+ICsJCW11bCA9ICh0bXAgJiAoMHg3IDw8IDExKSkg
-KyAxOwo+ID4gKwkJZGl2ID0gKHRtcCAmICgweDcgPDwgOCkpICsgMTsKPiA+ICsJCXJhdGUgPSBy
-YXRlICogbXVsIC8gZGl2Owo+ID4gKwl9Cj4gPiArCj4gPiAgCS8qIEVuYWJsZSB0aW1lc3RhbXBz
-ICovCj4gPiAgCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX0NGRyhwaXBlKSk7Cj4gPiAgCXRtcCAm
-PSB+QVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+ID4gQEAgLTI3Niw2ICsyOTQsMzAgQEAgc3Rh
-dGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QKPiBkcm1fY29ubmVjdG9yICpj
-b25uZWN0b3IsCj4gPiAgCQl0bXAgfD0gQVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+ID4gIAll
-bHNlCj4gPiAgCQl0bXAgfD0gYXVkaW9fY29uZmlnX2hkbWlfcGl4ZWxfY2xvY2sobW9kZSk7Cj4g
-PiArCj4gPiArCWlmICgobW9kZS0+Y2xvY2sgIT0gMjk3MDAwKSAmJgo+ID4gKwkJKG1vZGUtPmNs
-b2NrICE9IERJVl9ST1VORF9VUCgyOTcwMDAgKiAxMDAwLCAxMDAxKSkpCj4gewo+ID4gKwkJdG1w
-ICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiArCX0gZWxzZSB7Cj4gPiArCQlmb3Ig
-KGkgPSAwOyBpIDwgQVJSQVlfU0laRShhdWRfbmN0cyk7IGkrKykgewo+ID4gKwkJCWlmICgocmF0
-ZSA9PSBhdWRfbmN0c1tpXS5zYW1wbGVfcmF0ZSkgJiYKPiA+ICsJCQkJKG1vZGUtPmNsb2NrID09
-IGF1ZF9uY3RzW2ldLmNsb2NrKSkgewo+ID4gKwkJCQluID0gYXVkX25jdHNbaV0ubjsKPiA+ICsJ
-CQkJYnJlYWs7Cj4gPiArCQkJfQo+ID4gKwkJfQo+IAo+IE1pc3NpbmcgaW5pdGlhbGl6YXRpb24g
-b2Ygbj8KCk9oLCB5ZXMsIEkgd2lsbCBmaXggaXQuCgo+IAo+ID4gKwkJaWYgKG4gIT0gMCkgewo+
-ID4gKwkJCXRtcCB8PSBBVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiArCQkJbl9sb3cgPSBu
-ICYgMHhmZmY7Cj4gPiArCQkJbl91cCA9IChuID4+IDEyKSAmIDB4ZmY7Cj4gPiArCQkJdG1wIHw9
-IEFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKPiAKPiBZb3UgZG9uJ3QgbmVlZCB0byBzZXQgaXQg
-dHdpY2UuCgpZZXMuCgo+IAo+ID4gKwkJCXRtcCAmPSB+QVVEX0NPTkZJR19VUFBFUl9OX01BU0s7
-Cj4gPiArCQkJdG1wIHw9IChuX3VwIDw8IEFVRF9DT05GSUdfVVBQRVJfTl9TSElGVCk7Cj4gPiAr
-CQkJdG1wICY9IH5BVURfQ09ORklHX0xPV0VSX05fTUFTSzsKPiA+ICsJCQl0bXAgfD0gKG5fbG93
-IDw8Cj4gQVVEX0NPTkZJR19MT1dFUl9OX1NISUZUKTsKPiA+ICsJCX0KPiA+ICsJfQo+ID4gKwo+
-ID4gIAlJOTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBpcGUpLCB0bXApOwo+ID4gIH0KPiA+Cj4gPiAt
-LQo+ID4gMS45LjEKPiA+Cj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Mon, Jul 13, 2015 at 04:41:00PM +0800, Zidan Wang wrote:
+> Add sysclk auto mode. When it's sysclk auto mode, if the MCLK is
+> available for clock configure, using MCLK to provide sysclk directly,
+> otherwise, search a available pll out frequcncy and set pll.
+> 
+> Configure clock in hw_params may cause problems when using bypass style
+> paths without hw_params in machine driver getting called. So add configure
+> clock to set_bias_level.
+> 
+> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> ---
+<snip>
+> @@ -711,6 +785,9 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+>  	case SND_SOC_BIAS_PREPARE:
+>  		switch (snd_soc_codec_get_bias_level(codec)) {
+>  		case SND_SOC_BIAS_STANDBY:
+> +			ret = wm8960_configure_clocking(codec);
+> +			if (ret)
+> +				return ret;
+
+Is it right that we are calling wm8960_configure_clocking before
+clk_prepare_enable? As configure_clocking will enable the clocks
+shouldn't mclk be available before then?
+
+>  			if (!IS_ERR(wm8960->mclk)) {
+>  				ret = clk_prepare_enable(wm8960->mclk);
+>  				if (ret) {
+> @@ -726,6 +803,13 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+>  			break;
+>  
+>  		case SND_SOC_BIAS_ON:
+> +			/*
+> +			 * If it's sysclk auto mode, and the pll is enabled,
+> +			 * disable the pll
+> +			 */
+> +			if (wm8960->clk_id == WM8960_SYSCLK_AUTO && (pm2 & 0x1))
+> +				wm8960_set_pll(codec, 0, 0);
+> +
+>  			if (!IS_ERR(wm8960->mclk))
+>  				clk_disable_unprepare(wm8960->mclk);
+>  			break;
+> @@ -780,6 +864,7 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+>  					 enum snd_soc_bias_level level)
+>  {
+>  	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+> +	u16 pm2 = snd_soc_read(codec, WM8960_POWER2);
+>  	int reg, ret;
+>  
+>  	switch (level) {
+> @@ -822,6 +907,10 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+>  
+>  			msleep(100);
+>  
+> +			ret = wm8960_configure_clocking(codec);
+> +			if (ret)
+> +				return ret;
+> +
+
+Ditto here.
+
+Other than that I think this looks ok to me.
+
+Thanks,
+Charles
