@@ -1,135 +1,37 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Mon, 10 Aug 2015 09:00:50 +0200
-Message-ID: <CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com>
-References: <20150629094854.GB11162@sirena.org.uk>
- <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
- <20150630103404.GI6321@opensource.wolfsonmicro.com>
- <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
- <20150713095359.GM16517@opensource.wolfsonmicro.com>
- <CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
- <CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
- <20150715081224.GN16517@opensource.wolfsonmicro.com>
- <20150715091709.GK11162@sirena.org.uk>
- <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
- <20150717085434.GO16517@opensource.wolfsonmicro.com>
+From: libin.yang@intel.com
+Subject: [PATCH v2 1/4] drm/i915: Add audio set_ncts callback
+Date: Mon, 10 Aug 2015 15:32:08 +0800
+Message-ID: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 37FE42614C2
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 09:00:51 +0200 (CEST)
-Received: by qkdv3 with SMTP id v3so5806764qkd.2
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 00:00:50 -0700 (PDT)
-In-Reply-To: <20150717085434.GO16517@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, mika.westerberg@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-> That implies the pdata is not set for the device when you are
-> entering arizona_dev_init, also might be worth checking if it is
-> calling the stub version of the full version (basically is
-> CONFIG_OF turned on).
-# CONFIG_OF is not set here, so the current code as in arizona_dev_init()
-
-...
-if (dev_get_platdata(arizona->dev,0)) {
-/* currently not working... */
-else
- arizona_of_get_core_pdata(arizona);
-
-which returns only '0' in this case  because the config option
-CONFIG_OF is disabled.
-
-Today I am back at this device and I have changed the above function
-(arizona_of_get_core_pdata) where I set
-currently the pdata with its values for the arizona type = WM5102.
-
-So the pdata is at the moment hardcoded, that is not the way I want to
-go on, but
-it seems the code works so far, except the LDO1 makes trouble with the
-current GPIO value 0x17 (extracted from dsdt.dsl as seen above).
-
-[    5.790655] systemd-journald[434]: Received request to flush
-runtime journal from PID 1
-[    7.263225] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
-[    7.263339] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
-[    7.263482] spi spi-WM510205:00: 8333333 Hz actual, PIO
-[    7.263490] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
-[    7.263551] spi spi-WM510205:00: checking WM510205 with bmp180
-[    7.263557] spi spi-WM510205:00: checking WM510205 with bmp181
-[    7.263562] spi spi-WM510205:00: modalias WM510205 in id_table not
-found, returns NULL
-[    7.263610] arizona spi-WM510205:00: acpi_match_device() first,
-than via spi_get_device_id().
-[    7.263617] arizona spi-WM510205:00: matched ACPI ID and data
-[    7.263621] arizona spi-WM510205:00: using 1 as type for arizona audio codec
-[    7.263625] arizona spi-WM510205:00: regmap set to wm5102_spi
-[    7.264424] arizona spi-WM510205:00: spi_irq = -1
-[    7.264432] arizona spi-WM510205:00: arizona_irq = -1
-[    7.264436] arizona spi-WM510205:00: arizona_spi_probe done, call
-and return of  arizona_dev_init
-[    7.264440] arizona spi-WM510205:00: dev_set_drvdata done for 1
-[    7.264445] arizona spi-WM510205:00: arizona_of_get_core_pdata for 1
-[    7.264450] arizona spi-WM510205:00: regcache_cache_only for 1 set
-[    7.264454] arizona spi-WM510205:00: added wm5102_core_supplies for 1
-[    7.269430] LDO1: Failed to request enable GPIO23: -517
-[    7.269506] arizona spi-WM510205:00: Failed to register LDO1 supply: -517
-[    7.289191] spi-WM510205:00 supply AVDD not found, using dummy regulator
-[    7.289246] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
-[    7.289366] spi-WM510205:00 supply DCVDD not found, using dummy regulator
-[    7.289415] arizona spi-WM510205:00: Failed to request /RESET: -517
-[    7.289690] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-
-... arizona spi-wm510202 tries to init the device 2 times again ....
-
-side-note: added a lot of dev_err to see whats going on, so the most
-messages are not in master, only in my local branch (today its
-4.2.0-rc6)
-
-Instead of hardcoding and finding the correct GPIOs by Try&Error I
-want as mentioned above already by Charles Keepax, to pull them from
-ACPI.
-
-currently I am not using the the gpiolib.h and its functions to get
-the named and relevant GPIOs in question,
-failing yet searching for examples which fits into the arizona mfd code easily.
-
-I saw the drivers/gpio/gpio-arizona.h, which is also not using the
-gpiolib.h, too.also it is not clear to me, if I should use
-gpio-arizona at all (or extend it for using it with the wm5102).
-
-
-zitat from Charles:
-
-"I suspect we still have some issues with the GPIO lookups, I
-suspect we want to actually pull them from ACPI rather than
-putting them into the pdata, as I don't know if the number will
-translate directly over."
-
-What I have understand today :  the three values (irq_gpio, reset,
-ldoena) have different 'parents' as seen in the dsdt.dsl
-irq_gpio = _SB.GPO2 -> 0x0004
-reset = _SB.I2C7.PMIC
-
-Looking in other wmXXXX drivers how they get and set there gpios, but
-nothing found what I can adapt or reuse here at the moment.
-
-Does anybody has a clue??
-
-cheers
-chris
+RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpBZGQgdGhlIHNldF9uY3Rz
+IGNhbGxiYWNrLgoKV2l0aCB0aGUgY2FsbGJhY2ssIGF1ZGlvIGRyaXZlciBjYW4gdHJpZ2dlcgpp
+OTE1IGRyaXZlciB0byBzZXQgdGhlIHByb3BlciBOL0NUUwpiYXNlZCBvbiBkaWZmZXJlbnQgc2Ft
+cGxlIHJhdGVzLgoKU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5j
+b20+Ci0tLQogaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCB8IDIgKysKIDEgZmlsZSBjaGFu
+Z2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBv
+bmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAppbmRleCBjOWE4YjY0Li43MzA1
+ODgxIDEwMDY0NAotLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCisrKyBiL2luY2x1
+ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKQEAgLTMzLDYgKzMzLDggQEAgc3RydWN0IGk5MTVfYXVk
+aW9fY29tcG9uZW50IHsKIAkJdm9pZCAoKnB1dF9wb3dlcikoc3RydWN0IGRldmljZSAqKTsKIAkJ
+dm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZpY2UgKiwgYm9vbCBlbmFibGUp
+OwogCQlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0IGRldmljZSAqKTsKKwkJaW50ICgqc2V0
+X25jdHMpKHN0cnVjdCBkZXZpY2UgKiwgaW50IHBvcnQsIGludCBkZXZfZW50cnksCisJCQkJCWlu
+dCByYXRlKTsKIAl9ICpvcHM7CiB9OwogCi0tIAoxLjkuMQoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
+ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9pbnRlbC1nZngK
