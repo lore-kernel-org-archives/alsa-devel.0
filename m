@@ -1,89 +1,38 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v2 1/4] drm/i915: Add audio set_ncts callback
-Date: Tue, 11 Aug 2015 05:51:06 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196E1ECE@SHSMSX103.ccr.corp.intel.com>
-References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
- <87a8tz8iya.fsf@intel.com>
+From: Johnny <jhu@SDF.ORG>
+Subject: writing an alsa driver
+Date: Mon, 10 Aug 2015 14:12:42 +0000 (UTC)
+Message-ID: <Pine.NEB.4.64.1508101406280.9167@sdf.lonestar.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sdf.lonestar.org (mx.sdf.org [192.94.73.23])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6562E2608BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 16:12:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: michele.curti@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IFlhbmcsIExpYmluCj4gU2VudDog
-VHVlc2RheSwgQXVndXN0IDExLCAyMDE1IDEwOjQxIEFNCj4gVG86ICdKYW5pIE5pa3VsYSc7IGFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4gZ2Z4QGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZzsgZGFuaWVsLnZldHRlckBmZndsbC5jaAo+IFN1YmplY3Q6IFJF
-OiBbSW50ZWwtZ2Z4XSBbUEFUQ0ggdjIgMS80XSBkcm0vaTkxNTogQWRkIGF1ZGlvIHNldF9uY3Rz
-Cj4gY2FsbGJhY2sKPiAKPiBIaSBKYW5pLAo+IAo+IFRoYW5rcyBmb3IgcmV2aWV3aW5nLCBwbGVh
-c2Ugc2VlIG15IGNvbW1lbnRzCj4gCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4g
-RnJvbTogSmFuaSBOaWt1bGEgW21haWx0bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb21dCj4g
-PiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA3OjQ2IFBNCj4gPiBUbzogWWFuZywgTGli
-aW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4g
-PiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4gPiBT
-dWJqZWN0OiBSZTogW0ludGVsLWdmeF0gW1BBVENIIHYyIDEvNF0gZHJtL2k5MTU6IEFkZCBhdWRp
-byBzZXRfbmN0cwo+ID4gY2FsbGJhY2sKPiA+Cj4gPiBPbiBNb24sIDEwIEF1ZyAyMDE1LCBsaWJp
-bi55YW5nQGludGVsLmNvbSB3cm90ZToKPiA+ID4gRnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFu
-Z0BpbnRlbC5jb20+Cj4gPiA+Cj4gPiA+IEFkZCB0aGUgc2V0X25jdHMgY2FsbGJhY2suCj4gPiA+
-Cj4gPiA+IFdpdGggdGhlIGNhbGxiYWNrLCBhdWRpbyBkcml2ZXIgY2FuIHRyaWdnZXIKPiA+ID4g
-aTkxNSBkcml2ZXIgdG8gc2V0IHRoZSBwcm9wZXIgTi9DVFMKPiA+ID4gYmFzZWQgb24gZGlmZmVy
-ZW50IHNhbXBsZSByYXRlcy4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8
-bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgaW5jbHVkZS9kcm0vaTkxNV9j
-b21wb25lbnQuaCB8IDIgKysKPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykK
-PiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+
-IGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiBpbmRleCBjOWE4YjY0Li43MzA1
-ODgxIDEwMDY0NAo+ID4gPiAtLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4gPiA+
-ICsrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gQEAgLTMzLDYgKzMzLDgg
-QEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKPiA+ID4gIAkJdm9pZCAoKnB1dF9wb3dl
-cikoc3RydWN0IGRldmljZSAqKTsKPiA+ID4gIAkJdm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUp
-KHN0cnVjdCBkZXZpY2UgKiwgYm9vbAo+ID4gZW5hYmxlKTsKPiA+ID4gIAkJaW50ICgqZ2V0X2Nk
-Y2xrX2ZyZXEpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+ICsJCWludCAoKnNldF9uY3RzKShzdHJ1
-Y3QgZGV2aWNlICosIGludCBwb3J0LCBpbnQgZGV2X2VudHJ5LAo+ID4gPiArCQkJCQlpbnQgcmF0
-ZSk7Cj4gPgo+ID4gSSdkIHJhdGhlciBjYWxsIHRoaXMgc2V0X2F1ZGlvX3JhdGUgb3Igc2ltaWxh
-ciwgYW5kIGRyb3BwaW5nIHRoZQo+ID4gcmVmZXJlbmNlcyB0byBOIGFuZCBDVFMuIFRoZSBjYWxs
-ZXIgZG9lcyBub3QgbmVlZCB0byBrbm93Lgo+IAo+IEJ1dCBpdCBzZWVtcyB0aGUgc2V0X2F1ZGlv
-X3JhdGUgd2lsbCBjb25mdXNlIHRoZSB1c2VyLiBGcm9tIHRoZQo+IGxpdGVyYWwgbWVhbmluZywg
-aXQgaXMgc2V0dGluZyB0aGUgcmF0ZSBvZiBhdWRpbywgc3VjaCBhcyBzYW1wbGUgcmF0ZSwKPiB3
-aGljaCB3aWxsIG1ha2UgYXVkaW8gZHJpdmVyIGRldmVsb3BlcnMgY29uZnVzZWQuCj4gQW5kIHRo
-ZSBmdW5jdGlvbiBpcyBqdXN0IHNldHRpbmcgTi9DVFMgd2hpY2ggaXMgZGVmaW5lZCBmcm9tCj4g
-SERNSSBTUEVDLgoKQWZ0ZXIgYSBzZWNvbmQgdGhvdWdodCwgc2V0X25jdHMgaXMgbm90IHZlcnkg
-Z29vZCwgd2Ugc2hvdWxkCmNvbnNpZGVyIERQJ3MgbmFtaW5nIGFuZCBoYW5kbGluZyBEUCBtb2Rl
-IHRvZ2V0aGVyLgoKPiAKPiBCVFc6IHlvdXIgY29tbWVudCByZW1pbmRzIG1lIHRoYXQgZ2V0X2Nk
-Y2xrX2ZyZXEoKSBzZWVtcwo+IHRvIG5lZWQgY2hhbmdlIHRoZSBuYW1lIGFzIGNkY2xrIGlzIG5v
-dCBpbiB0aGUgb3BlbiBzcGVjLgo+IAo+ID4KPiA+IEknbSBhbHNvIG5vdCBmb25kIG9mIGFkZGlu
-ZyBhIGRldl9lbnRyeSBwYXJhbWV0ZXIgYW5kIGxlYXZpbmcgaXQKPiA+IHVudXNlZC4gSSBkbyBu
-b3QgdGhpbmsgd2Uga25vdyBzcGVjaWZpY2FsbHkgaG93IHdlJ3JlIGdvaW5nIHRvCj4gaWRlbnRp
-ZnkKPiA+IE1TVCBzaW5rcywgYW5kIHRoZSBpbnRlcmZhY2UgbWF5IG5lZWQgdG8gYmUgY2hhbmdl
-ZCBhbnl3YXkuIExldCdzCj4gPiBmb3JjZQo+ID4gYW4gdXBkYXRlIGluIHRoZSBjYWxsZXIgc2lk
-ZSBhcyB3ZWxsIHdoZW4gdGhlcmUncyBhY3R1YWxseSBzZW5zaWJsZQo+ID4gc3VwcG9ydCBpbiBv
-dXIgc2lkZS4KPiAKPiBUaGUgZGV2aWNlIGVudHJ5IGlzIGEgY29uY2VwdCBpbiBIREEgc3BlYy4g
-Rm9yIGRyaXZlciBpbXBsZW1lbnRhdGlvbiwKPiBJIHRoaW5rIHdlIGNhbiB1c2UgYW4gaW50IHZh
-cmlhYmxlIG9yIGEgc3RydWN0IGRldmljZSB0byByZXByZXNlbnQgaXQuCj4gQSBpbnQgdmFyaWFi
-bGUgaXMgYW4gZWFzeSB3YXkuIFRoZXJlIGlzIHNvbWUgcGxhY2UgaW4gYXVkaW8gZHJpdmVyIHVz
-aW5nCj4gaW50IHZhcmlhYmxlIHRvIHJlcHJlc2VudCB0aGUgZGVpdmNlIGVudHJ5LiBBbmQgYXVk
-aW8gZHJpdmVyIHdpbGwgbm90Cj4gY2FyZSBob3cgZ2Z4IGRyaXZlciBzdXBwb3J0cyB0aGUgRFAx
-LjIgTVNULCBJIG1lYW4gYXVkaW8gZHJpdmVyIHdpbGwKPiBub3Qga25vdyB0aGUgc3RydWN0dXJl
-cyBpbnNpZGUgZ2Z4IGRyaXZlci4KPiAKPiBJIHdpbGwgcmVtb3ZlIHRoaXMgcGFyYW1ldGVyIGlu
-IHRoaXMgdmVyc2lvbiBpZiB5b3UgYXJlIHRoaW5raW5nIHRoZQo+IE1TVCBpbnRlcmZhY2UgaXMg
-aW5kZXRlcm1pbmF0ZS4KPiAKPiBCVFc6IGRvIHlvdSBrbm93IHdoZW4gZ2Z4IHdpbGwgbm9ybWFs
-bHkgc3VwcG9ydCBNU1Q/Cj4gCj4gQmVzdCBSZWdhcmRzLAo+IExpYmluCj4gCj4gPgo+ID4gQlIs
-Cj4gPiBKYW5pLgo+ID4KPiA+ID4gIAl9ICpvcHM7Cj4gPiA+ICB9Owo+ID4gPgo+ID4gPiAtLQo+
-ID4gPiAxLjkuMQo+ID4gPgo+ID4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+ID4gPiBJbnRlbC1nZnggbWFpbGluZyBsaXN0Cj4gPiA+IEludGVsLWdm
-eEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo+ID4KPiA+IC0tCj4gPiBKYW5pIE5pa3VsYSwg
-SW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+Hi,
+
+I have been following your progress with great anticipation.
+
+> SSP2
+> http://permalink.gmane.org/gmane.linux.alsa.devel/140328
+> future versions of the firmware should support SSP1
+
+So, I'm guessing, until the firmware supports SSP1, there will not be any 
+sound? I also tried using the firmware that supports SSP0, which Vinod 
+posted in another thread, and get no sound.
+
+Regards,
+John
