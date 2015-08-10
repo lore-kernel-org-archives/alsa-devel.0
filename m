@@ -1,99 +1,85 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/3] topology: Add C templates structure
- for building topology from C programs
-Date: Mon, 10 Aug 2015 11:23:59 +0100
-Message-ID: <1439202239.2416.7.camel@loki>
-References: <1438963434-6407-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1438963434-6407-2-git-send-email-liam.r.girdwood@linux.intel.com>
- <s5htwsbf543.wl-tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
+Date: Mon, 10 Aug 2015 11:39:21 +0100
+Message-ID: <20150810103921.GR7557@n2100.arm.linux.org.uk>
+References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
+ <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
+ <s5hk2t35ui4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id EA948260836
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 12:24:03 +0200 (CEST)
-In-Reply-To: <s5htwsbf543.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hk2t35ui4.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2015-08-07 at 18:14 +0200, Takashi Iwai wrote:
-> On Fri, 07 Aug 2015 18:03:52 +0200,
-> Liam Girdwood wrote:
-> > 
-> > From: Mengdong Lin <mengdong.lin@intel.com>
-> > 
-> > Define structures that can be used by applications to directly build topology
-> > data instead of using text files. The application will build up the topology
-> > data by populating the template structures for each object type and then
-> > registering the template with the topology core.
-> > 
-> > Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > ---
-> >  include/sound/asoc.h      |   2 +
-> >  include/topology.h        | 178 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  src/topology/builder.c    |  38 +++++-----
-> >  src/topology/ctl.c        |  38 +++++-----
-> >  src/topology/dapm.c       |  28 ++++----
-> >  src/topology/data.c       |  10 +--
-> >  src/topology/elem.c       |  26 +++----
-> >  src/topology/parser.c     |   6 +-
-> >  src/topology/pcm.c        |  34 ++++-----
-> >  src/topology/text.c       |   2 +-
-> >  src/topology/tplg_local.h |  23 +-----
-> >  11 files changed, 273 insertions(+), 112 deletions(-)
-> > 
-> > diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-> > index c642855..1b19739 100644
-> > --- a/include/sound/asoc.h
-> > +++ b/include/sound/asoc.h
-> > @@ -15,6 +15,8 @@
-> >  #ifndef __LINUX_UAPI_SND_ASOC_H
-> >  #define __LINUX_UAPI_SND_ASOC_H
-> >  
-> > +#include <sound/type_compat.h>
-> > +
-> 
-> Don't modify this file specific to alsa-lib.  This file should be a
-> copy from the kernel uapi header.
-> 
-
-Fwiw the reasoning behind this was to allow client application to use
-the SND_SOC_TPLG_ macros in aosc.h to identify topology object types.
-The problem is that asoc.h also contains lots of endian specific types
-in the ABI that need type_compat.h. I guess clients will also need to
-include <sound/type_compat.h> from now on.
-
-
-> >  #ifdef __cplusplus
-> > diff --git a/src/topology/builder.c b/src/topology/builder.c
-> > index a944866..3bccd44 100644
-> > --- a/src/topology/builder.c
-> > +++ b/src/topology/builder.c
-> > @@ -141,7 +141,7 @@ static int write_elem_block(snd_tplg_t *tplg,
-> >  		if (elem->compound_elem)
-> >  			continue;
-> >  
-> > -		if (elem->type != OBJECT_TYPE_DAPM_GRAPH)
-> > +		if (elem->type != SND_TPLG_TYPE_DAPM_GRAPH)
-> 
-> I prefer splitting this systematic replacement in another patch.
-> Then it's easier to check by a script, and the size won't matter.
-> Otherwise the whole patch became too big and difficult to follow.
-> 
-
-Sorry, this was squashed in by mistake, it should have been a separate
-patch.
-
-Liam
+T24gTW9uLCBBdWcgMTAsIDIwMTUgYXQgMTI6MDU6MDdQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFNhdCwgMDggQXVnIDIwMTUgMTg6MTA6MDYgKzAyMDAsCj4gUnVzc2VsbCBLaW5n
+IHdyb3RlOgo+ID4gK3N0YXRpYyBpcnFyZXR1cm5fdCBzbmRfZHdfaGRtaV9pcnEoaW50IGlycSwg
+dm9pZCAqZGF0YSkKPiA+ICt7Cj4gPiArCXN0cnVjdCBzbmRfZHdfaGRtaSAqZHcgPSBkYXRhOwo+
+ID4gKwlzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbTsKPiA+ICsJdW5zaWduZWQg
+c3RhdDsKPiA+ICsKPiA+ICsJc3RhdCA9IHJlYWRiX3JlbGF4ZWQoZHctPmRhdGEuYmFzZSArIEhE
+TUlfSUhfQUhCRE1BQVVEX1NUQVQwKTsKPiA+ICsJaWYgKCFzdGF0KQo+ID4gKwkJcmV0dXJuIElS
+UV9OT05FOwo+ID4gKwo+ID4gKwl3cml0ZWJfcmVsYXhlZChzdGF0LCBkdy0+ZGF0YS5iYXNlICsg
+SERNSV9JSF9BSEJETUFBVURfU1RBVDApOwo+ID4gKwo+ID4gKwlzdWJzdHJlYW0gPSBkdy0+c3Vi
+c3RyZWFtOwo+ID4gKwlpZiAoc3RhdCAmIEhETUlfSUhfQUhCRE1BQVVEX1NUQVQwX0RPTkUgJiYg
+c3Vic3RyZWFtKSB7Cj4gPiArCQlzbmRfcGNtX3BlcmlvZF9lbGFwc2VkKHN1YnN0cmVhbSk7Cj4g
+PiArCQlpZiAoZHctPnN1YnN0cmVhbSkKPiA+ICsJCQlkd19oZG1pX3N0YXJ0X2RtYShkdyk7Cj4g
+PiArCX0KPiAKPiBEb24ndCB3ZSBuZWVkIGxvY2tpbmc/CgpQb3NzaWJseS4KCj4gSW4gdGhlb3J5
+LCB0aGUgdHJpZ2dlciBjYW4gYmUgaXNzdWVkIHdoaWxlIHRoZSBpcnEgaXMgYmVpbmcgaGFuZGxl
+ZC4KCldlbGwsIHdlIGNhbid0IGhhdmUgYSBsb2NrIGFyb3VuZCB0aGUgd2hvbGUgb2YgdGhlIGFi
+b3ZlLCBiZWNhdXNlIHRoYXQKcmVzdWx0cyBpbiBkZWFkbG9jayAoYXMgc25kX3BjbV9wZXJpb2Rf
+ZWxhcHNlZCgpIGNhbiBlbmQgdXAgY2FsbGluZyBpbnRvCnRoZSB0cmlnZ2VyIG1ldGhvZC4pICBJ
+J20gbm90IGhhcHB5IHRvIHRocm93IGEgc3BpbmxvY2sgYXJvdW5kIHRoaXMKYmVjYXVzZSBvZiB0
+aGUgaW4tYnVpbHQgZm9ybWF0IGNvbnZlcnNpb24gKHNvbWV0aGluZyBlbHNlIEknbSByZWFsbHkg
+bm90CmhhcHB5IGFib3V0IC0gd2hpY2ggaGFzIHRvIGV4aXN0IGhlcmUgYmVjYXVzZSBhbHNhbGli
+IGlzIHNvbyBwYWluZnVsCnRvIGFkZCBjdXN0b20gc2FtcGxlIHJlZm9ybWF0dGluZyB0byAtIHN1
+Y2ggbW9kdWxlcyBoYXZlIHRvIGJlIGJ1aWx0CmFzIHBhcnQgb2YgYWxzYWxpYiBpdHNlbGYgcmF0
+aGVyIHRoYW4gYW4gYWRkLW9uIG1vZHVsZS4pCgo+ID4gK3N0YXRpYyBpbnQgZHdfaGRtaV90cmln
+Z2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBpbnQgY21kKQo+ID4gK3sK
+PiA+ICsJc3RydWN0IHNuZF9kd19oZG1pICpkdyA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOwo+
+ID4gKwlpbnQgcmV0ID0gMDsKPiA+ICsKPiA+ICsJc3dpdGNoIChjbWQpIHsKPiA+ICsJY2FzZSBT
+TkRSVl9QQ01fVFJJR0dFUl9TVEFSVDoKPiA+ICsJCWR3LT5idWZfb2Zmc2V0ID0gMDsKPiA+ICsJ
+CWR3LT5zdWJzdHJlYW0gPSBzdWJzdHJlYW07Cj4gPiArCQlkd19oZG1pX3N0YXJ0X2RtYShkdyk7
+Cj4gPiArCQlkd19oZG1pX2F1ZGlvX2VuYWJsZShkdy0+ZGF0YS5oZG1pKTsKPiA+ICsJCXN1YnN0
+cmVhbS0+cnVudGltZS0+ZGVsYXkgPSBzdWJzdHJlYW0tPnJ1bnRpbWUtPnBlcmlvZF9zaXplOwo+
+ID4gKwkJYnJlYWs7Cj4gPiArCj4gPiArCWNhc2UgU05EUlZfUENNX1RSSUdHRVJfU1RPUDoKPiA+
+ICsJCWR3X2hkbWlfc3RvcF9kbWEoZHcpOwo+ID4gKwkJZHdfaGRtaV9hdWRpb19kaXNhYmxlKGR3
+LT5kYXRhLmhkbWkpOwo+ID4gKwkJYnJlYWs7Cj4gPiArCj4gPiArCWRlZmF1bHQ6Cj4gPiArCQly
+ZXQgPSAtRUlOVkFMOwo+ID4gKwkJYnJlYWs7Cj4gCj4gU05EUlZfUENNX1RSSUdHRVJfU1VTUEVO
+RCBtYXkgYmUgcGFzc2VkIGF0IHN1c3BlbmQsIHRvby4KCkkgdGhpbmsgcmF0aGVyIHRoYW4gYWRk
+aW5nIGNvZGUgd2hpY2ggd291bGQgYmUgZGlmZmljdWx0IGZvciBtZSB0byB0ZXN0LApJJ2QgaW5z
+dGVhZCByZW1vdmUgdGhlIHN1c3BlbmQvcmVzdW1lIGNhbGxiYWNrcywgb3IgYXQgbGVhc3QgZGlz
+YWJsZSB0aGVtCnVudGlsIHNvbWVvbmUgY2FuIHRlc3QgdGhhdCBmZWF0dXJlLCBvciBpcyB3aWxs
+aW5nIHRvIGltcGxlbWVudCBpdC4KCj4gPiArc3RhdGljIHNuZF9wY21fdWZyYW1lc190IGR3X2hk
+bWlfcG9pbnRlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPiA+ICt7Cj4g
+PiArCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7
+Cj4gPiArCXN0cnVjdCBzbmRfZHdfaGRtaSAqZHcgPSBzdWJzdHJlYW0tPnByaXZhdGVfZGF0YTsK
+PiA+ICsKPiA+ICsJcmV0dXJuIGJ5dGVzX3RvX2ZyYW1lcyhydW50aW1lLCBkdy0+YnVmX29mZnNl
+dCk7Cj4gCj4gU28sIHRoaXMgcmV0dXJucyB0aGUgb2Zmc2V0IHRoYXQgaGFzIGJlZW4gcmVmb3Jt
+YXR0ZWQuICBEb2VzIHRoZQo+IGhhcmR3YXJlIHN1cHBvcnQgYW55IGJldHRlciBwb3NpdGlvbiBy
+ZXBvcnRpbmc/ICBXZSBtYXkgZ2l2ZSB0aGUgZGVsYXkKPiBmcm9tIHRoZSBkcml2ZXIgaWYgcG9z
+c2libGUuCgpCYXNpY2FsbHksIG5vLiAgUmVhZGluZyBhIDMyLWJpdCBETUEgcG9zaXRpb24gYXMg
+c2VwYXJhdGUgYnl0ZXMgd2hpbGUKRE1BIGlzIGFjdGl2ZSBpcyByYWN5LgoKVGhpcyBpcyB0aGUg
+YmVzdCB3ZSBjYW4gZG8sIGFuZCB0aGUgd2F5IHdlIHJlcG9ydCB0aGUgcG9zaXRpb24gaGFzIGJl
+ZW4KYXJyaXZlZCBhdCBhZnRlciB3aGF0J3MgZ2V0dGluZyBvbiBmb3IgdHdvIHllYXJzIG9mIHRl
+c3Rpbmcgd2l0aApwdWxzZWF1ZGlvLCB2bGMgZGlyZWN0IGFjY2VzcyAmIHNwZGlmIHBhc3MtdGhy
+b3VnaCwgYXBsYXksIGV0YzoKCkF1dGhvcjogUnVzc2VsbCBLaW5nIDxybWsra2VybmVsQGFybS5s
+aW51eC5vcmcudWs+CkRhdGU6ICAgVGh1IE5vdiA3IDE2OjAxOjQ1IDIwMTMgKzAwMDAKCiAgICBk
+cm06IGJyaWRnZS9kd19oZG1pLWFoYi1hdWRpbzogYWRkIGF1ZGlvIGRyaXZlcgoKLS0gCkZUVEMg
+YnJvYWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQw
+MGticHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRl
+dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
