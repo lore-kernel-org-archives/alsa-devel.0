@@ -1,56 +1,101 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
-	of WM510205 codec via ACPI (resend)
-Date: Mon, 10 Aug 2015 09:10:01 +0100
-Message-ID: <20150810081001.GG25225@opensource.wolfsonmicro.com>
-References: <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com> <20150713095359.GM16517@opensource.wolfsonmicro.com> <CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com> <CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com> <20150715081224.GN16517@opensource.wolfsonmicro.com> <20150715091709.GK11162@sirena.org.uk> <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com> <20150717085434.GO16517@opensource.wolfsonmicro.com> <CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com> <CAKor6TdLkGZbARmV1CfqUiguH8HAD+oC8VSsH_OkNQ6E-7YVAw@mail.gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
+Date: Mon, 10 Aug 2015 08:30:45 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196E0A32@SHSMSX103.ccr.corp.intel.com>
+References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+ <1439191931-25705-4-git-send-email-libin.yang@intel.com>
+ <s5h1tfb7eo6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKor6TdLkGZbARmV1CfqUiguH8HAD+oC8VSsH_OkNQ6E-7YVAw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h1tfb7eo6.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 10, 2015 at 10:00:38AM +0200, Christian Hartmann wrote:
-> Hi again,
-> 
-> in the case of CONFIG_OF (this machine has no OF) the arizona_of_get_core_pdata
-> sets also gpio_defaults for struct pdata, which I had not added into
-> the #else switch (CONFIG_OF is not set).
-> 
-> All I have is an one example in
-> Documentation/devicetree/bindings/mfd/arizona.txt.
-> 
-> What should I do here cause I do not now the defaults but they seem to
-> be needed too and I cannot use devicetree here.
-> Where can I get the gpio-defaults or how can I use gpiolib to extract
-> these defaults and gpio pins as expected?
-> 
-
-Those defaults are for the GPIOs on the CODEC and have nothing to
-do with getting the reset and ldo enable working. You only need
-to set them if you are going to use pins on the CODEC to control
-something else.
-
-> 
-> 
-> Looking again ( and again at the code), I have to use a function
-> similar to arizona_of_get_named_gpio to find all of these pins, is
-> there a function for the acpi case?
-
-No as we have discussed currently the driver has no support for
-ACPI. I would imagine there is an ACPI equivalent of
-of_get_named_gpio which is what the function you mention uses to
-get the actual GPIO number though. But I don't know what the
-exact function is.
-
-Thanks,
-Charles
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
+dG86dGl3YWlAc3VzZS5kZV0KPiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA0OjA0IFBN
+Cj4gVG86IFlhbmcsIExpYmluCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgaW50
+ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsKPiBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4g
+U3ViamVjdDogUmU6IFtQQVRDSCB2NCA0LzRdIGRybS9pOTE1OiBzZXQgcHJvcGVyIE4vQ1RTIGlu
+IG1vZGVzZXQKPiAKPiBPbiBNb24sIDEwIEF1ZyAyMDE1IDA5OjMyOjExICswMjAwLAo+IGxpYmlu
+LnlhbmdAaW50ZWwuY29tIHdyb3RlOgo+ID4KPiA+IEZyb206IExpYmluIFlhbmcgPGxpYmluLnlh
+bmdAaW50ZWwuY29tPgo+ID4KPiA+IFdoZW4gbW9kZXNldCBvY2N1cnMgYW5kIHRoZSBUTURTIGZy
+ZXF1ZW5jeSBpcyBzZXQgdG8gc29tZQo+ID4gc3BlaWNhbCB2YWx1ZSwgdGhlIE4vQ1RTIG5lZWQg
+dG8gYmUgc2V0IG1hbnVhbGx5IGlmIGF1ZGlvCj4gPiBpcyBwbGF5aW5nLgo+ID4KPiA+IFNpZ25l
+ZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdAaW50ZWwuY29tPgo+ID4gLS0tCj4gPiAg
+ZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaCAgICB8ICA2ICsrKysrKwo+ID4gIGRyaXZl
+cnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgfCA0Mgo+ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA0OCBpbnNlcnRpb25zKCsp
+Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiBi
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiA+IGluZGV4IGRhMmQxMjguLjg1ZjNi
+ZWIgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiAr
+KysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiBAQCAtNzAzMCw2ICs3MDMw
+LDEyIEBAIGVudW0gc2tsX2Rpc3BfcG93ZXJfd2VsbHMgewo+ID4gIAkJCQkJX0hTV19BVURfRElH
+X0NOVlRfMikKPiA+ICAjZGVmaW5lIERJUF9QT1JUX1NFTF9NQVNLCQkweDMKPiA+Cj4gPiArI2Rl
+ZmluZSBfSFNXX0FVRF9TVFJfREVTQ18xCQkweDY1MDg0Cj4gPiArI2RlZmluZSBfSFNXX0FVRF9T
+VFJfREVTQ18yCQkweDY1MTg0Cj4gPiArI2RlZmluZSBBVURfU1RSX0RFU0MocGlwZSkJX1BJUEUo
+cGlwZSwgXAo+ID4gKwkJCQkJIF9IU1dfQVVEX1NUUl9ERVNDXzEsCj4gCVwKPiA+ICsJCQkJCSBf
+SFNXX0FVRF9TVFJfREVTQ18yKQo+ID4gKwo+ID4gICNkZWZpbmUgX0hTV19BVURfRURJRF9EQVRB
+X0EJCTB4NjUwNTAKPiA+ICAjZGVmaW5lIF9IU1dfQVVEX0VESURfREFUQV9CCQkweDY1MTUwCj4g
+PiAgI2RlZmluZSBIU1dfQVVEX0VESURfREFUQShwaXBlKSBfUElQRShwaXBlLCBcCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IGIvZHJpdmVycy9n
+cHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gaW5kZXggZWRkZjM3Zi4uMDgyZjk2ZCAxMDA2
+NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ICsrKyBi
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+IEBAIC0yMzUsNiArMjM1LDkg
+QEAgc3RhdGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QKPiBkcm1fY29ubmVj
+dG9yICpjb25uZWN0b3IsCj4gPiAgCWNvbnN0IHVpbnQ4X3QgKmVsZCA9IGNvbm5lY3Rvci0+ZWxk
+Owo+ID4gIAl1aW50MzJfdCB0bXA7Cj4gPiAgCWludCBsZW4sIGk7Cj4gPiArCWludCBjdnRfaWR4
+Owo+ID4gKwlpbnQgbl9sb3csIG5fdXAsIG47Cj4gPiArCWludCBiYXNlX3JhdGUsIG11bCwgZGl2
+LCByYXRlOwo+ID4KPiA+ICAJRFJNX0RFQlVHX0tNUygiRW5hYmxlIGF1ZGlvIGNvZGVjIG9uIHBp
+cGUgJWMsICV1IGJ5dGVzCj4gRUxEXG4iLAo+ID4gIAkJICAgICAgcGlwZV9uYW1lKHBpcGUpLCBk
+cm1fZWxkX3NpemUoZWxkKSk7Cj4gPiBAQCAtMjY3LDYgKzI3MCwyMSBAQCBzdGF0aWMgdm9pZCBo
+c3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwK
+PiA+ICAJdG1wIHw9IEFVRElPX0VMRF9WQUxJRChwaXBlKTsKPiA+ICAJSTkxNV9XUklURShIU1df
+QVVEX1BJTl9FTERfQ1BfVkxELCB0bXApOwo+ID4KPiA+ICsJaWYgKChtb2RlLT5jbG9jayA9PSAy
+OTcwMDApIHx8Cj4gPiArCQkobW9kZS0+Y2xvY2sgPT0gRElWX1JPVU5EX1VQKDI5NzAwMCAqIDEw
+MDAsIDEwMDEpKSkKPiB7Cj4gCj4gVE1EU18yOTdNIGFuZCBUTURTXzI5Nk0gY2FuIGJlIHVzZWQg
+aGVyZT8KCk9oLCBzb3JyeSwgSSBmb3Jnb3QgdG8gdXNlIGl0IGhlcmUuCgo+IAo+IAo+ID4gKwkJ
+dG1wID0gSTkxNV9SRUFEKEhTV19BVURfUElQRV9DT05OX1NFTF9DVFJMKTsKPiA+ICsJCWN2dF9p
+ZHggPSAodG1wID4+IHBpcGUqOCkgJiAweGZmOwo+ID4gKwkJdG1wID0gSTkxNV9SRUFEKEFVRF9T
+VFJfREVTQyhjdnRfaWR4KSk7Cj4gPiArCQliYXNlX3JhdGUgPSB0bXAgJiAoMSA8PCAxNCk7Cj4g
+PiArCQlpZiAoYmFzZV9yYXRlID09IDApCj4gPiArCQkJcmF0ZSA9IDQ4MDAwOwo+ID4gKwkJZWxz
+ZQo+ID4gKwkJCXJhdGUgPSA0NDEwMDsKPiA+ICsJCW11bCA9ICh0bXAgJiAoMHg3IDw8IDExKSkg
+KyAxOwo+ID4gKwkJZGl2ID0gKHRtcCAmICgweDcgPDwgOCkpICsgMTsKPiA+ICsJCXJhdGUgPSBy
+YXRlICogbXVsIC8gZGl2Owo+ID4gKwl9Cj4gPiArCj4gPiAgCS8qIEVuYWJsZSB0aW1lc3RhbXBz
+ICovCj4gPiAgCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX0NGRyhwaXBlKSk7Cj4gPiAgCXRtcCAm
+PSB+QVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+ID4gQEAgLTI3Niw2ICsyOTQsMzAgQEAgc3Rh
+dGljIHZvaWQgaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QKPiBkcm1fY29ubmVjdG9yICpj
+b25uZWN0b3IsCj4gPiAgCQl0bXAgfD0gQVVEX0NPTkZJR19OX1ZBTFVFX0lOREVYOwo+ID4gIAll
+bHNlCj4gPiAgCQl0bXAgfD0gYXVkaW9fY29uZmlnX2hkbWlfcGl4ZWxfY2xvY2sobW9kZSk7Cj4g
+PiArCj4gPiArCWlmICgobW9kZS0+Y2xvY2sgIT0gMjk3MDAwKSAmJgo+ID4gKwkJKG1vZGUtPmNs
+b2NrICE9IERJVl9ST1VORF9VUCgyOTcwMDAgKiAxMDAwLCAxMDAxKSkpCj4gewo+ID4gKwkJdG1w
+ICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiArCX0gZWxzZSB7Cj4gPiArCQlmb3Ig
+KGkgPSAwOyBpIDwgQVJSQVlfU0laRShhdWRfbmN0cyk7IGkrKykgewo+ID4gKwkJCWlmICgocmF0
+ZSA9PSBhdWRfbmN0c1tpXS5zYW1wbGVfcmF0ZSkgJiYKPiA+ICsJCQkJKG1vZGUtPmNsb2NrID09
+IGF1ZF9uY3RzW2ldLmNsb2NrKSkgewo+ID4gKwkJCQluID0gYXVkX25jdHNbaV0ubjsKPiA+ICsJ
+CQkJYnJlYWs7Cj4gPiArCQkJfQo+ID4gKwkJfQo+IAo+IE1pc3NpbmcgaW5pdGlhbGl6YXRpb24g
+b2Ygbj8KCk9oLCB5ZXMsIEkgd2lsbCBmaXggaXQuCgo+IAo+ID4gKwkJaWYgKG4gIT0gMCkgewo+
+ID4gKwkJCXRtcCB8PSBBVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiArCQkJbl9sb3cgPSBu
+ICYgMHhmZmY7Cj4gPiArCQkJbl91cCA9IChuID4+IDEyKSAmIDB4ZmY7Cj4gPiArCQkJdG1wIHw9
+IEFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKPiAKPiBZb3UgZG9uJ3QgbmVlZCB0byBzZXQgaXQg
+dHdpY2UuCgpZZXMuCgo+IAo+ID4gKwkJCXRtcCAmPSB+QVVEX0NPTkZJR19VUFBFUl9OX01BU0s7
+Cj4gPiArCQkJdG1wIHw9IChuX3VwIDw8IEFVRF9DT05GSUdfVVBQRVJfTl9TSElGVCk7Cj4gPiAr
+CQkJdG1wICY9IH5BVURfQ09ORklHX0xPV0VSX05fTUFTSzsKPiA+ICsJCQl0bXAgfD0gKG5fbG93
+IDw8Cj4gQVVEX0NPTkZJR19MT1dFUl9OX1NISUZUKTsKPiA+ICsJCX0KPiA+ICsJfQo+ID4gKwo+
+ID4gIAlJOTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBpcGUpLCB0bXApOwo+ID4gIH0KPiA+Cj4gPiAt
+LQo+ID4gMS45LjEKPiA+Cj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
+dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
