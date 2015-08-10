@@ -1,62 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/9] drm: bridge/dw_hdmi-ahb-audio: add audio driver
-Date: Mon, 10 Aug 2015 19:16:41 +0100
-Message-ID: <20150810181641.GD10748@sirena.org.uk>
-References: <20150808160936.GN7557@n2100.arm.linux.org.uk>
- <E1ZO6hC-0003M5-EU@rmk-PC.arm.linux.org.uk>
- <s5hk2t35ui4.wl-tiwai@suse.de>
- <20150810103921.GR7557@n2100.arm.linux.org.uk>
- <s5hegjb5o44.wl-tiwai@suse.de>
- <20150810164941.GW7557@n2100.arm.linux.org.uk>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH v2] ASoC: fsl-sai: add 32 bit word length
+ support
+Date: Mon, 10 Aug 2015 15:24:46 -0500
+Message-ID: <55C9088E.1050500@tabi.org>
+References: <deb461b426c4f24742e77dd58e0cb6713f1630ed.1439174417.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20150810164941.GW7557@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Yakir Yang <ykk@rock-chips.com>, Fabio Estevam <fabio.estevam@freescale.com>, Jaroslav Kysela <perex@perex.cz>, Sascha Hauer <s.hauer@pengutronix.de>, Jon Nettleton <jon.nettleton@gmail.com>, David Airlie <airlied@linux.ie>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2E0F2659D7
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 22:24:48 +0200 (CEST)
+In-Reply-To: <deb461b426c4f24742e77dd58e0cb6713f1630ed.1439174417.git.zidan.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>, nicoleotsuka@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 08/09/2015 09:43 PM, Zidan Wang wrote:
+> - * Copyright 2012-2013 Freescale Semiconductor, Inc.
+> + * Copyright 2012-2015 Freescale Semiconductor, Inc.
 
---pQhZXvAqiZgbeUkD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The change you made does not warrant a new copyright year.  You didn't 
+add any copyrightable content.
 
-On Mon, Aug 10, 2015 at 05:49:41PM +0100, Russell King - ARM Linux wrote:
-
-> I'm not sure what the right solution is here: modifying every audio
-> player out there to make HDMI work sanely is crazy.  Having alsalib
-> automatically generate the correct AES channel status bytes for
-> linear audio formats seems to be sensible, but difficult given its
-> present structure with the defaults - the iec958 plugin has no idea
-> if the defaults are being used or not.
-
-> The advantage of having the horrid conversion in the kernel is that
-> we can choose to generate proper AES channel status data without
-> regard to userspace for standard linear PCM, and when the iec958 plugin
-> is being used with proper channel status (eg, in compressed audio
-> pass-through mode by VLC) then that works too.
-
-The other advantage of doing it in kernel is that it also fixes tinyalsa
-applications (which mainly means Android systems) by default for PCM
-data.
-
---pQhZXvAqiZgbeUkD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVyOqIAAoJECTWi3JdVIfQ5xAH/jgHoxctKQ2yixGAjdkXug5s
-ShURRpNTK3ikzFITz6wOjB+VP/4CThHJdDEPCnwkQmR/QaCnuz2OpWEqEbfwCDJZ
-oTpmhz8kIhW2bFM0HLtVP+I8HOYGUK6D8u5cvb1i6CEqzKSfFYqsR6Mrqf8fYznE
-WbPmtnaX1GGgM+MEgzkUCFMpV/Eth/IHyxKddlubXWlGbxZ2djt3eEiwHXs2IUTC
-BUNt6dahxPpmWKWeVdWZpcUiX3nPYPGyGGA4F6Uh6BRqTJMSRbxn5hbf9M6x+E+y
-7w5+H0zcjJPqF3FTxOIpogWp0asJ5PykNiNqYWH8HZ0vZRqMX8avE20xqbqIpas=
-=XP20
------END PGP SIGNATURE-----
-
---pQhZXvAqiZgbeUkD--
+Besides, Freescale's policy is to not update copyright years in patches. 
+  I know, because I worked with the legal department to set that policy 
+back in 2012.
