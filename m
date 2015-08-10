@@ -1,58 +1,54 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH v3] ASoC: wm8960: update pll and clock
- setting function
-Date: Mon, 10 Aug 2015 16:08:06 +0800
-Message-ID: <20150810080805.GB15493@shlinux2>
-References: <ac311441efbc167953de3ab8706217c3c669f88d.1436776563.git.zidan.wang@freescale.com>
- <20150810083246.GH25225@opensource.wolfsonmicro.com>
+From: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Mon, 10 Aug 2015 11:20:04 +0200
+Message-ID: <CAKor6TfZC3AY0p-85mFAUJJYQ360NoDu6AppipSqAD73S_EkzQ@mail.gmail.com>
+References: <20150713095359.GM16517@opensource.wolfsonmicro.com>
+	<CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
+	<CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
+	<20150715081224.GN16517@opensource.wolfsonmicro.com>
+	<20150715091709.GK11162@sirena.org.uk>
+	<CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
+	<20150717085434.GO16517@opensource.wolfsonmicro.com>
+	<CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com>
+	<CAKor6TdLkGZbARmV1CfqUiguH8HAD+oC8VSsH_OkNQ6E-7YVAw@mail.gmail.com>
+	<20150810081001.GG25225@opensource.wolfsonmicro.com>
+	<20150810083540.GE1540@lahna.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0148.outbound.protection.outlook.com [65.55.169.148])
- by alsa0.perex.cz (Postfix) with ESMTP id 084BA265340
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 11:18:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150810083246.GH25225@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20150810083540.GE1540-3PARRvDOhMZrdx17CPfAsdBPR1lH4CV8@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 10, 2015 at 09:32:46AM +0100, Charles Keepax wrote:
-> On Mon, Jul 13, 2015 at 04:41:00PM +0800, Zidan Wang wrote:
-> > Add sysclk auto mode. When it's sysclk auto mode, if the MCLK is
-> > available for clock configure, using MCLK to provide sysclk directly,
-> > otherwise, search a available pll out frequcncy and set pll.
-> > 
-> > Configure clock in hw_params may cause problems when using bypass style
-> > paths without hw_params in machine driver getting called. So add configure
-> > clock to set_bias_level.
-> > 
-> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> > ---
-> <snip>
-> > @@ -711,6 +785,9 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
-> >  	case SND_SOC_BIAS_PREPARE:
-> >  		switch (snd_soc_codec_get_bias_level(codec)) {
-> >  		case SND_SOC_BIAS_STANDBY:
-> > +			ret = wm8960_configure_clocking(codec);
-> > +			if (ret)
-> > +				return ret;
-> 
-> Is it right that we are calling wm8960_configure_clocking before
-> clk_prepare_enable? As configure_clocking will enable the clocks
-> shouldn't mclk be available before then?
-The wm8960 codec don't need to enable MCLK to write register. So i think it's ok to enable MCLK at the last moment.
+2015-08-10 10:35 GMT+02:00 Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>:
+> On Mon, Aug 10, 2015 at 09:10:01AM +0100, Charles Keepax wrote:
+>> No as we have discussed currently the driver has no support for
+>> ACPI. I would imagine there is an ACPI equivalent of
+>> of_get_named_gpio which is what the function you mention uses to
+>> get the actual GPIO number though. But I don't know what the
+>> exact function is.
+>
+> You should use devm_gpiod_get() and friends. If you do not have
+> corresponding Linux device node, then it is fwnode_get_named_gpiod().
 
-Best Regards,
-Zidan Wang
+Hello,
+
+thanks Charles and Mika.
+
+@Mika: I actually view a patch by you from 6. May 2015 where you
+added dev_gpio_irq_get() and the acpi_dev_gpio_irq_get() functions,
+seems to be related here to, right??
+
+So I create the next patch to get the right IRQ and the right GPIOs in
+question (ldoena, reset).
+Will report soon again
+
+cheers
+chris
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
