@@ -1,15 +1,30 @@
-From: mengdong.lin@intel.com
-Subject: [RFC PATCH 10/10] ASOC: topology: Add PCM DAIs
-	dynamically when loading them
-Date: Mon, 10 Aug 2015 14:13:57 +0800
-Message-ID: <1439187237-1368-1-git-send-email-mengdong.lin@intel.com>
+From: Christian Hartmann <cornogle@googlemail.com>
+Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+ of WM510205 codec via ACPI (resend)
+Date: Mon, 10 Aug 2015 09:00:50 +0200
+Message-ID: <CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com>
+References: <20150629094854.GB11162@sirena.org.uk>
+ <CAKor6TdDPb2qOgdHbeX2w+yQa_ioDM5ak9bk+=jF+cKt_twiXw@mail.gmail.com>
+ <20150630103404.GI6321@opensource.wolfsonmicro.com>
+ <CAKor6TdKk2OUz4o12RiQBSVZyhD=L4JpBJcYkGE=_6X+ZeQY_g@mail.gmail.com>
+ <20150713095359.GM16517@opensource.wolfsonmicro.com>
+ <CAKor6Td83zgOS+iHGHGhFW4n26H=tC-QQDuzaHHfybhLeH-jvw@mail.gmail.com>
+ <CAKor6TdheYM73aqti362bOnP2GZmX60uuDY5v2eow1vqO9tcKw@mail.gmail.com>
+ <20150715081224.GN16517@opensource.wolfsonmicro.com>
+ <20150715091709.GK11162@sirena.org.uk>
+ <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
+ <20150717085434.GO16517@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A524E265205
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 08:00:41 +0200 (CEST)
+Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
+ [209.85.220.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37FE42614C2
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 09:00:51 +0200 (CEST)
+Received: by qkdv3 with SMTP id v3so5806764qkd.2
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 00:00:50 -0700 (PDT)
+In-Reply-To: <20150717085434.GO16517@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,175 +34,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, mika.westerberg@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Hi,
 
-Add PCM DAIs to ASoC core when loading them from topology.
-Embed dobj in the DAI to free it when unloading.
+> That implies the pdata is not set for the device when you are
+> entering arizona_dev_init, also might be worth checking if it is
+> calling the stub version of the full version (basically is
+> CONFIG_OF turned on).
+# CONFIG_OF is not set here, so the current code as in arizona_dev_init()
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+...
+if (dev_get_platdata(arizona->dev,0)) {
+/* currently not working... */
+else
+ arizona_of_get_core_pdata(arizona);
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 2df96b1..e8f0404 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -207,6 +207,7 @@ struct snd_soc_dai_driver {
- 	const char *name;
- 	unsigned int id;
- 	unsigned int base;
-+	struct snd_soc_dobj dobj;
- 
- 	/* DAI driver callbacks */
- 	int (*probe)(struct snd_soc_dai *dai);
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 5405f64..a49c134 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -71,7 +71,6 @@ struct snd_soc_dobj {
- 	union {
- 		struct snd_soc_dobj_control control;
- 		struct snd_soc_dobj_widget widget;
--		struct snd_soc_dobj_pcm_dai pcm_dai;
- 	};
- 	void *private; /* core does not touch this */
- };
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 0f8fa0d..6c0dd3f 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -499,6 +499,9 @@ static void remove_widget(struct snd_soc_component *comp,
- static void remove_pcm_dai(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
-+	struct snd_soc_dai_driver *dai =
-+		container_of(dobj, struct snd_soc_dai_driver, dobj);
-+
- 	if (pass != SOC_TPLG_PASS_PCM_DAI)
- 		return;
- 
-@@ -506,7 +509,7 @@ static void remove_pcm_dai(struct snd_soc_component *comp,
- 		dobj->ops->pcm_dai_unload(comp, dobj);
- 
- 	list_del(&dobj->list);
--	kfree(dobj);
-+	kfree(dai);
- }
- 
- /* bind a kcontrol to it's IO handlers */
-@@ -1558,12 +1561,75 @@ static int soc_tplg_dapm_complete(struct soc_tplg *tplg)
- 	return 0;
- }
- 
-+static unsigned int get_rates(unsigned int rate_min, unsigned int rate_max)
-+{
-+	static int pcm_rates[] = {
-+		5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000,
-+		64000, 88200, 96000, 176400, 192000,
-+	};
-+	unsigned int rates = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(pcm_rates); i++) {
-+		if (pcm_rates[i] >= rate_min && pcm_rates[i] <= rate_max)
-+			rates |= 1 << i;
-+	}
-+
-+	return rates;
-+}
-+
-+static int soc_tplg_pcm_dai_create(struct soc_tplg *tplg,
-+	struct snd_soc_tplg_pcm_dai *dai)
-+{
-+	struct snd_soc_dai_driver *dai_drv;
-+	struct snd_soc_pcm_stream *stream;
-+	struct snd_soc_tplg_stream_caps *caps;
-+
-+	dai_drv = kzalloc(sizeof(struct snd_soc_dai_driver), GFP_KERNEL);
-+	if (dai_drv == NULL)
-+		return -ENOMEM;
-+
-+	dai_drv->name = dai->name;
-+	dai_drv->id = dai->id;
-+	dai_drv->compress_dai = dai->compress;
-+
-+	if (dai->playback) {
-+		stream = &dai_drv->playback;
-+		caps = &dai->capconf[SND_SOC_TPLG_STREAM_PLAYBACK].caps;
-+
-+		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
-+		stream->channels_min = caps->channels_min;
-+		stream->channels_max = caps->channels_max;
-+		stream->rates = get_rates(caps->rate_min, caps->rate_max);
-+		stream->formats = caps->formats;
-+	}
-+
-+	if (dai->capture) {
-+		stream = &dai_drv->capture;
-+		caps = &dai->capconf[SND_SOC_TPLG_STREAM_CAPTURE].caps;
-+
-+		stream->stream_name = kstrdup(caps->name, GFP_KERNEL);
-+		stream->channels_min = caps->channels_min;
-+		stream->channels_max = caps->channels_max;
-+		stream->rates = get_rates(caps->rate_min, caps->rate_max);
-+		stream->formats = caps->formats;
-+	}
-+
-+	dai_drv->dobj.index = tplg->index;
-+	dai_drv->dobj.ops = tplg->ops;
-+	dai_drv->dobj.type = SND_SOC_DOBJ_PCM;
-+	list_add(&dai_drv->dobj.list, &tplg->comp->dobj_list);
-+
-+	return snd_soc_add_dai(tplg->comp, dai_drv);
-+}
-+
- static int soc_tplg_pcm_dai_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
- 	struct snd_soc_tplg_pcm_dai *pcm_dai;
- 	struct snd_soc_dobj *dobj;
- 	int count = hdr->count;
-+	int i;
- 	int ret;
- 
- 	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
-@@ -1579,26 +1645,21 @@ static int soc_tplg_pcm_dai_elems_load(struct soc_tplg *tplg,
- 		return -EINVAL;
- 	}
- 
--	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
--	tplg->pos += sizeof(struct snd_soc_tplg_pcm_dai) * count;
--
--	dobj = kzalloc(sizeof(struct snd_soc_dobj), GFP_KERNEL);
--	if (dobj == NULL)
--		return -ENOMEM;
--
--	/* Call the platform driver call back to register the dais */
-+	/* pass control to driver for optional further init */
- 	ret = soc_tplg_pcm_dai_load(tplg, pcm_dai, count);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: PCM DAI loading failed\n");
- 		goto err;
- 	}
- 
--	dobj->type = get_dobj_type(hdr, NULL);
--	dobj->pcm_dai.count = count;
--	dobj->pcm_dai.pd = pcm_dai;
--	dobj->ops = tplg->ops;
--	dobj->index = tplg->index;
--	list_add(&dobj->list, &tplg->comp->dobj_list);
-+	/* register the dais */
-+	for (i = 0; i < count; i++) {
-+		soc_tplg_pcm_dai_create(tplg, pcm_dai);
-+		pcm_dai++;
-+	}
-+
-+	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
-+	tplg->pos += sizeof(struct snd_soc_tplg_pcm_dai) * count;
- 	return 0;
- 
- err:
--- 
-1.9.1
+which returns only '0' in this case  because the config option
+CONFIG_OF is disabled.
+
+Today I am back at this device and I have changed the above function
+(arizona_of_get_core_pdata) where I set
+currently the pdata with its values for the arizona type = WM5102.
+
+So the pdata is at the moment hardcoded, that is not the way I want to
+go on, but
+it seems the code works so far, except the LDO1 makes trouble with the
+current GPIO value 0x17 (extracted from dsdt.dsl as seen above).
+
+[    5.790655] systemd-journald[434]: Received request to flush
+runtime journal from PID 1
+[    7.263225] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
+[    7.263339] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
+[    7.263482] spi spi-WM510205:00: 8333333 Hz actual, PIO
+[    7.263490] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
+[    7.263551] spi spi-WM510205:00: checking WM510205 with bmp180
+[    7.263557] spi spi-WM510205:00: checking WM510205 with bmp181
+[    7.263562] spi spi-WM510205:00: modalias WM510205 in id_table not
+found, returns NULL
+[    7.263610] arizona spi-WM510205:00: acpi_match_device() first,
+than via spi_get_device_id().
+[    7.263617] arizona spi-WM510205:00: matched ACPI ID and data
+[    7.263621] arizona spi-WM510205:00: using 1 as type for arizona audio codec
+[    7.263625] arizona spi-WM510205:00: regmap set to wm5102_spi
+[    7.264424] arizona spi-WM510205:00: spi_irq = -1
+[    7.264432] arizona spi-WM510205:00: arizona_irq = -1
+[    7.264436] arizona spi-WM510205:00: arizona_spi_probe done, call
+and return of  arizona_dev_init
+[    7.264440] arizona spi-WM510205:00: dev_set_drvdata done for 1
+[    7.264445] arizona spi-WM510205:00: arizona_of_get_core_pdata for 1
+[    7.264450] arizona spi-WM510205:00: regcache_cache_only for 1 set
+[    7.264454] arizona spi-WM510205:00: added wm5102_core_supplies for 1
+[    7.269430] LDO1: Failed to request enable GPIO23: -517
+[    7.269506] arizona spi-WM510205:00: Failed to register LDO1 supply: -517
+[    7.289191] spi-WM510205:00 supply AVDD not found, using dummy regulator
+[    7.289246] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
+[    7.289366] spi-WM510205:00 supply DCVDD not found, using dummy regulator
+[    7.289415] arizona spi-WM510205:00: Failed to request /RESET: -517
+[    7.289690] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
+
+... arizona spi-wm510202 tries to init the device 2 times again ....
+
+side-note: added a lot of dev_err to see whats going on, so the most
+messages are not in master, only in my local branch (today its
+4.2.0-rc6)
+
+Instead of hardcoding and finding the correct GPIOs by Try&Error I
+want as mentioned above already by Charles Keepax, to pull them from
+ACPI.
+
+currently I am not using the the gpiolib.h and its functions to get
+the named and relevant GPIOs in question,
+failing yet searching for examples which fits into the arizona mfd code easily.
+
+I saw the drivers/gpio/gpio-arizona.h, which is also not using the
+gpiolib.h, too.also it is not clear to me, if I should use
+gpio-arizona at all (or extend it for using it with the wm5102).
+
+
+zitat from Charles:
+
+"I suspect we still have some issues with the GPIO lookups, I
+suspect we want to actually pull them from ACPI rather than
+putting them into the pdata, as I don't know if the number will
+translate directly over."
+
+What I have understand today :  the three values (irq_gpio, reset,
+ldoena) have different 'parents' as seen in the dsdt.dsl
+irq_gpio = _SB.GPO2 -> 0x0004
+reset = _SB.I2C7.PMIC
+
+Looking in other wmXXXX drivers how they get and set there gpios, but
+nothing found what I can adapt or reuse here at the moment.
+
+Does anybody has a clue??
+
+cheers
+chris
