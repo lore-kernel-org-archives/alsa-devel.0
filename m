@@ -1,52 +1,85 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v2 1/4] drm/i915: Add audio set_ncts callback
-Date: Mon, 10 Aug 2015 14:46:21 +0300
-Message-ID: <87a8tz8iya.fsf@intel.com>
-References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 00/10] ASoC: support adding PCM
+ dynamically from topology
+Date: Mon, 10 Aug 2015 12:50:15 +0100
+Message-ID: <20150810115015.GA10748@sirena.org.uk>
+References: <1439186973-913-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch
+Content-Type: multipart/mixed; boundary="===============9137760789281865939=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5AAF260836
+ for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 13:50:30 +0200 (CEST)
+In-Reply-To: <1439186973-913-1-git-send-email-mengdong.lin@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mengdong.lin@intel.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxMCBBdWcgMjAxNSwgbGliaW4ueWFuZ0BpbnRlbC5jb20gd3JvdGU6Cj4gRnJvbTog
-TGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4KPiBBZGQgdGhlIHNldF9uY3RzIGNh
-bGxiYWNrLgo+Cj4gV2l0aCB0aGUgY2FsbGJhY2ssIGF1ZGlvIGRyaXZlciBjYW4gdHJpZ2dlcgo+
-IGk5MTUgZHJpdmVyIHRvIHNldCB0aGUgcHJvcGVyIE4vQ1RTCj4gYmFzZWQgb24gZGlmZmVyZW50
-IHNhbXBsZSByYXRlcy4KPgo+IFNpZ25lZC1vZmYtYnk6IExpYmluIFlhbmcgPGxpYmluLnlhbmdA
-aW50ZWwuY29tPgo+IC0tLQo+ICBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIHwgMiArKwo+
-ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEvaW5jbHVk
-ZS9kcm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiBp
-bmRleCBjOWE4YjY0Li43MzA1ODgxIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29t
-cG9uZW50LmgKPiArKysgYi9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4gQEAgLTMzLDYg
-KzMzLDggQEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKPiAgCQl2b2lkICgqcHV0X3Bv
-d2VyKShzdHJ1Y3QgZGV2aWNlICopOwo+ICAJCXZvaWQgKCpjb2RlY193YWtlX292ZXJyaWRlKShz
-dHJ1Y3QgZGV2aWNlICosIGJvb2wgZW5hYmxlKTsKPiAgCQlpbnQgKCpnZXRfY2RjbGtfZnJlcSko
-c3RydWN0IGRldmljZSAqKTsKPiArCQlpbnQgKCpzZXRfbmN0cykoc3RydWN0IGRldmljZSAqLCBp
-bnQgcG9ydCwgaW50IGRldl9lbnRyeSwKPiArCQkJCQlpbnQgcmF0ZSk7CgpJJ2QgcmF0aGVyIGNh
-bGwgdGhpcyBzZXRfYXVkaW9fcmF0ZSBvciBzaW1pbGFyLCBhbmQgZHJvcHBpbmcgdGhlCnJlZmVy
-ZW5jZXMgdG8gTiBhbmQgQ1RTLiBUaGUgY2FsbGVyIGRvZXMgbm90IG5lZWQgdG8ga25vdy4KCkkn
-bSBhbHNvIG5vdCBmb25kIG9mIGFkZGluZyBhIGRldl9lbnRyeSBwYXJhbWV0ZXIgYW5kIGxlYXZp
-bmcgaXQKdW51c2VkLiBJIGRvIG5vdCB0aGluayB3ZSBrbm93IHNwZWNpZmljYWxseSBob3cgd2Un
-cmUgZ29pbmcgdG8gaWRlbnRpZnkKTVNUIHNpbmtzLCBhbmQgdGhlIGludGVyZmFjZSBtYXkgbmVl
-ZCB0byBiZSBjaGFuZ2VkIGFueXdheS4gTGV0J3MgZm9yY2UKYW4gdXBkYXRlIGluIHRoZSBjYWxs
-ZXIgc2lkZSBhcyB3ZWxsIHdoZW4gdGhlcmUncyBhY3R1YWxseSBzZW5zaWJsZQpzdXBwb3J0IGlu
-IG91ciBzaWRlLgoKQlIsCkphbmkuCgo+ICAJfSAqb3BzOwo+ICB9Owo+ICAKPiAtLSAKPiAxLjku
-MQo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBJ
-bnRlbC1nZnggbWFpbGluZyBsaXN0Cj4gSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+
-IGh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
-Ci0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
-aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+
+--===============9137760789281865939==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
+Content-Disposition: inline
+
+
+--cNdxnHkX5QqsyA0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 10, 2015 at 02:09:33PM +0800, mengdong.lin@intel.com wrote:
+
+> Mengdong Lin (10):
+>   ASoC: change the PCM runtime array to a list
+>   ASoC: Define soc_init_dai_link() to wrap link intialization.
+>   ASoC: soc_bind_dai_link() change 2nd argument to DAI link pointer
+>   ASoC: implement DAI links in a list.
+>   ASoC: Add support for dummy DAI links and PCM runtimes
+>   ASoC: bind new DAI links after probing components.
+>   ASoC: support adding a DAI dynamically
+>   ASoC: topology: change pass number of DAI smaller than graph
+>   ASoC: Topology: change stream formats to bitwise flag
+>   ASOC: topology: Add PCM DAIs dynamically when loading them
+
+Please when submitting patch serieses use something like git send-email
+to make them appear as a thread in reply to the cover letter.  Please
+also make sure that PATCH is the first thing in the [] to make it easier
+to spot messages and try to keep your subject lines consistant with the
+style of the subsystem (and at least internally consistent within your
+series).
+
+--cNdxnHkX5QqsyA0e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVyI/3AAoJECTWi3JdVIfQ7zgIAIU6oZqIvquRwI7Y8BGIDdoV
+IQlSJbYWwUv3yLJVGZottx4jMz+ERqbLVxtKgdDQW4PllFjbJT2L8ZjibTBqv/W7
+Q4NU9Mf6FTH/pEfJNsuYSfLw8ITTsYNxMdQL1hbvHmfmYKAEzF+Mh4f5D6gykpx3
+uBE78S9l5pdJo74fhJwbcEYVb7AWqvE1jcXGzBGTHh8/J17tA9xtgpD6+Ez40b/v
+WaYaiu6VCfJGZEiwz01g9ulZFMbFgiUxqWPQknFa/CBTEym6xp2f5F2jIuvrtxu0
+D0VkWSpfjH2DzeR4OrurOI1tu07u7GRvFvKPb4thHivbnFYAJP39L9tCvaM/90Q=
+=tIjJ
+-----END PGP SIGNATURE-----
+
+--cNdxnHkX5QqsyA0e--
+
+--===============9137760789281865939==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9137760789281865939==--
