@@ -1,198 +1,269 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
-	Nuvoton 8825
-Date: Mon, 10 Aug 2015 17:32:32 -0700
-Message-ID: <CAOMFOmUg2D_T338=zFSrzw=ZRGRw9awLYrKFxhoPmOEd5NGZSA@mail.gmail.com>
-References: <1438038837-339-1-git-send-email-anatol.pomozov@gmail.com>
- <20150731182716.GO20873@sirena.org.uk>
- <CAOMFOmVA5HB138TUghe7fRwq4661vvQZt0NU5iJDZhkuGUZH1g@mail.gmail.com>
- <20150804094757.GE20873@sirena.org.uk>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/4] ALSA: hda - display audio
+ call ncts callback
+Date: Tue, 11 Aug 2015 02:30:41 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196E1D97@SHSMSX103.ccr.corp.intel.com>
+References: <1438843977-4269-1-git-send-email-libin.yang@intel.com>
+ <1438843977-4269-3-git-send-email-libin.yang@intel.com>
+ <s5hmvy4loou.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D196CFB33@SHSMSX103.ccr.corp.intel.com>
+ <CAN8ccib3VP+-OKz0PgWye04JF+jtcd9dq2AEZLyo2nQBLiMVPA@mail.gmail.com>
+ <96A12704CE18D347B625EE2D4A099D196DF764@SHSMSX103.ccr.corp.intel.com>
+ <CAN8cciYu+MJvtGGbu9gE1U-vrF-Wi7Bkoa2cU=0BjLQuCwjd=g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f65.google.com (mail-vk0-f65.google.com
- [209.85.213.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DC026260420
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 02:32:33 +0200 (CEST)
-Received: by vkbf67 with SMTP id f67so623137vkb.2
- for <alsa-devel@alsa-project.org>; Mon, 10 Aug 2015 17:32:33 -0700 (PDT)
-In-Reply-To: <20150804094757.GE20873@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, mfelton1@nuvoton.com, So KC <kcso@nuvoton.com>, Chih-Chiang Chang <ccchang12@nuvoton.com>, Dylan Reid <dgreid@google.com>, mhkuo@nuvoton.com
+Content-Type: multipart/mixed; boundary="===============2083849161=="
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <CAN8cciYu+MJvtGGbu9gE1U-vrF-Wi7Bkoa2cU=0BjLQuCwjd=g@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+--===============2083849161==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_96A12704CE18D347B625EE2D4A099D196E1D97SHSMSX103ccrcorpi_"
 
-On Tue, Aug 4, 2015 at 2:47 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Aug 03, 2015 at 08:13:40PM -0700, Anatol Pomozov wrote:
->> On Fri, Jul 31, 2015 at 11:27 AM, Mark Brown <broonie@kernel.org> wrote:
->> > On Mon, Jul 27, 2015 at 04:13:57PM -0700, Anatol Pomozov wrote:
->
->> >> +     /* Setup SAR ADC */
->> >> +     regmap_write(regmap, NAU8825_REG_SAR_CTRL, 0x0280);
->
->> > Lots of magic numbers in these things...
+--_000_96A12704CE18D347B625EE2D4A099D196E1D97SHSMSX103ccrcorpi_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Okay, I moved the magic number to board configuration options. Now
-most of these numbers can be configured via dts.
+SGkgUmF5bW9uZCwNCg0KRnJvbTogUmF5bW9uZCBZYXUgW21haWx0bzpzdXBlcnF1YWQudm9ydGV4
+MkBnbWFpbC5jb21dDQpTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSAxMjoyMyBQTQ0KVG86
+IFlhbmcsIExpYmluDQpDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBUYWthc2hpIEl3
+YWk7IExpbiwgTWVuZ2Rvbmc7IGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNClN1Ympl
+Y3Q6IFJFOiBbYWxzYS1kZXZlbF0gW1BBVENIIDMvNF0gQUxTQTogaGRhIC0gZGlzcGxheSBhdWRp
+byBjYWxsIG5jdHMgY2FsbGJhY2sNCg0KDQoyMDE1LTgtMTAg5LiK5Y2IMTE6MTXmlrwgIllhbmcs
+IExpYmluIiA8bGliaW4ueWFuZ0BpbnRlbC5jb208bWFpbHRvOmxpYmluLnlhbmdAaW50ZWwuY29t
+Pj7lr6vpgZPvvJoNCj4NCj4gSGkgUmF5bW9uZCwNCj4NCj4gPg0KPiA+ID4gPiAgICAgfQ0KPiA+
+ID4gPg0KPiA+ID4gPiArICAgaWYgKGlzX2hhc3dlbGxfcGx1cyhjb2RlYykpIHsNCj4gPiA+ID4g
+KyAgICAgICAgICAgaWYgKGFjb21wICYmIGFjb21wLT5vcHMgJiYgYWNvbXAtPm9wcy0+c2V0X25j
+dHMpDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgYWNvbXAtPm9wcy0+c2V0X25jdHMoYWNv
+bXAtPmRldiwgcGVyX3Bpbi0NCj4gPiA+ID5waW5fbmlkIC0gNCwNCj4gPiA+DQo+ID4gPiBQbGVh
+c2UgZGVzY3JpYmUgbW9yZSBob3cgInBpbl9uaWQgLSA0IiBpcyBzdXBwb3NlZCB0byB3b3JrLiAg
+QWxzby4uLg0KPiA+DQo+ID4gT0ssIEkgc2VlLg0KPiA+DQo+ID4gPg0KPiA+ID4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgMCwgcnVudGltZS0+cmF0ZSk7DQo+ID4gPg0KPiA+ID4gLi4u
+IHRoaXMgaW1wbGllcyB0aGF0IG5vIE1TVCBzdXBwb3J0IGluY2x1ZGVkPw0KPiA+DQo+ID4gV2Ug
+d2lsbCBzdXBwb3J0IE1TVCBsYXRlci4gQ3VycmVudGx5IEkganVzdCBhZGQgdGhlDQo+ID4gaW50
+ZXJmYWNlIHRvIHN1cHBvcnQgTVNULCBidXQgbm90IGltcGxlbWVudGluZyBpdC4NCj4gUmVmZXIg
+dG8gRENOIEhEQTA0MC1BDQo+IE11bHRpLXN0cmVhbSBvdmVyIFNpbmdsZSBEaXNwbGF5IFBvcnQN
+Cj4gQ2FuIHRoZSBkcml2ZXIgdXNlIHN1YmRldmljZXMgZm9yIHRob3NlIGRpc3BsYXkgcG9ydCBz
+dXBwb3J0IG11bHRpIHN0cmVhbWluZyA/DQo+DQo+IFtMaWJpbl0gV2hhdCBkbyB5b3UgbWVhbiBz
+dWJkZXZpY2UgaGVyZSwNCj4gdXNpbmcgYSBzdHJ1Y3QgZGV2aWNlIHRvIHJlcHJlc2VudCBhIGRl
+dl9lbnRyeSBvciBhbiBpbnQgdHlwZT8NCg0KaHR0cDovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGlu
+dXgva2VybmVsL2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcy9zdGFjOTIyNy1pbnRl
+bC1kOTQ2Z3ppcy1tb2JvP2lkPUhFQUQNCg0KV2hlbiBIREEgY29kZWNzIGhhdmUgdGhyZWUgQXVk
+aW8gSW5wdXQgd2lkZ2V0cywgdGhlIGRyaXZlciBjcmVhdGUgdGhyZWUgc3ViZGV2aWNlcyBmb3Ig
+dGhvc2UgZGVza3RvcCB3aGljaCBoYXZlIHRocmVlIG9yIG1vcmUgaW5wdXQgc291cmNlcyBpbiB0
+aGUgcGFzdA0KDQpUaGlzIGlzIHdoYXQgd2UgYXJlIHRoaW5raW5nIGN1cnJlbnRseS4gRGlmZmVy
+ZW50IGNvbXBhbmllcw0KDQpoYXZlIGRpZmZlcmVudCBpbXBsZW1lbnRhdGlvbi4gT24gY3VycmVu
+dGx5IEludGVsIHBsYXRmb3JtcywNCg0KaXQgbWF5IHNob3cgc2V2ZXJhbCBwaW4gd2lkZ2V0cyBh
+bmQgZWFjaCBwaW4gd2lkZ2V0IGhhcw0KDQpzZXZlcmFsIGRldmljZSBlbnRyeS4gQnV0IGl0IGFj
+dHVhbGx5IG9ubHkgc3VwcG9ydCAzIHN0cmVhbXMuDQoNCk1lbmdkb25nIGlzIHRoaW5raW5nIHRv
+IHVzZSBkeW5hbWljIFBDTSB0byBpbXBsZW1lbnQgaXQsDQoNCmFuZCBzbyB3ZSBkb27igJl0IG5l
+ZWQgZWFjaCBzdWJkZXZpY2UgZm9yIGVhY2ggZGV2aWNlIGVudHJ5Lg0KDQpJ4oCZbSBub3Qgc3Vy
+ZSB3ZSB3aWxsIHVzZSB3aGF0IHNvbHV0aW9uLiBJdCBzZWVtcyBpdCBpcyBhDQoNCmdvb2Qgb3Bl
+biBxdWVzdGlvbiB0byBkaXNjdXNzLg0KDQpSZWdhcmRzLA0KTGliaW4NCg0KDQoNCkFSRUNPUkQN
+Cg0KKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqDQpjYXJkIDA6IElu
+dGVsIFtIREEgSW50ZWxdLCBkZXZpY2UgMDogU1RBQzkyeHggQW5hbG9nIFtTVEFDOTJ4eCBBbmFs
+b2ddDQogIFN1YmRldmljZXM6IDMvMw0KICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMA0KICBT
+dWJkZXZpY2UgIzE6IHN1YmRldmljZSAjMQ0KICBTdWJkZXZpY2UgIzI6IHN1YmRldmljZSAjMg0K
+DQpXaXRoIHRoZSBhdXRvIGdlbmVyaWMgcGFyc2VyICwgdGhlIGRyaXZlciBjcmVhdGUgb25lIHN1
+YmRldmljZSBmb3IgQW5hbG9nICB0d28gc3ViZGV2aWNlcyBmb3IgQWx0IEFuYWxvZw0KDQoqKioq
+IExpc3Qgb2YgQ0FQVFVSRSBIYXJkd2FyZSBEZXZpY2VzICoqKioNCmNhcmQgMDogSW50ZWwgW0hE
+QSBJbnRlbF0sIGRldmljZSAwOiBTVEFDOTJ4eCBBbmFsb2cgW1NUQUM5Mnh4IEFuYWxvZ10NCiAg
+U3ViZGV2aWNlczogMS8xDQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwDQpjYXJkIDA6IElu
+dGVsIFtIREEgSW50ZWxdLCBkZXZpY2UgMjogU1RBQzkyeHggQWx0IEFuYWxvZyBbU1RBQzkyeHgg
+QWx0IEFuYWxvZ10NCiAgU3ViZGV2aWNlczogMi8yDQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNl
+ICMwDQogIFN1YmRldmljZSAjMTogc3ViZGV2aWNlICMxDQoNCj4NCj4gVGhlIHNwZWNpZmljYXRp
+b24gYWxsb3cgdXAgdG8gNjQgZGV2aWNlIGVudHJpZXMNCj4gVGhpcyBtZWFuIHRoZSBudW1iZXIg
+b2Ygc3ViZGV2aWNlcyBpcyBlcXVhbCB0byB0aGUgZGV2aWNlIGxpc3QgbGVuZ3RoDQo+IE1vcmUg
+dGhhbiBvbmUgYXVkaW8gb3V0cHV0IC9jb252ZXJ0ZXJzIGNhbiBiZSBjb25uZWN0ZWQgdG8gdGhl
+IG11bHRpIHN0cmVhbSBkaXNwbGF5cG9ydCBwaW4gd2lkZ2V0IGJ1dCBkaWZmZXJlbnQgZGV2aWNl
+IGVudHJ5IHdoaWxlIG9ubHkgb25lIGF1ZGlvIG91dHB1dCBjYW4gYmUgZHluYW1pY2FsbHkgYWxs
+b2NhdGVkICB0byBvdGhlciBIRE1JIHBpbiB3aWRnZXQNCj4NCj4gW0xpYmluXSBZZXMsIFBpbiB3
+aWRnZXQgY2FuIGhhdmUgbXVsdGlwbGUgZGV2aWNlIGVudHJ5IGFuZCBjb25uZWN0aW5nIGRpZmZl
+cmVudCBjb252ZXJ0ZXJzLiBUaGUgYXVkaW8gb3V0cHV0IHdpbGwgYmUgYmFzZWQgb24gZGV2aWNl
+IGVudHJ5Lg0K
 
->> >> +     /* Setup ADC x128 OSR */Moved to
->> >> +     regmap_write(regmap, NAU8825_REG_ADC_RATE, 0x0002);
->> >> +     /* Setup DAC x128 OSR */
->> >> +     regmap_write(regmap, NAU8825_REG_DAC_CTRL1, 0x0082);
->
->> > I'd expect this to be user controllable.
->
->> The oversampling configuration is important for chip audio quality.
->> There is audible hissing without these settings.
->
->> My understanding that all users need to set these values and it is
->> better to move it to the driver initialization sequence.
->
-> That sounds like spectacularly poor quality of implementation, but even
-> if there's a noticeable reduction in audio quality the control should
-> still be given to the user, they may have an application where power is
-> much more important than audio quality (eg, if they are doing some form
-> of recognition on the audio then all they need is something good enough
-> for their algorithm).
+--_000_96A12704CE18D347B625EE2D4A099D196E1D97SHSMSX103ccrcorpi_
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Moved it to ALSA controls. Though I still feel a bit uncomfortable
-that the default control value is not usable.
-I have to set "ADC Decimation Rate" and "DAC Oversampling Rate"
-controls in userspace from its defaults to "128".
+PGh0bWwgeG1sbnM6dj0idXJuOnNjaGVtYXMtbWljcm9zb2Z0LWNvbTp2bWwiIHhtbG5zOm89InVy
+bjpzY2hlbWFzLW1pY3Jvc29mdC1jb206b2ZmaWNlOm9mZmljZSIgeG1sbnM6dz0idXJuOnNjaGVt
+YXMtbWljcm9zb2Z0LWNvbTpvZmZpY2U6d29yZCIgeG1sbnM6bT0iaHR0cDovL3NjaGVtYXMubWlj
+cm9zb2Z0LmNvbS9vZmZpY2UvMjAwNC8xMi9vbW1sIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
+VFIvUkVDLWh0bWw0MCI+DQo8aGVhZD4NCjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIg
+Y29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4NCjxtZXRhIG5hbWU9IkdlbmVyYXRv
+ciIgY29udGVudD0iTWljcm9zb2Z0IFdvcmQgMTQgKGZpbHRlcmVkIG1lZGl1bSkiPg0KPHN0eWxl
+PjwhLS0NCi8qIEZvbnQgRGVmaW5pdGlvbnMgKi8NCkBmb250LWZhY2UNCgl7Zm9udC1mYW1pbHk6
+5a6L5L2TOw0KCXBhbm9zZS0xOjIgMSA2IDAgMyAxIDEgMSAxIDE7fQ0KQGZvbnQtZmFjZQ0KCXtm
+b250LWZhbWlseTrlrovkvZM7DQoJcGFub3NlLTE6MiAxIDYgMCAzIDEgMSAxIDEgMTt9DQpAZm9u
+dC1mYWNlDQoJe2ZvbnQtZmFtaWx5OkNhbGlicmk7DQoJcGFub3NlLTE6MiAxNSA1IDIgMiAyIDQg
+MyAyIDQ7fQ0KQGZvbnQtZmFjZQ0KCXtmb250LWZhbWlseTpUYWhvbWE7DQoJcGFub3NlLTE6MiAx
+MSA2IDQgMyA1IDQgNCAyIDQ7fQ0KQGZvbnQtZmFjZQ0KCXtmb250LWZhbWlseToiXEDlrovkvZMi
+Ow0KCXBhbm9zZS0xOjIgMSA2IDAgMyAxIDEgMSAxIDE7fQ0KLyogU3R5bGUgRGVmaW5pdGlvbnMg
+Ki8NCnAuTXNvTm9ybWFsLCBsaS5Nc29Ob3JtYWwsIGRpdi5Nc29Ob3JtYWwNCgl7bWFyZ2luOjBp
+bjsNCgltYXJnaW4tYm90dG9tOi4wMDAxcHQ7DQoJZm9udC1zaXplOjEyLjBwdDsNCglmb250LWZh
+bWlseToiVGltZXMgTmV3IFJvbWFuIiwic2VyaWYiO30NCmE6bGluaywgc3Bhbi5Nc29IeXBlcmxp
+bmsNCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOmJsdWU7DQoJdGV4dC1kZWNvcmF0
+aW9uOnVuZGVybGluZTt9DQphOnZpc2l0ZWQsIHNwYW4uTXNvSHlwZXJsaW5rRm9sbG93ZWQNCgl7
+bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCWNvbG9yOnB1cnBsZTsNCgl0ZXh0LWRlY29yYXRpb246
+dW5kZXJsaW5lO30NCnANCgl7bXNvLXN0eWxlLXByaW9yaXR5Ojk5Ow0KCW1zby1tYXJnaW4tdG9w
+LWFsdDphdXRvOw0KCW1hcmdpbi1yaWdodDowaW47DQoJbXNvLW1hcmdpbi1ib3R0b20tYWx0OmF1
+dG87DQoJbWFyZ2luLWxlZnQ6MGluOw0KCWZvbnQtc2l6ZToxMi4wcHQ7DQoJZm9udC1mYW1pbHk6
+IlRpbWVzIE5ldyBSb21hbiIsInNlcmlmIjt9DQpzcGFuLkVtYWlsU3R5bGUxOA0KCXttc28tc3R5
+bGUtdHlwZTpwZXJzb25hbC1yZXBseTsNCglmb250LWZhbWlseToiQ2FsaWJyaSIsInNhbnMtc2Vy
+aWYiOw0KCWNvbG9yOiMxRjQ5N0Q7fQ0KLk1zb0NocERlZmF1bHQNCgl7bXNvLXN0eWxlLXR5cGU6
+ZXhwb3J0LW9ubHk7DQoJZm9udC1mYW1pbHk6IkNhbGlicmkiLCJzYW5zLXNlcmlmIjt9DQpAcGFn
+ZSBXb3JkU2VjdGlvbjENCgl7c2l6ZTo4LjVpbiAxMS4waW47DQoJbWFyZ2luOjEuMGluIDEuMjVp
+biAxLjBpbiAxLjI1aW47fQ0KZGl2LldvcmRTZWN0aW9uMQ0KCXtwYWdlOldvcmRTZWN0aW9uMTt9
+DQotLT48L3N0eWxlPjwhLS1baWYgZ3RlIG1zbyA5XT48eG1sPg0KPG86c2hhcGVkZWZhdWx0cyB2
+OmV4dD0iZWRpdCIgc3BpZG1heD0iMTAyNiIgLz4NCjwveG1sPjwhW2VuZGlmXS0tPjwhLS1baWYg
+Z3RlIG1zbyA5XT48eG1sPg0KPG86c2hhcGVsYXlvdXQgdjpleHQ9ImVkaXQiPg0KPG86aWRtYXAg
+djpleHQ9ImVkaXQiIGRhdGE9IjEiIC8+DQo8L286c2hhcGVsYXlvdXQ+PC94bWw+PCFbZW5kaWZd
+LS0+DQo8L2hlYWQ+DQo8Ym9keSBsYW5nPSJFTi1VUyIgbGluaz0iYmx1ZSIgdmxpbms9InB1cnBs
+ZSI+DQo8ZGl2IGNsYXNzPSJXb3JkU2VjdGlvbjEiPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNw
+YW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90
+OywmcXVvdDtzYW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPkhpIFJheW1vbmQsPG86cD48
+L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQt
+c2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OywmcXVvdDtzYW5zLXNl
+cmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPjxvOnA+Jm5ic3A7PC9vOnA+PC9zcGFuPjwvcD4NCjxk
+aXYgc3R5bGU9ImJvcmRlcjpub25lO2JvcmRlci1sZWZ0OnNvbGlkIGJsdWUgMS41cHQ7cGFkZGlu
+ZzowaW4gMGluIDBpbiA0LjBwdCI+DQo8ZGl2Pg0KPGRpdiBzdHlsZT0iYm9yZGVyOm5vbmU7Ym9y
+ZGVyLXRvcDpzb2xpZCAjQjVDNERGIDEuMHB0O3BhZGRpbmc6My4wcHQgMGluIDBpbiAwaW4iPg0K
+PHAgY2xhc3M9Ik1zb05vcm1hbCI+PGI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMC4wcHQ7Zm9u
+dC1mYW1pbHk6JnF1b3Q7VGFob21hJnF1b3Q7LCZxdW90O3NhbnMtc2VyaWYmcXVvdDsiPkZyb206
+PC9zcGFuPjwvYj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjEwLjBwdDtmb250LWZhbWlseTomcXVv
+dDtUYWhvbWEmcXVvdDssJnF1b3Q7c2Fucy1zZXJpZiZxdW90OyI+IFJheW1vbmQgWWF1IFttYWls
+dG86c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tXQ0KPGJyPg0KPGI+U2VudDo8L2I+IE1vbmRh
+eSwgQXVndXN0IDEwLCAyMDE1IDEyOjIzIFBNPGJyPg0KPGI+VG86PC9iPiBZYW5nLCBMaWJpbjxi
+cj4NCjxiPkNjOjwvYj4gYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBUYWthc2hpIEl3YWk7
+IExpbiwgTWVuZ2Rvbmc7IGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc8YnI+DQo8Yj5T
+dWJqZWN0OjwvYj4gUkU6IFthbHNhLWRldmVsXSBbUEFUQ0ggMy80XSBBTFNBOiBoZGEgLSBkaXNw
+bGF5IGF1ZGlvIGNhbGwgbmN0cyBjYWxsYmFjazxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjwvZGl2
+Pg0KPC9kaXY+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48bzpwPiZuYnNwOzwvbzpwPjwvcD4NCjxw
+Pjxicj4NCjIwMTUtOC0xMCA8c3BhbiBsYW5nPSJaSC1DTiIgc3R5bGU9ImZvbnQtZmFtaWx5OuWu
+i+S9kyI+5LiK5Y2IPC9zcGFuPjExOjE1PHNwYW4gbGFuZz0iWkgtQ04iIHN0eWxlPSJmb250LWZh
+bWlseTrlrovkvZMiPuaWvDwvc3Bhbj4gJnF1b3Q7WWFuZywgTGliaW4mcXVvdDsgJmx0OzxhIGhy
+ZWY9Im1haWx0bzpsaWJpbi55YW5nQGludGVsLmNvbSI+bGliaW4ueWFuZ0BpbnRlbC5jb208L2E+
+Jmd0OzxzcGFuIGxhbmc9IlpILUNOIiBzdHlsZT0iZm9udC1mYW1pbHk65a6L5L2TIj7lr6vpgZPv
+vJo8L3NwYW4+PGJyPg0KJmd0Ozxicj4NCiZndDsgSGkgUmF5bW9uZCw8YnI+DQomZ3Q7PGJyPg0K
+Jmd0OyAmZ3Q7PGJyPg0KJmd0OyAmZ3Q7ICZndDsgJmd0OyZuYnNwOyAmbmJzcDsgJm5ic3A7fTxi
+cj4NCiZndDsgJmd0OyAmZ3Q7ICZndDs8YnI+DQomZ3Q7ICZndDsgJmd0OyAmZ3Q7ICYjNDM7Jm5i
+c3A7ICZuYnNwO2lmIChpc19oYXN3ZWxsX3BsdXMoY29kZWMpKSB7PGJyPg0KJmd0OyAmZ3Q7ICZn
+dDsgJmd0OyAmIzQzOyZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7aWYg
+KGFjb21wICZhbXA7JmFtcDsgYWNvbXAtJmd0O29wcyAmYW1wOyZhbXA7IGFjb21wLSZndDtvcHMt
+Jmd0O3NldF9uY3RzKTxicj4NCiZndDsgJmd0OyAmZ3Q7ICZndDsgJiM0MzsmbmJzcDsgJm5ic3A7
+ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDth
+Y29tcC0mZ3Q7b3BzLSZndDtzZXRfbmN0cyhhY29tcC0mZ3Q7ZGV2LCBwZXJfcGluLTxicj4NCiZn
+dDsgJmd0OyAmZ3Q7ICZndDtwaW5fbmlkIC0gNCw8YnI+DQomZ3Q7ICZndDsgJmd0Ozxicj4NCiZn
+dDsgJmd0OyAmZ3Q7IFBsZWFzZSBkZXNjcmliZSBtb3JlIGhvdyAmcXVvdDtwaW5fbmlkIC0gNCZx
+dW90OyBpcyBzdXBwb3NlZCB0byB3b3JrLiZuYnNwOyBBbHNvLi4uPGJyPg0KJmd0OyAmZ3Q7PGJy
+Pg0KJmd0OyAmZ3Q7IE9LLCBJIHNlZS48YnI+DQomZ3Q7ICZndDs8YnI+DQomZ3Q7ICZndDsgJmd0
+Ozxicj4NCiZndDsgJmd0OyAmZ3Q7ICZndDsgJiM0MzsmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
+cDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNw
+OyAmbmJzcDsgJm5ic3A7MCwgcnVudGltZS0mZ3Q7cmF0ZSk7PGJyPg0KJmd0OyAmZ3Q7ICZndDs8
+YnI+DQomZ3Q7ICZndDsgJmd0OyAuLi4gdGhpcyBpbXBsaWVzIHRoYXQgbm8gTVNUIHN1cHBvcnQg
+aW5jbHVkZWQ/PGJyPg0KJmd0OyAmZ3Q7PGJyPg0KJmd0OyAmZ3Q7IFdlIHdpbGwgc3VwcG9ydCBN
+U1QgbGF0ZXIuIEN1cnJlbnRseSBJIGp1c3QgYWRkIHRoZTxicj4NCiZndDsgJmd0OyBpbnRlcmZh
+Y2UgdG8gc3VwcG9ydCBNU1QsIGJ1dCBub3QgaW1wbGVtZW50aW5nIGl0Ljxicj4NCiZndDsgUmVm
+ZXIgdG8gRENOIEhEQTA0MC1BPGJyPg0KJmd0OyBNdWx0aS1zdHJlYW0gb3ZlciBTaW5nbGUgRGlz
+cGxheSBQb3J0PGJyPg0KJmd0OyBDYW4gdGhlIGRyaXZlciB1c2Ugc3ViZGV2aWNlcyBmb3IgdGhv
+c2UgZGlzcGxheSBwb3J0IHN1cHBvcnQgbXVsdGkgc3RyZWFtaW5nID88YnI+DQomZ3Q7PGJyPg0K
+Jmd0OyBbTGliaW5dIFdoYXQgZG8geW91IG1lYW4gc3ViZGV2aWNlIGhlcmUsPGJyPg0KJmd0OyB1
+c2luZyBhIHN0cnVjdCBkZXZpY2UgdG8gcmVwcmVzZW50IGEgZGV2X2VudHJ5IG9yIGFuIGludCB0
+eXBlPzxvOnA+PC9vOnA+PC9wPg0KPHA+PGEgaHJlZj0iaHR0cDovL2dpdC5rZXJuZWwub3JnL2Nn
+aXQvbGludXgva2VybmVsL2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcy9zdGFjOTIy
+Ny1pbnRlbC1kOTQ2Z3ppcy1tb2JvP2lkPUhFQUQiPmh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0
+L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvaGRhLWVtdS5naXQvdHJlZS9jb2RlY3Mvc3RhYzkyMjct
+aW50ZWwtZDk0Nmd6aXMtbW9ibz9pZD1IRUFEPC9hPg0KPG86cD48L286cD48L3A+DQo8cD5XaGVu
+IEhEQSBjb2RlY3MgaGF2ZSB0aHJlZSBBdWRpbyBJbnB1dCB3aWRnZXRzLCB0aGUgZHJpdmVyIGNy
+ZWF0ZSB0aHJlZSBzdWJkZXZpY2VzIGZvciB0aG9zZSBkZXNrdG9wIHdoaWNoIGhhdmUgdGhyZWUg
+b3IgbW9yZSBpbnB1dCBzb3VyY2VzIGluIHRoZSBwYXN0PHNwYW4gc3R5bGU9ImNvbG9yOiMxRjQ5
+N0QiPjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEu
+MHB0O2ZvbnQtZmFtaWx5OiZxdW90O0NhbGlicmkmcXVvdDssJnF1b3Q7c2Fucy1zZXJpZiZxdW90
+Oztjb2xvcjojMUY0OTdEIj5UaGlzIGlzIHdoYXQgd2UgYXJlIHRoaW5raW5nIGN1cnJlbnRseS4g
+RGlmZmVyZW50IGNvbXBhbmllcw0KPG86cD48L286cD48L3NwYW4+PC9wPg0KPHA+PHNwYW4gc3R5
+bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OywmcXVv
+dDtzYW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPmhhdmUgZGlmZmVyZW50IGltcGxlbWVu
+dGF0aW9uLiBPbiBjdXJyZW50bHkgSW50ZWwgcGxhdGZvcm1zLA0KPG86cD48L286cD48L3NwYW4+
+PC9wPg0KPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7
+Q2FsaWJyaSZxdW90OywmcXVvdDtzYW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPml0IG1h
+eSBzaG93IHNldmVyYWwgcGluIHdpZGdldHMgYW5kIGVhY2ggcGluIHdpZGdldCBoYXM8bzpwPjwv
+bzpwPjwvc3Bhbj48L3A+DQo8cD48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZh
+bWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LCZxdW90O3NhbnMtc2VyaWYmcXVvdDs7Y29sb3I6IzFG
+NDk3RCI+c2V2ZXJhbCBkZXZpY2UgZW50cnkuIEJ1dCBpdCBhY3R1YWxseSBvbmx5IHN1cHBvcnQg
+MyBzdHJlYW1zLjxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxwPjxzcGFuIHN0eWxlPSJmb250LXNp
+emU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O0NhbGlicmkmcXVvdDssJnF1b3Q7c2Fucy1zZXJp
+ZiZxdW90Oztjb2xvcjojMUY0OTdEIj5NZW5nZG9uZyBpcyB0aGlua2luZyB0byB1c2UgZHluYW1p
+YyBQQ00gdG8gaW1wbGVtZW50IGl0LDxvOnA+PC9vOnA+PC9zcGFuPjwvcD4NCjxwPjxzcGFuIHN0
+eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQtZmFtaWx5OiZxdW90O0NhbGlicmkmcXVvdDssJnF1
+b3Q7c2Fucy1zZXJpZiZxdW90Oztjb2xvcjojMUY0OTdEIj5hbmQgc28gd2UgZG9u4oCZdCBuZWVk
+IGVhY2ggc3ViZGV2aWNlIGZvciBlYWNoIGRldmljZSBlbnRyeS48bzpwPjwvbzpwPjwvc3Bhbj48
+L3A+DQo8cD48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBwdDtmb250LWZhbWlseTomcXVvdDtD
+YWxpYnJpJnF1b3Q7LCZxdW90O3NhbnMtc2VyaWYmcXVvdDs7Y29sb3I6IzFGNDk3RCI+SeKAmW0g
+bm90IHN1cmUgd2Ugd2lsbCB1c2Ugd2hhdCBzb2x1dGlvbi4gSXQgc2VlbXMgaXQgaXMgYTxvOnA+
+PC9vOnA+PC9zcGFuPjwvcD4NCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MTEuMHB0O2ZvbnQt
+ZmFtaWx5OiZxdW90O0NhbGlicmkmcXVvdDssJnF1b3Q7c2Fucy1zZXJpZiZxdW90Oztjb2xvcjoj
+MUY0OTdEIj5nb29kIG9wZW4gcXVlc3Rpb24gdG8gZGlzY3Vzcy48bzpwPjwvbzpwPjwvc3Bhbj48
+L3A+DQo8cCBjbGFzcz0iTXNvTm9ybWFsIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOjExLjBwdDtm
+b250LWZhbWlseTomcXVvdDtDYWxpYnJpJnF1b3Q7LCZxdW90O3NhbnMtc2VyaWYmcXVvdDs7Y29s
+b3I6IzFGNDk3RCI+PG86cD4mbmJzcDs8L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9Ik1zb05v
+cm1hbCI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2Fs
+aWJyaSZxdW90OywmcXVvdDtzYW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPlJlZ2FyZHMs
+PG86cD48L286cD48L3NwYW4+PC9wPg0KPHAgY2xhc3M9Ik1zb05vcm1hbCI+PHNwYW4gc3R5bGU9
+ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2FsaWJyaSZxdW90OywmcXVvdDtz
+YW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPkxpYmluPG86cD48L286cD48L3NwYW4+PC9w
+Pg0KPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxMS4wcHQ7Zm9udC1mYW1pbHk6JnF1b3Q7Q2Fs
+aWJyaSZxdW90OywmcXVvdDtzYW5zLXNlcmlmJnF1b3Q7O2NvbG9yOiMxRjQ5N0QiPjxvOnA+Jm5i
+c3A7PC9vOnA+PC9zcGFuPjwvcD4NCjxwPkFSRUNPUkQ8bzpwPjwvbzpwPjwvcD4NCjxwPioqKiog
+TGlzdCBvZiBDQVBUVVJFIEhhcmR3YXJlIERldmljZXMgKioqKjxicj4NCmNhcmQgMDogSW50ZWwg
+W0hEQSBJbnRlbF0sIGRldmljZSAwOiBTVEFDOTJ4eCBBbmFsb2cgW1NUQUM5Mnh4IEFuYWxvZ108
+YnI+DQombmJzcDsgU3ViZGV2aWNlczogMy8zPGJyPg0KJm5ic3A7IFN1YmRldmljZSAjMDogc3Vi
+ZGV2aWNlICMwPGJyPg0KJm5ic3A7IFN1YmRldmljZSAjMTogc3ViZGV2aWNlICMxPGJyPg0KJm5i
+c3A7IFN1YmRldmljZSAjMjogc3ViZGV2aWNlICMyPG86cD48L286cD48L3A+DQo8cD5XaXRoIHRo
+ZSBhdXRvIGdlbmVyaWMgcGFyc2VyICwgdGhlIGRyaXZlciBjcmVhdGUgb25lIHN1YmRldmljZSBm
+b3IgQW5hbG9nJm5ic3A7IHR3byBzdWJkZXZpY2VzIGZvciBBbHQgQW5hbG9nDQo8bzpwPjwvbzpw
+PjwvcD4NCjxwPioqKiogTGlzdCBvZiBDQVBUVVJFIEhhcmR3YXJlIERldmljZXMgKioqKjxicj4N
+CmNhcmQgMDogSW50ZWwgW0hEQSBJbnRlbF0sIGRldmljZSAwOiBTVEFDOTJ4eCBBbmFsb2cgW1NU
+QUM5Mnh4IEFuYWxvZ108YnI+DQombmJzcDsgU3ViZGV2aWNlczogMS8xPGJyPg0KJm5ic3A7IFN1
+YmRldmljZSAjMDogc3ViZGV2aWNlICMwPGJyPg0KY2FyZCAwOiBJbnRlbCBbSERBIEludGVsXSwg
+ZGV2aWNlIDI6IFNUQUM5Mnh4IEFsdCBBbmFsb2cgW1NUQUM5Mnh4IEFsdCBBbmFsb2ddPGJyPg0K
+Jm5ic3A7IFN1YmRldmljZXM6IDIvMjxicj4NCiZuYnNwOyBTdWJkZXZpY2UgIzA6IHN1YmRldmlj
+ZSAjMDxicj4NCiZuYnNwOyBTdWJkZXZpY2UgIzE6IHN1YmRldmljZSAjMTxvOnA+PC9vOnA+PC9w
+Pg0KPHA+Jmd0Ozxicj4NCiZndDsgVGhlIHNwZWNpZmljYXRpb24gYWxsb3cgdXAgdG8gNjQgZGV2
+aWNlIGVudHJpZXM8YnI+DQomZ3Q7IFRoaXMgbWVhbiB0aGUgbnVtYmVyIG9mIHN1YmRldmljZXMg
+aXMgZXF1YWwgdG8gdGhlIGRldmljZSBsaXN0IGxlbmd0aDxicj4NCiZndDsgTW9yZSB0aGFuIG9u
+ZSBhdWRpbyBvdXRwdXQgL2NvbnZlcnRlcnMgY2FuIGJlIGNvbm5lY3RlZCB0byB0aGUgbXVsdGkg
+c3RyZWFtIGRpc3BsYXlwb3J0IHBpbiB3aWRnZXQgYnV0IGRpZmZlcmVudCBkZXZpY2UgZW50cnkg
+d2hpbGUgb25seSBvbmUgYXVkaW8gb3V0cHV0IGNhbiBiZSBkeW5hbWljYWxseSBhbGxvY2F0ZWQm
+bmJzcDsgdG8gb3RoZXIgSERNSSBwaW4gd2lkZ2V0PGJyPg0KJmd0Ozxicj4NCiZndDsgW0xpYmlu
+XSBZZXMsIFBpbiB3aWRnZXQgY2FuIGhhdmUgbXVsdGlwbGUgZGV2aWNlIGVudHJ5IGFuZCBjb25u
+ZWN0aW5nIGRpZmZlcmVudCBjb252ZXJ0ZXJzLiBUaGUgYXVkaW8gb3V0cHV0IHdpbGwgYmUgYmFz
+ZWQgb24gZGV2aWNlIGVudHJ5LjxvOnA+PC9vOnA+PC9wPg0KPC9kaXY+DQo8L2Rpdj4NCjwvYm9k
+eT4NCjwvaHRtbD4NCg==
 
->> > I'd expect any initial register initialistion to happen here (if only so
->> > we save power until the card registers).
->
->> Moved most of the initialization here. The only part is left in
->> codec_probe() is interruption initialization via I2S master mode
->> toggling. That toggling trick depends on MCLK signal to initialize
->> interruption block correctly. In our case (a tegra SoC device) MCLK is
->> initialized later at audio platform driver probe.
->
-> If you need to control MCLK you should be using the clock API to get
-> MCLK which you can do in the driver model probe.  Relying on the machine
-> driver to control MCLK for you in this way is at best fragile.
+--_000_96A12704CE18D347B625EE2D4A099D196E1D97SHSMSX103ccrcorpi_--
 
-After discussing it with my teammates who works on Intel+NAU8825
-platform I found that they use MCLK only at playback/capture time. The
-rest of the time VCO is suppose to be sysclk source. Thus using
-get_clk() is not flexible for all cases.
+--===============2083849161==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-What I propose is to initialize driver with VCO as a sysclk source.
-And later a platform driver can change it to MCLK. Added set_sysclk()
-stub that works well with VCO->MCKL transition, tested it on TegraX1.
-Follow-up changes should improve VCO/FLL configuration.
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4
+IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0
+cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
 
-> > +     codec: nau8825@1a {
-> > +             compatible = "nuvoton,nau8825";
-> > +             reg = <0x1a>;
-> > +             nuvoton,jkdet-pullup = "true";
->
-> ...this isn't how boolean properties are done, the property simply needs
-> to exist.
-
-Fixed.
-
->
-> > +static int nau8825_output_driver_event(struct snd_soc_dapm_widget *w,
-> > +     struct snd_kcontrol *kcontrol, int event)
-> > +{
-> > +     struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-> > +     struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-> > +     struct regmap *regmap = nau8825->regmap;
-> > +
-> > +     if (SND_SOC_DAPM_EVENT_ON(event)) {
-> > +             /* Power Up L and R Output Drivers */
-> > +             regmap_update_bits(regmap, NAU8825_REG_POWER_UP_CONTROL, 0x3c,
-> > +                     0x3c);
-> > +             /* Power up Main Output Drivers (The main driver must be turned
-> > +                on after the predriver to avoid pops) */
-> > +             regmap_update_bits(regmap, NAU8825_REG_POWER_UP_CONTROL, 0x3,
-> > +                     0x3);
-> > +     } else {
-> > +             /* Power Down L and R Output Drivers */
-> > +             regmap_update_bits(regmap, NAU8825_REG_POWER_UP_CONTROL, 0x3f,
-> > +                     0x0);
->
-> You should be able to implement this with _S widgets without requiring
-> explicit code, they're designed for exactly this situation.
-
-I've decided to split this function into 6 different widgets. And it
-seems enough. No audible pop/clicks here.
-
->
-> > +int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
-> > +                             struct snd_soc_jack *jack)
-> > +{
-> > +     struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-> > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
->
-> The driver shouldn't do this - it's up to the system integration to
-> define how the buttons are mapped.
-
-I was following code from ts3a227e driver that does the same.
-
->
-> > +
-> > +     nau8825->jack = jack;
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(nau8825_enable_jack_detect);
->
-> This function doesn't appear to affect the hardware.  I would expect
-> that the jack detection hardware is turned off when not in use.
-
-Disabling jack detection means disable HeadsetCompletion IRQ. But the
-IRQ handler does a bunch of manual stuff like grounding/ungrounding
-jack pins. If IRQ handler is not called then neither playback nor
-capture will not work.
-
-
-At this point this function just sets jack structure needed later in
-IRQ handler.
-
->
-> > +static void nau8825_setup_buttons(struct regmap *regmap)
-> > +{
-> > +     /* Setup Button Detect (Debounce, number of buttons, and Hysteresis) */
-> > +     regmap_write(regmap, NAU8825_REG_KEYDET_CTRL, 0x7311);
-> > +
-> > +     /* Setup 4 buttons impedane according to Android specification
-> > +      * https://source.android.com/accessories/headset-spec.html
-> > +      * Button 0 - 0-70 Ohm
-> > +      * Button 1 - 110-180 Ohm
-> > +      * Button 2 - 210-290 Ohm
-> > +      * Button 3 - 360-680 Ohm
-> > +      */
-> > +     regmap_write(regmap, NAU8825_REG_VDET_THRESHOLD_1, 0x0f1f);
-> > +     regmap_write(regmap, NAU8825_REG_VDET_THRESHOLD_2, 0x325f);
-> > +}
->
-> This looks like system configuration...
-
-Moved to DTS.
-
->
-> > +     /* The interrupt clock is gated by x1[10:8],
-> > +      * one of them needs to be enabled all the time for
-> > +      * interrupts to happen. */
-> > +     snd_soc_dapm_force_enable_pin(&codec->dapm, "DDACR");
-> > +     snd_soc_dapm_sync(&codec->dapm);
->
-> This should be tied to jack detection, not done unconditionally.
+--===============2083849161==--
