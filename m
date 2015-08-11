@@ -1,19 +1,20 @@
-From: Zidan Wang <zidan.wang@freescale.com>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH v3 1/4] ASoC: fsl_sai: Add driver suspend
  and resume to support MEGA Fast
-Date: Tue, 11 Aug 2015 17:28:36 +0800
-Message-ID: <20150811092835.GB28723@shlinux2>
+Date: Tue, 11 Aug 2015 07:41:52 -0300
+Message-ID: <CAOMZO5Bs223E-gypxNM_GA6qrOc8yXO=yMH7UTCCU5VV_EbVOQ@mail.gmail.com>
 References: <6fa4e6ebf1f34f5d637324c9f62e68b03037568c.1438928296.git.zidan.wang@freescale.com>
  <20150811091220.GA3008@Asurada-CZ80>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2on0142.outbound.protection.outlook.com [207.46.100.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BF6A2604C6
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 12:39:21 +0200 (CEST)
-Content-Disposition: inline
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE9772604DD
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 12:41:53 +0200 (CEST)
+Received: by obbhe7 with SMTP id he7so48762021obb.0
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 03:41:52 -0700 (PDT)
 In-Reply-To: <20150811091220.GA3008@Asurada-CZ80>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,23 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Zidan Wang <zidan.wang@freescale.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 11, 2015 at 02:12:21AM -0700, Nicolin Chen wrote:
+On Tue, Aug 11, 2015 at 6:12 AM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 > On Fri, Aug 07, 2015 at 02:21:05PM +0800, Zidan Wang wrote:
-> > For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
-> > modules during system suspend and resume procedure. Thus, SAI needs to save
-> > all the values of registers before the system suspend and restore them after
-> > the system resume.
-> > 
-> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> 
+>> For i.MX6 SoloX, there is a mode of the SoC to shutdown all power source of
+>> modules during system suspend and resume procedure. Thus, SAI needs to save
+>> all the values of registers before the system suspend and restore them after
+>> the system resume.
+>>
+>> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+>
 > Have you tested this series based on the for-next branch?
-> 
-> I'm having trouble with suspend/resume test on my imx6sx-sdb.
-> Both broonie/for-next and linux-next/master hanged after suspend
-> even without this PATCH -- There should be some other patches
-> that broke the suspend/resume. Do you know which one?
-> 
-I just rebase to the newest linux-next/master, and don't meet system hang after suspend on imx6sx-sdb board.
+
+I am also interested in testing sai, but if I recall correctly we
+still miss the SDMA remap feature, right?
+
+Regards,
+
+Fabio Estevam
