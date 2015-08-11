@@ -1,119 +1,51 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
-Date: Tue, 11 Aug 2015 03:10:18 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196E1E2C@SHSMSX103.ccr.corp.intel.com>
-References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
- <1439191931-25705-4-git-send-email-libin.yang@intel.com>
- <871tfb8hu8.fsf@intel.com>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: [PATCH v3] ASoC: fsl-sai: add 32 bit word length
+	support
+Date: Tue, 11 Aug 2015 11:14:26 +0800
+Message-ID: <69f72120dad256225cbe771207e0f6b84a8f93df.1439262749.git.zidan.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <871tfb8hu8.fsf@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0130.outbound.protection.outlook.com [65.55.169.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FED2260444
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 05:12:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nicoleotsuka@gmail.com
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, Zidan Wang <zidan.wang@freescale.com>, Xiubo.Lee@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSmFuaSwKClRoYW5rcyBmb3IgY2FyZWZ1bCByZXZpZXdpbmcgZm9yIGFsbCB0aGUgcGF0Y2hl
-cywgcGxlYXNlCnNlZSBteSBjb21tZW50cy4KCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0K
-PiBGcm9tOiBKYW5pIE5pa3VsYSBbbWFpbHRvOmphbmkubmlrdWxhQGxpbnV4LmludGVsLmNvbV0K
-PiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA4OjEwIFBNCj4gVG86IFlhbmcsIExpYmlu
-OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHRpd2FpQHN1c2UuZGU7IGludGVsLQo+IGdm
-eEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2gKPiBTdWJqZWN0
-OiBSZTogW0ludGVsLWdmeF0gW1BBVENIIHY0IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9wZXIgTi9D
-VFMgaW4KPiBtb2Rlc2V0Cj4gCj4gT24gTW9uLCAxMCBBdWcgMjAxNSwgbGliaW4ueWFuZ0BpbnRl
-bC5jb20gd3JvdGU6Cj4gPiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4K
-PiA+Cj4gPiBXaGVuIG1vZGVzZXQgb2NjdXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0
-IHRvIHNvbWUKPiA+IHNwZWljYWwgdmFsdWUsIHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51
-YWxseSBpZiBhdWRpbwo+ID4gaXMgcGxheWluZy4KPiAKPiBXaGVuIG1vZGVzZXQgb2NjdXJzLCB3
-ZSBkaXNhYmxlIGV2ZXJ5dGhpbmcsIGFuZCB0aGVuIHJlLWVuYWJsZQo+IGV2ZXJ5dGhpbmcsIGFu
-ZCBub3RpZnkgdGhlIGF1ZGlvIGRyaXZlciBldmVyeSBzdGVwIG9mIHRoZSB3YXkuIElJVUMKPiB0
-aGVyZSBzaG91bGQgYmUgbm8gYXVkaW8gcGxheWluZyBhY3Jvc3MgdGhlIG1vZGVzZXQsIGFuZCB3
-aGVuIHRoZQo+IG1vZGVzZXQgaXMgY29tcGxldGUgYW5kIHdlJ3ZlIHNldCB0aGUgdmFsaWQgRUxE
-LCB0aGUgYXVkaW8gZHJpdmVyCj4gc2hvdWxkCj4gY2FsbCB0aGUgY2FsbGJhY2sgZnJvbSB0aGUg
-ZWFybGllciBwYXRjaGVzIHRvIHNldCB0aGUgY29ycmVjdCBhdWRpbwo+IHJhdGUuCj4gCj4gV2h5
-IGlzIHRoaXMgcGF0Y2ggbmVlZGVkPyBQbGVhc2UgZW5saWdodGVuIG1lLgoKUGxlYXNlIGltYWdl
-IHRoaXMgc2NlbmFyaW86IHdoZW4gYXVkaW8gaXMgcGxheWluZywgdGhlIGdmeCBkcml2ZXIKZG9l
-cyB0aGUgbW9kZXNldC4gSW4gdGhpcyBzaXR1YXRpb24sIGFmdGVyIG1vZGVzZXQsIGF1ZGlvIGRy
-aXZlcgp3aWxsIGRvIG5vdGhpbmcgYW5kIGNvbnRpbnVlIHBsYXlpbmcuIEFuZCBhdWRpbyBkcml2
-ZXIgd2lsbCBub3QgY2FsbApzZXRfbmN0cy4gCgo+IAo+IEFsc28gc29tZSBjb21tZW50cyBpbi1s
-aW5lLCBwcm92aWRlZCB5b3UndmUgY29udmluY2VkIG1lIGZpcnN0LiA7KQo+IAo+ID4gU2lnbmVk
-LW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gPiAtLS0KPiA+ICBk
-cml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oICAgIHwgIDYgKysrKysrCj4gPiAgZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDQyCj4gKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysKPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDQ4IGluc2VydGlvbnMoKykK
-PiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaAo+IGIv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaAo+ID4gaW5kZXggZGEyZDEyOC4uODVmM2Jl
-YiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiA+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiA+IEBAIC03MDMwLDYgKzcwMzAs
-MTIgQEAgZW51bSBza2xfZGlzcF9wb3dlcl93ZWxscyB7Cj4gPiAgCQkJCQlfSFNXX0FVRF9ESUdf
-Q05WVF8yKQo+ID4gICNkZWZpbmUgRElQX1BPUlRfU0VMX01BU0sJCTB4Mwo+ID4KPiA+ICsjZGVm
-aW5lIF9IU1dfQVVEX1NUUl9ERVNDXzEJCTB4NjUwODQKPiA+ICsjZGVmaW5lIF9IU1dfQVVEX1NU
-Ul9ERVNDXzIJCTB4NjUxODQKPiA+ICsjZGVmaW5lIEFVRF9TVFJfREVTQyhwaXBlKQlfUElQRShw
-aXBlLCBcCj4gPiArCQkJCQkgX0hTV19BVURfU1RSX0RFU0NfMSwKPiAJXAo+ID4gKwkJCQkJIF9I
-U1dfQVVEX1NUUl9ERVNDXzIpCj4gPiArCj4gPiAgI2RlZmluZSBfSFNXX0FVRF9FRElEX0RBVEFf
-QQkJMHg2NTA1MAo+ID4gICNkZWZpbmUgX0hTV19BVURfRURJRF9EQVRBX0IJCTB4NjUxNTAKPiA+
-ICAjZGVmaW5lIEhTV19BVURfRURJRF9EQVRBKHBpcGUpIF9QSVBFKHBpcGUsIFwKPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gYi9kcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gPiBpbmRleCBlZGRmMzdmLi4wODJmOTZkIDEwMDY0
-NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gKysrIGIv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gQEAgLTIzNSw2ICsyMzUsOSBA
-QCBzdGF0aWMgdm9pZCBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGRybV9jb25uZWN0
-b3IgKmNvbm5lY3RvciwKPiA+ICAJY29uc3QgdWludDhfdCAqZWxkID0gY29ubmVjdG9yLT5lbGQ7
-Cj4gPiAgCXVpbnQzMl90IHRtcDsKPiA+ICAJaW50IGxlbiwgaTsKPiA+ICsJaW50IGN2dF9pZHg7
-Cj4gPiArCWludCBuX2xvdywgbl91cCwgbjsKPiA+ICsJaW50IGJhc2VfcmF0ZSwgbXVsLCBkaXYs
-IHJhdGU7Cj4gPgo+ID4gIAlEUk1fREVCVUdfS01TKCJFbmFibGUgYXVkaW8gY29kZWMgb24gcGlw
-ZSAlYywgJXUgYnl0ZXMKPiBFTERcbiIsCj4gPiAgCQkgICAgICBwaXBlX25hbWUocGlwZSksIGRy
-bV9lbGRfc2l6ZShlbGQpKTsKPiA+IEBAIC0yNjcsNiArMjcwLDIxIEBAIHN0YXRpYyB2b2lkIGhz
-d19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0Cj4gZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+
-ID4gIAl0bXAgfD0gQVVESU9fRUxEX1ZBTElEKHBpcGUpOwo+ID4gIAlJOTE1X1dSSVRFKEhTV19B
-VURfUElOX0VMRF9DUF9WTEQsIHRtcCk7Cj4gPgo+ID4gKwlpZiAoKG1vZGUtPmNsb2NrID09IDI5
-NzAwMCkgfHwKPiA+ICsJCShtb2RlLT5jbG9jayA9PSBESVZfUk9VTkRfVVAoMjk3MDAwICogMTAw
-MCwKPiAxMDAxKSkpIHsKPiA+ICsJCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX1BJUEVfQ09OTl9T
-RUxfQ1RSTCk7Cj4gPiArCQljdnRfaWR4ID0gKHRtcCA+PiBwaXBlKjgpICYgMHhmZjsKPiA+ICsJ
-CXRtcCA9IEk5MTVfUkVBRChBVURfU1RSX0RFU0MoY3Z0X2lkeCkpOwo+ID4gKwkJYmFzZV9yYXRl
-ID0gdG1wICYgKDEgPDwgMTQpOwo+ID4gKwkJaWYgKGJhc2VfcmF0ZSA9PSAwKQo+ID4gKwkJCXJh
-dGUgPSA0ODAwMDsKPiA+ICsJCWVsc2UKPiA+ICsJCQlyYXRlID0gNDQxMDA7Cj4gPiArCQltdWwg
-PSAodG1wICYgKDB4NyA8PCAxMSkpICsgMTsKPiA+ICsJCWRpdiA9ICh0bXAgJiAoMHg3IDw8IDgp
-KSArIDE7Cj4gPiArCQlyYXRlID0gcmF0ZSAqIG11bCAvIGRpdjsKPiA+ICsJfQo+IAo+IFRoaXMg
-c2hvdWxkIGJlIGFic3RyYWN0ZWQgdG8gYSBzZXBhcmF0ZSBmdW5jdGlvbi4KClllcy4gSSB3aWxs
-IGRvIGl0LgoKPiAKPiA+ICsKPiA+ICAJLyogRW5hYmxlIHRpbWVzdGFtcHMgKi8KPiA+ICAJdG1w
-ID0gSTkxNV9SRUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKPiA+ICAJdG1wICY9IH5BVURfQ09ORklH
-X05fVkFMVUVfSU5ERVg7Cj4gPiBAQCAtMjc2LDYgKzI5NCwzMCBAQCBzdGF0aWMgdm9pZCBoc3df
-YXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiA+
-ICAJCXRtcCB8PSBBVURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4gPiAgCWVsc2UKPiA+ICAJCXRt
-cCB8PSBhdWRpb19jb25maWdfaGRtaV9waXhlbF9jbG9jayhtb2RlKTsKPiA+ICsKPiA+ICsJaWYg
-KChtb2RlLT5jbG9jayAhPSAyOTcwMDApICYmCj4gPiArCQkobW9kZS0+Y2xvY2sgIT0gRElWX1JP
-VU5EX1VQKDI5NzAwMCAqIDEwMDAsCj4gMTAwMSkpKSB7Cj4gPiArCQl0bXAgJj0gfkFVRF9DT05G
-SUdfTl9QUk9HX0VOQUJMRTsKPiA+ICsJfSBlbHNlIHsKPiA+ICsJCWZvciAoaSA9IDA7IGkgPCBB
-UlJBWV9TSVpFKGF1ZF9uY3RzKTsgaSsrKSB7Cj4gPiArCQkJaWYgKChyYXRlID09IGF1ZF9uY3Rz
-W2ldLnNhbXBsZV9yYXRlKSAmJgo+ID4gKwkJCQkobW9kZS0+Y2xvY2sgPT0gYXVkX25jdHNbaV0u
-Y2xvY2spKSB7Cj4gPiArCQkJCW4gPSBhdWRfbmN0c1tpXS5uOwo+ID4gKwkJCQlicmVhazsKPiA+
-ICsJCQl9Cj4gPiArCQl9Cj4gPiArCQlpZiAobiAhPSAwKSB7Cj4gPiArCQkJdG1wIHw9IEFVRF9D
-T05GSUdfTl9QUk9HX0VOQUJMRTsKPiA+ICsJCQluX2xvdyA9IG4gJiAweGZmZjsKPiA+ICsJCQlu
-X3VwID0gKG4gPj4gMTIpICYgMHhmZjsKPiA+ICsJCQl0bXAgfD0gQVVEX0NPTkZJR19OX1BST0df
-RU5BQkxFOwo+ID4gKwkJCXRtcCAmPSB+QVVEX0NPTkZJR19VUFBFUl9OX01BU0s7Cj4gPiArCQkJ
-dG1wIHw9IChuX3VwIDw8Cj4gQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKTsKPiA+ICsJCQl0bXAg
-Jj0gfkFVRF9DT05GSUdfTE9XRVJfTl9NQVNLOwo+ID4gKwkJCXRtcCB8PSAobl9sb3cgPDwKPiBB
-VURfQ09ORklHX0xPV0VSX05fU0hJRlQpOwo+ID4gKwkJfQo+ID4gKwl9Cj4gCj4gUGxlYXNlIGRl
-LWR1cGxpY2F0ZSB0aGUgY29weS1wYXN0ZSBmcm9tIHBhdGNoIDIuIEF0IHRoZSB2ZXJ5IGxlYXN0
-IHlvdQo+IHNob3VsZCB1c2UgYSBoZWxwZXIgZm9yIGZpbmRpbmcgdGhlIHBhcmFtZXRlcnMgZnJv
-bSB0aGUgdGFibGUuCgpPSy4gSSBzZWUuCgpSZWdhcmRzLApMaWJpbgoKPiAKPiA+ICsKPiA+ICAJ
-STkxNV9XUklURShIU1dfQVVEX0NGRyhwaXBlKSwgdG1wKTsKPiA+ICB9Cj4gPgo+ID4gLS0KPiA+
-IDEuOS4xCj4gPgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPiA+IEludGVsLWdmeCBtYWlsaW5nIGxpc3QKPiA+IEludGVsLWdmeEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKPiA+IGh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9pbnRlbC1nZngKPiAKPiAtLQo+IEphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBU
-ZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVs
-LWdmeAo=
+Add 32 bit word length support. There are no code changes required
+in the SAI driver since it has already wirten the word width to the
+corresponding register.
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_sai.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 0662809..d137290 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -13,7 +13,8 @@
+ 
+ #define FSL_SAI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+ 			 SNDRV_PCM_FMTBIT_S20_3LE |\
+-			 SNDRV_PCM_FMTBIT_S24_LE)
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ /* SAI Register Map Register */
+ #define FSL_SAI_TCSR	0x00 /* SAI Transmit Control */
+-- 
+1.9.1
