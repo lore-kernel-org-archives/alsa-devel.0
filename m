@@ -1,72 +1,43 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 3/3] topology: A API calls to directly
- build	topology data from templates
-Date: Tue, 11 Aug 2015 13:36:22 +0100
-Message-ID: <1439296582.2427.53.camel@loki>
-References: <1439230429-6173-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1439230429-6173-4-git-send-email-liam.r.girdwood@linux.intel.com>
- <s5htws62r6d.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC2E26051B
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 14:36:27 +0200 (CEST)
-In-Reply-To: <s5htws62r6d.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: rsnd: Silence DMA slave ID compile warning on 64-bit
+Date: Tue, 11 Aug 2015 14:47:18 +0200
+Message-ID: <1439297238-28943-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2015-08-11 at 09:57 +0200, Takashi Iwai wrote:
-> On Mon, 10 Aug 2015 20:13:49 +0200,
-> Liam Girdwood wrote:
+On arm64:
 
-> 
-> > +int snd_tplg_build(snd_tplg_t *tplg, const char *outfile)
-> > +{
-> > +	int err;
-> > +
-> > +	/* delete any old output files */
-> > +	unlink(outfile);
-> > +
-> > +	tplg->out_fd =
-> > +		open(outfile, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
-> > +	if (tplg->out_fd < 0) {
-> > +		SNDERR("error: failed to open %s err %d\n",
-> > +			outfile, -errno);
-> > +		return -errno;
-> > +	}
-> > +
-> > +	err = tplg_build_integ(tplg);
-> > +	if (err < 0) {
-> > +		SNDERR("error: failed to check topology integrity\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	err = tplg_write_data(tplg);
-> > +	if (err < 0) {
-> > +		SNDERR("error: failed to write data %d\n", err);
-> > +		goto out;
-> > +	}
-> > +
-> > +out:
-> > +	close(tplg->out_fd);
-> 
-> It's a question whether we should unlink automatically at error or
-> not.  If we leave the file as is, it should be documented.
-> 
+    sound/soc/sh/rcar/dma.c: In function 'rsnd_dmaen_init':
+    sound/soc/sh/rcar/dma.c:180:9: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+	     (void *)id);
+	     ^
+    include/linux/dmaengine.h:1185:75: note: in definition of macro 'dma_request_channel'
+     #define dma_request_channel(mask, x, y) __dma_request_channel(&(mask), x, y)
+									       ^
 
-The unlink is not really needed so I'll remove it. The file permissions
-should be 0600 too, so I'll fix that as well.
+Add an intermediate cast to "uintptr_t" to kill the compile warning.
 
-Liam
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ sound/soc/sh/rcar/dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 305b129298538850..bfbb8a5e93bdce6c 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -177,7 +177,7 @@ static int rsnd_dmaen_init(struct rsnd_dai_stream *io,
+ 		dma_cap_set(DMA_SLAVE, mask);
+ 
+ 		dmaen->chan = dma_request_channel(mask, shdma_chan_filter,
+-						  (void *)id);
++						  (void *)(uintptr_t)id);
+ 	}
+ 	if (IS_ERR_OR_NULL(dmaen->chan)) {
+ 		dmaen->chan = NULL;
+-- 
+1.9.1
+
