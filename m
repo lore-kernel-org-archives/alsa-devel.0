@@ -1,18 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/2] ALSA: fireworks/firewire-lib: add
- support for recent firmware quirk
-Date: Tue, 11 Aug 2015 20:22:28 +0900
-Message-ID: <55C9DAF4.4050906@sakamocchi.jp>
-References: <1438734065-5204-1-git-send-email-o-takashi@sakamocchi.jp>
- <55C92933.50207@sakamocchi.jp> <s5hbnee2xz0.wl-tiwai@suse.de>
+From: Zidan Wang <zidan.wang@freescale.com>
+Subject: Re: [PATCH v4] ASoC: wm8960: update pll and clock
+ setting function
+Date: Tue, 11 Aug 2015 18:12:37 +0800
+Message-ID: <20150811101235.GA18737@shlinux2>
+References: <f6e8caad9d39c37ff0660a5a59d707ee7b3963fb.1439268589.git.zidan.wang@freescale.com>
+ <20150811080334.GJ25225@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 679B426051B
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 13:22:32 +0200 (CEST)
-In-Reply-To: <s5hbnee2xz0.wl-tiwai@suse.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1on0133.outbound.protection.outlook.com [157.56.110.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FE41265E28
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 13:23:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20150811080334.GJ25225@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 11 2015 14:30, Takashi Iwai wrote:
->> Currently I'm preparing for the next patchset (Digi00x and TASCAM
->> drivers). As a quick glance, for-next branch in sound.git doesn't still
->> includes these two patches. In this case, which branch should my work
->> reabases to?
+On Tue, Aug 11, 2015 at 09:03:35AM +0100, Charles Keepax wrote:
+> On Tue, Aug 11, 2015 at 01:11:35PM +0800, Zidan Wang wrote:
+> > Add sysclk auto mode. When it's sysclk auto mode, if the MCLK is
+> > available for clock configure, using MCLK to provide sysclk directly,
+> > otherwise, search a available pll out frequcncy and set pll.
+> > 
+> > Configure clock in hw_params may cause problems when using bypass style
+> > paths without hw_params in machine driver getting called. So add configure
+> > clock to set_bias_level.
+> > 
+> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+> > ---
 > 
-> Use for-linus branch for now.
+> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> 
+> Thanks,
+> Charles
+Hi Charles,
 
-OK. And now you merged the 'for-linus' into 'for-next' in upstream. I
-rebase to the latter, as usual.
+After rebase to the newest linux-nest/master, there will be a build error. I have fixed it and will
+send patch v5, sorry for that.
 
-
-Thanks
-
-Takashi Sakamoto
+Best Regards,
+Zidan Wang
