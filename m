@@ -1,149 +1,90 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 4/4] ASoC: cs42l73: Use case range at
-	appropriate place
-Date: Wed, 12 Aug 2015 11:10:49 +0800
-Message-ID: <1439349049.3594.6.camel@ingics.com>
-References: <1439348866.3594.2.camel@ingics.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v2 1/4] drm/i915: Add audio set_ncts callback
+Date: Wed, 12 Aug 2015 03:16:38 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196E35B2@SHSMSX103.ccr.corp.intel.com>
+References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+ <87a8tz8iya.fsf@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196E1DB9@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 275E72605D8
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 05:10:55 +0200 (CEST)
-Received: by pawu10 with SMTP id u10so4287605paw.1
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 20:10:54 -0700 (PDT)
-In-Reply-To: <1439348866.3594.2.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D196E1DB9@SHSMSX103.ccr.corp.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: 'Jani Nikula' <jani.nikula@linux.intel.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'intel-gfx@lists.freedesktop.org'" <intel-gfx@lists.freedesktop.org>, "'daniel.vetter@ffwll.ch'" <daniel.vetter@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-The readable registers are in continuous ranges: 0x01 ~ 0x03, 0x05 ~ 0x5f.
-Use case range syntax makes the code shorter with better readability when
-we have a large number of continuous switch cases.
-No functional change with this patch.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/cs42l73.c | 96 +---------------------------------------------
- 1 file changed, 2 insertions(+), 94 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 427d6cf..42a8fd4 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -153,100 +153,8 @@ static bool cs42l73_volatile_register(struct device *dev, unsigned int reg)
- static bool cs42l73_readable_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case CS42L73_DEVID_AB:
--	case CS42L73_DEVID_CD:
--	case CS42L73_DEVID_E:
--	case CS42L73_REVID:
--	case CS42L73_PWRCTL1:
--	case CS42L73_PWRCTL2:
--	case CS42L73_PWRCTL3:
--	case CS42L73_CPFCHC:
--	case CS42L73_OLMBMSDC:
--	case CS42L73_DMMCC:
--	case CS42L73_XSPC:
--	case CS42L73_XSPMMCC:
--	case CS42L73_ASPC:
--	case CS42L73_ASPMMCC:
--	case CS42L73_VSPC:
--	case CS42L73_VSPMMCC:
--	case CS42L73_VXSPFS:
--	case CS42L73_MIOPC:
--	case CS42L73_ADCIPC:
--	case CS42L73_MICAPREPGAAVOL:
--	case CS42L73_MICBPREPGABVOL:
--	case CS42L73_IPADVOL:
--	case CS42L73_IPBDVOL:
--	case CS42L73_PBDC:
--	case CS42L73_HLADVOL:
--	case CS42L73_HLBDVOL:
--	case CS42L73_SPKDVOL:
--	case CS42L73_ESLDVOL:
--	case CS42L73_HPAAVOL:
--	case CS42L73_HPBAVOL:
--	case CS42L73_LOAAVOL:
--	case CS42L73_LOBAVOL:
--	case CS42L73_STRINV:
--	case CS42L73_XSPINV:
--	case CS42L73_ASPINV:
--	case CS42L73_VSPINV:
--	case CS42L73_LIMARATEHL:
--	case CS42L73_LIMRRATEHL:
--	case CS42L73_LMAXHL:
--	case CS42L73_LIMARATESPK:
--	case CS42L73_LIMRRATESPK:
--	case CS42L73_LMAXSPK:
--	case CS42L73_LIMARATEESL:
--	case CS42L73_LIMRRATEESL:
--	case CS42L73_LMAXESL:
--	case CS42L73_ALCARATE:
--	case CS42L73_ALCRRATE:
--	case CS42L73_ALCMINMAX:
--	case CS42L73_NGCAB:
--	case CS42L73_ALCNGMC:
--	case CS42L73_MIXERCTL:
--	case CS42L73_HLAIPAA:
--	case CS42L73_HLBIPBA:
--	case CS42L73_HLAXSPAA:
--	case CS42L73_HLBXSPBA:
--	case CS42L73_HLAASPAA:
--	case CS42L73_HLBASPBA:
--	case CS42L73_HLAVSPMA:
--	case CS42L73_HLBVSPMA:
--	case CS42L73_XSPAIPAA:
--	case CS42L73_XSPBIPBA:
--	case CS42L73_XSPAXSPAA:
--	case CS42L73_XSPBXSPBA:
--	case CS42L73_XSPAASPAA:
--	case CS42L73_XSPAASPBA:
--	case CS42L73_XSPAVSPMA:
--	case CS42L73_XSPBVSPMA:
--	case CS42L73_ASPAIPAA:
--	case CS42L73_ASPBIPBA:
--	case CS42L73_ASPAXSPAA:
--	case CS42L73_ASPBXSPBA:
--	case CS42L73_ASPAASPAA:
--	case CS42L73_ASPBASPBA:
--	case CS42L73_ASPAVSPMA:
--	case CS42L73_ASPBVSPMA:
--	case CS42L73_VSPAIPAA:
--	case CS42L73_VSPBIPBA:
--	case CS42L73_VSPAXSPAA:
--	case CS42L73_VSPBXSPBA:
--	case CS42L73_VSPAASPAA:
--	case CS42L73_VSPBASPBA:
--	case CS42L73_VSPAVSPMA:
--	case CS42L73_VSPBVSPMA:
--	case CS42L73_MMIXCTL:
--	case CS42L73_SPKMIPMA:
--	case CS42L73_SPKMXSPA:
--	case CS42L73_SPKMASPA:
--	case CS42L73_SPKMVSPMA:
--	case CS42L73_ESLMIPMA:
--	case CS42L73_ESLMXSPA:
--	case CS42L73_ESLMASPA:
--	case CS42L73_ESLMVSPMA:
--	case CS42L73_IM1:
--	case CS42L73_IM2:
-+	case CS42L73_DEVID_AB ... CS42L73_DEVID_E:
-+	case CS42L73_REVID ... CS42L73_IM2:
- 		return true;
- 	default:
- 		return false;
--- 
-2.1.0
+SGksCgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogWWFuZywgTGliaW4KPiBT
+ZW50OiBUdWVzZGF5LCBBdWd1c3QgMTEsIDIwMTUgMTA6NDEgQU0KPiBUbzogSmFuaSBOaWt1bGE7
+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4gZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZGFuaWVsLnZldHRlckBmZndsbC5jaAo+IFN1YmplY3Q6
+IFJFOiBbSW50ZWwtZ2Z4XSBbUEFUQ0ggdjIgMS80XSBkcm0vaTkxNTogQWRkIGF1ZGlvIHNldF9u
+Y3RzCj4gY2FsbGJhY2sKPiAKPiBIaSBKYW5pLAo+IAo+IFRoYW5rcyBmb3IgcmV2aWV3aW5nLCBw
+bGVhc2Ugc2VlIG15IGNvbW1lbnRzCj4gCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+
+ID4gRnJvbTogSmFuaSBOaWt1bGEgW21haWx0bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb21d
+Cj4gPiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA3OjQ2IFBNCj4gPiBUbzogWWFuZywg
+TGliaW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwt
+Cj4gPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4g
+PiBTdWJqZWN0OiBSZTogW0ludGVsLWdmeF0gW1BBVENIIHYyIDEvNF0gZHJtL2k5MTU6IEFkZCBh
+dWRpbyBzZXRfbmN0cwo+ID4gY2FsbGJhY2sKPiA+Cj4gPiBPbiBNb24sIDEwIEF1ZyAyMDE1LCBs
+aWJpbi55YW5nQGludGVsLmNvbSB3cm90ZToKPiA+ID4gRnJvbTogTGliaW4gWWFuZyA8bGliaW4u
+eWFuZ0BpbnRlbC5jb20+Cj4gPiA+Cj4gPiA+IEFkZCB0aGUgc2V0X25jdHMgY2FsbGJhY2suCj4g
+PiA+Cj4gPiA+IFdpdGggdGhlIGNhbGxiYWNrLCBhdWRpbyBkcml2ZXIgY2FuIHRyaWdnZXIKPiA+
+ID4gaTkxNSBkcml2ZXIgdG8gc2V0IHRoZSBwcm9wZXIgTi9DVFMKPiA+ID4gYmFzZWQgb24gZGlm
+ZmVyZW50IHNhbXBsZSByYXRlcy4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFu
+ZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gPiA+IC0tLQo+ID4gPiAgaW5jbHVkZS9kcm0vaTkx
+NV9jb21wb25lbnQuaCB8IDIgKysKPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMo
+KykKPiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgK
+PiA+IGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiBpbmRleCBjOWE4YjY0Li43
+MzA1ODgxIDEwMDY0NAo+ID4gPiAtLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4g
+PiA+ICsrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gQEAgLTMzLDYgKzMz
+LDggQEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKPiA+ID4gIAkJdm9pZCAoKnB1dF9w
+b3dlcikoc3RydWN0IGRldmljZSAqKTsKPiA+ID4gIAkJdm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJp
+ZGUpKHN0cnVjdCBkZXZpY2UgKiwgYm9vbAo+ID4gZW5hYmxlKTsKPiA+ID4gIAkJaW50ICgqZ2V0
+X2NkY2xrX2ZyZXEpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+ICsJCWludCAoKnNldF9uY3RzKShz
+dHJ1Y3QgZGV2aWNlICosIGludCBwb3J0LCBpbnQgZGV2X2VudHJ5LAo+ID4gPiArCQkJCQlpbnQg
+cmF0ZSk7Cj4gPgo+ID4gSSdkIHJhdGhlciBjYWxsIHRoaXMgc2V0X2F1ZGlvX3JhdGUgb3Igc2lt
+aWxhciwgYW5kIGRyb3BwaW5nIHRoZQo+ID4gcmVmZXJlbmNlcyB0byBOIGFuZCBDVFMuIFRoZSBj
+YWxsZXIgZG9lcyBub3QgbmVlZCB0byBrbm93Lgo+IAo+IEJ1dCBpdCBzZWVtcyB0aGUgc2V0X2F1
+ZGlvX3JhdGUgd2lsbCBjb25mdXNlIHRoZSB1c2VyLiBGcm9tIHRoZQo+IGxpdGVyYWwgbWVhbmlu
+ZywgaXQgaXMgc2V0dGluZyB0aGUgcmF0ZSBvZiBhdWRpbywgc3VjaCBhcyBzYW1wbGUgcmF0ZSwK
+PiB3aGljaCB3aWxsIG1ha2UgYXVkaW8gZHJpdmVyIGRldmVsb3BlcnMgY29uZnVzZWQuCj4gQW5k
+IHRoZSBmdW5jdGlvbiBpcyBqdXN0IHNldHRpbmcgTi9DVFMgd2hpY2ggaXMgZGVmaW5lZCBmcm9t
+Cj4gSERNSSBTUEVDLgoKV2hhdCBhYm91dCB0aGUgbmFtZSBzeW5jX2F1ZGlvX3JhdGUoKT8KCj4g
+Cj4gQlRXOiB5b3VyIGNvbW1lbnQgcmVtaW5kcyBtZSB0aGF0IGdldF9jZGNsa19mcmVxKCkgc2Vl
+bXMKPiB0byBuZWVkIGNoYW5nZSB0aGUgbmFtZSBhcyBjZGNsayBpcyBub3QgaW4gdGhlIG9wZW4g
+c3BlYy4KPiAKPiA+Cj4gPiBJJ20gYWxzbyBub3QgZm9uZCBvZiBhZGRpbmcgYSBkZXZfZW50cnkg
+cGFyYW1ldGVyIGFuZCBsZWF2aW5nIGl0Cj4gPiB1bnVzZWQuIEkgZG8gbm90IHRoaW5rIHdlIGtu
+b3cgc3BlY2lmaWNhbGx5IGhvdyB3ZSdyZSBnb2luZyB0bwo+IGlkZW50aWZ5Cj4gPiBNU1Qgc2lu
+a3MsIGFuZCB0aGUgaW50ZXJmYWNlIG1heSBuZWVkIHRvIGJlIGNoYW5nZWQgYW55d2F5LiBMZXQn
+cwo+ID4gZm9yY2UKPiA+IGFuIHVwZGF0ZSBpbiB0aGUgY2FsbGVyIHNpZGUgYXMgd2VsbCB3aGVu
+IHRoZXJlJ3MgYWN0dWFsbHkgc2Vuc2libGUKPiA+IHN1cHBvcnQgaW4gb3VyIHNpZGUuCj4gCj4g
+VGhlIGRldmljZSBlbnRyeSBpcyBhIGNvbmNlcHQgaW4gSERBIHNwZWMuIEZvciBkcml2ZXIgaW1w
+bGVtZW50YXRpb24sCj4gSSB0aGluayB3ZSBjYW4gdXNlIGFuIGludCB2YXJpYWJsZSBvciBhIHN0
+cnVjdCBkZXZpY2UgdG8gcmVwcmVzZW50IGl0Lgo+IEEgaW50IHZhcmlhYmxlIGlzIGFuIGVhc3kg
+d2F5LiBUaGVyZSBpcyBzb21lIHBsYWNlIGluIGF1ZGlvIGRyaXZlciB1c2luZwo+IGludCB2YXJp
+YWJsZSB0byByZXByZXNlbnQgdGhlIGRlaXZjZSBlbnRyeS4gQW5kIGF1ZGlvIGRyaXZlciB3aWxs
+IG5vdAo+IGNhcmUgaG93IGdmeCBkcml2ZXIgc3VwcG9ydHMgdGhlIERQMS4yIE1TVCwgSSBtZWFu
+IGF1ZGlvIGRyaXZlciB3aWxsCj4gbm90IGtub3cgdGhlIHN0cnVjdHVyZXMgaW5zaWRlIGdmeCBk
+cml2ZXIuCj4gCj4gSSB3aWxsIHJlbW92ZSB0aGlzIHBhcmFtZXRlciBpbiB0aGlzIHZlcnNpb24g
+aWYgeW91IGFyZSB0aGlua2luZyB0aGUKPiBNU1QgaW50ZXJmYWNlIGlzIGluZGV0ZXJtaW5hdGUu
+Cj4gCj4gQlRXOiBkbyB5b3Uga25vdyB3aGVuIGdmeCB3aWxsIG5vcm1hbGx5IHN1cHBvcnQgTVNU
+Pwo+IAo+IEJlc3QgUmVnYXJkcywKPiBMaWJpbgo+IAo+ID4KPiA+IEJSLAo+ID4gSmFuaS4KPiA+
+Cj4gPiA+ICAJfSAqb3BzOwo+ID4gPiAgfTsKPiA+ID4KPiA+ID4gLS0KPiA+ID4gMS45LjEKPiA+
+ID4KPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiA+ID4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+ID4gPiBJbnRlbC1nZnhAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCj4gPiA+IGh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9pbnRlbC1nZngKPiA+Cj4gPiAtLQo+ID4gSmFuaSBOaWt1bGEsIEludGVsIE9wZW4gU291
+cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVk
+ZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+aW50ZWwtZ2Z4Cg==
