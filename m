@@ -1,40 +1,61 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 4/4] ASoC: cs42l73: Use case range at
-	appropriate place
-Date: Wed, 12 Aug 2015 07:17:43 -0500
-Message-ID: <alpine.DEB.2.10.1508120716440.27423@heelroid>
-References: <1439348866.3594.2.camel@ingics.com>
- <1439349049.3594.6.camel@ingics.com>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2 2/4] drm/i915: implement set_ncts callback
+Date: Wed, 12 Aug 2015 15:04:57 +0200
+Message-ID: <20150812130457.GN17734@phenom.ffwll.local>
+References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+ <1439191931-25705-2-git-send-email-libin.yang@intel.com>
+ <877fp38ib6.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 332B5260421
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 14:16:53 +0200 (CEST)
-In-Reply-To: <1439349049.3594.6.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <877fp38ib6.fsf@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Aug 2015, Axel Lin wrote:
-
-> The readable registers are in continuous ranges: 0x01 ~ 0x03, 0x05 ~ 0x5f.
-> Use case range syntax makes the code shorter with better readability when
-> we have a large number of continuous switch cases.
-> No functional change with this patch.
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-That looks so much nicer!
-Thanks Axel
-
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+T24gTW9uLCBBdWcgMTAsIDIwMTUgYXQgMDM6MDA6MTNQTSArMDMwMCwgSmFuaSBOaWt1bGEgd3Jv
+dGU6Cj4gT24gTW9uLCAxMCBBdWcgMjAxNSwgbGliaW4ueWFuZ0BpbnRlbC5jb20gd3JvdGU6Cj4g
+PiArCW5fbG93ID0gbiAmIDB4ZmZmOwo+ID4gKwluX3VwID0gKG4gPj4gMTIpICYgMHhmZjsKPiA+
+ICsKPiA+ICsJLyogNC4gc2V0IHRoZSBOL0NUUyAqLwo+ID4gKwl0bXAgPSBJOTE1X1JFQUQoSFNX
+X0FVRF9DRkcocGlwZSkpOwo+ID4gKwl0bXAgfD0gQVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOwo+
+ID4gKwl0bXAgJj0gfkFVRF9DT05GSUdfVVBQRVJfTl9NQVNLOwo+ID4gKwl0bXAgfD0gKG5fdXAg
+PDwgQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKTsKPiA+ICsJdG1wICY9IH5BVURfQ09ORklHX0xP
+V0VSX05fTUFTSzsKPiA+ICsJdG1wIHw9IChuX2xvdyA8PCBBVURfQ09ORklHX0xPV0VSX05fU0hJ
+RlQpOwo+IAo+IFlvdSBjb3VsZCBzcXVhc2ggdGhlIG9ycyBhbmQgYW5kcyB0b2dldGhlci4KCkFs
+c28gcmVhZC1tb2RpZnktd3JpdGUgY29uc2lkZXJlZCBldmlsLiBJZiB5b3UgbmVlZCB0byBzYXZl
+IGEgZmV3IGJpdHMKcGxlYXNlIGJlIGV4cGxpY2l0IGFib3V0IGl0IGxpa2UKCgl0bXAgJj0gQklU
+U19XRV9XQU5UX1RPX0tFRVA7CgppZiB0aGVyZSdzIG5vIGJpdHMgdG8ga2VlcCBqdXN0IHN0YXJ0
+IG91dCB3aXRoIDAuIElmIHdlIGhhdmUgdG9vIG11Y2ggcndtCnRvIGh3IHJlZ2lzdGVycyB0aGVu
+IHByb2JhYmx5IHNvbWV0aGluZyB3aXRoIHRoZSBvdmVyYWxsIGRlc2lnbiBpcwpib3RjaGVkLCBl
+LmcuIHdpdGggdGhlIHBpcGUgY29uZmlnIHByZWNvbXB1dGF0aW9uIHdlIG1hbmFnZWQgdG8gcmVt
+b3ZlCmFsbW9zdCBhbGwgdGhlIHJ3bSBjb2RlIGZvciBtb2Rlc2V0cy4KLURhbmllbAoKPiAKPiA+
+ICsJSTkxNV9XUklURShIU1dfQVVEX0NGRyhwaXBlKSwgdG1wKTsKPiA+ICsKPiA+ICsJcmV0dXJu
+IDA7Cj4gPiArfQo+ID4gKwo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21w
+b25lbnRfb3BzIGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyA9IHsKPiA+ICAJLm93bmVyCQk9IFRI
+SVNfTU9EVUxFLAo+ID4gIAkuZ2V0X3Bvd2VyCT0gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X3Bv
+d2VyLAo+ID4gIAkucHV0X3Bvd2VyCT0gaTkxNV9hdWRpb19jb21wb25lbnRfcHV0X3Bvd2VyLAo+
+ID4gIAkuY29kZWNfd2FrZV9vdmVycmlkZSA9IGk5MTVfYXVkaW9fY29tcG9uZW50X2NvZGVjX3dh
+a2Vfb3ZlcnJpZGUsCj4gPiAgCS5nZXRfY2RjbGtfZnJlcQk9IGk5MTVfYXVkaW9fY29tcG9uZW50
+X2dldF9jZGNsa19mcmVxLAo+ID4gKwkuc2V0X25jdHMgPSBpOTE1X2F1ZGlvX2NvbXBvbmVudF9z
+ZXRfbmN0cywKPiA+ICB9Owo+ID4gIAo+ID4gIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21wb25l
+bnRfYmluZChzdHJ1Y3QgZGV2aWNlICppOTE1X2RldiwKPiA+IC0tIAo+ID4gMS45LjEKPiA+Cj4g
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gSW50
+ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+ID4gSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+
+ID4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdm
+eAo+IAo+IC0tIAo+IEphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENl
+bnRlcgoKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0
+aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
+Zm8vaW50ZWwtZ2Z4Cg==
