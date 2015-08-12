@@ -1,19 +1,20 @@
-From: Zidan Wang <zidan.wang@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: add wm8960 support
-Date: Wed, 12 Aug 2015 12:45:10 +0800
-Message-ID: <20150812044505.GA21786@shlinux2>
-References: <dc4e5a52a90982cea95445e27a30f2ad6cb73513.1439349623.git.zidan.wang@freescale.com>
- <20150812034257.GA2980@Asurada-CZ80>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [Intel-gfx] [PATCH v2 1/4] drm/i915: Add audio
+	set_ncts callback
+Date: Wed, 12 Aug 2015 09:14:08 +0300
+Message-ID: <87pp2tt4nj.fsf@intel.com>
+References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+ <87a8tz8iya.fsf@intel.com>
+ <96A12704CE18D347B625EE2D4A099D196E1DB9@SHSMSX103.ccr.corp.intel.com>
+ <96A12704CE18D347B625EE2D4A099D196E35B2@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0129.outbound.protection.outlook.com [65.55.169.129])
- by alsa0.perex.cz (Postfix) with ESMTP id D185226062B
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 07:55:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20150812034257.GA2980@Asurada-CZ80>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9052626062B
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 08:11:16 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D196E35B2@SHSMSX103.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +24,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org, tiwai@suse.com
+To: "Yang, Libin" <libin.yang@intel.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'intel-gfx@lists.freedesktop.org'" <intel-gfx@lists.freedesktop.org>, "'daniel.vetter@ffwll.ch'" <daniel.vetter@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 11, 2015 at 08:42:59PM -0700, Nicolin Chen wrote:
-> On Wed, Aug 12, 2015 at 11:22:30AM +0800, Zidan Wang wrote:
-> > add wm8960 support for fsl-asoc-card
-> > 
-> > Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-> 
-> > +	gpr_np = of_parse_phandle(np, "gpr", 0);
-> > +	if (gpr_np) {
-> > +		priv->gpr = syscon_node_to_regmap(gpr_np);
-> > +		if (IS_ERR(priv->gpr)) {
-> > +			ret = PTR_ERR(priv->gpr);
-> > +			dev_err(&pdev->dev, "failed to get gpr regmap\n");
-> > +			goto fail;
-> > +		}
-> > +		/*
-> > +		 * for imx6ul we should set SAI2_MCLK_DIR to enable
-> > +		 * codec MCLK
-> > +		 */
-> > +		if (of_device_is_compatible(np, "fsl,imx6ul-evk-wm8960"))
-> > +			regmap_update_bits(priv->gpr, 4, 1 << 20, 1 << 20);
-> 
-> What's this SAI2_MCLK_DIR? Can you provide the description of it?
-SAI2_MCLK_DIR: SD1_CLK data direction control when sai2.MCLK is selected (ALT2)
-0 SD1_CLK output driver is disabled when configured for ALT2
-1 SD1_CLK output driver is enabled when configured for ALT2
+On Wed, 12 Aug 2015, "Yang, Libin" <libin.yang@intel.com> wrote:
+> Hi,
+>
+>> -----Original Message-----
+>> From: Yang, Libin
+>> Sent: Tuesday, August 11, 2015 10:41 AM
+>> To: Jani Nikula; alsa-devel@alsa-project.org; tiwai@suse.de; intel-
+>> gfx@lists.freedesktop.org; daniel.vetter@ffwll.ch
+>> Subject: RE: [Intel-gfx] [PATCH v2 1/4] drm/i915: Add audio set_ncts
+>> callback
+>> 
+>> Hi Jani,
+>> 
+>> Thanks for reviewing, please see my comments
+>> 
+>> > -----Original Message-----
+>> > From: Jani Nikula [mailto:jani.nikula@linux.intel.com]
+>> > Sent: Monday, August 10, 2015 7:46 PM
+>> > To: Yang, Libin; alsa-devel@alsa-project.org; tiwai@suse.de; intel-
+>> > gfx@lists.freedesktop.org; daniel.vetter@ffwll.ch
+>> > Subject: Re: [Intel-gfx] [PATCH v2 1/4] drm/i915: Add audio set_ncts
+>> > callback
+>> >
+>> > On Mon, 10 Aug 2015, libin.yang@intel.com wrote:
+>> > > From: Libin Yang <libin.yang@intel.com>
+>> > >
+>> > > Add the set_ncts callback.
+>> > >
+>> > > With the callback, audio driver can trigger
+>> > > i915 driver to set the proper N/CTS
+>> > > based on different sample rates.
+>> > >
+>> > > Signed-off-by: Libin Yang <libin.yang@intel.com>
+>> > > ---
+>> > >  include/drm/i915_component.h | 2 ++
+>> > >  1 file changed, 2 insertions(+)
+>> > >
+>> > > diff --git a/include/drm/i915_component.h
+>> > b/include/drm/i915_component.h
+>> > > index c9a8b64..7305881 100644
+>> > > --- a/include/drm/i915_component.h
+>> > > +++ b/include/drm/i915_component.h
+>> > > @@ -33,6 +33,8 @@ struct i915_audio_component {
+>> > >  		void (*put_power)(struct device *);
+>> > >  		void (*codec_wake_override)(struct device *, bool
+>> > enable);
+>> > >  		int (*get_cdclk_freq)(struct device *);
+>> > > +		int (*set_ncts)(struct device *, int port, int dev_entry,
+>> > > +					int rate);
+>> >
+>> > I'd rather call this set_audio_rate or similar, and dropping the
+>> > references to N and CTS. The caller does not need to know.
+>> 
+>> But it seems the set_audio_rate will confuse the user. From the
+>> literal meaning, it is setting the rate of audio, such as sample rate,
+>> which will make audio driver developers confused.
+>> And the function is just setting N/CTS which is defined from
+>> HDMI SPEC.
+>
+> What about the name sync_audio_rate()?
 
-We are using SAI2 now, so we should enable SAI2_MCLK_DIR. If we want to use SAI1 and SAI3, we should also enable SAI1_MCLK_DIR and SAI3_MCLK_DIR. I don't consider SAI1 and SAI3 case, should i add it like below:
+I'm fine with that.
 
-gpr = <&gpr reg shift val>
+BR,
+Jani.
 
-> 
-> And why not put it inside:
->  +	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8960")) {
->  +		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
->  +		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
->  +		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
->  +		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> 
+>
+>> 
+>> BTW: your comment reminds me that get_cdclk_freq() seems
+>> to need change the name as cdclk is not in the open spec.
+>> 
+>> >
+>> > I'm also not fond of adding a dev_entry parameter and leaving it
+>> > unused. I do not think we know specifically how we're going to
+>> identify
+>> > MST sinks, and the interface may need to be changed anyway. Let's
+>> > force
+>> > an update in the caller side as well when there's actually sensible
+>> > support in our side.
+>> 
+>> The device entry is a concept in HDA spec. For driver implementation,
+>> I think we can use an int variable or a struct device to represent it.
+>> A int variable is an easy way. There is some place in audio driver using
+>> int variable to represent the deivce entry. And audio driver will not
+>> care how gfx driver supports the DP1.2 MST, I mean audio driver will
+>> not know the structures inside gfx driver.
+>> 
+>> I will remove this parameter in this version if you are thinking the
+>> MST interface is indeterminate.
+>> 
+>> BTW: do you know when gfx will normally support MST?
+>> 
+>> Best Regards,
+>> Libin
+>> 
+>> >
+>> > BR,
+>> > Jani.
+>> >
+>> > >  	} *ops;
+>> > >  };
+>> > >
+>> > > --
+>> > > 1.9.1
+>> > >
+>> > > _______________________________________________
+>> > > Intel-gfx mailing list
+>> > > Intel-gfx@lists.freedesktop.org
+>> > > http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+>> >
+>> > --
+>> > Jani Nikula, Intel Open Source Technology Center
 
-Just imx6ul should enable such bit. Put inside is also ok.
-
-
-> > @@ -521,7 +545,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
-> >  	/* Normal DAI Link */
-> >  	priv->dai_link[0].cpu_of_node = cpu_np;
-> >  	priv->dai_link[0].codec_of_node = codec_np;
-> > -	priv->dai_link[0].codec_dai_name = codec_dev->name;
-> > +	if (strstr(codec_dev->name, "wm8960"))
-> > +		priv->dai_link[0].codec_dai_name = "wm8960-hifi";
-> > +	else
-> > +		priv->dai_link[0].codec_dai_name = codec_dev->name;
-> 
-> What happens to the codec_dev->name over here so that you need to
-> specify the name?
-In wm8960 codec driver, codec dai name is "wm8960-hifi". Using codec_dev->name will cauce register card failed.
-
-> 
-> Nicolin
+-- 
+Jani Nikula, Intel Open Source Technology Center
