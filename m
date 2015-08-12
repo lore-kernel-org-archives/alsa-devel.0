@@ -1,94 +1,73 @@
-From: Matt Campbell <mcampbell@izotope.com>
-Subject: Re: Questions about ASoC driver implementation
-Date: Wed, 12 Aug 2015 12:56:37 -0400
-Message-ID: <CAMDowVXSRkRjwbpgssjycQFOPdbh-4cu9pFFu-oPdfhaN+hkgQ@mail.gmail.com>
-References: <CAMDowVVj26LdUz5hgp6J9kfB=g5gEfq1L_ycGbHymEYJ-_k+MQ@mail.gmail.com>
- <55CB62F1.3010805@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f174.google.com (mail-yk0-f174.google.com
- [209.85.160.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BB6D260542
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 18:56:39 +0200 (CEST)
-Received: by ykdz80 with SMTP id z80so19233772ykd.2
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 09:56:38 -0700 (PDT)
-In-Reply-To: <55CB62F1.3010805@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl-asoc-card: Specify codec_dai_name for DAI links
+Date: Wed, 12 Aug 2015 13:06:12 -0700
+Message-ID: <1439409972-56973-1-git-send-email-nicoleotsuka@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.de, perex@perex.cz, fabio.estevam@freescale.com, zidan.wang@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+The dev->name of CODEC might not be identical to its codec_dai_name,
+so using dev->name to probe the CODEC dai is not a correct approach.
 
-Thanks for the information, that really clears things up for me! Having the
-max9768 and lm4857 as examples should get me where I need to be.
+This patch specifies each supporting codec_dai_name instead of using
+dev->name any more.
 
-~Matt
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On Wed, Aug 12, 2015 at 11:14 AM, Lars-Peter Clausen <lars@metafoo.de>
-wrote:
-
-> Hi,
->
->
-> On 08/12/2015 04:01 PM, Matt Campbell wrote:
-> > Hi All,
-> >
-> > I'm diving into adding support for a new codec (AK4621) targeting IMX6
-> SoC
-> > and as this is my first dive into ALSA driver code (and first deep dive
-> in
-> > to Linux driver development) I've come up with a few questions. I've
-> done a
-> > lot of digging in available documentation as well as reading a lot of
-> code,
-> > but some things remain unclear.
-> >
-> > First, I'm a little confused with what appears to be inconsistent
-> > terminology. The SoC overview.txt lists three types of component drivers:
-> > codec, platform and machine. However, in the code there are four types of
-> > snd_soc_register_* functions: card, platform, codec and component. From
-> > looking at the underlying structs and how these are used in existing code
-> > this is my best guess but please correct me if I'm wrong:
-> >
-> > codec -> snd_soc_register_codec
-> > machine -> snd_soc_register_card
-> > platform -> snd_soc_register_component and snd_soc_register_platform?
-> (not
-> > sure about this, from what I can gather at some point there was an API
-> > switch to using component rather than platforms for the DAIs)
->
-> There used to be a lot of similarity between platforms and CODECs and some
-> code duplication. snd_soc_component was introduced is a new common base
-> class for both CODEC and platform. It can also be used standalone if none
-> of
-> the platform or CODEC specific functionality is need.
->
-> >
-> > My second question is around adding support for an amplifier external to
-> > the codec. The amplifier is a PGA controlled over SPI. One possible way I
-> > can see to adding this is to create a SPI based codec driver for the PGA
-> > that exposes an ALSA control for the gain level and give it a dummy DAI
-> > then add it to the card as an aux_dev. This feels a little kludgy as the
-> > PGA isn't a perfect fit for the codec class.
->
-> You don't need to register a DAI with your CODEC it will work just fine
-> without. Although in this case you don't need any CODEC specific features
-> so
-> the best is to just go with snd_soc_component. There are a few examples of
-> snd_soc_component based drivers for external analog amplifiers, e.g.
-> max9768
-> or lm4857.
->
-> - Lars
->
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index de43887..040362f 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -407,6 +407,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	struct fsl_asoc_card_priv *priv;
+ 	struct i2c_client *codec_dev;
+ 	struct clk *codec_clk;
++	const char *codec_dai_name;
+ 	u32 width;
+ 	int ret;
+ 
+@@ -459,6 +460,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ 	/* Diversify the card configurations */
+ 	if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
++		codec_dai_name = "cs42888";
+ 		priv->card.set_bias_level = NULL;
+ 		priv->cpu_priv.sysclk_freq[TX] = priv->codec_priv.mclk_freq;
+ 		priv->cpu_priv.sysclk_freq[RX] = priv->codec_priv.mclk_freq;
+@@ -467,9 +469,11 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		priv->cpu_priv.slot_width = 32;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
++		codec_dai_name = "sgtl5000";
+ 		priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
+ 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
++		codec_dai_name = "wm8962";
+ 		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
+ 		priv->codec_priv.mclk_id = WM8962_SYSCLK_MCLK;
+ 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
+@@ -521,7 +525,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	/* Normal DAI Link */
+ 	priv->dai_link[0].cpu_of_node = cpu_np;
+ 	priv->dai_link[0].codec_of_node = codec_np;
+-	priv->dai_link[0].codec_dai_name = codec_dev->name;
++	priv->dai_link[0].codec_dai_name = codec_dai_name;
+ 	priv->dai_link[0].platform_of_node = cpu_np;
+ 	priv->dai_link[0].dai_fmt = priv->dai_fmt;
+ 	priv->card.num_links = 1;
+@@ -530,7 +534,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		/* DPCM DAI Links only if ASRC exsits */
+ 		priv->dai_link[1].cpu_of_node = asrc_np;
+ 		priv->dai_link[1].platform_of_node = asrc_np;
+-		priv->dai_link[2].codec_dai_name = codec_dev->name;
++		priv->dai_link[2].codec_dai_name = codec_dai_name;
+ 		priv->dai_link[2].codec_of_node = codec_np;
+ 		priv->dai_link[2].cpu_of_node = cpu_np;
+ 		priv->dai_link[2].dai_fmt = priv->dai_fmt;
+-- 
+1.9.1
