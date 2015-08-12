@@ -1,23 +1,16 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: fix no frame clk in master
- mode
-Date: Wed, 12 Aug 2015 02:19:17 -0700
-Message-ID: <20150812091916.GA1512@Asurada>
-References: <2ec370890aca1bf5e8b796d7ebbfc95a0161980e.1439345935.git.zidan.wang@freescale.com>
- <20150812035317.GA3194@Asurada-CZ80>
- <20150812075914.GC21786@shlinux2>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: probe issue for Dice/OXFW drivers
+Date: Wed, 12 Aug 2015 11:20:49 +0200
+Message-ID: <55CB0FF1.1040100@ladisch.de>
+References: <55CA9C07.40702@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 46B35260438
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 11:19:26 +0200 (CEST)
-Received: by pawu10 with SMTP id u10so10771914paw.1
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 02:19:25 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150812075914.GC21786@shlinux2>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id AEE4B260438
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 11:20:55 +0200 (CEST)
+In-Reply-To: <55CA9C07.40702@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,26 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Etilem <contact@etilem.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 12, 2015 at 03:59:15PM +0800, Zidan Wang wrote:
-> On Tue, Aug 11, 2015 at 08:53:25PM -0700, Nicolin Chen wrote:
-> > On Wed, Aug 12, 2015 at 10:25:45AM +0800, Zidan Wang wrote:
-> > > After several open/close sai test with ctrl+c, there will be I/O error.
-> > > The SAI can't work anymore, can't recover. There will be no frame clock.
-> > > With adding the software reset in trigger stop, the issue can be fixed.
-> > 
-> > It doesn't look like a decent fix to me. Is it the only fix that
-> > IC team suggests? And why put this reset in the trigger function.
-> > Your MEGA fast patch has already included a software reset in the
-> > PM runtime functions. When dealing with CTRL+C test cases, that
-> > software reset should have worked as well.
-> > 
-> The MEGA fast patch add the suspend/resume function, but CTRL+C will not trigger suspend/resume function.
-> When CTRL+C, it will trigger stop and software reset SAI.
-> IC team suggest us to rest it, but I don't know if it's the only fix.
+Takashi Sakamoto wrote:
+> Recently, I received an issue from a user of Mackie Onyx-i series.
+> According to the user, snd-dice is not applied to his Dice model.
+> [...] According to the log, I cannot find the first
+> transaction which snd-dice performs. Additionally, no error messages in
+> syslog.
 
-You can try to add SET_RUNTIME_PM_OPS() and to see if the suspend
-function is called right after pressing ctrl+c.
+There are some checks performed before the first actual transaction.
+
+The kernel loads the driver if an entry in dice_id_table[] matches, i.e.,
+if version==1.  This values indeed is in the unit directory:
+
+>                ROM header and bus information block
+> -----------------------------------------------------------------
+> 400  0404f507  bus_info_length 4, crc_length 4, crc 62727
+> 404  31333934  bus_name "1394"
+> 408  e0008102  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 0, max_rec 8 (512)
+> 40c  000ff210  company_id 000ff2     |
+> 410  01800af7  device_id 1001800af7  | EUI-64 000ff21001800af7
+>
+>                root directory
+> -----------------------------------------------------------------
+> 414  000639d3  directory_length 6, crc 14803
+> 418  03000ff2  vendor
+> 41c  8100000a  --> descriptor leaf at 444
+> 420  17000006  model
+> 424  8100000d  --> descriptor leaf at 458
+> 428  0c0087c0  node capabilities per IEEE 1394
+> 42c  d1000001  --> unit directory at 430
+>
+>                unit directory at 430
+> -----------------------------------------------------------------
+> 430  00045246  directory_length 4, crc 21062
+> 434  12000ff2  specifier id
+> 438  13000001  version
+> 43c  17000006  model
+> 440  8100000b  --> descriptor leaf at 46c
+
+The dice_interface_check() function then makes other checks:
+/*
+ * Check that GUID and unit directory are constructed according to DICE
+ * rules, i.e., that the specifier ID is the GUID's OUI, and that the
+ * GUID chip ID consists of the 8-bit category ID, the 10-bit product
+ * ID, and a 22-bit serial number.
+ */
+
+These values are correct, except for the category ID.
+
+The driver already has an category ID exception for Weiss devices.
+It would be possible to add another exception, but given that firmware
+writers apparently like to change this value without good reason, it
+might be a better idea to just remove the category ID check.
+
+
+Regards,
+Clemens
