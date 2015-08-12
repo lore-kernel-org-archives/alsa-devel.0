@@ -1,16 +1,24 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: [PATCH] ALSA: usb-audio: Recurse before saving
-	terminal properties
-Date: Wed, 12 Aug 2015 22:14:59 +0200
-Message-ID: <1439410499-28630-1-git-send-email-julian@jusst.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: add wm8960 support
+Date: Wed, 12 Aug 2015 15:27:36 -0700
+Message-ID: <20150812222735.GA57015@Asurada-CZ80>
+References: <dc4e5a52a90982cea95445e27a30f2ad6cb73513.1439349623.git.zidan.wang@freescale.com>
+ <20150812034257.GA2980@Asurada-CZ80>
+ <20150812044505.GA21786@shlinux2>
+ <20150812064053.GA2807@Asurada-CZ80>
+ <20150812073859.GB21786@shlinux2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
- [74.201.84.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F2D1260462
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 22:15:11 +0200 (CEST)
+Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
+ [209.85.220.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 597C32608ED
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 00:27:42 +0200 (CEST)
+Received: by pacrr5 with SMTP id rr5so23223833pac.3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 15:27:41 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20150812073859.GB21786@shlinux2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,46 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Julian Scheel <julian@jusst.de>
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, tiwai@suse.com, timur@tabi.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When the descriptor parser recurses into the clock source descriptor, the
-terminals properties, like name and type, are set to the values of the clock
-selector as check_input_term overwrites term->name and others in the recursive
-call. As we want to only fill missing values using the descriptors higher in
-the recursion tree the properties taken from the actual descriptor must be
-applied after recursing.
+On Wed, Aug 12, 2015 at 03:39:00PM +0800, Zidan Wang wrote:
+> On Tue, Aug 11, 2015 at 11:40:54PM -0700, Nicolin Chen wrote:
+> > On Wed, Aug 12, 2015 at 12:45:10PM +0800, Zidan Wang wrote:
+> > 
+> > > > > +		/*
+> > > > > +		 * for imx6ul we should set SAI2_MCLK_DIR to enable
+> > > > > +		 * codec MCLK
+> > > > > +		 */
+> > > > > +		if (of_device_is_compatible(np, "fsl,imx6ul-evk-wm8960"))
+> > > > > +			regmap_update_bits(priv->gpr, 4, 1 << 20, 1 << 20);
+> > 
+> > > > What's this SAI2_MCLK_DIR? Can you provide the description of it?
+> > > SAI2_MCLK_DIR: SD1_CLK data direction control when sai2.MCLK is selected (ALT2)
+> > > 0 SD1_CLK output driver is disabled when configured for ALT2
+> > > 1 SD1_CLK output driver is enabled when configured for ALT2
+> > 
+> > > We are using SAI2 now, so we should enable SAI2_MCLK_DIR. If we want to
+> > > use SAI1 and SAI3, we should also enable SAI1_MCLK_DIR and SAI3_MCLK_DIR.
+> > > I don't consider SAI1 and SAI3 case, should i add it like below:
+> > 
+> > Yes. Just think about a general interface/configuration that can
+> > satisfy all the MCLK cases you can imagine.
 
-Signed-off-by: Julian Scheel <julian@jusst.de>
----
- sound/usb/mixer.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> > And I still don't understand the meaning of this MCLK at all.
+> > Does it indicate SAI's MCLK or an MCLK for external CODEC chips?
+> > Will it be possible that a user needs this MCLK bit to be unset?
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 6b3acba..4a49944 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
- 				term->name = d->iTerminal;
- 			} else { /* UAC_VERSION_2 */
- 				struct uac2_input_terminal_descriptor *d = p1;
--				term->type = le16_to_cpu(d->wTerminalType);
--				term->channels = d->bNrChannels;
--				term->chconfig = le32_to_cpu(d->bmChannelConfig);
--				term->name = d->iTerminal;
- 
- 				/* call recursively to get the clock selectors */
- 				err = check_input_term(state, d->bCSourceID, term);
- 				if (err < 0)
- 					return err;
-+
-+				term->type = le16_to_cpu(d->wTerminalType);
-+				term->channels = d->bNrChannels;
-+				term->chconfig = le32_to_cpu(d->bmChannelConfig);
-+				term->name = d->iTerminal;
- 			}
- 			return 0;
- 		case UAC_FEATURE_UNIT: {
--- 
-2.5.0
+> For imx6ul-evk, MCLK for wm8960 CODEC chips and SAI's MCLK is the same pin.
+> So it should always be set for SAI.
+
+Since the MCLK is driven to the external CODEC chip, it should
+be similar to the CLKO for wm8962 on the imx6qdl-sabresd board.
+So this configuration might be included in the clock tree in my
+opinion.
+
+And I Just checked the Reference Manual, it seems the direction
+could be totally set to input by leaving this bit unset: MCLK
+outputs via the SD1_CLK pad of IOMUX when setting this bit in
+the GPR; and MCLK inputs from an external clock source on the
+board level when clearing this bit. The SAI chapter mentions
+something similar in its MCLK section as well.
+
+But I can't find any clock MUX for the MCLK of SAI by selecting
+between the CCM and the external PAD: there is only a MUX inside
+the CCM. So I think you need to confirm with the IC team about
+this bit and the clock source of SAI MCLK.
+
+And there is a crucial problem I can imagine:
+  Is it okay to set this bit while setting SD1_CLK PAD as one
+  of other functions rather than SAI MCLK? -- Customers might
+  keep your code as they also use SAI2 while using SD1_CLK PAD
+  as a GPIO input.
+
+Nicolin
