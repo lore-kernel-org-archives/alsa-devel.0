@@ -1,21 +1,16 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
-Date: Wed, 12 Aug 2015 17:18:31 +0300
-Message-ID: <87614ktwso.fsf@intel.com>
-References: <1439191931-25705-4-git-send-email-libin.yang@intel.com>
- <871tfb8hu8.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E1E2C@SHSMSX103.ccr.corp.intel.com>
- <87oaie70wz.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E30C8@SHSMSX103.ccr.corp.intel.com>
- <87egjautrh.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E34F4@SHSMSX103.ccr.corp.intel.com>
- <87mvxxt4da.fsf@intel.com> <20150812131056.GP17734@phenom.ffwll.local>
- <87bnectzcv.fsf@intel.com> <20150812134310.GW17734@phenom.ffwll.local>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v2 2/4] drm/i915: implement set_ncts callback
+Date: Wed, 12 Aug 2015 14:31:40 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196E3A1E@SHSMSX103.ccr.corp.intel.com>
+References: <1439191931-25705-1-git-send-email-libin.yang@intel.com>
+ <1439191931-25705-2-git-send-email-libin.yang@intel.com>
+ <877fp38ib6.fsf@intel.com> <20150812130457.GN17734@phenom.ffwll.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20150812134310.GW17734@phenom.ffwll.local>
+In-Reply-To: <20150812130457.GN17734@phenom.ffwll.local>
+Content-Language: en-US
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
  <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -25,25 +20,54 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
  <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: intel-gfx-bounces@lists.freedesktop.org
 Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMiBBdWcgMjAxNSwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPiB3cm90
-ZToKPiBPbiBXZWQsIEF1ZyAxMiwgMjAxNSBhdCAwNDoyMzoxMlBNICswMzAwLCBKYW5pIE5pa3Vs
-YSB3cm90ZToKPj4gT24gV2VkLCAxMiBBdWcgMjAxNSwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZm
-d2xsLmNoPiB3cm90ZToKPj4gPiBJdCBzb3VuZHMgbGlrZSB3ZSBhY3R1YWxseSBuZWVkIHRvIHBp
-bmcgdGhlIGF1ZGlvIHNpZGUgX2JlZm9yZV8gd2UgZG8gdGhlCj4+IAo+PiBEbyB5b3UgbWVhbiAi
-cmVhZCBfSFNXX0FVRF9TVFJfREVTQ18qIiBieSAicGluZyB0aGUgYXVkaW8gc2lkZSIgYWJvdmU/
-Cj4KPiBObywgSSBtZWFuIGNhbGwgaW50byBzbmQtaGRhLWludGVsIGJlZm9yZSB3ZSBkbyB0aGUg
-bW9kZXNldCB0byBhc2sgaXQgZm9yCj4gd2hhdCBpdCBhY3R1YWxseSB3YW50cyB0byBoYXZlIHNl
-dCB1cC4gQXQgbGVhc3QgaXQgZmVlbHMgYSBiaXQgbGlrZSBvbmx5Cj4gcmVhY3RpbmcgdG8gYSBt
-b2Rlc2V0IGFmdGVyIGl0J3MgZG9uZSBsZWFkcyB0byBjb25mdXNpb24uIE9yIG1heWJlIHdlIGp1
-c3QKPiBuZWVkIHRvIHVwZGF0ZSB0aGUgcmVnaXN0ZXIgdmFsdWVzIHdlIHdhbnQgYXQgY29tcHV0
-ZV90aW1lIGluc3RlYWQgb2YKPiBkb2luZyByd20gZnVuIC4uLgo+Cj4gUHVyZSBndXQgZmVlbGlu
-ZyBjb21tZW50LCBJIGRpZG4ndCBsb29rIGludG8gZGV0YWlscyA7LSkKClRoZSBhdWRpbyBkcml2
-ZXIgY2FsbHMgdXMsIG5vdCB2aWNlIHZlcnNhLi4uCgpKYW5pLgoKCgotLSAKSmFuaSBOaWt1bGEs
-IEludGVsIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwt
-Z2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+SGkgRGFuaWVsLAoKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IERhbmllbCBW
+ZXR0ZXIgW21haWx0bzpkYW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiBEYW5p
+ZWwgVmV0dGVyCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMTIsIDIwMTUgOTowNSBQTQo+IFRv
+OiBKYW5pIE5pa3VsYQo+IENjOiBZYW5nLCBMaWJpbjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnOyB0aXdhaUBzdXNlLmRlOyBpbnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBk
+YW5pZWwudmV0dGVyQGZmd2xsLmNoCj4gU3ViamVjdDogUmU6IFtJbnRlbC1nZnhdIFtQQVRDSCB2
+MiAyLzRdIGRybS9pOTE1OiBpbXBsZW1lbnQgc2V0X25jdHMKPiBjYWxsYmFjawo+IAo+IE9uIE1v
+biwgQXVnIDEwLCAyMDE1IGF0IDAzOjAwOjEzUE0gKzAzMDAsIEphbmkgTmlrdWxhIHdyb3RlOgo+
+ID4gT24gTW9uLCAxMCBBdWcgMjAxNSwgbGliaW4ueWFuZ0BpbnRlbC5jb20gd3JvdGU6Cj4gPiA+
+ICsJbl9sb3cgPSBuICYgMHhmZmY7Cj4gPiA+ICsJbl91cCA9IChuID4+IDEyKSAmIDB4ZmY7Cj4g
+PiA+ICsKPiA+ID4gKwkvKiA0LiBzZXQgdGhlIE4vQ1RTICovCj4gPiA+ICsJdG1wID0gSTkxNV9S
+RUFEKEhTV19BVURfQ0ZHKHBpcGUpKTsKPiA+ID4gKwl0bXAgfD0gQVVEX0NPTkZJR19OX1BST0df
+RU5BQkxFOwo+ID4gPiArCXRtcCAmPSB+QVVEX0NPTkZJR19VUFBFUl9OX01BU0s7Cj4gPiA+ICsJ
+dG1wIHw9IChuX3VwIDw8IEFVRF9DT05GSUdfVVBQRVJfTl9TSElGVCk7Cj4gPiA+ICsJdG1wICY9
+IH5BVURfQ09ORklHX0xPV0VSX05fTUFTSzsKPiA+ID4gKwl0bXAgfD0gKG5fbG93IDw8IEFVRF9D
+T05GSUdfTE9XRVJfTl9TSElGVCk7Cj4gPgo+ID4gWW91IGNvdWxkIHNxdWFzaCB0aGUgb3JzIGFu
+ZCBhbmRzIHRvZ2V0aGVyLgo+IAo+IEFsc28gcmVhZC1tb2RpZnktd3JpdGUgY29uc2lkZXJlZCBl
+dmlsLiBJZiB5b3UgbmVlZCB0byBzYXZlIGEgZmV3IGJpdHMKPiBwbGVhc2UgYmUgZXhwbGljaXQg
+YWJvdXQgaXQgbGlrZQo+IAo+IAl0bXAgJj0gQklUU19XRV9XQU5UX1RPX0tFRVA7CgpPSywgSSB3
+aWxsIHRyeSB0byB1c2UgdGhpcyBmb3JtYXQuCgo+IAo+IGlmIHRoZXJlJ3Mgbm8gYml0cyB0byBr
+ZWVwIGp1c3Qgc3RhcnQgb3V0IHdpdGggMC4gSWYgd2UgaGF2ZSB0b28gbXVjaCByd20KPiB0byBo
+dyByZWdpc3RlcnMgdGhlbiBwcm9iYWJseSBzb21ldGhpbmcgd2l0aCB0aGUgb3ZlcmFsbCBkZXNp
+Z24gaXMKPiBib3RjaGVkLCBlLmcuIHdpdGggdGhlIHBpcGUgY29uZmlnIHByZWNvbXB1dGF0aW9u
+IHdlIG1hbmFnZWQgdG8KPiByZW1vdmUKPiBhbG1vc3QgYWxsIHRoZSByd20gY29kZSBmb3IgbW9k
+ZXNldHMuCgpZZXMsIGlmIHdlIGNhbiBzZXQgdGhlIHJlZ2lzdGVyIGJ5IHN0YXJ0aW5nIG91dCB3
+aXRoIDAsCml0IHdpbGwgYmUgYmV0dGVyLiBCdXQgaW4gdGhpcyBjYXNlLCB0aGVyZSBhcmUgc29t
+ZSByZXNlcnZlZApiaXRzLiBXZSBzaG91bGQgcmVzZXJ2ZSBpdHMgYml0cyBmb3IgY29tcGF0aWJp
+bGl0eSwgSSB0aGluay4KCj4gLURhbmllbAo+IAo+ID4KPiA+ID4gKwlJOTE1X1dSSVRFKEhTV19B
+VURfQ0ZHKHBpcGUpLCB0bXApOwo+ID4gPiArCj4gPiA+ICsJcmV0dXJuIDA7Cj4gPiA+ICt9Cj4g
+PiA+ICsKPiA+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3Bz
+Cj4gaTkxNV9hdWRpb19jb21wb25lbnRfb3BzID0gewo+ID4gPiAgCS5vd25lcgkJPSBUSElTX01P
+RFVMRSwKPiA+ID4gIAkuZ2V0X3Bvd2VyCT0gaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X3Bvd2Vy
+LAo+ID4gPiAgCS5wdXRfcG93ZXIJPSBpOTE1X2F1ZGlvX2NvbXBvbmVudF9wdXRfcG93ZXIsCj4g
+PiA+ICAJLmNvZGVjX3dha2Vfb3ZlcnJpZGUgPQo+IGk5MTVfYXVkaW9fY29tcG9uZW50X2NvZGVj
+X3dha2Vfb3ZlcnJpZGUsCj4gPiA+ICAJLmdldF9jZGNsa19mcmVxCT0gaTkxNV9hdWRpb19jb21w
+b25lbnRfZ2V0X2NkY2xrX2ZyZXEsCj4gPiA+ICsJLnNldF9uY3RzID0gaTkxNV9hdWRpb19jb21w
+b25lbnRfc2V0X25jdHMsCj4gPiA+ICB9Owo+ID4gPgo+ID4gPiAgc3RhdGljIGludCBpOTE1X2F1
+ZGlvX2NvbXBvbmVudF9iaW5kKHN0cnVjdCBkZXZpY2UgKmk5MTVfZGV2LAo+ID4gPiAtLQo+ID4g
+PiAxLjkuMQo+ID4gPgo+ID4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+ID4gPiBJbnRlbC1nZnggbWFpbGluZyBsaXN0Cj4gPiA+IEludGVsLWdmeEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo+ID4KPiA+IC0tCj4gPiBKYW5pIE5pa3VsYSwgSW50
+ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKPiAKPiAtLQo+IERhbmllbCBWZXR0ZXIK
+PiBTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KPiBodHRwOi8vYmxvZy5mZnds
+bC5jaApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRl
+bC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDov
+L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
