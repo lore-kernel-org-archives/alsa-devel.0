@@ -1,155 +1,71 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
-Date: Wed, 12 Aug 2015 14:57:24 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196E3AB4@SHSMSX103.ccr.corp.intel.com>
-References: <1439191931-25705-4-git-send-email-libin.yang@intel.com>
- <871tfb8hu8.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E1E2C@SHSMSX103.ccr.corp.intel.com>
- <87oaie70wz.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E30C8@SHSMSX103.ccr.corp.intel.com>
- <87egjautrh.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E34F4@SHSMSX103.ccr.corp.intel.com>
- <87mvxxt4da.fsf@intel.com> <20150812131056.GP17734@phenom.ffwll.local>
- <87bnectzcv.fsf@intel.com> <20150812134310.GW17734@phenom.ffwll.local>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Questions about ASoC driver implementation
+Date: Wed, 12 Aug 2015 17:14:57 +0200
+Message-ID: <55CB62F1.3010805@metafoo.de>
+References: <CAMDowVVj26LdUz5hgp6J9kfB=g5gEfq1L_ycGbHymEYJ-_k+MQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20150812134310.GW17734@phenom.ffwll.local>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-194.synserver.de (smtp-out-194.synserver.de
+ [212.40.185.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DBFD260438
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 17:14:59 +0200 (CEST)
+In-Reply-To: <CAMDowVVj26LdUz5hgp6J9kfB=g5gEfq1L_ycGbHymEYJ-_k+MQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Campbell <mcampbell@izotope.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGFuaWVsLAoKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IERhbmllbCBW
-ZXR0ZXIgW21haWx0bzpkYW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiBEYW5p
-ZWwgVmV0dGVyCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMTIsIDIwMTUgOTo0MyBQTQo+IFRv
-OiBKYW5pIE5pa3VsYQo+IENjOiBEYW5pZWwgVmV0dGVyOyBZYW5nLCBMaWJpbjsgYWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnOwo+IHRpd2FpQHN1c2UuZGU7IGludGVsLWdmeEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2gKPiBTdWJqZWN0OiBSZTogW0ludGVs
-LWdmeF0gW1BBVENIIHY0IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9wZXIgTi9DVFMgaW4KPiBtb2Rl
-c2V0Cj4gCj4gT24gV2VkLCBBdWcgMTIsIDIwMTUgYXQgMDQ6MjM6MTJQTSArMDMwMCwgSmFuaSBO
-aWt1bGEgd3JvdGU6Cj4gPiBPbiBXZWQsIDEyIEF1ZyAyMDE1LCBEYW5pZWwgVmV0dGVyIDxkYW5p
-ZWxAZmZ3bGwuY2g+IHdyb3RlOgo+ID4gPiBPbiBXZWQsIEF1ZyAxMiwgMjAxNSBhdCAwOToyMDox
-N0FNICswMzAwLCBKYW5pIE5pa3VsYSB3cm90ZToKPiA+ID4+IE9uIFdlZCwgMTIgQXVnIDIwMTUs
-ICJZYW5nLCBMaWJpbiIgPGxpYmluLnlhbmdAaW50ZWwuY29tPiB3cm90ZToKPiA+ID4+ID4gSGkg
-SmFuaSwKPiA+ID4+ID4KPiA+ID4+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiA+
-PiA+PiBGcm9tOiBKYW5pIE5pa3VsYSBbbWFpbHRvOmphbmkubmlrdWxhQGxpbnV4LmludGVsLmNv
-bV0KPiA+ID4+ID4+IFNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCAxMSwgMjAxNSA0OjE0IFBNCj4gPiA+
-PiA+PiBUbzogWWFuZywgTGliaW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlA
-c3VzZS5kZTsKPiBpbnRlbC0KPiA+ID4+ID4+IGdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IGRh
-bmllbC52ZXR0ZXJAZmZ3bGwuY2gKPiA+ID4+ID4+IFN1YmplY3Q6IFJFOiBbSW50ZWwtZ2Z4XSBb
-UEFUQ0ggdjQgNC80XSBkcm0vaTkxNTogc2V0IHByb3Blcgo+IE4vQ1RTIGluCj4gPiA+PiA+PiBt
-b2Rlc2V0Cj4gPiA+PiA+Pgo+ID4gPj4gPj4gT24gVHVlLCAxMSBBdWcgMjAxNSwgIllhbmcsIExp
-YmluIiA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gd3JvdGU6Cj4gPiA+PiA+PiA+IEhpIEphbmks
-Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4g
-Pj4gPj4gPj4gRnJvbTogSmFuaSBOaWt1bGEgW21haWx0bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRl
-bC5jb21dCj4gPiA+PiA+PiA+PiBTZW50OiBUdWVzZGF5LCBBdWd1c3QgMTEsIDIwMTUgMzoxNCBQ
-TQo+ID4gPj4gPj4gPj4gVG86IFlhbmcsIExpYmluOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmc7IHRpd2FpQHN1c2UuZGU7Cj4gaW50ZWwtCj4gPiA+PiA+PiA+PiBnZnhAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnOyBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4gPiA+PiA+PiA+PiBTdWJqZWN0OiBS
-RTogW0ludGVsLWdmeF0gW1BBVENIIHY0IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9wZXIKPiBOL0NU
-UyBpbgo+ID4gPj4gPj4gPj4gbW9kZXNldAo+ID4gPj4gPj4gPj4KPiA+ID4+ID4+ID4+IE9uIFR1
-ZSwgMTEgQXVnIDIwMTUsICJZYW5nLCBMaWJpbiIgPGxpYmluLnlhbmdAaW50ZWwuY29tPgo+IHdy
-b3RlOgo+ID4gPj4gPj4gPj4gPiBIaSBKYW5pLAo+ID4gPj4gPj4gPj4gPgo+ID4gPj4gPj4gPj4g
-PiBUaGFua3MgZm9yIGNhcmVmdWwgcmV2aWV3aW5nIGZvciBhbGwgdGhlIHBhdGNoZXMsIHBsZWFz
-ZQo+ID4gPj4gPj4gPj4gPiBzZWUgbXkgY29tbWVudHMuCj4gPiA+PiA+PiA+PiA+Cj4gPiA+PiA+
-PiA+PiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gPj4gPj4gPj4gPj4gRnJvbTog
-SmFuaSBOaWt1bGEgW21haWx0bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb21dCj4gPiA+PiA+
-PiA+PiA+PiBTZW50OiBNb25kYXksIEF1Z3VzdCAxMCwgMjAxNSA4OjEwIFBNCj4gPiA+PiA+PiA+
-PiA+PiBUbzogWWFuZywgTGliaW47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsKPiB0aXdh
-aUBzdXNlLmRlOyBpbnRlbC0KPiA+ID4+ID4+ID4+ID4+IGdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2gKPiA+ID4+ID4+ID4+ID4+IFN1YmplY3Q6IFJlOiBb
-SW50ZWwtZ2Z4XSBbUEFUQ0ggdjQgNC80XSBkcm0vaTkxNTogc2V0Cj4gcHJvcGVyIE4vQ1RTCj4g
-PiA+PiA+PiBpbgo+ID4gPj4gPj4gPj4gPj4gbW9kZXNldAo+ID4gPj4gPj4gPj4gPj4KPiA+ID4+
-ID4+ID4+ID4+IE9uIE1vbiwgMTAgQXVnIDIwMTUsIGxpYmluLnlhbmdAaW50ZWwuY29tIHdyb3Rl
-Ogo+ID4gPj4gPj4gPj4gPj4gPiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNv
-bT4KPiA+ID4+ID4+ID4+ID4+ID4KPiA+ID4+ID4+ID4+ID4+ID4gV2hlbiBtb2Rlc2V0IG9jY3Vy
-cyBhbmQgdGhlIFRNRFMgZnJlcXVlbmN5IGlzIHNldAo+IHRvIHNvbWUKPiA+ID4+ID4+ID4+ID4+
-ID4gc3BlaWNhbCB2YWx1ZSwgdGhlIE4vQ1RTIG5lZWQgdG8gYmUgc2V0IG1hbnVhbGx5IGlmCj4g
-YXVkaW8KPiA+ID4+ID4+ID4+ID4+ID4gaXMgcGxheWluZy4KPiA+ID4+ID4+ID4+ID4+Cj4gPiA+
-PiA+PiA+PiA+PiBXaGVuIG1vZGVzZXQgb2NjdXJzLCB3ZSBkaXNhYmxlIGV2ZXJ5dGhpbmcsIGFu
-ZCB0aGVuCj4gcmUtZW5hYmxlCj4gPiA+PiA+PiA+PiA+PiBldmVyeXRoaW5nLCBhbmQgbm90aWZ5
-IHRoZSBhdWRpbyBkcml2ZXIgZXZlcnkgc3RlcCBvZiB0aGUKPiB3YXkuIElJVUMKPiA+ID4+ID4+
-ID4+ID4+IHRoZXJlIHNob3VsZCBiZSBubyBhdWRpbyBwbGF5aW5nIGFjcm9zcyB0aGUgbW9kZXNl
-dCwKPiBhbmQgd2hlbgo+ID4gPj4gPj4gdGhlCj4gPiA+PiA+PiA+PiA+PiBtb2Rlc2V0IGlzIGNv
-bXBsZXRlIGFuZCB3ZSd2ZSBzZXQgdGhlIHZhbGlkIEVMRCwgdGhlCj4gYXVkaW8gZHJpdmVyCj4g
-PiA+PiA+PiA+PiA+PiBzaG91bGQKPiA+ID4+ID4+ID4+ID4+IGNhbGwgdGhlIGNhbGxiYWNrIGZy
-b20gdGhlIGVhcmxpZXIgcGF0Y2hlcyB0byBzZXQgdGhlCj4gY29ycmVjdCBhdWRpbwo+ID4gPj4g
-Pj4gPj4gPj4gcmF0ZS4KPiA+ID4+ID4+ID4+ID4+Cj4gPiA+PiA+PiA+PiA+PiBXaHkgaXMgdGhp
-cyBwYXRjaCBuZWVkZWQ/IFBsZWFzZSBlbmxpZ2h0ZW4gbWUuCj4gPiA+PiA+PiA+PiA+Cj4gPiA+
-PiA+PiA+PiA+IFBsZWFzZSBpbWFnZSB0aGlzIHNjZW5hcmlvOiB3aGVuIGF1ZGlvIGlzIHBsYXlp
-bmcsIHRoZSBnZngKPiBkcml2ZXIKPiA+ID4+ID4+ID4+ID4gZG9lcyB0aGUgbW9kZXNldC4gSW4g
-dGhpcyBzaXR1YXRpb24sIGFmdGVyIG1vZGVzZXQsIGF1ZGlvCj4gZHJpdmVyCj4gPiA+PiA+PiA+
-PiA+IHdpbGwgZG8gbm90aGluZyBhbmQgY29udGludWUgcGxheWluZy4gQW5kIGF1ZGlvIGRyaXZl
-ciB3aWxsCj4gbm90IGNhbGwKPiA+ID4+ID4+ID4+ID4gc2V0X25jdHMuCj4gPiA+PiA+PiA+Pgo+
-ID4gPj4gPj4gPj4gV2h5IGRvZXMgdGhlIGF1ZGlvIGRyaXZlciBub3QgZG8gYW55dGhpbmcgaGVy
-ZT8gV2hlbmV2ZXIKPiB0aGVyZSdzCj4gPiA+PiA+PiBhCj4gPiA+PiA+PiA+PiBtb2Rlc2V0LCB0
-aGUgZ3JhcGhpY3MgZHJpdmVyIHdpbGwgZGlzYWJsZSBhdWRpbyBhbmQKPiBpbnZhbGlkYXRlIHRo
-ZQo+ID4gPj4gPj4gRUxELAo+ID4gPj4gPj4gPj4gd2hpY2ggc2hvdWxkIGNhdXNlIGFuIGludGVy
-cnVwdCB0byBub3RpZnkgdGhlIGF1ZGlvIGRyaXZlcgo+IGFib3V0Cj4gPiA+PiA+PiA+PiB0aGlz
-LiBUaGlzIGlzIG5vIGRpZmZlcmVudCBmcm9tIGEgaG90LXVucGx1ZywgaW4gZmFjdCBJIGNhbid0
-IHNlZQo+IGhvdwo+ID4gPj4gPj4gPj4gdGhlIGF1ZGlvIGRyaXZlciBjb3VsZCBldmVuIGRldGVj
-dCB3aGV0aGVyIHRoZXJlJ3MgYmVlbiBhCj4gaG90cGx1Zwo+ID4gPj4gPj4gb3IKPiA+ID4+ID4+
-ID4+IG5vdAo+ID4gPj4gPj4gPj4gd2hlbiB0aGVyZSdzIGEgY29kZWMgZGlzYWJsZS9lbmFibGUu
-Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFllcywgaXQgd2lsbCB0cmlnZ2VyIGFuIGludGVycnVw
-dCB0byBhdWRpbyBkcml2ZXIgd2hlbiB1bnBsdWcKPiA+ID4+ID4+ID4gYW5kIGFub3RoZXIgaW50
-ZXJydXB0IGZvciBob3RwbHVnLiBCdXQgZnJvbSBhdWRpbyBkcml2ZXIsCj4gPiA+PiA+PiA+IHdl
-IHdpbGwgbm90IHN0b3AgdGhlIHBsYXlpbmcgYW5kIHJlc3VtZSB0aGUgcGxheWluZyBiYXNlZAo+
-ID4gPj4gPj4gPiBvbiB0aGUgaG90cGx1ZyBvciBtb2Rlc2V0LiBUaGUgYXVkaW8gaXMgYWx3YXlz
-IHBsYXlpbmcKPiBkdXJpbmcKPiA+ID4+ID4+ID4gdGhlIGhvdHBsdWcvbW9kZXNldC4KPiA+ID4+
-ID4+Cj4gPiA+PiA+PiBCdXQgdGhlIHdob2xlIGRpc3BsYXksIGFuZCBjb25zZXF1ZW50bHkgRUxE
-LCBtaWdodCBoYXZlCj4gY2hhbmdlZAo+ID4gPj4gPj4gZHVyaW5nCj4gPiA+PiA+PiB0aGUgaG90
-cGx1Zywgd2h5IGRvIHlvdSBhc3N1bWUgeW91IGNhbiBqdXN0IGtlZXAgcGxheWluZz8hCj4gVGhl
-Cj4gPiA+PiA+PiBkaXNwbGF5Cj4gPiA+PiA+PiBtaWdodCBldmVuIGhhdmUgY2hhbmdlZCBmcm9t
-IEhETUkgdG8gRFAgb3IgdmljZSB2ZXJzYS4KPiA+ID4+ID4KPiA+ID4+ID4gVGhlIGVsZCBpbmZv
-IGNoYW5naW5nIHdpbGwgbm90IGltcGFjdCB0aGUgYXVkaW8gcGxheWluZy4KPiA+ID4+ID4gQWN0
-dWFsbHksIHlvdSBjYW4gaW1hZ2UgdGhlIG1vbml0b3IgYXMgYSBkaWdpdGFsIHNwZWFrZXIsIGp1
-c3QKPiA+ID4+ID4gbGlrZSB0aGUgaGVhZHBob25lIHRvIHRoZSBhbmFsb2cgYXVkaW8uIFVucGx1
-ZyB0aGUgc3BlYWtlcgo+ID4gPj4gPiB3aWxsIG5vdCBpbXBhY3Qgb24gdGhlIGF1ZGlvIHBsYXlp
-bmcuIE9mIGNvdXJzZSAsIHRoZXJlIGlzIGEKPiA+ID4+ID4gbGl0dGxlIGRpZmZlcmVuY2UsIHdo
-ZW4gbW9uaXRvciBob3RwbHVnLCBpbiB0aGUgaW50ZXJydXB0LAo+ID4gPj4gPiB3ZSBtYXkgY2hh
-bmdlIHRoZSBjb2RlYyBjb25maWd1cmF0aW9uIGR5bmFtaWNhbGx5Lgo+ID4gPj4gPgo+ID4gPj4g
-PiBBbmQgYXVkaW8gZHJpdmVyIHN1cHBseSB0aGUgbWVjaGFuaXNtIHRvIHN0b3AgdGhlCj4gPiA+
-PiA+IGF1ZGlvIHBsYXlpbmcgd2hlbiBob3RwbHVnIGlmIHRoZSBIVyByZXF1aXJlcy4KPiA+ID4+
-ID4KPiA+ID4+ID4+Cj4gPiA+PiA+PiBXZSd2ZSBhbHNvIGJlZW4gcHV0dGluZyBhIGxvdCBvZiBl
-ZmZvcnQgaW50byBub3QgZGVwZW5kaW5nIG9uCj4gcHJldmlvdXMKPiA+ID4+ID4+IHN0YXRlIHdo
-ZW4gZW5hYmxpbmcgdGhlIG91dHB1dHMsIGZvciBtb3JlIHJlbGlhYmlsaXR5LiBXZQo+IGdlbmVy
-YWxseQo+ID4gPj4gPj4gZG9uJ3QgZG8gcGFydGlhbCBjaGFuZ2VzLCB3ZSBkaXNhYmxlIGV2ZXJ5
-dGhpbmcgYW5kIHRoZW4KPiBlbmFibGUKPiA+ID4+ID4+IGFnYWluLiBBbmQgbm93IHlvdSdyZSBz
-dWdnZXN0aW5nIHdlIGxvb2sgYXQgc29tZSByZWdpc3Rlcgo+IHdoaWNoIGZvciBhbGwKPiA+ID4+
-ID4+IHdlIGtub3cgbWF5IGhhdmUgYmVlbiB2YWxpZCBmb3Igc29tZSBvdGhlciBkaXNwbGF5Pwo+
-ID4gPj4gPgo+ID4gPj4gPiBJbiB0aGUgcGF0Y2gsIGl0IHdpbGwgbm90IGRlcGVuZCBvbiBwcmV2
-aW91cyBzdGF0ZSwgSSB0aGluay4gV2UKPiA+ID4+ID4gcmVhZCB0aGUgcmVnaXN0ZXIgdmFsdWUg
-d2hpY2ggaXMgYmFzZWQgb24gdGhlIHN0YXRlIGFmdGVyCj4gbW9kZXNldC4KPiA+ID4+Cj4gPiA+
-PiBPa2F5LCBsZXQncyBoYXZlIHRoZSBwYXRjaGVzIGNsZWFuZWQgdXAgYW5kIHNlZS4gSXQnbGwg
-YmUgZWFzaWVyIGFuZAo+ID4gPj4gcXVpY2tlciB0byBzb2xpY2l0IG1vcmUgcmV2aWV3IG9uIHRo
-YXQgdGhhbiB0aGlzIGV4cGFuZGluZyB0aHJlYWQuCj4gPiA+Cj4gPiA+IEl0IHNvdW5kcyBsaWtl
-IHdlIGFjdHVhbGx5IG5lZWQgdG8gcGluZyB0aGUgYXVkaW8gc2lkZSBfYmVmb3JlXyB3ZQo+IGRv
-IHRoZQo+ID4KPiA+IERvIHlvdSBtZWFuICJyZWFkIF9IU1dfQVVEX1NUUl9ERVNDXyoiIGJ5ICJw
-aW5nIHRoZSBhdWRpbwo+IHNpZGUiIGFib3ZlPwo+IAo+IE5vLCBJIG1lYW4gY2FsbCBpbnRvIHNu
-ZC1oZGEtaW50ZWwgYmVmb3JlIHdlIGRvIHRoZSBtb2Rlc2V0IHRvIGFzayBpdAo+IGZvcgo+IHdo
-YXQgaXQgYWN0dWFsbHkgd2FudHMgdG8gaGF2ZSBzZXQgdXAuIEF0IGxlYXN0IGl0IGZlZWxzIGEg
-Yml0IGxpa2Ugb25seQo+IHJlYWN0aW5nIHRvIGEgbW9kZXNldCBhZnRlciBpdCdzIGRvbmUgbGVh
-ZHMgdG8gY29uZnVzaW9uLiBPciBtYXliZSB3ZQo+IGp1c3QKPiBuZWVkIHRvIHVwZGF0ZSB0aGUg
-cmVnaXN0ZXIgdmFsdWVzIHdlIHdhbnQgYXQgY29tcHV0ZV90aW1lIGluc3RlYWQKPiBvZgo+IGRv
-aW5nIHJ3bSBmdW4gLi4uCgpBY3R1YWxseSB3ZSByZWFkIHRoZSBfSFNXX0FVRF9TVFJfREVTQ18q
-IHJlZ2lzdGVyIHRvIGdldAp3aGF0IHZhbHVlIHdlIGFyZSBnb2luZyB0byBzZXQuIFRoaXMgaXMg
-c2ltaWxhciB3aXRoIGNhbGxpbmcgYXVkaW8KZHJpdmVyIHRvIGFzayBmb3IgdGhlIHBhcmFtZXRl
-cnMuIFRoZSBfSFNXX0FVRF9TVFJfREVTQ18qCndpbGwgdGVsbCB1cyB3aGF0IGF1ZGlvIHNhbXBs
-ZSByYXRlcyBpdCdzIHVzaW5nLiA6LSkKClJlZ2FyZHMsCkxpYmluCj4gCj4gUHVyZSBndXQgZmVl
-bGluZyBjb21tZW50LCBJIGRpZG4ndCBsb29rIGludG8gZGV0YWlscyA7LSkKPiAtRGFuaWVsCj4g
-LS0KPiBEYW5pZWwgVmV0dGVyCj4gU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9u
-Cj4gaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9pbnRlbC1nZngK
+Hi,
+
+
+On 08/12/2015 04:01 PM, Matt Campbell wrote:
+> Hi All,
+> 
+> I'm diving into adding support for a new codec (AK4621) targeting IMX6 SoC
+> and as this is my first dive into ALSA driver code (and first deep dive in
+> to Linux driver development) I've come up with a few questions. I've done a
+> lot of digging in available documentation as well as reading a lot of code,
+> but some things remain unclear.
+> 
+> First, I'm a little confused with what appears to be inconsistent
+> terminology. The SoC overview.txt lists three types of component drivers:
+> codec, platform and machine. However, in the code there are four types of
+> snd_soc_register_* functions: card, platform, codec and component. From
+> looking at the underlying structs and how these are used in existing code
+> this is my best guess but please correct me if I'm wrong:
+> 
+> codec -> snd_soc_register_codec
+> machine -> snd_soc_register_card
+> platform -> snd_soc_register_component and snd_soc_register_platform? (not
+> sure about this, from what I can gather at some point there was an API
+> switch to using component rather than platforms for the DAIs)
+
+There used to be a lot of similarity between platforms and CODECs and some
+code duplication. snd_soc_component was introduced is a new common base
+class for both CODEC and platform. It can also be used standalone if none of
+the platform or CODEC specific functionality is need.
+
+> 
+> My second question is around adding support for an amplifier external to
+> the codec. The amplifier is a PGA controlled over SPI. One possible way I
+> can see to adding this is to create a SPI based codec driver for the PGA
+> that exposes an ALSA control for the gain level and give it a dummy DAI
+> then add it to the card as an aux_dev. This feels a little kludgy as the
+> PGA isn't a perfect fit for the codec class.
+
+You don't need to register a DAI with your CODEC it will work just fine
+without. Although in this case you don't need any CODEC specific features so
+the best is to just go with snd_soc_component. There are a few examples of
+snd_soc_component based drivers for external analog amplifiers, e.g. max9768
+or lm4857.
+
+- Lars
