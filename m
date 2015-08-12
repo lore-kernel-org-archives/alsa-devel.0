@@ -1,19 +1,19 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/4] ASoC: cs42l52: Use case range at
+Subject: [PATCH 3/4] ASoC: cs42l56: Use case range at
 	appropriate place
-Date: Wed, 12 Aug 2015 11:08:37 +0800
-Message-ID: <1439348917.3594.3.camel@ingics.com>
+Date: Wed, 12 Aug 2015 11:09:39 +0800
+Message-ID: <1439348979.3594.4.camel@ingics.com>
 References: <1439348866.3594.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
- [209.85.220.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D9622605DD
- for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 05:08:43 +0200 (CEST)
-Received: by pabyb7 with SMTP id yb7so4230456pab.0
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 20:08:42 -0700 (PDT)
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AD8426062B
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 05:09:44 +0200 (CEST)
+Received: by pdbfa8 with SMTP id fa8so2153598pdb.1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 20:09:43 -0700 (PDT)
 In-Reply-To: <1439348866.3594.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,77 +28,71 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-The readable registers are in continuous range: 0x01 ~ 0x34.
+The readable registers are in continuous range: 0x01 ~ 0x2e.
 Use case range syntax makes the code shorter with better readability when
 we have a large number of continuous switch cases.
 No functional change with this patch.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/cs42l52.c | 53 +---------------------------------------------
- 1 file changed, 1 insertion(+), 52 deletions(-)
+ sound/soc/codecs/cs42l56.c | 47 +---------------------------------------------
+ 1 file changed, 1 insertion(+), 46 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index a074cee..47b97fc 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -110,58 +110,7 @@ static const struct reg_default cs42l52_reg_defaults[] = {
- static bool cs42l52_readable_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 39f51fb..7cd5f76 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -115,52 +115,7 @@ static const struct reg_default cs42l56_reg_defaults[] = {
+ static bool cs42l56_readable_register(struct device *dev, unsigned int reg)
  {
  	switch (reg) {
--	case CS42L52_CHIP:
--	case CS42L52_PWRCTL1:
--	case CS42L52_PWRCTL2:
--	case CS42L52_PWRCTL3:
--	case CS42L52_CLK_CTL:
--	case CS42L52_IFACE_CTL1:
--	case CS42L52_IFACE_CTL2:
--	case CS42L52_ADC_PGA_A:
--	case CS42L52_ADC_PGA_B:
--	case CS42L52_ANALOG_HPF_CTL:
--	case CS42L52_ADC_HPF_FREQ:
--	case CS42L52_ADC_MISC_CTL:
--	case CS42L52_PB_CTL1:
--	case CS42L52_MISC_CTL:
--	case CS42L52_PB_CTL2:
--	case CS42L52_MICA_CTL:
--	case CS42L52_MICB_CTL:
--	case CS42L52_PGAA_CTL:
--	case CS42L52_PGAB_CTL:
--	case CS42L52_PASSTHRUA_VOL:
--	case CS42L52_PASSTHRUB_VOL:
--	case CS42L52_ADCA_VOL:
--	case CS42L52_ADCB_VOL:
--	case CS42L52_ADCA_MIXER_VOL:
--	case CS42L52_ADCB_MIXER_VOL:
--	case CS42L52_PCMA_MIXER_VOL:
--	case CS42L52_PCMB_MIXER_VOL:
--	case CS42L52_BEEP_FREQ:
--	case CS42L52_BEEP_VOL:
--	case CS42L52_BEEP_TONE_CTL:
--	case CS42L52_TONE_CTL:
--	case CS42L52_MASTERA_VOL:
--	case CS42L52_MASTERB_VOL:
--	case CS42L52_HPA_VOL:
--	case CS42L52_HPB_VOL:
--	case CS42L52_SPKA_VOL:
--	case CS42L52_SPKB_VOL:
--	case CS42L52_ADC_PCM_MIXER:
--	case CS42L52_LIMITER_CTL1:
--	case CS42L52_LIMITER_CTL2:
--	case CS42L52_LIMITER_AT_RATE:
--	case CS42L52_ALC_CTL:
--	case CS42L52_ALC_RATE:
--	case CS42L52_ALC_THRESHOLD:
--	case CS42L52_NOISE_GATE_CTL:
--	case CS42L52_CLK_STATUS:
--	case CS42L52_BATT_COMPEN:
--	case CS42L52_BATT_LEVEL:
--	case CS42L52_SPK_STATUS:
--	case CS42L52_TEM_CTL:
--	case CS42L52_THE_FOLDBACK:
--	case CS42L52_CHARGE_PUMP:
-+	case CS42L52_CHIP ... CS42L52_CHARGE_PUMP:
+-	case CS42L56_CHIP_ID_1:
+-	case CS42L56_CHIP_ID_2:
+-	case CS42L56_PWRCTL_1:
+-	case CS42L56_PWRCTL_2:
+-	case CS42L56_CLKCTL_1:
+-	case CS42L56_CLKCTL_2:
+-	case CS42L56_SERIAL_FMT:
+-	case CS42L56_CLASSH_CTL:
+-	case CS42L56_MISC_CTL:
+-	case CS42L56_INT_STATUS:
+-	case CS42L56_PLAYBACK_CTL:
+-	case CS42L56_DSP_MUTE_CTL:
+-	case CS42L56_ADCA_MIX_VOLUME:
+-	case CS42L56_ADCB_MIX_VOLUME:
+-	case CS42L56_PCMA_MIX_VOLUME:
+-	case CS42L56_PCMB_MIX_VOLUME:
+-	case CS42L56_ANAINPUT_ADV_VOLUME:
+-	case CS42L56_DIGINPUT_ADV_VOLUME:
+-	case CS42L56_MASTER_A_VOLUME:
+-	case CS42L56_MASTER_B_VOLUME:
+-	case CS42L56_BEEP_FREQ_ONTIME:
+-	case CS42L56_BEEP_FREQ_OFFTIME:
+-	case CS42L56_BEEP_TONE_CFG:
+-	case CS42L56_TONE_CTL:
+-	case CS42L56_CHAN_MIX_SWAP:
+-	case CS42L56_AIN_REFCFG_ADC_MUX:
+-	case CS42L56_HPF_CTL:
+-	case CS42L56_MISC_ADC_CTL:
+-	case CS42L56_GAIN_BIAS_CTL:
+-	case CS42L56_PGAA_MUX_VOLUME:
+-	case CS42L56_PGAB_MUX_VOLUME:
+-	case CS42L56_ADCA_ATTENUATOR:
+-	case CS42L56_ADCB_ATTENUATOR:
+-	case CS42L56_ALC_EN_ATTACK_RATE:
+-	case CS42L56_ALC_RELEASE_RATE:
+-	case CS42L56_ALC_THRESHOLD:
+-	case CS42L56_NOISE_GATE_CTL:
+-	case CS42L56_ALC_LIM_SFT_ZC:
+-	case CS42L56_AMUTE_HPLO_MUX:
+-	case CS42L56_HPA_VOLUME:
+-	case CS42L56_HPB_VOLUME:
+-	case CS42L56_LOA_VOLUME:
+-	case CS42L56_LOB_VOLUME:
+-	case CS42L56_LIM_THRESHOLD_CTL:
+-	case CS42L56_LIM_CTL_RELEASE_RATE:
+-	case CS42L56_LIM_ATTACK_RATE:
++	case CS42L56_CHIP_ID_1 ... CS42L56_LIM_ATTACK_RATE:
  		return true;
  	default:
  		return false;
