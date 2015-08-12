@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 3/3] ASoC: dapm: Consolidate path trace
-	events
-Date: Tue, 11 Aug 2015 21:38:01 +0200
-Message-ID: <1439321881-29476-3-git-send-email-lars@metafoo.de>
-References: <1439321881-29476-1-git-send-email-lars@metafoo.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH] ASoC: topology: Add support for TLV bytes
+	control
+Date: Wed, 12 Aug 2015 10:10:51 +0800
+Message-ID: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-194.synserver.de (smtp-out-194.synserver.de
- [212.40.185.194])
- by alsa0.perex.cz (Postfix) with ESMTP id D2B5A2605A4
- for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2015 21:38:07 +0200 (CEST)
-In-Reply-To: <1439321881-29476-1-git-send-email-lars@metafoo.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95D962605D3
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 03:57:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,130 +19,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Mengdong Lin <mengdong.lin@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The snd_soc_dapm_input_path and snd_soc_dapm_output_path trace events are
-identical except for the direction. Instead of having two events have a
-single one that has a field that contains the direction.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-No changes since v1
----
- include/trace/events/asoc.h | 53 +++++++++++++--------------------------------
- sound/soc/soc-dapm.c        |  9 --------
- 2 files changed, 15 insertions(+), 47 deletions(-)
+Allow vendor drivers to define bespoke bytes ext handlers and IDs for
+TLV bytes controls. And the topology core will bind these handlers by
+matching IDs defined by the vendor driver and user space topology
+data file.
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index 88cf39d..317a1ed 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -8,6 +8,7 @@
- #include <linux/tracepoint.h>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index 865a141..3e412c6 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -89,6 +89,13 @@ struct snd_soc_tplg_kcontrol_ops {
+ 		struct snd_ctl_elem_info *uinfo);
+ };
  
- #define DAPM_DIRECT "(direct)"
-+#define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
++/* Bytes ext operations, for TLV byte controls */
++struct snd_soc_tplg_bytes_ext_ops {
++	u32 id;
++	int (*get)(unsigned int __user *bytes, unsigned int size);
++	int (*put)(const unsigned int __user *bytes, unsigned int size);
++};
++
+ /*
+  * DAPM widget event handlers - used to map handlers onto widgets.
+  */
+@@ -139,6 +146,10 @@ struct snd_soc_tplg_ops {
+ 	/* bespoke kcontrol handlers available for binding */
+ 	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+ 	int io_ops_count;
++
++	/* bespoke bytes ext handlers available for binding */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
+ };
  
- struct snd_soc_jack;
- struct snd_soc_codec;
-@@ -152,62 +153,38 @@ TRACE_EVENT(snd_soc_dapm_walk_done,
- 		  (int)__entry->path_checks, (int)__entry->neighbour_checks)
- );
+ /* gets a pointer to data from the firmware block header */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 607f98b..b5a2868 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -70,6 +70,10 @@ struct soc_tplg {
+ 	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+ 	int io_ops_count;
  
--TRACE_EVENT(snd_soc_dapm_output_path,
-+TRACE_EVENT(snd_soc_dapm_path,
++	/* bespoke bytes ext handlers, for TLV bytes controls */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
++
+ 	/* optional fw loading callbacks to component drivers */
+ 	struct snd_soc_tplg_ops *ops;
+ };
+@@ -513,6 +517,15 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ {
+ 	int i;
  
- 	TP_PROTO(struct snd_soc_dapm_widget *widget,
-+		enum snd_soc_dapm_direction dir,
- 		struct snd_soc_dapm_path *path),
++	/* TLV bytes controls don't need get/put ops */
++	if (k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK
++		&& hdr->ops.info == SND_SOC_TPLG_CTL_BYTES) {
++			k->info = snd_soc_bytes_info_ext;
++			return 0;
++	}
++
+ 	/* try and map standard kcontrols handler first */
+ 	for (i = 0; i < num_ops; i++) {
  
--	TP_ARGS(widget, path),
-+	TP_ARGS(widget, dir, path),
- 
- 	TP_STRUCT__entry(
- 		__string(	wname,	widget->name		)
- 		__string(	pname,	path->name ? path->name : DAPM_DIRECT)
--		__string(	psname,	path->sink->name	)
--		__field(	int,	path_sink		)
-+		__string(	pnname,	path->node[dir]->name	)
-+		__field(	int,	path_node		)
- 		__field(	int,	path_connect		)
-+		__field(	int,	path_dir		)
- 	),
- 
- 	TP_fast_assign(
- 		__assign_str(wname, widget->name);
- 		__assign_str(pname, path->name ? path->name : DAPM_DIRECT);
--		__assign_str(psname, path->sink->name);
-+		__assign_str(pnname, path->node[dir]->name);
- 		__entry->path_connect = path->connect;
--		__entry->path_sink = (long)path->sink;
-+		__entry->path_node = (long)path->node[dir];
-+		__entry->path_dir = dir;
- 	),
- 
--	TP_printk("%c%s -> %s -> %s",
--		(int) __entry->path_sink &&
-+	TP_printk("%c%s %s %s %s %s",
-+		(int) __entry->path_node &&
- 		(int) __entry->path_connect ? '*' : ' ',
--		__get_str(wname), __get_str(pname), __get_str(psname))
--);
--
--TRACE_EVENT(snd_soc_dapm_input_path,
--
--	TP_PROTO(struct snd_soc_dapm_widget *widget,
--		struct snd_soc_dapm_path *path),
--
--	TP_ARGS(widget, path),
--
--	TP_STRUCT__entry(
--		__string(	wname,	widget->name		)
--		__string(	pname,	path->name ? path->name : DAPM_DIRECT)
--		__string(	psname,	path->source->name	)
--		__field(	int,	path_source		)
--		__field(	int,	path_connect		)
--	),
--
--	TP_fast_assign(
--		__assign_str(wname, widget->name);
--		__assign_str(pname, path->name ? path->name : DAPM_DIRECT);
--		__assign_str(psname, path->source->name);
--		__entry->path_connect = path->connect;
--		__entry->path_source = (long)path->source;
--	),
--
--	TP_printk("%c%s <- %s <- %s",
--		(int) __entry->path_source &&
--		(int) __entry->path_connect ? '*' : ' ',
--		__get_str(wname), __get_str(pname), __get_str(psname))
-+		__get_str(wname), DAPM_ARROW(__entry->path_dir),
-+		__get_str(pname), DAPM_ARROW(__entry->path_dir),
-+		__get_str(pnname))
- );
- 
- TRACE_EVENT(snd_soc_dapm_connected,
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 6aa6864..89e6316 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1047,15 +1047,6 @@ static int dapm_widget_list_create(struct snd_soc_dapm_widget_list **list,
- 	return 0;
+@@ -547,6 +560,32 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ 	return -EINVAL;
  }
  
--static void trace_snd_soc_dapm_path(struct snd_soc_dapm_widget *w,
--	enum snd_soc_dapm_direction dir, struct snd_soc_dapm_path *p)
--{
--	if (dir == SND_SOC_DAPM_DIR_IN)
--		trace_snd_soc_dapm_input_path(w, p);
--	else
--		trace_snd_soc_dapm_output_path(w, p);
--}
--
- /*
-  * Common implementation for is_connected_output_ep() and
-  * is_connected_input_ep(). The function is inlined since the combined size of
++/* bind bytes ext get/put handlers for TLV bytes controls */
++static int soc_tplg_bytes_ext_bind_io(struct soc_tplg *tplg,
++	struct snd_soc_tplg_io_ops *ops_id,
++	struct soc_bytes_ext *sbe)
++{
++	const struct snd_soc_tplg_bytes_ext_ops *ops = tplg->bytes_ext_ops;
++	int num_ops = tplg->bytes_ext_ops_count;
++	int i;
++
++	/* try bespoke handlers */
++	for (i = 0; i < num_ops; i++) {
++
++		if (sbe->put == NULL && ops[i].id == ops_id->put)
++			sbe->put = ops[i].put;
++		if (sbe->get == NULL && ops[i].id == ops_id->get)
++			sbe->get = ops[i].get;
++	}
++
++	/* bespoke handlers found ? */
++	if (sbe->put && sbe->get)
++		return 0;
++
++	/* nothing to bind */
++	return -EINVAL;
++}
++
+ /* bind a widgets to it's evnt handlers */
+ int snd_soc_tplg_widget_bind_event(struct snd_soc_dapm_widget *w,
+ 		const struct snd_soc_tplg_widget_events *events,
+@@ -690,6 +729,14 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
+ 			continue;
+ 		}
+ 
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc, &be->hdr);
++		/* map bytes ext io handlers for TLV bytes controls */
++		if (kc.access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++			soc_tplg_bytes_ext_bind_io(tplg,
++					&be->ext_ops, sbe);
++		}
++
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc,
+ 			(struct snd_soc_tplg_ctl_hdr *)be);
+@@ -1315,6 +1362,14 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
+ 			continue;
+ 		}
+ 
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc[i], &be->hdr);
++		/* map bytes ext io handlers for TLV bytes controls */
++		if (kc[i].access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++			soc_tplg_bytes_ext_bind_io(tplg,
++					&be->ext_ops, sbe);
++		}
++
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc[i],
+ 			(struct snd_soc_tplg_ctl_hdr *)be);
+@@ -1736,6 +1791,8 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	tplg.req_index = id;
+ 	tplg.io_ops = ops->io_ops;
+ 	tplg.io_ops_count = ops->io_ops_count;
++	tplg.bytes_ext_ops = ops->bytes_ext_ops;
++	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
+ 
+ 	return soc_tplg_load(&tplg);
+ }
 -- 
-2.1.4
+1.9.1
