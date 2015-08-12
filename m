@@ -1,139 +1,70 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v4 4/4] drm/i915: set proper N/CTS in modeset
-Date: Wed, 12 Aug 2015 15:43:10 +0200
-Message-ID: <20150812134310.GW17734@phenom.ffwll.local>
-References: <1439191931-25705-4-git-send-email-libin.yang@intel.com>
- <871tfb8hu8.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E1E2C@SHSMSX103.ccr.corp.intel.com>
- <87oaie70wz.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E30C8@SHSMSX103.ccr.corp.intel.com>
- <87egjautrh.fsf@intel.com>
- <96A12704CE18D347B625EE2D4A099D196E34F4@SHSMSX103.ccr.corp.intel.com>
- <87mvxxt4da.fsf@intel.com>
- <20150812131056.GP17734@phenom.ffwll.local>
- <87bnectzcv.fsf@intel.com>
+From: Matt Campbell <mcampbell@izotope.com>
+Subject: Questions about ASoC driver implementation
+Date: Wed, 12 Aug 2015 10:01:22 -0400
+Message-ID: <CAMDowVVj26LdUz5hgp6J9kfB=g5gEfq1L_ycGbHymEYJ-_k+MQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87bnectzcv.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f176.google.com (mail-yk0-f176.google.com
+ [209.85.160.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57D39260438
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 16:01:24 +0200 (CEST)
+Received: by ykdt205 with SMTP id t205so14458643ykd.1
+ for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2015 07:01:23 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBBdWcgMTIsIDIwMTUgYXQgMDQ6MjM6MTJQTSArMDMwMCwgSmFuaSBOaWt1bGEgd3Jv
-dGU6Cj4gT24gV2VkLCAxMiBBdWcgMjAxNSwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNo
-PiB3cm90ZToKPiA+IE9uIFdlZCwgQXVnIDEyLCAyMDE1IGF0IDA5OjIwOjE3QU0gKzAzMDAsIEph
-bmkgTmlrdWxhIHdyb3RlOgo+ID4+IE9uIFdlZCwgMTIgQXVnIDIwMTUsICJZYW5nLCBMaWJpbiIg
-PGxpYmluLnlhbmdAaW50ZWwuY29tPiB3cm90ZToKPiA+PiA+IEhpIEphbmksCj4gPj4gPgo+ID4+
-ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPj4gPj4gRnJvbTogSmFuaSBOaWt1bGEg
-W21haWx0bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb21dCj4gPj4gPj4gU2VudDogVHVlc2Rh
-eSwgQXVndXN0IDExLCAyMDE1IDQ6MTQgUE0KPiA+PiA+PiBUbzogWWFuZywgTGliaW47IGFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4gPj4gPj4gZ2Z4
-QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZGFuaWVsLnZldHRlckBmZndsbC5jaAo+ID4+ID4+IFN1
-YmplY3Q6IFJFOiBbSW50ZWwtZ2Z4XSBbUEFUQ0ggdjQgNC80XSBkcm0vaTkxNTogc2V0IHByb3Bl
-ciBOL0NUUyBpbgo+ID4+ID4+IG1vZGVzZXQKPiA+PiA+PiAKPiA+PiA+PiBPbiBUdWUsIDExIEF1
-ZyAyMDE1LCAiWWFuZywgTGliaW4iIDxsaWJpbi55YW5nQGludGVsLmNvbT4gd3JvdGU6Cj4gPj4g
-Pj4gPiBIaSBKYW5pLAo+ID4+ID4+ID4KPiA+PiA+PiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQo+ID4+ID4+ID4+IEZyb206IEphbmkgTmlrdWxhIFttYWlsdG86amFuaS5uaWt1bGFAbGlu
-dXguaW50ZWwuY29tXQo+ID4+ID4+ID4+IFNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCAxMSwgMjAxNSAz
-OjE0IFBNCj4gPj4gPj4gPj4gVG86IFlhbmcsIExpYmluOyBhbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmc7IHRpd2FpQHN1c2UuZGU7IGludGVsLQo+ID4+ID4+ID4+IGdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmc7IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2gKPiA+PiA+PiA+PiBTdWJqZWN0OiBSRTog
-W0ludGVsLWdmeF0gW1BBVENIIHY0IDQvNF0gZHJtL2k5MTU6IHNldCBwcm9wZXIgTi9DVFMgaW4K
-PiA+PiA+PiA+PiBtb2Rlc2V0Cj4gPj4gPj4gPj4KPiA+PiA+PiA+PiBPbiBUdWUsIDExIEF1ZyAy
-MDE1LCAiWWFuZywgTGliaW4iIDxsaWJpbi55YW5nQGludGVsLmNvbT4gd3JvdGU6Cj4gPj4gPj4g
-Pj4gPiBIaSBKYW5pLAo+ID4+ID4+ID4+ID4KPiA+PiA+PiA+PiA+IFRoYW5rcyBmb3IgY2FyZWZ1
-bCByZXZpZXdpbmcgZm9yIGFsbCB0aGUgcGF0Y2hlcywgcGxlYXNlCj4gPj4gPj4gPj4gPiBzZWUg
-bXkgY29tbWVudHMuCj4gPj4gPj4gPj4gPgo+ID4+ID4+ID4+ID4+IC0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tCj4gPj4gPj4gPj4gPj4gRnJvbTogSmFuaSBOaWt1bGEgW21haWx0bzpqYW5pLm5p
-a3VsYUBsaW51eC5pbnRlbC5jb21dCj4gPj4gPj4gPj4gPj4gU2VudDogTW9uZGF5LCBBdWd1c3Qg
-MTAsIDIwMTUgODoxMCBQTQo+ID4+ID4+ID4+ID4+IFRvOiBZYW5nLCBMaWJpbjsgYWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnOyB0aXdhaUBzdXNlLmRlOyBpbnRlbC0KPiA+PiA+PiA+PiA+PiBn
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkYW5pZWwudmV0dGVyQGZmd2xsLmNoCj4gPj4gPj4g
-Pj4gPj4gU3ViamVjdDogUmU6IFtJbnRlbC1nZnhdIFtQQVRDSCB2NCA0LzRdIGRybS9pOTE1OiBz
-ZXQgcHJvcGVyIE4vQ1RTCj4gPj4gPj4gaW4KPiA+PiA+PiA+PiA+PiBtb2Rlc2V0Cj4gPj4gPj4g
-Pj4gPj4KPiA+PiA+PiA+PiA+PiBPbiBNb24sIDEwIEF1ZyAyMDE1LCBsaWJpbi55YW5nQGludGVs
-LmNvbSB3cm90ZToKPiA+PiA+PiA+PiA+PiA+IEZyb206IExpYmluIFlhbmcgPGxpYmluLnlhbmdA
-aW50ZWwuY29tPgo+ID4+ID4+ID4+ID4+ID4KPiA+PiA+PiA+PiA+PiA+IFdoZW4gbW9kZXNldCBv
-Y2N1cnMgYW5kIHRoZSBUTURTIGZyZXF1ZW5jeSBpcyBzZXQgdG8gc29tZQo+ID4+ID4+ID4+ID4+
-ID4gc3BlaWNhbCB2YWx1ZSwgdGhlIE4vQ1RTIG5lZWQgdG8gYmUgc2V0IG1hbnVhbGx5IGlmIGF1
-ZGlvCj4gPj4gPj4gPj4gPj4gPiBpcyBwbGF5aW5nLgo+ID4+ID4+ID4+ID4+Cj4gPj4gPj4gPj4g
-Pj4gV2hlbiBtb2Rlc2V0IG9jY3Vycywgd2UgZGlzYWJsZSBldmVyeXRoaW5nLCBhbmQgdGhlbiBy
-ZS1lbmFibGUKPiA+PiA+PiA+PiA+PiBldmVyeXRoaW5nLCBhbmQgbm90aWZ5IHRoZSBhdWRpbyBk
-cml2ZXIgZXZlcnkgc3RlcCBvZiB0aGUgd2F5LiBJSVVDCj4gPj4gPj4gPj4gPj4gdGhlcmUgc2hv
-dWxkIGJlIG5vIGF1ZGlvIHBsYXlpbmcgYWNyb3NzIHRoZSBtb2Rlc2V0LCBhbmQgd2hlbgo+ID4+
-ID4+IHRoZQo+ID4+ID4+ID4+ID4+IG1vZGVzZXQgaXMgY29tcGxldGUgYW5kIHdlJ3ZlIHNldCB0
-aGUgdmFsaWQgRUxELCB0aGUgYXVkaW8gZHJpdmVyCj4gPj4gPj4gPj4gPj4gc2hvdWxkCj4gPj4g
-Pj4gPj4gPj4gY2FsbCB0aGUgY2FsbGJhY2sgZnJvbSB0aGUgZWFybGllciBwYXRjaGVzIHRvIHNl
-dCB0aGUgY29ycmVjdCBhdWRpbwo+ID4+ID4+ID4+ID4+IHJhdGUuCj4gPj4gPj4gPj4gPj4KPiA+
-PiA+PiA+PiA+PiBXaHkgaXMgdGhpcyBwYXRjaCBuZWVkZWQ/IFBsZWFzZSBlbmxpZ2h0ZW4gbWUu
-Cj4gPj4gPj4gPj4gPgo+ID4+ID4+ID4+ID4gUGxlYXNlIGltYWdlIHRoaXMgc2NlbmFyaW86IHdo
-ZW4gYXVkaW8gaXMgcGxheWluZywgdGhlIGdmeCBkcml2ZXIKPiA+PiA+PiA+PiA+IGRvZXMgdGhl
-IG1vZGVzZXQuIEluIHRoaXMgc2l0dWF0aW9uLCBhZnRlciBtb2Rlc2V0LCBhdWRpbyBkcml2ZXIK
-PiA+PiA+PiA+PiA+IHdpbGwgZG8gbm90aGluZyBhbmQgY29udGludWUgcGxheWluZy4gQW5kIGF1
-ZGlvIGRyaXZlciB3aWxsIG5vdCBjYWxsCj4gPj4gPj4gPj4gPiBzZXRfbmN0cy4KPiA+PiA+PiA+
-Pgo+ID4+ID4+ID4+IFdoeSBkb2VzIHRoZSBhdWRpbyBkcml2ZXIgbm90IGRvIGFueXRoaW5nIGhl
-cmU/IFdoZW5ldmVyIHRoZXJlJ3MKPiA+PiA+PiBhCj4gPj4gPj4gPj4gbW9kZXNldCwgdGhlIGdy
-YXBoaWNzIGRyaXZlciB3aWxsIGRpc2FibGUgYXVkaW8gYW5kIGludmFsaWRhdGUgdGhlCj4gPj4g
-Pj4gRUxELAo+ID4+ID4+ID4+IHdoaWNoIHNob3VsZCBjYXVzZSBhbiBpbnRlcnJ1cHQgdG8gbm90
-aWZ5IHRoZSBhdWRpbyBkcml2ZXIgYWJvdXQKPiA+PiA+PiA+PiB0aGlzLiBUaGlzIGlzIG5vIGRp
-ZmZlcmVudCBmcm9tIGEgaG90LXVucGx1ZywgaW4gZmFjdCBJIGNhbid0IHNlZSBob3cKPiA+PiA+
-PiA+PiB0aGUgYXVkaW8gZHJpdmVyIGNvdWxkIGV2ZW4gZGV0ZWN0IHdoZXRoZXIgdGhlcmUncyBi
-ZWVuIGEgaG90cGx1Zwo+ID4+ID4+IG9yCj4gPj4gPj4gPj4gbm90Cj4gPj4gPj4gPj4gd2hlbiB0
-aGVyZSdzIGEgY29kZWMgZGlzYWJsZS9lbmFibGUuCj4gPj4gPj4gPgo+ID4+ID4+ID4gWWVzLCBp
-dCB3aWxsIHRyaWdnZXIgYW4gaW50ZXJydXB0IHRvIGF1ZGlvIGRyaXZlciB3aGVuIHVucGx1Zwo+
-ID4+ID4+ID4gYW5kIGFub3RoZXIgaW50ZXJydXB0IGZvciBob3RwbHVnLiBCdXQgZnJvbSBhdWRp
-byBkcml2ZXIsCj4gPj4gPj4gPiB3ZSB3aWxsIG5vdCBzdG9wIHRoZSBwbGF5aW5nIGFuZCByZXN1
-bWUgdGhlIHBsYXlpbmcgYmFzZWQKPiA+PiA+PiA+IG9uIHRoZSBob3RwbHVnIG9yIG1vZGVzZXQu
-IFRoZSBhdWRpbyBpcyBhbHdheXMgcGxheWluZyBkdXJpbmcKPiA+PiA+PiA+IHRoZSBob3RwbHVn
-L21vZGVzZXQuCj4gPj4gPj4gCj4gPj4gPj4gQnV0IHRoZSB3aG9sZSBkaXNwbGF5LCBhbmQgY29u
-c2VxdWVudGx5IEVMRCwgbWlnaHQgaGF2ZSBjaGFuZ2VkCj4gPj4gPj4gZHVyaW5nCj4gPj4gPj4g
-dGhlIGhvdHBsdWcsIHdoeSBkbyB5b3UgYXNzdW1lIHlvdSBjYW4ganVzdCBrZWVwIHBsYXlpbmc/
-ISBUaGUKPiA+PiA+PiBkaXNwbGF5Cj4gPj4gPj4gbWlnaHQgZXZlbiBoYXZlIGNoYW5nZWQgZnJv
-bSBIRE1JIHRvIERQIG9yIHZpY2UgdmVyc2EuCj4gPj4gPgo+ID4+ID4gVGhlIGVsZCBpbmZvIGNo
-YW5naW5nIHdpbGwgbm90IGltcGFjdCB0aGUgYXVkaW8gcGxheWluZy4KPiA+PiA+IEFjdHVhbGx5
-LCB5b3UgY2FuIGltYWdlIHRoZSBtb25pdG9yIGFzIGEgZGlnaXRhbCBzcGVha2VyLCBqdXN0Cj4g
-Pj4gPiBsaWtlIHRoZSBoZWFkcGhvbmUgdG8gdGhlIGFuYWxvZyBhdWRpby4gVW5wbHVnIHRoZSBz
-cGVha2VyCj4gPj4gPiB3aWxsIG5vdCBpbXBhY3Qgb24gdGhlIGF1ZGlvIHBsYXlpbmcuIE9mIGNv
-dXJzZSAsIHRoZXJlIGlzIGEKPiA+PiA+IGxpdHRsZSBkaWZmZXJlbmNlLCB3aGVuIG1vbml0b3Ig
-aG90cGx1ZywgaW4gdGhlIGludGVycnVwdCwKPiA+PiA+IHdlIG1heSBjaGFuZ2UgdGhlIGNvZGVj
-IGNvbmZpZ3VyYXRpb24gZHluYW1pY2FsbHkuIAo+ID4+ID4KPiA+PiA+IEFuZCBhdWRpbyBkcml2
-ZXIgc3VwcGx5IHRoZSBtZWNoYW5pc20gdG8gc3RvcCB0aGUKPiA+PiA+IGF1ZGlvIHBsYXlpbmcg
-d2hlbiBob3RwbHVnIGlmIHRoZSBIVyByZXF1aXJlcy4KPiA+PiA+Cj4gPj4gPj4gCj4gPj4gPj4g
-V2UndmUgYWxzbyBiZWVuIHB1dHRpbmcgYSBsb3Qgb2YgZWZmb3J0IGludG8gbm90IGRlcGVuZGlu
-ZyBvbiBwcmV2aW91cwo+ID4+ID4+IHN0YXRlIHdoZW4gZW5hYmxpbmcgdGhlIG91dHB1dHMsIGZv
-ciBtb3JlIHJlbGlhYmlsaXR5LiBXZSBnZW5lcmFsbHkKPiA+PiA+PiBkb24ndCBkbyBwYXJ0aWFs
-IGNoYW5nZXMsIHdlIGRpc2FibGUgZXZlcnl0aGluZyBhbmQgdGhlbiBlbmFibGUKPiA+PiA+PiBh
-Z2Fpbi4gQW5kIG5vdyB5b3UncmUgc3VnZ2VzdGluZyB3ZSBsb29rIGF0IHNvbWUgcmVnaXN0ZXIg
-d2hpY2ggZm9yIGFsbAo+ID4+ID4+IHdlIGtub3cgbWF5IGhhdmUgYmVlbiB2YWxpZCBmb3Igc29t
-ZSBvdGhlciBkaXNwbGF5Pwo+ID4+ID4KPiA+PiA+IEluIHRoZSBwYXRjaCwgaXQgd2lsbCBub3Qg
-ZGVwZW5kIG9uIHByZXZpb3VzIHN0YXRlLCBJIHRoaW5rLiBXZQo+ID4+ID4gcmVhZCB0aGUgcmVn
-aXN0ZXIgdmFsdWUgd2hpY2ggaXMgYmFzZWQgb24gdGhlIHN0YXRlIGFmdGVyIG1vZGVzZXQuCj4g
-Pj4gCj4gPj4gT2theSwgbGV0J3MgaGF2ZSB0aGUgcGF0Y2hlcyBjbGVhbmVkIHVwIGFuZCBzZWUu
-IEl0J2xsIGJlIGVhc2llciBhbmQKPiA+PiBxdWlja2VyIHRvIHNvbGljaXQgbW9yZSByZXZpZXcg
-b24gdGhhdCB0aGFuIHRoaXMgZXhwYW5kaW5nIHRocmVhZC4KPiA+Cj4gPiBJdCBzb3VuZHMgbGlr
-ZSB3ZSBhY3R1YWxseSBuZWVkIHRvIHBpbmcgdGhlIGF1ZGlvIHNpZGUgX2JlZm9yZV8gd2UgZG8g
-dGhlCj4gCj4gRG8geW91IG1lYW4gInJlYWQgX0hTV19BVURfU1RSX0RFU0NfKiIgYnkgInBpbmcg
-dGhlIGF1ZGlvIHNpZGUiIGFib3ZlPwoKTm8sIEkgbWVhbiBjYWxsIGludG8gc25kLWhkYS1pbnRl
-bCBiZWZvcmUgd2UgZG8gdGhlIG1vZGVzZXQgdG8gYXNrIGl0IGZvcgp3aGF0IGl0IGFjdHVhbGx5
-IHdhbnRzIHRvIGhhdmUgc2V0IHVwLiBBdCBsZWFzdCBpdCBmZWVscyBhIGJpdCBsaWtlIG9ubHkK
-cmVhY3RpbmcgdG8gYSBtb2Rlc2V0IGFmdGVyIGl0J3MgZG9uZSBsZWFkcyB0byBjb25mdXNpb24u
-IE9yIG1heWJlIHdlIGp1c3QKbmVlZCB0byB1cGRhdGUgdGhlIHJlZ2lzdGVyIHZhbHVlcyB3ZSB3
-YW50IGF0IGNvbXB1dGVfdGltZSBpbnN0ZWFkIG9mCmRvaW5nIHJ3bSBmdW4gLi4uCgpQdXJlIGd1
-dCBmZWVsaW5nIGNvbW1lbnQsIEkgZGlkbid0IGxvb2sgaW50byBkZXRhaWxzIDstKQotRGFuaWVs
-Ci0tIApEYW5pZWwgVmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRlbCBDb3Jwb3JhdGlvbgpo
-dHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2lu
-dGVsLWdmeAo=
+Hi All,
+
+I'm diving into adding support for a new codec (AK4621) targeting IMX6 SoC
+and as this is my first dive into ALSA driver code (and first deep dive in
+to Linux driver development) I've come up with a few questions. I've done a
+lot of digging in available documentation as well as reading a lot of code,
+but some things remain unclear.
+
+First, I'm a little confused with what appears to be inconsistent
+terminology. The SoC overview.txt lists three types of component drivers:
+codec, platform and machine. However, in the code there are four types of
+snd_soc_register_* functions: card, platform, codec and component. From
+looking at the underlying structs and how these are used in existing code
+this is my best guess but please correct me if I'm wrong:
+
+codec -> snd_soc_register_codec
+machine -> snd_soc_register_card
+platform -> snd_soc_register_component and snd_soc_register_platform? (not
+sure about this, from what I can gather at some point there was an API
+switch to using component rather than platforms for the DAIs)
+
+My second question is around adding support for an amplifier external to
+the codec. The amplifier is a PGA controlled over SPI. One possible way I
+can see to adding this is to create a SPI based codec driver for the PGA
+that exposes an ALSA control for the gain level and give it a dummy DAI
+then add it to the card as an aux_dev. This feels a little kludgy as the
+PGA isn't a perfect fit for the codec class.
+
+Another option would be to have PGA driver separate from the ASoC
+framework, add the controls for the gain level directly in the ASoC card
+and put the glue code to interact with the device in the machine driver.
+This feels somewhat better to me, but has two problems. First, I don't know
+the best way to interact with the external PGA driver from the machine
+driver. Second, this leaves the PGA driver outside of the ASoC framework,
+If it was in ASoC it could be useful for others that come across this chip
+when writing machine drivers.
+
+Sorry for the long email, but there has been a bit of a learning curve up
+front. I tried to do my best with documentation and code reading before
+coming to the mailing list. I'll greatly appreciate any help the community
+can offer and look forward to contributing to the ALSA project.
+
+Best,
+~Matt
