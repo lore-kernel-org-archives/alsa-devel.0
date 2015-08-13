@@ -1,17 +1,34 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: SSM2518 Device Tree support ?
-Date: Thu, 13 Aug 2015 14:21:52 +0200
-Message-ID: <55CC8BE0.4000406@metafoo.de>
-References: <alpine.DEB.2.02.1508131400010.27635@lnxricardw1.se.axis.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH] Add rudimentary DT support to SSM2518 codec
+	driver
+Date: Thu, 13 Aug 2015 14:23:11 +0200
+Message-ID: <alpine.DEB.2.02.1508131420480.27635@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-198.synserver.de (smtp-out-198.synserver.de
- [212.40.185.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D8EF62619F5
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:21:53 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1508131400010.27635@lnxricardw1.se.axis.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32A7C261A03
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 04DA52E44F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:13 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id po9UmNmOgGa8 for <alsa-devel@alsa-project.org>;
+ Thu, 13 Aug 2015 14:23:12 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 4BA752E4DB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:12 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 334E21400
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:12 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id 2704010E5
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:12 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id 2432334005
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:23:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +38,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/13/2015 02:12 PM, Ricard Wanderlof wrote:
-> 
-> We needed DT support in the SSM2518 codec driver, and I noticed that there 
-> is already a set of bindings specified in Documentation/devicetree, 
-> however, there doesn't seem to be any DT support in the driver itself. I 
-> don't know if this is the result of a missing commit ? 
 
-There is DT support in the driver. E.g. see the of_get_gpio() call.
+For some reason, the SSM2518 codec driver has device tree bindings =
 
-What's not in the driver is a explicit of match table. It will work without
-since the I2C subsystem supports matching based on the I2C ID table. But,
-yes, it is better to add a explicit OF table to indicate that this works.
+specified (Documentation/devicetree/bindings/sound/ssm2518.txt) but the =
 
-> 
-> Documentation/devicetree/bindings/sound/ssm2518.c seems to have been added 
-> in May 2013.
-> 
-> I've added rudimentary support for at least the compatible property so 
-> that the driver can be used in a system with DT configuration (sent as a 
-> separate email).
+actual driver doesn't seem to support DT. This patch adds rudimentary =
+
+support for the compatible property so that the driver can be used in a DT =
+
+based setup.
+
+---
+ sound/soc/codecs/ssm2518.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index 67ea55a..ecf9996 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -811,6 +810,14 @@ static int ssm2518_i2c_remove(struct i2c_client *clien=
+t)
+ 	return 0;
+ }
+ =
+
++#ifdef CONFIG_OF
++static const struct of_device_id ssm2518_dt_ids[] =3D {
++	{ .compatible =3D "adi,ssm2518", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ssm2518_dt_ids);
++#endif
++
+ static const struct i2c_device_id ssm2518_i2c_ids[] =3D {
+ 	{ "ssm2518", 0 },
+ 	{ }
+@@ -821,6 +828,9 @@ static struct i2c_driver ssm2518_driver =3D {
+ 	.driver =3D {
+ 		.name =3D "ssm2518",
+ 		.owner =3D THIS_MODULE,
++#ifdef CONFIG_OF
++		.of_match_table =3D of_match_ptr(ssm2518_dt_ids),
++#endif
+ 	},
+ 	.probe =3D ssm2518_i2c_probe,
+ 	.remove =3D ssm2518_i2c_remove,
+-- =
+
+1.7.10.4
+
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
