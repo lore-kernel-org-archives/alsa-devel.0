@@ -1,138 +1,269 @@
-From: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: Convert to managed resources
-Date: Thu, 13 Aug 2015 12:59:21 +0530
-Message-ID: <20150813072920.GA17181@localhost>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 03/25] ALSA: firewire-lib: add helper
+ functions for asynchronous MIDI port
+Date: Thu, 13 Aug 2015 16:57:20 +0900
+Message-ID: <55CC4DE0.9090803@sakamocchi.jp>
+References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>	<1439425221-30826-4-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hwpwzzoks.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AE2E2604A1
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 09:57:22 +0200 (CEST)
+In-Reply-To: <s5hwpwzzoks.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Use managed resource functions devm_clk_put and
-devm_snd_soc_register_component to simplify error handling.
+On Aug 13 2015 15:31, Takashi Iwai wrote:
+> On Thu, 13 Aug 2015 02:19:59 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Some devices receive MIDI messages via IEEE 1394 asynchronous transactions.
+>> In this case, MIDI messages are transferred in fixed-length payload. It's
+>> nice for firewire-lib module to have common helper functions.
+>>
+>> This commit implements this idea. Each driver adds
+>> 'struct snd_fw_async_midi_port' in its data structure. In probing,
+>> it should call snd_fw_async_midi_port_init() to initialize the
+>> structure with some parameters such as target address, the length
+>> of payload for a transaction and a pointer for callback function
+>> to fill the payload buffer. When 'struct snd_rawmidi_ops.trigger()'
+>> callback, it should call 'snd_fw_async_midi_port_run()' to start
+>> transactions. Each driver should ensure that the lifetime of MIDI
+>> substream continues till calling 'snd_fw_async_midi_port_finish()'.
+>>
+>> The helper functions support retries to transferring MIDI messages when
+>> transmission errors occur. When transactions are successful, the helper
+>> functions call 'snd_rawmidi_transmit_ack()' to consume MIDI bytes in the
+>> buffer. Therefore, Each driver is expected to use
+>> 'snd_rawmidi_transmit_peek()'.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>   sound/firewire/lib.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   sound/firewire/lib.h | 46 +++++++++++++++++++++++++
+>>   2 files changed, 141 insertions(+)
+>>
+>> diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+>> index 7409edb..f5b5526 100644
+>> --- a/sound/firewire/lib.c
+>> +++ b/sound/firewire/lib.c
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/device.h>
+>>   #include <linux/firewire.h>
+>>   #include <linux/module.h>
+>> +#include <linux/slab.h>
+>>   #include "lib.h"
+>>
+>>   #define ERROR_RETRY_DELAY_MS	20
+>> @@ -66,6 +67,100 @@ int snd_fw_transaction(struct fw_unit *unit, int tcode,
+>>   }
+>>   EXPORT_SYMBOL(snd_fw_transaction);
+>>
+>> +static void async_midi_port_callback(struct fw_card *card, int rcode,
+>> +				     void *data, size_t length,
+>> +				     void *callback_data)
+>> +{
+>> +	struct snd_fw_async_midi_port *port = callback_data;
+>> +	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
+>> +
+>> +	if (rcode == RCODE_COMPLETE && substream != NULL)
+>> +		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
+>> +}
+>> +
+>> +static void midi_port_tasklet(unsigned long data)
+>> +{
+>> +	struct snd_fw_async_midi_port *port =
+>> +					(struct snd_fw_async_midi_port *)data;
+>> +	struct snd_rawmidi_substream *substream = ACCESS_ONCE(port->substream);
+>> +	int generation;
+>> +	int type;
+>> +
+>> +	/* Nothing to do. */
+>> +	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
+>> +		return;
+>> +
+>> +	/*
+>> +	 * Fill the buffer. The callee must use snd_rawmidi_transmit_peek().
+>> +	 * Later, snd_rawmidi_transmit_ack() may be called.
+>> +	 */
+>> +	memset(port->buf, 0, port->len);
+>> +	port->consume_bytes = port->packetize(substream, port->buf);
+>> +	if (port->consume_bytes <= 0) {
+>> +		/* Do it in next chance, immediately. */
+>> +		if (port->consume_bytes == 0)
+>> +			tasklet_schedule(&port->tasklet);
+>> +		return;
+>> +	}
+>> +
+>> +	/* Calculate type of transaction. */
+>> +	if (port->len == 4)
+>> +		type = TCODE_WRITE_QUADLET_REQUEST;
+>> +	else
+>> +		type = TCODE_WRITE_BLOCK_REQUEST;
+>> +
+>> +	/* Start this transaction. */
+>> +	generation = port->parent->generation;
+>> +	smp_rmb(); /* node_id vs. generation */
+>
+> Why this barrier is needed?
 
-To be compatible with the change various gotos are replaced
-with direct returns, and unneeded labels are dropped.
+Oops. I forgot to refine it after copying from the other place. Exactly, 
+it's not need here.
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/tegra/tegra20_spdif.c | 37 +++++++++++++------------------------
- 1 file changed, 13 insertions(+), 24 deletions(-)
+>> +	fw_send_request(port->parent->card, &port->transaction, type,
+>> +			port->parent->node_id, generation,
+>> +			port->parent->max_speed, port->addr,
+>> +			port->buf, port->len, async_midi_port_callback,
+>> +			port);
+>> +}
+>> +
+>> +/**
+>> + * snd_fw_async_midi_port_init - initialize asynchronous MIDI port structure
+>> + * @port: the asynchronous MIDI port to initialize
+>> + * @unit: the target of the asynchronous transaction
+>> + * @addr: the address to which transactions are transferred
+>> + * @len: the length of transaction
+>> + * @packetize: the callback function to fill given buffer, and returns the
+>> + *	       number of consumed bytes for MIDI message.
+>> + *
+>> + */
+>> +int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+>> +		struct fw_unit *unit, __u64 addr, unsigned int len,
+>> +		int (*packetize)(struct snd_rawmidi_substream *substream,
+>> +				 __u8 *buf))
+>> +{
+>> +	port->len = DIV_ROUND_UP(len, 4) * 4;
+>> +	port->buf = kzalloc(port->len, GFP_KERNEL);
+>> +	if (port->buf == NULL)
+>> +		return -ENOMEM;
+>> +
+>> +	port->parent = fw_parent_device(unit);
+>> +	port->addr = addr;
+>> +	port->packetize = packetize;
+>> +
+>> +	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
+>
+> Well, tasklet is an interface that might be deprecated in future.
+> Better to code with other interfaces if possible.
+>
+> But, tasklet seems heavily used in the current firewire code already,
+> so it's fine to keep it in this patchset.  But bear it in mind that
+> we may need conversions of tasklet usage sometime later.
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 9141477..f69b2e4 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -273,45 +273,40 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 			     GFP_KERNEL);
- 	if (!spdif) {
- 		dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
--		ret = -ENOMEM;
--		goto err;
-+		return -ENOMEM;
- 	}
- 	dev_set_drvdata(&pdev->dev, spdif);
- 
--	spdif->clk_spdif_out = clk_get(&pdev->dev, "spdif_out");
-+	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
- 	if (IS_ERR(spdif->clk_spdif_out)) {
- 		pr_err("Can't retrieve spdif clock\n");
- 		ret = PTR_ERR(spdif->clk_spdif_out);
--		goto err;
-+		return ret;
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "No memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
-+		return -ENODEV;
- 	}
- 
- 	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmareq) {
- 		dev_err(&pdev->dev, "No DMA resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
-+		return -ENODEV;
- 	}
- 
- 	memregion = devm_request_mem_region(&pdev->dev, mem->start,
- 					    resource_size(mem), DRV_NAME);
- 	if (!memregion) {
- 		dev_err(&pdev->dev, "Memory region already claimed\n");
--		ret = -EBUSY;
--		goto err_clk_put;
-+		return -EBUSY;
- 	}
- 
- 	regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
- 	if (!regs) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
--		goto err_clk_put;
-+		return -ENOMEM;
- 	}
- 
- 	spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-@@ -319,7 +314,7 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	if (IS_ERR(spdif->regmap)) {
- 		dev_err(&pdev->dev, "regmap init failed\n");
- 		ret = PTR_ERR(spdif->regmap);
--		goto err_clk_put;
-+		return ret;
- 	}
- 
- 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
-@@ -334,8 +329,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 
--	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
--				   &tegra20_spdif_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &tegra20_spdif_component,
-+					      &tegra20_spdif_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
-@@ -345,21 +341,17 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	ret = tegra_pcm_platform_register(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
--		goto err_unregister_component;
-+		return ret;
- 	}
- 
- 	return 0;
- 
--err_unregister_component:
--	snd_soc_unregister_component(&pdev->dev);
- err_suspend:
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
--err_clk_put:
--	clk_put(spdif->clk_spdif_out);
--err:
-+
- 	return ret;
- }
- 
-@@ -372,9 +364,6 @@ static int tegra20_spdif_platform_remove(struct platform_device *pdev)
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
- 
- 	tegra_pcm_platform_unregister(&pdev->dev);
--	snd_soc_unregister_component(&pdev->dev);
--
--	clk_put(spdif->clk_spdif_out);
- 
- 	return 0;
- }
--- 
-1.9.1
+Using the other kernel functionalities such as workqueue, itself, 
+doesn't matter to me, because I've already post RFC with using workqueue 
+instead of tasklet.
+
+[alsa-devel] [PATCH 08/11] ALSA: digi00x: support MIDI ports for device 
+control
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-March/089147.html
+
+ON the other hand, I'm interested in the discussion about the 
+deprecation, even if 'might'. Could you show the resources about it?
+
+
+Thanks
+
+Takashi Sakamoto
+
+> thanks,
+>
+> Takashi
+>
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(snd_fw_async_midi_port_init);
+>> +
+>> +/**
+>> + * snd_fw_async_midi_port_destroy - free asynchronous MIDI port structure
+>> + * @port: the asynchronous MIDI port structure
+>> + */
+>> +void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port)
+>> +{
+>> +	snd_fw_async_midi_port_finish(port);
+>> +	tasklet_kill(&port->tasklet);
+>> +	kfree(port->buf);
+>> +}
+>> +EXPORT_SYMBOL(snd_fw_async_midi_port_destroy);
+>> +
+>>   MODULE_DESCRIPTION("FireWire audio helper functions");
+>>   MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+>>   MODULE_LICENSE("GPL v2");
+>> diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+>> index 02cfabc..c662bf9 100644
+>> --- a/sound/firewire/lib.h
+>> +++ b/sound/firewire/lib.h
+>> @@ -3,6 +3,8 @@
+>>
+>>   #include <linux/firewire-constants.h>
+>>   #include <linux/types.h>
+>> +#include <linux/sched.h>
+>> +#include <sound/rawmidi.h>
+>>
+>>   struct fw_unit;
+>>
+>> @@ -20,4 +22,48 @@ static inline bool rcode_is_permanent_error(int rcode)
+>>   	return rcode == RCODE_TYPE_ERROR || rcode == RCODE_ADDRESS_ERROR;
+>>   }
+>>
+>> +struct snd_fw_async_midi_port {
+>> +	struct fw_device *parent;
+>> +	struct tasklet_struct tasklet;
+>> +
+>> +	__u64 addr;
+>> +	struct fw_transaction transaction;
+>> +
+>> +	__u8 *buf;
+>> +	unsigned int len;
+>> +
+>> +	struct snd_rawmidi_substream *substream;
+>> +	int (*packetize)(struct snd_rawmidi_substream *substream, __u8 *buf);
+>> +	unsigned int consume_bytes;
+>> +};
+>> +
+>> +int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+>> +		struct fw_unit *unit, __u64 addr, unsigned int len,
+>> +		int (*packetize)(struct snd_rawmidi_substream *substream,
+>> +				 __u8 *buf));
+>> +void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port);
+>> +
+>> +/**
+>> + * snd_fw_async_midi_port_run - run transactions for the async MIDI port
+>> + * @port: the asynchronous MIDI port
+>> + * @substream: the MIDI substream
+>> + */
+>> +static inline void
+>> +snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
+>> +			   struct snd_rawmidi_substream *substream)
+>> +{
+>> +	port->substream = substream;
+>> +	tasklet_schedule(&port->tasklet);
+>> +}
+>> +
+>> +/**
+>> + * snd_fw_async_midi_port_finish - finish the asynchronous MIDI port
+>> + * @port: the asynchronous MIDI port
+>> + */
+>> +static inline void
+>> +snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
+>> +{
+>> +	port->substream = NULL;
+>> +}
+>> +
+>>   #endif
+>> --
+>> 2.1.4
