@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/25] ALSA: firewire-lib: add a restriction
-	for a transaction at once
-Date: Thu, 13 Aug 2015 09:20:00 +0900
-Message-ID: <1439425221-30826-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/25] ALSA: firewire-lib: avoid endless loop
+	to transfer MIDI messages at fatal error
+Date: Thu, 13 Aug 2015 09:20:03 +0900
+Message-ID: <1439425221-30826-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id BD3082612AE
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F8F32614C8
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:36 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,70 +25,94 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when waiting for a response, callers can start another
-transaction by scheduling another tasklet. This is not good for error
-processing.
+Currently, when asynchronous transactions finish in error state and
+retries, tasklet scheduling and tasklet running also continues. This
+should be canceled at fatal error because it can cause endless loop.
 
-This commit serialize request/response transactions, by adding one
-boolean member to represent idling state.
+This commit cancels transferring MIDI messages when transactions encounter
+fatal error, by setting error state.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 8 ++++++++
- sound/firewire/lib.h | 1 +
- 2 files changed, 9 insertions(+)
+ sound/firewire/lib.c | 11 +++++++++--
+ sound/firewire/lib.h |  8 ++++++--
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index f5b5526..a66e011 100644
+index 452728c..387505f 100644
 --- a/sound/firewire/lib.c
 +++ b/sound/firewire/lib.c
-@@ -76,6 +76,8 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+@@ -79,6 +79,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+ 	else if (!rcode_is_permanent_error(rcode))
+ 		/* To start next transaction immediately for recovery. */
+ 		port->next_tick = 0;
++	else
++		/* Don't continue processing. */
++		port->error = true;
  
- 	if (rcode == RCODE_COMPLETE && substream != NULL)
- 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
-+
-+	port->idling = true;
- }
+ 	port->idling = true;
  
- static void midi_port_tasklet(unsigned long data)
-@@ -86,6 +88,10 @@ static void midi_port_tasklet(unsigned long data)
+@@ -94,8 +97,8 @@ static void midi_port_tasklet(unsigned long data)
  	int generation;
  	int type;
  
-+	/* Under transacting. */
-+	if (!port->idling)
-+		return;
-+
- 	/* Nothing to do. */
- 	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
+-	/* Under transacting. */
+-	if (!port->idling)
++	/* Under transacting or error state. */
++	if (!port->idling || port->error)
  		return;
-@@ -110,6 +116,7 @@ static void midi_port_tasklet(unsigned long data)
- 		type = TCODE_WRITE_BLOCK_REQUEST;
  
- 	/* Start this transaction. */
-+	port->idling = false;
- 	generation = port->parent->generation;
- 	smp_rmb(); /* node_id vs. generation */
- 	fw_send_request(port->parent->card, &port->transaction, type,
-@@ -142,6 +149,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	port->parent = fw_parent_device(unit);
- 	port->addr = addr;
+ 	/* Nothing to do. */
+@@ -119,6 +122,9 @@ static void midi_port_tasklet(unsigned long data)
+ 		if (port->consume_bytes == 0) {
+ 			port->next_tick = 0;
+ 			tasklet_schedule(&port->tasklet);
++		} else {
++			/* Fatal error. */
++			port->error = true;
+ 		}
+ 		return;
+ 	}
+@@ -169,6 +175,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
  	port->packetize = packetize;
-+	port->idling = true;
+ 	port->idling = true;
+ 	port->next_tick = 0;
++	port->error = false;
  
  	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
  
 diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index c662bf9..9d76f5c 100644
+index e4b00e2..ebac516 100644
 --- a/sound/firewire/lib.h
 +++ b/sound/firewire/lib.h
-@@ -25,6 +25,7 @@ static inline bool rcode_is_permanent_error(int rcode)
- struct snd_fw_async_midi_port {
- 	struct fw_device *parent;
+@@ -27,6 +27,7 @@ struct snd_fw_async_midi_port {
  	struct tasklet_struct tasklet;
-+	bool idling;
+ 	bool idling;
+ 	unsigned long next_tick;
++	bool error;
  
  	__u64 addr;
  	struct fw_transaction transaction;
+@@ -54,8 +55,10 @@ static inline void
+ snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
+ 			   struct snd_rawmidi_substream *substream)
+ {
+-	port->substream = substream;
+-	tasklet_schedule(&port->tasklet);
++	if (!port->error) {
++		port->substream = substream;
++		tasklet_schedule(&port->tasklet);
++	}
+ }
+ 
+ /**
+@@ -66,6 +69,7 @@ static inline void
+ snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
+ {
+ 	port->substream = NULL;
++	port->error = false;
+ }
+ 
+ #endif
 -- 
 2.1.4
