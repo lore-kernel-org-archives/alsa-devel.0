@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/25] ALSA: firewire-lib: avoid endless loop
-	to transfer MIDI messages at fatal error
-Date: Thu, 13 Aug 2015 09:20:03 +0900
-Message-ID: <1439425221-30826-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/25] ALSA: firewire-lib: schedule tasklet
+	again when MIDI substream has rest of MIDI messages
+Date: Thu, 13 Aug 2015 09:20:01 +0900
+Message-ID: <1439425221-30826-6-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F8F32614C8
+ by alsa0.perex.cz (Postfix) with ESMTP id 949CC261552
  for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:36 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,94 +25,30 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when asynchronous transactions finish in error state and
-retries, tasklet scheduling and tasklet running also continues. This
-should be canceled at fatal error because it can cause endless loop.
+When two MIDI trigger callbacks can be called immediately, transactions
+for the second MIDI messages can be postpone till next trigger callback.
 
-This commit cancels transferring MIDI messages when transactions encounter
-fatal error, by setting error state.
+This commit schedules tasklet again at response handling callback if the
+MIDI substream still includes untransferred MIDI messages.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 11 +++++++++--
- sound/firewire/lib.h |  8 ++++++--
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ sound/firewire/lib.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index 452728c..387505f 100644
+index a66e011..e309b9b 100644
 --- a/sound/firewire/lib.c
 +++ b/sound/firewire/lib.c
-@@ -79,6 +79,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
- 	else if (!rcode_is_permanent_error(rcode))
- 		/* To start next transaction immediately for recovery. */
- 		port->next_tick = 0;
-+	else
-+		/* Don't continue processing. */
-+		port->error = true;
+@@ -78,6 +78,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+ 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
  
  	port->idling = true;
- 
-@@ -94,8 +97,8 @@ static void midi_port_tasklet(unsigned long data)
- 	int generation;
- 	int type;
- 
--	/* Under transacting. */
--	if (!port->idling)
-+	/* Under transacting or error state. */
-+	if (!port->idling || port->error)
- 		return;
- 
- 	/* Nothing to do. */
-@@ -119,6 +122,9 @@ static void midi_port_tasklet(unsigned long data)
- 		if (port->consume_bytes == 0) {
- 			port->next_tick = 0;
- 			tasklet_schedule(&port->tasklet);
-+		} else {
-+			/* Fatal error. */
-+			port->error = true;
- 		}
- 		return;
- 	}
-@@ -169,6 +175,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	port->packetize = packetize;
- 	port->idling = true;
- 	port->next_tick = 0;
-+	port->error = false;
- 
- 	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
- 
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index e4b00e2..ebac516 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -27,6 +27,7 @@ struct snd_fw_async_midi_port {
- 	struct tasklet_struct tasklet;
- 	bool idling;
- 	unsigned long next_tick;
-+	bool error;
- 
- 	__u64 addr;
- 	struct fw_transaction transaction;
-@@ -54,8 +55,10 @@ static inline void
- snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
- 			   struct snd_rawmidi_substream *substream)
- {
--	port->substream = substream;
--	tasklet_schedule(&port->tasklet);
-+	if (!port->error) {
-+		port->substream = substream;
++
++	if (!snd_rawmidi_transmit_empty(substream))
 +		tasklet_schedule(&port->tasklet);
-+	}
  }
  
- /**
-@@ -66,6 +69,7 @@ static inline void
- snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
- {
- 	port->substream = NULL;
-+	port->error = false;
- }
- 
- #endif
+ static void midi_port_tasklet(unsigned long data)
 -- 
 2.1.4
