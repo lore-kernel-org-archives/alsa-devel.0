@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/25] ALSA: firewire-digi00x: add hwdep
-	interface
-Date: Thu, 13 Aug 2015 09:20:10 +0900
-Message-ID: <1439425221-30826-15-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 16/25] ALSA: firewire-digi00x: add support for
+	MIDI ports for machine control
+Date: Thu, 13 Aug 2015 09:20:12 +0900
+Message-ID: <1439425221-30826-17-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F1B8261583
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CAC1261606
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:38 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,507 +25,280 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other firewire sound devices
-has.
+Digi 002/003 family uses asynchronous transactions for MIDI messages to
+control the devices. The address to receive the messages is 0xffffe0000040.
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit supports these MIDI ports.
 
 Cc: Damien Zammit <damien@zamaudio.com>
 Cc: Robin Gareus <robin@gareus.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h             |   3 +-
- include/uapi/sound/firewire.h           |   1 +
- sound/firewire/Kconfig                  |   1 +
- sound/firewire/digi00x/Makefile         |   3 +-
- sound/firewire/digi00x/digi00x-hwdep.c  | 193 ++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x-midi.c   |  14 +++
- sound/firewire/digi00x/digi00x-pcm.c    |  23 +++-
- sound/firewire/digi00x/digi00x-stream.c |  39 +++++++
- sound/firewire/digi00x/digi00x.c        |   5 +
- sound/firewire/digi00x/digi00x.h        |  14 +++
- 10 files changed, 288 insertions(+), 8 deletions(-)
- create mode 100644 sound/firewire/digi00x/digi00x-hwdep.c
+ sound/firewire/digi00x/digi00x-midi.c        | 65 ++++++++++++++++++++------
+ sound/firewire/digi00x/digi00x-transaction.c | 70 +++++++++++++++++++++++++---
+ sound/firewire/digi00x/digi00x.h             |  5 ++
+ 3 files changed, 118 insertions(+), 22 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index a45be6b..aa32913 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -100,9 +100,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
- 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
-+	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_DIGI00X
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 49122df..f67d228 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -56,6 +56,7 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
- #define SNDRV_FIREWIRE_TYPE_BEBOB	3
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
-+#define SNDRV_FIREWIRE_TYPE_DIGI00X	5
- /* RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index c6b8828..80f3b57 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -123,6 +123,7 @@ config SND_BEBOB
- config SND_FIREWIRE_DIGI00X
- 	tristate "Digidesign 002/003 family support"
- 	select SND_FIREWIRE_LIB
-+	select SND_HWDEP
- 	help
- 	 Say Y here to include support for Digidesign 002/003 family.
- 	  * Digi 002 Console
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-index 0aea9dd..91e6671 100644
---- a/sound/firewire/digi00x/Makefile
-+++ b/sound/firewire/digi00x/Makefile
-@@ -1,3 +1,4 @@
- snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
--			     digi00x-pcm.o digi00x-midi.o digi00x.o
-+			     digi00x-pcm.o digi00x-midi.o digi00x-hwdep.o \
-+			     digi00x.o
- obj-m += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
-new file mode 100644
-index 0000000..6c157dd
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x-hwdep.c
-@@ -0,0 +1,193 @@
-+/*
-+ * digi00x-hwdep.c - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node information
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ * 4.get asynchronous messaging
-+ */
-+
-+#include "digi00x.h"
-+
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+		       loff_t *offset)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&dg00x->lock);
-+
-+	while (!dg00x->dev_lock_changed) {
-+		prepare_to_wait(&dg00x->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&dg00x->lock);
-+		schedule();
-+		finish_wait(&dg00x->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&dg00x->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (dg00x->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (dg00x->dev_lock_count > 0);
-+		dg00x->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &dg00x->hwdep_wait, wait);
-+
-+	spin_lock_irq(&dg00x->lock);
-+	if (dg00x->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return events;
-+}
-+
-+static int hwdep_get_info(struct snd_dg00x *dg00x, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(dg00x->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_DIGI00X;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_dg00x *dg00x)
-+{
-+	int err;
-+
-+	spin_lock_irq(&dg00x->lock);
-+
-+	if (dg00x->dev_lock_count == 0) {
-+		dg00x->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
-+	}
-+
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_unlock(struct snd_dg00x *dg00x)
-+{
-+	int err;
-+
-+	spin_lock_irq(&dg00x->lock);
-+
-+	if (dg00x->dev_lock_count == -1) {
-+		dg00x->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
-+
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+
-+	spin_lock_irq(&dg00x->lock);
-+	if (dg00x->dev_lock_count == -1)
-+		dg00x->dev_lock_count = 0;
-+	spin_unlock_irq(&dg00x->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_dg00x *dg00x = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(dg00x, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(dg00x);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(dg00x);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+static const struct snd_hwdep_ops hwdep_ops = {
-+	.read		= hwdep_read,
-+	.release	= hwdep_release,
-+	.poll		= hwdep_poll,
-+	.ioctl		= hwdep_ioctl,
-+	.ioctl_compat	= hwdep_compat_ioctl,
-+};
-+
-+int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(dg00x->card, "Digi00x", 0, &hwdep);
-+	if (err < 0)
-+		return err;
-+
-+	strcpy(hwdep->name, "Digi00x");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_DIGI00X;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = dg00x;
-+	hwdep->exclusive = true;
-+
-+	return err;
-+}
 diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
-index 09489fc..241d93a 100644
+index 241d93a..9051902 100644
 --- a/sound/firewire/digi00x/digi00x-midi.c
 +++ b/sound/firewire/digi00x/digi00x-midi.c
-@@ -13,10 +13,16 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
+@@ -13,6 +13,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
  	struct snd_dg00x *dg00x = substream->rmidi->private_data;
  	int err;
  
-+	err = snd_dg00x_stream_lock_try(dg00x);
-+	if (err < 0)
-+		return err;
++	/* This port is for Asynchronous transaction. */
++	if (substream->number == 0)
++		return 0;
 +
- 	mutex_lock(&dg00x->mutex);
- 	dg00x->substreams_counter++;
- 	err = snd_dg00x_stream_start_duplex(dg00x, 0);
- 	mutex_unlock(&dg00x->mutex);
-+	if (err < 0)
-+		snd_dg00x_stream_lock_release(dg00x);
- 
- 	return err;
- }
-@@ -26,10 +32,16 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ 	err = snd_dg00x_stream_lock_try(dg00x);
+ 	if (err < 0)
+ 		return err;
+@@ -32,6 +36,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
  	struct snd_dg00x *dg00x = substream->rmidi->private_data;
  	int err;
  
-+	err = snd_dg00x_stream_lock_try(dg00x);
-+	if (err < 0)
-+		return err;
++	/* This port is for Asynchronous transaction. */
++	if (substream->number == 0)
++		return 0;
 +
- 	mutex_lock(&dg00x->mutex);
- 	dg00x->substreams_counter++;
- 	err = snd_dg00x_stream_start_duplex(dg00x, 0);
- 	mutex_unlock(&dg00x->mutex);
-+	if (err < 0)
-+		snd_dg00x_stream_lock_release(dg00x);
- 
- 	return err;
- }
-@@ -43,6 +55,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	snd_dg00x_stream_stop_duplex(dg00x);
- 	mutex_unlock(&dg00x->mutex);
- 
-+	snd_dg00x_stream_lock_release(dg00x);
- 	return 0;
- }
- 
-@@ -55,6 +68,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	snd_dg00x_stream_stop_duplex(dg00x);
- 	mutex_unlock(&dg00x->mutex);
- 
-+	snd_dg00x_stream_lock_release(dg00x);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-index 465f022..ae96aff 100644
---- a/sound/firewire/digi00x/digi00x-pcm.c
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -118,21 +118,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_dg00x_stream_lock_try(dg00x);
-+	if (err < 0)
-+		goto end;
-+
- 	err = pcm_init_hw_params(dg00x, substream);
+ 	err = snd_dg00x_stream_lock_try(dg00x);
  	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	/* Check current clock source. */
- 	err = snd_dg00x_stream_get_clock(dg00x, &clock);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 	if (clock != SND_DG00X_CLOCK_INTERNAL) {
- 		err = snd_dg00x_stream_check_external_clock(dg00x, &detect);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		if (!detect) {
- 			err = -EBUSY;
--			return err;
-+			goto err_locked;
- 		}
- 	}
- 
-@@ -141,18 +145,25 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	    amdtp_stream_pcm_running(&dg00x->tx_stream)) {
- 		err = snd_dg00x_stream_get_external_rate(dg00x, &rate);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
- 
- 	snd_pcm_set_sync(substream);
--
-+end:
-+	return err;
-+err_locked:
-+	snd_dg00x_stream_lock_release(dg00x);
- 	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
+ 		return err;
+@@ -50,6 +58,9 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
  {
-+	struct snd_dg00x *dg00x = substream->private_data;
-+
-+	snd_dg00x_stream_lock_release(dg00x);
-+
- 	return 0;
- }
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
  
-diff --git a/sound/firewire/digi00x/digi00x-stream.c b/sound/firewire/digi00x/digi00x-stream.c
-index 2956283..dd2f4b8 100644
---- a/sound/firewire/digi00x/digi00x-stream.c
-+++ b/sound/firewire/digi00x/digi00x-stream.c
-@@ -381,3 +381,42 @@ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x)
- 	amdtp_stream_update(&dg00x->tx_stream);
- 	amdtp_stream_update(&dg00x->rx_stream);
- }
++	if (substream->number == 0)
++		return 0;
 +
-+void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x)
-+{
-+	dg00x->dev_lock_changed = true;
-+	wake_up(&dg00x->hwdep_wait);
-+}
-+
-+int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x)
-+{
-+	int err;
-+
-+	spin_lock_irq(&dg00x->lock);
-+
-+	/* user land lock this */
-+	if (dg00x->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto end;
+ 	mutex_lock(&dg00x->mutex);
+ 	dg00x->substreams_counter--;
+ 	snd_dg00x_stream_stop_duplex(dg00x);
+@@ -63,6 +74,11 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
+ 
++	if (substream->number == 0) {
++		snd_fw_async_midi_port_finish(&dg00x->out_control);
++		return 0;
 +	}
 +
-+	/* this is the first time */
-+	if (dg00x->dev_lock_count++ == 0)
-+		snd_dg00x_stream_lock_changed(dg00x);
-+	err = 0;
-+end:
-+	spin_unlock_irq(&dg00x->lock);
-+	return err;
-+}
-+
-+void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x)
+ 	mutex_lock(&dg00x->mutex);
+ 	dg00x->substreams_counter--;
+ 	snd_dg00x_stream_stop_duplex(dg00x);
+@@ -79,12 +95,19 @@ static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
+ 
+ 	spin_lock_irqsave(&dg00x->lock, flags);
+ 
+-	if (up)
+-		amdtp_dot_midi_trigger(&dg00x->tx_stream,
+-				       substrm->number - 1, substrm);
+-	else
+-		amdtp_dot_midi_trigger(&dg00x->tx_stream,
+-				       substrm->number - 1, NULL);
++	if (substrm->number == 0) {
++		if (up)
++			dg00x->in_control = substrm;
++		else
++			dg00x->in_control = NULL;
++	} else {
++		if (up)
++			amdtp_dot_midi_trigger(&dg00x->tx_stream,
++					       substrm->number - 1, substrm);
++		else
++			amdtp_dot_midi_trigger(&dg00x->tx_stream,
++					       substrm->number - 1, NULL);
++	}
+ 
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
+ }
+@@ -96,12 +119,18 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
+ 
+ 	spin_lock_irqsave(&dg00x->lock, flags);
+ 
+-	if (up)
+-		amdtp_dot_midi_trigger(&dg00x->rx_stream,
+-				       substrm->number - 1, substrm);
+-	else
+-		amdtp_dot_midi_trigger(&dg00x->rx_stream,
+-				       substrm->number - 1, NULL);
++	if (substrm->number == 0) {
++		if (up)
++			snd_fw_async_midi_port_run(&dg00x->out_control,
++						   substrm);
++	} else {
++		if (up)
++			amdtp_dot_midi_trigger(&dg00x->rx_stream,
++					       substrm->number - 1, substrm);
++		else
++			amdtp_dot_midi_trigger(&dg00x->rx_stream,
++					       substrm->number - 1, NULL);
++	}
+ 
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
+ }
+@@ -124,9 +153,15 @@ static void set_midi_substream_names(struct snd_dg00x *dg00x,
+ 	struct snd_rawmidi_substream *subs;
+ 
+ 	list_for_each_entry(subs, &str->substreams, list) {
+-		snprintf(subs->name, sizeof(subs->name),
+-			 "%s MIDI %d",
+-			 dg00x->card->shortname, subs->number);
++		/* This port is for device control. */
++		if (subs->number == 0) {
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s control", dg00x->card->shortname);
++		} else {
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 dg00x->card->shortname, subs->number);
++		}
+ 	}
+ }
+ 
+diff --git a/sound/firewire/digi00x/digi00x-transaction.c b/sound/firewire/digi00x/digi00x-transaction.c
+index 4568d98..5c66b17 100644
+--- a/sound/firewire/digi00x/digi00x-transaction.c
++++ b/sound/firewire/digi00x/digi00x-transaction.c
+@@ -9,6 +9,18 @@
+ #include <sound/asound.h>
+ #include "digi00x.h"
+ 
++static int packetize_message(struct snd_rawmidi_substream *substream, __u8 *buf)
 +{
-+	spin_lock_irq(&dg00x->lock);
++	int bytes;
 +
-+	if (WARN_ON(dg00x->dev_lock_count <= 0))
-+		goto end;
-+	if (--dg00x->dev_lock_count == 0)
-+		snd_dg00x_stream_lock_changed(dg00x);
-+end:
-+	spin_unlock_irq(&dg00x->lock);
++	buf[0] = 0x80;
++	bytes = snd_rawmidi_transmit_peek(substream, buf + 1, 2);
++	if (bytes >= 0)
++		buf[3] = 0xc0 | bytes;
++
++	return bytes;
 +}
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 0aa036c..0f2c331 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -75,6 +75,7 @@ static int snd_dg00x_probe(struct fw_unit *unit,
++
+ static void handle_unknown_message(struct snd_dg00x *dg00x,
+ 				   unsigned long long offset, u32 *buf)
+ {
+@@ -21,6 +33,28 @@ static void handle_unknown_message(struct snd_dg00x *dg00x,
+ 	wake_up(&dg00x->hwdep_wait);
+ }
  
- 	mutex_init(&dg00x->mutex);
- 	spin_lock_init(&dg00x->lock);
-+	init_waitqueue_head(&dg00x->hwdep_wait);
++static void handle_midi_control(struct snd_dg00x *dg00x, u32 *buf,
++				unsigned int length)
++{
++	struct snd_rawmidi_substream *substream;
++	unsigned int i;
++	unsigned int len;
++	u8 *b;
++
++	substream = ACCESS_ONCE(dg00x->in_control);
++	if (substream == NULL)
++		return;
++
++	length /= 4;
++
++	for (i = 0; i < length; i++) {
++		b = (u8 *)&buf[i];
++		len = b[3] & 0xf;
++		if (len > 0)
++			snd_rawmidi_receive(dg00x->in_control, b + 1, len);
++	}
++}
++
+ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 			   int tcode, int destination, int source,
+ 			   int generation, unsigned long long offset,
+@@ -31,6 +65,8 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
  
- 	err = name_card(dg00x);
- 	if (err < 0)
-@@ -94,6 +95,10 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+ 	if (offset == dg00x->async_handler.offset)
+ 		handle_unknown_message(dg00x, offset, buf);
++	else if (offset == dg00x->async_handler.offset + 4)
++		handle_midi_control(dg00x, buf, length);
  
-+	err = snd_dg00x_create_hwdep_device(dg00x);
+ 	fw_send_response(card, request, RCODE_COMPLETE);
+ }
+@@ -39,14 +75,25 @@ int snd_dg00x_transaction_reregister(struct snd_dg00x *dg00x)
+ {
+ 	struct fw_device *device = fw_parent_device(dg00x->unit);
+ 	__be32 data[2];
++	int err;
+ 
+ 	/* Unknown. 4bytes. */
+ 	data[0] = cpu_to_be32((device->card->node_id << 16) |
+ 			      (dg00x->async_handler.offset >> 32));
+ 	data[1] = cpu_to_be32(dg00x->async_handler.offset);
++	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
++				 DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
++				 &data, sizeof(data), 0);
++	if (err < 0)
++		return err;
++
++	/* Asynchronous transactions for MIDI control message. */
++	data[0] = cpu_to_be32((device->card->node_id << 16) |
++			      (dg00x->async_handler.offset >> 32));
++	data[1] = cpu_to_be32(dg00x->async_handler.offset + 4);
+ 	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
+-				   DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
+-				   &data, sizeof(data), 0);
++				  DG00X_ADDR_BASE + DG00X_OFFSET_MIDI_CTL_ADDR,
++				  &data, sizeof(data), 0);
+ }
+ 
+ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+@@ -57,7 +104,7 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+ 	};
+ 	int err;
+ 
+-	dg00x->async_handler.length = 4;
++	dg00x->async_handler.length = 12;
+ 	dg00x->async_handler.address_callback = handle_message;
+ 	dg00x->async_handler.callback_data = dg00x;
+ 
+@@ -67,15 +114,24 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+ 		return err;
+ 
+ 	err = snd_dg00x_transaction_reregister(dg00x);
+-	if (err < 0) {
+-		fw_core_remove_address_handler(&dg00x->async_handler);
+-		dg00x->async_handler.address_callback = NULL;
+-	}
 +	if (err < 0)
 +		goto error;
 +
- 	err = snd_card_register(card);
- 	if (err < 0)
- 		goto error;
++	err = snd_fw_async_midi_port_init(&dg00x->out_control, dg00x->unit,
++					  DG00X_ADDR_BASE + DG00X_OFFSET_MMC,
++					  4, packetize_message);
++	if (err < 0)
++		goto error;
+ 
+ 	return err;
++error:
++	fw_core_remove_address_handler(&dg00x->async_handler);
++	dg00x->async_handler.address_callback = NULL;
++	return err;
+ }
+ 
+ void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x)
+ {
++	snd_fw_async_midi_port_destroy(&dg00x->out_control);
+ 	fw_core_remove_address_handler(&dg00x->async_handler);
+ }
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 3715785..b0c00b2 100644
+index bd759bf..9b54b5b 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -23,6 +23,8 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/rawmidi.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../lib.h"
- #include "../packets-buffer.h"
-@@ -43,6 +45,12 @@ struct snd_dg00x {
- 	struct fw_iso_resources rx_resources;
- 
- 	unsigned int substreams_counter;
+@@ -54,6 +54,11 @@ struct snd_dg00x {
+ 	/* For asynchronous messages. */
+ 	struct fw_address_handler async_handler;
+ 	u32 msg;
 +
-+	/* for uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
-+
++	/* For asynchronous MIDI controls. */
++	struct tasklet_struct tasklet;
++	struct snd_rawmidi_substream *in_control;
++	struct snd_fw_async_midi_port out_control;
  };
  
  #define DG00X_ADDR_BASE		0xffffe0000000ull
-@@ -123,9 +131,15 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
- void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
- 
-+void snd_dg00x_stream_lock_changed(struct snd_dg00x *dg00x);
-+int snd_dg00x_stream_lock_try(struct snd_dg00x *dg00x);
-+void snd_dg00x_stream_lock_release(struct snd_dg00x *dg00x);
-+
- void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
- 
- int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x);
- 
- int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x);
-+
-+int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x);
- #endif
 -- 
 2.1.4
