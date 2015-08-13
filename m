@@ -1,16 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/25] ALSA: support AMDTP variants
-Date: Thu, 13 Aug 2015 09:32:17 +0900
-Message-ID: <55CBE591.8090906@sakamocchi.jp>
-References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ASoC: topology: Add support for TLV bytes
+	control
+Date: Thu, 13 Aug 2015 01:41:02 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480CA0BF@SHSMSX101.ccr.corp.intel.com>
+References: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 471F52660B4
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:32:23 +0200 (CEST)
-In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id A34AB2612AE
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 03:41:43 +0200 (CEST)
+In-Reply-To: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,124 +22,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 13 2015 09:19, Takashi Sakamoto wrote:
-> Takashi Sakamoto (25):
->   ALSA: firewire-lib: rename 'amdtp' to 'amdtp-stream' for functional
->     separation
->   ALSA: firewire-lib: functional separation for packet transmission
->     layer and data processing layer
+Hi Mark,
 
-This patch (0002) is a bit large for this ML...
+If convenient, would you please review this patch before my another series:
+"[PATCH v2 00/10] ASoC: support adding PCM dynamically from topology"?
 
-You can see this patchset as a part of this branch. Please refer to the
-branch if the patch is not blasted.
-https://github.com/takaswie/sound/tree/amdtp-variants
+This patch is more like a fix for TLV bytes control in topology kernel.
+The user space part has been merged in alsa-lib now. We want to avoid mismatch between the kernel and user space.
 
+That v2 series for dynamic PCM support in topology is actually still in RFC phase. We hope to get your feedback to adjust the direction and go ahead.
 
-Regards
+Thanks
+Mengdong  
 
-Takashi Sakamoto
-
->   ALSA: firewire-lib: add helper functions for asynchronous MIDI port
->   ALSA: firewire-lib: add a restriction for a transaction at once
->   ALSA: firewire-lib: schedule tasklet again when MIDI substream has
->     rest of MIDI messages
->   ALSA: firewire-lib: add throttle for MIDI data rate
->   ALSA: firewire-lib: avoid endless loop to transfer MIDI messages at
->     fatal error
->   ALSA: firewire-digi00x: add skeleton for Digi 002/003 family
->   ALSA: firewire-digi00x: add data processing layer
->   ALSA: firewire-digi00x: add stream functionality
->   ALSA: firewire-digi00x: add proc node to show clock status
->   ALSA: firewire-digi00x: add PCM functionality
->   ALSA: firewire-digi00x: add MIDI functionality
->   ALSA: firewire-digi00x: add hwdep interface
->   ALSA: firewire-digi00x: add support for asynchronous messaging
->   ALSA: firewire-digi00x: add support for MIDI ports for machine control
->   ALSA: firewire-tascam: add skeleton for TASCAM FireWire series
->   ALSA: firewire-tascam: add a structure for model-dependent parameters.
->   ALSA: firewire-tascam: add proc node to show firmware information
->   ALSA: firewire-tascam: add data processing layer
->   ALSA: firewire-tascam: add streaming functionality
->   ALSA: firewire-tascam: add PCM functionality
->   ALSA: firewire-tascam: add transaction functionality
->   ALSA: firewire-tascam: add MIDI functionality
->   ALSA: firewire-tascam: add hwdep interface
+> -----Original Message-----
+> From: Lin, Mengdong
+> Sent: Wednesday, August 12, 2015 10:11 AM
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de; broonie@kernel.org; Girdwood, Liam R; Lin, Mengdong
+> Subject: [PATCH] ASoC: topology: Add support for TLV bytes control
 > 
->  include/uapi/sound/asound.h                  |   4 +-
->  include/uapi/sound/firewire.h                |   9 +
->  sound/firewire/Kconfig                       |  27 ++
->  sound/firewire/Makefile                      |   4 +-
->  sound/firewire/amdtp-am824.c                 | 451 ++++++++++++++++++++++++
->  sound/firewire/amdtp-am824.h                 |  47 +++
->  sound/firewire/{amdtp.c => amdtp-stream.c}   | 375 ++++----------------
->  sound/firewire/{amdtp.h => amdtp-stream.h}   | 113 ++----
->  sound/firewire/bebob/bebob.h                 |   2 +-
->  sound/firewire/bebob/bebob_midi.c            |  16 +-
->  sound/firewire/bebob/bebob_pcm.c             |  12 +-
->  sound/firewire/bebob/bebob_stream.c          |  34 +-
->  sound/firewire/dice/dice-midi.c              |  16 +-
->  sound/firewire/dice/dice-pcm.c               |  12 +-
->  sound/firewire/dice/dice-stream.c            |  41 ++-
->  sound/firewire/dice/dice.h                   |   2 +-
->  sound/firewire/digi00x/Makefile              |   4 +
->  sound/firewire/digi00x/amdtp-dot.c           | 436 +++++++++++++++++++++++
->  sound/firewire/digi00x/digi00x-hwdep.c       | 200 +++++++++++
->  sound/firewire/digi00x/digi00x-midi.c        | 198 +++++++++++
->  sound/firewire/digi00x/digi00x-pcm.c         | 353 +++++++++++++++++++
->  sound/firewire/digi00x/digi00x-proc.c        |  99 ++++++
->  sound/firewire/digi00x/digi00x-stream.c      | 422 +++++++++++++++++++++++
->  sound/firewire/digi00x/digi00x-transaction.c | 137 ++++++++
->  sound/firewire/digi00x/digi00x.c             | 174 ++++++++++
->  sound/firewire/digi00x/digi00x.h             | 157 +++++++++
->  sound/firewire/fcp.c                         |   2 +-
->  sound/firewire/fireworks/fireworks.c         |  12 +-
->  sound/firewire/fireworks/fireworks.h         |   2 +-
->  sound/firewire/fireworks/fireworks_midi.c    |  16 +-
->  sound/firewire/fireworks/fireworks_pcm.c     |  10 +-
->  sound/firewire/fireworks/fireworks_stream.c  |   8 +-
->  sound/firewire/lib.c                         | 129 +++++++
->  sound/firewire/lib.h                         |  52 +++
->  sound/firewire/oxfw/oxfw-midi.c              |  16 +-
->  sound/firewire/oxfw/oxfw-pcm.c               |  10 +-
->  sound/firewire/oxfw/oxfw-stream.c            |  11 +-
->  sound/firewire/oxfw/oxfw.h                   |   2 +-
->  sound/firewire/tascam/Makefile               |   4 +
->  sound/firewire/tascam/amdtp-tascam.c         | 248 +++++++++++++
->  sound/firewire/tascam/tascam-hwdep.c         | 202 +++++++++++
->  sound/firewire/tascam/tascam-midi.c          | 162 +++++++++
->  sound/firewire/tascam/tascam-pcm.c           | 298 ++++++++++++++++
->  sound/firewire/tascam/tascam-proc.c          |  88 +++++
->  sound/firewire/tascam/tascam-stream.c        | 497 +++++++++++++++++++++++++++
->  sound/firewire/tascam/tascam-transaction.c   | 291 ++++++++++++++++
->  sound/firewire/tascam/tascam.c               | 230 +++++++++++++
->  sound/firewire/tascam/tascam.h               | 140 ++++++++
->  48 files changed, 5277 insertions(+), 498 deletions(-)
->  create mode 100644 sound/firewire/amdtp-am824.c
->  create mode 100644 sound/firewire/amdtp-am824.h
->  rename sound/firewire/{amdtp.c => amdtp-stream.c} (70%)
->  rename sound/firewire/{amdtp.h => amdtp-stream.h} (77%)
->  create mode 100644 sound/firewire/digi00x/Makefile
->  create mode 100644 sound/firewire/digi00x/amdtp-dot.c
->  create mode 100644 sound/firewire/digi00x/digi00x-hwdep.c
->  create mode 100644 sound/firewire/digi00x/digi00x-midi.c
->  create mode 100644 sound/firewire/digi00x/digi00x-pcm.c
->  create mode 100644 sound/firewire/digi00x/digi00x-proc.c
->  create mode 100644 sound/firewire/digi00x/digi00x-stream.c
->  create mode 100644 sound/firewire/digi00x/digi00x-transaction.c
->  create mode 100644 sound/firewire/digi00x/digi00x.c
->  create mode 100644 sound/firewire/digi00x/digi00x.h
->  create mode 100644 sound/firewire/tascam/Makefile
->  create mode 100644 sound/firewire/tascam/amdtp-tascam.c
->  create mode 100644 sound/firewire/tascam/tascam-hwdep.c
->  create mode 100644 sound/firewire/tascam/tascam-midi.c
->  create mode 100644 sound/firewire/tascam/tascam-pcm.c
->  create mode 100644 sound/firewire/tascam/tascam-proc.c
->  create mode 100644 sound/firewire/tascam/tascam-stream.c
->  create mode 100644 sound/firewire/tascam/tascam-transaction.c
->  create mode 100644 sound/firewire/tascam/tascam.c
->  create mode 100644 sound/firewire/tascam/tascam.h
+> From: Mengdong Lin <mengdong.lin@intel.com>
+> 
+> Allow vendor drivers to define bespoke bytes ext handlers and IDs for TLV
+> bytes controls. And the topology core will bind these handlers by matching
+> IDs defined by the vendor driver and user space topology data file.
+> 
+> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> 
+> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+> index 865a141..3e412c6 100644
+> --- a/include/sound/soc-topology.h
+> +++ b/include/sound/soc-topology.h
+> @@ -89,6 +89,13 @@ struct snd_soc_tplg_kcontrol_ops {
+>  		struct snd_ctl_elem_info *uinfo);
+>  };
+> 
+> +/* Bytes ext operations, for TLV byte controls */ struct
+> +snd_soc_tplg_bytes_ext_ops {
+> +	u32 id;
+> +	int (*get)(unsigned int __user *bytes, unsigned int size);
+> +	int (*put)(const unsigned int __user *bytes, unsigned int size); };
+> +
+>  /*
+>   * DAPM widget event handlers - used to map handlers onto widgets.
+>   */
+> @@ -139,6 +146,10 @@ struct snd_soc_tplg_ops {
+>  	/* bespoke kcontrol handlers available for binding */
+>  	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+>  	int io_ops_count;
+> +
+> +	/* bespoke bytes ext handlers available for binding */
+> +	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
+> +	int bytes_ext_ops_count;
+>  };
+> 
+>  /* gets a pointer to data from the firmware block header */ diff --git
+> a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c index
+> 607f98b..b5a2868 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -70,6 +70,10 @@ struct soc_tplg {
+>  	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+>  	int io_ops_count;
+> 
+> +	/* bespoke bytes ext handlers, for TLV bytes controls */
+> +	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
+> +	int bytes_ext_ops_count;
+> +
+>  	/* optional fw loading callbacks to component drivers */
+>  	struct snd_soc_tplg_ops *ops;
+>  };
+> @@ -513,6 +517,15 @@ static int soc_tplg_kcontrol_bind_io(struct
+> snd_soc_tplg_ctl_hdr *hdr,  {
+>  	int i;
+> 
+> +	/* TLV bytes controls don't need get/put ops */
+> +	if (k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
+> +		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
+> +		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK
+> +		&& hdr->ops.info == SND_SOC_TPLG_CTL_BYTES) {
+> +			k->info = snd_soc_bytes_info_ext;
+> +			return 0;
+> +	}
+> +
+>  	/* try and map standard kcontrols handler first */
+>  	for (i = 0; i < num_ops; i++) {
+> 
+> @@ -547,6 +560,32 @@ static int soc_tplg_kcontrol_bind_io(struct
+> snd_soc_tplg_ctl_hdr *hdr,
+>  	return -EINVAL;
+>  }
+> 
+> +/* bind bytes ext get/put handlers for TLV bytes controls */ static int
+> +soc_tplg_bytes_ext_bind_io(struct soc_tplg *tplg,
+> +	struct snd_soc_tplg_io_ops *ops_id,
+> +	struct soc_bytes_ext *sbe)
+> +{
+> +	const struct snd_soc_tplg_bytes_ext_ops *ops = tplg->bytes_ext_ops;
+> +	int num_ops = tplg->bytes_ext_ops_count;
+> +	int i;
+> +
+> +	/* try bespoke handlers */
+> +	for (i = 0; i < num_ops; i++) {
+> +
+> +		if (sbe->put == NULL && ops[i].id == ops_id->put)
+> +			sbe->put = ops[i].put;
+> +		if (sbe->get == NULL && ops[i].id == ops_id->get)
+> +			sbe->get = ops[i].get;
+> +	}
+> +
+> +	/* bespoke handlers found ? */
+> +	if (sbe->put && sbe->get)
+> +		return 0;
+> +
+> +	/* nothing to bind */
+> +	return -EINVAL;
+> +}
+> +
+>  /* bind a widgets to it's evnt handlers */  int
+> snd_soc_tplg_widget_bind_event(struct snd_soc_dapm_widget *w,
+>  		const struct snd_soc_tplg_widget_events *events, @@ -690,6
+> +729,14 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned
+> int count,
+>  			continue;
+>  		}
+> 
+> +		/* create any TLV data */
+> +		soc_tplg_create_tlv(tplg, &kc, &be->hdr);
+> +		/* map bytes ext io handlers for TLV bytes controls */
+> +		if (kc.access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+> +			soc_tplg_bytes_ext_bind_io(tplg,
+> +					&be->ext_ops, sbe);
+> +		}
+> +
+>  		/* pass control to driver for optional further init */
+>  		err = soc_tplg_init_kcontrol(tplg, &kc,
+>  			(struct snd_soc_tplg_ctl_hdr *)be);
+> @@ -1315,6 +1362,14 @@ static struct snd_kcontrol_new
+> *soc_tplg_dapm_widget_dbytes_create(
+>  			continue;
+>  		}
+> 
+> +		/* create any TLV data */
+> +		soc_tplg_create_tlv(tplg, &kc[i], &be->hdr);
+> +		/* map bytes ext io handlers for TLV bytes controls */
+> +		if (kc[i].access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+> +			soc_tplg_bytes_ext_bind_io(tplg,
+> +					&be->ext_ops, sbe);
+> +		}
+> +
+>  		/* pass control to driver for optional further init */
+>  		err = soc_tplg_init_kcontrol(tplg, &kc[i],
+>  			(struct snd_soc_tplg_ctl_hdr *)be);
+> @@ -1736,6 +1791,8 @@ int snd_soc_tplg_component_load(struct
+> snd_soc_component *comp,
+>  	tplg.req_index = id;
+>  	tplg.io_ops = ops->io_ops;
+>  	tplg.io_ops_count = ops->io_ops_count;
+> +	tplg.bytes_ext_ops = ops->bytes_ext_ops;
+> +	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
+> 
+>  	return soc_tplg_load(&tplg);
+>  }
+> --
+> 1.9.1
