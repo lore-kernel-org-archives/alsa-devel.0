@@ -1,23 +1,33 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
-	Nuvoton 8825
-Date: Thu, 13 Aug 2015 12:26:39 +0100
-Message-ID: <20150813112639.GB1654@sirena.org.uk>
-References: <1438038837-339-1-git-send-email-anatol.pomozov@gmail.com>
- <20150731182716.GO20873@sirena.org.uk>
- <CAOMFOmVA5HB138TUghe7fRwq4661vvQZt0NU5iJDZhkuGUZH1g@mail.gmail.com>
- <20150804094757.GE20873@sirena.org.uk>
- <CAOMFOmUg2D_T338=zFSrzw=ZRGRw9awLYrKFxhoPmOEd5NGZSA@mail.gmail.com>
- <20150811163954.GM10748@sirena.org.uk>
- <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH] Add rudimentary device tree support for SSM2518
+Date: Thu, 13 Aug 2015 14:12:26 +0200
+Message-ID: <alpine.DEB.2.02.1508131404050.27635@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2639526739064406776=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3C202617E0
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 13:26:47 +0200 (CEST)
-In-Reply-To: <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 283362619F5
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id CA6092E506
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:33 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id AsBtMGmqrRBw for <alsa-devel@alsa-project.org>;
+ Thu, 13 Aug 2015 14:12:31 +0200 (CEST)
+Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
+ by bes.se.axis.com (Postfix) with ESMTP id 5CC982E5C2
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:26 +0200 (CEST)
+Received: from boulder.se.axis.com (localhost [127.0.0.1])
+ by postfix.imss71 (Postfix) with ESMTP id 9EEE51404
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:26 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by boulder.se.axis.com (Postfix) with ESMTP id 93253F9D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:26 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id 8FF5134005
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 14:12:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,134 +37,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: mfelton1@nuvoton.com, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@google.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2639526739064406776==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
-Content-Disposition: inline
+For some reason the SSM2518 codec driver doesn't have DT support, even =
+
+though there are bindings described for it in =
+
+Documentation/devicetree/sound/ssm2518.txt . This patch adds rudimentary =
+
+DT support for the compatible property which is a step forward.
+
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+---
+ sound/soc/codecs/ssm2518.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index 67ea55a..ecf9996 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -811,6 +810,14 @@ static int ssm2518_i2c_remove(struct i2c_client *clien=
+t)
+ 	return 0;
+ }
+ =
+
++#ifdef CONFIG_OF
++static const struct of_device_id ssm2518_dt_ids[] =3D {
++	{ .compatible =3D "adi,ssm2518", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ssm2518_dt_ids);
++#endif
++
+ static const struct i2c_device_id ssm2518_i2c_ids[] =3D {
+ 	{ "ssm2518", 0 },
+ 	{ }
+@@ -821,6 +828,9 @@ static struct i2c_driver ssm2518_driver =3D {
+ 	.driver =3D {
+ 		.name =3D "ssm2518",
+ 		.owner =3D THIS_MODULE,
++#ifdef CONFIG_OF
++		.of_match_table =3D of_match_ptr(ssm2518_dt_ids),
++#endif
+ 	},
+ 	.probe =3D ssm2518_i2c_probe,
+ 	.remove =3D ssm2518_i2c_remove,
+-- =
+
+1.7.10.4
 
 
---ftEhullJWpWg/VHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- =
 
-On Wed, Aug 12, 2015 at 04:08:31PM -0700, Anatol Pomozov wrote:
-> >> Moved it to ALSA controls. Though I still feel a bit uncomfortable
-> >> that the default control value is not usable.
-> >> I have to set "ADC Decimation Rate" and "DAC Oversampling Rate"
-> >> controls in userspace from its defaults to "128".
-
-> >Setting the default isn't too bad in this case (especially with a
-> >comment explaining why) - that doesn't preclude also providing user
-> >configuration.
-
-> What is the best way to set default control value? Just a regmap_write()?
-
-Yes.
-
-> > I'm sorry, I don't understand.  What makes you say that "using get_clk()
-> > is not flexible for all cases", I can't quite parse that bit?
-
-> My initial assumption was that you are talking about moving complete
-> clock handling (clock initialization, MCLK frequency calculation based
-> on rate, policy of switching clock sources i.e. everything that
-> platform drivers do) to the the driver code.
-
-That is the ideal thing.
-
-> I've looked at other codec drivers and did not find many examples of
-> using clk api. The drivers seems expect clock signal is pre-configured
-> already. e.g. tegra has a utility function that configures audio
-> clocks tegra_asoc_utils_set_rate() and it actively used in tegra-based
-> platform drivers.
-
-Most of these drivers predate the clock API, while there's no pressing
-need to update things (and it's pretty disruptive to existing systems
-especially older ones) if you're running into problems with new code
-that are best fixed with the clock API then you should do that.
-
-> Locally I tried to move clock initialization out of platform code to
-> codec itself. Codec calls devm_clk_get() in init and sets frequency in
-> nau8825_set_sysclk(). See it here
-> https://github.com/anatol/linux/tree/nau8825  It works fine on a
-> Tegra-based device. But I found that devm_clk_get() is DTS specific
-> and does not work with ACPI. We need NAU8825 driver for Intel platform
-> as well.
-
-No, that is not the case at all - what makes you claim that devm_clk_get()
-is DT specific?
-
-> >> I was following code from ts3a227e driver that does the same.
-
-> > That device is specifically tied to Chromebooks which have a defined
-> > mapping, as opposed to being a generic device which is usable on a range
-> > of devices.
-
-> I do not see anything Chromebook specific about this chip
-
-> http://www.ti.com/product/ts3a227e
-
-My understanding is that the accessories it supports are
-Chrombook/Android ones (note that there's no configuration of ranges for
-detection in the code).
-
-> >> At this point this function just sets jack structure needed later in
-> >> IRQ handler.
-
-> > I can see what it's doing, I'd just also expect it to also be starting
-> > and stopping the detection in the hardware.
-
-> If we move IRQ enabling from init() function to enable_jack_detect()
-> then it means chip will be unusable after the init(). It won't be able
-> to playback nor capture audio. All developers will be forced to call
-> nau88225_enable_jack_detect() from their platform driver to enable
-> basic chip functionality. I think it is better if basic functionality
-> is enabled during driver init and does not require additional steps.
-
-I very much doubt that this will be a problem for all boards.  To repeat
-what I said in my previous reply:
-
-| The assumption would be that if the system doesn't have or need jack
-| detection then the jack pins won't be reconfigurable anyway.
-
-Your board may be wired up with jack detection configured in a way that
-needs this, I would be surprised if all boards were.
-
-> It is better if I rename nau8825_enable_jack_detect() to
-> nau8825_set_jack() to make cleaner what the function suppose to do. It
-> sets jack structure that driver uses to report events to upper level.
-> If the jack pointer is not set then driver still handles jack
-> insert/eject internally but does not report it to the userspace.
-
-No, that doesn't help.
-
---ftEhullJWpWg/VHq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVzH7uAAoJECTWi3JdVIfQsrgH/i3GT1GiIsWdmMmk38l+EIMy
-mNYqu9uOtZrv6aBPxZfdqcqvQHPUNNNV5Ult8VyuJz5E9HC4yvTsg5zFotTlJTVa
-uuPNqwGthwH3C4OWaByfmCxb+fkBoMh9BKPoAZvUSeqG5+i/j/ADZCpXvGWB2MYJ
-of9my/AXyiHhsoLw/rsdleXk12frVRBEDXluHsl9mkCNBSp5NUM0+kjfzVnYMoEb
-nBN21yEXm0BvP+vtmoPSIJR46UiwfFEjs/uV4mSTjc/Qxnn3ARzawcdjSvbu2ImJ
-8yHe3icz1z/weN39T/bnMXxGw+m83rnsTEwar2cQ5H+RhIgSLxbb6ydwnQ+nWhc=
-=9QN3
------END PGP SIGNATURE-----
-
---ftEhullJWpWg/VHq--
-
---===============2639526739064406776==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2639526739064406776==--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
