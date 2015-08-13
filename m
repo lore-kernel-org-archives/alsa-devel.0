@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 23/25] ALSA: firewire-tascam: add transaction
+Subject: [PATCH 22/25] ALSA: firewire-tascam: add PCM
 	functionality
-Date: Thu, 13 Aug 2015 09:20:19 +0900
-Message-ID: <1439425221-30826-24-git-send-email-o-takashi@sakamocchi.jp>
+Date: Thu, 13 Aug 2015 09:20:18 +0900
+Message-ID: <1439425221-30826-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id EE4CE2615C0
+ by alsa0.perex.cz (Postfix) with ESMTP id D165626158C
  for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:37 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,50 +25,38 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series use asynchronous transaction for transmittion of
-MIDI messages.
+This commit adds PCM functionality to transmit/receive PCM samples.
 
-The messages in the transferred transaction include quirks:
- * Several MIDI messages are transferred in one block transaction, up to 8.
- * Two quadlets are used for one MIDI message and one timestamp.
- * A quadlet includes bytes up to 3, the first byte is used to indicate
-   MIDI port and MSB 4 bit of MIDI status.
-
-The messages in the received transaction includes quirks:
- * One MIDI message is transferred in one quadlet transaction.
- * MIDI running status is not allowed, thus transactions always include
-   status byte.
- * The protocol for MIDI exclusive message is not clear. Therefore,
-   this commit drop the message.
-
-This commit supports the transmittion.
+When one of PCM substreams are running or external clock source is
+selected, current sampling rate is used. Else, the sampling rate is
+changed as an userspace application requests.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile             |   2 +-
- sound/firewire/tascam/tascam-transaction.c | 291 +++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.c             |   7 +
- sound/firewire/tascam/tascam.h             |  25 +++
- 4 files changed, 324 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/tascam-transaction.c
+ sound/firewire/tascam/Makefile     |   2 +-
+ sound/firewire/tascam/tascam-pcm.c | 287 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c     |   4 +
+ sound/firewire/tascam/tascam.h     |   2 +
+ 4 files changed, 294 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-pcm.c
 
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 84391ac..1f39e02 100644
+index 3be9434..84391ac 100644
 --- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
 @@ -1,3 +1,3 @@
  snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
--			    tascam-pcm.o tascam.o
-+			    tascam-pcm.o tascam-transaction.o tascam.o
+-			    tascam.o
++			    tascam-pcm.o tascam.o
  obj-m += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
 new file mode 100644
-index 0000000..084d7d9
+index 0000000..b1aa980
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -0,0 +1,291 @@
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -0,0 +1,287 @@
 +/*
-+ * tascam-transaction.c - a part of driver for TASCAM FireWire series
++ * tascam-pcm.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
@@ -77,382 +65,307 @@ index 0000000..084d7d9
 +
 +#include "tascam.h"
 +
-+/*
-+ * When return minus value, given argument is not MIDI status.
-+ * When return 0, given argument is a beginning of system exclusive.
-+ * When return the others, given argument is MIDI data.
-+ */
-+static inline int calculate_message_bytes(u8 status)
++static void set_buffer_params(struct snd_pcm_hardware *hw)
 +{
-+	switch (status) {
-+	case 0xf6:	/* Tune request. */
-+	case 0xf8:	/* Timing clock. */
-+	case 0xfa:	/* Start. */
-+	case 0xfb:	/* Continue. */
-+	case 0xfc:	/* Stop. */
-+	case 0xfe:	/* Active sensing. */
-+	case 0xff:	/* System reset. */
-+		return 1;
-+	case 0xf1:	/* MIDI time code quarter frame. */
-+	case 0xf3:	/* Song select. */
-+		return 2;
-+	case 0xf2:	/* Song position pointer. */
-+		return 3;
-+	case 0xf0:	/* Exclusive. */
-+		return 0;
-+	case 0xf7:	/* End of exclusive. */
-+		break;
-+	case 0xf4:	/* Undefined. */
-+	case 0xf5:	/* Undefined. */
-+	case 0xf9:	/* Undefined. */
-+	case 0xfd:	/* Undefined. */
-+		break;
-+	default:
-+		switch (status & 0xf0) {
-+		case 0x80:	/* Note on. */
-+		case 0x90:	/* Note off. */
-+		case 0xa0:	/* Polyphonic key pressure. */
-+		case 0xb0:	/* Control change and Mode change. */
-+		case 0xe0:	/* Pitch bend change. */
-+			return 3;
-+		case 0xc0:	/* Program change. */
-+		case 0xd0:	/* Channel pressure. */
-+			return 2;
-+		default:
-+		break;
-+		}
-+	break;
-+	}
++	hw->period_bytes_min = 4 * hw->channels_min;
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * 2;
 +
-+	return -EINVAL;
++	hw->periods_min = 2;
++	hw->periods_max = UINT_MAX;
 +}
 +
-+static int packetize_message(struct snd_rawmidi_substream *substream, __u8 *buf)
++static int pcm_init_hw_params(struct snd_tscm *tscm,
++			      struct snd_pcm_substream *substream)
 +{
-+	struct snd_tscm *tscm = substream->rmidi->private_data;
-+	unsigned int port = substream->number;
-+	unsigned int len;
-+	unsigned int i;
-+	u8 status;
-+	int consume;
-+
-+	buf[0] = buf[1] = buf[2] = buf[3] = 0x00;
-+
-+	len = snd_rawmidi_transmit_peek(substream, buf + 1, 3);
-+	if (len == 0)
-+		return 0;
-+
-+	/* On exclusive message. */
-+	if (tscm->on_sysex[port] > 0) {
-+		/* Seek the end of exclusives. */
-+		for (i = 1; i < 4; ++i) {
-+			if (buf[i] == 0xf7) {
-+				tscm->on_sysex[port] = 0;
-+				break;
-+			}
-+		}
-+		if (i == 4)
-+			i = 3;
-+		/* Currently, the exclusives are not supported. */
-+		snd_rawmidi_transmit_ack(substream, i);
-+		return 0;
-+	} else {
-+		/* The beginning of exclusives. */
-+		if (buf[1] == 0xf0) {
-+			/* Currently, the exclusives are not supported. */
-+			snd_rawmidi_transmit_ack(substream, 1);
-+			tscm->on_sysex[port] = 1;
-+			return 0;
-+		} else {
-+			/* On running-status. */
-+			if ((buf[1] & 0x80) != 0x80)
-+				status = tscm->running_status[port];
-+			else
-+				status = buf[1];
-+
-+			/* Calculate consume bytes. */
-+			consume = calculate_message_bytes(status);
-+			if (consume <= 0)
-+				return 0;
-+
-+			/* On running-status. */
-+			if ((buf[1] & 0x80) != 0x80) {
-+				buf[3] = buf[2];
-+				buf[2] = buf[1];
-+				buf[1] = tscm->running_status[port];
-+				consume--;
-+			} else {
-+				tscm->running_status[port] = buf[1];
-+			}
-+
-+			/* Confirm length. */
-+			if (len < consume)
-+				return 0;
-+			if (len > consume)
-+				len = consume;
-+		}
-+	}
-+
-+	buf[0] = (port << 4) | (buf[1] >> 4);
-+
-+	return len;
-+}
-+
-+static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
-+			   int tcode, int destination, int source,
-+			   int generation, unsigned long long offset,
-+			   void *data, size_t length, void *callback_data)
-+{
-+	struct snd_tscm *tscm = callback_data;
-+	__u32 *buf = (__u32 *)data;
-+	unsigned int messages;
-+	unsigned int i;
-+	unsigned int port;
-+	struct snd_rawmidi_substream *substream;
-+	__u8 *b;
-+	int bytes;
-+
-+	if (offset != tscm->async_handler.offset)
-+		goto end;
-+
-+	messages = length / 8;
-+	for (i = 0; i < messages; i++) {
-+		b = (__u8 *)(buf + i * 2);
-+
-+		port = b[0] >> 4;
-+		if (port >= tscm->spec->midi_capture_ports) {
-+			/* 0x5 = VP1, 0x6 = VP2. */
-+			port = tscm->spec->midi_capture_ports + port - 5;
-+			if (port >= TSCM_MIDI_IN_PORT_MAX)
-+				goto end;
-+		}
-+
-+		/* Assume the message length. */
-+		bytes = calculate_message_bytes(b[1]);
-+		/* On MIDI data or exclusives. */
-+		if (bytes <= 0) {
-+			/* Seek the end of exclusives. */
-+			for (bytes = 1; bytes < 4; bytes++) {
-+				if (b[bytes] == 0xf7)
-+					break;
-+			}
-+			if (bytes == 4)
-+				bytes = 3;
-+		}
-+
-+		substream = ACCESS_ONCE(tscm->tx_midi_substreams[port]);
-+		if (substream != NULL)
-+			snd_rawmidi_receive(substream, b + 1, bytes);
-+	}
-+end:
-+	fw_send_response(card, request, RCODE_COMPLETE);
-+}
-+
-+int snd_tscm_transaction_register(struct snd_tscm *tscm)
-+{
-+	static const struct fw_address_region resp_register_region = {
-+		.start	= 0xffffe0000000ull,
-+		.end	= 0xffffe000ffffull,
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 |
++			 SNDRV_PCM_RATE_96000,
++		.rate_min = 44100,
++		.rate_max = 96000,
++		.channels_min = 10,
++		.channels_max = 18,
 +	};
-+	unsigned int i;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct amdtp_stream *stream;
++	unsigned int pcm_channels;
++
++	runtime->hw = hardware;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		stream = &tscm->tx_stream;
++		pcm_channels = tscm->spec->pcm_capture_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
++	} else {
++		runtime->hw.formats =
++				SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32;
++		stream = &tscm->rx_stream;
++		pcm_channels = tscm->spec->pcm_playback_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
++	}
++
++	set_buffer_params(&runtime->hw);
++
++	return amdtp_tscm_add_pcm_hw_constraints(stream, runtime);
++}
++
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	enum snd_tscm_clock clock;
++	unsigned int rate;
 +	int err;
 +
-+	/*
-+	 * Usually, two quadlets are transferred by one transaction. The first
-+	 * quadlet has MIDI messages, the rest includes timestamp.
-+	 * Sometimes, 8 set of the data is transferred by a block transaction.
-+	 */
-+	tscm->async_handler.length = 8 * 8;
-+	tscm->async_handler.address_callback = handle_midi_tx;
-+	tscm->async_handler.callback_data = tscm;
-+
-+	err = fw_core_add_address_handler(&tscm->async_handler,
-+					  &resp_register_region);
++	err = pcm_init_hw_params(tscm, substream);
 +	if (err < 0)
 +		return err;
 +
-+	err = snd_tscm_transaction_reregister(tscm);
-+	if (err < 0) {
-+		fw_core_remove_address_handler(&tscm->async_handler);
-+		return err;
++	err = snd_tscm_stream_get_clock(tscm, &clock);
++	if ((clock != SND_TSCM_CLOCK_INTERNAL) |
++	    amdtp_stream_pcm_running(&tscm->rx_stream) |
++	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
++		err = snd_tscm_stream_get_rate(tscm, &rate);
++		if (err < 0)
++			return err;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
 +	}
 +
-+	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++) {
-+		err = snd_fw_async_midi_port_init(
-+				&tscm->out_ports[i], tscm->unit,
-+				TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_RX_QUAD,
-+				4, packetize_message);
-+		if (err < 0)
-+			break;
-+	}
++	snd_pcm_set_sync(substream);
 +
 +	return err;
 +}
 +
-+/* At bus reset, these registers are cleared. */
-+int snd_tscm_transaction_reregister(struct snd_tscm *tscm)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	struct fw_device *device = fw_parent_device(tscm->unit);
-+	__be32 reg;
++	return 0;
++}
++
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
++	}
++	amdtp_tscm_set_pcm_format(&tscm->tx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
++	}
++	amdtp_tscm_set_pcm_format(&tscm->rx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	mutex_lock(&tscm->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
++
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	mutex_lock(&tscm->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
++
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +	int err;
 +
-+	/* Register messaging address. Block transaction is not allowed. */
-+	reg = cpu_to_be32((device->card->node_id << 16) |
-+			  (tscm->async_handler.offset >> 32));
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ADDR_HI,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	mutex_lock(&tscm->mutex);
 +
-+	reg = cpu_to_be32(tscm->async_handler.offset);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ADDR_LO,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->tx_stream);
 +
-+	/* Turn on messaging. */
-+	reg = cpu_to_be32(0x00000001);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ON,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	mutex_unlock(&tscm->mutex);
 +
-+	/* Turn on FireWire LED. */
-+	reg = cpu_to_be32(0x0001008e);
-+	err = snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 TSCM_ADDR_BASE + TSCM_OFFSET_LED_TURN_ON,
-+				 &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
 +
-+	reg = cpu_to_be32(0x000100f2);
-+	return snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				  TSCM_ADDR_BASE + TSCM_OFFSET_LED_TURN_ON,
-+				  &reg, sizeof(reg), 0);
++	mutex_lock(&tscm->mutex);
++
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->rx_stream);
++
++	mutex_unlock(&tscm->mutex);
++
++	return err;
 +}
 +
-+void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	unsigned int i;
-+	__be32 reg;
++	struct snd_tscm *tscm = substream->private_data;
 +
-+	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++)
-+		snd_fw_async_midi_port_destroy(&tscm->out_ports[i]);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+	fw_core_remove_address_handler(&tscm->async_handler);
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_tscm *tscm = substream->private_data;
 +
-+	/* Turn off messaging. */
-+	reg = cpu_to_be32(0x00000000);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ON,
-+			   &reg, sizeof(reg), 0);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+	/* Unregister the address. */
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ADDR_HI,
-+			   &reg, sizeof(reg), 0);
-+	snd_fw_transaction(tscm->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   TSCM_ADDR_BASE + TSCM_OFFSET_MIDI_TX_ADDR_LO,
-+			   &reg, sizeof(reg), 0);
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_tscm *tscm = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&tscm->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_tscm *tscm = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(tscm->card, tscm->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	pcm->private_data = tscm;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", tscm->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++
++	return 0;
 +}
 diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 18a7e70..5e770e5 100644
+index 875a74c..18a7e70 100644
 --- a/sound/firewire/tascam/tascam.c
 +++ b/sound/firewire/tascam/tascam.c
-@@ -93,6 +93,7 @@ static void tscm_card_free(struct snd_card *card)
- {
- 	struct snd_tscm *tscm = card->private_data;
- 
-+	snd_tscm_transaction_unregister(tscm);
- 	snd_tscm_stream_destroy_duplex(tscm);
- 
- 	fw_unit_put(tscm->unit);
-@@ -135,6 +136,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
+@@ -131,6 +131,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	err = snd_tscm_transaction_register(tscm);
++	err = snd_tscm_create_pcm_devices(tscm);
 +	if (err < 0)
 +		goto error;
 +
  	err = snd_card_register(card);
  	if (err < 0)
  		goto error;
-@@ -151,6 +156,8 @@ static void snd_tscm_update(struct fw_unit *unit)
- {
- 	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
- 
-+	snd_tscm_transaction_reregister(tscm);
-+
- 	mutex_lock(&tscm->mutex);
- 	snd_tscm_stream_update_duplex(tscm);
- 	mutex_unlock(&tscm->mutex);
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index ab922d8..920bf30 100644
+index 2c935f7..ab922d8 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -20,6 +20,7 @@
- #include <sound/info.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/rawmidi.h>
- 
- #include "../lib.h"
- #include "../packets-buffer.h"
-@@ -37,6 +38,9 @@ struct snd_tscm_spec {
- 	bool is_controller;
- };
- 
-+#define TSCM_MIDI_IN_PORT_MAX	7
-+#define TSCM_MIDI_OUT_PORT_MAX	4
-+
- struct snd_tscm {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -50,6 +54,15 @@ struct snd_tscm {
- 	struct amdtp_stream tx_stream;
- 	struct amdtp_stream rx_stream;
- 	unsigned int substreams_counter;
-+
-+	/* For MIDI message incoming transactions. */
-+	struct fw_address_handler async_handler;
-+	struct snd_rawmidi_substream *tx_midi_substreams[TSCM_MIDI_IN_PORT_MAX];
-+
-+	/* For MIDI message outgoing transactions. */
-+	struct snd_fw_async_midi_port out_ports[TSCM_MIDI_OUT_PORT_MAX];
-+	u8 running_status[TSCM_MIDI_OUT_PORT_MAX];
-+	u8 on_sysex[TSCM_MIDI_OUT_PORT_MAX];
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
-@@ -72,6 +85,14 @@ struct snd_tscm {
- #define TSCM_OFFSET_CLOCK_STATUS	0x0228
- #define TSCM_OFFSET_SET_OPTION		0x022c
- 
-+#define TSCM_OFFSET_MIDI_TX_ON		0x0300
-+#define TSCM_OFFSET_MIDI_TX_ADDR_HI	0x0304
-+#define TSCM_OFFSET_MIDI_TX_ADDR_LO	0x0308
-+
-+#define TSCM_OFFSET_LED_TURN_ON		0x0404
-+
-+#define TSCM_OFFSET_MIDI_RX_QUAD	0x4000
-+
- enum snd_tscm_clock {
- 	SND_TSCM_CLOCK_INTERNAL = 0,
- 	SND_TSCM_CLOCK_WORD	= 1,
-@@ -95,6 +116,10 @@ void snd_tscm_stream_destroy_duplex(struct snd_tscm *tscm);
- int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
+@@ -96,3 +96,5 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
  void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
  
-+int snd_tscm_transaction_register(struct snd_tscm *tscm);
-+int snd_tscm_transaction_reregister(struct snd_tscm *tscm);
-+void snd_tscm_transaction_unregister(struct snd_tscm *tscm);
-+
  void snd_tscm_proc_init(struct snd_tscm *tscm);
- 
- int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
++
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
 -- 
 2.1.4
