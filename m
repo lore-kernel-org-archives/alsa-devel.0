@@ -1,18 +1,27 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: ics43432: Add codec driver for
- InvenSense ICS-43432
-Date: Thu, 13 Aug 2015 16:57:06 +0200
-Message-ID: <55CCB042.7090100@metafoo.de>
-References: <alpine.DEB.2.02.1508131428310.27635@lnxricardw1.se.axis.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
+	Nuvoton 8825
+Date: Thu, 13 Aug 2015 12:44:33 -0700
+Message-ID: <CAOMFOmXm66VgFPfD=NBMJNbqUvE0mbBSq5mRPk_4APuUJPcF_A@mail.gmail.com>
+References: <1438038837-339-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150731182716.GO20873@sirena.org.uk>
+ <CAOMFOmVA5HB138TUghe7fRwq4661vvQZt0NU5iJDZhkuGUZH1g@mail.gmail.com>
+ <20150804094757.GE20873@sirena.org.uk>
+ <CAOMFOmUg2D_T338=zFSrzw=ZRGRw9awLYrKFxhoPmOEd5NGZSA@mail.gmail.com>
+ <20150811163954.GM10748@sirena.org.uk>
+ <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
+ <20150813112639.GB1654@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-200.synserver.de (smtp-out-200.synserver.de
- [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BCD1261A5A
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 16:57:08 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1508131428310.27635@lnxricardw1.se.axis.com>
+Received: from mail-vk0-f65.google.com (mail-vk0-f65.google.com
+ [209.85.213.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93540264F39
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 21:44:34 +0200 (CEST)
+Received: by vkfi73 with SMTP id i73so1789217vkf.3
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 12:44:33 -0700 (PDT)
+In-Reply-To: <20150813112639.GB1654@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +31,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: mfelton1@nuvoton.com, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/13/2015 03:55 PM, Ricard Wanderlof wrote:
-> +
-> +#define ICS43432_RATE_MIN 7190 /* Hz, from data sheet */
-> +#define ICS43432_RATE_MAX 52800  /* Hz, from data sheet */
+Hi
 
-If the part can work with continuous rates between those two values set
-rate_min and rate_max in the DAI struct and set the rates field of the same
-struct to SNDRV_PCM_RATE_CONTINUOUS.
+On Thu, Aug 13, 2015 at 4:26 AM, Mark Brown <broonie@kernel.org> wrote:
+>> Locally I tried to move clock initialization out of platform code to
+>> codec itself. Codec calls devm_clk_get() in init and sets frequency in
+>> nau8825_set_sysclk(). See it here
+>> https://github.com/anatol/linux/tree/nau8825  It works fine on a
+>> Tegra-based device. But I found that devm_clk_get() is DTS specific
+>> and does not work with ACPI. We need NAU8825 driver for Intel platform
+>> as well.
+>
+> No, that is not the case at all - what makes you claim that devm_clk_get()
+> is DT specific?
 
-> +
-> +static int ics43432_hw_params(struct snd_pcm_substream *substream,
-> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-> +{
-> +	unsigned int rate = params_rate(params);
-> +
-> +	if (rate < ICS43432_RATE_MIN || rate > ICS43432_RATE_MAX)
-> +		return -EINVAL;
+clk_dev uses of_clk_get_by_name() that is implemented for DTS only.
+See include/linux/clk.h.
 
-And then drop all of this. The ALSA core will take care of enforcing the
-constraints.
+ACPI has a compatible API for getting simple properties
+(strings/numbers), but no API for dealing with clocks.
 
-> +
-> +	return 0;
-> +}
+
+> I very much doubt that this will be a problem for all boards.  To repeat
+> what I said in my previous reply:
+>
+> | The assumption would be that if the system doesn't have or need jack
+> | detection then the jack pins won't be reconfigurable anyway.
+>
+> Your board may be wired up with jack detection configured in a way that
+> needs this, I would be surprised if all boards were.
+
+I am still trying to understand the use-case for NAU8825 without jack
+detection functionality. Are you talking about a board configuration
+that does not wire jack to JKDET codec pin and (maybe) statically
+connects output to speakers?
+
+If platform driver does not enable jack detection, what NAU8825
+functionality suppose to work? Does output (HPL/HPR) suppose to work?
+Does mic suppose to work? Is OMTP/CTIA mic detection functionality
+needed?
