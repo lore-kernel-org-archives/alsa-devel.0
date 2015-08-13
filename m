@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/25] ALSA: firewire-digi00x: add support for
-	MIDI ports for machine control
-Date: Thu, 13 Aug 2015 09:20:12 +0900
-Message-ID: <1439425221-30826-17-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 20/25] ALSA: firewire-tascam: add data
+	processing layer
+Date: Thu, 13 Aug 2015 09:20:16 +0900
+Message-ID: <1439425221-30826-21-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CAC1261606
+ by alsa0.perex.cz (Postfix) with ESMTP id 08E7A2615FC
  for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:38 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,283 +22,338 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi 002/003 family uses asynchronous transactions for MIDI messages to
-control the devices. The address to receive the messages is 0xffffe0000040.
+TASCAM FireWire series uses non-blocking transmission for AMDTP packet
+streaming, while the format of data blocks is unique.
 
-This commit supports these MIDI ports.
+The CIP headers includes specific value in FMT field and no SYT
+information.
 
-Cc: Damien Zammit <damien@zamaudio.com>
-Cc: Robin Gareus <robin@gareus.org>
+In transmitted packets, the first data channel represents event counter,
+and the last data channel has status and control information. The rest
+has 24bit PCM samples with right padding.
+
+In received packets, all of data channels include 16, 24, 32bit PCM
+samples. There's no the other kind of information.
+
+This commit adds support for this protocol. For convinience, the size of
+PCM samples in outgoing packet is 16, 24bit. The status and control
+information will be supported in a future commit.
+
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x-midi.c        | 65 ++++++++++++++++++++------
- sound/firewire/digi00x/digi00x-transaction.c | 70 +++++++++++++++++++++++++---
- sound/firewire/digi00x/digi00x.h             |  5 ++
- 3 files changed, 118 insertions(+), 22 deletions(-)
+ sound/firewire/tascam/Makefile       |   2 +-
+ sound/firewire/tascam/amdtp-tascam.c | 248 +++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.h       |  18 +++
+ 3 files changed, 267 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/amdtp-tascam.c
 
-diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
-index 241d93a..9051902 100644
---- a/sound/firewire/digi00x/digi00x-midi.c
-+++ b/sound/firewire/digi00x/digi00x-midi.c
-@@ -13,6 +13,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
- 	int err;
- 
-+	/* This port is for Asynchronous transaction. */
-+	if (substream->number == 0)
-+		return 0;
+diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
+index 63f08c6..5d11cad 100644
+--- a/sound/firewire/tascam/Makefile
++++ b/sound/firewire/tascam/Makefile
+@@ -1,2 +1,2 @@
+-snd-firewire-tascam-objs := tascam-proc.o tascam.o
++snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
+ obj-m += snd-firewire-tascam.o
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+new file mode 100644
+index 0000000..6c15b98
+--- /dev/null
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -0,0 +1,248 @@
++/*
++ * amdtp-tascam.c - a part of driver for TASCAM FireWire series
++ *
++ * Copyright (c) 2015 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
- 	err = snd_dg00x_stream_lock_try(dg00x);
- 	if (err < 0)
- 		return err;
-@@ -32,6 +36,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
- 	int err;
- 
-+	/* This port is for Asynchronous transaction. */
-+	if (substream->number == 0)
-+		return 0;
++#include <sound/pcm.h>
++#include "tascam.h"
 +
- 	err = snd_dg00x_stream_lock_try(dg00x);
- 	if (err < 0)
- 		return err;
-@@ -50,6 +58,9 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
- 
-+	if (substream->number == 0)
-+		return 0;
++#define AMDTP_FMT_TSCM_TX	0x1e
++#define AMDTP_FMT_TSCM_RX	0x3e
 +
- 	mutex_lock(&dg00x->mutex);
- 	dg00x->substreams_counter--;
- 	snd_dg00x_stream_stop_duplex(dg00x);
-@@ -63,6 +74,11 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_dg00x *dg00x = substream->rmidi->private_data;
- 
-+	if (substream->number == 0) {
-+		snd_fw_async_midi_port_finish(&dg00x->out_control);
-+		return 0;
-+	}
++struct amdtp_tscm {
++	unsigned int pcm_channels;
 +
- 	mutex_lock(&dg00x->mutex);
- 	dg00x->substreams_counter--;
- 	snd_dg00x_stream_stop_duplex(dg00x);
-@@ -79,12 +95,19 @@ static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
- 
- 	spin_lock_irqsave(&dg00x->lock, flags);
- 
--	if (up)
--		amdtp_dot_midi_trigger(&dg00x->tx_stream,
--				       substrm->number - 1, substrm);
--	else
--		amdtp_dot_midi_trigger(&dg00x->tx_stream,
--				       substrm->number - 1, NULL);
-+	if (substrm->number == 0) {
-+		if (up)
-+			dg00x->in_control = substrm;
-+		else
-+			dg00x->in_control = NULL;
-+	} else {
-+		if (up)
-+			amdtp_dot_midi_trigger(&dg00x->tx_stream,
-+					       substrm->number - 1, substrm);
-+		else
-+			amdtp_dot_midi_trigger(&dg00x->tx_stream,
-+					       substrm->number - 1, NULL);
-+	}
- 
- 	spin_unlock_irqrestore(&dg00x->lock, flags);
- }
-@@ -96,12 +119,18 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
- 
- 	spin_lock_irqsave(&dg00x->lock, flags);
- 
--	if (up)
--		amdtp_dot_midi_trigger(&dg00x->rx_stream,
--				       substrm->number - 1, substrm);
--	else
--		amdtp_dot_midi_trigger(&dg00x->rx_stream,
--				       substrm->number - 1, NULL);
-+	if (substrm->number == 0) {
-+		if (up)
-+			snd_fw_async_midi_port_run(&dg00x->out_control,
-+						   substrm);
-+	} else {
-+		if (up)
-+			amdtp_dot_midi_trigger(&dg00x->rx_stream,
-+					       substrm->number - 1, substrm);
-+		else
-+			amdtp_dot_midi_trigger(&dg00x->rx_stream,
-+					       substrm->number - 1, NULL);
-+	}
- 
- 	spin_unlock_irqrestore(&dg00x->lock, flags);
- }
-@@ -124,9 +153,15 @@ static void set_midi_substream_names(struct snd_dg00x *dg00x,
- 	struct snd_rawmidi_substream *subs;
- 
- 	list_for_each_entry(subs, &str->substreams, list) {
--		snprintf(subs->name, sizeof(subs->name),
--			 "%s MIDI %d",
--			 dg00x->card->shortname, subs->number);
-+		/* This port is for device control. */
-+		if (subs->number == 0) {
-+			snprintf(subs->name, sizeof(subs->name),
-+				 "%s control", dg00x->card->shortname);
-+		} else {
-+			snprintf(subs->name, sizeof(subs->name),
-+				 "%s MIDI %d",
-+				 dg00x->card->shortname, subs->number);
++	void (*transfer_samples)(struct amdtp_stream *s,
++				 struct snd_pcm_runtime *pcm,
++				 __be32 *buffer, unsigned int frames);
++};
++
++int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int data_channels;
++
++	if (amdtp_stream_running(s))
++		return -EBUSY;
++
++	data_channels = p->pcm_channels;
++	if (s->direction == AMDTP_IN_STREAM)
++		data_channels += 2;
++
++	return amdtp_stream_set_parameters(s, rate, data_channels);
++}
++
++static void write_pcm_s32(struct amdtp_stream *s,
++			  struct snd_pcm_runtime *runtime,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32(*src);
++			src++;
 +		}
- 	}
- }
- 
-diff --git a/sound/firewire/digi00x/digi00x-transaction.c b/sound/firewire/digi00x/digi00x-transaction.c
-index 4568d98..5c66b17 100644
---- a/sound/firewire/digi00x/digi00x-transaction.c
-+++ b/sound/firewire/digi00x/digi00x-transaction.c
-@@ -9,6 +9,18 @@
- #include <sound/asound.h>
- #include "digi00x.h"
- 
-+static int packetize_message(struct snd_rawmidi_substream *substream, __u8 *buf)
-+{
-+	int bytes;
-+
-+	buf[0] = 0x80;
-+	bytes = snd_rawmidi_transmit_peek(substream, buf + 1, 2);
-+	if (bytes >= 0)
-+		buf[3] = 0xc0 | bytes;
-+
-+	return bytes;
-+}
-+
- static void handle_unknown_message(struct snd_dg00x *dg00x,
- 				   unsigned long long offset, u32 *buf)
- {
-@@ -21,6 +33,28 @@ static void handle_unknown_message(struct snd_dg00x *dg00x,
- 	wake_up(&dg00x->hwdep_wait);
- }
- 
-+static void handle_midi_control(struct snd_dg00x *dg00x, u32 *buf,
-+				unsigned int length)
-+{
-+	struct snd_rawmidi_substream *substream;
-+	unsigned int i;
-+	unsigned int len;
-+	u8 *b;
-+
-+	substream = ACCESS_ONCE(dg00x->in_control);
-+	if (substream == NULL)
-+		return;
-+
-+	length /= 4;
-+
-+	for (i = 0; i < length; i++) {
-+		b = (u8 *)&buf[i];
-+		len = b[3] & 0xf;
-+		if (len > 0)
-+			snd_rawmidi_receive(dg00x->in_control, b + 1, len);
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
 +	}
 +}
 +
- static void handle_message(struct fw_card *card, struct fw_request *request,
- 			   int tcode, int destination, int source,
- 			   int generation, unsigned long long offset,
-@@ -31,6 +65,8 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
- 
- 	if (offset == dg00x->async_handler.offset)
- 		handle_unknown_message(dg00x, offset, buf);
-+	else if (offset == dg00x->async_handler.offset + 4)
-+		handle_midi_control(dg00x, buf, length);
- 
- 	fw_send_response(card, request, RCODE_COMPLETE);
- }
-@@ -39,14 +75,25 @@ int snd_dg00x_transaction_reregister(struct snd_dg00x *dg00x)
- {
- 	struct fw_device *device = fw_parent_device(dg00x->unit);
- 	__be32 data[2];
++static void write_pcm_s16(struct amdtp_stream *s,
++			  struct snd_pcm_runtime *runtime,
++			  __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int channels, remaining_frames, i, c;
++	const u16 *src;
++
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_be32(*src << 16);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
++}
++
++static void read_pcm_s32(struct amdtp_stream *s,
++			 struct snd_pcm_runtime *runtime,
++			 __be32 *buffer, unsigned int frames)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	/* The first data channel is for event counter. */
++	buffer += 1;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = be32_to_cpu(buffer[c]);
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s, __be32 *buffer,
++			      unsigned int data_blocks)
++{
++	struct amdtp_tscm *p = s->protocol;
++	unsigned int channels, i, c;
++
++	channels = p->pcm_channels;
++
++	for (i = 0; i < data_blocks; ++i) {
++		for (c = 0; c < channels; ++c)
++			buffer[c] = 0x00000000;
++		buffer += s->data_block_quadlets;
++	}
++}
++
++int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
++				      struct snd_pcm_runtime *runtime)
++{
 +	int err;
- 
- 	/* Unknown. 4bytes. */
- 	data[0] = cpu_to_be32((device->card->node_id << 16) |
- 			      (dg00x->async_handler.offset >> 32));
- 	data[1] = cpu_to_be32(dg00x->async_handler.offset);
-+	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				 DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
-+				 &data, sizeof(data), 0);
++
++	/*
++	 * Our implementation allows this protocol to deliver 24 bit sample in
++	 * 32bit data channel.
++	 */
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
 +	if (err < 0)
 +		return err;
 +
-+	/* Asynchronous transactions for MIDI control message. */
-+	data[0] = cpu_to_be32((device->card->node_id << 16) |
-+			      (dg00x->async_handler.offset >> 32));
-+	data[1] = cpu_to_be32(dg00x->async_handler.offset + 4);
- 	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
--				   DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
--				   &data, sizeof(data), 0);
-+				  DG00X_ADDR_BASE + DG00X_OFFSET_MIDI_CTL_ADDR,
-+				  &data, sizeof(data), 0);
- }
- 
- int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
-@@ -57,7 +104,7 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
- 	};
- 	int err;
- 
--	dg00x->async_handler.length = 4;
-+	dg00x->async_handler.length = 12;
- 	dg00x->async_handler.address_callback = handle_message;
- 	dg00x->async_handler.callback_data = dg00x;
- 
-@@ -67,15 +114,24 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
- 		return err;
- 
- 	err = snd_dg00x_transaction_reregister(dg00x);
--	if (err < 0) {
--		fw_core_remove_address_handler(&dg00x->async_handler);
--		dg00x->async_handler.address_callback = NULL;
--	}
-+	if (err < 0)
-+		goto error;
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
 +
-+	err = snd_fw_async_midi_port_init(&dg00x->out_control, dg00x->unit,
-+					  DG00X_ADDR_BASE + DG00X_OFFSET_MMC,
-+					  4, packetize_message);
-+	if (err < 0)
-+		goto error;
- 
- 	return err;
-+error:
-+	fw_core_remove_address_handler(&dg00x->async_handler);
-+	dg00x->async_handler.address_callback = NULL;
-+	return err;
- }
- 
- void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x)
- {
-+	snd_fw_async_midi_port_destroy(&dg00x->out_control);
- 	fw_core_remove_address_handler(&dg00x->async_handler);
- }
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index bd759bf..9b54b5b 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -54,6 +54,11 @@ struct snd_dg00x {
- 	/* For asynchronous messages. */
- 	struct fw_address_handler async_handler;
- 	u32 msg;
++void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
++{
++	struct amdtp_tscm *p = s->protocol;
 +
-+	/* For asynchronous MIDI controls. */
-+	struct tasklet_struct tasklet;
-+	struct snd_rawmidi_substream *in_control;
-+	struct snd_fw_async_midi_port out_control;
++	if (WARN_ON(amdtp_stream_pcm_running(s)))
++		return;
++
++	switch (format) {
++	default:
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S16:
++		if (s->direction == AMDTP_OUT_STREAM) {
++			p->transfer_samples = write_pcm_s16;
++			break;
++		}
++		WARN_ON(1);
++		/* fall through */
++	case SNDRV_PCM_FORMAT_S32:
++		if (s->direction == AMDTP_OUT_STREAM)
++			p->transfer_samples = write_pcm_s32;
++		else
++			p->transfer_samples = read_pcm_s32;
++		break;
++	}
++}
++
++static void read_control_messages(struct amdtp_stream *s,
++				  __be32 *buffer, unsigned int data_blocks)
++{
++	unsigned int first, index = 0;
++	unsigned int i;
++
++	first = (buffer[0] >> 15) % 64;
++
++	/* TODO */
++	for (i = 0; i < data_blocks; i++) {
++		index = be32_to_cpu(buffer[0]) % 64;
++		buffer += s->data_block_quadlets;
++	}
++}
++
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
++	struct snd_pcm_substream *pcm;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (data_blocks > 0 && pcm)
++		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
++
++	read_control_messages(s, buffer, data_blocks);
++
++	return data_blocks;
++}
++
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
++	struct snd_pcm_substream *pcm;
++
++	/* This field is not used. */
++	*syt = 0x0000;
++
++	pcm = ACCESS_ONCE(s->pcm);
++	if (pcm)
++		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
++	else
++		write_pcm_silence(s, buffer, data_blocks);
++
++	return data_blocks;
++}
++
++int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
++		    enum amdtp_stream_direction dir, unsigned int pcm_channels)
++{
++	struct amdtp_tscm *p;
++	int err;
++
++	err = amdtp_stream_init(s, unit, dir,
++				CIP_NONBLOCKING | CIP_SKIP_DBC_ZERO_CHECK,
++				sizeof(struct amdtp_tscm));
++	if (err < 0)
++		return 0;
++
++	if (dir == AMDTP_IN_STREAM) {
++		s->fmt = AMDTP_FMT_TSCM_TX;
++		s->process_data_blocks = process_tx_data_blocks;
++	} else {
++		s->fmt = AMDTP_FMT_TSCM_RX;
++		s->process_data_blocks = process_rx_data_blocks;
++	}
++	s->fdf = 0x00;
++
++	p = s->protocol;
++	p->pcm_channels = pcm_channels;
++
++	return 0;
++}
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index 8d4eb3f..7f8ec3d 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -18,8 +18,13 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/info.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ 
+ #include "../lib.h"
++#include "../packets-buffer.h"
++#include "../iso-resources.h"
++#include "../amdtp-stream.h"
+ 
+ struct snd_tscm_spec {
+ 	const char *const name;
+@@ -39,6 +44,12 @@ struct snd_tscm {
+ 	struct mutex mutex;
+ 
+ 	struct snd_tscm_spec *spec;
++
++	struct fw_iso_resources tx_resources;
++	struct fw_iso_resources rx_resources;
++	struct amdtp_stream tx_stream;
++	struct amdtp_stream rx_stream;
++	unsigned int substreams_counter;
  };
  
- #define DG00X_ADDR_BASE		0xffffe0000000ull
+ #define TSCM_ADDR_BASE			0xffff00000000ull
+@@ -48,4 +59,11 @@ struct snd_tscm {
+ #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
+ #define TSCM_OFFSET_FIRMWARE_HW		0x000c
+ 
++int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
++int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
++int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
++				      struct snd_pcm_runtime *runtime);
++void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
++
+ void snd_tscm_proc_init(struct snd_tscm *tscm);
 -- 
 2.1.4
