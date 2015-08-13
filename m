@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 17/25] ALSA: firewire-tascam: add skeleton for
-	TASCAM FireWire series
-Date: Thu, 13 Aug 2015 09:20:13 +0900
-Message-ID: <1439425221-30826-18-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/25] ALSA: firewire-tascam: add proc node to
+	show firmware information
+Date: Thu, 13 Aug 2015 09:20:15 +0900
+Message-ID: <1439425221-30826-20-git-send-email-o-takashi@sakamocchi.jp>
 References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 045FF2615F7
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F119261609
  for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 02:20:38 +0200 (CEST)
 In-Reply-To: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,276 +25,158 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for TASCAM FireWire series. In this commit,
-this driver just creates/removes card instance according to bus event.
-More functionalities will be added in following commits.
+TASCAM FireWire series has certain registers for firmware information.
 
-TASCAM FireWire series consists of:
- * PDI 1394P23 for IEEE 1394 PHY layer
- * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
- * XILINX XC9536XL
- * XILINX Spartan-II XC2S100
- * ATMEL AT91M42800A
-
-Ilya Zimnovich had investigated TASCAM FireWire series in 2011, and
-discover some features of his FW-1804. You can see a part of his research
-in FFADO project.
-http://subversion.ffado.org/wiki/Tascam
-
-A part of my work is based on Ilya's investigation, while this series
-doesn't support the FW-1804, because of a lack of config ROM
-information and its protocol detail, especially for PCM channels.
-
-I observed that FW-1884 and FW-1082 don't work properly with 1394 OHCI
-controller based on VT6315. The controller can actually communicate packets
-to these models, while these models generate no sounds. It may be due to
-the PHY/LINK layer issues. Using 1394 OHCI controller produced by the other
-vendors such as Texas Instruments may enable to work. Or adding another
-node on the bus.
+This commit adds proc node to show the information.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig         |  11 +++
- sound/firewire/Makefile        |   1 +
- sound/firewire/tascam/Makefile |   2 +
- sound/firewire/tascam/tascam.c | 155 +++++++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.h |  28 ++++++++
- 5 files changed, 197 insertions(+)
- create mode 100644 sound/firewire/tascam/Makefile
- create mode 100644 sound/firewire/tascam/tascam.c
- create mode 100644 sound/firewire/tascam/tascam.h
+ sound/firewire/tascam/Makefile      |  2 +-
+ sound/firewire/tascam/tascam-proc.c | 88 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c      |  2 +
+ sound/firewire/tascam/tascam.h      | 10 +++++
+ 4 files changed, 101 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-proc.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 80f3b57..605cb91 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -135,4 +135,15 @@ config SND_FIREWIRE_DIGI00X
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-digi00x.
- 
-+config SND_FIREWIRE_TASCAM
-+	tristate "TASCAM FireWire series support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	 Say Y here to include support for TASCAM.
-+	  * FW-1884
-+	  * FW-1082
-+
-+	 To compile this driver as a module, choose M here: the module
-+	 will be called snd-firewire-tascam.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 5325d15..6ae50f5 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
-+obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-new file mode 100644
-index 0000000..29bdbce
---- /dev/null
+index 29bdbce..63f08c6 100644
+--- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -0,0 +1,2 @@
-+snd-firewire-tascam-objs := tascam.o
-+obj-m += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+@@ -1,2 +1,2 @@
+-snd-firewire-tascam-objs := tascam.o
++snd-firewire-tascam-objs := tascam-proc.o tascam.o
+ obj-m += snd-firewire-tascam.o
+diff --git a/sound/firewire/tascam/tascam-proc.c b/sound/firewire/tascam/tascam-proc.c
 new file mode 100644
-index 0000000..9f2d2a3
+index 0000000..bfd4a4c
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam.c
-@@ -0,0 +1,155 @@
++++ b/sound/firewire/tascam/tascam-proc.c
+@@ -0,0 +1,88 @@
 +/*
-+ * tascam.c - a part of driver for TASCAM FireWire series
++ * tascam-proc.h - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "tascam.h"
++#include "./tascam.h"
 +
-+MODULE_DESCRIPTION("TASCAM FireWire series Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static int check_name(struct snd_tscm *tscm)
++static void proc_read_firmware(struct snd_info_entry *entry,
++			       struct snd_info_buffer *buffer)
 +{
-+	struct fw_device *fw_dev = fw_parent_device(tscm->unit);
-+	char vendor[8];
-+	char model[8];
-+	__u32 data;
-+
-+	/* Retrieve model name. */
-+	data = be32_to_cpu(fw_dev->config_rom[28]);
-+	memcpy(model, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[29]);
-+	memcpy(model + 4, &data, 4);
-+	model[7] = '\0';
-+
-+	/* Retrieve vendor name. */
-+	data = be32_to_cpu(fw_dev->config_rom[23]);
-+	memcpy(vendor, &data, 4);
-+	data = be32_to_cpu(fw_dev->config_rom[24]);
-+	memcpy(vendor + 4, &data, 4);
-+	vendor[7] = '\0';
-+
-+	strcpy(tscm->card->driver, "FW-TASCAM");
-+	strcpy(tscm->card->shortname, model);
-+	strcpy(tscm->card->mixername, model);
-+	snprintf(tscm->card->longname, sizeof(tscm->card->longname),
-+		 "%s %s, GUID %08x%08x at %s, S%d", vendor, model,
-+		 cpu_to_be32(fw_dev->config_rom[3]),
-+		 cpu_to_be32(fw_dev->config_rom[4]),
-+		 dev_name(&tscm->unit->device), 100 << fw_dev->max_speed);
-+
-+	return 0;
-+}
-+
-+static void tscm_card_free(struct snd_card *card)
-+{
-+	struct snd_tscm *tscm = card->private_data;
-+
-+	fw_unit_put(tscm->unit);
-+
-+	mutex_destroy(&tscm->mutex);
-+}
-+
-+static int snd_tscm_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_tscm *tscm;
++	struct snd_tscm *tscm = entry->private_data;
++	__be32 data;
++	unsigned int reg, fpga, arm, hw;
 +	int err;
 +
-+	/* create card */
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_tscm), &card);
++	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
++			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_REGISTER,
++			&data, sizeof(data), 0);
 +	if (err < 0)
-+		return err;
-+	card->private_free = tscm_card_free;
++		return;
++	reg = be32_to_cpu(data);
 +
-+	/* initialize myself */
-+	tscm = card->private_data;
-+	tscm->card = card;
-+	tscm->unit = fw_unit_get(unit);
-+
-+	mutex_init(&tscm->mutex);
-+
-+	err = check_name(tscm);
++	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
++			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_FPGA,
++			&data, sizeof(data), 0);
 +	if (err < 0)
-+		goto error;
++		return;
++	fpga = be32_to_cpu(data);
 +
-+	err = snd_card_register(card);
++	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
++			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_ARM,
++			&data, sizeof(data), 0);
 +	if (err < 0)
-+		goto error;
++		return;
++	arm = be32_to_cpu(data);
 +
-+	dev_set_drvdata(&unit->device, tscm);
++	err = snd_fw_transaction(tscm->unit, TCODE_READ_QUADLET_REQUEST,
++			TSCM_ADDR_BASE + TSCM_OFFSET_FIRMWARE_HW,
++			&data, sizeof(data), 0);
++	if (err < 0)
++		return;
++	hw = be32_to_cpu(data);
 +
-+	return err;
-+error:
-+	snd_card_free(card);
-+	return err;
++	snd_iprintf(buffer, "Register: %d (0x%08x)\n", reg & 0xffff, reg);
++	snd_iprintf(buffer, "FPGA:     %d (0x%08x)\n", fpga & 0xffff, fpga);
++	snd_iprintf(buffer, "ARM:      %d (0x%08x)\n", arm & 0xffff, arm);
++	snd_iprintf(buffer, "Hardware: %d (0x%08x)\n", hw >> 16, hw);
 +}
 +
-+static void snd_tscm_update(struct fw_unit *unit)
++static void add_node(struct snd_tscm *tscm, struct snd_info_entry *root,
++		     const char *name,
++		     void (*op)(struct snd_info_entry *e,
++				struct snd_info_buffer *b))
 +{
-+	return;
++	struct snd_info_entry *entry;
++
++	entry = snd_info_create_card_entry(tscm->card, name, root);
++	if (entry == NULL)
++		return;
++
++	snd_info_set_text_ops(entry, tscm, op);
++	if (snd_info_register(entry) < 0)
++		snd_info_free_entry(entry);
 +}
 +
-+static void snd_tscm_remove(struct fw_unit *unit)
++void snd_tscm_proc_init(struct snd_tscm *tscm)
 +{
-+	struct snd_tscm *tscm = dev_get_drvdata(&unit->device);
++	struct snd_info_entry *root;
 +
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(tscm->card);
++	/*
++	 * All nodes are automatically removed at snd_card_disconnect(),
++	 * by following to link list.
++	 */
++	root = snd_info_create_card_entry(tscm->card, "firewire",
++					  tscm->card->proc_root);
++	if (root == NULL)
++		return;
++	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(root) < 0) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	add_node(tscm, root, "firmware", proc_read_firmware);
 +}
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index 29924ff..5bf3290 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -123,6 +123,8 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	snd_tscm_proc_init(tscm);
 +
-+static const struct ieee1394_device_id snd_tscm_id_table[] = {
-+	/* FW-1082 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800003,
-+	},
-+	/* FW-1884 */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800000,
-+	},
-+	/* FW-1804 mey be supported if IDs are clear. */
-+	/* FE-08 requires reverse-engineering because it just has faders. */
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_tscm_id_table);
-+
-+static struct fw_driver tscm_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-firewire-tascam",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = snd_tscm_probe,
-+	.update   = snd_tscm_update,
-+	.remove   = snd_tscm_remove,
-+	.id_table = snd_tscm_id_table,
-+};
-+
-+static int __init snd_tscm_init(void)
-+{
-+	return driver_register(&tscm_driver.driver);
-+}
-+
-+static void __exit snd_tscm_exit(void)
-+{
-+	driver_unregister(&tscm_driver.driver);
-+}
-+
-+module_init(snd_tscm_init);
-+module_exit(snd_tscm_exit);
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-new file mode 100644
-index 0000000..ca6b6b1
---- /dev/null
+index 9c225c3..8d4eb3f 100644
+--- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -0,0 +1,28 @@
-+/*
-+ * tascam.h - a part of driver for TASCAM FireWire series
-+ *
-+ * Copyright (c) 2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -17,6 +17,7 @@
+ 
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/info.h>
+ 
+ #include "../lib.h"
+ 
+@@ -39,3 +40,12 @@ struct snd_tscm {
+ 
+ 	struct snd_tscm_spec *spec;
+ };
 +
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/compat.h>
++#define TSCM_ADDR_BASE			0xffff00000000ull
 +
-+#include <sound/core.h>
-+#include <sound/initval.h>
++#define TSCM_OFFSET_FIRMWARE_REGISTER	0x0000
++#define TSCM_OFFSET_FIRMWARE_FPGA	0x0004
++#define TSCM_OFFSET_FIRMWARE_ARM	0x0008
++#define TSCM_OFFSET_FIRMWARE_HW		0x000c
 +
-+#include "../lib.h"
-+
-+struct snd_tscm {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+
-+	struct mutex mutex;
-+};
++void snd_tscm_proc_init(struct snd_tscm *tscm);
 -- 
 2.1.4
