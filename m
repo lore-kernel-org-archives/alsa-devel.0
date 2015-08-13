@@ -1,16 +1,23 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: [PATCH] ALSA: usb-audio: Fix parameter block size for
-	UAC2 control requests
-Date: Thu, 13 Aug 2015 13:04:46 +0200
-Message-ID: <1439463886-5369-1-git-send-email-julian@jusst.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
+	Nuvoton 8825
+Date: Thu, 13 Aug 2015 12:26:39 +0100
+Message-ID: <20150813112639.GB1654@sirena.org.uk>
+References: <1438038837-339-1-git-send-email-anatol.pomozov@gmail.com>
+ <20150731182716.GO20873@sirena.org.uk>
+ <CAOMFOmVA5HB138TUghe7fRwq4661vvQZt0NU5iJDZhkuGUZH1g@mail.gmail.com>
+ <20150804094757.GE20873@sirena.org.uk>
+ <CAOMFOmUg2D_T338=zFSrzw=ZRGRw9awLYrKFxhoPmOEd5NGZSA@mail.gmail.com>
+ <20150811163954.GM10748@sirena.org.uk>
+ <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2639526739064406776=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
- [74.201.84.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 7042A2608ED
- for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 13:05:00 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3C202617E0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2015 13:26:47 +0200 (CEST)
+In-Reply-To: <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,188 +27,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Julian Scheel <julian@jusst.de>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: mfelton1@nuvoton.com, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-USB Audio Class version 2.0 supports three different parameter block sizes for
-CUR requests, which are 1 byte (5.2.3.1 Layout 1 Parameter Block), 2 bytes
-(5.2.3.2 Layout 2 Parameter Block) and 4 bytes (5.2.3.3 Layout 3 Parameter
-Block). Use the correct size according to the specific control as it was
-already done for UACv1. The allocated block size for control requests is
-increased to support the 4 byte worst case.
 
-Signed-off-by: Julian Scheel <julian@jusst.de>
----
- sound/usb/mixer.c | 83 +++++++++++++++++++++++++++++++++++++++++--------------
- sound/usb/mixer.h |  2 ++
- 2 files changed, 65 insertions(+), 20 deletions(-)
+--===============2639526739064406776==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
+Content-Disposition: inline
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 4a49944..675725b 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -233,6 +233,14 @@ static int convert_signed_value(struct usb_mixer_elem_info *cval, int val)
- 		if (val >= 0x8000)
- 			val -= 0x10000;
- 		break;
-+	case USB_MIXER_U32:
-+		val &= 0xffffffff;
-+		break;
-+	case USB_MIXER_S32:
-+		val &= 0xffffffff;
-+		if (val >= 0x80000000)
-+			val -= 0x100000000;
-+		break;
- 	}
- 	return val;
- }
-@@ -253,6 +261,9 @@ static int convert_bytes_value(struct usb_mixer_elem_info *cval, int val)
- 	case USB_MIXER_S16:
- 	case USB_MIXER_U16:
- 		return val & 0xffff;
-+	case USB_MIXER_S32:
-+	case USB_MIXER_U32:
-+		return val & 0xffffffff;
- 	}
- 	return 0; /* not reached */
- }
-@@ -328,14 +339,26 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 			    int validx, int *value_ret)
- {
- 	struct snd_usb_audio *chip = cval->head.mixer->chip;
--	unsigned char buf[2 + 3 * sizeof(__u16)]; /* enough space for one range */
-+	unsigned char buf[4 + 3 * sizeof(__u32)]; /* enough space for one range */
- 	unsigned char *val;
- 	int idx = 0, ret, size;
- 	__u8 bRequest;
- 
- 	if (request == UAC_GET_CUR) {
- 		bRequest = UAC2_CS_CUR;
--		size = sizeof(__u16);
-+		switch (cval->val_type) {
-+			case USB_MIXER_S32:
-+			case USB_MIXER_U32:
-+				size = 4;
-+				break;
-+			case USB_MIXER_S16:
-+			case USB_MIXER_U16:
-+				size = 2;
-+				break;
-+			default:
-+				size = 1;
-+				break;
-+		}
- 	} else {
- 		bRequest = UAC2_CS_RANGE;
- 		size = sizeof(buf);
-@@ -446,7 +469,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 				int request, int validx, int value_set)
- {
- 	struct snd_usb_audio *chip = cval->head.mixer->chip;
--	unsigned char buf[2];
-+	unsigned char buf[4];
- 	int idx = 0, val_len, err, timeout = 10;
- 
- 	validx += cval->idx_off;
-@@ -454,8 +477,19 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 	if (cval->head.mixer->protocol == UAC_VERSION_1) {
- 		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
- 	} else { /* UAC_VERSION_2 */
--		/* audio class v2 controls are always 2 bytes in size */
--		val_len = sizeof(__u16);
-+		switch (cval->val_type) {
-+			case USB_MIXER_S32:
-+			case USB_MIXER_U32:
-+				val_len = 4;
-+				break;
-+			case USB_MIXER_S16:
-+			case USB_MIXER_U16:
-+				val_len = 2;
-+				break;
-+			default:
-+				val_len = 1;
-+				break;
-+		}
- 
- 		/* FIXME */
- 		if (request != UAC_SET_CUR) {
-@@ -469,6 +503,8 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 	value_set = convert_bytes_value(cval, value_set);
- 	buf[0] = value_set & 0xff;
- 	buf[1] = (value_set >> 8) & 0xff;
-+	buf[2] = (value_set >> 16) & 0xff;
-+	buf[3] = (value_set >> 24) & 0xff;
- 	err = snd_usb_autoresume(chip);
- 	if (err < 0)
- 		return -EIO;
-@@ -799,24 +835,25 @@ static int check_input_term(struct mixer_build *state, int id,
- /* feature unit control information */
- struct usb_feature_control_info {
- 	const char *name;
--	unsigned int type;	/* control type (mute, volume, etc.) */
-+	int type;	/* data type for uac1 */
-+	int type_uac2;	/* data type for uac2 if different from uac1, else -1 */
- };
- 
- static struct usb_feature_control_info audio_feature_info[] = {
--	{ "Mute",			USB_MIXER_INV_BOOLEAN },
--	{ "Volume",			USB_MIXER_S16 },
--	{ "Tone Control - Bass",	USB_MIXER_S8 },
--	{ "Tone Control - Mid",		USB_MIXER_S8 },
--	{ "Tone Control - Treble",	USB_MIXER_S8 },
--	{ "Graphic Equalizer",		USB_MIXER_S8 }, /* FIXME: not implemeted yet */
--	{ "Auto Gain Control",		USB_MIXER_BOOLEAN },
--	{ "Delay Control",		USB_MIXER_U16 }, /* FIXME: U32 in UAC2 */
--	{ "Bass Boost",			USB_MIXER_BOOLEAN },
--	{ "Loudness",			USB_MIXER_BOOLEAN },
-+	{ "Mute",			USB_MIXER_INV_BOOLEAN, -1 },
-+	{ "Volume",			USB_MIXER_S16, -1 },
-+	{ "Tone Control - Bass",	USB_MIXER_S8, -1 },
-+	{ "Tone Control - Mid",		USB_MIXER_S8, -1 },
-+	{ "Tone Control - Treble",	USB_MIXER_S8, -1 },
-+	{ "Graphic Equalizer",		USB_MIXER_S8, -1 }, /* FIXME: not implemeted yet */
-+	{ "Auto Gain Control",		USB_MIXER_BOOLEAN, -1 },
-+	{ "Delay Control",		USB_MIXER_U16, USB_MIXER_U32 },
-+	{ "Bass Boost",			USB_MIXER_BOOLEAN, -1 },
-+	{ "Loudness",			USB_MIXER_BOOLEAN, -1 },
- 	/* UAC2 specific */
--	{ "Input Gain Control",		USB_MIXER_S16 },
--	{ "Input Gain Pad Control",	USB_MIXER_S16 },
--	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN },
-+	{ "Input Gain Control",		USB_MIXER_S16, -1 },
-+	{ "Input Gain Pad Control",	USB_MIXER_S16, -1 },
-+	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN, -1 },
- };
- 
- /* private_free callback */
-@@ -1241,7 +1278,13 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, unitid);
- 	cval->control = control;
- 	cval->cmask = ctl_mask;
--	cval->val_type = audio_feature_info[control-1].type;
-+	if (state->mixer->protocol == UAC_VERSION_1)
-+		cval->val_type = audio_feature_info[control-1].type;
-+	else /* UAC_VERSION_2 */
-+		cval->val_type = audio_feature_info[control-1].type_uac2 > -1 ?
-+			audio_feature_info[control-1].type_uac2 :
-+			audio_feature_info[control-1].type;
-+
- 	if (ctl_mask == 0) {
- 		cval->channels = 1;	/* master channel */
- 		cval->master_readonly = readonly_mask;
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index d3268f0..3417ef3 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -33,6 +33,8 @@ enum {
- 	USB_MIXER_U8,
- 	USB_MIXER_S16,
- 	USB_MIXER_U16,
-+	USB_MIXER_S32,
-+	USB_MIXER_U32,
- };
- 
- typedef void (*usb_mixer_elem_dump_func_t)(struct snd_info_buffer *buffer,
--- 
-2.5.0
+
+--ftEhullJWpWg/VHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 12, 2015 at 04:08:31PM -0700, Anatol Pomozov wrote:
+> >> Moved it to ALSA controls. Though I still feel a bit uncomfortable
+> >> that the default control value is not usable.
+> >> I have to set "ADC Decimation Rate" and "DAC Oversampling Rate"
+> >> controls in userspace from its defaults to "128".
+
+> >Setting the default isn't too bad in this case (especially with a
+> >comment explaining why) - that doesn't preclude also providing user
+> >configuration.
+
+> What is the best way to set default control value? Just a regmap_write()?
+
+Yes.
+
+> > I'm sorry, I don't understand.  What makes you say that "using get_clk()
+> > is not flexible for all cases", I can't quite parse that bit?
+
+> My initial assumption was that you are talking about moving complete
+> clock handling (clock initialization, MCLK frequency calculation based
+> on rate, policy of switching clock sources i.e. everything that
+> platform drivers do) to the the driver code.
+
+That is the ideal thing.
+
+> I've looked at other codec drivers and did not find many examples of
+> using clk api. The drivers seems expect clock signal is pre-configured
+> already. e.g. tegra has a utility function that configures audio
+> clocks tegra_asoc_utils_set_rate() and it actively used in tegra-based
+> platform drivers.
+
+Most of these drivers predate the clock API, while there's no pressing
+need to update things (and it's pretty disruptive to existing systems
+especially older ones) if you're running into problems with new code
+that are best fixed with the clock API then you should do that.
+
+> Locally I tried to move clock initialization out of platform code to
+> codec itself. Codec calls devm_clk_get() in init and sets frequency in
+> nau8825_set_sysclk(). See it here
+> https://github.com/anatol/linux/tree/nau8825  It works fine on a
+> Tegra-based device. But I found that devm_clk_get() is DTS specific
+> and does not work with ACPI. We need NAU8825 driver for Intel platform
+> as well.
+
+No, that is not the case at all - what makes you claim that devm_clk_get()
+is DT specific?
+
+> >> I was following code from ts3a227e driver that does the same.
+
+> > That device is specifically tied to Chromebooks which have a defined
+> > mapping, as opposed to being a generic device which is usable on a range
+> > of devices.
+
+> I do not see anything Chromebook specific about this chip
+
+> http://www.ti.com/product/ts3a227e
+
+My understanding is that the accessories it supports are
+Chrombook/Android ones (note that there's no configuration of ranges for
+detection in the code).
+
+> >> At this point this function just sets jack structure needed later in
+> >> IRQ handler.
+
+> > I can see what it's doing, I'd just also expect it to also be starting
+> > and stopping the detection in the hardware.
+
+> If we move IRQ enabling from init() function to enable_jack_detect()
+> then it means chip will be unusable after the init(). It won't be able
+> to playback nor capture audio. All developers will be forced to call
+> nau88225_enable_jack_detect() from their platform driver to enable
+> basic chip functionality. I think it is better if basic functionality
+> is enabled during driver init and does not require additional steps.
+
+I very much doubt that this will be a problem for all boards.  To repeat
+what I said in my previous reply:
+
+| The assumption would be that if the system doesn't have or need jack
+| detection then the jack pins won't be reconfigurable anyway.
+
+Your board may be wired up with jack detection configured in a way that
+needs this, I would be surprised if all boards were.
+
+> It is better if I rename nau8825_enable_jack_detect() to
+> nau8825_set_jack() to make cleaner what the function suppose to do. It
+> sets jack structure that driver uses to report events to upper level.
+> If the jack pointer is not set then driver still handles jack
+> insert/eject internally but does not report it to the userspace.
+
+No, that doesn't help.
+
+--ftEhullJWpWg/VHq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJVzH7uAAoJECTWi3JdVIfQsrgH/i3GT1GiIsWdmMmk38l+EIMy
+mNYqu9uOtZrv6aBPxZfdqcqvQHPUNNNV5Ult8VyuJz5E9HC4yvTsg5zFotTlJTVa
+uuPNqwGthwH3C4OWaByfmCxb+fkBoMh9BKPoAZvUSeqG5+i/j/ADZCpXvGWB2MYJ
+of9my/AXyiHhsoLw/rsdleXk12frVRBEDXluHsl9mkCNBSp5NUM0+kjfzVnYMoEb
+nBN21yEXm0BvP+vtmoPSIJR46UiwfFEjs/uV4mSTjc/Qxnn3ARzawcdjSvbu2ImJ
+8yHe3icz1z/weN39T/bnMXxGw+m83rnsTEwar2cQ5H+RhIgSLxbb6ydwnQ+nWhc=
+=9QN3
+-----END PGP SIGNATURE-----
+
+--ftEhullJWpWg/VHq--
+
+--===============2639526739064406776==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2639526739064406776==--
