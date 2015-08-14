@@ -1,80 +1,93 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH RFC v3 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Fri, 14 Aug 2015 17:18:20 +0100
-Message-ID: <20150814161820.GU10748@sirena.org.uk>
-References: <cover.1439542916.git.jsarha@ti.com>
- <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ics43432: Add codec driver for
+	InvenSense ICS-43432
+Date: Fri, 14 Aug 2015 16:55:48 +0100
+Message-ID: <20150814155548.GQ10748@sirena.org.uk>
+References: <alpine.DEB.2.02.1508131428310.27635@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="m+1hRa/9CwYN9i9M"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, tomi.valkeinen-l0cyMroinI0@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, rmk+kernel-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3354574419721437378=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42A9526648D
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:24 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1508131428310.27635@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---m+1hRa/9CwYN9i9M
+--===============3354574419721437378==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="e4tCsK4+RPJB2X0k"
+Content-Disposition: inline
+
+
+--e4tCsK4+RPJB2X0k
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 14, 2015 at 12:30:41PM +0300, Jyri Sarha wrote:
+On Thu, Aug 13, 2015 at 03:55:17PM +0200, Ricard Wanderlof wrote:
 
-> +struct hdmi_codec_ops {
-> +	/* For runtime clock configuration from ASoC machine driver.
-> +	 * A direct forward from set_sysclk in struct snd_soc_dai_ops.
-> +	 * Optional */
-> +	int (*set_clk)(struct device *dev, int clk_id, int freq);
+> +static int ics43432_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+> +{
+> +	unsigned int rate = params_rate(params);
+> +
+> +	if (rate < ICS43432_RATE_MIN || rate > ICS43432_RATE_MAX)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
 
-I'd be much happier if we were using the clock API as the external
-interface here, it's where we want to be internally too and it's going
-to be easier to not introduce any external dependencies on the ASoC
-internal stuff.
+This isn't adding much, just let the constraint code worry about it.
 
-> +	/* Called when ASoC starts an audio stream setup. The call
-> +	 * provides an audio abort callback for stoping an ongoing
-> +	 * stream if the HDMI audio becomes unavailable.
-> +	 * Optional */
-> +	int (*audio_startup)(struct device *dev,
-> +			     void (*abort_cb)(struct device *dev));
+> +static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF:
 
-I'm a bit confused about what is going to use abort_cb() and why they
-wouldn't just call shutdown instead?
+Similarly here, this isn't adding any discoverability of the
+configuration so just omit it.
 
-> +/* HDMI codec initalization data */
-> +struct hdmi_codec_pdata {
-> +	struct device *dev; /* The HDMI encoder registering the codec */
+> +MODULE_DESCRIPTION("ASoC ICS43432 driver");
+> +MODULE_AUTHOR("Ricard Wanderlof <ricardw@axis.com>");
+> +MODULE_LICENSE("GPL2");
 
-Shouldn't this just be dev->parent?
+GPLv2.
 
-> +enum {
-> +	DAI_ID_I2C = 0,
-> +	DAI_ID_SPDIF,
-> +};
-
-I2C?  :P
-
---m+1hRa/9CwYN9i9M
+--e4tCsK4+RPJB2X0k
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzhTLAAoJECTWi3JdVIfQjp0H/0RWulQb/WC9GMi64BDKCmdm
-paUTUKdFTuhaC2HUn8ecFaE4RLYmunc8jgP1rqdI4cLZq7J98lhD3KOgm1n03q6O
-Dv/NlYem4THejxX8b8WiNmuXXcJI07NERSyy7B3YrpEsu30RU95z/r4nlFm1wXqo
-8UIQC8PsDDimuicYWuC2UKaZV5B9w4ZT8YAzCDDWoBZwMU4gJ0IA0lt4mDhNd1fc
-j32CImAzlCT9VJIC8ez5LtOgZmLnzO4ch8UB0vw5dG3mnpnQRalr6+Lzd9JhERee
-Co9PQj+FIZvNBqXf3YawGffEt5veDfgsvnKP5i/jh5E55hrNx/XryMuzy1dZpcI=
-=ryRi
+iQEcBAEBCAAGBQJVzg+EAAoJECTWi3JdVIfQzAwH/17PNM0fJs/yspnyoaAT1/pl
+pQ6HXYjfy2WsbEtW8G3gt1I8XIxrNl67HFUr4bBOfeDT8Ec9Hwqr8IsW3S7JphkT
+LZZXs78olgeC6+qSOIK/qNVu8Ve6w/RHh9+3886Xxl5J10m/YPVD5pOOIkZNvT6m
+JqqKWGb56H8J3cl2gt2ELZ6Rw6DQ+103OPx2UQ6pXzdHYDFpRsWC9ARxXszXA6I1
+FsKpy1Mt0/tWa7ilnHeE7KsDFdixkY5/qiQMCECQKnVgw6UISE3KxSufIiYPSmV4
+iB8pAXcyEIahGAZ8ckk32fCxkk8D6gmSVSvwo3OmR0slyllhsQJwaJJHluxBNjk=
+=wFGW
 -----END PGP SIGNATURE-----
 
---m+1hRa/9CwYN9i9M--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--e4tCsK4+RPJB2X0k--
+
+--===============3354574419721437378==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3354574419721437378==--
