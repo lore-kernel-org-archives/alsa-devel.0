@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: ssm2518: Add explicit device tree
-	support
-Date: Fri, 14 Aug 2015 16:53:04 +0100
-Message-ID: <20150814155304.GP10748@sirena.org.uk>
-References: <alpine.DEB.2.02.1508131456110.27635@lnxricardw1.se.axis.com>
+Subject: Re: [PATCH 9/9] ASoC: Intel: Skylake: Remove CPU dai
+	that is not used
+Date: Fri, 14 Aug 2015 23:06:33 +0100
+Message-ID: <20150814220633.GX10748@sirena.org.uk>
+References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1438976184-6160-10-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8636234215128572405=="
+Content-Type: multipart/mixed; boundary="===============1231701676393640977=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BB2DE266488
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:17 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1508131456110.27635@lnxricardw1.se.axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C950526627C
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:23 +0200 (CEST)
+In-Reply-To: <1438976184-6160-10-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8636234215128572405==
+--===============1231701676393640977==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TJXgsAvz6ds/es3G"
+	protocol="application/pgp-signature"; boundary="UaIp6+ubhcbWp687"
 Content-Disposition: inline
 
 
---TJXgsAvz6ds/es3G
+--UaIp6+ubhcbWp687
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 13, 2015 at 03:10:19PM +0200, Ricard Wanderlof wrote:
+On Sat, Aug 08, 2015 at 01:06:24AM +0530, Subhransu S. Prusty wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
 >=20
-> Add OF match table to SSM2518 to allow direct matching without going
-> through I2C subsystem.
->=20
-> Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
->=20
-> ---
->  sound/soc/codecs/ssm2518.c |    9 +++++++++
->  1 file changed, 9 insertions(+)
+> For each endpoint instance, need to create CPU dai,
+> Removed unused CPU dai DMIC23/HDA-SPK/HDA-AMIC dais.
 
-You should document all new DT bindings (even if they did implicitly
-happen to work before).
+I'm not sure I understand the first line here?
 
---TJXgsAvz6ds/es3G
+--UaIp6+ubhcbWp687
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzg7fAAoJECTWi3JdVIfQNG4H/3aytwUjELFlQyn16/iHkgV7
-v0+tR2ylkuofem3Ymr0nwLHjixD9Zq16Mk/ftiC3EWhJxX+VvxuQihV5w7oQIkj0
-vGpRYddWwRHlXrf5GqUq/jdASEaUwkD2HacOYdTzuT2+hZ0cnFsrWNWWIbQkT/d6
-1ennWbR9zXwro/WCIITa4jNQ8u7O8JKlnkXOdcmexzBe4+Bg5tgRudFEGV/0gUcy
-VAmr3XqDmxOzNFMUiw/aLR7Q/3jNas6g+YSDt4OTZctB1hMU1NlDI3IoYIHxkLvL
-5W7agw+E3rNgNo8Iyfq0XbTARAUzVAxXfINGdeV5keZ1AE3KrgvDzqc6oKtOc3s=
-=EgDT
+iQEcBAEBCAAGBQJVzmZoAAoJECTWi3JdVIfQtugH/Rw3iPnCfhjS8v746jWAGw5s
+jtZuPo5qzKI9g/9LP4NLBG+MpdXj4gtY2XX05nNT7L99rkz0At6ijO0gCcAC96UQ
+WZeCIB8dFkhCtWDI9PoyHpo0fDclpKldD6uyKcZR4lxiR8g5J5I4KxckOzgg2myp
+W8btl2y4E0TBM4sL1vs1g+0kuI8KWF7TekYZTK1GPqNIND+P5FbeEPFMF3MxZ+lB
+g8CQ9IuPzAZVb13rVk7ZeiH4xgq/NBgLu0GuU8cBdweClnKt/FnacGvzpPAOmL9p
+DCejm3Cny4tMsHbbNqwb79emU0pCKvlSkjWCzag1vuoM/eF43rmylEw78UZU9vE=
+=hNSf
 -----END PGP SIGNATURE-----
 
---TJXgsAvz6ds/es3G--
+--UaIp6+ubhcbWp687--
 
---===============8636234215128572405==
+--===============1231701676393640977==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8636234215128572405==--
+--===============1231701676393640977==--
