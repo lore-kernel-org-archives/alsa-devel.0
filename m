@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 05/10] ASoC: Add support for dummy DAI
- links and PCM runtimes
-Date: Fri, 14 Aug 2015 21:22:10 +0100
-Message-ID: <20150814202210.GQ10748@sirena.org.uk>
+Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
+ formats to bitwise flag
+Date: Fri, 14 Aug 2015 21:34:28 +0100
+Message-ID: <20150814203428.GR10748@sirena.org.uk>
 References: <cover.1439217448.git.mengdong.lin@intel.com>
- <0364569ce2898a20d08243ba59a92973b2dc4735.1439217448.git.mengdong.lin@intel.com>
+ <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5631125723579816664=="
+Content-Type: multipart/mixed; boundary="===============2738970378088398193=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AF512664D4
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:58 +0200 (CEST)
-In-Reply-To: <0364569ce2898a20d08243ba59a92973b2dc4735.1439217448.git.mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F9202664F4
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:12:13 +0200 (CEST)
+In-Reply-To: <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,68 +27,72 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5631125723579816664==
+--===============2738970378088398193==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="a1taQt+5gib656GU"
+	protocol="application/pgp-signature"; boundary="rwwPlZPbpBX9O0Yk"
 Content-Disposition: inline
 
 
---a1taQt+5gib656GU
+--rwwPlZPbpBX9O0Yk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 10, 2015 at 10:47:47PM +0800, mengdong.lin@intel.com wrote:
+On Mon, Aug 10, 2015 at 10:48:37PM +0800, mengdong.lin@intel.com wrote:
 
-> Add dummy flag to a DAI link and PCM runtime. A dummy link will create
-> a dummy PCM runtime.
+>  struct snd_soc_tplg_stream_caps {
+>  	__le32 size;		/* in bytes of this structure */
+>  	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> -	__le64 formats[SND_SOC_TPLG_MAX_FORMATS];	/* supported formats SNDRV_PCM_FMTBIT_* */
+> +	__le64 formats;	/* supported formats SNDRV_PCM_FORMAT_* */
 
-> A machine driver can define dummy dai links to specify the expected
-> platform and codec. And its dummy runtime is used to probe the platform
-> and codec components, which can bring real DAI/DAI links based on topology.
-> After components probing, all dummy PCM runtimes will be removed.
+Argh, this is *another* ABI change which you've buried in the middle of
+a series you're sending right at the end of the release cycle (this was
+sent after -rc6, we may not even get a -rc7...).  Given how close we are
+to the release and the invasiveness of the changes in this series it's
+very lucky I even saw it before release, I'm reading this on my flight
+to Plumbers which means my bandwidth next week will be limited.
 
-This isn't very clear to me either in terms of the description or the
-interface.  As far as I can tell these links that are being created here
-are placeholders representing links that will actually be instantiated
-later but if that's the case they're not really dummies as I'd
-understand them, they are real links which physically exist and will be
-created later by topology data.  If we are going to do things this way
-we need a better way of talking about these not yet instantiated links.
+This should have at the very least been sent at the start of the series,
+and really should have been sent separately.  It is also worrying that
+there is nothing in the subject or changelog talking about the fact that
+this is an ABI change or explaining why it is required.  The changelog
+was simply a statement of the content of the diff, not a rationale:
 
-I'm really confused as to why physical links that exist in the board are
-coming in via topology information loaded from userspace - it's not like
-the DSP firmware is going to be able to physically connect the DSP to
-things where no links existed before.  I'd expect that these links are
-connections between physical devices which just exist in the system and
-that while the topology information might leave some of them dangling
-they wouldn't be created or removed.
+| The toplogy user space tool will generate this bitwise flag by using
+| SNDRV_PCM_FORMAT_* exposed by asound.h, and the topology core will copy
+| this flag when generating DAI streams.
 
-Presumably we're also going to need to handle the case where the
-firmware is unloaded and we destroy the links if we do this...
+Once the release goes out this sort of incompatible change will be
+unacceptable.  Given the number of changes that are going into the ABI
+(we also had some others went in last week) I'm now giving some serious
+thought to the idea that we should ask Linus to revert the topology code
+for v4.2 and waiting for v4.3 so we've got more chance to make sure the
+ABI is one we actually want to stick with.  Liam, Takashi I don't know
+what you think?
 
---a1taQt+5gib656GU
+--rwwPlZPbpBX9O0Yk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzk3yAAoJECTWi3JdVIfQtm8H/3o3e2ol7duZ+zAiV33y/5Zf
-Tu52IQhyGPucl09GxIOeQc39uu6dfBHGHAJ60fz0MTvOfekw/FwAlgk7Fdm77LLZ
-3fiV98YrfgEXs8FiOaP7JL5GOhrIZh/wDEYAYdwhvy/DXO+7UYmm+JTq66uK1OvO
-aclXFs5O5qN2r8Ebo43kV4wiTMuFcqSuvRrE7Zd6CtlWLxR+3yrTaHXBb8IqSamA
-j4Gg5eVfvSSN/mdmaZmi+u8otv3eXcYSigBNUAdluhud797q4bVGAWa6NKd6D70Q
-yjpR2RdgTPGGnx3CPlSp8Hcgs0K41Nf425UHij2v/m095ZFJX30RKmmYlanuIB4=
-=1Pec
+iQEcBAEBCAAGBQJVzlDTAAoJECTWi3JdVIfQoIQH/1I/Qqqz6vZWYZyOP07SLedW
+J2pp9hpYjeyTQFJNUzFTckRIgIENXAmPBFGLTBUW28seewS7t1djzDqze8l4P+tB
+E7uZo6wRNSh2r+adPV5ucJpTo4roVE/74G8uNwhA8mi07j5VG9idVDsFw9lT0V0a
+4XM18Vmgyo5hKtCrfW+PYj+xBT+SZZpmgxK3OFLu+Ej8dAl8yeN482PTtyxE/ZYB
+MSblTnqMlVh3Bi0/OtnhNLk/53xPBZtYWya79u5B8Qu+DnxoSsqODiFL+bHLJRn7
++GZFw/mWozBLuoALzTLMSBCQewhOyeGGJCwj/H44nI350fKhYD9mcYdVVB33P1I=
+=OTwA
 -----END PGP SIGNATURE-----
 
---a1taQt+5gib656GU--
+--rwwPlZPbpBX9O0Yk--
 
---===============5631125723579816664==
+--===============2738970378088398193==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5631125723579816664==--
+--===============2738970378088398193==--
