@@ -1,61 +1,82 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH RFC v3 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Fri, 14 Aug 2015 10:57:41 +0100
-Message-ID: <20150814095741.GG7576@n2100.arm.linux.org.uk>
-References: <cover.1439542916.git.jsarha@ti.com>
- <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: wm8741: Drop misleading readable_reg
+ callback implementation
+Date: Fri, 14 Aug 2015 17:58:01 +0800
+Message-ID: <1439546281.5150.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB90D265152
+ for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 11:58:06 +0200 (CEST)
+Received: by pdbfa8 with SMTP id fa8so29668719pdb.1
+ for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 02:58:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTQsIDIwMTUgYXQgMTI6MzA6NDFQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
-ZToKPiArc3RhdGljIGludCBoZG1pX2NvZGVjX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSwKPiArCQkJCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1z
-LAo+ICsJCQkJc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCj4gK3sKPiArCXN0cnVjdCBoZG1pX2Nv
-ZGVjX3ByaXYgKmhjcCA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gKwlzdHJ1Y3Qg
-aGRtaV9jb2RlY19wYXJhbXMgaHAgPSB7Cj4gKwkJLmNlYSA9IHsgMCB9LAoKVW5uZWNlc3Nhcnkg
-aW5pdGlhbGlzYXRpb24gLSBiZWNhdXNlIHlvdSBhcmUgaW5pdGlhbGlzaW5nIHRoaXMgc3RydWN0
-dXJlLAphbGwgdW5uYW1lZCBmaWVsZHMgd2lsbCBiZSB6ZXJvZWQuCgo+ICsJCS5pZWMgPSB7Cj4g
-KwkJCS5zdGF0dXMgPSB7Cj4gKwkJCQlJRUM5NThfQUVTMF9DT05fTk9UX0NPUFlSSUdIVCwKPiAr
-CQkJCUlFQzk1OF9BRVMxX0NPTl9HRU5FUkFMLAo+ICsJCQkJSUVDOTU4X0FFUzJfQ09OX1NPVVJD
-RV9VTlNQRUMsCj4gKwkJCQlJRUM5NThfQUVTM19DT05fQ0xPQ0tfVkFSSUFCTEUsCj4gKwkJCX0s
-CgouLi4KCj4gKwloZG1pX2F1ZGlvX2luZm9mcmFtZV9pbml0KCZocC5jZWEpOwo+ICsJaHAuY2Vh
-LmNvZGluZ190eXBlID0gSERNSV9BVURJT19DT0RJTkdfVFlQRV9QQ007CgpTb21ldGhpbmcgdGVs
-bHMgbWUgaGVyZSB0aGF0IHlvdSBoYXZlbid0IHJlYWQgdGhlIEhETUkgc3BlY2lmaWNhdGlvbi4K
-SERNSSBzYXlzIHRoYXQgdGhlIGNvZGluZyB0eXBlIHdpbGwgYmUgemVybyAocmVmZXIgdG8gc3Ry
-ZWFtIGhlYWRlcikuClRoZSBzYW1lIGdvZXMgZm9yIG11Y2ggb2YgdGhlIENFQSBhdWRpbyBpbmZv
-ZnJhbWUuICBQbGVhc2Ugc2VlIHRoZQpBdWRpbyBJbmZvRnJhbWUgZGV0YWlscyBpbiB0aGUgSERN
-SSBzcGVjaWZpY2F0aW9uLgoKPiArCWhwLmNlYS5jaGFubmVscyA9IHBhcmFtc19jaGFubmVscyhw
-YXJhbXMpOwo+ICsKPiArCXN3aXRjaCAocGFyYW1zX3dpZHRoKHBhcmFtcykpIHsKPiArCWNhc2Ug
-MTY6Cj4gKwkJaHAuaWVjLnN0YXR1c1s0XSB8PSBJRUM5NThfQUVTNF9DT05fV09SRExFTl8yMF8x
-NjsKPiArCQlocC5jZWEuc2FtcGxlX3NpemUgPSBIRE1JX0FVRElPX1NBTVBMRV9TSVpFXzE2Owo+
-ICsJCWJyZWFrOwo+ICsJY2FzZSAxODoKPiArCQlocC5pZWMuc3RhdHVzWzRdIHw9IElFQzk1OF9B
-RVM0X0NPTl9XT1JETEVOXzIyXzE4Owo+ICsJCWhwLmNlYS5zYW1wbGVfc2l6ZSA9IEhETUlfQVVE
-SU9fU0FNUExFX1NJWkVfMjA7Cj4gKwkJYnJlYWs7Cj4gKwljYXNlIDIwOgo+ICsJCWhwLmllYy5z
-dGF0dXNbNF0gfD0gSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjRfMjA7Cj4gKwkJaHAuY2VhLnNh
-bXBsZV9zaXplID0gSERNSV9BVURJT19TQU1QTEVfU0laRV8yMDsKPiArCQlicmVhazsKPiArCWNh
-c2UgMjQ6Cj4gKwljYXNlIDMyOgo+ICsJCWhwLmllYy5zdGF0dXNbNF0gfD0gSUVDOTU4X0FFUzRf
-Q09OX01BWF9XT1JETEVOXzI0IHwKPiArCQkJSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjRfMjA7
-CgpXaHkgbm90IHVzZSB0aGUgZ2VuZXJpYyBjb2RlIHRvIGdlbmVyYXRlIHRoZSBBRVMgY2hhbm5l
-bCBzdGF0dXMgYml0cz8KU2VlIHNvdW5kL2NvcmUvcGNtX2llYzk1OC5jLgoKLS0gCkZUVEMgYnJv
-YWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGti
-cHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVs
-QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+regmap_readable() returns false if map->format.format_write is set.
+For .reg_bits = 7, .val_bits = 9, setting,
+  map->format.format_write = regmap_format_7_9_write;
+
+Even current code has implemented map->readable_reg, regmap_readable()
+still returns false anyway. Thus drop the misleading readable_reg callback
+implementation.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/wm8741.c | 21 ---------------------
+ 1 file changed, 21 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 9723e44..de42c03 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -61,25 +61,6 @@ static const struct reg_default wm8741_reg_defaults[] = {
+ 	{ 32, 0x0002 },     /* R32 - ADDITONAL_CONTROL_1 */
+ };
+ 
+-static bool wm8741_readable(struct device *dev, unsigned int reg)
+-{
+-	switch (reg) {
+-	case WM8741_DACLLSB_ATTENUATION:
+-	case WM8741_DACLMSB_ATTENUATION:
+-	case WM8741_DACRLSB_ATTENUATION:
+-	case WM8741_DACRMSB_ATTENUATION:
+-	case WM8741_VOLUME_CONTROL:
+-	case WM8741_FORMAT_CONTROL:
+-	case WM8741_FILTER_CONTROL:
+-	case WM8741_MODE_CONTROL_1:
+-	case WM8741_MODE_CONTROL_2:
+-	case WM8741_ADDITIONAL_CONTROL_1:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+ static int wm8741_reset(struct snd_soc_codec *codec)
+ {
+ 	return snd_soc_write(codec, WM8741_RESET, 0);
+@@ -541,8 +522,6 @@ static const struct regmap_config wm8741_regmap = {
+ 	.reg_defaults = wm8741_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(wm8741_reg_defaults),
+ 	.cache_type = REGCACHE_RBTREE,
+-
+-	.readable_reg = wm8741_readable,
+ };
+ 
+ static int wm8741_set_pdata(struct device *dev, struct wm8741_priv *wm8741)
+-- 
+2.1.0
