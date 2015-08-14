@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
- hw_params handling
-Date: Fri, 14 Aug 2015 22:53:10 +0100
-Message-ID: <20150814215310.GV10748@sirena.org.uk>
-References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v2 01/10] ASoC: Change the PCM runtime
+	array to a list
+Date: Fri, 14 Aug 2015 21:02:41 +0100
+Message-ID: <20150814200241.GP10748@sirena.org.uk>
+References: <cover.1439217448.git.mengdong.lin@intel.com>
+ <0b1c3916360faff8a36cc860f5b6af802bd6778b.1439217448.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0876678330010338104=="
+Content-Type: multipart/mixed; boundary="===============0524788931817349640=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C6C912664CB
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:35 +0200 (CEST)
-In-Reply-To: <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EF50266469
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:49 +0200 (CEST)
+In-Reply-To: <0b1c3916360faff8a36cc860f5b6af802bd6778b.1439217448.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,173 +22,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: mengdong.lin@intel.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0876678330010338104==
+--===============0524788931817349640==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lpBPog2+b3WGyJY6"
+	protocol="application/pgp-signature"; boundary="3h+hNn3PVp185ISI"
 Content-Disposition: inline
 
 
---lpBPog2+b3WGyJY6
+--3h+hNn3PVp185ISI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Aug 08, 2015 at 01:06:19AM +0530, Subhransu S. Prusty wrote:
+On Mon, Aug 10, 2015 at 10:45:28PM +0800, mengdong.lin@intel.com wrote:
 
-> +	/*
-> +	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit container so
-> +	 * update bit depth accordingly
-> +	 */
-> +	if (format->valid_bit_depth == SKL_DEPTH_16BIT)
-> +		format->bit_depth = format->valid_bit_depth;
-> +	else if (format->valid_bit_depth == SKL_DEPTH_24BIT)
-> +		format->bit_depth = SKL_DEPTH_32BIT;
+> +	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
+> +	codec_dai = rtd->codec_dai;
 > +
 
-What if the depth is neither 16 bit nor 24 bit?  Shouldn't this just be
-a simple override for the 24 bit case?
+For ease of review please split the addition of this new interface for
+getting the runtime from the change to the implementation - the same
+function can be written in terms of a list.  As ever please make one
+change per commit :(
 
-> +/*
-> + * Fill the BE gateway parameters
-> + * The BE gateway expects a blob of parameters which are kept in the ACPI
-> + * NHLT blob, so query the blob for interface type (i2s/pdm) and instance.
-> + * The port cna have multiple settings so pick based on the PCM
-> + * parameters
-> + */
-> +static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
-> +		struct skl_module_cfg *mconfig, struct skl_pipe_params *params)
+> +static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+> +	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
 > +{
-> +	struct skl_pipe *pipe = mconfig->pipe;
-> +	struct nhlt_specific_cfg *cfg;
-> +	struct skl *skl = get_skl_ctx(dai->dev);
-> +	int link_type = skl_tplg_be_link_type(mconfig->dev_type);
+> +	struct snd_soc_pcm_runtime *rtd;
 > +
-> +	memcpy(pipe->p_params, params, sizeof(*params));
-> +
-> +	/* update the blob based on virtual bus_id*/
-> +	cfg = (struct nhlt_specific_cfg *) skl_get_ep_blob(skl,
-> +			mconfig->vbus_id, link_type, params->s_fmt,
-> +			params->ch, params->s_freq, params->stream);
+> +	rtd = devm_kzalloc(card->dev,
+> +			sizeof(struct snd_soc_pcm_runtime), GFP_KERNEL);
+> +	if (!rtd)
+> +		return NULL;
 
-I don't seem to have slk_get_ep_blob() but hopefully it's returning a
-void * in which case why do we need to cast it?  In any case it needs to
-be defined in mainline before this can be applied :(
+Why are we allocating something with devm_kzalloc()...
 
-> +	if (cfg) {
-> +		mconfig->formats_config.caps_size = cfg->size;
-> +		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
-> +	} else {
-> +		dev_dbg(dai->dev, "Blob is NULL");
-> +		return -EINVAL;
-> +	}
-
-This seems like a more serious problem than something we just dev_dbg()
-about?
-
-> +static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
-> +					struct snd_soc_dapm_widget *w,
-> +					struct skl_pipe_params *params)
+> +static void soc_free_pcm_runtime(struct snd_soc_card *card,
+> +	struct snd_soc_pcm_runtime *rtd)
 > +{
-> +	if (!w->power) {
-> +		dev_dbg(dai->dev, "set params for widget=%s\n", w->name);
-> +		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
-> +	}
-> +
-> +	return -EINVAL;
+> +	if (rtd->codec_dai)
+> +		devm_kfree(card->dev, rtd->codec_dais);
+> +	devm_kfree(card->dev, rtd);
+> +}
 
-Shouldn't that be -EBUSY?  The normal idiom would be to check to see if
-we were busy and error out rather than writing it as only configuing if
-not busy (which looks like an error case now).
+...things that we later explicitly free in (hopefully?) all cases.
 
-> +	list_for_each_entry(p, &w->sources, list_sink) {
-> +		if (p->connect && is_skl_dsp_widget_type(p->source) &&
-> +						 p->source->priv) {
-> +			ret = skl_tplg_be_set_params(dai, p->source, params);
-> +
-> +			if (ret < 0)
-> +				return ret;
-> +		} else {
-> +			ret = skl_tplg_be_set_src_pipe_params(dai, p->source,
-> +									 params);
-> +		}
-
-These two cases appear to be identical apart from ignoring the error in
-the else case...
-
-> +	}
-> +
-> +	return ret;
-
-...unless it happens to be the last entry in the list in which case we
-pay attention.
-
-> +static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
-> +	struct snd_soc_dapm_widget *w, struct skl_pipe_params *params)
+> +static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
 > +{
-> +	struct snd_soc_dapm_path *p = NULL;
-> +	int ret = 0;
+> +	struct snd_soc_pcm_runtime *rtd, *_rtd;
 > +
-> +	dev_dbg(dai->dev, "widget name=%s\n", w->name);
-> +
-> +	list_for_each_entry(p, &w->sinks, list_source) {
-> +		if (p->connect && is_skl_dsp_widget_type(p->sink) &&
-> +						p->sink->priv) {
-> +			ret = skl_tplg_be_set_params(dai, p->sink, params);
-> +
-> +			if (ret < 0)
-> +				return ret;
-> +		} else {
-> +			ret = skl_tplg_be_set_sink_pipe_params(dai, p->sink,
-> +									 params);
-> +		}
-> +	}
-
-There's some more common code here and the same patterns as above...  :/
-
-> +	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		w = dai->playback_widget;
-> +
-> +		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
-> +		return skl_tplg_be_set_src_pipe_params(dai, w, params);
+> +	list_for_each_entry_safe(rtd, _rtd, &card->rtd_list, list) {
+> +		list_del(&rtd->list);
+> +		soc_free_pcm_runtime(card, rtd);
 > +	}
 > +
-> +	if (params->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		w = dai->capture_widget;
-> +
-> +		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
-> +		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
-> +	}
+> +	card->num_rtd = 0;
+> +}
 
-Normally that'd be written as an if/else, and the only difference
-between the two cases here is which widget we pick...
+Why doesn't the free function do the list removal?
 
---lpBPog2+b3WGyJY6
+--3h+hNn3PVp185ISI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzmNFAAoJECTWi3JdVIfQ5uwH/2MwJL5bnxoVh+uZDX8IN45I
-aPo76VxCDm5xaGQxIUUcCQcTmMAXWZJoI/0gQQyDDRo+kS/Kl1lA7uWB7WR2hHlz
-eDT/rjdepKIrO8vU53xAJvITF+YrlV09K0cNSVayQKhhJfGzULRQw7oYB8hTzqp/
-Q+In2YnYMaaMYDTTEvmsW2jV1iSy2z5mv63RSO9DuigWVX8xNjRvyLGFqVnhh/+0
-RugPn4F7e0ZUdg7PRQLSoxmr3xZB6VMSnnYIuD955tK2t6d2WMqZFzszqyHRhgwa
-fFV68nIrg9usygA4TbXu/OyRKOGZIMIbaS/azG5mNlNMZKQ05ABE7h6S9JfzbwE=
-=CQeF
+iQEcBAEBCAAGBQJVzkleAAoJECTWi3JdVIfQBjkH/0M8cG7PINYPg8FUVZ8YAu6C
+lapJ8BQQP2xQR1K/4rhGRXLgk4i5MdgCLewXVEuO2trfD703S0aqjjgOy+Jif4fF
+bEpsBx1+oojBXbymA89V/xBbaeuOs3eiJ6YA+nf1tiNA3cWJ8P1zuWPQvGZ6Cnc2
+drIbx7/pRF3LswZX73Cpf7CKwvjDwNan6ysxRmBDJKL8qA5UICbLjifxYnuu92iX
+jyJBk0Pcb1X3dUG8bO5h6uH1K3fv7Wmoy3OUviwWBYTV5O5XHALLYelIwYH0uln1
+FoJ6+gvYOQdfqxKGEMYDxUKLDXIgYEj9unzLJcDb/SG+fkVqTOYocFPayE2hIQY=
+=oThH
 -----END PGP SIGNATURE-----
 
---lpBPog2+b3WGyJY6--
+--3h+hNn3PVp185ISI--
 
---===============0876678330010338104==
+--===============0524788931817349640==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0876678330010338104==--
+--===============0524788931817349640==--
