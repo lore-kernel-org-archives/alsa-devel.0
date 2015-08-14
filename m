@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Change pass number of DAI
-	smaller than graph" to the asoc tree
-Date: Fri, 14 Aug 2015 19:13:19 -0700
-Message-ID: <E1ZQQyF-0004I6-CU@finisterre>
-References: <1439187223-1285-1-git-send-email-mengdong.lin@intel.com>
+Subject: Re: [PATCH v2] ASoC: ics43432: Add codec driver for
+ InvenSense ICS-43432
+Date: Fri, 14 Aug 2015 17:07:31 +0100
+Message-ID: <20150814160731.GS10748@sirena.org.uk>
+References: <alpine.DEB.2.02.1508141106040.27635@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3460188384829468007=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D94EF2665B2
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:24 +0200 (CEST)
-In-Reply-To: <1439187223-1285-1-git-send-email-mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AAD712665C0
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:25 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1508141106040.27635@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,71 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: Change pass number of DAI smaller than graph
+--===============3460188384829468007==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tTvAEuyWWbMF5UF4"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--tTvAEuyWWbMF5UF4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Aug 14, 2015 at 11:10:10AM +0200, Ricard Wanderlof wrote:
+>=20
+> V2: Update after comments from Lars-Peter yesterday: set rate to=20
+> CONTINUOUS and let ALSA figure out the details, also removing hw_params a=
+s=20
+> it is then not needed.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Please add any non-changelog content like this after the --- as covered
+in SubmittingPatches.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fm=
+t)
+> +{
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+This still seems redundant (IIRC Lars mentioned this...).
 
-Thanks,
-Mark
+--tTvAEuyWWbMF5UF4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->From 1a8e7fab70c8d7cad2e606e7b21d46e42e51c2fd Mon Sep 17 00:00:00 2001
-From: Mengdong Lin <mengdong.lin@intel.com>
-Date: Mon, 10 Aug 2015 22:48:30 +0800
-Subject: [PATCH] ASoC: topology: Change pass number of DAI smaller than graph
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-The PCM DAIs need to be loaded and added to ASoC core ealier than the
-graph (route). Otherwise, adding routes will fail for missing DAIs.
+iQEcBAEBCAAGBQJVzhJCAAoJECTWi3JdVIfQVS8H/3qcalHwqmUhodD2oRwP1WNx
+/EqlK63UEHbuv6jDJ5ybi28FDq5EUmL3607n7vWN4HTqMqY2WiauJKLYmUZJ90tK
+BcDj9fX7IcYsceptKc051BXlKVvwdK51V1yy+/OJOWJtEM8/1ZkgvCHZvrRLw57l
+GaQHfwJ1sLkZTq26yhK93GRFmr1qrQRa+jE41WkDFeFZk4eXAmJjo7796nln3YFr
+VbXhUHLDYB13/Q2jgwNFdpa065E3/crXruK0PeJGcG5NNQ9oM+RqsRQWZ9PlzLg8
+Uiyyj72fBwe7lU0elyDKldMYrIeUdbDetI3uxv9GXLlgQFiDtK3PEikI60jSyL0=
+=N5Dd
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-topology.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--tTvAEuyWWbMF5UF4--
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8620dbf..942c1ac 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -44,12 +44,12 @@
- #define SOC_TPLG_PASS_VENDOR		1
- #define SOC_TPLG_PASS_MIXER		2
- #define SOC_TPLG_PASS_WIDGET		3
--#define SOC_TPLG_PASS_GRAPH		4
--#define SOC_TPLG_PASS_PINS		5
--#define SOC_TPLG_PASS_PCM_DAI		6
-+#define SOC_TPLG_PASS_PCM_DAI		4
-+#define SOC_TPLG_PASS_GRAPH		5
-+#define SOC_TPLG_PASS_PINS		6
- 
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
--#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_PCM_DAI
-+#define SOC_TPLG_PASS_END	SOC_TPLG_PASS_PINS
- 
- struct soc_tplg {
- 	const struct firmware *fw;
--- 
-2.5.0
+--===============3460188384829468007==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3460188384829468007==--
