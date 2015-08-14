@@ -1,50 +1,61 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: adav80x: Remove .read_flag_mask setting
- from adav80x_regmap_config
-Date: Fri, 14 Aug 2015 17:54:07 +0800
-Message-ID: <1439546047.5150.1.camel@ingics.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH RFC v3 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
+ HDMI-encoders
+Date: Fri, 14 Aug 2015 10:57:41 +0100
+Message-ID: <20150814095741.GG7576@n2100.arm.linux.org.uk>
+References: <cover.1439542916.git.jsarha@ti.com>
+ <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
- [209.85.192.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B38F2650F5
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 11:54:12 +0200 (CEST)
-Received: by pdrg1 with SMTP id g1so29747384pdr.2
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 02:54:11 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't set .read_flag_mask for adav803, it's for adav801 only.
-
-Fixes: 0c2d69645628 ("ASoC: adav80x: Split SPI and I2C code into different modules")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/adav80x.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
-index 88fd37c..198c924 100644
---- a/sound/soc/codecs/adav80x.c
-+++ b/sound/soc/codecs/adav80x.c
-@@ -865,7 +865,6 @@ const struct regmap_config adav80x_regmap_config = {
- 	.val_bits = 8,
- 	.pad_bits = 1,
- 	.reg_bits = 7,
--	.read_flag_mask = 0x01,
- 
- 	.max_register = ADAV80X_PLL_OUTE,
- 
--- 
-2.1.0
+T24gRnJpLCBBdWcgMTQsIDIwMTUgYXQgMTI6MzA6NDFQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
+ZToKPiArc3RhdGljIGludCBoZG1pX2NvZGVjX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJz
+dHJlYW0gKnN1YnN0cmVhbSwKPiArCQkJCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1z
+LAo+ICsJCQkJc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCj4gK3sKPiArCXN0cnVjdCBoZG1pX2Nv
+ZGVjX3ByaXYgKmhjcCA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRhKGRhaSk7Cj4gKwlzdHJ1Y3Qg
+aGRtaV9jb2RlY19wYXJhbXMgaHAgPSB7Cj4gKwkJLmNlYSA9IHsgMCB9LAoKVW5uZWNlc3Nhcnkg
+aW5pdGlhbGlzYXRpb24gLSBiZWNhdXNlIHlvdSBhcmUgaW5pdGlhbGlzaW5nIHRoaXMgc3RydWN0
+dXJlLAphbGwgdW5uYW1lZCBmaWVsZHMgd2lsbCBiZSB6ZXJvZWQuCgo+ICsJCS5pZWMgPSB7Cj4g
+KwkJCS5zdGF0dXMgPSB7Cj4gKwkJCQlJRUM5NThfQUVTMF9DT05fTk9UX0NPUFlSSUdIVCwKPiAr
+CQkJCUlFQzk1OF9BRVMxX0NPTl9HRU5FUkFMLAo+ICsJCQkJSUVDOTU4X0FFUzJfQ09OX1NPVVJD
+RV9VTlNQRUMsCj4gKwkJCQlJRUM5NThfQUVTM19DT05fQ0xPQ0tfVkFSSUFCTEUsCj4gKwkJCX0s
+CgouLi4KCj4gKwloZG1pX2F1ZGlvX2luZm9mcmFtZV9pbml0KCZocC5jZWEpOwo+ICsJaHAuY2Vh
+LmNvZGluZ190eXBlID0gSERNSV9BVURJT19DT0RJTkdfVFlQRV9QQ007CgpTb21ldGhpbmcgdGVs
+bHMgbWUgaGVyZSB0aGF0IHlvdSBoYXZlbid0IHJlYWQgdGhlIEhETUkgc3BlY2lmaWNhdGlvbi4K
+SERNSSBzYXlzIHRoYXQgdGhlIGNvZGluZyB0eXBlIHdpbGwgYmUgemVybyAocmVmZXIgdG8gc3Ry
+ZWFtIGhlYWRlcikuClRoZSBzYW1lIGdvZXMgZm9yIG11Y2ggb2YgdGhlIENFQSBhdWRpbyBpbmZv
+ZnJhbWUuICBQbGVhc2Ugc2VlIHRoZQpBdWRpbyBJbmZvRnJhbWUgZGV0YWlscyBpbiB0aGUgSERN
+SSBzcGVjaWZpY2F0aW9uLgoKPiArCWhwLmNlYS5jaGFubmVscyA9IHBhcmFtc19jaGFubmVscyhw
+YXJhbXMpOwo+ICsKPiArCXN3aXRjaCAocGFyYW1zX3dpZHRoKHBhcmFtcykpIHsKPiArCWNhc2Ug
+MTY6Cj4gKwkJaHAuaWVjLnN0YXR1c1s0XSB8PSBJRUM5NThfQUVTNF9DT05fV09SRExFTl8yMF8x
+NjsKPiArCQlocC5jZWEuc2FtcGxlX3NpemUgPSBIRE1JX0FVRElPX1NBTVBMRV9TSVpFXzE2Owo+
+ICsJCWJyZWFrOwo+ICsJY2FzZSAxODoKPiArCQlocC5pZWMuc3RhdHVzWzRdIHw9IElFQzk1OF9B
+RVM0X0NPTl9XT1JETEVOXzIyXzE4Owo+ICsJCWhwLmNlYS5zYW1wbGVfc2l6ZSA9IEhETUlfQVVE
+SU9fU0FNUExFX1NJWkVfMjA7Cj4gKwkJYnJlYWs7Cj4gKwljYXNlIDIwOgo+ICsJCWhwLmllYy5z
+dGF0dXNbNF0gfD0gSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjRfMjA7Cj4gKwkJaHAuY2VhLnNh
+bXBsZV9zaXplID0gSERNSV9BVURJT19TQU1QTEVfU0laRV8yMDsKPiArCQlicmVhazsKPiArCWNh
+c2UgMjQ6Cj4gKwljYXNlIDMyOgo+ICsJCWhwLmllYy5zdGF0dXNbNF0gfD0gSUVDOTU4X0FFUzRf
+Q09OX01BWF9XT1JETEVOXzI0IHwKPiArCQkJSUVDOTU4X0FFUzRfQ09OX1dPUkRMRU5fMjRfMjA7
+CgpXaHkgbm90IHVzZSB0aGUgZ2VuZXJpYyBjb2RlIHRvIGdlbmVyYXRlIHRoZSBBRVMgY2hhbm5l
+bCBzdGF0dXMgYml0cz8KU2VlIHNvdW5kL2NvcmUvcGNtX2llYzk1OC5jLgoKLS0gCkZUVEMgYnJv
+YWRiYW5kIGZvciAwLjhtaWxlIGxpbmU6IGN1cnJlbnRseSBhdCAxMC41TWJwcyBkb3duIDQwMGti
+cHMgdXAKYWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQuCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVs
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vZHJpLWRldmVsCg==
