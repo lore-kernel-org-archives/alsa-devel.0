@@ -1,27 +1,15 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: add wm8960 support
-Date: Fri, 14 Aug 2015 02:22:53 -0700
-Message-ID: <20150814092252.GA4164@Asurada-CZ80>
-References: <dc4e5a52a90982cea95445e27a30f2ad6cb73513.1439349623.git.zidan.wang@freescale.com>
- <20150812034257.GA2980@Asurada-CZ80>
- <20150812044505.GA21786@shlinux2>
- <20150812064053.GA2807@Asurada-CZ80>
- <20150812073859.GB21786@shlinux2>
- <20150812222735.GA57015@Asurada-CZ80>
- <20150814022116.GA11145@shlinux2> <20150814035805.GA2180@Asurada>
- <20150814073758.GB11145@shlinux2>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH RFC v3 0/7] Implement generic ASoC HDMI codec
+	and use it in tda998x
+Date: Fri, 14 Aug 2015 12:30:38 +0300
+Message-ID: <cover.1439542916.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id DF26E2650F5
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 11:22:58 +0200 (CEST)
-Received: by paccq16 with SMTP id cq16so12973024pac.1
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 02:22:57 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150814073758.GB11145@shlinux2>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62B732650F5
+ for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 11:31:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,36 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, shawnguo@kernel.org
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, tiwai@suse.com, timur@tabi.org, broonie@kernel.org
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, moinejf@free.fr, tony@atomide.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-I have to add Shawn for help :)
+This is my third RFC patch series on the subject. This time also the
+tda998x driver patches are a serious attempt to come up with an
+initial implementation for HDMI audio ASoC support.
 
-On Fri, Aug 14, 2015 at 03:38:16PM +0800, Zidan Wang wrote:
+Russell's "drm/edid: add function to help find SADs" is here just to
+produce a working patch-set on top of mainline. It should be getting in
+trough drm-next at some point.
 
-> ccm ----->1------------------>2<------------>3
-> 	  |                   |
->     	  |                   |		
-> 	  4 SAIx MCLK1        5 SAIx MCLK2
-> 
-> If this bit is set, the clock route is ccm->1->2->3, 2 to 5 is disconnect.
-> If this bit is clear, the clock route is 3->2->5, 1 to 2 is disconnect.
+The binding for tda998x is taken from Jean Francois' patch series[1] on
+the same subject. The implementation of the of-node parsing has some
+minor changes from my self.
 
-@Shawn
+Here is what I think at least could or should still be done, but non of
+that stuff does not sounds critical right now.
+ 
+Missing from tda998x driver side
+- hdmi_codec_ops audio_startup() implementation for audio abort support
+- multi channel audio support (I would need specs and preferably some
+  HW to test for this).
 
-Suppose 1 and 2 are clock MUXs that we can't specifically touch
-via registers. And 3 is an IO PAD that can either output a clock
-from CCM or input a clock from an external source outside SoC.
-Both 4 and 5 are two clock sources for one single SAI, SAI2 for
-example.
+Missing from ASoC side generic implementation:
+- channel_allocation handling is completely left for the video side driver,
+  see if ASoC side could help in any way
+- snd_soc_jack functionality to handle hdmi cable plug/unplug events
 
-There is a bit in the GPR register to control above routes. And
-my question is where should be the best place to put this bit.
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/095596.html
 
-Apparently it's outside the CCM and SAI, not to mention it is
-hard to relate this bit to this ASoC dai-link driver which's
-supposed to solve problems between the SAI and CODECs.
+Best regards,
+Jyri
 
-Thanks
-Nicolin
+Jean-Francois Moine (1):
+  drm/i2c: tda998x: Add support of a DT graph of ports
+
+Jyri Sarha (5):
+  ASoC: hdmi: Remove obsolete dummy HDMI codec
+  ASoC: hdmi-codec: Add hdmi-codec for external HDMI-encoders
+  drm/i2c: tda998x: Remove include/sound/tda998x.h and fix graph parsing
+  drm/i2c: tda998x: Register ASoC HDMI codec for audio functionality
+  ARM: dts: am335x-boneblack: Add HDMI audio support
+
+Russell King - ARM Linux (1):
+  drm/edid: add function to help find SADs, DO NOT MERGE
+
+ .../devicetree/bindings/drm/i2c/tda998x.txt        |  51 +++
+ arch/arm/boot/dts/am335x-boneblack.dts             |  90 +++-
+ drivers/gpu/drm/i2c/Kconfig                        |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 336 +++++++++++++--
+ include/drm/drm_edid.h                             |  19 +
+ include/sound/hdmi-codec.h                         |  99 +++++
+ sound/soc/codecs/Kconfig                           |   3 +-
+ sound/soc/codecs/Makefile                          |   4 +-
+ sound/soc/codecs/hdmi-codec.c                      | 467 +++++++++++++++++++++
+ sound/soc/codecs/hdmi.c                            | 109 -----
+ 10 files changed, 1026 insertions(+), 153 deletions(-)
+ create mode 100644 include/sound/hdmi-codec.h
+ create mode 100644 sound/soc/codecs/hdmi-codec.c
+ delete mode 100644 sound/soc/codecs/hdmi.c
+
+-- 
+1.9.1
