@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoc: Handle multiple codecs with split
- playback / capture
-Date: Fri, 14 Aug 2015 16:52:23 +0100
-Message-ID: <20150814155223.GO10748@sirena.org.uk>
-References: <alpine.DEB.2.02.1508131605170.27635@lnxricardw1.se.axis.com>
+Subject: Re: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
+ hw_params handling
+Date: Fri, 14 Aug 2015 22:53:10 +0100
+Message-ID: <20150814215310.GV10748@sirena.org.uk>
+References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9004212233684860447=="
+Content-Type: multipart/mixed; boundary="===============0876678330010338104=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D4DF26649A
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:33 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1508131605170.27635@lnxricardw1.se.axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C6C912664CB
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:11:35 +0200 (CEST)
+In-Reply-To: <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,138 +22,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9004212233684860447==
+--===============0876678330010338104==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HJakWL7yBo69DI1O"
+	protocol="application/pgp-signature"; boundary="lpBPog2+b3WGyJY6"
 Content-Disposition: inline
 
 
---HJakWL7yBo69DI1O
+--lpBPog2+b3WGyJY6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 13, 2015 at 04:12:56PM +0200, Ricard Wanderlof wrote:
+On Sat, Aug 08, 2015 at 01:06:19AM +0530, Subhransu S. Prusty wrote:
 
-> (Referring to this thread:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093214.htm=
-l)
+> +	/*
+> +	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit container so
+> +	 * update bit depth accordingly
+> +	 */
+> +	if (format->valid_bit_depth == SKL_DEPTH_16BIT)
+> +		format->bit_depth = format->valid_bit_depth;
+> +	else if (format->valid_bit_depth == SKL_DEPTH_24BIT)
+> +		format->bit_depth = SKL_DEPTH_32BIT;
+> +
 
-I shouldn't need to read another mailing list thread as the first part
-of a commit log, and if referring to external information you should
-always include a human readable description of what you're referring to
-so that people can understand your message without having to start
-another program.  As it is I'm in a plane over the Atlantic so I can't
-tell what you're talking about here, sorry.
+What if the depth is neither 16 bit nor 24 bit?  Shouldn't this just be
+a simple override for the 24 bit case?
 
-> As noted in the thread, there might be more places where the new
-
-Please write the commit log to describe the change without needing to
-refer to other threads.
-
->  /**
-> + * snd_soc_dai_stream_valid() - check if a DAI supports the given stream
-> + *
-> + * @dai: The DAI to check for stream support
-> + * @stream: The stream type (playback / capture) to check for
-
-You're adding externally readable kerneldoc on a static function so
-nothing outside this file can use it.
-
-> + *
-> + * Checks if the DAI in question supports the indicated stream type.
-> + * Needed to skip over codecs when iterating over
-> + * snd_soc_pcm_runtime->codec_dais in order to skip codecs that are play=
-back-
-> + * or capture-only, which would otherwise inhibit capture or playback,
-> + * respectively, to the other codec in a multiple codec / common I2S bus
-> + * environment.
+> +/*
+> + * Fill the BE gateway parameters
+> + * The BE gateway expects a blob of parameters which are kept in the ACPI
+> + * NHLT blob, so query the blob for interface type (i2s/pdm) and instance.
+> + * The port cna have multiple settings so pick based on the PCM
+> + * parameters
 > + */
-
-This mostly seems to describe a potential use of this function, not what
-it is supposed to do.
-
-> +static bool snd_soc_dai_stream_valid(struct snd_soc_dai *dai, int stream)
+> +static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+> +		struct skl_module_cfg *mconfig, struct skl_pipe_params *params)
 > +{
-> +	struct snd_soc_pcm_stream *codec_stream;
+> +	struct skl_pipe *pipe = mconfig->pipe;
+> +	struct nhlt_specific_cfg *cfg;
+> +	struct skl *skl = get_skl_ctx(dai->dev);
+> +	int link_type = skl_tplg_be_link_type(mconfig->dev_type);
 > +
-> +	if (stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
-> +		codec_stream =3D &dai->driver->playback;
-> +	else
-> +		codec_stream =3D &dai->driver->capture;
+> +	memcpy(pipe->p_params, params, sizeof(*params));
 > +
-> +	/* If the codec specifies any rate at all, it supports the stream. */
-> +	return !!codec_stream->rates;
+> +	/* update the blob based on virtual bus_id*/
+> +	cfg = (struct nhlt_specific_cfg *) skl_get_ep_blob(skl,
+> +			mconfig->vbus_id, link_type, params->s_fmt,
+> +			params->ch, params->s_freq, params->stream);
 
-The !! is redundant here.
+I don't seem to have slk_get_ep_blob() but hopefully it's returning a
+void * in which case why do we need to cast it?  In any case it needs to
+be defined in mainline before this can be applied :(
 
->  	/* first calculate min/max only for CODECs in the DAI link */
->  	for (i =3D 0; i < rtd->num_codecs; i++) {
+> +	if (cfg) {
+> +		mconfig->formats_config.caps_size = cfg->size;
+> +		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
+> +	} else {
+> +		dev_dbg(dai->dev, "Blob is NULL");
+> +		return -EINVAL;
+> +	}
+
+This seems like a more serious problem than something we just dev_dbg()
+about?
+
+> +static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
+> +					struct snd_soc_dapm_widget *w,
+> +					struct skl_pipe_params *params)
+> +{
+> +	if (!w->power) {
+> +		dev_dbg(dai->dev, "set params for widget=%s\n", w->name);
+> +		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
+> +	}
 > +
-> +		/* Skip codecs which don't support the current stream type. */
-> +		if (!snd_soc_dai_stream_valid(rtd->codec_dais[i],
-> +					      substream->stream))
-> +			continue;
+> +	return -EINVAL;
+
+Shouldn't that be -EBUSY?  The normal idiom would be to check to see if
+we were busy and error out rather than writing it as only configuing if
+not busy (which looks like an error case now).
+
+> +	list_for_each_entry(p, &w->sources, list_sink) {
+> +		if (p->connect && is_skl_dsp_widget_type(p->source) &&
+> +						 p->source->priv) {
+> +			ret = skl_tplg_be_set_params(dai, p->source, params);
 > +
->  		codec_dai_drv =3D rtd->codec_dais[i]->driver;
->  		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
->  			codec_stream =3D &codec_dai_drv->playback;
+> +			if (ret < 0)
+> +				return ret;
+> +		} else {
+> +			ret = skl_tplg_be_set_src_pipe_params(dai, p->source,
+> +									 params);
+> +		}
 
-So what happens if we end up in these loops and nothing matches?  It'd
-be good to document the considerations there.
+These two cases appear to be identical apart from ignoring the error in
+the else case...
 
-> @@ -827,6 +859,10 @@ static int soc_pcm_hw_params(struct snd_pcm_substrea=
-m *substream,
->  		struct snd_soc_dai *codec_dai =3D rtd->codec_dais[i];
->  		struct snd_pcm_hw_params codec_params;
-> =20
-> +		/* Skip codecs which don't support the current stream type. */
-> +		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
-> +			continue;
+> +	}
 > +
->  		/* copy params for each codec */
->  		codec_params =3D *params;
+> +	return ret;
 
-We're still calling hw_params() for all CODECs, even ones that happen to
-not be suitable...  is that sensible?  It might be in a case where the
-CODEC for one direction clocks everything but I can see problems
-occurring if the transmit and receive paths are separately clocked which
-is going to be quite common for things like i.MX systems.  If the two
-are tied together there's going to be constraints between the two
-directions.
+...unless it happens to be the last entry in the list in which case we
+pay attention.
 
-I'd expect that we could take a pretty good guess as to what the best
-thing to do is based on the symmetry constraints we have for the link
-but I think we do want to think about this early.
+> +static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
+> +	struct snd_soc_dapm_widget *w, struct skl_pipe_params *params)
+> +{
+> +	struct snd_soc_dapm_path *p = NULL;
+> +	int ret = 0;
+> +
+> +	dev_dbg(dai->dev, "widget name=%s\n", w->name);
+> +
+> +	list_for_each_entry(p, &w->sinks, list_source) {
+> +		if (p->connect && is_skl_dsp_widget_type(p->sink) &&
+> +						p->sink->priv) {
+> +			ret = skl_tplg_be_set_params(dai, p->sink, params);
+> +
+> +			if (ret < 0)
+> +				return ret;
+> +		} else {
+> +			ret = skl_tplg_be_set_sink_pipe_params(dai, p->sink,
+> +									 params);
+> +		}
+> +	}
 
---HJakWL7yBo69DI1O
+There's some more common code here and the same patterns as above...  :/
+
+> +	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		w = dai->playback_widget;
+> +
+> +		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
+> +		return skl_tplg_be_set_src_pipe_params(dai, w, params);
+> +	}
+> +
+> +	if (params->stream == SNDRV_PCM_STREAM_CAPTURE) {
+> +		w = dai->capture_widget;
+> +
+> +		dev_dbg(dai->dev, "Stream name=%s\n", w->name);
+> +		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
+> +	}
+
+Normally that'd be written as an if/else, and the only difference
+between the two cases here is which widget we pick...
+
+--lpBPog2+b3WGyJY6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzg6zAAoJECTWi3JdVIfQTlcH/0+ncrtOsi6toz8aAPXlcwd1
-v7L2ebZAgPmjY3mD1vnru7fGcL9AuizKt9ASxyy7Lh26rLG0goZEIJ9ROn1sU0xv
-SfeF79+aFEK+e6bZjPT0piZfB+ZGVFYgcdZpR+0zz3p8/Gjq+8sJ0Bcvivq0T9sm
-B8xq278Mg5vDgDFQAwoypLdp9mniYewZHi170IWRbs/Lbtq99So7VrXAxHChZOIY
-lU7Q4MFwF201m9zaiMy7LdpKIkgkPgK5WJfL1toRx5BDwcmSvs7LMEMPft8/2PZ7
-NZSqTzt6DwtnCfz8egMNernOlQI3jsmqE/QdyGqR5kIVZ0CFr9u34wggst+cvqY=
-=YWmQ
+iQEcBAEBCAAGBQJVzmNFAAoJECTWi3JdVIfQ5uwH/2MwJL5bnxoVh+uZDX8IN45I
+aPo76VxCDm5xaGQxIUUcCQcTmMAXWZJoI/0gQQyDDRo+kS/Kl1lA7uWB7WR2hHlz
+eDT/rjdepKIrO8vU53xAJvITF+YrlV09K0cNSVayQKhhJfGzULRQw7oYB8hTzqp/
+Q+In2YnYMaaMYDTTEvmsW2jV1iSy2z5mv63RSO9DuigWVX8xNjRvyLGFqVnhh/+0
+RugPn4F7e0ZUdg7PRQLSoxmr3xZB6VMSnnYIuD955tK2t6d2WMqZFzszqyHRhgwa
+fFV68nIrg9usygA4TbXu/OyRKOGZIMIbaS/azG5mNlNMZKQ05ABE7h6S9JfzbwE=
+=CQeF
 -----END PGP SIGNATURE-----
 
---HJakWL7yBo69DI1O--
+--lpBPog2+b3WGyJY6--
 
---===============9004212233684860447==
+--===============0876678330010338104==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9004212233684860447==--
+--===============0876678330010338104==--
