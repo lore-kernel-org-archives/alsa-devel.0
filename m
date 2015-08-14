@@ -1,20 +1,14 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v2] ASoC: fsl-asoc-card: add wm8960 support
-Date: Fri, 14 Aug 2015 12:19:02 -0700
-Message-ID: <20150814191901.GA9884@Asurada>
-References: <d873df2b23a6d39099b3c62db8901d78a60d9362.1439550574.git.zidan.wang@freescale.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 0/2] USB audio fixes
+Date: Fri, 14 Aug 2015 17:19:41 -0500
+Message-ID: <1439590783-3635-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 04856266189
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 21:19:16 +0200 (CEST)
-Received: by pacgr6 with SMTP id gr6so65484551pac.2
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 12:19:14 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <d873df2b23a6d39099b3c62db8901d78a60d9362.1439550574.git.zidan.wang@freescale.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 939D3266189
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 00:19:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 14, 2015 at 07:11:09PM +0800, Zidan Wang wrote:
-> add wm8960 support for fsl-asoc-card
-> 
-> Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
+While trying to understand how asynchronous endpoints are supported, I
+identified two major issues. On my M-Audio transit, the following
+script tries to play using the 3 different endpoints supported and
+fails (error and no audio) after the first playback without the
+patches. With the patches on top of 4.1.5 or Takashi's for-next
+(4.2.0-rc5), I stopped the audio after an hour.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+while true
+do
+    aplay -d5 -Dhw:2,0 ~/16_48.wav # play 48kHz, 16 bit on async ep
+    aplay -d5 -Dhw:2,0 ~/24_48.wav # play 48kHz, 24 bit on 'none'/async ep
+    aplay -d5 -Dhw:2,0 ~/24_96.wav # play 96 kHz, 24 bit on adaptive ep
+    aplay -d5 -Dhw:2,0 ~/24_48.wav 
+    aplay -d5 -Dhw:2,0 ~/16_48.wav
+    aplay -d5 -Dhw:2,0 ~/24_96.wav
+done
 
-> ---
+The first issue is pretty bad with corrupted pointers. When
+transitioning from a alternate setting with a sync_endpoint to another
+which doesn't have one by construction (synchronous, adaptive, async
+on capture), the pointers are not reset and the code tries to set the
+parameters of a non-existent endpoint.
 
-Please put a change log between these two lines next time.
+The second issue is that the M-audio Transit descriptors are illegal
+but the logic can be changed without harm.
 
-Thanks
-Nicolin
+I sometimes hear noise on playback start, probably the code needs to
+be changed to add enough silent samples to let the PLL lock. I haven't
+had time to work on this and this is more of an enhancement.
 
->  sound/soc/fsl/fsl-asoc-card.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> index 040362f..5aeb6ed 100644
-> --- a/sound/soc/fsl/fsl-asoc-card.c
-> +++ b/sound/soc/fsl/fsl-asoc-card.c
-> @@ -23,6 +23,7 @@
->  
->  #include "../codecs/sgtl5000.h"
->  #include "../codecs/wm8962.h"
-> +#include "../codecs/wm8960.h"
->  
->  #define RX 0
->  #define TX 1
-> @@ -479,6 +480,12 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
->  		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
->  		priv->codec_priv.pll_id = WM8962_FLL;
->  		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> +	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8960")) {
-> +		codec_dai_name = "wm8960-hifi";
-> +		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
-> +		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
-> +		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
-> +		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
->  	} else {
->  		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
->  		return -EINVAL;
-> @@ -582,6 +589,7 @@ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
->  	{ .compatible = "fsl,imx-audio-cs42888", },
->  	{ .compatible = "fsl,imx-audio-sgtl5000", },
->  	{ .compatible = "fsl,imx-audio-wm8962", },
-> +	{ .compatible = "fsl,imx-audio-wm8960", },
->  	{}
->  };
->  
-> -- 
-> 1.9.1
-> 
+v2: applied Takashi's comments
+    unconditional clean-up of sync_endpoint pointers
+    better logical tests and removal of goto
+
+Pierre-Louis Bossart (2):
+  ALSA: usb: fix corrupted pointers due to interface setting change
+  ALSA: usb: handle descriptor with SYNC_NONE illegal value
+
+ sound/usb/pcm.c | 32 ++++++++++++++++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
+
+-- 
+1.9.1
