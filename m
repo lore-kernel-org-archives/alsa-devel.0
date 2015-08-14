@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: handle reset_pin logical
-	state correctly
-Date: Fri, 14 Aug 2015 20:01:26 +0100
-Message-ID: <20150814190126.GI10748@sirena.org.uk>
-References: <1437154736-15320-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Re: [PATCH RFC v2 3/7] ASoC: hdmi-codec: Add
+ hdmi-codec for external HDMI-encoders
+Date: Fri, 14 Aug 2015 20:25:21 +0100
+Message-ID: <20150814192521.GL10748@sirena.org.uk>
+References: <1432666751-24794-1-git-send-email-jsarha@ti.com>
+ <1432666751-24794-4-git-send-email-jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5674636862471746352=="
+Content-Type: multipart/mixed; boundary="===============3762761155945753945=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AB22226659C
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:12:56 +0200 (CEST)
-In-Reply-To: <1437154736-15320-1-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C7BA266574
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:02 +0200 (CEST)
+In-Reply-To: <1432666751-24794-4-git-send-email-jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, moinejf@free.fr, airlied@linux.ie, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5674636862471746352==
+--===============3762761155945753945==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="D+MycPccvPlP5/X+"
+	protocol="application/pgp-signature"; boundary="gphVtybrzJJtG9bX"
 Content-Disposition: inline
 
 
---D+MycPccvPlP5/X+
+--gphVtybrzJJtG9bX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 17, 2015 at 10:38:56AM -0700, Anatol Pomozov wrote:
-> According to the datasheet RESET is active low pin, i.e. system goes to r=
-eset
-> state when pin is low.
->=20
-> Handle logic state correctly - set reset_pin to logical 0 at boot time, a=
-nd
-> set it to logical 1 when we need to reset the chip.
+On Tue, May 26, 2015 at 09:59:07PM +0300, Jyri Sarha wrote:
 
-I'm a bit confused here - how was the original code (written by you it
-seems...) tested?  This looks like it's fixing the device being held in
-reset when it should be operation which seems like something that'd get
-noticed.  Are there existing systems that the current code works for
-which we need to handle here?
+> +
+> +	mutex_lock(&hcp->current_stream_lock);
+> +	if (hcp->current_stream && hcp->current_stream->runtime &&
+> +	    snd_pcm_running(hcp->current_stream)) {
+> +		dev_info(dev, "HDMI audio playback aborted\n");
 
---D+MycPccvPlP5/X+
+Does this really need to be dev_info()?
+
+> +	if (hcp->hcd.ops->get_eld) {
+> +		hcp->eld = hcp->hcd.ops->get_eld(hcp->hcd.dev);
+> +
+> +		/* Call snd_pcm_hw_constraint_eld here */
+> +	}
+
+...
+
+> +	dev_dbg(dai->dev, "%s()\n", __func__);
+> +
+> +	mutex_lock(&hcp->current_stream_lock);
+> +	BUG_ON(hcp->current_stream != substream);
+> +	hcp->current_stream = NULL;
+> +	mutex_unlock(&hcp->current_stream_lock);
+> +
+> +	hcp->hcd.ops->audio_shutdown(hcp->hcd.dev);
+
+Shouldn't the callback be in or before the lock?  Otherwise we could
+potentially race with starting a new stream.
+
+--gphVtybrzJJtG9bX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzjsCAAoJECTWi3JdVIfQJXoH/0GyyTzG7/V2eA9eDCHRgq+u
-15wEXBglT6GGH0HgIueqJDiRwSEOXd0zq1giQBO4WWjhAPrsa5wB57gZMG278s3o
-MXyGwwjVYPZ1vLkI4pOXZ/B4orw3gcOaUk7SLX9aD2ompg2T3fMsAM21WDZg6/gH
-dTnbv4dVcry0rdx0LnPPQ0OfPVCARc2ArkvtIWCAjYmTCRWrpjltpkbzonfdAjm+
-7cm+O7K6guHIpVlDotfeQM41r//78bao8FrEEAphKkLhPCxhfiWTPNW6/xNb4HW2
-0hKwD0XTDw+yYYo8+f2Emsg9JlrWIT1OvsJDj2maHqoJYzRzKpoe7IYYcO+0lX0=
-=jB3d
+iQEcBAEBCAAGBQJVzkCgAAoJECTWi3JdVIfQ7LIH/AwPVyzSpdoeaqLmonKXGlgW
+ITWXMST3RW01j2/OUx3tMqXssVd3trQkkIDav4IFScmnVwJ735CgFl3qK815viB7
+0NChnYiZ/h0pOIgjBhGGKsLgWHSj8tpD3cgByIzO1GQ+cZKySJLqoHfC95erjRY1
+pkdRS8Xu/HVbESU9iGK/C8F3KNQQ9UGayWiwIfkcEGuB+UYImIFop6lYBLocrnyB
+5bg1z4qRrQPcs+DBevo7fYGdiy1HFbm2y0v8SyOnLeI6/K47XbqR5vSvCPYPahrY
+9zvdYdP6mL3OWDqeaFuGKWxam0FxhVPWsk5cTrpn21hRbgSTz538pqtb+yiM/rs=
+=MTvG
 -----END PGP SIGNATURE-----
 
---D+MycPccvPlP5/X+--
+--gphVtybrzJJtG9bX--
 
---===============5674636862471746352==
+--===============3762761155945753945==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5674636862471746352==--
+--===============3762761155945753945==--
