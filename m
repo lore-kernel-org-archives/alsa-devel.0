@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
- formats to bitwise flag
-Date: Fri, 14 Aug 2015 21:34:28 +0100
-Message-ID: <20150814203428.GR10748@sirena.org.uk>
-References: <cover.1439217448.git.mengdong.lin@intel.com>
- <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
+Subject: Re: [PATCH] ASoC: topology: Add support for TLV bytes
+	control
+Date: Fri, 14 Aug 2015 20:17:42 +0100
+Message-ID: <20150814191742.GJ10748@sirena.org.uk>
+References: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2738970378088398193=="
+Content-Type: multipart/mixed; boundary="===============3583143873455410270=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F9202664F4
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:12:13 +0200 (CEST)
-In-Reply-To: <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66D96266488
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:12:16 +0200 (CEST)
+In-Reply-To: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,72 +26,83 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2738970378088398193==
+--===============3583143873455410270==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rwwPlZPbpBX9O0Yk"
+	protocol="application/pgp-signature"; boundary="U4Pv8ouM+6WX/UB7"
 Content-Disposition: inline
 
 
---rwwPlZPbpBX9O0Yk
+--U4Pv8ouM+6WX/UB7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 10, 2015 at 10:48:37PM +0800, mengdong.lin@intel.com wrote:
+On Wed, Aug 12, 2015 at 10:10:51AM +0800, mengdong.lin@intel.com wrote:
 
->  struct snd_soc_tplg_stream_caps {
->  	__le32 size;		/* in bytes of this structure */
->  	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-> -	__le64 formats[SND_SOC_TPLG_MAX_FORMATS];	/* supported formats SNDRV_PCM_FMTBIT_* */
-> +	__le64 formats;	/* supported formats SNDRV_PCM_FORMAT_* */
+> Allow vendor drivers to define bespoke bytes ext handlers and IDs for
+> TLV bytes controls. And the topology core will bind these handlers by
+> matching IDs defined by the vendor driver and user space topology
+> data file.
 
-Argh, this is *another* ABI change which you've buried in the middle of
-a series you're sending right at the end of the release cycle (this was
-sent after -rc6, we may not even get a -rc7...).  Given how close we are
-to the release and the invasiveness of the changes in this series it's
-very lucky I even saw it before release, I'm reading this on my flight
-to Plumbers which means my bandwidth next week will be limited.
+> @@ -513,6 +517,15 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_=
+tplg_ctl_hdr *hdr,
+>  {
+>  	int i;
+> =20
+> +	/* TLV bytes controls don't need get/put ops */
 
-This should have at the very least been sent at the start of the series,
-and really should have been sent separately.  It is also worrying that
-there is nothing in the subject or changelog talking about the fact that
-this is an ABI change or explaining why it is required.  The changelog
-was simply a statement of the content of the diff, not a rationale:
+AFAICT it's actually the case that we're binding them later rather than
+that the ops aren't needed.  Isn't that what soc_tplg_bytes_ext_bind_io()
+does?
 
-| The toplogy user space tool will generate this bitwise flag by using
-| SNDRV_PCM_FORMAT_* exposed by asound.h, and the topology core will copy
-| this flag when generating DAI streams.
+> +	if (k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
+> +		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
+> +		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK
+> +		&& hdr->ops.info =3D=3D SND_SOC_TPLG_CTL_BYTES) {
+> +			k->info =3D snd_soc_bytes_info_ext;
+> +			return 0;
+> +	}
+> +
 
-Once the release goes out this sort of incompatible change will be
-unacceptable.  Given the number of changes that are going into the ABI
-(we also had some others went in last week) I'm now giving some serious
-thought to the idea that we should ask Linus to revert the topology code
-for v4.2 and waiting for v4.3 so we've got more chance to make sure the
-ABI is one we actually want to stick with.  Liam, Takashi I don't know
-what you think?
+I'm confused.  What's special about TLV controls compared to other
+controls, why are the existing bespoke handlers which get bound in this
+function not sufficient and why don't we bind the TLV bespoke handlers
+here?
 
---rwwPlZPbpBX9O0Yk
+Having two different classes of bespoke handlers like this both called
+bespoke handlers seems like it's going to lead to problems - either
+bringing the interfaces closer together or naming them in a way that
+clarifies their meaning seems better.  Instead of just calling them
+"bespoke handlers" we should probably just call them handlers for
+whatever kind of control they're for and probably bind them first rather
+than second so we're doing more specific to less specific handling.
+That way drivers can also have specific handling for things the topology
+data didn't anticipate they'd need it for which seems like it might come
+in handy.
+
+--U4Pv8ouM+6WX/UB7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVzlDTAAoJECTWi3JdVIfQoIQH/1I/Qqqz6vZWYZyOP07SLedW
-J2pp9hpYjeyTQFJNUzFTckRIgIENXAmPBFGLTBUW28seewS7t1djzDqze8l4P+tB
-E7uZo6wRNSh2r+adPV5ucJpTo4roVE/74G8uNwhA8mi07j5VG9idVDsFw9lT0V0a
-4XM18Vmgyo5hKtCrfW+PYj+xBT+SZZpmgxK3OFLu+Ej8dAl8yeN482PTtyxE/ZYB
-MSblTnqMlVh3Bi0/OtnhNLk/53xPBZtYWya79u5B8Qu+DnxoSsqODiFL+bHLJRn7
-+GZFw/mWozBLuoALzTLMSBCQewhOyeGGJCwj/H44nI350fKhYD9mcYdVVB33P1I=
-=OTwA
+iQEcBAEBCAAGBQJVzj7WAAoJECTWi3JdVIfQbaAH/2c/Ae9/RMsJhQ0aq6KggkIL
+K3ScDmKtkBcyE7LVoTlEydPp0FZxsZwUDGm/lgUlaSFETXLgPdkyLp2FJrui5Bjf
+zjKYgjVgaJL7BhWSqnTMTVXhh3oGkDJfwCck6VxaOH/TGe5bMPfbNhxq7n6ba9lR
+gWgLmEZnR/Ehv763gkScysVU0awl6BcclqWjYyAIJ5HeIGClAatuXyhRlOnjKXEQ
+2HFt3PutAU7u4VGNwXFbD3JyhbKBWlZ8Varjw/MK9YWWZFICgPqdQM3n75y/4o87
+UawDD9gT35p0JYiVFboogMoEXUrGeytRGClHtXmfHOADk/p6/Z0Wv8asyv8TWvE=
+=oUhl
 -----END PGP SIGNATURE-----
 
---rwwPlZPbpBX9O0Yk--
+--U4Pv8ouM+6WX/UB7--
 
---===============2738970378088398193==
+--===============3583143873455410270==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2738970378088398193==--
+--===============3583143873455410270==--
