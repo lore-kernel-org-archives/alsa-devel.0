@@ -1,20 +1,16 @@
 From: Julian Scheel <julian@jusst.de>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix parameter block size
- for UAC2 control requests
-Date: Fri, 14 Aug 2015 16:14:35 +0200
-Message-ID: <55CDF7CB.6030300@jusst.de>
-References: <1439463886-5369-1-git-send-email-julian@jusst.de>
- <s5hpp2qt3ei.wl-tiwai@suse.de> <55CDF116.8070400@jusst.de>
- <s5hk2syt1vf.wl-tiwai@suse.de>
+Subject: [PATCH v2] ALSA: usb-audio: Fix parameter block size
+	for UAC2 control requests
+Date: Fri, 14 Aug 2015 16:14:45 +0200
+Message-ID: <1439561685-20121-1-git-send-email-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
  [74.201.84.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E7482654B3
- for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 16:14:40 +0200 (CEST)
-In-Reply-To: <s5hk2syt1vf.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E91CE2654B8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2015 16:15:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +20,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Julian Scheel <julian@jusst.de>
 List-Id: alsa-devel@alsa-project.org
 
-Am 14.08.2015 um 15:51 schrieb Takashi Iwai:
-> On Fri, 14 Aug 2015 15:45:58 +0200,
-> Julian Scheel wrote:
->>
->> Am 14.08.2015 um 15:17 schrieb Takashi Iwai:
->>> On Thu, 13 Aug 2015 13:04:46 +0200,
->>> Julian Scheel wrote:
->>>>
->>>> @@ -469,6 +503,8 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
->>>>    	value_set = convert_bytes_value(cval, value_set);
->>>>    	buf[0] = value_set & 0xff;
->>>>    	buf[1] = (value_set >> 8) & 0xff;
->>>> +	buf[2] = (value_set >> 16) & 0xff;
->>>> +	buf[3] = (value_set >> 24) & 0xff;
->>>
->>> It's not smart but OK, just a subtle matter...
->>
->> Hm, what would you like better?
->
-> A shorter code would be to to pass __le32 value pointer directly after
-> calling cpu_to_le32(), for example.  But it's a matter of taste, so
-> it's OK to keep your code as is.
+USB Audio Class version 2.0 supports three different parameter block sizes for
+CUR requests, which are 1 byte (5.2.3.1 Layout 1 Parameter Block), 2 bytes
+(5.2.3.2 Layout 2 Parameter Block) and 4 bytes (5.2.3.3 Layout 3 Parameter
+Block). Use the correct size according to the specific control as it was
+already done for UACv1. The allocated block size for control requests is
+increased to support the 4 byte worst case.
 
-Thanks, I'll leave it as is for now and keep the le32 approach in mind 
-for the future.
+Signed-off-by: Julian Scheel <julian@jusst.de>
+---
+Changes in v2:
+- Removed superfluous int32 checks
+- Check control value length in function
+- Compare against 0
+- Use a tmp variable to access audio_feature_info[control-1]
+
+Thanks for review by Takashi Iwai :)
+---
+ sound/usb/mixer.c | 64 ++++++++++++++++++++++++++++++++++++++-----------------
+ sound/usb/mixer.h |  2 ++
+ 2 files changed, 46 insertions(+), 20 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 4a49944..7046f54 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -282,6 +282,21 @@ static int get_abs_value(struct usb_mixer_elem_info *cval, int val)
+ 	return val;
+ }
+ 
++static int uac2_ctl_value_size(int val_type)
++{
++	switch (val_type) {
++	case USB_MIXER_S32:
++	case USB_MIXER_U32:
++		return 4;
++	case USB_MIXER_S16:
++	case USB_MIXER_U16:
++		return 2;
++	default:
++		return 1;
++	}
++	return 0; /* unreachable */
++}
++
+ 
+ /*
+  * retrieve a mixer value
+@@ -328,14 +343,14 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
+ 			    int validx, int *value_ret)
+ {
+ 	struct snd_usb_audio *chip = cval->head.mixer->chip;
+-	unsigned char buf[2 + 3 * sizeof(__u16)]; /* enough space for one range */
++	unsigned char buf[4 + 3 * sizeof(__u32)]; /* enough space for one range */
+ 	unsigned char *val;
+ 	int idx = 0, ret, size;
+ 	__u8 bRequest;
+ 
+ 	if (request == UAC_GET_CUR) {
+ 		bRequest = UAC2_CS_CUR;
+-		size = sizeof(__u16);
++		size = uac2_ctl_value_size(cval->val_type);
+ 	} else {
+ 		bRequest = UAC2_CS_RANGE;
+ 		size = sizeof(buf);
+@@ -446,7 +461,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 				int request, int validx, int value_set)
+ {
+ 	struct snd_usb_audio *chip = cval->head.mixer->chip;
+-	unsigned char buf[2];
++	unsigned char buf[4];
+ 	int idx = 0, val_len, err, timeout = 10;
+ 
+ 	validx += cval->idx_off;
+@@ -454,8 +469,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 	if (cval->head.mixer->protocol == UAC_VERSION_1) {
+ 		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
+ 	} else { /* UAC_VERSION_2 */
+-		/* audio class v2 controls are always 2 bytes in size */
+-		val_len = sizeof(__u16);
++		val_len = uac2_ctl_value_size(cval->val_type);
+ 
+ 		/* FIXME */
+ 		if (request != UAC_SET_CUR) {
+@@ -469,6 +483,8 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 	value_set = convert_bytes_value(cval, value_set);
+ 	buf[0] = value_set & 0xff;
+ 	buf[1] = (value_set >> 8) & 0xff;
++	buf[2] = (value_set >> 16) & 0xff;
++	buf[3] = (value_set >> 24) & 0xff;
+ 	err = snd_usb_autoresume(chip);
+ 	if (err < 0)
+ 		return -EIO;
+@@ -799,24 +815,25 @@ static int check_input_term(struct mixer_build *state, int id,
+ /* feature unit control information */
+ struct usb_feature_control_info {
+ 	const char *name;
+-	unsigned int type;	/* control type (mute, volume, etc.) */
++	int type;	/* data type for uac1 */
++	int type_uac2;	/* data type for uac2 if different from uac1, else -1 */
+ };
+ 
+ static struct usb_feature_control_info audio_feature_info[] = {
+-	{ "Mute",			USB_MIXER_INV_BOOLEAN },
+-	{ "Volume",			USB_MIXER_S16 },
+-	{ "Tone Control - Bass",	USB_MIXER_S8 },
+-	{ "Tone Control - Mid",		USB_MIXER_S8 },
+-	{ "Tone Control - Treble",	USB_MIXER_S8 },
+-	{ "Graphic Equalizer",		USB_MIXER_S8 }, /* FIXME: not implemeted yet */
+-	{ "Auto Gain Control",		USB_MIXER_BOOLEAN },
+-	{ "Delay Control",		USB_MIXER_U16 }, /* FIXME: U32 in UAC2 */
+-	{ "Bass Boost",			USB_MIXER_BOOLEAN },
+-	{ "Loudness",			USB_MIXER_BOOLEAN },
++	{ "Mute",			USB_MIXER_INV_BOOLEAN, -1 },
++	{ "Volume",			USB_MIXER_S16, -1 },
++	{ "Tone Control - Bass",	USB_MIXER_S8, -1 },
++	{ "Tone Control - Mid",		USB_MIXER_S8, -1 },
++	{ "Tone Control - Treble",	USB_MIXER_S8, -1 },
++	{ "Graphic Equalizer",		USB_MIXER_S8, -1 }, /* FIXME: not implemeted yet */
++	{ "Auto Gain Control",		USB_MIXER_BOOLEAN, -1 },
++	{ "Delay Control",		USB_MIXER_U16, USB_MIXER_U32 },
++	{ "Bass Boost",			USB_MIXER_BOOLEAN, -1 },
++	{ "Loudness",			USB_MIXER_BOOLEAN, -1 },
+ 	/* UAC2 specific */
+-	{ "Input Gain Control",		USB_MIXER_S16 },
+-	{ "Input Gain Pad Control",	USB_MIXER_S16 },
+-	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN },
++	{ "Input Gain Control",		USB_MIXER_S16, -1 },
++	{ "Input Gain Pad Control",	USB_MIXER_S16, -1 },
++	{ "Phase Inverter Control",	USB_MIXER_BOOLEAN, -1 },
+ };
+ 
+ /* private_free callback */
+@@ -1216,6 +1233,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 			      int readonly_mask)
+ {
+ 	struct uac_feature_unit_descriptor *desc = raw_desc;
++	struct usb_feature_control_info *ctl_info;
+ 	unsigned int len = 0;
+ 	int mapped_name = 0;
+ 	int nameid = uac_feature_unit_iFeature(desc);
+@@ -1241,7 +1259,13 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, unitid);
+ 	cval->control = control;
+ 	cval->cmask = ctl_mask;
+-	cval->val_type = audio_feature_info[control-1].type;
++	ctl_info = &audio_feature_info[control-1];
++	if (state->mixer->protocol == UAC_VERSION_1)
++		cval->val_type = ctl_info->type;
++	else /* UAC_VERSION_2 */
++		cval->val_type = ctl_info->type_uac2 >= 0 ?
++			ctl_info->type_uac2 : ctl_info->type;
++
+ 	if (ctl_mask == 0) {
+ 		cval->channels = 1;	/* master channel */
+ 		cval->master_readonly = readonly_mask;
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index d3268f0..3417ef3 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -33,6 +33,8 @@ enum {
+ 	USB_MIXER_U8,
+ 	USB_MIXER_S16,
+ 	USB_MIXER_U16,
++	USB_MIXER_S32,
++	USB_MIXER_U32,
+ };
+ 
+ typedef void (*usb_mixer_elem_dump_func_t)(struct snd_info_buffer *buffer,
+-- 
+2.5.0
