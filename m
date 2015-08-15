@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: instantiate AC'97 CODEC" to
-	the asoc tree
-Date: Fri, 14 Aug 2015 19:13:28 -0700
-Message-ID: <E1ZQQyO-0004Jk-6x@finisterre>
-References: <558FFB35.8000105@maciej.szmigiero.name>
+Subject: Applied "ASoC: fsl_ssi: add AC'97 ops setting check
+	and cleanup" to the asoc tree
+Date: Fri, 14 Aug 2015 19:13:30 -0700
+Message-ID: <E1ZQQyQ-0004KD-C2@finisterre>
+References: <558FFB07.9000500@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CEF7F2665E0
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:35 +0200 (CEST)
-In-Reply-To: <558FFB35.8000105@maciej.szmigiero.name>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E4052665E2
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:36 +0200 (CEST)
+In-Reply-To: <558FFB07.9000500@maciej.szmigiero.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: instantiate AC'97 CODEC
+   ASoC: fsl_ssi: add AC'97 ops setting check and cleanup
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 8ed0c842153434fa3aeeb89d16b71ac7dc8e12ee Mon Sep 17 00:00:00 2001
+>From 04143d614f3af84a3f39e79a24a7ca740bd39efd Mon Sep 17 00:00:00 2001
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Wed, 5 Aug 2015 17:26:44 +0200
-Subject: [PATCH] ASoC: fsl_ssi: instantiate AC'97 CODEC
+Date: Wed, 5 Aug 2015 17:25:31 +0200
+Subject: [PATCH] ASoC: fsl_ssi: add AC'97 ops setting check and cleanup
 
-Instantiate AC'97 CODEC in fsl_ssi driver AC'97 mode.
+Check whether setting AC'97 ops succeeded and clean them
+on removal so the fsl_ssi driver can be reloaded.
 
 Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ sound/soc/fsl/fsl_ssi.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 0b4fcd9..e79dc16 100644
+index f3034b9..0b4fcd9 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1460,6 +1460,27 @@ done:
- 		_fsl_ssi_set_dai_fmt(&pdev->dev, ssi_private,
- 				     ssi_private->dai_fmt);
+@@ -1340,7 +1340,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
  
-+	if (fsl_ssi_is_ac97(ssi_private)) {
-+		u32 ssi_idx;
-+
-+		ret = of_property_read_u32(np, "cell-index", &ssi_idx);
+ 		fsl_ac97_data = ssi_private;
+ 
+-		snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
++		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
 +		if (ret) {
-+			dev_err(&pdev->dev, "cannot get SSI index property\n");
-+			goto error_sound_card;
++			dev_err(&pdev->dev, "could not set AC'97 ops\n");
++			return ret;
 +		}
-+
-+		ssi_private->pdev =
-+			platform_device_register_data(NULL,
-+					"ac97-codec", ssi_idx, NULL, 0);
-+		if (IS_ERR(ssi_private->pdev)) {
-+			ret = PTR_ERR(ssi_private->pdev);
-+			dev_err(&pdev->dev,
-+				"failed to register AC97 codec platform: %d\n",
-+				ret);
-+			goto error_sound_card;
-+		}
-+	}
+ 	} else {
+ 		/* Initialize this copy of the CPU DAI driver structure */
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+@@ -1480,6 +1484,9 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
+ 
++	if (fsl_ssi_is_ac97(ssi_private))
++		snd_soc_set_ac97_ops(NULL);
 +
  	return 0;
+ }
  
- error_sound_card:
 -- 
 2.5.0
