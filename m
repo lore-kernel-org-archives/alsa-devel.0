@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
- hw_params handling
-Date: Sat, 15 Aug 2015 19:30:14 +0530
-Message-ID: <20150815140014.GE13546@localhost>
+Subject: Re: [PATCH 5/9] ASoC: Intel: Skylake: Add topology
+ core init and handlers
+Date: Sat, 15 Aug 2015 19:46:58 +0530
+Message-ID: <20150815141658.GF13546@localhost>
 References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
- <20150814215310.GV10748@sirena.org.uk>
+ <1438976184-6160-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20150814220313.GW10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9210487961896242197=="
+Content-Type: multipart/mixed; boundary="===============8943736454637162760=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B0BF52650FE
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 15:58:16 +0200 (CEST)
-In-Reply-To: <20150814215310.GV10748@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E5C92608EC
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 16:15:00 +0200 (CEST)
+In-Reply-To: <20150814220313.GW10748@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,216 +27,123 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9210487961896242197==
+--===============8943736454637162760==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
+	protocol="application/pgp-signature"; boundary="at6+YcpfzWZg/htY"
 Content-Disposition: inline
 
 
---bKyqfOwhbdpXa4YI
+--at6+YcpfzWZg/htY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 14, 2015 at 10:53:10PM +0100, Mark Brown wrote:
-> On Sat, Aug 08, 2015 at 01:06:19AM +0530, Subhransu S. Prusty wrote:
+On Fri, Aug 14, 2015 at 11:03:13PM +0100, Mark Brown wrote:
+> On Sat, Aug 08, 2015 at 01:06:20AM +0530, Subhransu S. Prusty wrote:
 >=20
-> > +	/*
-> > +	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit container so
-> > +	 * update bit depth accordingly
-> > +	 */
-> > +	if (format->valid_bit_depth =3D=3D SKL_DEPTH_16BIT)
-> > +		format->bit_depth =3D format->valid_bit_depth;
-> > +	else if (format->valid_bit_depth =3D=3D SKL_DEPTH_24BIT)
-> > +		format->bit_depth =3D SKL_DEPTH_32BIT;
+> > +	struct skl_pipeline  *ppl;
+>=20
+> > +	pipe  =3D devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
+>=20
+> There's lots of random spaces in this code so far and some further down
+> too.
+sorry about that, will fix
+
+>=20
+> > +	struct skl_dfw_module *dfw_config =3D (struct skl_dfw_module *) tplg_=
+w->priv.data;
 > > +
+> > +	skl_tplg_dump_widget_info(bus->dev, dfw_config, tplg_w);
 >=20
-> What if the depth is neither 16 bit nor 24 bit?  Shouldn't this just be
-> a simple override for the 24 bit case?
+> Consider implementing debugfs for this...
 
-These are the only two DSP supports, so am not sure that overriding will
-work with DSP. I think we should add else and error out.
-
->=20
-> > +/*
-> > + * Fill the BE gateway parameters
-> > + * The BE gateway expects a blob of parameters which are kept in the A=
-CPI
-> > + * NHLT blob, so query the blob for interface type (i2s/pdm) and insta=
-nce.
-> > + * The port cna have multiple settings so pick based on the PCM
-> > + * parameters
-> > + */
-> > +static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
-> > +		struct skl_module_cfg *mconfig, struct skl_pipe_params *params)
-> > +{
-> > +	struct skl_pipe *pipe =3D mconfig->pipe;
-> > +	struct nhlt_specific_cfg *cfg;
-> > +	struct skl *skl =3D get_skl_ctx(dai->dev);
-> > +	int link_type =3D skl_tplg_be_link_type(mconfig->dev_type);
-> > +
-> > +	memcpy(pipe->p_params, params, sizeof(*params));
-> > +
-> > +	/* update the blob based on virtual bus_id*/
-> > +	cfg =3D (struct nhlt_specific_cfg *) skl_get_ep_blob(skl,
-> > +			mconfig->vbus_id, link_type, params->s_fmt,
-> > +			params->ch, params->s_freq, params->stream);
->=20
-> I don't seem to have slk_get_ep_blob() but hopefully it's returning a
-> void * in which case why do we need to cast it?  In any case it needs to
-> be defined in mainline before this can be applied :(
-
-It is already merged in your tree and part of NHLT patch. And my bad, it
-returns struct nhlt_specific_cfg so the cast is not required and will fix
+yes that a good idea, will drop this here.
 
 >=20
-> > +	if (cfg) {
-> > +		mconfig->formats_config.caps_size =3D cfg->size;
-> > +		memcpy(mconfig->formats_config.caps, &cfg->caps, cfg->size);
-> > +	} else {
-> > +		dev_dbg(dai->dev, "Blob is NULL");
-> > +		return -EINVAL;
+> > +/* This will be read from topology manifest, currently defined here */
+> > +#define SKL_MAX_MCPS 30000000
+> > +#define SKL_FW_MAX_MEM 1000000
+>=20
+> Oh dear, this sounds like we need another ABI update to add these
+> manifests?
+
+Not yet. So we will add this and few other stuff in topology manifest vendor
+data for Intel. So Topology Kernel ABI will not get modified with this.
+Yes we need to start adding these data sets to Kernel ABI, but I am planning
+to add that, one shot at the end of SKL cycle so that we don't have to modi=
+fy
+ABI defines.
+
+>=20
+> > +	dev_dbg(bus->dev, "In%s req firmware topology bin\n",  __func__);
+>=20
+> Those "In%s" are going to come out as the function name prefixed with
+> In.  What's that for?  It's just going to make the logs harder to read
+> as far as I can tell :(
+
+Will fix this
+
+>=20
+> > +	const struct firmware *fw;
+>=20
+> > +	ret =3D request_firmware(&fw, "dfw_sst.bin", bus->dev);
+> > +	if (fw =3D=3D NULL) {
+> > +		dev_err(bus->dev, "config firmware request failed with %d\n", ret);
+> > +		return ret;
 > > +	}
 >=20
-> This seems like a more serious problem than something we just dev_dbg()
-> about?
+> We're ignoring the return value (which is what we should be paying
+> attention to here) and checking to see if fw is NULL but fw wasn't
+> initialized :(
 
-Yes this should be an error as it will fail and we can't start a stream
-without this, will fix. Thanks for pointing.
-
->=20
-> > +static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
-> > +					struct snd_soc_dapm_widget *w,
-> > +					struct skl_pipe_params *params)
-> > +{
-> > +	if (!w->power) {
-> > +		dev_dbg(dai->dev, "set params for widget=3D%s\n", w->name);
-> > +		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
-> > +	}
-> > +
-> > +	return -EINVAL;
->=20
-> Shouldn't that be -EBUSY?  The normal idiom would be to check to see if
-> we were busy and error out rather than writing it as only configuing if
-> not busy (which looks like an error case now).
-
-Not EBUSY. So here we are trying to set params for the pipe. So we would
-expect that pipe (widget) should be powered up by DAPM, but if that is not
-the case then we are in bad state. I am thinking EIO might suit this one be=
-tter
+Yes, will fix
 
 >=20
-> > +	list_for_each_entry(p, &w->sources, list_sink) {
-> > +		if (p->connect && is_skl_dsp_widget_type(p->source) &&
-> > +						 p->source->priv) {
-> > +			ret =3D skl_tplg_be_set_params(dai, p->source, params);
-> > +
-> > +			if (ret < 0)
-> > +				return ret;
-> > +		} else {
-> > +			ret =3D skl_tplg_be_set_src_pipe_params(dai, p->source,
-> > +									 params);
-> > +		}
+> > +	/* Index is for each config load */
+> > +	ret =3D snd_soc_tplg_component_load(&platform->component, &skl_tplg_o=
+ps, fw, 0);
 >=20
-> These two cases appear to be identical apart from ignoring the error in
-> the else case...
+> Which index?
+The last arg of snd_soc_tplg_component_load() is id which is set as
+tplg.req_index =3D id;
 
-Former is skl_tplg_be_set_params whereas latter is
-skl_tplg_be_set_src_pipe_params(). In former case we set the params but in
-former we set for source pipe
+So the comment tries to explain how last 0 index is added. We have only one
+load so we will be always 0 index
 
-Agree we should check return here, will add that
->=20
-> > +	}
-> > +
-> > +	return ret;
->=20
-> ...unless it happens to be the last entry in the list in which case we
-> pay attention.
->=20
-> > +static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
-> > +	struct snd_soc_dapm_widget *w, struct skl_pipe_params *params)
-> > +{
-> > +	struct snd_soc_dapm_path *p =3D NULL;
-> > +	int ret =3D 0;
-> > +
-> > +	dev_dbg(dai->dev, "widget name=3D%s\n", w->name);
-> > +
-> > +	list_for_each_entry(p, &w->sinks, list_source) {
-> > +		if (p->connect && is_skl_dsp_widget_type(p->sink) &&
-> > +						p->sink->priv) {
-> > +			ret =3D skl_tplg_be_set_params(dai, p->sink, params);
-> > +
-> > +			if (ret < 0)
-> > +				return ret;
-> > +		} else {
-> > +			ret =3D skl_tplg_be_set_sink_pipe_params(dai, p->sink,
-> > +									 params);
-> > +		}
-> > +	}
->=20
-> There's some more common code here and the same patterns as above...  :/
 
-well the problem here is sink, source. Former was for source pipe using
-p->source, here we have sink pipe and using p->sink.
-Same here too that we either set params or for sink pipe
-
-Jeeja did try to make this common but it becomes quite hard, if you have
-a trick up your sleeve for this, am all ears :)
-
->=20
-> > +	if (params->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
-> > +		w =3D dai->playback_widget;
-> > +
-> > +		dev_dbg(dai->dev, "Stream name=3D%s\n", w->name);
-> > +		return skl_tplg_be_set_src_pipe_params(dai, w, params);
-> > +	}
-> > +
-> > +	if (params->stream =3D=3D SNDRV_PCM_STREAM_CAPTURE) {
-> > +		w =3D dai->capture_widget;
-> > +
-> > +		dev_dbg(dai->dev, "Stream name=3D%s\n", w->name);
-> > +		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
-> > +	}
->=20
-> Normally that'd be written as an if/else, and the only difference
-> between the two cases here is which widget we pick...
-
-Yes we can change to else. Btw should we rather do if and if else, and else
-for error check, in case the value became bad. I am thinking latter.
-
+Thanks
 --=20
 ~Vinod
 
---bKyqfOwhbdpXa4YI
+--at6+YcpfzWZg/htY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJVz0XuAAoJEHwUBw8lI4NHciQQAKTkeoz+zVMkIpZJVoPSERH5
-omhwXN+uD7+C4sUXWsQZdUsc+Cwctyf9RpHls5mkoUYqUFZLNBuHdrHkeyn3s7ca
-ygt2ySefn5RVUu+7b8drCsACLK4844Rz9W8Liou8Xb7m5bb1KP+GQ+bNTUXqo/8c
-n42waAWedXqESIcMPx80P8qp95iKiz4Y25WCLYnzjT13C7olzOana0ztiyLxjvrV
-GT6oAnhDTKugRSija5YqqnR9nSioDtoJGjPKrs+muvQcbPBKTS3jHYGekLafT1Ps
-HqXjg9C7vftND6f8RyssSQ5XEQV6jqUtfuewWojYWj5mMSlXZfBFCluyHzKJ90Y1
-75+dwKVaVLPTIio6DUINGZOhU7tAdNd6tMXHrlXCtVmF6LQcDuw7cQkmmaCVATRV
-aBJiYcAe3UYdzFnVkgA2F0mArFO/wq0rhGt82giZnI/Sw3bApPBw3NOl7h30aEBN
-vKY9NunWdMxGN4d5X7pGUg0OhsDBM0S3wWIdWpDfiOoY03bJ9bLQiBKQOdLQc+eH
-sJAQUzH2RnNwBG5RLJtkNrjREObDsePmqVzGlQrEEKAnji3a4TEhd0+dQcg5EAQb
-V93QS1wTBopYDAJQM6UfycY2St7nQFxVR73YbaIACaHwTt1iT/3XmNc067pt2UQq
-HDM6/vzwHi0uDlP3SJNO
-=ybuD
+iQIcBAEBAgAGBQJVz0naAAoJEHwUBw8lI4NHn6QP/32zFQ/b+Gq7yF+FcgegNYxn
+cC4bEaWZFbauZdshNEbrZR+twrzCbd9/wAjw+6DXOY/igCRCWh7hMJSUNSKaXBNI
+McHh/oEOZBTlgOWj9Gku3lyZjwxhX/KGCIwpRfjl6TlDotUg2e1efpDGmYb36a1+
+COmzWNm+uB67wJHw2Q3ek0boNoapnNBanrgu/cKUTXP5vRD+tXGXshZ236GhoSRg
+t053qGauyTBFnwUc/FW5DUBDW1fd8UQcu2Ex/Dfplyozl1SvuGZih5PzFPmwWSL/
+jNf193Unb+1N/3ubsuTbNsq6/cyF5KOa3ukQaCSwHa97z4H5h5rpXikTLaSEQn+z
+UpEpXiIUZdSoKyDtIGOe6jaBZVqhVCdkjPOFlvaBqZdUu4AjHfvqLU/OfoMfY3bY
+oMtuqurg4hjpXAasYERLIOc4HtXKDPeMRJaiIhUWFgCRjzOtvFxM0cJ78InAt9bl
+xUPNgV+Q3rPqtO0Nethq55KAcUjXLQgPpuRuBPbf/FL/lfflv/M8zvsrp2BQPXop
+u/PIXP8Umuzr/V5EbkoQDRiw6K7yoc+Y6+vIriu3lpfFPXXlO17nZthIHLtTCI24
+p98vWsvqeSp7UEz4ksNogByug3TAMSV4RJtZguDSziKpS/jVDhN+D0NhkRXO/KfI
+ZP8jjs2bLpTw9mK1GvrT
+=0k+s
 -----END PGP SIGNATURE-----
 
---bKyqfOwhbdpXa4YI--
+--at6+YcpfzWZg/htY--
 
---===============9210487961896242197==
+--===============8943736454637162760==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9210487961896242197==--
+--===============8943736454637162760==--
