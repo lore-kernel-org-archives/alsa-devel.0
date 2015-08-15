@@ -1,18 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 00/10] ASoC: support adding PCM
- dynamically from topology
-Date: Sat, 15 Aug 2015 09:56:24 +0200
-Message-ID: <55CEF0A8.5030707@metafoo.de>
-References: <cover.1439217448.git.mengdong.lin@intel.com>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 03/25] ALSA: firewire-lib: add helper
+ functions for asynchronous MIDI port
+Date: Sat, 15 Aug 2015 12:15:54 +0200
+Message-ID: <20150815121554.1f1cffc6@kant>
+References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1439425221-30826-4-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hwpwzzoks.wl-tiwai@suse.de> <55CC4DE0.9090803@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-221.synserver.de (smtp-out-223.synserver.de
- [212.40.185.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CF3F26514B
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 09:56:26 +0200 (CEST)
-In-Reply-To: <cover.1439217448.git.mengdong.lin@intel.com>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6EF12651C7
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 12:15:55 +0200 (CEST)
+In-Reply-To: <55CC4DE0.9090803@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@intel.com, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 08/10/2015 04:45 PM, mengdong.lin@intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@intel.com>
-> 
-> This series allows the topology core to create PCM devices dynamically.
-> The user can define different DAIs in the topology files for different
-> versions of firmware, but share a generic platform and machine driver.
-> 
-> A dummy DAI and DAI link can be used to register the soc card and specify
-> the platform with topology. Then real DAIs are created in platform probing
-> phase by the topology core, and the machine driver will be notified to create
-> relavant DAI links.
-
-This all sounds as if the dynamically loaded topology information does not
-describe dynamic topology, e.g. like DSP firmware, but rather the static
-topology that would usually come from things like devicetree or ACPI. Maybe
-you need to rethink when the topology information is loaded and make sure
-that the parts that describe the static topology are available before the
-card is instantiated.
-
-- Lars
+T24gQXVnIDEzIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gT24gQXVnIDEzIDIwMTUgMTU6MzEs
+IFRha2FzaGkgSXdhaSB3cm90ZToKPiA+IE9uIFRodSwgMTMgQXVnIDIwMTUgMDI6MTk6NTkgKzAy
+MDAsCj4gPiBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+ID4+IC0tLSBhL3NvdW5kL2ZpcmV3aXJl
+L2xpYi5jCj4gPj4gKysrIGIvc291bmQvZmlyZXdpcmUvbGliLmMKWy4uLl0KPiA+PiArc3RhdGlj
+IHZvaWQgbWlkaV9wb3J0X3Rhc2tsZXQodW5zaWduZWQgbG9uZyBkYXRhKQo+ID4+ICt7Cj4gPj4g
+KwlzdHJ1Y3Qgc25kX2Z3X2FzeW5jX21pZGlfcG9ydCAqcG9ydCA9Cj4gPj4gKwkJCQkJKHN0cnVj
+dCBzbmRfZndfYXN5bmNfbWlkaV9wb3J0ICopZGF0YTsKPiA+PiArCXN0cnVjdCBzbmRfcmF3bWlk
+aV9zdWJzdHJlYW0gKnN1YnN0cmVhbSA9IEFDQ0VTU19PTkNFKHBvcnQtPnN1YnN0cmVhbSk7Cj4g
+Pj4gKwlpbnQgZ2VuZXJhdGlvbjsKPiA+PiArCWludCB0eXBlOwpbLi4uXQo+ID4+ICsJLyogU3Rh
+cnQgdGhpcyB0cmFuc2FjdGlvbi4gKi8KPiA+PiArCWdlbmVyYXRpb24gPSBwb3J0LT5wYXJlbnQt
+PmdlbmVyYXRpb247Cj4gPj4gKwlzbXBfcm1iKCk7IC8qIG5vZGVfaWQgdnMuIGdlbmVyYXRpb24g
+Ki8KPiA+Cj4gPiBXaHkgdGhpcyBiYXJyaWVyIGlzIG5lZWRlZD8KPiAKPiBPb3BzLiBJIGZvcmdv
+dCB0byByZWZpbmUgaXQgYWZ0ZXIgY29weWluZyBmcm9tIHRoZSBvdGhlciBwbGFjZS4gRXhhY3Rs
+eSwgCj4gaXQncyBub3QgbmVlZCBoZXJlLgo+IAo+ID4+ICsJZndfc2VuZF9yZXF1ZXN0KHBvcnQt
+PnBhcmVudC0+Y2FyZCwgJnBvcnQtPnRyYW5zYWN0aW9uLCB0eXBlLAo+ID4+ICsJCQlwb3J0LT5w
+YXJlbnQtPm5vZGVfaWQsIGdlbmVyYXRpb24sCj4gPj4gKwkJCXBvcnQtPnBhcmVudC0+bWF4X3Nw
+ZWVkLCBwb3J0LT5hZGRyLAo+ID4+ICsJCQlwb3J0LT5idWYsIHBvcnQtPmxlbiwgYXN5bmNfbWlk
+aV9wb3J0X2NhbGxiYWNrLAo+ID4+ICsJCQlwb3J0KTsKPiA+PiArfQoKVGhlIGJhcnJpZXIgaXMg
+bm9ybWFsbHkgbmVlZGVkIGJlY2F1c2U6CiAgLSAiZ2VuZXJhdGlvbiIgaXMgdGhlIElFRUUgMTM5
+NCBidXMgZ2VuZXJhdGlvbiwgd2hpY2ggaXMgYSBjb3VudGVyIHRoYXQKICAgIGRpc3Rpbmd1aXNo
+ZXMgcGVyaW9kcyBiZXR3ZWVuIGJ1cyByZXNldHMuCiAgLSBBdCBhIGJ1cyByZXNldCwgbm9kZXMg
+bWF5IGFzc3VtZSBkaWZmZXJlbnQgbm9kZSBJRHMgZnJvbSBiZWZvcmUgdGhlCiAgICByZXNldC4g
+IEhlbmNlIHdoZW5ldmVyIGEgbm9kZSBpcyBhZGRyZXNzZWQgYnkgbWVhbnMgb2Ygbm9kZSBJRCwg
+dGhlCiAgICBnZW5lcmF0aW9uIHZhbHVlIG11c3QgYmUgZ2l2ZW4gdG9vLgogIC0gVGhlIG5vZGVf
+SUQ6Z2VuZXJhdGlvbiB0dXBsZSBpcyBhY2Nlc3NlZCBpbiB0aGUgTGludXggZmlyZXdpcmUgc3Rh
+Y2sgaW4KICAgIGEgbG9ja2xlc3MgbWFubmVywrk6CiAgICAgICAtIGZpcmV3aXJlLWNvcmUncyBi
+dXMgcmVzZXQgaGFuZGxlciB3cml0ZXMgdGhlbSBieQogICAgICAgICBzZXQgbm9kZV9pZDsgc21w
+X3dtYigpOyBzZXQgZ2VuZXJhdGlvbgogICAgICAgLSBoaWdoZXItbGV2ZWwgY29kZSByZWFkcyB0
+aGVtIGJ5CiAgICAgICAgIGdldCBnZW5lcmF0aW9uOyBzbXBfcm1iKCk7IGdldCBub2RlX2lkCiAg
+ICBUaGlzIHdheSBoaWdobGV2ZWwgYWx3YXlzIG9ubHkgdXNlcyBjdXJyZW50IElEcyBpbiBjdXJy
+ZW50IGdlbmVyYXRpb25zCiAgICBvciBjdXJyZW50IElEcyBpbiBvdXRkYXRlZCBnZW5lcmF0aW9u
+cyAodGhlIGxhdHRlciBjYXNlIGJlaW5nCiAgICBleHRyZW1lbHkgcmFyZSBhbmQgZG9pbmcgbm8g
+aGFybSBiZWNhdXNlIHRoZSBsaW5rIGxheWVyIGhhcmR3YXJlIHdpbGwKICAgIG5vdCBlbWl0IHRo
+aXMgc29ydCBvZiByZXF1ZXN0cyB0byB0aGUgYnVzKSwgd2hpbGUgb24gdGhlIG90aGVyIGhhbmQK
+ICAgIGhpZ2hsZXZlbCBuZXZlciB1c2VzIG91dGRhdGVkIElEcyBpbiBjdXJyZW50IGdlbmVyYXRp
+b25zICh3aGljaCB3b3VsZAogICAgY2F1c2UgcmVxdWVzdHMgdG8gYmUgbWlzZGlyZWN0ZWQgdG8g
+YSB3cm9uZyBub2RlKS4KClNvIEkgYW0gd29uZGVyaW5nLCB3aHkgd291bGQgdGhlIGJhcnJpZXIg
+X25vdF8gYmUgbmVlZGVkIGhlcmU/CgotLS0tLS0tLS0tLS0KIMK5KSBUaGlzIHdhcyB0aGUgb3Jp
+Z2luYWwgYXV0aG9yJ3MgY2hvaWNlIGluIGhpcyBwcmVmZXJlbmNlIG92ZXIgdXNpbmcgYQogICAg
+bG9jayBmb3IgdGhpcyBhY2Nlc3MuICBBbm90aGVyIHBvc3NpYmlsaXR5IGZvciBhIGxvY2tsZXNz
+IEFQSSB3b3VsZCBiZQogICAgdG8gY29tYmluZSBub2RlX0lEOmdlbmVyYXRpb24gaW50byBhIHNp
+bmdsZSBhdG9taWMgdmFyaWFibGU7IHRvZ2V0aGVyCiAgICB0aGV5IGFyZSAyNCBiaXRzIHdpZGUu
+Ci0tIApTdGVmYW4gUmljaHRlcgotPT09PT0tPT09PT0gPS0tLSAtPT09PQpodHRwOi8vYXJjZ3Jh
+cGguZGUvc3IvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
