@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: adjust set DAI format in AC'97
-	mode" to the asoc tree
-Date: Fri, 14 Aug 2015 19:13:26 -0700
-Message-ID: <E1ZQQyM-0004Ik-BI@finisterre>
-References: <55BE9D3B.3090303@maciej.szmigiero.name>
+Subject: Applied "ASoC: fsl_ssi: instantiate AC'97 CODEC" to
+	the asoc tree
+Date: Fri, 14 Aug 2015 19:13:28 -0700
+Message-ID: <E1ZQQyO-0004Jk-6x@finisterre>
+References: <558FFB35.8000105@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B3D62665DE
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:34 +0200 (CEST)
-In-Reply-To: <55BE9D3B.3090303@maciej.szmigiero.name>
+ by alsa0.perex.cz (Postfix) with ESMTP id CEF7F2665E0
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:35 +0200 (CEST)
+In-Reply-To: <558FFB35.8000105@maciej.szmigiero.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
+   ASoC: fsl_ssi: instantiate AC'97 CODEC
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From dce0332c85c4d9eb5d96182c56f63cd20566f073 Mon Sep 17 00:00:00 2001
+>From 8ed0c842153434fa3aeeb89d16b71ac7dc8e12ee Mon Sep 17 00:00:00 2001
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Wed, 5 Aug 2015 17:29:02 +0200
-Subject: [PATCH] ASoC: fsl_ssi: adjust set DAI format in AC'97 mode
+Date: Wed, 5 Aug 2015 17:26:44 +0200
+Subject: [PATCH] ASoC: fsl_ssi: instantiate AC'97 CODEC
 
-Adjust set DAI format function in fsl_ssi driver
-so it doesn't fail and clears RXDIR in AC'97 mode.
+Instantiate AC'97 CODEC in fsl_ssi driver AC'97 mode.
 
 Signed-off-by: Maciej Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e79dc16..f03d57e 100644
+index 0b4fcd9..e79dc16 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -900,14 +900,16 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
- 		break;
- 	default:
--		return -EINVAL;
-+		if (!fsl_ssi_is_ac97(ssi_private))
-+			return -EINVAL;
- 	}
+@@ -1460,6 +1460,27 @@ done:
+ 		_fsl_ssi_set_dai_fmt(&pdev->dev, ssi_private,
+ 				     ssi_private->dai_fmt);
  
- 	stcr |= strcr;
- 	srcr |= strcr;
++	if (fsl_ssi_is_ac97(ssi_private)) {
++		u32 ssi_idx;
++
++		ret = of_property_read_u32(np, "cell-index", &ssi_idx);
++		if (ret) {
++			dev_err(&pdev->dev, "cannot get SSI index property\n");
++			goto error_sound_card;
++		}
++
++		ssi_private->pdev =
++			platform_device_register_data(NULL,
++					"ac97-codec", ssi_idx, NULL, 0);
++		if (IS_ERR(ssi_private->pdev)) {
++			ret = PTR_ERR(ssi_private->pdev);
++			dev_err(&pdev->dev,
++				"failed to register AC97 codec platform: %d\n",
++				ret);
++			goto error_sound_card;
++		}
++	}
++
+ 	return 0;
  
--	if (ssi_private->cpu_dai_drv.symmetric_rates) {
--		/* Need to clear RXDIR when using SYNC mode */
-+	if (ssi_private->cpu_dai_drv.symmetric_rates
-+			|| fsl_ssi_is_ac97(ssi_private)) {
-+		/* Need to clear RXDIR when using SYNC or AC97 mode */
- 		srcr &= ~CCSR_SSI_SRCR_RXDIR;
- 		scr |= CCSR_SSI_SCR_SYN;
- 	}
+ error_sound_card:
 -- 
 2.5.0
