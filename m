@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 5/9] ASoC: Intel: Skylake: Add topology
- core init and handlers
-Date: Sat, 15 Aug 2015 19:46:58 +0530
-Message-ID: <20150815141658.GF13546@localhost>
+Subject: Re: [PATCH 9/9] ASoC: Intel: Skylake: Remove CPU dai
+	that is not used
+Date: Sat, 15 Aug 2015 19:49:55 +0530
+Message-ID: <20150815141955.GG13546@localhost>
 References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-6-git-send-email-subhransu.s.prusty@intel.com>
- <20150814220313.GW10748@sirena.org.uk>
+ <1438976184-6160-10-git-send-email-subhransu.s.prusty@intel.com>
+ <20150814220633.GX10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8943736454637162760=="
+Content-Type: multipart/mixed; boundary="===============6354785608201147107=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E5C92608EC
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 16:15:00 +0200 (CEST)
-In-Reply-To: <20150814220313.GW10748@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6D622608EC
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 16:17:55 +0200 (CEST)
+In-Reply-To: <20150814220633.GX10748@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,123 +27,65 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8943736454637162760==
+--===============6354785608201147107==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="at6+YcpfzWZg/htY"
+	protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
 Content-Disposition: inline
 
 
---at6+YcpfzWZg/htY
+--pY3vCvL1qV+PayAL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 14, 2015 at 11:03:13PM +0100, Mark Brown wrote:
-> On Sat, Aug 08, 2015 at 01:06:20AM +0530, Subhransu S. Prusty wrote:
+On Fri, Aug 14, 2015 at 11:06:33PM +0100, Mark Brown wrote:
+> On Sat, Aug 08, 2015 at 01:06:24AM +0530, Subhransu S. Prusty wrote:
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> >=20
+> > For each endpoint instance, need to create CPU dai,
+> > Removed unused CPU dai DMIC23/HDA-SPK/HDA-AMIC dais.
 >=20
-> > +	struct skl_pipeline  *ppl;
->=20
-> > +	pipe  =3D devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
->=20
-> There's lots of random spaces in this code so far and some further down
-> too.
-sorry about that, will fix
+> I'm not sure I understand the first line here?
 
->=20
-> > +	struct skl_dfw_module *dfw_config =3D (struct skl_dfw_module *) tplg_=
-w->priv.data;
-> > +
-> > +	skl_tplg_dump_widget_info(bus->dev, dfw_config, tplg_w);
->=20
-> Consider implementing debugfs for this...
+We need to create CPU DAI for each endpoint instance. For this we should
+have one DMIC DAI, one HDA DAI and SSP DAI. DMIC23, HDA-SPK/AMIC was not
+required so this patch removes
 
-yes that a good idea, will drop this here.
-
->=20
-> > +/* This will be read from topology manifest, currently defined here */
-> > +#define SKL_MAX_MCPS 30000000
-> > +#define SKL_FW_MAX_MEM 1000000
->=20
-> Oh dear, this sounds like we need another ABI update to add these
-> manifests?
-
-Not yet. So we will add this and few other stuff in topology manifest vendor
-data for Intel. So Topology Kernel ABI will not get modified with this.
-Yes we need to start adding these data sets to Kernel ABI, but I am planning
-to add that, one shot at the end of SKL cycle so that we don't have to modi=
-fy
-ABI defines.
-
->=20
-> > +	dev_dbg(bus->dev, "In%s req firmware topology bin\n",  __func__);
->=20
-> Those "In%s" are going to come out as the function name prefixed with
-> In.  What's that for?  It's just going to make the logs harder to read
-> as far as I can tell :(
-
-Will fix this
-
->=20
-> > +	const struct firmware *fw;
->=20
-> > +	ret =3D request_firmware(&fw, "dfw_sst.bin", bus->dev);
-> > +	if (fw =3D=3D NULL) {
-> > +		dev_err(bus->dev, "config firmware request failed with %d\n", ret);
-> > +		return ret;
-> > +	}
->=20
-> We're ignoring the return value (which is what we should be paying
-> attention to here) and checking to see if fw is NULL but fw wasn't
-> initialized :(
-
-Yes, will fix
-
->=20
-> > +	/* Index is for each config load */
-> > +	ret =3D snd_soc_tplg_component_load(&platform->component, &skl_tplg_o=
-ps, fw, 0);
->=20
-> Which index?
-The last arg of snd_soc_tplg_component_load() is id which is set as
-tplg.req_index =3D id;
-
-So the comment tries to explain how last 0 index is added. We have only one
-load so we will be always 0 index
-
+Will fix the description
 
 Thanks
 --=20
 ~Vinod
 
---at6+YcpfzWZg/htY
+--pY3vCvL1qV+PayAL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJVz0naAAoJEHwUBw8lI4NHn6QP/32zFQ/b+Gq7yF+FcgegNYxn
-cC4bEaWZFbauZdshNEbrZR+twrzCbd9/wAjw+6DXOY/igCRCWh7hMJSUNSKaXBNI
-McHh/oEOZBTlgOWj9Gku3lyZjwxhX/KGCIwpRfjl6TlDotUg2e1efpDGmYb36a1+
-COmzWNm+uB67wJHw2Q3ek0boNoapnNBanrgu/cKUTXP5vRD+tXGXshZ236GhoSRg
-t053qGauyTBFnwUc/FW5DUBDW1fd8UQcu2Ex/Dfplyozl1SvuGZih5PzFPmwWSL/
-jNf193Unb+1N/3ubsuTbNsq6/cyF5KOa3ukQaCSwHa97z4H5h5rpXikTLaSEQn+z
-UpEpXiIUZdSoKyDtIGOe6jaBZVqhVCdkjPOFlvaBqZdUu4AjHfvqLU/OfoMfY3bY
-oMtuqurg4hjpXAasYERLIOc4HtXKDPeMRJaiIhUWFgCRjzOtvFxM0cJ78InAt9bl
-xUPNgV+Q3rPqtO0Nethq55KAcUjXLQgPpuRuBPbf/FL/lfflv/M8zvsrp2BQPXop
-u/PIXP8Umuzr/V5EbkoQDRiw6K7yoc+Y6+vIriu3lpfFPXXlO17nZthIHLtTCI24
-p98vWsvqeSp7UEz4ksNogByug3TAMSV4RJtZguDSziKpS/jVDhN+D0NhkRXO/KfI
-ZP8jjs2bLpTw9mK1GvrT
-=0k+s
+iQIcBAEBAgAGBQJVz0qLAAoJEHwUBw8lI4NHHYMP/2AXmAgo1UfvISw1RoZU0uFj
+YjttNLBRSU6m36XQiHtSENBbk9xWlfM+yeKIFORTfagdWxfvbEOuNkPH+nnwIS7A
++4sRRN87gWf+FX9xTHe7vMV8neB/JJ/OCbg842UOwmUjsKrfBPEnpdZFgfY15iD3
+ceGizKfubqwBTY9u1plLFzhAE/1kqwLR8f/1pTIlWuxYKJfp/9klPRqwjMz7oBhC
+/Ybx7sqyTXUcKmF6hp2WSRxLztU8004lsCAR4ezjPEo55BOsRiXW5MbfR3YOI1X3
+UZaZQFQ21BCe8iBMlJyd8h76JosIghrk48ZJga/QHgFwQpOJaxoVH1qhdyfsdnjG
+W+zhgayopezNGYfnYnryQbvqpM1pyEJ7MQwCFtDI+YZGy4y2bteRiWIVpJ0j6C1H
+N90838FHFw1G69R6PRx8jtvzCtwgbGo7txDjgfCW4f4DBbJDP61quEta9A7C31hd
+IlNqwajztVtcvNeDqfZKUZ0CyqBOa5Z0l0ZjYJ7bWNhERPUeUWwJYQotehj5oMn3
+yy9aB4FiD5nG29ajAn3Nu+yMaJ4/Yqb/h6tD9VN5kO5hwsAAFhUShaWaTAIl8sgj
+ZWSlGQLTnyagxB2eeShxNA7mOiAqwHoCgZv/ekVekxxnRCIncnld60tAoUEGlLnf
+f/ZeX6gnxJG38uvNIf4t
+=45kl
 -----END PGP SIGNATURE-----
 
---at6+YcpfzWZg/htY--
+--pY3vCvL1qV+PayAL--
 
---===============8943736454637162760==
+--===============6354785608201147107==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8943736454637162760==--
+--===============6354785608201147107==--
