@@ -1,20 +1,21 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
- hw_params handling
-Date: Sat, 15 Aug 2015 20:43:22 +0530
-Message-ID: <20150815151322.GI13546@localhost>
-References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
- <20150814215310.GV10748@sirena.org.uk>
- <20150815140014.GE13546@localhost>
- <20150815144646.GD10748@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
+ formats to bitwise flag
+Date: Sat, 15 Aug 2015 08:14:01 -0700
+Message-ID: <20150815151401.GF10748@sirena.org.uk>
+References: <cover.1439217448.git.mengdong.lin@intel.com>
+ <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
+ <20150814203428.GR10748@sirena.org.uk>
+ <s5ha8ttypc1.wl-tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F8480D04D0@SHSMSX101.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7219532056827586243=="
+Content-Type: multipart/mixed; boundary="===============5067433885446405009=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id BDF8026513F
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 17:11:21 +0200 (CEST)
-In-Reply-To: <20150815144646.GD10748@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DA8426513F
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 17:14:07 +0200 (CEST)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F8480D04D0@SHSMSX101.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,139 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7219532056827586243==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t4apE7yKrX2dGgJC"
+--===============5067433885446405009==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="EzoGi9kFQAnUjl0a"
 Content-Disposition: inline
 
 
---t4apE7yKrX2dGgJC
+--EzoGi9kFQAnUjl0a
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 15, 2015 at 07:46:46AM -0700, Mark Brown wrote:
-> On Sat, Aug 15, 2015 at 07:30:14PM +0530, Vinod Koul wrote:
-> > On Fri, Aug 14, 2015 at 10:53:10PM +0100, Mark Brown wrote:
-> > > On Sat, Aug 08, 2015 at 01:06:19AM +0530, Subhransu S. Prusty wrote:
->=20
-> > > > +	/*
-> > > > +	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit contain=
-er so
-> > > > +	 * update bit depth accordingly
-> > > > +	 */
-> > > > +	if (format->valid_bit_depth =3D=3D SKL_DEPTH_16BIT)
-> > > > +		format->bit_depth =3D format->valid_bit_depth;
-> > > > +	else if (format->valid_bit_depth =3D=3D SKL_DEPTH_24BIT)
-> > > > +		format->bit_depth =3D SKL_DEPTH_32BIT;
-> > > > +
->=20
-> > > What if the depth is neither 16 bit nor 24 bit?  Shouldn't this just =
-be
-> > > a simple override for the 24 bit case?
->=20
-> > These are the only two DSP supports, so am not sure that overriding will
-> > work with DSP. I think we should add else and error out.
->=20
-> Then write a switch statement.  :/
+On Sat, Aug 15, 2015 at 01:49:42PM +0000, Lin, Mengdong wrote:
 
-Ok
+> Is there some topic branch which can accept topology patches for next
+> kernel release?  Can we change topology ABI in v4.3?
 
->=20
-> > > > +static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
-> > > > +					struct snd_soc_dapm_widget *w,
-> > > > +					struct skl_pipe_params *params)
-> > > > +{
-> > > > +	if (!w->power) {
-> > > > +		dev_dbg(dai->dev, "set params for widget=3D%s\n", w->name);
-> > > > +		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
-> > > > +	}
-> > > > +
-> > > > +	return -EINVAL;
-> > >=20
-> > > Shouldn't that be -EBUSY?  The normal idiom would be to check to see =
-if
-> > > we were busy and error out rather than writing it as only configuing =
-if
-> > > not busy (which looks like an error case now).
-> >=20
-> > Not EBUSY. So here we are trying to set params for the pipe. So we would
-> > expect that pipe (widget) should be powered up by DAPM, but if that is =
-not
-> > the case then we are in bad state. I am thinking EIO might suit this on=
-e better
->=20
-> Right, that's why I'm saying -EBUSY - we can't configure the pipe
-> because it is current in use.
+You're not quite getting the issue here - the problem is that once we
+have released the ABI we need to keep supporting applications using it
+so we can't just change the ABI, we also need to keep compatibility code
+for the original ABI.  This makes it a lot more effort to change things.
 
-Ok will update
+> Now only Intel SKL driver is using topology code, so the affect should
+> be limited.  And I feel using bitwise flag is simpler in both user
+> space and in kernel coding.  We can increase the topology ABI number
+> when there is ABI change, and the topology driver always checks this
+> version.
 
-> > > There's some more common code here and the same patterns as above... =
- :/
->=20
-> > well the problem here is sink, source. Former was for source pipe using
-> > p->source, here we have sink pipe and using p->sink.
-> > Same here too that we either set params or for sink pipe
->=20
-> > Jeeja did try to make this common but it becomes quite hard, if you have
-> > a trick up your sleeve for this, am all ears :)
->=20
-> Well, I don't have the code any more.
->=20
-> > > > +	if (params->stream =3D=3D SNDRV_PCM_STREAM_CAPTURE) {
-> > > > +		w =3D dai->capture_widget;
-> > > > +
-> > > > +		dev_dbg(dai->dev, "Stream name=3D%s\n", w->name);
-> > > > +		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
-> > > > +	}
->=20
-> > > Normally that'd be written as an if/else, and the only difference
-> > > between the two cases here is which widget we pick...
->=20
-> > Yes we can change to else. Btw should we rather do if and if else, and =
-else
-> > for error check, in case the value became bad. I am thinking latter.
->=20
-> Either works.
-Ok will add latter
+Someone else may take this kernel and use it in their product, or some
+distro may decide to ship v4.2 as their kernel.  Once it's in a release
+we have to assume someone is going to start relying on the ABI.
 
---=20
-~Vinod
-
---t4apE7yKrX2dGgJC
+--EzoGi9kFQAnUjl0a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJVz1cSAAoJEHwUBw8lI4NHNvQQAKUYlkqreslXWRtF1BOA8IhC
-aU4gbzuR3s/WA+qPJ4b3WMdIytH2A9QkXzr4vUd+HWNgEi7s6NPeakbvo0Oty/l9
-WPbAj7WbyzlXWumnM4IquxX4Z5BkW5uoR2EZY1TtZ0dfkDxUTRE+c5PSDPSVBzcI
-CFQBMdS8lrcLprs20itggGKPDG65OEPW6Wbt1i73Kdzc6y2+reDfWGyMJfCNQ1j4
-OGXSLZLrEHFCUOGs51i27W/hzFlerFH7KnwoWBAEJZZqDLEbMzfaBKOB4eO20Vsk
-OaVWMGNpPiehrPtsVxwsku+jYICah3BBcCAFyJmfk6aCf8QF9Da4MDIi2cwk57dF
-cU3VvLkvQAQbnbz0jG+PcC7e24kxf6tEnlLITICgO65Z6/3IMynk+RdKhe2i9N3R
-D9h3Kce7GQlz6b8yXN+ZCtGlsfYQpL5DO3NT3caZp+ISRNzHrr/q4l9BfRo1h0jW
-GWSPou8Dp4jCIYTWWNOSlutS/0x4kzummBIIm4zoXp9RSl6E2EpXH6imJTC3kZHb
-qWC/svtjpC/xLTpDw6KpMrSOdZBqWof2UDRJLN8ViU0nCmUo4HptgMDKl5Hjd/ug
-uzKdSLNA0TmTukgYc0uOVr1ulfsOWnr7l2jtbIAi1E2pokSD+z8pfvHuzmLztugO
-O4WsIfVDTY+H/tynbCHW
-=Hz8G
+iQEcBAEBCAAGBQJVz1c5AAoJECTWi3JdVIfQ3H4H/iYSD8BdRVt/+kINCc2AXBiv
+yhkElRktS3U/8m64x8GMwxGh/l7JimtpAGFrJ47viznlYkabs8FPxisqo1cWQ5Ob
+Rd14i4DZArbmgjT+8wQHft6kcMJhMz9ROLy05KcY6wwDxjqpky+nKWRtDvH6kRmv
+i9V9mFU933mAEnOlOYt+99QydqbShmIPkiw+YvqIKPRQki3Pj2pq43Plxie4lCD1
+BNdmhEAaka/J9SPwiZ3byfV48gNL00hveZgJY9Pb1/bzn+n1RQvFn0/SopaSJhNg
+x4nDVqlPcqHx4sG3gM8Pa4mTiyCNZJMRNlPdP6sG6lMqd0aAzai4z2G2Y1Lhvxg=
+=v6yE
 -----END PGP SIGNATURE-----
 
---t4apE7yKrX2dGgJC--
+--EzoGi9kFQAnUjl0a--
 
---===============7219532056827586243==
+--===============5067433885446405009==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7219532056827586243==--
+--===============5067433885446405009==--
