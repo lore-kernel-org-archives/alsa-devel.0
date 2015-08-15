@@ -1,21 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
 Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
  formats to bitwise flag
-Date: Sat, 15 Aug 2015 08:14:01 -0700
-Message-ID: <20150815151401.GF10748@sirena.org.uk>
+Date: Sat, 15 Aug 2015 15:25:18 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D056B@SHSMSX101.ccr.corp.intel.com>
 References: <cover.1439217448.git.mengdong.lin@intel.com>
  <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
- <20150814203428.GR10748@sirena.org.uk>
- <s5ha8ttypc1.wl-tiwai@suse.de>
+ <20150814203428.GR10748@sirena.org.uk>	<s5ha8ttypc1.wl-tiwai@suse.de>
  <F46914AEC2663F4A9BB62374E5EEF8F8480D04D0@SHSMSX101.ccr.corp.intel.com>
+ <s5h37zkzk2x.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5067433885446405009=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DA8426513F
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 17:14:07 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F8480D04D0@SHSMSX101.ccr.corp.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4F5B26510A
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 17:25:47 +0200 (CEST)
+In-Reply-To: <s5h37zkzk2x.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,65 +26,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "Girdwood,
  Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Saturday, August 15, 2015 10:46 PM
+ 
+> On Sat, 15 Aug 2015 15:49:42 +0200,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Saturday, August 15, 2015 3:38 PM
+> >
+> > > On Fri, 14 Aug 2015 22:34:28 +0200,
+> > > Mark Brown wrote:
+> > > >
+> > > > On Mon, Aug 10, 2015 at 10:48:37PM +0800, mengdong.lin@intel.com
+> > > wrote:
+> > > >
+> > > > >  struct snd_soc_tplg_stream_caps {
+> > > > >  	__le32 size;		/* in bytes of this structure */
+> > > > >  	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> > > > > -	__le64 formats[SND_SOC_TPLG_MAX_FORMATS];	/* supported
+> > > formats SNDRV_PCM_FMTBIT_* */
+> > > > > +	__le64 formats;	/* supported formats SNDRV_PCM_FORMAT_*
+> */
+> > > >
+> > > > Argh, this is *another* ABI change which you've buried in the
+> > > > middle of a series you're sending right at the end of the release
+> > > > cycle (this was sent after -rc6, we may not even get a -rc7...).
+> > > > Given how close we are to the release and the invasiveness of the
+> > > > changes in this series it's very lucky I even saw it before
+> > > > release, I'm reading this on my flight to Plumbers which means my
+> > > > bandwidth next week will be
+> > > limited.
+> > >
+> > > Thanks for checking this.  Mengdong, if there is a change in uapi/*,
+> > > this means touching ABI.  So, this change isn't acceptable once when
+> > > the kernel is released.  At least, the backward compatibility *must*
+> > > be kept no matter which version is.
+> >
+> > Thanks for your review, Mark and Takashi.
+> > This series including the ABI change, is not for v4.2, but is an RFC to adding
+> DAI/DAI links support in topology.
+> > I'm sorry that I should have explicitly said this in my comments.
+> >
+> > Is there some topic branch which can accept topology patches for next
+> kernel release?
+> > Can we change topology ABI in v4.3?
+> 
+> In general "yes, but only if it's backward-compatible".
+> 
+> > Now only Intel SKL driver is using topology code, so the affect should be
+> limited.
+> > And I feel using bitwise flag is simpler in both user space and in kernel
+> coding.
+> 
+> Yes, using FMTBIT_* is better, but this must not justify to break ABI.  Either
+> we disable this API/ABI for 4.2, or make the change backward compatible.
 
---===============5067433885446405009==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="EzoGi9kFQAnUjl0a"
-Content-Disposition: inline
+Many thanks for your clarification!
+We'd better keep current ABI unchanged to keep backward compatibility.
 
+In addition, does "disable this API/ABI for 4.2" mean disabling all topology features, or only some structures for v4.2?
+But alsa-lib already integrated this ABI version.
 
---EzoGi9kFQAnUjl0a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm worried that If we have to add new fields to ABI structures, how to keep the backward compatibility.
 
-On Sat, Aug 15, 2015 at 01:49:42PM +0000, Lin, Mengdong wrote:
+Thanks
+Mengdong
 
-> Is there some topic branch which can accept topology patches for next
-> kernel release?  Can we change topology ABI in v4.3?
-
-You're not quite getting the issue here - the problem is that once we
-have released the ABI we need to keep supporting applications using it
-so we can't just change the ABI, we also need to keep compatibility code
-for the original ABI.  This makes it a lot more effort to change things.
-
-> Now only Intel SKL driver is using topology code, so the affect should
-> be limited.  And I feel using bitwise flag is simpler in both user
-> space and in kernel coding.  We can increase the topology ABI number
-> when there is ABI change, and the topology driver always checks this
-> version.
-
-Someone else may take this kernel and use it in their product, or some
-distro may decide to ship v4.2 as their kernel.  Once it's in a release
-we have to assume someone is going to start relying on the ABI.
-
---EzoGi9kFQAnUjl0a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJVz1c5AAoJECTWi3JdVIfQ3H4H/iYSD8BdRVt/+kINCc2AXBiv
-yhkElRktS3U/8m64x8GMwxGh/l7JimtpAGFrJ47viznlYkabs8FPxisqo1cWQ5Ob
-Rd14i4DZArbmgjT+8wQHft6kcMJhMz9ROLy05KcY6wwDxjqpky+nKWRtDvH6kRmv
-i9V9mFU933mAEnOlOYt+99QydqbShmIPkiw+YvqIKPRQki3Pj2pq43Plxie4lCD1
-BNdmhEAaka/J9SPwiZ3byfV48gNL00hveZgJY9Pb1/bzn+n1RQvFn0/SopaSJhNg
-x4nDVqlPcqHx4sG3gM8Pa4mTiyCNZJMRNlPdP6sG6lMqd0aAzai4z2G2Y1Lhvxg=
-=v6yE
------END PGP SIGNATURE-----
-
---EzoGi9kFQAnUjl0a--
-
---===============5067433885446405009==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5067433885446405009==--
+> 
+> > We can increase the topology ABI number when there is ABI change, and
+> the topology driver always checks this version.
+> 
+> It's a big NO, sorry, this isn't acceptable.  Again, the kernel must give the
+> backward compatibility.  That is, the kernel must accept the old dialect the
+> user space talks if user space wants.  You cannot force user space to
+> communicate in a new ABI out of sudden.
+> 
+> So, yes, ABI version bump is needed if you change ABI.  But it means that the
+> kernel accepts all ABIs up to this version, not meaning
+> *only* this ABI version.
+> 
+> Hopefully this clarifies the situation.
+> 
+> 
+> thanks,
+> 
+> Takashi
