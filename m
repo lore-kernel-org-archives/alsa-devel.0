@@ -1,18 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/9] ASoC: Intel: Skylake: add DSP platform
- widget event handlers
-Date: Sat, 15 Aug 2015 19:12:08 +0530
-Message-ID: <20150815134208.GD13546@localhost>
-References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-4-git-send-email-subhransu.s.prusty@intel.com>
- <20150814214336.GU10748@sirena.org.uk>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
+ formats to bitwise flag
+Date: Sat, 15 Aug 2015 13:49:42 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D04D0@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1439217448.git.mengdong.lin@intel.com>
+ <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
+ <20150814203428.GR10748@sirena.org.uk> <s5ha8ttypc1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8328250152953464314=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C12B261522
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 15:40:09 +0200 (CEST)
-In-Reply-To: <20150814214336.GU10748@sirena.org.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3129261522
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 15:49:47 +0200 (CEST)
+In-Reply-To: <s5ha8ttypc1.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,138 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Saturday, August 15, 2015 3:38 PM
 
---===============8328250152953464314==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DKU6Jbt7q3WqK7+M"
-Content-Disposition: inline
+> On Fri, 14 Aug 2015 22:34:28 +0200,
+> Mark Brown wrote:
+> >
+> > On Mon, Aug 10, 2015 at 10:48:37PM +0800, mengdong.lin@intel.com
+> wrote:
+> >
+> > >  struct snd_soc_tplg_stream_caps {
+> > >  	__le32 size;		/* in bytes of this structure */
+> > >  	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> > > -	__le64 formats[SND_SOC_TPLG_MAX_FORMATS];	/* supported
+> formats SNDRV_PCM_FMTBIT_* */
+> > > +	__le64 formats;	/* supported formats SNDRV_PCM_FORMAT_* */
+> >
+> > Argh, this is *another* ABI change which you've buried in the middle
+> > of a series you're sending right at the end of the release cycle (this
+> > was sent after -rc6, we may not even get a -rc7...).  Given how close
+> > we are to the release and the invasiveness of the changes in this
+> > series it's very lucky I even saw it before release, I'm reading this
+> > on my flight to Plumbers which means my bandwidth next week will be
+> limited.
+> 
+> Thanks for checking this.  Mengdong, if there is a change in uapi/*, this
+> means touching ABI.  So, this change isn't acceptable once when the kernel
+> is released.  At least, the backward compatibility *must* be kept no matter
+> which version is.
 
+Thanks for your review, Mark and Takashi. 
+This series including the ABI change, is not for v4.2, but is an RFC to adding DAI/DAI links support in topology.
+I'm sorry that I should have explicitly said this in my comments.
 
---DKU6Jbt7q3WqK7+M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is there some topic branch which can accept topology patches for next kernel release?
+Can we change topology ABI in v4.3?
 
-On Fri, Aug 14, 2015 at 10:43:36PM +0100, Mark Brown wrote:
-> On Sat, Aug 08, 2015 at 01:06:18AM +0530, Subhransu S. Prusty wrote:
->=20
-> > +	/* If its not SKL DSP type dont handle */
-> > +	if (source->priv =3D=3D NULL &&  (!is_skl_dsp_widget_type(w)))
-> > +		return 0;
->=20
-> Why would this event be assigned to a widget that is not a suitable
-> type, and what if it's an unsuitable widget type that happens ton have
-> private data?  I'm not sure I understand the priv check.
+Now only Intel SKL driver is using topology code, so the affect should be limited.
+And I feel using bitwise flag is simpler in both user space and in kernel coding.
+We can increase the topology ABI number when there is ABI change, and the topology driver always checks this version.
 
-Yes rethinking now I don't see why this would be called for events we don't
-register as you pointed. I will recheck this bit and get back.
+> Also, the patch (and even the current code) looks wrong.  The current
+> formats[] would receive SNDRV_PCM_FORMAT_* while the comment shows
+> SNDRV_PCM_FMT_BIT_*.  And your patch changes it again wrongly in the
+> comment.  Quite confusing.
 
-> You've also got a typo with "don't" and an extra space after the &&.
-Oops, will fix. Thanks for pointing.
+Sorry. I will change the comments.
+I hope to change "formats" to a bitwise flag of _SNDRV_PCM_FMTBIT_*.
+Current upstreamed topology driver does not really handle DAIs (streams caps) so the error is not discovered.
 
-> > +	list_for_each_entry(p, &w->sinks, list_source) {
-> > +		if (!p->connect)
-> > +			continue;
->=20
-> Hrm.  Do we handle routing changes well?
+> > This should have at the very least been sent at the start of the
+> > series, and really should have been sent separately.  It is also
+> > worrying that there is nothing in the subject or changelog talking
+> > about the fact that this is an ABI change or explaining why it is
+> > required.  The changelog was simply a statement of the content of the diff,
+> not a rationale:
+> >
+> > | The toplogy user space tool will generate this bitwise flag by using
+> > | SNDRV_PCM_FORMAT_* exposed by asound.h, and the topology core will
+> > | copy this flag when generating DAI streams.
+> >
+> > Once the release goes out this sort of incompatible change will be
+> > unacceptable.  Given the number of changes that are going into the ABI
+> > (we also had some others went in last week) I'm now giving some
+> > serious thought to the idea that we should ask Linus to revert the
+> > topology code for v4.2 and waiting for v4.3 so we've got more chance
+> > to make sure the ABI is one we actually want to stick with.  Liam,
+> > Takashi I don't know what you think?
+> 
+> We can make the topology stuff disabled in Makefile (and the only call in
+> soc-core.c) instead of the whole revert.  This will be the minimal impact and
+> safe enough.
+> 
+> BTW, I wonder why there is no Kconfig for topology stuff.  If we had it, it
+> would have been easy to disable.
 
-Yes we do :)
-This is the pmu handler for a mixer widget. Here we need to send Bind event
-to firmware for the paths which are connected, so if a path is not connected
-we don't need to send bind event so we skip that.
-
->=20
-> > +			/* Add connected path to one global list */
-> > +			path_list->dapm_path =3D p;
-> > +			list_add_tail(&path_list->node, &skl->dapm_path_list);
-> > +			break;
->=20
-> We have our own private path list here which includes the DAPM path...
-> can't we outsource some of this to the topology and DAPM code?  I'm a
-> little fuzzy on what the list is for, it appears to be used mainly for
-> deallocation though it's called dapm_path_list (which is a bit worrying).
-
-If you look at the usage of the dapm_path_list, it is used in pmd handler
-for this mixer. For a mixer there can be many paths and we need to
-disconnect the previously connected path. DAPM will disconnect and send
-event, so we wont know which paths were disconnected and thats why we keep a
-track if this by using this list. At PMU we keep adding and at PMD we check
-the path which was disconnected and send the event for that.
-This gives driver very quick lookup of which disconnect to send. I am not
-sure if we should be changing framework for this...
-
-> > +static int skl_tplg_mixer_dapm_post_pmu_event(struct snd_soc_dapm_widg=
-et *w,
-> > +								struct skl *skl)
-> > +{
->=20
-> This looks a lot like the previous function, there's similar duplication
-> in the other event functions.
-
-Actually logic is quite different. The skl_tplg_mixer_dapm_post_pmu_event is
-for mixer and is supposed to bind to source pipe and start
-The previous one is for PGA and starts sink pipelines it is connected to and
-then its own. It doesn't do bind.
-
-Said that I will check and try to see if common code for checking and
-starting can be factored out from these into a common helper
-
->=20
-> > +	}
-> > +	if (src_pipe_started) {
->=20
-> Missing blank line here.
-Will fix
-
->=20
-> > +/*
-> > + * In modelling, we assume ther will be one mixer in a pipeline. If a =
-second
-> > + * one is required that is created as another pipe entity.
-> > + * The mixer is resposible for pipe management and represent a pipeline
-> > + * instance
-> > + */
->=20
-> You mean to say you assume there will be *exactly* one mixer?
-Yes :) and if we need another mixer then that will become another pipeline
+We'll add Kconfig for topology. 
 
 Thanks
---=20
-~Vinod
-
---DKU6Jbt7q3WqK7+M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJVz0GwAAoJEHwUBw8lI4NH2KsP/3PJCgFdis6JCKMyY8+OE/q+
-rNlYhxCgY2QBrCSrRYJmG75Kce6dc1UPOz2rSrpVxfCF04rrY9gzAeteJomP91Ld
-2pRuow7JfmMmKNJJkHxKlCZTsSNRezhMv8XKfOM+eJzsoTLy6+Z/VPE8Sqb/QKhp
-h6e9H/Wsuaoumu38QaKzE0jTaHL65GFwTGHTfNYbZ2RoJ80EZYvIueS3NrEv5OcL
-2fpwVipas3OVyZDb5zil6Goj/prjZMNQFhu6dAmjeTWH7/2vfPkUslV6FjiG5p0I
-0h/T8nLDTPwE4y8xO8VT8mFKJZmQ2xXB7tdXxI9fyNo1+I4p8apLg3p6Qg097mFV
-GaUDnEVb2t4no7RKQALWTYEJGA9fxF6M4NhdUfZwHTEQTXGJWTe9Gc7U24YySekd
-xuu6ymMx8S4jv+z1O+OyP3ocYShltxjjoGskNnrZPehvCOp0BVtI/esdFtW9GNFD
-1pbeN+B3+OLYrS1MBQ1lvfwC0N1jCyCFRZPvDmgsirzdpp96ezpLgxGA9bDs8wFA
-FMGFr6M0lw4F3RuKbfttlYNa415wguYOkNkkQTbN42tT/9b3r3f6iz+5+UbU7iF0
-LKEYag4AjbAP/OuaUTPjyrnNx+p1MPRT8pcVlGuQ5euw8ye9vsK8qrWQa4kiiXG0
-YqDTce1jzQBzLQVqAy0i
-=G7ps
------END PGP SIGNATURE-----
-
---DKU6Jbt7q3WqK7+M--
-
---===============8328250152953464314==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8328250152953464314==--
+Mengdong
