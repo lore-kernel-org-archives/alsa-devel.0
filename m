@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: Convert to managed resources" to
-	the asoc tree
-Date: Fri, 14 Aug 2015 19:14:59 -0700
-Message-ID: <E1ZQQzr-0004QO-Ai@finisterre>
-References: <20150813072920.GA17181@localhost>
+Subject: Applied "ASoC: ssm4567: Add sense support" to the asoc
+	tree
+Date: Fri, 14 Aug 2015 19:15:01 -0700
+Message-ID: <E1ZQQzt-0004Qp-Da@finisterre>
+References: <1439380718-12503-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55B102664FE
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:15:06 +0200 (CEST)
-In-Reply-To: <20150813072920.GA17181@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id AC05B2664F4
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:15:09 +0200 (CEST)
+In-Reply-To: <1439380718-12503-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: Convert to managed resources
+   ASoC: ssm4567: Add sense support
 
 has been applied to the asoc tree at
 
@@ -53,134 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From 470805eb9f31be7b0b94cb8e0cbeb5910c47ce37 Mon Sep 17 00:00:00 2001
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Date: Thu, 13 Aug 2015 12:59:21 +0530
-Subject: [PATCH] ASoC: tegra: Convert to managed resources
+>From dbe71b9d86ee77cf58a92657c43b0e48954dc62b Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Wed, 12 Aug 2015 13:58:38 +0200
+Subject: [PATCH] ASoC: ssm4567: Add sense support
 
-Use managed resource functions devm_clk_put and
-devm_snd_soc_register_component to simplify error handling.
+The ssm4567 has sensing circuitry that can be used to monitor the current
+and voltage on the speaker amplifier output has well as the VBAT input.
+This data can be output over the I2S interface so it can be processed by a
+DSP or similar.
 
-To be compatible with the change various gotos are replaced
-with direct returns, and unneeded labels are dropped.
+This patch adds the sense capture output stream to the CODEC DAI as well as
+DAPM widgets that ensure that the sensing circuitry is powered up when the
+capture stream is active.
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra20_spdif.c | 37 +++++++++++++------------------------
- 1 file changed, 13 insertions(+), 24 deletions(-)
+ sound/soc/codecs/ssm4567.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 9141477..a814da0 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -273,45 +273,40 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 			     GFP_KERNEL);
- 	if (!spdif) {
- 		dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
--		ret = -ENOMEM;
--		goto err;
-+		return -ENOMEM;
- 	}
- 	dev_set_drvdata(&pdev->dev, spdif);
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index ac242b2..e619d56 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -174,6 +174,12 @@ static const struct snd_soc_dapm_widget ssm4567_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SWITCH("Amplifier Boost", SSM4567_REG_POWER_CTRL, 3, 1,
+ 		&ssm4567_amplifier_boost_control),
  
--	spdif->clk_spdif_out = clk_get(&pdev->dev, "spdif_out");
-+	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
- 	if (IS_ERR(spdif->clk_spdif_out)) {
- 		pr_err("Can't retrieve spdif clock\n");
- 		ret = PTR_ERR(spdif->clk_spdif_out);
--		goto err;
-+		return ret;
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "No memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
-+		return -ENODEV;
- 	}
- 
- 	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmareq) {
- 		dev_err(&pdev->dev, "No DMA resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
-+		return -ENODEV;
- 	}
- 
- 	memregion = devm_request_mem_region(&pdev->dev, mem->start,
- 					    resource_size(mem), DRV_NAME);
- 	if (!memregion) {
- 		dev_err(&pdev->dev, "Memory region already claimed\n");
--		ret = -EBUSY;
--		goto err_clk_put;
-+		return -EBUSY;
- 	}
- 
- 	regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
- 	if (!regs) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
--		goto err_clk_put;
-+		return -ENOMEM;
- 	}
- 
- 	spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-@@ -319,7 +314,7 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	if (IS_ERR(spdif->regmap)) {
- 		dev_err(&pdev->dev, "regmap init failed\n");
- 		ret = PTR_ERR(spdif->regmap);
--		goto err_clk_put;
-+		return ret;
- 	}
- 
- 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
-@@ -334,8 +329,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 
--	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
--				   &tegra20_spdif_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &tegra20_spdif_component,
-+					      &tegra20_spdif_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
-@@ -345,21 +341,17 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	ret = tegra_pcm_platform_register(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
--		goto err_unregister_component;
-+		return ret;
- 	}
- 
- 	return 0;
- 
--err_unregister_component:
--	snd_soc_unregister_component(&pdev->dev);
- err_suspend:
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
--err_clk_put:
--	clk_put(spdif->clk_spdif_out);
--err:
++	SND_SOC_DAPM_SIGGEN("Sense"),
 +
- 	return ret;
- }
++	SND_SOC_DAPM_PGA("Current Sense", SSM4567_REG_POWER_CTRL, 4, 1, NULL, 0),
++	SND_SOC_DAPM_PGA("Voltage Sense", SSM4567_REG_POWER_CTRL, 5, 1, NULL, 0),
++	SND_SOC_DAPM_PGA("VBAT Sense", SSM4567_REG_POWER_CTRL, 6, 1, NULL, 0),
++
+ 	SND_SOC_DAPM_OUTPUT("OUT"),
+ };
  
-@@ -372,9 +364,6 @@ static int tegra20_spdif_platform_remove(struct platform_device *pdev)
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
+@@ -181,6 +187,13 @@ static const struct snd_soc_dapm_route ssm4567_routes[] = {
+ 	{ "OUT", NULL, "Amplifier Boost" },
+ 	{ "Amplifier Boost", "Switch", "DAC" },
+ 	{ "OUT", NULL, "DAC" },
++
++	{ "Current Sense", NULL, "Sense" },
++	{ "Voltage Sense", NULL, "Sense" },
++	{ "VBAT Sense", NULL, "Sense" },
++	{ "Capture Sense", NULL, "Current Sense" },
++	{ "Capture Sense", NULL, "Voltage Sense" },
++	{ "Capture Sense", NULL, "VBAT Sense" },
+ };
  
- 	tegra_pcm_platform_unregister(&pdev->dev);
--	snd_soc_unregister_component(&pdev->dev);
--
--	clk_put(spdif->clk_spdif_out);
+ static int ssm4567_hw_params(struct snd_pcm_substream *substream,
+@@ -388,6 +401,14 @@ static struct snd_soc_dai_driver ssm4567_dai = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
+ 			SNDRV_PCM_FMTBIT_S32,
+ 	},
++	.capture = {
++		.stream_name = "Capture Sense",
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32,
++	},
+ 	.ops = &ssm4567_dai_ops,
+ };
  
- 	return 0;
- }
 -- 
 2.5.0
