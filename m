@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: fix runtime pm imbalance on
-	error" to the asoc tree
-Date: Fri, 14 Aug 2015 19:13:38 -0700
-Message-ID: <E1ZQQyY-0004MM-Bp@finisterre>
-References: <1437100140-5048-1-git-send-email-junjie.mao@enight.me>
+Subject: Applied "ASoC: cs42l73: Use case range at appropriate
+	place" to the asoc tree
+Date: Fri, 14 Aug 2015 19:13:41 -0700
+Message-ID: <E1ZQQyb-0004Mp-8W@finisterre>
+References: <1439349049.3594.6.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C49882665EB
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:47 +0200 (CEST)
-In-Reply-To: <1437100140-5048-1-git-send-email-junjie.mao@enight.me>
+ by alsa0.perex.cz (Postfix) with ESMTP id F36D12664A0
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:13:51 +0200 (CEST)
+In-Reply-To: <1439349049.3594.6.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Junjie Mao <junjie.mao@enight.me>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: fix runtime pm imbalance on error
+   ASoC: cs42l73: Use case range at appropriate place
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,129 @@ to this mail.
 Thanks,
 Mark
 
->From e1d46d30d133e7909e7dde06a4e867225c7e079b Mon Sep 17 00:00:00 2001
-From: Junjie Mao <junjie.mao@enight.me>
-Date: Fri, 17 Jul 2015 10:29:00 +0800
-Subject: [PATCH] ASoC: Intel: fix runtime pm imbalance on error
+>From fbf917e14eb65689ad80290170f7d615be711fb7 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Wed, 12 Aug 2015 11:10:49 +0800
+Subject: [PATCH] ASoC: cs42l73: Use case range at appropriate place
 
-pm_runtime_get_sync() increments the runtime PM usage counter even the
-call returns an error code. Thus a pairing decrement is needed on the
-error handling path to keep the counter balanced.
+The readable registers are in continuous ranges: 0x01 ~ 0x03, 0x05 ~ 0x5f.
+Use case range syntax makes the code shorter with better readability when
+we have a large number of continuous switch cases.
+No functional change with this patch.
 
-Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_drv_interface.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs42l73.c | 96 +---------------------------------------------
+ 1 file changed, 2 insertions(+), 94 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index 620da1d..27a9653 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -152,6 +152,7 @@ static int sst_power_control(struct device *dev, bool state)
- 
- 		dev_dbg(ctx->dev, "Enable: pm usage count: %d\n", usage_count);
- 		if (ret < 0) {
-+			pm_runtime_put_sync(dev);
- 			dev_err(ctx->dev, "Runtime get failed with err: %d\n", ret);
- 			return ret;
- 		}
-@@ -204,8 +205,10 @@ static int sst_cdev_open(struct device *dev,
- 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
- 
- 	retval = pm_runtime_get_sync(ctx->dev);
--	if (retval < 0)
-+	if (retval < 0) {
-+		pm_runtime_put_sync(ctx->dev);
- 		return retval;
-+	}
- 
- 	str_id = sst_get_stream(ctx, str_params);
- 	if (str_id > 0) {
-@@ -672,8 +675,10 @@ static int sst_send_byte_stream(struct device *dev,
- 	if (NULL == bytes)
- 		return -EINVAL;
- 	ret_val = pm_runtime_get_sync(ctx->dev);
--	if (ret_val < 0)
-+	if (ret_val < 0) {
-+		pm_runtime_put_sync(ctx->dev);
- 		return ret_val;
-+	}
- 
- 	ret_val = sst_send_byte_stream_mrfld(ctx, bytes);
- 	sst_pm_runtime_put(ctx);
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index efd924a..3de8662 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -153,100 +153,8 @@ static bool cs42l73_volatile_register(struct device *dev, unsigned int reg)
+ static bool cs42l73_readable_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+-	case CS42L73_DEVID_AB:
+-	case CS42L73_DEVID_CD:
+-	case CS42L73_DEVID_E:
+-	case CS42L73_REVID:
+-	case CS42L73_PWRCTL1:
+-	case CS42L73_PWRCTL2:
+-	case CS42L73_PWRCTL3:
+-	case CS42L73_CPFCHC:
+-	case CS42L73_OLMBMSDC:
+-	case CS42L73_DMMCC:
+-	case CS42L73_XSPC:
+-	case CS42L73_XSPMMCC:
+-	case CS42L73_ASPC:
+-	case CS42L73_ASPMMCC:
+-	case CS42L73_VSPC:
+-	case CS42L73_VSPMMCC:
+-	case CS42L73_VXSPFS:
+-	case CS42L73_MIOPC:
+-	case CS42L73_ADCIPC:
+-	case CS42L73_MICAPREPGAAVOL:
+-	case CS42L73_MICBPREPGABVOL:
+-	case CS42L73_IPADVOL:
+-	case CS42L73_IPBDVOL:
+-	case CS42L73_PBDC:
+-	case CS42L73_HLADVOL:
+-	case CS42L73_HLBDVOL:
+-	case CS42L73_SPKDVOL:
+-	case CS42L73_ESLDVOL:
+-	case CS42L73_HPAAVOL:
+-	case CS42L73_HPBAVOL:
+-	case CS42L73_LOAAVOL:
+-	case CS42L73_LOBAVOL:
+-	case CS42L73_STRINV:
+-	case CS42L73_XSPINV:
+-	case CS42L73_ASPINV:
+-	case CS42L73_VSPINV:
+-	case CS42L73_LIMARATEHL:
+-	case CS42L73_LIMRRATEHL:
+-	case CS42L73_LMAXHL:
+-	case CS42L73_LIMARATESPK:
+-	case CS42L73_LIMRRATESPK:
+-	case CS42L73_LMAXSPK:
+-	case CS42L73_LIMARATEESL:
+-	case CS42L73_LIMRRATEESL:
+-	case CS42L73_LMAXESL:
+-	case CS42L73_ALCARATE:
+-	case CS42L73_ALCRRATE:
+-	case CS42L73_ALCMINMAX:
+-	case CS42L73_NGCAB:
+-	case CS42L73_ALCNGMC:
+-	case CS42L73_MIXERCTL:
+-	case CS42L73_HLAIPAA:
+-	case CS42L73_HLBIPBA:
+-	case CS42L73_HLAXSPAA:
+-	case CS42L73_HLBXSPBA:
+-	case CS42L73_HLAASPAA:
+-	case CS42L73_HLBASPBA:
+-	case CS42L73_HLAVSPMA:
+-	case CS42L73_HLBVSPMA:
+-	case CS42L73_XSPAIPAA:
+-	case CS42L73_XSPBIPBA:
+-	case CS42L73_XSPAXSPAA:
+-	case CS42L73_XSPBXSPBA:
+-	case CS42L73_XSPAASPAA:
+-	case CS42L73_XSPAASPBA:
+-	case CS42L73_XSPAVSPMA:
+-	case CS42L73_XSPBVSPMA:
+-	case CS42L73_ASPAIPAA:
+-	case CS42L73_ASPBIPBA:
+-	case CS42L73_ASPAXSPAA:
+-	case CS42L73_ASPBXSPBA:
+-	case CS42L73_ASPAASPAA:
+-	case CS42L73_ASPBASPBA:
+-	case CS42L73_ASPAVSPMA:
+-	case CS42L73_ASPBVSPMA:
+-	case CS42L73_VSPAIPAA:
+-	case CS42L73_VSPBIPBA:
+-	case CS42L73_VSPAXSPAA:
+-	case CS42L73_VSPBXSPBA:
+-	case CS42L73_VSPAASPAA:
+-	case CS42L73_VSPBASPBA:
+-	case CS42L73_VSPAVSPMA:
+-	case CS42L73_VSPBVSPMA:
+-	case CS42L73_MMIXCTL:
+-	case CS42L73_SPKMIPMA:
+-	case CS42L73_SPKMXSPA:
+-	case CS42L73_SPKMASPA:
+-	case CS42L73_SPKMVSPMA:
+-	case CS42L73_ESLMIPMA:
+-	case CS42L73_ESLMXSPA:
+-	case CS42L73_ESLMASPA:
+-	case CS42L73_ESLMVSPMA:
+-	case CS42L73_IM1:
+-	case CS42L73_IM2:
++	case CS42L73_DEVID_AB ... CS42L73_DEVID_E:
++	case CS42L73_REVID ... CS42L73_IM2:
+ 		return true;
+ 	default:
+ 		return false;
 -- 
 2.5.0
