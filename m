@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: add wm8960 support" to
-	the asoc tree
-Date: Sat, 15 Aug 2015 09:22:11 -0700
-Message-ID: <E1ZQeDj-0007RA-4B@finisterre>
-References: <d873df2b23a6d39099b3c62db8901d78a60d9362.1439550574.git.zidan.wang@freescale.com>
+Subject: Re: [PATCH 3/9] ASoC: Intel: Skylake: add DSP platform
+ widget event handlers
+Date: Sat, 15 Aug 2015 09:46:14 -0700
+Message-ID: <20150815164614.GI10748@sirena.org.uk>
+References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1438976184-6160-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20150814214336.GU10748@sirena.org.uk>
+ <20150815134208.GD13546@localhost>
+ <20150815143638.GC10748@sirena.org.uk>
+ <20150815151204.GH13546@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8007329379993789688=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C94426510A
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 18:22:21 +0200 (CEST)
-In-Reply-To: <d873df2b23a6d39099b3c62db8901d78a60d9362.1439550574.git.zidan.wang@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 232F02654AD
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 18:46:45 +0200 (CEST)
+In-Reply-To: <20150815151204.GH13546@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Hardik T Shah <hardik.t.shah@intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: fsl-asoc-card: add wm8960 support
+--===============8007329379993789688==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fXCyug6VAL2FbtaR"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--fXCyug6VAL2FbtaR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Sat, Aug 15, 2015 at 08:42:04PM +0530, Vinod Koul wrote:
+> On Sat, Aug 15, 2015 at 07:36:38AM -0700, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > This is the sort of thing where the whole lack of documentation thing
+> > that I keep going on about becomes really important - there's a limited
+> > amount of time I can spend on any individual patch series and so things
+> > that need to be reverse engineered are just going to get queried a lot
+> > of the time (and even if they get reverse engineered the feedback is
+> > often going to be that the code needs to be clearer).
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Okay, I did try to add comments to help understand but looks like I still
+> have more work to do. Will try to add these details as well
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+If you're adding any of this stuff it's really not obvious, all I'm
+seeing is very tactical stuff down in the details of the code which
+isn't always useful without any big picture - bear in mind that there's
+a lot of Intel internal abstractions talking to Intel internal
+abstractions none of which are terribly obvious, and of course the
+tendency to throw in things like the NHLT table or acronyms like mcps.
 
-Thanks,
-Mark
+Bigger changelogs would help a lot here, as would building the
+functionality up gradually rather than dumping large sections of code.
+Right now the changelogs just tend to be some fairly brief comments on
+the purpose of the code and don't really go into the structure or the
+design decisions that went into it.
 
->From 50e0ee01382b8e08289d3db209738c5856fd25cf Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 14 Aug 2015 19:11:09 +0800
-Subject: [PATCH] ASoC: fsl-asoc-card: add wm8960 support
+--fXCyug6VAL2FbtaR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-add wm8960 support for fsl-asoc-card
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl-asoc-card.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+iQEcBAEBCAAGBQJVz2zVAAoJECTWi3JdVIfQl+cH/A4Ox+TWNf0mm+e7uD2KCe34
+XaGORnbXqKM9kYRGvE7+rSN4b7ldAFBX2DJOJaVzIEPRQ/Z2/G+QQ7p7Qz7mA/XH
+CMEeOW4q0EfX3yT4h0YuHd+PI1+lyKIaCEYzsko+eQ35DTX/KdIijMdl2ucTvx/Y
+4AHi0RPHlbkXSKHTDf2F0T2c5InD8xBxkEYtWn1lazPDP7fBfjowG89CMWRnfZY7
+ZJ89/Qy54oiPJRoZeuTt7Y5Pmru9HJBaeesRO2jtWwDglDBv+K0qObS7YmkBFOQO
+RHAbmKudCNDIVnrWDnelzGkWFZMBdWoYVSsP+GxMXqBl2a9/yE+iUh72wMZXrs0=
+=pAP1
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 040362f..5aeb6ed 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -23,6 +23,7 @@
- 
- #include "../codecs/sgtl5000.h"
- #include "../codecs/wm8962.h"
-+#include "../codecs/wm8960.h"
- 
- #define RX 0
- #define TX 1
-@@ -479,6 +480,12 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
- 		priv->codec_priv.pll_id = WM8962_FLL;
- 		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8960")) {
-+		codec_dai_name = "wm8960-hifi";
-+		priv->card.set_bias_level = fsl_asoc_card_set_bias_level;
-+		priv->codec_priv.fll_id = WM8960_SYSCLK_AUTO;
-+		priv->codec_priv.pll_id = WM8960_SYSCLK_AUTO;
-+		priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
- 	} else {
- 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
- 		return -EINVAL;
-@@ -582,6 +589,7 @@ static const struct of_device_id fsl_asoc_card_dt_ids[] = {
- 	{ .compatible = "fsl,imx-audio-cs42888", },
- 	{ .compatible = "fsl,imx-audio-sgtl5000", },
- 	{ .compatible = "fsl,imx-audio-wm8962", },
-+	{ .compatible = "fsl,imx-audio-wm8960", },
- 	{}
- };
- 
--- 
-2.5.0
+--fXCyug6VAL2FbtaR--
+
+--===============8007329379993789688==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8007329379993789688==--
