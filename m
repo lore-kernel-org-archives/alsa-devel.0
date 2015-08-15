@@ -1,118 +1,60 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 2/2] ALSA: usb: handle descriptor with
-	SYNC_NONE illegal value
-Date: Fri, 14 Aug 2015 17:19:43 -0500
-Message-ID: <1439590783-3635-3-git-send-email-pierre-louis.bossart@linux.intel.com>
-References: <1439590783-3635-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+Subject: [PATCH] ASoC: rockchip: i2s: Adjust devm usage
+Date: Sat, 15 Aug 2015 07:21:00 +0530
+Message-ID: <20150815015059.GA31009@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E236C2661A1
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 00:19:52 +0200 (CEST)
-In-Reply-To: <1439590783-3635-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The M-Audio Transit exposes an interface with a SYNC_NONE attribute.
-This is not a valid value according to the USB audio classspec. However
-there is a sync endpoint associated to this record. Changing the logic to
-try to use this sync endpoint allows for seamless transitions between
-altset 2 and altset 3. If any errors happen, the behavior remains the same.
+Remove use of snd_soc_unregister_component in remove function
+as devm_snd_soc_register_component in probe function automatically
+handles it.
 
-$ more /proc/asound/card1/stream0
-M-Audio Transit USB at usb-0000:00:14.0-2, full speed : USB Audio
+Also, convert call of snd_dmaengine_pcm_register to managed resource
+function devm_snd_dmaengine_pcm_register and remove usage of
+snd_dmaengine_pcm_unregister in probe and remove functions.
 
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 3 OUT (ADAPTIVE)
-    Rates: 48001 - 96000 (continuous)
-  Interface 1
-    Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 3 OUT (NONE)
-    Rates: 8000 - 48000 (continuous)
-  Interface 1
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 3 OUT (ASYNC)
-    Rates: 8000 - 48000 (continuous)
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
 ---
- sound/usb/pcm.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 7fb17c8..3079726 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -412,10 +412,17 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 	if (altsd->bNumEndpoints < 2)
- 		return 0;
- 
--	if ((is_playback && attr != USB_ENDPOINT_SYNC_ASYNC) ||
-+	if ((is_playback && (attr == USB_ENDPOINT_SYNC_SYNC ||
-+			     attr == USB_ENDPOINT_SYNC_ADAPTIVE)) ||
- 	    (!is_playback && attr != USB_ENDPOINT_SYNC_ADAPTIVE))
- 		return 0;
- 
-+	/*
-+	 * In case of illegal SYNC_NONE for OUT endpoint, we keep going to see
-+	 * if we don't find a sync endpoint, as on M-Audio Transit. In case of
-+	 * error fall back to SYNC mode and don't create sync endpoint
-+	 */
-+
- 	/* check sync-pipe endpoint */
- 	/* ... and check descriptor size before accessing bSynchAddress
- 	   because there is a version of the SB Audigy 2 NX firmware lacking
-@@ -429,6 +436,8 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 			   get_endpoint(alts, 1)->bmAttributes,
- 			   get_endpoint(alts, 1)->bLength,
- 			   get_endpoint(alts, 1)->bSynchAddress);
-+		if (is_playback && attr == USB_ENDPOINT_SYNC_NONE)
-+			return 0;
- 		return -EINVAL;
- 	}
- 	ep = get_endpoint(alts, 1)->bEndpointAddress;
-@@ -439,6 +448,8 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 			"%d:%d : invalid sync pipe. is_playback %d, ep %02x, bSynchAddress %02x\n",
- 			   fmt->iface, fmt->altsetting,
- 			   is_playback, ep, get_endpoint(alts, 0)->bSynchAddress);
-+		if (is_playback && attr == USB_ENDPOINT_SYNC_NONE)
-+			return 0;
- 		return -EINVAL;
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index acb5be5..b936102 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -483,16 +483,14 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		goto err_suspend;
  	}
  
-@@ -450,8 +461,11 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 						   implicit_fb ?
- 							SND_USB_ENDPOINT_TYPE_DATA :
- 							SND_USB_ENDPOINT_TYPE_SYNC);
--	if (!subs->sync_endpoint)
-+	if (!subs->sync_endpoint) {
-+		if (is_playback && attr == USB_ENDPOINT_SYNC_NONE)
-+			return 0;
- 		return -EINVAL;
-+	}
+-	ret = snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+-		goto err_pcm_register;
++		return ret;
+ 	}
  
- 	subs->data_endpoint->sync_master = subs->sync_endpoint;
+ 	return 0;
  
+-err_pcm_register:
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+ err_suspend:
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		i2s_runtime_suspend(&pdev->dev);
+@@ -512,8 +510,6 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
+ 
+ 	clk_disable_unprepare(i2s->mclk);
+ 	clk_disable_unprepare(i2s->hclk);
+-	snd_dmaengine_pcm_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	return 0;
+ }
 -- 
 1.9.1
