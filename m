@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/9] ASoC: Intel: Skylake: Add FE and BE
- hw_params handling
-Date: Sat, 15 Aug 2015 07:46:46 -0700
-Message-ID: <20150815144646.GD10748@sirena.org.uk>
-References: <1438976184-6160-1-git-send-email-subhransu.s.prusty@intel.com>
- <1438976184-6160-5-git-send-email-subhransu.s.prusty@intel.com>
- <20150814215310.GV10748@sirena.org.uk>
- <20150815140014.GE13546@localhost>
+Subject: Re: [PATCH v2 09/10] ASoC: topology: Change stream
+ formats to bitwise flag
+Date: Sat, 15 Aug 2015 07:59:04 -0700
+Message-ID: <20150815145904.GE10748@sirena.org.uk>
+References: <cover.1439217448.git.mengdong.lin@intel.com>
+ <b9a7ab97e4b4f96cced9faa2e2bce2b533d25a10.1439217448.git.mengdong.lin@intel.com>
+ <20150814203428.GR10748@sirena.org.uk>
+ <s5ha8ttypc1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1496987431696166962=="
+Content-Type: multipart/mixed; boundary="===============6166720058549609864=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D23912614E3
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 16:46:57 +0200 (CEST)
-In-Reply-To: <20150815140014.GE13546@localhost>
+ by alsa0.perex.cz (Postfix) with ESMTP id AED1926512B
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 16:59:12 +0200 (CEST)
+In-Reply-To: <s5ha8ttypc1.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,118 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1496987431696166962==
+--===============6166720058549609864==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YyEPptUYZmwjRdlG"
+	protocol="application/pgp-signature"; boundary="ZPyQn7mfIBXOql8K"
 Content-Disposition: inline
 
 
---YyEPptUYZmwjRdlG
+--ZPyQn7mfIBXOql8K
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 15, 2015 at 07:30:14PM +0530, Vinod Koul wrote:
-> On Fri, Aug 14, 2015 at 10:53:10PM +0100, Mark Brown wrote:
-> > On Sat, Aug 08, 2015 at 01:06:19AM +0530, Subhransu S. Prusty wrote:
+On Sat, Aug 15, 2015 at 09:37:34AM +0200, Takashi Iwai wrote:
 
-> > > +	/*
-> > > +	 * 16 bit is 16 bit container whereas 24 bit is in 32 bit container=
- so
-> > > +	 * update bit depth accordingly
-> > > +	 */
-> > > +	if (format->valid_bit_depth =3D=3D SKL_DEPTH_16BIT)
-> > > +		format->bit_depth =3D format->valid_bit_depth;
-> > > +	else if (format->valid_bit_depth =3D=3D SKL_DEPTH_24BIT)
-> > > +		format->bit_depth =3D SKL_DEPTH_32BIT;
-> > > +
+> We can make the topology stuff disabled in Makefile (and the only call
+> in soc-core.c) instead of the whole revert.  This will be the minimal
+> impact and safe enough.
 
-> > What if the depth is neither 16 bit nor 24 bit?  Shouldn't this just be
-> > a simple override for the 24 bit case?
+Yes, though it does leave the UAPI files there for people to look at
+which is a big part of the risk since they end up getting shipped
+separately to the kernel binary.  Might be sufficient, though - we could
+just put some #errors in the headers to catch potential users.  Or
+perhaps we're OK with the ABI as it stands.
 
-> These are the only two DSP supports, so am not sure that overriding will
-> work with DSP. I think we should add else and error out.
+> BTW, I wonder why there is no Kconfig for topology stuff.  If we had
+> it, it would have been easy to disable.
 
-Then write a switch statement.  :/
+It's probably worth adding that anyway - I know Intel at least are keen
+on having the capability to minimise memory usage!
 
-> > > +static int skl_tplg_be_set_params(struct snd_soc_dai *dai,
-> > > +					struct snd_soc_dapm_widget *w,
-> > > +					struct skl_pipe_params *params)
-> > > +{
-> > > +	if (!w->power) {
-> > > +		dev_dbg(dai->dev, "set params for widget=3D%s\n", w->name);
-> > > +		return skl_tplg_be_fill_pipe_params(dai, w->priv, params);
-> > > +	}
-> > > +
-> > > +	return -EINVAL;
-> >=20
-> > Shouldn't that be -EBUSY?  The normal idiom would be to check to see if
-> > we were busy and error out rather than writing it as only configuing if
-> > not busy (which looks like an error case now).
->=20
-> Not EBUSY. So here we are trying to set params for the pipe. So we would
-> expect that pipe (widget) should be powered up by DAPM, but if that is not
-> the case then we are in bad state. I am thinking EIO might suit this one =
-better
-
-Right, that's why I'm saying -EBUSY - we can't configure the pipe
-because it is current in use.
-
-> > There's some more common code here and the same patterns as above...  :/
-
-> well the problem here is sink, source. Former was for source pipe using
-> p->source, here we have sink pipe and using p->sink.
-> Same here too that we either set params or for sink pipe
-
-> Jeeja did try to make this common but it becomes quite hard, if you have
-> a trick up your sleeve for this, am all ears :)
-
-Well, I don't have the code any more.
-
-> > > +	if (params->stream =3D=3D SNDRV_PCM_STREAM_CAPTURE) {
-> > > +		w =3D dai->capture_widget;
-> > > +
-> > > +		dev_dbg(dai->dev, "Stream name=3D%s\n", w->name);
-> > > +		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
-> > > +	}
-
-> > Normally that'd be written as an if/else, and the only difference
-> > between the two cases here is which widget we pick...
-
-> Yes we can change to else. Btw should we rather do if and if else, and el=
-se
-> for error check, in case the value became bad. I am thinking latter.
-
-Either works.
-
---YyEPptUYZmwjRdlG
+--ZPyQn7mfIBXOql8K
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJVz1DWAAoJECTWi3JdVIfQ/YgH/2K7FrtAEd+ii1mjgx2HRpyh
-YrOBdUnUdJHNjZUS8YJn9EkjbbiZskmFr4Lx1dt/I2yx38b9u0pdoeOHdXKPQlxE
-YymnDyk6zGfIAnknCKF+ueQiODkECpRaDKXK18lmn/OZCuNDLoeu6f2QnUGA/ubO
-QhjNLk3NnoTdvj4zYDTSCoBQ81Hg1Bm/LA8id5MrKvyp+yl5UB2oFS8x29/r11Og
-soHeRS41zY3+SQdgKMpOOA69D0PFxtsXs46G/0QRHwZ7KLIbZyF1C1wHxg7dQvDm
-js/XpE7ywREHp3WShgm95mGlLWuqD1bTHNq73+A32rWPvsQ/+a94SoFY3v2TLyg=
-=sF+0
+iQEcBAEBCAAGBQJVz1O3AAoJECTWi3JdVIfQ6EYH+gO29UEzB/VslGXFAq2+RBbj
+Np68F4DQ+3LMgCXZCnbIHNyr0dqOP56/Y3o8HdCzOhw3G9xQYv6P2PSfD2VoiFbH
+11zqDmZQbeGB/WQ4HJTUwLs/47GTom6TIfgzxxtVKU6jkSjDQJOzqL1E37ptCIGT
+XdwE1gSbU//yhbomLS+abwCSc+AvZpHlg5p4F4P+Qtp9q3Fz2HBkrC2CLUnRHQA2
+YBNyocX8J1mWJIoaWdKS7zjNjheqxli14f3ZK9fpXN2CivR39/DQ0pQlZQSYOm3s
+PVzf9VlzUlrHtoMNxhbRP4fMr88mjUtrZD7GAg7CI0O0BX7h2ktWU7THO0wpIqE=
+=KVy3
 -----END PGP SIGNATURE-----
 
---YyEPptUYZmwjRdlG--
+--ZPyQn7mfIBXOql8K--
 
---===============1496987431696166962==
+--===============6166720058549609864==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1496987431696166962==--
+--===============6166720058549609864==--
