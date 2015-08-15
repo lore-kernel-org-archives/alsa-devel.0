@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm4567: Add sense support" to the asoc
-	tree
-Date: Fri, 14 Aug 2015 19:15:01 -0700
-Message-ID: <E1ZQQzt-0004Qp-Da@finisterre>
-References: <1439380718-12503-1-git-send-email-lars@metafoo.de>
+Subject: Applied "ASoC: fsl: fix typos for sound/soc/fsl/*" to
+	the asoc tree
+Date: Fri, 14 Aug 2015 19:15:12 -0700
+Message-ID: <E1ZQR04-0004SF-Bl@finisterre>
+References: <1439361498-8489-1-git-send-email-lixiubo@cmss.chinamobile.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AC05B2664F4
- for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:15:09 +0200 (CEST)
-In-Reply-To: <1439380718-12503-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C6C1266632
+ for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2015 04:15:19 +0200 (CEST)
+In-Reply-To: <1439361498-8489-1-git-send-email-lixiubo@cmss.chinamobile.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
+To: Xiubo Li <lixiubo@cmss.chinamobile.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssm4567: Add sense support
+   ASoC: fsl: fix typos for sound/soc/fsl/*
 
 has been applied to the asoc tree at
 
@@ -53,71 +53,138 @@ to this mail.
 Thanks,
 Mark
 
->From dbe71b9d86ee77cf58a92657c43b0e48954dc62b Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Wed, 12 Aug 2015 13:58:38 +0200
-Subject: [PATCH] ASoC: ssm4567: Add sense support
+>From dcfcf2c2cd71906073beef32aadb1989e8996951 Mon Sep 17 00:00:00 2001
+From: Xiubo Li <lixiubo@cmss.chinamobile.com>
+Date: Wed, 12 Aug 2015 14:38:18 +0800
+Subject: [PATCH] ASoC: fsl: fix typos for sound/soc/fsl/*
 
-The ssm4567 has sensing circuitry that can be used to monitor the current
-and voltage on the speaker amplifier output has well as the VBAT input.
-This data can be output over the I2S interface so it can be processed by a
-DSP or similar.
+There are too much noise about the typos for fsl's drivers. So I fix
+all the typos here in this patch in almost every file I touched.
 
-This patch adds the sense capture output stream to the CODEC DAI as well as
-DAPM widgets that ensure that the sensing circuitry is powered up when the
-capture stream is active.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Xiubo Li <lixiubo@cmss.chinamobile.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm4567.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ sound/soc/fsl/eukrea-tlv320.c |  2 +-
+ sound/soc/fsl/fsl_sai.h       | 12 ++++++------
+ sound/soc/fsl/fsl_spdif.c     |  6 +++---
+ sound/soc/fsl/fsl_ssi.c       |  4 ++--
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index ac242b2..e619d56 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -174,6 +174,12 @@ static const struct snd_soc_dapm_widget ssm4567_dapm_widgets[] = {
- 	SND_SOC_DAPM_SWITCH("Amplifier Boost", SSM4567_REG_POWER_CTRL, 3, 1,
- 		&ssm4567_amplifier_boost_control),
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index e1aa3834..883087f 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -182,7 +182,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 		);
+ 	} else {
+ 		if (np) {
+-			/* The eukrea,asoc-tlv320 driver was explicitely
++			/* The eukrea,asoc-tlv320 driver was explicitly
+ 			 * requested (through the device tree).
+ 			 */
+ 			dev_err(&pdev->dev,
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 0662809..b4666fd 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -45,7 +45,7 @@
+ #define FSL_SAI_xFR(tx)		(tx ? FSL_SAI_TFR : FSL_SAI_RFR)
+ #define FSL_SAI_xMR(tx)		(tx ? FSL_SAI_TMR : FSL_SAI_RMR)
  
-+	SND_SOC_DAPM_SIGGEN("Sense"),
-+
-+	SND_SOC_DAPM_PGA("Current Sense", SSM4567_REG_POWER_CTRL, 4, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Voltage Sense", SSM4567_REG_POWER_CTRL, 5, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("VBAT Sense", SSM4567_REG_POWER_CTRL, 6, 1, NULL, 0),
-+
- 	SND_SOC_DAPM_OUTPUT("OUT"),
- };
+-/* SAI Transmit/Recieve Control Register */
++/* SAI Transmit/Receive Control Register */
+ #define FSL_SAI_CSR_TERE	BIT(31)
+ #define FSL_SAI_CSR_FR		BIT(25)
+ #define FSL_SAI_CSR_SR		BIT(24)
+@@ -67,10 +67,10 @@
+ #define FSL_SAI_CSR_FRIE	BIT(8)
+ #define FSL_SAI_CSR_FRDE	BIT(0)
  
-@@ -181,6 +187,13 @@ static const struct snd_soc_dapm_route ssm4567_routes[] = {
- 	{ "OUT", NULL, "Amplifier Boost" },
- 	{ "Amplifier Boost", "Switch", "DAC" },
- 	{ "OUT", NULL, "DAC" },
-+
-+	{ "Current Sense", NULL, "Sense" },
-+	{ "Voltage Sense", NULL, "Sense" },
-+	{ "VBAT Sense", NULL, "Sense" },
-+	{ "Capture Sense", NULL, "Current Sense" },
-+	{ "Capture Sense", NULL, "Voltage Sense" },
-+	{ "Capture Sense", NULL, "VBAT Sense" },
- };
+-/* SAI Transmit and Recieve Configuration 1 Register */
++/* SAI Transmit and Receive Configuration 1 Register */
+ #define FSL_SAI_CR1_RFW_MASK	0x1f
  
- static int ssm4567_hw_params(struct snd_pcm_substream *substream,
-@@ -388,6 +401,14 @@ static struct snd_soc_dai_driver ssm4567_dai = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
- 			SNDRV_PCM_FMTBIT_S32,
- 	},
-+	.capture = {
-+		.stream_name = "Capture Sense",
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32,
-+	},
- 	.ops = &ssm4567_dai_ops,
- };
+-/* SAI Transmit and Recieve Configuration 2 Register */
++/* SAI Transmit and Receive Configuration 2 Register */
+ #define FSL_SAI_CR2_SYNC	BIT(30)
+ #define FSL_SAI_CR2_MSEL_MASK	(0x3 << 26)
+ #define FSL_SAI_CR2_MSEL_BUS	0
+@@ -82,12 +82,12 @@
+ #define FSL_SAI_CR2_BCD_MSTR	BIT(24)
+ #define FSL_SAI_CR2_DIV_MASK	0xff
  
+-/* SAI Transmit and Recieve Configuration 3 Register */
++/* SAI Transmit and Receive Configuration 3 Register */
+ #define FSL_SAI_CR3_TRCE	BIT(16)
+ #define FSL_SAI_CR3_WDFL(x)	(x)
+ #define FSL_SAI_CR3_WDFL_MASK	0x1f
+ 
+-/* SAI Transmit and Recieve Configuration 4 Register */
++/* SAI Transmit and Receive Configuration 4 Register */
+ #define FSL_SAI_CR4_FRSZ(x)	(((x) - 1) << 16)
+ #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+ #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+@@ -97,7 +97,7 @@
+ #define FSL_SAI_CR4_FSP		BIT(1)
+ #define FSL_SAI_CR4_FSD_MSTR	BIT(0)
+ 
+-/* SAI Transmit and Recieve Configuration 5 Register */
++/* SAI Transmit and Receive Configuration 5 Register */
+ #define FSL_SAI_CR5_WNW(x)	(((x) - 1) << 24)
+ #define FSL_SAI_CR5_WNW_MASK	(0x1f << 24)
+ #define FSL_SAI_CR5_W0W(x)	(((x) - 1) << 16)
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index d1e9be7..92efbc5 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -707,7 +707,7 @@ static int fsl_spdif_subcode_get(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ 
+-/* Q-subcode infomation. The byte size is SPDIF_UBITS_SIZE/8 */
++/* Q-subcode information. The byte size is SPDIF_UBITS_SIZE/8 */
+ static int fsl_spdif_qinfo(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+ {
+@@ -739,7 +739,7 @@ static int fsl_spdif_qget(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ 
+-/* Valid bit infomation */
++/* Valid bit information */
+ static int fsl_spdif_vbit_info(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+ {
+@@ -767,7 +767,7 @@ static int fsl_spdif_vbit_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-/* DPLL lock infomation */
++/* DPLL lock information */
+ static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+ {
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index e122dab..6a338b8 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -156,7 +156,7 @@ struct fsl_ssi_soc_data {
+  *
+  * @dbg_stats: Debugging statistics
+  *
+- * @soc: SoC specifc data
++ * @soc: SoC specific data
+  */
+ struct fsl_ssi_private {
+ 	struct regmap *regs;
+@@ -1210,7 +1210,7 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 		}
+ 	}
+ 
+-	/* For those SLAVE implementations, we ingore non-baudclk cases
++	/* For those SLAVE implementations, we ignore non-baudclk cases
+ 	 * and, instead, abandon MASTER mode that needs baud clock.
+ 	 */
+ 	ssi_private->baudclk = devm_clk_get(&pdev->dev, "baud");
 -- 
 2.5.0
