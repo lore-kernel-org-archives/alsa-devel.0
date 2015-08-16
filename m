@@ -1,20 +1,15 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 03/25] ALSA: firewire-lib: add helper
- functions for asynchronous MIDI port
-Date: Sun, 16 Aug 2015 14:15:09 +0200
-Message-ID: <20150816141509.06cc622b@kant>
-References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
- <1439425221-30826-4-git-send-email-o-takashi@sakamocchi.jp>
- <s5hwpwzzoks.wl-tiwai@suse.de> <55CC4DE0.9090803@sakamocchi.jp>
- <20150815121554.1f1cffc6@kant> <s5hd1ynybkd.wl-tiwai@suse.de>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH 1/2] ALSA: usb-audio: Add a volume scale quirk
+	for AudioQuest DragonFly
+Date: Sun, 16 Aug 2015 15:50:12 +0300
+Message-ID: <1439729413-30804-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BBA82604A9
- for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2015 14:15:11 +0200 (CEST)
-In-Reply-To: <s5hd1ynybkd.wl-tiwai@suse.de>
+Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38FF42604A9
+ for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2015 14:50:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,59 +20,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gQXVnIDE2IFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTYXQsIDE1IEF1ZyAyMDE1IDEyOjE1
-OjU0ICswMjAwLAo+IFN0ZWZhbiBSaWNodGVyIHdyb3RlOgo+ID4gCj4gPiBPbiBBdWcgMTMgVGFr
-YXNoaSBTYWthbW90byB3cm90ZToKPiA+ID4gT24gQXVnIDEzIDIwMTUgMTU6MzEsIFRha2FzaGkg
-SXdhaSB3cm90ZToKPiA+ID4gPiBPbiBUaHUsIDEzIEF1ZyAyMDE1IDAyOjE5OjU5ICswMjAwLAo+
-ID4gPiA+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gPiA+ID4+ICsJZ2VuZXJhdGlvbiA9IHBv
-cnQtPnBhcmVudC0+Z2VuZXJhdGlvbjsKPiA+ID4gPj4gKwlzbXBfcm1iKCk7IC8qIG5vZGVfaWQg
-dnMuIGdlbmVyYXRpb24gKi8KPiA+ID4gPgo+ID4gPiA+IFdoeSB0aGlzIGJhcnJpZXIgaXMgbmVl
-ZGVkPwo+ID4gPiAKPiA+ID4gT29wcy4gSSBmb3Jnb3QgdG8gcmVmaW5lIGl0IGFmdGVyIGNvcHlp
-bmcgZnJvbSB0aGUgb3RoZXIgcGxhY2UuIEV4YWN0bHksIAo+ID4gPiBpdCdzIG5vdCBuZWVkIGhl
-cmUuCj4gPiA+IAo+ID4gPiA+PiArCWZ3X3NlbmRfcmVxdWVzdChwb3J0LT5wYXJlbnQtPmNhcmQs
-ICZwb3J0LT50cmFuc2FjdGlvbiwgdHlwZSwKPiA+ID4gPj4gKwkJCXBvcnQtPnBhcmVudC0+bm9k
-ZV9pZCwgZ2VuZXJhdGlvbiwKPiA+ID4gPj4gKwkJCXBvcnQtPnBhcmVudC0+bWF4X3NwZWVkLCBw
-b3J0LT5hZGRyLAo+ID4gPiA+PiArCQkJcG9ydC0+YnVmLCBwb3J0LT5sZW4sIGFzeW5jX21pZGlf
-cG9ydF9jYWxsYmFjaywKPiA+ID4gPj4gKwkJCXBvcnQpOwo+ID4gPiA+PiArfQo+ID4gCj4gPiBU
-aGUgYmFycmllciBpcyBub3JtYWxseSBuZWVkZWQgYmVjYXVzZToKW3RoZXJlIGlzIGEgZGVwZW5k
-ZW5jeSBiZXR3ZWVuIG5vZGVfSUQgYW5kIGdlbmVyYXRpb24gYW5kXQo+ID4gICAtIFRoZSBub2Rl
-X0lEOmdlbmVyYXRpb24gdHVwbGUgaXMgYWNjZXNzZWQgaW4gdGhlIExpbnV4IGZpcmV3aXJlIHN0
-YWNrIGluCj4gPiAgICAgYSBsb2NrbGVzcyBtYW5uZXI6ClsuLi5dCj4gVGhhbmtzLCB0aGF0IGNs
-YXJpZmllcy4gIEJ1dCB3b3VsZG4ndCBpdCBiZSBtb3JlIGhlbHBmdWwgdG8gaGF2ZSBzb21lCj4g
-bWFjcm8gdGhhbiBvcGVuLWNvZGluZyBhdCBlYWNoIHBsYWNlPwoKSSBhZ3JlZSB0aGF0IGEgY29v
-a2VkLXVwIGFjY2Vzc29yIHZpYSA8bGludXgvZmlyZXdpcmUuaD4gd291bGQgYmUgZ29vZCwKYnV0
-IEkgaGF2ZSBubyBpbW1lZGlhdGUgaWRlYSBob3cgdGhhdCBhY2Nlc3NvciBzaG91bGQgbG9vayBs
-aWtlLiAgTG9va2luZwphdCB0aGUgdmFyaW91cyB1c2VzIG9mIGZ3X3NlbmRfcmVxdWVzdApbaHR0
-cDovL2x4ci5mcmVlLWVsZWN0cm9ucy5jb20vaWRlbnQ/aT1md19zZW5kX3JlcXVlc3RdLAppdCdz
-IGNsZWFyIHRoYXQgdGhpcyBBUEkgYmV0d2VlbiBwcm90b2NvbCBkcml2ZXJzIGFuZCBmaXJld2ly
-ZS1jb3JlIGlzCnF1aXRlIGxvdy1sZXZlbCBhbmQgZmxleGlibGUgYnkgbmF0dXJlLiAgSW4gcGFy
-dGljdWxhciwgdGhlIGRpZmZlcmVudCB1c2VycwpvZiB0aGUgQVBJIHRha2Ugbm9kZV9pZDpnZW5l
-cmF0aW9uIGZyb20gZGlmZmVyZW50IHNvdXJjZXMuwrkgIAoKQXMgbWVudGlvbmVkLCBhbm90aGVy
-IHdheSB3b3VsZCBiZSB0byBmdXNlIG5vZGVfaWQ6Z2VuZXJhdGlvbiBpbnRvIGEgc2luZ2xlCmF0
-b21pYyBkYXR1bSB0aHJvdWdob3V0IGFsbCBmaXJld2lyZSBkcml2ZXJzLiAgSS5lLiBpbnN0ZWFk
-IG9mIGVuc3VyaW5nIHRoZQpwcm9wZXIgYWNjZXNzIG9yZGVyIGV2ZXJ5dGltZSwganVzdCBhY2Nl
-c3MgYm90aCBkYXRhIHNpbXVsdGFuZW91c2x5CmV2ZXJ5dGltZS4gIE5vdCBoYXZpbmcgdHJpZWQg
-dGhpcyB5ZXQsIEkgYW0gbm90IHN1cmUgd2hpY2ggd2F5IHdvdWxkIGJlCm1vcmUgcmVhZGFibGUu
-Ci0tLS0tLS0tLS0tLQogwrkpIFRob3NlIGRpZmZlcmVuY2VzIGJldHdlZW4gZndfc2VuZF9yZXF1
-ZXN0IHVzZXJzIGFyZSB0eXBpY2FsbHkgZHVlIHRvCiAgICBidXMgcmVzZXQgaGFuZGxpbmcgaW4g
-aGlnaGxldmVsIGRyaXZlcnMgb24gdG9wIG9mIGZpcmV3aXJlLWNvcmUncwogICAgYnVzIHJlc2V0
-IGhhbmRsaW5nLgogICAgW2ZpcmV3aXJlLWNvcmU6OmJ1cyByZXNldCBoYW5kbGVyXQogICAgICAt
-IGFuYWx5emUgYnVzIHRvcG9sb2d5CiAgICAgIC0gd3JpdGUgZndfZGV2aWNlIGluc3RhbmNlcycg
-bm9kZV9pZDpnZW5lcmF0aW9uIHR1cGxlCiAgICAgIC0gbm90aWZ5IHByb3RvY29sIGRyaXZlcnMK
-ICAgIFtwcm90b2NvbF9kcml2ZXI6OmJ1cyByZXNldCBoYW5kbGVyXQogICAgICAtIHBlcmZvcm0g
-cHJvdG9jb2wtc3BlY2lmaWMgcmVjb25uZWN0aW9uIHByb2NlZHVyZQogICAgICAtIHdyaXRlIHBy
-b3RvY29sX2RyaXZlcl9kZXZpY2UgaW5zdGFuY2UncyBub2RlX2lkOmdlbmVyYXRpb24gdHVwbGUK
-ICAgIFtwcm90b2NvbF9kcml2ZXI6Om91dGJvdW5kIElPXQogICAgICAtIHJlYWQgcHJvdG9jb2xf
-ZHJpdmVyX2RldmljZSBpbnN0YW5jZSdzIG5vZGVfaWQ6Z2VuZXJhdGlvbiB0dXBsZQogICAgICAt
-IHNlbmQgcmVxdWVzdAogICAgSGVyZSB0aGUgcmVxdWVzdCBpcyBub3Qgb25seSBndWFyYW50ZWVk
-IHRvIGhpdCB0aGUgdG9wb2xvZ2ljYWxseQogICAgY29ycmVjdCB0YXJnZXQsIGl0IGlzIGFsc28g
-Z3VhcmFudGVlZCB0byBoaXQgb25seSB3aGlsZSBpbiBhCiAgICBwcm90b2NvbC1zcGVjaWZpYyBj
-b25uZWN0ZWQgc3RhdGUuICAoUmVxdWVzdHMgd2l0aCBhIHN0YWxlIGdlbmVyYXRpb24KICAgIHdv
-bid0IGdvIG91dCB0byB0aGUgYnVzLikKLS0gClN0ZWZhbiBSaWNodGVyCi09PT09PS09PT09PSA9
-LS0tID0tLS0tCmh0dHA6Ly9hcmNncmFwaC5kZS9zci8KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+AudioQuest DragonFly DAC reports a volume control range of 0..50
+(0x0000..0x0032) which in USB Audio means a range of 0 .. 0.2dB, which
+is obviously incorrect and causes software using the dB information in
+e.g. volume sliders to have a massive volume difference in 100..102%
+range.
+
+The actual volume mapping seems to be neither linear volume nor linear
+dB scale, but instead quite close to the cubic mapping e.g. alsamixer
+uses, with a range of -53...0 dB.
+
+Add a quirk for DragonFly to use a custom dB mapping, based on my
+measurements, using a 10-item range TLV (so it still fits in alsa-lib
+MAX_TLV_RANGE_SIZE).
+
+Tested on AudioQuest DragonFly HW v1.2. The quirk is only applied if the
+range is 0..50, so if this gets fixed/changed in later HW revisions it
+will no longer be applied.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: <stable@vger.kernel.org>
+---
+ sound/usb/mixer_quirks.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 337c317ead6f..39d7f34e44e6 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -37,6 +37,7 @@
+ #include <sound/control.h>
+ #include <sound/hwdep.h>
+ #include <sound/info.h>
++#include <sound/tlv.h>
+ 
+ #include "usbaudio.h"
+ #include "mixer.h"
+@@ -1733,6 +1734,38 @@ static int snd_microii_controls_create(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
++static void snd_dragonfly_quirk_db_scale(struct usb_mixer_interface *mixer)
++{
++	struct usb_mixer_elem_list *list;
++	struct usb_mixer_elem_info *cval;
++	static const int unit_id = 7;
++
++	/* approximation using 10 ranges based on output measurement on hw v1.2 */
++	static const DECLARE_TLV_DB_RANGE(scale,
++		 0,  1, TLV_DB_MINMAX_ITEM(-5300, -4970),
++		 2,  5, TLV_DB_MINMAX_ITEM(-4710, -4160),
++		 6,  7, TLV_DB_MINMAX_ITEM(-3884, -3710),
++		 8, 14, TLV_DB_MINMAX_ITEM(-3443, -2560),
++		15, 16, TLV_DB_MINMAX_ITEM(-2475, -2324),
++		17, 19, TLV_DB_MINMAX_ITEM(-2228, -2031),
++		20, 26, TLV_DB_MINMAX_ITEM(-1910, -1393),
++		27, 31, TLV_DB_MINMAX_ITEM(-1322, -1032),
++		32, 40, TLV_DB_MINMAX_ITEM(-968, -490),
++		41, 50, TLV_DB_MINMAX_ITEM(-441, 0),
++	);
++
++	for (list = mixer->id_elems[unit_id]; list; list = list->next_id_elem) {
++		cval = (struct usb_mixer_elem_info *)list;
++		if (cval->control == UAC_FU_VOLUME &&
++		    cval->min == 0 && cval->max == 50) {
++			usb_audio_info(mixer->chip, "applying DragonFly dB scale quirk\n");
++			list->kctl->tlv.p = scale;
++			list->kctl->vd[0].access |=  SNDRV_CTL_ELEM_ACCESS_TLV_READ;
++			list->kctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK;
++		}
++	}
++}
++
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err = 0;
+@@ -1810,6 +1843,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 	case USB_ID(0x1235, 0x800c): /* Focusrite Scarlett 18i20 */
+ 		err = snd_scarlett_controls_create(mixer);
+ 		break;
++
++	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
++		snd_dragonfly_quirk_db_scale(mixer);
++		break;
+ 	}
+ 
+ 	return err;
+-- 
+2.3.8
