@@ -1,18 +1,20 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
- terminal properties
-Date: Sun, 16 Aug 2015 13:45:20 +0200
-Message-ID: <55D077D0.90005@zonque.org>
-References: <1439410499-28630-1-git-send-email-julian@jusst.de>
- <s5hr3n6t3wt.wl-tiwai@suse.de> <55CDEC38.7000006@jusst.de>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [PATCH 03/25] ALSA: firewire-lib: add helper
+ functions for asynchronous MIDI port
+Date: Sun, 16 Aug 2015 14:15:09 +0200
+Message-ID: <20150816141509.06cc622b@kant>
+References: <1439425221-30826-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1439425221-30826-4-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hwpwzzoks.wl-tiwai@suse.de> <55CC4DE0.9090803@sakamocchi.jp>
+ <20150815121554.1f1cffc6@kant> <s5hd1ynybkd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id A15D72604A9
- for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2015 13:45:22 +0200 (CEST)
-In-Reply-To: <55CDEC38.7000006@jusst.de>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BBA82604A9
+ for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2015 14:15:11 +0200 (CEST)
+In-Reply-To: <s5hd1ynybkd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 08/14/2015 03:25 PM, Julian Scheel wrote:
-> Am 14.08.2015 um 15:06 schrieb Takashi Iwai:
-
->>> @@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
->>>   				term->name = d->iTerminal;
->>>   			} else { /* UAC_VERSION_2 */
->>>   				struct uac2_input_terminal_descriptor *d = p1;
->>> -				term->type = le16_to_cpu(d->wTerminalType);
->>> -				term->channels = d->bNrChannels;
->>> -				term->chconfig = le32_to_cpu(d->bmChannelConfig);
->>> -				term->name = d->iTerminal;
->>>
->>>   				/* call recursively to get the clock selectors */
->>>   				err = check_input_term(state, d->bCSourceID, term);
->>>   				if (err < 0)
->>>   					return err;
->>> +
->>> +				term->type = le16_to_cpu(d->wTerminalType);
->>> +				term->channels = d->bNrChannels;
->>> +				term->chconfig = le32_to_cpu(d->bmChannelConfig);
->>> +				term->name = d->iTerminal;
->>
->> ... by this override, essentially all fields except for id are
->> restored.  Then what's the point to call check_input_term() for the
->> clock source?
-> 
-> This is a good point indeed, but due do my understanding the recursion 
-> is not about filling missing information, but about verifying a valid 
-> descriptor. So in case there are broken references in the descriptor it 
-> gets abandoned. I'm happy to be corrected if this understanding is wrong.
-
-Hmm, good point. It' been a while since I worked on this, but looking at
-the code right now, you're right, the mixer unit for input terminal is
-indeed just overridden by the information of the clock selector on UAC2.
-That doesn't seem right.
-
-I guess what we really want is to add a 2nd mixer control in such cases,
-and that would mean we need to call into parse_audio_selector_unit()
-instead.
-
-I can cook up or test a patch next week, when I have access to test
-hardware.
-
-
-Thanks,
-Daniel
+T24gQXVnIDE2IFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTYXQsIDE1IEF1ZyAyMDE1IDEyOjE1
+OjU0ICswMjAwLAo+IFN0ZWZhbiBSaWNodGVyIHdyb3RlOgo+ID4gCj4gPiBPbiBBdWcgMTMgVGFr
+YXNoaSBTYWthbW90byB3cm90ZToKPiA+ID4gT24gQXVnIDEzIDIwMTUgMTU6MzEsIFRha2FzaGkg
+SXdhaSB3cm90ZToKPiA+ID4gPiBPbiBUaHUsIDEzIEF1ZyAyMDE1IDAyOjE5OjU5ICswMjAwLAo+
+ID4gPiA+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gPiA+ID4+ICsJZ2VuZXJhdGlvbiA9IHBv
+cnQtPnBhcmVudC0+Z2VuZXJhdGlvbjsKPiA+ID4gPj4gKwlzbXBfcm1iKCk7IC8qIG5vZGVfaWQg
+dnMuIGdlbmVyYXRpb24gKi8KPiA+ID4gPgo+ID4gPiA+IFdoeSB0aGlzIGJhcnJpZXIgaXMgbmVl
+ZGVkPwo+ID4gPiAKPiA+ID4gT29wcy4gSSBmb3Jnb3QgdG8gcmVmaW5lIGl0IGFmdGVyIGNvcHlp
+bmcgZnJvbSB0aGUgb3RoZXIgcGxhY2UuIEV4YWN0bHksIAo+ID4gPiBpdCdzIG5vdCBuZWVkIGhl
+cmUuCj4gPiA+IAo+ID4gPiA+PiArCWZ3X3NlbmRfcmVxdWVzdChwb3J0LT5wYXJlbnQtPmNhcmQs
+ICZwb3J0LT50cmFuc2FjdGlvbiwgdHlwZSwKPiA+ID4gPj4gKwkJCXBvcnQtPnBhcmVudC0+bm9k
+ZV9pZCwgZ2VuZXJhdGlvbiwKPiA+ID4gPj4gKwkJCXBvcnQtPnBhcmVudC0+bWF4X3NwZWVkLCBw
+b3J0LT5hZGRyLAo+ID4gPiA+PiArCQkJcG9ydC0+YnVmLCBwb3J0LT5sZW4sIGFzeW5jX21pZGlf
+cG9ydF9jYWxsYmFjaywKPiA+ID4gPj4gKwkJCXBvcnQpOwo+ID4gPiA+PiArfQo+ID4gCj4gPiBU
+aGUgYmFycmllciBpcyBub3JtYWxseSBuZWVkZWQgYmVjYXVzZToKW3RoZXJlIGlzIGEgZGVwZW5k
+ZW5jeSBiZXR3ZWVuIG5vZGVfSUQgYW5kIGdlbmVyYXRpb24gYW5kXQo+ID4gICAtIFRoZSBub2Rl
+X0lEOmdlbmVyYXRpb24gdHVwbGUgaXMgYWNjZXNzZWQgaW4gdGhlIExpbnV4IGZpcmV3aXJlIHN0
+YWNrIGluCj4gPiAgICAgYSBsb2NrbGVzcyBtYW5uZXI6ClsuLi5dCj4gVGhhbmtzLCB0aGF0IGNs
+YXJpZmllcy4gIEJ1dCB3b3VsZG4ndCBpdCBiZSBtb3JlIGhlbHBmdWwgdG8gaGF2ZSBzb21lCj4g
+bWFjcm8gdGhhbiBvcGVuLWNvZGluZyBhdCBlYWNoIHBsYWNlPwoKSSBhZ3JlZSB0aGF0IGEgY29v
+a2VkLXVwIGFjY2Vzc29yIHZpYSA8bGludXgvZmlyZXdpcmUuaD4gd291bGQgYmUgZ29vZCwKYnV0
+IEkgaGF2ZSBubyBpbW1lZGlhdGUgaWRlYSBob3cgdGhhdCBhY2Nlc3NvciBzaG91bGQgbG9vayBs
+aWtlLiAgTG9va2luZwphdCB0aGUgdmFyaW91cyB1c2VzIG9mIGZ3X3NlbmRfcmVxdWVzdApbaHR0
+cDovL2x4ci5mcmVlLWVsZWN0cm9ucy5jb20vaWRlbnQ/aT1md19zZW5kX3JlcXVlc3RdLAppdCdz
+IGNsZWFyIHRoYXQgdGhpcyBBUEkgYmV0d2VlbiBwcm90b2NvbCBkcml2ZXJzIGFuZCBmaXJld2ly
+ZS1jb3JlIGlzCnF1aXRlIGxvdy1sZXZlbCBhbmQgZmxleGlibGUgYnkgbmF0dXJlLiAgSW4gcGFy
+dGljdWxhciwgdGhlIGRpZmZlcmVudCB1c2VycwpvZiB0aGUgQVBJIHRha2Ugbm9kZV9pZDpnZW5l
+cmF0aW9uIGZyb20gZGlmZmVyZW50IHNvdXJjZXMuwrkgIAoKQXMgbWVudGlvbmVkLCBhbm90aGVy
+IHdheSB3b3VsZCBiZSB0byBmdXNlIG5vZGVfaWQ6Z2VuZXJhdGlvbiBpbnRvIGEgc2luZ2xlCmF0
+b21pYyBkYXR1bSB0aHJvdWdob3V0IGFsbCBmaXJld2lyZSBkcml2ZXJzLiAgSS5lLiBpbnN0ZWFk
+IG9mIGVuc3VyaW5nIHRoZQpwcm9wZXIgYWNjZXNzIG9yZGVyIGV2ZXJ5dGltZSwganVzdCBhY2Nl
+c3MgYm90aCBkYXRhIHNpbXVsdGFuZW91c2x5CmV2ZXJ5dGltZS4gIE5vdCBoYXZpbmcgdHJpZWQg
+dGhpcyB5ZXQsIEkgYW0gbm90IHN1cmUgd2hpY2ggd2F5IHdvdWxkIGJlCm1vcmUgcmVhZGFibGUu
+Ci0tLS0tLS0tLS0tLQogwrkpIFRob3NlIGRpZmZlcmVuY2VzIGJldHdlZW4gZndfc2VuZF9yZXF1
+ZXN0IHVzZXJzIGFyZSB0eXBpY2FsbHkgZHVlIHRvCiAgICBidXMgcmVzZXQgaGFuZGxpbmcgaW4g
+aGlnaGxldmVsIGRyaXZlcnMgb24gdG9wIG9mIGZpcmV3aXJlLWNvcmUncwogICAgYnVzIHJlc2V0
+IGhhbmRsaW5nLgogICAgW2ZpcmV3aXJlLWNvcmU6OmJ1cyByZXNldCBoYW5kbGVyXQogICAgICAt
+IGFuYWx5emUgYnVzIHRvcG9sb2d5CiAgICAgIC0gd3JpdGUgZndfZGV2aWNlIGluc3RhbmNlcycg
+bm9kZV9pZDpnZW5lcmF0aW9uIHR1cGxlCiAgICAgIC0gbm90aWZ5IHByb3RvY29sIGRyaXZlcnMK
+ICAgIFtwcm90b2NvbF9kcml2ZXI6OmJ1cyByZXNldCBoYW5kbGVyXQogICAgICAtIHBlcmZvcm0g
+cHJvdG9jb2wtc3BlY2lmaWMgcmVjb25uZWN0aW9uIHByb2NlZHVyZQogICAgICAtIHdyaXRlIHBy
+b3RvY29sX2RyaXZlcl9kZXZpY2UgaW5zdGFuY2UncyBub2RlX2lkOmdlbmVyYXRpb24gdHVwbGUK
+ICAgIFtwcm90b2NvbF9kcml2ZXI6Om91dGJvdW5kIElPXQogICAgICAtIHJlYWQgcHJvdG9jb2xf
+ZHJpdmVyX2RldmljZSBpbnN0YW5jZSdzIG5vZGVfaWQ6Z2VuZXJhdGlvbiB0dXBsZQogICAgICAt
+IHNlbmQgcmVxdWVzdAogICAgSGVyZSB0aGUgcmVxdWVzdCBpcyBub3Qgb25seSBndWFyYW50ZWVk
+IHRvIGhpdCB0aGUgdG9wb2xvZ2ljYWxseQogICAgY29ycmVjdCB0YXJnZXQsIGl0IGlzIGFsc28g
+Z3VhcmFudGVlZCB0byBoaXQgb25seSB3aGlsZSBpbiBhCiAgICBwcm90b2NvbC1zcGVjaWZpYyBj
+b25uZWN0ZWQgc3RhdGUuICAoUmVxdWVzdHMgd2l0aCBhIHN0YWxlIGdlbmVyYXRpb24KICAgIHdv
+bid0IGdvIG91dCB0byB0aGUgYnVzLikKLS0gClN0ZWZhbiBSaWNodGVyCi09PT09PS09PT09PSA9
+LS0tID0tLS0tCmh0dHA6Ly9hcmNncmFwaC5kZS9zci8KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
