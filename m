@@ -1,21 +1,20 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH] ASoC: topology: Add support for TLV bytes
-	control
-Date: Mon, 17 Aug 2015 01:33:11 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D0A78@SHSMSX101.ccr.corp.intel.com>
-References: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
- <20150814191742.GJ10748@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F8480D0537@SHSMSX101.ccr.corp.intel.com>
- <20150815161021.GH10748@sirena.org.uk>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
+ terminal properties
+Date: Mon, 17 Aug 2015 07:56:48 +0200
+Message-ID: <55D177A0.9020501@jusst.de>
+References: <1439410499-28630-1-git-send-email-julian@jusst.de>
+ <s5hr3n6t3wt.wl-tiwai@suse.de> <55CDEC38.7000006@jusst.de>
+ <55D077D0.90005@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E5F56260535
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 03:33:16 +0200 (CEST)
-In-Reply-To: <20150815161021.GH10748@sirena.org.uk>
-Content-Language: en-US
+Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
+ [74.201.84.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id E648526053D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 07:56:54 +0200 (CEST)
+In-Reply-To: <55D077D0.90005@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,44 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Daniel Mack <daniel@zonque.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Sunday, August 16, 2015 12:10 AM
+Hi Daniel,
 
-> On Sat, Aug 15, 2015 at 03:04:53PM +0000, Lin, Mengdong wrote:
-> > > -----Original Message-----
-> > > From: Mark Brown [mailto:broonie@kernel.org]
-> 
-> Please fix your mail client to word wrap within paragraphs, your messages are
-> quite hard to read.  It also seems to be rewriting quoted material :/
+On 16.08.15 13:45, Daniel Mack wrote:
+> On 08/14/2015 03:25 PM, Julian Scheel wrote:
+>> Am 14.08.2015 um 15:06 schrieb Takashi Iwai:
+>
+>>>> @@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
+>>>>    				term->name = d->iTerminal;
+>>>>    			} else { /* UAC_VERSION_2 */
+>>>>    				struct uac2_input_terminal_descriptor *d = p1;
+>>>> -				term->type = le16_to_cpu(d->wTerminalType);
+>>>> -				term->channels = d->bNrChannels;
+>>>> -				term->chconfig = le32_to_cpu(d->bmChannelConfig);
+>>>> -				term->name = d->iTerminal;
+>>>>
+>>>>    				/* call recursively to get the clock selectors */
+>>>>    				err = check_input_term(state, d->bCSourceID, term);
+>>>>    				if (err < 0)
+>>>>    					return err;
+>>>> +
+>>>> +				term->type = le16_to_cpu(d->wTerminalType);
+>>>> +				term->channels = d->bNrChannels;
+>>>> +				term->chconfig = le32_to_cpu(d->bmChannelConfig);
+>>>> +				term->name = d->iTerminal;
+>>>
+>>> ... by this override, essentially all fields except for id are
+>>> restored.  Then what's the point to call check_input_term() for the
+>>> clock source?
+>>
+>> This is a good point indeed, but due do my understanding the recursion
+>> is not about filling missing information, but about verifying a valid
+>> descriptor. So in case there are broken references in the descriptor it
+>> gets abandoned. I'm happy to be corrected if this understanding is wrong.
+>
+> Hmm, good point. It' been a while since I worked on this, but looking at
+> the code right now, you're right, the mixer unit for input terminal is
+> indeed just overridden by the information of the clock selector on UAC2.
+> That doesn't seem right.
+>
+> I guess what we really want is to add a 2nd mixer control in such cases,
+> and that would mean we need to call into parse_audio_selector_unit()
+> instead.
 
-Okay. Sorry for the inconvenience.
+Ah, you're right. The Clock Selector shall actually be exposed as a 
+mixer unit. This never happened with the current code, but it just 
+renamed all other selectors to the name of the clock selector if it existed.
 
-> > > Having two different classes of bespoke handlers like this both
-> > > called bespoke handlers seems like it's going to lead to problems -
-> > > either bringing the interfaces closer together or naming them in a
-> > > way that clarifies their meaning seems better.  Instead of just
-> > > calling them "bespoke handlers" we should probably just call them
-> > > handlers for whatever kind of control they're for and probably bind
-> > > them first rather than second so we're doing more specific to less specific
-> handling.
-> > > That way drivers can also have specific handling for things the
-> > > topology data didn't anticipate they'd need it for which seems like it
-> might come in handy.
-> 
-> > Are you suggesting that we bind bespoke handlers at first and then the
-> > standard handlers?  Since the bespoke handlers means more
-> > vendor-specific handling that need to be taken care at first.
-> 
-> Yes, that's what I'm suggesting.  Why would this mean any additional work?
-> Either things have custom handlers or they don't...
+> I can cook up or test a patch next week, when I have access to test
+> hardware.
 
-Got it. Not additional work. I'll revise the patch.
+I can update my patch to reflect this as well. If you haven't done 
+before I'll try to do it later today.
 
-Thanks
-Mengdong
+-Julian
