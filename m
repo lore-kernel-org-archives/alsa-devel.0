@@ -1,17 +1,21 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 2/2] ALSA: usb-audio: Add sample rate inquiry
-	quirk for AudioQuest DragonFly
-Date: Sun, 16 Aug 2015 15:50:13 +0300
-Message-ID: <1439729413-30804-2-git-send-email-anssi.hannula@iki.fi>
-References: <1439729413-30804-1-git-send-email-anssi.hannula@iki.fi>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ASoC: topology: Add support for TLV bytes
+	control
+Date: Mon, 17 Aug 2015 01:33:11 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D0A78@SHSMSX101.ccr.corp.intel.com>
+References: <2758b949231d10b23f1c8285fb3923db06fb1a46.1439345293.git.mengdong.lin@intel.com>
+ <20150814191742.GJ10748@sirena.org.uk>
+ <F46914AEC2663F4A9BB62374E5EEF8F8480D0537@SHSMSX101.ccr.corp.intel.com>
+ <20150815161021.GH10748@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 674F62604B0
- for <alsa-devel@alsa-project.org>; Sun, 16 Aug 2015 14:50:22 +0200 (CEST)
-In-Reply-To: <1439729413-30804-1-git-send-email-anssi.hannula@iki.fi>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5F56260535
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 03:33:16 +0200 (CEST)
+In-Reply-To: <20150815161021.GH10748@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Avoid getting sample rate on AudioQuest DragonFly as it is unsupported
-and causes noisy "cannot get freq at ep 0x1" messages when playback
-starts.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Sunday, August 16, 2015 12:10 AM
 
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: <stable@vger.kernel.org>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Sat, Aug 15, 2015 at 03:04:53PM +0000, Lin, Mengdong wrote:
+> > > -----Original Message-----
+> > > From: Mark Brown [mailto:broonie@kernel.org]
+> 
+> Please fix your mail client to word wrap within paragraphs, your messages are
+> quite hard to read.  It also seems to be rewriting quoted material :/
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 754e689596a2..078ff58f1ba0 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1121,6 +1121,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x045E, 0x0779): /* MS Lifecam HD-3000 */
- 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
- 	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
-+	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
- 		return true;
- 	}
- 	return false;
--- 
-2.3.8
+Okay. Sorry for the inconvenience.
+
+> > > Having two different classes of bespoke handlers like this both
+> > > called bespoke handlers seems like it's going to lead to problems -
+> > > either bringing the interfaces closer together or naming them in a
+> > > way that clarifies their meaning seems better.  Instead of just
+> > > calling them "bespoke handlers" we should probably just call them
+> > > handlers for whatever kind of control they're for and probably bind
+> > > them first rather than second so we're doing more specific to less specific
+> handling.
+> > > That way drivers can also have specific handling for things the
+> > > topology data didn't anticipate they'd need it for which seems like it
+> might come in handy.
+> 
+> > Are you suggesting that we bind bespoke handlers at first and then the
+> > standard handlers?  Since the bespoke handlers means more
+> > vendor-specific handling that need to be taken care at first.
+> 
+> Yes, that's what I'm suggesting.  Why would this mean any additional work?
+> Either things have custom handlers or they don't...
+
+Got it. Not additional work. I'll revise the patch.
+
+Thanks
+Mengdong
