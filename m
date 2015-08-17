@@ -1,45 +1,45 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v3 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 17 Aug 2015 15:59:21 +0300
-Message-ID: <55D1DAA9.8050702@ti.com>
-References: <cover.1439542916.git.jsarha@ti.com>
- <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
- <20150814161820.GU10748@sirena.org.uk> <55D193CF.5070605@ti.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/4] Minor cleanups to hda code
+Date: Mon, 17 Aug 2015 15:44:07 +0200
+Message-ID: <1439819051-32166-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <55D193CF.5070605@ti.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87F97260453
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 15:44:22 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DDCE3AD9E
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 13:44:21 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMTcvMTUgMTA6NTcsIEp5cmkgU2FyaGEgd3JvdGU6Cj4gTWlzc2VkIG9uZSBjb21tZXQg
-Zmlyc3QgdGltZSBhcm91bmQuLi4KPgo+IE9uIDA4LzE0LzE1IDE5OjE4LCBNYXJrIEJyb3duIHdy
-b3RlOgo+PiBPbiBGcmksIEF1ZyAxNCwgMjAxNSBhdCAxMjozMDo0MVBNICswMzAwLCBKeXJpIFNh
-cmhhIHdyb3RlOgo+IC4uLgo+Pj4gKy8qIEhETUkgY29kZWMgaW5pdGFsaXphdGlvbiBkYXRhICov
-Cj4+PiArc3RydWN0IGhkbWlfY29kZWNfcGRhdGEgewo+Pj4gKyAgICBzdHJ1Y3QgZGV2aWNlICpk
-ZXY7IC8qIFRoZSBIRE1JIGVuY29kZXIgcmVnaXN0ZXJpbmcgdGhlIGNvZGVjICovCj4+Cj4+IFNo
-b3VsZG4ndCB0aGlzIGp1c3QgYmUgZGV2LT5wYXJlbnQ/Cj4+Cj4KPiBOby4gVGhlIEhETUkgZW5j
-b2RlciBkZXZpY2UgaXMgdGhlIHBhcmVudCBmb3IgSERNSS1jb2RlYy4KPgo+IFRoZSBwYXRjaCB5
-b3UgdG9vayBpbiBpbiB0aGUgbGFzdCByb3VuZCB1c2VzIHRoZSBBU29DIGNvbXBvbmVudCBkcml2
-ZXJzCj4gcGFyZW50J3Mgb2Ytbm9kZSBpZiB0aGUgY29tcG9uZW50IGRyaXZlciBkb2VzIG5vdCBo
-YXZlIG9uZSBpdHNlbGYuIEluCj4gdGhpcyBjYXNlIHRoZSBwaGFuZGxlIGluIHRoZSBiaW5kaW5n
-IHBvaW50cyB0byB0aGUgSERNSSBlbmNvZGVyJ3Mgbm9kZSwKPiB3aGljaCBpcyB0aGUgcGFyZW50
-IG9mIHRoZSBIRE1JIGNvZGVjLgo+CgpBZnRlciByZWFkaW5nIHRoZSBjb21tZW50IGFnYWluIEkg
-c2VlIG5vdyB3aGF0IHlvdSBtZWFudC4KClllcywgSSBjYW4gZXh0cmFjdCB0aGUgZW5jb2RlciBk
-ZXZpY2UgZnJvbSB0aGUgZGV2LT5wYXJlbnQgcG9pbnRlci4gTm8gCm5lZWQgdG8gaGF2ZSBpdCBp
-biBwZGF0YS4KClRoYW5rcywKSnlyaQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZy
-ZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vZHJpLWRldmVsCg==
+Hi,
+
+this is a series of trivial cleanup patches for HDA driver, mostly for
+procfs code.
+
+Takashi Iwai (4):
+  ALSA: hda - Make some helper functions local
+  ALSA: hda/proc - Add const to possible places
+  ALSA: hda/proc - Fix racy string access for power states
+  ALSA: hda/eld - Add const to possible places
+
+ sound/pci/hda/hda_codec.c |  70 ------------------------------
+ sound/pci/hda/hda_codec.h |   7 ---
+ sound/pci/hda/hda_eld.c   |  10 ++---
+ sound/pci/hda/hda_proc.c  | 107 +++++++++++++++++++++++++++++++++++-----------
+ 4 files changed, 86 insertions(+), 108 deletions(-)
+
+-- 
+2.5.0
