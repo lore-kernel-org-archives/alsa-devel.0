@@ -1,58 +1,71 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v3 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 17 Aug 2015 10:07:55 +0300
-Message-ID: <55D1884B.6050800@ti.com>
-References: <cover.1439542916.git.jsarha@ti.com>
- <ed41a6c0b594866c05e695cc066371d0e3862c7e.1439542916.git.jsarha@ti.com>
- <20150814161820.GU10748@sirena.org.uk>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH v2] ASoC: ics43432: Add codec driver for
+ InvenSense ICS-43432
+Date: Mon, 17 Aug 2015 09:09:22 +0200
+Message-ID: <alpine.DEB.2.02.1508170844030.27635@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508141106040.27635@lnxricardw1.se.axis.com>
+ <20150814160731.GS10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150814161820.GU10748@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FD0626053D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 09:09:24 +0200 (CEST)
+In-Reply-To: <20150814160731.GS10748@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, tomi.valkeinen@ti.com, bcousson@baylibre.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMTQvMTUgMTk6MTgsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJpLCBBdWcgMTQsIDIw
-MTUgYXQgMTI6MzA6NDFQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90ZToKPgo+PiArc3RydWN0IGhk
-bWlfY29kZWNfb3BzIHsKPj4gKwkvKiBGb3IgcnVudGltZSBjbG9jayBjb25maWd1cmF0aW9uIGZy
-b20gQVNvQyBtYWNoaW5lIGRyaXZlci4KPj4gKwkgKiBBIGRpcmVjdCBmb3J3YXJkIGZyb20gc2V0
-X3N5c2NsayBpbiBzdHJ1Y3Qgc25kX3NvY19kYWlfb3BzLgo+PiArCSAqIE9wdGlvbmFsICovCj4+
-ICsJaW50ICgqc2V0X2Nsaykoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgY2xrX2lkLCBpbnQgZnJl
-cSk7Cj4KPiBJJ2QgYmUgbXVjaCBoYXBwaWVyIGlmIHdlIHdlcmUgdXNpbmcgdGhlIGNsb2NrIEFQ
-SSBhcyB0aGUgZXh0ZXJuYWwKPiBpbnRlcmZhY2UgaGVyZSwgaXQncyB3aGVyZSB3ZSB3YW50IHRv
-IGJlIGludGVybmFsbHkgdG9vIGFuZCBpdCdzIGdvaW5nCj4gdG8gYmUgZWFzaWVyIHRvIG5vdCBp
-bnRyb2R1Y2UgYW55IGV4dGVybmFsIGRlcGVuZGVuY2llcyBvbiB0aGUgQVNvQwo+IGludGVybmFs
-IHN0dWZmLgo+CgpTb3VuZHMgYmV0dGVyLiBJJ2xsIGNoYW5nZSB0aGF0LgoKPj4gKwkvKiBDYWxs
-ZWQgd2hlbiBBU29DIHN0YXJ0cyBhbiBhdWRpbyBzdHJlYW0gc2V0dXAuIFRoZSBjYWxsCj4+ICsJ
-ICogcHJvdmlkZXMgYW4gYXVkaW8gYWJvcnQgY2FsbGJhY2sgZm9yIHN0b3BpbmcgYW4gb25nb2lu
-Zwo+PiArCSAqIHN0cmVhbSBpZiB0aGUgSERNSSBhdWRpbyBiZWNvbWVzIHVuYXZhaWxhYmxlLgo+
-PiArCSAqIE9wdGlvbmFsICovCj4+ICsJaW50ICgqYXVkaW9fc3RhcnR1cCkoc3RydWN0IGRldmlj
-ZSAqZGV2LAo+PiArCQkJICAgICB2b2lkICgqYWJvcnRfY2IpKHN0cnVjdCBkZXZpY2UgKmRldikp
-Owo+Cj4gSSdtIGEgYml0IGNvbmZ1c2VkIGFib3V0IHdoYXQgaXMgZ29pbmcgdG8gdXNlIGFib3J0
-X2NiKCkgYW5kIHdoeSB0aGV5Cj4gd291bGRuJ3QganVzdCBjYWxsIHNodXRkb3duIGluc3RlYWQ/
-Cj4KCmF1ZGlvX3NodXRkb3duKCkgaXMgZm9yIEFTb0Mgc2lkZSB0byB0ZWxsIHZpZGVvIHNpZGUg
-dGhhdCBhdWRpbyBwbGF5YmFjayAKaGFzIHN0b3BwZWQuCgpUaGUgYWJvcnRfY2IoKSBpcyBmb3Ig
-dmlkZW8gc2lkZSB0byBpbmZvcm0gQVNvQyB0aGF0IGN1cnJlbnQgYXVkaW8gCnN0cmVhbSBjYW4g
-bm90IGNvbnRpbnVlIGFueW1vcmUgYW5kIGl0IHNob3VsZCBiZSBhYm9ydGVkLiBUaGUgc2ltaWxh
-ciAKbWVjaGFuaXNtIGlzIGN1cnJlbnRseSBpbiB1c2UgaW4gc291bmQvc29jL29tYXAvb21hcC1o
-ZG1pLWF1ZGlvLmMuCgo+PiArLyogSERNSSBjb2RlYyBpbml0YWxpemF0aW9uIGRhdGEgKi8KPj4g
-K3N0cnVjdCBoZG1pX2NvZGVjX3BkYXRhIHsKPj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXY7IC8qIFRo
-ZSBIRE1JIGVuY29kZXIgcmVnaXN0ZXJpbmcgdGhlIGNvZGVjICovCj4KPiBTaG91bGRuJ3QgdGhp
-cyBqdXN0IGJlIGRldi0+cGFyZW50Pwo+Cj4+ICtlbnVtIHsKPj4gKwlEQUlfSURfSTJDID0gMCwK
-Pj4gKwlEQUlfSURfU1BESUYsCj4+ICt9Owo+Cj4gSTJDPyAgOlAKPgoKUmlnaHQsIHNob3VsZCBi
-ZSBJMlMuIFRoYW5rcyEKCkJlc3QgcmVnYXJkcywKSnlyaQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2
-ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+On Fri, 14 Aug 2015, Mark Brown wrote:
+
+> On Fri, Aug 14, 2015 at 11:10:10AM +0200, Ricard Wanderlof wrote:
+> > =
+
+> > V2: Update after comments from Lars-Peter yesterday: set rate to =
+
+> > CONTINUOUS and let ALSA figure out the details, also removing hw_params=
+ as =
+
+> > it is then not needed.
+> =
+
+> Please add any non-changelog content like this after the --- as covered
+> in SubmittingPatches.
+
+Ok, sorry.
+
+> > +static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int =
+fmt)
+> > +{
+> > +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> =
+
+> This still seems redundant (IIRC Lars mentioned this...).
+
+I though Lars was referring solely to the hw_params function, not =
+
+set_dai_fmt, but of course I could have misunderstood him.
+
+I can understand the rates constraints being handled by the ALSA framework =
+
+based on the parameters set in struct snd_soc_dai_driver, but how would =
+
+the framework know about the acceptable INV_MASK and FORMAT_MASK values?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
