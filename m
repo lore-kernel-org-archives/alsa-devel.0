@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 5/9] ASoC: Intel: Skylake: Add topology core
-	init and handlers
-Date: Mon, 17 Aug 2015 22:56:40 +0530
-Message-ID: <1439832404-12424-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 1/9] ASoC: Intel: Skylake: Add pipe and
+	modules handlers
+Date: Mon, 17 Aug 2015 22:56:36 +0530
+Message-ID: <1439832404-12424-2-git-send-email-vinod.koul@intel.com>
 References: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id F283B26007E
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 19:24:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E72C2602AD
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 19:24:46 +0200 (CEST)
 In-Reply-To: <1439832404-12424-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,342 +27,314 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-The SKL driver does not code DSP topology in driver. It uses the
-newly added ASoC topology core to parse the topology information
-(controls, widgets and map) from topology binary.
-Each topology element passed private data which contains
-information that driver used to identify the module instance
-within firmware and send IPCs for that module to DSP firmware
-along with parameters.
-This patch adds init routine to invoke topology load and callback
-for topology creation.
+SKL driver needs to instantiate pipelines and modules in the DSP.
+The topology in the DSP is modelled as DAPM graph with a PGA
+representing a module instance and mixer representing a pipeline
+for a group of modules along with the mixer itself.
+
+Here we start adding building block for handling these. We add
+resource checks (memory/compute) for pipelines, find the modules
+in a pipeline, init modules in a pipe and lastly bind/unbind
+modules in a pipe These will be used by pipe event handlers in
+subsequent patches
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 217 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  78 ++++++++++
- 2 files changed, 295 insertions(+)
+ sound/soc/intel/skylake/Makefile       |   3 +-
+ sound/soc/intel/skylake/skl-topology.c | 220 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h |  10 ++
+ sound/soc/intel/skylake/skl.h          |  11 ++
+ 4 files changed, 243 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-topology.c
 
+diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
+index 27db22178204..914b6dab9bea 100644
+--- a/sound/soc/intel/skylake/Makefile
++++ b/sound/soc/intel/skylake/Makefile
+@@ -1,4 +1,5 @@
+-snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o
++snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o \
++skl-topology.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
+ 
 diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 287935eab68b..d18ce8c461a4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
+new file mode 100644
+index 000000000000..6d0eee6a04ff
+--- /dev/null
 +++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1043,3 +1043,220 @@ int skl_tplg_set_fe_pipeline_state(struct snd_soc_dai *dai, bool start,
- 
- 	return 0;
- }
+@@ -0,0 +1,220 @@
++/*
++ *  skl-topology.c - Implements Platform component ALSA controls/widget
++ *  handlers.
++ *
++ *  Copyright (C) 2014-2015 Intel Corp
++ *  Author: Jeeja KP <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as version 2, as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ */
 +
-+const static struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
-+	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
-+	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
-+	{SKL_PGA_EVENT, skl_tplg_pga_event},
-+};
++#include <linux/slab.h>
++#include <linux/types.h>
++#include <linux/firmware.h>
++#include <sound/soc.h>
++#include <sound/soc-topology.h>
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
++#include "skl-topology.h"
++#include "skl.h"
++#include "skl-tplg-interface.h"
 +
 +/*
-+ * The topology binary passes the pin info for a module so initialize the pin
-+ * info passed into module instance
++ * SKL DSP driver modelling uses only few DAPM widgets so for rest we will
++ * ignore. This helpers checks if the SKL driver handles this widget type
 + */
-+static void skl_fill_module_pin_info(struct device *dev,
-+			struct skl_module_pin *m_pin,
-+			int max_pin)
++static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w)
 +{
-+	int i;
-+
-+	for (i = 0; i < max_pin; i++) {
-+		m_pin[i].id.module_id = 0;
-+		m_pin[i].id.instance_id = 0;
-+		m_pin[i].in_use = false;
-+		m_pin[i].is_dynamic = true;
-+		m_pin[i].pin_index = i;
++	switch (w->id) {
++	case snd_soc_dapm_dai_link:
++	case snd_soc_dapm_dai_in:
++	case snd_soc_dapm_aif_in:
++	case snd_soc_dapm_aif_out:
++	case snd_soc_dapm_dai_out:
++	case snd_soc_dapm_switch:
++		return false;
++	default:
++		return true;
 +	}
 +}
 +
-+/*
-+ * Add pipeline from topology binary into driver pipeline list
-+ *
-+ * If already added we return that instance
-+ * Otherwise we create a new instance and add into driver list
-+ */
-+static struct skl_pipe *skl_tplg_add_pipe(struct device *dev,
-+			struct skl *skl, struct skl_dfw_pipe *dfw_pipe)
-+{
-+	struct skl_pipeline *ppl;
-+	struct skl_pipe *pipe;
-+	struct skl_pipe_params *params;
-+
-+	list_for_each_entry(ppl, &skl->ppl_list, node) {
-+		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id)
-+			return ppl->pipe;
-+	}
-+
-+	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
-+	if (!ppl)
-+		return NULL;
-+
-+	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
-+	if (!pipe)
-+		return NULL;
-+
-+	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return NULL;
-+
-+	pipe->ppl_id = dfw_pipe->pipe_id;
-+	pipe->memory_pages = dfw_pipe->memory_pages;
-+	pipe->pipe_priority = dfw_pipe->pipe_priority;
-+	pipe->conn_type = dfw_pipe->conn_type;
-+	pipe->state = SKL_PIPE_INVALID;
-+	pipe->p_params = params;
-+	INIT_LIST_HEAD(&pipe->w_list);
-+
-+	ppl->pipe = pipe;
-+	list_add(&ppl->node, &skl->ppl_list);
-+
-+	return ppl->pipe;
-+}
-+
-+/*
-+ * Topology core widget load callback
-+ *
-+ * This is used to save the private data for each widget which gives
-+ * information to the driver about module and pipeline parameters which DSP
-+ * FW expects like ids, resource values, formats etc
-+ */
-+static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
-+					struct snd_soc_dapm_widget *w,
-+					struct snd_soc_tplg_dapm_widget *tplg_w)
++static int skl_tplg_bind_unbind_pipes(struct skl_module_cfg *src_module,
++	struct skl_module_cfg *sink_module, struct skl_sst *ctx, bool bind)
 +{
 +	int ret;
-+	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
-+	struct skl *skl = ebus_to_skl(ebus);
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
++
++	if (!bind) {
++		ret = skl_stop_pipe(ctx, src_module->pipe);
++		if (ret < 0)
++			return ret;
++
++		ret = skl_unbind_modules(ctx, src_module, sink_module);
++	} else {
++		ret = skl_bind_modules(ctx, src_module, sink_module);
++	}
++
++	return ret;
++}
++
++/*
++ * Each pipelines needs memory to be allocated. Check if we have free memory
++ * from available pool. Then only add this to pool
++ * This is freed when pipe is deleted
++ * Note: DSP does actual memory management we only keep track for complete
++ * pool
++ */
++static bool skl_tplg_is_pipe_mem_available(struct skl *skl,
++				struct skl_module_cfg *mconfig)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	dev_dbg(ctx->dev, "%s: module_id =%d instance=%d\n", __func__,
++		 mconfig->id.module_id, mconfig->id.instance_id);
++
++	if (skl->resource.mem + mconfig->pipe->memory_pages > skl->resource.max_mem) {
++		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
++				skl->resource.max_mem, skl->resource.mem);
++		return false;
++	}
++
++	skl->resource.mem += mconfig->pipe->memory_pages;
++	return true;
++}
++
++/*
++ * Pipeline needs needs DSP CPU resources for computation, this is quantified
++ * in MCPS (Million Clocks Per Second) required for module/pipe
++ *
++ * Each pipelines needs mcps to be allocated. Check if we have mcps for this
++ * pipe. This adds the mcps to driver counter
++ * This is removed on pipeline delete
++ */
++static bool skl_tplg_is_pipe_mcps_available(struct skl *skl,
++				struct skl_module_cfg *mconfig)
++{
++	struct skl_sst *ctx = skl->skl_sst;
++
++	dev_dbg(ctx->dev, "%s: module_id = %d instance=%d\n", __func__,
++			mconfig->id.module_id, mconfig->id.instance_id);
++
++	if (skl->resource.mcps + mconfig->mcps > skl->resource.max_mcps) {
++		dev_err(ctx->dev, "exceeds ppl memory available=%d > mem=%d\n",
++				skl->resource.max_mcps, skl->resource.mcps);
++		return false;
++	}
++
++	skl->resource.mcps += mconfig->mcps;
++	return true;
++}
++
++/*
++ * A pipe can have multiple modules each of the will be a DAPM widget as
++ * well. While managing a pipeline we need to get the list of all the
++ * widgets in a pipelines, so this helper - skl_tplg_get_pipe_widget() helps
++ * to get the SKL type widgets in that pipeline
++ */
++static int skl_tplg_get_pipe_widget(struct device *dev,
++	struct snd_soc_dapm_widget *w, struct skl_pipe *pipe)
++{
++	struct skl_module_cfg *src_module = NULL;
++	struct snd_soc_dapm_path *p = NULL;
++	struct skl_pipe_module *p_module = NULL;
++
++	p_module = devm_kzalloc(dev, sizeof(*p_module), GFP_KERNEL);
++	if (!p_module)
++		return -ENOMEM;
++
++	p_module->w = w;
++	list_add_tail(&p_module->node, &pipe->w_list);
++
++	list_for_each_entry(p, &w->sinks, list_source) {
++		if ((p->sink->priv == NULL)
++			&& (!is_skl_dsp_widget_type(w)))
++			continue;
++
++		if ((p->sink->priv != NULL) && (p->connect)
++			&& (is_skl_dsp_widget_type(p->sink))) {
++			src_module = p->sink->priv;
++			if (pipe->ppl_id == src_module->pipe->ppl_id) {
++				dev_dbg(dev, "found widget=%s\n", p->sink->name);
++				skl_tplg_get_pipe_widget(dev, p->sink, pipe);
++			}
++		}
++	}
++	return 0;
++}
++
++/*
++ * Inside a pipe instance, we can have various modules. These modules need
++ * to instantiated in DSP by invoking INIT_MODULE IPC, which is achieved by
++ * skl_init_module() routine, so invoke that for all modules in a pipeline
++ */
++static int skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
++{
++	struct skl_pipe_module *w_module;
++	struct snd_soc_dapm_widget *w;
 +	struct skl_module_cfg *mconfig;
-+	struct skl_pipe *pipe;
-+	struct skl_dfw_module *dfw_config = (struct skl_dfw_module *)tplg_w->priv.data;
++	struct skl_sst *ctx = skl->skl_sst;
++	int ret = 0;
 +
-+	if (!tplg_w->priv.size)
-+		goto bind_event;
++	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
++	list_for_each_entry(w_module, &pipe->w_list, node) {
++		w = w_module->w;
++		dev_dbg(ctx->dev, "Pipe Module =%s\n", w->name);
++		mconfig = w->priv;
 +
-+	mconfig = devm_kzalloc(bus->dev, sizeof(*mconfig), GFP_KERNEL);
++		/* check resource available */
++		if (!skl_tplg_is_pipe_mcps_available(skl, mconfig))
++			return -ENOMEM;
 +
-+	if (!mconfig)
-+		return -ENOMEM;
-+
-+	w->priv = mconfig;
-+	mconfig->id.module_id = dfw_config->module_id;
-+	mconfig->id.instance_id = dfw_config->instance_id;
-+	mconfig->mcps = dfw_config->max_mcps;
-+	mconfig->ibs = dfw_config->ibs;
-+	mconfig->obs = dfw_config->obs;
-+	mconfig->core_id = dfw_config->core_id;
-+	mconfig->max_in_queue = dfw_config->max_in_queue;
-+	mconfig->max_out_queue = dfw_config->max_out_queue;
-+	mconfig->is_loadable = dfw_config->is_loadable;
-+	mconfig->in_fmt.channels = dfw_config->in_fmt.channels;
-+	mconfig->in_fmt.s_freq = dfw_config->in_fmt.freq;
-+	mconfig->in_fmt.bit_depth = dfw_config->in_fmt.bit_depth;
-+	mconfig->in_fmt.valid_bit_depth = dfw_config->in_fmt.valid_bit_depth;
-+	mconfig->in_fmt.ch_cfg = dfw_config->in_fmt.ch_cfg;
-+	mconfig->out_fmt.channels = dfw_config->out_fmt.channels;
-+	mconfig->out_fmt.s_freq = dfw_config->out_fmt.freq;
-+	mconfig->out_fmt.bit_depth = dfw_config->out_fmt.bit_depth;
-+	mconfig->out_fmt.valid_bit_depth = dfw_config->out_fmt.valid_bit_depth;
-+	mconfig->out_fmt.ch_cfg = dfw_config->out_fmt.ch_cfg;
-+	mconfig->params_fixup = dfw_config->params_fixup;
-+	mconfig->converter = dfw_config->converter;
-+	mconfig->m_type = dfw_config->module_type;
-+	mconfig->vbus_id = dfw_config->vbus_id;
-+
-+	pipe = skl_tplg_add_pipe(bus->dev, skl, &dfw_config->pipe);
-+	if (pipe)
-+		mconfig->pipe = pipe;
-+
-+	mconfig->dev_type = dfw_config->dev_type;
-+	mconfig->hw_conn_type = dfw_config->hw_conn_type;
-+	mconfig->time_slot = dfw_config->time_slot;
-+	mconfig->formats_config.caps_size = dfw_config->caps.caps_size;
-+
-+	mconfig->m_in_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_in_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_in_pin)
-+		return -ENOMEM;
-+
-+	mconfig->m_out_pin = devm_kzalloc(bus->dev, (mconfig->max_in_queue) *
-+						sizeof(*mconfig->m_out_pin),
-+						GFP_KERNEL);
-+	if (!mconfig->m_out_pin)
-+		return -ENOMEM;
-+
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_in_pin,
-+				mconfig->max_in_queue);
-+	skl_fill_module_pin_info(bus->dev, mconfig->m_out_pin,
-+				mconfig->max_out_queue);
-+
-+	if (mconfig->formats_config.caps_size == 0)
-+		goto bind_event;
-+
-+	mconfig->formats_config.caps = (u32 *)devm_kzalloc(bus->dev,
-+				mconfig->formats_config.caps_size, GFP_KERNEL);
-+
-+	if (mconfig->formats_config.caps == NULL)
-+		return -ENOMEM;
-+
-+	memcpy(mconfig->formats_config.caps, dfw_config->caps.caps,
-+						 dfw_config->caps.caps_size);
-+
-+bind_event:
-+	if (tplg_w->event_type == 0) {
-+		dev_info(bus->dev, "ASoC: No event handler required\n");
-+		return 0;
-+	}
-+
-+	ret = snd_soc_tplg_widget_bind_event(w, skl_tplg_widget_ops,
-+			ARRAY_SIZE(skl_tplg_widget_ops), tplg_w->event_type);
-+
-+	if (ret) {
-+		dev_err(bus->dev, "%s: No matching event handlers found for %d\n",
-+					__func__, tplg_w->event_type);
-+		return -EINVAL;
++		ret = skl_init_module(ctx, mconfig, NULL);
++		if (ret < 0)
++			return ret;
 +	}
 +
 +	return 0;
 +}
-+
-+static struct snd_soc_tplg_ops skl_tplg_ops  = {
-+	.widget_load = skl_tplg_widget_load,
-+};
-+
-+/* This will be read from topology manifest, currently defined here */
-+#define SKL_MAX_MCPS 30000000
-+#define SKL_FW_MAX_MEM 1000000
 +
 +/*
-+ * SKL topology init routine
++ * Once all the modules in a pipe are instantiated, they need to be
++ * connected.
++ * On removal, before deleting a pipeline the modules need to disconnected.
++ *
++ * This is achieved by binding/unbinding these modules
 + */
-+int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
++static int skl_tplg_bind_unbind_pipe_modules(struct skl_sst *ctx,
++				struct skl_pipe *pipe, bool bind)
 +{
-+	int ret;
-+	const struct firmware *fw;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct skl *skl = ebus_to_skl(ebus);
++	struct skl_pipe_module *w_module;
++	struct skl_module_cfg *src_module = NULL;
++	struct skl_module_cfg *dst_module;
++	int ret = 0;
 +
-+	ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "config firmware request failed with %d\n", ret);
-+		return ret;
++	dev_dbg(ctx->dev, "%s: pipe=%d\n", __func__, pipe->ppl_id);
++	list_for_each_entry(w_module, &pipe->w_list, node) {
++		dst_module = w_module->w->priv;
++
++		if (src_module == NULL) {
++			src_module = dst_module;
++			continue;
++		}
++
++		if (bind)
++			ret = skl_bind_modules(ctx, src_module, dst_module);
++		else
++			ret = skl_unbind_modules(ctx, src_module, dst_module);
++		if (ret < 0)
++			return ret;
++
++		src_module = dst_module;
 +	}
-+
-+	/*
-+	 * The complete tplg for SKL is loaded as index 0, we don't use
-+	 * any other index
-+	 */
-+	ret = snd_soc_tplg_component_load(&platform->component, &skl_tplg_ops, fw, 0);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "tplg component load failed%d\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	skl->resource.max_mcps = SKL_MAX_MCPS;
-+	skl->resource.max_mem = SKL_FW_MAX_MEM;
-+
 +	return 0;
 +}
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index a50689825bca..b258c90d89f1 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -19,6 +19,27 @@
- #ifndef __HDA_TPLG_INTERFACE_H__
- #define __HDA_TPLG_INTERFACE_H__
- 
-+/* Default types range from 0~12. type can range from 0 to 0xff
-+ * SST types start at higher to avoid any overlapping in future */
-+#define SOC_CONTROL_TYPE_HDA_SST_ALGO_PARAMS	200
-+#define SOC_CONTROL_TYPE_HDA_SST_MUX		201
-+#define SOC_CONTROL_TYPE_HDA_SST_MIX		201
-+#define SOC_CONTROL_TYPE_HDA_SST_BYTE		203
-+
-+#define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
-+#define MAX_IN_QUEUE 8
-+#define MAX_OUT_QUEUE 8
-+
-+/* Event types goes here */
-+/* Reserve event type 0 for no event handlers */
-+enum skl_event_types {
-+	SKL_EVENT_NONE = 0,
-+	SKL_MIXER_EVENT,
-+	SKL_MUX_EVENT,
-+	SKL_VMIXER_EVENT,
-+	SKL_PGA_EVENT
-+};
-+
- /**
-  * enum skl_ch_cfg - channel configuration
-  *
-@@ -85,4 +106,61 @@ enum skl_dev_type {
- 	SKL_DEVICE_HDALINK = 0x4,
- 	SKL_DEVICE_NONE
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 8c7767baa94f..73d7916ee33e 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -263,6 +263,16 @@ struct skl_module_cfg {
+ 	struct skl_specific_cfg formats_config;
  };
-+
-+struct skl_dfw_module_pin {
-+	u16 module_id;
-+	u16 instance_id;
-+	u8 pin_id;
-+	bool is_dynamic;
-+} __packed;
-+
-+struct skl_dfw_module_fmt {
-+	u32 channels;
-+	u32 freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+} __packed;
-+
-+struct skl_dfw_module_caps {
-+	u32 caps_size;
-+	u32 caps[HDA_SST_CFG_MAX];
+ 
++struct skl_pipeline {
++	struct skl_pipe *pipe;
++	struct list_head node;
 +};
 +
-+struct skl_dfw_pipe {
-+	u8 pipe_id;
-+	u8 pipe_priority;
-+	u16 conn_type;
-+	u32 memory_pages;
-+} __packed;
++struct skl_dapm_path_list {
++	struct snd_soc_dapm_path *dapm_path;
++	struct list_head node;
++};
 +
-+struct skl_dfw_module {
-+	u16 module_id;
-+	u16 instance_id;
+ int skl_create_pipeline(struct skl_sst *ctx, struct skl_pipe *pipe);
+ 
+ int skl_run_pipe(struct skl_sst *ctx, struct skl_pipe *pipe);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index f7fdbb02947f..e980d7897642 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -48,6 +48,13 @@
+ #define AZX_REG_VS_SDXEFIFOS_XBASE	0x1094
+ #define AZX_REG_VS_SDXEFIFOS_XINTERVAL	0x20
+ 
++struct skl_dsp_resource {
 +	u32 max_mcps;
-+	u8 core_id;
-+	u8 max_in_queue;
-+	u8 max_out_queue;
-+	u8 is_loadable;
-+	u8 conn_type;
-+	u8 dev_type;
-+	u8 hw_conn_type;
-+	u8 time_slot;
-+	u32 obs;
-+	u32 ibs;
-+	u32 params_fixup;
-+	u32 converter;
-+	u32 module_type;
-+	u32 vbus_id;
-+	struct skl_dfw_pipe pipe;
-+	struct skl_dfw_module_fmt in_fmt;
-+	struct skl_dfw_module_fmt out_fmt;
-+	struct skl_dfw_module_caps caps;
-+} __packed;
++	u32 max_mem;
++	u32 mcps;
++	u32 mem;
++};
 +
-+struct skl_dfw_algo_data {
-+	u32 max;
-+	char *params;
-+} __packed;
+ struct skl {
+ 	struct hdac_ext_bus ebus;
+ 	struct pci_dev *pci;
+@@ -57,6 +64,10 @@ struct skl {
+ 
+ 	void __iomem *nhlt; /* nhlt ptr */
+ 	struct skl_sst *skl_sst; /* sst skl ctx */
 +
- #endif
++	struct skl_dsp_resource resource;
++	struct list_head ppl_list;
++	struct list_head dapm_path_list;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
 -- 
 1.9.1
