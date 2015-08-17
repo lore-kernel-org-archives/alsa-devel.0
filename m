@@ -1,19 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: ics43432: Add codec driver for
- InvenSense ICS-43432
-Date: Mon, 17 Aug 2015 10:33:17 -0700
-Message-ID: <20150817173317.GQ10748@sirena.org.uk>
-References: <alpine.DEB.2.02.1508141106040.27635@lnxricardw1.se.axis.com>
- <20150814160731.GS10748@sirena.org.uk>
- <alpine.DEB.2.02.1508170844030.27635@lnxricardw1.se.axis.com>
- <55D191BB.1000204@metafoo.de>
+Subject: Re: [PATCH] ASoC: nau8825: Add driver for headset chip
+	Nuvoton 8825
+Date: Mon, 17 Aug 2015 11:20:40 -0700
+Message-ID: <20150817182040.GS10748@sirena.org.uk>
+References: <20150731182716.GO20873@sirena.org.uk>
+ <CAOMFOmVA5HB138TUghe7fRwq4661vvQZt0NU5iJDZhkuGUZH1g@mail.gmail.com>
+ <20150804094757.GE20873@sirena.org.uk>
+ <CAOMFOmUg2D_T338=zFSrzw=ZRGRw9awLYrKFxhoPmOEd5NGZSA@mail.gmail.com>
+ <20150811163954.GM10748@sirena.org.uk>
+ <CAOMFOmWTahWyq3Oto2h3bVEwke7=FzGpJ2sG48vqkRrNb_--QA@mail.gmail.com>
+ <20150813112639.GB1654@sirena.org.uk>
+ <CAOMFOmXm66VgFPfD=NBMJNbqUvE0mbBSq5mRPk_4APuUJPcF_A@mail.gmail.com>
+ <20150813223339.GN10748@sirena.org.uk>
+ <CAOMFOmVtw9sXBRp6hkNu+AfhQR2TF-uJeyyB0SmHTtgLd8ZoQw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8955013482975310774=="
+Content-Type: multipart/mixed; boundary="===============3338826008536362329=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from p2012.superclick.com (unknown [216.4.250.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AC02260427
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 19:33:21 +0200 (CEST)
-In-Reply-To: <55D191BB.1000204@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA42C260412
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 20:20:45 +0200 (CEST)
+In-Reply-To: <CAOMFOmVtw9sXBRp6hkNu+AfhQR2TF-uJeyyB0SmHTtgLd8ZoQw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +29,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ricard Wanderlof <ricard.wanderlof@axis.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: mfelton1@nuvoton.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dylan Reid <dgreid@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8955013482975310774==
+--===============3338826008536362329==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="C3csQhHPgbq3tf44"
+	protocol="application/pgp-signature"; boundary="3nbTfX4V9Gs/5Yhz"
 Content-Disposition: inline
 
 
---C3csQhHPgbq3tf44
+--3nbTfX4V9Gs/5Yhz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 17, 2015 at 09:48:11AM +0200, Lars-Peter Clausen wrote:
+On Sun, Aug 16, 2015 at 12:38:41AM -0700, Anatol Pomozov wrote:
+> On Thu, Aug 13, 2015 at 3:33 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> Yes, I was. In my opinion this set_dai_fmt() implementation is useful to
-> have as a mechanism to detect invalid configurations. E.g. if you don't
-> implement the callback the CODEC will accept any setting while with he
-> callback it will error out with the wrong configuration. Given that a I2S
-> link typically at least somewhat works, even if you have the wrong settin=
-g,
-> I think it makes sense to keep it to catch errors early on.
+> > So ACPI based platforms have to deal with providing clocks in some other
+> > way, that's something that is abstracted away by the clock API.  There
+> > are a number of drivers for both board file based and ACPI based systems
+> > already in tree which manage to make use of the clock API.
 
-I agree that it's useful to catch such errors however I don't want to go
-to implementing basically empty functions if we don't have to - we
-should add the ability to specify capabilites in the DAI for the core to
-check instead.=20
+> What is the best example of driver that uses clk API in both DT and
+> ACPI friendly way? I will use it as a template for my driver.
 
---C3csQhHPgbq3tf44
+Any driver using the clock API should provide a suitable reference.  The
+mechanism used to resolve clocks is completely opaque to the driver
+using the clock API.
+
+--3nbTfX4V9Gs/5Yhz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV0hrcAAoJECTWi3JdVIfQKlcH/jwGcJNI7FsYCgo9yDtU/Su1
-5pytcaakpC+DKqP8Ou7p3Yz6huvN+P8/dEGTEROj+F/K7c423FiQepuUDNowKeps
-6zUnCpP8B6HQ9jnbxwKmoKNIGJsonutPy1ni8skc9oIklk4UZxscVRmV4vAqdPQX
-M9JR5s6KoSM/GNcGylyS9KtMvRu29rclNkUtNkWezzT0rz2uzYluo3oSYHS8Dkz7
-HWyuh9pBvg7qJy7HdsiRliTDco66rh/RobwThi8BOuM7T62QxEgubE6EKzRyaiDl
-xSCjJsr5kTPKI+ieBjodoMuyEZZa+rFZdCv9O7o8n+0pH4boatCcQvC/YTXadbY=
-=1xA8
+iQEcBAEBCAAGBQJV0iX3AAoJECTWi3JdVIfQphAH/iwVzQjAqR0gexc1mfL+T0YA
+rp1czj3a87gX9jGvSGRCHTdOo8tisAAJkf8Q+42qcjE2fldvUxgyZMh/RRYLXiqn
+OUP1eIjKxIWB/WhyW4MzXuzwbC5xeCQoUoT7sRJrXQzdABzqf0kGN/a28FeFyXKE
+VUKESF8I40tfIoPf9Zv5bYtvn9HqSt72/7PhqAOdPXAu+HDv1RPFhPy1T4VVdrbI
+p8XxVNh9QKnQL3ZB7/lElqdQXcW0vCUNOpdNeBo1wr1w6evem4q0oc4wmZP04nor
+nkpgS7+zOykTufkWsuyRXbTylVyfRpd3vXIi6QZTPIEoK616JHBErjeC9WvYDS0=
+=xkvv
 -----END PGP SIGNATURE-----
 
---C3csQhHPgbq3tf44--
+--3nbTfX4V9Gs/5Yhz--
 
---===============8955013482975310774==
+--===============3338826008536362329==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8955013482975310774==--
+--===============3338826008536362329==--
