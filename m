@@ -1,20 +1,15 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
- terminal properties
-Date: Mon, 17 Aug 2015 07:56:48 +0200
-Message-ID: <55D177A0.9020501@jusst.de>
-References: <1439410499-28630-1-git-send-email-julian@jusst.de>
- <s5hr3n6t3wt.wl-tiwai@suse.de> <55CDEC38.7000006@jusst.de>
- <55D077D0.90005@zonque.org>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: Intel: Bsw: Read sst DSP DMA pointer
+	after period elapse occurs
+Date: Sun, 16 Aug 2015 23:12:25 -0700
+Message-ID: <1439791945-106012-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
- [74.201.84.163])
- by alsa0.perex.cz (Postfix) with ESMTP id E648526053D
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 07:56:54 +0200 (CEST)
-In-Reply-To: <55D077D0.90005@zonque.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA6E026053D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 08:13:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +19,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, srinivas.sripathi@intel.com, vinod.koul@intel.com, praveen.k.jain@intel.com, dinesh.mirche@intel.com, denny.iriawan@intel.com, "Fang, Yang A" <yang.a.fang@intel.com>, sathyanarayana.nujella@intel.com, kevin.strasser@linux.intel.com, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-On 16.08.15 13:45, Daniel Mack wrote:
-> On 08/14/2015 03:25 PM, Julian Scheel wrote:
->> Am 14.08.2015 um 15:06 schrieb Takashi Iwai:
->
->>>> @@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
->>>>    				term->name = d->iTerminal;
->>>>    			} else { /* UAC_VERSION_2 */
->>>>    				struct uac2_input_terminal_descriptor *d = p1;
->>>> -				term->type = le16_to_cpu(d->wTerminalType);
->>>> -				term->channels = d->bNrChannels;
->>>> -				term->chconfig = le32_to_cpu(d->bmChannelConfig);
->>>> -				term->name = d->iTerminal;
->>>>
->>>>    				/* call recursively to get the clock selectors */
->>>>    				err = check_input_term(state, d->bCSourceID, term);
->>>>    				if (err < 0)
->>>>    					return err;
->>>> +
->>>> +				term->type = le16_to_cpu(d->wTerminalType);
->>>> +				term->channels = d->bNrChannels;
->>>> +				term->chconfig = le32_to_cpu(d->bmChannelConfig);
->>>> +				term->name = d->iTerminal;
->>>
->>> ... by this override, essentially all fields except for id are
->>> restored.  Then what's the point to call check_input_term() for the
->>> clock source?
->>
->> This is a good point indeed, but due do my understanding the recursion
->> is not about filling missing information, but about verifying a valid
->> descriptor. So in case there are broken references in the descriptor it
->> gets abandoned. I'm happy to be corrected if this understanding is wrong.
->
-> Hmm, good point. It' been a while since I worked on this, but looking at
-> the code right now, you're right, the mixer unit for input terminal is
-> indeed just overridden by the information of the clock selector on UAC2.
-> That doesn't seem right.
->
-> I guess what we really want is to add a 2nd mixer control in such cases,
-> and that would mean we need to call into parse_audio_selector_unit()
-> instead.
+We should not read sst hw_ptr and pcm_delay in sst_platform_pcm_pointer
+Since it will be ricky if sst_platform_pcm_pointer is called while dsp
+is updating the timestamp.Now read sst hw_ptr after period elapse
+interrupt occurs.
 
-Ah, you're right. The Clock Selector shall actually be exposed as a 
-mixer unit. This never happened with the current code, but it just 
-renamed all other selectors to the name of the clock selector if it existed.
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |   18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-> I can cook up or test a patch next week, when I have access to test
-> hardware.
-
-I can update my patch to reflect this as well. If you haven't done 
-before I'll try to do it later today.
-
--Julian
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 683e501..d58230b 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -263,17 +263,27 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
+ static void sst_period_elapsed(void *arg)
+ {
+ 	struct snd_pcm_substream *substream = arg;
++	struct snd_soc_pcm_runtime *rtd;
+ 	struct sst_runtime_stream *stream;
++	struct pcm_stream_info *str_info;
+ 	int status;
++	int ret_val;
+ 
+ 	if (!substream || !substream->runtime)
+ 		return;
++	rtd = substream->private_data;
+ 	stream = substream->runtime->private_data;
+ 	if (!stream)
+ 		return;
+ 	status = sst_get_stream_status(stream);
+ 	if (status != SST_PLATFORM_RUNNING)
+ 		return;
++	str_info = &stream->stream_info;
++	ret_val = stream->ops->stream_read_tstamp(sst->dev, str_info);
++	if (ret_val) {
++		dev_err(rtd->dev, "sst: err code = %d\n", ret_val);
++		return;
++	}
+ 	snd_pcm_period_elapsed(substream);
+ }
+ 
+@@ -660,20 +670,14 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+ 			(struct snd_pcm_substream *substream)
+ {
+ 	struct sst_runtime_stream *stream;
+-	int ret_val, status;
++	int status;
+ 	struct pcm_stream_info *str_info;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 
+ 	stream = substream->runtime->private_data;
+ 	status = sst_get_stream_status(stream);
+ 	if (status == SST_PLATFORM_INIT)
+ 		return 0;
+ 	str_info = &stream->stream_info;
+-	ret_val = stream->ops->stream_read_tstamp(sst->dev, str_info);
+-	if (ret_val) {
+-		dev_err(rtd->dev, "sst: error code = %d\n", ret_val);
+-		return ret_val;
+-	}
+ 	substream->runtime->delay = str_info->pcm_delay;
+ 	return str_info->buffer_ptr;
+ }
+-- 
+1.7.9.5
