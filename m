@@ -1,80 +1,81 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v3 3/4] ALSA: hda - display audio call
- sync_audio_rate callback
-Date: Mon, 17 Aug 2015 14:42:11 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196F21A0@SHSMSX103.ccr.corp.intel.com>
-References: <1439808001-132727-1-git-send-email-libin.yang@intel.com>
- <1439808001-132727-3-git-send-email-libin.yang@intel.com>
- <s5h614ekso6.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: probe issue for Dice/OXFW drivers
+Date: Tue, 18 Aug 2015 00:30:44 +0900
+Message-ID: <55D1FE24.80707@sakamocchi.jp>
+References: <55CA9C07.40702@sakamocchi.jp> <55CB0FF1.1040100@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h614ekso6.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA5A6260474
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 17:30:49 +0200 (CEST)
+In-Reply-To: <55CB0FF1.1040100@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Etilem <contact@etilem.net>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiBGcm9tOiBUYWthc2hp
-IEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+IFNlbnQ6IE1vbmRheSwgQXVndXN0IDE3LCAy
-MDE1IDg6MjYgUE0KPiBUbzogWWFuZywgTGliaW4KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnOyBpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOwo+IGRhbmllbC52ZXR0ZXJA
-ZmZ3bGwuY2g7IGphbmkubmlrdWxhQGxpbnV4LmludGVsLmNvbQo+IFN1YmplY3Q6IFJlOiBbUEFU
-Q0ggdjMgMy80XSBBTFNBOiBoZGEgLSBkaXNwbGF5IGF1ZGlvIGNhbGwKPiBzeW5jX2F1ZGlvX3Jh
-dGUgY2FsbGJhY2sKPiAKPiBPbiBNb24sIDE3IEF1ZyAyMDE1IDEyOjQwOjAwICswMjAwLAo+IGxp
-YmluLnlhbmdAaW50ZWwuY29tIHdyb3RlOgo+ID4KPiA+IEZyb206IExpYmluIFlhbmcgPGxpYmlu
-LnlhbmdAaW50ZWwuY29tPgo+ID4KPiA+IEZvciBkaXNwbGF5IGF1ZGlvLCBjYWxsIHRoZSBzeW5j
-X2F1ZGlvX3JhdGUgY2FsbGJhY2sgZnVuY3Rpb24KPiA+IHRvIGRvIHRoZSBzeW5jaHJvbml6YXRp
-b24gYmV0d2VlbiBnZnggZHJpdmVyIGFuZCBhdWRpbyBkcml2ZXIuCj4gPgo+ID4gU2lnbmVkLW9m
-Zi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gCj4gSSBndWVzcyBpdCB3
-b3VsZCBiZSBlYXNpZXIgdG8gdGFrZSB0aGlzIHNlcmllcyBmcm9tIGRybSB0cmVlLgo+IEZlZWwg
-ZnJlZSB0byBteSBhY2sKPiAgIFJldmlld2VkLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
-ZGU+CgpHZXQgaXQuIFRoYW5rcy4KClJlZ2FyZHMsCkxpYmluCgo+IAo+IAo+IHRoYW5rcywKPiAK
-PiBUYWthc2hpCj4gCj4gCj4gPiAtLS0KPiA+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8
-IDE5ICsrKysrKysrKysrKysrKysrKysKPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9u
-cygrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+IGIv
-c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiA+IGluZGV4IGE5N2RiNWYuLjE2Njg4NjggMTAw
-NjQ0Cj4gPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYwo+ID4gKysrIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9oZG1pLmMKPiA+IEBAIC0xNzcwLDYgKzE3NzAsMTYgQEAgc3RhdGljIGJv
-b2wKPiBjaGVja19ub25fcGNtX3Blcl9jdnQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9u
-aWRfdCBjdnRfbmlkKQo+ID4gIAlyZXR1cm4gbm9uX3BjbTsKPiA+ICB9Cj4gPgo+ID4gKy8qIFRo
-ZXJlIGlzIGEgZml4ZWQgbWFwcGluZyBiZXR3ZWVuIGF1ZGlvIHBpbiBub2RlIGFuZCBkaXNwbGF5
-Cj4gcG9ydAo+ID4gKyAqIG9uIGN1cnJlbnQgSW50ZWwgcGxhdGZvcm1zOgo+ID4gKyAqIFBpbiBX
-aWRnZXQgNSAtIFBPUlQgQiAocG9ydCA9IDEgaW4gaTkxNSBkcml2ZXIpCj4gPiArICogUGluIFdp
-ZGdldCA2IC0gUE9SVCBDIChwb3J0ID0gMiBpbiBpOTE1IGRyaXZlcikKPiA+ICsgKiBQaW4gV2lk
-Z2V0IDcgLSBQT1JUIEQgKHBvcnQgPSAzIGluIGk5MTUgZHJpdmVyKQo+ID4gKyAqLwo+ID4gK3N0
-YXRpYyBpbnQgaW50ZWxfcGluMnBvcnQoaGRhX25pZF90IHBpbl9uaWQpCj4gPiArewo+ID4gKwly
-ZXR1cm4gcGluX25pZCAtIDQ7Cj4gPiArfQo+ID4KPiA+ICAvKgo+ID4gICAqIEhETUkgY2FsbGJh
-Y2tzCj4gPiBAQCAtMTc4Niw2ICsxNzk2LDggQEAgc3RhdGljIGludAo+IGdlbmVyaWNfaGRtaV9w
-bGF5YmFja19wY21fcHJlcGFyZShzdHJ1Y3QgaGRhX3BjbV9zdHJlYW0gKmhpbmZvLAo+ID4gIAlp
-bnQgcGluX2lkeCA9IGhpbmZvX3RvX3Bpbl9pbmRleChjb2RlYywgaGluZm8pOwo+ID4gIAlzdHJ1
-Y3QgaGRtaV9zcGVjX3Blcl9waW4gKnBlcl9waW4gPSBnZXRfcGluKHNwZWMsIHBpbl9pZHgpOwo+
-ID4gIAloZGFfbmlkX3QgcGluX25pZCA9IHBlcl9waW4tPnBpbl9uaWQ7Cj4gPiArCXN0cnVjdCBz
-bmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7Cj4gPiArCXN0cnVj
-dCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBjb2RlYy0+YnVzLQo+ID5jb3JlLmF1ZGlv
-X2NvbXBvbmVudDsKPiA+ICAJYm9vbCBub25fcGNtOwo+ID4gIAlpbnQgcGluY3RsOwo+ID4KPiA+
-IEBAIC0xODAyLDYgKzE4MTQsMTMgQEAgc3RhdGljIGludAo+IGdlbmVyaWNfaGRtaV9wbGF5YmFj
-a19wY21fcHJlcGFyZShzdHJ1Y3QgaGRhX3BjbV9zdHJlYW0gKmhpbmZvLAo+ID4gIAkJaW50ZWxf
-bm90X3NoYXJlX2Fzc2lnbmVkX2N2dChjb2RlYywgcGluX25pZCwgcGVyX3Bpbi0KPiA+bXV4X2lk
-eCk7Cj4gPiAgCX0KPiA+Cj4gPiArCS8qIENhbGwgc3luY19hdWRpb19yYXRlIHRvIHNldCB0aGUg
-Ti9DVFMvTSBtYW51YWxseSBpZgo+IG5lY2Vzc2FyeSAqLwo+ID4gKwkvKiBUb2RvOiBhZGQgRFAx
-LjIgTVNUIGF1ZGlvIHN1cHBvcnQgbGF0ZXIgKi8KPiA+ICsJaWYgKGFjb21wICYmIGFjb21wLT5v
-cHMgJiYgYWNvbXAtPm9wcy0+c3luY19hdWRpb19yYXRlKQo+ID4gKwkJYWNvbXAtPm9wcy0+c3lu
-Y19hdWRpb19yYXRlKGFjb21wLT5kZXYsCj4gPiArCQkJCWludGVsX3BpbjJwb3J0KHBpbl9uaWQp
-LAo+ID4gKwkJCQlydW50aW1lLT5yYXRlKTsKPiA+ICsKPiA+ICAJbm9uX3BjbSA9IGNoZWNrX25v
-bl9wY21fcGVyX2N2dChjb2RlYywgY3Z0X25pZCk7Cj4gPiAgCW11dGV4X2xvY2soJnBlcl9waW4t
-PmxvY2spOwo+ID4gIAlwZXJfcGluLT5jaGFubmVscyA9IHN1YnN0cmVhbS0+cnVudGltZS0+Y2hh
-bm5lbHM7Cj4gPiAtLQo+ID4gMS45LjEKPiA+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vaW50ZWwtZ2Z4Cg==
+Hi Clemens,
+
+On Aug 12 2015 18:20, Clemens Ladisch wrote:
+>>                ROM header and bus information block
+>> -----------------------------------------------------------------
+>> 400  0404f507  bus_info_length 4, crc_length 4, crc 62727
+>> 404  31333934  bus_name "1394"
+>> 408  e0008102  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 0, max_rec 8 (512)
+>> 40c  000ff210  company_id 000ff2     |
+>> 410  01800af7  device_id 1001800af7  | EUI-64 000ff21001800af7
+>>
+>>                root directory
+>> -----------------------------------------------------------------
+>> 414  000639d3  directory_length 6, crc 14803
+>> 418  03000ff2  vendor
+>> 41c  8100000a  --> descriptor leaf at 444
+>> 420  17000006  model
+>> 424  8100000d  --> descriptor leaf at 458
+>> 428  0c0087c0  node capabilities per IEEE 1394
+>> 42c  d1000001  --> unit directory at 430
+>>
+>>                unit directory at 430
+>> -----------------------------------------------------------------
+>> 430  00045246  directory_length 4, crc 21062
+>> 434  12000ff2  specifier id
+>> 438  13000001  version
+>> 43c  17000006  model
+>> 440  8100000b  --> descriptor leaf at 46c
+> 
+> The dice_interface_check() function then makes other checks:
+> /*
+>  * Check that GUID and unit directory are constructed according to DICE
+>  * rules, i.e., that the specifier ID is the GUID's OUI, and that the
+>  * GUID chip ID consists of the 8-bit category ID, the 10-bit product
+>  * ID, and a 22-bit serial number.
+>  */
+> 
+> These values are correct, except for the category ID.
+
+Aha. I've overlooked this case. I assumed that we can see 'No such
+device' in syslog, due to returning -ENODEV.
+
+> The driver already has an category ID exception for Weiss devices.
+> It would be possible to add another exception, but given that firmware
+> writers apparently like to change this value without good reason, it
+> might be a better idea to just remove the category ID check.
+
+Sounds to work, while I've never read such a specification about the
+Dice rule (I'm not so good at Dice itself). Is it possible that you post
+patches for this issue?
+
+
+Regards
+
+Takashi Sakamoto
