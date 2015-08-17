@@ -1,19 +1,17 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v3 6/7] drm/i2c: tda998x: Register ASoC
- HDMI codec for audio functionality
-Date: Mon, 17 Aug 2015 10:25:23 +0300
-Message-ID: <55D18C63.1010401@ti.com>
-References: <cover.1439542916.git.jsarha@ti.com>
- <1e8e3215caa932dab68de8576aee81f5e1008163.1439542916.git.jsarha@ti.com>
- <20150814100616.GH7576@n2100.arm.linux.org.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: davinci-vcif: Use
+	devm_snd_soc_register_component
+Date: Mon, 17 Aug 2015 10:36:18 +0300
+Message-ID: <55D18EF2.8090300@ti.com>
+References: <20150815023155.GA27364@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C789260547
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 09:25:30 +0200 (CEST)
-In-Reply-To: <20150814100616.GH7576@n2100.arm.linux.org.uk>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3356260577
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 09:36:24 +0200 (CEST)
+In-Reply-To: <20150815023155.GA27364@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,95 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, moinejf@free.fr, airlied@linux.ie, tomi.valkeinen@ti.com, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tony@atomide.com, broonie@kernel.org, bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/14/15 13:06, Russell King - ARM Linux wrote:
-> On Fri, Aug 14, 2015 at 12:30:44PM +0300, Jyri Sarha wrote:
->> +static int tda998x_write_aif(struct tda998x_priv *priv,
->> +			     struct hdmi_audio_infoframe *cea)
->> +{
->> +	uint8_t buf[HDMI_INFOFRAME_SIZE(AUDIO)];
->> +	int len;
->> +
->> +	len = hdmi_audio_infoframe_pack(cea, buf, sizeof(buf));
->> +	if (len < 0) {
->> +		dev_err(&priv->hdmi->dev,
->> +			"Failed to pack audio infoframe: %d\n", len);
->> +		return len;
->> +	}
->> +
->> +	/* Write the audio information packet */
->> +	tda998x_write_if(priv, DIP_IF_FLAGS_IF4, REG_IF4_HB0, buf, len);
->> +	return 0;
->> +}
->> +
->
-> I have such a function already queued up, but I can't push it out at the
-> moment because of too many conflicts across all my DRM work.  I'm waiting
-> for after 4.3-rc1 before publishing anything from or accepting anything
-> else into DRM branches.
->
+On 08/15/2015 05:31 AM, Vaishali Thakkar wrote:
+> Use resource managed function devm_snd_soc_register_component for
+> component registration instead of snd_soc_register_component.
+> =
 
-Ok, is the code available some where? Could take a look so I can align 
-my code to that.
+> Also, remove davinci_vcif_remove as it is now redundant.
 
->>   static void
->>   tda998x_write_avi(struct tda998x_priv *priv, struct drm_display_mode *mode)
->>   {
->> @@ -670,19 +691,24 @@ static void tda998x_audio_mute(struct tda998x_priv *priv, bool on)
->>   	}
->>   }
->>
->> -static void
->> +static int
->>   tda998x_configure_audio(struct tda998x_priv *priv,
->> -		struct drm_display_mode *mode, struct tda998x_encoder_params *p)
->> +			int mode_clock,
->> +			int ena_ap,
->> +			int dai_format,
->> +			int sample_width,
->> +			int sample_rate,
->> +			const u8 *status)
->
-> I don't think this is an improvement.
->
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Still it makes the function more generic and enables its usage in 
-HDMI-codec API implementation. I'll try to make it look tidier.
+> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+> ---
+>  sound/soc/davinci/davinci-vcif.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
+> =
 
->> +static int tda998x_audio_get_eld(struct device *dev, uint8_t *buf, size_t len)
->> +{
->> +	struct tda998x_priv *priv = dev_get_drvdata(dev);
->> +	struct drm_mode_config *config = &priv->encoder->dev->mode_config;
->> +	struct drm_connector *connector;
->> +	int ret = -ENODEV;
->> +
->> +	mutex_lock(&config.mutex);
->> +	list_for_each_entry(connector, &config->connector_list, head) {
->> +		if (priv->encoder == connector->encoder) {
->> +			memcpy(buf, connector->eld,
->> +			       min(sizeof(connector->eld), len));
->> +			ret = 0;
->> +		}
->> +	}
->> +	mutex_unlock(&config.mutex);
->
-> Obviously untested.  Should be config->mutex.
->
+> diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci=
+-vcif.c
+> index fabd05f..c77d921 100644
+> --- a/sound/soc/davinci/davinci-vcif.c
+> +++ b/sound/soc/davinci/davinci-vcif.c
+> @@ -231,8 +231,9 @@ static int davinci_vcif_probe(struct platform_device =
+*pdev)
+>  =
 
-Sorry. Should never do these last minute changes. I must have been 
-compiling and testing different code version. I first had this function 
-using config->connection_mutex, but then - after reading the eld related 
-code - found that mode_config mutex should be used instead.
+>  	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
+>  =
 
-> But in any case, when I kill the DRM slave encoder code in here, this
-> becomes unnecessary.
->
+> -	ret =3D snd_soc_register_component(&pdev->dev, &davinci_vcif_component,
+> -					 &davinci_vcif_dai, 1);
+> +	ret =3D devm_snd_soc_register_component(&pdev->dev,
+> +					      &davinci_vcif_component,
+> +					      &davinci_vcif_dai, 1);
+>  	if (ret !=3D 0) {
+>  		dev_err(&pdev->dev, "could not register dai\n");
+>  		return ret;
+> @@ -241,23 +242,14 @@ static int davinci_vcif_probe(struct platform_devic=
+e *pdev)
+>  	ret =3D edma_pcm_platform_register(&pdev->dev);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
+> -		snd_soc_unregister_component(&pdev->dev);
+>  		return ret;
+>  	}
+>  =
 
-Ok, The information from ELD needs be passed to audio side constraints 
-somehow. I'd love to see the code you have in queue.
+>  	return 0;
+>  }
+>  =
 
-Best regards,
-Jyri
+> -static int davinci_vcif_remove(struct platform_device *pdev)
+> -{
+> -	snd_soc_unregister_component(&pdev->dev);
+> -
+> -	return 0;
+> -}
+> -
+>  static struct platform_driver davinci_vcif_driver =3D {
+>  	.probe		=3D davinci_vcif_probe,
+> -	.remove		=3D davinci_vcif_remove,
+>  	.driver		=3D {
+>  		.name	=3D "davinci-vcif",
+>  	},
+> =
+
+
+
+-- =
+
+P=E9ter
