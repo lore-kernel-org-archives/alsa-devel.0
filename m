@@ -1,73 +1,38 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 00/10] ASoC: support adding PCM
- dynamically from topology
-Date: Mon, 17 Aug 2015 11:39:59 +0100
-Message-ID: <1439807999.2420.25.camel@loki>
-References: <cover.1439217448.git.mengdong.lin@intel.com>
- <55CEF0A8.5030707@metafoo.de> <20150815155035.GG10748@sirena.org.uk>
- <F46914AEC2663F4A9BB62374E5EEF8F8480D0F4C@SHSMSX101.ccr.corp.intel.com>
+From: libin.yang@intel.com
+Subject: [PATCH v3 1/4] drm/i915: Add audio sync_audio_rate
+	callback
+Date: Mon, 17 Aug 2015 18:39:58 +0800
+Message-ID: <1439808001-132727-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C07E726061B
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 12:40:05 +0200 (CEST)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F8480D0F4C@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, jani.nikula@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2015-08-17 at 06:13 +0000, Lin, Mengdong wrote:
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-> > Sent: Saturday, August 15, 2015 11:51 PM
-> > To: Lars-Peter Clausen
-> > Cc: Lin, Mengdong; alsa-devel@alsa-project.org; tiwai@suse.de; Girdwood,
-> > Liam R
-> > Subject: Re: [alsa-devel] [PATCH v2 00/10] ASoC: support adding PCM
-> > dynamically from topology
-> > 
-> > On Sat, Aug 15, 2015 at 09:56:24AM +0200, Lars-Peter Clausen wrote:
-> > 
-> > > This all sounds as if the dynamically loaded topology information does
-> > > not describe dynamic topology, e.g. like DSP firmware, but rather the
-> > > static topology that would usually come from things like devicetree or
-> > > ACPI. Maybe you need to rethink when the topology information is
-> > > loaded and make sure that the parts that describe the static topology
-> > > are available before the card is instantiated.
-> > 
-> > I do think that's some of it (as I said in my replies in the series), but I got the
-> > impression from some other discussion that some of this was about
-> > host<->DSP channels that exist purely in software which does seem like
-> > something that could reasonably be in the topology, but this does seem more
-> > like the fixed links stuff.
-> 
-> We hope to release different firmware for different OEM products. 
-> Due to license restrictions, these firmware may have different features and may support different FE DAIs.
-> 
-> ACPI only describes physical links and does not handle FE DAIs. This is why we use topology here.
-> 
-
-To further clarify.
-
-The intention is that the topology data for BE and codec style links is
-not to define the link (as this should come from DT or ACPI) but to
-define the links config/capabilities for a given FW. e.g. we have two
-different FWs that run BE0 (SSP0) with different number of channels (one
-is stereo, the other is 4 channel TDM). Currently the link definitions
-will be hard coded until the ACPI data is ready.
-
-The FE uses the above too for config/capabilities but it can also be
-defined and created by the topology data (since it's a FW entity).
-
-Liam
+RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpBZGQgdGhlIHN5bmNfYXVk
+aW9fcmF0ZSBjYWxsYmFjay4KCldpdGggdGhlIGNhbGxiYWNrLCBhdWRpbyBkcml2ZXIgY2FuIHRy
+aWdnZXIKaTkxNSBkcml2ZXIgdG8gc2V0IHRoZSBwcm9wZXIgTi9DVFMgb3IgTi9NCmJhc2VkIG9u
+IGRpZmZlcmVudCBzYW1wbGUgcmF0ZXMuCgpTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5nIDxsaWJp
+bi55YW5nQGludGVsLmNvbT4KLS0tCiBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oIHwgMSAr
+CiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2Ry
+bS9pOTE1X2NvbXBvbmVudC5oIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAppbmRleCBj
+OWE4YjY0Li5hYWJlYmNiIDEwMDY0NAotLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5o
+CisrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKQEAgLTMzLDYgKzMzLDcgQEAgc3Ry
+dWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKIAkJdm9pZCAoKnB1dF9wb3dlcikoc3RydWN0IGRl
+dmljZSAqKTsKIAkJdm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZpY2UgKiwg
+Ym9vbCBlbmFibGUpOwogCQlpbnQgKCpnZXRfY2RjbGtfZnJlcSkoc3RydWN0IGRldmljZSAqKTsK
+KwkJaW50ICgqc3luY19hdWRpb19yYXRlKShzdHJ1Y3QgZGV2aWNlICosIGludCBwb3J0LCBpbnQg
+cmF0ZSk7CiAJfSAqb3BzOwogfTsKIAotLSAKMS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
