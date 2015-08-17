@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: Convert to managed resources
-Date: Mon, 17 Aug 2015 13:47:51 -0700
-Message-ID: <20150817204751.GD10748@sirena.org.uk>
-References: <20150813072920.GA17181@localhost>
- <CAAVeFuKT1st8E1fxcDM5CV_OzUcTmvFw8UuU5oh15J1PiFJ0vA@mail.gmail.com>
- <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w@mail.gmail.com>
+Subject: Applied "ASoC: davinci-vcif: Use
+	devm_snd_soc_register_component" to the asoc tree
+Date: Mon, 17 Aug 2015 13:49:07 -0700
+Message-ID: <E1ZRRL9-0001dm-EI@finisterre>
+References: <20150815023155.GA27364@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6916679773762117797=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from p2012.superclick.com (unknown [216.4.250.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 80FB4260471
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 22:47:55 +0200 (CEST)
-In-Reply-To: <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B2ED7260471
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 22:49:09 +0200 (CEST)
+In-Reply-To: <20150815023155.GA27364@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +21,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@wwwdotorg.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+To: Vaishali Thakkar <vthakkar1994@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6916679773762117797==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BM/1i/1Z34LY4Oq9"
-Content-Disposition: inline
+   ASoC: davinci-vcif: Use devm_snd_soc_register_component
 
+has been applied to the asoc tree at
 
---BM/1i/1Z34LY4Oq9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Aug 17, 2015 at 03:02:29PM +0530, Vaishali Thakkar wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I think you are right. I missed that. But now thing is , this patch is already
-> applied here:
-> https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=topic/tegra
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I am not sure if now I can change version 2 with the changes you suggested
-> or not. Although I will not be able to test it  after changing 'goto
-> err_suspend'
-> as I don't have hardware but may be someone else can test it.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-You can send an incremental update on top of what's there, or it may be
-more sensible to just discard the change entirely.  I suspect we're safe
-with either PM vs component ordering though since we should support !PM
-configurations anyway.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---BM/1i/1Z34LY4Oq9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>From 553de19a0e2f21809bc3864d40308864652521eb Mon Sep 17 00:00:00 2001
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+Date: Sat, 15 Aug 2015 08:01:55 +0530
+Subject: [PATCH] ASoC: davinci-vcif: Use devm_snd_soc_register_component
 
-iQEcBAEBCAAGBQJV0kh2AAoJECTWi3JdVIfQqGMH/jHQxOKyEchzt4Sf61eVxGSz
-fPWiwQLpRsnYM9Oh2diRNrFayzosaHQmUX26Yw6KPa5xOoVfc6NU0qY2yIZ1GJIQ
-qoymgena/rF9hPLHw4/daXfhaiv11cEnjTSUulQNbYCkv/6Wop8u17rLxkmNSI9r
-hSq8kL6/CrGurS5aFo8LHaMwyu/bKhTIxDZhyegSXSh7RjOLSHnHb/HQPIdtqOwz
-qxlpWsBKemW857Iy+ifn63pYeQWRmfu+GUgUo2qXfXHKGqqszMXkbXDkzjI2T5Zm
-9CL8b1KmtrCckGURTbpTc297hyHJDeQnFr70yV+Sl4w+5vWfnTDwEp1VJP4tJG4=
-=eBt/
------END PGP SIGNATURE-----
+Use resource managed function devm_snd_soc_register_component for
+component registration instead of snd_soc_register_component.
 
---BM/1i/1Z34LY4Oq9--
+Also, remove davinci_vcif_remove as it is now redundant.
 
---===============6916679773762117797==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/davinci/davinci-vcif.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-
---===============6916679773762117797==--
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index fabd05f..c77d921 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -231,8 +231,9 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &davinci_vcif_component,
+-					 &davinci_vcif_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &davinci_vcif_component,
++					      &davinci_vcif_dai, 1);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "could not register dai\n");
+ 		return ret;
+@@ -241,23 +242,14 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 	ret = edma_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
+-		snd_soc_unregister_component(&pdev->dev);
+ 		return ret;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int davinci_vcif_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_component(&pdev->dev);
+-
+-	return 0;
+-}
+-
+ static struct platform_driver davinci_vcif_driver = {
+ 	.probe		= davinci_vcif_probe,
+-	.remove		= davinci_vcif_remove,
+ 	.driver		= {
+ 		.name	= "davinci-vcif",
+ 	},
+-- 
+2.5.0
