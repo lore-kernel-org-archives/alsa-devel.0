@@ -1,18 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH] ASoc: Handle multiple codecs with split
- playback / capture
-Date: Mon, 17 Aug 2015 10:02:29 +0200
-Message-ID: <alpine.DEB.2.02.1508170922420.27635@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1508131605170.27635@lnxricardw1.se.axis.com>
- <20150814155223.GO10748@sirena.org.uk>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
+ terminal properties
+Date: Mon, 17 Aug 2015 10:35:00 +0200
+Message-ID: <55D19CB4.3080208@jusst.de>
+References: <1439410499-28630-1-git-send-email-julian@jusst.de>
+ <s5hr3n6t3wt.wl-tiwai@suse.de> <55CDEC38.7000006@jusst.de>
+ <55D077D0.90005@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 069FB260547
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 10:02:31 +0200 (CEST)
-In-Reply-To: <20150814155223.GO10748@sirena.org.uk>
+Received: from sender163-mail.zoho.com (sender163-mail.zoho.com
+ [74.201.84.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id EED732605F0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 10:35:06 +0200 (CEST)
+In-Reply-To: <55D077D0.90005@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,152 +24,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Daniel Mack <daniel@zonque.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
 
-On Fri, 14 Aug 2015, Mark Brown wrote:
+On 16.08.2015 13:45, Daniel Mack wrote:
+> Hi,
+>
+> On 08/14/2015 03:25 PM, Julian Scheel wrote:
+>> Am 14.08.2015 um 15:06 schrieb Takashi Iwai:
+>
+>>>> @@ -715,15 +715,16 @@ static int check_input_term(struct mixer_build *state, int id,
+>>>>    				term->name = d->iTerminal;
+>>>>    			} else { /* UAC_VERSION_2 */
+>>>>    				struct uac2_input_terminal_descriptor *d = p1;
+>>>> -				term->type = le16_to_cpu(d->wTerminalType);
+>>>> -				term->channels = d->bNrChannels;
+>>>> -				term->chconfig = le32_to_cpu(d->bmChannelConfig);
+>>>> -				term->name = d->iTerminal;
+>>>>
+>>>>    				/* call recursively to get the clock selectors */
+>>>>    				err = check_input_term(state, d->bCSourceID, term);
+>>>>    				if (err < 0)
+>>>>    					return err;
+>>>> +
+>>>> +				term->type = le16_to_cpu(d->wTerminalType);
+>>>> +				term->channels = d->bNrChannels;
+>>>> +				term->chconfig = le32_to_cpu(d->bmChannelConfig);
+>>>> +				term->name = d->iTerminal;
+>>>
+>>> ... by this override, essentially all fields except for id are
+>>> restored.  Then what's the point to call check_input_term() for the
+>>> clock source?
+>>
+>> This is a good point indeed, but due do my understanding the recursion
+>> is not about filling missing information, but about verifying a valid
+>> descriptor. So in case there are broken references in the descriptor it
+>> gets abandoned. I'm happy to be corrected if this understanding is wrong.
+>
+> Hmm, good point. It' been a while since I worked on this, but looking at
+> the code right now, you're right, the mixer unit for input terminal is
+> indeed just overridden by the information of the clock selector on UAC2.
+> That doesn't seem right.
+>
+> I guess what we really want is to add a 2nd mixer control in such cases,
+> and that would mean we need to call into parse_audio_selector_unit()
+> instead.
 
-> On Thu, Aug 13, 2015 at 04:12:56PM +0200, Ricard Wanderlof wrote:
-> =
+I just had another look at this. In fact all mixer controls are properly 
+created with the current code. This happens in the loop over all 
+descriptors in snd_usb_mixer_controls. parse_audio_unit is called for 
+each of them. For clock selectors and selector units it calls 
+parse_audio_selector_unit where the actual clock selector/selector units 
+are parsed and mixer ctls are created.
+So I'd renew my first comment about the recursion. It is only needed to 
+verify the integrity of descriptors and hence shall not overwrite any 
+values.
 
-> > (Referring to this thread:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093214.h=
-tml)
-> =
+After patching my device to offer 2 clocks on the clock selector the 
+mixer looks like this with my patch:
+--
+Simple mixer control 'Master',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+   Playback channels: Mono
+   Limits: Playback 0 - 44
+   Mono: Playback 26 [59%] [-36.00dB] [on]
+Simple mixer control 'Clock Selector',0
+   Capabilities: enum
+   Items: 'Internal Clock' 'Fake Clock'
+   Item0: 'Internal Clock'
+Simple mixer control 'Input Selector',0
+   Capabilities: enum
+   Items: 'USB' 'S/PDIF'
+   Item0: 'USB'
+--
 
-> I shouldn't need to read another mailing list thread as the first part
-> of a commit log, and if referring to external information you should
-> always include a human readable description of what you're referring to
-> so that people can understand your message without having to start
-> another program.  As it is I'm in a plane over the Atlantic so I can't
-> tell what you're talking about here, sorry.
+Running the same without my patch results in:
+--
+Simple mixer control 'Master',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+   Playback channels: Mono
+   Limits: Playback 0 - 44
+   Mono: Playback 26 [59%] [-36.00dB] [on]
+Simple mixer control 'Clock Selector',0
+   Capabilities: enum
+   Items: 'Internal Clock' 'Fake Clock'
+   Item0: 'Internal Clock'
+Simple mixer control 'Input Selector',0
+   Capabilities: enum
+   Items: 'Clock Selector' 'Clock Selector'
+   Item0: 'Clock Selector'
+--
 
-The reference isn't necessary for the patch, it was intended to provide a =
+So you can see, in both cases the mixer controls are generated as it 
+should be. But the original code applies the wrong labels to all the 
+Input Terminals associated to Input Selector. I think keeping the 
+recursion, but not using any of the term values from the recursion is 
+the correct approach as it ensures there are no dead ends in the 
+descriptor hierarchy (i.e. referencing non-existant clock entities), but 
+keeps the actual terminal properties correct.
+What shall be changed in my original patch is that the term->id shall 
+also be reset after recursing into check_input_term, as otherwise the 
+input terminals are stored with the clock selectors id. Would you agree 
+on that?
 
-link to a previous discussion that led up to it.
-
-I'll restructure it to keep links out of the commit message.
-
-Should the commit message have any information as to which specific use =
-
-case led to the creation of the patch?
-
-> >  /**
-> > + * snd_soc_dai_stream_valid() - check if a DAI supports the given stre=
-am
-> > + *
-> > + * @dai: The DAI to check for stream support
-> > + * @stream: The stream type (playback / capture) to check for
-> =
-
-> You're adding externally readable kerneldoc on a static function so
-> nothing outside this file can use it.
-
-My mistake. Probably started out by having it global then realized =
-
-it was not necessary as it is not needed anywhere else for the moment at =
-
-least.
-
-> > + *
-> > + * Checks if the DAI in question supports the indicated stream type.
-> > + * Needed to skip over codecs when iterating over
-> > + * snd_soc_pcm_runtime->codec_dais in order to skip codecs that are pl=
-ayback-
-> > + * or capture-only, which would otherwise inhibit capture or playback,
-> > + * respectively, to the other codec in a multiple codec / common I2S b=
-us
-> > + * environment.
-> > + */
-> =
-
-> This mostly seems to describe a potential use of this function, not what
-> it is supposed to do.
-
-Ok, I'll rephrase it.
-
-> > +	return !!codec_stream->rates;
-> =
-
-> The !! is redundant here.
-
-I still felt it made sense as rates is an int and the function actually =
-
-returns a bool, i.e. the !! indicates to a human reader that the author of =
-
-the function is aware that rates is not a bool yet the function is =
-
-declared as one.
-
-> >  	/* first calculate min/max only for CODECs in the DAI link */
-> >  	for (i =3D 0; i < rtd->num_codecs; i++) {
-> > +
-> > +		/* Skip codecs which don't support the current stream type. */
-> > +		if (!snd_soc_dai_stream_valid(rtd->codec_dais[i],
-> > +					      substream->stream))
-> > +			continue;
-> > +
-> >  		codec_dai_drv =3D rtd->codec_dais[i]->driver;
-> >  		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
-> >  			codec_stream =3D &codec_dai_drv->playback;
-> =
-
-> So what happens if we end up in these loops and nothing matches?  It'd
-> be good to document the considerations there.
-
-Ok, I'll add this.
-
-> > @@ -827,6 +859,10 @@ static int soc_pcm_hw_params(struct snd_pcm_substr=
-eam *substream,
-> >  		struct snd_soc_dai *codec_dai =3D rtd->codec_dais[i];
-> >  		struct snd_pcm_hw_params codec_params;
-> >  =
-
-> > +		/* Skip codecs which don't support the current stream type. */
-> > +		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
-> > +			continue;
-> > +
-> >  		/* copy params for each codec */
-> >  		codec_params =3D *params;
-> =
-
-> We're still calling hw_params() for all CODECs, even ones that happen to
-> not be suitable...  is that sensible? =
-
-
-Hm, how so, the soc_dai_hw_params(..., codec_dai) is further on inside the =
-
-loop so the continue skips over it?
-
-However, if nothing matches, soc_dai_hw_params(..., cpu_dai) would still =
-
-be called, just after the loop, which might not make sense. =
-
-
-> It might be in a case where the CODEC for one direction clocks =
-
-> everything but I can see problems occurring if the transmit and receive =
-
-> paths are separately clocked which is going to be quite common for =
-
-> things like i.MX systems.  If the two are tied together there's going to =
-
-> be constraints between the two directions.
-> =
-
-> I'd expect that we could take a pretty good guess as to what the best
-> thing to do is based on the symmetry constraints we have for the link
-> but I think we do want to think about this early.
-
-I guess it would be better just to 'goto out' after the loop if a suitable =
-
-codec could not be found.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+Julian
