@@ -1,86 +1,64 @@
-From: libin.yang@intel.com
-Subject: [PATCH v3 4/4] drm/i915: set proper N/CTS in modeset
-Date: Mon, 17 Aug 2015 18:40:01 +0800
-Message-ID: <1439808001-132727-4-git-send-email-libin.yang@intel.com>
-References: <1439808001-132727-1-git-send-email-libin.yang@intel.com>
+From: Koro Chen <koro.chen@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: Remove AIF widgets for backend DAIs
+Date: Mon, 17 Aug 2015 19:16:51 +0800
+Message-ID: <1439810211-45518-1-git-send-email-koro.chen@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1439808001-132727-1-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch, jani.nikula@linux.intel.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: matthias.bgg@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com
+Cc: srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, Koro Chen <koro.chen@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+CgpXaGVuIG1vZGVzZXQgb2Nj
-dXJzIGFuZCB0aGUgVE1EUyBmcmVxdWVuY3kgaXMgc2V0IHRvIHNvbWUKc3BlaWNhbCB2YWx1ZXMs
-IHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBpZiBhdWRpbwppcyBwbGF5aW5nLgoK
-U2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Ci0tLQogZHJp
-dmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaCAgICB8ICA4ICsrKysrKysrCiBkcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgNDAgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKy0KIDIgZmlsZXMgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
-bigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmggYi9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCmluZGV4IDY3ODZlOTQuLjEyMmI1YmQgMTAwNjQ0
-Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL2k5MTUvaTkxNV9yZWcuaApAQCAtNzAzNSw2ICs3MDM1LDggQEAgZW51bSBza2xfZGlzcF9w
-b3dlcl93ZWxscyB7CiAJCQkJCV9IU1dfQVVEX01JU0NfQ1RSTF9BLCBcCiAJCQkJCV9IU1dfQVVE
-X01JU0NfQ1RSTF9CKQogCisjZGVmaW5lIEhTV19BVURfUElQRV9DT05OX1NFTF9DVFJMICAweDY1
-MGFjCisKICNkZWZpbmUgX0hTV19BVURfRElQX0VMRF9DVFJMX1NUX0EJMHg2NTBiNAogI2RlZmlu
-ZSBfSFNXX0FVRF9ESVBfRUxEX0NUUkxfU1RfQgkweDY1MWI0CiAjZGVmaW5lIEhTV19BVURfRElQ
-X0VMRF9DVFJMKHBpcGUpIF9QSVBFKHBpcGUsIFwKQEAgLTcwNDksNiArNzA1MSwxMiBAQCBlbnVt
-IHNrbF9kaXNwX3Bvd2VyX3dlbGxzIHsKIAkJCQkJX0hTV19BVURfRElHX0NOVlRfMikKICNkZWZp
-bmUgRElQX1BPUlRfU0VMX01BU0sJCTB4MwogCisjZGVmaW5lIF9IU1dfQVVEX1NUUl9ERVNDXzEJ
-CTB4NjUwODQKKyNkZWZpbmUgX0hTV19BVURfU1RSX0RFU0NfMgkJMHg2NTE4NAorI2RlZmluZSBB
-VURfU1RSX0RFU0MocGlwZSkJX1BJUEUocGlwZSwgXAorCQkJCQkgX0hTV19BVURfU1RSX0RFU0Nf
-MSwJXAorCQkJCQkgX0hTV19BVURfU1RSX0RFU0NfMikKKwogI2RlZmluZSBfSFNXX0FVRF9FRElE
-X0RBVEFfQQkJMHg2NTA1MAogI2RlZmluZSBfSFNXX0FVRF9FRElEX0RBVEFfQgkJMHg2NTE1MAog
-I2RlZmluZSBIU1dfQVVEX0VESURfREFUQShwaXBlKSBfUElQRShwaXBlLCBcCmRpZmYgLS1naXQg
-YS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5
-MTUvaW50ZWxfYXVkaW8uYwppbmRleCAyN2FkZDZhLi4wYTU0YWMwIDEwMDY0NAotLS0gYS9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2F1ZGlvLmMKQEAgLTE0MCw2ICsxNDAsMjcgQEAgc3RhdGljIGJvb2wgYXVkaW9fcmF0
-ZV9uZWVkX3Byb2coc3RydWN0IGludGVsX2NydGMgKmNydGMsCiAJCXJldHVybiBmYWxzZTsKIH0K
-IAorc3RhdGljIGludCBhdWRpb19jb25maWdfZ2V0X3JhdGUoc3RydWN0IGRybV9pOTE1X3ByaXZh
-dGUgKmRldl9wcml2LAorCQkJCQkJZW51bSBwaXBlIHBpcGUpCit7CisJdWludDMyX3QgdG1wOwor
-CWludCBjdnRfaWR4OworCWludCBiYXNlX3JhdGUsIG11bCwgZGl2LCByYXRlOworCisJdG1wID0g
-STkxNV9SRUFEKEhTV19BVURfUElQRV9DT05OX1NFTF9DVFJMKTsKKwljdnRfaWR4ID0gKHRtcCA+
-PiAocGlwZSAqIDgpKSAmIDB4ZmY7CisJdG1wID0gSTkxNV9SRUFEKEFVRF9TVFJfREVTQyhjdnRf
-aWR4KSk7CisJYmFzZV9yYXRlID0gdG1wICYgKDEgPDwgMTQpOworCWlmIChiYXNlX3JhdGUgPT0g
-MCkKKwkJcmF0ZSA9IDQ4MDAwOworCWVsc2UKKwkJcmF0ZSA9IDQ0MTAwOworCW11bCA9ICh0bXAg
-JiAoMHg3IDw8IDExKSkgKyAxOworCWRpdiA9ICh0bXAgJiAoMHg3IDw8IDgpKSArIDE7CisJcmF0
-ZSA9IHJhdGUgKiBtdWwgLyBkaXY7CisJcmV0dXJuIHJhdGU7Cit9CisKIHN0YXRpYyBib29sIGlu
-dGVsX2VsZF91cHRvZGF0ZShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAogCQkJICAg
-ICAgIGludCByZWdfZWxkdiwgdWludDMyX3QgYml0c19lbGR2LAogCQkJICAgICAgIGludCByZWdf
-ZWxkYSwgdWludDMyX3QgYml0c19lbGRhLApAQCAtMjYxLDYgKzI4Miw4IEBAIHN0YXRpYyB2b2lk
-IGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwK
-IAljb25zdCB1aW50OF90ICplbGQgPSBjb25uZWN0b3ItPmVsZDsKIAl1aW50MzJfdCB0bXA7CiAJ
-aW50IGxlbiwgaTsKKwlpbnQgbl9sb3csIG5fdXAsIG47CisJaW50IHJhdGU7CiAKIAlEUk1fREVC
-VUdfS01TKCJFbmFibGUgYXVkaW8gY29kZWMgb24gcGlwZSAlYywgJXUgYnl0ZXMgRUxEXG4iLAog
-CQkgICAgICBwaXBlX25hbWUocGlwZSksIGRybV9lbGRfc2l6ZShlbGQpKTsKQEAgLTI5NiwxMiAr
-MzE5LDI3IEBAIHN0YXRpYyB2b2lkIGhzd19hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9j
-b25uZWN0b3IgKmNvbm5lY3RvciwKIAkvKiBFbmFibGUgdGltZXN0YW1wcyAqLwogCXRtcCA9IEk5
-MTVfUkVBRChIU1dfQVVEX0NGRyhwaXBlKSk7CiAJdG1wICY9IH5BVURfQ09ORklHX05fVkFMVUVf
-SU5ERVg7Ci0JdG1wICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7CiAJdG1wICY9IH5BVURf
-Q09ORklHX1BJWEVMX0NMT0NLX0hETUlfTUFTSzsKIAlpZiAoaW50ZWxfcGlwZV9oYXNfdHlwZShp
-bnRlbF9jcnRjLCBJTlRFTF9PVVRQVVRfRElTUExBWVBPUlQpKQogCQl0bXAgfD0gQVVEX0NPTkZJ
-R19OX1ZBTFVFX0lOREVYOwogCWVsc2UKIAkJdG1wIHw9IGF1ZGlvX2NvbmZpZ19oZG1pX3BpeGVs
-X2Nsb2NrKG1vZGUpOworCisJdG1wICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7CisJaWYg
-KGF1ZGlvX3JhdGVfbmVlZF9wcm9nKGludGVsX2NydGMsIG1vZGUpKSB7CisJCXJhdGUgPSBhdWRp
-b19jb25maWdfZ2V0X3JhdGUoZGV2X3ByaXYsIHBpcGUpOworCQluID0gYXVkaW9fY29uZmlnX2dl
-dF9uKG1vZGUsIHJhdGUpOworCQlpZiAobiAhPSAwKSB7CisJCQluX2xvdyA9IG4gJiAweGZmZjsK
-KwkJCW5fdXAgPSAobiA+PiAxMikgJiAweGZmOworCQkJdG1wICY9IH4oQVVEX0NPTkZJR19VUFBF
-Ul9OX01BU0sgfAorCQkJCQkgQVVEX0NPTkZJR19MT1dFUl9OX01BU0spOworCQkJdG1wIHw9ICgo
-bl91cCA8PCBBVURfQ09ORklHX1VQUEVSX05fU0hJRlQpIHwKKwkJCQkJKG5fbG93IDw8IEFVRF9D
-T05GSUdfTE9XRVJfTl9TSElGVCkgfAorCQkJCQlBVURfQ09ORklHX05fUFJPR19FTkFCTEUpOwor
-CQl9CisJfQorCiAJSTkxNV9XUklURShIU1dfQVVEX0NGRyhwaXBlKSwgdG1wKTsKIH0KIAotLSAK
-MS45LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCklu
-dGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+DAPM core already creates widgets for DAIs. It is not necessary
+to declare them by SND_SOC_DAPM_AIF_IN/SND_SOC_DAPM_AIF_OUT.
+Furthermore, original codes use backend DAI's stream name to be the AIF
+widget name. It causes the same widget to be created twice, and after
+commit 92fa12426741 ("ASoC: dapm: Add new widgets to the end of the
+widget list") the first created widget (by snd_soc_dapm_new_controls)
+is used, not the 2nd created one (by snd_soc_dapm_new_dai_widgets),
+so audio path is broken.
+
+Signed-off-by: Koro Chen <koro.chen@mediatek.com>
+---
+ sound/soc/mediatek/mtk-afe-pcm.c |   11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
+index 55471ee..d190fe0 100644
+--- a/sound/soc/mediatek/mtk-afe-pcm.c
++++ b/sound/soc/mediatek/mtk-afe-pcm.c
+@@ -897,10 +897,6 @@ static const struct snd_kcontrol_new mtk_afe_o10_mix[] = {
+ };
+ 
+ static const struct snd_soc_dapm_widget mtk_afe_pcm_widgets[] = {
+-	/* Backend DAIs  */
+-	SND_SOC_DAPM_AIF_IN("I2S Capture", NULL, 0, SND_SOC_NOPM, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("I2S Playback", NULL, 0, SND_SOC_NOPM, 0, 0),
+-
+ 	/* inter-connections */
+ 	SND_SOC_DAPM_MIXER("I05", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_MIXER("I06", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -932,11 +928,6 @@ static const struct snd_soc_dapm_route mtk_afe_pcm_routes[] = {
+ 	{ "O10", "I18 Switch", "I18" },
+ };
+ 
+-static const struct snd_soc_dapm_widget mtk_afe_hdmi_widgets[] = {
+-	/* Backend DAIs  */
+-	SND_SOC_DAPM_AIF_OUT("HDMIO Playback", NULL, 0, SND_SOC_NOPM, 0, 0),
+-};
+-
+ static const struct snd_soc_dapm_route mtk_afe_hdmi_routes[] = {
+ 	{"HDMIO Playback", NULL, "HDMI"},
+ };
+@@ -951,8 +942,6 @@ static const struct snd_soc_component_driver mtk_afe_pcm_dai_component = {
+ 
+ static const struct snd_soc_component_driver mtk_afe_hdmi_dai_component = {
+ 	.name = "mtk-afe-hdmi-dai",
+-	.dapm_widgets = mtk_afe_hdmi_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(mtk_afe_hdmi_widgets),
+ 	.dapm_routes = mtk_afe_hdmi_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(mtk_afe_hdmi_routes),
+ };
+-- 
+1.7.9.5
