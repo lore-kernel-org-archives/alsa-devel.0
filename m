@@ -1,17 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: davinci-vcif: Use
-	devm_snd_soc_register_component
-Date: Mon, 17 Aug 2015 10:36:18 +0300
-Message-ID: <55D18EF2.8090300@ti.com>
-References: <20150815023155.GA27364@localhost>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2] ASoC: ics43432: Add codec driver for
+ InvenSense ICS-43432
+Date: Mon, 17 Aug 2015 09:48:11 +0200
+Message-ID: <55D191BB.1000204@metafoo.de>
+References: <alpine.DEB.2.02.1508141106040.27635@lnxricardw1.se.axis.com>
+ <20150814160731.GS10748@sirena.org.uk>
+ <alpine.DEB.2.02.1508170844030.27635@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id F3356260577
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 09:36:24 +0200 (CEST)
-In-Reply-To: <20150815023155.GA27364@localhost>
+Received: from smtp-out-241.synserver.de (smtp-out-241.synserver.de
+ [212.40.185.241])
+ by alsa0.perex.cz (Postfix) with ESMTP id E03E9260547
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 09:48:14 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1508170844030.27635@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Wolfram Sang <wsa@the-dreams.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/15/2015 05:31 AM, Vaishali Thakkar wrote:
-> Use resource managed function devm_snd_soc_register_component for
-> component registration instead of snd_soc_register_component.
-> =
+On 08/17/2015 09:09 AM, Ricard Wanderlof wrote:
+> 
+> On Fri, 14 Aug 2015, Mark Brown wrote:
+> 
+>> On Fri, Aug 14, 2015 at 11:10:10AM +0200, Ricard Wanderlof wrote:
+>>>
+>>> V2: Update after comments from Lars-Peter yesterday: set rate to 
+>>> CONTINUOUS and let ALSA figure out the details, also removing hw_params as 
+>>> it is then not needed.
+>>
+>> Please add any non-changelog content like this after the --- as covered
+>> in SubmittingPatches.
+> 
+> Ok, sorry.
+> 
+>>> +static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>>> +{
+>>> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+>>
+>> This still seems redundant (IIRC Lars mentioned this...).
+> 
+> I though Lars was referring solely to the hw_params function, not 
+> set_dai_fmt, but of course I could have misunderstood him.
 
-> Also, remove davinci_vcif_remove as it is now redundant.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
-> ---
->  sound/soc/davinci/davinci-vcif.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
-> =
-
-> diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci=
--vcif.c
-> index fabd05f..c77d921 100644
-> --- a/sound/soc/davinci/davinci-vcif.c
-> +++ b/sound/soc/davinci/davinci-vcif.c
-> @@ -231,8 +231,9 @@ static int davinci_vcif_probe(struct platform_device =
-*pdev)
->  =
-
->  	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
->  =
-
-> -	ret =3D snd_soc_register_component(&pdev->dev, &davinci_vcif_component,
-> -					 &davinci_vcif_dai, 1);
-> +	ret =3D devm_snd_soc_register_component(&pdev->dev,
-> +					      &davinci_vcif_component,
-> +					      &davinci_vcif_dai, 1);
->  	if (ret !=3D 0) {
->  		dev_err(&pdev->dev, "could not register dai\n");
->  		return ret;
-> @@ -241,23 +242,14 @@ static int davinci_vcif_probe(struct platform_devic=
-e *pdev)
->  	ret =3D edma_pcm_platform_register(&pdev->dev);
->  	if (ret) {
->  		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-> -		snd_soc_unregister_component(&pdev->dev);
->  		return ret;
->  	}
->  =
-
->  	return 0;
->  }
->  =
-
-> -static int davinci_vcif_remove(struct platform_device *pdev)
-> -{
-> -	snd_soc_unregister_component(&pdev->dev);
-> -
-> -	return 0;
-> -}
-> -
->  static struct platform_driver davinci_vcif_driver =3D {
->  	.probe		=3D davinci_vcif_probe,
-> -	.remove		=3D davinci_vcif_remove,
->  	.driver		=3D {
->  		.name	=3D "davinci-vcif",
->  	},
-> =
-
-
-
--- =
-
-P=E9ter
+Yes, I was. In my opinion this set_dai_fmt() implementation is useful to
+have as a mechanism to detect invalid configurations. E.g. if you don't
+implement the callback the CODEC will accept any setting while with he
+callback it will error out with the wrong configuration. Given that a I2S
+link typically at least somewhat works, even if you have the wrong setting,
+I think it makes sense to keep it to catch errors early on.
