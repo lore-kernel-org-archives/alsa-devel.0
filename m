@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/4] ALSA: hda - Make some helper functions
-	local
-Date: Mon, 17 Aug 2015 15:44:08 +0200
-Message-ID: <1439819051-32166-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/4] ALSA: hda/eld - Add const to possible
+	places
+Date: Mon, 17 Aug 2015 15:44:11 +0200
+Message-ID: <1439819051-32166-5-git-send-email-tiwai@suse.de>
 References: <1439819051-32166-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DCCD1260464
+ by alsa0.perex.cz (Postfix) with ESMTP id 000D7260471
  for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 15:44:25 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A8E13AD9E
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B9A0EADDA
  for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 13:44:25 +0000 (UTC)
 In-Reply-To: <1439819051-32166-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,200 +27,61 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A few helper functions to convert the pin information to strings have
-been exported with assumption that they were used by other drivers.
-But they are referred only in the proc interface in the end.
-
-Let's make them local so that we can get rid of a few exports.
+Similar like the previous fix to hda_proc.c, adding const prefix will
+save our world (a little bit).
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 70 -----------------------------------------------
- sound/pci/hda/hda_codec.h |  7 -----
- sound/pci/hda/hda_proc.c  | 65 +++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 62 insertions(+), 80 deletions(-)
+ sound/pci/hda/hda_eld.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d78fa713c103..00c9a42af656 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -53,76 +53,6 @@
- #define codec_has_clkstop(codec) \
- 	((codec)->core.power_caps & AC_PWRST_CLKSTOP)
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index c746cd9a4450..563984dd2562 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -42,7 +42,7 @@ enum cea_edid_versions {
+ 	CEA_EDID_VER_RESERVED	= 4,
+ };
  
--/**
-- * snd_hda_get_jack_location - Give a location string of the jack
-- * @cfg: pin default config value
-- *
-- * Parse the pin default config value and returns the string of the
-- * jack location, e.g. "Rear", "Front", etc.
-- */
--const char *snd_hda_get_jack_location(u32 cfg)
--{
--	static char *bases[7] = {
--		"N/A", "Rear", "Front", "Left", "Right", "Top", "Bottom",
--	};
--	static unsigned char specials_idx[] = {
--		0x07, 0x08,
--		0x17, 0x18, 0x19,
--		0x37, 0x38
--	};
--	static char *specials[] = {
--		"Rear Panel", "Drive Bar",
--		"Riser", "HDMI", "ATAPI",
--		"Mobile-In", "Mobile-Out"
--	};
--	int i;
--	cfg = (cfg & AC_DEFCFG_LOCATION) >> AC_DEFCFG_LOCATION_SHIFT;
--	if ((cfg & 0x0f) < 7)
--		return bases[cfg & 0x0f];
--	for (i = 0; i < ARRAY_SIZE(specials_idx); i++) {
--		if (cfg == specials_idx[i])
--			return specials[i];
--	}
--	return "UNKNOWN";
--}
--EXPORT_SYMBOL_GPL(snd_hda_get_jack_location);
--
--/**
-- * snd_hda_get_jack_connectivity - Give a connectivity string of the jack
-- * @cfg: pin default config value
-- *
-- * Parse the pin default config value and returns the string of the
-- * jack connectivity, i.e. external or internal connection.
-- */
--const char *snd_hda_get_jack_connectivity(u32 cfg)
--{
--	static char *jack_locations[4] = { "Ext", "Int", "Sep", "Oth" };
--
--	return jack_locations[(cfg >> (AC_DEFCFG_LOCATION_SHIFT + 4)) & 3];
--}
--EXPORT_SYMBOL_GPL(snd_hda_get_jack_connectivity);
--
--/**
-- * snd_hda_get_jack_type - Give a type string of the jack
-- * @cfg: pin default config value
-- *
-- * Parse the pin default config value and returns the string of the
-- * jack type, i.e. the purpose of the jack, such as Line-Out or CD.
-- */
--const char *snd_hda_get_jack_type(u32 cfg)
--{
--	static char *jack_types[16] = {
--		"Line Out", "Speaker", "HP Out", "CD",
--		"SPDIF Out", "Digital Out", "Modem Line", "Modem Hand",
--		"Line In", "Aux", "Mic", "Telephony",
--		"SPDIF In", "Digital In", "Reserved", "Other"
--	};
--
--	return jack_types[(cfg & AC_DEFCFG_DEVICE)
--				>> AC_DEFCFG_DEVICE_SHIFT];
--}
--EXPORT_SYMBOL_GPL(snd_hda_get_jack_type);
--
- /*
-  * Send and receive a verb - passed to exec_verb override for hdac_device
-  */
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 12837abbbbe5..2970413f18a0 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -469,13 +469,6 @@ int hda_call_check_power_status(struct hda_codec *codec, hda_nid_t nid)
- }
+-static char *cea_speaker_allocation_names[] = {
++static const char * const cea_speaker_allocation_names[] = {
+ 	/*  0 */ "FL/FR",
+ 	/*  1 */ "LFE",
+ 	/*  2 */ "FC",
+@@ -56,7 +56,7 @@ static char *cea_speaker_allocation_names[] = {
+ 	/* 10 */ "FCH",
+ };
  
- /*
-- * get widget information
-- */
--const char *snd_hda_get_jack_connectivity(u32 cfg);
--const char *snd_hda_get_jack_type(u32 cfg);
--const char *snd_hda_get_jack_location(u32 cfg);
--
--/*
-  * power saving
-  */
- #define snd_hda_power_up(codec)		snd_hdac_power_up(&(codec)->core)
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index baaf7ed06875..3a470f7b9f41 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -269,6 +269,65 @@ static const char *get_jack_color(u32 cfg)
- 		return "UNKNOWN";
- }
+-static char *eld_connection_type_names[4] = {
++static const char * const eld_connection_type_names[4] = {
+ 	"HDMI",
+ 	"DisplayPort",
+ 	"2-reserved",
+@@ -94,7 +94,7 @@ enum cea_audio_coding_xtypes {
+ 	AUDIO_CODING_XTYPE_FIRST_RESERVED	= 4,
+ };
  
-+/*
-+ * Parse the pin default config value and returns the string of the
-+ * jack location, e.g. "Rear", "Front", etc.
-+ */
-+static const char *get_jack_location(u32 cfg)
-+{
-+	static char *bases[7] = {
-+		"N/A", "Rear", "Front", "Left", "Right", "Top", "Bottom",
-+	};
-+	static unsigned char specials_idx[] = {
-+		0x07, 0x08,
-+		0x17, 0x18, 0x19,
-+		0x37, 0x38
-+	};
-+	static char *specials[] = {
-+		"Rear Panel", "Drive Bar",
-+		"Riser", "HDMI", "ATAPI",
-+		"Mobile-In", "Mobile-Out"
-+	};
-+	int i;
-+
-+	cfg = (cfg & AC_DEFCFG_LOCATION) >> AC_DEFCFG_LOCATION_SHIFT;
-+	if ((cfg & 0x0f) < 7)
-+		return bases[cfg & 0x0f];
-+	for (i = 0; i < ARRAY_SIZE(specials_idx); i++) {
-+		if (cfg == specials_idx[i])
-+			return specials[i];
-+	}
-+	return "UNKNOWN";
-+}
-+
-+/*
-+ * Parse the pin default config value and returns the string of the
-+ * jack connectivity, i.e. external or internal connection.
-+ */
-+static const char *get_jack_connectivity(u32 cfg)
-+{
-+	static char *jack_locations[4] = { "Ext", "Int", "Sep", "Oth" };
-+
-+	return jack_locations[(cfg >> (AC_DEFCFG_LOCATION_SHIFT + 4)) & 3];
-+}
-+
-+/*
-+ * Parse the pin default config value and returns the string of the
-+ * jack type, i.e. the purpose of the jack, such as Line-Out or CD.
-+ */
-+static const char *get_jack_type(u32 cfg)
-+{
-+	static char *jack_types[16] = {
-+		"Line Out", "Speaker", "HP Out", "CD",
-+		"SPDIF Out", "Digital Out", "Modem Line", "Modem Hand",
-+		"Line In", "Aux", "Mic", "Telephony",
-+		"SPDIF In", "Digital In", "Reserved", "Other"
-+	};
-+
-+	return jack_types[(cfg & AC_DEFCFG_DEVICE)
-+				>> AC_DEFCFG_DEVICE_SHIFT];
-+}
-+
- static void print_pin_caps(struct snd_info_buffer *buffer,
- 			   struct hda_codec *codec, hda_nid_t nid,
- 			   int *supports_vref)
-@@ -340,9 +399,9 @@ static void print_pin_caps(struct snd_info_buffer *buffer,
- 	caps = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONFIG_DEFAULT, 0);
- 	snd_iprintf(buffer, "  Pin Default 0x%08x: [%s] %s at %s %s\n", caps,
- 		    jack_conns[(caps & AC_DEFCFG_PORT_CONN) >> AC_DEFCFG_PORT_CONN_SHIFT],
--		    snd_hda_get_jack_type(caps),
--		    snd_hda_get_jack_connectivity(caps),
--		    snd_hda_get_jack_location(caps));
-+		    get_jack_type(caps),
-+		    get_jack_connectivity(caps),
-+		    get_jack_location(caps));
- 	snd_iprintf(buffer, "    Conn = %s, Color = %s\n",
- 		    get_jack_connection(caps),
- 		    get_jack_color(caps));
+-static char *cea_audio_coding_type_names[] = {
++static const char * const cea_audio_coding_type_names[] = {
+ 	/*  0 */ "undefined",
+ 	/*  1 */ "LPCM",
+ 	/*  2 */ "AC-3",
+@@ -482,14 +482,14 @@ void snd_hdmi_print_eld_info(struct hdmi_eld *eld,
+ 	struct parsed_hdmi_eld *e = &eld->info;
+ 	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
+ 	int i;
+-	static char *eld_version_names[32] = {
++	static const char * const eld_version_names[32] = {
+ 		"reserved",
+ 		"reserved",
+ 		"CEA-861D or below",
+ 		[3 ... 30] = "reserved",
+ 		[31] = "partial"
+ 	};
+-	static char *cea_edid_version_names[8] = {
++	static const char * const cea_edid_version_names[8] = {
+ 		"no CEA EDID Timing Extension block present",
+ 		"CEA-861",
+ 		"CEA-861-A",
 -- 
 2.5.0
