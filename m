@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: Remove AIF widgets for
-	backend DAIs" to the asoc tree
-Date: Mon, 17 Aug 2015 13:06:56 -0700
-Message-ID: <E1ZRQgK-0006En-Lb@finisterre>
-References: <1439810211-45518-1-git-send-email-koro.chen@mediatek.com>
+Subject: Re: [PATCH] ASoC: topology: Add Kconfig option for
+	topology
+Date: Mon, 17 Aug 2015 13:18:35 -0700
+Message-ID: <20150817201835.GB10748@sirena.org.uk>
+References: <1439654427-26109-1-git-send-email-broonie@kernel.org>
+ <s5hpp2oxu73.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3370832509533135595=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from p2012.superclick.com (unknown [216.4.250.2])
- by alsa0.perex.cz (Postfix) with ESMTP id DD9D926042F
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 22:06:58 +0200 (CEST)
-In-Reply-To: <1439810211-45518-1-git-send-email-koro.chen@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1229826042F
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 22:18:38 +0200 (CEST)
+In-Reply-To: <s5hpp2oxu73.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,92 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Koro Chen <koro.chen@mediatek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: mediatek: Remove AIF widgets for backend DAIs
+--===============3370832509533135595==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="NwQOVL9IuL7Lgg8R"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--NwQOVL9IuL7Lgg8R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Sat, Aug 15, 2015 at 08:50:08PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > +ifneq ($(CONFIG_SND_SOC_TOPOLOGY),)
+> >  snd-soc-core-objs += soc-topology.o
+> > +endif
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> This can be simplified like
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> snd-soc-core-$(CONFIG_SND_SOC_TOPOLOGY) += soc-topology.o
 
-Thanks,
-Mark
+Yeah, that thought did occur to me while I was doing this however all
+the other optional files for the core that are in there already use the
+same idiom for some reason so I'm going to go back and update them all
+at once later rather than having some in one style and some in another.
 
->From 0643558f85e740019e0632072c55e8b2f79a8d7d Mon Sep 17 00:00:00 2001
-From: Koro Chen <koro.chen@mediatek.com>
-Date: Mon, 17 Aug 2015 19:16:51 +0800
-Subject: [PATCH] ASoC: mediatek: Remove AIF widgets for backend DAIs
+--NwQOVL9IuL7Lgg8R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-DAPM core already creates widgets for DAIs. It is not necessary
-to declare them by SND_SOC_DAPM_AIF_IN/SND_SOC_DAPM_AIF_OUT.
-Furthermore, original codes use backend DAI's stream name to be the AIF
-widget name. It causes the same widget to be created twice, and after
-commit 92fa12426741 ("ASoC: dapm: Add new widgets to the end of the
-widget list") the first created widget (by snd_soc_dapm_new_controls)
-is used, not the 2nd created one (by snd_soc_dapm_new_dai_widgets),
-so audio path is broken.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Signed-off-by: Koro Chen <koro.chen@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/mediatek/mtk-afe-pcm.c | 11 -----------
- 1 file changed, 11 deletions(-)
+iQEcBAEBCAAGBQJV0kGaAAoJECTWi3JdVIfQEZsH/2Qh2tV2/bjwJO8yKSI7F3Tf
+tqgCspeEl6SdfmqEIWvP23SuvAYQBrV4Dzz6cRfH2vuORQge7f0zmlrLzlPpQJRb
+EGRR22Ah29AXPWoP0cvsyLjP84DkCJwaL7C1J2W+t4j8t1552wztc/+/rl883kfl
+V+veuKkQyY0Tk5tdcsWECiHTHwdHUBSfBjQxPEqjM172uH9Zt97I7qTHRdRoIs0V
+EEC8BxFLFd+NUIJlwYYkTJlvFIDUhnF+O97h+NwdBI6ZrivVpP1S0MoXyJo2UY/H
+wIeL8XnYn55e3E2ooGjp1F14JNjyjUo0AvmWTR7GTscBOjXF+6D/js4lm1KYFuc=
+=rQHh
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/mediatek/mtk-afe-pcm.c b/sound/soc/mediatek/mtk-afe-pcm.c
-index cc228db..e3e6331 100644
---- a/sound/soc/mediatek/mtk-afe-pcm.c
-+++ b/sound/soc/mediatek/mtk-afe-pcm.c
-@@ -820,10 +820,6 @@ static const struct snd_kcontrol_new mtk_afe_o10_mix[] = {
- };
- 
- static const struct snd_soc_dapm_widget mtk_afe_pcm_widgets[] = {
--	/* Backend DAIs  */
--	SND_SOC_DAPM_AIF_IN("I2S Capture", NULL, 0, SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("I2S Playback", NULL, 0, SND_SOC_NOPM, 0, 0),
--
- 	/* inter-connections */
- 	SND_SOC_DAPM_MIXER("I05", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER("I06", SND_SOC_NOPM, 0, 0, NULL, 0),
-@@ -855,11 +851,6 @@ static const struct snd_soc_dapm_route mtk_afe_pcm_routes[] = {
- 	{ "O10", "I18 Switch", "I18" },
- };
- 
--static const struct snd_soc_dapm_widget mtk_afe_hdmi_widgets[] = {
--	/* Backend DAIs  */
--	SND_SOC_DAPM_AIF_OUT("HDMIO Playback", NULL, 0, SND_SOC_NOPM, 0, 0),
--};
--
- static const struct snd_soc_dapm_route mtk_afe_hdmi_routes[] = {
- 	{"HDMIO Playback", NULL, "HDMI"},
- };
-@@ -874,8 +865,6 @@ static const struct snd_soc_component_driver mtk_afe_pcm_dai_component = {
- 
- static const struct snd_soc_component_driver mtk_afe_hdmi_dai_component = {
- 	.name = "mtk-afe-hdmi-dai",
--	.dapm_widgets = mtk_afe_hdmi_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(mtk_afe_hdmi_widgets),
- 	.dapm_routes = mtk_afe_hdmi_routes,
- 	.num_dapm_routes = ARRAY_SIZE(mtk_afe_hdmi_routes),
- };
--- 
-2.5.0
+--NwQOVL9IuL7Lgg8R--
+
+--===============3370832509533135595==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3370832509533135595==--
