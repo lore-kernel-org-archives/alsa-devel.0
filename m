@@ -1,51 +1,145 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC v2 3/7] ASoC: hdmi-codec: Add hdmi-codec for external
- HDMI-encoders
-Date: Mon, 17 Aug 2015 11:39:31 +0300
-Message-ID: <55D19DC3.3070704@ti.com>
-References: <1432666751-24794-1-git-send-email-jsarha@ti.com>
- <1432666751-24794-4-git-send-email-jsarha@ti.com>
- <20150814192521.GL10748@sirena.org.uk>
+From: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: Convert to managed resources
+Date: Mon, 17 Aug 2015 15:02:29 +0530
+Message-ID: <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w@mail.gmail.com>
+References: <20150813072920.GA17181@localhost>
+	<CAAVeFuKT1st8E1fxcDM5CV_OzUcTmvFw8UuU5oh15J1PiFJ0vA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150814192521.GL10748@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, rmk+kernel@arm.linux.org.uk, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAAVeFuKT1st8E1fxcDM5CV_OzUcTmvFw8UuU5oh15J1PiFJ0vA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMTQvMTUgMjI6MjUsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gVHVlLCBNYXkgMjYsIDIw
-MTUgYXQgMDk6NTk6MDdQTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90ZToKPgo+PiArCj4+ICsJbXV0
-ZXhfbG9jaygmaGNwLT5jdXJyZW50X3N0cmVhbV9sb2NrKTsKPj4gKwlpZiAoaGNwLT5jdXJyZW50
-X3N0cmVhbSAmJiBoY3AtPmN1cnJlbnRfc3RyZWFtLT5ydW50aW1lICYmCj4+ICsJICAgIHNuZF9w
-Y21fcnVubmluZyhoY3AtPmN1cnJlbnRfc3RyZWFtKSkgewo+PiArCQlkZXZfaW5mbyhkZXYsICJI
-RE1JIGF1ZGlvIHBsYXliYWNrIGFib3J0ZWRcbiIpOwo+Cj4gRG9lcyB0aGlzIHJlYWxseSBuZWVk
-IHRvIGJlIGRldl9pbmZvKCk/Cj4KCk5vLCBJJ2xsIGNoYW5nZSB0aGF0IHRvIGRlYnVnIGxldmVs
-LgoKPj4gKwlpZiAoaGNwLT5oY2Qub3BzLT5nZXRfZWxkKSB7Cj4+ICsJCWhjcC0+ZWxkID0gaGNw
-LT5oY2Qub3BzLT5nZXRfZWxkKGhjcC0+aGNkLmRldik7Cj4+ICsKPj4gKwkJLyogQ2FsbCBzbmRf
-cGNtX2h3X2NvbnN0cmFpbnRfZWxkIGhlcmUgKi8KPj4gKwl9Cj4KPiAuLi4KPgo+PiArCWRldl9k
-YmcoZGFpLT5kZXYsICIlcygpXG4iLCBfX2Z1bmNfXyk7Cj4+ICsKPj4gKwltdXRleF9sb2NrKCZo
-Y3AtPmN1cnJlbnRfc3RyZWFtX2xvY2spOwo+PiArCUJVR19PTihoY3AtPmN1cnJlbnRfc3RyZWFt
-ICE9IHN1YnN0cmVhbSk7Cj4+ICsJaGNwLT5jdXJyZW50X3N0cmVhbSA9IE5VTEw7Cj4+ICsJbXV0
-ZXhfdW5sb2NrKCZoY3AtPmN1cnJlbnRfc3RyZWFtX2xvY2spOwo+PiArCj4+ICsJaGNwLT5oY2Qu
-b3BzLT5hdWRpb19zaHV0ZG93bihoY3AtPmhjZC5kZXYpOwo+Cj4gU2hvdWxkbid0IHRoZSBjYWxs
-YmFjayBiZSBpbiBvciBiZWZvcmUgdGhlIGxvY2s/ICBPdGhlcndpc2Ugd2UgY291bGQKPiBwb3Rl
-bnRpYWxseSByYWNlIHdpdGggc3RhcnRpbmcgYSBuZXcgc3RyZWFtLgo+CgpZZXMsIGl0IHNob3Vs
-ZCBiZSBiZWZvcmUgaXQuIEknbGwgZml4IHRoYXQuCgpJZiBpdCBpcyBpbnNpZGUsIHRoZXJlIGlz
-IGEgInBvc3NpYmxlIGRlYWRsb2NrIiB3YXJuaW5nIChhdGxlYXN0IGluIHRoZSAKc2ltaWxhciBw
-bGFjZSBpbiBvbWFwLWhkbWktYXVkaW8gdGhlcmUgd2FzKSBpZiB0aG9zZSB3YXJuaW5ncyBhcmUg
-dHVybmVkIApvbiBhbmQgdGhlcmUgaXMgYW5vdGhlciBsb2NrIHRoYXQgaXMgdGFrZW4gaW4gdGhl
-IHZpZGVvIHNpZGUgY2FsbGJhY2tzLgoKVGhhbmtzLApKeXJpCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRl
-dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+On Mon, Aug 17, 2015 at 12:47 PM, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> On Thu, Aug 13, 2015 at 4:29 PM, Vaishali Thakkar
+> <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>> Use managed resource functions devm_clk_put and
+>> devm_snd_soc_register_component to simplify error handling.
+>>
+>> To be compatible with the change various gotos are replaced
+>> with direct returns, and unneeded labels are dropped.
+>>
+>> Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>> ---
+>>  sound/soc/tegra/tegra20_spdif.c | 37 +++++++++++++------------------------
+>>  1 file changed, 13 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+>> index 9141477..f69b2e4 100644
+>> --- a/sound/soc/tegra/tegra20_spdif.c
+>> +++ b/sound/soc/tegra/tegra20_spdif.c
+>> @@ -273,45 +273,40 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+>>                              GFP_KERNEL);
+>>         if (!spdif) {
+>>                 dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
+>> -               ret = -ENOMEM;
+>> -               goto err;
+>> +               return -ENOMEM;
+>>         }
+>>         dev_set_drvdata(&pdev->dev, spdif);
+>>
+>> -       spdif->clk_spdif_out = clk_get(&pdev->dev, "spdif_out");
+>> +       spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
+>>         if (IS_ERR(spdif->clk_spdif_out)) {
+>>                 pr_err("Can't retrieve spdif clock\n");
+>>                 ret = PTR_ERR(spdif->clk_spdif_out);
+>> -               goto err;
+>> +               return ret;
+>
+> Maybe do "return PTR_ERR(spdif->clk_spdif_out);" for consistency with
+> the other error cases of this function?
+>
+>>         }
+>>
+>>         mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>         if (!mem) {
+>>                 dev_err(&pdev->dev, "No memory resource\n");
+>> -               ret = -ENODEV;
+>> -               goto err_clk_put;
+>> +               return -ENODEV;
+>>         }
+>>
+>>         dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>>         if (!dmareq) {
+>>                 dev_err(&pdev->dev, "No DMA resource\n");
+>> -               ret = -ENODEV;
+>> -               goto err_clk_put;
+>> +               return -ENODEV;
+>>         }
+>>
+>>         memregion = devm_request_mem_region(&pdev->dev, mem->start,
+>>                                             resource_size(mem), DRV_NAME);
+>>         if (!memregion) {
+>>                 dev_err(&pdev->dev, "Memory region already claimed\n");
+>> -               ret = -EBUSY;
+>> -               goto err_clk_put;
+>> +               return -EBUSY;
+>>         }
+>>
+>>         regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
+>>         if (!regs) {
+>>                 dev_err(&pdev->dev, "ioremap failed\n");
+>> -               ret = -ENOMEM;
+>> -               goto err_clk_put;
+>> +               return -ENOMEM;
+>>         }
+>>
+>>         spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+>> @@ -319,7 +314,7 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+>>         if (IS_ERR(spdif->regmap)) {
+>>                 dev_err(&pdev->dev, "regmap init failed\n");
+>>                 ret = PTR_ERR(spdif->regmap);
+>> -               goto err_clk_put;
+>> +               return ret;
+>
+> Same here.
+
+Actually people prefer to write this way when they are calling PTR_ERR
+more than one time for the same value. But as for this file at both places
+we are calling PTR_ERR for different values, may be we can directly call
+it in return.
+
+>>         }
+>>
+>>         spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
+>> @@ -334,8 +329,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+>>                         goto err_pm_disable;
+>>         }
+>>
+>> -       ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
+>> -                                  &tegra20_spdif_dai, 1);
+>> +       ret = devm_snd_soc_register_component(&pdev->dev,
+>> +                                             &tegra20_spdif_component,
+>> +                                             &tegra20_spdif_dai, 1);
+>>         if (ret) {
+>>                 dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
+>>                 ret = -ENOMEM;
+>> @@ -345,21 +341,17 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+>>         ret = tegra_pcm_platform_register(&pdev->dev);
+>>         if (ret) {
+>>                 dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
+>> -               goto err_unregister_component;
+>> +               return ret;
+>
+> In the previous code, PM cleanup was also performed after the
+> component was unregistered. If you return directly, this is not
+> performed anymore - I think you should "goto err_suspend;" here.
+> This will change the ordering of cleanup operations though - e.g.
+> snd_soc_unregister_component() will now be called *after* PM cleanup.
+> Are things still working ok after this? (I suppose they do considering
+> how simple the PM ops are, but it might be worth testing).
+
+I think you are right. I missed that. But now thing is , this patch is already
+applied here:
+https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=topic/tegra
+
+I am not sure if now I can change version 2 with the changes you suggested
+or not. Although I will not be able to test it  after changing 'goto
+err_suspend'
+as I don't have hardware but may be someone else can test it.
+
+-- 
+Vaishali
