@@ -1,20 +1,18 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 01/10] ASoC: Change the PCM runtime
-	array to a list
-Date: Mon, 17 Aug 2015 06:28:48 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D0F79@SHSMSX101.ccr.corp.intel.com>
-References: <cover.1439217448.git.mengdong.lin@intel.com>
- <0b1c3916360faff8a36cc860f5b6af802bd6778b.1439217448.git.mengdong.lin@intel.com>
- <20150814200241.GP10748@sirena.org.uk>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH v2] ASoC: ssm2518: Add explicit device tree
+ support
+Date: Mon, 17 Aug 2015 08:43:23 +0200
+Message-ID: <alpine.DEB.2.02.1508170841190.27635@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508131456110.27635@lnxricardw1.se.axis.com>
+ <20150814155304.GP10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CA62726053D
- for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 08:28:53 +0200 (CEST)
-In-Reply-To: <20150814200241.GP10748@sirena.org.uk>
-Content-Language: en-US
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B65726053D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Aug 2015 08:43:24 +0200 (CEST)
+In-Reply-To: <20150814155304.GP10748@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,65 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Saturday, August 15, 2015 4:03 AM
 
-> On Mon, Aug 10, 2015 at 10:45:28PM +0800, mengdong.lin@intel.com wrote:
-> 
-> > +	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
-> > +	codec_dai = rtd->codec_dai;
-> > +
-> 
-> For ease of review please split the addition of this new interface for getting
-> the runtime from the change to the implementation - the same function can
-> be written in terms of a list.  As ever please make one change per commit :(
+On Fri, 14 Aug 2015, Mark Brown wrote:
 
-Okay. I'll split adding snd_soc_get_pcm_runtime() to a new commit.
+> On Thu, Aug 13, 2015 at 03:10:19PM +0200, Ricard Wanderlof wrote:
+> > =
 
-> > +static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
-> > +	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link) {
-> > +	struct snd_soc_pcm_runtime *rtd;
-> > +
-> > +	rtd = devm_kzalloc(card->dev,
-> > +			sizeof(struct snd_soc_pcm_runtime), GFP_KERNEL);
-> > +	if (!rtd)
-> > +		return NULL;
-> 
-> Why are we allocating something with devm_kzalloc()...
+> > Add OF match table to SSM2518 to allow direct matching without going
+> > through I2C subsystem.
+> > =
 
-I'll change to use kzalloc() and free the memory for the error path.
+> > Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+> > =
 
-> > +static void soc_free_pcm_runtime(struct snd_soc_card *card,
-> > +	struct snd_soc_pcm_runtime *rtd)
-> > +{
-> > +	if (rtd->codec_dai)
-> > +		devm_kfree(card->dev, rtd->codec_dais);
-> > +	devm_kfree(card->dev, rtd);
-> > +}
-> 
-> ...things that we later explicitly free in (hopefully?) all cases.
+> > ---
+> >  sound/soc/codecs/ssm2518.c |    9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> =
 
-Okay. 
+> You should document all new DT bindings (even if they did implicitly
+> happen to work before).
 
-> > +static void soc_remove_pcm_runtimes(struct snd_soc_card *card) {
-> > +	struct snd_soc_pcm_runtime *rtd, *_rtd;
-> > +
-> > +	list_for_each_entry_safe(rtd, _rtd, &card->rtd_list, list) {
-> > +		list_del(&rtd->list);
-> > +		soc_free_pcm_runtime(card, rtd);
-> > +	}
-> > +
-> > +	card->num_rtd = 0;
-> > +}
-> 
-> Why doesn't the free function do the list removal?
+Do you mean in the commit message then? (The patch doesn't implement any =
 
-Sorry, I'll add the list removal.
+bindings not already described in =
 
-Thanks
-Mengdong
+Documentation/devicetree/bindings/sound/ssm2518.txt).
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
