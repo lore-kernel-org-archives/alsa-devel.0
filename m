@@ -1,154 +1,61 @@
-From: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: Convert to managed resources
-Date: Tue, 18 Aug 2015 16:18:32 +0900
-Message-ID: <CAAVeFuKTm6xnYP-YMjKGL-bP8a9QHv0+vdRLdmaAPULr=2GKgg@mail.gmail.com>
-References: <20150813072920.GA17181@localhost> <CAAVeFuKT1st8E1fxcDM5CV_OzUcTmvFw8UuU5oh15J1PiFJ0vA@mail.gmail.com>
- <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w@mail.gmail.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Recurse before saving
+ terminal properties
+Date: Tue, 18 Aug 2015 10:09:35 +0200
+Message-ID: <55D2E83F.5030704@zonque.org>
+References: <1439410499-28630-1-git-send-email-julian@jusst.de>
+ <s5hr3n6t3wt.wl-tiwai@suse.de> <55CDEC38.7000006@jusst.de>
+ <55D077D0.90005@zonque.org> <55D19CB4.3080208@jusst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 516D62604A9
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 10:09:37 +0200 (CEST)
+In-Reply-To: <55D19CB4.3080208@jusst.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 17, 2015 at 6:32 PM, Vaishali Thakkar
-<vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> On Mon, Aug 17, 2015 at 12:47 PM, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->> On Thu, Aug 13, 2015 at 4:29 PM, Vaishali Thakkar
->> <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->>> Use managed resource functions devm_clk_put and
->>> devm_snd_soc_register_component to simplify error handling.
->>>
->>> To be compatible with the change various gotos are replaced
->>> with direct returns, and unneeded labels are dropped.
->>>
->>> Signed-off-by: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>> ---
->>>  sound/soc/tegra/tegra20_spdif.c | 37 +++++++++++++------------------------
->>>  1 file changed, 13 insertions(+), 24 deletions(-)
->>>
->>> diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
->>> index 9141477..f69b2e4 100644
->>> --- a/sound/soc/tegra/tegra20_spdif.c
->>> +++ b/sound/soc/tegra/tegra20_spdif.c
->>> @@ -273,45 +273,40 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->>>                              GFP_KERNEL);
->>>         if (!spdif) {
->>>                 dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
->>> -               ret = -ENOMEM;
->>> -               goto err;
->>> +               return -ENOMEM;
->>>         }
->>>         dev_set_drvdata(&pdev->dev, spdif);
->>>
->>> -       spdif->clk_spdif_out = clk_get(&pdev->dev, "spdif_out");
->>> +       spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
->>>         if (IS_ERR(spdif->clk_spdif_out)) {
->>>                 pr_err("Can't retrieve spdif clock\n");
->>>                 ret = PTR_ERR(spdif->clk_spdif_out);
->>> -               goto err;
->>> +               return ret;
+On 08/17/2015 10:35 AM, Julian Scheel wrote:
+> On 16.08.2015 13:45, Daniel Mack wrote:
+
+>> Hmm, good point. It' been a while since I worked on this, but looking at
+>> the code right now, you're right, the mixer unit for input terminal is
+>> indeed just overridden by the information of the clock selector on UAC2.
+>> That doesn't seem right.
 >>
->> Maybe do "return PTR_ERR(spdif->clk_spdif_out);" for consistency with
->> the other error cases of this function?
->>
->>>         }
->>>
->>>         mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>>         if (!mem) {
->>>                 dev_err(&pdev->dev, "No memory resource\n");
->>> -               ret = -ENODEV;
->>> -               goto err_clk_put;
->>> +               return -ENODEV;
->>>         }
->>>
->>>         dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
->>>         if (!dmareq) {
->>>                 dev_err(&pdev->dev, "No DMA resource\n");
->>> -               ret = -ENODEV;
->>> -               goto err_clk_put;
->>> +               return -ENODEV;
->>>         }
->>>
->>>         memregion = devm_request_mem_region(&pdev->dev, mem->start,
->>>                                             resource_size(mem), DRV_NAME);
->>>         if (!memregion) {
->>>                 dev_err(&pdev->dev, "Memory region already claimed\n");
->>> -               ret = -EBUSY;
->>> -               goto err_clk_put;
->>> +               return -EBUSY;
->>>         }
->>>
->>>         regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
->>>         if (!regs) {
->>>                 dev_err(&pdev->dev, "ioremap failed\n");
->>> -               ret = -ENOMEM;
->>> -               goto err_clk_put;
->>> +               return -ENOMEM;
->>>         }
->>>
->>>         spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
->>> @@ -319,7 +314,7 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->>>         if (IS_ERR(spdif->regmap)) {
->>>                 dev_err(&pdev->dev, "regmap init failed\n");
->>>                 ret = PTR_ERR(spdif->regmap);
->>> -               goto err_clk_put;
->>> +               return ret;
->>
->> Same here.
->
-> Actually people prefer to write this way when they are calling PTR_ERR
-> more than one time for the same value. But as for this file at both places
-> we are calling PTR_ERR for different values, may be we can directly call
-> it in return.
+>> I guess what we really want is to add a 2nd mixer control in such cases,
+>> and that would mean we need to call into parse_audio_selector_unit()
+>> instead.
+> 
+> I just had another look at this. In fact all mixer controls are properly 
+> created with the current code. This happens in the loop over all 
+> descriptors in snd_usb_mixer_controls. parse_audio_unit is called for 
+> each of them. For clock selectors and selector units it calls 
+> parse_audio_selector_unit where the actual clock selector/selector units 
+> are parsed and mixer ctls are created.
+> So I'd renew my first comment about the recursion. It is only needed to 
+> verify the integrity of descriptors and hence shall not overwrite any 
+> values.
 
-Ok, I don't feel too strongly about this, so your call.
+Yes, you're right. So your first patch on this is actually correct, but
+given it caused confusion, I guess it deserves a comment in both the
+code and the commit log :)
 
->
->>>         }
->>>
->>>         spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
->>> @@ -334,8 +329,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->>>                         goto err_pm_disable;
->>>         }
->>>
->>> -       ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
->>> -                                  &tegra20_spdif_dai, 1);
->>> +       ret = devm_snd_soc_register_component(&pdev->dev,
->>> +                                             &tegra20_spdif_component,
->>> +                                             &tegra20_spdif_dai, 1);
->>>         if (ret) {
->>>                 dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
->>>                 ret = -ENOMEM;
->>> @@ -345,21 +341,17 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->>>         ret = tegra_pcm_platform_register(&pdev->dev);
->>>         if (ret) {
->>>                 dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
->>> -               goto err_unregister_component;
->>> +               return ret;
->>
->> In the previous code, PM cleanup was also performed after the
->> component was unregistered. If you return directly, this is not
->> performed anymore - I think you should "goto err_suspend;" here.
->> This will change the ordering of cleanup operations though - e.g.
->> snd_soc_unregister_component() will now be called *after* PM cleanup.
->> Are things still working ok after this? (I suppose they do considering
->> how simple the PM ops are, but it might be worth testing).
->
-> I think you are right. I missed that. But now thing is , this patch is already
-> applied here:
-> https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=topic/tegra
+Care to resend with those comments added?
 
-Ah, that will teach me to check my patches queue more often. :(
 
->
-> I am not sure if now I can change version 2 with the changes you suggested
-> or not. Although I will not be able to test it  after changing 'goto
-> err_suspend'
-> as I don't have hardware but may be someone else can test it.
 
-I think you can send a fixup patch since Mark already merged this one,
-this is an error code path (which by definition should not be taken
-too often), and there should not be any resulting breakage.
+Thanks,
+Daniel
