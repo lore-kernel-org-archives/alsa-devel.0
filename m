@@ -1,89 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Disable use from userspace"
-	to the asoc tree
-Date: Tue, 18 Aug 2015 09:33:50 -0700
-Message-ID: <E1ZRjpe-0002k4-1E@finisterre>
-References: <1439877828-4206-1-git-send-email-broonie@kernel.org>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] Revert part of "ASoC: tegra: Convert to managed
+ resources"
+Date: Tue, 18 Aug 2015 09:55:17 -0700
+Message-ID: <20150818165517.GL10748@sirena.org.uk>
+References: <20150818115645.GA3345@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p2012.superclick.com (unknown [216.4.250.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 999F32619BE
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 18:33:53 +0200 (CEST)
-In-Reply-To: <1439877828-4206-1-git-send-email-broonie@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HFmY1QOi3uof3bwe"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150818115645.GA3345@localhost>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: Disable use from userspace
+--HFmY1QOi3uof3bwe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Tue, Aug 18, 2015 at 05:26:45PM +0530, Vaishali Thakkar wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> Revert the problematic part of commit 470805eb9f31 ("ASoC: tegra:
+> Convert to managed resources"). Before this commit, PM cleanup was
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Please use subject lines matching the style for the subsystem on
+patches.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--HFmY1QOi3uof3bwe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEcBAEBCAAGBQJV02NxAAoJECTWi3JdVIfQRvkH/jSJZDphUwBnFf/wkWpcMTIa
+GGur19MuCklj+1inueffr85tiiymZcrX4a0ZUNRzL899/XdnSAoyT5cjbVg02KPm
+bqtYiY/IN/F10Sucuqsm218kgePPhxBGtzTLOfYA1+/ZH7sMpenAKhCNyH9xG00G
+9xFH+wZmoNjClXC6lvCcIkdnPNpkPHfnxUnL6UCn7RICO5OBq5bb8Am3p0wjQJUr
+CS0lWKu/GmG3s2oqPZkEK/GCsxEVJddSA4+EYw3SRvFAJbMrJ3v6hG0GdLI/uvCg
+PG/OndZvurLm8g+QNUrtTuIZRdZiVhVvOOOR5lQvegBypr4Upah+opk/V+G/ZOc=
+=Nrq+
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
->From 8c90503bf246bebb48caa5590d41df755ba08550 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 17 Aug 2015 22:59:25 -0700
-Subject: [PATCH] ASoC: topology: Disable use from userspace
-
-Since the topology API is still in sufficient flux for changes to be
-identified disable the use of the userspace ABI by adding #error
-statements to the code, ensuring that nobody relies on the headers as
-currently defined.  It is expected that this change will be reverted for
-v4.3.
-
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/uapi/sound/asoc.h | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 1221520..677c3c9 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -18,6 +18,12 @@
- #include <linux/types.h>
- #include <sound/asound.h>
- 
-+#ifndef __KERNEL__
-+#error This API is an early revision and not enabled in the current
-+#error kernel release, it will be enabled in a future kernel version
-+#error with incompatible changes to what is here.
-+#endif
-+
- /*
-  * Maximum number of channels topology kcontrol can represent.
-  */
--- 
-2.5.0
+--HFmY1QOi3uof3bwe--
