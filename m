@@ -1,66 +1,47 @@
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Subject: [PATCH] Revert part of "ASoC: tegra: Convert to managed resources"
-Date: Tue, 18 Aug 2015 17:26:45 +0530
-Message-ID: <20150818115645.GA3345@localhost>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8741: Drop misleading readable_reg
+ callback implementation
+Date: Tue, 18 Aug 2015 14:09:29 +0100
+Message-ID: <20150818130929.GC9493@ck-lbox>
+References: <1439546281.5150.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m0077473.ppops.net (mx0a-001ae601.pphosted.com [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54D8A260A5B
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 15:29:20 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, Alexandre Courbot <gnurou@gmail.com>, Wolfram Sang <wsa@the-dreams.de>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1439546281.5150.2.camel@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Revert the problematic part of commit 470805eb9f31 ("ASoC: tegra:
-Convert to managed resources"). Before this commit, PM cleanup was
-performed after the component was unregistered. But returning
-directly will skip PM cleanup. So, to be on safe side it is better
-to use snd_soc_register_component instead of
-devm_snd_soc_register_component.
+On Fri, Aug 14, 2015 at 05:58:01PM +0800, Axel Lin wrote:
+> regmap_readable() returns false if map->format.format_write is set.
+> For .reg_bits = 7, .val_bits = 9, setting,
+>   map->format.format_write = regmap_format_7_9_write;
+> 
+> Even current code has implemented map->readable_reg, regmap_readable()
+> still returns false anyway. Thus drop the misleading readable_reg callback
+> implementation.
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
----
- sound/soc/tegra/tegra20_spdif.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index a814da0..66237bc 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -329,9 +329,8 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 
--	ret = devm_snd_soc_register_component(&pdev->dev,
--					      &tegra20_spdif_component,
--					      &tegra20_spdif_dai, 1);
-+	ret = snd_soc_register_component(&pdev->dev, &tegra20_spdif_component,
-+					 &tegra20_spdif_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
- 		ret = -ENOMEM;
-@@ -341,11 +340,13 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	ret = tegra_pcm_platform_register(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM: %d\n", ret);
--		return ret;
-+		goto err_unregister_component;
- 	}
- 
- 	return 0;
- 
-+err_unregister_component:
-+	snd_soc_unregister_component(&pdev->dev);
- err_suspend:
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
-@@ -364,6 +365,7 @@ static int tegra20_spdif_platform_remove(struct platform_device *pdev)
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
- 
- 	tegra_pcm_platform_unregister(&pdev->dev);
-+	snd_soc_unregister_component(&pdev->dev);
- 
- 	return 0;
- }
--- 
-1.9.1
+Apologies, on the slight delay we have had a bit of an email
+fiasco going on at this end, hopefully all resolved now.
+
+Thanks,
+Charles
