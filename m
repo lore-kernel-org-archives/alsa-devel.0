@@ -1,51 +1,71 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: Convert to managed resources
-Date: Mon, 17 Aug 2015 22:15:55 -0700
-Message-ID: <20150818051555.GG10748@sirena.org.uk>
-References: <20150813072920.GA17181@localhost>
- <CAAVeFuKT1st8E1fxcDM5CV_OzUcTmvFw8UuU5oh15J1PiFJ0vA@mail.gmail.com>
- <CAK-LDbJwfuqU6ekRudms=YfjVxWf1BOREBwCnCh4v-YWY9hA_w@mail.gmail.com>
- <20150817204751.GD10748@sirena.org.uk>
- <CAK-LDbLCvdUiNZ17oxWwuUhC=hwtpuGeYdxXj=0Y3q48gkbzRw@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 00/10] ASoC: support adding PCM
+ dynamically from topology
+Date: Tue, 18 Aug 2015 05:17:36 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8480D1B67@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1439217448.git.mengdong.lin@intel.com>
+ <55CEF0A8.5030707@metafoo.de> <20150815155035.GG10748@sirena.org.uk>
+ <F46914AEC2663F4A9BB62374E5EEF8F8480D0F4C@SHSMSX101.ccr.corp.intel.com>
+ <1439807999.2420.25.camel@loki> <20150817200502.GZ10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rDr66iUNdD59gODe"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAK-LDbLCvdUiNZ17oxWwuUhC=hwtpuGeYdxXj=0Y3q48gkbzRw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vaishali Thakkar <vthakkar1994-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux Kernel Mailing List <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2955D2612AE
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 07:18:05 +0200 (CEST)
+In-Reply-To: <20150817200502.GZ10748@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, August 18, 2015 4:05 AM
+> To: Liam Girdwood
+> Cc: Lars-Peter Clausen; tiwai@suse.de; alsa-devel@alsa-project.org; Lin,
+> Mengdong
+> Subject: Re: [alsa-devel] [PATCH v2 00/10] ASoC: support adding PCM
+> dynamically from topology
+> 
+> On Mon, Aug 17, 2015 at 11:39:59AM +0100, Liam Girdwood wrote:
+> 
+> > The intention is that the topology data for BE and codec style links
+> > is not to define the link (as this should come from DT or ACPI) but to
+> > define the links config/capabilities for a given FW. e.g. we have two
+> > different FWs that run BE0 (SSP0) with different number of channels
+> > (one is stereo, the other is 4 channel TDM). Currently the link
+> > definitions will be hard coded until the ACPI data is ready.
+> 
+> > The FE uses the above too for config/capabilities but it can also be
+> > defined and created by the topology data (since it's a FW entity).
+> 
+> So this is actually for adding further constraints to the existing physical links,
+> not just for defining new virtual links.  That is definitely a reasonable
+> application but it seems like what we should be doing here is adding
+> constraints to a fully defined link rather than just having a dummy link.  The
+> link is real and there, it's just that we want to further restrict how it can be
+> used.  Something that says "this is a dummy link" definitely feels wrong.
 
---rDr66iUNdD59gODe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I feel it's not enough to just "adding constraints to a fully defined link" for FE DAIs.
+We need to determine the number of FE DAIs (thus FE DAI links as well) for a specific version of FW based on its topology info.
 
-On Tue, Aug 18, 2015 at 08:15:35AM +0530, Vaishali Thakkar wrote:
+We use a "dummy FE DAI link" in the Broadwell machine driver just to 
+-  pass the soc_bind_dai_link() on registering the soc card and use the deferred probe mechanism;
+-  pull in the platform component which carries topology the info
 
-> I think yes may be code was good before this. But devm_clk_put part should work
-> fine as call of it is before PM stuff. So, can I send a patch
-> reverting the change
-> of component part or do you want me to send a patch reverting whole change?
+If you prefer not using any dummy DAI link but creating the links from scratch when we detect them in firmware, can we add new field into "struct snd_soc_card" to specify the components for topology? 
+After all, topology may not only come from the platform component. 
 
-Just fixing the problematic part is fine.
-
---rDr66iUNdD59gODe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV0r+KAAoJECTWi3JdVIfQeYsH/ROZ7tusJahnwHEEbgIqvvXn
-Lkz1aSX935eYCQQfFnvnXD9B/2F9cZ1g13KUXSdyqd5gfbKXgSdbxFbLQm0HbZBD
-CG5KrSTN1729feAl/Mq6iqmFYfUxf/85ts3RVtjZQUy3YR3ynBlOZymJNh+hFUHa
-7ofBeGjsg1TdsfrhWEVXhF6mePgMNCXNOq8140dciPEUgXQsj41Cyhz8HzM2mAbN
-S2o8XBndPST0eEcYg0/OmRBYBUQZ7drJsMpvpiOWEGoD7+Vw7z0HrFbNUN7ah/ff
-Vs5c9zBrj+yRzFmOq1SW30XxifGd4VGjCydYpjjAE/6IbDxQeLkxFZgRXLMlYQU=
-=c/zY
------END PGP SIGNATURE-----
-
---rDr66iUNdD59gODe--
+Thanks
+Mengdong
