@@ -1,21 +1,19 @@
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Subject: Re: [PATCH] Revert part of "ASoC: tegra: Convert to
-	managed resources"
-Date: Tue, 18 Aug 2015 22:31:19 +0530
-Message-ID: <CAK-LDbJh26b=ZQnD5Y4cYgzRdu=Zzi+quKU8-_FDk25pgoMCcw@mail.gmail.com>
-References: <20150818115645.GA3345@localhost>
- <20150818165517.GL10748@sirena.org.uk>
+From: "Fang, Yang A" <yang.a.fang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Bsw: Read sst DSP DMA pointer
+ after period elapse occurs
+Date: Tue, 18 Aug 2015 17:33:33 +0000
+Message-ID: <0485FB02182A4744A8B06D69AB7BF8E718D71126@ORSMSX113.amr.corp.intel.com>
+References: <1439791945-106012-1-git-send-email-yang.a.fang@intel.com>
+ <20150817195555.GY10748@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f174.google.com (mail-yk0-f174.google.com
- [209.85.160.174])
- by alsa0.perex.cz (Postfix) with ESMTP id C4D222618ED
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 19:01:19 +0200 (CEST)
-Received: by ykbi184 with SMTP id i184so100228556ykb.2
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 10:01:19 -0700 (PDT)
-In-Reply-To: <20150818165517.GL10748@sirena.org.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB5632619D7
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 19:33:36 +0200 (CEST)
+In-Reply-To: <20150817195555.GY10748@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,21 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org
+To: 'Mark Brown' <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Sripathi,
+ Srinivas" <srinivas.sripathi@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Jain, Praveen K" <praveen.k.jain@intel.com>, "Mirche,
+ Dinesh" <dinesh.mirche@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Iriawan, Denny" <denny.iriawan@intel.com>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, "kevin.strasser@linux.intel.com" <kevin.strasser@linux.intel.com>, "dgreid@chromium.org" <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 18 Aug 2015 22:25, "Mark Brown" <broonie@kernel.org> wrote:
->
-> On Tue, Aug 18, 2015 at 05:26:45PM +0530, Vaishali Thakkar wrote:
->
-> > Revert the problematic part of commit 470805eb9f31 ("ASoC: tegra:
-> > Convert to managed resources"). Before this commit, PM cleanup was
->
-> Please use subject lines matching the style for the subsystem on
-> patches.
 
-Oh, I am sorry.
 
-I'll keep this in mind for next time. Thanks for making it suitable and
-applying the patch.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Monday, August 17, 2015 12:56 PM
+> To: Fang, Yang A
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org;
+> dgreid@chromium.org; Nujella, Sathyanarayana;
+> kevin.strasser@linux.intel.com; Sripathi, Srinivas; Iriawan, Denny; Jain,
+> Praveen K; Koul, Vinod; Mirche, Dinesh
+> Subject: Re: [PATCH] ASoC: Intel: Bsw: Read sst DSP DMA pointer after
+> period elapse occurs
+> 
+> On Sun, Aug 16, 2015 at 11:12:25PM -0700, yang.a.fang@intel.com wrote:
+> 
+> > We should not read sst hw_ptr and pcm_delay in
+> > sst_platform_pcm_pointer Since it will be ricky if
+> > sst_platform_pcm_pointer is called while dsp is updating the
+> > timestamp.Now read sst hw_ptr after period elapse interrupt occurs.
+> 
+> So I guess there's still some risk that we could run into problems here if we
+> take too long to service the interrupt and/or the period is very short?  Is
+> there anything we can do to improve that?
+Hi Mark,
+ I think before and after the patch. There is no difference in term of 
+ handling the period elapse interrupt . because before the patch 
+ sst_period_elapsed calls the snd_pcm_period_elapsed which in turn 
+ calling the sst_platform_pcm_pointer which calls the stream_read_tstamp.
