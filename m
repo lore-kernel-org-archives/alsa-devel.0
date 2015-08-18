@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH v2 1/3] ASoC: topology: Bind vendor specific
-	kcontrol handlers before standard ones
-Date: Tue, 18 Aug 2015 18:11:51 +0800
-Message-ID: <c16322a038d8b6ccd9f5235cfea2c28b81a90c5d.1439892263.git.mengdong.lin@intel.com>
+Subject: [PATCH v2 3/3] ASoC: topology: Add support for TLV
+	bytes controls
+Date: Tue, 18 Aug 2015 18:12:20 +0800
+Message-ID: <354dceaa5ebfa4f3555eea42e29f32351dd14af5.1439892263.git.mengdong.lin@intel.com>
 References: <cover.1439892263.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C3FF326051B
- for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 11:58:22 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09B262616F3
+ for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 11:58:51 +0200 (CEST)
 In-Reply-To: <cover.1439892263.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,84 +27,120 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@intel.com>
 
-Vendor specific handlers should override standard handlers. So we can
-handle things in the order from specific to generic.
+Allow vendor drivers to define bespoke bytes ext handlers and IDs for
+TLV bytes controls. And the topology core will bind these handlers by
+matching IDs defined by the vendor driver and user space topology
+data file.
+
+And TLV callback binding is moved to soc_tplg_kcontrol_bind_io(). This
+function process all handler binding now.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
 diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 865a141..a6541a1 100644
+index a6541a1..ea387ed 100644
 --- a/include/sound/soc-topology.h
 +++ b/include/sound/soc-topology.h
-@@ -136,7 +136,7 @@ struct snd_soc_tplg_ops {
- 	int (*manifest)(struct snd_soc_component *,
- 		struct snd_soc_tplg_manifest *);
+@@ -89,6 +89,13 @@ struct snd_soc_tplg_kcontrol_ops {
+ 		struct snd_ctl_elem_info *uinfo);
+ };
  
--	/* bespoke kcontrol handlers available for binding */
-+	/* vendor specific kcontrol handlers available for binding */
++/* Bytes ext operations, for TLV byte controls */
++struct snd_soc_tplg_bytes_ext_ops {
++	u32 id;
++	int (*get)(unsigned int __user *bytes, unsigned int size);
++	int (*put)(const unsigned int __user *bytes, unsigned int size);
++};
++
+ /*
+  * DAPM widget event handlers - used to map handlers onto widgets.
+  */
+@@ -139,6 +146,10 @@ struct snd_soc_tplg_ops {
+ 	/* vendor specific kcontrol handlers available for binding */
  	const struct snd_soc_tplg_kcontrol_ops *io_ops;
  	int io_ops_count;
++
++	/* vendor specific bytes ext handlers available for binding */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
  };
+ 
+ /* gets a pointer to data from the firmware block header */
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 04764fd..707c360 100644
+index 9ec97f4..69d01cd 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -66,7 +66,7 @@ struct soc_tplg {
- 	u32 index;	/* current block index */
- 	u32 req_index;	/* required index, only loaded/free matching blocks */
- 
--	/* kcontrol operations */
-+	/* vendor specific kcontrol operations */
+@@ -70,6 +70,10 @@ struct soc_tplg {
  	const struct snd_soc_tplg_kcontrol_ops *io_ops;
  	int io_ops_count;
  
-@@ -513,22 +513,7 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
++	/* vendor specific bytes ext handlers, for TLV bytes controls */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
++
+ 	/* optional fw loading callbacks to component drivers */
+ 	struct snd_soc_tplg_ops *ops;
+ };
+@@ -511,8 +515,40 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ 	const struct soc_tplg *tplg)
  {
- 	int i;
+ 	const struct snd_soc_tplg_kcontrol_ops *ops;
++	const struct snd_soc_tplg_bytes_ext_ops *ext_ops;
+ 	int num_ops, i;
  
--	/* try and map standard kcontrols handler first */
--	for (i = 0; i < num_ops; i++) {
--
--		if (ops[i].id == hdr->ops.put)
--			k->put = ops[i].put;
--		if (ops[i].id == hdr->ops.get)
--			k->get = ops[i].get;
--		if (ops[i].id == hdr->ops.info)
--			k->info = ops[i].info;
--	}
--
--	/* standard handlers found ? */
--	if (k->put && k->get && k->info)
--		return 0;
--
--	/* none found so try bespoke handlers */
-+	/* try and map vendor specific kcontrol handlers first */
- 	for (i = 0; i < num_bops; i++) {
- 
- 		if (k->put == NULL && bops[i].id == hdr->ops.put)
-@@ -539,7 +524,22 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 			k->info = bops[i].info;
- 	}
- 
--	/* bespoke handlers found ? */
-+	/* vendor specific handlers found ? */
-+	if (k->put && k->get && k->info)
-+		return 0;
++	if (hdr->ops.info == SND_SOC_TPLG_CTL_BYTES
++		&& k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++		struct soc_bytes_ext *sbe;
++		struct snd_soc_tplg_bytes_control *be;
 +
-+	/* none found so try standard kcontrol handlers */
-+	for (i = 0; i < num_ops; i++) {
++		sbe = (struct soc_bytes_ext *)k->private_value;
++		be = container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
 +
-+		if (k->put == NULL && ops[i].id == hdr->ops.put)
-+			k->put = ops[i].put;
-+		if (k->get == NULL && ops[i].id == hdr->ops.get)
-+			k->get = ops[i].get;
-+		if (k->info == NULL && ops[i].id == hdr->ops.info)
-+			k->info = ops[i].info;
++		/* TLV bytes controls need standard kcontrol info handler,
++		 * TLV callback and extended put/get handlers.
++		 */
++		k->info = snd_soc_bytes_info;
++		k->tlv.c = snd_soc_bytes_tlv_callback;
++
++		ext_ops = tplg->bytes_ext_ops;
++		num_ops = tplg->bytes_ext_ops_count;
++		for (i = 0; i < num_ops; i++) {
++			if (!sbe->put && ext_ops[i].id == be->ext_ops.put)
++				sbe->put = ext_ops[i].put;
++			if (!sbe->get && ext_ops[i].id == be->ext_ops.get)
++				sbe->get = ext_ops[i].get;
++		}
++
++		if (sbe->put && sbe->get)
++			return 0;
++		else
++			return -EINVAL;
 +	}
 +
-+	/* standard handlers found ? */
- 	if (k->put && k->get && k->info)
+ 	/* try and map vendor specific kcontrol handlers first */
+ 	ops = tplg->io_ops;
+ 	num_ops = tplg->io_ops_count;
+@@ -613,9 +649,7 @@ static int soc_tplg_create_tlv(struct soc_tplg *tplg,
+ 	if (!(tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE))
  		return 0;
  
+-	if (tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+-		kc->tlv.c = snd_soc_bytes_tlv_callback;
+-	} else {
++	if (!(tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK)) {
+ 		tplg_tlv = &tc->tlv;
+ 		switch (tplg_tlv->type) {
+ 		case SNDRV_CTL_TLVT_DB_SCALE:
+@@ -1733,6 +1767,8 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	tplg.req_index = id;
+ 	tplg.io_ops = ops->io_ops;
+ 	tplg.io_ops_count = ops->io_ops_count;
++	tplg.bytes_ext_ops = ops->bytes_ext_ops;
++	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
+ 
+ 	return soc_tplg_load(&tplg);
+ }
 -- 
 1.9.1
