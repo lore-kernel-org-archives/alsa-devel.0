@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Drop misleading readable_reg
-	callback implementation" to the asoc tree
+Subject: Applied "ASoC: topology: Disable use from userspace"
+	to the asoc tree
 Date: Tue, 18 Aug 2015 09:33:50 -0700
-Message-ID: <E1ZRjpe-0002kX-B8@finisterre>
-References: <1439546281.5150.2.camel@ingics.com>
+Message-ID: <E1ZRjpe-0002k4-1E@finisterre>
+References: <1439877828-4206-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from p2012.superclick.com (unknown [216.4.250.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CC812618ED
+ by alsa0.perex.cz (Postfix) with ESMTP id 999F32619BE
  for <alsa-devel@alsa-project.org>; Tue, 18 Aug 2015 18:33:53 +0200 (CEST)
-In-Reply-To: <1439546281.5150.2.camel@ingics.com>
+In-Reply-To: <1439877828-4206-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8741: Drop misleading readable_reg callback implementation
+   ASoC: topology: Disable use from userspace
 
 has been applied to the asoc tree at
 
@@ -52,65 +52,38 @@ to this mail.
 Thanks,
 Mark
 
->From 84eac6196c4b3930fc81f9bcd76c4a1a2161fd34 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 14 Aug 2015 17:58:01 +0800
-Subject: [PATCH] ASoC: wm8741: Drop misleading readable_reg callback
- implementation
+>From 8c90503bf246bebb48caa5590d41df755ba08550 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Mon, 17 Aug 2015 22:59:25 -0700
+Subject: [PATCH] ASoC: topology: Disable use from userspace
 
-regmap_readable() returns false if map->format.format_write is set.
-For .reg_bits = 7, .val_bits = 9, setting,
-  map->format.format_write = regmap_format_7_9_write;
+Since the topology API is still in sufficient flux for changes to be
+identified disable the use of the userspace ABI by adding #error
+statements to the code, ensuring that nobody relies on the headers as
+currently defined.  It is expected that this change will be reverted for
+v4.3.
 
-Even current code has implemented map->readable_reg, regmap_readable()
-still returns false anyway. Thus drop the misleading readable_reg callback
-implementation.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8741.c | 21 ---------------------
- 1 file changed, 21 deletions(-)
+ include/uapi/sound/asoc.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 506792b..c24c1a3 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -61,25 +61,6 @@ static const struct reg_default wm8741_reg_defaults[] = {
- 	{ 32, 0x0002 },     /* R32 - ADDITONAL_CONTROL_1 */
- };
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 1221520..677c3c9 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -18,6 +18,12 @@
+ #include <linux/types.h>
+ #include <sound/asound.h>
  
--static bool wm8741_readable(struct device *dev, unsigned int reg)
--{
--	switch (reg) {
--	case WM8741_DACLLSB_ATTENUATION:
--	case WM8741_DACLMSB_ATTENUATION:
--	case WM8741_DACRLSB_ATTENUATION:
--	case WM8741_DACRMSB_ATTENUATION:
--	case WM8741_VOLUME_CONTROL:
--	case WM8741_FORMAT_CONTROL:
--	case WM8741_FILTER_CONTROL:
--	case WM8741_MODE_CONTROL_1:
--	case WM8741_MODE_CONTROL_2:
--	case WM8741_ADDITIONAL_CONTROL_1:
--		return true;
--	default:
--		return false;
--	}
--}
--
- static int wm8741_reset(struct snd_soc_codec *codec)
- {
- 	return snd_soc_write(codec, WM8741_RESET, 0);
-@@ -541,8 +522,6 @@ static const struct regmap_config wm8741_regmap = {
- 	.reg_defaults = wm8741_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(wm8741_reg_defaults),
- 	.cache_type = REGCACHE_RBTREE,
--
--	.readable_reg = wm8741_readable,
- };
- 
- static int wm8741_set_pdata(struct device *dev, struct wm8741_priv *wm8741)
++#ifndef __KERNEL__
++#error This API is an early revision and not enabled in the current
++#error kernel release, it will be enabled in a future kernel version
++#error with incompatible changes to what is here.
++#endif
++
+ /*
+  * Maximum number of channels topology kcontrol can represent.
+  */
 -- 
 2.5.0
