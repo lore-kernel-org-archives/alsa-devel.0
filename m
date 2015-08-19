@@ -1,17 +1,15 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Recurse before saving
- terminal properties
-Date: Wed, 19 Aug 2015 17:17:19 +0200
-Message-ID: <55D49DFF.80403@zonque.org>
-References: <1439969289-25357-1-git-send-email-julian@jusst.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: arizona: Fix gain settings of FLL in
+	free-run mode
+Date: Wed, 19 Aug 2015 16:02:24 +0100
+Message-ID: <1439996544-21354-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 32534265054
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 17:17:21 +0200 (CEST)
-In-Reply-To: <1439969289-25357-1-git-send-email-julian@jusst.de>
+Received: from m0077474.ppops.net (mx0b-001ae601.pphosted.com [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61051265054
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 17:23:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julian Scheel <julian@jusst.de>, tiwai@suse.de, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: nikesh.oswal@wolfsonmicro.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2015 09:28 AM, Julian Scheel wrote:
-> The input terminal parser recurses into the referenced clock entity to verify
-> it is existant and thus the terminal descriptor is valid. The actual property
-> values of the term instance which is initially parsed must not be overriden by
-> the recursion. For this to work the term properties have to be assigned after
-> recursing into the referenced clock entity descriptors.
-> 
-> Signed-off-by: Julian Scheel <julian@jusst.de>
+From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 
-Given your explanations, I believe this is the right thing to do.
+The wrong register was used to set the gain of ref loop, when changing
+the FLL output on an active FLL. This patch corrects the offset of the
+gain register.
 
-Acked-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
-Thanks!
-
-
-> ---
-> Changes in v2:
-> - Store term->id after recursion as well, as it gets overriden in the
->   recursion
-> - Add comments explaining that the recursion is only for validation of the
->   descriptor validity
-> ---
->  sound/usb/mixer.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 81055d3..c50790c 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -731,15 +731,21 @@ static int check_input_term(struct mixer_build *state, int id,
->  				term->name = d->iTerminal;
->  			} else { /* UAC_VERSION_2 */
->  				struct uac2_input_terminal_descriptor *d = p1;
-> -				term->type = le16_to_cpu(d->wTerminalType);
-> -				term->channels = d->bNrChannels;
-> -				term->chconfig = le32_to_cpu(d->bmChannelConfig);
-> -				term->name = d->iTerminal;
->  
-> -				/* call recursively to get the clock selectors */
-> +				/* call recursively to verify that the
-> +				 * referenced clock entity is valid */
->  				err = check_input_term(state, d->bCSourceID, term);
->  				if (err < 0)
->  					return err;
-> +
-> +				/* save input term properties after recursion,
-> +				 * to ensure they are not overriden by the
-> +				 * recursion calls */
-> +				term->id = id;
-> +				term->type = le16_to_cpu(d->wTerminalType);
-> +				term->channels = d->bNrChannels;
-> +				term->chconfig = le32_to_cpu(d->bmChannelConfig);
-> +				term->name = d->iTerminal;
->  			}
->  			return 0;
->  		case UAC_FEATURE_UNIT: {
-> 
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e759d39..42b2021 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2058,7 +2058,7 @@ static int arizona_enable_fll(struct arizona_fll *fll)
+ 
+ 	if (already_enabled) {
+ 		/* Facilitate smooth refclk across the transition */
+-		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x7,
++		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
+ 					 ARIZONA_FLL1_GAIN_MASK, 0);
+ 		regmap_update_bits_async(fll->arizona->regmap, fll->base + 1,
+ 					 ARIZONA_FLL1_FREERUN,
+-- 
+1.7.2.5
