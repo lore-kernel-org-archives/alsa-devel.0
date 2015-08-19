@@ -1,14 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Fix runtime PM unbalance
-Date: Wed, 19 Aug 2015 07:33:23 +0200
-Message-ID: <1439962403-23785-1-git-send-email-tiwai@suse.de>
+From: Rick Sherman <rick@shermdog.com>
+Subject: [PATCH] ALSA: hda - Add dock support for Thinkpad W541
+	(17aa:2211)
+Date: Tue, 18 Aug 2015 21:04:30 -0500
+Message-ID: <1439949683.6864.0.camel@shermdog.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BAC02625C4
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 07:33:25 +0200 (CEST)
+Received: from mail.shermdog.com (mail.shermdog.com [162.243.32.247])
+ by alsa0.perex.cz (Postfix) with ESMTP id A52E6261B20
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 04:04:33 +0200 (CEST)
+Received: from w541.shermdog.local (unknown [68.184.196.170])
+ (Authenticated sender: rick@shermdog.com)
+ by mail.shermdog.com (Postfix) with ESMTPSA id 8FC11C2AFD
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 02:04:31 +0000 (UTC)
+Resent-To: alsa-devel@alsa-project.org
+Resent-Message-Id: <20150819020446.60DC6261B36@alsa0.perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Hans Yang <hansy@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The fix for deadlock in PM in commit [1ee23fe07ee8: ALSA: usb-audio:
-Fix deadlocks at resuming] introduced a new check of in_pm flag.
-However, the brainless patch author evaluated it in a wrong way
-(logical AND instead of logical OR), thus usb_autopm_get_interface()
-is never called, leading to unbalance of runtime PM refcount.
-
-This patch fixes it by correcting the logic.
-
-Reported-by: Hans Yang <hansy@nvidia.com>
-Fixes: 1ee23fe07ee8 ('ALSA: usb-audio: Fix deadlocks at resuming')
-Cc: <stable@vger.kernel.org> [v3.15+]
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Tested with W541 and Ultra Dock 170w
+Signed-off-by: Rick Sherman <rick@shermdog.com>
 ---
- sound/usb/card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1fab9778807a..0450593980fd 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -638,7 +638,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
- 	int err = -ENODEV;
- 
- 	down_read(&chip->shutdown_rwsem);
--	if (chip->probing && chip->in_pm)
-+	if (chip->probing || chip->in_pm)
- 		err = 0;
- 	else if (!chip->shutdown)
- 		err = usb_autopm_get_interface(chip->pm_intf);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0b9847a..39a0342 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5291,6 +5291,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x220e, "Thinkpad T440p", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2210, "Thinkpad T540p", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2211, "Thinkpad W541", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad X240", ALC292_FIXUP_TPT440_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
-2.5.0
+2.4.3
