@@ -1,102 +1,203 @@
-From: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Wed, 19 Aug 2015 16:43:28 +0300
-Message-ID: <20150819134328.GU1552@lahna.fi.intel.com>
-References: <CAKor6TcSc7n=Rd9NJAf-6cYXr50Z62cbcsbuaEutRMPAiM=2NQ@mail.gmail.com>
- <20150717085434.GO16517@opensource.wolfsonmicro.com>
- <CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com>
- <CAKor6TdLkGZbARmV1CfqUiguH8HAD+oC8VSsH_OkNQ6E-7YVAw@mail.gmail.com>
- <20150810081001.GG25225@opensource.wolfsonmicro.com>
- <20150810083540.GE1540@lahna.fi.intel.com>
- <CAKor6Tc26kKG-7ytxBjT41S1h4eORoeTg_T=nZ4dZGM1H0gAMQ@mail.gmail.com>
- <20150810140207.GB1541@lahna.fi.intel.com>
- <CAKor6TdKrQrvXTPU=fzL9LTCBbyc9WAbLnYdObY+Wu73g1w6Fg@mail.gmail.com>
- <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ@mail.gmail.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] ASoc: Handle multiple codecs with split
+ playback / capture
+Date: Wed, 19 Aug 2015 16:15:26 +0200
+Message-ID: <alpine.DEB.2.02.1508190955150.27635@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508131605170.27635@lnxricardw1.se.axis.com>
+ <20150814155223.GO10748@sirena.org.uk>
+ <alpine.DEB.2.02.1508170922420.27635@lnxricardw1.se.axis.com>
+ <20150817204448.GC10748@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id C95F6265054
+ for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 16:15:42 +0200 (CEST)
+In-Reply-To: <20150817204448.GC10748@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 19, 2015 at 12:29:08PM +0200, Christian Hartmann wrote:
-> Hi
-> 
-> >> There is acpi_fwnode_handle() in include/acpi/acpi_bus.h. However, if
-> >> you have Linux device available you should really use devm_gpio_*
-> >> functions instead.
-> 
-> ok, after some changes I got it compiled, but there seems another
-> mistake (by me?), it does not find the GPIOs yet.
-> 
 
-...
+On Mon, 17 Aug 2015, Mark Brown wrote:
 
-> [    5.891255] arizona spi-WM510205:00: GPIO lookup for consumer ldoena
-> [    5.891263] arizona spi-WM510205:00: using ACPI for GPIO lookup
-> [    5.891269] acpi WM510205:00: GPIO: looking up ldoena-gpios
-> [    5.891274] acpi WM510205:00: GPIO: looking up ldoena-gpio
-> [    5.891279] acpi WM510205:00: GPIO: looking up 0 in _CRS
-> [    5.891324] gpio-342 (reset): gpiod_request: status -16
-> [    5.891330] arizona spi-WM510205:00: Failed to get ldoena line: -16
+> On Mon, Aug 17, 2015 at 10:02:29AM +0200, Ricard Wanderlof wrote:
+> > On Fri, 14 Aug 2015, Mark Brown wrote:
+> > > On Thu, Aug 13, 2015 at 04:12:56PM +0200, Ricard Wanderlof wrote:
+> =
 
-It returns -EBUSY so is the GPIO already requested?
+> > Should the commit message have any information as to which specific =
 
-> [    5.891335] acpi WM510205:00: GPIO: looking up 0 in _CRS
-> [    5.891409] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using irq_gpio GPIO = 146
-> [    5.891415] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using ldoena GPIO =  23
-> [    5.891421] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using reset GPIO =  -184850384
-> [    5.891425] arizona spi-WM510205:00: arizona_of_get_core_pdata for 1
-> [    5.891430] arizona spi-WM510205:00: regcache_cache_only for 1 set
-> [    5.891434] arizona spi-WM510205:00: added wm5102_core_supplies for 1
-> [    5.894845] rfkill_gpio: probe of LNV4752:00 failed with error -16
-> [    5.906587] LDO1: Failed to request enable GPIO23: -517
-> [    5.906673] arizona spi-WM510205:00: Failed to register LDO1 supply: -517
-> [    5.923633] spi-WM510205:00 supply AVDD not found, using dummy regulator
-> [    5.923687] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
-> [    5.923718] spi-WM510205:00 supply DCVDD not found, using dummy regulator
-> [    5.923751] ------------[ cut here ]------------
-> [    5.923763] WARNING: CPU: 2 PID: 474 at drivers/gpio/gpiolib.c:86
-> gpio_to_desc+0xbb/0xd0()
-> 
-> in  arizona-spi I try to map these GPIOs, which I want to get in
-> arizona-core: arizona_dev_init
-> 
-> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-> index 1e845f6..52872a0 100644
-> --- a/drivers/mfd/arizona-spi.c
-> +++ b/drivers/mfd/arizona-spi.c
-> @@ -18,28 +18,58 @@
->  #include <linux/slab.h>
->  #include <linux/spi/spi.h>
->  #include <linux/of.h>
-> +#include <linux/acpi.h>
-> 
->  #include <linux/mfd/arizona/core.h>
-> 
->  #include "arizona.h"
-> 
-> +const struct acpi_gpio_params reset_gpio = { 1, 0, false};
-> +const struct acpi_gpio_params ldoena_gpio = { 2, 0, false};
-> +
-> +const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
-> +       { "reset_gpio", &reset_gpio, 1,},
-> +       { "ldoena_gpio", &ldoena_gpio, 1},
+> > use case led to the creation of the patch?
+> =
 
-The correct names are "reset-gpios" and "ldoena-gpios". If you call
+> That's often good to mention, yes.
 
-        reset = devm_gpiod_get_optional(arizona->dev, "reset", GPIOD_OUT_LOW);
+Ok, will do.
 
-GPIO core will look for "reset-gpios" and then "reset-gpio" not
-"reset_gpio" so it will not find the mapping.
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > > > +	return !!codec_stream->rates;
+> =
+
+> > > The !! is redundant here.
+> =
+
+> > I still felt it made sense as rates is an int and the function =
+
+> > actually returns a bool, i.e. the !! indicates to a human reader that =
+
+> > the author of the function is aware that rates is not a bool yet the =
+
+> > function is declared as one.
+> =
+
+> It's sufficiently obvious that you're just checking if rates has anything =
+
+> set at all here I think.
+
+Ok. I will change it then.
+
+> > > > +		/* Skip codecs which don't support the current stream =
+
+> type. */
+> > > > +		if (!snd_soc_dai_stream_valid(codec_dai, =
+
+> substream->stream))
+> > > > +			continue;
+> =
+
+> > > >  		/* copy params for each codec */
+> > > >  		codec_params =3D *params;
+> =
+
+> > > We're still calling hw_params() for all CODECs, even ones that =
+
+> > > happen to not be suitable...  is that sensible?
+> =
+
+> > Hm, how so, the soc_dai_hw_params(..., codec_dai) is further on inside =
+
+> > the loop so the continue skips over it?
+> =
+
+> > However, if nothing matches, soc_dai_hw_params(..., cpu_dai) would =
+
+> > still be called, just after the loop, which might not make sense.
+> =
+
+> I think that's the bit I was thinking of, sorry.
+
+[in light of this, rephrasing Mark's comment to:]
+We're still calling soc_dai_hw_params() even if no CODEC DAI matches.
+> > > ...  is that sensible? It might be in a =
+
+> > > case where the CODEC for one direction clocks everything but I can =
+
+> > > see problems occurring if the transmit and receive paths are =
+
+> > > separately clocked which is going to be quite common for things like =
+
+> > > i.MX systems.  If the two are tied together there's going to be =
+
+> > > constraints between the two directions.
+> =
+
+> > > I'd expect that we could take a pretty good guess as to what the =
+
+> > > best thing to do is based on the symmetry constraints we have for =
+
+> > > the link but I think we do want to think about this early.
+> =
+
+> > I guess it would be better just to 'goto out' after the loop if a =
+
+> > suitable codec could not be found.
+> =
+
+> Well, there's two things here: one is if we've got a completely invalid =
+
+> configuration with no CODECs being configured and the other is if we =
+
+> should only be configuring matching CODECs in the first place.  For =
+
+> systems where the LRCLK and BCLK are shared between playback and capture =
+
+> we may want to always configure them even if the CODEC driving the clocks =
+
+> isn't the one handling the audio.
+
+Considering the first thing, i.e. a completely invalid configuration, such =
+
+as trying to play back on a capture-only DAI link, then I would expect =
+
+that would be taken care of long before we get to even attempt to =
+
+configure anything, resulting in something like 'Unknown PCM' at the user =
+
+level. We could of course bail out of this function before attempting to =
+
+set up the CPU DAI in the event that that type of situation occurs anyway. =
+
+I can add code to do just that.
+
+The second thing is which codecs to configure. Should we attempt to =
+
+configure all of them, even those that don't match the stream type, or (as =
+
+the patch is currently written) only the ones that match the stream type. =
+
+Let me see if I get the issues right here:
+
+In the former case, IIUC, this might be needed if we have a codec that is =
+
+generating clocks even though it is not actually used for the transfer, =
+
+e.g. a playback codec generating LRCLK and/or BCLK for the whole link, =
+
+including the capture codec. In this case we would want to set up both =
+
+codecs even though only one is actually used.
+
+In the latter case there might be systems which need to set up different =
+
+clocking configurations for playback and capture on the CPU DAI, in which =
+
+case we only want to configure matching codecs.
+
+So how do we differentiate between these two cases? It seems to me that we =
+
+cannot determine this using software means as it is really part of how the =
+
+hardware is designed, so it must either be specified in the machine driver =
+
+or via DT.
+
+Since the current situation is that we can't support separate playback =
+
+and capture codecs on a DAI link at all without this patch, my suggestion =
+
+is to let the patch handle the case at hand, and add a comment as to which =
+
+considerations have been made regarding which codecs are to be configured =
+
+in soc_pcm_hw_params(), so that when the need arises to handle cases with =
+
+different CPU DAI settings for both directions that can be handled =
+
+appropriately.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
