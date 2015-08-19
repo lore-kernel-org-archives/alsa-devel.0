@@ -1,94 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC update for v4.2
-Date: Wed, 19 Aug 2015 09:29:59 -0700
-Message-ID: <20150819162959.GR10748@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6925930420701358661=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB726265062
- for <alsa-devel@alsa-project.org>; Wed, 19 Aug 2015 18:31:11 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Applied "ASoC: arizona: Fix gain settings of FLL in free-run mode" to the asoc tree
+Date: Wed, 19 Aug 2015 09:37:46 -0700
+Message-ID: <E1ZS6N0-0007ul-Tn@finisterre>
+References: <1439996544-21354-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1439996544-21354-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: stable-owner@vger.kernel.org
+To: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6925930420701358661==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GZcHWaa9CKmuhJmS"
-Content-Disposition: inline
+   ASoC: arizona: Fix gain settings of FLL in free-run mode
 
+has been applied to the asoc tree at
 
---GZcHWaa9CKmuhJmS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-The following changes since commit bc0195aad0daa2ad5b0d76cce22b167bc3435590:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-  Linux 4.2-rc2 (2015-07-12 15:10:30 -0700)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-are available in the git repository at:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v4.2-disable-topology
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-for you to fetch changes up to 8c90503bf246bebb48caa5590d41df755ba08550:
+Thanks,
+Mark
 
-  ASoC: topology: Disable use from userspace (2015-08-18 09:33:21 -0700)
+>From 1cf5a330c05ae37a0a98ac7c9800a6f50d5579ec Mon Sep 17 00:00:00 2001
+From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+Date: Wed, 19 Aug 2015 16:02:24 +0100
+Subject: [PATCH] ASoC: arizona: Fix gain settings of FLL in free-run mode
 
-----------------------------------------------------------------
-ASoC: Disable topology support for v4.2
+The wrong register was used to set the gain of ref loop, when changing
+the FLL output on an active FLL. This patch corrects the offset of the
+gain register.
 
-The topology code merged in the v4.2 merge window introduced a new ABI
-which was believed to be suitable for use but subsequently additional
-work by the developers of this feature have revealed some problems that
-need to be addressed.  In order to allow this to be done without having
-to support the initial ABI add Kconfig to disable the build and also add
-some #error statements to the UAPI header so users can't use them.
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-----------------------------------------------------------------
-Mark Brown (2):
-      ASoC: topology: Add Kconfig option for topology
-      ASoC: topology: Disable use from userspace
-
- include/sound/soc-topology.h | 12 ++++++++++++
- include/uapi/sound/asoc.h    |  6 ++++++
- sound/soc/Kconfig            |  3 +++
- sound/soc/Makefile           |  3 +++
- 4 files changed, 24 insertions(+)
-
---GZcHWaa9CKmuhJmS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV1K8HAAoJECTWi3JdVIfQ8I0H/AzdvMYz0T+IJx/Z1JPJGWc6
-9pT32/KdxjdyAMQzlpymBvSKx1c7HWhnzu3jsqXZPop3/9Tq6yVYqtKALiUeos54
-s5P4Us/Ys5KRuQcZwbGHc1pVhOifi6ijt9gMT4wTMBxqc2VZFtF+w2PvZsZyqEne
-3CWVMGdcrx5pACZLhFsCYqq73p9fZ/C5Pnh4A1ZCorFN4sNU7KIv41j6odob5Mem
-Fueg2ZwzT0EPFcg/pI5sNDP1kFC1oPGf4i/CEUZxKAizi7550oa8jevPSFxvI7Km
-7KxdvinMwckY8k84vosLZBAaESFSxviervFl2jxWEVjvyllkvdbj/FEJAhociQY=
-=iYfo
------END PGP SIGNATURE-----
-
---GZcHWaa9CKmuhJmS--
-
---===============6925930420701358661==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6925930420701358661==--
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 802e05e..4e5d0a9 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -2058,7 +2058,7 @@ static int arizona_enable_fll(struct arizona_fll *fll)
+ 
+ 	if (already_enabled) {
+ 		/* Facilitate smooth refclk across the transition */
+-		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x7,
++		regmap_update_bits_async(fll->arizona->regmap, fll->base + 0x9,
+ 					 ARIZONA_FLL1_GAIN_MASK, 0);
+ 		regmap_update_bits_async(fll->arizona->regmap, fll->base + 1,
+ 					 ARIZONA_FLL1_FREERUN,
+-- 
+2.5.0
