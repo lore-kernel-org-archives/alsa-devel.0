@@ -1,133 +1,98 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH V5 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
-Date: Thu, 20 Aug 2015 19:45:46 -0400
-Message-ID: <CADnq5_N_jtEpFkGFncazDHfuDby-QXaH0kuvKJSpr2QKUM2jMg@mail.gmail.com>
-References: <1440106594-29564-1-git-send-email-alexander.deucher@amd.com>
- <20150820231848.GX12027@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
+	[v4]
+Date: Thu, 20 Aug 2015 16:45:37 -0700
+Message-ID: <20150820234537.GA12027@sirena.org.uk>
+References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
+ <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
+ <20150820211305.GU12027@sirena.org.uk>
+ <CADnq5_NOd_JLafdvbCs3oVGhDPZC+dD1xD_hL1R8+qaMgr2i3w@mail.gmail.com>
+ <20150820223113.GW12027@sirena.org.uk>
+ <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150820231848.GX12027@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
+Content-Type: multipart/mixed; boundary="===============9153786551301114887=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC45A265467
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 01:45:51 +0200 (CEST)
+In-Reply-To: <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alex Deucher <alexdeucher@gmail.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBdWcgMjAsIDIwMTUgYXQgNzoxOCBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPiB3cm90ZToKPiBPbiBUaHUsIEF1ZyAyMCwgMjAxNSBhdCAwNTozNjozNFBNIC0wNDAw
-LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4+IEZyb206IE1hcnV0aGkgU3Jpbml2YXMgQmF5eWF2YXJh
-cHUgPE1hcnV0aGkuQmF5eWF2YXJhcHVAYW1kLmNvbT4KPj4KPj4gQUNQIElQIGJsb2NrIGNvbnNp
-c3RzIG9mIGRlZGljYXRlZCBETUEgYW5kIEkyUyBibG9ja3MuIFRoZSBQQ00gZHJpdmVyCj4+IHBy
-b3ZpZGVzIHRoZSBETUEgYW5kIENQVSBEQUkgY29tcG9uZW50cyB0byBBTFNBIGNvcmUuCj4KPiBU
-aGlzIGlzIGZsYWdnZWQgYXMgcGF0Y2ggMy8zIGJ1dCBhcHBlYXJzIHRvIGJlIHNlbnQgYXMgYSBz
-aW5nbGUgcGF0Y2guCj4gUGxlYXNlIGRvbid0IGRvIHRoaXMsIHRoZSBwdXJwb3NlIG9mIG51bWJl
-cmluZyBwYXRjaGVzIGlzIHRvIGhlbHAgcGVvcGxlCj4gdGVsbCB3aGljaCBvcmRlciB0aGV5IGFy
-ZSBpbi4gIE51bWJlcmluZyBvbmx5IG1ha2VzIHNlbnNlIHdoZW4geW91IHNlbmQKPiBtb3JlIHRo
-YW4gb25lIHBhdGNoLCBpZiB5b3UgYXJlIHNlbmRpbmcgYSBzaW5nbGUgcGF0Y2ggdGhlcmUgaXMg
-bm8gbmVlZAo+IHRvIG51bWJlci4KClNvcnJ5LCBJIGp1c3Qgc2F3IHRoaXMgcmVwbHkgbm93LiAg
-SSBqdXN0IHJlc2VudCB0aGUgcGF0Y2ggd2l0aCBhbgppbXByb3ZlZCBjaGFuZ2UgbG9nLiAgWW91
-IGFuIGlnbm9yZSB0aGF0IG9uZS4KCk1hcnV0aGksIGNhbiB5b3UgY29tbWVudCBvbiB0aGUgcG9p
-bnRzIGJlbG93IGFuZCByZXNwaW4gdGhlIHBhdGNoZXMgYXMKbmVjZXNzYXJ5PwoKVGhhbmtzLAoK
-QWxleAoKPgo+PiArKysgYi9zb3VuZC9zb2MvYW1kL0tjb25maWcKPj4gQEAgLTAsMCArMSw1IEBA
-Cj4+ICtjb25maWcgU05EX1NPQ19BTURfQUNQCj4+ICsgICAgIHRyaXN0YXRlICJBTUQgQXVkaW8g
-Q29wcm9jZXNzb3Igc3VwcG9ydCIKPj4gKyAgICAgZGVwZW5kcyBvbiBNRkRfQ09SRQo+Cj4gV2hh
-dCBpcyB0aGUgZGVwZW5kZW5jeSBvbiB0aGUgTUZEIGNvcmU/Cj4KPj4gKy8qCj4+ICsgKiBBTUQg
-QUxTQSBTb0MgUENNIERyaXZlcgo+PiArICoKPj4gKyAqIENvcHlyaWdodCAyMDE0LTIwMTUgQWR2
-YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLgo+PiArICoKPj4gKyAqIFBlcm1pc3Npb24gaXMgaGVy
-ZWJ5IGdyYW50ZWQsIGZyZWUgb2YgY2hhcmdlLCB0byBhbnkgcGVyc29uIG9idGFpbmluZyBhCj4+
-ICsgKiBjb3B5IG9mIHRoaXMgc29mdHdhcmUgYW5kIGFzc29jaWF0ZWQgZG9jdW1lbnRhdGlvbiBm
-aWxlcyAodGhlICJTb2Z0d2FyZSIpLAo+PiArICogdG8gZGVhbCBpbiB0aGUgU29mdHdhcmUgd2l0
-aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nIHdpdGhvdXQgbGltaXRhdGlvbgo+PiArICogdGhl
-IHJpZ2h0cyB0byB1c2UsIGNvcHksIG1vZGlmeSwgbWVyZ2UsIHB1Ymxpc2gsIGRpc3RyaWJ1dGUs
-IHN1YmxpY2Vuc2UsCj4+ICsgKiBhbmQvb3Igc2VsbCBjb3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBh
-bmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUKPj4gKyAqIFNvZnR3YXJlIGlzIGZ1cm5p
-c2hlZCB0byBkbyBzbywgc3ViamVjdCB0byB0aGUgZm9sbG93aW5nIGNvbmRpdGlvbnM6Cj4+ICsg
-Kgo+PiArICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UgYW5kIHRoaXMgcGVybWlzc2lvbiBu
-b3RpY2Ugc2hhbGwgYmUgaW5jbHVkZWQgaW4KPj4gKyAqIGFsbCBjb3BpZXMgb3Igc3Vic3RhbnRp
-YWwgcG9ydGlvbnMgb2YgdGhlIFNvZnR3YXJlLgo+PiArICoKPj4gKyAqIFRIRSBTT0ZUV0FSRSBJ
-UyBQUk9WSURFRCAiQVMgSVMiLCBXSVRIT1VUIFdBUlJBTlRZIE9GIEFOWSBLSU5ELCBFWFBSRVNT
-IE9SCj4+ICsgKiBJTVBMSUVELCBJTkNMVURJTkcgQlVUIE5PVCBMSU1JVEVEIFRPIFRIRSBXQVJS
-QU5USUVTIE9GIE1FUkNIQU5UQUJJTElUWSwKPj4gKyAqIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxB
-UiBQVVJQT1NFIEFORCBOT05JTkZSSU5HRU1FTlQuICBJTiBOTyBFVkVOVCBTSEFMTAo+PiArICog
-VEhFIENPUFlSSUdIVCBIT0xERVIoUykgT1IgQVVUSE9SKFMpIEJFIExJQUJMRSBGT1IgQU5ZIENM
-QUlNLCBEQU1BR0VTIE9SCj4+ICsgKiBPVEhFUiBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4gQUNU
-SU9OIE9GIENPTlRSQUNULCBUT1JUIE9SIE9USEVSV0lTRSwKPj4gKyAqIEFSSVNJTkcgRlJPTSwg
-T1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBUSEUgU09GVFdBUkUgT1IgVEhFIFVTRSBPUgo+
-PiArICogT1RIRVIgREVBTElOR1MgSU4gVEhFIFNPRlRXQVJFLgo+Cj4gU3RpbGwgbm90IGhhcHB5
-IHdpdGggdGhlIGxpY2Vuc2luZy4KPgo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2Nv
-bXBvbmVudF9kcml2ZXIgZHdfaTJzX2NvbXBvbmVudCA9IHsKPj4gKyAgICAgLm5hbWUgPSAiZHct
-aTJzIiwKPj4gK307Cj4KPiBXZSBhbHJlYWR5IGhhdmUgYSBkcml2ZXIgZm9yIHRoZSBEZXNpZ25X
-YXJlIEkyUyBjb250cm9sbGVyLiAgVG8gcmVwZWF0Cj4gdGhlIGNvbmNlcm4gSSByYWlzZWQgaW4g
-YSBzbGlnaHRseSBkaWZmZXJlbnQgYml0IG9mIHRoZSBjb2RlIGxhc3QgdGltZToKPgo+IHwgVGhp
-cyBkb2Vzbid0IGFwcGVhciB0byBiZSBhIGRlc2lnbndhcmUtaTJzIGRyaXZlciwgd2UgYWxyZWFk
-eSBoYXZlIG9uZQo+IHwgb2YgdGhvc2U/Cj4KPiBMaWtlIEkgc2F5IHBsZWFzZSBzdG9wIGlnbm9y
-aW5nIHJldmlldyBjb21tZW50cy4gIFRoZSBod19wYXJhbXMoKQo+IGNlcnRhaW5seSBzZWVtcyB0
-byBiZWFyIG1vcmUgdGhhbiBhIHBhc3NpbmcgcmVzZW1ibGFuY2UuCj4KPj4gK3N0YXRpYyB2b2lk
-IGFjcF9wY21fcGVyaW9kX2VsYXBzZWQoc3RydWN0IGRldmljZSAqZGV2LCB1MTYgcGxheV9pbnRy
-LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB1MTYgY2FwdHVyZV9pbnRyKQo+PiArewo+PiArICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gKnN1YnN0cmVhbTsKPj4gKyAgICAgc3RydWN0IGF1ZGlvX2Rydl9kYXRhICppcnFfZGF0YSA9
-IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+PiArCj4+ICsgICAgIC8qIEluZm9ybSBBTFNBIGFib3V0
-IHRoZSBwZXJpb2QgZWxhcHNlZCAob25lIG91dCBvZiB0d28gcGVyaW9kcykgKi8KPj4gKyAgICAg
-aWYgKHBsYXlfaW50cikKPj4gKyAgICAgICAgICAgICBzdWJzdHJlYW0gPSBpcnFfZGF0YS0+cGxh
-eV9zdHJlYW07Cj4+ICsgICAgIGVsc2UKPj4gKyAgICAgICAgICAgICBzdWJzdHJlYW0gPSBpcnFf
-ZGF0YS0+Y2FwdHVyZV9zdHJlYW07Cj4KPiBTbyB5b3UndmUgcmVwbGFjZWQgdGhlIHR3byBpZiBz
-dGF0ZW1lbnRzIHdpdGggYW4gaWYvZWxzZSB3aGljaCBtZWFucwo+IHN1YnNzdHJlYW0gaXMgbm93
-IGd1YXJhbnRlZWQgdG8gYmUgaW5pdGlhbGl6ZWQgYnV0IHBlcmhhcHMgbm90IGluIHRoZQo+IHdh
-eSB0aGUgY2FsbGVyIGludGVuZGVkLi4uICBJIGRpZCBmaW5kIHRoZSBjYWxsZXIgKHdoaWNoIGdv
-dCBtb3ZlZCBpbnRvCj4gYW5vdGhlciBwYXRjaCBpbiB0aGlzIHZlcnNpb24pIGFuZCBpdCBhcHBl
-YXJzIHRoYXQgdGhlIHR3byB1MTZzIGFyZQo+IGFjdHVhbGx5IHVzZWQgdG8gcGFzcyBib29sZWFu
-IGZsYWdzLiAgVGhlIHdob2xlIGludGVyZmFjZSBoZXJlIG5vdwo+IHNlZW1zIG9kZCwgd2hhdCBp
-cyBnb2luZyBvbiBoZXJlPwo+Cj4+ICsgICAgIGlmIChOVUxMICE9IHBnKSB7Cj4KPiBXZSBzdGls
-bCBub3JtYWxseSB3cml0ZSB0aGVzZSBjaGVja3MgbW9yZSBsaWtlIChwZyAhPSBOVUxMKSBvciBl
-dmVuIGp1c3QKPiAocGcpLgo+Cj4+ICsgICAgICAgICAgICAgLyogU2F2ZSBmb3IgcnVudGltZSBw
-cml2YXRlIGRhdGEgKi8KPj4gKyAgICAgICAgICAgICBydGQtPnBnID0gcGc7Cj4+ICsgICAgICAg
-ICAgICAgcnRkLT5vcmRlciA9IGdldF9vcmRlcihzaXplKTsKPj4gKwo+PiArICAgICAgICAgICAg
-IC8qIExldCBBQ1Aga25vdyB0aGUgQWxsb2NhdGVkIG1lbW9yeSAqLwo+PiArICAgICAgICAgICAg
-IG51bV9vZl9wYWdlcyA9IFBBR0VfQUxJR04oc2l6ZSkgPj4gUEFHRV9TSElGVDsKPj4gKwo+PiAr
-ICAgICAgICAgICAgIC8qIEZpbGwgdGhlIHBhZ2UgdGFibGUgZW50cmllcyBpbiBBQ1AgU1JBTSAq
-Lwo+PiArICAgICAgICAgICAgIHJ0ZC0+cGcgPSBwZzsKPj4gKyAgICAgICAgICAgICBydGQtPnNp
-emUgPSBzaXplOwo+PiArICAgICAgICAgICAgIHJ0ZC0+bnVtX29mX3BhZ2VzID0gbnVtX29mX3Bh
-Z2VzOwo+PiArICAgICAgICAgICAgIHJ0ZC0+ZGlyZWN0aW9uID0gc3Vic3RyZWFtLT5zdHJlYW07
-Cj4+ICsKPj4gKyAgICAgICAgICAgICBhY3BfZGV2LT5jb25maWdfZG1hKGFjcF9kZXYsIHJ0ZCk7
-Cj4+ICsgICAgICAgICAgICAgc3RhdHVzID0gMDsKPj4gKyAgICAgfSBlbHNlIHsKPj4gKyAgICAg
-ICAgICAgICBzdGF0dXMgPSAtRU5PTUVNOwo+PiArICAgICB9Cj4+ICsgICAgIHJldHVybiBzdGF0
-dXM7Cj4+ICt9Cj4+ICsKPj4gK3N0YXRpYyBpbnQgYWNwX2RtYV9od19mcmVlKHN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQo+PiArewo+PiArICAgICByZXR1cm4gc25kX3BjbV9s
-aWJfZnJlZV9wYWdlcyhzdWJzdHJlYW0pOwo+PiArfQo+Cj4gaHdfZnJlZSgpIGRvZXNuJ3Qgc2Vl
-bSB0byB1bmRvIGV2ZXJ5dGhpbmcgdGhhdCB3ZSBkaWQgb24gYWxsb2NhdGlvbj8KPgo+PiArICAg
-ICAgICAgICAgIC8qIE5vdyBjb25maWd1cmUgRE1BIHRvIHRyYW5zZmVyIG9ubHkgZmlyc3QgaGFs
-ZiBvZiBTeXN0ZW0gUkFNCj4+ICsgICAgICAgICAgICAgICogYnVmZmVyIGJlZm9yZSBwbGF5YmFj
-ayBpcyB0cmlnZ2VyZWQuIFRoaXMgd2lsbCBvdmVyd3JpdGUKPj4gKyAgICAgICAgICAgICAgKiB6
-ZXJvLWVkIHNlY29uZCBoYWxmIG9mIFNSQU0gYnVmZmVyICovCj4+ICsgICAgICAgICAgICAgYWNw
-X2Rldi0+Y29uZmlnX2RtYV9jaGFubmVsKGFjcF9kZXYsIFNZU1JBTV9UT19BQ1BfQ0hfTlVNLAo+
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBMQVlCQUNLX1NUQVJUX0RN
-QV9ERVNDUl9DSDEyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEs
-IDApOwo+Cj4gfCBXaHk/ICBUaGUgY29tbWVudHMgZGVzY3JpYmUgd2hhdCdzIGhhcHBlbmluZyBi
-dXQgaXQncyBub3QgY2xlYXIgd2h5IGl0J3MKPiB8IGhhcHBlbmluZy4KPgo+PiArc3RhdGljIHN0
-cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgaTJzX2RhaV9kcml2ZXIgPSB7Cj4+ICsgICAgIC5wbGF5
-YmFjayA9IHsKPj4gKyAgICAgICAgICAgICAgICAgIC5zdHJlYW1fbmFtZSA9ICJJMlMgUGxheWJh
-Y2siLAo+PiArICAgICAgICAgICAgICAgICAgLmNoYW5uZWxzX21pbiA9IDIsCj4+ICsgICAgICAg
-ICAgICAgICAgICAuY2hhbm5lbHNfbWF4ID0gMiwKPgo+IEVsc2V3aGVyZSBzdXBwb3J0IGZvciA4
-IGNoYW5uZWxzIHdhcyBkZWNsYXJlZCBhbmQgaGFuZGxlZC4KPgo+PiArICAgICAgICAgICAgICAg
-ICAgLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF85NjAwMCwKPj4gKyAgICAgICAgICAgICAg
-ICAgIC5mb3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9TMjRfTEUgfAo+PiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBTTkRSVl9QQ01fRk1UQklUX1MzMl9MRSwKPgo+IEVsc2V3aGVyZSB0
-aGVyZSB3YXMgMTYgYml0IHN1cHBvcnQgZGVjbGFyZWQgYW5kIGhhbmRsZWQuCj4KPj4gKyAgICAg
-cG1fcnRzID0gcG1fcnVudGltZV9zdGF0dXNfc3VzcGVuZGVkKGRldik7Cj4+ICsgICAgIGlmIChw
-bV9ydHMgPT0gdHJ1ZSkgewo+Cj4gVGhlcmUgc2VlbSB0byBiZSBhIGxvdCBvZiB2YXJpYWJsZXMg
-aW4gaGVyZSB0aGF0IGhhdmUgb25seSBvbmUKPiBhc3NpZ25tZW50IGFuZCBvbmUgdXNlciBpbW1l
-ZGlhdGVseSBuZXh0IHRvIHRoZW0uICBJJ20gbm90IHN1cmUgaXQncwo+IGFkZGluZyBtdWNoLgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwg
-bWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3Rz
-LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============9153786551301114887==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gz4FNQG/2iJjJcgR"
+Content-Disposition: inline
+
+
+--gz4FNQG/2iJjJcgR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Aug 20, 2015 at 07:11:22PM -0400, Alex Deucher wrote:
+> On Thu, Aug 20, 2015 at 6:31 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> > DRM is a special case here since there has always been work to share
+> > bits of the code with other operating systems, the licensing for DRM is
+> > very unusual within the kernel.  A quick sampling of drivers suggests
+> > that this license is not universally used there either.
+
+> > There is also the issue I raised with the fact that your non-GPL license
+> > statement does not appear to correspond to the MODULE_LICENSE() that
+> > you've included which claims the code is GPLed.
+
+> Once again this is exactly what the other drm drivers and support
+> modules do.  AMD generally prefers to contribute code licensed under
+> an MIT/X11 style licence which is why we've done this.  IANAL, but I
+> think that is compatible with "GPL and additional rights".
+
+This is not a DRM driver, it is an ASoC driver, and like I say DRM is a
+bit special.  I do note that AMD has contributed at least its CCP and
+cpufreq drivers (indeed all their non-DRM code I could find with
+explicit license statements) under a normal kernel license.  As far as I
+can tell this licensing is entirely confined to the DRM drivers.
+
+I am not readily able to convince myself that this is compatible with
+the intent of exporting the ASoC APIs _GPL(), this looks like it can be
+used as the basis for a shim layer for non-GPL code (the licensing
+strategy seems very similar).  I'd need to think through this carefully.
+
+--gz4FNQG/2iJjJcgR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV1madAAoJECTWi3JdVIfQYjgH/14nPcvRkWkz4JyWg7gtn/4D
+PsxeJzBkmkSyIcOtGB/DkqG6ioUgKcMF7LPgazl7hKy5mniPWJUgwpVgu3Q63RFF
+sb9DSUbdjGLHFz0kzzUjKTiI0nVPec7PV297pNuffxfGbsO8TdA9svigweR2frXK
+14+saUdN5NRT5r76DduomEe8ZyE2Xe3n/ndupZ/lu4Oybp5XtF8BeCp74dIZrLor
+JhQ/1oB40tnPH587XfI5RdIA/233DBP47QSx0isPmfeWOJuYmjFadTBvc5wXmfDh
+ylfEmB1T1qVLvItohJeTJWbVOe8iZCRvL6ZfO9Dc3EAtfrKigsNE3Hyub02IsRc=
+=kmhm
+-----END PGP SIGNATURE-----
+
+--gz4FNQG/2iJjJcgR--
+
+--===============9153786551301114887==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9153786551301114887==--
