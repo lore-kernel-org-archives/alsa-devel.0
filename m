@@ -1,98 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
-	[v4]
-Date: Thu, 20 Aug 2015 16:45:37 -0700
-Message-ID: <20150820234537.GA12027@sirena.org.uk>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver [v4]
+Date: Thu, 20 Aug 2015 19:50:34 -0400
+Message-ID: <CADnq5_MvWi9w4QgmenGDyotdmwSxC+WAdpJUbF+pi5RV_ZmBAA@mail.gmail.com>
 References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
  <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
  <20150820211305.GU12027@sirena.org.uk>
  <CADnq5_NOd_JLafdvbCs3oVGhDPZC+dD1xD_hL1R8+qaMgr2i3w@mail.gmail.com>
  <20150820223113.GW12027@sirena.org.uk>
  <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
+ <20150820234537.GA12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9153786551301114887=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC45A265467
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 01:45:51 +0200 (CEST)
-In-Reply-To: <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150820234537.GA12027@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============9153786551301114887==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gz4FNQG/2iJjJcgR"
-Content-Disposition: inline
-
-
---gz4FNQG/2iJjJcgR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 20, 2015 at 07:11:22PM -0400, Alex Deucher wrote:
-> On Thu, Aug 20, 2015 at 6:31 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > DRM is a special case here since there has always been work to share
-> > bits of the code with other operating systems, the licensing for DRM is
-> > very unusual within the kernel.  A quick sampling of drivers suggests
-> > that this license is not universally used there either.
-
-> > There is also the issue I raised with the fact that your non-GPL license
-> > statement does not appear to correspond to the MODULE_LICENSE() that
-> > you've included which claims the code is GPLed.
-
-> Once again this is exactly what the other drm drivers and support
-> modules do.  AMD generally prefers to contribute code licensed under
-> an MIT/X11 style licence which is why we've done this.  IANAL, but I
-> think that is compatible with "GPL and additional rights".
-
-This is not a DRM driver, it is an ASoC driver, and like I say DRM is a
-bit special.  I do note that AMD has contributed at least its CCP and
-cpufreq drivers (indeed all their non-DRM code I could find with
-explicit license statements) under a normal kernel license.  As far as I
-can tell this licensing is entirely confined to the DRM drivers.
-
-I am not readily able to convince myself that this is compatible with
-the intent of exporting the ASoC APIs _GPL(), this looks like it can be
-used as the basis for a shim layer for non-GPL code (the licensing
-strategy seems very similar).  I'd need to think through this carefully.
-
---gz4FNQG/2iJjJcgR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV1madAAoJECTWi3JdVIfQYjgH/14nPcvRkWkz4JyWg7gtn/4D
-PsxeJzBkmkSyIcOtGB/DkqG6ioUgKcMF7LPgazl7hKy5mniPWJUgwpVgu3Q63RFF
-sb9DSUbdjGLHFz0kzzUjKTiI0nVPec7PV297pNuffxfGbsO8TdA9svigweR2frXK
-14+saUdN5NRT5r76DduomEe8ZyE2Xe3n/ndupZ/lu4Oybp5XtF8BeCp74dIZrLor
-JhQ/1oB40tnPH587XfI5RdIA/233DBP47QSx0isPmfeWOJuYmjFadTBvc5wXmfDh
-ylfEmB1T1qVLvItohJeTJWbVOe8iZCRvL6ZfO9Dc3EAtfrKigsNE3Hyub02IsRc=
-=kmhm
------END PGP SIGNATURE-----
-
---gz4FNQG/2iJjJcgR--
-
---===============9153786551301114887==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9153786551301114887==--
+T24gVGh1LCBBdWcgMjAsIDIwMTUgYXQgNzo0NSBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
+ZWwub3JnPiB3cm90ZToKPiBPbiBUaHUsIEF1ZyAyMCwgMjAxNSBhdCAwNzoxMToyMlBNIC0wNDAw
+LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4+IE9uIFRodSwgQXVnIDIwLCAyMDE1IGF0IDY6MzEgUE0s
+IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gPiBEUk0gaXMgYSBz
+cGVjaWFsIGNhc2UgaGVyZSBzaW5jZSB0aGVyZSBoYXMgYWx3YXlzIGJlZW4gd29yayB0byBzaGFy
+ZQo+PiA+IGJpdHMgb2YgdGhlIGNvZGUgd2l0aCBvdGhlciBvcGVyYXRpbmcgc3lzdGVtcywgdGhl
+IGxpY2Vuc2luZyBmb3IgRFJNIGlzCj4+ID4gdmVyeSB1bnVzdWFsIHdpdGhpbiB0aGUga2VybmVs
+LiAgQSBxdWljayBzYW1wbGluZyBvZiBkcml2ZXJzIHN1Z2dlc3RzCj4+ID4gdGhhdCB0aGlzIGxp
+Y2Vuc2UgaXMgbm90IHVuaXZlcnNhbGx5IHVzZWQgdGhlcmUgZWl0aGVyLgo+Cj4+ID4gVGhlcmUg
+aXMgYWxzbyB0aGUgaXNzdWUgSSByYWlzZWQgd2l0aCB0aGUgZmFjdCB0aGF0IHlvdXIgbm9uLUdQ
+TCBsaWNlbnNlCj4+ID4gc3RhdGVtZW50IGRvZXMgbm90IGFwcGVhciB0byBjb3JyZXNwb25kIHRv
+IHRoZSBNT0RVTEVfTElDRU5TRSgpIHRoYXQKPj4gPiB5b3UndmUgaW5jbHVkZWQgd2hpY2ggY2xh
+aW1zIHRoZSBjb2RlIGlzIEdQTGVkLgo+Cj4+IE9uY2UgYWdhaW4gdGhpcyBpcyBleGFjdGx5IHdo
+YXQgdGhlIG90aGVyIGRybSBkcml2ZXJzIGFuZCBzdXBwb3J0Cj4+IG1vZHVsZXMgZG8uICBBTUQg
+Z2VuZXJhbGx5IHByZWZlcnMgdG8gY29udHJpYnV0ZSBjb2RlIGxpY2Vuc2VkIHVuZGVyCj4+IGFu
+IE1JVC9YMTEgc3R5bGUgbGljZW5jZSB3aGljaCBpcyB3aHkgd2UndmUgZG9uZSB0aGlzLiAgSUFO
+QUwsIGJ1dCBJCj4+IHRoaW5rIHRoYXQgaXMgY29tcGF0aWJsZSB3aXRoICJHUEwgYW5kIGFkZGl0
+aW9uYWwgcmlnaHRzIi4KPgo+IFRoaXMgaXMgbm90IGEgRFJNIGRyaXZlciwgaXQgaXMgYW4gQVNv
+QyBkcml2ZXIsIGFuZCBsaWtlIEkgc2F5IERSTSBpcyBhCj4gYml0IHNwZWNpYWwuICBJIGRvIG5v
+dGUgdGhhdCBBTUQgaGFzIGNvbnRyaWJ1dGVkIGF0IGxlYXN0IGl0cyBDQ1AgYW5kCj4gY3B1ZnJl
+cSBkcml2ZXJzIChpbmRlZWQgYWxsIHRoZWlyIG5vbi1EUk0gY29kZSBJIGNvdWxkIGZpbmQgd2l0
+aAo+IGV4cGxpY2l0IGxpY2Vuc2Ugc3RhdGVtZW50cykgdW5kZXIgYSBub3JtYWwga2VybmVsIGxp
+Y2Vuc2UuICBBcyBmYXIgYXMgSQo+IGNhbiB0ZWxsIHRoaXMgbGljZW5zaW5nIGlzIGVudGlyZWx5
+IGNvbmZpbmVkIHRvIHRoZSBEUk0gZHJpdmVycy4KPgo+IEkgYW0gbm90IHJlYWRpbHkgYWJsZSB0
+byBjb252aW5jZSBteXNlbGYgdGhhdCB0aGlzIGlzIGNvbXBhdGlibGUgd2l0aAo+IHRoZSBpbnRl
+bnQgb2YgZXhwb3J0aW5nIHRoZSBBU29DIEFQSXMgX0dQTCgpLCB0aGlzIGxvb2tzIGxpa2UgaXQg
+Y2FuIGJlCj4gdXNlZCBhcyB0aGUgYmFzaXMgZm9yIGEgc2hpbSBsYXllciBmb3Igbm9uLUdQTCBj
+b2RlICh0aGUgbGljZW5zaW5nCj4gc3RyYXRlZ3kgc2VlbXMgdmVyeSBzaW1pbGFyKS4gIEknZCBu
+ZWVkIHRvIHRoaW5rIHRocm91Z2ggdGhpcyBjYXJlZnVsbHkuCgpJZiB5b3UgaGF2ZSBzdHJvbmcg
+Y29uY2VybnMsIEkgY2FuIGRvdWJsZSBjaGVjayB3aXRoIG91ciBsYXd5ZXJzIGFuZApzZWUgYWJv
+dXQgY2hhbmdpbmcgaXQsIEknbSBqdXN0IG5vdCBzdXJlIGhvdyBsb25nIHRoYXQgd2lsbCB0YWtl
+IDooClRoZSBsaWNlbnNpbmcgdGVuZHMgdG8gdmFyeSBiYXNlZCBvbiB0aGUgdGVhbXMgaW52b2x2
+ZWQuICBUaGUgQUNQCmF1ZGlvIGFuZCBpMnMgd2FzIGRldmVsb3BlZCBieSB0aGUgR1BVIHRlYW1z
+IGFuZCB3ZSd2ZSBtb3N0bHkgd29ya2VkCm9uIGRybSBhbmQgWG9yZyBzdHVmZiB1bnRpbCBub3cu
+CgpBbGV4Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
+aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
