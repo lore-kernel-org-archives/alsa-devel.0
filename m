@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Remove redundant arndale_audio_remove" to the asoc tree
-Date: Thu, 20 Aug 2015 11:34:07 -0700
-Message-ID: <E1ZSUf9-0008Pp-HP@finisterre>
-References: <20150820164115.GA19191@localhost>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20150820164115.GA19191@localhost>
-Sender: stable-owner@vger.kernel.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: wm8994: fix add dynamic path error" to
+	the asoc tree
+Date: Thu, 20 Aug 2015 11:34:06 -0700
+Message-ID: <E1ZSUf8-0008PM-Bu@finisterre>
+References: <898610f35e157ce9d5b1e53a85f5a6ed822eadae.1439522138.git.zidan.wang@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65CEC265366
+ for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2015 20:34:22 +0200 (CEST)
+In-Reply-To: <898610f35e157ce9d5b1e53a85f5a6ed822eadae.1439522138.git.zidan.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Remove redundant arndale_audio_remove
+   ASoC: wm8994: fix add dynamic path error
 
 has been applied to the asoc tree at
 
@@ -37,50 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 14a500fe1396934c6b3ed8f009459a4723da7862 Mon Sep 17 00:00:00 2001
-From: Vaishali Thakkar <vthakkar1994@gmail.com>
-Date: Thu, 20 Aug 2015 22:11:15 +0530
-Subject: [PATCH] ASoC: samsung: Remove redundant arndale_audio_remove
+>From e134cb2041359c927b735b81568373624ea26baf Mon Sep 17 00:00:00 2001
+From: Zidan Wang <zidan.wang@freescale.com>
+Date: Fri, 14 Aug 2015 11:22:16 +0800
+Subject: [PATCH] ASoC: wm8994: fix add dynamic path error
 
-There is no use of snd_soc_unregister_card in remove function
-as devm_snd_soc_register_card in probe function automatically
-handles it. So, remove use of snd_soc_unregister_card and with
-this change remove arndale_audio_remove as it is now redundant.
+If there don't exist dynamic sink or source widget, it will failed to
+add dynamic path.
 
-Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+"AIF3ADCDAT" is snd_soc_dapm_aif_out, can't be dynamic sink widget. So
+change the audio route to fix this issue.
+
+Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/samsung/arndale_rt5631.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ sound/soc/codecs/wm8994.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index 8bf2e2c..9e371eb 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -116,15 +116,6 @@ static int arndale_audio_probe(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 962e1d3..2ccbb32 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1942,14 +1942,16 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{ "AIF2ADCDAT", NULL, "AIF2ADC Mux" },
  
--static int arndale_audio_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--
--	return 0;
--}
--
- static const struct of_device_id samsung_arndale_rt5631_of_match[] __maybe_unused = {
- 	{ .compatible = "samsung,arndale-rt5631", },
- 	{ .compatible = "samsung,arndale-alc5631", },
-@@ -139,7 +130,6 @@ static struct platform_driver arndale_audio_driver = {
- 		.of_match_table = of_match_ptr(samsung_arndale_rt5631_of_match),
- 	},
- 	.probe = arndale_audio_probe,
--	.remove = arndale_audio_remove,
- };
+ 	/* AIF3 output */
+-	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC1L" },
+-	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC1R" },
+-	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC2L" },
+-	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC2R" },
+-	{ "AIF3ADCDAT", "AIF2ADCDAT", "AIF2ADCL" },
+-	{ "AIF3ADCDAT", "AIF2ADCDAT", "AIF2ADCR" },
+-	{ "AIF3ADCDAT", "AIF2DACDAT", "AIF2DACL" },
+-	{ "AIF3ADCDAT", "AIF2DACDAT", "AIF2DACR" },
++	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC1L" },
++	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC1R" },
++	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC2L" },
++	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC2R" },
++	{ "AIF3ADC Mux", "AIF2ADCDAT", "AIF2ADCL" },
++	{ "AIF3ADC Mux", "AIF2ADCDAT", "AIF2ADCR" },
++	{ "AIF3ADC Mux", "AIF2DACDAT", "AIF2DACL" },
++	{ "AIF3ADC Mux", "AIF2DACDAT", "AIF2DACR" },
++
++	{ "AIF3ADCDAT", NULL, "AIF3ADC Mux" },
  
- module_platform_driver(arndale_audio_driver);
+ 	/* Loopback */
+ 	{ "AIF1 Loopback", "ADCDAT", "AIF1ADCDAT" },
 -- 
 2.5.0
