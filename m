@@ -1,103 +1,108 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8994: fix add dynamic path error" to
-	the asoc tree
-Date: Thu, 20 Aug 2015 11:34:06 -0700
-Message-ID: <E1ZSUf8-0008PM-Bu@finisterre>
-References: <898610f35e157ce9d5b1e53a85f5a6ed822eadae.1439522138.git.zidan.wang@freescale.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH 0/3] Add ASoC support for AMD APUs [v2]
+Date: Thu, 20 Aug 2015 16:09:19 -0400
+Message-ID: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 65CEC265366
- for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2015 20:34:22 +0200 (CEST)
-In-Reply-To: <898610f35e157ce9d5b1e53a85f5a6ed822eadae.1439522138.git.zidan.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: broonie@kernel.org, airlied@gmail.com, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com
+Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: wm8994: fix add dynamic path error
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From e134cb2041359c927b735b81568373624ea26baf Mon Sep 17 00:00:00 2001
-From: Zidan Wang <zidan.wang@freescale.com>
-Date: Fri, 14 Aug 2015 11:22:16 +0800
-Subject: [PATCH] ASoC: wm8994: fix add dynamic path error
-
-If there don't exist dynamic sink or source widget, it will failed to
-add dynamic path.
-
-"AIF3ADCDAT" is snd_soc_dapm_aif_out, can't be dynamic sink widget. So
-change the audio route to fix this issue.
-
-Signed-off-by: Zidan Wang <zidan.wang@freescale.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8994.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 962e1d3..2ccbb32 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1942,14 +1942,16 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{ "AIF2ADCDAT", NULL, "AIF2ADC Mux" },
- 
- 	/* AIF3 output */
--	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC1L" },
--	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC1R" },
--	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC2L" },
--	{ "AIF3ADCDAT", "AIF1ADCDAT", "AIF1ADC2R" },
--	{ "AIF3ADCDAT", "AIF2ADCDAT", "AIF2ADCL" },
--	{ "AIF3ADCDAT", "AIF2ADCDAT", "AIF2ADCR" },
--	{ "AIF3ADCDAT", "AIF2DACDAT", "AIF2DACL" },
--	{ "AIF3ADCDAT", "AIF2DACDAT", "AIF2DACR" },
-+	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC1L" },
-+	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC1R" },
-+	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC2L" },
-+	{ "AIF3ADC Mux", "AIF1ADCDAT", "AIF1ADC2R" },
-+	{ "AIF3ADC Mux", "AIF2ADCDAT", "AIF2ADCL" },
-+	{ "AIF3ADC Mux", "AIF2ADCDAT", "AIF2ADCR" },
-+	{ "AIF3ADC Mux", "AIF2DACDAT", "AIF2DACL" },
-+	{ "AIF3ADC Mux", "AIF2DACDAT", "AIF2DACR" },
-+
-+	{ "AIF3ADCDAT", NULL, "AIF3ADC Mux" },
- 
- 	/* Loopback */
- 	{ "AIF1 Loopback", "ADCDAT", "AIF1ADCDAT" },
--- 
-2.5.0
+VGhpcyBwYXRjaCBzZXQgaW1wbGVtZW50cyBzdXBwb3J0IGZvciBpMnMgYXVkaW8gYW5kIG5ldyBB
+TUQgR1BVcy4KVGhlIGkycyBjb2RlYyBpcyBmZWQgYnkgYSBETUEgZW5naW5lIG9uIHRoZSBHUFUu
+ICBUbyBoYW5kbGUgdGhpcwp3ZSBjcmVhdGUgYW4gbWZkIGNlbGwgd2hpY2ggd2UgY2FuIGhhbmcg
+dGhlIGkycyBjb2RlYyBvbi4gIEJlY2F1c2UKb2YgdGhpcywgdGhpcyBwYXRjaCBzZXQgY292ZXJz
+IHR3byBzdWJzeXN0ZW1zOiBkcm0gYW5kIGFsc2EuICBUaGUKZHJtIHBhdGNoZXMgYWRkIHN1cHBv
+cnQgZm9yIHRoZSBBQ1AgaHcgYmxvY2sgd2hpY2ggcHJvdmlkZXMgdGhlIERNQQplbmdpbmUgZm9y
+IHRoZSBpMnMgY29kZWMuICBUaGUgYWxzYSBwYXRjaGVzIGFkZCB0aGUgQVNvQyBkcml2ZXIgZm9y
+CnRoZSBpMnMgY29kZWMuICBTaW5jZSB0aGUgYWxzYSBjaGFuZ2VzIGRlcGVuZCBvbiB0aGUgZHJt
+IGNoYW5nZXMgaW4KdGhpcyBwYXRjaCBzZXQgYXMgd2VsbCBhcyBzb21lIG90aGVyIGRybSBjaGFu
+Z2VzIHF1ZXVlZCBmb3IgNC4zLCBJJ2QKbGlrZSB0byB0YWtlIHRoZSBhbHNhIHBhdGNoZXMgaW4g
+dmlhIHRoZSBkcm0gdHJlZS4KClYyIGNoYW5nZXM6Ci0gVXNlIHRoZSBNRkQgc3Vic3lzdGVtIHJh
+dGhlciB0aGFuIGFkZGluZyBvdXIgb3duIGJ1cwotIFNxdWFzaCBhbGwgc3ViLWZlYXR1cmUgcGF0
+Y2hlcyB0b2dldGhlcgotIGZpeCBjb21tZW50cyBtZW50aW9uZWQgaW4gcHJldmlvdXMgcmV2aWV3
+CgpUaGVyZSB3YXMgYSBxdWVzdGlvbiBhYm91dCB0aGUgY29kZSBhbmQgdGhlIG1vZHVsZSBsaWNl
+bnNpbmcuCklBTkFMLCBidXQgdGhpcyBmb2xsb3dzIHRoZSBzYW1lIHBhdHRlcm4gdGhhdCBtb3N0
+IGlmIG5vdCBhbGwKZHJtIGRyaXZlcnMgdXNlLgoKVGhlcmUgd2FzIGFsc28gYSBjb21tZW50IGFi
+b3V0IHRoZSBwYXRjaCBjaGFuZ2Vsb2cuICBJIHRoaW5rIHRoaXMKaXMgbW9yZSBvZiBhIHN1YnN5
+c3RlbSBwcmVmZXJlbmNlIGtpbmQgb2YgdGhpbmcuICBHZW5lcmFsbHkgaW4gdGhlCmRybSB3ZSBp
+bmNsdWRlIHRoZSBwYXRjaCBjaGFuZ2Vsb2cgYW5kIHZlcnNpb25zIGluIHRoZSBjb21taXQKbWVz
+c2FnZXMgc28gd2UgaGF2ZSBhIGhpc3Rvcnkgb2YgdGhlIHBhdGNoIGlmIHdlIG5lZWQgdG8gcmVm
+ZXJlbmNlCml0IGluIHRoZSBmdXR1cmUuICBJZiB5b3UgaGF2ZSBhIHN0cm9uZyBwcmVmZXJlbmNl
+IGZvciB0aGUgYXVkaW8KcGF0Y2gsIHdlIGNhbiBkcm9wIHRoYXQuCgpQYXRjaCAxIGFkZHMgdGhl
+IHJlZ2lzdGVyIGhlYWRlcnMgZm9yIHRoZSBBQ1AgYmxvY2sgd2hpY2ggaXMgYQpwcmV0dHkgYmln
+IHBhdGNoIHNvIEkndmUgZXhjbHVkZWQgaXQgZnJvbSBlbWFpbC4gIFRoZSBlbnRpcmUgcGF0Y2gK
+c2V0IGNhbiBiZSB2aWV3ZWQgaGVyZToKaHR0cDovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL35hZ2Q1
+Zi9saW51eC9sb2cvP2g9YWNwLXVwc3RyZWFtMgoKVGhhbmtzLAoKQWxleAoKQ2h1bm1pbmcgWmhv
+dSAoMSk6CiAgZHJtL2FtZDogYWRkIEFDUCAyLnggcmVnaXN0ZXIgaGVhZGVycwoKTWFydXRoaSBC
+YXl5YXZhcmFwdSAoMSk6CiAgZHJtL2FtZDogYWRkIEFDUCBkcml2ZXIgc3VwcG9ydCBbdjZdCgpN
+YXJ1dGhpIFNyaW5pdmFzIEJheXlhdmFyYXB1ICgxKToKICBBU29DOiBBTUQ6IGFkZCBBTUQgQVNv
+QyBBQ1AtSTJTIGRyaXZlciBbdjRdCgogZHJpdmVycy9ncHUvZHJtL0tjb25maWcgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgICAyICsKIGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL0tjb25m
+aWcgICAgICAgICAgICAgICAgICAgIHwgICAxMCArCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9N
+YWtlZmlsZSAgICAgICAgICAgICAgICAgICB8ICAgIDkgKwogZHJpdmVycy9ncHUvZHJtL2FtZC9h
+Y3AvYWNwX2h3LmMgICAgICAgICAgICAgICAgICAgfCAxMTMzICsrKysrKysrKysKIGRyaXZlcnMv
+Z3B1L2RybS9hbWQvYWNwL2FjcF9ody5oICAgICAgICAgICAgICAgICAgIHwgICA5MSArCiBkcml2
+ZXJzL2dwdS9kcm0vYW1kL2FjcC9pbmNsdWRlL2FjcF9nZnhfaWYuaCAgICAgICB8ICAgNDkgKwog
+ZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvTWFrZWZpbGUgICAgICAgICAgICAgICAgfCAgIDEz
+ICstCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHUuaCAgICAgICAgICAgICAgICB8
+ICAgIDUgKwogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jICAgICAgICAg
+ICAgfCAgMjA4ICsrCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmggICAg
+ICAgICAgICB8ICAgNDAgKwogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvdmkuYyAgICAgICAg
+ICAgICAgICAgICAgfCAgIDEyICsKIGRyaXZlcnMvZ3B1L2RybS9hbWQvaW5jbHVkZS9hbWRfc2hh
+cmVkLmggICAgICAgICAgIHwgICAgMSArCiAuLi4vZ3B1L2RybS9hbWQvaW5jbHVkZS9hc2ljX3Jl
+Zy9hY3AvYWNwXzJfMV9kLmggICB8ICA0MzcgKysrKwogLi4uL2RybS9hbWQvaW5jbHVkZS9hc2lj
+X3JlZy9hY3AvYWNwXzJfMV9lbnVtLmggICAgfCAxMTk4ICsrKysrKysrKysKIC4uLi9kcm0vYW1k
+L2luY2x1ZGUvYXNpY19yZWcvYWNwL2FjcF8yXzFfc2hfbWFzay5oIHwgMTU2OCArKysrKysrKysr
+KysrCiAuLi4vZ3B1L2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfMl9kLmggICB8
+ICA2MDkgKysrKysrCiAuLi4vZHJtL2FtZC9pbmNsdWRlL2FzaWNfcmVnL2FjcC9hY3BfMl8yX2Vu
+dW0uaCAgICB8IDEwNjggKysrKysrKysrCiAuLi4vZHJtL2FtZC9pbmNsdWRlL2FzaWNfcmVnL2Fj
+cC9hY3BfMl8yX3NoX21hc2suaCB8IDIyOTIgKysrKysrKysrKysrKysrKysrKysKIC4uLi9ncHUv
+ZHJtL2FtZC9pbmNsdWRlL2FzaWNfcmVnL2FjcC9hY3BfMl8zX2QuaCAgIHwgIDU4MiArKysrKwog
+Li4uL2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfM19lbnVtLmggICAgfCAxMDc5
+ICsrKysrKysrKwogLi4uL2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfM19zaF9t
+YXNrLmggfCAyMTkyICsrKysrKysrKysrKysrKysrKysKIGluY2x1ZGUvbGludXgvbWZkL2FtZF9h
+Y3AuaCAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIxMSArKwogc291bmQvc29jL0tjb25maWcg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsKIHNvdW5kL3NvYy9NYWtl
+ZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMSArCiBzb3VuZC9zb2Mv
+YW1kL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDUgKwogc291bmQv
+c29jL2FtZC9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAzICsKIHNv
+dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDY3NiAr
+KysrKysKIDI3IGZpbGVzIGNoYW5nZWQsIDEzNDk0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24o
+LSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9LY29uZmlnCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvTWFrZWZpbGUKIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FjcC9hY3BfaHcuYwogY3JlYXRlIG1v
+ZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYWNwL2FjcF9ody5oCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9hY3AvaW5jbHVkZS9hY3BfZ2Z4X2lmLmgKIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMKIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmgK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2luY2x1ZGUvYXNpY19yZWcv
+YWNwL2FjcF8yXzFfZC5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9p
+bmNsdWRlL2FzaWNfcmVnL2FjcC9hY3BfMl8xX2VudW0uaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvZ3B1L2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfMV9zaF9tYXNrLmgK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2luY2x1ZGUvYXNpY19yZWcv
+YWNwL2FjcF8yXzJfZC5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9p
+bmNsdWRlL2FzaWNfcmVnL2FjcC9hY3BfMl8yX2VudW0uaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvZ3B1L2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfMl9zaF9tYXNrLmgK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwdS9kcm0vYW1kL2luY2x1ZGUvYXNpY19yZWcv
+YWNwL2FjcF8yXzNfZC5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2FtZC9p
+bmNsdWRlL2FzaWNfcmVnL2FjcC9hY3BfMl8zX2VudW0uaAogY3JlYXRlIG1vZGUgMTAwNjQ0IGRy
+aXZlcnMvZ3B1L2RybS9hbWQvaW5jbHVkZS9hc2ljX3JlZy9hY3AvYWNwXzJfM19zaF9tYXNrLmgK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L21mZC9hbWRfYWNwLmgKIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBzb3VuZC9zb2MvYW1kL0tjb25maWcKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3Vu
+ZC9zb2MvYW1kL01ha2VmaWxlCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3At
+cGNtLWRtYS5jCgotLSAKMS44LjMuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9kcmktZGV2ZWwK
