@@ -1,91 +1,133 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 4/4] ALSA: hda - Wake the codec up on
-	pin/ELD notify events
-Date: Thu, 20 Aug 2015 11:41:42 +0200
-Message-ID: <55D5A0D6.1040403@canonical.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>	<1439974138-3296-5-git-send-email-david.henningsson@canonical.com>
- <s5hbne271h7.wl-tiwai@suse.de>
+From: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Thu, 20 Aug 2015 12:45:42 +0300
+Message-ID: <20150820094542.GC30005@lahna.fi.intel.com>
+References: <CAKor6Tcof3PA3JGD2=4X8mtSak8ka9BVD2L4zdYC4M1yEYEXjg@mail.gmail.com>
+ <CAKor6TdLkGZbARmV1CfqUiguH8HAD+oC8VSsH_OkNQ6E-7YVAw@mail.gmail.com>
+ <20150810081001.GG25225@opensource.wolfsonmicro.com>
+ <20150810083540.GE1540@lahna.fi.intel.com>
+ <CAKor6Tc26kKG-7ytxBjT41S1h4eORoeTg_T=nZ4dZGM1H0gAMQ@mail.gmail.com>
+ <20150810140207.GB1541@lahna.fi.intel.com>
+ <CAKor6TdKrQrvXTPU=fzL9LTCBbyc9WAbLnYdObY+Wu73g1w6Fg@mail.gmail.com>
+ <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ@mail.gmail.com>
+ <20150819134328.GU1552@lahna.fi.intel.com>
+ <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hbne271h7.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, intel-gfx@lists.freedesktop.org, daniel.vetter@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTA4LTIwIDExOjI4LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gV2VkLCAxOSBB
-dWcgMjAxNSAxMDo0ODo1OCArMDIwMCwKPiBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4KPj4g
-V2hlbmV2ZXIgdGhlcmUgaXMgYW4gZXZlbnQgZnJvbSB0aGUgaTkxNSBkcml2ZXIsIHdha2UgdGhl
-IGNvZGVjCj4+IGFuZCByZWNoZWNrIHBsdWcvdW5wbHVnICsgRUxEIHN0YXR1cy4KPj4KPj4gVGhp
-cyBmaXhlcyB0aGUgaXNzdWUgd2l0aCBsb3N0IHVuc29sIGV2ZW50cyBpbiBwb3dlciBzYXZlIG1v
-ZGUsCj4+IHRoZSBjb2RlYyBhbmQgY29udHJvbGxlciBjYW4gbm93IHNsZWVwIGluIEQzIGFuZCBz
-dGlsbCBrbm93IHdoZW4KPj4gdGhlIEhETUkgbW9uaXRvciBoYXMgYmVlbiBjb25uZWN0ZWQuCj4+
-Cj4+IFNpZ25lZC1vZmYtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5uaW5nc3NvbkBj
-YW5vbmljYWwuY29tPgo+Cj4gVGhpcyBhZGRpdGlvbiBsb29rcyBmaW5lLCBidXQgdGhlbiB3ZSds
-bCBnZXQgZG91YmxlIG5vdGlmaWNhdGlvbiBmb3IKPiB0aGUgbm9ybWFsIGhvdHBsdWcvdW5wbHVn
-LCBvbmUgdmlhIGNvbXBvbmVudCBvcHMgYW5kIGFub3RoZXIgdmlhIHVuc29sCj4gZXZlbnQ/CgpS
-aWdodCwgaW4gY2FzZSB0aGUgdW5zb2wgZXZlbnQgYWN0dWFsbHkgd29ya3MuLi4KCkkgd291bGQg
-YXJndWUgdGhhdCB0aGUgbm9ybWFsIGNhc2Ugd291bGQgYmUgdGhhdCB0aGUgY29udHJvbGxlciBh
-bmQgCmNvZGVjIGlzIGluIEQzIHdoaWNoIG1lYW5zIHRoYXQgdGhlIHVuc29sIGV2ZW50IG5ldmVy
-IGdldHMgdGhyb3VnaCAtIGR1ZSAKdG8gaHcgbGltaXRhdGlvbnMgLSB3aGljaCBpcyB3aGF0IHRy
-aWdnZXJlZCB0aGlzIHBhdGNoIHNldCBpbiB0aGUgZmlyc3QgCnBsYWNlLgoKQnV0IHllcywgaW4g
-c29tZSBjYXNlIHdlIG1pZ2h0IGdldCBkb3VibGUgbm90aWZpY2F0aW9uLCBidXQgdGhpcyBzaG91
-bGQgCm5vdCBjYXVzZSBhbnkgdHJvdWJsZSBpbiBwcmFjdGljZS4gVGhlIHVuc29sIGV2ZW50IGNv
-dWxkIGJlIHR1cm5lZCBvZmYsIApidXQgd291bGQgaXQgYmUgb2theSB0byBzYXZlIHRoYXQgZm9y
-IGEgbGF0ZXIgcGF0Y2ggc2V0IChzbyBJIGRvbid0IG1pc3MgCnRoZSB1cGNvbWluZyBtZXJnZSB3
-aW5kb3cpPwoKPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4+IC0tLQo+PiAgIHNvdW5kL3Bj
-aS9oZGEvcGF0Y2hfaGRtaS5jIHwgMjIgKysrKysrKysrKysrKysrKysrKysrLQo+PiAgIDEgZmls
-ZSBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1n
-aXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRt
-aS5jCj4+IGluZGV4IGE5N2RiNWYuLjkzMjI5MmMgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3BjaS9o
-ZGEvcGF0Y2hfaGRtaS5jCj4+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCj4+IEBA
-IC0zNyw2ICszNyw4IEBACj4+ICAgI2luY2x1ZGUgPHNvdW5kL2phY2suaD4KPj4gICAjaW5jbHVk
-ZSA8c291bmQvYXNvdW5kZWYuaD4KPj4gICAjaW5jbHVkZSA8c291bmQvdGx2Lmg+Cj4+ICsjaW5j
-bHVkZSA8c291bmQvaGRhdWRpby5oPgo+PiArI2luY2x1ZGUgPHNvdW5kL2hkYV9pOTE1Lmg+Cj4+
-ICAgI2luY2x1ZGUgImhkYV9jb2RlYy5oIgo+PiAgICNpbmNsdWRlICJoZGFfbG9jYWwuaCIKPj4g
-ICAjaW5jbHVkZSAiaGRhX2phY2suaCIKPj4gQEAgLTE0NCw2ICsxNDYsOSBAQCBzdHJ1Y3QgaGRt
-aV9zcGVjIHsKPj4gICAJICovCj4+ICAgCXN0cnVjdCBoZGFfbXVsdGlfb3V0IG11bHRpb3V0Owo+
-PiAgIAlzdHJ1Y3QgaGRhX3BjbV9zdHJlYW0gcGNtX3BsYXliYWNrOwo+PiArCj4+ICsJLyogaTkx
-NS9wb3dlcndlbGwgKEhhc3dlbGwrL1ZhbGxleXZpZXcrKSBzcGVjaWZpYyAqLwo+PiArCXN0cnVj
-dCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9hdWRpb19vcHMgaTkxNV9hdWRpb19vcHM7Cj4+ICAgfTsK
-Pj4KPj4KPj4gQEAgLTIxOTEsNiArMjE5Niw5IEBAIHN0YXRpYyB2b2lkIGdlbmVyaWNfaGRtaV9m
-cmVlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQo+PiAgIAlzdHJ1Y3QgaGRtaV9zcGVjICpzcGVj
-ID0gY29kZWMtPnNwZWM7Cj4+ICAgCWludCBwaW5faWR4Owo+Pgo+PiArCWlmIChpc19oYXN3ZWxs
-X3BsdXMoY29kZWMpIHx8IGlzX3ZhbGxleXZpZXdfcGx1cyhjb2RlYykpCj4+ICsJCXNuZF9oZGFj
-X2k5MTVfcmVnaXN0ZXJfbm90aWZpZXIoTlVMTCk7Cj4+ICsKPj4gICAJZm9yIChwaW5faWR4ID0g
-MDsgcGluX2lkeCA8IHNwZWMtPm51bV9waW5zOyBwaW5faWR4KyspIHsKPj4gICAJCXN0cnVjdCBo
-ZG1pX3NwZWNfcGVyX3BpbiAqcGVyX3BpbiA9IGdldF9waW4oc3BlYywgcGluX2lkeCk7Cj4+Cj4+
-IEBAIC0yMzE2LDYgKzIzMjQsMTQgQEAgc3RhdGljIHZvaWQgaGFzd2VsbF9zZXRfcG93ZXJfc3Rh
-dGUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBmZywKPj4gICAJc25kX2hkYV9j
-b2RlY19zZXRfcG93ZXJfdG9fYWxsKGNvZGVjLCBmZywgcG93ZXJfc3RhdGUpOwo+PiAgIH0KPj4K
-Pj4gK3N0YXRpYyB2b2lkIGludGVsX3Bpbl9lbGRfbm90aWZ5KHZvaWQgKmF1ZGlvX3B0ciwgaW50
-IHBvcnQsIGludCBwb3J0X21zdF9pbmRleCkKPj4gK3sKPj4gKwlzdHJ1Y3QgaGRhX2NvZGVjICpj
-b2RlYyA9IGF1ZGlvX3B0cjsKPj4gKwlpbnQgcGluX25pZCA9IHBvcnQgKyAweDA0Owo+PiArCj4+
-ICsJY2hlY2tfcHJlc2VuY2VfYW5kX3JlcG9ydChjb2RlYywgcGluX25pZCk7Cj4+ICt9Cj4+ICsK
-Pj4gICBzdGF0aWMgaW50IHBhdGNoX2dlbmVyaWNfaGRtaShzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
-YykKPj4gICB7Cj4+ICAgCXN0cnVjdCBoZG1pX3NwZWMgKnNwZWM7Cj4+IEBAIC0yMzQyLDggKzIz
-NTgsMTIgQEAgc3RhdGljIGludCBwYXRjaF9nZW5lcmljX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMpCj4+ICAgCWlmIChpc192YWxsZXl2aWV3X3BsdXMoY29kZWMpIHx8IGlzX3NreWxha2Uo
-Y29kZWMpKQo+PiAgIAkJY29kZWMtPmNvcmUubGlua19wb3dlcl9jb250cm9sID0gMTsKPj4KPj4g
-LQlpZiAoaXNfaGFzd2VsbF9wbHVzKGNvZGVjKSB8fCBpc192YWxsZXl2aWV3X3BsdXMoY29kZWMp
-KQo+PiArCWlmIChpc19oYXN3ZWxsX3BsdXMoY29kZWMpIHx8IGlzX3ZhbGxleXZpZXdfcGx1cyhj
-b2RlYykpIHsKPj4gICAJCWNvZGVjLT5kZXBvcF9kZWxheSA9IDA7Cj4+ICsJCXNwZWMtPmk5MTVf
-YXVkaW9fb3BzLmF1ZGlvX3B0ciA9IGNvZGVjOwo+PiArCQlzcGVjLT5pOTE1X2F1ZGlvX29wcy5w
-aW5fZWxkX25vdGlmeSA9IGludGVsX3Bpbl9lbGRfbm90aWZ5Owo+PiArCQlzbmRfaGRhY19pOTE1
-X3JlZ2lzdGVyX25vdGlmaWVyKCZzcGVjLT5pOTE1X2F1ZGlvX29wcyk7Cj4+ICsJfQo+Pgo+PiAg
-IAlpZiAoaGRtaV9wYXJzZV9jb2RlYyhjb2RlYykgPCAwKSB7Cj4+ICAgCQljb2RlYy0+c3BlYyA9
-IE5VTEw7Cj4+IC0tCj4+IDEuOS4xCj4+Cj4KCi0tIApEYXZpZCBIZW5uaW5nc3NvbiwgQ2Fub25p
-Y2FsIEx0ZC4KaHR0cHM6Ly9sYXVuY2hwYWQubmV0L35kaXdpYwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVs
-LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On Thu, Aug 20, 2015 at 11:38:13AM +0200, Christian Hartmann wrote:
+> Hi again,
+> 
+> >> in  arizona-spi I try to map these GPIOs, which I want to get in
+> >> arizona-core: arizona_dev_init
+> >>
+> >> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+> >> index 1e845f6..52872a0 100644
+> >> --- a/drivers/mfd/arizona-spi.c
+> >> +++ b/drivers/mfd/arizona-spi.c
+> >> @@ -18,28 +18,58 @@
+> >>  #include <linux/slab.h>
+> >>  #include <linux/spi/spi.h>
+> >>  #include <linux/of.h>
+> >> +#include <linux/acpi.h>
+> >>
+> >>  #include <linux/mfd/arizona/core.h>
+> >>
+> >>  #include "arizona.h"
+> >>
+> >> +const struct acpi_gpio_params reset_gpio = { 1, 0, false};
+> >> +const struct acpi_gpio_params ldoena_gpio = { 2, 0, false};
+> >> +
+> >> +const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
+> >> +       { "reset_gpio", &reset_gpio, 1,},
+> >> +       { "ldoena_gpio", &ldoena_gpio, 1},
+> >
+> > The correct names are "reset-gpios" and "ldoena-gpios". If you call
+> >
+> >         reset = devm_gpiod_get_optional(arizona->dev, "reset", GPIOD_OUT_LOW);
+> >
+> > GPIO core will look for "reset-gpios" and then "reset-gpio" not
+> > "reset_gpio" so it will not find the mapping.
+> 
+> yes you are right, I had fixed it yesterday by changing the names.
+> 
+> +const struct acpi_gpio_params reset_gpios = { 1, 0, false};
+> +const struct acpi_gpio_params ldoena_gpios = { 2, 0, false};
+> +
+> +const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
+> +       { "reset-gpios", &reset_gpios, 1,},
+> +       { "ldoena-gpios", &ldoena_gpios, 1},
+> +       { },
+> +};
+> 
+> 
+> 
+> Today I can see that the mapping is working as seen below.
+> But for unknown reasons I got wrong values read
+> via devm_gpiod_get_optional() in the arizona_dev_init ->
+> arizona_of_get_core_pdata()
+> 
+> [    6.387993] pxa2xx-spi 80860F0E:00: no DMA channels available, using PIO
+> [    6.389258] pxa2xx-spi 80860F0E:00: registered master spi32766 (dynamic)
+> [    6.389416] spi spi-WM510205:00: 8333333 Hz actual, PIO
+> [    6.389424] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
+> [    6.389567] spi spi-WM510205:00: checking WM510205 with bmp180
+> [    6.389574] spi spi-WM510205:00: checking WM510205 with bmp181
+> [    6.389578] spi spi-WM510205:00: modalias WM510205 in id_table not
+> found, returns NULL
+> [    6.405723] arizona spi-WM510205:00: arizona_acpi_get_type(), than
+> via spi_get_device_id().
+> [    6.405735] arizona spi-WM510205:00: arizona_acpi_get_type matched
+> [    6.405740] arizona spi-WM510205:00: using 1 as type for arizona audio codec
+> [    6.405744] arizona spi-WM510205:00: regmap set to wm5102_spi
+> [    6.406557] arizona spi-WM510205:00: spi_irq = -1
+> [    6.406565] arizona spi-WM510205:00: acpi_dev_add_driver_gpios
+> arizona_acpi_gpios added done, 0
+> [    6.406569] arizona spi-WM510205:00: arizona_spi_probe done,
+> calling arizona_dev_init
+> [    6.406574] arizona spi-WM510205:00: dev_set_drvdata done for 1
+> [    6.406580] arizona spi-WM510205:00: GPIO lookup for consumer reset
+> [    6.406585] arizona spi-WM510205:00: using ACPI for GPIO lookup
+> [    6.406590] acpi WM510205:00: GPIO: looking up reset-gpios
+> [    6.406597] acpi WM510205:00: GPIO: _DSD returned WM510205:00 3 1 0 0
+> [    6.406673] acpi WM510205:00: GPIO: looking up 0 in _CRS
+> [    6.406724] arizona spi-WM510205:00: GPIO lookup for consumer ldoena
+> [    6.406729] arizona spi-WM510205:00: using ACPI for GPIO lookup
+> [    6.406733] acpi WM510205:00: GPIO: looking up ldoena-gpios
+> [    6.406739] acpi WM510205:00: GPIO: _DSD returned WM510205:00 3 2 0 0
+> [    6.406790] acpi WM510205:00: GPIO: looking up 0 in _CRS
+> [    6.406844] arizona spi-WM510205:00: arizona_of_get_core_pdata
+> (ACPI) using irq_gpio GPIO = 146
+> [    6.406850] arizona spi-WM510205:00: arizona_of_get_core_pdata
+> (ACPI) using ldoena GPIO =  -185173228
+> [    6.406855] arizona spi-WM510205:00: arizona_of_get_core_pdata
+> (ACPI) using reset GPIO =  -184741840
+> [    6.406859] arizona spi-WM510205:00: arizona_of_get_core_pdata for 1
+> [    6.406864] arizona spi-WM510205:00: regcache_cache_only for 1 set
+> [    6.406868] arizona spi-WM510205:00: added wm5102_core_supplies for 1
+> [    6.407100] spi-WM510205:00 supply AVDD not found, using dummy regulator
+> [    6.407131] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
+> [    6.407162] LDO1: supplied by regulator-dummy
+> [    6.407214] ------------[ cut here ]------------
+> [    6.407226] WARNING: CPU: 0 PID: 472 at drivers/gpio/gpiolib.c:86
+> gpio_to_desc+0xbb/0xd0()
+> 
+> 
+> did I cast the values wrong?
+
+devm_gpiod_get_optional() returns GPIO descriptor which should not be
+cast to anything else. If you want to get the numberic value for
+logging purposes you can call desc_to_gpio(desc) for the returned
+descriptor.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
