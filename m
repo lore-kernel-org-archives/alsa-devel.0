@@ -1,117 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
-	[v4]
-Date: Thu, 20 Aug 2015 14:13:05 -0700
-Message-ID: <20150820211305.GU12027@sirena.org.uk>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver [v4]
+Date: Thu, 20 Aug 2015 17:30:27 -0400
+Message-ID: <CADnq5_NOd_JLafdvbCs3oVGhDPZC+dD1xD_hL1R8+qaMgr2i3w@mail.gmail.com>
 References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
  <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
+ <20150820211305.GU12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5833709445070535002=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 26DD1265388
- for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2015 23:13:19 +0200 (CEST)
-In-Reply-To: <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, airlied@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150820211305.GU12027@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5833709445070535002==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iytlPraCFSCqrfnM"
-Content-Disposition: inline
-
-
---iytlPraCFSCqrfnM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 20, 2015 at 04:09:21PM -0400, Alex Deucher wrote:
-> From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
->=20
-> ACP IP block consists of dedicated DMA and I2S blocks. The PCM driver
-> provides the DMA and CPU DAI components to ALSA core.
->=20
-> v2: squash in Kconfig fix
-> v3: squash additional commits, convert to mfd, drop rt286 changes
-> v4: squash in naming fixes
-
-To repeat what I said last time:
-
-| Please follow the patch submission process in SubmittingPatches: put any
-| versioning in the subject line inside the [] and put noise like inter
-| version changelogs after the ---.
-
-> +/*
-> + * AMD ALSA SoC PCM Driver
-> + *
-> + * Copyright 2014-2015 Advanced Micro Devices, Inc.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining=
- a
-> + * copy of this software and associated documentation files (the "Softwa=
-re"),
-> + * to deal in the Software without restriction, including without limita=
-tion
-> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
-se,
-> + * and/or sell copies of the Software, and to permit persons to whom the
-> + * Software is furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice shall be includ=
-ed in
-> + * all copies or substantial portions of the Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
-SS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
-TY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
-ALL
-> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
- OR
-> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + * OTHER DEALINGS IN THE SOFTWARE.
-
-I also remain very concerned about this non-GPL license you are using.
-Please do not ignore review comments like this :(
-
---iytlPraCFSCqrfnM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV1kLgAAoJECTWi3JdVIfQ3KQH/ig3zPrPlrqK5LMtAdRPE7t2
-l6ZcjLtgVl9K8eBGjC1dxBe1so3XFAXlE+1mNubml22LcEJ+A56pQt8XBO2wUy/y
-EhwxkAWmq7eqbaG152CUYlGbsas+iJks00tLR8Y3mlv0DjQJdfPdaZb8Nh4yvFhj
-WZ7Y/SKvFnA+eqaR92hU/vL0VYDwYsGz1H8BBJneb3jXtheg39EFmMzyXqbD6x+q
-/0Rcfem2FQ2lpUCGhoWWMwj0d2kZ6ro3MT82b/Yhs0EpC41ZlWCuJmOxOQ0btql+
-41zaSBkFsTqzG9C4lw8iIr0hx4TxNZpqudE7a8tFKL5ynMcE7JieYmg2cQaH1pk=
-=44Ij
------END PGP SIGNATURE-----
-
---iytlPraCFSCqrfnM--
-
---===============5833709445070535002==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5833709445070535002==--
+T24gVGh1LCBBdWcgMjAsIDIwMTUgYXQgNToxMyBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
+ZWwub3JnPiB3cm90ZToKPiBPbiBUaHUsIEF1ZyAyMCwgMjAxNSBhdCAwNDowOToyMVBNIC0wNDAw
+LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4+IEZyb206IE1hcnV0aGkgU3Jpbml2YXMgQmF5eWF2YXJh
+cHUgPE1hcnV0aGkuQmF5eWF2YXJhcHVAYW1kLmNvbT4KPj4KPj4gQUNQIElQIGJsb2NrIGNvbnNp
+c3RzIG9mIGRlZGljYXRlZCBETUEgYW5kIEkyUyBibG9ja3MuIFRoZSBQQ00gZHJpdmVyCj4+IHBy
+b3ZpZGVzIHRoZSBETUEgYW5kIENQVSBEQUkgY29tcG9uZW50cyB0byBBTFNBIGNvcmUuCj4+Cj4+
+IHYyOiBzcXVhc2ggaW4gS2NvbmZpZyBmaXgKPj4gdjM6IHNxdWFzaCBhZGRpdGlvbmFsIGNvbW1p
+dHMsIGNvbnZlcnQgdG8gbWZkLCBkcm9wIHJ0Mjg2IGNoYW5nZXMKPj4gdjQ6IHNxdWFzaCBpbiBu
+YW1pbmcgZml4ZXMKPgo+IFRvIHJlcGVhdCB3aGF0IEkgc2FpZCBsYXN0IHRpbWU6Cj4KPiB8IFBs
+ZWFzZSBmb2xsb3cgdGhlIHBhdGNoIHN1Ym1pc3Npb24gcHJvY2VzcyBpbiBTdWJtaXR0aW5nUGF0
+Y2hlczogcHV0IGFueQo+IHwgdmVyc2lvbmluZyBpbiB0aGUgc3ViamVjdCBsaW5lIGluc2lkZSB0
+aGUgW10gYW5kIHB1dCBub2lzZSBsaWtlIGludGVyCj4gfCB2ZXJzaW9uIGNoYW5nZWxvZ3MgYWZ0
+ZXIgdGhlIC0tLS4KCkkgYWRkcmVzc2VkIHRoaXMgaW4gbXkgY292ZXJsZXR0ZXIuICBTb21lIHN1
+YnN5c3RlbXMgcHJlZmVyIHRvIHJldGFpbgp0aGF0IGluZm9ybWF0aW9uLiAgSWYgeW91J2QgcHJl
+ZmVyIHRvIG5vdCBoYXZlIHRoZW0gaW4gdGhlIGF1ZGlvIHBhdGNoCkkgd2lsbCByZW1vdmUgdGhl
+bS4KCj4KPj4gKy8qCj4+ICsgKiBBTUQgQUxTQSBTb0MgUENNIERyaXZlcgo+PiArICoKPj4gKyAq
+IENvcHlyaWdodCAyMDE0LTIwMTUgQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLgo+PiArICoK
+Pj4gKyAqIFBlcm1pc3Npb24gaXMgaGVyZWJ5IGdyYW50ZWQsIGZyZWUgb2YgY2hhcmdlLCB0byBh
+bnkgcGVyc29uIG9idGFpbmluZyBhCj4+ICsgKiBjb3B5IG9mIHRoaXMgc29mdHdhcmUgYW5kIGFz
+c29jaWF0ZWQgZG9jdW1lbnRhdGlvbiBmaWxlcyAodGhlICJTb2Z0d2FyZSIpLAo+PiArICogdG8g
+ZGVhbCBpbiB0aGUgU29mdHdhcmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nIHdpdGhv
+dXQgbGltaXRhdGlvbgo+PiArICogdGhlIHJpZ2h0cyB0byB1c2UsIGNvcHksIG1vZGlmeSwgbWVy
+Z2UsIHB1Ymxpc2gsIGRpc3RyaWJ1dGUsIHN1YmxpY2Vuc2UsCj4+ICsgKiBhbmQvb3Igc2VsbCBj
+b3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBhbmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUK
+Pj4gKyAqIFNvZnR3YXJlIGlzIGZ1cm5pc2hlZCB0byBkbyBzbywgc3ViamVjdCB0byB0aGUgZm9s
+bG93aW5nIGNvbmRpdGlvbnM6Cj4+ICsgKgo+PiArICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3Rp
+Y2UgYW5kIHRoaXMgcGVybWlzc2lvbiBub3RpY2Ugc2hhbGwgYmUgaW5jbHVkZWQgaW4KPj4gKyAq
+IGFsbCBjb3BpZXMgb3Igc3Vic3RhbnRpYWwgcG9ydGlvbnMgb2YgdGhlIFNvZnR3YXJlLgo+PiAr
+ICoKPj4gKyAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAiQVMgSVMiLCBXSVRIT1VUIFdBUlJB
+TlRZIE9GIEFOWSBLSU5ELCBFWFBSRVNTIE9SCj4+ICsgKiBJTVBMSUVELCBJTkNMVURJTkcgQlVU
+IE5PVCBMSU1JVEVEIFRPIFRIRSBXQVJSQU5USUVTIE9GIE1FUkNIQU5UQUJJTElUWSwKPj4gKyAq
+IEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFIEFORCBOT05JTkZSSU5HRU1FTlQuICBJ
+TiBOTyBFVkVOVCBTSEFMTAo+PiArICogVEhFIENPUFlSSUdIVCBIT0xERVIoUykgT1IgQVVUSE9S
+KFMpIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlNLCBEQU1BR0VTIE9SCj4+ICsgKiBPVEhFUiBMSUFC
+SUxJVFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBUT1JUIE9SIE9USEVSV0lT
+RSwKPj4gKyAqIEFSSVNJTkcgRlJPTSwgT1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBUSEUg
+U09GVFdBUkUgT1IgVEhFIFVTRSBPUgo+PiArICogT1RIRVIgREVBTElOR1MgSU4gVEhFIFNPRlRX
+QVJFLgo+Cj4gSSBhbHNvIHJlbWFpbiB2ZXJ5IGNvbmNlcm5lZCBhYm91dCB0aGlzIG5vbi1HUEwg
+bGljZW5zZSB5b3UgYXJlIHVzaW5nLgo+IFBsZWFzZSBkbyBub3QgaWdub3JlIHJldmlldyBjb21t
+ZW50cyBsaWtlIHRoaXMgOigKCkkgbWVudGlvbmVkIHRoaXMgaW4gdGhlIGNvdmVyIGxldHRlciBh
+cyB3ZWxsLiAgTW9zdCBpZiBub3QgYWxsIG9mIHRoZQpkcm0gZHJpdmVycyBhcmUgbGljZW5zZWQg
+dGhlIHNhbWUgd2F5LiAgSUFOQUwsIGJ1dCBJIGFtIG5vdCBhd2FyZSBvZgphbnkgY29uY2VybnMg
+YWJvdXQgdGhlbS4KCkFsZXgKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmkt
+ZGV2ZWwK
