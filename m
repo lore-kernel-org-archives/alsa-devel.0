@@ -1,56 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: ac97: Switch to dev_pm_ops
-Date: Thu, 20 Aug 2015 10:18:24 -0700
-Message-ID: <20150820171824.GE12027@sirena.org.uk>
-References: <1438890129-32621-1-git-send-email-lars@metafoo.de>
- <20150806225501.GA24261@dtor-ws>
- <55C468BC.60500@metafoo.de>
- <20150807163213.GB30852@dtor-ws>
- <20150820163301.GA12027@sirena.org.uk>
- <55D601CC.4030707@metafoo.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YkJPYEFdoxh/AXLE"
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <55D601CC.4030707@metafoo.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Applied "ASoC: samsung: Remove redundant arndale_audio_remove" to the asoc tree
+Date: Thu, 20 Aug 2015 11:34:07 -0700
+Message-ID: <E1ZSUf9-0008Pp-HP@finisterre>
+References: <20150820164115.GA19191@localhost>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20150820164115.GA19191@localhost>
+Sender: stable-owner@vger.kernel.org
+To: Vaishali Thakkar <vthakkar1994@gmail.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---YkJPYEFdoxh/AXLE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: samsung: Remove redundant arndale_audio_remove
 
-On Thu, Aug 20, 2015 at 06:35:24PM +0200, Lars-Peter Clausen wrote:
-> On 08/20/2015 06:33 PM, Mark Brown wrote:
+has been applied to the asoc tree at
 
-> > Just discussed this in person with Dmitry: I'll apply the patch just now
-> > for v4.3 and we can incrementally improve the ifdef handling after.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Great, thanks. I was about to send a patch with the ifdefs removed tomorrow.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Oh, that'd be even better if we could get that into v4.3 instead - this
-was partly given that I'd just met Dmitry and the merge window will be
-opening very soon.  If you could get that patch done that'd be even
-better.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---YkJPYEFdoxh/AXLE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEcBAEBCAAGBQJV1gvfAAoJECTWi3JdVIfQ+/gH+gMdODcYTXYbrOofGDcoChY+
-yw+gNkjdhepxdCpJzBvi2z6WditmFxVVEJVNHYmP2M3o4Ge20Q2r64Y466fFmJ41
-f0GOQxmc7NFsu0Veg4weUvlrHeQIxREMqKVGiWyw+l1qZU61T7s2ODsabOeM5EpR
-Vo48CZ4zheiJzutCaC47iZ/IFNTYYQPqWQYAjggkE5bsTLNVdas94ZbUgiL1wdTi
-6AU5zWvjYcEEpHKy0UdJ4wUFOZb0X0kuEYAGomrXN5BCbO4ZF5mO/k/0WkCCT8Nk
-2GHWJP/REACnKNEuutMXQlkGPmVCq+rOt7OMILm5qk0aBifAr/lY+Hc3r7yKbHE=
-=Uu7H
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---YkJPYEFdoxh/AXLE--
+>From 14a500fe1396934c6b3ed8f009459a4723da7862 Mon Sep 17 00:00:00 2001
+From: Vaishali Thakkar <vthakkar1994@gmail.com>
+Date: Thu, 20 Aug 2015 22:11:15 +0530
+Subject: [PATCH] ASoC: samsung: Remove redundant arndale_audio_remove
+
+There is no use of snd_soc_unregister_card in remove function
+as devm_snd_soc_register_card in probe function automatically
+handles it. So, remove use of snd_soc_unregister_card and with
+this change remove arndale_audio_remove as it is now redundant.
+
+Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/samsung/arndale_rt5631.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
+index 8bf2e2c..9e371eb 100644
+--- a/sound/soc/samsung/arndale_rt5631.c
++++ b/sound/soc/samsung/arndale_rt5631.c
+@@ -116,15 +116,6 @@ static int arndale_audio_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int arndale_audio_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id samsung_arndale_rt5631_of_match[] __maybe_unused = {
+ 	{ .compatible = "samsung,arndale-rt5631", },
+ 	{ .compatible = "samsung,arndale-alc5631", },
+@@ -139,7 +130,6 @@ static struct platform_driver arndale_audio_driver = {
+ 		.of_match_table = of_match_ptr(samsung_arndale_rt5631_of_match),
+ 	},
+ 	.probe = arndale_audio_probe,
+-	.remove = arndale_audio_remove,
+ };
+ 
+ module_platform_driver(arndale_audio_driver);
+-- 
+2.5.0
