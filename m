@@ -1,7 +1,8 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver [v4]
-Date: Thu, 20 Aug 2015 19:50:34 -0400
-Message-ID: <CADnq5_MvWi9w4QgmenGDyotdmwSxC+WAdpJUbF+pi5RV_ZmBAA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
+	[v4]
+Date: Thu, 20 Aug 2015 17:10:39 -0700
+Message-ID: <20150821001039.GC12027@sirena.org.uk>
 References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
  <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
  <20150820211305.GU12027@sirena.org.uk>
@@ -9,59 +10,96 @@ References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
  <20150820223113.GW12027@sirena.org.uk>
  <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
  <20150820234537.GA12027@sirena.org.uk>
+ <CADnq5_MvWi9w4QgmenGDyotdmwSxC+WAdpJUbF+pi5RV_ZmBAA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20150820234537.GA12027@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
+Content-Type: multipart/mixed; boundary="===============2878749176428448096=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B50732654E0
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 02:10:50 +0200 (CEST)
+In-Reply-To: <CADnq5_MvWi9w4QgmenGDyotdmwSxC+WAdpJUbF+pi5RV_ZmBAA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alex Deucher <alexdeucher@gmail.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
- Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBdWcgMjAsIDIwMTUgYXQgNzo0NSBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPiB3cm90ZToKPiBPbiBUaHUsIEF1ZyAyMCwgMjAxNSBhdCAwNzoxMToyMlBNIC0wNDAw
-LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4+IE9uIFRodSwgQXVnIDIwLCAyMDE1IGF0IDY6MzEgUE0s
-IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gPiBEUk0gaXMgYSBz
-cGVjaWFsIGNhc2UgaGVyZSBzaW5jZSB0aGVyZSBoYXMgYWx3YXlzIGJlZW4gd29yayB0byBzaGFy
-ZQo+PiA+IGJpdHMgb2YgdGhlIGNvZGUgd2l0aCBvdGhlciBvcGVyYXRpbmcgc3lzdGVtcywgdGhl
-IGxpY2Vuc2luZyBmb3IgRFJNIGlzCj4+ID4gdmVyeSB1bnVzdWFsIHdpdGhpbiB0aGUga2VybmVs
-LiAgQSBxdWljayBzYW1wbGluZyBvZiBkcml2ZXJzIHN1Z2dlc3RzCj4+ID4gdGhhdCB0aGlzIGxp
-Y2Vuc2UgaXMgbm90IHVuaXZlcnNhbGx5IHVzZWQgdGhlcmUgZWl0aGVyLgo+Cj4+ID4gVGhlcmUg
-aXMgYWxzbyB0aGUgaXNzdWUgSSByYWlzZWQgd2l0aCB0aGUgZmFjdCB0aGF0IHlvdXIgbm9uLUdQ
-TCBsaWNlbnNlCj4+ID4gc3RhdGVtZW50IGRvZXMgbm90IGFwcGVhciB0byBjb3JyZXNwb25kIHRv
-IHRoZSBNT0RVTEVfTElDRU5TRSgpIHRoYXQKPj4gPiB5b3UndmUgaW5jbHVkZWQgd2hpY2ggY2xh
-aW1zIHRoZSBjb2RlIGlzIEdQTGVkLgo+Cj4+IE9uY2UgYWdhaW4gdGhpcyBpcyBleGFjdGx5IHdo
-YXQgdGhlIG90aGVyIGRybSBkcml2ZXJzIGFuZCBzdXBwb3J0Cj4+IG1vZHVsZXMgZG8uICBBTUQg
-Z2VuZXJhbGx5IHByZWZlcnMgdG8gY29udHJpYnV0ZSBjb2RlIGxpY2Vuc2VkIHVuZGVyCj4+IGFu
-IE1JVC9YMTEgc3R5bGUgbGljZW5jZSB3aGljaCBpcyB3aHkgd2UndmUgZG9uZSB0aGlzLiAgSUFO
-QUwsIGJ1dCBJCj4+IHRoaW5rIHRoYXQgaXMgY29tcGF0aWJsZSB3aXRoICJHUEwgYW5kIGFkZGl0
-aW9uYWwgcmlnaHRzIi4KPgo+IFRoaXMgaXMgbm90IGEgRFJNIGRyaXZlciwgaXQgaXMgYW4gQVNv
-QyBkcml2ZXIsIGFuZCBsaWtlIEkgc2F5IERSTSBpcyBhCj4gYml0IHNwZWNpYWwuICBJIGRvIG5v
-dGUgdGhhdCBBTUQgaGFzIGNvbnRyaWJ1dGVkIGF0IGxlYXN0IGl0cyBDQ1AgYW5kCj4gY3B1ZnJl
-cSBkcml2ZXJzIChpbmRlZWQgYWxsIHRoZWlyIG5vbi1EUk0gY29kZSBJIGNvdWxkIGZpbmQgd2l0
-aAo+IGV4cGxpY2l0IGxpY2Vuc2Ugc3RhdGVtZW50cykgdW5kZXIgYSBub3JtYWwga2VybmVsIGxp
-Y2Vuc2UuICBBcyBmYXIgYXMgSQo+IGNhbiB0ZWxsIHRoaXMgbGljZW5zaW5nIGlzIGVudGlyZWx5
-IGNvbmZpbmVkIHRvIHRoZSBEUk0gZHJpdmVycy4KPgo+IEkgYW0gbm90IHJlYWRpbHkgYWJsZSB0
-byBjb252aW5jZSBteXNlbGYgdGhhdCB0aGlzIGlzIGNvbXBhdGlibGUgd2l0aAo+IHRoZSBpbnRl
-bnQgb2YgZXhwb3J0aW5nIHRoZSBBU29DIEFQSXMgX0dQTCgpLCB0aGlzIGxvb2tzIGxpa2UgaXQg
-Y2FuIGJlCj4gdXNlZCBhcyB0aGUgYmFzaXMgZm9yIGEgc2hpbSBsYXllciBmb3Igbm9uLUdQTCBj
-b2RlICh0aGUgbGljZW5zaW5nCj4gc3RyYXRlZ3kgc2VlbXMgdmVyeSBzaW1pbGFyKS4gIEknZCBu
-ZWVkIHRvIHRoaW5rIHRocm91Z2ggdGhpcyBjYXJlZnVsbHkuCgpJZiB5b3UgaGF2ZSBzdHJvbmcg
-Y29uY2VybnMsIEkgY2FuIGRvdWJsZSBjaGVjayB3aXRoIG91ciBsYXd5ZXJzIGFuZApzZWUgYWJv
-dXQgY2hhbmdpbmcgaXQsIEknbSBqdXN0IG5vdCBzdXJlIGhvdyBsb25nIHRoYXQgd2lsbCB0YWtl
-IDooClRoZSBsaWNlbnNpbmcgdGVuZHMgdG8gdmFyeSBiYXNlZCBvbiB0aGUgdGVhbXMgaW52b2x2
-ZWQuICBUaGUgQUNQCmF1ZGlvIGFuZCBpMnMgd2FzIGRldmVsb3BlZCBieSB0aGUgR1BVIHRlYW1z
-IGFuZCB3ZSd2ZSBtb3N0bHkgd29ya2VkCm9uIGRybSBhbmQgWG9yZyBzdHVmZiB1bnRpbCBub3cu
-CgpBbGV4Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
-aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============2878749176428448096==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xOS8do0ZRfB5pORP"
+Content-Disposition: inline
+
+
+--xOS8do0ZRfB5pORP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Aug 20, 2015 at 07:50:34PM -0400, Alex Deucher wrote:
+> On Thu, Aug 20, 2015 at 7:45 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> > This is not a DRM driver, it is an ASoC driver, and like I say DRM is a
+> > bit special.  I do note that AMD has contributed at least its CCP and
+> > cpufreq drivers (indeed all their non-DRM code I could find with
+> > explicit license statements) under a normal kernel license.  As far as I
+> > can tell this licensing is entirely confined to the DRM drivers.
+
+> > I am not readily able to convince myself that this is compatible with
+> > the intent of exporting the ASoC APIs _GPL(), this looks like it can be
+> > used as the basis for a shim layer for non-GPL code (the licensing
+> > strategy seems very similar).  I'd need to think through this carefully.
+
+> If you have strong concerns, I can double check with our lawyers and
+> see about changing it, I'm just not sure how long that will take :(
+
+I at the very least need to think about this, it's really important to
+me that we don't want to see proprietary drivers.
+
+> The licensing tends to vary based on the teams involved.  The ACP
+> audio and i2s was developed by the GPU teams and we've mostly worked
+> on drm and Xorg stuff until now.
+
+For reference the GPL code in the kernel includes at least:
+
+  drivers/crypto/ccp/ccp-crypto-*.c
+  drivers/cpufreq/powernow-k8.c
+  drivers/pinctrl/pinctrl-amd.c
+
+and there's direct contributions from AMD there AFAICT, not just outside
+developers contributing support for AMD chips.
+
+--xOS8do0ZRfB5pORP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV1mx6AAoJECTWi3JdVIfQv0AH/iV+MPytyTVfr9rcY6nazT/o
+5u19vwRWdHLQr5KUdbr/2jwGlx87OtcISq4y9IbF+VF2vzW7yzRpKtiNlDPFNyCl
+do5G4S9gMt7T0rOjx3ICzepP5Fyq77rSOgbeiQlAKBBnZ1svdj/T8EgKPACgsYic
+qv01zZ/g6QnbYXkqjQg2VUdD/otcEEflOKQ6JnFU+SqnEy4a86vraXE+vY+3RUWw
+Y2epqqEsHK9+OoHhfy7GYZ8NpMsJ9Gc73RMNy/wBkD0IQkM//cpBYYKs4N4a8ZsH
+fScbto24dmOPbZ7trL2BFwumOFl8BQkJonabSZ4e4hAa7dyeCEMxlyS/2U4k6KI=
+=edQs
+-----END PGP SIGNATURE-----
+
+--xOS8do0ZRfB5pORP--
+
+--===============2878749176428448096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2878749176428448096==--
