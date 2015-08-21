@@ -1,103 +1,84 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH v5 4/4] drm/i915: set proper N/CTS in modeset
-Date: Fri, 21 Aug 2015 18:26:06 +0300
-Message-ID: <20150821152606.GG5176@intel.com>
-References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
- <1439880714-40931-4-git-send-email-libin.yang@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 3/5] ALSA: hdac: Add snd_hdac_get_hdac_stream()
+Date: Fri, 21 Aug 2015 21:36:19 +0530
+Message-ID: <1440173181-3150-4-git-send-email-vinod.koul@intel.com>
+References: <1440173181-3150-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <1439880714-40931-4-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: libin.yang@intel.com
-Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDE622605B1
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 18:04:34 +0200 (CEST)
+In-Reply-To: <1440173181-3150-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgMTgsIDIwMTUgYXQgMDI6NTE6NTRQTSArMDgwMCwgbGliaW4ueWFuZ0BpbnRl
-bC5jb20gd3JvdGU6Cj4gRnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4g
-Cj4gV2hlbiBtb2Rlc2V0IG9jY3VycyBhbmQgdGhlIFRNRFMgZnJlcXVlbmN5IGlzIHNldCB0byBz
-b21lCj4gc3BlaWNhbCB2YWx1ZXMsIHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBp
-ZiBhdWRpbwo+IGlzIHBsYXlpbmcuCj4gCj4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8bGli
-aW4ueWFuZ0BpbnRlbC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVn
-LmggICAgfCAgOCArKysrKysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5j
-IHwgNDAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KPiAgMiBmaWxlcyBj
-aGFuZ2VkLCA0NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmggYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-OTE1X3JlZy5oCj4gaW5kZXggNjc4NmU5NC4uMTIyYjViZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
-L2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkx
-NV9yZWcuaAo+IEBAIC03MDM1LDYgKzcwMzUsOCBAQCBlbnVtIHNrbF9kaXNwX3Bvd2VyX3dlbGxz
-IHsKPiAgCQkJCQlfSFNXX0FVRF9NSVNDX0NUUkxfQSwgXAo+ICAJCQkJCV9IU1dfQVVEX01JU0Nf
-Q1RSTF9CKQo+ICAKPiArI2RlZmluZSBIU1dfQVVEX1BJUEVfQ09OTl9TRUxfQ1RSTCAgMHg2NTBh
-Ywo+ICsKPiAgI2RlZmluZSBfSFNXX0FVRF9ESVBfRUxEX0NUUkxfU1RfQQkweDY1MGI0Cj4gICNk
-ZWZpbmUgX0hTV19BVURfRElQX0VMRF9DVFJMX1NUX0IJMHg2NTFiNAo+ICAjZGVmaW5lIEhTV19B
-VURfRElQX0VMRF9DVFJMKHBpcGUpIF9QSVBFKHBpcGUsIFwKPiBAQCAtNzA0OSw2ICs3MDUxLDEy
-IEBAIGVudW0gc2tsX2Rpc3BfcG93ZXJfd2VsbHMgewo+ICAJCQkJCV9IU1dfQVVEX0RJR19DTlZU
-XzIpCj4gICNkZWZpbmUgRElQX1BPUlRfU0VMX01BU0sJCTB4Mwo+ICAKPiArI2RlZmluZSBfSFNX
-X0FVRF9TVFJfREVTQ18xCQkweDY1MDg0Cj4gKyNkZWZpbmUgX0hTV19BVURfU1RSX0RFU0NfMgkJ
-MHg2NTE4NAo+ICsjZGVmaW5lIEFVRF9TVFJfREVTQyhwaXBlKQlfUElQRShwaXBlLCBcCj4gKwkJ
-CQkJIF9IU1dfQVVEX1NUUl9ERVNDXzEsCVwKPiArCQkJCQkgX0hTV19BVURfU1RSX0RFU0NfMikK
-PiArCj4gICNkZWZpbmUgX0hTV19BVURfRURJRF9EQVRBX0EJCTB4NjUwNTAKPiAgI2RlZmluZSBf
-SFNXX0FVRF9FRElEX0RBVEFfQgkJMHg2NTE1MAo+ICAjZGVmaW5lIEhTV19BVURfRURJRF9EQVRB
-KHBpcGUpIF9QSVBFKHBpcGUsIFwKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiBpbmRl
-eCA5NmI5N2JlLi4wZGZkYzc3IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2lu
-dGVsX2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4g
-QEAgLTE0MCw2ICsxNDAsMjcgQEAgc3RhdGljIGJvb2wgYXVkaW9fcmF0ZV9uZWVkX3Byb2coc3Ry
-dWN0IGludGVsX2NydGMgKmNydGMsCj4gIAkJcmV0dXJuIGZhbHNlOwo+ICB9Cj4gIAo+ICtzdGF0
-aWMgaW50IGF1ZGlvX2NvbmZpZ19nZXRfcmF0ZShzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2
-X3ByaXYsCj4gKwkJCQkJCWVudW0gcGlwZSBwaXBlKQo+ICt7Cj4gKwl1aW50MzJfdCB0bXA7Cj4g
-KwlpbnQgY3Z0X2lkeDsKPiArCWludCBiYXNlX3JhdGUsIG11bCwgZGl2LCByYXRlOwo+ICsKPiAr
-CXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX1BJUEVfQ09OTl9TRUxfQ1RSTCk7Cj4gKwljdnRfaWR4
-ID0gKHRtcCA+PiAocGlwZSAqIDgpKSAmIDB4ZmY7Cj4gKwl0bXAgPSBJOTE1X1JFQUQoQVVEX1NU
-Ul9ERVNDKGN2dF9pZHgpKTsKPiArCWJhc2VfcmF0ZSA9IHRtcCAmICgxIDw8IDE0KTsKPiArCWlm
-IChiYXNlX3JhdGUgPT0gMCkKPiArCQlyYXRlID0gNDgwMDA7Cj4gKwllbHNlCj4gKwkJcmF0ZSA9
-IDQ0MTAwOwo+ICsJbXVsID0gKHRtcCAmICgweDcgPDwgMTEpKSArIDE7Cj4gKwlkaXYgPSAodG1w
-ICYgKDB4NyA8PCA4KSkgKyAxOwo+ICsJcmF0ZSA9IHJhdGUgKiBtdWwgLyBkaXY7Cj4gKwlyZXR1
-cm4gcmF0ZTsKPiArfQoKR2l2ZW4geW91ciBuZXcgLnN5bmNfYXVkaW9fcmF0ZSgpIGNhbGxiYWNr
-LCB0aGUgYXVkaW8gZHJpdmVyIHNob3VsZCBoYXZlCmFscmVhZHkgdG9sZCB1cyB3aGF0IHRoZSBj
-dXJyZW50IHNhbXBsZSByYXRlIGlzLCBhbmQgc28gd2Ugc2hvdWxkbid0CmhhdmUgdG8gZ28gZGln
-IGl0IHVwIGZyb20gcmVnaXN0ZXJzLgoKPiArCj4gIHN0YXRpYyBib29sIGludGVsX2VsZF91cHRv
-ZGF0ZShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+ICAJCQkgICAgICAgaW50IHJl
-Z19lbGR2LCB1aW50MzJfdCBiaXRzX2VsZHYsCj4gIAkJCSAgICAgICBpbnQgcmVnX2VsZGEsIHVp
-bnQzMl90IGJpdHNfZWxkYSwKPiBAQCAtMjYxLDYgKzI4Miw4IEBAIHN0YXRpYyB2b2lkIGhzd19h
-dWRpb19jb2RlY19lbmFibGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiAgCWNv
-bnN0IHVpbnQ4X3QgKmVsZCA9IGNvbm5lY3Rvci0+ZWxkOwo+ICAJdWludDMyX3QgdG1wOwo+ICAJ
-aW50IGxlbiwgaTsKPiArCWludCBuX2xvdywgbl91cCwgbjsKPiArCWludCByYXRlOwo+ICAKPiAg
-CURSTV9ERUJVR19LTVMoIkVuYWJsZSBhdWRpbyBjb2RlYyBvbiBwaXBlICVjLCAldSBieXRlcyBF
-TERcbiIsCj4gIAkJICAgICAgcGlwZV9uYW1lKHBpcGUpLCBkcm1fZWxkX3NpemUoZWxkKSk7Cj4g
-QEAgLTI5NiwxMiArMzE5LDI3IEBAIHN0YXRpYyB2b2lkIGhzd19hdWRpb19jb2RlY19lbmFibGUo
-c3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiAgCS8qIEVuYWJsZSB0aW1lc3RhbXBz
-ICovCj4gIAl0bXAgPSBJOTE1X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwo+ICAJdG1wICY9IH5B
-VURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4gLQl0bXAgJj0gfkFVRF9DT05GSUdfTl9QUk9HX0VO
-QUJMRTsKPiAgCXRtcCAmPSB+QVVEX0NPTkZJR19QSVhFTF9DTE9DS19IRE1JX01BU0s7Cj4gIAlp
-ZiAoaW50ZWxfcGlwZV9oYXNfdHlwZShpbnRlbF9jcnRjLCBJTlRFTF9PVVRQVVRfRElTUExBWVBP
-UlQpKQo+ICAJCXRtcCB8PSBBVURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4gIAllbHNlCj4gIAkJ
-dG1wIHw9IGF1ZGlvX2NvbmZpZ19oZG1pX3BpeGVsX2Nsb2NrKG1vZGUpOwo+ICsKPiArCXRtcCAm
-PSB+QVVEX0NPTkZJR19OX1BST0dfRU5BQkxFOwo+ICsJaWYgKGF1ZGlvX3JhdGVfZWVkX3Byb2co
-aW50ZWxfY3J0YywgbW9kZSkpIHsKPiArCQlyYXRlID0gYXVkaW9fY29uZmlnX2dldF9yYXRlKGRl
-dl9wcml2LCBwaXBlKTsKPiArCQluID0gYXVkaW9fY29uZmlnX2dldF9uKG1vZGUsIHJhdGUpOwo+
-ICsJCWlmIChuICE9IDApIHsKPiArCQkJbl9sb3cgPSBuICYgMHhmZmY7Cj4gKwkJCW5fdXAgPSAo
-biA+PiAxMikgJiAweGZmOwo+ICsJCQl0bXAgJj0gfihBVURfQ09ORklHX1VQUEVSX05fTUFTSyB8
-Cj4gKwkJCQkJIEFVRF9DT05GSUdfTE9XRVJfTl9NQVNLKTsKPiArCQkJdG1wIHw9ICgobl91cCA8
-PCBBVURfQ09ORklHX1VQUEVSX05fU0hJRlQpIHwKPiArCQkJCQkobl9sb3cgPDwgQVVEX0NPTkZJ
-R19MT1dFUl9OX1NISUZUKSB8Cj4gKwkJCQkJQVVEX0NPTkZJR19OX1BST0dfRU5BQkxFKTsKPiAr
-CQl9Cj4gKwl9CgpXZSBzaG91bGQgc2hhcmUgdGhlIGNvZGUgdG8gc2V0IHRoaXMgdXAgd2l0aCAu
-c3luY19hdWRpb19yYXRlKCkgcmF0aGVyCnRoYW4gaGF2aW5nIHR3byBjb3BpZXMgb2YgZXNzZW50
-aWNhbGx5IHRoZSBzYW1lIGNvZGUuCgo+ICsKPiAgCUk5MTVfV1JJVEUoSFNXX0FVRF9DRkcocGlw
-ZSksIHRtcCk7Cj4gIH0KPiAgCj4gLS0gCj4gMS45LjEKPiAKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEludGVsLWdmeCBtYWlsaW5nIGxpc3QKPiBJ
-bnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9w
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRl
-bCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50
-ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+From: Jeeja KP <jeeja.kp@intel.com>
+
+Add a helper to find the stream using stream tag and direction.
+This is useful for drivers to query stream based on stream tag and
+direction, fox example while downloading FW thru DSP loader code
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/hdaudio.h |  2 ++
+ sound/hda/hdac_stream.c | 19 +++++++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index e37c3355ae8a..67f7068696b9 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -438,6 +438,8 @@ void snd_hdac_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
+ struct hdac_stream *snd_hdac_stream_assign(struct hdac_bus *bus,
+ 					   struct snd_pcm_substream *substream);
+ void snd_hdac_stream_release(struct hdac_stream *azx_dev);
++struct hdac_stream *snd_hdac_get_hdac_stream(struct hdac_bus *bus,
++						int dir, int stream_tag);
+ 
+ int snd_hdac_stream_setup(struct hdac_stream *azx_dev);
+ void snd_hdac_stream_cleanup(struct hdac_stream *azx_dev);
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index 4c15d0accc9e..02aed2e85504 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -286,6 +286,25 @@ void snd_hdac_stream_release(struct hdac_stream *azx_dev)
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_stream_release);
+ 
++/**
++ * snd_hdac_get_hdac_stream - return hdac_stream based on stream_tag and
++ * direction
++ *
++ * @bus: HD-audio core bus
++ */
++struct hdac_stream *snd_hdac_get_hdac_stream(struct hdac_bus *bus,
++						int dir, int stream_tag)
++{
++	struct hdac_stream *s;
++
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (s->direction == dir && s->stream_tag == stream_tag)
++			return s;
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_get_hdac_stream);
+ /*
+  * set up a BDL entry
+  */
+-- 
+1.9.1
