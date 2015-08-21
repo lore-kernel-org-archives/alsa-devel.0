@@ -1,154 +1,135 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v2] ALSA: ac97: Switch to dev_pm_ops
-Date: Fri, 21 Aug 2015 09:15:29 -0700
-Message-ID: <20150821161529.GB26302@localhost>
-References: <1440143313-27914-1-git-send-email-lars@metafoo.de>
- <s5hbne1ujxk.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V5 3/3] ASoC: AMD: add AMD ASoC ACP-I2S
+ driver
+Date: Fri, 21 Aug 2015 09:17:16 -0700
+Message-ID: <20150821161716.GD12027@sirena.org.uk>
+References: <1440106594-29564-1-git-send-email-alexander.deucher@amd.com>
+ <20150820231848.GX12027@sirena.org.uk>
+ <CANv6ZMb9f-kaAUfcUka9T-0XLdG_0eNMVD8YvJNbN=fHEGMRPw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hbne1ujxk.wl-tiwai@suse.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3394800455951747927=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98A712604EB
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 18:17:30 +0200 (CEST)
+In-Reply-To: <CANv6ZMb9f-kaAUfcUka9T-0XLdG_0eNMVD8YvJNbN=fHEGMRPw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Cc: alsa-devel@alsa-project.org, maruthi.bayyavarapu@amd.com, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, Alex Deucher <alexdeucher@gmail.com>, airlied@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 10:25:59AM +0200, Takashi Iwai wrote:
-> On Fri, 21 Aug 2015 09:48:33 +0200,
-> Lars-Peter Clausen wrote:
-> > 
-> > Convert the ac97_bus from legacy suspend/resume callbacks to dev_pm_ops.
-> > 
-> > Since there isn't anything special to do at the bus level the bus driver
-> > does not have to implement any callbacks. The device driver core will
-> > automatically pick up and execute the device's PM ops.
-> > 
-> > As there is only a single AC'97 driver implementing suspend and resume,
-> > update both the core and driver at the same time to avoid unnecessary code
-> > churn.
-> > 
-> > While we are at it also drop the ifdefs around the suspend/resume functions
-> > to increase compile test coverage.
-> > 
-> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > ---
-> > This patch touches code in both ALSA and the input subsystem. Ideally this
-> > patch will be merged via the ALSA tree. Given that the wm97xx touchscreen
-> > driver is not seeing too many changes these days the risk of conflicts
-> > should be low.
-> 
-> If Dmitry is happy with this, I'll take this.
 
-Sounds good to me.
+--===============3394800455951747927==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="p1zxN+PsucbyOM2v"
+Content-Disposition: inline
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Thanks!
+--p1zxN+PsucbyOM2v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > Changes since v1:
-> > 	* Drop ifdefs around suspend/resum functions
-> > ---
-> >  drivers/input/touchscreen/wm97xx-core.c | 13 ++++---------
-> >  sound/ac97_bus.c                        | 26 --------------------------
-> >  2 files changed, 4 insertions(+), 35 deletions(-)
-> > 
-> > diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
-> > index b1ae779..1534e9b 100644
-> > --- a/drivers/input/touchscreen/wm97xx-core.c
-> > +++ b/drivers/input/touchscreen/wm97xx-core.c
-> > @@ -732,8 +732,7 @@ static int wm97xx_remove(struct device *dev)
-> >  	return 0;
-> >  }
-> >  
-> > -#ifdef CONFIG_PM
-> > -static int wm97xx_suspend(struct device *dev, pm_message_t state)
-> > +static int __maybe_unused wm97xx_suspend(struct device *dev)
-> >  {
-> >  	struct wm97xx *wm = dev_get_drvdata(dev);
-> >  	u16 reg;
-> > @@ -765,7 +764,7 @@ static int wm97xx_suspend(struct device *dev, pm_message_t state)
-> >  	return 0;
-> >  }
-> >  
-> > -static int wm97xx_resume(struct device *dev)
-> > +static int __maybe_unused wm97xx_resume(struct device *dev)
-> >  {
-> >  	struct wm97xx *wm = dev_get_drvdata(dev);
-> >  
-> > @@ -799,10 +798,7 @@ static int wm97xx_resume(struct device *dev)
-> >  	return 0;
-> >  }
-> >  
-> > -#else
-> > -#define wm97xx_suspend		NULL
-> > -#define wm97xx_resume		NULL
-> > -#endif
-> > +static SIMPLE_DEV_PM_OPS(wm97xx_pm_ops, wm97xx_suspend, wm97xx_resume);
-> >  
-> >  /*
-> >   * Machine specific operations
-> > @@ -836,8 +832,7 @@ static struct device_driver wm97xx_driver = {
-> >  	.owner =	THIS_MODULE,
-> >  	.probe =	wm97xx_probe,
-> >  	.remove =	wm97xx_remove,
-> > -	.suspend =	wm97xx_suspend,
-> > -	.resume =	wm97xx_resume,
-> > +	.pm =		&wm97xx_pm_ops,
-> >  };
-> >  
-> >  static int __init wm97xx_init(void)
-> > diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
-> > index 2b50cbe..57a6dfc 100644
-> > --- a/sound/ac97_bus.c
-> > +++ b/sound/ac97_bus.c
-> > @@ -27,35 +27,9 @@ static int ac97_bus_match(struct device *dev, struct device_driver *drv)
-> >  	return 1;
-> >  }
-> >  
-> > -#ifdef CONFIG_PM
-> > -static int ac97_bus_suspend(struct device *dev, pm_message_t state)
-> > -{
-> > -	int ret = 0;
-> > -
-> > -	if (dev->driver && dev->driver->suspend)
-> > -		ret = dev->driver->suspend(dev, state);
-> > -
-> > -	return ret;
-> > -}
-> > -
-> > -static int ac97_bus_resume(struct device *dev)
-> > -{
-> > -	int ret = 0;
-> > -
-> > -	if (dev->driver && dev->driver->resume)
-> > -		ret = dev->driver->resume(dev);
-> > -
-> > -	return ret;
-> > -}
-> > -#endif /* CONFIG_PM */
-> > -
-> >  struct bus_type ac97_bus_type = {
-> >  	.name		= "ac97",
-> >  	.match		= ac97_bus_match,
-> > -#ifdef CONFIG_PM
-> > -	.suspend	= ac97_bus_suspend,
-> > -	.resume		= ac97_bus_resume,
-> > -#endif /* CONFIG_PM */
-> >  };
-> >  
-> >  static int __init ac97_bus_init(void)
-> > -- 
-> > 2.1.4
-> > 
-> > 
+On Fri, Aug 21, 2015 at 05:21:07PM +0530, maruthi srinivas wrote:
+> On Fri, Aug 21, 2015 at 4:48 AM, Mark Brown <broonie@kernel.org> wrote:
 
--- 
-Dmitry
+> > We already have a driver for the DesignWare I2S controller.  To repeat
+> > the concern I raised in a slightly different bit of the code last time:
+
+> > | This doesn't appear to be a designware-i2s driver, we already have one
+> > | of those?
+
+> Our IP block includes few AMD IPs along with DesignWare I2S IP.  I have reused
+> code from Designware I2S controller from
+> sound/soc/dwc/designware_i2s.c and because
+> of the way IPs are coupled together, I couldn't use existing
+> Designware I2S driver as is.
+
+Could you be more specific about the way in which the IPs are coupled
+and the problems this causes please?
+
+> I have given credit to the original author in DRM patch copyright
+> header, where register I2S read/writes
+> are made. Do I need to add the same header in ASoC driver too ?
+
+What I'm looking for is actual code sharing where we use the same code
+for the I2S controller block or a clear and documented understanding of
+why it is not possible to share things.
+
+> Oh! I freed  in dma_close(), that were  allocated in dma_open(). Rest
+> of them  used devm_*
+
+OK.
+
+> > > +             /* Now configure DMA to transfer only first half of System RAM
+> > > +              * buffer before playback is triggered. This will overwrite
+> > > +              * zero-ed second half of SRAM buffer */
+> > > +             acp_dev->config_dma_channel(acp_dev, SYSRAM_TO_ACP_CH_NUM,
+> > > +                                     PLAYBACK_START_DMA_DESCR_CH12,
+> > > +                                     1, 0);
+> >
+> > | Why?  The comments describe what's happening but it's not clear why it's
+> > | happening.
+
+> The reason for doing this is :  When C completes rendering, calls
+> period_elapsed() and informs
+> ALSA core there is free space to fill new data to system memory. In
+> the same irq handler, B is
+> DMA'ed to C to be ready by the time D completes rendering with
+> prefetched data (in trigger()).
+> when D completes rendering, new data fetched by ALSA core can be
+> DMA'ed  from A to D and
+> rendering is continued with C. This is done cyclically.
+
+My point here is that the internal documentation in the driver should be
+improved so that someone reading the code can tell why this is being
+done.  It doesn't need to be this full explanation but at least enough
+for people to be aware of the general issue.
+
+> > > +static struct snd_soc_dai_driver i2s_dai_driver = {
+> > > +     .playback = {
+> > > +                  .stream_name = "I2S Playback",
+> > > +                  .channels_min = 2,
+> > > +                  .channels_max = 2,
+
+> > Elsewhere support for 8 channels was declared and handled.
+
+> The board for which driver is developed, doesn't support more than 2 channels.
+
+This is a driver for the IP, not for the board - you may not be able to
+test everything but code should try to be as general as it can be.
+
+--p1zxN+PsucbyOM2v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV108IAAoJECTWi3JdVIfQD5kH/0EAbdsNykOv1XvdbKRDLOO5
+LrUXKSTORE0oeGnp1pAEUUY85yUJ4kIeoZlFUV7lm9UUaBWXtqPRtmI1aq0iVCgv
+Ud3dypam42fMP8VOsEbODZxLFgFHEt/zzp0s2YaBGd2dC1eXyeVtmDCie66IYNUV
+HARYGa9Tm+m0vcIRAUeSQstrUNpIwkKodBssQ8fZrXGsSXyaB0iQ/pUXRimaqryS
+2Ma2TiVKlG5Eg0TA+6gXHHi8PV3LKfYXr6rYRVCJ+dWA7PzlQIwU5b3lRVBFUrT6
+r3TnlX6ZEskrvkLqy9QZ87dW03MbXWbVZDi78A0rtyjm/CQ9xDGyS4KzwNgk88A=
+=eMmc
+-----END PGP SIGNATURE-----
+
+--p1zxN+PsucbyOM2v--
+
+--===============3394800455951747927==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3394800455951747927==--
