@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/4] ALSA: hdac: add hdac extended device
-Date: Fri, 21 Aug 2015 15:47:41 +0530
-Message-ID: <1440152263-24156-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/4] ALSA: hdac: add extended device driver
+	registration
+Date: Fri, 21 Aug 2015 15:47:42 +0530
+Message-ID: <1440152263-24156-4-git-send-email-vinod.koul@intel.com>
 References: <1440152263-24156-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 871FB2657B3
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 12:15:39 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1210E2657CA
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 12:15:41 +0200 (CEST)
 In-Reply-To: <1440152263-24156-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,122 +22,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds based hdac extended device object which will be used by
-ASoC HDAC codecs
+This adds new extended driver objects and API for registering the
+extended devices.
 
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio_ext.h  | 44 ++++++++++++++++++++++++++++++++++++++++++++
- sound/hda/ext/hdac_ext_bus.c | 13 +++++++++----
- 2 files changed, 53 insertions(+), 4 deletions(-)
+ include/sound/hdaudio_ext.h  | 15 ++++++++++
+ sound/hda/ext/hdac_ext_bus.c | 66 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+)
 
 diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 148267b76ab7..0641d00e2a94 100644
+index 0641d00e2a94..55e2fc36177f 100644
 --- a/include/sound/hdaudio_ext.h
 +++ b/include/sound/hdaudio_ext.h
-@@ -130,4 +130,48 @@ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
- 	writew(((readw(addr + reg) & ~(mask)) | (val)), \
- 		addr + reg)
+@@ -173,5 +173,20 @@ struct hdac_ext_device {
  
-+
-+struct hdac_ext_device;
-+
-+/* ops common to all codec drivers */
-+struct hdac_ext_codec_ops {
-+	int (*build_controls)(struct hdac_ext_device *dev);
-+	int (*init)(struct hdac_ext_device *dev);
-+	void (*free)(struct hdac_ext_device *dev);
-+};
-+
-+struct hda_dai_map {
-+	char *dai_name;
-+	hda_nid_t nid;
-+	u32	maxbps;
-+};
-+
-+#define HDA_MAX_NIDS 16
-+
-+/**
-+ * struct hdac_ext_device - HDAC Ext device
-+ *
-+ * @hdac: hdac core device
-+ * @nid_list - the dai map which matches the dai-name with the nid
-+ * @map_cur_idx - the idx in use in dai_map
-+ * @ops - the hda codec ops common to all codec drivers
-+ * @pvt_data - private data, for asoc contains asoc codec object
+ #define to_ehdac_device(dev) (container_of((dev), \
+ 				 struct hdac_ext_device, hdac))
++/*
++ * HD-audio codec base driver
 + */
-+struct hdac_ext_device {
-+	struct hdac_device hdac;
-+	struct hdac_ext_bus *ebus;
++struct hdac_ext_driver {
++	struct hdac_driver hdac;
 +
-+	/* soc-dai to nid map */
-+	struct hda_dai_map nid_list[HDA_MAX_NIDS];
-+	unsigned int map_cur_idx;
-+
-+	/* codec ops */
-+	struct hdac_ext_codec_ops ops;
-+
-+	void *private_data;
++	int	(*probe)(struct hdac_ext_device *dev);
++	int	(*remove)(struct hdac_ext_device *dev);
++	void	(*shutdown)(struct hdac_ext_device *dev);
 +};
 +
-+#define to_ehdac_device(dev) (container_of((dev), \
-+				 struct hdac_ext_device, hdac))
++int snd_hda_ext_driver_register(struct hdac_ext_driver *drv);
++void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv);
 +
++#define to_ehdac_driver(_drv) container_of(_drv, struct hdac_ext_driver, hdac)
+ 
  #endif /* __SOUND_HDAUDIO_EXT_H */
 diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index cf69202f7da0..94fb9878f5cb 100644
+index 94fb9878f5cb..8544e4fb1cd3 100644
 --- a/sound/hda/ext/hdac_ext_bus.c
 +++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -125,7 +125,7 @@ static void default_release(struct device *dev)
- }
- 
- /**
-- * snd_hdac_ext_device_init - initialize the HDA extended codec base device
-+ * snd_hdac_ext_bus_device_init - initialize the HDA extended codec base device
-  * @ebus: hdac extended bus to attach to
-  * @addr: codec address
-  *
-@@ -133,14 +133,16 @@ static void default_release(struct device *dev)
-  */
- int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
- {
-+	struct hdac_ext_device *edev;
- 	struct hdac_device *hdev = NULL;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	char name[15];
- 	int ret;
- 
--	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
--	if (!hdev)
-+	edev = kzalloc(sizeof(*hdev), GFP_KERNEL);
-+	if (!edev)
- 		return -ENOMEM;
-+	hdev = &edev->hdac;
- 
- 	snprintf(name, sizeof(name), "ehdaudio%dD%d", ebus->idx, addr);
- 
-@@ -158,6 +160,7 @@ int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
- 		snd_hdac_ext_bus_device_exit(hdev);
- 		return ret;
+@@ -196,3 +196,69 @@ void snd_hdac_ext_bus_device_remove(struct hdac_ext_bus *ebus)
  	}
-+
- 	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
-@@ -168,8 +171,10 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
-  */
- void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
- {
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_remove);
++#define dev_to_hdac(dev) (container_of((dev), \
++			struct hdac_device, dev))
++
++static inline struct hdac_ext_driver *get_edrv(struct device *dev)
++{
++	struct hdac_driver *hdrv = drv_to_hdac_driver(dev->driver);
++	struct hdac_ext_driver *edrv = to_ehdac_driver(hdrv);
++
++	return edrv;
++}
++
++static inline struct hdac_ext_device *get_edev(struct device *dev)
++{
++	struct hdac_device *hdev = dev_to_hdac_dev(dev);
 +	struct hdac_ext_device *edev = to_ehdac_device(hdev);
 +
- 	snd_hdac_device_exit(hdev);
--	kfree(hdev);
-+	kfree(edev);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
- 
++	return edev;
++}
++
++static int hda_ext_drv_probe(struct device *dev)
++{
++	return (get_edrv(dev))->probe(get_edev(dev));
++}
++
++static int hdac_ext_drv_remove(struct device *dev)
++{
++	return (get_edrv(dev))->remove(get_edev(dev));
++}
++
++static void hdac_ext_drv_shutdown(struct device *dev)
++{
++	return (get_edrv(dev))->shutdown(get_edev(dev));
++}
++
++/**
++ * snd_hda_ext_driver_register - register a driver for ext hda devices
++ *
++ * @drv: ext hda driver structure
++ */
++int snd_hda_ext_driver_register(struct hdac_ext_driver *drv)
++{
++	drv->hdac.type = HDA_DEV_ASOC;
++	drv->hdac.driver.bus = &snd_hda_bus_type;
++	/* we use default match */
++
++	if (drv->probe)
++		drv->hdac.driver.probe = hda_ext_drv_probe;
++	if (drv->remove)
++		drv->hdac.driver.remove = hdac_ext_drv_remove;
++	if (drv->shutdown)
++		drv->hdac.driver.shutdown = hdac_ext_drv_shutdown;
++
++	return driver_register(&drv->hdac.driver);
++}
++EXPORT_SYMBOL_GPL(snd_hda_ext_driver_register);
++
++/**
++ * snd_hda_ext_driver_unregister - unregister a driver for ext hda devices
++ *
++ * @drv: ext hda driver structure
++ */
++void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv)
++{
++	driver_unregister(&drv->hdac.driver);
++}
++EXPORT_SYMBOL_GPL(snd_hda_ext_driver_unregister);
 -- 
 1.9.1
