@@ -1,15 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Refresh widgets sysfs at probing
-	Haswell+ HDMI codecs
-Date: Fri, 21 Aug 2015 15:12:46 +0200
-Message-ID: <1440162766-27727-1-git-send-email-tiwai@suse.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH v2] ASoC: Handle multiple codecs with split
+ playback / capture
+Date: Fri, 21 Aug 2015 16:05:25 +0200
+Message-ID: <alpine.DEB.2.02.1508211603450.16666@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1508191717300.27635@lnxricardw1.se.axis.com>
+ <55D5F611.9090205@linux.intel.com>
+ <alpine.DEB.2.02.1508210849260.10202@lnxricardw1.se.axis.com>
+ <55D72E1B.2040109@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C32052604B3
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 15:12:48 +0200 (CEST)
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEEA22604B3
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 16:05:30 +0200 (CEST)
+In-Reply-To: <55D72E1B.2040109@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Intel Haswell (and later) codec refreshes the widgets tree to expose
-the whole widget nodes at probing.  However, this refresh was missing
-for sysfs tree.
 
-This patch adds the missing piece, as we have now a proper API.
+On Fri, 21 Aug 2015, Pierre-Louis Bossart wrote:
 
-Reported-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+> On 8/21/15 2:11 AM, Ricard Wanderlof wrote:
+> >
+> > On Thu, 20 Aug 2015, Pierre-Louis Bossart wrote:
+> >
+> >>>    /**
+> >>>     * snd_soc_runtime_activate() - Increment active count for PCM run=
+time components
+> >>>     * @rtd: ASoC PCM runtime that is activated
+> >>> @@ -371,6 +389,20 @@ static void soc_pcm_init_runtime_hw(struct snd_p=
+cm_substream *substream)
+> >>>
+> >>>    	/* first calculate min/max only for CODECs in the DAI link */
+> >>>    	for (i =3D 0; i < rtd->num_codecs; i++) {
+> >>> +
+> >>> +		/*
+> >>> +		 * Skip CODECs which don't support the current stream type.
+> >>> +		 * Otherwise, since the rate, channel, and format values will
+> >>> +		 * zero in that case, we would have no usable settings left,
+> >>> +		 * causing the resulting setup to fail.
+> >>> +		 * At least one CODEC should match, otherwise we should have
+> >>> +		 * bailed out on a higher level, since there would be no
+> >>> +		 * CODEC to support the transfer direction in that case.
+> >>> +		 */
+> >>> +		if (!snd_soc_dai_stream_valid(rtd->codec_dais[i],
+> >>> +					      substream->stream))
+> >>
+> >> Maybe I misunderstood but shouldn't there be some sort of verification
+> >> that the codecs can use the same number of slots between playback and
+> >> capture if they share the same LRCLK/FS? e.g. it's not uncommon to have
+> >> 4 mic capture and 2 ch playback. If the capture and playback is handled
+> >> by different chips you'd still need to maintain some level of consiste=
+ncy.
+> >
+> > You're probably right, although it may be that that sort of thing is
+> > handled at a higher level, e.g. the machine driver in such a setup would
+> > configure both codecs to use TDM before we even get to this function, I
+> > don't know.
+> >
+> > I think we'd have to take care of that situation if and when it arises.
+> > The setup I have here doesn't allow me to test it.
+> =
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index a97db5fc8a15..df982fc6a872 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2331,6 +2331,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 	if (is_haswell_plus(codec)) {
- 		intel_haswell_enable_all_pins(codec, true);
- 		intel_haswell_fixup_enable_dp12(codec);
-+		snd_hdac_refresh_widget_sysfs(&codec->core);
- 	}
- 
- 	/* For Valleyview/Cherryview, only the display codec is in the display
--- 
-2.5.0
+> ok, sounds fine. maybe you could add this to the comments or commit =
+
+> message then so that this assumption is known.
+
+Ok, good point. Will do.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
