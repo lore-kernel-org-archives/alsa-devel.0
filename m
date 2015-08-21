@@ -1,58 +1,125 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: fix no frame clk in master
- mode
-Date: Fri, 21 Aug 2015 00:47:37 -0700
-Message-ID: <20150821074737.GA1796@Asurada>
-References: <2ec370890aca1bf5e8b796d7ebbfc95a0161980e.1439345935.git.zidan.wang@freescale.com>
- <20150812035317.GA3194@Asurada-CZ80>
- <20150812075914.GC21786@shlinux2> <20150812091916.GA1512@Asurada>
- <20150818020152.GA17381@shlinux2>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 235C52604D5
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 09:47:50 +0200 (CEST)
-Received: by pdbfa8 with SMTP id fa8so23883913pdb.1
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 00:47:48 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20150818020152.GA17381@shlinux2>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zidan Wang <zidan.wang@freescale.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2] ALSA: ac97: Switch to dev_pm_ops
+Date: Fri, 21 Aug 2015 09:48:33 +0200
+Message-ID: <1440143313-27914-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 18, 2015 at 10:01:54AM +0800, Zidan Wang wrote:
+Convert the ac97_bus from legacy suspend/resume callbacks to dev_pm_ops.
 
-> > > > > After several open/close sai test with ctrl+c, there will be I/O error.
-> > > > > The SAI can't work anymore, can't recover. There will be no frame clock.
-> > > > > With adding the software reset in trigger stop, the issue can be fixed.
+Since there isn't anything special to do at the bus level the bus driver
+does not have to implement any callbacks. The device driver core will
+automatically pick up and execute the device's PM ops.
 
-> > > > It doesn't look like a decent fix to me. Is it the only fix that
-> > > > IC team suggests? And why put this reset in the trigger function.
-> > > > Your MEGA fast patch has already included a software reset in the
-> > > > PM runtime functions. When dealing with CTRL+C test cases, that
-> > > > software reset should have worked as well.
+As there is only a single AC'97 driver implementing suspend and resume,
+update both the core and driver at the same time to avoid unnecessary code
+churn.
 
-> > > The MEGA fast patch add the suspend/resume function, but CTRL+C will not
-> > > trigger suspend/resume function.
-> > > When CTRL+C, it will trigger stop and software reset SAI.
-> > > IC team suggest us to rest it, but I don't know if it's the only fix.
+While we are at it also drop the ifdefs around the suspend/resume functions
+to increase compile test coverage.
 
-> > You can try to add SET_RUNTIME_PM_OPS() and to see if the suspend
-> > function is called right after pressing ctrl+c.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+This patch touches code in both ALSA and the input subsystem. Ideally this
+patch will be merged via the ALSA tree. Given that the wm97xx touchscreen
+driver is not seeing too many changes these days the risk of conflicts
+should be low.
 
-> The runtime suspend function will be call after the power down time. So if i
-> playback again before the power down time, runtime suspend will not be called.
+Changes since v1:
+	* Drop ifdefs around suspend/resum functions
+---
+ drivers/input/touchscreen/wm97xx-core.c | 13 ++++---------
+ sound/ac97_bus.c                        | 26 --------------------------
+ 2 files changed, 4 insertions(+), 35 deletions(-)
 
-I see.. Can you provide me a test case to reproduce this issue?
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+index b1ae779..1534e9b 100644
+--- a/drivers/input/touchscreen/wm97xx-core.c
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -732,8 +732,7 @@ static int wm97xx_remove(struct device *dev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int wm97xx_suspend(struct device *dev, pm_message_t state)
++static int __maybe_unused wm97xx_suspend(struct device *dev)
+ {
+ 	struct wm97xx *wm = dev_get_drvdata(dev);
+ 	u16 reg;
+@@ -765,7 +764,7 @@ static int wm97xx_suspend(struct device *dev, pm_message_t state)
+ 	return 0;
+ }
+ 
+-static int wm97xx_resume(struct device *dev)
++static int __maybe_unused wm97xx_resume(struct device *dev)
+ {
+ 	struct wm97xx *wm = dev_get_drvdata(dev);
+ 
+@@ -799,10 +798,7 @@ static int wm97xx_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-#else
+-#define wm97xx_suspend		NULL
+-#define wm97xx_resume		NULL
+-#endif
++static SIMPLE_DEV_PM_OPS(wm97xx_pm_ops, wm97xx_suspend, wm97xx_resume);
+ 
+ /*
+  * Machine specific operations
+@@ -836,8 +832,7 @@ static struct device_driver wm97xx_driver = {
+ 	.owner =	THIS_MODULE,
+ 	.probe =	wm97xx_probe,
+ 	.remove =	wm97xx_remove,
+-	.suspend =	wm97xx_suspend,
+-	.resume =	wm97xx_resume,
++	.pm =		&wm97xx_pm_ops,
+ };
+ 
+ static int __init wm97xx_init(void)
+diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
+index 2b50cbe..57a6dfc 100644
+--- a/sound/ac97_bus.c
++++ b/sound/ac97_bus.c
+@@ -27,35 +27,9 @@ static int ac97_bus_match(struct device *dev, struct device_driver *drv)
+ 	return 1;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int ac97_bus_suspend(struct device *dev, pm_message_t state)
+-{
+-	int ret = 0;
+-
+-	if (dev->driver && dev->driver->suspend)
+-		ret = dev->driver->suspend(dev, state);
+-
+-	return ret;
+-}
+-
+-static int ac97_bus_resume(struct device *dev)
+-{
+-	int ret = 0;
+-
+-	if (dev->driver && dev->driver->resume)
+-		ret = dev->driver->resume(dev);
+-
+-	return ret;
+-}
+-#endif /* CONFIG_PM */
+-
+ struct bus_type ac97_bus_type = {
+ 	.name		= "ac97",
+ 	.match		= ac97_bus_match,
+-#ifdef CONFIG_PM
+-	.suspend	= ac97_bus_suspend,
+-	.resume		= ac97_bus_resume,
+-#endif /* CONFIG_PM */
+ };
+ 
+ static int __init ac97_bus_init(void)
+-- 
+2.1.4
+
