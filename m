@@ -1,87 +1,143 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH v2] ASoC: Handle multiple codecs with split
- playback / capture
-Date: Fri, 21 Aug 2015 16:05:25 +0200
-Message-ID: <alpine.DEB.2.02.1508211603450.16666@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1508191717300.27635@lnxricardw1.se.axis.com>
- <55D5F611.9090205@linux.intel.com>
- <alpine.DEB.2.02.1508210849260.10202@lnxricardw1.se.axis.com>
- <55D72E1B.2040109@linux.intel.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH v5 2/4] drm/i915: implement sync_audio_rate
+ callback
+Date: Fri, 21 Aug 2015 18:14:19 +0300
+Message-ID: <20150821151419.GE5176@intel.com>
+References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
+ <1439880714-40931-2-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
- by alsa0.perex.cz (Postfix) with ESMTP id DEEA22604B3
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 16:05:30 +0200 (CEST)
-In-Reply-To: <55D72E1B.2040109@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <1439880714-40931-2-git-send-email-libin.yang@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: libin.yang@intel.com
+Cc: tiwai@suse.de, daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On Fri, 21 Aug 2015, Pierre-Louis Bossart wrote:
-
-> On 8/21/15 2:11 AM, Ricard Wanderlof wrote:
-> >
-> > On Thu, 20 Aug 2015, Pierre-Louis Bossart wrote:
-> >
-> >>>    /**
-> >>>     * snd_soc_runtime_activate() - Increment active count for PCM run=
-time components
-> >>>     * @rtd: ASoC PCM runtime that is activated
-> >>> @@ -371,6 +389,20 @@ static void soc_pcm_init_runtime_hw(struct snd_p=
-cm_substream *substream)
-> >>>
-> >>>    	/* first calculate min/max only for CODECs in the DAI link */
-> >>>    	for (i =3D 0; i < rtd->num_codecs; i++) {
-> >>> +
-> >>> +		/*
-> >>> +		 * Skip CODECs which don't support the current stream type.
-> >>> +		 * Otherwise, since the rate, channel, and format values will
-> >>> +		 * zero in that case, we would have no usable settings left,
-> >>> +		 * causing the resulting setup to fail.
-> >>> +		 * At least one CODEC should match, otherwise we should have
-> >>> +		 * bailed out on a higher level, since there would be no
-> >>> +		 * CODEC to support the transfer direction in that case.
-> >>> +		 */
-> >>> +		if (!snd_soc_dai_stream_valid(rtd->codec_dais[i],
-> >>> +					      substream->stream))
-> >>
-> >> Maybe I misunderstood but shouldn't there be some sort of verification
-> >> that the codecs can use the same number of slots between playback and
-> >> capture if they share the same LRCLK/FS? e.g. it's not uncommon to have
-> >> 4 mic capture and 2 ch playback. If the capture and playback is handled
-> >> by different chips you'd still need to maintain some level of consiste=
-ncy.
-> >
-> > You're probably right, although it may be that that sort of thing is
-> > handled at a higher level, e.g. the machine driver in such a setup would
-> > configure both codecs to use TDM before we even get to this function, I
-> > don't know.
-> >
-> > I think we'd have to take care of that situation if and when it arises.
-> > The setup I have here doesn't allow me to test it.
-> =
-
-> ok, sounds fine. maybe you could add this to the comments or commit =
-
-> message then so that this assumption is known.
-
-Ok, good point. Will do.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+T24gVHVlLCBBdWcgMTgsIDIwMTUgYXQgMDI6NTE6NTJQTSArMDgwMCwgbGliaW4ueWFuZ0BpbnRl
+bC5jb20gd3JvdGU6Cj4gRnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4g
+Cj4gSERNSSBhdWRpbyBtYXkgbm90IHdvcmsgYXQgc29tZSBmcmVxdWVuY2llcwo+IHdpdGggdGhl
+IEhXIHByb3ZpZGVkIE4vQ1RTLgo+IAo+IFRoaXMgcGF0Y2ggc2V0cyB0aGUgcHJvcGVyIE4gdmFs
+dWUgZm9yIHRoZQo+IGdpdmVuIGF1ZGlvIHNhbXBsZSByYXRlIGF0IHRoZSBpbXBhY3RlZCBmcmVx
+dWVuY2llcy4KPiBBdCBvdGhlciBmcmVxdWVuY2llcywgaXQgd2lsbCB1c2UgdGhlIE4vQ1RTIHZh
+bHVlCj4gd2hpY2ggSFcgcHJvdmlkZXMuCj4gCj4gU2lnbmVkLW9mZi1ieTogTGliaW4gWWFuZyA8
+bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
+X2F1ZGlvLmMgfCAxMTkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICAx
+IGZpbGUgY2hhbmdlZCwgMTE5IGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
+X2F1ZGlvLmMKPiBpbmRleCBkYzMyY2Y0Li45NmI5N2JlIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+Z3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+bnRlbF9hdWRpby5jCj4gQEAgLTY4LDYgKzY4LDMxIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgewo+
+ICAJeyAxNDg1MDAsIEFVRF9DT05GSUdfUElYRUxfQ0xPQ0tfSERNSV8xNDg1MDAgfSwKPiAgfTsK
+PiAgCj4gKy8qIEhETUkgTi9DVFMgdGFibGUgKi8KPiArI2RlZmluZSBUTURTXzI5N00gMjk3MDAw
+Cj4gKyNkZWZpbmUgVE1EU18yOTZNIERJVl9ST1VORF9VUCgyOTcwMDAgKiAxMDAwLCAxMDAxKQoK
+SSBkb24ndCByZWFsbHkgbGlrZSB0aGUgZGVmaW5lcy4KCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
+ewo+ICsJaW50IHNhbXBsZV9yYXRlOwo+ICsJaW50IGNsb2NrOwo+ICsJaW50IG47Cj4gKwlpbnQg
+Y3RzOwo+ICt9IGF1ZF9uY3RzW10gPSB7Cj4gKwl7IDQ0MTAwLCBUTURTXzI5Nk0sIDQ0NTksIDIz
+NDM3NSB9LAo+ICsJeyA0NDEwMCwgVE1EU18yOTdNLCA0NzA0LCAyNDc1MDAgfSwKPiArCXsgNDgw
+MDAsIFRNRFNfMjk2TSwgNTgyNCwgMjgxMjUwIH0sCj4gKwl7IDQ4MDAwLCBUTURTXzI5N00sIDUx
+MjAsIDI0NzUwMCB9LAo+ICsJeyAzMjAwMCwgVE1EU18yOTZNLCA1ODI0LCA0MjE4NzUgfSwKPiAr
+CXsgMzIwMDAsIFRNRFNfMjk3TSwgMzA3MiwgMjIyNzUwIH0sCj4gKwl7IDg4MjAwLCBUTURTXzI5
+Nk0sIDg5MTgsIDIzNDM3NSB9LAo+ICsJeyA4ODIwMCwgVE1EU18yOTdNLCA5NDA4LCAyNDc1MDAg
+fSwKPiArCXsgOTYwMDAsIFRNRFNfMjk2TSwgMTE2NDgsIDI4MTI1MCB9LAo+ICsJeyA5NjAwMCwg
+VE1EU18yOTdNLCAxMDI0MCwgMjQ3NTAwIH0sCj4gKwl7IDE3NjQwMCwgVE1EU18yOTZNLCAxNzgz
+NiwgMjM0Mzc1IH0sCj4gKwl7IDE3NjQwMCwgVE1EU18yOTdNLCAxODgxNiwgMjQ3NTAwIH0sCj4g
+Kwl7IDQ0MTAwLCBUTURTXzI5Nk0sIDIzMjk2LCAyODEyNTAgfSwKPiArCXsgNDQxMDAsIFRNRFNf
+Mjk3TSwgMjA0ODAsIDI0NzUwMCB9LAo+ICt9OwoKTGFzdCB0d28gc2hvdWxkIGJlIDE5MiBrSHou
+IEFsbCB0aGUgb3RoZXIgdmFsdWVzIHNlZW0gdG8gbWF0Y2ggdGhlIHNwZWMuCgpUaGVzZSBkbyBh
+c3N1bWUgOGJwYywgYnV0IGFzIHRoZSBzcGVjIGRvZXNuJ3QgZXZlbiBzcGVjaWZ5IE4vQ1RTCnZh
+bHVlcyBmb3IgZGVlcCBjb2xvciBtb2RlcyBAIDI5N01Ieiwgc28gSSBzdXBwb3NlIHRoZSBleHBl
+Y3RhdGlvbnMgaXMKdGhhdCB0aGUgbWF4IFRNRFMgY2xvY2sgd2lsbCBuZXZlciBiZSBzbyBoaWdo
+IGFzIHRvIGFsbG93IHRoZW0uCgpJZi93aGVuIHdlIHN0YXJ0IHVzaW5nIG1hbnVhbCBwcm9ncmFt
+bWluZyBmb3Igb3RoZXIgVE1EUyBjbG9jayByYXRlcwp3ZSdsbCBuZWVkIHRvIGNvbnNpZGVyIDEy
+YnBjIGFzIHdlbGwuCgo+ICsKPiAgLyogZ2V0IEFVRF9DT05GSUdfUElYRUxfQ0xPQ0tfSERNSV8q
+IHZhbHVlIGZvciBtb2RlICovCj4gIHN0YXRpYyB1MzIgYXVkaW9fY29uZmlnX2hkbWlfcGl4ZWxf
+Y2xvY2soc3RydWN0IGRybV9kaXNwbGF5X21vZGUgKm1vZGUpCj4gIHsKPiBAQCAtOTAsNiArMTE1
+LDMxIEBAIHN0YXRpYyB1MzIgYXVkaW9fY29uZmlnX2hkbWlfcGl4ZWxfY2xvY2soc3RydWN0IGRy
+bV9kaXNwbGF5X21vZGUgKm1vZGUpCj4gIAlyZXR1cm4gaGRtaV9hdWRpb19jbG9ja1tpXS5jb25m
+aWc7Cj4gIH0KPiAgCj4gK3N0YXRpYyBpbnQgYXVkaW9fY29uZmlnX2dldF9uKHN0cnVjdCBkcm1f
+ZGlzcGxheV9tb2RlICptb2RlLCBpbnQgcmF0ZSkKCm1vZGUgY2FuIGJlIGNvbnN0LgoKPiArewo+
+ICsJaW50IGk7Cj4gKwo+ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoYXVkX25jdHMpOyBp
+KyspIHsKPiArCQlpZiAoKHJhdGUgPT0gYXVkX25jdHNbaV0uc2FtcGxlX3JhdGUpICYmCj4gKwkJ
+CShtb2RlLT5jbG9jayA9PSBhdWRfbmN0c1tpXS5jbG9jaykpIHsKPiArCQkJcmV0dXJuIGF1ZF9u
+Y3RzW2ldLm47Cj4gKwkJfQo+ICsJfQo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qIGNoZWNr
+IHdoZXRoZXIgTi9DVFMvTSBuZWVkIGJlIHNldCBtYW51YWxseSAqLwo+ICtzdGF0aWMgYm9vbCBh
+dWRpb19yYXRlX25lZWRfcHJvZyhzdHJ1Y3QgaW50ZWxfY3J0YyAqY3J0YywKPiArCQkJCQlzdHJ1
+Y3QgZHJtX2Rpc3BsYXlfbW9kZSAqbW9kZSkKPiArewo+ICsJaWYgKCgobW9kZS0+Y2xvY2sgPT0g
+VE1EU18yOTdNKSB8fAo+ICsJCSAobW9kZS0+Y2xvY2sgPT0gVE1EU18yOTZNKSkgJiYKPiArCQlp
+bnRlbF9waXBlX2hhc190eXBlKGNydGMsIElOVEVMX09VVFBVVF9IRE1JKSkKPiArCQlyZXR1cm4g
+dHJ1ZTsKPiArCWVsc2UKPiArCQlyZXR1cm4gZmFsc2U7Cj4gK30KPiArCj4gIHN0YXRpYyBib29s
+IGludGVsX2VsZF91cHRvZGF0ZShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVjdG9yLAo+ICAJ
+CQkgICAgICAgaW50IHJlZ19lbGR2LCB1aW50MzJfdCBiaXRzX2VsZHYsCj4gIAkJCSAgICAgICBp
+bnQgcmVnX2VsZGEsIHVpbnQzMl90IGJpdHNfZWxkYSwKPiBAQCAtNTE0LDEyICs1NjQsODEgQEAg
+c3RhdGljIGludCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9nZXRfY2RjbGtfZnJlcShzdHJ1Y3QgZGV2
+aWNlICpkZXYpCj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+ICtzdGF0aWMgaW50IGk5MTVfYXVk
+aW9fY29tcG9uZW50X3N5bmNfYXVkaW9fcmF0ZShzdHJ1Y3QgZGV2aWNlICpkZXYsCj4gKwkJCQkJ
+CWludCBwb3J0LCBpbnQgcmF0ZSkKPiArewo+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRl
+dl9wcml2ID0gZGV2X3RvX2k5MTUoZGV2KTsKPiArCXN0cnVjdCBkcm1fZGV2aWNlICpkcm1fZGV2
+ID0gZGV2X3ByaXYtPmRldjsKPiArCXN0cnVjdCBpbnRlbF9lbmNvZGVyICppbnRlbF9lbmNvZGVy
+Owo+ICsJc3RydWN0IGludGVsX2RpZ2l0YWxfcG9ydCAqaW50ZWxfZGlnX3BvcnQ7Cj4gKwlzdHJ1
+Y3QgaW50ZWxfY3J0YyAqY3J0YzsKPiArCXN0cnVjdCBkcm1fZGlzcGxheV9tb2RlICptb2RlOwo+
+ICsJZW51bSBwaXBlIHBpcGUgPSAtMTsKPiArCXUzMiB0bXA7Cj4gKwlpbnQgbl9sb3csIG5fdXAs
+IG47Cj4gKwo+ICsJLyogMS4gZ2V0IHRoZSBwaXBlICovCj4gKwlmb3JfZWFjaF9pbnRlbF9lbmNv
+ZGVyKGRybV9kZXYsIGludGVsX2VuY29kZXIpIHsKPiArCQlpZiAoaW50ZWxfZW5jb2Rlci0+dHlw
+ZSAhPSBJTlRFTF9PVVRQVVRfSERNSSkKPiArCQkJY29udGludWU7Cj4gKwkJaW50ZWxfZGlnX3Bv
+cnQgPSBlbmNfdG9fZGlnX3BvcnQoJmludGVsX2VuY29kZXItPmJhc2UpOwo+ICsJCWlmIChwb3J0
+ID09IGludGVsX2RpZ19wb3J0LT5wb3J0KSB7Cj4gKwkJCWNydGMgPSB0b19pbnRlbF9jcnRjKGlu
+dGVsX2VuY29kZXItPmJhc2UuY3J0Yyk7CgpUaGlzIHNvcnQgb2YgdGhpbmcgd291bGQgbmVlZCBz
+b21lIGxvY2tpbmcgdG8gc2FmZWx5IHN0YXJ0IGRpZ2dpbmcgYXQKdGhlIG1vZGVzZXQgc3RhdGUu
+CgpJIHdvdWxkIHByb2JhYmx5IG5vdCBkbyB0aGF0LCBhbmQgaW5zdGVhZCBhZGQgc29tZSBuZXcg
+bG9jayhzKSBmb3IgdGhpcy4KVGhlIG1vZGVzZXQgY29kZSB3b3VsZCB0aGVuIGZpbGwgb3V0IHNv
+bWUgcmVsZXZhbnQgaW5mb3JtYXRpb24gcHJvdGVjdGVkCmJ5IHRoYXQgc2FtZSBsb2NrLCBhbmQg
+dGhpcyBmdW5jdGlvbiBjb3VsZCB0aGVuIGdvIGxvb2sgYXQgaXQgd2l0aG91dApoYXZpbmcgdG8g
+d29ycnkgYWJvdXQgdGhlIHJlc3Qgb2YgbW9kZXNldCBsb2NraW5nL3N0YXRlLgoKPiArCQkJaWYg
+KCFjcnRjKSB7Cj4gKwkJCQlEUk1fREVCVUdfS01TKCIlczogY3J0YyBpcyBOVUxMXG4iLCBfX2Z1
+bmNfXyk7Cj4gKwkJCQljb250aW51ZTsKPiArCQkJfQo+ICsJCQlwaXBlID0gY3J0Yy0+cGlwZTsK
+PiArCQkJYnJlYWs7Cj4gKwkJfQo+ICsJfQo+ICsKPiArCWlmIChwaXBlID09IElOVkFMSURfUElQ
+RSkgewo+ICsJCURSTV9ERUJVR19LTVMoIm5vIHBpcGUgZm9yIHRoZSBwb3J0ICVjXG4iLCBwb3J0
+X25hbWUocG9ydCkpOwo+ICsJCXJldHVybiAtRU5PREVWOwo+ICsJfQo+ICsJRFJNX0RFQlVHX0tN
+UygicGlwZSAlYyBjb25uZWN0cyBwb3J0ICVjXG4iLAo+ICsJCQkJICBwaXBlX25hbWUocGlwZSks
+IHBvcnRfbmFtZShwb3J0KSk7Cj4gKwltb2RlID0gJmNydGMtPmNvbmZpZy0+YmFzZS5hZGp1c3Rl
+ZF9tb2RlOwo+ICsKPiArCS8qIDIuIGNoZWNrIHdoZXRoZXIgdG8gc2V0IHRoZSBOL0NUUy9NIG1h
+bnVhbGx5IG9yIG5vdCAqLwo+ICsJaWYgKCFhdWRpb19yYXRlX25lZWRfcHJvZyhjcnRjLCBtb2Rl
+KSkgewo+ICsJCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX0NGRyhwaXBlKSk7Cj4gKwkJdG1wICY9
+IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gKwkJSTkxNV9XUklURShIU1dfQVVEX0NGRyhw
+aXBlKSwgdG1wKTsKClRoaXMgc3R1ZmYgd291bGQgbmVlZCB0byBiZSBhYnN0cmFjdGVkIHRvIHdv
+cmsgb24gcHJlLUhTVyB0b28uCgo+ICsJCXJldHVybiAwOwo+ICsJfQo+ICsKPiArCW4gPSBhdWRp
+b19jb25maWdfZ2V0X24obW9kZSwgcmF0ZSk7Cj4gKwlpZiAobiA9PSAwKSB7Cj4gKwkJRFJNX0RF
+QlVHX0tNUygiVXNpbmcgYXV0b21hdGljIG1vZGUgZm9yIE4gdmFsdWUgb24gcG9ydCAlY1xuIiwK
+PiArCQkJCQkgIHBvcnRfbmFtZShwb3J0KSk7Cj4gKwkJdG1wID0gSTkxNV9SRUFEKEhTV19BVURf
+Q0ZHKHBpcGUpKTsKPiArCQl0bXAgJj0gfkFVRF9DT05GSUdfTl9QUk9HX0VOQUJMRTsKPiArCQlJ
+OTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBpcGUpLCB0bXApOwo+ICsJCXJldHVybiAwOwo+ICsJfQo+
+ICsJbl9sb3cgPSBuICYgMHhmZmY7Cj4gKwluX3VwID0gKG4gPj4gMTIpICYgMHhmZjsKPiArCj4g
+KwkvKiA0LiBzZXQgdGhlIE4vQ1RTL00gKi8KPiArCXRtcCA9IEk5MTVfUkVBRChIU1dfQVVEX0NG
+RyhwaXBlKSk7Cj4gKwl0bXAgJj0gfihBVURfQ09ORklHX1VQUEVSX05fTUFTSyB8IEFVRF9DT05G
+SUdfTE9XRVJfTl9NQVNLKTsKPiArCXRtcCB8PSAoKG5fdXAgPDwgQVVEX0NPTkZJR19VUFBFUl9O
+X1NISUZUKSB8Cj4gKwkJCShuX2xvdyA8PCBBVURfQ09ORklHX0xPV0VSX05fU0hJRlQpIHwKPiAr
+CQkJQVVEX0NPTkZJR19OX1BST0dfRU5BQkxFKTsKPiArCUk5MTVfV1JJVEUoSFNXX0FVRF9DRkco
+cGlwZSksIHRtcCk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfb3BzIGk5MTVfYXVkaW9fY29tcG9uZW50X29wcyA9
+IHsKPiAgCS5vd25lcgkJPSBUSElTX01PRFVMRSwKPiAgCS5nZXRfcG93ZXIJPSBpOTE1X2F1ZGlv
+X2NvbXBvbmVudF9nZXRfcG93ZXIsCj4gIAkucHV0X3Bvd2VyCT0gaTkxNV9hdWRpb19jb21wb25l
+bnRfcHV0X3Bvd2VyLAo+ICAJLmNvZGVjX3dha2Vfb3ZlcnJpZGUgPSBpOTE1X2F1ZGlvX2NvbXBv
+bmVudF9jb2RlY193YWtlX292ZXJyaWRlLAo+ICAJLmdldF9jZGNsa19mcmVxCT0gaTkxNV9hdWRp
+b19jb21wb25lbnRfZ2V0X2NkY2xrX2ZyZXEsCj4gKwkuc3luY19hdWRpb19yYXRlID0gaTkxNV9h
+dWRpb19jb21wb25lbnRfc3luY19hdWRpb19yYXRlLAo+ICB9Owo+ICAKPiAgc3RhdGljIGludCBp
+OTE1X2F1ZGlvX2NvbXBvbmVudF9iaW5kKHN0cnVjdCBkZXZpY2UgKmk5MTVfZGV2LAo+IC0tIAo+
+IDEuOS4xCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBJbnRlbC1nZnggbWFpbGluZyBsaXN0Cj4gSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwo+IGh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
+bC1nZngKCi0tIApWaWxsZSBTeXJqw6Rsw6QKSW50ZWwgT1RDCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwt
+Z2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
+aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
