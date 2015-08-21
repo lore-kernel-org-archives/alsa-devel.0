@@ -1,7 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/2] dmaengine: OF DMAEngine API based on CONFIG_DMA_OF instead of CONFIG_OF
-Date: Fri, 21 Aug 2015 11:48:37 +0000
-Message-ID: <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 2/2] ASoC: rsnd: SND_SOC_RCAR doesn't depend on DMA_OF
+Date: Fri, 21 Aug 2015 11:49:17 +0000
+Message-ID: <87a8tklva8.wl%kuninori.morimoto.gx@renesas.com>
 References: <87wpwpurzk.wl%kuninori.morimoto.gx@renesas.com>
 	<20150821082636.GK13546@localhost>
 	<87d1yglvcy.wl%kuninori.morimoto.gx@renesas.com>
@@ -16,29 +16,31 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-5fa422c ("dmaengine: move drivers/of/dma.c -> drivers/dma/of-dma.c")
-moved OF base DMAEngine code to of-dma.c, then it based on CONFIG_DMA_OF.
-But, OF base DMAEngine API on of_dma.h still based on CONFIG_OF now.
-So, current kernel can't find OF base DMAEngine API if .config has CONFIG_OF,
-but not have CONFIG_DMA_OF. This patch tidyup it.
+8616774("ASoC: rnsd: fix build regression without CONFIG_OF")
+added "depends on DMA_OF" in SND_SOC_RCAR to avoid compile error of
+
+    sound/built-in.o: In function `rsnd_dma_request_channel':
+    :(.text+0x9fb84): undefined reference to `of_dma_request_slave_channel'
+
+But, it was OF base DMAEngine API definition issue, not SND_SOC_RCAR
+issue. This patch remove DMA_OF dependence.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/linux/of_dma.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
-index 98ba752..36112cd 100644
---- a/include/linux/of_dma.h
-+++ b/include/linux/of_dma.h
-@@ -34,7 +34,7 @@ struct of_dma_filter_info {
- 	dma_filter_fn	filter_fn;
- };
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 07114b0..2b30304 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -36,7 +36,6 @@ config SND_SOC_SH4_SIU
  
--#ifdef CONFIG_OF
-+#ifdef CONFIG_DMA_OF
- extern int of_dma_controller_register(struct device_node *np,
- 		struct dma_chan *(*of_dma_xlate)
- 		(struct of_phandle_args *, struct of_dma *),
+ config SND_SOC_RCAR
+ 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
+-	depends on DMA_OF
+ 	select SND_SIMPLE_CARD
+ 	select REGMAP_MMIO
+ 	help
 -- 
 1.9.1
