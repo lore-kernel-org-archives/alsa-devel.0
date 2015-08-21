@@ -1,15 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 3/5] ALSA: hdac: Add snd_hdac_get_hdac_stream()
-Date: Fri, 21 Aug 2015 21:36:19 +0530
-Message-ID: <1440173181-3150-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 4/5] ALSA: hdac: Add support to enable SPIB for
+	hdac ext stream
+Date: Fri, 21 Aug 2015 21:36:20 +0530
+Message-ID: <1440173181-3150-5-git-send-email-vinod.koul@intel.com>
 References: <1440173181-3150-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE622605B1
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 18:04:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A03E26581D
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 18:04:35 +0200 (CEST)
 In-Reply-To: <1440173181-3150-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,59 +27,142 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Add a helper to find the stream using stream tag and direction.
-This is useful for drivers to query stream based on stream tag and
-direction, fox example while downloading FW thru DSP loader code
+The drivers need to set the spib and maxfifios values, so add
+these new APIs snd_hdac_ext_stream_set_spib() and
+snd_hdac_ext_stream_set_spbmaxfifo() APIs
+
+For these APIs we also need to have spib and fifos pointer, so
+add these to hdac_ext_stream and initialize them at stream init
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/hdaudio.h |  2 ++
- sound/hda/hdac_stream.c | 19 +++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ include/sound/hda_register.h    |  4 +++
+ include/sound/hdaudio_ext.h     | 10 ++++++++
+ sound/hda/ext/hdac_ext_stream.c | 54 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 68 insertions(+)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index e37c3355ae8a..67f7068696b9 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -438,6 +438,8 @@ void snd_hdac_stream_init(struct hdac_bus *bus, struct hdac_stream *azx_dev,
- struct hdac_stream *snd_hdac_stream_assign(struct hdac_bus *bus,
- 					   struct snd_pcm_substream *substream);
- void snd_hdac_stream_release(struct hdac_stream *azx_dev);
-+struct hdac_stream *snd_hdac_get_hdac_stream(struct hdac_bus *bus,
-+						int dir, int stream_tag);
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index ae995e523ff8..2ae8812d7b1a 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -160,6 +160,10 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_SPB_BASE			0x08
+ /* Interval used to calculate the iterating register offset */
+ #define AZX_SPB_INTERVAL		0x08
++/* SPIB base */
++#define AZX_SPB_SPIB			0x00
++/* SPIB MAXFIFO base*/
++#define AZX_SPB_MAXFIFO			0x04
  
- int snd_hdac_stream_setup(struct hdac_stream *azx_dev);
- void snd_hdac_stream_cleanup(struct hdac_stream *azx_dev);
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 4c15d0accc9e..02aed2e85504 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -286,6 +286,25 @@ void snd_hdac_stream_release(struct hdac_stream *azx_dev)
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_release);
+ /* registers of Global Time Synchronization Capability Structure */
+ #define AZX_GTS_CAP_ID			0x1
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 160160d9bffc..9385c99a6504 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -63,6 +63,8 @@ enum hdac_ext_stream_type {
+  * @hstream: hdac_stream
+  * @pphc_addr: processing pipe host stream pointer
+  * @pplc_addr: processing pipe link stream pointer
++ * @spib_addr: software position in buffers stream pointer
++ * @fifo_addr: software position Max fifos stream pointer
+  * @decoupled: stream host and link is decoupled
+  * @link_locked: link is locked
+  * @link_prepared: link is prepared
+@@ -74,6 +76,9 @@ struct hdac_ext_stream {
+ 	void __iomem *pphc_addr;
+ 	void __iomem *pplc_addr;
  
-+/**
-+ * snd_hdac_get_hdac_stream - return hdac_stream based on stream_tag and
-+ * direction
-+ *
-+ * @bus: HD-audio core bus
-+ */
-+struct hdac_stream *snd_hdac_get_hdac_stream(struct hdac_bus *bus,
-+						int dir, int stream_tag)
-+{
-+	struct hdac_stream *s;
++	void __iomem *spib_addr;
++	void __iomem *fifo_addr;
 +
-+	list_for_each_entry(s, &bus->stream_list, list) {
-+		if (s->direction == dir && s->stream_tag == stream_tag)
-+			return s;
+ 	bool decoupled:1;
+ 	bool link_locked:1;
+ 	bool link_prepared;
+@@ -100,6 +105,11 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *bus,
+ 				struct hdac_ext_stream *azx_dev, bool decouple);
+ void snd_hdac_ext_stop_streams(struct hdac_ext_bus *sbus);
+ 
++int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
++				 struct hdac_ext_stream *stream, u32 value);
++int snd_hdac_ext_stream_set_spbmaxfifo(struct hdac_ext_bus *ebus,
++				 struct hdac_ext_stream *stream);
++
+ void snd_hdac_ext_link_stream_start(struct hdac_ext_stream *hstream);
+ void snd_hdac_ext_link_stream_clear(struct hdac_ext_stream *hstream);
+ void snd_hdac_ext_link_stream_reset(struct hdac_ext_stream *hstream);
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index b649625f43a4..a4f6bbe5da8f 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -49,6 +49,16 @@ void snd_hdac_ext_stream_init(struct hdac_ext_bus *ebus,
+ 				AZX_PPLC_INTERVAL * idx;
+ 	}
+ 
++	if (ebus->spbcap) {
++		stream->spib_addr = ebus->spbcap + AZX_SPB_BASE +
++					AZX_SPB_INTERVAL * idx +
++					AZX_SPB_SPIB;
++
++		stream->fifo_addr = ebus->spbcap + AZX_SPB_BASE +
++					AZX_SPB_INTERVAL * idx +
++					AZX_SPB_MAXFIFO;
 +	}
 +
-+	return NULL;
+ 	stream->decoupled = false;
+ 	snd_hdac_stream_init(bus, &stream->hstream, idx, direction, tag);
+ }
+@@ -435,6 +445,50 @@ void snd_hdac_ext_stream_spbcap_enable(struct hdac_ext_bus *ebus,
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_spbcap_enable);
+ 
+ /**
++ * snd_hdac_ext_stream_set_spib - sets the spib value of a stream
++ * @ebus: HD-audio ext core bus
++ * @stream: hdac_ext_stream
++ * @value: spib value to set
++ */
++int snd_hdac_ext_stream_set_spib(struct hdac_ext_bus *ebus,
++				 struct hdac_ext_stream *stream, u32 value)
++{
++	struct hdac_bus *bus = &ebus->bus;
++
++	if (!ebus->spbcap) {
++		dev_err(bus->dev, "Address of SPB capability is NULL");
++		return -EINVAL;
++	}
++
++	writel(value, stream->spib_addr);
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_hdac_get_hdac_stream);
- /*
-  * set up a BDL entry
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_spib);
++
++/**
++ * snd_hdac_ext_stream_set_spbmaxfifo - sets the spib value of a stream
++ * @ebus: HD-audio ext core bus
++ * @stream: hdac_ext_stream
++ *
++ * Return maxfifo for the stream
++ */
++int snd_hdac_ext_stream_set_spbmaxfifo(struct hdac_ext_bus *ebus,
++				 struct hdac_ext_stream *stream)
++{
++	struct hdac_bus *bus = &ebus->bus;
++
++	if (!ebus->spbcap) {
++		dev_err(bus->dev, "Address of SPB capability is NULL");
++		return -EINVAL;
++	}
++
++	return readl(stream->fifo_addr);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_set_spbmaxfifo);
++
++
++/**
+  * snd_hdac_ext_stop_streams - stop all stream if running
+  * @ebus: HD-audio ext core bus
   */
 -- 
 1.9.1
