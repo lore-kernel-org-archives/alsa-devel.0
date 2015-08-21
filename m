@@ -1,82 +1,58 @@
-From: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Fri, 21 Aug 2015 10:43:10 +0300
-Message-ID: <20150821074310.GM30005@lahna.fi.intel.com>
-References: <CAKor6Tc26kKG-7ytxBjT41S1h4eORoeTg_T=nZ4dZGM1H0gAMQ@mail.gmail.com>
- <20150810140207.GB1541@lahna.fi.intel.com>
- <CAKor6TdKrQrvXTPU=fzL9LTCBbyc9WAbLnYdObY+Wu73g1w6Fg@mail.gmail.com>
- <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ@mail.gmail.com>
- <20150819134328.GU1552@lahna.fi.intel.com>
- <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
- <20150820094542.GC30005@lahna.fi.intel.com>
- <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
- <20150820115845.GF30005@lahna.fi.intel.com>
- <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: fix no frame clk in master
+ mode
+Date: Fri, 21 Aug 2015 00:47:37 -0700
+Message-ID: <20150821074737.GA1796@Asurada>
+References: <2ec370890aca1bf5e8b796d7ebbfc95a0161980e.1439345935.git.zidan.wang@freescale.com>
+ <20150812035317.GA3194@Asurada-CZ80>
+ <20150812075914.GC21786@shlinux2> <20150812091916.GA1512@Asurada>
+ <20150818020152.GA17381@shlinux2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
+ [209.85.192.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 235C52604D5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 09:47:50 +0200 (CEST)
+Received: by pdbfa8 with SMTP id fa8so23883913pdb.1
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 00:47:48 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+In-Reply-To: <20150818020152.GA17381@shlinux2>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zidan Wang <zidan.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 09:31:25AM +0200, Christian Hartmann wrote:
-> [    6.169473] spi spi-WM510205:00: modalias WM510205 in id_table not
-> found, returns NULL
-> [    6.169501] arizona spi-WM510205:00: arizona_acpi_get_type(), than
-> via spi_get_device_id().
-> [    6.169507] arizona spi-WM510205:00: arizona_acpi_get_type matched
-> [    6.169511] arizona spi-WM510205:00: using 1 as type for arizona audio codec
-> [    6.169515] arizona spi-WM510205:00: regmap set to wm5102_spi
-> [    6.170301] arizona spi-WM510205:00: spi_irq = -1
-> [    6.170309] arizona spi-WM510205:00: acpi_dev_add_driver_gpios
-> arizona_acpi_gpios added done, 0
-> [    6.170313] arizona spi-WM510205:00: arizona_spi_probe done,
-> calling arizona_dev_init
-> [    6.170317] arizona spi-WM510205:00: dev_set_drvdata done for 1
-> [    6.170323] arizona spi-WM510205:00: GPIO lookup for consumer reset
-> [    6.170328] arizona spi-WM510205:00: using ACPI for GPIO lookup
-> [    6.170333] acpi WM510205:00: GPIO: looking up reset-gpios
-> [    6.170340] acpi WM510205:00: GPIO: _DSD returned WM510205:00 3 1 0 0
-> [    6.175675] acpi WM510205:00: GPIO: looking up 0 in _CRS
+On Tue, Aug 18, 2015 at 10:01:54AM +0800, Zidan Wang wrote:
 
-1) You got "reset-gpios" here.
+> > > > > After several open/close sai test with ctrl+c, there will be I/O error.
+> > > > > The SAI can't work anymore, can't recover. There will be no frame clock.
+> > > > > With adding the software reset in trigger stop, the issue can be fixed.
 
-> [    6.175733] arizona spi-WM510205:00: GPIO lookup for consumer ldoena
-> [    6.175739] arizona spi-WM510205:00: using ACPI for GPIO lookup
-> [    6.175744] acpi WM510205:00: GPIO: looking up ldoena-gpios
-> [    6.175750] acpi WM510205:00: GPIO: _DSD returned WM510205:00 3 2 0 0
-> [    6.175805] acpi WM510205:00: GPIO: looking up 0 in _CRS
-> [    6.175860] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using irq_gpio GPIO = 146
-> [    6.175867] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using ldoena GPIO =  405
-> [    6.175871] arizona spi-WM510205:00: arizona_of_get_core_pdata
-> (ACPI) using reset GPIO =  342
-> [    6.175875] arizona spi-WM510205:00: arizona_of_get_core_pdata for 1
-> [    6.175880] arizona spi-WM510205:00: regcache_cache_only for 1 set
-> [    6.175885] arizona spi-WM510205:00: added wm5102_core_supplies for 1
-> [    6.176079] gpio-405 (ldoena): gpiod_request: status -16
-> [    6.176084] LDO1: Failed to request enable GPIO405: -16
-> [    6.176154] arizona spi-WM510205:00: Failed to register LDO1 supply: -16
-> [    6.189631] arizona-ldo1: probe of arizona-ldo1 failed with error -16
-> [    6.189656] arizona spi-WM510205:00: mfd_add_devices done for 1
-> [    6.189665] spi-WM510205:00 supply AVDD not found, using dummy regulator
-> [    6.189721] spi-WM510205:00 supply DBVDD1 not found, using dummy regulator
-> [    6.189753] arizona spi-WM510205:00: devm_regulator_bulk_get done for 1
-> [    6.189757] spi-WM510205:00 supply DCVDD not found, using dummy regulator
-> [    6.189786] arizona spi-WM510205:00: regulator_get done for 1
-> [    6.189794] gpio-342 (reset): gpiod_request: status -16
-> [    6.189799] arizona spi-WM510205:00: Failed to request /RESET: -16
+> > > > It doesn't look like a decent fix to me. Is it the only fix that
+> > > > IC team suggests? And why put this reset in the trigger function.
+> > > > Your MEGA fast patch has already included a software reset in the
+> > > > PM runtime functions. When dealing with CTRL+C test cases, that
+> > > > software reset should have worked as well.
 
-2) and fail here with -EBUSY because you have already requested the GPIO.
+> > > The MEGA fast patch add the suspend/resume function, but CTRL+C will not
+> > > trigger suspend/resume function.
+> > > When CTRL+C, it will trigger stop and software reset SAI.
+> > > IC team suggest us to rest it, but I don't know if it's the only fix.
 
-So please drop the code in 1) to be able to request the GPIO in the
-driver.
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > You can try to add SET_RUNTIME_PM_OPS() and to see if the suspend
+> > function is called right after pressing ctrl+c.
+
+> The runtime suspend function will be call after the power down time. So if i
+> playback again before the power down time, runtime suspend will not be called.
+
+I see.. Can you provide me a test case to reproduce this issue?
