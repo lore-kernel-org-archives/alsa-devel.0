@@ -1,125 +1,47 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2] ALSA: ac97: Switch to dev_pm_ops
-Date: Fri, 21 Aug 2015 09:48:33 +0200
-Message-ID: <1440143313-27914-1-git-send-email-lars@metafoo.de>
-Return-path: <linux-input-owner@vger.kernel.org>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Cc: Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] usb: Add native DSD support for Gustard
+	DAC-X20U
+Date: Fri, 21 Aug 2015 09:48:35 +0200
+Message-ID: <1440143315-4712-1-git-send-email-gtmkramer@xs4all.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
+ [194.109.24.26])
+ by alsa0.perex.cz (Postfix) with ESMTP id E63FB265733
+ for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 09:48:39 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Convert the ac97_bus from legacy suspend/resume callbacks to dev_pm_ops.
+This patch adds native DSD support for the Gustard DAC-X20U.
 
-Since there isn't anything special to do at the bus level the bus driver
-does not have to implement any callbacks. The device driver core will
-automatically pick up and execute the device's PM ops.
-
-As there is only a single AC'97 driver implementing suspend and resume,
-update both the core and driver at the same time to avoid unnecessary code
-churn.
-
-While we are at it also drop the ifdefs around the suspend/resume functions
-to increase compile test coverage.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
 ---
-This patch touches code in both ALSA and the input subsystem. Ideally this
-patch will be merged via the ALSA tree. Given that the wm97xx touchscreen
-driver is not seeing too many changes these days the risk of conflicts
-should be low.
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes since v1:
-	* Drop ifdefs around suspend/resum functions
----
- drivers/input/touchscreen/wm97xx-core.c | 13 ++++---------
- sound/ac97_bus.c                        | 26 --------------------------
- 2 files changed, 4 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
-index b1ae779..1534e9b 100644
---- a/drivers/input/touchscreen/wm97xx-core.c
-+++ b/drivers/input/touchscreen/wm97xx-core.c
-@@ -732,8 +732,7 @@ static int wm97xx_remove(struct device *dev)
- 	return 0;
- }
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 754e689..00ebc0c 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1268,6 +1268,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
  
--#ifdef CONFIG_PM
--static int wm97xx_suspend(struct device *dev, pm_message_t state)
-+static int __maybe_unused wm97xx_suspend(struct device *dev)
- {
- 	struct wm97xx *wm = dev_get_drvdata(dev);
- 	u16 reg;
-@@ -765,7 +764,7 @@ static int wm97xx_suspend(struct device *dev, pm_message_t state)
- 	return 0;
- }
- 
--static int wm97xx_resume(struct device *dev)
-+static int __maybe_unused wm97xx_resume(struct device *dev)
- {
- 	struct wm97xx *wm = dev_get_drvdata(dev);
- 
-@@ -799,10 +798,7 @@ static int wm97xx_resume(struct device *dev)
- 	return 0;
- }
- 
--#else
--#define wm97xx_suspend		NULL
--#define wm97xx_resume		NULL
--#endif
-+static SIMPLE_DEV_PM_OPS(wm97xx_pm_ops, wm97xx_suspend, wm97xx_resume);
- 
- /*
-  * Machine specific operations
-@@ -836,8 +832,7 @@ static struct device_driver wm97xx_driver = {
- 	.owner =	THIS_MODULE,
- 	.probe =	wm97xx_probe,
- 	.remove =	wm97xx_remove,
--	.suspend =	wm97xx_suspend,
--	.resume =	wm97xx_resume,
-+	.pm =		&wm97xx_pm_ops,
- };
- 
- static int __init wm97xx_init(void)
-diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
-index 2b50cbe..57a6dfc 100644
---- a/sound/ac97_bus.c
-+++ b/sound/ac97_bus.c
-@@ -27,35 +27,9 @@ static int ac97_bus_match(struct device *dev, struct device_driver *drv)
- 	return 1;
- }
- 
--#ifdef CONFIG_PM
--static int ac97_bus_suspend(struct device *dev, pm_message_t state)
--{
--	int ret = 0;
--
--	if (dev->driver && dev->driver->suspend)
--		ret = dev->driver->suspend(dev, state);
--
--	return ret;
--}
--
--static int ac97_bus_resume(struct device *dev)
--{
--	int ret = 0;
--
--	if (dev->driver && dev->driver->resume)
--		ret = dev->driver->resume(dev);
--
--	return ret;
--}
--#endif /* CONFIG_PM */
--
- struct bus_type ac97_bus_type = {
- 	.name		= "ac97",
- 	.match		= ac97_bus_match,
--#ifdef CONFIG_PM
--	.suspend	= ac97_bus_suspend,
--	.resume		= ac97_bus_resume,
--#endif /* CONFIG_PM */
- };
- 
- static int __init ac97_bus_init(void)
++	case USB_ID(0x20b1, 0x000a): /* Gustard DAC-X20U */
+ 	case USB_ID(0x20b1, 0x2009): /* DIYINHK DSD DXD 384kHz USB to I2S/DSD */
+ 	case USB_ID(0x20b1, 0x2023): /* JLsounds I2SoverUSB */
+ 		if (fp->altsetting == 3)
 -- 
-2.1.4
-
+2.1.0
