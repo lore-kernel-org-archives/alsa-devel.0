@@ -1,30 +1,71 @@
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Subject: Re: [PATCH] ASoC: Samsung: Remove redundant arndale_audio_remove
-Date: Fri, 21 Aug 2015 09:48:22 +0900
-Message-ID: <55D67556.4040500@samsung.com>
-References: <20150820164115.GA19191@localhost>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver [v4]
+Date: Thu, 20 Aug 2015 22:05:28 -0400
+Message-ID: <CADnq5_MhhZYi8kGxXOMCq1NPU45ibSHLgPZ-DdhJAOUhBn5LVA@mail.gmail.com>
+References: <1440101361-9912-1-git-send-email-alexander.deucher@amd.com>
+ <1440101361-9912-3-git-send-email-alexander.deucher@amd.com>
+ <20150820211305.GU12027@sirena.org.uk>
+ <CADnq5_NOd_JLafdvbCs3oVGhDPZC+dD1xD_hL1R8+qaMgr2i3w@mail.gmail.com>
+ <20150820223113.GW12027@sirena.org.uk>
+ <CADnq5_OGvvbq7=mc5JtcdA2zouUvk1VhV5pHg-Rbp2szQhA2KA@mail.gmail.com>
+ <20150820234537.GA12027@sirena.org.uk>
+ <CADnq5_MvWi9w4QgmenGDyotdmwSxC+WAdpJUbF+pi5RV_ZmBAA@mail.gmail.com>
+ <20150821001039.GC12027@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20150820164115.GA19191@localhost>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Vaishali Thakkar <vthakkar1994@gmail.com>, Kukjin Kim <kgene@kernel.org>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150821001039.GC12027@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, perex@perex.cz, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21.08.2015 01:41, Vaishali Thakkar wrote:
-> There is no use of snd_soc_unregister_card in remove function
-> as devm_snd_soc_register_card in probe function automatically
-> handles it. So, remove use of snd_soc_unregister_card and with
-> this change remove arndale_audio_remove as it is now redundant.
-> 
-> Signed-off-by: Vaishali Thakkar <vthakkar1994@gmail.com>z
-> ---
->  sound/soc/samsung/arndale_rt5631.c | 10 ----------
->  1 file changed, 10 deletions(-)
-
-Reviewed-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-
-Best regards,
-Krzysztof
+T24gVGh1LCBBdWcgMjAsIDIwMTUgYXQgODoxMCBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
+ZWwub3JnPiB3cm90ZToKPiBPbiBUaHUsIEF1ZyAyMCwgMjAxNSBhdCAwNzo1MDozNFBNIC0wNDAw
+LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4+IE9uIFRodSwgQXVnIDIwLCAyMDE1IGF0IDc6NDUgUE0s
+IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gPiBUaGlzIGlzIG5v
+dCBhIERSTSBkcml2ZXIsIGl0IGlzIGFuIEFTb0MgZHJpdmVyLCBhbmQgbGlrZSBJIHNheSBEUk0g
+aXMgYQo+PiA+IGJpdCBzcGVjaWFsLiAgSSBkbyBub3RlIHRoYXQgQU1EIGhhcyBjb250cmlidXRl
+ZCBhdCBsZWFzdCBpdHMgQ0NQIGFuZAo+PiA+IGNwdWZyZXEgZHJpdmVycyAoaW5kZWVkIGFsbCB0
+aGVpciBub24tRFJNIGNvZGUgSSBjb3VsZCBmaW5kIHdpdGgKPj4gPiBleHBsaWNpdCBsaWNlbnNl
+IHN0YXRlbWVudHMpIHVuZGVyIGEgbm9ybWFsIGtlcm5lbCBsaWNlbnNlLiAgQXMgZmFyIGFzIEkK
+Pj4gPiBjYW4gdGVsbCB0aGlzIGxpY2Vuc2luZyBpcyBlbnRpcmVseSBjb25maW5lZCB0byB0aGUg
+RFJNIGRyaXZlcnMuCj4KPj4gPiBJIGFtIG5vdCByZWFkaWx5IGFibGUgdG8gY29udmluY2UgbXlz
+ZWxmIHRoYXQgdGhpcyBpcyBjb21wYXRpYmxlIHdpdGgKPj4gPiB0aGUgaW50ZW50IG9mIGV4cG9y
+dGluZyB0aGUgQVNvQyBBUElzIF9HUEwoKSwgdGhpcyBsb29rcyBsaWtlIGl0IGNhbiBiZQo+PiA+
+IHVzZWQgYXMgdGhlIGJhc2lzIGZvciBhIHNoaW0gbGF5ZXIgZm9yIG5vbi1HUEwgY29kZSAodGhl
+IGxpY2Vuc2luZwo+PiA+IHN0cmF0ZWd5IHNlZW1zIHZlcnkgc2ltaWxhcikuICBJJ2QgbmVlZCB0
+byB0aGluayB0aHJvdWdoIHRoaXMgY2FyZWZ1bGx5Lgo+Cj4+IElmIHlvdSBoYXZlIHN0cm9uZyBj
+b25jZXJucywgSSBjYW4gZG91YmxlIGNoZWNrIHdpdGggb3VyIGxhd3llcnMgYW5kCj4+IHNlZSBh
+Ym91dCBjaGFuZ2luZyBpdCwgSSdtIGp1c3Qgbm90IHN1cmUgaG93IGxvbmcgdGhhdCB3aWxsIHRh
+a2UgOigKPgo+IEkgYXQgdGhlIHZlcnkgbGVhc3QgbmVlZCB0byB0aGluayBhYm91dCB0aGlzLCBp
+dCdzIHJlYWxseSBpbXBvcnRhbnQgdG8KPiBtZSB0aGF0IHdlIGRvbid0IHdhbnQgdG8gc2VlIHBy
+b3ByaWV0YXJ5IGRyaXZlcnMuCgpUaGF0J3MgZGVmaW5pdGVseSBub3Qgb3VyIGludGVudGlvbi4g
+IEhpc3RvcmljYWxseSBvbiB0aGUgR1BVIHNpZGUsCndlJ3ZlIHByZWZlcnJlZCB0aGUgWDExL01J
+VCBsaWNlbnNlIGJlY2F1c2UgaXQgbGV0cyBvdGhlciBwcm9qZWN0cwpsaWtlIHRoZSBCU0RzIG1v
+cmUgZWFzaWx5IGxldmVyYWdlIG91ciBjb2RlLgoKPgo+PiBUaGUgbGljZW5zaW5nIHRlbmRzIHRv
+IHZhcnkgYmFzZWQgb24gdGhlIHRlYW1zIGludm9sdmVkLiAgVGhlIEFDUAo+PiBhdWRpbyBhbmQg
+aTJzIHdhcyBkZXZlbG9wZWQgYnkgdGhlIEdQVSB0ZWFtcyBhbmQgd2UndmUgbW9zdGx5IHdvcmtl
+ZAo+PiBvbiBkcm0gYW5kIFhvcmcgc3R1ZmYgdW50aWwgbm93Lgo+Cj4gRm9yIHJlZmVyZW5jZSB0
+aGUgR1BMIGNvZGUgaW4gdGhlIGtlcm5lbCBpbmNsdWRlcyBhdCBsZWFzdDoKPgo+ICAgZHJpdmVy
+cy9jcnlwdG8vY2NwL2NjcC1jcnlwdG8tKi5jCj4gICBkcml2ZXJzL2NwdWZyZXEvcG93ZXJub3ct
+azguYwo+ICAgZHJpdmVycy9waW5jdHJsL3BpbmN0cmwtYW1kLmMKPgo+IGFuZCB0aGVyZSdzIGRp
+cmVjdCBjb250cmlidXRpb25zIGZyb20gQU1EIHRoZXJlIEFGQUlDVCwgbm90IGp1c3Qgb3V0c2lk
+ZQo+IGRldmVsb3BlcnMgY29udHJpYnV0aW5nIHN1cHBvcnQgZm9yIEFNRCBjaGlwcy4KClJpZ2h0
+LCBkaWZmZXJlbnQgdGVhbXMgd2l0aGluIEFNRC4gIE15IHRlYW0gaGFzIGhpc3RvcmljYWxseSBv
+bmx5CndvcmtlZCBvbiBHUFUgc3R1ZmYgYW5kIHNpbmNlIHdlIGNvbnRyaWJ1dGVkIHRvIFhvcmcg
+YW5kIHRoZSBkcm0gd2UndmUKYmVlbiBhcHByb3ZlZCB0byByZWxlYXNlIGNvZGUgdW5kZXIgdGhl
+IFgxMS9NSVQgbGljZW5zZS4KCkFsZXgKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9kcmktZGV2ZWwK
