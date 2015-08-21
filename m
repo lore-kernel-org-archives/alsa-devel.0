@@ -1,51 +1,51 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/4] ALSA: hdac: add codec driver support
-Date: Fri, 21 Aug 2015 16:20:11 +0530
-Message-ID: <20150821105011.GS13546@localhost>
-References: <1440152263-24156-1-git-send-email-vinod.koul@intel.com>
- <s5hoai13p23.wl-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] ALSA: hdsp: silence a sprinft() overflow warning
+Date: Fri, 21 Aug 2015 14:25:02 +0300
+Message-ID: <20150821112502.GR5610@mwanda>
+References: <20150611151434.GE12192@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 73BF92604D8
- for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2015 12:48:08 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hoai13p23.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+In-Reply-To: <20150611151434.GE12192@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Benoit Taine <benoit.taine@lip6.fr>, Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 12:37:24PM +0200, Takashi Iwai wrote:
-> On Fri, 21 Aug 2015 12:17:39 +0200,
-> Vinod Koul wrote:
-> > 
-> > This patch adds the core framework support for adding hdac extended devices
-> > and drivers. We introduce a minimal hdac extended device and driver and APIs
-> > for registration
-> > This series also ads extended device cleanup API and refresh sysfs tree API
-> > 
-> > Vinod Koul (4):
-> >   ALSA: hdac: Add API for removing hdac extended device
-> >   ALSA: hdac: add hdac extended device
-> >   ALSA: hdac: add extended device driver registration
-> >   ALSA: hdac: add snd_hdac_refresh_widget_sysfs()
+Ping?
+
+regards,
+dan carpenter
+
+On Thu, Jun 11, 2015 at 06:14:34PM +0300, Dan Carpenter wrote:
+> card->shortname is a 32 char string so the sprintf() can theoretically
+> overflow.  snd_rawmidi_new() can accept strings up to 64 bytes long.
 > 
-> I applied them now, but the last patch had trivial coding style
-> problems.  Please do run checkpatch.pl once before submission at the
-> next time.
-
-Thanks a bunch, I usually do run it but missed it this time. my bad :(
-
--- 
-~Vinod
+> I have made the temporay buf[] array 40 bytes long and changed the
+> sprintf() to snprintf().
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+> index c19e021..c1fe1d3 100644
+> --- a/sound/pci/rme9652/hdsp.c
+> +++ b/sound/pci/rme9652/hdsp.c
+> @@ -1526,7 +1526,7 @@ static struct snd_rawmidi_ops snd_hdsp_midi_input =
+>  
+>  static int snd_hdsp_create_midi (struct snd_card *card, struct hdsp *hdsp, int id)
+>  {
+> -	char buf[32];
+> +	char buf[40];
+>  
+>  	hdsp->midi[id].id = id;
+>  	hdsp->midi[id].rmidi = NULL;
+> @@ -1537,7 +1537,7 @@ static int snd_hdsp_create_midi (struct snd_card *card, struct hdsp *hdsp, int i
+>  	hdsp->midi[id].pending = 0;
+>  	spin_lock_init (&hdsp->midi[id].lock);
+>  
+> -	sprintf (buf, "%s MIDI %d", card->shortname, id+1);
+> +	snprintf(buf, sizeof(buf), "%s MIDI %d", card->shortname, id + 1);
+>  	if (snd_rawmidi_new (card, buf, id, 1, 1, &hdsp->midi[id].rmidi) < 0)
+>  		return -1;
+>  
