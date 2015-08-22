@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Reduce arguments of
-	soc_tplg_kcontrol_bind_io()" to the asoc tree
+Subject: Applied "ASoC: topology: Add support for TLV bytes
+	controls" to the asoc tree
 Date: Sat, 22 Aug 2015 08:55:30 -0700
-Message-ID: <E1ZTB8k-0000R6-UE@finisterre>
-References: <50ef2cb41e76b1582b71910b4dfea144388dcc5f.1439892263.git.mengdong.lin@intel.com>
+Message-ID: <E1ZTB8k-0000Qe-JX@finisterre>
+References: <354dceaa5ebfa4f3555eea42e29f32351dd14af5.1439892263.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C094260484
- for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 17:55:45 +0200 (CEST)
-In-Reply-To: <50ef2cb41e76b1582b71910b4dfea144388dcc5f.1439892263.git.mengdong.lin@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2726D26047B
+ for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 17:55:44 +0200 (CEST)
+In-Reply-To: <354dceaa5ebfa4f3555eea42e29f32351dd14af5.1439892263.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Reduce arguments of soc_tplg_kcontrol_bind_io()
+   ASoC: topology: Add support for TLV bytes controls
 
 has been applied to the asoc tree at
 
@@ -53,128 +53,130 @@ to this mail.
 Thanks,
 Mark
 
->From 2b5cdb9156f76162d5302e2847f84a79de8a3ad1 Mon Sep 17 00:00:00 2001
+>From 1a3232d2f61d2853a848464b7bde2d54960c58bb Mon Sep 17 00:00:00 2001
 From: Mengdong Lin <mengdong.lin@intel.com>
-Date: Tue, 18 Aug 2015 18:12:01 +0800
-Subject: [PATCH] ASoC: topology: Reduce arguments of
- soc_tplg_kcontrol_bind_io()
+Date: Tue, 18 Aug 2015 18:12:20 +0800
+Subject: [PATCH] ASoC: topology: Add support for TLV bytes controls
 
-Add the pointer of struct soc_tplg as one argument, so no need to
-pass standard/vendor specific kcontrol handlers and their count.
+Allow vendor drivers to define bespoke bytes ext handlers and IDs for
+TLV bytes controls. And the topology core will bind these handlers by
+matching IDs defined by the vendor driver and user space topology
+data file.
+
+And TLV callback binding is moved to soc_tplg_kcontrol_bind_io(). This
+function process all handler binding now.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 45 +++++++++++++++++++++------------------------
- 1 file changed, 21 insertions(+), 24 deletions(-)
+ include/sound/soc-topology.h | 11 +++++++++++
+ sound/soc/soc-topology.c     | 42 +++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 50 insertions(+), 3 deletions(-)
 
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index a6541a1..ea387ed 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -89,6 +89,13 @@ struct snd_soc_tplg_kcontrol_ops {
+ 		struct snd_ctl_elem_info *uinfo);
+ };
+ 
++/* Bytes ext operations, for TLV byte controls */
++struct snd_soc_tplg_bytes_ext_ops {
++	u32 id;
++	int (*get)(unsigned int __user *bytes, unsigned int size);
++	int (*put)(const unsigned int __user *bytes, unsigned int size);
++};
++
+ /*
+  * DAPM widget event handlers - used to map handlers onto widgets.
+  */
+@@ -139,6 +146,10 @@ struct snd_soc_tplg_ops {
+ 	/* vendor specific kcontrol handlers available for binding */
+ 	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+ 	int io_ops_count;
++
++	/* vendor specific bytes ext handlers available for binding */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
+ };
+ 
+ /* gets a pointer to data from the firmware block header */
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index ca551b9..c4a58d7 100644
+index c4a58d7..5690b7e 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -508,20 +508,22 @@ static void remove_pcm_dai(struct snd_soc_component *comp,
- /* bind a kcontrol to it's IO handlers */
- static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 	struct snd_kcontrol_new *k,
--	const struct snd_soc_tplg_kcontrol_ops *ops, int num_ops,
--	const struct snd_soc_tplg_kcontrol_ops *bops, int num_bops)
-+	const struct soc_tplg *tplg)
- {
--	int i;
-+	const struct snd_soc_tplg_kcontrol_ops *ops;
-+	int num_ops, i;
+@@ -70,6 +70,10 @@ struct soc_tplg {
+ 	const struct snd_soc_tplg_kcontrol_ops *io_ops;
+ 	int io_ops_count;
  
- 	/* try and map vendor specific kcontrol handlers first */
--	for (i = 0; i < num_bops; i++) {
--
--		if (k->put == NULL && bops[i].id == hdr->ops.put)
--			k->put = bops[i].put;
--		if (k->get == NULL && bops[i].id == hdr->ops.get)
--			k->get = bops[i].get;
--		if (k->info == NULL && bops[i].id == hdr->ops.info)
--			k->info = bops[i].info;
-+	ops = tplg->io_ops;
-+	num_ops = tplg->io_ops_count;
-+	for (i = 0; i < num_ops; i++) {
++	/* vendor specific bytes ext handlers, for TLV bytes controls */
++	const struct snd_soc_tplg_bytes_ext_ops *bytes_ext_ops;
++	int bytes_ext_ops_count;
 +
-+		if (k->put == NULL && ops[i].id == hdr->ops.put)
-+			k->put = ops[i].put;
-+		if (k->get == NULL && ops[i].id == hdr->ops.get)
-+			k->get = ops[i].get;
-+		if (k->info == NULL && ops[i].id == hdr->ops.info)
-+			k->info = ops[i].info;
- 	}
+ 	/* optional fw loading callbacks to component drivers */
+ 	struct snd_soc_tplg_ops *ops;
+ };
+@@ -511,8 +515,40 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ 	const struct soc_tplg *tplg)
+ {
+ 	const struct snd_soc_tplg_kcontrol_ops *ops;
++	const struct snd_soc_tplg_bytes_ext_ops *ext_ops;
+ 	int num_ops, i;
  
- 	/* vendor specific handlers found ? */
-@@ -529,6 +531,8 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
++	if (hdr->ops.info == SND_SOC_TPLG_CTL_BYTES
++		&& k->iface & SNDRV_CTL_ELEM_IFACE_MIXER
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE
++		&& k->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
++		struct soc_bytes_ext *sbe;
++		struct snd_soc_tplg_bytes_control *be;
++
++		sbe = (struct soc_bytes_ext *)k->private_value;
++		be = container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
++
++		/* TLV bytes controls need standard kcontrol info handler,
++		 * TLV callback and extended put/get handlers.
++		 */
++		k->info = snd_soc_bytes_info;
++		k->tlv.c = snd_soc_bytes_tlv_callback;
++
++		ext_ops = tplg->bytes_ext_ops;
++		num_ops = tplg->bytes_ext_ops_count;
++		for (i = 0; i < num_ops; i++) {
++			if (!sbe->put && ext_ops[i].id == be->ext_ops.put)
++				sbe->put = ext_ops[i].put;
++			if (!sbe->get && ext_ops[i].id == be->ext_ops.get)
++				sbe->get = ext_ops[i].get;
++		}
++
++		if (sbe->put && sbe->get)
++			return 0;
++		else
++			return -EINVAL;
++	}
++
+ 	/* try and map vendor specific kcontrol handlers first */
+ 	ops = tplg->io_ops;
+ 	num_ops = tplg->io_ops_count;
+@@ -613,9 +649,7 @@ static int soc_tplg_create_tlv(struct soc_tplg *tplg,
+ 	if (!(tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE))
  		return 0;
  
- 	/* none found so try standard kcontrol handlers */
-+	ops = io_ops;
-+	num_ops = ARRAY_SIZE(io_ops);
- 	for (i = 0; i < num_ops; i++) {
+-	if (tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+-		kc->tlv.c = snd_soc_bytes_tlv_callback;
+-	} else {
++	if (!(tc->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK)) {
+ 		tplg_tlv = &tc->tlv;
+ 		switch (tplg_tlv->type) {
+ 		case SNDRV_CTL_TLVT_DB_SCALE:
+@@ -1733,6 +1767,8 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	tplg.req_index = id;
+ 	tplg.io_ops = ops->io_ops;
+ 	tplg.io_ops_count = ops->io_ops_count;
++	tplg.bytes_ext_ops = ops->bytes_ext_ops;
++	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
  
- 		if (k->put == NULL && ops[i].id == hdr->ops.put)
-@@ -682,8 +686,7 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, unsigned int count,
- 		INIT_LIST_HEAD(&sbe->dobj.list);
- 
- 		/* map io handlers */
--		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc, io_ops,
--			ARRAY_SIZE(io_ops), tplg->io_ops, tplg->io_ops_count);
-+		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc, tplg);
- 		if (err) {
- 			soc_control_err(tplg, &be->hdr, be->hdr.name);
- 			kfree(sbe);
-@@ -777,8 +780,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
- 		INIT_LIST_HEAD(&sm->dobj.list);
- 
- 		/* map io handlers */
--		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc, io_ops,
--			ARRAY_SIZE(io_ops), tplg->io_ops, tplg->io_ops_count);
-+		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc, tplg);
- 		if (err) {
- 			soc_control_err(tplg, &mc->hdr, mc->hdr.name);
- 			kfree(sm);
-@@ -950,8 +952,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
- 		}
- 
- 		/* map io handlers */
--		err = soc_tplg_kcontrol_bind_io(&ec->hdr, &kc, io_ops,
--			ARRAY_SIZE(io_ops), tplg->io_ops, tplg->io_ops_count);
-+		err = soc_tplg_kcontrol_bind_io(&ec->hdr, &kc, tplg);
- 		if (err) {
- 			soc_control_err(tplg, &ec->hdr, ec->hdr.name);
- 			kfree(se);
-@@ -1137,8 +1138,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 		INIT_LIST_HEAD(&sm->dobj.list);
- 
- 		/* map io handlers */
--		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc[i], io_ops,
--			ARRAY_SIZE(io_ops), tplg->io_ops, tplg->io_ops_count);
-+		err = soc_tplg_kcontrol_bind_io(&mc->hdr, &kc[i], tplg);
- 		if (err) {
- 			soc_control_err(tplg, &mc->hdr, mc->hdr.name);
- 			kfree(sm);
-@@ -1235,8 +1235,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
- 	}
- 
- 	/* map io handlers */
--	err = soc_tplg_kcontrol_bind_io(&ec->hdr, kc, io_ops,
--		ARRAY_SIZE(io_ops), tplg->io_ops, tplg->io_ops_count);
-+	err = soc_tplg_kcontrol_bind_io(&ec->hdr, kc, tplg);
- 	if (err) {
- 		soc_control_err(tplg, &ec->hdr, ec->hdr.name);
- 		goto err_se;
-@@ -1306,9 +1305,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dbytes_create(
- 		INIT_LIST_HEAD(&sbe->dobj.list);
- 
- 		/* map standard io handlers and check for external handlers */
--		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc[i], io_ops,
--				ARRAY_SIZE(io_ops), tplg->io_ops,
--				tplg->io_ops_count);
-+		err = soc_tplg_kcontrol_bind_io(&be->hdr, &kc[i], tplg);
- 		if (err) {
- 			soc_control_err(tplg, &be->hdr, be->hdr.name);
- 			kfree(sbe);
+ 	return soc_tplg_load(&tplg);
+ }
 -- 
 2.5.0
