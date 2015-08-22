@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 22/25] ALSA: firewire-tascam: add PCM
+Subject: [PATCH 24/25] ALSA: firewire-tascam: add MIDI
 	functionality
-Date: Sat, 22 Aug 2015 18:19:38 +0900
-Message-ID: <1440235181-18181-23-git-send-email-o-takashi@sakamocchi.jp>
+Date: Sat, 22 Aug 2015 18:19:40 +0900
+Message-ID: <1440235181-18181-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 012642605C0
+ by alsa0.perex.cz (Postfix) with ESMTP id 05E012605C4
  for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:50 +0200 (CEST)
 In-Reply-To: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,38 +25,42 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds PCM functionality to transmit/receive PCM samples.
+This commit adds MIDI functionality to transfer/receive MIDI messages.
 
-When one of PCM substreams are running or external clock source is
-selected, current sampling rate is used. Else, the sampling rate is
-changed as an userspace application requests.
+Console models supports virtual MIDI ports additional to physical MIDI
+ports. Once physical controls are assigned to the virtual MIDI ports,
+userspace applications can receive/transmit MIDI messages from/to the
+MIDI ports. Additionally, without assignment, physical controls can
+transmit control events in isochronous packets. This messages are
+supported in later commit.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile     |   2 +-
- sound/firewire/tascam/tascam-pcm.c | 287 +++++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.c     |   4 +
- sound/firewire/tascam/tascam.h     |   2 +
- 4 files changed, 294 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/tascam-pcm.c
+ sound/firewire/tascam/Makefile      |   3 +-
+ sound/firewire/tascam/tascam-midi.c | 162 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c      |   4 +
+ sound/firewire/tascam/tascam.h      |   3 +
+ 4 files changed, 171 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-midi.c
 
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 0a1c387..f075b9b 100644
+index 2c3d101..905fdc1 100644
 --- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -1,3 +1,3 @@
+@@ -1,3 +1,4 @@
  snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
--			    tascam.o
-+			    tascam-pcm.o tascam.o
+-			    tascam-pcm.o tascam-transaction.o tascam.o
++			    tascam-pcm.o tascam-transaction.o tascam-midi.o \
++			    tascam.o
  obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
+diff --git a/sound/firewire/tascam/tascam-midi.c b/sound/firewire/tascam/tascam-midi.c
 new file mode 100644
-index 0000000..b1aa980
+index 0000000..f0344b3
 --- /dev/null
-+++ b/sound/firewire/tascam/tascam-pcm.c
-@@ -0,0 +1,287 @@
++++ b/sound/firewire/tascam/tascam-midi.c
+@@ -0,0 +1,162 @@
 +/*
-+ * tascam-pcm.c - a part of driver for TASCAM FireWire series
++ * tascam-midi.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
@@ -65,292 +69,167 @@ index 0000000..b1aa980
 +
 +#include "tascam.h"
 +
-+static void set_buffer_params(struct snd_pcm_hardware *hw)
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	hw->period_bytes_min = 4 * hw->channels_min;
-+	hw->period_bytes_max = hw->period_bytes_min * 2048;
-+	hw->buffer_bytes_max = hw->period_bytes_max * 2;
++	/* TODO: pick up hardware control messages as MIDI? */
++	if (substream->pstr->substream_count == substream->number)
++		return -1;
 +
-+	hw->periods_min = 2;
-+	hw->periods_max = UINT_MAX;
++	return 0;
 +}
 +
-+static int pcm_init_hw_params(struct snd_tscm *tscm,
-+			      struct snd_pcm_substream *substream)
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
 +{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_JOINT_DUPLEX |
-+			SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID,
-+		.rates = SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 |
-+			 SNDRV_PCM_RATE_96000,
-+		.rate_min = 44100,
-+		.rate_max = 96000,
-+		.channels_min = 10,
-+		.channels_max = 18,
-+	};
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct amdtp_stream *stream;
-+	unsigned int pcm_channels;
++	struct snd_tscm *tscm = substream->rmidi->private_data;
 +
-+	runtime->hw = hardware;
++	/* Initialize internal status. */
++	tscm->running_status[substream->number] = 0;
++	tscm->on_sysex[substream->number] = 0;
++	return 0;
++}
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
-+		stream = &tscm->tx_stream;
-+		pcm_channels = tscm->spec->pcm_capture_analog_channels;
-+		if (tscm->spec->has_adat)
-+			pcm_channels += 8;
-+		if (tscm->spec->has_spdif)
-+			pcm_channels += 2;
-+		runtime->hw.channels_min =
-+					runtime->hw.channels_max = pcm_channels;
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	/* TODO: pick up hardware control messages as MIDI? */
++	if (substream->pstr->substream_count == substream->number)
++		return -1;
++
++	return 0;
++}
++
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_tscm *tscm = substream->rmidi->private_data;
++
++	snd_fw_async_midi_port_finish(&tscm->out_ports[substream->number]);
++
++	return 0;
++}
++
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
++{
++	struct snd_tscm *tscm = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&tscm->lock, flags);
++
++	/* TODO: pick up hardware control messages as MIDI? */
++	if (substrm->pstr->substream_count == substrm->number) {
++		return;
 +	} else {
-+		runtime->hw.formats =
-+				SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32;
-+		stream = &tscm->rx_stream;
-+		pcm_channels = tscm->spec->pcm_playback_analog_channels;
-+		if (tscm->spec->has_adat)
-+			pcm_channels += 8;
-+		if (tscm->spec->has_spdif)
-+			pcm_channels += 2;
-+		runtime->hw.channels_min =
-+					runtime->hw.channels_max = pcm_channels;
++		if (up)
++			tscm->tx_midi_substreams[substrm->number] = substrm;
++		else
++			tscm->tx_midi_substreams[substrm->number] = NULL;
 +	}
 +
-+	set_buffer_params(&runtime->hw);
-+
-+	return amdtp_tscm_add_pcm_hw_constraints(stream, runtime);
++	spin_unlock_irqrestore(&tscm->lock, flags);
 +}
 +
-+static int pcm_open(struct snd_pcm_substream *substream)
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
 +{
-+	struct snd_tscm *tscm = substream->private_data;
-+	enum snd_tscm_clock clock;
-+	unsigned int rate;
++	struct snd_tscm *tscm = substrm->rmidi->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&tscm->lock, flags);
++
++	if (up)
++		snd_fw_async_midi_port_run(&tscm->out_ports[substrm->number],
++					   substrm);
++
++	spin_unlock_irqrestore(&tscm->lock, flags);
++}
++
++static struct snd_rawmidi_ops midi_capture_ops = {
++	.open		= midi_capture_open,
++	.close		= midi_capture_close,
++	.trigger	= midi_capture_trigger,
++};
++
++static struct snd_rawmidi_ops midi_playback_ops = {
++	.open		= midi_playback_open,
++	.close		= midi_playback_close,
++	.trigger	= midi_playback_trigger,
++};
++
++int snd_tscm_create_midi_devices(struct snd_tscm *tscm)
++{
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *stream;
++	unsigned in_ports, out_ports;
++	struct snd_rawmidi_substream *subs;
 +	int err;
 +
-+	err = pcm_init_hw_params(tscm, substream);
++	in_ports = tscm->spec->midi_capture_ports;
++	out_ports = tscm->spec->midi_playback_ports;
++
++	/* Controllers have additional 3 ports for output. */
++	if (tscm->spec->is_controller)
++		in_ports += 3;
++
++	err = snd_rawmidi_new(tscm->card, tscm->card->driver, 0,
++			      out_ports, in_ports, &rmidi);
 +	if (err < 0)
 +		return err;
 +
-+	err = snd_tscm_stream_get_clock(tscm, &clock);
-+	if ((clock != SND_TSCM_CLOCK_INTERNAL) |
-+	    amdtp_stream_pcm_running(&tscm->rx_stream) |
-+	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
-+		err = snd_tscm_stream_get_rate(tscm, &rate);
-+		if (err < 0)
-+			return err;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", tscm->card->shortname);
++	rmidi->private_data = tscm;
++
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++			    &midi_capture_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++
++	/* Set port names for MIDI input. */
++	list_for_each_entry(subs, &stream->substreams, list) {
++		if (subs->number < tscm->spec->midi_capture_ports) {
++			/* Hardware MIDI ports. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 tscm->card->shortname, subs->number + 1);
++		} else if (subs->number < tscm->spec->midi_capture_ports + 2) {
++			/* Virtual MIDI ports. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s virtual MIDI %d",
++				 tscm->card->shortname,
++				 subs->number -
++					tscm->spec->midi_capture_ports + 1);
++		} else if (tscm->spec->is_controller) {
++			/* Hardware controls. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s control", tscm->card->shortname);
++		}
 +	}
 +
-+	snd_pcm_set_sync(substream);
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++			    &midi_playback_ops);
++	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
 +
-+	return err;
-+}
-+
-+static int pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&tscm->mutex);
-+		tscm->substreams_counter++;
-+		mutex_unlock(&tscm->mutex);
-+	}
-+	amdtp_tscm_set_pcm_format(&tscm->tx_stream, params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
-+		mutex_lock(&tscm->mutex);
-+		tscm->substreams_counter++;
-+		mutex_unlock(&tscm->mutex);
-+	}
-+	amdtp_tscm_set_pcm_format(&tscm->rx_stream, params_format(hw_params));
-+	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+						params_buffer_bytes(hw_params));
-+}
-+
-+static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	mutex_lock(&tscm->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		tscm->substreams_counter--;
-+
-+	snd_tscm_stream_stop_duplex(tscm);
-+
-+	mutex_unlock(&tscm->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	mutex_lock(&tscm->mutex);
-+
-+	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
-+		tscm->substreams_counter--;
-+
-+	snd_tscm_stream_stop_duplex(tscm);
-+
-+	mutex_unlock(&tscm->mutex);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&tscm->mutex);
-+
-+	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&tscm->tx_stream);
-+
-+	mutex_unlock(&tscm->mutex);
-+
-+	return err;
-+}
-+static int pcm_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+
-+	mutex_lock(&tscm->mutex);
-+
-+	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
-+	if (err >= 0)
-+		amdtp_stream_pcm_prepare(&tscm->rx_stream);
-+
-+	mutex_unlock(&tscm->mutex);
-+
-+	return err;
-+}
-+
-+static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&tscm->tx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&tscm->tx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
++	/* Set port names for MIDI ourput. */
++	list_for_each_entry(subs, &stream->substreams, list) {
++		if (subs->number < tscm->spec->midi_capture_ports) {
++			/* Hardware MIDI ports only. */
++			snprintf(subs->name, sizeof(subs->name),
++				 "%s MIDI %d",
++				 tscm->card->shortname, subs->number + 1);
++		}
 +	}
 +
-+	return 0;
-+}
-+static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_tscm *tscm = substream->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&tscm->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&tscm->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_tscm *tscm = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&tscm->tx_stream);
-+}
-+static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
-+{
-+	struct snd_tscm *tscm = sbstrm->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
-+}
-+
-+static struct snd_pcm_ops pcm_capture_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_capture_hw_params,
-+	.hw_free	= pcm_capture_hw_free,
-+	.prepare	= pcm_capture_prepare,
-+	.trigger	= pcm_capture_trigger,
-+	.pointer	= pcm_capture_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+};
-+static struct snd_pcm_ops pcm_playback_ops = {
-+	.open		= pcm_open,
-+	.close		= pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pcm_playback_hw_params,
-+	.hw_free	= pcm_playback_hw_free,
-+	.prepare	= pcm_playback_prepare,
-+	.trigger	= pcm_playback_trigger,
-+	.pointer	= pcm_playback_pointer,
-+	.page		= snd_pcm_lib_get_vmalloc_page,
-+	.mmap		= snd_pcm_lib_mmap_vmalloc,
-+};
-+
-+int snd_tscm_create_pcm_devices(struct snd_tscm *tscm)
-+{
-+	struct snd_pcm *pcm;
-+	int err;
-+
-+	err = snd_pcm_new(tscm->card, tscm->card->driver, 0, 1, 1, &pcm);
-+	if (err < 0)
-+		return err;
-+
-+	pcm->private_data = tscm;
-+	snprintf(pcm->name, sizeof(pcm->name),
-+		 "%s PCM", tscm->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
 +
 +	return 0;
 +}
 diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 875a74c..18a7e70 100644
+index 5e770e5..99622e1 100644
 --- a/sound/firewire/tascam/tascam.c
 +++ b/sound/firewire/tascam/tascam.c
-@@ -131,6 +131,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
+@@ -140,6 +140,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
  	if (err < 0)
  		goto error;
  
-+	err = snd_tscm_create_pcm_devices(tscm);
++	err = snd_tscm_create_midi_devices(tscm);
 +	if (err < 0)
 +		goto error;
 +
@@ -358,14 +237,22 @@ index 875a74c..18a7e70 100644
  	if (err < 0)
  		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 2c935f7..ab922d8 100644
+index 920bf30..0c0b753 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -96,3 +96,5 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
- void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
+@@ -46,6 +46,7 @@ struct snd_tscm {
+ 	struct fw_unit *unit;
  
+ 	struct mutex mutex;
++	spinlock_t lock;
+ 
+ 	struct snd_tscm_spec *spec;
+ 
+@@ -123,3 +124,5 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm);
  void snd_tscm_proc_init(struct snd_tscm *tscm);
+ 
+ int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
 +
-+int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
++int snd_tscm_create_midi_devices(struct snd_tscm *tscm);
 -- 
 2.1.4
