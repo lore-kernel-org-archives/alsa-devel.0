@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/25] ALSA: firewire-lib: add a restriction
-	for a transaction at once
-Date: Sat, 22 Aug 2015 18:19:20 +0900
-Message-ID: <1440235181-18181-5-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/25] ALSA: firewire-lib: rename 'amdtp' to
+	'amdtp-stream' for functional separation
+Date: Sat, 22 Aug 2015 18:19:17 +0900
+Message-ID: <1440235181-18181-2-git-send-email-o-takashi@sakamocchi.jp>
 References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 71360260578
+ by alsa0.perex.cz (Postfix) with ESMTP id 72958260579
  for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:46 +0200 (CEST)
 In-Reply-To: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,71 +25,129 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when waiting for a response, callers can start another
-transaction by scheduling another tasklet. This is not good for error
-processing.
-
-This commit serialize request/response transactions, by adding one
-boolean member to represent idling state.
+This commit is a preparation for splitting to packet transmission layer
+and data processing layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 9 +++++++++
- sound/firewire/lib.h | 1 +
- 2 files changed, 10 insertions(+)
+ sound/firewire/Makefile                    | 2 +-
+ sound/firewire/{amdtp.c => amdtp-stream.c} | 2 +-
+ sound/firewire/{amdtp.h => amdtp-stream.h} | 4 ++--
+ sound/firewire/bebob/bebob.h               | 2 +-
+ sound/firewire/dice/dice.h                 | 2 +-
+ sound/firewire/fcp.c                       | 2 +-
+ sound/firewire/fireworks/fireworks.h       | 2 +-
+ sound/firewire/oxfw/oxfw.h                 | 2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
+ rename sound/firewire/{amdtp.c => amdtp-stream.c} (99%)
+ rename sound/firewire/{amdtp.h => amdtp-stream.h} (99%)
 
-diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index 1ec4f52..9da8894 100644
---- a/sound/firewire/lib.c
-+++ b/sound/firewire/lib.c
-@@ -76,6 +76,8 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 8b37f08..102e342 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,5 +1,5 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+-			 fcp.o cmp.o amdtp.o
++			 fcp.o cmp.o amdtp-stream.o
+ snd-oxfw-objs := oxfw.o
+ snd-isight-objs := isight.o
+ snd-scs1x-objs := scs1x.o
+diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp-stream.c
+similarity index 99%
+rename from sound/firewire/amdtp.c
+rename to sound/firewire/amdtp-stream.c
+index 2a153d2..50e4d40 100644
+--- a/sound/firewire/amdtp.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -15,7 +15,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+-#include "amdtp.h"
++#include "amdtp-stream.h"
  
- 	if (rcode == RCODE_COMPLETE && substream != NULL)
- 		snd_rawmidi_transmit_ack(substream, port->consume_bytes);
-+
-+	port->idling = true;
- }
+ #define TICKS_PER_CYCLE		3072
+ #define CYCLES_PER_SECOND	8000
+diff --git a/sound/firewire/amdtp.h b/sound/firewire/amdtp-stream.h
+similarity index 99%
+rename from sound/firewire/amdtp.h
+rename to sound/firewire/amdtp-stream.h
+index b2cf9e7..adab54f 100644
+--- a/sound/firewire/amdtp.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -1,5 +1,5 @@
+-#ifndef SOUND_FIREWIRE_AMDTP_H_INCLUDED
+-#define SOUND_FIREWIRE_AMDTP_H_INCLUDED
++#ifndef SOUND_FIREWIRE_AMDTP_STREAM_H_INCLUDED
++#define SOUND_FIREWIRE_AMDTP_STREAM_H_INCLUDED
  
- static void midi_port_tasklet(unsigned long data)
-@@ -86,6 +88,10 @@ static void midi_port_tasklet(unsigned long data)
- 	int generation;
- 	int type;
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index d23caca..72a1c5e 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -31,7 +31,7 @@
+ #include "../fcp.h"
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp.h"
++#include "../amdtp-stream.h"
+ #include "../cmp.h"
  
-+	/* Under transacting. */
-+	if (!port->idling)
-+		return;
-+
- 	/* Nothing to do. */
- 	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
- 		return;
-@@ -110,6 +116,8 @@ static void midi_port_tasklet(unsigned long data)
- 		type = TCODE_WRITE_BLOCK_REQUEST;
+ /* basic register addresses on DM1000/DM1100/DM1500 */
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index ecf5dc8..29578c1 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -34,7 +34,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
  
- 	/* Start this transaction. */
-+	port->idling = false;
-+
- 	/*
- 	 * In Linux FireWire core, when generation is updated with memory
- 	 * barrier, node id has already been updated. In this module, After
-@@ -151,6 +159,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	port->parent = fw_parent_device(unit);
- 	port->addr = addr;
- 	port->packetize = packetize;
-+	port->idling = true;
+-#include "../amdtp.h"
++#include "../amdtp-stream.h"
+ #include "../iso-resources.h"
+ #include "../lib.h"
+ #include "dice-interface.h"
+diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
+index 0619597..cce1976 100644
+--- a/sound/firewire/fcp.c
++++ b/sound/firewire/fcp.c
+@@ -17,7 +17,7 @@
+ #include <linux/delay.h>
+ #include "fcp.h"
+ #include "lib.h"
+-#include "amdtp.h"
++#include "amdtp-stream.h"
  
- 	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
+ #define CTS_AVC 0x00
  
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index c662bf9..9d76f5c 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -25,6 +25,7 @@ static inline bool rcode_is_permanent_error(int rcode)
- struct snd_fw_async_midi_port {
- 	struct fw_device *parent;
- 	struct tasklet_struct tasklet;
-+	bool idling;
+diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
+index 084d414..d54f171 100644
+--- a/sound/firewire/fireworks/fireworks.h
++++ b/sound/firewire/fireworks/fireworks.h
+@@ -29,7 +29,7 @@
  
- 	__u64 addr;
- 	struct fw_transaction transaction;
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp.h"
++#include "../amdtp-stream.h"
+ #include "../cmp.h"
+ #include "../lib.h"
+ 
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+index cace5ad..2c3d20b 100644
+--- a/sound/firewire/oxfw/oxfw.h
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -28,7 +28,7 @@
+ #include "../fcp.h"
+ #include "../packets-buffer.h"
+ #include "../iso-resources.h"
+-#include "../amdtp.h"
++#include "../amdtp-stream.h"
+ #include "../cmp.h"
+ 
+ struct device_info {
 -- 
 2.1.4
