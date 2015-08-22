@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 07/25] ALSA: firewire-lib: avoid endless loop
-	to transfer MIDI messages at fatal error
-Date: Sat, 22 Aug 2015 18:19:23 +0900
-Message-ID: <1440235181-18181-8-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/25] ALSA: firewire-digi00x: add proc node to
+	show clock status
+Date: Sat, 22 Aug 2015 18:19:27 +0900
+Message-ID: <1440235181-18181-12-git-send-email-o-takashi@sakamocchi.jp>
 References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 52230260595
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CE42260586
  for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:48 +0200 (CEST)
 In-Reply-To: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,97 +22,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, when asynchronous transactions finish in error state and
-retries, tasklet scheduling and tasklet running also continues. This
-should be canceled at fatal error because it can cause endless loop.
+This commit adds proc node to show current clock status for debugging.
 
-This commit cancels transferring MIDI messages when transactions encounter
-fatal error, by setting error state.
+As long as testing Digi 002 rack, registers can show local clock rate,
+local clock source. When external clock input such as S/PDIF is
+connected, the registers show detection and external clock rate.
 
+Additionally, the registers show the mode of optical digital input
+interface. On the other hand, a tester with Digi 003 rack reports
+this makes no sence. Further investigation is required.
+
+Besides, in Digi 002 rack, the S/PDIF format must be IEC 60958-4,
+so-called professional.
+
+Cc: Damien Zammit <damien@zamaudio.com>
+Cc: Robin Gareus <robin@gareus.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.c | 11 +++++++++--
- sound/firewire/lib.h |  8 ++++++--
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ sound/firewire/digi00x/Makefile       |  3 +-
+ sound/firewire/digi00x/digi00x-proc.c | 99 +++++++++++++++++++++++++++++++++++
+ sound/firewire/digi00x/digi00x.c      |  2 +
+ sound/firewire/digi00x/digi00x.h      |  2 +
+ 4 files changed, 105 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/digi00x/digi00x-proc.c
 
-diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index 5d04632..013d40d 100644
---- a/sound/firewire/lib.c
-+++ b/sound/firewire/lib.c
-@@ -79,6 +79,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
- 	else if (!rcode_is_permanent_error(rcode))
- 		/* To start next transaction immediately for recovery. */
- 		port->next_tick = 0;
-+	else
-+		/* Don't continue processing. */
-+		port->error = true;
- 
- 	port->idling = true;
- 
-@@ -94,8 +97,8 @@ static void midi_port_tasklet(unsigned long data)
- 	int generation;
- 	int type;
- 
--	/* Under transacting. */
--	if (!port->idling)
-+	/* Under transacting or error state. */
-+	if (!port->idling || port->error)
- 		return;
- 
- 	/* Nothing to do. */
-@@ -119,6 +122,9 @@ static void midi_port_tasklet(unsigned long data)
- 		if (port->consume_bytes == 0) {
- 			port->next_tick = 0;
- 			tasklet_schedule(&port->tasklet);
-+		} else {
-+			/* Fatal error. */
-+			port->error = true;
- 		}
- 		return;
- 	}
-@@ -187,6 +193,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	port->packetize = packetize;
- 	port->idling = true;
- 	port->next_tick = 0;
-+	port->error = false;
- 
- 	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
- 
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index bfc353b..84db912 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -27,6 +27,7 @@ struct snd_fw_async_midi_port {
- 	struct tasklet_struct tasklet;
- 	bool idling;
- 	__u64 next_tick;
-+	bool error;
- 
- 	__u64 addr;
- 	struct fw_transaction transaction;
-@@ -54,8 +55,10 @@ static inline void
- snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
- 			   struct snd_rawmidi_substream *substream)
- {
--	port->substream = substream;
--	tasklet_schedule(&port->tasklet);
-+	if (!port->error) {
-+		port->substream = substream;
-+		tasklet_schedule(&port->tasklet);
+diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
+index 32d8ebe..3e0f028 100644
+--- a/sound/firewire/digi00x/Makefile
++++ b/sound/firewire/digi00x/Makefile
+@@ -1,2 +1,3 @@
+-snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x.o
++snd-firewire-digi00x-objs := amdtp-dot.o digi00x-stream.o digi00x-proc.o \
++			     digi00x.o
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
+diff --git a/sound/firewire/digi00x/digi00x-proc.c b/sound/firewire/digi00x/digi00x-proc.c
+new file mode 100644
+index 0000000..280d621
+--- /dev/null
++++ b/sound/firewire/digi00x/digi00x-proc.c
+@@ -0,0 +1,99 @@
++/*
++ * digi00x-proc.c - a part of driver for Digidesign Digi 002/003 family
++ *
++ * Copyright (c) 2014-2015 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "./digi00x.h"
++
++static int get_optical_iface_mode(struct snd_dg00x *dg00x,
++				  enum snd_dg00x_optical_mode *mode)
++{
++	__be32 data;
++	int err;
++
++	err = snd_fw_transaction(dg00x->unit, TCODE_READ_QUADLET_REQUEST,
++				 DG00X_ADDR_BASE + DG00X_OFFSET_OPT_IFACE_MODE,
++				 &data, sizeof(data), 0);
++	if (err >= 0)
++		*mode = be32_to_cpu(data) & 0x01;
++
++	return err;
++}
++
++static void proc_read_clock(struct snd_info_entry *entry,
++			    struct snd_info_buffer *buf)
++{
++	static const char *const source_name[] = {
++		[SND_DG00X_CLOCK_INTERNAL] = "internal",
++		[SND_DG00X_CLOCK_SPDIF] = "s/pdif",
++		[SND_DG00X_CLOCK_ADAT] = "adat",
++		[SND_DG00X_CLOCK_WORD] = "word clock",
++	};
++	static const char *const optical_name[] = {
++		[SND_DG00X_OPT_IFACE_MODE_ADAT] = "adat",
++		[SND_DG00X_OPT_IFACE_MODE_SPDIF] = "s/pdif",
++	};
++	struct snd_dg00x *dg00x = entry->private_data;
++	enum snd_dg00x_optical_mode mode;
++	unsigned int rate;
++	enum snd_dg00x_clock clock;
++	bool detect;
++
++	if (get_optical_iface_mode(dg00x, &mode) < 0)
++		return;
++	if (snd_dg00x_stream_get_local_rate(dg00x, &rate) < 0)
++		return;
++	if (snd_dg00x_stream_get_clock(dg00x, &clock) < 0)
++		return;
++
++	snd_iprintf(buf, "Optical mode: %s\n", optical_name[mode]);
++	snd_iprintf(buf, "Sampling Rate: %d\n", rate);
++	snd_iprintf(buf, "Clock Source: %s\n", source_name[clock]);
++
++	if (clock == SND_DG00X_CLOCK_INTERNAL)
++		return;
++
++	if (snd_dg00x_stream_check_external_clock(dg00x, &detect) < 0)
++		return;
++	snd_iprintf(buf, "External source: %s\n", detect ? "detected" : "not");
++	if (!detect)
++		return;
++
++	if (snd_dg00x_stream_get_external_rate(dg00x, &rate) >= 0)
++		snd_iprintf(buf, "External sampling rate: %d\n", rate);
++}
++
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x)
++{
++	struct snd_info_entry *root, *entry;
++
++	/*
++	 * All nodes are automatically removed at snd_card_disconnect(),
++	 * by following to link list.
++	 */
++	root = snd_info_create_card_entry(dg00x->card, "firewire",
++					  dg00x->card->proc_root);
++	if (root == NULL)
++		return;
++
++	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	if (snd_info_register(root) < 0) {
++		snd_info_free_entry(root);
++		return;
 +	}
- }
++
++	entry = snd_info_create_card_entry(dg00x->card, "clock", root);
++	if (entry == NULL) {
++		snd_info_free_entry(root);
++		return;
++	}
++
++	snd_info_set_text_ops(entry, dg00x, proc_read_clock);
++	if (snd_info_register(entry) < 0) {
++		snd_info_free_entry(entry);
++		snd_info_free_entry(root);
++	}
++}
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index 2c517ec..130f569 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -83,6 +83,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
  
- /**
-@@ -66,6 +69,7 @@ static inline void
- snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
- {
- 	port->substream = NULL;
-+	port->error = false;
- }
++	snd_dg00x_proc_init(dg00x);
++
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+index f4ce90e..e8eadc9 100644
+--- a/sound/firewire/digi00x/digi00x.h
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -19,6 +19,7 @@
  
+ #include <sound/core.h>
+ #include <sound/initval.h>
++#include <sound/info.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/rawmidi.h>
+@@ -121,4 +122,5 @@ void snd_dg00x_stream_stop_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_update_duplex(struct snd_dg00x *dg00x);
+ void snd_dg00x_stream_destroy_duplex(struct snd_dg00x *dg00x);
+ 
++void snd_dg00x_proc_init(struct snd_dg00x *dg00x);
  #endif
 -- 
 2.1.4
