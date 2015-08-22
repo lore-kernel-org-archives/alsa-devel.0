@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/25] ALSA: firewire-digi00x: add skeleton for
-	Digi 002/003 family
-Date: Sat, 22 Aug 2015 18:19:24 +0900
-Message-ID: <1440235181-18181-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/25] ALSA: firewire-lib: avoid endless loop
+	to transfer MIDI messages at fatal error
+Date: Sat, 22 Aug 2015 18:19:23 +0900
+Message-ID: <1440235181-18181-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 506A1260593
+ by alsa0.perex.cz (Postfix) with ESMTP id 52230260595
  for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:48 +0200 (CEST)
 In-Reply-To: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,257 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Robin Gareus <robin@gareus.org>, Damien Zammit <damien@zamaudio.com>, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for Digidesign 002/003 family. This commit
-just creates/removes card instance according to bus event. More functions
-will be added in following commits.
+Currently, when asynchronous transactions finish in error state and
+retries, tasklet scheduling and tasklet running also continues. This
+should be canceled at fatal error because it can cause endless loop.
 
-Digidesign 002/003 family consists of:
- * Agere FW802B for IEEE 1394 PHY layer
- * PDI 1394L40 for IEEE 1394 LINK layer and IEC 61883 interface
- * ALTERA ACEX EP1K50 for IEC 61883 layer and DSP controller
- * ADSP-21065L for signal processing
+This commit cancels transferring MIDI messages when transactions encounter
+fatal error, by setting error state.
 
-Cc: Damien Zammit <damien@zamaudio.com>
-Cc: Robin Gareus <robin@gareus.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig           |  14 ++++
- sound/firewire/Makefile          |   1 +
- sound/firewire/digi00x/Makefile  |   2 +
- sound/firewire/digi00x/digi00x.c | 141 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/digi00x/digi00x.h |  32 +++++++++
- 5 files changed, 190 insertions(+)
- create mode 100644 sound/firewire/digi00x/Makefile
- create mode 100644 sound/firewire/digi00x/digi00x.c
- create mode 100644 sound/firewire/digi00x/digi00x.h
+ sound/firewire/lib.c | 11 +++++++++--
+ sound/firewire/lib.h |  8 ++++++--
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 8850b7d..c6b8828 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -120,4 +120,18 @@ config SND_BEBOB
-           To compile this driver as a module, choose M here: the module
-           will be called snd-bebob.
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index 5d04632..013d40d 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -79,6 +79,9 @@ static void async_midi_port_callback(struct fw_card *card, int rcode,
+ 	else if (!rcode_is_permanent_error(rcode))
+ 		/* To start next transaction immediately for recovery. */
+ 		port->next_tick = 0;
++	else
++		/* Don't continue processing. */
++		port->error = true;
  
-+config SND_FIREWIRE_DIGI00X
-+	tristate "Digidesign 002/003 family support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	 Say Y here to include support for Digidesign 002/003 family.
-+	  * Digi 002 Console
-+	  * Digi 002 Rack
-+	  * Digi 003 Console
-+	  * Digi 003 Rack
-+	  * Digi 003 Rack+
-+
-+	 To compile this driver as a module, choose M here: the module
-+	 will be called snd-firewire-digi00x.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 6a8a713..5325d15 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
- obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
- obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
-+obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
-diff --git a/sound/firewire/digi00x/Makefile b/sound/firewire/digi00x/Makefile
-new file mode 100644
-index 0000000..13fec5b
---- /dev/null
-+++ b/sound/firewire/digi00x/Makefile
-@@ -0,0 +1,2 @@
-+snd-firewire-digi00x-objs := digi00x.o
-+obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += snd-firewire-digi00x.o
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-new file mode 100644
-index 0000000..2bdf987
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -0,0 +1,141 @@
-+/*
-+ * digi00x.c - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "digi00x.h"
-+
-+MODULE_DESCRIPTION("Digidesign 002/003 Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+#define VENDOR_DIGIDESIGN	0x00a07e
-+#define MODEL_DIGI00X		0x000002
-+
-+static int name_card(struct snd_dg00x *dg00x)
-+{
-+	struct fw_device *fw_dev = fw_parent_device(dg00x->unit);
-+	char name[32] = {0};
-+	char *model;
-+	int err;
-+
-+	err = fw_csr_string(dg00x->unit->directory, CSR_MODEL, name,
-+			    sizeof(name));
-+	if (err < 0)
-+		return err;
-+
-+	model = name;
-+	if (model[0] == ' ')
-+		model = strchr(model, ' ') + 1;
-+
-+	strcpy(dg00x->card->driver, "Digi00x");
-+	strcpy(dg00x->card->shortname, model);
-+	strcpy(dg00x->card->mixername, model);
-+	snprintf(dg00x->card->longname, sizeof(dg00x->card->longname),
-+		 "Digidesign %s, GUID %08x%08x at %s, S%d", model,
-+		 cpu_to_be32(fw_dev->config_rom[3]),
-+		 cpu_to_be32(fw_dev->config_rom[4]),
-+		 dev_name(&dg00x->unit->device), 100 << fw_dev->max_speed);
-+
-+	return 0;
-+}
-+
-+static void dg00x_card_free(struct snd_card *card)
-+{
-+	struct snd_dg00x *dg00x = card->private_data;
-+
-+	fw_unit_put(dg00x->unit);
-+
-+	mutex_destroy(&dg00x->mutex);
-+}
-+
-+static int snd_dg00x_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_dg00x *dg00x;
-+	int err;
-+
-+	/* create card */
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_dg00x), &card);
-+	if (err < 0)
-+		return err;
-+	card->private_free = dg00x_card_free;
-+
-+	/* initialize myself */
-+	dg00x = card->private_data;
-+	dg00x->card = card;
-+	dg00x->unit = fw_unit_get(unit);
-+
-+	mutex_init(&dg00x->mutex);
-+
-+	err = name_card(dg00x);
-+	if (err < 0)
-+		goto error;
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&unit->device, dg00x);
-+
-+	return err;
-+error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void snd_dg00x_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+static void snd_dg00x_remove(struct fw_unit *unit)
-+{
-+	struct snd_dg00x *dg00x = dev_get_drvdata(&unit->device);
-+
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(dg00x->card);
-+}
-+
-+
-+static const struct ieee1394_device_id snd_dg00x_id_table[] = {
-+	/* Both of 002/003 use the same ID. */
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id = VENDOR_DIGIDESIGN,
-+		.model_id = MODEL_DIGI00X,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_dg00x_id_table);
-+
-+static struct fw_driver dg00x_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "snd-firewire-digi00x",
-+		.bus = &fw_bus_type,
-+	},
-+	.probe    = snd_dg00x_probe,
-+	.update   = snd_dg00x_update,
-+	.remove   = snd_dg00x_remove,
-+	.id_table = snd_dg00x_id_table,
-+};
-+
-+static int __init snd_dg00x_init(void)
-+{
-+	return driver_register(&dg00x_driver.driver);
-+}
-+
-+static void __exit snd_dg00x_exit(void)
-+{
-+	driver_unregister(&dg00x_driver.driver);
-+}
-+
-+module_init(snd_dg00x_init);
-+module_exit(snd_dg00x_exit);
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-new file mode 100644
-index 0000000..0bb2ca3
---- /dev/null
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -0,0 +1,32 @@
-+/*
-+ * digi00x.h - a part of driver for Digidesign Digi 002/003 family
-+ *
-+ * Copyright (c) 2014-2015 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef SOUND_DIGI00X_H_INCLUDED
-+#define SOUND_DIGI00X_H_INCLUDED
-+
-+#include <linux/compat.h>
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+
-+#include "../lib.h"
-+
-+struct snd_dg00x {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+
-+	struct mutex mutex;
-+};
-+
-+#endif
+ 	port->idling = true;
+ 
+@@ -94,8 +97,8 @@ static void midi_port_tasklet(unsigned long data)
+ 	int generation;
+ 	int type;
+ 
+-	/* Under transacting. */
+-	if (!port->idling)
++	/* Under transacting or error state. */
++	if (!port->idling || port->error)
+ 		return;
+ 
+ 	/* Nothing to do. */
+@@ -119,6 +122,9 @@ static void midi_port_tasklet(unsigned long data)
+ 		if (port->consume_bytes == 0) {
+ 			port->next_tick = 0;
+ 			tasklet_schedule(&port->tasklet);
++		} else {
++			/* Fatal error. */
++			port->error = true;
+ 		}
+ 		return;
+ 	}
+@@ -187,6 +193,7 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+ 	port->packetize = packetize;
+ 	port->idling = true;
+ 	port->next_tick = 0;
++	port->error = false;
+ 
+ 	tasklet_init(&port->tasklet, midi_port_tasklet, (unsigned long)port);
+ 
+diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
+index bfc353b..84db912 100644
+--- a/sound/firewire/lib.h
++++ b/sound/firewire/lib.h
+@@ -27,6 +27,7 @@ struct snd_fw_async_midi_port {
+ 	struct tasklet_struct tasklet;
+ 	bool idling;
+ 	__u64 next_tick;
++	bool error;
+ 
+ 	__u64 addr;
+ 	struct fw_transaction transaction;
+@@ -54,8 +55,10 @@ static inline void
+ snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
+ 			   struct snd_rawmidi_substream *substream)
+ {
+-	port->substream = substream;
+-	tasklet_schedule(&port->tasklet);
++	if (!port->error) {
++		port->substream = substream;
++		tasklet_schedule(&port->tasklet);
++	}
+ }
+ 
+ /**
+@@ -66,6 +69,7 @@ static inline void
+ snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
+ {
+ 	port->substream = NULL;
++	port->error = false;
+ }
+ 
+ #endif
 -- 
 2.1.4
