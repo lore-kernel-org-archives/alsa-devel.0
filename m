@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 20/25] ALSA: firewire-tascam: add data
-	processing layer
-Date: Sat, 22 Aug 2015 18:19:36 +0900
-Message-ID: <1440235181-18181-21-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 22/25] ALSA: firewire-tascam: add PCM
+	functionality
+Date: Sat, 22 Aug 2015 18:19:38 +0900
+Message-ID: <1440235181-18181-23-git-send-email-o-takashi@sakamocchi.jp>
 References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id D67112605BD
- for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 012642605C0
+ for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2015 11:19:50 +0200 (CEST)
 In-Reply-To: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,335 +25,347 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-TASCAM FireWire series uses non-blocking transmission for AMDTP packet
-streaming, while the format of data blocks is unique.
+This commit adds PCM functionality to transmit/receive PCM samples.
 
-The CIP headers includes specific value in FMT field and no SYT
-information.
-
-In transmitted packets, the first data channel represents event counter,
-and the last data channel has status and control information. The rest
-has 24bit PCM samples with right padding.
-
-In received packets, all of data channels include 16, 24, 32bit PCM
-samples. There's no the other kind of information.
-
-This commit adds support for this protocol. For convinience, the size of
-PCM samples in outgoing packet is 16, 24bit. The status and control
-information will be supported in a future commit.
+When one of PCM substreams are running or external clock source is
+selected, current sampling rate is used. Else, the sampling rate is
+changed as an userspace application requests.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/Makefile       |   2 +-
- sound/firewire/tascam/amdtp-tascam.c | 248 +++++++++++++++++++++++++++++++++++
- sound/firewire/tascam/tascam.h       |  18 +++
- 3 files changed, 267 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/tascam/amdtp-tascam.c
+ sound/firewire/tascam/Makefile     |   2 +-
+ sound/firewire/tascam/tascam-pcm.c | 287 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/tascam/tascam.c     |   4 +
+ sound/firewire/tascam/tascam.h     |   2 +
+ 4 files changed, 294 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/tascam/tascam-pcm.c
 
 diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
-index 1555206..d06c737 100644
+index 0a1c387..f075b9b 100644
 --- a/sound/firewire/tascam/Makefile
 +++ b/sound/firewire/tascam/Makefile
-@@ -1,2 +1,2 @@
--snd-firewire-tascam-objs := tascam-proc.o tascam.o
-+snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam.o
+@@ -1,3 +1,3 @@
+ snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
+-			    tascam.o
++			    tascam-pcm.o tascam.o
  obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
 new file mode 100644
-index 0000000..6c15b98
+index 0000000..b1aa980
 --- /dev/null
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -0,0 +1,248 @@
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -0,0 +1,287 @@
 +/*
-+ * amdtp-tascam.c - a part of driver for TASCAM FireWire series
++ * tascam-pcm.c - a part of driver for TASCAM FireWire series
 + *
 + * Copyright (c) 2015 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include <sound/pcm.h>
 +#include "tascam.h"
 +
-+#define AMDTP_FMT_TSCM_TX	0x1e
-+#define AMDTP_FMT_TSCM_RX	0x3e
++static void set_buffer_params(struct snd_pcm_hardware *hw)
++{
++	hw->period_bytes_min = 4 * hw->channels_min;
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * 2;
 +
-+struct amdtp_tscm {
++	hw->periods_min = 2;
++	hw->periods_max = UINT_MAX;
++}
++
++static int pcm_init_hw_params(struct snd_tscm *tscm,
++			      struct snd_pcm_substream *substream)
++{
++	static const struct snd_pcm_hardware hardware = {
++		.info = SNDRV_PCM_INFO_BATCH |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_JOINT_DUPLEX |
++			SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID,
++		.rates = SNDRV_PCM_RATE_44100 |
++			 SNDRV_PCM_RATE_48000 |
++			 SNDRV_PCM_RATE_88200 |
++			 SNDRV_PCM_RATE_96000,
++		.rate_min = 44100,
++		.rate_max = 96000,
++		.channels_min = 10,
++		.channels_max = 18,
++	};
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct amdtp_stream *stream;
 +	unsigned int pcm_channels;
 +
-+	void (*transfer_samples)(struct amdtp_stream *s,
-+				 struct snd_pcm_runtime *pcm,
-+				 __be32 *buffer, unsigned int frames);
-+};
++	runtime->hw = hardware;
 +
-+int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int data_channels;
-+
-+	if (amdtp_stream_running(s))
-+		return -EBUSY;
-+
-+	data_channels = p->pcm_channels;
-+	if (s->direction == AMDTP_IN_STREAM)
-+		data_channels += 2;
-+
-+	return amdtp_stream_set_parameters(s, rate, data_channels);
-+}
-+
-+static void write_pcm_s32(struct amdtp_stream *s,
-+			  struct snd_pcm_runtime *runtime,
-+			  __be32 *buffer, unsigned int frames)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u32 *src;
-+
-+	channels = p->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[c] = cpu_to_be32(*src);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		stream = &tscm->tx_stream;
++		pcm_channels = tscm->spec->pcm_capture_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
++	} else {
++		runtime->hw.formats =
++				SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32;
++		stream = &tscm->rx_stream;
++		pcm_channels = tscm->spec->pcm_playback_analog_channels;
++		if (tscm->spec->has_adat)
++			pcm_channels += 8;
++		if (tscm->spec->has_spdif)
++			pcm_channels += 2;
++		runtime->hw.channels_min =
++					runtime->hw.channels_max = pcm_channels;
 +	}
++
++	set_buffer_params(&runtime->hw);
++
++	return amdtp_tscm_add_pcm_hw_constraints(stream, runtime);
 +}
 +
-+static void write_pcm_s16(struct amdtp_stream *s,
-+			  struct snd_pcm_runtime *runtime,
-+			  __be32 *buffer, unsigned int frames)
++static int pcm_open(struct snd_pcm_substream *substream)
 +{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	const u16 *src;
-+
-+	channels = p->pcm_channels;
-+	src = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			buffer[c] = cpu_to_be32(*src << 16);
-+			src++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			src = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void read_pcm_s32(struct amdtp_stream *s,
-+			 struct snd_pcm_runtime *runtime,
-+			 __be32 *buffer, unsigned int frames)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, remaining_frames, i, c;
-+	u32 *dst;
-+
-+	channels = p->pcm_channels;
-+	dst  = (void *)runtime->dma_area +
-+			frames_to_bytes(runtime, s->pcm_buffer_pointer);
-+	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
-+
-+	/* The first data channel is for event counter. */
-+	buffer += 1;
-+
-+	for (i = 0; i < frames; ++i) {
-+		for (c = 0; c < channels; ++c) {
-+			*dst = be32_to_cpu(buffer[c]);
-+			dst++;
-+		}
-+		buffer += s->data_block_quadlets;
-+		if (--remaining_frames == 0)
-+			dst = (void *)runtime->dma_area;
-+	}
-+}
-+
-+static void write_pcm_silence(struct amdtp_stream *s, __be32 *buffer,
-+			      unsigned int data_blocks)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+	unsigned int channels, i, c;
-+
-+	channels = p->pcm_channels;
-+
-+	for (i = 0; i < data_blocks; ++i) {
-+		for (c = 0; c < channels; ++c)
-+			buffer[c] = 0x00000000;
-+		buffer += s->data_block_quadlets;
-+	}
-+}
-+
-+int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
-+				      struct snd_pcm_runtime *runtime)
-+{
++	struct snd_tscm *tscm = substream->private_data;
++	enum snd_tscm_clock clock;
++	unsigned int rate;
 +	int err;
 +
-+	/*
-+	 * Our implementation allows this protocol to deliver 24 bit sample in
-+	 * 32bit data channel.
-+	 */
-+	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	err = pcm_init_hw_params(tscm, substream);
 +	if (err < 0)
 +		return err;
 +
-+	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
-+}
-+
-+void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format)
-+{
-+	struct amdtp_tscm *p = s->protocol;
-+
-+	if (WARN_ON(amdtp_stream_pcm_running(s)))
-+		return;
-+
-+	switch (format) {
-+	default:
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S16:
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			p->transfer_samples = write_pcm_s16;
-+			break;
-+		}
-+		WARN_ON(1);
-+		/* fall through */
-+	case SNDRV_PCM_FORMAT_S32:
-+		if (s->direction == AMDTP_OUT_STREAM)
-+			p->transfer_samples = write_pcm_s32;
-+		else
-+			p->transfer_samples = read_pcm_s32;
-+		break;
++	err = snd_tscm_stream_get_clock(tscm, &clock);
++	if ((clock != SND_TSCM_CLOCK_INTERNAL) |
++	    amdtp_stream_pcm_running(&tscm->rx_stream) |
++	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
++		err = snd_tscm_stream_get_rate(tscm, &rate);
++		if (err < 0)
++			return err;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
 +	}
++
++	snd_pcm_set_sync(substream);
++
++	return err;
 +}
 +
-+static void read_control_messages(struct amdtp_stream *s,
-+				  __be32 *buffer, unsigned int data_blocks)
++static int pcm_close(struct snd_pcm_substream *substream)
 +{
-+	unsigned int first, index = 0;
-+	unsigned int i;
++	return 0;
++}
 +
-+	first = (buffer[0] >> 15) % 64;
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
 +
-+	/* TODO */
-+	for (i = 0; i < data_blocks; i++) {
-+		index = be32_to_cpu(buffer[0]) % 64;
-+		buffer += s->data_block_quadlets;
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
 +	}
++	amdtp_tscm_set_pcm_format(&tscm->tx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&tscm->mutex);
++		tscm->substreams_counter++;
++		mutex_unlock(&tscm->mutex);
++	}
++	amdtp_tscm_set_pcm_format(&tscm->rx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
 +}
 +
-+static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
-+					   __be32 *buffer,
-+					   unsigned int data_blocks,
-+					   unsigned int *syt)
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
-+	struct snd_pcm_substream *pcm;
++	struct snd_tscm *tscm = substream->private_data;
 +
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (data_blocks > 0 && pcm)
-+		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
++	mutex_lock(&tscm->mutex);
 +
-+	read_control_messages(s, buffer, data_blocks);
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
 +
-+	return data_blocks;
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	mutex_lock(&tscm->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		tscm->substreams_counter--;
++
++	snd_tscm_stream_stop_duplex(tscm);
++
++	mutex_unlock(&tscm->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
 +}
 +
-+static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
-+					   __be32 *buffer,
-+					   unsigned int data_blocks,
-+					   unsigned int *syt)
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
 +{
-+	struct amdtp_tscm *p = (struct amdtp_tscm *)s->protocol;
-+	struct snd_pcm_substream *pcm;
-+
-+	/* This field is not used. */
-+	*syt = 0x0000;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm)
-+		p->transfer_samples(s, pcm->runtime, buffer, data_blocks);
-+	else
-+		write_pcm_silence(s, buffer, data_blocks);
-+
-+	return data_blocks;
-+}
-+
-+int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		    enum amdtp_stream_direction dir, unsigned int pcm_channels)
-+{
-+	struct amdtp_tscm *p;
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
 +	int err;
 +
-+	err = amdtp_stream_init(s, unit, dir,
-+				CIP_NONBLOCKING | CIP_SKIP_DBC_ZERO_CHECK,
-+				sizeof(struct amdtp_tscm));
-+	if (err < 0)
-+		return 0;
++	mutex_lock(&tscm->mutex);
 +
-+	if (dir == AMDTP_IN_STREAM) {
-+		s->fmt = AMDTP_FMT_TSCM_TX;
-+		s->process_data_blocks = process_tx_data_blocks;
-+	} else {
-+		s->fmt = AMDTP_FMT_TSCM_RX;
-+		s->process_data_blocks = process_rx_data_blocks;
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->tx_stream);
++
++	mutex_unlock(&tscm->mutex);
++
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_tscm *tscm = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&tscm->mutex);
++
++	err = snd_tscm_stream_start_duplex(tscm, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&tscm->rx_stream);
++
++	mutex_unlock(&tscm->mutex);
++
++	return err;
++}
++
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
 +	}
-+	s->fdf = 0x00;
-+
-+	p = s->protocol;
-+	p->pcm_channels = pcm_channels;
 +
 +	return 0;
 +}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_tscm *tscm = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&tscm->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_tscm *tscm = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&tscm->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_tscm *tscm = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(tscm->card, tscm->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	pcm->private_data = tscm;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", tscm->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++
++	return 0;
++}
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index 875a74c..18a7e70 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -131,6 +131,10 @@ static int snd_tscm_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_tscm_create_pcm_devices(tscm);
++	if (err < 0)
++		goto error;
++
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index 8d4eb3f..7f8ec3d 100644
+index 2c935f7..ab922d8 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -18,8 +18,13 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/info.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
+@@ -96,3 +96,5 @@ int snd_tscm_stream_start_duplex(struct snd_tscm *tscm, unsigned int rate);
+ void snd_tscm_stream_stop_duplex(struct snd_tscm *tscm);
  
- #include "../lib.h"
-+#include "../packets-buffer.h"
-+#include "../iso-resources.h"
-+#include "../amdtp-stream.h"
- 
- struct snd_tscm_spec {
- 	const char *const name;
-@@ -39,6 +44,12 @@ struct snd_tscm {
- 	struct mutex mutex;
- 
- 	struct snd_tscm_spec *spec;
-+
-+	struct fw_iso_resources tx_resources;
-+	struct fw_iso_resources rx_resources;
-+	struct amdtp_stream tx_stream;
-+	struct amdtp_stream rx_stream;
-+	unsigned int substreams_counter;
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
-@@ -48,4 +59,11 @@ struct snd_tscm {
- #define TSCM_OFFSET_FIRMWARE_ARM	0x0008
- #define TSCM_OFFSET_FIRMWARE_HW		0x000c
- 
-+int amdtp_tscm_init(struct amdtp_stream *s, struct fw_unit *unit,
-+		  enum amdtp_stream_direction dir, unsigned int pcm_channels);
-+int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate);
-+int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
-+				      struct snd_pcm_runtime *runtime);
-+void amdtp_tscm_set_pcm_format(struct amdtp_stream *s, snd_pcm_format_t format);
-+
  void snd_tscm_proc_init(struct snd_tscm *tscm);
++
++int snd_tscm_create_pcm_devices(struct snd_tscm *tscm);
 -- 
 2.1.4
