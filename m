@@ -1,20 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 4/5] ALSA: hdac: Add support to enable SPIB
- for hdac ext stream
-Date: Sun, 23 Aug 2015 11:17:13 +0530
-Message-ID: <20150823054713.GU13546@localhost>
-References: <1440173181-3150-1-git-send-email-vinod.koul@intel.com>
- <1440173181-3150-5-git-send-email-vinod.koul@intel.com>
- <55D761FA.9060201@linux.intel.com>
+Subject: [PATCH v2 1/3] ALSA: hdac: Fix size allocation for ext
+	device allocation
+Date: Sun, 23 Aug 2015 11:52:49 +0530
+Message-ID: <1440310971-14849-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 226D5260470
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2015 07:45:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <55D761FA.9060201@linux.intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FC6F260470
+ for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2015 08:20:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,16 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Jeeja KP <jeeja.kp@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 12:38:02PM -0500, Pierre-Louis Bossart wrote:
-> weird function name. a set_spbmaxfifo that reads a value? Shouldn't
-> it be a get?
-Sorry it is my bad as I inserted get while correcting few other things in
-this patch. I will send an update fixing these things as Takashi applied
-this
+While creating hdac_ext_device, we used hdev for sizeof insteadof
+edev, which resulted in eventual crash of the system Fix the size
+here
 
+Fixes: a512f5611646 ('ALSA: hdac: add hdac extended device')
+Reported-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/hda/ext/hdac_ext_bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+index 8544e4fb1cd3..4449d1a99089 100644
+--- a/sound/hda/ext/hdac_ext_bus.c
++++ b/sound/hda/ext/hdac_ext_bus.c
+@@ -139,7 +139,7 @@ int snd_hdac_ext_bus_device_init(struct hdac_ext_bus *ebus, int addr)
+ 	char name[15];
+ 	int ret;
+ 
+-	edev = kzalloc(sizeof(*hdev), GFP_KERNEL);
++	edev = kzalloc(sizeof(*edev), GFP_KERNEL);
+ 	if (!edev)
+ 		return -ENOMEM;
+ 	hdev = &edev->hdac;
 -- 
-~Vinod
+1.9.1
