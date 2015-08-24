@@ -1,28 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Mon, 24 Aug 2015 09:51:40 +0100
-Message-ID: <20150824085140.GA5647@ck-lbox>
-References: <CAKor6TdKrQrvXTPU=fzL9LTCBbyc9WAbLnYdObY+Wu73g1w6Fg@mail.gmail.com>
- <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ@mail.gmail.com>
- <20150819134328.GU1552@lahna.fi.intel.com>
- <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
- <20150820094542.GC30005@lahna.fi.intel.com>
- <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
- <20150820115845.GF30005@lahna.fi.intel.com>
- <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
- <20150821074310.GM30005@lahna.fi.intel.com>
- <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] dmaengine: OF DMAEngine API based on
+ CONFIG_DMA_OF instead of CONFIG_OF
+Date: Mon, 24 Aug 2015 14:48:38 +0530
+Message-ID: <20150824091838.GH13546@localhost>
+References: <87wpwpurzk.wl%kuninori.morimoto.gx@renesas.com>
+ <20150821082636.GK13546@localhost>
+ <87d1yglvcy.wl%kuninori.morimoto.gx@renesas.com>
+ <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id BCDC426063A
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 11:11:40 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE9826063A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 11:16:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+In-Reply-To: <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,42 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Hartmann <cornogle@googlemail.com>
-Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, \@localhost
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 02:09:46PM +0200, Christian Hartmann wrote:
-> Hi
+On Fri, Aug 21, 2015 at 11:48:37AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> 2015-08-21 9:43 GMT+02:00 Mika Westerberg <mika.westerberg@linux.intel.com>:
-> > So please drop the code in 1) to be able to request the GPIO in the
-> > driver.
-> 
-> [    6.129664] spi spi-WM510205:00: 8333333 Hz actual, PIO
-> [    6.129675] spi spi-WM510205:00: setup mode 0, 8 bits/w, 8000000 Hz max --> 0
-> [    6.129759] spi spi-WM510205:00: checking WM510205 with bmp180
-> [    6.129765] spi spi-WM510205:00: checking WM510205 with bmp181
-> [    6.129797] spi spi-WM510205:00: modalias WM510205 in id_table not
-> found, returns NULL
-> [    6.129825] arizona spi-WM510205:00: arizona_acpi_get_type(), than
-> via spi_get_device_id().
-> [    6.129831] arizona spi-WM510205:00: arizona_acpi_get_type matched
-> [    6.129836] arizona spi-WM510205:00: using 1 as type for arizona audio codec
-> [    6.129840] arizona spi-WM510205:00: regmap set to wm5102_spi
-> [    6.130630] arizona spi-WM510205:00: spi_irq = -1
-> [    6.130638] arizona spi-WM510205:00: acpi_dev_add_driver_gpios
-> [    6.144806] arizona spi-WM510205:00: found device ID: ffff
-> [    6.175352] arizona spi-WM510205:00: Unknown device ID ffff
-> [    6.175584] pxa2xx-spi 80860F0E:00: registered child spi-WM510205:00
-> [    6.177870] sst-acpi 80860F28:00: No matching ASoC machine driver found
-> 
-> as you said, I removed the code in 1) so the EBUSY error is gone.
-> 
-> What is with the spi_irq = -1 ?? is this a problem here?
+> 5fa422c ("dmaengine: move drivers/of/dma.c -> drivers/dma/of-dma.c")
+> moved OF base DMAEngine code to of-dma.c, then it based on CONFIG_DMA_OF.
+> But, OF base DMAEngine API on of_dma.h still based on CONFIG_OF now.
+> So, current kernel can't find OF base DMAEngine API if .config has CONFIG_OF,
+> but not have CONFIG_DMA_OF. This patch tidyup it.
 
-The IRQ needs pulled from the ACPI as well, having no IRQ
-specified will not interfer with basic functionality of the
-driver but will become a problem eventually.
+I did a quick build with arm config, but didn't see any failures. But still
+am worried about random config and other builds may find.
 
-Thanks,
-Charles
+So I think it would be safer to merge this patch after merge window so that
+we have ample time to fix any issue
+
+-- 
+~Vinod
+
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/linux/of_dma.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
+> index 98ba752..36112cd 100644
+> --- a/include/linux/of_dma.h
+> +++ b/include/linux/of_dma.h
+> @@ -34,7 +34,7 @@ struct of_dma_filter_info {
+>  	dma_filter_fn	filter_fn;
+>  };
+>  
+> -#ifdef CONFIG_OF
+> +#ifdef CONFIG_DMA_OF
+>  extern int of_dma_controller_register(struct device_node *np,
+>  		struct dma_chan *(*of_dma_xlate)
+>  		(struct of_phandle_args *, struct of_dma *),
+> -- 
+> 1.9.1
+> 
