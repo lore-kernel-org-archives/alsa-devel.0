@@ -1,99 +1,74 @@
-From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Subject: Re: [PATCH 02/10] dt: add img,axd.txt device tree binding document
-Date: Mon, 24 Aug 2015 14:26:33 +0100
-Message-ID: <20150824132633.GF7139@leverpostej>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <1440419959-14315-3-git-send-email-qais.yousef@imgtec.com>
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
+ I2C slaves
+Date: Mon, 24 Aug 2015 15:26:13 +0200
+Message-ID: <20150824132612.GA10078@katana>
+References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
+Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1440419959-14315-3-git-send-email-qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Qais Yousef <qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1440413522-7855-1-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lm-sensors-GZX6beZjE8VD60Wz+7aTrA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dustin Byford <dustin-qUQiAmfTcIp+XZJcv9eMoEEOCMrvLtNR@public.gmane.org>, linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 24, 2015 at 01:39:11PM +0100, Qais Yousef wrote:
-> Signed-off-by: Qais Yousef <qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
-> Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
-> Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-> Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
-> Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-> Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> ---
->  .../devicetree/bindings/sound/img,axd.txt          | 34 ++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/img,axd.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/img,axd.txt b/Documentation/devicetree/bindings/sound/img,axd.txt
-> new file mode 100644
-> index 000000000000..6a8764a79d01
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/img,axd.txt
-> @@ -0,0 +1,34 @@
-> +* AXD Audio Processing IP Binding *
-> +
-> +Required properties:
-> +- compatible: "img,axd"
 
-This sounds awfully generic. Is there not a more complete name?
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +- clocks: phandle for the clock that drives AXD.
-> +- interrupts: the GIC interrupt where AXD is connected
-> +- gic-irq: it takes two non-zero values, the first one is the host hwirq and
-> +           the second one is AXD's. Host's hwirq should match the value in
-> +           interrupts.
+On Mon, Aug 24, 2015 at 01:52:02PM +0300, Jarkko Nikula wrote:
+> Commit 70762abb9f89 ("i2c: Use stable dev_name for ACPI enumerated I2C
+> slaves") broke the lm-sensors which relies on I2C hwmon slave devices und=
+er
+> /sys/bus/i2c/devices/ to be named as "x-00yz". However if those hwmon
+> devices are ACPI 5 enumerated their name became "i2c-INTABCD:ij" and sysfs
+> code in lm-sensors does not find them anymore:
+>=20
+> lib/sysfs.c:665:
+> if ((!subsys || !strcmp(subsys, "i2c")) &&
+>     sscanf(dev_name, "%hd-%x", &entry.chip.bus.nr,
+> 	   &entry.chip.addr) =3D=3D 2) {
+>=20
+> This patch fixes this by reverting back the old device naming in i2c-core
+> but at the same avoids regression to ALSA SoC drivers that depend on stab=
+le
+> device binding.
 
-I don't understand what this gic-irq property is for; and it generally
-doesn't look right.
+This way we fix some userspace by going back. However, this name change
+was effective for 18 months, so enough time for some other userspace to
+adapt. We would break the latter by reverting.
 
-Could you please describe what this is and why you thing it is
-necessary?
+I tend to create the symlinks to prevent any further breakage. I am open
+for other suggestions, though. This ugly situation has surely happened
+before somewhere somewhen in the kernel :/
 
-> +
-> +Optional properties:
-> +- vpe: VPE number on which AXD should start. Must be provided if AXD is
-> +       running as a single VPE along Linux on the same core.
-> +       It can't be VPE0.
-> +       The VPE will be offlined before AXD is loaded.
+   Wolfram
 
-Likewise could you please elaborate on this is?
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-What is a VPE number? What does it mean to start at that number?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-> +- inbuf-size: size of shared input buffers area. By default it's 0x7800 bytes.
-> +- outbuf-size: size of shared output buffers area. By default it's 0x3c000 bytes.
+iQIcBAEBAgAGBQJV2xt0AAoJEBQN5MwUoCm23J0P/0YDUWsezA++Pu6BQSJCCddQ
+d1hecuxEGecza0ppyHbmWSySZr2RQRvmgomafhczMGBX4BKY/NxFMSqvwU+rZK9e
+M6U+ggoCk8PulO3uTSFyv7841EqI95Dwmnbo6ewtcumcxgDD2IYuwy8sEhBeVqdp
+FFsR4BideDYWxawMZfwEcP4PiJrRAbnpnG0qaIk0OE1qzoEKwxKDu7IA5MM+oj1T
+fyI3p7Z8nCIn+MEy14l4v48/7JLP1f28srEypMq2kHmRKJqVREH6q91bQeQtTs7V
+ifRQntMzFjQCYQ3nx5MaA4lneq1YjYB/wXDmI3gzRFmZzIR6ELbRqTUv02ykMYmj
+ubi/4RDuv2ci+SipWoAfxhQaizzBueVCugJ25a8VfZIZL6+qxCHsY0uD54Q4g8Xr
+NJdyjJtAww2UcmbpL91xnphEk3k+G1W8lTm4m7XmntTY2E38vuqN9ulyp87Pppyu
+lEUdEcdZyBMWDSlEs64JZ0OlvRdlkZ+sjhn9act7FrkeuoFfXHDL4zo5YAV16Odk
+AV4f3itN96PaUw+rPDTSL1SUEOUiPYKkoup20tWBSXk3vO9Aoq5BAUtm1WsmlCkc
+SFA16tLPDJ+kK5jtk6XIuwtsQLUWveYgEh1KtMp77iYPc3BcD9OWRQ81XQrReXVH
+BbBb+N2mf/frtFwhsnmj
+=y5uz
+-----END PGP SIGNATURE-----
 
-Is this something the kernel dynamically allocates? Why does this need
-to be in the DT?
-
-Thanks,
-Mark.
-
-> +
-> +
-> +Example:
-> +
-> +	axdclk: axdclk@400M {
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <400000000>;
-> +	};
-> +
-> +	axd {
-> +		compatible = "img,axd";
-> +		clocks = <&axdclk>;
-> +		interrupts = <36 IRQ_TYPE_EDGE_RISING>;
-> +		gic-irq = <36 37>;
-> +		vpe = <1>;
-> +	};
-> -- 
-> 2.1.0
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--HlL+5n6rz5pIUxbD--
