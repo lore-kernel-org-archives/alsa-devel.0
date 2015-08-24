@@ -1,19 +1,17 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export
-	gic_send_ipi
-Date: Mon, 24 Aug 2015 16:55:33 +0200 (CEST)
-Message-ID: <alpine.DEB.2.11.1508241653200.3873@nanos>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com>
- <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com>
+From: Luka Karinja <lk@bazdara.com>
+Subject: Re: Intel SST on a Bay Trail tablet
+Date: Mon, 24 Aug 2015 17:05:41 +0200
+Message-ID: <55DB32C5.8050906@bazdara.com>
+References: <20150824132904.GA665@acervm.homenet.telecomitalia.it>
+ <20150824142625.GM13546@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (www.linutronix.de [62.245.132.108])
- by alsa0.perex.cz (Postfix) with ESMTP id 34BBF2608ED
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 16:56:02 +0200 (CEST)
-In-Reply-To: <55DB15EB.3090109@imgtec.com>
+Received: from server.bazdara.com (server.bazdara.com [84.255.206.229])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEDBD2608ED
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 17:05:42 +0200 (CEST)
+In-Reply-To: <20150824142625.GM13546@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: Marc Zyngier <marc.zyngier@arm.com>, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Michele Curti <michele.curti@gmail.com>
+Cc: alsa-devel@alsa-project.org, ao2@ao2.it, jarkko.nikula@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Aug 2015, Qais Yousef wrote:
-> On 08/24/2015 01:49 PM, Thomas Gleixner wrote:
-> > On Mon, 24 Aug 2015, Qais Yousef wrote:
-> > 
-> > > Some drivers might require to send ipi to other cores. So export it.
-> > Which IPIs do you need to send from a driver which are not exposed by
-> > the SMP functions already?
-> 
-> It's not an SMP IPI. We use GIC to exchange interrupts between AXD and the
-> host system since AXD is another MIPS core in the cluster.
 
-So that should have been in the changelog to begin with.
- 
-> > > This will be used later by AXD driver.
-> > That smells fishy and it wants a proper explanation WHY and not just a
-> > sloppy statement that it will be used later. I can figure that out
-> > myself as exporting a function without using it does not make any sense.
-> 
-> Sorry for the terse explanation. As pointed above AXD uses GIC to send and
-> receive interrupts to the host core. Without this change I can't compile the
-> driver as a driver module because the symbol is not exported.
+>> Damn, completely missed..
+>>
+>> Hi Vinod,
+>> if it's possible, could you please generate a fw_sst_0f28_ssp1.bin
+>> also, so I can test my driver (mine was for the Asus X205TA laptop,
+>> where the codec is on SSP1 port)?
+> Are you sure you ahve SSP1 port enabled. I have not seen anyone using that
+> one. Jarkko do you know about this?
+>
+> I will ask firmware folks for generation (i don't do that) and get back
+>
+Hi Vinod
 
-Really? Exporting it solves that problem then. That's interesting news
-for me.
-
-Thanks,
-
-	tglx
+The Asus T100TAF seems to be using the SSP1 port too with a RT5642,.
+I have tested SSP2 and SSP0 firmwares, only getting heat and clicks,
+errors reported by Michele are the same on my device.
+In the DSDT there are only references to SSP1.
