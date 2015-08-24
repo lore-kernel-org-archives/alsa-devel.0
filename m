@@ -1,17 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: davinci: Convert to use
-	devm_ioremap_resource
-Date: Mon, 24 Aug 2015 13:27:48 +0300
-Message-ID: <55DAF1A4.4080303@ti.com>
+Subject: Re: [PATCH 2/3] ASoC: omap-mcbsp: Convert to use
+ devm_ioremap_resource
+Date: Mon, 24 Aug 2015 13:28:06 +0300
+Message-ID: <55DAF1B6.2050605@ti.com>
 References: <1440406056.27868.0.camel@ingics.com>
+ <1440406145.27868.2.camel@ingics.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B0152606B7
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 12:27:52 +0200 (CEST)
-In-Reply-To: <1440406056.27868.0.camel@ingics.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA2CA2606B7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 12:28:10 +0200 (CEST)
+In-Reply-To: <1440406145.27868.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, =?UTF-8?Q?Thomas_Niederpr=c3=bcm?= <niederp@physik.uni-kl.de>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vipin Kumar <vipin.kumar@st.com>, alsa-devel@alsa-project.org, =?UTF-8?Q?Thomas_Niederpr=c3=bcm?= <niederp@physik.uni-kl.de>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMjQvMjAxNSAxMTo0NyBBTSwgQXhlbCBMaW4gd3JvdGU6Cj4gVXNlIGRldm1faW9yZW1h
-cF9yZXNvdXJjZSgpIGluc3RlYWQgb2Ygb3BlbiBjb2RlLgoKQWNrZWQtYnk6IFBldGVyIFVqZmFs
-dXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+Cgo+IFNpZ25lZC1vZmYtYnk6IEF4ZWwgTGluIDxh
-eGVsLmxpbkBpbmdpY3MuY29tPgo+IC0tLQo+ICBzb3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLWky
-cy5jICAgfCAyNSArKysrKystLS0tLS0tLS0tLS0tLS0tLS0tCj4gIHNvdW5kL3NvYy9kYXZpbmNp
-L2RhdmluY2ktbWNhc3AuYyB8IDE4ICsrKystLS0tLS0tLS0tLS0tLQo+ICAyIGZpbGVzIGNoYW5n
-ZWQsIDEwIGluc2VydGlvbnMoKyksIDMzIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9z
-b3VuZC9zb2MvZGF2aW5jaS9kYXZpbmNpLWkycy5jIGIvc291bmQvc29jL2RhdmluY2kvZGF2aW5j
-aS1pMnMuYwo+IGluZGV4IDU2Y2I0ZDkuLmVjOTg1NDggMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
-L2RhdmluY2kvZGF2aW5jaS1pMnMuYwo+ICsrKyBiL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2kt
-aTJzLmMKPiBAQCAtNjUxLDIzICs2NTEsMTUgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29j
-X2NvbXBvbmVudF9kcml2ZXIgZGF2aW5jaV9pMnNfY29tcG9uZW50ID0gewo+ICBzdGF0aWMgaW50
-IGRhdmluY2lfaTJzX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIHsKPiAg
-CXN0cnVjdCBkYXZpbmNpX21jYnNwX2RldiAqZGV2Owo+IC0Jc3RydWN0IHJlc291cmNlICptZW0s
-ICppb2FyZWEsICpyZXM7Cj4gKwlzdHJ1Y3QgcmVzb3VyY2UgKm1lbSwgKnJlczsKPiArCXZvaWQg
-X19pb21lbSAqaW9fYmFzZTsKPiAgCWludCAqZG1hOwo+ICAJaW50IHJldDsKPiAgCj4gIAltZW0g
-PSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOwo+IC0JaWYg
-KCFtZW0pIHsKPiAtCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJubyBtZW0gcmVzb3VyY2U/XG4iKTsK
-PiAtCQlyZXR1cm4gLUVOT0RFVjsKPiAtCX0KPiAtCj4gLQlpb2FyZWEgPSBkZXZtX3JlcXVlc3Rf
-bWVtX3JlZ2lvbigmcGRldi0+ZGV2LCBtZW0tPnN0YXJ0LAo+IC0JCQkJCSByZXNvdXJjZV9zaXpl
-KG1lbSksCj4gLQkJCQkJIHBkZXYtPm5hbWUpOwo+IC0JaWYgKCFpb2FyZWEpIHsKPiAtCQlkZXZf
-ZXJyKCZwZGV2LT5kZXYsICJNY0JTUCByZWdpb24gYWxyZWFkeSBjbGFpbWVkXG4iKTsKPiAtCQly
-ZXR1cm4gLUVCVVNZOwo+IC0JfQo+ICsJaW9fYmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgm
-cGRldi0+ZGV2LCBtZW0pOwo+ICsJaWYgKElTX0VSUihpb19iYXNlKSkKPiArCQlyZXR1cm4gUFRS
-X0VSUihpb19iYXNlKTsKPiAgCj4gIAlkZXYgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwgc2l6
-ZW9mKHN0cnVjdCBkYXZpbmNpX21jYnNwX2RldiksCj4gIAkJCSAgIEdGUF9LRVJORUwpOwo+IEBA
-IC02NzksMTIgKzY3MSw3IEBAIHN0YXRpYyBpbnQgZGF2aW5jaV9pMnNfcHJvYmUoc3RydWN0IHBs
-YXRmb3JtX2RldmljZSAqcGRldikKPiAgCQlyZXR1cm4gLUVOT0RFVjsKPiAgCWNsa19lbmFibGUo
-ZGV2LT5jbGspOwo+ICAKPiAtCWRldi0+YmFzZSA9IGRldm1faW9yZW1hcCgmcGRldi0+ZGV2LCBt
-ZW0tPnN0YXJ0LCByZXNvdXJjZV9zaXplKG1lbSkpOwo+IC0JaWYgKCFkZXYtPmJhc2UpIHsKPiAt
-CQlkZXZfZXJyKCZwZGV2LT5kZXYsICJpb3JlbWFwIGZhaWxlZFxuIik7Cj4gLQkJcmV0ID0gLUVO
-T01FTTsKPiAtCQlnb3RvIGVycl9yZWxlYXNlX2NsazsKPiAtCX0KPiArCWRldi0+YmFzZSA9IGlv
-X2Jhc2U7Cj4gIAo+ICAJZGV2LT5kbWFfZGF0YVtTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLXS5h
-ZGRyID0KPiAgCSAgICAoZG1hX2FkZHJfdCkobWVtLT5zdGFydCArIERBVklOQ0lfTUNCU1BfRFhS
-X1JFRyk7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYyBi
-L3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYwo+IGluZGV4IGI5NjBlNjIuLmFkZDZi
-YjkgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jCj4gKysr
-IGIvc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jCj4gQEAgLTE2MTMsNyArMTYxMyw3
-IEBAIHN0YXRpYyBpbnQgZGF2aW5jaV9tY2FzcF9nZXRfZG1hX3R5cGUoc3RydWN0IGRhdmluY2lf
-bWNhc3AgKm1jYXNwKQo+ICBzdGF0aWMgaW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3RydWN0IHBs
-YXRmb3JtX2RldmljZSAqcGRldikKPiAgewo+ICAJc3RydWN0IHNuZF9kbWFlbmdpbmVfZGFpX2Rt
-YV9kYXRhICpkbWFfZGF0YTsKPiAtCXN0cnVjdCByZXNvdXJjZSAqbWVtLCAqaW9hcmVhLCAqcmVz
-LCAqZGF0Owo+ICsJc3RydWN0IHJlc291cmNlICptZW0sICpyZXMsICpkYXQ7Cj4gIAlzdHJ1Y3Qg
-ZGF2aW5jaV9tY2FzcF9wZGF0YSAqcGRhdGE7Cj4gIAlzdHJ1Y3QgZGF2aW5jaV9tY2FzcCAqbWNh
-c3A7Cj4gIAljaGFyICppcnFfbmFtZTsKPiBAQCAtMTY0OCwyMiArMTY0OCwxMiBAQCBzdGF0aWMg
-aW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAg
-CQl9Cj4gIAl9Cj4gIAo+IC0JaW9hcmVhID0gZGV2bV9yZXF1ZXN0X21lbV9yZWdpb24oJnBkZXYt
-PmRldiwgbWVtLT5zdGFydCwKPiAtCQkJcmVzb3VyY2Vfc2l6ZShtZW0pLCBwZGV2LT5uYW1lKTsK
-PiAtCWlmICghaW9hcmVhKSB7Cj4gLQkJZGV2X2VycigmcGRldi0+ZGV2LCAiQXVkaW8gcmVnaW9u
-IGFscmVhZHkgY2xhaW1lZFxuIik7Cj4gLQkJcmV0dXJuIC1FQlVTWTsKPiAtCX0KPiArCW1jYXNw
-LT5iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIG1lbSk7Cj4gKwlpZiAo
-SVNfRVJSKG1jYXNwLT5iYXNlKSkKPiArCQlyZXR1cm4gUFRSX0VSUihtY2FzcC0+YmFzZSk7Cj4g
-IAo+ICAJcG1fcnVudGltZV9lbmFibGUoJnBkZXYtPmRldik7Cj4gIAo+IC0JbWNhc3AtPmJhc2Ug
-PSBkZXZtX2lvcmVtYXAoJnBkZXYtPmRldiwgbWVtLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShtZW0p
-KTsKPiAtCWlmICghbWNhc3AtPmJhc2UpIHsKPiAtCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJpb3Jl
-bWFwIGZhaWxlZFxuIik7Cj4gLQkJcmV0ID0gLUVOT01FTTsKPiAtCQlnb3RvIGVycjsKPiAtCX0K
-PiAtCj4gIAltY2FzcC0+b3BfbW9kZSA9IHBkYXRhLT5vcF9tb2RlOwo+ICAJLyogc2FuaXR5IGNo
-ZWNrIGZvciB0ZG0gc2xvdHMgcGFyYW1ldGVyICovCj4gIAlpZiAobWNhc3AtPm9wX21vZGUgPT0g
-REFWSU5DSV9NQ0FTUF9JSVNfTU9ERSkgewo+IAoKCi0tIApQw6l0ZXIKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 08/24/2015 11:49 AM, Axel Lin wrote:
+> Use devm_ioremap_resource() instead of open code.
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/omap/mcbsp.c | 20 +++++---------------
+>  1 file changed, 5 insertions(+), 15 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+> index 68a1252..c7563e2 100644
+> --- a/sound/soc/omap/mcbsp.c
+> +++ b/sound/soc/omap/mcbsp.c
+> @@ -965,25 +965,15 @@ int omap_mcbsp_init(struct platform_device *pdev)
+>  	mcbsp->free =3D true;
+>  =
+
+>  	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+> -	if (!res) {
+> +	if (!res)
+>  		res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -		if (!res) {
+> -			dev_err(mcbsp->dev, "invalid memory resource\n");
+> -			return -ENOMEM;
+> -		}
+> -	}
+> -	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
+> -				     dev_name(&pdev->dev))) {
+> -		dev_err(mcbsp->dev, "memory region already claimed\n");
+> -		return -ENODEV;
+> -	}
+> +
+> +	mcbsp->io_base =3D devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(mcbsp->io_base))
+> +		return PTR_ERR(mcbsp->io_base);
+>  =
+
+>  	mcbsp->phys_base =3D res->start;
+>  	mcbsp->reg_cache_size =3D resource_size(res);
+> -	mcbsp->io_base =3D devm_ioremap(&pdev->dev, res->start,
+> -				      resource_size(res));
+> -	if (!mcbsp->io_base)
+> -		return -ENOMEM;
+>  =
+
+>  	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
+>  	if (!res)
+> =
+
+
+
+-- =
+
+P=E9ter
