@@ -1,87 +1,99 @@
-From: Christian Hartmann <cornogle@googlemail.com>
-Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
- of WM510205 codec via ACPI (resend)
-Date: Mon, 24 Aug 2015 15:25:57 +0200
-Message-ID: <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
-References: <CAKor6TdKrQrvXTPU=fzL9LTCBbyc9WAbLnYdObY+Wu73g1w6Fg@mail.gmail.com>
- <CAKor6Tep1jjOnoPn7e5Djird3RVDNP8Gjcb8HOKO6g-_R5++VQ@mail.gmail.com>
- <20150819134328.GU1552@lahna.fi.intel.com>
- <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
- <20150820094542.GC30005@lahna.fi.intel.com>
- <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
- <20150820115845.GF30005@lahna.fi.intel.com>
- <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
- <20150821074310.GM30005@lahna.fi.intel.com>
- <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
- <20150824085140.GA5647@ck-lbox>
+From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [PATCH 02/10] dt: add img,axd.txt device tree binding document
+Date: Mon, 24 Aug 2015 14:26:33 +0100
+Message-ID: <20150824132633.GF7139@leverpostej>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-3-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f195.google.com (mail-wi0-f195.google.com
- [209.85.212.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 5904C2608C7
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 15:25:58 +0200 (CEST)
-Received: by wicxr16 with SMTP id xr16so12556689wic.2
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 06:25:58 -0700 (PDT)
-In-Reply-To: <20150824085140.GA5647@ck-lbox>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1440419959-14315-3-git-send-email-qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Qais Yousef <qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Aug 24, 2015 at 01:39:11PM +0100, Qais Yousef wrote:
+> Signed-off-by: Qais Yousef <qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+> Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>
+> Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+> Cc: Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>
+> Cc: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+> Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> ---
+>  .../devicetree/bindings/sound/img,axd.txt          | 34 ++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/img,axd.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/img,axd.txt b/Documentation/devicetree/bindings/sound/img,axd.txt
+> new file mode 100644
+> index 000000000000..6a8764a79d01
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/img,axd.txt
+> @@ -0,0 +1,34 @@
+> +* AXD Audio Processing IP Binding *
+> +
+> +Required properties:
+> +- compatible: "img,axd"
 
-2015-08-24 10:51 GMT+02:00 Charles Keepax <ckeepax@opensource.wolfsonmicro.com>:
->> What is with the spi_irq = -1 ?? is this a problem here?
->
-> The IRQ needs pulled from the ACPI as well, having no IRQ
-> specified will not interfer with basic functionality of the
-> driver but will become a problem eventually.
->
-> Thanks,
-> Charles
+This sounds awfully generic. Is there not a more complete name?
 
-ok, I will have an eye on it these days for the IRQ.
-For me its looking that the pxa2xx does not have an irq yet,
-nor an dma channel (thats should be fine, as I understand it correctly)
+> +- clocks: phandle for the clock that drives AXD.
+> +- interrupts: the GIC interrupt where AXD is connected
+> +- gic-irq: it takes two non-zero values, the first one is the host hwirq and
+> +           the second one is AXD's. Host's hwirq should match the value in
+> +           interrupts.
 
-actually I cleanup and want to rework / begin with a new v2 patch
-series, but first it should drive this chip  before beginning with a
-v2 patch.
+I don't understand what this gic-irq property is for; and it generally
+doesn't look right.
 
-one more question: the function devm_gpio_request_one() which is used
-here to request "arizona /RESET"
+Could you please describe what this is and why you thing it is
+necessary?
 
-<code in arizona-core.c>
+> +
+> +Optional properties:
+> +- vpe: VPE number on which AXD should start. Must be provided if AXD is
+> +       running as a single VPE along Linux on the same core.
+> +       It can't be VPE0.
+> +       The VPE will be offlined before AXD is loaded.
 
-/* Start out with /RESET low to put the chip into reset */
-ret = devm_gpio_request_one(arizona->dev, arizona->pdata.reset,
-GPIOF_DIR_OUT | GPIOF_INIT_LOW,
-"arizona /RESET");
-</code>
+Likewise could you please elaborate on this is?
 
-the string arizona /RESET, where is this documented, where can I find
-it? It fails here, and my question is, is this string correct at all
-for my case? Should it be called only "reset" in my case??
+What is a VPE number? What does it mean to start at that number?
 
-All I have found is:
-Documentation/devicetree/bindings/mfd/arizona.txt:  - wlf,reset : GPIO
-specifier for the GPIO controlling /RESET
+> +- inbuf-size: size of shared input buffers area. By default it's 0x7800 bytes.
+> +- outbuf-size: size of shared output buffers area. By default it's 0x3c000 bytes.
 
-in devres.c its documented as a label only:
-@label: a literal description string of this GPIO
+Is this something the kernel dynamically allocates? Why does this need
+to be in the DT?
 
-I am curios about the answers, anyway I will change it, it looks
-faulty (but do not know why exactly at all :) )
+Thanks,
+Mark.
 
-cheers
-chris
+> +
+> +
+> +Example:
+> +
+> +	axdclk: axdclk@400M {
+> +		#clock-cells = <0>;
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <400000000>;
+> +	};
+> +
+> +	axd {
+> +		compatible = "img,axd";
+> +		clocks = <&axdclk>;
+> +		interrupts = <36 IRQ_TYPE_EDGE_RISING>;
+> +		gic-irq = <36 37>;
+> +		vpe = <1>;
+> +	};
+> -- 
+> 2.1.0
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
