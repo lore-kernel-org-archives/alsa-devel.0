@@ -1,15 +1,21 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH v4] ASoC: ics43432: Add codec driver for
- InvenSense ICS-43432 (fwd)
-Date: Mon, 24 Aug 2015 14:03:14 +0200
-Message-ID: <alpine.DEB.2.02.1508241357410.16666@lnxricardw1.se.axis.com>
+From: Markus Osterhoff <linux-kernel@k-raum.org>
+Subject: [PATCH RESEND V2] ALSA: hda: fix possible NULL
+	dereference
+Date: Mon, 24 Aug 2015 14:11:39 +0200
+Message-ID: <20150824121139.GB13757@mo-online.de>
+References: <20150823183705.GT31650@mo-online.de>
+ <s5hsi79ryfg.wl-tiwai@suse.de>
+ <20150824101740.GA13757@mo-online.de>
+ <s5h1tetdlva.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id B7E4D2606B7
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 14:03:29 +0200 (CEST)
+Received: from mo-online.de (mo-online.de [89.238.66.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E75962606F5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 14:11:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h1tetdlva.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,243 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+After a for-loop was replaced by list_for_each_entry, see
+Commit bbbc7e8502c9 ("ALSA: hda - Allocate hda_pcm objects dynamically"),
+Commit 751e2216899c ("ALSA: hda: fix possible null dereference"),
+a possible NULL pointer dereference has been introduced; this patch adds
+the NULL check on pcm->pcm, while leaving a potentially superfluous
+check on pcm itself untouched.
 
-Add support for the InvenSense ICS-43432 I2S MEMS microphone.
-
-This is a non-software-configurable MEMS microphone with I2S output.
-
-Tested on a setup with a single ICS-43432, although the device itself =
-
-supports stereo operation using a hardware pin controlling left vs. right
-channel output.
-
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+Signed-off-by: Markus Osterhoff <linux-kernel@k-raum.org>
 ---
-V4: Updated commit message that the driver has been tested with real =
+ sound/pci/hda/hda_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-hardware, after off-list comment on V3.
-
-V3: Fixed MODULE_LICENSE string.
-
-V2: Update after comments from Lars-Peter: set rate to CONTINUOUS and let =
-
-ALSA figure out the details, also removing hw_params as it is then not =
-
-needed. I've left the checks in dai_set_fmt, as (IIUC) there currently =
-
-doesn't seem to be a way for the ALSA framework to handle format =
-
-constraints using the codec configuration struct.
-
- .../devicetree/bindings/sound/ics43432.txt         |   17 ++++
- .../devicetree/bindings/vendor-prefixes.txt        |    1 +
- sound/soc/codecs/Kconfig                           |    4 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/ics43432.c                        |  101 ++++++++++++++++=
-++++
- 5 files changed, 125 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ics43432.txt
- create mode 100644 sound/soc/codecs/ics43432.c
-
-diff --git a/Documentation/devicetree/bindings/sound/ics43432.txt b/Documen=
-tation/devicetree/bindings/sound/ics43432.txt
-new file mode 100644
-index 0000000..b02e3a6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ics43432.txt
-@@ -0,0 +1,17 @@
-+Invensense ICS-43432 MEMS microphone with I2S output.
-+
-+There are no software configuration options for this device, indeed, the o=
-nly
-+host connection is the I2S interface. Apart from requirements on clock
-+frequency (460 kHz to 3.379 MHz according to the data sheet) there must be
-+64 clock cycles in each stereo output frame; 24 of the 32 available bits
-+contain audio data. A hardware pin determines if the device outputs data
-+on the left or right channel of the I2S frame.
-+
-+Required properties:
-+  - compatible : Must be "invensense,ics43432"
-+
-+Example:
-+
-+	ics43432: ics43432 {
-+		compatible =3D "invensense,ics43432";
-+	};
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Docume=
-ntation/devicetree/bindings/vendor-prefixes.txt
-index 8033919..7966637 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.txt
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
-@@ -103,6 +103,7 @@ img	Imagination Technologies Ltd.
- innolux	Innolux Corporation
- intel	Intel Corporation
- intercontrol	Inter Control Group
-+invensense	InvenSense Inc.
- isee	ISEE 2007 S.L.
- isil	Intersil
- karo	Ka-Ro electronics GmbH
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 061c465..d696c85 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -62,6 +62,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_ES8328_SPI if SPI_MASTER
- 	select SND_SOC_ES8328_I2C if I2C
-+	select SND_SOC_ICS43432
- 	select SND_SOC_ISABELLE if I2C
- 	select SND_SOC_JZ4740_CODEC
- 	select SND_SOC_LM4857 if I2C
-@@ -444,6 +445,9 @@ config SND_SOC_ES8328_SPI
- 	tristate
- 	select SND_SOC_ES8328
- =
-
-+config SND_SOC_ICS43432
-+	tristate
-+
- config SND_SOC_ISABELLE
-         tristate
- =
-
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index abe2d7e..23a2caf 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -55,6 +55,7 @@ snd-soc-dmic-objs :=3D dmic.o
- snd-soc-es8328-objs :=3D es8328.o
- snd-soc-es8328-i2c-objs :=3D es8328-i2c.o
- snd-soc-es8328-spi-objs :=3D es8328-spi.o
-+snd-soc-ics43432-objs :=3D ics43432.o
- snd-soc-isabelle-objs :=3D isabelle.o
- snd-soc-jz4740-codec-objs :=3D jz4740.o
- snd-soc-l3-objs :=3D l3.o
-@@ -240,6 +241,7 @@ obj-$(CONFIG_SND_SOC_DMIC)	+=3D snd-soc-dmic.o
- obj-$(CONFIG_SND_SOC_ES8328)	+=3D snd-soc-es8328.o
- obj-$(CONFIG_SND_SOC_ES8328_I2C)+=3D snd-soc-es8328-i2c.o
- obj-$(CONFIG_SND_SOC_ES8328_SPI)+=3D snd-soc-es8328-spi.o
-+obj-$(CONFIG_SND_SOC_ICS43432)	+=3D snd-soc-ics43432.o
- obj-$(CONFIG_SND_SOC_ISABELLE)	+=3D snd-soc-isabelle.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+=3D snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_L3)	+=3D snd-soc-l3.o
-diff --git a/sound/soc/codecs/ics43432.c b/sound/soc/codecs/ics43432.c
-new file mode 100644
-index 0000000..fe0af4a
---- /dev/null
-+++ b/sound/soc/codecs/ics43432.c
-@@ -0,0 +1,101 @@
-+/*
-+ * I2S MEMS microphone driver for InvenSense ICS-43432
-+ *
-+ * - Non configurable.
-+ * - I2S interface, 64 BCLs per frame, 32 bits per channel, 24 bit data
-+ *
-+ * Copyright (c) 2015 Axis Communications AB
-+ *
-+ * Licensed under GPL2.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/initval.h>
-+#include <sound/tlv.h>
-+
-+#define ICS43432_RATE_MIN 7190 /* Hz, from data sheet */
-+#define ICS43432_RATE_MAX 52800  /* Hz, from data sheet */
-+
-+static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+#define ICS43432_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32)
-+
-+static const struct snd_soc_dai_ops ics43432_dai_ops =3D {
-+	.set_fmt	=3D ics43432_set_dai_fmt,
-+};
-+
-+static struct snd_soc_dai_driver ics43432_dai =3D {
-+	.name =3D "ics43432-hifi",
-+	.capture =3D {
-+		.stream_name =3D "Capture",
-+		.channels_min =3D 1,
-+		.channels_max =3D 2,
-+		.rate_min =3D ICS43432_RATE_MIN,
-+		.rate_max =3D ICS43432_RATE_MAX,
-+		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
-+		.formats =3D ICS43432_FORMATS,
-+	},
-+	.ops =3D &ics43432_dai_ops,
-+};
-+
-+static struct snd_soc_codec_driver ics43432_codec_driver =3D {
-+};
-+
-+static int ics43432_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_codec(&pdev->dev, &ics43432_codec_driver,
-+			&ics43432_dai, 1);
-+}
-+
-+static int ics43432_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id ics43432_ids[] =3D {
-+	{ .compatible =3D "invensense,ics43432", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ics43432_dt_ids);
-+#endif
-+
-+static struct platform_driver ics43432_driver =3D {
-+	.driver =3D {
-+		.name =3D "ics43432",
-+		.owner =3D THIS_MODULE,
-+		.of_match_table =3D of_match_ptr(ics43432_ids),
-+	},
-+	.probe =3D ics43432_probe,
-+	.remove =3D ics43432_remove,
-+};
-+
-+module_platform_driver(ics43432_driver);
-+
-+MODULE_DESCRIPTION("ASoC ICS43432 driver");
-+MODULE_AUTHOR("Ricard Wanderlof <ricardw@axis.com>");
-+MODULE_LICENSE("GPLv2");
--- =
-
-1.7.10.4
-
-
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5de3c5d..d1a2cb6 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3172,7 +3172,7 @@ static int add_std_chmaps(struct hda_codec *codec)
+                        struct snd_pcm_chmap *chmap;
+                        const struct snd_pcm_chmap_elem *elem;
+ 
+-                       if (!pcm || pcm->own_chmap ||
++                       if (!pcm || !pcm->pcm || pcm->own_chmap ||
+                            !hinfo->substreams)
+                                continue;
+                        elem = hinfo->chmap ? hinfo->chmap : snd_pcm_std_chmaps;
