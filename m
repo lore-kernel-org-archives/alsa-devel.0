@@ -1,21 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] dmaengine: OF DMAEngine API based on
- CONFIG_DMA_OF instead of CONFIG_OF
-Date: Mon, 24 Aug 2015 14:48:38 +0530
-Message-ID: <20150824091838.GH13546@localhost>
-References: <87wpwpurzk.wl%kuninori.morimoto.gx@renesas.com>
- <20150821082636.GK13546@localhost>
- <87d1yglvcy.wl%kuninori.morimoto.gx@renesas.com>
- <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
+From: Markus Osterhoff <linux-kernel@k-raum.org>
+Subject: Re: PATCH: ALSA: hda: fix possible null dereference
+Date: Mon, 24 Aug 2015 12:17:40 +0200
+Message-ID: <20150824101740.GA13757@mo-online.de>
+References: <20150823183705.GT31650@mo-online.de>
+ <s5hsi79ryfg.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FE9826063A
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 11:16:33 +0200 (CEST)
+Received: from mo-online.de (mo-online.de [89.238.66.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8C782606B7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 12:17:40 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <87bne0lvbe.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <s5hsi79ryfg.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, \@localhost
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 21, 2015 at 11:48:37AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> 5fa422c ("dmaengine: move drivers/of/dma.c -> drivers/dma/of-dma.c")
-> moved OF base DMAEngine code to of-dma.c, then it based on CONFIG_DMA_OF.
-> But, OF base DMAEngine API on of_dma.h still based on CONFIG_OF now.
-> So, current kernel can't find OF base DMAEngine API if .config has CONFIG_OF,
-> but not have CONFIG_DMA_OF. This patch tidyup it.
+Dear Takashi,
 
-I did a quick build with arm config, but didn't see any failures. But still
-am worried about random config and other builds may find.
+maybe I am mistaken or have not made my patch clear, please let me
+apologise.
 
-So I think it would be safer to merge this patch after merge window so that
-we have ample time to fix any issue
+* Takashi Iwai <tiwai@suse.de> [150824 08:30]:
+> On Sun, 23 Aug 2015 20:37:05 +0200,
+> Markus Osterhoff wrote:
+> > With commits bbbc7e85 and 751e2216, a for-loop was restated using
+> > list_for_each_entry(...); originally, a local pcm* was extracted from an array
+> > and checked against NULL, if not-NULL then passed along to
+> > snd_pcm_add_chmap_ctls(...).
+> > 
+> > For a history of the function in question, have a look at lines 2430ff for
+> > 	git diff v4.0 v4.1 sound/pci/hda/hda_codec.c
+> > 
+> > The two commits that touched this function are
+> > Commit bbbc7e8502c9 ("ALSA: hda - Allocate hda_pcm objects dynamically")
+> > Commit 751e2216899c ("ALSA: hda: fix possible null dereference")
+> > 
+> > where the latter only fixes the order of two fixes, but not the pcm / pcm->pcm confusion.
 
--- 
-~Vinod
+> Thanks for the patch.  But this was already fixed by commit
+> 751e2216899c in 4.1-rc1.
+So I re-checked and diff'ed against the current v4.2-rc8 and found that
+the if-statement reads, /sound/pci/hda/hda_codec.c, line 3172:
+	if (!pcm || pcm->own_chmap ||
+while I propose
+	if (!pcm->pcm || pcm->own_chmap ||
 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  include/linux/of_dma.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
-> index 98ba752..36112cd 100644
-> --- a/include/linux/of_dma.h
-> +++ b/include/linux/of_dma.h
-> @@ -34,7 +34,7 @@ struct of_dma_filter_info {
->  	dma_filter_fn	filter_fn;
->  };
->  
-> -#ifdef CONFIG_OF
-> +#ifdef CONFIG_DMA_OF
->  extern int of_dma_controller_register(struct device_node *np,
->  		struct dma_chan *(*of_dma_xlate)
->  		(struct of_phandle_args *, struct of_dma *),
-> -- 
-> 1.9.1
-> 
+With the mentioned 751e2216899c I do get a NULL dereference (for
+whatever reason), because pcm->pcm can indeed by NULL inside the loop. Please
+reconsider the patch:
+
+> Takashi
+Thanks for your time, Markus
+
+
+Signed-off-by: Markus Osterhoff <linux-kernel@k-raum.org>
+---
+ sound/pci/hda/hda_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5de3c5d..47206b9 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3172,7 +3172,7 @@ static int add_std_chmaps(struct hda_codec *codec)
+                        struct snd_pcm_chmap *chmap;
+                        const struct snd_pcm_chmap_elem *elem;
+ 
+-                       if (!pcm || pcm->own_chmap ||
++                       if (!pcm->pcm || pcm->own_chmap ||
+                            !hinfo->substreams)
+                                continue;
+                        elem = hinfo->chmap ? hinfo->chmap : snd_pcm_std_chmaps;
