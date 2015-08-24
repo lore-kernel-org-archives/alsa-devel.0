@@ -1,75 +1,55 @@
-From: Michele Curti <michele.curti@gmail.com>
-Subject: Intel SST on a Bay Trail tablet
-Date: Mon, 24 Aug 2015 15:29:04 +0200
-Message-ID: <20150824132904.GA665@acervm.homenet.telecomitalia.it>
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Mon, 24 Aug 2015 14:32:02 +0100
+Message-ID: <55DB1CD2.5030300@arm.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 72C362608EC
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 15:29:07 +0200 (CEST)
-Received: by widdq5 with SMTP id dq5so50360137wid.1
- for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 06:29:07 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: alsa-devel@alsa-project.org, ao2@ao2.it, jarkko.nikula@linux.intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55DB15EB.3090109@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu, 25 Jun 2015 22:17:17 +0530 Vinod Koul wrote:
+On 24/08/15 14:02, Qais Yousef wrote:
+> On 08/24/2015 01:49 PM, Thomas Gleixner wrote:
+>> On Mon, 24 Aug 2015, Qais Yousef wrote:
+>>
+>>> Some drivers might require to send ipi to other cores. So export it.
+>> Which IPIs do you need to send from a driver which are not exposed by
+>> the SMP functions already?
 > 
-> > On Thu, Jun 25, 2015 at 12:21:24PM +0200, Antonio Ospite wrote:
-> > > On Thu, 25 Jun 2015 11:20:46 +0530
-> > > Vinod Koul <vinod.koul at intel.com> wrote:
-> > > 
-> > > > On Wed, Jun 24, 2015 at 03:46:13PM +0530, Vinod Koul wrote:
-> > > > > On Tue, Apr 14, 2015 at 05:06:27PM +0300, Jarkko Nikula wrote:
-> > > [...]
-> > > > > > 
-> > > > > > Which makes me thinking how does those strings describe the SSP port
-> > > > > > setup? E.g. do they reflect what port is actually used or could it
-> > > > > > be possible that those are just driver strings but firmware could
-> > > > > > have been tuned for SSP0? If I looked at earlier right, Teclast has
-> > > > > > the low pin-count Baytrail without SSP2 but I'm not sure about that.
-> > > > > The FW doesnt provide way to changes ports from driver in this, so this
-> > > > > doesnt mean much. If we are sure it is not ssp2, I can provide ssp1 fw for
-> > > > > test
-> > > > I ahve pushed latest BYT version we have as well as added binary for second
-> > > > SSP port. Please give it a try:
-> > > > 
-> > > > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt&id=28ff420dd33ec299217bad7d526ff3bfd163b551
-> > > > 
-> > > 
-> > > Thanks Vinod, but I see these are in the ELF format, and the mainline
-> > > driver does not support this format, at least the last time I checked it
-> > > didn't.
-> > My bad, updated the patch now with right format
-> > 
-> > https://git.kernel.org/cgit/linux/kernel/git/vkoul/firmware.git/commit/?h=byt
-> >
-> 
-> (Adding Michele to CC)
-> 
-> OK, so Jarkko was right: after a quick test I confirm that with
-> fw_sst_0f28_ssp0.bin I get sound; this is quite an improvement,
-> thanks!
+> It's not an SMP IPI. We use GIC to exchange interrupts between AXD and 
+> the host system since AXD is another MIPS core in the cluster.
 
-Damn, completely missed..
+So is this the case of another CPU in the system that is not under
+control of Linux, but that you need to signal anyway? How do you agree
+on the IPI number between the two systems?
 
-Hi Vinod,
-if it's possible, could you please generate a fw_sst_0f28_ssp1.bin
-also, so I can test my driver (mine was for the Asus X205TA laptop,
-where the codec is on SSP1 port)?
+>>> This will be used later by AXD driver.
+>> That smells fishy and it wants a proper explanation WHY and not just a
+>> sloppy statement that it will be used later. I can figure that out
+>> myself as exporting a function without using it does not make any sense.
+> 
+> Sorry for the terse explanation. As pointed above AXD uses GIC to send 
+> and receive interrupts to the host core. Without this change I can't 
+> compile the driver as a driver module because the symbol is not exported.
+> 
+> Does this make things clearer?
+
+To me, it feels like this is yet another case of routing interrupts to
+another agent in the system, which is not a CPU under the kernel's
+control. There is at least two other platforms doing similar craziness
+(a Freescale platform, and at least one Nvidia).
+
+I'd rather see something more "architected" than this blind export, or
+at least some level of filtering (the idea random drivers can access
+such a low-level function doesn't make me feel very good).
 
 Thanks,
-Michele
+
+	M.
+-- 
+Jazz is not dead. It just smells funny...
