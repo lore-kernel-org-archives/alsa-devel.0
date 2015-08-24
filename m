@@ -1,7 +1,7 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH 08/10] ALSA: axd: add low level AXD platform setup files
-Date: Mon, 24 Aug 2015 13:39:17 +0100
-Message-ID: <1440419959-14315-9-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH 09/10] ALSA: axd: add alsa compress offload operations
+Date: Mon, 24 Aug 2015 13:39:18 +0100
+Message-ID: <1440419959-14315-10-git-send-email-qais.yousef@imgtec.com>
 References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,10 +12,8 @@ To: alsa-devel@alsa-project.org
 Cc: Qais Yousef <qais.yousef@imgtec.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-At the moment AXD runs on MIPS cores only. These files provide
-basic functionality to prepare AXD f/w to bootstrap itself and
-do low level interrupt/kick when being initialised from a mips
-core.
+Add implementation of alsa compress offload operations.
+At the moment we only support playback only.
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
@@ -24,20 +22,18 @@ Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
 Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/img/axd/axd_platform.h      |  35 +++
- sound/soc/img/axd/axd_platform_mips.c | 416 ++++++++++++++++++++++++++++++++++
- 2 files changed, 451 insertions(+)
- create mode 100644 sound/soc/img/axd/axd_platform.h
- create mode 100644 sound/soc/img/axd/axd_platform_mips.c
+ sound/soc/img/axd/axd_alsa_ops.c | 211 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 211 insertions(+)
+ create mode 100644 sound/soc/img/axd/axd_alsa_ops.c
 
-diff --git a/sound/soc/img/axd/axd_platform.h b/sound/soc/img/axd/axd_platform.h
+diff --git a/sound/soc/img/axd/axd_alsa_ops.c b/sound/soc/img/axd/axd_alsa_ops.c
 new file mode 100644
-index 000000000000..f9cc3c308a4a
+index 000000000000..91e17119b306
 --- /dev/null
-+++ b/sound/soc/img/axd/axd_platform.h
-@@ -0,0 +1,35 @@
++++ b/sound/soc/img/axd/axd_alsa_ops.c
+@@ -0,0 +1,211 @@
 +/*
-+ * Copyright (C) 2011-2015 Imagination Technologies Ltd.
++ * Copyright (C) 2015 Imagination Technologies Ltd.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License version
@@ -48,450 +44,204 @@ index 000000000000..f9cc3c308a4a
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 + * GNU General Public License for more details.
 + *
-+ * Platform Specific helper functions.
++ * AXD ALSA Compressed ops
 + */
-+#ifndef AXD_PLATFORM_H_
-+#define AXD_PLATFORM_H_
++#include <sound/compress_driver.h>
++#include <sound/soc.h>
++
++#include "axd_cmds.h"
 +#include "axd_module.h"
 +
-+void axd_platform_init(struct axd_dev *axd);
-+void axd_platform_set_pc(unsigned long pc);
-+int axd_platform_start(void);
-+void axd_platform_stop(void);
-+unsigned int axd_platform_num_threads(void);
-+void axd_platform_kick(void);
-+void axd_platform_irq_ack(void);
-+void axd_platform_print_regs(void);
-+
-+/*
-+ * protect against simultaneous access to shared memory mapped registers area
-+ * between axd and the host
-+ */
-+unsigned long axd_platform_lock(void);
-+void axd_platform_unlock(unsigned long flags);
-+
-+#endif /* AXD_PLATFORM_H_ */
-diff --git a/sound/soc/img/axd/axd_platform_mips.c b/sound/soc/img/axd/axd_platform_mips.c
-new file mode 100644
-index 000000000000..ac1cf5eb8a64
---- /dev/null
-+++ b/sound/soc/img/axd/axd_platform_mips.c
-@@ -0,0 +1,416 @@
-+/*
-+ * Copyright (C) 2011-2015 Imagination Technologies Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License version
-+ * 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * This file implements running AXD as a single VPE along side linux on the same
-+ * core.
-+ */
-+#include <linux/cpu.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/irqchip/mips-gic.h>
-+#include <linux/spinlock.h>
-+
-+#include <asm/cpu-features.h>
-+#include <asm/hazards.h>
-+#include <asm/mipsregs.h>
-+#include <asm/mipsmtregs.h>
-+#include <asm/tlbmisc.h>
-+
-+#include "axd_module.h"
-+#include "axd_platform.h"
-+
-+
-+static unsigned int axd_irqnum;
-+static unsigned int axd_irq;
-+static unsigned int axd_vpe;
-+static spinlock_t lock;
-+static unsigned long smpirqflags;
-+
-+
-+static void _axd_platform_init(void *info)
++static struct axd_dev *get_axd_from_cstream(struct snd_compr_stream *cstream)
 +{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	/*
-+	 * make sure nothing else on this vpe or another vpe can try to modify
-+	 * any of the shared registers below
-+	 */
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	/* EVP = 0, VPC = 1 */
-+	val = read_c0_mvpcontrol();
-+	val &= ~MVPCONTROL_EVP;
-+	val |= MVPCONTROL_VPC;
-+	write_c0_mvpcontrol(val);
-+	instruction_hazard();
-+
-+	/* prepare TC for setting up */
-+	settc(axd_vpe);
-+	write_tc_c0_tchalt(1);
-+
-+	/* make sure no interrupts are pending and exceptions bits are clear */
-+	write_vpe_c0_cause(0);
-+	write_vpe_c0_status(0);
-+
-+	/* bind TC to VPE */
-+	val = read_tc_c0_tcbind();
-+	val |= (axd_vpe << TCBIND_CURTC_SHIFT) | (axd_vpe << TCBIND_CURVPE_SHIFT);
-+	write_tc_c0_tcbind(val);
-+
-+	/* VPA = 1, MVP = 1 */
-+	val = read_vpe_c0_vpeconf0();
-+	val |= VPECONF0_MVP;
-+	val |= VPECONF0_VPA;
-+	write_vpe_c0_vpeconf0(val);
-+
-+	/* A = 1, IXMT = 0 */
-+	val = read_tc_c0_tcstatus();
-+	val &= ~TCSTATUS_IXMT;
-+	val |= TCSTATUS_A;
-+	write_tc_c0_tcstatus(val);
-+
-+	/* TE = 1 */
-+	val = read_vpe_c0_vpecontrol();
-+	val |= VPECONTROL_TE;
-+	write_vpe_c0_vpecontrol(val);
-+
-+	/* EVP = 1, VPC = 0 */
-+	val = read_c0_mvpcontrol();
-+	val |= MVPCONTROL_EVP;
-+	val &= ~MVPCONTROL_VPC;
-+	write_c0_mvpcontrol(val);
-+	instruction_hazard();
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	return snd_soc_platform_get_drvdata(rtd->platform);
 +}
 +
-+void axd_platform_init(struct axd_dev *axd)
++static int copied_total;
++
++static int axd_compr_open(struct snd_compr_stream *cstream)
 +{
-+	struct cpumask cpumask;
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
 +
-+	axd_irqnum = axd->irqnum;
-+	axd_irq = axd->axd_irq;
-+	axd_vpe = axd->vpe;
-+	spin_lock_init(&lock);
-+
-+	/*
-+	 * ensure axd irq runs on cpu 0 only as it's the only one that can use
-+	 * MT to communicate with AXD
-+	 */
-+	cpumask_clear(&cpumask);
-+	cpumask_set_cpu(0, &cpumask);
-+	irq_set_affinity_hint(axd_irqnum, &cpumask);
-+
-+#ifdef CONFIG_HOTPLUG_CPU
-+	/*
-+	 * offline the cpu before we do anything
-+	 * it's best effort here since the cpu could already be offline, hence
-+	 * we ignore the return value.
-+	 */
-+	cpu_down(axd_vpe);
-+#endif
-+
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can start AXD, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_init, NULL, 1);
-+		return;
-+	}
-+
-+	_axd_platform_init(NULL);
++	axd_cmd_output_set_sink(&axd->cmd, 0, 1);
++	return axd_cmd_inpipe_start(&axd->cmd, 0);
 +}
 +
-+static void _reset(void *info)
++static int axd_compr_free(struct snd_compr_stream *cstream)
 +{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
 +
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	/* first stop TC1 */
-+	write_tc_c0_tchalt(1);
-+
-+	/* clear EXL and ERL from TCSTATUS */
-+	val = read_c0_tcstatus();
-+	val &= ~(ST0_EXL | ST0_ERL);
-+	write_c0_tcstatus(val);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+static void reset(void)
-+{
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can reset AXD, so send it a message to do so */
-+		smp_call_function_single(0, &_reset, NULL, 1);
-+		return;
-+	}
-+
-+	_reset(NULL);
-+}
-+
-+static void _axd_platform_set_pc(void *info)
-+{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+	unsigned long pc = *(unsigned long *)info;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	write_tc_c0_tcrestart(pc);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+void axd_platform_set_pc(unsigned long pc)
-+{
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can set AXD PC, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_set_pc, &pc, 1);
-+		return;
-+	}
-+
-+	_axd_platform_set_pc(&pc);
-+}
-+
-+static void thread_control(int start)
-+{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	/* start/stop the VPE */
-+	write_tc_c0_tchalt(!start);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+static void _axd_platform_start(void *info)
-+{
-+	reset();
-+	thread_control(1);
-+}
-+
-+int axd_platform_start(void)
-+{
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can start AXD, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_start, NULL, 1);
-+		return 0;
-+	}
-+
-+	_axd_platform_start(NULL);
++	axd_cmd_inpipe_stop(&axd->cmd, 0);
++	copied_total = 0;
 +
 +	return 0;
 +}
 +
-+static void _axd_platform_stop(void *info)
++static int axd_compr_set_params(struct snd_compr_stream *cstream,
++				struct snd_compr_params *params)
 +{
-+	thread_control(0);
++	int ret;
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
++
++	ret = axd_cmd_input_set_decoder_params(&axd->cmd, 0, &params->codec);
++	if (ret)
++		return -EINVAL;
++	return 0;
 +}
 +
-+void axd_platform_stop(void)
++static int axd_compr_get_params(struct snd_compr_stream *cstream,
++				struct snd_codec *params)
 +{
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can stop AXD, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_stop, NULL, 1);
-+		return;
-+	}
++	int ret;
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
 +
-+	_axd_platform_stop(NULL);
++	ret = axd_cmd_input_get_decoder_params(&axd->cmd, 0, params);
++	if (ret)
++		return -EIO;
++	return 0;
 +}
 +
-+unsigned int axd_platform_num_threads(void)
++static int axd_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 +{
-+	return 1;
-+}
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
 +
-+static void _axd_platform_kick_sw1(void *info)
-+{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
++	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
++		cmd == SND_COMPR_TRIGGER_DRAIN) {
++		/* stop to send EOS which will cause the stream to be drained */
++		axd_cmd_inpipe_stop(&axd->cmd, 0);
 +
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	val = read_vpe_c0_cause();
-+	val |= CAUSEF_IP1;
-+	write_vpe_c0_cause(val);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+void axd_platform_kick(void)
-+{
-+	/*
-+	 * ensure all writes to shared uncached memory are visible to AXD
-+	 * before sending interrupt
-+	 */
-+	wmb();
-+
-+	if (axd_irq) {
-+		gic_send_ipi(axd_irq);
-+		return;
-+	}
-+
-+	/* fallback to sending interrupt at SW1 */
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can send AXD SW1, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_kick_sw1, NULL, 1);
-+		return;
-+	}
-+
-+	_axd_platform_kick_sw1(NULL);
-+}
-+
-+static void axd_smp_platform_lock(void *info)
-+{
-+	unsigned long *flags = info;
-+
-+	/*
-+	 * prevent AXD irq handler from accessing the lock while another
-+	 * processor holds it
-+	 */
-+	disable_irq(axd_irqnum);
-+	*flags = dvpe();
-+}
-+
-+inline unsigned long axd_platform_lock(void)
-+{
-+	unsigned long irqflags;
-+
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can lock AXD out, so send it a message to do so */
-+		unsigned long flags;
-+
-+		spin_lock(&lock); /* serialise other smp cpus to access the lock */
-+		smp_call_function_single(0, &axd_smp_platform_lock, &flags, 1);
-+		return flags;
-+	}
-+
-+	/*
-+	 * When not servicing AXD irq then another task is trying to acquire the
-+	 * lock, in this case we need to acquire the spinlock without spinning
-+	 * because cpu0 must keep on running to service other cpus requests..
-+	 */
-+	if (!in_interrupt())
-+		while (!spin_trylock(&lock))
++		/*
++		 * start again, repeating if EAGAIN is returned meaning we're
++		 * being drained
++		 */
++		while (axd_cmd_inpipe_start(&axd->cmd, 0) == -EAGAIN)
 +			cpu_relax();
 +
-+	/* prevent other cpus from acquiring the lock while we hold it */
-+	local_irq_save(irqflags);
-+	smpirqflags = irqflags;
-+	return dvpe();
-+}
-+
-+static void axd_smp_platform_unlock(void *info)
-+{
-+	unsigned long *flags = info;
-+
-+	evpe(*flags);
-+	enable_irq(axd_irqnum);
-+}
-+
-+inline void axd_platform_unlock(unsigned long flags)
-+{
-+	if (smp_processor_id() != 0) {
-+		smp_call_function_single(0, &axd_smp_platform_unlock, &flags, 1);
-+		spin_unlock(&lock);
-+		return;
++		copied_total = 0;
 +	}
-+	evpe(flags);
-+	local_irq_restore(smpirqflags);
-+	if (!in_interrupt())
-+		spin_unlock(&lock);
++	return 0;
 +}
 +
-+inline void axd_platform_irq_ack(void)
++static int axd_compr_pointer(struct snd_compr_stream *cstream,
++			     struct snd_compr_tstamp *tstamp)
 +{
++	tstamp->copied_total = copied_total;
++	return 0;
 +}
 +
-+static void print_regs(unsigned int thread)
++static int axd_compr_copy(struct snd_compr_stream *cstream, char __user *buf,
++			  size_t count)
 +{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
++	int ret;
 +
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
++	ret = axd_cmd_send_buffer(&axd->cmd, 0, buf, count);
++	if (ret < 0) {
++		dev_err(axd->dev, "failed to write buffer %d\n", ret);
++		return ret;
++	}
++	copied_total += ret;
 +
-+	settc(thread);
-+	pr_err("PC:\t\t0x%08lX\n", read_tc_c0_tcrestart());
-+	pr_err("STATUS:\t\t0x%08lX\n", read_vpe_c0_status());
-+	pr_err("CAUSE:\t\t0x%08lX\n", read_vpe_c0_cause());
-+	pr_err("EPC:\t\t0x%08lX\n", read_vpe_c0_epc());
-+	pr_err("EBASE:\t\t0x%08lX\n", read_vpe_c0_ebase());
-+	pr_err("BADVADDR:\t0x%08lX\n", read_vpe_c0_badvaddr());
-+	pr_err("CONFIG:\t\t0x%08lX\n", read_vpe_c0_config());
-+	pr_err("MVPCONTROL:\t0x%08X\n", read_c0_mvpcontrol());
-+	pr_err("VPECONTROL:\t0x%08lX\n", read_vpe_c0_vpecontrol());
-+	pr_err("VPECONF0:\t0x%08lX\n", read_vpe_c0_vpeconf0());
-+	pr_err("TCBIND:\t\t0x%08lX\n", read_tc_c0_tcbind());
-+	pr_err("TCSTATUS:\t0x%08lX\n", read_tc_c0_tcstatus());
-+	pr_err("TCHALT:\t\t0x%08lX\n", read_tc_c0_tchalt());
-+	pr_err("\n");
-+	pr_err("$0: 0x%08lX\tat: 0x%08lX\tv0: 0x%08lX\tv1: 0x%08lX\n",
-+				mftgpr(0), mftgpr(1), mftgpr(2), mftgpr(3));
-+	pr_err("a0: 0x%08lX\ta1: 0x%08lX\ta2: 0x%08lX\ta3: 0x%08lX\n",
-+				mftgpr(4), mftgpr(5), mftgpr(6), mftgpr(7));
-+	pr_err("t0: 0x%08lX\tt1: 0x%08lX\tt2: 0x%08lX\tt3: 0x%08lX\n",
-+				mftgpr(8), mftgpr(9), mftgpr(10), mftgpr(11));
-+	pr_err("t4: 0x%08lX\tt5: 0x%08lX\tt6: 0x%08lX\tt7: 0x%08lX\n",
-+				mftgpr(12), mftgpr(13), mftgpr(14), mftgpr(15));
-+	pr_err("s0: 0x%08lX\ts1: 0x%08lX\ts2: 0x%08lX\ts3: 0x%08lX\n",
-+				mftgpr(16), mftgpr(17), mftgpr(18), mftgpr(19));
-+	pr_err("s4: 0x%08lX\ts5: 0x%08lX\ts6: 0x%08lX\ts7: 0x%08lX\n",
-+				mftgpr(20), mftgpr(21), mftgpr(22), mftgpr(23));
-+	pr_err("t8: 0x%08lX\tt9: 0x%08lX\tk0: 0x%08lX\tk1: 0x%08lX\n",
-+				mftgpr(24), mftgpr(25), mftgpr(26), mftgpr(27));
-+	pr_err("gp: 0x%08lX\tsp: 0x%08lX\ts8: 0x%08lX\tra: 0x%08lX\n",
-+				mftgpr(28), mftgpr(29), mftgpr(30), mftgpr(31));
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
++	return ret;
 +}
 +
-+static void _axd_platform_print_regs(void *info)
++static int axd_compr_get_caps(struct snd_compr_stream *cstream,
++			      struct snd_compr_caps *caps)
 +{
-+	pr_err("VPE%d regs dump\n", axd_vpe);
-+	print_regs(axd_vpe);
++	struct axd_dev *axd = get_axd_from_cstream(cstream);
++
++	caps->min_fragment_size = 1024*2;
++	caps->max_fragment_size = 1024*2;
++	caps->min_fragments= 1;
++	caps->max_fragments= 5;
++
++	axd_cmd_get_decoders(&axd->cmd, caps);
++
++	return 0;
 +}
 +
-+void axd_platform_print_regs(void)
++static int axd_compr_get_codec_caps(struct snd_compr_stream *cstream,
++				    struct snd_compr_codec_caps *codec)
 +{
-+	if (smp_processor_id() != 0) {
-+		/* only cpu 0 can read AXD regs, so send it a message to do so */
-+		smp_call_function_single(0, &_axd_platform_print_regs, NULL, 1);
-+		return;
++	switch (codec->codec) {
++	case SND_AUDIOCODEC_PCM:
++		codec->num_descriptors = 1;
++		codec->descriptor[0].max_ch = 2;
++		codec->descriptor[0].sample_rates[0] = 96000;
++		codec->descriptor[0].sample_rates[1] = 64000;
++		codec->descriptor[0].sample_rates[2] = 48000;
++		codec->descriptor[0].sample_rates[3] = 44100;
++		codec->descriptor[0].sample_rates[4] = 32000;
++		codec->descriptor[0].sample_rates[5] = 16000;
++		codec->descriptor[0].sample_rates[6] = 8000;
++		codec->descriptor[0].num_sample_rates = 7;
++		codec->descriptor[0].num_bitrates = 0;
++		codec->descriptor[0].profiles = 0;
++		codec->descriptor[0].modes = 0;
++		codec->descriptor[0].formats = 0;
++		break;
++	case SND_AUDIOCODEC_MP3:
++		codec->num_descriptors = 1;
++		codec->descriptor[0].max_ch = 2;
++		codec->descriptor[0].num_sample_rates = 0;
++		codec->descriptor[0].num_bitrates = 0;
++		codec->descriptor[0].profiles = 0;
++		codec->descriptor[0].modes = 0;
++		codec->descriptor[0].formats = 0;
++		break;
++	case SND_AUDIOCODEC_AAC:
++		codec->num_descriptors = 1;
++		codec->descriptor[0].max_ch = 6;
++		codec->descriptor[0].num_sample_rates = 0;
++		codec->descriptor[0].num_bitrates = 0;
++		codec->descriptor[0].profiles = 0;
++		codec->descriptor[0].modes = SND_AUDIOMODE_AAC_MAIN |
++			SND_AUDIOMODE_AAC_LC | SND_AUDIOMODE_AAC_SSR;
++		codec->descriptor[0].formats = SND_AUDIOSTREAMFORMAT_MP2ADTS |
++			SND_AUDIOSTREAMFORMAT_MP4ADTS | SND_AUDIOSTREAMFORMAT_ADIF |
++			SND_AUDIOSTREAMFORMAT_RAW;
++		break;
++	case SND_AUDIOCODEC_VORBIS:
++		codec->num_descriptors = 0;
++		break;
++	case SND_AUDIOCODEC_FLAC:
++		codec->num_descriptors = 1;
++		codec->descriptor[0].max_ch = 6;
++		codec->descriptor[0].num_sample_rates = 0;
++		codec->descriptor[0].num_bitrates = 0;
++		codec->descriptor[0].profiles = 0;
++		codec->descriptor[0].modes = 0;
++		codec->descriptor[0].formats = SND_AUDIOSTREAMFORMAT_FLAC;
++		break;
++	case SND_AUDIOCODEC_WMA:
++		codec->num_descriptors = 1;
++		codec->descriptor[0].max_ch = 6;
++		codec->descriptor[0].num_sample_rates = 0;
++		codec->descriptor[0].num_bitrates = 0;
++		codec->descriptor[0].profiles = SND_AUDIOPROFILE_WMA7 |
++			SND_AUDIOPROFILE_WMA8 | SND_AUDIOPROFILE_WMA9 |
++			SND_AUDIOPROFILE_WMA10;
++		codec->descriptor[0].modes = 0;
++		codec->descriptor[0].formats = SND_AUDIOSTREAMFORMAT_WMA_NOASF_HDR;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	_axd_platform_print_regs(NULL);
++	return 0;
 +}
++
++struct snd_compr_ops axd_compr_ops = {
++	.open		= axd_compr_open,
++	.free		= axd_compr_free,
++	.set_params	= axd_compr_set_params,
++	.get_params	= axd_compr_get_params,
++	.trigger	= axd_compr_trigger,
++	.pointer	= axd_compr_pointer,
++	.copy		= axd_compr_copy,
++	.get_caps	= axd_compr_get_caps,
++	.get_codec_caps	= axd_compr_get_codec_caps
++};
 -- 
 2.1.0
