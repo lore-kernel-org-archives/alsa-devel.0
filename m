@@ -1,282 +1,119 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: tegra: Use devm_ioremap_resource instead
-	of open code
-Date: Sun, 23 Aug 2015 23:32:14 +0800
-Message-ID: <1440343934.18793.1.camel@ingics.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v5 4/4] drm/i915: set proper N/CTS in modeset
+Date: Mon, 24 Aug 2015 01:53:16 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196F5794@SHSMSX103.ccr.corp.intel.com>
+References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
+ <1439880714-40931-4-git-send-email-libin.yang@intel.com>
+ <20150821152606.GG5176@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
- [209.85.220.42])
- by alsa0.perex.cz (Postfix) with ESMTP id D54CE260421
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2015 17:32:20 +0200 (CEST)
-Received: by pacti10 with SMTP id ti10so4609079pac.0
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2015 08:32:19 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Vaishali Thakkar <vthakkar1994@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20150821152606.GG5176@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use devm_ioremap_resource() to simplify the code.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/tegra/tegra20_das.c   | 23 ++++------------------
- sound/soc/tegra/tegra20_i2s.c   | 23 ++++------------------
- sound/soc/tegra/tegra20_spdif.c | 22 ++++-----------------
- sound/soc/tegra/tegra30_ahub.c  | 43 +++++++----------------------------------
- sound/soc/tegra/tegra30_i2s.c   | 23 ++++------------------
- 5 files changed, 23 insertions(+), 111 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra20_das.c b/sound/soc/tegra/tegra20_das.c
-index f52600b..89add13 100644
---- a/sound/soc/tegra/tegra20_das.c
-+++ b/sound/soc/tegra/tegra20_das.c
-@@ -133,7 +133,7 @@ static const struct regmap_config tegra20_das_regmap_config = {
- 
- static int tegra20_das_probe(struct platform_device *pdev)
- {
--	struct resource *res, *region;
-+	struct resource *res;
- 	void __iomem *regs;
- 	int ret = 0;
- 
-@@ -149,24 +149,9 @@ static int tegra20_das_probe(struct platform_device *pdev)
- 	das->dev = &pdev->dev;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "No memory resource\n");
--		ret = -ENODEV;
--		goto err;
--	}
--
--	region = devm_request_mem_region(&pdev->dev, res->start,
--					 resource_size(res), pdev->name);
--	if (!region) {
--		dev_err(&pdev->dev, "Memory region already claimed\n");
--		ret = -EBUSY;
--		goto err;
--	}
--
--	regs = devm_ioremap(&pdev->dev, res->start, resource_size(res));
--	if (!regs) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
-+	regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
- 		goto err;
- 	}
- 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 05f1c6e..14106fa 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -339,7 +339,7 @@ static const struct regmap_config tegra20_i2s_regmap_config = {
- static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- {
- 	struct tegra20_i2s *i2s;
--	struct resource *mem, *memregion;
-+	struct resource *mem;
- 	void __iomem *regs;
- 	int ret;
- 
-@@ -362,24 +362,9 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem) {
--		dev_err(&pdev->dev, "No memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
--	}
--
--	memregion = devm_request_mem_region(&pdev->dev, mem->start,
--					    resource_size(mem), DRV_NAME);
--	if (!memregion) {
--		dev_err(&pdev->dev, "Memory region already claimed\n");
--		ret = -EBUSY;
--		goto err_clk_put;
--	}
--
--	regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
--	if (!regs) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
-+	regs = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
- 		goto err_clk_put;
- 	}
- 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 0809b1e..a0c3640 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -265,7 +265,7 @@ static const struct regmap_config tegra20_spdif_regmap_config = {
- static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- {
- 	struct tegra20_spdif *spdif;
--	struct resource *mem, *memregion, *dmareq;
-+	struct resource *mem, *dmareq;
- 	void __iomem *regs;
- 	int ret;
- 
-@@ -285,10 +285,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem) {
--		dev_err(&pdev->dev, "No memory resource\n");
--		return -ENODEV;
--	}
-+	regs = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
- 
- 	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmareq) {
-@@ -296,19 +295,6 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	memregion = devm_request_mem_region(&pdev->dev, mem->start,
--					    resource_size(mem), DRV_NAME);
--	if (!memregion) {
--		dev_err(&pdev->dev, "Memory region already claimed\n");
--		return -EBUSY;
--	}
--
--	regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
--	if (!regs) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		return -ENOMEM;
--	}
--
- 	spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
- 					    &tegra20_spdif_regmap_config);
- 	if (IS_ERR(spdif->regmap)) {
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 989b1e8..fef3b9a 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -521,7 +521,7 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct reset_control *rst;
- 	int i;
--	struct resource *res0, *res1, *region;
-+	struct resource *res0, *res1;
- 	void __iomem *regs_apbif, *regs_ahub;
- 	int ret = 0;
- 
-@@ -584,26 +584,12 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res0) {
--		dev_err(&pdev->dev, "No apbif memory resource\n");
--		return -ENODEV;
--	}
-+	regs_apbif = devm_ioremap_resource(&pdev->dev, res0);
-+	if (IS_ERR(regs_apbif))
-+		return PTR_ERR(regs_apbif);
- 
--	region = devm_request_mem_region(&pdev->dev, res0->start,
--					 resource_size(res0), DRV_NAME);
--	if (!region) {
--		dev_err(&pdev->dev, "request region apbif failed\n");
--		return -EBUSY;
--	}
- 	ahub->apbif_addr = res0->start;
- 
--	regs_apbif = devm_ioremap(&pdev->dev, res0->start,
--				  resource_size(res0));
--	if (!regs_apbif) {
--		dev_err(&pdev->dev, "ioremap apbif failed\n");
--		return -ENOMEM;
--	}
--
- 	ahub->regmap_apbif = devm_regmap_init_mmio(&pdev->dev, regs_apbif,
- 					&tegra30_ahub_apbif_regmap_config);
- 	if (IS_ERR(ahub->regmap_apbif)) {
-@@ -614,24 +600,9 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 
- 	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--	if (!res1) {
--		dev_err(&pdev->dev, "No ahub memory resource\n");
--		return -ENODEV;
--	}
--
--	region = devm_request_mem_region(&pdev->dev, res1->start,
--					 resource_size(res1), DRV_NAME);
--	if (!region) {
--		dev_err(&pdev->dev, "request region ahub failed\n");
--		return -EBUSY;
--	}
--
--	regs_ahub = devm_ioremap(&pdev->dev, res1->start,
--				 resource_size(res1));
--	if (!regs_ahub) {
--		dev_err(&pdev->dev, "ioremap ahub failed\n");
--		return -ENOMEM;
--	}
-+	regs_ahub = devm_ioremap_resource(&pdev->dev, res1);
-+	if (IS_ERR(regs_ahub))
-+		return PTR_ERR(regs_ahub);
- 
- 	ahub->regmap_ahub = devm_regmap_init_mmio(&pdev->dev, regs_ahub,
- 					&tegra30_ahub_ahub_regmap_config);
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index fe36375..8e55583 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -379,7 +379,7 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
- 	struct tegra30_i2s *i2s;
- 	const struct of_device_id *match;
- 	u32 cif_ids[2];
--	struct resource *mem, *memregion;
-+	struct resource *mem;
- 	void __iomem *regs;
- 	int ret;
- 
-@@ -419,24 +419,9 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
- 	}
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem) {
--		dev_err(&pdev->dev, "No memory resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
--	}
--
--	memregion = devm_request_mem_region(&pdev->dev, mem->start,
--					    resource_size(mem), DRV_NAME);
--	if (!memregion) {
--		dev_err(&pdev->dev, "Memory region already claimed\n");
--		ret = -EBUSY;
--		goto err_clk_put;
--	}
--
--	regs = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
--	if (!regs) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
-+	regs = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
- 		goto err_clk_put;
- 	}
- 
--- 
-2.1.0
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IFZpbGxlIFN5cmrDpGzDpCBbbWFp
+bHRvOnZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tXQo+IFNlbnQ6IEZyaWRheSwgQXVndXN0
+IDIxLCAyMDE1IDExOjI2IFBNCj4gVG86IFlhbmcsIExpYmluCj4gQ2M6IGFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4gZ2Z4QGxpc3RzLmZyZWVkZXNr
+dG9wLm9yZzsgZGFuaWVsLnZldHRlckBmZndsbC5jaDsKPiBqYW5pLm5pa3VsYUBsaW51eC5pbnRl
+bC5jb20KPiBTdWJqZWN0OiBSZTogW0ludGVsLWdmeF0gW1BBVENIIHY1IDQvNF0gZHJtL2k5MTU6
+IHNldCBwcm9wZXIgTi9DVFMgaW4KPiBtb2Rlc2V0Cj4gCj4gT24gVHVlLCBBdWcgMTgsIDIwMTUg
+YXQgMDI6NTE6NTRQTSArMDgwMCwgbGliaW4ueWFuZ0BpbnRlbC5jb20KPiB3cm90ZToKPiA+IEZy
+b206IExpYmluIFlhbmcgPGxpYmluLnlhbmdAaW50ZWwuY29tPgo+ID4KPiA+IFdoZW4gbW9kZXNl
+dCBvY2N1cnMgYW5kIHRoZSBUTURTIGZyZXF1ZW5jeSBpcyBzZXQgdG8gc29tZQo+ID4gc3BlaWNh
+bCB2YWx1ZXMsIHRoZSBOL0NUUyBuZWVkIHRvIGJlIHNldCBtYW51YWxseSBpZiBhdWRpbwo+ID4g
+aXMgcGxheWluZy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5nIDxsaWJpbi55YW5n
+QGludGVsLmNvbT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgg
+ICAgfCAgOCArKysrKysrKwo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMg
+fCA0MAo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCj4gPiAgMiBmaWxl
+cyBjaGFuZ2VkLCA0NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gPgo+ID4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgKPiBiL2RyaXZlcnMvZ3B1L2Ry
+bS9pOTE1L2k5MTVfcmVnLmgKPiA+IGluZGV4IDY3ODZlOTQuLjEyMmI1YmQgMTAwNjQ0Cj4gPiAt
+LS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiArKysgYi9kcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pOTE1X3JlZy5oCj4gPiBAQCAtNzAzNSw2ICs3MDM1LDggQEAgZW51bSBza2xf
+ZGlzcF9wb3dlcl93ZWxscyB7Cj4gPiAgCQkJCQlfSFNXX0FVRF9NSVNDX0NUUkxfQSwgXAo+ID4g
+IAkJCQkJX0hTV19BVURfTUlTQ19DVFJMX0IpCj4gPgo+ID4gKyNkZWZpbmUgSFNXX0FVRF9QSVBF
+X0NPTk5fU0VMX0NUUkwgIDB4NjUwYWMKPiA+ICsKPiA+ICAjZGVmaW5lIF9IU1dfQVVEX0RJUF9F
+TERfQ1RSTF9TVF9BCTB4NjUwYjQKPiA+ICAjZGVmaW5lIF9IU1dfQVVEX0RJUF9FTERfQ1RSTF9T
+VF9CCTB4NjUxYjQKPiA+ICAjZGVmaW5lIEhTV19BVURfRElQX0VMRF9DVFJMKHBpcGUpIF9QSVBF
+KHBpcGUsIFwKPiA+IEBAIC03MDQ5LDYgKzcwNTEsMTIgQEAgZW51bSBza2xfZGlzcF9wb3dlcl93
+ZWxscyB7Cj4gPiAgCQkJCQlfSFNXX0FVRF9ESUdfQ05WVF8yKQo+ID4gICNkZWZpbmUgRElQX1BP
+UlRfU0VMX01BU0sJCTB4Mwo+ID4KPiA+ICsjZGVmaW5lIF9IU1dfQVVEX1NUUl9ERVNDXzEJCTB4
+NjUwODQKPiA+ICsjZGVmaW5lIF9IU1dfQVVEX1NUUl9ERVNDXzIJCTB4NjUxODQKPiA+ICsjZGVm
+aW5lIEFVRF9TVFJfREVTQyhwaXBlKQlfUElQRShwaXBlLCBcCj4gPiArCQkJCQkgX0hTV19BVURf
+U1RSX0RFU0NfMSwKPiAJXAo+ID4gKwkJCQkJIF9IU1dfQVVEX1NUUl9ERVNDXzIpCj4gPiArCj4g
+PiAgI2RlZmluZSBfSFNXX0FVRF9FRElEX0RBVEFfQQkJMHg2NTA1MAo+ID4gICNkZWZpbmUgX0hT
+V19BVURfRURJRF9EQVRBX0IJCTB4NjUxNTAKPiA+ICAjZGVmaW5lIEhTV19BVURfRURJRF9EQVRB
+KHBpcGUpIF9QSVBFKHBpcGUsIFwKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkx
+NS9pbnRlbF9hdWRpby5jCj4gYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4g
+PiBpbmRleCA5NmI5N2JlLi4wZGZkYzc3IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
+L2k5MTUvaW50ZWxfYXVkaW8uYwo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
+YXVkaW8uYwo+ID4gQEAgLTE0MCw2ICsxNDAsMjcgQEAgc3RhdGljIGJvb2wgYXVkaW9fcmF0ZV9u
+ZWVkX3Byb2coc3RydWN0Cj4gaW50ZWxfY3J0YyAqY3J0YywKPiA+ICAJCXJldHVybiBmYWxzZTsK
+PiA+ICB9Cj4gPgo+ID4gK3N0YXRpYyBpbnQgYXVkaW9fY29uZmlnX2dldF9yYXRlKHN0cnVjdCBk
+cm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiwKPiA+ICsJCQkJCQllbnVtIHBpcGUgcGlwZSkKPiA+
+ICt7Cj4gPiArCXVpbnQzMl90IHRtcDsKPiA+ICsJaW50IGN2dF9pZHg7Cj4gPiArCWludCBiYXNl
+X3JhdGUsIG11bCwgZGl2LCByYXRlOwo+ID4gKwo+ID4gKwl0bXAgPSBJOTE1X1JFQUQoSFNXX0FV
+RF9QSVBFX0NPTk5fU0VMX0NUUkwpOwo+ID4gKwljdnRfaWR4ID0gKHRtcCA+PiAocGlwZSAqIDgp
+KSAmIDB4ZmY7Cj4gPiArCXRtcCA9IEk5MTVfUkVBRChBVURfU1RSX0RFU0MoY3Z0X2lkeCkpOwo+
+ID4gKwliYXNlX3JhdGUgPSB0bXAgJiAoMSA8PCAxNCk7Cj4gPiArCWlmIChiYXNlX3JhdGUgPT0g
+MCkKPiA+ICsJCXJhdGUgPSA0ODAwMDsKPiA+ICsJZWxzZQo+ID4gKwkJcmF0ZSA9IDQ0MTAwOwo+
+ID4gKwltdWwgPSAodG1wICYgKDB4NyA8PCAxMSkpICsgMTsKPiA+ICsJZGl2ID0gKHRtcCAmICgw
+eDcgPDwgOCkpICsgMTsKPiA+ICsJcmF0ZSA9IHJhdGUgKiBtdWwgLyBkaXY7Cj4gPiArCXJldHVy
+biByYXRlOwo+ID4gK30KPiAKPiBHaXZlbiB5b3VyIG5ldyAuc3luY19hdWRpb19yYXRlKCkgY2Fs
+bGJhY2ssIHRoZSBhdWRpbyBkcml2ZXIgc2hvdWxkCj4gaGF2ZQo+IGFscmVhZHkgdG9sZCB1cyB3
+aGF0IHRoZSBjdXJyZW50IHNhbXBsZSByYXRlIGlzLCBhbmQgc28gd2Ugc2hvdWxkbid0Cj4gaGF2
+ZSB0byBnbyBkaWcgaXQgdXAgZnJvbSByZWdpc3RlcnMuCgpUaGlzIHBhdGNoIGlzIG5vdCBjYWxs
+aW5nIHN5bmNfYXVkaW9fcmF0ZSgpIGZyb20gYXVkaW8gZHJpdmVyLgpJdCBoYXBwZW5zIHdoZW4g
+Z2Z4IGRvaW5nIHRoZSBtb2Rlc2V0LgoKPiAKPiA+ICsKPiA+ICBzdGF0aWMgYm9vbCBpbnRlbF9l
+bGRfdXB0b2RhdGUoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3RvciwKPiA+ICAJCQkgICAg
+ICAgaW50IHJlZ19lbGR2LCB1aW50MzJfdCBiaXRzX2VsZHYsCj4gPiAgCQkJICAgICAgIGludCBy
+ZWdfZWxkYSwgdWludDMyX3QgYml0c19lbGRhLAo+ID4gQEAgLTI2MSw2ICsyODIsOCBAQCBzdGF0
+aWMgdm9pZCBoc3dfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGRybV9jb25uZWN0b3IgKmNv
+bm5lY3RvciwKPiA+ICAJY29uc3QgdWludDhfdCAqZWxkID0gY29ubmVjdG9yLT5lbGQ7Cj4gPiAg
+CXVpbnQzMl90IHRtcDsKPiA+ICAJaW50IGxlbiwgaTsKPiA+ICsJaW50IG5fbG93LCBuX3VwLCBu
+Owo+ID4gKwlpbnQgcmF0ZTsKPiA+Cj4gPiAgCURSTV9ERUJVR19LTVMoIkVuYWJsZSBhdWRpbyBj
+b2RlYyBvbiBwaXBlICVjLCAldSBieXRlcwo+IEVMRFxuIiwKPiA+ICAJCSAgICAgIHBpcGVfbmFt
+ZShwaXBlKSwgZHJtX2VsZF9zaXplKGVsZCkpOwo+ID4gQEAgLTI5NiwxMiArMzE5LDI3IEBAIHN0
+YXRpYyB2b2lkCj4gaHN3X2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAq
+Y29ubmVjdG9yLAo+ID4gIAkvKiBFbmFibGUgdGltZXN0YW1wcyAqLwo+ID4gIAl0bXAgPSBJOTE1
+X1JFQUQoSFNXX0FVRF9DRkcocGlwZSkpOwo+ID4gIAl0bXAgJj0gfkFVRF9DT05GSUdfTl9WQUxV
+RV9JTkRFWDsKPiA+IC0JdG1wICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiAgCXRt
+cCAmPSB+QVVEX0NPTkZJR19QSVhFTF9DTE9DS19IRE1JX01BU0s7Cj4gPiAgCWlmIChpbnRlbF9w
+aXBlX2hhc190eXBlKGludGVsX2NydGMsCj4gSU5URUxfT1VUUFVUX0RJU1BMQVlQT1JUKSkKPiA+
+ICAJCXRtcCB8PSBBVURfQ09ORklHX05fVkFMVUVfSU5ERVg7Cj4gPiAgCWVsc2UKPiA+ICAJCXRt
+cCB8PSBhdWRpb19jb25maWdfaGRtaV9waXhlbF9jbG9jayhtb2RlKTsKPiA+ICsKPiA+ICsJdG1w
+ICY9IH5BVURfQ09ORklHX05fUFJPR19FTkFCTEU7Cj4gPiArCWlmIChhdWRpb19yYXRlX2VlZF9w
+cm9nKGludGVsX2NydGMsIG1vZGUpKSB7Cj4gPiArCQlyYXRlID0gYXVkaW9fY29uZmlnX2dldF9y
+YXRlKGRldl9wcml2LCBwaXBlKTsKPiA+ICsJCW4gPSBhdWRpb19jb25maWdfZ2V0X24obW9kZSwg
+cmF0ZSk7Cj4gPiArCQlpZiAobiAhPSAwKSB7Cj4gPiArCQkJbl9sb3cgPSBuICYgMHhmZmY7Cj4g
+PiArCQkJbl91cCA9IChuID4+IDEyKSAmIDB4ZmY7Cj4gPiArCQkJdG1wICY9IH4oQVVEX0NPTkZJ
+R19VUFBFUl9OX01BU0sgfAo+ID4gKwo+IEFVRF9DT05GSUdfTE9XRVJfTl9NQVNLKTsKPiA+ICsJ
+CQl0bXAgfD0gKChuX3VwIDw8Cj4gQVVEX0NPTkZJR19VUFBFUl9OX1NISUZUKSB8Cj4gPiArCQkJ
+CQkobl9sb3cgPDwKPiBBVURfQ09ORklHX0xPV0VSX05fU0hJRlQpIHwKPiA+ICsKPiAJQVVEX0NP
+TkZJR19OX1BST0dfRU5BQkxFKTsKPiA+ICsJCX0KPiA+ICsJfQo+IAo+IFdlIHNob3VsZCBzaGFy
+ZSB0aGUgY29kZSB0byBzZXQgdGhpcyB1cCB3aXRoIC5zeW5jX2F1ZGlvX3JhdGUoKSByYXRoZXIK
+PiB0aGFuIGhhdmluZyB0d28gY29waWVzIG9mIGVzc2VudGljYWxseSB0aGUgc2FtZSBjb2RlLgoK
+SXQncyBvbmx5IHNldHRpbmcgYSB2YXJpYWJsZSB0bXAsIG5vdCBzdXJlIHdlIHJlYWxseSBuZWVk
+CmEgc2VwYXJhdGUgZnVuY3Rpb24gdG8gZG8gdGhlIHNldHRpbmc/Cgo+IAo+ID4gKwo+ID4gIAlJ
+OTE1X1dSSVRFKEhTV19BVURfQ0ZHKHBpcGUpLCB0bXApOwo+ID4gIH0KPiA+Cj4gPiAtLQo+ID4g
+MS45LjEKPiA+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+ID4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+ID4gSW50ZWwtZ2Z4QGxpc3RzLmZyZWVk
+ZXNrdG9wLm9yZwo+ID4gaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2ludGVsLWdmeAo+IAo+IC0tCj4gVmlsbGUgU3lyasOkbMOkCj4gSW50ZWwgT1RDCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWls
+aW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
