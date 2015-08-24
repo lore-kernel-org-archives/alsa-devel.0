@@ -1,307 +1,261 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [RFC] i2c: Revert back to old device naming for ACPI enumerated I2C slaves
-Date: Mon, 24 Aug 2015 13:52:02 +0300
-Message-ID: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: linux-i2c@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, lm-sensors@lm-sensors.org, Wolfram Sang <wsa@the-dreams.de>, Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jean Delvare <jdelvare@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Dustin Byford <dustin@cumulusnetworks.com>, linux@roeck-us.net, Jarkko Nikula <jarkko.nikula@linux.intel.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: [PATCH v4] ASoC: ics43432: Add codec driver for
+ InvenSense ICS-43432 (fwd)
+Date: Mon, 24 Aug 2015 14:03:14 +0200
+Message-ID: <alpine.DEB.2.02.1508241357410.16666@lnxricardw1.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7E4D2606B7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2015 14:03:29 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 70762abb9f89 ("i2c: Use stable dev_name for ACPI enumerated I2C
-slaves") broke the lm-sensors which relies on I2C hwmon slave devices under
-/sys/bus/i2c/devices/ to be named as "x-00yz". However if those hwmon
-devices are ACPI 5 enumerated their name became "i2c-INTABCD:ij" and sysfs
-code in lm-sensors does not find them anymore:
 
-lib/sysfs.c:665:
-if ((!subsys || !strcmp(subsys, "i2c")) &&
-    sscanf(dev_name, "%hd-%x", &entry.chip.bus.nr,
-	   &entry.chip.addr) == 2) {
+Add support for the InvenSense ICS-43432 I2S MEMS microphone.
 
-This patch fixes this by reverting back the old device naming in i2c-core
-but at the same avoids regression to ALSA SoC drivers that depend on stable
-device binding.
+This is a non-software-configurable MEMS microphone with I2S output.
 
-Reverted I2C slave device naming is handled in ALSA SoC core by using the
-ACPI name as a component name if device is ACPI probed. This keeps the
-component binding in ALSA SoC stable and requires only minimal changes to
-affected machine drivers.
+Tested on a setup with a single ICS-43432, although the device itself =
 
-Fixes: 70762abb9f89 i2c: Use stable dev_name for ACPI enumerated I2C slaves
-Reported-by: Dustin Byford <dustin@cumulusnetworks.com>
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+supports stereo operation using a hardware pin controlling left vs. right
+channel output.
+
+Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
 ---
-This is on top of 4.2.0-rc8. I didn't check exact kernel versions where this
-still applies but I know we would need a few different versions for older
-stable versions. Mainly because of added and moved drivers in
-sound/soc/intel/.
+V4: Updated commit message that the driver has been tested with real =
 
-This is for discussion so I didn't cc stable@vger.kernel.org yet. I was
-thinking would it work if we'd keep the stable name but have an another
-symlink in /sys/bus/i2c/devices/ that uses "x-00yz" name. However this
-feels ill-use of devices directory and probably causes more troubles
-elsewhere.
+hardware, after off-list comment on V3.
 
-I don't know how common ACPI enumerated I2C hwmon devices are but I guess
-they exists since Dustin notices this issue and wrote "With that change,
-/sys/bus/i2c/devices/i2c-0-004a, for example, became
-/sys/bus/i2c/devices/i2c-PNPXXXX:xx".
+V3: Fixed MODULE_LICENSE string.
 
-It could be possible there is use for the new device naming. I found a
-comment from Documentation/hid/hid-sensor.txt introduced by commit
-b2eafd7282fd ("HID: sensor: Update document for custom sensor") that seems
-to indicate current i2c-INTABCD:xy naming may be used from userspace too but
-I didn't find examples of that.
----
- drivers/i2c/i2c-core.c                       | 21 ++++-----------------
- sound/soc/intel/boards/broadwell.c           |  6 +++---
- sound/soc/intel/boards/byt-max98090.c        |  2 +-
- sound/soc/intel/boards/byt-rt5640.c          |  2 +-
- sound/soc/intel/boards/bytcr_rt5640.c        |  2 +-
- sound/soc/intel/boards/cht_bsw_max98090_ti.c |  4 ++--
- sound/soc/intel/boards/cht_bsw_rt5645.c      |  4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c      |  6 +++---
- sound/soc/intel/boards/haswell.c             |  2 +-
- sound/soc/soc-core.c                         | 10 ++++++++++
- 10 files changed, 28 insertions(+), 31 deletions(-)
+V2: Update after comments from Lars-Peter: set rate to CONTINUOUS and let =
 
-diff --git a/drivers/i2c/i2c-core.c b/drivers/i2c/i2c-core.c
-index c83e4d13cfc5..e9c227b9dc92 100644
---- a/drivers/i2c/i2c-core.c
-+++ b/drivers/i2c/i2c-core.c
-@@ -913,22 +913,6 @@ void i2c_unlock_adapter(struct i2c_adapter *adapter)
- }
- EXPORT_SYMBOL_GPL(i2c_unlock_adapter);
- 
--static void i2c_dev_set_name(struct i2c_adapter *adap,
--			     struct i2c_client *client)
--{
--	struct acpi_device *adev = ACPI_COMPANION(&client->dev);
--
--	if (adev) {
--		dev_set_name(&client->dev, "i2c-%s", acpi_dev_name(adev));
--		return;
--	}
--
--	/* For 10-bit clients, add an arbitrary offset to avoid collisions */
--	dev_set_name(&client->dev, "%d-%04x", i2c_adapter_id(adap),
--		     client->addr | ((client->flags & I2C_CLIENT_TEN)
--				     ? 0xa000 : 0));
--}
--
- /**
-  * i2c_new_device - instantiate an i2c device
-  * @adap: the adapter managing the device
-@@ -987,7 +971,10 @@ i2c_new_device(struct i2c_adapter *adap, struct i2c_board_info const *info)
- 	client->dev.of_node = info->of_node;
- 	client->dev.fwnode = info->fwnode;
- 
--	i2c_dev_set_name(adap, client);
-+	/* For 10-bit clients, add an arbitrary offset to avoid collisions */
-+	dev_set_name(&client->dev, "%d-%04x", i2c_adapter_id(adap),
-+		     client->addr | ((client->flags & I2C_CLIENT_TEN)
-+				     ? 0xa000 : 0));
- 	status = device_register(&client->dev);
- 	if (status)
- 		goto out_err;
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 8bafaf6ceab1..3abcf0d7682e 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -205,7 +205,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 		.cpu_dai_name = "snd-soc-dummy-dai",
- 		.platform_name = "snd-soc-dummy",
- 		.no_pcm = 1,
--		.codec_name = "i2c-INT343A:00",
-+		.codec_name = "INT343A:00",
- 		.codec_dai_name = "rt286-aif1",
- 		.init = broadwell_rt286_codec_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-@@ -223,7 +223,7 @@ static int broadwell_suspend(struct snd_soc_card *card){
- 	struct snd_soc_codec *codec;
- 
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
-+		if (!strcmp(codec->component.name, "INT343A:00")) {
- 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
- 			rt286_mic_detect(codec, NULL);
- 			break;
-@@ -236,7 +236,7 @@ static int broadwell_resume(struct snd_soc_card *card){
- 	struct snd_soc_codec *codec;
- 
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-INT343A:00")) {
-+		if (!strcmp(codec->component.name, "INT343A:00")) {
- 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
- 			rt286_mic_detect(codec, &broadwell_headset);
- 			break;
-diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
-index 7ab8cc9fbfd5..ae336b8522a8 100644
---- a/sound/soc/intel/boards/byt-max98090.c
-+++ b/sound/soc/intel/boards/byt-max98090.c
-@@ -116,7 +116,7 @@ static struct snd_soc_dai_link byt_max98090_dais[] = {
- 		.stream_name = "Audio",
- 		.cpu_dai_name = "baytrail-pcm-audio",
- 		.codec_dai_name = "HiFi",
--		.codec_name = "i2c-193C9890:00",
-+		.codec_name = "193C9890:00",
- 		.platform_name = "baytrail-pcm-audio",
- 		.init = byt_max98090_init,
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-diff --git a/sound/soc/intel/boards/byt-rt5640.c b/sound/soc/intel/boards/byt-rt5640.c
-index ae89b9b966d9..275b056c495c 100644
---- a/sound/soc/intel/boards/byt-rt5640.c
-+++ b/sound/soc/intel/boards/byt-rt5640.c
-@@ -186,7 +186,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.stream_name = "Audio",
- 		.cpu_dai_name = "baytrail-pcm-audio",
- 		.codec_dai_name = "rt5640-aif1",
--		.codec_name = "i2c-10EC5640:00",
-+		.codec_name = "10EC5640:00",
- 		.platform_name = "baytrail-pcm-audio",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 7f55d59024a8..973f07548b08 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -171,7 +171,7 @@ static struct snd_soc_dai_link byt_dailink[] = {
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
- 		.codec_dai_name = "rt5640-aif1",
--		.codec_name = "i2c-10EC5640:00",
-+		.codec_name = "10EC5640:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 						| SND_SOC_DAIFMT_CBS_CFS,
- 		.be_hw_params_fixup = byt_codec_fixup,
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 70f832114a5a..1a5348771e03 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -232,7 +232,7 @@ static struct snd_soc_ops cht_be_ssp2_ops = {
- static struct snd_soc_aux_dev cht_max98090_headset_dev = {
- 	.name = "Headset Chip",
- 	.init = cht_max98090_headset_init,
--	.codec_name = "i2c-104C227E:00",
-+	.codec_name = "104C227E:00",
- };
- 
- static struct snd_soc_dai_link cht_dailink[] = {
-@@ -265,7 +265,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
- 		.codec_dai_name = "HiFi",
--		.codec_name = "i2c-193C9890:00",
-+		.codec_name = "193C9890:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 					| SND_SOC_DAIFMT_CBS_CFS,
- 		.init = cht_codec_init,
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index bdcaf467842a..c05841264dc7 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -290,7 +290,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
- 		.platform_name = "sst-mfld-platform",
- 		.no_pcm = 1,
- 		.codec_dai_name = "rt5645-aif1",
--		.codec_name = "i2c-10EC5645:00",
-+		.codec_name = "10EC5645:00",
- 		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
- 					| SND_SOC_DAIFMT_CBS_CFS,
- 		.init = cht_codec_init,
-@@ -365,7 +365,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 	card->dev = &pdev->dev;
--	sprintf(codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
-+	sprintf(codec_name, "%s:00", drv->acpi_card->codec_id);
- 	/* set correct codec name */
- 	strcpy((char *)card->dai_link[2].codec_name, codec_name);
- 	snd_soc_card_set_drvdata(card, drv);
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 2c9cc5be439e..632926d0c595 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -280,7 +280,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
- 		.no_pcm = 1,
- 		.nonatomic = true,
- 		.codec_dai_name = "rt5670-aif1",
--		.codec_name = "i2c-10EC5670:00",
-+		.codec_name = "10EC5670:00",
- 		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
- 					| SND_SOC_DAIFMT_CBS_CFS,
- 		.init = cht_codec_init,
-@@ -296,7 +296,7 @@ static int cht_suspend_pre(struct snd_soc_card *card)
- 	struct snd_soc_codec *codec;
- 
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
-+		if (!strcmp(codec->component.name, "10EC5670:00")) {
- 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
- 			rt5670_jack_suspend(codec);
- 			break;
-@@ -310,7 +310,7 @@ static int cht_resume_post(struct snd_soc_card *card)
- 	struct snd_soc_codec *codec;
- 
- 	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
--		if (!strcmp(codec->component.name, "i2c-10EC5670:00")) {
-+		if (!strcmp(codec->component.name, "10EC5670:00")) {
- 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
- 			rt5670_jack_resume(codec);
- 			break;
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 22558572cb9c..6fd6491e368d 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -160,7 +160,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
- 		.cpu_dai_name = "snd-soc-dummy-dai",
- 		.platform_name = "snd-soc-dummy",
- 		.no_pcm = 1,
--		.codec_name = "i2c-INT33CA:00",
-+		.codec_name = "INT33CA:00",
- 		.codec_dai_name = "rt5640-aif1",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0e1e69c7abd5..811d63e31a7a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -34,6 +34,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/of.h>
-+#include <linux/acpi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -2476,10 +2477,18 @@ static char *fmt_single_name(struct device *dev, int *id)
- {
- 	char *found, name[NAME_SIZE];
- 	int id1, id2;
-+	struct acpi_device *adev;
- 
- 	if (dev_name(dev) == NULL)
- 		return NULL;
- 
-+	if (ACPI_HANDLE(dev) &&
-+	    !acpi_bus_get_device(ACPI_HANDLE(dev), &adev)) {
-+		/* use ACPI name as a component name for ACPI probed devices */
-+		strlcpy(name, acpi_dev_name(adev), NAME_SIZE);
-+		goto out;
+ALSA figure out the details, also removing hw_params as it is then not =
+
+needed. I've left the checks in dai_set_fmt, as (IIUC) there currently =
+
+doesn't seem to be a way for the ALSA framework to handle format =
+
+constraints using the codec configuration struct.
+
+ .../devicetree/bindings/sound/ics43432.txt         |   17 ++++
+ .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/ics43432.c                        |  101 ++++++++++++++++=
+++++
+ 5 files changed, 125 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ics43432.txt
+ create mode 100644 sound/soc/codecs/ics43432.c
+
+diff --git a/Documentation/devicetree/bindings/sound/ics43432.txt b/Documen=
+tation/devicetree/bindings/sound/ics43432.txt
+new file mode 100644
+index 0000000..b02e3a6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ics43432.txt
+@@ -0,0 +1,17 @@
++Invensense ICS-43432 MEMS microphone with I2S output.
++
++There are no software configuration options for this device, indeed, the o=
+nly
++host connection is the I2S interface. Apart from requirements on clock
++frequency (460 kHz to 3.379 MHz according to the data sheet) there must be
++64 clock cycles in each stereo output frame; 24 of the 32 available bits
++contain audio data. A hardware pin determines if the device outputs data
++on the left or right channel of the I2S frame.
++
++Required properties:
++  - compatible : Must be "invensense,ics43432"
++
++Example:
++
++	ics43432: ics43432 {
++		compatible =3D "invensense,ics43432";
++	};
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Docume=
+ntation/devicetree/bindings/vendor-prefixes.txt
+index 8033919..7966637 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.txt
++++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+@@ -103,6 +103,7 @@ img	Imagination Technologies Ltd.
+ innolux	Innolux Corporation
+ intel	Intel Corporation
+ intercontrol	Inter Control Group
++invensense	InvenSense Inc.
+ isee	ISEE 2007 S.L.
+ isil	Intersil
+ karo	Ka-Ro electronics GmbH
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 061c465..d696c85 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -62,6 +62,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_BT_SCO
+ 	select SND_SOC_ES8328_SPI if SPI_MASTER
+ 	select SND_SOC_ES8328_I2C if I2C
++	select SND_SOC_ICS43432
+ 	select SND_SOC_ISABELLE if I2C
+ 	select SND_SOC_JZ4740_CODEC
+ 	select SND_SOC_LM4857 if I2C
+@@ -444,6 +445,9 @@ config SND_SOC_ES8328_SPI
+ 	tristate
+ 	select SND_SOC_ES8328
+ =
+
++config SND_SOC_ICS43432
++	tristate
++
+ config SND_SOC_ISABELLE
+         tristate
+ =
+
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index abe2d7e..23a2caf 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -55,6 +55,7 @@ snd-soc-dmic-objs :=3D dmic.o
+ snd-soc-es8328-objs :=3D es8328.o
+ snd-soc-es8328-i2c-objs :=3D es8328-i2c.o
+ snd-soc-es8328-spi-objs :=3D es8328-spi.o
++snd-soc-ics43432-objs :=3D ics43432.o
+ snd-soc-isabelle-objs :=3D isabelle.o
+ snd-soc-jz4740-codec-objs :=3D jz4740.o
+ snd-soc-l3-objs :=3D l3.o
+@@ -240,6 +241,7 @@ obj-$(CONFIG_SND_SOC_DMIC)	+=3D snd-soc-dmic.o
+ obj-$(CONFIG_SND_SOC_ES8328)	+=3D snd-soc-es8328.o
+ obj-$(CONFIG_SND_SOC_ES8328_I2C)+=3D snd-soc-es8328-i2c.o
+ obj-$(CONFIG_SND_SOC_ES8328_SPI)+=3D snd-soc-es8328-spi.o
++obj-$(CONFIG_SND_SOC_ICS43432)	+=3D snd-soc-ics43432.o
+ obj-$(CONFIG_SND_SOC_ISABELLE)	+=3D snd-soc-isabelle.o
+ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+=3D snd-soc-jz4740-codec.o
+ obj-$(CONFIG_SND_SOC_L3)	+=3D snd-soc-l3.o
+diff --git a/sound/soc/codecs/ics43432.c b/sound/soc/codecs/ics43432.c
+new file mode 100644
+index 0000000..fe0af4a
+--- /dev/null
++++ b/sound/soc/codecs/ics43432.c
+@@ -0,0 +1,101 @@
++/*
++ * I2S MEMS microphone driver for InvenSense ICS-43432
++ *
++ * - Non configurable.
++ * - I2S interface, 64 BCLs per frame, 32 bits per channel, 24 bit data
++ *
++ * Copyright (c) 2015 Axis Communications AB
++ *
++ * Licensed under GPL2.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++
++#define ICS43432_RATE_MIN 7190 /* Hz, from data sheet */
++#define ICS43432_RATE_MAX 52800  /* Hz, from data sheet */
++
++static int ics43432_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
- 	strlcpy(name, dev_name(dev), NAME_SIZE);
- 
- 	/* are we a "%s.%d" name (platform and SPI components) */
-@@ -2508,6 +2517,7 @@ static char *fmt_single_name(struct device *dev, int *id)
- 			*id = 0;
- 	}
- 
-+out:
- 	return kstrdup(name, GFP_KERNEL);
- }
- 
--- 
-2.5.0
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++#define ICS43432_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32)
++
++static const struct snd_soc_dai_ops ics43432_dai_ops =3D {
++	.set_fmt	=3D ics43432_set_dai_fmt,
++};
++
++static struct snd_soc_dai_driver ics43432_dai =3D {
++	.name =3D "ics43432-hifi",
++	.capture =3D {
++		.stream_name =3D "Capture",
++		.channels_min =3D 1,
++		.channels_max =3D 2,
++		.rate_min =3D ICS43432_RATE_MIN,
++		.rate_max =3D ICS43432_RATE_MAX,
++		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
++		.formats =3D ICS43432_FORMATS,
++	},
++	.ops =3D &ics43432_dai_ops,
++};
++
++static struct snd_soc_codec_driver ics43432_codec_driver =3D {
++};
++
++static int ics43432_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_codec(&pdev->dev, &ics43432_codec_driver,
++			&ics43432_dai, 1);
++}
++
++static int ics43432_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_codec(&pdev->dev);
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id ics43432_ids[] =3D {
++	{ .compatible =3D "invensense,ics43432", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ics43432_dt_ids);
++#endif
++
++static struct platform_driver ics43432_driver =3D {
++	.driver =3D {
++		.name =3D "ics43432",
++		.owner =3D THIS_MODULE,
++		.of_match_table =3D of_match_ptr(ics43432_ids),
++	},
++	.probe =3D ics43432_probe,
++	.remove =3D ics43432_remove,
++};
++
++module_platform_driver(ics43432_driver);
++
++MODULE_DESCRIPTION("ASoC ICS43432 driver");
++MODULE_AUTHOR("Ricard Wanderlof <ricardw@axis.com>");
++MODULE_LICENSE("GPLv2");
+-- =
 
+1.7.10.4
+
+
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
