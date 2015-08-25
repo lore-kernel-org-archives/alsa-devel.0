@@ -1,158 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci: Convert to use
-	devm_ioremap_resource" to the asoc tree
-Date: Tue, 25 Aug 2015 10:36:30 +0100
-Message-ID: <E1ZUAec-0006F9-1P@debutante>
-References: <1440406056.27868.0.camel@ingics.com>
+From: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Subject: Re: [alsa-devel] [PATCH V5 3/3] ASoC: AMD: add AMD ASoC ACP-I2S driver
+Date: Tue, 25 Aug 2015 15:26:54 +0530
+Message-ID: <CANv6ZMaQV5XK3RG28ayeX-QsC2F3x+sK8ouegFgT=_xM+GUSFg@mail.gmail.com>
+References: <1440106594-29564-1-git-send-email-alexander.deucher@amd.com>
+ <20150820231848.GX12027@sirena.org.uk>
+ <CANv6ZMb9f-kaAUfcUka9T-0XLdG_0eNMVD8YvJNbN=fHEGMRPw@mail.gmail.com>
+ <20150821161716.GD12027@sirena.org.uk>
+ <CADnq5_PofEuygdfJ7W6=kMCUAxZw=8eft0W7F_dEj-8eTw-Ngw@mail.gmail.com>
+ <20150825060648.GA27431@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CDB0260410
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 11:36:44 +0200 (CEST)
-In-Reply-To: <1440406056.27868.0.camel@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20150825060648.GA27431@sirena.org.uk>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: davinci: Convert to use devm_ioremap_resource
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 508a43fdd73072c959f849b4e9eb60a9b523396f Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Mon, 24 Aug 2015 16:47:36 +0800
-Subject: [PATCH] ASoC: davinci: Convert to use devm_ioremap_resource
-
-Use devm_ioremap_resource() instead of open code.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/davinci/davinci-i2s.c   | 25 ++++++-------------------
- sound/soc/davinci/davinci-mcasp.c | 18 ++++--------------
- 2 files changed, 10 insertions(+), 33 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 56cb4d95637d..ec98548a5fc9 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -651,23 +651,15 @@ static const struct snd_soc_component_driver davinci_i2s_component = {
- static int davinci_i2s_probe(struct platform_device *pdev)
- {
- 	struct davinci_mcbsp_dev *dev;
--	struct resource *mem, *ioarea, *res;
-+	struct resource *mem, *res;
-+	void __iomem *io_base;
- 	int *dma;
- 	int ret;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem) {
--		dev_err(&pdev->dev, "no mem resource?\n");
--		return -ENODEV;
--	}
--
--	ioarea = devm_request_mem_region(&pdev->dev, mem->start,
--					 resource_size(mem),
--					 pdev->name);
--	if (!ioarea) {
--		dev_err(&pdev->dev, "McBSP region already claimed\n");
--		return -EBUSY;
--	}
-+	io_base = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
- 
- 	dev = devm_kzalloc(&pdev->dev, sizeof(struct davinci_mcbsp_dev),
- 			   GFP_KERNEL);
-@@ -679,12 +671,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	clk_enable(dev->clk);
- 
--	dev->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
--	if (!dev->base) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
--		goto err_release_clk;
--	}
-+	dev->base = io_base;
- 
- 	dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK].addr =
- 	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index b960e626dad9..add6bb99661d 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1613,7 +1613,7 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
--	struct resource *mem, *ioarea, *res, *dat;
-+	struct resource *mem, *res, *dat;
- 	struct davinci_mcasp_pdata *pdata;
- 	struct davinci_mcasp *mcasp;
- 	char *irq_name;
-@@ -1648,22 +1648,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ioarea = devm_request_mem_region(&pdev->dev, mem->start,
--			resource_size(mem), pdev->name);
--	if (!ioarea) {
--		dev_err(&pdev->dev, "Audio region already claimed\n");
--		return -EBUSY;
--	}
-+	mcasp->base = devm_ioremap_resource(&pdev->dev, mem);
-+	if (IS_ERR(mcasp->base))
-+		return PTR_ERR(mcasp->base);
- 
- 	pm_runtime_enable(&pdev->dev);
- 
--	mcasp->base = devm_ioremap(&pdev->dev, mem->start, resource_size(mem));
--	if (!mcasp->base) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -ENOMEM;
--		goto err;
--	}
--
- 	mcasp->op_mode = pdata->op_mode;
- 	/* sanity check for tdm slots parameter */
- 	if (mcasp->op_mode == DAVINCI_MCASP_IIS_MODE) {
--- 
-2.5.0
+T24gVHVlLCBBdWcgMjUsIDIwMTUgYXQgMTE6MzYgQU0sIE1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
+bmVsLm9yZz4gd3JvdGU6Cj4gT24gTW9uLCBBdWcgMjQsIDIwMTUgYXQgMDQ6MDg6MzFQTSAtMDQw
+MCwgQWxleCBEZXVjaGVyIHdyb3RlOgo+PiBPbiBGcmksIEF1ZyAyMSwgMjAxNSBhdCAxMjoxNyBQ
+TSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPiB3cm90ZToKPgo+PiA+IFdoYXQgSSdt
+IGxvb2tpbmcgZm9yIGlzIGFjdHVhbCBjb2RlIHNoYXJpbmcgd2hlcmUgd2UgdXNlIHRoZSBzYW1l
+IGNvZGUKPj4gPiBmb3IgdGhlIEkyUyBjb250cm9sbGVyIGJsb2NrIG9yIGEgY2xlYXIgYW5kIGRv
+Y3VtZW50ZWQgdW5kZXJzdGFuZGluZyBvZgo+PiA+IHdoeSBpdCBpcyBub3QgcG9zc2libGUgdG8g
+c2hhcmUgdGhpbmdzLgo+Cj4+IE1hcnV0aGkgY2FuIGNsYXJpZnkgZnVydGhlciwgYnV0IGl0J3Mg
+bm90IHBvc3NpYmxlIHRvIHVzZSB0aGUKPj4gZGVzaWdud2FyZSBkcml2ZXIgZGlyZWN0bHkgYmVj
+YXVzZToKPj4gMS4gVGhlIGkycyByZWdpc3RlcnMgYXJlIHdpdGhpbiB0aGUgc2FtZSBNTUlPIGFw
+ZXJ0dXJlIGFzIG91ciBvdGhlcgo+PiBHUFUgcmVnaXN0ZXJzLiAgT3VyIEdQVSBkcml2ZXIgaXMg
+ZGVzaWduZWQgaW4gc3VjaCBhIHdheSB0aGF0IHRoZQo+PiBzcGVjaWZpYyBJUCBtb2R1bGVzIGRv
+bid0IGhhdmUgZGlyZWN0IGFjY2VzcyB0byB0aGUgTU1JTyBhcGVydHVyZS4KPj4gVGhleSB1c2Ug
+ZnVuY3Rpb25zIHByb3ZpZGVkIGJ5IHRoZSBjb3JlIGRyaXZlciB0byBhY2Nlc3MgcmVnaXN0ZXJz
+Lgo+PiBUaHVzIHRoZSBBQ1AgSVAgbW9kdWxlIHdpdGhpbiB0aGUgR1BVIGRyaXZlciBkb2VzIG5v
+dCBoYXZlIGRpcmVjdAo+PiBhY2Nlc3MgdG8gdGhlIG1taW8gYmFzZSBwb2ludGVyIGluIG9yZGVy
+IHRvIHBhc3MgaXQgb24uCj4KPiBQbGVhc2UgZXhwbGFpbiB0aGlzIGluIG1vcmUgZGV0YWlsLCBz
+aGFyZWQgcmVnaXN0ZXIgcmFuZ2VzIGFyZSB2ZXJ5Cj4gY29tbW9uIGFuZCBhcmUgdGhlIHNvcnQg
+b2YgdGhpbmdzIE1GRHMgYXJlIHN1cHBvc2VkIHRvIGhlbHAgd2l0aC4KPgoKSW4gb3VyIGNhc2Us
+IEFDUCBJMlMgZHJpdmVyIG5lZWQgbm90IGRvIGEgICdkZXZtX2lvcmVtYXBfcmVzb3VyY2UnIHRv
+CmdldCBtbWlvIGJhc2UuCkFDUCBhdWRpbyBJUCAoRE1BICsgSTJTKyBPdGhlcnMpIHJlZ2lzdGVy
+cyBjYW4gYmUgYWNjZXNzZWQsIHVzaW5nCkdQVSdzIE1NSU8gYmFzZS4KRHVyaW5nIEdQVSBkcml2
+ZXIgZGVzaWduLCBpdCB3YXMgZGVjaWRlZCB0aGF0IGFsbCB0aGUgcmVnaXN0ZXIgYWNjZXNzCmZv
+ciBlbnRpcmUgR1BVIE1NSU8KYXBlcnR1cmUgKGluY2x1ZGVzIEFDUCBhbmQgb3RoZXJzKSB0byBi
+ZSBkb25lIGluIEdQVSBtb2R1bGUgb25seS4KVGhpcyBpcyBpbXBsZW1lbnRlZCBpbiBhbm90aGVy
+IHBhdGNoIGluIHRoaXMgcGF0Y2ggc2VyaWVzIHVzaW5nIGEKYWJzdHJhY3Rpb24gbGF5ZXIuCkEg
+c2V0IG9mIGZ1bmN0aW9ucyB3ZXJlIGRlZmluZWQgZm9yIGF1ZGlvIERNQSBhbmQgSTJTIGZ1bmN0
+aW9uYWxpdHkKd2l0aGluIEdQVSBkcml2ZXIKbW9kdWxlIGFuZCB0aG9zZSBmdW5jdGlvbiBwb2lu
+dGVycyB3ZXJlIHBhc3NlZCBhcyBwbGF0Zm9ybSBkYXRhIHRvIEFMU0EgUENNCmRyaXZlciB0byBo
+YW5kbGUgYm90aCBETUEgYW5kIEkyUy4KCj4+IDIuIFRoZSBkZXNpZ253YXJlIGRyaXZlciBkZXBl
+bmRzIG9uIHRoZSBDTEtERVYgZnJhbWV3b3JrIHdoaWNoIHdlCj4+IGRvbid0IGN1cnJlbnRseSBz
+dXBwb3J0Lgo+Cj4gWW91IG5lZWQgdG8gc3VwcG9ydCB0aGUgY2xvY2sgQVBJLCBpdCdzIHZlcnkg
+ZWFzeSB0byBkbyBzbyBzbyB0aGVyZSBpcwo+IG5vIGV4Y3VzZSBmb3IgZG9pbmcgc29tZXRoaW5n
+IGN1c3RvbSBoZXJlLgo+CgpDb2RlYyBhY3RzIGFzIG1hc3RlciBpbiBvdXIgY2FzZSB0byBwcm92
+aWRlIGNsb2NrIHRvIGkycyBjb250cm9sbGVyIGFuZAp0aGVyZSB3YXNuJ3QgYSBuZWVkIHRvIHVz
+ZSBjbG9jayBBUElzIHVubGlrZSBpbiBleGlzdGluZyBkZXNpZ253YXJlIGkycyBkcml2ZXIuClRo
+ZXJlIGlzIG5vIGN1c3RvbSBpbXBsZW1lbnRhdGlvbi4KCj4+IDMuIE91ciBoYXJkd2FyZSBkb2Vz
+IG5vdCBzdXBwb3J0IFMxNl9MRQo+Cj4gSWYgeW91IGhhdmUgbW9kaWZpZWQgdGhlIGRlc2lnbndh
+cmUgSVAgdG8gcmVtb3ZlIHRoaXMgc3VwcG9ydCAod2h5IHdvdWxkCj4gYW55b25lIGRvIHRoYXQ/
+KSBpdCdzIGEgdHJpdmlhbCBxdWlyaywgaWYgdGhlIHJlc3RyaWN0aW9uIGNvbWVzIGZyb20KPiBz
+b21lIG90aGVyIHBhcnQgb2YgdGhlIHN5c3RlbSBsaWtlIHRoZSBETUEgZHJpdmVyIHRoZW4gdGhl
+IGNvbnN0cmFpbnQKPiB3aWxsIGNvbWUgZnJvbSB0aGF0IHBhcnQgb2YgdGhlIHN5c3RlbS4KClRo
+ZXJlIGlzIGEgYnVnIGluIEFDUCBTb0MgaW1wbGVtZW50YXRpb24gKHdoaWNoIGNvbWJpbmVzIGlu
+dGVybmFsIERNQSwKZGVzaWdud2FyZSBJMlMKYW5kIG90aGVyIGJsb2NrcykgZm9yIDE2Yml0IGFu
+ZCBsb3dlciByZXNvbHV0aW9uLiBJIGZlbHQgLCBpdCB3b3VsZCBiZQpiZXR0ZXIgdG8gbGltaXQg
+ZnVuY3Rpb25hbGl0eQppbiBJMlMgREFJIGNhcGFiaWxpdGllcy4gSSB3aWxsIHB1dCAgdGhpcyBs
+aW1pdGF0aW9uIGluIERNQSBkcml2ZXIKY2FwYWJpbGl0aWVzLCB0byByZXByZXNlbnQgb3ZlcmFs
+bApzb3VuZCBjYXJkIGNhcGFiaWxpdGllcywgaWYgeW91IHN1Z2dlc3QuCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
+ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
