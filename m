@@ -1,76 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: rt5645: Prevent the pop sound of
- the headphone while rebooting or shutdowning
-Date: Tue, 25 Aug 2015 18:57:26 +0100
-Message-ID: <20150825175726.GJ12878@sirena.org.uk>
-References: <1440419579-9970-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4767802374703385097=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B7ADF265152
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 19:57:40 +0200 (CEST)
-In-Reply-To: <1440419579-9970-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, john.lin@realtek.com, woojoo.lee@samsung.com, bardliao@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: rt5645: Add struct dmi_system_id "Google Celes" for chrome platform" to the asoc tree
+Date: Tue, 25 Aug 2015 19:13:08 +0100
+Message-ID: <E1ZUIia-0006At-2d@debutante>
+References: <1440489828-24347-1-git-send-email-oder_chiou@realtek.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1440489828-24347-1-git-send-email-oder_chiou@realtek.com>
+Sender: stable-owner@vger.kernel.org
+To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4767802374703385097==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oplxJGu+Ee5xywIT"
-Content-Disposition: inline
+   ASoC: rt5645: Add struct dmi_system_id "Google Celes" for chrome platform
 
+has been applied to the asoc tree at
 
---oplxJGu+Ee5xywIT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Aug 24, 2015 at 08:32:55PM +0800, Oder Chiou wrote:
-> Add i2c shutdown function to prevent the pop sound of the headphone while
-> the system is rebooting or shutdowning
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +	regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL3, 0x0020, 0x0020);
-> +	regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL2, 0x1000, 0x1000);
-> +	regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL1, 0x0004, 0x0000);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Yay, magic numbers!  What is the issue this is fixing?  The core is
-supposed to power everything down to _BIAS_OFF before exiting, are we
-missing something here?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---oplxJGu+Ee5xywIT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJV3KyFAAoJECTWi3JdVIfQjJYH/ReSAM6WLUOdBFZvQWLbz8iu
-rzpzaiAPdzFnTMMWDTih8IqrNFT/hx5aLnRGYRLl8J971UJGOoUWoXt92VYikBmL
-PHbSt1lsc3bT5auXRRhrPIr3NZ0EXWXLhVyu3z3RwKmR+yjORV3U9lXWa2FIfiVZ
-6Hq+o0uuD9fjmsQ3shdhrQnBXcGE+ubAPF6SSiGuCEn7WwlSn98nMH+DqCZnuvIW
-Qs/SCOAoK7UV0pgOfJvdHOd4nwWISiFcNhK8s5+80jVAezch++hsMDSi3kgHA+Ru
-nmOB0xK2+oB9UUuLXJG2vqNwgjiozwulmyKlzxiBbxA8IZELPwWNQKW9VXHDDNs=
-=GLqi
------END PGP SIGNATURE-----
+>From c1713485f9fc06e1f4de9800b43f6486f2527379 Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Tue, 25 Aug 2015 16:03:48 +0800
+Subject: [PATCH] ASoC: rt5645: Add struct dmi_system_id "Google Celes" for
+ chrome platform
 
---oplxJGu+Ee5xywIT--
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/rt5645.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---===============4767802374703385097==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4767802374703385097==--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9ce311e088fc..610eacd34900 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3229,6 +3229,13 @@ static struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Strago"),
+ 		},
+ 	},
++	{
++		.ident = "Google Celes",
++		.callback = strago_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Celes"),
++		},
++	},
+ 	{ }
+ };
+ 
+-- 
+2.5.0
