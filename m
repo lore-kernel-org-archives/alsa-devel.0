@@ -1,39 +1,59 @@
-From: Xing Zheng <zhengxing@rock-chips.com>
-Subject: [RESEND PATCH v1] ASoC: rockchip: fix a misjudgement by return
-Date: Tue, 25 Aug 2015 15:52:42 +0800
-Message-ID: <1440489162-28270-2-git-send-email-zhengxing@rock-chips.com>
-References: <1440489162-28270-1-git-send-email-zhengxing@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1440489162-28270-1-git-send-email-zhengxing@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org
-Cc: linux-rockchip@lists.infradead.org, Xing Zheng <zhengxing@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH]  sound: Clean up docbook warnings
+Date: Tue, 25 Aug 2015 08:56:16 +0100
+Message-ID: <20150825075616.GH27431@sirena.org.uk>
+References: <20150823035036.1c5614db@xps.lwn.net>
+ <s5hzj1is09b.wl-tiwai@suse.de>
+ <20150825062541.GC27431@sirena.org.uk>
+ <s5hegir51do.wl-tiwai@suse.de>
+ <20150825064739.GF27431@sirena.org.uk>
+ <s5hr3mronv8.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0XhtP95kHFp3KGBe"
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hr3mronv8.wl-tiwai@suse.de>
+Sender: linux-doc-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Being careless, judge the return value of snd_soc_card_jack_new
-is opposite, so it should be fixed.
 
----
+--0XhtP95kHFp3KGBe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes in v1:
-Signed-off-by: Xing Zheng <zhengxing@rock-chips.com>
-Reviewed-by: Dylan Reid <dgreid@chromium.org>
+On Tue, Aug 25, 2015 at 08:58:51AM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
+> > On Tue, Aug 25, 2015 at 08:27:15AM +0200, Takashi Iwai wrote:
 
- sound/soc/rockchip/rockchip_rt5645.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > I don't have a copy of the patch.
 
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index 3c6bb1e..adfe98c 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -118,7 +118,7 @@ static int rk_init(struct snd_soc_pcm_runtime *runtime)
- 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
- 				    &headset_jack, NULL, 0);
--	if (!ret) {
-+	if (ret) {
- 		dev_err(card->dev, "New Headset Jack failed! (%d)\n", ret);
- 		return ret;
- 	}
--- 
-1.7.9.5
+> > > It's on alsa-devel ML.
+
+> > Sure, but as a result of being at Plumbers last week I currently have
+> > about 100 patches actually in my inbox that need review and I don't need
+> > to go trawling for...
+
+> If you need the patch in your inbox, I can forward the original post.
+
+That was what I was asking for, yes.  I see Jon already did that.
+
+--0XhtP95kHFp3KGBe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV3B+gAAoJECTWi3JdVIfQry0H/3r49P6HaFq9nHMZagaZluIw
+Cg2dpZcfAcdX9nGas6KOb9+VE5HKcOcCILcctRIURhK25ezQRqfzGs/ma3K6apVq
+fzlBVLXtJ/KgwZmZGJ+j0K1Ldli4g3Vgq6fK1fy5Glqh4ne4ZPmvVymG0yWT7bOX
+KVSnx2h93uk1CCJRHg/cUTPutFiDLfxjy+rKjdNAINQLkpktGjXckI1c1QRm39h2
+JNrKs3igSACW6/0hXmbA0aa7g0axMAN/SWe+6u8G9N294xbc0bt6mccX+FmjbohW
+PPz8wYiEwLsbWFM/owV8IwY+XkkNL2b1Yu0q0zxN9NloGzn6AHzlDs7BBd6UJUE=
+=D/LQ
+-----END PGP SIGNATURE-----
+
+--0XhtP95kHFp3KGBe--
