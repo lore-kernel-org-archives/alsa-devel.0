@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: Fix unused variable 'spdif'
-	warning" to the asoc tree
-Date: Tue, 25 Aug 2015 10:36:27 +0100
-Message-ID: <E1ZUAeZ-0006Di-A1@debutante>
-References: <1440295633.12294.0.camel@ingics.com>
+Subject: Applied "ASoC: omap-mcbsp: Convert to use
+	devm_ioremap_resource" to the asoc tree
+Date: Tue, 25 Aug 2015 10:36:29 +0100
+Message-ID: <E1ZUAeb-0006Eg-4N@debutante>
+References: <1440406145.27868.2.camel@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94359260438
+ by alsa0.perex.cz (Postfix) with ESMTP id 34E2B260435
  for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 11:36:39 +0200 (CEST)
-In-Reply-To: <1440295633.12294.0.camel@ingics.com>
+In-Reply-To: <1440406145.27868.2.camel@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: Fix unused variable 'spdif' warning
+   ASoC: omap-mcbsp: Convert to use devm_ioremap_resource
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 5e9a3fcfa2ca10e3ff76938fe9a12515ffa41003 Mon Sep 17 00:00:00 2001
+>From 5aec892a6ebe5a3e2a006d969b5fab59e6c79f63 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Sun, 23 Aug 2015 10:07:13 +0800
-Subject: [PATCH] ASoC: tegra: Fix unused variable 'spdif' warning
+Date: Mon, 24 Aug 2015 16:49:05 +0800
+Subject: [PATCH] ASoC: omap-mcbsp: Convert to use devm_ioremap_resource
 
-Fix below build warning:
-  CC [M]  sound/soc/tegra/tegra20_spdif.o
-sound/soc/tegra/tegra20_spdif.c: In function 'tegra20_spdif_platform_remove':
-sound/soc/tegra/tegra20_spdif.c:361:24: warning: unused variable 'spdif' [-Wunused-variable]
+Use devm_ioremap_resource() instead of open code.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Reviewed-by: Vaishali Thakkar <vthakkar1994@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra20_spdif.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/omap/mcbsp.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 66237bc44033..0809b1ec1171 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -358,8 +358,6 @@ err_pm_disable:
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+index 68a125205375..c7563e230c7d 100644
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -965,25 +965,15 @@ int omap_mcbsp_init(struct platform_device *pdev)
+ 	mcbsp->free = true;
  
- static int tegra20_spdif_platform_remove(struct platform_device *pdev)
- {
--	struct tegra20_spdif *spdif = dev_get_drvdata(&pdev->dev);
--
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		tegra20_spdif_runtime_suspend(&pdev->dev);
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+-	if (!res) {
++	if (!res)
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-		if (!res) {
+-			dev_err(mcbsp->dev, "invalid memory resource\n");
+-			return -ENOMEM;
+-		}
+-	}
+-	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
+-				     dev_name(&pdev->dev))) {
+-		dev_err(mcbsp->dev, "memory region already claimed\n");
+-		return -ENODEV;
+-	}
++
++	mcbsp->io_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mcbsp->io_base))
++		return PTR_ERR(mcbsp->io_base);
+ 
+ 	mcbsp->phys_base = res->start;
+ 	mcbsp->reg_cache_size = resource_size(res);
+-	mcbsp->io_base = devm_ioremap(&pdev->dev, res->start,
+-				      resource_size(res));
+-	if (!mcbsp->io_base)
+-		return -ENOMEM;
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
+ 	if (!res)
 -- 
 2.5.0
