@@ -1,18 +1,18 @@
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: Re: [sound:for-next 174/174]
- sound/ppc/keywest.c:104:1: error: type defaults to 'int' in declaration of
- 'MODULE_DEVICE_TABLE'
-Date: Tue, 25 Aug 2015 13:53:18 +0200
-Message-ID: <55DC572E.3070701@osg.samsung.com>
-References: <201508251919.xL9c6697%fengguang.wu@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 22/25] ALSA: firewire-tascam: add PCM
+	functionality
+Date: Tue, 25 Aug 2015 20:56:00 +0900
+Message-ID: <55DC57D0.2060502@sakamocchi.jp>
+References: <1440235181-18181-1-git-send-email-o-takashi@sakamocchi.jp>	<1440235181-18181-23-git-send-email-o-takashi@sakamocchi.jp>
+ <s5htwro4chk.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lists.s-osg.org (lists.s-osg.org [54.187.51.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 085A92605AA
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 13:53:23 +0200 (CEST)
-In-Reply-To: <201508251919.xL9c6697%fengguang.wu@intel.com>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id D40F22605AF
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 13:56:01 +0200 (CEST)
+In-Reply-To: <s5htwro4chk.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +22,185 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kbuild-all@01.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 08/25/2015 01:23 PM, kbuild test robot wrote:
-> tree:   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-> head:   a2bc2af66a5b656577fc2d71b6c277b73537777e
-> commit: a2bc2af66a5b656577fc2d71b6c277b73537777e [174/174] ALSA: ppc: keywest: Export I2C module alias information
-> config: powerpc-defconfig (attached as .config)
-> reproduce:
->   wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
->   chmod +x ~/bin/make.cross
->   git checkout a2bc2af66a5b656577fc2d71b6c277b73537777e
->   # save the attached .config to linux build tree
->   make.cross ARCH=powerpc 
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
->>> sound/ppc/keywest.c:104:1: warning: data definition has no type or storage class
->     MODULE_DEVICE_TABLE(i2c, keywest_i2c_id);
->     ^
->>> sound/ppc/keywest.c:104:1: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE' [-Werror=implicit-int]
->>> sound/ppc/keywest.c:104:1: warning: parameter names (without types) in function declaration
->    cc1: some warnings being treated as errors
-> 
-> vim +104 sound/ppc/keywest.c
-> 
->     98	
->     99	static const struct i2c_device_id keywest_i2c_id[] = {
->    100		{ "MAC,tas3004", 0 },		/* instantiated by i2c-powermac */
->    101		{ "keywest", 0 },		/* instantiated by us if needed */
->    102		{ }
->    103	};
->  > 104	MODULE_DEVICE_TABLE(i2c, keywest_i2c_id);
->    105	
->    106	static struct i2c_driver keywest_driver = {
->    107		.driver = {
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-> 
+On Aug 25 2015 06:12, Takashi Iwai wrote:
+> On Sat, 22 Aug 2015 11:19:38 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> This commit adds PCM functionality to transmit/receive PCM samples.
+>>
+>> When one of PCM substreams are running or external clock source is
+>> selected, current sampling rate is used. Else, the sampling rate is
+>> changed as an userspace application requests.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> ---
+>>   sound/firewire/tascam/Makefile     |   2 +-
+>>   sound/firewire/tascam/tascam-pcm.c | 287 +++++++++++++++++++++++++++++++++++++
+>>   sound/firewire/tascam/tascam.c     |   4 +
+>>   sound/firewire/tascam/tascam.h     |   2 +
+>>   4 files changed, 294 insertions(+), 1 deletion(-)
+>>   create mode 100644 sound/firewire/tascam/tascam-pcm.c
+>>
+>> diff --git a/sound/firewire/tascam/Makefile b/sound/firewire/tascam/Makefile
+>> index 0a1c387..f075b9b 100644
+>> --- a/sound/firewire/tascam/Makefile
+>> +++ b/sound/firewire/tascam/Makefile
+>> @@ -1,3 +1,3 @@
+>>   snd-firewire-tascam-objs := tascam-proc.o amdtp-tascam.o tascam-stream.o \
+>> -			    tascam.o
+>> +			    tascam-pcm.o tascam.o
+>>   obj-$(CONFIG_SND_FIREWIRE_TASCAM) += snd-firewire-tascam.o
+>> diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
+>> new file mode 100644
+>> index 0000000..b1aa980
+>> --- /dev/null
+>> +++ b/sound/firewire/tascam/tascam-pcm.c
+>> @@ -0,0 +1,287 @@
+>> +/*
+>> + * tascam-pcm.c - a part of driver for TASCAM FireWire series
+>> + *
+>> + * Copyright (c) 2015 Takashi Sakamoto
+>> + *
+>> + * Licensed under the terms of the GNU General Public License, version 2.
+>> + */
+>> +
+>> +#include "tascam.h"
+>> +
+>> +static void set_buffer_params(struct snd_pcm_hardware *hw)
+>> +{
+>> +	hw->period_bytes_min = 4 * hw->channels_min;
+>> +	hw->period_bytes_max = hw->period_bytes_min * 2048;
+>> +	hw->buffer_bytes_max = hw->period_bytes_max * 2;
+>> +
+>> +	hw->periods_min = 2;
+>> +	hw->periods_max = UINT_MAX;
+>> +}
+>> +
+>> +static int pcm_init_hw_params(struct snd_tscm *tscm,
+>> +			      struct snd_pcm_substream *substream)
+>> +{
+>> +	static const struct snd_pcm_hardware hardware = {
+>> +		.info = SNDRV_PCM_INFO_BATCH |
+>> +			SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>> +			SNDRV_PCM_INFO_INTERLEAVED |
+>> +			SNDRV_PCM_INFO_JOINT_DUPLEX |
+>> +			SNDRV_PCM_INFO_MMAP |
+>> +			SNDRV_PCM_INFO_MMAP_VALID,
+>> +		.rates = SNDRV_PCM_RATE_44100 |
+>> +			 SNDRV_PCM_RATE_48000 |
+>> +			 SNDRV_PCM_RATE_88200 |
+>> +			 SNDRV_PCM_RATE_96000,
+>> +		.rate_min = 44100,
+>> +		.rate_max = 96000,
+>> +		.channels_min = 10,
+>> +		.channels_max = 18,
+>> +	};
+>> +	struct snd_pcm_runtime *runtime = substream->runtime;
+>> +	struct amdtp_stream *stream;
+>> +	unsigned int pcm_channels;
+>> +
+>> +	runtime->hw = hardware;
+>> +
+>> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+>> +		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
+>> +		stream = &tscm->tx_stream;
+>> +		pcm_channels = tscm->spec->pcm_capture_analog_channels;
+>> +		if (tscm->spec->has_adat)
+>> +			pcm_channels += 8;
+>> +		if (tscm->spec->has_spdif)
+>> +			pcm_channels += 2;
+>> +		runtime->hw.channels_min =
+>> +					runtime->hw.channels_max = pcm_channels;
+>> +	} else {
+>> +		runtime->hw.formats =
+>> +				SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32;
+>> +		stream = &tscm->rx_stream;
+>> +		pcm_channels = tscm->spec->pcm_playback_analog_channels;
+>> +		if (tscm->spec->has_adat)
+>> +			pcm_channels += 8;
+>> +		if (tscm->spec->has_spdif)
+>> +			pcm_channels += 2;
+>> +		runtime->hw.channels_min =
+>> +					runtime->hw.channels_max = pcm_channels;
+>> +	}
+>> +
+>> +	set_buffer_params(&runtime->hw);
+>> +
+>> +	return amdtp_tscm_add_pcm_hw_constraints(stream, runtime);
+>> +}
+>> +
+>> +static int pcm_open(struct snd_pcm_substream *substream)
+>> +{
+>> +	struct snd_tscm *tscm = substream->private_data;
+>> +	enum snd_tscm_clock clock;
+>> +	unsigned int rate;
+>> +	int err;
+>> +
+>> +	err = pcm_init_hw_params(tscm, substream);
+>> +	if (err < 0)
+>> +		return err;
+>> +
+>> +	err = snd_tscm_stream_get_clock(tscm, &clock);
+>> +	if ((clock != SND_TSCM_CLOCK_INTERNAL) |
+>> +	    amdtp_stream_pcm_running(&tscm->rx_stream) |
+>> +	    amdtp_stream_pcm_running(&tscm->tx_stream)) {
+>
+> Must be '||'.
+>
+>> +		err = snd_tscm_stream_get_rate(tscm, &rate);
+>> +		if (err < 0)
+>> +			return err;
+>> +		substream->runtime->hw.rate_min = rate;
+>> +		substream->runtime->hw.rate_max = rate;
+>> +	}
+>> +
+>> +	snd_pcm_set_sync(substream);
+>> +
+>> +	return err;
+>> +}
+>> +
+>> +static int pcm_close(struct snd_pcm_substream *substream)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
+>> +				 struct snd_pcm_hw_params *hw_params)
+>> +{
+>> +	struct snd_tscm *tscm = substream->private_data;
+>> +
+>> +	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+>> +		mutex_lock(&tscm->mutex);
+>> +		tscm->substreams_counter++;
+>> +		mutex_unlock(&tscm->mutex);
+>> +	}
+>
+> This looks dangerous.  For example...
+>
+>> +	amdtp_tscm_set_pcm_format(&tscm->tx_stream, params_format(hw_params));
+>> +	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+>> +						params_buffer_bytes(hw_params));
+>
+> ... if the buffer allocation fails, this return an error.  And
+> snd_pcm_hw_params() calls hw_free() at the error path.  But hw_free()
+> decreases the counter only when the state is not OPEN.  At this
+> moment, however, the state is still OPEN, so the counter is unbalanced.
 
-Sigh, this is because it misses a <linux/module.h> include.
+Indeed. I missed this case. I think moving the increment of substream 
+counter aftre keeping buffer.
 
-I built test with make M=drivers but forgot that sound is outside drivers.
+And Fireworks/BeBoB/OXFW/Dice drivers have the same issue.
 
-So the following change is needed [0].
+>> +}
+>> +static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
+>
+> Put a blank line (also in many places in this file).
 
-Takashi,
 
-Should I re-spin a v2 adding the include or now that you applied, should
-I send an incremental patch?
+Thanks
 
-[0]
-diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-index f644a8c57e0a..4373615f13e2 100644
---- a/sound/ppc/keywest.c
-+++ b/sound/ppc/keywest.c
-@@ -22,6 +22,7 @@
- #include <linux/init.h>
- #include <linux/i2c.h>
- #include <linux/delay.h>
-+#include <linux/module.h>
- #include <sound/core.h>
- #include "pmac.h"
-
-Best regards,
--- 
-Javier Martinez Canillas
-Open Source Group
-Samsung Research America
+Takashi Sakamoto
