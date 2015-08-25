@@ -1,49 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v1 0/1] A misjudgement should be fixed
-Date: Tue, 25 Aug 2015 17:33:04 +0100
-Message-ID: <20150825163304.GC12878@sirena.org.uk>
-References: <1440489162-28270-1-git-send-email-zhengxing@rock-chips.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
+ I2C slaves
+Date: Tue, 25 Aug 2015 10:12:24 -0700
+Message-ID: <55DCA1F8.3050008@roeck-us.net>
+References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com> <20150825052513.GI1654@sirena.org.uk> <20150825145756.GA4066@schokonusskuchen.bad> <55DC8746.1060809@roeck-us.net> <20150825161850.GA8118@katana>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1440489162-28270-1-git-send-email-zhengxing@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xing Zheng <zhengxing@rock-chips.com>
-Cc: dgreid@chromium.org, dianders@chromium.org, heiko@sntech.de, sonnyrao@chromium.org, linux-rockchip@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20150825161850.GA8118@katana>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org, lm-sensors@lm-sensors.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Jean Delvare <jdelvare@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Dustin Byford <dustin@cumulusnetworks.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/25/2015 09:18 AM, Wolfram Sang wrote:
+> On Tue, Aug 25, 2015 at 08:18:30AM -0700, Guenter Roeck wrote:
+>> On 08/25/2015 07:57 AM, Wolfram Sang wrote:
+>>> On Tue, Aug 25, 2015 at 06:25:13AM +0100, Mark Brown wrote:
+>>>> On Mon, Aug 24, 2015 at 01:52:02PM +0300, Jarkko Nikula wrote:
+>>>>> Commit 70762abb9f89 ("i2c: Use stable dev_name for ACPI enumerated I2C
+>>>>> slaves") broke the lm-sensors which relies on I2C hwmon slave devices under
+>>>>> /sys/bus/i2c/devices/ to be named as "x-00yz". However if those hwmon
+>>>>> devices are ACPI 5 enumerated their name became "i2c-INTABCD:ij" and sysfs
+>>>>> code in lm-sensors does not find them anymore:
+>>>>
+>>>> Acked-by: Mark Brown <broonie@kernel.org>
+>>>
+>>> Don't you think there will be regressions given that the new naming
+>>> scheme was around for 18 months?
+>>>
+>>
+>> acpi is pretty long term. New bindings don't show up quickly.
+>
+> The key is, there might be userspace applications that got used to our
+> new "export" of ACPI bindings. The bindings were already existing, our
+> "export" did change.
+>
+>> So I am not surprised that this only shows up now.
+>
+> I am, to be honest. It shows running lm-sensors with ACPI on a kernel
+> newer than 18 months. Not a rare scenario, so I thought.
+>
+With i2c (sensor) devices enumerated in acpi ? Yes, I think that is quite rare.
+This is not about the kernel, it is about such device bindings showing up
+in acpi data.
 
---vOmOzSkFvhd7u8Ms
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Guenter
 
-On Tue, Aug 25, 2015 at 03:52:41PM +0800, Xing Zheng wrote:
->=20
-> Hi,
-> Being careless, judge the return value of snd_soc_card_jack_new
-> is opposite, so it should be fixed.
-
-Please don't send cover letters for single patches, if there is anything
-useful it should either be in the changelog or after the --- in the
-patch.
-
---vOmOzSkFvhd7u8Ms
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV3Ji/AAoJECTWi3JdVIfQtXwH/jmiEd/YFkh1bjoGQDnHZyOL
-F+K6m3BCcpbU9bI1cJ6oQGb4gTRNFXYCmqKhT+w2+q7bghsBtZg4VCd6DuSExa54
-gtxksZns3ZD4LXCSCHRrIx3A/LgOH0f+WKVuUgmVjovXE8QNyjSc9w1xubF9rGwk
-M36bLNclYUi2XSAGW33Q3Jsi4K2QsRDV2GXrqjyvKau46EsWh0H5MIh5XKFzPqH1
-HBf+5Rpl7HAzNR79K93a9xCNZgesEmzM84CHP53zRfA1fXW2tg1Myj0nhBBF2YVF
-TIGd82pCKLqZKq1SPAONn5QAOiYmE06Z85SVRue6xbI+O5Qsjwnnp+YhlFTALUU=
-=qsWF
------END PGP SIGNATURE-----
-
---vOmOzSkFvhd7u8Ms--
