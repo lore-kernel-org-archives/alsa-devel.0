@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Remove the incorrect setting of
-	the JD mode" to the asoc tree
-Date: Tue, 25 Aug 2015 19:13:09 +0100
-Message-ID: <E1ZUIib-0006Bp-Te@debutante>
-References: <1440419579-9970-4-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt5645: Add the register
+	RT5645_CHARGE_PUMP to readable check function" to the asoc tree
+Date: Tue, 25 Aug 2015 19:13:08 +0100
+Message-ID: <E1ZUIia-0006BM-W4@debutante>
+References: <1440419579-9970-5-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C027265152
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 20:13:19 +0200 (CEST)
-In-Reply-To: <1440419579-9970-4-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DE20B26516A
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 20:13:20 +0200 (CEST)
+In-Reply-To: <1440419579-9970-5-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Remove the incorrect setting of the JD mode
+   ASoC: rt5645: Add the register RT5645_CHARGE_PUMP to readable check function
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,29 @@ to this mail.
 Thanks,
 Mark
 
->From 4aed4c9efb30253483869c58236ab00bdfa45630 Mon Sep 17 00:00:00 2001
+>From b1d42598cb654ce63b55ccf27da09dcd914781f3 Mon Sep 17 00:00:00 2001
 From: Oder Chiou <oder_chiou@realtek.com>
-Date: Mon, 24 Aug 2015 20:32:58 +0800
-Subject: [PATCH] ASoC: rt5645: Remove the incorrect setting of the JD mode
-
-The patch removes the incorrect setting of the JD mode. It will cause pop
-sound in the booting time.
+Date: Mon, 24 Aug 2015 20:32:59 +0800
+Subject: [PATCH] ASoC: rt5645: Add the register RT5645_CHARGE_PUMP to readable
+ check function
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/rt5645.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index bcb44de002c9..d9f34421414e 100644
+index d9f34421414e..0a4cb6bc3433 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -3373,8 +3373,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL3,
- 				   RT5645_IRQ_CLK_GATE_CTRL,
- 				   RT5645_IRQ_CLK_GATE_CTRL);
--		regmap_update_bits(rt5645->regmap, RT5645_IN1_CTRL1,
--				   RT5645_CBJ_BST1_EN, RT5645_CBJ_BST1_EN);
- 		regmap_update_bits(rt5645->regmap, RT5645_MICBIAS,
- 				   RT5645_IRQ_CLK_INT, RT5645_IRQ_CLK_INT);
- 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+@@ -394,6 +394,7 @@ static bool rt5645_readable_register(struct device *dev, unsigned int reg)
+ 	case RT5645_DEPOP_M1:
+ 	case RT5645_DEPOP_M2:
+ 	case RT5645_DEPOP_M3:
++	case RT5645_CHARGE_PUMP:
+ 	case RT5645_MICBIAS:
+ 	case RT5645_A_JD_CTRL1:
+ 	case RT5645_VAD_CTRL4:
 -- 
 2.5.0
