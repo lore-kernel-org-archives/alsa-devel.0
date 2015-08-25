@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 4/6] drm: bridge/dw_hdmi-i2s-audio: add
-	audio driver
-Date: Tue, 25 Aug 2015 07:52:22 +0100
-Message-ID: <20150825065222.GG27431@sirena.org.uk>
-References: <1434730417-10629-1-git-send-email-ykk@rock-chips.com>
- <1434731295-11060-1-git-send-email-ykk@rock-chips.com>
- <20150808153540.GL7557@n2100.arm.linux.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Refresh sysfs at
+	snd_hda_codec_update_widgets()
+Date: Tue, 25 Aug 2015 08:56:20 +0200
+Message-ID: <1440485780-3687-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4277342809764043343=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C483A26040E
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 08:52:38 +0200 (CEST)
-In-Reply-To: <20150808153540.GL7557@n2100.arm.linux.org.uk>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C960426007E
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 08:56:27 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 8FE02AC44
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 06:56:27 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, Doug Anderson <dianders@chromium.org>, linux-rockchip@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>, Philipp Zabel <p.zabel@pengutronix.de>, Yakir Yang <ykk@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>, Paul Bolle <pebolle@tiscali.nl>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+In the commit [fa4f18b4f402: ALSA: hda - Refresh widgets sysfs at
+probing Haswell+ HDMI codecs], snd_hdac_refresh_widget_sysfs() is
+explicitly called in the codec driver.  But this results in refreshing
+twice, as snd_hdac_refresh_widget_sysfs() itself calls
+snd_hdac_refresh_widgets() function.
 
---===============4277342809764043343==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="S5HS5MvDw4DmbRmb"
-Content-Disposition: inline
+Instead, we can replace the call in snd_hda_codec_update_widgets()
+with snd_hdac_refresh_widget_sysfs().  This also fixes the missing
+sysfs update for ca0132, too.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_codec.c  | 2 +-
+ sound/pci/hda/patch_hdmi.c | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
---S5HS5MvDw4DmbRmb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Aug 08, 2015 at 04:35:41PM +0100, Russell King - ARM Linux wrote:
-> On Sat, Jun 20, 2015 at 12:28:15AM +0800, Yakir Yang wrote:
-> > Add ALSA based HDMI I2S audio driver for dw_hdmi. Sound card
-> > driver could connect to this codec through the codec dai name
-> > "dw-hdmi-i2s-audio".
-
-> I'm applying this patch to my tree with some changes.  I haven't seen
-> anyone ack it, nor review it any further.  I'm hoping someone can ack
-> this patch with the following changes below - I'll be posting it as
-> part of my dw-hdmi devel updates later today.
-
-I'm pretty sure I deleted this patch unread because what shows up in my
-inbox is:
-
-->  197   C 08/08 Russell King -  (1.1K) =E2=94=82 =E2=94=94=E2=94=80>Re: [=
-PATCH v5 4/6] drm: bridge/dw_
-
-so there's no indication that it's anything to do with audio :(
-
---S5HS5MvDw4DmbRmb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV3BCmAAoJECTWi3JdVIfQ01kH/1joG0/ST3gc1zTn/Tjd/pKb
-0dOJ4AjrbVD/f7YAKpB+6umDmXA9jPBl1lbkPQdn1pOucTVEi/3xe+gn3bvUoRje
-xLTlwrpS5B37rpnolcz8gQVoVu+JNrgwvvxodmbfmT7G6UG8Q6lm1+ZMERqRRcmD
-gCAszOCxtJxrXUpWR08vIOmUoWgW7DmGWHe+SttGZytHDUf+QJNIOUW9cQ9FfJtX
-fK0T94/DcR0rvjOl9sEbXEEtcMjgsxxTr2rtxe7HXJzg8vCebxRbXIiKD1V3JZPr
-jX0oQ7n1B4qsO9mjQam1Q5DSWOqolERNU1e5KaPujrMxwqmdFEGQhnV0SRcOfw4=
-=vliN
------END PGP SIGNATURE-----
-
---S5HS5MvDw4DmbRmb--
-
---===============4277342809764043343==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4277342809764043343==--
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 792948418cf0..2c021911f88a 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -955,7 +955,7 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec)
+ 	hda_nid_t fg;
+ 	int err;
+ 
+-	err = snd_hdac_refresh_widgets(&codec->core);
++	err = snd_hdac_refresh_widget_sysfs(&codec->core);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index df982fc6a872..a97db5fc8a15 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2331,7 +2331,6 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 	if (is_haswell_plus(codec)) {
+ 		intel_haswell_enable_all_pins(codec, true);
+ 		intel_haswell_fixup_enable_dp12(codec);
+-		snd_hdac_refresh_widget_sysfs(&codec->core);
+ 	}
+ 
+ 	/* For Valleyview/Cherryview, only the display codec is in the display
+-- 
+2.5.0
