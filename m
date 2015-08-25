@@ -1,64 +1,74 @@
-From: Markus Osterhoff <linux-kernel@k-raum.org>
-Subject: PATCH: ALSA: hda: fix possible null dereference
-Date: Sun, 23 Aug 2015 20:37:05 +0200
-Message-ID: <20150823183705.GT31650@mo-online.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Tue, 25 Aug 2015 07:21:57 +0100
+Message-ID: <20150825062157.GB27431@sirena.org.uk>
+References: <20150819134328.GU1552@lahna.fi.intel.com>
+ <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
+ <20150820094542.GC30005@lahna.fi.intel.com>
+ <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
+ <20150820115845.GF30005@lahna.fi.intel.com>
+ <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
+ <20150821074310.GM30005@lahna.fi.intel.com>
+ <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+ <20150824085140.GA5647@ck-lbox>
+ <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-online.de (mo-online.de [89.238.66.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D2BE2604FA
- for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2015 20:37:06 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-VXBncmFkaW5nIG9uIEdlbnRvbyBoYXJkZW5lZCBmcm9tIDQuMC44IHRvIDQuMS42ICh3aXRoIGlu
-dGVybWVkaWF0ZSA0LjEuNCksIEkKbm90aWNlZCBhIE5VTEwgcG9pbnRlciBkZXJlZmVuY2UgZHVy
-aW5nIGJvb3RpbmcsIGFuZCB0YWNrbGVkIGl0IGRvd24gdG8KCXN0YXRpYyBpbnQgYWRkX3N0ZF9j
-aG1hcHMoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCmluIGZpbGUgc291bmQvcGNpL2hkYS9oZGFf
-Y29kZWMuYwoKV2l0aCBjb21taXRzIGJiYmM3ZTg1IGFuZCA3NTFlMjIxNiwgYSBmb3ItbG9vcCB3
-YXMgcmVzdGF0ZWQgdXNpbmcKbGlzdF9mb3JfZWFjaF9lbnRyeSguLi4pOyBvcmlnaW5hbGx5LCBh
-IGxvY2FsIHBjbSogd2FzIGV4dHJhY3RlZCBmcm9tIGFuIGFycmF5CmFuZCBjaGVja2VkIGFnYWlu
-c3QgTlVMTCwgaWYgbm90LU5VTEwgdGhlbiBwYXNzZWQgYWxvbmcgdG8Kc25kX3BjbV9hZGRfY2ht
-YXBfY3RscyguLi4pLgoKTm93LCBwY20tPnBjbSBpcyBwYXNzZWQgdG8gc25kX3BjbV9hZGRfY2ht
-YXBfY3RscywgYnV0IHRoZSBOVUxMIHBvaW50ZXIgY2hlY2sKc3RpbGwgdXNlcyB0aGUg4oCcdXBw
-ZXIgbGV2ZWzigJ0gcGNtLCBub3QgdGhlIOKAnGluLWxvb3DigJ0gcGNtLT5wY20uCgpQbGVhc2Ug
-aGF2ZSBhIGxvb2sgYXQgdGhlIGF0dGFjaGVkIChyYXRoZXIgc21hbGwpIHN1Z2dlc3Rpb24gdG8g
-Zml4IHRoaXMKcHJvYmxlbS4KCgpGb3IgYSBoaXN0b3J5IG9mIHRoZSBmdW5jdGlvbiBpbiBxdWVz
-dGlvbiwgaGF2ZSBhIGxvb2sgYXQgbGluZXMgMjQzMGZmIGZvcgoJZ2l0IGRpZmYgdjQuMCB2NC4x
-IHNvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMKClRoZSB0d28gY29tbWl0cyB0aGF0IHRvdWNoZWQg
-dGhpcyBmdW5jdGlvbiBhcmUKQ29tbWl0IGJiYmM3ZTg1MDJjOSAoIkFMU0E6IGhkYSAtIEFsbG9j
-YXRlIGhkYV9wY20gb2JqZWN0cyBkeW5hbWljYWxseSIpCkNvbW1pdCA3NTFlMjIxNjg5OWMgKCJB
-TFNBOiBoZGE6IGZpeCBwb3NzaWJsZSBudWxsIGRlcmVmZXJlbmNlIikKCndoZXJlIHRoZSBsYXR0
-ZXIgb25seSBmaXhlcyB0aGUgb3JkZXIgb2YgdHdvIGZpeGVzLCBidXQgbm90IHRoZSBwY20gLyBw
-Y20tPnBjbSBjb25mdXNpb24uCgoKClVzaW5nIHY0LjEtZGVzY2VuZGFudCBzb3VyY2VzLCBib290
-IGdvdCBPT1BTIGxpa2UgdGhpcyAodHdvIGJ1Zy1odW50aW5nIHByaW50aydzIGFkZGVkIHVwIGZy
-b250KToKCj4gcGNtOiBmZmZmODgwNDBjZjgzNDAwCj4gcGNtLT5wY206IChuaWwpCj4gQlVHOiB1
-bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgMDAwMDAw
-MDAwMDAwMDAxOAo+IElQOiBbPGZmZmZmZmZmYTA3ZmVhYjk+XSBzbmRfcGNtX2FkZF9jaG1hcF9j
-dGxzKzB4MTE5LzB4MWYwIFtzbmRfcGNtXQo+IFBHRCAwIAo+IE9vcHM6IDAwMDAgWyMxXSBQUkVF
-TVBUIFNNUCAKCgpOVUxMIGNoZWNraW5nIHBjbS0+cGNtIGluc3RlYWQgb2YgcGNtIGZpeGVzIHRo
-aXMgcHJvYmxlbS4KCgpHcmVldGluZ3MgYW5kIHRoYW5rcyBmb3IgeW91ciB0aW1lLCBNYXJrdXMK
-ClNpZ25lZC1vZmYtYnk6IE1hcmt1cyBPc3RlcmhvZmYgPGxpbnV4LWtlcm5lbEBrLXJhdW0ub3Jn
-PgotLS0KLS0tIHNvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMJMjAxNS0wOC0yMyAyMDowMjo1Ny4y
-ODE3ODI2NDggKzAyMDAKKysrIHNvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMub3JpZwkyMDE1LTA4
-LTIzIDIwOjAyOjQ5LjcyMzc4MzA2MyArMDIwMApAQCAtMzE3Miw3ICszMTcyLDcgQEAgc3RhdGlj
-IGludCBhZGRfc3RkX2NobWFwcyhzdHJ1Y3QgaGRhX2NvZAogCQkJc3RydWN0IHNuZF9wY21fY2ht
-YXAgKmNobWFwOwogCQkJY29uc3Qgc3RydWN0IHNuZF9wY21fY2htYXBfZWxlbSAqZWxlbTsKIAot
-CQkJaWYgKCFwY20tPnBjbSB8fCBwY20tPm93bl9jaG1hcCB8fAorCQkJaWYgKCFwY20gfHwgcGNt
-LT5vd25fY2htYXAgfHwKIAkJCSAgICAhaGluZm8tPnN1YnN0cmVhbXMpCiAJCQkJY29udGludWU7
-CiAJCQllbGVtID0gaGluZm8tPmNobWFwID8gaGluZm8tPmNobWFwIDogc25kX3BjbV9zdGRfY2ht
-YXBzOwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--oLBj+sq0vYjzfsbl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 24, 2015 at 03:25:57PM +0200, Christian Hartmann wrote:
+
+> /* Start out with /RESET low to put the chip into reset */
+> ret = devm_gpio_request_one(arizona->dev, arizona->pdata.reset,
+> GPIOF_DIR_OUT | GPIOF_INIT_LOW,
+> "arizona /RESET");
+> </code>
+
+> the string arizona /RESET, where is this documented, where can I find
+> it? It fails here, and my question is, is this string correct at all
+> for my case? Should it be called only "reset" in my case??
+
+That string is documentation - it's used purely for display purposes,
+which is what this...
+
+> in devres.c its documented as a label only:
+> @label: a literal description string of this GPIO
+
+...says.  In cases like this looking at the code is often helpful (you
+can see exactly how the string gets used...) but obviously patches to
+improve the doumentation are welcome.
+
+--oLBj+sq0vYjzfsbl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV3AmFAAoJECTWi3JdVIfQ3AcH/R7EIgsWQtaFWfgcAA2JbB7X
+4x8beSU8p5UEe7ibm0J5hwOtxytwZnjWGiwwiiODE+XEodnP1wT9LeWDnAwNeLLd
+rWl+nDp+KJz/PHwQNtey9Rm/q/ZEgzHzcVi6drpT2Mgsa/uv6VjvEmcOpkSoFd+K
+fcM1XV1dulWdE8fl2/V6EGcTo+B0bZy8sxgswWiHoSn0DDcJVaHyffAXdvrF+4A2
+GEPPGLkqlvyk95tNIH440XsbU9B+aBLYQ92DbxEo/76o4YkaYWJYqGlGigxD5JST
+YF3M3dhNiveJLwaH8fLP4m2r1ZWrIadXDXA4dupiCJgbcMpJtyWq+PIc0ZSD/xo=
+=b1rD
+-----END PGP SIGNATURE-----
+
+--oLBj+sq0vYjzfsbl--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
