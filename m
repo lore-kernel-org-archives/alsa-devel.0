@@ -1,19 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Modify the headphone depop and
-	calibration function to prevent the pop sound in the booting
-	time" to the asoc tree
-Date: Tue, 25 Aug 2015 19:13:11 +0100
-Message-ID: <E1ZUIid-0006Ct-O6@debutante>
-References: <1440419579-9970-2-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH V5 3/3] ASoC: AMD: add AMD ASoC ACP-I2S
+ driver
+Date: Tue, 25 Aug 2015 19:32:58 +0100
+Message-ID: <20150825183258.GL12878@sirena.org.uk>
+References: <1440106594-29564-1-git-send-email-alexander.deucher@amd.com>
+ <20150820231848.GX12027@sirena.org.uk>
+ <CANv6ZMb9f-kaAUfcUka9T-0XLdG_0eNMVD8YvJNbN=fHEGMRPw@mail.gmail.com>
+ <20150821161716.GD12027@sirena.org.uk>
+ <CADnq5_PofEuygdfJ7W6=kMCUAxZw=8eft0W7F_dEj-8eTw-Ngw@mail.gmail.com>
+ <20150825060648.GA27431@sirena.org.uk>
+ <CANv6ZMaQV5XK3RG28ayeX-QsC2F3x+sK8ouegFgT=_xM+GUSFg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8250181628788644790=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD7C226525B
- for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 20:13:26 +0200 (CEST)
-In-Reply-To: <1440419579-9970-2-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F77126516A
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 20:33:06 +0200 (CEST)
+In-Reply-To: <CANv6ZMaQV5XK3RG28ayeX-QsC2F3x+sK8ouegFgT=_xM+GUSFg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,216 +27,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: maruthi srinivas <maruthi.srinivas.b@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Bayyavarapu,
+ Maruthi" <maruthi.bayyavarapu@amd.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Alex Deucher <alexdeucher@gmail.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5645: Modify the headphone depop and calibration function to prevent the pop sound in the booting time
+--===============8250181628788644790==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kkRamCq5m5VQq0L6"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--kkRamCq5m5VQq0L6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Aug 25, 2015 at 03:26:54PM +0530, maruthi srinivas wrote:
+> On Tue, Aug 25, 2015 at 11:36 AM, Mark Brown <broonie@kernel.org> wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Please explain this in more detail, shared register ranges are very
+> > common and are the sort of things MFDs are supposed to help with.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> In our case, ACP I2S driver need not do a  'devm_ioremap_resource' to
+> get mmio base.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+That sounds like a MFD type problem...
 
-Thanks,
-Mark
+> ACP audio IP (DMA + I2S+ Others) registers can be accessed, using
+> GPU's MMIO base.
+> During GPU driver design, it was decided that all the register access
+> for entire GPU MMIO
+> aperture (includes ACP and others) to be done in GPU module only.
+> This is implemented in another patch in this patch series using a
+> abstraction layer.
 
->From 588cd850f5089cb63e031e8d70e9c081b0d97ab2 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Mon, 24 Aug 2015 20:32:56 +0800
-Subject: [PATCH] ASoC: rt5645: Modify the headphone depop and calibration
- function to prevent the pop sound in the booting time
+That sounds like converting the Designware driver to use regmap and
+providing a regmap would enable code sharing (you can provide a regmap
+for accessors if you don't use it in the main driver).
 
-Remove the original calibration function and modify the depop and
-calibration function to prevent the pop sound in the booting time.
+> >> 2. The designware driver depends on the CLKDEV framework which we
+> >> don't currently support.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 111 +++++++++++++---------------------------------
- 1 file changed, 32 insertions(+), 79 deletions(-)
+> > You need to support the clock API, it's very easy to do so so there is
+> > no excuse for doing something custom here.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 2ee42781cc52..ac2f42f4e3a0 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -254,6 +254,7 @@ struct rt5645_priv {
- 
- 	int jack_type;
- 	bool en_button_func;
-+	bool hp_on;
- };
- 
- static int rt5645_reset(struct snd_soc_codec *codec)
-@@ -1364,15 +1365,23 @@ static void hp_amp_power(struct snd_soc_codec *codec, int on)
- 	if (on) {
- 		if (hp_amp_power_count <= 0) {
- 			if (rt5645->codec_type == CODEC_TYPE_RT5650) {
-+				snd_soc_write(codec, RT5645_DEPOP_M2, 0x3100);
- 				snd_soc_write(codec, RT5645_CHARGE_PUMP,
- 					0x0e06);
--				snd_soc_write(codec, RT5645_DEPOP_M1, 0x001d);
-+				snd_soc_write(codec, RT5645_DEPOP_M1, 0x000d);
-+				regmap_write(rt5645->regmap, RT5645_PR_BASE +
-+					RT5645_HP_DCC_INT1, 0x9f01);
-+				msleep(20);
-+				snd_soc_update_bits(codec, RT5645_DEPOP_M1,
-+					RT5645_HP_CO_MASK, RT5645_HP_CO_EN);
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
- 					0x3e, 0x7400);
- 				snd_soc_write(codec, RT5645_DEPOP_M3, 0x0737);
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
- 					RT5645_MAMP_INT_REG2, 0xfc00);
- 				snd_soc_write(codec, RT5645_DEPOP_M2, 0x1140);
-+				mdelay(5);
-+				rt5645->hp_on = true;
- 			} else {
- 				/* depop parameters */
- 				snd_soc_update_bits(codec, RT5645_DEPOP_M2,
-@@ -1586,6 +1595,27 @@ static int rt5645_bst2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct rt5645_priv *rt5645 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		if (rt5645->hp_on) {
-+			msleep(100);
-+			rt5645->hp_on = false;
-+		}
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("LDO2", RT5645_PWR_MIXER,
- 		RT5645_PWR_LDO2_BIT, 0, NULL, 0),
-@@ -1870,6 +1900,7 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("PDM1R"),
- 	SND_SOC_DAPM_OUTPUT("SPOL"),
- 	SND_SOC_DAPM_OUTPUT("SPOR"),
-+	SND_SOC_DAPM_POST("DAPM_POST", rt5650_hp_event),
- };
- 
- static const struct snd_soc_dapm_widget rt5645_specific_dapm_widgets[] = {
-@@ -2721,77 +2752,6 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--static int rt5650_calibration(struct rt5645_priv *rt5645)
--{
--	int val, i;
--	int ret = -1;
--
--	regcache_cache_bypass(rt5645->regmap, true);
--	regmap_write(rt5645->regmap, RT5645_RESET, 0);
--	regmap_write(rt5645->regmap, RT5645_GEN_CTRL3, 0x0800);
--	regmap_write(rt5645->regmap, RT5645_PR_BASE + RT5645_CHOP_DAC_ADC,
--		0x3600);
--	regmap_write(rt5645->regmap, RT5645_PR_BASE + 0x25, 0x7000);
--	regmap_write(rt5645->regmap, RT5645_I2S1_SDP, 0x8008);
--	/* headset type */
--	regmap_write(rt5645->regmap, RT5645_GEN_CTRL1, 0x2061);
--	regmap_write(rt5645->regmap, RT5645_CHARGE_PUMP, 0x0006);
--	regmap_write(rt5645->regmap, RT5645_PWR_ANLG1, 0x2012);
--	regmap_write(rt5645->regmap, RT5645_PWR_MIXER, 0x0002);
--	regmap_write(rt5645->regmap, RT5645_PWR_VOL, 0x0020);
--	regmap_write(rt5645->regmap, RT5645_JD_CTRL3, 0x00f0);
--	regmap_write(rt5645->regmap, RT5645_IN1_CTRL1, 0x0006);
--	regmap_write(rt5645->regmap, RT5645_IN1_CTRL2, 0x1827);
--	regmap_write(rt5645->regmap, RT5645_IN1_CTRL2, 0x0827);
--	msleep(400);
--	/* Inline command */
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M1, 0x0001);
--	regmap_write(rt5645->regmap, RT5650_4BTN_IL_CMD2, 0xc000);
--	regmap_write(rt5645->regmap, RT5650_4BTN_IL_CMD1, 0x0008);
--	/* Calbration */
--	regmap_write(rt5645->regmap, RT5645_GLB_CLK, 0x8000);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M1, 0x0000);
--	regmap_write(rt5645->regmap, RT5650_4BTN_IL_CMD2, 0xc000);
--	regmap_write(rt5645->regmap, RT5650_4BTN_IL_CMD1, 0x0008);
--	regmap_write(rt5645->regmap, RT5645_PWR_DIG2, 0x8800);
--	regmap_write(rt5645->regmap, RT5645_PWR_ANLG1, 0xe8fa);
--	regmap_write(rt5645->regmap, RT5645_PWR_ANLG2, 0x8c04);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M2, 0x3100);
--	regmap_write(rt5645->regmap, RT5645_CHARGE_PUMP, 0x0e06);
--	regmap_write(rt5645->regmap, RT5645_BASS_BACK, 0x8a13);
--	regmap_write(rt5645->regmap, RT5645_GEN_CTRL3, 0x0820);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M1, 0x000d);
--	/* Power on and Calbration */
--	regmap_write(rt5645->regmap, RT5645_PR_BASE + RT5645_HP_DCC_INT1,
--		0x9f01);
--	msleep(200);
--	for (i = 0; i < 5; i++) {
--		regmap_read(rt5645->regmap, RT5645_PR_BASE + 0x7a, &val);
--		if (val != 0 && val != 0x3f3f) {
--			ret = 0;
--			break;
--		}
--		msleep(50);
--	}
--	pr_debug("%s: PR-7A = 0x%x\n", __func__, val);
--
--	/* mute */
--	regmap_write(rt5645->regmap, RT5645_PR_BASE + 0x3e, 0x7400);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M3, 0x0737);
--	regmap_write(rt5645->regmap, RT5645_PR_BASE + RT5645_MAMP_INT_REG2,
--		0xfc00);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M2, 0x1140);
--	regmap_write(rt5645->regmap, RT5645_DEPOP_M1, 0x0000);
--	regmap_write(rt5645->regmap, RT5645_GEN_CTRL2, 0x4020);
--	regmap_write(rt5645->regmap, RT5645_PWR_ANLG2, 0x0006);
--	regmap_write(rt5645->regmap, RT5645_PWR_DIG2, 0x0000);
--	msleep(350);
--
--	regcache_cache_bypass(rt5645->regmap, false);
--
--	return ret;
--}
--
- static void rt5645_enable_push_button_irq(struct snd_soc_codec *codec,
- 	bool enable)
- {
-@@ -3319,13 +3279,6 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		goto err_enable;
- 	}
- 
--	if (rt5645->codec_type == CODEC_TYPE_RT5650) {
--		ret = rt5650_calibration(rt5645);
--
--		if (ret < 0)
--			pr_err("calibration failed!\n");
--	}
--
- 	regmap_write(rt5645->regmap, RT5645_RESET, 0);
- 
- 	ret = regmap_register_patch(rt5645->regmap, init_list,
--- 
-2.5.0
+> Codec acts as master in our case to provide clock to i2s controller and
+> there wasn't a need to use clock APIs unlike in existing designware i2s driver.
+> There is no custom implementation.
+
+So you just need to add slave mode support to the driver.  Again not a
+reason to just copy the code.
+
+> >> 3. Our hardware does not support S16_LE
+
+> > If you have modified the designware IP to remove this support (why would
+> > anyone do that?) it's a trivial quirk, if the restriction comes from
+> > some other part of the system like the DMA driver then the constraint
+> > will come from that part of the system.
+
+> There is a bug in ACP SoC implementation (which combines internal DMA,
+> designware I2S
+> and other blocks) for 16bit and lower resolution. I felt , it would be
+> better to limit functionality
+> in I2S DAI capabilities. I will put  this limitation in DMA driver
+> capabilities, to represent overall
+> sound card capabilities, if you suggest.
+
+A quirk would also do the job.
+
+--kkRamCq5m5VQq0L6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEbBAEBCAAGBQJV3LTZAAoJECTWi3JdVIfQB18H+J727bLD75CUG7szDdXD0TTV
+PU8g7sPcaGfgdW0q88sxOTSwIqmZBenzxmRFWncO7k3C4cIwNTKcYmOv+RSBfDa7
+NkNbcOUhq5hvtQEhq+IAArQtlm9Q/5EsdmVAvRJzIZNa++g2x3tsu+vqdYI1/nYP
+viT0qV4PE2TtEGSRMa+1hqOagtyeARXOxAn9dvyhDb8RCMNqw7c66CqIZBUM1u9d
+akMfHa6B/Aeq7oApQmTptSC3Hr/HJmIarhIDIT8fkPiZ+zapO9hQLaBTsZnqNl9n
+SD56OwdzBV4erretp2V0nyPtoHg57oFyd0zNbPpvgOCtCw/3IzMCZ4YOfdJ0ZQ==
+=6SZI
+-----END PGP SIGNATURE-----
+
+--kkRamCq5m5VQq0L6--
+
+--===============8250181628788644790==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8250181628788644790==--
