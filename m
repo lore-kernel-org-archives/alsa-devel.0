@@ -1,48 +1,66 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RFC] i2c: Revert back to old device naming for ACPI enumerated
- I2C slaves
-Date: Tue, 25 Aug 2015 06:25:13 +0100
-Message-ID: <20150825052513.GI1654@sirena.org.uk>
-References: <1440413522-7855-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: hda - Check all inputs for
+	is_active_nid_for_any()
+Date: Tue, 25 Aug 2015 07:59:41 +0200
+Message-ID: <1440482382-1967-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r5lq+205vWdkqwtk"
-Return-path: <linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1440413522-7855-1-git-send-email-jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Sender: linux-i2c-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jarkko Nikula <jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Cc: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lm-sensors-GZX6beZjE8VD60Wz+7aTrA@public.gmane.org, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, "Rafael J. Wysocki" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, Jean Delvare <jdelvare-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dustin Byford <dustin-qUQiAmfTcIp+XZJcv9eMoEEOCMrvLtNR@public.gmane.org>, linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 212EA264F0D
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 07:59:47 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C50B9ACD4
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 05:59:46 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The is_active_nid_for_any() function in the generic parser is supposed
+to check all connections from/to the given widget, but the current
+code checks only the first input connection (index = 0).
 
---r5lq+205vWdkqwtk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch corrects the code to check all inputs by passing -1 to
+index argument.
 
-On Mon, Aug 24, 2015 at 01:52:02PM +0300, Jarkko Nikula wrote:
-> Commit 70762abb9f89 ("i2c: Use stable dev_name for ACPI enumerated I2C
-> slaves") broke the lm-sensors which relies on I2C hwmon slave devices under
-> /sys/bus/i2c/devices/ to be named as "x-00yz". However if those hwmon
-> devices are ACPI 5 enumerated their name became "i2c-INTABCD:ij" and sysfs
-> code in lm-sensors does not find them anymore:
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=102521
+Cc: <stable@vger.kernel.org> [v4.1+]
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_generic.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-
---r5lq+205vWdkqwtk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV2/wxAAoJECTWi3JdVIfQqAEH/RzBrneVJ4mml8ks/Gr9hA+B
-Gy/2BLyESl/2wYICVZwduC6p07x1UH3mHPPLbt/F9YAOupj6KXDgBXPViiSQQsiv
-oTYuJLAiCnCxT8XrF1TDO3e4T16e6/mjk26mjgDBeHHpidwN16yofs070kAnK++Z
-7/KPVhjhOVwbo7BXXlFXrrmUJ0f7DGE6dUxkpVgabqgO8peCBOWgcPgAXlJ/Dlod
-p34VsGwiRO8oCNGKT12Mb+rhS/7jKdkoSH2khWDPOJSQQB4KHKHJ/FFlGcaolpKF
-EUhpxIm5nvafU9CuLEfLE/3GoMZxfZLmf+XOyF2zBPVVISdhtLv+fkCKpa7KmgM=
-=kKSL
------END PGP SIGNATURE-----
-
---r5lq+205vWdkqwtk--
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index b077bb644434..368181d8b0ce 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -671,7 +671,8 @@ static bool is_active_nid(struct hda_codec *codec, hda_nid_t nid,
+ 		}
+ 		for (i = 0; i < path->depth; i++) {
+ 			if (path->path[i] == nid) {
+-				if (dir == HDA_OUTPUT || path->idx[i] == idx)
++				if (dir == HDA_OUTPUT || idx == -1 ||
++				    path->idx[i] == idx)
+ 					return true;
+ 				break;
+ 			}
+@@ -682,7 +683,7 @@ static bool is_active_nid(struct hda_codec *codec, hda_nid_t nid,
+ 
+ /* check whether the NID is referred by any active paths */
+ #define is_active_nid_for_any(codec, nid) \
+-	is_active_nid(codec, nid, HDA_OUTPUT, 0)
++	is_active_nid(codec, nid, HDA_OUTPUT, -1)
+ 
+ /* get the default amp value for the target state */
+ static int get_amp_val_to_activate(struct hda_codec *codec, hda_nid_t nid,
+-- 
+2.5.0
