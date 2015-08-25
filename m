@@ -1,74 +1,57 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
- WM510205 codec via ACPI (resend)
-Date: Tue, 25 Aug 2015 07:21:57 +0100
-Message-ID: <20150825062157.GB27431@sirena.org.uk>
-References: <20150819134328.GU1552@lahna.fi.intel.com>
- <CAKor6Tc6RDW+2uuX2yMszk3O69=6QTPdd+emC-m_Cro67VPR8g@mail.gmail.com>
- <20150820094542.GC30005@lahna.fi.intel.com>
- <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
- <20150820115845.GF30005@lahna.fi.intel.com>
- <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
- <20150821074310.GM30005@lahna.fi.intel.com>
- <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
- <20150824085140.GA5647@ck-lbox>
- <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH]  sound: Clean up docbook warnings
+Date: Tue, 25 Aug 2015 07:25:41 +0100
+Message-ID: <20150825062541.GC27431@sirena.org.uk>
+References: <20150823035036.1c5614db@xps.lwn.net>
+ <s5hzj1is09b.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
-Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+In-Reply-To: <s5hzj1is09b.wl-tiwai@suse.de>
+Sender: linux-doc-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oLBj+sq0vYjzfsbl
+--ALfTUftag+2gvp1h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 24, 2015 at 03:25:57PM +0200, Christian Hartmann wrote:
+On Sun, Aug 23, 2015 at 01:38:24PM +0200, Takashi Iwai wrote:
+> On Sun, 23 Aug 2015 11:50:36 +0200,
+> Jonathan Corbet wrote:
 
-> /* Start out with /RESET low to put the chip into reset */
-> ret = devm_gpio_request_one(arizona->dev, arizona->pdata.reset,
-> GPIOF_DIR_OUT | GPIOF_INIT_LOW,
-> "arizona /RESET");
-> </code>
+> > A number of functions and structures in the sound subsystem had incomplete
+> > and/or obsolete DocBook comments, leading to warnings when the docs were
+> > built.  Correct those comments so that we can enjoy our audio in the
+> > absence of warning noise.
 
-> the string arizona /RESET, where is this documented, where can I find
-> it? It fails here, and my question is, is this string correct at all
-> for my case? Should it be called only "reset" in my case??
+> > Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 
-That string is documentation - it's used purely for display purposes,
-which is what this...
+> > NOTE that it would be good if somebody more knowledgeable than me checked
+> > my work, since I had to fill in a couple of things.
 
-> in devres.c its documented as a label only:
-> @label: a literal description string of this GPIO
+> All these are ASoC ones...  Mark, could you check this?
 
-...says.  In cases like this looking at the code is often helpful (you
-can see exactly how the string gets used...) but obviously patches to
-improve the doumentation are welcome.
+I don't have a copy of the patch.
 
---oLBj+sq0vYjzfsbl
+--ALfTUftag+2gvp1h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJV3AmFAAoJECTWi3JdVIfQ3AcH/R7EIgsWQtaFWfgcAA2JbB7X
-4x8beSU8p5UEe7ibm0J5hwOtxytwZnjWGiwwiiODE+XEodnP1wT9LeWDnAwNeLLd
-rWl+nDp+KJz/PHwQNtey9Rm/q/ZEgzHzcVi6drpT2Mgsa/uv6VjvEmcOpkSoFd+K
-fcM1XV1dulWdE8fl2/V6EGcTo+B0bZy8sxgswWiHoSn0DDcJVaHyffAXdvrF+4A2
-GEPPGLkqlvyk95tNIH440XsbU9B+aBLYQ92DbxEo/76o4YkaYWJYqGlGigxD5JST
-YF3M3dhNiveJLwaH8fLP4m2r1ZWrIadXDXA4dupiCJgbcMpJtyWq+PIc0ZSD/xo=
-=b1rD
+iQEcBAEBCAAGBQJV3ApkAAoJECTWi3JdVIfQCYIH/irtTlVOHNJTOdI4ZVf6BKtB
+PCP1cvn0qfKwDrpZiUBsz6zzpHKhgQZMlrhBbdyHWnxuFUJTXfNYZBxHTgMVNJqU
+fpR2TYk+Wt7RT6KSPF0pjUsjneCKxYXf5vo/uwgmvTk7Z9DrH7rmK2ovw2H5p7JE
+GkOItUgXDegiOZhze8e5Lgt/O4SzNqP6O5nWvOfXDb8VtiP5pKxu29OQinJhk6VL
+ai7DIL/oFbQQlfEYiqN8vmV35p+hC6Gxk65rVuAIfNvwk+HX9lMCm/rR1cNGsRqO
+4MjVTLXwg0przyMT1la0rE8nIeh7kQwrMyzIXPn44sCSSYaRKARplGzKDFyxcxo=
+=dDyG
 -----END PGP SIGNATURE-----
 
---oLBj+sq0vYjzfsbl--
---
-To unsubscribe from this list: send the line "unsubscribe linux-spi" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--ALfTUftag+2gvp1h--
