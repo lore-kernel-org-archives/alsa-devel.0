@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Poll for FLL clock OK rather than use interrupts" to the asoc tree
-Date: Tue, 25 Aug 2015 19:13:07 +0100
-Message-ID: <E1ZUIiZ-0006AQ-5C@debutante>
-References: <1440503028-19376-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1440503028-19376-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: stable-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+Subject: Applied "ASoC: rockchip: fix a misjudgement by return"
+	to the asoc tree
+Date: Tue, 25 Aug 2015 19:13:06 +0100
+Message-ID: <E1ZUIiY-00069x-7s@debutante>
+References: <1440487137-27989-2-git-send-email-zhengxing@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5D3C2650BD
+ for <alsa-devel@alsa-project.org>; Tue, 25 Aug 2015 20:13:18 +0200 (CEST)
+In-Reply-To: <1440487137-27989-2-git-send-email-zhengxing@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Poll for FLL clock OK rather than use interrupts
+   ASoC: rockchip: fix a misjudgement by return
 
 has been applied to the asoc tree at
 
@@ -37,146 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 0e7659712836ca59b4735bc5cc94de38698a5e01 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 25 Aug 2015 12:43:48 +0100
-Subject: [PATCH] ASoC: arizona: Poll for FLL clock OK rather than use
- interrupts
+>From 089935ff5ae93aea575c70e36be9264b9c581e24 Mon Sep 17 00:00:00 2001
+From: Xing Zheng <zhengxing@rock-chips.com>
+Date: Tue, 25 Aug 2015 15:52:42 +0800
+Subject: [PATCH] ASoC: rockchip: fix a misjudgement by return
 
-The extcon driver takes the DAPM mutex from within the interrupt thread
-in several places, which makes it possible to get into a situation where
-the interrupt thread is blocked waiting on the DAPM mutex whilst a DAPM
-sequence is running which is attempting to configure the FLL. In this
-case the FLL completion can't be completed as as the IRQ handler is
-ONE_SHOT, which cause the FLL lock to use the full time out (250mS) and
-report that the process timed out.
+Being careless, judge the return value of snd_soc_card_jack_new
+is opposite, so it should be fixed.
 
-It is not really practical to make the extcon driver not take the DAPM
-mutex from within the interrupt thread, at least not without extensive
-modification. So this patch fixes the issue by switching the wait for
-the FLL lock to polling. A few fast polls are done first as the FLL
-should lock quickly for a good quality reference clock, (indeed it hits
-on the first poll on my system) and it will poll every 20mS after that
-until it times out.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/arizona.c | 47 +++++++++++++++++++---------------------------
- sound/soc/codecs/arizona.h |  1 -
- 2 files changed, 19 insertions(+), 29 deletions(-)
+ sound/soc/rockchip/rockchip_rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 4e5d0a96f933..4180827a8480 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1756,17 +1756,6 @@ int arizona_init_dai(struct arizona_priv *priv, int id)
- }
- EXPORT_SYMBOL_GPL(arizona_init_dai);
- 
--static irqreturn_t arizona_fll_clock_ok(int irq, void *data)
--{
--	struct arizona_fll *fll = data;
--
--	arizona_fll_dbg(fll, "clock OK\n");
--
--	complete(&fll->ok);
--
--	return IRQ_HANDLED;
--}
--
- static struct {
- 	unsigned int min;
- 	unsigned int max;
-@@ -2048,10 +2037,11 @@ static int arizona_is_enabled_fll(struct arizona_fll *fll)
- static int arizona_enable_fll(struct arizona_fll *fll)
- {
- 	struct arizona *arizona = fll->arizona;
--	unsigned long time_left;
- 	bool use_sync = false;
- 	int already_enabled = arizona_is_enabled_fll(fll);
- 	struct arizona_fll_cfg cfg;
-+	int i;
-+	unsigned int val;
- 
- 	if (already_enabled < 0)
- 		return already_enabled;
-@@ -2110,9 +2100,6 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 	if (!already_enabled)
- 		pm_runtime_get(arizona->dev);
- 
--	/* Clear any pending completions */
--	try_wait_for_completion(&fll->ok);
--
- 	regmap_update_bits_async(arizona->regmap, fll->base + 1,
- 				 ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
- 	if (use_sync)
-@@ -2124,10 +2111,24 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 		regmap_update_bits_async(arizona->regmap, fll->base + 1,
- 					 ARIZONA_FLL1_FREERUN, 0);
- 
--	time_left = wait_for_completion_timeout(&fll->ok,
--					  msecs_to_jiffies(250));
--	if (time_left == 0)
-+	arizona_fll_dbg(fll, "Waiting for FLL lock...\n");
-+	val = 0;
-+	for (i = 0; i < 15; i++) {
-+		if (i < 5)
-+			usleep_range(200, 400);
-+		else
-+			msleep(20);
-+
-+		regmap_read(arizona->regmap,
-+			    ARIZONA_INTERRUPT_RAW_STATUS_5,
-+			    &val);
-+		if (val & (ARIZONA_FLL1_CLOCK_OK_STS << (fll->id - 1)))
-+			break;
-+	}
-+	if (i == 15)
- 		arizona_fll_warn(fll, "Timed out waiting for lock\n");
-+	else
-+		arizona_fll_dbg(fll, "FLL locked (%d polls)\n", i);
- 
- 	return 0;
- }
-@@ -2212,11 +2213,8 @@ EXPORT_SYMBOL_GPL(arizona_set_fll);
- int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
- 		     int ok_irq, struct arizona_fll *fll)
- {
--	int ret;
- 	unsigned int val;
- 
--	init_completion(&fll->ok);
--
- 	fll->id = id;
- 	fll->base = base;
- 	fll->arizona = arizona;
-@@ -2238,13 +2236,6 @@ int arizona_init_fll(struct arizona *arizona, int id, int base, int lock_irq,
- 	snprintf(fll->clock_ok_name, sizeof(fll->clock_ok_name),
- 		 "FLL%d clock OK", id);
- 
--	ret = arizona_request_irq(arizona, ok_irq, fll->clock_ok_name,
--				  arizona_fll_clock_ok, fll);
--	if (ret != 0) {
--		dev_err(arizona->dev, "Failed to get FLL%d clock OK IRQ: %d\n",
--			id, ret);
--	}
--
- 	regmap_update_bits(arizona->regmap, fll->base + 1,
- 			   ARIZONA_FLL1_FREERUN, 0);
- 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 43deb0462309..36867d05e0bb 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -242,7 +242,6 @@ struct arizona_fll {
- 	int id;
- 	unsigned int base;
- 	unsigned int vco_mult;
--	struct completion ok;
- 
- 	unsigned int fout;
- 	int sync_src;
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 3c6bb1ea06ec..adfe98c5d26f 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -118,7 +118,7 @@ static int rk_init(struct snd_soc_pcm_runtime *runtime)
+ 				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
+ 				    &headset_jack, NULL, 0);
+-	if (!ret) {
++	if (ret) {
+ 		dev_err(card->dev, "New Headset Jack failed! (%d)\n", ret);
+ 		return ret;
+ 	}
 -- 
 2.5.0
