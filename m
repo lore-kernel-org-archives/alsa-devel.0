@@ -1,28 +1,32 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [PATCH] ASoC: rockchip: fix platform_no_drv_owner.cocci warnings
-Date: Wed, 26 Aug 2015 19:44:10 +0800
-Message-ID: <20150826114410.GA186569@ivytown2>
-References: <201508261907.XaXhY7JN%fengguang.wu@intel.com>
+Subject: [PATCH] ASoC: rockchip: fix
+	platform_no_drv_owner.cocci warnings
+Date: Wed, 26 Aug 2015 19:48:13 +0800
+Message-ID: <20150826114813.GA88839@ivytown2>
+References: <201508261911.CXlWEwle%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 544742654C9
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 13:49:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201508261907.XaXhY7JN%fengguang.wu@intel.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+In-Reply-To: <201508261911.CXlWEwle%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: zhengxing <zhengxing@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Dylan Reid <dgreid@chromium.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/rockchip/rockchip_max98090.c:225:3-8: No need to set .owner here. The core will do it.
+sound/soc/rockchip/rockchip_rt5645.c:214:3-8: No need to set .owner here. The core will do it.
 
  Remove .owner field if calls are used which set it automatically
 
@@ -32,16 +36,16 @@ CC: zhengxing <zhengxing@rock-chips.com>
 Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 ---
 
- rockchip_max98090.c |    1 -
+ rockchip_rt5645.c |    1 -
  1 file changed, 1 deletion(-)
 
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -222,7 +222,6 @@ static struct platform_driver snd_rk_mc_
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -211,7 +211,6 @@ static struct platform_driver snd_rk_mc_
  	.probe = snd_rk_mc_probe,
  	.driver = {
  		.name = DRV_NAME,
 -		.owner = THIS_MODULE,
  		.pm = &snd_soc_pm_ops,
- 		.of_match_table = rockchip_max98090_of_match,
+ 		.of_match_table = rockchip_rt5645_of_match,
  	},
