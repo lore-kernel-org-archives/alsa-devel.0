@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] OMAPDSS: Couple of HDMI audio fixes
-Date: Wed, 26 Aug 2015 18:42:54 +0100
-Message-ID: <20150826174254.GB28760@sirena.org.uk>
-References: <cover.1440594174.git.jsarha@ti.com>
+Subject: Applied "ASoC: omap-hdmi-audio: Set buffer bytes step
+	constraint to 128" to the asoc tree
+Date: Wed, 26 Aug 2015 18:59:33 +0100
+Message-ID: <E1ZUeyz-0003PS-L3@debutante>
+References: <041db517d2b5313648e20536a3fc0b13d4a72d09.1440594174.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0388446458849526442=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AE2E260525
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 19:43:01 +0200 (CEST)
-In-Reply-To: <cover.1440594174.git.jsarha@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E5637260525
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 19:59:43 +0200 (CEST)
+In-Reply-To: <041db517d2b5313648e20536a3fc0b13d4a72d09.1440594174.git.jsarha@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, linux-omap@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0388446458849526442==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
-Content-Disposition: inline
+   ASoC: omap-hdmi-audio: Set buffer bytes step constraint to 128
 
+has been applied to the asoc tree at
 
---TRYliJ5NKNqkz5bu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Aug 26, 2015 at 04:11:38PM +0300, Jyri Sarha wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> The two fixes are totally independent and the video and audio side
-> patches applied separately trough their own trees.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-In general if patches aren't related to each other either through code
-overlap or through content it's better to just send them as individual
-changes, that avoids any potential for confusion.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---TRYliJ5NKNqkz5bu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Thanks,
+Mark
 
-iQEcBAEBCAAGBQJV3fqdAAoJECTWi3JdVIfQxNcIAIHzZws5nLgKZj7ttMs+G0S3
-3B/McybzzK/F6GXoqLJ3e/HWlp3vaR3Is46jB2X/cta1Zm0HOam+sdYKmzAyXtlD
-/mpFdVv3C9buofUPhECy9NPHEgX2TfInKOKRU+8hs8Niytcsjfq5yVBzCL3x2HS8
-NxeTZ39oUR/xH8jUnDIVVl/EJyP2bLd1ZTG43cBJ7nDbn67DlwKcemg1uMCrUHdZ
-ANZ/3z+uTTP56CJIjsfYYA2RSpOceFHTdRGjoyy2z5wELt9oJHp/Aauj2y+ZtdjW
-F5DNmaWuZomFGeSUFA9p100O882idHPx3rl9MHiVreQszPbOXgzCskA35I7cD/M=
-=zdqV
------END PGP SIGNATURE-----
+>From 7d40acc38be55abb095f517e4e3a634818bc5253 Mon Sep 17 00:00:00 2001
+From: Jyri Sarha <jsarha@ti.com>
+Date: Wed, 26 Aug 2015 16:11:40 +0300
+Subject: [PATCH] ASoC: omap-hdmi-audio: Set buffer bytes step constraint to
+ 128
 
---TRYliJ5NKNqkz5bu--
+Set buffer bytes step constraint to 128. A matching constraint has
+already been set to period size. This helps PCM setup to tolerate ALSA
+clients that set the PCM hw params in unusual order.
 
---===============0388446458849526442==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/omap/omap-hdmi-audio.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-
---===============0388446458849526442==--
+diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
+index aeef25c0cb3d..584b2372339e 100644
+--- a/sound/soc/omap/omap-hdmi-audio.c
++++ b/sound/soc/omap/omap-hdmi-audio.c
+@@ -81,7 +81,15 @@ static int hdmi_dai_startup(struct snd_pcm_substream *substream,
+ 	ret = snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 128);
+ 	if (ret < 0) {
+-		dev_err(dai->dev, "could not apply constraint\n");
++		dev_err(dai->dev, "Could not apply period constraint: %d\n",
++			ret);
++		return ret;
++	}
++	ret = snd_pcm_hw_constraint_step(substream->runtime, 0,
++					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 128);
++	if (ret < 0) {
++		dev_err(dai->dev, "Could not apply buffer constraint: %d\n",
++			ret);
+ 		return ret;
+ 	}
+ 
+-- 
+2.5.0
