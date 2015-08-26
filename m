@@ -1,59 +1,38 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 2/2] ASoC: omap-hdmi-audio: Set buffer bytes
-	step constraint to 128
-Date: Wed, 26 Aug 2015 16:11:40 +0300
-Message-ID: <041db517d2b5313648e20536a3fc0b13d4a72d09.1440594174.git.jsarha@ti.com>
-References: <cover.1440594174.git.jsarha@ti.com>
+From: Alexander Kuleshov <kuleshovmail@gmail.com>
+Subject: Re: ALSA/usb-audio: snd_usb_autoresume possible recursive locking
+ detected
+Date: Wed, 26 Aug 2015 19:16:43 +0600
+Message-ID: <20150826131643.GA1607@localhost>
+References: <20150825133256.GA1804@localhost>
+ <s5hbndvmqb9.wl-tiwai@suse.de>
+ <s5h4mjnmnfh.wl-tiwai@suse.de>
+ <20150825171523.GA1413@localhost>
+ <s5ha8tfnrkz.wl-tiwai@suse.de>
+ <CANCZXo7jFP_j9ymE9xO5kmRoZ0PWUMaj9LimY9ohEokTTnprGA@mail.gmail.com>
+ <s5h6143nofh.wl-tiwai@suse.de>
+ <20150826074002.GA1600@localhost>
+ <s5hlhcymoo6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CB78260522
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 15:11:59 +0200 (CEST)
-In-Reply-To: <cover.1440594174.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Description: mesg
+Content-Disposition: inline
+In-Reply-To: <s5hlhcymoo6.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alexander Kuleshov <kuleshovmail@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Set buffer bytes step constraint to 128. A matching constraint has
-already been set to period size. This helps PCM setup to tolerate ALSA
-clients that set the PCM hw params in unusual order.
+On 08-26-15, Takashi Iwai wrote:
+> 
+> Ah, sorry, this was the missing refcount increment at resume.
+> Below is the revised patch.  In the final form, it'll be split to a
+> few parts, but now it's all folded for ease of testing.
+> 
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/omap/omap-hdmi-audio.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Hello Takashi,
 
-diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
-index aeef25c..584b237 100644
---- a/sound/soc/omap/omap-hdmi-audio.c
-+++ b/sound/soc/omap/omap-hdmi-audio.c
-@@ -81,7 +81,15 @@ static int hdmi_dai_startup(struct snd_pcm_substream *substream,
- 	ret = snd_pcm_hw_constraint_step(substream->runtime, 0,
- 					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 128);
- 	if (ret < 0) {
--		dev_err(dai->dev, "could not apply constraint\n");
-+		dev_err(dai->dev, "Could not apply period constraint: %d\n",
-+			ret);
-+		return ret;
-+	}
-+	ret = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 128);
-+	if (ret < 0) {
-+		dev_err(dai->dev, "Could not apply buffer constraint: %d\n",
-+			ret);
- 		return ret;
- 	}
- 
--- 
-1.9.1
+sorry for delay, just made a test with the last patch and finally
+dmesg is clear.
+
+Thank you.
