@@ -1,48 +1,85 @@
-From: Alexander Kuleshov <kuleshovmail@gmail.com>
-Subject: Re: ALSA/usb-audio: snd_usb_autoresume possible recursive locking
- detected
-Date: Wed, 26 Aug 2015 19:29:29 +0600
-Message-ID: <20150826132929.GA1853@localhost>
-References: <s5hbndvmqb9.wl-tiwai@suse.de>
- <s5h4mjnmnfh.wl-tiwai@suse.de>
- <20150825171523.GA1413@localhost>
- <s5ha8tfnrkz.wl-tiwai@suse.de>
- <CANCZXo7jFP_j9ymE9xO5kmRoZ0PWUMaj9LimY9ohEokTTnprGA@mail.gmail.com>
- <s5h6143nofh.wl-tiwai@suse.de>
- <20150826074002.GA1600@localhost>
- <s5hlhcymoo6.wl-tiwai@suse.de>
- <20150826131643.GA1607@localhost>
- <s5h6142kwtm.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: usb-audio: Handle normal and
+	auto-suspend equally
+Date: Wed, 26 Aug 2015 16:16:09 +0200
+Message-ID: <1440598569-4473-4-git-send-email-tiwai@suse.de>
+References: <1440598569-4473-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h6142kwtm.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alexander Kuleshov <kuleshovmail@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4995C260522
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 16:16:14 +0200 (CEST)
+In-Reply-To: <1440598569-4473-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Alexander Kuleshov <kuleshovmail@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08-26-15, Takashi Iwai wrote:
-> On Wed, 26 Aug 2015 15:16:43 +0200,
-> Alexander Kuleshov wrote:
-> > 
-> > On 08-26-15, Takashi Iwai wrote:
-> > > 
-> > > Ah, sorry, this was the missing refcount increment at resume.
-> > > Below is the revised patch.  In the final form, it'll be split to a
-> > > few parts, but now it's all folded for ease of testing.
-> > > 
-> > 
-> > Hello Takashi,
-> > 
-> > sorry for delay, just made a test with the last patch and finally
-> > dmesg is clear.
-> 
-> Great, thanks for many tests!
-> 
-> I tried the autopm on my machine, but strangely I couldn't reproduce
-> this lockdep warning.  Could you give your kconfig?  I'd like to
-> check.
+In theory, the device may get suspended even at runtime PM suspend.
+Currently we don't save the mixer state for autopm, and it may bring
+inconsistency.
 
-Yes, my .config: http://pastebin.com/N2e8TTtK
+This patch removes the special handling for autosuspend.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c | 30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 73c5833e7657..18f56646ce86 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -689,30 +689,20 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 	if (chip == (void *)-1L)
+ 		return 0;
+ 
+-	if (!PMSG_IS_AUTO(message)) {
++	chip->autosuspended = !!PMSG_IS_AUTO(message);
++	if (!chip->autosuspended)
+ 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+-		if (!chip->num_suspended_intf++) {
+-			list_for_each_entry(as, &chip->pcm_list, list) {
+-				snd_pcm_suspend_all(as->pcm);
+-				as->substream[0].need_setup_ep =
+-					as->substream[1].need_setup_ep = true;
+-			}
+-			list_for_each(p, &chip->midi_list) {
+-				snd_usbmidi_suspend(p);
+-			}
++	if (!chip->num_suspended_intf++) {
++		list_for_each_entry(as, &chip->pcm_list, list) {
++			snd_pcm_suspend_all(as->pcm);
++			as->substream[0].need_setup_ep =
++				as->substream[1].need_setup_ep = true;
+ 		}
+-	} else {
+-		/*
+-		 * otherwise we keep the rest of the system in the dark
+-		 * to keep this transparent
+-		 */
+-		if (!chip->num_suspended_intf++)
+-			chip->autosuspended = 1;
+-	}
+-
+-	if (chip->num_suspended_intf == 1)
++		list_for_each(p, &chip->midi_list)
++			snd_usbmidi_suspend(p);
+ 		list_for_each_entry(mixer, &chip->mixer_list, list)
+ 			snd_usb_mixer_suspend(mixer);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.5.0
