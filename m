@@ -1,76 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: rt5645: Prevent the pop sound of
- the headphone while rebooting or shutdowning
-Date: Wed, 26 Aug 2015 11:51:58 +0100
-Message-ID: <20150826105158.GP12878@sirena.org.uk>
-References: <1440419579-9970-1-git-send-email-oder_chiou@realtek.com>
- <20150825175726.GJ12878@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694F90D70@RTITMBSV03.realtek.com.tw>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH v5 1/4] drm/i915: Add audio sync_audio_rate
+	callback
+Date: Wed, 26 Aug 2015 11:08:16 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D196F6824@SHSMSX103.ccr.corp.intel.com>
+References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
+ <20150826081735.GZ20434@phenom.ffwll.local>
+ <96A12704CE18D347B625EE2D4A099D196F66DD@SHSMSX103.ccr.corp.intel.com>
+ <20150826090825.GO20434@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6200038585128095051=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BF5F2604D5
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 12:52:03 +0200 (CEST)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694F90D70@RTITMBSV03.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, John Lin <john.lin@realtek.com>, "woojoo.lee@samsung.com" <woojoo.lee@samsung.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20150826090825.GO20434@phenom.ffwll.local>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6200038585128095051==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RtGa12sjXv8gVUZO"
-Content-Disposition: inline
-
-
---RtGa12sjXv8gVUZO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 26, 2015 at 02:17:40AM +0000, Oder Chiou wrote:
-
-> It de-initialed our jack detection function, and it cannot be turned off in
-> _BIAS_OFF. If we didn't de-initial it, we will hear the pop sound in the
-> situation of powering off, thanks.
-
-OK, can you add a comment explaining what the register writes do (or
-ideally move to using #defines for the register values so it's obvious
-just from looking at the writes)?
-
---RtGa12sjXv8gVUZO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV3ZpNAAoJECTWi3JdVIfQjP0H/A6yGKGd6g0Evr3vKTrxYe0q
-GbWOZulugg5h10q2Gv9MjZBkqWsvCDtYDDWwcj7w9NZvBUn7tJ9F2mXoKUQo/Dsz
-qHs/WP5CiEKcJDTKUimkH2GwuBhRzxR24fDfHsaGzd9ioMgaZAI4PNdNrZs/u3Iw
-lDJSFDiXb+13/VBefnDQxlTVC13+w6LEyce0/lQzW44bhvlWGeZw3spCxiJySKjE
-oLF9oPdF10JcdjXd9/YGqrBn6vrXSTC/oEi9h1SUg7v+bnaic1lmtZly2Jo8hfhB
-CWlsMFooV725dHLKmjR3Uu7UcI7pzGlKeMHBLXCCqyndv/DEancftKP8nN/O/EU=
-=Jdbp
------END PGP SIGNATURE-----
-
---RtGa12sjXv8gVUZO--
-
---===============6200038585128095051==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6200038585128095051==--
+SGkgRGFuaWVsLAoKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IERhbmllbCBW
+ZXR0ZXIgW21haWx0bzpkYW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiBEYW5p
+ZWwgVmV0dGVyCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMjYsIDIwMTUgNTowOCBQTQo+IFRv
+OiBZYW5nLCBMaWJpbgo+IENjOiBEYW5pZWwgVmV0dGVyOyBhbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmc7IHRpd2FpQHN1c2UuZGU7IGludGVsLQo+IGdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
+IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g7Cj4gamFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tCj4g
+U3ViamVjdDogUmU6IFtQQVRDSCB2NSAxLzRdIGRybS9pOTE1OiBBZGQgYXVkaW8gc3luY19hdWRp
+b19yYXRlCj4gY2FsbGJhY2sKPiAKPiBPbiBXZWQsIEF1ZyAyNiwgMjAxNSBhdCAwODoyOTowOUFN
+ICswMDAwLCBZYW5nLCBMaWJpbiB3cm90ZToKPiA+IEhpIERhbmllbCwKPiA+Cj4gPiA+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiA+IEZyb206IERhbmllbCBWZXR0ZXIgW21haWx0bzpk
+YW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiA+ID4gRGFuaWVsIFZldHRlcgo+
+ID4gPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyNiwgMjAxNSA0OjE4IFBNCj4gPiA+IFRvOiBZ
+YW5nLCBMaWJpbgo+ID4gPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyB0aXdhaUBz
+dXNlLmRlOyBpbnRlbC0KPiA+ID4gZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZGFuaWVsLnZl
+dHRlckBmZndsbC5jaDsKPiA+ID4gamFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tCj4gPiA+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0ggdjUgMS80XSBkcm0vaTkxNTogQWRkIGF1ZGlvIHN5bmNfYXVkaW9f
+cmF0ZQo+ID4gPiBjYWxsYmFjawo+ID4gPgo+ID4gPiBPbiBUdWUsIEF1ZyAxOCwgMjAxNSBhdCAw
+Mjo1MTo1MVBNICswODAwLCBsaWJpbi55YW5nQGludGVsLmNvbQo+ID4gPiB3cm90ZToKPiA+ID4g
+PiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4KPiA+ID4gPgo+ID4gPiA+
+IEFkZCB0aGUgc3luY19hdWRpb19yYXRlIGNhbGxiYWNrLgo+ID4gPiA+Cj4gPiA+ID4gV2l0aCB0
+aGUgY2FsbGJhY2ssIGF1ZGlvIGRyaXZlciBjYW4gdHJpZ2dlcgo+ID4gPiA+IGk5MTUgZHJpdmVy
+IHRvIHNldCB0aGUgcHJvcGVyIE4vQ1RTIG9yIE4vTQo+ID4gPiA+IGJhc2VkIG9uIGRpZmZlcmVu
+dCBzYW1wbGUgcmF0ZXMuCj4gPiA+ID4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5n
+IDxsaWJpbi55YW5nQGludGVsLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgaW5jbHVkZS9kcm0v
+aTkxNV9jb21wb25lbnQuaCB8IDEgKwo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKykKPiA+ID4gPgo+ID4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBv
+bmVudC5oCj4gPiA+IGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiA+IGluZGV4
+IGM5YThiNjQuLmFhYmViY2IgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9j
+b21wb25lbnQuaAo+ID4gPiA+ICsrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+
+ID4gPiBAQCAtMzMsNiArMzMsNyBAQCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgewo+ID4g
+PiA+ICAJCXZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+ID4gIAkJdm9p
+ZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZpY2UgKiwgYm9vbAo+ID4gPiBlbmFi
+bGUpOwo+ID4gPiA+ICAJCWludCAoKmdldF9jZGNsa19mcmVxKShzdHJ1Y3QgZGV2aWNlICopOwo+
+ID4gPiA+ICsJCWludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRldmljZSAqLCBpbnQgcG9y
+dCwgaW50Cj4gPiA+IHJhdGUpOwo+ID4gPgo+ID4gPiBXZSdyZSBtaXNzaW5nIGtlcm5lbGRvYyBm
+b3IgdGhpcyBlbnRpcmUgc3RydWN0IGhlcmUsIHdoaWNoIGlzbid0Cj4gZ3JlYXQuCj4gPiA+IFRo
+aXMgbmVlZHMgdG8gYmUgZml4ZWQuIFBsZWFzZQo+ID4gPiAtIHB1bGwgb3V0IHRoZSBvcHMgc3Ry
+dWN0dXJlIHNvIGl0J3Mgbm90IGlubGluZWQgKGtlcm5lbGRvYyBjYW4ndAo+IGhhbmRsZQo+ID4g
+PiAgIG5lc3RlZCBvcHMgc3RydWN0dXJlcykuCj4gPiA+IC0gcGxlYXNlIGRvY3VtZW50IGFsbCB0
+aGUgY2FsbGJhY2tzIHdpdGgga2VybmVsZG9jLiBJbiA0LjMgd2UgY2FuCj4gaGF2ZQo+ID4gPiAg
+IGtlcm5lbGRvYyBpbi1saW5lIGluIHN0cnVjdHVyZXMgcmlnaHQgYWJvdmUgZWFjaCBtZW1iZXIg
+bGlrZSB0aGlzCj4gPiA+Cj4gPiA+ICAgLyoqCj4gPiA+ICAgICogQHB1dF9wb3dlcjoKPiA+ID4g
+ICAgKgo+ID4gPiAgICAqIExvbmdlciB0ZXh0IGV4cGxhaW5pbmcgdGhpcyBob29rLgo+ID4gPiAg
+ICAqLwo+ID4gPiAgIHZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+Cj4g
+PiA+ICAgRm9yIGVhY2ggaG9vayBwbGVhc2UgZXhwbGFpbiBhdCBsZWFzdCB3aG8gY2FsbHMgaXQg
+KGdmeCBvciBhdWRpbykKPiBhbmQKPiA+ID4gICB3aGVyZSBleGFjdGx5IGl0J3MgY2FsbGVkIGlu
+IHRoZSBvdmVyYWxsIGZsb3cuCj4gPiA+IC0gRXh0ZW5kZWQgdGhlIG92ZXJ2aWV3IGRvYyBzZWN0
+aW9uIHdpdGggcmVmZXJlbmNlcyB0byB0aGUKPiA+ID4gY29tcG9uZW50L29wcwo+ID4gPiAgIHN0
+cnVjdHVyZSB3b3VsZCBiZSBuZWVkZWQgdG9vLgo+ID4gPgo+ID4gPiBBbmQgcGxlYXNlIG1ha2Ug
+c3VyZSBpdCBhbGwgbG9va3MgcHJldHR5IHdpdGggbWFrZSBodG1sZG9jcy4KPiA+Cj4gPiBDb3Vs
+ZCB3ZSBzdGFydCBhbm90aGVyIHBhdGNoIHNlc3Npb24gZm9yIHRoaXMgdGFzayBiZWNhdXNlLAo+
+ID4gYXMgeW91IGtub3csIHRoaXMgaXMgYSBsaXR0bGUgaW5kZXBlbmRlbnQgb24gdGhlc2UgcGF0
+Y2hlcz8KPiA+IFdoYXQgZG8geW91IHRoaW5rPwo+IAo+IE5vd2FkYXlzIEkgd2FudCBwcm9wZXIg
+ZG9jcyBmb3IgbmV3IGZlYXR1cmVzLCBhbmQgZm9yIHBsYWNlcyB3aGVyZQo+IHdlCj4gbWlzc2Vk
+IHRoZW0gdGh1cyBmYXIgdGhleSBuZWVkIHRvIGJlIGJhY2tmaWxsZWQuIEFsc28gdGhlcmUncyBz
+b21lCj4gZ29vZAo+IGNvbmZ1c2lvbiBpbiB0aGUgcmV2aWV3IGFib3V0IGhvdyB0aGlzIGFsbCB3
+b3JrcyB0b2dldGhlciwgc28gYmV0dGVyCj4gZG9jcwo+IHNlZW0gY2FsbGVkIGZvciBubyBtYXR0
+ZXIgd2hhdCB0byBnZXQgdGhpcyBpbi4gSW5zdGVhZCBvZiBqdXN0IGFkZGluZyBhbGwKPiB0aGUg
+ZXhwbGFuYXRpb25zIHRvIGNvbW1pdCBtZXNzYWdlcyBvbmx5IEkgZmlndXJlZCBpdCdzIGJldHRl
+ciB0byBkbwo+IHRoZW0KPiBhcyBrZXJuZWxkb2MuCgpZZXMsIEkgYWdyZWUgYW5kIEkgd2lsbCBh
+ZGQgaXQgZm9yIHRoZSBzeW5jX2F1ZGlvX3JhdGUgZnVuY3Rpb24KaW4gdGhlIG5leHQgdmVyc2lv
+bi4KClJlZ2FyZHMsCkxpYmluCgo+IC1EYW5pZWwKPiAtLQo+IERhbmllbCBWZXR0ZXIKPiBTb2Z0
+d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KPiBodHRwOi8vYmxvZy5mZndsbC5jaApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZngg
+bWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3Rz
+LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
