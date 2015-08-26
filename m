@@ -1,81 +1,84 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v5 1/4] drm/i915: Add audio sync_audio_rate
-	callback
-Date: Wed, 26 Aug 2015 11:08:25 +0200
-Message-ID: <20150826090825.GO20434@phenom.ffwll.local>
-References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
- <20150826081735.GZ20434@phenom.ffwll.local>
- <96A12704CE18D347B625EE2D4A099D196F66DD@SHSMSX103.ccr.corp.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init
+ of WM510205 codec via ACPI (resend)
+Date: Wed, 26 Aug 2015 10:13:12 +0100
+Message-ID: <20150826091312.GA19411@ck-lbox>
+References: <CAKor6Te-DSDxx711-EQi=fw46nNPGnQNqhj-+6upBxhOOp5XvA@mail.gmail.com>
+ <20150820115845.GF30005@lahna.fi.intel.com>
+ <CAKor6Teq=Aoa6WYkTEVpjBPsWziL-o5FzQHxJWOMeaTrMzXpMg@mail.gmail.com>
+ <20150821074310.GM30005@lahna.fi.intel.com>
+ <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+ <20150824085140.GA5647@ck-lbox>
+ <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
+ <20150825062157.GB27431@sirena.org.uk>
+ <CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
+ <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEA29265259
+ for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 11:33:16 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <96A12704CE18D347B625EE2D4A099D196F66DD@SHSMSX103.ccr.corp.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "Yang, Libin" <libin.yang@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+In-Reply-To: <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Christian Hartmann <cornogle@googlemail.com>
+Cc: alsa-devel@alsa-project.org, Mika Westerberg <mika.westerberg@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, jarkko.nikula@linux.intel.com, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBBdWcgMjYsIDIwMTUgYXQgMDg6Mjk6MDlBTSArMDAwMCwgWWFuZywgTGliaW4gd3Jv
-dGU6Cj4gSGkgRGFuaWVsLAo+IAo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiA+IEZy
-b206IERhbmllbCBWZXR0ZXIgW21haWx0bzpkYW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhh
-bGYgT2YKPiA+IERhbmllbCBWZXR0ZXIKPiA+IFNlbnQ6IFdlZG5lc2RheSwgQXVndXN0IDI2LCAy
-MDE1IDQ6MTggUE0KPiA+IFRvOiBZYW5nLCBMaWJpbgo+ID4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZzsgdGl3YWlAc3VzZS5kZTsgaW50ZWwtCj4gPiBnZnhAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnOyBkYW5pZWwudmV0dGVyQGZmd2xsLmNoOwo+ID4gamFuaS5uaWt1bGFAbGludXguaW50
-ZWwuY29tCj4gPiBTdWJqZWN0OiBSZTogW1BBVENIIHY1IDEvNF0gZHJtL2k5MTU6IEFkZCBhdWRp
-byBzeW5jX2F1ZGlvX3JhdGUKPiA+IGNhbGxiYWNrCj4gPiAKPiA+IE9uIFR1ZSwgQXVnIDE4LCAy
-MDE1IGF0IDAyOjUxOjUxUE0gKzA4MDAsIGxpYmluLnlhbmdAaW50ZWwuY29tCj4gPiB3cm90ZToK
-PiA+ID4gRnJvbTogTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4gPiA+Cj4gPiA+
-IEFkZCB0aGUgc3luY19hdWRpb19yYXRlIGNhbGxiYWNrLgo+ID4gPgo+ID4gPiBXaXRoIHRoZSBj
-YWxsYmFjaywgYXVkaW8gZHJpdmVyIGNhbiB0cmlnZ2VyCj4gPiA+IGk5MTUgZHJpdmVyIHRvIHNl
-dCB0aGUgcHJvcGVyIE4vQ1RTIG9yIE4vTQo+ID4gPiBiYXNlZCBvbiBkaWZmZXJlbnQgc2FtcGxl
-IHJhdGVzLgo+ID4gPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5nIDxsaWJpbi55YW5n
-QGludGVsLmNvbT4KPiA+ID4gLS0tCj4gPiA+ICBpbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5o
-IHwgMSArCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiA+ID4KPiA+ID4g
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+IGIvaW5jbHVkZS9k
-cm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiBpbmRleCBjOWE4YjY0Li5hYWJlYmNiIDEwMDY0NAo+
-ID4gPiAtLS0gYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBvbmVudC5oCj4gPiA+ICsrKyBiL2luY2x1
-ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+ID4gQEAgLTMzLDYgKzMzLDcgQEAgc3RydWN0IGk5
-MTVfYXVkaW9fY29tcG9uZW50IHsKPiA+ID4gIAkJdm9pZCAoKnB1dF9wb3dlcikoc3RydWN0IGRl
-dmljZSAqKTsKPiA+ID4gIAkJdm9pZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZp
-Y2UgKiwgYm9vbAo+ID4gZW5hYmxlKTsKPiA+ID4gIAkJaW50ICgqZ2V0X2NkY2xrX2ZyZXEpKHN0
-cnVjdCBkZXZpY2UgKik7Cj4gPiA+ICsJCWludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRl
-dmljZSAqLCBpbnQgcG9ydCwgaW50Cj4gPiByYXRlKTsKPiA+IAo+ID4gV2UncmUgbWlzc2luZyBr
-ZXJuZWxkb2MgZm9yIHRoaXMgZW50aXJlIHN0cnVjdCBoZXJlLCB3aGljaCBpc24ndCBncmVhdC4K
-PiA+IFRoaXMgbmVlZHMgdG8gYmUgZml4ZWQuIFBsZWFzZQo+ID4gLSBwdWxsIG91dCB0aGUgb3Bz
-IHN0cnVjdHVyZSBzbyBpdCdzIG5vdCBpbmxpbmVkIChrZXJuZWxkb2MgY2FuJ3QgaGFuZGxlCj4g
-PiAgIG5lc3RlZCBvcHMgc3RydWN0dXJlcykuCj4gPiAtIHBsZWFzZSBkb2N1bWVudCBhbGwgdGhl
-IGNhbGxiYWNrcyB3aXRoIGtlcm5lbGRvYy4gSW4gNC4zIHdlIGNhbiBoYXZlCj4gPiAgIGtlcm5l
-bGRvYyBpbi1saW5lIGluIHN0cnVjdHVyZXMgcmlnaHQgYWJvdmUgZWFjaCBtZW1iZXIgbGlrZSB0
-aGlzCj4gPiAKPiA+ICAgLyoqCj4gPiAgICAqIEBwdXRfcG93ZXI6Cj4gPiAgICAqCj4gPiAgICAq
-IExvbmdlciB0ZXh0IGV4cGxhaW5pbmcgdGhpcyBob29rLgo+ID4gICAgKi8KPiA+ICAgdm9pZCAo
-KnB1dF9wb3dlcikoc3RydWN0IGRldmljZSAqKTsKPiA+IAo+ID4gICBGb3IgZWFjaCBob29rIHBs
-ZWFzZSBleHBsYWluIGF0IGxlYXN0IHdobyBjYWxscyBpdCAoZ2Z4IG9yIGF1ZGlvKSBhbmQKPiA+
-ICAgd2hlcmUgZXhhY3RseSBpdCdzIGNhbGxlZCBpbiB0aGUgb3ZlcmFsbCBmbG93Lgo+ID4gLSBF
-eHRlbmRlZCB0aGUgb3ZlcnZpZXcgZG9jIHNlY3Rpb24gd2l0aCByZWZlcmVuY2VzIHRvIHRoZQo+
-ID4gY29tcG9uZW50L29wcwo+ID4gICBzdHJ1Y3R1cmUgd291bGQgYmUgbmVlZGVkIHRvby4KPiA+
-IAo+ID4gQW5kIHBsZWFzZSBtYWtlIHN1cmUgaXQgYWxsIGxvb2tzIHByZXR0eSB3aXRoIG1ha2Ug
-aHRtbGRvY3MuCj4gCj4gQ291bGQgd2Ugc3RhcnQgYW5vdGhlciBwYXRjaCBzZXNzaW9uIGZvciB0
-aGlzIHRhc2sgYmVjYXVzZSwKPiBhcyB5b3Uga25vdywgdGhpcyBpcyBhIGxpdHRsZSBpbmRlcGVu
-ZGVudCBvbiB0aGVzZSBwYXRjaGVzPwo+IFdoYXQgZG8geW91IHRoaW5rPwoKTm93YWRheXMgSSB3
-YW50IHByb3BlciBkb2NzIGZvciBuZXcgZmVhdHVyZXMsIGFuZCBmb3IgcGxhY2VzIHdoZXJlIHdl
-Cm1pc3NlZCB0aGVtIHRodXMgZmFyIHRoZXkgbmVlZCB0byBiZSBiYWNrZmlsbGVkLiBBbHNvIHRo
-ZXJlJ3Mgc29tZSBnb29kCmNvbmZ1c2lvbiBpbiB0aGUgcmV2aWV3IGFib3V0IGhvdyB0aGlzIGFs
-bCB3b3JrcyB0b2dldGhlciwgc28gYmV0dGVyIGRvY3MKc2VlbSBjYWxsZWQgZm9yIG5vIG1hdHRl
-ciB3aGF0IHRvIGdldCB0aGlzIGluLiBJbnN0ZWFkIG9mIGp1c3QgYWRkaW5nIGFsbAp0aGUgZXhw
-bGFuYXRpb25zIHRvIGNvbW1pdCBtZXNzYWdlcyBvbmx5IEkgZmlndXJlZCBpdCdzIGJldHRlciB0
-byBkbyB0aGVtCmFzIGtlcm5lbGRvYy4KLURhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2Fy
-ZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxp
-bmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+On Wed, Aug 26, 2015 at 10:58:06AM +0200, Christian Hartmann wrote:
+> Hi at all,
+> 
+> 
+> the current logs shows me, that something else is missing here.
+> The spi irq is one of the issues I will try to solve today
+> 
+> Looking at the read_regmap() where it reads its device id,
+> I do not understand why it gots only an ID of 0xffff !
+
+I would probably focus on getting the device ID to read back
+first. The interrupts aren't that important until you can talk to
+the device and the interrupt setup won't have any effect on being
+able to talk to the device.
+
+> 
+> I have (silly or not), added a case for 0xffff in the next switch
+> statements but anyway this seems not okay.
+> I do not know what else (other than the wrong or missing spi irq,
+> which is currently only -1)
+
+Yeah adding a case for 0xffff probably won't help much as this
+likely means that the device isn't responding at all when you are
+talking to it, so you can't really do anything meaningful when
+you get past reading the ID register anyway.
+
+Basically to be able to talk to the device you need the following
+things:
+
+ 1) The supplies need to be applied.
+ 2) The device needs to be out of reset.
+ 3) The device needs to have the LDO enabled.
+ 4) The chip select needs to be active.
+
+It seems very likely that 1) is already taken care of, so I
+probalby won't spend too much time worrying about that. It looks
+like we are getting a valid GPIO for the reset (2) and LDOENA (3),
+so it feels like those are probably ok. I guess this leaves the
+SPI config as the next place to investigate, are there other
+devices on the SPI that you can talk to that might at least
+verify the SPI is working? Also might be worth trying to look at
+how the chip selects are done perhaps that is not happening for
+some reason?
+
+Thanks,
+Charles
