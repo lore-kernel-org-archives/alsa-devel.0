@@ -1,254 +1,178 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 06/10] ALSA: axd: add basic files for
- sending/receiving axd cmds
-Date: Wed, 26 Aug 2015 20:16:42 +0100
-Message-ID: <20150826191642.GG28760@sirena.org.uk>
-References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
- <1440419959-14315-7-git-send-email-qais.yousef@imgtec.com>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Wed, 26 Aug 2015 23:40:35 +0200 (CEST)
+Message-ID: <alpine.DEB.2.11.1508262101450.15006@nanos>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com>
+ <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com> <55DB519D.2090203@arm.com> <55DDA1C4.4070301@imgtec.com> <alpine.DEB.2.11.1508261427280.15006@nanos> <55DDD3E3.7070009@imgtec.com> <alpine.DEB.2.11.1508261701430.15006@nanos>
+ <55DDDE3C.8030609@imgtec.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3582254623393558283=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BF566260532
- for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2015 21:16:54 +0200 (CEST)
-In-Reply-To: <1440419959-14315-7-git-send-email-qais.yousef@imgtec.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55DDDE3C.8030609@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Qais Yousef <qais.yousef@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Marc Zyngier <marc.zyngier@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Mark Rutland <Mark.Rutland@arm.com>, Jiang Liu <jiang.liu@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 26 Aug 2015, Qais Yousef wrote:
+> On 08/26/2015 04:08 PM, Thomas Gleixner wrote:
+> > IPI = Inter Processor Interrupt
+> > 
+> > As the name says that's an interrupt which goes from one cpu to
+> > another. So an IPI has a very clear target.
+> 
+> OK understood. My interpretation of the processor here was the difference. I
+> was viewing the whole linux cpus as one unit with regard to its coprocessors.
 
---===============3582254623393558283==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="df+09Je9rNq3P+GE"
-Content-Disposition: inline
+You can only view it this way if you talk about peripheral interrupts
+which are not used as per cpu interrupts and can be routed to a single
+cpu or a set of cpus via set_affinity.
 
+> > Whether the platform implements IPIs via general interrupts which are
+> > made affine to a particular cpu or some other specialized mechanism is
+> > completely irrelevant. An IPI is not subject to affinity settings,
+> > period.
+> > 
+> > So if you want to use an IPI then you need a target cpu for that IPI.
+> > 
+> > If you want something which can be affined to any cpu, then you need a
+> > general interrupt and not an IPI.
+> 
+> We are using IPIs to exchange interrupts. Affinity is not important to me.
 
---df+09Je9rNq3P+GE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's a bold statement. If you chose CPU x as the target for the
+interrupts received from the coprocessor, then you have pinned the
+processing for this stuff on to CPU x. So you limit the freedom of
+moving stuff around on the linux cpus.
 
-On Mon, Aug 24, 2015 at 01:39:15PM +0100, Qais Yousef wrote:
+And if your root irq controller supports sending normal device
+interrupts in the same or a similar way as it sends IPIs you can spare
+quite some extra handling on the linux side for receiving the
+coprocessor interrupt, i.e. you can use just the bog standard
+request_irq() mechanism and have the ability to set the affinity of
+that interrupt from user space so you can move it to the core on which
+your processing happens. Definitely simpler and more flexible, so I
+would go there if the hardware allows.
 
-> +int axd_cmd_set_pc(struct axd_cmd *cmd, unsigned int thread, unsigned lo=
-ng pc)
-> +{
-> +	if (thread >=3D THREAD_COUNT)
-> +		return -1;
+But back to the IPIs. We need infrastructure and DT support to:
 
-Return sensible error codes please.
+1) reserve an IPI
 
-> +unsigned long  axd_cmd_get_datain_address(struct axd_cmd *cmd)
-> +{
-> +	struct axd_dev *axd =3D container_of(cmd, struct axd_dev, cmd);
-> +
-> +	return (unsigned long) axd->buf_base_m;
-> +}
+2) send an IPI
 
-What's going on with these casts?
+3) request/free an IPI
 
-> +static inline void axd_set_flag(unsigned int *flag, unsigned int value)
-> +{
-> +	*flag =3D value;
-> +	smp_wmb();	/* guarantee smp ordering */
-> +}
-> +
-> +static inline unsigned int axd_get_flag(unsigned int *flag)
-> +{
-> +	smp_rmb();	/* guarantee smp ordering */
-> +	return *flag;
-> +}
+#1 We have no infrastructure for that, but we definitely need one.
 
-Please use a normal locking construct rather than hand rolling
-something, or alternatively introduce new generic operations.  The fact
-that you're hand rolling these things that have no driver specific
-content is really worrying in terms of their safety.
+   We can look at the IPI as a single linux irq number which is
+   replicated on all cpu cores. The replication can happen in hardware
+   or by software, but that depends on the underlying root irq
+   controller. How that is implemented does not matter for the
+   reservation.
 
-> +/*
-> + * axd_pipe->enabled_flg for output pipes is overloaded to mean two thin=
-gs:
-> + *
-> + * - PIPE_STARTED: indicates that pipe was opened but no buffers were pa=
-ssed.
-> + *   When stopping the pipes, we know that we don't need to discard anyt=
-hing if
-> + *   the discard_flg is set in cmd struct. Which allows us to terminate =
-easily
-> + *   and quickly.
-> + *
-> + * - PIPE_RUNNING: indicates that pipe has processed some buffers, so we=
- should
-> + *   discard if user terminates early (and discard_flg is set in cmd str=
-uct).
-> + */
-> +#define PIPE_STARTED	1
-> +#define PIPE_RUNNING	2
+   The most flexible and platform independent solution would be to
+   describe the IPI space as a seperate irq domain. In most cases this
+   would be a hierarchical domain stacked on the root irq domain:
 
-Why is the case with in place buffers not a simple zero iteration loop?
+   [IPI-domain] --> [GIC-MIPS-domain]
 
-> +#ifdef AXD_DEBUG_DIAG
-> +static unsigned int inSentCount[AXD_MAX_PIPES];
-> +static unsigned int inRecvCount[AXD_MAX_PIPES];
-> +static unsigned int outSentCount[AXD_MAX_PIPES];
-> +static unsigned int outRecvCount[AXD_MAX_PIPES];
-> +static unsigned int primeupCount[AXD_MAX_PIPES];
-> +static unsigned int read_size[AXD_MAX_PIPES];
-> +static unsigned int write_size[AXD_MAX_PIPES];
-> +static unsigned int recv_size[AXD_MAX_PIPES];
+   on x86 this would be:
 
-No static globals and please follow the kernel coding style.
+   [IPI-domain] --> [vector-domain]
 
-> +static inline void axd_datain_kick(struct axd_pipe *axd_pipe)
-> +{
-> +	unsigned long flags;
-> +	struct axd_memory_map __iomem *message =3D axd_pipe->cmd->message;
-> +	unsigned int pipe =3D axd_pipe->id;
-> +	unsigned int temp;
-> +
-> +#ifdef AXD_DEBUG_DIAG
-> +	inSentCount[pipe]++;
-> +#endif
+   That needs some change how the IPIs which are used by the kernel
+   (rescheduling, function call ..) are set up, but we get a proper
+   management and collision avoidance that way. Depending on the
+   platform we could actually remove the whole IPI compile time
+   reservation and hand out IPIs at boot time on demand and
+   dynamically.
 
-Define accessor macros for these and then define them to noops when not
-debugging rather than having #defines in the code.
+   So the reservation function would be something like:
 
-> +static irqreturn_t axd_irq(int irq, void *data)
-> +{
-> +	struct axd_cmd *cmd =3D data;
-> +	unsigned int int_status;
-> +	unsigned long flags;
-> +	int i, ret;
-> +
-> +	/*
-> +	 * int_status is ioremapped() which means it could page fault. When axd
-> +	 * is running on the same core as the host, holding lock2 would disable
-> +	 * exception handling in that core which means a page fault would stuff
-> +	 * host thread executing the driver. We do a double read here to ensure
-> +	 * that we stall until the memory access is done before lock2 is
-> +	 * acquired, hence ensuring that any page fault is handled outside lock2
-> +	 * region.
-> +	*/
-> +	int_status =3D ioread32(&cmd->message->int_status);
-> +	int_status =3D ioread32(&cmd->message->int_status);
+   unsigned int irq_reserve_ipi(const struct cpumask *dest, void *devid);
 
-Eew.
+   @dest contains the possible targets for the IPI. So for generic
+   linux IPIs this would be cpu_possible_mask. For your coprocessor
+   the target would be a cpumask with just the bit of the coprocessor
+   core set. If you need to use an IPI for sending an interrupt from
+   the coprocessor to a specific linux core then @dest will contain
+   just that target cpu.
 
-> +
-> +	axd_platform_irq_ack();
+   @devid is stored in the IPI domain for sanity checks during
+   operation.
 
-When would this ever be called anywhere else?  Just inline it (and it's
-better practice to only ack things we handle...).
+   The function returns a linux irq number or 0 if allocation fails.
 
-> +	flags =3D axd_platform_lock();
-> +	int_status =3D ioread32(&cmd->message->int_status);
-> +	iowrite32(0, &cmd->message->int_status);
-> +
-> +	if (!int_status)
-> +		goto out;
+   We need a complementary interface as well, so you can hand back the
+   IPI to the core when the coprocessor is disabled:
 
-This should cause us to return IRQ_NONE.
-
-> +	if (int_status & AXD_INT_ERROR) {
-> +		struct axd_dev *axd =3D container_of(cmd, struct axd_dev, cmd);
-> +		int error =3D ioread32(&cmd->message->error);
-> +
-> +		pr_debug("<---- Received error interrupt\n");
-> +		switch (error) {
-> +		default:
-> +		case 0:
-> +			break;
-
-We just ignore these?
-
-> +		case 2:
-> +			dev_warn(axd->dev, "Failed to set last configuration command\n");
-> +			break;
-
-Does the configuration command notice?
-
-> +	/*
-> +	 * if we could lock the semaphore, then we're guaranteed that the
-> +	 * current rd_idx is valid and ready to be used. So no need to verify
-> +	 * that the status of the descriptor at rd_idx is valid.
-> +	 */
-> +	spin_lock(&desc_ctrl->rd_lock);
-
-It really feels like this locking is all complicated and fragile.  I'm
-not entirely sure the optimisation is worth it - are we really sending
-compressed audio at such a high rate that it's worth having concurrency
-handling that's hard to think about?
-
-> +void axd_cmd_free_irq(struct axd_cmd *cmd, unsigned int irqnum)
-> +{
-> +	flush_workqueue(cmd->in_workq);
-
-_sync()
-
-> +	destroy_workqueue(cmd->in_workq);
-> +	flush_workqueue(cmd->out_workq);
-> +	destroy_workqueue(cmd->out_workq);
-> +	free_irq(irqnum, cmd);
-
-We're freeing the interrupts after we destroy the workqueue which means
-we could try to schedule new work after destruction.
-
-> +	/*
-> +	 * Based on the defined axd_pipe->buf_size and number of input pipes
-> +	 * supported by the firmware, we calculate the number of descriptors we
-> +	 * need to use using this formula:
-> +	 *
-> +	 *	axd_pipe->buf_size * num_desc =3D total_size / num_inputs
-> +	 */
-> +	num_desc =3D total_size / (cmd->num_inputs * axd_pipe->buf_size);
-
-I'm not sure that was an especially tricky line of code to follow...  am
-I missing something here?
-
-I've stopped reviewing here mostly because it's the end of my day and
-this patch is 72K which is enormous for something that's not just lots
-of defines or whatever and actually needs reading in considerable detail
-given all the tricky concurrency stuff you're doing.  Please split this
-code up into multiple patches for ease of review.  For example all the
-queue management and allocation seems rather separate to the interrupt
-handling. =20
-
-It also feels like there's room for pruning the code, perhaps sharing
-more of it between input and output paths and removing some layers of
-abstraction. =20
-
---df+09Je9rNq3P+GE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJV3hCZAAoJECTWi3JdVIfQPLIH/2g4wIYQFOM/onn07F6iUkw8
-25OYUqRIMXCG5ZP6Fs6rfbgqbbQO34OlMYZV69DO218KtZYcuZj1urAqWBlUsH2M
-+THv0VK7/YVIPsFHmUY9ci2jaI3TQSZ315ODlfUJF+qVu445ZpAOazvPsmW9bFSC
-9v7plAnGpReNKO/JBSc/irLQcIkwTurBHwTirAsXMH5QtMNW2EjtxSMLJGyWnp2p
-hoidHm/b6vcV53NwU/yS01MxZUVgHRrmgYRZo5R4XbdwrDh5ZNRDGpOFor82TQOj
-a0tKrI5sdf1uIRc5SE9YkQYLrLbrrTRDx0/m3FDfNjhRnyxmBTI6VkgHFlm2jVQ=
-=QAZ8
------END PGP SIGNATURE-----
-
---df+09Je9rNq3P+GE--
-
---===============3582254623393558283==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+   void irq_destroy_ipi(unsigned int irq, void *devid);
 
 
---===============3582254623393558283==--
+   To configure your coprocessor proper, we need a translation
+   mechanism from the linux interrupt number to the magic value which
+   needs to be written into the trigger register when the coprocessor
+   wants to send an interrupt or an IPI.
+
+   int irq_get_irq_hwcfg(unsigned int irq, struct irq_hwcfg *cfg);
+
+   struct irq_hwcfg needs to be defined, but it might look like this:
+
+     {
+	/* Generic fields */
+	x;
+	...
+	union {
+	      mips_gic;
+	      ...
+	};
+     };
+
+   The actual hw specific value(s) need to be filled in from the irq
+   domain specific code.
+
+
+#2 We have no generic mechanism for that either.
+
+   Something like this is needed:
+
+   void irq_send_ipi(unsigned int irq, const struct cpumask *dest,
+   		     void *devid);	      
+
+   @dest is for generic linux IPIs and can be NULL so the IPI is sent to
+    	 the core(s) which have been handed in at reservation time
+
+   @devid is used to sanity check the driver call.
+
+   So that finally will call down via a irq chip callback into the
+   code which sends the IPI.
+
+
+#3 Now you get lucky, because we actually have an interface for this
+
+   request_percpu_irq()
+   free_percpu_irq()
+   disable_percpu_irq()
+   enable_percpu_irq()
+
+   Though there is a caveat. enable/disable_percpu_irq() must be
+   called from the target cpu, but that should be a solvable problem.
+
+   And at the IPI-domain side we need sanity checks whether the cpu
+   from which enable/disable is called is actually configured in the
+   reservation mask.
+   
+   There are a few other nasty details, but that's not important for
+   the big picture.
+
+   As I said above, I really would recommend to avoid that if possible
+   because a bog standard device interrupt is way simpler to deal
+   with. 
+
+That's certainly not the quick and dirty solution you are looking for,
+but exposing IPIs to drivers by anything else than a well thought out
+infrastructure is not going to happen.
+
+Thanks,
+
+	tglx
