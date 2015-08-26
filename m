@@ -1,94 +1,204 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH v5 1/4] drm/i915: Add audio sync_audio_rate
-	callback
-Date: Wed, 26 Aug 2015 11:08:16 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D196F6824@SHSMSX103.ccr.corp.intel.com>
-References: <1439880714-40931-1-git-send-email-libin.yang@intel.com>
- <20150826081735.GZ20434@phenom.ffwll.local>
- <96A12704CE18D347B625EE2D4A099D196F66DD@SHSMSX103.ccr.corp.intel.com>
- <20150826090825.GO20434@phenom.ffwll.local>
+From: Qais Yousef <qais.yousef@imgtec.com>
+Subject: Re: [PATCH 01/10] irqchip: irq-mips-gic: export gic_send_ipi
+Date: Wed, 26 Aug 2015 12:23:48 +0100
+Message-ID: <55DDA1C4.4070301@imgtec.com>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com> <1440419959-14315-2-git-send-email-qais.yousef@imgtec.com> <alpine.DEB.2.11.1508241447100.3873@nanos> <55DB15EB.3090109@imgtec.com> <55DB1CD2.5030300@arm.com> <55DB29B5.3010202@imgtec.com> <alpine.DEB.2.11.1508241656280.3873@nanos> <55DB48C9.7010508@imgtec.com> <55DB519D.2090203@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20150826090825.GO20434@phenom.ffwll.local>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <55DB519D.2090203@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Mark Rutland <Mark.Rutland@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGFuaWVsLAoKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IERhbmllbCBW
-ZXR0ZXIgW21haWx0bzpkYW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiBEYW5p
-ZWwgVmV0dGVyCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMjYsIDIwMTUgNTowOCBQTQo+IFRv
-OiBZYW5nLCBMaWJpbgo+IENjOiBEYW5pZWwgVmV0dGVyOyBhbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmc7IHRpd2FpQHN1c2UuZGU7IGludGVsLQo+IGdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
-IGRhbmllbC52ZXR0ZXJAZmZ3bGwuY2g7Cj4gamFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tCj4g
-U3ViamVjdDogUmU6IFtQQVRDSCB2NSAxLzRdIGRybS9pOTE1OiBBZGQgYXVkaW8gc3luY19hdWRp
-b19yYXRlCj4gY2FsbGJhY2sKPiAKPiBPbiBXZWQsIEF1ZyAyNiwgMjAxNSBhdCAwODoyOTowOUFN
-ICswMDAwLCBZYW5nLCBMaWJpbiB3cm90ZToKPiA+IEhpIERhbmllbCwKPiA+Cj4gPiA+IC0tLS0t
-T3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiA+IEZyb206IERhbmllbCBWZXR0ZXIgW21haWx0bzpk
-YW5pZWwudmV0dGVyQGZmd2xsLmNoXSBPbiBCZWhhbGYgT2YKPiA+ID4gRGFuaWVsIFZldHRlcgo+
-ID4gPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAyNiwgMjAxNSA0OjE4IFBNCj4gPiA+IFRvOiBZ
-YW5nLCBMaWJpbgo+ID4gPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyB0aXdhaUBz
-dXNlLmRlOyBpbnRlbC0KPiA+ID4gZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZGFuaWVsLnZl
-dHRlckBmZndsbC5jaDsKPiA+ID4gamFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tCj4gPiA+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0ggdjUgMS80XSBkcm0vaTkxNTogQWRkIGF1ZGlvIHN5bmNfYXVkaW9f
-cmF0ZQo+ID4gPiBjYWxsYmFjawo+ID4gPgo+ID4gPiBPbiBUdWUsIEF1ZyAxOCwgMjAxNSBhdCAw
-Mjo1MTo1MVBNICswODAwLCBsaWJpbi55YW5nQGludGVsLmNvbQo+ID4gPiB3cm90ZToKPiA+ID4g
-PiBGcm9tOiBMaWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4KPiA+ID4gPgo+ID4gPiA+
-IEFkZCB0aGUgc3luY19hdWRpb19yYXRlIGNhbGxiYWNrLgo+ID4gPiA+Cj4gPiA+ID4gV2l0aCB0
-aGUgY2FsbGJhY2ssIGF1ZGlvIGRyaXZlciBjYW4gdHJpZ2dlcgo+ID4gPiA+IGk5MTUgZHJpdmVy
-IHRvIHNldCB0aGUgcHJvcGVyIE4vQ1RTIG9yIE4vTQo+ID4gPiA+IGJhc2VkIG9uIGRpZmZlcmVu
-dCBzYW1wbGUgcmF0ZXMuCj4gPiA+ID4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMaWJpbiBZYW5n
-IDxsaWJpbi55YW5nQGludGVsLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgaW5jbHVkZS9kcm0v
-aTkxNV9jb21wb25lbnQuaCB8IDEgKwo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKykKPiA+ID4gPgo+ID4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pOTE1X2NvbXBv
-bmVudC5oCj4gPiA+IGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+ID4gPiA+IGluZGV4
-IGM5YThiNjQuLmFhYmViY2IgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEvaW5jbHVkZS9kcm0vaTkxNV9j
-b21wb25lbnQuaAo+ID4gPiA+ICsrKyBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPiA+
-ID4gPiBAQCAtMzMsNiArMzMsNyBAQCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnQgewo+ID4g
-PiA+ICAJCXZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+ID4gIAkJdm9p
-ZCAoKmNvZGVjX3dha2Vfb3ZlcnJpZGUpKHN0cnVjdCBkZXZpY2UgKiwgYm9vbAo+ID4gPiBlbmFi
-bGUpOwo+ID4gPiA+ICAJCWludCAoKmdldF9jZGNsa19mcmVxKShzdHJ1Y3QgZGV2aWNlICopOwo+
-ID4gPiA+ICsJCWludCAoKnN5bmNfYXVkaW9fcmF0ZSkoc3RydWN0IGRldmljZSAqLCBpbnQgcG9y
-dCwgaW50Cj4gPiA+IHJhdGUpOwo+ID4gPgo+ID4gPiBXZSdyZSBtaXNzaW5nIGtlcm5lbGRvYyBm
-b3IgdGhpcyBlbnRpcmUgc3RydWN0IGhlcmUsIHdoaWNoIGlzbid0Cj4gZ3JlYXQuCj4gPiA+IFRo
-aXMgbmVlZHMgdG8gYmUgZml4ZWQuIFBsZWFzZQo+ID4gPiAtIHB1bGwgb3V0IHRoZSBvcHMgc3Ry
-dWN0dXJlIHNvIGl0J3Mgbm90IGlubGluZWQgKGtlcm5lbGRvYyBjYW4ndAo+IGhhbmRsZQo+ID4g
-PiAgIG5lc3RlZCBvcHMgc3RydWN0dXJlcykuCj4gPiA+IC0gcGxlYXNlIGRvY3VtZW50IGFsbCB0
-aGUgY2FsbGJhY2tzIHdpdGgga2VybmVsZG9jLiBJbiA0LjMgd2UgY2FuCj4gaGF2ZQo+ID4gPiAg
-IGtlcm5lbGRvYyBpbi1saW5lIGluIHN0cnVjdHVyZXMgcmlnaHQgYWJvdmUgZWFjaCBtZW1iZXIg
-bGlrZSB0aGlzCj4gPiA+Cj4gPiA+ICAgLyoqCj4gPiA+ICAgICogQHB1dF9wb3dlcjoKPiA+ID4g
-ICAgKgo+ID4gPiAgICAqIExvbmdlciB0ZXh0IGV4cGxhaW5pbmcgdGhpcyBob29rLgo+ID4gPiAg
-ICAqLwo+ID4gPiAgIHZvaWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7Cj4gPiA+Cj4g
-PiA+ICAgRm9yIGVhY2ggaG9vayBwbGVhc2UgZXhwbGFpbiBhdCBsZWFzdCB3aG8gY2FsbHMgaXQg
-KGdmeCBvciBhdWRpbykKPiBhbmQKPiA+ID4gICB3aGVyZSBleGFjdGx5IGl0J3MgY2FsbGVkIGlu
-IHRoZSBvdmVyYWxsIGZsb3cuCj4gPiA+IC0gRXh0ZW5kZWQgdGhlIG92ZXJ2aWV3IGRvYyBzZWN0
-aW9uIHdpdGggcmVmZXJlbmNlcyB0byB0aGUKPiA+ID4gY29tcG9uZW50L29wcwo+ID4gPiAgIHN0
-cnVjdHVyZSB3b3VsZCBiZSBuZWVkZWQgdG9vLgo+ID4gPgo+ID4gPiBBbmQgcGxlYXNlIG1ha2Ug
-c3VyZSBpdCBhbGwgbG9va3MgcHJldHR5IHdpdGggbWFrZSBodG1sZG9jcy4KPiA+Cj4gPiBDb3Vs
-ZCB3ZSBzdGFydCBhbm90aGVyIHBhdGNoIHNlc3Npb24gZm9yIHRoaXMgdGFzayBiZWNhdXNlLAo+
-ID4gYXMgeW91IGtub3csIHRoaXMgaXMgYSBsaXR0bGUgaW5kZXBlbmRlbnQgb24gdGhlc2UgcGF0
-Y2hlcz8KPiA+IFdoYXQgZG8geW91IHRoaW5rPwo+IAo+IE5vd2FkYXlzIEkgd2FudCBwcm9wZXIg
-ZG9jcyBmb3IgbmV3IGZlYXR1cmVzLCBhbmQgZm9yIHBsYWNlcyB3aGVyZQo+IHdlCj4gbWlzc2Vk
-IHRoZW0gdGh1cyBmYXIgdGhleSBuZWVkIHRvIGJlIGJhY2tmaWxsZWQuIEFsc28gdGhlcmUncyBz
-b21lCj4gZ29vZAo+IGNvbmZ1c2lvbiBpbiB0aGUgcmV2aWV3IGFib3V0IGhvdyB0aGlzIGFsbCB3
-b3JrcyB0b2dldGhlciwgc28gYmV0dGVyCj4gZG9jcwo+IHNlZW0gY2FsbGVkIGZvciBubyBtYXR0
-ZXIgd2hhdCB0byBnZXQgdGhpcyBpbi4gSW5zdGVhZCBvZiBqdXN0IGFkZGluZyBhbGwKPiB0aGUg
-ZXhwbGFuYXRpb25zIHRvIGNvbW1pdCBtZXNzYWdlcyBvbmx5IEkgZmlndXJlZCBpdCdzIGJldHRl
-ciB0byBkbwo+IHRoZW0KPiBhcyBrZXJuZWxkb2MuCgpZZXMsIEkgYWdyZWUgYW5kIEkgd2lsbCBh
-ZGQgaXQgZm9yIHRoZSBzeW5jX2F1ZGlvX3JhdGUgZnVuY3Rpb24KaW4gdGhlIG5leHQgdmVyc2lv
-bi4KClJlZ2FyZHMsCkxpYmluCgo+IC1EYW5pZWwKPiAtLQo+IERhbmllbCBWZXR0ZXIKPiBTb2Z0
-d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KPiBodHRwOi8vYmxvZy5mZndsbC5jaApf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZngg
-bWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3Rz
-LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+On 08/24/2015 06:17 PM, Marc Zyngier wrote:
+> [adding Mark Rutland, as this is heading straight into uncharted DT
+> territory]
+>
+> On 24/08/15 17:39, Qais Yousef wrote:
+>> On 08/24/2015 04:07 PM, Thomas Gleixner wrote:
+>>> On Mon, 24 Aug 2015, Qais Yousef wrote:
+>>>> On 08/24/2015 02:32 PM, Marc Zyngier wrote:
+>>>>> I'd rather see something more "architected" than this blind export, or
+>>>>> at least some level of filtering (the idea random drivers can access
+>>>>> such a low-level function doesn't make me feel very good).
+>>>> I don't know how to architect this better or how to perform  the filtering,
+>>>> but I'm happy to hear suggestions and try them out.
+>>>> Keep in mind that detecting GIC and writing your own gic_send_ipi() is very
+>>>> simple. I have done this when the driver was out of tree. So restricting it by
+>>>> not exporting it will not prevent someone from really accessing the
+>>>> functionality, it's just they have to do it their own way.
+>>> Keep in mind that we are not talking about out of tree hackery. We
+>>> talk about a kernel code submission and I doubt, that you will get
+>>> away with a GIC detection/fiddling burried in your driver code.
+>>>
+>>> Keep in mind that just slapping an export to some random function is
+>>> not much better than doing a GIC hack in the driver.
+>>>
+>>> Marcs concerns about blindly exposing IPI functionality to drivers is
+>>> well justified and that kind of coprocessor stuff is not unique to
+>>> your particular SoC. We're going to see such things more frequently in
+>>> the not so distant future, so we better think now about proper
+>>> solutions to that problem.
+>> Sure I'm not trying to argue against that.
+>>
+>>> There are a couple of issues to solve:
+>>>
+>>> 1) How is the IPI which is received by the coprocessor reserved in the
+>>>      system?
+>>>
+>>> 2) How is it associated to a particular driver?
+>> Shouldn't 'interrupts' property in DT take care of these 2 questions?
+>> Maybe we can give it an alias name to make it more readable that this
+>> interrupt is requested for external IPI.
+> The "interrupts" property has a rather different meaning, and isn't
+> designed to hardcode IPIs. Also, this property describes an interrupt
+> from a device to the CPU, not the other way around (I imagine you also
+> have an interrupt coming from the AXD to the CPU, possibly using an IPI
+> too).
+
+Yes we have an interrupt from AXD to the CPU. But the way I take
+care of the routing at the moment is that the CPU routes the interrupt it
+receives from AXD. And AXD routes the interrupt it receives from the
+CPU. This is useful because in MIPS GIC the routing is done per hw thread
+on the core so this gives the flexibility for each one to choose what it
+suits it best.
+
+>
+> We can deal with these issues, but that's not something we can improvise.
+>
+> What I had in mind was something fairly generic:
+> - interrupt-source: something generating an interrupt
+> - interrupt-sink: something being targeted by an interrupt
+>
+> You could then express things like:
+>
+> intc: interrupt-controller@1000 {
+> 	interrupt-controller;
+> };
+>
+> mydevice@f0000000 {
+> 	interrupt-source = <&intc INT_SPEC 2 &inttarg1 &inttarg1>;
+> };
+
+To make sure we're on the same page. INT_SPEC here refers to the arguments
+we pass to a standard interrupts property, right?
+
+>
+> inttarg1: mydevice@f1000000 {
+> 	interrupt-sink = <&intc HWAFFINITY1>;
+> };
+>
+> inttarg2: cpu@1 {
+> 	interrupt-sink = <&intc HWAFFINITY2>;
+> };
+
+And HWAFFINITY here is the core (or hardware thread) this interrupt will 
+be routed to?
+
+So for my case where CPU is on core 0 and AXD is on core 1 my 
+description will look like
+
+cpu: cpu@0 {
+         interrupt-source = <&gic GIC_SHARED 36 IRQ_TYPE_EDGE_RISING 1 
+&axd>;
+         interrupt-sink = <&gic 0>;
+}
+
+axd: axd {
+         interrupt-source = <&gic GIC_SHARED 37 IRQ_TYPE_EDGE_RISING 1 
+&cpu>;
+         interrupt-sink = <&gic 1>;
+}
+
+If I didn't misunderstand you, the issue I see with this is that the 
+information about which IRQ to use to send an IPI to AXD is not present 
+in the AXD node. We will need to search the cpu node for something that 
+is meant to be routed to axd or have some logic to implicitly infer it 
+from interrupt-sink in axd node. Not convenient IMO.
+
+Can we replace 'something' in interrupt-source and interrupt-sink 
+definitions to 'host' or 'CPU' or do we really care about creating IPI 
+between any 2 'things'?
+
+Changing the definition will also make interrupt-sink a synonym/alias to 
+interrupts property. So the description will become
+
+axd: axd {
+         interrupt-source = <&gic GIC_SHARED 36 IRQ_TYPE_EDGE_RISING>; 
+/* interrupt from CPU to AXD */
+         interrupt-sink = <&gic GIC_SHARED 37 IRQ_TYPE_EDGE_RISING>; /* 
+interrupt from AXD to CPU */
+}
+
+But this assume Linux won't take care of the routing. If we want Linux 
+to take care of the routing, maybe something like this then?
+
+axd: axd {
+         interrupt-source = <&gic GIC_SHARED 36 IRQ_TYPE_EDGE_RISING 
+HWAFFINITY1>; /* interrupt from CPU to
+AXD@HWAFFINITY1*/
+         interrupt-sink = <&gic GIC_SHARED 37 IRQ_TYPE_EDGE_RISING 
+HWAFFINITY2>; /* interrupt from AXD to CPU@HWAFFINITY2 */
+}
+
+I don't think it's necessary to specify the HWAFFINITY2 for 
+interrupt-sink as linux can use SMP affinity to move it around but we 
+can make it optional in case there's a need to hardcode it to a specific 
+Linux core. Or maybe the driver can use affinity hint..
+
+>
+> You could also imagine having CPUs being both source and sink.
+>
+>>> 3) How do we ensure that a driver cannot issue random IPIs and can
+>>>      only send the associated ones?
+>> If we get the irq number from DT then I'm not sure how feasible it is to
+>> implement a generic_send_ipi() function that takes this number to
+>> generate an IPI.
+>>
+>> Do you think this approach would work?
+> If you follow the above approach, it should be pretty easy to derive a
+> source identifier and a sink identifier from the DT, and have the core
+> code to route one to the other and do the right thing.
+
+Do you think it's better for linux to take care of all the routing 
+instead of each core doing its own routing?
+If Linux to do the routing for the other core (even if optionally), 
+what's the mechanism to do that? We can't use irq_set_affinity() because 
+we want to map something that is not part of Linux. A new mapping 
+function in struct irq_domain_ops maybe?
+
+>
+> The source identifier could also be used to describe an IPI in a fairly
+> safe way (the target being fixed by DT, but the actual number used
+> dynamically allocated by the kernel).
+
+To be dynamic, then the interrupt controller must specify which 
+interrupts are actually free to use. What if the DT doesn't describe all 
+the hardawre that is connected to GIC and Linux thinks its free to use 
+but actually it's connected to a real hardware but no one told us about? 
+I think since this information will always have to be looked up maybe 
+it's better to give the responsibility to the user to specify something 
+they know will work explicitly.
+
+>
+> This is just a 10 minutes braindump, so feel free to throw rocks at it
+> and to come up with a better solution! :-)
+
+Thanks for that. My brain is tied down to my use case to come up with 
+something generic easily :-)
+
+Any pointers on the best way to tie gic_send_ipi() with the driver/core 
+code? The way it's currently tied to the core code is through SMP IPI 
+functions which I don't think we can use. I'm thinking adding a pointer 
+function in struct irq_chip would be the easiest approach maybe?
+
+Thanks,
+Qais
+
+>
+> Thanks,
+>
+> 	M.
