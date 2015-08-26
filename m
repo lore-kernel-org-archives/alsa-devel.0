@@ -1,63 +1,85 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] drm/i915: Add audio pin
- sense / ELD callback
-Date: Wed, 26 Aug 2015 20:39:00 +0200
-Message-ID: <55DE07C4.2000503@canonical.com>
-References: <1439974138-3296-1-git-send-email-david.henningsson@canonical.com>
- <1439974138-3296-2-git-send-email-david.henningsson@canonical.com>
- <20150826083353.GE20434@phenom.ffwll.local>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 05/10] ALSA: axd: add buffers manipulation files
+Date: Wed, 26 Aug 2015 19:43:23 +0100
+Message-ID: <20150826184323.GE28760@sirena.org.uk>
+References: <1440419959-14315-1-git-send-email-qais.yousef@imgtec.com>
+ <1440419959-14315-6-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20150826083353.GE20434@phenom.ffwll.local>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Daniel Vetter <daniel@ffwll.ch>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, intel-gfx@lists.freedesktop.org, tiwai@suse.de, daniel.vetter@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="a+b56+3nqLzpiR9O"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1440419959-14315-6-git-send-email-qais.yousef@imgtec.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE1LTA4LTI2IDEwOjMzLCBEYW5pZWwgVmV0dGVyIHdyb3RlOgo+IE9uIFdlZCwgQXVn
-IDE5LCAyMDE1IGF0IDEwOjQ4OjU1QU0gKzAyMDAsIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+
-PiBUaGlzIGNhbGxiYWNrIHdpbGwgYmUgY2FsbGVkIGJ5IHRoZSBpOTE1IGRyaXZlciB0byBub3Rp
-ZnkgdGhlIGhkYQo+PiBkcml2ZXIgdGhhdCBpdHMgSERNSSBpbmZvcm1hdGlvbiBuZWVkcyB0byBi
-ZSByZWZyZXNoZWQsIGkgZSwKPj4gdGhhdCBhdWRpbyBvdXRwdXQgaXMgbm93IGF2YWlsYWJsZSAo
-b3IgdW5hdmFpbGFibGUpIC0gdXN1YWxseSBhcyBhCj4+IHJlc3VsdCBvZiBhIG1vbml0b3IgYmVp
-bmcgcGx1Z2dlZCBpbiAob3IgdW5wbHVnZ2VkKS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogRGF2aWQg
-SGVubmluZ3Nzb24gPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+Cj4+IC0tLQo+PiAg
-IGluY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmggfCAxMiArKysrKysrKysrKysKPj4gICAxIGZp
-bGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9k
-cm0vaTkxNV9jb21wb25lbnQuaCBiL2luY2x1ZGUvZHJtL2k5MTVfY29tcG9uZW50LmgKPj4gaW5k
-ZXggYzlhOGI2NC4uYWI1YmRlMzcgMTAwNjQ0Cj4+IC0tLSBhL2luY2x1ZGUvZHJtL2k5MTVfY29t
-cG9uZW50LmgKPj4gKysrIGIvaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaAo+PiBAQCAtMzQs
-NiArMzQsMTggQEAgc3RydWN0IGk5MTVfYXVkaW9fY29tcG9uZW50IHsKPj4gICAJCXZvaWQgKCpj
-b2RlY193YWtlX292ZXJyaWRlKShzdHJ1Y3QgZGV2aWNlICosIGJvb2wgZW5hYmxlKTsKPj4gICAJ
-CWludCAoKmdldF9jZGNsa19mcmVxKShzdHJ1Y3QgZGV2aWNlICopOwo+PiAgIAl9ICpvcHM7Cj4+
-ICsKPj4gKwljb25zdCBzdHJ1Y3QgaTkxNV9hdWRpb19jb21wb25lbnRfYXVkaW9fb3BzIHsKPj4g
-KwkJdm9pZCAqYXVkaW9fcHRyOwo+PiArCQkvKioKPj4gKwkJICogQ2FsbCBmcm9tIGk5MTUgZHJp
-dmVyLCBub3RpZnlpbmcgdGhlIEhEQSBkcml2ZXIgdGhhdAo+PiArCQkgKiBwaW4gc2Vuc2UgYW5k
-L29yIEVMRCBpbmZvcm1hdGlvbiBoYXMgY2hhbmdlZC4KPj4gKwkJICogQGF1ZGlvX3B0cjoJCUhE
-QSBkcml2ZXIgb2JqZWN0Cj4+ICsJCSAqIEBwb3J0OgkJV2hpY2ggcG9ydCBoYXMgY2hhbmdlZCAo
-UE9SVEEgLyBQT1JUQiAvIFBPUlRDIGV0YykKPj4gKwkJICogQHBvcnRfbXN0X2luZGV4OglJbmRl
-eCB3aXRoaW4gdGhhdCBwb3J0LCBmb3IgRGlzcGxheVBvcnQgbXVsdGlzdHJlYW1pbmcKPj4gKwkJ
-ICovCj4+ICsJCXZvaWQgKCpwaW5fZWxkX25vdGlmeSkodm9pZCAqYXVkaW9fcHRyLCBpbnQgcG9y
-dCwgaW50IHBvcnRfbXN0X2luZGV4KTsKPj4gKwl9ICphdWRpb19vcHM7Cj4KPiBUaGlzIHdvbid0
-IHdvcmsgYXMgcHJvcGVyIGtlcm5lbGRvYywgYnV0IHlvdSBnZXQgYXdheSB3aXRoIGl0IHNpbmNl
-IGl0J3MKPiBub3QgcHVsbGVkIGludG8gdGhlIGRybS50bXBsLiBTZWUgbXkgY29tbWVudHMgZm9y
-IHRoZSBuZXcgc2V0X2F1ZGlvX3JhdGUKPiBjYWxsYmFjay4KClNvcnJ5LCBteSBnb29nbGUgZmFp
-bGVkIG1lLCBzbyBJIGNhbid0IGZpbmQgeW91ciBjb21tZW50cyBmb3IgdGhlIApzZXRfYXVkaW9f
-cmF0ZSBjYWxsYmFjay4KCkFwYXJ0IGZyb20gdGhlIGtlcm5lbGRvYyBpc3N1ZSwgYXJlIHlvdSBv
-a2F5IHdpdGggYWNraW5nIHRoZSBwYXRjaCwgYXQgCmxlYXN0IHRoZSBmaXJzdCB0d28gaTkxNSBv
-bmVzLCBhbmQgYWdyZWUgd2l0aCBUYWthc2hpIHdoaWNoIHRyZWUgdGhpcyAKc2hvdWxkIGdvIHRo
-cm91Z2g/CgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHBzOi8vbGF1
-bmNocGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
-bC1nZngK
+
+--a+b56+3nqLzpiR9O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 24, 2015 at 01:39:14PM +0100, Qais Yousef wrote:
+
+> +	/*
+> +	 * must ensure we have one access at a time to the queue and rd_idx
+> +	 * to be preemption and SMP safe
+> +	 * Sempahores will ensure that we will only read after a complete write
+> +	 * has finished, so we will never read and write from the same location.
+> +	 */
+
+In what way will sempahores ensure that we will only read after a
+complete write?
+
+> +	buf = bufferq->queue[bufferq->rd_idx];
+
+So buffers are always retired in the same order that they are acquired?
+
+> +int axd_bufferq_put(struct axd_bufferq *bufferq, char *buf, int buf_size)
+> +{
+> +	int ret;
+> +
+> +	if (!bufferq->queue)
+> +		return 0;
+> +
+> +	if (buf_size < 0)
+> +		buf_size = bufferq->stride;
+
+We've got strides as well?  What is that?
+
+> +void axd_bufferq_abort_take(struct axd_bufferq *bufferq)
+> +{
+> +	if (axd_bufferq_is_empty(bufferq)) {
+> +		bufferq->abort_take = 1;
+> +		up(&bufferq->rd_sem);
+> +	}
+> +}
+> +
+> +void axd_bufferq_abort_put(struct axd_bufferq *bufferq)
+> +{
+> +	if (axd_bufferq_is_full(bufferq)) {
+> +		bufferq->abort_put = 1;
+> +		up(&bufferq->wr_sem);
+> +	}
+> +}
+
+These look *incredibly* racy.  Why are they here and why are they safe?
+
+--a+b56+3nqLzpiR9O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJV3gjKAAoJECTWi3JdVIfQnKoH/AtcvuiB7W1ujxAejJqZKFLz
+CfAuL2+kcQbWxeg23amyKo4YnVzIEmDpD6Rp/6F/zYvVywBnW4RfdmW8+PMUGaX1
+cQETxvpsWxwfo17je7Rw2sKLjC4CUI4QDHHK2l3kRfQS43ElTHPhvWHsGuTPoRAi
+VFiD9ktGteU8t6GCYa3Kdew0fLp0bQVUgRfx4tQGfh0cXA/obUSo72TZtzl3uRUW
+YLTiB0vVplxPMs4Mknp3/czNQ4QybzngQH/Bg3/ZMpEXHYQc73WmR9MPalxa4IDo
+L5JHz6Cv/5wGu1nCA6XeSJfD3KUQPkhm6c5h4zW/dacRv0matGFduVwTdqZ/e+Q=
+=HgYV
+-----END PGP SIGNATURE-----
+
+--a+b56+3nqLzpiR9O--
