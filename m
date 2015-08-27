@@ -1,169 +1,66 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 1/2] OMAPDSS: hdmi: Reconfigure and restart
- audio when display is enabled
-Date: Thu, 27 Aug 2015 17:30:53 +0300
-Message-ID: <55DF1F1D.3080203@ti.com>
-References: <cover.1440594174.git.jsarha@ti.com>
- <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] Fwd: [PATCH 1/1] SPI : spi-pxa2xx : fix spi init of
+ WM510205 codec via ACPI (resend)
+Date: Thu, 27 Aug 2015 15:56:14 +0100
+Message-ID: <20150827145614.GC5313@sirena.org.uk>
+References: <20150821074310.GM30005@lahna.fi.intel.com>
+ <CAKor6TeJp4ti6_QVCEpz0x7c2NwvUiS5wq_=_WDjM3B7T4=1Yg@mail.gmail.com>
+ <20150824085140.GA5647@ck-lbox>
+ <CAKor6TcRWgn-Z+Va0JKCBqxVA9HBSLMR_vh-z8MSBZebn9kDVg@mail.gmail.com>
+ <20150825062157.GB27431@sirena.org.uk>
+ <CAKor6Tf_8J4DVrVRShw2ked-zJzmP6G1P1i=vTcbzWX-J1H6dQ@mail.gmail.com>
+ <CAKor6TfpWuhTG6dfARdHmXEb+bLpm5Q6Z-A0g60VPD2fCWHbOg@mail.gmail.com>
+ <20150826100155.GA1513@lahna.fi.intel.com>
+ <CAKor6TeH32hd0QUCPowzrjp54iJjGKiJ8jVT994y2O29dfk=QA@mail.gmail.com>
+ <20150827115914.GF28428@lahna.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8277218285402594884=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E9DB265A1E
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 16:30:58 +0200 (CEST)
-In-Reply-To: <44089dc819903c71e1d0ed0c14dd3ab060ed8c68.1440594174.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Sr1nOIr3CvdE5hEN"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20150827115914.GF28428-3PARRvDOhMZrdx17CPfAsdBPR1lH4CV8@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mika Westerberg <mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Christian Hartmann <cornogle-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, jarkko.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, dan.carpenter-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============8277218285402594884==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature";
-	boundary="3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL"
 
---3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+--Sr1nOIr3CvdE5hEN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi,
+On Thu, Aug 27, 2015 at 02:59:14PM +0300, Mika Westerberg wrote:
+> On Thu, Aug 27, 2015 at 01:44:45PM +0200, Christian Hartmann wrote:
 
-On 26/08/15 16:11, Jyri Sarha wrote:
+> > drivers/gpio/gpio-arizona.c
+> > and drivers/extcon/extcon-arizona.c
 
-I few comments, for the parts I had time to review:
+> > I have already CONFIG_GPIO_ARIZONA=y, but it does not be used at all.
+> > Is it save to ignore ?? Or should I use them as well ??
 
-> diff --git a/drivers/video/fbdev/omap2/dss/hdmi5.c b/drivers/video/fbde=
-v/omap2/dss/hdmi5.c
-> index 7f87578..f352c4b 100644
-> --- a/drivers/video/fbdev/omap2/dss/hdmi5.c
-> +++ b/drivers/video/fbdev/omap2/dss/hdmi5.c
-> @@ -352,6 +352,7 @@ static int read_edid(u8 *buf, int len)
->  static int hdmi_display_enable(struct omap_dss_device *dssdev)
->  {
->  	struct omap_dss_device *out =3D &hdmi.output;
-> +	unsigned long flags;
->  	int r =3D 0;
-> =20
->  	DSSDBG("ENTER hdmi_display_enable\n");
-> @@ -370,7 +371,37 @@ static int hdmi_display_enable(struct omap_dss_dev=
-ice *dssdev)
->  		goto err0;
->  	}
-> =20
+> If the SPI device interrupt is connected to arizona GPIO pin, then you
+> probably need that.
 
-I think you could refactor parts of the code below into small helper
-functions:
+I can't see how that would work, the interrupt output isn't a GPIO.
 
-> +	if (hdmi.audio_configured) {
-> +		spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
-> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, false);
-> +		hdmi_wp_audio_enable(&hdmi.wp, false);
-> +		if (hdmi.wp_idlemode > 0)
-> +			REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG,
-> +				    hdmi.wp_idlemode, 3, 2);
-> +		hdmi.wp_idlemode =3D -1;
-
-The above looks like it's disabling audio output, the same that's done
-in hdmi_audio_stop(). Adding a helper func for that makes the code more
-readable.
-
-For the wp_idlemode, I think hdmi.wp_idlemode could be initialized to a
-valid value, so that it can be set at any time without the if check above=
-=2E
-
-> +		spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
-> +
-> +		r =3D hdmi5_audio_config(&hdmi.core, &hdmi.wp, &hdmi.audio_config,
-> +				       hdmi.cfg.timings.pixelclock);
-> +		if (r) {
-> +			DSSERR("Error restoring audio configuration: %d", r);
-> +			hdmi.audio_abort_cb(&hdmi.pdev->dev);
-> +			hdmi.audio_configured =3D false;
-> +		}
-> +	}
-> +
-> +	spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
-> +	if (hdmi.audio_configured && hdmi.audio_playing) {
-> +		/* No-idle while playing audio, store the old value */
-> +		hdmi.wp_idlemode =3D
-> +			REG_GET(hdmi.wp.base, HDMI_WP_SYSCONFIG, 3, 2);
-> +		REG_FLD_MOD(hdmi.wp.base, HDMI_WP_SYSCONFIG, 1, 3, 2);
-> +
-> +		hdmi_wp_audio_enable(&hdmi.wp, true);
-> +		hdmi_wp_audio_core_req_enable(&hdmi.wp, true);
-
-And here maybe a helper func to enable the audio output.
-
-> +	}
-
->  	hdmi.display_enabled =3D true;
-> +	spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
-> =20
->  	mutex_unlock(&hdmi.lock);
->  	return 0;
-> @@ -382,17 +413,18 @@ err0:
-> =20
->  static void hdmi_display_disable(struct omap_dss_device *dssdev)
->  {
-> +	unsigned long flags;
-> +
->  	DSSDBG("Enter hdmi_display_disable\n");
-> =20
->  	mutex_lock(&hdmi.lock);
-> =20
-> -	if (hdmi.audio_pdev && hdmi.audio_abort_cb)
-> -		hdmi.audio_abort_cb(&hdmi.audio_pdev->dev);
-> +	spin_lock_irqsave(&hdmi.audio_playing_lock, flags);
-> +	hdmi.display_enabled =3D false;
-> +	spin_unlock_irqrestore(&hdmi.audio_playing_lock, flags);
-
-Shouldn't something be done here in hdmi_display_disable about audio?
-You probably want to keep the state flag enabled, so that we know the
-user is playing audio, but you could still disable the HDMI audio HW.
-I'm sure the audio output dies when the video is disabled, but being
-more explicit here makes the code logic easier to follow.
-
- Tomi
-
-
---3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL
+--Sr1nOIr3CvdE5hEN
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJV3x8dAAoJEPo9qoy8lh71caIQAJZiEL0rOnoQ4KkUtt8gAn/4
-aR8DoJsKk+g9pdPnVqa4nUK4FE3O9mFz50TywENRn+sMb84NLglqvKAsegEub0cu
-UPrQw5cTv3VJE20UE3SC7RVqgY8HMqZ5blbyevDdIf3Ci+4xkmis9i4NhC09B19t
-UrzQ4CkuK+oZ+iTDoJp1/pfBk1E9p9Lb53nJ6ERwr/kcV2yuUDLmBpjTbtzp41ks
-aB2IMkPO/5nSUOCM/RJoNaQVn2s9VWp6LmCreJ1ZvMDvwt3we1xHtt9BuVOCOc8T
-4Y/ocX53COvSoNh9Vjn/XQ/JkBM2eQG9aJlR1qBDvCZ65ft9WJU4g9eY+7aGZ3iL
-98ZqL+mREgYTZLyf9TL8oLHlEMc2xiZqA97BmpV7btAMQFLdgeAPMSxY535dObsw
-Ih9AZKm33PyCTs1exJN4NBetSsPKA1Iwp7yWmcqr7R9qn1SwkUBZbpqkalOVVoC6
-0s9DHtJDpql1yS0GOufhCDWIrH9FRM0kJNToN1Uv49v72cj1oenGyLDLVwfBs1Nt
-rloH97RnpVrOqgLrJJh58CUSHSgcPMdk4PTtiujk0K5EYDIGYqwL6UCv0oKhkQ0v
-95YGKkwipk1FiTt6CdVjTsWSQ++dAvmiTHurmqGk1nD+ZKZv/emTd8fW3rxfvK1X
-ky0a1C5X0neJFb6EHmfh
-=2Ljn
+iQEcBAEBCAAGBQJV3yUOAAoJECTWi3JdVIfQcOYH/0Dh0WJT54ydA4NrA4ibU1Y9
+IDY7RM1WeGqadcF+dwwF+JYsDsH9XbAwc74RuOf5stnJCC6okY7gHgvjoMTkcksa
+7zGsZ3e1qEs27BQ3/aQPqon/iR13MNPGTsuQsk4c9UhNfouKe4CwE0LzUi45l1qH
+J9TykBySd9xXK2nz+ODdGo44swzGPErhvUO8niPjyWvRz/JjAsvC8BPTjX/qgdfI
+witQmJ/TRgeKn1yDSKWHn+aiTW6T1bb/PVn4D2Ea+wy/SLzd2DNXUzFsGSxC9If9
+D9MgZt+3rszsDH6SasBZSBVjKwo/vS97w7v1LUdPKJwEyIe05/xLhrdVnP4/sGo=
+=9gnX
 -----END PGP SIGNATURE-----
 
---3uOh6pdtAiXNsKCOwxrpVj0n25LBqGnmL--
-
---===============8277218285402594884==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8277218285402594884==--
+--Sr1nOIr3CvdE5hEN--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
