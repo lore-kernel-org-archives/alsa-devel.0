@@ -1,328 +1,367 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 1/2] mfd: arizona: Add register bits to
-	support the ANC block
-Date: Thu, 27 Aug 2015 17:07:48 +0100
-Message-ID: <1440691669-26966-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 2/2] ASoC: wm5110: Add DAPM/routing hookup for the ANC block
+Date: Thu, 27 Aug 2015 17:07:49 +0100
+Message-ID: <1440691669-26966-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1440691669-26966-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id DA593260580
- for <alsa-devel@alsa-project.org>; Thu, 27 Aug 2015 18:27:54 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1440691669-26966-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, sameo@linux.intel.com, lgirdwood@gmail.com
+Cc: sameo@linux.intel.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Some Arizona devices have a hardware ANC block present. This patch adds
-the registers necessary to configure this hardware block.
+The wm5110 device contains a hardware ANC block, this patch connects up
+controls and routing for this.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/mfd/wm5110-tables.c           |  185 +++++++++++++++++++++++++++++++++
- include/linux/mfd/arizona/registers.h |   70 +++++++++++++
- 2 files changed, 255 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mfd/wm5110-tables.c b/drivers/mfd/wm5110-tables.c
-index dae04dd..71b84cd 100644
---- a/drivers/mfd/wm5110-tables.c
-+++ b/drivers/mfd/wm5110-tables.c
-@@ -1637,6 +1637,184 @@ static const struct reg_default wm5110_reg_default[] = {
- 	{ 0x00000EF8, 0x0000 },    /* R3832  - ISRC 3 CTRL 3 */
- 	{ 0x00000F00, 0x0000 },    /* R3840  - Clock Control */
- 	{ 0x00000F01, 0x0000 },    /* R3841  - ANC_SRC */
-+	{ 0x00000F08, 0x001c },    /* R3848  - ANC Coefficient */
-+	{ 0x00000F09, 0x0000 },    /* R3849  - ANC Coefficient */
-+	{ 0x00000F0B, 0x0000 },    /* R3851  - ANC Coefficient */
-+	{ 0x00000F0C, 0x0000 },    /* R3852  - ANC Coefficient */
-+	{ 0x00000F0D, 0x0000 },    /* R3853  - ANC Coefficient */
-+	{ 0x00000F0E, 0x0000 },    /* R3854  - ANC Coefficient */
-+	{ 0x00000F0F, 0x0000 },    /* R3855  - ANC Coefficient */
-+	{ 0x00000F10, 0x0000 },    /* R3856  - ANC Coefficient */
-+	{ 0x00000F11, 0x0000 },    /* R3857  - ANC Coefficient */
-+	{ 0x00000F12, 0x0000 },    /* R3858  - ANC Coefficient */
-+	{ 0x00000F15, 0x0000 },    /* R3861  - FCL Filter Control */
-+	{ 0x00000F17, 0x0004 },    /* R3863  - FCL ADC Reformatter Control */
-+	{ 0x00000F18, 0x0004 },    /* R3864  - ANC Coefficient */
-+	{ 0x00000F19, 0x0002 },    /* R3865  - ANC Coefficient */
-+	{ 0x00000F1A, 0x0000 },    /* R3866  - ANC Coefficient */
-+	{ 0x00000F1B, 0x0010 },    /* R3867  - ANC Coefficient */
-+	{ 0x00000F1C, 0x0000 },    /* R3868  - ANC Coefficient */
-+	{ 0x00000F1D, 0x0000 },    /* R3869  - ANC Coefficient */
-+	{ 0x00000F1E, 0x0000 },    /* R3870  - ANC Coefficient */
-+	{ 0x00000F1F, 0x0000 },    /* R3871  - ANC Coefficient */
-+	{ 0x00000F20, 0x0000 },    /* R3872  - ANC Coefficient */
-+	{ 0x00000F21, 0x0000 },    /* R3873  - ANC Coefficient */
-+	{ 0x00000F22, 0x0000 },    /* R3874  - ANC Coefficient */
-+	{ 0x00000F23, 0x0000 },    /* R3875  - ANC Coefficient */
-+	{ 0x00000F24, 0x0000 },    /* R3876  - ANC Coefficient */
-+	{ 0x00000F25, 0x0000 },    /* R3877  - ANC Coefficient */
-+	{ 0x00000F26, 0x0000 },    /* R3878  - ANC Coefficient */
-+	{ 0x00000F27, 0x0000 },    /* R3879  - ANC Coefficient */
-+	{ 0x00000F28, 0x0000 },    /* R3880  - ANC Coefficient */
-+	{ 0x00000F29, 0x0000 },    /* R3881  - ANC Coefficient */
-+	{ 0x00000F2A, 0x0000 },    /* R3882  - ANC Coefficient */
-+	{ 0x00000F2B, 0x0000 },    /* R3883  - ANC Coefficient */
-+	{ 0x00000F2C, 0x0000 },    /* R3884  - ANC Coefficient */
-+	{ 0x00000F2D, 0x0000 },    /* R3885  - ANC Coefficient */
-+	{ 0x00000F2E, 0x0000 },    /* R3886  - ANC Coefficient */
-+	{ 0x00000F2F, 0x0000 },    /* R3887  - ANC Coefficient */
-+	{ 0x00000F30, 0x0000 },    /* R3888  - ANC Coefficient */
-+	{ 0x00000F31, 0x0000 },    /* R3889  - ANC Coefficient */
-+	{ 0x00000F32, 0x0000 },    /* R3890  - ANC Coefficient */
-+	{ 0x00000F33, 0x0000 },    /* R3891  - ANC Coefficient */
-+	{ 0x00000F34, 0x0000 },    /* R3892  - ANC Coefficient */
-+	{ 0x00000F35, 0x0000 },    /* R3893  - ANC Coefficient */
-+	{ 0x00000F36, 0x0000 },    /* R3894  - ANC Coefficient */
-+	{ 0x00000F37, 0x0000 },    /* R3895  - ANC Coefficient */
-+	{ 0x00000F38, 0x0000 },    /* R3896  - ANC Coefficient */
-+	{ 0x00000F39, 0x0000 },    /* R3897  - ANC Coefficient */
-+	{ 0x00000F3A, 0x0000 },    /* R3898  - ANC Coefficient */
-+	{ 0x00000F3B, 0x0000 },    /* R3899  - ANC Coefficient */
-+	{ 0x00000F3C, 0x0000 },    /* R3900  - ANC Coefficient */
-+	{ 0x00000F3D, 0x0000 },    /* R3901  - ANC Coefficient */
-+	{ 0x00000F3E, 0x0000 },    /* R3902  - ANC Coefficient */
-+	{ 0x00000F3F, 0x0000 },    /* R3903  - ANC Coefficient */
-+	{ 0x00000F40, 0x0000 },    /* R3904  - ANC Coefficient */
-+	{ 0x00000F41, 0x0000 },    /* R3905  - ANC Coefficient */
-+	{ 0x00000F42, 0x0000 },    /* R3906  - ANC Coefficient */
-+	{ 0x00000F43, 0x0000 },    /* R3907  - ANC Coefficient */
-+	{ 0x00000F44, 0x0000 },    /* R3908  - ANC Coefficient */
-+	{ 0x00000F45, 0x0000 },    /* R3909  - ANC Coefficient */
-+	{ 0x00000F46, 0x0000 },    /* R3910  - ANC Coefficient */
-+	{ 0x00000F47, 0x0000 },    /* R3911  - ANC Coefficient */
-+	{ 0x00000F48, 0x0000 },    /* R3912  - ANC Coefficient */
-+	{ 0x00000F49, 0x0000 },    /* R3913  - ANC Coefficient */
-+	{ 0x00000F4A, 0x0000 },    /* R3914  - ANC Coefficient */
-+	{ 0x00000F4B, 0x0000 },    /* R3915  - ANC Coefficient */
-+	{ 0x00000F4C, 0x0000 },    /* R3916  - ANC Coefficient */
-+	{ 0x00000F4D, 0x0000 },    /* R3917  - ANC Coefficient */
-+	{ 0x00000F4E, 0x0000 },    /* R3918  - ANC Coefficient */
-+	{ 0x00000F4F, 0x0000 },    /* R3919  - ANC Coefficient */
-+	{ 0x00000F50, 0x0000 },    /* R3920  - ANC Coefficient */
-+	{ 0x00000F51, 0x0000 },    /* R3921  - ANC Coefficient */
-+	{ 0x00000F52, 0x0000 },    /* R3922  - ANC Coefficient */
-+	{ 0x00000F53, 0x0000 },    /* R3923  - ANC Coefficient */
-+	{ 0x00000F54, 0x0000 },    /* R3924  - ANC Coefficient */
-+	{ 0x00000F55, 0x0000 },    /* R3925  - ANC Coefficient */
-+	{ 0x00000F56, 0x0000 },    /* R3926  - ANC Coefficient */
-+	{ 0x00000F57, 0x0000 },    /* R3927  - ANC Coefficient */
-+	{ 0x00000F58, 0x0000 },    /* R3928  - ANC Coefficient */
-+	{ 0x00000F59, 0x0000 },    /* R3929  - ANC Coefficient */
-+	{ 0x00000F5A, 0x0000 },    /* R3930  - ANC Coefficient */
-+	{ 0x00000F5B, 0x0000 },    /* R3931  - ANC Coefficient */
-+	{ 0x00000F5C, 0x0000 },    /* R3932  - ANC Coefficient */
-+	{ 0x00000F5D, 0x0000 },    /* R3933  - ANC Coefficient */
-+	{ 0x00000F5E, 0x0000 },    /* R3934  - ANC Coefficient */
-+	{ 0x00000F5F, 0x0000 },    /* R3935  - ANC Coefficient */
-+	{ 0x00000F60, 0x0000 },    /* R3936  - ANC Coefficient */
-+	{ 0x00000F61, 0x0000 },    /* R3937  - ANC Coefficient */
-+	{ 0x00000F62, 0x0000 },    /* R3938  - ANC Coefficient */
-+	{ 0x00000F63, 0x0000 },    /* R3939  - ANC Coefficient */
-+	{ 0x00000F64, 0x0000 },    /* R3940  - ANC Coefficient */
-+	{ 0x00000F65, 0x0000 },    /* R3941  - ANC Coefficient */
-+	{ 0x00000F66, 0x0000 },    /* R3942  - ANC Coefficient */
-+	{ 0x00000F67, 0x0000 },    /* R3943  - ANC Coefficient */
-+	{ 0x00000F68, 0x0000 },    /* R3944  - ANC Coefficient */
-+	{ 0x00000F69, 0x0000 },    /* R3945  - ANC Coefficient */
-+	{ 0x00000F70, 0x0000 },    /* R3952  - FCR Filter Control */
-+	{ 0x00000F72, 0x0004 },    /* R3954  - FCR ADC Reformatter Control */
-+	{ 0x00000F73, 0x0004 },    /* R3955  - ANC Coefficient */
-+	{ 0x00000F74, 0x0002 },    /* R3956  - ANC Coefficient */
-+	{ 0x00000F75, 0x0000 },    /* R3957  - ANC Coefficient */
-+	{ 0x00000F76, 0x0010 },    /* R3958  - ANC Coefficient */
-+	{ 0x00000F77, 0x0000 },    /* R3959  - ANC Coefficient */
-+	{ 0x00000F78, 0x0000 },    /* R3960  - ANC Coefficient */
-+	{ 0x00000F79, 0x0000 },    /* R3961  - ANC Coefficient */
-+	{ 0x00000F7A, 0x0000 },    /* R3962  - ANC Coefficient */
-+	{ 0x00000F7B, 0x0000 },    /* R3963  - ANC Coefficient */
-+	{ 0x00000F7C, 0x0000 },    /* R3964  - ANC Coefficient */
-+	{ 0x00000F7D, 0x0000 },    /* R3965  - ANC Coefficient */
-+	{ 0x00000F7E, 0x0000 },    /* R3966  - ANC Coefficient */
-+	{ 0x00000F7F, 0x0000 },    /* R3967  - ANC Coefficient */
-+	{ 0x00000F80, 0x0000 },    /* R3968  - ANC Coefficient */
-+	{ 0x00000F81, 0x0000 },    /* R3969  - ANC Coefficient */
-+	{ 0x00000F82, 0x0000 },    /* R3970  - ANC Coefficient */
-+	{ 0x00000F83, 0x0000 },    /* R3971  - ANC Coefficient */
-+	{ 0x00000F84, 0x0000 },    /* R3972  - ANC Coefficient */
-+	{ 0x00000F85, 0x0000 },    /* R3973  - ANC Coefficient */
-+	{ 0x00000F86, 0x0000 },    /* R3974  - ANC Coefficient */
-+	{ 0x00000F87, 0x0000 },    /* R3975  - ANC Coefficient */
-+	{ 0x00000F88, 0x0000 },    /* R3976  - ANC Coefficient */
-+	{ 0x00000F89, 0x0000 },    /* R3977  - ANC Coefficient */
-+	{ 0x00000F8A, 0x0000 },    /* R3978  - ANC Coefficient */
-+	{ 0x00000F8B, 0x0000 },    /* R3979  - ANC Coefficient */
-+	{ 0x00000F8C, 0x0000 },    /* R3980  - ANC Coefficient */
-+	{ 0x00000F8D, 0x0000 },    /* R3981  - ANC Coefficient */
-+	{ 0x00000F8E, 0x0000 },    /* R3982  - ANC Coefficient */
-+	{ 0x00000F8F, 0x0000 },    /* R3983  - ANC Coefficient */
-+	{ 0x00000F90, 0x0000 },    /* R3984  - ANC Coefficient */
-+	{ 0x00000F91, 0x0000 },    /* R3985  - ANC Coefficient */
-+	{ 0x00000F92, 0x0000 },    /* R3986  - ANC Coefficient */
-+	{ 0x00000F93, 0x0000 },    /* R3987  - ANC Coefficient */
-+	{ 0x00000F94, 0x0000 },    /* R3988  - ANC Coefficient */
-+	{ 0x00000F95, 0x0000 },    /* R3989  - ANC Coefficient */
-+	{ 0x00000F96, 0x0000 },    /* R3990  - ANC Coefficient */
-+	{ 0x00000F97, 0x0000 },    /* R3991  - ANC Coefficient */
-+	{ 0x00000F98, 0x0000 },    /* R3992  - ANC Coefficient */
-+	{ 0x00000F99, 0x0000 },    /* R3993  - ANC Coefficient */
-+	{ 0x00000F9A, 0x0000 },    /* R3994  - ANC Coefficient */
-+	{ 0x00000F9B, 0x0000 },    /* R3995  - ANC Coefficient */
-+	{ 0x00000F9C, 0x0000 },    /* R3996  - ANC Coefficient */
-+	{ 0x00000F9D, 0x0000 },    /* R3997  - ANC Coefficient */
-+	{ 0x00000F9E, 0x0000 },    /* R3998  - ANC Coefficient */
-+	{ 0x00000F9F, 0x0000 },    /* R3999  - ANC Coefficient */
-+	{ 0x00000FA0, 0x0000 },    /* R4000  - ANC Coefficient */
-+	{ 0x00000FA1, 0x0000 },    /* R4001  - ANC Coefficient */
-+	{ 0x00000FA2, 0x0000 },    /* R4002  - ANC Coefficient */
-+	{ 0x00000FA3, 0x0000 },    /* R4003  - ANC Coefficient */
-+	{ 0x00000FA4, 0x0000 },    /* R4004  - ANC Coefficient */
-+	{ 0x00000FA5, 0x0000 },    /* R4005  - ANC Coefficient */
-+	{ 0x00000FA6, 0x0000 },    /* R4006  - ANC Coefficient */
-+	{ 0x00000FA7, 0x0000 },    /* R4007  - ANC Coefficient */
-+	{ 0x00000FA8, 0x0000 },    /* R4008  - ANC Coefficient */
-+	{ 0x00000FA9, 0x0000 },    /* R4009  - ANC Coefficient */
-+	{ 0x00000FAA, 0x0000 },    /* R4010  - ANC Coefficient */
-+	{ 0x00000FAB, 0x0000 },    /* R4011  - ANC Coefficient */
-+	{ 0x00000FAC, 0x0000 },    /* R4012  - ANC Coefficient */
-+	{ 0x00000FAD, 0x0000 },    /* R4013  - ANC Coefficient */
-+	{ 0x00000FAE, 0x0000 },    /* R4014  - ANC Coefficient */
-+	{ 0x00000FAF, 0x0000 },    /* R4015  - ANC Coefficient */
-+	{ 0x00000FB0, 0x0000 },    /* R4016  - ANC Coefficient */
-+	{ 0x00000FB1, 0x0000 },    /* R4017  - ANC Coefficient */
-+	{ 0x00000FB2, 0x0000 },    /* R4018  - ANC Coefficient */
-+	{ 0x00000FB3, 0x0000 },    /* R4019  - ANC Coefficient */
-+	{ 0x00000FB4, 0x0000 },    /* R4020  - ANC Coefficient */
-+	{ 0x00000FB5, 0x0000 },    /* R4021  - ANC Coefficient */
-+	{ 0x00000FB6, 0x0000 },    /* R4022  - ANC Coefficient */
-+	{ 0x00000FB7, 0x0000 },    /* R4023  - ANC Coefficient */
-+	{ 0x00000FB8, 0x0000 },    /* R4024  - ANC Coefficient */
-+	{ 0x00000FB9, 0x0000 },    /* R4025  - ANC Coefficient */
-+	{ 0x00000FBA, 0x0000 },    /* R4026  - ANC Coefficient */
-+	{ 0x00000FBB, 0x0000 },    /* R4027  - ANC Coefficient */
-+	{ 0x00000FBC, 0x0000 },    /* R4028  - ANC Coefficient */
-+	{ 0x00000FBD, 0x0000 },    /* R4029  - ANC Coefficient */
-+	{ 0x00000FBE, 0x0000 },    /* R4030  - ANC Coefficient */
-+	{ 0x00000FBF, 0x0000 },    /* R4031  - ANC Coefficient */
-+	{ 0x00000FC0, 0x0000 },    /* R4032  - ANC Coefficient */
-+	{ 0x00000FC1, 0x0000 },    /* R4033  - ANC Coefficient */
-+	{ 0x00000FC2, 0x0000 },    /* R4034  - ANC Coefficient */
-+	{ 0x00000FC3, 0x0000 },    /* R4035  - ANC Coefficient */
-+	{ 0x00000FC4, 0x0000 },    /* R4036  - ANC Coefficient */
- 	{ 0x00001100, 0x0010 },    /* R4352  - DSP1 Control 1 */
- 	{ 0x00001101, 0x0000 },    /* R4353  - DSP1 Clocking 1 */
- 	{ 0x00001200, 0x0010 },    /* R4608  - DSP2 Control 1 */
-@@ -2716,6 +2894,13 @@ static bool wm5110_readable_register(struct device *dev, unsigned int reg)
- 	case ARIZONA_CLOCK_CONTROL:
- 	case ARIZONA_ANC_SRC:
- 	case ARIZONA_DSP_STATUS:
-+	case ARIZONA_ANC_COEFF_START ... ARIZONA_ANC_COEFF_END:
-+	case ARIZONA_FCL_FILTER_CONTROL:
-+	case ARIZONA_FCL_ADC_REFORMATTER_CONTROL:
-+	case ARIZONA_FCL_COEFF_START ... ARIZONA_FCL_COEFF_END:
-+	case ARIZONA_FCR_FILTER_CONTROL:
-+	case ARIZONA_FCR_ADC_REFORMATTER_CONTROL:
-+	case ARIZONA_FCR_COEFF_START ... ARIZONA_FCR_COEFF_END:
- 	case ARIZONA_DSP1_CONTROL_1:
- 	case ARIZONA_DSP1_CLOCKING_1:
- 	case ARIZONA_DSP1_STATUS_1:
-diff --git a/include/linux/mfd/arizona/registers.h b/include/linux/mfd/arizona/registers.h
-index 11affb3..fdb12bf 100644
---- a/include/linux/mfd/arizona/registers.h
-+++ b/include/linux/mfd/arizona/registers.h
-@@ -1050,6 +1050,16 @@
- #define ARIZONA_CLOCK_CONTROL                    0xF00
- #define ARIZONA_ANC_SRC                          0xF01
- #define ARIZONA_DSP_STATUS                       0xF02
-+#define ARIZONA_ANC_COEFF_START                  0xF08
-+#define ARIZONA_ANC_COEFF_END                    0xF12
-+#define ARIZONA_FCL_FILTER_CONTROL               0xF15
-+#define ARIZONA_FCL_ADC_REFORMATTER_CONTROL      0xF17
-+#define ARIZONA_FCL_COEFF_START                  0xF18
-+#define ARIZONA_FCL_COEFF_END                    0xF69
-+#define ARIZONA_FCR_FILTER_CONTROL               0xF70
-+#define ARIZONA_FCR_ADC_REFORMATTER_CONTROL      0xF72
-+#define ARIZONA_FCR_COEFF_START                  0xF73
-+#define ARIZONA_FCR_COEFF_END                    0xFC4
- #define ARIZONA_DSP1_CONTROL_1                   0x1100
- #define ARIZONA_DSP1_CLOCKING_1                  0x1101
- #define ARIZONA_DSP1_STATUS_1                    0x1104
-@@ -7823,6 +7833,66 @@
- #define ARIZONA_ISRC3_NOTCH_ENA_WIDTH                 1  /* ISRC3_NOTCH_ENA */
+Changes since v1:
+ - Added missing break in arizona_anc_ev
+
+ sound/soc/codecs/arizona.c |  119 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |    7 ++
+ sound/soc/codecs/wm5110.c  |  136 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 262 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 8a2221a..2dcffaa 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -672,6 +672,100 @@ const struct soc_enum arizona_in_dmic_osr[] = {
+ };
+ EXPORT_SYMBOL_GPL(arizona_in_dmic_osr);
  
- /*
-+ * R3840 (0xF00) - Clock Control
-+ */
-+#define ARIZONA_EXT_NG_SEL_CLR                   0x0080  /* EXT_NG_SEL_CLR */
-+#define ARIZONA_EXT_NG_SEL_CLR_MASK              0x0080  /* EXT_NG_SEL_CLR */
-+#define ARIZONA_EXT_NG_SEL_CLR_SHIFT                  7  /* EXT_NG_SEL_CLR */
-+#define ARIZONA_EXT_NG_SEL_CLR_WIDTH                  1  /* EXT_NG_SEL_CLR */
-+#define ARIZONA_EXT_NG_SEL_SET                   0x0040  /* EXT_NG_SEL_SET */
-+#define ARIZONA_EXT_NG_SEL_SET_MASK              0x0040  /* EXT_NG_SEL_SET */
-+#define ARIZONA_EXT_NG_SEL_SET_SHIFT                  6  /* EXT_NG_SEL_SET */
-+#define ARIZONA_EXT_NG_SEL_SET_WIDTH                  1  /* EXT_NG_SEL_SET */
-+#define ARIZONA_CLK_R_ENA_CLR                    0x0020  /* CLK_R_ENA_CLR */
-+#define ARIZONA_CLK_R_ENA_CLR_MASK               0x0020  /* CLK_R_ENA_CLR */
-+#define ARIZONA_CLK_R_ENA_CLR_SHIFT                   5  /* CLK_R_ENA_CLR */
-+#define ARIZONA_CLK_R_ENA_CLR_WIDTH                   1  /* CLK_R_ENA_CLR */
-+#define ARIZONA_CLK_R_ENA_SET                    0x0010  /* CLK_R_ENA_SET */
-+#define ARIZONA_CLK_R_ENA_SET_MASK               0x0010  /* CLK_R_ENA_SET */
-+#define ARIZONA_CLK_R_ENA_SET_SHIFT                   4  /* CLK_R_ENA_SET */
-+#define ARIZONA_CLK_R_ENA_SET_WIDTH                   1  /* CLK_R_ENA_SET */
-+#define ARIZONA_CLK_NG_ENA_CLR                   0x0008  /* CLK_NG_ENA_CLR */
-+#define ARIZONA_CLK_NG_ENA_CLR_MASK              0x0008  /* CLK_NG_ENA_CLR */
-+#define ARIZONA_CLK_NG_ENA_CLR_SHIFT                  3  /* CLK_NG_ENA_CLR */
-+#define ARIZONA_CLK_NG_ENA_CLR_WIDTH                  1  /* CLK_NG_ENA_CLR */
-+#define ARIZONA_CLK_NG_ENA_SET                   0x0004  /* CLK_NG_ENA_SET */
-+#define ARIZONA_CLK_NG_ENA_SET_MASK              0x0004  /* CLK_NG_ENA_SET */
-+#define ARIZONA_CLK_NG_ENA_SET_SHIFT                  2  /* CLK_NG_ENA_SET */
-+#define ARIZONA_CLK_NG_ENA_SET_WIDTH                  1  /* CLK_NG_ENA_SET */
-+#define ARIZONA_CLK_L_ENA_CLR                    0x0002  /* CLK_L_ENA_CLR */
-+#define ARIZONA_CLK_L_ENA_CLR_MASK               0x0002  /* CLK_L_ENA_CLR */
-+#define ARIZONA_CLK_L_ENA_CLR_SHIFT                   1  /* CLK_L_ENA_CLR */
-+#define ARIZONA_CLK_L_ENA_CLR_WIDTH                   1  /* CLK_L_ENA_CLR */
-+#define ARIZONA_CLK_L_ENA_SET                    0x0001  /* CLK_L_ENA_SET */
-+#define ARIZONA_CLK_L_ENA_SET_MASK               0x0001  /* CLK_L_ENA_SET */
-+#define ARIZONA_CLK_L_ENA_SET_SHIFT                   0  /* CLK_L_ENA_SET */
-+#define ARIZONA_CLK_L_ENA_SET_WIDTH                   1  /* CLK_L_ENA_SET */
++static const char * const arizona_anc_input_src_text[] = {
++	"None", "IN1", "IN2", "IN3", "IN4",
++};
 +
-+/*
-+ * R3841 (0xF01) - ANC SRC
-+ */
-+#define ARIZONA_IN_RXANCR_SEL_MASK               0x0070  /* IN_RXANCR_SEL - [4:6] */
-+#define ARIZONA_IN_RXANCR_SEL_SHIFT                   4  /* IN_RXANCR_SEL - [4:6] */
-+#define ARIZONA_IN_RXANCR_SEL_WIDTH                   3  /* IN_RXANCR_SEL - [4:6] */
-+#define ARIZONA_IN_RXANCL_SEL_MASK               0x0007  /* IN_RXANCL_SEL - [0:2] */
-+#define ARIZONA_IN_RXANCL_SEL_SHIFT                   0  /* IN_RXANCL_SEL - [0:2] */
-+#define ARIZONA_IN_RXANCL_SEL_WIDTH                   3  /* IN_RXANCL_SEL - [0:2] */
++static const char * const arizona_anc_channel_src_text[] = {
++	"None", "Left", "Right", "Combine",
++};
 +
-+/*
-+ * R3863 (0xF17) - FCL ADC Reformatter Control
-+ */
-+#define ARIZONA_FCL_MIC_MODE_SEL                 0x000C  /* FCL_MIC_MODE_SEL - [2:3] */
-+#define ARIZONA_FCL_MIC_MODE_SEL_SHIFT                2  /* FCL_MIC_MODE_SEL - [2:3] */
-+#define ARIZONA_FCL_MIC_MODE_SEL_WIDTH                2  /* FCL_MIC_MODE_SEL - [2:3] */
++const struct soc_enum arizona_anc_input_src[] = {
++	SOC_ENUM_SINGLE(ARIZONA_ANC_SRC,
++			ARIZONA_IN_RXANCL_SEL_SHIFT,
++			ARRAY_SIZE(arizona_anc_input_src_text),
++			arizona_anc_input_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_FCL_ADC_REFORMATTER_CONTROL,
++			ARIZONA_FCL_MIC_MODE_SEL,
++			ARRAY_SIZE(arizona_anc_channel_src_text),
++			arizona_anc_channel_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_ANC_SRC,
++			ARIZONA_IN_RXANCR_SEL_SHIFT,
++			ARRAY_SIZE(arizona_anc_input_src_text),
++			arizona_anc_input_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_FCR_ADC_REFORMATTER_CONTROL,
++			ARIZONA_FCR_MIC_MODE_SEL,
++			ARRAY_SIZE(arizona_anc_channel_src_text),
++			arizona_anc_channel_src_text),
++};
++EXPORT_SYMBOL_GPL(arizona_anc_input_src);
 +
-+/*
-+ * R3954 (0xF72) - FCR ADC Reformatter Control
-+ */
-+#define ARIZONA_FCR_MIC_MODE_SEL                 0x000C  /* FCR_MIC_MODE_SEL - [2:3] */
-+#define ARIZONA_FCR_MIC_MODE_SEL_SHIFT                2  /* FCR_MIC_MODE_SEL - [2:3] */
-+#define ARIZONA_FCR_MIC_MODE_SEL_WIDTH                2  /* FCR_MIC_MODE_SEL - [2:3] */
++static const char * const arizona_anc_ng_texts[] = {
++	"None",
++	"Internal",
++	"External",
++};
 +
-+/*
-  * R4352 (0x1100) - DSP1 Control 1
-  */
- #define ARIZONA_DSP1_RATE_MASK                   0x7800  /* DSP1_RATE - [14:11] */
++SOC_ENUM_SINGLE_DECL(arizona_anc_ng_enum, SND_SOC_NOPM, 0,
++		     arizona_anc_ng_texts);
++EXPORT_SYMBOL_GPL(arizona_anc_ng_enum);
++
++static const char * const arizona_output_anc_src_text[] = {
++	"None", "RXANCL", "RXANCR",
++};
++
++const struct soc_enum arizona_output_anc_src[] = {
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_1L,
++			ARIZONA_OUT1L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_1R,
++			ARIZONA_OUT1R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_2L,
++			ARIZONA_OUT2L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_2R,
++			ARIZONA_OUT2R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_3L,
++			ARIZONA_OUT3L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_DAC_VOLUME_LIMIT_3R,
++			ARIZONA_OUT3R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_4L,
++			ARIZONA_OUT4L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_4R,
++			ARIZONA_OUT4R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_5L,
++			ARIZONA_OUT5L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_5R,
++			ARIZONA_OUT5R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_6L,
++			ARIZONA_OUT6L_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++	SOC_ENUM_SINGLE(ARIZONA_OUTPUT_PATH_CONFIG_6R,
++			ARIZONA_OUT6R_ANC_SRC_SHIFT,
++			ARRAY_SIZE(arizona_output_anc_src_text),
++			arizona_output_anc_src_text),
++};
++EXPORT_SYMBOL_GPL(arizona_output_anc_src);
++
+ static void arizona_in_set_vu(struct snd_soc_codec *codec, int ena)
+ {
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+@@ -979,6 +1073,31 @@ void arizona_init_dvfs(struct arizona_priv *priv)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_dvfs);
+ 
++int arizona_anc_ev(struct snd_soc_dapm_widget *w,
++		   struct snd_kcontrol *kcontrol,
++		   int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	unsigned int mask = 0x3 << w->shift;
++	unsigned int val;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		val = 1 << w->shift;
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		val = 1 << (w->shift + 1);
++		break;
++	default:
++		return 0;
++	}
++
++	snd_soc_update_bits(codec, ARIZONA_CLOCK_CONTROL, mask, val);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_anc_ev);
++
+ static unsigned int arizona_sysclk_48k_rates[] = {
+ 	6144000,
+ 	12288000,
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index ada0a41..1a4ba09 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -233,6 +233,10 @@ extern const struct soc_enum arizona_in_dmic_osr[];
+ 
+ extern const struct snd_kcontrol_new arizona_adsp2_rate_controls[];
+ 
++extern const struct soc_enum arizona_anc_input_src[];
++extern const struct soc_enum arizona_anc_ng_enum;
++extern const struct soc_enum arizona_output_anc_src[];
++
+ extern int arizona_in_ev(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 int event);
+@@ -242,6 +246,9 @@ extern int arizona_out_ev(struct snd_soc_dapm_widget *w,
+ extern int arizona_hp_ev(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol,
+ 			 int event);
++extern int arizona_anc_ev(struct snd_soc_dapm_widget *w,
++			  struct snd_kcontrol *kcontrol,
++			  int event);
+ 
+ extern int arizona_eq_coeff_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol);
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 9756578..5a90cc5 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -448,6 +448,33 @@ static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
+ 	SOC_SINGLE(name " NG SPKDAT2L Switch", base, 10, 1, 0), \
+ 	SOC_SINGLE(name " NG SPKDAT2R Switch", base, 11, 1, 0)
+ 
++#define WM5110_RXANC_INPUT_ROUTES(widget, name) \
++	{ widget, NULL, name " NG Mux" }, \
++	{ name " NG Internal", NULL, "RXANC NG Clock" }, \
++	{ name " NG Internal", NULL, name " Channel" }, \
++	{ name " NG External", NULL, "RXANC NG External Clock" }, \
++	{ name " NG External", NULL, name " Channel" }, \
++	{ name " NG Mux", "None", name " Channel" }, \
++	{ name " NG Mux", "Internal", name " NG Internal" }, \
++	{ name " NG Mux", "External", name " NG External" }, \
++	{ name " Channel", "Left", name " Left Input" }, \
++	{ name " Channel", "Combine", name " Left Input" }, \
++	{ name " Channel", "Right", name " Right Input" }, \
++	{ name " Channel", "Combine", name " Right Input" }, \
++	{ name " Left Input", "IN1", "IN1L PGA" }, \
++	{ name " Right Input", "IN1", "IN1R PGA" }, \
++	{ name " Left Input", "IN2", "IN2L PGA" }, \
++	{ name " Right Input", "IN2", "IN2R PGA" }, \
++	{ name " Left Input", "IN3", "IN3L PGA" }, \
++	{ name " Right Input", "IN3", "IN3R PGA" }, \
++	{ name " Left Input", "IN4", "IN4L PGA" }, \
++	{ name " Right Input", "IN4", "IN4R PGA" }
++
++#define WM5110_RXANC_OUTPUT_ROUTES(widget, name) \
++	{ widget, NULL, name " ANC Source" }, \
++	{ name " ANC Source", "RXANCL", "RXANCL" }, \
++	{ name " ANC Source", "RXANCR", "RXANCR" }
++
+ static const struct snd_kcontrol_new wm5110_snd_controls[] = {
+ SOC_ENUM("IN1 OSR", arizona_in_dmic_osr[0]),
+ SOC_ENUM("IN2 OSR", arizona_in_dmic_osr[1]),
+@@ -506,6 +533,15 @@ SOC_SINGLE_TLV("IN4R Digital Volume", ARIZONA_ADC_DIGITAL_VOLUME_4R,
+ SOC_ENUM("Input Ramp Up", arizona_in_vi_ramp),
+ SOC_ENUM("Input Ramp Down", arizona_in_vd_ramp),
+ 
++SND_SOC_BYTES("RXANC Coefficients", ARIZONA_ANC_COEFF_START,
++	      ARIZONA_ANC_COEFF_END - ARIZONA_ANC_COEFF_START + 1),
++SND_SOC_BYTES("RXANCL Config", ARIZONA_FCL_FILTER_CONTROL, 1),
++SND_SOC_BYTES("RXANCL Coefficients", ARIZONA_FCL_COEFF_START,
++	      ARIZONA_FCL_COEFF_END - ARIZONA_FCL_COEFF_START + 1),
++SND_SOC_BYTES("RXANCR Config", ARIZONA_FCR_FILTER_CONTROL, 1),
++SND_SOC_BYTES("RXANCR Coefficients", ARIZONA_FCR_COEFF_START,
++	      ARIZONA_FCR_COEFF_END - ARIZONA_FCR_COEFF_START + 1),
++
+ ARIZONA_MIXER_CONTROLS("EQ1", ARIZONA_EQ1MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ2", ARIZONA_EQ2MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("EQ3", ARIZONA_EQ3MIX_INPUT_1_SOURCE),
+@@ -862,6 +898,31 @@ static const struct soc_enum wm5110_aec_loopback =
+ static const struct snd_kcontrol_new wm5110_aec_loopback_mux =
+ 	SOC_DAPM_ENUM("AEC Loopback", wm5110_aec_loopback);
+ 
++static const struct snd_kcontrol_new wm5110_anc_input_mux[] = {
++	SOC_DAPM_ENUM("RXANCL Input", arizona_anc_input_src[0]),
++	SOC_DAPM_ENUM("RXANCL Channel", arizona_anc_input_src[1]),
++	SOC_DAPM_ENUM("RXANCR Input", arizona_anc_input_src[2]),
++	SOC_DAPM_ENUM("RXANCR Channel", arizona_anc_input_src[3]),
++};
++
++static const struct snd_kcontrol_new wm5110_anc_ng_mux =
++	SOC_DAPM_ENUM("RXANC NG Source", arizona_anc_ng_enum);
++
++static const struct snd_kcontrol_new wm5110_output_anc_src[] = {
++	SOC_DAPM_ENUM("HPOUT1L ANC Source", arizona_output_anc_src[0]),
++	SOC_DAPM_ENUM("HPOUT1R ANC Source", arizona_output_anc_src[1]),
++	SOC_DAPM_ENUM("HPOUT2L ANC Source", arizona_output_anc_src[2]),
++	SOC_DAPM_ENUM("HPOUT2R ANC Source", arizona_output_anc_src[3]),
++	SOC_DAPM_ENUM("HPOUT3L ANC Source", arizona_output_anc_src[4]),
++	SOC_DAPM_ENUM("HPOUT3R ANC Source", arizona_output_anc_src[5]),
++	SOC_DAPM_ENUM("SPKOUTL ANC Source", arizona_output_anc_src[6]),
++	SOC_DAPM_ENUM("SPKOUTR ANC Source", arizona_output_anc_src[7]),
++	SOC_DAPM_ENUM("SPKDAT1L ANC Source", arizona_output_anc_src[8]),
++	SOC_DAPM_ENUM("SPKDAT1R ANC Source", arizona_output_anc_src[9]),
++	SOC_DAPM_ENUM("SPKDAT2L ANC Source", arizona_output_anc_src[10]),
++	SOC_DAPM_ENUM("SPKDAT2R ANC Source", arizona_output_anc_src[11]),
++};
++
+ static const struct snd_soc_dapm_widget wm5110_dapm_widgets[] = {
+ SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
+ 		    0, wm5110_sysclk_ev, SND_SOC_DAPM_POST_PMU),
+@@ -1046,6 +1107,65 @@ SND_SOC_DAPM_MUX("AEC Loopback", ARIZONA_DAC_AEC_CONTROL_1,
+ 		       ARIZONA_AEC_LOOPBACK_ENA_SHIFT, 0,
+ 		       &wm5110_aec_loopback_mux),
+ 
++SND_SOC_DAPM_SUPPLY("RXANC NG External Clock", SND_SOC_NOPM,
++		   ARIZONA_EXT_NG_SEL_SET_SHIFT, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA("RXANCL NG External", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_PGA("RXANCR NG External", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++SND_SOC_DAPM_SUPPLY("RXANC NG Clock", SND_SOC_NOPM,
++		   ARIZONA_CLK_NG_ENA_SET_SHIFT, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA("RXANCL NG Internal", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_PGA("RXANCR NG Internal", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++SND_SOC_DAPM_MUX("RXANCL Left Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[0]),
++SND_SOC_DAPM_MUX("RXANCL Right Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[0]),
++SND_SOC_DAPM_MUX("RXANCL Channel", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[1]),
++SND_SOC_DAPM_MUX("RXANCL NG Mux", SND_SOC_NOPM, 0, 0, &wm5110_anc_ng_mux),
++SND_SOC_DAPM_MUX("RXANCR Left Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[2]),
++SND_SOC_DAPM_MUX("RXANCR Right Input", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[2]),
++SND_SOC_DAPM_MUX("RXANCR Channel", SND_SOC_NOPM, 0, 0,
++		 &wm5110_anc_input_mux[3]),
++SND_SOC_DAPM_MUX("RXANCR NG Mux", SND_SOC_NOPM, 0, 0, &wm5110_anc_ng_mux),
++
++SND_SOC_DAPM_PGA_E("RXANCL", SND_SOC_NOPM, ARIZONA_CLK_L_ENA_SET_SHIFT,
++		   0, NULL, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++SND_SOC_DAPM_PGA_E("RXANCR", SND_SOC_NOPM, ARIZONA_CLK_R_ENA_SET_SHIFT,
++		   0, NULL, 0, arizona_anc_ev,
++		   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++
++SND_SOC_DAPM_MUX("HPOUT1L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[0]),
++SND_SOC_DAPM_MUX("HPOUT1R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[1]),
++SND_SOC_DAPM_MUX("HPOUT2L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[2]),
++SND_SOC_DAPM_MUX("HPOUT2R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[3]),
++SND_SOC_DAPM_MUX("HPOUT3L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[4]),
++SND_SOC_DAPM_MUX("HPOUT3R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[5]),
++SND_SOC_DAPM_MUX("SPKOUTL ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[6]),
++SND_SOC_DAPM_MUX("SPKOUTR ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[7]),
++SND_SOC_DAPM_MUX("SPKDAT1L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[8]),
++SND_SOC_DAPM_MUX("SPKDAT1R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[9]),
++SND_SOC_DAPM_MUX("SPKDAT2L ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[10]),
++SND_SOC_DAPM_MUX("SPKDAT2R ANC Source", SND_SOC_NOPM, 0, 0,
++		 &wm5110_output_anc_src[11]),
++
+ SND_SOC_DAPM_AIF_OUT("AIF1TX1", NULL, 0,
+ 		     ARIZONA_AIF1_TX_ENABLES, ARIZONA_AIF1TX1_ENA_SHIFT, 0),
+ SND_SOC_DAPM_AIF_OUT("AIF1TX2", NULL, 0,
+@@ -1699,6 +1819,22 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
+ 	{ "SPKDAT2L", NULL, "OUT6L" },
+ 	{ "SPKDAT2R", NULL, "OUT6R" },
+ 
++	WM5110_RXANC_INPUT_ROUTES("RXANCL", "RXANCL"),
++	WM5110_RXANC_INPUT_ROUTES("RXANCR", "RXANCR"),
++
++	WM5110_RXANC_OUTPUT_ROUTES("OUT1L", "HPOUT1L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT1R", "HPOUT1R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT2L", "HPOUT2L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT2R", "HPOUT2R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT3L", "HPOUT3L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT3R", "HPOUT3R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT4L", "SPKOUTL"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT4R", "SPKOUTR"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT5L", "SPKDAT1L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT5R", "SPKDAT1R"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT6L", "SPKDAT2L"),
++	WM5110_RXANC_OUTPUT_ROUTES("OUT6R", "SPKDAT2R"),
++
+ 	{ "MICSUPP", NULL, "SYSCLK" },
+ 
+ 	{ "DRC1 Signal Activity", NULL, "DRC1L" },
 -- 
 1.7.2.5
